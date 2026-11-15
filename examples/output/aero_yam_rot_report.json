@@ -1,0 +1,138 @@
+{
+  "name": "Aero Yam Rot",
+  "parts": 24,
+  "instances": 33,
+  "faces": 693,
+  "triangles": 1378,
+  "vertices_flat": 2916,
+  "vertices_unique": 714,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.594,
+  "texel_density": 3.0,
+  "colors_used": 24,
+  "palette": {
+    "aqua": [
+      "#0a2c5a",
+      "#0b4c86",
+      "#0b72b4",
+      "#1199d6",
+      "#25bfe8",
+      "#5cdcf4",
+      "#a6f0fb",
+      "#e8fdff"
+    ],
+    "mint": [
+      "#0b4a5a",
+      "#0f7d84",
+      "#1fb59e",
+      "#4fdcb2",
+      "#9af5cf",
+      "#e0fff0"
+    ],
+    "bubble": [
+      "#1559a8",
+      "#2384d6",
+      "#4cb3f0",
+      "#8fd9fb",
+      "#d2f3ff"
+    ],
+    "mag": [
+      "#22052a",
+      "#55095e",
+      "#9a0fa0",
+      "#e01ee0",
+      "#ff5cff",
+      "#ffc2ff"
+    ],
+    "grn": [
+      "#03200b",
+      "#065814",
+      "#0c9a22",
+      "#1ee23e",
+      "#86ff80",
+      "#dcffd6"
+    ],
+    "void": [
+      "#07060c",
+      "#141020",
+      "#241c34"
+    ],
+    "spec": [
+      "#d6f6ff",
+      "#ffffff"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -19.17,
+      0.086,
+      -5.221
+    ],
+    "max": [
+      17.8,
+      15.2,
+      6.75
+    ],
+    "size": [
+      36.97,
+      15.114,
+      11.971
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.5,
+    "crash": 2.0
+  },
+  "joints": [
+    "hop",
+    "body_0",
+    "body_1",
+    "body_2",
+    "body_3",
+    "body_4",
+    "body_5",
+    "body_6",
+    "body_7",
+    "body_8",
+    "body_9",
+    "root_tail",
+    "nub0",
+    "nub1",
+    "nub2",
+    "nub3",
+    "sprout",
+    "leaf0",
+    "leaf1",
+    "leaf2",
+    "ghost_m",
+    "ghost_g",
+    "orbit",
+    "bubble0",
+    "bubble1",
+    "bubble2",
+    "bubble3",
+    "bubble4",
+    "bubble5",
+    "err_warn",
+    "err_text",
+    "err_tile",
+    "err_flare"
+  ],
+  "files": {
+    "aero_yam_rot.glb": "examples/output/aero_yam_rot.glb",
+    "aero_yam_rot.obj": "examples/output/aero_yam_rot.obj",
+    "aero_yam_rot.mtl": "examples/output/aero_yam_rot.mtl",
+    "aero_yam_rot.bbmodel": "examples/output/aero_yam_rot.bbmodel",
+    "aero_yam_rot_texture.png": "examples/output/aero_yam_rot_texture.png",
+    "aero_yam_rot_texture_x4.png": "examples/output/aero_yam_rot_texture_x4.png",
+    "aero_yam_rot_hero.png": "examples/output/aero_yam_rot_hero.png",
+    "aero_yam_rot_sheet.png": "examples/output/aero_yam_rot_sheet.png",
+    "aero_yam_rot_turntable.gif": "examples/output/aero_yam_rot_turntable.gif",
+    "aero_yam_rot_idle.gif": "examples/output/aero_yam_rot_idle.gif",
+    "aero_yam_rot_crash.gif": "examples/output/aero_yam_rot_crash.gif"
+  }
+}

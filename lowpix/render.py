@@ -217,6 +217,9 @@ def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
     around the target (close-ups)."""
     tex = model.atlas
     rs = model.spec.get("render", {})
+    if worlds is None and rs.get("pose"):  # previews in a clip pose, e.g. with VFX cards hidden or mid-action
+        pose = rs["pose"]
+        worlds = model.animator().world_matrices(pose.get("clip"), float(pose.get("t", 0.0)))
     bg = parse_hex(background or rs.get("background", "#0d0c14"))
     W, H = width * ssaa, height * ssaa
     tris, uvs, pts, lo, cam, fitpts = _view(model, yaw, pitch, fov, width / height, target, worlds, fit_pts)

@@ -120,7 +120,8 @@ class Model:
         if tiny:
             warnings.append(f"{len(tiny)} faces are under 2px on a side (detail lost): {tiny[:6]}"
                             + (" ..." if len(tiny) > 6 else ""))
-        if lo[1] < -0.05:
+        grounded = self.spec.get("grounded", True)  # false: a floating prop (weapon, pickup, VFX): no ground checks
+        if lo[1] < -0.05 and grounded:
             sunk = []
             for inst in self.instances:
                 y = min(float(transform_points(inst.world, f.pts)[:, 1].min()) for f in inst.faces) if inst.faces else 0
@@ -129,7 +130,7 @@ class Model:
             warnings.append("below ground plane y=0: " + ", ".join(sunk[:12]) + (" ..." if len(sunk) > 12 else ""))
         # animated clips: sample frames and flag parts that sink through the floor mid-motion
         clips = self.spec.get("animations") or {}
-        if clips:
+        if clips and grounded:
             anim = self.animator()
             tol = float(self.spec.get("anim_ground_tolerance", 0.15))
             for cname in clips:

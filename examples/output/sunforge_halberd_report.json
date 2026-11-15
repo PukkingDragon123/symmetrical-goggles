@@ -1,18 +1,18 @@
 {
   "name": "Sunforge Halberd",
-  "parts": 32,
-  "instances": 32,
-  "faces": 226,
-  "triangles": 560,
-  "vertices_flat": 1012,
-  "vertices_unique": 396,
+  "parts": 28,
+  "instances": 28,
+  "faces": 530,
+  "triangles": 1110,
+  "vertices_flat": 2170,
+  "vertices_unique": 664,
   "atlas": [
     256,
     256
   ],
-  "atlas_fill": 0.507,
+  "atlas_fill": 0.676,
   "texel_density": 4.0,
-  "colors_used": 33,
+  "colors_used": 29,
   "palette": {
     "brass": [
       "#2a1408",
@@ -66,19 +66,19 @@
   },
   "bounds": {
     "min": [
-      -11.61,
-      1.587,
-      -1.571
+      -8.138,
+      4.6,
+      -1.75
     ],
     "max": [
-      13.239,
-      56.8,
-      1.571
+      14.639,
+      57.9,
+      1.75
     ],
     "size": [
-      24.849,
-      55.213,
-      3.141
+      22.777,
+      53.3,
+      3.5
     ]
   },
   "warnings": [],
@@ -86,15 +86,12 @@
     "showcase": 4.0
   },
   "joints": [
-    "shaft",
-    "grip",
-    "ring0",
-    "ring1",
-    "ring2",
-    "butt",
-    "collar",
-    "head",
-    "sun_ring",
+    "haft",
+    "blade",
+    "horn0",
+    "horn1",
+    "hook",
+    "sun",
     "sun_core",
     "ray0",
     "ray1",
@@ -108,15 +105,14 @@
     "ray9",
     "ray10",
     "ray11",
-    "blade",
-    "blade_edge",
-    "horn",
-    "horn_lo",
-    "langet",
-    "spear",
-    "spear_fuller",
-    "hook",
-    "hook_tip",
+    "flare0",
+    "flare1",
+    "ember0",
+    "ember1",
+    "ember2",
+    "ember3",
+    "glint_edge",
+    "glint_tip",
     "ribbon"
   ],
   "files": {

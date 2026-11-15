@@ -1,0 +1,122 @@
+{
+  "name": "Aero Yam",
+  "parts": 21,
+  "instances": 30,
+  "faces": 577,
+  "triangles": 1122,
+  "vertices_flat": 2428,
+  "vertices_unique": 540,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.906,
+  "texel_density": 3.0,
+  "colors_used": 20,
+  "palette": {
+    "aqua": [
+      "#0a2c5a",
+      "#0b4c86",
+      "#0b72b4",
+      "#1199d6",
+      "#25bfe8",
+      "#5cdcf4",
+      "#a6f0fb",
+      "#e8fdff"
+    ],
+    "mint": [
+      "#0b4a5a",
+      "#0f7d84",
+      "#1fb59e",
+      "#4fdcb2",
+      "#9af5cf",
+      "#e0fff0"
+    ],
+    "lime": [
+      "#0f3d2a",
+      "#176b30",
+      "#2a9c35",
+      "#56c93c",
+      "#9be856",
+      "#dcffa0"
+    ],
+    "bubble": [
+      "#1559a8",
+      "#2384d6",
+      "#4cb3f0",
+      "#8fd9fb",
+      "#d2f3ff"
+    ],
+    "spec": [
+      "#d6f6ff",
+      "#ffffff"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -19.17,
+      0.086,
+      -5.221
+    ],
+    "max": [
+      17.8,
+      15.507,
+      6.75
+    ],
+    "size": [
+      36.97,
+      15.421,
+      11.971
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.0,
+    "spin": 1.8
+  },
+  "joints": [
+    "hop",
+    "body_0",
+    "body_1",
+    "body_2",
+    "body_3",
+    "body_4",
+    "body_5",
+    "body_6",
+    "body_7",
+    "body_8",
+    "body_9",
+    "root_tail",
+    "nub0",
+    "nub1",
+    "nub2",
+    "nub3",
+    "sprout",
+    "leaf0",
+    "leaf1",
+    "leaf2",
+    "orbit",
+    "bubble0",
+    "bubble1",
+    "bubble2",
+    "bubble3",
+    "bubble4",
+    "bubble5",
+    "sparkle",
+    "sparkle_a",
+    "sparkle_b"
+  ],
+  "files": {
+    "aero_yam.glb": "examples/output/aero_yam.glb",
+    "aero_yam.obj": "examples/output/aero_yam.obj",
+    "aero_yam.mtl": "examples/output/aero_yam.mtl",
+    "aero_yam.bbmodel": "examples/output/aero_yam.bbmodel",
+    "aero_yam_texture.png": "examples/output/aero_yam_texture.png",
+    "aero_yam_texture_x4.png": "examples/output/aero_yam_texture_x4.png",
+    "aero_yam_hero.png": "examples/output/aero_yam_hero.png",
+    "aero_yam_sheet.png": "examples/output/aero_yam_sheet.png",
+    "aero_yam_turntable.gif": "examples/output/aero_yam_turntable.gif",
+    "aero_yam_idle.gif": "examples/output/aero_yam_idle.gif",
+    "aero_yam_spin.gif": "examples/output/aero_yam_spin.gif"
+  }
+}
