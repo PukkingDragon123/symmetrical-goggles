@@ -1,6 +1,6 @@
 {
   "name": "Ibis Scribe",
-  "description": "Original chubby ibis-headed scribe figurine: egg-shaped ivory body, long curved slate beak, lapis-and-gold striped headcloth with swaying lappets, beaded gold and turquoise collar, white kilt, reed pen and papyrus, seated cross-legged on a sandstone plinth.",
+  "description": "Original chubby ibis-headed scribe figurine: egg-shaped ivory body with folded black-tipped wings and a tail tuft, a long curved slate beak darkening to the tip, a kohl-lined gold eye, a lapis-and-gold striped headcloth with brow band, queue and swaying lappets, a beaded gold, turquoise, lapis and carnelian collar, a pleated white kilt, a reed pen writing invented glyphs on papyrus, seated cross-legged with bird feet on a sandstone plinth with a tiled frieze. Rigged with idle, write and bow clips.",
   "author": "lowpix example", "license": "CC0-1.0", "density": 2, "budget": {"tris": 1000, "colors": 52},
   "light": {"dir": [-0.55, 1.0, 0.65], "strength": 1.0, "gradient": 0.4, "ao": 0.7, "ao_height": 4.0},
   "render": {"background": "#1e2b33", "hero": [34, 20], "shadow": 0.45},
@@ -243,7 +243,8 @@
           {"id": "bars_z", "op": "stripes", "axis": "z", "period": 2.5, "width": 0.2, "ramp": "gold", "tone": 3.6, "faces": ["flanks"]},
           {"id": "above", "op": "band", "axis": "y", "from": 0.4, "to": 1.0, "ramp": "sand", "tone": 3.6, "faces": ["-top"]},
           {"id": "below", "op": "band", "axis": "y", "from": -1.0, "to": -0.4, "ramp": "sand", "tone": 3.0, "faces": ["-top"]},
-          {"id": "lip", "op": "band", "axis": "y", "from": 0.55, "to": 0.75, "ramp": "gold", "tone": 3.4, "faces": ["-top"]}
+          {"id": "lip", "op": "band", "axis": "y", "from": 0.55, "to": 0.75, "ramp": "gold", "tone": 3.4, "faces": ["-top"]},
+          {"id": "frame", "op": "panel", "inset": 3, "shift": -1.4, "highlight": 0.8, "shadow": -0.6, "faces": ["top"]}
         ]
       }
     },
@@ -434,9 +435,9 @@
       "id": "brow", "parent": "head", "shape": "loft", "profile": {"sides": 4, "round": 2.0}, "subdiv": 1, "caps": [true, true],
       "rings": [
         {"at": [-8.0, 8.6, 1.0], "size": [1.3, 1.6]},
-        {"at": [-5.6, 12.4, 1.8], "size": [1.3, 1.6]},
-        {"at": [0, 14.0, 2.2], "size": [1.3, 1.6]},
-        {"at": [5.6, 12.4, 1.8], "size": [1.3, 1.6]},
+        {"at": [-5.6, 12.0, 1.6], "size": [1.3, 1.6]},
+        {"at": [0, 13.4, 1.8], "size": [1.3, 1.6]},
+        {"at": [5.6, 12.0, 1.6], "size": [1.3, 1.6]},
         {"at": [8.0, 8.6, 1.0], "size": [1.3, 1.6]}
       ],
       "style": "gold", "paint": {"tone": 3.6}

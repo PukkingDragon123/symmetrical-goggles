@@ -40,7 +40,7 @@
       "layers": [
         {"id": "glow", "op": "gradient", "axis": "path", "amount": 1.0},
         {"id": "facet", "op": "fill", "shift": 0.6, "min_light": 0.6},
-        {"id": "glint", "op": "gloss", "post": true, "dash": true, "length": 3, "inset": 1, "density": 0.6, "shift": 2.5}
+        {"id": "glint", "op": "gloss", "post": true, "dash": true, "length": 2, "inset": 1, "density": 0.35, "shift": 2.5}
       ]
     },
     "bone": {
