@@ -1,6 +1,7 @@
 {
   "name": "Pipe Otter",
   "description": "Original gacha-style figure: a sleek chocolate otter popping out of a weathered copper-and-brass standpipe with verdigris patina, bolted flanges and a red valve wheel; its tail pokes out of the side branch. Rigged with popup, idle and wave clips.",
+  "notes": "Rig: riser (root, pipe frame: +X = side branch) > body_0..2 (otter chain; body_0 position.y drops the whole otter into the pipe, -15.6 = fully hidden) > head > eyes/muzzle/nose/ears/whiskers; arm_0..1 + paw (mirrored chains); tail_0..4 (chain out of the branch). The riser is 13 wide so the ducked otter (head squeezed, whiskers folded, hands up) stays inside it. On the near-vertical body loft `around` 0 is the back, so the shoulders attach at 0.33.",
   "author": "lowpix example",
   "license": "CC0-1.0",
   "density": 2,
@@ -9,68 +10,14 @@
   "render": {"background": "#1a2130", "hero": [-34, 22], "shadow": 0.45},
   "palette": {
     "ramps": {
-      "fur": [
-        "#140b14",
-        "#271520",
-        "#3d2023",
-        "#58321f",
-        "#784a2b",
-        "#9e6a37",
-        "#c8924c"
-      ],
-      "cream": [
-        "#5e3c3c",
-        "#94705e",
-        "#c9a583",
-        "#ead0a4",
-        "#fff2d2"
-      ],
-      "copper": [
-        "#1f0d12",
-        "#4a1a16",
-        "#7c2f1c",
-        "#b0512a",
-        "#d77a3c",
-        "#f0a35a",
-        "#ffd49a"
-      ],
-      "brass": [
-        "#1f0d12",
-        "#41301a",
-        "#6e5424",
-        "#9c7d34",
-        "#c9a74c",
-        "#ecd88e"
-      ],
-      "patina": [
-        "#12303a",
-        "#1d5551",
-        "#2f8070",
-        "#52ad8f",
-        "#8fd8b2"
-      ],
-      "red": [
-        "#2c0a14",
-        "#5e1220",
-        "#9a1c26",
-        "#d63a33",
-        "#ff7a5c"
-      ],
-      "eye": [
-        "#0a0610",
-        "#1c1018",
-        "#4a2a1c",
-        "#94592c",
-        "#fff6e4"
-      ],
-      "stone": [
-        "#121521",
-        "#1f2433",
-        "#2e3546",
-        "#434b5c",
-        "#5f6874",
-        "#858c8e"
-      ]
+      "fur": ["#140b14", "#271520", "#3d2023", "#58321f", "#784a2b", "#9e6a37", "#c8924c"],
+      "cream": ["#5e3c3c", "#94705e", "#c9a583", "#ead0a4", "#fff2d2"],
+      "copper": ["#1f0d12", "#4a1a16", "#7c2f1c", "#b0512a", "#d77a3c", "#f0a35a", "#ffd49a"],
+      "brass": ["#1f0d12", "#41301a", "#6e5424", "#9c7d34", "#c9a74c", "#ecd88e"],
+      "patina": ["#12303a", "#1d5551", "#2f8070", "#52ad8f", "#8fd8b2"],
+      "red": ["#2c0a14", "#5e1220", "#9a1c26", "#d63a33", "#ff7a5c"],
+      "eye": ["#0a0610", "#1c1018", "#4a2a1c", "#94592c", "#fff6e4"],
+      "stone": ["#121521", "#1f2433", "#2e3546", "#434b5c", "#5f6874", "#858c8e"]
     }
   },
   "styles": {
@@ -87,7 +34,7 @@
       "dither": 0,
       "layers": [
         {"id": "mottle", "op": "noise", "scale": 2.0, "amount": 0.3},
-        {"id": "spec", "op": "fill", "shift": 1.6, "min_light": 0.55},
+        {"id": "spec", "op": "fill", "shift": 1.3, "min_light": 0.6},
         {"id": "dark_ref", "op": "fill", "shift": -0.8, "min_light": -0.05, "max_light": 0.3},
         {"id": "bounce", "op": "fill", "shift": 0.6, "max_light": -0.45},
         {
@@ -119,18 +66,31 @@
       "dither": 0,
       "rim": {"light": 1, "dark": 1, "outline": ["bottom"]},
       "layers": [
-        {"id": "mottle", "op": "noise", "scale": 2.0, "amount": 0.3},
-        {"id": "grime", "op": "patches", "scale": 1.6, "threshold": 0.64, "shift": -0.7, "faces": ["-up"]},
+        {"id": "mottle", "op": "noise", "scale": 2.8, "amount": 0.2},
+        {"id": "grime", "op": "patches", "scale": 2.4, "threshold": 0.7, "shift": -0.6, "faces": ["-up"]},
         {
           "id": "patina",
           "op": "patches",
           "ramp": "patina",
           "tone": 2,
-          "scale": 1.1,
-          "threshold": 0.77,
+          "scale": 1.4,
+          "threshold": 0.8,
           "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.0}
         },
-        {"id": "wear", "op": "wear", "width": 2, "density": 0.16, "shift": 1.2, "post": true}
+        {
+          "id": "crust",
+          "op": "band",
+          "axis": "z",
+          "from": -1,
+          "to": -1,
+          "ramp": "patina",
+          "tone": 2.2,
+          "wobble": 0,
+          "wobble_scale": 0.7,
+          "faces": ["sides"],
+          "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.0}
+        },
+        {"id": "wear", "op": "wear", "width": 2, "density": 0.1, "shift": 1.2, "post": true, "faces": ["-up"]}
       ]
     },
     "fur": {
@@ -138,14 +98,14 @@
       "tone": 3.2,
       "dither": 0,
       "layers": [
-        {"id": "mottle", "op": "noise", "scale": 2.2, "amount": 0.35},
+        {"id": "mottle", "op": "noise", "scale": 2.6, "amount": 0.24},
         {
           "id": "sheen",
           "op": "patches",
-          "scale": 0.7,
-          "threshold": 0.66,
+          "scale": 0.8,
+          "threshold": 0.7,
           "shift": 1,
-          "min_light": 0.6,
+          "min_light": 0.62,
           "post": true
         }
       ]
@@ -159,7 +119,13 @@
     "eye": {"ramp": "fur", "tone": 2.6, "dither": 0.0, "rim": {"light": 0, "dark": 0}},
     "nose": {"ramp": "fur", "tone": 0.8, "dither": 0.0, "rim": {"light": 1, "dark": 0}},
     "paw": {"ramp": "fur", "tone": 2.6, "dither": 0.0, "rim": {"light": 1, "dark": 1, "outline": "dark"}},
-    "whisker": {"ramp": "cream", "tone": 3.0, "light": 0.0, "rim": {"light": 0, "dark": 0}, "art_key": {"w": "cream:3"}},
+    "whisker": {
+      "ramp": "cream",
+      "tone": 3,
+      "light": 0,
+      "rim": {"light": 0, "dark": 0},
+      "art_key": {"w": "cream:4", "d": "fur:1"}
+    },
     "water": {
       "ramp": "patina",
       "tone": 1,
@@ -173,7 +139,7 @@
       "tone": 3,
       "light": 0,
       "rim": {"light": 0, "dark": 0},
-      "art_key": {"r": "red:3", "o": "red:4", "d": "red:1", "h": "brass:4"}
+      "art_key": {"r": "red:3", "o": "red:4", "d": "red:1", "s": "red:2", "H": "brass:5", "h": "brass:3"}
     }
   },
   "animations": {
@@ -237,9 +203,10 @@
             [0, [-125, 0, 14]],
             [0.3, [-125, 0, 14]],
             [0.62, [-90, 0, 0], "out"],
-            [0.97, [-90, 0, 0]],
-            [1.08, [-60, 0, -10]],
-            [1.24, [0, 0, 0], "back"],
+            [0.86, [-90, 0, 0]],
+            [1, [-125, 0, 14]],
+            [1.09, [-60, 0, -10]],
+            [1.24, [0, 0, 0], "out"],
             [2.3, [0, 0, 0]],
             [2.42, [-125, 0, 14], "out"]
           ]
@@ -250,9 +217,10 @@
             [0, [0, 0, 0]],
             [0.3, [0, 0, 0]],
             [0.62, [72, 0, 0], "out"],
-            [0.97, [72, 0, 0]],
+            [0.86, [72, 0, 0]],
+            [1, [0, 0, 0]],
             [1.1, [-20, 0, 0]],
-            [1.26, [0, 0, 0], "back"]
+            [1.26, [0, 0, 0], "out"]
           ]
         },
         {
@@ -266,12 +234,16 @@
             [2.6, [-0.12, 0.06, -0.1]]
           ]
         },
-        {"part": "whisker", "axis": "y", "keys": [[0, 100], [1.08, 100], [1.26, 0, "back"], [2.34, 0], [2.46, 100]]},
+        {
+          "parts": ["whisker", "whisker_low"],
+          "axis": "y",
+          "keys": [[0, 100], [1.08, 100], [1.26, 0, "back"], [2.34, 0], [2.46, 100]]
+        },
         {
           "part": "tail_0",
           "channel": "position",
           "axis": "x",
-          "keys": [[0, 2.2], [0.95, 2.2], [1.15, 0, "back"], [2.36, 0], [2.62, 2.2, "out"]]
+          "keys": [[0, 1.4], [0.95, 1.4], [1.15, 0, "back"], [2.36, 0], [2.62, 1.4, "out"]]
         },
         {
           "part": "tail_0",
@@ -345,7 +317,7 @@
       "loop": true,
       "tracks": [
         {"part": "body_1", "channel": "scale", "osc": {"amp": [0.03, 0.02, 0.03], "cycles": 1}},
-        {"parts": ["body_1", "body_2"], "wave": {"axis": "z", "amp": 1.8, "cycles": 1, "lag": 0.12}},
+        {"parts": ["body_1", "body_2"], "wave": {"axis": "z", "amp": 1.0, "cycles": 1, "lag": 0.12}},
         {
           "part": "head",
           "ease": "ease",
@@ -358,7 +330,7 @@
           "osc": {"amp": [0, -0.85, 0], "cycles": 1, "phase": 0.35, "shape": "pulse"}
         },
         {
-          "part": "whisker",
+          "parts": ["whisker", "whisker_low"],
           "osc": {"axis": "z", "amp": 12, "cycles": 2, "phase": 0.1, "shape": "pulse"},
           "mirror_phase": 0.04
         },
@@ -382,12 +354,12 @@
       "tracks": [
         {
           "part": "arm_0_mirror",
-          "keys": [[0, [0, 0, 0]], [0.3, [-100, 0, -42], "back"], [1.42, [-100, 0, -42]], [1.72, [0, 0, 0]]]
+          "keys": [[0, [0, 0, 0]], [0.3, [-124, 0, -48], "back"], [1.42, [-124, 0, -48]], [1.72, [0, 0, 0]]]
         },
         {
           "part": "arm_1_mirror",
           "axis": "y",
-          "keys": [[0, 0], [0.3, 0], [0.44, 24], [0.62, -22], [0.8, 24], [0.98, -22], [1.16, 24], [1.34, -14], [1.5, 0]]
+          "keys": [[0, 0], [0.3, 0], [0.44, 26], [0.62, -10], [0.8, 26], [0.98, -10], [1.16, 26], [1.34, -6], [1.5, 0]]
         },
         {
           "part": "paw_mirror",
@@ -395,12 +367,12 @@
           "keys": [
             [0, 0],
             [0.37, 0],
-            [0.51, 31.2],
-            [0.69, -28.6],
-            [0.87, 31.2],
-            [1.05, -28.6],
-            [1.23, 31.2],
-            [1.41, -18.2],
+            [0.51, 33.8],
+            [0.69, -13],
+            [0.87, 33.8],
+            [1.05, -13],
+            [1.23, 33.8],
+            [1.41, -7.8],
             [1.57, 0]
           ]
         },
@@ -409,8 +381,8 @@
           "keys": [[0, [0, 0, 0]], [0.36, [3, -10, 11], "back"], [1.42, [3, -10, 11]], [1.74, [0, 0, 0]]]
         },
         {"part": "head", "osc": {"axis": "x", "amp": 2.5, "cycles": 3}},
-        {"part": "body_1", "axis": "z", "keys": [[0, 0], [0.35, -3], [1.42, -3], [1.74, 0]]},
-        {"part": "whisker", "osc": {"axis": "z", "amp": 6, "cycles": 3}},
+        {"part": "body_1", "axis": "z", "keys": [[0, 0], [0.35, 2.0], [1.42, 2.0], [1.74, 0]]},
+        {"parts": ["whisker", "whisker_low"], "osc": {"axis": "z", "amp": 6, "cycles": 3}},
         {"part": "ear", "osc": {"axis": "x", "amp": -14, "cycles": 3, "shape": "pulse"}},
         {
           "parts": [
@@ -458,7 +430,7 @@
     {
       "id": "riser",
       "shape": "loft",
-      "pivot": [-4.5, 0, -2.5],
+      "pivot": [-4, 0, -5.5],
       "rotation": [0, -45, 0],
       "profile": {"sides": 10, "round": 2.0},
       "subdiv": 0,
@@ -488,7 +460,7 @@
       "parent": "riser",
       "shape": "prism",
       "sides": 8,
-      "size": [17, 17, 1.4],
+      "size": [20, 20, 1.4],
       "pivot": [0, 3, 0],
       "offset": [0, 0, 0.7],
       "rotation": [-90, 0, 0],
@@ -497,83 +469,91 @@
       "paint": {
         "stamps": [
           {
-            "at": [9, 25],
+            "at": [11, 31],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [19, 25],
+            "at": [22, 31],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [25, 19],
+            "at": [31, 22],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [25, 9],
+            "at": [31, 11],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [19, 3],
+            "at": [22, 2],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [9, 3],
+            "at": [11, 2],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [3, 9],
+            "at": [2, 11],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [3, 19],
+            "at": [2, 22],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           }
         ]
@@ -599,7 +579,8 @@
             "phase": 0.6,
             "shift": -1.2,
             "faces": ["sides"]
-          }
+          },
+          {"id": "crust", "to": -0.62, "wobble": 0.16}
         ]
       }
     },
@@ -666,83 +647,91 @@
             "face": "front"
           },
           {
-            "at": [6, 18],
+            "at": [6, 17],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [13, 18],
+            "at": [12, 17],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [18, 13],
+            "at": [17, 12],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [18, 6],
+            "at": [17, 6],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [13, 1],
+            "at": [12, 1],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
             "at": [6, 1],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
             "at": [1, 6],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [1, 13],
+            "at": [1, 12],
             "art": [
-              "...",
-              ".hb",
-              ".bd"
+              ".kk.",
+              "khbk",
+              "kbdk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           }
         ]
@@ -800,83 +789,91 @@
             "face": "front"
           },
           {
-            "at": [9, 28],
+            "at": [9, 27],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [20, 28],
+            "at": [19, 27],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [28, 20],
+            "at": [27, 19],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [28, 9],
+            "at": [27, 9],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [20, 1],
+            "at": [19, 1],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
             "at": [9, 1],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
             "at": [1, 9],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           },
           {
-            "at": [1, 20],
+            "at": [1, 19],
             "art": [
-              "db.",
-              "bh.",
-              "..."
+              ".kk.",
+              "kdbk",
+              "kbhk",
+              ".kk."
             ],
-            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "s": "brass:1"},
+            "key": {"h": "brass:5", "b": "brass:4", "d": "brass:2", "k": "brass:0"},
             "face": "front"
           }
         ]
@@ -888,7 +885,7 @@
       "shape": "prism",
       "sides": 6,
       "size": [3.4, 3.4, 2],
-      "pivot": [12, 9, 3.6],
+      "pivot": [11.8, 9, 3.6],
       "offset": [0, 0, 1],
       "hide": ["back"],
       "style": "brass"
@@ -912,17 +909,19 @@
       "pivot": [0, 0, 1.7],
       "style": "wheel",
       "art": [
-        "...ooooo...",
-        ".oo..r..rr.",
-        ".o...r...r.",
-        "o....r....r",
-        "o....r....d",
-        "orrrrhrrrrd",
-        "o....r....d",
-        "r....r....d",
-        ".r...r...d.",
-        ".rr..r..dd.",
-        "...ddddd..."
+        "....ooooo....",
+        "..ooooooorr..",
+        ".oooo.r.rrrr.",
+        ".oo...r...rr.",
+        "ooo...r...rdd",
+        "oo....H....dd",
+        "oorrrHHhsssdd",
+        "oo....h....dd",
+        "oor...s...ddd",
+        ".rr...s...dd.",
+        ".rrrr.s.dddd.",
+        "..rrddddddd..",
+        "....ddddd...."
       ]
     },
     {
@@ -937,9 +936,9 @@
         {"at": [12.6, 8.6, 0.0], "size": [5.4, 4.8]},
         {"at": [17.6, 7.6, 0.4], "size": [5.0, 4.2]},
         {"at": [20.2, 5.6, 2.8], "size": [4.2, 3.4]},
-        {"at": [20.4, 4.7, 6.6], "size": [3.4, 2.7]},
-        {"at": [18.6, 5.4, 9.8], "size": [2.4, 2.0]},
-        {"at": [16.0, 7.2, 11.2], "size": [0.8, 0.8]}
+        {"at": [19.8, 4.7, 6.2], "size": [3.4, 2.7]},
+        {"at": [17.8, 5.4, 9.0], "size": [2.4, 2.0]},
+        {"at": [15.0, 7.0, 10.0], "size": [0.8, 0.8]}
       ],
       "style": "fur",
       "paint": {"layers": [{"id": "belly", "op": "band", "axis": "y", "from": -1.0, "to": -0.55, "shift": -0.6}]}
@@ -1121,19 +1120,23 @@
       "mirror": true,
       "shape": "card",
       "plane": "xy",
-      "pivot": [3.2, 1.6, 6],
-      "offset": [2, 0, 0],
-      "rotation": [0, -30, -8],
+      "pivot": [3, 2.1, 6],
+      "offset": [2.25, 0, 0],
+      "rotation": [0, -28, 9],
       "style": "whisker",
-      "art": [
-        "......ww.",
-        "...www...",
-        "ww.......",
-        ".........",
-        "ww.......",
-        "..wwww...",
-        "......www"
-      ]
+      "art": ["wwwwwwwww", "ddddddddd"]
+    },
+    {
+      "id": "whisker_low",
+      "parent": "head",
+      "mirror": true,
+      "shape": "card",
+      "plane": "xy",
+      "pivot": [3, 1.2, 5.9],
+      "offset": [2, 0, 0],
+      "rotation": [0, -34, -12],
+      "style": "whisker",
+      "art": ["wwwwwwwww", "ddddddddd"]
     },
     {
       "id": "arm",
@@ -1178,7 +1181,20 @@
             ]
           }
         ],
-        "stamps": [{"face": "front", "at": "bottom", "art": ["c.c.c"], "key": {"c": "cream:3"}}]
+        "stamps": [
+          {"face": "front", "at": "bottom", "art": ["c.c.c"], "key": {"c": "cream:3"}},
+          {
+            "face": "bottom",
+            "at": [0, 0],
+            "art": [
+              "b.b.b",
+              ".....",
+              ".ppp.",
+              ".ppp."
+            ],
+            "key": {"b": "cream:1", "p": "cream:1"}
+          }
+        ]
       }
     },
     {
