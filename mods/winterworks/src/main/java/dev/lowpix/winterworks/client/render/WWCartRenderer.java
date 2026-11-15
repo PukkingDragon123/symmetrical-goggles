@@ -93,7 +93,7 @@ public class WWCartRenderer extends EntityRenderer<WWCart> {
         WWModel<WWCart> model = models.get(cart.kind);
         float age = cart.tickCount + partial;
         model.reset();
-        float wheelRate = (float) Math.min(8.0, cart.clientSpeed * 15.0);
+        float wheelRate = (float) Math.min(8.0, cart.clientSpeed * (cart.kind.locomotive ? 11.3 : 15.0));   // revolutions per second for the wheel size
         model.play(cart.runState, "run", age, Math.max(0.3f, wheelRate));
         model.play(cart.idleState, "idle", age, 1f);
         String action = cart.kind == CartKind.DRAGON_LOCOMOTIVE ? "roar" : "whistle";
