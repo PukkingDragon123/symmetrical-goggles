@@ -1,0 +1,7 @@
+{
+  "parent": "winterworks:block/template_rail_flat",
+  "textures": {
+    "rail": "winterworks:block/drop_rail",
+    "ties": "winterworks:block/drop_rail_ties"
+  }
+}

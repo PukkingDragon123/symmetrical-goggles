@@ -27,9 +27,11 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
         }
     }
 
+    private static final ResourceLocation ALPHA_COAT = dev.lowpix.winterworks.Winterworks.id("textures/entity/icebreaker_alpha.png");
+
     @Override
     public ResourceLocation getTextureLocation(IcebreakerEntity e) {
-        return e.isBaby() ? cub.texture : COATS[e.variant()];
+        return e.isBaby() ? cub.texture : e.isAlpha() ? ALPHA_COAT : COATS[e.variant()];
     }
 
     @Override
@@ -55,6 +57,8 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
         }
 
         private static final String[] HORN = {"horn", "horn_1", "horn_2", "horn_3"};
+        private static final String[] ALPHA_PARTS = {"alpha_mane0", "alpha_mane1", "alpha_mane2", "alpha_mane3", "alpha_mane4",
+                "alpha_mane5", "alpha_mane6", "alpha_beard", "alpha_ruff"};
 
         @Override
         public void setupAnim(IcebreakerEntity e, float limbSwing, float limbAmount, float age, float headYaw, float headPitch) {
@@ -82,15 +86,19 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
             });
             // the belly is a spring: footfalls, landings and hits make it jiggle and settle
             float j = e.bellyJiggle(partial);
-            get(e.isBaby() ? "belly" : "belly_under").ifPresent(p -> {
+            get("belly_under").ifPresent(p -> {
                 p.yScale *= 1f - j;
                 p.xScale *= 1f + j * 0.55f;
                 p.zScale *= 1f + j * 0.35f;
             });
-            get(e.isBaby() ? "body" : "chest_under").ifPresent(p -> p.yScale *= 1f - j * 0.4f);
-            get(e.isBaby() ? "body" : "belly").ifPresent(p -> p.yScale *= 1f - j * 0.1f);
+            get("chest_under").ifPresent(p -> p.yScale *= 1f - j * 0.4f);
+            get("belly").ifPresent(p -> p.yScale *= 1f - j * 0.1f);
             if (e.isBaby()) {
                 return;   // the cub model has its own little horn bud
+            }
+            boolean alpha = e.isAlpha();   // the Alpha's mane, beard and chest ruff
+            for (String n : ALPHA_PARTS) {
+                show(n, alpha);
             }
             // the horn grows in stages; the newest segment pops in with a little overshoot
             int stage = e.hornStage();

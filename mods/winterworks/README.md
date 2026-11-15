@@ -17,7 +17,10 @@ Recipe: redstone, hopper, redstone / iron, dispenser, iron / iron, blaze rod, ir
 **Icebreaker.** A huge, fat, monstrous seal of frozen rivers, plains and coasts: a long segmented body, a shaggy fur mane,
 ice-armour shards on its back, great curved ice tusks, a jagged ice horn and big fins, in six coats (grey, harbour,
 leopard, ringed, brown, frost) picked by biome and inherited by cubs. Its face is expressive: blinking lids, heavy
-brows that knit when it's angry, flaring nostrils, a bark on every grunt. It charges into ice to break holes, guards its fluffy white cubs (it rears up, drums its belly, bellows and
+brows that knit when it's angry, flaring nostrils, a bark on every grunt. About one adult in twelve is an
+**Alpha**: 30% bigger, +60 health and +5 attack, a full horn, a great lion's mane of fur with a beard and chest ruff,
+and a near-black grizzled coat covered in old scars (one runs across its eye). **Cubs** are fluffy white pups built
+like little Icebreakers: the same segmented body, a fur ruff and crest, big dark eyes, ice buds for a horn and tusks. It charges into ice to break holes, guards its fluffy white cubs (it rears up, drums its belly, bellows and
 charges players who come near them), and is calmed by fish: drop some or feed it. Animations: idle, waddling walk with a
 spring-driven belly wobble, belly slide on ice, hip-driven swimming, charge, ram, belly slap, tail slap, happy chomp.
 Its horn grows back in four stages, faster in the cold, faster still while freezing, fastest when it is stuck in
@@ -47,7 +50,7 @@ cabin, then slowly settle.
 
 ```bash
 ./gradlew build                 # the mod jar in build/libs
-./gradlew runGametest           # headless GameTests (8 tests: shears, horn regrowth, fish, brewing, leaves, rails, trains, recipes)
+./gradlew runGametest           # headless GameTests (11: shears, horn regrowth, fish, brewing, leaves, booster, trap and drop rails, trains, Alpha, recipes)
 xvfb-run -a ./gradlew runShowcase   # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
 python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipes, loot, tags, lang fragments
 ```
@@ -65,3 +68,4 @@ Screenshots taken by `runShowcase` (the real client, software-rendered):
 | ![Icebreaker family](docs/screenshots/icebreaker_family.png) | ![Icebreaker close](docs/screenshots/icebreaker_close.png) |
 | ![Winter Express](docs/screenshots/winter_express_running.png) | ![Snow Globe](docs/screenshots/snow_globe_swirl.png) |
 | ![Launcher firing](docs/screenshots/launcher_firing.png) | ![Launcher HUD](docs/screenshots/launcher_hud.png) |
+| ![Trap and Drop Rails](docs/screenshots/trap_and_drop_rails.png) | |

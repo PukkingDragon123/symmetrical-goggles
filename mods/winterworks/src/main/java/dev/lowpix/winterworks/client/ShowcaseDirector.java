@@ -64,7 +64,7 @@ public final class ShowcaseDirector {
             cmd("setblock -6 -60 12 minecraft:spruce_log");
             cmd("setblock -6 -59 12 minecraft:spruce_log");
             cmd("fill -7 -58 11 -5 -57 13 minecraft:spruce_leaves[persistent=true]");
-            cmd("summon winterworks:icebreaker 0.5 -60 12 {NoAI:1b,Rotation:[160f,0f],HornStage:4,Variant:\"grey\",PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker 0.5 -60 12 {NoAI:1b,Rotation:[160f,0f],HornStage:4,Variant:\"grey\",Alpha:1b,PersistenceRequired:1b}");
             cmd("summon winterworks:icebreaker -9.5 -60 16 {NoAI:1b,Rotation:[205f,0f],HornStage:3,Variant:\"harbor\",PersistenceRequired:1b}");
             cmd("summon winterworks:icebreaker 10.5 -60 17 {NoAI:1b,Rotation:[130f,0f],HornStage:2,Variant:\"leopard\",PersistenceRequired:1b}");
             cmd("summon winterworks:icebreaker -4.5 -60 27 {NoAI:1b,Rotation:[180f,0f],HornStage:4,Variant:\"brown\",PersistenceRequired:1b}");
@@ -108,6 +108,26 @@ public final class ShowcaseDirector {
             cmd("tp @s 60 -58.2 -4 25 15");
         });
         at(t += 70, () -> shot("winter_express_running"));
+        // scene 2b: Trap Rail and Drop Rail on a little coaster
+        at(t += 5, () -> {
+            cmd("fill 100 -61 -6 124 -61 8 minecraft:snow_block");
+            cmd("fill 100 -60 0 124 -60 0 winterworks:coaster_rail[shape=east_west]");
+            cmd("setblock 106 -61 0 minecraft:redstone_block");
+            cmd("setblock 106 -60 0 winterworks:trap_rail[shape=east_west]");
+            cmd("summon winterworks:fox_cart 106.5 -60 0.5");
+            cmd("fill 110 -57 3 122 -57 3 winterworks:coaster_rail[shape=east_west]");
+            cmd("fill 110 -58 3 122 -58 3 minecraft:spruce_planks");
+            cmd("setblock 114 -58 3 minecraft:air");
+            cmd("setblock 114 -57 3 winterworks:drop_rail[shape=east_west]");
+            cmd("setblock 117 -58 3 minecraft:air");
+            cmd("setblock 117 -57 3 winterworks:drop_rail[shape=east_west]");
+            cmd("summon winterworks:zombie_cart 114.5 -57 3.5");
+            cmd("fill 110 -60 3 122 -60 3 winterworks:coaster_rail[shape=east_west]");
+            cmd("tp @s 110.5 -57.6 -7.5 -8 4");
+        });
+        at(t += 40, () -> cmd("setblock 117 -57 2 minecraft:redstone_block"));
+        at(t += 30, () -> cmd("setblock 114 -57 2 minecraft:redstone_block"));
+        at(t += 5, () -> shot("trap_and_drop_rails"));
         // scene 3: the snow globe
         at(t += 5, () -> {
             cmd("fill 88 -61 -4 96 -61 4 minecraft:spruce_planks");

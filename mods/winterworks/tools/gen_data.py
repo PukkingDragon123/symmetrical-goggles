@@ -165,12 +165,13 @@ def rail_models():
         "shape=ascending_north": m("coaster_rail_raised_ne"), "shape=ascending_south": m("coaster_rail_raised_sw"),
         "shape=south_east": m("coaster_rail_corner"), "shape=south_west": m("coaster_rail_corner", 90),
         "shape=north_west": m("coaster_rail_corner", 180), "shape=north_east": m("coaster_rail_corner", 270)}})
-    for rail in ("booster_rail", "lift_rail"):
+    for rail in ("booster_rail", "lift_rail", "trap_rail", "drop_rail"):
         ties = rail + "_ties"
         for on in ("", "_on"):
-            model(rail + on, rail + on, ties, "template_rail_flat")
-            model(rail + on + "_raised_ne", rail + on, ties, "template_rail_raised_ne")
-            model(rail + on + "_raised_sw", rail + on, ties, "template_rail_raised_sw")
+            tex = rail if (on and rail == "drop_rail") else rail + on
+            model(rail + on, tex, ties, "template_rail_flat")
+            model(rail + on + "_raised_ne", tex, ties, "template_rail_raised_ne")
+            model(rail + on + "_raised_sw", tex, ties, "template_rail_raised_sw")
         v = {}
         for powered, on in (("false", ""), ("true", "_on")):
             v[f"powered={powered},shape=north_south"] = m(rail + on)
@@ -180,7 +181,14 @@ def rail_models():
             v[f"powered={powered},shape=ascending_north"] = m(rail + on + "_raised_ne")
             v[f"powered={powered},shape=ascending_south"] = m(rail + on + "_raised_sw")
         write(os.path.join(A, "blockstates", rail + ".json"), {"variants": v})
-    for rail in ("coaster_rail", "booster_rail", "lift_rail"):
+    # the open Drop Rail: a hazard-striped frame (tinted like the sleepers) round an empty hole
+    write(os.path.join(A, "models", "block", "drop_rail_open.json"), {"ambientocclusion": False,
+        "textures": {"frame": f"{M}:block/drop_rail_frame", "particle": f"{M}:block/drop_rail_frame"},
+        "elements": [{"from": [0, 1, 0], "to": [16, 1, 16], "faces": {
+            "up": {"uv": [0, 0, 16, 16], "texture": "#frame"}, "down": {"uv": [0, 16, 16, 0], "texture": "#frame"}}}]})
+    write(os.path.join(A, "blockstates", "drop_rail_open.json"), {"variants": {
+        "along_x=false": {"model": f"{M}:block/drop_rail_open"}, "along_x=true": {"model": f"{M}:block/drop_rail_open", "y": 90}}})
+    for rail in ("coaster_rail", "booster_rail", "lift_rail", "trap_rail", "drop_rail"):
         write(os.path.join(A, "models", "item", rail + ".json"),
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:block/{rail}_ties", "layer1": f"{M}:block/{rail}"}})
 
@@ -220,6 +228,10 @@ def recipes():
     shaped("rail", ["I I", "ISI", "I I"], {"I": "minecraft:iron_ingot", "S": "minecraft:stick"}, "minecraft:rail", 32, "minecraft")
     shaped("powered_rail", ["G G", "GSG", "GRG"], {"G": "minecraft:gold_ingot", "S": "minecraft:stick",
            "R": "minecraft:redstone"}, "minecraft:powered_rail", 12, "minecraft")
+    shaped("trap_rail", ["IPI", "ISI", "IRI"], {"I": "minecraft:iron_ingot", "P": "minecraft:sticky_piston",
+           "S": "minecraft:stick", "R": "minecraft:redstone"}, f"{M}:trap_rail", 6)
+    shaped("drop_rail", ["ITI", "ISI", "IRI"], {"I": "minecraft:iron_ingot", "T": "minecraft:iron_trapdoor",
+           "S": "minecraft:stick", "R": "minecraft:redstone"}, f"{M}:drop_rail", 6)
     shaped("locomotive", ["I  ", "FMF", "III"], {"I": "minecraft:iron_ingot", "F": "minecraft:furnace",
            "M": "minecraft:minecart"}, f"{M}:locomotive")
     shapeless("dragon_locomotive", [f"{M}:locomotive", "minecraft:blaze_powder", "minecraft:gold_ingot",
@@ -234,7 +246,10 @@ def recipes():
 
 
 def loot():
-    for b in ("coaster_rail", "booster_rail", "lift_rail", "snow_globe"):
+    write(os.path.join(D, M, "loot_table", "blocks", "drop_rail_open.json"), {"type": "minecraft:block", "pools": [{
+        "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"{M}:drop_rail"}],
+        "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    for b in ("coaster_rail", "booster_rail", "lift_rail", "trap_rail", "drop_rail", "snow_globe"):
         write(os.path.join(D, M, "loot_table", "blocks", b + ".json"), {"type": "minecraft:block", "pools": [{
             "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"{M}:{b}"}],
             "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
@@ -250,10 +265,11 @@ def loot():
 
 
 def tags():
-    rails = [f"{M}:coaster_rail", f"{M}:booster_rail", f"{M}:lift_rail"]
+    rails = [f"{M}:coaster_rail", f"{M}:booster_rail", f"{M}:lift_rail", f"{M}:trap_rail", f"{M}:drop_rail"]
     write(os.path.join(D, "minecraft", "tags", "block", "rails.json"), {"replace": False, "values": rails})
     write(os.path.join(D, "minecraft", "tags", "item", "rails.json"), {"replace": False, "values": rails})
-    write(os.path.join(D, "minecraft", "tags", "block", "mineable", "pickaxe.json"), {"replace": False, "values": rails})
+    write(os.path.join(D, "minecraft", "tags", "block", "mineable", "pickaxe.json"),
+          {"replace": False, "values": rails + [f"{M}:drop_rail_open"]})
 
 
 def lang(subtitles):
@@ -298,6 +314,9 @@ def lang(subtitles):
         "block.winterworks.coaster_rail": "Coaster Rail",
         "block.winterworks.booster_rail": "Booster Rail",
         "block.winterworks.lift_rail": "Chain Lift Rail",
+        "block.winterworks.trap_rail": "Trap Rail",
+        "block.winterworks.drop_rail": "Drop Rail",
+        "block.winterworks.drop_rail_open": "Open Drop Rail",
         "message.winterworks.couple.first": "Now click the cart behind it",
         "message.winterworks.couple.too_far": "Too far apart to couple",
         "message.winterworks.couple.taken": "That coupler is already in use",

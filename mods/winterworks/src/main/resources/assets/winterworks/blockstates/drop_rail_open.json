@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "along_x=false": {
+      "model": "winterworks:block/drop_rail_open"
+    },
+    "along_x=true": {
+      "model": "winterworks:block/drop_rail_open",
+      "y": 90
+    }
+  }
+}

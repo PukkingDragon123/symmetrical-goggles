@@ -5,7 +5,7 @@
  "license": "CC0-1.0",
  "density": 1,
  "budget": {
-  "tris": 1800,
+  "tris": 2000,
   "colors": 72
  },
  "light": {
@@ -1452,6 +1452,200 @@
     -18
    ],
    "mirror": true
+  },
+  {
+   "id": "alpha_mane0",
+   "shape": "box",
+   "size": [
+    9,
+    14,
+    8
+   ],
+   "pivot": [
+    -15,
+    6,
+    5
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -18,
+    14,
+    34
+   ]
+  },
+  {
+   "id": "alpha_mane1",
+   "shape": "box",
+   "size": [
+    9,
+    14,
+    8
+   ],
+   "pivot": [
+    15,
+    6,
+    5
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -18,
+    -14,
+    -34
+   ]
+  },
+  {
+   "id": "alpha_mane2",
+   "shape": "box",
+   "size": [
+    11,
+    12,
+    8
+   ],
+   "pivot": [
+    -9,
+    13,
+    3
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -30,
+    8,
+    18
+   ]
+  },
+  {
+   "id": "alpha_mane3",
+   "shape": "box",
+   "size": [
+    11,
+    12,
+    8
+   ],
+   "pivot": [
+    9,
+    13,
+    3
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -30,
+    -8,
+    -18
+   ]
+  },
+  {
+   "id": "alpha_mane4",
+   "shape": "box",
+   "size": [
+    13,
+    11,
+    8
+   ],
+   "pivot": [
+    0,
+    15,
+    1
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -42,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "alpha_mane5",
+   "shape": "box",
+   "size": [
+    9,
+    10,
+    7
+   ],
+   "pivot": [
+    -12,
+    13,
+    -4
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -20,
+    20,
+    26
+   ]
+  },
+  {
+   "id": "alpha_mane6",
+   "shape": "box",
+   "size": [
+    9,
+    10,
+    7
+   ],
+   "pivot": [
+    12,
+    13,
+    -4
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -20,
+    -20,
+    -26
+   ]
+  },
+  {
+   "id": "alpha_beard",
+   "shape": "box",
+   "size": [
+    12,
+    8,
+    7
+   ],
+   "pivot": [
+    0,
+    -2,
+    6
+   ],
+   "style": "fur_dark",
+   "parent": "jaw",
+   "offset": [
+    0,
+    -4,
+    0
+   ],
+   "rotation": [
+    12,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "alpha_ruff",
+   "shape": "box",
+   "size": [
+    26,
+    10,
+    6
+   ],
+   "pivot": [
+    0,
+    -1,
+    10.5
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    10,
+    0,
+    0
+   ]
   },
   {
    "id": "elbow_tuft",

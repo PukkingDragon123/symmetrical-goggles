@@ -68,6 +68,15 @@ for k, (x, y, z, rx, ry, rz, w, h) in enumerate([(-13, 9, 4, -24, 10, 28, 8, 9),
                                                  (0, 14, 0, -40, 0, 0, 10, 8)]):
     box(f"tuft{k}", "chest", [w, h, 6], [x, y, z], "fur_dark", rot=[rx, ry, rz])
 box("sideburn", "head", [3, 9, 7], [11.8, -2, 9], "fur_dark", offset=[0, -3, 0], rot=[-10, 0, -18], mirror=True)
+# the Alpha's great mane (the mod shows parts named alpha_* only on Alphas): a lion's ruff of long locks round the
+# neck and shoulders, a hanging beard of fur under the chin, a thick ruff on the chest
+for k, (x, y, z, rx, ry, rz, w, h, d) in enumerate([(-15, 6, 5, -18, 14, 34, 9, 14, 8), (15, 6, 5, -18, -14, -34, 9, 14, 8),
+                                                     (-9, 13, 3, -30, 8, 18, 11, 12, 8), (9, 13, 3, -30, -8, -18, 11, 12, 8),
+                                                     (0, 15, 1, -42, 0, 0, 13, 11, 8), (-12, 13, -4, -20, 20, 26, 9, 10, 7),
+                                                     (12, 13, -4, -20, -20, -26, 9, 10, 7)]):
+    box(f"alpha_mane{k}", "chest", [w, h, d], [x, y, z], "fur_dark", rot=[rx, ry, rz])
+box("alpha_beard", "jaw", [12, 8, 7], [0, -2, 6], "fur_dark", offset=[0, -4, 0], rot=[12, 0, 0])
+box("alpha_ruff", "chest", [26, 10, 6], [0, -1, 10.5], "fur_dark", rot=[10, 0, 0])
 box("elbow_tuft", "flipper", [4, 5, 5], [3.6, -2, -3.5], "fur_dark", rot=[24, 0, 12])
 # shingled fur plates down the back, each lifted at its rear edge like a pelt
 box("shag_chest", "chest", [14, 3, 10], [6.5, 11.4, 1], "fur", rot=[-9, -7, -8], mirror=True)
@@ -373,7 +382,7 @@ spec = {
                    "Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": 1,
-    "budget": {"tris": 1800, "colors": 72},
+    "budget": {"tris": 2000, "colors": 72},
     "light": light,
     "brush": brush,
     "minecraft": {"fps": 12},
@@ -416,6 +425,12 @@ VARIANTS = {
                   "#efe1c4"],
         "blotch": ["#120c08", "#1b130d", "#251a12", "#302218", "#3c2b1f", "#493427"],
         "spots": {"count": 10, "radius": [1.4, 3.0], "tone": 2.6}, "back_spots": 18},
+    "alpha": {    # the herd's leader: near-black, silver-grizzled, covered in old scars, one across its eye
+        "seal": ["#0b0c0e", "#131519", "#1c1f24", "#262a30", "#31363d", "#3d434b", "#4b525a", "#5c636b", "#717880",
+                 "#8a9097", "#a5aab0", "#c3c7cb"],
+        "blotch": ["#6d747b", "#7f868d", "#92989e", "#a6abb0", "#babec2", "#cdd0d3"],
+        "spots": {"count": 30, "radius": [0.5, 1.4], "tone": 3.0}, "back_spots": 60, "tone": 4.6,
+        "scars": {"scale": 2.4, "width": 0.045, "shift": 3.4}, "eye_scar": True},
     "frost": {    # nearly white with blue-grey dapples, an old arctic bull
         "seal": ["#3c4550", "#4f5966", "#636e7c", "#788492", "#8e9aa7", "#a4afba", "#b9c3cc", "#cbd3da", "#dbe1e6",
                  "#e8ecef", "#f2f4f6", "#f9fafb"],
@@ -442,6 +457,16 @@ def variant_spec(name):
                     layer["count"] = v.get("back_spots", layer["count"])
                 if st_name == "head":
                     layer["count"] = max(4, v["spots"]["count"] // 3)
+        for layer in st.get("layers", []):
+            if layer.get("id") == "scars" and "scars" in v:
+                layer.update(v["scars"])
+                layer["faces"] = ["sides", "top", "front"] if st_name == "head" else ["sides", "top"]
+        if st_name == "head" and v.get("eye_scar"):
+            st.setdefault("stamps", []).append(
+                {"face": "front", "at": [13, 0], "art": ["s.......", "ss......", ".s......", ".ss.....", "..s.....",
+                                                         "..ss....", "...s....", "...ss...", "....s...", "....ss..",
+                                                         ".....s..", ".....ss.", "......s."],
+                 "key": {"s": "mouth:5"}})
         if st_name == "belly" and v.get("belly_spots"):
             st["layers"].append({"id": "belly_spots", "op": "spots", "count": v["spots"]["count"] // 2,
                                  "radius": v["spots"]["radius"], "ramp": "blotch", "tone": v["spots"]["tone"],

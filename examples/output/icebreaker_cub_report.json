@@ -1,18 +1,18 @@
 {
   "name": "Icebreaker Cub",
-  "parts": 18,
-  "instances": 24,
-  "faces": 144,
-  "triangles": 288,
-  "vertices_flat": 576,
-  "vertices_unique": 192,
+  "parts": 32,
+  "instances": 45,
+  "faces": 270,
+  "triangles": 540,
+  "vertices_flat": 1080,
+  "vertices_unique": 360,
   "atlas": [
     128,
     256
   ],
-  "atlas_fill": 0.541,
+  "atlas_fill": 0.69,
   "texel_density": 1.0,
-  "colors_used": 29,
+  "colors_used": 36,
   "palette": {
     "fluff": [
       "#3b3f45",
@@ -49,6 +49,20 @@
       "#1c2026",
       "#5a626b"
     ],
+    "white": [
+      "#9aa3ab",
+      "#c5ccd1",
+      "#e9eef0",
+      "#ffffff"
+    ],
+    "mouth": [
+      "#24151a",
+      "#3a2127",
+      "#523038",
+      "#6b424a",
+      "#86585e",
+      "#a07276"
+    ],
     "nose": [
       "#0e0f11",
       "#181a1e",
@@ -59,55 +73,77 @@
   },
   "bounds": {
     "min": [
-      -14.043,
-      0.034,
-      -30.225
+      -16.734,
+      0.057,
+      -43.258
     ],
     "max": [
-      14.043,
-      38.679,
-      34.95
+      16.734,
+      38.384,
+      33.384
     ],
     "size": [
-      28.086,
-      38.645,
-      65.174
+      33.468,
+      38.327,
+      76.642
     ]
   },
   "warnings": [],
   "animations": {
-    "idle": 3.0,
+    "idle": 4.0,
     "walk": 0.7,
     "swim": 1.6,
     "happy": 1.4,
+    "bark": 0.7,
     "belly_slap": 1.0,
     "tail_slap": 0.8
   },
   "joints": [
-    "body",
+    "chest",
+    "chest_under",
     "belly",
-    "belly_side",
-    "belly_side_mirror",
-    "fluff_back",
+    "belly_under",
     "hips",
     "tail",
     "fluke",
+    "fluke_fan",
     "fluke_mirror",
+    "fluke_fan_mirror",
+    "tail_fur",
+    "shag_belly",
+    "shag_belly_mirror",
     "flipper",
     "palm",
     "flipper_mirror",
     "palm_mirror",
+    "tuft0",
+    "tuft1",
+    "tuft2",
+    "shag_chest",
+    "shag_chest_mirror",
     "neck",
     "head",
     "crown",
+    "crest",
     "horn",
     "cheek",
     "cheek_mirror",
     "muzzle",
+    "whisker_pad",
+    "whisker_pad_mirror",
     "nose",
+    "nostril",
+    "nostril_mirror",
+    "tusk",
+    "tusk_mirror",
     "jaw",
+    "tongue",
     "eye",
-    "eye_mirror"
+    "eye_mirror",
+    "lid",
+    "lid_mirror",
+    "brow",
+    "brow_mirror"
   ],
   "files": {
     "icebreaker_cub.glb": "examples/output/icebreaker_cub.glb",
@@ -123,6 +159,7 @@
     "icebreaker_cub_walk.gif": "examples/output/icebreaker_cub_walk.gif",
     "icebreaker_cub_swim.gif": "examples/output/icebreaker_cub_swim.gif",
     "icebreaker_cub_happy.gif": "examples/output/icebreaker_cub_happy.gif",
+    "icebreaker_cub_bark.gif": "examples/output/icebreaker_cub_bark.gif",
     "icebreaker_cub_belly_slap.gif": "examples/output/icebreaker_cub_belly_slap.gif",
     "icebreaker_cub_tail_slap.gif": "examples/output/icebreaker_cub_tail_slap.gif"
   }

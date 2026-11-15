@@ -150,6 +150,69 @@ public class WinterworksTests implements FabricGameTest {
         });
     }
 
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 120)
+    public void dropRailOpensAndTheCartFalls(GameTestHelper h) {
+        floor(h, 0, 8);
+        for (int x = 0; x < 8; x++) {
+            h.setBlock(new BlockPos(x, 1, 1), WWBlocks.COASTER_RAIL.defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.RailBlock.SHAPE, RailShape.EAST_WEST));
+        }
+        BlockPos drop = new BlockPos(3, 5, 1);   // hanging in the air, no support
+        h.setBlock(drop, WWBlocks.DROP_RAIL.defaultBlockState().setValue(PoweredRailBlock.SHAPE, RailShape.EAST_WEST));
+        AbstractMinecart cart = h.spawn(EntityType.MINECART, new Vec3(3.5, 5.1, 1.5));
+        double startY = cart.getY();
+        h.runAfterDelay(10, () -> h.setBlock(drop.north(), Blocks.REDSTONE_BLOCK));
+        h.succeedWhen(() -> {
+            h.assertBlockPresent(WWBlocks.DROP_RAIL_OPEN, drop);
+            h.assertTrue(cart.getY() < startY - 3, "the cart should have dropped, y=" + cart.getY());
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 160)
+    public void trapRailHoldsThenLaunches(GameTestHelper h) {
+        floor(h, 0, 8);
+        for (int x = 0; x < 8; x++) {
+            h.setBlock(new BlockPos(x, 1, 1), WWBlocks.COASTER_RAIL.defaultBlockState()
+                    .setValue(net.minecraft.world.level.block.RailBlock.SHAPE, RailShape.EAST_WEST));
+        }
+        BlockPos trap = new BlockPos(3, 1, 1);
+        h.setBlock(trap.below(), Blocks.REDSTONE_BLOCK);
+        h.setBlock(trap, WWBlocks.TRAP_RAIL.defaultBlockState().setValue(PoweredRailBlock.SHAPE, RailShape.EAST_WEST));
+        AbstractMinecart cart = h.spawn(EntityType.MINECART, new Vec3(1.5, 1.1, 1.5));
+        cart.setDeltaMovement(0.3, 0, 0);
+        double[] peak = {0};
+        boolean[] released = {false};
+        h.onEachTick(() -> {
+            if (released[0]) {
+                peak[0] = Math.max(peak[0], cart.getDeltaMovement().horizontalDistance());
+            }
+        });
+        h.runAfterDelay(40, () -> {
+            Vec3 at = h.relativeVec(cart.position());
+            h.assertTrue(Math.abs(at.x - 3.5) < 0.2 && cart.getDeltaMovement().horizontalDistance() < 0.01,
+                    "the trap should hold the cart at x=3.5, it is at " + at.x);
+            h.setBlock(trap.below(), Blocks.STONE);   // cut the power
+            released[0] = true;
+        });
+        h.runAfterDelay(52, () -> {
+            h.assertTrue(peak[0] > 0.4, "released carts launch, peak speed " + peak[0]);
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void alphaIsBiggerAndTougher(GameTestHelper h) {
+        floor(h, 0, 8);
+        IcebreakerEntity seal = h.spawn(WWEntities.ICEBREAKER, new BlockPos(3, 1, 3));
+        seal.setAge(0);
+        float baseHealth = seal.getMaxHealth();
+        seal.setAlpha(true);
+        h.assertTrue(seal.isAlpha() && seal.getScale() > 1.25f, "an Alpha is 30% bigger, scale " + seal.getScale());
+        h.assertTrue(seal.getMaxHealth() >= baseHealth + 59, "an Alpha has 60 more health, " + seal.getMaxHealth());
+        h.assertTrue(seal.hornStage() == IcebreakerEntity.MAX_HORN, "an Alpha carries a full horn");
+        h.succeed();
+    }
+
     @GameTest(template = EMPTY_STRUCTURE)
     public void recipesLoaded(GameTestHelper h) {
         var rm = h.getLevel().getRecipeManager();

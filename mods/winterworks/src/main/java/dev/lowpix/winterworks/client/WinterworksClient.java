@@ -45,11 +45,13 @@ public final class WinterworksClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(WWParticles.GLOBE_SNOW, GlobeSnowParticle.Provider::new);
         ParticleFactoryRegistry.getInstance().register(WWParticles.STUN_STAR, StunStarParticle.Provider::new);
 
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), WWBlocks.COASTER_RAIL, WWBlocks.BOOSTER_RAIL, WWBlocks.LIFT_RAIL);
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), WWBlocks.COASTER_RAIL, WWBlocks.BOOSTER_RAIL, WWBlocks.LIFT_RAIL,
+                WWBlocks.TRAP_RAIL, WWBlocks.DROP_RAIL, WWBlocks.DROP_RAIL_OPEN);
         ColorProviderRegistry.BLOCK.register((state, view, pos, tint) -> tint == 0 ? RailPaint.tint(state) : -1,
-                WWBlocks.COASTER_RAIL, WWBlocks.BOOSTER_RAIL, WWBlocks.LIFT_RAIL);
+                WWBlocks.COASTER_RAIL, WWBlocks.BOOSTER_RAIL, WWBlocks.LIFT_RAIL, WWBlocks.TRAP_RAIL, WWBlocks.DROP_RAIL,
+                WWBlocks.DROP_RAIL_OPEN);
         ColorProviderRegistry.ITEM.register((stack, tint) -> tint == 0 ? 0xFF8A6B47 : -1,
-                WWItems.COASTER_RAIL, WWItems.BOOSTER_RAIL, WWItems.LIFT_RAIL);
+                WWItems.COASTER_RAIL, WWItems.BOOSTER_RAIL, WWItems.LIFT_RAIL, WWItems.TRAP_RAIL, WWItems.DROP_RAIL);
         ClientTrains.init();
         ShowcaseDirector.init();
     }

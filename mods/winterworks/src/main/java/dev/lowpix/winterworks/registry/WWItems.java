@@ -41,6 +41,8 @@ public final class WWItems {
     public static final Item COASTER_RAIL = reg("coaster_rail", new BlockItem(WWBlocks.COASTER_RAIL, new Item.Properties()));
     public static final Item BOOSTER_RAIL = reg("booster_rail", new BlockItem(WWBlocks.BOOSTER_RAIL, new Item.Properties()));
     public static final Item LIFT_RAIL = reg("lift_rail", new BlockItem(WWBlocks.LIFT_RAIL, new Item.Properties()));
+    public static final Item TRAP_RAIL = reg("trap_rail", new BlockItem(WWBlocks.TRAP_RAIL, new Item.Properties()));
+    public static final Item DROP_RAIL = reg("drop_rail", new BlockItem(WWBlocks.DROP_RAIL, new Item.Properties()));
     public static final Item SNOW_GLOBE = reg("snow_globe", new BlockItem(WWBlocks.SNOW_GLOBE, new Item.Properties().stacksTo(16)));
 
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
@@ -64,6 +66,8 @@ public final class WWItems {
                         out.accept(COASTER_RAIL);
                         out.accept(BOOSTER_RAIL);
                         out.accept(LIFT_RAIL);
+                        out.accept(TRAP_RAIL);
+                        out.accept(DROP_RAIL);
                         out.accept(SNOW_GLOBE);
                     }).build());
 

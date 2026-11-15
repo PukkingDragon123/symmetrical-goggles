@@ -16,6 +16,19 @@ public abstract class AbstractMinecartMixin implements CartSpeed {
     @Unique
     private double ww$speedFactor = 1.0;
 
+    @Unique
+    private net.minecraft.world.phys.Vec3 ww$heldDir;
+
+    @Override
+    public net.minecraft.world.phys.Vec3 ww$heldDir() {
+        return ww$heldDir;
+    }
+
+    @Override
+    public void ww$setHeldDir(net.minecraft.world.phys.Vec3 dir) {
+        ww$heldDir = dir;
+    }
+
     @Override
     public double ww$speedFactor() {
         return ww$speedFactor;

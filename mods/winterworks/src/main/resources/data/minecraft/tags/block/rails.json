@@ -3,6 +3,8 @@
   "values": [
     "winterworks:coaster_rail",
     "winterworks:booster_rail",
-    "winterworks:lift_rail"
+    "winterworks:lift_rail",
+    "winterworks:trap_rail",
+    "winterworks:drop_rail"
   ]
 }

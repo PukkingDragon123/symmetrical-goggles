@@ -38,6 +38,29 @@ public final class RailPhysics {
         Vec3 v = cart.getDeltaMovement();
         Vec3 hv = new Vec3(v.x, 0, v.z);
         double speed = hv.length();
+        Vec3 held = sp.ww$heldDir();
+        if (state.is(WWBlocks.TRAP_RAIL)) {
+            if (state.getValue(PoweredRailBlock.POWERED)) {
+                if (held == null) {   // jaws snap shut: remember which way it was going
+                    Vec3 d = speed > 0.01 ? hv.normalize() : railDir(state);
+                    sp.ww$setHeldDir(d);
+                    level.playSound(null, pos, net.minecraft.sounds.SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 0.8f, 0.6f);
+                    level.playSound(null, pos, net.minecraft.sounds.SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1.0f, 0.8f);
+                }
+                cart.setDeltaMovement(0, Math.min(0, v.y), 0);
+                cart.setPos(pos.getX() + 0.5, cart.getY(), pos.getZ() + 0.5);
+            } else if (held != null) {   // released: launch
+                cart.setDeltaMovement(held.x * 1.1, v.y, held.z * 1.1);
+                sp.ww$setHeldDir(null);
+                factor = BOOST_FACTOR;
+                level.playSound(null, pos, net.minecraft.sounds.SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.8f, 1.2f);
+                level.playSound(null, pos, WWSounds.BOOSTER, SoundSource.BLOCKS, 1.0f, 0.8f);
+                level.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, cart.getX(), cart.getY() + 0.2, cart.getZ(),
+                        8, 0.3, 0.1, 0.3, 0.05);
+            }
+        } else if (held != null) {
+            sp.ww$setHeldDir(null);
+        }
         if (state.is(WWBlocks.BOOSTER_RAIL)) {
             if (state.getValue(PoweredRailBlock.POWERED)) {
                 target = BOOST_FACTOR;
@@ -87,7 +110,7 @@ public final class RailPhysics {
                 cart.setDeltaMovement(cart.getDeltaMovement().multiply(1.015, 1, 1.015));   // keep momentum
             }
         }
-        if (factor > target) {
+        if (factor > target && !state.is(WWBlocks.TRAP_RAIL)) {
             factor = Math.max(target, factor - 0.04);
         }
         sp.ww$setSpeedFactor(factor);

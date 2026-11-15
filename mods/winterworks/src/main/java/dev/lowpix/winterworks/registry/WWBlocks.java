@@ -3,6 +3,9 @@ package dev.lowpix.winterworks.registry;
 import dev.lowpix.winterworks.Winterworks;
 import dev.lowpix.winterworks.express.BoosterRailBlock;
 import dev.lowpix.winterworks.express.CoasterRailBlock;
+import dev.lowpix.winterworks.express.DropRailBlock;
+import dev.lowpix.winterworks.express.DropRailOpenBlock;
+import dev.lowpix.winterworks.express.TrapRailBlock;
 import dev.lowpix.winterworks.express.LiftRailBlock;
 import dev.lowpix.winterworks.globe.SnowGlobeBlock;
 import dev.lowpix.winterworks.globe.SnowGlobeBlockEntity;
@@ -22,6 +25,13 @@ public final class WWBlocks {
             new BoosterRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL)));
     public static final Block LIFT_RAIL = reg("lift_rail",
             new LiftRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL).sound(SoundType.CHAIN)));
+    public static final Block TRAP_RAIL = reg("trap_rail",
+            new TrapRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL).sound(SoundType.METAL)));
+    public static final Block DROP_RAIL = reg("drop_rail",
+            new DropRailBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL).sound(SoundType.METAL)));
+    public static final Block DROP_RAIL_OPEN = reg("drop_rail_open",
+            new DropRailOpenBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.POWERED_RAIL).sound(SoundType.METAL).noCollission()
+                    .noOcclusion()));
     public static final Block SNOW_GLOBE = reg("snow_globe",
             new SnowGlobeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS).strength(0.6f).noOcclusion()
                     .lightLevel(s -> 4)));

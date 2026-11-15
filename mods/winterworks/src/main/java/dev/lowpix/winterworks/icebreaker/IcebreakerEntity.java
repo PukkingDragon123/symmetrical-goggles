@@ -64,6 +64,7 @@ public class IcebreakerEntity extends Animal {
     private static final EntityDataAccessor<Boolean> SLIDING = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> CALM = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> ALPHA = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.BOOLEAN);
     /** Coat variants: textures/entity/icebreaker_<name>.png (same model, different colours and spots). */
     public static final String[] VARIANTS = {"grey", "harbor", "leopard", "ringed", "brown", "frost"};
 
@@ -134,6 +135,7 @@ public class IcebreakerEntity extends Animal {
         builder.define(SLIDING, false);
         builder.define(CALM, false);
         builder.define(VARIANT, 0);
+        builder.define(ALPHA, false);
     }
 
     @Override
@@ -192,6 +194,40 @@ public class IcebreakerEntity extends Animal {
     /** Big enough to shear (and to break ice with). */
     public boolean hasHorn() {
         return hornStage() >= 2;
+    }
+
+    /** The herd's Alpha: bigger, tougher, a great mane and a scarred grizzled coat. About 1 adult in 12. */
+    public boolean isAlpha() {
+        return entityData.get(ALPHA);
+    }
+
+    public void setAlpha(boolean alpha) {
+        if (alpha == isAlpha()) {
+            return;
+        }
+        entityData.set(ALPHA, alpha);
+        var id = dev.lowpix.winterworks.Winterworks.id("alpha");
+        for (var attr : new net.minecraft.core.Holder[]{Attributes.SCALE, Attributes.MAX_HEALTH, Attributes.ATTACK_DAMAGE,
+                Attributes.KNOCKBACK_RESISTANCE}) {
+            @SuppressWarnings("unchecked")
+            var inst = getAttribute((net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute>) attr);
+            if (inst != null) {
+                inst.removeModifier(id);
+            }
+        }
+        if (alpha) {
+            getAttribute(Attributes.SCALE).addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(id, 0.3,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
+            getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(id, 60,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
+            getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(id, 5,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
+            getAttribute(Attributes.KNOCKBACK_RESISTANCE).addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(id,
+                    0.15, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
+            setHornStage(MAX_HORN);
+            setHealth(getMaxHealth());
+        }
+        refreshDimensions();
     }
 
     public int variant() {
@@ -556,6 +592,9 @@ public class IcebreakerEntity extends Animal {
         SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
         setHornStage(isBaby() ? 0 : 2 + random.nextInt(3));
         setVariant(pickVariant(level));
+        if (!isBaby() && random.nextInt(12) == 0) {
+            setAlpha(true);
+        }
         return out;
     }
 
@@ -600,7 +639,7 @@ public class IcebreakerEntity extends Animal {
 
     @Override
     public float getVoicePitch() {
-        return isBaby() ? 1.6f + random.nextFloat() * 0.2f : 0.85f + random.nextFloat() * 0.15f;
+        return isBaby() ? 1.6f + random.nextFloat() * 0.2f : (isAlpha() ? 0.65f : 0.85f) + random.nextFloat() * 0.15f;
     }
 
     // --------------------------------------------------------------------------------------- saving
@@ -610,6 +649,7 @@ public class IcebreakerEntity extends Animal {
         super.addAdditionalSaveData(tag);
         tag.putInt("HornStage", hornStage());
         tag.putString("Variant", VARIANTS[variant()]);
+        tag.putBoolean("Alpha", isAlpha());
         tag.putInt("HornPoints", hornPoints);
         tag.putInt("CalmTicks", calmTicks);
     }
@@ -619,6 +659,10 @@ public class IcebreakerEntity extends Animal {
         super.readAdditionalSaveData(tag);
         setHornStage(tag.contains("HornStage") ? tag.getInt("HornStage") : MAX_HORN);
         hornPoints = tag.getInt("HornPoints");
+        if (tag.getBoolean("Alpha")) {
+            entityData.set(ALPHA, true);   // its attribute modifiers are saved with the attributes
+            refreshDimensions();
+        }
         String v = tag.getString("Variant");
         for (int i = 0; i < VARIANTS.length; i++) {
             if (VARIANTS[i].equals(v)) {
