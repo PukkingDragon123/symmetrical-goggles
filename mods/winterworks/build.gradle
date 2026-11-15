@@ -1,0 +1,59 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+base { archivesName = project.archives_base_name }
+
+repositories { mavenCentral() }
+
+loom {
+    accessWidenerPath = file("src/main/resources/winterworks.accesswidener")
+    runs {
+        // headless smoke test: boots a dedicated server, loads every registry, then stops
+        server { ideConfigGenerated false; runDir 'run/server' }
+        client { runDir 'run/client' }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+// Each feature keeps its strings in lang/<feature>.json; they are merged into en_us.json at build time,
+// so several people (or agents) can work on features without editing one shared file.
+tasks.register('mergeLang') {
+    def src = file('lang')
+    def out = file("$buildDir/generated/lang/assets/winterworks/lang/en_us.json")
+    inputs.dir src
+    outputs.file out
+    doLast {
+        def merged = new TreeMap()
+        src.listFiles().findAll { it.name.endsWith('.json') }.sort().each { f ->
+            def m = new JsonSlurper().parse(f)
+            m.each { k, v ->
+                if (merged.containsKey(k) && merged[k] != v) throw new GradleException("lang key $k defined twice (${f.name})")
+                merged[k] = v
+            }
+        }
+        out.parentFile.mkdirs()
+        out.text = JsonOutput.prettyPrint(JsonOutput.toJson(merged))
+    }
+}
+sourceSets.main.resources.srcDir("$buildDir/generated/lang")
+processResources {
+    dependsOn 'mergeLang'
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+
+tasks.withType(JavaCompile).configureEach { it.options.release = 21 }
+java { withSourcesJar(); sourceCompatibility = JavaVersion.VERSION_21; targetCompatibility = JavaVersion.VERSION_21 }
+jar { from('LICENSE') { rename { "${it}_${project.base.archivesName.get()}" } } }

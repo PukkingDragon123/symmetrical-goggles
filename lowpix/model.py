@@ -115,7 +115,9 @@ class Model:
         col_budget = budget.get("colors")
         if col_budget and len(cols) > col_budget:
             warnings.append(f"{len(cols)} colours used, budget is {col_budget}")
-        tiny = [f"{inst.id}.{f.name}" for inst in self.instances for f in inst.faces if min(f.W, f.H) < 2
+        # Minecraft-scale models (a "minecraft" block, density 1) use 1px details on purpose
+        min_px = 1 if self.spec.get("minecraft") else 2
+        tiny = [f"{inst.id}.{f.name}" for inst in self.instances for f in inst.faces if min(f.W, f.H) < min_px
                 and inst.part.get("shape") != "card" and not f.soft and "bevels" not in f.tags]
         if tiny:
             warnings.append(f"{len(tiny)} faces are under 2px on a side (detail lost): {tiny[:6]}"

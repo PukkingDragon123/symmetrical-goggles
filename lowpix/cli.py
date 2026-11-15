@@ -203,6 +203,17 @@ def main(argv=None):
     sf.add_argument("-o", "--out", default="out/_downloads")
     sf.add_argument("--limit", type=int, default=24)
 
+    mc = sub.add_parser("mc", help="Minecraft Java: export a box spec into a mod (entity model code, texture, clips)")
+    mc.add_argument("action", choices=["export", "icon"])
+    mc.add_argument("src", help="export: a box spec .json; icon: a .png item icon")
+    mc.add_argument("--mod", required=True, help="the mod project's root (any Fabric/NeoForge/Forge repo)")
+    mc.add_argument("--modid", required=True)
+    mc.add_argument("--package", help="Java package for the generated model classes + runtime (export)")
+    mc.add_argument("--name", help="override the model / icon name")
+    mc.add_argument("--texture-dir", default="entity", help="textures/<dir>/ for the model texture (entity, block, item)")
+    mc.add_argument("--fps", type=float, default=12.0, help="keyframes per second when baking clips")
+    mc.add_argument("--handheld", action="store_true", help="icon: held like a tool")
+    mc.add_argument("-o", "--out", default="out/mc", help="where the export preview sheet goes")
     sub.add_parser("schema", help="print the JSON schema for specs")
 
     a = ap.parse_args(_fix_negative_args(list(sys.argv[1:] if argv is None else argv)))
@@ -390,6 +401,19 @@ def main(argv=None):
         else:
             uid = a.query[0].split(":", 1)[-1]
             print(f"-> {fetch(uid, os.path.join(a.out, f'sketchfab_{uid}'))}")
+    elif a.cmd == "mc":
+        from . import mc as mcmod
+        if a.action == "icon":
+            mcmod.export_icon(a.src, a.mod, a.modid, a.name or os.path.splitext(os.path.basename(a.src))[0], a.handheld)
+            print(f"installed item icon {a.name or a.src} into {a.mod}")
+        else:
+            if not a.package:
+                ap.error("mc export needs --package")
+            summary = mcmod.export(a.src, a.mod, a.modid, a.package, out_dir=a.out, fps=a.fps, name=a.name,
+                                   texture_dir=a.texture_dir)
+            print(json.dumps(summary, indent=1))
+            for w in summary["warnings"]:
+                print("  warning:", w)
     elif a.cmd == "schema":
         here = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(here, "schema.json")) as fh:
