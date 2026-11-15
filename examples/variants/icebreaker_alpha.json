@@ -129,6 +129,20 @@
     "#6b424a",
     "#86585e",
     "#a07276"
+   ],
+   "mane": [
+    "#3d4652",
+    "#4f5966",
+    "#636e7b",
+    "#78838f",
+    "#8e98a3",
+    "#a4adb6",
+    "#b9c1c8",
+    "#ccd2d8",
+    "#dde1e5",
+    "#eaedef",
+    "#f5f6f6",
+    "#fdfcf8"
    ]
   }
  },
@@ -326,12 +340,12 @@
      "at": "center",
      "art": [
       "................",
-      "..d.d.d....d.d.d",
-      ".d.d.d......d.d.",
-      "..d.d........d.."
+      "...d...d...d....",
+      ".....d...d......",
+      "................"
      ],
      "key": {
-      "d": "seal:3"
+      "d": "belly:4"
      }
     }
    ]
@@ -462,6 +476,51 @@
       "front",
       "back"
      ]
+    }
+   ]
+  },
+  "mane": {
+   "ramp": "mane",
+   "tone": 8.2,
+   "layers": [
+    {
+     "id": "frost_tips",
+     "op": "drip",
+     "ramp": "horn",
+     "tone": 7.6,
+     "depth": 0.4,
+     "length": 1.0,
+     "width": 0.45,
+     "scale": 1.4,
+     "faces": [
+      "sides",
+      "back"
+     ]
+    },
+    {
+     "id": "strands",
+     "op": "drip",
+     "ramp": "mane",
+     "tone": 4.6,
+     "depth": 2.0,
+     "length": 4.5,
+     "width": 0.5,
+     "scale": 1.8,
+     "faces": [
+      "sides",
+      "front",
+      "back",
+      "top"
+     ]
+    },
+    {
+     "id": "locks",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.4,
+     "width": 0.35,
+     "shift": -1.8,
+     "wobble": 0.8
     }
    ]
   },
@@ -1140,6 +1199,45 @@
    "mirror": true
   },
   {
+   "id": "whisker",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    ".......www",
+    "..wwwwww..",
+    "www.......",
+    "wwwwwwwwww",
+    "www.......",
+    "..wwwwww..",
+    ".......www"
+   ],
+   "pivot": [
+    4,
+    -1,
+    2.6
+   ],
+   "paint": {
+    "ramp": "belly",
+    "light": 0.5,
+    "art_key": {
+     "w": "belly:7"
+    }
+   },
+   "parent": "whisker_pad",
+   "offset": [
+    5,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    -24,
+    -8
+   ],
+   "mirror": true,
+   "flip_on_mirror": true
+  },
+  {
    "id": "nose",
    "shape": "box",
    "size": [
@@ -1479,7 +1577,7 @@
     6,
     5
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
    "rotation": [
     -18,
@@ -1500,7 +1598,7 @@
     6,
     5
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
    "rotation": [
     -18,
@@ -1521,7 +1619,7 @@
     13,
     3
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
    "rotation": [
     -30,
@@ -1542,7 +1640,7 @@
     13,
     3
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
    "rotation": [
     -30,
@@ -1563,7 +1661,7 @@
     15,
     1
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
    "rotation": [
     -42,
@@ -1584,7 +1682,7 @@
     13,
     -4
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
    "rotation": [
     -20,
@@ -1605,7 +1703,7 @@
     13,
     -4
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
    "rotation": [
     -20,
@@ -1626,7 +1724,7 @@
     -2,
     6
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "jaw",
    "offset": [
     0,
@@ -1652,8 +1750,125 @@
     -1,
     10.5
    ],
-   "style": "fur_dark",
+   "style": "mane",
    "parent": "chest",
+   "rotation": [
+    10,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "alpha_fringe_side",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "mmmmmmmmm",
+    "mmmmmmmmm",
+    "mmmm.mmmm",
+    "mmm..mm.m",
+    ".mm..mm..",
+    ".m...m...",
+    "..m..m...",
+    "..m......"
+   ],
+   "pivot": [
+    -4.5,
+    -7,
+    0
+   ],
+   "paint": {
+    "ramp": "mane",
+    "light": 0.5,
+    "art_key": {
+     "m": "mane:8"
+    }
+   },
+   "parent": "alpha_mane0",
+   "offset": [
+    0,
+    -4,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -8
+   ],
+   "mirror": true,
+   "flip_on_mirror": true
+  },
+  {
+   "id": "alpha_fringe_beard",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "mmmmmmmmm",
+    "mmmmmmmmm",
+    "mmmmmmmmm",
+    "mmmm.mmmm",
+    "mmm..mm.m",
+    ".mm..mm..",
+    ".m...m...",
+    "..m..m...",
+    "..m......"
+   ],
+   "pivot": [
+    0,
+    -4,
+    3.6
+   ],
+   "paint": {
+    "ramp": "mane",
+    "light": 0.5,
+    "art_key": {
+     "m": "mane:9"
+    }
+   },
+   "parent": "alpha_beard",
+   "offset": [
+    0,
+    -4.5,
+    0
+   ],
+   "rotation": [
+    8,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "alpha_fringe_ruff",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "mmmmmmmmmmmmmmmmmmmmmm",
+    "mmmmmmmmmmmmmmmmmmmmmm",
+    "mmmm.mmmmmmmmmmmm.mmmm",
+    "mmm..mm.mmmmmmmm..mm.m",
+    ".mm..mm..mmmm.mm..mm..",
+    ".m...m...mmmm.m...m...",
+    "..m..m...mmmm..m..m...",
+    "..m......mmmm..m......"
+   ],
+   "pivot": [
+    0,
+    -5,
+    3.2
+   ],
+   "paint": {
+    "ramp": "mane",
+    "light": 0.5,
+    "art_key": {
+     "m": "mane:7"
+    }
+   },
+   "parent": "alpha_ruff",
+   "offset": [
+    0,
+    -4,
+    0
+   ],
    "rotation": [
     10,
     0,

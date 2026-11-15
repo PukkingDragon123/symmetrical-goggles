@@ -101,7 +101,7 @@ class TestCards(unittest.TestCase):
                 "parts": [{"id": "body", "shape": "box", "size": [8, 6, 12], "pivot": [0, 6, 0], "style": "fur"},
                           {"id": "tuft", "parent": "body", "shape": "card", "plane": "yz", "pivot": [0, 3, 0],
                            "offset": [0, 2, 0], "art": ["..t.t...", ".tt.tt.t", "tttttttt", "tttttttt"],
-                           "art_key": {"t": "fur:3"}}]}
+                           "paint": {"ramp": "fur", "art_key": {"t": "fur:3"}}}]}
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "cards.json")
             with open(path, "w") as fh:

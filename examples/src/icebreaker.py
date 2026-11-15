@@ -24,6 +24,35 @@ def box(id, parent, size, pivot, style, offset=None, rot=None, **kw):
     return d
 
 
+def card(id, parent, art, pivot, key, plane="xy", offset=None, rot=None, **kw):
+    """A flat alpha-cut card (fur fringes, whiskers): exports to Minecraft as a zero-thickness cube."""
+    ramp = next(iter(key.values())).split(":")[0]
+    d = {"id": id, "shape": "card", "plane": plane, "art": art, "pivot": pivot,
+         "paint": {"ramp": ramp, "light": 0.5, "art_key": key}}
+    if parent:
+        d["parent"] = parent
+    if offset:
+        d["offset"] = offset
+    if rot:
+        d["rotation"] = rot
+    d.update(kw)
+    P.append(d)
+    return d
+
+
+def strands(w, h, lines, ch="w"):
+    """Rasterise whisker strands: lines [(x0, y0, x1, y1)] in pixels -> an art grid."""
+    g = [["."] * w for _ in range(h)]
+    for x0, y0, x1, y1 in lines:
+        n = max(abs(x1 - x0), abs(y1 - y0)) * 2 + 1
+        for i in range(int(n) + 1):
+            t = i / n
+            x, y = round(x0 + (x1 - x0) * t), round(y0 + (y1 - y0) * t)
+            if 0 <= x < w and 0 <= y < h:
+                g[y][x] = ch
+    return ["".join(r) for r in g]
+
+
 # ------------------------------------------------------------------ a real seal's build, Minecraft-style
 # A long fat torpedo: the spine is a chain of segments (chest -> belly -> waist -> hips -> tail), each a little
 # narrower, each hinged at its front so waves can ripple down the body. Big fan-shaped hind flippers, big
@@ -50,6 +79,8 @@ box("crown", "head", [18, 3, 13], [0, 12.5, 7.5], "head")
 box("cheek", "head", [2, 12, 12], [11.5, 0, 8], "head", mirror=True)
 box("muzzle", "head", [14, 8, 6], [0, -3.5, 16.5], "muzzle", offset=[0, 0, 3])
 box("whisker_pad", "muzzle", [8, 7, 6], [4, -0.5, 4], "whiskers", mirror=True)
+card("whisker", "whisker_pad", strands(10, 7, [(0, 2, 9, 0), (0, 3, 9, 3), (0, 4, 9, 6)]), [4, -1, 2.6],
+     {"w": "belly:7"}, offset=[5, 0, 0], rot=[0, -24, -8], mirror=True, flip_on_mirror=True)
 box("nose", "muzzle", [6, 3, 3], [0, 4, 4.5], "nose")
 box("nostril", "nose", [2, 1, 1], [1.5, 0.6, 1.6], "nostril", mirror=True)
 box("jaw", "head", [12, 4, 12], [0, -7, 9], "jaw", offset=[0, -1.5, 6], rot=[4, 0, 0])
@@ -74,9 +105,17 @@ for k, (x, y, z, rx, ry, rz, w, h, d) in enumerate([(-15, 6, 5, -18, 14, 34, 9, 
                                                      (-9, 13, 3, -30, 8, 18, 11, 12, 8), (9, 13, 3, -30, -8, -18, 11, 12, 8),
                                                      (0, 15, 1, -42, 0, 0, 13, 11, 8), (-12, 13, -4, -20, 20, 26, 9, 10, 7),
                                                      (12, 13, -4, -20, -20, -26, 9, 10, 7)]):
-    box(f"alpha_mane{k}", "chest", [w, h, d], [x, y, z], "fur_dark", rot=[rx, ry, rz])
-box("alpha_beard", "jaw", [12, 8, 7], [0, -2, 6], "fur_dark", offset=[0, -4, 0], rot=[12, 0, 0])
-box("alpha_ruff", "chest", [26, 10, 6], [0, -1, 10.5], "fur_dark", rot=[10, 0, 0])
+    box(f"alpha_mane{k}", "chest", [w, h, d], [x, y, z], "mane", rot=[rx, ry, rz])
+box("alpha_beard", "jaw", [12, 8, 7], [0, -2, 6], "mane", offset=[0, -4, 0], rot=[12, 0, 0])
+box("alpha_ruff", "chest", [26, 10, 6], [0, -1, 10.5], "mane", rot=[10, 0, 0])
+# shaggy white fringes hanging off the mane and beard (children of alpha_* parts, so only Alphas show them)
+FRINGE = ["mmmmmmmmm", "mmmmmmmmm", "mmmm.mmmm", "mmm..mm.m", ".mm..mm..", ".m...m...", "..m..m...", "..m......"]
+card("alpha_fringe_side", "alpha_mane0", FRINGE, [-4.5, -7, 0], {"m": "mane:8"}, plane="yz", offset=[0, -4, 0],
+     rot=[0, 0, -8], mirror=True, flip_on_mirror=True)
+card("alpha_fringe_beard", "alpha_beard", FRINGE[:2] + ["mmmmmmmmm"] + FRINGE[2:], [0, -4, 3.6], {"m": "mane:9"},
+     offset=[0, -4.5, 0], rot=[8, 0, 0])
+card("alpha_fringe_ruff", "alpha_ruff", ["m" * 22, "m" * 22] + [r + "mmmm"[:4] + r for r in FRINGE[2:]], [0, -5, 3.2],
+     {"m": "mane:7"}, offset=[0, -4, 0], rot=[10, 0, 0])
 box("elbow_tuft", "flipper", [4, 5, 5], [3.6, -2, -3.5], "fur_dark", rot=[24, 0, 12])
 # shingled fur plates down the back, each lifted at its rear edge like a pelt
 box("shag_chest", "chest", [14, 3, 10], [6.5, 11.4, 1], "fur", rot=[-9, -7, -8], mirror=True)
@@ -125,6 +164,9 @@ ramps = {
     "nose": ["#0e0f11", "#17191c", "#22252a", "#2e3237", "#3c4147"],
     "claw": ["#141210", "#201d1a", "#2e2a26", "#3d3833", "#4f4943"],
     "mouth": ["#24151a", "#3a2127", "#523038", "#6b424a", "#86585e", "#a07276"],
+    # the Alpha's silver-white mane: cool blue-grey in the shadows, warm white in the light
+    "mane": ["#3d4652", "#4f5966", "#636e7b", "#78838f", "#8e98a3", "#a4adb6", "#b9c1c8", "#ccd2d8", "#dde1e5",
+             "#eaedef", "#f5f6f6", "#fdfcf8"],
 }
 light = {"dir": [-0.4, 1.0, 0.55], "strength": 0.55, "gradient": 0.7, "ao": 1.1, "ao_height": 9.0}
 brush = {"flow": "z", "length": 3.6, "width": 1.2, "rough": 0.45, "overshoot": 0.25,
@@ -154,9 +196,9 @@ styles = {
     "whiskers": {"ramp": "belly", "tone": 6.6, "stamps": [
         {"faces": ["front"], "at": "center", "art": [
             "................",
-            "..d.d.d....d.d.d",
-            ".d.d.d......d.d.",
-            "..d.d........d.."], "key": {"d": "seal:3"}},
+            "...d...d...d....",
+            ".....d...d......",
+            "................"], "key": {"d": "belly:4"}},
 ]},
     "jaw": {"ramp": "belly", "tone": 5.4},
     "nose": {"ramp": "nose", "tone": 2.0, "stamps": [
@@ -176,6 +218,12 @@ styles = {
          "faces": ["sides", "front", "back"]},
         {"id": "tufts", "op": "stripes", "axis": "x", "period": 2.0, "width": 0.3, "shift": -1.4, "wobble": 0.6,
          "faces": ["sides", "front", "back"]}]},
+    "mane": {"ramp": "mane", "tone": 8.2, "layers": [
+        {"id": "frost_tips", "op": "drip", "ramp": "horn", "tone": 7.6, "depth": 0.4, "length": 1.0, "width": 0.45, "scale": 1.4,
+         "faces": ["sides", "back"]},
+        {"id": "strands", "op": "drip", "ramp": "mane", "tone": 4.6, "depth": 2.0, "length": 4.5, "width": 0.5, "scale": 1.8,
+         "faces": ["sides", "front", "back", "top"]},
+        {"id": "locks", "op": "stripes", "axis": "x", "period": 1.4, "width": 0.35, "shift": -1.8, "wobble": 0.8}]},
     "fur_dark": {"ramp": "seal", "tone": 3.6, "layers": [
         {"id": "frost_tips", "op": "drip", "ramp": "horn", "tone": 7.4, "depth": 0.4, "length": 1.0, "width": 0.45, "scale": 1.4,
          "faces": ["sides", "back"]},
