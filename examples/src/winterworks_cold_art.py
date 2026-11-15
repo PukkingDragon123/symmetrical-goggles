@@ -400,11 +400,11 @@ SLASH_ARC = """
 .....WWWWWW.....
 ...WWwwwwwwWW...
 ..WwwllllllwwW..
-.Wwlc......clwW.
+.Wwlc..g...clwW.
 .Wlc........clW.
-Wwc..........cwW
-Wl............lW
-W..............W
+Wwc.g.....l..cwW
+Wl.........g..lW
+W....c.........W
 ................
 ................
 ................
@@ -821,16 +821,16 @@ item("fang_dagger", pal(BONE, FROST, CRYSTAL, a=FUR["6"], A=FUR["3"]), """
 ............klk.
 ...........klck.
 ..........kGYck.
-..0.....kkGYck..
-.070...kGGYyck..
-.0470kkGGYyck...
+........kkGYck..
+...0...kGGYyck..
+..070kkGGYyck...
 ..047GGYYyck....
 ..0367Yyck......
 ...03670k.......
 ..kaA0370.......
-.kaAk.0370......
-kaAk...080......
-Yyk.....0.......
+.kaAk..070......
+kaAk....0.......
+Yyk.............
 yBk.............
 """)
 
@@ -906,8 +906,8 @@ def block(name, palette, grid):
 
 # Ancient ice: deep indigo glacier ice (translucent) with crystal prisms at different depths (bright
 # ridge, darker core, fading into the dark below), trapped bubbles. Tiles seamlessly (edges are depth).
-DEEP_ICE = pal(**{"0": "#141344e8", "1": "#1c2470e0", "2": "#22399ad8", "3": "#2856bcd0", "4": "#2f7dd4d0",
-                  "5": "#45ace6d8", "6": "#82dcf4e4", "7": "#c8f4fcee", "8": "#fffffff4"})
+DEEP_ICE = pal(**{"0": "#141344d0", "1": "#1c2470c4", "2": "#22399ac8", "3": "#2856bccc", "4": "#2f7dd4d0",
+                  "5": "#45ace6d8", "6": "#82dcf4e4", "7": "#c8f4fcee", "8": "#fffffff4", "f": "#a6ecfa90"})
 block("ancient_ice", DEEP_ICE, """
 1121101121112112
 1211711217611151
@@ -922,9 +922,9 @@ block("ancient_ice", DEEP_ICE, """
 2132412426362461
 1121312425361312
 1211211315251311
-1751101314251321
-2521117213141211
-1112111122131211
+1751101314251f21
+252111721314f211
+11121111221f1211
 """)
 
 # Icicles (cross models like pointed dripstone): pale translucent ice prisms, bright left edge, darker
@@ -935,13 +935,13 @@ block("icicle_base", PALE_ICE, """
 ....fedcbcdg....
 ....edcbacdg....
 ....edcbacdg....
-...efedcbcddg...
+...dfedcbcddg...
 ....edcbacdg....
 ....edcbacdg....
 .....edbacdg....
 .....edbacdg....
 .....fdbacdg....
-....efdcbcdg....
+....dfdcbcdg....
 .....edbacg.....
 .....edbacg.....
 .....fdbacg.....
@@ -967,6 +967,891 @@ block("icicle_tip", PALE_ICE, """
 ................
 ................
 """)
+
+
+# ====================================================================== entity skins (box UV layout)
+class Skin:
+    """A texture built from hand-drawn box faces placed at their vanilla UV spots.
+
+    box(u, v, w, h, d) follows ModelPart's cube unwrap: top (u+d, v), bottom (u+d+w, v), right (u, v+d),
+    front (u+d, v+d), left (u+d+w, v+d), back (u+2d+w, v+d). On `top` the last row touches the front;
+    `right` is the model's right side (its last column touches the front), `left` its first column does.
+    """
+
+    def __init__(self, size=(64, 64)):
+        self.im = Image.new("RGBA", size, (0, 0, 0, 0))
+
+    def box(self, u, v, w, h, d, palette, name="?", **faces):
+        spots = {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, h),
+                 "front": (u + d, v + d, w, h), "left": (u + d + w, v + d, d, h), "back": (u + 2 * d + w, v + d, w, h)}
+        for face, grid in faces.items():
+            x, y, fw, fh = spots[face]
+            rows = parse(grid) if isinstance(grid, str) else grid
+            self.im.alpha_composite(draw(rows, palette, (fw, fh), f"{name}.{face}"), (x, y))
+        return self
+
+
+def flip(grid):
+    return [row[::-1] for row in (parse(grid) if isinstance(grid, str) else grid)]
+
+
+def mirrored(faces):
+    """The faces of the opposite limb, as vanilla's mirror() shows them (left/right swapped, flipped)."""
+    swap = {"right": "left", "left": "right"}
+    return {swap.get(f, f): flip(g) for f, g in faces.items()}
+
+
+def patched(faces, **patches):
+    """Copy of `faces` with some cells replaced: patch grids use '_' for 'keep the original pixel'."""
+    out = {f: (parse(g) if isinstance(g, str) else list(g)) for f, g in faces.items()}
+    for face, patch in patches.items():
+        rows = []
+        for base, over in zip(out[face], parse(patch)):
+            rows.append("".join(b if o == "_" else o for b, o in zip(base, over)))
+        out[face] = rows
+    return out
+
+
+# Player-model UV spots (64x64): head 0,0 / hat 32,0 / body 16,16 / right arm 40,16 / right leg 0,16;
+# left arm 32,48 and left leg 16,48 (the drowned layout; the zombie layout mirrors the right limbs).
+HEAD, HAT, BODY, R_ARM, R_LEG, L_ARM, L_LEG = (0, 0), (32, 0), (16, 16), (40, 16), (0, 16), (32, 48), (16, 48)
+
+
+def humanoid(skin, palette, name, head=None, hat=None, body=None, arm=None, leg=None, l_arm=None, l_leg=None):
+    if head:
+        skin.box(*HEAD, 8, 8, 8, palette, f"{name}.head", **head)
+    if hat:
+        skin.box(*HAT, 8, 8, 8, palette, f"{name}.hat", **hat)
+    if body:
+        skin.box(*BODY, 8, 12, 4, palette, f"{name}.body", **body)
+    if arm:
+        skin.box(*R_ARM, 4, 12, 4, palette, f"{name}.right_arm", **arm)
+        skin.box(*L_ARM, 4, 12, 4, palette, f"{name}.left_arm", **(l_arm or mirrored(arm)))
+    if leg:
+        skin.box(*R_LEG, 4, 12, 4, palette, f"{name}.right_leg", **leg)
+        skin.box(*L_LEG, 4, 12, 4, palette, f"{name}.left_leg", **(l_leg or mirrored(leg)))
+    return skin
+
+
+# --- Frost Zombie: a frozen polar explorer. Frostbitten blue-grey skin (indigo fingertips, nose, ears),
+# frosted hair and beard, icy eyes, a ragged leather parka lined with cream fur (hood = hat layer),
+# indigo wool trousers, fur boots, ice crusts.
+ZOMBIE = pal(FUR,
+             a="#2c3550", b="#435370", c="#5f7390", d="#7f94ab", e="#a3b7c8", f="#c8d8e2",  # skin
+             p="#2a275a", P="#46448a", m="#131728",                                        # frostbite, mouth
+             E="#d8fdff", F="#55d8f2",                                                     # icy eyes
+             h="#3f4558", H="#6c7690", i="#a9b8cc", I="#e4eff8",                           # frosted hair
+             k="#241a19", l="#3f2b25", L="#5c3f33", r="#7c5945", R="#9b7659",              # parka leather
+             t="#1b1d31", T="#292d47", u="#3b4262", U="#525a7e",                           # wool trousers
+             j="#16131a", J="#352b2e", g="#a8956c", G="#d6c79d",                           # belt, bone toggles
+             x="#2a66c6", X="#4bbde9", z="#8de3f6", Z="#d0f7fd", W="#ffffff",              # ice
+             S="#eef4f8", s="#c4d2e0")                                                     # snow
+
+FZ_HEAD = dict(top="""
+hHhiHhHh
+HhIhhHih
+hiHhHhhH
+HhhIhiHh
+hHiHhHIh
+iHhHiHhi
+HIhiHIhH
+IiHIiHiI
+""", bottom="""
+bbcbbcbb
+bcbbcbbb
+bbbcbbcb
+cbHbbHbc
+HhHhHhHh
+hHihHihH
+iHIiHiIH
+IiIHIiHI
+""", right="""
+hHhhiHhH
+HhhHhhIh
+hhHhhfeh
+hHhhcdde
+hhhPpcdd
+hHhbcdcH
+hhHhbHiI
+hHhHiIiH
+""", front="""
+hiIHhIih
+HIhiHIhH
+hdeffedh
+dabccbac
+cFEdcEFb
+cdcPpdcb
+iHammaHh
+IiHiIHiH
+""", back="""
+hHhhHhhH
+HhiHhhiH
+hHhIhHhh
+hiHhHhiH
+HhHhiHhH
+hHiHhHih
+iHhiHIhH
+IiIHiIiI
+""")
+FZ_HEAD["left"] = flip(FZ_HEAD["right"])
+
+FZ_HOOD = dict(top="""
+lLrLkLrl
+LlLLkLlL
+lrLlkLLl
+LLlLkrLl
+lLLrkLlL
+LlLLkLrL
+45545454
+56456545
+""", front="""
+56656545
+45....43
+4......3
+5......2
+4......3
+4......2
+3......2
+3......1
+""", right="""
+LlLLrlL5
+lLrLlL45
+LlLlLl54
+lLLlrL43
+LlLlLl54
+lLlLlL43
+LlLrlL32
+.LlkL.l2
+""", back="""
+lLLklLLl
+LlrkLlrL
+lLLkLLlL
+LrlklLLl
+lLLkLrlL
+LlLklLLr
+lLlkLlLl
+.Ll.kL.l
+""")
+FZ_HOOD["left"] = flip(FZ_HOOD["right"])
+
+FZ_BODY = dict(top="""
+rrr45LLl
+r456654L
+r465564l
+rRr45LLl
+""", bottom="""
+34343434
+43434343
+34343434
+43434343
+""", front="""
+45655654
+r4566544
+rrL45LLl
+rLg54lLl
+RrL45LlL
+rLg45Lld
+rrL54llc
+jJjgGjJj
+rRL45Lzl
+rLL54LxZ
+4r5L4l5l
+54565454
+""", right="""
+rrRr
+rRrr
+rrrl
+Rrrr
+rrlr
+rRrr
+rrrl
+jJjj
+rrRr
+rlrr
+4r5r
+5454
+""", left="""
+LLlL
+LlLL
+LLLl
+lLLL
+LLlL
+LlLL
+LLLl
+jjJj
+LLlL
+lLLL
+L5l4
+4545
+""", back="""
+rrrlkLLL
+rRrlkLlL
+rcdlkLLl
+RdclkLLL
+rrrlkLlL
+rRrlkLLl
+rrrlkLLL
+jJjjjjJj
+rrrlkzZl
+rRrlkxzL
+4r5lk54l
+54545454
+""")
+
+FZ_ARM = dict(top="""
+rrRr
+rRrr
+rrrL
+rLLL
+""", bottom="""
+PpPp
+pPcP
+PcpP
+pPpP
+""", right="""
+rrRr
+rRrr
+rrrl
+rcdl
+ldcl
+lllk
+4535
+5453
+dcdb
+edcb
+dcPb
+Pppp
+""", front="""
+rrrL
+rRrL
+rrLL
+rrrL
+llll
+rrLl
+5453
+4535
+edcc
+fedc
+dPcb
+pPpp
+""", left="""
+LLLl
+LLlL
+LLLl
+LlLL
+llkl
+LLLl
+3545
+5354
+ccdb
+cdcb
+bPcb
+pppP
+""", back="""
+LLrL
+LrLL
+LLLl
+LrLL
+lllk
+LLLl
+4545
+5454
+cdcb
+dccb
+cPbb
+PpPp
+""")
+
+FZ_LEG = dict(top="""
+TuTu
+uTUT
+TuTu
+uTuT
+""", bottom="""
+lklk
+klkl
+lkLk
+kLkl
+""", right="""
+TuUT
+uTuT
+TUTu
+uTtT
+TuTu
+tTuT
+UtTu
+5454
+4545
+3545
+4354
+klLk
+""", front="""
+TuUT
+uUTu
+TuTu
+UTuT
+TxzT
+uXxu
+TuTt
+5645
+4545
+5434
+4543
+lkLk
+""", left="""
+TuTt
+tTuT
+TtTu
+tTuT
+TuTt
+tTtT
+TtTu
+4543
+3454
+4343
+3434
+klkl
+""", back="""
+TuTu
+uTtT
+TuTu
+tTuT
+TtTu
+uTtT
+TuTt
+4545
+5454
+4543
+3454
+kLkl
+""")
+
+# The left limbs are the mirrored right ones with their own tears and ice (zombie layout ignores them).
+FZ_L_ARM = patched(mirrored(FZ_ARM), left="""
+____
+____
+____
+____
+____
+____
+____
+____
+____
+____
+____
+____
+""", right="""
+____
+____
+_Rd_
+_dc_
+____
+____
+____
+____
+____
+____
+____
+____
+""")
+FZ_L_LEG = mirrored(FZ_LEG)
+
+put("textures/entity/frost_zombie.png", humanoid(Skin(), ZOMBIE, "frost_zombie", head=FZ_HEAD, hat=FZ_HOOD,
+                                                 body=FZ_BODY, arm=FZ_ARM, leg=FZ_LEG, l_arm=FZ_L_ARM,
+                                                 l_leg=FZ_L_LEG).im)
+
+# Outer frost layer (drowned-style: head +0.25 under the hood, hat +0.75 over it, body and limbs +0.25):
+# frost and icicles on the beard, snow and ice crystals on the hood, shoulders and back, icicles under
+# the outstretched arms (the arm's front face points down when a zombie reaches), snow on the boots.
+FZ_OUT_HEAD = dict(front="""
+........
+........
+........
+........
+........
+Z......z
+.z....Z.
+ZX.z..XZ
+""", bottom="""
+........
+........
+........
+........
+........
+Z.z..Z.z
+.X.ZX.Z.
+zZ.XZ.zX
+""", right="""
+........
+........
+........
+........
+........
+.......Z
+......zZ
+.....ZXz
+""")
+FZ_OUT_HEAD["left"] = flip(FZ_OUT_HEAD["right"])
+FZ_OUT_HAT = dict(top="""
+sSsS.SsS
+SsZWsSzs
+sSzXSs.S
+S.sSsSsZ
+.SsS.sSs
+sS.sS..s
+.s....S.
+........
+""", front="""
+SsSSsSsS
+.Z....z.
+.z......
+........
+........
+........
+........
+........
+""", right="""
+SsSsSsSs
+.W.sSs.s
+.ZX.....
+.zx.....
+........
+........
+........
+........
+""", back="""
+SsSsSsSs
+sSs.sSsS
+.W...s..
+.ZX.....
+.zx.....
+........
+........
+........
+""")
+FZ_OUT_HAT["left"] = flip(FZ_OUT_HAT["right"])
+FZ_OUT_BODY = dict(top="""
+SsS..SsS
+sSsS.sSs
+SsS..SsS
+sS....sS
+""", front="""
+Ss....sS
+z......Z
+........
+........
+........
+........
+........
+...ZW...
+........
+........
+........
+.z..Z..z
+""", right="""
+Ss.S
+.s..
+....
+....
+....
+....
+....
+....
+....
+....
+....
+z..Z
+""", left="""
+S.sS
+..s.
+....
+....
+....
+....
+....
+....
+....
+....
+....
+Z..z
+""", back="""
+SsSsSsSs
+sWsSsSsS
+.ZX..W..
+.Zx..ZX.
+.zx..zx.
+........
+........
+........
+........
+........
+........
+z..Z...z
+""")
+FZ_OUT_ARM = dict(top="""
+SsSs
+sSsS
+SsSs
+sSsS
+""", back="""
+SsSs
+sSsS
+SsS.
+.SsS
+sS..
+..Ss
+S...
+....
+....
+....
+....
+....
+""", front="""
+....
+....
+.Z..
+.z..
+....
+...Z
+...z
+....
+.Z..
+....
+....
+....
+""", right="""
+S...
+s...
+...Z
+..zX
+....
+....
+...Z
+..zx
+....
+....
+....
+....
+""")
+FZ_OUT_ARM["left"] = flip(FZ_OUT_ARM["right"])
+FZ_OUT_LEG = dict(front="""
+....
+....
+....
+....
+....
+....
+....
+SsSs
+.s.S
+....
+....
+....
+""", right="""
+....
+....
+....
+....
+....
+....
+....
+sSsS
+S.s.
+....
+....
+....
+""", back="""
+....
+....
+....
+....
+....
+....
+....
+SsSs
+.S.s
+....
+....
+....
+""")
+FZ_OUT_LEG["left"] = flip(FZ_OUT_LEG["right"])
+put("textures/entity/frost_zombie_outer.png", humanoid(Skin(), ZOMBIE, "frost_zombie_outer", head=FZ_OUT_HEAD,
+                                                       hat=FZ_OUT_HAT, body=FZ_OUT_BODY, arm=FZ_OUT_ARM,
+                                                       leg=FZ_OUT_LEG).im)
+
+# Emissive eyes: only the eye texels of the head's front face.
+put("textures/entity/frost_zombie_eyes.png", Skin().box(*HEAD, 8, 8, 8, ZOMBIE, "frost_zombie_eyes", front="""
+........
+........
+........
+........
+.FE..EF.
+........
+........
+........
+""").im)
+
+
+# ====================================================================== fur armour fallback (64x32)
+# Vanilla armour layout: layer 1 = helmet (head), chestplate (body + arms), boots (legs, lower part);
+# layer 2 = leggings (legs + waist). Cream polar fur in hanging strands, hide straps, bone toggles.
+FURARM = pal(FUR, HIDE, k="#241d29", Y=BONE["Y"], y=BONE["y"])
+FUR_SIDE = """
+45465445
+45465445
+54546554
+54546554
+45465445
+45464445
+54546543
+54545543
+"""
+FUR_STRANDS_4x12 = """
+4546
+4546
+5455
+5455
+4546
+4536
+5455
+5445
+4546
+4536
+5445
+4344
+"""
+layer1 = Skin((64, 32))
+layer1.box(*HEAD, 8, 8, 8, FURARM, "fur_layer_1.helmet", top="""
+45454545
+54545454
+45464546
+53255235
+42255224
+54545454
+45454545
+56565656
+""", front="""
+56565656
+45k55k45
+454kk454
+43....34
+4......4
+5......4
+4......3
+3......3
+""", right=FUR_SIDE, left=flip(FUR_SIDE), back="""
+54545454
+45465445
+45465445
+54546554
+54546554
+45465445
+45464445
+54545543
+""")
+layer1.box(*BODY, 8, 12, 4, FURARM, "fur_layer_1.coat", top="""
+45454545
+54566545
+45655654
+54545454
+""", front="""
+565tN565
+456tN545
+545Yy454
+456tN545
+565tN464
+454tN545
+545Yy454
+456tN545
+565tN454
+454tN545
+565Yy565
+656tN656
+""", right=FUR_STRANDS_4x12, left=flip(FUR_STRANDS_4x12), back="""
+54654565
+54654565
+45545456
+45545456
+54654565
+54654465
+45545456
+45545446
+54654565
+54653465
+45545446
+34434343
+""")
+FUR_SLEEVE = """
+4546
+4546
+5455
+5455
+4546
+4536
+5455
+5445
+6565
+....
+....
+....
+"""
+layer1.box(*R_ARM, 4, 12, 4, FURARM, "fur_layer_1.sleeve", top="""
+4545
+5465
+4564
+5454
+""", right=FUR_SLEEVE, front=FUR_SLEEVE, left=flip(FUR_SLEEVE), back=FUR_SLEEVE)
+FUR_BOOT = """
+....
+....
+....
+....
+....
+....
+....
+6565
+5456
+4546
+4545
+TtNn
+"""
+layer1.box(*R_LEG, 4, 12, 4, FURARM, "fur_layer_1.boot", bottom="""
+NnNn
+nNnN
+NnNn
+nNnN
+""", right=FUR_BOOT, front=FUR_BOOT, left=flip(FUR_BOOT), back=FUR_BOOT)
+put("textures/models/armor/fur_layer_1.png", layer1.im)
+
+layer2 = Skin((64, 32))
+FUR_TROUSER = """
+4546
+4546
+5455
+5455
+4546
+4536
+5455
+5445
+4546
+....
+....
+....
+"""
+layer2.box(*R_LEG, 4, 12, 4, FURARM, "fur_layer_2.trouser", top="""
+4545
+5454
+4545
+5454
+""", right=FUR_TROUSER, front=FUR_TROUSER, left=flip(FUR_TROUSER), back=FUR_TROUSER)
+layer2.box(*BODY, 8, 12, 4, FURARM, "fur_layer_2.waist", front="""
+........
+........
+........
+........
+........
+........
+........
+tTTYytTN
+45465445
+54546554
+45465445
+54546554
+""", right="""
+....
+....
+....
+....
+....
+....
+....
+tTtN
+4546
+5455
+4546
+5455
+""", left="""
+....
+....
+....
+....
+....
+....
+....
+NtTt
+6454
+5545
+6454
+5545
+""", back="""
+........
+........
+........
+........
+........
+........
+........
+NtTtTttN
+54654565
+45545456
+54654565
+45545456
+""")
+put("textures/models/armor/fur_layer_2.png", layer2.im)
+
+
+def skin_mockup(base, overlays=(), size=64, scale=8):
+    """Front / back / right / left views of a humanoid skin (zombie pose straightened), with overlay
+    layers drawn inflated: overlays = [(image, {part: inflate})], e.g. hat 0.5, outer 0.25/0.75."""
+    parts = {  # part: (uv, w, h, d)
+        "head": (HEAD, 8, 8, 8), "hat": (HAT, 8, 8, 8), "body": (BODY, 8, 12, 4),
+        "right_arm": (R_ARM, 4, 12, 4), "left_arm": (L_ARM, 4, 12, 4),
+        "right_leg": (R_LEG, 4, 12, 4), "left_leg": (L_LEG, 4, 12, 4)}
+
+    def face(im, part, which):
+        (u, v), w, h, d = parts[part]
+        x, y, fw, fh = {"front": (u + d, v + d, w, h), "back": (u + 2 * d + w, v + d, w, h),
+                        "right": (u, v + d, d, h), "left": (u + d + w, v + d, d, h)}[which]
+        return im.crop((x, y, x + fw, y + fh))
+
+    # (part, face, x, y) in model pixels for each view (16 x 32 canvas; side views 8 wide)
+    views = {
+        "front": [("right_leg", "front", 4, 20), ("left_leg", "front", 8, 20), ("body", "front", 4, 8),
+                  ("right_arm", "front", 0, 8), ("left_arm", "front", 12, 8), ("head", "front", 4, 0),
+                  ("hat", "front", 4, 0)],
+        "back": [("left_leg", "back", 4, 20), ("right_leg", "back", 8, 20), ("body", "back", 4, 8),
+                 ("left_arm", "back", 0, 8), ("right_arm", "back", 12, 8), ("head", "back", 4, 0),
+                 ("hat", "back", 4, 0)],
+        "right": [("body", "right", 6, 8), ("right_leg", "right", 6, 20), ("right_arm", "right", 6, 8),
+                  ("head", "right", 4, 0), ("hat", "right", 4, 0)],
+        "left": [("body", "left", 6, 8), ("left_leg", "left", 6, 20), ("left_arm", "left", 6, 8),
+                 ("head", "left", 4, 0), ("hat", "left", 4, 0)],
+    }
+    pad = 2 * scale
+    out = Image.new("RGBA", ((16 * 4 + 6) * scale + pad * 2, 32 * scale + pad * 2 + 16), (34, 36, 44, 255))
+    dr = ImageDraw.Draw(out)
+    ox = pad
+    layers = [(base, {})] + list(overlays)
+    for vname, items in views.items():
+        dr.text((ox, 2), vname, fill=(235, 235, 235, 255))
+        # draw by inflation, smallest first, so outer shells cover inner ones
+        order = []
+        for li, (im, infl) in enumerate(layers):
+            for part, which, x, y in items:
+                if part == "hat" and li == 0 and "hat" not in infl:
+                    infl_v = 0.5
+                else:
+                    infl_v = infl.get(part, 0.0) if li else (0.5 if part == "hat" else 0.0)
+                if li and part not in infl:
+                    continue
+                order.append((infl_v, li, part, which, x, y, im))
+        for infl_v, li, part, which, x, y, im in sorted(order, key=lambda o: (o[0], o[1])):
+            f = face(im, part, which)
+            g = int(round(infl_v * scale))
+            big = f.resize((f.width * scale + 2 * g, f.height * scale + 2 * g), Image.NEAREST)
+            out.alpha_composite(big, (ox + x * scale - g, 16 + pad + y * scale - g))
+        ox += (16 if vname in ("front", "back") else 16) * scale + scale
+    return out
 
 
 # ====================================================================== output
@@ -1064,7 +1949,26 @@ def main():
             if g != "particle":
                 groups.setdefault(g, []).append(rel)
         for g, paths in groups.items():
-            print("sheet:", contact_sheet(sorted(paths), a.preview / f"cold_{g}.png"))
+            print("sheet:", contact_sheet(sorted(paths), a.preview / f"cold_{g}.png", cols=2 if g in (
+                "entity", "armor") else 4))
+        base = OUT["textures/entity/frost_zombie.png"]
+        outer = OUT["textures/entity/frost_zombie_outer.png"]
+        eyes = OUT["textures/entity/frost_zombie_eyes.png"]
+        rows = [("base skin + hood", skin_mockup(base)),
+                ("+ outer frost layer + eyes", skin_mockup(base, [
+                    (outer, {"head": 0.25, "body": 0.25, "right_arm": 0.25, "left_arm": 0.25,
+                             "right_leg": 0.25, "left_leg": 0.25, "hat": 0.75}),
+                    (eyes, {"head": 0.0})]))]
+        w = max(r.width for _, r in rows)
+        sheet = Image.new("RGBA", (w, sum(r.height + 20 for _, r in rows)), (26, 27, 33, 255))
+        y = 0
+        for label, r in rows:
+            ImageDraw.Draw(sheet).text((8, y + 4), label, fill=(255, 230, 160, 255))
+            sheet.paste(r, (0, y + 20))
+            y += r.height + 20
+        dst = a.preview / "frost_zombie_mockup.png"
+        sheet.save(dst)
+        print("mockup:", dst)
 
 
 if __name__ == "__main__":
