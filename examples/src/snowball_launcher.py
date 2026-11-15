@@ -108,14 +108,18 @@ for wid, rel, size, rot in [("deco_hop_wf", (0, 1.0, 2.25), [5.5, 2, 0.5], (9, 0
                             ("deco_hop_wr", (-2.25, 1.0, 0), [0.5, 2, 5], (0, 0, 9))]:
     part(wid, "hopper", size, "hopper_wall", rel=rel, offset=(0, 1, 0), rot=rot)
 bone("snowballs", "hopper", rel=(0, 1.5, 0))
-for k, (x, y, z, rot) in enumerate([(-1.0, 1.0, -1.0, (0, 12, 0)), (1.0, 0.95, -0.9, (0, -20, 6)),
-                                    (0.05, 1.35, 1.0, (10, 30, -8))]):
-    part(f"deco_sb{k}", "snowballs", [2, 1.5, 2], "snow", rel=(x, y, z), rot=rot)
-    part(f"deco_sb{k}_r", f"deco_sb{k}", [1.5, 2, 1.5], "snow")
+# the magazine: six packed snowballs the mod shows one per loaded shot (ammo_s0 is the first to go)
+for k, (x, y, z, rot) in enumerate([(-0.9, 0.9, -0.9, (0, 12, 0)), (0.9, 0.9, -0.9, (0, -20, 6)),
+                                    (-0.9, 0.9, 0.9, (8, 30, -6)), (0.9, 0.9, 0.9, (-6, 8, 4)),
+                                    (-0.4, 2.3, 0.1, (10, 40, -8)), (0.6, 2.4, -0.2, (-8, -25, 6))][::-1]):
+    part(f"ammo_s{k}", "snowballs", [1.5, 1.5, 1.5], "snow", rel=(x, y, z), rot=rot)
+    part(f"deco_sb{k}_r", f"ammo_s{k}", [2, 1, 1], "snow")
+    part(f"deco_sb{k}_q", f"ammo_s{k}", [1, 1, 2], "snow")
 bone("cobble", "hopper", rel=(0, 1.5, 0))
-part("deco_cob_a", "cobble", [3, 2, 2.5], "cobble", rel=(0, 1.0, -0.2), rot=(8, 20, 10))
-part("deco_cob_b", "deco_cob_a", [2, 3, 2], "cobble")
-part("deco_cob_c", "deco_cob_a", [2.5, 2.5, 3], "cobble", rot=(0, 0, 12))
+for k, (x, y, z, rot) in enumerate([(-0.9, 1.0, 0.0, (8, 20, 10)), (1.0, 1.0, 0.2, (-6, -30, 8)),
+                                    (0.0, 2.6, 0.0, (12, 45, -10))][::-1]):
+    part(f"ammo_c{k}", "cobble", [2, 2, 2], "cobble", rel=(x, y, z), rot=rot)
+    part(f"deco_cob{k}_r", f"ammo_c{k}", [2.5, 1.5, 1.5], "cobble")
 
 # ======================================================================= pump piston on top, behind the hopper
 part("deco_piston_tube", "frame", [2, 2, 2.5], "brass_tube", centre=(0, 9.5, -4.75))
@@ -407,6 +411,42 @@ anim = {
         {"part": "hopper", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.5, [0, 0, 0]],
                                                         [0.58, [0.08, -0.12, 0.08], "out"],
                                                         [1.0, [0, 0, 0], "elastic"]]},
+    ]},
+    # swap ammo: the hopper tips back, the old load flies out over the shoulder, the crank whips round,
+    # the new load drops in with a bounce (the mod shows the old ammo for the first half, the new for the second)
+    "swap": {"length": 0.9, "loop": False, "tracks": [
+        {"part": "hopper", "axis": "x", "keys": [[0, 0], [0.12, 6, "out"], [0.3, -42, "out_back"], [0.45, -38],
+                                                 [0.62, 4, "in"], [0.9, 0, "elastic"]]},
+        {"part": "hopper", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.62, [0, 0, 0]], [0.68, [0.16, -0.22, 0.16], "out"],
+                                                        [0.9, [0, 0, 0], "elastic"]]},
+        {"part": "snowballs", "channel": "position", "keys": [[0, [0, 0, 0]], [0.12, [0, -0.3, 0]], [0.3, [0, 3.5, -3], "out"],
+                                                              [0.45, [0, 6, -6]], [0.46, [0, 7, 0]], [0.7, [0, -0.3, 0], "in"],
+                                                              [0.9, [0, 0, 0], "elastic"]]},
+        {"part": "snowballs", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [-0.2, -0.2, -0.2]], [0.45, [-0.7, -0.7, -0.7]],
+                                                           [0.46, [-0.4, -0.4, -0.4]], [0.7, [0.1, -0.15, 0.1]],
+                                                           [0.9, [0, 0, 0], "elastic"]]},
+        {"part": "cobble", "channel": "position", "keys": [[0, [0, 0, 0]], [0.12, [0, -0.3, 0]], [0.3, [0, 3.0, -3], "out"],
+                                                           [0.45, [0, 5, -6]], [0.46, [0, 7, 0]], [0.7, [0, -0.3, 0], "in"],
+                                                           [0.9, [0, 0, 0], "elastic"]]},
+        {"part": "cobble", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [-0.2, -0.2, -0.2]], [0.45, [-0.7, -0.7, -0.7]],
+                                                        [0.46, [-0.4, -0.4, -0.4]], [0.7, [0.1, -0.15, 0.1]],
+                                                        [0.9, [0, 0, 0], "elastic"]]},
+        {"part": "crank", "axis": "x", "keys": [[0, 0], [0.5, -360, "inout_back"], [0.9, -360]]},
+        {"part": "frame", "channel": "position", "keys": [[0, [0, 0, 0]], [0.15, [0, 0.5, 0], "out"], [0.45, [0, 0.2, 0]],
+                                                           [0.7, [0, -0.15, 0], "in"], [0.9, [0, 0, 0], "elastic"]]},
+        {"part": "frame", "axis": "z", "keys": [[0, 0], [0.15, -8, "out"], [0.45, 6], [0.7, -3], [0.9, 0, "elastic"]]},
+        {"part": "core", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.62, [0, 0, 0]], [0.7, [0.25, 0.25, 0.15], "out"],
+                                                      [0.9, [0, 0, 0], "elastic"]]},
+        {"part": "needle", "axis": "x", "keys": [[0, 0], [0.3, -10], [0.7, 30, "out"], [0.9, 0, "elastic"]]},
+    ]},
+    # one snowball drops from the hopper into the drum
+    "load": {"length": 0.25, "loop": False, "tracks": [
+        {"part": "hopper", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.06, [0.08, -0.14, 0.08], "out"],
+                                                        [0.25, [0, 0, 0], "elastic"]]},
+        {"part": "snowballs", "channel": "position", "keys": [[0, [0, 0.8, 0]], [0.08, [0, -0.25, 0], "in"],
+                                                              [0.25, [0, 0, 0], "back"]]},
+        {"part": "cobble", "channel": "position", "keys": [[0, [0, 0.8, 0]], [0.08, [0, -0.25, 0], "in"],
+                                                           [0.25, [0, 0, 0], "back"]]},
     ]},
     # too hot: the frame rattles, the vent slaps open and shut, the needle hammers in the red
     "overheat": {"length": 0.8, "loop": True, "tracks": [

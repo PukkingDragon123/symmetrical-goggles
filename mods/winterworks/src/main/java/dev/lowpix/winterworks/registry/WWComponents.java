@@ -19,6 +19,11 @@ public final class WWComponents {
             Winterworks.id("mode"), DataComponentType.<Integer>builder().persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT).build());
 
+    /** Snowballs (or cobble balls) sitting in the launcher's hopper, ready to fire: the magazine you can see. */
+    public static final DataComponentType<Integer> LOADED = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+            Winterworks.id("loaded"), DataComponentType.<Integer>builder().persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.VAR_INT).build());
+
     private WWComponents() {}
 
     public static void init() {}

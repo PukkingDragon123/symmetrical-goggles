@@ -52,6 +52,8 @@ S = {
     "item.snowball_launcher.overheat": ([("random/fizz", 0.7)], "Launcher overheats"),
     "item.snowball_launcher.empty": ([("random/click", 1.6)], "Launcher clicks"),
     "item.snowball_launcher.mode": ([("random/click", 0.8), ("tile/piston/in", 1.6)], "Launcher switches ammo"),
+    "item.snowball_launcher.load": ([("block/powder_snow/step1", 1.4), ("block/powder_snow/step2", 1.5), ("random/click", 1.9)],
+                                    "Launcher loads a snowball"),
     "effect.ramming.charged": ([("mob/ravager/roar3", 1.4)], "Ram charged"),
     "effect.ramming.impact": ([("entity/player/attack/knockback3", 0.7), ("mob/zombie/metal1", 0.6)], "Ram impact"),
     "entity.locomotive.whistle": ([("note/flute", 1.25), ("note/flute", 1.5)], "Locomotive whistles"),

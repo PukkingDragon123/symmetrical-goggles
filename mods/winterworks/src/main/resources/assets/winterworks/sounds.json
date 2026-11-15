@@ -260,6 +260,23 @@
     ],
     "subtitle": "subtitles.winterworks.item.snowball_launcher.mode"
   },
+  "item.snowball_launcher.load": {
+    "sounds": [
+      {
+        "name": "minecraft:block/powder_snow/step1",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/step2",
+        "pitch": 1.5
+      },
+      {
+        "name": "minecraft:random/click",
+        "pitch": 1.9
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.snowball_launcher.load"
+  },
   "effect.ramming.charged": {
     "sounds": [
       {

@@ -28,6 +28,10 @@ import net.minecraft.world.phys.Vec3;
  * The Snowball Launcher: hold use to rapid-fire packed snowballs (they stun), or switch mode (sneak + use) to
  * cobblestone balls, which must charge for a second before they fire and hit hard. Firing builds heat; at 100 the
  * launcher overheats and locks until it cools below 25.
+ *
+ * No HUD: the hopper on top is the magazine. It holds 6 snowballs (or 3 cobble balls) that you can see; firing
+ * empties it ball by ball, and when you stop it refills one ball at a time from your inventory. With an empty hopper
+ * it still fires straight from your pockets, but slower. Swapping ammo tips the old load back into your inventory.
  */
 public class SnowballLauncherItem extends Item {
     public static final int MODE_SNOW = 0, MODE_COBBLE = 1;
@@ -39,6 +43,14 @@ public class SnowballLauncherItem extends Item {
 
     public SnowballLauncherItem(Properties props) {
         super(props);
+    }
+
+    public static int capacity(int mode) {
+        return mode == MODE_SNOW ? 6 : 3;
+    }
+
+    public static int loaded(ItemStack s) {
+        return s.getOrDefault(WWComponents.LOADED, 0);
     }
 
     public static int heat(ItemStack s) {
@@ -58,7 +70,16 @@ public class SnowballLauncherItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!level.isClientSide) {
-                int m = mode(stack) == MODE_SNOW ? MODE_COBBLE : MODE_SNOW;
+                int old = mode(stack);
+                int m = old == MODE_SNOW ? MODE_COBBLE : MODE_SNOW;
+                int back = loaded(stack);
+                if (back > 0 && !player.getAbilities().instabuild) {   // the old load goes back in your pockets
+                    ItemStack ret = new ItemStack(old == MODE_SNOW ? Items.SNOWBALL : WWItems.COBBLE_BALL, back);
+                    if (!player.getInventory().add(ret)) {
+                        player.drop(ret, false);
+                    }
+                }
+                stack.set(WWComponents.LOADED, 0);
                 stack.set(WWComponents.MODE, m);
                 level.playSound(null, player.blockPosition(), WWSounds.LAUNCHER_MODE, SoundSource.PLAYERS, 0.9f, m == MODE_SNOW ? 1.3f : 0.8f);
                 player.displayClientMessage(Component.translatable("item.winterworks.snowball_launcher.mode." + m), true);
@@ -69,7 +90,7 @@ public class SnowballLauncherItem extends Item {
             level.playSound(null, player.blockPosition(), WWSounds.LAUNCHER_OVERHEAT, SoundSource.PLAYERS, 0.5f, 1.6f);
             return InteractionResultHolder.fail(stack);
         }
-        if (findAmmo(player, mode(stack)).isEmpty() && !player.getAbilities().instabuild) {
+        if (loaded(stack) == 0 && findAmmo(player, mode(stack)).isEmpty() && !player.getAbilities().instabuild) {
             level.playSound(null, player.blockPosition(), WWSounds.LAUNCHER_EMPTY, SoundSource.PLAYERS, 0.8f, 1.4f);
             return InteractionResultHolder.fail(stack);
         }
@@ -99,18 +120,30 @@ public class SnowballLauncherItem extends Item {
             }
             return;
         }
-        if (used % FIRE_INTERVAL != 0) {
+        int loaded = loaded(stack);
+        // from the hopper: full rate; straight from the pockets: half rate
+        if (used % (loaded > 0 ? FIRE_INTERVAL : FIRE_INTERVAL * 2) != 0) {
             return;
         }
         if (level.isClientSide) {
             FX.put(user, new long[]{level.getGameTime(), 0});
+            if (user instanceof Player p) {
+                Vec3 m = muzzle(p);
+                Vec3 look = p.getLookAngle();
+                for (int i = 0; i < 3; i++) {
+                    level.addParticle(ParticleTypes.SNOWFLAKE, m.x, m.y, m.z, look.x * 0.15 + (level.random.nextDouble() - 0.5) * 0.05,
+                            look.y * 0.15 + 0.02, look.z * 0.15 + (level.random.nextDouble() - 0.5) * 0.05);
+                }
+                level.addParticle(ParticleTypes.POOF, m.x, m.y, m.z, look.x * 0.05, 0.01, look.z * 0.05);
+            }
             return;
         }
         if (!(user instanceof Player player)) {
             return;
         }
-        ItemStack ammo = findAmmo(player, MODE_SNOW);
-        if (ammo.isEmpty() && !player.getAbilities().instabuild) {
+        boolean creative = player.getAbilities().instabuild;
+        ItemStack ammo = loaded > 0 || creative ? ItemStack.EMPTY : findAmmo(player, MODE_SNOW);
+        if (loaded == 0 && ammo.isEmpty() && !creative) {
             level.playSound(null, player.blockPosition(), WWSounds.LAUNCHER_EMPTY, SoundSource.PLAYERS, 0.8f, 1.4f);
             player.stopUsingItem();
             return;
@@ -122,8 +155,12 @@ public class SnowballLauncherItem extends Item {
         level.addFreshEntity(shot);
         level.playSound(null, player.blockPosition(), WWSounds.LAUNCHER_FIRE, SoundSource.PLAYERS, 0.6f,
                 1.1f + level.random.nextFloat() * 0.3f);
-        if (!player.getAbilities().instabuild) {
-            ammo.shrink(1);
+        if (!creative) {
+            if (loaded > 0) {
+                stack.set(WWComponents.LOADED, loaded - 1);
+            } else {
+                ammo.shrink(1);
+            }
             stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
         }
         addHeat(level, player, stack, SNOW_HEAT);
@@ -146,8 +183,10 @@ public class SnowballLauncherItem extends Item {
             FX.put(user, new long[]{level.getGameTime(), 1});
             return;
         }
-        ItemStack ammo = findAmmo(player, MODE_COBBLE);
-        if (ammo.isEmpty() && !player.getAbilities().instabuild) {
+        boolean creative = player.getAbilities().instabuild;
+        int loaded = loaded(stack);
+        ItemStack ammo = loaded > 0 || creative ? ItemStack.EMPTY : findAmmo(player, MODE_COBBLE);
+        if (loaded == 0 && ammo.isEmpty() && !creative) {
             return;
         }
         CobbleBallEntity ball = new CobbleBallEntity(level, player, power);
@@ -159,8 +198,12 @@ public class SnowballLauncherItem extends Item {
         Vec3 back = player.getLookAngle().scale(-0.35 * power);
         player.push(back.x, 0.05, back.z);   // recoil
         player.hurtMarked = true;
-        if (!player.getAbilities().instabuild) {
-            ammo.shrink(1);
+        if (!creative) {
+            if (loaded > 0) {
+                stack.set(WWComponents.LOADED, loaded - 1);
+            } else {
+                ammo.shrink(1);
+            }
             stack.hurtAndBreak(3, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
         }
         addHeat(level, player, stack, COBBLE_HEAT);
@@ -181,7 +224,7 @@ public class SnowballLauncherItem extends Item {
         }
     }
 
-    private static Vec3 muzzle(Player p) {
+    public static Vec3 muzzle(Player p) {
         Vec3 look = p.getLookAngle();
         Vec3 right = look.cross(new Vec3(0, 1, 0)).normalize();
         float side = p.getUsedItemHand() == InteractionHand.MAIN_HAND ? 1f : -1f;
@@ -197,6 +240,22 @@ public class SnowballLauncherItem extends Item {
             return;
         }
         boolean firing = entity instanceof LivingEntity le && le.isUsingItem() && le.getUseItem() == stack;
+        // refill the hopper one ball at a time while not firing (a clunk and a bounce each time)
+        if (!firing && entity instanceof Player player && level.getGameTime() % 6 == 0) {
+            int m = mode(stack), l = loaded(stack);
+            if (l < capacity(m)) {
+                boolean creative = player.getAbilities().instabuild;
+                ItemStack ammo = creative ? ItemStack.EMPTY : findAmmo(player, m);
+                if (creative || !ammo.isEmpty()) {
+                    if (!creative) {
+                        ammo.shrink(1);
+                    }
+                    stack.set(WWComponents.LOADED, l + 1);
+                    level.playSound(null, player.blockPosition(), WWSounds.LAUNCHER_LOAD, SoundSource.PLAYERS, 0.4f,
+                            1.2f + l * 0.12f);
+                }
+            }
+        }
         int h = heat(stack);
         if (h > 0 && !firing) {
             boolean over = overheated(stack);
@@ -245,24 +304,6 @@ public class SnowballLauncherItem extends Item {
     @Override
     public boolean allowComponentsUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack, ItemStack newStack) {
         return false;   // heat changes every tick; don't replay the equip animation
-    }
-
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
-        return heat(stack) > 0 || super.isBarVisible(stack);
-    }
-
-    @Override
-    public int getBarWidth(ItemStack stack) {
-        return heat(stack) > 0 ? Math.round(13f * heat(stack) / MAX_HEAT) : super.getBarWidth(stack);
-    }
-
-    @Override
-    public int getBarColor(ItemStack stack) {
-        if (heat(stack) > 0) {
-            return overheated(stack) ? 0xFF3A20 : 0xFFA040;
-        }
-        return super.getBarColor(stack);
     }
 
     @Override

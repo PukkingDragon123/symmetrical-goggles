@@ -1,6 +1,5 @@
 package dev.lowpix.winterworks.client;
 
-import dev.lowpix.winterworks.client.hud.LauncherHud;
 import dev.lowpix.winterworks.client.particle.GlobeSnowParticle;
 import dev.lowpix.winterworks.client.particle.StunStarParticle;
 import dev.lowpix.winterworks.client.render.IcebreakerRenderer;
@@ -19,7 +18,6 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
@@ -43,7 +41,7 @@ public final class WinterworksClient implements ClientModInitializer {
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.SNOW_GLOBE, new SnowGlobeRenderer.Item());
         ModelLoadingPlugin.register(ctx -> ctx.addModels(LauncherItemRenderer.ICON_MODEL));
 
-        HudRenderCallback.EVENT.register(LauncherHud::render);
+        LauncherEffects.init();
         ParticleFactoryRegistry.getInstance().register(WWParticles.GLOBE_SNOW, GlobeSnowParticle.Provider::new);
         ParticleFactoryRegistry.getInstance().register(WWParticles.STUN_STAR, StunStarParticle.Provider::new);
 

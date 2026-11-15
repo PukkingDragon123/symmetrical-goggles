@@ -2510,34 +2510,34 @@
    "style": "iron_dark"
   },
   {
-   "id": "deco_sb0",
+   "id": "ammo_s0",
    "shape": "box",
    "parent": "snowballs",
    "size": [
-    2,
     1.5,
-    2
+    1.5,
+    1.5
    ],
    "pivot": [
-    -1.0,
-    1.0,
-    -1.0
+    0.6,
+    2.4,
+    -0.2
    ],
    "rotation": [
-    0,
-    12,
-    0
+    -8,
+    -25,
+    6
    ],
    "style": "snow"
   },
   {
    "id": "deco_sb0_r",
    "shape": "box",
-   "parent": "deco_sb0",
+   "parent": "ammo_s0",
    "size": [
-    1.5,
     2,
-    1.5
+    1,
+    1
    ],
    "pivot": [
     0.0,
@@ -2547,17 +2547,192 @@
    "style": "snow"
   },
   {
-   "id": "deco_sb1",
+   "id": "deco_sb0_q",
    "shape": "box",
-   "parent": "snowballs",
+   "parent": "ammo_s0",
    "size": [
-    2,
-    1.5,
+    1,
+    1,
     2
    ],
    "pivot": [
-    1.0,
-    0.95,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "ammo_s1",
+   "shape": "box",
+   "parent": "snowballs",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -0.4,
+    2.3,
+    0.1
+   ],
+   "rotation": [
+    10,
+    40,
+    -8
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb1_r",
+   "shape": "box",
+   "parent": "ammo_s1",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb1_q",
+   "shape": "box",
+   "parent": "ammo_s1",
+   "size": [
+    1,
+    1,
+    2
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "ammo_s2",
+   "shape": "box",
+   "parent": "snowballs",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.9,
+    0.9,
+    0.9
+   ],
+   "rotation": [
+    -6,
+    8,
+    4
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb2_r",
+   "shape": "box",
+   "parent": "ammo_s2",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb2_q",
+   "shape": "box",
+   "parent": "ammo_s2",
+   "size": [
+    1,
+    1,
+    2
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "ammo_s3",
+   "shape": "box",
+   "parent": "snowballs",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -0.9,
+    0.9,
+    0.9
+   ],
+   "rotation": [
+    8,
+    30,
+    -6
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb3_r",
+   "shape": "box",
+   "parent": "ammo_s3",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb3_q",
+   "shape": "box",
+   "parent": "ammo_s3",
+   "size": [
+    1,
+    1,
+    2
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "ammo_s4",
+   "shape": "box",
+   "parent": "snowballs",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.9,
+    0.9,
     -0.9
    ],
    "rotation": [
@@ -2568,13 +2743,13 @@
    "style": "snow"
   },
   {
-   "id": "deco_sb1_r",
+   "id": "deco_sb4_r",
    "shape": "box",
-   "parent": "deco_sb1",
+   "parent": "ammo_s4",
    "size": [
-    1.5,
     2,
-    1.5
+    1,
+    1
    ],
    "pivot": [
     0.0,
@@ -2584,34 +2759,66 @@
    "style": "snow"
   },
   {
-   "id": "deco_sb2",
+   "id": "deco_sb4_q",
    "shape": "box",
-   "parent": "snowballs",
+   "parent": "ammo_s4",
    "size": [
-    2,
-    1.5,
+    1,
+    1,
     2
    ],
    "pivot": [
-    0.05,
-    1.35,
-    1.0
-   ],
-   "rotation": [
-    10,
-    30,
-    -8
+    0.0,
+    0.0,
+    0.0
    ],
    "style": "snow"
   },
   {
-   "id": "deco_sb2_r",
+   "id": "ammo_s5",
    "shape": "box",
-   "parent": "deco_sb2",
+   "parent": "snowballs",
    "size": [
     1.5,
-    2,
+    1.5,
     1.5
+   ],
+   "pivot": [
+    -0.9,
+    0.9,
+    -0.9
+   ],
+   "rotation": [
+    0,
+    12,
+    0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb5_r",
+   "shape": "box",
+   "parent": "ammo_s5",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "snow"
+  },
+  {
+   "id": "deco_sb5_q",
+   "shape": "box",
+   "parent": "ammo_s5",
+   "size": [
+    1,
+    1,
+    2
    ],
    "pivot": [
     0.0,
@@ -2632,18 +2839,92 @@
    "style": "iron_dark"
   },
   {
-   "id": "deco_cob_a",
+   "id": "ammo_c0",
    "shape": "box",
    "parent": "cobble",
    "size": [
-    3,
     2,
-    2.5
+    2,
+    2
+   ],
+   "pivot": [
+    -0.0,
+    2.6,
+    -0.0
+   ],
+   "rotation": [
+    12,
+    45,
+    -10
+   ],
+   "style": "cobble"
+  },
+  {
+   "id": "deco_cob0_r",
+   "shape": "box",
+   "parent": "ammo_c0",
+   "size": [
+    2.5,
+    1.5,
+    1.5
    ],
    "pivot": [
     0.0,
+    0.0,
+    0.0
+   ],
+   "style": "cobble"
+  },
+  {
+   "id": "ammo_c1",
+   "shape": "box",
+   "parent": "cobble",
+   "size": [
+    2,
+    2,
+    2
+   ],
+   "pivot": [
     1.0,
-    -0.2
+    1.0,
+    0.2
+   ],
+   "rotation": [
+    -6,
+    -30,
+    8
+   ],
+   "style": "cobble"
+  },
+  {
+   "id": "deco_cob1_r",
+   "shape": "box",
+   "parent": "ammo_c1",
+   "size": [
+    2.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "cobble"
+  },
+  {
+   "id": "ammo_c2",
+   "shape": "box",
+   "parent": "cobble",
+   "size": [
+    2,
+    2,
+    2
+   ],
+   "pivot": [
+    -0.9,
+    1.0,
+    0.0
    ],
    "rotation": [
     8,
@@ -2653,39 +2934,18 @@
    "style": "cobble"
   },
   {
-   "id": "deco_cob_b",
+   "id": "deco_cob2_r",
    "shape": "box",
-   "parent": "deco_cob_a",
+   "parent": "ammo_c2",
    "size": [
-    2,
-    3,
-    2
+    2.5,
+    1.5,
+    1.5
    ],
    "pivot": [
     0.0,
     0.0,
     0.0
-   ],
-   "style": "cobble"
-  },
-  {
-   "id": "deco_cob_c",
-   "shape": "box",
-   "parent": "deco_cob_a",
-   "size": [
-    2.5,
-    2.5,
-    3
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "rotation": [
-    0,
-    0,
-    12
    ],
    "style": "cobble"
   },
@@ -4028,6 +4288,588 @@
         0
        ],
        "elastic"
+      ]
+     ]
+    }
+   ]
+  },
+  "swap": {
+   "length": 0.9,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "hopper",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.12,
+       6,
+       "out"
+      ],
+      [
+       0.3,
+       -42,
+       "out_back"
+      ],
+      [
+       0.45,
+       -38
+      ],
+      [
+       0.62,
+       4,
+       "in"
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "hopper",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.62,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.68,
+       [
+        0.16,
+        -0.22,
+        0.16
+       ],
+       "out"
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "snowballs",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        3.5,
+        -3
+       ],
+       "out"
+      ],
+      [
+       0.45,
+       [
+        0,
+        6,
+        -6
+       ]
+      ],
+      [
+       0.46,
+       [
+        0,
+        7,
+        0
+       ]
+      ],
+      [
+       0.7,
+       [
+        0,
+        -0.3,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "snowballs",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        -0.2,
+        -0.2,
+        -0.2
+       ]
+      ],
+      [
+       0.45,
+       [
+        -0.7,
+        -0.7,
+        -0.7
+       ]
+      ],
+      [
+       0.46,
+       [
+        -0.4,
+        -0.4,
+        -0.4
+       ]
+      ],
+      [
+       0.7,
+       [
+        0.1,
+        -0.15,
+        0.1
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "cobble",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        3.0,
+        -3
+       ],
+       "out"
+      ],
+      [
+       0.45,
+       [
+        0,
+        5,
+        -6
+       ]
+      ],
+      [
+       0.46,
+       [
+        0,
+        7,
+        0
+       ]
+      ],
+      [
+       0.7,
+       [
+        0,
+        -0.3,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "cobble",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        -0.2,
+        -0.2,
+        -0.2
+       ]
+      ],
+      [
+       0.45,
+       [
+        -0.7,
+        -0.7,
+        -0.7
+       ]
+      ],
+      [
+       0.46,
+       [
+        -0.4,
+        -0.4,
+        -0.4
+       ]
+      ],
+      [
+       0.7,
+       [
+        0.1,
+        -0.15,
+        0.1
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "crank",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.5,
+       -360,
+       "inout_back"
+      ],
+      [
+       0.9,
+       -360
+      ]
+     ]
+    },
+    {
+     "part": "frame",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0,
+        0.5,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.45,
+       [
+        0,
+        0.2,
+        0
+       ]
+      ],
+      [
+       0.7,
+       [
+        0,
+        -0.15,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "frame",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.15,
+       -8,
+       "out"
+      ],
+      [
+       0.45,
+       6
+      ],
+      [
+       0.7,
+       -3
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "core",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.62,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.7,
+       [
+        0.25,
+        0.25,
+        0.15
+       ],
+       "out"
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "needle",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.3,
+       -10
+      ],
+      [
+       0.7,
+       30,
+       "out"
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ]
+    }
+   ]
+  },
+  "load": {
+   "length": 0.25,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "hopper",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.06,
+       [
+        0.08,
+        -0.14,
+        0.08
+       ],
+       "out"
+      ],
+      [
+       0.25,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "snowballs",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0.8,
+        0
+       ]
+      ],
+      [
+       0.08,
+       [
+        0,
+        -0.25,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.25,
+       [
+        0,
+        0,
+        0
+       ],
+       "back"
+      ]
+     ]
+    },
+    {
+     "part": "cobble",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0.8,
+        0
+       ]
+      ],
+      [
+       0.08,
+       [
+        0,
+        -0.25,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.25,
+       [
+        0,
+        0,
+        0
+       ],
+       "back"
       ]
      ]
     }

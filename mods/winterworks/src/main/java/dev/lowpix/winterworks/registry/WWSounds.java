@@ -26,6 +26,7 @@ public final class WWSounds {
     public static final SoundEvent LAUNCHER_OVERHEAT = reg("item.snowball_launcher.overheat");
     public static final SoundEvent LAUNCHER_EMPTY = reg("item.snowball_launcher.empty");
     public static final SoundEvent LAUNCHER_MODE = reg("item.snowball_launcher.mode");
+    public static final SoundEvent LAUNCHER_LOAD = reg("item.snowball_launcher.load");
     public static final SoundEvent RAM_CHARGED = reg("effect.ramming.charged");
     public static final SoundEvent RAM_IMPACT = reg("effect.ramming.impact");
     public static final SoundEvent LOCO_WHISTLE = reg("entity.locomotive.whistle");
