@@ -101,9 +101,9 @@ card("pommel_spike", "pommel_cap", ["..b..", ".bbb.", "bbbbb"], "bone_card", at=
 # ======================================================================= the guard: a burst of ice crystals
 part("guard", "dagger", [4, 2.5, 1.5], "ice_plate", centre=(0, 2, -0.75))
 GUARD = [  # (rel, w, h, rot): crystals jutting up, down and out, a little forward
-    ((1.5, 0.5, 0), 1.5, 3.5, (14, 0, -55)), ((-1.5, 0.5, 0), 1.5, 3.0, (10, 0, 62)),
-    ((0.8, 1.0, 0.2), 1.0, 2.5, (20, 10, -18)), ((-0.6, -1.0, 0), 1.5, 3.0, (-170, 0, -20)),
-    ((1.0, -0.8, 0.2), 1.0, 2.0, (160, 0, 40)), ((-1.2, 1.0, 0.3), 1.0, 2.0, (24, 0, 30)),
+    ((1.5, 0.5, 0), 1.0, 3.5, (14, 0, -62)), ((-1.5, 0.3, 0), 1.0, 3.0, (10, 0, 70)),
+    ((0.8, 1.0, 0.2), 1.0, 2.0, (20, 10, -18)), ((-0.6, -1.0, 0), 1.0, 2.5, (-165, 0, -24)),
+    ((1.2, -0.8, 0.2), 1.0, 1.5, (160, 0, 50)), ((-1.0, 1.0, 0.3), 1.0, 1.5, (24, 0, 34)),
 ]
 for k, (rel, w, h, rot) in enumerate(GUARD):
     part(f"guard_crystal{k}", "guard", [w, h, w], "crystal" if k % 2 == 0 else "crystal_b", rel=rel,
@@ -112,8 +112,8 @@ for k, (rel, w, h, rot) in enumerate(GUARD):
 # ======================================================================= the blade: one huge curved fang
 # Each segment hangs from the bottom-front of the one before, so the frost-blue edge along the underside runs
 # unbroken while the spine tapers; each bends up a little more toward the point.
-SEGS = [("blade", [2, 3.5, 3], -4), ("blade1", [1.5, 3, 2.5], -8), ("blade2", [1.5, 2.5, 2.0], -10),
-        ("blade3", [1, 2, 1.5], -13), ("blade_tip", [1, 1, 1.5], -16)]
+SEGS = [("blade", [2.5, 3.5, 3], -3), ("blade1", [2, 3, 2.5], -10), ("blade2", [1.5, 2.5, 2.0], -13),
+        ("blade3", [1, 2, 1.5], -16), ("blade_tip", [0.5, 1, 1.5], -20)]   # no two neighbours share a side plane
 parent, joint = "dagger", (0, 0.25, 0)
 for k, (bid, size, rx) in enumerate(SEGS):
     at = None if k else (0, 0.25, -0.25)
@@ -134,14 +134,14 @@ ICE_RIM = {"light": 1, "dark": 1, "light_shift": 2.6, "dark_shift": 1.0}
 styles = {
     "fur": {"ramp": "white", "tone": 6.0},
     # ivory fang: lengthwise grain, darker at the root, a frost-blue cutting edge along the underside
-    "fang": {"ramp": "bone", "tone": 9.2, "rim": {"light_shift": 1.6, "dark_shift": -2.0, "outline": "dark"},
+    "fang": {"ramp": "bone", "tone": 9.0, "rim": {"light_shift": 1.4, "dark_shift": -1.6},
              "brush": {"flow": "z"},
              "layers": [{"id": "grain", "op": "stripes", "axis": "y", "period": 0.8, "width": 0.25, "shift": -1.0,
                          "wobble": 0.3, "faces": ["left", "right", "top"]},
                         {"id": "root", "op": "gradient", "axis": "z", "amount": 0.8},
                         {"id": "edge", "op": "band", "axis": "y", "from": -1.01, "to": -0.45, "ramp": "ice", "tone": 8.6,
                          "faces": ["left", "right", "bottom", "front"],
-                         "bevel": {"shadow_ramp": "ice", "shadow_shift": -3, "highlight": 1}},
+                         "bevel": {"shadow_ramp": "ice", "shadow_shift": -1.2, "highlight": 1}},
                         {"id": "edge_glint", "op": "band", "axis": "y", "from": -1.01, "to": -0.8, "ramp": "ice",
                          "tone": 11, "faces": ["left", "right"], "post": True}]},
     "fang_tip": {"ramp": "ice", "tone": 9.6, "brush": {"off": True}, "rim": {"light_shift": 1.4, "dark_shift": -1.0}},

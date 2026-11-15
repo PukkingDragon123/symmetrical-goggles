@@ -176,7 +176,7 @@ part("shag_body", "body", [14, 3, 11], "fur", at=(5, 32.4, -1), rot=(-8, -6, -8)
 part("shag_body_b", "body", [13, 3, 10], "fur", at=(4, 32.0, -11), rot=(-10, 5, -6))
 
 # chest: the bear's shoulder hump
-part("chest", "body", [26, 23, 19], "fur_body", at=(0, 25, 3), centre=(0, 26.5, 11.5), rot=(-5, 0, 0))
+part("chest", "body", [26, 23, 19], "fur_body", at=(0, 25, 3), centre=(0, 26.5, 11.5), rot=(-5, 3, -1.5))
 part("brisket", "chest", [16, 6, 9], "mane_dark", centre=(0, 16.5, 16), rot=(22, 0, 0))
 card("brisket_fringe", "brisket", locks(17, 8, 21), "fringe", rel=(0, -2.6, 4.65), offset=(0, -3.5, 0),
      plane="xy", rot=(-16, 0, 0))
@@ -184,7 +184,7 @@ card("chest_fringe_l", "chest", locks(16, 6, 22), "fringe", at=(13.1, 16, 11), o
 card("chest_fringe_r", "chest", locks(16, 6, 23), "fringe", at=(-13.1, 16, 11), offset=(0, -2.5, 0), rot=(0, 0, -10))
 
 # hips: the haunches, sloping down to the tail
-part("hips", "body", [22, 18, 15], "fur_body", at=(0, 24, -13), centre=(0, 23, -20), rot=(-7, 0, 0))
+part("hips", "body", [22, 18, 15], "fur_body", at=(0, 24, -13), centre=(0, 23, -20), rot=(-7, -4, 1.5))
 part("shag_hips", "hips", [14, 3, 10], "fur", at=(0, 31.5, -20), rot=(-12, 0, 0))
 card("rump_fringe", "hips", locks(18, 6, 31), "fringe", at=(0, 21, -27.8), offset=(0, -2.5, 0), plane="xy",
      rot=(-12, 0, 0))
@@ -295,6 +295,23 @@ front_leg(1)
 front_leg(-1)
 back_leg(1)
 back_leg(-1)
+# shaggy fur breaking the silhouette: locks standing off the shoulders, hanging from the back's edges and the shag
+for s in (1, -1):
+    n = "l" if s > 0 else "r"
+    card(f"shoulder_fringe_{n}", f"front_leg_{n}", locks(11, 7, 130 + s, min_len=0.5), "fringe", rel=(s * 4.65, 0.5, 0),
+         offset=(0, -3, 0), rot=(0, 0, s * 18))
+    card(f"shoulder_spikes_{n}", f"front_leg_{n}", spikes(9, 5, 132 + s), "fur_spikes", rel=(s * 2.5, 2.2, 0),
+         offset=(0, 2.5, 0), rot=(-10, 0, -s * 30))
+card("back_fringe_l", "body", locks(20, 6, 135), "fringe", at=(12.15, 32.0, -4.5), offset=(0, -2.5, 0), rot=(0, 0, 22))
+card("shag_body_fringe", "shag_body", locks(11, 5, 136), "fringe", rel=(7.1, -1, 0), offset=(0, -2, 0), rot=(0, 0, 15))
+card("shag_body_b_fringe", "shag_body_b", locks(10, 5, 137), "fringe", rel=(6.6, -1, 0), offset=(0, -2, 0),
+     rot=(0, 0, 15))
+card("spine_fur2", "chest", spikes(12, 6, 138), "fur_spikes", at=(-1, 38.5, 2.5), offset=(0, 3, 0), rot=(-16, 0, 6))
+for k in range(len(MANE_TUFTS)):
+    if k in (0, 1, 5, 6):
+        card(f"mane{k}_spikes", f"mane{k}", spikes(7, 5, 140 + k), "mane_spikes", rel=(0, 3.5, 0), offset=(0, 2.5, 0),
+             rot=(-15, 0, 0))
+
 # the left foreleg is sheathed in ice: plates on the outside and front, a crystal spur at the elbow
 part("ice_arm_l", "front_leg_l", [2, 11, 9], "ice_plate", rel=(4.9, -4.5, 0), rot=(0, 0, 4))
 part("ice_spur_l", "front_leg_l", [2, 7, 2], "crystal", rel=(4.2, -10, -3), offset=(0, 3.5, 0), rot=(-62, 0, -28))
@@ -305,6 +322,9 @@ part("ice_wrist_l", "front_fore_l", [2, 5, 2], "crystal_b", rel=(4.4, -7.5, 3), 
 # ======================================================================= neck and head
 part("neck", "chest", [16, 15, 12], "fur_body", at=(0, 32, 15), centre=(0, 30, 20), wrot=(14, 0, 0))
 part("throat", "neck", [12, 8, 10], "mane", rel=(0, -7.5, 2), rot=(-8, 0, 0))
+for s in (1, -1):
+    card(f"neck_fringe_{'l' if s > 0 else 'r'}", "neck", locks(11, 7, 150 + s), "mane_fringe", rel=(s * 8.15, -1, 0),
+         offset=(0, -3, 0), rot=(0, 0, s * 12))
 card("throat_fringe", "throat", locks(12, 8, 91), "mane_fringe", rel=(0, -3.5, 5.15), offset=(0, -3.5, 0), plane="xy",
      rot=(-5, 0, 0))
 part("mane_neck", "neck", [20, 8, 14], "mane", rel=(0, 6.5, -1), rot=(-8, 0, 0))
@@ -369,8 +389,12 @@ for s in (1, -1):
     part(f"fang_{n}_tip", f"fang_{n}_mid", [1, 3, 1], "fang_tip", rel=(0, -5, 0), offset=(0, -1.5, 0), rot=(18, 0, 0))
 
 # ======================================================================= tail: fur, then bare vertebrae, then an ice club
-part("tail", "hips", [7, 7, 11], "fur", at=(0, 27, -26.5), offset=(0, 0, -5), wrot=(-16, 0, 0))
+part("tail", "hips", [7, 7, 11], "fur", at=(0, 27, -26.5), offset=(0, 0, -5), wrot=(-16, 10, 0))
 card("tail_fringe", "tail", locks(11, 5, 121), "fringe", rel=(0, -3.6, -5), offset=(0, -2, 0), rot=(0, 0, 0))
+card("tail_fringe_l", "tail", locks(12, 5, 123), "fringe", rel=(3.65, -1.5, -5), offset=(0, -2, 0), rot=(0, 0, 14))
+card("tail_fringe_r", "tail", locks(12, 5, 124), "fringe", rel=(-3.65, -1.5, -5), offset=(0, -2, 0), rot=(0, 0, -14))
+card("tail_tuft", "tail", locks(7, 6, 125, min_len=0.6), "fringe", rel=(0, 0, -10.6), offset=(0, -2.5, 0), plane="xy",
+     rot=(-40, 0, 0))
 card("tail_crest", "tail", spikes(10, 4, 122), "fur_spikes", rel=(0, 3.6, -5), offset=(0, 2, 0))
 part("tail_mid", "tail", [3, 3, 10], "bone", rel=(0, 0, -10), offset=(0, 0, -5), rot=(-20, 0, 0))
 for k, z in enumerate((-2.0, -5.0, -8.0)):

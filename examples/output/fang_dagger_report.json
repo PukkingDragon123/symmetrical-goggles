@@ -1,0 +1,125 @@
+{
+  "name": "Fang Dagger",
+  "parts": 24,
+  "instances": 24,
+  "faces": 113,
+  "triangles": 226,
+  "vertices_flat": 452,
+  "vertices_unique": 164,
+  "atlas": [
+    64,
+    128
+  ],
+  "atlas_fill": 0.475,
+  "texel_density": 2.0,
+  "colors_used": 34,
+  "palette": {
+    "bone": [
+      "#271e15",
+      "#392c1f",
+      "#4d3d2b",
+      "#635039",
+      "#7a6449",
+      "#927a5a",
+      "#aa916d",
+      "#c0a882",
+      "#d3bf98",
+      "#e3d4b2",
+      "#efe5cc",
+      "#f8f2e4"
+    ],
+    "ice": [
+      "#0b2440",
+      "#113154",
+      "#173f69",
+      "#1f507f",
+      "#2a6495",
+      "#377aaa",
+      "#4891bf",
+      "#5ea9d0",
+      "#7cc1de",
+      "#a0d7ea",
+      "#c8ecf5",
+      "#effbfd"
+    ],
+    "white": [
+      "#4a4c55",
+      "#62646d",
+      "#7c7e86",
+      "#96989f",
+      "#afb1b7",
+      "#c6c8cd",
+      "#dadce0",
+      "#eaebee",
+      "#f6f7f8"
+    ],
+    "horn": [
+      "#120b08",
+      "#1d130d",
+      "#2a1c13",
+      "#38261a",
+      "#473222",
+      "#593f2b",
+      "#6c4e36"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -4.529,
+      -0.0,
+      -9.75
+    ],
+    "max": [
+      4.84,
+      6.618,
+      7.956
+    ],
+    "size": [
+      9.369,
+      6.618,
+      17.706
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 1.0
+  },
+  "joints": [
+    "dagger",
+    "grip",
+    "wrap0",
+    "wrap1",
+    "wrap2",
+    "fur_tuft0",
+    "fur_tuft1",
+    "fur_tuft2",
+    "fur_tail",
+    "pommel",
+    "pommel_cap",
+    "pommel_spike",
+    "guard",
+    "guard_crystal0",
+    "guard_crystal1",
+    "guard_crystal2",
+    "guard_crystal3",
+    "guard_crystal4",
+    "guard_crystal5",
+    "blade",
+    "blade1",
+    "blade2",
+    "blade3",
+    "blade_tip"
+  ],
+  "files": {
+    "fang_dagger.glb": "examples/output/fang_dagger.glb",
+    "fang_dagger.obj": "examples/output/fang_dagger.obj",
+    "fang_dagger.mtl": "examples/output/fang_dagger.mtl",
+    "fang_dagger.bbmodel": "examples/output/fang_dagger.bbmodel",
+    "fang_dagger_texture.png": "examples/output/fang_dagger_texture.png",
+    "fang_dagger_texture_x8.png": "examples/output/fang_dagger_texture_x8.png",
+    "fang_dagger_hero.png": "examples/output/fang_dagger_hero.png",
+    "fang_dagger_sheet.png": "examples/output/fang_dagger_sheet.png",
+    "fang_dagger_turntable.gif": "examples/output/fang_dagger_turntable.gif",
+    "fang_dagger_idle.gif": "examples/output/fang_dagger_idle.gif"
+  }
+}
