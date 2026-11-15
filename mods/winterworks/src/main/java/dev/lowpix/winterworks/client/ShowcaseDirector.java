@@ -33,7 +33,13 @@ import net.minecraft.world.phys.AABB;
  * Does nothing in normal play.
  */
 public final class ShowcaseDirector {
-    private static final boolean ENABLED = Boolean.getBoolean("winterworks.showcase");
+    /** "true": the flat-world scenes; "cold": a real generated world, to photograph natural Ice Caves and tombs. */
+    private static final String MODE = System.getProperty("winterworks.showcase", "");
+    private static final boolean ENABLED = !MODE.isEmpty() && !MODE.equals("false");
+
+    static boolean coldWorld() {
+        return MODE.equals("cold");
+    }
     private static boolean created;
     private static int ticks;
     private static int step;
@@ -47,6 +53,10 @@ public final class ShowcaseDirector {
             return;
         }
         ClientTickEvents.END_CLIENT_TICK.register(ShowcaseDirector::tick);
+        if (coldWorld()) {
+            ColdShowcase.plan();
+            return;
+        }
         int t = 40;
         at(t, () -> {
             cmd("gamerule doDaylightCycle false");
@@ -166,23 +176,23 @@ public final class ShowcaseDirector {
         at(t += 5, () -> Minecraft.getInstance().stop());
     }
 
-    private static void at(int tick, Runnable r) {
+    static void at(int tick, Runnable r) {
         AT.add(tick);
         PLAN.add(r);
     }
 
-    private static void cmd(String c) {
+    static void cmd(String c) {
         Minecraft.getInstance().player.connection.sendCommand(c);
     }
 
-    private static void server(java.util.function.Consumer<ServerLevel> job) {
+    static void server(java.util.function.Consumer<ServerLevel> job) {
         var srv = Minecraft.getInstance().getSingleplayerServer();
         if (srv != null) {
             srv.execute(() -> job.accept(srv.overworld()));
         }
     }
 
-    private static void shot(String name) {
+    static void shot(String name) {
         Minecraft mc = Minecraft.getInstance();
         Screenshot.grab(mc.gameDirectory, "winterworks_" + name + ".png", mc.getMainRenderTarget(), msg -> {});
         Winterworks.LOG.info("showcase: shot {}", name);
@@ -197,9 +207,13 @@ public final class ShowcaseDirector {
             GameRules rules = new GameRules();
             LevelSettings settings = new LevelSettings("winterworks_showcase", GameType.CREATIVE, false, Difficulty.PEACEFUL,
                     true, rules, WorldDataConfiguration.DEFAULT);
-            WorldOptions options = new WorldOptions(20261115L, false, false);
+            WorldOptions options = new WorldOptions(20261115L, coldWorld(), false);
+            var preset = coldWorld() ? WorldPresets.NORMAL : WorldPresets.FLAT;
+            if (coldWorld()) {
+                mc.options.renderDistance().set(8);
+            }
             mc.createWorldOpenFlows().createFreshLevel("winterworks_showcase_" + System.currentTimeMillis(), settings, options,
-                    reg -> reg.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions(),
+                    reg -> reg.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(preset).value().createWorldDimensions(),
                     mc.screen);
             return;
         }
