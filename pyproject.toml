@@ -15,11 +15,8 @@ dependencies = ["numpy>=1.22", "Pillow>=9.0"]
 lowpix = "lowpix.cli:main"
 lowpix-mcp = "lowpix.mcp_server:main"
 
-[tool.setuptools.package-data]
-lowpix = ["mc_runtime/*.java", "styles/*.json"]
-
 [tool.setuptools]
 packages = ["lowpix"]
 
 [tool.setuptools.package-data]
-lowpix = ["schema.json"]
+lowpix = ["schema.json", "mc_runtime/*.java", "styles/*.json"]
