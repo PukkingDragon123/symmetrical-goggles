@@ -110,7 +110,7 @@ ramps.update({
     "brass": ["#211808", "#33250b", "#4a3610", "#634916", "#7d5d1d", "#977226", "#ae8833", "#c49f46", "#d6b660"],
     "red": ["#170a0b", "#250f11", "#351417", "#461a1d", "#591f23", "#6c262a", "#7f2f31", "#93393a", "#a64644"],
     "bone": ["#1c1712", "#2c251c", "#3f3527", "#544833", "#6b5d43", "#827355", "#9a8b6b", "#b3a585", "#cbbf9f"],
-    "leather": ["#140b0c", "#211214", "#30191b", "#402123", "#512a2b", "#633434", "#753f3d", "#884c47"],
+    "leather": ["#100c0c", "#1a1314", "#251b1b", "#312423", "#3e2d2b", "#4c3734", "#5b423e", "#6b4f49"],
     "ember": ["#4a1204", "#8a2a06", "#c84c0c", "#f07d1c", "#ffb347", "#ffe29a", "#fff8e0"],
     "lamp": ["#7a2a08", "#b8460c", "#e8701a", "#ffa03c", "#ffd27a", "#fff2cc"],
 })
@@ -172,7 +172,7 @@ styles.update({
     "horn_tip": {"ramp": "bone", "tone": 6.0, "rim": {"light_shift": 1.4, "dark_shift": -1.0},
                  "brush": {"flow": "long", "length": 2}, "layers": [
                      {"id": "tip", "op": "gradient", "axis": "y", "amount": 1.0}]},
-    "belly": {"ramp": "bone", "tone": 3.8, "rim": {"light_shift": 1.2, "dark_shift": -1.2},
+    "belly": {"ramp": "bone", "tone": 3.2, "rim": {"light_shift": 1.2, "dark_shift": -1.2},
               "brush": {"flow": "x", "length": 3, "rough": 0.5},
               "layers": [{"id": "scutes", "op": "stripes", "axis": "y", "period": 1.4, "width": 0.3, "shift": -1.4,
                           "wobble": 0.15, "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 0.8}},
@@ -309,7 +309,7 @@ spec = {
     "minecraft": {"fps": 12, "glow_parts": ["lamp", "firebox", "eye"],
                   "tint_parts": sorted(p["id"] for p in b.P if p["id"].startswith("trim"))},
     "anim_ground_tolerance": 0.5,
-    "render": {"background": "#171a1a", "hero": [-36, 20], "shadow": 0.5},
+    "render": {"background": "#171a1a", "hero": [-55, 18], "shadow": 0.5},
     "palette": {"ramps": ramps},
     "styles": styles,
     "parts": b.P,

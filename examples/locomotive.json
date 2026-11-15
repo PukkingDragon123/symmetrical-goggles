@@ -51,8 +51,8 @@
  "render": {
   "background": "#1a1d22",
   "hero": [
-   -36,
-   20
+   -55,
+   18
   ],
   "shadow": 0.5
  },

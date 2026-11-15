@@ -167,6 +167,7 @@ public final class ShowcaseDirector {
         // start from whatever menu is up (title screen, or the first-launch accessibility screen) once loading is done
         if (!created && mc.level == null && mc.screen != null && mc.getOverlay() == null) {
             mc.options.onboardAccessibility = false;
+            mc.getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
             created = true;
             GameRules rules = new GameRules();
             LevelSettings settings = new LevelSettings("winterworks_showcase", GameType.CREATIVE, false, Difficulty.PEACEFUL,
@@ -184,6 +185,8 @@ public final class ShowcaseDirector {
             mc.options.hideGui = true;
         }
         ticks++;
+        mc.gui.getChat().clearMessages(false);   // keep command feedback and toasts out of the shots
+        mc.getToasts().clear();
         while (step < PLAN.size() && ticks >= AT.get(step)) {
             PLAN.get(step++).run();
         }

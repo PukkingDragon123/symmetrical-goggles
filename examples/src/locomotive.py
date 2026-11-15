@@ -195,7 +195,7 @@ spec = {
     "minecraft": {"fps": 12, "glow_parts": ["lamp", "firebox"],
                   "tint_parts": sorted(p["id"] for p in b.P if p["id"].startswith("trim"))},
     "anim_ground_tolerance": 0.5,
-    "render": {"background": "#1a1d22", "hero": [-36, 20], "shadow": 0.5},
+    "render": {"background": "#1a1d22", "hero": [-55, 18], "shadow": 0.5},
     "palette": {"ramps": ramps},
     "styles": styles,
     "parts": b.P,

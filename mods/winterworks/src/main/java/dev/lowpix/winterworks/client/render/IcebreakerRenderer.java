@@ -32,6 +32,14 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
         super.render(e, yaw, partial, pose, buffers, light);
     }
 
+    /** Babies use the cub model, which is drawn at twice its in-game size; 1.21.1 doesn't halve babies for us. */
+    @Override
+    protected void scale(IcebreakerEntity e, PoseStack pose, float partial) {
+        if (e.isBaby()) {
+            pose.scale(0.5f, 0.5f, 0.5f);
+        }
+    }
+
     public static class Model extends WWModel<IcebreakerEntity> {
         float partial;
 
