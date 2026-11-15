@@ -1,6 +1,6 @@
 # lowpix
 
-**A code-first low-poly modeller with procedurally hand-painted pixel-art textures, built to be driven by AI agents.**
+**A code-first low-poly modeller, rigger and animator with procedurally hand-painted pixel-art textures, built to be driven by AI agents. It can also convert any detailed model into the same style in one command.**
 
 You describe a model as JSON: smooth lofted tubes for organic forms, chamfered boxes and prisms
 for hard surfaces, and alpha-cut cards, in a pivot hierarchy, plus colour ramps and paint layers. lowpix then builds the geometry, packs a
@@ -11,12 +11,40 @@ and exports a validated glTF, OBJ and Blockbench file.
 
 ![Ember Salamander](examples/output/ember_salamander_hero.png)
 
-| organic (lofts + attach) | hard surface (chamfers + panel ops) | props (prisms + cards) |
-|---|---|---|
-| ![Ember Salamander](examples/output/ember_salamander_turntable.gif) | ![Lamplighter Bot](examples/output/lamplighter_bot_turntable.gif) | ![Glowcap Mushroom](examples/output/glowcap_mushroom_turntable.gif) |
-| *Ember Salamander*: 888 tris, 25 colours | *Lamplighter Bot*: 1038 tris, 31 colours | *Glowcap Mushroom*: 106 tris, 23 colours |
+### The rigged and animated collection
 
-All three are original designs (CC0), each a single JSON file in [`examples/`](examples/).
+Every model is a single JSON spec in [`examples/`](examples/), rigged (one joint per part, with
+chain lofts for spines and tails) and animated. Clips are baked into each `.glb`.
+
+| | | |
+|---|---|---|
+| ![walk](examples/output/ember_salamander_walk.gif) | ![roar](examples/output/geode_drake_roar.gif) | ![fly](examples/output/duskmoth_griffin_fly.gif) |
+| **Ember Salamander**: idle, walk | **Geode Drake**: idle, roar, prowl | **Duskmoth Griffin**: idle, fly, headturn |
+| ![wave](examples/output/lamplighter_bot_wave.gif) | ![chomp](examples/output/rex_hood_bunny_chomp.gif) | ![snap](examples/output/tin_hermit_snap.gif) |
+| **Lamplighter Bot**: idle, wave, walk | **Rex-Hood Bunny**: idle, chomp, peek | **Tin Hermit**: idle, snap, hide |
+| ![popup](examples/output/pipe_otter_popup.gif) | ![write](examples/output/ibis_scribe_write.gif) | ![boing](examples/output/glowcap_mushroom_boing.gif) |
+| **Pipe Otter**: popup, idle, wave | **Ibis Scribe**: idle, write, bow | **Glowcap Mushroom**: idle, boing |
+
+The creatures and gacha-style figures were inspired by reference concepts (a crystal dragon, an
+owl hybrid, capsule-toy lines) but are original designs, not copies. All are CC0.
+
+### Convert any detailed model
+
+| ![rat](examples/converted/street_rat_turntable.gif) | ![duck](examples/converted/rubber_duck_turntable.gif) | ![horse](examples/converted/horse_statue_turntable.gif) |
+|---|---|---|
+| Poly Haven *Street Rat*, 900 tris | Poly Haven *Rubber Duck*, 500 tris | Poly Haven *Horse Statue*, 1200 tris |
+
+```bash
+python -m lowpix polyhaven rat
+```
+
+```bash
+python -m lowpix convert polyhaven:street_rat -o out/rat --tris 900 --height 14
+```
+
+This decimates the mesh, bakes the texture at a uniform pixel density, remaps colours to
+hue-shifted ramps, and paints in light, rims and outlines. It works on any `.glb`, `.gltf` or `.obj`.
+See [`docs/CONVERT.md`](docs/CONVERT.md). Source models are CC0 from [Poly Haven](https://polyhaven.com).
 
 ## Why it's built for agents
 
@@ -29,7 +57,12 @@ and critiquing images. lowpix closes that loop:
 * **It sees what it made**: every build renders a contact sheet (hero, front, side, top and back
   views, atlas, palette and stats). `render --part head` gives pixel-level close-ups.
 * **An MCP server** (`.mcp.json` included) whose tools return those images straight into the
-  agent's context: `lowpix_build`, `lowpix_render`, `lowpix_texture`, `lowpix_ramp`, `lowpix_guide`.
+  agent's context: `lowpix_build`, `lowpix_render`, `lowpix_animate` (filmstrips of a clip),
+  `lowpix_convert`, `lowpix_polyhaven_search`, `lowpix_texture`, `lowpix_ramp`, `lowpix_guide`.
+* **Animation it can judge**: filmstrips show timing and arcs as one image, and `lint` samples
+  every clip for feet sinking through the floor.
+* **Cheap realism**: `convert` turns an existing detailed model into the style in one call
+  instead of thousands of tokens of hand-modelling.
 * **Stable randomness**: pattern seeds key on layer ids, so iterating doesn't reshuffle the art.
 * **Genre knowledge built in**: [`docs/STYLE_GUIDE.md`](docs/STYLE_GUIDE.md) breaks the look down
   into rules, each mapped to a feature, and ends with a critique checklist.
@@ -77,12 +110,14 @@ low-poly pixel-art frog; iterate until the critique checklist passes."* The
 | | |
 |---|---|
 | Shapes | `loft` (smooth tubes through control rings: Catmull-Rom subdivision, rounded or chamfered profiles, parallel-transport frames), `box`/`taper` with optional `chamfer`, `prism` (n-gon cylinders with tapered caps), `card` (double-sided alpha cut-outs from ASCII art) |
-| Rigging | pivot hierarchy, Euler rotations, `attach` (stick parts onto a loft's curved surface by path position and angle), `mirror` (whole subtrees, correct on asymmetric bodies, images stay un-flipped), `orient: "world"` for limbs, `snap_ground` for feet, `hide` for buried faces |
+| Animation | clips of keyframes (ease/smooth/back/elastic/step), oscillators (sine/bounce/square/pulse), `wave` chains with lag and growth (overlap and follow-through), squash and stretch via scale, mirror-phased gaits. Baked to glTF clips, GIFs and filmstrips |
+| Converter | `.glb`/`.gltf`/`.obj` or `polyhaven:<id>` → decimated, pixel-painted, palette-quantised lowpix model |
+| Rigging | every part is a joint at its pivot, `chain` lofts split into posable segments, `bone` (empty joint), pivot hierarchy, Euler rotations, `attach` (stick parts onto a loft's curved surface by path position and angle), `mirror` (whole subtrees, correct on asymmetric bodies, images stay un-flipped), `orient: "world"` for limbs, `snap_ground` for feet, `hide` for buried faces |
 | Painting | hue-shifted ramps, tone-space shading, painted key light, local gradient, ground occlusion, lit and dark edge rims, outlines, `band`, `stripes` (can follow a loft's path), `spots` (3D, wrapping, tapering), `patches`, `noise`, `gradient`, `speckle`, `gloss` (wet dashes), hard-surface `panel`, `rivets`, `wear`, `grille`, `rect`, pattern `bevel`s, ASCII `stamps`, Bayer dithering |
 | Output | `.glb` (unlit, nearest, alpha mask, node per part, passes the Khronos validator), `.obj/.mtl`, `.bbmodel` (experimental), PNG atlas, hero, contact sheet, turntable GIF, JSON report |
 | Agent I/O | CLI, Python API, MCP server, JSON Schema (`python -m lowpix schema`) |
 
-Docs: [spec reference](docs/SPEC.md) · [style guide](docs/STYLE_GUIDE.md) · [agent workflow](docs/AGENT_WORKFLOW.md)
+Docs: [spec reference](docs/SPEC.md) (incl. rigging and animation) · [style guide](docs/STYLE_GUIDE.md) (incl. animation principles) · [agent workflow](docs/AGENT_WORKFLOW.md) · [converter](docs/CONVERT.md)
 
 ## About the reference and originality
 

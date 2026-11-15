@@ -1,0 +1,159 @@
+{
+  "name": "Pipe Otter",
+  "parts": 26,
+  "instances": 40,
+  "faces": 372,
+  "triangles": 863,
+  "vertices_flat": 1607,
+  "vertices_unique": 536,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.581,
+  "texel_density": 2.0,
+  "colors_used": 43,
+  "palette": {
+    "fur": [
+      "#140b14",
+      "#271520",
+      "#3d2023",
+      "#58321f",
+      "#784a2b",
+      "#9e6a37",
+      "#c8924c"
+    ],
+    "cream": [
+      "#5e3c3c",
+      "#94705e",
+      "#c9a583",
+      "#ead0a4",
+      "#fff2d2"
+    ],
+    "copper": [
+      "#1f0d12",
+      "#4a1a16",
+      "#7c2f1c",
+      "#b0512a",
+      "#d77a3c",
+      "#f0a35a",
+      "#ffd49a"
+    ],
+    "brass": [
+      "#1f0d12",
+      "#41301a",
+      "#6e5424",
+      "#9c7d34",
+      "#c9a74c",
+      "#ecd88e"
+    ],
+    "patina": [
+      "#12303a",
+      "#1d5551",
+      "#2f8070",
+      "#52ad8f",
+      "#8fd8b2"
+    ],
+    "red": [
+      "#2c0a14",
+      "#5e1220",
+      "#9a1c26",
+      "#d63a33",
+      "#ff7a5c"
+    ],
+    "eye": [
+      "#0a0610",
+      "#1c1018",
+      "#4a2a1c",
+      "#94592c",
+      "#fff6e4"
+    ],
+    "stone": [
+      "#121521",
+      "#1f2433",
+      "#2e3546",
+      "#434b5c",
+      "#5f6874",
+      "#858c8e"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -17.387,
+      -0.0,
+      -17.387
+    ],
+    "max": [
+      17.387,
+      34.497,
+      17.387
+    ],
+    "size": [
+      34.773,
+      34.497,
+      34.773
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "popup": 2.8,
+    "idle": 2.6,
+    "wave": 1.8
+  },
+  "joints": [
+    "base",
+    "riser",
+    "floor_flange",
+    "tee",
+    "socket",
+    "branch",
+    "end_flange",
+    "top_flange",
+    "bonnet",
+    "stem",
+    "wheel",
+    "tail_0",
+    "tail_1",
+    "tail_2",
+    "tail_3",
+    "tail_4",
+    "body_0",
+    "body_1",
+    "body_2",
+    "head",
+    "eye",
+    "eye_mirror",
+    "muzzle",
+    "nose",
+    "ear",
+    "ear_mirror",
+    "whisker",
+    "whisker_mirror",
+    "whisker_low",
+    "whisker_low_mirror",
+    "arm_0",
+    "arm_1",
+    "paw",
+    "arm_0_mirror",
+    "arm_1_mirror",
+    "paw_mirror",
+    "puddle",
+    "pebble1",
+    "pebble2",
+    "pebble3"
+  ],
+  "files": {
+    "pipe_otter.glb": "examples/output/pipe_otter.glb",
+    "pipe_otter.obj": "examples/output/pipe_otter.obj",
+    "pipe_otter.mtl": "examples/output/pipe_otter.mtl",
+    "pipe_otter.bbmodel": "examples/output/pipe_otter.bbmodel",
+    "pipe_otter_texture.png": "examples/output/pipe_otter_texture.png",
+    "pipe_otter_texture_x4.png": "examples/output/pipe_otter_texture_x4.png",
+    "pipe_otter_hero.png": "examples/output/pipe_otter_hero.png",
+    "pipe_otter_sheet.png": "examples/output/pipe_otter_sheet.png",
+    "pipe_otter_turntable.gif": "examples/output/pipe_otter_turntable.gif",
+    "pipe_otter_popup.gif": "examples/output/pipe_otter_popup.gif",
+    "pipe_otter_idle.gif": "examples/output/pipe_otter_idle.gif",
+    "pipe_otter_wave.gif": "examples/output/pipe_otter_wave.gif"
+  }
+}

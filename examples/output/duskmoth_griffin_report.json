@@ -1,0 +1,144 @@
+{
+  "name": "Duskmoth Griffin",
+  "parts": 18,
+  "instances": 32,
+  "faces": 416,
+  "triangles": 920,
+  "vertices_flat": 1752,
+  "vertices_unique": 542,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.484,
+  "texel_density": 2.0,
+  "colors_used": 32,
+  "palette": {
+    "plum": [
+      "#120b1a",
+      "#21142b",
+      "#33203d",
+      "#4a2f50",
+      "#654265",
+      "#85597a",
+      "#a87a8f",
+      "#cfa8a8"
+    ],
+    "ash": [
+      "#2c2433",
+      "#4b4052",
+      "#6f6474",
+      "#958a95",
+      "#bab0b4",
+      "#ddd3cd",
+      "#f4ede2"
+    ],
+    "mauve": [
+      "#2a1630",
+      "#45234a",
+      "#653a62",
+      "#8a5878",
+      "#b07f92",
+      "#d4aab0"
+    ],
+    "moon": [
+      "#3d2008",
+      "#7a4a0e",
+      "#c08418",
+      "#f0c040",
+      "#ffe57a",
+      "#fffbd8"
+    ],
+    "teal": [
+      "#0a1f2a",
+      "#11404a",
+      "#1d6e6e",
+      "#38a395",
+      "#86d8c0"
+    ],
+    "bean": [
+      "#5a2c44",
+      "#8e4c66",
+      "#c47c8e",
+      "#eab0b4"
+    ],
+    "horn": [
+      "#1c1416",
+      "#3a2a28",
+      "#62483c",
+      "#8f7058",
+      "#bea078"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -25.44,
+      0.02,
+      -18.503
+    ],
+    "max": [
+      25.44,
+      39.685,
+      12.199
+    ],
+    "size": [
+      50.88,
+      39.665,
+      30.703
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 3.0,
+    "fly": 1.0,
+    "headturn": 2.4
+  },
+  "joints": [
+    "body",
+    "head",
+    "eye",
+    "eye_mirror",
+    "beak",
+    "antenna",
+    "antenna_mid",
+    "antenna_tip",
+    "antenna_mirror",
+    "antenna_mid_mirror",
+    "antenna_tip_mirror",
+    "front_leg",
+    "front_paw",
+    "front_leg_mirror",
+    "front_paw_mirror",
+    "back_leg",
+    "back_paw",
+    "back_leg_mirror",
+    "back_paw_mirror",
+    "tail_0",
+    "tail_1",
+    "tail_2",
+    "tail_tuft",
+    "wing_root",
+    "forewing",
+    "wing_root_mirror",
+    "forewing_mirror",
+    "hind_root",
+    "hindwing",
+    "hind_root_mirror",
+    "hindwing_mirror",
+    "bib"
+  ],
+  "files": {
+    "duskmoth_griffin.glb": "examples/output/duskmoth_griffin.glb",
+    "duskmoth_griffin.obj": "examples/output/duskmoth_griffin.obj",
+    "duskmoth_griffin.mtl": "examples/output/duskmoth_griffin.mtl",
+    "duskmoth_griffin.bbmodel": "examples/output/duskmoth_griffin.bbmodel",
+    "duskmoth_griffin_texture.png": "examples/output/duskmoth_griffin_texture.png",
+    "duskmoth_griffin_texture_x4.png": "examples/output/duskmoth_griffin_texture_x4.png",
+    "duskmoth_griffin_hero.png": "examples/output/duskmoth_griffin_hero.png",
+    "duskmoth_griffin_sheet.png": "examples/output/duskmoth_griffin_sheet.png",
+    "duskmoth_griffin_turntable.gif": "examples/output/duskmoth_griffin_turntable.gif",
+    "duskmoth_griffin_idle.gif": "examples/output/duskmoth_griffin_idle.gif",
+    "duskmoth_griffin_fly.gif": "examples/output/duskmoth_griffin_fly.gif",
+    "duskmoth_griffin_headturn.gif": "examples/output/duskmoth_griffin_headturn.gif"
+  }
+}

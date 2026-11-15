@@ -47,7 +47,7 @@
       {"part": "crown", "channel": "scale", "osc": {"amp": [0.08, 0.08, 0.12], "cycles": 2, "phase": 0.1}},
       {"part": "baby_stem", "osc": {"axis": "y", "amp": 4.0, "cycles": 1, "phase": 0.4}},
       {"part": "baby_cap", "channel": "scale", "osc": {"amp": [0.06, 0.06, -0.08], "cycles": 3}},
-      {"parts": ["tuft_a", "tuft_b", "tuft_c"], "wave": {"axis": "z", "amp": 6, "cycles": 1, "lag": 0.3}}
+      {"parts": ["tuft_a", "tuft_b", "tuft_c"], "wave": {"axis": "x", "amp": 7, "cycles": 1, "lag": 0.3}}
     ]},
     "boing": {"length": 1.6, "loop": true, "tracks": [
       {"part": "stem", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.25, [0.12, 0.12, -0.22]], [0.45, [-0.08, -0.08, 0.2]], [0.75, [0.05, 0.05, -0.08]], [1.0, [0, 0, 0]]], "ease": "ease"},
@@ -55,7 +55,7 @@
       {"part": "cap", "keys": [[0, [0, 0, 0]], [0.5, [6, 0, 0]], [0.8, [-4, 0, 0]], [1.1, [2, 0, 0]], [1.4, [0, 0, 0]]], "ease": "ease"},
       {"part": "crown", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.45, [0.3, 0.3, 0.4]], [0.9, [0, 0, 0]]], "ease": "out"},
       {"part": "baby_stem", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.5, [0, 0, 0]], [0.7, [0.15, 0.15, -0.25]], [0.9, [-0.1, -0.1, 0.22]], [1.2, [0, 0, 0]]], "ease": "ease"},
-      {"parts": ["tuft_a", "tuft_b", "tuft_c"], "wave": {"axis": "z", "amp": 10, "cycles": 1, "lag": 0.2}}
+      {"parts": ["tuft_a", "tuft_b", "tuft_c"], "wave": {"axis": "x", "amp": 11, "cycles": 1, "lag": 0.2}}
     ]}
   },
 
@@ -74,7 +74,7 @@
     {"id": "baby_cap", "parent": "baby_stem", "shape": "prism", "sides": 7, "size": [5.4, 5.4, 2.2], "pivot": [0, 0, 4.0],
      "front_scale": [0.4, 0.4], "style": "cap", "paint": {"layers": [{"id": "dots", "count": 4, "radius": [0.4, 0.7]}]}},
 
-    {"id": "tuft_a", "shape": "card", "plane": "xy", "snap_ground": 0, "pivot": [-5.5, 2.0, 2.5], "rotation": [0, 30, 0], "style": "grass",
+    {"id": "tuft_a", "shape": "card", "plane": "xy", "pivot": [-5.5, 0.0, 2.5], "offset": [0, 2.25, 0], "rotation": [0, 30, 0], "style": "grass",
      "art": [
        "...t.......t...",
        "...o..t...oo...",
@@ -85,7 +85,7 @@
        ".ooo.ooooo.oo..",
        ".oooooooooooo..",
        "ddoooooooooodd."]},
-    {"id": "tuft_b", "shape": "card", "plane": "xy", "snap_ground": 0, "pivot": [-5.5, 2.0, 2.5], "rotation": [0, -60, 0], "style": "grass",
+    {"id": "tuft_b", "shape": "card", "plane": "xy", "pivot": [-5.5, 0.0, 2.5], "offset": [0, 2.25, 0], "rotation": [0, -60, 0], "style": "grass",
      "art": [
        "....t....t.....",
        ".t..o...oo..t..",
@@ -96,7 +96,7 @@
        "...ooooooooooo.",
        "..ooooooooooo..",
        ".ddoooooooooodd"]},
-    {"id": "tuft_c", "shape": "card", "plane": "xy", "snap_ground": 0, "pivot": [3.0, 1.5, -5.5], "rotation": [0, 75, 0], "style": "grass",
+    {"id": "tuft_c", "shape": "card", "plane": "xy", "pivot": [3.0, 0.0, -5.5], "offset": [0, 1.75, 0], "rotation": [0, 75, 0], "style": "grass",
      "art": [
        "..t.....t..",
        "..o..t..o..",

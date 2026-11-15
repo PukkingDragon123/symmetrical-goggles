@@ -42,16 +42,16 @@
 
   "animations": {
     "idle": {"length": 3.2, "loop": true, "tracks": [
-      {"part": "body_0", "channel": "position", "osc": {"axis": "y", "amp": 0.25, "cycles": 1}},
+      {"part": "body_0", "channel": "position", "osc": {"axis": "y", "amp": 0.1, "bias": 0.1, "cycles": 1}},
       {"parts": ["body_3", "body_4", "body_5", "body_6", "body_7", "body_8"], "wave": {"axis": "y", "amp": 4.0, "cycles": 1, "lag": 0.09, "growth": 1.18}},
       {"part": "head", "keys": [[0, [0, 0, 0]], [0.9, [-4, 14, 0]], [1.5, [-4, 14, 0]], [2.3, [2, -6, 0]], [2.8, [2, -6, 0]]], "ease": "ease"},
       {"part": "jaw", "keys": [[0, 0], [1.9, 0], [2.1, 9], [2.5, 0]], "axis": "x", "ease": "smooth"},
       {"parts": ["crest1", "crest2", "crest3", "crest4", "crest5", "crest6", "crest7", "crest8", "crest9", "crest10", "crest11"], "channel": "scale", "wave": {"amp": [0.0, 0.22, 0.06], "cycles": 4, "lag": 0.17}},
-      {"part": "front_leg", "osc": {"axis": "z", "amp": 1.5, "cycles": 1, "phase": 0.5}}
+      {"part": "front_leg", "osc": {"axis": "z", "amp": 1.5, "bias": 1.5, "cycles": 1, "phase": 0.5}}
     ]},
     "walk": {"length": 1.4, "loop": true, "tracks": [
       {"parts": ["body_0", "body_1", "body_2", "body_3", "body_4", "body_5", "body_6", "body_7", "body_8"], "wave": {"axis": "y", "amp": 4.5, "cycles": 1, "lag": 0.1, "growth": 1.08}},
-      {"part": "body_0", "channel": "position", "osc": {"axis": "y", "amp": 0.35, "cycles": 2, "phase": 0.1}},
+      {"part": "body_0", "channel": "position", "osc": {"axis": "y", "amp": 0.15, "bias": 0.12, "cycles": 2, "phase": 0.1}},
       {"part": "head", "osc": {"axis": "y", "amp": -6, "cycles": 1, "phase": 0.08}},
       {"part": "front_leg", "osc": {"axis": "y", "amp": 24, "cycles": 1}, "mirror_phase": 0.5},
       {"part": "front_leg", "osc": {"axis": "z", "amp": 7, "bias": 7, "cycles": 1, "phase": 0.25}, "mirror_phase": 0.5},
@@ -116,24 +116,21 @@
     {"id": "eye", "parent": "head", "shape": "loft", "pivot": [4.6, 2.4, 6.8], "rotation": [0, 58, 40], "mirror": true,
      "profile": {"sides": 6, "round": 2.0}, "subdiv": 0, "caps": [false, true],
      "rings": [
-       {"at": [0, 0, -0.8], "size": 6.4},
-       {"at": [0, 0, 1.0], "size": 6.2},
-       {"at": [0, 0, 2.3], "size": 4.8}
+       {"at": [0, 0, -0.8], "size": 4.6},
+       {"at": [0, 0, 0.8], "size": 4.4},
+       {"at": [0, 0, 1.8], "size": 3.4}
      ],
      "style": "skin",
      "paint": {"tone": 3.0,
        "layers": [{"id": "lid", "op": "band", "axis": "y", "from": 0.05, "to": 1.0, "ramp": "gold", "tone": 3.6,
                    "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -2.0}}],
        "stamps": [{"face": "end", "at": [0, 0], "art": [
-         "..rrrrrr..",
-         ".rggooooor",
-         "rgwwiiiior",
-         "rowwiippor",
-         "roiipppior",
-         "roiipppiar",
-         "roiiipiiar",
-         ".rooiiaar.",
-         "..rrrrrr.."],
+         "..rrr..",
+         ".rgoor.",
+         "rgwppor",
+         "roipppr",
+         ".raipr.",
+         "..rrr.."],
         "key": {"r": "skin:2", "g": "eye:5", "o": "eye:4", "a": "eye:3", "i": "eye:2", "p": "eye:0", "w": "eye:6"}}]}},
 
     {"id": "gland", "parent": "head", "shape": "loft", "attach": {"t": 0.28, "around": 0.15, "align": "surface", "offset": -0.3},

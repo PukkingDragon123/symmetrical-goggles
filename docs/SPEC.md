@@ -45,8 +45,10 @@ left side as seen from the front (screen-right in a front view). The ground is
 | `orient` | `"world"`: `rotation` is absolute (ignores the parent's rotation). Ideal for legs that must point straight down and feet that lie flat. |
 | `mirror` | `true`: also build a copy (with all children) mirrored across X. Painted images stay un-flipped. Symmetric patterns by default. |
 | `snap_ground` | `true` or a height: after posing, move the part vertically so its lowest point sits at that y (default 0.02). Use it on feet. |
-| `attach` | `{"t": 0..1, "around": 0..1, "offset": 0, "align": "tangent"}`: place the pivot **on the surface of a loft parent**. `t` runs along the loft's path, and `around` goes 0 top → 0.25 the part's +X side → 0.5 bottom → 0.75 −X. `align`: `tangent` follows the path and stays upright (spines, crests), `surface` stands on the surface normal (glands, horns), `none` keeps the parent's axes (limbs). Mirrored copies attach on the reflected side of the *actual* surface, so asymmetric S-curved bodies work. |
+| `attach` | `{"t": 0..1, "around": 0..1, "offset": 0, "align": "tangent"}` (`align` may also be `normal`: like `surface` but tilted by the loft's taper, so parts sit flush on cones): place the pivot **on the surface of a loft parent**. `t` runs along the loft's path, and `around` goes 0 top → 0.25 the part's +X side → 0.5 bottom → 0.75 −X. `align`: `tangent` follows the path and stays upright (spines, crests), `surface` stands on the surface normal (glands, horns), `none` keeps the parent's axes (limbs). Mirrored copies attach on the reflected side of the *actual* surface, so asymmetric S-curved bodies work. |
 | `hide` | face names to drop (internal faces hidden inside other parts). Saves triangles and atlas space. |
+| `double_sided` | render the part's faces from both sides (open cans, shells, thin plates). |
+| `flip_on_mirror` | cards: mirror the `art` on the mirrored copy too (wings, whiskers with a slope). |
 | `chamfer` | box/taper only: cut all four long edges by this many units. That gives eight sides (`top right bottom left` + `bevel_tl bevel_tr bevel_bl bevel_br`) and octagonal `front`/`back` caps. This is the hard-surface staple. |
 | `style` | a style name or list of names (merged in order, then `paint`). |
 | `paint` | per-part paint (see below). |
@@ -67,12 +69,16 @@ left side as seen from the front (screen-right in a front view). The ground is
   (at least 2). `profile`: `{"sides": 8, "round": 2.5, "angle": 0}`, where `round` 2 = regular polygon or ellipse and
   higher = boxier (8 sides at 3 or more reads as a chamfered box). `subdiv`: Catmull-Rom rings inserted between each
   control pair (default 1). `caps`: `[start, end]`. A ring of size 0 pinches to a point (tail tips).
-  Ring frames use parallel transport, so tubes can bend through vertical without twisting. Faces are
+  Ring frames use parallel transport, so tubes can bend through vertical without twisting. For a loft whose
+  path starts (nearly) vertical, `around` is measured from the part's +Z (front) instead of +Y. If the start is
+  only *slightly* tilted, the reference can flip, so set `"up": [0, 0, 1]` explicitly to pin it. Faces are
   `s{segment}_{side}`, tagged `top`/`right`/`bottom`/`left` (by position around the profile), `sides`, `flanks`;
   caps are `start`/`end`. Loft faces are *soft*: no rims or outlines between facets, and the faceted look comes
   from the painted light. Set `"hard": true` for rims on every facet. Each texel also knows its
   `path` coordinate (units along the loft) and `around` (0..1), which `stripes`, `band`, `gradient` and `spots.where`
   can use.
+* **bone**: no geometry, just a joint. Use it to rotate children around an axis that no visible
+  part has, for example a wing root.
 * **card**: a single double-sided quad with an alpha cut-out, for toes, fins,
   spines, hair, leaves and flames. `plane`: `xy` (faces +Z), `xz` (lies flat,
   faces +Y; image-top = -Z), `yz` (faces +X). `art` is a list of strings: `.`
@@ -135,7 +141,9 @@ also accept `bevel`.
 Axes: `x`/`y`/`z` (part coordinates; normalised -1..1 for `band`/`gradient`), a vector, or on lofts
 `path` (units along the loft for `stripes`; 0..1 for `band`/`gradient`/`range`) and `around` (0..1).
 `spots` extras: `where` may also use `path` (0..1) and `around` (wrapping ranges like `[0.6, 0.4]` are fine),
-and `taper: true` shrinks spots where a loft narrows. Any layer can take `min_light`/`max_light` to only paint
+and `taper: true` shrinks spots where a loft narrows. `centers: [[x, y, z, r], ...]` places exact decals
+(part coordinates) instead of random seeds. Any layer or stamp with `"off": true` is skipped, which lets a part
+switch off a layer it inherits from a style (`{"id": "gloss", "off": true}`). Any layer can take `min_light`/`max_light` to only paint
 faces whose light term (dot of normal and light, -1..1) falls in range, for example sheen on the most-lit facets.
 
 `space`: `"local"` (default; part coordinates, symmetric across mirrored copies)
@@ -162,7 +170,8 @@ exclude: `["sides", "-front"]`.
  "art": ["n......n", "nn....nn"], "key": {"n": "skin:0"}, "flip_on_mirror": false}
 ```
 
-`at`: `center`, `top`, `bottom`, `left`, `right`, `top-left` (and the other corners), or
+Use `"faces": ["sides"]` (any face filter) instead of `face` to stamp every matching face. Loft side faces are
+named `s<segment>_<side>` (see `lint`'s report or the atlas). `at`: `center`, `top`, `bottom`, `left`, `right`, `top-left` (and the other corners), or
 `[x, y]` pixel coordinates. `.` and space skip a pixel, `_` punches it
 transparent, and other characters come from `key`. Stamps are applied after lighting,
 so paint the light into them yourself, with the highlight on the side facing the light.
@@ -219,12 +228,12 @@ give more joints.
 |---|---|
 | `part` / `parts` | a part id (drives it **and** its mirrored copy), an instance id (`leg_mirror`, `tail_2`) for just that joint, or a list (`parts`), which is treated as a chain for `wave` |
 | `channel` | `rotation` (degrees, Euler XYZ, in the joint's own frame after its rest rotation; default), `position` (units, parent frame) or `scale` (values are offsets from 1, so `0.1` = 110%) |
-| `keys` | `[[time_s, value], ...]` or `[[t, v, "ease"], ...]`. `value` is `[x, y, z]`, or a number with `"axis"`. Interpolation `ease` per track or per key: `ease` (sine in-out, default), `smooth` (Catmull-Rom through the keys), `linear`, `step`, `in`, `out`, `back` (overshoot), `elastic` |
+| `keys` | `[[time_s, value], ...]` or `[[t, v, "ease"], ...]`. `value` is `[x, y, z]`, or a number with `"axis"`. Interpolation `ease` per track or per key: `ease` (sine in-out, default), `smooth` (Catmull-Rom through the keys), `linear`, `step`, `in`, `out`, `back`/`out_back` (fast start, overshoot), `in_back` (pull back first), `inout_back` (both, gentler start), `elastic`. In a looping clip, time before the first key blends in from the last key |
 | `osc` | `{"axis": "x" or [x, y, z], "amp": n or [ax, ay, az], "cycles": int, "phase": 0..1, "bias": n, "shape": "sine"/"bounce"/"square"/"saw"/"pulse"}` |
 | `wave` | an `osc` applied down a chain, with joint *k* delayed by `k * lag` cycles and its amplitude multiplied by `growth^k`. This gives follow-through and overlapping action for free |
 | `mirror_phase` | time offset (fraction of the clip) for the mirrored copy: `0.5` gives alternating legs or wings |
 | `segment` / `segments: "all"` | for non-wave tracks on a chain id: which segment (default 0) |
-| `raw` | don't mirror the values for the mirrored copy (use it for symmetric motion like a wing *flap* on Z) |
+| `raw` | don't mirror the values for the mirrored copy. Default mirroring already makes paired motion symmetric (both wings flap up together); use `raw` when both sides must turn the *same* world direction, such as a whole-body lean |
 | `only` | drive just the un-mirrored copy of a mirrored part |
 
 Tracks on the same joint add up (scale multiplies). **Looping**: with `loop: true`,

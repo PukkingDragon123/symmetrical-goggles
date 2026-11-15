@@ -68,6 +68,20 @@
     ]
   },
   "warnings": [],
+  "animations": {
+    "idle": 3.0,
+    "boing": 1.6
+  },
+  "joints": [
+    "stem",
+    "cap",
+    "crown",
+    "baby_stem",
+    "baby_cap",
+    "tuft_a",
+    "tuft_b",
+    "tuft_c"
+  ],
   "files": {
     "glowcap_mushroom.glb": "examples/output/glowcap_mushroom.glb",
     "glowcap_mushroom.obj": "examples/output/glowcap_mushroom.obj",
@@ -77,6 +91,8 @@
     "glowcap_mushroom_texture_x8.png": "examples/output/glowcap_mushroom_texture_x8.png",
     "glowcap_mushroom_hero.png": "examples/output/glowcap_mushroom_hero.png",
     "glowcap_mushroom_sheet.png": "examples/output/glowcap_mushroom_sheet.png",
-    "glowcap_mushroom_turntable.gif": "examples/output/glowcap_mushroom_turntable.gif"
+    "glowcap_mushroom_turntable.gif": "examples/output/glowcap_mushroom_turntable.gif",
+    "glowcap_mushroom_idle.gif": "examples/output/glowcap_mushroom_idle.gif",
+    "glowcap_mushroom_boing.gif": "examples/output/glowcap_mushroom_boing.gif"
   }
 }

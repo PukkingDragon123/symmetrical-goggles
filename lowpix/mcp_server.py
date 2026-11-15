@@ -67,6 +67,27 @@ TOOLS = [
             "yaw": {"type": "number"}, "pitch": {"type": "number"}})},
     },
     {
+        "name": "lowpix_convert",
+        "description": ("Turn a detailed model into the lowpix pixel style in one call (the cheap way to get a "
+                        "realistic shape): source is a .glb/.gltf/.obj path or 'polyhaven:<asset_id>' (CC0). "
+                        "Decimates to `tris`, bakes the texture at a uniform pixel density, remaps colours to "
+                        "hue-shifted ramps with painted light, rims and outlines. Returns the report and contact "
+                        "sheet; writes .glb/.obj/.bbmodel/previews to out_dir."),
+        "inputSchema": {"type": "object", "required": ["source"], "properties": {
+            "source": {"type": "string"}, "out_dir": {"type": "string"},
+            "tris": {"type": "integer", "default": 900}, "height": {"type": "number", "default": 24},
+            "density": {"type": "number", "default": 2}, "ramps": {"type": "integer", "default": 6},
+            "steps": {"type": "integer", "default": 6}, "light": {"type": "number", "default": 1.0},
+            "detail": {"type": "number", "default": 1.0}, "crease": {"type": "number", "default": 38},
+            "outline": {"type": "boolean", "default": True}, "yaw": {"type": "number", "default": 0},
+            "name": {"type": "string"}}},
+    },
+    {
+        "name": "lowpix_polyhaven_search",
+        "description": "Search Poly Haven's free CC0 3D models (ids to pass to lowpix_convert as 'polyhaven:<id>').",
+        "inputSchema": {"type": "object", "properties": {"query": {"type": "string"}, "limit": {"type": "integer", "default": 30}}},
+    },
+    {
         "name": "lowpix_texture",
         "description": "Return the painted texture atlas, nearest-upscaled, to inspect pixel work directly.",
         "inputSchema": {"type": "object", "properties": dict(_SPEC_ARGS, **{
@@ -143,6 +164,26 @@ def call_tool(name: str, args: dict):
         m = build_model(_spec(args))
         img = filmstrip(m, args["anim"], frames=int(args.get("frames", 8)), yaw=args.get("yaw"), pitch=args.get("pitch"))
         return [_png(img, max_w=1600)]
+    if name == "lowpix_convert":
+        from .build import export_model
+        from .convert import convert
+        src = args["source"]
+        slug = os.path.splitext(os.path.basename(src.split(":", 1)[-1]))[0]
+        out = args.get("out_dir") or os.path.join("out", slug)
+        m = convert(src, tris=int(args.get("tris", 900)), height=float(args.get("height", 24)),
+                    density=float(args.get("density", 2)), ramps=int(args.get("ramps", 6)),
+                    steps=int(args.get("steps", 6)), light=float(args.get("light", 1.0)),
+                    detail=float(args.get("detail", 1.0)), crease=float(args.get("crease", 38)),
+                    outline=bool(args.get("outline", True)), yaw=float(args.get("yaw", 0)), name=args.get("name"),
+                    work_dir=os.path.join(out, "_source"))
+        rep = export_model(m, out)
+        rep.pop("palette", None)
+        sheet = [p for k, p in rep["files"].items() if k.endswith("_sheet.png")][0]
+        return [_text(rep), _png(Image.open(sheet))]
+    if name == "lowpix_polyhaven_search":
+        from .convert import polyhaven_search
+        hits = polyhaven_search(args.get("query", ""), int(args.get("limit", 30)))
+        return [_text("\n".join(f"polyhaven:{a}  {n}  ({d} downloads)" for a, n, d in hits) or "no matches")]
     if name == "lowpix_texture":
         m = build_model(_spec(args))
         k = int(args.get("scale", 4))
@@ -183,7 +224,9 @@ def handle(msg: dict):
             "serverInfo": {"name": "lowpix", "version": __version__},
             "instructions": ("lowpix builds low-poly models with hand-painted pixel-art textures from JSON specs. "
                              "Call lowpix_guide first, then iterate: edit spec -> lowpix_build -> look at the image -> "
-                             "fix warnings and art problems -> repeat. Use lowpix_render with part=... for close-ups."),
+                             "fix warnings and art problems -> repeat. Use lowpix_render with part=... for close-ups. "
+                             "For a realistic shape, skip hand-modelling: lowpix_polyhaven_search then lowpix_convert "
+                             "turns any detailed .glb/.gltf/.obj (or polyhaven:<id>) into this style in one call."),
         }}
     if method == "ping":
         return {"jsonrpc": "2.0", "id": mid, "result": {}}

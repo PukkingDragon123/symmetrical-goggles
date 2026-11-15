@@ -7,6 +7,9 @@ description: Model, rig and animate low-poly 3D assets with hand-painted pixel-a
 
 1. Read `docs/STYLE_GUIDE.md` (genre rules + critique checklist) and skim `docs/SPEC.md`.
    With the MCP server available, `lowpix_guide` returns both.
+   **Realistic shape wanted (an animal, a prop)?** Convert instead of hand-building. It's far cheaper:
+   `python -m lowpix polyhaven <words>` then `python -m lowpix convert polyhaven:<id> -o out/<name>`
+   (MCP: `lowpix_polyhaven_search` → `lowpix_convert`). See `docs/CONVERT.md`.
 2. Start from the closest example in `examples/` (`salamander.json` for creatures,
    `glowcap.json` for props) and copy it to a new spec file.
 3. Iterate: edit the spec → `lowpix_build` (MCP) or `python -m lowpix build <spec> -o out/<name>`

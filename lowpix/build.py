@@ -12,7 +12,11 @@ from .render import animation_gif, contact_sheet, render, turntable
 
 
 def export_all(src, out_dir: str, gif: bool = False, sheet: bool = True, hero_size=(1200, 900)) -> dict:
-    model = build_model(src)
+    return export_model(build_model(src), out_dir, gif, sheet, hero_size)
+
+
+def export_model(model, out_dir: str, gif: bool = False, sheet: bool = True, hero_size=(1200, 900)) -> dict:
+    """Write every output for an already-built Model (spec-built or converted)."""
     os.makedirs(out_dir, exist_ok=True)
     slug = "".join(c if c.isalnum() else "_" for c in model.name.lower()).strip("_") or "model"
     files = {}

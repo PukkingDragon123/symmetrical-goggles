@@ -1,0 +1,143 @@
+{
+  "name": "Rex-Hood Bunny",
+  "parts": 23,
+  "instances": 38,
+  "faces": 398,
+  "triangles": 874,
+  "vertices_flat": 1670,
+  "vertices_unique": 548,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.519,
+  "texel_density": 2.0,
+  "colors_used": 33,
+  "palette": {
+    "bone": [
+      "#2a1f2e",
+      "#4e3e4f",
+      "#7b6670",
+      "#a8928f",
+      "#cdb9a6",
+      "#e7d8bd",
+      "#f8efd6",
+      "#fffbee"
+    ],
+    "fur": [
+      "#251a3d",
+      "#43306b",
+      "#664e94",
+      "#8a72b8",
+      "#ad98d4",
+      "#cfbde8",
+      "#f1e6f8"
+    ],
+    "pink": [
+      "#4a1236",
+      "#8c2459",
+      "#cc4a7f",
+      "#f07aa2",
+      "#ffa9c2",
+      "#ffd9e4"
+    ],
+    "eye": [
+      "#0e0918",
+      "#20143a",
+      "#3b2862",
+      "#6a54a0"
+    ],
+    "socket": [
+      "#110a16",
+      "#1f1426",
+      "#33223a",
+      "#4e3a52"
+    ],
+    "mint": [
+      "#0e2a30",
+      "#164a4c",
+      "#21706a",
+      "#36a08c",
+      "#62c7a6",
+      "#a2e8c6",
+      "#dcfbea"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -14.04,
+      -0.0,
+      -13.353
+    ],
+    "max": [
+      14.04,
+      42.639,
+      13.353
+    ],
+    "size": [
+      28.08,
+      42.639,
+      26.706
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.6,
+    "chomp": 1.6,
+    "peek": 2.4
+  },
+  "joints": [
+    "plinth",
+    "plinth_top",
+    "body",
+    "paw",
+    "paw_mirror",
+    "foot",
+    "foot_mirror",
+    "tail",
+    "hood",
+    "socket",
+    "socket_mirror",
+    "fenestra",
+    "fenestra_mirror",
+    "horn",
+    "horn_mirror",
+    "crest",
+    "bandaid",
+    "ear_hole_l",
+    "ear_hole_r",
+    "ear_l_0",
+    "ear_l_1",
+    "ear_l_2",
+    "ear_l_3",
+    "ear_r_0",
+    "ear_r_1",
+    "ear_r_2",
+    "ear_r_3",
+    "head",
+    "nose",
+    "jaw",
+    "low_fang",
+    "low_fang_mirror",
+    "low_tooth",
+    "low_tooth_mirror",
+    "fang",
+    "fang_mirror",
+    "incisor",
+    "incisor_mirror"
+  ],
+  "files": {
+    "rex_hood_bunny.glb": "examples/output/rex_hood_bunny.glb",
+    "rex_hood_bunny.obj": "examples/output/rex_hood_bunny.obj",
+    "rex_hood_bunny.mtl": "examples/output/rex_hood_bunny.mtl",
+    "rex_hood_bunny.bbmodel": "examples/output/rex_hood_bunny.bbmodel",
+    "rex_hood_bunny_texture.png": "examples/output/rex_hood_bunny_texture.png",
+    "rex_hood_bunny_texture_x4.png": "examples/output/rex_hood_bunny_texture_x4.png",
+    "rex_hood_bunny_hero.png": "examples/output/rex_hood_bunny_hero.png",
+    "rex_hood_bunny_sheet.png": "examples/output/rex_hood_bunny_sheet.png",
+    "rex_hood_bunny_turntable.gif": "examples/output/rex_hood_bunny_turntable.gif",
+    "rex_hood_bunny_idle.gif": "examples/output/rex_hood_bunny_idle.gif",
+    "rex_hood_bunny_chomp.gif": "examples/output/rex_hood_bunny_chomp.gif",
+    "rex_hood_bunny_peek.gif": "examples/output/rex_hood_bunny_peek.gif"
+  }
+}

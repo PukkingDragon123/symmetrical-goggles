@@ -9,8 +9,13 @@ fix** loop, without a 3D viewport.
   `lowpix_guide`, `lowpix_build` (returns the report and the contact-sheet image),
   `lowpix_render` (any angle, or `part=` close-ups), `lowpix_texture`,
   `lowpix_ramp`.
-* **CLI**: `python -m lowpix build|render|lint|ramp|schema` (see `--help`).
+* **CLI**: `python -m lowpix build|render|lint|animate|ramp|schema` (see `--help`). Close-ups:
+  `render <spec> -o x.png --part head [--only] --size 640`, `render --target -3,7,8 --radius 6`, a posed frame with
+  `render --anim roar --time 0.9`, and `animate <spec> --anim walk -o strip.png --part head --size 400`.
 * **Python**: `from lowpix import build_model, render, export_all`.
+
+**Realistic shapes:** if the brief is "a realistic X" and a detailed model exists, convert it
+(`docs/CONVERT.md`) instead of authoring a spec. It's one call and a few seconds.
 
 ## Loop
 
@@ -47,6 +52,7 @@ fix** loop, without a 3D viewport.
 | `triangle count exceeds budget` | `hide` buried faces; use fewer prism sides; replace thin geometry with cards |
 | `colours used ... budget` | shorten ramps; set `dither: 0`; reuse ramps across parts |
 | `unknown ramp` / `stamp chars missing from key` | the message names the part and layer |
+| `clip 'walk' sinks below the ground: boot(-0.41 @ 0.15s)` | lint samples every clip. Make bobs lift-only (`bias` = `amp`), rotate cards about their base edge, or counter-rotate feet by the sum of the leg angles to keep them level |
 
 ## Tips
 

@@ -1016,7 +1016,7 @@
       "mirror": true,
       "shape": "prism",
       "sides": 8,
-      "size": [4.9, 4.9, 1],
+      "size": [2.6, 2.6, 1],
       "front_scale": [0.94, 0.94],
       "pivot": [2.65, 4.4, 4.4],
       "rotation": [-5, 8, 0],
@@ -1027,17 +1027,7 @@
           {
             "face": "front",
             "at": [0, 0],
-            "art": [
-              "..kkkkk..",
-              ".kiiiiik.",
-              "kiwwpppik",
-              "kiwwppppk",
-              "kipppppik",
-              "kippppwak",
-              "kaapppaak",
-              ".kaaaaak.",
-              "..kkkkk.."
-            ],
+            "art": [".kkk.", "kwppk", "kpppk", "kappk", ".kkk."],
             "key": {"k": "eye:0", "p": "eye:1", "i": "eye:2", "a": "eye:3", "w": "eye:4"}
           }
         ]

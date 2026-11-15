@@ -140,6 +140,9 @@ class Face:
             order = [1, 0, 3, 2]
             f.pts = f.pts[order]
             f.attrs = {k: v[order] for k, v in f.attrs.items()}
+            # re-pick the non-degenerate triangles: a pinched (wedge) face keeps a different half
+            f.tris = [t for t in QUAD_TRIS
+                      if np.linalg.norm(np.cross(f.pts[t[1]] - f.pts[t[0]], f.pts[t[2]] - f.pts[t[0]])) > 1e-9]
         else:
             n = len(f.pts)
             order = list(range(n))[::-1]
@@ -350,7 +353,7 @@ def loft_frames(part: dict) -> dict:
             "angle": float(prof.get("angle", 0.0))}
 
 
-def loft_point(info: dict, t: float, around: float, offset: float = 0.0):
+def loft_point(info: dict, t: float, around: float, offset: float = 0.0, taper_normal: bool = False):
     """Surface point, outward normal, tangent and ring 'up' at path fraction t
     (0 = first ring, 1 = last) and angle `around` (0 top, .25 +X, .5 bottom, .75 -X)."""
     L = info["L"]
@@ -373,6 +376,13 @@ def loft_point(info: dict, t: float, around: float, offset: float = 0.0):
     nrm = normalize(X * (x / max(w, 1e-6) ** 2 if w > 1e-6 else 0) + Y * (y / max(h, 1e-6) ** 2 if h > 1e-6 else 0))
     if np.linalg.norm(nrm) < 1e-6:
         nrm = Y
+    if taper_normal and len(L) > 1:
+        # tilt the normal by how fast the tube widens here, so it is the true surface normal
+        seg_len = max(L[j] - L[i], 1e-9)
+        dw, dh = (info["S"][j] - info["S"][i]) / 2 / seg_len
+        wsum = x * x + y * y
+        g = (x * x * dw + y * y * dh) / wsum if wsum > 1e-12 else 0.0
+        nrm = normalize(nrm - Tn * g)
     P = C + X * (sh[0] + x * w) + Y * (sh[1] + y * h) + nrm * offset
     return P, nrm, Tn, Y
 
@@ -556,6 +566,9 @@ def build_shape(part: dict) -> list[Face]:
     elif shape == "loft":
         faces = _build_loft(part)
 
+    elif shape == "bone":
+        faces = []  # an invisible joint: a pivot to rotate children around
+
     elif shape == "card":
         size = part.get("size")
         art = part.get("art")
@@ -616,11 +629,12 @@ class Instance:
 def _attach_frame(parent_part: dict, att: dict, around: float):
     """Pivot position + rotation frame on a loft parent's surface (parent frame)."""
     info = loft_frames(parent_part)
-    P, nrm, Tn, Yr = loft_point(info, float(att.get("t", 0.5)), around, float(att.get("offset", 0.0)))
     align = att.get("align", "tangent")
+    P, nrm, Tn, Yr = loft_point(info, float(att.get("t", 0.5)), around, float(att.get("offset", 0.0)),
+                                taper_normal=(align == "normal"))
     if align == "none":
         return P, np.eye(3)
-    if align == "surface":
+    if align in ("surface", "normal"):
         y = nrm
         z = normalize(Tn - y * np.dot(Tn, y))
     else:  # tangent: follow the path, stay upright (parent's +Y)
@@ -684,6 +698,9 @@ def expand_instances(parts: list[dict], density: float) -> list[Instance]:
         inst = Instance(pid, part["id"], part, mirrored, parent_inst.id if parent_inst else None, local)
         inst.world = (parent_inst.world if parent_inst else np.eye(4)) @ local
         src = build_shape(dict(part, _density=density))
+        if part.get("double_sided"):
+            for f in src:
+                f.double_sided = True
         inst.src_faces = src
         inst.faces = [f.mirrored() for f in src] if mirrored else [f.copy() for f in src]
         snap = part.get("snap_ground")

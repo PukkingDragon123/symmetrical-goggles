@@ -11,13 +11,14 @@ import json
 import os
 
 TOP_KEYS = {"name", "description", "author", "license", "density", "budget", "light", "palette",
-            "styles", "defaults", "parts", "render", "notes", "grounded", "animations", "anim_fps", "$schema"}
+            "styles", "defaults", "parts", "render", "notes", "grounded", "animations", "anim_fps", "anim_ground_tolerance", "$schema"}
 PART_KEYS = {"id", "parent", "shape", "size", "pivot", "offset", "rotation", "mirror", "style",
              "paint", "hide", "front_scale", "back_scale", "front_shift", "back_shift", "sides",
              "angle", "plane", "art", "orient", "snap_ground", "notes", "chamfer", "profile", "rings",
-             "subdiv", "smooth", "caps", "up", "attach", "hard", "chain"}
+             "subdiv", "smooth", "caps", "up", "attach", "hard", "chain",
+             "double_sided", "flip_on_mirror"}
 PAINT_KEYS = {"ramp", "tone", "light", "dither", "rim", "layers", "stamps", "art_key"}
-SHAPES = {"box", "taper", "prism", "card", "loft"}
+SHAPES = {"box", "taper", "prism", "card", "loft", "bone"}
 OPS = {"fill", "band", "stripes", "spots", "patches", "speckle", "gradient", "noise", "gloss",
        "rect", "panel", "rivets", "wear", "grille"}
 FACE_TAGS = {"all", "*", "sides", "flanks", "ends", "caps", "up", "down", "level", "lit", "shaded",
@@ -203,8 +204,10 @@ def validate(spec: dict):
                     warnings.append(f"{where}: layer {li} face filter {tag!r} matches nothing on a {shape}")
         for si, st in enumerate(paint.get("stamps", [])):
             fname = st.get("face", "front")
-            if fname not in faces:
-                errors.append(f"{where}: stamp {si} face {fname!r} not on a {shape} (has {sorted(faces)})")
+            loft_face = shape == "loft" and re.fullmatch(r"s\d+_\d+|joint\d+_(start|end)", str(fname))
+            if "faces" not in st and fname not in faces and not loft_face:
+                hint = " (loft side faces are named s<segment>_<side>; or use \"faces\": [filters])" if shape == "loft" else ""
+                errors.append(f"{where}: stamp {si} face {fname!r} not on a {shape} (has {sorted(faces)}){hint}")
             if not st.get("art"):
                 errors.append(f"{where}: stamp {si} has no art")
             for ch, ref in st.get("key", {}).items():

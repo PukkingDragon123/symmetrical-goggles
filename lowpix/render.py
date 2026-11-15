@@ -165,11 +165,11 @@ def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
     return img
 
 
-def part_sphere(model, part_id: str):
-    """Centre and radius of a part instance (and its children) - for close-ups."""
+def part_sphere(model, part_id: str, only: bool = False):
+    """Centre and radius of a part instance (and its children unless `only`) - for close-ups."""
     from .mathutil import transform_points
     ids = {part_id}
-    changed = True
+    changed = not only
     while changed:
         changed = False
         for inst in model.instances:
@@ -255,7 +255,7 @@ def contact_sheet(model, report: dict | None = None, width=1600) -> Image.Image:
     return sheet
 
 
-def turntable(model, path, frames=36, size=(480, 360), pitch=20.0, duration=70):
+def turntable(model, path, frames=30, size=(400, 300), pitch=20.0, duration=80):
     yaws = [35 + i * 360.0 / frames for i in range(frames)]
     f = min(fit_focal(model, y, pitch, size[0], size[1]) for y in yaws[::3])
     imgs = [render(model, size[0], size[1], yaw=y, pitch=pitch, ssaa=2, focal=f) for y in yaws]
@@ -292,15 +292,16 @@ def animation_frames(model, clip, fps=15, size=(480, 360), yaw=None, pitch=None,
     return frames
 
 
-def animation_gif(model, clip, path, fps=15, size=(480, 360), yaw=None, pitch=None):
+def animation_gif(model, clip, path, fps=12, size=(400, 300), yaw=None, pitch=None):
     frames = animation_frames(model, clip, fps, size, yaw, pitch)
     pal = [im.convert("P", palette=Image.ADAPTIVE, colors=255) for im in frames]
     pal[0].save(path, save_all=True, append_images=pal[1:], duration=int(1000 / fps), loop=0, disposal=2)
     return path
 
 
-def filmstrip(model, clip, frames=8, cell=(320, 260), yaw=None, pitch=None, cols=4):
-    """One PNG grid of evenly spaced poses from a clip (agents can't watch GIFs)."""
+def filmstrip(model, clip, frames=8, cell=(320, 260), yaw=None, pitch=None, cols=4, target=None, radius=None):
+    """One PNG grid of evenly spaced poses from a clip (agents can't watch GIFs).
+    `target` + `radius` give a fixed close-up instead of framing the whole motion."""
     anim = model.animator()
     length, _, _ = anim.clip(clip)
     rs = model.spec.get("render", {})
@@ -314,7 +315,11 @@ def filmstrip(model, clip, frames=8, cell=(320, 260), yaw=None, pitch=None, cols
     d.text((10, 8), f"{model.name} - {clip} ({length:.2f}s)", fill=(230, 226, 240), font=_font(18))
     for k in range(frames):
         t = length * k / frames
-        im = render(model, cell[0], cell[1], yaw, pitch, ssaa=2, worlds=anim.world_matrices(clip, t), fit_pts=fit)
+        if target is not None:
+            im = render(model, cell[0], cell[1], yaw, pitch, ssaa=2, worlds=anim.world_matrices(clip, t),
+                        target=target, radius=radius)
+        else:
+            im = render(model, cell[0], cell[1], yaw, pitch, ssaa=2, worlds=anim.world_matrices(clip, t), fit_pts=fit)
         x, y = (k % cols) * cell[0], 34 + (k // cols) * cell[1]
         sheet.paste(im, (x, y))
         d.text((x + 6, y + 4), f"t={t:.2f}", fill=(200, 196, 215), font=_font(13))

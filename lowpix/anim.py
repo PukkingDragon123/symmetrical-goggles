@@ -48,9 +48,17 @@ def _ease(u, mode):
         return 1 - math.cos(u * math.pi / 2)
     if mode in ("out", "ease_out"):
         return math.sin(u * math.pi / 2)
-    if mode == "back":  # overshoot then settle (anticipation/follow-through)
+    if mode in ("back", "out_back"):  # fast start, overshoot, settle (follow-through)
         c = 1.70158
         return 1 + (c + 1) * (u - 1) ** 3 + c * (u - 1) ** 2
+    if mode == "in_back":  # pull back first, then go (anticipation)
+        c = 1.70158
+        return (c + 1) * u ** 3 - c * u ** 2
+    if mode == "inout_back":  # gentle start, anticipation and overshoot
+        c = 1.70158 * 1.525
+        if u < 0.5:
+            return ((2 * u) ** 2 * ((c + 1) * 2 * u - c)) / 2
+        return ((2 * u - 2) ** 2 * ((c + 1) * (u * 2 - 2) + c) + 2) / 2
     if mode == "elastic":
         if u in (0.0, 1.0):
             return u
@@ -62,8 +70,14 @@ def eval_keys(keys, t, length, loop, ease="ease", axis=None):
     """Keyframes [[time, value], ...] (optionally [time, value, ease]) -> vec3."""
     ks = [(float(k[0]), _vec3(k[1], axis), k[2] if len(k) > 2 else None) for k in keys]
     ks.sort(key=lambda k: k[0])
-    if loop and ks[-1][0] < length - 1e-9:
-        ks.append((length, ks[0][1], ks[0][2]))
+    if loop:
+        first, last = ks[0], ks[-1]
+        if last[0] < length - 1e-9:
+            # wrap: after the last key, blend toward the first key one loop later
+            ks.append((first[0] + length, first[1], first[2]))
+        if first[0] > 1e-9:
+            # time before the first key blends in from the last key one loop earlier
+            ks.insert(0, (last[0] - length, last[1], last[2]))
     if t <= ks[0][0]:
         return ks[0][1]
     if t >= ks[-1][0]:

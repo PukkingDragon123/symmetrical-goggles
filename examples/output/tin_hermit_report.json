@@ -1,0 +1,168 @@
+{
+  "name": "Tin Hermit",
+  "parts": 46,
+  "instances": 59,
+  "faces": 395,
+  "triangles": 880,
+  "vertices_flat": 1710,
+  "vertices_unique": 622,
+  "atlas": [
+    256,
+    512
+  ],
+  "atlas_fill": 0.46,
+  "texel_density": 2.0,
+  "colors_used": 40,
+  "palette": {
+    "crab": [
+      "#2b0f22",
+      "#5a1630",
+      "#922436",
+      "#c83c3a",
+      "#ea6446",
+      "#fb9a5f",
+      "#ffd08a"
+    ],
+    "sand": [
+      "#3d2a2c",
+      "#6f4c3f",
+      "#a37a58",
+      "#cfa874",
+      "#ecd29c",
+      "#fff2cf"
+    ],
+    "tin": [
+      "#151424",
+      "#2b2c40",
+      "#4a4e64",
+      "#6f7689",
+      "#9aa2b0",
+      "#c6ccd1",
+      "#e8ebe6",
+      "#fffef4"
+    ],
+    "gun": [
+      "#0d0c17",
+      "#1a1a2a",
+      "#2a2d42",
+      "#3d435c",
+      "#566079",
+      "#76839b"
+    ],
+    "label": [
+      "#0a1328",
+      "#11284a",
+      "#18416c",
+      "#1f628c",
+      "#2f8aa6",
+      "#5bb8b9",
+      "#a7e3cf"
+    ],
+    "brass": [
+      "#3a1d14",
+      "#6b3a16",
+      "#a5631d",
+      "#d4962e",
+      "#f0c55a",
+      "#fff0a6"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -24.148,
+      -0.0,
+      -23.182
+    ],
+    "max": [
+      24.148,
+      35.422,
+      23.182
+    ],
+    "size": [
+      48.296,
+      35.422,
+      46.364
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.8,
+    "snap": 1.6,
+    "hide": 2.6
+  },
+  "joints": [
+    "base_rim",
+    "sand",
+    "pebble_a",
+    "pebble_b",
+    "pebble_c",
+    "glass",
+    "starfish",
+    "tin",
+    "tin_back_rim",
+    "tin_front_rim",
+    "tin_inner",
+    "liner_top",
+    "liner_bottom",
+    "liner_l",
+    "liner_r",
+    "liner_tl",
+    "liner_tr",
+    "liner_bl",
+    "liner_br",
+    "lid",
+    "lid_curl",
+    "ring_pull",
+    "body",
+    "eye_stalk_0",
+    "eye_stalk_1",
+    "eye",
+    "eye_stalk_0_mirror",
+    "eye_stalk_1_mirror",
+    "eye_mirror",
+    "feeler_0",
+    "feeler_1",
+    "feeler_0_mirror",
+    "feeler_1_mirror",
+    "leg1",
+    "leg1_tip",
+    "leg1_mirror",
+    "leg1_tip_mirror",
+    "leg2",
+    "leg2_tip",
+    "leg2_mirror",
+    "leg2_tip_mirror",
+    "leg3",
+    "leg3_tip",
+    "leg3_mirror",
+    "leg3_tip_mirror",
+    "claw_arm",
+    "claw_palm",
+    "claw_finger",
+    "claw_dactyl",
+    "mech_arm",
+    "mech_elbow",
+    "mech_fore",
+    "mech_palm",
+    "mech_jaw_lo",
+    "mech_hook_lo",
+    "mech_jaw_up",
+    "mech_hook_up",
+    "mech_pin",
+    "mech_gear"
+  ],
+  "files": {
+    "tin_hermit.glb": "examples/output/tin_hermit.glb",
+    "tin_hermit.obj": "examples/output/tin_hermit.obj",
+    "tin_hermit.mtl": "examples/output/tin_hermit.mtl",
+    "tin_hermit.bbmodel": "examples/output/tin_hermit.bbmodel",
+    "tin_hermit_texture.png": "examples/output/tin_hermit_texture.png",
+    "tin_hermit_texture_x2.png": "examples/output/tin_hermit_texture_x2.png",
+    "tin_hermit_hero.png": "examples/output/tin_hermit_hero.png",
+    "tin_hermit_sheet.png": "examples/output/tin_hermit_sheet.png",
+    "tin_hermit_turntable.gif": "examples/output/tin_hermit_turntable.gif",
+    "tin_hermit_idle.gif": "examples/output/tin_hermit_idle.gif",
+    "tin_hermit_snap.gif": "examples/output/tin_hermit_snap.gif",
+    "tin_hermit_hide.gif": "examples/output/tin_hermit_hide.gif"
+  }
+}

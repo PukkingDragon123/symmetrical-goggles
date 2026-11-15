@@ -305,6 +305,8 @@ class Painter:
             cols = max(len(r) for r in art)
             ay = np.clip((ctx.py * rows) // H, 0, rows - 1)
             ax = np.clip((ctx.px * cols) // W, 0, cols - 1)
+            if inst.mirrored and inst.part.get("flip_on_mirror"):
+                ax = cols - 1 - ax  # mirror the card's art too (wings, whiskers)
             for y in range(H):
                 for x in range(W):
                     row = art[ay[y, x]]
@@ -316,7 +318,12 @@ class Painter:
 
         # stamps: hand-placed pixel art on a named face
         for st in paint.get("stamps", []):
-            if st.get("face", "front") != face.name:
+            if st.get("off"):
+                continue
+            if "faces" in st:  # stamp every face matching a filter, e.g. ["sides"]
+                if not face_matches(st["faces"], face, ctx.n_world, ctx.n_local, self.light):
+                    continue
+            elif st.get("face", "front") != face.name:
                 continue
             self.apply_stamp(ctx, st, rgb, alpha, inst)
 
@@ -325,6 +332,8 @@ class Painter:
     # ----------------------------------------------------------------- layers
     def apply_layer(self, ctx: FaceCtx, layer: dict, li: int, rid, tone, paint):
         op = layer.get("op", "fill")
+        if layer.get("off"):
+            return  # a part can switch off a layer it inherits: {"id": ..., "off": true}
         if not face_matches(layer.get("faces"), ctx.face, ctx.n_world, ctx.n_local, self.light):
             return
         if op != "gloss" and ("min_light" in layer or "max_light" in layer):
@@ -571,6 +580,8 @@ class Painter:
         return (d < r_eff).any(axis=-1)
 
     def _make_spots(self, inst, layer, seed):
+        if layer.get("centers"):  # explicit decals: [[x, y, z, r], ...] in part coordinates
+            return [(np.array(c[:3], float), float(c[3]) if len(c) > 3 else 1.0) for c in layer["centers"]]
         rng = np.random.default_rng(seed)
         count = int(layer.get("count", 6))
         rad = layer.get("radius", [0.8, 1.6])

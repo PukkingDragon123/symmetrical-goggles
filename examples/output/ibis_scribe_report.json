@@ -1,0 +1,153 @@
+{
+  "name": "Ibis Scribe",
+  "parts": 24,
+  "instances": 34,
+  "faces": 467,
+  "triangles": 978,
+  "vertices_flat": 1916,
+  "vertices_unique": 580,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.778,
+  "texel_density": 2.0,
+  "colors_used": 40,
+  "palette": {
+    "ivory": [
+      "#1b1626",
+      "#3a3046",
+      "#6b5d70",
+      "#a6979a",
+      "#d6c9bc",
+      "#f0e6d4",
+      "#fffaf0"
+    ],
+    "linen": [
+      "#1e2033",
+      "#3b4258",
+      "#6f7a8f",
+      "#a9b2bd",
+      "#dfe2df",
+      "#fbfaf2"
+    ],
+    "ink": [
+      "#0a0911",
+      "#15141f",
+      "#232333",
+      "#36384a",
+      "#4f5468",
+      "#727a8e"
+    ],
+    "lapis": [
+      "#0b0d2e",
+      "#141c57",
+      "#1f2f8c",
+      "#2f4cbf",
+      "#4f74e0",
+      "#86a8f2"
+    ],
+    "gold": [
+      "#3a1a08",
+      "#7a3d0c",
+      "#b86c14",
+      "#e3a024",
+      "#f6cd4a",
+      "#fff19a"
+    ],
+    "turq": [
+      "#06302f",
+      "#0d5a55",
+      "#17877c",
+      "#2fb5a2",
+      "#7fe0cc"
+    ],
+    "sand": [
+      "#2a1a1a",
+      "#553028",
+      "#8a523a",
+      "#bf7f52",
+      "#dcab72",
+      "#f0d39a"
+    ],
+    "red": [
+      "#3d0d10",
+      "#7d1d1b",
+      "#b9382a",
+      "#e2643f"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -15.0,
+      0.0,
+      -12.629
+    ],
+    "max": [
+      15.0,
+      39.224,
+      21.472
+    ],
+    "size": [
+      30.0,
+      39.224,
+      34.101
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 3.0,
+    "write": 2.0,
+    "bow": 2.4
+  },
+  "joints": [
+    "plinth",
+    "hips",
+    "lap",
+    "foot",
+    "foot_mirror",
+    "torso",
+    "tail",
+    "wing",
+    "wing_mirror",
+    "collar",
+    "head",
+    "beak_0",
+    "beak_1",
+    "beak_2",
+    "eye",
+    "eye_mirror",
+    "nemes",
+    "brow",
+    "queue",
+    "lappet_0",
+    "lappet_1",
+    "lappet_2",
+    "lappet_0_mirror",
+    "lappet_1_mirror",
+    "lappet_2_mirror",
+    "r_upper",
+    "r_fore",
+    "r_hand",
+    "pen",
+    "l_upper",
+    "l_fore",
+    "l_hand",
+    "sheet",
+    "roll"
+  ],
+  "files": {
+    "ibis_scribe.glb": "examples/output/ibis_scribe.glb",
+    "ibis_scribe.obj": "examples/output/ibis_scribe.obj",
+    "ibis_scribe.mtl": "examples/output/ibis_scribe.mtl",
+    "ibis_scribe.bbmodel": "examples/output/ibis_scribe.bbmodel",
+    "ibis_scribe_texture.png": "examples/output/ibis_scribe_texture.png",
+    "ibis_scribe_texture_x4.png": "examples/output/ibis_scribe_texture_x4.png",
+    "ibis_scribe_hero.png": "examples/output/ibis_scribe_hero.png",
+    "ibis_scribe_sheet.png": "examples/output/ibis_scribe_sheet.png",
+    "ibis_scribe_turntable.gif": "examples/output/ibis_scribe_turntable.gif",
+    "ibis_scribe_idle.gif": "examples/output/ibis_scribe_idle.gif",
+    "ibis_scribe_write.gif": "examples/output/ibis_scribe_write.gif",
+    "ibis_scribe_bow.gif": "examples/output/ibis_scribe_bow.gif"
+  }
+}

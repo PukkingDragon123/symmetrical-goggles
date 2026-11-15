@@ -1,16 +1,16 @@
 {
   "name": "Ember Salamander",
   "parts": 20,
-  "instances": 26,
-  "faces": 435,
-  "triangles": 888,
-  "vertices_flat": 1758,
+  "instances": 34,
+  "faces": 451,
+  "triangles": 984,
+  "vertices_flat": 1886,
   "vertices_unique": 542,
   "atlas": [
     128,
     256
   ],
-  "atlas_fill": 0.81,
+  "atlas_fill": 0.92,
   "texel_density": 2.0,
   "colors_used": 25,
   "palette": {
@@ -73,6 +73,46 @@
     ]
   },
   "warnings": [],
+  "animations": {
+    "idle": 3.2,
+    "walk": 1.4
+  },
+  "joints": [
+    "body_0",
+    "body_1",
+    "body_2",
+    "body_3",
+    "body_4",
+    "body_5",
+    "body_6",
+    "body_7",
+    "body_8",
+    "head",
+    "jaw",
+    "eye",
+    "eye_mirror",
+    "gland",
+    "gland_mirror",
+    "front_leg",
+    "hand",
+    "front_leg_mirror",
+    "hand_mirror",
+    "back_leg",
+    "foot",
+    "back_leg_mirror",
+    "foot_mirror",
+    "crest1",
+    "crest2",
+    "crest3",
+    "crest4",
+    "crest5",
+    "crest6",
+    "crest7",
+    "crest8",
+    "crest9",
+    "crest10",
+    "crest11"
+  ],
   "files": {
     "ember_salamander.glb": "examples/output/ember_salamander.glb",
     "ember_salamander.obj": "examples/output/ember_salamander.obj",
@@ -82,6 +122,8 @@
     "ember_salamander_texture_x4.png": "examples/output/ember_salamander_texture_x4.png",
     "ember_salamander_hero.png": "examples/output/ember_salamander_hero.png",
     "ember_salamander_sheet.png": "examples/output/ember_salamander_sheet.png",
-    "ember_salamander_turntable.gif": "examples/output/ember_salamander_turntable.gif"
+    "ember_salamander_turntable.gif": "examples/output/ember_salamander_turntable.gif",
+    "ember_salamander_idle.gif": "examples/output/ember_salamander_idle.gif",
+    "ember_salamander_walk.gif": "examples/output/ember_salamander_walk.gif"
   }
 }

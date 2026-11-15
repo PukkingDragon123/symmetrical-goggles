@@ -86,6 +86,17 @@ class TestGeometry(unittest.TestCase):
         self.assertAlmostEqual(float(ys.min()), 0.05, places=6)
         self.assertAlmostEqual(float(ys.max()), 0.05, places=6)  # world-oriented flat card stays flat
 
+    def test_mirrored_wedge_keeps_its_real_triangle(self):
+        spec = {"palette": {"ramps": {"a": ["#000000", "#ffffff"]}},
+                "parts": [{"id": "w", "shape": "taper", "size": [2, 2, 6], "pivot": [3, 2, 0], "front_scale": [0, 0],
+                           "mirror": True, "paint": {"ramp": "a"}}]}
+        m = build_model(spec)
+        for inst in m.instances:
+            for f in inst.faces:
+                self.assertGreater(np.linalg.norm(f.normal), 0.5, f"{inst.id}.{f.name} lost its triangle")
+        a, b = m.instances
+        self.assertAlmostEqual(sum(f.area() for f in a.faces), sum(f.area() for f in b.faces), places=6)
+
     def test_hide_removes_faces(self):
         spec = copy.deepcopy(MINI)
         spec["parts"][0]["hide"] = ["back", "bottom"]
@@ -307,6 +318,98 @@ class TestAnimation(unittest.TestCase):
         errors, _ = validate(spec)
         self.assertTrue(any("unknown part 'wing'" in e for e in errors), errors)
         self.assertTrue(any("exactly one of keys / osc / wave" in e for e in errors), errors)
+
+
+class TestEngineFixes(unittest.TestCase):
+    """Features added from the modelling agents' reports."""
+
+    def test_bone_off_layers_and_multi_face_stamps(self):
+        spec = copy.deepcopy(MINI)
+        spec["styles"] = {"s": {"layers": [{"id": "dots", "op": "spots", "count": 4, "ramp": "b"}]}}
+        spec["parts"][0]["style"] = "s"
+        spec["parts"][0]["paint"]["layers"] = [{"id": "dots", "off": True}]
+        spec["parts"][0]["paint"]["stamps"] = [{"faces": ["sides"], "art": ["w"], "key": {"w": "#ffffff"}}]
+        spec["parts"].append({"id": "pivot_only", "parent": "body", "shape": "bone", "pivot": [0, 1, 0]})
+        m = build_model(spec)
+        by = {i.id: i for i in m.instances}
+        self.assertEqual(by["pivot_only"].faces, [])
+        white = 0
+        for f in by["body"].faces:
+            x, y = f.rect
+            img = m.atlas[y:y + f.H, x:x + f.W, :3]
+            white += int(((img == 255).all(-1)).any())
+        self.assertEqual(white, 4, "the stamp lands once on each of the four side faces")
+        b_cols = {tuple(c) for c in m.palette.ramps["b"]}
+        for f in by["body"].faces:  # the inherited spots layer is switched off
+            x, y = f.rect
+            cols = {tuple(int(v) for v in c) for c in m.atlas[y:y + f.H, x:x + f.W, :3].reshape(-1, 3)}
+            self.assertFalse(cols & b_cols)
+
+    def test_card_flip_on_mirror(self):
+        spec = {"palette": {"ramps": {"a": ["#000000", "#808080", "#ffffff"]}},
+                "parts": [{"id": "c", "shape": "card", "art": ["#.", "##"], "pivot": [2, 2, 0], "mirror": True,
+                           "flip_on_mirror": True, "paint": {"ramp": "a", "light": 0}}]}
+        m = build_model(spec)
+        a, b = [i for i in m.instances]
+        fa, fb = a.faces[0], b.faces[0]
+        ma = m.atlas[fa.rect[1]:fa.rect[1] + fa.H, fa.rect[0]:fa.rect[0] + fa.W, 3] > 0
+        mb = m.atlas[fb.rect[1]:fb.rect[1] + fb.H, fb.rect[0]:fb.rect[0] + fb.W, 3] > 0
+        np.testing.assert_array_equal(ma, mb[:, ::-1])
+
+    def test_looping_keys_lead_in_from_last_key(self):
+        from lowpix.anim import eval_keys
+        v = eval_keys([[1.0, 10], [3.0, 20]], 0.0, 4.0, True, "linear", "x")
+        self.assertAlmostEqual(float(v[0]), 15.0, places=6)  # halfway from 20 (at t=3) back to 10 (at t=5)
+        from lowpix.anim import _ease
+        self.assertLess(_ease(0.2, "in_back"), 0)  # anticipation dips below the start
+
+    def test_lint_flags_clips_that_sink(self):
+        spec = copy.deepcopy(MINI)
+        spec["animations"] = {"dip": {"length": 1.0, "tracks": [
+            {"part": "body", "channel": "position", "osc": {"axis": "y", "amp": 3}}]}}
+        rep = build_model(spec).report()
+        self.assertTrue(any("clip 'dip' sinks below the ground" in w for w in rep["warnings"]), rep["warnings"])
+
+    def test_cli_size_and_negative_target(self):
+        from lowpix.cli import _fix_negative_args, _size
+        self.assertEqual(_size("640"), (640, 640))
+        self.assertEqual(_size("320x200"), (320, 200))
+        self.assertEqual(_fix_negative_args(["render", "--target", "-3,7,8"]), ["render", "--target=-3,7,8"])
+
+
+class TestConvert(unittest.TestCase):
+    """Detailed model -> lowpix style, offline: round-trip a GLB we build ourselves."""
+
+    def test_convert_glb_roundtrip(self):
+        from lowpix.convert import convert, load_model
+        from lowpix.export import glb_bytes
+        with tempfile.TemporaryDirectory() as td:
+            src = os.path.join(td, "robot.glb")
+            with open(src, "wb") as fh:
+                fh.write(glb_bytes(build_model(os.path.join(ROOT, "examples", "robot.json"))))
+            mesh = load_model(src)
+            self.assertGreater(len(mesh.F), 900)
+            m = convert(src, tris=300, height=20, ramps=4)
+            rep = m.report()
+            self.assertLessEqual(rep["triangles"], 330)
+            self.assertAlmostEqual(rep["bounds"]["size"][1], 20.0, delta=1.5)
+            self.assertAlmostEqual(rep["bounds"]["min"][1], 0.0, delta=0.05)
+            pal = {c for r in m.palette.ramps.values() for c in r}
+            used = {tuple(int(v) for v in c) for c in m.atlas[..., :3][m.atlas[..., 3] > 127].reshape(-1, 3)}
+            self.assertTrue(used <= pal, "converted texture must be strictly in-palette")
+            self.assertLessEqual(len(m.palette.names), 4)
+            magic, *_ = parse_glb(glb_bytes(m))
+            self.assertEqual(magic, 0x46546C67)
+
+    def test_obj_loader_triangulates_quads(self):
+        from lowpix.convert import load_obj
+        with tempfile.TemporaryDirectory() as td:
+            p = os.path.join(td, "q.obj")
+            with open(p, "w") as fh:
+                fh.write("v 0 0 0\nv 1 0 0\nv 1 1 0\nv 0 1 0\nvt 0 0\nvt 1 0\nvt 1 1\nvt 0 1\nf 1/1 2/2 3/3 4/4\n")
+            mesh = load_obj(p)
+            self.assertEqual(len(mesh.F), 2)
+            self.assertAlmostEqual(float(mesh.UV[0, 1]), 1.0)  # OBJ v flipped to top-left origin
 
 
 class TestValidation(unittest.TestCase):

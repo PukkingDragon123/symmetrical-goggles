@@ -82,8 +82,9 @@
     "walk": {"length": 1.2, "loop": true, "tracks": [
       {"part": "thigh", "osc": {"axis": "x", "amp": 20, "cycles": 1}, "mirror_phase": 0.5},
       {"part": "shin", "osc": {"axis": "x", "amp": 13, "bias": 13, "cycles": 1, "phase": 0.3}, "mirror_phase": 0.5},
-      {"part": "boot", "osc": {"axis": "x", "amp": 8, "cycles": 1, "phase": 0.55}, "mirror_phase": 0.5},
-      {"part": "hips", "channel": "position", "osc": {"axis": "y", "amp": 0.55, "cycles": 2, "phase": 0.25, "shape": "bounce"}},
+      {"part": "boot", "osc": {"axis": "x", "amp": -20, "cycles": 1}, "mirror_phase": 0.5},
+      {"part": "boot", "osc": {"axis": "x", "amp": -13, "bias": -13, "cycles": 1, "phase": 0.3}, "mirror_phase": 0.5},
+      {"part": "hips", "channel": "position", "osc": {"axis": "y", "amp": 0.6, "bias": 0.35, "cycles": 2, "phase": 0.25, "shape": "bounce"}},
       {"part": "hips", "osc": {"axis": "z", "amp": 3, "cycles": 1}},
       {"part": "chest", "osc": {"axis": "y", "amp": 5, "cycles": 1, "phase": 0.5}},
       {"part": "helmet", "osc": {"axis": "z", "amp": -3, "cycles": 1, "phase": 0.1}},

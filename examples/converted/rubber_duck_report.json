@@ -1,0 +1,75 @@
+{
+  "name": "Rubber Duck",
+  "parts": 1,
+  "instances": 1,
+  "faces": 499,
+  "triangles": 499,
+  "vertices_flat": 1497,
+  "vertices_unique": 244,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.93,
+  "texel_density": 2.0,
+  "colors_used": 13,
+  "palette": {
+    "m0": [
+      "#230900",
+      "#742d00",
+      "#c46600",
+      "#fcb01e",
+      "#fae07e",
+      "#fdfad8"
+    ],
+    "m1": [
+      "#260006",
+      "#7c0002",
+      "#d31800",
+      "#fc602d",
+      "#fab286",
+      "#fdecdb"
+    ],
+    "m2": [
+      "#060000",
+      "#130200",
+      "#200800",
+      "#752e01",
+      "#f78f20",
+      "#fbe5bc"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -5.964,
+      0.0,
+      -8.434
+    ],
+    "max": [
+      5.964,
+      16.0,
+      8.434
+    ],
+    "size": [
+      11.928,
+      16.0,
+      16.868
+    ]
+  },
+  "warnings": [],
+  "animations": {},
+  "joints": [
+    "mesh"
+  ],
+  "files": {
+    "rubber_duck.glb": "examples/converted/rubber_duck.glb",
+    "rubber_duck.obj": "examples/converted/rubber_duck.obj",
+    "rubber_duck.mtl": "examples/converted/rubber_duck.mtl",
+    "rubber_duck.bbmodel": "examples/converted/rubber_duck.bbmodel",
+    "rubber_duck_texture.png": "examples/converted/rubber_duck_texture.png",
+    "rubber_duck_texture_x8.png": "examples/converted/rubber_duck_texture_x8.png",
+    "rubber_duck_hero.png": "examples/converted/rubber_duck_hero.png",
+    "rubber_duck_sheet.png": "examples/converted/rubber_duck_sheet.png",
+    "rubber_duck_turntable.gif": "examples/converted/rubber_duck_turntable.gif"
+  }
+}

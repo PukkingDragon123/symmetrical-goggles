@@ -108,6 +108,27 @@ class Model:
                 if y < -0.05:
                     sunk.append(f"{inst.id}({y:.2f})")
             warnings.append("below ground plane y=0: " + ", ".join(sunk[:12]) + (" ..." if len(sunk) > 12 else ""))
+        # animated clips: sample frames and flag parts that sink through the floor mid-motion
+        clips = self.spec.get("animations") or {}
+        if clips:
+            anim = self.animator()
+            tol = float(self.spec.get("anim_ground_tolerance", 0.15))
+            for cname in clips:
+                length, _, _ = anim.clip(cname)
+                worst = {}
+                for k in range(24):
+                    t = length * k / 24
+                    W = anim.world_matrices(cname, t)
+                    for inst in self.instances:
+                        if not inst.faces:
+                            continue
+                        y = min(float(transform_points(W[inst.id], f.pts)[:, 1].min()) for f in inst.faces)
+                        if y < -tol and y < worst.get(inst.id, (0, 0))[0]:
+                            worst[inst.id] = (y, t)
+                if worst:
+                    items = sorted(worst.items(), key=lambda kv: kv[1][0])[:6]
+                    warnings.append(f"clip {cname!r} sinks below the ground: "
+                                    + ", ".join(f"{k}({y:.2f} @ {t:.2f}s)" for k, (y, t) in items))
         floating = lo[1] > 0.3
         if floating and self.spec.get("grounded", True):
             warnings.append(f"model floats {lo[1]:.2f} above the ground plane")
