@@ -451,6 +451,10 @@ class Painter:
             c = _axis_coord(P, ax, ctx) + float(layer.get("phase", 0.0))
             if layer.get("wobble"):
                 c = c + layer["wobble"] * (fbm(P, 1.0 / float(layer.get("wobble_scale", 3.0)), 2, seed) - 0.5) * 2
+            if layer.get("zigzag"):  # chevrons / lightning bands: offset by a triangle wave across the stripes
+                amp, zp = layer["zigzag"]
+                w_ = _axis_coord(P, layer.get("zig_axis", "around"), ctx) / float(zp)
+                c = c + float(amp) * (np.abs(np.mod(w_, 1.0) - 0.5) * 2 - 0.5)
             period = float(layer.get("period", 4.0))
             width = float(layer.get("width", 0.5))
             mask = np.mod(c / period, 1.0) < width

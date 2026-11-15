@@ -262,10 +262,40 @@ def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
     L = np.array([-0.5, 1.0, 0.6]) / np.linalg.norm([-0.5, 1.0, 0.6])
     _rasterize(sc, sz, uvs, tex, color, zbuf, W, H, True, nrm=nrm,
                bilinear=mat.get("filter") == "linear", light=L)
+    if rs.get("bloom"):
+        color = _bloom(model, color, zbuf, rs["bloom"], f / max(ssaa, 1), ssaa)
     img = Image.fromarray(color, "RGB")
     if ssaa > 1:
         img = img.resize((width, height), Image.BOX)
     return img
+
+
+def _bloom(model, color, zbuf, conf, focal, ssaa):
+    """VFX glow for previews: texels from the named (emissive) ramps bleed light into their surroundings.
+
+    conf: {"ramps": [...], "min_step": 0, "radius": percent of the image size, "strength": 0..2}."""
+    from .brush import blur
+    pal = model.palette
+    keys = []
+    for name in conf.get("ramps", []):
+        if name in pal.index:
+            i = pal.index[name]
+            for j in range(int(conf.get("min_step", 0)), int(pal.lengths[i])):
+                c = pal.table[i, j].astype(np.int64)
+                keys.append((c[0] << 16) | (c[1] << 8) | c[2])
+    if not keys:
+        return color
+    ci = color.astype(np.int64)
+    key = (ci[..., 0] << 16) | (ci[..., 1] << 8) | ci[..., 2]
+    m = np.isin(key, np.array(keys)) & np.isfinite(zbuf)
+    if not m.any():
+        return color
+    src = color.astype(np.float64) / 255.0 * m[..., None]
+    r = max(1.0, float(conf.get("radius", 1.5)) / 100.0 * min(color.shape[:2]))
+    glow = 0.6 * blur(src, r * 0.35) + 0.4 * blur(src, r)
+    k = float(conf.get("strength", 1.0))
+    out = 1 - (1 - color.astype(np.float64) / 255.0) * (1 - np.clip(glow * k, 0, 1))
+    return (np.clip(out, 0, 1) * 255).astype(np.uint8)
 
 
 def part_sphere(model, part_id: str, only: bool = False):
