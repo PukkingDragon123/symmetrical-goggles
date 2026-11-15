@@ -17,6 +17,8 @@ float index into the ramp. The pipeline is
 """
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 from .noise import BAYER4, fbm, hash3, seed_of
@@ -276,12 +278,25 @@ class Painter:
             if layer.get("post"):
                 self.apply_layer(ctx, layer, li, rid, tone, paint)
 
-        # quantise with ordered dithering
-        d = float(paint.get("dither", 0.5))
-        thr = (1 - d) * 0.5 + d * BAYER4[ctx.py % 4, ctx.px % 4]
-        idx = np.floor(tone + thr).astype(np.int64)
+        bconf = self.spec.get("brush")
+        if isinstance(paint.get("brush"), dict):  # style/part brush settings refine the model's
+            bconf = dict(bconf if isinstance(bconf, dict) else {}, **paint["brush"])
+        elif "brush" in paint:
+            bconf = paint["brush"]
+        if bconf and not (isinstance(bconf, dict) and bconf.get("off")):
+            # paint the tones as brush strokes that run along the form
+            idx = self._brush_quantise(ctx, rid, tone, bconf if isinstance(bconf, dict) else {})
+        else:
+            # quantise with ordered dithering
+            d = float(paint.get("dither", 0.5))
+            thr = (1 - d) * 0.5 + d * BAYER4[ctx.py % 4, ctx.px % 4]
+            idx = np.floor(tone + thr).astype(np.int64)
         idx = np.clip(idx, 0, self.pal.lengths[rid] - 1)
         rgb = self.pal.table[rid, idx].astype(np.uint8)
+        if getattr(ctx, "photo_rgb", None) is not None:  # photo colours, shaded by the painted light
+            pm = ctx.photo_mask
+            shade = 1 + ctx.photo_gain * (tone - ctx.photo_tone0)
+            rgb[pm] = np.clip(ctx.photo_rgb[pm] * shade[pm, None] * 255, 0, 255).astype(np.uint8)
 
         # outlines (darkest colour of the texel's ramp, or an explicit colour)
         mode = rim.get("outline", "none")
@@ -328,6 +343,81 @@ class Painter:
             self.apply_stamp(ctx, st, rgb, alpha, inst)
 
         return np.dstack([rgb, alpha])
+
+
+    # ------------------------------------------------------------------ brush
+    def _flow_axis(self, ctx, name):
+        """A local-space unit axis for a flow name: x/y/z, long, path, or a vector."""
+        if isinstance(name, (list, tuple)):
+            a = np.array(name, float)
+            return a / max(np.linalg.norm(a), 1e-9)
+        if name in ("x", "y", "z"):
+            a = np.zeros(3)
+            a["xyz".index(name)] = 1
+            return a
+        lo, hi = self._bbox[ctx.inst.src_id]
+        ext = hi - lo
+        order = np.argsort(-ext)
+        a = np.zeros(3)
+        a[order[0]] = 1
+        return a
+
+    def _brush_quantise(self, ctx, rid, tone, conf):
+        from . import brush
+        H, W = ctx.H, ctx.W
+        R = ctx.inst.world[:3, :3]
+        flow = conf.get("flow", "long")
+        per_ramp = conf.get("flows", {})
+        F = np.zeros((H, W, 2))
+        lo, hi = self._bbox[ctx.inst.src_id]
+        order = list(np.argsort(-(hi - lo)))
+
+        def img_dir(axis_local):
+            w = R @ axis_local
+            fu, fv = float(np.dot(w, ctx.U)), float(np.dot(w, ctx.V))
+            return fu, fv
+
+        def face_flow(name):
+            if name == "path" and ctx.path is not None:
+                gy, gx = np.gradient(ctx.path[..., 0])
+                n = np.hypot(gx, gy)
+                return np.dstack([gx, gy]) / np.maximum(n, 1e-9)[..., None]
+            if name == "horizontal":  # whichever of x / z lies best in this face
+                cands = sorted([np.eye(3)[0], np.eye(3)[2]], key=lambda a: -math.hypot(*img_dir(a)))
+                cands += [np.eye(3)[k] for k in order]
+            elif name == "vertical":
+                cands = [np.eye(3)[1]] + [np.eye(3)[k] for k in order]
+            else:
+                cands = [self._flow_axis(ctx, name)] + [np.eye(3)[k] for k in order]
+            for a in cands:
+                fu, fv = img_dir(a)
+                if math.hypot(fu, fv) > 0.45:
+                    v = np.array([fu, fv]) / math.hypot(fu, fv)
+                    return np.broadcast_to(v, (H, W, 2)).copy()
+            return np.broadcast_to(np.array([1.0, 0.0]), (H, W, 2)).copy()
+
+        F[:] = face_flow(flow)
+        for rname, fl in per_ramp.items():
+            if rname in self.pal.index:
+                m = rid == self.pal.index[rname]
+                if m.any():
+                    F[m] = face_flow(fl)[m]
+        seed = seed_of(ctx.inst.src_id, ctx.face.name, ctx.fidx if ctx.inst.mirrored else 0, "brush")
+        rng = np.random.default_rng(seed)
+        hi_idx = self.pal.lengths[rid] - 1
+        textures = conf.get("textures", {})
+        marks = []
+        for rname, tex in textures.items():
+            if rname in self.pal.index:
+                m = rid == self.pal.index[rname]
+                if m.any():
+                    marks.append((m, tex))
+        # stroke sizes are in model units, so the brush keeps its look at any texel density
+        length = float(conf.get("length", 2.5)) * self.density
+        width = max(1.0, float(conf.get("width", 0.5)) * self.density)
+        return brush.quantise(tone, rid, F, rng, 0, hi_idx, length=length, rough=float(conf.get("rough", 0.7)),
+                              overshoot=float(conf.get("overshoot", 0.3)), width=width,
+                              marks=marks, mark_scale=float(conf.get("marks", 1.0)))
 
     # ----------------------------------------------------------------- layers
     def apply_layer(self, ctx: FaceCtx, layer: dict, li: int, rid, tone, paint):
@@ -426,6 +516,19 @@ class Painter:
                 m &= ok
             tone[m] = 99.0  # clamps to the lightest entry of the texel's ramp
             return
+        elif op == "scales":
+            mask = self._scales(ctx, layer, seed, rid, tone)
+            if mask is None:
+                return
+        elif op == "photo":
+            self._photo_layer(ctx, layer, rid, tone)
+            return
+        elif op == "drip":
+            mask = self._drip(ctx, layer, seed)
+        elif op == "cracks":
+            n = fbm(P, 1.0 / float(layer.get("scale", 4.0)), int(layer.get("octaves", 3)), seed)
+            n2 = fbm(P, 1.0 / float(layer.get("scale", 4.0)) * 0.5, 2, seed + 11)
+            mask = (np.abs(n - 0.5) < float(layer.get("width", 0.025))) & (n2 > float(layer.get("threshold", 0.45)))
         elif op == "rect":
             # a face-space rectangle [x0, y0, x1, y1]: fractions of the face, or pixels with "px": true
             x0, y0, x1, y1 = layer.get("rect", [0.2, 0.2, 0.8, 0.8])
@@ -561,6 +664,133 @@ class Painter:
             tone[mask] += float(layer["shift"])
         if bevel and hl:
             tone[inner] += float(bevel.get("highlight_shift", 1.0))
+
+    def _photo_layer(self, ctx, layer, rid, tone):
+        """Photo-bash: project a photo texture onto the face (planar, continuous across faces).
+        mode "detail" adds its relief to the tone (stays on the ramps); "colour" paints the photo's
+        own colours, later shaded by the painted light."""
+        from .photo import detail, load_photo, relight
+        ph = load_photo(layer["src"], layer.get("res", "1k"))
+        n = np.abs(ctx.n_local)
+        axes = [k for k in range(3) if k != int(np.argmax(n))]
+        P = ctx.coords(layer.get("space", "local"))
+        scale = float(layer.get("scale", 8.0))
+        u = P[..., axes[0]] / scale + float(layer.get("offset", [0, 0])[0])
+        v = -P[..., axes[1]] / scale + float(layer.get("offset", [0, 0])[1])
+        if axes[1] != 1 and axes[0] == 1:
+            u, v = v, u
+        m = np.ones(u.shape, bool)
+        if layer.get("ramps"):
+            m &= np.isin(rid, [self.ramp_id(r) for r in layer["ramps"]])
+        if layer.get("mode", "detail") == "detail":
+            tone[m] += float(layer.get("amount", 1.2)) * detail(ph, u, v)[m]
+            return
+        if "_lit" not in ph:
+            ph["_lit"] = relight(ph, float(layer.get("relight", 0.5)))
+        a = ph["_lit"]
+        Hh, Ww = a.shape[:2]
+        x = (np.mod(u, 1.0) * Ww).astype(np.int64) % Ww
+        y = (np.mod(v, 1.0) * Hh).astype(np.int64) % Hh
+        col = a[y, x]
+        if layer.get("tint"):
+            t = np.array(self.pal.resolve(layer["tint"]), float) / 255
+            k = float(layer.get("tint_amount", 0.5))
+            lum = col @ np.array([0.3, 0.59, 0.11])
+            col = col * (1 - k) + (lum[..., None] * t / max(float(t @ np.array([0.3, 0.59, 0.11])), 1e-6)) * k
+        if getattr(ctx, "photo_rgb", None) is None:
+            ctx.photo_rgb = np.zeros(u.shape + (3,))
+            ctx.photo_mask = np.zeros(u.shape, bool)
+            ctx.photo_tone0 = tone.copy()
+        ctx.photo_rgb[m] = col[m]
+        ctx.photo_mask |= m
+        ctx.photo_tone0[m] = tone[m]
+        ctx.photo_gain = float(layer.get("shade", 0.16))
+
+    def _plane_axes(self, ctx, along):
+        """Two local axes spanning this face for pattern ops: (along, across)."""
+        n = np.abs(ctx.n_local)
+        ax = {"x": 0, "y": 1, "z": 2}
+        a = ax.get(along, 2)
+        if n[a] > 0.7:  # the along axis points out of this face: rows stay horizontal if they can
+            rest = [k for k in range(3) if k != int(np.argmax(n))]
+            if 1 in rest:
+                other = [k for k in rest if k != 1][0]
+                return other, 1
+            lo, hi = self._bbox[ctx.inst.src_id]
+            rest.sort(key=lambda k: -(hi - lo)[k])
+            return rest[0], rest[1]
+        rest = [k for k in range(3) if k != a]
+        b = min(rest, key=lambda k: n[k])
+        return a, b
+
+    def _scales(self, ctx, layer, seed, rid, tone):
+        """Overlapping scale / plate / brick rows in pattern space (continuous across faces)."""
+        a, b = self._plane_axes(ctx, layer.get("along", "z"))
+        P = ctx.coords(layer.get("space", "local"))
+        sa, sb = layer.get("size", [3.0, 2.0])
+        shape = layer.get("shape", "round")
+        u = P[..., a] / float(sa)
+        v = -P[..., b] / float(sb)  # rows run downward from the top
+        row = np.floor(v)
+        u = u + (np.mod(row, 2) * 0.5 if layer.get("stagger", True) else 0)
+        col = np.floor(u)
+        fu, fv = u - col, v - row
+        r = hash3(col.astype(np.int64), row.astype(np.int64), np.full(col.shape, 3, np.int64), seed)
+        if "range" in layer:
+            c0, c1 = layer["range"]
+            cn = ctx.N[..., b]
+            keep = (cn >= c0) & (cn <= c1)
+        else:
+            keep = np.ones(fu.shape, bool)
+        if shape == "round":
+            # a scale is a rounded bottom edge: distance to the arc below the plate centre
+            dx = (fu - 0.5) * float(sa)
+            dy = fv * float(sb)
+            rr = np.hypot(dx / (float(sa) * 0.5), np.maximum(dy - float(sb) * 0.35, 0) / (float(sb) * 0.65))
+            rim = (rr > 0.78) & (rr <= 1.0)
+            body = rr <= 0.78
+            under = rr > 1.0
+        else:  # square plates / bricks: mortar lines at the plate borders
+            px_u = float(layer.get("gap", 1.0)) / (float(sa) * self.density)
+            px_v = float(layer.get("gap", 1.0)) / (float(sb) * self.density)
+            under = (fu < px_u) | (fv > 1 - px_v)
+            rim = ~under & ((fv < px_v * 1.5) | (fu > 1 - px_u * 1.5))
+            body = ~under & ~rim
+        new_r = self.ramp_id(layer["ramp"]) if "ramp" in layer else None
+        m = keep
+        if new_r is not None:
+            rid[m] = new_r
+            tone[m] = float(layer.get("tone", self.pal.mid(layer["ramp"])))
+        grad = float(layer.get("gradient", 1.2))
+        tone[m & body] += grad * (0.5 - fv[m & body])           # light at the top of each plate
+        tone[m & rim] += float(layer.get("rim", -1.0)) if shape == "round" else float(layer.get("highlight", 0.8))
+        tone[m & under] += float(layer.get("shadow", -1.6))
+        tone[m] += float(layer.get("jitter", 0.6)) * (r[m] - 0.5) * 2
+        return None
+
+    def _drip(self, ctx, layer, seed):
+        """Moss, snow, slime or paint running down from a part's top edge in uneven strands."""
+        lo, hi = self._bbox[ctx.inst.src_id]
+        P = ctx.P_src
+        top = hi[1] - float(layer.get("top", 0.0))
+        depth = float(layer.get("depth", 1.0))
+        length = float(layer.get("length", 2.0))
+        width = float(layer.get("width", 0.5))
+        n = np.abs(ctx.n_local)
+        # horizontal coordinate along the face (x on front/back faces, z on left/right)
+        h = P[..., 0] if n[2] >= n[0] else P[..., 2]
+        colid = np.floor(h / width).astype(np.int64)
+        r1 = hash3(colid, np.full(colid.shape, 1, np.int64), np.full(colid.shape, 7, np.int64), seed)
+        r2 = hash3(colid // 3, np.full(colid.shape, 2, np.int64), np.full(colid.shape, 7, np.int64), seed)
+        wob = fbm(P, 1.0 / float(layer.get("scale", 3.0)), 2, seed + 5) - 0.5
+        reach = depth + length * (0.55 * r1 ** 2 + 0.45 * r2) + wob * depth
+        below = top - P[..., 1]
+        m = below < reach
+        if ctx.n_local[1] > 0.5:  # top faces are fully covered
+            m = np.ones_like(m)
+        if ctx.n_local[1] < -0.5:
+            m = np.zeros_like(m)
+        return m
 
     def _spots_mask(self, ctx: FaceCtx, layer, li, seed):
         key = (ctx.inst.src_id if not layer.get("asymmetric") else ctx.inst.id, layer.get("id", li))

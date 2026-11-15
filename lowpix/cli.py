@@ -152,6 +152,26 @@ def main(argv=None):
     nw.add_argument("name")
     nw.add_argument("-o", "--out", default=None)
 
+    sp = sub.add_parser("sprite", help="2D sprites: a generator (sword, gem, ore, fish, potion) or a sprite spec .json")
+    sp.add_argument("source", help="generator name or sprite spec .json")
+    sp.add_argument("-o", "--out", default=None, help="output PNG (default out/sprites/<name>.png)")
+    sp.add_argument("--seed", type=int, default=0)
+    sp.add_argument("--count", type=int, default=1, help="more than 1: a sheet of seeded variations")
+    sp.add_argument("--size", default=None, help="N or WxH pixels")
+    sp.add_argument("--paint", default=None, choices=["strokes", "flat", "painted"])
+    sp.add_argument("--scale", type=int, default=1, help="also write an upscaled preview (nearest)")
+    sp.add_argument("--param", action="append", default=[], help="generator option key=value (species=koi, theme=frost)")
+    sp.add_argument("--background", default=None, help="preview background colour")
+
+    pt = sub.add_parser("photo", help="photo-bash: stylise a photo texture (polyhaven:<id>, a folder or an image)")
+    pt.add_argument("source", nargs="+", help="photo source, or: search <words> | vendor <polyhaven id>")
+    pt.add_argument("--style", default="pixel-hd", choices=["realistic", "painted", "pixel-hd", "pixel"])
+    pt.add_argument("--size", type=int, default=64)
+    pt.add_argument("--colours", type=int, default=None)
+    pt.add_argument("-o", "--out", default=None)
+    pt.add_argument("--preview", type=int, default=3, help="also write an NxN tiled preview (0 = off)")
+    pt.add_argument("--dest", default="assets/photos", help="vendor: folder to save the small offline copy in")
+
     sub.add_parser("schema", help="print the JSON schema for specs")
 
     a = ap.parse_args(_fix_negative_args(list(sys.argv[1:] if argv is None else argv)))
@@ -237,6 +257,55 @@ def main(argv=None):
         from .convert import polyhaven_search
         for aid, name, dl in polyhaven_search(" ".join(a.query), a.limit):
             print(f"{aid:40s} {name}  ({dl} downloads)")
+    elif a.cmd == "sprite":
+        from .sprite import upscale
+        from .sprite_gen import make, make_sheet
+        size = None
+        if a.size:
+            size = [int(v) for v in a.size.lower().split("x")] if "x" in a.size.lower() else int(a.size)
+        params = {}
+        for kv in a.param:
+            k, v = kv.split("=", 1)
+            params[k] = json.loads(v) if v[:1] in "[{0123456789-" or v in ("true", "false") else v
+        name = os.path.splitext(os.path.basename(a.source))[0]
+        out = a.out or os.path.join("out", "sprites", f"{name}{'_sheet' if a.count > 1 else ''}.png")
+        os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+        if a.count > 1:
+            im, specs, rects = make_sheet(a.source, a.count, a.seed, size, a.paint, **params)
+            meta = {"sprites": [{"rect": r, "spec": sp_} for r, sp_ in zip(rects, specs)]}
+        else:
+            spec_, im = make(a.source, a.seed, size, a.paint, **params)
+            meta = spec_
+        im.save(out)
+        with open(os.path.splitext(out)[0] + ".json", "w") as fh:
+            json.dump(meta, fh)
+        print(f"-> {out} ({im.width}x{im.height}) + .json")
+        if a.scale > 1:
+            pv = os.path.splitext(out)[0] + f"_x{a.scale}.png"
+            upscale(im, a.scale, a.background).save(pv)
+            print(f"-> {pv}")
+    elif a.cmd == "photo":
+        from .photo import load_photo, photo_search, photo_vendor, stylise, tiled_preview
+        if a.source[0] == "search":
+            for aid, name, dl in photo_search(" ".join(a.source[1:]), 30):
+                print(f"polyhaven:{aid:36s} {name}  ({dl} downloads)")
+            return 0
+        if a.source[0] == "vendor":
+            for aid in a.source[1:]:
+                print(f"-> {photo_vendor(aid, a.dest)}")
+            return 0
+        src = a.source[0]
+        tex = stylise(load_photo(src), a.style, a.size, colours=a.colours)
+        stem = src.split(":", 1)[-1].rstrip("/").split("/")[-1]
+        out = a.out or os.path.join("out", "photos", f"{os.path.splitext(stem)[0]}_{a.style}_{a.size}.png")
+        os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+        tex.save(out)
+        print(f"-> {out}")
+        if a.preview:
+            k = max(1, 512 // (a.size * a.preview))
+            pv = os.path.splitext(out)[0] + "_tiled.png"
+            tiled_preview(tex, a.preview, k).save(pv)
+            print(f"-> {pv}")
     elif a.cmd == "schema":
         here = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(here, "schema.json")) as fh:

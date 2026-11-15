@@ -11,16 +11,16 @@ import json
 import os
 
 TOP_KEYS = {"name", "description", "author", "license", "density", "budget", "light", "palette",
-            "styles", "defaults", "parts", "render", "notes", "grounded", "animations", "anim_fps", "anim_ground_tolerance", "material", "convert", "$schema"}
+            "styles", "defaults", "parts", "render", "notes", "grounded", "animations", "anim_fps", "anim_ground_tolerance", "material", "convert", "brush", "$schema"}
 PART_KEYS = {"id", "parent", "shape", "size", "pivot", "offset", "rotation", "mirror", "style",
              "paint", "hide", "front_scale", "back_scale", "front_shift", "back_shift", "sides",
              "angle", "plane", "art", "orient", "snap_ground", "notes", "chamfer", "profile", "rings",
              "subdiv", "smooth", "caps", "up", "attach", "hard", "chain",
              "double_sided", "flip_on_mirror"}
-PAINT_KEYS = {"ramp", "tone", "light", "dither", "rim", "layers", "stamps", "art_key"}
+PAINT_KEYS = {"ramp", "tone", "light", "dither", "rim", "layers", "stamps", "art_key", "brush"}
 SHAPES = {"box", "taper", "prism", "card", "loft", "bone"}
 OPS = {"fill", "band", "stripes", "spots", "patches", "speckle", "gradient", "noise", "gloss",
-       "rect", "panel", "rivets", "wear", "grille"}
+       "rect", "panel", "rivets", "wear", "grille", "scales", "drip", "cracks", "photo"}
 FACE_TAGS = {"all", "*", "sides", "flanks", "ends", "caps", "up", "down", "level", "lit", "shaded",
              "local_up", "local_down", "front", "back", "left", "right", "top", "bottom",
              "start", "end", "bevels", "bevel_tl", "bevel_tr", "bevel_bl", "bevel_br"}

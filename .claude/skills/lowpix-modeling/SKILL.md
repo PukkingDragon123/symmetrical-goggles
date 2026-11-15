@@ -1,6 +1,6 @@
 ---
 name: lowpix-modeling
-description: Model, rig and animate low-poly 3D assets with hand-painted pixel-art textures using lowpix (JSON specs -> animated glb/obj/bbmodel + previews). Use when asked to make, edit, recolour, rig, animate or critique a low-poly / pixel-art / Blockbench-style model, creature, prop, character or gacha figure.
+description: Model, rig and animate low-poly 3D assets with hand-painted pixel-art textures using lowpix (JSON specs -> animated glb/obj/bbmodel + previews), and make 2D pixel-art or painted sprites (swords, gems, ores, fish, potions) and photo-bashed textures. Use when asked to make, edit, recolour, rig, animate or critique a low-poly / pixel-art / Blockbench / Minecraft-style model, creature, prop, character, gacha figure, item icon, sprite sheet or stylised texture.
 ---
 
 # Modeling with lowpix
@@ -12,6 +12,9 @@ description: Model, rig and animate low-poly 3D assets with hand-painted pixel-a
    (MCP: `lowpix_polyhaven_search` → `lowpix_convert`). See `docs/CONVERT.md`.
    **Many models?** `python -m lowpix batch <sources> --style <style> -o out/<set>` and review `contact.png`
    (MCP: `lowpix_batch`). See `docs/BATCH.md`.
+   **2D icons or sprites?** `python -m lowpix sprite <sword|gem|ore|fish|potion> --count 12 --scale 4`
+   (MCP: `lowpix_sprite`). See `docs/SPRITES.md`. **A texture from a photo?** `python -m lowpix photo ...`
+   (MCP: `lowpix_photo`). See `docs/PHOTOBASH.md`. **A detailed blocky monster?** Start from `examples/thornhide_behemoth.json`.
    **New original character?** `python -m lowpix new <creature|quadruped|bird|robot|figure|critter|prop> "<Name>"`.
 2. Start from the closest example in `examples/` (`salamander.json` for creatures,
    `glowcap.json` for props) and copy it to a new spec file.

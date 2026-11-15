@@ -108,6 +108,19 @@ Each rule below names the lowpix feature that implements it.
   contrasts with the body value (a black creature on a dark moss green background, for example).
   → `render.hero`, `render.background`.
 
+## 7b. Paint like a person: strokes, not gradients
+
+A pixel artist does not let light fall off smoothly. They lay clusters as strokes that follow the form: along a
+blade, around a skull, down a leg, across scale rows. The edges between tones interlock instead of forming clean
+contour lines. → `"brush"` on 3D specs and styles; `paint: "strokes"` on sprites (the default).
+
+* Pick the flow per surface: `horizontal` for hide and scales on a body, `vertical` for moss strands and bark, `long` or `path` for horns, tails and blades.
+* Keep `rough` around 0.5 to 0.7 on organic hide. Raise it (0.8 to 0.9) on moss and fur; drop the brush (`off`) on eyes and glowing parts.
+* Use `textures` marks for material truth: scratches on metal, grain on bone and wood, chips on stone, strands on moss.
+* Organic outlines are curves. 2D generators draw every outline through jittered Catmull-Rom control points. Never
+  ship a bare circle, box or straight polygon as a body.
+* Photo detail (`op: "photo"`, `mode: "detail"`) adds real-world surface relief without leaving the palette.
+
 ## Critique checklist (run it on every contact sheet)
 
 1. Does the silhouette read at thumbnail size? Is the head or focal point the
@@ -115,7 +128,8 @@ Each rule below names the lowpix feature that implements it.
 2. Are pixels the same size everywhere? (Watch `tiny faces` warnings.)
 3. Is it clear where the light comes from, on every part?
 4. Do the markings have a bevel shadow and highlight? Do they wrap edges cleanly?
-5. Is there any single-pixel noise that reads as dust? Replace it with clusters.
+5. Is there any single-pixel noise that reads as dust? Replace it with clusters. Do tone clusters follow the
+   form like strokes, or do they look like smooth computed gradients? (Use `brush`.)
 6. Do the eyes have a catchlight? Is the accent colour carrying the identity?
 7. Do the feet touch the ground with nothing sunk below it? (`below ground plane` warnings.)
 8. Are triangles and colours within budget?

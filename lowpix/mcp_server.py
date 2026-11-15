@@ -116,9 +116,34 @@ TOOLS = [
             "spread": {"type": "number", "default": 0.75}}},
     },
     {
+        "name": "lowpix_sprite",
+        "description": ("2D sprite art painted as brush strokes: a generator (sword, gem, ore, fish, potion) with seeded "
+                        "variations, or an inline sprite spec. Returns the sprite (upscaled) and its spec so you can edit "
+                        "it and call again. paint: strokes (pixel art), flat (clean pixel art), painted (smooth hand-painted)."),
+        "inputSchema": {"type": "object", "properties": {
+            "generator": {"type": "string", "enum": ["sword", "gem", "ore", "fish", "potion"]},
+            "spec": {"type": "object", "description": "Inline sprite spec (see docs/SPRITES.md) instead of a generator."},
+            "seed": {"type": "integer", "default": 0},
+            "count": {"type": "integer", "default": 1, "description": "more than 1: a sheet of seeded variations"},
+            "size": {"description": "N or [W, H] pixels"},
+            "paint": {"type": "string", "enum": ["strokes", "flat", "painted"]},
+            "params": {"type": "object", "description": "generator options, e.g. {species: koi}, {theme: frost}, {cut: heart}"},
+            "out": {"type": "string", "description": "optional PNG path to save"}}},
+    },
+    {
+        "name": "lowpix_photo",
+        "description": ("Photo-bash: stylise a real photo texture (polyhaven:<id>, a vendored folder like assets/photos/rock_face_03, "
+                        "or an image path) into realistic, painted, pixel-hd or pixel style. Tileable. Use query to search "
+                        "Poly Haven's CC0 textures instead."),
+        "inputSchema": {"type": "object", "properties": {
+            "source": {"type": "string"}, "query": {"type": "string"},
+            "style": {"type": "string", "enum": ["realistic", "painted", "pixel-hd", "pixel"], "default": "pixel-hd"},
+            "size": {"type": "integer", "default": 64}, "out": {"type": "string"}}},
+    },
+    {
         "name": "lowpix_guide",
         "description": ("Return the spec reference and the style guide (read this first). topic: 'spec', 'style', "
-                        "'workflow' or 'all'."),
+                        "'workflow', 'sprites' or 'all'."),
         "inputSchema": {"type": "object", "properties": {"topic": {"type": "string", "default": "all"}}},
     },
 ]
@@ -222,6 +247,37 @@ def call_tool(name: str, args: dict):
         for i, c in enumerate(cols):
             sw.paste(Image.new("RGB", (48, 48), c), (48 * i, 0))
         return [_text(json.dumps(cols)), _png(sw)]
+    if name == "lowpix_sprite":
+        from .sprite import upscale
+        from .sprite_gen import make, make_sheet
+        src = args.get("spec") or args.get("generator")
+        if not src:
+            raise ValueError("pass generator or spec")
+        size = args.get("size")
+        params = args.get("params") or {}
+        if int(args.get("count", 1)) > 1:
+            im, specs, _ = make_sheet(src, int(args["count"]), int(args.get("seed", 0)), size, args.get("paint"), **params)
+            info = [s_.get("meta", {}) for s_ in specs]
+        else:
+            spec_, im = make(src, int(args.get("seed", 0)), size, args.get("paint"), **params)
+            info = spec_
+        if args.get("out"):
+            os.makedirs(os.path.dirname(args["out"]) or ".", exist_ok=True)
+            im.save(args["out"])
+        k = max(1, min(8, 640 // max(im.width, im.height)))
+        return [_text(info), _png(upscale(im, k, "#2e3644"))]
+    if name == "lowpix_photo":
+        from .photo import load_photo, photo_search, stylise, tiled_preview
+        if args.get("query") is not None and not args.get("source"):
+            hits = photo_search(args["query"], 30)
+            return [_text("\n".join(f"polyhaven:{a}  {n}  ({d} downloads)" for a, n, d in hits) or "no matches")]
+        size = int(args.get("size", 64))
+        tex = stylise(load_photo(args["source"]), args.get("style", "pixel-hd"), size)
+        if args.get("out"):
+            os.makedirs(os.path.dirname(args["out"]) or ".", exist_ok=True)
+            tex.save(args["out"])
+        return [_text(f"{args.get('style', 'pixel-hd')} {size}px, shown tiled 2x2"),
+                _png(tiled_preview(tex, 2, max(1, 512 // (size * 2))))]
     if name == "lowpix_guide":
         topic = args.get("topic", "all")
         parts = []
@@ -231,6 +287,8 @@ def call_tool(name: str, args: dict):
             parts.append(_read_doc("SPEC.md"))
         if topic in ("style", "all"):
             parts.append(_read_doc("STYLE_GUIDE.md"))
+        if topic in ("sprites", "all"):
+            parts.append(_read_doc("SPRITES.md"))
         return [_text("\n\n---\n\n".join(parts) or "topics: workflow, spec, style, all")]
     raise ValueError(f"unknown tool {name!r}")
 

@@ -137,6 +137,10 @@ also accept `bevel`.
 | `rivets` | `inset`, `spacing`, `highlight`, `shadow`, `ramp`/`tone`, `min_size` | bolt heads at face corners (and every `spacing` px), each with a 1px cast shadow |
 | `wear` | `width`, `density`, `scratches`, `ramp`/`tone` or `shift` | chipped paint along edges revealing another ramp (dark metal under enamel reads best) |
 | `grille` | `rect`, `period`, `dir` (`h`/`v`), `slit_tone`, `lip` | vent slits with a lit lip under each slit |
+| `scales` | `along` (axis the rows run along), `size [along, down]`, `shape` (`round` scales or `square` plates/bricks), `gap`, `gradient`, `rim`, `highlight`, `shadow`, `jitter`, `range`, `ramp`/`tone` | overlapping scale rows or armour plates in pattern space, continuous across faces. Each plate is lit at the top and shadowed under the next row, with a random tone per plate. Rows stay horizontal on faces the `along` axis points out of. |
+| `drip` | `ramp`/`tone`, `depth`, `length`, `width`, `scale`, `top` | moss, snow or slime covering a part's top and running down its sides in uneven strands. Add `bevel` with a `shadow_ramp` for a cast shadow under the strands. |
+| `cracks` | `scale`, `width`, `threshold`, `shift`, `bevel` | branching crack lines (ridged noise). With a bevel they get a lit lip. |
+| `photo` | `src` (`polyhaven:<id>`, an `assets/photos/<id>` folder or an image), `scale` (units per tile), `amount`, `mode` (`detail` or `colour`), `ramps`, `relight`, `tint` | photo-bashing: a real texture projected per face. `detail` adds its relief to the tone (stays on palette). `colour` paints the photo's colours, shaded by the painted light. See [PHOTOBASH.md](PHOTOBASH.md). |
 
 Axes: `x`/`y`/`z` (part coordinates; normalised -1..1 for `band`/`gradient`), a vector, or on lofts
 `path` (units along the loft for `stripes`; 0..1 for `band`/`gradient`/`range`) and `around` (0..1).
@@ -153,6 +157,22 @@ lighting and rims.
 `bevel`: `true` or `{"shadow": 1, "highlight": 1, "shadow_shift": -1.5, "highlight_shift": 1, "shadow_ramp": null}`.
 It paints a 1px drop shadow on the side of the shape away from the light and a
 highlight on the lit side, which is the classic hand-painted inset look.
+
+### Brush (`brush`)
+
+Add `"brush": {...}` at the top of a spec, in a style, or in a part's `paint`. Style and part settings refine the
+model's. The tones are then quantised as **brush strokes that follow the form** instead of with dithering. The
+lit tone is smeared along a flow direction and broken into stroke streaks, so clusters read as hand-laid marks.
+
+| key | meaning |
+|---|---|
+| `flow` | stroke direction: `horizontal` (whichever of x/z lies in the face), `vertical`, `x`/`y`/`z`, `long` (the part's longest axis), `path` (along a loft) or a vector |
+| `flows` | per-ramp overrides, e.g. `{"moss": "vertical"}` |
+| `length`, `width` | stroke size in model units (scaled by `density`) |
+| `rough` | how far stroke streaks push the tone, in ramp steps (0.5 to 0.9) |
+| `overshoot` | how far a stroke carries its tone past where the light says |
+| `textures` | per-ramp marks: `{"moss": "moss", "stone": "stone", "bone": "wood", ...}`. Kinds: metal, wood, stone, leather, cloth, crystal, organic, scales, moss, fur, liquid |
+| `off` | `true` disables the brush for a style (eyes, glowing parts) |
 
 ### Face filters
 

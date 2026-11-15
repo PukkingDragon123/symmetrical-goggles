@@ -25,6 +25,19 @@ chain lofts for spines and tails) and animated. Clips are baked into each `.glb`
 | ![popup](examples/output/pipe_otter_popup.gif) | ![write](examples/output/ibis_scribe_write.gif) | ![boing](examples/output/glowcap_mushroom_boing.gif) |
 | **Pipe Otter**: popup, idle, wave | **Ibis Scribe**: idle, write, bow | **Glowcap Mushroom**: idle, boing |
 
+### Thornhide Behemoth: a detailed blocky monster
+
+![behemoth](examples/output/thornhide_behemoth_hero.png)
+
+A Minecraft-style (all cuboids) original monster at 4 texels per unit, with a 1024² atlas painted entirely in brush
+strokes. It has scale rows and armour plates, moss running down in strands, cracked stone, banded horn and crystal
+clusters, plus photo-bashed relief from CC0 leather, leaf and rock photos. It is rigged with idle, walk and roar clips.
+Spec: [`examples/thornhide_behemoth.json`](examples/thornhide_behemoth.json).
+
+| | | |
+|---|---|---|
+| ![idle](examples/output/thornhide_behemoth_idle.gif) | ![walk](examples/output/thornhide_behemoth_walk.gif) | ![roar](examples/output/thornhide_behemoth_roar.gif) |
+
 The creatures and gacha-style figures were inspired by reference concepts (a crystal dragon, an
 owl hybrid, capsule-toy lines) but are original designs, not copies. All are CC0.
 
@@ -49,6 +62,44 @@ closest-point texture transfer, then per-style shading. It works on any `.glb`, 
 smooth normals, i.e. a game-ready LOD. See [`docs/CONVERT.md`](docs/CONVERT.md). The set above
 is reproducible with `python -m lowpix batch examples/converted/manifest.json -o examples/converted`.
 Source models are CC0 from [Poly Haven](https://polyhaven.com).
+
+### 2D sprites, painted in strokes
+
+![swords](examples/sprites/swords_x3.png)
+
+![gems](examples/sprites/gems_x4.png)
+![ores](examples/sprites/ores_x4.png)
+![potions](examples/sprites/potions_x4.png)
+
+```bash
+python -m lowpix sprite fish --param species=koi --size 80x40 --scale 4
+```
+
+```bash
+python -m lowpix sprite sword --count 12 --scale 3
+```
+
+There are seeded generators for fish (9 species), swords (8 themes), gems (10 cuts, 12 stones), ores, crystals,
+ingots and potions. Every outline is a hand-drawn curve. Anatomy and construction details are layered on top: fin
+rays, gill covers and catch-lights; quillon curls and leather wraps; star facets; and meniscus lines. A brush engine
+lays the light as strokes that follow the form.
+
+There are three finishes: `strokes` (pixel art, the default), `flat` (clean pixel art) and `painted` (smooth
+hand-painted, any size). See [`docs/SPRITES.md`](docs/SPRITES.md).
+
+![painted](examples/sprites/painted.png)
+
+### Photo-bashing
+
+![photobash](examples/sprites/photobash.png)
+
+```bash
+python -m lowpix photo polyhaven:rock_face_03 --style pixel-hd --size 64
+```
+
+This takes a real CC0 photo texture and makes it `realistic`, `painted`, `pixel-hd` or `pixel`. The output is
+tileable and uses ramps extracted from the photo. Photos also feed the 3D painter (`op: "photo"`) and sprite
+materials. See [`docs/PHOTOBASH.md`](docs/PHOTOBASH.md).
 
 ### Mass production
 
@@ -84,7 +135,8 @@ and critiquing images. lowpix closes that loop:
   views, atlas, palette and stats). `render --part head` gives pixel-level close-ups.
 * **An MCP server** (`.mcp.json` included) whose tools return those images straight into the
   agent's context: `lowpix_build`, `lowpix_render`, `lowpix_animate` (filmstrips of a clip),
-  `lowpix_convert`, `lowpix_batch`, `lowpix_polyhaven_search`, `lowpix_texture`, `lowpix_ramp`, `lowpix_guide`.
+  `lowpix_convert`, `lowpix_batch`, `lowpix_polyhaven_search`, `lowpix_texture`, `lowpix_ramp`, `lowpix_sprite`,
+  `lowpix_photo`, `lowpix_guide`.
 * **Animation it can judge**: filmstrips show timing and arcs as one image, and `lint` samples
   every clip for feet sinking through the floor.
 * **Cheap realism**: `convert` turns an existing detailed model into any of four styles in one call
@@ -140,11 +192,14 @@ low-poly pixel-art frog; iterate until the critique checklist passes."* The
 | Converter | `.glb`/`.gltf`/`.obj` or `polyhaven:<id>` → quadric-decimated, chart-unwrapped, closest-point re-baked model in `pixel`, `pixel-hd`, `painted` or `realistic` (lit PBR) style |
 | Production | `batch` (parallel, mixed sources, manifests, summary, contact grid, HTML gallery), `new` (spec templates), batched software rasteriser for high-poly previews |
 | Rigging | every part is a joint at its pivot, `chain` lofts split into posable segments, `bone` (empty joint), pivot hierarchy, Euler rotations, `attach` (stick parts onto a loft's curved surface by path position and angle), `mirror` (whole subtrees, correct on asymmetric bodies, images stay un-flipped), `orient: "world"` for limbs, `snap_ground` for feet, `hide` for buried faces |
-| Painting | hue-shifted ramps, tone-space shading, painted key light, local gradient, ground occlusion, lit and dark edge rims, outlines, `band`, `stripes` (can follow a loft's path), `spots` (3D, wrapping, tapering), `patches`, `noise`, `gradient`, `speckle`, `gloss` (wet dashes), hard-surface `panel`, `rivets`, `wear`, `grille`, `rect`, pattern `bevel`s, ASCII `stamps`, Bayer dithering |
+| Brush | line-integral-convolution brush engine: tones quantised as strokes along a flow field, material marks (scratches, grain, chips, moss strands), and a smooth painted mode with bristles. Used by both the 3D painter (`brush`) and the 2D sprites |
+| 2D | sprite specs (polygons, ellipses, strokes, gems, pixels; per-pixel normals; selective outline; glow and sparkles), generators for fish, swords, gems, ores and potions, sprite sheets, and `strokes`/`flat`/`painted` finishes |
+| Photo-bash | Poly Haven CC0 textures or your photos, stylised to realistic, painted, pixel-hd or pixel (tileable); `photo` paint op and sprite material |
+| Painting | hue-shifted ramps, tone-space shading, painted key light, local gradient, ground occlusion, lit and dark edge rims, outlines, `band`, `stripes` (can follow a loft's path), `spots` (3D, wrapping, tapering), `patches`, `noise`, `gradient`, `speckle`, `gloss` (wet dashes), hard-surface `panel`, `rivets`, `wear`, `grille`, `rect`, `scales`, `drip`, `cracks`, `photo`, pattern `bevel`s, ASCII `stamps`, Bayer dithering or brush strokes |
 | Output | `.glb` (unlit, nearest, alpha mask, node per part, passes the Khronos validator), `.obj/.mtl`, `.bbmodel` (experimental), PNG atlas, hero, contact sheet, turntable GIF, JSON report |
 | Agent I/O | CLI, Python API, MCP server, JSON Schema (`python -m lowpix schema`) |
 
-Docs: [spec reference](docs/SPEC.md) (incl. rigging and animation) · [style guide](docs/STYLE_GUIDE.md) (incl. animation principles) · [agent workflow](docs/AGENT_WORKFLOW.md) · [converter](docs/CONVERT.md) · [batch](docs/BATCH.md)
+Docs: [spec reference](docs/SPEC.md) (incl. rigging and animation) · [style guide](docs/STYLE_GUIDE.md) (incl. animation principles) · [agent workflow](docs/AGENT_WORKFLOW.md) · [converter](docs/CONVERT.md) · [batch](docs/BATCH.md) · [2D sprites](docs/SPRITES.md) · [photo-bashing](docs/PHOTOBASH.md)
 
 ## About the reference and originality
 
@@ -156,6 +211,11 @@ Instead, the *genre* (Blockbench-style low poly, unlit, hand-painted pixel textu
 public preview images (the salamander and a few of the collection's robots, none tagged `noai`) and
 turned into the general rules and tools above. Ember Salamander and Lamplighter Bot are original
 designs made with them. Please treat other artists' models the same way.
+
+The 2D references (an RPG icon sheet, gem and ore sheets, a fish pack and a sword pack) are commercial
+works, so they were treated the same way. lowpix matches their craft (resolution, cluster discipline, hue-shifted
+ramps, selective outlines, catch-lights) with original generators, and does not copy their sprites. The
+blocky-monster references were handled the same way: the Thornhide Behemoth is an original design.
 
 ## Status
 

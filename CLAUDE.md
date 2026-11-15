@@ -13,6 +13,9 @@ can look at.
 | their own detailed model in this style | `python -m lowpix convert path/to/model.glb --style pixel -o out/<name>` |
 | many models / a whole set | **batch**: `python -m lowpix batch <files, folders, globs, polyhaven?<query>> --style <style> -o out/<set>` → open `out/<set>/contact.png` |
 | an original stylised character or creature, rigged and animated | **spec**: `python -m lowpix new <template> "<Name>"` → edit `examples/<name>.json` → `python -m lowpix build examples/<name>.json -o out/<name>` → look → iterate |
+| 2D sprites / item icons (swords, gems, ores, fish, potions) | `python -m lowpix sprite <generator> --count 12 --scale 4` (`--param species=koi`, `--paint painted`) → edit the `.json` it writes → `python -m lowpix sprite my.json`. See docs/SPRITES.md |
+| a texture from a real photo (realistic, painted or pixel) | `python -m lowpix photo search <words>` → `python -m lowpix photo polyhaven:<id> --style pixel-hd --size 64`. In models: paint op `{"op": "photo", ...}` (docs/PHOTOBASH.md) |
+| a detailed blocky (Minecraft-style) monster | copy `examples/thornhide_behemoth.json`: boxes and tapers, `density` 4, a `brush` block, `scales`/`drip`/`cracks`/`photo` layers |
 | animations on a spec | add `animations` (docs/SPEC.md "Rigging and animation") → `python -m lowpix animate <spec> --anim <clip> -o strip.png` |
 
 Styles (`--style`): `pixel` (chunky pixel art, unlit, the house style), `pixel-hd`
@@ -26,17 +29,19 @@ Templates for `new`: `creature` (chain-loft body, walk), `quadruped`, `bird` (wi
 ## Always
 * **Look at the image** (`*_sheet.png`, or `animate` filmstrips) after every build before you
   claim it's good. Fix every `warnings` entry in the report.
-* Don't copy another artist's model. Poly Haven assets are CC0 and fine to convert.
+* Don't copy another artist's model or sprite. Poly Haven assets are CC0 and fine to convert or photo-bash.
+* Organic shapes are curves: never ship a bare circle, box or straight polygon as a body. Paint with `brush` strokes.
   Don't make trademarked characters.
 * Convert/batch outputs go to `out/` (gitignored). Only commit curated results.
 
 ## Repo map
-* `lowpix/`: `geometry` (shapes, lofts, chains, attach), `painter` (texel painting), `anim`
+* `lowpix/`: `geometry` (shapes, lofts, chains, attach), `painter` (texel painting), `brush` (stroke engine),
+  `sprite` + `sprite_gen` (2D), `photo` (photo-bashing), `anim`
   (rigid-bone clips), `model` (build pipeline, report and lint), `render` (software rasteriser,
   filmstrips, GIFs), `export` (glb/obj/bbmodel), `convert` (detailed model → style), `batch`
   (parallel mass production, gallery, templates), `cli`, `mcp_server`.
 * Docs: `docs/SPEC.md` (spec + animation reference), `docs/STYLE_GUIDE.md` (art and animation rules),
-  `docs/AGENT_WORKFLOW.md`, `docs/CONVERT.md`, `docs/BATCH.md`. Skill: `.claude/skills/lowpix-modeling/`.
+  `docs/AGENT_WORKFLOW.md`, `docs/CONVERT.md`, `docs/BATCH.md`, `docs/SPRITES.md`, `docs/PHOTOBASH.md`. Skill: `.claude/skills/lowpix-modeling/`.
 * Tests: `python -m unittest discover -s tests -v` (every example must build with zero warnings
   and a strictly in-palette atlas).
 * After changing an example spec, regenerate its committed outputs:
