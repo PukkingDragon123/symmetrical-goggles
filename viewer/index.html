@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lowpix viewer</title>
+<style>
+  :root { --bg: #1f2b26; --fg: #e8e4f0; --muted: #9a96ad; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
+    font: 14px/1.4 system-ui, -apple-system, Segoe UI, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+  #hud { position: fixed; left: 16px; top: 12px; right: 16px; display: flex; gap: 12px; align-items: center;
+    flex-wrap: wrap; pointer-events: none; }
+  #hud > * { pointer-events: auto; }
+  #name { font-weight: 600; }
+  #hint { color: var(--muted); }
+  button, input { font: inherit; color: var(--fg); background: #0006; border: 1px solid #fff3; border-radius: 6px;
+    padding: 4px 10px; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <span id="name">drop a .glb, or open ?model=path/to/model.glb</span>
+  <button id="spin">auto-rotate: on</button>
+  <label><input type="color" id="bgc" value="#1f2b26"> bg</label>
+  <span id="hint">drag to orbit · scroll to zoom · right-drag to pan</span>
+</div>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+const bg = new THREE.Color('#1f2b26');
+scene.background = bg;
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 5000);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 1.2;
+let current = null;
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+resize();
+
+function frame(obj, yawDeg = 38, pitchDeg = 24) {
+  const box = new THREE.Box3().setFromObject(obj);
+  const size = box.getSize(new THREE.Vector3());
+  const centre = box.getCenter(new THREE.Vector3());
+  const r = size.length() / 2;
+  const vf = THREE.MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect);
+  const d = r / Math.sin(Math.min(vf, hf) / 2) * 0.86;
+  const y = THREE.MathUtils.degToRad(yawDeg), p = THREE.MathUtils.degToRad(pitchDeg);
+  camera.position.set(centre.x + d * Math.cos(p) * Math.sin(y), centre.y + d * Math.sin(p),
+                      centre.z + d * Math.cos(p) * Math.cos(y));
+  controls.target.copy(centre);
+  camera.near = d / 100; camera.far = d * 10; camera.updateProjectionMatrix();
+  controls.update();
+}
+
+function show(gltf, label) {
+  if (current) scene.remove(current);
+  current = gltf.scene;
+  current.traverse(o => {
+    if (o.isMesh) {
+      const m = o.material;
+      if (m.map) { m.map.magFilter = THREE.NearestFilter; m.map.minFilter = THREE.NearestFilter; m.map.generateMipmaps = false; }
+    }
+  });
+  scene.add(current);
+  frame(current);
+  document.getElementById('name').textContent = label;
+  window.__lowpixReady = true;
+}
+
+const loader = new GLTFLoader();
+const url = new URLSearchParams(location.search).get('model');
+if (url) loader.load(url, g => show(g, url.split('/').pop()), undefined, e => {
+  document.getElementById('name').textContent = 'failed to load ' + url; console.error(e); });
+if (new URLSearchParams(location.search).get('spin') === '0') controls.autoRotate = false;
+
+addEventListener('dragover', e => e.preventDefault());
+addEventListener('drop', e => {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (!f) return;
+  f.arrayBuffer().then(buf => loader.parse(buf, '', g => show(g, f.name)));
+});
+const spin = document.getElementById('spin');
+spin.onclick = () => { controls.autoRotate = !controls.autoRotate; spin.textContent = 'auto-rotate: ' + (controls.autoRotate ? 'on' : 'off'); };
+spin.textContent = 'auto-rotate: ' + (controls.autoRotate ? 'on' : 'off');
+document.getElementById('bgc').oninput = e => bg.set(e.target.value);
+
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+</script>
+</body>
+</html>

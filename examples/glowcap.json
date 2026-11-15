@@ -1,0 +1,88 @@
+{
+  "name": "Glowcap Mushroom",
+  "description": "Original prop: a bioluminescent mushroom with a baby cap and grass tufts. Shows prisms, radial forms, gills and grass cards.",
+  "license": "CC0-1.0",
+  "density": 2,
+  "budget": {"tris": 220, "colors": 40},
+  "light": {"dir": [-0.5, 1.0, 0.7], "strength": 1.0, "gradient": 0.5, "ao": 0.8, "ao_height": 2.5},
+  "render": {"background": "#171326", "hero": [32, 20], "shadow": 0.45},
+
+  "palette": {"ramps": {
+    "cap":   ["#0b1a2b", "#0f3346", "#11525f", "#127775", "#1fa38a", "#4fd3a0", "#a6f5c2"],
+    "spot":  ["#3a8f86", "#8fe8d0", "#e3fff3", "#ffffff"],
+    "gill":  ["#160f22", "#2a1c3a", "#4a2f57", "#73466f"],
+    "stem":  ["#2b2235", "#4e4258", "#7d6f82", "#b5a8a8", "#e3d8c8"],
+    "grass": ["#0c1f1a", "#16382a", "#24573a", "#3d7a43", "#6ba34e"]
+  }},
+
+  "styles": {
+    "cap": {
+      "ramp": "cap", "tone": 3.2, "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 2.0, "amount": 0.45},
+        {"id": "dots", "op": "spots", "count": 9, "radius": [0.7, 1.3], "ramp": "spot", "tone": 2.0, "roughness": 0.3,
+         "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -2.0}, "faces": ["sides", "front"], "min_gap": 1.1},
+        {"id": "gills", "op": "stripes", "axis": "x", "period": 1.0, "width": 0.5, "ramp": "gill", "tone": 1.6, "faces": ["back"]},
+        {"id": "gloss", "op": "gloss", "post": true, "dash": true, "length": 2, "density": 0.35, "shift": 2.0, "ramps": ["cap"]}
+      ]
+    },
+    "stem": {
+      "ramp": "stem", "tone": 2.6, "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [
+        {"id": "fibres", "op": "stripes", "axis": "x", "period": 1.5, "width": 0.25, "shift": -0.8, "faces": ["sides"]},
+        {"id": "base", "op": "band", "axis": "z", "from": -1.0, "to": -0.55, "shift": -0.9, "wobble": 0.15}
+      ]
+    },
+    "grass": {"ramp": "grass", "tone": 2.6, "rim": {"light": 0, "dark": 0}, "art_key": {"t": "grass:4", "d": "grass:1"}}
+  },
+
+  "parts": [
+    {"id": "stem", "shape": "prism", "sides": 7, "size": [3.6, 3.6, 8.0], "pivot": [0, 0, 0], "offset": [0, 0, 4.0],
+     "rotation": [-90, 0, 0], "front_scale": [0.8, 0.8], "back_scale": [1.2, 1.2], "hide": ["front", "back"], "style": "stem"},
+    {"id": "cap", "parent": "stem", "shape": "prism", "sides": 8, "size": [13.0, 13.0, 3.6], "pivot": [0, 0, 8.6],
+     "rotation": [0, 0, 8], "front_scale": [0.55, 0.55], "style": "cap"},
+    {"id": "crown", "parent": "cap", "shape": "prism", "sides": 8, "size": [7.0, 7.0, 1.6], "pivot": [0, 0, 2.4],
+     "front_scale": [0.45, 0.45], "hide": ["back"], "style": "cap",
+     "paint": {"layers": [{"id": "dots", "count": 3, "radius": [0.6, 0.9]}]}},
+
+    {"id": "baby_stem", "shape": "prism", "sides": 6, "size": [1.8, 1.8, 3.6], "pivot": [6.5, 0, 3.0], "offset": [0, 0, 1.8],
+     "rotation": [-90, 0, -14], "front_scale": [0.8, 0.8], "back_scale": [1.2, 1.2], "hide": ["front", "back"], "style": "stem",
+     "snap_ground": 0},
+    {"id": "baby_cap", "parent": "baby_stem", "shape": "prism", "sides": 7, "size": [5.4, 5.4, 2.2], "pivot": [0, 0, 4.0],
+     "front_scale": [0.4, 0.4], "style": "cap", "paint": {"layers": [{"id": "dots", "count": 4, "radius": [0.4, 0.7]}]}},
+
+    {"id": "tuft_a", "shape": "card", "plane": "xy", "snap_ground": 0, "pivot": [-5.5, 2.0, 2.5], "rotation": [0, 30, 0], "style": "grass",
+     "art": [
+       "...t.......t...",
+       "...o..t...oo...",
+       "..oo..o..oo..t.",
+       "t.o..oo..o..oo.",
+       "o.oo.o..oo.oo..",
+       "oo.o.oo.o..o...",
+       ".ooo.ooooo.oo..",
+       ".oooooooooooo..",
+       "ddoooooooooodd."]},
+    {"id": "tuft_b", "shape": "card", "plane": "xy", "snap_ground": 0, "pivot": [-5.5, 2.0, 2.5], "rotation": [0, -60, 0], "style": "grass",
+     "art": [
+       "....t....t.....",
+       ".t..o...oo..t..",
+       ".o..oo..o..oo..",
+       ".oo..o.oo..o...",
+       "..o.oo.o..oo.t.",
+       "..oo.o.oo.o..o.",
+       "...ooooooooooo.",
+       "..ooooooooooo..",
+       ".ddoooooooooodd"]},
+    {"id": "tuft_c", "shape": "card", "plane": "xy", "snap_ground": 0, "pivot": [3.0, 1.5, -5.5], "rotation": [0, 75, 0], "style": "grass",
+     "art": [
+       "..t.....t..",
+       "..o..t..o..",
+       ".oo..o.oo..",
+       ".o..oo.o..t",
+       ".oo.o.oo.oo",
+       "..oooooooo.",
+       "ddooooooodd"]}
+  ]
+}

@@ -1,0 +1,1421 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "title": "lowpix model spec",
+ "type": "object",
+ "required": [
+  "palette",
+  "parts"
+ ],
+ "properties": {
+  "$schema": {
+   "type": "string"
+  },
+  "name": {
+   "type": "string"
+  },
+  "description": {
+   "type": "string"
+  },
+  "author": {
+   "type": "string"
+  },
+  "license": {
+   "type": "string"
+  },
+  "notes": {
+   "type": "string"
+  },
+  "density": {
+   "type": "number",
+   "exclusiveMinimum": 0
+  },
+  "grounded": {
+   "type": "boolean"
+  },
+  "budget": {
+   "type": "object",
+   "properties": {
+    "tris": {
+     "type": "integer"
+    },
+    "colors": {
+     "type": "integer"
+    }
+   }
+  },
+  "light": {
+   "type": "object",
+   "properties": {
+    "dir": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 3,
+     "maxItems": 3
+    },
+    "strength": {
+     "type": "number"
+    },
+    "gradient": {
+     "type": "number"
+    },
+    "ao": {
+     "type": "number"
+    },
+    "ao_height": {
+     "type": "number"
+    },
+    "ground": {
+     "type": "number"
+    }
+   }
+  },
+  "render": {
+   "type": "object",
+   "properties": {
+    "background": {
+     "type": "string"
+    },
+    "hero": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "shadow": {
+     "type": "number"
+    }
+   }
+  },
+  "palette": {
+   "type": "object",
+   "required": [
+    "ramps"
+   ],
+   "properties": {
+    "ramps": {
+     "type": "object",
+     "additionalProperties": {
+      "oneOf": [
+       {
+        "type": "array",
+        "items": {
+         "type": "string",
+         "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "minItems": 1
+       },
+       {
+        "type": "object",
+        "required": [
+         "base"
+        ],
+        "properties": {
+         "base": {
+          "type": "string"
+         },
+         "steps": {
+          "type": "integer"
+         },
+         "hue_shift": {
+          "type": "number"
+         },
+         "sat_shift": {
+          "type": "number"
+         },
+         "spread": {
+          "type": "number"
+         },
+         "base_index": {
+          "type": "integer"
+         }
+        }
+       }
+      ]
+     }
+    }
+   }
+  },
+  "styles": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "properties": {
+     "ramp": {
+      "type": "string"
+     },
+     "tone": {
+      "type": "number"
+     },
+     "light": {
+      "type": "number"
+     },
+     "dither": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+     },
+     "rim": {
+      "type": "object",
+      "properties": {
+       "light": {
+        "type": "integer"
+       },
+       "dark": {
+        "type": "integer"
+       },
+       "light_shift": {
+        "type": "number"
+       },
+       "dark_shift": {
+        "type": "number"
+       },
+       "threshold": {
+        "type": "number"
+       },
+       "outline": {
+        "oneOf": [
+         {
+          "enum": [
+           "none",
+           "dark",
+           "all",
+           "bottom"
+          ]
+         },
+         {
+          "type": "array",
+          "items": {
+           "enum": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+           ]
+          }
+         }
+        ]
+       },
+       "outline_width": {
+        "type": "integer"
+       },
+       "outline_color": {
+        "type": "string",
+        "description": "'ramp:index' or '#rrggbb'"
+       }
+      }
+     },
+     "layers": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [],
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "op": {
+         "enum": [
+          "fill",
+          "band",
+          "stripes",
+          "spots",
+          "patches",
+          "speckle",
+          "gradient",
+          "noise",
+          "gloss"
+         ]
+        },
+        "faces": {
+         "oneOf": [
+          {
+           "type": "string"
+          },
+          {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          }
+         ],
+         "description": "face filter tags: face names, sides, flanks, ends, caps, up, down, level, lit, shaded, local_up, local_down, all; prefix '-' to exclude"
+        },
+        "ramp": {
+         "type": "string"
+        },
+        "tone": {
+         "type": "number"
+        },
+        "shift": {
+         "type": "number"
+        },
+        "seed": {
+         "type": "integer"
+        },
+        "space": {
+         "enum": [
+          "local",
+          "world"
+         ]
+        },
+        "post": {
+         "type": "boolean"
+        },
+        "axis": {
+         "oneOf": [
+          {
+           "enum": [
+            "x",
+            "y",
+            "z"
+           ]
+          },
+          {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 3,
+           "maxItems": 3
+          }
+         ]
+        },
+        "from": {
+         "type": "number"
+        },
+        "to": {
+         "type": "number"
+        },
+        "wobble": {
+         "type": "number"
+        },
+        "wobble_scale": {
+         "type": "number"
+        },
+        "period": {
+         "type": "number"
+        },
+        "width": {
+         "type": "number"
+        },
+        "phase": {
+         "type": "number"
+        },
+        "range": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 2,
+         "maxItems": 2
+        },
+        "count": {
+         "type": "integer"
+        },
+        "radius": {
+         "oneOf": [
+          {
+           "type": "number"
+          },
+          {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          }
+         ]
+        },
+        "stretch": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 3,
+         "maxItems": 3
+        },
+        "roughness": {
+         "type": "number"
+        },
+        "rough_scale": {
+         "type": "number"
+        },
+        "where": {
+         "type": "object",
+         "additionalProperties": {
+          "type": "array",
+          "items": {
+           "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+         }
+        },
+        "seed_faces": {
+         "oneOf": [
+          {
+           "type": "string"
+          },
+          {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          }
+         ],
+         "description": "face filter tags: face names, sides, flanks, ends, caps, up, down, level, lit, shaded, local_up, local_down, all; prefix '-' to exclude"
+        },
+        "min_gap": {
+         "type": "number"
+        },
+        "asymmetric": {
+         "type": "boolean"
+        },
+        "scale": {
+         "type": "number"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "octaves": {
+         "type": "integer"
+        },
+        "amount": {
+         "type": "number"
+        },
+        "density": {
+         "type": "number"
+        },
+        "dash": {
+         "type": "boolean"
+        },
+        "length": {
+         "type": "integer"
+        },
+        "inset": {
+         "type": "integer"
+        },
+        "edge": {
+         "type": "integer"
+        },
+        "edge_boost": {
+         "type": "number"
+        },
+        "min_light": {
+         "type": "number"
+        },
+        "streak": {
+         "type": "boolean"
+        },
+        "ramps": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "bevel": {
+         "oneOf": [
+          {
+           "type": "boolean"
+          },
+          {
+           "type": "object",
+           "properties": {
+            "shadow": {
+             "type": "integer"
+            },
+            "highlight": {
+             "type": "integer"
+            },
+            "shadow_shift": {
+             "type": "number"
+            },
+            "highlight_shift": {
+             "type": "number"
+            },
+            "shadow_ramp": {
+             "type": "string"
+            },
+            "shadow_tone": {
+             "type": "number"
+            }
+           }
+          }
+         ]
+        }
+       }
+      }
+     },
+     "stamps": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "art"
+       ],
+       "properties": {
+        "face": {
+         "type": "string"
+        },
+        "at": {
+         "oneOf": [
+          {
+           "type": "string"
+          },
+          {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          }
+         ]
+        },
+        "offset": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 2,
+         "maxItems": 2
+        },
+        "art": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "key": {
+         "type": "object",
+         "additionalProperties": {
+          "type": "string",
+          "description": "'ramp:index' or '#rrggbb'"
+         }
+        },
+        "flip_on_mirror": {
+         "type": "boolean"
+        }
+       }
+      }
+     },
+     "art_key": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "string",
+       "description": "'ramp:index' or '#rrggbb'"
+      }
+     }
+    }
+   }
+  },
+  "defaults": {
+   "type": "object",
+   "properties": {
+    "paint": {
+     "type": "object",
+     "properties": {
+      "ramp": {
+       "type": "string"
+      },
+      "tone": {
+       "type": "number"
+      },
+      "light": {
+       "type": "number"
+      },
+      "dither": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 1
+      },
+      "rim": {
+       "type": "object",
+       "properties": {
+        "light": {
+         "type": "integer"
+        },
+        "dark": {
+         "type": "integer"
+        },
+        "light_shift": {
+         "type": "number"
+        },
+        "dark_shift": {
+         "type": "number"
+        },
+        "threshold": {
+         "type": "number"
+        },
+        "outline": {
+         "oneOf": [
+          {
+           "enum": [
+            "none",
+            "dark",
+            "all",
+            "bottom"
+           ]
+          },
+          {
+           "type": "array",
+           "items": {
+            "enum": [
+             "top",
+             "right",
+             "bottom",
+             "left"
+            ]
+           }
+          }
+         ]
+        },
+        "outline_width": {
+         "type": "integer"
+        },
+        "outline_color": {
+         "type": "string",
+         "description": "'ramp:index' or '#rrggbb'"
+        }
+       }
+      },
+      "layers": {
+       "type": "array",
+       "items": {
+        "type": "object",
+        "required": [],
+        "properties": {
+         "id": {
+          "type": "string"
+         },
+         "op": {
+          "enum": [
+           "fill",
+           "band",
+           "stripes",
+           "spots",
+           "patches",
+           "speckle",
+           "gradient",
+           "noise",
+           "gloss"
+          ]
+         },
+         "faces": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "array",
+            "items": {
+             "type": "string"
+            }
+           }
+          ],
+          "description": "face filter tags: face names, sides, flanks, ends, caps, up, down, level, lit, shaded, local_up, local_down, all; prefix '-' to exclude"
+         },
+         "ramp": {
+          "type": "string"
+         },
+         "tone": {
+          "type": "number"
+         },
+         "shift": {
+          "type": "number"
+         },
+         "seed": {
+          "type": "integer"
+         },
+         "space": {
+          "enum": [
+           "local",
+           "world"
+          ]
+         },
+         "post": {
+          "type": "boolean"
+         },
+         "axis": {
+          "oneOf": [
+           {
+            "enum": [
+             "x",
+             "y",
+             "z"
+            ]
+           },
+           {
+            "type": "array",
+            "items": {
+             "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+           }
+          ]
+         },
+         "from": {
+          "type": "number"
+         },
+         "to": {
+          "type": "number"
+         },
+         "wobble": {
+          "type": "number"
+         },
+         "wobble_scale": {
+          "type": "number"
+         },
+         "period": {
+          "type": "number"
+         },
+         "width": {
+          "type": "number"
+         },
+         "phase": {
+          "type": "number"
+         },
+         "range": {
+          "type": "array",
+          "items": {
+           "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+         },
+         "count": {
+          "type": "integer"
+         },
+         "radius": {
+          "oneOf": [
+           {
+            "type": "number"
+           },
+           {
+            "type": "array",
+            "items": {
+             "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+           }
+          ]
+         },
+         "stretch": {
+          "type": "array",
+          "items": {
+           "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+         },
+         "roughness": {
+          "type": "number"
+         },
+         "rough_scale": {
+          "type": "number"
+         },
+         "where": {
+          "type": "object",
+          "additionalProperties": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          }
+         },
+         "seed_faces": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "array",
+            "items": {
+             "type": "string"
+            }
+           }
+          ],
+          "description": "face filter tags: face names, sides, flanks, ends, caps, up, down, level, lit, shaded, local_up, local_down, all; prefix '-' to exclude"
+         },
+         "min_gap": {
+          "type": "number"
+         },
+         "asymmetric": {
+          "type": "boolean"
+         },
+         "scale": {
+          "type": "number"
+         },
+         "threshold": {
+          "type": "number"
+         },
+         "octaves": {
+          "type": "integer"
+         },
+         "amount": {
+          "type": "number"
+         },
+         "density": {
+          "type": "number"
+         },
+         "dash": {
+          "type": "boolean"
+         },
+         "length": {
+          "type": "integer"
+         },
+         "inset": {
+          "type": "integer"
+         },
+         "edge": {
+          "type": "integer"
+         },
+         "edge_boost": {
+          "type": "number"
+         },
+         "min_light": {
+          "type": "number"
+         },
+         "streak": {
+          "type": "boolean"
+         },
+         "ramps": {
+          "type": "array",
+          "items": {
+           "type": "string"
+          }
+         },
+         "bevel": {
+          "oneOf": [
+           {
+            "type": "boolean"
+           },
+           {
+            "type": "object",
+            "properties": {
+             "shadow": {
+              "type": "integer"
+             },
+             "highlight": {
+              "type": "integer"
+             },
+             "shadow_shift": {
+              "type": "number"
+             },
+             "highlight_shift": {
+              "type": "number"
+             },
+             "shadow_ramp": {
+              "type": "string"
+             },
+             "shadow_tone": {
+              "type": "number"
+             }
+            }
+           }
+          ]
+         }
+        }
+       }
+      },
+      "stamps": {
+       "type": "array",
+       "items": {
+        "type": "object",
+        "required": [
+         "art"
+        ],
+        "properties": {
+         "face": {
+          "type": "string"
+         },
+         "at": {
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "array",
+            "items": {
+             "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+           }
+          ]
+         },
+         "offset": {
+          "type": "array",
+          "items": {
+           "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+         },
+         "art": {
+          "type": "array",
+          "items": {
+           "type": "string"
+          }
+         },
+         "key": {
+          "type": "object",
+          "additionalProperties": {
+           "type": "string",
+           "description": "'ramp:index' or '#rrggbb'"
+          }
+         },
+         "flip_on_mirror": {
+          "type": "boolean"
+         }
+        }
+       }
+      },
+      "art_key": {
+       "type": "object",
+       "additionalProperties": {
+        "type": "string",
+        "description": "'ramp:index' or '#rrggbb'"
+       }
+      }
+     }
+    }
+   }
+  },
+  "parts": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "parent": {
+      "type": "string"
+     },
+     "shape": {
+      "enum": [
+       "box",
+       "taper",
+       "prism",
+       "card"
+      ]
+     },
+     "size": {
+      "type": "array",
+      "items": {
+       "type": "number",
+       "minimum": 0
+      },
+      "minItems": 2,
+      "maxItems": 3
+     },
+     "pivot": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+     },
+     "offset": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+     },
+     "rotation": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+     },
+     "orient": {
+      "enum": [
+       "parent",
+       "world"
+      ]
+     },
+     "mirror": {
+      "type": "boolean"
+     },
+     "snap_ground": {
+      "oneOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "number"
+       }
+      ]
+     },
+     "hide": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "front_scale": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "back_scale": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "front_shift": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "back_shift": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "sides": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 32
+     },
+     "angle": {
+      "type": "number"
+     },
+     "plane": {
+      "enum": [
+       "xy",
+       "xz",
+       "yz"
+      ]
+     },
+     "art": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "style": {
+      "oneOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      ]
+     },
+     "paint": {
+      "type": "object",
+      "properties": {
+       "ramp": {
+        "type": "string"
+       },
+       "tone": {
+        "type": "number"
+       },
+       "light": {
+        "type": "number"
+       },
+       "dither": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+       },
+       "rim": {
+        "type": "object",
+        "properties": {
+         "light": {
+          "type": "integer"
+         },
+         "dark": {
+          "type": "integer"
+         },
+         "light_shift": {
+          "type": "number"
+         },
+         "dark_shift": {
+          "type": "number"
+         },
+         "threshold": {
+          "type": "number"
+         },
+         "outline": {
+          "oneOf": [
+           {
+            "enum": [
+             "none",
+             "dark",
+             "all",
+             "bottom"
+            ]
+           },
+           {
+            "type": "array",
+            "items": {
+             "enum": [
+              "top",
+              "right",
+              "bottom",
+              "left"
+             ]
+            }
+           }
+          ]
+         },
+         "outline_width": {
+          "type": "integer"
+         },
+         "outline_color": {
+          "type": "string",
+          "description": "'ramp:index' or '#rrggbb'"
+         }
+        }
+       },
+       "layers": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "required": [],
+         "properties": {
+          "id": {
+           "type": "string"
+          },
+          "op": {
+           "enum": [
+            "fill",
+            "band",
+            "stripes",
+            "spots",
+            "patches",
+            "speckle",
+            "gradient",
+            "noise",
+            "gloss"
+           ]
+          },
+          "faces": {
+           "oneOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "string"
+             }
+            }
+           ],
+           "description": "face filter tags: face names, sides, flanks, ends, caps, up, down, level, lit, shaded, local_up, local_down, all; prefix '-' to exclude"
+          },
+          "ramp": {
+           "type": "string"
+          },
+          "tone": {
+           "type": "number"
+          },
+          "shift": {
+           "type": "number"
+          },
+          "seed": {
+           "type": "integer"
+          },
+          "space": {
+           "enum": [
+            "local",
+            "world"
+           ]
+          },
+          "post": {
+           "type": "boolean"
+          },
+          "axis": {
+           "oneOf": [
+            {
+             "enum": [
+              "x",
+              "y",
+              "z"
+             ]
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 3,
+             "maxItems": 3
+            }
+           ]
+          },
+          "from": {
+           "type": "number"
+          },
+          "to": {
+           "type": "number"
+          },
+          "wobble": {
+           "type": "number"
+          },
+          "wobble_scale": {
+           "type": "number"
+          },
+          "period": {
+           "type": "number"
+          },
+          "width": {
+           "type": "number"
+          },
+          "phase": {
+           "type": "number"
+          },
+          "range": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "count": {
+           "type": "integer"
+          },
+          "radius": {
+           "oneOf": [
+            {
+             "type": "number"
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 2,
+             "maxItems": 2
+            }
+           ]
+          },
+          "stretch": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 3,
+           "maxItems": 3
+          },
+          "roughness": {
+           "type": "number"
+          },
+          "rough_scale": {
+           "type": "number"
+          },
+          "where": {
+           "type": "object",
+           "additionalProperties": {
+            "type": "array",
+            "items": {
+             "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+           }
+          },
+          "seed_faces": {
+           "oneOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "string"
+             }
+            }
+           ],
+           "description": "face filter tags: face names, sides, flanks, ends, caps, up, down, level, lit, shaded, local_up, local_down, all; prefix '-' to exclude"
+          },
+          "min_gap": {
+           "type": "number"
+          },
+          "asymmetric": {
+           "type": "boolean"
+          },
+          "scale": {
+           "type": "number"
+          },
+          "threshold": {
+           "type": "number"
+          },
+          "octaves": {
+           "type": "integer"
+          },
+          "amount": {
+           "type": "number"
+          },
+          "density": {
+           "type": "number"
+          },
+          "dash": {
+           "type": "boolean"
+          },
+          "length": {
+           "type": "integer"
+          },
+          "inset": {
+           "type": "integer"
+          },
+          "edge": {
+           "type": "integer"
+          },
+          "edge_boost": {
+           "type": "number"
+          },
+          "min_light": {
+           "type": "number"
+          },
+          "streak": {
+           "type": "boolean"
+          },
+          "ramps": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "bevel": {
+           "oneOf": [
+            {
+             "type": "boolean"
+            },
+            {
+             "type": "object",
+             "properties": {
+              "shadow": {
+               "type": "integer"
+              },
+              "highlight": {
+               "type": "integer"
+              },
+              "shadow_shift": {
+               "type": "number"
+              },
+              "highlight_shift": {
+               "type": "number"
+              },
+              "shadow_ramp": {
+               "type": "string"
+              },
+              "shadow_tone": {
+               "type": "number"
+              }
+             }
+            }
+           ]
+          }
+         }
+        }
+       },
+       "stamps": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "required": [
+          "art"
+         ],
+         "properties": {
+          "face": {
+           "type": "string"
+          },
+          "at": {
+           "oneOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 2,
+             "maxItems": 2
+            }
+           ]
+          },
+          "offset": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "art": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "key": {
+           "type": "object",
+           "additionalProperties": {
+            "type": "string",
+            "description": "'ramp:index' or '#rrggbb'"
+           }
+          },
+          "flip_on_mirror": {
+           "type": "boolean"
+          }
+         }
+        }
+       },
+       "art_key": {
+        "type": "object",
+        "additionalProperties": {
+         "type": "string",
+         "description": "'ramp:index' or '#rrggbb'"
+        }
+       }
+      }
+     },
+     "notes": {
+      "type": "string"
+     }
+    },
+    "additionalProperties": false
+   },
+   "minItems": 1
+  }
+ }
+}

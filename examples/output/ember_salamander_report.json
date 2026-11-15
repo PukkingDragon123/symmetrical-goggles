@@ -1,0 +1,87 @@
+{
+  "name": "Ember Salamander",
+  "parts": 18,
+  "instances": 26,
+  "faces": 116,
+  "triangles": 236,
+  "vertices_flat": 468,
+  "vertices_unique": 200,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.708,
+  "texel_density": 2.0,
+  "colors_used": 28,
+  "palette": {
+    "skin": [
+      "#07060b",
+      "#110f19",
+      "#1c1828",
+      "#2a253b",
+      "#3c3553",
+      "#564e72",
+      "#7d7699",
+      "#aba6c4"
+    ],
+    "gold": [
+      "#3d1006",
+      "#7a240a",
+      "#b9440d",
+      "#e2701a",
+      "#f59f2a",
+      "#ffcb48",
+      "#fff09a"
+    ],
+    "belly": [
+      "#0e0b13",
+      "#1a1520",
+      "#28212e",
+      "#3a2f3f",
+      "#514253"
+    ],
+    "eye": [
+      "#020104",
+      "#0b0810",
+      "#1a1420",
+      "#4f3420",
+      "#9a6a34",
+      "#e2b86c",
+      "#ffffff"
+    ],
+    "mouth": [
+      "#1a060c",
+      "#3d0e19",
+      "#6e1f2c"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -14.522,
+      0.023,
+      -52.206
+    ],
+    "max": [
+      18.673,
+      12.479,
+      25.165
+    ],
+    "size": [
+      33.195,
+      12.457,
+      77.371
+    ]
+  },
+  "warnings": [],
+  "files": {
+    "ember_salamander.glb": "examples/output/ember_salamander.glb",
+    "ember_salamander.obj": "examples/output/ember_salamander.obj",
+    "ember_salamander.mtl": "examples/output/ember_salamander.mtl",
+    "ember_salamander.bbmodel": "examples/output/ember_salamander.bbmodel",
+    "ember_salamander_texture.png": "examples/output/ember_salamander_texture.png",
+    "ember_salamander_texture_x4.png": "examples/output/ember_salamander_texture_x4.png",
+    "ember_salamander_hero.png": "examples/output/ember_salamander_hero.png",
+    "ember_salamander_sheet.png": "examples/output/ember_salamander_sheet.png",
+    "ember_salamander_turntable.gif": "examples/output/ember_salamander_turntable.gif"
+  }
+}

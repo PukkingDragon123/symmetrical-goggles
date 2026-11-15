@@ -1,0 +1,178 @@
+{
+  "name": "Ember Salamander",
+  "description": "Original low-poly, pixel-painted fire salamander: glossy ink-black skin, molten gold blotches, bronze-ringed eyes, parotoid glands, costal grooves, splayed sprawl and an S-curved tail.",
+  "author": "lowpix example",
+  "license": "CC0-1.0",
+  "density": 2,
+  "budget": {"tris": 320, "colors": 48},
+  "light": {"dir": [-0.55, 1.0, 0.65], "strength": 1.0, "gradient": 0.6, "ao": 0.9, "ao_height": 3.2},
+  "render": {"background": "#1f2b26", "hero": [38, 26], "shadow": 0.5},
+
+  "palette": {"ramps": {
+    "skin":  ["#07060b", "#110f19", "#1c1828", "#2a253b", "#3c3553", "#564e72", "#7d7699", "#aba6c4"],
+    "gold":  ["#3d1006", "#7a240a", "#b9440d", "#e2701a", "#f59f2a", "#ffcb48", "#fff09a"],
+    "belly": ["#0e0b13", "#1a1520", "#28212e", "#3a2f3f", "#514253"],
+    "eye":   ["#020104", "#0b0810", "#1a1420", "#4f3420", "#9a6a34", "#e2b86c", "#ffffff"],
+    "mouth": ["#1a060c", "#3d0e19", "#6e1f2c"]
+  }},
+
+  "styles": {
+    "skin": {
+      "ramp": "skin", "tone": 2.0, "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "light_shift": 1.0, "dark_shift": -1.0, "outline": "dark"},
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 2.6, "amount": 0.4},
+        {"id": "belly_band", "op": "band", "axis": "y", "from": -1.0, "to": -0.7, "ramp": "belly", "tone": 2.2,
+         "faces": ["sides", "-front", "-back"], "wobble": 0.12},
+        {"id": "belly", "op": "fill", "ramp": "belly", "tone": 2.0, "faces": ["bottom"]},
+        {"id": "pores", "op": "spots", "count": 6, "radius": [0.3, 0.5], "roughness": 0.0, "shift": -1.0, "faces": ["-bottom"]},
+        {"id": "gloss", "op": "gloss", "post": true, "dash": true, "length": 3, "inset": 1, "density": 0.4, "shift": 2.0, "ramps": ["skin"]}
+      ]
+    },
+    "blotches": {
+      "layers": [
+        {"id": "blotch", "op": "spots", "ramp": "gold", "tone": 3.7, "count": 0, "roughness": 0.45, "rough_scale": 1.1,
+         "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -2.0, "highlight_shift": 1.2}, "faces": ["-bottom"]},
+        {"id": "grain", "op": "noise", "scale": 1.4, "amount": 0.35}
+      ]
+    },
+    "grooves": {
+      "layers": [
+        {"id": "costal", "op": "stripes", "axis": "z", "period": 2.4, "width": 0.18, "shift": -1.1,
+         "faces": ["flanks"], "range": [-1.0, 1.0]}
+      ]
+    },
+    "gold_gland": {
+      "ramp": "gold", "tone": 3.6, "dither": 0.3,
+      "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [
+        {"op": "noise", "scale": 1.2, "amount": 0.4},
+        {"id": "gland_pores", "op": "spots", "count": 7, "radius": [0.25, 0.4], "ramp": "gold", "tone": 1.2,
+         "roughness": 0.0, "faces": ["top", "flanks"], "min_gap": 1.4},
+        {"op": "gloss", "post": true, "density": 0.03, "edge": 2}
+      ]
+    },
+    "toes": {
+      "ramp": "skin", "tone": 3.4, "rim": {"light": 0, "dark": 0}, "art_key": {"t": "skin:6", "s": "skin:2"}
+    }
+  },
+
+  "parts": [
+    {"id": "chest", "shape": "taper", "size": [12.6, 7.4, 11.4], "pivot": [0, 6.0, 0], "offset": [0, 0, 5.5],
+     "front_scale": [0.86, 0.9], "hide": ["back"], "style": ["skin", "blotches", "grooves"],
+     "paint": {"layers": [
+       {"id": "blotch", "count": 5, "radius": [1.3, 2.0], "stretch": [1, 1, 1.5], "where": {"y": [-0.1, 1.0]}, "seed": 3}
+     ]}},
+
+    {"id": "belly", "parent": "chest", "shape": "taper", "size": [13.8, 7.8, 10.8], "pivot": [0, 0.1, 0.3], "offset": [0, 0, -5.0],
+     "rotation": [0, -7, 0], "front_scale": [0.97, 0.97], "hide": ["front"], "style": ["skin", "blotches", "grooves"],
+     "paint": {"layers": [
+       {"id": "blotch", "count": 5, "radius": [1.3, 2.1], "stretch": [1, 1, 1.6], "where": {"y": [-0.1, 1.0]}, "seed": 11}
+     ]}},
+
+    {"id": "hips", "parent": "belly", "shape": "taper", "size": [13.0, 7.2, 9.8], "pivot": [0, -0.1, -10.0], "offset": [0, 0, -4.6],
+     "rotation": [0, -8, 0], "back_scale": [0.8, 0.86], "hide": ["front"], "style": ["skin", "blotches", "grooves"],
+     "paint": {"layers": [
+       {"id": "blotch", "count": 5, "radius": [1.2, 1.9], "stretch": [1, 1, 1.5], "where": {"y": [-0.1, 1.0]}, "seed": 19}
+     ]}},
+
+    {"id": "neck", "parent": "chest", "shape": "taper", "size": [11.0, 6.4, 3.6], "pivot": [0, 0.1, 11.0], "offset": [0, 0, 1.2],
+     "back_scale": [1.02, 1.04], "hide": ["front", "back"], "style": "skin"},
+
+    {"id": "head", "parent": "neck", "shape": "taper", "size": [13.4, 5.6, 11.4], "pivot": [0, 0.9, 2.6], "offset": [0, 0, 4.9],
+     "rotation": [-7, 11, 0], "front_scale": [0.74, 0.62], "front_shift": [0, -0.7], "back_scale": [0.92, 1.0],
+     "hide": ["back"], "style": ["skin", "blotches"],
+     "paint": {
+       "layers": [
+         {"id": "blotch", "count": 3, "radius": [1.0, 1.5], "where": {"y": [0.3, 1.0], "z": [-1.0, 0.1]}, "seed": 5, "faces": ["top"]},
+         {"id": "lip", "op": "band", "axis": "y", "from": -1.0, "to": -0.82, "ramp": "mouth", "tone": 0.4, "faces": ["flanks", "front"]}
+       ],
+       "stamps": [
+         {"face": "front", "at": "top", "offset": [0, 2], "art": ["n......n", "nn....nn"], "key": {"n": "skin:0"}}
+       ]
+     }},
+
+    {"id": "jaw", "parent": "head", "shape": "taper", "size": [12.0, 2.2, 10.6], "pivot": [0, -3.6, 0.2], "offset": [0, 0, 4.9],
+     "rotation": [4, 0, 0], "front_scale": [0.72, 0.8], "back_scale": [0.9, 1.0], "hide": ["back"], "style": "skin",
+     "paint": {"tone": 1.8, "layers": [
+       {"id": "lip", "op": "band", "axis": "y", "from": 0.55, "to": 1.0, "ramp": "mouth", "tone": 0.6, "faces": ["flanks", "front"]},
+       {"id": "jaw_spots", "op": "spots", "count": 2, "radius": [0.7, 1.0], "ramp": "gold", "tone": 3.0, "faces": ["flanks"], "seed": 2, "bevel": true}
+     ]}},
+
+    {"id": "eye", "parent": "head", "shape": "prism", "sides": 6, "size": [5.4, 5.4, 2.4], "pivot": [5.0, 2.1, 6.6],
+     "rotation": [0, 60, 42], "front_scale": [0.9, 0.9], "hide": ["back"], "mirror": true, "style": "skin",
+     "paint": {"tone": 3.0,
+       "layers": [{"id": "lid", "op": "band", "axis": "y", "from": 0.15, "to": 1.0, "ramp": "gold", "tone": 3.6, "faces": ["sides"],
+                   "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -2.0}}],
+       "stamps": [{"face": "front", "at": [0, 0],
+       "art": [
+         "..rrrrrr..",
+         ".rggooooor",
+         "rgwwiiiior",
+         "rowwiippor",
+         "roiipppior",
+         "roiipppiar",
+         "roiiipiiar",
+         ".rooiiaar.",
+         "..rrrrrr.."],
+       "key": {"r": "skin:2", "g": "eye:5", "o": "eye:4", "a": "eye:3", "i": "eye:2", "p": "eye:0", "w": "eye:6"}}]}},
+
+    {"id": "gland", "parent": "head", "shape": "taper", "size": [3.8, 1.8, 5.0], "pivot": [4.4, 2.4, 2.2],
+     "rotation": [-4, -12, 14], "front_scale": [0.7, 0.6], "back_scale": [0.8, 0.7], "hide": ["bottom"], "mirror": true,
+     "style": "gold_gland"},
+
+    {"id": "upper_arm", "parent": "chest", "shape": "taper", "size": [6.0, 3.3, 3.5], "pivot": [5.0, -1.6, 8.0], "offset": [2.8, 0, 0],
+     "rotation": [0, -26, -14], "front_scale": [0.95, 0.95], "hide": ["left"], "mirror": true, "style": ["skin", "blotches"],
+     "paint": {"layers": [{"id": "blotch", "count": 2, "radius": [0.9, 1.3], "faces": ["top", "front"], "seed": 21}]}},
+
+    {"id": "forearm", "parent": "upper_arm", "shape": "taper", "size": [2.9, 3.5, 3.0], "pivot": [5.4, 0.2, 0], "offset": [0, -1.35, 0],
+     "orient": "world", "rotation": [8, 0, 6], "front_scale": [0.9, 1], "hide": ["top"], "style": "skin"},
+
+    {"id": "hand", "parent": "forearm", "shape": "card", "plane": "xz", "pivot": [0.4, -3.4, 1.4], "orient": "world",
+     "rotation": [0, 22, 0], "snap_ground": 0.04, "style": "toes",
+     "art": [
+       "....oooooo....",
+       "...oooooooo...",
+       "..oooooooooo..",
+       ".ooo.oooo.ooo.",
+       "oo..oo..oo..oo",
+       "o...oo..oo...o",
+       "o...oo..oo...o",
+       "t...tt..tt...t"]},
+
+    {"id": "thigh", "parent": "hips", "shape": "taper", "size": [6.4, 3.7, 4.0], "pivot": [5.2, -1.4, -5.4], "offset": [3.0, 0, 0],
+     "rotation": [0, 24, -12], "front_scale": [0.95, 0.95], "hide": ["left"], "mirror": true, "style": ["skin", "blotches"],
+     "paint": {"layers": [{"id": "blotch", "count": 2, "radius": [1.0, 1.4], "faces": ["top", "back"], "seed": 31}]}},
+
+    {"id": "shin", "parent": "thigh", "shape": "taper", "size": [3.1, 3.8, 3.2], "pivot": [5.8, 0.3, 0], "offset": [0, -1.55, 0],
+     "orient": "world", "rotation": [-6, 0, 6], "front_scale": [0.9, 1], "hide": ["top"], "style": "skin"},
+
+    {"id": "foot", "parent": "shin", "shape": "card", "plane": "xz", "pivot": [0.8, -3.4, 0.9], "orient": "world",
+     "rotation": [0, 46, 0], "snap_ground": 0.04, "style": "toes",
+     "art": [
+       ".....oooooo.....",
+       "....oooooooo....",
+       "...oooooooooo...",
+       "..ooo.oooo.ooo..",
+       ".oo..o.oo.o..oo.",
+       "oo...o.oo.o...oo",
+       "o...o..oo..o...o",
+       "t...t..tt..t...t"]},
+
+    {"id": "tail1", "parent": "hips", "shape": "taper", "size": [10.4, 6.2, 11.0], "pivot": [0, -0.2, -9.0], "offset": [0, 0, -5.0],
+     "rotation": [-5, -15, 0], "back_scale": [0.76, 0.8], "hide": ["front"], "style": ["skin", "blotches"],
+     "paint": {"layers": [{"id": "blotch", "count": 4, "radius": [1.2, 1.8], "stretch": [1, 1, 1.4], "where": {"y": [0.0, 1.0]}, "seed": 41}]}},
+
+    {"id": "tail2", "parent": "tail1", "shape": "taper", "size": [7.9, 5.0, 10.4], "pivot": [0, 0, -10.2], "offset": [0, 0, -4.8],
+     "rotation": [-2, 20, 0], "back_scale": [0.72, 0.76], "hide": ["front"], "style": ["skin", "blotches"],
+     "paint": {"layers": [{"id": "blotch", "count": 4, "radius": [1.0, 1.5], "stretch": [1, 1, 1.4], "where": {"y": [0.0, 1.0]}, "seed": 43}]}},
+
+    {"id": "tail3", "parent": "tail2", "shape": "taper", "size": [5.7, 3.8, 9.6], "pivot": [0, 0, -9.6], "offset": [0, 0, -4.4],
+     "rotation": [0, 26, 0], "back_scale": [0.64, 0.68], "hide": ["front"], "style": ["skin", "blotches"],
+     "paint": {"layers": [{"id": "blotch", "count": 3, "radius": [0.8, 1.2], "where": {"y": [0.0, 1.0]}, "seed": 47}]}},
+
+    {"id": "tail4", "parent": "tail3", "shape": "taper", "size": [3.7, 2.6, 9.0], "pivot": [0, 0, -8.8], "offset": [0, 0, -4.0],
+     "rotation": [0, 18, 0], "back_scale": [0.22, 0.28], "hide": ["front", "back"], "style": ["skin", "blotches"],
+     "paint": {"layers": [{"id": "blotch", "count": 2, "radius": [0.6, 0.9], "where": {"y": [0.0, 1.0]}, "seed": 53}]}}
+  ]
+}

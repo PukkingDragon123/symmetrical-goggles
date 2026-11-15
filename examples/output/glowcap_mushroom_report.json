@@ -1,0 +1,82 @@
+{
+  "name": "Glowcap Mushroom",
+  "parts": 8,
+  "instances": 8,
+  "faces": 44,
+  "triangles": 106,
+  "vertices_flat": 194,
+  "vertices_unique": 84,
+  "atlas": [
+    64,
+    128
+  ],
+  "atlas_fill": 0.538,
+  "texel_density": 2.0,
+  "colors_used": 21,
+  "palette": {
+    "cap": [
+      "#0b1a2b",
+      "#0f3346",
+      "#11525f",
+      "#127775",
+      "#1fa38a",
+      "#4fd3a0",
+      "#a6f5c2"
+    ],
+    "spot": [
+      "#3a8f86",
+      "#8fe8d0",
+      "#e3fff3",
+      "#ffffff"
+    ],
+    "gill": [
+      "#160f22",
+      "#2a1c3a",
+      "#4a2f57",
+      "#73466f"
+    ],
+    "stem": [
+      "#2b2235",
+      "#4e4258",
+      "#7d6f82",
+      "#b5a8a8",
+      "#e3d8c8"
+    ],
+    "grass": [
+      "#0c1f1a",
+      "#16382a",
+      "#24573a",
+      "#3d7a43",
+      "#6ba34e"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -8.748,
+      -0.0,
+      -8.156
+    ],
+    "max": [
+      9.756,
+      11.8,
+      6.293
+    ],
+    "size": [
+      18.503,
+      11.8,
+      14.449
+    ]
+  },
+  "warnings": [],
+  "files": {
+    "glowcap_mushroom.glb": "examples/output/glowcap_mushroom.glb",
+    "glowcap_mushroom.obj": "examples/output/glowcap_mushroom.obj",
+    "glowcap_mushroom.mtl": "examples/output/glowcap_mushroom.mtl",
+    "glowcap_mushroom.bbmodel": "examples/output/glowcap_mushroom.bbmodel",
+    "glowcap_mushroom_texture.png": "examples/output/glowcap_mushroom_texture.png",
+    "glowcap_mushroom_texture_x8.png": "examples/output/glowcap_mushroom_texture_x8.png",
+    "glowcap_mushroom_hero.png": "examples/output/glowcap_mushroom_hero.png",
+    "glowcap_mushroom_sheet.png": "examples/output/glowcap_mushroom_sheet.png",
+    "glowcap_mushroom_turntable.gif": "examples/output/glowcap_mushroom_turntable.gif"
+  }
+}
