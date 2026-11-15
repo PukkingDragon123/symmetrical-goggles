@@ -1,0 +1,1429 @@
+{
+ "name": "Sunforge Halberd",
+ "description": "Original stylised halberd: chamfered faceted steel and brass, a white-hot sun core with alternating rays, crescent axe blade, spear tip, hooked back spike, lacquered shaft with a wrapped grip and a red ribbon. Painted gradients, glowing core.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 4,
+ "budget": {
+  "tris": 1600,
+  "colors": 56
+ },
+ "light": {
+  "dir": [
+   -0.5,
+   1.0,
+   0.7
+  ],
+  "strength": 1.2,
+  "gradient": 0.4,
+  "ao": 0.0
+ },
+ "render": {
+  "background": "#1c1826",
+  "hero": [
+   38,
+   10
+  ],
+  "shadow": 0.35,
+  "bloom": {
+   "ramps": [
+    "sun"
+   ],
+   "min_step": 4,
+   "radius": 2.2,
+   "strength": 1.0
+  }
+ },
+ "palette": {
+  "ramps": {
+   "brass": [
+    "#2a1408",
+    "#55290c",
+    "#8a4c14",
+    "#c07a22",
+    "#e6a83a",
+    "#f8d06a",
+    "#fff0b0"
+   ],
+   "steel": [
+    "#141826",
+    "#262d42",
+    "#3e4a64",
+    "#5e6e8a",
+    "#8a9ab2",
+    "#b8c6d6",
+    "#e4ecf4"
+   ],
+   "sun": [
+    "#5a1600",
+    "#a33a04",
+    "#e2700c",
+    "#ffa620",
+    "#ffd04a",
+    "#fff09a",
+    "#ffffff"
+   ],
+   "lacquer": [
+    "#1a0608",
+    "#38100e",
+    "#5e1c14",
+    "#86301c",
+    "#ae4a26",
+    "#d06e3c"
+   ],
+   "leather": [
+    "#160c08",
+    "#2e1a10",
+    "#4c2c1a",
+    "#6c4228",
+    "#8e5a38"
+   ],
+   "ribbon": [
+    "#3a0610",
+    "#6a0e1c",
+    "#a01e2a",
+    "#d0383a",
+    "#f06a54"
+   ]
+  }
+ },
+ "styles": {
+  "brass": {
+   "ramp": "brass",
+   "tone": 3.8,
+   "layers": [
+    {
+     "id": "grad",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.8
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "dash": true,
+     "length": 3,
+     "density": 0.4,
+     "shift": 2.0,
+     "post": true
+    }
+   ]
+  },
+  "brass_engraved": {
+   "ramp": "brass",
+   "tone": 3.6,
+   "layers": [
+    {
+     "id": "rays",
+     "op": "stripes",
+     "axis": "around",
+     "period": 0.125,
+     "width": 0.25,
+     "shift": -1.4
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "dash": true,
+     "length": 3,
+     "density": 0.4,
+     "shift": 2.0,
+     "post": true
+    }
+   ]
+  },
+  "steel": {
+   "ramp": "steel",
+   "tone": 4.0,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "sheen",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    },
+    {
+     "id": "streak",
+     "op": "stripes",
+     "axis": [
+      1,
+      1,
+      0
+     ],
+     "period": 3.0,
+     "width": 0.18,
+     "shift": 1.2,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "dash": true,
+     "length": 3,
+     "density": 0.4,
+     "shift": 2.0,
+     "post": true
+    }
+   ]
+  },
+  "edge": {
+   "ramp": "steel",
+   "tone": 5.2,
+   "light": 0.6,
+   "layers": [
+    {
+     "id": "hone",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.4,
+     "width": 0.3,
+     "shift": 0.8
+    }
+   ]
+  },
+  "steel_face": {
+   "ramp": "steel",
+   "tone": 3.0,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "sheen",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    },
+    {
+     "id": "sun_etch",
+     "op": "spots",
+     "centers": [
+      [
+       -0.6,
+       0,
+       0.55,
+       2.2
+      ],
+      [
+       -0.6,
+       0,
+       -0.55,
+       2.2
+      ]
+     ],
+     "ring": 0.72,
+     "gaps": -1,
+     "ramp": "brass",
+     "tone": 4.0,
+     "roughness": 0.0,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "sun_dot",
+     "op": "spots",
+     "centers": [
+      [
+       -0.6,
+       0,
+       0.55,
+       0.9
+      ],
+      [
+       -0.6,
+       0,
+       -0.55,
+       0.9
+      ]
+     ],
+     "ramp": "brass",
+     "tone": 4.6,
+     "roughness": 0.0,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "streak",
+     "op": "stripes",
+     "axis": [
+      1,
+      1,
+      0
+     ],
+     "period": 3.0,
+     "width": 0.16,
+     "shift": 1.4,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "dash": true,
+     "length": 3,
+     "density": 0.4,
+     "shift": 2.0,
+     "post": true
+    }
+   ]
+  },
+  "fuller": {
+   "ramp": "steel",
+   "tone": 2.4
+  },
+  "sun": {
+   "ramp": "sun",
+   "tone": 4.2,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "core",
+     "op": "spots",
+     "centers": [
+      [
+       0,
+       0,
+       1.1,
+       1.6
+      ]
+     ],
+     "tone": 6.0,
+     "roughness": 0.0
+    },
+    {
+     "id": "halo",
+     "op": "spots",
+     "centers": [
+      [
+       0,
+       0,
+       1.1,
+       2.4
+      ]
+     ],
+     "ring": 0.66,
+     "gaps": -1,
+     "tone": 5.0,
+     "roughness": 0.0
+    },
+    {
+     "id": "flare",
+     "op": "stripes",
+     "axis": "around",
+     "period": 0.0833,
+     "width": 0.3,
+     "shift": 0.8
+    }
+   ]
+  },
+  "sun_ray": {
+   "ramp": "sun",
+   "tone": 3.6,
+   "light": 0.3,
+   "layers": [
+    {
+     "id": "hot",
+     "op": "gradient",
+     "axis": "z",
+     "amount": -1.6
+    }
+   ]
+  },
+  "lacquer": {
+   "ramp": "lacquer",
+   "tone": 3.0,
+   "layers": [
+    {
+     "id": "inlay",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.4,
+     "width": 0.14,
+     "zigzag": [
+      0.8,
+      0.25
+     ],
+     "ramp": "brass",
+     "tone": 4.0
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "dash": true,
+     "length": 3,
+     "density": 0.4,
+     "shift": 2.0,
+     "post": true
+    }
+   ]
+  },
+  "leather": {
+   "ramp": "leather",
+   "tone": 2.6,
+   "layers": [
+    {
+     "id": "wrap",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.9,
+     "width": 0.45,
+     "shift": -1.0,
+     "zigzag": [
+      0.4,
+      0.5
+     ]
+    }
+   ]
+  },
+  "ribbon": {
+   "ramp": "ribbon",
+   "tone": 3.0,
+   "light": 0.6,
+   "art_key": {
+    "r": "ribbon:3"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "shaft",
+   "shape": "loft",
+   "pivot": [
+    0,
+    4.6,
+    0
+   ],
+   "rings": [
+    {
+     "at": [
+      0,
+      0,
+      0
+     ],
+     "size": 1.7
+    },
+    {
+     "at": [
+      0,
+      16,
+      0
+     ],
+     "size": 1.55
+    },
+    {
+     "at": [
+      0,
+      33,
+      0
+     ],
+     "size": 1.7
+    }
+   ],
+   "profile": {
+    "sides": 8,
+    "round": 2.2
+   },
+   "subdiv": 0,
+   "caps": [
+    true,
+    true
+   ],
+   "style": "lacquer",
+   "up": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "id": "grip",
+   "parent": "shaft",
+   "shape": "loft",
+   "rings": [
+    {
+     "at": [
+      0,
+      7,
+      0
+     ],
+     "size": 2.1
+    },
+    {
+     "at": [
+      0,
+      17,
+      0
+     ],
+     "size": 2.0
+    }
+   ],
+   "profile": {
+    "sides": 8,
+    "round": 2.2
+   },
+   "subdiv": 0,
+   "caps": [
+    true,
+    true
+   ],
+   "style": "leather",
+   "up": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "id": "ring0",
+   "parent": "shaft",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    2.6,
+    2.6,
+    0.9
+   ],
+   "pivot": [
+    0,
+    6.6,
+    0
+   ],
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "ring1",
+   "parent": "shaft",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    2.6,
+    2.6,
+    0.9
+   ],
+   "pivot": [
+    0,
+    17.4,
+    0
+   ],
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "ring2",
+   "parent": "shaft",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    2.6,
+    2.6,
+    0.9
+   ],
+   "pivot": [
+    0,
+    25.0,
+    0
+   ],
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "butt",
+   "parent": "shaft",
+   "shape": "taper",
+   "size": [
+    2.4,
+    2.4,
+    4.4
+   ],
+   "pivot": [
+    0,
+    0.2,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    2.2
+   ],
+   "rotation": [
+    90,
+    0,
+    45
+   ],
+   "front_scale": [
+    0.12,
+    0.12
+   ],
+   "chamfer": 0.4,
+   "style": "brass",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "collar",
+   "parent": "shaft",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    3.4,
+    3.4,
+    3.0
+   ],
+   "pivot": [
+    0,
+    32.6,
+    0
+   ],
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "back_scale": [
+    0.8,
+    0.8
+   ],
+   "style": "brass_engraved"
+  },
+  {
+   "id": "head",
+   "parent": "shaft",
+   "shape": "bone",
+   "pivot": [
+    0,
+    37.6,
+    0
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "sun_ring",
+   "parent": "head",
+   "shape": "prism",
+   "sides": 12,
+   "size": [
+    7.6,
+    7.6,
+    1.8
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "sun_core",
+   "parent": "sun_ring",
+   "shape": "prism",
+   "sides": 12,
+   "size": [
+    5.6,
+    5.6,
+    2.2
+   ],
+   "pivot": [
+    0,
+    0,
+    0
+   ],
+   "style": "sun"
+  },
+  {
+   "id": "ray0",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.5,
+    0.9,
+    3.4
+   ],
+   "pivot": [
+    3.6,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    0,
+    90,
+    0.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray1",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.1,
+    0.9,
+    2.2
+   ],
+   "pivot": [
+    3.118,
+    1.8,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.1
+   ],
+   "rotation": [
+    0,
+    90,
+    30.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray2",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.5,
+    0.9,
+    3.4
+   ],
+   "pivot": [
+    1.8,
+    3.118,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    0,
+    90,
+    60.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray3",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.1,
+    0.9,
+    2.2
+   ],
+   "pivot": [
+    0.0,
+    3.6,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.1
+   ],
+   "rotation": [
+    0,
+    90,
+    90.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray4",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.5,
+    0.9,
+    3.4
+   ],
+   "pivot": [
+    -1.8,
+    3.118,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    0,
+    90,
+    120.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray5",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.1,
+    0.9,
+    2.2
+   ],
+   "pivot": [
+    -3.118,
+    1.8,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.1
+   ],
+   "rotation": [
+    0,
+    90,
+    150.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray6",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.5,
+    0.9,
+    3.4
+   ],
+   "pivot": [
+    -3.6,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    0,
+    90,
+    180.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray7",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.1,
+    0.9,
+    2.2
+   ],
+   "pivot": [
+    -3.118,
+    -1.8,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.1
+   ],
+   "rotation": [
+    0,
+    90,
+    210.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray8",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.5,
+    0.9,
+    3.4
+   ],
+   "pivot": [
+    -1.8,
+    -3.118,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    0,
+    90,
+    240.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray9",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.1,
+    0.9,
+    2.2
+   ],
+   "pivot": [
+    -0.0,
+    -3.6,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.1
+   ],
+   "rotation": [
+    0,
+    90,
+    270.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray10",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.5,
+    0.9,
+    3.4
+   ],
+   "pivot": [
+    1.8,
+    -3.118,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    0,
+    90,
+    300.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ray11",
+   "parent": "sun_ring",
+   "shape": "taper",
+   "size": [
+    1.1,
+    0.9,
+    2.2
+   ],
+   "pivot": [
+    3.118,
+    -1.8,
+    0.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.1
+   ],
+   "rotation": [
+    0,
+    90,
+    330.0
+   ],
+   "front_scale": [
+    0.12,
+    0.6
+   ],
+   "style": "sun_ray",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "blade",
+   "parent": "head",
+   "shape": "box",
+   "size": [
+    6.6,
+    9.6,
+    1.0
+   ],
+   "pivot": [
+    8.0,
+    -0.6,
+    0
+   ],
+   "chamfer": 0.35,
+   "style": "steel_face"
+  },
+  {
+   "id": "blade_edge",
+   "parent": "blade",
+   "shape": "box",
+   "size": [
+    1.4,
+    10.4,
+    0.6
+   ],
+   "pivot": [
+    3.6,
+    0,
+    0
+   ],
+   "chamfer": 0.15,
+   "style": "edge"
+  },
+  {
+   "id": "horn",
+   "parent": "blade",
+   "shape": "taper",
+   "size": [
+    1.0,
+    3.2,
+    6.4
+   ],
+   "pivot": [
+    2.2,
+    4.4,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    2.6
+   ],
+   "rotation": [
+    -60,
+    90,
+    0
+   ],
+   "front_scale": [
+    0.5,
+    0.1
+   ],
+   "chamfer": 0.3,
+   "style": "steel",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "horn_lo",
+   "parent": "blade",
+   "shape": "taper",
+   "size": [
+    1.0,
+    3.2,
+    6.4
+   ],
+   "pivot": [
+    2.2,
+    -4.4,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    2.6
+   ],
+   "rotation": [
+    60,
+    90,
+    0
+   ],
+   "front_scale": [
+    0.5,
+    0.1
+   ],
+   "chamfer": 0.3,
+   "style": "steel",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "langet",
+   "parent": "head",
+   "shape": "box",
+   "size": [
+    3.8,
+    2.6,
+    1.6
+   ],
+   "pivot": [
+    4.4,
+    -0.6,
+    0
+   ],
+   "chamfer": 0.4,
+   "style": "brass"
+  },
+  {
+   "id": "spear",
+   "parent": "head",
+   "shape": "taper",
+   "size": [
+    2.4,
+    1.3,
+    11.0
+   ],
+   "pivot": [
+    0,
+    3.6,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    5.5
+   ],
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.06,
+    0.2
+   ],
+   "chamfer": 0.3,
+   "style": "steel",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "spear_fuller",
+   "parent": "spear",
+   "shape": "box",
+   "size": [
+    0.6,
+    0.5,
+    6.0
+   ],
+   "pivot": [
+    0,
+    0.5,
+    3.5
+   ],
+   "style": "fuller"
+  },
+  {
+   "id": "hook",
+   "parent": "head",
+   "shape": "taper",
+   "size": [
+    1.4,
+    1.2,
+    5.0
+   ],
+   "pivot": [
+    -4.4,
+    0.6,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    2.5
+   ],
+   "rotation": [
+    0,
+    -90,
+    0
+   ],
+   "front_scale": [
+    0.6,
+    0.6
+   ],
+   "chamfer": 0.2,
+   "style": "steel",
+   "hide": [
+    "back"
+   ]
+  },
+  {
+   "id": "hook_tip",
+   "parent": "hook",
+   "shape": "taper",
+   "size": [
+    0.9,
+    0.8,
+    3.4
+   ],
+   "pivot": [
+    0,
+    0,
+    5.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    50,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.08,
+    0.08
+   ],
+   "style": "steel",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "ribbon",
+   "parent": "shaft",
+   "shape": "card",
+   "plane": "xy",
+   "pivot": [
+    0.4,
+    31.2,
+    1.3
+   ],
+   "size": [
+    4.0,
+    11.0
+   ],
+   "offset": [
+    1.2,
+    -5.2,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -8
+   ],
+   "style": "ribbon",
+   "art": [
+    "..rrrr....",
+    ".rrrrrr...",
+    "..rrrr....",
+    "..rrr.....",
+    "..rrr.....",
+    "...rrr....",
+    "...rrr....",
+    "....rrr...",
+    "....rrr...",
+    "....rrrr..",
+    "...rrrrr..",
+    "...rr.rrr.",
+    "..rr...rr.",
+    "..r.....r."
+   ]
+  }
+ ],
+ "animations": {
+  "showcase": {
+   "length": 4.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "shaft",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       4.0,
+       360,
+       "linear"
+      ]
+     ]
+    },
+    {
+     "part": "shaft",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.8,
+       0
+      ],
+      "cycles": 1,
+      "bias": [
+       0,
+       1.0,
+       0
+      ]
+     }
+    },
+    {
+     "part": "sun_core",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.06,
+       0.06,
+       0.0
+      ],
+      "cycles": 4,
+      "shape": "pulse"
+     }
+    },
+    {
+     "part": "sun_ring",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       4.0,
+       -90,
+       "linear"
+      ]
+     ]
+    },
+    {
+     "part": "ribbon",
+     "axis": "z",
+     "osc": {
+      "amp": 10,
+      "cycles": 2
+     }
+    }
+   ]
+  }
+ },
+ "grounded": false
+}

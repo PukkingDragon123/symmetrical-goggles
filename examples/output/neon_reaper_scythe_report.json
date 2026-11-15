@@ -1,0 +1,124 @@
+{
+  "name": "Neon Reaper Scythe",
+  "parts": 31,
+  "instances": 31,
+  "faces": 178,
+  "triangles": 356,
+  "vertices_flat": 712,
+  "vertices_unique": 240,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.673,
+  "texel_density": 4.0,
+  "colors_used": 26,
+  "palette": {
+    "gun": [
+      "#0c0d12",
+      "#181a22",
+      "#262a36",
+      "#3a404e",
+      "#545c6c",
+      "#7a8292"
+    ],
+    "accent": [
+      "#3a1202",
+      "#7a2a04",
+      "#c4500a",
+      "#f2801a",
+      "#ffb04a"
+    ],
+    "neon": [
+      "#2a0638",
+      "#5a0a70",
+      "#a018b0",
+      "#e040e0",
+      "#ff86f4",
+      "#ffd8fc",
+      "#ffffff"
+    ],
+    "cyan": [
+      "#03202a",
+      "#06485a",
+      "#0a8098",
+      "#22c4d8",
+      "#86f0ff",
+      "#e0fcff"
+    ],
+    "rubber": [
+      "#08080a",
+      "#141418",
+      "#22222a",
+      "#34343e"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -4.612,
+      4.4,
+      -4.29
+    ],
+    "max": [
+      15.453,
+      49.092,
+      1.98
+    ],
+    "size": [
+      20.066,
+      44.692,
+      6.27
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "showcase": 4.0,
+    "swing": 1.6
+  },
+  "joints": [
+    "shaft",
+    "seg0",
+    "band0",
+    "seg1",
+    "band1",
+    "seg2",
+    "band2",
+    "seg3",
+    "band3",
+    "seg4",
+    "band4",
+    "reactor",
+    "reactor_core",
+    "cable0",
+    "cable1",
+    "blade0",
+    "edge0",
+    "blade1",
+    "edge1",
+    "spine_fin",
+    "blade2",
+    "edge2",
+    "blade3",
+    "edge3",
+    "blade4",
+    "edge4",
+    "blade5",
+    "edge5",
+    "tip",
+    "pommel",
+    "pommel_rune"
+  ],
+  "files": {
+    "neon_reaper_scythe.glb": "examples/output/neon_reaper_scythe.glb",
+    "neon_reaper_scythe.obj": "examples/output/neon_reaper_scythe.obj",
+    "neon_reaper_scythe.mtl": "examples/output/neon_reaper_scythe.mtl",
+    "neon_reaper_scythe.bbmodel": "examples/output/neon_reaper_scythe.bbmodel",
+    "neon_reaper_scythe_texture.png": "examples/output/neon_reaper_scythe_texture.png",
+    "neon_reaper_scythe_texture_x4.png": "examples/output/neon_reaper_scythe_texture_x4.png",
+    "neon_reaper_scythe_hero.png": "examples/output/neon_reaper_scythe_hero.png",
+    "neon_reaper_scythe_sheet.png": "examples/output/neon_reaper_scythe_sheet.png",
+    "neon_reaper_scythe_turntable.gif": "examples/output/neon_reaper_scythe_turntable.gif",
+    "neon_reaper_scythe_showcase.gif": "examples/output/neon_reaper_scythe_showcase.gif",
+    "neon_reaper_scythe_swing.gif": "examples/output/neon_reaper_scythe_swing.gif"
+  }
+}

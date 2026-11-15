@@ -1,0 +1,134 @@
+{
+  "name": "Sunforge Halberd",
+  "parts": 32,
+  "instances": 32,
+  "faces": 226,
+  "triangles": 560,
+  "vertices_flat": 1012,
+  "vertices_unique": 396,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.507,
+  "texel_density": 4.0,
+  "colors_used": 33,
+  "palette": {
+    "brass": [
+      "#2a1408",
+      "#55290c",
+      "#8a4c14",
+      "#c07a22",
+      "#e6a83a",
+      "#f8d06a",
+      "#fff0b0"
+    ],
+    "steel": [
+      "#141826",
+      "#262d42",
+      "#3e4a64",
+      "#5e6e8a",
+      "#8a9ab2",
+      "#b8c6d6",
+      "#e4ecf4"
+    ],
+    "sun": [
+      "#5a1600",
+      "#a33a04",
+      "#e2700c",
+      "#ffa620",
+      "#ffd04a",
+      "#fff09a",
+      "#ffffff"
+    ],
+    "lacquer": [
+      "#1a0608",
+      "#38100e",
+      "#5e1c14",
+      "#86301c",
+      "#ae4a26",
+      "#d06e3c"
+    ],
+    "leather": [
+      "#160c08",
+      "#2e1a10",
+      "#4c2c1a",
+      "#6c4228",
+      "#8e5a38"
+    ],
+    "ribbon": [
+      "#3a0610",
+      "#6a0e1c",
+      "#a01e2a",
+      "#d0383a",
+      "#f06a54"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -11.61,
+      1.587,
+      -1.571
+    ],
+    "max": [
+      13.239,
+      56.8,
+      1.571
+    ],
+    "size": [
+      24.849,
+      55.213,
+      3.141
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "showcase": 4.0
+  },
+  "joints": [
+    "shaft",
+    "grip",
+    "ring0",
+    "ring1",
+    "ring2",
+    "butt",
+    "collar",
+    "head",
+    "sun_ring",
+    "sun_core",
+    "ray0",
+    "ray1",
+    "ray2",
+    "ray3",
+    "ray4",
+    "ray5",
+    "ray6",
+    "ray7",
+    "ray8",
+    "ray9",
+    "ray10",
+    "ray11",
+    "blade",
+    "blade_edge",
+    "horn",
+    "horn_lo",
+    "langet",
+    "spear",
+    "spear_fuller",
+    "hook",
+    "hook_tip",
+    "ribbon"
+  ],
+  "files": {
+    "sunforge_halberd.glb": "examples/output/sunforge_halberd.glb",
+    "sunforge_halberd.obj": "examples/output/sunforge_halberd.obj",
+    "sunforge_halberd.mtl": "examples/output/sunforge_halberd.mtl",
+    "sunforge_halberd.bbmodel": "examples/output/sunforge_halberd.bbmodel",
+    "sunforge_halberd_texture.png": "examples/output/sunforge_halberd_texture.png",
+    "sunforge_halberd_texture_x4.png": "examples/output/sunforge_halberd_texture_x4.png",
+    "sunforge_halberd_hero.png": "examples/output/sunforge_halberd_hero.png",
+    "sunforge_halberd_sheet.png": "examples/output/sunforge_halberd_sheet.png",
+    "sunforge_halberd_turntable.gif": "examples/output/sunforge_halberd_turntable.gif",
+    "sunforge_halberd_showcase.gif": "examples/output/sunforge_halberd_showcase.gif"
+  }
+}

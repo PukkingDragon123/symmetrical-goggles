@@ -1,0 +1,1270 @@
+{
+ "name": "Neon Reaper Scythe",
+ "description": "Original blocky pixel-tech scythe: stacked gunmetal shaft segments with cyan circuit traces and orange accent bands, a rubber grip, a reactor block with vents and cables, a stepped-arc blade with a neon edge, and a rune pommel. Glowing neon, flickering edge.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 4,
+ "budget": {
+  "tris": 1200,
+  "colors": 48
+ },
+ "light": {
+  "dir": [
+   -0.5,
+   1.0,
+   0.7
+  ],
+  "strength": 1.0,
+  "gradient": 0.3,
+  "ao": 0.0
+ },
+ "render": {
+  "background": "#1a1424",
+  "hero": [
+   24,
+   10
+  ],
+  "shadow": 0.35,
+  "bloom": {
+   "ramps": [
+    "neon",
+    "cyan"
+   ],
+   "min_step": 3,
+   "radius": 1.8,
+   "strength": 1.1
+  }
+ },
+ "palette": {
+  "ramps": {
+   "gun": [
+    "#0c0d12",
+    "#181a22",
+    "#262a36",
+    "#3a404e",
+    "#545c6c",
+    "#7a8292"
+   ],
+   "accent": [
+    "#3a1202",
+    "#7a2a04",
+    "#c4500a",
+    "#f2801a",
+    "#ffb04a"
+   ],
+   "neon": [
+    "#2a0638",
+    "#5a0a70",
+    "#a018b0",
+    "#e040e0",
+    "#ff86f4",
+    "#ffd8fc",
+    "#ffffff"
+   ],
+   "cyan": [
+    "#03202a",
+    "#06485a",
+    "#0a8098",
+    "#22c4d8",
+    "#86f0ff",
+    "#e0fcff"
+   ],
+   "rubber": [
+    "#08080a",
+    "#141418",
+    "#22222a",
+    "#34343e"
+   ]
+  }
+ },
+ "styles": {
+  "gun": {
+   "ramp": "gun",
+   "tone": 3.0,
+   "dither": 0,
+   "layers": [
+    {
+     "id": "panel",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.2,
+     "highlight": 1.0,
+     "min_size": 6
+    }
+   ]
+  },
+  "circuit": {
+   "ramp": "gun",
+   "tone": 2.8,
+   "dither": 0,
+   "layers": [
+    {
+     "id": "panel",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.2,
+     "highlight": 1.0,
+     "min_size": 6
+    },
+    {
+     "id": "trace",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.2,
+     "width": 0.12,
+     "zigzag": [
+      0.9,
+      0.5
+     ],
+     "ramp": "cyan",
+     "tone": 4.0
+    },
+    {
+     "id": "nodes",
+     "op": "rivets",
+     "inset": 1,
+     "spacing": 4,
+     "ramp": "cyan",
+     "tone": 4.5,
+     "min_size": 5
+    }
+   ]
+  },
+  "grip": {
+   "ramp": "rubber",
+   "tone": 2.0,
+   "layers": [
+    {
+     "id": "wrap",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.5,
+     "shift": 1.0
+    }
+   ]
+  },
+  "accent": {
+   "ramp": "accent",
+   "tone": 3.0,
+   "layers": [
+    {
+     "id": "notch",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.0,
+     "width": 0.25,
+     "shift": -1.2,
+     "faces": [
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "reactor": {
+   "ramp": "gun",
+   "tone": 3.2,
+   "layers": [
+    {
+     "id": "panel",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.3,
+     "highlight": 1.0
+    },
+    {
+     "id": "vents",
+     "op": "grille",
+     "rect": [
+      0.12,
+      0.6,
+      0.88,
+      0.9
+     ],
+     "period": 2,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "warn",
+     "op": "stripes",
+     "axis": [
+      1,
+      1,
+      0
+     ],
+     "period": 1.6,
+     "width": 0.5,
+     "ramp": "accent",
+     "tone": 3.4,
+     "range": [
+      -1.0,
+      -0.6
+     ]
+    },
+    {
+     "id": "nodes",
+     "op": "rivets",
+     "inset": 1,
+     "spacing": 4,
+     "ramp": "cyan",
+     "tone": 4.5,
+     "min_size": 5
+    }
+   ]
+  },
+  "neon_block": {
+   "ramp": "neon",
+   "tone": 4.4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "rune",
+     "op": "rect",
+     "rect": [
+      0.3,
+      0.3,
+      0.7,
+      0.7
+     ],
+     "tone": 6.0
+    }
+   ]
+  },
+  "cable": {
+   "ramp": "rubber",
+   "tone": 1.8,
+   "layers": [
+    {
+     "id": "rib",
+     "op": "stripes",
+     "axis": "z",
+     "period": 0.6,
+     "width": 0.4,
+     "shift": 1.0
+    }
+   ]
+  },
+  "blade": {
+   "ramp": "gun",
+   "tone": 3.6,
+   "dither": 0,
+   "rim": {
+    "light_shift": 1.4,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "plate",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.0,
+     "highlight": 1.0,
+     "min_size": 5
+    },
+    {
+     "id": "etch",
+     "op": "stripes",
+     "axis": "x",
+     "period": 3.0,
+     "width": 0.12,
+     "ramp": "neon",
+     "tone": 3.0,
+     "faces": [
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "neon_edge": {
+   "ramp": "neon",
+   "tone": 4.6,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "shaft",
+   "shape": "bone",
+   "pivot": [
+    0,
+    7.0,
+    0
+   ],
+   "style": "gun"
+  },
+  {
+   "id": "seg0",
+   "parent": "shaft",
+   "shape": "box",
+   "size": [
+    1.9,
+    7.0,
+    1.9
+   ],
+   "pivot": [
+    0,
+    0,
+    0
+   ],
+   "offset": [
+    0,
+    3.5,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "style": "circuit"
+  },
+  {
+   "id": "band0",
+   "parent": "seg0",
+   "shape": "box",
+   "size": [
+    2.4,
+    0.8,
+    2.4
+   ],
+   "pivot": [
+    0,
+    6.6,
+    0
+   ],
+   "style": "accent"
+  },
+  {
+   "id": "seg1",
+   "parent": "seg0",
+   "shape": "box",
+   "size": [
+    1.6,
+    7.0,
+    1.6
+   ],
+   "pivot": [
+    0,
+    7.0,
+    0
+   ],
+   "offset": [
+    0,
+    3.5,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    4
+   ],
+   "style": "grip"
+  },
+  {
+   "id": "band1",
+   "parent": "seg1",
+   "shape": "box",
+   "size": [
+    2.1,
+    0.8,
+    2.1
+   ],
+   "pivot": [
+    0,
+    6.6,
+    0
+   ],
+   "style": "gun"
+  },
+  {
+   "id": "seg2",
+   "parent": "seg1",
+   "shape": "box",
+   "size": [
+    1.9,
+    7.0,
+    1.9
+   ],
+   "pivot": [
+    0,
+    7.0,
+    0
+   ],
+   "offset": [
+    0,
+    3.5,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -3
+   ],
+   "style": "circuit"
+  },
+  {
+   "id": "band2",
+   "parent": "seg2",
+   "shape": "box",
+   "size": [
+    2.4,
+    0.8,
+    2.4
+   ],
+   "pivot": [
+    0,
+    6.6,
+    0
+   ],
+   "style": "accent"
+  },
+  {
+   "id": "seg3",
+   "parent": "seg2",
+   "shape": "box",
+   "size": [
+    1.6,
+    7.0,
+    1.6
+   ],
+   "pivot": [
+    0,
+    7.0,
+    0
+   ],
+   "offset": [
+    0,
+    3.5,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    3
+   ],
+   "style": "circuit"
+  },
+  {
+   "id": "band3",
+   "parent": "seg3",
+   "shape": "box",
+   "size": [
+    2.1,
+    0.8,
+    2.1
+   ],
+   "pivot": [
+    0,
+    6.6,
+    0
+   ],
+   "style": "gun"
+  },
+  {
+   "id": "seg4",
+   "parent": "seg3",
+   "shape": "box",
+   "size": [
+    1.9,
+    6.0,
+    1.9
+   ],
+   "pivot": [
+    0,
+    7.0,
+    0
+   ],
+   "offset": [
+    0,
+    3.0,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -2
+   ],
+   "style": "circuit"
+  },
+  {
+   "id": "band4",
+   "parent": "seg4",
+   "shape": "box",
+   "size": [
+    2.4,
+    0.8,
+    2.4
+   ],
+   "pivot": [
+    0,
+    5.6,
+    0
+   ],
+   "style": "accent"
+  },
+  {
+   "id": "pommel",
+   "parent": "seg0",
+   "shape": "box",
+   "size": [
+    2.8,
+    2.8,
+    2.8
+   ],
+   "pivot": [
+    0,
+    -1.2,
+    0
+   ],
+   "rotation": [
+    0,
+    45,
+    0
+   ],
+   "style": "gun"
+  },
+  {
+   "id": "pommel_rune",
+   "parent": "pommel",
+   "shape": "box",
+   "size": [
+    1.2,
+    1.2,
+    3.0
+   ],
+   "style": "neon_block"
+  },
+  {
+   "id": "reactor",
+   "parent": "seg4",
+   "shape": "box",
+   "size": [
+    4.2,
+    4.6,
+    3.4
+   ],
+   "pivot": [
+    0,
+    6.2,
+    0
+   ],
+   "offset": [
+    0,
+    1.8,
+    0
+   ],
+   "style": "reactor"
+  },
+  {
+   "id": "reactor_core",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    2.4,
+    2.4,
+    3.6
+   ],
+   "pivot": [
+    0,
+    1.8,
+    0
+   ],
+   "style": "neon_block"
+  },
+  {
+   "id": "cable0",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    0.7,
+    0.7,
+    4.2
+   ],
+   "pivot": [
+    -2.4,
+    0.4,
+    -1.0
+   ],
+   "offset": [
+    0,
+    0,
+    -1.6
+   ],
+   "rotation": [
+    20,
+    -30,
+    0
+   ],
+   "style": "cable"
+  },
+  {
+   "id": "cable1",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    0.7,
+    0.7,
+    4.2
+   ],
+   "pivot": [
+    -2.6,
+    2.6,
+    -1.0
+   ],
+   "offset": [
+    0,
+    0,
+    -1.6
+   ],
+   "rotation": [
+    35,
+    -30,
+    0
+   ],
+   "style": "cable"
+  },
+  {
+   "id": "blade0",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    4.4,
+    3.6,
+    0.9
+   ],
+   "pivot": [
+    1.6,
+    4.4,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "style": "blade"
+  },
+  {
+   "id": "edge0",
+   "parent": "blade0",
+   "shape": "box",
+   "size": [
+    4.4,
+    0.7,
+    1.1
+   ],
+   "pivot": [
+    0,
+    -1.6,
+    0
+   ],
+   "style": "neon_edge"
+  },
+  {
+   "id": "blade1",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    4.2,
+    3.15,
+    0.9
+   ],
+   "pivot": [
+    5.6,
+    4.6,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -12
+   ],
+   "style": "blade"
+  },
+  {
+   "id": "edge1",
+   "parent": "blade1",
+   "shape": "box",
+   "size": [
+    4.2,
+    0.7,
+    1.1
+   ],
+   "pivot": [
+    0,
+    -1.375,
+    0
+   ],
+   "style": "neon_edge"
+  },
+  {
+   "id": "blade2",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    4.0,
+    2.7,
+    0.9
+   ],
+   "pivot": [
+    9.4,
+    3.6,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -28
+   ],
+   "style": "blade"
+  },
+  {
+   "id": "edge2",
+   "parent": "blade2",
+   "shape": "box",
+   "size": [
+    4.0,
+    0.7,
+    1.1
+   ],
+   "pivot": [
+    0,
+    -1.1500000000000001,
+    0
+   ],
+   "style": "neon_edge"
+  },
+  {
+   "id": "blade3",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    3.6,
+    2.25,
+    0.9
+   ],
+   "pivot": [
+    12.6,
+    1.6,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -46
+   ],
+   "style": "blade"
+  },
+  {
+   "id": "edge3",
+   "parent": "blade3",
+   "shape": "box",
+   "size": [
+    3.6,
+    0.7,
+    1.1
+   ],
+   "pivot": [
+    0,
+    -0.925,
+    0
+   ],
+   "style": "neon_edge"
+  },
+  {
+   "id": "blade4",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    3.2,
+    1.8,
+    0.9
+   ],
+   "pivot": [
+    14.8,
+    -1.4,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -66
+   ],
+   "style": "blade"
+  },
+  {
+   "id": "edge4",
+   "parent": "blade4",
+   "shape": "box",
+   "size": [
+    3.2,
+    0.7,
+    1.1
+   ],
+   "pivot": [
+    0,
+    -0.7,
+    0
+   ],
+   "style": "neon_edge"
+  },
+  {
+   "id": "blade5",
+   "parent": "reactor",
+   "shape": "box",
+   "size": [
+    2.8,
+    1.35,
+    0.9
+   ],
+   "pivot": [
+    15.8,
+    -4.6,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -86
+   ],
+   "style": "blade"
+  },
+  {
+   "id": "edge5",
+   "parent": "blade5",
+   "shape": "box",
+   "size": [
+    2.8,
+    0.7,
+    1.1
+   ],
+   "pivot": [
+    0,
+    -0.47500000000000003,
+    0
+   ],
+   "style": "neon_edge"
+  },
+  {
+   "id": "tip",
+   "parent": "blade5",
+   "shape": "taper",
+   "size": [
+    1.2,
+    2.0,
+    3.2
+   ],
+   "pivot": [
+    1.2,
+    -0.4,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    1.6
+   ],
+   "rotation": [
+    0,
+    90,
+    -20
+   ],
+   "front_scale": [
+    0.15,
+    0.15
+   ],
+   "style": "blade",
+   "hide": [
+    "back",
+    "front"
+   ]
+  },
+  {
+   "id": "spine_fin",
+   "parent": "blade1",
+   "shape": "box",
+   "size": [
+    3.0,
+    1.4,
+    0.5
+   ],
+   "pivot": [
+    -0.4,
+    2.2,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    18
+   ],
+   "style": "accent"
+  }
+ ],
+ "animations": {
+  "showcase": {
+   "length": 4.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "shaft",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       4.0,
+       360,
+       "linear"
+      ]
+     ]
+    },
+    {
+     "part": "shaft",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.8,
+       0
+      ],
+      "cycles": 1,
+      "bias": [
+       0,
+       1.0,
+       0
+      ]
+     }
+    },
+    {
+     "part": "reactor_core",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.12,
+       0.12,
+       0.0
+      ],
+      "cycles": 4,
+      "shape": "pulse"
+     }
+    },
+    {
+     "part": "edge0",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.4,
+       [
+        0,
+        -0.5,
+        0
+       ],
+       "step"
+      ],
+      [
+       0.46,
+       [
+        0,
+        0,
+        0
+       ],
+       "step"
+      ]
+     ]
+    },
+    {
+     "part": "edge1",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.77,
+       [
+        0,
+        -0.5,
+        0
+       ],
+       "step"
+      ],
+      [
+       0.8300000000000001,
+       [
+        0,
+        0,
+        0
+       ],
+       "step"
+      ]
+     ]
+    },
+    {
+     "part": "edge2",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.1400000000000001,
+       [
+        0,
+        -0.5,
+        0
+       ],
+       "step"
+      ],
+      [
+       1.2,
+       [
+        0,
+        0,
+        0
+       ],
+       "step"
+      ]
+     ]
+    },
+    {
+     "part": "edge3",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.5099999999999998,
+       [
+        0,
+        -0.5,
+        0
+       ],
+       "step"
+      ],
+      [
+       1.5699999999999998,
+       [
+        0,
+        0,
+        0
+       ],
+       "step"
+      ]
+     ]
+    },
+    {
+     "part": "edge4",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.88,
+       [
+        0,
+        -0.5,
+        0
+       ],
+       "step"
+      ],
+      [
+       1.94,
+       [
+        0,
+        0,
+        0
+       ],
+       "step"
+      ]
+     ]
+    },
+    {
+     "part": "edge5",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.25,
+       [
+        0,
+        -0.5,
+        0
+       ],
+       "step"
+      ],
+      [
+       2.31,
+       [
+        0,
+        0,
+        0
+       ],
+       "step"
+      ]
+     ]
+    }
+   ]
+  },
+  "swing": {
+   "length": 1.6,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "shaft",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.45,
+       38,
+       "in_back"
+      ],
+      [
+       0.7,
+       -70,
+       "out"
+      ],
+      [
+       1.0,
+       -60
+      ],
+      [
+       1.5,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "shaft",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.45,
+       [
+        -2,
+        1.0,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.7,
+       [
+        3,
+        0.4,
+        0
+       ],
+       "out"
+      ],
+      [
+       1.5,
+       [
+        0,
+        0,
+        0
+       ],
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "reactor_core",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.6,
+       [
+        0.25,
+        0.25,
+        0.1
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    }
+   ]
+  }
+ },
+ "grounded": false
+}
