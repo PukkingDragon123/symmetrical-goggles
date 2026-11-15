@@ -8,7 +8,7 @@ from PIL import Image
 
 from .export import bbmodel_json, glb_bytes, obj_text
 from .model import build_model
-from .render import contact_sheet, render, turntable
+from .render import animation_gif, contact_sheet, render, turntable
 
 
 def export_all(src, out_dir: str, gif: bool = False, sheet: bool = True, hero_size=(1200, 900)) -> dict:
@@ -44,6 +44,8 @@ def export_all(src, out_dir: str, gif: bool = False, sheet: bool = True, hero_si
         contact_sheet(model, report).save(p(f"{slug}_sheet.png"))
     if gif:
         turntable(model, p(f"{slug}_turntable.gif"))
+        for clip in (model.spec.get("animations") or {}):
+            animation_gif(model, clip, p(f"{slug}_{clip}.gif"))
     report["files"] = {k2: os.path.relpath(v) for k2, v in files.items()}
     with open(p(f"{slug}_report.json"), "w") as fh:
         json.dump(report, fh, indent=2)

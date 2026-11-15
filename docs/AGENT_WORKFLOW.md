@@ -29,7 +29,12 @@ fix** loop, without a 3D viewport.
    `lowpix_render part=head` to check them at pixel level.
 7. **Polish**: gloss dashes, pores as tiny spots, colour budget. Run the critique
    checklist in `STYLE_GUIDE.md` and fix the worst problem first.
-8. **Ship**: `build --gif`. Hand over the `.glb` (game engines and three.js), the `.obj`,
+8. **Rig and animate**: place pivots at the joints (re-check the rest pose), make tails and necks
+   `"chain": true` lofts, then add `animations` (idle plus a signature action, and walk or fly if
+   it moves). Check each clip with `python -m lowpix animate <spec> --anim <clip> -o strip.png`
+   (MCP: `lowpix_animate`). Look for limbs sinking into the floor mid-stride, joints tearing
+   apart, and loops that pop. Apply the animation section of the style guide.
+9. **Ship**: `build --gif`. Hand over the `.glb` (game engines and three.js), the `.obj`,
    and the `.bbmodel` (for a human to touch up in Blockbench).
 
 ## Fixing common warnings

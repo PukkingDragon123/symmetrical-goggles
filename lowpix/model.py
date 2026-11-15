@@ -53,20 +53,26 @@ class Model:
         return (np.concatenate(P).astype(np.float32), np.concatenate(N).astype(np.float32),
                 np.concatenate(UV).astype(np.float32), np.array(I, dtype=np.uint32))
 
-    def world_triangles(self):
-        """(T,3,3) world positions, (T,3,2) uvs - for the software renderer."""
+    def world_triangles(self, worlds=None):
+        """(T,3,3) world positions, (T,3,2) uvs - for the software renderer.
+        `worlds` (instance id -> 4x4) poses the model, e.g. from Animator.world_matrices."""
         tris, uvs = [], []
         for inst in self.instances:
+            W = worlds[inst.id] if worlds is not None else inst.world
             for f in inst.faces:
-                wp = transform_points(inst.world, f.pts)
+                wp = transform_points(W, f.pts)
                 uv = self.face_uvs(f)
                 for a, b, c in f.tris:
                     tris.append(wp[[a, b, c]])
                     uvs.append(uv[[a, b, c]])
         return np.array(tris), np.array(uvs)
 
-    def bounds(self):
-        t, _ = self.world_triangles()
+    def animator(self):
+        from .anim import Animator
+        return Animator(self)
+
+    def bounds(self, worlds=None):
+        t, _ = self.world_triangles(worlds)
         p = t.reshape(-1, 3)
         return p.min(axis=0), p.max(axis=0)
 
@@ -121,6 +127,8 @@ class Model:
             "bounds": {"min": [round(float(v), 3) for v in lo], "max": [round(float(v), 3) for v in hi],
                        "size": [round(float(v), 3) for v in (hi - lo)]},
             "warnings": warnings,
+            "animations": {k: float(v.get("length", 1.0)) for k, v in (self.spec.get("animations") or {}).items()},
+            "joints": [i.id for i in self.instances],
         }
 
     def colors_hex(self):

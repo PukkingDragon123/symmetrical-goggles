@@ -6,15 +6,16 @@ docs/SPEC.md for the full reference.
 from __future__ import annotations
 
 import copy
+import re
 import json
 import os
 
 TOP_KEYS = {"name", "description", "author", "license", "density", "budget", "light", "palette",
-            "styles", "defaults", "parts", "render", "notes", "grounded", "$schema"}
+            "styles", "defaults", "parts", "render", "notes", "grounded", "animations", "anim_fps", "$schema"}
 PART_KEYS = {"id", "parent", "shape", "size", "pivot", "offset", "rotation", "mirror", "style",
              "paint", "hide", "front_scale", "back_scale", "front_shift", "back_shift", "sides",
              "angle", "plane", "art", "orient", "snap_ground", "notes", "chamfer", "profile", "rings",
-             "subdiv", "smooth", "caps", "up", "attach", "hard"}
+             "subdiv", "smooth", "caps", "up", "attach", "hard", "chain"}
 PAINT_KEYS = {"ramp", "tone", "light", "dither", "rim", "layers", "stamps", "art_key"}
 SHAPES = {"box", "taper", "prism", "card", "loft"}
 OPS = {"fill", "band", "stripes", "spots", "patches", "speckle", "gradient", "noise", "gloss",
@@ -216,6 +217,37 @@ def validate(spec: dict):
         for ch, ref in paint.get("art_key", {}).items():
             if not _ref_ok(ref, ramps):
                 errors.append(f"{where}: art_key {ch!r} -> {ref!r} is not a colour")
+    # animations
+    part_ids = {p.get("id") for p in parts}
+    for cname, clip in (spec.get("animations") or {}).items():
+        where = f"animation {cname!r}"
+        if not isinstance(clip, dict):
+            errors.append(f"{where}: must be an object with length/loop/tracks")
+            continue
+        if float(clip.get("length", 1.0)) <= 0:
+            errors.append(f"{where}: length must be > 0")
+        for ti, tr in enumerate(clip.get("tracks", [])):
+            names = tr.get("parts") or [tr.get("part")]
+            for n in names:
+                base = str(n).replace("_mirror", "") if n else None
+                if base not in part_ids and base is not None:
+                    base = re.sub(r"_\d+$", "", base)  # chain segment "tail_3"
+                if base not in part_ids:
+                    errors.append(f"{where}: track {ti} targets unknown part {n!r}")
+            if tr.get("channel", "rotation") not in ("rotation", "position", "scale"):
+                errors.append(f"{where}: track {ti} channel must be rotation|position|scale")
+            kinds = [k for k in ("keys", "osc", "wave") if k in tr]
+            if len(kinds) != 1:
+                errors.append(f"{where}: track {ti} needs exactly one of keys / osc / wave")
+            if "keys" in tr:
+                ks = tr["keys"]
+                if not ks or any(not isinstance(k, list) or len(k) < 2 for k in ks):
+                    errors.append(f"{where}: track {ti} keys must be [[time, value], ...]")
+                elif any(float(k[0]) < 0 or float(k[0]) > float(clip.get("length", 1.0)) + 1e-9 for k in ks):
+                    errors.append(f"{where}: track {ti} has a key outside 0..length")
+            if "wave" in tr and tr.get("part") and not any(p.get("id") == tr["part"] and p.get("chain") for p in parts) \
+                    and not tr.get("parts"):
+                warnings.append(f"{where}: track {ti} wave on {tr['part']!r} needs a chain loft or a 'parts' list")
     # cycles
     parent = {p.get("id"): p.get("parent") for p in parts}
     for pid in parent:

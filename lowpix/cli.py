@@ -52,6 +52,14 @@ def main(argv=None):
     pa.add_argument("--sat-shift", type=float, default=0.12)
     pa.add_argument("--spread", type=float, default=0.75)
 
+    an = sub.add_parser("animate", help="render an animation clip as a filmstrip PNG and/or GIF")
+    an.add_argument("spec")
+    an.add_argument("--anim", required=True, help="clip name")
+    an.add_argument("-o", "--out", required=True, help="output .png (filmstrip) or .gif")
+    an.add_argument("--frames", type=int, default=8, help="filmstrip frames")
+    an.add_argument("--yaw", type=float, default=None)
+    an.add_argument("--pitch", type=float, default=None)
+
     sub.add_parser("schema", help="print the JSON schema for specs")
 
     a = ap.parse_args(argv)
@@ -91,6 +99,15 @@ def main(argv=None):
         print(json.dumps(rep, indent=2))
     elif a.cmd == "ramp":
         print(json.dumps(make_ramp(a.base, a.steps, a.hue_shift, a.sat_shift, a.spread)))
+    elif a.cmd == "animate":
+        from .model import build_model
+        from .render import animation_gif, filmstrip
+        m = build_model(a.spec)
+        if a.out.lower().endswith(".gif"):
+            animation_gif(m, a.anim, a.out, yaw=a.yaw, pitch=a.pitch)
+        else:
+            filmstrip(m, a.anim, frames=a.frames, yaw=a.yaw, pitch=a.pitch).save(a.out)
+        print(a.out)
     elif a.cmd == "schema":
         here = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(here, "schema.json")) as fh:

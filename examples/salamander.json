@@ -4,7 +4,7 @@
   "author": "lowpix example",
   "license": "CC0-1.0",
   "density": 2,
-  "budget": {"tris": 900, "colors": 48},
+  "budget": {"tris": 1000, "colors": 48},
   "light": {"dir": [-0.55, 1.0, 0.65], "strength": 1.15, "gradient": 0.5, "ao": 0.9, "ao_height": 3.0},
   "render": {"background": "#1f2b26", "hero": [38, 24], "shadow": 0.5},
 
@@ -40,8 +40,29 @@
     "toes": {"ramp": "skin", "tone": 3.6, "rim": {"light": 0, "dark": 0}, "art_key": {"t": "gold:4"}}
   },
 
+  "animations": {
+    "idle": {"length": 3.2, "loop": true, "tracks": [
+      {"part": "body_0", "channel": "position", "osc": {"axis": "y", "amp": 0.25, "cycles": 1}},
+      {"parts": ["body_3", "body_4", "body_5", "body_6", "body_7", "body_8"], "wave": {"axis": "y", "amp": 4.0, "cycles": 1, "lag": 0.09, "growth": 1.18}},
+      {"part": "head", "keys": [[0, [0, 0, 0]], [0.9, [-4, 14, 0]], [1.5, [-4, 14, 0]], [2.3, [2, -6, 0]], [2.8, [2, -6, 0]]], "ease": "ease"},
+      {"part": "jaw", "keys": [[0, 0], [1.9, 0], [2.1, 9], [2.5, 0]], "axis": "x", "ease": "smooth"},
+      {"parts": ["crest1", "crest2", "crest3", "crest4", "crest5", "crest6", "crest7", "crest8", "crest9", "crest10", "crest11"], "channel": "scale", "wave": {"amp": [0.0, 0.22, 0.06], "cycles": 4, "lag": 0.17}},
+      {"part": "front_leg", "osc": {"axis": "z", "amp": 1.5, "cycles": 1, "phase": 0.5}}
+    ]},
+    "walk": {"length": 1.4, "loop": true, "tracks": [
+      {"parts": ["body_0", "body_1", "body_2", "body_3", "body_4", "body_5", "body_6", "body_7", "body_8"], "wave": {"axis": "y", "amp": 4.5, "cycles": 1, "lag": 0.1, "growth": 1.08}},
+      {"part": "body_0", "channel": "position", "osc": {"axis": "y", "amp": 0.35, "cycles": 2, "phase": 0.1}},
+      {"part": "head", "osc": {"axis": "y", "amp": -6, "cycles": 1, "phase": 0.08}},
+      {"part": "front_leg", "osc": {"axis": "y", "amp": 24, "cycles": 1}, "mirror_phase": 0.5},
+      {"part": "front_leg", "osc": {"axis": "z", "amp": 7, "bias": 7, "cycles": 1, "phase": 0.25}, "mirror_phase": 0.5},
+      {"part": "back_leg", "osc": {"axis": "y", "amp": 24, "cycles": 1, "phase": 0.5}, "mirror_phase": 0.5},
+      {"part": "back_leg", "osc": {"axis": "z", "amp": 7, "bias": 7, "cycles": 1, "phase": 0.75}, "mirror_phase": 0.5},
+      {"parts": ["crest1", "crest2", "crest3", "crest4", "crest5", "crest6", "crest7", "crest8", "crest9", "crest10", "crest11"], "channel": "scale", "wave": {"amp": [0.0, 0.2, 0.05], "cycles": 4, "lag": 0.17}}
+    ]}
+  },
+
   "parts": [
-    {"id": "body", "shape": "loft", "profile": {"sides": 8, "round": 2.5}, "subdiv": 1, "caps": [false, false],
+    {"id": "body", "shape": "loft", "chain": true, "profile": {"sides": 8, "round": 2.5}, "subdiv": 1, "caps": [false, false],
      "rings": [
        {"at": [0.0, 5.7, 13.0], "size": [10.4, 6.4]},
        {"at": [0.4, 5.9, 6.0], "size": [12.6, 7.4]},

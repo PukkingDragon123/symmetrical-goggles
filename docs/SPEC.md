@@ -185,3 +185,52 @@ inherited one, in which case it is patched in place. That's how a part tunes a s
 | `<slug>_texture.png` | the atlas; `_texture_xN.png` is nearest-upscaled |
 | `<slug>_hero.png`, `_sheet.png`, `_turntable.gif` | previews |
 | `<slug>_report.json` | tris, verts, atlas fill, colours used, bounds and **warnings** |
+
+## Rigging and animation
+
+**The rig is the part hierarchy.** Every part instance is a joint at its `pivot`
+(Blockbench-style rigid bones), exported as a glTF node with its rest
+translation and rotation. Put pivots where the joint should bend: shoulder, elbow, neck,
+hinge of the jaw, wing root. Children follow their parents.
+
+**Chains.** A `loft` with `"chain": true` is split into rigid segments, one per
+span between control rings, named `<id>_0`, `<id>_1`, and so on (mirrored copies get `_mirror`
+appended). Each segment pivots at its first ring. Joint caps close the gaps
+that open when segments bend. Patterns and `path` coordinates stay continuous
+across segments, and parts with `attach` or a pivot ride on the segment they sit on.
+Use chains for tails, necks, spines, tentacles and antennae. More control rings
+give more joints.
+
+**Clips** live under top-level `animations`:
+
+```jsonc
+"animations": {
+  "idle": {"length": 2.4, "loop": true, "tracks": [
+    {"part": "head", "osc": {"axis": "x", "amp": 4, "cycles": 1, "phase": 0.25}},
+    {"parts": ["tail_1", "tail_2", "tail_3"], "wave": {"axis": "y", "amp": 8, "cycles": 1, "lag": 0.12, "growth": 1.2}},
+    {"part": "jaw", "keys": [[0, 0], [0.4, 18], [0.6, 18], [1.0, 0]], "axis": "x", "ease": "smooth"},
+    {"part": "body", "channel": "scale", "osc": {"amp": [0.04, -0.03, 0.04], "cycles": 2}},
+    {"part": "leg", "osc": {"axis": "y", "amp": 25}, "mirror_phase": 0.5}
+  ]}
+}
+```
+
+| track key | meaning |
+|---|---|
+| `part` / `parts` | a part id (drives it **and** its mirrored copy), an instance id (`leg_mirror`, `tail_2`) for just that joint, or a list (`parts`), which is treated as a chain for `wave` |
+| `channel` | `rotation` (degrees, Euler XYZ, in the joint's own frame after its rest rotation; default), `position` (units, parent frame) or `scale` (values are offsets from 1, so `0.1` = 110%) |
+| `keys` | `[[time_s, value], ...]` or `[[t, v, "ease"], ...]`. `value` is `[x, y, z]`, or a number with `"axis"`. Interpolation `ease` per track or per key: `ease` (sine in-out, default), `smooth` (Catmull-Rom through the keys), `linear`, `step`, `in`, `out`, `back` (overshoot), `elastic` |
+| `osc` | `{"axis": "x" or [x, y, z], "amp": n or [ax, ay, az], "cycles": int, "phase": 0..1, "bias": n, "shape": "sine"/"bounce"/"square"/"saw"/"pulse"}` |
+| `wave` | an `osc` applied down a chain, with joint *k* delayed by `k * lag` cycles and its amplitude multiplied by `growth^k`. This gives follow-through and overlapping action for free |
+| `mirror_phase` | time offset (fraction of the clip) for the mirrored copy: `0.5` gives alternating legs or wings |
+| `segment` / `segments: "all"` | for non-wave tracks on a chain id: which segment (default 0) |
+| `raw` | don't mirror the values for the mirrored copy (use it for symmetric motion like a wing *flap* on Z) |
+| `only` | drive just the un-mirrored copy of a mirrored part |
+
+Tracks on the same joint add up (scale multiplies). **Looping**: with `loop: true`,
+keys wrap to the first key, and oscillators loop seamlessly when `cycles` is a whole number.
+
+Outputs: every clip is baked into the `.glb` at 30 fps (`anim_fps` to change) as LINEAR
+translation, rotation and scale channels, so three.js, Godot, Unity and Blender play them as-is.
+`build --gif` also writes `<slug>_<clip>.gif`. `python -m lowpix animate spec.json --anim walk -o strip.png`
+renders a filmstrip of evenly spaced poses (use `.gif` for a GIF). The MCP tool is `lowpix_animate`.

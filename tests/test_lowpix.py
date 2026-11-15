@@ -154,7 +154,14 @@ class TestExport(unittest.TestCase):
         for bv in js["bufferViews"]:
             self.assertLessEqual(bv["byteOffset"] + bv["byteLength"], blen)
         roots = js["scenes"][0]["nodes"]
-        self.assertEqual([js["nodes"][i]["name"] for i in roots], ["body"])
+        self.assertEqual([js["nodes"][i]["name"] for i in roots], ["body_0"])
+        # animations: every channel targets a real node, input/output counts agree
+        self.assertEqual(sorted(a["name"] for a in js["animations"]), ["idle", "walk"])
+        for a in js["animations"]:
+            for ch in a["channels"]:
+                smp = a["samplers"][ch["sampler"]]
+                self.assertLess(ch["target"]["node"], len(js["nodes"]))
+                self.assertEqual(js["accessors"][smp["input"]]["count"], js["accessors"][smp["output"]]["count"])
 
     def test_examples_are_clean(self):
         for path in EXAMPLES:
@@ -253,6 +260,53 @@ class TestLoftsAndHardSurface(unittest.TestCase):
         bad["parts"][2]["parent"] = "crate"
         errors, _ = validate(load_spec(bad))
         self.assertTrue(any("attach needs a parent with shape 'loft'" in e for e in errors), errors)
+
+
+class TestAnimation(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.m = build_model(SALAMANDER)
+        cls.anim = cls.m.animator()
+
+    def test_loops_are_seamless(self):
+        for clip in self.anim.names():
+            length, loop, _ = self.anim.clip(clip)
+            a = self.anim.world_matrices(clip, 0.0)
+            b = self.anim.world_matrices(clip, length - 1e-6)
+            for k in a:
+                np.testing.assert_allclose(a[k], b[k], atol=2e-3, err_msg=f"{clip}:{k}")
+
+    def test_chain_rest_pose_matches_unsplit_loft(self):
+        spec = load_spec(SALAMANDER)
+        plain = copy.deepcopy(spec)
+        for p in plain["parts"]:
+            if p["id"] == "body":
+                p.pop("chain")
+        plain.pop("animations")
+        mc, mp = self.m, build_model(plain)
+        side = lambda m: {tuple(np.round(p, 3)) for i in m.instances if i.src_id == "body"  # noqa: E731
+                          for f in i.faces if "joints" not in f.tags for p in transform_points(i.world, f.pts)}
+        self.assertEqual(side(mc), side(mp))
+
+    def test_mirror_phase_offsets_mirrored_leg(self):
+        length, _, _ = self.anim.clip("walk")
+        t = 0.3
+        a = self.anim.pose("walk", t)["front_leg"][0]
+        b = self.anim.pose("walk", t + length / 2)["front_leg_mirror"][0]
+        np.testing.assert_allclose(a * [1, -1, -1], b, atol=1e-6)
+
+    def test_rest_pose_is_untouched_without_clip(self):
+        w = self.anim.world_matrices(None)
+        for inst in self.m.instances:
+            np.testing.assert_allclose(w[inst.id], inst.world, atol=1e-9)
+
+    def test_bad_track_is_reported(self):
+        spec = load_spec(SALAMANDER)
+        spec["animations"]["idle"]["tracks"].append({"part": "wing", "osc": {"amp": 3}})
+        spec["animations"]["idle"]["tracks"].append({"part": "head"})
+        errors, _ = validate(spec)
+        self.assertTrue(any("unknown part 'wing'" in e for e in errors), errors)
+        self.assertTrue(any("exactly one of keys / osc / wave" in e for e in errors), errors)
 
 
 class TestValidation(unittest.TestCase):

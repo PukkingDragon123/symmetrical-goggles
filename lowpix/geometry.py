@@ -53,11 +53,12 @@ class Face:
     tags: set = field(default_factory=set)     # extra filter tags ("top", "sides", "caps", ...)
     attrs: dict = field(default_factory=dict)  # per-corner attributes, e.g. "path": (n, 2)
     soft: bool = False        # smooth-surface face: no rims/outlines along its edges
+    ring: int = -1            # loft: index of the ring this face starts at (chain segmenting)
 
     def copy(self) -> "Face":
         return Face(self.name, self.kind, self.pts.copy(), self.uv.copy(), list(self.tris),
                     self.double_sided, self.W, self.H, self.rect, set(self.tags),
-                    {k: v.copy() for k, v in self.attrs.items()}, self.soft)
+                    {k: v.copy() for k, v in self.attrs.items()}, self.soft, self.ring)
 
     @property
     def normal(self) -> np.ndarray:
@@ -410,11 +411,20 @@ def _build_loft(part: dict) -> list[Face]:
             f = _quad(name, cs, fc - mid, attrs=attrs, tags={"sides", region, "flanks" if region in ("left", "right") else region})
             if f is not None:
                 f.soft = not hard
+                f.ring = i
                 faces.append(f)
     caps = part.get("caps", [True, True])
     if isinstance(caps, bool):
         caps = [caps, caps]
-    for idx, name, sgn, on in ((0, "start", -1, caps[0]), (m - 1, "end", 1, caps[1])):
+    cap_list = [(0, "start", -1, caps[0], 0), (m - 1, "end", 1, caps[1], m - 2)]
+    if part.get("chain"):
+        # joint caps close the gaps that open when chain segments bend
+        step = int(part.get("subdiv", 1)) + 1
+        for j in range(1, len(part.get("rings", [])) - 1):
+            a = j * step
+            cap_list.append((a, f"joint{j}_end", 1, True, a - 1))
+            cap_list.append((a, f"joint{j}_start", -1, True, a))
+    for idx, name, sgn, on, ring in cap_list:
         if not on or name in hide:
             continue
         pts = R[idx]
@@ -423,8 +433,10 @@ def _build_loft(part: dict) -> list[Face]:
         y2 = np.array([np.dot(p - C[idx], Y[idx]) for p in pts])
         uv = _cap_uv(np.c_[x2, y2], 1 if sgn > 0 else -1)
         attrs = {"path": np.c_[np.full(n, L[idx]), around]}
-        f = _poly(name, pts, uv, T[idx] * sgn, attrs=attrs, tags={"caps", "ends"})
+        f = _poly(name, pts, uv, T[idx] * sgn, attrs=attrs,
+                  tags={"caps", "ends"} if not name.startswith("joint") else {"joints"})
         if f is not None:
+            f.ring = ring
             faces.append(f)
     return faces
 
@@ -584,6 +596,13 @@ class Instance:
     src_faces: list = field(default_factory=list)   # unmirrored, pivot frame
     faces: list = field(default_factory=list)       # instance (possibly mirrored), pivot frame
     children: list = field(default_factory=list)
+    segment: int = -1             # chain lofts: segment index
+    frame_offset: np.ndarray = None   # chain segments: segment origin in the part's frame (unmirrored)
+    rest_local: np.ndarray = None     # rest pose (animation is applied on top)
+
+    @property
+    def pattern_offset(self):
+        return self.frame_offset if self.frame_offset is not None else np.zeros(3)
 
     @property
     def translation(self):
@@ -654,6 +673,13 @@ def expand_instances(parts: list[dict], density: float) -> list[Instance]:
             # rotation is absolute: cancel the parent's world rotation
             r = rot * (np.array([1, -1, -1]) if (mirrored and att) else 1)
             local[:3, :3] = parent_inst.world[:3, :3].T @ rot_matrix(r)
+        if parent_inst is not None and parent_inst.frame_offset is not None:
+            # parent is a chain segment: positions were computed in the whole part's frame
+            off = parent_inst.frame_offset * (np.array([-1, 1, 1]) if parent_inst.mirrored else 1)
+            local[:3, 3] -= off
+        if part.get("shape") == "loft" and part.get("chain"):
+            make_chain(part, parent_inst, mirrored, local)
+            return
         pid = part["id"] + ("_mirror" if mirrored else "")
         inst = Instance(pid, part["id"], part, mirrored, parent_inst.id if parent_inst else None, local)
         inst.world = (parent_inst.world if parent_inst else np.eye(4)) @ local
@@ -679,12 +705,64 @@ def expand_instances(parts: list[dict], density: float) -> list[Instance]:
             else:
                 make(ch, inst, mirrored)
 
+    def make_chain(part, parent_inst, mirrored, local):
+        """Split a loft into rigid, individually posable segments (one per control span)."""
+        full = build_shape(dict(part, _density=density))
+        info = loft_frames(part)
+        C, L = info["C"], info["L"]
+        step = int(part.get("subdiv", 1)) + 1
+        nseg = max(1, len(part.get("rings", [])) - 1)
+        seg_of = lambda ring: int(np.clip(ring // step, 0, nseg - 1))  # noqa: E731
+        M = np.array([-1, 1, 1]) if mirrored else np.ones(3)
+        segs, prev = [], None
+        for j in range(nseg):
+            cj = C[j * step]
+            if j == 0:
+                loc = local @ mat4(None, cj * M)
+                par = parent_inst
+            else:
+                loc = mat4(None, (cj - C[(j - 1) * step]) * M)
+                par = prev
+            sid = f"{part['id']}_{j}" + ("_mirror" if mirrored else "")  # engine-safe (no '.')
+            inst = Instance(sid, part["id"], part, mirrored, par.id if par else None, loc)
+            inst.world = (par.world if par else np.eye(4)) @ loc
+            inst.segment, inst.frame_offset = j, cj.copy()
+            inst.src_faces = full
+            mine = []
+            for f in full:
+                if seg_of(f.ring) == j:
+                    g = f.copy()
+                    g.pts = g.pts - cj
+                    mine.append(g.mirrored() if mirrored else g)
+            inst.faces = mine
+            out.append(inst)
+            if par is not None:
+                par.children.append(sid)
+            segs.append(inst)
+            prev = inst
+        for ch in kids.get(part["id"], []):
+            att = ch.get("attach")
+            if att:
+                s = float(att.get("t", 0.5)) * L[-1]
+                ring = int(np.clip(np.searchsorted(L, s, side="right") - 1, 0, len(L) - 2))
+            else:
+                pv = np.array(_vec(ch.get("pivot"), 3, (0, 0, 0)))
+                ring = int(np.argmin(np.linalg.norm(C - pv, axis=1)))
+            target = segs[seg_of(ring)]
+            if ch.get("mirror") and not mirrored:
+                make(ch, target, False)
+                make(ch, target, True)
+            else:
+                make(ch, target, mirrored)
+
     for root in kids.get(None, []):
         if root.get("mirror"):
             make(root, None, False)
             make(root, None, True)
         else:
             make(root, None, False)
+    for inst in out:
+        inst.rest_local = inst.local.copy()
     return out
 
 

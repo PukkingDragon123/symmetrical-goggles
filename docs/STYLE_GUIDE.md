@@ -119,3 +119,28 @@ Each rule below names the lowpix feature that implements it.
 6. Do the eyes have a catchlight? Is the accent colour carrying the identity?
 7. Do the feet touch the ground with nothing sunk below it? (`below ground plane` warnings.)
 8. Are triangles and colours within budget?
+
+## 8. Animation that reads as polished
+
+Rigid-part animation lives or dies on timing and overlap. Steal from the
+classic principles:
+
+* **Overlap and follow-through**: never move a chain all at once. Use `wave` with a
+  `lag` of 0.08 to 0.2 and a `growth` of 1.1 to 1.3 so tips trail and swing wider than roots
+  (tails, necks, antennae, ears, feathers, flame crests).
+* **Ease, then hold**: key poses with `ease` or `smooth`, and *hold* important poses
+  (repeat a key) so they read. Snappy actions use short wind-ups and `back`
+  overshoot.
+* **Anticipation**: before a big move (pounce, roar, pop-up), move a little the
+  other way first.
+* **Squash and stretch**: small `scale` offsets on the body (about 0.03 to 0.12), with volume
+  roughly kept (stretch Y, thin X/Z). Use it on landings, breaths and hops.
+* **Secondary motion**: give idle clips at least three things moving at
+  different rates (breathing at 1 cycle, a tail at 1 cycle with lag, a blink or twitch as a
+  `pulse`, flames or leaves flickering at 3 to 4 cycles).
+* **Arcs**: rotate joints rather than sliding positions, so motion follows arcs.
+  Combine a swing (Y) with a lift (Z, `bias` so it never dips below rest) for legs and wings.
+* **Gaits**: diagonal pairs move together. Give the front legs `mirror_phase: 0.5` and the
+  back legs the same but `phase` offset by 0.5. Bob the body twice per stride.
+* **Loops**: use whole-number `cycles`, and end keyed clips on their first pose.
+  Check the filmstrip: the last cell should flow into the first.

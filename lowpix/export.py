@@ -91,6 +91,28 @@ def glb_bytes(model) -> bytes:
         node["extras"] = {"part": inst.src_id, "mirrored": inst.mirrored}
         nodes.append(node)
 
+    # animations: every clip baked to LINEAR samples (30 fps) per animated joint
+    animations = []
+    clips = model.spec.get("animations") or {}
+    if clips:
+        anim = model.animator()
+        for cname in clips:
+            times, data = anim.trs_samples(cname, fps=int(model.spec.get("anim_fps", 30)))
+            tin = add_accessor(times.astype(np.float32).reshape(-1, 1), "SCALAR", 5126, None, True)
+            samplers, channels = [], []
+            for iid, (T, Q, S) in data.items():
+                node = index_of[iid]
+                for path, arr, kind in (("translation", T, "VEC3"), ("rotation", Q, "VEC4"), ("scale", S, "VEC3")):
+                    if np.ptp(arr, axis=0).max() < 1e-6 and path != "rotation":
+                        continue  # constant channel
+                    if path == "rotation" and np.ptp(arr, axis=0).max() < 1e-7:
+                        continue
+                    out = add_accessor(arr.astype(np.float32), kind, 5126, None)
+                    samplers.append({"input": tin, "output": out, "interpolation": "LINEAR"})
+                    channels.append({"sampler": len(samplers) - 1, "target": {"node": node, "path": path}})
+            if channels:
+                animations.append({"name": cname, "samplers": samplers, "channels": channels})
+
     img_view = add_view(atlas_png_bytes(model))
     mat_common = {"pbrMetallicRoughness": {"baseColorTexture": {"index": 0}, "metallicFactor": 0.0,
                                            "roughnessFactor": 1.0},
@@ -107,6 +129,7 @@ def glb_bytes(model) -> bytes:
         "textures": [{"sampler": 0, "source": 0}],
         "samplers": [{"magFilter": NEAREST, "minFilter": NEAREST, "wrapS": CLAMP, "wrapT": CLAMP}],
         "images": [{"bufferView": img_view, "mimeType": "image/png", "name": "atlas"}],
+        **({"animations": animations} if animations else {}),
         "accessors": accessors,
         "bufferViews": buffer_views,
         "buffers": [{"byteLength": 0}],

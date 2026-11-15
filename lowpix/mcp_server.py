@@ -58,6 +58,15 @@ TOOLS = [
         })},
     },
     {
+        "name": "lowpix_animate",
+        "description": ("Render an animation clip as a filmstrip image (evenly spaced poses in a grid) so you can "
+                        "judge timing, arcs, overlap and ground contact. Use after adding/editing 'animations'."),
+        "inputSchema": {"type": "object", "required": ["anim"], "properties": dict(_SPEC_ARGS, **{
+            "anim": {"type": "string", "description": "clip name"},
+            "frames": {"type": "integer", "default": 8},
+            "yaw": {"type": "number"}, "pitch": {"type": "number"}})},
+    },
+    {
         "name": "lowpix_texture",
         "description": "Return the painted texture atlas, nearest-upscaled, to inspect pixel work directly.",
         "inputSchema": {"type": "object", "properties": dict(_SPEC_ARGS, **{
@@ -129,6 +138,11 @@ def call_tool(name: str, args: dict):
         img = render(m, int(args.get("width", 900)), int(args.get("height", 650)), float(args.get("yaw", 35)),
                      float(args.get("pitch", 22)), target=tgt, radius=rad)
         return [_png(img)]
+    if name == "lowpix_animate":
+        from .render import filmstrip
+        m = build_model(_spec(args))
+        img = filmstrip(m, args["anim"], frames=int(args.get("frames", 8)), yaw=args.get("yaw"), pitch=args.get("pitch"))
+        return [_png(img, max_w=1600)]
     if name == "lowpix_texture":
         m = build_model(_spec(args))
         k = int(args.get("scale", 4))

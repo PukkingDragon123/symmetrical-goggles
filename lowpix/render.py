@@ -84,9 +84,10 @@ def _rasterize(scr, z, uvs, tex, color, zbuf, W, H, alpha_test=True, flat=None):
         zb[m] = depth[m]
 
 
-def _view(model, yaw, pitch, fov, aspect, target=None):
-    tris, uvs = model.world_triangles()
-    pts = tris.reshape(-1, 3)
+def _view(model, yaw, pitch, fov, aspect, target=None, worlds=None, fit_pts=None):
+    """Camera is framed on `fit_pts` (default: the drawn pose); `worlds` poses the model."""
+    tris, uvs = model.world_triangles(worlds)
+    pts = tris.reshape(-1, 3) if fit_pts is None else np.asarray(fit_pts, float)
     lo, hi = pts.min(axis=0), pts.max(axis=0)
     centre = (lo + hi) / 2 if target is None else np.asarray(target, float)
     radius = float(np.max(np.linalg.norm(pts - centre, axis=1)))
@@ -112,7 +113,7 @@ def fit_focal(model, yaw, pitch, width, height, fov=30.0, margin=0.88):
 
 def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
            background=None, shadow=True, zoom=1.0, target=None, fit="tight", margin=0.88,
-           focal=None, radius=None) -> Image.Image:
+           focal=None, radius=None, worlds=None, fit_pts=None) -> Image.Image:
     """fit="tight" frames the visible model (and its shadow) to fill `margin` of the
     image; fit="sphere" frames the bounding sphere; `focal` (pixels at 1x) and
     `target` override framing; `target` + `radius` frames a sphere of that radius
@@ -121,7 +122,7 @@ def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
     rs = model.spec.get("render", {})
     bg = parse_hex(background or rs.get("background", "#0d0c14"))
     W, H = width * ssaa, height * ssaa
-    tris, uvs, pts, lo, cam, fitpts = _view(model, yaw, pitch, fov, width / height, target)
+    tris, uvs, pts, lo, cam, fitpts = _view(model, yaw, pitch, fov, width / height, target, worlds, fit_pts)
     cxn = cyn = 0.0
     if focal is not None:
         f = focal * ssaa * zoom
@@ -261,3 +262,60 @@ def turntable(model, path, frames=36, size=(480, 360), pitch=20.0, duration=70):
     pal = [im.convert("P", palette=Image.ADAPTIVE, colors=255) for im in imgs]
     pal[0].save(path, save_all=True, append_images=pal[1:], duration=duration, loop=0, disposal=2)
     return path
+
+
+# ---------------------------------------------------------------- animation
+def _anim_fit_points(model, anim, clip, samples=12):
+    length, _, _ = anim.clip(clip)
+    pts = [model.world_triangles(anim.world_matrices(clip, length * k / samples))[0].reshape(-1, 3)
+           for k in range(samples)]
+    p = np.concatenate(pts)
+    g = p.copy()
+    g[:, 1] = min(0.0, p[:, 1].min())
+    return np.concatenate([p, g])
+
+
+def animation_frames(model, clip, fps=15, size=(480, 360), yaw=None, pitch=None, ssaa=2, margin=0.86):
+    """Rendered frames of one clip with a fixed camera framed on the whole motion."""
+    anim = model.animator()
+    length, _, _ = anim.clip(clip)
+    rs = model.spec.get("render", {})
+    hy, hp = rs.get("hero", (35, 22))
+    yaw = hy if yaw is None else yaw
+    pitch = hp if pitch is None else pitch
+    fit = _anim_fit_points(model, anim, clip)
+    n = max(2, int(round(length * fps)))
+    frames = []
+    for k in range(n):
+        w = anim.world_matrices(clip, length * k / n)
+        frames.append(render(model, size[0], size[1], yaw, pitch, ssaa=ssaa, worlds=w, fit_pts=fit, margin=margin))
+    return frames
+
+
+def animation_gif(model, clip, path, fps=15, size=(480, 360), yaw=None, pitch=None):
+    frames = animation_frames(model, clip, fps, size, yaw, pitch)
+    pal = [im.convert("P", palette=Image.ADAPTIVE, colors=255) for im in frames]
+    pal[0].save(path, save_all=True, append_images=pal[1:], duration=int(1000 / fps), loop=0, disposal=2)
+    return path
+
+
+def filmstrip(model, clip, frames=8, cell=(320, 260), yaw=None, pitch=None, cols=4):
+    """One PNG grid of evenly spaced poses from a clip (agents can't watch GIFs)."""
+    anim = model.animator()
+    length, _, _ = anim.clip(clip)
+    rs = model.spec.get("render", {})
+    hy, hp = rs.get("hero", (35, 22))
+    yaw = hy if yaw is None else yaw
+    pitch = hp if pitch is None else pitch
+    fit = _anim_fit_points(model, anim, clip)
+    rows = (frames + cols - 1) // cols
+    sheet = Image.new("RGB", (cell[0] * cols, cell[1] * rows + 34), (12, 12, 18))
+    d = ImageDraw.Draw(sheet)
+    d.text((10, 8), f"{model.name} - {clip} ({length:.2f}s)", fill=(230, 226, 240), font=_font(18))
+    for k in range(frames):
+        t = length * k / frames
+        im = render(model, cell[0], cell[1], yaw, pitch, ssaa=2, worlds=anim.world_matrices(clip, t), fit_pts=fit)
+        x, y = (k % cols) * cell[0], 34 + (k // cols) * cell[1]
+        sheet.paste(im, (x, y))
+        d.text((x + 6, y + 4), f"t={t:.2f}", fill=(200, 196, 215), font=_font(13))
+    return sheet

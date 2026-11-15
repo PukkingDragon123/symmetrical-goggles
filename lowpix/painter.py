@@ -108,7 +108,7 @@ class FaceCtx:
         self.path = face.texel_attr("path", self.W, self.H)   # loft (length, around) per texel
         self.path_total = 1.0
         self.P_local = face.texel_positions(self.W, self.H)
-        self.P_src = self.P_local * (np.array([-1, 1, 1]) if inst.mirrored else 1)
+        self.P_src = self.P_local * (np.array([-1, 1, 1]) if inst.mirrored else 1) + inst.pattern_offset
         R, t = inst.world[:3, :3], inst.world[:3, 3]
         self.P_world = self.P_local @ R.T + t
         n_loc = face.normal
