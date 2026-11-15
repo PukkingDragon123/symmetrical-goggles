@@ -1,0 +1,2832 @@
+{
+ "sources": {
+  "oga_rd_creature": {
+   "site": "opengameart.org",
+   "title": "80 CC0 creature SFX",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/80-cc0-creature-sfx",
+   "url": "https://opengameart.org/sites/default/files/80-CC0-creature-SFX_0.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_creature2": {
+   "site": "opengameart.org",
+   "title": "80 CC0 creture SFX #2",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/80-cc0-creture-sfx-2",
+   "url": "https://opengameart.org/sites/default/files/80-CC0-creature-sfx-2.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_rpg": {
+   "site": "opengameart.org",
+   "title": "80 CC0 RPG SFX",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/80-cc0-rpg-sfx",
+   "url": "https://opengameart.org/sites/default/files/80-CC0-RPG-SFX_0.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_break": {
+   "site": "opengameart.org",
+   "title": "75 CC0 breaking / falling / hit sfx",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+   "url": "https://opengameart.org/sites/default/files/sfx_breaking_and_falling.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_100": {
+   "site": "opengameart.org",
+   "title": "100 CC0 SFX",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/100-cc0-sfx",
+   "url": "https://opengameart.org/sites/default/files/100-CC0-SFX_0.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_100b": {
+   "site": "opengameart.org",
+   "title": "100 CC0 SFX #2",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/100-cc0-sfx-2",
+   "url": "https://opengameart.org/sites/default/files/sfx_100_v2.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_metalwood": {
+   "site": "opengameart.org",
+   "title": "100 CC0 metal and wood SFX",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/100-cc0-metal-and-wood-sfx",
+   "url": "https://opengameart.org/sites/default/files/100-CC0-wood-metal-SFX.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_water": {
+   "site": "opengameart.org",
+   "title": "40 CC0 water / splash / slime SFX",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/40-cc0-water-splash-slime-sfx",
+   "url": "https://opengameart.org/sites/default/files/water-splash-slime-sfx.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_rd_bang": {
+   "site": "opengameart.org",
+   "title": "25 CC0 bang / firework SFX",
+   "author": "rubberduck",
+   "page": "https://opengameart.org/content/25-cc0-bang-firework-sfx",
+   "url": "https://opengameart.org/sites/default/files/25-CC0-bang-sfx.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_ice_shatter": {
+   "site": "opengameart.org",
+   "title": "Ice breaking/shattering",
+   "author": "IgnasD",
+   "page": "https://opengameart.org/content/ice-breakingshattering",
+   "url": "https://opengameart.org/sites/default/files/IceShatters_0.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_bear": {
+   "site": "opengameart.org",
+   "title": "Bear Growls (U.S. Fish & Wildlife Service recordings)",
+   "author": "AntumDeluge",
+   "page": "https://opengameart.org/content/bear-growls",
+   "url": "https://opengameart.org/sites/default/files/bear.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_deep_roar": {
+   "site": "opengameart.org",
+   "title": "CC0 Deep Monster Roar",
+   "author": "trazzz123",
+   "page": "https://opengameart.org/content/cc0-deep-monster-roar",
+   "url": "https://opengameart.org/sites/default/files/monster_roar.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_troll_roars": {
+   "site": "opengameart.org",
+   "title": "Big scary troll sounds (troll-roars)",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/big-scary-troll-sounds",
+   "url": "https://opengameart.org/sites/default/files/troll-roars_0.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_troll_idle": {
+   "site": "opengameart.org",
+   "title": "Big scary troll sounds (troll-idle-noises)",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/big-scary-troll-sounds",
+   "url": "https://opengameart.org/sites/default/files/troll-idle-noises_0.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_snarls1": {
+   "site": "opengameart.org",
+   "title": "Monster snarls (monster-snarls)",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/monster-snarls",
+   "url": "https://opengameart.org/sites/default/files/monster-snarls_0.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_snarls2": {
+   "site": "opengameart.org",
+   "title": "Monster snarls (monster-snarls-2)",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/monster-snarls",
+   "url": "https://opengameart.org/sites/default/files/monster-snarls-2_0.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_snarls3": {
+   "site": "opengameart.org",
+   "title": "Monster snarls (monsters-snarls-3)",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/monster-snarls",
+   "url": "https://opengameart.org/sites/default/files/monsters-snarls-3_0.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_snarls4": {
+   "site": "opengameart.org",
+   "title": "Monster snarls (monster-snarl-attack)",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/monster-snarls",
+   "url": "https://opengameart.org/sites/default/files/monster-snarl-attack.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_snarls5": {
+   "site": "opengameart.org",
+   "title": "Monster snarls (monster-snarl-5)",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/monster-snarls",
+   "url": "https://opengameart.org/sites/default/files/monster-snarl-5.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_ogre": {
+   "site": "opengameart.org",
+   "title": "Monster Sound Pack, Volume 1",
+   "author": "Ogrebane",
+   "page": "https://opengameart.org/content/monster-sound-pack-volume-1",
+   "url": "https://opengameart.org/sites/default/files/monster-sounds-volume-2.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_steam_hiss": {
+   "site": "opengameart.org",
+   "title": "Steam release sounds",
+   "author": "bart",
+   "page": "https://opengameart.org/content/steam-release-sounds",
+   "url": "https://opengameart.org/sites/default/files/steam_hisses.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_steam_whistle1": {
+   "site": "opengameart.org",
+   "title": "Steam whistle (steamwhistle)",
+   "author": "bart",
+   "page": "https://opengameart.org/content/steam-whistle",
+   "url": "https://opengameart.org/sites/default/files/steamwhistle_0.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_steam_whistle2": {
+   "site": "opengameart.org",
+   "title": "Steam whistle (steam_whistle)",
+   "author": "bart",
+   "page": "https://opengameart.org/content/steam-whistle",
+   "url": "https://opengameart.org/sites/default/files/steam_whistle.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_swishes": {
+   "site": "opengameart.org",
+   "title": "Swishes Sound Pack",
+   "author": "artisticdude",
+   "page": "https://opengameart.org/content/swishes-sound-pack",
+   "url": "https://opengameart.org/sites/default/files/swishes.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_wet_snow": {
+   "site": "opengameart.org",
+   "title": "9 wet snow steps",
+   "author": "qubodup",
+   "page": "https://opengameart.org/content/9-wet-snow-steps",
+   "url": "https://opengameart.org/sites/default/files/qubodup-wet_snow_steps.7z",
+   "license": "CC0 1.0",
+   "archive": "7z"
+  },
+  "oga_dry_snow": {
+   "site": "opengameart.org",
+   "title": "4 dry snow steps",
+   "author": "qubodup",
+   "page": "https://opengameart.org/content/4-dry-snow-steps",
+   "url": "https://opengameart.org/sites/default/files/qubodup-snow_steps_dry_0.7z",
+   "license": "CC0 1.0",
+   "archive": "7z"
+  },
+  "oga_snow42": {
+   "site": "opengameart.org",
+   "title": "42 Snow and Gravel Footsteps (recorded by Corsica_S, cut by qubodup)",
+   "author": "qubodup / Corsica_S",
+   "page": "https://opengameart.org/content/42-snow-and-gravel-footsteps",
+   "url": "https://opengameart.org/sites/default/files/corsica_s-walking_in_snow.7z",
+   "license": "CC0 1.0",
+   "archive": "7z"
+  },
+  "oga_towel": {
+   "site": "opengameart.org",
+   "title": "12 wet towel hitting/falling/punching floor sounds",
+   "author": "qubodup",
+   "page": "https://opengameart.org/content/12-wet-towel-hittingfallingpunching-floor-sounds",
+   "url": "https://opengameart.org/sites/default/files/wet_towel_on_floor.7z",
+   "license": "CC0 1.0",
+   "archive": "7z"
+  },
+  "oga_zombies": {
+   "site": "opengameart.org",
+   "title": "Zombies Sound Pack",
+   "author": "artisticdude",
+   "page": "https://opengameart.org/content/zombies-sound-pack",
+   "url": "https://opengameart.org/sites/default/files/zombies.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_zombie_moans": {
+   "site": "opengameart.org",
+   "title": "Zombie moans",
+   "author": "Darsycho",
+   "page": "https://opengameart.org/content/zombie-moans",
+   "url": "https://opengameart.org/sites/default/files/darsycho__zombie-moans_0.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_undead": {
+   "site": "opengameart.org",
+   "title": "Undead Moans",
+   "author": "AntumDeluge",
+   "page": "https://opengameart.org/content/undead-moans",
+   "url": "https://opengameart.org/sites/default/files/undead-moans.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_kenney_ui": {
+   "site": "opengameart.org",
+   "title": "51 UI sound effects (buttons, switches and clicks)",
+   "author": "Kenney",
+   "page": "https://opengameart.org/content/51-ui-sound-effects-buttons-switches-and-clicks",
+   "url": "https://opengameart.org/sites/default/files/UI_SFX_Set.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_mech_clank": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (clank1)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/clank1.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_mech_clunk1": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (lightclunk1)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/lightclunk1.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_mech_clunk2": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (lightclunk2)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/lightclunk2.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_mech_rattle": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (rattle1)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/rattle1.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_mech_sq1": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (squeakyclick1)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/squeakyclick1.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_mech_sq2": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (squeakyclick2)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/squeakyclick2.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_mech1": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (mechanical1)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/mechanical1.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_mech2": {
+   "site": "opengameart.org",
+   "title": "Mechanical Sounds (mechanical2)",
+   "author": "BMacZero",
+   "page": "https://opengameart.org/content/mechanical-sounds",
+   "url": "https://opengameart.org/sites/default/files/mechanical2.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_ice_spells": {
+   "site": "opengameart.org",
+   "title": "Ice spells (from a pdsounds.org public domain recording)",
+   "author": "bart",
+   "page": "https://opengameart.org/content/ice-spells",
+   "url": "https://opengameart.org/sites/default/files/icespells.zip",
+   "license": "CC0 1.0",
+   "archive": "zip"
+  },
+  "oga_freeze": {
+   "site": "opengameart.org",
+   "title": "Freeze Spell",
+   "author": "artisticdude",
+   "page": "https://opengameart.org/content/freeze-spell-0",
+   "url": "https://opengameart.org/sites/default/files/freeze.wav",
+   "license": "CC0 1.0"
+  },
+  "oga_cannon": {
+   "site": "opengameart.org",
+   "title": "Cannon fire",
+   "author": "Thimras",
+   "page": "https://opengameart.org/content/cannon-fire",
+   "url": "https://opengameart.org/sites/default/files/cannon_fire_0.ogg",
+   "license": "CC0 1.0"
+  },
+  "oga_shears1": {
+   "site": "opengameart.org",
+   "title": "various scissors (garden_shears_01)",
+   "author": "sinny",
+   "page": "https://opengameart.org/content/various-scissors",
+   "url": "https://opengameart.org/sites/default/files/garden_shears_01.mp3",
+   "license": "CC0 1.0"
+  },
+  "oga_shears2": {
+   "site": "opengameart.org",
+   "title": "various scissors (garden_shears_02)",
+   "author": "sinny",
+   "page": "https://opengameart.org/content/various-scissors",
+   "url": "https://opengameart.org/sites/default/files/garden_shears_02.mp3",
+   "license": "CC0 1.0"
+  },
+  "oga_wind1": {
+   "site": "opengameart.org",
+   "title": "wind1 (synthesised wind)",
+   "author": "Luke.RUSTLTD",
+   "page": "https://opengameart.org/content/wind1",
+   "url": "https://opengameart.org/sites/default/files/wind1.wav",
+   "license": "CC0 1.0"
+  },
+  "ia_sealion": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Caleta Portales - Sea Lion",
+   "author": "Felix Blume",
+   "page": "https://archive.org/details/aporee_37576_43021",
+   "url": "https://archive.org/download/aporee_37576_43021/LoboMarinoCaletaPortalesBIS.mp3",
+   "license": "Public Domain Mark 1.0"
+  },
+  "ia_greyseal": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Grey seal cries with sea and people, Great Yarmouth",
+   "author": "Peter Cusack",
+   "page": "https://archive.org/details/aporee_58972_67674",
+   "url": "https://archive.org/download/aporee_58972_67674/0021311sealsWintertonhelicopteredit.mp3",
+   "license": "Public Domain Mark 1.0"
+  },
+  "ia_icebooms": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Klondike Park Lake Ice Booms, Augusta, Missouri",
+   "author": "Pierrot Desperes",
+   "page": "https://archive.org/details/aporee_51900_59267",
+   "url": "https://archive.org/download/aporee_51900_59267/IceBooms.flac",
+   "license": "Public Domain Mark 1.0"
+  },
+  "ia_midwinter_ice": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Midwinter lake ice activity (Chuncheon lake)",
+   "author": "abyssence",
+   "page": "https://archive.org/details/aporee_39246_44843",
+   "url": "https://archive.org/download/aporee_39246_44843/midwinterlakeice.flac",
+   "license": "Public Domain Mark 1.0"
+  },
+  "ia_pond_ice": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Fobney Island Nature Reserve Reading UK - Cracking Lake Ice",
+   "author": "mike",
+   "page": "https://archive.org/details/aporee_52228_59621",
+   "url": "https://archive.org/download/aporee_52228_59621/CrackingPondIce.mp3",
+   "license": "Public Domain Mark 1.0"
+  },
+  "ia_lake_ice_lt": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Utena, Lithuania - Heartbeat of Nature LAKE ICE",
+   "author": "Kim Ha Sun",
+   "page": "https://archive.org/details/aporee_42183_48085",
+   "url": "https://archive.org/download/aporee_42183_48085/TASCAM.mp3",
+   "license": "Public Domain Mark 1.0"
+  },
+  "ia_lake_ice_andromeda": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Utena, Lietuva - Lake ice Andromeda",
+   "author": "miegantizeme",
+   "page": "https://archive.org/details/aporee_55411_63316",
+   "url": "https://archive.org/download/aporee_55411_63316/Pleiades.flac",
+   "license": "Public Domain Mark 1.0"
+  },
+  "ia_ice_forming": {
+   "site": "archive.org (Radio Aporee ::: Maps)",
+   "title": "Pointe-Claire, Quebec - Lake Ice Forming",
+   "author": "Regan Welsh",
+   "page": "https://archive.org/details/aporee_70778_82526",
+   "url": "https://archive.org/download/aporee_70778_82526/IceFormingH1Clippys20260120143535.flac",
+   "license": "Public Domain Mark 1.0"
+  },
+  "cw_lion": {
+   "site": "commons.wikimedia.org",
+   "title": "Lion_raring-sound1TamilNadu178.ogg",
+   "author": "த*உழவன்",
+   "page": "https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg",
+   "license": "Public domain",
+   "desc": "English: the roaring of a lion in captivity தமிழ்: விலங்கியல் பூங்காவிலுள்ள, ஆண் சிங்கத்தின் குரல்.ஒலி சீரமைப்புச் செய்யப்பட்டது."
+  },
+  "cw_grizzly_roar": {
+   "site": "commons.wikimedia.org",
+   "title": "Yellowstone sound library - Grizzly Bears Roar - 001.mp3",
+   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
+   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bears_Roar_-_001.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Yellowstone_sound_library_-_Grizzly_Bears_Roar_-_001.mp3",
+   "license": "Public domain/PDM",
+   "desc": "Français : Deux grizzly en train de manger."
+  },
+  "cw_grizzly_vocal": {
+   "site": "commons.wikimedia.org",
+   "title": "Yellowstone sound library - Grizzly Bear vocalizations - 001.mp3",
+   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
+   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_vocalizations_-_001.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Yellowstone_sound_library_-_Grizzly_Bear_vocalizations_-_001.mp3",
+   "license": "Public domain/PDM",
+   "desc": "Français : Cri du grizzly."
+  },
+  "cw_grizzly_eat1": {
+   "site": "commons.wikimedia.org",
+   "title": "Yellowstone sound library - Grizzly Bear Eating - 001.mp3",
+   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
+   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_001.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_001.mp3",
+   "license": "Public domain/PDM",
+   "desc": "Français : Un grizzly en train de manger."
+  },
+  "cw_grizzly_eat2": {
+   "site": "commons.wikimedia.org",
+   "title": "Yellowstone sound library - Grizzly Bear Eating - 002.mp3",
+   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
+   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_002.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_002.mp3",
+   "license": "Public domain/PDM",
+   "desc": "Français : Un grizzly en train de manger."
+  },
+  "cw_grizzly_eat3": {
+   "site": "commons.wikimedia.org",
+   "title": "Yellowstone sound library - Grizzly Bear Eating - 003.mp3",
+   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
+   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_003.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_003.mp3",
+   "license": "Public domain/PDM",
+   "desc": "Français : Un grizzly en train de manger."
+  },
+  "cw_elk_bellow": {
+   "site": "commons.wikimedia.org",
+   "title": "Elkbellow.ogg",
+   "author": "",
+   "page": "https://commons.wikimedia.org/wiki/File:Elkbellow.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/9/96/Elkbellow.ogg",
+   "license": "Public domain",
+   "desc": "This image or recording is the work of a U.S. Fish and Wildlife Service employee, taken or made as part of that person's official duties. As a work of the U.S. "
+  },
+  "cw_gator1": {
+   "site": "commons.wikimedia.org",
+   "title": "Alligatorbellow1.ogg",
+   "author": "",
+   "page": "https://commons.wikimedia.org/wiki/File:Alligatorbellow1.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Alligatorbellow1.ogg",
+   "license": "Public domain",
+   "desc": "This image or recording is the work of a U.S. Fish and Wildlife Service employee, taken or made as part of that person's official duties. As a work of the U.S. "
+  },
+  "cw_gator2": {
+   "site": "commons.wikimedia.org",
+   "title": "27alligator2bellow.ogg",
+   "author": "",
+   "page": "https://commons.wikimedia.org/wiki/File:27alligator2bellow.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/27alligator2bellow.ogg",
+   "license": "Public domain",
+   "desc": "This image or recording is the work of a U.S. Fish and Wildlife Service employee, taken or made as part of that person's official duties. As a work of the U.S. "
+  },
+  "cw_monster_growls": {
+   "site": "commons.wikimedia.org",
+   "title": "Monster growls.ogg",
+   "author": "stilgar",
+   "page": "https://commons.wikimedia.org/wiki/File:Monster_growls.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/7/71/Monster_growls.ogg",
+   "license": "Public domain/Public domain",
+   "desc": "English: Title Monster Growls Artist stilgar Original mp3 data Length:0:54 minutes (1.94 MB) Format:FLAC Mono 44kHz 302Kbps (VBR) User tags Growl, growling, Mon"
+  },
+  "cw_monster_growls2": {
+   "site": "commons.wikimedia.org",
+   "title": "Monster growls 2.ogg",
+   "author": "stilgar",
+   "page": "https://commons.wikimedia.org/wiki/File:Monster_growls_2.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Monster_growls_2.ogg",
+   "license": "Public domain/Public domain",
+   "desc": "English: Title Monster Growls 2 Artist stilgar Original mp3 data Length:0:28 minutes (1.02 MB) Format:FLAC Mono 44kHz 300Kbps (VBR) User tags Growl, growling, g"
+  },
+  "cw_beast_laughter": {
+   "site": "commons.wikimedia.org",
+   "title": "Beast laughter.ogg",
+   "author": "stilgar",
+   "page": "https://commons.wikimedia.org/wiki/File:Beast_laughter.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Beast_laughter.ogg",
+   "license": "Public domain/Public domain",
+   "desc": "English: Title Beast Laughter Artist stilgar Original mp3 data Length:0:13 minutes (483.04 KB) Format:FLAC Mono 44kHz 293Kbps (VBR) User tags Growl, growling, l"
+  },
+  "cw_tiger": {
+   "site": "commons.wikimedia.org",
+   "title": "439280 schots angry-tiger.wav",
+   "author": "schots",
+   "page": "https://commons.wikimedia.org/wiki/File:439280_schots_angry-tiger.wav",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/2/29/439280_schots_angry-tiger.wav",
+   "license": "CC0",
+   "desc": "English: Tiger in a cage, growling and snarling. Lots of reverb"
+  },
+  "cw_bearded_seal": {
+   "site": "commons.wikimedia.org",
+   "title": "Svalbard Sample for Wiki.ogg",
+   "author": "Max Eastley",
+   "page": "https://commons.wikimedia.org/wiki/File:Svalbard_Sample_for_Wiki.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Svalbard_Sample_for_Wiki.ogg",
+   "license": "Public domain/Public domain",
+   "desc": "Recording made of bearded seals by Max Eastley from a ship in Svalbard. Recording was made using a hydrophone while on a trip with the Cape Farewell Climate Cha"
+  },
+  "cw_elephant": {
+   "site": "commons.wikimedia.org",
+   "title": "Elephant_voice_-_trumpeting.ogg",
+   "author": "தகவலுழவன்",
+   "page": "https://commons.wikimedia.org/wiki/File:Elephant_voice_-_trumpeting.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Elephant_voice_-_trumpeting.ogg",
+   "license": "CC0",
+   "desc": "English: Elephant_voice_-_trumpeting. தமிழ்: யானையின் பிளிறல்"
+  },
+  "cw_beehive": {
+   "site": "commons.wikimedia.org",
+   "title": "Yellowstone sound library - Beehive Geyser - 001.mp3",
+   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
+   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Beehive_Geyser_-_001.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Yellowstone_sound_library_-_Beehive_Geyser_-_001.mp3",
+   "license": "Public domain/PDM",
+   "desc": "Français : Son du Beehive Geyser."
+  },
+  "cw_beryl": {
+   "site": "commons.wikimedia.org",
+   "title": "Yellowstone sound library - Beryl Spring - 001.mp3",
+   "author": "NPS & MSU Acoustic Atlas / Peter Comley",
+   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Beryl_Spring_-_001.mp3",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Yellowstone_sound_library_-_Beryl_Spring_-_001.mp3",
+   "license": "Public domain/PDM",
+   "desc": "Français : Son de la source Beryl Spring."
+  },
+  "bsb_2205": {
+   "site": "bigsoundbank.com",
+   "title": "Cracking ice #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cracking-ice-1-s2205.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2205.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Crack of ice. Noisy with a block of ice that I crush."
+  },
+  "bsb_2206": {
+   "site": "bigsoundbank.com",
+   "title": "Cracking ice #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cracking-ice-2-s2206.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2206.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Crack of ice. Noisy with a block of ice that I crush."
+  },
+  "bsb_2207": {
+   "site": "bigsoundbank.com",
+   "title": "Cracking ice #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cracking-ice-3-s2207.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2207.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Crack of ice. Noisy with a block of ice that I crush."
+  },
+  "bsb_2208": {
+   "site": "bigsoundbank.com",
+   "title": "Cracking ice #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cracking-ice-4-s2208.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2208.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Crack of ice. Noisy with a block of ice that I crush."
+  },
+  "bsb_2123": {
+   "site": "bigsoundbank.com",
+   "title": "Ice cubes in a glass #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-1-s2123.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2123.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "3 ice cubes put in a whisky glass."
+  },
+  "bsb_2124": {
+   "site": "bigsoundbank.com",
+   "title": "Ice cubes in a glass #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-2-s2124.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2124.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "3 ice cubes put in a whisky glass."
+  },
+  "bsb_2125": {
+   "site": "bigsoundbank.com",
+   "title": "Ice cubes in a glass #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-3-s2125.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2125.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "3 ice cubes put in a whisky glass."
+  },
+  "bsb_2126": {
+   "site": "bigsoundbank.com",
+   "title": "Ice cubes in a glass #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-4-s2126.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2126.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "3 ice cubes put in a whisky glass."
+  },
+  "bsb_2127": {
+   "site": "bigsoundbank.com",
+   "title": "Ice cubes in a glass #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-5-s2127.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2127.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "3 ice cubes put in a whisky glass."
+  },
+  "bsb_2128": {
+   "site": "bigsoundbank.com",
+   "title": "Ice cubes in a glass #6",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-6-s2128.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2128.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "3 ice cubes put in a whisky glass."
+  },
+  "bsb_2219": {
+   "site": "bigsoundbank.com",
+   "title": "Defrost #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/defrost-1-s2219.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2219.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Defrosting a windshield by hand."
+  },
+  "bsb_2220": {
+   "site": "bigsoundbank.com",
+   "title": "Defrost #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/defrost-2-s2220.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2220.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Defrosting a windshield by hand."
+  },
+  "bsb_2221": {
+   "site": "bigsoundbank.com",
+   "title": "Defrost #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/defrost-3-s2221.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2221.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Defrosting a windshield by hand."
+  },
+  "bsb_2222": {
+   "site": "bigsoundbank.com",
+   "title": "Defrost #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/defrost-4-s2222.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2222.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Defrosting a windshield by hand."
+  },
+  "bsb_2223": {
+   "site": "bigsoundbank.com",
+   "title": "Defrost #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/defrost-5-s2223.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2223.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Defrosting a windshield by hand."
+  },
+  "bsb_2209": {
+   "site": "bigsoundbank.com",
+   "title": "Ice cubes that melt",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ice-cubes-that-melt-s2209.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2209.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A few ice cubes that melt in a glass of water. Perfect for sounding a drooling animal."
+  },
+  "bsb_3363": {
+   "site": "bigsoundbank.com",
+   "title": "Steps in the snow #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/steps-in-the-snow-3-s3363.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3363.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Several quick steps in the snow. Learn how to make the sound of footsteps in the snow: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#2"
+  },
+  "bsb_2890": {
+   "site": "bigsoundbank.com",
+   "title": "Footstep in the Snow #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/footstep-in-the-snow-2-s2890.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2890.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Human footsteps in the snow. Easy to loop. Made with a sound effect technique: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#2"
+  },
+  "bsb_1658": {
+   "site": "bigsoundbank.com",
+   "title": "Grumpy pig, with the mouth #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/grumpy-pig-1-s1658.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1658.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Imitation, with the mouth, of a grumbling pig."
+  },
+  "bsb_1659": {
+   "site": "bigsoundbank.com",
+   "title": "Grumpy Pig, with the Mouth #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/grumpy-pig-2-s1659.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1659.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Imitation, with the mouth, of a grumbling pig."
+  },
+  "bsb_0546": {
+   "site": "bigsoundbank.com",
+   "title": "Cow Moos #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cow-moos-s0546.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/0546.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "5 mooing of a cow. It seemed to call goats with which I walked. Slight background noise."
+  },
+  "bsb_2382": {
+   "site": "bigsoundbank.com",
+   "title": "Cow moos #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cow-moos-2-s2382.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2382.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mooing of a cow. It seemed to call goats with which I walked."
+  },
+  "bsb_2383": {
+   "site": "bigsoundbank.com",
+   "title": "Cow moos #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cow-moos-3-s2383.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2383.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mooing of a cow. It seemed to call goats with which I walked."
+  },
+  "bsb_2384": {
+   "site": "bigsoundbank.com",
+   "title": "Cow moos #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cow-moos-4-s2384.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2384.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mooing of a cow. It seemed to call goats with which I walked."
+  },
+  "bsb_2385": {
+   "site": "bigsoundbank.com",
+   "title": "Cow moos #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cow-moos-5-s2385.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2385.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mooing of a cow. It seemed to call goats with which I walked."
+  },
+  "bsb_2386": {
+   "site": "bigsoundbank.com",
+   "title": "Cow Moos #6",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cow-moos-6-s2386.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2386.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mooing of a cow. It seemed to call goats with which I walked."
+  },
+  "bsb_1543": {
+   "site": "bigsoundbank.com",
+   "title": "Breath Horse #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breath-horse-4-s1543.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1543.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A horse's breath."
+  },
+  "bsb_1881": {
+   "site": "bigsoundbank.com",
+   "title": "Cat roar #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cat-roar-1-s1881.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1881.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A cat that roars."
+  },
+  "bsb_1882": {
+   "site": "bigsoundbank.com",
+   "title": "Cat roar #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cat-roar-2-s1882.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1882.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A cat that roars."
+  },
+  "bsb_1883": {
+   "site": "bigsoundbank.com",
+   "title": "Cat roar #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cat-roar-3-s1883.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1883.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A cat that roars."
+  },
+  "bsb_1884": {
+   "site": "bigsoundbank.com",
+   "title": "Cat roar #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cat-roar-4-s1884.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1884.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A cat that roars."
+  },
+  "bsb_2106": {
+   "site": "bigsoundbank.com",
+   "title": "Zombie #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/zombie-1-s2106.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2106.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Horrible zombie growls. This sound has no effect."
+  },
+  "bsb_2107": {
+   "site": "bigsoundbank.com",
+   "title": "Zombie #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/zombie-2-s2107.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2107.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Horrible zombie growls. This sound has no effect."
+  },
+  "bsb_2108": {
+   "site": "bigsoundbank.com",
+   "title": "Zombie #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/zombie-3-s2108.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2108.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Horrible zombie growls. This sound has no effect."
+  },
+  "bsb_2109": {
+   "site": "bigsoundbank.com",
+   "title": "Zombie #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/zombie-4-s2109.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2109.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Horrible zombie growls. This sound has no effect."
+  },
+  "bsb_2110": {
+   "site": "bigsoundbank.com",
+   "title": "Zombie #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/zombie-5-s2110.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2110.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Horrible zombie growls. This sound has no effect."
+  },
+  "bsb_2111": {
+   "site": "bigsoundbank.com",
+   "title": "Zombie #6",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/zombie-6-s2111.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2111.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Horrible zombie growl. This sound has no effect."
+  },
+  "bsb_2112": {
+   "site": "bigsoundbank.com",
+   "title": "Zombie #7",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/zombie-7-s2112.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2112.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Horrible zombie growl. This sound has no effect."
+  },
+  "bsb_3617": {
+   "site": "bigsoundbank.com",
+   "title": "Sika deer rut call #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/sika-deer-rut-call-1-s3617.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3617.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Rut call of a sika deer (Cervus nippon). Not to be confused with red deer: the sika call is a high-pitched, shrill whistle, often in series of three or four, very different from the deep roar of the r"
+  },
+  "bsb_3618": {
+   "site": "bigsoundbank.com",
+   "title": "Sika deer rut call #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/sika-deer-rut-call-2-s3618.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3618.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Rut call of a sika deer (Cervus nippon). Not to be confused with red deer: the sika call is a high-pitched, shrill whistle, often in series of three or four, very different from the deep roar of the r"
+  },
+  "bsb_1547": {
+   "site": "bigsoundbank.com",
+   "title": "Dogs Breathing",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/dogs-breathing-s1547.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1547.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Two big dogs out of breath."
+  },
+  "bsb_2352": {
+   "site": "bigsoundbank.com",
+   "title": "Old dog barking #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/old-dog-barking-1-s2352.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2352.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "An elderly dog barks. Gravel path."
+  },
+  "bsb_2353": {
+   "site": "bigsoundbank.com",
+   "title": "Old dog barking #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/old-dog-barking-2-s2353.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2353.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "An elderly dog barks. Gravel path."
+  },
+  "bsb_2190": {
+   "site": "bigsoundbank.com",
+   "title": "Chattering teeth #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chattering-teeth-2-s2190.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2190.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Quick chattering of teeth. Like when you're cold."
+  },
+  "bsb_2195": {
+   "site": "bigsoundbank.com",
+   "title": "Man Breathing",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/man-breathing-s2195.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2195.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A man who breathes slowly through his nose. Do not put too much."
+  },
+  "bsb_1103": {
+   "site": "bigsoundbank.com",
+   "title": "Breathless Man",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breathless-man-s1103.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1103.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A man out of breath after a few sports exercises. Can be looped."
+  },
+  "bsb_1404": {
+   "site": "bigsoundbank.com",
+   "title": "Sigh by the nose",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/sigh-by-the-nose-s1404.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1404.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A man who sighs by the nose."
+  },
+  "bsb_1405": {
+   "site": "bigsoundbank.com",
+   "title": "Sigh by the Mouth",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/sigh-by-the-mouth-s1405.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1405.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A man who sighs through his mouth."
+  },
+  "bsb_1602": {
+   "site": "bigsoundbank.com",
+   "title": "Blow hard #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/blow-hard-1-s1602.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1602.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A man is blowing hard. A candle for example."
+  },
+  "bsb_1603": {
+   "site": "bigsoundbank.com",
+   "title": "Blow Hard #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/blow-hard-2-s1603.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1603.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A man is blowing hard. A candle for example."
+  },
+  "bsb_0208": {
+   "site": "bigsoundbank.com",
+   "title": "Footstep in the Snow #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/on-snow-s0208.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0208.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Learn how to make the sound effects of footsteps in the snow: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#2"
+  },
+  "bsb_0285": {
+   "site": "bigsoundbank.com",
+   "title": "Breath of a horse #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breath-of-a-horse-1-s0285.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0285.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Breath of a horse."
+  },
+  "bsb_0286": {
+   "site": "bigsoundbank.com",
+   "title": "Breath of a horse #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breath-of-a-horse-2-s0286.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0286.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A horse’s snort."
+  },
+  "bsb_0287": {
+   "site": "bigsoundbank.com",
+   "title": "Breath horse #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breath-horse-3-s0287.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0287.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Breath horse."
+  },
+  "bsb_0486": {
+   "site": "bigsoundbank.com",
+   "title": "Grunts",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/grunts-s0486.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0486.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Low growls of an imaginary animal. Made by mouth, then abused on computer."
+  },
+  "bsb_0789": {
+   "site": "bigsoundbank.com",
+   "title": "Chattering teeth #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chattering-teeth-s0789.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0789.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Slow teeth chattering."
+  },
+  "bsb_1113": {
+   "site": "bigsoundbank.com",
+   "title": "Apple crunched #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/apple-crunched-1-s1113.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1113.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I eat a green apple in front of the microphone, indoors."
+  },
+  "bsb_1114": {
+   "site": "bigsoundbank.com",
+   "title": "Apple crunched #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/apple-crunched-2-s1114.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1114.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I eat a green apple in front of the microphone, indoors."
+  },
+  "bsb_1594": {
+   "site": "bigsoundbank.com",
+   "title": "Raw carrot crunched #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/raw-carrot-crunched-1-s1594.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1594.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A raw carrot, crunched and chewed."
+  },
+  "bsb_1595": {
+   "site": "bigsoundbank.com",
+   "title": "Raw carrot crunched #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/raw-carrot-crunched-2-s1595.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1595.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A raw carrot, crunched and chewed."
+  },
+  "bsb_0352": {
+   "site": "bigsoundbank.com",
+   "title": "Mouth Noises #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/mouth-noises-1-s0352.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0352.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mouth sounds."
+  },
+  "bsb_0353": {
+   "site": "bigsoundbank.com",
+   "title": "Mouth noises #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/mouth-noises-2-s0353.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0353.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mouth noises."
+  },
+  "bsb_0354": {
+   "site": "bigsoundbank.com",
+   "title": "Mouth noises #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/mouth-noises-3-s0354.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0354.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Mouth sounds."
+  },
+  "bsb_0497": {
+   "site": "bigsoundbank.com",
+   "title": "Horse chewing hay",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/horse-chewing-hay-s0497.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0497.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A horse that chews hay in his box. Light background noise of hay he pushes with his nose."
+  },
+  "bsb_0596": {
+   "site": "bigsoundbank.com",
+   "title": "Bones cracking #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bones-cracking-s0596.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0596.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Bones cracking noises made with a sprig of celery. The technical https://www.libertivi.com/lelabodubruiteur_123"
+  },
+  "bsb_1408": {
+   "site": "bigsoundbank.com",
+   "title": "Bones cracking #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bones-cracking-2-s1408.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1408.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Bones cracking noises made with a sprig of celery. The technical https://www.libertivi.com/lelabodubruiteur_66"
+  },
+  "bsb_1409": {
+   "site": "bigsoundbank.com",
+   "title": "Bones cracking #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bones-cracking-3-s1409.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1409.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Bones cracking noises made with a sprig of celery. The technical https://www.libertivi.com/lelabodubruiteur_66"
+  },
+  "bsb_0148": {
+   "site": "bigsoundbank.com",
+   "title": "Glass Burst",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/glass-burst-s0148.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0148.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A glass exploding on the floor. The sound saturates slightly."
+  },
+  "bsb_0387": {
+   "site": "bigsoundbank.com",
+   "title": "A Mirror Explodes",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/mirror-explodes-s0387.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0387.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Noise of a mirror thick (1cm) sitting on a wooden border where we throw a heavy object (in this case salt) and that is break the mirror collapses."
+  },
+  "bsb_0771": {
+   "site": "bigsoundbank.com",
+   "title": "Broken glass",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/broken-glass-s0771.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0771.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Broken glass. Foley made with this technique cinema sound effects: https://www.libertivi.com/lelabodubruiteur_135"
+  },
+  "bsb_1121": {
+   "site": "bigsoundbank.com",
+   "title": "Broken Christmas Ball #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/broken-christmas-ball-1-s1121.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1121.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A glass Christmas ball that falls to the ground and breaks."
+  },
+  "bsb_1122": {
+   "site": "bigsoundbank.com",
+   "title": "Broken christmas ball #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/broken-christmas-ball-2-s1122.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1122.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A glass Christmas ball that falls to the ground and breaks."
+  },
+  "bsb_1123": {
+   "site": "bigsoundbank.com",
+   "title": "Broken christmas ball #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/broken-christmas-ball-3-s1123.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1123.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A glass Christmas ball that falls to the ground and breaks."
+  },
+  "bsb_2039": {
+   "site": "bigsoundbank.com",
+   "title": "Bulb bursting #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bulb-bursting-1-s2039.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2039.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A bursting glass bulb."
+  },
+  "bsb_2040": {
+   "site": "bigsoundbank.com",
+   "title": "Bulb bursting #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bulb-bursting-2-s2040.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2040.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A bursting glass bulb."
+  },
+  "bsb_2041": {
+   "site": "bigsoundbank.com",
+   "title": "Bulb bursting #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bulb-bursting-3-s2041.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2041.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A bursting glass bulb."
+  },
+  "bsb_2042": {
+   "site": "bigsoundbank.com",
+   "title": "Bulb bursting #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bulb-bursting-4-s2042.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2042.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A bursting glass bulb."
+  },
+  "bsb_2886": {
+   "site": "bigsoundbank.com",
+   "title": "Clink of glass, Toast #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/clink-of-glass-toast-1-s2886.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2886.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "When we want to make a toast, we clink a glass with a cutlery."
+  },
+  "bsb_2240": {
+   "site": "bigsoundbank.com",
+   "title": "Glass ball, bounce #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/glass-ball-bounce-1-s2240.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2240.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A glass ball bouncing off a tiled floor."
+  },
+  "bsb_2241": {
+   "site": "bigsoundbank.com",
+   "title": "Glass ball, bounce #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/glass-ball-bounce-2-s2241.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2241.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A glass ball bouncing off a tiled floor."
+  },
+  "bsb_1335": {
+   "site": "bigsoundbank.com",
+   "title": "Cheers, Champagne Flute #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cheers-champagne-flute-1-s1335.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1335.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Two champagne flute that are shocking."
+  },
+  "bsb_0487": {
+   "site": "bigsoundbank.com",
+   "title": "Bottle clink",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bottle-clink-s0487.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0487.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Two glass wine bottles clinking together."
+  },
+  "bsb_2687": {
+   "site": "bigsoundbank.com",
+   "title": "Cluster Chimes #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cluster-chimes-1-s2687.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2687.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "The sound of chimes in the wind."
+  },
+  "bsb_2079": {
+   "site": "bigsoundbank.com",
+   "title": "Chimes \"Dream\" #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chimes-dream-1-s2079.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2079.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Cluster chimes of a dream hook."
+  },
+  "bsb_2080": {
+   "site": "bigsoundbank.com",
+   "title": "Chimes \"dream\" #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chimes-dream-2-s2080.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2080.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Cluster chimes of a dream hook."
+  },
+  "bsb_2081": {
+   "site": "bigsoundbank.com",
+   "title": "Chimes \"dream\" #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chimes-dream-3-s2081.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2081.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Cluster chimes of a dream hook."
+  },
+  "bsb_2087": {
+   "site": "bigsoundbank.com",
+   "title": "Chimes \"butterfly\" #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chimes-butterfly-1-s2087.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2087.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Decorative small chimes cluster."
+  },
+  "bsb_2088": {
+   "site": "bigsoundbank.com",
+   "title": "Chimes \"butterfly\" #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chimes-butterfly-2-s2088.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2088.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Decorative small chimes cluster."
+  },
+  "bsb_0920": {
+   "site": "bigsoundbank.com",
+   "title": "Glockenspiel",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/glockenspiel-s0920.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0920.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Slipped up on a glockenspiel."
+  },
+  "bsb_1867": {
+   "site": "bigsoundbank.com",
+   "title": "Music box, C #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/music-box-c-1-s1867.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1867.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "The 'do' of a music box."
+  },
+  "bsb_1871": {
+   "site": "bigsoundbank.com",
+   "title": "Music box, G #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/music-box-g-1-s1871.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1871.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "The 'sol' of a music box."
+  },
+  "bsb_1870": {
+   "site": "bigsoundbank.com",
+   "title": "Music box, F #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/music-box-f-1-s1870.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1870.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "The 'fa' of a music box."
+  },
+  "bsb_2545": {
+   "site": "bigsoundbank.com",
+   "title": "Starting crank",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/starting-crank-s2545.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2545.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Crank starting of a 1903 De Dion-Bouton Type Q."
+  },
+  "bsb_0572": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-1-s0572.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0572.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh of a sword that cuts through the air. Learn how to make this sound effects: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22"
+  },
+  "bsb_0573": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-2-s0573.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/0573.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh of a sword or an arrow through the air. Learn how to make this sound effects: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22"
+  },
+  "bsb_1795": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-3-s1795.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1795.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a long rope."
+  },
+  "bsb_1796": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-4-s1796.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1796.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a long rope."
+  },
+  "bsb_1797": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-5-s1797.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1797.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a long wooden stick."
+  },
+  "bsb_1799": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #6",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-6-s1799.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1799.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a wooden sheet."
+  },
+  "bsb_1800": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #7",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-7-s1800.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1800.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a metal tube."
+  },
+  "bsb_1801": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #8",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-8-s1801.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1801.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a metal tube."
+  },
+  "bsb_1802": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #9",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-9-s1802.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1802.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a wooden sheet."
+  },
+  "bsb_1798": {
+   "site": "bigsoundbank.com",
+   "title": "Whoosh #10",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whoosh-10-s1798.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1798.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whoosh made with a large bamboo stick."
+  },
+  "bsb_0128": {
+   "site": "bigsoundbank.com",
+   "title": "Sword Through the Air",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/sword-through-the-air-s0128.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/0128.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a sword that cuts through the air. Learn to make your own sound effects of swords https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22"
+  },
+  "bsb_0127": {
+   "site": "bigsoundbank.com",
+   "title": "Sword That Cuts",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/sword-that-cuts-s0127.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/0127.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a sword cutting something soft. Learn to make your own sound effects of swords https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22"
+  },
+  "bsb_1714": {
+   "site": "bigsoundbank.com",
+   "title": "Wind from inside #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/wind-from-inside-1-s1714.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1714.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Storm Ciara is raging outside. I take the sound from inside a house."
+  },
+  "bsb_1715": {
+   "site": "bigsoundbank.com",
+   "title": "Wind from inside #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/wind-from-inside-2-s1715.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1715.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Storm Ciara is raging outside. I take the sound from inside a room. Noise of the PVC rolling shutter."
+  },
+  "bsb_1716": {
+   "site": "bigsoundbank.com",
+   "title": "Wind from Inside #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/wind-from-inside-3-s1716.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1716.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Storm Ciara is raging outside. I take the sound from inside an outbuilding."
+  },
+  "bsb_0147": {
+   "site": "bigsoundbank.com",
+   "title": "Whistling of the Wind #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whistling-of-the-wind-1-s0147.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0147.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Slight hiss of the wind. Inside a house through a window is not closed. Wind outside. Learn to imitate the sound of the wind https://www.libertivi.com/lelabodubruiteur_122"
+  },
+  "bsb_0155": {
+   "site": "bigsoundbank.com",
+   "title": "Whistling of the Wind #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whistling-of-the-wind-2-s0155.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0155.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whistling of the wind in the chimney off. Learn to imitate the sound of the wind: https://www.libertivi.com/lelabodubruiteur_122"
+  },
+  "bsb_0152": {
+   "site": "bigsoundbank.com",
+   "title": "Strong wind #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/strong-wind-2-s0152.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0152.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Strong wind from the interior of a house. Small cracks and bumps. Learn to imitate the sound of the wind https://www.libertivi.com/lelabodubruiteur_122"
+  },
+  "bsb_0153": {
+   "site": "bigsoundbank.com",
+   "title": "Strong wind #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/strong-wind-3-s0153.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0153.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Strong wind from the interior of a house. Small cracks and bumps. Learn to imitate the sound of the wind https://www.libertivi.com/lelabodubruiteur_122"
+  },
+  "bsb_0595": {
+   "site": "bigsoundbank.com",
+   "title": "Wind",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/wind-s0595.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/0595.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Wind noise, made with a technique Foley: https://www.libertivi.com/lelabodubruiteur_122"
+  },
+  "bsb_1694": {
+   "site": "bigsoundbank.com",
+   "title": "Quenching, cooling #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/quenching-cooling-1-s1694.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1694.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Cooling a hot object with water. This is a welder in a glass."
+  },
+  "bsb_1695": {
+   "site": "bigsoundbank.com",
+   "title": "Quenching, cooling #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/quenching-cooling-2-s1695.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1695.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Cooling a hot object with water. This is a welder in a glass."
+  },
+  "bsb_1696": {
+   "site": "bigsoundbank.com",
+   "title": "Quenching, cooling #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/quenching-cooling-3-s1696.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1696.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Cooling a hot object with water. This is a welder in a glass."
+  },
+  "bsb_1697": {
+   "site": "bigsoundbank.com",
+   "title": "Quenching, cooling #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/quenching-cooling-4-s1697.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1697.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Cooling a hot object with water. This is a welder in a glass."
+  },
+  "bsb_1161": {
+   "site": "bigsoundbank.com",
+   "title": "Chimney of smoke that cools",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/chimney-of-smoke-that-cools-s1161.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1161.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Chimney pipe that cools quickly after closing the smoke damper of a wood-fired boiler."
+  },
+  "bsb_1519": {
+   "site": "bigsoundbank.com",
+   "title": "Splash, Big #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/splash-big-1-s1519.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1519.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Big 'splash' of a big stone thrown in a big water tank."
+  },
+  "bsb_1520": {
+   "site": "bigsoundbank.com",
+   "title": "Splash, big #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/splash-big-2-s1520.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1520.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Big 'splash' of a big stone thrown in a big water tank."
+  },
+  "bsb_1521": {
+   "site": "bigsoundbank.com",
+   "title": "Splash, Big #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/splash-big-3-s1521.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1521.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Big 'splash' of a big stone thrown in a big water tank."
+  },
+  "bsb_1529": {
+   "site": "bigsoundbank.com",
+   "title": "Splash, Small #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/splash-small-1-s1529.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1529.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Small 'splash' of a small stone thrown into a pond."
+  },
+  "bsb_1530": {
+   "site": "bigsoundbank.com",
+   "title": "Splash, small #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/splash-small-2-s1530.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1530.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Small 'splash' of a small stone thrown into a pond."
+  },
+  "bsb_1384": {
+   "site": "bigsoundbank.com",
+   "title": "Drops of water #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/drops-of-water-1-s1384.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1384.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Many drops of water."
+  },
+  "bsb_1385": {
+   "site": "bigsoundbank.com",
+   "title": "Drops of water #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/drops-of-water-2-s1385.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1385.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Many drops of water."
+  },
+  "bsb_1386": {
+   "site": "bigsoundbank.com",
+   "title": "Drops of Water #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/drops-of-water-3-s1386.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1386.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Many drops of water."
+  },
+  "bsb_1382": {
+   "site": "bigsoundbank.com",
+   "title": "Drops, metal pan",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/drops-metal-pan-s1382.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1382.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Many drops of water in a metal pan."
+  },
+  "bsb_1807": {
+   "site": "bigsoundbank.com",
+   "title": "Explosion #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/explosion-1-s1807.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1807.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "An explosion at around 150 meters. An agricultural gun designed to frighten birds."
+  },
+  "bsb_1808": {
+   "site": "bigsoundbank.com",
+   "title": "Explosion #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/explosion-2-s1808.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1808.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "An explosion at around 10 meters. An agricultural gun designed to frighten birds."
+  },
+  "bsb_1023": {
+   "site": "bigsoundbank.com",
+   "title": "Explosion far Away #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/explosion-far-away-s1023.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1023.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A distant explosion of an agricultural gun designed to frighten birds."
+  },
+  "bsb_1806": {
+   "site": "bigsoundbank.com",
+   "title": "Explosion far away #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/explosion-far-away-2-s1806.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1806.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "An explosion at around 250 meters. An agricultural gun designed to frighten birds."
+  },
+  "bsb_2718": {
+   "site": "bigsoundbank.com",
+   "title": "Thunder #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/thunder-s2718.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2718.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A single clap of thunder, without rain."
+  },
+  "bsb_3113": {
+   "site": "bigsoundbank.com",
+   "title": "Thunder #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/thunder-2-s3113.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3113.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A single short thunderclap, without rain."
+  },
+  "bsb_3114": {
+   "site": "bigsoundbank.com",
+   "title": "Thunder #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/thunder-3-s3114.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3114.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A single thunderclap, without rain."
+  },
+  "bsb_3115": {
+   "site": "bigsoundbank.com",
+   "title": "Thunder #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/thunder-4-s3115.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3115.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A single thunderclap, without rain."
+  },
+  "bsb_3179": {
+   "site": "bigsoundbank.com",
+   "title": "Thunder #6",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/thunder-6-s3179.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3179.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A single thunderclap, without rain."
+  },
+  "bsb_1674": {
+   "site": "bigsoundbank.com",
+   "title": "Winder #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/winder-1-s1674.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1674.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Music box that you go back manually with a small key. Some turns."
+  },
+  "bsb_1675": {
+   "site": "bigsoundbank.com",
+   "title": "Winder #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/winder-2-s1675.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1675.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Music box that you go back manually with a small key. Some turns."
+  },
+  "bsb_2664": {
+   "site": "bigsoundbank.com",
+   "title": "Winder #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/winder-3-s2664.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2664.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Small old mechanical alarm clock that is manually wound with a small key. A few rounds."
+  },
+  "bsb_2665": {
+   "site": "bigsoundbank.com",
+   "title": "Winder #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/winder-4-s2665.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2665.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Small old mechanical alarm clock that is manually wound with a small key. A few rounds."
+  },
+  "bsb_0795": {
+   "site": "bigsoundbank.com",
+   "title": "Large ratchet",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/large-ratchet-s0795.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0795.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Large ratchet."
+  },
+  "bsb_0794": {
+   "site": "bigsoundbank.com",
+   "title": "Small ratchet",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/small-ratchet-s0794.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0794.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Small ratchet."
+  },
+  "bsb_0901": {
+   "site": "bigsoundbank.com",
+   "title": "Manual winch #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/manual-winch-1-s0901.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0901.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Action on the crank of a manual winch."
+  },
+  "bsb_1824": {
+   "site": "bigsoundbank.com",
+   "title": "Ratchet tensioner",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ratchet-tensioner-s1824.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1824.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a ratchet tensioner to tighten a strap."
+  },
+  "bsb_1491": {
+   "site": "bigsoundbank.com",
+   "title": "Pneumatic cylinder, small #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pneumatic-cylinder-small-1-s1491.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1491.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Noise of a small pneumatic cylinder of seat tablet."
+  },
+  "bsb_1492": {
+   "site": "bigsoundbank.com",
+   "title": "Pneumatic cylinder, small #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pneumatic-cylinder-small-2-s1492.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1492.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Noise of a small pneumatic cylinder of seat tablet."
+  },
+  "bsb_1493": {
+   "site": "bigsoundbank.com",
+   "title": "Pneumatic cylinder, small #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pneumatic-cylinder-small-3-s1493.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1493.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Noise of a small pneumatic cylinder of seat tablet."
+  },
+  "bsb_1984": {
+   "site": "bigsoundbank.com",
+   "title": "Pistol, cocking #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pistol-cocking-1-s1984.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1984.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Manual cocking of a semi-automatic pistol by retracting the breech."
+  },
+  "bsb_1985": {
+   "site": "bigsoundbank.com",
+   "title": "Pistol, cocking #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pistol-cocking-2-s1985.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1985.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Manual cocking of a semi-automatic pistol by retracting the breech."
+  },
+  "bsb_1986": {
+   "site": "bigsoundbank.com",
+   "title": "Pistol, cocking #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pistol-cocking-3-s1986.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1986.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Manual cocking of a semi-automatic pistol by retracting the breech."
+  },
+  "bsb_1988": {
+   "site": "bigsoundbank.com",
+   "title": "Gun, loading #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/gun-loading-1-s1988.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1988.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Loading of a semi-automatic pistol magazine."
+  },
+  "bsb_1989": {
+   "site": "bigsoundbank.com",
+   "title": "Gun, loading #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/gun-loading-2-s1989.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1989.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Loading of a semi-automatic pistol magazine."
+  },
+  "bsb_1992": {
+   "site": "bigsoundbank.com",
+   "title": "Pistol, cocking hammer #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pistol-cocking-hammer-1-s1992.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1992.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Manual arming of the hammer with a semi-automatic pistol."
+  },
+  "bsb_3061": {
+   "site": "bigsoundbank.com",
+   "title": "Industrial switch #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/industrial-switch-1-s3061.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3061.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a very large industrial switch. Like that of a shed or a very large room. Like you hear in the movies. This sound was created on a computer, with a switch noise, iron bar and reverb."
+  },
+  "bsb_3062": {
+   "site": "bigsoundbank.com",
+   "title": "Industrial switch #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/industrial-switch-2-s3062.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3062.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a very large industrial switch. Like that of a shed or a very large room. Like you hear in the movies. This sound was created on a computer, with a switch noise, iron bar and reverb."
+  },
+  "bsb_0540": {
+   "site": "bigsoundbank.com",
+   "title": "Old switch",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/old-switch-s0540.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0540.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Handling an old light switch."
+  },
+  "bsb_3589": {
+   "site": "bigsoundbank.com",
+   "title": "Anvil #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/anvil-1-s3589.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3589.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "The sound of a hammer striking an anvil repeatedly as a blacksmith works the iron. Sound recording using an omnidirectional capsule microphone."
+  },
+  "bsb_3590": {
+   "site": "bigsoundbank.com",
+   "title": "Anvil #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/anvil-2-s3590.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3590.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a hammer striking an anvil repeatedly as a blacksmith works the iron. Sound recording using a microphone with a cardioid capsule."
+  },
+  "bsb_2242": {
+   "site": "bigsoundbank.com",
+   "title": "Metal ball, bounce #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/metal-ball-bounce-1-s2242.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2242.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A metal ball bouncing off a tiled floor."
+  },
+  "bsb_2243": {
+   "site": "bigsoundbank.com",
+   "title": "Metal ball, bounce #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/metal-ball-bounce-2-s2243.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2243.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A metal ball bouncing off a tiled floor."
+  },
+  "bsb_0706": {
+   "site": "bigsoundbank.com",
+   "title": "Ax on axe wedge",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/ax-on-axe-wedge-s0706.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0706.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A large ax off with a metal axe wedge."
+  },
+  "bsb_1084": {
+   "site": "bigsoundbank.com",
+   "title": "Shot of shovel",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/shot-shovel-s1084.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1084.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Noise of a shovel that knocks on a hard object. A head for example :)"
+  },
+  "bsb_0359": {
+   "site": "bigsoundbank.com",
+   "title": "Heavy chain",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/heavy-chain-s0359.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0359.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a heavy chain that is moving."
+  },
+  "bsb_0619": {
+   "site": "bigsoundbank.com",
+   "title": "Medium chain",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/medium-chain-s0619.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0619.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Manipulation of a medium chain."
+  },
+  "bsb_0360": {
+   "site": "bigsoundbank.com",
+   "title": "Medium Chain #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/medium-chain-1-s0360.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0360.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a medium-sized chain being moved."
+  },
+  "bsb_0361": {
+   "site": "bigsoundbank.com",
+   "title": "Medium chain #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/medium-chain-2-s0361.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0361.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "An average noise metal chain that is moving."
+  },
+  "bsb_0355": {
+   "site": "bigsoundbank.com",
+   "title": "Small chain #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/small-chain-1-s0355.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0355.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a small chain being moved."
+  },
+  "bsb_1133": {
+   "site": "bigsoundbank.com",
+   "title": "Manual chain hoist, mounted",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/manual-chain-hoist-mounted-s1133.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1133.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Noise from a winch or manual chain hoist coming up."
+  },
+  "bsb_3315": {
+   "site": "bigsoundbank.com",
+   "title": "Train whistle, foley #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/train-whistle-foley-1-s3315.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3315.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792"
+  },
+  "bsb_3316": {
+   "site": "bigsoundbank.com",
+   "title": "Train whistle, foley #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/train-whistle-foley-2-s3316.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3316.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792"
+  },
+  "bsb_3317": {
+   "site": "bigsoundbank.com",
+   "title": "Train whistle, foley #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/train-whistle-foley-3-s3317.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3317.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792"
+  },
+  "bsb_3318": {
+   "site": "bigsoundbank.com",
+   "title": "Train whistle, foley #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/train-whistle-foley-4-s3318.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3318.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792"
+  },
+  "bsb_3319": {
+   "site": "bigsoundbank.com",
+   "title": "Train whistle, foley #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/train-whistle-foley-5-s3319.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3319.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792"
+  },
+  "bsb_0225": {
+   "site": "bigsoundbank.com",
+   "title": "Whistling train #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whistling-train-1-s0225.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0225.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whistling train."
+  },
+  "bsb_0226": {
+   "site": "bigsoundbank.com",
+   "title": "Whistling train #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/whistling-train-2-s0226.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0226.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whistling train."
+  },
+  "bsb_0227": {
+   "site": "bigsoundbank.com",
+   "title": "Hiss of steam train #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/hiss-of-steam-train-1-s0227.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0227.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Hiss of steam train."
+  },
+  "bsb_0228": {
+   "site": "bigsoundbank.com",
+   "title": "Hiss of Steam Train #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/hiss-of-steam-train-2-s0228.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0228.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Hiss of steam train."
+  },
+  "bsb_3011": {
+   "site": "bigsoundbank.com",
+   "title": "Hiss of steam train #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/hiss-of-steam-train-3-s3011.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3011.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whistle of a steam train. Recording in the town of Martel, France."
+  },
+  "bsb_3013": {
+   "site": "bigsoundbank.com",
+   "title": "Hiss of steam train #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/hiss-of-steam-train-4-s3013.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3013.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whistle of a steam train. Recording in the town of Martel, France."
+  },
+  "bsb_3014": {
+   "site": "bigsoundbank.com",
+   "title": "Hiss of steam train #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/hiss-of-steam-train-5-s3014.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3014.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Whistle of a steam train. Recording in the town of Martel, France."
+  },
+  "bsb_3016": {
+   "site": "bigsoundbank.com",
+   "title": "Steam locomotive #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/steam-locomotive-1-s3016.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3016.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Running a steam locomotive. Recording from the first car, in the town of Martel, France."
+  },
+  "bsb_3018": {
+   "site": "bigsoundbank.com",
+   "title": "Steam Locomotive #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/steam-locomotive-2-s3018.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3018.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Running a steam locomotive. Recording from the first car, in the town of Martel, France."
+  },
+  "bsb_3021": {
+   "site": "bigsoundbank.com",
+   "title": "Locomotive à vapeur, starting",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/locomotive-a-vapeur-starting-s3021.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3021.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Starting a steam locomotive. Strangely, it's faster and makes less noise than I imagined. Recording from the train station, in the town of Martel, France."
+  },
+  "bsb_3310": {
+   "site": "bigsoundbank.com",
+   "title": "Steam engine, foley #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/steam-engine-foley-1-s3310.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3310.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I make a sound like a locomotive steam engine using a foley technique. Easy to loop."
+  },
+  "bsb_3311": {
+   "site": "bigsoundbank.com",
+   "title": "Steam engine, foley #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/steam-engine-foley-2-s3311.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3311.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "I make a sound like a locomotive steam engine using a foley technique. Easy to loop."
+  },
+  "bsb_0805": {
+   "site": "bigsoundbank.com",
+   "title": "Pressure cooker",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pressure-cooker-s0805.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0805.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Steam from a pressure cooker."
+  },
+  "bsb_0105": {
+   "site": "bigsoundbank.com",
+   "title": "Punch #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/punch-s0105.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0105.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A punch followed by a 'tiens'."
+  },
+  "bsb_2459": {
+   "site": "bigsoundbank.com",
+   "title": "Punch #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/punch-4-s2459.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2459.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Punch. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_2460": {
+   "site": "bigsoundbank.com",
+   "title": "Punch #5",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/punch-5-s2460.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2460.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Punch. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_2461": {
+   "site": "bigsoundbank.com",
+   "title": "Punch #6",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/punch-6-s2461.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2461.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Punch. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_2462": {
+   "site": "bigsoundbank.com",
+   "title": "Punch #7",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/punch-7-s2462.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2462.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Punch. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_0597": {
+   "site": "bigsoundbank.com",
+   "title": "Slaps",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/slaps-s0597.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0597.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Slapping noise."
+  },
+  "bsb_1152": {
+   "site": "bigsoundbank.com",
+   "title": "Spanking",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/spanking-s1152.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1152.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A series of 20 spankings."
+  },
+  "bsb_0444": {
+   "site": "bigsoundbank.com",
+   "title": "Punch #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/punches-s0444.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/0444.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "9 sounds of punches."
+  },
+  "bsb_2452": {
+   "site": "bigsoundbank.com",
+   "title": "Body Fall #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/body-fall-1-s2452.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2452.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A man falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_2453": {
+   "site": "bigsoundbank.com",
+   "title": "Body Fall #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/body-fall-2-s2453.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2453.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A human falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_2454": {
+   "site": "bigsoundbank.com",
+   "title": "Body fall #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/body-fall-3-s2454.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2454.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A human falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_2455": {
+   "site": "bigsoundbank.com",
+   "title": "Body fall #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/body-fall-4-s2455.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/2455.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A human falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B."
+  },
+  "bsb_0495": {
+   "site": "bigsoundbank.com",
+   "title": "Steps in the Mud",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/steps-in-the-mud-s0495.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0495.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "The sound of human footsteps in the very liquid mud."
+  },
+  "bsb_0690": {
+   "site": "bigsoundbank.com",
+   "title": "Shoes in the Water",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/shoes-in-the-water-s0690.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0690.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Walking shoes in the water. After the storm."
+  },
+  "bsb_1837": {
+   "site": "bigsoundbank.com",
+   "title": "Jumping on dirt road #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/jumping-on-dirt-road-1-s1837.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1837.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Human jumping on a dirt road."
+  },
+  "bsb_1104": {
+   "site": "bigsoundbank.com",
+   "title": "Synthetic Coat Rubbed",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/synthetic-coat-rubbed-s1104.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1104.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Synthetic coat rubbed by hand."
+  },
+  "bsb_0576": {
+   "site": "bigsoundbank.com",
+   "title": "Canvas bag on floor",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/canvas-bag-on-floor-s0576.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0576.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A canvas bag thrown on the floor. 9x."
+  },
+  "bsb_1787": {
+   "site": "bigsoundbank.com",
+   "title": "Flag #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/flag-1-s1787.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1787.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Shaken nylon flag."
+  },
+  "bsb_1788": {
+   "site": "bigsoundbank.com",
+   "title": "Flag #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/flag-2-s1788.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1788.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Shaken nylon flag."
+  },
+  "bsb_1789": {
+   "site": "bigsoundbank.com",
+   "title": "Flag #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/flag-3-s1789.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1789.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Shaken nylon flag."
+  },
+  "bsb_0399": {
+   "site": "bigsoundbank.com",
+   "title": "Tent or curtain shower",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/tent-or-curtain-shower-s0399.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0399.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Noise made by the friction of a shower curtain with your fingers. It is also the noise of a tent when rubbed in the same way."
+  },
+  "bsb_0008": {
+   "site": "bigsoundbank.com",
+   "title": "Scissors",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/scissors-s0008.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0008.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Scissors: closing (x3), opening and closing (x3), short closure (x1)."
+  },
+  "bsb_0443": {
+   "site": "bigsoundbank.com",
+   "title": "Cutter",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cutter-s0443.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/0443.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Sound of a box cutter when the blade is extended or retracted."
+  },
+  "bsb_0134": {
+   "site": "bigsoundbank.com",
+   "title": "Electric shock",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/electric-shock-s0134.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0134.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Electrical shock that emits a speaker when plugged into the same circuit as other equipment that turns and turns off. Hears back, very light breath of the speaker itself."
+  },
+  "bsb_0952": {
+   "site": "bigsoundbank.com",
+   "title": "Short welds",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/short-welds-s0952.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0952.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Short welds carried with a welding machine 'Mig Mag' by Stanley."
+  },
+  "bsb_1252": {
+   "site": "bigsoundbank.com",
+   "title": "Electrical fence",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/electrical-fence-s1252.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1252.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Electric shocks from a fence. Easy to loop."
+  },
+  "bsb_3426": {
+   "site": "bigsoundbank.com",
+   "title": "Big rope",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/big-rope-s3426.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3426.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Squeaking of a large swing rope recorded with a contact microphone."
+  },
+  "bsb_0865": {
+   "site": "bigsoundbank.com",
+   "title": "Creaking of wicker",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/creaking-of-wicker-s0865.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0865.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Creaking of a wicker basket."
+  },
+  "bsb_3051": {
+   "site": "bigsoundbank.com",
+   "title": "Squeaking parquet #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/squeaking-parquet-1-s3051.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3051.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A creaking of an oak floor."
+  },
+  "bsb_3052": {
+   "site": "bigsoundbank.com",
+   "title": "Squeaking parquet #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/squeaking-parquet-2-s3052.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/3052.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A creaking of an oak floor."
+  },
+  "bsb_0616": {
+   "site": "bigsoundbank.com",
+   "title": "Creaking metallic door",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/creaking-metallic-door-s0616.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0616.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Much gnashing of metal door."
+  },
+  "bsb_1643": {
+   "site": "bigsoundbank.com",
+   "title": "Broken Plate #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/broken-plate-1-s1643.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1643.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A plate dropped on a concrete floor, which breaks."
+  },
+  "bsb_1644": {
+   "site": "bigsoundbank.com",
+   "title": "Broken plate #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/broken-plate-2-s1644.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1644.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A plate dropped on a concrete floor, which breaks."
+  },
+  "bsb_1645": {
+   "site": "bigsoundbank.com",
+   "title": "Broken plate #3",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/broken-plate-3-s1645.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1645.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "A plate dropped on a concrete floor, which breaks."
+  },
+  "bsb_0138": {
+   "site": "bigsoundbank.com",
+   "title": "Air",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/air-s0138.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0138.wav",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Air."
+  },
+  "bsb_1486": {
+   "site": "bigsoundbank.com",
+   "title": "Air leak",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/air-leak-s1486.html",
+   "url": "https://bigsoundbank.com/UPLOAD/flac/1486.flac",
+   "license": "CC0 1.0",
+   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
+   "desc": "Air leak as in a tire puncture."
+  }
+ },
+ "events": {}
+}
