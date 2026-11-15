@@ -1,0 +1,170 @@
+{
+  "name": "Fox Cart",
+  "parts": 35,
+  "instances": 42,
+  "faces": 234,
+  "triangles": 468,
+  "vertices_flat": 936,
+  "vertices_unique": 312,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.579,
+  "texel_density": 1.0,
+  "colors_used": 53,
+  "palette": {
+    "fox": [
+      "#1a0e0c",
+      "#2c150f",
+      "#421d12",
+      "#5a2815",
+      "#73361a",
+      "#8b4520",
+      "#a05628",
+      "#b26932",
+      "#c28042",
+      "#cf9858",
+      "#dcb27a"
+    ],
+    "cream": [
+      "#25232a",
+      "#3a373e",
+      "#524e55",
+      "#6c676c",
+      "#878282",
+      "#a39d98",
+      "#bdb7ae",
+      "#d2cdc2",
+      "#e3dfd5",
+      "#f1eee6"
+    ],
+    "black": [
+      "#0c0a0c",
+      "#151113",
+      "#1e1819",
+      "#282020",
+      "#342927",
+      "#42342f",
+      "#52413a"
+    ],
+    "eye": [
+      "#080506",
+      "#1e1209",
+      "#40260c",
+      "#6a4214"
+    ],
+    "wood": [
+      "#16110e",
+      "#221a14",
+      "#30241b",
+      "#3f3023",
+      "#503e2d",
+      "#624d38",
+      "#755e45",
+      "#887053",
+      "#9b8364"
+    ],
+    "iron": [
+      "#0f1013",
+      "#1a1c20",
+      "#272a2f",
+      "#373a40",
+      "#4a4d53",
+      "#5f6268",
+      "#76797d",
+      "#8f9194"
+    ],
+    "wool": [
+      "#4c4c4c",
+      "#5e5e5e",
+      "#727272",
+      "#878787",
+      "#9c9c9c",
+      "#b1b1b1",
+      "#c5c5c5",
+      "#d8d8d8",
+      "#e9e9e9",
+      "#f7f7f7"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -8.055,
+      0.0,
+      -20.485
+    ],
+    "max": [
+      8.055,
+      26.504,
+      21.367
+    ],
+    "size": [
+      16.111,
+      26.504,
+      41.853
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "run": 1.0,
+    "idle": 2.0
+  },
+  "joints": [
+    "tub",
+    "wall_l",
+    "wall_r",
+    "wall_f",
+    "wall_b",
+    "axle_f",
+    "axle_b",
+    "trim",
+    "trim_l",
+    "trim_r",
+    "trim_b",
+    "wheel_fl",
+    "wheel_fl_hub",
+    "wheel_fr",
+    "wheel_fr_hub",
+    "wheel_bl",
+    "wheel_bl_hub",
+    "wheel_br",
+    "wheel_br_hub",
+    "seat",
+    "leg",
+    "paw",
+    "leg_mirror",
+    "paw_mirror",
+    "haunch",
+    "haunch_mirror",
+    "neck",
+    "head",
+    "cheek",
+    "cheek_mirror",
+    "snout",
+    "nose",
+    "ear",
+    "ear_mid",
+    "ear_tip",
+    "ear_mirror",
+    "ear_mid_mirror",
+    "ear_tip_mirror",
+    "tail",
+    "tail_1",
+    "tail_2",
+    "tail_tip"
+  ],
+  "files": {
+    "fox_cart.glb": "examples/output/fox_cart.glb",
+    "fox_cart.obj": "examples/output/fox_cart.obj",
+    "fox_cart.mtl": "examples/output/fox_cart.mtl",
+    "fox_cart.bbmodel": "examples/output/fox_cart.bbmodel",
+    "fox_cart_texture.png": "examples/output/fox_cart_texture.png",
+    "fox_cart_texture_x8.png": "examples/output/fox_cart_texture_x8.png",
+    "fox_cart_hero.png": "examples/output/fox_cart_hero.png",
+    "fox_cart_sheet.png": "examples/output/fox_cart_sheet.png",
+    "fox_cart_turntable.gif": "examples/output/fox_cart_turntable.gif",
+    "fox_cart_run.gif": "examples/output/fox_cart_run.gif",
+    "fox_cart_idle.gif": "examples/output/fox_cart_idle.gif"
+  }
+}

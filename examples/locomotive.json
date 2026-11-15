@@ -1,0 +1,10216 @@
+{
+ "name": "Locomotive",
+ "description": "The Iron Locomotive: a little riveted iron steam tank engine with brass bands, a flared stack, red spoked drivers, connecting rods, a cowcatcher and a coal bunker (Winterworks mod vehicle). Front = +Z, rail top y = 0; Minecraft pixel units, density 1.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 1,
+ "budget": {
+  "tris": 3200,
+  "colors": 110
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 1.1,
+  "gradient": 0.6,
+  "ao": 1.0,
+  "ao_height": 9.0
+ },
+ "brush": {
+  "length": 3.2,
+  "rough": 0.5,
+  "width": 0.6,
+  "overshoot": 0.3,
+  "flow": "long",
+  "textures": {
+   "iron": "metal",
+   "steel": "metal",
+   "brass": "metal",
+   "red": "metal",
+   "wood": "wood",
+   "coal": "stone",
+   "tint": "metal"
+  }
+ },
+ "minecraft": {
+  "fps": 12,
+  "glow_parts": [
+   "lamp",
+   "firebox"
+  ],
+  "tint_parts": [
+   "trim",
+   "trim_band",
+   "trim_boiler"
+  ]
+ },
+ "anim_ground_tolerance": 0.5,
+ "render": {
+  "background": "#1a1d22",
+  "hero": [
+   -36,
+   20
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "iron": [
+    "#121216",
+    "#1b1c21",
+    "#25272d",
+    "#30333a",
+    "#3c3f46",
+    "#494c52",
+    "#585a5f",
+    "#696a6d",
+    "#7d7c7c",
+    "#93908b",
+    "#aaa59e"
+   ],
+   "steel": [
+    "#1b1d22",
+    "#2b2e35",
+    "#40444b",
+    "#585c63",
+    "#73777c",
+    "#909396",
+    "#adafaf",
+    "#c9c8c3"
+   ],
+   "brass": [
+    "#221c10",
+    "#352b16",
+    "#4b3d1d",
+    "#635126",
+    "#7c6731",
+    "#947d3f",
+    "#ab9452",
+    "#c1aa6a",
+    "#d4bf86"
+   ],
+   "red": [
+    "#1c0f0e",
+    "#2c1513",
+    "#3e1c18",
+    "#53241e",
+    "#682d23",
+    "#7d382a",
+    "#904634",
+    "#a25843",
+    "#b26e58"
+   ],
+   "wood": [
+    "#1d140e",
+    "#2b1d13",
+    "#3b2819",
+    "#4d3420",
+    "#5f4129",
+    "#715033",
+    "#83603f",
+    "#94714d",
+    "#a5845e"
+   ],
+   "coal": [
+    "#0b0b0e",
+    "#121217",
+    "#1a1a20",
+    "#23232a",
+    "#2e2e36",
+    "#3c3c45",
+    "#565663"
+   ],
+   "glass": [
+    "#0e1418",
+    "#162028",
+    "#1f2d36",
+    "#2b3d48",
+    "#3d525d",
+    "#587077",
+    "#7f9799"
+   ],
+   "fire": [
+    "#3b0f05",
+    "#6a1c06",
+    "#9c3009",
+    "#cc4d10",
+    "#ee7a1e",
+    "#ffad40",
+    "#ffd98a",
+    "#fff6d8"
+   ],
+   "lamp": [
+    "#6e5420",
+    "#b08a34",
+    "#e2bc54",
+    "#fbe08a",
+    "#fff4c4",
+    "#fffdf0"
+   ],
+   "tint": [
+    "#5e5e5e",
+    "#717171",
+    "#858585",
+    "#999999",
+    "#adadad",
+    "#c1c1c1",
+    "#d5d5d5",
+    "#e8e8e8",
+    "#f6f6f6"
+   ]
+  }
+ },
+ "styles": {
+  "frame": {
+   "ramp": "iron",
+   "tone": 2.6,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "oil",
+     "op": "patches",
+     "scale": 2.0,
+     "threshold": 0.58,
+     "shift": -0.8
+    },
+    {
+     "id": "grime",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.9
+    }
+   ]
+  },
+  "frame_dark": {
+   "ramp": "iron",
+   "tone": 2.8,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    }
+   ]
+  },
+  "footplate": {
+   "ramp": "iron",
+   "tone": 4.800000000000001,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "deck",
+     "op": "fill",
+     "ramp": "wood",
+     "tone": 4.6,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "planks",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.0,
+     "width": 0.18,
+     "shift": -1.4,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.5,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "edge_rivets",
+     "op": "rivets",
+     "spacing": 3,
+     "inset": 0,
+     "shadow": -0.6,
+     "highlight": 1.0,
+     "faces": [
+      "sides"
+     ],
+     "min_size": 1
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    }
+   ]
+  },
+  "deck": {
+   "ramp": "wood",
+   "tone": 4.0,
+   "brush": {
+    "flow": "x"
+   },
+   "layers": [
+    {
+     "id": "planks",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.0,
+     "width": 0.18,
+     "shift": -1.4
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.5
+    }
+   ]
+  },
+  "beam": {
+   "ramp": "red",
+   "tone": 4.6,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "x"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -0.5,
+     "wobble": 0.4
+    },
+    {
+     "id": "chips",
+     "op": "wear",
+     "width": 1,
+     "density": 0.35,
+     "ramp": "wood",
+     "tone": 2.6
+    },
+    {
+     "id": "bolts",
+     "op": "rivets",
+     "spacing": 4,
+     "inset": 0,
+     "ramp": "iron",
+     "tone": 6,
+     "min_size": 3
+    }
+   ]
+  },
+  "steel": {
+   "ramp": "steel",
+   "tone": 4.2,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "long",
+    "length": 3
+   },
+   "layers": [
+    {
+     "id": "sheen",
+     "op": "noise",
+     "scale": 1.5,
+     "amount": 0.4
+    }
+   ]
+  },
+  "steel_dark": {
+   "ramp": "steel",
+   "tone": 2.6,
+   "rim": {
+    "light_shift": 1.4,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    }
+   ]
+  },
+  "rod": {
+   "ramp": "steel",
+   "tone": 4.4,
+   "light": 0.5,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "flow": "z",
+    "length": 4,
+    "rough": 0.5
+   },
+   "layers": [
+    {
+     "id": "oil",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.62,
+     "shift": -1.3
+    }
+   ]
+  },
+  "cylinder": {
+   "ramp": "iron",
+   "tone": 5.4,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "lag",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.5,
+     "width": 0.2,
+     "ramp": "brass",
+     "tone": 4.0,
+     "faces": [
+      "sides",
+      "top"
+     ]
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    },
+    {
+     "id": "drip_oil",
+     "op": "drip",
+     "shift": -1.0,
+     "depth": 0.2,
+     "length": 2.0,
+     "width": 0.5,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "wheel_disk": {
+   "ramp": "red",
+   "tone": 4,
+   "light": 0,
+   "brush": {
+    "off": true
+   }
+  },
+  "tyre": {
+   "ramp": "iron",
+   "tone": 2.6,
+   "light": 0.2,
+   "rim": {
+    "light_shift": 0.8,
+    "dark_shift": -0.6
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "tread",
+     "op": "fill",
+     "ramp": "steel",
+     "tone": 4.4,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "wear",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    }
+   ]
+  },
+  "hub": {
+   "ramp": "red",
+   "tone": 3.6,
+   "light": 0.3,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -0.8
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "axle",
+     "op": "rect",
+     "rect": [
+      0.34,
+      0.34,
+      0.66,
+      0.66
+     ],
+     "ramp": "steel",
+     "tone": 4.6,
+     "faces": [
+      "flanks"
+     ]
+    }
+   ]
+  },
+  "cab": {
+   "ramp": "iron",
+   "tone": 5.800000000000001,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "y",
+    "length": 3,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    },
+    {
+     "id": "grime",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.6
+    },
+    {
+     "id": "seams",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.0,
+     "highlight": 0.6,
+     "min_size": 5,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "rivets",
+     "op": "rivets",
+     "spacing": 3,
+     "inset": 1,
+     "shadow": -0.8,
+     "highlight": 1.1,
+     "min_size": 5
+    },
+    {
+     "id": "streaks",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.3,
+     "width": 0.25,
+     "shift": -0.6,
+     "wobble": 0.5,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "chips",
+     "op": "wear",
+     "width": 1,
+     "density": 0.18,
+     "shift": 1.4
+    }
+   ]
+  },
+  "cab_roof": {
+   "ramp": "iron",
+   "tone": 4.6000000000000005,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "z",
+    "length": 3
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    },
+    {
+     "id": "seams",
+     "op": "stripes",
+     "axis": "z",
+     "period": 3.0,
+     "width": 0.18,
+     "shift": -1.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "soot",
+     "op": "patches",
+     "scale": 2.2,
+     "threshold": 0.55,
+     "shift": -1.0
+    }
+   ]
+  },
+  "bunker": {
+   "ramp": "iron",
+   "tone": 5.2,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "y",
+    "length": 3
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    },
+    {
+     "id": "grime",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.8
+    },
+    {
+     "id": "rivets",
+     "op": "rivets",
+     "spacing": 3,
+     "inset": 1,
+     "shadow": -0.8,
+     "highlight": 1.1,
+     "min_size": 4
+    },
+    {
+     "id": "coal_dust",
+     "op": "drip",
+     "shift": -1.2,
+     "depth": 0.3,
+     "length": 2.0,
+     "width": 0.5,
+     "faces": [
+      "sides",
+      "back"
+     ]
+    }
+   ]
+  },
+  "iron_dark": {
+   "ramp": "iron",
+   "tone": 2.6,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    }
+   ]
+  },
+  "coal": {
+   "ramp": "coal",
+   "tone": 2.0,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "long",
+    "length": 1.5,
+    "rough": 0.8,
+    "textures": {
+     "coal": "stone"
+    }
+   },
+   "layers": [
+    {
+     "id": "lumps",
+     "op": "patches",
+     "scale": 1.0,
+     "threshold": 0.55,
+     "shift": 1.0
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "density": 0.05,
+     "post": true
+    }
+   ]
+  },
+  "brass": {
+   "ramp": "brass",
+   "tone": 4.4,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "long",
+    "length": 2,
+    "rough": 0.5
+   },
+   "layers": [
+    {
+     "id": "tarnish",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.56,
+     "shift": -1.2
+    },
+    {
+     "id": "shine",
+     "op": "gloss",
+     "dash": true,
+     "length": 2,
+     "density": 0.5,
+     "shift": 1.5,
+     "post": true
+    }
+   ]
+  },
+  "glass": {
+   "ramp": "glass",
+   "tone": 2.5,
+   "light": 0.3,
+   "brush": {
+    "off": true
+   }
+  },
+  "fire": {
+   "ramp": "fire",
+   "tone": 4.6,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "embers",
+     "op": "patches",
+     "scale": 0.9,
+     "threshold": 0.5,
+     "shift": 1.4
+    },
+    {
+     "id": "ash",
+     "op": "patches",
+     "scale": 0.7,
+     "threshold": 0.7,
+     "shift": -1.6,
+     "seed": 3
+    },
+    {
+     "id": "heat",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.0
+    }
+   ]
+  },
+  "grate": {
+   "ramp": "iron",
+   "tone": 3.0,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    }
+   ]
+  },
+  "lamp": {
+   "ramp": "lamp",
+   "tone": 3.6,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "core",
+     "op": "rect",
+     "rect": [
+      0.3,
+      0.3,
+      0.7,
+      0.7
+     ],
+     "tone": 5.0,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "trim": {
+   "ramp": "tint",
+   "tone": 6.0,
+   "rim": {
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "long",
+    "length": 3,
+    "rough": 0.5
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.2,
+     "amount": 0.5
+    },
+    {
+     "id": "chips",
+     "op": "wear",
+     "width": 1,
+     "density": 0.2,
+     "shift": -2.4
+    },
+    {
+     "id": "grime",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.5
+    }
+   ]
+  },
+  "boiler": {
+   "ramp": "iron",
+   "tone": 5.6,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "z",
+    "length": 4.0,
+    "rough": 0.5
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    },
+    {
+     "id": "grime",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.6
+    },
+    {
+     "id": "rolled",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.7,
+     "width": 0.3,
+     "shift": -0.6,
+     "wobble": 0.3,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "rivets",
+     "op": "rivets",
+     "spacing": 3,
+     "inset": 0,
+     "shadow": -0.8,
+     "highlight": 1.0,
+     "min_size": 6,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "bands",
+     "op": "stripes",
+     "axis": "z",
+     "space": "world",
+     "period": 4.0,
+     "width": 0.25,
+     "phase": -2.0,
+     "ramp": "brass",
+     "tone": 3.4
+    },
+    {
+     "id": "soot",
+     "op": "drip",
+     "shift": -1.3,
+     "depth": 0.2,
+     "length": 2.0,
+     "width": 0.6,
+     "scale": 2.0,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "smokebox": {
+   "ramp": "iron",
+   "tone": 4.0,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "y",
+    "length": 3,
+    "rough": 0.65
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    },
+    {
+     "id": "soot",
+     "op": "drip",
+     "shift": -1.0,
+     "depth": 0.6,
+     "length": 3.5,
+     "width": 0.5,
+     "scale": 2.0,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "rivets",
+     "op": "rivets",
+     "spacing": 2,
+     "inset": 0,
+     "shadow": -0.6,
+     "highlight": 1.2,
+     "min_size": 4,
+     "faces": [
+      "back"
+     ]
+    }
+   ]
+  },
+  "iron_cap": {
+   "ramp": "iron",
+   "tone": 5.0,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "y",
+    "length": 2
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "soot",
+     "op": "drip",
+     "shift": -0.8,
+     "depth": 0.2,
+     "length": 1.5,
+     "width": 0.5
+    }
+   ]
+  },
+  "pipe": {
+   "ramp": "iron",
+   "tone": 4.4,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "long",
+    "length": 3
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "flange",
+     "op": "stripes",
+     "axis": "y",
+     "period": 4.0,
+     "width": 0.25,
+     "shift": 1.2
+    }
+   ]
+  },
+  "plate": {
+   "ramp": "brass",
+   "tone": 3.0,
+   "rim": {
+    "light_shift": 1.8,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "door": {
+   "ramp": "iron",
+   "tone": 4.8,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    }
+   ]
+  },
+  "stack": {
+   "ramp": "iron",
+   "tone": 3.8,
+   "rim": {
+    "light_shift": 1.4,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "y",
+    "length": 3,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rusty_metal_02",
+     "scale": 9.0,
+     "amount": 0.3,
+     "ramps": [
+      "iron",
+      "steel"
+     ]
+    },
+    {
+     "id": "soot",
+     "op": "drip",
+     "shift": -1.0,
+     "depth": 0.3,
+     "length": 2.0,
+     "width": 0.5
+    }
+   ]
+  },
+  "stack_top": {
+   "ramp": "brass",
+   "tone": 3.2,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "flue",
+     "op": "rect",
+     "rect": [
+      0.2,
+      0.2,
+      0.8,
+      0.8
+     ],
+     "ramp": "coal",
+     "tone": 0.5,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "glow",
+     "op": "rect",
+     "rect": [
+      0.4,
+      0.4,
+      0.6,
+      0.6
+     ],
+     "ramp": "fire",
+     "tone": 1.0,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "lamp_body": {
+   "ramp": "brass",
+   "tone": 2.8,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "long",
+    "length": 2
+   },
+   "layers": [
+    {
+     "id": "tarnish",
+     "op": "patches",
+     "scale": 1.2,
+     "threshold": 0.5,
+     "shift": -1.4
+    }
+   ]
+  },
+  "pilot": {
+   "ramp": "iron",
+   "tone": 4.6,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "long",
+    "length": 3
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "grime",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0
+    }
+   ]
+  },
+  "pilot_bar": {
+   "ramp": "red",
+   "tone": 4.4,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "long",
+    "length": 3
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 4.0,
+     "amount": 0.3
+    },
+    {
+     "id": "chips",
+     "op": "wear",
+     "width": 1,
+     "density": 0.3,
+     "ramp": "iron",
+     "tone": 2.5
+    }
+   ]
+  },
+  "smokebox_ring": {
+   "ramp": "iron",
+   "tone": 4.0,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "bolts",
+     "op": "rivets",
+     "spacing": 2,
+     "inset": 0,
+     "shadow": -0.6,
+     "highlight": 1.4,
+     "min_size": 4,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "chassis",
+   "shape": "box",
+   "size": [
+    5.0,
+    4.0,
+    26.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "frame",
+   "offset": [
+    0.0,
+    5.5,
+    0.0
+   ]
+  },
+  {
+   "id": "footplate",
+   "shape": "box",
+   "size": [
+    14.0,
+    1.0,
+    26.0
+   ],
+   "pivot": [
+    0.0,
+    10.5,
+    0.0
+   ],
+   "style": "footplate",
+   "parent": "chassis"
+  },
+  {
+   "id": "beam_front",
+   "shape": "box",
+   "size": [
+    14.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    8.5,
+    13.5
+   ],
+   "style": "beam",
+   "parent": "chassis"
+  },
+  {
+   "id": "beam_back",
+   "shape": "box",
+   "size": [
+    14.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    8.5,
+    -13.5
+   ],
+   "style": "beam",
+   "parent": "chassis"
+  },
+  {
+   "id": "buffer_l",
+   "shape": "box",
+   "size": [
+    2.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    4.5,
+    0.0,
+    -0.7
+   ],
+   "style": "steel",
+   "parent": "beam_back"
+  },
+  {
+   "id": "step_l",
+   "shape": "box",
+   "size": [
+    3.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    6.0,
+    8.0,
+    -12.0
+   ],
+   "style": "frame_dark",
+   "parent": "chassis"
+  },
+  {
+   "id": "step_l_hanger",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "frame_dark",
+   "parent": "step_l"
+  },
+  {
+   "id": "buffer_r",
+   "shape": "box",
+   "size": [
+    2.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    -4.5,
+    0.0,
+    -0.7
+   ],
+   "style": "steel",
+   "parent": "beam_back"
+  },
+  {
+   "id": "step_r",
+   "shape": "box",
+   "size": [
+    3.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    -6.0,
+    8.0,
+    -12.0
+   ],
+   "style": "frame_dark",
+   "parent": "chassis"
+  },
+  {
+   "id": "step_r_hanger",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "frame_dark",
+   "parent": "step_r"
+  },
+  {
+   "id": "coupler",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -0.5,
+    -0.75
+   ],
+   "style": "steel_dark",
+   "parent": "beam_back"
+  },
+  {
+   "id": "trim",
+   "shape": "box",
+   "size": [
+    15.0,
+    1.0,
+    26.0
+   ],
+   "pivot": [
+    0.0,
+    9.5,
+    0.0
+   ],
+   "style": "trim",
+   "parent": "chassis",
+   "hide": [
+    "top"
+   ]
+  },
+  {
+   "id": "wheel_fl",
+   "shape": "box",
+   "size": [
+    1.0,
+    7.0,
+    7.0
+   ],
+   "pivot": [
+    3.6,
+    4.6,
+    2.5
+   ],
+   "style": "wheel_disk",
+   "parent": "chassis",
+   "hide": [
+    "top",
+    "bottom",
+    "front",
+    "back"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "_rrrrR_",
+       "rs_s_sr",
+       "r_hhh_R",
+       "rshhhsk",
+       "rchhhcr",
+       "Rscscsr",
+       "_rrRrk_"
+      ],
+      "key": {
+       "t": "iron:2",
+       "r": "red:4",
+       "R": "red:6",
+       "k": "iron:3",
+       "s": "red:5",
+       "h": "red:3",
+       "c": "red:3"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_fl_t0",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_t1",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_t2",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    90.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_t3",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    135.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_t4",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_t5",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    225.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_t6",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    270.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_t7",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    315.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fl_hub",
+   "shape": "box",
+   "size": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    0.5,
+    0.0,
+    0.0
+   ],
+   "style": "hub",
+   "parent": "wheel_fl"
+  },
+  {
+   "id": "wheel_bl",
+   "shape": "box",
+   "size": [
+    1.0,
+    7.0,
+    7.0
+   ],
+   "pivot": [
+    3.6,
+    4.6,
+    -7.5
+   ],
+   "style": "wheel_disk",
+   "parent": "chassis",
+   "hide": [
+    "top",
+    "bottom",
+    "front",
+    "back"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "_rrrrR_",
+       "rs_s_sr",
+       "r_hhh_R",
+       "rshhhsk",
+       "rchhhcr",
+       "Rscscsr",
+       "_rrRrk_"
+      ],
+      "key": {
+       "t": "iron:2",
+       "r": "red:4",
+       "R": "red:6",
+       "k": "iron:3",
+       "s": "red:5",
+       "h": "red:3",
+       "c": "red:3"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_bl_t0",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_t1",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_t2",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    90.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_t3",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    135.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_t4",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_t5",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    225.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_t6",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    270.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_t7",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_bl",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    315.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_bl_hub",
+   "shape": "box",
+   "size": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    0.5,
+    0.0,
+    0.0
+   ],
+   "style": "hub",
+   "parent": "wheel_bl"
+  },
+  {
+   "id": "lead_l",
+   "shape": "box",
+   "size": [
+    1.0,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    3.6,
+    2.5,
+    10.0
+   ],
+   "style": "wheel_disk",
+   "parent": "chassis",
+   "hide": [
+    "top",
+    "bottom",
+    "front",
+    "back"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "_s_",
+       "shs",
+       "_s_"
+      ],
+      "key": {
+       "t": "iron:2",
+       "r": "red:4",
+       "R": "red:6",
+       "k": "iron:3",
+       "s": "red:5",
+       "h": "red:3",
+       "c": "red:3"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "lead_l_t0",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_t1",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_t2",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    90.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_t3",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    135.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_t4",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_t5",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    225.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_t6",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    270.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_t7",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_l",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    315.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_l_hub",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.5,
+    0.0,
+    0.0
+   ],
+   "style": "hub",
+   "parent": "lead_l"
+  },
+  {
+   "id": "wheel_fr",
+   "shape": "box",
+   "size": [
+    1.0,
+    7.0,
+    7.0
+   ],
+   "pivot": [
+    -3.6,
+    4.6,
+    2.5
+   ],
+   "style": "wheel_disk",
+   "parent": "chassis",
+   "hide": [
+    "top",
+    "bottom",
+    "front",
+    "back"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "_rrrrR_",
+       "rs_s_sr",
+       "r_hhh_R",
+       "rshhhsk",
+       "rchhhcr",
+       "Rscscsr",
+       "_rrRrk_"
+      ],
+      "key": {
+       "t": "iron:2",
+       "r": "red:4",
+       "R": "red:6",
+       "k": "iron:3",
+       "s": "red:5",
+       "h": "red:3",
+       "c": "red:3"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_fr_t0",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_t1",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_t2",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    90.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_t3",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    135.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_t4",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_t5",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    225.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_t6",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    270.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_t7",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_fr",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    315.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_fr_hub",
+   "shape": "box",
+   "size": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    -0.5,
+    0.0,
+    0.0
+   ],
+   "style": "hub",
+   "parent": "wheel_fr"
+  },
+  {
+   "id": "wheel_br",
+   "shape": "box",
+   "size": [
+    1.0,
+    7.0,
+    7.0
+   ],
+   "pivot": [
+    -3.6,
+    4.6,
+    -7.5
+   ],
+   "style": "wheel_disk",
+   "parent": "chassis",
+   "hide": [
+    "top",
+    "bottom",
+    "front",
+    "back"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "_rrrrR_",
+       "rs_s_sr",
+       "r_hhh_R",
+       "rshhhsk",
+       "rchhhcr",
+       "Rscscsr",
+       "_rrRrk_"
+      ],
+      "key": {
+       "t": "iron:2",
+       "r": "red:4",
+       "R": "red:6",
+       "k": "iron:3",
+       "s": "red:5",
+       "h": "red:3",
+       "c": "red:3"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_br_t0",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_t1",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_t2",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    90.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_t3",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    135.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_t4",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_t5",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    225.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_t6",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    270.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_t7",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "wheel_br",
+   "offset": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "rotation": [
+    315.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "wheel_br_hub",
+   "shape": "box",
+   "size": [
+    2.0,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    -0.5,
+    0.0,
+    0.0
+   ],
+   "style": "hub",
+   "parent": "wheel_br"
+  },
+  {
+   "id": "lead_r",
+   "shape": "box",
+   "size": [
+    1.0,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    -3.6,
+    2.5,
+    10.0
+   ],
+   "style": "wheel_disk",
+   "parent": "chassis",
+   "hide": [
+    "top",
+    "bottom",
+    "front",
+    "back"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "_s_",
+       "shs",
+       "_s_"
+      ],
+      "key": {
+       "t": "iron:2",
+       "r": "red:4",
+       "R": "red:6",
+       "k": "iron:3",
+       "s": "red:5",
+       "h": "red:3",
+       "c": "red:3"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "lead_r_t0",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_t1",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_t2",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    90.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_t3",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    135.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_t4",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_t5",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    225.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_t6",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    270.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_t7",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.04,
+    0.0,
+    0.0
+   ],
+   "style": "tyre",
+   "parent": "lead_r",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    315.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lead_r_hub",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -0.5,
+    0.0,
+    0.0
+   ],
+   "style": "hub",
+   "parent": "lead_r"
+  },
+  {
+   "id": "cylinder_l",
+   "shape": "box",
+   "size": [
+    3.0,
+    3.0,
+    5.0
+   ],
+   "pivot": [
+    5.9,
+    6.7,
+    10.5
+   ],
+   "style": "cylinder",
+   "parent": "chassis"
+  },
+  {
+   "id": "cylinder_l_cap",
+   "shape": "box",
+   "size": [
+    2.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    0.2,
+    0.0,
+    2.6
+   ],
+   "style": "steel_dark",
+   "parent": "cylinder_l"
+  },
+  {
+   "id": "steamchest_l",
+   "shape": "box",
+   "size": [
+    2.0,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    0.3,
+    2.3,
+    0.0
+   ],
+   "style": "cylinder",
+   "parent": "cylinder_l"
+  },
+  {
+   "id": "slidebar_l",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    6.85,
+    8.1,
+    5.3
+   ],
+   "style": "steel_dark",
+   "parent": "chassis"
+  },
+  {
+   "id": "piston_l",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    6.75,
+    6.5,
+    4.9996
+   ],
+   "style": "steel",
+   "parent": "chassis",
+   "offset": [
+    0.0,
+    0.0,
+    3.5
+   ]
+  },
+  {
+   "id": "crosshead_l",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.05,
+    0.0,
+    0.0
+   ],
+   "style": "steel_dark",
+   "parent": "piston_l"
+  },
+  {
+   "id": "mainrod_l",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    13.0
+   ],
+   "pivot": [
+    0.1,
+    0.0,
+    0.0
+   ],
+   "style": "rod",
+   "parent": "piston_l",
+   "offset": [
+    0.0,
+    0.0,
+    -6.25
+   ],
+   "rotation": [
+    0.458,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "mainrod_l_end",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.12,
+    0.0,
+    -12.5
+   ],
+   "style": "steel_dark",
+   "parent": "mainrod_l"
+  },
+  {
+   "id": "rod_l",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    11.0
+   ],
+   "pivot": [
+    5.65,
+    6.6,
+    -2.5
+   ],
+   "style": "rod",
+   "parent": "chassis"
+  },
+  {
+   "id": "rod_l_boss0",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.1,
+    0.0,
+    5.0
+   ],
+   "style": "steel_dark",
+   "parent": "rod_l"
+  },
+  {
+   "id": "rod_l_boss1",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.1,
+    0.0,
+    -5.0
+   ],
+   "style": "steel_dark",
+   "parent": "rod_l"
+  },
+  {
+   "id": "cylinder_r",
+   "shape": "box",
+   "size": [
+    3.0,
+    3.0,
+    5.0
+   ],
+   "pivot": [
+    -5.9,
+    6.7,
+    10.5
+   ],
+   "style": "cylinder",
+   "parent": "chassis"
+  },
+  {
+   "id": "cylinder_r_cap",
+   "shape": "box",
+   "size": [
+    2.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    -0.2,
+    0.0,
+    2.6
+   ],
+   "style": "steel_dark",
+   "parent": "cylinder_r"
+  },
+  {
+   "id": "steamchest_r",
+   "shape": "box",
+   "size": [
+    2.0,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    -0.3,
+    2.3,
+    0.0
+   ],
+   "style": "cylinder",
+   "parent": "cylinder_r"
+  },
+  {
+   "id": "slidebar_r",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    -6.85,
+    8.1,
+    5.3
+   ],
+   "style": "steel_dark",
+   "parent": "chassis"
+  },
+  {
+   "id": "piston_r",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    -6.75,
+    6.5,
+    6.8548
+   ],
+   "style": "steel",
+   "parent": "chassis",
+   "offset": [
+    0.0,
+    0.0,
+    3.5
+   ]
+  },
+  {
+   "id": "crosshead_r",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    -0.05,
+    0.0,
+    0.0
+   ],
+   "style": "steel_dark",
+   "parent": "piston_r"
+  },
+  {
+   "id": "mainrod_r",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    13.0
+   ],
+   "pivot": [
+    -0.1,
+    0.0,
+    0.0
+   ],
+   "style": "rod",
+   "parent": "piston_r",
+   "offset": [
+    0.0,
+    0.0,
+    -6.25
+   ],
+   "rotation": [
+    -8.743,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "mainrod_r_end",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    -0.12,
+    0.0,
+    -12.5
+   ],
+   "style": "steel_dark",
+   "parent": "mainrod_r"
+  },
+  {
+   "id": "rod_r",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    11.0
+   ],
+   "pivot": [
+    -5.65,
+    4.6,
+    -0.5
+   ],
+   "style": "rod",
+   "parent": "chassis"
+  },
+  {
+   "id": "rod_r_boss0",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    -0.1,
+    0.0,
+    5.0
+   ],
+   "style": "steel_dark",
+   "parent": "rod_r"
+  },
+  {
+   "id": "rod_r_boss1",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    -0.1,
+    0.0,
+    -5.0
+   ],
+   "style": "steel_dark",
+   "parent": "rod_r"
+  },
+  {
+   "id": "cab",
+   "shape": "box",
+   "size": [
+    14.0,
+    11.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    16.5,
+    -1.5
+   ],
+   "style": "cab",
+   "parent": "chassis",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": [
+       1,
+       0
+      ],
+      "art": [
+       "gGg",
+       "Ggg",
+       "ggg"
+      ],
+      "key": {
+       "g": "glass:2",
+       "G": "glass:5"
+      }
+     },
+     {
+      "face": "front",
+      "at": [
+       10,
+       0
+      ],
+      "art": [
+       "gGg",
+       "Ggg",
+       "ggg"
+      ],
+      "key": {
+       "g": "glass:2",
+       "G": "glass:5"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "cab_back",
+   "shape": "box",
+   "size": [
+    14.0,
+    11.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -7.0
+   ],
+   "style": "cab",
+   "parent": "cab",
+   "paint": {
+    "stamps": [
+     {
+      "face": "back",
+      "at": [
+       2,
+       1
+      ],
+      "art": [
+       "gGg",
+       "Ggg",
+       "ggg"
+      ],
+      "key": {
+       "g": "glass:2",
+       "G": "glass:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": [
+       9,
+       1
+      ],
+      "art": [
+       "gGg",
+       "Ggg",
+       "ggg"
+      ],
+      "key": {
+       "g": "glass:2",
+       "G": "glass:5"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "cab_side",
+   "shape": "box",
+   "size": [
+    1.0,
+    6.0,
+    6.0
+   ],
+   "pivot": [
+    6.5,
+    -2.5,
+    -3.5
+   ],
+   "style": "cab",
+   "parent": "cab",
+   "mirror": true
+  },
+  {
+   "id": "cab_floor",
+   "shape": "box",
+   "size": [
+    12.0,
+    1.0,
+    6.0
+   ],
+   "pivot": [
+    0.0,
+    -5.4,
+    -3.5
+   ],
+   "style": "deck",
+   "parent": "cab"
+  },
+  {
+   "id": "cab_rail",
+   "shape": "box",
+   "size": [
+    1.0,
+    5.0,
+    1.0
+   ],
+   "pivot": [
+    6.6,
+    2.0,
+    -0.9
+   ],
+   "style": "brass",
+   "parent": "cab",
+   "mirror": true
+  },
+  {
+   "id": "cab_roof_l",
+   "shape": "box",
+   "size": [
+    8.0,
+    1.0,
+    11.0
+   ],
+   "pivot": [
+    0.0,
+    7.1,
+    -3.5
+   ],
+   "style": "cab_roof",
+   "parent": "cab",
+   "offset": [
+    3.2,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -9.0
+   ]
+  },
+  {
+   "id": "cab_roof_r",
+   "shape": "box",
+   "size": [
+    8.0,
+    1.0,
+    11.0
+   ],
+   "pivot": [
+    0.0,
+    7.1,
+    -3.55
+   ],
+   "style": "cab_roof",
+   "parent": "cab",
+   "offset": [
+    -3.2,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    9.0
+   ]
+  },
+  {
+   "id": "cab_ridge",
+   "shape": "box",
+   "size": [
+    4.0,
+    1.0,
+    12.0
+   ],
+   "pivot": [
+    0.0,
+    7.8,
+    -3.5
+   ],
+   "style": "cab_roof",
+   "parent": "cab"
+  },
+  {
+   "id": "bunker",
+   "shape": "box",
+   "size": [
+    14.0,
+    6.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    14.0,
+    -11.0
+   ],
+   "style": "bunker",
+   "parent": "chassis"
+  },
+  {
+   "id": "bunker_lip",
+   "shape": "box",
+   "size": [
+    12.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "style": "iron_dark",
+   "parent": "bunker",
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "coal",
+   "shape": "box",
+   "size": [
+    10.0,
+    2.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    4.0,
+    0.0
+   ],
+   "style": "coal",
+   "parent": "bunker"
+  },
+  {
+   "id": "coal_0",
+   "shape": "box",
+   "size": [
+    4.0,
+    2.0,
+    3.0
+   ],
+   "pivot": [
+    -3.0,
+    1.4,
+    0.2
+   ],
+   "style": "coal",
+   "parent": "coal",
+   "rotation": [
+    8.0,
+    20.0,
+    -6.0
+   ]
+  },
+  {
+   "id": "coal_1",
+   "shape": "box",
+   "size": [
+    4.0,
+    2.0,
+    3.0
+   ],
+   "pivot": [
+    2.5,
+    1.5,
+    -0.3
+   ],
+   "style": "coal",
+   "parent": "coal",
+   "rotation": [
+    -10.0,
+    -25.0,
+    9.0
+   ]
+  },
+  {
+   "id": "coal_2",
+   "shape": "box",
+   "size": [
+    3.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    2.2,
+    0.3
+   ],
+   "style": "coal",
+   "parent": "coal",
+   "rotation": [
+    12.0,
+    40.0,
+    6.0
+   ]
+  },
+  {
+   "id": "coal_3",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    -1.2,
+    2.9,
+    -0.1
+   ],
+   "style": "coal",
+   "parent": "coal",
+   "rotation": [
+    -8.0,
+    15.0,
+    14.0
+   ]
+  },
+  {
+   "id": "coal_4",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    4.0,
+    0.8,
+    0.6
+   ],
+   "style": "coal",
+   "parent": "coal",
+   "rotation": [
+    0.0,
+    35.0,
+    -12.0
+   ]
+  },
+  {
+   "id": "coal_5",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    -4.4,
+    0.7,
+    -0.6
+   ],
+   "style": "coal",
+   "parent": "coal",
+   "rotation": [
+    15.0,
+    -20.0,
+    10.0
+   ]
+  },
+  {
+   "id": "firebox",
+   "shape": "box",
+   "size": [
+    13.0,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    12.5,
+    0.5
+   ],
+   "style": "fire",
+   "parent": "chassis",
+   "hide": [
+    "back"
+   ]
+  },
+  {
+   "id": "firebox_grate",
+   "shape": "box",
+   "size": [
+    14.0,
+    3.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.2,
+    0.0
+   ],
+   "style": "grate",
+   "parent": "firebox",
+   "hide": [
+    "top",
+    "bottom",
+    "back"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "oiio",
+       "_i_i",
+       "_i_i"
+      ],
+      "key": {
+       "i": "iron:4",
+       "o": "iron:2"
+      }
+     },
+     {
+      "face": "front",
+      "at": "center",
+      "art": [
+       "oiiiiiiiiiiiio",
+       "_i_i_i_i_i_i_i",
+       "_i_i_i_i_i_i_i"
+      ],
+      "key": {
+       "i": "iron:4",
+       "o": "iron:2"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "trim_band",
+   "shape": "box",
+   "size": [
+    15.0,
+    1.0,
+    13.0
+   ],
+   "pivot": [
+    0.0,
+    6.0,
+    -7.0
+   ],
+   "style": "trim",
+   "parent": "trim",
+   "hide": [
+    "top",
+    "bottom"
+   ]
+  },
+  {
+   "id": "boiler",
+   "shape": "box",
+   "size": [
+    10.0,
+    6.0,
+    10.0
+   ],
+   "pivot": [
+    0.0,
+    15.5,
+    4.0
+   ],
+   "style": "boiler",
+   "parent": "chassis",
+   "hide": [
+    "front",
+    "back"
+   ]
+  },
+  {
+   "id": "boiler_v",
+   "shape": "box",
+   "size": [
+    6.0,
+    10.0,
+    10.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "boiler",
+   "parent": "boiler",
+   "hide": [
+    "front",
+    "back"
+   ]
+  },
+  {
+   "id": "boiler_m",
+   "shape": "box",
+   "size": [
+    8.0,
+    8.0,
+    10.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "boiler",
+   "parent": "boiler",
+   "hide": [
+    "front",
+    "back"
+   ]
+  },
+  {
+   "id": "trim_boiler",
+   "shape": "box",
+   "size": [
+    11.0,
+    1.0,
+    10.0
+   ],
+   "pivot": [
+    0.0,
+    6.0,
+    4.0
+   ],
+   "style": "trim",
+   "parent": "trim",
+   "hide": [
+    "front",
+    "back"
+   ]
+  },
+  {
+   "id": "handrail",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    10.0
+   ],
+   "pivot": [
+    5.4,
+    3.6,
+    0.5
+   ],
+   "style": "steel",
+   "parent": "boiler",
+   "mirror": true
+  },
+  {
+   "id": "stanchion0",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -0.6,
+    -0.5,
+    -3.0
+   ],
+   "style": "steel_dark",
+   "parent": "handrail",
+   "mirror": true
+  },
+  {
+   "id": "stanchion1",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -0.6,
+    -0.5,
+    1.0
+   ],
+   "style": "steel_dark",
+   "parent": "handrail",
+   "mirror": true
+  },
+  {
+   "id": "stanchion2",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -0.6,
+    -0.5,
+    4.5
+   ],
+   "style": "steel_dark",
+   "parent": "handrail",
+   "mirror": true
+  },
+  {
+   "id": "dome",
+   "shape": "box",
+   "size": [
+    4.0,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    4.9,
+    0.5
+   ],
+   "style": "brass",
+   "parent": "boiler",
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "dome_oct",
+   "shape": "box",
+   "size": [
+    4.0,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.04,
+    0.0
+   ],
+   "style": "brass",
+   "parent": "dome",
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "dome_cap",
+   "shape": "box",
+   "size": [
+    3.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "style": "brass",
+   "parent": "dome",
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "dome_cap_oct",
+   "shape": "box",
+   "size": [
+    3.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    0.04,
+    0.0
+   ],
+   "style": "brass",
+   "parent": "dome_cap",
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "whistle",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    5.2,
+    -4.2
+   ],
+   "style": "brass",
+   "parent": "boiler",
+   "offset": [
+    0.0,
+    1.0,
+    0.0
+   ]
+  },
+  {
+   "id": "whistle_bell",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    2.4,
+    0.0
+   ],
+   "style": "brass",
+   "parent": "whistle",
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ]
+  },
+  {
+   "id": "safety_valve",
+   "shape": "box",
+   "size": [
+    2.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    4.9,
+    -2.4
+   ],
+   "style": "brass",
+   "parent": "boiler",
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ]
+  },
+  {
+   "id": "sand_dome",
+   "shape": "box",
+   "size": [
+    3.0,
+    2.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    4.9,
+    3.6
+   ],
+   "style": "iron_cap",
+   "parent": "boiler",
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "sand_dome_oct",
+   "shape": "box",
+   "size": [
+    3.0,
+    2.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    0.04,
+    0.0
+   ],
+   "style": "iron_cap",
+   "parent": "sand_dome",
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "sand_cap",
+   "shape": "box",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    1.9,
+    0.0
+   ],
+   "style": "brass",
+   "parent": "sand_dome",
+   "rotation": [
+    0.0,
+    22.5,
+    0.0
+   ]
+  },
+  {
+   "id": "steam_pipe",
+   "shape": "box",
+   "size": [
+    1.0,
+    5.0,
+    2.0
+   ],
+   "pivot": [
+    4.9,
+    15.6,
+    10.2
+   ],
+   "style": "pipe",
+   "parent": "chassis",
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    15.0
+   ],
+   "mirror": true
+  },
+  {
+   "id": "number_plate",
+   "shape": "box",
+   "size": [
+    1.0,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    0.6,
+    0.6,
+    0.0
+   ],
+   "style": "plate",
+   "parent": "cab_side",
+   "mirror": true,
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "flanks"
+      ],
+      "at": "center",
+      "art": [
+       "....",
+       ".nn."
+      ],
+      "key": {
+       "n": "brass:7"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "grab_rail",
+   "shape": "box",
+   "size": [
+    1.0,
+    5.0,
+    1.0
+   ],
+   "pivot": [
+    5.0,
+    0.5,
+    -2.6
+   ],
+   "style": "steel",
+   "parent": "bunker",
+   "mirror": true
+  },
+  {
+   "id": "smokebox",
+   "shape": "box",
+   "size": [
+    11.0,
+    7.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    15.5,
+    11.0
+   ],
+   "style": "smokebox",
+   "parent": "chassis"
+  },
+  {
+   "id": "smokebox_v",
+   "shape": "box",
+   "size": [
+    7.0,
+    11.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "smokebox",
+   "parent": "smokebox"
+  },
+  {
+   "id": "smokebox_m",
+   "shape": "box",
+   "size": [
+    9.0,
+    9.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "smokebox",
+   "parent": "smokebox"
+  },
+  {
+   "id": "smokebox_door",
+   "shape": "box",
+   "size": [
+    7.0,
+    7.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -1.0,
+    2.5
+   ],
+   "style": "door",
+   "parent": "smokebox",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "center",
+      "art": [
+       "o.HHh.o",
+       ".Hdddh.",
+       "Hdpppdh",
+       "hdddddr",
+       "hdddddr",
+       ".rdddr.",
+       "o.rrr.o"
+      ],
+      "key": {
+       "o": "iron:2",
+       "H": "iron:9",
+       "h": "iron:7",
+       "r": "iron:5",
+       "d": "iron:3",
+       "p": "brass:6"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "door_dart",
+   "shape": "box",
+   "size": [
+    3.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -0.4,
+    0.9
+   ],
+   "style": "steel_dark",
+   "parent": "smokebox_door",
+   "rotation": [
+    0.0,
+    0.0,
+    28.0
+   ]
+  },
+  {
+   "id": "door_boss",
+   "shape": "box",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -0.4,
+    1.1
+   ],
+   "style": "brass",
+   "parent": "smokebox_door"
+  },
+  {
+   "id": "door_ring",
+   "shape": "box",
+   "size": [
+    9.0,
+    9.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -1.0,
+    2.05
+   ],
+   "style": "smokebox_ring",
+   "parent": "smokebox",
+   "hide": [
+    "back"
+   ]
+  },
+  {
+   "id": "lamp_housing",
+   "shape": "box",
+   "size": [
+    4.0,
+    3.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    4.5,
+    2.5
+   ],
+   "style": "lamp_body",
+   "parent": "smokebox"
+  },
+  {
+   "id": "lamp_hood",
+   "shape": "box",
+   "size": [
+    4.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    1.6,
+    0.2
+   ],
+   "style": "lamp_body",
+   "parent": "lamp_housing",
+   "rotation": [
+    12.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "lamp",
+   "shape": "box",
+   "size": [
+    3.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -0.1,
+    0.9
+   ],
+   "style": "lamp",
+   "parent": "lamp_housing",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "center",
+      "art": [
+       ".L.",
+       "LWL",
+       ".L."
+      ],
+      "key": {
+       "L": "lamp:3",
+       "W": "lamp:5"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "smokestack",
+   "shape": "box",
+   "size": [
+    3.0,
+    4.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    5.3,
+    0.0
+   ],
+   "style": "stack",
+   "parent": "smokebox",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "hide": [
+    "top",
+    "bottom"
+   ]
+  },
+  {
+   "id": "stack_oct",
+   "shape": "box",
+   "size": [
+    3.0,
+    4.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "stack",
+   "parent": "smokestack",
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "hide": [
+    "top",
+    "bottom"
+   ]
+  },
+  {
+   "id": "stack_base",
+   "shape": "box",
+   "size": [
+    5.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "stack",
+   "parent": "smokestack",
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "stack_base_oct",
+   "shape": "box",
+   "size": [
+    5.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    -0.05,
+    0.0
+   ],
+   "style": "stack",
+   "parent": "smokestack",
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "hide": [
+    "bottom"
+   ]
+  },
+  {
+   "id": "stack_flare",
+   "shape": "box",
+   "size": [
+    4.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    3.9,
+    0.0
+   ],
+   "style": "stack",
+   "parent": "smokestack",
+   "rotation": [
+    0.0,
+    22.5,
+    0.0
+   ]
+  },
+  {
+   "id": "stack_flare_oct",
+   "shape": "box",
+   "size": [
+    4.0,
+    1.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    3.85,
+    0.0
+   ],
+   "style": "stack",
+   "parent": "smokestack",
+   "rotation": [
+    0.0,
+    67.5,
+    0.0
+   ]
+  },
+  {
+   "id": "stack_crown",
+   "shape": "box",
+   "size": [
+    5.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    4.9,
+    0.0
+   ],
+   "style": "stack_top",
+   "parent": "smokestack"
+  },
+  {
+   "id": "stack_crown_oct",
+   "shape": "box",
+   "size": [
+    5.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    4.85,
+    0.0
+   ],
+   "style": "stack_top",
+   "parent": "smokestack",
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "hide": [
+    "top"
+   ]
+  },
+  {
+   "id": "cowcatcher",
+   "shape": "box",
+   "size": [
+    13.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    6.5,
+    13.3
+   ],
+   "style": "pilot_bar",
+   "parent": "chassis"
+  },
+  {
+   "id": "cowcatcher_slat0",
+   "shape": "box",
+   "size": [
+    1.0,
+    6.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "pilot",
+   "parent": "cowcatcher",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    -16.607,
+    0.0,
+    0.0
+   ],
+   "mirror": false
+  },
+  {
+   "id": "cowcatcher_slat1",
+   "shape": "box",
+   "size": [
+    1.0,
+    6.0,
+    1.0
+   ],
+   "pivot": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "style": "pilot",
+   "parent": "cowcatcher",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    -11.245,
+    0.0,
+    0.0
+   ],
+   "mirror": true
+  },
+  {
+   "id": "cowcatcher_slat2",
+   "shape": "box",
+   "size": [
+    1.0,
+    6.0,
+    1.0
+   ],
+   "pivot": [
+    4.0,
+    0.0,
+    0.0
+   ],
+   "style": "pilot",
+   "parent": "cowcatcher",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    -5.677,
+    0.0,
+    0.0
+   ],
+   "mirror": true
+  },
+  {
+   "id": "cowcatcher_slat3",
+   "shape": "box",
+   "size": [
+    1.0,
+    6.0,
+    1.0
+   ],
+   "pivot": [
+    5.9,
+    0.0,
+    0.0
+   ],
+   "style": "pilot",
+   "parent": "cowcatcher",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    -0.285,
+    0.0,
+    0.0
+   ],
+   "mirror": true
+  },
+  {
+   "id": "cowcatcher_toe",
+   "shape": "box",
+   "size": [
+    7.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -5.7,
+    1.6
+   ],
+   "style": "pilot_bar",
+   "parent": "cowcatcher",
+   "offset": [
+    3.2,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    15.819,
+    0.0
+   ],
+   "mirror": true
+  },
+  {
+   "id": "cowcatcher_mid",
+   "shape": "box",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -2.9,
+    1.25
+   ],
+   "style": "pilot_bar",
+   "parent": "cowcatcher",
+   "offset": [
+    2.2,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    15.819,
+    0.0
+   ],
+   "mirror": true
+  }
+ ],
+ "animations": {
+  "run": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "wheel_fl",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ]
+    },
+    {
+     "part": "wheel_fl",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "wheel_bl",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ]
+    },
+    {
+     "part": "wheel_bl",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lead_l",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       720
+      ]
+     ]
+    },
+    {
+     "part": "lead_l",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "rod_l",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.1431,
+        0.5176
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.4929,
+        1.0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -0.8858,
+        1.4142
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -1.225,
+        1.7321
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -1.5574,
+        1.9319
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -2.0,
+        2.0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -2.5926,
+        1.9319
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -3.225,
+        1.7321
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -3.7142,
+        1.4142
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -3.9571,
+        1.0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -4.0069,
+        0.5176
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -4.0,
+        0.0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        -4.0069,
+        -0.5176
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -3.9571,
+        -1.0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        -3.7142,
+        -1.4142
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -3.225,
+        -1.7321
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        -2.5926,
+        -1.9319
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -2.0,
+        -2.0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        -1.5574,
+        -1.9319
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -1.225,
+        -1.7321
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        -0.8858,
+        -1.4142
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.4929,
+        -1.0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        -0.1431,
+        -0.5176
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0.0,
+        -0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "piston_l",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0.0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        0,
+        0.518
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        0,
+        0.9993
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        0,
+        1.4052
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        0,
+        1.7
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        0,
+        1.8556
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        0,
+        1.8552
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        0,
+        1.6962
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        0,
+        1.3914
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        0,
+        0.9672
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        0,
+        0.4611
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        0,
+        -0.0838
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0,
+        -0.6236
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        0,
+        -1.119
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        0,
+        -1.5389
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        0,
+        -1.8612
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        0,
+        -2.0727
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        0,
+        -2.1675
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        0,
+        -2.1448
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        0,
+        -2.0081
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        0,
+        -1.7641
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        0,
+        -1.4233
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        0,
+        -1.0007
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        0,
+        -0.5173
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        -0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "mainrod_l",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0417,
+       -0.312
+      ],
+      [
+       0.0833,
+       -1.228
+      ],
+      [
+       0.125,
+       -2.686
+      ],
+      [
+       0.1667,
+       -4.587
+      ],
+      [
+       0.2083,
+       -6.808
+      ],
+      [
+       0.25,
+       -9.201
+      ],
+      [
+       0.2917,
+       -11.61
+      ],
+      [
+       0.3333,
+       -13.873
+      ],
+      [
+       0.375,
+       -15.833
+      ],
+      [
+       0.4167,
+       -17.35
+      ],
+      [
+       0.4583,
+       -18.31
+      ],
+      [
+       0.5,
+       -18.638
+      ],
+      [
+       0.5417,
+       -18.31
+      ],
+      [
+       0.5833,
+       -17.35
+      ],
+      [
+       0.625,
+       -15.833
+      ],
+      [
+       0.6667,
+       -13.873
+      ],
+      [
+       0.7083,
+       -11.61
+      ],
+      [
+       0.75,
+       -9.201
+      ],
+      [
+       0.7917,
+       -6.808
+      ],
+      [
+       0.8333,
+       -4.587
+      ],
+      [
+       0.875,
+       -2.686
+      ],
+      [
+       0.9167,
+       -1.228
+      ],
+      [
+       0.9583,
+       -0.312
+      ],
+      [
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "part": "wheel_fr",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ]
+    },
+    {
+     "part": "wheel_fr",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "wheel_br",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ]
+    },
+    {
+     "part": "wheel_br",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lead_r",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       720
+      ]
+     ]
+    },
+    {
+     "part": "lead_r",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        -0.3,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.225,
+        0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        -0.075,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "rod_r",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        -0.5926,
+        -0.0681
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -1.225,
+        -0.2679
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        -1.7142,
+        -0.5858
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -1.9571,
+        -1.0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        -2.0069,
+        -1.4824
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -2.0,
+        -2.0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        -2.0069,
+        -2.5176
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -1.9571,
+        -3.0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        -1.7142,
+        -3.4142
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -1.225,
+        -3.7321
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        -0.5926,
+        -3.9319
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0.0,
+        -4.0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        0.4426,
+        -3.9319
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        0.775,
+        -3.7321
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        1.1142,
+        -3.4142
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        1.5071,
+        -3.0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        1.8569,
+        -2.5176
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        2.0,
+        -2.0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        1.8569,
+        -1.4824
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        1.5071,
+        -1.0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        1.1142,
+        -0.5858
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        0.775,
+        -0.2679
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        0.4426,
+        -0.0681
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "piston_r",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0.0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        0,
+        -0.1589
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        0,
+        -0.4638
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        0,
+        -0.8879
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        0,
+        -1.3941
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        0,
+        -1.9389
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        0,
+        -2.4787
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        0,
+        -2.9742
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        0,
+        -3.3941
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        0,
+        -3.7163
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        0,
+        -3.9279
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        0,
+        -4.0226
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0,
+        -4.0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        0,
+        -3.8633
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        0,
+        -3.6192
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        0,
+        -3.2784
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        0,
+        -2.8559
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        0,
+        -2.3724
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        0,
+        -1.8552
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        0,
+        -1.3372
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        0,
+        -0.8559
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        0,
+        -0.45
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        0,
+        -0.1551
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        0,
+        0.0004
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "mainrod_r",
+     "axis": "x",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.0417,
+       -2.409
+      ],
+      [
+       0.0833,
+       -4.672
+      ],
+      [
+       0.125,
+       -6.632
+      ],
+      [
+       0.1667,
+       -8.149
+      ],
+      [
+       0.2083,
+       -9.108
+      ],
+      [
+       0.25,
+       -9.437
+      ],
+      [
+       0.2917,
+       -9.108
+      ],
+      [
+       0.3333,
+       -8.149
+      ],
+      [
+       0.375,
+       -6.632
+      ],
+      [
+       0.4167,
+       -4.672
+      ],
+      [
+       0.4583,
+       -2.409
+      ],
+      [
+       0.5,
+       0.0
+      ],
+      [
+       0.5417,
+       2.394
+      ],
+      [
+       0.5833,
+       4.614
+      ],
+      [
+       0.625,
+       6.516
+      ],
+      [
+       0.6667,
+       7.973
+      ],
+      [
+       0.7083,
+       8.889
+      ],
+      [
+       0.75,
+       9.201
+      ],
+      [
+       0.7917,
+       8.889
+      ],
+      [
+       0.8333,
+       7.973
+      ],
+      [
+       0.875,
+       6.516
+      ],
+      [
+       0.9167,
+       4.614
+      ],
+      [
+       0.9583,
+       2.394
+      ],
+      [
+       1.0,
+       0.0
+      ]
+     ]
+    },
+    {
+     "part": "chassis",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ],
+      [
+       0.0417,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.125,
+       [
+        0,
+        0.3,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.2083,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ],
+      [
+       0.2917,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.375,
+       [
+        0,
+        0.3,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.4583,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.625,
+       [
+        0,
+        0.3,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.875,
+       [
+        0,
+        0.3,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        0.225,
+        0
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0,
+        0.075,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "chassis",
+     "axis": "x",
+     "osc": {
+      "amp": 0.6,
+      "cycles": 2,
+      "phase": 0.1
+     }
+    },
+    {
+     "part": "smokestack",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.075,
+       [
+        0.14,
+        0.24,
+        0.14
+       ],
+       "out"
+      ],
+      [
+       0.2,
+       [
+        0.021,
+        0.024,
+        0.021
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.325,
+       [
+        0.14,
+        0.24,
+        0.14
+       ],
+       "out"
+      ],
+      [
+       0.45,
+       [
+        0.021,
+        0.024,
+        0.021
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.575,
+       [
+        0.14,
+        0.24,
+        0.14
+       ],
+       "out"
+      ],
+      [
+       0.7,
+       [
+        0.021,
+        0.024,
+        0.021
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.825,
+       [
+        0.14,
+        0.24,
+        0.14
+       ],
+       "out"
+      ],
+      [
+       0.95,
+       [
+        0.021,
+        0.024,
+        0.021
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "dome",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.05,
+       0.03
+      ],
+      "cycles": 4,
+      "phase": 0.2
+     }
+    },
+    {
+     "part": "lamp_housing",
+     "axis": "x",
+     "osc": {
+      "amp": 1.5,
+      "cycles": 4,
+      "phase": 0.15
+     }
+    },
+    {
+     "part": "whistle",
+     "axis": "z",
+     "osc": {
+      "amp": 2.0,
+      "cycles": 4,
+      "phase": 0.3
+     }
+    },
+    {
+     "part": "coal",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.2,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.3
+     }
+    },
+    {
+     "part": "firebox",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.05,
+       0.05,
+       0.0
+      ],
+      "cycles": 5,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "firebox",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.03,
+       0.0
+      ],
+      "cycles": 9,
+      "phase": 0.13
+     }
+    },
+    {
+     "part": "lamp",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.03,
+       0.0
+      ],
+      "cycles": 7,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "lamp",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.02,
+       0.02,
+       0.0
+      ],
+      "cycles": 11,
+      "phase": 0.13
+     }
+    }
+   ]
+  },
+  "idle": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "wheel_fl",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "wheel_bl",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lead_l",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "rod_l",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "wheel_fr",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "wheel_br",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lead_r",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "rod_r",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        -0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        -0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        -0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        -0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        -0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        -0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "chassis",
+     "channel": "position",
+     "ease": "linear",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0,
+        0.0121,
+        0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0,
+        0.045,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0,
+        0.09,
+        0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0,
+        0.135,
+        0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0,
+        0.1679,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0.18,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        0.1679,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        0.135,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        0.09,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        0.045,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        0.0121,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        0.0121,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        0.045,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        0.09,
+        0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0,
+        0.135,
+        0
+       ]
+      ],
+      [
+       1.4167,
+       [
+        0,
+        0.1679,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        0.18,
+        0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0,
+        0.1679,
+        0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0,
+        0.135,
+        0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0,
+        0.09,
+        0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0,
+        0.045,
+        0
+       ]
+      ],
+      [
+       1.9167,
+       [
+        0,
+        0.0121,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        0.0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "smokestack",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.05,
+       0.09,
+       0.05
+      ],
+      "cycles": 2,
+      "phase": 0.15
+     }
+    },
+    {
+     "part": "dome",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.02,
+       0.03,
+       0.02
+      ],
+      "cycles": 2,
+      "phase": 0.25
+     }
+    },
+    {
+     "part": "safety_valve",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.0,
+       0.12,
+       0.0
+      ],
+      "cycles": 6,
+      "shape": "pulse"
+     }
+    },
+    {
+     "part": "firebox",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.06,
+       0.06,
+       0.0
+      ],
+      "cycles": 9,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "firebox",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.04,
+       0.04,
+       0.0
+      ],
+      "cycles": 14,
+      "phase": 0.13
+     }
+    },
+    {
+     "part": "lamp",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.04,
+       0.04,
+       0.0
+      ],
+      "cycles": 11,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "lamp",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.03,
+       0.0
+      ],
+      "cycles": 17,
+      "phase": 0.13
+     }
+    }
+   ]
+  },
+  "whistle": {
+   "length": 1.0,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "chassis",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.14,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.36,
+       [
+        0,
+        3.2,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.56,
+       [
+        0,
+        0,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.68,
+       [
+        0,
+        0.8,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0
+       ],
+       "in"
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "chassis",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.14,
+       [
+        0.06,
+        -0.1,
+        0.04
+       ],
+       "out"
+      ],
+      [
+       0.3,
+       [
+        -0.04,
+        0.09,
+        -0.03
+       ],
+       "out"
+      ],
+      [
+       0.56,
+       [
+        0.07,
+        -0.11,
+        0.05
+       ],
+       "in"
+      ],
+      [
+       0.66,
+       [
+        -0.02,
+        0.04,
+        -0.01
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "chassis",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.14,
+       2,
+       "out"
+      ],
+      [
+       0.36,
+       -4,
+       "out"
+      ],
+      [
+       0.56,
+       1.5,
+       "in"
+      ],
+      [
+       1.0,
+       0,
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "smokestack",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        -0.06,
+        -0.12,
+        -0.06
+       ],
+       "out"
+      ],
+      [
+       0.32,
+       [
+        0.38,
+        0.55,
+        0.38
+       ],
+       "out_back"
+      ],
+      [
+       0.6,
+       [
+        0.1,
+        0.16,
+        0.1
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "whistle",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.3,
+        0.4,
+        0.3
+       ],
+       "out_back"
+      ],
+      [
+       0.7,
+       [
+        0.25,
+        0.35,
+        0.25
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "whistle",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.14,
+       8
+      ],
+      [
+       0.19,
+       -8
+      ],
+      [
+       0.24,
+       8
+      ],
+      [
+       0.29,
+       -8
+      ],
+      [
+       0.34,
+       8
+      ],
+      [
+       0.39,
+       -8
+      ],
+      [
+       0.44,
+       8
+      ],
+      [
+       0.49,
+       -8
+      ],
+      [
+       0.54,
+       8
+      ],
+      [
+       0.59,
+       -8
+      ],
+      [
+       0.64,
+       8
+      ],
+      [
+       0.72,
+       0
+      ],
+      [
+       1.0,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "lamp",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.25,
+        0.25,
+        0.1
+       ],
+       "out_back"
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "dome",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2,
+       [
+        0.1,
+        0.18,
+        0.1
+       ],
+       "out_back"
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}

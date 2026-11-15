@@ -1,0 +1,3748 @@
+{
+ "name": "Snow Globe",
+ "description": "A snow globe decoration block (Winterworks mod block entity): a walnut and brass pedestal with an engraved plaque, a glass globe built from stepped translucent slabs, and inside a snowy clearing with two pines, a log cabin with lit windows and a snowman. Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 1400,
+  "colors": 110
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 1.0,
+  "gradient": 0.8,
+  "ao": 0.6,
+  "ao_height": 2.0
+ },
+ "brush": {
+  "flow": "long",
+  "length": 2.0,
+  "width": 0.5,
+  "rough": 0.55,
+  "overshoot": 0.3,
+  "textures": {
+   "brass": "metal",
+   "walnut": "wood",
+   "logs": "wood",
+   "bark": "wood",
+   "stone": "stone",
+   "pine": "fur"
+  }
+ },
+ "minecraft": {
+  "fps": 24,
+  "glow_parts": [
+   "window",
+   "deco_window_side"
+  ],
+  "alpha_parts": {
+   "glass0": 0.35,
+   "glass0b": 0.35,
+   "glass1": 0.35,
+   "glass1b": 0.35,
+   "glass2": 0.35,
+   "glass2b": 0.35,
+   "glass3": 0.35,
+   "glass3b": 0.35,
+   "glass4": 0.35,
+   "glass4b": 0.35,
+   "glass5": 0.35,
+   "glass5b": 0.35,
+   "glass6": 0.35,
+   "glass6b": 0.35
+  }
+ },
+ "render": {
+  "background": "#1a1c22",
+  "hero": [
+   -34,
+   18
+  ],
+  "shadow": 0.45
+ },
+ "palette": {
+  "ramps": {
+   "walnut": [
+    "#0f0a09",
+    "#18100d",
+    "#211612",
+    "#2b1c16",
+    "#36231b",
+    "#422b21",
+    "#4f3428",
+    "#5d3e30"
+   ],
+   "brass": [
+    "#19130c",
+    "#2a2013",
+    "#3d301a",
+    "#524122",
+    "#68532b",
+    "#7e6634",
+    "#94793f",
+    "#a88d4e",
+    "#bba263",
+    "#cdb67c"
+   ],
+   "verdigris": [
+    "#232c27",
+    "#313d35",
+    "#415045"
+   ],
+   "glass": [
+    "#6f8496",
+    "#8ea3b4",
+    "#b3c5d2",
+    "#d9e5ec",
+    "#ffffff"
+   ],
+   "snow": [
+    "#4f5a6c",
+    "#68758a",
+    "#8592a6",
+    "#a4b0c2",
+    "#c3cdd9",
+    "#dde4ec",
+    "#f0f4f8",
+    "#fbfdfe"
+   ],
+   "pine": [
+    "#0c1512",
+    "#122019",
+    "#192b21",
+    "#21372a",
+    "#2b4534",
+    "#37533f",
+    "#45624b"
+   ],
+   "bark": [
+    "#140d0b",
+    "#1f1511",
+    "#2b1d17",
+    "#38261d",
+    "#463024"
+   ],
+   "logs": [
+    "#1a110c",
+    "#261911",
+    "#332217",
+    "#422c1e",
+    "#513726",
+    "#61432f",
+    "#715038"
+   ],
+   "roof": [
+    "#141215",
+    "#1e1b1f",
+    "#29252a",
+    "#353036",
+    "#423c43"
+   ],
+   "stone": [
+    "#1a191c",
+    "#28272a",
+    "#37363a",
+    "#48474a",
+    "#5a585b",
+    "#6e6b6d"
+   ],
+   "window": [
+    "#5c2c07",
+    "#99560e",
+    "#d48f22",
+    "#f7c44c",
+    "#ffe48a",
+    "#fff6cf"
+   ],
+   "wool": [
+    "#2a1012",
+    "#43181a",
+    "#5e2323",
+    "#77302c",
+    "#8c3f36"
+   ],
+   "carrot": [
+    "#4a2108",
+    "#7a3a0e",
+    "#a45518",
+    "#c06e26"
+   ],
+   "coal": [
+    "#0e0e10",
+    "#18181b",
+    "#232327",
+    "#303035"
+   ]
+  }
+ },
+ "styles": {
+  "walnut": {
+   "ramp": "walnut",
+   "tone": 4.0,
+   "rim": {
+    "light_shift": 1.3,
+    "dark_shift": -1.3
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.5,
+     "width": 0.4,
+     "shift": -0.7,
+     "wobble": 0.5,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "grain_top",
+     "op": "stripes",
+     "axis": "x",
+     "period": 0.5,
+     "width": 0.4,
+     "shift": -0.6,
+     "wobble": 0.5,
+     "faces": [
+      "top",
+      "bottom"
+     ]
+    },
+    {
+     "id": "figure",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.55
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/bark_brown_02",
+     "scale": 10.0,
+     "amount": 0.25,
+     "ramps": [
+      "walnut"
+     ]
+    },
+    {
+     "id": "polish",
+     "op": "gloss",
+     "dash": true,
+     "length": 3,
+     "shift": 1.2,
+     "density": 0.45,
+     "post": true
+    }
+   ]
+  },
+  "walnut_dark": {
+   "ramp": "walnut",
+   "tone": 3.2,
+   "rim": {
+    "light_shift": 1.3,
+    "dark_shift": -1.3
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.5,
+     "width": 0.4,
+     "shift": -0.7,
+     "wobble": 0.5,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "grain_top",
+     "op": "stripes",
+     "axis": "x",
+     "period": 0.5,
+     "width": 0.4,
+     "shift": -0.6,
+     "wobble": 0.5,
+     "faces": [
+      "top",
+      "bottom"
+     ]
+    },
+    {
+     "id": "figure",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.55
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/bark_brown_02",
+     "scale": 10.0,
+     "amount": 0.25,
+     "ramps": [
+      "walnut"
+     ]
+    },
+    {
+     "id": "polish",
+     "op": "gloss",
+     "dash": true,
+     "length": 3,
+     "shift": 1.2,
+     "density": 0.45,
+     "post": true
+    }
+   ]
+  },
+  "brass": {
+   "ramp": "brass",
+   "tone": 4.0,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.3
+   },
+   "layers": [
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.7
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.5
+    },
+    {
+     "id": "tarnish",
+     "op": "patches",
+     "scale": 0.8,
+     "threshold": 0.76,
+     "ramp": "verdigris",
+     "tone": 1.4,
+     "faces": [
+      "sides",
+      "bottom"
+     ]
+    },
+    {
+     "id": "polish",
+     "op": "gloss",
+     "dash": true,
+     "length": 2,
+     "shift": 1.4,
+     "density": 0.5,
+     "post": true
+    }
+   ]
+  },
+  "brass_dark": {
+   "ramp": "brass",
+   "tone": 3.4,
+   "rim": {
+    "light_shift": 1.5,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.7
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.5
+    },
+    {
+     "id": "tarnish",
+     "op": "patches",
+     "scale": 0.8,
+     "threshold": 0.76,
+     "ramp": "verdigris",
+     "tone": 1.4,
+     "faces": [
+      "sides",
+      "bottom"
+     ]
+    },
+    {
+     "id": "polish",
+     "op": "gloss",
+     "dash": true,
+     "length": 2,
+     "shift": 1.4,
+     "density": 0.5,
+     "post": true
+    }
+   ]
+  },
+  "plaque": {
+   "ramp": "brass",
+   "tone": 5.0,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "layers": [
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.7
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.5
+    },
+    {
+     "id": "tarnish",
+     "op": "patches",
+     "scale": 0.8,
+     "threshold": 0.76,
+     "ramp": "verdigris",
+     "tone": 1.4,
+     "faces": [
+      "sides",
+      "bottom"
+     ]
+    },
+    {
+     "id": "polish",
+     "op": "gloss",
+     "dash": true,
+     "length": 2,
+     "shift": 1.4,
+     "density": 0.5,
+     "post": true
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      0,
+      1
+     ],
+     "key": {
+      "k": "brass:1",
+      "K": "brass:3"
+     },
+     "art": [
+      ".kk.kKk.k."
+     ]
+    }
+   ]
+  },
+  "glass": {
+   "ramp": "glass",
+   "tone": 1.4,
+   "light": 0.35,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.0,
+   "rim": {
+    "light_shift": 1.4,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "sheen",
+     "op": "band",
+     "axis": "x",
+     "space": "world",
+     "from": -3.4,
+     "to": -2.6,
+     "ramp": "glass",
+     "tone": 4,
+     "faces": [
+      "front"
+     ]
+    },
+    {
+     "id": "sheen_soft",
+     "op": "band",
+     "axis": "x",
+     "space": "world",
+     "from": -2.2,
+     "to": -1.9,
+     "ramp": "glass",
+     "tone": 3,
+     "faces": [
+      "front"
+     ]
+    },
+    {
+     "id": "sheen_side",
+     "op": "band",
+     "axis": "z",
+     "space": "world",
+     "from": 2.4,
+     "to": 3.2,
+     "ramp": "glass",
+     "tone": 3.6,
+     "faces": [
+      "left"
+     ]
+    },
+    {
+     "id": "back_sheen",
+     "op": "band",
+     "axis": "x",
+     "space": "world",
+     "from": 2.6,
+     "to": 3.0,
+     "ramp": "glass",
+     "tone": 2.6,
+     "faces": [
+      "back"
+     ]
+    },
+    {
+     "id": "cap_glint",
+     "op": "band",
+     "axis": "x",
+     "space": "world",
+     "from": -2.6,
+     "to": -1.6,
+     "ramp": "glass",
+     "tone": 3.6,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "snow_ground": {
+   "ramp": "snow",
+   "tone": 3.6,
+   "rim": {
+    "light_shift": 0.8,
+    "dark_shift": -0.9
+   },
+   "brush": {
+    "flow": "horizontal",
+    "rough": 0.45
+   },
+   "layers": [
+    {
+     "id": "drifts",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.7
+    },
+    {
+     "id": "hollows",
+     "op": "patches",
+     "scale": 0.9,
+     "threshold": 0.66,
+     "shift": -0.8
+    },
+    {
+     "id": "glint",
+     "op": "speckle",
+     "density": 0.03,
+     "shift": 1.5
+    }
+   ]
+  },
+  "snow_cap": {
+   "ramp": "snow",
+   "tone": 4.4,
+   "rim": {
+    "light_shift": 0.8,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "drifts",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.7
+    }
+   ]
+  },
+  "flake": {
+   "ramp": "snow",
+   "tone": 6.4,
+   "light": 0.3,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "pine": {
+   "ramp": "pine",
+   "tone": 3.6,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "vertical",
+    "rough": 0.7
+   },
+   "layers": [
+    {
+     "id": "needles",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.5,
+     "width": 0.4,
+     "shift": -0.9,
+     "wobble": 0.6,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 0.8
+    },
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/forest_leaves_02",
+     "scale": 3.0,
+     "amount": 0.5,
+     "ramps": [
+      "pine"
+     ]
+    },
+    {
+     "id": "snow",
+     "op": "drip",
+     "ramp": "snow",
+     "tone": 4.6,
+     "depth": 0.08,
+     "length": 0.35,
+     "width": 0.5,
+     "scale": 1.0,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_ramp": "pine",
+      "shadow_tone": 1.0
+     }
+    },
+    {
+     "id": "bare",
+     "op": "patches",
+     "scale": 0.5,
+     "threshold": 0.58,
+     "ramp": "pine",
+     "tone": 3.4,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "pine_tip": {
+   "ramp": "pine",
+   "tone": 4.0,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 0.8
+    },
+    {
+     "id": "snow",
+     "op": "drip",
+     "ramp": "snow",
+     "tone": 4.6,
+     "depth": 0.25,
+     "length": 0.35,
+     "width": 0.5,
+     "scale": 1.0,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_ramp": "pine",
+      "shadow_tone": 1.0
+     }
+    }
+   ]
+  },
+  "bark": {
+   "ramp": "bark",
+   "tone": 2.4,
+   "rim": {
+    "light_shift": 0.8,
+    "dark_shift": -0.8
+   },
+   "layers": [
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/bark_brown_02",
+     "scale": 2.0,
+     "amount": 0.7,
+     "ramps": [
+      "bark"
+     ]
+    }
+   ]
+  },
+  "logs": {
+   "ramp": "logs",
+   "tone": 3.6,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.1
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "courses",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.5,
+     "width": 0.5,
+     "shift": -1.2,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 0.6
+    },
+    {
+     "id": "snowline",
+     "op": "drip",
+     "ramp": "snow",
+     "tone": 4.6,
+     "depth": 0.1,
+     "length": 0.4,
+     "width": 0.5,
+     "scale": 1.0,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "roof": {
+   "ramp": "roof",
+   "tone": 2.6,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "shingles",
+     "op": "scales",
+     "shape": "square",
+     "along": "x",
+     "size": [
+      0.8,
+      0.5
+     ],
+     "gap": 1.0,
+     "highlight": 0.7,
+     "shadow": -1.0,
+     "gradient": 0.4,
+     "jitter": 0.6
+    },
+    {
+     "id": "snow",
+     "op": "drip",
+     "ramp": "snow",
+     "tone": 4.8,
+     "depth": 0.2,
+     "length": 0.4,
+     "width": 0.5,
+     "scale": 1.0,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_ramp": "roof",
+      "shadow_tone": 0.5
+     }
+    },
+    {
+     "id": "bare",
+     "op": "patches",
+     "scale": 0.6,
+     "threshold": 0.64,
+     "ramp": "roof",
+     "tone": 2.4,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "woodpile": {
+   "ramp": "logs",
+   "tone": 3.4,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "ends",
+     "op": "spots",
+     "count": 6,
+     "radius": [
+      0.2,
+      0.3
+     ],
+     "ramp": "logs",
+     "tone": 5.5,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "snow",
+     "op": "drip",
+     "ramp": "snow",
+     "tone": 5.0,
+     "depth": 0.1,
+     "length": 0.3,
+     "width": 0.5,
+     "scale": 1.0
+    }
+   ]
+  },
+  "door": {
+   "ramp": "logs",
+   "tone": 1.8,
+   "rim": {
+    "light_shift": 0.8,
+    "dark_shift": -0.8
+   },
+   "layers": [
+    {
+     "id": "planks",
+     "op": "stripes",
+     "axis": "x",
+     "period": 0.5,
+     "width": 0.3,
+     "shift": -0.8
+    },
+    {
+     "id": "knob",
+     "op": "rect",
+     "rect": [
+      0.6,
+      0.45,
+      0.8,
+      0.6
+     ],
+     "ramp": "brass",
+     "tone": 6,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "window": {
+   "ramp": "window",
+   "tone": 3.4,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.0,
+   "rim": {
+    "light": 0,
+    "dark": 1,
+    "dark_shift": -1.4
+   },
+   "layers": [
+    {
+     "id": "mullion",
+     "op": "band",
+     "axis": "x",
+     "from": -0.2,
+     "to": 0.2,
+     "ramp": "logs",
+     "tone": 1.0,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "mullion_side",
+     "op": "band",
+     "axis": "z",
+     "from": -0.2,
+     "to": 0.2,
+     "ramp": "logs",
+     "tone": 1.0,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "warm",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -0.6
+    }
+   ]
+  },
+  "stone": {
+   "ramp": "stone",
+   "tone": 3.2,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "photo",
+     "op": "photo",
+     "src": "assets/photos/rock_face_03",
+     "scale": 2.0,
+     "amount": 0.8,
+     "ramps": [
+      "stone"
+     ]
+    },
+    {
+     "id": "snow",
+     "op": "drip",
+     "ramp": "snow",
+     "tone": 5.4,
+     "depth": 0.2,
+     "length": 0.4,
+     "width": 0.5,
+     "scale": 1.0
+    }
+   ]
+  },
+  "snowman": {
+   "ramp": "snow",
+   "tone": 4.0,
+   "rim": {
+    "light_shift": 0.7,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "horizontal",
+    "rough": 0.4
+   },
+   "layers": [
+    {
+     "id": "lumps",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 0.7
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0
+    }
+   ]
+  },
+  "scarf": {
+   "ramp": "wool",
+   "tone": 2.8,
+   "rim": {
+    "light_shift": 0.9,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "knit",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.5,
+     "width": 0.5,
+     "shift": -0.7
+    },
+    {
+     "id": "fuzz",
+     "op": "noise",
+     "scale": 0.4,
+     "amount": 0.5
+    }
+   ]
+  },
+  "carrot": {
+   "ramp": "carrot",
+   "tone": 2.4,
+   "rim": {
+    "light_shift": 0.8,
+    "dark_shift": -0.8
+   }
+  },
+  "coal": {
+   "ramp": "coal",
+   "tone": 1.6,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -0.6
+   }
+  },
+  "twig": {
+   "ramp": "bark",
+   "tone": 2.6,
+   "rim": {
+    "light_shift": 0.8,
+    "dark_shift": -0.6
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "base",
+   "shape": "box",
+   "size": [
+    12,
+    2.5,
+    12
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "deco_foot0",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2,
+    0.5,
+    2
+   ],
+   "pivot": [
+    5.25,
+    0.25,
+    5.25
+   ],
+   "rotation": [
+    0,
+    45,
+    0
+   ],
+   "style": "brass_dark"
+  },
+  {
+   "id": "deco_foot1",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2,
+    0.5,
+    2
+   ],
+   "pivot": [
+    -5.25,
+    0.25,
+    5.25
+   ],
+   "rotation": [
+    0,
+    45,
+    0
+   ],
+   "style": "brass_dark"
+  },
+  {
+   "id": "deco_foot2",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2,
+    0.5,
+    2
+   ],
+   "pivot": [
+    -5.25,
+    0.25,
+    -5.25
+   ],
+   "rotation": [
+    0,
+    45,
+    0
+   ],
+   "style": "brass_dark"
+  },
+  {
+   "id": "deco_foot3",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2,
+    0.5,
+    2
+   ],
+   "pivot": [
+    5.25,
+    0.25,
+    -5.25
+   ],
+   "rotation": [
+    0,
+    45,
+    0
+   ],
+   "style": "brass_dark"
+  },
+  {
+   "id": "deco_plinth",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    13,
+    1,
+    13
+   ],
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "walnut_dark"
+  },
+  {
+   "id": "deco_trim",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    12.5,
+    0.5,
+    12.5
+   ],
+   "pivot": [
+    0.0,
+    4.25,
+    0.0
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "deco_step",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    11,
+    1,
+    11
+   ],
+   "pivot": [
+    0.0,
+    5.0,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "deco_collar",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    10,
+    1,
+    10
+   ],
+   "pivot": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "deco_plaque",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    5,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    2.75,
+    6.1
+   ],
+   "style": "plaque"
+  },
+  {
+   "id": "deco_plaque_pin0",
+   "shape": "box",
+   "parent": "deco_plaque",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    -2.1,
+    0.0,
+    0.25
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "deco_plaque_pin1",
+   "shape": "box",
+   "parent": "deco_plaque",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    2.1,
+    0.0,
+    0.25
+   ],
+   "style": "brass"
+  },
+  {
+   "id": "globe",
+   "shape": "bone",
+   "parent": "base",
+   "pivot": [
+    0.0,
+    6.5,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "glass",
+   "shape": "bone",
+   "parent": "globe",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "glass0",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    9,
+    1.0,
+    6.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "top",
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass0b",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    6.5,
+    1.0,
+    9
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "top",
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "left",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     },
+     {
+      "face": "right",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass1",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    10,
+    1.0,
+    7
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "top"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "bottom",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________."
+      ]
+     },
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass1b",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    7,
+    1.0,
+    10
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "top"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "bottom",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..............",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       ".............."
+      ]
+     },
+     {
+      "face": "left",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     },
+     {
+      "face": "right",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass2",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    11,
+    3.5,
+    8
+   ],
+   "pivot": [
+    0.0,
+    3.75,
+    0.0
+   ],
+   "style": "glass",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "....______________....",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       "....______________...."
+      ]
+     },
+     {
+      "face": "bottom",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "....______________....",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       ".____________________.",
+       "....______________...."
+      ]
+     },
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________..."
+      ]
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass2b",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    8,
+    3.5,
+    11
+   ],
+   "pivot": [
+    0.0,
+    3.75,
+    0.0
+   ],
+   "style": "glass",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "................",
+       ".______________.",
+       ".______________.",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       ".______________.",
+       ".______________.",
+       "................"
+      ]
+     },
+     {
+      "face": "bottom",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "................",
+       ".______________.",
+       ".______________.",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       "________________",
+       ".______________.",
+       ".______________.",
+       "................"
+      ]
+     },
+     {
+      "face": "left",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________..."
+      ]
+     },
+     {
+      "face": "right",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________...",
+       "...________________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass3",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    10,
+    1.0,
+    7
+   ],
+   "pivot": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________.",
+       ".__________________."
+      ]
+     },
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass3b",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    7,
+    1.0,
+    10
+   ],
+   "pivot": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..............",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       "______________",
+       ".............."
+      ]
+     },
+     {
+      "face": "left",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     },
+     {
+      "face": "right",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...______________...",
+       "...______________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass4",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    9,
+    1.0,
+    6.5
+   ],
+   "pivot": [
+    0.0,
+    7.0,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "....__________....",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "..______________..",
+       "....__________...."
+      ]
+     },
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass4b",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    6.5,
+    1.0,
+    9
+   ],
+   "pivot": [
+    0.0,
+    7.0,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".............",
+       ".............",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       "_____________",
+       ".............",
+       "............."
+      ]
+     },
+     {
+      "face": "left",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     },
+     {
+      "face": "right",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...____________...",
+       "...____________..."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass5",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    7,
+    1.0,
+    5
+   ],
+   "pivot": [
+    0.0,
+    8.0,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..............",
+       "....______....",
+       "...________...",
+       "...________...",
+       "...________...",
+       "...________...",
+       "...________...",
+       "...________...",
+       "....______....",
+       ".............."
+      ]
+     },
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..__________..",
+       "..__________.."
+      ]
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..__________..",
+       "..__________.."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass5b",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    5,
+    1.0,
+    7
+   ],
+   "pivot": [
+    0.0,
+    8.0,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..........",
+       "..........",
+       "__________",
+       "__________",
+       "__________",
+       "__________",
+       "__________",
+       "__________",
+       "__________",
+       "__________",
+       "__________",
+       "__________",
+       "..........",
+       ".........."
+      ]
+     },
+     {
+      "face": "left",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..__________..",
+       "..__________.."
+      ]
+     },
+     {
+      "face": "right",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "..__________..",
+       "..__________.."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass6",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    4,
+    0.5,
+    3
+   ],
+   "pivot": [
+    0.0,
+    8.75,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".______."
+      ]
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".______."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "glass6b",
+   "shape": "box",
+   "parent": "glass",
+   "size": [
+    3,
+    0.5,
+    4
+   ],
+   "pivot": [
+    0.0,
+    8.75,
+    0.0
+   ],
+   "style": "glass",
+   "hide": [
+    "bottom"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "......",
+       "______",
+       "______",
+       "______",
+       "______",
+       "______",
+       "______",
+       "......"
+      ]
+     },
+     {
+      "face": "left",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".______."
+      ]
+     },
+     {
+      "face": "right",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".______."
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "scene",
+   "shape": "bone",
+   "parent": "globe",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "ground",
+   "shape": "box",
+   "parent": "scene",
+   "size": [
+    8.5,
+    1,
+    6
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "style": "snow_ground"
+  },
+  {
+   "id": "deco_ground_b",
+   "shape": "box",
+   "parent": "ground",
+   "size": [
+    6,
+    0.5,
+    8.5
+   ],
+   "pivot": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "style": "snow_ground"
+  },
+  {
+   "id": "deco_drift0",
+   "shape": "box",
+   "parent": "ground",
+   "size": [
+    4,
+    0.5,
+    2.5
+   ],
+   "pivot": [
+    -1.6,
+    0.65,
+    1.5
+   ],
+   "rotation": [
+    0,
+    18,
+    0
+   ],
+   "style": "snow_ground"
+  },
+  {
+   "id": "deco_drift1",
+   "shape": "box",
+   "parent": "ground",
+   "size": [
+    3.5,
+    0.5,
+    2.5
+   ],
+   "pivot": [
+    2.0,
+    0.65,
+    0.6
+   ],
+   "rotation": [
+    0,
+    -14,
+    0
+   ],
+   "style": "snow_ground"
+  },
+  {
+   "id": "deco_rock",
+   "shape": "box",
+   "parent": "ground",
+   "size": [
+    1,
+    0.5,
+    1
+   ],
+   "pivot": [
+    1.4,
+    0.7,
+    3.0
+   ],
+   "rotation": [
+    0,
+    30,
+    6
+   ],
+   "style": "stone"
+  },
+  {
+   "id": "deco_rock1",
+   "shape": "box",
+   "parent": "ground",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    1.95,
+    0.6,
+    2.7
+   ],
+   "rotation": [
+    0,
+    10,
+    -8
+   ],
+   "style": "stone"
+  },
+  {
+   "id": "tree0",
+   "shape": "box",
+   "parent": "scene",
+   "size": [
+    1,
+    1.5,
+    1
+   ],
+   "pivot": [
+    -2.75,
+    1.0,
+    -0.9
+   ],
+   "offset": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "rotation": [
+    -3,
+    0,
+    5
+   ],
+   "style": "bark"
+  },
+  {
+   "id": "deco_tree0_t0",
+   "shape": "box",
+   "parent": "tree0",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    1.9,
+    -0.0
+   ],
+   "rotation": [
+    0,
+    10,
+    0
+   ],
+   "style": "pine"
+  },
+  {
+   "id": "deco_tree0_t1",
+   "shape": "box",
+   "parent": "tree0",
+   "size": [
+    3.5,
+    1,
+    3.5
+   ],
+   "pivot": [
+    -0.0,
+    2.85,
+    -0.0
+   ],
+   "rotation": [
+    0,
+    55,
+    0
+   ],
+   "style": "pine"
+  },
+  {
+   "id": "deco_tree0_t2",
+   "shape": "box",
+   "parent": "tree0",
+   "size": [
+    2.5,
+    1,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    3.8,
+    0.0
+   ],
+   "rotation": [
+    0,
+    10,
+    0
+   ],
+   "style": "pine"
+  },
+  {
+   "id": "deco_tree0_t3",
+   "shape": "box",
+   "parent": "tree0",
+   "size": [
+    2,
+    1,
+    2
+   ],
+   "pivot": [
+    0.0,
+    4.7,
+    -0.0
+   ],
+   "rotation": [
+    0,
+    55,
+    0
+   ],
+   "style": "pine"
+  },
+  {
+   "id": "deco_tree0_t4",
+   "shape": "box",
+   "parent": "tree0",
+   "size": [
+    1,
+    1.5,
+    1
+   ],
+   "pivot": [
+    -0.0,
+    5.6,
+    -0.0
+   ],
+   "rotation": [
+    0,
+    10,
+    0
+   ],
+   "style": "pine_tip"
+  },
+  {
+   "id": "tree1",
+   "shape": "box",
+   "parent": "scene",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    2.9,
+    1.0,
+    -0.6
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    4,
+    0,
+    -6
+   ],
+   "style": "bark"
+  },
+  {
+   "id": "deco_tree1_t0",
+   "shape": "box",
+   "parent": "tree1",
+   "size": [
+    3,
+    1,
+    3
+   ],
+   "pivot": [
+    -0.0,
+    1.4,
+    0.0
+   ],
+   "rotation": [
+    0,
+    20,
+    0
+   ],
+   "style": "pine"
+  },
+  {
+   "id": "deco_tree1_t1",
+   "shape": "box",
+   "parent": "tree1",
+   "size": [
+    2.5,
+    1,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    2.2,
+    -0.0
+   ],
+   "rotation": [
+    0,
+    65,
+    0
+   ],
+   "style": "pine"
+  },
+  {
+   "id": "deco_tree1_t2",
+   "shape": "box",
+   "parent": "tree1",
+   "size": [
+    1.5,
+    1,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    -0.0
+   ],
+   "rotation": [
+    0,
+    20,
+    0
+   ],
+   "style": "pine"
+  },
+  {
+   "id": "deco_tree1_t3",
+   "shape": "box",
+   "parent": "tree1",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    3.8,
+    0.0
+   ],
+   "rotation": [
+    0,
+    65,
+    0
+   ],
+   "style": "pine_tip"
+  },
+  {
+   "id": "cabin",
+   "shape": "box",
+   "parent": "scene",
+   "size": [
+    3.5,
+    2,
+    3
+   ],
+   "pivot": [
+    0.4,
+    2.0,
+    -2.0
+   ],
+   "rotation": [
+    0,
+    -14,
+    0
+   ],
+   "style": "logs"
+  },
+  {
+   "id": "deco_gable0",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    3.5,
+    0.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    1.25,
+    0.0
+   ],
+   "style": "logs"
+  },
+  {
+   "id": "deco_gable1",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    3.5,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "style": "logs"
+  },
+  {
+   "id": "deco_roof_f",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    4.5,
+    0.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    2.25,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    1.2
+   ],
+   "rotation": [
+    36,
+    0,
+    0
+   ],
+   "style": "roof"
+  },
+  {
+   "id": "deco_roof_b",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    4.5,
+    0.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    2.25,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -1.2
+   ],
+   "rotation": [
+    -36,
+    0,
+    0
+   ],
+   "style": "roof"
+  },
+  {
+   "id": "deco_ridge",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    4.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    2.45,
+    0.0
+   ],
+   "style": "snow_cap"
+  },
+  {
+   "id": "deco_chimney",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    1,
+    2,
+    1
+   ],
+   "pivot": [
+    1.0,
+    1.9,
+    -0.8
+   ],
+   "style": "stone"
+  },
+  {
+   "id": "deco_door",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    1,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    -0.9,
+    -0.25,
+    1.55
+   ],
+   "style": "door"
+  },
+  {
+   "id": "deco_window_side",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    0.5,
+    1,
+    1.5
+   ],
+   "pivot": [
+    1.8,
+    0.1,
+    -0.1
+   ],
+   "style": "window"
+  },
+  {
+   "id": "deco_woodpile",
+   "shape": "box",
+   "parent": "cabin",
+   "size": [
+    0.5,
+    1,
+    2
+   ],
+   "pivot": [
+    -2.05,
+    -0.5,
+    0.2
+   ],
+   "style": "woodpile"
+  },
+  {
+   "id": "deco_woodpile1",
+   "shape": "box",
+   "parent": "deco_woodpile",
+   "size": [
+    0.5,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    -0.3,
+    -0.25,
+    0.1
+   ],
+   "rotation": [
+    0,
+    6,
+    0
+   ],
+   "style": "woodpile"
+  },
+  {
+   "id": "window",
+   "shape": "box",
+   "parent": "scene",
+   "size": [
+    1.5,
+    1,
+    0.5
+   ],
+   "pivot": [
+    0.7042,
+    2.1,
+    -0.3267
+   ],
+   "rotation": [
+    0,
+    -14,
+    0
+   ],
+   "style": "window"
+  },
+  {
+   "id": "deco_sill",
+   "shape": "box",
+   "parent": "window",
+   "size": [
+    2,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -0.65,
+    0.15
+   ],
+   "style": "snow_cap"
+  },
+  {
+   "id": "snowman",
+   "shape": "box",
+   "parent": "scene",
+   "size": [
+    1.5,
+    1,
+    1.5
+   ],
+   "pivot": [
+    -2.0,
+    1.0,
+    2.4
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    0,
+    25,
+    0
+   ],
+   "style": "snowman"
+  },
+  {
+   "id": "deco_sm_round",
+   "shape": "box",
+   "parent": "snowman",
+   "size": [
+    1,
+    1.5,
+    1
+   ],
+   "pivot": [
+    0.0,
+    0.6,
+    0.0
+   ],
+   "style": "snowman"
+  },
+  {
+   "id": "deco_sm_scarf",
+   "shape": "box",
+   "parent": "snowman",
+   "size": [
+    1,
+    0.5,
+    1
+   ],
+   "pivot": [
+    0.0,
+    1.3,
+    0.0
+   ],
+   "rotation": [
+    0,
+    20,
+    4
+   ],
+   "style": "scarf"
+  },
+  {
+   "id": "deco_sm_tail",
+   "shape": "box",
+   "parent": "deco_sm_scarf",
+   "size": [
+    0.5,
+    1,
+    0.5
+   ],
+   "pivot": [
+    0.4,
+    -0.45,
+    0.4
+   ],
+   "rotation": [
+    0,
+    0,
+    -12
+   ],
+   "style": "scarf"
+  },
+  {
+   "id": "deco_sm_head",
+   "shape": "box",
+   "parent": "snowman",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    1.95,
+    0.0
+   ],
+   "rotation": [
+    0,
+    -10,
+    12
+   ],
+   "style": "snowman"
+  },
+  {
+   "id": "deco_sm_nose",
+   "shape": "box",
+   "parent": "deco_sm_head",
+   "size": [
+    0.5,
+    0.5,
+    1
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.6
+   ],
+   "style": "carrot"
+  },
+  {
+   "id": "deco_sm_hat",
+   "shape": "box",
+   "parent": "deco_sm_head",
+   "size": [
+    1,
+    0.5,
+    1
+   ],
+   "pivot": [
+    -0.0,
+    0.6,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    -6
+   ],
+   "style": "coal"
+  },
+  {
+   "id": "deco_sm_arm0",
+   "shape": "box",
+   "parent": "snowman",
+   "size": [
+    1.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.6,
+    1.0,
+    0.0
+   ],
+   "offset": [
+    0.7,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    30
+   ],
+   "style": "twig"
+  },
+  {
+   "id": "deco_sm_arm1",
+   "shape": "box",
+   "parent": "snowman",
+   "size": [
+    1.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    -0.6,
+    1.0,
+    0.0
+   ],
+   "offset": [
+    -0.7,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    -16
+   ],
+   "style": "twig"
+  },
+  {
+   "id": "deco_snow_a",
+   "shape": "bone",
+   "parent": "scene",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "deco_snow_a0",
+   "shape": "box",
+   "parent": "deco_snow_a",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    -3.2,
+    1.1,
+    0.6
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_a1",
+   "shape": "box",
+   "parent": "deco_snow_a",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    -0.2,
+    1.1,
+    3.6
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_a2",
+   "shape": "box",
+   "parent": "deco_snow_a",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.6,
+    1.1,
+    1.2
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_a3",
+   "shape": "box",
+   "parent": "deco_snow_a",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    3.0,
+    1.4,
+    1.6
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_b",
+   "shape": "bone",
+   "parent": "scene",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "deco_snow_b0",
+   "shape": "box",
+   "parent": "deco_snow_b",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    -0.6,
+    1.1,
+    0.0
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_b1",
+   "shape": "box",
+   "parent": "deco_snow_b",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    1.0,
+    1.1,
+    3.4
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_b2",
+   "shape": "box",
+   "parent": "deco_snow_b",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    -2.8,
+    1.1,
+    -2.9
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_b3",
+   "shape": "box",
+   "parent": "deco_snow_b",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    3.6,
+    1.1,
+    -2.6
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_c",
+   "shape": "bone",
+   "parent": "scene",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "walnut"
+  },
+  {
+   "id": "deco_snow_c0",
+   "shape": "box",
+   "parent": "deco_snow_c",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    2.6,
+    1.1,
+    -3.2
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_c1",
+   "shape": "box",
+   "parent": "deco_snow_c",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    -1.4,
+    1.4,
+    0.8
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_c2",
+   "shape": "box",
+   "parent": "deco_snow_c",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    3.8,
+    1.1,
+    0.9
+   ],
+   "style": "flake"
+  },
+  {
+   "id": "deco_snow_c3",
+   "shape": "box",
+   "parent": "deco_snow_c",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.2,
+    1.1,
+    2.4
+   ],
+   "style": "flake"
+  }
+ ],
+ "animations": {
+  "shake": {
+   "length": 0.9,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "base",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.08,
+       [
+        0.07,
+        -0.12,
+        0.07
+       ],
+       "out"
+      ],
+      [
+       0.2,
+       [
+        -0.03,
+        0.06,
+        -0.03
+       ],
+       "out"
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "globe",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.08,
+       [
+        0.06,
+        -0.1,
+        0.06
+       ],
+       "out"
+      ],
+      [
+       0.22,
+       [
+        -0.07,
+        0.13,
+        -0.07
+       ],
+       "out"
+      ],
+      [
+       0.36,
+       [
+        0.04,
+        -0.06,
+        0.04
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "globe",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.1,
+       -5
+      ],
+      [
+       0.24,
+       9,
+       "out"
+      ],
+      [
+       0.4,
+       -6.5
+      ],
+      [
+       0.56,
+       3.5
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "globe",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.16,
+       4
+      ],
+      [
+       0.32,
+       -5
+      ],
+      [
+       0.5,
+       3
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "deco_snow_a",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.18,
+       [
+        0,
+        4.4,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.5,
+       [
+        0,
+        3.6,
+        0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "in"
+      ]
+     ]
+    },
+    {
+     "part": "deco_snow_a",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.9,
+       360,
+       "out"
+      ]
+     ]
+    },
+    {
+     "part": "deco_snow_b",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.22,
+       [
+        0,
+        5.0,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.55,
+       [
+        0,
+        3.0,
+        0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "in"
+      ]
+     ]
+    },
+    {
+     "part": "deco_snow_b",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.9,
+       -360,
+       "out"
+      ]
+     ]
+    },
+    {
+     "part": "deco_snow_c",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0,
+        3.0,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.45,
+       [
+        0,
+        4.2,
+        0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "in"
+      ]
+     ]
+    },
+    {
+     "part": "deco_snow_c",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.9,
+       360,
+       "inout_back"
+      ]
+     ]
+    },
+    {
+     "part": "tree0",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.16,
+       4
+      ],
+      [
+       0.3,
+       -5
+      ],
+      [
+       0.46,
+       3
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "tree1",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.18,
+       -5
+      ],
+      [
+       0.32,
+       5
+      ],
+      [
+       0.48,
+       -2.5
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "deco_sm_head",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.2,
+       8
+      ],
+      [
+       0.36,
+       -6
+      ],
+      [
+       0.9,
+       0,
+       "elastic"
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "window",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0.15,
+        0.15,
+        0.15
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    }
+   ]
+  },
+  "idle": {
+   "length": 3.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "window",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.06,
+       0.06,
+       0.06
+      ],
+      "cycles": 2
+     }
+    },
+    {
+     "part": "window",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.03,
+       0.03
+      ],
+      "cycles": 5,
+      "phase": 0.3
+     }
+    },
+    {
+     "part": "deco_window_side",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.05,
+       0.05,
+       0.05
+      ],
+      "cycles": 2,
+      "phase": 0.35
+     }
+    }
+   ]
+  }
+ }
+}

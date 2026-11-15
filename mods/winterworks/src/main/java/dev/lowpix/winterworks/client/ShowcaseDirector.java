@@ -12,7 +12,6 @@ import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
@@ -165,7 +164,9 @@ public final class ShowcaseDirector {
     }
 
     private static void tick(Minecraft mc) {
-        if (!created && mc.screen instanceof TitleScreen) {
+        // start from whatever menu is up (title screen, or the first-launch accessibility screen) once loading is done
+        if (!created && mc.level == null && mc.screen != null && mc.getOverlay() == null) {
+            mc.options.onboardAccessibility = false;
             created = true;
             GameRules rules = new GameRules();
             LevelSettings settings = new LevelSettings("winterworks_showcase", GameType.CREATIVE, false, Difficulty.PEACEFUL,
