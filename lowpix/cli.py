@@ -172,6 +172,15 @@ def main(argv=None):
     pt.add_argument("--preview", type=int, default=3, help="also write an NxN tiled preview (0 = off)")
     pt.add_argument("--dest", default="assets/photos", help="vendor: folder to save the small offline copy in")
 
+    mt = sub.add_parser("match", help="line a model up with a 2D reference (landmarks JSON) and report the error")
+    mt.add_argument("spec")
+    mt.add_argument("landmarks", help="landmarks .json (see lowpix/match.py)")
+    mt.add_argument("--image", default=None, help="the reference image, blended into the overlay")
+    mt.add_argument("-o", "--out", default=None)
+    mt.add_argument("--scale", type=float, default=1.0)
+    mt.add_argument("--project", choices=["palette", "photo"], default=None,
+                    help="also paint the photo onto the model from the matched camera (needs --image)")
+
     sub.add_parser("schema", help="print the JSON schema for specs")
 
     a = ap.parse_args(_fix_negative_args(list(sys.argv[1:] if argv is None else argv)))
@@ -306,6 +315,29 @@ def main(argv=None):
             pv = os.path.splitext(out)[0] + "_tiled.png"
             tiled_preview(tex, a.preview, k).save(pv)
             print(f"-> {pv}")
+    elif a.cmd == "match":
+        from .match import match
+        ref = a.landmarks
+        if a.image:
+            with open(a.landmarks) as fh:
+                ref = json.load(fh)
+            ref["image"] = a.image
+        out = a.out or os.path.join("out", "match", os.path.splitext(os.path.basename(a.spec))[0] + "_match.png")
+        os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+        rep, _ = match(a.spec, ref, out=out, scale=a.scale)
+        if a.project:
+            if not a.image:
+                print("--project needs --image", file=sys.stderr)
+                return 2
+            from .build import export_model
+            from .match import project_photo
+            m, prep = project_photo(a.spec, ref, a.image, mode=a.project)
+            pout = os.path.join(os.path.dirname(out), os.path.splitext(os.path.basename(a.spec))[0] + "_projected")
+            export_model(m, pout, gif=False)
+            print(f"projected {prep['texels_from_photo']} texels from the photo -> {pout}/")
+        for k, v in rep["points"].items():
+            print(f"{k:14s} ref {v['ref']}  model {v['model']}  error {v['error_pct']}%")
+        print(f"mean error {rep['mean_error_pct']}% of image height -> {out}")
     elif a.cmd == "schema":
         here = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(here, "schema.json")) as fh:

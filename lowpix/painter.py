@@ -378,7 +378,7 @@ class Painter:
             return fu, fv
 
         def face_flow(name):
-            if name == "path" and ctx.path is not None:
+            if name == "path" and ctx.path is not None and min(H, W) >= 2:
                 gy, gx = np.gradient(ctx.path[..., 0])
                 n = np.hypot(gx, gy)
                 return np.dstack([gx, gy]) / np.maximum(n, 1e-9)[..., None]
@@ -463,7 +463,10 @@ class Painter:
                 cn = ctx.band_coord(P, ax, "local")
                 mask &= (cn >= a) & (cn <= b)
         elif op == "spots":
+            self._last_inner = None
             mask = self._spots_mask(ctx, layer, li, seed)
+            if layer.get("ring") and self._last_inner is not None and layer.get("centre_shift"):
+                tone[self._last_inner] += float(layer["centre_shift"])
         elif op == "patches":
             scale = float(layer.get("scale", 3.0))
             n = fbm(P, 1.0 / scale, int(layer.get("octaves", 3)), seed)
@@ -811,6 +814,13 @@ class Painter:
         rough = float(layer.get("roughness", 0.35))
         n = fbm(P, 1.0 / float(layer.get("rough_scale", 1.2)), 2, seed + 17)
         r_eff = R[None, None] * (1.0 + rough * (n[..., None] - 0.5) * 2)
+        ring = float(layer.get("ring", 0.0))
+        if ring > 0:  # rosettes: a broken dark ring around each spot, the centre returned separately
+            inner = (d < r_eff * ring).any(axis=-1)
+            gaps = fbm(P, 1.0 / max(float(layer.get("gap_scale", 0.35)), 1e-3), 2, seed + 29)
+            band = ((d < r_eff) & (d >= r_eff * ring)).any(axis=-1) & (gaps > float(layer.get("gaps", 0.32)))
+            self._last_inner = inner & ~band
+            return band
         return (d < r_eff).any(axis=-1)
 
     def _make_spots(self, inst, layer, seed):

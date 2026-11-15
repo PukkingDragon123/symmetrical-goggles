@@ -1,0 +1,174 @@
+{
+  "name": "Snow Leopard Cub",
+  "parts": 51,
+  "instances": 57,
+  "faces": 750,
+  "triangles": 1784,
+  "vertices_flat": 3284,
+  "vertices_unique": 1038,
+  "atlas": [
+    256,
+    512
+  ],
+  "atlas_fill": 0.717,
+  "texel_density": 4.0,
+  "colors_used": 41,
+  "palette": {
+    "fur": [
+      "#1c202a",
+      "#323846",
+      "#4c5464",
+      "#6a7282",
+      "#8c94a4",
+      "#aeb5c2",
+      "#ccd1da",
+      "#e4e7ec",
+      "#f6f7f9"
+    ],
+    "cream": [
+      "#3c404c",
+      "#5e6472",
+      "#868c9a",
+      "#aeb3be",
+      "#cfd3da",
+      "#e8eaee",
+      "#fafbfc"
+    ],
+    "spot": [
+      "#050507",
+      "#0e0f13",
+      "#1a1b22",
+      "#2a2c35",
+      "#3e414c"
+    ],
+    "eye": [
+      "#020203",
+      "#08070a",
+      "#141012",
+      "#22191a",
+      "#352826",
+      "#523e36",
+      "#ffffff"
+    ],
+    "nose": [
+      "#0a0a0e",
+      "#18171e",
+      "#2a2832",
+      "#403c48",
+      "#5e5866"
+    ],
+    "pad": [
+      "#040405",
+      "#0e0e12",
+      "#1c1c24",
+      "#2e2e3a",
+      "#4a4a5c",
+      "#8a8aa0"
+    ],
+    "pink": [
+      "#2e2628",
+      "#4a3c40",
+      "#6a5658",
+      "#8e7678",
+      "#b09a9c"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -12.857,
+      0.0,
+      -11.503
+    ],
+    "max": [
+      9.33,
+      23.63,
+      13.938
+    ],
+    "size": [
+      22.188,
+      23.63,
+      25.442
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0,
+    "wave": 2.4,
+    "meow": 2.0,
+    "surprised": 2.2
+  },
+  "joints": [
+    "body",
+    "haunch",
+    "hind_paw",
+    "haunch_r",
+    "hind_paw_r",
+    "front_leg",
+    "front_paw",
+    "arm",
+    "paw",
+    "pad_main",
+    "bean0",
+    "bean1",
+    "bean2",
+    "bean3",
+    "head",
+    "cheek",
+    "whisker_pad",
+    "whiskers",
+    "ear",
+    "cheek_r",
+    "whisker_pad_r",
+    "whiskers_r",
+    "ear_r",
+    "nose",
+    "bridge",
+    "philtrum",
+    "chin",
+    "tongue",
+    "eye_rim",
+    "iris",
+    "pupil",
+    "glint",
+    "glint2",
+    "eye_ring",
+    "liner_tail",
+    "lid",
+    "lid_low",
+    "brow",
+    "tear",
+    "eye_rim_r",
+    "iris_r",
+    "pupil_r",
+    "glint_r",
+    "glint2_r",
+    "eye_ring_r",
+    "liner_tail_r",
+    "lid_r",
+    "lid_low_r",
+    "brow_r",
+    "tear_r",
+    "tail_0",
+    "tail_1",
+    "tail_2",
+    "tail_3",
+    "tail_4",
+    "tail_5",
+    "tail_6"
+  ],
+  "files": {
+    "snow_leopard_cub.glb": "examples/output/snow_leopard_cub.glb",
+    "snow_leopard_cub.obj": "examples/output/snow_leopard_cub.obj",
+    "snow_leopard_cub.mtl": "examples/output/snow_leopard_cub.mtl",
+    "snow_leopard_cub.bbmodel": "examples/output/snow_leopard_cub.bbmodel",
+    "snow_leopard_cub_texture.png": "examples/output/snow_leopard_cub_texture.png",
+    "snow_leopard_cub_texture_x2.png": "examples/output/snow_leopard_cub_texture_x2.png",
+    "snow_leopard_cub_hero.png": "examples/output/snow_leopard_cub_hero.png",
+    "snow_leopard_cub_sheet.png": "examples/output/snow_leopard_cub_sheet.png",
+    "snow_leopard_cub_turntable.gif": "examples/output/snow_leopard_cub_turntable.gif",
+    "snow_leopard_cub_idle.gif": "examples/output/snow_leopard_cub_idle.gif",
+    "snow_leopard_cub_wave.gif": "examples/output/snow_leopard_cub_wave.gif",
+    "snow_leopard_cub_meow.gif": "examples/output/snow_leopard_cub_meow.gif",
+    "snow_leopard_cub_surprised.gif": "examples/output/snow_leopard_cub_surprised.gif"
+  }
+}

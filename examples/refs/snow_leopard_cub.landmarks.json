@@ -1,0 +1,21 @@
+{
+ "note": "Landmarks measured on the user's reference photo (643x844, frontal close-up of a snow leopard cub raising a paw). The photo itself is not in the repo; pass --image to blend it in.",
+ "size": [643, 844],
+ "camera": {"yaw": 0, "pitch": 4, "fov": 30, "distance": 48},
+ "anchors": ["eye_rim", "eye_rim_r"],
+ "points": {
+  "eye_rim": [0.703, 0.252],
+  "eye_rim_r": [0.308, 0.252],
+  "nose": [0.505, 0.388],
+  "chin": [0.505, 0.505],
+  "ear": {"at": [0.85, 0.045], "mode": "top"},
+  "ear_r": {"at": [0.15, 0.045], "mode": "top"},
+  "cheek": {"at": [0.935, 0.36], "mode": "right"},
+  "cheek_r": {"at": [0.085, 0.36], "mode": "left"},
+  "pad_main": [0.498, 0.835],
+  "bean0": [0.339, 0.776],
+  "bean1": [0.451, 0.685],
+  "bean2": [0.61, 0.697],
+  "bean3": [0.703, 0.758]
+ }
+}

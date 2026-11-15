@@ -210,7 +210,7 @@ def fit_focal(model, yaw, pitch, width, height, fov=30.0, margin=0.88):
 
 def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
            background=None, shadow=True, zoom=1.0, target=None, fit="tight", margin=0.88,
-           focal=None, radius=None, worlds=None, fit_pts=None) -> Image.Image:
+           focal=None, radius=None, worlds=None, fit_pts=None, shift=None) -> Image.Image:
     """fit="tight" frames the visible model (and its shadow) to fill `margin` of the
     image; fit="sphere" frames the bounding sphere; `focal` (pixels at 1x) and
     `target` override framing; `target` + `radius` frames a sphere of that radius
@@ -223,6 +223,8 @@ def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
     cxn = cyn = 0.0
     if focal is not None:
         f = focal * ssaa * zoom
+        if shift is not None:  # image-plane offset (used by `match` to line a render up with a photo)
+            cxn, cyn = float(shift[0]), float(shift[1])
     elif target is not None and radius:
         d = float(np.linalg.norm(cam[0] - np.asarray(target, float)))
         f = min(W, H) * 0.5 * margin * d / float(radius) * zoom
