@@ -14,6 +14,28 @@ public final class WWParticles {
     public static final SimpleParticleType STUN_STAR = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
             Winterworks.id("stun_star"), FabricParticleTypes.simple(true));
 
+    // ---- Cold Zone update: simple particles (docs/COLD_UPDATE.md section 10)
+    public static final SimpleParticleType FROST_BREATH = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("frost_breath"), FabricParticleTypes.simple());
+    public static final SimpleParticleType ICE_SHARD = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("ice_shard"), FabricParticleTypes.simple());
+    public static final SimpleParticleType FROST_BURST = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("frost_burst"), FabricParticleTypes.simple());
+    public static final SimpleParticleType ROAR_WAVE = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("roar_wave"), FabricParticleTypes.simple());
+    public static final SimpleParticleType FROST_SLASH = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("frost_slash"), FabricParticleTypes.simple());
+    public static final SimpleParticleType ICE_CRIT = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("ice_crit"), FabricParticleTypes.simple());
+    public static final SimpleParticleType FUR_TUFT = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("fur_tuft"), FabricParticleTypes.simple());
+    public static final SimpleParticleType BLIZZARD_FLAKE = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("blizzard_flake"), FabricParticleTypes.simple());
+    public static final SimpleParticleType SNOW_PUFF = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("snow_puff"), FabricParticleTypes.simple());
+    public static final SimpleParticleType COLD_MIST = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("cold_mist"), FabricParticleTypes.simple());
+
     private WWParticles() {}
 
     public static void init() {}

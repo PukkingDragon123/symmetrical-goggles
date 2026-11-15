@@ -63,10 +63,64 @@ S = {
     "block.booster_rail.boost": ([("fireworks/launch1", 1.2), ("block/beacon/power1", 2.0)], "Booster rail whooshes"),
     "entity.minecart.couple": ([("block/chain/break1", 1.0), ("block/chain/break2", 1.1)], "Carts coupled"),
     "block.snow_globe.shake": ([("block/amethyst/shimmer", 1.3), ("block/powder_snow/step2", 1.6)], "Snow globe shakes"),
+    # ---- Cold Zone placeholders (tools/sound_map.json replaces them with real sounds)
+    "ambient.ice_caves.loop": ([("ambient/cave/cave1", 0.6)], None),
+    "ambient.ice_caves.additions": ([("block/amethyst/shimmer", 0.6), ("random/glass1", 0.4)], None),
+    "ambient.ice_caves.mood": ([("ambient/cave/cave13", 0.6)], None),
+    "entity.player.shiver": ([("block/powder_snow/step1", 1.8)], "Teeth chatter"),
+    "entity.player.overheat": ([("random/fizz", 1.0)], "Fur sizzles"),
+    "block.ancient_ice.break": ([("random/glass1", 0.5), ("random/glass2", 0.5)], None),
+    "block.ancient_ice.step": ([("step/stone1", 0.8)], None),
+    "block.ancient_ice.place": ([("dig/stone1", 0.7)], None),
+    "block.ancient_ice.hit": ([("step/stone2", 0.7)], None),
+    "block.ancient_ice.fall": ([("step/stone3", 0.7)], None),
+    "block.ancient_ice.burst": ([("random/explode1", 1.4), ("random/glass3", 0.6)], "Ancient ice bursts"),
+    "block.ancient_ice.crack": ([("random/glass1", 0.4), ("random/glass2", 0.35)], "Ancient ice cracks"),
+    "block.icicle.fall": ([("block/pointed_dripstone/land1", 1.3)], "Icicle falls"),
+    "block.icicle.shatter": ([("random/glass2", 1.2), ("random/glass3", 1.3)], "Icicle shatters"),
+    "event.frozen_tomb.rumble": ([("ambient/cave/cave10", 0.5)], "The cave rumbles"),
+    "entity.frost_mauler.ambient": ([("mob/ravager/idle1", 0.5), ("mob/ravager/idle2", 0.5)], "Frost Mauler growls"),
+    "entity.frost_mauler.hurt": ([("mob/ravager/hurt1", 0.55), ("mob/ravager/hurt2", 0.55)], "Frost Mauler hurts"),
+    "entity.frost_mauler.death": ([("mob/ravager/death1", 0.5)], "Frost Mauler dies"),
+    "entity.frost_mauler.roar": ([("mob/ravager/roar1", 0.5), ("mob/ravager/roar2", 0.5)], "Frost Mauler roars"),
+    "entity.frost_mauler.claw": ([("entity/player/attack/sweep1", 0.6), ("entity/player/attack/sweep2", 0.6)], "Frost Mauler claws"),
+    "entity.frost_mauler.bite": ([("mob/ravager/bite1", 0.7), ("mob/ravager/bite2", 0.7)], "Frost Mauler bites"),
+    "entity.frost_mauler.fury": ([("mob/wolf/growl1", 0.5), ("mob/wolf/growl2", 0.5)], "Frost Mauler snarls"),
+    "entity.frost_mauler.stunned": ([("mob/ravager/stun1", 0.6), ("mob/ravager/stun2", 0.6)], "Frost Mauler is stunned"),
+    "entity.frost_mauler.step": ([("mob/ravager/step1", 0.6), ("mob/ravager/step2", 0.6)], None),
+    "entity.frost_mauler.wake": ([("random/glass1", 0.5), ("mob/ravager/roar3", 0.5)], "Frost Mauler awakens"),
+    "entity.frost_mauler.breath": ([("mob/polarbear/idle1", 0.4)], None),
+    "entity.frost_mauler.explode": ([("random/explode2", 0.7)], "Frost Mauler bursts"),
+    "entity.polar_bear.roar": ([("mob/polarbear/warning1", 0.8), ("mob/polarbear/warning2", 0.8)], "Polar bear roars"),
+    "entity.polar_bear.leap": ([("mob/polarbear/warning3", 1.1)], "Polar bear leaps"),
+    "entity.polar_bear.slam": ([("mob/ravager/step3", 0.8)], "Polar bear slams down"),
+    "entity.polar_bear.munch": ([("random/eat1", 0.7), ("random/eat2", 0.7)], "Polar bear eats"),
+    "entity.polar_bear.calm": ([("mob/polarbear/idle2", 1.1)], "Polar bear calms down"),
+    "entity.polar_bear.shear": ([("mob/sheep/shear", 0.8)], "Polar bear shorn"),
+    "entity.zombie_polar_bear.ambient": ([("mob/polarbear/idle3", 0.6), ("mob/zombie/say1", 0.5)], "Zombie polar bear groans"),
+    "entity.zombie_polar_bear.hurt": ([("mob/polarbear/hurt1", 0.6)], "Zombie polar bear hurts"),
+    "entity.zombie_polar_bear.death": ([("mob/polarbear/death1", 0.6)], "Zombie polar bear dies"),
+    "entity.frost_zombie.ambient": ([("mob/zombie/say1", 0.8), ("mob/zombie/say2", 0.8)], "Frost Zombie groans"),
+    "entity.frost_zombie.hurt": ([("mob/zombie/hurt1", 0.85)], "Frost Zombie hurts"),
+    "entity.frost_zombie.death": ([("mob/zombie/death", 0.85)], "Frost Zombie dies"),
+    "entity.frost_zombie.step": ([("block/powder_snow/step1", 0.9)], None),
+    "item.armor.equip_fur": ([("item/armor/equip_leather1", 0.8), ("item/armor/equip_leather2", 0.8)], "Fur armour rustles"),
+    "item.fang_dagger.slash": ([("entity/player/attack/sweep1", 1.6), ("entity/player/attack/sweep2", 1.7)], "Fang dagger slashes"),
+    "item.fang_dagger.pounce": ([("entity/player/attack/sweep3", 1.1)], "Pounce"),
+    "item.fang_dagger.crit": ([("random/glass1", 1.4), ("entity/player/attack/crit1", 1.2)], "Fang crit"),
+    "item.fang_dagger.tired": ([("random/click", 0.6)], "Daggers tire"),
+    "item.fang_dagger.ready": ([("block/amethyst/shimmer", 1.6)], "Daggers ready"),
+    "block.frost_mauler_skull.ignite": ([("block/beacon/activate", 0.7)], "Skull eye glows"),
+    "block.frost_mauler_skull.revive": ([("random/explode3", 0.7), ("mob/ravager/roar1", 0.5)], "The Frost Mauler returns"),
 }
 
 
 def sounds():
+    """Real sounds from tools/sound_map.json (tools/sounds/build_sounds.py) win; the rest use re-pitched vanilla files."""
+    real = {}
+    smap = os.path.join(ROOT, "tools", "sound_map.json")
+    if os.path.exists(smap):
+        real = json.load(open(smap, encoding="utf-8"))
     known = None
     idx = "/tmp/claude-0/sounds_121.json"
     if os.path.exists(idx):
@@ -79,10 +133,17 @@ def sounds():
                 print("unknown vanilla sound", f, file=sys.stderr)
                 continue
             entries.append({"name": "minecraft:" + f, "pitch": pitch})
+        if name in real:
+            entries = real[name]["sounds"]
+            subtitle = real[name].get("subtitle", subtitle) or subtitle
         d = {"sounds": entries}
         if subtitle:
             d["subtitle"] = f"subtitles.{M}.{name}"
         out[name] = d
+        S[name] = (files, subtitle)
+    for name, e in real.items():
+        if name not in out:
+            print("sound_map.json has an event with no sound event in Java:", name, file=sys.stderr)
     write(os.path.join(A, "sounds.json"), out)
     return {f"subtitles.{M}.{n}": sub for n, (_, sub) in S.items() if sub}
 
@@ -326,6 +387,23 @@ def lang(subtitles):
     write(os.path.join(L, "globe.json"), {"block.winterworks.snow_globe": "Snow Globe"})
 
 
+class Ctx:
+    """What the per-area data modules (tools/data_*.py) get: paths and writers."""
+    ROOT, RES, A, D, M = ROOT, RES, A, D, M
+    L = os.path.join(ROOT, "lang")
+    write = staticmethod(write)
+    shaped = staticmethod(shaped)
+    shapeless = staticmethod(shapeless)
+
+
+def areas():
+    """The Cold Zone areas each keep their data in their own module (docs/COLD_UPDATE.md)."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import importlib
+    for name in ("data_cold", "data_boss", "data_bear", "data_dagger"):
+        importlib.import_module(name).run(Ctx)
+
+
 if __name__ == "__main__":
     subs = sounds()
     item_models()
@@ -335,4 +413,5 @@ if __name__ == "__main__":
     loot()
     tags()
     lang(subs)
+    areas()
     print("resources written")

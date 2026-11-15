@@ -1,0 +1,9 @@
+{
+  "biome.winterworks.ice_caves": "Ice Caves",
+  "effect.winterworks.frostbite": "Frostbite",
+  "death.attack.winterworks.overheat": "%1$s overheated in their fur",
+  "death.attack.winterworks.overheat.player": "%1$s overheated in their fur while fighting %2$s",
+  "death.attack.winterworks.falling_icicle": "%1$s was skewered by a falling icicle",
+  "death.attack.winterworks.falling_icicle.player": "%1$s was skewered by a falling icicle while fighting %2$s",
+  "item.winterworks.fur.tip": "Warm: no freezing, no Slowness. Strength in the cold, the more pieces the stronger. Too hot for the Nether!"
+}

@@ -36,9 +36,29 @@ public final class WWBlocks {
             new SnowGlobeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS).strength(0.6f).noOcclusion()
                     .lightLevel(s -> 4)));
 
+    // ---- Cold Zone update (docs/COLD_UPDATE.md sections 6 and 8)
+    public static final Block ANCIENT_ICE = reg("ancient_ice", new dev.lowpix.winterworks.boss.AncientIceBlock(
+            BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.ICE).strength(25f, 1200f)
+                    .friction(0.989f).sound(WWSounds.ANCIENT_ICE_SOUNDS).noOcclusion().requiresCorrectToolForDrops()
+                    .isValidSpawn(Blocks::never).isRedstoneConductor((s, l, p) -> false).isSuffocating((s, l, p) -> false)
+                    .isViewBlocking((s, l, p) -> false)));
+    public static final Block ICICLE = reg("icicle", new dev.lowpix.winterworks.boss.IcicleBlock(
+            BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.ICE).strength(0.4f)
+                    .sound(SoundType.GLASS).noOcclusion().dynamicShape()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+    public static final Block FROST_MAULER_SKULL = reg("frost_mauler_skull", new dev.lowpix.winterworks.boss.FrostMaulerSkullBlock(
+            BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.QUARTZ).strength(2f, 1200f)
+                    .sound(SoundType.BONE_BLOCK).noOcclusion()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+
     public static final BlockEntityType<SnowGlobeBlockEntity> SNOW_GLOBE_BE = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id("snow_globe"),
             FabricBlockEntityTypeBuilder.create(SnowGlobeBlockEntity::new, SNOW_GLOBE).build());
+
+    public static final BlockEntityType<dev.lowpix.winterworks.boss.FrostMaulerSkullBlockEntity> FROST_MAULER_SKULL_BE =
+            Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id("frost_mauler_skull"),
+                    FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.boss.FrostMaulerSkullBlockEntity::new,
+                            FROST_MAULER_SKULL).build());
 
     private WWBlocks() {}
 

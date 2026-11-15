@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
-/** Sound events. Their files are mapped in assets/winterworks/sounds.json (re-pitched vanilla sounds). */
+/** Sound events. Their files are mapped in assets/winterworks/sounds.json (written by tools/gen_data.py from tools/sound_map.json). */
 public final class WWSounds {
     public static final SoundEvent ICEBREAKER_AMBIENT = reg("entity.icebreaker.ambient");
     public static final SoundEvent ICEBREAKER_HURT = reg("entity.icebreaker.hurt");
@@ -36,6 +36,60 @@ public final class WWSounds {
     public static final SoundEvent BOOSTER = reg("block.booster_rail.boost");
     public static final SoundEvent COUPLE = reg("entity.minecart.couple");
     public static final SoundEvent GLOBE_SHAKE = reg("block.snow_globe.shake");
+
+    // ---- Cold Zone update (docs/COLD_UPDATE.md)
+    public static final SoundEvent ICE_CAVES_LOOP = reg("ambient.ice_caves.loop");
+    public static final SoundEvent ICE_CAVES_ADDITIONS = reg("ambient.ice_caves.additions");
+    public static final SoundEvent ICE_CAVES_MOOD = reg("ambient.ice_caves.mood");
+    public static final SoundEvent PLAYER_SHIVER = reg("entity.player.shiver");
+    public static final SoundEvent PLAYER_OVERHEAT = reg("entity.player.overheat");
+    public static final SoundEvent ANCIENT_ICE_BREAK = reg("block.ancient_ice.break");
+    public static final SoundEvent ANCIENT_ICE_STEP = reg("block.ancient_ice.step");
+    public static final SoundEvent ANCIENT_ICE_PLACE = reg("block.ancient_ice.place");
+    public static final SoundEvent ANCIENT_ICE_HIT = reg("block.ancient_ice.hit");
+    public static final SoundEvent ANCIENT_ICE_FALL = reg("block.ancient_ice.fall");
+    public static final SoundEvent ANCIENT_ICE_BURST = reg("block.ancient_ice.burst");
+    public static final SoundEvent ANCIENT_ICE_CRACK = reg("block.ancient_ice.crack");
+    public static final SoundEvent ICICLE_FALL = reg("block.icicle.fall");
+    public static final SoundEvent ICICLE_SHATTER = reg("block.icicle.shatter");
+    public static final SoundEvent TOMB_RUMBLE = reg("event.frozen_tomb.rumble");
+    public static final SoundEvent MAULER_AMBIENT = reg("entity.frost_mauler.ambient");
+    public static final SoundEvent MAULER_HURT = reg("entity.frost_mauler.hurt");
+    public static final SoundEvent MAULER_DEATH = reg("entity.frost_mauler.death");
+    public static final SoundEvent MAULER_ROAR = reg("entity.frost_mauler.roar");
+    public static final SoundEvent MAULER_CLAW = reg("entity.frost_mauler.claw");
+    public static final SoundEvent MAULER_BITE = reg("entity.frost_mauler.bite");
+    public static final SoundEvent MAULER_FURY = reg("entity.frost_mauler.fury");
+    public static final SoundEvent MAULER_STUNNED = reg("entity.frost_mauler.stunned");
+    public static final SoundEvent MAULER_STEP = reg("entity.frost_mauler.step");
+    public static final SoundEvent MAULER_WAKE = reg("entity.frost_mauler.wake");
+    public static final SoundEvent MAULER_BREATH = reg("entity.frost_mauler.breath");
+    public static final SoundEvent MAULER_EXPLODE = reg("entity.frost_mauler.explode");
+    public static final SoundEvent BEAR_ROAR = reg("entity.polar_bear.roar");
+    public static final SoundEvent BEAR_LEAP = reg("entity.polar_bear.leap");
+    public static final SoundEvent BEAR_SLAM = reg("entity.polar_bear.slam");
+    public static final SoundEvent BEAR_MUNCH = reg("entity.polar_bear.munch");
+    public static final SoundEvent BEAR_CALM = reg("entity.polar_bear.calm");
+    public static final SoundEvent BEAR_SHEAR = reg("entity.polar_bear.shear");
+    public static final SoundEvent ZOMBIE_BEAR_AMBIENT = reg("entity.zombie_polar_bear.ambient");
+    public static final SoundEvent ZOMBIE_BEAR_HURT = reg("entity.zombie_polar_bear.hurt");
+    public static final SoundEvent ZOMBIE_BEAR_DEATH = reg("entity.zombie_polar_bear.death");
+    public static final SoundEvent FROST_ZOMBIE_AMBIENT = reg("entity.frost_zombie.ambient");
+    public static final SoundEvent FROST_ZOMBIE_HURT = reg("entity.frost_zombie.hurt");
+    public static final SoundEvent FROST_ZOMBIE_DEATH = reg("entity.frost_zombie.death");
+    public static final SoundEvent FROST_ZOMBIE_STEP = reg("entity.frost_zombie.step");
+    public static final SoundEvent EQUIP_FUR = reg("item.armor.equip_fur");
+    public static final SoundEvent DAGGER_SLASH = reg("item.fang_dagger.slash");
+    public static final SoundEvent DAGGER_POUNCE = reg("item.fang_dagger.pounce");
+    public static final SoundEvent DAGGER_CRIT = reg("item.fang_dagger.crit");
+    public static final SoundEvent DAGGER_TIRED = reg("item.fang_dagger.tired");
+    public static final SoundEvent DAGGER_READY = reg("item.fang_dagger.ready");
+    public static final SoundEvent SKULL_IGNITE = reg("block.frost_mauler_skull.ignite");
+    public static final SoundEvent SKULL_REVIVE = reg("block.frost_mauler_skull.revive");
+
+    /** Ancient ice: deeper and heavier than glass. */
+    public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
+            1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);
 
     private WWSounds() {}
 

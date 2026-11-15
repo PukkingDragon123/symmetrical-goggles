@@ -40,12 +40,18 @@ public final class Winterworks implements ModInitializer {
         HeavyShearsItem.init();
         RamHandler.init();
         Couplings.init();
+        dev.lowpix.winterworks.registry.WWArmor.init();
+        dev.lowpix.winterworks.world.WWWorldgen.init();
+        dev.lowpix.winterworks.cold.ColdSystem.init();
+        dev.lowpix.winterworks.boss.BossFeature.init();
+        dev.lowpix.winterworks.bear.BearFeature.init();
+        dev.lowpix.winterworks.dagger.DaggerFeature.init();
         PayloadTypeRegistry.playS2C().register(CouplingPayload.TYPE, CouplingPayload.CODEC);
         FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> {
             b.addMix(Potions.AWKWARD, WWItems.ICEBREAKER_HORN, WWEffects.RAMMING_POTION);
             b.addMix(WWEffects.RAMMING_POTION, Items.REDSTONE, WWEffects.LONG_RAMMING_POTION);
             b.addMix(WWEffects.RAMMING_POTION, Items.GLOWSTONE_DUST, WWEffects.STRONG_RAMMING_POTION);
         });
-        LOG.info("Winterworks ready: Snowball Launcher, Icebreaker, Winter Express, Snow Globe");
+        LOG.info("Winterworks ready: Snowball Launcher, Icebreaker, Winter Express, Snow Globe, Cold Zone");
     }
 }

@@ -53,6 +53,10 @@ public final class WinterworksClient implements ClientModInitializer {
         ColorProviderRegistry.ITEM.register((stack, tint) -> tint == 0 ? 0xFF8A6B47 : -1,
                 WWItems.COASTER_RAIL, WWItems.BOOSTER_RAIL, WWItems.LIFT_RAIL, WWItems.TRAP_RAIL, WWItems.DROP_RAIL);
         ClientTrains.init();
+        dev.lowpix.winterworks.client.cold.ColdClient.init();
+        dev.lowpix.winterworks.client.boss.BossClient.init();
+        dev.lowpix.winterworks.client.bear.BearClient.init();
+        dev.lowpix.winterworks.client.dagger.DaggerClient.init();
         ShowcaseDirector.init();
     }
 }

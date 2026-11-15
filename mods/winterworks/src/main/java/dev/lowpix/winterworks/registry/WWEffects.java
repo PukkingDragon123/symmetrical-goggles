@@ -24,6 +24,10 @@ public final class WWEffects {
                     .addAttributeModifier(Attributes.ATTACK_SPEED, Winterworks.id("effect.stunned_attack"), -0.75,
                             AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
+    /** Deep cold: freezes fast and bites (cold.FrostbiteEffect). Fur armour and freeze-immune mobs are immune. */
+    public static final Holder<MobEffect> FROSTBITE = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
+            Winterworks.id("frostbite"), new dev.lowpix.winterworks.cold.FrostbiteEffect());
+
     public static final Holder<Potion> RAMMING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
             Winterworks.id("ramming"), new Potion("ramming", new net.minecraft.world.effect.MobEffectInstance(RAMMING, 3600)));
     public static final Holder<Potion> LONG_RAMMING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,

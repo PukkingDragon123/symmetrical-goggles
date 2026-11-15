@@ -45,6 +45,22 @@ public final class WWEntities {
             EntityType.Builder.<WWCart>of((t, l) -> new WWCart(t, l, CartKind.TRAILER_CART), MobCategory.MISC)
                     .sized(0.98f, 0.7f).clientTrackingRange(8));
 
+
+    // ---- Cold Zone update (docs/COLD_UPDATE.md)
+    public static final EntityType<dev.lowpix.winterworks.boss.FrostMaulerEntity> FROST_MAULER = reg("frost_mauler",
+            EntityType.Builder.of(dev.lowpix.winterworks.boss.FrostMaulerEntity::new, MobCategory.MONSTER).sized(2.4f, 2.6f)
+                    .eyeHeight(2.1f).immuneTo(net.minecraft.world.level.block.Blocks.POWDER_SNOW).clientTrackingRange(10));
+    public static final EntityType<dev.lowpix.winterworks.bear.FrostZombie> FROST_ZOMBIE = reg("frost_zombie",
+            EntityType.Builder.<dev.lowpix.winterworks.bear.FrostZombie>of(dev.lowpix.winterworks.bear.FrostZombie::new,
+                            MobCategory.MONSTER).sized(0.6f, 1.95f).eyeHeight(1.74f).passengerAttachments(2.0125f)
+                    .ridingOffset(-0.7f).immuneTo(net.minecraft.world.level.block.Blocks.POWDER_SNOW).clientTrackingRange(8));
+    public static final EntityType<dev.lowpix.winterworks.bear.ZombiePolarBear> ZOMBIE_POLAR_BEAR = reg("zombie_polar_bear",
+            EntityType.Builder.of(dev.lowpix.winterworks.bear.ZombiePolarBear::new, MobCategory.MONSTER).sized(1.4f, 1.4f)
+                    .immuneTo(net.minecraft.world.level.block.Blocks.POWDER_SNOW).clientTrackingRange(10));
+    public static final EntityType<dev.lowpix.winterworks.boss.FallingIcicleEntity> FALLING_ICICLE = reg("falling_icicle",
+            EntityType.Builder.<dev.lowpix.winterworks.boss.FallingIcicleEntity>of(dev.lowpix.winterworks.boss.FallingIcicleEntity::new,
+                    MobCategory.MISC).sized(0.5f, 0.9f).clientTrackingRange(8).updateInterval(2));
+
     private WWEntities() {}
 
     private static <T extends net.minecraft.world.entity.Entity> EntityType<T> reg(String name, EntityType.Builder<T> b) {
@@ -53,6 +69,9 @@ public final class WWEntities {
 
     public static void init() {
         FabricDefaultAttributeRegistry.register(ICEBREAKER, IcebreakerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(FROST_MAULER, dev.lowpix.winterworks.boss.FrostMaulerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(FROST_ZOMBIE, dev.lowpix.winterworks.bear.FrostZombie.createAttributes());
+        FabricDefaultAttributeRegistry.register(ZOMBIE_POLAR_BEAR, dev.lowpix.winterworks.bear.ZombiePolarBear.createAttributes());
         SpawnPlacements.register(ICEBREAKER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 IcebreakerEntity::checkIcebreakerSpawnRules);
         // frozen lakes, rivers and coasts
