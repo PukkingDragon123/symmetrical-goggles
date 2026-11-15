@@ -1,0 +1,129 @@
+{
+  "name": "Icebreaker Cub",
+  "parts": 18,
+  "instances": 24,
+  "faces": 144,
+  "triangles": 288,
+  "vertices_flat": 576,
+  "vertices_unique": 192,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.541,
+  "texel_density": 1.0,
+  "colors_used": 29,
+  "palette": {
+    "fluff": [
+      "#3b3f45",
+      "#555a61",
+      "#71767c",
+      "#8d9297",
+      "#a8adb0",
+      "#c1c5c6",
+      "#d6d8d6",
+      "#e6e7e3",
+      "#f2f2ee",
+      "#fbfbf8"
+    ],
+    "skin": [
+      "#1a1c20",
+      "#262a2f",
+      "#343940",
+      "#454b52",
+      "#575e66",
+      "#6b737a",
+      "#81888e"
+    ],
+    "horn": [
+      "#3a4650",
+      "#566571",
+      "#7b8b96",
+      "#a3b2ba",
+      "#c9d5da",
+      "#e8f0f2"
+    ],
+    "eye": [
+      "#07080a",
+      "#101216",
+      "#1c2026",
+      "#5a626b"
+    ],
+    "nose": [
+      "#0e0f11",
+      "#181a1e",
+      "#25282d",
+      "#363a41",
+      "#4d535b"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -14.043,
+      0.034,
+      -30.225
+    ],
+    "max": [
+      14.043,
+      38.679,
+      34.95
+    ],
+    "size": [
+      28.086,
+      38.645,
+      65.174
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 3.0,
+    "walk": 0.7,
+    "swim": 1.6,
+    "happy": 1.4,
+    "belly_slap": 1.0,
+    "tail_slap": 0.8
+  },
+  "joints": [
+    "body",
+    "belly",
+    "belly_side",
+    "belly_side_mirror",
+    "fluff_back",
+    "hips",
+    "tail",
+    "fluke",
+    "fluke_mirror",
+    "flipper",
+    "palm",
+    "flipper_mirror",
+    "palm_mirror",
+    "neck",
+    "head",
+    "crown",
+    "horn",
+    "cheek",
+    "cheek_mirror",
+    "muzzle",
+    "nose",
+    "jaw",
+    "eye",
+    "eye_mirror"
+  ],
+  "files": {
+    "icebreaker_cub.glb": "examples/output/icebreaker_cub.glb",
+    "icebreaker_cub.obj": "examples/output/icebreaker_cub.obj",
+    "icebreaker_cub.mtl": "examples/output/icebreaker_cub.mtl",
+    "icebreaker_cub.bbmodel": "examples/output/icebreaker_cub.bbmodel",
+    "icebreaker_cub_texture.png": "examples/output/icebreaker_cub_texture.png",
+    "icebreaker_cub_texture_x4.png": "examples/output/icebreaker_cub_texture_x4.png",
+    "icebreaker_cub_hero.png": "examples/output/icebreaker_cub_hero.png",
+    "icebreaker_cub_sheet.png": "examples/output/icebreaker_cub_sheet.png",
+    "icebreaker_cub_turntable.gif": "examples/output/icebreaker_cub_turntable.gif",
+    "icebreaker_cub_idle.gif": "examples/output/icebreaker_cub_idle.gif",
+    "icebreaker_cub_walk.gif": "examples/output/icebreaker_cub_walk.gif",
+    "icebreaker_cub_swim.gif": "examples/output/icebreaker_cub_swim.gif",
+    "icebreaker_cub_happy.gif": "examples/output/icebreaker_cub_happy.gif",
+    "icebreaker_cub_belly_slap.gif": "examples/output/icebreaker_cub_belly_slap.gif",
+    "icebreaker_cub_tail_slap.gif": "examples/output/icebreaker_cub_tail_slap.gif"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "name": "Icebreaker",
+  "parts": 33,
+  "instances": 48,
+  "faces": 288,
+  "triangles": 576,
+  "vertices_flat": 1152,
+  "vertices_unique": 384,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.528,
+  "texel_density": 1.0,
+  "colors_used": 52,
+  "palette": {
+    "seal": [
+      "#15171a",
+      "#1f2226",
+      "#2a2e33",
+      "#363b41",
+      "#444a50",
+      "#535a60",
+      "#646a6f",
+      "#767b7f",
+      "#898d8f",
+      "#9da09f",
+      "#b2b4b1",
+      "#c8c9c4"
+    ],
+    "blotch": [
+      "#121417",
+      "#1b1e22",
+      "#25292e",
+      "#30353b",
+      "#3c4147",
+      "#494f55"
+    ],
+    "belly": [
+      "#3b3934",
+      "#4e4b45",
+      "#625e57",
+      "#77736b",
+      "#8d8880",
+      "#a39e95",
+      "#b9b4aa",
+      "#ccc8be",
+      "#dddad0",
+      "#ebe9e0"
+    ],
+    "horn": [
+      "#252c33",
+      "#333d46",
+      "#45525c",
+      "#596873",
+      "#6f7f89",
+      "#8797a0",
+      "#a0aeb5",
+      "#b9c6ca",
+      "#d1dbdd",
+      "#e5ecec",
+      "#f4f7f6"
+    ],
+    "eye": [
+      "#08090b",
+      "#111316",
+      "#1c1f23",
+      "#4a4f55"
+    ],
+    "nose": [
+      "#0e0f11",
+      "#17191c",
+      "#22252a",
+      "#2e3237",
+      "#3c4147"
+    ],
+    "claw": [
+      "#141210",
+      "#201d1a",
+      "#2e2a26",
+      "#3d3833",
+      "#4f4943"
+    ],
+    "mouth": [
+      "#24151a",
+      "#3a2127",
+      "#523038",
+      "#6b424a",
+      "#86585e",
+      "#a07276"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -18.013,
+      0.02,
+      -41.804
+    ],
+    "max": [
+      18.013,
+      61.166,
+      41.932
+    ],
+    "size": [
+      36.026,
+      61.146,
+      83.736
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0,
+    "walk": 1.0,
+    "charge": 0.5,
+    "slide": 1.2,
+    "swim": 2.0,
+    "belly_slap": 1.2,
+    "tail_slap": 1.0,
+    "ram": 0.8,
+    "happy": 1.6
+  },
+  "joints": [
+    "body",
+    "belly",
+    "belly_side",
+    "belly_side_mirror",
+    "belly_low",
+    "hump",
+    "flank",
+    "flank_mirror",
+    "hips",
+    "hips_fat",
+    "tail",
+    "fluke",
+    "fluke_web",
+    "fluke_mirror",
+    "fluke_web_mirror",
+    "flipper",
+    "palm",
+    "claw0",
+    "claw0_mirror",
+    "claw1",
+    "claw1_mirror",
+    "claw2",
+    "claw2_mirror",
+    "flipper_mirror",
+    "palm_mirror",
+    "claw0_mirror",
+    "claw1_mirror",
+    "claw2_mirror",
+    "neck",
+    "head",
+    "crown",
+    "horn",
+    "horn_1",
+    "horn_2",
+    "horn_3",
+    "horn_tip",
+    "cheek",
+    "cheek_mirror",
+    "muzzle",
+    "whisker_pad",
+    "nose",
+    "tusk",
+    "tusk_mirror",
+    "nostril_ridge",
+    "jaw",
+    "tongue",
+    "eye",
+    "eye_mirror"
+  ],
+  "files": {
+    "icebreaker.glb": "examples/output/icebreaker.glb",
+    "icebreaker.obj": "examples/output/icebreaker.obj",
+    "icebreaker.mtl": "examples/output/icebreaker.mtl",
+    "icebreaker.bbmodel": "examples/output/icebreaker.bbmodel",
+    "icebreaker_texture.png": "examples/output/icebreaker_texture.png",
+    "icebreaker_texture_x4.png": "examples/output/icebreaker_texture_x4.png",
+    "icebreaker_hero.png": "examples/output/icebreaker_hero.png",
+    "icebreaker_sheet.png": "examples/output/icebreaker_sheet.png",
+    "icebreaker_turntable.gif": "examples/output/icebreaker_turntable.gif",
+    "icebreaker_idle.gif": "examples/output/icebreaker_idle.gif",
+    "icebreaker_walk.gif": "examples/output/icebreaker_walk.gif",
+    "icebreaker_charge.gif": "examples/output/icebreaker_charge.gif",
+    "icebreaker_slide.gif": "examples/output/icebreaker_slide.gif",
+    "icebreaker_swim.gif": "examples/output/icebreaker_swim.gif",
+    "icebreaker_belly_slap.gif": "examples/output/icebreaker_belly_slap.gif",
+    "icebreaker_tail_slap.gif": "examples/output/icebreaker_tail_slap.gif",
+    "icebreaker_ram.gif": "examples/output/icebreaker_ram.gif",
+    "icebreaker_happy.gif": "examples/output/icebreaker_happy.gif"
+  }
+}

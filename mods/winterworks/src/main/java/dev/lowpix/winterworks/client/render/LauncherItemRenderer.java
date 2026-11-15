@@ -82,7 +82,7 @@ public class LauncherItemRenderer implements BuiltinItemRendererRegistry.Dynamic
             m.clip("fire", sinceShot * (heavy ? 0.7f : 1f));
         }
         m.get("drum").ifPresent(p -> p.zRot += drumAngle);
-        m.get("needle").ifPresent(p -> p.xRot -= heat / 100f * 2.3f + (over ? Mth.sin(t * 2.1f) * 0.12f : 0f));
+        m.get("needle").ifPresent(p -> p.xRot += heat / 100f * 2.3f + (over ? Mth.sin(t * 2.1f) * 0.12f : 0f));
         m.get("crank").ifPresent(p -> p.xRot += drumAngle * 0.5f);
         m.show("snowballs", modeId == SnowballLauncherItem.MODE_SNOW);
         m.show("cobble", modeId == SnowballLauncherItem.MODE_COBBLE);
