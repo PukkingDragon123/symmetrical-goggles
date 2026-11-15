@@ -5,7 +5,7 @@
  "license": "CC0-1.0",
  "density": 1,
  "budget": {
-  "tris": 800,
+  "tris": 1300,
   "colors": 64
  },
  "light": {
@@ -21,10 +21,10 @@
  },
  "brush": {
   "flow": "z",
-  "length": 3.2,
-  "width": 1.0,
-  "rough": 0.62,
-  "overshoot": 0.3,
+  "length": 3.6,
+  "width": 1.2,
+  "rough": 0.45,
+  "overshoot": 0.25,
   "flows": {
    "horn": "y"
   },
@@ -102,6 +102,12 @@
     "#1c1f23",
     "#4a4f55"
    ],
+   "white": [
+    "#9aa3ab",
+    "#c5ccd1",
+    "#e9eef0",
+    "#ffffff"
+   ],
    "nose": [
     "#0e0f11",
     "#17191c",
@@ -169,6 +175,16 @@
    "tone": 6.0,
    "layers": [
     {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 5.0,
+     "width": 0.02,
+     "shift": 1.6,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
      "id": "back_dark",
      "op": "gradient",
      "axis": "y",
@@ -196,6 +212,17 @@
    "ramp": "seal",
    "tone": 6.4,
    "layers": [
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 4.0,
+     "width": 0.025,
+     "shift": 1.8,
+     "faces": [
+      "sides",
+      "top"
+     ]
+    },
     {
      "id": "back_dark",
      "op": "gradient",
@@ -344,7 +371,145 @@
   },
   "claw": {
    "ramp": "claw",
-   "tone": 2.2
+   "tone": 2.4,
+   "layers": [
+    {
+     "id": "tip",
+     "op": "gradient",
+     "axis": "z",
+     "amount": 1.2
+    }
+   ]
+  },
+  "fur": {
+   "ramp": "seal",
+   "tone": 4.8,
+   "layers": [
+    {
+     "id": "dark_root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    },
+    {
+     "id": "strands",
+     "op": "drip",
+     "ramp": "seal",
+     "tone": 7.4,
+     "depth": 1.6,
+     "length": 4.0,
+     "width": 0.6,
+     "scale": 2.2,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "tufts",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.0,
+     "width": 0.3,
+     "shift": -1.4,
+     "wobble": 0.6,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "fur_dark": {
+   "ramp": "seal",
+   "tone": 3.6,
+   "layers": [
+    {
+     "id": "strands",
+     "op": "drip",
+     "ramp": "seal",
+     "tone": 6.4,
+     "depth": 2.0,
+     "length": 4.5,
+     "width": 0.55,
+     "scale": 1.8,
+     "faces": [
+      "sides",
+      "front",
+      "back",
+      "top"
+     ]
+    },
+    {
+     "id": "locks",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.4,
+     "width": 0.35,
+     "shift": -1.6,
+     "wobble": 0.8
+    }
+   ]
+  },
+  "fur_pale": {
+   "ramp": "belly",
+   "tone": 6.0,
+   "layers": [
+    {
+     "id": "strands",
+     "op": "drip",
+     "ramp": "belly",
+     "tone": 7.6,
+     "depth": 1.2,
+     "length": 3.5,
+     "width": 0.6,
+     "scale": 2.0,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "tufts",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.6,
+     "width": 0.3,
+     "shift": -1.2,
+     "wobble": 0.6
+    }
+   ]
+  },
+  "ice_shard": {
+   "ramp": "horn",
+   "tone": 6.6,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "base_dark",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.6
+    },
+    {
+     "id": "facet",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.6,
+     "width": 0.4,
+     "shift": 1.2,
+     "wobble": 0.2
+    }
+   ]
   },
   "lid": {
    "ramp": "seal",
@@ -380,12 +545,25 @@
    "stamps": [
     {
      "face": "front",
-     "at": "top-left",
+     "at": "center",
      "art": [
-      "h."
+      "iii",
+      "ipi",
+      "iii"
      ],
      "key": {
-      "h": "eye:3"
+      "i": "horn:7",
+      "p": "eye:0"
+     }
+    },
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "h"
+     ],
+     "key": {
+      "h": "white:3"
      }
     }
    ]
@@ -712,12 +890,12 @@
    "size": [
     1,
     1,
-    2
+    3
    ],
    "pivot": [
     -2.8,
     0.2,
-    7.5
+    8.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -729,12 +907,12 @@
    "size": [
     1,
     1,
-    2
+    3
    ],
    "pivot": [
     -1.4,
     0.2,
-    7.5
+    8.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -746,12 +924,12 @@
    "size": [
     1,
     1,
-    2
+    3
    ],
    "pivot": [
     0,
     0.2,
-    7.5
+    8.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -763,12 +941,12 @@
    "size": [
     1,
     1,
-    2
+    3
    ],
    "pivot": [
     1.4,
     0.2,
-    7.5
+    8.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -780,12 +958,12 @@
    "size": [
     1,
     1,
-    2
+    3
    ],
    "pivot": [
     2.8,
     0.2,
-    7.5
+    8.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -1016,8 +1194,8 @@
    ],
    "pivot": [
     6.5,
-    7.0,
-    16.6
+    6.6,
+    16.8
    ],
    "style": "lid",
    "parent": "head",
@@ -1027,18 +1205,513 @@
    "id": "brow",
    "shape": "box",
    "size": [
-    5,
-    1,
+    6,
+    2,
     2
    ],
    "pivot": [
     6.5,
-    8.6,
-    16.0
+    8.2,
+    16.6
    ],
    "style": "brow",
    "parent": "head",
+   "rotation": [
+    0,
+    0,
+    -8
+   ],
    "mirror": true
+  },
+  {
+   "id": "mane",
+   "shape": "box",
+   "size": [
+    32,
+    10,
+    13
+   ],
+   "pivot": [
+    0,
+    8,
+    7
+   ],
+   "style": "fur",
+   "parent": "chest",
+   "rotation": [
+    -10,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "mane_side",
+   "shape": "box",
+   "size": [
+    4,
+    15,
+    13
+   ],
+   "pivot": [
+    15.5,
+    1,
+    6
+   ],
+   "style": "fur",
+   "parent": "chest",
+   "rotation": [
+    0,
+    0,
+    6
+   ],
+   "mirror": true
+  },
+  {
+   "id": "ruff",
+   "shape": "box",
+   "size": [
+    22,
+    8,
+    4
+   ],
+   "pivot": [
+    0,
+    -3,
+    10.5
+   ],
+   "style": "fur_pale",
+   "parent": "chest",
+   "rotation": [
+    8,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "tuft0",
+   "shape": "box",
+   "size": [
+    8,
+    9,
+    6
+   ],
+   "pivot": [
+    -13,
+    9,
+    4
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -24,
+    10,
+    28
+   ]
+  },
+  {
+   "id": "tuft1",
+   "shape": "box",
+   "size": [
+    8,
+    9,
+    6
+   ],
+   "pivot": [
+    13,
+    9,
+    4
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -24,
+    -10,
+    -28
+   ]
+  },
+  {
+   "id": "tuft2",
+   "shape": "box",
+   "size": [
+    9,
+    8,
+    6
+   ],
+   "pivot": [
+    -7,
+    13,
+    2
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -34,
+    6,
+    12
+   ]
+  },
+  {
+   "id": "tuft3",
+   "shape": "box",
+   "size": [
+    9,
+    8,
+    6
+   ],
+   "pivot": [
+    7,
+    13,
+    2
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -34,
+    -6,
+    -12
+   ]
+  },
+  {
+   "id": "tuft4",
+   "shape": "box",
+   "size": [
+    10,
+    8,
+    6
+   ],
+   "pivot": [
+    0,
+    14,
+    0
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -40,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "tuft5",
+   "shape": "box",
+   "size": [
+    6,
+    10,
+    6
+   ],
+   "pivot": [
+    -15,
+    2,
+    8
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -6,
+    14,
+    40
+   ]
+  },
+  {
+   "id": "tuft6",
+   "shape": "box",
+   "size": [
+    6,
+    10,
+    6
+   ],
+   "pivot": [
+    15,
+    2,
+    8
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    -6,
+    -14,
+    -40
+   ]
+  },
+  {
+   "id": "sideburn",
+   "shape": "box",
+   "size": [
+    3,
+    9,
+    7
+   ],
+   "pivot": [
+    11.8,
+    -2,
+    9
+   ],
+   "style": "fur_dark",
+   "parent": "head",
+   "offset": [
+    0,
+    -3,
+    0
+   ],
+   "rotation": [
+    -10,
+    0,
+    -18
+   ],
+   "mirror": true
+  },
+  {
+   "id": "elbow_tuft",
+   "shape": "box",
+   "size": [
+    5,
+    5,
+    6
+   ],
+   "pivot": [
+    1.5,
+    -1,
+    -2
+   ],
+   "style": "fur_dark",
+   "parent": "flipper",
+   "rotation": [
+    20,
+    0,
+    -10
+   ]
+  },
+  {
+   "id": "fur_back",
+   "shape": "box",
+   "size": [
+    22,
+    4,
+    16
+   ],
+   "pivot": [
+    0,
+    11.5,
+    -9
+   ],
+   "style": "fur",
+   "parent": "belly"
+  },
+  {
+   "id": "fur_waist",
+   "shape": "box",
+   "size": [
+    16,
+    3,
+    12
+   ],
+   "pivot": [
+    0,
+    8.5,
+    -7
+   ],
+   "style": "fur",
+   "parent": "waist"
+  },
+  {
+   "id": "shard0",
+   "shape": "box",
+   "size": [
+    4,
+    10,
+    4
+   ],
+   "pivot": [
+    -4,
+    2,
+    3
+   ],
+   "style": "ice_shard",
+   "parent": "fur_back",
+   "offset": [
+    0,
+    5,
+    0
+   ],
+   "rotation": [
+    -22,
+    18,
+    14
+   ]
+  },
+  {
+   "id": "shard1",
+   "shape": "box",
+   "size": [
+    3,
+    8,
+    3
+   ],
+   "pivot": [
+    5,
+    2,
+    -1
+   ],
+   "style": "ice_shard",
+   "parent": "fur_back",
+   "offset": [
+    0,
+    4,
+    0
+   ],
+   "rotation": [
+    -28,
+    -24,
+    -12
+   ]
+  },
+  {
+   "id": "shard2",
+   "shape": "box",
+   "size": [
+    3,
+    7,
+    3
+   ],
+   "pivot": [
+    -2,
+    1.5,
+    -1
+   ],
+   "style": "ice_shard",
+   "parent": "fur_waist",
+   "offset": [
+    0,
+    3.5,
+    0
+   ],
+   "rotation": [
+    -34,
+    10,
+    10
+   ]
+  },
+  {
+   "id": "shard3",
+   "shape": "box",
+   "size": [
+    3,
+    7,
+    3
+   ],
+   "pivot": [
+    8,
+    4,
+    -1
+   ],
+   "style": "ice_shard",
+   "parent": "mane",
+   "offset": [
+    0,
+    3.5,
+    0
+   ],
+   "rotation": [
+    -30,
+    -30,
+    -20
+   ]
+  },
+  {
+   "id": "spur",
+   "shape": "box",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    2.5,
+    1,
+    -3
+   ],
+   "style": "ice_shard",
+   "parent": "flipper",
+   "offset": [
+    0,
+    2.5,
+    0
+   ],
+   "rotation": [
+    -40,
+    0,
+    -30
+   ]
+  },
+  {
+   "id": "tusk",
+   "shape": "box",
+   "size": [
+    3,
+    11,
+    3
+   ],
+   "pivot": [
+    4.8,
+    -3.5,
+    4.5
+   ],
+   "style": "tusk",
+   "parent": "muzzle",
+   "offset": [
+    0,
+    -5.5,
+    0
+   ],
+   "rotation": [
+    -16,
+    0,
+    7
+   ],
+   "mirror": true
+  },
+  {
+   "id": "tusk_tip",
+   "shape": "box",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    0,
+    -10.5,
+    0
+   ],
+   "style": "tusk",
+   "parent": "tusk",
+   "offset": [
+    0,
+    -2.5,
+    0
+   ],
+   "rotation": [
+    -22,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "brow_ridge",
+   "shape": "box",
+   "size": [
+    20,
+    3,
+    4
+   ],
+   "pivot": [
+    0,
+    8.8,
+    15.5
+   ],
+   "style": "brow",
+   "parent": "head"
   },
   {
    "id": "horn",
@@ -1169,6 +1842,33 @@
     0,
     0
    ]
+  },
+  {
+   "id": "horn_spike",
+   "shape": "box",
+   "size": [
+    2,
+    4,
+    2
+   ],
+   "pivot": [
+    2.5,
+    2,
+    0
+   ],
+   "style": "horn",
+   "parent": "horn_1",
+   "offset": [
+    0,
+    2,
+    0
+   ],
+   "rotation": [
+    0,
+    0,
+    -38
+   ],
+   "mirror": true
   }
  ],
  "animations": {
@@ -1779,6 +2479,23 @@
       "amp": 3,
       "cycles": 2,
       "bias": 8
+     }
+    },
+    {
+     "part": "mane",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.06,
+       0.03
+      ],
+      "cycles": 2,
+      "bias": [
+       0.06,
+       0.16,
+       0.06
+      ]
      }
     }
    ]
@@ -2859,6 +3576,46 @@
        "elastic"
       ]
      ]
+    },
+    {
+     "part": "mane",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.08,
+        0.2,
+        0.08
+       ],
+       "out_back"
+      ],
+      [
+       0.6,
+       [
+        0.06,
+        0.15,
+        0.06
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
     }
    ]
   },
@@ -3019,6 +3776,46 @@
       [
        1.2,
        0
+      ]
+     ]
+    },
+    {
+     "part": "mane",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2,
+       [
+        0.08,
+        0.2,
+        0.08
+       ],
+       "out_back"
+      ],
+      [
+       1.0,
+       [
+        0.06,
+        0.16,
+        0.06
+       ]
+      ],
+      [
+       1.2,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
       ]
      ]
     },

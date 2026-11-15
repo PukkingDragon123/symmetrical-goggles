@@ -130,11 +130,10 @@ public class SnowballLauncherItem extends Item {
             if (user instanceof Player p) {
                 Vec3 m = muzzle(p);
                 Vec3 look = p.getLookAngle();
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 2; i++) {
                     level.addParticle(ParticleTypes.SNOWFLAKE, m.x, m.y, m.z, look.x * 0.15 + (level.random.nextDouble() - 0.5) * 0.05,
                             look.y * 0.15 + 0.02, look.z * 0.15 + (level.random.nextDouble() - 0.5) * 0.05);
                 }
-                level.addParticle(ParticleTypes.POOF, m.x, m.y, m.z, look.x * 0.05, 0.01, look.z * 0.05);
             }
             return;
         }

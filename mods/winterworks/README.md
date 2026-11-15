@@ -7,13 +7,17 @@ A winter contraptions mod for Minecraft Java 1.21.1 (Fabric). Every model, textu
 
 **Snowball Launcher.** A homemade rapid-fire snowball gatling of iron, redstone and a blaze rod. Hold use to fire packed
 snowballs that briefly stun (dizzy stars). Sneak + use switches to cobblestone balls, which charge for a second and hit
-hard with recoil. Firing builds heat; at 100 it overheats and locks until it cools. A mechanical HUD next to the hotbar
-shows ammo (LED digits), ammo type, charge, a heat bar and a live heat dial. The held model spins its drum, kicks on
-recoil, winds its crank and needle, and shakes when overheated.
+hard with recoil. There is no HUD: the hopper on top is the magazine. You can see the 6 snowballs (or 3 cobble balls)
+in it; firing pops them off the top, they drop back in one at a time when you stop, and an empty hopper still fires
+from your pockets at half rate. Swapping ammo tips the hopper back, throws the old load out (into your inventory) and
+drops the new one in. Heat shows on the gun: the gauge needle climbs, the vent opens, the barrels glow orange then
+red-hot, the muzzle smokes, and at 100 it overheats, judders and vents steam until it cools.
 Recipe: redstone, hopper, redstone / iron, dispenser, iron / iron, blaze rod, iron.
 
-**Icebreaker.** A huge fat grey seal of frozen rivers, plains and coasts, with an enormous head, big fins and an ice
-horn. It charges into ice to break holes, guards its fluffy white cubs (it rears up, drums its belly, bellows and
+**Icebreaker.** A huge, fat, monstrous seal of frozen rivers, plains and coasts: a long segmented body, a shaggy fur mane,
+ice-armour shards on its back, great curved ice tusks, a jagged ice horn and big fins, in six coats (grey, harbour,
+leopard, ringed, brown, frost) picked by biome and inherited by cubs. Its face is expressive: blinking lids, heavy
+brows that knit when it's angry, flaring nostrils, a bark on every grunt. It charges into ice to break holes, guards its fluffy white cubs (it rears up, drums its belly, bellows and
 charges players who come near them), and is calmed by fish: drop some or feed it. Animations: idle, waddling walk with a
 spring-driven belly wobble, belly slide on ice, hip-driven swimming, charge, ram, belly slap, tail slap, happy chomp.
 Its horn grows back in four stages, faster in the cold, faster still while freezing, fastest when it is stuck in
