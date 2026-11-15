@@ -1,0 +1,61 @@
+{
+ "name": "ref_gems",
+ "settings": {
+  "steps": 9.0,
+  "hue_shift": 31.5,
+  "spread": 0.5,
+  "contrast": 2.2,
+  "rough": 0.9,
+  "stroke_len": 1.5,
+  "dither": 0.0,
+  "outline_black": 0.0,
+  "outline_tone": 0.0,
+  "saturation": 0.4
+ },
+ "profile": {
+  "colours": {
+   "mean": 15.0,
+   "std": 3.8829
+  },
+  "ramp_len": {
+   "mean": 4.7147,
+   "std": 1.6785
+  },
+  "hue_shift": {
+   "mean": 13.8246,
+   "std": 6.9756
+  },
+  "outline_dark": {
+   "mean": 0.4029,
+   "std": 0.3199
+  },
+  "selout": {
+   "mean": 0.0255,
+   "std": 0.0353
+  },
+  "cluster": {
+   "mean": 0.6053,
+   "std": 0.2239
+  },
+  "orphans": {
+   "mean": 0.2853,
+   "std": 0.0881
+  },
+  "dither": {
+   "mean": 0.0135,
+   "std": 0.0162
+  },
+  "contrast": {
+   "mean": 0.5865,
+   "std": 0.1043
+  },
+  "saturation": {
+   "mean": 0.4052,
+   "std": 0.1248
+  },
+  "n": 26
+ },
+ "learned_from": [
+  "5.jpg"
+ ]
+}

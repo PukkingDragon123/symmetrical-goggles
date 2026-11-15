@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import base64
+import math
 import io
 import json
 import struct
@@ -179,11 +180,78 @@ def obj_text(model, texture_name="texture.png", mtl_name="model.mtl"):
 
 
 # ---------------------------------------------------------------- Blockbench
+def _euler_zyx(M):
+    """Rotation matrix -> Blockbench/three.js 'ZYX' Euler degrees [x, y, z] (M = Rz @ Ry @ Rx)."""
+    sy = -M[2, 0]
+    b = math.asin(max(-1.0, min(1.0, sy)))
+    if abs(sy) < 0.99999:
+        a = math.atan2(M[2, 1], M[2, 2])
+        c = math.atan2(M[1, 0], M[0, 0])
+    else:
+        a = math.atan2(-M[1, 2], M[1, 1])
+        c = 0.0
+    return [math.degrees(a), math.degrees(b), math.degrees(c)]
+
+
+def _bb_animations(model, groups, fps=24):
+    """Every clip as Blockbench bone keyframes. Bones rest unrotated at their pivots (meshes are exported
+    posed), so each key is this bone's motion relative to its parent bone, in world-aligned axes."""
+    clips = model.spec.get("animations") or {}
+    if not clips:
+        return []
+    anim = model.animator()
+    rest = {i.id: i.world for i in model.instances}
+    parent = {i.id: i.parent for i in model.instances}
+    out = []
+    for cname in clips:
+        length, loop, _ = anim.clip(cname)
+        n = max(2, int(round(length * fps)) + 1)
+        tracks = {}
+        for k in range(n):
+            t = min(length, k / fps)
+            W = anim.world_matrices(cname, t)
+            A = {iid: W[iid] @ np.linalg.inv(rest[iid]) for iid in rest}   # world-space motion of each bone
+            for iid, g in groups.items():
+                pa = A[parent[iid]] if parent[iid] in A else np.eye(4)
+                L = np.linalg.inv(pa) @ A[iid]
+                Rm = L[:3, :3]
+                sc = np.linalg.norm(Rm, axis=0)
+                Rn = Rm / np.maximum(sc, 1e-9)
+                o = np.array(g["origin"])
+                pos = (Rm @ o + L[:3, 3]) - o
+                tr = tracks.setdefault(iid, {"rotation": [], "position": [], "scale": []})
+                ex, ey, ez = _euler_zyx(Rn)
+                # Blockbench's bone animator negates X/Y rotation and X position (Minecraft convention)
+                tr["rotation"].append((t, [-ex, -ey, ez]))
+                tr["position"].append((t, [-float(pos[0]), float(pos[1]), float(pos[2])]))
+                tr["scale"].append((t, sc.tolist()))
+        animators = {}
+        for iid, tr in tracks.items():
+            kfs = []
+            for ch, keys in tr.items():
+                ident = [0, 0, 0] if ch != "scale" else [1, 1, 1]
+                if all(np.allclose(v, ident, atol=1e-4) for _, v in keys):
+                    continue
+                for t, v in keys:
+                    kfs.append({"channel": ch, "data_points": [{"x": round(v[0], 4), "y": round(v[1], 4),
+                                                                "z": round(v[2], 4)}],
+                                "uuid": str(uuid.uuid5(uuid.NAMESPACE_URL, f"{cname}/{iid}/{ch}/{t:.4f}")),
+                                "time": round(t, 4), "color": -1, "interpolation": "linear"})
+            if kfs:
+                animators[groups[iid]["uuid"]] = {"name": iid, "type": "bone", "keyframes": kfs}
+        out.append({"uuid": str(uuid.uuid5(uuid.NAMESPACE_URL, f"lowpix/{model.name}/anim/{cname}")), "name": cname,
+                    "loop": "loop" if loop else "once", "override": False, "length": round(length, 4), "snapping": fps,
+                    "selected": False, "anim_time_update": "", "blend_weight": "", "start_delay": "",
+                    "loop_delay": "", "animators": animators})
+    return out
+
+
 def bbmodel_json(model) -> dict:
     """Blockbench 'Generic Model' file with one mesh element per part instance
     (world-space, so hand-painting in Blockbench works immediately). Experimental."""
     AH, AW = model.atlas.shape[:2]
     elements, outliner = [], []
+    elem_of = {}
     for inst in model.instances:
         verts, faces = {}, {}
         R = inst.world[:3, :3]
@@ -215,7 +283,21 @@ def bbmodel_json(model) -> dict:
                          "rotation": [0, 0, 0], "export": True, "visibility": True, "locked": False,
                          "render_order": "default", "allow_mirror_modeling": True, "color": 0,
                          "vertices": verts, "faces": faces})
-        outliner.append(uid)
+        elem_of[inst.id] = uid
+    # bones: one group per instance at its pivot, nested like the rig, holding that instance's mesh
+    groups = {}
+    for inst in model.instances:
+        gid = str(uuid.uuid5(uuid.NAMESPACE_URL, f"lowpix/{model.name}/bone/{inst.id}"))
+        groups[inst.id] = {"name": inst.id, "origin": [round(float(v), 5) for v in inst.world[:3, 3]],
+                           "rotation": [0, 0, 0], "uuid": gid, "export": True, "isOpen": False, "locked": False,
+                           "visibility": True, "autouv": 0, "color": 0,
+                           "children": [elem_of[inst.id]] if inst.faces else []}
+    for inst in model.instances:
+        if inst.parent and inst.parent in groups:
+            groups[inst.parent]["children"].append(groups[inst.id])
+        else:
+            outliner.append(groups[inst.id])
+    animations = _bb_animations(model, groups)
     png = base64.b64encode(atlas_png_bytes(model)).decode()
     return {
         "meta": {"format_version": "4.5", "model_format": "free", "box_uv": False},
@@ -225,6 +307,7 @@ def bbmodel_json(model) -> dict:
         "resolution": {"width": AW, "height": AH},
         "elements": elements,
         "outliner": outliner,
+        "animations": animations,
         "textures": [{"path": "", "name": "texture.png", "folder": "", "namespace": "", "id": "0",
                       "width": AW, "height": AH, "uv_width": AW, "uv_height": AH, "particle": False,
                       "render_mode": "default", "render_sides": "auto", "frame_time": 1,

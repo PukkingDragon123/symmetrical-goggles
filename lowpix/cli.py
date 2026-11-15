@@ -162,6 +162,15 @@ def main(argv=None):
     sp.add_argument("--scale", type=int, default=1, help="also write an upscaled preview (nearest)")
     sp.add_argument("--param", action="append", default=[], help="generator option key=value (species=koi, theme=frost)")
     sp.add_argument("--background", default=None, help="preview background colour")
+    sp.add_argument("--style", default=None, help="a learned style: ref_gems, ref_swords, ref_icons, or your own")
+
+    lr = sub.add_parser("learn", help="learn a pixel-art style from reference sheets and fit the generators to it")
+    lr.add_argument("action", choices=["measure", "fit"])
+    lr.add_argument("refs", nargs="+", help="reference images (sprite sheets)")
+    lr.add_argument("--generator", default="gem")
+    lr.add_argument("--name", default=None, help="style name to save (fit)")
+    lr.add_argument("--scale", type=int, default=None, help="upscale factor of the references (default: detect)")
+    lr.add_argument("--size", default=None, help="sprite size for the fit")
 
     pt = sub.add_parser("photo", help="photo-bash: stylise a photo texture (polyhaven:<id>, a folder or an image)")
     pt.add_argument("source", nargs="+", help="photo source, or: search <words> | vendor <polyhaven id>")
@@ -293,10 +302,10 @@ def main(argv=None):
         out = a.out or os.path.join("out", "sprites", f"{name}{'_sheet' if a.count > 1 else ''}.png")
         os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
         if a.count > 1:
-            im, specs, rects = make_sheet(a.source, a.count, a.seed, size, a.paint, **params)
+            im, specs, rects = make_sheet(a.source, a.count, a.seed, size, a.paint, style=a.style, **params)
             meta = {"sprites": [{"rect": r, "spec": sp_} for r, sp_ in zip(rects, specs)]}
         else:
-            spec_, im = make(a.source, a.seed, size, a.paint, **params)
+            spec_, im = make(a.source, a.seed, size, a.paint, style=a.style, **params)
             meta = spec_
         im.save(out)
         with open(os.path.splitext(out)[0] + ".json", "w") as fh:
@@ -352,6 +361,16 @@ def main(argv=None):
         for k, v in rep["points"].items():
             print(f"{k:14s} ref {v['ref']}  model {v['model']}  error {v['error_pct']}%")
         print(f"mean error {rep['mean_error_pct']}% of image height -> {out}")
+    elif a.cmd == "learn":
+        from .style_learn import fit, measure, save_style
+        prof = measure(a.refs, k=a.scale)
+        if a.action == "measure":
+            print(json.dumps(prof, indent=1))
+        else:
+            size = None if not a.size else ([int(v) for v in a.size.split("x")] if "x" in a.size else int(a.size))
+            style, d = fit(prof, a.generator, size=size)
+            print(f"distance {d:.3f}: {json.dumps({k: round(v, 3) for k, v in style.items()})}")
+            print(f"-> {save_style(a.name or a.generator + '_learned', style, prof, a.refs)}")
     elif a.cmd == "auth":
         from .tokens import remove_token, set_token, status
         if a.action == "list":

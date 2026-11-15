@@ -592,10 +592,13 @@ def _outline(spec, rgb, alpha, solid, mid, mats, mat_names, Lv):
             cols = m["cols"]
             if m.get("emissive"):
                 rgb[yy, xx] = cols[max(1, len(cols) // 3)]
-            elif ol == "selout" and lit > 0.3:
-                rgb[yy, xx] = cols[1] if len(cols) > 3 else cols[0]
             else:
-                rgb[yy, xx] = cols[0]
+                k = int(spec.get("outline_tone", 0))  # 0 = darkest step; higher = softer, coloured outlines
+                k = min(k, len(cols) - 2)
+                if ol == "selout" and lit > 0.3:
+                    rgb[yy, xx] = cols[k + 1] if len(cols) > 3 else cols[k]
+                else:
+                    rgb[yy, xx] = cols[k]
         alpha[yy, xx] = 255
 
 

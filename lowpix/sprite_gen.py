@@ -805,7 +805,7 @@ GENERATORS = {"sword": sword, "gem": gem, "ore": ore, "fish": fish, "potion": po
 
 
 # ================================================================== front door
-def make(source, seed=0, size=None, paint=None, **params):
+def make(source, seed=0, size=None, paint=None, style=None, **params):
     """A generator name (sword, gem, ore, fish, potion) or a sprite spec (dict or .json path) ->
     (spec, PIL image). `params` go to the generator (species=, theme=, cut=, kind=, colour=, shape=...)."""
     import json
@@ -824,17 +824,20 @@ def make(source, seed=0, size=None, paint=None, **params):
             spec = json.load(fh)
     else:
         raise ValueError(f"unknown sprite source {source!r}: use one of {sorted(GENERATORS)} or a spec .json")
+    if style:  # a style learned from reference art (lowpix/styles/<name>.json, see lowpix.style_learn)
+        from .style_learn import apply_style, load_style
+        spec = apply_style(spec, load_style(style))
     if paint:
         spec["paint"] = paint
     return spec, render_sprite(spec, seed)
 
 
-def make_sheet(source, count=12, seed=0, size=None, paint=None, cols=None, **params):
+def make_sheet(source, count=12, seed=0, size=None, paint=None, cols=None, style=None, **params):
     """Many seeded variations of one generator packed into a sprite sheet. Returns (sheet, specs, rects)."""
     from .sprite import sheet
     specs, ims = [], []
     for k in range(count):
-        sp, im = make(source, seed + k, size, paint, **params)
+        sp, im = make(source, seed + k, size, paint, style=style, **params)
         specs.append(sp)
         ims.append(im)
     sh, rects = sheet(ims, cols=cols or min(count, 6), pad=2)

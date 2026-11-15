@@ -1,0 +1,61 @@
+{
+ "name": "ref_swords",
+ "settings": {
+  "steps": 7.75,
+  "hue_shift": 14.5,
+  "spread": 0.5,
+  "contrast": 0.9,
+  "rough": 0.45,
+  "stroke_len": 1.5,
+  "dither": 0.0,
+  "outline_black": 0.75,
+  "outline_tone": 0.0,
+  "saturation": 0.75
+ },
+ "profile": {
+  "colours": {
+   "mean": 9.875,
+   "std": 4.8072
+  },
+  "ramp_len": {
+   "mean": 5.3958,
+   "std": 2.6873
+  },
+  "hue_shift": {
+   "mean": 9.8526,
+   "std": 8.0186
+  },
+  "outline_dark": {
+   "mean": 0.4704,
+   "std": 0.3781
+  },
+  "selout": {
+   "mean": -0.0058,
+   "std": 0.0205
+  },
+  "cluster": {
+   "mean": 12.873,
+   "std": 32.9357
+  },
+  "orphans": {
+   "mean": 0.1259,
+   "std": 0.0751
+  },
+  "dither": {
+   "mean": 0.0075,
+   "std": 0.0048
+  },
+  "contrast": {
+   "mean": 0.5439,
+   "std": 0.229
+  },
+  "saturation": {
+   "mean": 0.5498,
+   "std": 0.1156
+  },
+  "n": 8
+ },
+ "learned_from": [
+  "7.jpg"
+ ]
+}

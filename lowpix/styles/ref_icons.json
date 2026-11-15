@@ -1,0 +1,61 @@
+{
+ "name": "ref_icons",
+ "settings": {
+  "steps": 4.0,
+  "hue_shift": 6.0,
+  "spread": 0.5,
+  "contrast": 0.9,
+  "rough": 0.45,
+  "stroke_len": 1.5,
+  "dither": 0.6,
+  "outline_black": 0.0,
+  "outline_tone": 0.75,
+  "saturation": 0.4
+ },
+ "profile": {
+  "colours": {
+   "mean": 10.6579,
+   "std": 3.5264
+  },
+  "ramp_len": {
+   "mean": 5.9748,
+   "std": 2.2167
+  },
+  "hue_shift": {
+   "mean": 7.3214,
+   "std": 7.6031
+  },
+  "outline_dark": {
+   "mean": 0.0347,
+   "std": 0.0597
+  },
+  "selout": {
+   "mean": 0.0106,
+   "std": 0.0589
+  },
+  "cluster": {
+   "mean": 1.8768,
+   "std": 0.5115
+  },
+  "orphans": {
+   "mean": 0.5219,
+   "std": 0.1138
+  },
+  "dither": {
+   "mean": 0.021,
+   "std": 0.027
+  },
+  "contrast": {
+   "mean": 0.4889,
+   "std": 0.1886
+  },
+  "saturation": {
+   "mean": 0.2175,
+   "std": 0.1914
+  },
+  "n": 76
+ },
+ "learned_from": [
+  "4.webp"
+ ]
+}
