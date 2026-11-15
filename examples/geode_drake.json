@@ -1,0 +1,399 @@
+{
+  "name": "Geode Drake",
+  "description": "Original wingless amethyst geode drake: a crouched, prowling indigo-slate dragon with an eruption of violet crystals from its shoulders, swept bone horns, pale fangs and one ember-glowing eye per side.",
+  "author": "lowpix example",
+  "license": "CC0-1.0",
+  "density": 2,
+  "budget": {"tris": 1600, "colors": 56},
+  "light": {"dir": [-0.55, 1.0, 0.65], "strength": 1.15, "gradient": 0.45, "ao": 0.9, "ao_height": 3.0},
+  "render": {"background": "#2a2721", "hero": [38, 24], "shadow": 0.5},
+
+  "palette": {"ramps": {
+    "hide":    ["#0c0918", "#15132c", "#1d1d3e", "#282b50", "#353a62", "#4a5479", "#6a7898", "#94a1bc"],
+    "belly":   ["#16132b", "#262542", "#383a5c", "#4f5577", "#6b7593", "#929cb4"],
+    "crystal": ["#170b3d", "#2c166f", "#4c249f", "#7335cc", "#9b64d3", "#ba8bdb", "#d9bdf0", "#f6ecff"],
+    "bone":    ["#2a1712", "#4f3122", "#80583a", "#b08a5c", "#d4b886", "#efe0b6", "#fff8e2"],
+    "ember":   ["#3a0a02", "#7a1f02", "#bd4206", "#ef7410", "#ffa52e", "#ffd66a", "#fff6cf"],
+    "mouth":   ["#1c0712", "#3e0f22", "#6a1d33", "#9a3446"]
+  }},
+
+  "styles": {
+    "hide": {
+      "ramp": "hide", "tone": 2.9, "dither": 0.0,
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 2.2, "amount": 0.35},
+        {"id": "scales", "op": "spots", "count": 0, "radius": [1.0, 1.5], "roughness": 0.35, "shift": 0.55, "min_gap": 0.8,
+         "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -0.9}, "faces": ["-bottom"]},
+        {"id": "belly", "op": "fill", "ramp": "belly", "tone": 3.0, "faces": ["bottom"]},
+        {"id": "sheen", "op": "patches", "scale": 1.4, "threshold": 0.74, "shift": 0.8, "min_light": 0.75, "post": true}
+      ]
+    },
+    "banded": {
+      "layers": [
+        {"id": "tiger", "op": "stripes", "axis": "path", "period": 4.6, "width": 0.3, "phase": 0.35, "wobble": 0.7, "wobble_scale": 1.3,
+         "ramp": "crystal", "tone": 1.5, "faces": ["-bottom"],
+         "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.2, "highlight_shift": 1.4}}
+      ]
+    },
+    "crystal": {
+      "ramp": "crystal", "tone": 2.4, "dither": 0.0, "rim": {"light": 1, "dark": 1, "light_shift": 1.5},
+      "layers": [
+        {"id": "glow", "op": "gradient", "axis": "path", "amount": 1.0},
+        {"id": "facet", "op": "fill", "shift": 0.6, "min_light": 0.6},
+        {"id": "glint", "op": "gloss", "post": true, "dash": true, "length": 3, "inset": 1, "density": 0.6, "shift": 2.5}
+      ]
+    },
+    "bone": {
+      "ramp": "bone", "tone": 3.0, "dither": 0.0,
+      "layers": [
+        {"id": "tipfade", "op": "gradient", "axis": "path", "amount": 1.6},
+        {"id": "ridges", "op": "stripes", "axis": "path", "period": 1.6, "width": 0.25, "shift": -0.6, "range": [0.0, 0.7]}
+      ]
+    },
+    "claw": {"ramp": "bone", "tone": 3.6, "rim": {"light": 0, "dark": 0},
+             "layers": [{"id": "tipfade", "op": "gradient", "axis": "path", "amount": 1.4}]},
+    "teeth": {"ramp": "bone", "tone": 5, "light": 0.0, "rim": {"light": 0, "dark": 0},
+              "art_key": {"w": "bone:6", "t": "bone:5", "s": "bone:3", "g": "mouth:2"}}
+  },
+
+  "animations": {
+    "idle": {"length": 3.0, "loop": true, "tracks": [
+      {"part": "body_0", "channel": "scale", "osc": {"amp": [0.035, 0.022, 0.0], "cycles": 1}},
+      {"part": "front_leg", "channel": "position", "osc": {"amp": [-0.294, 0.202, 0.0], "cycles": 1}},
+      {"part": "back_leg", "channel": "position", "osc": {"amp": [-0.312, 0.202, 0.0], "cycles": 1}},
+      {"parts": ["neck_0", "neck_1", "neck_2", "head"], "wave": {"axis": "y", "amp": 2.4, "cycles": 1, "lag": 0.12, "growth": 1.2}},
+      {"parts": ["neck_0", "neck_1", "neck_2"], "wave": {"axis": "x", "amp": 1.6, "cycles": 1, "phase": 0.25, "lag": 0.15}},
+      {"part": "head", "keys": [[0, [0, 0, 0]], [0.8, [-3, 7, 0]], [1.3, [-3, 7, 0]], [2.3, [1, -5, 0]], [2.7, [1, -5, 0]]]},
+      {"part": "head", "axis": "x", "keys": [[0, 0], [1.75, 0], [1.88, -4, "out"], [2.2, 0]]},
+      {"part": "jaw", "axis": "x", "keys": [[0, 0], [1.78, 0], [1.9, 9, "out"], [2.02, 2], [2.14, 6], [2.45, 0]]},
+      {"parts": ["body_2", "body_3", "body_4", "body_5", "body_6", "body_7"], "wave": {"axis": "y", "amp": 3.4, "cycles": 1, "phase": 0.1, "lag": 0.1, "growth": 1.22}},
+      {"parts": ["body_5", "body_6", "body_7"], "wave": {"axis": "x", "amp": -2.0, "cycles": 2, "lag": 0.15}},
+      {"parts": ["neck_crys_c", "neck_crys_b", "neck_crys_a", "crys_e", "crys_b", "crys_h", "crys_a", "crys_c", "crys_g", "crys_d", "crys_f", "tail_crys_b", "tail_crys_a", "tail_crys_c"], "channel": "scale", "wave": {"amp": [0.035, 0.075, 0.035], "cycles": 2, "lag": 0.13}}
+    ]},
+    "roar": {"length": 2.4, "loop": true, "tracks": [
+      {"part": "body_0", "channel": "position", "axis": "z", "keys": [[0, 0.0], [0.45, -0.7], [0.72, 0.9, "back"], [1.5, 0.75], [2.05, 0.0]]},
+      {"part": "body_0", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.45, [0.035, -0.045, 0]], [0.72, [-0.02, 0.04, 0], "back"], [1.5, [-0.015, 0.03, 0]], [2.05, [0, 0, 0]]]},
+      {"part": "front_leg", "segment": 0, "axis": "x", "keys": [[0, 0.0], [0.45, -4.62], [0.72, 5.94, "back"], [1.5, 4.95], [2.05, 0.0]]},
+      {"part": "back_leg", "segment": 0, "axis": "x", "keys": [[0, 0.0], [0.45, -4.13], [0.72, 5.31, "back"], [1.5, 4.42], [2.05, 0.0]]},
+      {"part": "front_paw", "keys": [[0, [-0.0, -0.0, -0.0]], [0.45, [4.55, 0.0, 0.8]], [0.72, [-5.85, -0.0, -1.03], "back"], [1.5, [-4.88, -0.0, -0.86]], [2.05, [-0.0, -0.0, -0.0]]]},
+      {"part": "back_paw", "keys": [[0, [-0.0, -0.0, -0.0]], [0.45, [3.97, 0.0, 1.14]], [0.72, [-5.1, -0.0, -1.47], "back"], [1.5, [-4.25, -0.0, -1.22]], [2.05, [-0.0, -0.0, -0.0]]]},
+      {"part": "front_leg", "channel": "position", "keys": [[0, [0.0, -0.0, 0]], [0.45, [-0.294, -0.414, 0]], [0.72, [0.168, 0.368, 0], "back"], [1.5, [0.126, 0.276, 0]], [2.05, [0.0, -0.0, 0]]]},
+      {"part": "back_leg", "channel": "position", "keys": [[0, [0.0, -0.0, 0]], [0.45, [-0.312, -0.414, 0]], [0.72, [0.178, 0.368, 0], "back"], [1.5, [0.134, 0.276, 0]], [2.05, [0.0, -0.0, 0]]]},
+      {"part": "neck_0", "axis": "x", "keys": [[0, 0], [0.45, 5], [0.72, -7, "back"], [1.5, -5], [2.1, 0]]},
+      {"part": "neck_1", "axis": "x", "keys": [[0, 0], [0.48, 4], [0.75, -5, "back"], [1.55, -4], [2.15, 0]]},
+      {"part": "neck_2", "axis": "x", "keys": [[0, 0], [0.5, 2], [0.78, 5, "back"], [1.6, 4], [2.2, 0]]},
+      {"part": "head", "axis": "x", "keys": [[0, 0], [0.52, 12], [0.8, -12, "back"], [1.6, -10], [2.2, 0]]},
+      {"part": "head", "axis": "z", "keys": [[0, 0], [0.85, 0], [0.95, 2.0], [1.05, -2.0], [1.15, 2.0], [1.25, -2.0], [1.35, 1.5], [1.45, -1.0], [1.55, 0]]},
+      {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.45, 7], [0.75, 38, "back"], [1.5, 34], [1.9, 3, "in"], [2.0, 0]]},
+      {"part": "brow", "axis": "x", "keys": [[0, 0], [0.5, -3], [0.75, 4, "back"], [1.6, 3.5], [2.1, 0]]},
+      {"parts": ["neck_crys_c", "neck_crys_b", "neck_crys_a", "crys_e", "crys_b", "crys_h", "crys_a", "crys_c", "crys_g", "crys_d", "crys_f", "tail_crys_b", "tail_crys_a", "tail_crys_c"], "channel": "scale", "keys": [[0, [0, 0, 0]], [0.45, [-0.02, -0.04, -0.02]], [0.75, [0.06, 0.16, 0.06], "back"], [1.55, [0.04, 0.11, 0.04]], [2.1, [0, 0, 0]]]},
+      {"part": "body_2", "axis": "y", "keys": [[0, 0], [0.35, -5.0], [0.8, 10.0], [1.2, -8.0], [1.6, 4.0], [2.05, 0.0]]},
+      {"part": "body_3", "axis": "y", "keys": [[0, 0], [0.405, -5.8], [0.855, 11.6], [1.255, -9.28], [1.655, 4.64], [2.105, 0.0]]},
+      {"part": "body_4", "axis": "y", "keys": [[0, 0], [0.46, -6.73], [0.91, 13.46], [1.31, -10.76], [1.71, 5.38], [2.16, 0.0]]},
+      {"part": "body_5", "axis": "y", "keys": [[0, 0], [0.515, -7.8], [0.965, 15.61], [1.365, -12.49], [1.765, 6.24], [2.215, 0.0]]},
+      {"part": "body_6", "axis": "y", "keys": [[0, 0], [0.57, -9.05], [1.02, 18.11], [1.42, -14.49], [1.82, 7.24], [2.27, 0.0]]},
+      {"part": "body_7", "axis": "y", "keys": [[0, 0], [0.625, -10.5], [1.075, 21.0], [1.475, -16.8], [1.875, 8.4], [2.325, 0.0]]}
+    ]},
+    "prowl": {"length": 1.6, "loop": true, "tracks": [
+      {"part": "body_0", "channel": "position", "osc": {"axis": "y", "amp": 0.21, "cycles": 2, "phase": 0.25, "bias": -0.21}},
+      {"part": "front_leg", "segment": 0, "osc": {"axis": "x", "amp": 17.89, "cycles": 1}, "mirror_phase": 0.5},
+      {"part": "front_leg", "segment": 2, "axis": "x", "keys": [[0, 0], [0.4, 0], [0.8, -26], [1.2000000000000002, 0]], "mirror_phase": 0.5},
+      {"part": "front_paw", "osc": {"axis": [0.985, 0, 0.174], "amp": -17.89, "cycles": 1}, "mirror_phase": 0.5},
+      {"part": "front_paw", "axis": "x", "keys": [[0, 0], [0.4, 0], [0.8, 38], [1.2000000000000002, 0]], "mirror_phase": 0.5},
+      {"part": "back_leg", "segment": 0, "osc": {"axis": "x", "amp": 16.9, "cycles": 1, "phase": 0.5}, "mirror_phase": 0.5},
+      {"part": "back_leg", "segment": 2, "axis": "x", "keys": [[0, 30], [0.4, 0], [1.2000000000000002, 0]], "mirror_phase": 0.5},
+      {"part": "back_paw", "osc": {"axis": [0.961, 0, 0.276], "amp": -16.9, "cycles": 1, "phase": 0.5}, "mirror_phase": 0.5},
+      {"part": "back_paw", "axis": "x", "keys": [[0, -22], [0.4, 0], [1.2000000000000002, 0]], "mirror_phase": 0.5},
+      {"parts": ["neck_0", "neck_1", "neck_2"], "wave": {"axis": "y", "amp": 2.6, "cycles": 1, "lag": 0.1, "growth": 1.1}},
+      {"part": "head", "osc": {"axis": "y", "amp": -5.0, "cycles": 1, "phase": 0.12}},
+      {"parts": ["neck_0", "neck_1", "neck_2"], "wave": {"axis": "x", "amp": 1.2, "cycles": 2, "phase": 0.5, "lag": 0.1}},
+      {"parts": ["body_2", "body_3", "body_4", "body_5", "body_6", "body_7"], "wave": {"axis": "y", "amp": 3.6, "cycles": 1, "phase": 0.5, "lag": 0.1, "growth": 1.2}},
+      {"parts": ["neck_crys_c", "neck_crys_b", "neck_crys_a", "crys_e", "crys_b", "crys_h", "crys_a", "crys_c", "crys_g", "crys_d", "crys_f", "tail_crys_b", "tail_crys_a", "tail_crys_c"], "channel": "scale", "wave": {"amp": [0.02, 0.05, 0.02], "cycles": 2, "lag": 0.08}}
+    ]}
+  },
+
+  "parts": [
+    {"id": "body", "shape": "loft", "chain": true, "profile": {"sides": 8, "round": 2.6}, "subdiv": 1, "caps": [true, false],
+     "hide": ["joint1_end", "joint1_start"],
+     "rings": [
+       {"at": [0.0, 9.2, 9.0], "size": [10.6, 9.4]},
+       {"at": [0.0, 10.0, 1.0], "size": [13.2, 10.8]},
+       {"at": [0.0, 10.4, -7.0], "size": [11.6, 9.8]},
+       {"at": [0.0, 9.6, -14.0], "size": [8.2, 7.2]},
+       {"at": [2.0, 7.6, -22.0], "size": [5.8, 5.0]},
+       {"at": [3.8, 5.4, -30.0], "size": [4.0, 3.4]},
+       {"at": [1.8, 3.8, -37.0], "size": [2.7, 2.3]},
+       {"at": [-3.0, 2.8, -42.5], "size": [1.6, 1.4]},
+       {"at": [-8.6, 2.5, -45.4], "size": [0.3, 0.3]}
+     ],
+     "style": ["hide", "banded"],
+     "paint": {"layers": [
+       {"id": "tiger", "range": [0.13, 0.95]},
+       {"id": "ribs", "op": "stripes", "axis": "path", "period": 2.1, "width": 0.17, "shift": -0.7, "faces": ["flanks"], "range": [0.02, 0.27]},
+       {"id": "scutes", "op": "stripes", "axis": "path", "period": 1.6, "width": 0.22, "shift": -0.6, "faces": ["bottom"]},
+       {"id": "crust", "op": "spots", "count": 9, "radius": [1.3, 1.9], "ramp": "hide", "tone": 1.3,
+        "where": {"path": [0.0, 0.24], "around": [0.88, 0.12]}, "roughness": 0.5, "rough_scale": 1.2, "min_gap": 0.2, "seed": 14,
+        "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 2.2}},
+       {"id": "glints", "op": "spots", "count": 7, "radius": [0.35, 0.55], "ramp": "crystal", "tone": 4.6,
+        "where": {"path": [0.0, 0.24], "around": [0.9, 0.1]}, "roughness": 0.0, "min_gap": 0.8, "seed": 15, "post": true}
+     ]}},
+
+    {"id": "neck", "parent": "body", "shape": "loft", "chain": true, "pivot": [0, 9.6, 6.0],
+     "profile": {"sides": 8, "round": 2.6}, "subdiv": 1, "caps": [false, false],
+     "rings": [
+       {"at": [0, 0.0, 0.0], "size": [9.8, 9.0]},
+       {"at": [0, 3.0, 5.0], "size": [6.4, 6.6]},
+       {"at": [0, 5.4, 8.4], "size": [5.4, 5.6]},
+       {"at": [0, 6.6, 11.8], "size": [5.2, 5.6]}
+     ],
+     "style": ["hide", "banded"],
+     "paint": {"layers": [
+       {"id": "tiger", "period": 3.8, "phase": 0.15, "wobble": 0.6, "range": [0.0, 1.0]},
+       {"id": "belly", "tone": 2.6},
+       {"id": "scutes", "op": "stripes", "axis": "path", "period": 1.4, "width": 0.25, "shift": -0.9, "faces": ["bottom"]}
+     ]}},
+
+    {"id": "head", "parent": "neck", "shape": "loft", "pivot": [0, 6.7, 11.4], "rotation": [8, 0, 0],
+     "profile": {"sides": 8, "round": 2.8}, "subdiv": 1, "caps": [true, true],
+     "rings": [
+       {"at": [0, 0.8, -2.4], "size": [7.4, 6.6]},
+       {"at": [0, 1.2, 1.8], "size": [10.4, 7.8]},
+       {"at": [0, 0.2, 6.6], "size": [7.4, 5.4]},
+       {"at": [0, -0.5, 10.6], "size": [5.8, 4.0]},
+       {"at": [0, -0.9, 12.8], "size": [4.6, 2.8]}
+     ],
+     "style": "hide",
+     "paint": {
+       "layers": [
+         {"id": "mottle", "amount": 0.2},
+         {"id": "sheen", "shift": 0},
+         {"id": "gloss", "op": "gloss", "post": true, "dash": true, "length": 3, "inset": 1, "density": 0.45, "shift": 1.4, "faces": ["up"]},
+         {"id": "blaze", "op": "band", "axis": "x", "from": -0.13, "to": 0.13, "wobble": 0.1, "ramp": "crystal", "tone": 1.6, "faces": ["top"],
+          "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.2, "highlight_shift": 1.4}},
+         {"id": "blaze_end", "op": "band", "axis": "z", "from": 0.22, "to": 1.3, "ramp": "hide", "tone": 2.9, "faces": ["top"]},
+         {"id": "tiger", "op": "stripes", "axis": "path", "period": 2.4, "width": 0.38, "phase": 0.1, "wobble": 0.3, "range": [0.0, 0.26],
+          "ramp": "crystal", "tone": 1.5, "faces": ["top", "bevels", "sides", "-bottom"],
+          "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.2, "highlight_shift": 1.4}},
+         {"id": "lip", "op": "band", "axis": "y", "from": -1.0, "to": -0.72, "ramp": "mouth", "tone": 1.2, "faces": ["-top"]}
+       ],
+       "stamps": [{"face": "end", "at": "center", "offset": [0, 0], "art": ["k.....k", "kk...kk"], "key": {"k": "hide:0"}}]
+     }},
+
+    {"id": "jaw", "parent": "head", "shape": "loft", "pivot": [0, -2.4, 0.2], "rotation": [2, 0, 0],
+     "profile": {"sides": 6, "round": 2.6}, "subdiv": 0, "caps": [true, true],
+     "rings": [
+       {"at": [0, -0.3, -1.4], "size": [7.6, 2.8]},
+       {"at": [0, -0.6, 4.0], "size": [6.6, 2.6]},
+       {"at": [0, -0.4, 8.8], "size": [5.0, 2.0]},
+       {"at": [0, -0.2, 11.2], "size": [3.6, 1.6]}
+     ],
+     "style": "hide",
+     "paint": {"tone": 2.6, "layers": [
+       {"id": "lip", "op": "band", "axis": "y", "from": 0.55, "to": 1.0, "ramp": "mouth", "tone": 1.6},
+       {"id": "throat", "op": "fill", "ramp": "belly", "tone": 2.4, "faces": ["bottom"]}
+     ]}},
+
+    {"id": "tongue", "parent": "jaw", "shape": "card", "plane": "xz", "pivot": [0, 0.75, 5.6], "rotation": [-3, 0, 0],
+     "style": "teeth", "paint": {"art_key": {"m": "mouth:3", "n": "mouth:2", "d": "mouth:1"}},
+     "art": [
+       ".nmmmn.",
+       ".nmmmn.",
+       ".nmmdn.",
+       "..mmn..",
+       "..mmn..",
+       "..mdn..",
+       "..mmn..",
+       "..m.n..",
+       ".m...n."]},
+
+    {"id": "eye", "parent": "head", "shape": "loft", "pivot": [4.4, 1.7, 3.8], "rotation": [-4, 70, 0], "mirror": true,
+     "profile": {"sides": 6, "round": 2.2}, "subdiv": 0, "caps": [false, true],
+     "rings": [
+       {"at": [0, 0, -1.2], "size": [4.2, 3.0]},
+       {"at": [0, 0, 0.6], "size": [4.0, 2.8]}
+     ],
+     "style": "hide",
+     "paint": {"stamps": [{"face": "end", "at": "center", "flip_on_mirror": true, "art": [
+       ".kkkkkk.",
+       "kroapark",
+       "koywpyok",
+       "koyypaok",
+       ".koapok.",
+       "..kkkk.."],
+       "key": {"k": "hide:0", "w": "ember:6", "y": "ember:5", "a": "ember:4", "o": "ember:3", "r": "ember:2", "p": "ember:0"}}]}},
+
+    {"id": "brow", "parent": "head", "shape": "loft", "pivot": [3.4, 3.4, 0.4], "rotation": [0, 12, -18], "mirror": true,
+     "profile": {"sides": 5, "round": 2.4}, "subdiv": 0, "caps": [true, true],
+     "rings": [
+       {"at": [0, 0.2, -0.6], "size": [3.2, 2.4]},
+       {"at": [0.3, -0.2, 3.0], "size": [2.8, 2.0]},
+       {"at": [0.4, -1.0, 5.4], "size": [1.2, 1.0]}
+     ],
+     "style": "hide"},
+
+    {"id": "horn", "parent": "head", "shape": "loft", "pivot": [2.4, 3.2, -0.4], "rotation": [-12, -16, 0], "mirror": true,
+     "profile": {"sides": 6, "round": 2.2}, "subdiv": 0, "caps": [true, false],
+     "rings": [
+       {"at": [0, 0, 0], "size": 2.3},
+       {"at": [0.2, 0.5, -2.4], "size": 1.9},
+       {"at": [0.5, 0.8, -4.8], "size": 1.4},
+       {"at": [0.8, 1.3, -6.9], "size": 0.8},
+       {"at": [0.9, 2.3, -8.4], "size": 0.0}
+     ],
+     "style": "bone"},
+
+    {"id": "cheek_horn", "parent": "head", "shape": "loft", "pivot": [4.2, -0.8, -0.2], "rotation": [-6, -26, 0], "mirror": true,
+     "profile": {"sides": 5, "round": 2.2}, "subdiv": 0, "caps": [true, false],
+     "rings": [
+       {"at": [0, 0, 0], "size": 1.8},
+       {"at": [0.1, 0.3, -2.2], "size": 1.3},
+       {"at": [0.2, 0.8, -4.2], "size": 0.0}
+     ],
+     "style": "bone"},
+
+    {"id": "fangs", "parent": "head", "shape": "card", "plane": "yz", "pivot": [2.75, -2.75, 8.4], "rotation": [0, -11, 0], "mirror": true,
+     "style": "teeth",
+     "art": [
+       "wt..t.wt..t.t.",
+       "wt..t.wt..t...",
+       ".w....w.......",
+       ".w............"]},
+
+    {"id": "low_fangs", "parent": "jaw", "shape": "card", "plane": "yz", "pivot": [2.1, 1.25, 8.6], "rotation": [0, -14, 0], "mirror": true,
+     "style": "teeth",
+     "art": [
+       ".w....w.",
+       "wt...wt.",
+       "wt...wt."]},
+
+    {"id": "front_leg", "parent": "body", "shape": "loft", "chain": true, "attach": {"t": 0.05, "around": 0.30, "align": "none"},
+     "mirror": true, "profile": {"sides": 6, "round": 2.3}, "subdiv": 0, "caps": [false, false],
+     "hide": ["joint1_end", "joint1_start", "joint3_end", "joint3_start"],
+     "rings": [
+       {"at": [-2.2, 1.0, 1.0], "size": [4.6, 5.0]},
+       {"at": [1.6, -0.6, -1.0], "size": [3.8, 4.0]},
+       {"at": [2.6, -2.8, -1.8], "size": [3.2, 3.2]},
+       {"at": [2.9, -5.4, 0.4], "size": [2.6, 2.6]},
+       {"at": [3.0, -6.4, 0.8], "size": [2.8, 1.6]}
+     ],
+     "style": ["hide", "banded"],
+     "paint": {"layers": [{"id": "tiger", "period": 3.0, "width": 0.32, "phase": 1.6, "range": [0.0, 0.6]}]}},
+
+    {"id": "front_paw", "parent": "front_leg", "shape": "loft", "attach": {"t": 1.0, "around": 0.5, "align": "none"},
+     "orient": "world", "rotation": [0, 10, 0], "snap_ground": 0.04,
+     "profile": {"sides": 6, "round": 2.4}, "subdiv": 0, "caps": [false, true],
+     "rings": [
+       {"at": [0, 0.8, -1.2], "size": [3.2, 1.8]},
+       {"at": [0, 0.8, 0.9], "size": [3.8, 1.8]},
+       {"at": [0, 0.6, 2.4], "size": [3.4, 1.2]}
+     ],
+     "style": "hide"},
+    {"id": "fclaw_m", "parent": "front_paw", "shape": "loft", "pivot": [0, 0.6, 2.3], "rotation": [0, 0, 0],
+     "profile": {"sides": 3, "round": 2.0, "angle": 180}, "subdiv": 0, "caps": [false, false],
+     "rings": [{"at": [0, 0, 0], "size": [1.0, 0.9]}, {"at": [0, 0.0, 1.0], "size": [0.7, 0.6]}, {"at": [0, -0.5, 1.8], "size": 0.0}],
+     "style": "claw"},
+    {"id": "fclaw_o", "parent": "front_paw", "shape": "loft", "pivot": [1.2, 0.6, 2.0], "rotation": [0, 18, 0],
+     "profile": {"sides": 3, "round": 2.0, "angle": 180}, "subdiv": 0, "caps": [false, false],
+     "rings": [{"at": [0, 0, 0], "size": [1.0, 0.9]}, {"at": [0, 0.0, 1.0], "size": [0.7, 0.6]}, {"at": [0, -0.5, 1.7], "size": 0.0}],
+     "style": "claw"},
+    {"id": "fclaw_i", "parent": "front_paw", "shape": "loft", "pivot": [-1.2, 0.6, 2.0], "rotation": [0, -18, 0],
+     "profile": {"sides": 3, "round": 2.0, "angle": 180}, "subdiv": 0, "caps": [false, false],
+     "rings": [{"at": [0, 0, 0], "size": [1.0, 0.9]}, {"at": [0, 0.0, 1.0], "size": [0.7, 0.6]}, {"at": [0, -0.5, 1.7], "size": 0.0}],
+     "style": "claw"},
+
+    {"id": "back_leg", "parent": "body", "shape": "loft", "chain": true, "attach": {"t": 0.24, "around": 0.30, "align": "none"},
+     "mirror": true, "profile": {"sides": 6, "round": 2.3}, "subdiv": 0, "caps": [false, false],
+     "hide": ["joint1_end", "joint1_start", "joint3_end", "joint3_start"],
+     "rings": [
+       {"at": [-2.4, 1.2, -0.47], "size": [5.6, 6.4]},
+       {"at": [1.8, -0.6, 1.8], "size": [4.6, 5.0]},
+       {"at": [2.8, -2.6, 2.2], "size": [3.6, 3.6]},
+       {"at": [3.2, -4.8, -1.2], "size": [2.8, 2.8]},
+       {"at": [3.3, -6.8, -0.4], "size": [2.8, 1.6]}
+     ],
+     "style": ["hide", "banded"],
+     "paint": {"layers": [{"id": "tiger", "period": 3.0, "width": 0.32, "phase": 0.2, "range": [0.05, 0.55]}]}},
+
+    {"id": "back_paw", "parent": "back_leg", "shape": "loft", "attach": {"t": 1.0, "around": 0.5, "align": "none"},
+     "orient": "world", "rotation": [0, 16, 0], "snap_ground": 0.04,
+     "profile": {"sides": 6, "round": 2.4}, "subdiv": 0, "caps": [false, true],
+     "rings": [
+       {"at": [0, 0.8, -1.4], "size": [3.2, 1.8]},
+       {"at": [0, 0.8, 1.0], "size": [3.8, 1.8]},
+       {"at": [0, 0.6, 2.6], "size": [3.4, 1.2]}
+     ],
+     "style": "hide"},
+    {"id": "bclaw_m", "parent": "back_paw", "shape": "loft", "pivot": [0, 0.6, 2.5], "rotation": [0, 0, 0],
+     "profile": {"sides": 3, "round": 2.0, "angle": 180}, "subdiv": 0, "caps": [false, false],
+     "rings": [{"at": [0, 0, 0], "size": [1.0, 0.9]}, {"at": [0, 0.0, 1.0], "size": [0.7, 0.6]}, {"at": [0, -0.5, 1.8], "size": 0.0}],
+     "style": "claw"},
+    {"id": "bclaw_o", "parent": "back_paw", "shape": "loft", "pivot": [1.2, 0.6, 2.2], "rotation": [0, 18, 0],
+     "profile": {"sides": 3, "round": 2.0, "angle": 180}, "subdiv": 0, "caps": [false, false],
+     "rings": [{"at": [0, 0, 0], "size": [1.0, 0.9]}, {"at": [0, 0.0, 1.0], "size": [0.7, 0.6]}, {"at": [0, -0.5, 1.7], "size": 0.0}],
+     "style": "claw"},
+    {"id": "bclaw_i", "parent": "back_paw", "shape": "loft", "pivot": [-1.2, 0.6, 2.2], "rotation": [0, -18, 0],
+     "profile": {"sides": 3, "round": 2.0, "angle": 180}, "subdiv": 0, "caps": [false, false],
+     "rings": [{"at": [0, 0, 0], "size": [1.0, 0.9]}, {"at": [0, 0.0, 1.0], "size": [0.7, 0.6]}, {"at": [0, -0.5, 1.7], "size": 0.0}],
+     "style": "claw"},
+
+    {"id": "crys_a", "parent": "body", "shape": "loft", "attach": {"t": 0.10, "around": 0.0, "align": "surface", "offset": -0.8},
+     "rotation": [-14, 0, 4], "profile": {"sides": 6, "round": 2.0}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 3.4}, {"at": [0, 7.0, 0], "size": 3.7}, {"at": [0, 10.0, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "crys_b", "parent": "body", "shape": "loft", "attach": {"t": 0.07, "around": 0.07, "align": "surface", "offset": -0.6},
+     "rotation": [-30, 0, -22], "profile": {"sides": 6, "round": 2.0, "angle": 15}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 2.4}, {"at": [0, 4.6, 0], "size": 2.6}, {"at": [0, 6.6, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "crys_c", "parent": "body", "shape": "loft", "attach": {"t": 0.13, "around": 0.92, "align": "surface", "offset": -0.6},
+     "rotation": [-6, 0, 24], "profile": {"sides": 6, "round": 2.0, "angle": 30}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 2.8}, {"at": [0, 5.4, 0], "size": 3.0}, {"at": [0, 7.8, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "crys_d", "parent": "body", "shape": "loft", "attach": {"t": 0.16, "around": 0.08, "align": "surface", "offset": -0.5},
+     "rotation": [18, 0, -26], "profile": {"sides": 6, "round": 2.0, "angle": 10}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 2.2}, {"at": [0, 3.6, 0], "size": 2.4}, {"at": [0, 5.2, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "crys_e", "parent": "body", "shape": "loft", "attach": {"t": 0.04, "around": 0.94, "align": "surface", "offset": -0.4},
+     "rotation": [-34, 0, 16], "profile": {"sides": 6, "round": 2.0, "angle": 20}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.8}, {"at": [0, 3.0, 0], "size": 2.0}, {"at": [0, 4.4, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "crys_f", "parent": "body", "shape": "loft", "attach": {"t": 0.19, "around": 0.97, "align": "surface", "offset": -0.4},
+     "rotation": [26, 0, 10], "profile": {"sides": 6, "round": 2.0, "angle": 5}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.8}, {"at": [0, 2.6, 0], "size": 2.0}, {"at": [0, 3.8, 0], "size": 0.0}],
+     "style": "crystal"},
+
+    {"id": "crys_g", "parent": "body", "shape": "loft", "attach": {"t": 0.12, "around": 0.86, "align": "surface", "offset": -0.4},
+     "rotation": [8, 0, 36], "profile": {"sides": 6, "round": 2.0, "angle": 12}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.7}, {"at": [0, 2.0, 0], "size": 1.8}, {"at": [0, 3.1, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "crys_h", "parent": "body", "shape": "loft", "attach": {"t": 0.09, "around": 0.13, "align": "surface", "offset": -0.4},
+     "rotation": [-10, 0, -40], "profile": {"sides": 6, "round": 2.0, "angle": 22}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.6}, {"at": [0, 1.8, 0], "size": 1.7}, {"at": [0, 2.8, 0], "size": 0.0}],
+     "style": "crystal"},
+
+    {"id": "neck_crys_a", "parent": "neck", "shape": "loft", "attach": {"t": 0.2, "around": 0.0, "align": "surface", "offset": -0.3},
+     "rotation": [-30, 0, -10], "profile": {"sides": 6, "round": 2.0, "angle": 10}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 2.0}, {"at": [0, 2.4, 0], "size": 2.1}, {"at": [0, 3.6, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "neck_crys_b", "parent": "neck", "shape": "loft", "attach": {"t": 0.48, "around": 0.97, "align": "surface", "offset": -0.3},
+     "rotation": [-34, 0, 12], "profile": {"sides": 6, "round": 2.0, "angle": 25}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.7}, {"at": [0, 1.8, 0], "size": 1.8}, {"at": [0, 2.8, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "neck_crys_c", "parent": "neck", "shape": "loft", "attach": {"t": 0.74, "around": 0.03, "align": "surface", "offset": -0.3},
+     "rotation": [-38, 0, -8], "profile": {"sides": 6, "round": 2.0, "angle": 5}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.5}, {"at": [0, 1.3, 0], "size": 1.6}, {"at": [0, 2.1, 0], "size": 0.0}],
+     "style": "crystal"},
+
+    {"id": "tail_crys_a", "parent": "body", "shape": "loft", "attach": {"t": 0.93, "around": 0.0, "align": "surface", "offset": -0.3},
+     "rotation": [30, 0, 0], "profile": {"sides": 6, "round": 2.0}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.6}, {"at": [0, 2.6, 0], "size": 1.8}, {"at": [0, 3.8, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "tail_crys_b", "parent": "body", "shape": "loft", "attach": {"t": 0.89, "around": 0.12, "align": "surface", "offset": -0.3},
+     "rotation": [20, 0, -20], "profile": {"sides": 6, "round": 2.0, "angle": 20}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.4}, {"at": [0, 1.8, 0], "size": 1.5}, {"at": [0, 2.8, 0], "size": 0.0}],
+     "style": "crystal"},
+    {"id": "tail_crys_c", "parent": "body", "shape": "loft", "attach": {"t": 0.90, "around": 0.88, "align": "surface", "offset": -0.3},
+     "rotation": [24, 0, 22], "profile": {"sides": 6, "round": 2.0, "angle": 10}, "subdiv": 0, "caps": [false, false], "hard": true,
+     "rings": [{"at": [0, 0, 0], "size": 1.5}, {"at": [0, 1.6, 0], "size": 1.6}, {"at": [0, 2.6, 0], "size": 0.0}],
+     "style": "crystal"}
+  ]
+}

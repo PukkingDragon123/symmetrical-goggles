@@ -1,0 +1,556 @@
+{
+  "name": "Ibis Scribe",
+  "description": "Original chubby ibis-headed scribe figurine: egg-shaped ivory body, long curved slate beak, lapis-and-gold striped headcloth with swaying lappets, beaded gold and turquoise collar, white kilt, reed pen and papyrus, seated cross-legged on a sandstone plinth.",
+  "author": "lowpix example", "license": "CC0-1.0", "density": 2, "budget": {"tris": 1000, "colors": 52},
+  "light": {"dir": [-0.55, 1.0, 0.65], "strength": 1.0, "gradient": 0.4, "ao": 0.7, "ao_height": 4.0},
+  "render": {"background": "#1e2b33", "hero": [34, 20], "shadow": 0.45},
+  "palette": {
+    "ramps": {
+      "ivory": ["#1b1626", "#3a3046", "#6b5d70", "#a6979a", "#d6c9bc", "#f0e6d4", "#fffaf0"],
+      "linen": ["#1e2033", "#3b4258", "#6f7a8f", "#a9b2bd", "#dfe2df", "#fbfaf2"],
+      "ink": ["#0a0911", "#15141f", "#232333", "#36384a", "#4f5468", "#727a8e"],
+      "lapis": ["#0b0d2e", "#141c57", "#1f2f8c", "#2f4cbf", "#4f74e0", "#86a8f2"],
+      "gold": ["#3a1a08", "#7a3d0c", "#b86c14", "#e3a024", "#f6cd4a", "#fff19a"],
+      "turq": ["#06302f", "#0d5a55", "#17877c", "#2fb5a2", "#7fe0cc"],
+      "sand": ["#2a1a1a", "#553028", "#8a523a", "#bf7f52", "#dcab72", "#f0d39a"], "red": ["#3d0d10", "#7d1d1b", "#b9382a", "#e2643f"]
+    }
+  },
+  "styles": {
+    "plume": {"ramp": "ivory", "tone": 4.2, "dither": 0.0, "layers": [{"id": "mottle", "op": "noise", "scale": 2.2, "amount": 0.22}]},
+    "kilt": {"ramp": "linen", "tone": 3.6, "dither": 0.0}, "ink": {"ramp": "ink", "tone": 2.6, "dither": 0.0},
+    "nemes": {
+      "ramp": "lapis", "tone": 3.0, "dither": 0.0,
+      "layers": [
+        {
+          "id": "nstripe", "op": "stripes", "axis": "path", "period": 2.0, "width": 0.4, "ramp": "gold", "tone": 3.5,
+          "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.5}
+        }
+      ]
+    },
+    "gold": {"ramp": "gold", "tone": 3.4, "dither": 0.0},
+    "sand": {
+      "ramp": "sand", "tone": 3.3, "dither": 0.0, "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [{"id": "grain", "op": "noise", "scale": 2.5, "amount": 0.35}]
+    }
+  },
+  "animations": {
+    "idle": {
+      "length": 3.0, "loop": true,
+      "tracks": [
+        {"part": "torso", "channel": "scale", "osc": {"amp": [0.025, 0.035, 0.025], "cycles": 2, "phase": 0.75}},
+        {
+          "part": "head",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.55, [0, 0, 0]],
+            [0.67, [-9, 7, -3], "out"],
+            [1.3, [-9, 7, -3]],
+            [1.42, [5, -5, 7], "out"],
+            [2.1, [5, -5, 7]],
+            [2.24, [0, 0, 0], "out"]
+          ]
+        },
+        {
+          "part": "head", "channel": "position",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.55, [0, 0, 0]],
+            [0.67, [0, 0.3, 0.5], "out"],
+            [1.3, [0, 0.3, 0.5]],
+            [1.42, [0, -0.2, -0.3], "out"],
+            [2.1, [0, -0.2, -0.3]],
+            [2.24, [0, 0, 0], "out"]
+          ]
+        },
+        {
+          "parts": ["beak_0", "beak_1", "beak_2"],
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.62, [0, 0, 0]],
+            [0.74, [-4, 0, 0]],
+            [0.9, [1.5, 0, 0]],
+            [1.05, [0, 0, 0]],
+            [1.47, [0, 0, 0]],
+            [1.58, [4, 0, 0]],
+            [1.75, [-1.5, 0, 0]],
+            [1.9, [0, 0, 0]]
+          ],
+          "ease": "smooth"
+        },
+        {"part": "eye", "channel": "scale", "osc": {"axis": "y", "amp": -0.9, "shape": "pulse", "cycles": 1, "phase": 0.18}},
+        {"part": "lappet", "wave": {"axis": "x", "amp": 2.5, "cycles": 2, "phase": 0.6, "lag": 0.14, "growth": 1.3}},
+        {
+          "part": "lappet", "raw": true, "ease": "smooth",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.58, [0, 0, 0]],
+            [0.74, [6, 0, 2]],
+            [0.88, [8, 0, 3]],
+            [1.04, [5.5, 0, 1.8]],
+            [1.32, [6, 0, 2]],
+            [1.48, [-3, 0, -5]],
+            [1.62, [-4.5, 0, -6.5]],
+            [1.78, [-2.6, 0, -4.4]],
+            [2.12, [-3, 0, -5]],
+            [2.3, [1.5, 0, 1.2]],
+            [2.45, [0, 0, 0]]
+          ]
+        },
+        {"part": "lappet", "wave": {"axis": "z", "amp": 1.5, "cycles": 1, "phase": 0.3, "lag": 0.14, "growth": 1.3}},
+        {"part": "queue", "osc": {"axis": "x", "amp": 3, "cycles": 2, "phase": 0.5}},
+        {"part": "tail", "osc": {"axis": "y", "amp": 7, "cycles": 3}},
+        {"part": "r_hand", "osc": {"axis": "x", "amp": 2.5, "cycles": 1, "phase": 0.1}}
+      ]
+    },
+    "write": {
+      "length": 2.0, "loop": true,
+      "tracks": [
+        {
+          "part": "r_fore",
+          "keys": [[0, [0, 0, 0]], [1.05, [0, 10, 0], "linear"], [1.22, [-8, 11, 0]], [1.62, [-8, 7, 0]], [1.85, [-2, 1, 0]]]
+        },
+        {
+          "part": "r_hand",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.13, [5, 5, 0]],
+            [0.26, [0, 9, 0]],
+            [0.39, [-5, 5, 0]],
+            [0.52, [0, 0, 0]],
+            [0.65, [5, 5, 0]],
+            [0.78, [0, 9, 0]],
+            [0.91, [-5, 5, 0]],
+            [1.04, [0, 0, 0]],
+            [1.2, [-6, 0, -6]],
+            [1.62, [-6, 0, -6]],
+            [1.85, [0, 0, 0]]
+          ],
+          "ease": "smooth"
+        },
+        {
+          "part": "head", "keys": [[0, [7, -9, 0]], [1.05, [8, 1, 0]], [1.3, [-6, 2, 11]], [1.62, [-5, 4, 13]], [1.84, [8, -10, 0]]],
+          "ease": "ease"
+        },
+        {
+          "parts": ["beak_0", "beak_1", "beak_2"],
+          "keys": [[0, [0, 0, 0]], [1.2, [0, 0, 0]], [1.36, [-5, 0, 0]], [1.62, [-4, 0, 0]], [1.8, [2, 0, 0]], [1.92, [0, 0, 0]]],
+          "ease": "smooth"
+        },
+        {"part": "torso", "osc": {"axis": "y", "amp": 1.5, "cycles": 1, "phase": 0.75}},
+        {"part": "torso", "channel": "scale", "osc": {"amp": [0.02, 0.03, 0.02], "cycles": 1, "phase": 0.25}},
+        {"part": "eye", "channel": "scale", "osc": {"axis": "y", "amp": -0.9, "shape": "pulse", "cycles": 1, "phase": 0.27}},
+        {"part": "lappet", "wave": {"axis": "x", "amp": 2.0, "cycles": 2, "lag": 0.14, "growth": 1.3}},
+        {
+          "part": "lappet", "raw": true, "ease": "smooth",
+          "keys": [
+            [0, [-4, 0, 0]],
+            [1.05, [-4.5, 0, 0]],
+            [1.36, [4, 0, -6]],
+            [1.5, [5.5, 0, -8.5]],
+            [1.66, [3.5, 0, -7]],
+            [1.9, [-5.5, 0, 1]]
+          ]
+        },
+        {"part": "lappet", "wave": {"axis": "z", "amp": 2.0, "cycles": 1, "phase": 0.4, "lag": 0.14, "growth": 1.3}},
+        {"part": "queue", "osc": {"axis": "x", "amp": 2.5, "cycles": 2, "phase": 0.25}},
+        {"part": "tail", "osc": {"axis": "y", "amp": 5, "cycles": 2}}
+      ]
+    },
+    "bow": {
+      "length": 2.4, "loop": true,
+      "tracks": [
+        {"part": "torso", "keys": [[0, [0, 0, 0]], [0.35, [-5, 0, 0]], [0.95, [26, 0, 0]], [1.4, [26, 0, 0]], [2.0, [0, 0, 0], "back"]]},
+        {
+          "part": "head",
+          "keys": [[0, [0, 0, 0]], [0.4, [-4, 0, 0]], [1.05, [10, 0, 0]], [1.5, [10, 0, 0]], [2.1, [-3, 0, 0], "out"], [2.3, [0, 0, 0]]]
+        },
+        {
+          "parts": ["beak_0", "beak_1", "beak_2"],
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.4, [-2, 0, 0]],
+            [0.95, [-3, 0, 0]],
+            [1.12, [5, 0, 0]],
+            [1.35, [0, 0, 0]],
+            [1.75, [-4, 0, 0]],
+            [2.05, [4, 0, 0]],
+            [2.25, [-1, 0, 0]],
+            [2.4, [0, 0, 0]]
+          ],
+          "ease": "smooth"
+        },
+        {
+          "part": "lappet_0",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.4, [4, 0, 0]],
+            [1.0, [-26, 0, 0]],
+            [1.2, [-33, 0, 0]],
+            [1.45, [-29, 0, 0]],
+            [2.0, [6, 0, 0]],
+            [2.2, [-2, 0, 0]],
+            [2.4, [0, 0, 0]]
+          ],
+          "ease": "smooth"
+        },
+        {
+          "part": "lappet_0_mirror",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.4, [4, 0, 0]],
+            [1.0, [-26, 0, 0]],
+            [1.2, [-33, 0, 0]],
+            [1.45, [-29, 0, 0]],
+            [2.0, [6, 0, 0]],
+            [2.2, [-2, 0, 0]],
+            [2.4, [0, 0, 0]]
+          ],
+          "ease": "smooth"
+        },
+        {"part": "lappet", "wave": {"axis": "x", "amp": 4, "cycles": 1, "phase": 0.1, "lag": 0.12, "growth": 1.3}},
+        {
+          "part": "queue", "keys": [[0, [0, 0, 0]], [1.0, [-20, 0, 0]], [1.4, [-26, 0, 0]], [2.05, [6, 0, 0]], [2.4, [0, 0, 0]]],
+          "ease": "smooth"
+        },
+        {"part": "r_upper", "keys": [[0, [0, 0, 0]], [0.35, [4, 0, 0]], [0.95, [-22, 0, 0]], [1.4, [-22, 0, 0]], [2.0, [0, 0, 0], "back"]]},
+        {"part": "l_upper", "keys": [[0, [0, 0, 0]], [0.35, [4, 0, 0]], [0.95, [-22, 0, 0]], [1.4, [-22, 0, 0]], [2.0, [0, 0, 0], "back"]]},
+        {
+          "part": "eye", "channel": "scale",
+          "keys": [[0, [0, 0, 0]], [0.95, [0, 0, 0]], [1.05, [0, -0.85, 0]], [1.4, [0, -0.85, 0]], [1.5, [0, 0, 0]]]
+        },
+        {
+          "part": "tail", "keys": [[0, [0, 0, 0]], [0.9, [0, 0, 0]], [1.1, [0, 10, 0]], [1.25, [0, -10, 0]], [1.4, [0, 0, 0]]],
+          "ease": "smooth"
+        }
+      ]
+    }
+  },
+  "parts": [
+    {
+      "id": "plinth", "shape": "box", "chamfer": 0.8, "size": [30, 5, 25], "pivot": [0, 2.5, 0], "hide": ["bottom"], "style": "sand",
+      "paint": {
+        "layers": [
+          {"id": "frieze", "op": "band", "axis": "y", "from": -0.4, "to": 0.4, "ramp": "lapis", "tone": 2.4, "faces": ["-top"]},
+          {
+            "id": "tiles_x", "op": "stripes", "axis": "x", "period": 5, "width": 0.4, "phase": -0.5, "ramp": "turq", "tone": 2.6,
+            "faces": ["ends"]
+          },
+          {
+            "id": "tiles_z", "op": "stripes", "axis": "z", "period": 5, "width": 0.4, "phase": -0.5, "ramp": "turq", "tone": 2.6,
+            "faces": ["flanks"]
+          },
+          {"id": "bars_x", "op": "stripes", "axis": "x", "period": 2.5, "width": 0.2, "ramp": "gold", "tone": 3.6, "faces": ["ends"]},
+          {"id": "bars_z", "op": "stripes", "axis": "z", "period": 2.5, "width": 0.2, "ramp": "gold", "tone": 3.6, "faces": ["flanks"]},
+          {"id": "above", "op": "band", "axis": "y", "from": 0.4, "to": 1.0, "ramp": "sand", "tone": 3.6, "faces": ["-top"]},
+          {"id": "below", "op": "band", "axis": "y", "from": -1.0, "to": -0.4, "ramp": "sand", "tone": 3.0, "faces": ["-top"]},
+          {"id": "lip", "op": "band", "axis": "y", "from": 0.55, "to": 0.75, "ramp": "gold", "tone": 3.4, "faces": ["-top"]}
+        ]
+      }
+    },
+    {
+      "id": "hips", "shape": "loft", "pivot": [0, 5, 0], "profile": {"sides": 8, "round": 2.6}, "subdiv": 0, "caps": [false, true],
+      "rings": [{"at": [0, 0.2, -0.5], "size": [20, 17]}, {"at": [0, 3.2, 0], "size": [23.5, 19.5]}, {"at": [0, 7.8, 0], "size": [22, 18]}],
+      "style": "kilt",
+      "paint": {
+        "layers": [
+          {"id": "pleats", "op": "stripes", "axis": "around", "period": 0.05, "width": 0.3, "shift": -0.7, "faces": ["sides"]},
+          {
+            "id": "belt", "op": "band", "axis": "path", "from": 0.82, "to": 1.0, "ramp": "gold", "tone": 3.4, "faces": ["sides"],
+            "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.5}
+          }
+        ]
+      }
+    },
+    {
+      "id": "lap", "parent": "hips", "shape": "loft", "profile": {"sides": 6, "round": 2.4}, "subdiv": 0, "caps": [false, false],
+      "rings": [
+        {"at": [-11.0, 2.3, 2.5], "size": [5.6, 4.8]},
+        {"at": [-6.6, 2.5, 8.2], "size": [6.2, 5.2]},
+        {"at": [0, 2.6, 9.8], "size": [6.4, 5.4]},
+        {"at": [6.6, 2.5, 8.2], "size": [6.2, 5.2]},
+        {"at": [11.0, 2.3, 2.5], "size": [5.6, 4.8]}
+      ],
+      "style": "kilt", "paint": {"layers": [{"id": "pleats", "op": "stripes", "axis": "path", "period": 1.6, "width": 0.3, "shift": -0.7}]}
+    },
+    {
+      "id": "foot", "parent": "hips", "shape": "card", "plane": "xz", "pivot": [8.2, 0.1, 8.8], "rotation": [0, 48, 0], "mirror": true,
+      "snap_ground": 5.03, "style": "ink",
+      "paint": {"rim": {"light": 0, "dark": 0}, "art_key": {"o": "ink:2", "h": "ink:4", "c": "ivory:4"}},
+      "art": [
+        ".....hh.....",
+        ".....oo.....",
+        "....oooo....",
+        "...oohhoo...",
+        "..oho..oho..",
+        ".oho.oo.oho.",
+        "oho..oo..oho",
+        "oo...hh...oo",
+        "c....cc....c"
+      ]
+    },
+    {
+      "id": "torso", "parent": "hips", "shape": "loft", "pivot": [0, 6.5, 0], "profile": {"sides": 8, "round": 2.5}, "subdiv": 0,
+      "caps": [false, false],
+      "rings": [
+        {"at": [0, -4, 0], "size": [17, 14]},
+        {"at": [0, -0.5, 0], "size": [20, 16.4]},
+        {"at": [0, 2.6, 0.4], "size": [21.2, 17.2]},
+        {"at": [0, 5.6, 0.3], "size": [20, 16]},
+        {"at": [0, 8.5, 0.1], "size": [16.4, 13.4]},
+        {"at": [0, 11, 0], "size": [11, 10]}
+      ],
+      "style": "plume"
+    },
+    {
+      "id": "tail", "parent": "torso", "shape": "loft", "profile": {"sides": 6, "round": 2.3}, "subdiv": 0, "caps": [false, true],
+      "rings": [
+        {"at": [0, 0.5, -7.2], "size": [6.4, 2.6]},
+        {"at": [0, -1.4, -10.6], "size": [5.6, 1.8]},
+        {"at": [0, -3.4, -12.2], "size": [3.0, 1.1]}
+      ],
+      "style": "ink",
+      "paint": {"tone": 2.8, "layers": [{"id": "quills", "op": "stripes", "axis": "x", "period": 1.4, "width": 0.3, "shift": -1.0}]}
+    },
+    {
+      "id": "wing", "parent": "torso", "shape": "loft", "mirror": true, "profile": {"sides": 4, "round": 2.0}, "subdiv": 0,
+      "caps": [true, true],
+      "rings": [
+        {"at": [6.6, 8.0, -4.4], "size": [1.4, 4.2], "roll": -30},
+        {"at": [8.6, 4.6, -5.4], "size": [1.7, 6.0], "roll": -34},
+        {"at": [7.6, 0.8, -7.0], "size": [1.5, 5.2], "roll": -40},
+        {"at": [5.0, -2.0, -8.9], "size": [0.9, 2.6], "roll": -48}
+      ],
+      "style": "plume",
+      "paint": {
+        "layers": [
+          {"id": "rows", "op": "stripes", "axis": "path", "period": 1.5, "width": 0.34, "shift": -0.8, "range": [0.0, 0.62]},
+          {
+            "id": "primaries", "op": "band", "axis": "path", "from": 0.62, "to": 1.0, "ramp": "ink", "tone": 2.7,
+            "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.0, "highlight_shift": 1.0}
+          },
+          {"id": "quills", "op": "stripes", "axis": "around", "period": 0.125, "width": 0.25, "shift": -1.0, "range": [0.62, 1.0]}
+        ]
+      }
+    },
+    {
+      "id": "collar", "parent": "torso", "shape": "loft", "profile": {"sides": 10, "round": 2.3}, "subdiv": 0, "caps": [false, false],
+      "rings": [
+        {"at": [0, 12.0, 0], "size": [11.5, 10]},
+        {"at": [0, 10.4, 0.2], "size": [17, 14.5]},
+        {"at": [0, 8.4, 0.3], "size": [21, 17.5]}
+      ],
+      "style": "gold",
+      "paint": {
+        "layers": [
+          {"id": "beads", "op": "stripes", "axis": "around", "period": 0.04, "width": 0.5, "ramp": "turq", "tone": 3.0},
+          {"id": "c_gold1", "op": "band", "axis": "path", "from": 0.0, "to": 0.14, "ramp": "gold", "tone": 3.6},
+          {"id": "c_turq", "op": "band", "axis": "path", "from": 0.14, "to": 0.32, "ramp": "turq", "tone": 2.8, "bevel": true},
+          {"id": "c_lapis", "op": "band", "axis": "path", "from": 0.44, "to": 0.6, "ramp": "lapis", "tone": 3.0, "bevel": true},
+          {"id": "c_red", "op": "band", "axis": "path", "from": 0.7, "to": 0.82, "ramp": "red", "tone": 2.4, "bevel": true}
+        ]
+      }
+    },
+    {
+      "id": "head", "parent": "torso", "shape": "loft", "pivot": [0, 11.5, 0.5], "profile": {"sides": 8, "round": 2.6}, "subdiv": 1,
+      "caps": [true, true],
+      "rings": [
+        {"at": [0, 6.4, -6.8], "size": [11.8, 10.2]},
+        {"at": [0, 6.9, -3.1], "size": [15.6, 13.4]},
+        {"at": [0, 6.9, 1.1], "size": [16.2, 13.8]},
+        {"at": [0, 6.1, 4.8], "size": [13.4, 11.2]},
+        {"at": [0, 5.1, 7.4], "size": [8.0, 7.4]}
+      ],
+      "style": "plume",
+      "paint": {
+        "layers": [
+          {"id": "throat", "op": "band", "axis": "y", "from": -1.0, "to": -0.6, "ramp": "ink", "tone": 2.8},
+          {"id": "mask", "op": "band", "axis": "path", "from": 0.93, "to": 1.0, "ramp": "ink", "tone": 2.8}
+        ]
+      }
+    },
+    {
+      "id": "beak", "parent": "head", "shape": "loft", "chain": true, "profile": {"sides": 5, "round": 2.2, "angle": 36}, "subdiv": 1,
+      "caps": [false, false],
+      "rings": [
+        {"at": [0, 4.4, 6.2], "size": [4.4, 4.8]},
+        {"at": [0, 3.6, 11.9], "size": [3.1, 3.3]},
+        {"at": [0, 0.5, 16.9], "size": [1.8, 1.9]},
+        {"at": [0, -5.9, 20.9], "size": [0.2, 0.2]}
+      ],
+      "style": "ink",
+      "paint": {
+        "tone": 3.4,
+        "layers": [
+          {"id": "tipdark", "op": "gradient", "axis": "path", "amount": -2.2},
+          {"id": "ridge", "op": "fill", "shift": 1.2, "min_light": 0.55}
+        ]
+      }
+    },
+    {
+      "id": "eye", "parent": "head", "shape": "box", "size": [7, 3.5, 0.4], "attach": {"t": 0.7, "around": 0.25, "align": "none"},
+      "rotation": [0, 70, 0], "offset": [0, 1.0, 0.12], "mirror": true, "hide": ["back", "left", "right", "top", "bottom"], "style": "plume",
+      "paint": {
+        "stamps": [
+          {
+            "face": "front", "at": [0, 0], "flip_on_mirror": true,
+            "art": [
+              "___kkkkkkk____",
+              "_kksgggggskkkk",
+              "kssgwwppogsk__",
+              "ksgowpppqoDk__",
+              "ksgoppppqdDk__",
+              "_ksDoddoDsk___",
+              "__kkkkkkkk____"
+            ],
+            "key": {
+              "k": "ink:0", "s": "ivory:6", "g": "gold:4", "o": "gold:3", "D": "gold:2", "d": "gold:1", "p": "ink:0", "q": "ink:2",
+              "w": "ivory:6"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "nemes", "parent": "head", "shape": "loft", "profile": {"sides": 8, "round": 2.5}, "subdiv": 0, "caps": [true, false],
+      "rings": [
+        {"at": [0, 14.6, -1.7], "size": [12.2, 11.6]},
+        {"at": [0, 12.2, -2.4], "size": [16.8, 14.6]},
+        {"at": [0, 7.8, -3.8], "size": [18.2, 12.2]},
+        {"at": [0, 3.2, -4.2], "size": [20.5, 10.4]},
+        {"at": [0, -0.5, -4.2], "size": [21.2, 9.8]}
+      ],
+      "style": "nemes",
+      "paint": {
+        "layers": [
+          {"id": "crown", "op": "fill", "ramp": "lapis", "tone": 2.2, "faces": ["start"]},
+          {
+            "id": "crown_stripes", "op": "stripes", "axis": "x", "period": 2.0, "width": 0.4, "ramp": "gold", "tone": 2.7,
+            "faces": ["start"], "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.5}
+          }
+        ]
+      }
+    },
+    {
+      "id": "brow", "parent": "head", "shape": "loft", "profile": {"sides": 4, "round": 2.0}, "subdiv": 1, "caps": [true, true],
+      "rings": [
+        {"at": [-8.0, 8.6, 1.0], "size": [1.3, 1.6]},
+        {"at": [-5.6, 12.4, 1.8], "size": [1.3, 1.6]},
+        {"at": [0, 14.0, 2.2], "size": [1.3, 1.6]},
+        {"at": [5.6, 12.4, 1.8], "size": [1.3, 1.6]},
+        {"at": [8.0, 8.6, 1.0], "size": [1.3, 1.6]}
+      ],
+      "style": "gold", "paint": {"tone": 3.6}
+    },
+    {
+      "id": "queue", "parent": "head", "shape": "loft", "profile": {"sides": 6, "round": 2.3}, "subdiv": 0, "caps": [false, true],
+      "rings": [
+        {"at": [0, 2.2, -8.0], "size": [5.0, 2.2]},
+        {"at": [0, -1.8, -8.8], "size": [3.8, 1.8]},
+        {"at": [0, -4.6, -8.6], "size": [2.6, 1.6]}
+      ],
+      "style": "nemes",
+      "paint": {
+        "layers": [
+          {
+            "id": "qband", "op": "band", "axis": "path", "from": 0.55, "to": 1.0, "ramp": "gold", "tone": 3.5,
+            "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.5}
+          }
+        ]
+      }
+    },
+    {
+      "id": "lappet", "parent": "head", "shape": "loft", "chain": true, "mirror": true, "profile": {"sides": 4, "round": 2.0}, "subdiv": 0,
+      "caps": [true, true],
+      "rings": [
+        {"at": [8.6, 3, -0.5], "size": [4.4, 1.3]},
+        {"at": [8.8, -0.8, 3.0], "size": [4.6, 1.3]},
+        {"at": [8.6, -4.8, 5.4], "size": [4.8, 1.3]},
+        {"at": [8.4, -8.6, 6.0], "size": [5.0, 1.3]}
+      ],
+      "style": "nemes", "paint": {"layers": [{"id": "nstripe", "axis": "path"}]}
+    },
+    {
+      "id": "r_upper", "parent": "torso", "shape": "loft", "pivot": [-9.3, 7.5, 0.8], "profile": {"sides": 6, "round": 2.3}, "subdiv": 0,
+      "caps": [true, false],
+      "rings": [{"at": [0, 0, 0], "size": 4.4}, {"at": [-0.49, -2.75, 1.65], "size": 4.0}, {"at": [-0.9, -5.0, 3.0], "size": 3.7}],
+      "style": "plume"
+    },
+    {
+      "id": "r_fore", "parent": "r_upper", "shape": "loft", "pivot": [-0.9, -5.0, 3.0], "profile": {"sides": 6, "round": 2.3}, "subdiv": 0,
+      "caps": [true, false],
+      "rings": [{"at": [0, 0, 0], "size": 3.7}, {"at": [3.3, -0.75, 2.4], "size": 3.4}, {"at": [6.6, -1.5, 4.8], "size": 3.2}],
+      "style": "plume",
+      "paint": {
+        "layers": [
+          {
+            "id": "bracelet", "op": "band", "axis": "path", "from": 0.74, "to": 0.95, "ramp": "gold", "tone": 3.4,
+            "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.5}
+          }
+        ]
+      }
+    },
+    {
+      "id": "r_hand", "parent": "r_fore", "shape": "loft", "pivot": [6.6, -1.5, 4.8], "profile": {"sides": 6, "round": 2.4}, "subdiv": 0,
+      "caps": [false, true],
+      "rings": [{"at": [0, 0, -0.4], "size": 3.0}, {"at": [0.5, -0.2, 1.0], "size": 3.3}, {"at": [0.9, -0.4, 2.2], "size": 2.4}],
+      "style": "plume"
+    },
+    {
+      "id": "pen", "parent": "r_hand", "shape": "loft", "pivot": [0.5, 0, 1.0], "profile": {"sides": 4, "round": 2.0}, "subdiv": 0,
+      "caps": [true, false],
+      "rings": [{"at": [-1.8, 5.0, -2.8], "size": 0.9}, {"at": [0.8, -1.4, 2.2], "size": 0.8}, {"at": [1.0, -1.9, 2.7], "size": 0.0}],
+      "paint": {
+        "ramp": "sand", "tone": 4.0,
+        "layers": [{"id": "nib", "op": "band", "axis": "path", "from": 0.82, "to": 1.0, "ramp": "ink", "tone": 2.0}]
+      }
+    },
+    {
+      "id": "l_upper", "parent": "torso", "shape": "loft", "pivot": [9.3, 7.5, 0.8], "profile": {"sides": 6, "round": 2.3}, "subdiv": 0,
+      "caps": [true, false],
+      "rings": [{"at": [0, 0, 0], "size": 4.4}, {"at": [0.49, -2.75, 1.54], "size": 4.0}, {"at": [0.9, -5.0, 2.8], "size": 3.7}],
+      "style": "plume"
+    },
+    {
+      "id": "l_fore", "parent": "l_upper", "shape": "loft", "pivot": [0.9, -5.0, 2.8], "profile": {"sides": 6, "round": 2.3}, "subdiv": 0,
+      "caps": [true, false],
+      "rings": [{"at": [0, 0, 0], "size": 3.7}, {"at": [-2.0, -0.55, 2.4], "size": 3.4}, {"at": [-4.0, -1.1, 4.8], "size": 3.2}],
+      "style": "plume",
+      "paint": {
+        "layers": [
+          {
+            "id": "bracelet", "op": "band", "axis": "path", "from": 0.74, "to": 0.95, "ramp": "gold", "tone": 3.4,
+            "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.5}
+          }
+        ]
+      }
+    },
+    {
+      "id": "l_hand", "parent": "l_fore", "shape": "loft", "pivot": [-4.0, -1.1, 4.8], "profile": {"sides": 6, "round": 2.4}, "subdiv": 0,
+      "caps": [false, true],
+      "rings": [{"at": [0, 0, -0.4], "size": 3.0}, {"at": [-0.5, -0.2, 1.0], "size": 3.3}, {"at": [-0.9, -0.4, 2.2], "size": 2.4}],
+      "style": "plume"
+    },
+    {
+      "id": "sheet", "parent": "hips", "shape": "card", "plane": "xz", "pivot": [-0.5, 5.3, 10.4],
+      "paint": {
+        "ramp": "sand", "tone": 4.7, "light": 0.3, "rim": {"light": 0, "dark": 0}, "art_key": {"e": "sand:4", "k": "ink:1", "r": "red:2"}
+      },
+      "rotation": [0, 0, 0],
+      "art": [
+        "eeeeeeeeeeeeeeeeeeeeeeee",
+        "prpppkpkppkppkkpppkkpkkk",
+        "prrppkkkpkkkpkpppkpkpppk",
+        "prrrpkpkppkppkkppkkpppkp",
+        "pppppppppppppppppppppppp",
+        "prprpkkkppkkppkppkpkpkkp",
+        "pprppkpkpkpkpkkkpkkkpkpp",
+        "prprpkpppkkpppkppkpkpkkp",
+        "eeeeeeeeeeeeeeeeeeeeeeee"
+      ]
+    },
+    {
+      "id": "roll", "parent": "hips", "shape": "prism", "sides": 6, "size": [2.6, 2.6, 4.6], "pivot": [6.9, 6.4, 10.4],
+      "paint": {"ramp": "sand", "tone": 4.3}
+    }
+  ]
+}

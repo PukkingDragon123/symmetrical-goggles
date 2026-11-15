@@ -1,0 +1,4618 @@
+{
+ "name": "Tin Hermit",
+ "description": "Original gacha-style figure: a coral hermit crab living in a sardine-style tin lying on its side. Peeled-back lid with a curl and ring pull, an invented sea label (sardine school, waves), rolled seams, rivets and dents; googly eyes on banded stalks, a little coral claw and an oversized mechanical claw improvised from can scraps (gunmetal, tin, rivets, a brass hinge pin and gear). It sits on a sandy display base.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 1100,
+  "colors": 52
+ },
+ "light": {
+  "dir": [
+   -0.55,
+   1.0,
+   0.65
+  ],
+  "strength": 1.1,
+  "gradient": 0.4,
+  "ao": 0.8,
+  "ao_height": 3.0,
+  "ground": 3.4
+ },
+ "render": {
+  "background": "#251f33",
+  "hero": [
+   -36,
+   22
+  ],
+  "shadow": 0.45
+ },
+ "palette": {
+  "ramps": {
+   "crab": [
+    "#2b0f22",
+    "#5a1630",
+    "#922436",
+    "#c83c3a",
+    "#ea6446",
+    "#fb9a5f",
+    "#ffd08a"
+   ],
+   "sand": [
+    "#3d2a2c",
+    "#6f4c3f",
+    "#a37a58",
+    "#cfa874",
+    "#ecd29c",
+    "#fff2cf"
+   ],
+   "tin": [
+    "#151424",
+    "#2b2c40",
+    "#4a4e64",
+    "#6f7689",
+    "#9aa2b0",
+    "#c6ccd1",
+    "#e8ebe6",
+    "#fffef4"
+   ],
+   "gun": [
+    "#0d0c17",
+    "#1a1a2a",
+    "#2a2d42",
+    "#3d435c",
+    "#566079",
+    "#76839b"
+   ],
+   "label": [
+    "#0a1328",
+    "#11284a",
+    "#18416c",
+    "#1f628c",
+    "#2f8aa6",
+    "#5bb8b9",
+    "#a7e3cf"
+   ],
+   "brass": [
+    "#3a1d14",
+    "#6b3a16",
+    "#a5631d",
+    "#d4962e",
+    "#f0c55a",
+    "#fff0a6"
+   ]
+  }
+ },
+ "styles": {
+  "tin": {
+   "ramp": "tin",
+   "tone": 4.4,
+   "dither": 0.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.22
+    },
+    {
+     "id": "dents",
+     "op": "spots",
+     "count": 0,
+     "radius": [
+      0.8,
+      1.3
+     ],
+     "roughness": 0.3,
+     "shift": -0.7,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1,
+      "shadow_shift": 0.9,
+      "highlight_shift": -0.9
+     }
+    },
+    {
+     "id": "wear",
+     "op": "wear",
+     "width": 1,
+     "density": 0.08,
+     "ramp": "tin",
+     "tone": 2.2,
+     "post": true
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 3,
+     "density": 0.3,
+     "shift": 1.4,
+     "ramps": [
+      "tin"
+     ]
+    }
+   ]
+  },
+  "gun": {
+   "ramp": "gun",
+   "tone": 2.9,
+   "dither": 0.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 1.6,
+     "amount": 0.35
+    },
+    {
+     "id": "scuffs",
+     "op": "wear",
+     "width": 1,
+     "density": 0.22,
+     "shift": 1.2,
+     "post": true
+    }
+   ]
+  },
+  "crab": {
+   "ramp": "crab",
+   "tone": 3.3,
+   "dither": 0.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 1.8,
+     "amount": 0.3
+    },
+    {
+     "id": "dots",
+     "op": "spots",
+     "count": 0,
+     "radius": [
+      0.35,
+      0.55
+     ],
+     "roughness": 0.0,
+     "ramp": "sand",
+     "tone": 4.4,
+     "min_gap": 1.6,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_ramp": "crab",
+      "shadow_tone": 1.6
+     }
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "density": 0.45,
+     "shift": 1.5,
+     "ramps": [
+      "crab"
+     ]
+    }
+   ]
+  },
+  "limb": {
+   "ramp": "crab",
+   "tone": 3.4,
+   "dither": 0.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "band",
+     "op": "band",
+     "axis": "z",
+     "from": 0.55,
+     "to": 1.0,
+     "ramp": "sand",
+     "tone": 4.2,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_ramp": "crab",
+      "shadow_tone": 1.4
+     }
+    },
+    {
+     "id": "under",
+     "op": "fill",
+     "shift": -0.6,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "liner": {
+   "ramp": "brass",
+   "tone": 1.7,
+   "light": 0.45,
+   "dither": 0.0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "deep",
+     "op": "gradient",
+     "axis": "z",
+     "amount": 1.0
+    }
+   ]
+  },
+  "sand": {
+   "ramp": "sand",
+   "tone": 3.0,
+   "dither": 0.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "outline": "dark"
+   }
+  },
+  "pebble": {
+   "ramp": "tin",
+   "tone": 3.0,
+   "dither": 0.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.45
+    }
+   ]
+  }
+ },
+ "animations": {
+  "idle": {
+   "length": 2.8,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "body",
+     "channel": "position",
+     "osc": {
+      "axis": "y",
+      "amp": 0.16,
+      "bias": 0.16,
+      "cycles": 1,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "body",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       -0.015,
+       0.03,
+       -0.015
+      ],
+      "cycles": 1,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "eye_stalk",
+     "wave": {
+      "axis": "z",
+      "amp": 5.0,
+      "cycles": 1,
+      "lag": 0.14,
+      "growth": 1.25
+     },
+     "mirror_phase": 0.31
+    },
+    {
+     "part": "eye_stalk",
+     "wave": {
+      "axis": "x",
+      "amp": 3.0,
+      "cycles": 2,
+      "lag": 0.12,
+      "growth": 1.2,
+      "phase": 0.1
+     },
+     "mirror_phase": 0.31
+    },
+    {
+     "part": "eye",
+     "osc": {
+      "axis": "z",
+      "amp": 7.0,
+      "cycles": 1,
+      "phase": -0.3
+     },
+     "mirror_phase": 0.31
+    },
+    {
+     "part": "eye",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.12,
+       0.12,
+       -0.05
+      ],
+      "cycles": 1,
+      "shape": "pulse",
+      "phase": 0.6
+     },
+     "mirror_phase": 0.05
+    },
+    {
+     "part": "feeler",
+     "wave": {
+      "axis": "y",
+      "amp": 9.0,
+      "cycles": 3,
+      "lag": 0.16,
+      "growth": 1.3,
+      "shape": "pulse"
+     },
+     "mirror_phase": 0.43
+    },
+    {
+     "part": "feeler",
+     "wave": {
+      "axis": "x",
+      "amp": 5.0,
+      "cycles": 1,
+      "lag": 0.12,
+      "growth": 1.2
+     },
+     "mirror_phase": 0.2
+    },
+    {
+     "parts": [
+      "leg1",
+      "leg2",
+      "leg3"
+     ],
+     "wave": {
+      "axis": "x",
+      "amp": -16.0,
+      "cycles": 2,
+      "lag": 0.09,
+      "shape": "pulse"
+     },
+     "mirror_phase": 0.25
+    },
+    {
+     "parts": [
+      "leg1_tip",
+      "leg2_tip",
+      "leg3_tip"
+     ],
+     "wave": {
+      "axis": "x",
+      "amp": -14.0,
+      "cycles": 2,
+      "lag": 0.09,
+      "phase": -0.02,
+      "shape": "pulse"
+     },
+     "mirror_phase": 0.25
+    },
+    {
+     "part": "claw_arm",
+     "osc": {
+      "axis": "x",
+      "amp": 4.0,
+      "cycles": 1,
+      "phase": 0.15
+     }
+    },
+    {
+     "part": "claw_dactyl",
+     "osc": {
+      "axis": "x",
+      "amp": -14.0,
+      "cycles": 2,
+      "shape": "pulse",
+      "phase": 0.35
+     }
+    },
+    {
+     "part": "mech_jaw_up",
+     "osc": {
+      "axis": "x",
+      "amp": 4.0,
+      "cycles": 1,
+      "phase": 0.5
+     }
+    },
+    {
+     "part": "mech_gear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       2.8,
+       360
+      ]
+     ],
+     "axis": "x",
+     "ease": "linear"
+    },
+    {
+     "part": "ring_pull",
+     "osc": {
+      "axis": "z",
+      "amp": 7.0,
+      "cycles": 1,
+      "phase": 0.2
+     }
+    }
+   ]
+  },
+  "snap": {
+   "length": 1.6,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "mech_arm",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.22,
+       [
+        -5,
+        -7,
+        0
+       ]
+      ],
+      [
+       0.46,
+       [
+        -48,
+        8,
+        0
+       ],
+       "back"
+      ],
+      [
+       0.9,
+       [
+        -48,
+        8,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        -56,
+        5,
+        0
+       ],
+       "out"
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "mech_palm",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.22,
+       [
+        -3,
+        0,
+        0
+       ]
+      ],
+      [
+       0.36,
+       [
+        8,
+        0,
+        0
+       ]
+      ],
+      [
+       0.52,
+       [
+        -18,
+        0,
+        0
+       ]
+      ],
+      [
+       0.66,
+       [
+        -12,
+        0,
+        0
+       ]
+      ],
+      [
+       0.98,
+       [
+        -20,
+        0,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        3,
+        0,
+        0
+       ]
+      ],
+      [
+       1.45,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "mech_jaw_up",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.22,
+       -12
+      ],
+      [
+       0.52,
+       -12
+      ],
+      [
+       0.6,
+       27,
+       "back"
+      ],
+      [
+       0.7,
+       -8,
+       "out"
+      ],
+      [
+       0.8,
+       27,
+       "back"
+      ],
+      [
+       1.05,
+       27
+      ],
+      [
+       1.35,
+       0
+      ],
+      [
+       1.6,
+       0
+      ]
+     ],
+     "axis": "x"
+    },
+    {
+     "part": "mech_gear",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.52,
+       0
+      ],
+      [
+       0.6,
+       45,
+       "back"
+      ],
+      [
+       0.8,
+       90,
+       "back"
+      ],
+      [
+       1.6,
+       90
+      ]
+     ],
+     "axis": "x"
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.22,
+       [
+        0,
+        0.05,
+        -0.6
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0.35,
+        0.5
+       ]
+      ],
+      [
+       0.95,
+       [
+        0,
+        0.35,
+        0.4
+       ]
+      ],
+      [
+       1.05,
+       [
+        0,
+        0.25,
+        -0.7
+       ],
+       "out"
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.22,
+       [
+        0,
+        3,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        -6,
+        0
+       ]
+      ],
+      [
+       0.95,
+       [
+        0,
+        -6,
+        0
+       ]
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.22,
+       [
+        0.03,
+        -0.05,
+        0.03
+       ]
+      ],
+      [
+       0.46,
+       [
+        -0.02,
+        0.04,
+        -0.02
+       ]
+      ],
+      [
+       0.7,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0.03,
+        -0.04,
+        0.03
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye_stalk",
+     "segments": "all",
+     "raw": true,
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        -5,
+        0,
+        -3
+       ]
+      ],
+      [
+       0.55,
+       [
+        13,
+        0,
+        9
+       ],
+       "back"
+      ],
+      [
+       0.98,
+       [
+        13,
+        0,
+        9
+       ]
+      ],
+      [
+       1.12,
+       [
+        -6,
+        0,
+        -4
+       ],
+       "out"
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.55,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.62,
+       [
+        0.18,
+        0.18,
+        0
+       ]
+      ],
+      [
+       0.72,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.82,
+       [
+        0.18,
+        0.18,
+        0
+       ]
+      ],
+      [
+       0.95,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "feeler",
+     "segments": "all",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.25,
+       [
+        -12,
+        0,
+        0
+       ]
+      ],
+      [
+       0.55,
+       [
+        8,
+        0,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        8,
+        0,
+        0
+       ]
+      ],
+      [
+       1.1,
+       [
+        -10,
+        0,
+        0
+       ]
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "claw_dactyl",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.62,
+       0
+      ],
+      [
+       0.68,
+       -14,
+       "back"
+      ],
+      [
+       0.74,
+       0
+      ],
+      [
+       0.84,
+       -14,
+       "back"
+      ],
+      [
+       0.9,
+       0
+      ]
+     ],
+     "axis": "x"
+    },
+    {
+     "part": "claw_arm",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        -8,
+        6,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        -8,
+        6,
+        0
+       ]
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "leg1",
+      "leg2",
+      "leg3"
+     ],
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.95,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.05,
+       [
+        -10,
+        0,
+        0
+       ],
+       "out"
+      ],
+      [
+       1.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "tin",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.98,
+       0
+      ],
+      [
+       1.06,
+       -1.2,
+       "out"
+      ],
+      [
+       1.3,
+       0
+      ]
+     ],
+     "axis": "x"
+    },
+    {
+     "part": "ring_pull",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       0
+      ],
+      [
+       1.1,
+       14
+      ],
+      [
+       1.24,
+       -8
+      ],
+      [
+       1.38,
+       4
+      ],
+      [
+       1.6,
+       0
+      ]
+     ],
+     "axis": "z",
+     "ease": "smooth"
+    }
+   ]
+  },
+  "hide": {
+   "length": 2.6,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.14,
+       [
+        0,
+        0.45,
+        0.4
+       ]
+      ],
+      [
+       0.46,
+       [
+        0,
+        0.25,
+        -7.5
+       ],
+       "out"
+      ],
+      [
+       1.6,
+       [
+        0,
+        0.25,
+        -7.5
+       ]
+      ],
+      [
+       1.8,
+       [
+        0,
+        0.25,
+        -6.0
+       ]
+      ],
+      [
+       2.08,
+       [
+        0,
+        0.25,
+        -6.0
+       ]
+      ],
+      [
+       2.44,
+       [
+        0,
+        0,
+        0
+       ],
+       "back"
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.14,
+       [
+        -0.03,
+        0.06,
+        -0.03
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.03,
+        -0.05,
+        0.03
+       ]
+      ],
+      [
+       0.46,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.44,
+       [
+        0.03,
+        -0.05,
+        0.03
+       ]
+      ],
+      [
+       2.56,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye_stalk",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.15,
+        0.15,
+        0.15
+       ]
+      ],
+      [
+       0.38,
+       [
+        -0.75,
+        -0.75,
+        -0.75
+       ]
+      ],
+      [
+       1.62,
+       [
+        -0.75,
+        -0.75,
+        -0.75
+       ]
+      ],
+      [
+       1.82,
+       [
+        -0.5,
+        -0.5,
+        -0.5
+       ],
+       "back"
+      ],
+      [
+       2.1,
+       [
+        -0.5,
+        -0.5,
+        -0.5
+       ]
+      ],
+      [
+       2.46,
+       [
+        0,
+        0,
+        0
+       ],
+       "back"
+      ]
+     ]
+    },
+    {
+     "part": "eye_stalk",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        -10,
+        0,
+        0
+       ]
+      ],
+      [
+       0.38,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.62,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.82,
+       [
+        44,
+        0,
+        0
+       ]
+      ],
+      [
+       2.1,
+       [
+        44,
+        0,
+        0
+       ]
+      ],
+      [
+       2.46,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye_stalk",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.62,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.82,
+       [
+        0,
+        -0.6,
+        4.6
+       ]
+      ],
+      [
+       2.1,
+       [
+        0,
+        -0.6,
+        4.6
+       ]
+      ],
+      [
+       2.46,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.84,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.92,
+       [
+        0,
+        24,
+        0
+       ]
+      ],
+      [
+       1.98,
+       [
+        0,
+        24,
+        0
+       ]
+      ],
+      [
+       2.04,
+       [
+        0,
+        -20,
+        0
+       ]
+      ],
+      [
+       2.1,
+       [
+        0,
+        -20,
+        0
+       ]
+      ],
+      [
+       2.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "feeler",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.1,
+        0.1,
+        0.15
+       ]
+      ],
+      [
+       0.36,
+       [
+        -0.8,
+        -0.8,
+        -0.8
+       ]
+      ],
+      [
+       1.7,
+       [
+        -0.8,
+        -0.8,
+        -0.8
+       ]
+      ],
+      [
+       1.9,
+       [
+        -0.45,
+        -0.45,
+        -0.45
+       ]
+      ],
+      [
+       2.42,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "feeler",
+     "segments": "all",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.84,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.92,
+       [
+        -12,
+        10,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        -12,
+        -10,
+        0
+       ]
+      ],
+      [
+       2.08,
+       [
+        -12,
+        10,
+        0
+       ]
+      ],
+      [
+       2.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "leg1",
+      "leg2",
+      "leg3"
+     ],
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        -12,
+        0,
+        0
+       ]
+      ],
+      [
+       0.42,
+       [
+        -22,
+        55,
+        0
+       ]
+      ],
+      [
+       2.02,
+       [
+        -22,
+        55,
+        0
+       ]
+      ],
+      [
+       2.4,
+       [
+        0,
+        0,
+        0
+       ],
+       "back"
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "leg1",
+      "leg2",
+      "leg3"
+     ],
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.14,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.42,
+       [
+        -0.6,
+        -0.6,
+        -0.6
+       ]
+      ],
+      [
+       2.02,
+       [
+        -0.6,
+        -0.6,
+        -0.6
+       ]
+      ],
+      [
+       2.4,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "leg1_tip",
+      "leg2_tip",
+      "leg3_tip"
+     ],
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.22,
+       0
+      ],
+      [
+       0.46,
+       35
+      ],
+      [
+       2.02,
+       35
+      ],
+      [
+       2.4,
+       0
+      ]
+     ],
+     "axis": "x"
+    },
+    {
+     "part": "claw_arm",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        -18,
+        0,
+        0
+       ]
+      ],
+      [
+       0.42,
+       [
+        8,
+        -40,
+        0
+       ]
+      ],
+      [
+       2.06,
+       [
+        8,
+        -40,
+        0
+       ]
+      ],
+      [
+       2.42,
+       [
+        0,
+        0,
+        0
+       ],
+       "back"
+      ]
+     ]
+    },
+    {
+     "part": "claw_arm",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.14,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.42,
+       [
+        -0.6,
+        -0.6,
+        -0.6
+       ]
+      ],
+      [
+       2.06,
+       [
+        -0.6,
+        -0.6,
+        -0.6
+       ]
+      ],
+      [
+       2.42,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "mech_arm",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.12,
+       [
+        -8,
+        0,
+        0
+       ]
+      ],
+      [
+       0.46,
+       [
+        -4,
+        -12,
+        0
+       ]
+      ],
+      [
+       2.08,
+       [
+        -4,
+        -12,
+        0
+       ]
+      ],
+      [
+       2.46,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "mech_arm",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.14,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.46,
+       [
+        -0.55,
+        -0.55,
+        -0.55
+       ]
+      ],
+      [
+       2.08,
+       [
+        -0.55,
+        -0.55,
+        -0.55
+       ]
+      ],
+      [
+       2.46,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "mech_jaw_up",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.16,
+       0
+      ],
+      [
+       0.34,
+       27,
+       "back"
+      ],
+      [
+       2.12,
+       27
+      ],
+      [
+       2.42,
+       0
+      ]
+     ],
+     "axis": "x"
+    },
+    {
+     "part": "lid",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.4,
+       0
+      ],
+      [
+       0.7,
+       188,
+       "in"
+      ],
+      [
+       0.98,
+       200,
+       "elastic"
+      ],
+      [
+       1.34,
+       200
+      ],
+      [
+       1.42,
+       188,
+       "out"
+      ],
+      [
+       1.48,
+       190
+      ],
+      [
+       1.66,
+       152
+      ],
+      [
+       2.08,
+       152
+      ],
+      [
+       2.36,
+       0,
+       "back"
+      ]
+     ],
+     "axis": "x"
+    },
+    {
+     "part": "ring_pull",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.44,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.66,
+       [
+        165,
+        0,
+        0
+       ]
+      ],
+      [
+       0.76,
+       [
+        165,
+        0,
+        18
+       ]
+      ],
+      [
+       0.86,
+       [
+        165,
+        0,
+        -10
+       ]
+      ],
+      [
+       0.96,
+       [
+        165,
+        0,
+        4
+       ]
+      ],
+      [
+       1.06,
+       [
+        165,
+        0,
+        0
+       ]
+      ],
+      [
+       2.06,
+       [
+        165,
+        0,
+        0
+       ]
+      ],
+      [
+       2.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.4,
+       [
+        0,
+        0,
+        -14
+       ]
+      ],
+      [
+       2.5,
+       [
+        0,
+        0,
+        6
+       ]
+      ],
+      [
+       2.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "tin",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.68,
+       0
+      ],
+      [
+       0.74,
+       -1.4,
+       "out"
+      ],
+      [
+       0.92,
+       0
+      ],
+      [
+       2.32,
+       0
+      ],
+      [
+       2.38,
+       -0.6
+      ],
+      [
+       2.5,
+       0
+      ]
+     ],
+     "axis": "x"
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "base_rim",
+   "shape": "prism",
+   "sides": 12,
+   "size": [
+    50,
+    48,
+    2.2
+   ],
+   "pivot": [
+    0,
+    0,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    1.1
+   ],
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.96,
+    0.96
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "sand",
+   "paint": {
+    "ramp": "label",
+    "tone": 3.6,
+    "light": 0.7,
+    "layers": [
+     {
+      "id": "lip",
+      "op": "band",
+      "axis": "z",
+      "from": 0.35,
+      "to": 1.0,
+      "shift": 1.0,
+      "faces": [
+       "sides"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "sand",
+   "shape": "prism",
+   "sides": 12,
+   "size": [
+    47,
+    45,
+    1.2
+   ],
+   "pivot": [
+    0,
+    2.2,
+    0
+   ],
+   "offset": [
+    0,
+    0,
+    0.6
+   ],
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.94,
+    0.94
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "sand",
+   "paint": {
+    "tone": 3.1,
+    "light": 0.8,
+    "layers": [
+     {
+      "id": "ripples",
+      "op": "stripes",
+      "axis": [
+       0.3,
+       0,
+       1
+      ],
+      "period": 3.4,
+      "width": 0.22,
+      "wobble": 0.9,
+      "wobble_scale": 4.0,
+      "shift": -0.7,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "clumps",
+      "op": "patches",
+      "scale": 2.2,
+      "threshold": 0.64,
+      "shift": 0.6,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "grit",
+      "op": "spots",
+      "count": 26,
+      "radius": [
+       0.25,
+       0.4
+      ],
+      "roughness": 0.0,
+      "ramp": "sand",
+      "tone": 1.4,
+      "min_gap": 2.0,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "shells",
+      "op": "spots",
+      "count": 10,
+      "radius": [
+       0.3,
+       0.5
+      ],
+      "roughness": 0.0,
+      "ramp": "sand",
+      "tone": 5.0,
+      "min_gap": 3.0,
+      "faces": [
+       "front"
+      ],
+      "seed": 4
+     }
+    ]
+   }
+  },
+  {
+   "id": "pebble_a",
+   "shape": "prism",
+   "sides": 6,
+   "size": [
+    4.6,
+    3.6,
+    1.8
+   ],
+   "pivot": [
+    13.5,
+    3.3,
+    9.0
+   ],
+   "offset": [
+    0,
+    0,
+    0.9
+   ],
+   "rotation": [
+    -90,
+    20,
+    0
+   ],
+   "front_scale": [
+    0.7,
+    0.7
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "pebble"
+  },
+  {
+   "id": "pebble_b",
+   "shape": "prism",
+   "sides": 5,
+   "size": [
+    2.6,
+    2.2,
+    1.2
+   ],
+   "pivot": [
+    17.0,
+    3.3,
+    3.5
+   ],
+   "offset": [
+    0,
+    0,
+    0.6
+   ],
+   "rotation": [
+    -90,
+    50,
+    0
+   ],
+   "front_scale": [
+    0.7,
+    0.7
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "pebble",
+   "paint": {
+    "ramp": "gun",
+    "tone": 3.6
+   }
+  },
+  {
+   "id": "pebble_c",
+   "shape": "prism",
+   "sides": 6,
+   "size": [
+    3.2,
+    2.6,
+    1.4
+   ],
+   "pivot": [
+    -17.5,
+    3.3,
+    -6.0
+   ],
+   "offset": [
+    0,
+    0,
+    0.7
+   ],
+   "rotation": [
+    -90,
+    -30,
+    0
+   ],
+   "front_scale": [
+    0.7,
+    0.7
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "pebble"
+  },
+  {
+   "id": "glass",
+   "shape": "prism",
+   "sides": 5,
+   "size": [
+    2.4,
+    2.0,
+    1.2
+   ],
+   "pivot": [
+    -4.0,
+    3.3,
+    15.5
+   ],
+   "offset": [
+    0,
+    0,
+    0.6
+   ],
+   "rotation": [
+    -90,
+    15,
+    0
+   ],
+   "front_scale": [
+    0.65,
+    0.65
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "pebble",
+   "paint": {
+    "ramp": "label",
+    "tone": 4.6,
+    "layers": [
+     {
+      "id": "grain",
+      "amount": 0.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "starfish",
+   "shape": "card",
+   "plane": "xz",
+   "pivot": [
+    8.0,
+    3.45,
+    15.0
+   ],
+   "rotation": [
+    0,
+    -20,
+    0
+   ],
+   "style": "sand",
+   "paint": {
+    "ramp": "brass",
+    "tone": 3.0,
+    "rim": {
+     "light": 0,
+     "dark": 0
+    },
+    "light": 0.4,
+    "art_key": {
+     "o": "brass:3",
+     "h": "brass:4",
+     "d": "brass:2",
+     "k": "brass:1"
+    }
+   },
+   "art": [
+    ".....h.....",
+    ".....h.....",
+    "....hoo....",
+    "hhhhoooood.",
+    ".dooooookd.",
+    "..dooooo...",
+    "..ood.dok..",
+    ".dok...dk..",
+    ".k.......k."
+   ]
+  },
+  {
+   "id": "tin",
+   "shape": "box",
+   "chamfer": 2.6,
+   "size": [
+    24,
+    15,
+    17
+   ],
+   "pivot": [
+    0,
+    3.8,
+    -17
+   ],
+   "offset": [
+    0,
+    7.5,
+    8.5
+   ],
+   "rotation": [
+    -3,
+    0,
+    0
+   ],
+   "hide": [
+    "front"
+   ],
+   "style": "tin",
+   "paint": {
+    "ramp": "label",
+    "tone": 2.4,
+    "layers": [
+     {
+      "id": "dents",
+      "count": 0
+     },
+     {
+      "id": "waves",
+      "op": "stripes",
+      "axis": "y",
+      "period": 2.0,
+      "width": 0.3,
+      "wobble": 0.35,
+      "wobble_scale": 1.6,
+      "ramp": "label",
+      "tone": 3.9,
+      "range": [
+       -1.0,
+       -0.15
+      ],
+      "faces": [
+       "left",
+       "right",
+       "bevel_bl",
+       "bevel_br",
+       "bottom"
+      ]
+     },
+     {
+      "id": "waves_top",
+      "op": "stripes",
+      "axis": "z",
+      "period": 2.2,
+      "width": 0.28,
+      "wobble": 0.35,
+      "wobble_scale": 1.6,
+      "ramp": "label",
+      "tone": 3.6,
+      "range": [
+       -1.0,
+       -0.2
+      ],
+      "faces": [
+       "top",
+       "bevel_tl",
+       "bevel_tr"
+      ]
+     },
+     {
+      "id": "trim_back",
+      "op": "band",
+      "axis": "z",
+      "from": -0.66,
+      "to": -0.56,
+      "ramp": "sand",
+      "tone": 4.6,
+      "wobble": 0.03,
+      "bevel": {
+       "shadow": 1,
+       "highlight": 0,
+       "shadow_ramp": "label",
+       "shadow_tone": 0.6
+      },
+      "faces": [
+       "sides",
+       "bevels"
+      ]
+     },
+     {
+      "id": "trim_front",
+      "op": "band",
+      "axis": "z",
+      "from": 0.56,
+      "to": 0.66,
+      "ramp": "sand",
+      "tone": 4.6,
+      "wobble": 0.03,
+      "bevel": {
+       "shadow": 1,
+       "highlight": 0,
+       "shadow_ramp": "label",
+       "shadow_tone": 0.6
+      },
+      "faces": [
+       "sides",
+       "bevels"
+      ]
+     },
+     {
+      "id": "end_back",
+      "op": "band",
+      "axis": "z",
+      "from": -1.0,
+      "to": -0.68,
+      "ramp": "tin",
+      "tone": 4.4,
+      "wobble": 0.05,
+      "wobble_scale": 1.0,
+      "bevel": {
+       "shadow": 1,
+       "highlight": 1,
+       "shadow_ramp": "label",
+       "shadow_tone": 0.4
+      }
+     },
+     {
+      "id": "end_front",
+      "op": "band",
+      "axis": "z",
+      "from": 0.68,
+      "to": 1.0,
+      "ramp": "tin",
+      "tone": 4.4,
+      "wobble": 0.05,
+      "wobble_scale": 1.0,
+      "bevel": {
+       "shadow": 1,
+       "highlight": 1,
+       "shadow_ramp": "label",
+       "shadow_tone": 0.4
+      }
+     },
+     {
+      "id": "cap",
+      "op": "fill",
+      "ramp": "tin",
+      "tone": 4.4,
+      "faces": [
+       "back"
+      ]
+     },
+     {
+      "id": "ring1",
+      "op": "panel",
+      "inset": 2,
+      "min_size": 9,
+      "shift": -1.4,
+      "faces": [
+       "back"
+      ]
+     },
+     {
+      "id": "ring2",
+      "op": "panel",
+      "inset": 6,
+      "min_size": 9,
+      "shift": -1.0,
+      "highlight": 0.6,
+      "faces": [
+       "back"
+      ]
+     },
+     {
+      "id": "scuff",
+      "op": "patches",
+      "scale": 1.2,
+      "threshold": 0.7,
+      "shift": -0.6,
+      "faces": [
+       "-back"
+      ]
+     },
+     {
+      "id": "rivets",
+      "op": "rivets",
+      "inset": 3,
+      "min_size": 9,
+      "post": true,
+      "faces": [
+       "back"
+      ]
+     }
+    ],
+    "stamps": [
+     {
+      "face": "left",
+      "at": [
+       7,
+       4
+      ],
+      "art": [
+       "..........hhhh......",
+       "tt.....hhhffffhh....",
+       ".tt..hhffffffffffh..",
+       "..tthffbbbbbbbbfwwh.",
+       "..tfffffffffffffwefs",
+       ".ttgggfffffffffffff.",
+       "tt....ggggggggggss..",
+       "..........sssss....."
+      ],
+      "key": {
+       "h": "tin:7",
+       "f": "tin:6",
+       "b": "brass:4",
+       "g": "tin:4",
+       "s": "tin:2",
+       "t": "tin:5",
+       "w": "tin:7",
+       "e": "label:0"
+      }
+     },
+     {
+      "face": "left",
+      "at": [
+       9,
+       1
+      ],
+      "art": [
+       "o......o...o"
+      ],
+      "key": {
+       "o": "label:6"
+      }
+     },
+     {
+      "face": "right",
+      "at": [
+       7,
+       4
+      ],
+      "art": [
+       "......hhhh..........",
+       "....hhffffhhh.....tt",
+       "..hffffffffffhh..tt.",
+       ".hwwfbbbbbbbbffhtt..",
+       "sfewffffffffffffft..",
+       ".fffffffffffffgggtt.",
+       "..ssgggggggggg....tt",
+       ".....sssss.........."
+      ],
+      "key": {
+       "h": "tin:7",
+       "f": "tin:6",
+       "b": "brass:4",
+       "g": "tin:4",
+       "s": "tin:2",
+       "t": "tin:5",
+       "w": "tin:7",
+       "e": "label:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": [
+       12,
+       1
+      ],
+      "art": [
+       "o...o......o"
+      ],
+      "key": {
+       "o": "label:6"
+      }
+     },
+     {
+      "face": "top",
+      "at": [
+       3,
+       8
+      ],
+      "art": [
+       "..........hhhh......",
+       "tt.....hhhffffhh....",
+       ".tt..hhffffffffffh..",
+       "..tthffbbbbbbbbfwwh.",
+       "..tfffffffffffffwefs",
+       ".ttgggfffffffffffff.",
+       "tt....ggggggggggss..",
+       "..........sssss....."
+      ],
+      "key": {
+       "h": "tin:7",
+       "f": "tin:6",
+       "b": "brass:4",
+       "g": "tin:4",
+       "s": "tin:2",
+       "t": "tin:5",
+       "w": "tin:7",
+       "e": "label:0"
+      }
+     },
+     {
+      "face": "top",
+      "at": [
+       16,
+       16
+      ],
+      "art": [
+       "..........hhhh......",
+       "tt.....hhhffffhh....",
+       ".tt..hhffffffffffh..",
+       "..tthffbbbbbbbbfwwh.",
+       "..tfffffffffffffwefs",
+       ".ttgggfffffffffffff.",
+       "tt....ggggggggggss..",
+       "..........sssss....."
+      ],
+      "key": {
+       "h": "tin:7",
+       "f": "tin:6",
+       "b": "brass:4",
+       "g": "tin:4",
+       "s": "tin:2",
+       "t": "tin:5",
+       "w": "tin:7",
+       "e": "label:0"
+      }
+     },
+     {
+      "face": "top",
+      "at": [
+       29,
+       7
+      ],
+      "art": [
+       ".o.",
+       "o.o",
+       ".o.",
+       "...",
+       "..o"
+      ],
+      "key": {
+       "o": "label:6"
+      }
+     },
+     {
+      "face": "back",
+      "at": [
+       17,
+       13
+      ],
+      "art": [
+       "k.kk.k.kkk.k",
+       "kk.k.kk.k.kk"
+      ],
+      "key": {
+       "k": "tin:2"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "tin_back_rim",
+   "parent": "tin",
+   "shape": "box",
+   "chamfer": 2.9,
+   "size": [
+    24.8,
+    15.8,
+    1.4
+   ],
+   "pivot": [
+    0,
+    7.5,
+    0.7
+   ],
+   "hide": [
+    "front",
+    "back"
+   ],
+   "style": "tin"
+  },
+  {
+   "id": "tin_front_rim",
+   "parent": "tin",
+   "shape": "box",
+   "chamfer": 2.9,
+   "size": [
+    24.8,
+    15.8,
+    1.4
+   ],
+   "pivot": [
+    0,
+    7.5,
+    16.3
+   ],
+   "hide": [
+    "front",
+    "back"
+   ],
+   "style": "tin"
+  },
+  {
+   "id": "tin_inner",
+   "parent": "tin",
+   "shape": "box",
+   "chamfer": 2.4,
+   "size": [
+    23.5,
+    14.5,
+    0.4
+   ],
+   "pivot": [
+    0,
+    7.5,
+    3.0
+   ],
+   "hide": [
+    "back",
+    "top",
+    "bottom",
+    "left",
+    "right",
+    "bevels"
+   ],
+   "style": "liner",
+   "paint": {
+    "tone": 0.5,
+    "layers": [
+     {
+      "id": "deep",
+      "amount": 0
+     }
+    ]
+   }
+  },
+  {
+   "id": "liner_top",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "xz",
+   "size": [
+    18.7,
+    14
+   ],
+   "pivot": [
+    0,
+    14.75,
+    10
+   ],
+   "rotation": [
+    0,
+    0,
+    180
+   ],
+   "style": "liner"
+  },
+  {
+   "id": "liner_bottom",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "xz",
+   "size": [
+    18.7,
+    14
+   ],
+   "pivot": [
+    0,
+    0.25,
+    10
+   ],
+   "style": "liner",
+   "paint": {
+    "tone": 1.3
+   }
+  },
+  {
+   "id": "liner_l",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "yz",
+   "size": [
+    14,
+    9.7
+   ],
+   "pivot": [
+    -11.75,
+    7.5,
+    10
+   ],
+   "style": "liner"
+  },
+  {
+   "id": "liner_r",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "yz",
+   "size": [
+    14,
+    9.7
+   ],
+   "pivot": [
+    11.75,
+    7.5,
+    10
+   ],
+   "rotation": [
+    0,
+    0,
+    180
+   ],
+   "style": "liner"
+  },
+  {
+   "id": "liner_tl",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "yz",
+   "size": [
+    14,
+    3.5
+   ],
+   "pivot": [
+    -10.55,
+    13.55,
+    10
+   ],
+   "rotation": [
+    0,
+    0,
+    -45
+   ],
+   "style": "liner"
+  },
+  {
+   "id": "liner_tr",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "yz",
+   "size": [
+    14,
+    3.5
+   ],
+   "pivot": [
+    10.55,
+    13.55,
+    10
+   ],
+   "rotation": [
+    0,
+    0,
+    -135
+   ],
+   "style": "liner"
+  },
+  {
+   "id": "liner_bl",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "yz",
+   "size": [
+    14,
+    3.5
+   ],
+   "pivot": [
+    -10.55,
+    1.45,
+    10
+   ],
+   "rotation": [
+    0,
+    0,
+    45
+   ],
+   "style": "liner"
+  },
+  {
+   "id": "liner_br",
+   "parent": "tin",
+   "shape": "card",
+   "plane": "yz",
+   "size": [
+    14,
+    3.5
+   ],
+   "pivot": [
+    10.55,
+    1.45,
+    10
+   ],
+   "rotation": [
+    0,
+    0,
+    135
+   ],
+   "style": "liner"
+  },
+  {
+   "id": "lid",
+   "parent": "tin",
+   "shape": "box",
+   "chamfer": 2.3,
+   "size": [
+    22.6,
+    13.6,
+    1.0
+   ],
+   "pivot": [
+    0,
+    14.6,
+    17.0
+   ],
+   "offset": [
+    0,
+    -6.8,
+    0.6
+   ],
+   "rotation": [
+    -200,
+    0,
+    0
+   ],
+   "style": "tin",
+   "paint": {
+    "layers": [
+     {
+      "id": "lacquer",
+      "op": "fill",
+      "ramp": "brass",
+      "tone": 2.9,
+      "faces": [
+       "back"
+      ]
+     },
+     {
+      "id": "rib1",
+      "op": "panel",
+      "inset": 2,
+      "min_size": 9,
+      "shift": -1.2,
+      "faces": [
+       "front",
+       "back"
+      ]
+     },
+     {
+      "id": "rib2",
+      "op": "panel",
+      "inset": 5,
+      "min_size": 9,
+      "shift": -0.9,
+      "highlight": 0.7,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "streak",
+      "op": "stripes",
+      "axis": [
+       1,
+       0.9,
+       0
+      ],
+      "period": 9.0,
+      "width": 0.14,
+      "shift": 0.7,
+      "faces": [
+       "back"
+      ],
+      "phase": 2.0
+     },
+     {
+      "id": "gloss",
+      "ramps": [
+       "tin",
+       "brass"
+      ]
+     }
+    ],
+    "stamps": [
+     {
+      "face": "front",
+      "at": [
+       20,
+       2
+      ],
+      "art": [
+       "hhhh",
+       "hssh",
+       "hssh",
+       "hhhh"
+      ],
+      "key": {
+       "h": "tin:6",
+       "s": "tin:2"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "lid_curl",
+   "parent": "lid",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    3.0,
+    3.0,
+    21.4
+   ],
+   "pivot": [
+    0,
+    -13.2,
+    1.9
+   ],
+   "rotation": [
+    0,
+    90,
+    0
+   ],
+   "style": "tin",
+   "paint": {
+    "layers": [
+     {
+      "id": "dents",
+      "count": 0
+     }
+    ],
+    "stamps": [
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".kkkk.",
+       "kshhsk",
+       "kskhsk",
+       "ksksk.",
+       "kssssk",
+       ".kkkk."
+      ],
+      "key": {
+       "k": "tin:1",
+       "s": "tin:4",
+       "h": "tin:6"
+      }
+     },
+     {
+      "face": "back",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       ".kkkk.",
+       "kshhsk",
+       "kshksk",
+       ".ksksk",
+       "kssssk",
+       ".kkkk."
+      ],
+      "key": {
+       "k": "tin:1",
+       "s": "tin:4",
+       "h": "tin:6"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "ring_pull",
+   "parent": "lid",
+   "shape": "card",
+   "plane": "xy",
+   "pivot": [
+    3.0,
+    -13.6,
+    2.2
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "style": "tin",
+   "paint": {
+    "rim": {
+     "light": 0,
+     "dark": 0
+    },
+    "art_key": {
+     "h": "tin:7",
+     "o": "tin:5",
+     "s": "tin:3",
+     "d": "tin:1"
+    }
+   },
+   "art": [
+    "..hhhhhh..",
+    ".hoddddoo.",
+    "ho......os",
+    "ho......os",
+    "oo......ss",
+    ".os....ss.",
+    "..osssss..",
+    "...oddo...",
+    "...hoos..."
+   ],
+   "offset": [
+    0,
+    -1.8,
+    0
+   ]
+  },
+  {
+   "id": "body",
+   "parent": "tin",
+   "shape": "loft",
+   "pivot": [
+    0,
+    4.6,
+    14.5
+   ],
+   "profile": {
+    "sides": 8,
+    "round": 2.8
+   },
+   "subdiv": 1,
+   "caps": [
+    false,
+    true
+   ],
+   "rings": [
+    {
+     "at": [
+      0,
+      0.4,
+      -6.5
+     ],
+     "size": [
+      11.0,
+      6.6
+     ]
+    },
+    {
+     "at": [
+      0,
+      0.8,
+      -2.0
+     ],
+     "size": [
+      13.0,
+      8.0
+     ]
+    },
+    {
+     "at": [
+      0,
+      0.8,
+      2.5
+     ],
+     "size": [
+      12.0,
+      7.6
+     ]
+    },
+    {
+     "at": [
+      0,
+      0.2,
+      5.5
+     ],
+     "size": [
+      8.4,
+      5.2
+     ]
+    }
+   ],
+   "style": "crab",
+   "paint": {
+    "layers": [
+     {
+      "id": "dots",
+      "count": 18,
+      "where": {
+       "around": [
+        0.8,
+        0.3
+       ]
+      },
+      "seed": 3
+     },
+     {
+      "id": "belly",
+      "op": "band",
+      "axis": "y",
+      "from": -1.0,
+      "to": -0.55,
+      "ramp": "sand",
+      "tone": 3.6,
+      "bevel": {
+       "shadow": 1,
+       "highlight": 0,
+       "shadow_ramp": "crab",
+       "shadow_tone": 1.5
+      }
+     },
+     {
+      "id": "groove",
+      "op": "stripes",
+      "axis": "path",
+      "period": 3.0,
+      "width": 0.14,
+      "shift": -1.0,
+      "faces": [
+       "top",
+       "flanks"
+      ],
+      "range": [
+       0.55,
+       0.85
+      ]
+     }
+    ],
+    "stamps": [
+     {
+      "face": "end",
+      "at": "center",
+      "offset": [
+       0,
+       2
+      ],
+      "art": [
+       ".s.s..s.s.",
+       "sks.ss.sks",
+       ".k..kk..k."
+      ],
+      "key": {
+       "s": "sand:4",
+       "k": "crab:0"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "eye_stalk",
+   "parent": "body",
+   "shape": "loft",
+   "chain": true,
+   "attach": {
+    "t": 0.86,
+    "around": 0.08,
+    "align": "none"
+   },
+   "mirror": true,
+   "profile": {
+    "sides": 6,
+    "round": 2.2
+   },
+   "subdiv": 0,
+   "caps": [
+    false,
+    false
+   ],
+   "rings": [
+    {
+     "at": [
+      0,
+      -0.6,
+      0
+     ],
+     "size": 2.4
+    },
+    {
+     "at": [
+      0.7,
+      3.6,
+      0.6
+     ],
+     "size": 2.0
+    },
+    {
+     "at": [
+      1.6,
+      7.0,
+      1.2
+     ],
+     "size": 1.7
+    }
+   ],
+   "style": "crab",
+   "paint": {
+    "layers": [
+     {
+      "id": "dots",
+      "count": 0
+     },
+     {
+      "id": "bands",
+      "op": "stripes",
+      "axis": "path",
+      "period": 2.4,
+      "width": 0.4,
+      "ramp": "sand",
+      "tone": 4.3,
+      "phase": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "id": "eye",
+   "parent": "eye_stalk",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    6.4,
+    6.4,
+    3.0
+   ],
+   "pivot": [
+    1.6,
+    7.0,
+    1.2
+   ],
+   "offset": [
+    0,
+    2.2,
+    0.6
+   ],
+   "front_scale": [
+    0.84,
+    0.84
+   ],
+   "style": "tin",
+   "paint": {
+    "tone": 5.4,
+    "layers": [
+     {
+      "id": "dents",
+      "count": 0
+     },
+     {
+      "id": "wear",
+      "density": 0.0
+     }
+    ],
+    "stamps": [
+     {
+      "face": "front",
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "...wwww...",
+       ".wwwwwwww.",
+       ".wwwwwwwws",
+       "wwpppppwws",
+       "wpphhpppws",
+       "wpphppppws",
+       "wpppppppss",
+       ".wpppppwss",
+       ".wwpppwss.",
+       "...ssss..."
+      ],
+      "key": {
+       "w": "tin:7",
+       "s": "tin:5",
+       "p": "gun:0",
+       "h": "tin:7"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "feeler",
+   "parent": "body",
+   "shape": "loft",
+   "chain": true,
+   "attach": {
+    "t": 0.97,
+    "around": 0.12,
+    "align": "none"
+   },
+   "mirror": true,
+   "profile": {
+    "sides": 4,
+    "round": 2.0
+   },
+   "subdiv": 1,
+   "caps": [
+    false,
+    false
+   ],
+   "hide": [
+    "joint1_end",
+    "joint1_start"
+   ],
+   "rings": [
+    {
+     "at": [
+      0,
+      0,
+      0
+     ],
+     "size": 0.8
+    },
+    {
+     "at": [
+      1.8,
+      2.8,
+      3.0
+     ],
+     "size": 0.6
+    },
+    {
+     "at": [
+      4.6,
+      3.6,
+      6.6
+     ],
+     "size": 0.4
+    }
+   ],
+   "style": "crab",
+   "paint": {
+    "tone": 4.0,
+    "layers": [
+     {
+      "id": "dots",
+      "count": 0
+     },
+     {
+      "id": "tip",
+      "op": "band",
+      "axis": "path",
+      "from": 0.7,
+      "to": 1.0,
+      "ramp": "sand",
+      "tone": 4.6
+     }
+    ]
+   }
+  },
+  {
+   "id": "leg1",
+   "parent": "body",
+   "shape": "taper",
+   "size": [
+    2.1,
+    2.1,
+    6.6
+   ],
+   "attach": {
+    "t": 0.82,
+    "around": 0.34,
+    "align": "none"
+   },
+   "offset": [
+    0,
+    0,
+    3.3
+   ],
+   "rotation": [
+    -30,
+    90,
+    0
+   ],
+   "front_scale": [
+    0.8,
+    0.8
+   ],
+   "hide": [
+    "back"
+   ],
+   "mirror": true,
+   "style": "limb"
+  },
+  {
+   "id": "leg1_tip",
+   "parent": "leg1",
+   "shape": "taper",
+   "size": [
+    1.7,
+    1.7,
+    7.6
+   ],
+   "pivot": [
+    0,
+    0,
+    6.3
+   ],
+   "offset": [
+    0,
+    0,
+    3.8
+   ],
+   "rotation": [
+    104,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.0,
+    0.0
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "limb",
+   "paint": {
+    "layers": [
+     {
+      "id": "band",
+      "from": -0.45,
+      "to": -0.1
+     },
+     {
+      "id": "nail",
+      "op": "band",
+      "axis": "z",
+      "from": 0.55,
+      "to": 1.0,
+      "ramp": "crab",
+      "tone": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "leg2",
+   "parent": "body",
+   "shape": "taper",
+   "size": [
+    2.1,
+    2.1,
+    6.6
+   ],
+   "attach": {
+    "t": 0.89,
+    "around": 0.36,
+    "align": "none"
+   },
+   "offset": [
+    0,
+    0,
+    3.3
+   ],
+   "rotation": [
+    -30,
+    70,
+    0
+   ],
+   "front_scale": [
+    0.8,
+    0.8
+   ],
+   "hide": [
+    "back"
+   ],
+   "mirror": true,
+   "style": "limb"
+  },
+  {
+   "id": "leg2_tip",
+   "parent": "leg2",
+   "shape": "taper",
+   "size": [
+    1.7,
+    1.7,
+    7.6
+   ],
+   "pivot": [
+    0,
+    0,
+    6.3
+   ],
+   "offset": [
+    0,
+    0,
+    3.8
+   ],
+   "rotation": [
+    104,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.0,
+    0.0
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "limb",
+   "paint": {
+    "layers": [
+     {
+      "id": "band",
+      "from": -0.45,
+      "to": -0.1
+     },
+     {
+      "id": "nail",
+      "op": "band",
+      "axis": "z",
+      "from": 0.55,
+      "to": 1.0,
+      "ramp": "crab",
+      "tone": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "leg3",
+   "parent": "body",
+   "shape": "taper",
+   "size": [
+    2.1,
+    2.1,
+    6.6
+   ],
+   "attach": {
+    "t": 0.96,
+    "around": 0.38,
+    "align": "none"
+   },
+   "offset": [
+    0,
+    0,
+    3.3
+   ],
+   "rotation": [
+    -30,
+    50,
+    0
+   ],
+   "front_scale": [
+    0.8,
+    0.8
+   ],
+   "hide": [
+    "back"
+   ],
+   "mirror": true,
+   "style": "limb"
+  },
+  {
+   "id": "leg3_tip",
+   "parent": "leg3",
+   "shape": "taper",
+   "size": [
+    1.7,
+    1.7,
+    7.6
+   ],
+   "pivot": [
+    0,
+    0,
+    6.3
+   ],
+   "offset": [
+    0,
+    0,
+    3.8
+   ],
+   "rotation": [
+    104,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.0,
+    0.0
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "limb",
+   "paint": {
+    "layers": [
+     {
+      "id": "band",
+      "from": -0.45,
+      "to": -0.1
+     },
+     {
+      "id": "nail",
+      "op": "band",
+      "axis": "z",
+      "from": 0.55,
+      "to": 1.0,
+      "ramp": "crab",
+      "tone": 1.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "claw_arm",
+   "parent": "body",
+   "shape": "taper",
+   "size": [
+    2.2,
+    2.0,
+    4.4
+   ],
+   "attach": {
+    "t": 0.9,
+    "around": 0.3,
+    "align": "none"
+   },
+   "offset": [
+    0,
+    0,
+    2.5
+   ],
+   "rotation": [
+    -24,
+    34,
+    0
+   ],
+   "front_scale": [
+    0.85,
+    0.85
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "limb"
+  },
+  {
+   "id": "claw_palm",
+   "parent": "claw_arm",
+   "shape": "box",
+   "chamfer": 0.9,
+   "size": [
+    3.2,
+    3.0,
+    3.8
+   ],
+   "pivot": [
+    0,
+    0,
+    4.4
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    -5,
+    -28,
+    0
+   ],
+   "style": "crab",
+   "paint": {
+    "layers": [
+     {
+      "id": "dots",
+      "count": 5,
+      "radius": [
+       0.35,
+       0.45
+      ],
+      "seed": 2
+     }
+    ]
+   }
+  },
+  {
+   "id": "claw_finger",
+   "parent": "claw_palm",
+   "shape": "taper",
+   "size": [
+    1.5,
+    1.2,
+    3.2
+   ],
+   "pivot": [
+    0,
+    -0.75,
+    3.5
+   ],
+   "offset": [
+    0,
+    0,
+    1.5
+   ],
+   "rotation": [
+    -6,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.0,
+    0.0
+   ],
+   "style": "limb",
+   "paint": {
+    "layers": [
+     {
+      "id": "band",
+      "from": 0.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "claw_dactyl",
+   "parent": "claw_palm",
+   "shape": "taper",
+   "size": [
+    1.5,
+    1.2,
+    3.4
+   ],
+   "pivot": [
+    0,
+    0.75,
+    3.5
+   ],
+   "offset": [
+    0,
+    0,
+    1.6
+   ],
+   "rotation": [
+    16,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.0,
+    0.0
+   ],
+   "style": "limb",
+   "paint": {
+    "layers": [
+     {
+      "id": "band",
+      "from": 0.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "mech_arm",
+   "parent": "body",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    3.4,
+    3.4,
+    5.0
+   ],
+   "attach": {
+    "t": 0.9,
+    "around": 0.71,
+    "align": "none"
+   },
+   "offset": [
+    0,
+    0,
+    2.5
+   ],
+   "rotation": [
+    26,
+    -50,
+    0
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "gun",
+   "paint": {
+    "layers": [
+     {
+      "id": "rings",
+      "op": "stripes",
+      "axis": "z",
+      "period": 1.6,
+      "width": 0.3,
+      "shift": -1.1
+     }
+    ]
+   }
+  },
+  {
+   "id": "mech_elbow",
+   "parent": "mech_arm",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    4.8,
+    4.8,
+    3.6
+   ],
+   "pivot": [
+    0,
+    0,
+    5.2
+   ],
+   "rotation": [
+    0,
+    90,
+    0
+   ],
+   "style": "tin",
+   "paint": {
+    "layers": [
+     {
+      "id": "dents",
+      "count": 0
+     },
+     {
+      "id": "hub",
+      "op": "rect",
+      "rect": [
+       0.3,
+       0.3,
+       0.7,
+       0.7
+      ],
+      "ramp": "brass",
+      "tone": 3.4,
+      "faces": [
+       "caps"
+      ],
+      "bevel": true
+     },
+     {
+      "id": "bolts",
+      "op": "rivets",
+      "inset": 1,
+      "min_size": 7,
+      "faces": [
+       "caps"
+      ],
+      "post": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "mech_fore",
+   "parent": "mech_arm",
+   "shape": "prism",
+   "sides": 8,
+   "size": [
+    3.8,
+    3.8,
+    4.0
+   ],
+   "pivot": [
+    0,
+    0,
+    5.2
+   ],
+   "offset": [
+    0,
+    0,
+    2.0
+   ],
+   "rotation": [
+    -2,
+    100,
+    0
+   ],
+   "hide": [
+    "back"
+   ],
+   "style": "tin",
+   "paint": {
+    "ramp": "label",
+    "tone": 2.8,
+    "layers": [
+     {
+      "id": "dents",
+      "count": 0
+     },
+     {
+      "id": "scrap",
+      "op": "stripes",
+      "axis": "z",
+      "period": 1.4,
+      "width": 0.3,
+      "ramp": "label",
+      "tone": 4.3,
+      "wobble": 0.2
+     },
+     {
+      "id": "cuff",
+      "op": "band",
+      "axis": "z",
+      "from": 0.55,
+      "to": 1.0,
+      "ramp": "tin",
+      "tone": 4.0,
+      "bevel": {
+       "shadow": 1,
+       "highlight": 1,
+       "shadow_ramp": "label",
+       "shadow_tone": 0.5
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "mech_palm",
+   "parent": "mech_fore",
+   "shape": "prism",
+   "sides": 10,
+   "size": [
+    8.2,
+    7.6,
+    7.4
+   ],
+   "pivot": [
+    0,
+    0,
+    3.8
+   ],
+   "offset": [
+    0,
+    0,
+    3.7
+   ],
+   "rotation": [
+    12,
+    12,
+    0
+   ],
+   "style": "tin",
+   "paint": {
+    "layers": [
+     {
+      "id": "dents",
+      "count": 3,
+      "seed": 5,
+      "faces": [
+       "sides"
+      ]
+     },
+     {
+      "id": "label",
+      "op": "band",
+      "axis": "z",
+      "from": -0.55,
+      "to": 0.45,
+      "ramp": "label",
+      "tone": 2.5,
+      "wobble": 0.08,
+      "faces": [
+       "sides"
+      ],
+      "bevel": {
+       "shadow": 1,
+       "highlight": 1,
+       "shadow_ramp": "tin",
+       "shadow_tone": 1.6
+      }
+     },
+     {
+      "id": "label_wave",
+      "op": "stripes",
+      "axis": "y",
+      "period": 1.3,
+      "width": 0.3,
+      "wobble": 0.3,
+      "wobble_scale": 1.2,
+      "ramp": "label",
+      "tone": 4.0,
+      "range": [
+       -1.0,
+       -0.1
+      ],
+      "faces": [
+       "sides"
+      ]
+     },
+     {
+      "id": "trim",
+      "op": "band",
+      "axis": "z",
+      "from": 0.45,
+      "to": 0.62,
+      "ramp": "sand",
+      "tone": 4.6,
+      "faces": [
+       "sides"
+      ]
+     },
+     {
+      "id": "endcap",
+      "op": "fill",
+      "ramp": "gun",
+      "tone": 2.8,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "seam",
+      "op": "panel",
+      "inset": 1,
+      "min_size": 8,
+      "shift": -1.0,
+      "faces": [
+       "caps"
+      ]
+     },
+     {
+      "id": "rivets",
+      "op": "rivets",
+      "inset": 1,
+      "min_size": 7,
+      "post": true,
+      "faces": [
+       "caps"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mech_jaw_lo",
+   "parent": "mech_palm",
+   "shape": "taper",
+   "size": [
+    4.4,
+    3.0,
+    6.6
+   ],
+   "pivot": [
+    0,
+    -2.1,
+    7.0
+   ],
+   "offset": [
+    0,
+    0,
+    3.1
+   ],
+   "rotation": [
+    2,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.7,
+    0.6
+   ],
+   "front_shift": [
+    0,
+    0.3
+   ],
+   "chamfer": 0.5,
+   "style": "tin",
+   "paint": {
+    "layers": [
+     {
+      "id": "teeth",
+      "op": "stripes",
+      "axis": "z",
+      "period": 1.0,
+      "width": 0.5,
+      "shift": -1.6,
+      "faces": [
+       "top"
+      ]
+     },
+     {
+      "id": "rivets",
+      "op": "rivets",
+      "inset": 1,
+      "spacing": 4,
+      "min_size": 5,
+      "post": true,
+      "faces": [
+       "left",
+       "right"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "mech_hook_lo",
+   "parent": "mech_jaw_lo",
+   "shape": "taper",
+   "size": [
+    3.0,
+    1.9,
+    3.4
+   ],
+   "pivot": [
+    0,
+    0.35,
+    6.0
+   ],
+   "offset": [
+    0,
+    0,
+    1.5
+   ],
+   "rotation": [
+    -34,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.0,
+    0.0
+   ],
+   "style": "tin"
+  },
+  {
+   "id": "mech_jaw_up",
+   "parent": "mech_palm",
+   "shape": "taper",
+   "size": [
+    4.4,
+    3.2,
+    7.2
+   ],
+   "pivot": [
+    0,
+    2.0,
+    6.8
+   ],
+   "offset": [
+    0,
+    0,
+    3.4
+   ],
+   "rotation": [
+    -28,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.7,
+    0.6
+   ],
+   "front_shift": [
+    0,
+    -0.3
+   ],
+   "chamfer": 0.5,
+   "style": "gun",
+   "paint": {
+    "layers": [
+     {
+      "id": "teeth",
+      "op": "stripes",
+      "axis": "z",
+      "period": 1.0,
+      "width": 0.5,
+      "ramp": "tin",
+      "tone": 4.6,
+      "faces": [
+       "bottom"
+      ]
+     },
+     {
+      "id": "rivets",
+      "op": "rivets",
+      "inset": 1,
+      "spacing": 4,
+      "min_size": 5,
+      "post": true,
+      "faces": [
+       "top",
+       "left",
+       "right"
+      ],
+      "ramp": "tin",
+      "tone": 5.2
+     }
+    ]
+   }
+  },
+  {
+   "id": "mech_hook_up",
+   "parent": "mech_jaw_up",
+   "shape": "taper",
+   "size": [
+    3.0,
+    2.1,
+    3.8
+   ],
+   "pivot": [
+    0,
+    -0.35,
+    6.6
+   ],
+   "offset": [
+    0,
+    0,
+    1.7
+   ],
+   "rotation": [
+    38,
+    0,
+    0
+   ],
+   "front_scale": [
+    0.0,
+    0.0
+   ],
+   "style": "gun"
+  },
+  {
+   "id": "mech_pin",
+   "parent": "mech_palm",
+   "shape": "prism",
+   "sides": 6,
+   "size": [
+    1.8,
+    1.8,
+    6.6
+   ],
+   "pivot": [
+    0,
+    2.0,
+    6.8
+   ],
+   "rotation": [
+    0,
+    90,
+    0
+   ],
+   "style": "gun",
+   "paint": {
+    "ramp": "brass",
+    "tone": 3.2
+   }
+  },
+  {
+   "id": "mech_gear",
+   "parent": "mech_palm",
+   "shape": "card",
+   "plane": "yz",
+   "pivot": [
+    -4.2,
+    1.9,
+    3.4
+   ],
+   "style": "gun",
+   "paint": {
+    "ramp": "brass",
+    "tone": 3.0,
+    "rim": {
+     "light": 0,
+     "dark": 0
+    },
+    "light": 0.5,
+    "art_key": {
+     "o": "brass:3",
+     "h": "brass:5",
+     "l": "brass:4",
+     "d": "brass:2",
+     "x": "brass:1",
+     "k": "gun:1"
+    }
+   },
+   "art": [
+    ".....hh......",
+    "..h..hl..o...",
+    "..hhhllooo...",
+    "...hlllooo...",
+    "hhlllodddoodd",
+    "hlllodkkkdodd",
+    "..lldkkkkkdd.",
+    "lloodkkkkkdxx",
+    "oooodkkkdxdxx",
+    "...oodddxxx..",
+    "..oooddxxxx..",
+    "..o..dx..x...",
+    "......xx....."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,929 @@
+{
+  "name": "Duskmoth Griffin",
+  "description": "Original owl-moth-lynx griffin.",
+  "author": "lowpix example",
+  "license": "CC0-1.0",
+  "density": 2,
+  "budget": {"tris": 1400, "colors": 56},
+  "light": {"dir": [-0.55, 1.0, 0.65], "strength": 1.1, "gradient": 0.5, "ao": 0.9, "ao_height": 4.0},
+  "render": {"background": "#17262b", "hero": [-32, 18], "shadow": 0.5},
+  "palette": {
+    "ramps": {
+      "plum": [
+        "#120b1a",
+        "#21142b",
+        "#33203d",
+        "#4a2f50",
+        "#654265",
+        "#85597a",
+        "#a87a8f",
+        "#cfa8a8"],
+      "ash": [
+        "#2c2433",
+        "#4b4052",
+        "#6f6474",
+        "#958a95",
+        "#bab0b4",
+        "#ddd3cd",
+        "#f4ede2"],
+      "mauve": [
+        "#2a1630",
+        "#45234a",
+        "#653a62",
+        "#8a5878",
+        "#b07f92",
+        "#d4aab0"],
+      "moon": [
+        "#3d2008",
+        "#7a4a0e",
+        "#c08418",
+        "#f0c040",
+        "#ffe57a",
+        "#fffbd8"],
+      "teal": [
+        "#0a1f2a",
+        "#11404a",
+        "#1d6e6e",
+        "#38a395",
+        "#86d8c0"],
+      "bean": [
+        "#5a2c44",
+        "#8e4c66",
+        "#c47c8e",
+        "#eab0b4"],
+      "horn": [
+        "#1c1416",
+        "#3a2a28",
+        "#62483c",
+        "#8f7058",
+        "#bea078"]
+    }
+  },
+  "styles": {
+    "fur": {
+      "ramp": "plum",
+      "tone": 3.0,
+      "dither": 0.0,
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 2.2, "amount": 0.35},
+        {
+          "id": "lynx",
+          "op": "spots",
+          "count": 0,
+          "radius": [0.6, 1.0],
+          "shift": -1.4,
+          "roughness": 0.35,
+          "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 0.9}
+        },
+        {"id": "sheen", "op": "patches", "scale": 1.2, "threshold": 0.62, "shift": 0.9, "min_light": 0.55, "post": true}
+      ]
+    },
+    "pale": {"ramp": "ash", "tone": 3.6, "dither": 0.0, "layers": [{"id": "mottle", "op": "noise", "scale": 2.0, "amount": 0.3}]},
+    "card": {"ramp": "ash", "tone": 3.0, "light": 0.0, "rim": {"light": 0, "dark": 0}}
+  },
+  "animations": {
+    "idle": {
+      "length": 3.0,
+      "loop": true,
+      "tracks": [
+        {
+          "part": "head",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.3, [-3, 6, 15], "back"],
+            [1.15, [-3, 6, 15]],
+            [1.45, [2, -7, -11], "back"],
+            [2.2, [2, -7, -11]],
+            [2.6, [0, 0, 0]],
+            [3.0, [0, 0, 0]]
+          ]
+        },
+        {"part": "head", "channel": "position", "osc": {"axis": "y", "amp": 0.18, "cycles": 2, "phase": 0.1}},
+        {"part": "eye", "channel": "scale", "osc": {"amp": [0, -0.86, 0], "cycles": 1, "phase": 0.6, "shape": "pulse"}},
+        {
+          "parts": [
+            "antenna",
+            "antenna_mid",
+            "antenna_tip"],
+          "wave": {"axis": "x", "amp": 4, "cycles": 2, "lag": 0.14, "growth": 1.3},
+          "mirror_phase": 0.08
+        },
+        {
+          "part": "antenna_tip",
+          "osc": {"axis": "z", "amp": -9, "cycles": 1, "phase": 0.35, "shape": "pulse"},
+          "mirror_phase": 0.12
+        },
+        {"part": "wing_root", "osc": {"axis": "z", "amp": 3.5, "cycles": 1}},
+        {"part": "wing_root", "osc": {"axis": "y", "amp": 3, "cycles": 1, "phase": 0.1}},
+        {"part": "hind_root", "osc": {"axis": "z", "amp": 3, "cycles": 1, "phase": -0.06}},
+        {
+          "part": "wing_root",
+          "axis": "z",
+          "ease": "smooth",
+          "keys": [[0, 0], [1.85, 0], [1.95, 9], [2.05, -3], [2.15, 7], [2.27, -2], [2.42, 0], [3.0, 0]]
+        },
+        {
+          "part": "hind_root",
+          "axis": "z",
+          "ease": "smooth",
+          "keys": [[0, 0], [1.9, 0], [2.0, 7], [2.1, -3], [2.2, 6], [2.32, -2], [2.48, 0], [3.0, 0]]
+        },
+        {"part": "tail", "wave": {"axis": "y", "amp": 6, "cycles": 1, "lag": 0.12, "growth": 1.25}},
+        {
+          "parts": ["tail_1", "tail_2"],
+          "wave": {"axis": "x", "amp": 10, "cycles": 1, "phase": 0.75, "lag": 0.04, "shape": "pulse"}
+        },
+        {"part": "bib", "channel": "scale", "osc": {"amp": [0.03, 0.05, 0], "cycles": 1, "phase": 0.25}}
+      ]
+    },
+    "fly": {
+      "length": 1.0,
+      "loop": true,
+      "tracks": [
+        {"part": "body", "channel": "position", "axis": "y", "keys": [[0, 8.6], [0.55, 7.4], [1.0, 8.6]]},
+        {"part": "body", "axis": "x", "keys": [[0, -7], [0.55, -4], [1.0, -7]]},
+        {"part": "forewing", "osc": {"axis": "x", "amp": 8, "bias": 62, "cycles": 1, "phase": 0.6}},
+        {"part": "hindwing", "osc": {"axis": "x", "amp": 8, "bias": 56, "cycles": 1, "phase": 0.55}},
+        {"part": "wing_root", "axis": "z", "keys": [[0, -30], [0.58, 40], [1.0, -30]]},
+        {"part": "hind_root", "axis": "z", "keys": [[0, -24], [0.07, -28], [0.65, 34], [1.0, -24]]},
+        {"part": "wing_root", "osc": {"axis": "y", "amp": 6, "cycles": 1, "phase": 0.3}},
+        {"part": "front_leg", "osc": {"axis": "x", "amp": 4, "bias": 62, "cycles": 1, "phase": 0.2}},
+        {"part": "front_paw", "osc": {"axis": "x", "amp": 6, "bias": 50, "cycles": 1, "phase": 0.1}},
+        {"part": "back_leg", "osc": {"axis": "x", "amp": 4, "bias": 58, "cycles": 1, "phase": 0.3}},
+        {"part": "back_paw", "osc": {"axis": "x", "amp": 6, "bias": 40, "cycles": 1, "phase": 0.2}},
+        {"part": "tail", "segments": "all", "axis": "x", "keys": [[0, -22]]},
+        {"part": "tail", "wave": {"axis": "x", "amp": 6, "cycles": 1, "lag": 0.15, "growth": 1.2, "phase": 0.5}},
+        {"part": "tail", "wave": {"axis": "y", "amp": 5, "cycles": 1, "lag": 0.15, "growth": 1.2}},
+        {"part": "head", "axis": "x", "keys": [[0, 6], [0.55, 3], [1.0, 6]]},
+        {
+          "parts": [
+            "antenna",
+            "antenna_mid",
+            "antenna_tip"],
+          "wave": {"axis": "x", "amp": 6, "bias": -12, "cycles": 1, "lag": 0.12, "growth": 1.2, "phase": 0.45}
+        }
+      ]
+    },
+    "headturn": {
+      "length": 2.4,
+      "loop": true,
+      "tracks": [
+        {
+          "part": "head",
+          "axis": "y",
+          "keys": [[0, 0], [0.25, -8], [0.75, 110, "back"], [1.45, 110], [1.95, 0, "back"], [2.4, 0]]
+        },
+        {"part": "head", "axis": "z", "ease": "smooth", "keys": [[0, 0], [0.8, 0], [1.05, 13], [1.3, 13], [1.5, 0], [2.4, 0]]},
+        {"part": "eye", "channel": "scale", "osc": {"amp": [0, -0.86, 0], "cycles": 1, "phase": 0.5, "shape": "pulse"}},
+        {
+          "parts": [
+            "antenna",
+            "antenna_mid",
+            "antenna_tip"],
+          "axis": "y",
+          "raw": true,
+          "ease": "smooth",
+          "keys": [
+            [0, 0],
+            [0.25, 4],
+            [0.55, -14],
+            [0.9, 9],
+            [1.15, -3],
+            [1.4, 0],
+            [1.5, 0],
+            [1.75, 14],
+            [2.05, -8],
+            [2.25, 2],
+            [2.4, 0]
+          ]
+        },
+        {"part": "tail", "wave": {"axis": "y", "amp": 4, "cycles": 1, "lag": 0.12, "growth": 1.25}},
+        {"part": "wing_root", "osc": {"axis": "z", "amp": 2.5, "cycles": 1}}
+      ]
+    }
+  },
+  "parts": [
+    {
+      "id": "body",
+      "shape": "loft",
+      "profile": {"sides": 8, "round": 2.6},
+      "subdiv": 1,
+      "caps": [true, true],
+      "rings": [
+        {"at": [0, 13.2, 8.6], "size": [10.0, 10.0]},
+        {"at": [0, 13.4, 5.0], "size": [13.6, 13.0]},
+        {"at": [0, 13.0, -1.0], "size": [13.0, 12.0]},
+        {"at": [0, 12.6, -7.0], "size": [12.2, 11.0]},
+        {"at": [0, 12.8, -11.2], "size": [8.4, 8.0]}
+      ],
+      "style": "fur",
+      "paint": {
+        "layers": [
+          {"id": "lynx", "count": 16, "where": {"around": [0.15, 0.4]}, "seed": 4},
+          {"id": "belly", "op": "band", "axis": "y", "from": -1.0, "to": -0.45, "wobble": 0.15, "ramp": "ash", "tone": 2.6},
+          {
+            "id": "barring",
+            "op": "stripes",
+            "axis": "path",
+            "period": 3.4,
+            "width": 0.2,
+            "wobble": 0.5,
+            "shift": -1.3,
+            "range": [0.22, 0.95],
+            "faces": ["top", "flanks"],
+            "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.0}
+          }
+        ]
+      }
+    },
+    {
+      "id": "head",
+      "parent": "body",
+      "shape": "loft",
+      "pivot": [0, 19.5, 5.5],
+      "rotation": [-4, 0, 0],
+      "profile": {"sides": 10, "round": 2.3},
+      "subdiv": 1,
+      "caps": [true, true],
+      "rings": [
+        {"at": [0, 0.4, -5.6], "size": [9.6, 8.6]},
+        {"at": [0, 0.9, -2.8], "size": [15.2, 13.4]},
+        {"at": [0, 1.0, 1.4], "size": [17.4, 14.6]},
+        {"at": [0, 0.6, 4.6], "size": [16.6, 13.6]}
+      ],
+      "style": "fur",
+      "paint": {
+        "layers": [
+          {
+            "id": "crown",
+            "op": "spots",
+            "count": 12,
+            "radius": [0.35, 0.55],
+            "ramp": "ash",
+            "tone": 4.2,
+            "where": {"around": [0.85, 0.15], "path": [0.2, 0.75]},
+            "seed": 9,
+            "faces": ["-end"],
+            "bevel": {"shadow": 1, "highlight": 0}
+          },
+          {"id": "ruff", "op": "band", "axis": "path", "from": 0.84, "to": 1.0, "ramp": "plum", "tone": 4.6, "faces": ["-end"]},
+          {"id": "ruff_edge", "op": "band", "axis": "path", "from": 0.79, "to": 0.84, "shift": -1.2, "faces": ["-end"]}
+        ],
+        "stamps": [
+          {
+            "face": "end",
+            "at": [0, 0],
+            "art": [
+              ".................................",
+              ".................................",
+              "......ddddd...........ddddd......",
+              "....ddfffffddd.....dddfeeeedd....",
+              "...dffwcccwfffd...dfffCcccCeed...",
+              "..dfwccccccccwfd.dfcccccccccCed..",
+              ".dfwccccccccccwfdfCcccccccccbCed.",
+              "dfwcccccccccccccfCcccccccccbbbCed",
+              "dfcccccccccccccCbcccccccccbbbbbed",
+              "dfcccccccccccccCbCcccccccbbbbbbed",
+              "dfccccccccccccccbcccccccbbbbbbbed",
+              "dfccccccccccccccbcccccccbbbbbbbed",
+              "dfccccccccccccccbccccccbbbbbbbbed",
+              "dfcccccccccccccCbCccccbbbbbbbbbed",
+              "dfcccccccccccccCbCcccbbbbbbbbbbed",
+              ".dfcccccccccccCCbCCcbbbbbbbbbbed.",
+              ".dfCcccccccccCCcbCcCbbbbbbbbbced.",
+              "..dffcccccccCCCCbccCCbbbbbbbeed..",
+              "...ddfffffCcCCCCbcCCCCbeeeeedd...",
+              ".....dddddecCCCCbCCCCceddddd.....",
+              "..........decCCCbCCCced..........",
+              "...........deCCCbCCced...........",
+              "............deCCbCced............",
+              ".............deebeed.............",
+              "..............ddedd..............",
+              "................d................",
+              "................................."],
+            "key": {
+              "w": "ash:6",
+              "C": "ash:5",
+              "c": "ash:4",
+              "b": "ash:3",
+              "a": "ash:2",
+              "d": "plum:1",
+              "q": "plum:3",
+              "e": "plum:4",
+              "f": "plum:5",
+              "k": "plum:0"
+            }
+          },
+          {
+            "face": "start",
+            "at": "center",
+            "offset": [0, -2],
+            "art": [
+              "..kkkk.....kkkk..",
+              ".kCCCCk...kCCCCk.",
+              "kCwuukCk.kCwuukCk",
+              "kCuttuCk.kCuttuCk",
+              ".kCCCCk...kCCCCk.",
+              "..kkkk.....kkkk.."],
+            "key": {"k": "plum:1", "C": "ash:4", "w": "ash:6", "u": "teal:2", "t": "plum:0"}
+          }
+        ]
+      }
+    },
+    {
+      "id": "eye",
+      "parent": "head",
+      "shape": "prism",
+      "sides": 8,
+      "size": [6.5, 6.5, 1.0],
+      "mirror": true,
+      "pivot": [3.9, 1.7, 4.75],
+      "hide": ["back"],
+      "style": "fur",
+      "paint": {
+        "tone": 2.0,
+        "stamps": [
+          {
+            "face": "front",
+            "at": [0, 0],
+            "art": [
+              "...kkkkkk...",
+              "..kkllllkk..",
+              ".kllllllllk.",
+              "kkLLkkkkLLkk",
+              "kLLkwwkkkLLk",
+              "kyykwkkkkyyk",
+              "kyykkkkkkyyk",
+              "kyykkkkpkyyk",
+              "kkookkkkookk",
+              ".kooooooook.",
+              "..kkooookk..",
+              "...kkkkkk..."],
+            "key": {
+              "k": "plum:0",
+              "d": "plum:1",
+              "l": "moon:1",
+              "L": "moon:2",
+              "y": "moon:3",
+              "o": "moon:4",
+              "w": "moon:5",
+              "p": "plum:3"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "beak",
+      "parent": "head",
+      "shape": "taper",
+      "size": [2.2, 2.8, 2.0],
+      "pivot": [0, -1.4, 4.9],
+      "offset": [0, 0, 0.9],
+      "rotation": [24, 0, 0],
+      "front_scale": [0.45, 0.35],
+      "front_shift": [0, -0.7],
+      "hide": ["back"],
+      "paint": {"ramp": "horn", "tone": 2.4, "rim": {"outline": "dark"}}
+    },
+    {
+      "id": "antenna",
+      "parent": "head",
+      "shape": "card",
+      "plane": "xy",
+      "mirror": true,
+      "art": [
+        "..CCbsabb..",
+        "...CCsbb...",
+        "....wsb....",
+        ".....s.....",
+        ".....s.....",
+        ".....s.....",
+        ".....s.....",
+        ".....s.....",
+        ".....s.....",
+        ".....s....."],
+      "pivot": [3.0, 6.0, 2.6],
+      "offset": [0, 2.5, 0],
+      "rotation": [-6, 22, -16],
+      "style": "card",
+      "paint": {"art_key": {"s": "plum:2", "C": "ash:5", "b": "ash:3", "a": "ash:2", "w": "ash:6", "q": "plum:4"}}
+    },
+    {
+      "id": "antenna_mid",
+      "parent": "antenna",
+      "shape": "card",
+      "plane": "xy",
+      "art": [
+        ".CCbCsbabb.",
+        "CbCCbsabbab",
+        "CCbCCsbbabb",
+        ".CCbCsbabb.",
+        "CbCCbsabbab",
+        ".CbCCsbbab.",
+        ".wCbCsbabb.",
+        "..CCbsabb..",
+        "...CCsbb...",
+        "..wbCsbab.."],
+      "pivot": [0, 5.0, 0],
+      "offset": [0, 2.5, 0],
+      "rotation": [-12, 0, -10],
+      "style": "card",
+      "paint": {"art_key": {"s": "plum:2", "C": "ash:5", "b": "ash:3", "a": "ash:2", "w": "ash:6", "q": "plum:4"}}
+    },
+    {
+      "id": "antenna_tip",
+      "parent": "antenna_mid",
+      "shape": "card",
+      "plane": "xy",
+      "art": [
+        "...CCCbb...",
+        "..wbCCbab..",
+        "..CCbsabb..",
+        ".CbCCsbbab.",
+        ".wCbCsbabb.",
+        "..CCbsabb..",
+        "CCbCCsbbabb",
+        ".CCbCsbabb.",
+        "CbCCbsabbab",
+        "CCbCCsbbabb"],
+      "pivot": [0, 5.0, 0],
+      "offset": [0, 2.5, 0],
+      "rotation": [-18, 0, -8],
+      "style": "card",
+      "paint": {"art_key": {"s": "plum:2", "C": "ash:5", "b": "ash:3", "a": "ash:2", "w": "ash:6", "q": "plum:4"}}
+    },
+    {
+      "id": "front_leg",
+      "parent": "body",
+      "shape": "loft",
+      "attach": {"t": 0.2, "around": 0.33, "align": "none"},
+      "orient": "world",
+      "mirror": true,
+      "profile": {"sides": 6, "round": 2.3},
+      "subdiv": 0,
+      "caps": [false, false],
+      "rings": [
+        {"at": [-0.6, 0.6, 0.0], "size": [5.0, 5.6]},
+        {"at": [-0.3, -3.0, 0.5], "size": [4.6, 4.4]},
+        {"at": [-0.2, -6.0, 0.7], "size": [3.2, 3.2]},
+        {"at": [-0.2, -7.6, 0.8], "size": [3.6, 3.2]}
+      ],
+      "style": "fur",
+      "paint": {
+        "layers": [
+          {"id": "lynx", "count": 3, "seed": 11},
+          {
+            "id": "bars",
+            "op": "stripes",
+            "axis": "path",
+            "period": 2.0,
+            "width": 0.24,
+            "shift": -0.9,
+            "range": [0.25, 0.7],
+            "faces": ["-left"]
+          },
+          {"id": "sock", "op": "band", "axis": "path", "from": 0.72, "to": 1.0, "shift": 0.7}
+        ]
+      }
+    },
+    {
+      "id": "front_paw",
+      "parent": "front_leg",
+      "shape": "taper",
+      "chamfer": 0.8,
+      "size": [5.2, 2.9, 4.6],
+      "front_scale": [0.88, 0.78],
+      "front_shift": [0, -0.32],
+      "attach": {"t": 1.0, "around": 0.5, "align": "none"},
+      "offset": [0, 0, 0.8],
+      "orient": "world",
+      "snap_ground": 0.02,
+      "style": "fur",
+      "paint": {
+        "tone": 3.6,
+        "stamps": [
+          {
+            "face": "front",
+            "at": "bottom",
+            "art": [
+              "..q.q.q..",
+              ".pq.q.q.p",
+              ".pq.q.q.p",
+              "BqBqBqBqB"],
+            "key": {"q": "plum:2", "p": "plum:3", "B": "bean:3"}
+          },
+          {"face": "top", "at": "bottom", "art": [".q.q.q.", ".q.q.q."], "key": {"q": "plum:2"}},
+          {
+            "face": "bottom",
+            "at": "center",
+            "art": [
+              "B.B.B.B",
+              "B.B.B.B",
+              ".......",
+              "..BBB..",
+              ".BBBBB.",
+              ".BBBBB.",
+              "..B.B.."],
+            "key": {"B": "bean:3"}
+          }
+        ]
+      }
+    },
+    {
+      "id": "back_leg",
+      "parent": "body",
+      "shape": "loft",
+      "attach": {"t": 0.78, "around": 0.32, "align": "none"},
+      "orient": "world",
+      "mirror": true,
+      "profile": {"sides": 6, "round": 2.3},
+      "subdiv": 1,
+      "caps": [false, false],
+      "rings": [
+        {"at": [-0.8, 1.2, 0.6], "size": [6.0, 7.6]},
+        {"at": [-0.4, -2.6, -1.4], "size": [5.0, 5.0]},
+        {"at": [-0.2, -5.4, -2.2], "size": [3.0, 3.0]},
+        {"at": [-0.2, -7.6, -1.2], "size": [3.4, 3.0]}
+      ],
+      "style": "fur",
+      "paint": {
+        "layers": [
+          {"id": "lynx", "count": 4, "seed": 13},
+          {
+            "id": "bars",
+            "op": "stripes",
+            "axis": "path",
+            "period": 2.0,
+            "width": 0.24,
+            "shift": -0.9,
+            "range": [0.45, 0.75],
+            "faces": ["-left"]
+          },
+          {"id": "sock", "op": "band", "axis": "path", "from": 0.78, "to": 1.0, "shift": 0.7}
+        ]
+      }
+    },
+    {
+      "id": "back_paw",
+      "parent": "back_leg",
+      "shape": "taper",
+      "chamfer": 0.8,
+      "size": [5.0, 2.7, 4.4],
+      "front_scale": [0.88, 0.78],
+      "front_shift": [0, -0.3],
+      "attach": {"t": 1.0, "around": 0.5, "align": "none"},
+      "offset": [0, 0, 0.9],
+      "orient": "world",
+      "snap_ground": 0.02,
+      "style": "fur",
+      "paint": {
+        "tone": 3.6,
+        "stamps": [
+          {
+            "face": "front",
+            "at": "bottom",
+            "art": [
+              "..q.q.q..",
+              ".pq.q.q.p",
+              ".pq.q.q.p",
+              "BqBqBqBqB"],
+            "key": {"q": "plum:2", "p": "plum:3", "B": "bean:3"}
+          },
+          {"face": "top", "at": "bottom", "art": [".q.q.q.", ".q.q.q."], "key": {"q": "plum:2"}},
+          {
+            "face": "bottom",
+            "at": "center",
+            "art": [
+              "B.B.B.B",
+              "B.B.B.B",
+              ".......",
+              "..BBB..",
+              ".BBBBB.",
+              ".BBBBB.",
+              "..B.B.."],
+            "key": {"B": "bean:3"}
+          }
+        ]
+      }
+    },
+    {
+      "id": "tail",
+      "parent": "body",
+      "shape": "loft",
+      "chain": true,
+      "attach": {"t": 0.96, "around": 0.08, "align": "none"},
+      "profile": {"sides": 8, "round": 2.4},
+      "subdiv": 1,
+      "caps": [false, true],
+      "rings": [
+        {"at": [0, 0.0, 0.0], "size": 4.8},
+        {"at": [0, 1.2, -3.2], "size": 5.4},
+        {"at": [0, 3.4, -5.6], "size": 5.0},
+        {"at": [0, 6.0, -6.4], "size": 4.0}
+      ],
+      "style": "fur",
+      "paint": {
+        "layers": [
+          {"id": "tip", "op": "band", "axis": "path", "from": 0.7, "to": 1.0, "ramp": "plum", "tone": 0.9},
+          {"id": "rings", "op": "stripes", "axis": "path", "period": 2.6, "width": 0.3, "shift": -1.2, "range": [0.15, 0.6]}
+        ]
+      }
+    },
+    {
+      "id": "tail_tuft",
+      "parent": "tail",
+      "shape": "card",
+      "plane": "yz",
+      "art": [
+        "......d.....",
+        "...d.dkd.d..",
+        "..dkkdkkdk..",
+        ".dkkkkkkkkd.",
+        "dkkkkpkkkkkd",
+        ".dkkkkkkpkd.",
+        "..dkkdkkdk..",
+        "...d.dkd.d..",
+        "......d....."],
+      "attach": {"t": 1.0, "around": 0.0, "align": "tangent"},
+      "offset": [0, 0, -1.6],
+      "style": "card",
+      "paint": {"art_key": {"k": "plum:0", "d": "plum:1", "p": "plum:3"}}
+    },
+    {
+      "id": "wing_root",
+      "parent": "body",
+      "shape": "loft",
+      "mirror": true,
+      "attach": {"t": 0.32, "around": 0.13, "align": "none"},
+      "profile": {"sides": 6, "round": 2.2},
+      "subdiv": 1,
+      "caps": [true, true],
+      "rings": [
+        {"at": [-1.0, -0.6, 0], "size": [3.4, 3.6]},
+        {"at": [1.0, 0.2, 0], "size": [3.6, 4.2]},
+        {"at": [2.6, 0.8, -0.4], "size": [2.0, 2.6]}
+      ],
+      "style": "fur",
+      "paint": {"tone": 3.9}
+    },
+    {
+      "id": "forewing",
+      "parent": "wing_root",
+      "shape": "card",
+      "plane": "xy",
+      "art": [
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
+      "pivot": [1.2, 0.6, 0.4],
+      "offset": [10.2, 4.3, 0],
+      "rotation": [-14, 30, 22],
+      "style": "card",
+      "paint": {
+        "art_key": {"x": "plum:2"},
+        "stamps": [
+          {
+            "face": "front",
+            "at": [0, 0],
+            "art": [
+              "________________________________kkkkkkkkkk__",
+              "_____________________kkkkkkkkkkkcccdccccdCkk",
+              "______________kkkkkkkccccdccccnnnnnCrrrbCCbk",
+              "__________kkkkcdccccnnnnnnnnnnnnnnCdrrbCkkbk",
+              "______kkkkdcccdnnnnnnnnnnnnnnnnnnCdrrbbCCbC_",
+              "____kkqqccqqCddnnnnnnnnnnnnnnnnnnCrrrbbbbC__",
+              "___kqqqqqqqqCdnnnnnnnnnnnnnnnnnnrCdrrddbbk__",
+              "_kkqqqqqqqqCddnnnnnnnnnnnrrrrrrrrCdrrddbk___",
+              "kpqqqqqqqqqqCdnnnnrrrrrrrrnnnnnnnCdrrbbbC___",
+              "kpqqqqqqqqqqCddrrrrnnnkkkknnnnnnnCdrrbbbk___",
+              "kppqqqqqqqqqqqCdnnnnkkCCCCkknnnnCdrrddbbC___",
+              "kppqqqqqqqqqqqqCdnnnkCuuuuCknnnCdrrbddbC____",
+              "kpppqqqqqqqqqqqCddnkCuwwttuCknCdrrbbbbbk____",
+              "kpqqqqqqqqqqqqqqCdmkCuwkktuCkmCdrrbdbbbC____",
+              "kppqqqqqqqqqqqqCddnkCutkktgCkmCdrrddbbC_____",
+              "kqqqqppppppppppbdmmkCutttguCknCdrrbbbbk_____",
+              "kqqqppppppppppbddmmmkCuuuuCkmCdrrraaak______",
+              "_kqqppppppppppbdmmmmkkCCCCkkCdrraddaaC______",
+              "__kpppppppppppbdmmmmmmkkkkCdrrraadaak_______",
+              "___kppppppppppbddnnmmmmmmCddrraaaaak________",
+              "____kppppppppppbddmnnnmmmCdrrrddaaaC________",
+              "_____kppppppppppbddmmnnnnCdrrradaaC_________",
+              "______kkpppppppppbddmmmmCCdrraaaak__________",
+              "________kpppppppppbdmmmCCdrrddaaak__________",
+              "_________kppppppppbdmmCdrrraddaaC___________",
+              "__________kkpppppbddmdrrraaaaaaC____________",
+              "____________kkkppbdmmdrraddaaak_____________",
+              "_______________kkddnCdrraddaak______________",
+              "_________________kkkkdrraaaak_______________",
+              "_____________________kkkkkkC________________"],
+            "key": {
+              "k": "plum:0",
+              "d": "plum:1",
+              "p": "plum:2",
+              "q": "plum:3",
+              "e": "plum:4",
+              "m": "mauve:2",
+              "n": "mauve:3",
+              "r": "mauve:4",
+              "s": "mauve:5",
+              "a": "ash:2",
+              "b": "ash:3",
+              "c": "ash:4",
+              "C": "ash:5",
+              "w": "ash:6",
+              "t": "teal:1",
+              "u": "teal:2",
+              "v": "teal:3",
+              "g": "teal:4",
+              "y": "moon:3",
+              "o": "moon:4"
+            },
+            "flip_on_mirror": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "hind_root",
+      "parent": "body",
+      "shape": "box",
+      "size": [1, 1, 1],
+      "mirror": true,
+      "hide": [
+        "front",
+        "back",
+        "left",
+        "right",
+        "top",
+        "bottom"],
+      "attach": {"t": 0.4, "around": 0.13, "align": "none"},
+      "style": "fur"
+    },
+    {
+      "id": "hindwing",
+      "parent": "hind_root",
+      "shape": "card",
+      "plane": "xy",
+      "art": [
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"],
+      "pivot": [0.6, 0, -0.3],
+      "offset": [9.2, -4.5, 0],
+      "rotation": [-10, 36, 0],
+      "style": "card",
+      "paint": {
+        "art_key": {"x": "plum:2"},
+        "stamps": [
+          {
+            "face": "front",
+            "at": [0, 0],
+            "art": [
+              "_________kkkkkkkkkkkkk__________________",
+              "___kkkkkknnnnnnnnnnnnnkkkkk_____________",
+              "kkkqqqqqnnnnnnnnnnnnnnnnbCdkkkk_________",
+              "kppqqqqnnnnnnnnnnnnnnnnnnCdbbbbkk_______",
+              "kpppqqqqnnnnnnnnnnnnnnnnnbdbbrrbbkk_____",
+              "kppppqqqnnnnnnnrrrrkkkkkkrCdbbbbrbbk____",
+              "kdppqqqqqnnnnnnrrrkkyyyykkbdbbbbrbbbk___",
+              "kppppqqnnnnnnnnnnkyyvvvvyykCddbbbbrbbk__",
+              "kppqqqqrnnnnnnnnkyvvuuuuvvykCddddbbbbk__",
+              "kppqqqqqnrrrnnnkkyvwwwtuuvykkCCCCdbbrbk_",
+              "kppqqqqbmmmmnnnkyvuwwkktuuvykmbbCCdbrbbk",
+              "kqqqqqdCbmmmmmmkyvutkkkktuvykmmmbCdbbbbk",
+              "_kqqbqbdCbmmmmmkyvutkkkktuvykmmmmbdbbrbk",
+              "__kbqbbbdCbbmmmkyvuutkktguvykmmmmbdbbrbk",
+              "___krbbbbdCCCbmkkyvuuttggvykknmmmbdbbbbk",
+              "____kbrrbdddCCbmkyvvuuuuvvykmnnnbCdbbbbk",
+              "_____kaaaaadddCamkyyvvvvyykmmaCCCdaaaak_",
+              "______karraaaadCamkkyyyykkmmCCddddaarak_",
+              "_______kaaaaaaadCCakkkkkkmaCddaaaaarak__",
+              "________kaaraaaadddddddCCCCdaaaaaarak___",
+              "_________kaaaraaaaaaaaaddddaaaaaarak____",
+              "__________kkaaaarraaaaaaaaaaaraaaak_____",
+              "____________kkaaaaarraarraarraaaaak_____",
+              "______________kkkkaaaaaaaaaaaaaaak______",
+              "__________________kkkkkkkkkkkaaaak______",
+              "_____________________________kbbak______",
+              "_____________________________kbbak______",
+              "______________________________kbak______",
+              "______________________________kbak______",
+              "_______________________________kaak_____",
+              "_______________________________kaak_____",
+              "________________________________kCk_____",
+              "________________________________kkkk____",
+              "___________________________________k____"],
+            "key": {
+              "k": "plum:0",
+              "d": "plum:1",
+              "p": "plum:2",
+              "q": "plum:3",
+              "e": "plum:4",
+              "m": "mauve:2",
+              "n": "mauve:3",
+              "r": "mauve:4",
+              "s": "mauve:5",
+              "a": "ash:2",
+              "b": "ash:3",
+              "c": "ash:4",
+              "C": "ash:5",
+              "w": "ash:6",
+              "t": "teal:1",
+              "u": "teal:2",
+              "v": "teal:3",
+              "g": "teal:4",
+              "y": "moon:3",
+              "o": "moon:4"
+            },
+            "flip_on_mirror": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "bib",
+      "parent": "body",
+      "shape": "card",
+      "plane": "xy",
+      "art": [
+        "cCCCcCCCcCCCcCCCcCCC",
+        "cCCccCCccCCccCCccCCc",
+        "qCcccCccqCcccCccqCcc",
+        "CCcCCCcCCCcCCCcCCCcC",
+        "CccCCccCCccCCccCCccC",
+        ".ccCccqCcccCccqCccc.",
+        ".CCCcCCCcCCCcCCCcCC.",
+        "..CccCCccCCccCCccC..",
+        "..cccCccqCcccCccqC..",
+        "...CCCcCCCcCCCcCC...",
+        "...CCccCCccCCccCC...",
+        "....ccqCcccCccqC....",
+        "....ccqbcccbccqb....",
+        ".....qb.ccb.cqb.....",
+        ".....b...b...b......"],
+      "pivot": [0, 13.4, 9.5],
+      "rotation": [-8, 0, 0],
+      "style": "card",
+      "paint": {"art_key": {"w": "ash:6", "C": "ash:5", "c": "ash:4", "b": "ash:3", "a": "ash:2", "q": "plum:3", "d": "plum:2"}}
+    }
+  ]
+}
