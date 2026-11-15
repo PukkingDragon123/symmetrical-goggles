@@ -107,34 +107,35 @@ def item(name, palette, grid):
 item("cobble_ball", pal(STONE), """
 ................
 .....kkkkkk.....
-...kk455154kk...
-..k4565415443k..
-..k4554431433k..
-.k344433143332k.
-.k113321413322k.
-.k441114531122k.
-.k432144332111k.
-.k332133221332k.
-.k221411213222k.
+...kk565154kk...
+..k5665515444k..
+..k5555541443k..
+.k555544144332k.
+.k114431513322k.
+.k551115441122k.
+.k544154443111k.
+.k443144331433k.
+.k331411213322k.
 ..k1433113222k..
-..k3332212222k..
-...kk222122kk...
+..k3332212221k..
+...kk222121kk...
 .....kkkkkk.....
 ................
 """)
 
-item("snowball_launcher", pal(IRON, BRASS, SNOW, REDSTONE, BLAZE, WOOD), """
+item("snowball_launcher", pal(IRON, BRASS, SNOW, REDSTONE, BLAZE, WOOD, u="#38445a", h="#8d8b90", l="#6c6b72",
+                              m="#504f5a", s="#3b3a45", d="#2b2a33"), """
 ...uuu..........
 ..uaAWu......oo.
-..uAWvu....oYhdo
+..uAWvu....oYgdo
 uuuWvvu....oYyod
-aAWuYo....ohlBym
+aAWuYo....oglBym
 AWvYylo..ohlolbB
-WvYylmshYYlolmo.
+WvYylmsgYYlolmo.
 uYylmshlmyBlmo..
 oylmshlddmybo...
 .omshldFEdsBo...
-..ohlmdEedsdo...
+..oglmdEedsdo...
 ..olmmmddsdJo...
 ...omsssddJjo...
 ...oyssddijo....
@@ -154,12 +155,12 @@ item("heavy_shears", pal(IRON, BRASS, c="#4a8c88", C="#8cc6bb", T="#7a4d33", U="
 ......olmcooCclo
 .....olmsoCclmo.
 ...ooomsGYlmso..
-..oTUTPlybso....
-oTUTpPpolmo.....
-lpPpo.oTPo......
-mooo.oUpo.......
-o...oTPo........
-...olmo.........
+...oTUTlybso....
+.oTUPTpolmo.....
+TPTUPpoTUpo.....
+lppo.oTPpo......
+moo.oUPpo.......
+o...olmo........
 """)
 
 item("icebreaker_horn", pal(ICE, o="#172338"), """
@@ -376,25 +377,26 @@ LAMP_OFF = {"L": "#4d1a15", "K": "#5e231b"}
 LAMP_ON = {"L": "#e2381f", "K": "#ffb878"}
 rail({"lift_rail": {**STEEL, **CHAIN, **LAMP_OFF}, "lift_rail_on": {**STEEL, **CHAIN, **LAMP_ON}}, """
 ..mhdq.lm.qmhd..
-WTmhdxlmsdxmhdTW
-WVmhdQlkkdQmhdVW
+WTmhdTlmsdTmhdTW
+WVmhdVlkkdVmhdVW
 cKmhdQmkkdQmhdKc
 cLmhdqmmsdqmhdLc
-WTmhdxTsdTxmhdUW
-WVmhdQVhsVQmhdVW
+WTmhdTTsdTTmhdUW
+WVmhdVVhsVVmhdVW
 ..mhdQ.hs.Qmhd..
 ..mhdq.lm.qmhd..
-WUmhdxlmsdxmhdTW
-WVmhdQlkkdQmhdVW
+WUmhdTlmsdTmhdTW
+WVmhdVlkkdVmhdVW
 cKmhdQmkkdQmhdKc
 cLmhdqmmsdqmhdLc
-WTmhdxTsdTxmhdTW
-WVmhdQVhsVQmhdVW
+WTmhdTTsdTTmhdTW
+WVmhdVVhsVVmhdVW
 ..mhdQ.hs.Qmhd..
 """, ties="lift_rail_ties")
 
 
 # ====================================================================== particles (8x8)
+# stun_star_0..3 spin in-plane by 18 degrees per frame (a 5-point star repeats every 72).
 def particle(name, palette, grid):
     put(f"textures/particle/{name}.png", draw(parse(grid), palette, (8, 8), name))
 
@@ -444,43 +446,43 @@ particle("globe_snow_3", FLAKE, """
 STAR = pal(o="#5c3707", k="#b9801c", y="#efbf33", Y="#fff1a6", K="#d9a12b")
 particle("stun_star_0", STAR, """
 ...oo...
-..oYYo..
-oooyyooo
+..oYyo..
+.ooYyoo.
 oYyyyyko
 .oyyyko.
-.oyook o.
-oyo..oko
-oo....oo
+.oyykko.
+.oyooko.
+..o..o..
 """)
 particle("stun_star_1", STAR, """
-...oo...
-..oYyo..
-.ooyyoo.
-.oYyyko.
-..oyko..
-..oyko..
-.oyooko.
-.oo..oo.
+....o...
+.oooYo..
+oYyyyo..
+.oyyyyo.
+.oyyykko
+oyyykoo.
+.oooko..
+....o...
 """)
 particle("stun_star_2", STAR, """
-...oo...
-...oo...
-..oYko..
+..o..o..
+.oYooyo.
+.oYyyyo.
+.oyyyko.
+oYyyykko
+.ooykoo.
 ..oyko..
-..oyko..
-..oyko..
-...oo...
 ...oo...
 """)
 particle("stun_star_3", STAR, """
-...oo...
-..okKo..
-.ookkoo.
-.okkkKo.
-..okKo..
-..okKo..
-.okooKo.
-.oo..oo.
+...o....
+..oYooo.
+..oYyyyo
+.oYyyko.
+oYyyyko.
+.ooykkko
+..okooo.
+...o....
 """)
 
 
@@ -555,19 +557,19 @@ KksssssssssssHhggdbHsssssssssskK
 KksssssssssssHgccbbHsssssssssskK
 KkssfssssssssHhgdcbHsssssssssskK
 KksssssssssssHhgdcbHsssssssfsskK
-Kksssssssssoo566554osssssssssskK
-Kkssssssssso563655443osssssssskK
-Kksssssssso56655544343ossssssskK
-Kkssssssso5655544443432osssssskK
-Kkzzzzzzzo54Ee444443Ee2ozzzzzzkK
-Kkzzzzzzzo43ee444433ee2ozzzzzzkK
-Kkzzzzzzzo44344N22N3332ozzzzzzkK
-Kkzzzzzzzo344mm2NN2mn32ozzzzzzkK
-Kkzzzzzzzo34mMMmnmMmmn2ozzzzzzkK
-Kkzzzzzzzo3mMwMwnmwmwn2ozzzzzzkK
-KkZZZZo32ommmwmnnmwn2o22oZZZZZkK
-KkaAZo3322onmmnwwnn2o2211oZZAakK
-KkAAo332221o23nn321o111111oAAAkK
+Kkssssssssooo566554oossssssssskK
+Kkssssssso56636655443osssssssskK
+Kksssssso5665565543443ossssssskK
+Kksssssso5565554444342ossssssskK
+Kkzzzzzzo54Ee44544Ee32ozzzzzzzkK
+Kkzzzzzzo43ee44443ee32ozzzzzzzkK
+Kkzzzzzzo44343N22N3332ozzzzzzzkK
+Kkzzzzzzo344mn2NN2nm32ozzzzzzzkK
+Kkzzzzzzo34mMMmnnmMmn2ozzzzzzzkK
+Kkzzzzzzo3mMwMwnnwmwn2ozzzzzzzkK
+KkZZZZo32onmmwmnnmwn2o22oZZZZZkK
+KkaAZo3322onmnnwwnn2o2211oZZAakK
+KkAAo332221o233n321o111111oAAAkK
 KkAaaaaAAaaaaaaaaaaaaaAAaaaaaAkK
 KkAAvAAAAAAvAAAAAAAAAAvAAAAvAAkK
 KkvvvvuvvvvvvvvvuvvvvvvvvuvvvvkK
@@ -575,6 +577,278 @@ KkvvvvuvvvvvvvvvuvvvvvvvvuvvvvkK
 ..KKKKKKKKKKKKKKKKKKKKKKKKKKKK..
 """
 put("icon.png", draw(parse(ICON_GRID), ICON, (32, 32), "icon").resize((128, 128), Image.NEAREST))
+
+
+# ====================================================================== Snowball Launcher HUD (256x256 sheet)
+# Layout contract (x, y, w, h), shared with the Java renderer:
+#   panel (0,0,120,34); glass windows inside it: ammo (6,6,34,12), mode socket (44,6,12,12),
+#   charge trough (6,22,66,8) with fill area (7,23,64,6), heat trough (76,22,38,8) with fill area
+#   (77,23,36,6), heat dial (88,2,18,18) whose needle pivots on the dial centre (97,11).
+#   digits 5x7 at (d*6, 40) lit and (d*6, 48) dim; charge fill (0,58,64,6); heat fill (0,66,36,6);
+#   mode icons 10x10 at (0,76) snowball and (12,76) cobble ball; overheat plate 34x12 at (24,76)
+#   lit and (60,76) dim; steam puffs 8x8 at (0,90), (10,90), (20,90).
+HUD = pal(BRASS, {
+    "O": "#121117", "D": "#1d1c24", "d": "#29282f", "p": "#38373f", "P": "#45444d", "l": "#5d5c66",
+    "L": "#8f8d93",
+    "k": "#090f12", "g": "#0e161b", "h": "#19262e", "H": "#2a3c47",
+    "c": "#d3c9ad", "C": "#ada388", "t": "#2a241c", "x": "#7e2216", "X": "#bf3a22", "n": "#26252c",
+    "N": "#8c8a91",
+    "R": "#4c0d10", "e": "#8f1813", "E": "#cf2a17", "F": "#f45a26", "f": "#ffb46a", "w": "#ffd9c2"})
+
+# The riveted iron plate, brass trims and the dark glass windows (columns grouped by ten).
+HUD_PANEL = """
+..OOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOO..
+.OYYYYYYYY YYYYYYYYYY YYYYYYYYYY YYYYYYYYYY YYYYYYYYYY YYYYYYYYYY yyyyyyyyyy yyyyyyyyyy yyyyyyyyyy yyyyyyyyyy yyyyyyyyyy yyyyyyyyO.
+OlPPPPPPLl PPPPPPPPPP PPLlPPPPPP PPPPPPLlPP PPPPPPPPLl PPPPPPPPPP PPPPPPPPPP PPPPPPPPPP PPPPPPPPPP PPPPPPPPPP PPPPPPPPPP PPPPPPPPdO
+OlpppppplD pppppppppp pplDpppppp pppppplDpp pppppppplD pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppGYYYYY YYYYYYYYYY YYYYYYYYYY YYYYYYYYYY Yypppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDDDDD DDDDDDDDDD DDDDDDDDDD DDDDDDDDDD dbpDDDDDDD DDDDDDdppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkkkk kkkkkkkkkk kkkkkkkkkk kkkkkkkkkk lbpDkkkkkk kkkkkklppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gggHHgghgg lbpDkggggg ggghHglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg ggHHgghggg lbpDkggggg gggghglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gHHgghgggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlLlYDkggg gggggggggg gggggggggg Hhgghggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OllDYDkggg gggggggggg gggggggggg hggggggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gggggggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gggggggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gggggggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gggggggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gggggggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYDkggg gggggggggg gggggggggg gggggggggg lbpDkggggg gggggglppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlppYdllll llllllllll llllllllll llllllllll lbpdllllll lllllllppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+Olppbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bBpppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+Olpppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp ppppppppdO
+OlpppDDDDD DDDDDDDDDD DDDDDDDDDD DDDDDDDDDD DDDDDDDDDD DDDDDDDDDD DDDDDDDDDD DDdppDDDDD DDDDDDDDDD DDDDDDDDDD DDDDDDDDDD DDDDdpppdO
+OlpppDOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOlppDOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOlpppdO
+OlpppDOkkk kkkkkhkkkk kkkhkkkkkk khkkkkkkkh kkkkkkkhkk kkkkkhkkkk kkkhkkkkkk kOlppDOkkk kkkhkkkkkh kkkkkhkkkk khkkkkkhkk kkkOlpppdO
+OlpppDOkgg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gOlppDOkgg gggggggggg gggggggggg gggggggggg gggOlpppdO
+OlLlpDOkgg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gOlppDOkgg gggggggggg gggggggggg gggggggggg gggOlLlpdO
+OllDpDOkgg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gOlppDOkgg gggggggggg gggggggggg gggggggggg gggOllDpdO
+OlpppDOkgg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gggggggggg gOlppDOkgg gggggggggg gggggggggg gggggggggg gggOlpppdO
+OlpppDOkgg ggggghgggg ggghgggggg ghgggggggh ggggggghgg ggggghgggg ggghgggggg gOlppDOkgg ggghgggggh ggggghgggg ghggggghgg gggOlpppdO
+OlpppDOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOlppDOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOlpppdO
+Olpppdllll llllllllll llllllllll llllllllll llllllllll llllllllll llllllllll lllppdllll llllllllll llllllllll llllllllll lllllpppdO
+Olpppppppp Lppppppppp pppppppppp pppppppppp Lppppppppp pppppppppp pppppppppp pppppppppp pppppppppp pppppppppp Lppppppppp ppppppppdO
+.Obbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbO.
+..OOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOOOO OOOOOOOO..
+"""
+
+# Pressure dial (18x18) at (88,2): brass bezel, aged face, scale from 7:30 round to 3:00, red zone
+# from 1 o'clock to 3 o'clock, needle hub on the 2x2 centre (pixels 96-97, 10-11).
+HUD_DIAL = """
+......OOOOOO......
+....OOYYYYyyOO....
+...OYYCCttCCyyO...
+..OYYCtcttctXyyO..
+.OYYtCccccccxXyyO.
+.OYCctcccccctxXyO.
+OYYtcccccccccxXyyO
+OYCcccccccccccxXyO
+OYttccccNnccccttyO
+ObttccccnnccccttBO
+ObccccccccccccccBO
+ObbtcccccccccccBBO
+.ObcctcccccccccBO.
+.ObbtcccccccccBBO.
+..ObbccccccccBBO..
+...ObbccccccBBO...
+....OOBBBBBBOO....
+......OOOOOO......
+"""
+
+# Redstone porthole, vent grille, brass steam pipe with a valve and a tee (30x19) at (57,2).
+HUD_WORKS = """
+..............................
+.....OOOO......DDDDDDDDDDDDDD.
+...OOYYyyOO....DOOOOOOOOOOOOl.
+...OYReeRyO....DPPPPPPPPPPPPl.
+..OYRwEEeRyO...DOOOOOOOOOOOOl.
+..OYeEffEeyO...DPPPPPPPPPPPPl.
+..ObeEffEebO...DOOOOOOOOOOOOl.
+..ObReEEeRBO...DPPPPPPPPPPPPl.
+...ObReeRBO....dlllllllllllll.
+...OObbBBOO.............OOOOO.
+.....OOOO...............OLldO.
+OO...........OO..........OdOOO
+YbOOOOOOOOOOOYbOOOOOOOOOOOdOYb
+YbYYGYYYYYYYYYbYYGYYYYYYYYYYYb
+yByyyyyyyyyyyyByyyyyyyyyyyyyyB
+bZBBBBBBBBBBBbZBBBBBBBBBBBBBbZ
+bZOOOOOOOOOOObZOyBOOOOOOOOOObZ
+OO...........OOOYbO.........OO
+...............OYbO...........
+"""
+
+# Brass maker's plate with a frost emblem, rivets and a pipe into the heat trough (12x19) at (106,2).
+HUD_PLATE = """
+............
+..OOOOOOO...
+.OYYYYYYyO..
+.OYGbGbGBO..
+.OYbGGGbBO..
+.OYYYGYYBO..
+.OYbGGGbBO..
+.OYGbGbGBO..
+.OyBBBBBBO..
+..OOOOOOO...
+............
+.........Ll.
+...OOOO..lD.
+...OGBO.....
+...OYbO.....
+...OYbO.....
+...OYbO..Ll.
+...OYbO..lD.
+...OYbO.....
+"""
+
+# Pipe dropping between the two troughs (2x11) at (73,21).
+HUD_DOWNPIPE = """
+Yb
+Yb
+Yb
+Gb
+Yb
+yB
+Yb
+Yb
+Yb
+Yb
+yB
+"""
+
+DIGITS = """
+.aaa.. ..a... .aaa.. .aaa.. ...a.. aaaaa. ..aa.. aaaaa. .aaa.. .aaa.
+a...a. .aa... a...a. a...a. ..aa.. a..... .a.... ....a. a...a. a...a
+A...A. ..A... ....A. ....A. .A.A.. AAAA.. A..... ...A.. A...A. A...A
+A...A. ..A... ...A.. ..AA.. A..A.. ....A. AAAA.. ..A... .AAA.. .AAAA
+A...A. ..A... ..A... ....A. AAAAA. ....A. A...A. .A.... A...A. ....A
+q...q. ..q... .q.... q...q. ...q.. q...q. q...q. .q.... q...q. ...q.
+.qqq.. .qqq.. qqqqq. .qqq.. ...q.. .qqq.. .qqq.. .q.... .qqq.. .qq..
+"""
+DIGIT_LIT = pal(a="#ffe7a0", A="#ffb43c", q="#e8781c")
+DIGIT_DIM = pal(a="#5d3a1c", A="#4f2f16", q="#432812")
+
+CHARGE_FILL = """
+aaaaaWaa aaaaaWaa aaaaaaWa aaaaaWaa aaaaaWaa aWaaaWaa aaaaaWaa aaaaaaWa
+bbbbwbbb bbbbwbbb bbbbbwbb bbbbwbbb bbbbwbbb bbbbwbbb bbbbwbbb bbbbbwbb
+cccbcccc cccbcccc ccccbccc cccbcccc cccbcccc cccbcccc cccbcccc ccccbccc
+ddcddddd ddcddddd dddcdddd ddcddddd ddcddddd ddcddddd ddcddddd dddcdddd
+dcdddddd dcdddddd ddcddddd dcdddddd dcdddddd dcdddddd dcdddddd ddcddddd
+deeeeeee deeeeeee edeeeeee deeeeeee deeeeeee deeeeeee deeeeeee edeeeeee
+"""
+CHARGE_PAL = pal(W="#ffe6c8", w="#ffb088", a="#ff8a62", b="#f2502e", c="#d42a1c", d="#a8161a", e="#741014")
+
+HEAT_FILL = """
+222233334445555666777788889990000000
+111222233344445556666777788899990000
+111122223334444555666677778889999000
+111122223334444555666677778889999000
+111222233344445556666777788899990000
+111111112223333444555566667778888999
+"""
+HEAT_PAL = pal(**{"1": "#24508c", "2": "#3a6ea6", "3": "#5f7e9e", "4": "#7a6478", "5": "#9a3a32",
+                  "6": "#cc3a1e", "7": "#f06a1e", "8": "#ffa040", "9": "#ffd890", "0": "#fff4dc"})
+
+MODE_SNOWBALL = """
+...uuuu...
+.uuaaAAuu.
+.uaaaAAWu.
+uaaaAAAWvu
+uaaAAAWWvu
+uAAAAWWvvu
+uAAWWWvvVu
+.uWWvvvVu.
+.uuvvVVuu.
+...uuuu...
+"""
+MODE_COBBLE = """
+...kkkk...
+.kk5541kk.
+.k456413k.
+k45541343k
+k34411332k
+k11343212k
+k33412122k
+.k231222k.
+.kk2212kk.
+...kkkk...
+"""
+
+OVERHEAT = """
+.OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO.
+OlllllllllllllllllllllllllllllllDO
+OlYYkkYYEEEEEEEEEEEEEEEEEEYYkkYYDO
+OlYkkYYkWeeWeeWWeeWWWWWeWeYkkYYkDO
+OlkkYYkkWeeWeWeeWeeeWeeeWekkYYkkDO
+OlkYYkkYWWWWeWeeWeeeWeeeWekYYkkYDO
+OlYYkkYYWeeWeWeeWeeeWeeeWeYYkkYYDO
+OlYkkYYkWeeWeWeeWeeeWeeeeeYkkYYkDO
+OlkkYYkkWeeWeeWWeeeeWeeeWekkYYkkDO
+OlkYYkkYrrrrrrrrrrrrrrrrrrkYYkkYDO
+ODDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDO
+.OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO.
+"""
+OVERHEAT_LIT = pal(O="#1a0d0b", l="#7a6a5c", D="#2a1c18", Y="#e8b838", k="#1c1612", E="#f0512c", e="#c8281a",
+                   r="#8a1610", W="#fff1d2")
+OVERHEAT_DIM = pal(O="#140b0a", l="#4a3f38", D="#1e1513", Y="#5e4a1e", k="#171210", E="#5a1c14", e="#4a1610",
+                   r="#320e0a", W="#8a5a48")
+
+STEAM = [pal(a="#f4f6f8", A="#d6dde4", v="#a9b4c0"),
+         pal(a="#f4f6f8", A="#d6dde4", v="#a9b4c0"),
+         pal(X="#eef2f5c0", x="#c8d2dc90")]
+STEAM_GRIDS = ["""
+........
+........
+........
+........
+...AA...
+..AaaA..
+..vAAv..
+...vv...
+""", """
+........
+........
+...AA...
+..AaaA..
+.AaaaAA.
+.vAaAAv.
+..vvAv..
+...vv...
+""", """
+..xx....
+.xXXx.x.
+xXXXXxXx
+.xXXXXx.
+..xXXx..
+...xx...
+........
+........
+"""]
+
+
+def hud_sheet():
+    sheet = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    panel = draw(parse(HUD_PANEL), HUD, (120, 34), "hud panel")
+    for grid, size, at in ((HUD_DIAL, (18, 18), (88, 2)), (HUD_WORKS, (30, 19), (57, 2)),
+                           (HUD_PLATE, (12, 19), (106, 2)), (HUD_DOWNPIPE, (2, 11), (73, 21))):
+        panel.alpha_composite(draw(parse(grid), HUD, size, "hud part"), at)
+    sheet.alpha_composite(panel, (0, 0))
+    sheet.alpha_composite(draw(parse(DIGITS), DIGIT_LIT, (59, 7), "digits"), (0, 40))
+    sheet.alpha_composite(draw(parse(DIGITS), DIGIT_DIM, (59, 7), "digits dim"), (0, 48))
+    sheet.alpha_composite(draw(parse(CHARGE_FILL), CHARGE_PAL, (64, 6), "charge"), (0, 58))
+    sheet.alpha_composite(draw(parse(HEAT_FILL), HEAT_PAL, (36, 6), "heat"), (0, 66))
+    sheet.alpha_composite(draw(parse(MODE_SNOWBALL), pal(SNOW, u="#3f4c63", V="#73889f"), (10, 10), "m1"),
+                          (0, 76))
+    sheet.alpha_composite(draw(parse(MODE_COBBLE), pal(STONE), (10, 10), "m2"), (12, 76))
+    sheet.alpha_composite(draw(parse(OVERHEAT), OVERHEAT_LIT, (34, 12), "overheat"), (24, 76))
+    sheet.alpha_composite(draw(parse(OVERHEAT), OVERHEAT_DIM, (34, 12), "overheat dim"), (60, 76))
+    for i, (g, p_) in enumerate(zip(STEAM_GRIDS, STEAM)):
+        sheet.alpha_composite(draw(parse(g), p_, (8, 8), f"steam{i}"), (i * 10, 90))
+    return sheet
+
+
+put("textures/gui/launcher_hud.png", hud_sheet())
 
 # ====================================================================== output
 def write_all():
@@ -628,6 +902,65 @@ def contact_sheet(paths, dst, scale=8, cols=4):
     return dst
 
 
+HUD_REGIONS = {  # name: (x, y, w, h) -- the layout contract, used for the labelled preview
+    "panel": (0, 0, 120, 34), "ammo": (6, 6, 34, 12), "mode": (44, 6, 12, 12), "charge": (6, 22, 66, 8),
+    "heat": (76, 22, 38, 8), "dial": (88, 2, 18, 18), "digits": (0, 40, 59, 7), "digits dim": (0, 48, 59, 7),
+    "charge fill": (0, 58, 64, 6), "heat fill": (0, 66, 36, 6), "snowball": (0, 76, 10, 10),
+    "cobble": (12, 76, 10, 10), "overheat": (24, 76, 34, 12), "overheat dim": (60, 76, 34, 12),
+    "steam 0": (0, 90, 8, 8), "steam 1": (10, 90, 8, 8), "steam 2": (20, 90, 8, 8)}
+
+
+def hud_preview(dst_dir):
+    """Labelled 4x preview of the sheet, plus an in-context mock-up composited the way the Java draws it."""
+    import math
+    from PIL import ImageDraw
+    sheet = OUT["textures/gui/launcher_hud.png"]
+    crop = sheet.crop((0, 0, 128, 104))
+    s = 4
+    big = Image.new("RGBA", (crop.width * s + 260, crop.height * s), (70, 70, 76, 255))
+    big.alpha_composite(checker((crop.width * s, crop.height * s), (84, 84, 90, 255), (96, 96, 102, 255), 16))
+    big.alpha_composite(crop.resize((crop.width * s, crop.height * s), Image.NEAREST))
+    d = ImageDraw.Draw(big)
+    for i, (name, (x, y, w, h)) in enumerate(HUD_REGIONS.items()):
+        col = [(255, 80, 80), (80, 220, 255), (255, 220, 60), (120, 255, 120)][i % 4] + (255,)
+        if name != "panel":
+            d.rectangle([x * s, y * s, (x + w) * s - 1, (y + h) * s - 1], outline=col)
+        d.text((crop.width * s + 8, 6 + i * 14), f"{name}: {x},{y} {w}x{h}", fill=col)
+    big.save(dst_dir / "hud_sheet_x4.png")
+
+    # mock-up: ammo "042" (leading zero dim), snowball mode, half charge, 70% heat, at 3x
+    m = Image.new("RGBA", (120, 34), (0, 0, 0, 0))
+    m.alpha_composite(sheet.crop((0, 0, 120, 34)))
+    for i, ch in enumerate("042"):
+        dim = i == 0
+        dx = int(ch) * 6
+        m.alpha_composite(sheet.crop((dx, 48 if dim else 40, dx + 5, (48 if dim else 40) + 7)), (6 + 3 + i * 6, 6 + 2))
+    m.alpha_composite(sheet.crop((0, 76, 10, 10 + 76)), (45, 7))
+    m.alpha_composite(sheet.crop((0, 58, 32, 64)), (7, 23))
+    m.alpha_composite(sheet.crop((0, 66, 25, 72)), (77, 23))
+    # needle: scale from 7:30 (-135 deg) clockwise to 3:00 (+90 deg); 70% heat
+    ang = math.radians(-135 + 0.7 * 225)
+    px = m.load()
+    for k in range(1, 7):
+        x = 97 + math.sin(ang) * k
+        y = 11 - math.cos(ang) * k
+        px[int(math.floor(x)), int(math.floor(y))] = (150, 24, 16, 255)
+    px[96, 10] = px[97, 10] = px[96, 11] = px[97, 11] = (38, 37, 44, 255)
+    px[96, 10] = (140, 138, 145, 255)
+    scene = Image.new("RGBA", (200, 70), (0, 0, 0, 255))
+    sp = scene.load()
+    for yy in range(70):
+        for xx in range(200):
+            sp[xx, yy] = (110 + yy // 3, 150 + yy // 4, 190, 255) if yy < 40 else (88, 120, 60, 255)
+    hb = Image.new("RGBA", (182, 22), (40, 40, 40, 200))
+    ImageDraw.Draw(hb).rectangle([0, 0, 181, 21], outline=(20, 20, 20, 255))
+    scene.alpha_composite(hb, (9, 46))
+    scene.alpha_composite(m, (40, 8))
+    scene = scene.resize((scene.width * 3, scene.height * 3), Image.NEAREST)
+    scene.save(dst_dir / "hud_mockup_x3.png")
+    m.resize((360, 102), Image.NEAREST).save(dst_dir / "hud_panel_mock_x3.png")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--preview", type=Path, help="write contact sheets / HUD mock-up here")
@@ -643,7 +976,11 @@ def main():
         for rel in OUT:
             groups.setdefault(rel.split("/")[-2] if "/" in rel else "root", []).append(rel)
         for g, paths in groups.items():
+            if g in ("gui",):
+                continue
             print("sheet:", contact_sheet(sorted(paths), a.preview / f"sheet_{g}.png"))
+        hud_preview(a.preview)
+        print("hud previews:", a.preview / "hud_sheet_x4.png", a.preview / "hud_mockup_x3.png")
 
 
 if __name__ == "__main__":

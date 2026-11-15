@@ -86,14 +86,15 @@ public final class LauncherHud {
         // heat bar + dial needle
         int hw = Math.round(36 * heat / 100f);
         g.blit(TEX, x + 76 + 1, y + 22 + 1, 0, 66, hw, 6);
-        float ang = Mth.lerp(heat / 100f, -2.35f, 2.35f) + (over ? Mth.sin(t * 2.9f) * 0.08f : 0f);
-        float cx = x + 88 + 9f, cy = y + 2 + 9f;
-        int col = heat > 80 ? 0xFFFF4020 : 0xFFE8E0D0;
+        // the dial's scale runs from 7:30 (cold) clockwise to 3:00 (red hot)
+        float ang = (-135f + heat / 100f * 225f) * Mth.DEG_TO_RAD + (over ? Mth.sin(t * 2.9f) * 0.08f : 0f);
+        float cx = x + 96.5f, cy = y + 10.5f;
+        int col = 0xFF96180F;
         for (int i = 1; i <= 7; i++) {
             int px = Math.round(cx + Mth.sin(ang) * i - 0.5f), py = Math.round(cy - Mth.cos(ang) * i - 0.5f);
             g.fill(px, py, px + 1, py + 1, col);
         }
-        g.fill(Math.round(cx) - 1, Math.round(cy) - 1, Math.round(cx) + 1, Math.round(cy) + 1, 0xFF2A2420);
+
         // overheat: flashing plate and steam puffs from the dial
         if (over) {
             boolean lit = ((int) (t / 4)) % 2 == 0;

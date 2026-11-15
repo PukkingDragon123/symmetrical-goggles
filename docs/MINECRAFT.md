@@ -23,6 +23,11 @@ complete Fabric 1.21.1 mod made this way.
 
 MCP: the `lowpix_mc_export` tool does step 3 and returns the preview image.
 
+**Variants** (coats, colours): keep the parts identical and change only paint, then export each with
+`--texture-only --name <model>_<variant>`. Identical parts pack to the identical box-UV layout, so every variant
+texture fits the one model; pick the texture in your renderer. `examples/src/icebreaker.py` writes six coats to
+`examples/variants/`.
+
 ## What gets written
 
 | file | what |

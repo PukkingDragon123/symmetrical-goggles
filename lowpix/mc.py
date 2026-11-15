@@ -513,9 +513,11 @@ def install_runtime(java_dir: str, package: str):
                 fh.write(src)
 
 
-def export(src, mod_root: str, modid: str, package: str, out_dir: str | None = None, fps: float = 12.0,
-           name: str | None = None, texture_dir: str = "entity") -> dict:
-    """Export a lowpix spec (path or dict) into a mod project. Returns a summary dict."""
+def export(src, mod_root: str, modid: str, package: str | None, out_dir: str | None = None, fps: float = 12.0,
+           name: str | None = None, texture_dir: str = "entity", texture_only: bool = False) -> dict:
+    """Export a lowpix spec (path or dict) into a mod project. Returns a summary dict.
+
+    texture_only: write just the textures (a recolour/variant of a model already exported with the same parts)."""
     model = build_model(src)
     mc_conf = model.spec.get("minecraft", {}) or {}
     mc = from_model(model, fps=float(mc_conf.get("fps", fps)), glow_parts=set(mc_conf.get("glow_parts", [])),
@@ -524,11 +526,14 @@ def export(src, mod_root: str, modid: str, package: str, out_dir: str | None = N
     if name:
         mc.name = _ident(name)
     cls = _camel(mc.name) + "Model"
-    java_dir = os.path.join(mod_root, "src", "main", "java", *package.split("."))
     res = os.path.join(mod_root, "src", "main", "resources", "assets", modid)
-    install_runtime(java_dir, package)
-    with open(os.path.join(java_dir, cls + ".java"), "w", encoding="utf-8") as fh:
-        fh.write(mc.java(package, cls))
+    if not texture_only:
+        if not package:
+            raise ValueError("export needs a Java package (or texture_only)")
+        java_dir = os.path.join(mod_root, "src", "main", "java", *package.split("."))
+        install_runtime(java_dir, package)
+        with open(os.path.join(java_dir, cls + ".java"), "w", encoding="utf-8") as fh:
+            fh.write(mc.java(package, cls))
     tdir = os.path.join(res, "textures", texture_dir)
     os.makedirs(tdir, exist_ok=True)
     mc.texture.save(os.path.join(tdir, mc.name + ".png"))
@@ -538,13 +543,14 @@ def export(src, mod_root: str, modid: str, package: str, out_dir: str | None = N
             img.save(path)
         elif os.path.exists(path):
             os.remove(path)
-    adir = os.path.join(res, "lowpix")
-    os.makedirs(adir, exist_ok=True)
-    with open(os.path.join(adir, mc.name + ".anim.json"), "w", encoding="utf-8") as fh:
-        json.dump(mc.anim_json(), fh, separators=(",", ":"))
-    with open(os.path.join(adir, mc.name + ".geo.json"), "w", encoding="utf-8") as fh:
-        json.dump(mc.geo_json(), fh, separators=(",", ":"))
-    summary = {"name": mc.name, "class": f"{package}.{cls}", "parts": len(mc.parts),
+    if not texture_only:
+        adir = os.path.join(res, "lowpix")
+        os.makedirs(adir, exist_ok=True)
+        with open(os.path.join(adir, mc.name + ".anim.json"), "w", encoding="utf-8") as fh:
+            json.dump(mc.anim_json(), fh, separators=(",", ":"))
+        with open(os.path.join(adir, mc.name + ".geo.json"), "w", encoding="utf-8") as fh:
+            json.dump(mc.geo_json(), fh, separators=(",", ":"))
+    summary = {"name": mc.name, "class": None if texture_only else f"{package}.{cls}", "parts": len(mc.parts),
                "cubes": sum(1 for p in mc.parts if p.cube is not None),
                "texture": [mc.texture.width, mc.texture.height], "texture_units": list(mc.tex_units),
                "glow": mc.glow is not None, "tint": mc.tint is not None, "clips": {k: round(v["length"], 3) for k, v in mc.clips.items()},

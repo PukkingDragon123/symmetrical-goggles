@@ -51,3 +51,13 @@ python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipe
 Model sources live in `examples/src/` at the repo root (icebreaker, icebreaker_cub, snowball_launcher, snow_globe,
 locomotive, dragon_locomotive, fox_cart, zombie_cart, trailer_cart); 2D art in `examples/src/winterworks_art.py`.
 Sounds are re-pitched vanilla sounds (no new audio files).
+
+## In game
+
+Screenshots taken by `runShowcase` (the real client, software-rendered):
+
+| | |
+|---|---|
+| ![Icebreaker family](docs/screenshots/icebreaker_family.png) | ![Icebreaker close](docs/screenshots/icebreaker_close.png) |
+| ![Winter Express](docs/screenshots/winter_express_running.png) | ![Snow Globe](docs/screenshots/snow_globe_swirl.png) |
+| ![Launcher firing](docs/screenshots/launcher_firing.png) | ![Launcher HUD](docs/screenshots/launcher_hud.png) |

@@ -1,0 +1,198 @@
+{
+  "name": "Zombie Cart",
+  "parts": 39,
+  "instances": 39,
+  "faces": 216,
+  "triangles": 432,
+  "vertices_flat": 864,
+  "vertices_unique": 296,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.564,
+  "texel_density": 1.0,
+  "colors_used": 71,
+  "palette": {
+    "rot": [
+      "#111310",
+      "#1b1e19",
+      "#272b23",
+      "#33382e",
+      "#41463a",
+      "#4f5546",
+      "#5f6452",
+      "#70745e",
+      "#83866c",
+      "#979a7e"
+    ],
+    "moss": [
+      "#0c140b",
+      "#142011",
+      "#1c2e17",
+      "#253d1c",
+      "#304c22",
+      "#3c5c29",
+      "#4a6b30",
+      "#5b7c39"
+    ],
+    "skin": [
+      "#0e1610",
+      "#152218",
+      "#1d2e1f",
+      "#263c27",
+      "#304a2f",
+      "#3c5937",
+      "#486740",
+      "#57754a",
+      "#678356",
+      "#7a9263"
+    ],
+    "shirt": [
+      "#0c1519",
+      "#122027",
+      "#182c35",
+      "#1f3a43",
+      "#284851",
+      "#31565e",
+      "#3d646a",
+      "#4c7276"
+    ],
+    "rust": [
+      "#131010",
+      "#211915",
+      "#31241c",
+      "#433024",
+      "#563c2c",
+      "#694934",
+      "#7b573f",
+      "#8c674c"
+    ],
+    "iron": [
+      "#0f1013",
+      "#1a1c20",
+      "#272a2f",
+      "#373a40",
+      "#4a4d53",
+      "#5f6268",
+      "#76797d",
+      "#8f9194"
+    ],
+    "gum": [
+      "#0c0507",
+      "#1a0a0c",
+      "#2a1013",
+      "#3c181a",
+      "#4f2222"
+    ],
+    "tooth": [
+      "#2f2a1e",
+      "#4b4430",
+      "#685f45",
+      "#857b5b",
+      "#a09672"
+    ],
+    "socket": [
+      "#060807",
+      "#0e120f",
+      "#1a1f19"
+    ],
+    "cloth": [
+      "#17120e",
+      "#251d16",
+      "#352a1f",
+      "#463829",
+      "#574734",
+      "#695840",
+      "#7b6a4e"
+    ],
+    "wool": [
+      "#4c4c4c",
+      "#5e5e5e",
+      "#727272",
+      "#878787",
+      "#9c9c9c",
+      "#b1b1b1",
+      "#c5c5c5",
+      "#d8d8d8",
+      "#e9e9e9",
+      "#f7f7f7"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -9.384,
+      0.0,
+      -11.8
+    ],
+    "max": [
+      8.808,
+      24.194,
+      18.511
+    ],
+    "size": [
+      18.192,
+      24.194,
+      30.311
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "run": 1.0,
+    "idle": 2.0
+  },
+  "joints": [
+    "tub",
+    "wall_l",
+    "loose_plank",
+    "nail_0",
+    "wall_r",
+    "nail_3",
+    "flap",
+    "wall_f",
+    "nail_1",
+    "wall_b",
+    "nail_2",
+    "axle_f",
+    "axle_b",
+    "trim",
+    "trim_l",
+    "trim_r",
+    "trim_b",
+    "wheel_fl",
+    "wheel_fl_hub",
+    "wheel_fr",
+    "wheel_fr_hub",
+    "wheel_bl",
+    "wheel_bl_hub",
+    "wheel_br",
+    "wheel_br_hub",
+    "seat",
+    "torso",
+    "collar",
+    "head",
+    "brow",
+    "jaw",
+    "arm_l",
+    "arm_l_sleeve",
+    "arm_l_fore",
+    "arm_l_hand",
+    "arm_r",
+    "arm_r_sleeve",
+    "arm_r_fore",
+    "arm_r_hand"
+  ],
+  "files": {
+    "zombie_cart.glb": "examples/output/zombie_cart.glb",
+    "zombie_cart.obj": "examples/output/zombie_cart.obj",
+    "zombie_cart.mtl": "examples/output/zombie_cart.mtl",
+    "zombie_cart.bbmodel": "examples/output/zombie_cart.bbmodel",
+    "zombie_cart_texture.png": "examples/output/zombie_cart_texture.png",
+    "zombie_cart_texture_x8.png": "examples/output/zombie_cart_texture_x8.png",
+    "zombie_cart_hero.png": "examples/output/zombie_cart_hero.png",
+    "zombie_cart_sheet.png": "examples/output/zombie_cart_sheet.png",
+    "zombie_cart_turntable.gif": "examples/output/zombie_cart_turntable.gif",
+    "zombie_cart_run.gif": "examples/output/zombie_cart_run.gif",
+    "zombie_cart_idle.gif": "examples/output/zombie_cart_idle.gif"
+  }
+}

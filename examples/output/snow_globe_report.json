@@ -1,0 +1,249 @@
+{
+  "name": "Snow Globe",
+  "parts": 83,
+  "instances": 83,
+  "faces": 448,
+  "triangles": 896,
+  "vertices_flat": 1792,
+  "vertices_unique": 616,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.798,
+  "texel_density": 2.0,
+  "colors_used": 79,
+  "palette": {
+    "walnut": [
+      "#0f0a09",
+      "#18100d",
+      "#211612",
+      "#2b1c16",
+      "#36231b",
+      "#422b21",
+      "#4f3428",
+      "#5d3e30"
+    ],
+    "brass": [
+      "#19130c",
+      "#2a2013",
+      "#3d301a",
+      "#524122",
+      "#68532b",
+      "#7e6634",
+      "#94793f",
+      "#a88d4e",
+      "#bba263",
+      "#cdb67c"
+    ],
+    "verdigris": [
+      "#232c27",
+      "#313d35",
+      "#415045"
+    ],
+    "glass": [
+      "#6f8496",
+      "#8ea3b4",
+      "#b3c5d2",
+      "#d9e5ec",
+      "#ffffff"
+    ],
+    "snow": [
+      "#4f5a6c",
+      "#68758a",
+      "#8592a6",
+      "#a4b0c2",
+      "#c3cdd9",
+      "#dde4ec",
+      "#f0f4f8",
+      "#fbfdfe"
+    ],
+    "pine": [
+      "#0c1512",
+      "#122019",
+      "#192b21",
+      "#21372a",
+      "#2b4534",
+      "#37533f",
+      "#45624b"
+    ],
+    "bark": [
+      "#140d0b",
+      "#1f1511",
+      "#2b1d17",
+      "#38261d",
+      "#463024"
+    ],
+    "logs": [
+      "#1a110c",
+      "#261911",
+      "#332217",
+      "#422c1e",
+      "#513726",
+      "#61432f",
+      "#715038"
+    ],
+    "roof": [
+      "#141215",
+      "#1e1b1f",
+      "#29252a",
+      "#353036",
+      "#423c43"
+    ],
+    "stone": [
+      "#1a191c",
+      "#28272a",
+      "#37363a",
+      "#48474a",
+      "#5a585b",
+      "#6e6b6d"
+    ],
+    "window": [
+      "#5c2c07",
+      "#99560e",
+      "#d48f22",
+      "#f7c44c",
+      "#ffe48a",
+      "#fff6cf"
+    ],
+    "wool": [
+      "#2a1012",
+      "#43181a",
+      "#5e2323",
+      "#77302c",
+      "#8c3f36"
+    ],
+    "carrot": [
+      "#4a2108",
+      "#7a3a0e",
+      "#a45518",
+      "#c06e26"
+    ],
+    "coal": [
+      "#0e0e10",
+      "#18181b",
+      "#232327",
+      "#303035"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -6.664,
+      0.0,
+      -6.664
+    ],
+    "max": [
+      6.664,
+      15.5,
+      6.664
+    ],
+    "size": [
+      13.328,
+      15.5,
+      13.328
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "shake": 0.9,
+    "idle": 3.0
+  },
+  "joints": [
+    "base",
+    "deco_foot0",
+    "deco_foot1",
+    "deco_foot2",
+    "deco_foot3",
+    "deco_plinth",
+    "deco_trim",
+    "deco_step",
+    "deco_collar",
+    "deco_plaque",
+    "deco_plaque_pin0",
+    "deco_plaque_pin1",
+    "globe",
+    "glass",
+    "glass0",
+    "glass0b",
+    "glass1",
+    "glass1b",
+    "glass2",
+    "glass2b",
+    "glass3",
+    "glass3b",
+    "glass4",
+    "glass4b",
+    "glass5",
+    "glass5b",
+    "glass6",
+    "glass6b",
+    "scene",
+    "ground",
+    "deco_ground_b",
+    "deco_drift0",
+    "deco_drift1",
+    "deco_rock",
+    "deco_rock1",
+    "tree0",
+    "deco_tree0_t0",
+    "deco_tree0_t1",
+    "deco_tree0_t2",
+    "deco_tree0_t3",
+    "deco_tree0_t4",
+    "tree1",
+    "deco_tree1_t0",
+    "deco_tree1_t1",
+    "deco_tree1_t2",
+    "deco_tree1_t3",
+    "cabin",
+    "deco_gable0",
+    "deco_gable1",
+    "deco_roof_f",
+    "deco_roof_b",
+    "deco_ridge",
+    "deco_chimney",
+    "deco_door",
+    "deco_window_side",
+    "deco_woodpile",
+    "deco_woodpile1",
+    "window",
+    "deco_sill",
+    "snowman",
+    "deco_sm_round",
+    "deco_sm_scarf",
+    "deco_sm_tail",
+    "deco_sm_head",
+    "deco_sm_nose",
+    "deco_sm_hat",
+    "deco_sm_arm0",
+    "deco_sm_arm1",
+    "deco_snow_a",
+    "deco_snow_a0",
+    "deco_snow_a1",
+    "deco_snow_a2",
+    "deco_snow_a3",
+    "deco_snow_b",
+    "deco_snow_b0",
+    "deco_snow_b1",
+    "deco_snow_b2",
+    "deco_snow_b3",
+    "deco_snow_c",
+    "deco_snow_c0",
+    "deco_snow_c1",
+    "deco_snow_c2",
+    "deco_snow_c3"
+  ],
+  "files": {
+    "snow_globe.glb": "examples/output/snow_globe.glb",
+    "snow_globe.obj": "examples/output/snow_globe.obj",
+    "snow_globe.mtl": "examples/output/snow_globe.mtl",
+    "snow_globe.bbmodel": "examples/output/snow_globe.bbmodel",
+    "snow_globe_texture.png": "examples/output/snow_globe_texture.png",
+    "snow_globe_texture_x4.png": "examples/output/snow_globe_texture_x4.png",
+    "snow_globe_hero.png": "examples/output/snow_globe_hero.png",
+    "snow_globe_sheet.png": "examples/output/snow_globe_sheet.png",
+    "snow_globe_turntable.gif": "examples/output/snow_globe_turntable.gif",
+    "snow_globe_shake.gif": "examples/output/snow_globe_shake.gif",
+    "snow_globe_idle.gif": "examples/output/snow_globe_idle.gif"
+  }
+}

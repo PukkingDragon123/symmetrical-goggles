@@ -63,6 +63,9 @@ public class IcebreakerEntity extends Animal {
     private static final EntityDataAccessor<Boolean> CHARGING = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SLIDING = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> CALM = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(IcebreakerEntity.class, EntityDataSerializers.INT);
+    /** Coat variants: textures/entity/icebreaker_<name>.png (same model, different colours and spots). */
+    public static final String[] VARIANTS = {"grey", "harbor", "leopard", "ringed", "brown", "frost"};
 
     public static final byte EVENT_RAM = 4;
     public static final byte EVENT_HAPPY = 41;
@@ -70,6 +73,7 @@ public class IcebreakerEntity extends Animal {
     public static final byte EVENT_ICE_SMASH = 43;
     public static final byte EVENT_BELLY_SLAP = 44;
     public static final byte EVENT_TAIL_SLAP = 45;
+    public static final byte EVENT_BARK = 46;
     /** Horn growth: 0 = none, 1 = a bud ... 4 = full horn. Points needed per stage (see tickHorn). */
     public static final int MAX_HORN = 4, HORN_POINTS = 3000;
 
@@ -82,6 +86,7 @@ public class IcebreakerEntity extends Animal {
     public final AnimationState happyState = new AnimationState();
     public final AnimationState bellySlapState = new AnimationState();
     public final AnimationState tailSlapState = new AnimationState();
+    public final AnimationState barkState = new AnimationState();
     /** Client: 0..1 how far the newest horn segment has grown (for a smooth grow-in). */
     public float hornGrowFx = 1f;
     private int lastHornStage = -1;
@@ -128,6 +133,7 @@ public class IcebreakerEntity extends Animal {
         builder.define(CHARGING, false);
         builder.define(SLIDING, false);
         builder.define(CALM, false);
+        builder.define(VARIANT, 0);
     }
 
     @Override
@@ -186,6 +192,25 @@ public class IcebreakerEntity extends Animal {
     /** Big enough to shear (and to break ice with). */
     public boolean hasHorn() {
         return hornStage() >= 2;
+    }
+
+    public int variant() {
+        return Math.floorMod(entityData.get(VARIANT), VARIANTS.length);
+    }
+
+    public void setVariant(int v) {
+        entityData.set(VARIANT, Math.floorMod(v, VARIANTS.length));
+    }
+
+    /** Coats by place: icy seas favour the pale and ringed seals, snowy land the spotted and brown ones. */
+    private int pickVariant(ServerLevelAccessor level) {
+        var biome = level.getBiome(blockPosition());
+        RandomSource r = random;
+        if (biome.is(net.minecraft.world.level.biome.Biomes.FROZEN_OCEAN) || biome.is(net.minecraft.world.level.biome.Biomes.DEEP_FROZEN_OCEAN)
+                || biome.is(net.minecraft.world.level.biome.Biomes.ICE_SPIKES)) {
+            return new int[]{5, 5, 3, 3, 0, 2}[r.nextInt(6)];
+        }
+        return new int[]{0, 0, 1, 1, 2, 3, 4, 4, 5}[r.nextInt(9)];
     }
 
     public boolean isCharging() {
@@ -390,6 +415,7 @@ public class IcebreakerEntity extends Animal {
             case EVENT_ICE_SMASH -> bellyJiggleVel += 0.3f;
             case EVENT_BELLY_SLAP -> bellySlapState.start(tickCount);
             case EVENT_TAIL_SLAP -> tailSlapState.start(tickCount);
+            case EVENT_BARK -> barkState.start(tickCount);
             default -> super.handleEntityEvent(id);
         }
     }
@@ -516,6 +542,7 @@ public class IcebreakerEntity extends Animal {
         IcebreakerEntity cub = WWEntities.ICEBREAKER.create(level);
         if (cub != null) {
             cub.setHornStage(0);
+            cub.setVariant(random.nextBoolean() || !(other instanceof IcebreakerEntity o) ? variant() : o.variant());
         }
         return cub;
     }
@@ -528,6 +555,7 @@ public class IcebreakerEntity extends Animal {
         }
         SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data);
         setHornStage(isBaby() ? 0 : 2 + random.nextInt(3));
+        setVariant(pickVariant(level));
         return out;
     }
 
@@ -542,6 +570,13 @@ public class IcebreakerEntity extends Animal {
     }
 
     // --------------------------------------------------------------------------------------- sounds
+
+    /** Every grunt is acted out: head up, mouth open, nostrils flared. */
+    @Override
+    public void playAmbientSound() {
+        super.playAmbientSound();
+        level().broadcastEntityEvent(this, EVENT_BARK);
+    }
 
     @Override
     protected SoundEvent getAmbientSound() {
@@ -574,6 +609,7 @@ public class IcebreakerEntity extends Animal {
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("HornStage", hornStage());
+        tag.putString("Variant", VARIANTS[variant()]);
         tag.putInt("HornPoints", hornPoints);
         tag.putInt("CalmTicks", calmTicks);
     }
@@ -583,6 +619,12 @@ public class IcebreakerEntity extends Animal {
         super.readAdditionalSaveData(tag);
         setHornStage(tag.contains("HornStage") ? tag.getInt("HornStage") : MAX_HORN);
         hornPoints = tag.getInt("HornPoints");
+        String v = tag.getString("Variant");
+        for (int i = 0; i < VARIANTS.length; i++) {
+            if (VARIANTS[i].equals(v)) {
+                setVariant(i);
+            }
+        }
         calmTicks = tag.getInt("CalmTicks");
         entityData.set(CALM, calmTicks > 0);
     }

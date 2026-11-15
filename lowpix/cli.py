@@ -213,6 +213,8 @@ def main(argv=None):
     mc.add_argument("--texture-dir", default="entity", help="textures/<dir>/ for the model texture (entity, block, item)")
     mc.add_argument("--fps", type=float, default=12.0, help="keyframes per second when baking clips")
     mc.add_argument("--handheld", action="store_true", help="icon: held like a tool")
+    mc.add_argument("--texture-only", action="store_true",
+                    help="export: only the textures (a coat/colour variant of a model exported with the same parts)")
     mc.add_argument("-o", "--out", default="out/mc", help="where the export preview sheet goes")
     sub.add_parser("schema", help="print the JSON schema for specs")
 
@@ -407,10 +409,10 @@ def main(argv=None):
             mcmod.export_icon(a.src, a.mod, a.modid, a.name or os.path.splitext(os.path.basename(a.src))[0], a.handheld)
             print(f"installed item icon {a.name or a.src} into {a.mod}")
         else:
-            if not a.package:
-                ap.error("mc export needs --package")
+            if not a.package and not a.texture_only:
+                ap.error("mc export needs --package (or --texture-only)")
             summary = mcmod.export(a.src, a.mod, a.modid, a.package, out_dir=a.out, fps=a.fps, name=a.name,
-                                   texture_dir=a.texture_dir)
+                                   texture_dir=a.texture_dir, texture_only=a.texture_only)
             print(json.dumps(summary, indent=1))
             for w in summary["warnings"]:
                 print("  warning:", w)

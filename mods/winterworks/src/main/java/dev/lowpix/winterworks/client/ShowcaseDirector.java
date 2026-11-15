@@ -58,19 +58,24 @@ public final class ShowcaseDirector {
         });
         // scene 1: an Icebreaker family by a frozen pond
         at(t += 5, () -> {
-            cmd("fill -16 -61 -6 16 -61 24 minecraft:snow_block");
-            cmd("fill -4 -61 9 12 -61 20 minecraft:ice");
+            cmd("fill -24 -61 -10 26 -61 40 minecraft:snow_block");
+            cmd("fill -6 -61 20 14 -61 34 minecraft:ice");
             cmd("fill 6 -60 -2 9 -60 0 minecraft:snow[layers=3]");
             cmd("setblock -6 -60 12 minecraft:spruce_log");
             cmd("setblock -6 -59 12 minecraft:spruce_log");
             cmd("fill -7 -58 11 -5 -57 13 minecraft:spruce_leaves[persistent=true]");
-            cmd("summon winterworks:icebreaker 1.5 -60 7 {NoAI:1b,Rotation:[160f,0f],HornStage:4,PersistenceRequired:1b}");
-            cmd("summon winterworks:icebreaker -2.5 -60 4.5 {NoAI:1b,Rotation:[205f,0f],Age:-24000,PersistenceRequired:1b}");
-            cmd("summon winterworks:icebreaker 6.5 -60 13 {NoAI:1b,Rotation:[120f,0f],HornStage:2,PersistenceRequired:1b}");
-            cmd("tp @s -1.5 -57.6 -3.5 -8 18");
+            cmd("summon winterworks:icebreaker 0.5 -60 12 {NoAI:1b,Rotation:[160f,0f],HornStage:4,Variant:\"grey\",PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker -9.5 -60 16 {NoAI:1b,Rotation:[205f,0f],HornStage:3,Variant:\"harbor\",PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker 10.5 -60 17 {NoAI:1b,Rotation:[130f,0f],HornStage:2,Variant:\"leopard\",PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker -4.5 -60 27 {NoAI:1b,Rotation:[180f,0f],HornStage:4,Variant:\"brown\",PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker 6.5 -60 30 {NoAI:1b,Rotation:[165f,0f],HornStage:4,Variant:\"ringed\",PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker 16.5 -60 27 {NoAI:1b,Rotation:[120f,0f],HornStage:4,Variant:\"frost\",PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker -5.5 -60 5.5 {NoAI:1b,Rotation:[215f,0f],Age:-24000,PersistenceRequired:1b}");
+            cmd("summon winterworks:icebreaker 5.5 -60 5 {NoAI:1b,Rotation:[150f,0f],Age:-24000,PersistenceRequired:1b}");
+            cmd("tp @s 1 -56.2 -1.5 0 14");
         });
         at(t += 120, () -> shot("icebreaker_family"));
-        at(t += 5, () -> cmd("tp @s 4.5 -59 2.5 -30 8"));
+        at(t += 5, () -> cmd("tp @s 7.5 -57.6 3.5 38 12"));
         at(t += 40, () -> shot("icebreaker_close"));
         // scene 2: the Winter Express on coaster rails
         at(t += 5, () -> {
@@ -108,7 +113,7 @@ public final class ShowcaseDirector {
             cmd("fill 88 -61 -4 96 -61 4 minecraft:spruce_planks");
             cmd("setblock 92 -60 0 minecraft:spruce_slab[type=top]");
             cmd("setblock 92 -59 0 winterworks:snow_globe[facing=north]");
-            cmd("tp @s 92.5 -58.1 -1.4 0 32");
+            cmd("tp @s 92.5 -58.0 -2.6 0 24");
         });
         at(t += 60, () -> server(level -> level.blockEvent(new BlockPos(92, -59, 0), WWBlocks.SNOW_GLOBE,
                 SnowGlobeBlockEntity.EVENT_SHAKE, 7)));
@@ -127,7 +132,7 @@ public final class ShowcaseDirector {
             cmd("give @s winterworks:fox_cart");
             cmd("give @s winterworks:coaster_rail 16");
             cmd("give @s winterworks:snow_globe");
-            cmd("tp @s -1.5 -59 -1.5 10 4");
+            cmd("tp @s 0.5 -59 -3.5 0 6");
             cmd("gamemode survival");
         });
         at(t += 40, () -> {

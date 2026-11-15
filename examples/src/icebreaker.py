@@ -24,37 +24,39 @@ def box(id, parent, size, pivot, style, offset=None, rot=None, **kw):
     return d
 
 
-# ------------------------------------------------------------------ torso: posed like a hauled-out seal --
-# chest propped up on the fore-flippers, the back sloping down to splayed tail flippers, an S-curved neck.
-# Rotated boxes overlap at every joint so no seams open.
-box("body", None, [28, 20, 26], [0, 5.4, -8], "seal_back", offset=[0, 10, 13], rot=[-12, 0, 0])
-box("belly", "body", [28, 9, 26], [0, 3.5, 13], "belly", offset=[0, -4.5, 0])
-box("belly_side", "belly", [3, 7, 20], [14.5, -4.0, 0], "belly", mirror=True)
-box("belly_low", "belly", [22, 3, 20], [0, -8.2, 1], "belly")
-box("hump", "body", [24, 3, 20], [0, 20, 12], "seal_back", rot=[-3, 0, 0])
-box("flank", "body", [3, 14, 22], [14.5, 8, 12], "seal", mirror=True)
-box("hips", "body", [23, 16, 14], [0, 8, 3], "seal", offset=[0, 0, -6], rot=[6, 0, 0])
-box("hips_fat", "hips", [25, 10, 10], [0, -3, -5], "seal")
-box("tail", "hips", [13, 9, 10], [0, -2.5, -11], "seal", offset=[0, 0, -4.5], rot=[9, 0, 0])
-box("fluke", "tail", [10, 2, 15], [3, -3, -8], "flipper", offset=[1, 0, -7.5], rot=[-6, 32, 6], mirror=True)
-box("fluke_web", "fluke", [8, 1, 4], [1, 0, -14], "flipper")
-box("flipper", "body", [5, 12, 9], [14, 6.5, 19], "flipper", offset=[1.5, -5.5, 0], rot=[-4, 0, -22], mirror=True)
-box("palm", "flipper", [7, 2, 12], [1.2, -11.2, 2.5], "flipper", rot=[16, 0, 22])
-for k, z in enumerate((-2.5, 0, 2.5)):
-    box(f"claw{k}", "palm", [1, 1, 1], [1.5 + k * 0.0, -0.3, z * 1.3 + 6.0], "claw", mirror=True)
-# ------------------------------------------------------------------ the enormous head on a thick neck
-box("neck", "body", [22, 17, 9], [0, 13.5, 24], "seal", offset=[0, 0, 3.5], rot=[-10, 0, 0])
-box("head", "neck", [24, 20, 16], [0, 2, 6], "head", offset=[0, 2, 8], rot=[18, 0, 0])
-box("crown", "head", [20, 2, 12], [0, 13, 7], "head")
-box("cheek", "head", [2, 12, 12], [12.5, -1, 8], "head", rot=[0, 0, 4], mirror=True)
-box("muzzle", "head", [14, 8, 6], [0, -4, 16], "muzzle", offset=[0, 0, 3], rot=[6, 0, 0])
-box("whisker_pad", "muzzle", [16, 4, 4], [0, -1, 4], "whiskers", rot=[0, 0, 0])
-box("nose", "muzzle", [4, 2, 1], [0, 2.5, 6], "nose", offset=[0, 0, 0.5])
-box("jaw", "head", [16, 4, 12], [0, -8, 9], "jaw", offset=[0, -1.5, 6], rot=[4, 0, 0])
-box("tongue", "jaw", [10, 1, 8], [0, 0.6, 7], "mouth")
-box("tusk", "muzzle", [2, 6, 2], [4.5, -4, 4], "tusk", offset=[0, -3, 0], rot=[-18, 0, 8], mirror=True)
-box("eye", "head", [2, 2, 1], [7.5, 5, 16], "eye", mirror=True)
-box("nostril_ridge", "muzzle", [8, 1, 2], [0, 4.5, 4], "muzzle")
+# ------------------------------------------------------------------ a real seal's build, Minecraft-style
+# A long fat torpedo: the spine is a chain of segments (chest -> belly -> waist -> hips -> tail), each a little
+# narrower, each hinged at its front so waves can ripple down the body. Big fan-shaped hind flippers, big
+# fore-flippers, a rounded head with puffy whisker pads, large dark eyes with lids and brows for expressions.
+box("chest", None, [28, 22, 20], [0, 15.4, 6], "seal_back", rot=[-6, 0, 0])
+box("chest_under", "chest", [26, 4, 17], [0, -10.6, 0.5], "belly")
+box("belly", "chest", [32, 23, 20], [0, -0.6, -8], "seal_back", offset=[0, -0.5, -9], rot=[5, 0, 0])
+box("belly_under", "belly", [30, 5, 18], [0, -10.9, -9], "belly")
+box("flank", "belly", [3, 16, 18], [16.5, -1, -9], "seal", mirror=True)
+box("waist", "belly", [26, 19, 16], [0, -1, -17], "seal", offset=[0, -1.5, -7], rot=[3, 0, 0])
+box("waist_under", "waist", [22, 3, 14], [0, -11, -7], "belly")
+box("hips", "waist", [19, 14, 13], [0, -1.5, -13], "seal", offset=[0, -1.5, -6], rot=[5, 0, 0])
+box("tail", "hips", [12, 8, 10], [0, -2.5, -11], "seal", offset=[0, -0.5, -4.5], rot=[6, 0, 0])
+box("fluke", "tail", [9, 2, 18], [3, -2, -8], "flipper", offset=[1.5, 0, -9], rot=[-8, 18, 4], mirror=True)
+box("fluke_fan", "fluke", [13, 2, 6], [2.5, 0, -17], "flipper", rot=[0, 14, 0])
+box("flipper", "chest", [6, 12, 11], [14, -3, 6], "flipper", offset=[1.5, -5.5, 1], rot=[-8, 0, -20], mirror=True)
+box("palm", "flipper", [8, 2, 15], [1.5, -11.4, 3], "flipper", rot=[14, 0, 20])
+for k, x in enumerate((-2.8, -1.4, 0, 1.4, 2.8)):
+    box(f"claw{k}", "palm", [1, 1, 2], [x, 0.2, 7.5], "claw", mirror=True)
+# ------------------------------------------------------------------ head
+box("neck", "chest", [24, 18, 10], [0, 6, 9], "seal", offset=[0, 1, 4], rot=[-14, 0, 0])
+box("head", "neck", [22, 19, 17], [0, 3, 8], "head", offset=[0, 2, 8], rot=[16, 0, 0])
+box("crown", "head", [18, 3, 13], [0, 12.5, 7.5], "head")
+box("cheek", "head", [2, 12, 12], [11.5, 0, 8], "head", mirror=True)
+box("muzzle", "head", [14, 8, 6], [0, -3.5, 16.5], "muzzle", offset=[0, 0, 3])
+box("whisker_pad", "muzzle", [8, 7, 6], [4, -0.5, 4], "whiskers", mirror=True)
+box("nose", "muzzle", [6, 3, 3], [0, 4, 4.5], "nose")
+box("nostril", "nose", [2, 1, 1], [1.5, 0.6, 1.6], "nostril", mirror=True)
+box("jaw", "head", [12, 4, 12], [0, -7, 9], "jaw", offset=[0, -1.5, 6], rot=[4, 0, 0])
+box("tongue", "jaw", [8, 1, 8], [0, 0.6, 7], "mouth")
+box("eye", "head", [3, 3, 1], [6.5, 4.5, 16.6], "eye", mirror=True)
+box("lid", "head", [4, 2, 2], [6.5, 7.0, 16.6], "lid", mirror=True)
+box("brow", "head", [5, 1, 2], [6.5, 8.6, 16.0], "brow", mirror=True)
 # the horn: a massive ice horn, stacked boxes curving up and forward
 box("horn", "crown", [7, 7, 7], [0, 1, 3], "horn", offset=[0, 3, 0], rot=[22, 0, 0])
 box("horn_1", "horn", [5, 6, 5], [0, 6, 0], "horn", offset=[0, 3, 0], rot=[12, 0, 4])
@@ -109,7 +111,6 @@ styles = {
 ]},
     "jaw": {"ramp": "belly", "tone": 5.4},
     "nose": {"ramp": "nose", "tone": 2.0, "stamps": [
-        {"face": "front", "at": "center", "art": ["n..n", ".nn."], "key": {"n": "nose:0"}},
         {"face": "front", "at": "top-left", "art": [".h"], "key": {"h": "nose:4"}}]},
     "mouth": {"ramp": "mouth", "tone": 3.2},
     "tusk": {"ramp": "horn", "tone": 8.0, "layers": [{"id": "tip", "op": "gradient", "axis": "y", "amount": -1.0}]},
@@ -118,6 +119,9 @@ styles = {
          "faces": ["front", "back", "bottom"]},
         {"id": "edge", "op": "gradient", "axis": "y", "amount": -0.8}]},
     "claw": {"ramp": "claw", "tone": 2.2},
+    "lid": {"ramp": "seal", "tone": 4.2, "layers": [{"id": "lash", "op": "gradient", "axis": "y", "amount": 1.0}]},
+    "brow": {"ramp": "seal", "tone": 2.6},
+    "nostril": {"ramp": "nose", "tone": 0.2, "light": 0, "brush": {"off": True}},
     "eye": {"ramp": "eye", "tone": 0.6, "light": 0, "brush": {"off": True}, "stamps": [
         {"face": "front", "at": "top-left", "art": ["h."], "key": {"h": "eye:3"}}]},
     # an old ice horn: grey-ivory with blue-grey depth, a slow spiral of ridges, a pale worn tip
@@ -127,131 +131,172 @@ styles = {
     "horn_tip": {"ramp": "horn", "tone": 9.0},
 }
 
-FL = ["flipper"]
+SPINE = ["belly", "waist", "hips", "tail"]
+BLINK = [[0, [0, 0, 0]], [0.06, [0, -2.6, 0]], [0.14, [0, 0, 0]]]
+
+
+def blink(at):
+    return [[at + k[0], k[1]] + k[2:] for k in BLINK]
+
+
+def keys(*groups):
+    out = [[0, [0, 0, 0]]]
+    for g in groups:
+        out += g
+    return out
+
+
 anim = {
-    "idle": {"length": 4.0, "loop": True, "tracks": [
-        {"part": "body", "channel": "scale", "osc": {"amp": [0.012, 0.025, 0.008], "cycles": 2}},
-        {"part": "belly", "channel": "scale", "osc": {"amp": [0.03, 0.08, 0.02], "cycles": 2, "phase": 0.12}},
-        {"part": "neck", "axis": "y", "osc": {"amp": 7, "cycles": 1}},
+    # breathing, looking around, curious head tilts, blinks, nostrils opening and closing
+    "idle": {"length": 5.0, "loop": True, "tracks": [
+        {"part": "chest", "channel": "scale", "osc": {"amp": [0.012, 0.025, 0.008], "cycles": 2}},
+        {"part": "belly", "channel": "scale", "osc": {"amp": [0.02, 0.03, 0.01], "cycles": 2, "phase": 0.08}},
+        {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.03, 0.08, 0.02], "cycles": 2, "phase": 0.14}},
+        {"part": "neck", "axis": "y", "keys": [[0, 0], [0.8, 14], [1.8, 14], [2.4, -10], [3.6, -10], [4.4, 0]]},
+        {"part": "head", "axis": "z", "keys": [[0, 0], [0.9, 0], [1.2, 12, "out_back"], [1.8, 12], [2.1, 0], [3.0, 0],
+                                               [3.3, -9, "out_back"], [3.7, -9], [4.0, 0]]},
         {"part": "head", "axis": "x", "osc": {"amp": 2.5, "cycles": 2, "phase": 0.2}},
-        {"part": "head", "axis": "z", "osc": {"amp": 3, "cycles": 1, "phase": 0.3}},
-        {"part": "eye", "channel": "scale", "keys": [[0, [0, 0, 0]], [1.5, [0, 0, 0]], [1.58, [0, -0.85, 0]],
-                                                      [1.7, [0, 0, 0]], [3.3, [0, 0, 0]], [3.36, [0, -0.85, 0]],
-                                                      [3.42, [0, 0, 0]], [3.5, [0, -0.85, 0]], [3.6, [0, 0, 0]]]},
-        {"part": "flipper", "axis": "x", "osc": {"amp": 5, "cycles": 1, "phase": 0.25}, "mirror_phase": 0.5},
-        {"part": "fluke", "axis": "y", "osc": {"amp": 10, "cycles": 2}, "mirror_phase": 0.0},
-        {"part": "tail", "axis": "x", "osc": {"amp": 4, "cycles": 1, "bias": 4}},
+        {"part": "lid", "channel": "position", "keys": keys(blink(1.0), blink(2.9), blink(3.15))},
+        {"part": "nostril", "channel": "scale", "osc": {"amp": [0.5, 0.5, 0], "cycles": 2, "bias": [0.2, 0.2, 0]}},
+        {"part": "brow", "axis": "z", "keys": [[0, 0], [1.1, 0], [1.3, 12], [1.8, 12], [2.0, 0]]},
+        {"part": "flipper", "axis": "x", "osc": {"amp": 4, "cycles": 1, "phase": 0.25}},
+        {"part": "fluke", "axis": "y", "osc": {"amp": 9, "cycles": 2}},
+        {"part": "fluke_fan", "axis": "y", "osc": {"amp": 6, "cycles": 2, "phase": 0.1}},
+        {"part": "tail", "axis": "x", "osc": {"amp": 3, "cycles": 1, "bias": 4}},
     ]},
-    # the seal galumph: the whole barrel rocks forward and back, the belly and head lag behind it
+    # the seal galumph: a wave of fat rolls from the chest back to the tail, the fore-flippers heave the front up
     "walk": {"length": 1.0, "loop": True, "tracks": [
-        {"part": "body", "axis": "x", "osc": {"amp": 6, "cycles": 1}},
-        {"part": "body", "channel": "position", "osc": {"amp": [0, 1.6, 0], "cycles": 1, "phase": 0.25, "shape": "bounce"}},
-        {"part": "belly", "channel": "scale", "osc": {"amp": [0.08, -0.15, 0.05], "cycles": 2, "phase": 0.18}},
-        {"part": "belly", "channel": "position", "osc": {"amp": [0, -0.8, 0], "cycles": 2, "phase": 0.22}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 6, "cycles": 1, "bias": -2}},
+        {"part": "belly", "axis": "x", "osc": {"amp": -6, "cycles": 1, "bias": 2}},
+        {"part": "chest", "channel": "position", "osc": {"amp": [0, 2.0, 0], "cycles": 1, "phase": 0.25, "shape": "bounce",
+                                                         "bias": [0, 0.8, 0]}},
+        {"parts": ["waist", "hips", "tail"], "wave": {"axis": "x", "amp": 3, "cycles": 1, "lag": 0.13, "bias": 1.5}},
+        {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.08, -0.16, 0.05], "cycles": 2, "phase": 0.2}},
+        {"part": "chest_under", "channel": "scale", "osc": {"amp": [0.05, -0.1, 0.03], "cycles": 2, "phase": 0.1}},
         {"part": "neck", "axis": "x", "osc": {"amp": -6, "cycles": 1, "phase": 0.1}},
         {"part": "head", "axis": "x", "osc": {"amp": -4, "cycles": 1, "phase": 0.18}},
-        {"part": "head", "axis": "z", "osc": {"amp": 3, "cycles": 1}},
-        {"part": "flipper", "axis": "x", "osc": {"amp": 14, "cycles": 1, "bias": 2}},
+        {"part": "flipper", "axis": "x", "osc": {"amp": 16, "cycles": 1, "bias": 2}},
         {"part": "palm", "axis": "x", "osc": {"amp": -14, "cycles": 1}},
-        {"part": "flipper", "axis": "z", "osc": {"amp": 8, "cycles": 1, "phase": 0.25}},
-        {"part": "hips", "axis": "x", "osc": {"amp": 6, "cycles": 1, "phase": 0.3, "bias": 3}},
-        {"part": "tail", "axis": "x", "osc": {"amp": 8, "cycles": 1, "phase": 0.4, "bias": 10}},
-        {"part": "fluke", "axis": "x", "osc": {"amp": 10, "cycles": 1, "phase": 0.5, "bias": 8}},
+        {"part": "fluke", "axis": "x", "osc": {"amp": 8, "cycles": 1, "phase": 0.5, "bias": 6}},
+        {"part": "nostril", "channel": "scale", "osc": {"amp": [0.3, 0.3, 0], "cycles": 2}},
     ]},
-    # head down, horn levelled at you, big pumping strides
+    # head down, horn levelled, brows knitted, nostrils flared, the whole body pumping
     "charge": {"length": 0.5, "loop": True, "tracks": [
-        {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 1, "bias": 3}},
-        {"part": "head", "axis": "x", "osc": {"amp": 2, "cycles": 1, "phase": 0.15, "bias": 3}},
-        {"part": "body", "axis": "x", "osc": {"amp": 5, "cycles": 1, "bias": -5}},
-        {"part": "body", "channel": "position", "osc": {"amp": [0, 2.6, 0], "cycles": 1, "phase": 0.25, "shape": "bounce"}},
-        {"part": "belly", "channel": "scale", "osc": {"amp": [0.08, -0.14, 0.05], "cycles": 2, "phase": 0.2, "bias": [0, -0.1, 0]}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 7, "cycles": 1, "bias": -3}},
+        {"part": "belly", "axis": "x", "osc": {"amp": -7, "cycles": 1, "bias": 3}},
+        {"part": "chest", "channel": "position", "osc": {"amp": [0, 2.6, 0], "cycles": 1, "phase": 0.25, "shape": "bounce",
+                                                         "bias": [0, 1.0, 0]}},
+        {"parts": ["waist", "hips", "tail"], "wave": {"axis": "x", "amp": 4, "cycles": 1, "lag": 0.12, "bias": 2}},
+        {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.1, -0.18, 0.06], "cycles": 2, "phase": 0.2,
+                                                             "bias": [0, -0.08, 0]}},
+        {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 1, "bias": 6}},
+        {"part": "head", "axis": "x", "osc": {"amp": 2, "cycles": 1, "phase": 0.15, "bias": 4}},
         {"part": "flipper", "axis": "x", "osc": {"amp": 24, "cycles": 1, "bias": 4}},
-        {"part": "palm", "axis": "x", "osc": {"amp": -16, "cycles": 1, "phase": 0.1}},
-        {"part": "hips", "axis": "x", "osc": {"amp": 8, "cycles": 1, "phase": 0.3, "bias": 4}},
-        {"part": "tail", "axis": "x", "osc": {"amp": 10, "cycles": 1, "phase": 0.4, "bias": 12}},
+        {"part": "palm", "axis": "x", "osc": {"amp": -16, "cycles": 1}},
+        {"part": "lid", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -1.0, 0]}},
+        {"part": "brow", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": -20}},
+        {"part": "brow", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -0.8, 0]}},
+        {"part": "nostril", "channel": "scale", "osc": {"amp": [0.2, 0.2, 0], "cycles": 2, "bias": [0.6, 0.6, 0]}},
         {"part": "jaw", "axis": "x", "osc": {"amp": 3, "cycles": 2, "bias": 8}},
     ]},
-    # belly-sliding on ice: flat, flippers swept back, nose up, a little wiggle
+    # belly-sliding on ice: flat, fore-flippers swept back, hind flippers up, nose forward
     "slide": {"length": 1.2, "loop": True, "tracks": [
-        {"part": "body", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -1.5, 0]}},
-        {"part": "body", "axis": "z", "osc": {"amp": 1.5, "cycles": 1}},
-        {"part": "belly", "channel": "scale", "osc": {"amp": [0.04, 0, 0], "cycles": 1, "bias": [0.06, -0.3, 0.04]}},
-        {"part": "flipper", "axis": "x", "osc": {"amp": 4, "cycles": 2, "bias": 62}},
-        {"part": "palm", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -40}},
-        {"part": "flipper", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 30}},
-        {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 1, "bias": -10}},
-        {"part": "head", "axis": "x", "osc": {"amp": 2, "cycles": 1, "phase": 0.2, "bias": -6}},
-        {"part": "tail", "axis": "x", "osc": {"amp": 3, "cycles": 1, "bias": 18}},
-        {"part": "fluke", "axis": "y", "osc": {"amp": 12, "cycles": 2}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 1, "cycles": 1, "bias": 4}},
+        {"part": "chest", "axis": "z", "osc": {"amp": 2, "cycles": 1}},
+        {"parts": SPINE, "wave": {"axis": "y", "amp": 3, "cycles": 1, "lag": 0.15}},
+        {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.04, 0, 0], "cycles": 1, "bias": [0.06, -0.25, 0.04]}},
+        {"part": "flipper", "axis": "x", "osc": {"amp": 4, "cycles": 2, "bias": 66}},
+        {"part": "flipper", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": -28}},
+        {"part": "palm", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -45}},
+        {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 1, "bias": -8}},
+        {"part": "fluke", "axis": "x", "osc": {"amp": 3, "cycles": 1, "bias": 16}},
+        {"part": "fluke", "axis": "y", "osc": {"amp": 10, "cycles": 2}},
+        {"part": "lid", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -0.8, 0]}},
     ]},
-    # true seals swim with their hips: the whole back half sweeps side to side, the tail flippers sculling like a fan,
-    # fore-flippers tucked, a slow barrel roll, the head steady and pointed
+    # true seals swim with their hips: the back half sweeps side to side, the hind flippers scull like a fan,
+    # fore-flippers tucked, a slow roll, the head steady
     "swim": {"length": 2.0, "loop": True, "tracks": [
-        {"part": "body", "channel": "position", "osc": {"amp": [0, 0.8, 0], "cycles": 1, "bias": [0, 8, 0]}},
-        {"part": "body", "axis": "x", "osc": {"amp": 3, "cycles": 2, "bias": 10}},
-        {"part": "body", "axis": "z", "osc": {"amp": 6, "cycles": 1, "phase": 0.1}},
-        {"part": "body", "axis": "y", "osc": {"amp": 5, "cycles": 1}},
-        {"parts": ["hips", "tail"], "wave": {"axis": "y", "amp": 12, "cycles": 1, "lag": 0.16, "growth": 1.5}},
-        {"part": "fluke", "axis": "y", "osc": {"amp": 26, "cycles": 1, "phase": 0.5, "bias": -8}},
-        {"part": "fluke", "axis": "x", "osc": {"amp": 6, "cycles": 2, "phase": 0.3}},
+        {"part": "chest", "channel": "position", "osc": {"amp": [0, 0.8, 0], "cycles": 1, "bias": [0, 12, 0]}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 3, "cycles": 2, "bias": 8}},
+        {"part": "chest", "axis": "z", "osc": {"amp": 6, "cycles": 1, "phase": 0.1}},
+        {"parts": ["waist", "hips", "tail"], "wave": {"axis": "y", "amp": 11, "cycles": 1, "lag": 0.15, "growth": 1.45}},
+        {"part": "belly", "axis": "y", "osc": {"amp": 4, "cycles": 1}},
+        {"part": "fluke", "axis": "y", "osc": {"amp": 24, "cycles": 1, "phase": 0.55}},
+        {"part": "fluke_fan", "axis": "y", "osc": {"amp": 14, "cycles": 1, "phase": 0.65}},
         {"part": "neck", "axis": "y", "osc": {"amp": -5, "cycles": 1, "phase": 0.05}},
         {"part": "head", "axis": "y", "osc": {"amp": -3, "cycles": 1, "phase": 0.1}},
-        {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 2, "bias": -6}},
         {"part": "flipper", "axis": "x", "osc": {"amp": 8, "cycles": 1, "bias": 55, "phase": 0.25}},
         {"part": "flipper", "axis": "z", "osc": {"amp": 6, "cycles": 1, "bias": 28}},
-        {"part": "palm", "axis": "x", "osc": {"amp": 12, "cycles": 1, "phase": 0.4}},
-        {"part": "belly", "channel": "scale", "osc": {"amp": [0.04, 0.07, 0.02], "cycles": 2, "phase": 0.2}},
+        {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.04, 0.07, 0.02], "cycles": 2, "phase": 0.2}},
+        {"part": "nostril", "channel": "scale", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [-0.6, -0.6, 0]}},
     ]},
-    # a threat display: rears up and drums both fore-flippers on its big belly three times
+    # one horn jab: wind up, thrust, wobble back; brows knitted
+    "ram": {"length": 0.8, "loop": False, "tracks": [
+        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.18, -18, "out"], [0.3, 6, "in"], [0.45, 3], [0.8, 0, "elastic"]]},
+        {"part": "head", "axis": "x", "keys": [[0, 0], [0.18, -10, "out"], [0.3, 4, "in"], [0.45, 2], [0.8, 0, "elastic"]]},
+        {"part": "chest", "channel": "position", "keys": [[0, [0, 0, 0]], [0.18, [0, 0.6, -2], "out"],
+                                                          [0.3, [0, 1.2, 4], "in"], [0.8, [0, 0, 0], "elastic"]]},
+        {"part": "belly_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [0, 0, 0]], [0.38, [0.14, -0.22, 0.08]],
+                                                              [0.8, [0, 0, 0], "elastic"]]},
+        {"part": "brow", "axis": "z", "keys": [[0, -20], [0.8, -20]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, -1, 0]], [0.8, [0, -1, 0]]]},
+        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.3, 16, "out"], [0.8, 0]]},
+    ]},
+    # fed a fish: happy squint, raised brows, chomp chomp, flipper claps, belly bounce, hind flippers wag
+    "happy": {"length": 1.6, "loop": False, "tracks": [
+        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.2, -14, "out_back"], [1.3, -10], [1.6, 0, "smooth"]]},
+        {"part": "head", "axis": "z", "keys": [[0, 0], [0.3, 10, "out_back"], [1.2, 8], [1.5, 0]]},
+        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.25, 18], [0.4, 0], [0.55, 18], [0.7, 0], [0.85, 16], [1.0, 0]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, 0, 0]], [0.15, [0, -1.6, 0]], [1.4, [0, -1.6, 0]], [1.6, [0, 0, 0]]]},
+        {"part": "brow", "channel": "position", "keys": [[0, [0, 0, 0]], [0.15, [0, 0.8, 0]], [1.4, [0, 0.8, 0]], [1.6, [0, 0, 0]]]},
+        {"part": "brow", "axis": "z", "keys": [[0, 0], [0.15, 14], [1.4, 14], [1.6, 0]]},
+        {"part": "flipper", "axis": "z", "raw": True, "keys": [[0, 0], [0.4, 0], [0.5, 30, "out"], [0.6, 0], [0.7, 30, "out"],
+                                                             [0.8, 0], [0.9, 30, "out"], [1.0, 0]]},
+        {"part": "chest", "channel": "position", "keys": [[0, [0, 0, 0]], [0.4, [0, 0, 0]], [0.55, [0, 2.5, 0], "out"],
+                                                          [0.75, [0, 0, 0], "in"], [0.95, [0, 1.6, 0], "out"],
+                                                          [1.15, [0, 0, 0], "in"], [1.6, [0, 0, 0]]]},
+        {"part": "belly_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.75, [0.1, -0.18, 0.06]], [0.9, [-0.04, 0.08, 0]],
+                                                              [1.15, [0.08, -0.14, 0.05]], [1.6, [0, 0, 0], "elastic"]]},
+        {"part": "fluke", "axis": "y", "keys": [[0, 0], [0.3, 20], [0.5, -20], [0.7, 20], [0.9, -20], [1.1, 0]]},
+    ]},
+    # a bark: head thrown up, mouth wide, nostrils flared, eyes wide
+    "bark": {"length": 0.9, "loop": False, "tracks": [
+        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.15, -16, "out"], [0.6, -14], [0.9, 0, "smooth"]]},
+        {"part": "head", "axis": "x", "keys": [[0, 0], [0.15, -8, "out"], [0.6, -6], [0.9, 0]]},
+        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.15, 26, "out_back"], [0.3, 6], [0.42, 24, "out"], [0.6, 4], [0.9, 0]]},
+        {"part": "nostril", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.12, [0.8, 0.8, 0]], [0.6, [0.6, 0.6, 0]], [0.9, [0, 0, 0]]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, 0, 0]], [0.12, [0, 0.6, 0]], [0.6, [0, 0.6, 0]], [0.9, [0, 0, 0]]]},
+        {"part": "brow", "channel": "position", "keys": [[0, [0, 0, 0]], [0.12, [0, 0.8, 0]], [0.6, [0, 0.8, 0]], [0.9, [0, 0, 0]]]},
+        {"part": "chest_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.15, [0.06, 0.1, 0.04]], [0.42, [0.06, 0.1, 0.04]],
+                                                              [0.9, [0, 0, 0], "elastic"]]},
+    ]},
+    # a threat display: rears up and drums both fore-flippers on its big belly three times, brows down
     "belly_slap": {"length": 1.2, "loop": False, "tracks": [
-        {"part": "body", "axis": "x", "keys": [[0, 0], [0.2, -16, "out_back"], [0.95, -14], [1.2, 0, "smooth"]]},
-        {"part": "body", "channel": "position", "keys": [[0, [0, 0, 0]], [0.2, [0, 1.5, -1], "out"], [0.95, [0, 1.2, -1]],
-                                                         [1.2, [0, 0, 0], "smooth"]]},
-        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.2, -10, "out"], [0.95, -8], [1.2, 0]]},
-        {"part": "hips", "axis": "x", "keys": [[0, 0], [0.2, 12, "out_back"], [0.95, 11], [1.2, 0, "smooth"]]},
-        {"part": "tail", "axis": "x", "keys": [[0, 0], [0.2, 8, "out"], [0.95, 7], [1.2, 0, "smooth"]]},
+        {"part": "chest", "axis": "x", "keys": [[0, 0], [0.2, -18, "out_back"], [0.95, -16], [1.2, 0, "smooth"]]},
+        {"part": "chest", "channel": "position", "keys": [[0, [0, 0, 0]], [0.2, [0, 1.5, -1], "out"], [0.95, [0, 1.2, -1]],
+                                                          [1.2, [0, 0, 0], "smooth"]]},
+        {"part": "belly", "axis": "x", "keys": [[0, 0], [0.2, 21, "out_back"], [0.95, 18], [1.2, 0, "smooth"]]},
+        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.2, -8, "out"], [0.95, -6], [1.2, 0]]},
         {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.25, 14, "out"], [0.9, 10], [1.1, 0]]},
+        {"part": "brow", "axis": "z", "keys": [[0, 0], [0.2, -18], [1.0, -18], [1.2, 0]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, 0, 0]], [0.2, [0, -0.9, 0]], [1.0, [0, -0.9, 0]], [1.2, [0, 0, 0]]]},
         {"part": "flipper", "axis": "z", "keys": [[0, 0], [0.18, -45, "out"], [0.3, 28, "in"], [0.42, -35, "out"], [0.54, 28, "in"],
                                                   [0.66, -35, "out"], [0.78, 30, "in"], [1.1, 0, "smooth"]]},
         {"part": "flipper", "axis": "x", "keys": [[0, 0], [0.18, -30, "out"], [0.9, -25], [1.1, 0]]},
-        {"part": "belly", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [0, 0, 0]], [0.33, [0.16, -0.2, 0.08]],
-                                                        [0.42, [-0.05, 0.06, 0]], [0.54, [0, 0, 0]], [0.57, [0.16, -0.2, 0.08]],
-                                                        [0.66, [-0.05, 0.06, 0]], [0.78, [0, 0, 0]], [0.81, [0.2, -0.24, 0.1]],
-                                                        [1.2, [0, 0, 0], "elastic"]]},
+        {"part": "belly_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [0, 0, 0]], [0.33, [0.16, -0.2, 0.08]],
+                                                              [0.42, [-0.05, 0.06, 0]], [0.54, [0, 0, 0]], [0.57, [0.16, -0.2, 0.08]],
+                                                              [0.66, [-0.05, 0.06, 0]], [0.78, [0, 0, 0]], [0.81, [0.2, -0.24, 0.1]],
+                                                              [1.2, [0, 0, 0], "elastic"]]},
     ]},
-    # tail and hind flippers swing up and slam down: a splash in water, a thump of snow on land
+    # hind flippers swing up and slam down: a splash in water, a thump of snow on land
     "tail_slap": {"length": 1.0, "loop": False, "tracks": [
         {"part": "hips", "axis": "x", "keys": [[0, 0], [0.35, 16, "in"], [0.48, -1, "out"], [1.0, 0, "elastic"]]},
         {"part": "tail", "axis": "x", "keys": [[0, 0], [0.35, 24, "in"], [0.48, 0, "out"], [1.0, 0, "elastic"]]},
         {"part": "fluke", "axis": "x", "keys": [[0, 0], [0.35, 20, "in"], [0.48, 2, "out"], [1.0, 0, "elastic"]]},
-        {"part": "body", "axis": "x", "keys": [[0, 0], [0.35, 4], [0.48, -3, "out"], [1.0, 0, "elastic"]]},
         {"part": "neck", "axis": "x", "keys": [[0, 0], [0.35, -6], [0.5, 4], [1.0, 0]]},
-        {"part": "belly", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.48, [0, 0, 0]], [0.52, [0.14, -0.18, 0.08]],
-                                                        [1.0, [0, 0, 0], "elastic"]]},
-    ]},
-    # one horn jab: wind up, thrust, wobble back
-    "ram": {"length": 0.8, "loop": False, "tracks": [
-        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.18, -18, "out"], [0.3, 4, "in"], [0.45, 2], [0.8, 0, "elastic"]]},
-        {"part": "head", "axis": "x", "keys": [[0, 0], [0.18, -10, "out"], [0.3, 2, "in"], [0.45, 1], [0.8, 0, "elastic"]]},
-        {"part": "body", "channel": "position", "keys": [[0, [0, 0, 0]], [0.18, [0, 0.6, -2], "out"],
-                                                         [0.3, [0, 1.2, 4], "in"], [0.8, [0, 0, 0], "elastic"]]},
-        {"part": "belly", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [0, 0, 0]], [0.38, [0.14, -0.22, 0.08]],
-                                                        [0.8, [0, 0, 0], "elastic"]]},
-        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.3, 14, "out"], [0.8, 0]]},
-    ]},
-    # fed a fish: happy squint, chomp chomp, flipper claps, belly bounce
-    "happy": {"length": 1.6, "loop": False, "tracks": [
-        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.2, -14, "out_back"], [1.3, -10], [1.6, 0, "smooth"]]},
-        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.25, 18], [0.4, 0], [0.55, 18], [0.7, 0], [0.85, 16], [1.0, 0]]},
-        {"part": "eye", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.15, [0, -0.6, 0]], [1.4, [0, -0.6, 0]], [1.6, [0, 0, 0]]]},
-        {"part": "flipper", "axis": "z", "raw": True, "keys": [[0, 0], [0.4, 0], [0.5, 30, "out"], [0.6, 0], [0.7, 30, "out"], [0.8, 0],
-                                                    [0.9, 30, "out"], [1.0, 0]]},
-        {"part": "body", "channel": "position", "keys": [[0, [0, 0, 0]], [0.4, [0, 0, 0]], [0.55, [0, 2.5, 0], "out"],
-                                                         [0.75, [0, 0, 0], "in"], [0.95, [0, 1.6, 0], "out"],
-                                                         [1.15, [0, 0, 0], "in"], [1.6, [0, 0, 0]]]},
-        {"part": "belly", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.75, [0.1, -0.18, 0.06]], [0.9, [-0.04, 0.08, 0]],
-                                                        [1.15, [0.08, -0.14, 0.05]], [1.6, [0, 0, 0], "elastic"]]},
-        {"part": "fluke", "axis": "y", "keys": [[0, 0], [0.3, 20], [0.5, -20], [0.7, 20], [0.9, -20], [1.1, 0]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, 0, 0]], [0.45, [0, 0, 0]], [0.5, [0, -2.2, 0]], [0.62, [0, 0, 0]]]},
+        {"part": "belly_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.48, [0, 0, 0]], [0.52, [0.14, -0.18, 0.08]],
+                                                              [1.0, [0, 0, 0], "elastic"]]},
     ]},
 }
 
@@ -274,8 +319,79 @@ spec = {
     "animations": anim,
 }
 
+# ------------------------------------------------------------------ coat variants
+# Same geometry (so the same box-UV layout), different coats. The mod picks one per seal at spawn; cubs inherit.
+# Each overrides the fur ramps and the spot layers: count, size, darker or paler, plain blotches or ring spots.
+VARIANTS = {
+    "grey": {},
+    "harbor": {   # silver with dense small dark speckles all over, like a harbour seal
+        "seal": ["#1c1f23", "#2a2e33", "#3a3f45", "#4c5258", "#60666b", "#757a7e", "#8b8f91", "#a1a4a4", "#b7b9b7",
+                 "#cbccc9", "#dcdcd8", "#ebebe7"],
+        "blotch": ["#16181b", "#202327", "#2b2f34", "#373c41", "#444a50", "#525a60"],
+        "spots": {"count": 70, "radius": [0.45, 1.1], "tone": 2.4}, "back_spots": 120, "belly_spots": True},
+    "leopard": {  # slate back, pale silver throat and flanks heavily spotted with black
+        "seal": ["#121519", "#1a1e24", "#232930", "#2e353d", "#3a424b", "#48515a", "#58616a", "#6b737b", "#80878d",
+                 "#979ca0", "#aeb2b4", "#c6c8c8"],
+        "belly": ["#4a4d52", "#5d6166", "#71757a", "#868a8e", "#9b9ea1", "#b0b3b4", "#c5c7c6", "#d8d9d7", "#e7e8e5",
+                  "#f2f2ef"],
+        "blotch": ["#0b0c0e", "#121418", "#1a1d22", "#23272d", "#2d3238", "#383e45"],
+        "spots": {"count": 22, "radius": [0.8, 1.9], "tone": 1.2}, "back_spots": 34, "belly_spots": True,
+        "tone": 4.6},
+    "ringed": {   # dark charcoal coat covered in pale rings, like a ringed seal
+        "seal": ["#0e0f12", "#16181c", "#1f2226", "#292d32", "#34393e", "#41464b", "#4f5459", "#5e6368", "#6f7478",
+                 "#828689", "#979a9c", "#adafaf"],
+        "blotch": ["#59606a", "#6c737c", "#80878f", "#959ba2", "#a9aeb3", "#bdc1c4"],
+        "spots": {"count": 18, "radius": [1.2, 2.2], "tone": 3.0, "ring": 0.6, "gaps": 0.25}, "back_spots": 28,
+        "tone": 4.8},
+    "brown": {    # warm umber with dark chocolate blotches and a sandy belly
+        "seal": ["#1b130e", "#281c14", "#36261b", "#463224", "#57402e", "#6a4f39", "#7e6046", "#937356", "#a88767",
+                 "#bc9c7b", "#cfb291", "#e0c8a8"],
+        "belly": ["#4a3c2c", "#5e4d39", "#735f47", "#887256", "#9d8666", "#b19a78", "#c4ae8b", "#d5c19e", "#e3d2b1",
+                  "#efe1c4"],
+        "blotch": ["#120c08", "#1b130d", "#251a12", "#302218", "#3c2b1f", "#493427"],
+        "spots": {"count": 10, "radius": [1.4, 3.0], "tone": 2.6}, "back_spots": 18},
+    "frost": {    # nearly white with blue-grey dapples, an old arctic bull
+        "seal": ["#3c4550", "#4f5966", "#636e7c", "#788492", "#8e9aa7", "#a4afba", "#b9c3cc", "#cbd3da", "#dbe1e6",
+                 "#e8ecef", "#f2f4f6", "#f9fafb"],
+        "blotch": ["#56606c", "#66717e", "#788391", "#8a95a2", "#9ca6b2", "#aeb7c1"],
+        "spots": {"count": 16, "radius": [1.0, 2.4], "tone": 2.8}, "back_spots": 26},
+}
+
+
+def variant_spec(name):
+    import copy
+    v = VARIANTS[name]
+    out = copy.deepcopy(spec)
+    out["name"] = "Icebreaker " + name.title()
+    for k in ("seal", "blotch", "belly"):
+        if k in v:
+            out["palette"]["ramps"][k] = v[k]
+    for st_name, st in out["styles"].items():
+        if "tone" in v and st.get("ramp") == "seal" and st_name in ("seal", "seal_back", "head"):
+            st["tone"] = v["tone"] + (0.2 if st_name == "head" else 0)
+        for layer in st.get("layers", []):
+            if layer.get("id") == "blotches" and "spots" in v:
+                layer.update(v["spots"])
+                if st_name == "seal_back":
+                    layer["count"] = v.get("back_spots", layer["count"])
+                if st_name == "head":
+                    layer["count"] = max(4, v["spots"]["count"] // 3)
+        if st_name == "belly" and v.get("belly_spots"):
+            st["layers"].append({"id": "belly_spots", "op": "spots", "count": v["spots"]["count"] // 2,
+                                 "radius": v["spots"]["radius"], "ramp": "blotch", "tone": v["spots"]["tone"],
+                                 "faces": ["sides", "front", "back"]})
+    return out
+
+
 if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "examples/icebreaker.json"
     with open(out, "w") as fh:
         json.dump(spec, fh, indent=1)
     print(out, len(P), "parts")
+    import os
+    vdir = os.path.join(os.path.dirname(out) or ".", "variants")
+    os.makedirs(vdir, exist_ok=True)
+    for name in VARIANTS:
+        with open(os.path.join(vdir, f"icebreaker_{name}.json"), "w") as fh:
+            json.dump(variant_spec(name), fh, indent=1)
+    print("variants:", ", ".join(VARIANTS))
