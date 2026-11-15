@@ -1,18 +1,18 @@
 {
   "name": "Ember Salamander",
-  "parts": 18,
+  "parts": 20,
   "instances": 26,
-  "faces": 116,
-  "triangles": 236,
-  "vertices_flat": 468,
-  "vertices_unique": 200,
+  "faces": 435,
+  "triangles": 888,
+  "vertices_flat": 1758,
+  "vertices_unique": 542,
   "atlas": [
     128,
     256
   ],
-  "atlas_fill": 0.708,
+  "atlas_fill": 0.81,
   "texel_density": 2.0,
-  "colors_used": 28,
+  "colors_used": 25,
   "palette": {
     "skin": [
       "#07060b",
@@ -57,19 +57,19 @@
   },
   "bounds": {
     "min": [
-      -14.522,
-      0.023,
-      -52.206
+      -18.432,
+      0.04,
+      -48.699
     ],
     "max": [
-      18.673,
-      12.479,
-      25.165
+      17.433,
+      14.846,
+      26.561
     ],
     "size": [
-      33.195,
-      12.457,
-      77.371
+      35.865,
+      14.806,
+      75.26
     ]
   },
   "warnings": [],

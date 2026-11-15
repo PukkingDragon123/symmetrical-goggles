@@ -2,8 +2,8 @@
 
 **A code-first low-poly modeller with procedurally hand-painted pixel-art textures, built to be driven by AI agents.**
 
-You describe a model as JSON: boxes, tapered boxes, prisms and alpha-cut cards in a
-pivot hierarchy, plus colour ramps and paint layers. lowpix then builds the geometry, packs a
+You describe a model as JSON: smooth lofted tubes for organic forms, chamfered boxes and prisms
+for hard surfaces, and alpha-cut cards, in a pivot hierarchy, plus colour ramps and paint layers. lowpix then builds the geometry, packs a
 texture atlas at a uniform texel density, and *paints* every texel. The painting covers
 lighting, edge rims, beveled markings, gloss dashes and hand-placed pixel stamps,
 quantised to a strict palette. It also renders previews for the agent to look at
@@ -11,12 +11,12 @@ and exports a validated glTF, OBJ and Blockbench file.
 
 ![Ember Salamander](examples/output/ember_salamander_hero.png)
 
-| turntable | second example, same tool |
-|---|---|
-| ![turntable](examples/output/ember_salamander_turntable.gif) | ![Glowcap Mushroom](examples/output/glowcap_mushroom_turntable.gif) |
+| organic (lofts + attach) | hard surface (chamfers + panel ops) | props (prisms + cards) |
+|---|---|---|
+| ![Ember Salamander](examples/output/ember_salamander_turntable.gif) | ![Lamplighter Bot](examples/output/lamplighter_bot_turntable.gif) | ![Glowcap Mushroom](examples/output/glowcap_mushroom_turntable.gif) |
+| *Ember Salamander*: 888 tris, 25 colours | *Lamplighter Bot*: 1038 tris, 31 colours | *Glowcap Mushroom*: 106 tris, 23 colours |
 
-*Ember Salamander* (236 tris, 28 colours) and *Glowcap Mushroom* (106 tris, 21 colours)
-are original designs, CC0.
+All three are original designs (CC0), each a single JSON file in [`examples/`](examples/).
 
 ## Why it's built for agents
 
@@ -76,9 +76,9 @@ low-poly pixel-art frog; iterate until the critique checklist passes."* The
 
 | | |
 |---|---|
-| Shapes | `box`, `taper` (scaled/shifted ends, wedges), `prism` (n-gon cylinders with tapered caps), `card` (double-sided alpha cut-outs from ASCII art) |
-| Rigging | pivot hierarchy, Euler rotations, `mirror` (whole subtrees, images stay un-flipped), `orient: "world"` for limbs, `snap_ground` for feet, `hide` for buried faces |
-| Painting | hue-shifted ramps, tone-space shading, painted key light, local gradient, ground occlusion, lit and dark edge rims, outlines, `band`, `stripes`, `spots` (3D, wrapping), `patches`, `noise`, `gradient`, `speckle`, `gloss` (wet dashes), pattern `bevel`s, ASCII `stamps`, Bayer dithering |
+| Shapes | `loft` (smooth tubes through control rings: Catmull-Rom subdivision, rounded or chamfered profiles, parallel-transport frames), `box`/`taper` with optional `chamfer`, `prism` (n-gon cylinders with tapered caps), `card` (double-sided alpha cut-outs from ASCII art) |
+| Rigging | pivot hierarchy, Euler rotations, `attach` (stick parts onto a loft's curved surface by path position and angle), `mirror` (whole subtrees, correct on asymmetric bodies, images stay un-flipped), `orient: "world"` for limbs, `snap_ground` for feet, `hide` for buried faces |
+| Painting | hue-shifted ramps, tone-space shading, painted key light, local gradient, ground occlusion, lit and dark edge rims, outlines, `band`, `stripes` (can follow a loft's path), `spots` (3D, wrapping, tapering), `patches`, `noise`, `gradient`, `speckle`, `gloss` (wet dashes), hard-surface `panel`, `rivets`, `wear`, `grille`, `rect`, pattern `bevel`s, ASCII `stamps`, Bayer dithering |
 | Output | `.glb` (unlit, nearest, alpha mask, node per part, passes the Khronos validator), `.obj/.mtl`, `.bbmodel` (experimental), PNG atlas, hero, contact sheet, turntable GIF, JSON report |
 | Agent I/O | CLI, Python API, MCP server, JSON Schema (`python -m lowpix schema`) |
 
@@ -91,8 +91,9 @@ The request was to clone the *Salamander* model from Sketchfab's
 collection. That model belongs to its artist (GurgleNurgle), is not downloadable, and carries
 no licence. Several of the same artist's models are tagged `noai`. So lowpix does **not** copy it.
 Instead, the *genre* (Blockbench-style low poly, unlit, hand-painted pixel textures) was studied from
-public preview images and turned into the general rules and tools above. Ember Salamander is an
-original design made with them. Please treat other artists' models the same way.
+public preview images (the salamander and a few of the collection's robots, none tagged `noai`) and
+turned into the general rules and tools above. Ember Salamander and Lamplighter Bot are original
+designs made with them. Please treat other artists' models the same way.
 
 ## Status
 

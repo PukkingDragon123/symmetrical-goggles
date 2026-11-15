@@ -1,0 +1,179 @@
+{
+  "name": "Lamplighter Bot",
+  "description": "Original hard-surface robot: chamfered ivory enamel shell with teal bands, gunmetal joints, glowing amber camera-iris eye, oil-tank backpack with a glowing chimney, pincer hands and a hanging lantern. Panel grooves, rivets, vents, chipped paint and hazard stripes are all procedural.",
+  "author": "lowpix example",
+  "license": "CC0-1.0",
+  "density": 2,
+  "budget": {"tris": 1200, "colors": 56},
+  "light": {"dir": [-0.55, 1.0, 0.7], "strength": 1.1, "gradient": 0.35, "ao": 0.9, "ao_height": 3.0},
+  "render": {"background": "#202432", "hero": [-34, 18], "shadow": 0.45},
+
+  "palette": {"ramps": {
+    "shell": ["#2b2321", "#4a3c35", "#76645a", "#a8957f", "#d2c2a4", "#efe4c8", "#fffaf0"],
+    "teal":  ["#08201f", "#0e3a38", "#145a55", "#1d7d73", "#2fa494", "#62c9b4", "#a8ecd8"],
+    "metal": ["#0f1114", "#1d2126", "#2e343b", "#454d56", "#66707b", "#8f99a3", "#c3cbd2"],
+    "glow":  ["#4a1d05", "#8a3a08", "#cf6a10", "#f5a128", "#ffd25a", "#fff3b0", "#ffffff"],
+    "red":   ["#2a0a0e", "#5c1219", "#9a1f26", "#d63a35", "#f2725a"],
+    "warn":  ["#3a2a06", "#7a5a0a", "#d9a514", "#ffd23a"]
+  }},
+
+  "styles": {
+    "enamel": {
+      "ramp": "shell", "tone": 3.9, "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 2.0, "amount": 0.25},
+        {"id": "panel", "op": "panel", "inset": 2, "min_size": 11},
+        {"id": "grime", "op": "patches", "scale": 1.8, "threshold": 0.72, "shift": -0.5, "faces": ["-top"]},
+        {"id": "wear", "op": "wear", "width": 2, "density": 0.16, "ramp": "metal", "tone": 2.2, "post": true},
+        {"id": "rivets", "op": "rivets", "inset": 1, "min_size": 9, "post": true}
+      ]
+    },
+    "teal": {
+      "ramp": "teal", "tone": 3.5, "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 2.0, "amount": 0.3},
+        {"id": "panel", "op": "panel", "inset": 1, "min_size": 9},
+        {"id": "wear", "op": "wear", "width": 2, "density": 0.16, "ramp": "metal", "tone": 2.4, "post": true},
+        {"id": "rivets", "op": "rivets", "inset": 1, "min_size": 8, "post": true}
+      ]
+    },
+    "gun": {
+      "ramp": "metal", "tone": 2.9, "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 1.6, "amount": 0.35},
+        {"id": "scuffs", "op": "wear", "width": 1, "density": 0.25, "shift": 1.2, "post": true},
+        {"id": "rivets", "op": "rivets", "inset": 1, "min_size": 8, "post": true}
+      ]
+    },
+    "glow": {
+      "ramp": "glow", "tone": 4.3, "light": 0.25, "dither": 0.0, "rim": {"light": 1, "dark": 0, "light_shift": 1.5},
+      "layers": [{"id": "hot", "op": "noise", "scale": 1.2, "amount": 0.5}]
+    }
+  },
+
+  "parts": [
+    {"id": "boot", "shape": "taper", "chamfer": 0.9, "size": [5.6, 3.2, 8.4], "pivot": [4.0, 1.6, 0.8], "mirror": true,
+     "front_scale": [0.86, 0.72], "front_shift": [0, -0.45], "style": "gun",
+     "paint": {"layers": [{"id": "toecap", "op": "band", "axis": "z", "from": 0.45, "to": 1.0, "ramp": "teal", "tone": 3.4, "faces": ["-bottom"], "bevel": true}],
+       "stamps": [{"face": "front", "at": "center", "offset": [0, 1], "art": ["kyykkyyk", "yykkyykk"], "key": {"y": "warn:3", "k": "metal:0"}}]}},
+    {"id": "shin", "shape": "prism", "sides": 8, "size": [3.2, 3.2, 6.6], "pivot": [4.0, 3.0, 0.2], "offset": [0, 0, 3.3],
+     "rotation": [-90, 0, 0], "hide": ["front", "back"], "mirror": true, "style": "gun",
+     "paint": {"layers": [{"id": "rings", "op": "stripes", "axis": "z", "period": 2.2, "width": 0.18, "shift": -1.2}]}},
+    {"id": "knee", "shape": "prism", "sides": 8, "size": [4.4, 4.4, 4.4], "pivot": [4.0, 9.9, 0.2], "rotation": [0, 90, 0],
+     "mirror": true, "style": "teal", "paint": {"layers": [{"id": "hub", "op": "rect", "rect": [0.3, 0.3, 0.7, 0.7], "ramp": "metal", "tone": 3.0, "faces": ["caps"], "bevel": true}]}},
+    {"id": "thigh", "shape": "prism", "sides": 8, "size": [3.6, 3.6, 5.0], "pivot": [4.0, 10.2, 0.2], "offset": [0, 0, 2.5],
+     "rotation": [-90, 0, 0], "hide": ["front", "back"], "mirror": true, "style": "gun"},
+
+    {"id": "hips", "shape": "box", "chamfer": 1.0, "size": [12.6, 3.8, 8.6], "pivot": [0, 16.2, 0], "style": "enamel"},
+    {"id": "abdomen", "parent": "hips", "shape": "box", "chamfer": 0.8, "size": [10.4, 3.4, 7.4], "pivot": [0, 3.2, 0], "style": "gun",
+     "paint": {"layers": [{"id": "vents", "op": "grille", "rect": [0.12, 0.2, 0.88, 0.85], "period": 2, "faces": ["front", "back", "left", "right"]}]}},
+
+    {"id": "chest", "parent": "hips", "shape": "taper", "chamfer": 1.7, "size": [15.6, 10.2, 11.0], "pivot": [0, 9.6, 0.2],
+     "front_scale": [0.94, 0.94], "style": "enamel",
+     "paint": {
+       "layers": [
+         {"id": "stripe", "op": "band", "axis": "y", "from": 0.08, "to": 0.42, "ramp": "teal", "tone": 3.4, "faces": ["-top", "-bottom"],
+          "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.8}},
+         {"id": "chest_vent", "op": "grille", "rect": [0.3, 0.66, 0.7, 0.9], "period": 2, "faces": ["front"]}
+       ],
+       "stamps": [
+         {"face": "front", "at": [3, 3], "art": [".mmmmm.", "mwwwwwm", "mwwwrwm", "mwwrwwm", "mwwkwwm", "mwwwwwm", ".mmmmm."],
+          "key": {"m": "metal:3", "w": "shell:6", "r": "red:3", "k": "metal:0"}},
+         {"face": "front", "at": [21, 3], "art": ["#...###", "#.....#", "#....#.", "#....#.", "###..#."], "key": {"#": "red:2"}}
+       ]}},
+    {"id": "collar", "parent": "chest", "shape": "prism", "sides": 10, "size": [6.6, 6.6, 1.4], "pivot": [0, 5.4, 0], "rotation": [-90, 0, 0],
+     "style": "gun"},
+    {"id": "neck", "parent": "chest", "shape": "prism", "sides": 8, "size": [4.2, 4.2, 2.6], "pivot": [0, 6.0, 0], "offset": [0, 0, 1.3],
+     "rotation": [-90, 0, 0], "hide": ["front", "back"], "style": "gun",
+     "paint": {"layers": [{"id": "rings", "op": "stripes", "axis": "z", "period": 1.0, "width": 0.5, "shift": -1.0}]}},
+
+    {"id": "helmet", "parent": "chest", "shape": "box", "chamfer": 1.9, "size": [10.6, 8.4, 9.6], "pivot": [0, 12.4, 0.4],
+     "rotation": [5, -10, 3], "style": "enamel",
+     "paint": {"layers": [
+       {"id": "crown", "op": "band", "axis": "x", "from": -0.22, "to": 0.22, "ramp": "teal", "tone": 3.5, "faces": ["top", "back", "bevel_tl", "bevel_tr"], "bevel": true},
+       {"id": "mouth", "op": "grille", "rect": [0.3, 0.74, 0.7, 0.92], "period": 2, "faces": ["front"]}
+     ]}},
+    {"id": "brow", "parent": "helmet", "shape": "box", "chamfer": 0.3, "size": [9.8, 1.8, 2.2], "pivot": [0, 2.6, 4.4], "rotation": [-12, 0, 0],
+     "style": "teal"},
+    {"id": "bezel", "parent": "helmet", "shape": "prism", "sides": 10, "size": [6.4, 6.4, 1.8], "pivot": [0, -0.2, 4.9], "style": "gun",
+     "paint": {"layers": [{"id": "bolts", "op": "rivets", "inset": 1, "min_size": 6}]}},
+    {"id": "lens", "parent": "bezel", "shape": "prism", "sides": 10, "size": [4.8, 4.8, 1.0], "pivot": [0, 0, 1.0], "hide": ["back"], "style": "glow",
+     "paint": {"stamps": [{"face": "front", "at": [0, 0], "art": [
+       "..oyyyyo..",
+       ".oywyyyyo.",
+       "oywwdddyyo",
+       "oywddbddyo",
+       "oyddlldbyo",
+       "oydbllddyo",
+       "oyddddbyyo",
+       ".ooyyyyoo.",
+       "..oooooo.."],
+       "key": {"o": "glow:3", "y": "glow:4", "w": "glow:6", "l": "glow:5", "d": "metal:0", "b": "metal:2"}}]}},
+    {"id": "ear", "parent": "helmet", "shape": "prism", "sides": 8, "size": [4.2, 4.2, 1.6], "pivot": [5.6, 0.2, -0.4], "rotation": [0, 90, 0],
+     "mirror": true, "style": "teal",
+     "paint": {"layers": [{"id": "hub", "op": "rect", "rect": [0.32, 0.32, 0.68, 0.68], "ramp": "metal", "tone": 3.2, "faces": ["caps"], "bevel": true}]}},
+    {"id": "antenna", "parent": "helmet", "shape": "prism", "sides": 4, "size": [1.5, 1.5, 5.0], "pivot": [2.6, 4.0, -1.8], "offset": [0, 0, 2.5],
+     "rotation": [-90, 0, 0], "style": "gun"},
+    {"id": "bulb", "parent": "antenna", "shape": "prism", "sides": 6, "size": [2.2, 2.2, 2.0], "pivot": [0, 0, 5.6], "style": "glow"},
+
+    {"id": "tank", "parent": "chest", "shape": "prism", "sides": 10, "size": [7.6, 7.6, 9.8], "pivot": [0, -4.6, -7.6], "offset": [0, 0, 4.9],
+     "rotation": [-90, 0, 0], "style": "gun",
+     "paint": {"layers": [
+       {"id": "bands", "op": "stripes", "axis": "z", "period": 3.6, "width": 0.24, "phase": 1.0, "ramp": "teal", "tone": 3.4, "faces": ["sides"], "bevel": true},
+       {"id": "cap_ring", "op": "rect", "rect": [0.25, 0.25, 0.75, 0.75], "ramp": "teal", "tone": 3.0, "faces": ["caps"], "bevel": true}
+     ]}},
+    {"id": "gauge_tube", "parent": "tank", "shape": "prism", "sides": 6, "size": [1.6, 1.6, 6.0], "pivot": [-3.8, -0.8, 4.9], "style": "glow",
+     "rotation": [0, 0, 0], "paint": {"layers": [{"id": "level", "op": "band", "axis": "z", "from": 0.2, "to": 1.0, "shift": -2.4}]}},
+    {"id": "chimney", "parent": "tank", "shape": "prism", "sides": 8, "size": [2.6, 2.6, 3.6], "pivot": [2.0, 0.8, 9.8], "offset": [0, 0, 1.8],
+     "hide": ["back"], "style": "gun",
+     "paint": {"layers": [{"id": "lip", "op": "band", "axis": "z", "from": 0.6, "to": 1.0, "ramp": "teal", "tone": 3.2, "faces": ["sides"]}]}},
+    {"id": "ember", "parent": "chimney", "shape": "prism", "sides": 6, "size": [2.2, 2.2, 1.0], "pivot": [0, 0, 3.9], "style": "glow"},
+
+    {"id": "r_pad", "parent": "chest", "shape": "box", "chamfer": 1.4, "size": [6.6, 5.0, 7.2], "pivot": [9.2, 3.3, 0], "rotation": [0, 0, -14],
+     "style": "teal"},
+    {"id": "r_upper", "parent": "chest", "shape": "prism", "sides": 8, "size": [3.0, 3.0, 6.0], "pivot": [9.6, 1.4, 0], "offset": [0, 0, 3.0],
+     "rotation": [90, 0, 8], "hide": ["front", "back"], "style": "gun"},
+    {"id": "r_elbow", "parent": "r_upper", "shape": "prism", "sides": 8, "size": [3.8, 3.8, 3.4], "pivot": [0, 0, 6.2], "rotation": [0, 90, 0],
+     "style": "gun", "paint": {"layers": [{"id": "hub", "op": "rect", "rect": [0.3, 0.3, 0.7, 0.7], "ramp": "teal", "tone": 3.2, "faces": ["caps"]}]}},
+    {"id": "r_fore", "parent": "r_upper", "shape": "box", "chamfer": 0.9, "size": [4.4, 4.4, 7.0], "pivot": [0, 0, 6.4], "offset": [0, 0, 3.4],
+     "rotation": [-30, 0, 0], "style": "enamel"},
+    {"id": "r_palm", "parent": "r_fore", "shape": "box", "chamfer": 0.6, "size": [4.0, 3.6, 3.4], "pivot": [0, 0, 7.0], "offset": [0, 0, 1.5],
+     "style": "gun"},
+    {"id": "r_claw_a", "parent": "r_palm", "shape": "taper", "size": [1.4, 1.3, 3.2], "pivot": [0, 1.1, 3.0], "offset": [0, 0, 1.5],
+     "rotation": [38, 0, 0], "front_scale": [0.7, 0.6], "style": "gun"},
+    {"id": "r_claw_b", "parent": "r_palm", "shape": "taper", "size": [1.4, 1.3, 3.2], "pivot": [0, -1.1, 3.0], "offset": [0, 0, 1.5],
+     "rotation": [-38, 0, 0], "front_scale": [0.7, 0.6], "style": "gun"},
+
+    {"id": "handle", "parent": "r_palm", "shape": "loft", "pivot": [0, 0, 4.4], "orient": "world", "rotation": [0, 20, 0],
+     "profile": {"sides": 4, "round": 2}, "subdiv": 1, "caps": false,
+     "rings": [{"at": [-2.3, -2.6, 0], "size": 0.6}, {"at": [-1.7, -0.7, 0], "size": 0.6}, {"at": [0, 0, 0], "size": 0.6},
+               {"at": [1.7, -0.7, 0], "size": 0.6}, {"at": [2.3, -2.6, 0], "size": 0.6}],
+     "style": "gun"},
+    {"id": "lamp_cap", "parent": "handle", "shape": "prism", "sides": 6, "size": [5.6, 5.6, 1.3], "pivot": [0, -3.1, 0], "rotation": [-90, 0, 0],
+     "front_scale": [0.7, 0.7], "style": "teal"},
+    {"id": "lamp_glass", "parent": "handle", "shape": "prism", "sides": 6, "size": [4.6, 4.6, 5.0], "pivot": [0, -6.2, 0], "rotation": [-90, 0, 0],
+     "hide": ["front", "back"], "style": "glow",
+     "paint": {"layers": [{"id": "frame", "op": "panel", "inset": 0, "min_size": 3, "shift": -3.5, "highlight": 0, "shadow": 0},
+                          {"id": "core", "op": "band", "axis": "z", "from": -0.5, "to": 0.4, "shift": 1.2}]}},
+    {"id": "lamp_base", "parent": "handle", "shape": "prism", "sides": 6, "size": [5.6, 5.6, 1.4], "pivot": [0, -9.3, 0], "rotation": [-90, 0, 0],
+     "back_scale": [0.8, 0.8], "style": "teal"},
+
+    {"id": "l_pad", "parent": "chest", "shape": "box", "chamfer": 1.4, "size": [6.6, 5.0, 7.2], "pivot": [-9.2, 3.3, 0], "rotation": [0, 0, 14],
+     "style": "teal"},
+    {"id": "l_upper", "parent": "chest", "shape": "prism", "sides": 8, "size": [3.0, 3.0, 6.0], "pivot": [-9.6, 1.4, 0], "offset": [0, 0, 3.0],
+     "rotation": [66, 0, -12], "hide": ["front", "back"], "style": "gun"},
+    {"id": "l_elbow", "parent": "l_upper", "shape": "prism", "sides": 8, "size": [3.8, 3.8, 3.4], "pivot": [0, 0, 6.2], "rotation": [0, 90, 0],
+     "style": "gun", "paint": {"layers": [{"id": "hub", "op": "rect", "rect": [0.3, 0.3, 0.7, 0.7], "ramp": "teal", "tone": 3.2, "faces": ["caps"]}]}},
+    {"id": "l_fore", "parent": "l_upper", "shape": "box", "chamfer": 0.9, "size": [4.4, 4.4, 7.0], "pivot": [0, 0, 6.4], "offset": [0, 0, 3.4],
+     "rotation": [-48, 0, 0], "style": "enamel"},
+    {"id": "l_palm", "parent": "l_fore", "shape": "box", "chamfer": 0.6, "size": [4.0, 3.6, 3.4], "pivot": [0, 0, 7.0], "offset": [0, 0, 1.5],
+     "style": "gun"},
+    {"id": "l_claw_a", "parent": "l_palm", "shape": "taper", "size": [1.4, 1.3, 3.2], "pivot": [0, 1.1, 3.0], "offset": [0, 0, 1.5],
+     "rotation": [-12, 0, 0], "front_scale": [0.7, 0.6], "style": "gun"},
+    {"id": "l_claw_b", "parent": "l_palm", "shape": "taper", "size": [1.4, 1.3, 3.2], "pivot": [0, -1.1, 3.0], "offset": [0, 0, 1.5],
+     "rotation": [12, 0, 0], "front_scale": [0.7, 0.6], "style": "gun"}
+  ]
+}

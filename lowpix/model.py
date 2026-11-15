@@ -91,7 +91,7 @@ class Model:
         if col_budget and len(cols) > col_budget:
             warnings.append(f"{len(cols)} colours used, budget is {col_budget}")
         tiny = [f"{inst.id}.{f.name}" for inst in self.instances for f in inst.faces if min(f.W, f.H) < 2
-                and inst.part.get("shape") != "card"]
+                and inst.part.get("shape") != "card" and not f.soft and "bevels" not in f.tags]
         if tiny:
             warnings.append(f"{len(tiny)} faces are under 2px on a side (detail lost): {tiny[:6]}"
                             + (" ..." if len(tiny) > 6 else ""))

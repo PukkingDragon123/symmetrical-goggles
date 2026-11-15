@@ -154,7 +154,7 @@ class TestExport(unittest.TestCase):
         for bv in js["bufferViews"]:
             self.assertLessEqual(bv["byteOffset"] + bv["byteLength"], blen)
         roots = js["scenes"][0]["nodes"]
-        self.assertEqual([js["nodes"][i]["name"] for i in roots], ["chest"])
+        self.assertEqual([js["nodes"][i]["name"] for i in roots], ["body"])
 
     def test_examples_are_clean(self):
         for path in EXAMPLES:
@@ -176,6 +176,83 @@ class TestExport(unittest.TestCase):
             self.assertEqual(rc, 0)
             for ext in (".glb", ".obj", ".mtl", ".bbmodel", "_texture.png", "_sheet.png", "_hero.png", "_report.json"):
                 self.assertTrue(os.path.exists(os.path.join(td, "ember_salamander" + ext)), ext)
+
+
+LOFTY = {
+    "name": "lofty", "density": 2,
+    "palette": {"ramps": {"a": {"base": "#55447a", "steps": 6}, "b": ["#331100", "#aa5500", "#ffcc66"],
+                          "m": {"base": "#7a8088", "steps": 5}}},
+    "parts": [
+        {"id": "body", "shape": "loft", "profile": {"sides": 8, "round": 2.5}, "subdiv": 1,
+         "rings": [{"at": [0, 4, 8], "size": [5, 4]}, {"at": [0, 4, 0], "size": [7, 5]}, {"at": [0, 3.5, -8], "size": [3, 2.5]}],
+         "paint": {"ramp": "a", "layers": [
+             {"id": "st", "op": "stripes", "axis": "path", "period": 3, "width": 0.3, "ramp": "b", "bevel": True},
+             {"id": "sp", "op": "spots", "count": 5, "ramp": "b", "where": {"around": [0.8, 0.2]}, "taper": True}]}},
+        {"id": "leg", "parent": "body", "shape": "loft", "attach": {"t": 0.5, "around": 0.3, "align": "none"}, "mirror": True,
+         "profile": {"sides": 6}, "subdiv": 0, "rings": [{"at": [0, 0, 0], "size": 2}, {"at": [3, -3, 0], "size": 1.6}],
+         "paint": {"ramp": "a"}},
+        {"id": "fin", "parent": "body", "shape": "card", "plane": "yz", "attach": {"t": 0.4, "around": 0.0}, "art": ["#", "#"],
+         "paint": {"ramp": "b"}},
+        {"id": "crate", "shape": "box", "chamfer": 1.0, "size": [6, 5, 6], "pivot": [-10, 2.5, 0],
+         "paint": {"ramp": "m", "layers": [
+             {"op": "panel", "inset": 2}, {"op": "rivets", "inset": 1}, {"op": "wear", "width": 2, "ramp": "b"},
+             {"op": "grille", "rect": [0.2, 0.3, 0.8, 0.7], "faces": ["front"]},
+             {"op": "rect", "rect": [0.1, 0.1, 0.9, 0.3], "ramp": "b", "faces": ["right"], "bevel": True}]}},
+    ],
+}
+
+
+class TestLoftsAndHardSurface(unittest.TestCase):
+    def setUp(self):
+        self.m = build_model(LOFTY)
+        self.by = {i.id: i for i in self.m.instances}
+
+    def test_loft_faces_point_outward(self):
+        from lowpix.geometry import loft_frames
+        info = loft_frames(LOFTY["parts"][0])
+        for f in self.by["body"].faces:
+            fc = f.pts.mean(axis=0)
+            centre = info["C"][np.argmin(np.linalg.norm(info["C"] - fc, axis=1))]
+            if f.kind == "poly":
+                continue
+            self.assertGreater(np.dot(f.normal, fc - centre), 0, f.name)
+
+    def test_loft_path_attribute_runs_along_the_body(self):
+        f = [f for f in self.by["body"].faces if f.name == "s0_0"][0]
+        g = [f for f in self.by["body"].faces if f.name == "s3_0"][0]
+        self.assertLess(f.attrs["path"][:, 0].max(), g.attrs["path"][:, 0].min() + 1e-9)
+
+    def test_attach_mirror_on_symmetric_parent_is_reflection(self):
+        a = np.concatenate([transform_points(self.by["leg"].world, f.pts) for f in self.by["leg"].faces])
+        b = np.concatenate([transform_points(self.by["leg_mirror"].world, f.pts) for f in self.by["leg_mirror"].faces])
+        a = {tuple(np.round(p * [-1, 1, 1], 3)) for p in a}
+        b = {tuple(np.round(p, 3)) for p in b}
+        self.assertEqual(a, b)
+        self.assertGreater(self.by["leg"].world[0, 3], 0, "around 0.3 should sit on the +X side")
+
+    def test_attach_sits_on_surface(self):
+        fin = self.by["fin"].world[:3, 3]
+        self.assertAlmostEqual(float(fin[1]), 4.0 + 5 / 2, delta=0.35)  # top of the middle ring
+
+    def test_chamfered_box_topology(self):
+        names = sorted(f.name for f in self.by["crate"].faces)
+        self.assertEqual(names, sorted(["front", "back", "top", "bottom", "left", "right",
+                                        "bevel_tl", "bevel_tr", "bevel_bl", "bevel_br"]))
+        c = np.concatenate([f.pts for f in self.by["crate"].faces]).mean(axis=0)
+        for f in self.by["crate"].faces:
+            self.assertGreater(np.dot(f.normal, f.pts.mean(axis=0) - c), 0, f.name)
+
+    def test_hard_surface_ops_stay_in_palette(self):
+        pal = {c for r in self.m.palette.ramps.values() for c in r}
+        opaque = self.m.atlas[..., 3] > 127
+        used = {tuple(int(v) for v in c) for c in self.m.atlas[..., :3][opaque].reshape(-1, 3)}
+        self.assertTrue(used <= pal)
+
+    def test_attach_requires_loft_parent(self):
+        bad = copy.deepcopy(LOFTY)
+        bad["parts"][2]["parent"] = "crate"
+        errors, _ = validate(load_spec(bad))
+        self.assertTrue(any("attach needs a parent with shape 'loft'" in e for e in errors), errors)
 
 
 class TestValidation(unittest.TestCase):

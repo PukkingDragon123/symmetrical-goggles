@@ -13,12 +13,15 @@ TOP_KEYS = {"name", "description", "author", "license", "density", "budget", "li
             "styles", "defaults", "parts", "render", "notes", "grounded", "$schema"}
 PART_KEYS = {"id", "parent", "shape", "size", "pivot", "offset", "rotation", "mirror", "style",
              "paint", "hide", "front_scale", "back_scale", "front_shift", "back_shift", "sides",
-             "angle", "plane", "art", "orient", "snap_ground", "notes"}
+             "angle", "plane", "art", "orient", "snap_ground", "notes", "chamfer", "profile", "rings",
+             "subdiv", "smooth", "caps", "up", "attach", "hard"}
 PAINT_KEYS = {"ramp", "tone", "light", "dither", "rim", "layers", "stamps", "art_key"}
-SHAPES = {"box", "taper", "prism", "card"}
-OPS = {"fill", "band", "stripes", "spots", "patches", "speckle", "gradient", "noise", "gloss"}
+SHAPES = {"box", "taper", "prism", "card", "loft"}
+OPS = {"fill", "band", "stripes", "spots", "patches", "speckle", "gradient", "noise", "gloss",
+       "rect", "panel", "rivets", "wear", "grille"}
 FACE_TAGS = {"all", "*", "sides", "flanks", "ends", "caps", "up", "down", "level", "lit", "shaded",
-             "local_up", "local_down", "front", "back", "left", "right", "top", "bottom"}
+             "local_up", "local_down", "front", "back", "left", "right", "top", "bottom",
+             "start", "end", "bevels", "bevel_tl", "bevel_tr", "bevel_bl", "bevel_br"}
 
 
 class SpecError(ValueError):
@@ -85,9 +88,12 @@ def resolve_paint(spec: dict, part: dict) -> dict:
 def _faces_for(part):
     shape = part.get("shape", "box")
     if shape in ("box", "taper"):
-        return {"front", "back", "left", "right", "top", "bottom"}
+        base = {"front", "back", "left", "right", "top", "bottom"}
+        return base | ({"bevel_tl", "bevel_tr", "bevel_bl", "bevel_br"} if part.get("chamfer") else set())
     if shape == "prism":
         return {"front", "back"} | {f"side{k}" for k in range(int(part.get("sides", 6)))}
+    if shape == "loft":
+        return {"start", "end"}
     return {"front"}
 
 
@@ -139,6 +145,29 @@ def validate(spec: dict):
                 warnings.append(f"{where}: art rows have different lengths")
         if shape == "prism" and int(p.get("sides", 6)) < 3:
             errors.append(f"{where}: prism needs sides >= 3")
+        if shape == "loft":
+            rings = p.get("rings")
+            if not (isinstance(rings, list) and len(rings) >= 2):
+                errors.append(f"{where}: loft needs at least 2 rings")
+            else:
+                for ri, r in enumerate(rings):
+                    if not (isinstance(r.get("at"), list) and len(r["at"]) == 3):
+                        errors.append(f"{where}: ring {ri} needs at [x, y, z]")
+                    sz = r.get("size", 1)
+                    if not (isinstance(sz, (int, float)) or (isinstance(sz, list) and len(sz) == 2)):
+                        errors.append(f"{where}: ring {ri} size must be a number or [w, h]")
+            prof = p.get("profile", {})
+            if isinstance(prof, dict) and int(prof.get("sides", 8)) < 3:
+                errors.append(f"{where}: profile needs sides >= 3")
+        att = p.get("attach")
+        if att is not None:
+            par = next((q for q in parts if q.get("id") == p.get("parent")), None)
+            if par is None or par.get("shape") != "loft":
+                errors.append(f"{where}: attach needs a parent with shape 'loft'")
+            if not isinstance(att, dict) or not (0 <= float(att.get("t", 0.5)) <= 1):
+                errors.append(f"{where}: attach.t must be within 0..1")
+            if p.get("pivot") is not None:
+                warnings.append(f"{where}: pivot is ignored when attach is set")
         for key in ("pivot", "offset", "rotation"):
             v = p.get(key)
             if v is not None and not (isinstance(v, list) and len(v) == 3):

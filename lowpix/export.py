@@ -56,9 +56,13 @@ def glb_bytes(model) -> bytes:
 
     nodes, meshes = [], []
     index_of = {inst.id: i for i, inst in enumerate(model.instances)}
+    has_solid = any(not f.double_sided for i in model.instances for f in i.faces)
+    has_card = any(f.double_sided for i in model.instances for f in i.faces)
+    mat_index = {False: 0, True: 1 if has_solid else 0}
     for inst in model.instances:
         prims = []
-        for ds, mat in ((False, 0), (True, 1)):
+        for ds in (False, True):
+            mat = mat_index[ds]
             m = model.instance_mesh(inst, ds)
             if m is None:
                 continue
@@ -98,8 +102,8 @@ def glb_bytes(model) -> bytes:
         "scenes": [{"name": model.name, "nodes": [i for i, inst in enumerate(model.instances) if inst.parent is None]}],
         "nodes": nodes,
         "meshes": meshes,
-        "materials": [dict(mat_common, name="pixel_solid", doubleSided=False),
-                      dict(mat_common, name="pixel_card", doubleSided=True)],
+        "materials": ([dict(mat_common, name="pixel_solid", doubleSided=False)] if has_solid else [])
+                     + ([dict(mat_common, name="pixel_card", doubleSided=True)] if has_card else []),
         "textures": [{"sampler": 0, "source": 0}],
         "samplers": [{"magFilter": NEAREST, "minFilter": NEAREST, "wrapS": CLAMP, "wrapT": CLAMP}],
         "images": [{"bufferView": img_view, "mimeType": "image/png", "name": "atlas"}],

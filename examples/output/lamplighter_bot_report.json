@@ -1,0 +1,96 @@
+{
+  "name": "Lamplighter Bot",
+  "parts": 38,
+  "instances": 43,
+  "faces": 410,
+  "triangles": 1038,
+  "vertices_flat": 1858,
+  "vertices_unique": 660,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.504,
+  "texel_density": 2.0,
+  "colors_used": 31,
+  "palette": {
+    "shell": [
+      "#2b2321",
+      "#4a3c35",
+      "#76645a",
+      "#a8957f",
+      "#d2c2a4",
+      "#efe4c8",
+      "#fffaf0"
+    ],
+    "teal": [
+      "#08201f",
+      "#0e3a38",
+      "#145a55",
+      "#1d7d73",
+      "#2fa494",
+      "#62c9b4",
+      "#a8ecd8"
+    ],
+    "metal": [
+      "#0f1114",
+      "#1d2126",
+      "#2e343b",
+      "#454d56",
+      "#66707b",
+      "#8f99a3",
+      "#c3cbd2"
+    ],
+    "glow": [
+      "#4a1d05",
+      "#8a3a08",
+      "#cf6a10",
+      "#f5a128",
+      "#ffd25a",
+      "#fff3b0",
+      "#ffffff"
+    ],
+    "red": [
+      "#2a0a0e",
+      "#5c1219",
+      "#9a1f26",
+      "#d63a35",
+      "#f2725a"
+    ],
+    "warn": [
+      "#3a2a06",
+      "#7a5a0a",
+      "#d9a514",
+      "#ffd23a"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -13.668,
+      -0.002,
+      -11.014
+    ],
+    "max": [
+      14.496,
+      49.164,
+      15.777
+    ],
+    "size": [
+      28.164,
+      49.166,
+      26.791
+    ]
+  },
+  "warnings": [],
+  "files": {
+    "lamplighter_bot.glb": "examples/output/lamplighter_bot.glb",
+    "lamplighter_bot.obj": "examples/output/lamplighter_bot.obj",
+    "lamplighter_bot.mtl": "examples/output/lamplighter_bot.mtl",
+    "lamplighter_bot.bbmodel": "examples/output/lamplighter_bot.bbmodel",
+    "lamplighter_bot_texture.png": "examples/output/lamplighter_bot_texture.png",
+    "lamplighter_bot_texture_x4.png": "examples/output/lamplighter_bot_texture_x4.png",
+    "lamplighter_bot_hero.png": "examples/output/lamplighter_bot_hero.png",
+    "lamplighter_bot_sheet.png": "examples/output/lamplighter_bot_sheet.png",
+    "lamplighter_bot_turntable.gif": "examples/output/lamplighter_bot_turntable.gif"
+  }
+}

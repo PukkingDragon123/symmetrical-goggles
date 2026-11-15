@@ -227,7 +227,12 @@
           "speckle",
           "gradient",
           "noise",
-          "gloss"
+          "gloss",
+          "rect",
+          "panel",
+          "rivets",
+          "wear",
+          "grille"
          ]
         },
         "faces": {
@@ -271,7 +276,9 @@
            "enum": [
             "x",
             "y",
-            "z"
+            "z",
+            "path",
+            "around"
            ]
           },
           {
@@ -447,6 +454,50 @@
            }
           }
          ]
+        },
+        "taper": {
+         "type": "boolean"
+        },
+        "max_light": {
+         "type": "number"
+        },
+        "rect": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 4,
+         "maxItems": 4
+        },
+        "px": {
+         "type": "boolean"
+        },
+        "min_size": {
+         "type": "integer"
+        },
+        "spacing": {
+         "type": "integer"
+        },
+        "highlight": {
+         "type": "number"
+        },
+        "shadow": {
+         "type": "number"
+        },
+        "scratches": {
+         "type": "number"
+        },
+        "dir": {
+         "enum": [
+          "h",
+          "v"
+         ]
+        },
+        "slit_tone": {
+         "type": "number"
+        },
+        "lip": {
+         "type": "number"
         }
        }
       }
@@ -910,7 +961,8 @@
        "box",
        "taper",
        "prism",
-       "card"
+       "card",
+       "loft"
       ]
      },
      "size": {
@@ -1411,6 +1463,134 @@
      },
      "notes": {
       "type": "string"
+     },
+     "chamfer": {
+      "type": "number",
+      "minimum": 0
+     },
+     "hard": {
+      "type": "boolean"
+     },
+     "subdiv": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "smooth": {
+      "type": "boolean"
+     },
+     "up": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+     },
+     "caps": {
+      "oneOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "array",
+        "items": {
+         "type": "boolean"
+        },
+        "minItems": 2,
+        "maxItems": 2
+       }
+      ]
+     },
+     "profile": {
+      "oneOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "object",
+        "properties": {
+         "sides": {
+          "type": "integer",
+          "minimum": 3
+         },
+         "round": {
+          "type": "number"
+         },
+         "angle": {
+          "type": "number"
+         }
+        }
+       }
+      ]
+     },
+     "rings": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+       "type": "object",
+       "required": [
+        "at"
+       ],
+       "properties": {
+        "at": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 3,
+         "maxItems": 3
+        },
+        "size": {
+         "oneOf": [
+          {
+           "type": "number"
+          },
+          {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          }
+         ]
+        },
+        "shift": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 2,
+         "maxItems": 2
+        },
+        "roll": {
+         "type": "number"
+        }
+       }
+      }
+     },
+     "attach": {
+      "type": "object",
+      "properties": {
+       "t": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+       },
+       "around": {
+        "type": "number"
+       },
+       "offset": {
+        "type": "number"
+       },
+       "align": {
+        "enum": [
+         "tangent",
+         "surface",
+         "none"
+        ]
+       }
+      }
      }
     },
     "additionalProperties": false

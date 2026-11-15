@@ -38,16 +38,16 @@ def face_matches(filters, face, n_world, n_local, light) -> bool:
         name = face.name
         if tag in ("all", "*"):
             return True
-        if tag == name:
+        if tag == name or tag in face.tags:
             return True
         if tag == "sides":
             return name in SIDE_NAMES or name.startswith("side")
         if tag == "flanks":
-            return name in ("left", "right")
+            return name in ("left", "right") or ("flanks" in face.tags)
         if tag == "ends":
             return name in ("front", "back")
         if tag == "caps":
-            return face.kind == "poly"
+            return face.kind == "poly" and name not in ("front", "back") or "caps" in face.tags
         if tag == "up":
             return n_world[1] > 0.5
         if tag == "down":
@@ -72,8 +72,15 @@ def face_matches(filters, face, n_world, n_local, light) -> bool:
 AXES = {"x": 0, "y": 1, "z": 2}
 
 
-def _axis_coord(P, axis):
+def _axis_coord(P, axis, ctx=None):
     if isinstance(axis, str):
+        if axis in ("path", "around"):
+            if ctx is not None and ctx.path is not None:
+                return ctx.path[..., 0 if axis == "path" else 1]
+            # non-loft fallback: local z / angle around local z
+            if axis == "path":
+                return P[..., 2]
+            return (np.arctan2(P[..., 0], P[..., 1]) / (2 * np.pi)) % 1.0
         return P[..., AXES[axis]]
     a = np.asarray(axis, dtype=np.float64)
     a = a / np.linalg.norm(a)
@@ -94,9 +101,12 @@ def _shift(mask: np.ndarray, dx: int, dy: int) -> np.ndarray:
 class FaceCtx:
     """Everything a paint op may want to know about one face."""
 
-    def __init__(self, inst, face, fidx, light, bbox):
+    def __init__(self, inst, face, fidx, light, bbox, density=2.0):
         self.inst, self.face, self.fidx = inst, face, fidx
+        self.density = density
         self.W, self.H = face.W, face.H
+        self.path = face.texel_attr("path", self.W, self.H)   # loft (length, around) per texel
+        self.path_total = 1.0
         self.P_local = face.texel_positions(self.W, self.H)
         self.P_src = self.P_local * (np.array([-1, 1, 1]) if inst.mirrored else 1)
         R, t = inst.world[:3, :3], inst.world[:3, 3]
@@ -133,16 +143,28 @@ class FaceCtx:
             oy = 1
         return ox, oy
 
-    def edge_info(self):
-        """[(dist_px array, dot(edge_outward_world, light))] for quad faces."""
+    def edge_info(self, include_soft=False):
+        """[(name, dist_px array, dot(edge_outward_world, light))] per face edge.
+        Soft (smooth loft) faces report no edges unless include_soft."""
         f = self.face
         out = []
-        if f.kind != "quad":
+        if f.soft and not include_soft:
             return out
+        if hasattr(self, "_edges"):
+            return self._edges
         R = self.inst.world[:3, :3]
         c = f.pts.mean(axis=0)
         W, H = self.W, self.H
-        dists = {"top": self.py, "right": W - 1 - self.px, "bottom": H - 1 - self.py, "left": self.px}
+        if f.kind == "quad":
+            dists = {"top": self.py, "right": W - 1 - self.px, "bottom": H - 1 - self.py, "left": self.px}
+        else:
+            dists = {}
+            for name, i, j in f.edges():
+                a, b = f.pts[i], f.pts[j]
+                e = b - a
+                el = max(np.linalg.norm(e), 1e-9)
+                d = np.linalg.norm(np.cross(e, self.P_local - a), axis=-1) / el
+                dists[name] = np.floor(d * self.density).astype(np.int64)
         for name, i, j in f.edges():
             a, b = f.pts[i], f.pts[j]
             e = b - a
@@ -155,7 +177,26 @@ class FaceCtx:
                 continue
             ow = R @ (m / mn)
             out.append((name, dists[name], float(np.dot(ow, self.light))))
+        self._edges = out
         return out
+
+    def edge_dist(self):
+        """Distance in px to the nearest edge (any edge, soft faces included)."""
+        e = self.edge_info(include_soft=True)
+        if not e:
+            return np.full((self.H, self.W), 99)
+        return np.min(np.stack([d for _, d, _ in e]), axis=0)
+
+    def band_coord(self, P, ax, space):
+        """Coordinate for band/gradient: normalised part coords (-1..1), or for
+        'path' the 0..1 fraction along a loft, for 'around' 0..1 around it."""
+        if ax == "path":
+            if self.path is not None:
+                return self.path[..., 0] / max(self.path_total, 1e-9)
+            return (self.N[..., 2] + 1) / 2
+        if ax == "around":
+            return _axis_coord(self.P_src, "around", self)
+        return _axis_coord(self.N if space != "world" else P, ax)
 
 
 class Painter:
@@ -172,7 +213,9 @@ class Painter:
         self.ao = float(lt.get("ao", 0.8))
         self.ao_height = float(lt.get("ao_height", 3.0))
         self.ground = float(lt.get("ground", 0.0))
+        self.density = float(spec.get("density", 2.0))
         self._spot_cache = {}
+        self._loft_len = {}
         self._bbox = {}
         for inst in instances:
             if inst.src_id not in self._bbox:
@@ -180,6 +223,13 @@ class Painter:
                 self._bbox[inst.src_id] = (pts.min(axis=0), pts.max(axis=0))
 
     # ------------------------------------------------------------------ utils
+    def _path_total(self, part):
+        key = part["id"]
+        if key not in self._loft_len:
+            from .geometry import loft_frames
+            self._loft_len[key] = float(loft_frames(part)["L"][-1])
+        return self._loft_len[key]
+
     def ramp_id(self, name, where="") -> int:
         if name not in self.pal.index:
             raise ValueError(f"unknown ramp {name!r}{where}")
@@ -187,7 +237,9 @@ class Painter:
 
     # --------------------------------------------------------------- painting
     def paint_face(self, inst, face, fidx, paint: dict) -> np.ndarray:
-        ctx = FaceCtx(inst, face, fidx, self.light, self._bbox[inst.src_id])
+        ctx = FaceCtx(inst, face, fidx, self.light, self._bbox[inst.src_id], self.density)
+        if ctx.path is not None:
+            ctx.path_total = self._path_total(inst.part)
         H, W = ctx.H, ctx.W
         base = paint.get("ramp") or self.pal.names[0]
         rid = np.full((H, W), self.ramp_id(base, f" (part {inst.src_id})"), dtype=np.int64)
@@ -275,6 +327,9 @@ class Painter:
         op = layer.get("op", "fill")
         if not face_matches(layer.get("faces"), ctx.face, ctx.n_world, ctx.n_local, self.light):
             return
+        if op != "gloss" and ("min_light" in layer or "max_light" in layer):
+            if not (float(layer.get("min_light", -2)) <= ctx.ndl <= float(layer.get("max_light", 2))):
+                return
         H, W = ctx.H, ctx.W
         space = layer.get("space", "local")
         P = ctx.coords(space)
@@ -287,14 +342,14 @@ class Painter:
             mask = np.ones((H, W), bool)
         elif op == "band":
             ax = layer.get("axis", "y")
-            c = _axis_coord(ctx.N if space != "world" else P, ax)
+            c = ctx.band_coord(P, ax, space)
             if layer.get("wobble"):
                 c = c + layer["wobble"] * (fbm(P, 1.0 / float(layer.get("wobble_scale", 3.0)), 2, seed) - 0.5) * 2
             lo, hi = layer.get("from", -1.0), layer.get("to", 1.0)
             mask = (c >= lo) & (c <= hi)
         elif op == "stripes":
             ax = layer.get("axis", "z")
-            c = _axis_coord(P, ax) + float(layer.get("phase", 0.0))
+            c = _axis_coord(P, ax, ctx) + float(layer.get("phase", 0.0))
             if layer.get("wobble"):
                 c = c + layer["wobble"] * (fbm(P, 1.0 / float(layer.get("wobble_scale", 3.0)), 2, seed) - 0.5) * 2
             period = float(layer.get("period", 4.0))
@@ -302,7 +357,7 @@ class Painter:
             mask = np.mod(c / period, 1.0) < width
             if "range" in layer:  # restrict to a normalised range along the axis
                 a, b = layer["range"]
-                cn = _axis_coord(ctx.N, ax)
+                cn = ctx.band_coord(P, ax, "local")
                 mask &= (cn >= a) & (cn <= b)
         elif op == "spots":
             mask = self._spots_mask(ctx, layer, li, seed)
@@ -317,7 +372,7 @@ class Painter:
             return
         elif op == "gradient":
             ax = layer.get("axis", "y")
-            c = _axis_coord(ctx.N if space != "world" else P, ax)
+            c = ctx.band_coord(P, ax, space)
             tone += float(layer.get("amount", 1.0)) * c
             return
         elif op == "noise":
@@ -361,6 +416,93 @@ class Painter:
                 ok = np.isin(rid, [self.ramp_id(r) for r in restrict])
                 m &= ok
             tone[m] = 99.0  # clamps to the lightest entry of the texel's ramp
+            return
+        elif op == "rect":
+            # a face-space rectangle [x0, y0, x1, y1]: fractions of the face, or pixels with "px": true
+            x0, y0, x1, y1 = layer.get("rect", [0.2, 0.2, 0.8, 0.8])
+            if layer.get("px"):
+                mask = (ctx.px >= x0) & (ctx.px <= x1) & (ctx.py >= y0) & (ctx.py <= y1)
+            else:
+                u, v = (ctx.px + 0.5) / W, (ctx.py + 0.5) / H
+                mask = (u >= x0) & (u <= x1) & (v >= y0) & (v <= y1)
+        elif op == "panel":
+            # recessed panel: a dark groove `inset` px inside the face edges, bevelled by the light
+            if min(W, H) < int(layer.get("min_size", 7)):
+                return
+            inset = int(layer.get("inset", 2))
+            d = ctx.edge_dist()
+            inner = d > inset
+            tone[d == inset] += float(layer.get("shift", -1.3))
+            for name, dist, s in ctx.edge_info(include_soft=True):
+                ring = (dist == inset + 1) & inner
+                if s > 0.25:
+                    tone[ring] += float(layer.get("highlight", 0.8))
+                elif s < -0.25:
+                    tone[ring] += float(layer.get("shadow", -0.5))
+            return
+        elif op == "rivets":
+            if min(W, H) < int(layer.get("min_size", 6)):
+                return
+            inset = int(layer.get("inset", 1))
+            spacing = int(layer.get("spacing", 0))
+            pts = []
+            if ctx.face.kind == "quad":
+                xs = [inset, W - 1 - inset]
+                ys = [inset, H - 1 - inset]
+                pts = [(x, y) for x in xs for y in ys]
+                if spacing > 0:
+                    for x in range(inset + spacing, W - 1 - inset, spacing):
+                        pts += [(x, inset), (x, H - 1 - inset)]
+                    for y in range(inset + spacing, H - 1 - inset, spacing):
+                        pts += [(inset, y), (W - 1 - inset, y)]
+            else:
+                cu, cv = ctx.face.uv.mean(axis=0)
+                for u, v in ctx.face.uv:
+                    x, y = u * W, v * H
+                    dx, dy = cu * W - x, cv * H - y
+                    n = max(np.hypot(dx, dy), 1e-6)
+                    pts.append((int(np.clip(x + dx / n * (inset + 1.2), 0, W - 1)),
+                                int(np.clip(y + dy / n * (inset + 1.2), 0, H - 1))))
+            ox, oy = ctx.shadow_offset()
+            for x, y in set(pts):
+                if 0 <= x + ox < W and 0 <= y + oy < H:
+                    tone[y + oy, x + ox] += float(layer.get("shadow", -1.0))
+                if "ramp" in layer:
+                    rid[y, x] = self.ramp_id(layer["ramp"])
+                    tone[y, x] = float(layer.get("tone", self.pal.mid(layer["ramp"])))
+                else:
+                    tone[y, x] += float(layer.get("highlight", 1.3))
+            return
+        elif op == "wear":
+            # chipped paint along edges (+ optional scratches) revealing another ramp
+            d = ctx.edge_dist()
+            width = int(layer.get("width", 2))
+            cell = hash3((ctx.px + (ctx.py % 2)) // 2 + 4096 * ctx.fidx, ctx.py, np.full_like(ctx.px, 5), seed)
+            fall = 1.0 - d / max(width, 1)
+            m = (d < width) & (cell < float(layer.get("density", 0.35)) * np.clip(fall + 0.35, 0, 1))
+            sc = float(layer.get("scratches", 0.0))
+            if sc > 0:
+                start = hash3(ctx.px // 3 + 4096 * ctx.fidx, ctx.py, np.full_like(ctx.px, 9), seed) < sc
+                m |= start & (d >= width)
+            if "ramp" in layer:
+                rid[m] = self.ramp_id(layer["ramp"])
+                tone[m] = float(layer.get("tone", self.pal.mid(layer["ramp"])))
+            else:
+                tone[m] += float(layer.get("shift", 1.0))
+            return
+        elif op == "grille":
+            # vent slits inside a face-space rect; dark slit rows with a lit lip below
+            x0, y0, x1, y1 = layer.get("rect", [0.2, 0.2, 0.8, 0.8])
+            u, v = (ctx.px + 0.5) / W, (ctx.py + 0.5) / H
+            inside = (u >= x0) & (u <= x1) & (v >= y0) & (v <= y1)
+            period = max(2, int(layer.get("period", 2)))
+            vertical = layer.get("dir", "h") == "v"
+            k = ctx.px if vertical else ctx.py
+            k0 = int(round((x0 if vertical else y0) * (W if vertical else H)))
+            slit = inside & ((k - k0) % period == 0)
+            lip = inside & ((k - k0) % period == 1)
+            tone[slit] = float(layer.get("slit_tone", 0.2))
+            tone[lip] += float(layer.get("lip", 0.6))
             return
         else:
             raise ValueError(f"unknown paint op {op!r}")
@@ -452,22 +594,39 @@ class Painter:
         areas = areas / areas.sum()
         spots = []
         min_gap = float(layer.get("min_gap", 0.0))
+        taper = None
+        if layer.get("taper") and inst.part.get("shape") == "loft":
+            from .geometry import loft_frames
+            info = loft_frames(inst.part)
+            sz = info["S"].max(axis=1)
+            taper = (info["L"], sz / max(sz.max(), 1e-9))
+        total = self._path_total(inst.part) if inst.part.get("shape") == "loft" else 1.0
         tries = 0
-        while len(spots) < count and tries < count * 60:
+        while len(spots) < count and tries < count * 80:
             tries += 1
             f = cands[rng.choice(len(cands), p=areas)]
             s, t = rng.random(), rng.random()
             p = f.sample(np.array(s), np.array(t))
             nrm = (p - cen) / half
+            path = f.sample(np.array(s), np.array(t), f.attrs["path"]) if "path" in f.attrs else None
             ok = True
             for ax, (a, b) in where.items():
-                v = nrm[AXES[ax]]
-                if v < a or v > b:
+                if ax in ("path", "around"):
+                    if path is None:
+                        continue
+                    v = path[0] / total if ax == "path" else path[1] % 1.0
+                    inside = (a <= v <= b) if a <= b else (v >= a or v <= b)  # around ranges may wrap
+                else:
+                    v = nrm[AXES[ax]]
+                    inside = a <= v <= b
+                if not inside:
                     ok = False
                     break
             if not ok:
                 continue
             r = rng.uniform(rad[0], rad[1])
+            if taper is not None and path is not None:
+                r *= float(np.clip(np.interp(path[0], taper[0], taper[1]), 0.3, 1.0))
             if min_gap and any(np.linalg.norm(p - q) < (r + rq) * min_gap for q, rq in spots):
                 continue
             spots.append((p, r))

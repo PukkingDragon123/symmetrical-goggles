@@ -45,7 +45,9 @@ left side as seen from the front (screen-right in a front view). The ground is
 | `orient` | `"world"`: `rotation` is absolute (ignores the parent's rotation). Ideal for legs that must point straight down and feet that lie flat. |
 | `mirror` | `true`: also build a copy (with all children) mirrored across X. Painted images stay un-flipped. Symmetric patterns by default. |
 | `snap_ground` | `true` or a height: after posing, move the part vertically so its lowest point sits at that y (default 0.02). Use it on feet. |
+| `attach` | `{"t": 0..1, "around": 0..1, "offset": 0, "align": "tangent"}`: place the pivot **on the surface of a loft parent**. `t` runs along the loft's path, and `around` goes 0 top → 0.25 the part's +X side → 0.5 bottom → 0.75 −X. `align`: `tangent` follows the path and stays upright (spines, crests), `surface` stands on the surface normal (glands, horns), `none` keeps the parent's axes (limbs). Mirrored copies attach on the reflected side of the *actual* surface, so asymmetric S-curved bodies work. |
 | `hide` | face names to drop (internal faces hidden inside other parts). Saves triangles and atlas space. |
+| `chamfer` | box/taper only: cut all four long edges by this many units. That gives eight sides (`top right bottom left` + `bevel_tl bevel_tr bevel_bl bevel_br`) and octagonal `front`/`back` caps. This is the hard-surface staple. |
 | `style` | a style name or list of names (merged in order, then `paint`). |
 | `paint` | per-part paint (see below). |
 
@@ -60,6 +62,17 @@ left side as seen from the front (screen-right in a front view). The ground is
   `size [w, h, length]`, optional `front_scale`/`back_scale`, and `angle` to rotate the
   cross-section. Faces `front`/`back` (polygon caps) and `side0..side{n-1}`.
   Great for eyes, horns, barrels and logs.
+* **loft**: a smooth low-poly tube through control rings, the tool for organic forms
+  (bodies, tails, limbs, heads, domes, horns, handles). `rings`: `[{"at": [x, y, z], "size": w | [w, h], "shift": [dx, dy], "roll": deg}, ...]`
+  (at least 2). `profile`: `{"sides": 8, "round": 2.5, "angle": 0}`, where `round` 2 = regular polygon or ellipse and
+  higher = boxier (8 sides at 3 or more reads as a chamfered box). `subdiv`: Catmull-Rom rings inserted between each
+  control pair (default 1). `caps`: `[start, end]`. A ring of size 0 pinches to a point (tail tips).
+  Ring frames use parallel transport, so tubes can bend through vertical without twisting. Faces are
+  `s{segment}_{side}`, tagged `top`/`right`/`bottom`/`left` (by position around the profile), `sides`, `flanks`;
+  caps are `start`/`end`. Loft faces are *soft*: no rims or outlines between facets, and the faceted look comes
+  from the painted light. Set `"hard": true` for rims on every facet. Each texel also knows its
+  `path` coordinate (units along the loft) and `around` (0..1), which `stripes`, `band`, `gradient` and `spots.where`
+  can use.
 * **card**: a single double-sided quad with an alpha cut-out, for toes, fins,
   spines, hair, leaves and flames. `plane`: `xy` (faces +Z), `xz` (lies flat,
   faces +Y; image-top = -Z), `yz` (faces +X). `art` is a list of strings: `.`
@@ -113,6 +126,17 @@ also accept `bevel`.
 | `gradient` | `axis`, `amount` | tone ramp across the part |
 | `speckle` | `density`, `shift` | single-pixel speckles (use sparingly) |
 | `gloss` | `post: true`, `dash: true`, `length`, `inset`, `density`, `shift`, `ramps` | wet highlight dashes inset along lit edges; without `dash`, random glints near lit edges |
+| `rect` | `rect` [x0, y0, x1, y1] (face fractions, or pixels with `px: true`) | colour-blocked panels, screens, hubs (mask: takes `ramp`/`tone`/`bevel`) |
+| `panel` | `inset`, `shift`, `highlight`, `shadow`, `min_size` | a recessed panel groove `inset` px inside the face edges, bevelled by the light |
+| `rivets` | `inset`, `spacing`, `highlight`, `shadow`, `ramp`/`tone`, `min_size` | bolt heads at face corners (and every `spacing` px), each with a 1px cast shadow |
+| `wear` | `width`, `density`, `scratches`, `ramp`/`tone` or `shift` | chipped paint along edges revealing another ramp (dark metal under enamel reads best) |
+| `grille` | `rect`, `period`, `dir` (`h`/`v`), `slit_tone`, `lip` | vent slits with a lit lip under each slit |
+
+Axes: `x`/`y`/`z` (part coordinates; normalised -1..1 for `band`/`gradient`), a vector, or on lofts
+`path` (units along the loft for `stripes`; 0..1 for `band`/`gradient`/`range`) and `around` (0..1).
+`spots` extras: `where` may also use `path` (0..1) and `around` (wrapping ranges like `[0.6, 0.4]` are fine),
+and `taper: true` shrinks spots where a loft narrows. Any layer can take `min_light`/`max_light` to only paint
+faces whose light term (dot of normal and light, -1..1) falls in range, for example sheen on the most-lit facets.
 
 `space`: `"local"` (default; part coordinates, symmetric across mirrored copies)
 or `"world"` (continuous across parts). `post: true` runs the layer after
@@ -125,7 +149,8 @@ highlight on the lit side, which is the classic hand-painted inset look.
 ### Face filters
 
 `faces` is a list of tags: face names (`front back left right top bottom`,
-`side0`...), `sides` (all four sides, or prism sides), `flanks` (left and right),
+`side0`...), `sides` (all four sides, or prism and loft sides), `flanks` (left and right), `bevels`
+(chamfer strips), `start`/`end` (loft caps),
 `ends` (front and back), `caps`, `up`/`down`/`level` (world normal), `lit`/`shaded`
 (relative to the light), `local_up`/`local_down`, `all`. Prefix with `-` to
 exclude: `["sides", "-front"]`.

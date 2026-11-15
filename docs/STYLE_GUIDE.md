@@ -25,6 +25,14 @@ Each rule below names the lowpix feature that implements it.
 * Thin things (toes, spines, fins, whiskers, flames) are **alpha-cut cards**,
   not geometry.
   → `card` + `art`.
+* **Organic means one continuous form, not stacked boxes.** Creatures read as "advanced" low poly when the
+  body and tail are a single tube with an 8-sided, slightly boxy cross-section bending through an S-curve,
+  and the head is a rounded chamfered loaf. The facets are flat-shaded by the painted light, with no seams.
+  → `loft` (`profile.round` about 2.5 to 3, `subdiv` 1), parts placed on it with `attach`.
+* **Hard surface means chamfered boxes and cylinders, layered.** Cut every long edge, stack a few
+  chunky masses (chest, hips, helmet), put joints in contrasting cylinders, and give the silhouette one
+  oversized readable feature (a single big eye, a lantern, a tank).
+  → `chamfer`, `prism`, nested parts.
 
 ## 2. Uniform, visible texel density
 
@@ -71,6 +79,19 @@ Each rule below names the lowpix feature that implements it.
   → `noise` (large `scale`), `spots` with tiny radii for pores; `speckle` sparingly.
 * Dithering is a tool, not a texture. Keep `dither` near 0 for clean bands and use
   it only on large gradients.
+
+## 5b. Hard-surface paint language
+
+* Colour-block the shell: one light enamel, one saturated accent (stripes, pads, caps), and gunmetal
+  for joints and mechanics.
+  → `band`, `rect` with `bevel`.
+* Recessed panel grooves on large faces, rivets at the corners, vent grilles, small stencils and gauges.
+  → `panel`, `rivets`, `grille`, `stamps`.
+* Wear is **sparse dark chips on outer edges** (paint flaked off to the metal underneath), not grey
+  noise everywhere. Keep grime low and away from top faces.
+  → `wear` (`density` about 0.15, `ramp` dark metal), `patches` with a negative `shift`.
+* Light sources are flat, saturated, near-white at the core, with `light` about 0.25 so the shading
+  doesn't dim them. They're the brightest values on the model, so use them for focal points.
 
 ## 6. Hand-placed focal details
 
