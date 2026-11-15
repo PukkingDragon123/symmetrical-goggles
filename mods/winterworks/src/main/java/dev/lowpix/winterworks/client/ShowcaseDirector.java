@@ -162,7 +162,7 @@ public final class ShowcaseDirector {
         });
         at(t += 14, () -> shot("launcher_firing"));
         at(t += 3, () -> Minecraft.getInstance().options.keyUse.setDown(false));
-        at(t += 30, () -> shot("launcher_hud"));
+        at(t += 30, () -> shot("launcher_magazine"));
         at(t += 5, () -> Minecraft.getInstance().stop());
     }
 

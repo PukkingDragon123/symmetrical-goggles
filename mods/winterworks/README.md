@@ -20,7 +20,8 @@ leopard, ringed, brown, frost) picked by biome and inherited by cubs. Its face i
 brows that knit when it's angry, flaring nostrils, a bark on every grunt. About one adult in twelve is an
 **Alpha**: 30% bigger, +60 health and +5 attack, a full horn, a great lion's mane of fur with a beard and chest ruff,
 and a near-black grizzled coat covered in old scars (one runs across its eye). **Cubs** are fluffy white pups built
-like little Icebreakers: the same segmented body, a fur ruff and crest, big dark eyes, ice buds for a horn and tusks. It charges into ice to break holes, guards its fluffy white cubs (it rears up, drums its belly, bellows and
+like little Icebreakers: the same segmented body, a fur ruff and crest, big dark eyes, ice buds for a horn and tusks.
+It charges into ice to break holes, guards its fluffy white cubs (it rears up, drums its belly, bellows and
 charges players who come near them), and is calmed by fish: drop some or feed it. Animations: idle, waddling walk with a
 spring-driven belly wobble, belly slide on ice, hip-driven swimming, charge, ram, belly slap, tail slap, happy chomp.
 Its horn grows back in four stages, faster in the cold, faster still while freezing, fastest when it is stuck in
@@ -37,6 +38,10 @@ unbreakable, respects spawn protection, adventure mode and land-claim mods (bloc
 **Winter Express.** Coaster rails (keep momentum, faster, dive down slopes), booster rails (powered: fling carts to 3x
 the vanilla speed limit; unpowered: brake) and chain lift rails (haul carts uphill, faster when powered). Rails are
 cheaper: the vanilla rail recipe gives 32, powered rails 12. Paint rail sleepers with any dye (a sponge washes it off).
+**Trap Rail** (redstone): while powered, its jaws clamp any cart and hold it still; cut the power and it lets go with a
+launch. Use it for coaster stations, brakes and launches. **Drop Rail** (redstone): it hangs in mid-air without
+support; power it and it springs open like a trapdoor, so the cart falls to the track below (coaster drops, trap pits).
+It closes again a moment after the power goes.
 Couple any minecarts into trains with a chain (click the front cart, then the one behind; sneak + click with an empty
 hand to uncouple). The Iron Locomotive and the Dragon-Head Locomotive burn coal, from your hand or from a chest
 minecart coupled behind them; sneak + right-click cycles stop / forward / reverse; longer trains are heavier and
@@ -67,5 +72,5 @@ Screenshots taken by `runShowcase` (the real client, software-rendered):
 |---|---|
 | ![Icebreaker family](docs/screenshots/icebreaker_family.png) | ![Icebreaker close](docs/screenshots/icebreaker_close.png) |
 | ![Winter Express](docs/screenshots/winter_express_running.png) | ![Snow Globe](docs/screenshots/snow_globe_swirl.png) |
-| ![Launcher firing](docs/screenshots/launcher_firing.png) | ![Launcher HUD](docs/screenshots/launcher_hud.png) |
+| ![Launcher firing](docs/screenshots/launcher_firing.png) | ![Launcher magazine](docs/screenshots/launcher_magazine.png) |
 | ![Trap and Drop Rails](docs/screenshots/trap_and_drop_rails.png) | |
