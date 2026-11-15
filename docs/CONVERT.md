@@ -68,3 +68,26 @@ The first command finds free CC0 models on Poly Haven. MCP: `lowpix_polyhaven_se
 * Converted meshes aren't rigged. For animation, author the creature as a spec
   (`python -m lowpix new creature "<Name>"`) and use the conversion as a proportion reference.
 * Poly Haven assets are CC0. Crediting "Poly Haven" is appreciated but not required.
+
+
+## Sketchfab models (with your API token)
+
+```bash
+python -m lowpix auth set sketchfab
+```
+
+```bash
+python -m lowpix sketchfab search low poly fox
+```
+
+```bash
+python -m lowpix convert sketchfab:<uid> --style pixel -o out/fox
+```
+
+* `auth set` prompts with hidden input (or reads stdin) and stores the token in `~/.config/lowpix/tokens.json`
+  with mode 600. `LOWPIX_SKETCHFAB_TOKEN` or `SKETCHFAB_API_TOKEN` in the environment take precedence. Tokens never go in
+  the repo, on the command line or into logs. `auth list` shows only a masked form.
+* Only **downloadable** models with a **Creative Commons / CC0** licence are fetched. Anything its author
+  tagged `noai` is hidden from search and refused by fetch.
+* The author, licence and source URL are saved as `ATTRIBUTION.json` with the download and copied into the converted
+  model's report. Credit the author when you share the result.

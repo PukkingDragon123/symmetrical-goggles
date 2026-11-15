@@ -101,6 +101,14 @@ This takes a real CC0 photo texture and makes it `realistic`, `painted`, `pixel-
 tileable and uses ramps extracted from the photo. Photos also feed the 3D painter (`op: "photo"`) and sprite
 materials. See [`docs/PHOTOBASH.md`](docs/PHOTOBASH.md).
 
+### Sketchfab and photos
+
+* `python -m lowpix auth set sketchfab` stores your API token privately, outside the repo.
+* `python -m lowpix convert sketchfab:<uid>` then converts any downloadable Creative Commons model. Licences are
+  checked, models tagged `noai` are refused, and the attribution is kept with the model.
+* `python -m lowpix match <spec> <landmarks> --image photo.jpg --project photo` lines a model up with a photo: it solves
+  the camera, fits the outline, and paints the photo on, so the model matches 1:1 from that view.
+
 ### Mass production
 
 ```bash

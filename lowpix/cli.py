@@ -184,6 +184,16 @@ def main(argv=None):
     mt.add_argument("--colours", type=int, default=18, help="palette size for --project palette")
     mt.add_argument("--gif", action="store_true", help="also render turntable + clip GIFs of the projected model")
 
+    au = sub.add_parser("auth", help="API tokens for online services (stored outside the repo, never printed)")
+    au.add_argument("action", choices=["set", "list", "remove"])
+    au.add_argument("service", nargs="?", default="sketchfab")
+
+    sf = sub.add_parser("sketchfab", help="search / fetch downloadable CC models on Sketchfab (noai-tagged are refused)")
+    sf.add_argument("action", choices=["search", "fetch"])
+    sf.add_argument("query", nargs="+", help="search words, or a model uid for fetch")
+    sf.add_argument("-o", "--out", default="out/_downloads")
+    sf.add_argument("--limit", type=int, default=24)
+
     sub.add_parser("schema", help="print the JSON schema for specs")
 
     a = ap.parse_args(_fix_negative_args(list(sys.argv[1:] if argv is None else argv)))
@@ -342,6 +352,25 @@ def main(argv=None):
         for k, v in rep["points"].items():
             print(f"{k:14s} ref {v['ref']}  model {v['model']}  error {v['error_pct']}%")
         print(f"mean error {rep['mean_error_pct']}% of image height -> {out}")
+    elif a.cmd == "auth":
+        from .tokens import remove_token, set_token, status
+        if a.action == "list":
+            for svc, where in status().items():
+                print(f"{svc:12s} {where}")
+        elif a.action == "remove":
+            print("removed" if remove_token(a.service) else "no stored token")
+        else:
+            import getpass
+            tok = sys.stdin.readline() if not sys.stdin.isatty() else getpass.getpass(f"{a.service} API token: ")
+            print(f"saved to {set_token(a.service, tok)} (mode 600)")
+    elif a.cmd == "sketchfab":
+        from .sketchfab import fetch, search
+        if a.action == "search":
+            for m in search(" ".join(a.query), a.limit):
+                print(f"sketchfab:{m['uid']}  {m['name'][:40]:40s} by {m['author']}  [{m['licence']}]  {m['faces']} faces")
+        else:
+            uid = a.query[0].split(":", 1)[-1]
+            print(f"-> {fetch(uid, os.path.join(a.out, f'sketchfab_{uid}'))}")
     elif a.cmd == "schema":
         here = os.path.dirname(os.path.abspath(__file__))
         with open(os.path.join(here, "schema.json")) as fh:

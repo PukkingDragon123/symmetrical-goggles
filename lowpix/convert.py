@@ -727,11 +727,26 @@ def convert(src: str, style: str = "pixel", height: float = 24.0, yaw: float = 0
     o.update({k: v for k, v in overrides.items() if v is not None})
     MAX_TEXTURE = 2048 if o["mode"] != "palette" else 1024
 
+    attribution = None
     if src.startswith("polyhaven:"):
         asset = src.split(":", 1)[1]
         src = polyhaven_fetch(asset, os.path.join(work_dir or "out/_downloads", asset),
                               res="2k" if o["mode"] != "palette" else "1k")
         name = name or asset.replace("_", " ").title()
+    elif src.startswith("sketchfab:"):  # downloadable CC models only; see lowpix/sketchfab.py
+        from .sketchfab import fetch
+        uid = src.split(":", 1)[1]
+        src = fetch(uid, os.path.join(work_dir or "out/_downloads", f"sketchfab_{uid}"))
+        try:
+            with open(os.path.join(os.path.dirname(src), "ATTRIBUTION.json")) as fh:
+                attribution = json.load(fh)
+        except OSError:
+            d = os.path.dirname(src)
+            while d and not os.path.exists(os.path.join(d, "ATTRIBUTION.json")) and d != os.path.dirname(d):
+                d = os.path.dirname(d)
+            with open(os.path.join(d, "ATTRIBUTION.json")) as fh:
+                attribution = json.load(fh)
+        name = name or attribution.get("name")
     mesh = load_model(src)
     name = name or os.path.splitext(os.path.basename(src))[0].replace("_", " ").title()
 
@@ -953,4 +968,6 @@ def convert(src: str, style: str = "pixel", height: float = 24.0, yaw: float = 0
             "convert": {"source": os.path.basename(src), "style": style, "height": height, "yaw": yaw,
                         "source_triangles": int(len(mesh.F)), "charts": len(faces),
                         **{k: (v if not isinstance(v, np.generic) else v.item()) for k, v in o.items()}}}
+    if attribution:  # credit travels with the model: report + exported files
+        spec["attribution"] = attribution
     return Model(spec, pal, [inst], atlas, density)

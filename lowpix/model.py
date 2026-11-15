@@ -152,6 +152,7 @@ class Model:
         if floating and self.spec.get("grounded", True):
             warnings.append(f"model floats {lo[1]:.2f} above the ground plane")
         return {
+            **({"attribution": self.spec["attribution"]} if self.spec.get("attribution") else {}),
             "name": self.name,
             "parts": len({i.src_id for i in self.instances}),
             "instances": len(self.instances),
