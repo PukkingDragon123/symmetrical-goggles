@@ -1,0 +1,686 @@
+{
+  "name": "Rex-Hood Bunny",
+  "description": "Original gacha-style figure: a chubby lilac bunny hiding in a bone-ivory dinosaur-skull hood (hinged chomping jaw, eye sockets, antorbital holes, a crossed band-aid), long ears poking out through holes in the skull, on a two-tone mint display plinth ringed with little bones. Glossy-vinyl paint; clips idle, chomp and peek.",
+  "author": "lowpix example",
+  "license": "CC0-1.0",
+  "density": 2,
+  "budget": {"tris": 900, "colors": 48},
+  "light": {"dir": [-0.55, 1.0, 0.65], "strength": 1.1, "gradient": 0.45, "ao": 0.7, "ao_height": 6.0},
+  "render": {"background": "#22203a", "hero": [36, 22], "shadow": 0.45},
+  "palette": {
+    "ramps": {
+      "bone": ["#2a1f2e", "#4e3e4f", "#7b6670", "#a8928f", "#cdb9a6", "#e7d8bd", "#f8efd6", "#fffbee"],
+      "fur": ["#251a3d", "#43306b", "#664e94", "#8a72b8", "#ad98d4", "#cfbde8", "#f1e6f8"],
+      "pink": ["#4a1236", "#8c2459", "#cc4a7f", "#f07aa2", "#ffa9c2", "#ffd9e4"],
+      "eye": ["#0e0918", "#20143a", "#3b2862", "#6a54a0"],
+      "socket": ["#110a16", "#1f1426", "#33223a", "#4e3a52"],
+      "mint": ["#0e2a30", "#164a4c", "#21706a", "#36a08c", "#62c7a6", "#a2e8c6", "#dcfbea"]
+    }
+  },
+  "styles": {
+    "fur": {
+      "ramp": "fur",
+      "tone": 3.6,
+      "dither": 0.0,
+      "rim": {"light": 1, "dark": 1},
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 2.6, "amount": 0.2},
+        {"id": "gloss", "op": "gloss", "post": true, "dash": true, "length": 2, "density": 0.25, "shift": 1.0, "ramps": ["fur"]}
+      ]
+    },
+    "bone": {
+      "ramp": "bone",
+      "tone": 4.6,
+      "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "outline": "dark"},
+      "layers": [
+        {"id": "mottle", "op": "noise", "scale": 3.2, "amount": 0.18},
+        {"id": "gloss", "op": "gloss", "post": true, "dash": true, "length": 3, "density": 0.3, "shift": 1.2, "ramps": ["bone"]}
+      ]
+    },
+    "tooth": {"ramp": "bone", "tone": 5.4, "dither": 0.0, "rim": {"light": 1, "dark": 1, "outline": "dark"}},
+    "mint": {
+      "ramp": "mint",
+      "tone": 3.6,
+      "dither": 0.0,
+      "rim": {"light": 1, "dark": 1, "outline": "bottom"},
+      "layers": [
+        {"id": "gloss", "op": "gloss", "post": true, "dash": true, "length": 3, "density": 0.35, "shift": 1.2, "ramps": ["mint"]}
+      ]
+    },
+    "ear": {"layers": [{"id": "inner", "op": "fill", "ramp": "pink", "tone": 3.4, "faces": ["top"]}]}
+  },
+  "parts": [
+    {
+      "id": "plinth",
+      "shape": "prism",
+      "sides": 10,
+      "size": [27, 27, 2.6],
+      "pivot": [0, 0, 0],
+      "offset": [0, 0, 1.3],
+      "rotation": [-90, 0, 0],
+      "back_scale": [1.04, 1.04],
+      "hide": ["back"],
+      "style": "mint",
+      "paint": {
+        "tone": 2.4,
+        "stamps": [
+          {"face": "side0", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side1", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side2", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side3", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side4", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side5", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side6", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side7", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side8", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}},
+          {"face": "side9", "at": "center", "art": ["hh.....hh", ".hsssssh.", "ss.....ss"], "key": {"h": "bone:6", "s": "bone:4"}}
+        ]
+      }
+    },
+    {
+      "id": "plinth_top",
+      "parent": "plinth",
+      "shape": "prism",
+      "sides": 10,
+      "size": [24, 24, 1.4],
+      "pivot": [0, 0, 2.6],
+      "offset": [0, 0, 0.7],
+      "hide": ["back"],
+      "style": "mint",
+      "paint": {
+        "tone": 4.4,
+        "stamps": [
+          {
+            "face": "front",
+            "at": [12, 6],
+            "art": [
+              "...........ssssssss...........",
+              "........ssssssssssssss........",
+              "......ssssssssssssssssss......",
+              ".....ssssssssssssssssssss.....",
+              "....ssssssssssssssssssssss....",
+              "...ssssssssssssssssssssssss...",
+              "..ssssssssssssssssssssssssss..",
+              ".ssssssssssssssssssssssssssss.",
+              ".ssssssssssssssssssssssssssss.",
+              ".ssssssssssssssssssssssssssss.",
+              "ssssssssssssssssssssssssssssss",
+              "ssssssssssssssssssssssssssssss",
+              "ssssssssssssssssssssssssssssss",
+              "ssssssssssssssssssssssssssssss",
+              "ssssssssssssssssssssssssssssss",
+              "ssssssssssssssssssssssssssssss",
+              ".ssssssssssssssssssssssssssss.",
+              ".ssssssssssssssssssssssssssss.",
+              ".ssssssssssssssssssssssssssss.",
+              "..ssssssssssssssssssssssssss..",
+              "...ssssssssssssssssssssssss...",
+              "....ssssssssssssssssssssss....",
+              ".....ssssssssssssssssssss.....",
+              "......ssssssssssssssssss......",
+              "........ssssssssssssss........",
+              "...........ssssssss..........."
+            ],
+            "key": {"s": "mint:3"}
+          }
+        ]
+      }
+    },
+    {
+      "id": "body",
+      "shape": "loft",
+      "pivot": [0, 4.0, -1.0],
+      "profile": {"sides": 8, "round": 2.3},
+      "subdiv": 1,
+      "caps": [false, false],
+      "rings": [
+        {"at": [0, 0.0, 0], "size": [11.5, 10.5]},
+        {"at": [0, 3.6, 0], "size": [14.2, 12.6]},
+        {"at": [0, 9.0, 0], "size": [9, 8.5]}
+      ],
+      "style": "fur",
+      "paint": {
+        "layers": [
+          {
+            "id": "tummy",
+            "op": "band",
+            "axis": "z",
+            "from": 0.35,
+            "to": 1.0,
+            "wobble": 0.08,
+            "ramp": "fur",
+            "tone": 4.9,
+            "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.0}
+          }
+        ]
+      }
+    },
+    {
+      "id": "paw",
+      "parent": "body",
+      "shape": "loft",
+      "mirror": true,
+      "pivot": [4.3, 6.4, 3.4],
+      "profile": {"sides": 6, "round": 2.3},
+      "subdiv": 0,
+      "caps": [false, true],
+      "rings": [{"at": [0, 0, 0], "size": 3.0}, {"at": [0.4, -2.0, 2.0], "size": 3.4}, {"at": [0.5, -3.0, 2.9], "size": [3.0, 2.4]}],
+      "style": "fur"
+    },
+    {
+      "id": "foot",
+      "parent": "body",
+      "shape": "loft",
+      "mirror": true,
+      "pivot": [4.6, 1.25, 1.0],
+      "rotation": [0, 12, 0],
+      "profile": {"sides": 6, "round": 2.4},
+      "subdiv": 0,
+      "caps": [true, true],
+      "rings": [{"at": [0, 0, -2.0], "size": [4.2, 2.2]}, {"at": [0, 0, 3.6], "size": [4.2, 2.1]}],
+      "style": "fur",
+      "hide": ["start"],
+      "paint": {"stamps": [{"face": "end", "at": [0, 1], "art": [".p.p.p."], "key": {"p": "pink:3"}}]}
+    },
+    {
+      "id": "tail",
+      "parent": "body",
+      "shape": "loft",
+      "pivot": [0, 2.6, -5.6],
+      "profile": {"sides": 6, "round": 2.2},
+      "subdiv": 0,
+      "caps": [true, true],
+      "rings": [{"at": [0, 0, 0.4], "size": 3.4}, {"at": [0, 0.2, -1.4], "size": 5.0}, {"at": [0, 0.2, -3.0], "size": 3.0}],
+      "style": "fur",
+      "paint": {"tone": 5.0}
+    },
+    {
+      "id": "hood",
+      "parent": "body",
+      "shape": "loft",
+      "pivot": [0, 9.0, 0],
+      "profile": {"sides": 8, "round": 2.1},
+      "subdiv": 1,
+      "caps": [true, true],
+      "rings": [
+        {"at": [0, 8.8, -6.3], "size": [12, 10]},
+        {"at": [0, 9.5, -2.5], "size": [20.5, 17]},
+        {"at": [0, 11.0, 2.5], "size": [20, 14]},
+        {"at": [0, 12.3, 6.0], "size": [16, 7.6]},
+        {"at": [0, 11.9, 11.6], "size": [12, 5.4]}
+      ],
+      "style": "bone",
+      "paint": {
+        "layers": [
+          {
+            "id": "suture",
+            "op": "band",
+            "axis": "x",
+            "from": -0.035,
+            "to": 0.035,
+            "wobble": 0.05,
+            "wobble_scale": 0.6,
+            "shift": -1.3,
+            "faces": ["top"]
+          }
+        ]
+      }
+    },
+    {
+      "id": "socket",
+      "parent": "hood",
+      "shape": "prism",
+      "sides": 7,
+      "mirror": true,
+      "size": [5.6, 4.6, 1.4],
+      "attach": {"t": 0.53, "around": 0.16, "align": "surface", "offset": -0.7},
+      "rotation": [-48, 0, 0],
+      "hide": ["back"],
+      "style": "bone",
+      "paint": {
+        "layers": [
+          {"id": "hole", "op": "fill", "ramp": "socket", "tone": 1.0, "faces": ["front"]},
+          {"id": "lip", "op": "band", "axis": "y", "from": -1.0, "to": -0.4, "shift": 1.2, "faces": ["front"]}
+        ]
+      }
+    },
+    {
+      "id": "fenestra",
+      "parent": "hood",
+      "shape": "prism",
+      "sides": 6,
+      "mirror": true,
+      "size": [2.0, 3.4, 1.0],
+      "attach": {"t": 0.73, "around": 0.25, "align": "surface", "offset": -0.5},
+      "rotation": [-90, 0, 0],
+      "hide": ["back"],
+      "style": "bone",
+      "paint": {"layers": [{"id": "hole", "op": "fill", "ramp": "socket", "tone": 1.0, "faces": ["front"]}]}
+    },
+    {
+      "id": "horn",
+      "parent": "hood",
+      "shape": "prism",
+      "sides": 5,
+      "mirror": true,
+      "size": [2.2, 2.2, 2.6],
+      "offset": [0, 0, 1.0],
+      "front_scale": [0.2, 0.2],
+      "attach": {"t": 0.44, "around": 0.1, "align": "surface", "offset": -0.3},
+      "rotation": [-75, 0, 0],
+      "hide": ["back", "front"],
+      "style": "bone"
+    },
+    {
+      "id": "crest",
+      "parent": "hood",
+      "shape": "card",
+      "plane": "yz",
+      "attach": {"t": 0.42, "around": 0.0, "align": "tangent", "offset": -0.6},
+      "style": "tooth",
+      "paint": {
+        "light": 0.6,
+        "rim": {"light": 0, "dark": 0},
+        "art_key": {"o": "bone:5", "h": "bone:6", "s": "bone:3", "d": "bone:2"}
+      },
+      "art": ["..h.......", ".hoo...h..", ".hoos.hoo.", "hooosshoos", "ooossoooss", "osssdossdd"],
+      "offset": [0, 1.3, 0]
+    },
+    {
+      "id": "bandaid",
+      "parent": "hood",
+      "shape": "card",
+      "plane": "xz",
+      "attach": {"t": 0.6, "around": 0.045, "align": "none", "offset": 0.15},
+      "rotation": [14, 20, -8],
+      "paint": {
+        "ramp": "pink",
+        "tone": 4,
+        "light": 0.3,
+        "rim": {"light": 0, "dark": 0},
+        "art_key": {"h": "pink:5", "p": "pink:4", "b": "pink:3", "c": "pink:3"}
+      },
+      "art": [
+        ".b......p.",
+        "hpb....ppb",
+        ".hpb..ppb.",
+        "..hpbppb..",
+        "...hcbb...",
+        "...phcb...",
+        "..ppbhpb..",
+        ".ppb..hpb.",
+        ".pb....hpb",
+        ".b......h."
+      ]
+    },
+    {
+      "id": "ear_hole_l",
+      "parent": "hood",
+      "shape": "prism",
+      "sides": 6,
+      "size": [4.0, 2.6, 1.0],
+      "attach": {"t": 0.26, "around": 0.08, "align": "surface", "offset": -0.25},
+      "rotation": [-90, 0, 0],
+      "hide": ["back"],
+      "style": "bone",
+      "paint": {"layers": [{"id": "hole", "op": "fill", "ramp": "socket", "tone": 0.6, "faces": ["front"]}]}
+    },
+    {
+      "id": "ear_hole_r",
+      "parent": "hood",
+      "shape": "prism",
+      "sides": 6,
+      "size": [4.0, 2.6, 1.0],
+      "attach": {"t": 0.26, "around": 0.92, "align": "surface", "offset": -0.25},
+      "rotation": [-90, 0, 0],
+      "hide": ["back"],
+      "style": "bone",
+      "paint": {"layers": [{"id": "hole", "op": "fill", "ramp": "socket", "tone": 0.6, "faces": ["front"]}]}
+    },
+    {
+      "id": "ear_l",
+      "parent": "hood",
+      "shape": "loft",
+      "chain": true,
+      "attach": {"t": 0.26, "around": 0.08, "align": "surface", "offset": -0.3},
+      "rotation": [0, 0, 10],
+      "profile": {"sides": 6, "round": 2.3},
+      "subdiv": 0,
+      "caps": [false, true],
+      "rings": [
+        {"at": [0, 0, 0], "size": [3.0, 1.6]},
+        {"at": [0.1, 3.6, -0.2], "size": [4.2, 1.9]},
+        {"at": [0.3, 7.8, -0.6], "size": [4.4, 1.8]},
+        {"at": [0.4, 11.4, -1.0], "size": [3.4, 1.5]},
+        {"at": [0.45, 13.2, -1.2], "size": [1.6, 1.0]}
+      ],
+      "style": ["fur", "ear"]
+    },
+    {
+      "id": "ear_r",
+      "parent": "hood",
+      "shape": "loft",
+      "chain": true,
+      "attach": {"t": 0.26, "around": 0.92, "align": "surface", "offset": -0.3},
+      "rotation": [0, 0, -10],
+      "profile": {"sides": 6, "round": 2.3},
+      "subdiv": 0,
+      "caps": [false, true],
+      "rings": [
+        {"at": [0, 0, 0], "size": [3.0, 1.6]},
+        {"at": [-0.1, 3.6, -0.2], "size": [4.2, 1.9]},
+        {"at": [-0.5, 7.6, -0.6], "size": [4.4, 1.8]},
+        {"at": [-2.5, 10.3, -0.9], "size": [3.4, 1.5]},
+        {"at": [-4.3, 10.8, -1.0], "size": [1.6, 1.0]}
+      ],
+      "style": ["fur", "ear"]
+    },
+    {
+      "id": "head",
+      "parent": "hood",
+      "shape": "loft",
+      "pivot": [0, 5.5, 2.0],
+      "profile": {"sides": 8, "round": 2.4},
+      "subdiv": 1,
+      "caps": [false, true],
+      "rings": [
+        {"at": [0, 0.6, -4.0], "size": [10, 9]},
+        {"at": [0, 0.2, 1.5], "size": [15.5, 13.2]},
+        {"at": [0, -0.8, 6.0], "size": [12.5, 10]}
+      ],
+      "style": "fur",
+      "paint": {
+        "layers": [{"id": "brim_shadow", "op": "band", "axis": "y", "from": 0.62, "to": 1.0, "shift": -1.2, "faces": ["end"]}],
+        "stamps": [
+          {
+            "face": "end",
+            "at": [4, 5],
+            "art": [".0000.", "0ww000", "0ww000", "0w0001", "000012", "0112w3", ".1223."],
+            "key": {"0": "eye:0", "1": "eye:1", "2": "eye:2", "3": "eye:3", "w": "bone:7"}
+          },
+          {
+            "face": "end",
+            "at": [15, 5],
+            "art": [".0000.", "0ww000", "0ww000", "0w0001", "000012", "0112w3", ".1223."],
+            "key": {"0": "eye:0", "1": "eye:1", "2": "eye:2", "3": "eye:3", "w": "bone:7"}
+          },
+          {"face": "end", "at": [2, 12], "art": [".hb.", "bbbb"], "key": {"b": "pink:3", "h": "pink:4"}},
+          {"face": "end", "at": [19, 12], "art": [".hb.", "bbbb"], "key": {"b": "pink:3", "h": "pink:4"}},
+          {"face": "end", "at": [10, 15], "art": ["..m..", ".m.m."], "key": {"m": "fur:1"}}
+        ]
+      }
+    },
+    {
+      "id": "nose",
+      "parent": "head",
+      "shape": "box",
+      "size": [1.6, 1.1, 1.0],
+      "pivot": [0, -1.9, 6.15],
+      "hide": ["back"],
+      "style": "fur",
+      "paint": {
+        "ramp": "pink",
+        "tone": 3.2,
+        "stamps": [{"face": "front", "at": [0, 0], "art": ["hpp", "dpd"], "key": {"h": "pink:5", "p": "pink:3", "d": "pink:2"}}]
+      }
+    },
+    {
+      "id": "jaw",
+      "parent": "hood",
+      "shape": "loft",
+      "pivot": [0, 3.8, -0.5],
+      "profile": {"sides": 6, "round": 2.8},
+      "subdiv": 0,
+      "caps": [true, true],
+      "rings": [
+        {"at": [-9.0, 0.0, 0.0], "size": [2.6, 3.2]},
+        {"at": [-8.2, -2.2, 5.5], "size": [2.8, 3.2]},
+        {"at": [-5.5, -4.6, 10.0], "size": [3.0, 3.0]},
+        {"at": [0.0, -5.4, 11.7], "size": [3.2, 3.0]},
+        {"at": [5.5, -4.6, 10.0], "size": [3.0, 3.0]},
+        {"at": [8.2, -2.2, 5.5], "size": [2.8, 3.2]},
+        {"at": [9.0, 0.0, 0.0], "size": [2.6, 3.2]}
+      ],
+      "style": "bone",
+      "hide": ["start", "end"]
+    },
+    {
+      "id": "fang",
+      "parent": "hood",
+      "shape": "taper",
+      "mirror": true,
+      "size": [1.6, 1.6, 2.0],
+      "pivot": [5.7, 9.4, 9.6],
+      "offset": [0, 0, 1.0],
+      "rotation": [90, 0, 0],
+      "front_scale": [0.25, 0.4],
+      "hide": ["back", "front"],
+      "style": "tooth"
+    },
+    {
+      "id": "incisor",
+      "parent": "hood",
+      "shape": "taper",
+      "mirror": true,
+      "size": [1.3, 1.2, 1.4],
+      "pivot": [1.3, 9.5, 11.6],
+      "offset": [0, 0, 0.6],
+      "rotation": [90, 0, 0],
+      "front_scale": [0.4, 0.5],
+      "hide": ["back", "front"],
+      "style": "tooth"
+    },
+    {
+      "id": "low_fang",
+      "parent": "jaw",
+      "shape": "taper",
+      "mirror": true,
+      "size": [1.5, 1.5, 2.0],
+      "pivot": [4.6, -3.6, 10.4],
+      "offset": [0, 0, 0.9],
+      "rotation": [-90, 0, 0],
+      "front_scale": [0.25, 0.4],
+      "hide": ["back", "front"],
+      "style": "tooth"
+    },
+    {
+      "id": "low_tooth",
+      "parent": "jaw",
+      "shape": "taper",
+      "mirror": true,
+      "size": [1.3, 1.2, 1.3],
+      "pivot": [1.6, -4.0, 11.6],
+      "offset": [0, 0, 0.55],
+      "rotation": [-90, 0, 0],
+      "front_scale": [0.4, 0.5],
+      "hide": ["back", "front"],
+      "style": "tooth"
+    }
+  ],
+  "animations": {
+    "idle": {
+      "length": 2.6,
+      "loop": true,
+      "tracks": [
+        {"part": "body", "channel": "scale", "osc": {"amp": [-0.03, 0.045, -0.03], "cycles": 1}},
+        {"part": "hood", "osc": {"axis": "x", "amp": 5, "cycles": 1, "phase": 0.2, "shape": "pulse"}},
+        {"part": "hood", "osc": {"axis": "z", "amp": 2.0, "cycles": 1, "phase": 0.25}},
+        {"part": "jaw", "osc": {"axis": "x", "amp": 2.5, "bias": 2.5, "cycles": 1, "phase": 0.75}},
+        {"part": "head", "channel": "scale", "osc": {"amp": [0.03, -0.1, 0.0], "cycles": 1, "phase": 0.2, "shape": "pulse"}},
+        {
+          "parts": ["ear_l_0", "ear_l_1", "ear_l_2", "ear_l_3"],
+          "wave": {"axis": "z", "amp": 3, "cycles": 1, "lag": 0.12, "growth": 1.3}
+        },
+        {
+          "parts": ["ear_r_0", "ear_r_1", "ear_r_2", "ear_r_3"],
+          "wave": {"axis": "z", "amp": -3, "cycles": 1, "phase": 0.35, "lag": 0.12, "growth": 1.3}
+        },
+        {"part": "ear_l_2", "osc": {"axis": "x", "amp": -16, "cycles": 1, "phase": 0.4, "shape": "pulse"}},
+        {"part": "nose", "channel": "scale", "osc": {"amp": [0.25, -0.2, 0.0], "cycles": 4, "shape": "pulse"}},
+        {"part": "nose", "channel": "scale", "osc": {"amp": [0.25, -0.2, 0.0], "cycles": 4, "phase": 0.09, "shape": "pulse"}},
+        {"part": "tail", "osc": {"axis": "y", "amp": 10, "cycles": 2}}
+      ]
+    },
+    "chomp": {
+      "length": 1.6,
+      "loop": true,
+      "tracks": [
+        {
+          "part": "body",
+          "channel": "position",
+          "keys": [[0, 0], [0.26, 0], [0.52, 4.6, "out"], [0.74, 4.8], [0.96, 0, "in"], [1.6, 0]],
+          "axis": "y"
+        },
+        {
+          "part": "body",
+          "channel": "scale",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.26, [0.1, -0.14, 0.1]],
+            [0.38, [-0.07, 0.12, -0.07]],
+            [0.62, [0, 0.02, 0]],
+            [0.92, [-0.04, 0.06, -0.04]],
+            [1.02, [0.13, -0.16, 0.13], "out"],
+            [1.1, [0.12, -0.15, 0.12]],
+            [1.3, [-0.03, 0.04, -0.03], "back"],
+            [1.6, [0, 0, 0]]
+          ]
+        },
+        {
+          "part": "jaw",
+          "keys": [
+            [0, 0],
+            [0.44, 0],
+            [0.56, 38, "back"],
+            [0.66, 0, "in"],
+            [0.7, 0],
+            [0.8, 32, "back"],
+            [0.92, 3, "elastic"],
+            [1.1, 0],
+            [1.6, 0]
+          ],
+          "axis": "x"
+        },
+        {
+          "part": "hood",
+          "keys": [[0, 0], [0.26, 7], [0.44, -4], [0.56, -11], [0.66, -3], [0.8, -10], [0.92, -2], [1.04, 7], [1.22, -2], [1.45, 0]],
+          "axis": "x"
+        },
+        {
+          "part": "paw",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.26, [12, 0, 0]],
+            [0.5, [-95, 0, -28], "back"],
+            [1.0, [-95, 0, -28]],
+            [1.1, [-75, 0, -22]],
+            [1.45, [0, 0, 0]]
+          ]
+        },
+        {"part": "tail", "keys": [[0, 0], [0.26, 8], [0.5, -22], [0.96, -6], [1.06, 18], [1.26, -8], [1.6, 0]], "axis": "x"},
+        {
+          "part": "ear_l_0",
+          "keys": [[0, 0], [0.26, 10], [0.5, -18], [0.8, -6], [1.0, 8], [1.1, 16], [1.34, -5], [1.6, 0]],
+          "axis": "x"
+        },
+        {
+          "part": "ear_l_1",
+          "keys": [[0, 0], [0.28, 8], [0.54, -14], [0.84, -4], [1.04, 8], [1.16, 18], [1.4, -6], [1.6, 0]],
+          "axis": "x"
+        },
+        {
+          "parts": ["ear_l_2", "ear_l_3"],
+          "keys": [[0, 0], [0.3, 8], [0.58, -14], [0.88, -4], [1.08, 8], [1.2, 20], [1.44, -6], [1.6, 0]],
+          "axis": "x"
+        },
+        {
+          "part": "ear_r_0",
+          "keys": [[0, 0], [0.29, 10], [0.53, -18], [0.83, -6], [1.03, 8], [1.13, 16], [1.37, -5], [1.6, 0]],
+          "axis": "x"
+        },
+        {
+          "part": "ear_r_1",
+          "keys": [[0, 0], [0.31, 8], [0.57, -14], [0.87, -4], [1.07, 8], [1.19, 18], [1.43, -6], [1.6, 0]],
+          "axis": "x"
+        },
+        {
+          "parts": ["ear_r_2", "ear_r_3"],
+          "keys": [[0, 0], [0.33, 8], [0.61, -14], [0.91, -4], [1.11, 8], [1.23, 20], [1.47, -6], [1.6, 0]],
+          "axis": "x"
+        }
+      ]
+    },
+    "peek": {
+      "length": 2.4,
+      "loop": true,
+      "tracks": [
+        {
+          "part": "head",
+          "channel": "position",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.12, [0, 0.3, 0.4]],
+            [0.4, [0, 1.0, -3.2], "out"],
+            [1.0, [0, 1.0, -3.2]],
+            [1.12, [0, 0.7, -1.9]],
+            [1.26, [0, 0.7, -1.9]],
+            [1.4, [0, 1.0, -3.2]],
+            [1.52, [0, 1.0, -3.2]],
+            [1.82, [0, 0, 0], "back"],
+            [2.4, [0, 0, 0]]
+          ]
+        },
+        {"part": "jaw", "keys": [[0, 0], [0.12, 3], [0.4, -14, "out"], [1.52, -14], [1.82, 5, "back"], [2.1, 0]], "axis": "x"},
+        {
+          "part": "hood",
+          "keys": [
+            [0, 0],
+            [0.12, -3],
+            [0.4, 6, "out"],
+            [1.0, 6],
+            [1.12, 3],
+            [1.26, 3],
+            [1.4, 6],
+            [1.52, 6],
+            [1.82, -4, "back"],
+            [2.2, 0]
+          ],
+          "axis": "x"
+        },
+        {
+          "part": "hood",
+          "keys": [[0, 0], [0.45, 0], [0.52, 1.2], [0.6, -1.2], [0.68, 1.0], [0.76, -0.8], [0.84, 0.5], [0.92, 0], [2.4, 0]],
+          "axis": "z",
+          "ease": "linear"
+        },
+        {
+          "part": "body",
+          "channel": "scale",
+          "keys": [
+            [0, [0, 0, 0]],
+            [0.12, [-0.02, 0.04, -0.02]],
+            [0.4, [0.06, -0.08, 0.06], "out"],
+            [1.52, [0.06, -0.08, 0.06]],
+            [1.74, [-0.04, 0.07, -0.04]],
+            [2.1, [0, 0, 0]]
+          ]
+        },
+        {"part": "paw", "keys": [[0, [0, 0, 0]], [0.4, [-55, 0, 8]], [1.52, [-55, 0, 8]], [1.9, [0, 0, 0]]]},
+        {"part": "ear_l_0", "keys": [[0, 0], [0.12, 8], [0.42, -62, "out"], [1.52, -62], [1.86, 10, "back"], [2.4, 0]], "axis": "x"},
+        {"part": "ear_r_0", "keys": [[0, 0], [0.16, 8], [0.46, -62, "out"], [1.56, -62], [1.9, 10, "back"], [2.4, 0]], "axis": "x"},
+        {
+          "parts": ["ear_l_1", "ear_l_2", "ear_l_3"],
+          "keys": [[0, 0], [0.16, 6], [0.5, -7], [1.52, -7], [1.7, -14], [2.0, 8, "back"], [2.4, 0]],
+          "axis": "x"
+        },
+        {
+          "parts": ["ear_r_1", "ear_r_2", "ear_r_3"],
+          "keys": [[0, 0], [0.2, 6], [0.54, -7], [1.56, -7], [1.74, -14], [2.04, 8, "back"], [2.4, 0]],
+          "axis": "x"
+        },
+        {"part": "tail", "osc": {"axis": "y", "amp": 12, "cycles": 6}}
+      ]
+    }
+  }
+}
