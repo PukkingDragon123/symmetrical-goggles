@@ -52,6 +52,10 @@ The runtime files are copied from `lowpix/mc_runtime/` on every export (with you
 ```
 
 * `fps`: keyframes per second when baking clips (Catmull-Rom between them).
+* Parts may be `box`, `bone` or `card`. Cards (fur tufts and shaggy fringes, whiskers, spikes, quills, crystal
+  facets, rib bones) export as zero-thickness cubes with their alpha-cut `art` on one face: the trick most
+  Minecraft creature artists use for fur. Draw the model with a cutout no-cull render type
+  (`RenderType.entityCutoutNoCull`, the default for mob renderers) so cards show from both sides.
 * `glow_parts` / `glow_ramps`: texels that also go into the `_glow` layer.
 * `tint_parts`: dyeable parts. Paint them in a light neutral ramp; the game multiplies them by the dye colour.
 * `alpha_parts`: per-part opacity for glass and ice (render those parts with `RenderType.entityTranslucent`).

@@ -329,8 +329,8 @@ def from_model(model: Model, fps: float = 12.0, glow_parts=(), glow_ramps=(), ti
     used = set()
     for inst in model.instances:
         shape = inst.part.get("shape", "box")
-        if shape not in ("box", "bone") or inst.part.get("chamfer"):
-            raise ValueError(f"part {inst.id!r}: Minecraft entity models are cuboids; use shape box or bone "
+        if shape not in ("box", "bone", "card") or inst.part.get("chamfer"):
+            raise ValueError(f"part {inst.id!r}: Minecraft entity models are cuboids; use shape box, card or bone "
                              f"(got {shape}{' with chamfer' if inst.part.get('chamfer') else ''})")
         pname = _ident(inst.id)
         while pname in used:
