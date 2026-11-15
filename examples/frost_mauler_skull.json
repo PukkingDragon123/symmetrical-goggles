@@ -1,0 +1,1672 @@
+{
+ "name": "Frost Mauler Skull",
+ "description": "The Frost Mauler's skull, a Winterworks block: half bare bone, half crusted in ancient ice with crystals bursting from it, propped up on its two sabre fangs, an empty socket where a cold eye lights up. Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 900,
+  "colors": 48
+ },
+ "light": {
+  "dir": [
+   -0.4,
+   1.0,
+   0.55
+  ],
+  "strength": 0.6,
+  "gradient": 0.6,
+  "ao": 0.8,
+  "ao_height": 4.0
+ },
+ "brush": {
+  "flow": "z",
+  "length": 2.4,
+  "width": 0.6,
+  "rough": 0.55,
+  "overshoot": 0.3,
+  "textures": {
+   "bone": "organic",
+   "ice": "crystal"
+  }
+ },
+ "minecraft": {
+  "fps": 20,
+  "glow_parts": [
+   "eye"
+  ]
+ },
+ "render": {
+  "background": "#232838",
+  "hero": [
+   -26,
+   20
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "bone": [
+    "#271e15",
+    "#392c1f",
+    "#4d3d2b",
+    "#635039",
+    "#7a6449",
+    "#927a5a",
+    "#aa916d",
+    "#c0a882",
+    "#d3bf98",
+    "#e3d4b2",
+    "#efe5cc",
+    "#f8f2e4"
+   ],
+   "ice": [
+    "#0b2440",
+    "#113154",
+    "#173f69",
+    "#1f507f",
+    "#2a6495",
+    "#377aaa",
+    "#4891bf",
+    "#5ea9d0",
+    "#7cc1de",
+    "#a0d7ea",
+    "#c8ecf5",
+    "#effbfd"
+   ],
+   "cavity": [
+    "#04040b",
+    "#090914",
+    "#0f0e1f",
+    "#16142a",
+    "#1f1b37"
+   ],
+   "glow": [
+    "#0d3a66",
+    "#17609b",
+    "#2490d0",
+    "#47c0f2",
+    "#8ce4ff",
+    "#d4f7ff",
+    "#ffffff"
+   ]
+  }
+ },
+ "styles": {
+  "bone_skull": {
+   "ramp": "bone",
+   "tone": 7.4,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -2.0,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 1.0
+    },
+    {
+     "id": "sutures",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.05,
+     "shift": -3.2
+    },
+    {
+     "id": "stain",
+     "op": "patches",
+     "scale": 0.9,
+     "threshold": 0.58,
+     "shift": -1.6
+    },
+    {
+     "id": "pits",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      0.25,
+      0.5
+     ],
+     "shift": -2.4
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    },
+    {
+     "id": "ice",
+     "op": "band",
+     "axis": "x",
+     "from": 0.12,
+     "to": 1.01,
+     "wobble": 0.25,
+     "wobble_scale": 0.3,
+     "ramp": "ice",
+     "tone": 7.0,
+     "bevel": {
+      "shadow_ramp": "cavity",
+      "shadow_shift": 0,
+      "highlight": 1
+     }
+    },
+    {
+     "id": "ice_cracks",
+     "op": "cracks",
+     "scale": 2.0,
+     "width": 0.05,
+     "shift": 2.0,
+     "faces": [
+      "right",
+      "top"
+     ]
+    }
+   ]
+  },
+  "bone": {
+   "ramp": "bone",
+   "tone": 7.6,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -2.0,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 1.0
+    },
+    {
+     "id": "sutures",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.05,
+     "shift": -3.2
+    },
+    {
+     "id": "stain",
+     "op": "patches",
+     "scale": 0.9,
+     "threshold": 0.58,
+     "shift": -1.6
+    },
+    {
+     "id": "pits",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      0.25,
+      0.5
+     ],
+     "shift": -2.4
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    }
+   ]
+  },
+  "bone_dark": {
+   "ramp": "bone",
+   "tone": 5.8,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -2.0,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 1.0
+    },
+    {
+     "id": "sutures",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.05,
+     "shift": -3.2
+    },
+    {
+     "id": "stain",
+     "op": "patches",
+     "scale": 0.9,
+     "threshold": 0.58,
+     "shift": -1.6
+    },
+    {
+     "id": "pits",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      0.25,
+      0.5
+     ],
+     "shift": -2.4
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    }
+   ]
+  },
+  "jaw": {
+   "ramp": "bone",
+   "tone": 7.0,
+   "rim": {
+    "light_shift": 1.6,
+    "dark_shift": -2.0,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 1.0
+    },
+    {
+     "id": "sutures",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.05,
+     "shift": -3.2
+    },
+    {
+     "id": "stain",
+     "op": "patches",
+     "scale": 0.9,
+     "threshold": 0.58,
+     "shift": -1.6
+    },
+    {
+     "id": "pits",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      0.25,
+      0.5
+     ],
+     "shift": -2.4
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    },
+    {
+     "id": "ice",
+     "op": "band",
+     "axis": "x",
+     "from": 0.45,
+     "to": 1.01,
+     "wobble": 0.5,
+     "wobble_scale": 0.4,
+     "ramp": "ice",
+     "tone": 6.4,
+     "faces": [
+      "right",
+      "top"
+     ]
+    }
+   ]
+  },
+  "socket": {
+   "ramp": "cavity",
+   "tone": 1.2,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "b......b",
+      "........",
+      "........",
+      "........",
+      "........",
+      "........",
+      "b......b"
+     ],
+     "key": {
+      "b": "bone:5"
+     }
+    }
+   ]
+  },
+  "mouth": {
+   "ramp": "cavity",
+   "tone": 3.0,
+   "light": 0.4
+  },
+  "eye": {
+   "ramp": "glow",
+   "tone": 4.6,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      ".bb.",
+      "bwwb",
+      "bwwd",
+      ".dd."
+     ],
+     "key": {
+      "w": "glow:6",
+      "b": "glow:4",
+      "d": "glow:2"
+     }
+    }
+   ]
+  },
+  "teeth": {
+   "ramp": "bone",
+   "tone": 9.6,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    }
+   ]
+  },
+  "fang": {
+   "ramp": "bone",
+   "tone": 9.4,
+   "rim": {
+    "light_shift": 1.4,
+    "dark_shift": -1.8
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "x",
+     "period": 0.8,
+     "width": 0.3,
+     "shift": -0.9,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "grain_z",
+     "op": "stripes",
+     "axis": "z",
+     "period": 0.8,
+     "width": 0.3,
+     "shift": -0.9,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    }
+   ]
+  },
+  "fang_tip": {
+   "ramp": "bone",
+   "tone": 10.6,
+   "brush": {
+    "off": true
+   }
+  },
+  "ice_plate": {
+   "ramp": "ice",
+   "tone": 6.2,
+   "light": 0.8,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.6,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "plates",
+     "op": "scales",
+     "shape": "square",
+     "along": "z",
+     "size": [
+      2.0,
+      1.5
+     ],
+     "gap": 1.0,
+     "highlight": 1.6,
+     "shadow": -1.8,
+     "gradient": 0.6,
+     "jitter": 0.6
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.0,
+     "width": 0.05,
+     "shift": 1.8
+    }
+   ]
+  },
+  "crystal": {
+   "ramp": "ice",
+   "tone": 7.0,
+   "light": 0.6,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 3.0,
+    "dark_shift": 1.0
+   },
+   "layers": [
+    {
+     "id": "core",
+     "op": "band",
+     "axis": "x",
+     "from": -0.4,
+     "to": 0.4,
+     "shift": -2.6,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "core_s",
+     "op": "band",
+     "axis": "z",
+     "from": -0.4,
+     "to": 0.4,
+     "shift": -2.6,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "base",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.6
+    },
+    {
+     "id": "glint",
+     "op": "band",
+     "axis": "y",
+     "from": 0.5,
+     "to": 0.7,
+     "shift": 2.0,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "crystal_b": {
+   "ramp": "ice",
+   "tone": 8.2,
+   "light": 0.6,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.6,
+    "dark_shift": 1.0
+   },
+   "layers": [
+    {
+     "id": "core",
+     "op": "band",
+     "axis": "x",
+     "from": -0.35,
+     "to": 0.35,
+     "shift": -2.2,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "core_s",
+     "op": "band",
+     "axis": "z",
+     "from": -0.35,
+     "to": 0.35,
+     "shift": -2.2,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "base",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    }
+   ]
+  },
+  "frost_card": {
+   "ramp": "ice",
+   "tone": 9.0,
+   "light": 0.4,
+   "brush": {
+    "off": true
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "skull",
+   "shape": "box",
+   "size": [
+    16,
+    10,
+    12
+   ],
+   "pivot": [
+    0.0,
+    5.6226,
+    -1.0
+   ],
+   "offset": [
+    0.0,
+    4.0,
+    -2.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "bone_skull"
+  },
+  {
+   "id": "crown",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    12,
+    2,
+    9
+   ],
+   "pivot": [
+    0.0,
+    9.5,
+    -3.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "crest",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2.5,
+    3.5,
+    11
+   ],
+   "pivot": [
+    0.0,
+    11.0,
+    -3.5
+   ],
+   "rotation": [
+    -6.0,
+    0.0,
+    0.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "crest_back",
+   "shape": "box",
+   "parent": "crest",
+   "size": [
+    2,
+    2.5,
+    3
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    -6.0
+   ],
+   "rotation": [
+    -20.0,
+    0.0,
+    0.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "occiput",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    12,
+    7,
+    2
+   ],
+   "pivot": [
+    0.0,
+    4.5,
+    -8.5
+   ],
+   "style": "bone_dark"
+  },
+  {
+   "id": "brow_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    7,
+    2.5,
+    3
+   ],
+   "pivot": [
+    4.5,
+    8.0,
+    3.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    12.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "brow_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    7,
+    2.5,
+    3
+   ],
+   "pivot": [
+    -4.5,
+    8.0,
+    3.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -12.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "socket_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    4,
+    3.5,
+    0.5
+   ],
+   "pivot": [
+    4.5,
+    5.5,
+    4.1
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "socket_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    4,
+    3.5,
+    0.5
+   ],
+   "pivot": [
+    -4.5,
+    5.5,
+    4.1
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "eye",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2,
+    2,
+    0.5
+   ],
+   "pivot": [
+    -4.5,
+    5.5,
+    4.25
+   ],
+   "style": "eye"
+  },
+  {
+   "id": "zygo_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2,
+    3,
+    10
+   ],
+   "pivot": [
+    9.2,
+    2.4,
+    -0.5
+   ],
+   "rotation": [
+    0.0,
+    -12.0,
+    -8.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "temple_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    0.5,
+    4,
+    5
+   ],
+   "pivot": [
+    8.05,
+    5.5,
+    -3.0
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "zygo_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2,
+    3,
+    10
+   ],
+   "pivot": [
+    -9.2,
+    2.4,
+    -0.5
+   ],
+   "rotation": [
+    0.0,
+    12.0,
+    8.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "temple_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    0.5,
+    4,
+    5
+   ],
+   "pivot": [
+    -8.05,
+    5.5,
+    -3.0
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "snout",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    9,
+    5,
+    8
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    8.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "snout_tip",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    6.5,
+    4,
+    4
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    14.0
+   ],
+   "rotation": [
+    4.0,
+    0.0,
+    0.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "nasal",
+   "shape": "box",
+   "parent": "snout_tip",
+   "size": [
+    3.5,
+    2,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    2.1
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "nasal_bridge",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    4,
+    1.5,
+    9
+   ],
+   "pivot": [
+    0.0,
+    2.9,
+    1.5
+   ],
+   "rotation": [
+    -3.0,
+    0.0,
+    0.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "palate",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    7,
+    0.5,
+    9
+   ],
+   "pivot": [
+    0.0,
+    -2.35,
+    0.5
+   ],
+   "style": "mouth"
+  },
+  {
+   "id": "teeth_up_l",
+   "shape": "card",
+   "parent": "snout",
+   "pivot": [
+    4.0,
+    -2.5,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    "yyyyyyyyyyyyyyyy",
+    "y.yy.yyy.yy.yy.y",
+    "..y...y....y..y.",
+    "..y...y........."
+   ]
+  },
+  {
+   "id": "teeth_up_r",
+   "shape": "card",
+   "parent": "snout",
+   "pivot": [
+    -4.0,
+    -2.5,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    "yyyyyyyyyyyyyyyy",
+    "y.yy.yyy.yy.yy.y",
+    "..y...y....y..y.",
+    "..y...y........."
+   ]
+  },
+  {
+   "id": "teeth_up_f",
+   "shape": "card",
+   "parent": "snout_tip",
+   "pivot": [
+    0.0,
+    -2.0,
+    1.6
+   ],
+   "offset": [
+    0.0,
+    -0.75,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "xy",
+   "art": [
+    "yyyyyyyyyyyy",
+    "y.yy.yy.yy.y",
+    "y.yy..y..yy."
+   ]
+  },
+  {
+   "id": "jaw",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    7,
+    2.5,
+    13
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -4.25,
+    7.5
+   ],
+   "rotation": [
+    30.0,
+    -0.0,
+    0.0
+   ],
+   "style": "jaw"
+  },
+  {
+   "id": "jaw_ramus",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    8.5,
+    4,
+    3
+   ],
+   "pivot": [
+    0.0,
+    -2.0,
+    0.5
+   ],
+   "style": "bone_dark"
+  },
+  {
+   "id": "tongue",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    4.5,
+    0.5,
+    10
+   ],
+   "pivot": [
+    0.0,
+    -2.9,
+    8.0
+   ],
+   "style": "mouth"
+  },
+  {
+   "id": "teeth_lo_l",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    3.1,
+    -3.0,
+    7.5
+   ],
+   "offset": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    ".y...y...y...y..",
+    "yy.yyy.yyy.yyy.y",
+    "yyyyyyyyyyyyyyyy"
+   ]
+  },
+  {
+   "id": "teeth_lo_r",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    -3.1,
+    -3.0,
+    7.5
+   ],
+   "offset": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    ".y...y...y...y..",
+    "yy.yyy.yyy.yyy.y",
+    "yyyyyyyyyyyyyyyy"
+   ]
+  },
+  {
+   "id": "teeth_lo_f",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    -3.0,
+    13.6
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "xy",
+   "art": [
+    ".y..y..y..",
+    "yyyyyyyyyy"
+   ]
+  },
+  {
+   "id": "fang_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    3,
+    5.5,
+    3
+   ],
+   "pivot": [
+    4.9,
+    -1.5,
+    12.5
+   ],
+   "offset": [
+    0.0,
+    -2.75,
+    0.0
+   ],
+   "rotation": [
+    20.0,
+    0.0,
+    4.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "fang_l_mid",
+   "shape": "box",
+   "parent": "fang_l",
+   "size": [
+    2.5,
+    3,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -5.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    12.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "fang_l_tip",
+   "shape": "box",
+   "parent": "fang_l_mid",
+   "size": [
+    1.5,
+    2,
+    1.5
+   ],
+   "pivot": [
+    -0.0,
+    -3.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "rotation": [
+    16.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang_tip"
+  },
+  {
+   "id": "fang_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    3,
+    5.5,
+    3
+   ],
+   "pivot": [
+    -4.9,
+    -1.5,
+    12.5
+   ],
+   "offset": [
+    0.0,
+    -2.75,
+    0.0
+   ],
+   "rotation": [
+    20.0,
+    0.0,
+    -4.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "fang_r_mid",
+   "shape": "box",
+   "parent": "fang_r",
+   "size": [
+    2.5,
+    3,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    -5.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    12.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "fang_r_tip",
+   "shape": "box",
+   "parent": "fang_r_mid",
+   "size": [
+    1.5,
+    2,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -3.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "rotation": [
+    16.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang_tip"
+  },
+  {
+   "id": "ice_cap",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    8.5,
+    2.5,
+    11
+   ],
+   "pivot": [
+    4.3,
+    9.4,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -6.0
+   ],
+   "style": "ice_plate"
+  },
+  {
+   "id": "ice_cheek",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2.5,
+    6,
+    9
+   ],
+   "pivot": [
+    8.8,
+    4.0,
+    -1.0
+   ],
+   "rotation": [
+    0.0,
+    -4.0,
+    -4.0
+   ],
+   "style": "ice_plate"
+  },
+  {
+   "id": "ice_snout",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    4.5,
+    2,
+    8
+   ],
+   "pivot": [
+    2.6,
+    3.0,
+    -0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -5.0
+   ],
+   "style": "ice_plate"
+  },
+  {
+   "id": "ice_eye",
+   "shape": "box",
+   "parent": "socket_l",
+   "size": [
+    3.5,
+    3,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -0.0,
+    0.4
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    8.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "crystal0",
+   "shape": "box",
+   "parent": "ice_cap",
+   "size": [
+    2.5,
+    7,
+    2.5
+   ],
+   "pivot": [
+    1.5,
+    1.0,
+    -2.5
+   ],
+   "offset": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "rotation": [
+    30.0,
+    20.0,
+    -30.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal1",
+   "shape": "box",
+   "parent": "ice_cap",
+   "size": [
+    2,
+    5.5,
+    2
+   ],
+   "pivot": [
+    -0.5,
+    1.0,
+    0.5
+   ],
+   "offset": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "rotation": [
+    40.0,
+    -10.0,
+    -12.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "crystal2",
+   "shape": "box",
+   "parent": "ice_cap",
+   "size": [
+    1.5,
+    4,
+    1.5
+   ],
+   "pivot": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    52.0,
+    30.0,
+    -44.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal3",
+   "shape": "box",
+   "parent": "ice_cap",
+   "size": [
+    2,
+    4.5,
+    2
+   ],
+   "pivot": [
+    0.5,
+    1.0,
+    -5.0
+   ],
+   "offset": [
+    0.0,
+    2.25,
+    0.0
+   ],
+   "rotation": [
+    14.0,
+    0.0,
+    -24.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "crystal4",
+   "shape": "box",
+   "parent": "ice_cheek",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    1.0,
+    1.5,
+    -2.0
+   ],
+   "offset": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "rotation": [
+    20.0,
+    0.0,
+    -44.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal5",
+   "shape": "box",
+   "parent": "ice_cheek",
+   "size": [
+    1.5,
+    4,
+    1.5
+   ],
+   "pivot": [
+    1.0,
+    -1.0,
+    2.0
+   ],
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    34.0,
+    0.0,
+    -58.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "crystal6",
+   "shape": "box",
+   "parent": "ice_snout",
+   "size": [
+    1.5,
+    4,
+    1.5
+   ],
+   "pivot": [
+    1.0,
+    1.0,
+    1.5
+   ],
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    34.0,
+    10.0,
+    -40.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal7",
+   "shape": "box",
+   "parent": "ice_snout",
+   "size": [
+    1.5,
+    3,
+    1.5
+   ],
+   "pivot": [
+    -0.5,
+    1.0,
+    -2.5
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    10.0,
+    0.0,
+    -22.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "frost_edge",
+   "shape": "card",
+   "parent": "skull",
+   "pivot": [
+    0.2,
+    9.6,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    70.0
+   ],
+   "style": "frost_card",
+   "plane": "yz",
+   "art": [
+    "i.ii.iii.ii.i..ii",
+    "iiiiiiiiiiiiiiiii",
+    ".iii.i..iii.ii.i."
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "eye",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.12,
+       0.12,
+       0
+      ],
+      "cycles": 1,
+      "bias": [
+       0.02,
+       0.02,
+       0
+      ]
+     }
+    },
+    {
+     "part": "jaw",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.9,
+       0
+      ],
+      [
+       1.05,
+       -1.6,
+       "out"
+      ],
+      [
+       1.3,
+       -0.4
+      ],
+      [
+       1.6,
+       0,
+       "back"
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}

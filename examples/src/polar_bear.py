@@ -26,8 +26,7 @@ import sys
 
 import numpy as np
 
-P = []
-W = {}      # rest frames (rotation, pivot) of the parts placed so far, in world space
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 
 
 def _rot(deg):
@@ -48,44 +47,56 @@ def r3(v):
     return [round(float(x), 3) + 0.0 for x in v]
 
 
-def part(shape, id, parent, pos, rot, style, rel=False, **kw):
-    """Place a part. pos/rot: its pivot and absolute rotation in WORLD space (rest pose); rel=True: in the parent's
-    frame, like a lowpix spec. Every part is stored parent-relative, as lowpix and Minecraft want."""
-    rot = rot or [0, 0, 0]
-    R, t = _rot(rot), np.array(pos, float)
-    if parent:
-        Rp, tp = W[parent]
-        if rel:
-            lp, lr = list(pos), list(rot)
-            R, t = Rp @ R, tp + Rp @ t
+class Rig:
+    """Collects parts. Pivots/rotations can be given in WORLD space (rest pose) and are stored parent-relative, as
+    lowpix and Minecraft want; rel=True takes them in the parent's frame instead."""
+
+    def __init__(self):
+        self.P, self.W = [], {}
+
+    def part(self, shape, id, parent, pos, rot, style, rel=False, **kw):
+        rot = rot or [0, 0, 0]
+        R, t = _rot(rot), np.array(pos, float)
+        if parent:
+            Rp, tp = self.W[parent]
+            if rel:
+                lp, lr = list(pos), list(rot)
+                R, t = Rp @ R, tp + Rp @ t
+            else:
+                lp, lr = Rp.T @ (t - tp), _euler(Rp.T @ R)
         else:
-            lp, lr = Rp.T @ (t - tp), _euler(Rp.T @ R)
-    else:
-        lp, lr = pos, rot
-    W[id] = (R, t)
-    d = {"id": id, "shape": shape, "pivot": r3(lp), "style": style}
-    if parent:
-        d["parent"] = parent
-    if any(abs(a) > 1e-6 for a in lr):
-        d["rotation"] = r3(lr)
-    for k in ("offset",):
-        if kw.get(k) is not None:
-            kw[k] = r3(kw[k])
-    d.update({k: v for k, v in kw.items() if v is not None})
-    P.append(d)
-    return d
+            lp, lr = pos, rot
+        self.W[id] = (R, t)
+        d = {"id": id, "shape": shape, "pivot": r3(lp), "style": style}
+        if parent:
+            d["parent"] = parent
+        if any(abs(a) > 1e-6 for a in lr):
+            d["rotation"] = r3(lr)
+        if kw.get("offset") is not None:
+            kw["offset"] = r3(kw["offset"])
+        d.update({k: v for k, v in kw.items() if v is not None})
+        self.P.append(d)
+        return d
+
+    def box(self, id, parent, size, pos, style, offset=None, rot=None, rel=False, **kw):
+        return self.part("box", id, parent, pos, rot, style, rel, size=size, offset=offset, **kw)
+
+    def card(self, id, parent, art, pos, style, plane="yz", offset=None, rot=None, rel=True, **kw):
+        """An alpha-cut card (exports to Minecraft as a zero-thickness cube). Its art_key lives in its style."""
+        return self.part("card", id, parent, pos, rot, style, rel, plane=plane, art=art, offset=offset, **kw)
+
+    def bone(self, id, parent, pos, rot=None, rel=True, style="fur"):
+        return self.part("bone", id, parent, pos, rot, style, rel)
+
+    def local(self, parent, world_point):
+        """A world point (rest pose) in a placed part's frame."""
+        R, t = self.W[parent]
+        return r3(R.T @ (np.array(world_point, float) - t))
 
 
-def box(id, parent, size, pos, style, offset=None, rot=None, rel=False, **kw):
-    return part("box", id, parent, pos, rot, style, rel, size=size, offset=offset, **kw)
-
-
-def card(id, parent, art, pos, style, plane="yz", offset=None, rot=None, rel=True, **kw):
-    return part("card", id, parent, pos, rot, style, rel, plane=plane, art=art, offset=offset, **kw)
-
-
-def bone(id, parent, pos, rot=None, rel=True):
-    return part("bone", id, parent, pos, rot, "fur", rel)
+RIG = Rig()
+P, W = RIG.P, RIG.W
+box, card, bone = RIG.box, RIG.card, RIG.bone
 
 
 SIDES = (("l", 1), ("r", -1))      # left is +X, right is -X
@@ -159,8 +170,7 @@ for s, sx in SIDES:
     box(f"fang_{s}", "snout", [1, 2, 1], mx([2.6, -2.6, 6.4], sx), "teeth", rel=True)
     box(f"jaw_fang_{s}", "jaw", [1, 2, 1], mx([2.1, 0.4, 6.0], sx), "teeth", rel=True)
 
-HR, HT = W["head"]
-SOCKETS = [r3(HR.T @ (W[f"eye_{s}"][1] - HT)) for s, _ in SIDES]     # eye centres in head part space
+SOCKETS = [RIG.local("head", W[f"eye_{s}"][1]) for s, _ in SIDES]     # eye centres in head part space
 
 # ------------------------------------------------------------------ legs: thick pillars, big paws, dark claws
 for s, sx in SIDES:
@@ -390,17 +400,425 @@ def styles_for(v="base"):
     return st
 
 
-def rest():
-    return [[0, [0, 0, 0]]]
+# ------------------------------------------------------------------ animation helpers (shared with the cub)
+def K(*ks):
+    """(t, value[, ease]) tuples -> a lowpix key list."""
+    return [list(k) for k in ks]
 
 
-ANIM = {
-    "idle": {"length": 4.0, "loop": True, "tracks": [
-        {"part": "chest", "channel": "scale", "osc": {"amp": [0.012, 0.02, 0.006], "cycles": 2}},
-        {"part": "neck", "axis": "x", "osc": {"amp": 3, "cycles": 1, "phase": 0.1}},
-        {"part": "head", "axis": "y", "osc": {"amp": 8, "cycles": 1}},
-    ]},
-}
+def trk(part, keys, axis=None, channel=None, ease=None, **kw):
+    d = {"part": part, "keys": keys}
+    for k, v in (("axis", axis), ("channel", channel), ("ease", ease)):
+        if v is not None:
+            d[k] = v
+    d.update(kw)
+    return d
+
+
+def osc(part, amp, cycles=1, phase=0.0, axis=None, channel=None, bias=None, shape=None, **kw):
+    o = {"amp": amp, "cycles": cycles}
+    if phase:
+        o["phase"] = phase
+    if bias is not None:
+        o["bias"] = bias
+    if shape:
+        o["shape"] = shape
+    d = {"part": part, "osc": o}
+    if axis:
+        d["axis"] = axis
+    if channel:
+        d["channel"] = channel
+    d.update(kw)
+    return d
+
+
+def delayed(keys, lag, scale=1.0, length=None):
+    """A copy of scalar keys, later by `lag` seconds and scaled: follow-through for fur, ears and tails."""
+    out = []
+    for k in keys:
+        t = k[0] + lag if k[0] > 0 else 0.0
+        if length is not None:
+            t = min(t, length)
+        out.append([round(t, 4), k[1] * scale] + k[2:])
+    return out
+
+
+class Leg:
+    """A three-joint leg: upper (shoulder/hip), lower (elbow/knee) and paw (wrist/ankle). bend -1: the middle joint
+    points back (front legs), +1: forward (hind legs)."""
+
+    def __init__(self, upper, lower, paw, bend, side):
+        self.upper, self.lower, self.paw, self.bend, self.sx = upper, lower, paw, bend, side
+
+
+def gait(T, phase, duty, stride, lift, curl=35.0, reach=12.0, dz=0.0):
+    """A stepping paw for a looping gait of period T: planted and sliding back for `duty` of the cycle, then lifted
+    (toes curled) and swung forward. Returns f(t, side) -> (offset from the rest wrist, paw pitch in degrees)."""
+    def f(t, sx):
+        u = (t / T + phase) % 1.0
+        if u < duty:
+            return [0.0, 0.0, dz + stride * (0.5 - u / duty)], 0.0
+        s = (u - duty) / (1 - duty)
+        e = 0.5 - 0.5 * math.cos(math.pi * s)
+        pitch = curl * math.sin(math.pi * s / 0.7) if s < 0.7 else -reach * math.sin(math.pi * (s - 0.7) / 0.3)
+        return [0.0, lift * math.sin(math.pi * s), dz + stride * (e - 0.5)], pitch
+    return f
+
+
+def keyed(pos_keys, pitch_keys=None, length=1.0, loop=False, ease="ease"):
+    """A paw path from keys: offsets from the rest wrist ([dx, dy, dz], dx mirrored on the right) and pitch degrees."""
+    sys.path.insert(0, ROOT)
+    from lowpix.anim import eval_keys
+
+    def f(t, sx):
+        o = eval_keys(pos_keys, t, length, loop, ease)
+        pch = float(eval_keys(pitch_keys, t, length, loop, ease, "x")[0]) if pitch_keys else 0.0
+        return [float(o[0]) * sx, float(o[1]), float(o[2])], pch
+    return f
+
+
+def planted(dz=0.0):
+    return lambda t, sx: ([0.0, 0.0, dz], 0.0)
+
+
+def paddle(T, phase, centre, rz, ry, pitch=30.0, swing=25.0):
+    """Swimming: the paw circles (forward high, then a power stroke down and back)."""
+    def f(t, sx):
+        th = 2 * math.pi * (t / T + phase)
+        return [0.0, centre[1] + ry * math.cos(th), centre[2] + rz * math.sin(th)], pitch + swing * math.sin(th)
+    return f
+
+
+def _rx(a):
+    c, s = math.cos(a), math.sin(a)
+    return np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
+
+
+def _rz(a):
+    c, s = math.cos(a), math.sin(a)
+    return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+
+
+def _ang(v):          # angle in the leg's y-z plane; an x rotation by a adds a to it
+    return math.atan2(v[2], v[1])
+
+
+def _wrap(a):
+    return (a + math.pi) % (2 * math.pi) - math.pi
+
+
+def bake(spec, clips, legs, fps=24):
+    """Solve the legs with IK on top of each clip's torso tracks, so paws stay planted or follow their paths.
+    clips: {name: (clip, {leg: path})}. Returns lowpix animations with rotation keys (and, where a leg must reach
+    further than it can, a small position drop of the hip/shoulder joint along its parent's -y)."""
+    sys.path.insert(0, ROOT)
+    from lowpix.model import build_model
+    model = build_model(dict(spec, animations={}))
+    insts = {i.id: i for i in model.instances}
+    rest = model.animator().world_matrices(None)
+    out = {}
+    for name, (clip, paths) in clips.items():
+        model.spec["animations"] = {name: clip}
+        anim = model.animator()
+        length, loop = float(clip["length"]), bool(clip.get("loop", True))
+        n = max(8, int(round(length * fps)))
+        times = [length * k / n for k in range(n + (0 if loop else 1))]
+        worlds = [anim.world_matrices(name, t) for t in times]
+        tracks = list(clip["tracks"])
+        for leg_name, path in paths.items():
+            leg = legs[leg_name]
+            U, Lo, Pw = insts[leg.upper], insts[leg.lower], insts[leg.paw]
+            Lu, Lf, Lp = U.rest_local, Lo.rest_local, Pw.rest_local
+            e0, Rf, w0 = Lf[:3, 3], Lf[:3, :3], Lp[:3, 3]
+            v0 = Rf @ w0
+            l1, l2 = math.hypot(e0[1], e0[2]), math.hypot(v0[1], v0[2])
+            g0 = _wrap(_ang(v0) - _ang(e0))
+            wrest, prest = rest[leg.paw][:3, 3], rest[leg.paw][:3, :3]
+            ku, kl, kp, kd = [], [], [], []
+            for t, Wm in zip(times, worlds):
+                off, pitch = path(t, leg.sx)
+                target = wrest + np.array(off)
+                Wpar = Wm[U.parent]
+                drop = 0.0
+                for _ in range(4):
+                    Su = Wpar @ np.vstack([np.c_[np.eye(3), [0, -drop, 0]], [0, 0, 0, 1]]) @ Lu
+                    q = Su[:3, :3].T @ (target - Su[:3, 3])
+                    x0 = e0[0] + v0[0]
+                    r = math.hypot(q[0], q[1])
+                    gam = 0.0
+                    if r > abs(x0) + 1e-6:
+                        phi = math.atan2(q[1], q[0])
+                        gam = _wrap(phi + math.acos(max(-1.0, min(1.0, x0 / r))))
+                        if abs(gam) > math.pi / 2:
+                            gam = _wrap(phi - math.acos(max(-1.0, min(1.0, x0 / r))))
+                    qp = _rz(-gam) @ q
+                    d = math.hypot(qp[1], qp[2])
+                    reach = 0.995 * (l1 + l2)
+                    if d <= reach or drop > 6:
+                        break
+                    drop += d - reach + 0.02
+                d = max(abs(l1 - l2) + 1e-3, min(l1 + l2 - 1e-3, d))
+                cg = (d * d - l1 * l1 - l2 * l2) / (2 * l1 * l2)
+                g = math.acos(max(-1.0, min(1.0, cg)))
+                b = _wrap(leg.bend * g - g0)
+                v = _rx(b) @ v0
+                c = np.array([0.0, e0[1] + v[1], e0[2] + v[2]])
+                a = _wrap(_ang(qp) - _ang(c))
+                # the paw: world orientation = a world pitch on top of its rest orientation
+                Rchain = Su[:3, :3] @ _rz(gam) @ _rx(a) @ Rf @ _rx(b) @ Lp[:3, :3]
+                Rpaw = Rchain.T @ _rx(math.radians(pitch)) @ prest
+                ku.append([round(t, 4), r3([math.degrees(a), 0, math.degrees(gam)])])
+                kl.append([round(t, 4), r3([math.degrees(b), 0, 0])])
+                kp.append([round(t, 4), r3(_euler(Rpaw))])
+                kd.append([round(t, 4), r3([0, -drop, 0])])
+            tracks += [{"part": leg.upper, "keys": ku, "ease": "linear"},
+                       {"part": leg.lower, "keys": kl, "ease": "linear"},
+                       {"part": leg.paw, "keys": kp, "ease": "linear"}]
+            if any(abs(k[1][1]) > 1e-3 for k in kd):
+                tracks.append({"part": leg.upper, "channel": "position", "keys": kd, "ease": "linear"})
+        out[name] = dict(clip, tracks=tracks)
+    return out
+
+
+# ------------------------------------------------------------------ the adult's clips
+LEGS = {"fl": Leg("front_leg_l", "front_forearm_l", "front_paw_l", -1, 1),
+        "fr": Leg("front_leg_r", "front_forearm_r", "front_paw_r", -1, -1),
+        "bl": Leg("back_leg_l", "back_shin_l", "back_paw_l", 1, 1),
+        "br": Leg("back_leg_r", "back_shin_r", "back_paw_r", 1, -1)}
+STAND = {k: planted() for k in LEGS}
+FUR_HANG = ["fur_mane", "fur_flank", "fur_chest_side", "fur_rump_side", "fur_neck_side", "fur_belly"]
+
+
+def fur_sway(amp, cycles, phase=0.0, axis="z"):
+    """Secondary motion: the hanging fur cards swing, each a little later than the last."""
+    return [osc(p, amp * (1 + 0.15 * k), cycles, phase + 0.06 * k, axis=axis) for k, p in enumerate(FUR_HANG)]
+
+
+def adult_clips():
+    C = {}
+    # idle: breathing, weight shifts, looking round, a sniff of the air, ear flicks, tail twitch
+    C["idle"] = ({"length": 4.0, "loop": True, "tracks": [
+        osc("body", [0.35, 0.2, 0], 1, channel="position", phase=0.25),
+        osc("body", 1.2, 1, axis="z"),
+        osc("hump", [0.03, 0.07, 0.02], 2, channel="scale"),
+        osc("neck_ruff", [0.03, 0.08, 0.02], 2, channel="scale", phase=0.08),
+        trk("neck", K((0, 0), (0.5, 0), (1.1, 16, "out_back"), (1.6, 16), (2.2, -4), (2.8, -14, "out_back"), (3.3, -14),
+                      (3.8, 0)), axis="y"),
+        trk("neck", K((0, 0), (1.6, 0), (1.9, -10, "out"), (2.4, -8), (2.7, 0)), axis="x"),
+        trk("head", K((0, 0), (1.6, 0), (1.9, -12, "out"), (2.0, -9), (2.1, -12), (2.2, -9), (2.3, -12), (2.6, 0)), axis="x"),
+        trk("head", K((0, 0), (1.15, 8, "out_back"), (1.6, 8), (2.0, 0), (2.85, -6, "out_back"), (3.3, -6), (3.7, 0)),
+            axis="z"),
+        trk("nose", K((0, [0, 0, 0]), (1.9, [0, 0, 0]), (1.95, [0.25, 0.2, 0]), (2.05, [0, 0, 0]), (2.15, [0.25, 0.2, 0]),
+                      (2.25, [0, 0, 0])), channel="scale"),
+        trk("ear_l", K((0, 0), (0.9, 0), (0.98, -28, "out"), (1.1, 6), (1.3, 0)), axis="z"),
+        trk("ear_r", K((0, 0), (2.9, 0), (2.98, 28, "out"), (3.1, -6), (3.3, 0)), axis="z"),
+        trk("jaw", K((0, 0), (3.3, 0), (3.45, 7, "out"), (3.6, 1), (3.7, 5), (3.85, 0)), axis="x"),
+        osc("tail", 4, 1, axis="x"),
+        trk("tail", K((0, 0), (2.4, 0), (2.5, 22, "out"), (2.62, -14), (2.76, 8), (2.95, 0)), axis="y"),
+    ] + fur_sway(2.5, 2)}, STAND)
+
+    # walk: a heavy shoulder-rolling amble, the head swinging low; diagonal-ish lateral sequence
+    T = 1.2
+    C["walk"] = ({"length": T, "loop": True, "tracks": [
+        osc("body", [0, 0.35, 0], 2, channel="position", phase=0.0, bias=[0, -1.0, 0]),
+        osc("body", 1.5, 1, axis="y", phase=0.25),
+        osc("chest", 3.0, 1, axis="z", phase=0.5),
+        osc("rump", -2.4, 1, axis="z", phase=0.25),
+        osc("chest", 1.6, 2, axis="x", phase=0.1),
+        osc("neck", 5, 1, axis="y", phase=0.6),
+        osc("neck", 2.5, 2, axis="x", phase=0.2),
+        osc("head", 3, 1, axis="y", phase=0.7),
+        osc("head", -2.5, 2, axis="x", phase=0.3),
+        osc("tail", 9, 1, axis="z", phase=0.4),
+        osc("tail", 4, 2, axis="x"),
+        osc("ear_l", 5, 2, axis="x", phase=0.3),
+    ] + fur_sway(5, 2, 0.1)}, {
+        "bl": gait(T, 0.0, 0.64, 9.0, 2.2, curl=30), "fl": gait(T, 0.25, 0.62, 9.0, 2.8, curl=45),
+        "br": gait(T, 0.5, 0.64, 9.0, 2.2, curl=30), "fr": gait(T, 0.75, 0.62, 9.0, 2.8, curl=45)})
+
+    # run: a rotary gallop, the spine flexing, the head low and driving, ears pinned
+    T = 0.6
+    C["run"] = ({"length": T, "loop": True, "tracks": [
+        osc("body", [0, 1.3, 0], 1, channel="position", phase=0.1, bias=[0, -0.9, 0]),
+        osc("body", 4, 1, axis="x", phase=0.0),
+        osc("chest", 6, 1, axis="x", phase=0.15),
+        osc("rump", -7, 1, axis="x", phase=0.0),
+        osc("chest", 2, 1, axis="z", phase=0.3),
+        osc("neck", -6, 1, axis="x", phase=0.25, bias=6),
+        osc("head", -5, 1, axis="x", phase=0.35, bias=-4),
+        osc("jaw", 4, 2, axis="x", bias=8),
+        osc("tail", 12, 1, axis="x", phase=0.2, bias=-10),
+        trk("ear_l", K((0, -22)), axis="x"), trk("ear_r", K((0, -22)), axis="x"),
+        osc("hump", [0.03, -0.05, 0.02], 1, channel="scale", phase=0.2),
+    ] + fur_sway(8, 1, 0.2, axis="x")}, {
+        "bl": gait(T, 0.0, 0.4, 15.0, 4.0, curl=55, reach=20, dz=-1.0),
+        "br": gait(T, 0.08, 0.4, 15.0, 4.0, curl=55, reach=20, dz=-1.0),
+        "fl": gait(T, 0.5, 0.38, 15.0, 4.6, curl=60, reach=24, dz=1.0),
+        "fr": gait(T, 0.58, 0.38, 15.0, 4.6, curl=60, reach=24, dz=1.0)})
+
+    # swim: afloat and doggy-paddling, the head held up, fur streaming back
+    T = 1.6
+    C["swim"] = ({"length": T, "loop": True, "tracks": [
+        osc("body", [0, 0.6, 0], 2, channel="position", bias=[0, 1.5, 0]),
+        osc("body", 2, 2, axis="x", bias=-7),
+        osc("body", 3, 1, axis="z", phase=0.25),
+        osc("neck", 2, 2, axis="x", bias=-18, phase=0.1),
+        osc("head", 2, 2, axis="x", bias=-6, phase=0.2),
+        osc("head", 3, 1, axis="z", phase=0.5),
+        osc("tail", 6, 1, axis="y"), trk("tail", K((0, 20)), axis="x"),
+        trk("ear_l", K((0, -12)), axis="x"), trk("ear_r", K((0, -12)), axis="x"),
+    ] + [osc(p, 6, 2, 0.08 * k, axis="x", bias=-24) for k, p in enumerate(FUR_HANG)]}, {
+        "fl": paddle(T, 0.0, [0, 3.5, 2.5], 4.0, 3.0), "fr": paddle(T, 0.5, [0, 3.5, 2.5], 4.0, 3.0),
+        "bl": paddle(T, 0.25, [0, 3.0, -2.0], 3.5, 2.0, pitch=45), "br": paddle(T, 0.75, [0, 3.0, -2.0], 3.5, 2.0, pitch=45)})
+
+    # leap (1.2 s): crouch and growl, spring, a stretched flight, the front paws slam down, the hind paws follow
+    L = 1.2
+    C["leap"] = ({"length": L, "loop": False, "tracks": [
+        trk("body", K((0, [0, 0, 0]), (0.30, [0, -3.0, -1.0], "out"), (0.36, [0, -3.2, -1.2]), (0.46, [0, 2.4, 2.0], "out"),
+                      (0.62, [0, 6.0, 3.5], "out"), (0.80, [0, 3.2, 3.0], "in"), (0.88, [0, -2.6, 2.0], "in"),
+                      (0.96, [0, -1.3, 1.0], "out"), (1.06, [0, 0.3, 0.3]), (1.2, [0, 0, 0])), channel="position"),
+        trk("body", K((0, 0), (0.30, 4, "out"), (0.36, 5), (0.46, -14, "out"), (0.62, -6), (0.80, 8, "in"), (0.88, 6),
+                      (0.96, 1), (1.06, -2), (1.2, 0)), axis="x"),
+        trk("chest", K((0, 0), (0.30, 5), (0.46, -6, "out"), (0.62, -3), (0.84, 6), (0.90, 9, "out"), (1.0, 2), (1.2, 0)),
+            axis="x"),
+        trk("rump", K((0, 0), (0.30, -8), (0.46, 10, "out"), (0.62, 6), (0.85, -6), (0.95, -2), (1.2, 0)), axis="x"),
+        trk("neck", K((0, 0), (0.30, 10), (0.46, -8, "out"), (0.62, -4), (0.86, 6), (0.92, 14, "out"), (1.05, 2), (1.2, 0)),
+            axis="x"),
+        trk("head", K((0, 0), (0.30, -6), (0.46, 6), (0.62, 2), (0.86, -6), (0.94, -10, "out"), (1.08, 2), (1.2, 0)),
+            axis="x"),
+        trk("jaw", K((0, 0), (0.30, 6), (0.36, 3), (0.46, 10), (0.62, 22, "out"), (0.86, 30), (0.92, 36), (1.0, 10),
+                     (1.2, 0)), axis="x"),
+        trk("ear_l", K((0, 0), (0.25, -26), (1.0, -26), (1.2, 0)), axis="x"),
+        trk("ear_r", K((0, 0), (0.25, -26), (1.0, -26), (1.2, 0)), axis="x"),
+        trk("hump", K((0, [0, 0, 0]), (0.30, [0.05, -0.08, 0.03]), (0.46, [-0.03, 0.08, -0.02]), (0.88, [0, 0, 0]),
+                      (0.92, [0.08, -0.14, 0.06]), (1.05, [-0.02, 0.03, 0]), (1.2, [0, 0, 0])), channel="scale"),
+        trk("tail", K((0, 0), (0.3, -10), (0.5, 26), (0.8, 18), (0.92, -12), (1.05, 6), (1.2, 0)), axis="x"),
+    ] + [trk(p, delayed(K((0, 0), (0.30, -6), (0.46, -24), (0.62, -30), (0.84, -10), (0.90, 18), (1.0, -6), (1.2, 0)),
+                        0.03 * k, 1 + 0.1 * k, L), axis="x") for k, p in enumerate(FUR_HANG)]}, {
+        "fl": keyed(K((0, [0, 0, 0]), (0.36, [0, 0, 0]), (0.42, [0, 1.0, 1.0]), (0.50, [0, 4.5, 5.0], "out"),
+                      (0.62, [0, 6.5, 7.0]), (0.80, [0, 3.0, 7.5]), (0.88, [0, 0, 6.0], "in"), (1.0, [0, 0, 6.0]),
+                      (1.08, [0, 1.4, 3.0]), (1.2, [0, 0, 0])),
+                    K((0, 0), (0.36, 0), (0.46, 35), (0.62, -15), (0.80, -25), (0.88, 0), (1.2, 0)), L),
+        "fr": keyed(K((0, [0, 0, 0]), (0.36, [0, 0, 0]), (0.43, [0, 1.0, 1.0]), (0.51, [0, 4.5, 5.0], "out"),
+                      (0.63, [0, 6.5, 7.0]), (0.81, [0, 3.0, 7.5]), (0.89, [0, 0, 6.0], "in"), (1.02, [0, 0, 6.0]),
+                      (1.1, [0, 1.4, 3.0]), (1.2, [0, 0, 0])),
+                    K((0, 0), (0.36, 0), (0.47, 35), (0.63, -15), (0.81, -25), (0.89, 0), (1.2, 0)), L),
+        "bl": keyed(K((0, [0, 0, 0]), (0.44, [0, 0, 0]), (0.52, [0, 2.0, -4.0], "out"), (0.62, [0, 4.5, -6.0]),
+                      (0.80, [0, 4.0, -1.0]), (0.94, [0, 0, 1.5], "in"), (1.2, [0, 0, 0])),
+                    K((0, 0), (0.44, 0), (0.52, 45), (0.62, 40), (0.80, 10), (0.94, 0), (1.2, 0)), L),
+        "br": keyed(K((0, [0, 0, 0]), (0.45, [0, 0, 0]), (0.53, [0, 2.0, -4.0], "out"), (0.63, [0, 4.5, -6.0]),
+                      (0.81, [0, 4.0, -1.0]), (0.95, [0, 0, 1.5], "in"), (1.2, [0, 0, 0])),
+                    K((0, 0), (0.45, 0), (0.53, 45), (0.63, 40), (0.81, 10), (0.95, 0), (1.2, 0)), L)})
+
+    # swipe (0.9 s): a dip, rear up with both paws wound high, rake them down and across, slam back onto all fours
+    L = 0.9
+    front = keyed(K((0, [0, 0, 0]), (0.10, [0, 0, 0]), (0.30, [3, 24, -1], "out"), (0.38, [5, 29, -3]),
+                    (0.48, [-3, 17, 8], "out"), (0.56, [-4, 10, 7]), (0.68, [0, 0.4, 4], "in"), (0.74, [0, 0, 3.5]),
+                    (0.82, [0, 1.0, 1.5]), (0.9, [0, 0, 0])),
+                  K((0, 0), (0.10, 0), (0.30, -40), (0.38, -70), (0.48, 20, "out"), (0.56, 50), (0.68, 0), (0.9, 0)), L)
+    C["swipe"] = ({"length": L, "loop": False, "tracks": [
+        trk("body", K((0, 0), (0.10, 3, "out"), (0.30, -42, "out"), (0.40, -44), (0.50, -36, "in"), (0.66, 6, "in"),
+                      (0.74, 4), (0.9, 0)), axis="x"),
+        trk("body", K((0, [0, 0, 0]), (0.10, [0, -1.0, 0]), (0.30, [0, 2.5, -1.5], "out"), (0.42, [0, 2.8, -1.0]),
+                      (0.50, [0, 2.0, 0.5]), (0.66, [0, -1.8, 1.0], "in"), (0.76, [0, -0.6, 0.5]), (0.9, [0, 0, 0])),
+            channel="position"),
+        trk("chest", K((0, 0), (0.30, -6), (0.45, 8, "out"), (0.60, 3), (0.9, 0)), axis="z"),
+        trk("neck", K((0, 0), (0.10, 6), (0.30, 18), (0.42, 26), (0.50, 30, "out"), (0.66, 6), (0.9, 0)), axis="x"),
+        trk("head", K((0, 0), (0.30, 8), (0.45, 14), (0.60, 0), (0.9, 0)), axis="x"),
+        trk("jaw", K((0, 0), (0.25, 20), (0.40, 32, "out"), (0.55, 26), (0.70, 8), (0.9, 0)), axis="x"),
+        trk("ear_l", K((0, 0), (0.2, -26), (0.7, -26), (0.9, 0)), axis="x"),
+        trk("ear_r", K((0, 0), (0.2, -26), (0.7, -26), (0.9, 0)), axis="x"),
+        trk("hump", K((0, [0, 0, 0]), (0.66, [0, 0, 0]), (0.70, [0.07, -0.12, 0.05]), (0.9, [0, 0, 0], "elastic")),
+            channel="scale"),
+    ] + [trk(p, delayed(K((0, 0), (0.30, -10), (0.48, 14), (0.66, -16), (0.72, 12), (0.9, 0)), 0.03 * k, 1, L), axis="z")
+         for k, p in enumerate(FUR_HANG)]}, {"fl": front, "fr": front, "bl": planted(), "br": planted()})
+
+    # roar (1.6 s): head drops, rears up roaring, head shaking, ruff bristling, crashes back down
+    L = 1.6
+    shake = K((0.62, 0), (0.68, 3), (0.74, -3), (0.80, 3), (0.86, -3), (0.92, 3), (0.98, -3), (1.04, 2), (1.10, -2),
+              (1.16, 1), (1.22, 0))
+    C["roar"] = ({"length": L, "loop": False, "tracks": [
+        trk("body", K((0, 0), (0.20, 4, "out"), (0.50, -46, "out"), (0.62, -44), (1.20, -42), (1.36, 5, "in"), (1.45, 3),
+                      (1.6, 0)), axis="x"),
+        trk("body", K((0, [0, 0, 0]), (0.20, [0, -1.2, 0.5]), (0.50, [0, 3.0, -1.5], "out"), (1.20, [0, 3.2, -1.5]),
+                      (1.36, [0, -1.6, 1.0], "in"), (1.46, [0, -0.5, 0.4]), (1.6, [0, 0, 0])), channel="position"),
+        trk("neck", K((0, 0), (0.20, 12), (0.50, 22), (0.60, 12, "out"), (1.20, 14), (1.36, 8), (1.6, 0)), axis="x"),
+        trk("head", K((0, 0), (0.20, 8), (0.50, 0), (0.60, -16, "out"), (1.15, -12), (1.36, 0), (1.6, 0)), axis="x"),
+        trk("head", K((0, 0)) + shake + K((1.6, 0)), axis="y", ease="linear"),
+        trk("jaw", K((0, 0), (0.40, 4), (0.56, 42, "out_back"), (0.9, 38), (0.95, 42), (1.15, 38), (1.30, 10), (1.45, 0),
+                     (1.6, 0)), axis="x"),
+        trk("ear_l", K((0, 0), (0.40, -32), (1.25, -32), (1.5, 0)), axis="x"),
+        trk("ear_r", K((0, 0), (0.40, -32), (1.25, -32), (1.5, 0)), axis="x"),
+        trk("hump", K((0, [0, 0, 0]), (0.50, [0.06, 0.10, 0.04]), (1.20, [0.05, 0.08, 0.04]), (1.40, [0, 0, 0])),
+            channel="scale"),
+        trk("neck_ruff", K((0, [0, 0, 0]), (0.55, [0.08, 0.22, 0.05], "out_back"), (1.20, [0.06, 0.18, 0.04]),
+                           (1.45, [0, 0, 0])), channel="scale"),
+        trk("tail", K((0, 0), (0.5, -20), (1.2, -16), (1.45, 8), (1.6, 0)), axis="x"),
+    ] + [trk(p, delayed(K((0, 0), (0.50, 16, "out_back"), (1.20, 14), (1.38, -8), (1.5, 3), (1.6, 0)), 0.03 * k, 1, L),
+             axis="z") for k, p in enumerate(FUR_HANG)]}, {
+        "fl": keyed(K((0, [0, 0, 0]), (0.20, [0, 0, 0]), (0.50, [3, 22, 2], "out"), (0.62, [5, 24, 3]), (1.20, [5, 23, 3]),
+                      (1.34, [0, 1.0, 4], "in"), (1.38, [0, 0, 4]), (1.48, [0, 0.8, 2]), (1.6, [0, 0, 0])),
+                    K((0, 0), (0.20, 0), (0.50, -30), (0.62, -50), (1.20, -45), (1.36, 0), (1.6, 0)), L),
+        "fr": keyed(K((0, [0, 0, 0]), (0.20, [0, 0, 0]), (0.52, [3, 22, 2], "out"), (0.64, [5, 24, 3]), (1.22, [5, 23, 3]),
+                      (1.35, [0, 1.0, 4], "in"), (1.39, [0, 0, 4]), (1.50, [0, 0.8, 2]), (1.6, [0, 0, 0])),
+                    K((0, 0), (0.20, 0), (0.52, -30), (0.64, -50), (1.22, -45), (1.37, 0), (1.6, 0)), L),
+        "bl": planted(), "br": planted()})
+
+    # eat (1.0 s): head down to the fish, munch munch munch, head back up
+    L = 1.0
+    C["eat"] = ({"length": L, "loop": False, "tracks": [
+        trk("chest", K((0, 0), (0.15, 8, "out"), (0.85, 8), (1.0, 0)), axis="x"),
+        trk("body", K((0, [0, 0, 0]), (0.15, [0, -0.8, 0]), (0.85, [0, -0.8, 0]), (1.0, [0, 0, 0])), channel="position"),
+        trk("neck", K((0, 0), (0.18, 22, "out_back"), (0.85, 20), (1.0, 0)), axis="x"),
+        trk("head", K((0, 0), (0.18, 16), (0.30, 9), (0.40, 18), (0.55, 9), (0.65, 18), (0.80, 10), (0.88, 16), (1.0, 0)),
+            axis="x"),
+        trk("head", K((0, 0), (0.30, 5), (0.55, -5), (0.80, 4), (1.0, 0)), axis="y"),
+        trk("jaw", K((0, 0), (0.20, 6), (0.30, 24), (0.40, 2), (0.55, 22), (0.65, 2), (0.80, 18), (0.88, 2), (1.0, 0)),
+            axis="x", ease="ease"),
+        trk("ear_l", K((0, 0), (0.3, -10), (0.45, 4), (0.6, -10), (0.9, 0)), axis="x"),
+        trk("ear_r", K((0, 0), (0.35, -10), (0.5, 4), (0.65, -10), (0.95, 0)), axis="x"),
+        trk("tail", K((0, 0), (0.3, 12), (0.5, -8), (0.7, 10), (1.0, 0)), axis="y"),
+    ]}, STAND)
+
+    # sit (loop): settled back on its haunches, hind paws out in front with the soles showing; slow breathing,
+    # a contented head tilt, looking about
+    L = 4.0
+    C["sit"] = ({"length": L, "loop": True, "tracks": [
+        osc("body", 0.8, 2, axis="x", bias=-36),
+        trk("body", K((0, [0, -4.6, -1.5])), channel="position"),
+        osc("chest", 1.0, 2, axis="x", bias=10, phase=0.1),
+        osc("hump", [0.03, 0.06, 0.02], 2, channel="scale"),
+        osc("neck", 1.5, 2, axis="x", bias=14, phase=0.15),
+        trk("head", K((0, -6), (1.0, -6), (1.3, -10, "out_back"), (2.2, -10), (2.5, -6), (4.0, -6)), axis="x"),
+        trk("head", K((0, 0), (1.0, 0), (1.3, 14, "out_back"), (2.2, 14), (2.5, 0), (4.0, 0)), axis="z"),
+        trk("neck", K((0, 0), (2.7, 0), (3.0, 12, "out_back"), (3.5, 12), (3.8, 0)), axis="y"),
+        trk("jaw", K((0, 3), (4.0, 3)), axis="x"),
+        trk("ear_l", K((0, 0), (1.3, 0), (1.38, -24, "out"), (1.5, 4), (1.7, 0)), axis="z"),
+        trk("ear_r", K((0, 0), (3.1, 0), (3.18, 24, "out"), (3.3, -4), (3.5, 0)), axis="z"),
+        trk("tail", K((0, 30)), axis="x"),
+    ] + fur_sway(2, 2)}, {
+        "fl": planted(1.0), "fr": planted(1.0),
+        "bl": lambda t, sx: ([2.0 * sx, 1.0, 9.0], -55.0), "br": lambda t, sx: ([2.0 * sx, 1.0, 9.0], -55.0)})
+
+    # shake (0.8 s): a dog-style shake from the shoulders back, the head and the long fur flying after
+    L = 0.8
+    roll = K((0, 0), (0.06, -5, "out"), (0.14, 11), (0.24, -13), (0.34, 12), (0.44, -10), (0.54, 7), (0.64, -4), (0.72, 2),
+             (0.8, 0))
+    C["shake"] = ({"length": L, "loop": False, "tracks": [
+        trk("chest", roll, axis="z"),
+        trk("body", delayed(roll, 0.03, 0.5, L), axis="z"),
+        trk("rump", delayed(roll, 0.06, 0.8, L), axis="z"),
+        trk("neck", delayed(roll, 0.02, -0.7, L), axis="y"),
+        trk("head", delayed(roll, 0.05, 1.2, L), axis="z"),
+        trk("ear_l", delayed(roll, 0.08, 2.2, L), axis="z"),
+        trk("ear_r", delayed(roll, 0.08, 2.2, L), axis="z"),
+        trk("tail", delayed(roll, 0.1, 2.0, L), axis="y"),
+        trk("body", K((0, [0, 0, 0]), (0.06, [0, -0.6, 0]), (0.30, [0, 0.4, 0]), (0.60, [0, 0.2, 0]), (0.8, [0, 0, 0])),
+            channel="position"),
+        trk("jaw", K((0, 0), (0.15, 8), (0.6, 6), (0.8, 0)), axis="x"),
+    ] + [trk(p, delayed(roll, 0.06 + 0.02 * k, 1.8, L), axis="z") for k, p in enumerate(FUR_HANG)]}, STAND)
+    return C
+
 
 spec = {
     "name": "Polar Bear",
@@ -420,7 +838,7 @@ spec = {
     "palette": {"ramps": RAMPS},
     "styles": styles_for("base"),
     "parts": P,
-    "animations": ANIM,
+    "animations": {},
 }
 
 VARIANT_RAMPS = {
@@ -451,8 +869,14 @@ def variant_spec(name):
     return out
 
 
+def finish():
+    """Bake the clips (IK legs) into the spec."""
+    spec["animations"] = bake(spec, adult_clips(), LEGS)
+
+
 if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "examples/polar_bear.json"
+    finish()
     with open(out, "w") as fh:
         json.dump(spec, fh, indent=1)
     print(out, len(P), "parts")

@@ -52,7 +52,7 @@ CREDITS = os.path.join(HERE, "CREDITS.md")
 DEFAULT_CACHE = os.path.join(MOD, "build", "sfx_cache")
 SR = 44100
 UA = "winterworks-sfx-pipeline/1.0"
-CEIL_DB = -1.0
+CEIL_DB = -1.3  # limiter ceiling; Vorbis encoding overshoots a little, decoded peaks land near -1 dBFS
 AUDIO_EXT = (".wav", ".flac", ".ogg", ".mp3", ".aif", ".aiff", ".oga", ".opus")
 
 
@@ -682,7 +682,8 @@ class Renderer:
             if "len" in var or "len" in ev:
                 ln = int(float(var.get("len", ev.get("len"))) * SR)
                 if mix.shape[1] > ln:
-                    mix = fades(mix[:, :ln], 0, min(0.15, ln / SR / 3))
+                    fo = float(var.get("lenfade", ev.get("lenfade", 0.15)))
+                    mix = fades(mix[:, :ln], 0, min(fo, ln / SR / 2))
         mix = normalise(mix, float(var.get("loud", ev.get("loud", -14.0))))
         return mix
 
@@ -714,7 +715,7 @@ def expand_variants(ev):
             for L in layers:
                 L["gain"] = L.get("gain", 0.0) + ov["gain"]
         v["layers"] = layers
-        for k in ("fx", "len", "loud", "seed", "hpf"):
+        for k in ("fx", "len", "loud", "seed", "hpf", "lenfade"):
             if k in ov:
                 v[k] = ov[k]
         out.append(v)
@@ -786,7 +787,7 @@ def build(cache, only=None, sheets_dir=None):
                 if "src" in L:
                     used.setdefault(L["src"].split("/")[0], set()).add(name)
             flag = ""
-            if pk > -0.5:
+            if pk > -0.7:
                 flag += " PEAK!"
             if dur < 0.03:
                 flag += " SHORT!"

@@ -1,0 +1,216 @@
+{
+  "block.ice.crack": {
+    "sounds": [
+      {
+        "name": "winterworks:ice/crack1"
+      },
+      {
+        "name": "winterworks:ice/crack2"
+      },
+      {
+        "name": "winterworks:ice/crack3"
+      }
+    ],
+    "subtitle": "Ice cracks"
+  },
+  "block.ancient_ice.crack": {
+    "sounds": [
+      {
+        "name": "winterworks:ancient_ice/crack1"
+      },
+      {
+        "name": "winterworks:ancient_ice/crack2"
+      },
+      {
+        "name": "winterworks:ancient_ice/crack3"
+      }
+    ],
+    "subtitle": "Ancient ice creaks"
+  },
+  "block.ancient_ice.break": {
+    "sounds": [
+      {
+        "name": "winterworks:ancient_ice/break1"
+      },
+      {
+        "name": "winterworks:ancient_ice/break2"
+      },
+      {
+        "name": "winterworks:ancient_ice/break3"
+      },
+      {
+        "name": "winterworks:ancient_ice/break4"
+      }
+    ],
+    "subtitle": "Ancient ice breaks"
+  },
+  "block.ancient_ice.step": {
+    "sounds": [
+      {
+        "name": "winterworks:ancient_ice/step1"
+      },
+      {
+        "name": "winterworks:ancient_ice/step2"
+      },
+      {
+        "name": "winterworks:ancient_ice/step3"
+      },
+      {
+        "name": "winterworks:ancient_ice/step4"
+      },
+      {
+        "name": "winterworks:ancient_ice/step5"
+      }
+    ],
+    "subtitle": null
+  },
+  "block.ancient_ice.hit": {
+    "sounds": [
+      {
+        "name": "winterworks:ancient_ice/hit1"
+      },
+      {
+        "name": "winterworks:ancient_ice/hit2"
+      },
+      {
+        "name": "winterworks:ancient_ice/hit3"
+      },
+      {
+        "name": "winterworks:ancient_ice/hit4"
+      }
+    ],
+    "subtitle": "Ancient ice chips"
+  },
+  "block.ancient_ice.place": {
+    "sounds": [
+      {
+        "name": "winterworks:ancient_ice/place1"
+      },
+      {
+        "name": "winterworks:ancient_ice/place2"
+      },
+      {
+        "name": "winterworks:ancient_ice/place3"
+      }
+    ],
+    "subtitle": "Ancient ice placed"
+  },
+  "block.ancient_ice.fall": {
+    "sounds": [
+      {
+        "name": "winterworks:ancient_ice/fall1"
+      },
+      {
+        "name": "winterworks:ancient_ice/fall2"
+      },
+      {
+        "name": "winterworks:ancient_ice/fall3"
+      }
+    ],
+    "subtitle": "Something falls on ancient ice"
+  },
+  "block.ancient_ice.burst": {
+    "sounds": [
+      {
+        "name": "winterworks:ancient_ice/burst1"
+      },
+      {
+        "name": "winterworks:ancient_ice/burst2"
+      },
+      {
+        "name": "winterworks:ancient_ice/burst3"
+      }
+    ],
+    "subtitle": "Ancient ice bursts"
+  },
+  "block.icicle.fall": {
+    "sounds": [
+      {
+        "name": "winterworks:icicle/fall1"
+      },
+      {
+        "name": "winterworks:icicle/fall2"
+      },
+      {
+        "name": "winterworks:icicle/fall3"
+      }
+    ],
+    "subtitle": "Icicle falls"
+  },
+  "block.icicle.shatter": {
+    "sounds": [
+      {
+        "name": "winterworks:icicle/shatter1"
+      },
+      {
+        "name": "winterworks:icicle/shatter2"
+      },
+      {
+        "name": "winterworks:icicle/shatter3"
+      },
+      {
+        "name": "winterworks:icicle/shatter4"
+      }
+    ],
+    "subtitle": "Icicle shatters"
+  },
+  "ambient.ice_caves.loop": {
+    "sounds": [
+      {
+        "name": "winterworks:ambient/ice_caves_loop1",
+        "stream": true
+      }
+    ],
+    "subtitle": null
+  },
+  "ambient.ice_caves.additions": {
+    "sounds": [
+      {
+        "name": "winterworks:ambient/ice_caves_additions1"
+      },
+      {
+        "name": "winterworks:ambient/ice_caves_additions2"
+      },
+      {
+        "name": "winterworks:ambient/ice_caves_additions3"
+      },
+      {
+        "name": "winterworks:ambient/ice_caves_additions4"
+      },
+      {
+        "name": "winterworks:ambient/ice_caves_additions5"
+      },
+      {
+        "name": "winterworks:ambient/ice_caves_additions6"
+      }
+    ],
+    "subtitle": null
+  },
+  "ambient.ice_caves.mood": {
+    "sounds": [
+      {
+        "name": "winterworks:ambient/ice_caves_mood1"
+      },
+      {
+        "name": "winterworks:ambient/ice_caves_mood2"
+      },
+      {
+        "name": "winterworks:ambient/ice_caves_mood3"
+      }
+    ],
+    "subtitle": null
+  },
+  "event.frozen_tomb.rumble": {
+    "sounds": [
+      {
+        "name": "winterworks:tomb/rumble1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:tomb/rumble2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Frozen tomb rumbles"
+  }
+}
