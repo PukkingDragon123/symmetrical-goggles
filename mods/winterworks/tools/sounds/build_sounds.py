@@ -52,7 +52,7 @@ CREDITS = os.path.join(HERE, "CREDITS.md")
 DEFAULT_CACHE = os.path.join(MOD, "build", "sfx_cache")
 SR = 44100
 UA = "winterworks-sfx-pipeline/1.0"
-CEIL_DB = -1.3  # limiter ceiling; Vorbis encoding overshoots a little, decoded peaks land near -1 dBFS
+CEIL_DB = -1.5  # limiter ceiling; Vorbis encoding overshoots a little, decoded peaks land near -1 dBFS
 AUDIO_EXT = (".wav", ".flac", ".ogg", ".mp3", ".aif", ".aiff", ".oga", ".opus")
 
 
@@ -620,6 +620,7 @@ class Renderer:
     def layer(self, L, channels, rng):
         if "synth" in L:
             x = synth(L, rng, channels)
+            x = fades(x, 0.002, min(0.03, x.shape[1] / SR / 4))  # never start or stop with a click
         else:
             path = source_path(self.cache, self.rec, L["src"])
             ch = L.get("ch")
@@ -684,7 +685,7 @@ class Renderer:
                 if mix.shape[1] > ln:
                     fo = float(var.get("lenfade", ev.get("lenfade", 0.15)))
                     mix = fades(mix[:, :ln], 0, min(fo, ln / SR / 2))
-        mix = normalise(mix, float(var.get("loud", ev.get("loud", -14.0))))
+        mix = normalise(mix, float(var.get("loud", ev.get("loud", -14.0))), max_gr=float(ev.get("maxgr", 6.0)))
         return mix
 
 

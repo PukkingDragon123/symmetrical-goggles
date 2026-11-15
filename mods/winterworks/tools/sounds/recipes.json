@@ -3353,6 +3353,1035 @@
     {"src": "ia_icebooms", "t": 104.38, "d": 1.6, "pitch": 0.5, "at": 1.2},
     {"src": "ia_pond_ice", "t": 17.9, "d": 1.0, "pitch": 0.4, "at": 0.3, "gain": -6, "fo": 0.3}
    ]}
+  ]},
+  "entity.icebreaker.ambient": {"group": "icebreaker", "name": "ambient", "subtitle": "Icebreaker grunts", "entry": {"attenuation_distance": 20}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.1, "lp": 6000}], "layers": [
+    {"src": "ia_sealion", "t": 2.0, "d": 0.66, "pitch": 0.62, "lp": 3500},
+    {"src": "bsb_1658", "t": 2.6, "d": 0.6, "pitch": 0.75, "gain": -8, "at": 0.05}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.1, "lp": 6000}], "layers": [
+    {"src": "ia_sealion", "t": 3.52, "d": 0.78, "pitch": 0.66, "lp": 3500}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.1, "lp": 6000}], "layers": [
+    {"src": "ia_sealion", "t": 14.18, "d": 0.52, "pitch": 0.6, "lp": 3200},
+    {"src": "ia_sealion", "t": 16.6, "d": 0.5, "pitch": 0.64, "at": 0.95, "gain": -2, "lp": 3200}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.1, "lp": 6000}], "layers": [
+    {"src": "bsb_1659", "t": 1.9, "d": 1.0, "pitch": 0.6},
+    {"src": "ia_sealion", "t": 7.4, "d": 0.76, "pitch": 0.7, "at": 0.25, "gain": -3, "lp": 3500}
+   ]}
+  ]},
+  "entity.icebreaker.hurt": {"group": "icebreaker", "name": "hurt", "subtitle": "Icebreaker hurts", "variants": [
+   {"layers": [
+    {"src": "ia_sealion", "t": 41.85, "d": 0.42, "pitch": 0.78, "fo": 0.1, "lp": 4000},
+    {"synth": "thump", "d": 0.3, "f": 70, "f1": 40, "gain": -10}
+   ]},
+   {"layers": [
+    {"src": "ia_sealion", "t": 66.92, "d": 0.4, "pitch": 0.75, "fo": 0.1, "lp": 4000},
+    {"src": "oga_rd_creature/hurt_02.ogg", "pitch": 0.55, "gain": -8}
+   ]},
+   {"layers": [
+    {"src": "ia_sealion", "t": 0.12, "d": 0.45, "pitch": 0.8, "fo": 0.12, "lp": 4000},
+    {"synth": "thump", "d": 0.3, "f": 65, "f1": 38, "gain": -10}
+   ]}
+  ]},
+  "entity.icebreaker.death": {"group": "icebreaker", "name": "death", "subtitle": "Icebreaker dies", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "len": 5.0, "lenfade": 0.4, "layers": [
+    {"src": "ia_sealion", "t": 30.75, "d": 1.45, "pitch": 0.58, "fo": 0.6, "lp": 3500},
+    {"src": "ia_sealion", "t": 50.6, "d": 2.0, "pitch": 0.5, "at": 1.6, "gain": -6, "fo": 1.0, "lp": 3000},
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-03.flac", "pitch": 0.6, "at": 4.2, "gain": -4, "lp": 3000},
+    {"synth": "thump", "d": 0.4, "f": 60, "f1": 32, "gain": -6, "at": 4.2}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "len": 4.4, "lenfade": 0.4, "layers": [
+    {"src": "ia_sealion", "t": 26.78, "d": 1.12, "pitch": 0.55, "lp": 3500},
+    {"src": "ia_sealion", "t": 45.5, "d": 1.0, "pitch": 0.5, "at": 1.6, "gain": -3, "fo": 0.8, "lp": 3000},
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-07.flac", "pitch": 0.6, "at": 3.4, "gain": -4, "lp": 3000},
+    {"synth": "thump", "d": 0.4, "f": 60, "f1": 32, "gain": -6, "at": 3.4}
+   ]}
+  ]},
+  "entity.icebreaker.roar": {"group": "icebreaker", "name": "roar", "subtitle": "Icebreaker bellows", "entry": {"attenuation_distance": 32}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.9, "mix": 0.15, "lp": 6000}], "len": 3.2, "lenfade": 0.5, "layers": [
+    {"src": "ia_sealion", "t": 30.75, "d": 1.45, "pitch": 0.5, "dist": 0.4, "lp": 3500},
+    {"src": "bsb_0546", "t": 0.8, "d": 1.5, "pitch": 0.55, "gain": -6},
+    {"synth": "rumble", "d": 2.6, "cut": 90, "gain": -10, "fo": 1.0}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.9, "mix": 0.15, "lp": 6000}], "len": 3.8, "lenfade": 0.5, "layers": [
+    {"src": "ia_sealion", "t": 50.6, "d": 2.1, "pitch": 0.55, "dist": 0.4, "lp": 3500},
+    {"src": "bsb_2383", "t": 1.0, "d": 1.55, "pitch": 0.5, "gain": -6},
+    {"synth": "rumble", "d": 3.0, "cut": 90, "gain": -10, "fo": 1.0}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.9, "mix": 0.15, "lp": 6000}], "len": 3.2, "lenfade": 0.5, "layers": [
+    {"src": "ia_sealion", "t": 45.5, "d": 1.0, "pitch": 0.5, "dist": 0.4, "lp": 3500},
+    {"src": "oga_troll_roars", "t": 7.09, "d": 1.6, "pitch": 0.7, "gain": -7},
+    {"src": "bsb_2384", "t": 0.83, "d": 1.54, "pitch": 0.5, "gain": -7}
+   ]}
+  ]},
+  "entity.icebreaker.ram": {"group": "icebreaker", "name": "ram", "subtitle": "Icebreaker rams", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 1.0, "layers": [
+    {"src": "bsb_2452", "t": 0.06, "d": 0.6, "pitch": 0.7},
+    {"src": "bsb_0105", "t": 0.74, "d": 0.3, "pitch": 0.6, "gain": -3},
+    {"synth": "thump", "d": 0.5, "f": 80, "f1": 35, "gain": -3},
+    {"src": "oga_rd_break/bfh1_hit_02.ogg", "pitch": 0.7, "gain": -4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 1.0, "layers": [
+    {"src": "bsb_2454", "t": 0.08, "d": 0.6, "pitch": 0.7},
+    {"src": "bsb_2460", "pitch": 0.6, "gain": -3},
+    {"synth": "thump", "d": 0.5, "f": 85, "f1": 35, "gain": -3},
+    {"src": "oga_rd_break/bfh1_rock_breaking_03.ogg", "pitch": 0.6, "gain": -8}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 1.0, "layers": [
+    {"src": "bsb_2453", "t": 0.14, "d": 0.6, "pitch": 0.65},
+    {"src": "bsb_2459", "pitch": 0.6, "gain": -3},
+    {"synth": "thump", "d": 0.5, "f": 75, "f1": 33, "gain": -3},
+    {"src": "oga_rd_break/bfh1_wood_hit_02.ogg", "pitch": 0.6, "gain": -5}
+   ]}
+  ]},
+  "entity.icebreaker.happy": {"group": "icebreaker", "name": "happy", "subtitle": "Icebreaker chirps", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.1, "lp": 6000}], "layers": [
+    {"src": "ia_sealion", "t": 21.6, "d": 1.9, "pitch": 0.95, "lp": 6000}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.1, "lp": 6000}], "layers": [
+    {"src": "ia_sealion", "t": 33.95, "d": 1.8, "pitch": 0.9, "lp": 6000}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.1, "lp": 6000}], "layers": [
+    {"src": "ia_sealion", "t": 36.15, "d": 1.9, "pitch": 0.92, "lp": 6000},
+    {"src": "oga_rd_creature/cute_03.ogg", "pitch": 0.6, "gain": -10, "at": 0.3}
+   ]}
+  ]},
+  "entity.icebreaker.step": {"group": "icebreaker", "name": "step", "subtitle": null, "variants": [
+   {"len": 0.7, "layers": [
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-02.flac", "pitch": 0.62, "lp": 2800},
+    {"src": "oga_wet_snow/qubodup-wet_snow_steps/snow_step_wet-01.flac", "pitch": 0.8, "gain": 12},
+    {"synth": "thump", "d": 0.3, "f": 60, "f1": 34, "gain": -8}
+   ]},
+   {"len": 0.7, "layers": [
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-04.flac", "pitch": 0.62, "lp": 2800},
+    {"src": "oga_wet_snow/qubodup-wet_snow_steps/snow_step_wet-03.flac", "pitch": 0.8, "gain": 16},
+    {"synth": "thump", "d": 0.3, "f": 60, "f1": 34, "gain": -8}
+   ]},
+   {"len": 0.7, "layers": [
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-05.flac", "pitch": 0.62, "lp": 2800},
+    {"src": "oga_wet_snow/qubodup-wet_snow_steps/snow_step_wet-06.flac", "pitch": 0.8, "gain": 16},
+    {"synth": "thump", "d": 0.3, "f": 60, "f1": 34, "gain": -8}
+   ]},
+   {"len": 0.7, "layers": [
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-09.flac", "pitch": 0.62, "lp": 2800},
+    {"src": "oga_wet_snow/qubodup-wet_snow_steps/snow_step_wet-09.flac", "pitch": 0.8, "gain": 14},
+    {"synth": "thump", "d": 0.3, "f": 60, "f1": 34, "gain": -8}
+   ]}
+  ]},
+  "entity.icebreaker.slap": {"group": "icebreaker", "name": "slap", "subtitle": "Icebreaker slaps", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.12, "lp": 6000}], "len": 0.8, "layers": [
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-01.flac", "pitch": 0.85},
+    {"src": "bsb_0597", "t": 1.13, "d": 0.12, "pitch": 0.8, "gain": -2},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-02.flac", "pitch": 1.0, "gain": 10, "at": 0.03},
+    {"synth": "thump", "d": 0.2, "f": 90, "f1": 50, "gain": -8}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.12, "lp": 6000}], "len": 0.8, "layers": [
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-06.flac", "pitch": 0.85},
+    {"src": "bsb_0597", "t": 2.92, "d": 0.12, "pitch": 0.8, "gain": -2},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-03.flac", "pitch": 1.0, "gain": 10, "at": 0.03},
+    {"synth": "thump", "d": 0.2, "f": 90, "f1": 50, "gain": -8}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.5, "mix": 0.12, "lp": 6000}], "len": 0.8, "layers": [
+    {"src": "oga_towel/wet_towel_on_floor/wet_towel_on_floor-10.flac", "pitch": 0.85},
+    {"src": "bsb_0597", "t": 5.69, "d": 0.12, "pitch": 0.8, "gain": -2},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-01.flac", "pitch": 1.0, "gain": 10, "at": 0.03},
+    {"synth": "thump", "d": 0.2, "f": 90, "f1": 50, "gain": -8}
+   ]}
+  ]},
+  "entity.icebreaker.splash": {"group": "icebreaker", "name": "splash", "subtitle": "Icebreaker splashes", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.12, "lp": 6000}], "len": 2.4, "layers": [
+    {"src": "bsb_1521", "t": 0.1, "d": 1.8, "pitch": 0.75},
+    {"src": "oga_rd_water/splash_05.ogg", "pitch": 0.6, "gain": -4},
+    {"synth": "thump", "d": 0.5, "f": 70, "f1": 35, "gain": -6}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.12, "lp": 6000}], "len": 2.4, "layers": [
+    {"src": "bsb_1519", "t": 0.12, "d": 1.4, "pitch": 0.7},
+    {"src": "oga_rd_water/splash_11.ogg", "pitch": 0.6, "gain": -4},
+    {"synth": "thump", "d": 0.5, "f": 65, "f1": 33, "gain": -6}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.12, "lp": 6000}], "len": 2.4, "layers": [
+    {"src": "bsb_1520", "t": 0.1, "d": 1.5, "pitch": 0.7},
+    {"src": "oga_rd_water/splash_07.ogg", "pitch": 0.6, "gain": -4},
+    {"synth": "thump", "d": 0.5, "f": 70, "f1": 35, "gain": -6}
+   ]}
+  ]},
+  "entity.icebreaker.shear": {"group": "icebreaker", "name": "shear", "subtitle": "Horn sheared", "variants": [
+   {"len": 0.8, "layers": [
+    {"src": "bsb_0008", "t": 2.25, "d": 0.45, "pitch": 0.85},
+    {"src": "bsb_1408", "t": 0.2, "d": 0.3, "pitch": 0.8, "gain": -3, "at": 0.05},
+    {"src": "bsb_2124", "gain": -9, "at": 0.05}
+   ]},
+   {"len": 0.8, "layers": [
+    {"src": "oga_shears1", "pitch": 0.85},
+    {"src": "bsb_1409", "t": 0.1, "d": 0.4, "pitch": 0.8, "gain": -3},
+    {"src": "bsb_2125", "gain": -9}
+   ]},
+   {"len": 0.8, "layers": [
+    {"src": "oga_shears2", "pitch": 0.8},
+    {"src": "bsb_0596", "t": 3.84, "d": 0.15, "pitch": 0.8, "gain": -3},
+    {"src": "bsb_2123", "gain": -9}
+   ]}
+  ]},
+  "entity.icebreaker.horn_regrow": {"group": "icebreaker", "name": "horn_regrow", "subtitle": "Horn grows", "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "layers": [
+    {"synth": "chime", "d": 2.0, "notes": [1318, 1568, 1976, 2637], "spread": 0.12, "decay": 1.4},
+    {"src": "bsb_2087", "t": 0.8, "d": 1.2, "gain": -6},
+    {"synth": "whoosh", "d": 1.0, "f": 2000, "f1": 8000, "q": 2, "gain": -16, "hp": 3000}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "layers": [
+    {"synth": "chime", "d": 2.0, "notes": [1175, 1480, 1760, 2349], "spread": 0.1, "decay": 1.4},
+    {"src": "bsb_2079", "t": 0.1, "d": 1.5, "gain": -6},
+    {"synth": "whoosh", "d": 1.0, "f": 2000, "f1": 8000, "q": 2, "gain": -16, "hp": 3000}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "layers": [
+    {"synth": "chime", "d": 2.0, "notes": [1397, 1760, 2093, 2794], "spread": 0.11, "decay": 1.4},
+    {"src": "bsb_2240", "t": 3.6, "d": 1.2, "pitch": 1.2, "gain": -8},
+    {"synth": "whoosh", "d": 1.0, "f": 2000, "f1": 8000, "q": 2, "gain": -16, "hp": 3000}
+   ]}
+  ]},
+  "item.snowball_launcher.fire": {"group": "launcher", "name": "fire", "subtitle": "Launcher fires", "variants": [
+   {"len": 0.45, "layers": [
+    {"src": "bsb_1491", "t": 0.1, "d": 0.35, "pitch": 0.8, "fo": 0.12},
+    {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
+    {"src": "oga_swishes/swishes/swish-3.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
+    {"src": "bsb_0138", "t": 6.36, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "bsb_1492", "t": 0.09, "d": 0.35, "pitch": 0.85, "fo": 0.12},
+    {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
+    {"src": "oga_swishes/swishes/swish-5.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
+    {"src": "bsb_0138", "t": 9.92, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "bsb_1493", "t": 0.09, "d": 0.35, "pitch": 0.8, "fo": 0.12},
+    {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
+    {"src": "oga_swishes/swishes/swish-8.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
+    {"src": "bsb_0138", "t": 2.27, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "bsb_1491", "t": 0.1, "d": 0.35, "pitch": 0.9, "fo": 0.12},
+    {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
+    {"src": "oga_swishes/swishes/swish-9.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
+    {"src": "bsb_0138", "t": 13.6, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+   ]}
+  ]},
+  "item.snowball_launcher.charge": {"group": "launcher", "name": "charge", "subtitle": "Launcher charges", "variants": [
+   {"len": 0.8, "layers": [
+    {"src": "bsb_1674", "t": 1.5, "d": 0.6},
+    {"src": "bsb_0795", "t": 2.5, "d": 0.6, "gain": -6}
+   ]},
+   {"len": 0.8, "layers": [
+    {"src": "bsb_1675", "t": 1.58, "d": 0.5},
+    {"src": "bsb_0794", "t": 2.24, "d": 0.4, "gain": -6}
+   ]},
+   {"len": 0.8, "layers": [
+    {"src": "bsb_2665", "t": 1.44, "d": 0.5},
+    {"src": "bsb_1824", "t": 0.9, "d": 0.2, "at": 0.3, "gain": -4}
+   ]}
+  ]},
+  "item.snowball_launcher.heavy": {"group": "launcher", "name": "heavy", "subtitle": "Launcher booms", "entry": {"attenuation_distance": 32}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.5, "mix": 0.2, "lp": 6000}], "len": 2.4, "lenfade": 0.5, "layers": [
+    {"src": "oga_cannon", "t": 0, "d": 2.0, "pitch": 0.85},
+    {"synth": "thump", "d": 0.9, "f": 70, "f1": 30, "gain": -2}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.5, "mix": 0.2, "lp": 6000}], "len": 2.4, "lenfade": 0.5, "layers": [
+    {"src": "oga_rd_bang/cannon_01.ogg", "pitch": 0.8},
+    {"src": "oga_rd_bang/cannon_02.ogg", "pitch": 0.6, "gain": -6},
+    {"synth": "thump", "d": 0.9, "f": 65, "f1": 28, "gain": -2}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.5, "mix": 0.2, "lp": 6000}], "len": 2.4, "lenfade": 0.5, "layers": [
+    {"src": "oga_rd_bang/cannon_04.ogg", "pitch": 0.75},
+    {"src": "bsb_3113", "t": 1.0, "d": 1.5, "pitch": 0.7, "gain": -8},
+    {"synth": "thump", "d": 0.9, "f": 70, "f1": 30, "gain": -2}
+   ]}
+  ]},
+  "item.snowball_launcher.overheat": {"group": "launcher", "name": "overheat", "subtitle": "Launcher overheats", "variants": [
+   {"len": 1.3, "layers": [
+    {"src": "oga_steam_hiss/steam hisses - Marker #1.wav", "t": 0, "d": 1.0, "fo": 0.4},
+    {"src": "bsb_2243", "t": 1.74, "d": 0.6, "pitch": 1.3, "gain": -6, "at": 0.05}
+   ]},
+   {"len": 1.3, "layers": [
+    {"src": "bsb_0805", "t": 22.7, "d": 1.2, "fo": 0.4},
+    {"src": "oga_rd_break/bfh1_metal_hit_01.ogg", "pitch": 1.2, "gain": -6}
+   ]},
+   {"len": 1.3, "layers": [
+    {"src": "bsb_0227", "t": 0.0, "d": 1.0, "fo": 0.4},
+    {"src": "bsb_3589", "t": 0.12, "d": 0.6, "pitch": 1.5, "gain": -10}
+   ]}
+  ]},
+  "item.snowball_launcher.empty": {"group": "launcher", "name": "empty", "subtitle": "Launcher clicks", "variants": [
+   {"layers": [
+    {"src": "oga_kenney_ui/click3.wav"},
+    {"src": "oga_kenney_ui/switch2.wav", "gain": -10}
+   ]},
+   {"layers": [
+    {"src": "oga_kenney_ui/switch3.wav", "pitch": 0.9}
+   ]},
+   {"layers": [
+    {"src": "bsb_1985", "t": 0.06, "d": 0.12}
+   ]}
+  ]},
+  "item.snowball_launcher.mode": {"group": "launcher", "name": "mode", "subtitle": "Launcher switches ammo", "variants": [
+   {"layers": [
+    {"src": "bsb_1989", "t": 0.1, "d": 0.35},
+    {"src": "oga_kenney_ui/switch1.wav", "gain": -4, "at": 0.1}
+   ]},
+   {"layers": [
+    {"src": "bsb_1988", "t": 0.3, "d": 0.2},
+    {"src": "oga_mech_clunk1", "gain": -3, "at": 0.05}
+   ]},
+   {"layers": [
+    {"src": "bsb_1992"},
+    {"src": "oga_mech_clunk2", "gain": -3, "at": 0.06}
+   ]}
+  ]},
+  "item.snowball_launcher.load": {"group": "launcher", "name": "load", "subtitle": "Launcher loads a snowball", "variants": [
+   {"len": 0.4, "layers": [
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-01.flac", "pitch": 1.3, "gain": 12},
+    {"src": "oga_rd_break/bfh1_wood_hit_02.ogg", "gain": -6},
+    {"src": "oga_kenney_ui/click3.wav", "at": 0.12, "gain": -8}
+   ]},
+   {"len": 0.4, "layers": [
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-03.flac", "t": 0, "d": 0.25, "pitch": 1.4, "gain": 12},
+    {"synth": "thump", "d": 0.12, "f": 150, "f1": 80, "gain": -6},
+    {"src": "oga_kenney_ui/switch2.wav", "at": 0.14, "gain": -6}
+   ]},
+   {"len": 0.4, "layers": [
+    {"src": "oga_wet_snow/qubodup-wet_snow_steps/snow_step_wet-01.flac", "pitch": 1.3, "gain": 14},
+    {"src": "oga_rd_break/bfh1_wood_hit_03.ogg", "pitch": 1.1, "gain": -6},
+    {"src": "oga_kenney_ui/switch3.wav", "at": 0.1, "gain": -8}
+   ]}
+  ]},
+  "effect.ramming.charged": {"group": "ramming", "name": "charged", "subtitle": "Ram charged", "variants": [
+   {"layers": [
+    {"src": "bsb_0285", "pitch": 0.8},
+    {"synth": "whoosh", "d": 0.9, "at": 0.15, "f": 300, "f1": 3000, "peak": 0.85, "q": 2, "gain": -3}
+   ]},
+   {"layers": [
+    {"src": "bsb_0286", "t": 0.15, "d": 0.6, "pitch": 0.75},
+    {"synth": "whoosh", "d": 0.9, "at": 0.15, "f": 300, "f1": 3000, "peak": 0.85, "q": 2, "gain": -3}
+   ]},
+   {"layers": [
+    {"src": "bsb_1543", "pitch": 0.8},
+    {"synth": "whoosh", "d": 0.9, "at": 0.15, "f": 300, "f1": 3000, "peak": 0.85, "q": 2, "gain": -3}
+   ]}
+  ]},
+  "effect.ramming.impact": {"group": "ramming", "name": "impact", "subtitle": "Ram impact", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 0.9, "layers": [
+    {"src": "bsb_1409", "t": 0.1, "d": 0.4, "pitch": 0.7},
+    {"src": "bsb_2452", "t": 0.06, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"synth": "thump", "d": 0.4, "f": 90, "f1": 40, "gain": -3},
+    {"src": "oga_rd_break/bfh1_rock_breaking_01.ogg", "pitch": 0.8, "gain": -4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 0.9, "layers": [
+    {"src": "bsb_1408", "t": 0.2, "d": 0.3, "pitch": 0.7},
+    {"src": "bsb_2455", "t": 0.13, "d": 0.4, "pitch": 0.7, "gain": -3},
+    {"synth": "thump", "d": 0.4, "f": 85, "f1": 40, "gain": -3},
+    {"src": "oga_rd_break/bfh1_wood_breaking_03.ogg", "pitch": 0.7, "gain": -4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 0.9, "layers": [
+    {"src": "bsb_0596", "t": 18.9, "d": 0.2, "pitch": 0.7},
+    {"src": "bsb_2453", "t": 0.15, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"synth": "thump", "d": 0.4, "f": 95, "f1": 40, "gain": -3},
+    {"src": "oga_rd_break/bfh1_rock_breaking_02.ogg", "pitch": 0.8, "gain": -4}
+   ]}
+  ]},
+  "entity.locomotive.whistle": {"group": "locomotive", "name": "whistle", "subtitle": "Locomotive whistles", "entry": {"attenuation_distance": 48}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.15, "lp": 6000}], "layers": [
+    {"src": "bsb_3316", "t": 0.05, "d": 1.95, "fo": 0.3}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.15, "lp": 6000}], "layers": [
+    {"src": "bsb_3319", "t": 0.05, "d": 2.0, "fo": 0.3}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.15, "lp": 6000}], "layers": [
+    {"src": "oga_steam_whistle1", "fo": 0.3}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.15, "lp": 6000}], "layers": [
+    {"src": "bsb_0226", "t": 0.0, "d": 2.5, "fo": 0.6}
+   ]}
+  ]},
+  "entity.locomotive.chuff": {"group": "locomotive", "name": "chuff", "subtitle": null, "variants": [
+   {"len": 0.45, "layers": [
+    {"src": "bsb_3310", "t": 0.42, "d": 0.34, "env": [[0, 0], [0.08, -2], [0.34, -30]]},
+    {"synth": "noise", "d": 0.34, "color": "pink", "bp": [300, 5000], "env": [[0, -40], [0.01, 0], [0.07, -5], [0.34, -40]], "gain": -4},
+    {"synth": "thump", "d": 0.25, "f": 70, "f1": 40, "gain": -8},
+    {"src": "oga_steam_hiss/steam hisses - Marker #1.wav", "t": 0.0, "d": 0.4, "gain": -14, "fo": 0.2}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "bsb_3310", "t": 2.37, "d": 0.34, "env": [[0, 0], [0.08, -2], [0.34, -30]]},
+    {"synth": "noise", "d": 0.34, "color": "pink", "bp": [300, 5000], "env": [[0, -40], [0.01, 0], [0.07, -5], [0.34, -40]], "gain": -4},
+    {"synth": "thump", "d": 0.25, "f": 70, "f1": 40, "gain": -8},
+    {"src": "oga_steam_hiss/steam hisses - Marker #2.wav", "t": 0.0, "d": 0.4, "gain": -14, "fo": 0.2}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "bsb_3311", "t": 3.12, "d": 0.34, "env": [[0, 0], [0.08, -2], [0.34, -30]]},
+    {"synth": "noise", "d": 0.34, "color": "pink", "bp": [300, 5000], "env": [[0, -40], [0.01, 0], [0.07, -5], [0.34, -40]], "gain": -4},
+    {"synth": "thump", "d": 0.25, "f": 70, "f1": 40, "gain": -8},
+    {"src": "oga_steam_hiss/steam hisses - Marker #3.wav", "t": 0.0, "d": 0.4, "gain": -14, "fo": 0.2}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "bsb_3311", "t": 4.6, "d": 0.34, "env": [[0, 0], [0.08, -2], [0.34, -30]]},
+    {"synth": "noise", "d": 0.34, "color": "pink", "bp": [300, 5000], "env": [[0, -40], [0.01, 0], [0.07, -5], [0.34, -40]], "gain": -4},
+    {"synth": "thump", "d": 0.25, "f": 70, "f1": 40, "gain": -8},
+    {"src": "oga_steam_hiss/steam hisses - Marker #4.wav", "t": 0.0, "d": 0.4, "gain": -14, "fo": 0.2}
+   ]}
+  ]},
+  "entity.dragon_locomotive.roar": {"group": "locomotive", "name": "dragon_roar", "subtitle": "Dragon engine roars", "entry": {"attenuation_distance": 32}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.2, "lp": 6000}], "len": 2.8, "lenfade": 0.5, "layers": [
+    {"src": "cw_lion", "t": 0.48, "d": 1.73, "pitch": 0.75, "dist": 1.0},
+    {"src": "oga_steam_hiss/steam hisses - Marker #3.wav", "t": 0, "d": 1.8, "gain": -6},
+    {"src": "bsb_0616", "t": 0.05, "d": 2.0, "pitch": 0.6, "gain": -9}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.2, "lp": 6000}], "len": 2.6, "lenfade": 0.5, "layers": [
+    {"src": "cw_lion", "t": 4.93, "d": 1.49, "pitch": 0.75, "dist": 1.0},
+    {"src": "bsb_0228", "t": 0.1, "d": 2.0, "gain": -6},
+    {"src": "bsb_0901", "t": 2.0, "d": 2.0, "pitch": 0.5, "gain": -10}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.2, "lp": 6000}], "len": 2.6, "lenfade": 0.5, "layers": [
+    {"src": "oga_troll_roars", "t": 7.09, "d": 1.6, "pitch": 0.8, "dist": 1.0},
+    {"src": "bsb_0227", "t": 0.0, "d": 1.8, "gain": -6},
+    {"src": "bsb_0616", "t": 12.45, "d": 1.0, "pitch": 0.6, "gain": -9}
+   ]}
+  ]},
+  "block.lift_rail.clank": {"group": "rail", "name": "lift_clank", "subtitle": null, "variants": [
+   {"len": 0.7, "layers": [
+    {"src": "bsb_0359", "t": 2.18, "d": 0.5},
+    {"src": "oga_mech_clank", "pitch": 0.9, "gain": -7}
+   ]},
+   {"len": 0.7, "layers": [
+    {"src": "bsb_0359", "t": 3.28, "d": 0.45},
+    {"src": "oga_mech_clunk1", "pitch": 0.8, "gain": -6}
+   ]},
+   {"len": 0.7, "layers": [
+    {"src": "bsb_0619", "t": 1.85, "d": 0.6},
+    {"src": "oga_mech_clank", "pitch": 0.8, "gain": -7}
+   ]}
+  ]},
+  "block.booster_rail.boost": {"group": "rail", "name": "boost", "subtitle": "Booster rail whooshes", "variants": [
+   {"layers": [
+    {"synth": "whoosh", "d": 0.8, "f": 400, "f1": 4000, "q": 3, "peak": 0.4},
+    {"src": "bsb_0952", "t": 2.77, "d": 0.6, "bp": [2000, 9000], "gain": -9},
+    {"synth": "tone", "d": 0.8, "f": 220, "f1": 880, "partials": [[1, 1], [2, 0.5], [3, 0.3]], "gain": -14, "fi": 0.05, "fo": 0.3},
+    {"src": "bsb_0134", "t": 4.05, "d": 0.45, "gain": -12}
+   ]},
+   {"layers": [
+    {"synth": "whoosh", "d": 0.75, "f": 500, "f1": 5000, "q": 3, "peak": 0.35},
+    {"src": "bsb_0952", "t": 5.35, "d": 0.55, "bp": [2000, 9000], "gain": -9},
+    {"synth": "tone", "d": 0.75, "f": 260, "f1": 1040, "partials": [[1, 1], [2, 0.5], [3, 0.3]], "gain": -14, "fi": 0.05, "fo": 0.3}
+   ]},
+   {"layers": [
+    {"synth": "whoosh", "d": 0.85, "f": 350, "f1": 3500, "q": 3, "peak": 0.45},
+    {"src": "bsb_0134", "t": 9.36, "d": 0.3, "gain": -10},
+    {"synth": "tone", "d": 0.85, "f": 196, "f1": 784, "partials": [[1, 1], [2, 0.5], [3, 0.3]], "gain": -14, "fi": 0.05, "fo": 0.3}
+   ]}
+  ]},
+  "entity.minecart.couple": {"group": "rail", "name": "couple", "subtitle": "Carts coupled", "variants": [
+   {"len": 0.7, "layers": [
+    {"src": "bsb_0360", "t": 0.15, "d": 0.4, "fo": 0.15},
+    {"src": "oga_mech_clunk1"},
+    {"src": "oga_rd_break/bfh1_metal_hit_02.ogg", "pitch": 0.7, "gain": -4}
+   ]},
+   {"len": 0.7, "layers": [
+    {"src": "bsb_0361", "t": 0.03, "d": 0.45, "fo": 0.15},
+    {"src": "oga_mech_clank", "gain": -2}
+   ]},
+   {"len": 0.7, "layers": [
+    {"src": "bsb_0355", "t": 0.08, "d": 0.4, "fo": 0.15},
+    {"src": "oga_mech_clunk2"},
+    {"src": "oga_rd_break/bfh1_metal_hit_05.ogg", "pitch": 0.8, "gain": -4}
+   ]}
+  ]},
+  "block.snow_globe.shake": {"group": "snow_globe", "name": "shake", "subtitle": "Snow globe shakes", "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.8, "layers": [
+    {"src": "bsb_2127", "pitch": 1.1},
+    {"src": "bsb_2128", "pitch": 1.2, "at": 0.25, "gain": -2},
+    {"src": "bsb_2088", "t": 0.85, "d": 1.0, "gain": -4, "at": 0.2},
+    {"synth": "chime", "d": 1.5, "notes": [2093, 2637, 3136, 3951], "spread": 0.07, "decay": 0.8, "gain": -6, "at": 0.1},
+    {"src": "bsb_1871", "t": 0.04, "d": 1.0, "gain": -10, "at": 0.3}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.8, "layers": [
+    {"src": "bsb_2124", "pitch": 1.15},
+    {"src": "bsb_2126", "pitch": 1.2, "at": 0.22, "gain": -2},
+    {"src": "bsb_2087", "t": 1.4, "d": 0.6, "gain": -4, "at": 0.15},
+    {"synth": "chime", "d": 1.5, "notes": [2349, 2960, 3520, 4699], "spread": 0.06, "decay": 0.8, "gain": -6, "at": 0.1},
+    {"src": "bsb_1867", "t": 0.07, "d": 1.0, "gain": -10, "at": 0.3}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.8, "layers": [
+    {"src": "bsb_2125", "pitch": 1.1},
+    {"src": "bsb_2123", "pitch": 1.25, "at": 0.2, "gain": -2},
+    {"src": "bsb_2079", "t": 0.1, "d": 1.0, "gain": -5, "at": 0.2},
+    {"synth": "chime", "d": 1.5, "notes": [1976, 2489, 2960, 3951], "spread": 0.08, "decay": 0.8, "gain": -6, "at": 0.1},
+    {"src": "bsb_1870", "t": 0.05, "d": 0.7, "gain": -10, "at": 0.3}
+   ]}
+  ]},
+  "entity.player.shiver": {"group": "player", "name": "shiver", "subtitle": "Player shivers", "variants": [
+   {"layers": [
+    {"src": "bsb_2190", "t": 0.25, "d": 1.25, "fo": 0.2},
+    {"src": "bsb_1103", "t": 1.5, "d": 0.3, "gain": -8, "at": 0.5}
+   ]},
+   {"layers": [
+    {"src": "bsb_2190", "t": 2.76, "d": 1.3, "fo": 0.2},
+    {"src": "bsb_2195", "t": 1.47, "d": 0.76, "gain": -9}
+   ]},
+   {"layers": [
+    {"src": "bsb_2190", "t": 1.68, "d": 0.8, "fo": 0.2},
+    {"src": "bsb_1103", "t": 4.28, "d": 0.32, "gain": -8, "at": 0.3}
+   ]}
+  ]},
+  "entity.player.overheat": {"group": "player", "name": "overheat", "subtitle": "Player overheats", "variants": [
+   {"layers": [
+    {"src": "bsb_1694", "t": 0.12, "d": 1.0, "fo": 0.3},
+    {"src": "oga_steam_hiss/steam hisses - Marker #2.wav", "t": 0, "d": 0.8, "gain": -8, "fo": 0.3}
+   ]},
+   {"layers": [
+    {"src": "bsb_1695", "t": 0.03, "d": 1.3, "fo": 0.4},
+    {"src": "oga_steam_hiss/steam hisses - Marker #4.wav", "t": 0, "d": 0.8, "gain": -9, "fo": 0.3}
+   ]},
+   {"layers": [
+    {"src": "bsb_1696", "t": 0.03, "d": 0.9, "fo": 0.3},
+    {"src": "oga_steam_hiss/steam hisses - Marker #5.wav", "t": 0, "d": 0.8, "gain": -8, "fo": 0.3}
+   ]}
+  ]},
+  "entity.frost_mauler.ambient": {"group": "frost_mauler", "name": "ambient", "subtitle": "Frost Mauler growls", "entry": {"attenuation_distance": 24}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "oga_troll_idle", "t": 1.0, "d": 1.75, "pitch": 0.7, "lp": 4500},
+    {"src": "bsb_0285", "pitch": 0.55, "gain": -6, "at": 1.6}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "oga_troll_idle", "t": 4.1, "d": 1.5, "pitch": 0.68, "lp": 4500},
+    {"src": "cw_lion", "t": 7.95, "d": 0.35, "pitch": 0.6, "gain": -6, "at": 0.4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "oga_troll_idle", "t": 10.6, "d": 1.5, "pitch": 0.72, "lp": 4500},
+    {"src": "bsb_1543", "pitch": 0.6, "gain": -4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "oga_bear/flac/bear_01.flac", "pitch": 0.6, "lp": 4500},
+    {"src": "oga_troll_idle", "t": 17.1, "d": 1.6, "pitch": 0.7, "gain": -4, "at": 0.3, "lp": 4500}
+   ]}
+  ]},
+  "entity.frost_mauler.hurt": {"group": "frost_mauler", "name": "hurt", "subtitle": "Frost Mauler hurts", "variants": [
+   {"layers": [
+    {"src": "oga_troll_roars", "t": 3.6, "d": 0.5, "pitch": 0.8, "fo": 0.15, "lp": 4500},
+    {"src": "oga_rd_creature/hurt_04.ogg", "pitch": 0.5, "gain": -6},
+    {"synth": "thump", "d": 0.3, "f": 70, "f1": 35, "gain": -10}
+   ]},
+   {"layers": [
+    {"src": "oga_troll_roars", "t": 9.39, "d": 0.45, "pitch": 0.78, "fo": 0.15, "lp": 4500},
+    {"src": "oga_rd_creature/hurt_01.ogg", "pitch": 0.5, "gain": -6}
+   ]},
+   {"layers": [
+    {"src": "cw_lion", "t": 4.93, "d": 0.5, "pitch": 0.75, "fo": 0.15, "lp": 4500},
+    {"src": "oga_rd_creature2/attack_02.ogg", "pitch": 0.6, "gain": -6}
+   ]}
+  ]},
+  "entity.frost_mauler.death": {"group": "frost_mauler", "name": "death", "subtitle": "Frost Mauler dies", "entry": {"attenuation_distance": 48}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.5, "mix": 0.25, "lp": 6000}], "len": 6.0, "lenfade": 0.8, "layers": [
+    {"src": "cw_lion", "t": 0.48, "d": 1.74, "pitch": 0.62, "env": [[0, 0], [1.6, 0], [2.8, -14]], "lp": 4500},
+    {"src": "oga_deep_roar", "t": 1.0, "d": 3.5, "pitch": 0.8, "gain": -7, "fo": 1.5},
+    {"src": "ia_pond_ice", "t": 31.0, "d": 2.4, "pitch": 0.7, "at": 2.0, "gain": -4},
+    {"src": "ia_icebooms", "t": 60.3, "d": 1.6, "pitch": 0.8, "at": 3.0},
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta5.ogg", "pitch": 0.7, "at": 3.6, "gain": -4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.5, "mix": 0.25, "lp": 6000}], "len": 5.5, "lenfade": 0.8, "layers": [
+    {"src": "cw_lion", "t": 4.93, "d": 1.49, "pitch": 0.6, "env": [[0, 0], [1.4, 0], [2.5, -14]], "lp": 4500},
+    {"src": "oga_troll_roars", "t": 7.09, "d": 1.6, "pitch": 0.6, "gain": -6, "fo": 0.8},
+    {"src": "ia_pond_ice", "t": 17.9, "d": 1.2, "pitch": 0.6, "at": 1.8, "gain": -4},
+    {"src": "ia_icebooms", "t": 104.38, "d": 1.4, "pitch": 0.8, "at": 2.6},
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta4.ogg", "pitch": 0.7, "at": 3.2, "gain": -4}
+   ]}
+  ]},
+  "entity.frost_mauler.roar": {"group": "frost_mauler", "name": "roar", "subtitle": "Frost Mauler roars", "entry": {"attenuation_distance": 64}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.8, "mix": 0.25, "lp": 6000}], "len": 3.0, "lenfade": 0.6, "layers": [
+    {"src": "cw_lion", "t": 0.48, "d": 1.74, "pitch": 0.72},
+    {"src": "oga_troll_roars", "t": 1.87, "d": 1.03, "pitch": 0.65, "gain": -4},
+    {"src": "oga_deep_roar", "t": 0.12, "d": 2.0, "pitch": 0.85, "gain": -6},
+    {"synth": "rumble", "d": 2.4, "cut": 70, "gain": -4, "fo": 0.8},
+    {"synth": "noise", "d": 2.2, "color": "white", "hp": 7000, "gain": -24, "env": [[0, -20], [0.4, 0], [2.2, -20]]},
+    {"synth": "chime", "d": 2.2, "notes": [3520, 4186, 4699], "spread": 0.15, "decay": 1.0, "gain": -20}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.8, "mix": 0.25, "lp": 6000}], "len": 3.0, "lenfade": 0.6, "layers": [
+    {"src": "cw_lion", "t": 4.93, "d": 1.49, "pitch": 0.7},
+    {"src": "oga_troll_roars", "t": 7.09, "d": 1.6, "pitch": 0.65, "gain": -4},
+    {"src": "oga_deep_roar", "t": 1.5, "d": 2.0, "pitch": 0.85, "gain": -6},
+    {"synth": "rumble", "d": 2.4, "cut": 70, "gain": -4, "fo": 0.8},
+    {"synth": "noise", "d": 2.2, "color": "white", "hp": 7000, "gain": -24, "env": [[0, -20], [0.4, 0], [2.2, -20]]},
+    {"synth": "chime", "d": 2.2, "notes": [3520, 4186, 4699], "spread": 0.15, "decay": 1.0, "gain": -20}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.8, "mix": 0.25, "lp": 6000}], "len": 3.0, "lenfade": 0.6, "layers": [
+    {"src": "oga_troll_roars", "t": 7.09, "d": 1.6, "pitch": 0.6},
+    {"src": "cw_lion", "t": 0.48, "d": 1.74, "pitch": 0.78, "gain": -3},
+    {"src": "bsb_3617", "t": 0.4, "d": 1.65, "pitch": 0.5, "gain": -8},
+    {"synth": "rumble", "d": 2.4, "cut": 70, "gain": -4, "fo": 0.8},
+    {"synth": "noise", "d": 2.2, "color": "white", "hp": 7000, "gain": -24, "env": [[0, -20], [0.4, 0], [2.2, -20]]},
+    {"synth": "chime", "d": 2.2, "notes": [3520, 4186, 4699], "spread": 0.15, "decay": 1.0, "gain": -20}
+   ]}
+  ]},
+  "entity.frost_mauler.claw": {"group": "frost_mauler", "name": "claw", "subtitle": "Frost Mauler swipes", "variants": [
+   {"len": 0.9, "layers": [
+    {"src": "bsb_1801", "t": 0.15, "d": 0.5, "pitch": 0.6},
+    {"src": "bsb_0127", "t": 0.05, "d": 0.4, "pitch": 0.75, "at": 0.15},
+    {"src": "bsb_2460", "pitch": 0.6, "at": 0.2, "gain": -4}
+   ]},
+   {"len": 0.9, "layers": [
+    {"src": "bsb_1796", "t": 0.12, "d": 0.5, "pitch": 0.6},
+    {"src": "bsb_0127", "t": 0.05, "d": 0.4, "pitch": 0.7, "at": 0.16},
+    {"src": "bsb_2461", "pitch": 0.6, "at": 0.2, "gain": -4}
+   ]},
+   {"len": 0.9, "layers": [
+    {"src": "bsb_1800", "t": 0.12, "d": 0.5, "pitch": 0.6},
+    {"src": "bsb_0127", "t": 0.05, "d": 0.4, "pitch": 0.8, "at": 0.15},
+    {"src": "bsb_2459", "pitch": 0.6, "at": 0.2, "gain": -4},
+    {"src": "bsb_2205", "t": 0.4, "d": 0.3, "pitch": 0.7, "at": 0.2, "gain": -8}
+   ]}
+  ]},
+  "entity.frost_mauler.bite": {"group": "frost_mauler", "name": "bite", "subtitle": "Frost Mauler bites", "variants": [
+   {"len": 0.6, "layers": [
+    {"src": "oga_rd_break/bfh1_wood_hit_01.ogg", "pitch": 0.7},
+    {"src": "bsb_1408", "t": 0.2, "d": 0.25, "pitch": 0.7, "gain": -3},
+    {"src": "oga_snarls2", "t": 0.38, "d": 0.3, "pitch": 0.7, "gain": -4},
+    {"synth": "thump", "d": 0.2, "f": 120, "f1": 60, "gain": -6}
+   ]},
+   {"len": 0.6, "layers": [
+    {"src": "oga_rd_break/bfh1_wood_hit_03.ogg", "pitch": 0.65},
+    {"src": "bsb_0596", "t": 25.05, "d": 0.2, "pitch": 0.7, "gain": -3},
+    {"src": "oga_snarls2", "t": 2.77, "d": 0.4, "pitch": 0.7, "gain": -4},
+    {"synth": "thump", "d": 0.2, "f": 110, "f1": 55, "gain": -6}
+   ]},
+   {"len": 0.6, "layers": [
+    {"src": "oga_rd_break/bfh1_hit_08.ogg", "pitch": 0.7},
+    {"src": "bsb_1409", "t": 0.1, "d": 0.3, "pitch": 0.7, "gain": -3},
+    {"src": "oga_snarls2", "t": 4.92, "d": 0.4, "pitch": 0.7, "gain": -4},
+    {"synth": "thump", "d": 0.2, "f": 120, "f1": 60, "gain": -6}
+   ]}
+  ]},
+  "entity.frost_mauler.fury": {"group": "frost_mauler", "name": "fury", "subtitle": "Frost Mauler snarls furiously", "entry": {"attenuation_distance": 24}, "variants": [
+   {"layers": [
+    {"src": "oga_snarls1", "t": 0.17, "d": 1.5, "pitch": 0.75, "fo": 0.3, "lp": 4500}
+   ]},
+   {"layers": [
+    {"src": "oga_snarls3", "t": 2.94, "d": 1.5, "pitch": 0.72, "fo": 0.3, "lp": 4500}
+   ]},
+   {"layers": [
+    {"src": "oga_snarls4", "t": 0.1, "d": 1.1, "pitch": 0.75, "lp": 4500},
+    {"src": "oga_snarls5", "t": 0.33, "d": 1.0, "pitch": 0.7, "at": 0.2, "gain": -5, "fo": 0.3, "lp": 4500}
+   ]}
+  ]},
+  "entity.frost_mauler.stunned": {"group": "frost_mauler", "name": "stunned", "subtitle": "Frost Mauler is dazed", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "bsb_0286", "t": 0.15, "d": 0.6, "pitch": 0.55},
+    {"src": "oga_rd_creature/howl.ogg", "pitch": 0.6, "at": 0.5, "gain": -4, "fo": 0.4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "bsb_1543", "pitch": 0.55},
+    {"src": "bsb_3618", "t": 2.5, "d": 1.2, "pitch": 0.55, "at": 0.4, "gain": -3, "fo": 0.5}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "bsb_0287", "pitch": 0.55},
+    {"src": "oga_rd_creature/howl.ogg", "pitch": 0.5, "at": 0.35, "gain": -4, "fo": 0.4}
+   ]}
+  ]},
+  "entity.frost_mauler.step": {"group": "frost_mauler", "name": "step", "subtitle": null, "variants": [
+   {"len": 0.6, "layers": [
+    {"synth": "thump", "d": 0.35, "f": 70, "f1": 35, "gain": -2},
+    {"src": "bsb_2454", "t": 0.1, "d": 0.3, "pitch": 0.6, "gain": -4},
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_03.flac", "pitch": 0.7, "gain": -3}
+   ]},
+   {"len": 0.6, "layers": [
+    {"synth": "thump", "d": 0.35, "f": 70, "f1": 35, "gain": -2},
+    {"src": "bsb_2452", "t": 0.06, "d": 0.3, "pitch": 0.6, "gain": -4},
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_06.flac", "pitch": 0.7, "gain": -3}
+   ]},
+   {"len": 0.6, "layers": [
+    {"synth": "thump", "d": 0.35, "f": 70, "f1": 35, "gain": -2},
+    {"src": "bsb_2455", "t": 0.13, "d": 0.3, "pitch": 0.6, "gain": -4},
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_17.flac", "pitch": 0.7, "gain": -3}
+   ]},
+   {"len": 0.6, "layers": [
+    {"synth": "thump", "d": 0.35, "f": 70, "f1": 35, "gain": -2},
+    {"src": "bsb_2453", "t": 0.15, "d": 0.3, "pitch": 0.6, "gain": -4},
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_20.flac", "pitch": 0.7, "gain": -3}
+   ]}
+  ]},
+  "entity.frost_mauler.wake": {"group": "frost_mauler", "name": "wake", "subtitle": "Frost Mauler awakens", "entry": {"attenuation_distance": 48}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 1.4, "mix": 0.22, "lp": 6000}], "len": 3.6, "lenfade": 0.6, "layers": [
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta5.ogg", "pitch": 0.65},
+    {"src": "bsb_0387", "pitch": 0.7, "gain": -3},
+    {"synth": "thump", "d": 0.6, "f": 90, "f1": 35, "gain": -3},
+    {"src": "oga_troll_idle", "t": 14.15, "d": 2.2, "pitch": 0.65, "at": 0.6, "lp": 4500}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 1.4, "mix": 0.22, "lp": 6000}], "len": 3.6, "lenfade": 0.6, "layers": [
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta4.ogg", "pitch": 0.65},
+    {"src": "bsb_0148", "pitch": 0.75, "gain": -3},
+    {"synth": "thump", "d": 0.6, "f": 90, "f1": 35, "gain": -3},
+    {"src": "oga_troll_idle", "t": 6.97, "d": 1.1, "pitch": 0.6, "at": 0.5, "lp": 4500},
+    {"src": "oga_deep_roar", "t": 2.0, "d": 1.5, "pitch": 0.8, "at": 1.2, "gain": -6, "fo": 0.6}
+   ]}
+  ]},
+  "entity.frost_mauler.breath": {"group": "frost_mauler", "name": "breath", "subtitle": null, "variants": [
+   {"layers": [
+    {"src": "bsb_1603", "t": 0.6, "d": 0.7, "pitch": 0.6},
+    {"src": "bsb_0285", "pitch": 0.5, "gain": -6},
+    {"synth": "noise", "d": 0.9, "color": "white", "hp": 5000, "gain": -16, "env": [[0, -30], [0.1, 0], [0.9, -30]]}
+   ]},
+   {"layers": [
+    {"src": "bsb_1405", "t": 2.0, "d": 1.4, "pitch": 0.6, "fo": 0.3},
+    {"src": "bsb_0286", "t": 0.15, "d": 0.6, "pitch": 0.5, "gain": -8},
+    {"synth": "noise", "d": 0.9, "color": "white", "hp": 5000, "gain": -16, "env": [[0, -30], [0.1, 0], [0.9, -30]]}
+   ]},
+   {"layers": [
+    {"src": "bsb_1602", "t": 0.25, "d": 0.3, "pitch": 0.55},
+    {"src": "bsb_0287", "pitch": 0.5, "gain": -4},
+    {"synth": "noise", "d": 0.9, "color": "white", "hp": 5000, "gain": -16, "env": [[0, -30], [0.1, 0], [0.9, -30]]}
+   ]}
+  ]},
+  "entity.frost_mauler.explode": {"group": "frost_mauler", "name": "explode", "subtitle": "Frost Mauler explodes", "entry": {"attenuation_distance": 64}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 3.5, "lenfade": 0.8, "layers": [
+    {"src": "oga_rd_bang/cannon_02.ogg", "pitch": 0.55},
+    {"src": "oga_cannon", "t": 0, "d": 2.5, "pitch": 0.6, "gain": -4},
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta5.ogg", "pitch": 0.7, "at": 0.05},
+    {"src": "bsb_0148", "pitch": 0.8, "at": 0.1, "gain": -4},
+    {"synth": "thump", "d": 1.0, "f": 60, "f1": 28, "gain": 0},
+    {"synth": "whoosh", "d": 1.2, "at": 0.05, "f": 3200, "f1": 600, "q": 1.2, "hp": 1200, "gain": -7, "peak": 0.25}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 3.5, "lenfade": 0.8, "layers": [
+    {"src": "oga_rd_bang/cannon_05.ogg", "pitch": 0.55},
+    {"src": "oga_rd_bang/bang_03.ogg", "pitch": 0.5, "gain": -4},
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta4.ogg", "pitch": 0.7, "at": 0.05},
+    {"src": "bsb_0387", "pitch": 0.8, "at": 0.1, "gain": -4},
+    {"synth": "thump", "d": 1.0, "f": 55, "f1": 26, "gain": 0},
+    {"synth": "whoosh", "d": 1.2, "at": 0.05, "f": 3200, "f1": 600, "q": 1.2, "hp": 1200, "gain": -7, "peak": 0.25}
+   ]}
+  ]},
+  "entity.polar_bear.roar": {"group": "polar_bear", "name": "roar", "subtitle": "Polar Bear roars", "entry": {"attenuation_distance": 32}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "layers": [
+    {"src": "oga_troll_roars", "t": 1.87, "d": 1.03, "pitch": 0.85},
+    {"src": "oga_bear/flac/bear_01.flac", "pitch": 0.9, "gain": -2}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "layers": [
+    {"src": "cw_lion", "t": 4.93, "d": 1.2, "pitch": 0.95, "fo": 0.4},
+    {"src": "oga_bear/flac/bear_02.flac", "pitch": 0.9, "gain": -4}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "layers": [
+    {"src": "oga_troll_roars", "t": 9.39, "d": 0.74, "pitch": 0.85},
+    {"src": "oga_bear/flac/bear_01.flac", "pitch": 0.8, "gain": -3, "at": 0.1}
+   ]}
+  ]},
+  "entity.polar_bear.leap": {"group": "polar_bear", "name": "leap", "subtitle": "Polar Bear leaps", "variants": [
+   {"layers": [
+    {"src": "oga_rd_creature/grunt_04.ogg", "pitch": 0.6},
+    {"src": "bsb_1796", "t": 0.2, "d": 0.4, "pitch": 0.7, "at": 0.15}
+   ]},
+   {"layers": [
+    {"src": "oga_rd_creature2/grunt_06.ogg", "pitch": 0.6},
+    {"src": "bsb_1801", "t": 0.2, "d": 0.4, "pitch": 0.7, "at": 0.12}
+   ]},
+   {"layers": [
+    {"src": "oga_rd_creature/grunt_05.ogg", "t": 0.1, "pitch": 0.6},
+    {"src": "bsb_1800", "t": 0.2, "d": 0.4, "pitch": 0.7, "at": 0.15}
+   ]}
+  ]},
+  "entity.polar_bear.slam": {"group": "polar_bear", "name": "slam", "subtitle": "Polar Bear slams", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "len": 1.0, "layers": [
+    {"synth": "thump", "d": 0.45, "f": 80, "f1": 35, "gain": -2},
+    {"src": "bsb_2453", "t": 0.15, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-02.flac", "pitch": 0.6, "gain": 10},
+    {"src": "bsb_0208", "t": 4.98, "d": 0.5, "pitch": 0.7, "gain": -2}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "len": 1.0, "layers": [
+    {"synth": "thump", "d": 0.45, "f": 80, "f1": 35, "gain": -2},
+    {"src": "bsb_2454", "t": 0.1, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-03.flac", "pitch": 0.6, "gain": 10},
+    {"src": "bsb_0208", "t": 3.73, "d": 0.5, "pitch": 0.7, "gain": -2}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "len": 1.0, "layers": [
+    {"synth": "thump", "d": 0.45, "f": 80, "f1": 35, "gain": -2},
+    {"src": "bsb_2452", "t": 0.06, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-01.flac", "pitch": 0.6, "gain": 10},
+    {"src": "bsb_0208", "t": 0.6, "d": 0.5, "pitch": 0.7, "gain": -2}
+   ]}
+  ]},
+  "entity.polar_bear.munch": {"group": "polar_bear", "name": "munch", "subtitle": "Polar Bear eats", "variants": [
+   {"layers": [
+    {"src": "bsb_0497", "t": 2.9, "d": 1.2, "pitch": 0.8},
+    {"src": "oga_rd_water/slime_03.ogg", "pitch": 0.7, "gain": -6, "at": 0.1},
+    {"src": "oga_rd_creature/eat_01.ogg", "pitch": 0.6, "gain": -4, "at": 0.4}
+   ]},
+   {"layers": [
+    {"src": "bsb_0497", "t": 5.5, "d": 1.0, "pitch": 0.8},
+    {"src": "oga_rd_water/slime_02.ogg", "pitch": 0.7, "gain": -6, "at": 0.2},
+    {"src": "oga_rd_creature/eat_02.ogg", "pitch": 0.6, "gain": -4}
+   ]},
+   {"layers": [
+    {"src": "bsb_0352", "t": 3.4, "d": 0.6, "pitch": 0.7},
+    {"src": "oga_rd_creature/eat_04.ogg", "pitch": 0.6, "gain": -2},
+    {"src": "oga_rd_water/slime_04.ogg", "pitch": 0.7, "gain": -6, "at": 0.3}
+   ]}
+  ]},
+  "entity.polar_bear.calm": {"group": "polar_bear", "name": "calm", "subtitle": "Polar Bear huffs contentedly", "variants": [
+   {"layers": [
+    {"src": "bsb_0285", "pitch": 0.7},
+    {"src": "bsb_1404", "t": 0.7, "d": 0.8, "pitch": 0.7, "gain": -6, "fo": 0.3, "at": 0.2}
+   ]},
+   {"layers": [
+    {"src": "bsb_0287", "pitch": 0.7},
+    {"src": "bsb_1404", "t": 2.0, "d": 0.8, "pitch": 0.7, "gain": -6, "fo": 0.3, "at": 0.15}
+   ]},
+   {"layers": [
+    {"src": "bsb_1543", "pitch": 0.72},
+    {"src": "bsb_1405", "t": 2.0, "d": 0.9, "pitch": 0.7, "gain": -8, "fo": 0.3, "at": 0.2}
+   ]}
+  ]},
+  "entity.polar_bear.shear": {"group": "polar_bear", "name": "shear", "subtitle": "Polar Bear shorn", "variants": [
+   {"layers": [
+    {"src": "bsb_0008", "t": 2.25, "d": 0.5},
+    {"src": "bsb_1104", "t": 0.36, "d": 0.45, "gain": -4, "at": 0.15}
+   ]},
+   {"layers": [
+    {"src": "oga_shears1"},
+    {"src": "oga_shears1", "pitch": 0.95, "at": 0.22, "gain": -2},
+    {"src": "bsb_1104", "t": 1.4, "d": 0.44, "gain": -4, "at": 0.1}
+   ]},
+   {"layers": [
+    {"src": "bsb_0008", "t": 4.1, "d": 0.5},
+    {"src": "bsb_1104", "t": 5.88, "d": 0.4, "gain": -4, "at": 0.12}
+   ]}
+  ]},
+  "entity.zombie_polar_bear.ambient": {"group": "zombie_polar_bear", "name": "ambient", "subtitle": "Zombie Polar Bear groans", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "oga_bear/flac/bear_01.flac", "pitch": 0.7, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "bsb_2106", "t": 4.77, "d": 1.23, "pitch": 0.6, "gain": -4, "dist": 1.2, "bp": [120, 4000]}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "bsb_2107", "t": 4.58, "d": 1.55, "pitch": 0.55, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "oga_troll_idle", "t": 21.7, "d": 0.8, "pitch": 0.75, "gain": -6}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "layers": [
+    {"src": "bsb_2108", "t": 3.77, "d": 1.22, "pitch": 0.55, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "oga_zombie_moans", "t": 0.39, "d": 1.68, "pitch": 0.6, "gain": -7}
+   ]}
+  ]},
+  "entity.zombie_polar_bear.hurt": {"group": "zombie_polar_bear", "name": "hurt", "subtitle": "Zombie Polar Bear hurts", "variants": [
+   {"layers": [
+    {"src": "bsb_2110", "t": 0.13, "d": 0.4, "pitch": 0.6, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "oga_rd_creature/hurt_03.ogg", "pitch": 0.5, "gain": -6}
+   ]},
+   {"layers": [
+    {"src": "bsb_2111", "t": 0.04, "d": 0.5, "pitch": 0.55, "fo": 0.15, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "oga_bear/flac/bear_02.flac", "t": 0.0, "d": 0.4, "pitch": 0.7, "gain": -6, "fo": 0.1}
+   ]},
+   {"layers": [
+    {"src": "oga_zombies/zombies/zombie-11.wav", "pitch": 0.6, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "oga_rd_creature/hurt_05.ogg", "pitch": 0.5, "gain": -6}
+   ]}
+  ]},
+  "entity.zombie_polar_bear.death": {"group": "zombie_polar_bear", "name": "death", "subtitle": "Zombie Polar Bear dies", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "len": 4.5, "lenfade": 0.5, "layers": [
+    {"src": "bsb_2106", "t": 10.65, "d": 2.19, "pitch": 0.55, "fo": 1.0, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "oga_bear/flac/bear_02.flac", "pitch": 0.7, "gain": -6},
+    {"src": "bsb_1409", "t": 0.1, "d": 0.4, "at": 1.6, "gain": -6}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "len": 4.5, "lenfade": 0.5, "layers": [
+    {"src": "bsb_2107", "t": 8.59, "d": 1.52, "pitch": 0.55, "fo": 0.8, "dist": 1.2, "bp": [120, 4000]},
+    {"src": "oga_zombie_moans", "t": 3.73, "d": 2.04, "pitch": 0.6, "gain": -6, "fo": 1.0},
+    {"src": "bsb_1408", "t": 0.2, "d": 0.3, "at": 1.8, "gain": -6}
+   ]}
+  ]},
+  "entity.frost_zombie.ambient": {"group": "frost_zombie", "name": "ambient", "subtitle": "Frost Zombie groans", "variants": [
+   {"layers": [
+    {"src": "bsb_2106", "t": 1.03, "d": 1.43, "pitch": 0.85},
+    {"synth": "crackle", "d": 1.4, "density": 30, "hp": 3000, "gain": -14}
+   ]},
+   {"layers": [
+    {"src": "bsb_2108", "t": 0.05, "d": 0.72, "pitch": 0.85},
+    {"src": "oga_zombies/zombies/zombie-1.wav", "pitch": 0.8, "gain": -8, "at": 0.5},
+    {"synth": "crackle", "d": 1.2, "density": 30, "hp": 3000, "gain": -14}
+   ]},
+   {"layers": [
+    {"src": "bsb_2112", "t": 0.04, "d": 1.06, "pitch": 0.85},
+    {"synth": "crackle", "d": 1.1, "density": 30, "hp": 3000, "gain": -14}
+   ]}
+  ]},
+  "entity.frost_zombie.hurt": {"group": "frost_zombie", "name": "hurt", "subtitle": "Frost Zombie hurts", "variants": [
+   {"layers": [
+    {"src": "oga_zombies/zombies/zombie-3.wav", "pitch": 0.9, "lp": 6000},
+    {"src": "bsb_2205", "t": 0.4, "d": 0.2, "gain": -8, "fo": 0.08}
+   ]},
+   {"layers": [
+    {"src": "oga_zombies/zombies/zombie-7.wav", "pitch": 0.9, "lp": 6000},
+    {"src": "bsb_2205", "t": 0.88, "d": 0.2, "gain": -8, "fo": 0.08}
+   ]},
+   {"layers": [
+    {"src": "oga_zombies/zombies/zombie-13.wav", "pitch": 0.9, "lp": 6000},
+    {"src": "bsb_2205", "t": 0.4, "d": 0.2, "gain": -8, "fo": 0.08}
+   ]}
+  ]},
+  "entity.frost_zombie.death": {"group": "frost_zombie", "name": "death", "subtitle": "Frost Zombie dies", "variants": [
+   {"len": 2.0, "layers": [
+    {"src": "bsb_2107", "t": 0.03, "d": 1.05, "pitch": 0.85, "fo": 0.3},
+    {"src": "oga_rd_break/bfh1_glass_breaking_02.ogg", "pitch": 0.8, "at": 0.8, "gain": -6}
+   ]},
+   {"len": 2.2, "layers": [
+    {"src": "bsb_2109", "t": 1.45, "d": 0.5, "pitch": 0.85},
+    {"src": "oga_zombies/zombies/zombie-16.wav", "pitch": 0.8, "at": 0.3, "gain": -4, "fo": 0.4},
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta2.ogg", "pitch": 0.8, "at": 1.0, "gain": -6}
+   ]}
+  ]},
+  "entity.frost_zombie.step": {"group": "frost_zombie", "name": "step", "subtitle": null, "variants": [
+   {"len": 0.45, "layers": [
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_08.flac"},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-01.flac", "pitch": 1.1, "gain": 8},
+    {"synth": "crackle", "d": 0.2, "density": 80, "hp": 4000, "gain": -16}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_11.flac"},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-02.flac", "pitch": 1.1, "gain": 8},
+    {"synth": "crackle", "d": 0.2, "density": 80, "hp": 4000, "gain": -16}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_19.flac"},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-03.flac", "pitch": 1.1, "gain": 8},
+    {"synth": "crackle", "d": 0.2, "density": 80, "hp": 4000, "gain": -16}
+   ]},
+   {"len": 0.45, "layers": [
+    {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_22.flac"},
+    {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-04.flac", "pitch": 1.1, "gain": 8},
+    {"synth": "crackle", "d": 0.2, "density": 80, "hp": 4000, "gain": -16}
+   ]}
+  ]},
+  "item.armor.equip_fur": {"group": "armor", "name": "equip_fur", "subtitle": "Fur armor rustles", "variants": [
+   {"layers": [
+    {"src": "bsb_1104", "t": 0.36, "d": 0.5, "lp": 6000, "fo": 0.15},
+    {"src": "bsb_0576", "t": 0.88, "d": 0.12, "gain": -6, "pitch": 0.8}
+   ]},
+   {"layers": [
+    {"src": "bsb_1104", "t": 1.4, "d": 0.45, "lp": 6000, "fo": 0.15},
+    {"src": "bsb_1788", "t": 0.15, "d": 0.25, "gain": -6}
+   ]},
+   {"layers": [
+    {"src": "bsb_1104", "t": 5.88, "d": 0.4, "lp": 6000, "fo": 0.15},
+    {"src": "bsb_1789", "t": 0.38, "d": 0.4, "gain": -8, "fo": 0.15}
+   ]}
+  ]},
+  "item.fang_dagger.slash": {"group": "fang_dagger", "name": "slash", "subtitle": "Fang Dagger slashes", "variants": [
+   {"len": 0.3, "layers": [
+    {"src": "oga_swishes/swishes/swish-1.wav", "pitch": 1.2},
+    {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
+    {"synth": "chime", "d": 0.25, "notes": [3520], "decay": 0.12, "gain": -18}
+   ]},
+   {"len": 0.3, "layers": [
+    {"src": "oga_swishes/swishes/swish-4.wav", "pitch": 1.25},
+    {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
+    {"synth": "chime", "d": 0.25, "notes": [3951], "decay": 0.12, "gain": -18}
+   ]},
+   {"len": 0.3, "layers": [
+    {"src": "oga_swishes/swishes/swish-6.wav", "pitch": 1.15},
+    {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
+    {"synth": "chime", "d": 0.25, "notes": [3136], "decay": 0.12, "gain": -18}
+   ]},
+   {"len": 0.3, "layers": [
+    {"src": "oga_swishes/swishes/swish-9.wav", "pitch": 1.2},
+    {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
+    {"synth": "chime", "d": 0.25, "notes": [4186], "decay": 0.12, "gain": -18}
+   ]},
+   {"len": 0.3, "layers": [
+    {"src": "oga_swishes/swishes/swish-12.wav", "pitch": 1.1},
+    {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
+    {"synth": "chime", "d": 0.25, "notes": [3729], "decay": 0.12, "gain": -18}
+   ]}
+  ]},
+  "item.fang_dagger.pounce": {"group": "fang_dagger", "name": "pounce", "subtitle": "Player pounces", "variants": [
+   {"layers": [
+    {"src": "bsb_1801", "t": 0.15, "d": 0.6, "pitch": 0.9},
+    {"src": "bsb_1787", "t": 0.6, "d": 0.2, "gain": -6}
+   ]},
+   {"layers": [
+    {"src": "bsb_1796", "t": 0.12, "d": 0.6, "pitch": 0.9},
+    {"src": "bsb_1788", "t": 0.15, "d": 0.25, "gain": -6}
+   ]},
+   {"layers": [
+    {"src": "bsb_1800", "t": 0.12, "d": 0.6, "pitch": 0.9},
+    {"src": "bsb_1787", "t": 0.6, "d": 0.2, "gain": -6, "pitch": 1.1}
+   ]}
+  ]},
+  "item.fang_dagger.crit": {"group": "fang_dagger", "name": "crit", "subtitle": "Fang Crit", "variants": [
+   {"len": 0.8, "layers": [
+    {"src": "bsb_2039", "pitch": 0.9},
+    {"src": "bsb_2460", "pitch": 0.9, "gain": -2},
+    {"synth": "chime", "d": 0.6, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
+   ]},
+   {"len": 0.8, "layers": [
+    {"src": "bsb_2041", "pitch": 0.9},
+    {"src": "bsb_2459", "pitch": 0.9, "gain": -2},
+    {"synth": "chime", "d": 0.6, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
+   ]},
+   {"len": 0.8, "layers": [
+    {"src": "bsb_2042", "pitch": 0.9},
+    {"src": "bsb_2461", "pitch": 0.9, "gain": -2},
+    {"synth": "chime", "d": 0.6, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
+   ]}
+  ]},
+  "item.fang_dagger.tired": {"group": "fang_dagger", "name": "tired", "subtitle": "Fang Daggers tire", "variants": [
+   {"layers": [
+    {"src": "bsb_1405", "t": 2.0, "d": 0.9, "pitch": 0.9, "gain": -6, "fo": 0.3},
+    {"src": "oga_rd_break/bfh1_metal_hit_05.ogg", "pitch": 0.7, "lp": 3000}
+   ]},
+   {"layers": [
+    {"src": "bsb_1404", "t": 0.7, "d": 0.8, "pitch": 0.9, "gain": -6, "fo": 0.3},
+    {"src": "oga_rd_break/bfh1_metal_hit_04.ogg", "pitch": 0.7, "lp": 3000}
+   ]},
+   {"layers": [
+    {"src": "bsb_1405", "t": 0.67, "d": 0.9, "pitch": 0.9, "gain": -4, "fo": 0.3},
+    {"src": "oga_rd_break/bfh1_metal_hit_02.ogg", "pitch": 0.75, "lp": 3000}
+   ]}
+  ]},
+  "item.fang_dagger.ready": {"group": "fang_dagger", "name": "ready", "subtitle": "Fang Daggers ready", "variants": [
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.2, "lp": 6000}], "layers": [
+    {"synth": "chime", "d": 1.0, "notes": [2093, 3136], "spread": 0.05, "decay": 0.6},
+    {"src": "bsb_2886", "t": 1.05, "d": 0.3, "gain": -6}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.2, "lp": 6000}], "layers": [
+    {"synth": "chime", "d": 1.0, "notes": [2349, 3520], "spread": 0.05, "decay": 0.6},
+    {"src": "bsb_2886", "t": 0.33, "d": 0.3, "gain": -6}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.2, "lp": 6000}], "layers": [
+    {"synth": "chime", "d": 1.0, "notes": [1976, 2960], "spread": 0.05, "decay": 0.6},
+    {"src": "bsb_1335", "t": 0.03, "d": 0.3, "gain": -6}
+   ]}
+  ]},
+  "block.frost_mauler_skull.ignite": {"group": "mauler_skull", "name": "ignite", "subtitle": "Frost Mauler Skull ignites", "variants": [
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 3.6, "lenfade": 0.4, "layers": [
+    {"synth": "tone", "d": 3.0, "f": 110, "f1": 440, "partials": [[1, 1], [2, 0.5], [3, 0.3], [5, 0.15]], "vib": [5.5, 0.012], "gain": -4, "env": [[0, -30], [1.5, -8], [2.7, 0], [3.0, -3]], "fo": 0.15},
+    {"synth": "tone", "d": 3.0, "f": 165.0, "f1": 660, "partials": [[1, 1], [2, 0.3]], "vib": [4.2, 0.015], "gain": -10, "env": [[0, -30], [2.0, -6], [3.0, 0]], "fo": 0.15},
+    {"src": "ia_pond_ice", "t": 31.0, "d": 2.4, "pitch": 0.9, "gain": -6, "at": 0.5, "fo": 0.3},
+    {"synth": "noise", "d": 3.0, "color": "white", "hp": 7000, "gain": -20, "env": [[0, -30], [2.8, 0], [3.0, -6]]}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 3.6, "lenfade": 0.4, "layers": [
+    {"synth": "tone", "d": 3.0, "f": 98, "f1": 392, "partials": [[1, 1], [2, 0.5], [3, 0.3], [5, 0.15]], "vib": [5.5, 0.012], "gain": -4, "env": [[0, -30], [1.5, -8], [2.7, 0], [3.0, -3]], "fo": 0.15},
+    {"synth": "tone", "d": 3.0, "f": 147.0, "f1": 588, "partials": [[1, 1], [2, 0.3]], "vib": [4.2, 0.015], "gain": -10, "env": [[0, -30], [2.0, -6], [3.0, 0]], "fo": 0.15},
+    {"src": "ia_pond_ice", "t": 17.9, "d": 2.4, "pitch": 0.9, "gain": -6, "at": 0.5, "fo": 0.3},
+    {"synth": "noise", "d": 3.0, "color": "white", "hp": 7000, "gain": -20, "env": [[0, -30], [2.8, 0], [3.0, -6]]}
+   ]}
+  ]},
+  "block.frost_mauler_skull.revive": {"group": "mauler_skull", "name": "revive", "subtitle": "Frost Mauler Skull explodes", "entry": {"attenuation_distance": 48}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 4.5, "lenfade": 0.8, "layers": [
+    {"src": "cw_lion", "t": 4.93, "d": 1.2, "pitch": 0.7, "fo": 0.3},
+    {"src": "oga_rd_bang/cannon_02.ogg", "pitch": 0.6, "at": 1.0},
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta5.ogg", "pitch": 0.7, "at": 1.0},
+    {"src": "bsb_0148", "pitch": 0.8, "at": 1.05, "gain": -3},
+    {"synth": "thump", "d": 1.0, "f": 60, "f1": 28, "gain": 0, "at": 1.0},
+    {"synth": "whoosh", "d": 1.2, "at": 1.0, "f": 3200, "f1": 600, "q": 1.2, "hp": 1200, "gain": -7, "peak": 0.25}
+   ]},
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 4.5, "lenfade": 0.8, "layers": [
+    {"src": "oga_troll_roars", "t": 1.87, "d": 1.0, "pitch": 0.65, "fo": 0.3},
+    {"src": "oga_rd_bang/cannon_05.ogg", "pitch": 0.6, "at": 0.9},
+    {"src": "oga_ice_shatter/IceShatters/LedasLuzta4.ogg", "pitch": 0.7, "at": 0.9},
+    {"src": "bsb_0387", "pitch": 0.8, "at": 0.95, "gain": -3},
+    {"synth": "thump", "d": 1.0, "f": 58, "f1": 27, "gain": 0, "at": 0.9},
+    {"synth": "whoosh", "d": 1.2, "at": 0.9, "f": 3200, "f1": 600, "q": 1.2, "hp": 1200, "gain": -7, "peak": 0.25}
+   ]}
   ]}
  }
 }

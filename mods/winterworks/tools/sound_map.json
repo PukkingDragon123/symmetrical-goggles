@@ -212,5 +212,917 @@
       }
     ],
     "subtitle": "Frozen tomb rumbles"
+  },
+  "entity.icebreaker.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/ambient1",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:icebreaker/ambient2",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:icebreaker/ambient3",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:icebreaker/ambient4",
+        "attenuation_distance": 20
+      }
+    ],
+    "subtitle": "Icebreaker grunts"
+  },
+  "entity.icebreaker.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/hurt1"
+      },
+      {
+        "name": "winterworks:icebreaker/hurt2"
+      },
+      {
+        "name": "winterworks:icebreaker/hurt3"
+      }
+    ],
+    "subtitle": "Icebreaker hurts"
+  },
+  "entity.icebreaker.death": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/death1"
+      },
+      {
+        "name": "winterworks:icebreaker/death2"
+      }
+    ],
+    "subtitle": "Icebreaker dies"
+  },
+  "entity.icebreaker.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/roar1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:icebreaker/roar2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:icebreaker/roar3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Icebreaker bellows"
+  },
+  "entity.icebreaker.ram": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/ram1"
+      },
+      {
+        "name": "winterworks:icebreaker/ram2"
+      },
+      {
+        "name": "winterworks:icebreaker/ram3"
+      }
+    ],
+    "subtitle": "Icebreaker rams"
+  },
+  "entity.icebreaker.happy": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/happy1"
+      },
+      {
+        "name": "winterworks:icebreaker/happy2"
+      },
+      {
+        "name": "winterworks:icebreaker/happy3"
+      }
+    ],
+    "subtitle": "Icebreaker chirps"
+  },
+  "entity.icebreaker.step": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/step1"
+      },
+      {
+        "name": "winterworks:icebreaker/step2"
+      },
+      {
+        "name": "winterworks:icebreaker/step3"
+      },
+      {
+        "name": "winterworks:icebreaker/step4"
+      }
+    ],
+    "subtitle": null
+  },
+  "entity.icebreaker.slap": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/slap1"
+      },
+      {
+        "name": "winterworks:icebreaker/slap2"
+      },
+      {
+        "name": "winterworks:icebreaker/slap3"
+      }
+    ],
+    "subtitle": "Icebreaker slaps"
+  },
+  "entity.icebreaker.splash": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/splash1"
+      },
+      {
+        "name": "winterworks:icebreaker/splash2"
+      },
+      {
+        "name": "winterworks:icebreaker/splash3"
+      }
+    ],
+    "subtitle": "Icebreaker splashes"
+  },
+  "entity.icebreaker.shear": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/shear1"
+      },
+      {
+        "name": "winterworks:icebreaker/shear2"
+      },
+      {
+        "name": "winterworks:icebreaker/shear3"
+      }
+    ],
+    "subtitle": "Horn sheared"
+  },
+  "entity.icebreaker.horn_regrow": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/horn_regrow1"
+      },
+      {
+        "name": "winterworks:icebreaker/horn_regrow2"
+      },
+      {
+        "name": "winterworks:icebreaker/horn_regrow3"
+      }
+    ],
+    "subtitle": "Horn grows"
+  },
+  "item.snowball_launcher.fire": {
+    "sounds": [
+      {
+        "name": "winterworks:launcher/fire1"
+      },
+      {
+        "name": "winterworks:launcher/fire2"
+      },
+      {
+        "name": "winterworks:launcher/fire3"
+      },
+      {
+        "name": "winterworks:launcher/fire4"
+      }
+    ],
+    "subtitle": "Launcher fires"
+  },
+  "item.snowball_launcher.charge": {
+    "sounds": [
+      {
+        "name": "winterworks:launcher/charge1"
+      },
+      {
+        "name": "winterworks:launcher/charge2"
+      },
+      {
+        "name": "winterworks:launcher/charge3"
+      }
+    ],
+    "subtitle": "Launcher charges"
+  },
+  "item.snowball_launcher.heavy": {
+    "sounds": [
+      {
+        "name": "winterworks:launcher/heavy1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:launcher/heavy2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:launcher/heavy3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Launcher booms"
+  },
+  "item.snowball_launcher.overheat": {
+    "sounds": [
+      {
+        "name": "winterworks:launcher/overheat1"
+      },
+      {
+        "name": "winterworks:launcher/overheat2"
+      },
+      {
+        "name": "winterworks:launcher/overheat3"
+      }
+    ],
+    "subtitle": "Launcher overheats"
+  },
+  "item.snowball_launcher.empty": {
+    "sounds": [
+      {
+        "name": "winterworks:launcher/empty1"
+      },
+      {
+        "name": "winterworks:launcher/empty2"
+      },
+      {
+        "name": "winterworks:launcher/empty3"
+      }
+    ],
+    "subtitle": "Launcher clicks"
+  },
+  "item.snowball_launcher.mode": {
+    "sounds": [
+      {
+        "name": "winterworks:launcher/mode1"
+      },
+      {
+        "name": "winterworks:launcher/mode2"
+      },
+      {
+        "name": "winterworks:launcher/mode3"
+      }
+    ],
+    "subtitle": "Launcher switches ammo"
+  },
+  "item.snowball_launcher.load": {
+    "sounds": [
+      {
+        "name": "winterworks:launcher/load1"
+      },
+      {
+        "name": "winterworks:launcher/load2"
+      },
+      {
+        "name": "winterworks:launcher/load3"
+      }
+    ],
+    "subtitle": "Launcher loads a snowball"
+  },
+  "effect.ramming.charged": {
+    "sounds": [
+      {
+        "name": "winterworks:ramming/charged1"
+      },
+      {
+        "name": "winterworks:ramming/charged2"
+      },
+      {
+        "name": "winterworks:ramming/charged3"
+      }
+    ],
+    "subtitle": "Ram charged"
+  },
+  "effect.ramming.impact": {
+    "sounds": [
+      {
+        "name": "winterworks:ramming/impact1"
+      },
+      {
+        "name": "winterworks:ramming/impact2"
+      },
+      {
+        "name": "winterworks:ramming/impact3"
+      }
+    ],
+    "subtitle": "Ram impact"
+  },
+  "entity.locomotive.whistle": {
+    "sounds": [
+      {
+        "name": "winterworks:locomotive/whistle1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:locomotive/whistle2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:locomotive/whistle3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:locomotive/whistle4",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Locomotive whistles"
+  },
+  "entity.locomotive.chuff": {
+    "sounds": [
+      {
+        "name": "winterworks:locomotive/chuff1"
+      },
+      {
+        "name": "winterworks:locomotive/chuff2"
+      },
+      {
+        "name": "winterworks:locomotive/chuff3"
+      },
+      {
+        "name": "winterworks:locomotive/chuff4"
+      }
+    ],
+    "subtitle": null
+  },
+  "entity.dragon_locomotive.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:locomotive/dragon_roar1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:locomotive/dragon_roar2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:locomotive/dragon_roar3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Dragon engine roars"
+  },
+  "block.lift_rail.clank": {
+    "sounds": [
+      {
+        "name": "winterworks:rail/lift_clank1"
+      },
+      {
+        "name": "winterworks:rail/lift_clank2"
+      },
+      {
+        "name": "winterworks:rail/lift_clank3"
+      }
+    ],
+    "subtitle": null
+  },
+  "block.booster_rail.boost": {
+    "sounds": [
+      {
+        "name": "winterworks:rail/boost1"
+      },
+      {
+        "name": "winterworks:rail/boost2"
+      },
+      {
+        "name": "winterworks:rail/boost3"
+      }
+    ],
+    "subtitle": "Booster rail whooshes"
+  },
+  "entity.minecart.couple": {
+    "sounds": [
+      {
+        "name": "winterworks:rail/couple1"
+      },
+      {
+        "name": "winterworks:rail/couple2"
+      },
+      {
+        "name": "winterworks:rail/couple3"
+      }
+    ],
+    "subtitle": "Carts coupled"
+  },
+  "block.snow_globe.shake": {
+    "sounds": [
+      {
+        "name": "winterworks:snow_globe/shake1"
+      },
+      {
+        "name": "winterworks:snow_globe/shake2"
+      },
+      {
+        "name": "winterworks:snow_globe/shake3"
+      }
+    ],
+    "subtitle": "Snow globe shakes"
+  },
+  "entity.player.shiver": {
+    "sounds": [
+      {
+        "name": "winterworks:player/shiver1"
+      },
+      {
+        "name": "winterworks:player/shiver2"
+      },
+      {
+        "name": "winterworks:player/shiver3"
+      }
+    ],
+    "subtitle": "Player shivers"
+  },
+  "entity.player.overheat": {
+    "sounds": [
+      {
+        "name": "winterworks:player/overheat1"
+      },
+      {
+        "name": "winterworks:player/overheat2"
+      },
+      {
+        "name": "winterworks:player/overheat3"
+      }
+    ],
+    "subtitle": "Player overheats"
+  },
+  "entity.frost_mauler.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/ambient1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:frost_mauler/ambient2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:frost_mauler/ambient3",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:frost_mauler/ambient4",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "Frost Mauler growls"
+  },
+  "entity.frost_mauler.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/hurt1"
+      },
+      {
+        "name": "winterworks:frost_mauler/hurt2"
+      },
+      {
+        "name": "winterworks:frost_mauler/hurt3"
+      }
+    ],
+    "subtitle": "Frost Mauler hurts"
+  },
+  "entity.frost_mauler.death": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/death1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:frost_mauler/death2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Frost Mauler dies"
+  },
+  "entity.frost_mauler.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/roar1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:frost_mauler/roar2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:frost_mauler/roar3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Frost Mauler roars"
+  },
+  "entity.frost_mauler.claw": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/claw1"
+      },
+      {
+        "name": "winterworks:frost_mauler/claw2"
+      },
+      {
+        "name": "winterworks:frost_mauler/claw3"
+      }
+    ],
+    "subtitle": "Frost Mauler swipes"
+  },
+  "entity.frost_mauler.bite": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/bite1"
+      },
+      {
+        "name": "winterworks:frost_mauler/bite2"
+      },
+      {
+        "name": "winterworks:frost_mauler/bite3"
+      }
+    ],
+    "subtitle": "Frost Mauler bites"
+  },
+  "entity.frost_mauler.fury": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/fury1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:frost_mauler/fury2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:frost_mauler/fury3",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "Frost Mauler snarls furiously"
+  },
+  "entity.frost_mauler.stunned": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/stunned1"
+      },
+      {
+        "name": "winterworks:frost_mauler/stunned2"
+      },
+      {
+        "name": "winterworks:frost_mauler/stunned3"
+      }
+    ],
+    "subtitle": "Frost Mauler is dazed"
+  },
+  "entity.frost_mauler.step": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/step1"
+      },
+      {
+        "name": "winterworks:frost_mauler/step2"
+      },
+      {
+        "name": "winterworks:frost_mauler/step3"
+      },
+      {
+        "name": "winterworks:frost_mauler/step4"
+      }
+    ],
+    "subtitle": null
+  },
+  "entity.frost_mauler.wake": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/wake1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:frost_mauler/wake2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Frost Mauler awakens"
+  },
+  "entity.frost_mauler.breath": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/breath1"
+      },
+      {
+        "name": "winterworks:frost_mauler/breath2"
+      },
+      {
+        "name": "winterworks:frost_mauler/breath3"
+      }
+    ],
+    "subtitle": null
+  },
+  "entity.frost_mauler.explode": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/explode1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:frost_mauler/explode2",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Frost Mauler explodes"
+  },
+  "entity.polar_bear.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:polar_bear/roar1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:polar_bear/roar2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:polar_bear/roar3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Polar Bear roars"
+  },
+  "entity.polar_bear.leap": {
+    "sounds": [
+      {
+        "name": "winterworks:polar_bear/leap1"
+      },
+      {
+        "name": "winterworks:polar_bear/leap2"
+      },
+      {
+        "name": "winterworks:polar_bear/leap3"
+      }
+    ],
+    "subtitle": "Polar Bear leaps"
+  },
+  "entity.polar_bear.slam": {
+    "sounds": [
+      {
+        "name": "winterworks:polar_bear/slam1"
+      },
+      {
+        "name": "winterworks:polar_bear/slam2"
+      },
+      {
+        "name": "winterworks:polar_bear/slam3"
+      }
+    ],
+    "subtitle": "Polar Bear slams"
+  },
+  "entity.polar_bear.munch": {
+    "sounds": [
+      {
+        "name": "winterworks:polar_bear/munch1"
+      },
+      {
+        "name": "winterworks:polar_bear/munch2"
+      },
+      {
+        "name": "winterworks:polar_bear/munch3"
+      }
+    ],
+    "subtitle": "Polar Bear eats"
+  },
+  "entity.polar_bear.calm": {
+    "sounds": [
+      {
+        "name": "winterworks:polar_bear/calm1"
+      },
+      {
+        "name": "winterworks:polar_bear/calm2"
+      },
+      {
+        "name": "winterworks:polar_bear/calm3"
+      }
+    ],
+    "subtitle": "Polar Bear huffs contentedly"
+  },
+  "entity.polar_bear.shear": {
+    "sounds": [
+      {
+        "name": "winterworks:polar_bear/shear1"
+      },
+      {
+        "name": "winterworks:polar_bear/shear2"
+      },
+      {
+        "name": "winterworks:polar_bear/shear3"
+      }
+    ],
+    "subtitle": "Polar Bear shorn"
+  },
+  "entity.zombie_polar_bear.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:zombie_polar_bear/ambient1"
+      },
+      {
+        "name": "winterworks:zombie_polar_bear/ambient2"
+      },
+      {
+        "name": "winterworks:zombie_polar_bear/ambient3"
+      }
+    ],
+    "subtitle": "Zombie Polar Bear groans"
+  },
+  "entity.zombie_polar_bear.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:zombie_polar_bear/hurt1"
+      },
+      {
+        "name": "winterworks:zombie_polar_bear/hurt2"
+      },
+      {
+        "name": "winterworks:zombie_polar_bear/hurt3"
+      }
+    ],
+    "subtitle": "Zombie Polar Bear hurts"
+  },
+  "entity.zombie_polar_bear.death": {
+    "sounds": [
+      {
+        "name": "winterworks:zombie_polar_bear/death1"
+      },
+      {
+        "name": "winterworks:zombie_polar_bear/death2"
+      }
+    ],
+    "subtitle": "Zombie Polar Bear dies"
+  },
+  "entity.frost_zombie.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_zombie/ambient1"
+      },
+      {
+        "name": "winterworks:frost_zombie/ambient2"
+      },
+      {
+        "name": "winterworks:frost_zombie/ambient3"
+      }
+    ],
+    "subtitle": "Frost Zombie groans"
+  },
+  "entity.frost_zombie.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_zombie/hurt1"
+      },
+      {
+        "name": "winterworks:frost_zombie/hurt2"
+      },
+      {
+        "name": "winterworks:frost_zombie/hurt3"
+      }
+    ],
+    "subtitle": "Frost Zombie hurts"
+  },
+  "entity.frost_zombie.death": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_zombie/death1"
+      },
+      {
+        "name": "winterworks:frost_zombie/death2"
+      }
+    ],
+    "subtitle": "Frost Zombie dies"
+  },
+  "entity.frost_zombie.step": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_zombie/step1"
+      },
+      {
+        "name": "winterworks:frost_zombie/step2"
+      },
+      {
+        "name": "winterworks:frost_zombie/step3"
+      },
+      {
+        "name": "winterworks:frost_zombie/step4"
+      }
+    ],
+    "subtitle": null
+  },
+  "item.armor.equip_fur": {
+    "sounds": [
+      {
+        "name": "winterworks:armor/equip_fur1"
+      },
+      {
+        "name": "winterworks:armor/equip_fur2"
+      },
+      {
+        "name": "winterworks:armor/equip_fur3"
+      }
+    ],
+    "subtitle": "Fur armor rustles"
+  },
+  "item.fang_dagger.slash": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/slash1"
+      },
+      {
+        "name": "winterworks:fang_dagger/slash2"
+      },
+      {
+        "name": "winterworks:fang_dagger/slash3"
+      },
+      {
+        "name": "winterworks:fang_dagger/slash4"
+      },
+      {
+        "name": "winterworks:fang_dagger/slash5"
+      }
+    ],
+    "subtitle": "Fang Dagger slashes"
+  },
+  "item.fang_dagger.pounce": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/pounce1"
+      },
+      {
+        "name": "winterworks:fang_dagger/pounce2"
+      },
+      {
+        "name": "winterworks:fang_dagger/pounce3"
+      }
+    ],
+    "subtitle": "Player pounces"
+  },
+  "item.fang_dagger.crit": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/crit1"
+      },
+      {
+        "name": "winterworks:fang_dagger/crit2"
+      },
+      {
+        "name": "winterworks:fang_dagger/crit3"
+      }
+    ],
+    "subtitle": "Fang Crit"
+  },
+  "item.fang_dagger.tired": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/tired1"
+      },
+      {
+        "name": "winterworks:fang_dagger/tired2"
+      },
+      {
+        "name": "winterworks:fang_dagger/tired3"
+      }
+    ],
+    "subtitle": "Fang Daggers tire"
+  },
+  "item.fang_dagger.ready": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/ready1"
+      },
+      {
+        "name": "winterworks:fang_dagger/ready2"
+      },
+      {
+        "name": "winterworks:fang_dagger/ready3"
+      }
+    ],
+    "subtitle": "Fang Daggers ready"
+  },
+  "block.frost_mauler_skull.ignite": {
+    "sounds": [
+      {
+        "name": "winterworks:mauler_skull/ignite1"
+      },
+      {
+        "name": "winterworks:mauler_skull/ignite2"
+      }
+    ],
+    "subtitle": "Frost Mauler Skull ignites"
+  },
+  "block.frost_mauler_skull.revive": {
+    "sounds": [
+      {
+        "name": "winterworks:mauler_skull/revive1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:mauler_skull/revive2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Frost Mauler Skull explodes"
   }
 }

@@ -222,7 +222,7 @@ for s, sx in SIDES:
          rot=mr([0, 0, 16], sx))
     card(f"fur_elbow_{s}", f"front_leg_{s}", strands(5, 9, 21 + (sx > 0)), mx([0.3, -3.0, -3.6], sx), FUR,
          offset=[0, -3.4, 0], rot=[-14, 0, 0])
-    card(f"fur_forearm_{s}", f"front_forearm_{s}", strands(4, 6, 23 + (sx > 0)), [0, -0.8, -2.8], FUR,
+    card(f"fur_forearm_{s}", f"front_forearm_{s}", strands(4, 5, 23 + (sx > 0)), [0, -0.8, -2.8], FUR,
          offset=[0, -2.4, 0], rot=[-10, 0, 0])
     card(f"fur_shoulder_{s}", f"front_leg_{s}", strands(7, 7, 29 + (sx > 0)), mx([3.4, -3.0, 0.2], sx), FUR,
          offset=[0, -2.4, 0], rot=mr([0, 0, 12], sx))
@@ -302,7 +302,9 @@ def styles_for(v="base"):
             {"id": "under", "op": "gradient", "axis": "y", "amount": 1.6},
             {"id": "toes", "op": "stripes", "axis": "x", "period": 1.6, "width": 0.22, "shift": -2.2,
              "faces": ["front", "top"]},
-            {"id": "pads", "op": "fill", "ramp": "skin", "tone": 2.0, "faces": ["bottom"]}]},
+            {"id": "sole", "op": "fill", "shift": -3.0, "faces": ["bottom"]}], "stamps": [
+            {"face": "bottom", "at": "top-left", "art": [".p.p.p.", "p.....p", "..ppp..", ".ppppp.", ".ppppp.", "..ppp.."],
+             "offset": [0, 1], "key": {"p": "skin:2"}}]},
         "claw": {"ramp": "claw", "tone": 2.6, "brush": {"off": True}, "layers": [
             {"id": "tip", "op": "gradient", "axis": "z", "amount": -1.6}]},
         "head": {"ramp": "fur", "tone": 10.2, "layers": [
@@ -363,7 +365,7 @@ def styles_for(v="base"):
         st["fur_card"]["stamps"] = INVISIBLE
     if zombie:
         # rotting grey-green coat with mangy bald patches and wounds, a dark wound behind the bare ribs
-        rot = {"id": "rot", "op": "patches", "ramp": "rot", "tone": 3.2, "scale": 1.3, "threshold": 0.72,
+        rot = {"id": "rot", "op": "patches", "ramp": "rot", "tone": 3.2, "scale": 1.3, "threshold": 0.77,
                "faces": ["sides", "back", "front", "top"]}
         mange = {"id": "mange", "op": "patches", "ramp": "flesh", "tone": 4.4, "scale": 1.9, "threshold": 0.68,
                  "faces": ["sides", "top"]}
@@ -381,7 +383,7 @@ def styles_for(v="base"):
                                          "centers": [[8.5, 0.8, 7.2, 4.4], [8.5, -1.2, 9.6, 3.0], [8.5, 2.8, 5.0, 3.0]],
                                          "faces": ["left", "right"],
                                          "bevel": {"highlight": 1, "shadow": 0, "highlight_shift": 2.0}})
-        st["fur_card"]["layers"] = st["fur_card"]["layers"] + [dict(rot, threshold=0.55)]
+        st["fur_card"]["layers"] = st["fur_card"]["layers"] + [dict(rot, threshold=0.66)]
         st["fur_card"]["art_key"] = {"h": "fur:10", "d": "fur:2"}
         st["zombie_bone"] = {"ramp": "bone", "tone": 6.4, "rim": {"light": 0, "dark": 0}, "brush": {"off": True},
                              "art_key": {"b": "bone:6"}, "layers": [
@@ -390,7 +392,7 @@ def styles_for(v="base"):
         st["zombie_flesh"] = {"ramp": "flesh", "tone": 4.0, "art_key": {"f": "flesh:4"}}
         # small intense glowing points in dark sockets
         st["eye"] = {"ramp": "eye", "tone": 0.2, "light": 0, "brush": {"off": True}, "stamps": [
-            {"face": "front", "at": "top-left", "art": [".g"], "key": {"g": "glow:4"}}]}
+            {"face": "front", "at": "top-left", "art": [".g"], "key": {"g": "glow:3"}}]}
         # the torn ear: a notch bitten out of the right ear
         st["ear_r"]["stamps"] = [
             {"face": "front", "at": "top-left", "art": ["___", "_d.", "..."], "key": {"d": "rot:2"}},
@@ -451,9 +453,10 @@ class Leg:
         self.upper, self.lower, self.paw, self.bend, self.sx = upper, lower, paw, bend, side
 
 
-def gait(T, phase, duty, stride, lift, curl=35.0, reach=12.0, dz=0.0):
+def gait(T, phase, duty, stride, lift, curl=35.0, reach=12.0, dz=0.0, toe=7.0, heel=2.2):
     """A stepping paw for a looping gait of period T: planted and sliding back for `duty` of the cycle, then lifted
-    (toes curled) and swung forward. Returns f(t, side) -> (offset from the rest wrist, paw pitch in degrees)."""
+    (toes curled) and swung forward. Returns f(t, side) -> (offset from the rest wrist, paw pitch in degrees).
+    The lift always clears the curled toes (`toe`: wrist-to-toe length) and the raised heel (`heel`)."""
     def f(t, sx):
         u = (t / T + phase) % 1.0
         if u < duty:
@@ -461,7 +464,10 @@ def gait(T, phase, duty, stride, lift, curl=35.0, reach=12.0, dz=0.0):
         s = (u - duty) / (1 - duty)
         e = 0.5 - 0.5 * math.cos(math.pi * s)
         pitch = curl * math.sin(math.pi * s / 0.7) if s < 0.7 else -reach * math.sin(math.pi * (s - 0.7) / 0.3)
-        return [0.0, lift * math.sin(math.pi * s), dz + stride * (e - 0.5)], pitch
+        p = math.radians(pitch)
+        clear = toe * math.sin(p) if p > 0 else heel * math.sin(-p) + 2.7 * (1 - math.cos(p))
+        y = max(lift * math.sin(math.pi * s), clear + 0.3 * math.sin(math.pi * s))
+        return [0.0, y, dz + stride * (e - 0.5)], pitch
     return f
 
 
@@ -507,7 +513,40 @@ def _wrap(a):
     return (a + math.pi) % (2 * math.pi) - math.pi
 
 
-def bake(spec, clips, legs, fps=24):
+def thin(keys, tol=0.06):
+    """Drop keys that linear interpolation between their neighbours reproduces within `tol` (degrees / units)."""
+    if len(keys) <= 2:
+        return keys
+    out, i = [keys[0]], 0
+    while i < len(keys) - 1:
+        j = i + 2
+        while j < len(keys):
+            t0, v0 = keys[i][0], np.array(keys[i][1])
+            t1, v1 = keys[j][0], np.array(keys[j][1])
+            ok = all(np.abs(v0 + (v1 - v0) * (keys[m][0] - t0) / (t1 - t0) - np.array(keys[m][1])).max() <= tol
+                     for m in range(i + 1, j))
+            if not ok:
+                break
+            j += 1
+        i = j - 1
+        out.append(keys[i])
+    return out
+
+
+def dumps(spec):
+    """JSON with short number lists kept on one line."""
+    import re
+    txt = json.dumps(spec, indent=1)
+    num = r"-?\d+(?:\.\d+)?(?:e-?\d+)?"
+    txt = re.sub(r"\[\s*(" + num + r"(?:,\s*" + num + r")*)\s*\]", lambda m: "[" + re.sub(r"\s+", " ", m.group(1)) + "]", txt)
+    txt = re.sub(r"\[\s*(" + num + r"),\s*(\[[^\[\]]*\])(,\s*\"[a-z_]+\")?\s*\]",
+                 lambda m: "[" + m.group(1) + ", " + m.group(2) + (", " + m.group(3).strip(", \n") if m.group(3) else "") + "]", txt)
+    txt = re.sub(r"\[\s*(\[[^\[\]]*\](?:,\s*\[[^\[\]]*\])*)\s*\]",
+                 lambda m: "[" + re.sub(r"\],\s*\[", "], [", m.group(1)) + "]", txt)
+    return txt
+
+
+def bake(spec, clips, legs, fps=30):
     """Solve the legs with IK on top of each clip's torso tracks, so paws stay planted or follow their paths.
     clips: {name: (clip, {leg: path})}. Returns lowpix animations with rotation keys (and, where a leg must reach
     further than it can, a small position drop of the hip/shoulder joint along its parent's -y)."""
@@ -522,7 +561,12 @@ def bake(spec, clips, legs, fps=24):
         anim = model.animator()
         length, loop = float(clip["length"]), bool(clip.get("loop", True))
         n = max(8, int(round(length * fps)))
-        times = [length * k / n for k in range(n + (0 if loop else 1))]
+        times = {round(length * k / n, 4) for k in range(n + (0 if loop else 1))}
+        for tr in clip["tracks"]:          # also sample exactly at the torso's key times (sharp changes of pace)
+            for k in tr.get("keys", []):
+                if 0 <= k[0] < length or (not loop and k[0] <= length):
+                    times.add(round(float(k[0]), 4))
+        times = sorted(times)
         worlds = [anim.world_matrices(name, t) for t in times]
         tracks = list(clip["tracks"])
         for leg_name, path in paths.items():
@@ -535,35 +579,45 @@ def bake(spec, clips, legs, fps=24):
             g0 = _wrap(_ang(v0) - _ang(e0))
             wrest, prest = rest[leg.paw][:3, 3], rest[leg.paw][:3, :3]
             ku, kl, kp, kd = [], [], [], []
-            for t, Wm in zip(times, worlds):
-                off, pitch = path(t, leg.sx)
-                target = wrest + np.array(off)
-                Wpar = Wm[U.parent]
-                drop = 0.0
-                for _ in range(4):
-                    Su = Wpar @ np.vstack([np.c_[np.eye(3), [0, -drop, 0]], [0, 0, 0, 1]]) @ Lu
-                    q = Su[:3, :3].T @ (target - Su[:3, 3])
-                    x0 = e0[0] + v0[0]
-                    r = math.hypot(q[0], q[1])
-                    gam = 0.0
-                    if r > abs(x0) + 1e-6:
-                        phi = math.atan2(q[1], q[0])
-                        gam = _wrap(phi + math.acos(max(-1.0, min(1.0, x0 / r))))
-                        if abs(gam) > math.pi / 2:
-                            gam = _wrap(phi - math.acos(max(-1.0, min(1.0, x0 / r))))
-                    qp = _rz(-gam) @ q
-                    d = math.hypot(qp[1], qp[2])
-                    reach = 0.995 * (l1 + l2)
-                    if d <= reach or drop > 6:
-                        break
-                    drop += d - reach + 0.02
+            def solve(q):
+                x0 = e0[0] + v0[0]
+                r = math.hypot(q[0], q[1])
+                gam = 0.0
+                if r > abs(x0) + 1e-6:
+                    phi = math.atan2(q[1], q[0])
+                    gam = _wrap(phi + math.acos(max(-1.0, min(1.0, x0 / r))))
+                    if abs(gam) > math.pi / 2:
+                        gam = _wrap(phi - math.acos(max(-1.0, min(1.0, x0 / r))))
+                qp = _rz(-gam) @ q
+                d = math.hypot(qp[1], qp[2])
                 d = max(abs(l1 - l2) + 1e-3, min(l1 + l2 - 1e-3, d))
                 cg = (d * d - l1 * l1 - l2 * l2) / (2 * l1 * l2)
                 g = math.acos(max(-1.0, min(1.0, cg)))
                 b = _wrap(leg.bend * g - g0)
                 v = _rx(b) @ v0
                 c = np.array([0.0, e0[1] + v[1], e0[2] + v[2]])
-                a = _wrap(_ang(qp) - _ang(c))
+                return _wrap(_ang(qp) - _ang(c)), b, gam, math.hypot(qp[1], qp[2])
+
+            def fk(a, b, gam):
+                return _rz(gam) @ _rx(a) @ (e0 + Rf @ _rx(b) @ w0)
+
+            for t, Wm in zip(times, worlds):
+                off, pitch = path(t, leg.sx)
+                target = wrest + np.array(off)
+                Wpar = Wm[U.parent]
+                drop = 0.0
+                for _ in range(5):
+                    Su = Wpar @ np.vstack([np.c_[np.eye(3), [0, -drop, 0]], [0, 0, 0, 1]]) @ Lu
+                    q = Su[:3, :3].T @ (target - Su[:3, 3])
+                    reach = 0.995 * (l1 + l2)
+                    a, b, gam, d = solve(q)
+                    if d <= reach or drop > 6:
+                        break
+                    drop += d - reach + 0.02
+                qt = q.copy()
+                for _ in range(4):           # the rest rotations aren't pure x turns: correct the residual
+                    qt = qt + (q - fk(a, b, gam))
+                    a, b, gam, _ = solve(qt)
                 # the paw: world orientation = a world pitch on top of its rest orientation
                 Rchain = Su[:3, :3] @ _rz(gam) @ _rx(a) @ Rf @ _rx(b) @ Lp[:3, :3]
                 Rpaw = Rchain.T @ _rx(math.radians(pitch)) @ prest
@@ -571,11 +625,11 @@ def bake(spec, clips, legs, fps=24):
                 kl.append([round(t, 4), r3([math.degrees(b), 0, 0])])
                 kp.append([round(t, 4), r3(_euler(Rpaw))])
                 kd.append([round(t, 4), r3([0, -drop, 0])])
-            tracks += [{"part": leg.upper, "keys": ku, "ease": "linear"},
-                       {"part": leg.lower, "keys": kl, "ease": "linear"},
-                       {"part": leg.paw, "keys": kp, "ease": "linear"}]
+            tracks += [{"part": leg.upper, "keys": thin(ku), "ease": "linear"},
+                       {"part": leg.lower, "keys": thin(kl), "ease": "linear"},
+                       {"part": leg.paw, "keys": thin(kp), "ease": "linear"}]
             if any(abs(k[1][1]) > 1e-3 for k in kd):
-                tracks.append({"part": leg.upper, "channel": "position", "keys": kd, "ease": "linear"})
+                tracks.append({"part": leg.upper, "channel": "position", "keys": thin(kd, 0.02), "ease": "linear"})
         out[name] = dict(clip, tracks=tracks)
     return out
 
@@ -633,8 +687,8 @@ def adult_clips():
         osc("tail", 4, 2, axis="x"),
         osc("ear_l", 5, 2, axis="x", phase=0.3),
     ] + fur_sway(5, 2, 0.1)}, {
-        "bl": gait(T, 0.0, 0.64, 9.0, 2.2, curl=30), "fl": gait(T, 0.25, 0.62, 9.0, 2.8, curl=45),
-        "br": gait(T, 0.5, 0.64, 9.0, 2.2, curl=30), "fr": gait(T, 0.75, 0.62, 9.0, 2.8, curl=45)})
+        "bl": gait(T, 0.0, 0.64, 9.0, 2.2, curl=30, toe=9.0), "fl": gait(T, 0.25, 0.62, 9.0, 2.8, curl=45, toe=8.5),
+        "br": gait(T, 0.5, 0.64, 9.0, 2.2, curl=30, toe=9.0), "fr": gait(T, 0.75, 0.62, 9.0, 2.8, curl=45, toe=8.5)})
 
     # run: a rotary gallop, the spine flexing, the head low and driving, ears pinned
     T = 0.6
@@ -651,15 +705,15 @@ def adult_clips():
         trk("ear_l", K((0, -22)), axis="x"), trk("ear_r", K((0, -22)), axis="x"),
         osc("hump", [0.03, -0.05, 0.02], 1, channel="scale", phase=0.2),
     ] + fur_sway(8, 1, 0.2, axis="x")}, {
-        "bl": gait(T, 0.0, 0.4, 15.0, 4.0, curl=55, reach=20, dz=-1.0),
-        "br": gait(T, 0.08, 0.4, 15.0, 4.0, curl=55, reach=20, dz=-1.0),
-        "fl": gait(T, 0.5, 0.38, 15.0, 4.6, curl=60, reach=24, dz=1.0),
-        "fr": gait(T, 0.58, 0.38, 15.0, 4.6, curl=60, reach=24, dz=1.0)})
+        "bl": gait(T, 0.0, 0.4, 15.0, 4.0, curl=55, reach=20, dz=-1.0, toe=9.0),
+        "br": gait(T, 0.08, 0.4, 15.0, 4.0, curl=55, reach=20, dz=-1.0, toe=9.0),
+        "fl": gait(T, 0.5, 0.38, 15.0, 4.6, curl=60, reach=24, dz=1.0, toe=8.5),
+        "fr": gait(T, 0.58, 0.38, 15.0, 4.6, curl=60, reach=24, dz=1.0, toe=8.5)})
 
     # swim: afloat and doggy-paddling, the head held up, fur streaming back
     T = 1.6
     C["swim"] = ({"length": T, "loop": True, "tracks": [
-        osc("body", [0, 0.6, 0], 2, channel="position", bias=[0, 1.5, 0]),
+        osc("body", [0, 0.6, 0], 2, channel="position", bias=[0, 4.0, 0]),
         osc("body", 2, 2, axis="x", bias=-7),
         osc("body", 3, 1, axis="z", phase=0.25),
         osc("neck", 2, 2, axis="x", bias=-18, phase=0.1),
@@ -668,23 +722,23 @@ def adult_clips():
         osc("tail", 6, 1, axis="y"), trk("tail", K((0, 20)), axis="x"),
         trk("ear_l", K((0, -12)), axis="x"), trk("ear_r", K((0, -12)), axis="x"),
     ] + [osc(p, 6, 2, 0.08 * k, axis="x", bias=-24) for k, p in enumerate(FUR_HANG)]}, {
-        "fl": paddle(T, 0.0, [0, 3.5, 2.5], 4.0, 3.0), "fr": paddle(T, 0.5, [0, 3.5, 2.5], 4.0, 3.0),
-        "bl": paddle(T, 0.25, [0, 3.0, -2.0], 3.5, 2.0, pitch=45), "br": paddle(T, 0.75, [0, 3.0, -2.0], 3.5, 2.0, pitch=45)})
+        "fl": paddle(T, 0.0, [0, 7.0, 3.0], 4.5, 3.0, 15, 20), "fr": paddle(T, 0.5, [0, 7.0, 3.0], 4.5, 3.0, 15, 20),
+        "bl": paddle(T, 0.25, [0, 6.5, -2.5], 4.0, 2.0, 20, 20), "br": paddle(T, 0.75, [0, 6.5, -2.5], 4.0, 2.0, 20, 20)})
 
     # leap (1.2 s): crouch and growl, spring, a stretched flight, the front paws slam down, the hind paws follow
     L = 1.2
     C["leap"] = ({"length": L, "loop": False, "tracks": [
-        trk("body", K((0, [0, 0, 0]), (0.30, [0, -3.0, -1.0], "out"), (0.36, [0, -3.2, -1.2]), (0.46, [0, 2.4, 2.0], "out"),
-                      (0.62, [0, 6.0, 3.5], "out"), (0.80, [0, 3.2, 3.0], "in"), (0.88, [0, -2.6, 2.0], "in"),
-                      (0.96, [0, -1.3, 1.0], "out"), (1.06, [0, 0.3, 0.3]), (1.2, [0, 0, 0])), channel="position"),
-        trk("body", K((0, 0), (0.30, 4, "out"), (0.36, 5), (0.46, -14, "out"), (0.62, -6), (0.80, 8, "in"), (0.88, 6),
+        trk("body", K((0, [0, 0, 0]), (0.30, [0, -2.4, -1.0], "out"), (0.36, [0, -2.6, -1.2]), (0.46, [0, 2.4, 2.0], "out"),
+                      (0.62, [0, 6.0, 3.5], "out"), (0.80, [0, 3.2, 3.0], "in"), (0.88, [0, -2.0, 2.0], "in"),
+                      (0.96, [0, -1.0, 1.0], "out"), (1.06, [0, 0.3, 0.3]), (1.2, [0, 0, 0])), channel="position"),
+        trk("body", K((0, 0), (0.30, 3, "out"), (0.36, 3.5), (0.46, -14, "out"), (0.62, -6), (0.80, 8, "in"), (0.88, 6),
                       (0.96, 1), (1.06, -2), (1.2, 0)), axis="x"),
-        trk("chest", K((0, 0), (0.30, 5), (0.46, -6, "out"), (0.62, -3), (0.84, 6), (0.90, 9, "out"), (1.0, 2), (1.2, 0)),
+        trk("chest", K((0, 0), (0.30, 5), (0.46, -6, "out"), (0.62, -3), (0.84, 4), (0.90, 6, "out"), (1.0, 2), (1.2, 0)),
             axis="x"),
         trk("rump", K((0, 0), (0.30, -8), (0.46, 10, "out"), (0.62, 6), (0.85, -6), (0.95, -2), (1.2, 0)), axis="x"),
-        trk("neck", K((0, 0), (0.30, 10), (0.46, -8, "out"), (0.62, -4), (0.86, 6), (0.92, 14, "out"), (1.05, 2), (1.2, 0)),
+        trk("neck", K((0, 0), (0.30, 8), (0.46, -8, "out"), (0.62, -4), (0.86, -2), (0.92, 4, "out"), (1.05, 1), (1.2, 0)),
             axis="x"),
-        trk("head", K((0, 0), (0.30, -6), (0.46, 6), (0.62, 2), (0.86, -6), (0.94, -10, "out"), (1.08, 2), (1.2, 0)),
+        trk("head", K((0, 0), (0.30, -6), (0.46, 6), (0.62, 2), (0.86, -10), (0.94, -16, "out"), (1.08, 2), (1.2, 0)),
             axis="x"),
         trk("jaw", K((0, 0), (0.30, 6), (0.36, 3), (0.46, 10), (0.62, 22, "out"), (0.86, 30), (0.92, 36), (1.0, 10),
                      (1.2, 0)), axis="x"),
@@ -695,27 +749,27 @@ def adult_clips():
         trk("tail", K((0, 0), (0.3, -10), (0.5, 26), (0.8, 18), (0.92, -12), (1.05, 6), (1.2, 0)), axis="x"),
     ] + [trk(p, delayed(K((0, 0), (0.30, -6), (0.46, -24), (0.62, -30), (0.84, -10), (0.90, 18), (1.0, -6), (1.2, 0)),
                         0.03 * k, 1 + 0.1 * k, L), axis="x") for k, p in enumerate(FUR_HANG)]}, {
-        "fl": keyed(K((0, [0, 0, 0]), (0.36, [0, 0, 0]), (0.42, [0, 1.0, 1.0]), (0.50, [0, 4.5, 5.0], "out"),
+        "fl": keyed(K((0, [0, 0, 0]), (0.36, [0, 0, 0]), (0.42, [0, 2.5, 1.5]), (0.50, [0, 6.0, 5.0], "out"),
                       (0.62, [0, 6.5, 7.0]), (0.80, [0, 3.0, 7.5]), (0.88, [0, 0, 6.0], "in"), (1.0, [0, 0, 6.0]),
                       (1.08, [0, 1.4, 3.0]), (1.2, [0, 0, 0])),
-                    K((0, 0), (0.36, 0), (0.46, 35), (0.62, -15), (0.80, -25), (0.88, 0), (1.2, 0)), L),
-        "fr": keyed(K((0, [0, 0, 0]), (0.36, [0, 0, 0]), (0.43, [0, 1.0, 1.0]), (0.51, [0, 4.5, 5.0], "out"),
+                    K((0, 0), (0.36, 0), (0.46, 25), (0.62, -15), (0.80, -25), (0.88, 0), (1.2, 0)), L),
+        "fr": keyed(K((0, [0, 0, 0]), (0.36, [0, 0, 0]), (0.43, [0, 2.5, 1.5]), (0.51, [0, 6.0, 5.0], "out"),
                       (0.63, [0, 6.5, 7.0]), (0.81, [0, 3.0, 7.5]), (0.89, [0, 0, 6.0], "in"), (1.02, [0, 0, 6.0]),
                       (1.1, [0, 1.4, 3.0]), (1.2, [0, 0, 0])),
-                    K((0, 0), (0.36, 0), (0.47, 35), (0.63, -15), (0.81, -25), (0.89, 0), (1.2, 0)), L),
-        "bl": keyed(K((0, [0, 0, 0]), (0.44, [0, 0, 0]), (0.52, [0, 2.0, -4.0], "out"), (0.62, [0, 4.5, -6.0]),
-                      (0.80, [0, 4.0, -1.0]), (0.94, [0, 0, 1.5], "in"), (1.2, [0, 0, 0])),
-                    K((0, 0), (0.44, 0), (0.52, 45), (0.62, 40), (0.80, 10), (0.94, 0), (1.2, 0)), L),
-        "br": keyed(K((0, [0, 0, 0]), (0.45, [0, 0, 0]), (0.53, [0, 2.0, -4.0], "out"), (0.63, [0, 4.5, -6.0]),
-                      (0.81, [0, 4.0, -1.0]), (0.95, [0, 0, 1.5], "in"), (1.2, [0, 0, 0])),
-                    K((0, 0), (0.45, 0), (0.53, 45), (0.63, 40), (0.81, 10), (0.95, 0), (1.2, 0)), L)})
+                    K((0, 0), (0.36, 0), (0.47, 25), (0.63, -15), (0.81, -25), (0.89, 0), (1.2, 0)), L),
+        "bl": keyed(K((0, [0, 0, 0]), (0.44, [0, 0, 0]), (0.47, [0, 2.0, -1.5]), (0.53, [0, 6.0, -4.0], "out"),
+                      (0.63, [0, 7.0, -6.0]), (0.80, [0, 5.0, -1.0]), (0.94, [0, 0, 1.5], "in"), (1.2, [0, 0, 0])),
+                    K((0, 0), (0.44, 0), (0.47, 12), (0.53, 35), (0.63, 30), (0.80, 10), (0.92, 0), (1.2, 0)), L),
+        "br": keyed(K((0, [0, 0, 0]), (0.45, [0, 0, 0]), (0.48, [0, 2.0, -1.5]), (0.54, [0, 6.0, -4.0], "out"),
+                      (0.64, [0, 7.0, -6.0]), (0.81, [0, 5.0, -1.0]), (0.95, [0, 0, 1.5], "in"), (1.2, [0, 0, 0])),
+                    K((0, 0), (0.45, 0), (0.48, 12), (0.54, 35), (0.64, 30), (0.81, 10), (0.93, 0), (1.2, 0)), L)})
 
     # swipe (0.9 s): a dip, rear up with both paws wound high, rake them down and across, slam back onto all fours
     L = 0.9
-    front = keyed(K((0, [0, 0, 0]), (0.10, [0, 0, 0]), (0.30, [3, 24, -1], "out"), (0.38, [5, 29, -3]),
-                    (0.48, [-3, 17, 8], "out"), (0.56, [-4, 10, 7]), (0.68, [0, 0.4, 4], "in"), (0.74, [0, 0, 3.5]),
+    front = keyed(K((0, [0, 0, 0]), (0.10, [0, 0, 0]), (0.30, [6, 28, -1], "out"), (0.38, [8, 33, -2]),
+                    (0.48, [-3, 20, 7], "out"), (0.56, [-4, 13, 6]), (0.68, [0, 0.4, 4], "in"), (0.74, [0, 0, 3.5]),
                     (0.82, [0, 1.0, 1.5]), (0.9, [0, 0, 0])),
-                  K((0, 0), (0.10, 0), (0.30, -40), (0.38, -70), (0.48, 20, "out"), (0.56, 50), (0.68, 0), (0.9, 0)), L)
+                  K((0, 0), (0.10, 0), (0.30, -60), (0.38, -85), (0.48, 10, "out"), (0.56, 45), (0.68, 0), (0.9, 0)), L)
     C["swipe"] = ({"length": L, "loop": False, "tracks": [
         trk("body", K((0, 0), (0.10, 3, "out"), (0.30, -42, "out"), (0.40, -44), (0.50, -36, "in"), (0.66, 6, "in"),
                       (0.74, 4), (0.9, 0)), axis="x"),
@@ -756,21 +810,21 @@ def adult_clips():
         trk("tail", K((0, 0), (0.5, -20), (1.2, -16), (1.45, 8), (1.6, 0)), axis="x"),
     ] + [trk(p, delayed(K((0, 0), (0.50, 16, "out_back"), (1.20, 14), (1.38, -8), (1.5, 3), (1.6, 0)), 0.03 * k, 1, L),
              axis="z") for k, p in enumerate(FUR_HANG)]}, {
-        "fl": keyed(K((0, [0, 0, 0]), (0.20, [0, 0, 0]), (0.50, [3, 22, 2], "out"), (0.62, [5, 24, 3]), (1.20, [5, 23, 3]),
+        "fl": keyed(K((0, [0, 0, 0]), (0.20, [0, 0, 0]), (0.50, [6, 24, 1], "out"), (0.62, [8, 27, 1]), (1.20, [7, 26, 1]),
                       (1.34, [0, 1.0, 4], "in"), (1.38, [0, 0, 4]), (1.48, [0, 0.8, 2]), (1.6, [0, 0, 0])),
-                    K((0, 0), (0.20, 0), (0.50, -30), (0.62, -50), (1.20, -45), (1.36, 0), (1.6, 0)), L),
-        "fr": keyed(K((0, [0, 0, 0]), (0.20, [0, 0, 0]), (0.52, [3, 22, 2], "out"), (0.64, [5, 24, 3]), (1.22, [5, 23, 3]),
+                    K((0, 0), (0.20, 0), (0.50, -30), (0.62, -50), (1.20, -45), (1.31, 0), (1.6, 0)), L),
+        "fr": keyed(K((0, [0, 0, 0]), (0.20, [0, 0, 0]), (0.52, [6, 24, 1], "out"), (0.64, [8, 27, 1]), (1.22, [7, 26, 1]),
                       (1.35, [0, 1.0, 4], "in"), (1.39, [0, 0, 4]), (1.50, [0, 0.8, 2]), (1.6, [0, 0, 0])),
-                    K((0, 0), (0.20, 0), (0.52, -30), (0.64, -50), (1.22, -45), (1.37, 0), (1.6, 0)), L),
+                    K((0, 0), (0.20, 0), (0.52, -30), (0.64, -50), (1.22, -45), (1.32, 0), (1.6, 0)), L),
         "bl": planted(), "br": planted()})
 
     # eat (1.0 s): head down to the fish, munch munch munch, head back up
     L = 1.0
     C["eat"] = ({"length": L, "loop": False, "tracks": [
-        trk("chest", K((0, 0), (0.15, 8, "out"), (0.85, 8), (1.0, 0)), axis="x"),
+        trk("chest", K((0, 0), (0.15, 5, "out"), (0.85, 5), (1.0, 0)), axis="x"),
         trk("body", K((0, [0, 0, 0]), (0.15, [0, -0.8, 0]), (0.85, [0, -0.8, 0]), (1.0, [0, 0, 0])), channel="position"),
-        trk("neck", K((0, 0), (0.18, 22, "out_back"), (0.85, 20), (1.0, 0)), axis="x"),
-        trk("head", K((0, 0), (0.18, 16), (0.30, 9), (0.40, 18), (0.55, 9), (0.65, 18), (0.80, 10), (0.88, 16), (1.0, 0)),
+        trk("neck", K((0, 0), (0.18, 14, "out_back"), (0.85, 13), (1.0, 0)), axis="x"),
+        trk("head", K((0, 0), (0.18, 7), (0.30, 1), (0.40, 8), (0.55, 1), (0.65, 8), (0.80, 2), (0.88, 7), (1.0, 0)),
             axis="x"),
         trk("head", K((0, 0), (0.30, 5), (0.55, -5), (0.80, 4), (1.0, 0)), axis="y"),
         trk("jaw", K((0, 0), (0.20, 6), (0.30, 24), (0.40, 2), (0.55, 22), (0.65, 2), (0.80, 18), (0.88, 2), (1.0, 0)),
@@ -785,7 +839,7 @@ def adult_clips():
     L = 4.0
     C["sit"] = ({"length": L, "loop": True, "tracks": [
         osc("body", 0.8, 2, axis="x", bias=-36),
-        trk("body", K((0, [0, -4.6, -1.5])), channel="position"),
+        trk("body", K((0, [0, -3.6, -1.5])), channel="position"),
         osc("chest", 1.0, 2, axis="x", bias=10, phase=0.1),
         osc("hump", [0.03, 0.06, 0.02], 2, channel="scale"),
         osc("neck", 1.5, 2, axis="x", bias=14, phase=0.15),
@@ -802,11 +856,11 @@ def adult_clips():
 
     # shake (0.8 s): a dog-style shake from the shoulders back, the head and the long fur flying after
     L = 0.8
-    roll = K((0, 0), (0.06, -5, "out"), (0.14, 11), (0.24, -13), (0.34, 12), (0.44, -10), (0.54, 7), (0.64, -4), (0.72, 2),
+    roll = K((0, 0), (0.06, -5, "out"), (0.14, 13), (0.24, -15), (0.34, 14), (0.44, -11), (0.54, 8), (0.64, -4), (0.72, 1.5),
              (0.8, 0))
     C["shake"] = ({"length": L, "loop": False, "tracks": [
         trk("chest", roll, axis="z"),
-        trk("body", delayed(roll, 0.03, 0.5, L), axis="z"),
+        trk("body", delayed(roll, 0.03, 0.6, L), axis="z"),
         trk("rump", delayed(roll, 0.06, 0.8, L), axis="z"),
         trk("neck", delayed(roll, 0.02, -0.7, L), axis="y"),
         trk("head", delayed(roll, 0.05, 1.2, L), axis="z"),
@@ -832,7 +886,7 @@ spec = {
     "budget": {"tris": 2000, "colors": 72},
     "light": LIGHT,
     "brush": BRUSH,
-    "minecraft": {"fps": 12},
+    "minecraft": {"fps": 24},
     "anim_ground_tolerance": 0.5,
     "render": {"background": "#28303c", "hero": [-38, 18], "shadow": 0.5},
     "palette": {"ramps": RAMPS},
@@ -878,11 +932,11 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "examples/polar_bear.json"
     finish()
     with open(out, "w") as fh:
-        json.dump(spec, fh, indent=1)
+        fh.write(dumps(spec))
     print(out, len(P), "parts")
     vdir = os.path.join(os.path.dirname(out) or ".", "variants")
     os.makedirs(vdir, exist_ok=True)
     for name, fn in VARIANTS.items():
         with open(os.path.join(vdir, f"{fn}.json"), "w") as fh:
-            json.dump(variant_spec(name), fh, indent=1)
+            fh.write(dumps(variant_spec(name)))
     print("variants:", ", ".join(VARIANTS.values()))
