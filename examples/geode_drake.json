@@ -22,8 +22,6 @@
       "ramp": "hide", "tone": 2.9, "dither": 0.0,
       "layers": [
         {"id": "mottle", "op": "noise", "scale": 2.2, "amount": 0.35},
-        {"id": "scales", "op": "spots", "count": 0, "radius": [1.0, 1.5], "roughness": 0.35, "shift": 0.55, "min_gap": 0.8,
-         "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -0.9}, "faces": ["-bottom"]},
         {"id": "belly", "op": "fill", "ramp": "belly", "tone": 3.0, "faces": ["bottom"]},
         {"id": "sheen", "op": "patches", "scale": 1.4, "threshold": 0.74, "shift": 0.8, "min_light": 0.75, "post": true}
       ]
@@ -53,7 +51,7 @@
     "claw": {"ramp": "bone", "tone": 3.6, "rim": {"light": 0, "dark": 0},
              "layers": [{"id": "tipfade", "op": "gradient", "axis": "path", "amount": 1.4}]},
     "teeth": {"ramp": "bone", "tone": 5, "light": 0.0, "rim": {"light": 0, "dark": 0},
-              "art_key": {"w": "bone:6", "t": "bone:5", "s": "bone:3", "g": "mouth:2"}}
+              "art_key": {"w": "bone:6", "t": "bone:5"}}
   },
 
   "animations": {
