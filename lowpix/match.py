@@ -121,21 +121,158 @@ def match(src, ref, out=None, scale=1.0, background="#20242e"):
     return rep_all, sheet
 
 
-def project_photo(src, ref, photo, mode="palette", min_facing=0.12, strength=1.0):
-    """Paint a reference photo onto the model from the solved camera (camera projection), so the model
-    matches the photo 1:1 from that view. Texels facing away or hidden keep their painted look.
+def subject_mask(ref, W, H, photo_arr=None):
+    """Where the subject is in the reference: inside its traced `outline` (normalised polygon, optional) and not
+    the smooth background colour flood-filled from the top corners."""
+    from PIL import ImageDraw as _D
+    m = np.ones((H, W), bool)
+    if ref.get("outline"):
+        poly = Image.new("L", (W, H), 0)
+        _D.Draw(poly).polygon([(x * W, y * H) for x, y in ref["outline"]], fill=255)
+        m &= np.asarray(poly) > 0
+    if photo_arr is not None:
+        from collections import deque
 
-    mode "palette": projected colours snap to the model's own ramps (stays pixel art);
-    "photo": the photo's true colours. Returns (model, report)."""
+        from .brush import blur
+        lum = photo_arr @ np.array([0.3, 0.59, 0.11])
+        sd = np.sqrt(np.maximum(blur(lum * lum, 3) - blur(lum, 3) ** 2, 0))
+        bg = np.concatenate([photo_arr[:20, :30].reshape(-1, 3), photo_arr[:20, -30:].reshape(-1, 3)]).mean(0)
+        cand = (np.linalg.norm(photo_arr - bg, axis=-1) < 55) & (sd < 9)
+        seen = np.zeros((H, W), bool)
+        q = deque([(0, 0), (0, W - 1), (0, W // 2)])
+        for y, x in q:
+            seen[y, x] = True
+        while q:
+            y, x = q.popleft()
+            for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                yy, xx = y + dy, x + dx
+                if 0 <= yy < H and 0 <= xx < W and not seen[yy, xx] and cand[yy, xx]:
+                    seen[yy, xx] = True
+                    q.append((yy, xx))
+        m &= ~seen
+    return m
+
+
+def silhouette(model, cam, f, shift, W, H, ids=None):
+    """Mask of the model (or of instances `ids`) seen from the matched camera."""
+    sx, sy = shift
+    tris = []
+    for inst in model.instances:
+        if ids is not None and inst.id not in ids:
+            continue
+        Rm, t = inst.world[:3, :3], inst.world[:3, 3]
+        for fc in inst.faces:
+            wp = fc.pts @ Rm.T + t
+            tris += [wp[list(tr)] for tr in fc.tris]
+    if not tris:
+        return np.zeros((H, W), bool)
+    T = np.array(tris)
+    nx, ny, cz = _image_plane(cam, T.reshape(-1, 3))
+    scr = np.stack([W / 2 + f * (nx - sx), H / 2 - f * (ny - sy)], axis=-1).reshape(-1, 3, 2)
+    zbuf = np.full((H, W), np.inf)
+    uv = np.zeros((len(T), 3, 2))
+    _rasterize(scr, cz.reshape(-1, 3), uv, model.atlas, np.zeros((H, W, 3), np.uint8), zbuf, W, H, False,
+               flat=np.array([255, 255, 255], np.uint8))
+    return np.isfinite(zbuf)
+
+
+def fit_outline(model, ref, args, subj, parts, passes=3, smooth=31, clamp=(0.75, 1.7), fade=60):
+    """Deform the outline parts so the model's silhouette matches the reference's, row by row.
+
+    Every vertex of `parts` (part ids; mirrored copies follow) moves sideways in camera space, scaled about the
+    eye centre line by (photo half-width / model half-width) at its row, separately left and right. Interior
+    features (eyes, nose, paws) are left alone, so the landmarks stay put. Returns the silhouette IoU."""
+    from .brush import blur
+    W, H = ref["size"]
+    cam, f, shift = args["cam"], args["focal"], args["shift"]
+    sx, sy = shift
+    eyes = [ref["points"][k] for k in (ref.get("anchors") or [])[:2]]
+    cx = float(np.mean([e[0] if not isinstance(e, dict) else e["at"][0] for e in eyes])) * W if eyes else W / 2
+    ids = {i.id for i in model.instances if i.src_id in parts or i.id in parts}
+    rows = np.arange(H)
+
+    def edges(mask):
+        L = np.full(H, np.nan)
+        Rr = np.full(H, np.nan)
+        for y in range(H):
+            xs = np.nonzero(mask[y])[0]
+            if len(xs):
+                L[y], Rr[y] = xs[0], xs[-1] + 1
+        return L, Rr
+    Lp, Rp = edges(subj)
+    for _ in range(passes):
+        Lm, Rm_ = edges(silhouette(model, cam, f, shift, W, H))
+        ok = ~np.isnan(Lm) & ~np.isnan(Lp)
+        if not ok.any():
+            break
+        rl = np.where(ok, (cx - Lp) / np.maximum(cx - Lm, 1.0), np.nan)
+        rr = np.where(ok, (Rp - cx) / np.maximum(Rm_ - cx, 1.0), np.nan)
+        for r in (rl, rr):  # fill gaps from the nearest measured row, then smooth along the height
+            good = ~np.isnan(r)
+            r[~good] = np.interp(rows[~good], rows[good], r[good])
+        rl = np.clip(blur(rl[:, None], smooth)[:, 0], *clamp)
+        rr = np.clip(blur(rr[:, None], smooth)[:, 0], *clamp)
+        right = cam[1]
+        for inst in model.instances:
+            if inst.id not in ids:
+                continue
+            Wm = inst.world
+            Winv = np.linalg.inv(Wm)
+            for fc in inst.faces:
+                wp = fc.pts @ Wm[:3, :3].T + Wm[:3, 3]
+                nx, ny, cz = _image_plane(cam, wp)
+                u = W / 2 + f * (nx - sx)
+                vf = H / 2 - f * (ny - sy)
+                v = np.clip(vf.astype(int), 0, H - 1)
+                ratio = np.where(u < cx, rl[v], rr[v])
+                # outside the frame the photo says nothing: fade the fit out instead of copying the edge row
+                out = np.maximum(np.maximum(-vf, vf - (H - 1)), 0)
+                ratio = 1 + (ratio - 1) * np.clip(1 - out / fade, 0, 1)
+                du = (cx + (u - cx) * ratio) - u
+                wp2 = wp + right[None] * (du * cz / f)[:, None]
+                fc.pts = (np.c_[wp2, np.ones(len(wp2))] @ Winv.T)[:, :3]
+    m = silhouette(model, cam, f, shift, W, H)
+    return float((m & subj).sum() / max((m | subj).sum(), 1))
+
+
+def photo_palette(photo_arr, mask, k=18, seed=0):
+    """A pixel-art palette taken from the photo itself: k-means on the subject's colours."""
+    px = photo_arr[mask].reshape(-1, 3)
+    rng = np.random.default_rng(seed)
+    px = px[rng.choice(len(px), min(len(px), 20000), replace=False)]
+    C = px[rng.choice(len(px), k, replace=False)]
+    for _ in range(25):
+        lab = ((px[:, None, :] - C[None]) ** 2).sum(-1).argmin(1)
+        C = np.array([px[lab == j].mean(0) if (lab == j).any() else C[j] for j in range(k)])
+    return C
+
+
+def project_photo(src, ref, photo, mode="palette", min_facing=0.06, strength=1.0, density=None, colours=18,
+                  harmonise=True):
+    """Paint a reference photo onto the model from the solved camera (camera projection), so the model
+    matches the photo 1:1 from that view. Texels facing away, hidden, or outside the subject keep their
+    painted look; small gaps along face edges are filled from their neighbours.
+
+    mode "photo": the photo's true colours; "palette": snapped to a pixel-art palette of `colours`
+    extracted from the photo (stylised). `density` raises the texel density for a crisper projection."""
     if isinstance(ref, str):
         with open(ref) as fh:
             ref = json.load(fh)
-    model = build_model(src)
+    from .spec import load_spec
+    spec = load_spec(src)
+    if density:
+        spec = dict(spec, density=float(density))
+    model = build_model(spec)
     args, rep = solve(model, ref)
     W, H = ref["size"]
     cam, f, (sx, sy) = args["cam"], args["focal"], args["shift"]
     img = Image.open(photo).convert("RGB").resize((W, H), Image.LANCZOS)
     ph = np.asarray(img, float)
+    subj = subject_mask(ref, W, H, ph)
+    pal = photo_palette(ph, subj, colours) if mode == "palette" else None
+    iou = None
+    if ref.get("outline_parts"):  # deform the outline parts so the silhouette matches the photo's
+        iou = fit_outline(model, ref, args, subj, set(ref["outline_parts"]))
 
     def proj(P):
         nx, ny, cz = _image_plane(cam, P)
@@ -146,10 +283,18 @@ def project_photo(src, ref, photo, mode="palette", min_facing=0.12, strength=1.0
     zbuf = np.full((H, W), np.inf)
     _rasterize(scr, cz.reshape(-1, 3), uvs, model.atlas, np.zeros((H, W, 3), np.uint8), zbuf, W, H, True,
                flat=np.array([255, 255, 255], np.uint8))
-    pal = model.palette.table.reshape(-1, 3).astype(float)
-    pal = pal[np.any(pal > 0, axis=1) | (np.arange(len(pal)) == 0)]
     fwd = cam[3]
     painted = 0
+    projected = np.zeros(model.atlas.shape[:2], bool)
+    if harmonise:  # what the photo can't see takes the photo's colour statistics (no clash at other angles)
+        opaque = model.atlas[..., 3] > 0
+        src_px = model.atlas[..., :3][opaque].astype(float)
+        mu_a, sd_a = src_px.mean(0), src_px.std(0) + 1e-6
+        mu_p, sd_p = ph[subj].mean(0), ph[subj].std(0)
+        g = (src_px - mu_a) / sd_a * sd_p + mu_p
+        if pal is not None:
+            g = pal[((g[:, None, :] - pal[None]) ** 2).sum(-1).argmin(1)]
+        model.atlas[..., :3][opaque] = np.clip(g, 0, 255).round().astype(np.uint8)
     for inst in model.instances:
         Rm, t = inst.world[:3, :3], inst.world[:3, 3]
         for fc in inst.faces:
@@ -163,18 +308,44 @@ def project_photo(src, ref, photo, mode="palette", min_facing=0.12, strength=1.0
             iu, iv = np.floor(pu).astype(int), np.floor(pv).astype(int)
             ok = (iu >= 0) & (iu < W) & (iv >= 0) & (iv < H)
             iu, iv = np.clip(iu, 0, W - 1), np.clip(iv, 0, H - 1)
-            ok &= pz <= zbuf[iv, iu] + 0.25
+            ok &= (pz <= zbuf[iv, iu] + 0.25) & subj[iv, iu]
             if not ok.any():
                 continue
             col = ph[iv, iu]
-            if mode == "palette":
-                d = ((col[:, None, :] - pal[None]) ** 2).sum(-1)
-                col = pal[d.argmin(1)]
-            wgt = np.clip((facing - min_facing) / 0.25, 0, 1) * strength
+            wgt = np.clip((facing - min_facing) / 0.2, 0, 1) * strength
             x, y = fc.rect
-            region = model.atlas[y:y + fc.H, x:x + fc.W, :3].reshape(-1, 3).astype(float)
-            m = ok.reshape(-1)
-            region[m] = region[m] * (1 - wgt) + col[m] * wgt
-            model.atlas[y:y + fc.H, x:x + fc.W, :3] = region.reshape(fc.H, fc.W, 3).round().astype(np.uint8)
-            painted += int(m.sum())
-    return model, {"texels_from_photo": painted, "landmarks": rep}
+            region = model.atlas[y:y + fc.H, x:x + fc.W, :3].astype(float)
+            okm = ok.reshape(fc.H, fc.W)
+            colm = col.reshape(fc.H, fc.W, 3)
+            # fill texels along edges / behind tiny occluders from projected neighbours (no seams)
+            for _ in range(3):
+                if okm.all():
+                    break
+                grow = okm.copy()
+                acc = np.zeros_like(colm)
+                cnt = np.zeros(okm.shape)
+                for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    sh_ok = np.roll(np.roll(okm, dy, 0), dx, 1)
+                    sh_c = np.roll(np.roll(colm, dy, 0), dx, 1)
+                    acc += sh_c * sh_ok[..., None]
+                    cnt += sh_ok
+                new = ~okm & (cnt > 0)
+                colm = np.where(new[..., None], acc / np.maximum(cnt, 1)[..., None], colm)
+                okm = okm | new
+            if pal is not None:
+                d = ((colm[..., None, :] - pal[None, None]) ** 2).sum(-1)
+                colm = pal[d.argmin(-1)]
+            region = np.where(okm[..., None], region * (1 - wgt) + colm * wgt, region)
+            model.atlas[y:y + fc.H, x:x + fc.W, :3] = region.round().astype(np.uint8)
+            projected[y:y + fc.H, x:x + fc.W] |= okm
+            painted += int(okm.sum())
+    # refresh the 1-texel gutters so sampling never bleeds old colours
+    for inst in model.instances:
+        for fc in inst.faces:
+            x, y = fc.rect
+            a_ = model.atlas
+            a_[y - 1, x:x + fc.W] = a_[y, x:x + fc.W]
+            a_[y + fc.H, x:x + fc.W] = a_[y + fc.H - 1, x:x + fc.W]
+            a_[y - 1:y + fc.H + 1, x - 1] = a_[y - 1:y + fc.H + 1, x]
+            a_[y - 1:y + fc.H + 1, x + fc.W] = a_[y - 1:y + fc.H + 1, x + fc.W - 1]
+    return model, {"texels_from_photo": painted, "landmarks": rep, "args": args, "silhouette_iou": iou}

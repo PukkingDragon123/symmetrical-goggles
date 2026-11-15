@@ -1,16 +1,16 @@
 {
   "name": "Snow Leopard Cub",
-  "parts": 51,
-  "instances": 57,
-  "faces": 750,
-  "triangles": 1784,
-  "vertices_flat": 3284,
-  "vertices_unique": 1038,
+  "parts": 47,
+  "instances": 53,
+  "faces": 827,
+  "triangles": 1971,
+  "vertices_flat": 3625,
+  "vertices_unique": 1128,
   "atlas": [
     256,
     512
   ],
-  "atlas_fill": 0.717,
+  "atlas_fill": 0.624,
   "texel_density": 4.0,
   "colors_used": 41,
   "palette": {
@@ -75,19 +75,19 @@
   },
   "bounds": {
     "min": [
-      -12.857,
-      0.0,
-      -11.503
+      -8.574,
+      0.02,
+      -23.701
     ],
     "max": [
-      9.33,
-      23.63,
-      13.938
+      8.574,
+      22.19,
+      13.97
     ],
     "size": [
-      22.188,
-      23.63,
-      25.442
+      17.149,
+      22.17,
+      37.671
     ]
   },
   "warnings": [],
@@ -113,13 +113,9 @@
     "bean2",
     "bean3",
     "head",
-    "cheek",
     "whisker_pad",
-    "whiskers",
     "ear",
-    "cheek_r",
     "whisker_pad_r",
-    "whiskers_r",
     "ear_r",
     "nose",
     "bridge",

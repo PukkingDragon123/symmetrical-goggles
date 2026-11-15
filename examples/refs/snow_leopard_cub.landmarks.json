@@ -1,21 +1,190 @@
 {
- "note": "Landmarks measured on the user's reference photo (643x844, frontal close-up of a snow leopard cub raising a paw). The photo itself is not in the repo; pass --image to blend it in.",
- "size": [643, 844],
- "camera": {"yaw": 0, "pitch": 4, "fov": 30, "distance": 48},
- "anchors": ["eye_rim", "eye_rim_r"],
+ "note": "Landmarks measured on examples/refs/snow_leopard_cub.jpg (the user's reference photo, 642x844): eyes, nose and paw pads from dark-blob detection on the pixels; ears and cheeks from the outline.",
+ "size": [
+  642,
+  844
+ ],
+ "camera": {
+  "yaw": 0,
+  "pitch": 4,
+  "fov": 30,
+  "distance": 48
+ },
+ "anchors": [
+  "eye_rim",
+  "eye_rim_r"
+ ],
  "points": {
-  "eye_rim": [0.703, 0.252],
-  "eye_rim_r": [0.308, 0.252],
-  "nose": [0.505, 0.388],
-  "chin": [0.505, 0.505],
-  "ear": {"at": [0.85, 0.045], "mode": "top"},
-  "ear_r": {"at": [0.15, 0.045], "mode": "top"},
-  "cheek": {"at": [0.935, 0.36], "mode": "right"},
-  "cheek_r": {"at": [0.085, 0.36], "mode": "left"},
-  "pad_main": [0.498, 0.835],
-  "bean0": [0.339, 0.776],
-  "bean1": [0.451, 0.685],
-  "bean2": [0.61, 0.697],
-  "bean3": [0.703, 0.758]
- }
+  "eye_rim": [
+   0.704,
+   0.253
+  ],
+  "eye_rim_r": [
+   0.32,
+   0.254
+  ],
+  "nose": [
+   0.513,
+   0.39
+  ],
+  "chin": [
+   0.505,
+   0.505
+  ],
+  "ear": {
+   "at": [
+    0.85,
+    0.045
+   ],
+   "mode": "top"
+  },
+  "ear_r": {
+   "at": [
+    0.15,
+    0.045
+   ],
+   "mode": "top"
+  },
+  "pad_main": [
+   0.505,
+   0.841
+  ],
+  "bean0": [
+   0.348,
+   0.784
+  ],
+  "bean1": [
+   0.456,
+   0.704
+  ],
+  "bean2": [
+   0.61,
+   0.712
+  ],
+  "bean3": [
+   0.686,
+   0.774
+  ],
+  "head:right": [
+   0.935,
+   0.36
+  ],
+  "head:left": [
+   0.085,
+   0.36
+  ]
+ },
+ "image": "snow_leopard_cub.jpg",
+ "outline": [
+  [
+   0.0701,
+   0.2073
+  ],
+  [
+   0.0623,
+   0.1303
+  ],
+  [
+   0.0857,
+   0.0711
+  ],
+  [
+   0.148,
+   0.045
+  ],
+  [
+   0.2181,
+   0.0521
+  ],
+  [
+   0.2804,
+   0.0853
+  ],
+  [
+   0.3349,
+   0.0877
+  ],
+  [
+   0.4673,
+   0.0758
+  ],
+  [
+   0.6231,
+   0.0758
+  ],
+  [
+   0.7009,
+   0.0829
+  ],
+  [
+   0.7632,
+   0.0521
+  ],
+  [
+   0.8411,
+   0.0355
+  ],
+  [
+   0.9065,
+   0.0545
+  ],
+  [
+   0.9377,
+   0.0972
+  ],
+  [
+   0.9439,
+   0.1659
+  ],
+  [
+   0.9283,
+   0.237
+  ],
+  [
+   0.9346,
+   0.3104
+  ],
+  [
+   0.9533,
+   0.391
+  ],
+  [
+   0.9751,
+   0.4976
+  ],
+  [
+   1.0,
+   0.5569
+  ],
+  [
+   1.0,
+   1.0
+  ],
+  [
+   0.0,
+   1.0
+  ],
+  [
+   0.0,
+   0.5687
+  ],
+  [
+   0.0312,
+   0.4976
+  ],
+  [
+   0.0623,
+   0.391
+  ],
+  [
+   0.081,
+   0.2962
+  ]
+ ],
+ "outline_parts": [
+  "body",
+  "head",
+  "ear",
+  "ear_r"
+ ]
 }

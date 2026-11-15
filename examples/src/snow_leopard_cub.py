@@ -26,7 +26,7 @@ def R(v):
     return [round(float(x), 3) for x in v] if isinstance(v, (list, tuple)) else round(float(v), 3)
 
 
-def loft(id, parent, rings, style, sides=8, rnd=2.2, subdiv=0, caps=(True, True), **kw):
+def loft(id, parent, rings, style, sides=10, rnd=2.0, subdiv=0, caps=(True, True), **kw):
     d = dict(shape="loft", profile={"sides": sides, "round": rnd}, subdiv=subdiv, caps=list(caps),
              rings=[{"at": R(a), "size": R(s)} for a, s in rings], style=style)
     if parent:
@@ -57,77 +57,67 @@ loft("arm", "body", [((0, 0, 0), [4.4, 4.8]), ((1.2, -4.6, 3.4), [4.0, 4.2]), ((
      ["fur", "leg_spots"], subdiv=1, pivot=[-3.6, 10.4, 2.6], caps=[False, False])
 loft("paw", "arm", [((0, -2.6, 0.2), [5.8, 4.2]), ((0, 0.2, 0.6), [7.6, 5.0]), ((0, 2.9, 0.4), [7.0, 4.4]),
                     ((0, 4.3, 0.0), [4.2, 2.8])], "fur", pivot=[3.6, -5.6, 7.6], rotation=[-6, 0, 0], sides=10, subdiv=1)
-part("pad_main", parent="paw", shape="prism", sides=7, size=[4.4, 3.2, 0.8], pivot=[0, -0.6, 2.85], offset=[0, 0, 0.2],
+part("pad_main", parent="paw", shape="prism", sides=7, size=[5.4, 3.2, 0.8], pivot=[0, -0.9, 2.85], offset=[0, 0, 0.2],
      rotation=[-4, 0, 0], style="pad", hide=["back"])
 for k, (x, y, s) in enumerate([(-2.8, 1.0, 1.7), (-1.05, 2.3, 1.8), (1.05, 2.15, 1.8), (2.7, 1.2, 1.7)]):
     part(f"bean{k}", parent="paw", shape="prism", sides=8, size=[s, s * 1.12, 0.7], pivot=[x, y, 2.55 - abs(x) * 0.12],
          offset=[0, 0, 0.2], rotation=[-10, x * 6, 0], style="pad", hide=["back"])
 
 # ------------------------------------------------------------------ head
-HEAD = [((0, 1.0, -4.6), [10.6, 9.6]), ((0, 1.6, -2.0), [15.4, 12.6]), ((0, 1.0, 1.2), [16.2, 12.4]),
-        ((0, -0.4, 3.8), [13.4, 10.6]), ((0, -1.6, 5.6), [8.8, 7.2]), ((0, -2.3, 6.6), [6.2, 4.8])]
-loft("head", "body", HEAD, ["head_fur", "speckles", "face"], pivot=[0, 15.6, 1.8], rotation=[4, 0, 0], sides=10, subdiv=1)
+HEAD = [((0, 0.4, -4.6), [10.6, 9.4]), ((0, 0.2, -2.2), [14.8, 11.4]), ((0, -0.6, 0.6), [16.8, 12.2]),
+        ((0, -1.0, 3.0), [15.4, 10.8]), ((0, -1.1, 4.6), [11.4, 8.6]), ((0, -1.6, 5.8), [7.4, 6.0])]
+loft("head", "body", HEAD, ["head_fur", "speckles", "face"], pivot=[0, 15.6, 1.8], rotation=[4, 0, 0], sides=14, rnd=2.0,
+     subdiv=1)
 for side in (1, -1):
     sfx = "" if side == 1 else "_r"
-    loft(f"cheek{sfx}", "head", [((0, 0, -2.2), [3.0, 4.6]), ((side * 1.0, -0.3, 0.2), [3.8, 5.2]),
-                                ((side * 1.6, -0.9, 2.2), [2.4, 3.2])], "white",
-         pivot=[side * 5.6, -1.1, 1.6], subdiv=0, sides=7)
-    loft(f"whisker_pad{sfx}", "head", [((0, 0, -0.9), [3.0, 2.5]), ((0, 0, 0.7), [2.8, 2.3])], "white",
-         pivot=[side * 1.6, -3.2, 5.9], subdiv=0, sides=8)
-    part(f"whiskers{sfx}", parent="head", shape="card", plane="xy", pivot=[side * 2.9, -3.1, 6.2], offset=[side * 2.6, 0, 0],
-         rotation=[0, side * -28, side * -6], size=[4.2, 1.9], style="whisker",
-         art=(["ww..............", "..www...........", ".....wwww.......", "................",
-               "wwww............", "....wwwwww......", "................", "ww..............",
-               "..wwwww.........", ".......www......"] if side == 1 else
-              ["..............ww", "...........www..", ".......wwww.....", "................",
-               "............wwww", "......wwwwww....", "................", "..............ww",
-               ".........wwwww..", "......www......."]))
+    loft(f"whisker_pad{sfx}", "head", [((0, 0, -1.0), [3.0, 2.6]), ((0, 0, 0.4), [3.0, 2.6]), ((0, 0, 1.0), [2.0, 1.8])],
+         "white", pivot=[side * 1.4, -2.6, 5.5], subdiv=0, sides=10, rnd=2.0)
     # low, rounded cub ears: dark backs with a pale thumbprint, pink-grey inner fur
-    loft(f"ear{sfx}", "head", [((0, 0, 0), [4.6, 1.9]), ((0, 2.0, -0.1), [4.3, 1.6]), ((0, 3.2, -0.3), [3.0, 1.2]),
-                               ((0, 3.9, -0.4), [1.5, 0.9])], ["ear"], sides=8, subdiv=0, caps=[False, True],
-         pivot=[side * 5.8, 3.4, -0.8], rotation=[-14, side * -20, side * -48], up=[0, 0, 1])
-part("nose", parent="head", shape="prism", sides=3, size=[2.5, 1.7, 1.1], angle=180, pivot=[0, -1.3, 6.95],
+    loft(f"ear{sfx}", "head", [((0, 0, 0), [5.0, 2.0]), ((0, 2.0, -0.1), [4.8, 1.7]), ((0, 3.4, -0.3), [3.4, 1.3]),
+                               ((0, 4.2, -0.4), [1.8, 1.0])], ["ear"], sides=8, subdiv=0, caps=[False, True],
+         pivot=[side * 5.0, 3.0, -0.6], rotation=[-12, side * -18, side * -40], up=[0, 0, 1])
+part("nose", parent="head", shape="prism", sides=6, size=[2.4, 1.2, 1.0], angle=0, pivot=[0, -1.55, 6.6],
      offset=[0, 0, 0.25], rotation=[-10, 0, 0], style="nose", hide=["back"])
-part("bridge", parent="head", shape="box", size=[2.6, 4.4, 0.9], pivot=[0, 1.0, 6.05], rotation=[-34, 0, 0],
+part("bridge", parent="head", shape="box", size=[2.4, 3.4, 0.8], pivot=[0, 0.6, 5.55], rotation=[-34, 0, 0],
      style="bridge")
-part("philtrum", parent="head", shape="box", size=[0.5, 1.4, 0.5], pivot=[0, -2.6, 6.95], rotation=[-12, 0, 0],
+part("philtrum", parent="head", shape="box", size=[0.45, 0.9, 0.45], pivot=[0, -2.45, 6.55], rotation=[-12, 0, 0],
      style="mouth_line")
-loft("chin", "head", [((0, 0.2, -2.0), [3.6, 1.9]), ((0, 0.0, 0.0), [3.4, 1.9]), ((0, -0.2, 1.4), [2.6, 1.5])], "white",
-     pivot=[0, -4.5, 5.2], subdiv=0, sides=8)
+loft("chin", "head", [((0, 0.3, -2.0), [4.2, 2.2]), ((0, 0.0, 0.0), [3.8, 2.2]), ((0, -0.1, 1.2), [2.8, 1.6])], "white",
+     pivot=[0, -4.5, 4.4], subdiv=0, sides=10, rnd=2.0)
 part("tongue", parent="chin", shape="box", size=[2.0, 0.5, 2.2], pivot=[0, 0.85, 0.2], style="tongue")
 FACE = []
 for side in (1, -1):
     sfx = "" if side == 1 else "_r"
     # eye stack: dark rim -> iris -> pupil (dilates, looks around); catch-lights stay put; lids for blinks/squints
-    part(f"eye_rim{sfx}", parent="head", shape="prism", sides=12, size=[5.6, 4.6, 1.8], pivot=[side * 3.25, 1.5, 4.65],
-         offset=[0, 0, 0.6], rotation=[-8, side * 20, 0], style="rim", hide=["back"])
-    part(f"iris{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=12, size=[4.5, 3.7, 0.5], pivot=[0, 0, 1.7],
+    part(f"eye_rim{sfx}", parent="head", shape="prism", sides=12, size=[3.6, 2.4, 1.2], pivot=[side * 3.25, 1.5, 4.95],
+         offset=[0, 0, 0.3], rotation=[-20, side * 26, 0], style="rim", hide=["back"])
+    part(f"iris{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=12, size=[3.1, 2.0, 0.5], pivot=[0, 0, 0.85],
          offset=[0, 0, 0.25], style="iris", hide=["back"])
-    part(f"pupil{sfx}", parent=f"iris{sfx}", shape="prism", sides=12, size=[3.0, 3.0, 0.5], pivot=[0, 0.05, 0.5],
+    part(f"pupil{sfx}", parent=f"iris{sfx}", shape="prism", sides=12, size=[1.8, 1.8, 0.5], pivot=[0, 0.0, 0.5],
          offset=[0, 0, 0.25], style="pupil", hide=["back"] + [f"side{k}" for k in range(12)])
-    part(f"glint{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=8, size=[1.3, 1.2, 0.5], pivot=[-0.85, 0.8, 2.45],
+    part(f"glint{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=8, size=[1.2, 0.6, 0.5], pivot=[-0.1, 0.45, 1.6],
          offset=[0, 0, 0.25], style="glint", hide=["back"] + [f"side{k}" for k in range(8)])
-    part(f"glint2{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=6, size=[0.7, 0.65, 0.5], pivot=[0.85, -0.9, 2.45],
+    part(f"glint2{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=6, size=[0.5, 0.5, 0.5], pivot=[0.75, -0.5, 1.6],
          offset=[0, 0, 0.25], style="glint", hide=["back"] + [f"side{k}" for k in range(6)])
-    part(f"eye_ring{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=12, size=[7.0, 6.0, 1.4], pivot=[0, 0.1, 0.4],
-         offset=[0, 0, 0.7], style="eye_ring", hide=["back"])
-    part(f"liner_tail{sfx}", parent=f"eye_rim{sfx}", shape="box", size=[1.8, 0.55, 0.6], pivot=[side * 2.9, -0.7, 1.4],
+    part(f"eye_ring{sfx}", parent=f"eye_rim{sfx}", shape="prism", sides=12, size=[4.8, 3.6, 1.0], pivot=[0, 0.05, 0.1],
+         offset=[0, 0, 0.5], style="eye_ring", hide=["back"])
+    part(f"liner_tail{sfx}", parent=f"eye_rim{sfx}", shape="box", size=[1.4, 0.45, 0.5], pivot=[side * 1.9, -0.55, 0.8],
          rotation=[0, 0, side * -24], style="mouth_line")
-    part(f"lid{sfx}", parent=f"eye_rim{sfx}", shape="box", size=[5.0, 0.55, 0.5], pivot=[0, 2.0, 1.0], offset=[0, -0.27, 0],
+    part(f"lid{sfx}", parent=f"eye_rim{sfx}", shape="box", size=[3.6, 0.5, 0.5], pivot=[0, 1.15, 0.5], offset=[0, -0.27, 0],
          style="lid")
-    part(f"lid_low{sfx}", parent=f"eye_rim{sfx}", shape="box", size=[4.8, 0.5, 0.5], pivot=[0, -2.0, 1.0],
+    part(f"lid_low{sfx}", parent=f"eye_rim{sfx}", shape="box", size=[3.4, 0.5, 0.5], pivot=[0, -1.15, 0.5],
          offset=[0, 0.25, 0], style="lid_low")
-    part(f"brow{sfx}", parent="head", shape="box", size=[3.2, 0.8, 0.9], pivot=[side * 3.0, 4.3, 4.5], offset=[0, 0, 0.3],
+    part(f"brow{sfx}", parent="head", shape="box", size=[2.8, 0.6, 0.7], pivot=[side * 3.0, 3.1, 4.6], offset=[0, 0, 0.3],
          rotation=[-14, side * 18, side * -10], style="brow")
-    part(f"tear{sfx}", parent="head", shape="box", size=[0.5, 2.0, 0.5], pivot=[side * 1.5, -0.4, 6.15],
+    part(f"tear{sfx}", parent="head", shape="box", size=[0.45, 1.6, 0.45], pivot=[side * 1.55, -0.3, 5.6],
          rotation=[-20, side * 10, side * 18], style="mouth_line")
     FACE += [f"eye_rim{sfx}", f"iris{sfx}", f"pupil{sfx}", f"lid{sfx}", f"lid_low{sfx}", f"brow{sfx}"]
 
 # ------------------------------------------------------------------ the thick tail, curled round the feet
-loft("tail", "body", [((0, 0, 0), [4.4, 4.4]), ((-3.2, 0.0, -3.4), [4.8, 4.8]), ((-8.2, 0.0, -2.4), [4.8, 4.8]),
-                      ((-10.6, 0.0, 1.6), [4.6, 4.6]), ((-9.8, 0.0, 5.8), [4.4, 4.4]), ((-6.6, 0.0, 8.2), [4.0, 4.0]),
-                      ((-3.4, 0.2, 9.0), [3.4, 3.4]), ((-1.4, 0.4, 8.8), [2.4, 2.4])],
-     ["fur", "tail_rings"], chain=True, sides=10, pivot=[0, 2.4, -5.8], caps=[False, True])
+loft("tail", "body", [((0, 0, 0), [4.4, 4.4]), ((0, -0.2, -4.0), [4.6, 4.6]), ((0, -0.3, -8.0), [4.6, 4.6]),
+                      ((0, 0.4, -11.8), [4.4, 4.4]), ((0, 2.2, -14.8), [4.0, 4.0]), ((0, 4.8, -16.4), [3.6, 3.6]),
+                      ((0, 7.4, -16.6), [3.0, 3.0]), ((0, 9.4, -15.8), [2.4, 2.4])],
+     ["fur", "tail_rings"], chain=True, sides=10, rnd=2.0, pivot=[0, 2.9, -5.6], caps=[False, True])
 
 ramps = {
     "fur": ["#1c202a", "#323846", "#4c5464", "#6a7282", "#8c94a4", "#aeb5c2", "#ccd1da", "#e4e7ec", "#f6f7f9"],

@@ -180,6 +180,9 @@ def main(argv=None):
     mt.add_argument("--scale", type=float, default=1.0)
     mt.add_argument("--project", choices=["palette", "photo"], default=None,
                     help="also paint the photo onto the model from the matched camera (needs --image)")
+    mt.add_argument("--density", type=float, default=None, help="texel density for the projected model")
+    mt.add_argument("--colours", type=int, default=18, help="palette size for --project palette")
+    mt.add_argument("--gif", action="store_true", help="also render turntable + clip GIFs of the projected model")
 
     sub.add_parser("schema", help="print the JSON schema for specs")
 
@@ -331,9 +334,10 @@ def main(argv=None):
                 return 2
             from .build import export_model
             from .match import project_photo
-            m, prep = project_photo(a.spec, ref, a.image, mode=a.project)
-            pout = os.path.join(os.path.dirname(out), os.path.splitext(os.path.basename(a.spec))[0] + "_projected")
-            export_model(m, pout, gif=False)
+            m, prep = project_photo(a.spec, ref, a.image, mode=a.project, density=a.density, colours=a.colours)
+            m.spec = dict(m.spec, name=f"{m.spec.get('name', 'model')} {a.project}")
+            pout = os.path.join(os.path.dirname(out), os.path.splitext(os.path.basename(a.spec))[0] + "_" + a.project)
+            export_model(m, pout, gif=a.gif)
             print(f"projected {prep['texels_from_photo']} texels from the photo -> {pout}/")
         for k, v in rep["points"].items():
             print(f"{k:14s} ref {v['ref']}  model {v['model']}  error {v['error_pct']}%")
