@@ -20,16 +20,6 @@
    "archive": "zip",
    "sha256": "6d251aeaaaa9c2fffed8fc2f64bab3104725ceabf9259a8441994e7a20cfe22f"
   },
-  "oga_rd_rpg": {
-   "site": "opengameart.org",
-   "title": "80 CC0 RPG SFX",
-   "author": "rubberduck",
-   "page": "https://opengameart.org/content/80-cc0-rpg-sfx",
-   "url": "https://opengameart.org/sites/default/files/80-CC0-RPG-SFX_0.zip",
-   "license": "CC0 1.0",
-   "archive": "zip",
-   "sha256": "1c2f06ff4e8563b5b8b745b23cf213c1474142a69bb82bd8f5e10d9b3f7a7bbd"
-  },
   "oga_rd_break": {
    "site": "opengameart.org",
    "title": "75 CC0 breaking / falling / hit sfx",
@@ -39,36 +29,6 @@
    "license": "CC0 1.0",
    "archive": "zip",
    "sha256": "e6ee04d91c5f4d30cfda1260d2c9d1faf96fda36319287215fbd07bcb1a80451"
-  },
-  "oga_rd_100": {
-   "site": "opengameart.org",
-   "title": "100 CC0 SFX",
-   "author": "rubberduck",
-   "page": "https://opengameart.org/content/100-cc0-sfx",
-   "url": "https://opengameart.org/sites/default/files/100-CC0-SFX_0.zip",
-   "license": "CC0 1.0",
-   "archive": "zip",
-   "sha256": "a5c135878c132f1c59cca54e60061c296cd0ac27ad031ca2c41b8cd5cab3c706"
-  },
-  "oga_rd_100b": {
-   "site": "opengameart.org",
-   "title": "100 CC0 SFX #2",
-   "author": "rubberduck",
-   "page": "https://opengameart.org/content/100-cc0-sfx-2",
-   "url": "https://opengameart.org/sites/default/files/sfx_100_v2.zip",
-   "license": "CC0 1.0",
-   "archive": "zip",
-   "sha256": "0fc61b4494e2e893c0c015ced4877b3f689c7d84a48cb61daecd7ddb52db797b"
-  },
-  "oga_rd_metalwood": {
-   "site": "opengameart.org",
-   "title": "100 CC0 metal and wood SFX",
-   "author": "rubberduck",
-   "page": "https://opengameart.org/content/100-cc0-metal-and-wood-sfx",
-   "url": "https://opengameart.org/sites/default/files/100-CC0-wood-metal-SFX.zip",
-   "license": "CC0 1.0",
-   "archive": "zip",
-   "sha256": "be6eba63b03409ac0c77787a956b1503a7c186403d04aef9725c52644a4b7878"
   },
   "oga_rd_water": {
    "site": "opengameart.org",
@@ -108,7 +68,8 @@
    "url": "https://opengameart.org/sites/default/files/bear.zip",
    "license": "CC0 1.0",
    "archive": "zip",
-   "sha256": "7fbcc09b292019926e00a460831267fc55ae658e3265bb3c1d4e806920699723"
+   "sha256": "7fbcc09b292019926e00a460831267fc55ae658e3265bb3c1d4e806920699723",
+   "license_note": "U.S. Fish & Wildlife Service recordings, packaged and released as CC0."
   },
   "oga_deep_roar": {
    "site": "opengameart.org",
@@ -182,16 +143,6 @@
    "license": "CC0 1.0",
    "sha256": "aeaf9ab0f25cb8b035a3257913206afd8ba33d47876106291d38dfac7e5c07aa"
   },
-  "oga_ogre": {
-   "site": "opengameart.org",
-   "title": "Monster Sound Pack, Volume 1",
-   "author": "Ogrebane",
-   "page": "https://opengameart.org/content/monster-sound-pack-volume-1",
-   "url": "https://opengameart.org/sites/default/files/monster-sounds-volume-2.zip",
-   "license": "CC0 1.0",
-   "archive": "zip",
-   "sha256": "f23b5691ac502cf03b58a353cb31f53e3cb93aeb65e654efc8482fd1829d7ef6"
-  },
   "oga_steam_hiss": {
    "site": "opengameart.org",
    "title": "Steam release sounds",
@@ -200,7 +151,8 @@
    "url": "https://opengameart.org/sites/default/files/steam_hisses.zip",
    "license": "CC0 1.0",
    "archive": "zip",
-   "sha256": "7dc5ae6f43ef0e9a47b8333e1e1508463cb64877ab06baa0259c643a9ab4677f"
+   "sha256": "7dc5ae6f43ef0e9a47b8333e1e1508463cb64877ab06baa0259c643a9ab4677f",
+   "license_note": "CC0; the author appreciates (does not require) attribution."
   },
   "oga_steam_whistle1": {
    "site": "opengameart.org",
@@ -209,16 +161,8 @@
    "page": "https://opengameart.org/content/steam-whistle",
    "url": "https://opengameart.org/sites/default/files/steamwhistle_0.wav",
    "license": "CC0 1.0",
-   "sha256": "7325f18c0c43193f3c1a27b7d8f67173bbb0cff8bd49041e865c71195c27800c"
-  },
-  "oga_steam_whistle2": {
-   "site": "opengameart.org",
-   "title": "Steam whistle (steam_whistle)",
-   "author": "bart",
-   "page": "https://opengameart.org/content/steam-whistle",
-   "url": "https://opengameart.org/sites/default/files/steam_whistle.wav",
-   "license": "CC0 1.0",
-   "sha256": "0c8c1115767140baa19adee9ce131b7b00555cc62907049d1ee918a5aa4ab5d4"
+   "sha256": "7325f18c0c43193f3c1a27b7d8f67173bbb0cff8bd49041e865c71195c27800c",
+   "license_note": "CC0; the author appreciates (does not require) attribution."
   },
   "oga_swishes": {
    "site": "opengameart.org",
@@ -258,7 +202,8 @@
    "url": "https://opengameart.org/sites/default/files/corsica_s-walking_in_snow.7z",
    "license": "CC0 1.0",
    "archive": "7z",
-   "sha256": "206306b51f8eeedf82043d6628174ec8ff9b16230dffb5192a5c74688e62abd4"
+   "sha256": "206306b51f8eeedf82043d6628174ec8ff9b16230dffb5192a5c74688e62abd4",
+   "license_note": "Recorded by Corsica_S (freesound); cut and released as CC0 by qubodup with the recordist's permission (stated on the page)."
   },
   "oga_towel": {
    "site": "opengameart.org",
@@ -268,7 +213,8 @@
    "url": "https://opengameart.org/sites/default/files/wet_towel_on_floor.7z",
    "license": "CC0 1.0",
    "archive": "7z",
-   "sha256": "b688a703e36e282c2f7a7ddfe0175c68757b7413e9ed03f045230a691b658e26"
+   "sha256": "b688a703e36e282c2f7a7ddfe0175c68757b7413e9ed03f045230a691b658e26",
+   "license_note": "The page states the pack is CC0 as of 2024-08-24 (the older text file inside the archive is superseded)."
   },
   "oga_zombies": {
    "site": "opengameart.org",
@@ -288,16 +234,6 @@
    "url": "https://opengameart.org/sites/default/files/darsycho__zombie-moans_0.ogg",
    "license": "CC0 1.0",
    "sha256": "49b0bd7a7908f2b3ea61ae93ccf584ab650705d62e8ed6d4c8c9f5b98ad37b05"
-  },
-  "oga_undead": {
-   "site": "opengameart.org",
-   "title": "Undead Moans",
-   "author": "AntumDeluge",
-   "page": "https://opengameart.org/content/undead-moans",
-   "url": "https://opengameart.org/sites/default/files/undead-moans.zip",
-   "license": "CC0 1.0",
-   "archive": "zip",
-   "sha256": "013d2327338585d950e3d55422ec0233b443ed888cdbf9908961502690bbe67e"
   },
   "oga_kenney_ui": {
    "site": "opengameart.org",
@@ -336,33 +272,6 @@
    "license": "CC0 1.0",
    "sha256": "987be837a5941ded9a81572c319b9bf8f57d9f89741a5781fc7104adc87d60f5"
   },
-  "oga_mech_rattle": {
-   "site": "opengameart.org",
-   "title": "Mechanical Sounds (rattle1)",
-   "author": "BMacZero",
-   "page": "https://opengameart.org/content/mechanical-sounds",
-   "url": "https://opengameart.org/sites/default/files/rattle1.wav",
-   "license": "CC0 1.0",
-   "sha256": "65ae71cd800986e4e4c0c1a180221c0f240f6ffd9e306f8634c0335a5e3f039a"
-  },
-  "oga_mech_sq1": {
-   "site": "opengameart.org",
-   "title": "Mechanical Sounds (squeakyclick1)",
-   "author": "BMacZero",
-   "page": "https://opengameart.org/content/mechanical-sounds",
-   "url": "https://opengameart.org/sites/default/files/squeakyclick1.wav",
-   "license": "CC0 1.0",
-   "sha256": "27b9430c35123a6b2e662b4268adb2238c59fa02522b060756d47666c6b0ffe0"
-  },
-  "oga_mech_sq2": {
-   "site": "opengameart.org",
-   "title": "Mechanical Sounds (squeakyclick2)",
-   "author": "BMacZero",
-   "page": "https://opengameart.org/content/mechanical-sounds",
-   "url": "https://opengameart.org/sites/default/files/squeakyclick2.wav",
-   "license": "CC0 1.0",
-   "sha256": "33adab3bd231593b4d1a7d3735b869275550e469fa6656ff7f836d8c391e5f0e"
-  },
   "oga_mech1": {
    "site": "opengameart.org",
    "title": "Mechanical Sounds (mechanical1)",
@@ -371,34 +280,6 @@
    "url": "https://opengameart.org/sites/default/files/mechanical1.wav",
    "license": "CC0 1.0",
    "sha256": "de520ad93fa9f4df357b31a8fdef7778d8df994574c861f9337d5241fee5db33"
-  },
-  "oga_mech2": {
-   "site": "opengameart.org",
-   "title": "Mechanical Sounds (mechanical2)",
-   "author": "BMacZero",
-   "page": "https://opengameart.org/content/mechanical-sounds",
-   "url": "https://opengameart.org/sites/default/files/mechanical2.wav",
-   "license": "CC0 1.0",
-   "sha256": "27b4b6c3517c90d635295fca48fccd747950f869d680c871662f26038c3665ef"
-  },
-  "oga_ice_spells": {
-   "site": "opengameart.org",
-   "title": "Ice spells (from a pdsounds.org public domain recording)",
-   "author": "bart",
-   "page": "https://opengameart.org/content/ice-spells",
-   "url": "https://opengameart.org/sites/default/files/icespells.zip",
-   "license": "CC0 1.0",
-   "archive": "zip",
-   "sha256": "45f02a204fc7cc896a17487080376c521ac2e564fe3da4d24cffa0086f8d6a54"
-  },
-  "oga_freeze": {
-   "site": "opengameart.org",
-   "title": "Freeze Spell",
-   "author": "artisticdude",
-   "page": "https://opengameart.org/content/freeze-spell-0",
-   "url": "https://opengameart.org/sites/default/files/freeze.wav",
-   "license": "CC0 1.0",
-   "sha256": "dc16da845f18f88885db4584205a4ad9b84a8da6e377b79d4511b366cc8631f1"
   },
   "oga_cannon": {
    "site": "opengameart.org",
@@ -434,7 +315,8 @@
    "page": "https://opengameart.org/content/wind1",
    "url": "https://opengameart.org/sites/default/files/wind1.wav",
    "license": "CC0 1.0",
-   "sha256": "a2856f794fbf77e05f8241dc4adeade7f62fa21c3c9dc49f7725b6c6218060c3"
+   "sha256": "a2856f794fbf77e05f8241dc4adeade7f62fa21c3c9dc49f7725b6c6218060c3",
+   "license_note": "Synthesised wind (PureData)."
   },
   "ia_sealion": {
    "site": "archive.org (Radio Aporee ::: Maps)",
@@ -443,16 +325,8 @@
    "page": "https://archive.org/details/aporee_37576_43021",
    "url": "https://archive.org/download/aporee_37576_43021/LoboMarinoCaletaPortalesBIS.mp3",
    "license": "Public Domain Mark 1.0",
-   "sha256": "bfeb2a5a7373cc211e3fbc5e7ea01b9e273cd2f4030cc42a51aa0cd41f1dca3b"
-  },
-  "ia_greyseal": {
-   "site": "archive.org (Radio Aporee ::: Maps)",
-   "title": "Grey seal cries with sea and people, Great Yarmouth",
-   "author": "Peter Cusack",
-   "page": "https://archive.org/details/aporee_58972_67674",
-   "url": "https://archive.org/download/aporee_58972_67674/0021311sealsWintertonhelicopteredit.mp3",
-   "license": "Public Domain Mark 1.0",
-   "sha256": "f23d1f5b33af49ae485c38f5eb65e8f75716fcb2a3908902788cf2a689c213aa"
+   "sha256": "bfeb2a5a7373cc211e3fbc5e7ea01b9e273cd2f4030cc42a51aa0cd41f1dca3b",
+   "license_note": "Radio Aporee recording released by the recordist under the Public Domain Mark 1.0 (archive.org item licence)."
   },
   "ia_icebooms": {
    "site": "archive.org (Radio Aporee ::: Maps)",
@@ -461,16 +335,8 @@
    "page": "https://archive.org/details/aporee_51900_59267",
    "url": "https://archive.org/download/aporee_51900_59267/IceBooms.flac",
    "license": "Public Domain Mark 1.0",
-   "sha256": "2f238b08991c621881ad2d225ac62cc93243c5f9e669cfc60ea2aaefbf9608b5"
-  },
-  "ia_midwinter_ice": {
-   "site": "archive.org (Radio Aporee ::: Maps)",
-   "title": "Midwinter lake ice activity (Chuncheon lake)",
-   "author": "abyssence",
-   "page": "https://archive.org/details/aporee_39246_44843",
-   "url": "https://archive.org/download/aporee_39246_44843/midwinterlakeice.flac",
-   "license": "Public Domain Mark 1.0",
-   "sha256": "a39f1186d0560776685a83511988dba0d04324980dcec9633662410a2d4fe086"
+   "sha256": "2f238b08991c621881ad2d225ac62cc93243c5f9e669cfc60ea2aaefbf9608b5",
+   "license_note": "Radio Aporee recording released by the recordist under the Public Domain Mark 1.0 (archive.org item licence)."
   },
   "ia_pond_ice": {
    "site": "archive.org (Radio Aporee ::: Maps)",
@@ -479,16 +345,8 @@
    "page": "https://archive.org/details/aporee_52228_59621",
    "url": "https://archive.org/download/aporee_52228_59621/CrackingPondIce.mp3",
    "license": "Public Domain Mark 1.0",
-   "sha256": "162a1adcec1d36c33e9b973e15cfb1e05c43fee31c4bebab5a02769239deeb61"
-  },
-  "ia_lake_ice_lt": {
-   "site": "archive.org (Radio Aporee ::: Maps)",
-   "title": "Utena, Lithuania - Heartbeat of Nature LAKE ICE",
-   "author": "Kim Ha Sun",
-   "page": "https://archive.org/details/aporee_42183_48085",
-   "url": "https://archive.org/download/aporee_42183_48085/TASCAM.mp3",
-   "license": "Public Domain Mark 1.0",
-   "sha256": "958cc351c63ceb6909f6ed139eaa81aabec134d439306342ac4d602f5b7bb67c"
+   "sha256": "162a1adcec1d36c33e9b973e15cfb1e05c43fee31c4bebab5a02769239deeb61",
+   "license_note": "Radio Aporee recording released by the recordist under the Public Domain Mark 1.0 (archive.org item licence)."
   },
   "ia_lake_ice_andromeda": {
    "site": "archive.org (Radio Aporee ::: Maps)",
@@ -497,16 +355,8 @@
    "page": "https://archive.org/details/aporee_55411_63316",
    "url": "https://archive.org/download/aporee_55411_63316/Pleiades.flac",
    "license": "Public Domain Mark 1.0",
-   "sha256": "c9943b8653d92ca6672cf0c4cdecd83f99cc84a9b7de916397ed0092d7a30712"
-  },
-  "ia_ice_forming": {
-   "site": "archive.org (Radio Aporee ::: Maps)",
-   "title": "Pointe-Claire, Quebec - Lake Ice Forming",
-   "author": "Regan Welsh",
-   "page": "https://archive.org/details/aporee_70778_82526",
-   "url": "https://archive.org/download/aporee_70778_82526/IceFormingH1Clippys20260120143535.flac",
-   "license": "Public Domain Mark 1.0",
-   "sha256": "3973f263cde060c8c90ff32fd01d0d58df9d57993617822d76a4c933e3e994fb"
+   "sha256": "c9943b8653d92ca6672cf0c4cdecd83f99cc84a9b7de916397ed0092d7a30712",
+   "license_note": "Radio Aporee recording released by the recordist under the Public Domain Mark 1.0 (archive.org item licence)."
   },
   "cw_lion": {
    "site": "commons.wikimedia.org",
@@ -515,151 +365,9 @@
    "page": "https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg",
    "url": "https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg",
    "license": "Public domain",
-   "desc": "English: the roaring of a lion in captivity தமிழ்: விலங்கியல் பூங்காவிலுள்ள, ஆண் சிங்கத்தின் குரல்.ஒலி சீரமைப்புச் செய்யப்பட்டது."
-  },
-  "cw_grizzly_roar": {
-   "site": "commons.wikimedia.org",
-   "title": "Yellowstone sound library - Grizzly Bears Roar - 001.mp3",
-   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
-   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bears_Roar_-_001.mp3",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Yellowstone_sound_library_-_Grizzly_Bears_Roar_-_001.mp3",
-   "license": "Public domain/PDM",
-   "desc": "Français : Deux grizzly en train de manger."
-  },
-  "cw_grizzly_vocal": {
-   "site": "commons.wikimedia.org",
-   "title": "Yellowstone sound library - Grizzly Bear vocalizations - 001.mp3",
-   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
-   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_vocalizations_-_001.mp3",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Yellowstone_sound_library_-_Grizzly_Bear_vocalizations_-_001.mp3",
-   "license": "Public domain/PDM",
-   "desc": "Français : Cri du grizzly."
-  },
-  "cw_grizzly_eat1": {
-   "site": "commons.wikimedia.org",
-   "title": "Yellowstone sound library - Grizzly Bear Eating - 001.mp3",
-   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
-   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_001.mp3",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_001.mp3",
-   "license": "Public domain/PDM",
-   "desc": "Français : Un grizzly en train de manger."
-  },
-  "cw_grizzly_eat2": {
-   "site": "commons.wikimedia.org",
-   "title": "Yellowstone sound library - Grizzly Bear Eating - 002.mp3",
-   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
-   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_002.mp3",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_002.mp3",
-   "license": "Public domain/PDM",
-   "desc": "Français : Un grizzly en train de manger."
-  },
-  "cw_grizzly_eat3": {
-   "site": "commons.wikimedia.org",
-   "title": "Yellowstone sound library - Grizzly Bear Eating - 003.mp3",
-   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
-   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_003.mp3",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/2/2b/Yellowstone_sound_library_-_Grizzly_Bear_Eating_-_003.mp3",
-   "license": "Public domain/PDM",
-   "desc": "Français : Un grizzly en train de manger."
-  },
-  "cw_elk_bellow": {
-   "site": "commons.wikimedia.org",
-   "title": "Elkbellow.ogg",
-   "author": "",
-   "page": "https://commons.wikimedia.org/wiki/File:Elkbellow.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/9/96/Elkbellow.ogg",
-   "license": "Public domain",
-   "desc": "This image or recording is the work of a U.S. Fish and Wildlife Service employee, taken or made as part of that person's official duties. As a work of the U.S. "
-  },
-  "cw_gator1": {
-   "site": "commons.wikimedia.org",
-   "title": "Alligatorbellow1.ogg",
-   "author": "",
-   "page": "https://commons.wikimedia.org/wiki/File:Alligatorbellow1.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Alligatorbellow1.ogg",
-   "license": "Public domain",
-   "desc": "This image or recording is the work of a U.S. Fish and Wildlife Service employee, taken or made as part of that person's official duties. As a work of the U.S. "
-  },
-  "cw_gator2": {
-   "site": "commons.wikimedia.org",
-   "title": "27alligator2bellow.ogg",
-   "author": "",
-   "page": "https://commons.wikimedia.org/wiki/File:27alligator2bellow.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/27alligator2bellow.ogg",
-   "license": "Public domain",
-   "desc": "This image or recording is the work of a U.S. Fish and Wildlife Service employee, taken or made as part of that person's official duties. As a work of the U.S. "
-  },
-  "cw_monster_growls": {
-   "site": "commons.wikimedia.org",
-   "title": "Monster growls.ogg",
-   "author": "stilgar",
-   "page": "https://commons.wikimedia.org/wiki/File:Monster_growls.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/7/71/Monster_growls.ogg",
-   "license": "Public domain/Public domain",
-   "desc": "English: Title Monster Growls Artist stilgar Original mp3 data Length:0:54 minutes (1.94 MB) Format:FLAC Mono 44kHz 302Kbps (VBR) User tags Growl, growling, Mon"
-  },
-  "cw_monster_growls2": {
-   "site": "commons.wikimedia.org",
-   "title": "Monster growls 2.ogg",
-   "author": "stilgar",
-   "page": "https://commons.wikimedia.org/wiki/File:Monster_growls_2.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Monster_growls_2.ogg",
-   "license": "Public domain/Public domain",
-   "desc": "English: Title Monster Growls 2 Artist stilgar Original mp3 data Length:0:28 minutes (1.02 MB) Format:FLAC Mono 44kHz 300Kbps (VBR) User tags Growl, growling, g"
-  },
-  "cw_beast_laughter": {
-   "site": "commons.wikimedia.org",
-   "title": "Beast laughter.ogg",
-   "author": "stilgar",
-   "page": "https://commons.wikimedia.org/wiki/File:Beast_laughter.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/5/56/Beast_laughter.ogg",
-   "license": "Public domain/Public domain",
-   "desc": "English: Title Beast Laughter Artist stilgar Original mp3 data Length:0:13 minutes (483.04 KB) Format:FLAC Mono 44kHz 293Kbps (VBR) User tags Growl, growling, l"
-  },
-  "cw_tiger": {
-   "site": "commons.wikimedia.org",
-   "title": "439280 schots angry-tiger.wav",
-   "author": "schots",
-   "page": "https://commons.wikimedia.org/wiki/File:439280_schots_angry-tiger.wav",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/2/29/439280_schots_angry-tiger.wav",
-   "license": "CC0",
-   "desc": "English: Tiger in a cage, growling and snarling. Lots of reverb"
-  },
-  "cw_bearded_seal": {
-   "site": "commons.wikimedia.org",
-   "title": "Svalbard Sample for Wiki.ogg",
-   "author": "Max Eastley",
-   "page": "https://commons.wikimedia.org/wiki/File:Svalbard_Sample_for_Wiki.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Svalbard_Sample_for_Wiki.ogg",
-   "license": "Public domain/Public domain",
-   "desc": "Recording made of bearded seals by Max Eastley from a ship in Svalbard. Recording was made using a hydrophone while on a trip with the Cape Farewell Climate Cha"
-  },
-  "cw_elephant": {
-   "site": "commons.wikimedia.org",
-   "title": "Elephant_voice_-_trumpeting.ogg",
-   "author": "தகவலுழவன்",
-   "page": "https://commons.wikimedia.org/wiki/File:Elephant_voice_-_trumpeting.ogg",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Elephant_voice_-_trumpeting.ogg",
-   "license": "CC0",
-   "desc": "English: Elephant_voice_-_trumpeting. தமிழ்: யானையின் பிளிறல்"
-  },
-  "cw_beehive": {
-   "site": "commons.wikimedia.org",
-   "title": "Yellowstone sound library - Beehive Geyser - 001.mp3",
-   "author": "NPS & MSU Acoustic Atlas / Jennifer Jerrett",
-   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Beehive_Geyser_-_001.mp3",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Yellowstone_sound_library_-_Beehive_Geyser_-_001.mp3",
-   "license": "Public domain/PDM",
-   "desc": "Français : Son du Beehive Geyser."
-  },
-  "cw_beryl": {
-   "site": "commons.wikimedia.org",
-   "title": "Yellowstone sound library - Beryl Spring - 001.mp3",
-   "author": "NPS & MSU Acoustic Atlas / Peter Comley",
-   "page": "https://commons.wikimedia.org/wiki/File:Yellowstone_sound_library_-_Beryl_Spring_-_001.mp3",
-   "url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Yellowstone_sound_library_-_Beryl_Spring_-_001.mp3",
-   "license": "Public domain/PDM",
-   "desc": "Français : Son de la source Beryl Spring."
+   "desc": "English: the roaring of a lion in captivity தமிழ்: விலங்கியல் பூங்காவிலுள்ள, ஆண் சிங்கத்தின் குரல்.ஒலி சீரமைப்புச் செய்யப்பட்டது.",
+   "sha256": "ab237d0f960e83412251d0c11f69959f3c2e8d3b14595f7181c3056f7fa18bf7",
+   "license_note": "Own work of the uploader, who released it into the public domain (\"I, the copyright holder of this work, release this work into the public domain\")."
   },
   "bsb_2205": {
    "site": "bigsoundbank.com",
@@ -668,9 +376,9 @@
    "page": "https://bigsoundbank.com/cracking-ice-1-s2205.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2205.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Crack of ice. Noisy with a block of ice that I crush.",
-   "sha256": "a7fbd4d73e6a20fe385f71169a2fa51af67e68d78841451ff5eb8a1d6eb83128"
+   "sha256": "a7fbd4d73e6a20fe385f71169a2fa51af67e68d78841451ff5eb8a1d6eb83128",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2206": {
    "site": "bigsoundbank.com",
@@ -679,9 +387,9 @@
    "page": "https://bigsoundbank.com/cracking-ice-2-s2206.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2206.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Crack of ice. Noisy with a block of ice that I crush.",
-   "sha256": "2dde81b7ca8fe650a5fa3da279f00030957f5488ef3bed19d65c4f0423e6f443"
+   "sha256": "2dde81b7ca8fe650a5fa3da279f00030957f5488ef3bed19d65c4f0423e6f443",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2207": {
    "site": "bigsoundbank.com",
@@ -690,9 +398,9 @@
    "page": "https://bigsoundbank.com/cracking-ice-3-s2207.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2207.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Crack of ice. Noisy with a block of ice that I crush.",
-   "sha256": "62c2f201638d77ba2e4ddbc6d2056058922af6c8f16ae05383a58bdcea4add4a"
+   "sha256": "62c2f201638d77ba2e4ddbc6d2056058922af6c8f16ae05383a58bdcea4add4a",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2208": {
    "site": "bigsoundbank.com",
@@ -701,9 +409,9 @@
    "page": "https://bigsoundbank.com/cracking-ice-4-s2208.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2208.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Crack of ice. Noisy with a block of ice that I crush.",
-   "sha256": "66d769beb22cef6c156892b8e8db7a84c7cfdf5e3072eec7f23c0fbe3a854a2f"
+   "sha256": "66d769beb22cef6c156892b8e8db7a84c7cfdf5e3072eec7f23c0fbe3a854a2f",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2123": {
    "site": "bigsoundbank.com",
@@ -712,9 +420,9 @@
    "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-1-s2123.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2123.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "3 ice cubes put in a whisky glass.",
-   "sha256": "f60b58cbff60f5792c6f8ba90197ff2a82627a7d64082c61ff47336a9c4e8052"
+   "sha256": "f60b58cbff60f5792c6f8ba90197ff2a82627a7d64082c61ff47336a9c4e8052",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2124": {
    "site": "bigsoundbank.com",
@@ -723,9 +431,9 @@
    "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-2-s2124.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2124.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "3 ice cubes put in a whisky glass.",
-   "sha256": "8a312e779d610f3d3f1be9b258c9ed353370175c4cc6b347bb7355007b369232"
+   "sha256": "8a312e779d610f3d3f1be9b258c9ed353370175c4cc6b347bb7355007b369232",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2125": {
    "site": "bigsoundbank.com",
@@ -734,9 +442,9 @@
    "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-3-s2125.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2125.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "3 ice cubes put in a whisky glass.",
-   "sha256": "f748ee780fb5608183e57d8e9a4442d2ebb9388785a9b4295b351269abdcde78"
+   "sha256": "f748ee780fb5608183e57d8e9a4442d2ebb9388785a9b4295b351269abdcde78",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2126": {
    "site": "bigsoundbank.com",
@@ -745,9 +453,9 @@
    "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-4-s2126.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2126.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "3 ice cubes put in a whisky glass.",
-   "sha256": "b301a797c1fc9f60415d4bbfbcabdf54b165c0db72d214387a09dbce3866e329"
+   "sha256": "b301a797c1fc9f60415d4bbfbcabdf54b165c0db72d214387a09dbce3866e329",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2127": {
    "site": "bigsoundbank.com",
@@ -756,9 +464,9 @@
    "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-5-s2127.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2127.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "3 ice cubes put in a whisky glass.",
-   "sha256": "70f3d9c5e19752641f6c323ee97b7f79450281508a39cbdc2e3925ef187bd2f9"
+   "sha256": "70f3d9c5e19752641f6c323ee97b7f79450281508a39cbdc2e3925ef187bd2f9",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2128": {
    "site": "bigsoundbank.com",
@@ -767,20 +475,9 @@
    "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-6-s2128.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2128.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "3 ice cubes put in a whisky glass.",
-   "sha256": "b75e8dd747bac9db0474132d0416700a520d064c6dd2d670323d1fd0f8ff631e"
-  },
-  "bsb_2219": {
-   "site": "bigsoundbank.com",
-   "title": "Defrost #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/defrost-1-s2219.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2219.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Defrosting a windshield by hand.",
-   "sha256": "27bd446dcb40658f5758a1befd85d7190cfefe5b5ed4457b4b5c20a73c331350"
+   "sha256": "b75e8dd747bac9db0474132d0416700a520d064c6dd2d670323d1fd0f8ff631e",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2220": {
    "site": "bigsoundbank.com",
@@ -789,9 +486,9 @@
    "page": "https://bigsoundbank.com/defrost-2-s2220.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2220.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Defrosting a windshield by hand.",
-   "sha256": "3a026639b0f57660c11d295cfa4da29536b4c9e4037407def7a6dccd15b0a54e"
+   "sha256": "3a026639b0f57660c11d295cfa4da29536b4c9e4037407def7a6dccd15b0a54e",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2221": {
    "site": "bigsoundbank.com",
@@ -800,64 +497,9 @@
    "page": "https://bigsoundbank.com/defrost-3-s2221.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2221.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Defrosting a windshield by hand.",
-   "sha256": "0422e4079151c1668d1d8842d236945d14b1e62ec4b8f17ff6c4c7cfc78ade56"
-  },
-  "bsb_2222": {
-   "site": "bigsoundbank.com",
-   "title": "Defrost #4",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/defrost-4-s2222.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2222.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Defrosting a windshield by hand.",
-   "sha256": "4e38b31991717398efc525fe8713daeb963b50a9498dae6fa71544283283d205"
-  },
-  "bsb_2223": {
-   "site": "bigsoundbank.com",
-   "title": "Defrost #5",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/defrost-5-s2223.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2223.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Defrosting a windshield by hand.",
-   "sha256": "ac133b071b628edbc94441cc9c397fd19eebfb33ee49849ee9c090f327c99663"
-  },
-  "bsb_2209": {
-   "site": "bigsoundbank.com",
-   "title": "Ice cubes that melt",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/ice-cubes-that-melt-s2209.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2209.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A few ice cubes that melt in a glass of water. Perfect for sounding a drooling animal.",
-   "sha256": "5369d219769abc170633679cfa05bde28e3853c89053f3fc80b0499cc3f00b00"
-  },
-  "bsb_3363": {
-   "site": "bigsoundbank.com",
-   "title": "Steps in the snow #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/steps-in-the-snow-3-s3363.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3363.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Several quick steps in the snow. Learn how to make the sound of footsteps in the snow: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#2",
-   "sha256": "9eabe6f438bbcc9d1ec52f521ed32c80979788f5f6d31b0626d3e382750d1c14"
-  },
-  "bsb_2890": {
-   "site": "bigsoundbank.com",
-   "title": "Footstep in the Snow #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/footstep-in-the-snow-2-s2890.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2890.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Human footsteps in the snow. Easy to loop. Made with a sound effect technique: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#2",
-   "sha256": "5d812b4cba4141a325cc2bde33f2a04316bd0e62fd3eff5051860396b7c73208"
+   "sha256": "0422e4079151c1668d1d8842d236945d14b1e62ec4b8f17ff6c4c7cfc78ade56",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1658": {
    "site": "bigsoundbank.com",
@@ -866,9 +508,9 @@
    "page": "https://bigsoundbank.com/grumpy-pig-1-s1658.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1658.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Imitation, with the mouth, of a grumbling pig.",
-   "sha256": "d0f3a57c011c098697674d44cdb4553e064220610b1672226367a34780d9a025"
+   "sha256": "d0f3a57c011c098697674d44cdb4553e064220610b1672226367a34780d9a025",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1659": {
    "site": "bigsoundbank.com",
@@ -877,9 +519,9 @@
    "page": "https://bigsoundbank.com/grumpy-pig-2-s1659.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1659.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Imitation, with the mouth, of a grumbling pig.",
-   "sha256": "ff0c883c3d534ec5d3f6adc687a583aaecef7d51f121cff103f33adf4acbbe76"
+   "sha256": "ff0c883c3d534ec5d3f6adc687a583aaecef7d51f121cff103f33adf4acbbe76",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0546": {
    "site": "bigsoundbank.com",
@@ -888,20 +530,9 @@
    "page": "https://bigsoundbank.com/cow-moos-s0546.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/0546.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "5 mooing of a cow. It seemed to call goats with which I walked. Slight background noise.",
-   "sha256": "78e0b38c0a2c3a028ca267822f0e4fc6270abee612a09f4be9effc1db9a8eab0"
-  },
-  "bsb_2382": {
-   "site": "bigsoundbank.com",
-   "title": "Cow moos #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cow-moos-2-s2382.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2382.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Mooing of a cow. It seemed to call goats with which I walked.",
-   "sha256": "38a0aea2080fed6485205b2b074927fc11df9bd32addf5f37b7cfc5c2a94869a"
+   "sha256": "78e0b38c0a2c3a028ca267822f0e4fc6270abee612a09f4be9effc1db9a8eab0",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2383": {
    "site": "bigsoundbank.com",
@@ -910,9 +541,9 @@
    "page": "https://bigsoundbank.com/cow-moos-3-s2383.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2383.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Mooing of a cow. It seemed to call goats with which I walked.",
-   "sha256": "e9c58a535af94a0a587d84aa22a7fc98676f958cfa10761008dccf5e381ea2bd"
+   "sha256": "e9c58a535af94a0a587d84aa22a7fc98676f958cfa10761008dccf5e381ea2bd",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2384": {
    "site": "bigsoundbank.com",
@@ -921,31 +552,9 @@
    "page": "https://bigsoundbank.com/cow-moos-4-s2384.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2384.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Mooing of a cow. It seemed to call goats with which I walked.",
-   "sha256": "821137766310d9d6fa207dc150d21685e64de4cb56ec94d990a6bde5b774d311"
-  },
-  "bsb_2385": {
-   "site": "bigsoundbank.com",
-   "title": "Cow moos #5",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cow-moos-5-s2385.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2385.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Mooing of a cow. It seemed to call goats with which I walked.",
-   "sha256": "ad7fef9cb391f9e62d4539d5d00374606b3ae55c5c46d8630013eb550437ef52"
-  },
-  "bsb_2386": {
-   "site": "bigsoundbank.com",
-   "title": "Cow Moos #6",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cow-moos-6-s2386.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2386.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Mooing of a cow. It seemed to call goats with which I walked.",
-   "sha256": "1eb9f716e497c49eae23e0250db4fd64971dbcc5abdacc0cb6e96af0bd45c42b"
+   "sha256": "821137766310d9d6fa207dc150d21685e64de4cb56ec94d990a6bde5b774d311",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1543": {
    "site": "bigsoundbank.com",
@@ -954,53 +563,9 @@
    "page": "https://bigsoundbank.com/breath-horse-4-s1543.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1543.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A horse's breath.",
-   "sha256": "2c0b1a33fe97f4bc61d5822c3958697e5b694e2e93b9b533debe7daef6a74a67"
-  },
-  "bsb_1881": {
-   "site": "bigsoundbank.com",
-   "title": "Cat roar #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cat-roar-1-s1881.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1881.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A cat that roars.",
-   "sha256": "fc29fd3e816d4dabc41553a1e2c4924bc6d91b6ece63bc90efb1ecc12ccc6095"
-  },
-  "bsb_1882": {
-   "site": "bigsoundbank.com",
-   "title": "Cat roar #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cat-roar-2-s1882.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1882.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A cat that roars.",
-   "sha256": "2fb2a78040f055bb88bbeeb3f67370532ee2de567d895a5601702f756a5642f3"
-  },
-  "bsb_1883": {
-   "site": "bigsoundbank.com",
-   "title": "Cat roar #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cat-roar-3-s1883.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1883.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A cat that roars.",
-   "sha256": "86a89d25fb67d817bdf42f0f7a6c8b85be2ad198fd1d67d5e04dc55a4cb87eae"
-  },
-  "bsb_1884": {
-   "site": "bigsoundbank.com",
-   "title": "Cat roar #4",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cat-roar-4-s1884.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1884.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A cat that roars.",
-   "sha256": "943fb5b9db281e3686343c4632a5e5a7ad609c7362dcbef238b9864f5d352edf"
+   "sha256": "2c0b1a33fe97f4bc61d5822c3958697e5b694e2e93b9b533debe7daef6a74a67",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2106": {
    "site": "bigsoundbank.com",
@@ -1009,9 +574,9 @@
    "page": "https://bigsoundbank.com/zombie-1-s2106.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2106.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Horrible zombie growls. This sound has no effect.",
-   "sha256": "baeeaf21c48cb232ebb10649ad3dc56d0b8f60f19c441490d829e5aac646a5d2"
+   "sha256": "baeeaf21c48cb232ebb10649ad3dc56d0b8f60f19c441490d829e5aac646a5d2",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2107": {
    "site": "bigsoundbank.com",
@@ -1020,9 +585,9 @@
    "page": "https://bigsoundbank.com/zombie-2-s2107.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2107.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Horrible zombie growls. This sound has no effect.",
-   "sha256": "3fed9d8d69a8f932310e9d17721f0133f026b1320d634812b467c748199c19df"
+   "sha256": "3fed9d8d69a8f932310e9d17721f0133f026b1320d634812b467c748199c19df",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2108": {
    "site": "bigsoundbank.com",
@@ -1031,9 +596,9 @@
    "page": "https://bigsoundbank.com/zombie-3-s2108.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2108.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Horrible zombie growls. This sound has no effect.",
-   "sha256": "c23fed5dc2f6484e86b15f3e52986992f7085f7614dd0ed705976099296edfdb"
+   "sha256": "c23fed5dc2f6484e86b15f3e52986992f7085f7614dd0ed705976099296edfdb",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2109": {
    "site": "bigsoundbank.com",
@@ -1042,9 +607,9 @@
    "page": "https://bigsoundbank.com/zombie-4-s2109.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2109.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Horrible zombie growls. This sound has no effect.",
-   "sha256": "6f46ff7cb28872b59016c838909366c757f93edeec4e48eff80c7fe4078626c8"
+   "sha256": "6f46ff7cb28872b59016c838909366c757f93edeec4e48eff80c7fe4078626c8",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2110": {
    "site": "bigsoundbank.com",
@@ -1053,9 +618,9 @@
    "page": "https://bigsoundbank.com/zombie-5-s2110.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2110.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Horrible zombie growls. This sound has no effect.",
-   "sha256": "227dffdddfc7382ca31ae1cf44295201f97beb328bc016327ad5884a32938724"
+   "sha256": "227dffdddfc7382ca31ae1cf44295201f97beb328bc016327ad5884a32938724",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2111": {
    "site": "bigsoundbank.com",
@@ -1064,9 +629,9 @@
    "page": "https://bigsoundbank.com/zombie-6-s2111.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2111.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Horrible zombie growl. This sound has no effect.",
-   "sha256": "6b6354cfc25fb3bcf0414a2dfde44d8264b3c8c9b905bee1bf5f2f37797624f4"
+   "sha256": "6b6354cfc25fb3bcf0414a2dfde44d8264b3c8c9b905bee1bf5f2f37797624f4",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2112": {
    "site": "bigsoundbank.com",
@@ -1075,9 +640,9 @@
    "page": "https://bigsoundbank.com/zombie-7-s2112.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2112.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Horrible zombie growl. This sound has no effect.",
-   "sha256": "8efa9b6635e898896f40c29a8bd1a579ed6db75ec34e0ef05becc118a32ad996"
+   "sha256": "8efa9b6635e898896f40c29a8bd1a579ed6db75ec34e0ef05becc118a32ad996",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3617": {
    "site": "bigsoundbank.com",
@@ -1086,9 +651,9 @@
    "page": "https://bigsoundbank.com/sika-deer-rut-call-1-s3617.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3617.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Rut call of a sika deer (Cervus nippon). Not to be confused with red deer: the sika call is a high-pitched, shrill whistle, often in series of three or four, very different from the deep roar of the r",
-   "sha256": "0b9fc35b8bf919c6b7a068a9a799ba2454a442de604a8aa9288f9d3b408d1e95"
+   "sha256": "0b9fc35b8bf919c6b7a068a9a799ba2454a442de604a8aa9288f9d3b408d1e95",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3618": {
    "site": "bigsoundbank.com",
@@ -1097,42 +662,9 @@
    "page": "https://bigsoundbank.com/sika-deer-rut-call-2-s3618.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3618.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Rut call of a sika deer (Cervus nippon). Not to be confused with red deer: the sika call is a high-pitched, shrill whistle, often in series of three or four, very different from the deep roar of the r",
-   "sha256": "537110bf0dc93960d2118f5bd0a6107f2da5a37f0187ca8d9999436cade7b7d7"
-  },
-  "bsb_1547": {
-   "site": "bigsoundbank.com",
-   "title": "Dogs Breathing",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/dogs-breathing-s1547.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1547.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Two big dogs out of breath.",
-   "sha256": "75730be12721322a4c866a9e9ffe49ac93b9679cc79fcf945c87ba3da2685db2"
-  },
-  "bsb_2352": {
-   "site": "bigsoundbank.com",
-   "title": "Old dog barking #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/old-dog-barking-1-s2352.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2352.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "An elderly dog barks. Gravel path.",
-   "sha256": "b7981840e9657163a13aeab0fa8cf829b74d0c08a0774a6f8fd3e21b5c28f894"
-  },
-  "bsb_2353": {
-   "site": "bigsoundbank.com",
-   "title": "Old dog barking #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/old-dog-barking-2-s2353.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2353.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "An elderly dog barks. Gravel path.",
-   "sha256": "b1834c279f3c13f401db6fabaa4b1904830c86db9919a51d8063e160a781fc9f"
+   "sha256": "537110bf0dc93960d2118f5bd0a6107f2da5a37f0187ca8d9999436cade7b7d7",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2190": {
    "site": "bigsoundbank.com",
@@ -1141,9 +673,9 @@
    "page": "https://bigsoundbank.com/chattering-teeth-2-s2190.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2190.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Quick chattering of teeth. Like when you're cold.",
-   "sha256": "9992ae8f80de4ec5eb1672e14364677352ecf3fbf6cacf7ee99b91bed9f099df"
+   "sha256": "9992ae8f80de4ec5eb1672e14364677352ecf3fbf6cacf7ee99b91bed9f099df",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2195": {
    "site": "bigsoundbank.com",
@@ -1152,9 +684,9 @@
    "page": "https://bigsoundbank.com/man-breathing-s2195.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2195.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A man who breathes slowly through his nose. Do not put too much.",
-   "sha256": "2daf3edbe5a72df95b84785f0353c7c507934eb90868a3d2c7b1fb9aa5c60e6f"
+   "sha256": "2daf3edbe5a72df95b84785f0353c7c507934eb90868a3d2c7b1fb9aa5c60e6f",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1103": {
    "site": "bigsoundbank.com",
@@ -1163,9 +695,9 @@
    "page": "https://bigsoundbank.com/breathless-man-s1103.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1103.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A man out of breath after a few sports exercises. Can be looped.",
-   "sha256": "2e837fba469cbc990cef488f62c4ee9cac1eb89270b0ff96aa526893e6fb4f60"
+   "sha256": "2e837fba469cbc990cef488f62c4ee9cac1eb89270b0ff96aa526893e6fb4f60",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1404": {
    "site": "bigsoundbank.com",
@@ -1174,9 +706,9 @@
    "page": "https://bigsoundbank.com/sigh-by-the-nose-s1404.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1404.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A man who sighs by the nose.",
-   "sha256": "4ae4ad0bd661d9f469a9abe8eac2cc72a031b02c5f560d83d8c28cac60b5520c"
+   "sha256": "4ae4ad0bd661d9f469a9abe8eac2cc72a031b02c5f560d83d8c28cac60b5520c",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1405": {
    "site": "bigsoundbank.com",
@@ -1185,9 +717,9 @@
    "page": "https://bigsoundbank.com/sigh-by-the-mouth-s1405.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1405.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A man who sighs through his mouth.",
-   "sha256": "fbd97d0914a7fcd1a178907e18f07f198a2aa952bc551034d33eda62379ee022"
+   "sha256": "fbd97d0914a7fcd1a178907e18f07f198a2aa952bc551034d33eda62379ee022",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1602": {
    "site": "bigsoundbank.com",
@@ -1196,9 +728,9 @@
    "page": "https://bigsoundbank.com/blow-hard-1-s1602.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1602.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A man is blowing hard. A candle for example.",
-   "sha256": "20a96ddf9b1dc3094176784196e4bf092e19dc2160701632633a40af6b66de32"
+   "sha256": "20a96ddf9b1dc3094176784196e4bf092e19dc2160701632633a40af6b66de32",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1603": {
    "site": "bigsoundbank.com",
@@ -1207,9 +739,9 @@
    "page": "https://bigsoundbank.com/blow-hard-2-s1603.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1603.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A man is blowing hard. A candle for example.",
-   "sha256": "02f9c642ff05913d7f7f7b505f91250dbb2a12c5f62114a60ee2ae12cc88fa96"
+   "sha256": "02f9c642ff05913d7f7f7b505f91250dbb2a12c5f62114a60ee2ae12cc88fa96",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0208": {
    "site": "bigsoundbank.com",
@@ -1218,9 +750,9 @@
    "page": "https://bigsoundbank.com/on-snow-s0208.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0208.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Learn how to make the sound effects of footsteps in the snow: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#2",
-   "sha256": "2930dfe1989b89ecca6df926c5c52c923590b9b16c7e3b4ab8918a3dbd1537f4"
+   "sha256": "2930dfe1989b89ecca6df926c5c52c923590b9b16c7e3b4ab8918a3dbd1537f4",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0285": {
    "site": "bigsoundbank.com",
@@ -1229,9 +761,9 @@
    "page": "https://bigsoundbank.com/breath-of-a-horse-1-s0285.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0285.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Breath of a horse.",
-   "sha256": "56e93bef3255e356d9a51bdb14f95e228d9e40b83f0a0bc226100a60a944bcab"
+   "sha256": "56e93bef3255e356d9a51bdb14f95e228d9e40b83f0a0bc226100a60a944bcab",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0286": {
    "site": "bigsoundbank.com",
@@ -1240,9 +772,9 @@
    "page": "https://bigsoundbank.com/breath-of-a-horse-2-s0286.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0286.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A horse’s snort.",
-   "sha256": "5d54df9bdbacf45a57625cef944130d32f77b16284ed8154ffe930cedf5261be"
+   "sha256": "5d54df9bdbacf45a57625cef944130d32f77b16284ed8154ffe930cedf5261be",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0287": {
    "site": "bigsoundbank.com",
@@ -1251,75 +783,9 @@
    "page": "https://bigsoundbank.com/breath-horse-3-s0287.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0287.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Breath horse.",
-   "sha256": "60d9c85d14d95b9079a569f082d60c1ae7f98366bd3d9cf1f8804d3dae69b997"
-  },
-  "bsb_0486": {
-   "site": "bigsoundbank.com",
-   "title": "Grunts",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/grunts-s0486.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0486.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Low growls of an imaginary animal. Made by mouth, then abused on computer.",
-   "sha256": "0618f00770bdbe23bb7103524db717e483abe402131568b6fef81872eda1d6c3"
-  },
-  "bsb_0789": {
-   "site": "bigsoundbank.com",
-   "title": "Chattering teeth #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/chattering-teeth-s0789.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0789.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Slow teeth chattering.",
-   "sha256": "7143b464c0e31570e4ee8b310a932b0775d473e667b7c53d1c5a59b05acf9f15"
-  },
-  "bsb_1113": {
-   "site": "bigsoundbank.com",
-   "title": "Apple crunched #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/apple-crunched-1-s1113.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1113.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "I eat a green apple in front of the microphone, indoors.",
-   "sha256": "ec51b89655e3587d9f506753d1e300916706da7ddfb6636e515e04c4cbfa2b1e"
-  },
-  "bsb_1114": {
-   "site": "bigsoundbank.com",
-   "title": "Apple crunched #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/apple-crunched-2-s1114.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1114.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "I eat a green apple in front of the microphone, indoors.",
-   "sha256": "bfadea714dce814f9e2f3f90f427bcbf643a6f4fb2ecfd1b1fbd3872f728b40e"
-  },
-  "bsb_1594": {
-   "site": "bigsoundbank.com",
-   "title": "Raw carrot crunched #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/raw-carrot-crunched-1-s1594.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1594.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A raw carrot, crunched and chewed.",
-   "sha256": "2b810d8cd8654a2e5c7ca747ac0e360783b7ebffb830d73691540cb90f97f44e"
-  },
-  "bsb_1595": {
-   "site": "bigsoundbank.com",
-   "title": "Raw carrot crunched #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/raw-carrot-crunched-2-s1595.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1595.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A raw carrot, crunched and chewed.",
-   "sha256": "4637d6295450ddc711e5fe2c8d616b11ac7e02d5848d6b69c0ca4c070bff0932"
+   "sha256": "60d9c85d14d95b9079a569f082d60c1ae7f98366bd3d9cf1f8804d3dae69b997",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0352": {
    "site": "bigsoundbank.com",
@@ -1328,31 +794,9 @@
    "page": "https://bigsoundbank.com/mouth-noises-1-s0352.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0352.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Mouth sounds.",
-   "sha256": "60784b41503d5c021f8766fe2645f8eac9bae1a574f74aef293c5d17e377ff17"
-  },
-  "bsb_0353": {
-   "site": "bigsoundbank.com",
-   "title": "Mouth noises #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/mouth-noises-2-s0353.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0353.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Mouth noises.",
-   "sha256": "53bc43220bdf5ecaa0f4adb86b179e5c54b9f003c2c495f4e88b00768eb92f29"
-  },
-  "bsb_0354": {
-   "site": "bigsoundbank.com",
-   "title": "Mouth noises #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/mouth-noises-3-s0354.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0354.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Mouth sounds.",
-   "sha256": "ab7ab7a384afca78a14c833031440f05ace7426cb468662d032901d7cd8e64e3"
+   "sha256": "60784b41503d5c021f8766fe2645f8eac9bae1a574f74aef293c5d17e377ff17",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0497": {
    "site": "bigsoundbank.com",
@@ -1361,9 +805,9 @@
    "page": "https://bigsoundbank.com/horse-chewing-hay-s0497.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0497.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A horse that chews hay in his box. Light background noise of hay he pushes with his nose.",
-   "sha256": "a5fd0f713b5f6883694bdffb2ed026175c7d40e94f502355311819caf13145ea"
+   "sha256": "a5fd0f713b5f6883694bdffb2ed026175c7d40e94f502355311819caf13145ea",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0596": {
    "site": "bigsoundbank.com",
@@ -1372,9 +816,9 @@
    "page": "https://bigsoundbank.com/bones-cracking-s0596.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0596.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Bones cracking noises made with a sprig of celery. The technical https://www.libertivi.com/lelabodubruiteur_123",
-   "sha256": "615d0c4c30c4dd284c6dd8b6faeabca2aec3805f8e4f7d861c0e532af88c5e1f"
+   "sha256": "615d0c4c30c4dd284c6dd8b6faeabca2aec3805f8e4f7d861c0e532af88c5e1f",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1408": {
    "site": "bigsoundbank.com",
@@ -1383,9 +827,9 @@
    "page": "https://bigsoundbank.com/bones-cracking-2-s1408.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1408.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Bones cracking noises made with a sprig of celery. The technical https://www.libertivi.com/lelabodubruiteur_66",
-   "sha256": "d178e1840d40b08f69d6413cc17a3a8fd4402a6542c1820635fc51ce5fc272c2"
+   "sha256": "d178e1840d40b08f69d6413cc17a3a8fd4402a6542c1820635fc51ce5fc272c2",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1409": {
    "site": "bigsoundbank.com",
@@ -1394,9 +838,9 @@
    "page": "https://bigsoundbank.com/bones-cracking-3-s1409.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1409.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Bones cracking noises made with a sprig of celery. The technical https://www.libertivi.com/lelabodubruiteur_66",
-   "sha256": "121bbb3cabd4d11c6176c0d43541284b2758cfc02e2a75700150b8d16b9892b5"
+   "sha256": "121bbb3cabd4d11c6176c0d43541284b2758cfc02e2a75700150b8d16b9892b5",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0148": {
    "site": "bigsoundbank.com",
@@ -1405,9 +849,9 @@
    "page": "https://bigsoundbank.com/glass-burst-s0148.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0148.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A glass exploding on the floor. The sound saturates slightly.",
-   "sha256": "b74772d5350981eae4fd94ca3900d28eb625cd0098b39dea13dfa2e43162fd03"
+   "sha256": "b74772d5350981eae4fd94ca3900d28eb625cd0098b39dea13dfa2e43162fd03",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0387": {
    "site": "bigsoundbank.com",
@@ -1416,9 +860,9 @@
    "page": "https://bigsoundbank.com/mirror-explodes-s0387.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0387.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Noise of a mirror thick (1cm) sitting on a wooden border where we throw a heavy object (in this case salt) and that is break the mirror collapses.",
-   "sha256": "54567de24967f81ba5131b0997190468865353d0e0d36b519d40b1f44f6f2673"
+   "sha256": "54567de24967f81ba5131b0997190468865353d0e0d36b519d40b1f44f6f2673",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0771": {
    "site": "bigsoundbank.com",
@@ -1427,9 +871,9 @@
    "page": "https://bigsoundbank.com/broken-glass-s0771.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0771.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Broken glass. Foley made with this technique cinema sound effects: https://www.libertivi.com/lelabodubruiteur_135",
-   "sha256": "49b2d6857fb2efce6d2c96c9126849b0618bdf5bc15aab8a5211dc657c398f7b"
+   "sha256": "49b2d6857fb2efce6d2c96c9126849b0618bdf5bc15aab8a5211dc657c398f7b",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1121": {
    "site": "bigsoundbank.com",
@@ -1438,31 +882,9 @@
    "page": "https://bigsoundbank.com/broken-christmas-ball-1-s1121.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1121.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A glass Christmas ball that falls to the ground and breaks.",
-   "sha256": "744aea9e53967c79bd44b223c91203bcd12975e9630bdbb890a61e40e406d0a7"
-  },
-  "bsb_1122": {
-   "site": "bigsoundbank.com",
-   "title": "Broken christmas ball #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/broken-christmas-ball-2-s1122.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1122.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A glass Christmas ball that falls to the ground and breaks.",
-   "sha256": "d3dbf5d94acceff24ed026ce2eb2fa578feee5f2f5572e60e4b171a06659b06a"
-  },
-  "bsb_1123": {
-   "site": "bigsoundbank.com",
-   "title": "Broken christmas ball #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/broken-christmas-ball-3-s1123.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1123.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A glass Christmas ball that falls to the ground and breaks.",
-   "sha256": "76484f5c7dd4f69b1245e36fc0f6ef9dffd88dd1b6fd4262cbb070b3e307032e"
+   "sha256": "744aea9e53967c79bd44b223c91203bcd12975e9630bdbb890a61e40e406d0a7",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2039": {
    "site": "bigsoundbank.com",
@@ -1471,20 +893,9 @@
    "page": "https://bigsoundbank.com/bulb-bursting-1-s2039.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2039.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A bursting glass bulb.",
-   "sha256": "ca77fb2a110b6b74e2d8e71dc3da2d9ad235c559084eb22e189f0e9abe079df0"
-  },
-  "bsb_2040": {
-   "site": "bigsoundbank.com",
-   "title": "Bulb bursting #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/bulb-bursting-2-s2040.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2040.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A bursting glass bulb.",
-   "sha256": "2b20b8a870d924f88c7acc49fcba70e5f130806b8d6863cda6f79c48ca13621c"
+   "sha256": "ca77fb2a110b6b74e2d8e71dc3da2d9ad235c559084eb22e189f0e9abe079df0",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2041": {
    "site": "bigsoundbank.com",
@@ -1493,9 +904,9 @@
    "page": "https://bigsoundbank.com/bulb-bursting-3-s2041.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2041.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A bursting glass bulb.",
-   "sha256": "7fc28eaaa6a267cd9ed6de037fcc298e0e4d10e9e2b988ced1a553f99e2746fd"
+   "sha256": "7fc28eaaa6a267cd9ed6de037fcc298e0e4d10e9e2b988ced1a553f99e2746fd",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2042": {
    "site": "bigsoundbank.com",
@@ -1504,9 +915,9 @@
    "page": "https://bigsoundbank.com/bulb-bursting-4-s2042.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2042.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A bursting glass bulb.",
-   "sha256": "48a3ee671938540f1b26cd04f88cd67c209a28a0a83b592542b85aa733c6b74e"
+   "sha256": "48a3ee671938540f1b26cd04f88cd67c209a28a0a83b592542b85aa733c6b74e",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2886": {
    "site": "bigsoundbank.com",
@@ -1515,9 +926,9 @@
    "page": "https://bigsoundbank.com/clink-of-glass-toast-1-s2886.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2886.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "When we want to make a toast, we clink a glass with a cutlery.",
-   "sha256": "c762016d1b46ebcd281a9f1bcc7a1cec301c5c43b46f7651839183e927c2d4ad"
+   "sha256": "c762016d1b46ebcd281a9f1bcc7a1cec301c5c43b46f7651839183e927c2d4ad",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2240": {
    "site": "bigsoundbank.com",
@@ -1526,20 +937,9 @@
    "page": "https://bigsoundbank.com/glass-ball-bounce-1-s2240.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2240.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A glass ball bouncing off a tiled floor.",
-   "sha256": "dd85f6604090b3ef950524d76c2c2b91b70b1615d5b25f5c74c0c092a89847bb"
-  },
-  "bsb_2241": {
-   "site": "bigsoundbank.com",
-   "title": "Glass ball, bounce #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/glass-ball-bounce-2-s2241.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2241.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A glass ball bouncing off a tiled floor.",
-   "sha256": "20859fb0a24bbe93e24c9c966c33fe1668a932a1d1e185441b5c793f7a5221ea"
+   "sha256": "dd85f6604090b3ef950524d76c2c2b91b70b1615d5b25f5c74c0c092a89847bb",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1335": {
    "site": "bigsoundbank.com",
@@ -1548,31 +948,9 @@
    "page": "https://bigsoundbank.com/cheers-champagne-flute-1-s1335.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1335.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Two champagne flute that are shocking.",
-   "sha256": "0ed6e71314090cc25a61923c14702ed905baff9223715d3c01ce137f7fda24fc"
-  },
-  "bsb_0487": {
-   "site": "bigsoundbank.com",
-   "title": "Bottle clink",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/bottle-clink-s0487.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0487.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Two glass wine bottles clinking together.",
-   "sha256": "9482ce19c5ba9c264c516c166ec6d5668aec6fc94f23e27307e1fb2a1c355e1d"
-  },
-  "bsb_2687": {
-   "site": "bigsoundbank.com",
-   "title": "Cluster Chimes #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cluster-chimes-1-s2687.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2687.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "The sound of chimes in the wind.",
-   "sha256": "443e31bc6df057c05aea27d7a5edabc9e58ecf4c643923b9f69d7a583596c4e9"
+   "sha256": "0ed6e71314090cc25a61923c14702ed905baff9223715d3c01ce137f7fda24fc",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2079": {
    "site": "bigsoundbank.com",
@@ -1581,31 +959,9 @@
    "page": "https://bigsoundbank.com/chimes-dream-1-s2079.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2079.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Cluster chimes of a dream hook.",
-   "sha256": "1257cc546b69523e2b320f6e1cf05f302e3c253368634639dfcbb98afccc0499"
-  },
-  "bsb_2080": {
-   "site": "bigsoundbank.com",
-   "title": "Chimes \"dream\" #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/chimes-dream-2-s2080.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2080.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Cluster chimes of a dream hook.",
-   "sha256": "57db1358f017943a6f474686f02f6026547baa241d657b0d14902d14a9f0f74f"
-  },
-  "bsb_2081": {
-   "site": "bigsoundbank.com",
-   "title": "Chimes \"dream\" #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/chimes-dream-3-s2081.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2081.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Cluster chimes of a dream hook.",
-   "sha256": "b303e81afea9439fc21a51abf4ae91d0331b32afbba68f55b45fb21884e44b54"
+   "sha256": "1257cc546b69523e2b320f6e1cf05f302e3c253368634639dfcbb98afccc0499",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2087": {
    "site": "bigsoundbank.com",
@@ -1614,9 +970,9 @@
    "page": "https://bigsoundbank.com/chimes-butterfly-1-s2087.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2087.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Decorative small chimes cluster.",
-   "sha256": "58fa4b221490611084df79c7a8881c56811ae5817265f647ee3974afb725cf55"
+   "sha256": "58fa4b221490611084df79c7a8881c56811ae5817265f647ee3974afb725cf55",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2088": {
    "site": "bigsoundbank.com",
@@ -1625,20 +981,9 @@
    "page": "https://bigsoundbank.com/chimes-butterfly-2-s2088.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2088.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Decorative small chimes cluster.",
-   "sha256": "c1038b319a09b2dea2e6647e0b51364a5b47abb446e2910af2432d14a4775736"
-  },
-  "bsb_0920": {
-   "site": "bigsoundbank.com",
-   "title": "Glockenspiel",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/glockenspiel-s0920.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0920.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Slipped up on a glockenspiel.",
-   "sha256": "6b12efb3fd465d97a94112e8561a066efb51b20cbd1bf0a3ee4bd857e8c14a84"
+   "sha256": "c1038b319a09b2dea2e6647e0b51364a5b47abb446e2910af2432d14a4775736",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1867": {
    "site": "bigsoundbank.com",
@@ -1647,9 +992,9 @@
    "page": "https://bigsoundbank.com/music-box-c-1-s1867.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1867.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "The 'do' of a music box.",
-   "sha256": "bb0f90cde3dd215b41d884cdcdb3f51c81c0cd85d32ec91d7f724cbe6dd2048e"
+   "sha256": "bb0f90cde3dd215b41d884cdcdb3f51c81c0cd85d32ec91d7f724cbe6dd2048e",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1871": {
    "site": "bigsoundbank.com",
@@ -1658,9 +1003,9 @@
    "page": "https://bigsoundbank.com/music-box-g-1-s1871.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1871.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "The 'sol' of a music box.",
-   "sha256": "95251372b15e2bdb7ab0aee64a4ed11c1eda6cb20765b7caad770c7f9d3ab8a4"
+   "sha256": "95251372b15e2bdb7ab0aee64a4ed11c1eda6cb20765b7caad770c7f9d3ab8a4",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1870": {
    "site": "bigsoundbank.com",
@@ -1669,53 +1014,9 @@
    "page": "https://bigsoundbank.com/music-box-f-1-s1870.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1870.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "The 'fa' of a music box.",
-   "sha256": "12ee7ca317ece7a01f8c11eabb3c37267d9b05a3fe173e6f2f963289f93d167b"
-  },
-  "bsb_2545": {
-   "site": "bigsoundbank.com",
-   "title": "Starting crank",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/starting-crank-s2545.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2545.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Crank starting of a 1903 De Dion-Bouton Type Q.",
-   "sha256": "8910993fced207d60a773957050415f0472127aac51af565d678e360320120d6"
-  },
-  "bsb_0572": {
-   "site": "bigsoundbank.com",
-   "title": "Whoosh #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whoosh-1-s0572.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0572.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whoosh of a sword that cuts through the air. Learn how to make this sound effects: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22",
-   "sha256": "ff06c297efb8cf1c9438473ed558d5ba0063638b0727687b8ab78fd6e9733769"
-  },
-  "bsb_0573": {
-   "site": "bigsoundbank.com",
-   "title": "Whoosh #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whoosh-2-s0573.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/0573.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whoosh of a sword or an arrow through the air. Learn how to make this sound effects: https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22",
-   "sha256": "4e497f50507f42b78c72db9f611366a83f90eea54a4adbb9ffce4b705849b068"
-  },
-  "bsb_1795": {
-   "site": "bigsoundbank.com",
-   "title": "Whoosh #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whoosh-3-s1795.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1795.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whoosh made with a long rope.",
-   "sha256": "b2e41d0320f6d54bb2462cf8b06552564fac60496b58553cbdcd561a6278958f"
+   "sha256": "12ee7ca317ece7a01f8c11eabb3c37267d9b05a3fe173e6f2f963289f93d167b",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1796": {
    "site": "bigsoundbank.com",
@@ -1724,31 +1025,9 @@
    "page": "https://bigsoundbank.com/whoosh-4-s1796.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1796.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Whoosh made with a long rope.",
-   "sha256": "17942950627b87b34eec2cc62dc7eddd1b9b2ff34742f87a781cb918ea6b9c92"
-  },
-  "bsb_1797": {
-   "site": "bigsoundbank.com",
-   "title": "Whoosh #5",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whoosh-5-s1797.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1797.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whoosh made with a long wooden stick.",
-   "sha256": "c7eec6353b7a50c41c4ca664ed07140a84d4aea4ad02eb92930946443e612d87"
-  },
-  "bsb_1799": {
-   "site": "bigsoundbank.com",
-   "title": "Whoosh #6",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whoosh-6-s1799.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1799.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whoosh made with a wooden sheet.",
-   "sha256": "5694af91c0959ca100da768a1b2f1c695f5e2c57451ae94ee74fc80c14a2e318"
+   "sha256": "17942950627b87b34eec2cc62dc7eddd1b9b2ff34742f87a781cb918ea6b9c92",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1800": {
    "site": "bigsoundbank.com",
@@ -1757,9 +1036,9 @@
    "page": "https://bigsoundbank.com/whoosh-7-s1800.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1800.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Whoosh made with a metal tube.",
-   "sha256": "6a7e1d21b2d829e36d9ad7d7cfc55ecb6cc10167f1c838411ea8058e67581687"
+   "sha256": "6a7e1d21b2d829e36d9ad7d7cfc55ecb6cc10167f1c838411ea8058e67581687",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1801": {
    "site": "bigsoundbank.com",
@@ -1768,31 +1047,9 @@
    "page": "https://bigsoundbank.com/whoosh-8-s1801.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1801.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Whoosh made with a metal tube.",
-   "sha256": "353e8662a31493403835312d2cbfc229ee4e8af0269fbdb28fad9258f501b4e0"
-  },
-  "bsb_1802": {
-   "site": "bigsoundbank.com",
-   "title": "Whoosh #9",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whoosh-9-s1802.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1802.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whoosh made with a wooden sheet.",
-   "sha256": "53fe3adb80b3709c7ff53cc4fc03fccb95b9ab81c2f61f5730c5b7cd34ddf3ce"
-  },
-  "bsb_1798": {
-   "site": "bigsoundbank.com",
-   "title": "Whoosh #10",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whoosh-10-s1798.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1798.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whoosh made with a large bamboo stick.",
-   "sha256": "a2bce5665468d1adf5880287a068eb5d82fa0405d61792df663838e58e4a16a6"
+   "sha256": "353e8662a31493403835312d2cbfc229ee4e8af0269fbdb28fad9258f501b4e0",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0128": {
    "site": "bigsoundbank.com",
@@ -1801,9 +1058,9 @@
    "page": "https://bigsoundbank.com/sword-through-the-air-s0128.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/0128.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Sound of a sword that cuts through the air. Learn to make your own sound effects of swords https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22",
-   "sha256": "f9591ac29eea5c86212ffdab75a3ad50a55b77577b038d73f9be2897f3646cf2"
+   "sha256": "f9591ac29eea5c86212ffdab75a3ad50a55b77577b038d73f9be2897f3646cf2",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0127": {
    "site": "bigsoundbank.com",
@@ -1812,9 +1069,9 @@
    "page": "https://bigsoundbank.com/sword-that-cuts-s0127.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/0127.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Sound of a sword cutting something soft. Learn to make your own sound effects of swords https://lasonotheque.org/dossiers/techniques-bruitage-f112.html#22",
-   "sha256": "e74e4e7d56bdf173946aee3ac6219150c33b73240b22776f276b40048a827390"
+   "sha256": "e74e4e7d56bdf173946aee3ac6219150c33b73240b22776f276b40048a827390",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1714": {
    "site": "bigsoundbank.com",
@@ -1823,42 +1080,9 @@
    "page": "https://bigsoundbank.com/wind-from-inside-1-s1714.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1714.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Storm Ciara is raging outside. I take the sound from inside a house.",
-   "sha256": "c4a13f3dc40164d8fb7bfa252e3c0f4b8542909eee277632104c3cc9e1e1625f"
-  },
-  "bsb_1715": {
-   "site": "bigsoundbank.com",
-   "title": "Wind from inside #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/wind-from-inside-2-s1715.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1715.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Storm Ciara is raging outside. I take the sound from inside a room. Noise of the PVC rolling shutter.",
-   "sha256": "3465164021300dc165e153919c144296d0a5c6cdca7ec95fe30123eb2cfb9f47"
-  },
-  "bsb_1716": {
-   "site": "bigsoundbank.com",
-   "title": "Wind from Inside #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/wind-from-inside-3-s1716.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1716.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Storm Ciara is raging outside. I take the sound from inside an outbuilding.",
-   "sha256": "23b60953282d1c562e726f318264a1cb174ea2b313915332aa634f3ac607af7c"
-  },
-  "bsb_0147": {
-   "site": "bigsoundbank.com",
-   "title": "Whistling of the Wind #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whistling-of-the-wind-1-s0147.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0147.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Slight hiss of the wind. Inside a house through a window is not closed. Wind outside. Learn to imitate the sound of the wind https://www.libertivi.com/lelabodubruiteur_122",
-   "sha256": "b30aa107a7503cac3b294f422405ea7dfff9fc5352d3a0891bee1aa614a3636b"
+   "sha256": "c4a13f3dc40164d8fb7bfa252e3c0f4b8542909eee277632104c3cc9e1e1625f",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0155": {
    "site": "bigsoundbank.com",
@@ -1867,42 +1091,9 @@
    "page": "https://bigsoundbank.com/whistling-of-the-wind-2-s0155.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0155.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Whistling of the wind in the chimney off. Learn to imitate the sound of the wind: https://www.libertivi.com/lelabodubruiteur_122",
-   "sha256": "1de928c282f3c306b93b167c184ab7d2df32ebf88aae3387c60bb2d9c6e3f0f8"
-  },
-  "bsb_0152": {
-   "site": "bigsoundbank.com",
-   "title": "Strong wind #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/strong-wind-2-s0152.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0152.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Strong wind from the interior of a house. Small cracks and bumps. Learn to imitate the sound of the wind https://www.libertivi.com/lelabodubruiteur_122",
-   "sha256": "4451c332c9f7b890dbc96b2904a17f7659974eef4634c151f6372418f79e6d9a"
-  },
-  "bsb_0153": {
-   "site": "bigsoundbank.com",
-   "title": "Strong wind #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/strong-wind-3-s0153.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0153.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Strong wind from the interior of a house. Small cracks and bumps. Learn to imitate the sound of the wind https://www.libertivi.com/lelabodubruiteur_122",
-   "sha256": "ebee86a4f17af72c0bf0342923346f4f18b81a554ef418e2073ac2da81a754de"
-  },
-  "bsb_0595": {
-   "site": "bigsoundbank.com",
-   "title": "Wind",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/wind-s0595.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/0595.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Wind noise, made with a technique Foley: https://www.libertivi.com/lelabodubruiteur_122",
-   "sha256": "cd84a94a3f3647d17cbcbd64eafbb6c2e76da40a5a896b9c9c28f6bb7994cc77"
+   "sha256": "1de928c282f3c306b93b167c184ab7d2df32ebf88aae3387c60bb2d9c6e3f0f8",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1694": {
    "site": "bigsoundbank.com",
@@ -1911,9 +1102,9 @@
    "page": "https://bigsoundbank.com/quenching-cooling-1-s1694.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1694.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Cooling a hot object with water. This is a welder in a glass.",
-   "sha256": "deff93576b3071f03b97df277fe45725499d28f3ef279fa697459fd1abd6d0aa"
+   "sha256": "deff93576b3071f03b97df277fe45725499d28f3ef279fa697459fd1abd6d0aa",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1695": {
    "site": "bigsoundbank.com",
@@ -1922,9 +1113,9 @@
    "page": "https://bigsoundbank.com/quenching-cooling-2-s1695.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1695.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Cooling a hot object with water. This is a welder in a glass.",
-   "sha256": "e89fce79647501798f9763e8d98c69597fbfe7d70e2165208b0cd516ebadaab5"
+   "sha256": "e89fce79647501798f9763e8d98c69597fbfe7d70e2165208b0cd516ebadaab5",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1696": {
    "site": "bigsoundbank.com",
@@ -1933,31 +1124,9 @@
    "page": "https://bigsoundbank.com/quenching-cooling-3-s1696.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1696.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Cooling a hot object with water. This is a welder in a glass.",
-   "sha256": "e5fc8d7664f0d11cb5fbd12ea0ddf680562e7bb5b56542efe58df9d72df2cfcb"
-  },
-  "bsb_1697": {
-   "site": "bigsoundbank.com",
-   "title": "Quenching, cooling #4",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/quenching-cooling-4-s1697.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1697.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Cooling a hot object with water. This is a welder in a glass.",
-   "sha256": "0873d98dbd90f0f123b637b76eac10b076ee2b403166b07f62959a16ef0e4414"
-  },
-  "bsb_1161": {
-   "site": "bigsoundbank.com",
-   "title": "Chimney of smoke that cools",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/chimney-of-smoke-that-cools-s1161.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1161.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Chimney pipe that cools quickly after closing the smoke damper of a wood-fired boiler.",
-   "sha256": "f81ac825d4acb4f0b5e96bef9e98d649da0c1e92bb3de5164ec2f526c7ca3cc3"
+   "sha256": "e5fc8d7664f0d11cb5fbd12ea0ddf680562e7bb5b56542efe58df9d72df2cfcb",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1519": {
    "site": "bigsoundbank.com",
@@ -1966,9 +1135,9 @@
    "page": "https://bigsoundbank.com/splash-big-1-s1519.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1519.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Big 'splash' of a big stone thrown in a big water tank.",
-   "sha256": "cd0c9d6730ddd44ad2341a2b9e2f4eaf4c4cc2ed119b2ef05edee3f1b3ed1596"
+   "sha256": "cd0c9d6730ddd44ad2341a2b9e2f4eaf4c4cc2ed119b2ef05edee3f1b3ed1596",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1520": {
    "site": "bigsoundbank.com",
@@ -1977,9 +1146,9 @@
    "page": "https://bigsoundbank.com/splash-big-2-s1520.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1520.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Big 'splash' of a big stone thrown in a big water tank.",
-   "sha256": "27b0aafc69c9766553ee5228cd84d1b911c9dd9da2479fe8a1b2f5d542d05b5c"
+   "sha256": "27b0aafc69c9766553ee5228cd84d1b911c9dd9da2479fe8a1b2f5d542d05b5c",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1521": {
    "site": "bigsoundbank.com",
@@ -1988,31 +1157,9 @@
    "page": "https://bigsoundbank.com/splash-big-3-s1521.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1521.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Big 'splash' of a big stone thrown in a big water tank.",
-   "sha256": "f73dbea09e51d71340552f1dc302c3f964659758df0a4ec20fd86ef9df0ccd57"
-  },
-  "bsb_1529": {
-   "site": "bigsoundbank.com",
-   "title": "Splash, Small #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/splash-small-1-s1529.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1529.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Small 'splash' of a small stone thrown into a pond.",
-   "sha256": "4a2958fc2d03cd13fa15062dda333bd89d12c26c52c29181692a0623ee350c8b"
-  },
-  "bsb_1530": {
-   "site": "bigsoundbank.com",
-   "title": "Splash, small #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/splash-small-2-s1530.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1530.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Small 'splash' of a small stone thrown into a pond.",
-   "sha256": "47c34979b4d886901195563239c84449854a2342f9c0c51649166abd0b21ff7b"
+   "sha256": "f73dbea09e51d71340552f1dc302c3f964659758df0a4ec20fd86ef9df0ccd57",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1384": {
    "site": "bigsoundbank.com",
@@ -2021,9 +1168,9 @@
    "page": "https://bigsoundbank.com/drops-of-water-1-s1384.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1384.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Many drops of water.",
-   "sha256": "1feae2fe40458f2c0644dd1aa973e5c36bd4b7e66f74935081a5e65c448433c9"
+   "sha256": "1feae2fe40458f2c0644dd1aa973e5c36bd4b7e66f74935081a5e65c448433c9",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1385": {
    "site": "bigsoundbank.com",
@@ -2032,86 +1179,9 @@
    "page": "https://bigsoundbank.com/drops-of-water-2-s1385.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1385.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Many drops of water.",
-   "sha256": "82c53105ddc5923bad7b066c88f000d348ba1d5206026e5e12bfbcffbe38a1ed"
-  },
-  "bsb_1386": {
-   "site": "bigsoundbank.com",
-   "title": "Drops of Water #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/drops-of-water-3-s1386.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1386.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Many drops of water.",
-   "sha256": "2ea1d99e488e2997e94921cd5a28165a099988ccc166f93ef8735efbe9d54205"
-  },
-  "bsb_1382": {
-   "site": "bigsoundbank.com",
-   "title": "Drops, metal pan",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/drops-metal-pan-s1382.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1382.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Many drops of water in a metal pan.",
-   "sha256": "f19ddf0629ca93c434996bd3b0b69672e659cd3cac6c2a973913e877e180235c"
-  },
-  "bsb_1807": {
-   "site": "bigsoundbank.com",
-   "title": "Explosion #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/explosion-1-s1807.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1807.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "An explosion at around 150 meters. An agricultural gun designed to frighten birds.",
-   "sha256": "179bd54cebdc42742e21101be1bb8fa72fc5a4fc3c846866b0e8f712177fac56"
-  },
-  "bsb_1808": {
-   "site": "bigsoundbank.com",
-   "title": "Explosion #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/explosion-2-s1808.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1808.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "An explosion at around 10 meters. An agricultural gun designed to frighten birds.",
-   "sha256": "b8baa6764682a6b27c9cbc7c8885f6ca26996f0800c9c0d37d6a5ee7fcdd9232"
-  },
-  "bsb_1023": {
-   "site": "bigsoundbank.com",
-   "title": "Explosion far Away #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/explosion-far-away-s1023.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1023.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A distant explosion of an agricultural gun designed to frighten birds.",
-   "sha256": "440cadbe3bb96c69aa674939f39a4385fcbe06ca7065cbf3a22a237972506c70"
-  },
-  "bsb_1806": {
-   "site": "bigsoundbank.com",
-   "title": "Explosion far away #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/explosion-far-away-2-s1806.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1806.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "An explosion at around 250 meters. An agricultural gun designed to frighten birds.",
-   "sha256": "ce8b90aed5fe29f356ccc2bb2d5a34846077f7592e05e329818676546d5a2fd7"
-  },
-  "bsb_2718": {
-   "site": "bigsoundbank.com",
-   "title": "Thunder #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/thunder-s2718.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2718.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A single clap of thunder, without rain.",
-   "sha256": "687a2ed723f767c4c959328f5f8acb441b137671eeeb17760da0b467196f6234"
+   "sha256": "82c53105ddc5923bad7b066c88f000d348ba1d5206026e5e12bfbcffbe38a1ed",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3113": {
    "site": "bigsoundbank.com",
@@ -2120,9 +1190,9 @@
    "page": "https://bigsoundbank.com/thunder-2-s3113.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3113.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A single short thunderclap, without rain.",
-   "sha256": "aece3d410a95b09dec470372576cfe5160cf99e208d8526cea5538fd12e32ddb"
+   "sha256": "aece3d410a95b09dec470372576cfe5160cf99e208d8526cea5538fd12e32ddb",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3114": {
    "site": "bigsoundbank.com",
@@ -2131,31 +1201,9 @@
    "page": "https://bigsoundbank.com/thunder-3-s3114.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3114.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A single thunderclap, without rain.",
-   "sha256": "90458dc8ee2337b81449cae726076e8d72f519d5e146ae8ec2da4a2ef7ac0e98"
-  },
-  "bsb_3115": {
-   "site": "bigsoundbank.com",
-   "title": "Thunder #4",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/thunder-4-s3115.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3115.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A single thunderclap, without rain.",
-   "sha256": "361cf9c9f49be122addbcbd19304c687f772b2048f137b5d78e0107a65e970d9"
-  },
-  "bsb_3179": {
-   "site": "bigsoundbank.com",
-   "title": "Thunder #6",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/thunder-6-s3179.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3179.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A single thunderclap, without rain.",
-   "sha256": "137560bbb88021b612c3038b55a18454400a42def917e357001e0979153ed34a"
+   "sha256": "90458dc8ee2337b81449cae726076e8d72f519d5e146ae8ec2da4a2ef7ac0e98",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1674": {
    "site": "bigsoundbank.com",
@@ -2164,9 +1212,9 @@
    "page": "https://bigsoundbank.com/winder-1-s1674.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1674.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Music box that you go back manually with a small key. Some turns.",
-   "sha256": "dc13ed75c32f3ed0de034f527c8afa93eed1cd275bec9ac7dcbc03c61287c9ae"
+   "sha256": "dc13ed75c32f3ed0de034f527c8afa93eed1cd275bec9ac7dcbc03c61287c9ae",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1675": {
    "site": "bigsoundbank.com",
@@ -2175,20 +1223,9 @@
    "page": "https://bigsoundbank.com/winder-2-s1675.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1675.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Music box that you go back manually with a small key. Some turns.",
-   "sha256": "6b71374bdbbcdcb614f9504e1ef30bf8f63a8b574b0fd34f24352bb2af21dd61"
-  },
-  "bsb_2664": {
-   "site": "bigsoundbank.com",
-   "title": "Winder #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/winder-3-s2664.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2664.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Small old mechanical alarm clock that is manually wound with a small key. A few rounds.",
-   "sha256": "62220b9a9ccd97bd1b555c557017acd65a900d36ba3195a69fa7e2e31007278f"
+   "sha256": "6b71374bdbbcdcb614f9504e1ef30bf8f63a8b574b0fd34f24352bb2af21dd61",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2665": {
    "site": "bigsoundbank.com",
@@ -2197,9 +1234,9 @@
    "page": "https://bigsoundbank.com/winder-4-s2665.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2665.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Small old mechanical alarm clock that is manually wound with a small key. A few rounds.",
-   "sha256": "58165a8fabf10c05ba6253462fa5943d8f806c3717a734d4eb5aff562ff95b14"
+   "sha256": "58165a8fabf10c05ba6253462fa5943d8f806c3717a734d4eb5aff562ff95b14",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0795": {
    "site": "bigsoundbank.com",
@@ -2208,9 +1245,9 @@
    "page": "https://bigsoundbank.com/large-ratchet-s0795.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0795.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Large ratchet.",
-   "sha256": "844ef9f5005a5d511ff8f80c1918a45e4cbea035def2114f5cf403f4ba08673f"
+   "sha256": "844ef9f5005a5d511ff8f80c1918a45e4cbea035def2114f5cf403f4ba08673f",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0794": {
    "site": "bigsoundbank.com",
@@ -2219,9 +1256,9 @@
    "page": "https://bigsoundbank.com/small-ratchet-s0794.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0794.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Small ratchet.",
-   "sha256": "73514f00fe02898aaa4f02b4fa165696be77629cf09f5a70a1a421600e8b354f"
+   "sha256": "73514f00fe02898aaa4f02b4fa165696be77629cf09f5a70a1a421600e8b354f",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0901": {
    "site": "bigsoundbank.com",
@@ -2230,9 +1267,9 @@
    "page": "https://bigsoundbank.com/manual-winch-1-s0901.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0901.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Action on the crank of a manual winch.",
-   "sha256": "f84f5a56a6f01b17f087aef610475a96a9326e044cd576a02f7426f0c0b7ee38"
+   "sha256": "f84f5a56a6f01b17f087aef610475a96a9326e044cd576a02f7426f0c0b7ee38",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1824": {
    "site": "bigsoundbank.com",
@@ -2241,9 +1278,9 @@
    "page": "https://bigsoundbank.com/ratchet-tensioner-s1824.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1824.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Sound of a ratchet tensioner to tighten a strap.",
-   "sha256": "1c3b4940c57d36fc03070fc4e1c1f82955ab51273036ff02580edcfc45a4bf60"
+   "sha256": "1c3b4940c57d36fc03070fc4e1c1f82955ab51273036ff02580edcfc45a4bf60",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1491": {
    "site": "bigsoundbank.com",
@@ -2252,9 +1289,9 @@
    "page": "https://bigsoundbank.com/pneumatic-cylinder-small-1-s1491.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1491.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Noise of a small pneumatic cylinder of seat tablet.",
-   "sha256": "c686fb959f214daa4326e156cc9a55fbc023d294459433a373a718d09472a5dd"
+   "sha256": "c686fb959f214daa4326e156cc9a55fbc023d294459433a373a718d09472a5dd",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1492": {
    "site": "bigsoundbank.com",
@@ -2263,9 +1300,9 @@
    "page": "https://bigsoundbank.com/pneumatic-cylinder-small-2-s1492.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1492.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Noise of a small pneumatic cylinder of seat tablet.",
-   "sha256": "dfb772dfc5fdf4a8735bdd20d559ce9bfa52768cfbabbf4752be0168d1d67e6f"
+   "sha256": "dfb772dfc5fdf4a8735bdd20d559ce9bfa52768cfbabbf4752be0168d1d67e6f",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1493": {
    "site": "bigsoundbank.com",
@@ -2274,20 +1311,9 @@
    "page": "https://bigsoundbank.com/pneumatic-cylinder-small-3-s1493.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1493.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Noise of a small pneumatic cylinder of seat tablet.",
-   "sha256": "8a51357b02f420a7188b177439fb88b93bc1198735bdf506e0c5e27ed1acd952"
-  },
-  "bsb_1984": {
-   "site": "bigsoundbank.com",
-   "title": "Pistol, cocking #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/pistol-cocking-1-s1984.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1984.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Manual cocking of a semi-automatic pistol by retracting the breech.",
-   "sha256": "d9d2f80ddaea9f1ffe67df8d14d1f39eb02deac1e823153738e558ff62052401"
+   "sha256": "8a51357b02f420a7188b177439fb88b93bc1198735bdf506e0c5e27ed1acd952",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1985": {
    "site": "bigsoundbank.com",
@@ -2296,9 +1322,9 @@
    "page": "https://bigsoundbank.com/pistol-cocking-2-s1985.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1985.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Manual cocking of a semi-automatic pistol by retracting the breech.",
-   "sha256": "f25d25d39d416e341c2ab3155e988f506105032ed18b1cbd7927cdb99ff2c7ad"
+   "sha256": "f25d25d39d416e341c2ab3155e988f506105032ed18b1cbd7927cdb99ff2c7ad",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1986": {
    "site": "bigsoundbank.com",
@@ -2307,9 +1333,9 @@
    "page": "https://bigsoundbank.com/pistol-cocking-3-s1986.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1986.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Manual cocking of a semi-automatic pistol by retracting the breech.",
-   "sha256": "d286c8ba595490d7fe90a4b55711e968f0f2a6b9a36aa2f1e064cda02d72f2c4"
+   "sha256": "d286c8ba595490d7fe90a4b55711e968f0f2a6b9a36aa2f1e064cda02d72f2c4",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1988": {
    "site": "bigsoundbank.com",
@@ -2318,9 +1344,9 @@
    "page": "https://bigsoundbank.com/gun-loading-1-s1988.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1988.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Loading of a semi-automatic pistol magazine.",
-   "sha256": "5fdac18da2a7c9e513bd476bded848f7431981036c5a452fc97a57851d6f4946"
+   "sha256": "5fdac18da2a7c9e513bd476bded848f7431981036c5a452fc97a57851d6f4946",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1989": {
    "site": "bigsoundbank.com",
@@ -2329,9 +1355,9 @@
    "page": "https://bigsoundbank.com/gun-loading-2-s1989.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1989.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Loading of a semi-automatic pistol magazine.",
-   "sha256": "00314a2ce9450f393b9fd554db54ce926f3049a1ed3a0daddd0c17ee46a716e1"
+   "sha256": "00314a2ce9450f393b9fd554db54ce926f3049a1ed3a0daddd0c17ee46a716e1",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1992": {
    "site": "bigsoundbank.com",
@@ -2340,42 +1366,9 @@
    "page": "https://bigsoundbank.com/pistol-cocking-hammer-1-s1992.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1992.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Manual arming of the hammer with a semi-automatic pistol.",
-   "sha256": "b466fdd69e0d9be19fe87b6d9efc6eb5ee4363eac16829156c0e76e7cfe46b0a"
-  },
-  "bsb_3061": {
-   "site": "bigsoundbank.com",
-   "title": "Industrial switch #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/industrial-switch-1-s3061.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3061.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Sound of a very large industrial switch. Like that of a shed or a very large room. Like you hear in the movies. This sound was created on a computer, with a switch noise, iron bar and reverb.",
-   "sha256": "9a0d5d4d98202fa74589baeb88b2fae54d54b9e4c781b85e0908cf02c44a934c"
-  },
-  "bsb_3062": {
-   "site": "bigsoundbank.com",
-   "title": "Industrial switch #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/industrial-switch-2-s3062.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3062.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Sound of a very large industrial switch. Like that of a shed or a very large room. Like you hear in the movies. This sound was created on a computer, with a switch noise, iron bar and reverb.",
-   "sha256": "f22582b08340d7a011d88416ddf07a0777b7eacbb84acf04333e358b24fea171"
-  },
-  "bsb_0540": {
-   "site": "bigsoundbank.com",
-   "title": "Old switch",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/old-switch-s0540.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0540.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Handling an old light switch.",
-   "sha256": "cc3e8616f03787e463e14c112c02d02aa3dc8c733bf9a0cdab3369a472049ae8"
+   "sha256": "b466fdd69e0d9be19fe87b6d9efc6eb5ee4363eac16829156c0e76e7cfe46b0a",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3589": {
    "site": "bigsoundbank.com",
@@ -2384,31 +1377,9 @@
    "page": "https://bigsoundbank.com/anvil-1-s3589.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3589.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "The sound of a hammer striking an anvil repeatedly as a blacksmith works the iron. Sound recording using an omnidirectional capsule microphone.",
-   "sha256": "2460f6ea509b63dc4f77999b061c798e8bbd28f758f1a505f8b856be4211a4b6"
-  },
-  "bsb_3590": {
-   "site": "bigsoundbank.com",
-   "title": "Anvil #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/anvil-2-s3590.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3590.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Sound of a hammer striking an anvil repeatedly as a blacksmith works the iron. Sound recording using a microphone with a cardioid capsule.",
-   "sha256": "18bf97a46035c5d270e356b187591b2acd8520e3a3e9186c36fd63d69c813e31"
-  },
-  "bsb_2242": {
-   "site": "bigsoundbank.com",
-   "title": "Metal ball, bounce #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/metal-ball-bounce-1-s2242.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2242.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A metal ball bouncing off a tiled floor.",
-   "sha256": "0611d370d3e24ab56feb0edc6ce953ce382ff84c3a9a827a9ff9d1cdf21e3dcb"
+   "sha256": "2460f6ea509b63dc4f77999b061c798e8bbd28f758f1a505f8b856be4211a4b6",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2243": {
    "site": "bigsoundbank.com",
@@ -2417,31 +1388,9 @@
    "page": "https://bigsoundbank.com/metal-ball-bounce-2-s2243.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2243.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A metal ball bouncing off a tiled floor.",
-   "sha256": "fdcd6e7c5ff5d1964c5bbe8f5f7b563fa6aff73eef87dda5f47ec2395ed6d4d4"
-  },
-  "bsb_0706": {
-   "site": "bigsoundbank.com",
-   "title": "Ax on axe wedge",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/ax-on-axe-wedge-s0706.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0706.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A large ax off with a metal axe wedge.",
-   "sha256": "364708f45f3d2f97aa772808171a22e206b3b7e99c66f66970dd24fd9c63fe96"
-  },
-  "bsb_1084": {
-   "site": "bigsoundbank.com",
-   "title": "Shot of shovel",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/shot-shovel-s1084.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1084.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Noise of a shovel that knocks on a hard object. A head for example :)",
-   "sha256": "c27138622aa4623e2b23aba9f14956008eaf4793b37c15b7f234571ccb00bdb0"
+   "sha256": "fdcd6e7c5ff5d1964c5bbe8f5f7b563fa6aff73eef87dda5f47ec2395ed6d4d4",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0359": {
    "site": "bigsoundbank.com",
@@ -2450,9 +1399,9 @@
    "page": "https://bigsoundbank.com/heavy-chain-s0359.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0359.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Sound of a heavy chain that is moving.",
-   "sha256": "48efcc0364bf98a47a622b7642254b3e885378f8a241b99885ba5781f3a6c41d"
+   "sha256": "48efcc0364bf98a47a622b7642254b3e885378f8a241b99885ba5781f3a6c41d",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0619": {
    "site": "bigsoundbank.com",
@@ -2461,9 +1410,9 @@
    "page": "https://bigsoundbank.com/medium-chain-s0619.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0619.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Manipulation of a medium chain.",
-   "sha256": "30605ec1806e82d855f6cdcc81fbf54449d4c7e2517d6d758f14f032b82913b4"
+   "sha256": "30605ec1806e82d855f6cdcc81fbf54449d4c7e2517d6d758f14f032b82913b4",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0360": {
    "site": "bigsoundbank.com",
@@ -2472,9 +1421,9 @@
    "page": "https://bigsoundbank.com/medium-chain-1-s0360.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0360.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Sound of a medium-sized chain being moved.",
-   "sha256": "84687605f578d66db9e4dc031864b3330c9cf97c50cbc1887799fd42749b51d1"
+   "sha256": "84687605f578d66db9e4dc031864b3330c9cf97c50cbc1887799fd42749b51d1",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0361": {
    "site": "bigsoundbank.com",
@@ -2483,9 +1432,9 @@
    "page": "https://bigsoundbank.com/medium-chain-2-s0361.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0361.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "An average noise metal chain that is moving.",
-   "sha256": "8d858237409595586f3923ae56b6ae153c57823aefa67eacd3d3fc23cca6e737"
+   "sha256": "8d858237409595586f3923ae56b6ae153c57823aefa67eacd3d3fc23cca6e737",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0355": {
    "site": "bigsoundbank.com",
@@ -2494,31 +1443,9 @@
    "page": "https://bigsoundbank.com/small-chain-1-s0355.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0355.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Sound of a small chain being moved.",
-   "sha256": "f931be0acefddee5b75e92036f7ae742933b784b09307b0d7163f45aa70e8464"
-  },
-  "bsb_1133": {
-   "site": "bigsoundbank.com",
-   "title": "Manual chain hoist, mounted",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/manual-chain-hoist-mounted-s1133.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1133.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Noise from a winch or manual chain hoist coming up.",
-   "sha256": "aa316a02c28654fc4f301a39a27ceeaacd4abe5928e0c03a65a898348b6ba9b4"
-  },
-  "bsb_3315": {
-   "site": "bigsoundbank.com",
-   "title": "Train whistle, foley #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/train-whistle-foley-1-s3315.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3315.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792",
-   "sha256": "9cec6e802f5718b3f815c896d52b535892ad0b5ce498e235b8d9cceccd1fb613"
+   "sha256": "f931be0acefddee5b75e92036f7ae742933b784b09307b0d7163f45aa70e8464",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3316": {
    "site": "bigsoundbank.com",
@@ -2527,31 +1454,9 @@
    "page": "https://bigsoundbank.com/train-whistle-foley-2-s3316.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3316.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792",
-   "sha256": "cfe8501ed653940b81e8d306a26a616a30eda22f8f4f2e27e414c322bf2dcde2"
-  },
-  "bsb_3317": {
-   "site": "bigsoundbank.com",
-   "title": "Train whistle, foley #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/train-whistle-foley-3-s3317.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3317.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792",
-   "sha256": "f678b016f2cf3d2aeb8770be72a8db88146c872749d329726daba26bc7c4bf36"
-  },
-  "bsb_3318": {
-   "site": "bigsoundbank.com",
-   "title": "Train whistle, foley #4",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/train-whistle-foley-4-s3318.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3318.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792",
-   "sha256": "0fbc643cf6a752eb27dff617bfa5bd9e66a1d8c1541bbc12aec3dd58c4594394"
+   "sha256": "cfe8501ed653940b81e8d306a26a616a30eda22f8f4f2e27e414c322bf2dcde2",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3319": {
    "site": "bigsoundbank.com",
@@ -2560,20 +1465,9 @@
    "page": "https://bigsoundbank.com/train-whistle-foley-5-s3319.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3319.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "I blow into a locomotive-style train whistle. I added a bit of reverb to make it sound more realistic. My whistle: https://thmn.to/thoprod/511358?offid=1&affid=792",
-   "sha256": "bcfda4081f93386962e77d03a1c43cfa83126067acffe3779f7dad13aae59d8e"
-  },
-  "bsb_0225": {
-   "site": "bigsoundbank.com",
-   "title": "Whistling train #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/whistling-train-1-s0225.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0225.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whistling train.",
-   "sha256": "f4f129b7750aa0346696c060e51a7d40e5b511b6c2cef984acb8af5a7ddb8fa4"
+   "sha256": "bcfda4081f93386962e77d03a1c43cfa83126067acffe3779f7dad13aae59d8e",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0226": {
    "site": "bigsoundbank.com",
@@ -2582,9 +1476,9 @@
    "page": "https://bigsoundbank.com/whistling-train-2-s0226.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0226.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Whistling train.",
-   "sha256": "33b190201266a69525ff92983e0c90be4f8122f8ef7307f8abce164b07d0c0c2"
+   "sha256": "33b190201266a69525ff92983e0c90be4f8122f8ef7307f8abce164b07d0c0c2",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0227": {
    "site": "bigsoundbank.com",
@@ -2593,9 +1487,9 @@
    "page": "https://bigsoundbank.com/hiss-of-steam-train-1-s0227.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0227.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Hiss of steam train.",
-   "sha256": "855e7533df1ae0d0be659c55973530c25d627099a7ff20baf633428b909c5de8"
+   "sha256": "855e7533df1ae0d0be659c55973530c25d627099a7ff20baf633428b909c5de8",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0228": {
    "site": "bigsoundbank.com",
@@ -2604,75 +1498,9 @@
    "page": "https://bigsoundbank.com/hiss-of-steam-train-2-s0228.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0228.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Hiss of steam train.",
-   "sha256": "076cc5b6e83a58fb085d7d2f77a40e2a88f61abb4f3a63120fa668d36a27b86d"
-  },
-  "bsb_3011": {
-   "site": "bigsoundbank.com",
-   "title": "Hiss of steam train #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/hiss-of-steam-train-3-s3011.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3011.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whistle of a steam train. Recording in the town of Martel, France.",
-   "sha256": "b0bb424b31a391615ddb3319c322feca39e99e295a3777c2029ea2caf06bb8cc"
-  },
-  "bsb_3013": {
-   "site": "bigsoundbank.com",
-   "title": "Hiss of steam train #4",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/hiss-of-steam-train-4-s3013.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3013.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whistle of a steam train. Recording in the town of Martel, France.",
-   "sha256": "a980dd3f5e452d26c6d69a241efc3d80b201b72f3579cd6a29c08fbe7b646c24"
-  },
-  "bsb_3014": {
-   "site": "bigsoundbank.com",
-   "title": "Hiss of steam train #5",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/hiss-of-steam-train-5-s3014.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3014.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Whistle of a steam train. Recording in the town of Martel, France.",
-   "sha256": "17824acf07ab21c0f6f3fc8cfae3a3cedafc0b2a4b4cf8f59a5ba6f442daa4cf"
-  },
-  "bsb_3016": {
-   "site": "bigsoundbank.com",
-   "title": "Steam locomotive #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/steam-locomotive-1-s3016.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3016.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Running a steam locomotive. Recording from the first car, in the town of Martel, France.",
-   "sha256": "4d175ac70c585b2053301890a38e40c982e175af041202c15e38f32a5a75c46d"
-  },
-  "bsb_3018": {
-   "site": "bigsoundbank.com",
-   "title": "Steam Locomotive #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/steam-locomotive-2-s3018.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3018.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Running a steam locomotive. Recording from the first car, in the town of Martel, France.",
-   "sha256": "f81f7fa6c818f4d3b9d4a95091df8aafd73cf2e95d80419d38ff1c20e0f47261"
-  },
-  "bsb_3021": {
-   "site": "bigsoundbank.com",
-   "title": "Locomotive à vapeur, starting",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/locomotive-a-vapeur-starting-s3021.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3021.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Starting a steam locomotive. Strangely, it's faster and makes less noise than I imagined. Recording from the train station, in the town of Martel, France.",
-   "sha256": "b632c7990d40be5f062592b9f219bbc2833b8c1bb33c6832c0d6a84d58b518a5"
+   "sha256": "076cc5b6e83a58fb085d7d2f77a40e2a88f61abb4f3a63120fa668d36a27b86d",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3310": {
    "site": "bigsoundbank.com",
@@ -2681,9 +1509,9 @@
    "page": "https://bigsoundbank.com/steam-engine-foley-1-s3310.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3310.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "I make a sound like a locomotive steam engine using a foley technique. Easy to loop.",
-   "sha256": "9a0ff00e5619211d8dfa446f400f8ddf2f0dc053f74a345c420be0dc24bea491"
+   "sha256": "9a0ff00e5619211d8dfa446f400f8ddf2f0dc053f74a345c420be0dc24bea491",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_3311": {
    "site": "bigsoundbank.com",
@@ -2692,9 +1520,9 @@
    "page": "https://bigsoundbank.com/steam-engine-foley-2-s3311.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/3311.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "I make a sound like a locomotive steam engine using a foley technique. Easy to loop.",
-   "sha256": "8a22d49ef6de6514317f411b75bfcbf6183bb38c7bdd415179b615d1db64a4ee"
+   "sha256": "8a22d49ef6de6514317f411b75bfcbf6183bb38c7bdd415179b615d1db64a4ee",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0805": {
    "site": "bigsoundbank.com",
@@ -2703,9 +1531,9 @@
    "page": "https://bigsoundbank.com/pressure-cooker-s0805.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0805.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Steam from a pressure cooker.",
-   "sha256": "2bacf5a9602ebbb6d04080170168e1ed7e2b5d576a780e39de4dde2a341b8e3e"
+   "sha256": "2bacf5a9602ebbb6d04080170168e1ed7e2b5d576a780e39de4dde2a341b8e3e",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0105": {
    "site": "bigsoundbank.com",
@@ -2714,9 +1542,9 @@
    "page": "https://bigsoundbank.com/punch-s0105.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0105.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A punch followed by a 'tiens'.",
-   "sha256": "55dff485d375902016c2dfa6df0775eda2e484caf250c7ec9478e503ad7a5b24"
+   "sha256": "55dff485d375902016c2dfa6df0775eda2e484caf250c7ec9478e503ad7a5b24",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2459": {
    "site": "bigsoundbank.com",
@@ -2725,9 +1553,9 @@
    "page": "https://bigsoundbank.com/punch-4-s2459.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2459.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Punch. Thanks to Kellian F. and Yoann B.",
-   "sha256": "9b2e308cbc6884be7e04d292b20c9f31e297bb31e27fc7c7099a2e79d1342b18"
+   "sha256": "9b2e308cbc6884be7e04d292b20c9f31e297bb31e27fc7c7099a2e79d1342b18",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2460": {
    "site": "bigsoundbank.com",
@@ -2736,9 +1564,9 @@
    "page": "https://bigsoundbank.com/punch-5-s2460.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2460.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Punch. Thanks to Kellian F. and Yoann B.",
-   "sha256": "22701213ffa078113731a9f036d69765cbe48ef93c73216aaedff295f2a40a63"
+   "sha256": "22701213ffa078113731a9f036d69765cbe48ef93c73216aaedff295f2a40a63",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2461": {
    "site": "bigsoundbank.com",
@@ -2747,20 +1575,9 @@
    "page": "https://bigsoundbank.com/punch-6-s2461.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2461.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Punch. Thanks to Kellian F. and Yoann B.",
-   "sha256": "779d35ce555ed60221bdee4dafe971b52b08237b932376be433e03800a57f109"
-  },
-  "bsb_2462": {
-   "site": "bigsoundbank.com",
-   "title": "Punch #7",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/punch-7-s2462.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/2462.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Punch. Thanks to Kellian F. and Yoann B.",
-   "sha256": "4baae06e1570c720dfcc623b5fa2ee2e53b5a6bda5dcac01af25243dc62a6a9e"
+   "sha256": "779d35ce555ed60221bdee4dafe971b52b08237b932376be433e03800a57f109",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0597": {
    "site": "bigsoundbank.com",
@@ -2769,31 +1586,9 @@
    "page": "https://bigsoundbank.com/slaps-s0597.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0597.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Slapping noise.",
-   "sha256": "79c46c6e5ce619e0ce578ac4b481336ef0452b52dd406202ad2b301f5a9baf1b"
-  },
-  "bsb_1152": {
-   "site": "bigsoundbank.com",
-   "title": "Spanking",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/spanking-s1152.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1152.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A series of 20 spankings.",
-   "sha256": "2487d8324f0717604ee16f47ec28ea6953aee5aaf9f6bbe8a01272b1f5837e82"
-  },
-  "bsb_0444": {
-   "site": "bigsoundbank.com",
-   "title": "Punch #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/punches-s0444.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/0444.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "9 sounds of punches.",
-   "sha256": "ac4eeaeabce78191c51510ddb9f26f13a4cfe2ee0ec6cb0795e2e075c2d2aa28"
+   "sha256": "79c46c6e5ce619e0ce578ac4b481336ef0452b52dd406202ad2b301f5a9baf1b",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2452": {
    "site": "bigsoundbank.com",
@@ -2802,9 +1597,9 @@
    "page": "https://bigsoundbank.com/body-fall-1-s2452.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2452.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A man falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B.",
-   "sha256": "0b0e65eed87dc3af415c0986c7c2a63b29351d520d0ca14f5cd48a4875a383d6"
+   "sha256": "0b0e65eed87dc3af415c0986c7c2a63b29351d520d0ca14f5cd48a4875a383d6",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2453": {
    "site": "bigsoundbank.com",
@@ -2813,9 +1608,9 @@
    "page": "https://bigsoundbank.com/body-fall-2-s2453.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2453.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A human falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B.",
-   "sha256": "f3b86e7da7265bb3f13ef8feee31db60d55c2266f6df91635c816ba71115fdd8"
+   "sha256": "f3b86e7da7265bb3f13ef8feee31db60d55c2266f6df91635c816ba71115fdd8",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2454": {
    "site": "bigsoundbank.com",
@@ -2824,9 +1619,9 @@
    "page": "https://bigsoundbank.com/body-fall-3-s2454.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2454.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A human falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B.",
-   "sha256": "d972b58e43934c71b95016af87dd47efe2f71c152804befb69d8f84cddb6cb82"
+   "sha256": "d972b58e43934c71b95016af87dd47efe2f71c152804befb69d8f84cddb6cb82",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_2455": {
    "site": "bigsoundbank.com",
@@ -2835,42 +1630,9 @@
    "page": "https://bigsoundbank.com/body-fall-4-s2455.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/2455.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A human falling on a tiled floor, indoors. Thanks to Kellian F. and Yoann B.",
-   "sha256": "012adfd505f0f4310813b9d4499b179e0391288e9d30cdbda0fcba2b4d164b38"
-  },
-  "bsb_0495": {
-   "site": "bigsoundbank.com",
-   "title": "Steps in the Mud",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/steps-in-the-mud-s0495.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0495.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "The sound of human footsteps in the very liquid mud.",
-   "sha256": "1fc9a1686e1441cb17c317943208aba4fa2e084f6281b9759d2da64e6fe6de25"
-  },
-  "bsb_0690": {
-   "site": "bigsoundbank.com",
-   "title": "Shoes in the Water",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/shoes-in-the-water-s0690.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0690.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Walking shoes in the water. After the storm.",
-   "sha256": "69b9672d3d4a62d930c404383c41112310be461b4ec0ee58fc1550a79ac2239b"
-  },
-  "bsb_1837": {
-   "site": "bigsoundbank.com",
-   "title": "Jumping on dirt road #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/jumping-on-dirt-road-1-s1837.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1837.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Human jumping on a dirt road.",
-   "sha256": "f62fe6da06075954571d0ff5e5031113370b14c96b8f1d35b8ddaeb06f8e675c"
+   "sha256": "012adfd505f0f4310813b9d4499b179e0391288e9d30cdbda0fcba2b4d164b38",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1104": {
    "site": "bigsoundbank.com",
@@ -2879,9 +1641,9 @@
    "page": "https://bigsoundbank.com/synthetic-coat-rubbed-s1104.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1104.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Synthetic coat rubbed by hand.",
-   "sha256": "ea812c3e002d8edf4b114c4fecb49cfdcffd5a4ce9c9ff310c4a354afd43b355"
+   "sha256": "ea812c3e002d8edf4b114c4fecb49cfdcffd5a4ce9c9ff310c4a354afd43b355",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0576": {
    "site": "bigsoundbank.com",
@@ -2890,9 +1652,9 @@
    "page": "https://bigsoundbank.com/canvas-bag-on-floor-s0576.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0576.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A canvas bag thrown on the floor. 9x.",
-   "sha256": "90ee960a18cc96ca29bc97ad9ca724fd81cb13189e3483e8b587a0a8e82ef8a9"
+   "sha256": "90ee960a18cc96ca29bc97ad9ca724fd81cb13189e3483e8b587a0a8e82ef8a9",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1787": {
    "site": "bigsoundbank.com",
@@ -2901,9 +1663,9 @@
    "page": "https://bigsoundbank.com/flag-1-s1787.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1787.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Shaken nylon flag.",
-   "sha256": "ca45db92691b6915b6cad28de1b043b19a450c193aa7ed640e8007a0143464bd"
+   "sha256": "ca45db92691b6915b6cad28de1b043b19a450c193aa7ed640e8007a0143464bd",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1788": {
    "site": "bigsoundbank.com",
@@ -2912,9 +1674,9 @@
    "page": "https://bigsoundbank.com/flag-2-s1788.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1788.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Shaken nylon flag.",
-   "sha256": "25f91bef1e285ca8281918355b495b5cda6f952d1f9728901f36199d5c217c41"
+   "sha256": "25f91bef1e285ca8281918355b495b5cda6f952d1f9728901f36199d5c217c41",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1789": {
    "site": "bigsoundbank.com",
@@ -2923,20 +1685,9 @@
    "page": "https://bigsoundbank.com/flag-3-s1789.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1789.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Shaken nylon flag.",
-   "sha256": "86fb00575bf0f25bd4007d5a2b2ec5537a5dcc31ddd3d1aeb0c0e67186b904de"
-  },
-  "bsb_0399": {
-   "site": "bigsoundbank.com",
-   "title": "Tent or curtain shower",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/tent-or-curtain-shower-s0399.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0399.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Noise made by the friction of a shower curtain with your fingers. It is also the noise of a tent when rubbed in the same way.",
-   "sha256": "179a32b969bacdce159d2dd85cd7abefed52750004d3e1712283b48f196088af"
+   "sha256": "86fb00575bf0f25bd4007d5a2b2ec5537a5dcc31ddd3d1aeb0c0e67186b904de",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0008": {
    "site": "bigsoundbank.com",
@@ -2945,20 +1696,9 @@
    "page": "https://bigsoundbank.com/scissors-s0008.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0008.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Scissors: closing (x3), opening and closing (x3), short closure (x1).",
-   "sha256": "1a50eb2df0add84de0de699379dc6f6ffb5739822575a8ec5a625f06dc3874b4"
-  },
-  "bsb_0443": {
-   "site": "bigsoundbank.com",
-   "title": "Cutter",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/cutter-s0443.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/0443.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Sound of a box cutter when the blade is extended or retracted.",
-   "sha256": "91204b567ea57b5286946ae9ea6daa3d0072bb0370af9fba6a598e30ea709deb"
+   "sha256": "1a50eb2df0add84de0de699379dc6f6ffb5739822575a8ec5a625f06dc3874b4",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0134": {
    "site": "bigsoundbank.com",
@@ -2967,9 +1707,9 @@
    "page": "https://bigsoundbank.com/electric-shock-s0134.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0134.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Electrical shock that emits a speaker when plugged into the same circuit as other equipment that turns and turns off. Hears back, very light breath of the speaker itself.",
-   "sha256": "d271ba87eec4fd3accf67b955ceeb2a07f20122ad1e6bb4b024f4d55c28f706b"
+   "sha256": "d271ba87eec4fd3accf67b955ceeb2a07f20122ad1e6bb4b024f4d55c28f706b",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0952": {
    "site": "bigsoundbank.com",
@@ -2978,64 +1718,9 @@
    "page": "https://bigsoundbank.com/short-welds-s0952.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0952.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Short welds carried with a welding machine 'Mig Mag' by Stanley.",
-   "sha256": "68a23b30146a05aea4a5c10ed890de3e69d8a0746fc8a4884921b69ec0e10ed9"
-  },
-  "bsb_1252": {
-   "site": "bigsoundbank.com",
-   "title": "Electrical fence",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/electrical-fence-s1252.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1252.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Electric shocks from a fence. Easy to loop.",
-   "sha256": "26b16eed2256fe5ad5d81ea414cb2208d810c2055f03ce4ad02f46fc535abf4b"
-  },
-  "bsb_3426": {
-   "site": "bigsoundbank.com",
-   "title": "Big rope",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/big-rope-s3426.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3426.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Squeaking of a large swing rope recorded with a contact microphone.",
-   "sha256": "550eaecc7f2c781e86ac16987a1d9485ffda68a9c60802ed71fc508c3d794594"
-  },
-  "bsb_0865": {
-   "site": "bigsoundbank.com",
-   "title": "Creaking of wicker",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/creaking-of-wicker-s0865.html",
-   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0865.wav",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Creaking of a wicker basket.",
-   "sha256": "37c5cefc6c70f470c5c71798d954235551fd3be4b32ed5262a108e1826d853e5"
-  },
-  "bsb_3051": {
-   "site": "bigsoundbank.com",
-   "title": "Squeaking parquet #1",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/squeaking-parquet-1-s3051.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3051.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A creaking of an oak floor.",
-   "sha256": "710fca89243a2b4e4b2434afdceac9bab6499810308cb28d294b781dda61330e"
-  },
-  "bsb_3052": {
-   "site": "bigsoundbank.com",
-   "title": "Squeaking parquet #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/squeaking-parquet-2-s3052.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/3052.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A creaking of an oak floor.",
-   "sha256": "2610dafd6501630eea8a5a459db8fd9a8b49ebb34f2edae9d35ec4904e38bac8"
+   "sha256": "68a23b30146a05aea4a5c10ed890de3e69d8a0746fc8a4884921b69ec0e10ed9",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0616": {
    "site": "bigsoundbank.com",
@@ -3044,9 +1729,9 @@
    "page": "https://bigsoundbank.com/creaking-metallic-door-s0616.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0616.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Much gnashing of metal door.",
-   "sha256": "7095712d8a36ad71890eeac768ddc6dabcfd8894bef70dba20d430e8745c2bdd"
+   "sha256": "7095712d8a36ad71890eeac768ddc6dabcfd8894bef70dba20d430e8745c2bdd",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_1643": {
    "site": "bigsoundbank.com",
@@ -3055,31 +1740,9 @@
    "page": "https://bigsoundbank.com/broken-plate-1-s1643.html",
    "url": "https://bigsoundbank.com/UPLOAD/flac/1643.flac",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "A plate dropped on a concrete floor, which breaks.",
-   "sha256": "a528777912682b0abc947a14169c110b05b61951853a8fa63fec1e67dafae5cc"
-  },
-  "bsb_1644": {
-   "site": "bigsoundbank.com",
-   "title": "Broken plate #2",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/broken-plate-2-s1644.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1644.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A plate dropped on a concrete floor, which breaks.",
-   "sha256": "845e04b3086ff160e10e1e3427475f04972bada980049aa111c0065c87a92989"
-  },
-  "bsb_1645": {
-   "site": "bigsoundbank.com",
-   "title": "Broken plate #3",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/broken-plate-3-s1645.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1645.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "A plate dropped on a concrete floor, which breaks.",
-   "sha256": "cc0583a468beb93d2bc7725e1c574d241fb0caed10eafbd7555f7866e7d95ed2"
+   "sha256": "a528777912682b0abc947a14169c110b05b61951853a8fa63fec1e67dafae5cc",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   },
   "bsb_0138": {
    "site": "bigsoundbank.com",
@@ -3088,24 +1751,13 @@
    "page": "https://bigsoundbank.com/air-s0138.html",
    "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0138.wav",
    "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
    "desc": "Air.",
-   "sha256": "b1199497b10afeee0b304b740ad3b8e9809d87df7c3bbdf2b6115d5fd59322cd"
-  },
-  "bsb_1486": {
-   "site": "bigsoundbank.com",
-   "title": "Air leak",
-   "author": "Joseph Sardin",
-   "page": "https://bigsoundbank.com/air-leak-s1486.html",
-   "url": "https://bigsoundbank.com/UPLOAD/flac/1486.flac",
-   "license": "CC0 1.0",
-   "license_note": "page marks it 'License CC0 (public domain): Free and royalty-free'",
-   "desc": "Air leak as in a tire puncture.",
-   "sha256": "7db4de985b0a2ca425804844ee869b19ec83c429abea5e2226670ec988aca153"
+   "sha256": "b1199497b10afeee0b304b740ad3b8e9809d87df7c3bbdf2b6115d5fd59322cd",
+   "license_check": "page marks it 'License CC0 (public domain): Free and royalty-free'"
   }
  },
  "events": {
-  "block.ice.crack": {"group": "ice", "name": "crack", "subtitle": "Ice cracks", "variants": [
+  "block.ice.crack": {"group": "ice", "name": "crack", "subtitle": "Ice cracks", "maxgr": 10, "variants": [
    {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.15, "lp": 6000}], "layers": [
     {"src": "bsb_2205", "t": 0.38, "d": 1.1, "pitch": 0.85},
     {"src": "ia_pond_ice", "t": 17.92, "d": 0.9, "gain": -7, "lp": 6000, "fo": 0.2}
@@ -3119,7 +1771,7 @@
     {"src": "bsb_2207", "t": 0.05, "d": 0.7, "pitch": 0.7, "at": 0.12, "gain": -4}
    ]}
   ]},
-  "block.ancient_ice.crack": {"group": "ancient_ice", "name": "crack", "subtitle": "Ancient ice creaks", "variants": [
+  "block.ancient_ice.crack": {"group": "ancient_ice", "name": "crack", "subtitle": "Ancient ice cracks", "variants": [
    {"fx": [{"t": "reverb", "rt": 1.6, "mix": 0.25, "lp": 6000}], "len": 3.0, "layers": [
     {"src": "ia_pond_ice", "t": 31.0, "d": 2.0, "pitch": 0.6, "lp": 5000, "fo": 0.6},
     {"src": "ia_icebooms", "t": 60.3, "d": 1.6, "pitch": 0.75, "at": 0.4, "gain": -1},
@@ -3136,7 +1788,7 @@
     {"src": "ia_pond_ice", "t": 32.8, "d": 0.8, "pitch": 0.5, "at": 1.0, "gain": -5, "fo": 0.3}
    ]}
   ]},
-  "block.ancient_ice.break": {"group": "ancient_ice", "name": "break", "subtitle": "Ancient ice breaks", "variants": [
+  "block.ancient_ice.break": {"group": "ancient_ice", "name": "break", "subtitle": null, "variants": [
    {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "len": 1.4, "layers": [
     {"src": "bsb_2205", "t": 0.38, "d": 1.2, "pitch": 0.6},
     {"src": "oga_rd_break/bfh1_rock_breaking_01.ogg", "pitch": 0.7, "gain": -4},
@@ -3186,7 +1838,7 @@
     {"synth": "thump", "d": 0.15, "f": 70, "f1": 45, "gain": -14}
    ]}
   ]},
-  "block.ancient_ice.hit": {"group": "ancient_ice", "name": "hit", "subtitle": "Ancient ice chips", "variants": [
+  "block.ancient_ice.hit": {"group": "ancient_ice", "name": "hit", "subtitle": null, "maxgr": 9, "variants": [
    {"len": 0.35, "layers": [
     {"src": "bsb_2205", "t": 0.4, "d": 0.18, "pitch": 0.75, "fo": 0.06},
     {"src": "oga_rd_break/bfh1_glass_hit_01.ogg", "pitch": 0.6, "gain": -8},
@@ -3208,7 +1860,7 @@
     {"src": "oga_rd_break/bfh1_hit_06.ogg", "pitch": 0.6, "gain": -5}
    ]}
   ]},
-  "block.ancient_ice.place": {"group": "ancient_ice", "name": "place", "subtitle": "Ancient ice placed", "variants": [
+  "block.ancient_ice.place": {"group": "ancient_ice", "name": "place", "subtitle": null, "variants": [
    {"len": 0.7, "layers": [
     {"src": "oga_rd_break/bfh1_rock_falling_02.ogg", "pitch": 0.6},
     {"src": "bsb_2124", "pitch": 0.55, "gain": -5},
@@ -3225,7 +1877,7 @@
     {"synth": "thump", "d": 0.35, "f": 65, "f1": 38, "gain": -6}
    ]}
   ]},
-  "block.ancient_ice.fall": {"group": "ancient_ice", "name": "fall", "subtitle": "Something falls on ancient ice", "variants": [
+  "block.ancient_ice.fall": {"group": "ancient_ice", "name": "fall", "subtitle": null, "variants": [
    {"len": 0.6, "layers": [
     {"src": "oga_rd_break/bfh1_hit_02.ogg", "pitch": 0.8},
     {"src": "oga_snow42/Corsica_S-Walking_in_Snow/Corsica_S-Walking_on_snow_covered_gravel_and_ice_03.flac", "pitch": 0.7, "gain": -3},
@@ -3277,7 +1929,7 @@
     {"synth": "whoosh", "d": 0.4, "f": 2500, "f1": 900, "q": 1.5, "gain": -8, "hp": 500}
    ]}
   ]},
-  "block.icicle.shatter": {"group": "icicle", "name": "shatter", "subtitle": "Icicle shatters", "variants": [
+  "block.icicle.shatter": {"group": "icicle", "name": "shatter", "subtitle": "Icicle shatters", "maxgr": 10, "variants": [
    {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "len": 1.0, "layers": [
     {"src": "oga_rd_break/bfh1_glass_breaking_03.ogg", "pitch": 0.95},
     {"src": "bsb_2041", "pitch": 0.9, "gain": -6}
@@ -3340,16 +1992,16 @@
     {"src": "ia_icebooms", "t": 55.0, "d": 2.0, "pitch": 0.5, "at": 1.2, "gain": -3}
    ]}
   ]},
-  "event.frozen_tomb.rumble": {"group": "tomb", "name": "rumble", "subtitle": "Frozen tomb rumbles", "entry": {"attenuation_distance": 48}, "variants": [
-   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 3000}], "len": 4.0, "layers": [
+  "event.frozen_tomb.rumble": {"group": "tomb", "name": "rumble", "subtitle": "The cave rumbles", "entry": {"attenuation_distance": 48}, "variants": [
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 3000}, {"t": "lp", "f": 2500}], "len": 4.0, "lenfade": 1.0, "layers": [
     {"synth": "rumble", "d": 4.0, "cut": 160, "rate": 6, "gain": 0, "fi": 0.4, "fo": 1.2},
-    {"src": "bsb_3113", "d": 3.0, "pitch": 0.5, "gain": -3, "fo": 1.0},
+    {"src": "bsb_3113", "t": 0.9, "d": 2.0, "pitch": 0.5, "gain": -3, "fo": 1.2},
     {"src": "ia_icebooms", "t": 60.3, "d": 1.6, "pitch": 0.5, "at": 0.9},
     {"src": "ia_pond_ice", "t": 31.0, "d": 1.6, "pitch": 0.4, "at": 0.4, "gain": -6, "fo": 0.4}
    ]},
-   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 3000}], "len": 4.0, "layers": [
+   {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 3000}, {"t": "lp", "f": 2500}], "len": 4.0, "lenfade": 1.0, "layers": [
     {"synth": "rumble", "d": 4.0, "cut": 160, "rate": 6, "gain": 0, "fi": 0.4, "fo": 1.2},
-    {"src": "bsb_3114", "d": 3.0, "pitch": 0.5, "gain": -3, "fo": 1.0},
+    {"src": "bsb_3114", "t": 0.8, "d": 2.0, "pitch": 0.5, "gain": -3, "fo": 1.2},
     {"src": "ia_icebooms", "t": 104.38, "d": 1.6, "pitch": 0.5, "at": 1.2},
     {"src": "ia_pond_ice", "t": 17.9, "d": 1.0, "pitch": 0.4, "at": 0.3, "gain": -6, "fo": 0.3}
    ]}
@@ -3381,7 +2033,7 @@
     {"src": "oga_rd_creature/hurt_02.ogg", "pitch": 0.55, "gain": -8}
    ]},
    {"layers": [
-    {"src": "ia_sealion", "t": 0.12, "d": 0.45, "pitch": 0.8, "fo": 0.12, "lp": 4000},
+    {"src": "ia_sealion", "t": 0.3, "d": 0.4, "pitch": 0.8, "fo": 0.12, "lp": 4000},
     {"synth": "thump", "d": 0.3, "f": 65, "f1": 38, "gain": -10}
    ]}
   ]},
@@ -3430,7 +2082,7 @@
     {"src": "oga_rd_break/bfh1_rock_breaking_03.ogg", "pitch": 0.6, "gain": -8}
    ]},
    {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 1.0, "layers": [
-    {"src": "bsb_2453", "t": 0.14, "d": 0.6, "pitch": 0.65},
+    {"src": "bsb_2453", "t": 0.14, "d": 0.3, "pitch": 0.65, "fo": 0.08},
     {"src": "bsb_2459", "pitch": 0.6, "gain": -3},
     {"synth": "thump", "d": 0.5, "f": 75, "f1": 33, "gain": -3},
     {"src": "oga_rd_break/bfh1_wood_hit_02.ogg", "pitch": 0.6, "gain": -5}
@@ -3525,49 +2177,49 @@
    ]}
   ]},
   "entity.icebreaker.horn_regrow": {"group": "icebreaker", "name": "horn_regrow", "subtitle": "Horn grows", "variants": [
-   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "layers": [
-    {"synth": "chime", "d": 2.0, "notes": [1318, 1568, 1976, 2637], "spread": 0.12, "decay": 1.4},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "len": 2.8, "lenfade": 0.9, "layers": [
+    {"synth": "chime", "d": 3.5, "notes": [1318, 1568, 1976, 2637], "spread": 0.12, "decay": 1.4},
     {"src": "bsb_2087", "t": 0.8, "d": 1.2, "gain": -6},
     {"synth": "whoosh", "d": 1.0, "f": 2000, "f1": 8000, "q": 2, "gain": -16, "hp": 3000}
    ]},
-   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "layers": [
-    {"synth": "chime", "d": 2.0, "notes": [1175, 1480, 1760, 2349], "spread": 0.1, "decay": 1.4},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "len": 2.8, "lenfade": 0.9, "layers": [
+    {"synth": "chime", "d": 3.5, "notes": [1175, 1480, 1760, 2349], "spread": 0.1, "decay": 1.4},
     {"src": "bsb_2079", "t": 0.1, "d": 1.5, "gain": -6},
     {"synth": "whoosh", "d": 1.0, "f": 2000, "f1": 8000, "q": 2, "gain": -16, "hp": 3000}
    ]},
-   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "layers": [
-    {"synth": "chime", "d": 2.0, "notes": [1397, 1760, 2093, 2794], "spread": 0.11, "decay": 1.4},
+   {"fx": [{"t": "reverb", "rt": 1.2, "mix": 0.3, "lp": 6000}], "len": 2.8, "lenfade": 0.9, "layers": [
+    {"synth": "chime", "d": 3.5, "notes": [1397, 1760, 2093, 2794], "spread": 0.11, "decay": 1.4},
     {"src": "bsb_2240", "t": 3.6, "d": 1.2, "pitch": 1.2, "gain": -8},
     {"synth": "whoosh", "d": 1.0, "f": 2000, "f1": 8000, "q": 2, "gain": -16, "hp": 3000}
    ]}
   ]},
   "item.snowball_launcher.fire": {"group": "launcher", "name": "fire", "subtitle": "Launcher fires", "variants": [
-   {"len": 0.45, "layers": [
+   {"len": 0.4, "layers": [
     {"src": "bsb_1491", "t": 0.1, "d": 0.35, "pitch": 0.8, "fo": 0.12},
     {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
     {"src": "oga_swishes/swishes/swish-3.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
-    {"src": "bsb_0138", "t": 6.36, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+    {"src": "bsb_0138", "t": 6.36, "d": 0.18, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.08}
    ]},
-   {"len": 0.45, "layers": [
+   {"len": 0.4, "layers": [
     {"src": "bsb_1492", "t": 0.09, "d": 0.35, "pitch": 0.85, "fo": 0.12},
     {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
     {"src": "oga_swishes/swishes/swish-5.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
-    {"src": "bsb_0138", "t": 9.92, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+    {"src": "bsb_0138", "t": 9.92, "d": 0.18, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.08}
    ]},
-   {"len": 0.45, "layers": [
+   {"len": 0.4, "layers": [
     {"src": "bsb_1493", "t": 0.09, "d": 0.35, "pitch": 0.8, "fo": 0.12},
     {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
     {"src": "oga_swishes/swishes/swish-8.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
-    {"src": "bsb_0138", "t": 2.27, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+    {"src": "bsb_0138", "t": 2.27, "d": 0.18, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.08}
    ]},
-   {"len": 0.45, "layers": [
+   {"len": 0.4, "layers": [
     {"src": "bsb_1491", "t": 0.1, "d": 0.35, "pitch": 0.9, "fo": 0.12},
     {"synth": "thump", "d": 0.2, "f": 110, "f1": 50, "gain": -4, "click": 0.5},
     {"src": "oga_swishes/swishes/swish-9.wav", "pitch": 0.7, "at": 0.03, "gain": -4},
-    {"src": "bsb_0138", "t": 13.6, "d": 0.25, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.1}
+    {"src": "bsb_0138", "t": 13.6, "d": 0.18, "pitch": 0.8, "gain": -8, "at": 0.02, "fo": 0.08}
    ]}
   ]},
-  "item.snowball_launcher.charge": {"group": "launcher", "name": "charge", "subtitle": "Launcher charges", "variants": [
+  "item.snowball_launcher.charge": {"group": "launcher", "name": "charge", "subtitle": "Launcher charges", "maxgr": 10, "variants": [
    {"len": 0.8, "layers": [
     {"src": "bsb_1674", "t": 1.5, "d": 0.6},
     {"src": "bsb_0795", "t": 2.5, "d": 0.6, "gain": -6}
@@ -3600,30 +2252,32 @@
   "item.snowball_launcher.overheat": {"group": "launcher", "name": "overheat", "subtitle": "Launcher overheats", "variants": [
    {"len": 1.3, "layers": [
     {"src": "oga_steam_hiss/steam hisses - Marker #1.wav", "t": 0, "d": 1.0, "fo": 0.4},
-    {"src": "bsb_2243", "t": 1.74, "d": 0.6, "pitch": 1.3, "gain": -6, "at": 0.05}
+    {"src": "bsb_2243", "t": 1.74, "d": 0.6, "pitch": 1.3, "gain": 6, "at": 0.05}
    ]},
    {"len": 1.3, "layers": [
     {"src": "bsb_0805", "t": 22.7, "d": 1.2, "fo": 0.4},
-    {"src": "oga_rd_break/bfh1_metal_hit_01.ogg", "pitch": 1.2, "gain": -6}
+    {"src": "oga_rd_break/bfh1_metal_hit_01.ogg", "pitch": 1.2, "gain": 0, "at": 0.05}
    ]},
    {"len": 1.3, "layers": [
     {"src": "bsb_0227", "t": 0.0, "d": 1.0, "fo": 0.4},
-    {"src": "bsb_3589", "t": 0.12, "d": 0.6, "pitch": 1.5, "gain": -10}
+    {"src": "bsb_3589", "t": 0.12, "d": 0.6, "pitch": 1.5, "gain": -4, "at": 0.05}
    ]}
   ]},
-  "item.snowball_launcher.empty": {"group": "launcher", "name": "empty", "subtitle": "Launcher clicks", "variants": [
+  "item.snowball_launcher.empty": {"group": "launcher", "name": "empty", "subtitle": "Launcher clicks", "maxgr": 12, "variants": [
    {"layers": [
-    {"src": "oga_kenney_ui/click3.wav"},
-    {"src": "oga_kenney_ui/switch2.wav", "gain": -10}
+    {"src": "bsb_1992"},
+    {"src": "oga_kenney_ui/click3.wav", "gain": -8}
    ]},
    {"layers": [
-    {"src": "oga_kenney_ui/switch3.wav", "pitch": 0.9}
+    {"src": "bsb_1985", "t": 0.06, "d": 0.14},
+    {"src": "oga_kenney_ui/switch3.wav", "pitch": 0.8, "gain": -6}
    ]},
    {"layers": [
-    {"src": "bsb_1985", "t": 0.06, "d": 0.12}
+    {"src": "bsb_1986", "t": 0.05, "d": 0.14},
+    {"src": "oga_kenney_ui/switch2.wav", "pitch": 0.9, "gain": -6}
    ]}
   ]},
-  "item.snowball_launcher.mode": {"group": "launcher", "name": "mode", "subtitle": "Launcher switches ammo", "variants": [
+  "item.snowball_launcher.mode": {"group": "launcher", "name": "mode", "subtitle": "Launcher switches ammo", "maxgr": 12, "variants": [
    {"layers": [
     {"src": "bsb_1989", "t": 0.1, "d": 0.35},
     {"src": "oga_kenney_ui/switch1.wav", "gain": -4, "at": 0.1}
@@ -3634,7 +2288,7 @@
    ]},
    {"layers": [
     {"src": "bsb_1992"},
-    {"src": "oga_mech_clunk2", "gain": -3, "at": 0.06}
+    {"src": "oga_mech1", "t": 0.08, "d": 0.35, "gain": -2, "at": 0.04}
    ]}
   ]},
   "item.snowball_launcher.load": {"group": "launcher", "name": "load", "subtitle": "Launcher loads a snowball", "variants": [
@@ -3683,7 +2337,7 @@
    ]},
    {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.1, "lp": 6000}], "len": 0.9, "layers": [
     {"src": "bsb_0596", "t": 18.9, "d": 0.2, "pitch": 0.7},
-    {"src": "bsb_2453", "t": 0.15, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"src": "bsb_2453", "t": 0.15, "d": 0.3, "pitch": 0.7, "gain": -3, "fo": 0.08},
     {"synth": "thump", "d": 0.4, "f": 95, "f1": 40, "gain": -3},
     {"src": "oga_rd_break/bfh1_rock_breaking_02.ogg", "pitch": 0.8, "gain": -4}
    ]}
@@ -3794,29 +2448,29 @@
    ]}
   ]},
   "block.snow_globe.shake": {"group": "snow_globe", "name": "shake", "subtitle": "Snow globe shakes", "variants": [
-   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.8, "layers": [
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.9, "lenfade": 0.6, "layers": [
     {"src": "bsb_2127", "pitch": 1.1},
     {"src": "bsb_2128", "pitch": 1.2, "at": 0.25, "gain": -2},
     {"src": "bsb_2088", "t": 0.85, "d": 1.0, "gain": -4, "at": 0.2},
-    {"synth": "chime", "d": 1.5, "notes": [2093, 2637, 3136, 3951], "spread": 0.07, "decay": 0.8, "gain": -6, "at": 0.1},
+    {"synth": "chime", "d": 2.2, "notes": [2093, 2637, 3136, 3951], "spread": 0.07, "decay": 0.8, "gain": -6, "at": 0.1},
     {"src": "bsb_1871", "t": 0.04, "d": 1.0, "gain": -10, "at": 0.3}
    ]},
-   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.8, "layers": [
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.9, "lenfade": 0.6, "layers": [
     {"src": "bsb_2124", "pitch": 1.15},
     {"src": "bsb_2126", "pitch": 1.2, "at": 0.22, "gain": -2},
     {"src": "bsb_2087", "t": 1.4, "d": 0.6, "gain": -4, "at": 0.15},
-    {"synth": "chime", "d": 1.5, "notes": [2349, 2960, 3520, 4699], "spread": 0.06, "decay": 0.8, "gain": -6, "at": 0.1},
+    {"synth": "chime", "d": 2.2, "notes": [2349, 2960, 3520, 4699], "spread": 0.06, "decay": 0.8, "gain": -6, "at": 0.1},
     {"src": "bsb_1867", "t": 0.07, "d": 1.0, "gain": -10, "at": 0.3}
    ]},
-   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.8, "layers": [
+   {"fx": [{"t": "reverb", "rt": 1.0, "mix": 0.25, "lp": 6000}], "len": 1.9, "lenfade": 0.6, "layers": [
     {"src": "bsb_2125", "pitch": 1.1},
     {"src": "bsb_2123", "pitch": 1.25, "at": 0.2, "gain": -2},
     {"src": "bsb_2079", "t": 0.1, "d": 1.0, "gain": -5, "at": 0.2},
-    {"synth": "chime", "d": 1.5, "notes": [1976, 2489, 2960, 3951], "spread": 0.08, "decay": 0.8, "gain": -6, "at": 0.1},
+    {"synth": "chime", "d": 2.2, "notes": [1976, 2489, 2960, 3951], "spread": 0.08, "decay": 0.8, "gain": -6, "at": 0.1},
     {"src": "bsb_1870", "t": 0.05, "d": 0.7, "gain": -10, "at": 0.3}
    ]}
   ]},
-  "entity.player.shiver": {"group": "player", "name": "shiver", "subtitle": "Player shivers", "variants": [
+  "entity.player.shiver": {"group": "player", "name": "shiver", "subtitle": "Teeth chatter", "maxgr": 12, "variants": [
    {"layers": [
     {"src": "bsb_2190", "t": 0.25, "d": 1.25, "fo": 0.2},
     {"src": "bsb_1103", "t": 1.5, "d": 0.3, "gain": -8, "at": 0.5}
@@ -3830,7 +2484,7 @@
     {"src": "bsb_1103", "t": 4.28, "d": 0.32, "gain": -8, "at": 0.3}
    ]}
   ]},
-  "entity.player.overheat": {"group": "player", "name": "overheat", "subtitle": "Player overheats", "variants": [
+  "entity.player.overheat": {"group": "player", "name": "overheat", "subtitle": "Fur sizzles", "variants": [
    {"layers": [
     {"src": "bsb_1694", "t": 0.12, "d": 1.0, "fo": 0.3},
     {"src": "oga_steam_hiss/steam hisses - Marker #2.wav", "t": 0, "d": 0.8, "gain": -8, "fo": 0.3}
@@ -3919,7 +2573,7 @@
     {"synth": "chime", "d": 2.2, "notes": [3520, 4186, 4699], "spread": 0.15, "decay": 1.0, "gain": -20}
    ]}
   ]},
-  "entity.frost_mauler.claw": {"group": "frost_mauler", "name": "claw", "subtitle": "Frost Mauler swipes", "variants": [
+  "entity.frost_mauler.claw": {"group": "frost_mauler", "name": "claw", "subtitle": "Frost Mauler claws", "variants": [
    {"len": 0.9, "layers": [
     {"src": "bsb_1801", "t": 0.15, "d": 0.5, "pitch": 0.6},
     {"src": "bsb_0127", "t": 0.05, "d": 0.4, "pitch": 0.75, "at": 0.15},
@@ -3957,7 +2611,7 @@
     {"synth": "thump", "d": 0.2, "f": 120, "f1": 60, "gain": -6}
    ]}
   ]},
-  "entity.frost_mauler.fury": {"group": "frost_mauler", "name": "fury", "subtitle": "Frost Mauler snarls furiously", "entry": {"attenuation_distance": 24}, "variants": [
+  "entity.frost_mauler.fury": {"group": "frost_mauler", "name": "fury", "subtitle": "Frost Mauler snarls", "entry": {"attenuation_distance": 24}, "variants": [
    {"layers": [
     {"src": "oga_snarls1", "t": 0.17, "d": 1.5, "pitch": 0.75, "fo": 0.3, "lp": 4500}
    ]},
@@ -3969,7 +2623,7 @@
     {"src": "oga_snarls5", "t": 0.33, "d": 1.0, "pitch": 0.7, "at": 0.2, "gain": -5, "fo": 0.3, "lp": 4500}
    ]}
   ]},
-  "entity.frost_mauler.stunned": {"group": "frost_mauler", "name": "stunned", "subtitle": "Frost Mauler is dazed", "variants": [
+  "entity.frost_mauler.stunned": {"group": "frost_mauler", "name": "stunned", "subtitle": "Frost Mauler is stunned", "variants": [
    {"fx": [{"t": "reverb", "rt": 0.7, "mix": 0.12, "lp": 6000}], "layers": [
     {"src": "bsb_0286", "t": 0.15, "d": 0.6, "pitch": 0.55},
     {"src": "oga_rd_creature/howl.ogg", "pitch": 0.6, "at": 0.5, "gain": -4, "fo": 0.4}
@@ -4037,7 +2691,7 @@
     {"synth": "noise", "d": 0.9, "color": "white", "hp": 5000, "gain": -16, "env": [[0, -30], [0.1, 0], [0.9, -30]]}
    ]}
   ]},
-  "entity.frost_mauler.explode": {"group": "frost_mauler", "name": "explode", "subtitle": "Frost Mauler explodes", "entry": {"attenuation_distance": 64}, "variants": [
+  "entity.frost_mauler.explode": {"group": "frost_mauler", "name": "explode", "subtitle": "Frost Mauler bursts", "entry": {"attenuation_distance": 64}, "variants": [
    {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 3.5, "lenfade": 0.8, "layers": [
     {"src": "oga_rd_bang/cannon_02.ogg", "pitch": 0.55},
     {"src": "oga_cannon", "t": 0, "d": 2.5, "pitch": 0.6, "gain": -4},
@@ -4055,7 +2709,7 @@
     {"synth": "whoosh", "d": 1.2, "at": 0.05, "f": 3200, "f1": 600, "q": 1.2, "hp": 1200, "gain": -7, "peak": 0.25}
    ]}
   ]},
-  "entity.polar_bear.roar": {"group": "polar_bear", "name": "roar", "subtitle": "Polar Bear roars", "entry": {"attenuation_distance": 32}, "variants": [
+  "entity.polar_bear.roar": {"group": "polar_bear", "name": "roar", "subtitle": "Polar bear roars", "entry": {"attenuation_distance": 32}, "variants": [
    {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "layers": [
     {"src": "oga_troll_roars", "t": 1.87, "d": 1.03, "pitch": 0.85},
     {"src": "oga_bear/flac/bear_01.flac", "pitch": 0.9, "gain": -2}
@@ -4069,7 +2723,7 @@
     {"src": "oga_bear/flac/bear_01.flac", "pitch": 0.8, "gain": -3, "at": 0.1}
    ]}
   ]},
-  "entity.polar_bear.leap": {"group": "polar_bear", "name": "leap", "subtitle": "Polar Bear leaps", "variants": [
+  "entity.polar_bear.leap": {"group": "polar_bear", "name": "leap", "subtitle": "Polar bear leaps", "variants": [
    {"layers": [
     {"src": "oga_rd_creature/grunt_04.ogg", "pitch": 0.6},
     {"src": "bsb_1796", "t": 0.2, "d": 0.4, "pitch": 0.7, "at": 0.15}
@@ -4083,27 +2737,27 @@
     {"src": "bsb_1800", "t": 0.2, "d": 0.4, "pitch": 0.7, "at": 0.15}
    ]}
   ]},
-  "entity.polar_bear.slam": {"group": "polar_bear", "name": "slam", "subtitle": "Polar Bear slams", "variants": [
+  "entity.polar_bear.slam": {"group": "polar_bear", "name": "slam", "subtitle": "Polar bear slams down", "variants": [
    {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "len": 1.0, "layers": [
     {"synth": "thump", "d": 0.45, "f": 80, "f1": 35, "gain": -2},
-    {"src": "bsb_2453", "t": 0.15, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"src": "bsb_2453", "t": 0.15, "d": 0.3, "pitch": 0.7, "gain": -3, "fo": 0.08},
     {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-02.flac", "pitch": 0.6, "gain": 10},
     {"src": "bsb_0208", "t": 4.98, "d": 0.5, "pitch": 0.7, "gain": -2}
    ]},
    {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "len": 1.0, "layers": [
     {"synth": "thump", "d": 0.45, "f": 80, "f1": 35, "gain": -2},
-    {"src": "bsb_2454", "t": 0.1, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"src": "bsb_2454", "t": 0.1, "d": 0.3, "pitch": 0.7, "gain": -3, "fo": 0.08},
     {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-03.flac", "pitch": 0.6, "gain": 10},
     {"src": "bsb_0208", "t": 3.73, "d": 0.5, "pitch": 0.7, "gain": -2}
    ]},
    {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "len": 1.0, "layers": [
     {"synth": "thump", "d": 0.45, "f": 80, "f1": 35, "gain": -2},
-    {"src": "bsb_2452", "t": 0.06, "d": 0.5, "pitch": 0.7, "gain": -3},
+    {"src": "bsb_2452", "t": 0.06, "d": 0.3, "pitch": 0.7, "gain": -3, "fo": 0.08},
     {"src": "oga_dry_snow/qubodup-snow_steps_dry/snow_step_dry-01.flac", "pitch": 0.6, "gain": 10},
     {"src": "bsb_0208", "t": 0.6, "d": 0.5, "pitch": 0.7, "gain": -2}
    ]}
   ]},
-  "entity.polar_bear.munch": {"group": "polar_bear", "name": "munch", "subtitle": "Polar Bear eats", "variants": [
+  "entity.polar_bear.munch": {"group": "polar_bear", "name": "munch", "subtitle": "Polar bear eats", "variants": [
    {"layers": [
     {"src": "bsb_0497", "t": 2.9, "d": 1.2, "pitch": 0.8},
     {"src": "oga_rd_water/slime_03.ogg", "pitch": 0.7, "gain": -6, "at": 0.1},
@@ -4120,7 +2774,7 @@
     {"src": "oga_rd_water/slime_04.ogg", "pitch": 0.7, "gain": -6, "at": 0.3}
    ]}
   ]},
-  "entity.polar_bear.calm": {"group": "polar_bear", "name": "calm", "subtitle": "Polar Bear huffs contentedly", "variants": [
+  "entity.polar_bear.calm": {"group": "polar_bear", "name": "calm", "subtitle": "Polar bear calms down", "variants": [
    {"layers": [
     {"src": "bsb_0285", "pitch": 0.7},
     {"src": "bsb_1404", "t": 0.7, "d": 0.8, "pitch": 0.7, "gain": -6, "fo": 0.3, "at": 0.2}
@@ -4134,7 +2788,7 @@
     {"src": "bsb_1405", "t": 2.0, "d": 0.9, "pitch": 0.7, "gain": -8, "fo": 0.3, "at": 0.2}
    ]}
   ]},
-  "entity.polar_bear.shear": {"group": "polar_bear", "name": "shear", "subtitle": "Polar Bear shorn", "variants": [
+  "entity.polar_bear.shear": {"group": "polar_bear", "name": "shear", "subtitle": "Polar bear shorn", "variants": [
    {"layers": [
     {"src": "bsb_0008", "t": 2.25, "d": 0.5},
     {"src": "bsb_1104", "t": 0.36, "d": 0.45, "gain": -4, "at": 0.15}
@@ -4149,7 +2803,7 @@
     {"src": "bsb_1104", "t": 5.88, "d": 0.4, "gain": -4, "at": 0.12}
    ]}
   ]},
-  "entity.zombie_polar_bear.ambient": {"group": "zombie_polar_bear", "name": "ambient", "subtitle": "Zombie Polar Bear groans", "variants": [
+  "entity.zombie_polar_bear.ambient": {"group": "zombie_polar_bear", "name": "ambient", "subtitle": "Zombie polar bear groans", "variants": [
    {"fx": [{"t": "reverb", "rt": 0.6, "mix": 0.12, "lp": 6000}], "layers": [
     {"src": "oga_bear/flac/bear_01.flac", "pitch": 0.7, "dist": 1.2, "bp": [120, 4000]},
     {"src": "bsb_2106", "t": 4.77, "d": 1.23, "pitch": 0.6, "gain": -4, "dist": 1.2, "bp": [120, 4000]}
@@ -4163,7 +2817,7 @@
     {"src": "oga_zombie_moans", "t": 0.39, "d": 1.68, "pitch": 0.6, "gain": -7}
    ]}
   ]},
-  "entity.zombie_polar_bear.hurt": {"group": "zombie_polar_bear", "name": "hurt", "subtitle": "Zombie Polar Bear hurts", "variants": [
+  "entity.zombie_polar_bear.hurt": {"group": "zombie_polar_bear", "name": "hurt", "subtitle": "Zombie polar bear hurts", "variants": [
    {"layers": [
     {"src": "bsb_2110", "t": 0.13, "d": 0.4, "pitch": 0.6, "dist": 1.2, "bp": [120, 4000]},
     {"src": "oga_rd_creature/hurt_03.ogg", "pitch": 0.5, "gain": -6}
@@ -4177,7 +2831,7 @@
     {"src": "oga_rd_creature/hurt_05.ogg", "pitch": 0.5, "gain": -6}
    ]}
   ]},
-  "entity.zombie_polar_bear.death": {"group": "zombie_polar_bear", "name": "death", "subtitle": "Zombie Polar Bear dies", "variants": [
+  "entity.zombie_polar_bear.death": {"group": "zombie_polar_bear", "name": "death", "subtitle": "Zombie polar bear dies", "variants": [
    {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.15, "lp": 6000}], "len": 4.5, "lenfade": 0.5, "layers": [
     {"src": "bsb_2106", "t": 10.65, "d": 2.19, "pitch": 0.55, "fo": 1.0, "dist": 1.2, "bp": [120, 4000]},
     {"src": "oga_bear/flac/bear_02.flac", "pitch": 0.7, "gain": -6},
@@ -4251,7 +2905,7 @@
     {"synth": "crackle", "d": 0.2, "density": 80, "hp": 4000, "gain": -16}
    ]}
   ]},
-  "item.armor.equip_fur": {"group": "armor", "name": "equip_fur", "subtitle": "Fur armor rustles", "variants": [
+  "item.armor.equip_fur": {"group": "armor", "name": "equip_fur", "subtitle": "Fur armour rustles", "maxgr": 8, "variants": [
    {"layers": [
     {"src": "bsb_1104", "t": 0.36, "d": 0.5, "lp": 6000, "fo": 0.15},
     {"src": "bsb_0576", "t": 0.88, "d": 0.12, "gain": -6, "pitch": 0.8}
@@ -4265,65 +2919,65 @@
     {"src": "bsb_1789", "t": 0.38, "d": 0.4, "gain": -8, "fo": 0.15}
    ]}
   ]},
-  "item.fang_dagger.slash": {"group": "fang_dagger", "name": "slash", "subtitle": "Fang Dagger slashes", "variants": [
+  "item.fang_dagger.slash": {"group": "fang_dagger", "name": "slash", "subtitle": "Fang dagger slashes", "maxgr": 10, "variants": [
    {"len": 0.3, "layers": [
     {"src": "oga_swishes/swishes/swish-1.wav", "pitch": 1.2},
     {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
-    {"synth": "chime", "d": 0.25, "notes": [3520], "decay": 0.12, "gain": -18}
+    {"synth": "chime", "d": 0.3, "notes": [3520], "decay": 0.1, "gain": -18}
    ]},
    {"len": 0.3, "layers": [
     {"src": "oga_swishes/swishes/swish-4.wav", "pitch": 1.25},
     {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
-    {"synth": "chime", "d": 0.25, "notes": [3951], "decay": 0.12, "gain": -18}
+    {"synth": "chime", "d": 0.3, "notes": [3951], "decay": 0.1, "gain": -18}
    ]},
    {"len": 0.3, "layers": [
     {"src": "oga_swishes/swishes/swish-6.wav", "pitch": 1.15},
     {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
-    {"synth": "chime", "d": 0.25, "notes": [3136], "decay": 0.12, "gain": -18}
+    {"synth": "chime", "d": 0.3, "notes": [3136], "decay": 0.1, "gain": -18}
    ]},
    {"len": 0.3, "layers": [
     {"src": "oga_swishes/swishes/swish-9.wav", "pitch": 1.2},
     {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
-    {"synth": "chime", "d": 0.25, "notes": [4186], "decay": 0.12, "gain": -18}
+    {"synth": "chime", "d": 0.3, "notes": [4186], "decay": 0.1, "gain": -18}
    ]},
    {"len": 0.3, "layers": [
     {"src": "oga_swishes/swishes/swish-12.wav", "pitch": 1.1},
     {"src": "bsb_0128", "t": 0.05, "d": 0.25, "pitch": 1.4, "gain": -6},
-    {"synth": "chime", "d": 0.25, "notes": [3729], "decay": 0.12, "gain": -18}
+    {"synth": "chime", "d": 0.3, "notes": [3729], "decay": 0.1, "gain": -18}
    ]}
   ]},
-  "item.fang_dagger.pounce": {"group": "fang_dagger", "name": "pounce", "subtitle": "Player pounces", "variants": [
+  "item.fang_dagger.pounce": {"group": "fang_dagger", "name": "pounce", "subtitle": "Pounce", "variants": [
    {"layers": [
-    {"src": "bsb_1801", "t": 0.15, "d": 0.6, "pitch": 0.9},
-    {"src": "bsb_1787", "t": 0.6, "d": 0.2, "gain": -6}
+    {"src": "bsb_1801", "t": 0.2, "d": 0.55, "pitch": 0.9},
+    {"src": "bsb_1787", "t": 0.6, "d": 0.2, "gain": -8, "at": 0.12}
    ]},
    {"layers": [
-    {"src": "bsb_1796", "t": 0.12, "d": 0.6, "pitch": 0.9},
-    {"src": "bsb_1788", "t": 0.15, "d": 0.25, "gain": -6}
+    {"src": "bsb_1796", "t": 0.17, "d": 0.55, "pitch": 0.9},
+    {"src": "bsb_1788", "t": 0.15, "d": 0.25, "gain": -8, "at": 0.1}
    ]},
    {"layers": [
-    {"src": "bsb_1800", "t": 0.12, "d": 0.6, "pitch": 0.9},
-    {"src": "bsb_1787", "t": 0.6, "d": 0.2, "gain": -6, "pitch": 1.1}
+    {"src": "bsb_1800", "t": 0.18, "d": 0.55, "pitch": 0.9},
+    {"src": "bsb_1787", "t": 0.6, "d": 0.2, "gain": -8, "pitch": 1.1, "at": 0.12}
    ]}
   ]},
-  "item.fang_dagger.crit": {"group": "fang_dagger", "name": "crit", "subtitle": "Fang Crit", "variants": [
-   {"len": 0.8, "layers": [
+  "item.fang_dagger.crit": {"group": "fang_dagger", "name": "crit", "subtitle": "Fang crit", "variants": [
+   {"len": 1.0, "layers": [
     {"src": "bsb_2039", "pitch": 0.9},
     {"src": "bsb_2460", "pitch": 0.9, "gain": -2},
-    {"synth": "chime", "d": 0.6, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
+    {"synth": "chime", "d": 1.2, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
    ]},
-   {"len": 0.8, "layers": [
+   {"len": 1.0, "layers": [
     {"src": "bsb_2041", "pitch": 0.9},
     {"src": "bsb_2459", "pitch": 0.9, "gain": -2},
-    {"synth": "chime", "d": 0.6, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
+    {"synth": "chime", "d": 1.2, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
    ]},
-   {"len": 0.8, "layers": [
+   {"len": 1.0, "layers": [
     {"src": "bsb_2042", "pitch": 0.9},
     {"src": "bsb_2461", "pitch": 0.9, "gain": -2},
-    {"synth": "chime", "d": 0.6, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
+    {"synth": "chime", "d": 1.2, "notes": [2637, 3520], "spread": 0.02, "decay": 0.4, "gain": -10}
    ]}
   ]},
-  "item.fang_dagger.tired": {"group": "fang_dagger", "name": "tired", "subtitle": "Fang Daggers tire", "variants": [
+  "item.fang_dagger.tired": {"group": "fang_dagger", "name": "tired", "subtitle": "Daggers tire", "variants": [
    {"layers": [
     {"src": "bsb_1405", "t": 2.0, "d": 0.9, "pitch": 0.9, "gain": -6, "fo": 0.3},
     {"src": "oga_rd_break/bfh1_metal_hit_05.ogg", "pitch": 0.7, "lp": 3000}
@@ -4337,21 +2991,21 @@
     {"src": "oga_rd_break/bfh1_metal_hit_02.ogg", "pitch": 0.75, "lp": 3000}
    ]}
   ]},
-  "item.fang_dagger.ready": {"group": "fang_dagger", "name": "ready", "subtitle": "Fang Daggers ready", "variants": [
+  "item.fang_dagger.ready": {"group": "fang_dagger", "name": "ready", "subtitle": "Daggers ready", "variants": [
    {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.2, "lp": 6000}], "layers": [
-    {"synth": "chime", "d": 1.0, "notes": [2093, 3136], "spread": 0.05, "decay": 0.6},
+    {"synth": "chime", "d": 1.8, "notes": [2093, 3136], "spread": 0.05, "decay": 0.6},
     {"src": "bsb_2886", "t": 1.05, "d": 0.3, "gain": -6}
    ]},
    {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.2, "lp": 6000}], "layers": [
-    {"synth": "chime", "d": 1.0, "notes": [2349, 3520], "spread": 0.05, "decay": 0.6},
+    {"synth": "chime", "d": 1.8, "notes": [2349, 3520], "spread": 0.05, "decay": 0.6},
     {"src": "bsb_2886", "t": 0.33, "d": 0.3, "gain": -6}
    ]},
    {"fx": [{"t": "reverb", "rt": 0.8, "mix": 0.2, "lp": 6000}], "layers": [
-    {"synth": "chime", "d": 1.0, "notes": [1976, 2960], "spread": 0.05, "decay": 0.6},
+    {"synth": "chime", "d": 1.8, "notes": [1976, 2960], "spread": 0.05, "decay": 0.6},
     {"src": "bsb_1335", "t": 0.03, "d": 0.3, "gain": -6}
    ]}
   ]},
-  "block.frost_mauler_skull.ignite": {"group": "mauler_skull", "name": "ignite", "subtitle": "Frost Mauler Skull ignites", "variants": [
+  "block.frost_mauler_skull.ignite": {"group": "mauler_skull", "name": "ignite", "subtitle": "Skull eye glows", "variants": [
    {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 3.6, "lenfade": 0.4, "layers": [
     {"synth": "tone", "d": 3.0, "f": 110, "f1": 440, "partials": [[1, 1], [2, 0.5], [3, 0.3], [5, 0.15]], "vib": [5.5, 0.012], "gain": -4, "env": [[0, -30], [1.5, -8], [2.7, 0], [3.0, -3]], "fo": 0.15},
     {"synth": "tone", "d": 3.0, "f": 165.0, "f1": 660, "partials": [[1, 1], [2, 0.3]], "vib": [4.2, 0.015], "gain": -10, "env": [[0, -30], [2.0, -6], [3.0, 0]], "fo": 0.15},
@@ -4365,7 +3019,7 @@
     {"synth": "noise", "d": 3.0, "color": "white", "hp": 7000, "gain": -20, "env": [[0, -30], [2.8, 0], [3.0, -6]]}
    ]}
   ]},
-  "block.frost_mauler_skull.revive": {"group": "mauler_skull", "name": "revive", "subtitle": "Frost Mauler Skull explodes", "entry": {"attenuation_distance": 48}, "variants": [
+  "block.frost_mauler_skull.revive": {"group": "mauler_skull", "name": "revive", "subtitle": "The Frost Mauler returns", "entry": {"attenuation_distance": 48}, "variants": [
    {"fx": [{"t": "reverb", "rt": 2.0, "mix": 0.3, "lp": 6000}], "len": 4.5, "lenfade": 0.8, "layers": [
     {"src": "cw_lion", "t": 4.93, "d": 1.2, "pitch": 0.7, "fo": 0.3},
     {"src": "oga_rd_bang/cannon_02.ogg", "pitch": 0.6, "at": 1.0},

@@ -772,7 +772,7 @@ def build(cache, only=None, sheets_dir=None):
             seed = int(var.get("seed", int(hashlib.md5(f"{name}{i}".encode()).hexdigest()[:8], 16)))
             y = r.variant(ev, var, seed)
             path = os.path.join(gdir, f"{base}{i + 1}.ogg")
-            encode_ogg(y, path, ev.get("q", 5 if y.shape[0] == 1 else 4))
+            encode_ogg(y, path, ev.get("q", 5))
             z = decode_ogg(path)
             pk, lu, rms, dur = loudness_stats(z)
             row = {"event": name, "file": os.path.relpath(path, SOUNDS), "dur": round(dur, 3), "peak": round(pk, 2),
@@ -987,32 +987,42 @@ def inspect(cache, refs, out):
 
 # ------------------------------------------------------------------------------------------- credits
 def write_credits(rec, used):
+    src = rec["sources"]
     lines = ["# Winterworks sound credits", "",
-             "Every sound in `src/main/resources/assets/winterworks/sounds/` was made by "
-             "`tools/sounds/build_sounds.py` from the recordings below (trimmed, layered, re-pitched, filtered, "
-             "normalised) plus procedural synthesis (numpy noise, tones and filters).",
-             "Only CC0 / public-domain sources are used, so the derived files can be shipped with the mod. "
-             "Credit is given anyway, with thanks.", "",
-             "| Source | Author | Site | Licence | Used by |", "|---|---|---|---|---|"]
-    for sid in sorted(used, key=lambda k: (rec["sources"][k]["site"], rec["sources"][k]["title"])):
-        s = rec["sources"][sid]
-        evs = ", ".join(f"`{e}`" for e in used[sid])
-        lines.append(f"| [{s['title']}]({s['page']}) | {s['author']} | {s['site']} | {s['license']} | {evs} |")
-    synth_only = [n for n, ev in rec["events"].items()
-                  if all("synth" in L for v in expand_variants(ev) for L in v["layers"])]
-    partly = [n for n, ev in rec["events"].items() if n not in synth_only and
-              any("synth" in L for v in expand_variants(ev) for L in v["layers"])]
-    lines += ["", "## Synthesised", "",
-              "Fully synthesised (no recordings): " + (", ".join(f"`{n}`" for n in synth_only) or "none") + ".", "",
-              "Recordings layered with synthesised parts (sub thumps, whooshes, shimmer, wind): "
-              + (", ".join(f"`{n}`" for n in partly) or "none") + ".", "",
-              "## Licence notes", "",
+             "Every sound in `src/main/resources/assets/winterworks/sounds/` is made by `tools/sounds/build_sounds.py` "
+             "from the recordings listed here (trimmed, layered, re-pitched, filtered, reverberated and normalised; see "
+             "`tools/sounds/recipes.json`), plus procedural synthesis (numpy noise, tones, chimes, thumps, wind).",
+             "Only CC0 and public-domain sources are used, so the derived files can be shipped with the mod. "
+             "None of them carries an attribution requirement or a no-AI / no-machine-learning clause; credit is given "
+             "anyway, with thanks to the recordists.", "",
+             "Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `... build` "
+             "(downloads are checked against the sha256 in recipes.json).", ""]
+    notes = []
+    for site in sorted({src[k]["site"] for k in used}):
+        lines += [f"## {site}", "", "| Source | Author | Licence | Used by |", "|---|---|---|---|"]
+        for sid in sorted((k for k in used if src[k]["site"] == site), key=lambda k: src[k]["title"].lower()):
+            s = src[sid]
+            lic = s["license"]
+            if s.get("license_note"):
+                notes.append(f"[{len(notes) + 1}] {s['title']}: {s['license_note']}")
+                lic += f" [{len(notes)}]"
+            evs = ", ".join(f"`{e}`" for e in used[sid])
+            lines.append(f"| [{s['title']}]({s['page']}) (`{sid}`) | {s['author']} | {lic} | {evs} |")
+        lines.append("")
+    if notes:
+        lines += ["Notes:", ""] + [f"* {n}" for n in notes] + [""]
+    lines += ["## Events and their ingredients", "", "| Event | Files | Recordings (source ids) | Synthesis |", "|---|---|---|---|"]
+    for n, ev in rec["events"].items():
+        vs = expand_variants(ev)
+        ids = sorted({L["src"].split("/")[0] for v in vs for L in v["layers"] if "src" in L})
+        syn = sorted({L["synth"] for v in vs for L in v["layers"] if "synth" in L})
+        lines.append(f"| `{n}` | {len(vs)} | {', '.join(ids) or 'none (fully synthesised)'} | {', '.join(syn) or '-'} |")
+    lines += ["", "## Licences", "",
               "* CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/",
-              "* Public Domain / Public Domain Mark 1.0: https://creativecommons.org/publicdomain/mark/1.0/ "
-              "(Wikimedia Commons files tagged public domain, e.g. U.S. Fish & Wildlife Service and U.S. National Park "
-              "Service recordings; Radio Aporee recordings released by their recordists under the Public Domain Mark).",
+              "* Public Domain Mark 1.0: https://creativecommons.org/publicdomain/mark/1.0/",
               "* BigSoundBank: every sound used is marked \"License CC0 (public domain): Free and royalty-free\" on its "
-              "page (see https://bigsoundbank.com/licenses.html).", ""]
+              "page; site terms at https://bigsoundbank.com/licenses.html (CC0 1.0 Universal).",
+              "* OpenGameArt: every page used lists CC0 as its licence.", ""]
     with open(CREDITS, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
 
