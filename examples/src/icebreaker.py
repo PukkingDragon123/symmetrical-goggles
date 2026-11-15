@@ -39,8 +39,8 @@ box("hips", "waist", [19, 14, 13], [0, -1.5, -13], "seal", offset=[0, -1.5, -6],
 box("tail", "hips", [12, 8, 10], [0, -2.5, -11], "seal", offset=[0, -0.5, -4.5], rot=[6, 0, 0])
 box("fluke", "tail", [9, 2, 18], [3, -2, -8], "flipper", offset=[1.5, 0, -9], rot=[-8, 18, 4], mirror=True)
 box("fluke_fan", "fluke", [13, 2, 6], [2.5, 0, -17], "flipper", rot=[0, 14, 0])
-box("flipper", "chest", [6, 12, 11], [14, -3, 6], "flipper", offset=[1.5, -5.5, 1], rot=[-8, 0, -20], mirror=True)
-box("palm", "flipper", [8, 2, 15], [1.5, -11.4, 3], "flipper", rot=[14, 0, 20])
+box("flipper", "chest", [6, 12, 11], [16, -2.8, 6], "flipper", offset=[1.5, -5.5, 1], rot=[-8, 0, 16], mirror=True)
+box("palm", "flipper", [8, 2, 15], [1.0, -11.4, 3], "flipper", rot=[14, 0, -14])
 for k, x in enumerate((-2.8, -1.4, 0, 1.4, 2.8)):
     box(f"claw{k}", "palm", [1, 1, 3], [x, 0.2, 8.0], "claw", mirror=True)
 # ------------------------------------------------------------------ head
@@ -54,24 +54,32 @@ box("nose", "muzzle", [6, 3, 3], [0, 4, 4.5], "nose")
 box("nostril", "nose", [2, 1, 1], [1.5, 0.6, 1.6], "nostril", mirror=True)
 box("jaw", "head", [12, 4, 12], [0, -7, 9], "jaw", offset=[0, -1.5, 6], rot=[4, 0, 0])
 box("tongue", "jaw", [8, 1, 8], [0, 0.6, 7], "mouth")
-box("eye", "head", [3, 3, 1], [6.5, 4.5, 16.6], "eye", mirror=True)
-box("lid", "head", [4, 2, 2], [6.5, 6.6, 16.8], "lid", mirror=True)
-box("brow", "head", [6, 2, 2], [6.5, 8.2, 16.6], "brow", rot=[0, 0, -8], mirror=True)
+box("eye", "head", [4, 3, 1], [6.5, 4.5, 16.6], "eye", mirror=True)
+box("lid", "head", [5, 2, 2], [6.5, 6.6, 16.8], "lid", mirror=True)
+box("brow", "head", [7, 2, 2], [6.5, 8.2, 16.6], "brow", rot=[0, 0, -8], mirror=True)
 # ------------------------------------------------------------------ monster dressing (Monster Hunter style)
 # a shaggy mane round the neck and shoulders, a ruff on the chest, a fur fringe down the spine
 box("mane", "chest", [32, 10, 13], [0, 8, 7], "fur", rot=[-10, 0, 0])
-box("mane_side", "chest", [4, 15, 13], [15.5, 1, 6], "fur", rot=[0, 0, 6], mirror=True)
+box("shoulder_fur", "chest", [6, 8, 13], [14, 6.5, 6], "fur_dark", rot=[-6, 0, -14], mirror=True)
 box("ruff", "chest", [22, 8, 4], [0, -3, 10.5], "fur_pale", rot=[8, 0, 0])
 # shaggy tufts layered round the mane, each tilted its own way so the outline breaks up like fur
 for k, (x, y, z, rx, ry, rz, w, h) in enumerate([(-13, 9, 4, -24, 10, 28, 8, 9), (13, 9, 4, -24, -10, -28, 8, 9),
                                                  (-7, 13, 2, -34, 6, 12, 9, 8), (7, 13, 2, -34, -6, -12, 9, 8),
-                                                 (0, 14, 0, -40, 0, 0, 10, 8), (-15, 2, 8, -6, 14, 40, 6, 10),
-                                                 (15, 2, 8, -6, -14, -40, 6, 10)]):
+                                                 (0, 14, 0, -40, 0, 0, 10, 8)]):
     box(f"tuft{k}", "chest", [w, h, 6], [x, y, z], "fur_dark", rot=[rx, ry, rz])
 box("sideburn", "head", [3, 9, 7], [11.8, -2, 9], "fur_dark", offset=[0, -3, 0], rot=[-10, 0, -18], mirror=True)
-box("elbow_tuft", "flipper", [5, 5, 6], [1.5, -1, -2], "fur_dark", rot=[20, 0, -10])
-box("fur_back", "belly", [22, 4, 16], [0, 11.5, -9], "fur")
-box("fur_waist", "waist", [16, 3, 12], [0, 8.5, -7], "fur")
+box("elbow_tuft", "flipper", [4, 5, 5], [3.6, -2, -3.5], "fur_dark", rot=[24, 0, 12])
+# shingled fur plates down the back, each lifted at its rear edge like a pelt
+box("shag_chest", "chest", [14, 3, 10], [6.5, 11.4, 1], "fur", rot=[-9, -7, -8], mirror=True)
+box("fur_back", "belly", [16, 3, 10], [7.5, 11.6, -4], "fur", rot=[-8, -6, -8], mirror=True)
+box("shag_belly", "belly", [15, 3, 10], [7, 11.4, -13], "fur", rot=[-10, -8, -7], mirror=True)
+box("fur_waist", "waist", [12, 3, 9], [5.5, 9.2, -4], "fur", rot=[-9, -7, -8], mirror=True)
+box("shag_hips", "hips", [9, 3, 8], [4, 7.0, -3], "fur", rot=[-11, -8, -8], mirror=True)
+box("tail_fur", "tail", [10, 3, 6], [0, 4.6, -2], "fur_dark", rot=[-14, 0, 0])
+# long fur hanging in a fringe along the lower flanks
+box("skirt", "belly", [2, 7, 18], [16.6, -6, -9], "fur_dark", rot=[0, 0, 10], mirror=True)
+box("chest_skirt", "chest", [2, 6, 10], [14.6, -7, -3], "fur_dark", rot=[0, 0, 10], mirror=True)
+box("waist_skirt", "waist", [2, 6, 13], [13.6, -6, -7], "fur_dark", rot=[0, 0, 10], mirror=True)
 # ice armour: shards grown out of the back like a glacier's teeth
 box("shard0", "fur_back", [4, 10, 4], [-4, 2, 3], "ice_shard", offset=[0, 5, 0], rot=[-22, 18, 14])
 box("shard1", "fur_back", [3, 8, 3], [5, 2, -1], "ice_shard", offset=[0, 4, 0], rot=[-28, -24, -12])
@@ -82,6 +90,8 @@ box("spur", "flipper", [2, 5, 2], [2.5, 1, -3], "ice_shard", offset=[0, 2.5, 0],
 box("tusk", "muzzle", [3, 11, 3], [4.8, -3.5, 4.5], "tusk", offset=[0, -5.5, 0], rot=[-16, 0, 7], mirror=True)
 box("tusk_tip", "tusk", [2, 5, 2], [0, -10.5, 0], "tusk", offset=[0, -2.5, 0], rot=[-22, 0, 0])
 box("brow_ridge", "head", [20, 3, 4], [0, 8.8, 15.5], "brow")
+box("crest", "crown", [10, 4, 9], [0, 2.5, -2], "fur_dark", rot=[-28, 0, 0])
+box("crest_b", "crest", [7, 3, 7], [0, 1, -6], "fur_dark", rot=[-14, 0, 0])
 
 # the horn: a massive ice horn, stacked boxes curving up and forward
 box("horn", "crown", [7, 7, 7], [0, 1, 3], "horn", offset=[0, 3, 0], rot=[22, 0, 0])
@@ -150,12 +160,16 @@ styles = {
         {"id": "edge", "op": "gradient", "axis": "y", "amount": -0.8}]},
     "claw": {"ramp": "claw", "tone": 2.4, "layers": [{"id": "tip", "op": "gradient", "axis": "z", "amount": 1.2}]},
     "fur": {"ramp": "seal", "tone": 4.8, "layers": [
+        {"id": "frost_tips", "op": "drip", "ramp": "horn", "tone": 7.4, "depth": 0.4, "length": 1.0, "width": 0.45, "scale": 1.4,
+         "faces": ["sides", "back"]},
         {"id": "dark_root", "op": "gradient", "axis": "y", "amount": 1.4},
         {"id": "strands", "op": "drip", "ramp": "seal", "tone": 7.4, "depth": 1.6, "length": 4.0, "width": 0.6, "scale": 2.2,
          "faces": ["sides", "front", "back"]},
         {"id": "tufts", "op": "stripes", "axis": "x", "period": 2.0, "width": 0.3, "shift": -1.4, "wobble": 0.6,
          "faces": ["sides", "front", "back"]}]},
     "fur_dark": {"ramp": "seal", "tone": 3.6, "layers": [
+        {"id": "frost_tips", "op": "drip", "ramp": "horn", "tone": 7.4, "depth": 0.4, "length": 1.0, "width": 0.45, "scale": 1.4,
+         "faces": ["sides", "back"]},
         {"id": "strands", "op": "drip", "ramp": "seal", "tone": 6.4, "depth": 2.0, "length": 4.5, "width": 0.55, "scale": 1.8,
          "faces": ["sides", "front", "back", "top"]},
         {"id": "locks", "op": "stripes", "axis": "x", "period": 1.4, "width": 0.35, "shift": -1.6, "wobble": 0.8}]},
@@ -169,11 +183,9 @@ styles = {
     "lid": {"ramp": "seal", "tone": 4.2, "layers": [{"id": "lash", "op": "gradient", "axis": "y", "amount": 1.0}]},
     "brow": {"ramp": "seal", "tone": 2.6},
     "nostril": {"ramp": "nose", "tone": 0.2, "light": 0, "brush": {"off": True}},
-    # a monster's eye: dark rim, a pale ice-grey iris, a black slit pupil, one hard catchlight
-    "eye": {"ramp": "eye", "tone": 0.6, "light": 0, "brush": {"off": True}, "stamps": [
-        {"face": "front", "at": "center", "art": ["iii", "ipi", "iii"], "key": {"i": "horn:7", "p": "eye:0"}},
-        {"face": "front", "at": "top-left", "art": ["h"], "key": {"h": "white:3"}}]},
-    # an old ice horn: grey-ivory with blue-grey depth, a slow spiral of ridges, a pale worn tip
+    # big dark glossy eyes: a cold blue glint low in the iris, one hard catchlight
+    "eye": {"ramp": "eye", "tone": 0.5, "light": 0, "brush": {"off": True}, "stamps": [
+        {"face": "front", "at": "top-left", "art": ["hh..", "h...", "..bb"], "key": {"h": "white:3", "b": "horn:3"}}]},
     "horn": {"ramp": "horn", "tone": 6.4, "rim": {"light_shift": 1.0, "dark_shift": -0.8}, "layers": [
         {"id": "base_dark", "op": "gradient", "axis": "y", "amount": 1.2},
         {"id": "ridges", "op": "stripes", "axis": "y", "period": 2.0, "width": 0.3, "shift": -1.3, "wobble": 0.35}]},
@@ -240,7 +252,7 @@ anim = {
                                                              "bias": [0, -0.08, 0]}},
         {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 1, "bias": 6}},
         {"part": "head", "axis": "x", "osc": {"amp": 2, "cycles": 1, "phase": 0.15, "bias": 4}},
-        {"part": "flipper", "axis": "x", "osc": {"amp": 24, "cycles": 1, "bias": 4}},
+        {"part": "flipper", "axis": "x", "osc": {"amp": 20, "cycles": 1, "bias": 4}},
         {"part": "palm", "axis": "x", "osc": {"amp": -16, "cycles": 1}},
         {"part": "lid", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -1.0, 0]}},
         {"part": "brow", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": -20}},
@@ -256,7 +268,7 @@ anim = {
         {"parts": SPINE, "wave": {"axis": "y", "amp": 3, "cycles": 1, "lag": 0.15}},
         {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.04, 0, 0], "cycles": 1, "bias": [0.06, -0.25, 0.04]}},
         {"part": "flipper", "axis": "x", "osc": {"amp": 4, "cycles": 2, "bias": 66}},
-        {"part": "flipper", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": -28}},
+        {"part": "flipper", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 14}},
         {"part": "palm", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -45}},
         {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 1, "bias": -8}},
         {"part": "fluke", "axis": "x", "osc": {"amp": 3, "cycles": 1, "bias": 16}},
@@ -361,7 +373,7 @@ spec = {
                    "Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": 1,
-    "budget": {"tris": 1300, "colors": 64},
+    "budget": {"tris": 1800, "colors": 72},
     "light": light,
     "brush": brush,
     "minecraft": {"fps": 12},

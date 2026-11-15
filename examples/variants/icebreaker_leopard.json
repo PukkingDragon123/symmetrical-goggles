@@ -5,8 +5,8 @@
  "license": "CC0-1.0",
  "density": 1,
  "budget": {
-  "tris": 1300,
-  "colors": 64
+  "tris": 1800,
+  "colors": 72
  },
  "light": {
   "dir": [
@@ -402,6 +402,20 @@
    "tone": 4.8,
    "layers": [
     {
+     "id": "frost_tips",
+     "op": "drip",
+     "ramp": "horn",
+     "tone": 7.4,
+     "depth": 0.4,
+     "length": 1.0,
+     "width": 0.45,
+     "scale": 1.4,
+     "faces": [
+      "sides",
+      "back"
+     ]
+    },
+    {
      "id": "dark_root",
      "op": "gradient",
      "axis": "y",
@@ -442,6 +456,20 @@
    "ramp": "seal",
    "tone": 3.6,
    "layers": [
+    {
+     "id": "frost_tips",
+     "op": "drip",
+     "ramp": "horn",
+     "tone": 7.4,
+     "depth": 0.4,
+     "length": 1.0,
+     "width": 0.45,
+     "scale": 1.4,
+     "faces": [
+      "sides",
+      "back"
+     ]
+    },
     {
      "id": "strands",
      "op": "drip",
@@ -553,7 +581,7 @@
   },
   "eye": {
    "ramp": "eye",
-   "tone": 0.6,
+   "tone": 0.5,
    "light": 0,
    "brush": {
     "off": true
@@ -561,25 +589,15 @@
    "stamps": [
     {
      "face": "front",
-     "at": "center",
-     "art": [
-      "iii",
-      "ipi",
-      "iii"
-     ],
-     "key": {
-      "i": "horn:7",
-      "p": "eye:0"
-     }
-    },
-    {
-     "face": "front",
      "at": "top-left",
      "art": [
-      "h"
+      "hh..",
+      "h...",
+      "..bb"
      ],
      "key": {
-      "h": "white:3"
+      "h": "white:3",
+      "b": "horn:3"
      }
     }
    ]
@@ -861,8 +879,8 @@
     11
    ],
    "pivot": [
-    14,
-    -3,
+    16,
+    -2.8,
     6
    ],
    "style": "flipper",
@@ -875,7 +893,7 @@
    "rotation": [
     -8,
     0,
-    -20
+    16
    ],
    "mirror": true
   },
@@ -888,7 +906,7 @@
     15
    ],
    "pivot": [
-    1.5,
+    1.0,
     -11.4,
     3
    ],
@@ -897,7 +915,7 @@
    "rotation": [
     14,
     0,
-    20
+    -14
    ]
   },
   {
@@ -1187,7 +1205,7 @@
    "id": "eye",
    "shape": "box",
    "size": [
-    3,
+    4,
     3,
     1
    ],
@@ -1204,7 +1222,7 @@
    "id": "lid",
    "shape": "box",
    "size": [
-    4,
+    5,
     2,
     2
    ],
@@ -1221,7 +1239,7 @@
    "id": "brow",
    "shape": "box",
    "size": [
-    6,
+    7,
     2,
     2
    ],
@@ -1261,24 +1279,24 @@
    ]
   },
   {
-   "id": "mane_side",
+   "id": "shoulder_fur",
    "shape": "box",
    "size": [
-    4,
-    15,
+    6,
+    8,
     13
    ],
    "pivot": [
-    15.5,
-    1,
+    14,
+    6.5,
     6
    ],
-   "style": "fur",
+   "style": "fur_dark",
    "parent": "chest",
    "rotation": [
+    -6,
     0,
-    0,
-    6
+    -14
    ],
    "mirror": true
   },
@@ -1409,48 +1427,6 @@
    ]
   },
   {
-   "id": "tuft5",
-   "shape": "box",
-   "size": [
-    6,
-    10,
-    6
-   ],
-   "pivot": [
-    -15,
-    2,
-    8
-   ],
-   "style": "fur_dark",
-   "parent": "chest",
-   "rotation": [
-    -6,
-    14,
-    40
-   ]
-  },
-  {
-   "id": "tuft6",
-   "shape": "box",
-   "size": [
-    6,
-    10,
-    6
-   ],
-   "pivot": [
-    15,
-    2,
-    8
-   ],
-   "style": "fur_dark",
-   "parent": "chest",
-   "rotation": [
-    -6,
-    -14,
-    -40
-   ]
-  },
-  {
    "id": "sideburn",
    "shape": "box",
    "size": [
@@ -1481,54 +1457,219 @@
    "id": "elbow_tuft",
    "shape": "box",
    "size": [
+    4,
     5,
-    5,
-    6
+    5
    ],
    "pivot": [
-    1.5,
-    -1,
-    -2
+    3.6,
+    -2,
+    -3.5
    ],
    "style": "fur_dark",
    "parent": "flipper",
    "rotation": [
-    20,
+    24,
     0,
-    -10
+    12
    ]
+  },
+  {
+   "id": "shag_chest",
+   "shape": "box",
+   "size": [
+    14,
+    3,
+    10
+   ],
+   "pivot": [
+    6.5,
+    11.4,
+    1
+   ],
+   "style": "fur",
+   "parent": "chest",
+   "rotation": [
+    -9,
+    -7,
+    -8
+   ],
+   "mirror": true
   },
   {
    "id": "fur_back",
    "shape": "box",
    "size": [
-    22,
-    4,
-    16
+    16,
+    3,
+    10
    ],
    "pivot": [
-    0,
-    11.5,
-    -9
+    7.5,
+    11.6,
+    -4
    ],
    "style": "fur",
-   "parent": "belly"
+   "parent": "belly",
+   "rotation": [
+    -8,
+    -6,
+    -8
+   ],
+   "mirror": true
+  },
+  {
+   "id": "shag_belly",
+   "shape": "box",
+   "size": [
+    15,
+    3,
+    10
+   ],
+   "pivot": [
+    7,
+    11.4,
+    -13
+   ],
+   "style": "fur",
+   "parent": "belly",
+   "rotation": [
+    -10,
+    -8,
+    -7
+   ],
+   "mirror": true
   },
   {
    "id": "fur_waist",
    "shape": "box",
    "size": [
-    16,
+    12,
     3,
-    12
+    9
+   ],
+   "pivot": [
+    5.5,
+    9.2,
+    -4
+   ],
+   "style": "fur",
+   "parent": "waist",
+   "rotation": [
+    -9,
+    -7,
+    -8
+   ],
+   "mirror": true
+  },
+  {
+   "id": "shag_hips",
+   "shape": "box",
+   "size": [
+    9,
+    3,
+    8
+   ],
+   "pivot": [
+    4,
+    7.0,
+    -3
+   ],
+   "style": "fur",
+   "parent": "hips",
+   "rotation": [
+    -11,
+    -8,
+    -8
+   ],
+   "mirror": true
+  },
+  {
+   "id": "tail_fur",
+   "shape": "box",
+   "size": [
+    10,
+    3,
+    6
    ],
    "pivot": [
     0,
-    8.5,
+    4.6,
+    -2
+   ],
+   "style": "fur_dark",
+   "parent": "tail",
+   "rotation": [
+    -14,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "skirt",
+   "shape": "box",
+   "size": [
+    2,
+    7,
+    18
+   ],
+   "pivot": [
+    16.6,
+    -6,
+    -9
+   ],
+   "style": "fur_dark",
+   "parent": "belly",
+   "rotation": [
+    0,
+    0,
+    10
+   ],
+   "mirror": true
+  },
+  {
+   "id": "chest_skirt",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    10
+   ],
+   "pivot": [
+    14.6,
+    -7,
+    -3
+   ],
+   "style": "fur_dark",
+   "parent": "chest",
+   "rotation": [
+    0,
+    0,
+    10
+   ],
+   "mirror": true
+  },
+  {
+   "id": "waist_skirt",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    13
+   ],
+   "pivot": [
+    13.6,
+    -6,
     -7
    ],
-   "style": "fur",
-   "parent": "waist"
+   "style": "fur_dark",
+   "parent": "waist",
+   "rotation": [
+    0,
+    0,
+    10
+   ],
+   "mirror": true
   },
   {
    "id": "shard0",
@@ -1728,6 +1869,48 @@
    ],
    "style": "brow",
    "parent": "head"
+  },
+  {
+   "id": "crest",
+   "shape": "box",
+   "size": [
+    10,
+    4,
+    9
+   ],
+   "pivot": [
+    0,
+    2.5,
+    -2
+   ],
+   "style": "fur_dark",
+   "parent": "crown",
+   "rotation": [
+    -28,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "crest_b",
+   "shape": "box",
+   "size": [
+    7,
+    3,
+    7
+   ],
+   "pivot": [
+    0,
+    1,
+    -6
+   ],
+   "style": "fur_dark",
+   "parent": "crest",
+   "rotation": [
+    -14,
+    0,
+    0
+   ]
   },
   {
    "id": "horn",
@@ -2415,7 +2598,7 @@
      "part": "flipper",
      "axis": "x",
      "osc": {
-      "amp": 24,
+      "amp": 20,
       "cycles": 1,
       "bias": 4
      }
@@ -2583,7 +2766,7 @@
      "osc": {
       "amp": 0,
       "cycles": 1,
-      "bias": -28
+      "bias": 14
      }
     },
     {
