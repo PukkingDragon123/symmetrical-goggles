@@ -249,7 +249,7 @@ give more joints.
 | `part` / `parts` | a part id (drives it **and** its mirrored copy), an instance id (`leg_mirror`, `tail_2`) for just that joint, or a list (`parts`), which is treated as a chain for `wave` |
 | `channel` | `rotation` (degrees, Euler XYZ, in the joint's own frame after its rest rotation; default), `position` (units, parent frame) or `scale` (values are offsets from 1, so `0.1` = 110%) |
 | `keys` | `[[time_s, value], ...]` or `[[t, v, "ease"], ...]`. `value` is `[x, y, z]`, or a number with `"axis"`. Interpolation `ease` per track or per key: `ease` (sine in-out, default), `smooth` (Catmull-Rom through the keys), `linear`, `step`, `in`, `out`, `back`/`out_back` (fast start, overshoot), `in_back` (pull back first), `inout_back` (both, gentler start), `elastic`. In a looping clip, time before the first key blends in from the last key |
-| `osc` | `{"axis": "x" or [x, y, z], "amp": n or [ax, ay, az], "cycles": int, "phase": 0..1, "bias": n, "shape": "sine"/"bounce"/"square"/"saw"/"pulse"}` |
+| `osc` | `{"axis": "x" or [x, y, z], "amp": n or [ax, ay, az], "cycles": int, "phase": 0..1, "bias": n, "shape": "sine"/"bounce"/"square"/"saw"/"pulse"}`. A track-level `"axis"` also applies to its `osc` or `wave` when they don't name one |
 | `wave` | an `osc` applied down a chain, with joint *k* delayed by `k * lag` cycles and its amplitude multiplied by `growth^k`. This gives follow-through and overlapping action for free |
 | `mirror_phase` | time offset (fraction of the clip) for the mirrored copy: `0.5` gives alternating legs or wings |
 | `segment` / `segments: "all"` | for non-wave tracks on a chain id: which segment (default 0) |

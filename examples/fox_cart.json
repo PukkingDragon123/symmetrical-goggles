@@ -1,0 +1,2465 @@
+{
+ "name": "Fox Cart",
+ "description": "A minecart skin shaped like a red fox (Winterworks mod): rust flanks over a wooden undercarriage, white chest and cheeks, black socks and ear backs, a huge brush of a tail curling up at the back. Dyeable wool rim (trim) and cushion (seat). Minecraft pixel units, density 1.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 1,
+ "budget": {
+  "tris": 900,
+  "colors": 72
+ },
+ "light": {
+  "dir": [
+   -0.4,
+   1.0,
+   0.5
+  ],
+  "strength": 0.6,
+  "gradient": 0.5,
+  "ao": 0.8,
+  "ao_height": 7.0
+ },
+ "brush": {
+  "flow": "z",
+  "length": 3.0,
+  "rough": 0.6,
+  "width": 0.6,
+  "overshoot": 0.3,
+  "marks": 0.8,
+  "textures": {
+   "fox": "fur",
+   "cream": "fur",
+   "black": "fur",
+   "wood": "wood",
+   "iron": "metal",
+   "wool": "cloth"
+  }
+ },
+ "minecraft": {
+  "fps": 12,
+  "glow_parts": [],
+  "tint_parts": [
+   "trim",
+   "trim_l",
+   "trim_r",
+   "trim_b",
+   "seat"
+  ]
+ },
+ "anim_ground_tolerance": 1.3,
+ "render": {
+  "background": "#1b2026",
+  "hero": [
+   -38,
+   20
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "fox": [
+    "#1a0e0c",
+    "#2c150f",
+    "#421d12",
+    "#5a2815",
+    "#73361a",
+    "#8b4520",
+    "#a05628",
+    "#b26932",
+    "#c28042",
+    "#cf9858",
+    "#dcb27a"
+   ],
+   "cream": [
+    "#25232a",
+    "#3a373e",
+    "#524e55",
+    "#6c676c",
+    "#878282",
+    "#a39d98",
+    "#bdb7ae",
+    "#d2cdc2",
+    "#e3dfd5",
+    "#f1eee6"
+   ],
+   "black": [
+    "#0c0a0c",
+    "#151113",
+    "#1e1819",
+    "#282020",
+    "#342927",
+    "#42342f",
+    "#52413a"
+   ],
+   "eye": [
+    "#080506",
+    "#1e1209",
+    "#40260c",
+    "#6a4214"
+   ],
+   "wood": [
+    "#16110e",
+    "#221a14",
+    "#30241b",
+    "#3f3023",
+    "#503e2d",
+    "#624d38",
+    "#755e45",
+    "#887053",
+    "#9b8364"
+   ],
+   "iron": [
+    "#0f1013",
+    "#1a1c20",
+    "#272a2f",
+    "#373a40",
+    "#4a4d53",
+    "#5f6268",
+    "#76797d",
+    "#8f9194"
+   ],
+   "wool": [
+    "#4c4c4c",
+    "#5e5e5e",
+    "#727272",
+    "#878787",
+    "#9c9c9c",
+    "#b1b1b1",
+    "#c5c5c5",
+    "#d8d8d8",
+    "#e9e9e9",
+    "#f7f7f7"
+   ]
+  }
+ },
+ "styles": {
+  "trim": {
+   "ramp": "wool",
+   "tone": 6.0,
+   "brush": {
+    "flow": "long",
+    "length": 2.0,
+    "rough": 0.55
+   },
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.3
+   },
+   "layers": [
+    {
+     "id": "fluff",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.8
+    },
+    {
+     "id": "clumps",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.58,
+     "shift": -0.8
+    },
+    {
+     "id": "stitch",
+     "op": "rivets",
+     "inset": 0,
+     "spacing": 2,
+     "highlight": -1.6,
+     "shadow": 0,
+     "min_size": 2,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.6
+    }
+   ]
+  },
+  "seat": {
+   "ramp": "wool",
+   "tone": 5.8,
+   "brush": {
+    "flow": "horizontal",
+    "length": 2.0,
+    "rough": 0.55
+   },
+   "rim": {
+    "light_shift": 1.2,
+    "dark_shift": -1.5
+   },
+   "layers": [
+    {
+     "id": "fluff",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.8
+    },
+    {
+     "id": "clumps",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.58,
+     "shift": -0.8
+    },
+    {
+     "id": "piping",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.3,
+     "highlight": 0.8,
+     "shadow": -1.2,
+     "min_size": 4,
+     "faces": [
+      "top",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "buttons",
+     "op": "rivets",
+     "inset": 2,
+     "spacing": 3,
+     "highlight": -2.0,
+     "shadow": 0.8,
+     "min_size": 5,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "stitch",
+     "op": "rivets",
+     "inset": 0,
+     "spacing": 2,
+     "highlight": -1.4,
+     "shadow": 0,
+     "min_size": 2,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "puff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.8
+    }
+   ]
+  },
+  "flank": {
+   "ramp": "fox",
+   "tone": 6.2,
+   "brush": {
+    "flow": "z",
+    "length": 2.2,
+    "rough": 0.5
+   },
+   "layers": [
+    {
+     "id": "dorsal",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.8
+    },
+    {
+     "id": "saddle",
+     "op": "band",
+     "axis": "y",
+     "from": 0.45,
+     "to": 1.0,
+     "wobble": 0.6,
+     "wobble_scale": 2.0,
+     "shift": -0.8
+    },
+    {
+     "id": "belly",
+     "op": "band",
+     "axis": "y",
+     "from": -1.0,
+     "to": -0.66,
+     "wobble": 0.5,
+     "ramp": "cream",
+     "tone": 6.0
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.55
+    },
+    {
+     "id": "tufts",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      0.5,
+      1.0
+     ],
+     "stretch": [
+      1,
+      0.6,
+      2.2
+     ],
+     "shift": 0.8,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "rump": {
+   "ramp": "fox",
+   "tone": 5.6,
+   "brush": {
+    "flow": "y",
+    "length": 3.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "dorsal",
+     "op": "band",
+     "axis": "y",
+     "from": 0.4,
+     "to": 1.0,
+     "wobble": 0.3,
+     "shift": -1.1
+    },
+    {
+     "id": "belly",
+     "op": "band",
+     "axis": "y",
+     "from": -1.0,
+     "to": -0.55,
+     "wobble": 0.4,
+     "ramp": "cream",
+     "tone": 5.6
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.2,
+     "amount": 0.7
+    }
+   ]
+  },
+  "chest": {
+   "ramp": "cream",
+   "tone": 6.6,
+   "brush": {
+    "flow": "y",
+    "length": 3.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "sides",
+     "op": "band",
+     "axis": "x",
+     "from": 0.62,
+     "to": 1.0,
+     "ramp": "fox",
+     "tone": 5.8,
+     "wobble": 0.4
+    },
+    {
+     "id": "sides2",
+     "op": "band",
+     "axis": "x",
+     "from": -1.0,
+     "to": -0.62,
+     "ramp": "fox",
+     "tone": 5.8,
+     "wobble": 0.4
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.0,
+     "amount": 0.6
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    }
+   ]
+  },
+  "ruff": {
+   "ramp": "cream",
+   "tone": 7.0,
+   "brush": {
+    "flow": "y",
+    "length": 3.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 1.6,
+     "amount": 0.6
+    },
+    {
+     "id": "nape",
+     "op": "fill",
+     "ramp": "fox",
+     "tone": 5.2,
+     "faces": [
+      "back",
+      "top"
+     ]
+    }
+   ]
+  },
+  "hull": {
+   "ramp": "wood",
+   "tone": 4.0,
+   "brush": {
+    "flow": "z",
+    "length": 3.5,
+    "rough": 0.55
+   },
+   "layers": [
+    {
+     "id": "seams",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.5,
+     "width": 0.4,
+     "shift": -1.3,
+     "faces": [
+      "top",
+      "bottom"
+     ]
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.7
+    },
+    {
+     "id": "straps",
+     "op": "stripes",
+     "axis": "z",
+     "period": 6.0,
+     "width": 0.17,
+     "phase": 0.08,
+     "ramp": "iron",
+     "tone": 3.2,
+     "faces": [
+      "sides",
+      "bottom"
+     ]
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.6
+    }
+   ]
+  },
+  "axle": {
+   "ramp": "iron",
+   "tone": 2.4
+  },
+  "tyre": {
+   "ramp": "iron",
+   "tone": 3.6,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "hub": {
+   "ramp": "iron",
+   "tone": 4.6,
+   "brush": {
+    "off": true
+   }
+  },
+  "sock": {
+   "ramp": "black",
+   "tone": 3.2,
+   "brush": {
+    "flow": "y",
+    "length": 2.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "blend",
+     "op": "band",
+     "axis": "y",
+     "from": 0.55,
+     "to": 1.0,
+     "ramp": "fox",
+     "tone": 4.4,
+     "wobble": 0.5
+    }
+   ]
+  },
+  "paw": {
+   "ramp": "black",
+   "tone": 3.0,
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "a.a"
+     ],
+     "key": {
+      "a": "black:0"
+     }
+    },
+    {
+     "face": "top",
+     "at": [
+      0,
+      2
+     ],
+     "art": [
+      "a.a"
+     ],
+     "key": {
+      "a": "black:1"
+     }
+    }
+   ]
+  },
+  "head": {
+   "ramp": "fox",
+   "tone": 6.0,
+   "brush": {
+    "flow": "z",
+    "length": 3.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "crown",
+     "op": "band",
+     "axis": "y",
+     "from": 0.3,
+     "to": 1.0,
+     "shift": -0.9,
+     "wobble": 0.4
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 1.8,
+     "amount": 0.5
+    },
+    {
+     "id": "jowl",
+     "op": "band",
+     "axis": "y",
+     "from": -1.0,
+     "to": -0.3,
+     "ramp": "cream",
+     "tone": 6.8,
+     "wobble": 0.35,
+     "faces": [
+      "front",
+      "sides"
+     ]
+    },
+    {
+     "id": "chin",
+     "op": "fill",
+     "ramp": "cream",
+     "tone": 5.4,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      1,
+      2
+     ],
+     "art": [
+      "oe"
+     ],
+     "key": {
+      "o": "eye:2",
+      "e": "eye:0"
+     }
+    },
+    {
+     "face": "front",
+     "at": [
+      5,
+      2
+     ],
+     "art": [
+      "eo"
+     ],
+     "key": {
+      "o": "eye:2",
+      "e": "eye:0"
+     }
+    }
+   ]
+  },
+  "cheek": {
+   "ramp": "cream",
+   "tone": 6.9,
+   "brush": {
+    "flow": "z",
+    "length": 2.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.5
+    },
+    {
+     "id": "top_fox",
+     "op": "fill",
+     "ramp": "fox",
+     "tone": 6.0,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "snout": {
+   "ramp": "fox",
+   "tone": 6.4,
+   "brush": {
+    "flow": "z",
+    "length": 2.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "muzzle",
+     "op": "band",
+     "axis": "y",
+     "from": -1.0,
+     "to": 0.2,
+     "ramp": "cream",
+     "tone": 7.0,
+     "faces": [
+      "front",
+      "sides",
+      "bottom"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      0,
+      2
+     ],
+     "art": [
+      "d..d"
+     ],
+     "key": {
+      "d": "black:3"
+     }
+    },
+    {
+     "face": "right",
+     "at": [
+      0,
+      2
+     ],
+     "art": [
+      "dd"
+     ],
+     "key": {
+      "d": "black:3"
+     }
+    },
+    {
+     "face": "left",
+     "at": [
+      1,
+      2
+     ],
+     "art": [
+      "dd"
+     ],
+     "key": {
+      "d": "black:3"
+     }
+    }
+   ]
+  },
+  "nose": {
+   "ramp": "black",
+   "tone": 1.6,
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "top",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "h."
+     ],
+     "key": {
+      "h": "black:5"
+     }
+    }
+   ]
+  },
+  "ear": {
+   "ramp": "black",
+   "tone": 2.6,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "inner",
+     "op": "fill",
+     "ramp": "fox",
+     "tone": 5.4,
+     "faces": [
+      "front"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      ".cc.",
+      "wwc."
+     ],
+     "flip_on_mirror": true,
+     "key": {
+      "c": "cream:5",
+      "w": "cream:7"
+     }
+    }
+   ]
+  },
+  "ear_mid": {
+   "ramp": "black",
+   "tone": 2.4,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "inner",
+     "op": "fill",
+     "ramp": "fox",
+     "tone": 4.4,
+     "faces": [
+      "front"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "k.",
+      "c."
+     ],
+     "flip_on_mirror": true,
+     "key": {
+      "k": "black:4",
+      "c": "cream:4"
+     }
+    }
+   ]
+  },
+  "ear_tip": {
+   "ramp": "black",
+   "tone": 1.8,
+   "brush": {
+    "off": true
+   }
+  },
+  "haunch": {
+   "ramp": "fox",
+   "tone": 5.8,
+   "brush": {
+    "flow": "z",
+    "length": 3.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "dorsal",
+     "op": "band",
+     "axis": "y",
+     "from": 0.3,
+     "to": 1.0,
+     "wobble": 0.3,
+     "shift": -1.1
+    },
+    {
+     "id": "belly",
+     "op": "band",
+     "axis": "y",
+     "from": -1.0,
+     "to": -0.6,
+     "wobble": 0.4,
+     "ramp": "cream",
+     "tone": 5.8
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.0,
+     "amount": 0.5
+    }
+   ]
+  },
+  "tail": {
+   "ramp": "fox",
+   "tone": 6.4,
+   "brush": {
+    "flow": "y",
+    "length": 3.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.0,
+     "amount": 0.6
+    },
+    {
+     "id": "guard",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.64,
+     "shift": -1.2
+    },
+    {
+     "id": "dorsal",
+     "op": "band",
+     "axis": "z",
+     "from": -1.0,
+     "to": -0.2,
+     "shift": -0.9,
+     "wobble": 0.5
+    },
+    {
+     "id": "under",
+     "op": "fill",
+     "ramp": "cream",
+     "tone": 5.0,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "tail_end": {
+   "ramp": "fox",
+   "tone": 5.8,
+   "brush": {
+    "flow": "y",
+    "length": 3.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.0,
+     "amount": 0.6
+    },
+    {
+     "id": "smoke",
+     "op": "band",
+     "axis": "y",
+     "from": 0.2,
+     "to": 0.75,
+     "wobble": 0.6,
+     "shift": -1.6
+    },
+    {
+     "id": "tipward",
+     "op": "band",
+     "axis": "y",
+     "from": 0.75,
+     "to": 1.0,
+     "ramp": "cream",
+     "tone": 6.0,
+     "wobble": 0.6
+    }
+   ]
+  },
+  "tail_tip": {
+   "ramp": "cream",
+   "tone": 7.0,
+   "brush": {
+    "flow": "y",
+    "length": 2.0,
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.6
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "tub",
+   "shape": "box",
+   "size": [
+    10,
+    3,
+    18
+   ],
+   "pivot": [
+    0,
+    3,
+    0
+   ],
+   "style": "hull",
+   "offset": [
+    0,
+    2.5,
+    0
+   ],
+   "hide": [
+    "front",
+    "back"
+   ]
+  },
+  {
+   "id": "wall_l",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    22
+   ],
+   "pivot": [
+    6,
+    7.0,
+    0
+   ],
+   "style": "flank",
+   "parent": "tub",
+   "hide": [
+    "top"
+   ],
+   "paint": {
+    "layers": [
+     {
+      "id": "lining",
+      "op": "fill",
+      "ramp": "wood",
+      "tone": 3.6,
+      "faces": [
+       "left"
+      ]
+     },
+     {
+      "id": "lining_seams",
+      "op": "stripes",
+      "axis": "y",
+      "period": 3.0,
+      "width": 0.34,
+      "phase": 0.5,
+      "shift": -1.6,
+      "faces": [
+       "left"
+      ]
+     },
+     {
+      "id": "lining_grain",
+      "op": "noise",
+      "scale": 1.5,
+      "amount": 0.6,
+      "faces": [
+       "left"
+      ]
+     },
+     {
+      "id": "lining_shade",
+      "op": "gradient",
+      "axis": "y",
+      "amount": 1.6,
+      "faces": [
+       "left"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "wall_r",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    22
+   ],
+   "pivot": [
+    -6,
+    7.0,
+    0
+   ],
+   "style": "flank",
+   "parent": "tub",
+   "hide": [
+    "top"
+   ],
+   "paint": {
+    "layers": [
+     {
+      "id": "lining",
+      "op": "fill",
+      "ramp": "wood",
+      "tone": 3.6,
+      "faces": [
+       "right"
+      ]
+     },
+     {
+      "id": "lining_seams",
+      "op": "stripes",
+      "axis": "y",
+      "period": 3.0,
+      "width": 0.34,
+      "phase": 0.5,
+      "shift": -1.6,
+      "faces": [
+       "right"
+      ]
+     },
+     {
+      "id": "lining_grain",
+      "op": "noise",
+      "scale": 1.5,
+      "amount": 0.6,
+      "faces": [
+       "right"
+      ]
+     },
+     {
+      "id": "lining_shade",
+      "op": "gradient",
+      "axis": "y",
+      "amount": 1.6,
+      "faces": [
+       "right"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "wall_f",
+   "shape": "box",
+   "size": [
+    10,
+    9,
+    2
+   ],
+   "pivot": [
+    0,
+    5.5,
+    10
+   ],
+   "style": "chest",
+   "parent": "tub",
+   "hide": [
+    "left",
+    "right",
+    "top"
+   ],
+   "paint": {
+    "layers": [
+     {
+      "id": "lining",
+      "op": "fill",
+      "ramp": "wood",
+      "tone": 3.6,
+      "faces": [
+       "back"
+      ]
+     },
+     {
+      "id": "lining_seams",
+      "op": "stripes",
+      "axis": "y",
+      "period": 3.0,
+      "width": 0.34,
+      "phase": 0.5,
+      "shift": -1.6,
+      "faces": [
+       "back"
+      ]
+     },
+     {
+      "id": "lining_grain",
+      "op": "noise",
+      "scale": 1.5,
+      "amount": 0.6,
+      "faces": [
+       "back"
+      ]
+     },
+     {
+      "id": "lining_shade",
+      "op": "gradient",
+      "axis": "y",
+      "amount": 1.6,
+      "faces": [
+       "back"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "wall_b",
+   "shape": "box",
+   "size": [
+    10,
+    9,
+    2
+   ],
+   "pivot": [
+    0,
+    5.5,
+    -10
+   ],
+   "style": "rump",
+   "parent": "tub",
+   "hide": [
+    "left",
+    "right",
+    "top"
+   ],
+   "paint": {
+    "layers": [
+     {
+      "id": "lining",
+      "op": "fill",
+      "ramp": "wood",
+      "tone": 3.6,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "lining_seams",
+      "op": "stripes",
+      "axis": "y",
+      "period": 3.0,
+      "width": 0.34,
+      "phase": 0.5,
+      "shift": -1.6,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "lining_grain",
+      "op": "noise",
+      "scale": 1.5,
+      "amount": 0.6,
+      "faces": [
+       "front"
+      ]
+     },
+     {
+      "id": "lining_shade",
+      "op": "gradient",
+      "axis": "y",
+      "amount": 1.6,
+      "faces": [
+       "front"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "axle_f",
+   "shape": "box",
+   "size": [
+    10,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    0,
+    6
+   ],
+   "style": "axle",
+   "parent": "tub",
+   "hide": [
+    "left",
+    "right"
+   ]
+  },
+  {
+   "id": "axle_b",
+   "shape": "box",
+   "size": [
+    10,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    0,
+    -6
+   ],
+   "style": "axle",
+   "parent": "tub",
+   "hide": [
+    "left",
+    "right"
+   ]
+  },
+  {
+   "id": "trim",
+   "shape": "box",
+   "size": [
+    9,
+    2,
+    3
+   ],
+   "pivot": [
+    0,
+    10,
+    10
+   ],
+   "style": "trim",
+   "parent": "tub"
+  },
+  {
+   "id": "trim_l",
+   "shape": "box",
+   "size": [
+    3,
+    2,
+    23
+   ],
+   "pivot": [
+    6,
+    0,
+    -10
+   ],
+   "style": "trim",
+   "parent": "trim"
+  },
+  {
+   "id": "trim_r",
+   "shape": "box",
+   "size": [
+    3,
+    2,
+    23
+   ],
+   "pivot": [
+    -6,
+    0,
+    -10
+   ],
+   "style": "trim",
+   "parent": "trim"
+  },
+  {
+   "id": "trim_b",
+   "shape": "box",
+   "size": [
+    9,
+    2,
+    3
+   ],
+   "pivot": [
+    0,
+    0,
+    -20
+   ],
+   "style": "trim",
+   "parent": "trim"
+  },
+  {
+   "id": "wheel_fl",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    6,
+    0,
+    6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "left"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "wood:6",
+       "d": "wood:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_fl_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_fl"
+  },
+  {
+   "id": "wheel_fr",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    -6,
+    0,
+    6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "right"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "wood:6",
+       "d": "wood:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_fr_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    -1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_fr"
+  },
+  {
+   "id": "wheel_bl",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    6,
+    0,
+    -6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "left"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "wood:6",
+       "d": "wood:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_bl_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_bl"
+  },
+  {
+   "id": "wheel_br",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    -6,
+    0,
+    -6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "right"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "wood:6",
+       "d": "wood:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_br_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    -1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_br"
+  },
+  {
+   "id": "seat",
+   "shape": "box",
+   "size": [
+    8,
+    2,
+    9
+   ],
+   "pivot": [
+    0,
+    5,
+    -3.5
+   ],
+   "style": "seat",
+   "parent": "tub"
+  },
+  {
+   "id": "leg",
+   "shape": "box",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    3.5,
+    5.5,
+    12
+   ],
+   "style": "sock",
+   "parent": "tub",
+   "offset": [
+    0,
+    -2.5,
+    0
+   ],
+   "rotation": [
+    -18,
+    0,
+    8
+   ],
+   "mirror": true
+  },
+  {
+   "id": "paw",
+   "shape": "box",
+   "size": [
+    2,
+    1,
+    3
+   ],
+   "pivot": [
+    0,
+    -4.6,
+    0.6
+   ],
+   "style": "paw",
+   "parent": "leg",
+   "offset": [
+    0,
+    0,
+    0
+   ],
+   "rotation": [
+    18,
+    0,
+    -8
+   ]
+  },
+  {
+   "id": "haunch",
+   "shape": "box",
+   "size": [
+    1,
+    5,
+    6
+   ],
+   "pivot": [
+    7.4,
+    6.8,
+    -6
+   ],
+   "style": "haunch",
+   "parent": "tub",
+   "rotation": [
+    -10,
+    0,
+    -3
+   ],
+   "mirror": true
+  },
+  {
+   "id": "neck",
+   "shape": "box",
+   "size": [
+    6,
+    6,
+    4
+   ],
+   "pivot": [
+    0,
+    5.5,
+    11.5
+   ],
+   "style": "ruff",
+   "parent": "tub",
+   "offset": [
+    0,
+    3,
+    0
+   ],
+   "rotation": [
+    14,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "head",
+   "shape": "box",
+   "size": [
+    8,
+    6,
+    6
+   ],
+   "pivot": [
+    0,
+    5.5,
+    0.5
+   ],
+   "style": "head",
+   "parent": "neck",
+   "offset": [
+    0,
+    3,
+    1
+   ],
+   "rotation": [
+    -16,
+    12,
+    9
+   ]
+  },
+  {
+   "id": "cheek",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    4
+   ],
+   "pivot": [
+    3.8,
+    1.5,
+    1.2
+   ],
+   "style": "cheek",
+   "parent": "head",
+   "rotation": [
+    0,
+    14,
+    -6
+   ],
+   "mirror": true
+  },
+  {
+   "id": "snout",
+   "shape": "box",
+   "size": [
+    4,
+    3,
+    3
+   ],
+   "pivot": [
+    0,
+    1.5,
+    4
+   ],
+   "style": "snout",
+   "parent": "head",
+   "offset": [
+    0,
+    0,
+    1.5
+   ],
+   "rotation": [
+    4,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "nose",
+   "shape": "box",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    1,
+    3
+   ],
+   "style": "nose",
+   "parent": "snout",
+   "offset": [
+    0,
+    0,
+    0.5
+   ]
+  },
+  {
+   "id": "ear",
+   "shape": "box",
+   "size": [
+    4,
+    2,
+    1
+   ],
+   "pivot": [
+    2.3,
+    5.6,
+    0.6
+   ],
+   "style": "ear",
+   "parent": "head",
+   "offset": [
+    0,
+    1,
+    0
+   ],
+   "rotation": [
+    -14,
+    0,
+    -15
+   ],
+   "mirror": true
+  },
+  {
+   "id": "ear_mid",
+   "shape": "box",
+   "size": [
+    2,
+    2,
+    1
+   ],
+   "pivot": [
+    1,
+    2,
+    0
+   ],
+   "style": "ear_mid",
+   "parent": "ear",
+   "offset": [
+    0,
+    1,
+    0
+   ]
+  },
+  {
+   "id": "ear_tip",
+   "shape": "box",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    0.5,
+    2,
+    0
+   ],
+   "style": "ear_tip",
+   "parent": "ear_mid",
+   "offset": [
+    0,
+    0.5,
+    0
+   ]
+  },
+  {
+   "id": "tail",
+   "shape": "box",
+   "size": [
+    5,
+    6,
+    5
+   ],
+   "pivot": [
+    0,
+    7.5,
+    -10.5
+   ],
+   "style": "tail",
+   "parent": "tub",
+   "offset": [
+    0,
+    2.5,
+    0
+   ],
+   "rotation": [
+    -52,
+    0,
+    7
+   ]
+  },
+  {
+   "id": "tail_1",
+   "shape": "box",
+   "size": [
+    6,
+    7,
+    6
+   ],
+   "pivot": [
+    0,
+    5,
+    0
+   ],
+   "style": "tail",
+   "parent": "tail",
+   "offset": [
+    0,
+    3,
+    0
+   ],
+   "rotation": [
+    26,
+    7,
+    8
+   ]
+  },
+  {
+   "id": "tail_2",
+   "shape": "box",
+   "size": [
+    5,
+    6,
+    5
+   ],
+   "pivot": [
+    0,
+    5.5,
+    0
+   ],
+   "style": "tail_end",
+   "parent": "tail_1",
+   "offset": [
+    0,
+    2.5,
+    0
+   ],
+   "rotation": [
+    34,
+    6,
+    8
+   ]
+  },
+  {
+   "id": "tail_tip",
+   "shape": "box",
+   "size": [
+    3,
+    3,
+    3
+   ],
+   "pivot": [
+    0,
+    5,
+    0
+   ],
+   "style": "tail_tip",
+   "parent": "tail_2",
+   "offset": [
+    0,
+    1,
+    0
+   ],
+   "rotation": [
+    32,
+    0,
+    6
+   ]
+  }
+ ],
+ "animations": {
+  "run": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "wheel_fl",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "wheel_fr",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "wheel_bl",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "wheel_br",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "parts": [
+      "tail",
+      "tail_1",
+      "tail_2",
+      "tail_tip"
+     ],
+     "wave": {
+      "axis": "y",
+      "amp": 9,
+      "cycles": 2,
+      "lag": 0.12,
+      "growth": 1.3
+     }
+    },
+    {
+     "parts": [
+      "tail",
+      "tail_1",
+      "tail_2",
+      "tail_tip"
+     ],
+     "wave": {
+      "axis": "x",
+      "amp": 4,
+      "cycles": 2,
+      "lag": 0.1,
+      "growth": 1.2,
+      "phase": 0.25,
+      "bias": -7
+     }
+    },
+    {
+     "part": "ear",
+     "axis": "x",
+     "osc": {
+      "amp": 6,
+      "cycles": 2,
+      "phase": 0.1,
+      "bias": -16
+     }
+    },
+    {
+     "part": "ear",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.3,
+       0
+      ],
+      [
+       0.36,
+       -16,
+       "out"
+      ],
+      [
+       0.5,
+       0,
+       "elastic"
+      ],
+      [
+       0.8,
+       0
+      ],
+      [
+       0.86,
+       -12,
+       "out"
+      ],
+      [
+       1.0,
+       0,
+       "elastic"
+      ]
+     ],
+     "only": true
+    },
+    {
+     "part": "ear_mirror",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.05,
+       0
+      ],
+      [
+       0.11,
+       14,
+       "out"
+      ],
+      [
+       0.28,
+       0,
+       "elastic"
+      ],
+      [
+       1.0,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "axis": "x",
+     "osc": {
+      "amp": 5,
+      "cycles": 2,
+      "phase": 0.15,
+      "bias": -3
+     }
+    },
+    {
+     "part": "head",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.6,
+       0
+      ],
+      "cycles": 2,
+      "shape": "bounce"
+     }
+    },
+    {
+     "part": "head",
+     "axis": "z",
+     "osc": {
+      "amp": 3,
+      "cycles": 1
+     }
+    },
+    {
+     "part": "leg",
+     "axis": "x",
+     "osc": {
+      "amp": 22,
+      "cycles": 2
+     },
+     "mirror_phase": 0.25
+    },
+    {
+     "part": "tub",
+     "axis": "z",
+     "osc": {
+      "amp": 1.0,
+      "cycles": 2,
+      "phase": 0.3
+     }
+    }
+   ]
+  },
+  "idle": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "parts": [
+      "tail",
+      "tail_1",
+      "tail_2",
+      "tail_tip"
+     ],
+     "wave": {
+      "axis": "y",
+      "amp": 7,
+      "cycles": 1,
+      "lag": 0.14,
+      "growth": 1.25
+     }
+    },
+    {
+     "parts": [
+      "tail_1",
+      "tail_2",
+      "tail_tip"
+     ],
+     "wave": {
+      "axis": "x",
+      "amp": 3,
+      "cycles": 1,
+      "lag": 0.15,
+      "phase": 0.25
+     }
+    },
+    {
+     "part": "ear",
+     "axis": "x",
+     "only": true,
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.7,
+       0
+      ],
+      [
+       0.75,
+       -22,
+       "out"
+      ],
+      [
+       0.83,
+       4,
+       "in"
+      ],
+      [
+       1.0,
+       0,
+       "elastic"
+      ],
+      [
+       2.0,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "ear_mirror",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.45,
+       0
+      ],
+      [
+       1.5,
+       12,
+       "out"
+      ],
+      [
+       1.7,
+       0,
+       "elastic"
+      ],
+      [
+       2.0,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.35,
+       0
+      ],
+      [
+       0.6,
+       10,
+       "out_back"
+      ],
+      [
+       1.25,
+       10
+      ],
+      [
+       1.6,
+       0
+      ],
+      [
+       2.0,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.4,
+       6
+      ],
+      [
+       1.2,
+       6
+      ],
+      [
+       1.7,
+       -3
+      ],
+      [
+       2.0,
+       0
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "head",
+     "axis": "x",
+     "osc": {
+      "amp": 2,
+      "cycles": 2
+     }
+    },
+    {
+     "part": "neck",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.04,
+       0.03
+      ],
+      "cycles": 1
+     }
+    }
+   ]
+  }
+ }
+}

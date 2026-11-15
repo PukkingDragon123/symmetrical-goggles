@@ -4,15 +4,26 @@
   "version": "${version}",
   "name": "Winterworks",
   "description": "A winter contraptions mod: the Snowball Launcher, the Icebreaker, the Winter Express trains and the Snow Globe. Models, textures and animations are made with lowpix.",
-  "authors": ["lowpix"],
+  "authors": [
+    "lowpix"
+  ],
   "license": "MIT",
   "icon": "assets/winterworks/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["dev.lowpix.winterworks.Winterworks"],
-    "client": ["dev.lowpix.winterworks.client.WinterworksClient"]
+    "main": [
+      "dev.lowpix.winterworks.Winterworks"
+    ],
+    "client": [
+      "dev.lowpix.winterworks.client.WinterworksClient"
+    ],
+    "fabric-gametest": [
+      "dev.lowpix.winterworks.test.WinterworksTests"
+    ]
   },
-  "mixins": ["winterworks.mixins.json"],
+  "mixins": [
+    "winterworks.mixins.json"
+  ],
   "accessWidener": "winterworks.accesswidener",
   "depends": {
     "fabricloader": ">=0.16.0",

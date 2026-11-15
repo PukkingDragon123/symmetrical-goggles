@@ -1,0 +1,1507 @@
+{
+ "name": "Icebreaker Cub",
+ "description": "An Icebreaker cub: a fluffy white seal pup with big dark eyes and a tiny horn bud (Winterworks mod). Minecraft pixel units at twice its in-game size, density 1.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 1,
+ "budget": {
+  "tris": 500,
+  "colors": 48
+ },
+ "light": {
+  "dir": [
+   -0.4,
+   1.0,
+   0.55
+  ],
+  "strength": 0.55,
+  "gradient": 0.75,
+  "ao": 1.1,
+  "ao_height": 7.0
+ },
+ "brush": {
+  "flow": "z",
+  "length": 2.6,
+  "width": 1.0,
+  "rough": 0.7,
+  "overshoot": 0.35,
+  "textures": {
+   "fluff": "fur",
+   "skin": "leather",
+   "horn": "bone"
+  }
+ },
+ "minecraft": {
+  "fps": 12
+ },
+ "anim_ground_tolerance": 1.25,
+ "render": {
+  "background": "#2a2e3a",
+  "hero": [
+   -38,
+   18
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "fluff": [
+    "#3b3f45",
+    "#555a61",
+    "#71767c",
+    "#8d9297",
+    "#a8adb0",
+    "#c1c5c6",
+    "#d6d8d6",
+    "#e6e7e3",
+    "#f2f2ee",
+    "#fbfbf8"
+   ],
+   "skin": [
+    "#1a1c20",
+    "#262a2f",
+    "#343940",
+    "#454b52",
+    "#575e66",
+    "#6b737a",
+    "#81888e"
+   ],
+   "horn": [
+    "#3a4650",
+    "#566571",
+    "#7b8b96",
+    "#a3b2ba",
+    "#c9d5da",
+    "#e8f0f2"
+   ],
+   "eye": [
+    "#07080a",
+    "#101216",
+    "#1c2026",
+    "#5a626b"
+   ],
+   "nose": [
+    "#0e0f11",
+    "#181a1e",
+    "#25282d",
+    "#363a41",
+    "#4d535b"
+   ]
+  }
+ },
+ "styles": {
+  "fluff": {
+   "ramp": "fluff",
+   "tone": 7.6,
+   "layers": [
+    {
+     "id": "shade",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0
+    },
+    {
+     "id": "tufts",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.6,
+     "shift": 0.8
+    }
+   ]
+  },
+  "fluff_under": {
+   "ramp": "fluff",
+   "tone": 7.0,
+   "layers": [
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.4
+    },
+    {
+     "id": "tufts",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.62,
+     "shift": -0.7
+    }
+   ]
+  },
+  "head": {
+   "ramp": "fluff",
+   "tone": 7.8,
+   "layers": [
+    {
+     "id": "shade",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.9
+    },
+    {
+     "id": "tufts",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.6,
+     "shift": 0.7
+    }
+   ]
+  },
+  "muzzle": {
+   "ramp": "fluff",
+   "tone": 6.4,
+   "layers": [
+    {
+     "id": "dusk",
+     "op": "gradient",
+     "axis": "z",
+     "amount": -0.8
+    }
+   ],
+   "stamps": [
+    {
+     "faces": [
+      "front"
+     ],
+     "at": "center",
+     "art": [
+      "d.d..d.d",
+      ".d....d."
+     ],
+     "key": {
+      "d": "skin:2"
+     }
+    }
+   ]
+  },
+  "nose": {
+   "ramp": "nose",
+   "tone": 1.6,
+   "stamps": [
+    {
+     "face": "front",
+     "at": "center",
+     "art": [
+      "n..n"
+     ],
+     "key": {
+      "n": "nose:0"
+     }
+    },
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      ".h"
+     ],
+     "key": {
+      "h": "nose:4"
+     }
+    }
+   ]
+  },
+  "flipper": {
+   "ramp": "skin",
+   "tone": 4.2,
+   "layers": [
+    {
+     "id": "toes",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.6,
+     "width": 0.25,
+     "shift": -0.9,
+     "wobble": 0.1,
+     "faces": [
+      "front",
+      "back",
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "eye": {
+   "ramp": "eye",
+   "tone": 0.5,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "h.."
+     ],
+     "key": {
+      "h": "eye:3"
+     }
+    },
+    {
+     "face": "front",
+     "at": "bottom",
+     "art": [
+      ".r."
+     ],
+     "key": {
+      "r": "eye:2"
+     }
+    }
+   ]
+  },
+  "horn": {
+   "ramp": "horn",
+   "tone": 4.0,
+   "layers": [
+    {
+     "id": "tip",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.0
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "body",
+   "shape": "box",
+   "size": [
+    22,
+    17,
+    22
+   ],
+   "pivot": [
+    0,
+    3.8,
+    -6
+   ],
+   "style": "fluff",
+   "offset": [
+    0,
+    8.5,
+    11
+   ],
+   "rotation": [
+    -10,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "belly",
+   "shape": "box",
+   "size": [
+    22,
+    7,
+    20
+   ],
+   "pivot": [
+    0,
+    3,
+    11
+   ],
+   "style": "fluff_under",
+   "parent": "body",
+   "offset": [
+    0,
+    -3.5,
+    0
+   ]
+  },
+  {
+   "id": "belly_side",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    16
+   ],
+   "pivot": [
+    11.5,
+    -2.5,
+    0
+   ],
+   "style": "fluff_under",
+   "parent": "belly",
+   "mirror": true
+  },
+  {
+   "id": "fluff_back",
+   "shape": "box",
+   "size": [
+    18,
+    3,
+    16
+   ],
+   "pivot": [
+    0,
+    17,
+    10
+   ],
+   "style": "fluff",
+   "parent": "body",
+   "rotation": [
+    -4,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "hips",
+   "shape": "box",
+   "size": [
+    18,
+    13,
+    10
+   ],
+   "pivot": [
+    0,
+    7,
+    2
+   ],
+   "style": "fluff",
+   "parent": "body",
+   "offset": [
+    0,
+    0,
+    -5
+   ],
+   "rotation": [
+    7,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "tail",
+   "shape": "box",
+   "size": [
+    10,
+    7,
+    8
+   ],
+   "pivot": [
+    0,
+    -2,
+    -9
+   ],
+   "style": "fluff",
+   "parent": "hips",
+   "offset": [
+    0,
+    0,
+    -3.5
+   ],
+   "rotation": [
+    10,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fluke",
+   "shape": "box",
+   "size": [
+    7,
+    2,
+    9
+   ],
+   "pivot": [
+    2.5,
+    -2.5,
+    -6
+   ],
+   "style": "flipper",
+   "parent": "tail",
+   "offset": [
+    0.5,
+    0,
+    -4.5
+   ],
+   "rotation": [
+    -6,
+    30,
+    6
+   ],
+   "mirror": true
+  },
+  {
+   "id": "flipper",
+   "shape": "box",
+   "size": [
+    4,
+    9,
+    7
+   ],
+   "pivot": [
+    11,
+    5.5,
+    16
+   ],
+   "style": "flipper",
+   "parent": "body",
+   "offset": [
+    1,
+    -4,
+    0
+   ],
+   "rotation": [
+    -4,
+    0,
+    -24
+   ],
+   "mirror": true
+  },
+  {
+   "id": "palm",
+   "shape": "box",
+   "size": [
+    5,
+    2,
+    8
+   ],
+   "pivot": [
+    0.8,
+    -8.5,
+    2
+   ],
+   "style": "flipper",
+   "parent": "flipper",
+   "rotation": [
+    16,
+    0,
+    22
+   ]
+  },
+  {
+   "id": "neck",
+   "shape": "box",
+   "size": [
+    18,
+    14,
+    6
+   ],
+   "pivot": [
+    0,
+    11,
+    20
+   ],
+   "style": "fluff",
+   "parent": "body",
+   "offset": [
+    0,
+    0,
+    2.5
+   ],
+   "rotation": [
+    -12,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "head",
+   "shape": "box",
+   "size": [
+    20,
+    18,
+    15
+   ],
+   "pivot": [
+    0,
+    2,
+    4
+   ],
+   "style": "head",
+   "parent": "neck",
+   "offset": [
+    0,
+    2,
+    7
+   ],
+   "rotation": [
+    16,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "crown",
+   "shape": "box",
+   "size": [
+    16,
+    2,
+    11
+   ],
+   "pivot": [
+    0,
+    12,
+    7
+   ],
+   "style": "fluff",
+   "parent": "head"
+  },
+  {
+   "id": "cheek",
+   "shape": "box",
+   "size": [
+    2,
+    10,
+    10
+   ],
+   "pivot": [
+    10.5,
+    -2,
+    8
+   ],
+   "style": "fluff",
+   "parent": "head",
+   "rotation": [
+    0,
+    0,
+    5
+   ],
+   "mirror": true
+  },
+  {
+   "id": "muzzle",
+   "shape": "box",
+   "size": [
+    10,
+    6,
+    4
+   ],
+   "pivot": [
+    0,
+    -4,
+    15
+   ],
+   "style": "muzzle",
+   "parent": "head",
+   "offset": [
+    0,
+    0,
+    2
+   ]
+  },
+  {
+   "id": "nose",
+   "shape": "box",
+   "size": [
+    4,
+    2,
+    1
+   ],
+   "pivot": [
+    0,
+    2,
+    4
+   ],
+   "style": "nose",
+   "parent": "muzzle",
+   "offset": [
+    0,
+    0,
+    0.5
+   ]
+  },
+  {
+   "id": "jaw",
+   "shape": "box",
+   "size": [
+    10,
+    3,
+    8
+   ],
+   "pivot": [
+    0,
+    -7,
+    9
+   ],
+   "style": "muzzle",
+   "parent": "head",
+   "offset": [
+    0,
+    -1,
+    4
+   ],
+   "rotation": [
+    4,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "eye",
+   "shape": "box",
+   "size": [
+    3,
+    3,
+    1
+   ],
+   "pivot": [
+    5.5,
+    3,
+    15
+   ],
+   "style": "eye",
+   "parent": "head",
+   "mirror": true
+  },
+  {
+   "id": "horn",
+   "shape": "box",
+   "size": [
+    3,
+    3,
+    3
+   ],
+   "pivot": [
+    0,
+    1,
+    3
+   ],
+   "style": "horn",
+   "parent": "crown",
+   "offset": [
+    0,
+    1.5,
+    0
+   ],
+   "rotation": [
+    18,
+    0,
+    0
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 3.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "body",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.015,
+       0.03,
+       0.01
+      ],
+      "cycles": 2
+     }
+    },
+    {
+     "part": "belly",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.04,
+       0.09,
+       0.03
+      ],
+      "cycles": 2,
+      "phase": 0.12
+     }
+    },
+    {
+     "part": "neck",
+     "axis": "y",
+     "osc": {
+      "amp": 10,
+      "cycles": 1
+     }
+    },
+    {
+     "part": "head",
+     "axis": "z",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.3
+     }
+    },
+    {
+     "part": "eye",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.26,
+       [
+        0,
+        -0.85,
+        0
+       ]
+      ],
+      [
+       1.34,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.4,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.46,
+       [
+        0,
+        -0.85,
+        0
+       ]
+      ],
+      [
+       2.54,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "axis": "y",
+     "osc": {
+      "amp": 12,
+      "cycles": 2
+     }
+    },
+    {
+     "part": "flipper",
+     "axis": "x",
+     "osc": {
+      "amp": 5,
+      "cycles": 1,
+      "phase": 0.25
+     }
+    }
+   ]
+  },
+  "walk": {
+   "length": 0.7,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "body",
+     "axis": "x",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.1
+     }
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       1.4,
+       0
+      ],
+      "cycles": 1,
+      "phase": 0.25,
+      "shape": "bounce",
+      "bias": [
+       0,
+       0.5,
+       0
+      ]
+     }
+    },
+    {
+     "part": "body",
+     "axis": "z",
+     "osc": {
+      "amp": 5,
+      "cycles": 1,
+      "phase": 0.1
+     }
+    },
+    {
+     "part": "belly",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.06,
+       -0.09,
+       0.04
+      ],
+      "cycles": 2,
+      "phase": 0.18
+     }
+    },
+    {
+     "part": "neck",
+     "axis": "x",
+     "osc": {
+      "amp": -7,
+      "cycles": 1,
+      "phase": 0.12
+     }
+    },
+    {
+     "part": "flipper",
+     "axis": "x",
+     "osc": {
+      "amp": 12,
+      "cycles": 1,
+      "bias": 2
+     }
+    },
+    {
+     "part": "palm",
+     "axis": "x",
+     "osc": {
+      "amp": -12,
+      "cycles": 1
+     }
+    },
+    {
+     "part": "flipper",
+     "axis": "z",
+     "osc": {
+      "amp": -6,
+      "cycles": 1,
+      "phase": 0.25
+     }
+    },
+    {
+     "part": "hips",
+     "axis": "x",
+     "osc": {
+      "amp": 7,
+      "cycles": 1,
+      "phase": 0.3,
+      "bias": 3
+     }
+    },
+    {
+     "part": "tail",
+     "axis": "x",
+     "osc": {
+      "amp": 9,
+      "cycles": 1,
+      "phase": 0.4,
+      "bias": 8
+     }
+    },
+    {
+     "part": "fluke",
+     "axis": "y",
+     "osc": {
+      "amp": 14,
+      "cycles": 2
+     }
+    }
+   ]
+  },
+  "swim": {
+   "length": 1.6,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "body",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.6,
+       0
+      ],
+      "cycles": 1,
+      "bias": [
+       0,
+       4,
+       0
+      ]
+     }
+    },
+    {
+     "part": "body",
+     "axis": "z",
+     "osc": {
+      "amp": 8,
+      "cycles": 1
+     }
+    },
+    {
+     "parts": [
+      "hips",
+      "tail"
+     ],
+     "wave": {
+      "axis": "y",
+      "amp": 12,
+      "cycles": 1,
+      "lag": 0.16,
+      "growth": 1.5
+     }
+    },
+    {
+     "part": "fluke",
+     "axis": "y",
+     "osc": {
+      "amp": 26,
+      "cycles": 1,
+      "phase": 0.5
+     }
+    },
+    {
+     "part": "flipper",
+     "axis": "x",
+     "osc": {
+      "amp": 10,
+      "cycles": 1,
+      "bias": 50
+     }
+    },
+    {
+     "part": "flipper",
+     "axis": "z",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "bias": 26
+     }
+    },
+    {
+     "part": "neck",
+     "axis": "y",
+     "osc": {
+      "amp": -5,
+      "cycles": 1
+     }
+    }
+   ]
+  },
+  "happy": {
+   "length": 1.4,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "neck",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.2,
+       -16,
+       "out_back"
+      ],
+      [
+       1.1,
+       -12
+      ],
+      [
+       1.4,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "jaw",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.2,
+       16
+      ],
+      [
+       0.35,
+       0
+      ],
+      [
+       0.5,
+       16
+      ],
+      [
+       0.65,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "eye",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0,
+        -0.6,
+        0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0,
+        -0.6,
+        0
+       ]
+      ],
+      [
+       1.4,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        2.4,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.5,
+       [
+        0,
+        0,
+        0
+       ],
+       "in"
+      ],
+      [
+       0.7,
+       [
+        0,
+        1.6,
+        0
+       ],
+       "out"
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ],
+       "in"
+      ],
+      [
+       1.4,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "belly",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0.12,
+        -0.2,
+        0.07
+       ]
+      ],
+      [
+       0.65,
+       [
+        -0.04,
+        0.08,
+        0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0.1,
+        -0.16,
+        0.06
+       ]
+      ],
+      [
+       1.4,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.25,
+       22
+      ],
+      [
+       0.45,
+       -22
+      ],
+      [
+       0.65,
+       22
+      ],
+      [
+       0.85,
+       -22
+      ],
+      [
+       1.05,
+       0
+      ]
+     ]
+    }
+   ]
+  },
+  "belly_slap": {
+   "length": 1.0,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "body",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.18,
+       -14,
+       "out_back"
+      ],
+      [
+       0.8,
+       -12
+      ],
+      [
+       1.0,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "hips",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.18,
+       10,
+       "out"
+      ],
+      [
+       0.8,
+       9
+      ],
+      [
+       1.0,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "flipper",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.15,
+       -40,
+       "out"
+      ],
+      [
+       0.27,
+       26,
+       "in"
+      ],
+      [
+       0.39,
+       -32,
+       "out"
+      ],
+      [
+       0.51,
+       26,
+       "in"
+      ],
+      [
+       0.8,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "belly",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.27,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.16,
+        -0.2,
+        0.08
+       ]
+      ],
+      [
+       0.4,
+       [
+        -0.05,
+        0.06,
+        0
+       ]
+      ],
+      [
+       0.51,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.54,
+       [
+        0.16,
+        -0.2,
+        0.08
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    }
+   ]
+  },
+  "tail_slap": {
+   "length": 0.8,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "hips",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.28,
+       16,
+       "in"
+      ],
+      [
+       0.38,
+       0,
+       "out"
+      ],
+      [
+       0.8,
+       0,
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "tail",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.28,
+       22,
+       "in"
+      ],
+      [
+       0.38,
+       0,
+       "out"
+      ],
+      [
+       0.8,
+       0,
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.28,
+       18,
+       "in"
+      ],
+      [
+       0.38,
+       2,
+       "out"
+      ],
+      [
+       0.8,
+       0,
+       "elastic"
+      ]
+     ]
+    },
+    {
+     "part": "belly",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.38,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.42,
+       [
+        0.12,
+        -0.16,
+        0.06
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0
+       ],
+       "elastic"
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}

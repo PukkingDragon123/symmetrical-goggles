@@ -1,0 +1,2041 @@
+{
+ "name": "Trailer Cart",
+ "description": "A flatbed wagon minecart skin (Winterworks mod): weathered oak deck on a dark chassis, low kickboards and posts, a wool bench, a crate set askew, rope coils, a drawbar and a lantern swinging from a leaning corner post. Dyeable padded rail (trim) and cushion (seat). Minecraft pixel units, density 1.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 1,
+ "budget": {
+  "tris": 900,
+  "colors": 72
+ },
+ "light": {
+  "dir": [
+   -0.4,
+   1.0,
+   0.5
+  ],
+  "strength": 0.6,
+  "gradient": 0.5,
+  "ao": 0.8,
+  "ao_height": 7.0
+ },
+ "brush": {
+  "flow": "z",
+  "length": 3.0,
+  "rough": 0.6,
+  "width": 0.6,
+  "overshoot": 0.3,
+  "marks": 0.8,
+  "textures": {
+   "oak": "wood",
+   "frame": "wood",
+   "crate": "wood",
+   "iron": "metal",
+   "wool": "cloth"
+  }
+ },
+ "minecraft": {
+  "fps": 12,
+  "glow_parts": [
+   "lantern"
+  ],
+  "tint_parts": [
+   "trim",
+   "trim_l",
+   "trim_r",
+   "trim_b",
+   "seat",
+   "seat_back"
+  ]
+ },
+ "anim_ground_tolerance": 1.3,
+ "render": {
+  "background": "#1a1e24",
+  "hero": [
+   -38,
+   22
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "oak": [
+    "#1b140e",
+    "#291e15",
+    "#392b1d",
+    "#4b3926",
+    "#5e4830",
+    "#71583b",
+    "#856947",
+    "#987b55",
+    "#aa8d66",
+    "#bb9f79"
+   ],
+   "frame": [
+    "#110d0b",
+    "#1b1511",
+    "#271e18",
+    "#34291f",
+    "#433427",
+    "#524031",
+    "#624d3b",
+    "#735c47"
+   ],
+   "crate": [
+    "#261e15",
+    "#3a2e1e",
+    "#504029",
+    "#665335",
+    "#7c6742",
+    "#917a51",
+    "#a48d63",
+    "#b6a077"
+   ],
+   "rope": [
+    "#211a11",
+    "#372c1b",
+    "#4e4126",
+    "#665632",
+    "#7d6b40",
+    "#938150",
+    "#a69563",
+    "#b8a978"
+   ],
+   "iron": [
+    "#0f1013",
+    "#1a1c20",
+    "#272a2f",
+    "#373a40",
+    "#4a4d53",
+    "#5f6268",
+    "#76797d",
+    "#8f9194"
+   ],
+   "flame": [
+    "#3b1c08",
+    "#6e3510",
+    "#a8561a",
+    "#d88226",
+    "#f2ae3e",
+    "#fcd468",
+    "#fff0a8",
+    "#fffbe6"
+   ],
+   "wool": [
+    "#4c4c4c",
+    "#5e5e5e",
+    "#727272",
+    "#878787",
+    "#9c9c9c",
+    "#b1b1b1",
+    "#c5c5c5",
+    "#d8d8d8",
+    "#e9e9e9",
+    "#f7f7f7"
+   ]
+  }
+ },
+ "styles": {
+  "trim": {
+   "ramp": "wool",
+   "tone": 6.0,
+   "brush": {
+    "flow": "long",
+    "length": 2.0,
+    "rough": 0.55
+   },
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.3
+   },
+   "layers": [
+    {
+     "id": "fluff",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.8
+    },
+    {
+     "id": "clumps",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.58,
+     "shift": -0.8
+    },
+    {
+     "id": "stitch",
+     "op": "rivets",
+     "inset": 0,
+     "spacing": 2,
+     "highlight": -1.6,
+     "shadow": 0,
+     "min_size": 2,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.6
+    }
+   ]
+  },
+  "seat": {
+   "ramp": "wool",
+   "tone": 5.8,
+   "brush": {
+    "flow": "horizontal",
+    "length": 2.0,
+    "rough": 0.55
+   },
+   "rim": {
+    "light_shift": 1.2,
+    "dark_shift": -1.5
+   },
+   "layers": [
+    {
+     "id": "fluff",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.8
+    },
+    {
+     "id": "clumps",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.58,
+     "shift": -0.8
+    },
+    {
+     "id": "piping",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.3,
+     "highlight": 0.8,
+     "shadow": -1.2,
+     "min_size": 4,
+     "faces": [
+      "top",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "buttons",
+     "op": "rivets",
+     "inset": 2,
+     "spacing": 3,
+     "highlight": -2.0,
+     "shadow": 0.8,
+     "min_size": 5,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "stitch",
+     "op": "rivets",
+     "inset": 0,
+     "spacing": 2,
+     "highlight": -1.4,
+     "shadow": 0,
+     "min_size": 2,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "puff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.8
+    }
+   ]
+  },
+  "deck": {
+   "ramp": "oak",
+   "tone": 5.6,
+   "brush": {
+    "length": 4.0,
+    "rough": 0.55,
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "seams",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.333,
+     "width": 0.3,
+     "phase": 0.08,
+     "shift": -1.7
+    },
+    {
+     "id": "butts",
+     "op": "stripes",
+     "axis": "z",
+     "period": 11.0,
+     "width": 0.07,
+     "phase": 0.3,
+     "shift": -1.4,
+     "faces": [
+      "top"
+     ],
+     "wobble": 0.0
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.7
+    },
+    {
+     "id": "weather",
+     "op": "patches",
+     "scale": 2.2,
+     "threshold": 0.6,
+     "shift": -1.0
+    },
+    {
+     "id": "bleach",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.7,
+     "shift": 0.8,
+     "seed": 5
+    },
+    {
+     "id": "edge",
+     "op": "fill",
+     "tone": 4.2,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "chassis": {
+   "ramp": "frame",
+   "tone": 4.0,
+   "brush": {
+    "length": 3.5,
+    "rough": 0.55,
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.6
+    },
+    {
+     "id": "straps",
+     "op": "stripes",
+     "axis": "z",
+     "period": 6.0,
+     "width": 0.17,
+     "phase": 0.08,
+     "ramp": "iron",
+     "tone": 3.6,
+     "faces": [
+      "sides",
+      "bottom"
+     ]
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.6
+    }
+   ]
+  },
+  "frame": {
+   "ramp": "frame",
+   "tone": 4.6,
+   "brush": {
+    "length": 3.5,
+    "rough": 0.55,
+    "flow": "long"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.6
+    }
+   ]
+  },
+  "kick": {
+   "ramp": "oak",
+   "tone": 5.0,
+   "brush": {
+    "length": 3.5,
+    "rough": 0.55,
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.6
+    },
+    {
+     "id": "nails",
+     "op": "rivets",
+     "inset": 0,
+     "spacing": 7,
+     "ramp": "iron",
+     "tone": 4.0,
+     "highlight": 1.0,
+     "shadow": -1.0,
+     "min_size": 2,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "kick_x": {
+   "ramp": "oak",
+   "tone": 5.0,
+   "brush": {
+    "length": 3.5,
+    "rough": 0.55,
+    "flow": "x"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.6
+    }
+   ]
+  },
+  "post": {
+   "ramp": "frame",
+   "tone": 4.8,
+   "brush": {
+    "length": 3.5,
+    "rough": 0.55,
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.6
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    }
+   ]
+  },
+  "axle": {
+   "ramp": "iron",
+   "tone": 2.4
+  },
+  "tyre": {
+   "ramp": "iron",
+   "tone": 3.6,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "hub": {
+   "ramp": "iron",
+   "tone": 4.6,
+   "brush": {
+    "off": true
+   }
+  },
+  "iron_bit": {
+   "ramp": "iron",
+   "tone": 4.0,
+   "brush": {
+    "off": true
+   }
+  },
+  "crate": {
+   "ramp": "crate",
+   "tone": 5.6,
+   "brush": {
+    "length": 3.0,
+    "rough": 0.55,
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.6
+    },
+    {
+     "id": "boards",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.667,
+     "width": 0.3,
+     "shift": -0.9,
+     "faces": [
+      "sides"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "faces": [
+      "sides",
+      "top"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "ffffff",
+      "fb...f",
+      "f.b..f",
+      "f..b.f",
+      "f...bf",
+      "ffffff"
+     ],
+     "key": {
+      "f": "crate:2",
+      "b": "crate:6"
+     }
+    },
+    {
+     "faces": [
+      "sides"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "hhhhh.",
+      "h.....",
+      "h.....",
+      "h.....",
+      "h....."
+     ],
+     "key": {
+      "h": "crate:5"
+     }
+    }
+   ]
+  },
+  "crate_small": {
+   "ramp": "crate",
+   "tone": 5.4,
+   "brush": {
+    "length": 2.0,
+    "rough": 0.55,
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.6
+    }
+   ],
+   "stamps": [
+    {
+     "faces": [
+      "sides",
+      "top"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "ffff",
+      "fb.f",
+      "f.bf",
+      "ffff"
+     ],
+     "key": {
+      "f": "crate:3",
+      "b": "crate:6"
+     }
+    }
+   ]
+  },
+  "rope": {
+   "ramp": "rope",
+   "tone": 4.8,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "twist",
+     "op": "stripes",
+     "axis": [
+      1,
+      0,
+      1
+     ],
+     "period": 1.4,
+     "width": 0.4,
+     "shift": -1.1
+    }
+   ],
+   "stamps": [
+    {
+     "face": "top",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "_tl_",
+      "tddl",
+      "sddt",
+      "_st_"
+     ],
+     "key": {
+      "t": "rope:4",
+      "l": "rope:6",
+      "s": "rope:3",
+      "d": "rope:0"
+     }
+    },
+    {
+     "faces": [
+      "sides"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "_.._"
+     ],
+     "key": {}
+    }
+   ]
+  },
+  "rope_side": {
+   "ramp": "rope",
+   "tone": 4.6,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "twist",
+     "op": "stripes",
+     "axis": [
+      0,
+      1,
+      1
+     ],
+     "period": 1.4,
+     "width": 0.4,
+     "shift": -1.1
+    }
+   ],
+   "stamps": [
+    {
+     "faces": [
+      "left",
+      "right"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "_tl_",
+      "tddl",
+      "sddt",
+      "_st_"
+     ],
+     "key": {
+      "t": "rope:4",
+      "l": "rope:6",
+      "s": "rope:3",
+      "d": "rope:0"
+     }
+    },
+    {
+     "faces": [
+      "front",
+      "back",
+      "top",
+      "bottom"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "_",
+      ".",
+      ".",
+      "_"
+     ],
+     "key": {}
+    }
+   ]
+  },
+  "lamp_iron": {
+   "ramp": "iron",
+   "tone": 3.0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light_shift": 1.4
+   }
+  },
+  "glass": {
+   "ramp": "flame",
+   "tone": 4.6,
+   "light": 0.25,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "heat",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -0.8
+    }
+   ],
+   "stamps": [
+    {
+     "faces": [
+      "sides"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "bgb",
+      "gcg",
+      "bwb",
+      "gcg"
+     ],
+     "key": {
+      "b": "flame:3",
+      "g": "flame:5",
+      "c": "flame:6",
+      "w": "flame:7"
+     }
+    },
+    {
+     "faces": [
+      "bottom"
+     ],
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "bgb",
+      "gcg",
+      "bgb"
+     ],
+     "key": {
+      "b": "flame:2",
+      "g": "flame:4",
+      "c": "flame:5"
+     }
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "tub",
+   "shape": "box",
+   "size": [
+    10,
+    3,
+    18
+   ],
+   "pivot": [
+    0,
+    3,
+    0
+   ],
+   "style": "chassis",
+   "offset": [
+    0,
+    2.5,
+    0
+   ]
+  },
+  {
+   "id": "axle_f",
+   "shape": "box",
+   "size": [
+    10,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    0,
+    6
+   ],
+   "style": "axle",
+   "parent": "tub",
+   "hide": [
+    "left",
+    "right"
+   ]
+  },
+  {
+   "id": "axle_b",
+   "shape": "box",
+   "size": [
+    10,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    0,
+    -6
+   ],
+   "style": "axle",
+   "parent": "tub",
+   "hide": [
+    "left",
+    "right"
+   ]
+  },
+  {
+   "id": "wheel_fl",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    6,
+    0,
+    6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "left"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "frame:6",
+       "d": "frame:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_fl_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_fl"
+  },
+  {
+   "id": "wheel_fr",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    -6,
+    0,
+    6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "right"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "frame:6",
+       "d": "frame:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_fr_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    -1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_fr"
+  },
+  {
+   "id": "wheel_bl",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    6,
+    0,
+    -6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "left"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "frame:6",
+       "d": "frame:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_bl_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_bl"
+  },
+  {
+   "id": "wheel_br",
+   "shape": "box",
+   "size": [
+    2,
+    6,
+    6
+   ],
+   "pivot": [
+    -6,
+    0,
+    -6
+   ],
+   "style": "tyre",
+   "parent": "tub",
+   "hide": [
+    "right"
+   ],
+   "paint": {
+    "stamps": [
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "_RRRR_",
+       "RdSSdR",
+       "RSHHSR",
+       "RSHhSR",
+       "RdSSdR",
+       "_RrrR_"
+      ],
+      "key": {
+       "R": "iron:5",
+       "r": "iron:3",
+       "S": "frame:6",
+       "d": "frame:1",
+       "H": "iron:6",
+       "h": "iron:4"
+      }
+     },
+     {
+      "faces": [
+       "top",
+       "bottom",
+       "front",
+       "back"
+      ],
+      "at": [
+       0,
+       0
+      ],
+      "art": [
+       "__",
+       "..",
+       "..",
+       "..",
+       "..",
+       "__"
+      ],
+      "key": {}
+     }
+    ]
+   }
+  },
+  {
+   "id": "wheel_br_hub",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    -1.5,
+    0,
+    0
+   ],
+   "style": "hub",
+   "parent": "wheel_br"
+  },
+  {
+   "id": "deck",
+   "shape": "box",
+   "size": [
+    14,
+    1,
+    22
+   ],
+   "pivot": [
+    0,
+    4.5,
+    0
+   ],
+   "style": "deck",
+   "parent": "tub"
+  },
+  {
+   "id": "hitch",
+   "shape": "box",
+   "size": [
+    2,
+    1,
+    6
+   ],
+   "pivot": [
+    0,
+    2.5,
+    9
+   ],
+   "style": "frame",
+   "parent": "tub",
+   "offset": [
+    0,
+    0,
+    3
+   ],
+   "rotation": [
+    8,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "hitch_ring",
+   "shape": "box",
+   "size": [
+    1,
+    2,
+    2
+   ],
+   "pivot": [
+    0,
+    0,
+    6.2
+   ],
+   "style": "iron_bit",
+   "parent": "hitch"
+  },
+  {
+   "id": "wall_l",
+   "shape": "box",
+   "size": [
+    1,
+    1,
+    22
+   ],
+   "pivot": [
+    6.5,
+    5.5,
+    0
+   ],
+   "style": "kick",
+   "parent": "tub"
+  },
+  {
+   "id": "wall_r",
+   "shape": "box",
+   "size": [
+    1,
+    1,
+    22
+   ],
+   "pivot": [
+    -6.5,
+    5.5,
+    0
+   ],
+   "style": "kick",
+   "parent": "tub"
+  },
+  {
+   "id": "wall_f",
+   "shape": "box",
+   "size": [
+    12,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    5.5,
+    10.5
+   ],
+   "style": "kick_x",
+   "parent": "tub"
+  },
+  {
+   "id": "wall_b",
+   "shape": "box",
+   "size": [
+    12,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    5.5,
+    -10.5
+   ],
+   "style": "kick_x",
+   "parent": "tub"
+  },
+  {
+   "id": "post_0",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    2
+   ],
+   "pivot": [
+    -6.5,
+    6.5,
+    10.5
+   ],
+   "style": "post",
+   "parent": "tub"
+  },
+  {
+   "id": "post_1",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    2
+   ],
+   "pivot": [
+    6.5,
+    6.5,
+    -10.5
+   ],
+   "style": "post",
+   "parent": "tub"
+  },
+  {
+   "id": "post_2",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    2
+   ],
+   "pivot": [
+    -6.5,
+    6.5,
+    -10.5
+   ],
+   "style": "post",
+   "parent": "tub"
+  },
+  {
+   "id": "post_3",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    2
+   ],
+   "pivot": [
+    6.5,
+    6.5,
+    3.5
+   ],
+   "style": "post",
+   "parent": "tub"
+  },
+  {
+   "id": "post_4",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    2
+   ],
+   "pivot": [
+    -6.5,
+    6.5,
+    3.5
+   ],
+   "style": "post",
+   "parent": "tub"
+  },
+  {
+   "id": "post_5",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    2
+   ],
+   "pivot": [
+    6.5,
+    6.5,
+    -3.5
+   ],
+   "style": "post",
+   "parent": "tub"
+  },
+  {
+   "id": "post_6",
+   "shape": "box",
+   "size": [
+    2,
+    3,
+    2
+   ],
+   "pivot": [
+    -6.5,
+    6.5,
+    -3.5
+   ],
+   "style": "post",
+   "parent": "tub"
+  },
+  {
+   "id": "trim",
+   "shape": "box",
+   "size": [
+    11,
+    1,
+    2
+   ],
+   "pivot": [
+    0,
+    8.5,
+    10.5
+   ],
+   "style": "trim",
+   "parent": "tub"
+  },
+  {
+   "id": "trim_l",
+   "shape": "box",
+   "size": [
+    2,
+    1,
+    23
+   ],
+   "pivot": [
+    6.5,
+    0.0,
+    -10.5
+   ],
+   "style": "trim",
+   "parent": "trim"
+  },
+  {
+   "id": "trim_r",
+   "shape": "box",
+   "size": [
+    2,
+    1,
+    23
+   ],
+   "pivot": [
+    -6.5,
+    0.0,
+    -10.5
+   ],
+   "style": "trim",
+   "parent": "trim"
+  },
+  {
+   "id": "trim_b",
+   "shape": "box",
+   "size": [
+    11,
+    1,
+    2
+   ],
+   "pivot": [
+    0,
+    0.0,
+    -21.0
+   ],
+   "style": "trim",
+   "parent": "trim"
+  },
+  {
+   "id": "bench",
+   "shape": "box",
+   "size": [
+    10,
+    1,
+    4
+   ],
+   "pivot": [
+    0,
+    1.0,
+    -6.5
+   ],
+   "style": "frame",
+   "parent": "deck"
+  },
+  {
+   "id": "seat",
+   "shape": "box",
+   "size": [
+    10,
+    2,
+    5
+   ],
+   "pivot": [
+    0,
+    1.5,
+    0.2
+   ],
+   "style": "seat",
+   "parent": "bench"
+  },
+  {
+   "id": "seat_back",
+   "shape": "box",
+   "size": [
+    10,
+    4,
+    1
+   ],
+   "pivot": [
+    0,
+    1.1,
+    -2.1
+   ],
+   "style": "seat",
+   "parent": "bench",
+   "offset": [
+    0,
+    2,
+    0
+   ],
+   "rotation": [
+    -12,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "crate",
+   "shape": "box",
+   "size": [
+    6,
+    6,
+    6
+   ],
+   "pivot": [
+    -2.5,
+    0.5,
+    5.0
+   ],
+   "style": "crate",
+   "parent": "deck",
+   "offset": [
+    0,
+    3,
+    0
+   ],
+   "rotation": [
+    0,
+    17,
+    0
+   ]
+  },
+  {
+   "id": "crate_small",
+   "shape": "box",
+   "size": [
+    4,
+    4,
+    4
+   ],
+   "pivot": [
+    0.3,
+    6,
+    -0.3
+   ],
+   "style": "crate_small",
+   "parent": "crate",
+   "offset": [
+    0,
+    2,
+    0
+   ],
+   "rotation": [
+    0,
+    -31,
+    3
+   ]
+  },
+  {
+   "id": "rope",
+   "shape": "box",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    3.0,
+    1.0,
+    1.0
+   ],
+   "style": "rope",
+   "parent": "deck",
+   "rotation": [
+    5,
+    24,
+    -6
+   ]
+  },
+  {
+   "id": "rope_1",
+   "shape": "box",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.2,
+    0.9,
+    -0.1
+   ],
+   "style": "rope",
+   "parent": "rope",
+   "rotation": [
+    -7,
+    21,
+    4
+   ]
+  },
+  {
+   "id": "rope_hang",
+   "shape": "box",
+   "size": [
+    1,
+    4,
+    4
+   ],
+   "pivot": [
+    -1.2,
+    -1.7,
+    -1
+   ],
+   "style": "rope_side",
+   "parent": "trim_r",
+   "rotation": [
+    0,
+    0,
+    10
+   ]
+  },
+  {
+   "id": "lamp_post",
+   "shape": "box",
+   "size": [
+    2,
+    13,
+    2
+   ],
+   "pivot": [
+    6.5,
+    0.5,
+    10.5
+   ],
+   "style": "post",
+   "parent": "deck",
+   "offset": [
+    0,
+    6.5,
+    0
+   ],
+   "rotation": [
+    -5,
+    0,
+    -7
+   ]
+  },
+  {
+   "id": "lamp_arm",
+   "shape": "box",
+   "size": [
+    1,
+    1,
+    5
+   ],
+   "pivot": [
+    0,
+    12.4,
+    0.6
+   ],
+   "style": "frame",
+   "parent": "lamp_post",
+   "offset": [
+    0,
+    0,
+    2
+   ],
+   "rotation": [
+    6,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "lamp_brace",
+   "shape": "box",
+   "size": [
+    1,
+    1,
+    4
+   ],
+   "pivot": [
+    0,
+    10.6,
+    0.6
+   ],
+   "style": "frame",
+   "parent": "lamp_post",
+   "offset": [
+    0,
+    0,
+    1.6
+   ],
+   "rotation": [
+    -42,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "lantern",
+   "shape": "box",
+   "size": [
+    3,
+    4,
+    3
+   ],
+   "pivot": [
+    0,
+    -0.4,
+    4.2
+   ],
+   "style": "glass",
+   "parent": "lamp_arm",
+   "offset": [
+    0,
+    -3.5,
+    0
+   ],
+   "rotation": [
+    -6,
+    0,
+    7
+   ]
+  },
+  {
+   "id": "lantern_cap",
+   "shape": "box",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0,
+    -1.0,
+    0
+   ],
+   "style": "lamp_iron",
+   "parent": "lantern"
+  },
+  {
+   "id": "lantern_ring",
+   "shape": "box",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    0,
+    0,
+    0
+   ],
+   "style": "lamp_iron",
+   "parent": "lantern"
+  },
+  {
+   "id": "lantern_base",
+   "shape": "box",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0,
+    -6.0,
+    0
+   ],
+   "style": "lamp_iron",
+   "parent": "lantern"
+  }
+ ],
+ "animations": {
+  "run": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "wheel_fl",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "wheel_fr",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "wheel_bl",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "wheel_br",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.0,
+       360
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "lantern",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       2
+      ],
+      [
+       0.25,
+       15,
+       "out"
+      ],
+      [
+       0.5,
+       -5
+      ],
+      [
+       0.75,
+       13,
+       "out"
+      ],
+      [
+       1.0,
+       2
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "lantern",
+     "axis": "z",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.2
+     }
+    },
+    {
+     "part": "deck",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.35,
+       0
+      ],
+      "cycles": 4,
+      "shape": "bounce"
+     }
+    },
+    {
+     "part": "deck",
+     "axis": "z",
+     "osc": {
+      "amp": 0.8,
+      "cycles": 3,
+      "phase": 0.1
+     }
+    },
+    {
+     "part": "deck",
+     "axis": "x",
+     "osc": {
+      "amp": 0.5,
+      "cycles": 2,
+      "phase": 0.3
+     }
+    },
+    {
+     "part": "crate",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.4,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.3,
+      "shape": "bounce"
+     }
+    },
+    {
+     "part": "crate_small",
+     "axis": "y",
+     "osc": {
+      "amp": 4,
+      "cycles": 2,
+      "phase": 0.2
+     }
+    },
+    {
+     "part": "rope_1",
+     "channel": "position",
+     "osc": {
+      "amp": [
+       0,
+       0.3,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.6,
+      "shape": "bounce"
+     }
+    },
+    {
+     "part": "rope_hang",
+     "axis": "z",
+     "osc": {
+      "amp": 8,
+      "cycles": 2,
+      "phase": 0.15
+     }
+    },
+    {
+     "part": "lamp_post",
+     "axis": "x",
+     "osc": {
+      "amp": 1.2,
+      "cycles": 2,
+      "phase": 0.4
+     }
+    }
+   ]
+  },
+  "idle": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "lantern",
+     "axis": "x",
+     "osc": {
+      "amp": 6,
+      "cycles": 1
+     }
+    },
+    {
+     "part": "lantern",
+     "axis": "z",
+     "osc": {
+      "amp": 4,
+      "cycles": 1,
+      "phase": 0.25
+     }
+    },
+    {
+     "part": "lantern",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.03,
+       0.05,
+       0.03
+      ],
+      "cycles": 4
+     }
+    },
+    {
+     "part": "rope_hang",
+     "axis": "z",
+     "osc": {
+      "amp": 2,
+      "cycles": 1,
+      "phase": 0.4
+     }
+    }
+   ]
+  }
+ }
+}

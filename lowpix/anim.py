@@ -194,10 +194,15 @@ class Animator:
                 tau = tt / length
                 if "wave" in tr:
                     w = dict(tr["wave"])
+                    if "axis" not in w and "axis" in tr:   # a track-level axis applies to its wave too
+                        w["axis"] = tr["axis"]
                     w["phase"] = float(w.get("phase", 0.0)) - k * float(w.get("lag", 0.1))
                     v = eval_osc(w, tau) * float(w.get("growth", 1.0)) ** k
                 elif "osc" in tr:
-                    v = eval_osc(tr["osc"], tau)
+                    o = tr["osc"]
+                    if "axis" not in o and "axis" in tr:   # {"axis": "z", "osc": {...}} means a z oscillation
+                        o = dict(o, axis=tr["axis"])
+                    v = eval_osc(o, tau)
                 elif "keys" in tr:
                     v = eval_keys(tr["keys"], tt, length, loop, tr.get("ease", "ease"), tr.get("axis"))
                 else:

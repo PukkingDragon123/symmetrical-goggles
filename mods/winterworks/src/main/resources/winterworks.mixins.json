@@ -3,7 +3,11 @@
   "minVersion": "0.8",
   "package": "dev.lowpix.winterworks.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "AbstractMinecartMixin"
+  ],
   "client": [],
-  "injectors": { "defaultRequire": 1 }
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

@@ -1,0 +1,165 @@
+package dev.lowpix.winterworks.icebreaker;
+
+import dev.lowpix.winterworks.registry.WWEffects;
+import dev.lowpix.winterworks.registry.WWSounds;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * Potion of Ramming: sprint for 3 seconds to charge up, then ram. While the ram lasts, anything in front of you takes
+ * damage and huge knockback, and blocks that TNT could break (blast resistance up to {@link #MAX_RESISTANCE}) are broken
+ * in a straight line at feet and head height.
+ *
+ * Limits: at most {@link #BLOCKS_PER_TICK} blocks a tick and {@link #BLOCKS_PER_RAM} per ram, no block entities, no
+ * unbreakable or wither-immune blocks, never in adventure/spectator mode, never inside spawn protection or where
+ * another mod's block-break event says no (land claims), and only with the mobGriefing-independent player rules.
+ */
+public final class RamHandler {
+    public static final int CHARGE_TICKS = 60;
+    public static final int RAM_TICKS = 70;
+    public static final float MAX_RESISTANCE = 6.0f;
+    public static final int BLOCKS_PER_TICK = 2;
+    public static final int BLOCKS_PER_RAM = 24;
+
+    private static final Map<UUID, State> STATES = new HashMap<>();
+
+    private RamHandler() {}
+
+    private static final class State {
+        int sprint;
+        int ram;
+        int blocks;
+        int cooldown;
+        final Set<Integer> hit = new HashSet<>();
+    }
+
+    public static void init() {
+        ServerTickEvents.END_SERVER_TICK.register(RamHandler::tick);
+    }
+
+    /** 0..1 charge for the HUD/particles; 1 while ramming. */
+    public static float charge(ServerPlayer p) {
+        State s = STATES.get(p.getUUID());
+        return s == null ? 0f : s.ram > 0 ? 1f : Math.min(1f, s.sprint / (float) CHARGE_TICKS);
+    }
+
+    private static void tick(MinecraftServer server) {
+        for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+            MobEffectInstance eff = p.getEffect(WWEffects.RAMMING);
+            if (eff == null || p.isSpectator()) {
+                STATES.remove(p.getUUID());
+                continue;
+            }
+            State s = STATES.computeIfAbsent(p.getUUID(), u -> new State());
+            ServerLevel level = p.serverLevel();
+            if (s.cooldown > 0) {
+                s.cooldown--;
+            }
+            boolean sprinting = p.isSprinting() && !p.isPassenger() && !p.isFallFlying() && !p.isSwimming();
+            if (s.ram > 0) {
+                if (!sprinting) {
+                    endRam(s);
+                    continue;
+                }
+                s.ram--;
+                ramTick(p, level, s, eff.getAmplifier());
+                if (s.ram == 0) {
+                    endRam(s);
+                }
+                continue;
+            }
+            if (sprinting && s.cooldown == 0) {
+                s.sprint++;
+                if (s.sprint % 5 == 0) {
+                    level.sendParticles(ParticleTypes.CLOUD, p.getX(), p.getY() + 0.2, p.getZ(), 2 + s.sprint / 15, 0.3, 0.1, 0.3, 0.02);
+                }
+                if (s.sprint >= CHARGE_TICKS) {
+                    s.ram = RAM_TICKS;
+                    s.blocks = 0;
+                    s.hit.clear();
+                    level.playSound(null, p.blockPosition(), WWSounds.RAM_CHARGED, SoundSource.PLAYERS, 1.2f, 1.0f);
+                    level.sendParticles(ParticleTypes.SNOWFLAKE, p.getX(), p.getY() + 1, p.getZ(), 30, 0.5, 0.6, 0.5, 0.15);
+                }
+            } else {
+                s.sprint = Math.max(0, s.sprint - 3);
+            }
+        }
+        STATES.keySet().removeIf(id -> server.getPlayerList().getPlayer(id) == null);
+    }
+
+    private static void endRam(State s) {
+        s.ram = 0;
+        s.sprint = 0;
+        s.cooldown = 40;
+    }
+
+    private static void ramTick(ServerPlayer p, ServerLevel level, State s, int amp) {
+        Vec3 look = p.getLookAngle();
+        Vec3 dir = new Vec3(look.x, 0, look.z).normalize();
+        level.sendParticles(ParticleTypes.SNOWFLAKE, p.getX() + dir.x * 0.8, p.getY() + 1.0, p.getZ() + dir.z * 0.8, 4, 0.3, 0.4, 0.3, 0.05);
+        // mobs and players in front
+        AABB box = p.getBoundingBox().move(dir.scale(0.9)).inflate(0.45, 0.1, 0.45);
+        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, box, e -> e != p && e.isAlive() && !s.hit.contains(e.getId())
+                && !p.isAlliedTo(e) && e.isPickable())) {
+            s.hit.add(e.getId());
+            e.hurt(level.damageSources().playerAttack(p), 6.0f + 3.0f * amp);
+            e.knockback(2.6 + amp, -dir.x, -dir.z);
+            e.push(0, 0.6, 0);
+            e.hurtMarked = true;
+            level.playSound(null, e.blockPosition(), WWSounds.RAM_IMPACT, SoundSource.PLAYERS, 1.4f, 0.9f);
+            level.sendParticles(ParticleTypes.EXPLOSION, e.getX(), e.getY() + e.getBbHeight() / 2, e.getZ(), 1, 0, 0, 0, 0);
+        }
+        // blocks in a straight line
+        if (!p.mayBuild() || s.blocks >= BLOCKS_PER_RAM) {
+            return;
+        }
+        int broken = 0;
+        BlockPos feet = BlockPos.containing(p.getX() + dir.x * 0.9, p.getY() + 0.2, p.getZ() + dir.z * 0.9);
+        for (BlockPos pos : new BlockPos[]{feet, feet.above()}) {
+            if (broken >= BLOCKS_PER_TICK || s.blocks >= BLOCKS_PER_RAM) {
+                break;
+            }
+            BlockState st = level.getBlockState(pos);
+            if (canRamBreak(level, p, pos, st)) {
+                level.destroyBlock(pos, true, p);
+                broken++;
+                s.blocks++;
+            }
+        }
+        if (broken > 0) {
+            level.playSound(null, feet, WWSounds.RAM_IMPACT, SoundSource.PLAYERS, 1.0f, 1.3f);
+        }
+    }
+
+    private static boolean canRamBreak(ServerLevel level, ServerPlayer p, BlockPos pos, BlockState st) {
+        if (st.isAir() || !st.getFluidState().isEmpty() || st.hasBlockEntity()) {
+            return false;
+        }
+        float hardness = st.getDestroySpeed(level, pos);
+        if (hardness < 0 || st.getBlock().getExplosionResistance() > MAX_RESISTANCE || st.is(BlockTags.WITHER_IMMUNE)
+                || st.is(BlockTags.DRAGON_IMMUNE)) {
+            return false;
+        }
+        if (!level.mayInteract(p, pos) || p.blockActionRestricted(level, pos, p.gameMode.getGameModeForPlayer())) {
+            return false;
+        }
+        return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, p, pos, st, null);
+    }
+}

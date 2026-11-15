@@ -1,0 +1,7 @@
+{
+  "parent": "winterworks:block/template_rail_flat",
+  "textures": {
+    "rail": "winterworks:block/coaster_rail_corner",
+    "ties": "winterworks:block/coaster_rail_corner_ties"
+  }
+}

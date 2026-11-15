@@ -223,6 +223,7 @@ spec = {
                    "scale rows, moss running down in strands, cracked stone and banded horn, quantised as strokes along the form.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": 4,
+    "anim_ground_tolerance": 0.3,
     "budget": {"tris": 1800, "colors": 96},
     "light": {"dir": [-0.5, 1.0, 0.65], "strength": 1.5, "gradient": 0.5, "ao": 1.4, "ao_height": 9.0},
     "brush": {"length": 2.2, "rough": 0.75, "width": 0.65, "overshoot": 0.35, "flow": "horizontal", "flows": {"moss": "vertical"},

@@ -1,0 +1,378 @@
+{
+  "entity.icebreaker.ambient": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/polarbear/idle1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/polarbear/idle2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/polarbear/idle3",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/polarbear/idle4",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.ambient"
+  },
+  "entity.icebreaker.hurt": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/polarbear/hurt1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/polarbear/hurt2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/polarbear/hurt3",
+        "pitch": 0.55
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.hurt"
+  },
+  "entity.icebreaker.death": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/polarbear/death1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/polarbear/death2",
+        "pitch": 0.5
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.death"
+  },
+  "entity.icebreaker.roar": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/ravager/roar2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/polarbear/warning1",
+        "pitch": 0.5
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.roar"
+  },
+  "entity.icebreaker.ram": {
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/knockback1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/zombie/wood1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/zombie/wood2",
+        "pitch": 0.5
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.ram"
+  },
+  "entity.icebreaker.happy": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/dolphin/play1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/dolphin/play2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/dolphin/eat1",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.happy"
+  },
+  "entity.icebreaker.step": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/polarbear/step1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/polarbear/step2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/polarbear/step3",
+        "pitch": 0.6
+      }
+    ]
+  },
+  "entity.icebreaker.slap": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/zombie/wood3",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:block/powder_snow/step1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:entity/player/attack/knockback2",
+        "pitch": 1.3
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.slap"
+  },
+  "entity.icebreaker.splash": {
+    "sounds": [
+      {
+        "name": "minecraft:random/splash",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.splash"
+  },
+  "block.ice.crack": {
+    "sounds": [
+      {
+        "name": "minecraft:random/glass1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:random/glass2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:random/glass3",
+        "pitch": 0.65
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.ice.crack"
+  },
+  "entity.icebreaker.shear": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/sheep/shear",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/amethyst/break1",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.shear"
+  },
+  "entity.icebreaker.horn_regrow": {
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/place1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block/amethyst/place2",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.icebreaker.horn_regrow"
+  },
+  "item.snowball_launcher.fire": {
+    "sounds": [
+      {
+        "name": "minecraft:random/bow",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:tile/piston/out",
+        "pitch": 1.9
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.snowball_launcher.fire"
+  },
+  "item.snowball_launcher.charge": {
+    "sounds": [
+      {
+        "name": "minecraft:item/crossbow/loading_middle1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:item/crossbow/loading_middle2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:tile/piston/in",
+        "pitch": 1.2
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.snowball_launcher.charge"
+  },
+  "item.snowball_launcher.heavy": {
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 1.7
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "pitch": 1.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.snowball_launcher.heavy"
+  },
+  "item.snowball_launcher.overheat": {
+    "sounds": [
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.snowball_launcher.overheat"
+  },
+  "item.snowball_launcher.empty": {
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 1.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.snowball_launcher.empty"
+  },
+  "item.snowball_launcher.mode": {
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:tile/piston/in",
+        "pitch": 1.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.snowball_launcher.mode"
+  },
+  "effect.ramming.charged": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar3",
+        "pitch": 1.4
+      }
+    ],
+    "subtitle": "subtitles.winterworks.effect.ramming.charged"
+  },
+  "effect.ramming.impact": {
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/knockback3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/zombie/metal1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.effect.ramming.impact"
+  },
+  "entity.locomotive.whistle": {
+    "sounds": [
+      {
+        "name": "minecraft:note/flute",
+        "pitch": 1.25
+      },
+      {
+        "name": "minecraft:note/flute",
+        "pitch": 1.5
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.locomotive.whistle"
+  },
+  "entity.locomotive.chuff": {
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/in",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 1.6
+      }
+    ]
+  },
+  "entity.dragon_locomotive.roar": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/growl1",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl2",
+        "pitch": 1.5
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragon_locomotive.roar"
+  },
+  "block.lift_rail.clank": {
+    "sounds": [
+      {
+        "name": "minecraft:block/chain/step1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block/chain/step3",
+        "pitch": 0.9
+      }
+    ]
+  },
+  "block.booster_rail.boost": {
+    "sounds": [
+      {
+        "name": "minecraft:fireworks/launch1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:block/beacon/power1",
+        "pitch": 2.0
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.booster_rail.boost"
+  },
+  "entity.minecart.couple": {
+    "sounds": [
+      {
+        "name": "minecraft:block/chain/break1",
+        "pitch": 1.0
+      },
+      {
+        "name": "minecraft:block/chain/break2",
+        "pitch": 1.1
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.minecart.couple"
+  },
+  "block.snow_globe.shake": {
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/shimmer",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:block/powder_snow/step2",
+        "pitch": 1.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.snow_globe.shake"
+  }
+}

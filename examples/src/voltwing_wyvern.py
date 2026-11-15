@@ -322,7 +322,7 @@ anim = {
         {"parts": TAIL, "wave": {"axis": "x", "amp": 2.5, "cycles": 2, "lag": 0.1}},
     ] + vfx(3.0)},
     "fly": {"length": 1.2, "loop": True, "tracks": [
-        {"part": "body", "channel": "position", "osc": {"amp": [0, 1.4, 0], "cycles": 1, "phase": 0.25, "bias": [0, 8, 0]}},
+        {"part": "body", "channel": "position", "osc": {"amp": [0, 1.4, 0], "cycles": 1, "phase": 0.25, "bias": [0, 11, 0]}},
         {"part": "body", "axis": "x", "osc": {"amp": 3, "cycles": 1, "phase": 0.3}},
         {"part": "wing_root", "axis": "z", "osc": {"amp": 40, "cycles": 1, "bias": -8}},
         {"part": "humerus", "axis": "y", "osc": {"amp": 8, "cycles": 1, "phase": 0.2}},

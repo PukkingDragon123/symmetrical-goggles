@@ -1,0 +1,7 @@
+{
+  "parent": "winterworks:block/template_rail_raised_ne",
+  "textures": {
+    "rail": "winterworks:block/coaster_rail",
+    "ties": "winterworks:block/coaster_rail_ties"
+  }
+}

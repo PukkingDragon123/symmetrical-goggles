@@ -1,0 +1,7 @@
+{
+  "parent": "winterworks:block/template_rail_raised_sw",
+  "textures": {
+    "rail": "winterworks:block/lift_rail",
+    "ties": "winterworks:block/lift_rail_ties"
+  }
+}

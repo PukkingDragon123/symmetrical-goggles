@@ -18,6 +18,7 @@ can look at.
 | 2D sprites / item icons (swords, gems, ores, fish, potions) | `python -m lowpix sprite <generator> --count 12 --scale 4` (`--param species=koi`, `--paint painted`) → edit the `.json` it writes → `python -m lowpix sprite my.json`. See docs/SPRITES.md |
 | a texture from a real photo (realistic, painted or pixel) | `python -m lowpix photo search <words>` → `python -m lowpix photo polyhaven:<id> --style pixel-hd --size 64`. In models: paint op `{"op": "photo", ...}` (docs/PHOTOBASH.md) |
 | a detailed blocky (Minecraft-style) monster | copy `examples/thornhide_behemoth.json`: boxes and tapers, `density` 4, a `brush` block, `scales`/`drip`/`cracks`/`photo` layers |
+| a Minecraft Java mod's mobs, carts, held items, block entities | box spec in Minecraft pixels (copy `examples/src/icebreaker.py`) → `python -m lowpix build` → `python -m lowpix mc export <spec> --mod <mod repo> --modid <id> --package <pkg>` → look at `<name>_mc.png`. See docs/MINECRAFT.md; `mods/winterworks/` is a full Fabric 1.21.1 mod built this way |
 | animations on a spec | add `animations` (docs/SPEC.md "Rigging and animation") → `python -m lowpix animate <spec> --anim <clip> -o strip.png` |
 
 Styles (`--style`): `pixel` (chunky pixel art, unlit, the house style), `pixel-hd`
@@ -42,9 +43,11 @@ Templates for `new`: `creature` (chain-loft body, walk), `quadruped`, `bird` (wi
   `sprite` + `sprite_gen` (2D), `photo` (photo-bashing), `anim`
   (rigid-bone clips), `model` (build pipeline, report and lint), `render` (software rasteriser,
   filmstrips, GIFs), `export` (glb/obj/bbmodel), `convert` (detailed model → style), `batch`
-  (parallel mass production, gallery, templates), `cli`, `mcp_server`.
+  (parallel mass production, gallery, templates), `mc` + `mc_runtime/` (Minecraft Java export), `cli`, `mcp_server`.
+* `mods/winterworks/`: the Winterworks Fabric mod (Java). `./gradlew build`, `./gradlew runGametest` (headless tests),
+  `xvfb-run ./gradlew runShowcase` (in-game screenshots). Resources: `python3 mods/winterworks/tools/gen_data.py`.
 * Docs: `docs/SPEC.md` (spec + animation reference), `docs/STYLE_GUIDE.md` (art and animation rules),
-  `docs/AGENT_WORKFLOW.md`, `docs/CONVERT.md`, `docs/BATCH.md`, `docs/SPRITES.md`, `docs/PHOTOBASH.md`. Skill: `.claude/skills/lowpix-modeling/`.
+  `docs/AGENT_WORKFLOW.md`, `docs/CONVERT.md`, `docs/BATCH.md`, `docs/SPRITES.md`, `docs/PHOTOBASH.md`, `docs/MINECRAFT.md`. Skill: `.claude/skills/lowpix-modeling/`.
 * Tests: `python -m unittest discover -s tests -v` (every example must build with zero warnings
   and a strictly in-palette atlas).
 * After changing an example spec, regenerate its committed outputs:

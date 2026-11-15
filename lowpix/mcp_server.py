@@ -141,9 +141,21 @@ TOOLS = [
             "size": {"type": "integer", "default": 64}, "out": {"type": "string"}}},
     },
     {
+        "name": "lowpix_mc_export",
+        "description": ("Minecraft Java: export a box spec (Minecraft pixel units, boxes and bones only) into any mod project: "
+                        "entity model (LayerDefinition code + geo.json), box-UV texture (+ glow/tint layers), baked keyframe clips "
+                        "for vanilla AnimationDefinition, and a small runtime. Returns the summary and a preview rendered from "
+                        "the exported cubes (what the game draws). See docs/MINECRAFT.md."),
+        "inputSchema": {"type": "object", "required": ["spec", "mod", "modid", "package"], "properties": {
+            "spec": {"type": "string", "description": "path to the spec .json"},
+            "mod": {"type": "string", "description": "the mod project's root folder"},
+            "modid": {"type": "string"}, "package": {"type": "string", "description": "Java package for the generated code"},
+            "name": {"type": "string"}, "fps": {"type": "number", "default": 12}}},
+    },
+    {
         "name": "lowpix_guide",
         "description": ("Return the spec reference and the style guide (read this first). topic: 'spec', 'style', "
-                        "'workflow', 'sprites' or 'all'."),
+                        "'workflow', 'sprites', 'minecraft' or 'all'."),
         "inputSchema": {"type": "object", "properties": {"topic": {"type": "string", "default": "all"}}},
     },
 ]
@@ -278,6 +290,14 @@ def call_tool(name: str, args: dict):
             tex.save(args["out"])
         return [_text(f"{args.get('style', 'pixel-hd')} {size}px, shown tiled 2x2"),
                 _png(tiled_preview(tex, 2, max(1, 512 // (size * 2))))]
+    if name == "lowpix_mc_export":
+        import tempfile
+        from . import mc
+        out = tempfile.mkdtemp(prefix="lowpix_mc_")
+        summary = mc.export(args["spec"], args["mod"], args["modid"], args["package"], out_dir=out,
+                            fps=float(args.get("fps", 12)), name=args.get("name"))
+        from PIL import Image
+        return [_text(summary), _png(Image.open(summary["preview"]))]
     if name == "lowpix_guide":
         topic = args.get("topic", "all")
         parts = []
@@ -289,6 +309,8 @@ def call_tool(name: str, args: dict):
             parts.append(_read_doc("STYLE_GUIDE.md"))
         if topic in ("sprites", "all"):
             parts.append(_read_doc("SPRITES.md"))
+        if topic in ("minecraft", "all"):
+            parts.append(_read_doc("MINECRAFT.md"))
         return [_text("\n\n---\n\n".join(parts) or "topics: workflow, spec, style, all")]
     raise ValueError(f"unknown tool {name!r}")
 

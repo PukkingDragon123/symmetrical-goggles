@@ -4,6 +4,7 @@
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 4,
+ "anim_ground_tolerance": 0.3,
  "budget": {
   "tris": 1800,
   "colors": 96

@@ -14,6 +14,8 @@ writes, inside any Fabric / NeoForge / Forge mod project (`--mod` is that projec
   `<name>_glow.png` with only the emissive texels, for an eyes/emissive render pass);
 * `assets/<modid>/lowpix/<name>.anim.json`: every clip baked to Minecraft keyframes
   (degrees, pixels, scale) for the runtime above;
+* `assets/<modid>/lowpix/<name>.geo.json`: the same part tree as data, so `LowpixGeometry.layer(modid, name)` can
+  build the LayerDefinition at runtime (use either it or the generated class);
 * `<out>/<name>_mc.png`: a preview rendered from the exported cubes and texture (what the game draws).
 
 A spec's top-level `"minecraft"` block tunes the export:
@@ -200,6 +202,23 @@ public final class {cls} {{
     }}
 }}
 """
+
+    def geo_json(self) -> dict:
+        """The part tree as data, for LowpixGeometry (builds the LayerDefinition at runtime, no generated class needed)."""
+        parts = []
+        for p in self.parts:
+            d = {"name": p.name, "parent": p.parent, "offset": [round(float(v), 4) for v in p.offset],
+                 "rotation": [round(float(v), 6) for v in p.rotation]}
+            if p.cube is not None:
+                lo, hi = p.cube
+                d["box"] = [round(float(v), 4) for v in lo] + [round(float(v), 4) for v in (hi - lo)]
+                d["uv"] = list(p.uv)
+            if p.glow:
+                d["glow"] = True
+            if p.tint:
+                d["tint"] = True
+            parts.append(d)
+        return {"model": self.name, "texture_size": list(self.tex_units), "parts": parts}
 
     def anim_json(self) -> dict:
         return {"model": self.name, "clips": self.clips}
@@ -523,6 +542,8 @@ def export(src, mod_root: str, modid: str, package: str, out_dir: str | None = N
     os.makedirs(adir, exist_ok=True)
     with open(os.path.join(adir, mc.name + ".anim.json"), "w", encoding="utf-8") as fh:
         json.dump(mc.anim_json(), fh, separators=(",", ":"))
+    with open(os.path.join(adir, mc.name + ".geo.json"), "w", encoding="utf-8") as fh:
+        json.dump(mc.geo_json(), fh, separators=(",", ":"))
     summary = {"name": mc.name, "class": f"{package}.{cls}", "parts": len(mc.parts),
                "cubes": sum(1 for p in mc.parts if p.cube is not None),
                "texture": [mc.texture.width, mc.texture.height], "texture_units": list(mc.tex_units),

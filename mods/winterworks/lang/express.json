@@ -1,0 +1,23 @@
+{
+  "item.winterworks.locomotive": "Iron Locomotive",
+  "item.winterworks.dragon_locomotive": "Dragon-Head Locomotive",
+  "item.winterworks.fox_cart": "Fox Cart",
+  "item.winterworks.zombie_cart": "Zombie Cart",
+  "item.winterworks.trailer_cart": "Trailer Cart",
+  "entity.winterworks.locomotive": "Iron Locomotive",
+  "entity.winterworks.dragon_locomotive": "Dragon-Head Locomotive",
+  "entity.winterworks.fox_cart": "Fox Cart",
+  "entity.winterworks.zombie_cart": "Zombie Cart",
+  "entity.winterworks.trailer_cart": "Trailer Cart",
+  "entity.winterworks.locomotive.throttle.0": "Reverse",
+  "entity.winterworks.locomotive.throttle.1": "Stopped",
+  "entity.winterworks.locomotive.throttle.2": "Full steam ahead!",
+  "block.winterworks.coaster_rail": "Coaster Rail",
+  "block.winterworks.booster_rail": "Booster Rail",
+  "block.winterworks.lift_rail": "Chain Lift Rail",
+  "message.winterworks.couple.first": "Now click the cart behind it",
+  "message.winterworks.couple.too_far": "Too far apart to couple",
+  "message.winterworks.couple.taken": "That coupler is already in use",
+  "message.winterworks.couple.loop": "Can't couple a train into a loop",
+  "message.winterworks.couple.done": "Coupled! Train length: %s"
+}

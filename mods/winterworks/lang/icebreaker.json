@@ -1,0 +1,12 @@
+{
+  "entity.winterworks.icebreaker": "Icebreaker",
+  "item.winterworks.icebreaker_spawn_egg": "Icebreaker Spawn Egg",
+  "item.winterworks.icebreaker_horn": "Icebreaker Horn",
+  "item.winterworks.heavy_shears": "Heavy Shears",
+  "item.winterworks.heavy_shears.tip": "Cuts whole canopies of leaves, gets more wool, and can take an Icebreaker's horn",
+  "effect.winterworks.ramming": "Ramming",
+  "item.minecraft.potion.effect.ramming": "Potion of Ramming",
+  "item.minecraft.splash_potion.effect.ramming": "Splash Potion of Ramming",
+  "item.minecraft.lingering_potion.effect.ramming": "Lingering Potion of Ramming",
+  "item.minecraft.tipped_arrow.effect.ramming": "Arrow of Ramming"
+}

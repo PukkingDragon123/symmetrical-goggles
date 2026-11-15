@@ -30,16 +30,16 @@ public abstract class LowpixEntityModel<T extends Entity> extends HierarchicalMo
         return root;
     }
 
-    protected void resetPose() {
+    public void resetPose() {
         root.getAllParts().forEach(ModelPart::resetPose);
     }
 
-    protected ModelPart part(String name) {
+    public ModelPart part(String name) {
         Optional<ModelPart> p = getAnyDescendantWithName(name);
         return p.orElseThrow(() -> new IllegalArgumentException("no model part " + name));
     }
 
-    protected Optional<ModelPart> maybePart(String name) {
+    public Optional<ModelPart> maybePart(String name) {
         return getAnyDescendantWithName(name);
     }
 
@@ -48,7 +48,7 @@ public abstract class LowpixEntityModel<T extends Entity> extends HierarchicalMo
     }
 
     /** Plays a clip driven by an AnimationState (started/stopped on the entity). */
-    protected void play(AnimationState state, String clip, float ageInTicks, float speed) {
+    public void play(AnimationState state, String clip, float ageInTicks, float speed) {
         AnimationDefinition def = clips.get(clip);
         if (def != null) {
             animate(state, def, ageInTicks, speed);
@@ -56,7 +56,7 @@ public abstract class LowpixEntityModel<T extends Entity> extends HierarchicalMo
     }
 
     /** Plays a looping clip in step with walking, faded in by how fast the entity moves. */
-    protected void walk(String clip, float limbSwing, float limbSwingAmount, float maxSpeed, float scale) {
+    public void walk(String clip, float limbSwing, float limbSwingAmount, float maxSpeed, float scale) {
         AnimationDefinition def = clips.get(clip);
         if (def != null) {
             animateWalk(def, limbSwing, limbSwingAmount, maxSpeed, scale);

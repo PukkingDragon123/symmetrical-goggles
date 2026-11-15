@@ -14,9 +14,24 @@ repositories { mavenCentral() }
 loom {
     accessWidenerPath = file("src/main/resources/winterworks.accesswidener")
     runs {
-        // headless smoke test: boots a dedicated server, loads every registry, then stops
-        server { ideConfigGenerated false; runDir 'run/server' }
+        server { runDir 'run/server' }
         client { runDir 'run/client' }
+        // In-game screenshots of the mod's content (dev only): ./gradlew runShowcase, under xvfb-run on a headless box
+        showcase {
+            client()
+            name 'Showcase'
+            vmArg '-Dwinterworks.showcase=true'
+            programArgs '--width', '1280', '--height', '720'
+            runDir 'run/showcase'
+        }
+        // GameTests on a headless server: ./gradlew runGametest (exits with the results; no EULA prompt)
+        gametest {
+            server()
+            name 'Game Test'
+            vmArg '-Dfabric-api.gametest'
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/gametest/junit.xml"
+            runDir 'build/gametest'
+        }
     }
 }
 

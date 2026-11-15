@@ -1,0 +1,10 @@
+{
+  "item.winterworks.snowball_launcher": "Snowball Launcher",
+  "item.winterworks.snowball_launcher.mode.0": "Ammo: packed snowballs (rapid fire, stuns)",
+  "item.winterworks.snowball_launcher.mode.1": "Ammo: cobblestone balls (hold to charge, heavy)",
+  "item.winterworks.snowball_launcher.tip": "Hold use to fire. Sneak + use switches ammo. Don't let it overheat!",
+  "item.winterworks.cobble_ball": "Cobblestone Ball",
+  "entity.winterworks.ice_shot": "Packed Snowball",
+  "entity.winterworks.cobble_ball": "Cobblestone Ball",
+  "effect.winterworks.stunned": "Stunned"
+}
