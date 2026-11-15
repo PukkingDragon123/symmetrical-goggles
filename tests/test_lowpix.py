@@ -401,6 +401,42 @@ class TestConvert(unittest.TestCase):
             magic, *_ = parse_glb(glb_bytes(m))
             self.assertEqual(magic, 0x46546C67)
 
+    def test_styles(self):
+        from lowpix.convert import convert
+        from lowpix.export import glb_bytes
+        with tempfile.TemporaryDirectory() as td:
+            src = os.path.join(td, "drake.glb")
+            with open(src, "wb") as fh:
+                fh.write(glb_bytes(build_model(os.path.join(ROOT, "examples", "geode_drake.json"))))
+            hd = convert(src, style="pixel-hd", tris=800, height=16)
+            self.assertEqual(hd.material["filter"], "nearest")
+            painted = convert(src, style="painted", tris=800, atlas=256, height=16)
+            real = convert(src, style="realistic", tris=1200, atlas=256, height=16)
+            self.assertFalse(real.material["unlit"])
+            self.assertEqual(real.material["filter"], "linear")
+            for m in (painted, real):
+                self.assertLessEqual(max(m.atlas.shape[:2]), 256)
+            _, _, _, _, _, js, _ = parse_glb(glb_bytes(real))
+            self.assertNotIn("extensionsUsed", js)                 # lit PBR material
+            self.assertEqual(js["samplers"][0]["magFilter"], 9729)  # linear
+            # smooth, outward-agreeing normals on every chart
+            for f in real.instances[0].faces:
+                N = np.sum([np.cross(f.pts[b] - f.pts[a], f.pts[c] - f.pts[a]) for a, b, c in f.tris], axis=0)
+                N /= max(np.linalg.norm(N), 1e-12)
+                self.assertGreater(float(np.mean(f.attrs["n"] @ N)), 0.4, f.name)
+
+    def test_quadric_decimation_keeps_extent(self):
+        from lowpix.convert import cluster_decimate, weld
+        m = build_model(os.path.join(ROOT, "examples", "robot.json"))
+        tris, _ = m.world_triangles()
+        V = tris.reshape(-1, 3)
+        F = np.arange(len(V)).reshape(-1, 3)
+        Vw, Fw = weld(V, F)
+        Vd, Fd = cluster_decimate(Vw, Fw, 400)
+        self.assertLessEqual(len(Fd), 440)
+        ext_src, ext_dec = np.ptp(Vw, axis=0), np.ptp(Vd, axis=0)
+        np.testing.assert_allclose(ext_dec, ext_src, rtol=0.12)  # no big shrinkage
+
     def test_obj_loader_triangulates_quads(self):
         from lowpix.convert import load_obj
         with tempfile.TemporaryDirectory() as td:
@@ -410,6 +446,40 @@ class TestConvert(unittest.TestCase):
             mesh = load_obj(p)
             self.assertEqual(len(mesh.F), 2)
             self.assertAlmostEqual(float(mesh.UV[0, 1]), 1.0)  # OBJ v flipped to top-left origin
+
+
+class TestBatch(unittest.TestCase):
+    def test_batch_specs_models_and_manifest(self):
+        from lowpix.batch import batch, expand_sources
+        from lowpix.export import glb_bytes
+        with tempfile.TemporaryDirectory() as td:
+            glb = os.path.join(td, "bot.glb")
+            with open(glb, "wb") as fh:
+                fh.write(glb_bytes(build_model(os.path.join(ROOT, "examples", "robot.json"))))
+            man = os.path.join(td, "m.json")
+            with open(man, "w") as fh:
+                json.dump({"defaults": {"style": "pixel", "tris": 300},
+                           "items": [{"source": "bot.glb", "name": "Bot Small"},
+                                     {"source": "bot.glb", "name": "Bot HD", "style": "pixel-hd", "tris": 500}]}, fh)
+            items = expand_sources([man, os.path.join(ROOT, "examples", "glowcap.json")])
+            self.assertEqual([i["kind"] for i in items], ["model", "model", "spec"])
+            self.assertEqual(items[1]["opts"]["style"], "pixel-hd")
+            out = os.path.join(td, "out")
+            s = batch([man, os.path.join(ROOT, "examples", "glowcap.json"), os.path.join(td, "missing.glb")],
+                      out, jobs=1, log=lambda *_: None)
+            self.assertEqual((s["ok"], s["failed"]), (3, 1))   # a bad item doesn't stop the batch
+            for f in ("summary.json", "summary.csv", "contact.png", "index.html"):
+                self.assertTrue(os.path.exists(os.path.join(out, f)), f)
+            names = {r["name"] for r in s["results"] if r["status"] == "ok"}
+            self.assertEqual(names, {"Bot Small", "Bot HD", "Glowcap Mushroom"})
+
+    def test_new_from_template(self):
+        from lowpix.batch import new_spec
+        with tempfile.TemporaryDirectory() as td:
+            p = new_spec("critter", "Test Weasel", os.path.join(td, "w.json"))
+            spec = load_spec(p)
+            self.assertEqual(spec["name"], "Test Weasel")
+            self.assertEqual(validate(spec)[0], [])
 
 
 class TestValidation(unittest.TestCase):

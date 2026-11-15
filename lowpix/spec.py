@@ -11,7 +11,7 @@ import json
 import os
 
 TOP_KEYS = {"name", "description", "author", "license", "density", "budget", "light", "palette",
-            "styles", "defaults", "parts", "render", "notes", "grounded", "animations", "anim_fps", "anim_ground_tolerance", "$schema"}
+            "styles", "defaults", "parts", "render", "notes", "grounded", "animations", "anim_fps", "anim_ground_tolerance", "material", "convert", "$schema"}
 PART_KEYS = {"id", "parent", "shape", "size", "pivot", "offset", "rotation", "mirror", "style",
              "paint", "hide", "front_scale", "back_scale", "front_shift", "back_shift", "sides",
              "angle", "plane", "art", "orient", "snap_ground", "notes", "chamfer", "profile", "rings",

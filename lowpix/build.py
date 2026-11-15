@@ -33,13 +33,16 @@ def export_model(model, out_dir: str, gif: bool = False, sheet: bool = True, her
         fh.write(obj)
     with open(p(f"{slug}.mtl"), "w") as fh:
         fh.write(mtl)
-    with open(p(f"{slug}.bbmodel"), "w") as fh:
-        json.dump(bbmodel_json(model), fh)
+    tri_count = sum(len(f.tris) for i in model.instances for f in i.faces)
+    if tri_count <= 4000:  # Blockbench is a low-poly editor; skip it for dense meshes
+        with open(p(f"{slug}.bbmodel"), "w") as fh:
+            json.dump(bbmodel_json(model), fh)
     tex = Image.fromarray(model.atlas, "RGBA")
     tex.save(p(f"{slug}_texture.png"))
     AH, AW = model.atlas.shape[:2]
     k = max(1, 1024 // max(AW, AH))
-    tex.resize((AW * k, AH * k), Image.NEAREST).save(p(f"{slug}_texture_x{k}.png"))
+    if k > 1:
+        tex.resize((AW * k, AH * k), Image.NEAREST).save(p(f"{slug}_texture_x{k}.png"))
     report = model.report()
     rs = model.spec.get("render", {})
     hy, hp = rs.get("hero", (35, 22))

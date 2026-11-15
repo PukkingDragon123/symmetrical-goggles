@@ -1,0 +1,12 @@
+{
+  "defaults": {"style": "pixel", "height": 20},
+  "items": [
+    {"source": "polyhaven:street_rat", "name": "Street Rat", "height": 14},
+    {"source": "polyhaven:street_rat", "name": "Street Rat", "height": 14, "style": "pixel-hd"},
+    {"source": "polyhaven:street_rat", "name": "Street Rat", "height": 14, "style": "painted"},
+    {"source": "polyhaven:street_rat", "name": "Street Rat", "height": 14, "style": "realistic"},
+    {"source": "polyhaven:rubber_duck_toy", "name": "Rubber Duck", "height": 16, "tris": 500},
+    {"source": "polyhaven:horse_statue_01", "name": "Horse Statue", "height": 24, "tris": 1200},
+    {"source": "polyhaven:concrete_cat_statue", "name": "Cat Statue", "style": "pixel-hd"}
+  ]
+}

@@ -13,6 +13,7 @@ from PIL import Image
 from .mathutil import quat_from_matrix, transform_points
 
 NEAREST = 9728
+LINEAR = 9729
 CLAMP = 33071
 
 
@@ -114,12 +115,17 @@ def glb_bytes(model) -> bytes:
                 animations.append({"name": cname, "samplers": samplers, "channels": channels})
 
     img_view = add_view(atlas_png_bytes(model))
+    mat_cfg = model.material
+    unlit = bool(mat_cfg.get("unlit", True))
+    filt = LINEAR if mat_cfg.get("filter") == "linear" else NEAREST
     mat_common = {"pbrMetallicRoughness": {"baseColorTexture": {"index": 0}, "metallicFactor": 0.0,
-                                           "roughnessFactor": 1.0},
-                  "extensions": {"KHR_materials_unlit": {}}, "alphaMode": "MASK", "alphaCutoff": 0.5}
+                                           "roughnessFactor": 1.0 if unlit else float(mat_cfg.get("roughness", 0.85))},
+                  "alphaMode": "MASK", "alphaCutoff": 0.5}
+    if unlit:
+        mat_common["extensions"] = {"KHR_materials_unlit": {}}
     gltf = {
         "asset": {"version": "2.0", "generator": "lowpix"},
-        "extensionsUsed": ["KHR_materials_unlit"],
+        **({"extensionsUsed": ["KHR_materials_unlit"]} if unlit else {}),
         "scene": 0,
         "scenes": [{"name": model.name, "nodes": [i for i, inst in enumerate(model.instances) if inst.parent is None]}],
         "nodes": nodes,
@@ -127,7 +133,7 @@ def glb_bytes(model) -> bytes:
         "materials": ([dict(mat_common, name="pixel_solid", doubleSided=False)] if has_solid else [])
                      + ([dict(mat_common, name="pixel_card", doubleSided=True)] if has_card else []),
         "textures": [{"sampler": 0, "source": 0}],
-        "samplers": [{"magFilter": NEAREST, "minFilter": NEAREST, "wrapS": CLAMP, "wrapT": CLAMP}],
+        "samplers": [{"magFilter": filt, "minFilter": filt, "wrapS": CLAMP, "wrapT": CLAMP}],
         "images": [{"bufferView": img_view, "mimeType": "image/png", "name": "atlas"}],
         **({"animations": animations} if animations else {}),
         "accessors": accessors,
@@ -192,7 +198,7 @@ def bbmodel_json(model) -> dict:
                 k += 1
                 verts[key] = [round(float(c), 5) for c in p]
                 keys.append(key)
-            if len(keys) == 4:
+            if len(keys) == 4 and f.kind == "quad":
                 # Blockbench quads: vertex order around the face
                 ordered = [keys[0], keys[3], keys[2], keys[1]]
                 uvo = [uv[0], uv[3], uv[2], uv[1]]

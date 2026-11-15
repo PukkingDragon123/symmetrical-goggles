@@ -1,0 +1,91 @@
+{
+  "name": "Rubber Duck",
+  "parts": 1,
+  "instances": 1,
+  "faces": 59,
+  "triangles": 500,
+  "vertices_flat": 528,
+  "vertices_unique": 244,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.431,
+  "texel_density": 2.0,
+  "colors_used": 15,
+  "palette": {
+    "m0": [
+      "#761e00",
+      "#a54000",
+      "#d46f00",
+      "#fca90b",
+      "#f8d346",
+      "#f7ed7e"
+    ],
+    "m1": [
+      "#840017",
+      "#b80007",
+      "#ed1700",
+      "#fa5626",
+      "#f7935a",
+      "#f6c18c"
+    ],
+    "m2": [
+      "#070709",
+      "#0a0a0d",
+      "#0d0d10",
+      "#262729",
+      "#585858",
+      "#888888"
+    ],
+    "m3": [
+      "#89000b",
+      "#bb1005",
+      "#ea370d",
+      "#ef753b",
+      "#efa76a",
+      "#f0cc98"
+    ],
+    "m4": [
+      "#53281b",
+      "#71442a",
+      "#8c633b",
+      "#aa8950",
+      "#b9ab7a",
+      "#cac6a4"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -6.04,
+      0.0,
+      -8.407
+    ],
+    "max": [
+      6.04,
+      16.0,
+      8.407
+    ],
+    "size": [
+      12.08,
+      16.0,
+      16.814
+    ]
+  },
+  "warnings": [],
+  "animations": {},
+  "joints": [
+    "mesh"
+  ],
+  "files": {
+    "rubber_duck.glb": "examples/converted/rubber_duck/rubber_duck.glb",
+    "rubber_duck.obj": "examples/converted/rubber_duck/rubber_duck.obj",
+    "rubber_duck.mtl": "examples/converted/rubber_duck/rubber_duck.mtl",
+    "rubber_duck.bbmodel": "examples/converted/rubber_duck/rubber_duck.bbmodel",
+    "rubber_duck_texture.png": "examples/converted/rubber_duck/rubber_duck_texture.png",
+    "rubber_duck_texture_x8.png": "examples/converted/rubber_duck/rubber_duck_texture_x8.png",
+    "rubber_duck_hero.png": "examples/converted/rubber_duck/rubber_duck_hero.png",
+    "rubber_duck_sheet.png": "examples/converted/rubber_duck/rubber_duck_sheet.png",
+    "rubber_duck_turntable.gif": "examples/converted/rubber_duck/rubber_duck_turntable.gif"
+  }
+}

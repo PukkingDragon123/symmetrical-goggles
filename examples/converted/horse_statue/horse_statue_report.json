@@ -1,0 +1,67 @@
+{
+  "name": "Horse Statue",
+  "parts": 1,
+  "instances": 1,
+  "faces": 238,
+  "triangles": 1193,
+  "vertices_flat": 1504,
+  "vertices_unique": 578,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.733,
+  "texel_density": 2.0,
+  "colors_used": 9,
+  "palette": {
+    "m0": [
+      "#7b655a",
+      "#a1958a",
+      "#c4c1bc",
+      "#dadad9",
+      "#e2e2e2",
+      "#eaeaea"
+    ],
+    "m1": [
+      "#411f18",
+      "#583424",
+      "#6e4c32",
+      "#8c6e47",
+      "#ab986b",
+      "#bfb999"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -8.668,
+      0.0,
+      -5.953
+    ],
+    "max": [
+      8.668,
+      24.0,
+      5.953
+    ],
+    "size": [
+      17.336,
+      24.0,
+      11.906
+    ]
+  },
+  "warnings": [],
+  "animations": {},
+  "joints": [
+    "mesh"
+  ],
+  "files": {
+    "horse_statue.glb": "examples/converted/horse_statue/horse_statue.glb",
+    "horse_statue.obj": "examples/converted/horse_statue/horse_statue.obj",
+    "horse_statue.mtl": "examples/converted/horse_statue/horse_statue.mtl",
+    "horse_statue.bbmodel": "examples/converted/horse_statue/horse_statue.bbmodel",
+    "horse_statue_texture.png": "examples/converted/horse_statue/horse_statue_texture.png",
+    "horse_statue_texture_x8.png": "examples/converted/horse_statue/horse_statue_texture_x8.png",
+    "horse_statue_hero.png": "examples/converted/horse_statue/horse_statue_hero.png",
+    "horse_statue_sheet.png": "examples/converted/horse_statue/horse_statue_sheet.png",
+    "horse_statue_turntable.gif": "examples/converted/horse_statue/horse_statue_turntable.gif"
+  }
+}

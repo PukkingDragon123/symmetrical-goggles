@@ -1,0 +1,73 @@
+{
+  "name": "Street Rat",
+  "parts": 1,
+  "instances": 1,
+  "faces": 227,
+  "triangles": 3000,
+  "vertices_flat": 2766,
+  "vertices_unique": 1483,
+  "atlas": [
+    512,
+    512
+  ],
+  "atlas_fill": 0.433,
+  "texel_density": 6.0,
+  "colors_used": 15,
+  "palette": {
+    "m0": [
+      "#1a0f0c",
+      "#211510",
+      "#281c15",
+      "#2f231a",
+      "#352b1f",
+      "#584c37",
+      "#796d50",
+      "#978f6c",
+      "#ada992"
+    ],
+    "m1": [
+      "#54233a",
+      "#6b3047",
+      "#823e53",
+      "#974e5e",
+      "#a8616b",
+      "#b17a7d",
+      "#bb9392",
+      "#c5aca9",
+      "#d1c2bf"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -6.594,
+      0.0,
+      -27.323
+    ],
+    "max": [
+      6.594,
+      14.0,
+      27.323
+    ],
+    "size": [
+      13.189,
+      14.0,
+      54.646
+    ]
+  },
+  "warnings": [],
+  "animations": {},
+  "joints": [
+    "mesh"
+  ],
+  "files": {
+    "street_rat.glb": "examples/converted/street_rat_pixel_hd/street_rat.glb",
+    "street_rat.obj": "examples/converted/street_rat_pixel_hd/street_rat.obj",
+    "street_rat.mtl": "examples/converted/street_rat_pixel_hd/street_rat.mtl",
+    "street_rat.bbmodel": "examples/converted/street_rat_pixel_hd/street_rat.bbmodel",
+    "street_rat_texture.png": "examples/converted/street_rat_pixel_hd/street_rat_texture.png",
+    "street_rat_texture_x2.png": "examples/converted/street_rat_pixel_hd/street_rat_texture_x2.png",
+    "street_rat_hero.png": "examples/converted/street_rat_pixel_hd/street_rat_hero.png",
+    "street_rat_sheet.png": "examples/converted/street_rat_pixel_hd/street_rat_sheet.png",
+    "street_rat_turntable.gif": "examples/converted/street_rat_pixel_hd/street_rat_turntable.gif"
+  }
+}

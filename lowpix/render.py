@@ -32,10 +32,93 @@ def _camera(target, radius, yaw, pitch, fov, aspect):
     return eye, right, up2, fwd
 
 
-def _rasterize(scr, z, uvs, tex, color, zbuf, W, H, alpha_test=True, flat=None):
+def _raster_batch(scr, z, uvs, tex, color, zbuf, W, H, alpha_test, flat, nrm, bilinear, light, sel, S):
+    """Vectorised rasterisation of many small triangles (bbox <= S px) in one go.
+    Depth conflicts inside the batch are resolved by sorting; the z-buffer handles the rest."""
+    TH, TW = tex.shape[:2]
+    for c0 in range(0, len(sel), max(1, 600000 // (S * S))):
+        k = sel[c0:c0 + max(1, 600000 // (S * S))]
+        p = scr[k]                                         # (n,3,2)
+        x0 = np.floor(p[..., 0].min(1)).astype(np.int64)
+        y0 = np.floor(p[..., 1].min(1)).astype(np.int64)
+        oy, ox = np.divmod(np.arange(S * S), S)
+        X = x0[:, None] + ox[None]                         # (n, S*S)
+        Y = y0[:, None] + oy[None]
+        Xc, Yc = X + 0.5, Y + 0.5
+        (ax_, ay_), (bx_, by_), (cx_, cy_) = [(p[:, i, 0][:, None], p[:, i, 1][:, None]) for i in range(3)]
+        area = (bx_ - ax_) * (cy_ - ay_) - (cx_ - ax_) * (by_ - ay_)
+        area = np.where(np.abs(area) < 1e-12, 1e-12, area)
+        w0 = ((bx_ - Xc) * (cy_ - Yc) - (cx_ - Xc) * (by_ - Yc)) / area
+        w1 = ((cx_ - Xc) * (ay_ - Yc) - (ax_ - Xc) * (cy_ - Yc)) / area
+        w2 = 1.0 - w0 - w1
+        m = (w0 >= -1e-7) & (w1 >= -1e-7) & (w2 >= -1e-7) & (X >= 0) & (X < W) & (Y >= 0) & (Y < H)
+        ti, ci = np.nonzero(m)
+        if not len(ti):
+            continue
+        kk = k[ti]
+        w0, w1, w2 = w0[ti, ci], w1[ti, ci], w2[ti, ci]
+        zz = z[kk]
+        iz = w0 / zz[:, 0] + w1 / zz[:, 1] + w2 / zz[:, 2]
+        depth = 1.0 / np.maximum(iz, 1e-12)
+        uu = uvs[kk]
+        u = (w0 * uu[:, 0, 0] / zz[:, 0] + w1 * uu[:, 1, 0] / zz[:, 1] + w2 * uu[:, 2, 0] / zz[:, 2]) / iz
+        v = (w0 * uu[:, 0, 1] / zz[:, 0] + w1 * uu[:, 1, 1] / zz[:, 1] + w2 * uu[:, 2, 1] / zz[:, 2]) / iz
+        tx = np.clip(np.floor(u * TW).astype(np.int64), 0, TW - 1)
+        ty = np.clip(np.floor(v * TH).astype(np.int64), 0, TH - 1)
+        keep = tex[ty, tx, 3] > 127 if alpha_test else np.ones(len(kk), bool)
+        pix = Y[ti, ci] * W + X[ti, ci]
+        idx = np.nonzero(keep)[0]
+        if not len(idx):
+            continue
+        order = idx[np.lexsort((depth[idx], pix[idx]))]
+        first = np.r_[True, pix[order][1:] != pix[order][:-1]]
+        win = order[first]
+        zflat = zbuf.reshape(-1)
+        win = win[depth[win] < zflat[pix[win]]]
+        if not len(win):
+            continue
+        cflat = color.reshape(-1, 3)
+        if flat is not None:
+            cflat[pix[win]] = flat
+        else:
+            if bilinear:
+                fx, fy = u[win] * TW - 0.5, v[win] * TH - 0.5
+                x0b, y0b = np.floor(fx).astype(np.int64), np.floor(fy).astype(np.int64)
+                ax, ay = (fx - x0b)[:, None], (fy - y0b)[:, None]
+                xa, xb = np.clip(x0b, 0, TW - 1), np.clip(x0b + 1, 0, TW - 1)
+                ya, yb = np.clip(y0b, 0, TH - 1), np.clip(y0b + 1, 0, TH - 1)
+                t = tex[..., :3].astype(np.float32)
+                rgb = (t[ya, xa] * (1 - ax) + t[ya, xb] * ax) * (1 - ay) + (t[yb, xa] * (1 - ax) + t[yb, xb] * ax) * ay
+            else:
+                rgb = tex[ty[win], tx[win], :3].astype(np.float32)
+            if nrm is not None:
+                nk = nrm[kk[win]]
+                zw = zz[win]
+                nn = ((w0[win] / zw[:, 0])[:, None] * nk[:, 0] + (w1[win] / zw[:, 1])[:, None] * nk[:, 1]
+                      + (w2[win] / zw[:, 2])[:, None] * nk[:, 2])
+                nn /= np.maximum(np.linalg.norm(nn, axis=1, keepdims=True), 1e-9)
+                shade = 0.48 + 0.62 * np.clip(nn @ light, 0, None) + 0.08 * np.clip(nn[:, 1], 0, None)
+                rgb = rgb * shade[:, None]
+            cflat[pix[win]] = np.clip(rgb, 0, 255).astype(np.uint8)
+        zflat[pix[win]] = depth[win]
+
+
+def _rasterize(scr, z, uvs, tex, color, zbuf, W, H, alpha_test=True, flat=None, nrm=None, bilinear=False, light=None):
     """scr (T,3,2) screen xy, z (T,3) view depth, uvs (T,3,2)."""
     TH, TW = tex.shape[:2]
-    for k in range(len(scr)):
+    if len(scr):
+        span = np.ceil(scr.max(1)) - np.floor(scr.min(1)) + 1
+        side = span.max(1)
+        done = np.zeros(len(scr), bool)
+        for S in (4, 8, 16, 32):  # small triangles: batched
+            sel = np.nonzero(~done & (side <= S))[0]
+            if len(sel):
+                _raster_batch(scr, z, uvs, tex, color, zbuf, W, H, alpha_test, flat, nrm, bilinear, light, sel, S)
+                done[sel] = True
+        big = np.nonzero(~done)[0]
+    else:
+        big = []
+    for k in big:
         (x0, y0), (x1, y1), (x2, y2) = scr[k]
         area = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
         if abs(area) < 1e-9:
@@ -79,8 +162,22 @@ def _rasterize(scr, z, uvs, tex, color, zbuf, W, H, alpha_test=True, flat=None):
         texel = tex[ty, tx]
         if alpha_test:
             m &= texel[..., 3] > 127
+        rgb = texel[..., :3]
+        if bilinear:
+            fx, fy = u * TW - 0.5, v * TH - 0.5
+            x0, y0 = np.floor(fx).astype(np.int64), np.floor(fy).astype(np.int64)
+            ax, ay = (fx - x0)[..., None], (fy - y0)[..., None]
+            x0c, x1c = np.clip(x0, 0, TW - 1), np.clip(x0 + 1, 0, TW - 1)
+            y0c, y1c = np.clip(y0, 0, TH - 1), np.clip(y0 + 1, 0, TH - 1)
+            t = tex[..., :3].astype(np.float32)
+            rgb = ((t[y0c, x0c] * (1 - ax) + t[y0c, x1c] * ax) * (1 - ay) + (t[y1c, x0c] * (1 - ax) + t[y1c, x1c] * ax) * ay)
+        if nrm is not None:
+            nn = sum((wk[..., None] * nrm[k, j] / z[k, j]) for j, wk in enumerate((w0, w1, w2))) / iz[..., None]
+            nn /= np.maximum(np.linalg.norm(nn, axis=-1, keepdims=True), 1e-9)
+            shade = 0.48 + 0.62 * np.clip(nn @ light, 0, None) + 0.08 * np.clip(nn[..., 1], 0, None)
+            rgb = np.clip(rgb.astype(np.float32) * shade[..., None], 0, 255)
         cb = color[miny:maxy + 1, minx:maxx + 1]
-        cb[m] = texel[..., :3][m]
+        cb[m] = rgb[m].astype(np.uint8)
         zb[m] = depth[m]
 
 
@@ -158,7 +255,13 @@ def render(model, width=960, height=720, yaw=35.0, pitch=22.0, fov=30.0, ssaa=2,
         color[m] = (color[m].astype(np.float64) * (1 - strength)).astype(np.uint8)
 
     sc, sz = project(tris)
-    _rasterize(sc, sz, uvs, tex, color, zbuf, W, H, True)
+    mat = model.material
+    nrm = None
+    if not mat.get("unlit", True):  # lit material: shade the preview like an engine would
+        nrm = model.world_normals(worlds)
+    L = np.array([-0.5, 1.0, 0.6]) / np.linalg.norm([-0.5, 1.0, 0.6])
+    _rasterize(sc, sz, uvs, tex, color, zbuf, W, H, True, nrm=nrm,
+               bilinear=mat.get("filter") == "linear", light=L)
     img = Image.fromarray(color, "RGB")
     if ssaa > 1:
         img = img.resize((width, height), Image.BOX)

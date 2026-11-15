@@ -5,15 +5,22 @@ into the lowpix look: low-poly geometry with a hand-painted pixel-art texture.
     python -m lowpix convert polyhaven:street_rat -o out/rat
     python -m lowpix polyhaven rat            # search Poly Haven (CC0) models
 
+Styles (`style=`): "pixel" (default, chunky unlit pixel art), "pixel-hd"
+(high-resolution pixel art), "painted" (smooth hand-painted, unlit) and
+"realistic" (high-res source texture, lit PBR material, smooth normals - a
+game-ready LOD). Every option can be overridden.
+
 Pipeline
-  1. load meshes + base-colour textures (all nodes, world transforms baked)
+  1. load meshes + base-colour textures (all nodes, world transforms baked), weld
   2. normalise: scale to `height` units, centre on x/z, stand on y = 0
-  3. bake colour: dense area-weighted surface samples -> a voxel colour field
-  4. decimate: vertex clustering, binary-searched to the triangle target
-  5. palette: k-means the colours into material groups, one hue-shifted ramp each
-  6. paint every texel at a uniform density: ramp from its baked colour, tone
-     from the colour's lightness plus painted light, lit rims and dark outlines on
-     creases, quantised to the palette - the same unlit pixel style as hand specs
+  3. decimate: vertex clustering with quadric-optimal cluster positions
+     (feature-preserving, no shrinkage), binary-searched to the triangle target
+  4. unwrap: grow near-planar charts over the low-poly mesh and pack them, so
+     texels run seamlessly across neighbouring faces
+  5. transfer: every texel finds the closest point on the detailed surface and
+     samples its texture (exact UV lookup, bilinear); voxel colour field fallback
+  6. shade per style: palette ramps + painted light/rims/outlines (pixel),
+     posterised painterly light (painted), or the untouched colour (realistic)
 """
 from __future__ import annotations
 
@@ -82,10 +89,13 @@ _CT = {5120: np.int8, 5121: np.uint8, 5122: np.int16, 5123: np.uint16, 5125: np.
 _NC = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
 
 
+MAX_TEXTURE = 1024  # convert() raises this for high-resolution styles
+
+
 def _load_image(data: bytes):
     im = Image.open(io.BytesIO(data)).convert("RGB")
-    if max(im.size) > 1024:  # plenty for pixel art, keeps memory low
-        im.thumbnail((1024, 1024), Image.LANCZOS)
+    if max(im.size) > MAX_TEXTURE:
+        im.thumbnail((MAX_TEXTURE, MAX_TEXTURE), Image.LANCZOS)
     return np.asarray(im, np.float32) / 255.0
 
 
@@ -299,12 +309,47 @@ def polyhaven_fetch(asset: str, dest: str, res: str = "1k") -> str:
 
 
 # -------------------------------------------------------------- processing
+STYLES = {
+    "pixel": dict(tris=900, density=2.0, atlas=None, ramps=6, steps=6, light=1.0, detail=0.5, smooth=2.5,
+                  grain=0.45, crease=60.0, outline=False, dither=0.0, mode="palette", spread=0.5, unlit=True, filter="nearest",
+                  chart_angle=45.0, gutter=1),
+    "pixel-hd": dict(tris=3000, density=6.0, atlas=None, ramps=8, steps=9, light=1.0, detail=0.9, smooth=1.2,
+                     grain=0.3, crease=60.0, outline=False, dither=0.0, mode="palette", spread=0.55, unlit=True, filter="nearest",
+                     chart_angle=40.0, gutter=1),
+    "painted": dict(tris=6000, density=None, atlas=1024, light=0.8, detail=1.0, smooth=0.0, grain=0.2,
+                    crease=55.0, outline=False, mode="painted", posterize=9, saturation=1.15, unlit=True,
+                    filter="linear", chart_angle=40.0, gutter=2, ramps=6, steps=6, dither=0.0),
+    "realistic": dict(tris=20000, density=None, atlas=1024, light=0.0, detail=1.0, smooth=0.0, grain=0.0,
+                      crease=0.0, outline=False, mode="source", unlit=False, filter="linear", chart_angle=45.0,
+                      gutter=2, ramps=6, steps=6, dither=0.0),
+}
+
+
 def _srgb_to_lab(rgb):
     c = np.where(rgb <= 0.04045, rgb / 12.92, ((rgb + 0.055) / 1.055) ** 2.4)
     M = np.array([[0.4124, 0.3576, 0.1805], [0.2126, 0.7152, 0.0722], [0.0193, 0.1192, 0.9505]])
     xyz = c @ M.T / np.array([0.95047, 1.0, 1.08883])
     f = np.where(xyz > 0.008856, np.cbrt(xyz), 7.787 * xyz + 16 / 116)
     return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
+
+
+def _lab_to_srgb(lab):
+    fy = (lab[..., 0] + 16) / 116
+    fx = fy + lab[..., 1] / 500
+    fz = fy - lab[..., 2] / 200
+    f = np.stack([fx, fy, fz], -1)
+    xyz = np.where(f ** 3 > 0.008856, f ** 3, (f - 16 / 116) / 7.787) * np.array([0.95047, 1.0, 1.08883])
+    Mi = np.array([[3.2406, -1.5372, -0.4986], [-0.9689, 1.8758, 0.0415], [0.0557, -0.2040, 1.0570]])
+    c = np.clip(xyz @ Mi.T, 0, 1)
+    return np.where(c <= 0.0031308, 12.92 * c, 1.055 * c ** (1 / 2.4) - 0.055)
+
+
+def weld(V, F, tol=1e-6):
+    """Merge coincident vertices (glTF splits them at UV seams) so adjacency is real."""
+    diag = float(np.linalg.norm(V.max(0) - V.min(0))) or 1.0
+    q = np.round(V / (diag * tol)).astype(np.int64)
+    _, idx, inv = np.unique(q, axis=0, return_index=True, return_inverse=True)
+    return V[idx], inv.reshape(-1)[F]
 
 
 def surface_samples(mesh: MeshData, n: int, seed: int = 0):
@@ -315,27 +360,65 @@ def surface_samples(mesh: MeshData, n: int, seed: int = 0):
     tri = rng.choice(len(F), size=n, p=area / area.sum())
     r1, r2 = rng.random(n), rng.random(n)
     s = np.sqrt(r1)
-    w0, w1, w2 = 1 - s, s * (1 - r2), s * r2
-    P = w0[:, None] * a[tri] + w1[:, None] * b[tri] + w2[:, None] * c[tri]
-    UV = (w0[:, None] * mesh.UV[F[tri, 0]] + w1[:, None] * mesh.UV[F[tri, 1]] + w2[:, None] * mesh.UV[F[tri, 2]])
-    col = np.zeros((n, 3))
+    w = np.stack([1 - s, s * (1 - r2), s * r2], 1)
+    P = w[:, :1] * a[tri] + w[:, 1:2] * b[tri] + w[:, 2:] * c[tri]
+    return P, _shade_source(mesh, tri, w)
+
+
+def _bilinear(tex, uv):
+    th, tw = tex.shape[:2]
+    x = np.mod(uv[:, 0], 1.0) * tw - 0.5
+    y = np.mod(uv[:, 1], 1.0) * th - 0.5
+    x0, y0 = np.floor(x).astype(int), np.floor(y).astype(int)
+    fx, fy = (x - x0)[:, None], (y - y0)[:, None]
+    x0m, x1m = np.mod(x0, tw), np.mod(x0 + 1, tw)
+    y0m, y1m = np.mod(y0, th), np.mod(y0 + 1, th)
+    return ((tex[y0m, x0m] * (1 - fx) + tex[y0m, x1m] * fx) * (1 - fy)
+            + (tex[y1m, x0m] * (1 - fx) + tex[y1m, x1m] * fx) * fy)
+
+
+def _shade_source(mesh, tri, w):
+    """Source colour at barycentric points `w` of source triangles `tri`."""
+    F = mesh.F
+    uv = (w[:, :1] * mesh.UV[F[tri, 0]] + w[:, 1:2] * mesh.UV[F[tri, 1]] + w[:, 2:] * mesh.UV[F[tri, 2]])
+    col = np.zeros((len(tri), 3))
     mats = mesh.M[tri]
     for mi, (tex, fac) in enumerate(mesh.materials):
         sel = mats == mi
         if not sel.any():
             continue
-        if tex is None:
-            col[sel] = fac
-        else:
-            th, tw = tex.shape[:2]
-            u = np.mod(UV[sel, 0], 1.0) * (tw - 1)
-            v = np.mod(UV[sel, 1], 1.0) * (th - 1)
-            col[sel] = tex[v.round().astype(int), u.round().astype(int)] * fac
-    return P, np.clip(col, 0, 1)
+        col[sel] = fac if tex is None else _bilinear(tex, uv[sel]) * fac
+    return np.clip(col, 0, 1)
+
+
+def _quadric_reps(V, F, inv, m, cnt):
+    """Cluster representatives that minimise the summed plane distance of their
+    source vertices (Lindstrom's out-of-core simplification): keeps creases/silhouettes."""
+    a, b, c = V[F[:, 0]], V[F[:, 1]], V[F[:, 2]]
+    n = np.cross(b - a, c - a)
+    area = np.linalg.norm(n, axis=1)
+    nn = n / np.maximum(area, 1e-12)[:, None]
+    d = -(nn * a).sum(1)
+    A = np.zeros((len(V), 3, 3))
+    B = np.zeros((len(V), 3))
+    outer = nn[:, :, None] * nn[:, None, :] * area[:, None, None]
+    nd = nn * (d * area)[:, None]
+    for k in range(3):
+        np.add.at(A, F[:, k], outer)
+        np.add.at(B, F[:, k], nd)
+    Ac = np.zeros((m, 3, 3))
+    Bc = np.zeros((m, 3))
+    np.add.at(Ac, inv, A)
+    np.add.at(Bc, inv, B)
+    mean = np.stack([np.bincount(inv, V[:, k], m) / cnt for k in range(3)], 1)
+    lam = 1e-3 * np.maximum(np.trace(Ac, axis1=1, axis2=2), 1e-12)[:, None, None]
+    rhs = -Bc + lam[:, :, 0] * mean
+    x = np.linalg.solve(Ac + lam * np.eye(3), rhs[:, :, None])[:, :, 0]
+    return x, mean
 
 
 def cluster_decimate(V, F, target: int):
-    """Vertex-clustering simplification, binary-searched to ~target triangles."""
+    """Feature-preserving vertex clustering, binary-searched to ~target triangles."""
     lo, hi = V.min(0), V.max(0)
     diag = float(np.linalg.norm(hi - lo))
 
@@ -343,32 +426,37 @@ def cluster_decimate(V, F, target: int):
         k = np.floor((V - lo) / cell).astype(np.int64)
         key = (k[:, 0] * 1_000_003 + k[:, 1]) * 1_000_033 + k[:, 2]
         _, inv = np.unique(key, return_inverse=True)
+        inv = inv.reshape(-1)
         m = inv.max() + 1
-        cnt = np.bincount(inv, minlength=m)
-        rep = np.stack([np.bincount(inv, V[:, d], m) / cnt for d in range(3)], 1)
+        cnt = np.bincount(inv, minlength=m).astype(float)
         G = inv[F]
         ok = (G[:, 0] != G[:, 1]) & (G[:, 1] != G[:, 2]) & (G[:, 0] != G[:, 2])
         G = G[ok]
         _, first = np.unique(np.sort(G, axis=1), axis=0, return_index=True)
         G = G[np.sort(first)]
-        used = np.unique(G)
-        remap = -np.ones(m, np.int64)
-        remap[used] = np.arange(len(used))
-        return rep[used], remap[G]
+        return G, inv, m, cnt, cell
 
     if len(F) <= target:
-        return run(diag * 1e-6)
-    a, b = diag / 2000.0, diag / 3.0
+        return V.copy(), F.copy()
+    a, b = diag / 4000.0, diag / 3.0
     best = run(b)
-    for _ in range(18):
+    for _ in range(20):
         mid = math.sqrt(a * b)
-        Vr, Fr = run(mid)
-        if len(Fr) > target:
+        r = run(mid)
+        if len(r[0]) > target:
             a = mid
         else:
             b = mid
-            best = (Vr, Fr)
-    return best
+            best = r
+    G, inv, m, cnt, cell = best
+    rep, mean = _quadric_reps(V, F, inv, m, cnt)
+    # keep each representative inside (a margin around) its own cluster cell
+    off = np.linalg.norm(rep - mean, axis=1)
+    rep = np.where((off > cell)[:, None], mean, rep)
+    used = np.unique(G)
+    remap = -np.ones(m, np.int64)
+    remap[used] = np.arange(len(used))
+    return rep[used], remap[G]
 
 
 class ColorField:
@@ -378,8 +466,8 @@ class ColorField:
         self.cell = cell
         self.lo = P.min(0) - cell
         k = np.floor((P - self.lo) / cell).astype(np.int64)
-        key = self._key(k)
-        uk, inv = np.unique(key, return_inverse=True)
+        uk, inv = np.unique(self._key(k), return_inverse=True)
+        inv = inv.reshape(-1)
         cnt = np.bincount(inv)
         self.keys = uk
         self.col = np.stack([np.bincount(inv, C[:, d]) / cnt for d in range(3)], 1)
@@ -393,9 +481,8 @@ class ColorField:
         k0 = np.floor((Q - self.lo) / self.cell).astype(np.int64)
         out = np.tile(self.fallback, (len(Q), 1))
         todo = np.ones(len(Q), bool)
-        offs = [(dx, dy, dz) for dx in range(-max_r, max_r + 1) for dy in range(-max_r, max_r + 1)
-                for dz in range(-max_r, max_r + 1)]
-        offs.sort(key=lambda o: o[0] ** 2 + o[1] ** 2 + o[2] ** 2)
+        offs = sorted(((dx, dy, dz) for dx in range(-max_r, max_r + 1) for dy in range(-max_r, max_r + 1)
+                       for dz in range(-max_r, max_r + 1)), key=lambda o: o[0] ** 2 + o[1] ** 2 + o[2] ** 2)
         for o in offs:
             if not todo.any():
                 break
@@ -406,6 +493,112 @@ class ColorField:
             out[idx[hit]] = self.col[pos[hit]]
             todo[idx[hit]] = False
         return out
+
+
+def _tri_data(V, F):
+    A, B, C = V[F[:, 0]], V[F[:, 1]], V[F[:, 2]]
+    ab, ac = B - A, C - A
+    n = np.cross(ab, ac)
+    d00, d01, d11 = (ab * ab).sum(1), (ab * ac).sum(1), (ac * ac).sum(1)
+    return {"A": A, "B": B, "C": C, "ab": ab, "ac": ac, "n": n, "nn": np.maximum((n * n).sum(1), 1e-20),
+            "d00": d00, "d01": d01, "d11": d11, "den": np.maximum(d00 * d11 - d01 * d01, 1e-20)}
+
+
+def _closest_on_tris(P, td, tri):
+    """Exact closest point on triangles `tri` (pairwise with P). Returns (dist2, barycentrics)."""
+    A, B, C, ab, ac, n = td["A"][tri], td["B"][tri], td["C"][tri], td["ab"][tri], td["ac"][tri], td["n"][tri]
+    Pp = P - (np.einsum("ij,ij->i", P - A, n) / td["nn"][tri])[:, None] * n
+    v2 = Pp - A
+    d00, d01, d11 = td["d00"][tri], td["d01"][tri], td["d11"][tri]
+    d20, d21 = np.einsum("ij,ij->i", v2, ab), np.einsum("ij,ij->i", v2, ac)
+    den = td["den"][tri]
+    v = (d11 * d20 - d01 * d21) / den
+    w = (d00 * d21 - d01 * d20) / den
+    u = 1 - v - w
+    bary = np.stack([u, v, w], 1)
+    dP = P - Pp
+    best_d = np.where((u >= 0) & (v >= 0) & (w >= 0), np.einsum("ij,ij->i", dP, dP), np.inf)
+    for (X, Y, ix, iy) in ((A, B, 0, 1), (B, C, 1, 2), (C, A, 2, 0)):
+        e = Y - X
+        t = np.clip(np.einsum("ij,ij->i", P - X, e) / np.maximum(np.einsum("ij,ij->i", e, e), 1e-20), 0, 1)
+        dq = P - (X + t[:, None] * e)
+        d = np.einsum("ij,ij->i", dq, dq)
+        better = d < best_d
+        if better.any():
+            bb = np.zeros((better.sum(), 3))
+            bb[:, ix] = 1 - t[better]
+            bb[:, iy] = t[better]
+            bary[better] = bb
+            best_d = np.where(better, d, best_d)
+    return best_d, bary
+
+
+class SurfaceSampler:
+    """Closest-point colour transfer from the detailed surface (uniform-grid broad phase)."""
+
+    def __init__(self, mesh: MeshData, cell: float, reach: float | None = None):
+        self.mesh = mesh
+        V, F = mesh.V, mesh.F
+        self.h = cell
+        self.reach = cell * 0.5 if reach is None else reach   # triangles within `reach` of a query are found
+        self.td = _tri_data(V, F)
+        self.lo = V.min(0) - 2 * cell
+        tmin = np.minimum(np.minimum(V[F[:, 0]], V[F[:, 1]]), V[F[:, 2]]) - self.reach
+        tmax = np.maximum(np.maximum(V[F[:, 0]], V[F[:, 1]]), V[F[:, 2]]) + self.reach
+        c0 = np.floor((tmin - self.lo) / cell).astype(np.int64)
+        c1 = np.floor((tmax - self.lo) / cell).astype(np.int64)
+        span = c1 - c0 + 1
+        keys, tris = [], []
+        S = int(min(span.max(), 4))
+        small = (span <= S).all(1)
+        for dx in range(S):
+            for dy in range(S):
+                for dz in range(S):
+                    m = small & (dx < span[:, 0]) & (dy < span[:, 1]) & (dz < span[:, 2])
+                    if m.any():
+                        keys.append(self._key(c0[m] + np.array([dx, dy, dz])))
+                        tris.append(np.nonzero(m)[0])
+        for t in np.nonzero(~small)[0]:  # the few large triangles: every cell they touch
+            g = np.stack(np.meshgrid(*[np.arange(c0[t, a], c1[t, a] + 1) for a in range(3)], indexing="ij"), -1).reshape(-1, 3)
+            keys.append(self._key(g))
+            tris.append(np.full(len(g), t))
+        keys, tris = np.concatenate(keys), np.concatenate(tris)
+        order = np.argsort(keys, kind="stable")
+        keys, self.tris = keys[order], tris[order]
+        self.ukeys, self.start, self.count = np.unique(keys, return_index=True, return_counts=True)
+
+    @staticmethod
+    def _key(k):
+        return (k[:, 0] * 2_000_003 + k[:, 1]) * 2_000_029 + k[:, 2]
+
+    def __call__(self, Q, chunk=20000):
+        """-> (colours (n,3), found mask)."""
+        mesh = self.mesh
+        V, F = mesh.V, mesh.F
+        out = np.zeros((len(Q), 3))
+        found = np.zeros(len(Q), bool)
+        for s in range(0, len(Q), chunk):
+            q = Q[s:s + chunk]
+            key = self._key(np.floor((q - self.lo) / self.h).astype(np.int64))
+            pos = np.clip(np.searchsorted(self.ukeys, key), 0, len(self.ukeys) - 1)
+            hit = self.ukeys[pos] == key
+            qi = np.nonzero(hit)[0]
+            if not len(qi):
+                continue
+            st, ct = self.start[pos[qi]], self.count[pos[qi]]
+            qid = np.repeat(qi, ct)
+            idx = np.repeat(st - np.cumsum(np.r_[0, ct[:-1]]), ct) + np.arange(ct.sum())
+            tri = self.tris[idx]
+            d2, bary = _closest_on_tris(q[qid], self.td, tri)
+            order = np.lexsort((d2, qid))
+            qid_s = qid[order]
+            first = np.r_[True, qid_s[1:] != qid_s[:-1]]
+            pick = order[first]
+            ok = d2[pick] <= self.reach ** 2
+            pick, qsel = pick[ok], qid[pick][ok]
+            out[s + qsel] = _shade_source(mesh, tri[pick], bary[pick])
+            found[s + qsel] = True
+        return out, found
 
 
 def kmeans(X, k, iters=25, seed=0):
@@ -423,18 +616,121 @@ def kmeans(X, k, iters=25, seed=0):
     return C, lab
 
 
+# ------------------------------------------------------------------- charts
+def build_charts(V, F, fn, fa, angle_deg: float, max_area: float):
+    """Greedy region growing over the low-poly mesh: near-planar charts."""
+    edge_faces = {}
+    for fi, f in enumerate(F):
+        for e in ((f[0], f[1]), (f[1], f[2]), (f[2], f[0])):
+            edge_faces.setdefault((min(e), max(e)), []).append(fi)
+    nbr = [[] for _ in range(len(F))]
+    for fl in edge_faces.values():
+        for i in fl:
+            for j in fl:
+                if i != j:
+                    nbr[i].append(j)
+    cos_t = math.cos(math.radians(angle_deg))
+    chart = -np.ones(len(F), np.int64)
+    charts = []
+    for seed in np.argsort(-fa):
+        if chart[seed] >= 0:
+            continue
+        cid = len(charts)
+        N = fn[seed]
+        members, area, stack = [seed], fa[seed], [seed]
+        chart[seed] = cid
+        while stack:
+            f = stack.pop()
+            for g in nbr[f]:
+                if chart[g] < 0 and float(np.dot(fn[g], N)) > cos_t and area + fa[g] <= max_area:
+                    chart[g] = cid
+                    members.append(g)
+                    area += fa[g]
+                    stack.append(g)
+        charts.append(members)
+    return charts, chart, edge_faces
+
+
+def _chart_face(V, F, vf, members, density, name, fnr, fn):
+    """Flatten one chart onto its average plane -> a textured Face (kind 'mesh')."""
+    Fm = F[members]
+    idx, inv = np.unique(Fm.reshape(-1), return_inverse=True)
+    pts = V[idx]
+    tris = [tuple(t) for t in inv.reshape(-1, 3).tolist()]
+    N = normalize(fnr[members].sum(0))
+    # angle-limited smooth normals: only faces facing roughly the chart's way contribute,
+    # so collapsed thin parts (tails, ears) don't cancel front against back
+    vn = np.zeros((len(idx), 3))
+    for i, v in enumerate(idx):
+        g = vf[v]
+        ok = fn[g] @ N > 0.5
+        vn[i] = fnr[g[ok]].sum(0) if ok.any() else N
+    vn /= np.maximum(np.linalg.norm(vn, axis=1, keepdims=True), 1e-12)
+    up = np.array([0.0, 1.0, 0.0]) if abs(N[1]) < 0.9 else np.array([0.0, 0.0, -1.0])
+    Vax = normalize(up - N * np.dot(up, N))   # image-up follows world-up (pixel-art convention)
+    U = np.cross(Vax, N)
+    x, y = (pts - pts[0]) @ U, (pts - pts[0]) @ Vax
+    W = max(1, int(math.ceil((x.max() - x.min()) * density)))
+    H = max(1, int(math.ceil((y.max() - y.min()) * density)))
+    uv = np.c_[(x - x.min()) * density / W, (y.max() - y) * density / H]
+    face = Face(name, "mesh", pts, uv, tris, double_sided=True, attrs={"n": vn})
+    face.W, face.H = W, H
+    face.soft = True
+    face._chart = (idx, U, Vax, N, x.min(), y.max(), x, y)
+    return face
+
+
+def _chart_texels(face, density):
+    """Per-texel 3D position, normal and owning triangle for a chart face."""
+    idx, U, Vax, N, x0, y1, x, y = face._chart
+    W, H = face.W, face.H
+    cx = x0 + (np.arange(W) + 0.5) / density
+    cy = y1 - (np.arange(H) + 0.5) / density
+    X, Y = np.meshgrid(cx, cy)
+    X, Y = X.reshape(-1), Y.reshape(-1)
+    T = np.array(face.tris)
+    ax, ay = x[T[:, 0]], y[T[:, 0]]
+    bx, by = x[T[:, 1]], y[T[:, 1]]
+    qx, qy = x[T[:, 2]], y[T[:, 2]]
+    den = (by - qy) * (ax - qx) + (qx - bx) * (ay - qy)
+    den = np.where(np.abs(den) < 1e-12, 1e-12, den)
+    w0 = ((by - qy)[None] * (X[:, None] - qx[None]) + (qx - bx)[None] * (Y[:, None] - qy[None])) / den[None]
+    w1 = ((qy - ay)[None] * (X[:, None] - qx[None]) + (ax - qx)[None] * (Y[:, None] - qy[None])) / den[None]
+    w2 = 1 - w0 - w1
+    score = np.minimum(np.minimum(w0, w1), w2)
+    best = np.argmax(score, axis=1)
+    r = np.arange(len(X))
+    w = np.stack([w0[r, best], w1[r, best], w2[r, best]], 1)
+    w = np.clip(w, 0, None)
+    w /= np.maximum(w.sum(1, keepdims=True), 1e-12)
+    tri = T[best]
+    P = (w[:, :1] * face.pts[tri[:, 0]] + w[:, 1:2] * face.pts[tri[:, 1]] + w[:, 2:] * face.pts[tri[:, 2]])
+    n = face.attrs["n"]
+    Nn = w[:, :1] * n[tri[:, 0]] + w[:, 1:2] * n[tri[:, 1]] + w[:, 2:] * n[tri[:, 2]]
+    Nn /= np.maximum(np.linalg.norm(Nn, axis=1, keepdims=True), 1e-12)
+    return P.reshape(H, W, 3), Nn.reshape(H, W, 3), (X.reshape(H, W), Y.reshape(H, W))
+
+
 # --------------------------------------------------------------------- core
-def convert(src: str, tris: int = 900, height: float = 24.0, density: float = 2.0, ramps: int = 6,
-            steps: int = 6, light: float = 1.0, detail: float = 0.7, crease: float = 60.0,
-            outline: bool = True, dither: float = 0.0, yaw: float = 0.0, name: str | None = None,
-            background: str = "#1d2230", hue_shift: float = 20.0, work_dir: str | None = None,
-            smooth: float = 2.5, merge: float = 14.0, grain: float = 0.45, outline_angle: float = 80.0):
-    """Detailed model -> lowpix Model (geometry + painted atlas), ready for export."""
+def convert(src: str, style: str = "pixel", height: float = 24.0, yaw: float = 0.0, name: str | None = None,
+            background: str = "#1d2230", hue_shift: float = 20.0, work_dir: str | None = None, **overrides):
+    """Detailed model -> lowpix Model (geometry + painted atlas), ready for export.
+    `style` picks a preset from STYLES; any preset key can be overridden by keyword
+    (tris, density, atlas, ramps, steps, light, detail, smooth, grain, crease, outline,
+    dither, posterize, saturation, chart_angle, ...)."""
     from .model import Model
+    global MAX_TEXTURE
+
+    if style not in STYLES:
+        raise ValueError(f"unknown style {style!r} (choose from {sorted(STYLES)})")
+    o = dict(STYLES[style])
+    o.update({k: v for k, v in overrides.items() if v is not None})
+    MAX_TEXTURE = 2048 if o["mode"] != "palette" else 1024
 
     if src.startswith("polyhaven:"):
         asset = src.split(":", 1)[1]
-        src = polyhaven_fetch(asset, os.path.join(work_dir or "out/_downloads", asset))
+        src = polyhaven_fetch(asset, os.path.join(work_dir or "out/_downloads", asset),
+                              res="2k" if o["mode"] != "palette" else "1k")
         name = name or asset.replace("_", " ").title()
     mesh = load_model(src)
     name = name or os.path.splitext(os.path.basename(src))[0].replace("_", " ").title()
@@ -448,162 +744,213 @@ def convert(src: str, tris: int = 900, height: float = 24.0, density: float = 2.
     s = height / max(hi[1] - lo[1], 1e-9)
     mesh.V = (mesh.V - np.array([(lo[0] + hi[0]) / 2, lo[1], (lo[2] + hi[2]) / 2])) * s
 
-    # bake colour from the detailed surface
-    area = 0.5 * np.linalg.norm(np.cross(mesh.V[mesh.F[:, 1]] - mesh.V[mesh.F[:, 0]],
-                                         mesh.V[mesh.F[:, 2]] - mesh.V[mesh.F[:, 0]]), axis=1).sum()
-    n = int(np.clip(area * (density * 2.5) ** 2, 60_000, 600_000))
-    P, C = surface_samples(mesh, n)
-    texel = 1.0 / density
-    field = ColorField(P, C, texel * max(smooth, 1.0))   # low-pass: colour clusters, not fur noise
-
-    # geometry
-    V, F = cluster_decimate(mesh.V, mesh.F, tris)
+    # geometry: weld, decimate, re-fit to the exact height / ground
+    Vw, Fw = weld(mesh.V, mesh.F)
+    V, F = cluster_decimate(Vw, Fw, int(o["tris"])) if o["tris"] and o["tris"] < len(Fw) else (Vw, Fw)
     if len(F) == 0:
-        raise ValueError("decimation removed everything - raise --tris")
-    # clustering pulls extremes inward: re-fit the low-poly mesh to the exact height / ground,
-    # and remember the mapping so colour is still baked from the matching source position
+        raise ValueError("decimation removed everything - raise tris")
     dlo, dhi = V.min(0), V.max(0)
     q_off = np.array([(dlo[0] + dhi[0]) / 2, dlo[1], (dlo[2] + dhi[2]) / 2])
     q_scale = height / max(dhi[1] - dlo[1], 1e-9)
     V = (V - q_off) * q_scale
 
-    # palette: group colours into material ramps (by hue/chroma, lightness down-weighted)
-    lab = _srgb_to_lab(C)
-    feat = lab * np.array([0.35, 1.0, 1.0])
-    sub = feat[np.random.default_rng(1).choice(len(feat), size=min(20000, len(feat)), replace=False)]
-    k = max(1, min(ramps, len(np.unique(np.round(sub, 0), axis=0))))
-    cent, lab_sub = kmeans(sub, k)
-    # merge material groups that are nearly the same colour (one ramp per real material)
-    groups = list(range(len(cent)))
-    for i in range(len(cent)):
-        for j in range(i):
-            if np.linalg.norm(cent[i] - cent[j]) < merge:
-                gi, gj = groups[i], groups[j]
-                groups = [gj if g == gi else g for g in groups]
-    keep = sorted(set(groups))
-    cent = np.array([cent[[i for i, g in enumerate(groups) if g == u]].mean(0) for u in keep])
-    k = len(cent)
-    ramp_cols, Lmid, Lspread = {}, [], []
-    lab_all = np.argmin(((feat[:, None, :] - cent[None]) ** 2).sum(-1), axis=1)
-    for j in range(k):
-        m = lab_all == j
-        Ls = lab[m, 0] if m.any() else np.array([50.0])
-        med = C[m][np.argsort(Ls)[len(Ls) // 2]] if m.any() else C.mean(0)
-        ramp_cols[f"m{j}"] = make_ramp(to_hex(med * 255), steps, hue_shift, 0.12, 0.85)
-        Lmid.append(float(np.median(Ls)))
-        Lspread.append(float(max(np.percentile(Ls, 90) - np.percentile(Ls, 10), 8.0)))
-    pal = Palette(ramp_cols)
+    fnr = np.cross(V[F[:, 1]] - V[F[:, 0]], V[F[:, 2]] - V[F[:, 0]])
+    fa = 0.5 * np.linalg.norm(fnr, axis=1)
+    keep = fa > 1e-10
+    F, fnr, fa = F[keep], fnr[keep], fa[keep]
+    fn = fnr / (2 * fa[:, None])
+    order = np.argsort(F.reshape(-1), kind="stable")
+    owner = np.repeat(np.arange(len(F)), 3)[order]
+    starts = np.searchsorted(F.reshape(-1)[order], np.arange(len(V) + 1))
+    vf = [owner[starts[v]:starts[v + 1]] for v in range(len(V))]   # faces around each vertex
 
-    # faces: one textured triangle face each, painted on its own pixel rectangle
-    faces = []
-    nrm = np.cross(V[F[:, 1]] - V[F[:, 0]], V[F[:, 2]] - V[F[:, 0]])
-    nl = np.linalg.norm(nrm, axis=1)
-    good = nl > 1e-9
-    F, nrm = F[good], nrm[good] / nl[good, None]
-    vn = np.zeros_like(V)
-    area_n = np.cross(V[F[:, 1]] - V[F[:, 0]], V[F[:, 2]] - V[F[:, 0]])
-    for c in range(3):
-        np.add.at(vn, F[:, c], area_n)
-    vn /= np.maximum(np.linalg.norm(vn, axis=1, keepdims=True), 1e-12)
-    for fi, f in enumerate(F):
-        p = V[f]
-        U = normalize(p[1] - p[0])
-        Vb = np.cross(nrm[fi], U)
-        x = (p - p[0]) @ U
-        y = (p - p[0]) @ Vb
-        w, h = max(x.max() - x.min(), 1e-6), max(y.max() - y.min(), 1e-6)
-        uv = np.c_[(x - x.min()) / w, (y.max() - y) / h]
-        # smooth normals for painted light, unless the corner sits on a hard crease
-        cn = np.array([vn[v] if np.dot(vn[v], nrm[fi]) > 0.5 else nrm[fi] for v in f])
-        face = Face(f"t{fi}", "poly", p.copy(), uv, [(0, 1, 2)], double_sided=True, attrs={"n": cn})
-        face.soft = True
-        faces.append(face)
+    # texel density: fixed (pixel styles) or fitted to an atlas budget (HD styles)
+    total_area = float(fa.sum())
+    density = o["density"] or math.sqrt(0.5 * o["atlas"] ** 2 / max(total_area, 1e-9))
+    max_side = 96 if o["mode"] == "palette" else 160
+    charts, chart_of, edge_faces = build_charts(V, F, fn, fa, o["chart_angle"], (max_side / density) ** 2 * 0.5)
+    gutter = int(o["gutter"])
+    for _ in range(12):
+        faces = [_chart_face(V, F, vf, members, density, f"c{ci}", fnr, fn) for ci, members in enumerate(charts)]
+        AW, AH, pos = shelf_pack([(f.W, f.H) for f in faces], gutter=gutter)
+        if not o["atlas"] or max(AW, AH) <= o["atlas"]:
+            break
+        density *= 0.9
+    for face, p in zip(faces, pos):
+        face.rect = p
 
-    # creases: edges whose neighbouring faces bend sharply (or open boundaries)
-    edge_faces = {}
-    for fi, f in enumerate(F):
-        for e in ((f[0], f[1]), (f[1], f[2]), (f[2], f[0])):
-            edge_faces.setdefault(tuple(sorted(e)), []).append(fi)
-    cos_c = math.cos(math.radians(crease))
-    cos_o = math.cos(math.radians(outline_angle))
+    # colour transfer from the detailed surface
+    texel = 1.0 / density
+    area_src = float(0.5 * np.linalg.norm(np.cross(mesh.V[mesh.F[:, 1]] - mesh.V[mesh.F[:, 0]],
+                                                   mesh.V[mesh.F[:, 2]] - mesh.V[mesh.F[:, 0]]), axis=1).sum())
+    nsamp = int(np.clip(area_src * (density * 1.5) ** 2, 60_000, 800_000))
+    Ps, Cs = surface_samples(mesh, nsamp)
+    smooth = float(o.get("smooth") or 0)
+    field = ColorField(Ps, Cs, texel * max(smooth, 1.0))
+    sampler = None
+    if smooth < 1.5:
+        e = mesh.V[mesh.F[:, 1]] - mesh.V[mesh.F[:, 0]]
+        edge = float(np.median(np.linalg.norm(e, axis=1)))
+        dev = height / 150.0  # typical low-poly deviation from the source surface
+        sampler = SurfaceSampler(mesh, cell=max(2.0 * edge, 2.0 * dev, texel), reach=max(edge, dev, texel))
+    texels = [_chart_texels(f, density) for f in faces]
+    Qall = np.concatenate([(t[0] / q_scale + q_off).reshape(-1, 3) for t in texels])
+    if sampler is not None:
+        Call, ok = sampler(Qall)
+        if not ok.all():
+            Call[~ok] = field(Qall[~ok])
+    else:
+        Call = field(Qall)
+    splits = np.cumsum([f.W * f.H for f in faces])[:-1]
+    cols = np.split(Call, splits)
+
+    # palette (pixel styles): material groups -> hue-shifted ramps
+    lab_s = _srgb_to_lab(Cs)
+    feat_w = np.array([0.35, 1.0, 1.0])
+    if o["mode"] == "palette":
+        feat = lab_s * feat_w
+        sub = feat[np.random.default_rng(1).choice(len(feat), size=min(20000, len(feat)), replace=False)]
+        k = max(1, min(int(o["ramps"]), len(np.unique(np.round(sub, 0), axis=0))))
+        cent, _ = kmeans(sub, k)
+        groups = list(range(len(cent)))
+        for i in range(len(cent)):
+            for j in range(i):
+                if np.linalg.norm(cent[i] - cent[j]) < 14.0:
+                    gi, gj = groups[i], groups[j]
+                    groups = [gj if g == gi else g for g in groups]
+        cent = np.array([cent[[i for i, g in enumerate(groups) if g == u]].mean(0) for u in sorted(set(groups))])
+        lab_all = np.argmin(((feat[:, None, :] - cent[None]) ** 2).sum(-1), axis=1)
+        ramp_cols, Lmid, Lspread = {}, [], []
+        for j in range(len(cent)):
+            m = lab_all == j
+            Ls = lab_s[m, 0] if m.any() else np.array([50.0])
+            med = Cs[m][np.argsort(Ls)[len(Ls) // 2]] if m.any() else Cs.mean(0)
+            ramp_cols[f"m{j}"] = make_ramp(to_hex(med * 255), int(o["steps"]), hue_shift, 0.12, float(o.get("spread", 0.5)))
+            Lmid.append(float(np.median(Ls)))
+            Lspread.append(float(max(np.percentile(Ls, 90) - np.percentile(Ls, 10), 8.0)))
+        pal = Palette(ramp_cols)
+        Lmid, Lspread = np.array(Lmid), np.array(Lspread)
+    else:
+        pal = None
+
+    # crease flags on low-poly edges
+    cos_c = math.cos(math.radians(o["crease"])) if o["crease"] else -2.0
+    cos_o = math.cos(math.radians(80.0))
     crease_of, hard_of = {}, {}
     for e, fl in edge_faces.items():
         if len(fl) != 2:
             crease_of[e] = hard_of[e] = True
         else:
-            d = float(np.dot(nrm[fl[0]], nrm[fl[1]]))
+            d = float(np.dot(fn[fl[0]], fn[fl[1]]))
             crease_of[e], hard_of[e] = d < cos_c, d < cos_o
 
-    for face in faces:
-        face.W, face.H = face.pixel_size(density)
-    AW, AH, pos = shelf_pack([(f.W, f.H) for f in faces], gutter=1)
+    AW, AH = max(f.rect[0] + f.W for f in faces) + gutter, max(f.rect[1] + f.H for f in faces) + gutter
+    AW, AH = 1 << (AW - 1).bit_length(), 1 << (AH - 1).bit_length()
     atlas = np.zeros((AH, AW, 4), np.uint8)
     L = normalize(np.array([-0.5, 1.0, 0.6]))
     yspan = max(V[:, 1].max(), 1e-6)
+    steps = int(o["steps"])
+    for ci, face in enumerate(faces):
+        W, H = face.W, face.H
+        Pt, Nt, (X2, Y2) = texels[ci]
+        col = cols[ci].reshape(H, W, 3)
+        ndl = Nt @ L
+
+        # boundary crease edges of this chart: distance (px) + whether they face the light
+        rim = np.zeros((H, W))
+        dark = np.zeros((H, W), bool)
+        if o["mode"] != "source":
+            idx, U, Vax, N, x0, y1, xs, ys = face._chart
+            gi = {g: i for i, g in enumerate(idx)}
+            mine = set(charts[ci])
+            cpos = face.pts.mean(0)
+            for fi in charts[ci]:
+                f = F[fi]
+                for a, b in ((f[0], f[1]), (f[1], f[2]), (f[2], f[0])):
+                    e = (min(a, b), max(a, b))
+                    others = [g for g in edge_faces[e] if g != fi]
+                    if others and all(g in mine for g in others):
+                        continue
+                    if not crease_of[e]:
+                        continue
+                    pa, pb = np.array([xs[gi[a]], ys[gi[a]]]), np.array([xs[gi[b]], ys[gi[b]]])
+                    ev = pb - pa
+                    t = np.clip(((X2 - pa[0]) * ev[0] + (Y2 - pa[1]) * ev[1]) / max(ev @ ev, 1e-12), 0, 1)
+                    dist = np.hypot(X2 - (pa[0] + t * ev[0]), Y2 - (pa[1] + t * ev[1])) * density
+                    near = dist < (1.0 if o["mode"] == "palette" else 1.6)
+                    mid3 = (V[a] + V[b]) / 2 - cpos
+                    e3 = V[b] - V[a]
+                    mid3 = mid3 - e3 * np.dot(mid3, e3) / max(np.dot(e3, e3), 1e-12)
+                    sdot = float(np.dot(normalize(mid3), L))
+                    if sdot > 0.2:
+                        rim[near] = np.maximum(rim[near], 1.0)
+                    elif o["outline"] and sdot < 0.05 and hard_of[e]:
+                        dark |= near
+                    else:
+                        rim[near] = np.minimum(rim[near], -0.8)
+
+        if o["mode"] == "palette":
+            lab_t = _srgb_to_lab(col)
+            rid = np.argmin(((lab_t[..., None, :] * feat_w - cent[None, None]) ** 2).sum(-1), axis=-1)
+            mid = (steps - 1) / 2.0
+            rel = np.clip((lab_t[..., 0] - Lmid[rid]) / Lspread[rid], -1.0, 1.0)
+            tone = mid + o["detail"] * rel * (steps - 1) * 0.45
+            tone += o["light"] * 1.0 * ndl * (steps / 6.0)
+            tone += 0.5 * np.clip(Pt[..., 1] / 3.0 - 1.0, -1.0, 0.0)
+            if o["grain"]:
+                tone += o["grain"] * (fbm(Pt, density / 1.6, 2, 7) - 0.5) * 2
+            tone += rim * (steps / 6.0)
+            thr = (1 - o["dither"]) * 0.5 + o["dither"] * BAYER4[np.arange(H)[:, None] % 4, np.arange(W)[None] % 4]
+            idx_t = np.clip(np.floor(tone + thr).astype(int), 1, pal.lengths[rid] - 1)
+            idx_t[dark] = 0
+            rgb = pal.table[rid, idx_t]
+        elif o["mode"] == "painted":
+            lab_t = _srgb_to_lab(col)
+            Lv = lab_t[..., 0]
+            Lv = Lv * o["detail"] + np.mean(Lv) * (1 - o["detail"])
+            Lv = Lv + o["light"] * 16.0 * ndl + 7.0 * rim
+            Lv += 0.5 * 12 * np.clip(Pt[..., 1] / 3.0 - 1.0, -1.0, 0.0)
+            if o["grain"]:
+                Lv += o["grain"] * 10 * (fbm(Pt, density / 3.0, 3, 7) - 0.5) * 2
+            step = 100.0 / max(int(o["posterize"]), 2)
+            Lv = np.round(Lv / step) * step  # painterly value bands
+            ab = lab_t[..., 1:] * o["saturation"]
+            shade = np.clip(-ndl, 0, 1)[..., None]
+            ab = ab + shade * np.array([4.0, -10.0])  # cool shadows
+            ab = ab + np.clip(ndl, 0, 1)[..., None] * np.array([1.0, 5.0])  # warm lights
+            rgb = (_lab_to_srgb(np.dstack([np.clip(Lv, 2, 99), ab])) * 255).round().astype(np.uint8)
+        else:  # source: untouched colour, lighting comes from the engine
+            rgb = (np.clip(col, 0, 1) * 255).round().astype(np.uint8)
+
+        x, y = face.rect
+        atlas[y:y + H, x:x + W, :3] = rgb
+        atlas[y:y + H, x:x + W, 3] = 255
+        for g in range(1, gutter + 1):  # extend edge texels into the gutter
+            atlas[y - g, x:x + W] = atlas[y, x:x + W]
+            atlas[y + H - 1 + g, x:x + W] = atlas[y + H - 1, x:x + W]
+            atlas[y - gutter:y + H + gutter, x - g] = atlas[y - gutter:y + H + gutter, x]
+            atlas[y - gutter:y + H + gutter, x + W - 1 + g] = atlas[y - gutter:y + H + gutter, x + W - 1]
+
+    if pal is None:  # HD styles: a small descriptive palette for the report/viewer
+        lab_t = _srgb_to_lab(atlas[..., :3][atlas[..., 3] > 0].reshape(-1, 3) / 255.0)
+        sub = lab_t[np.random.default_rng(0).choice(len(lab_t), size=min(6000, len(lab_t)), replace=False)]
+        cent2, _ = kmeans(sub * feat_w, min(5, len(sub)))
+        ramps = {}
+        for j, c in enumerate(cent2 / feat_w):
+            base = _lab_to_srgb(c[None])[0] * 255
+            ramps[f"m{j}"] = make_ramp(to_hex(base), 5, hue_shift, 0.1, 0.8)
+        pal = Palette(ramps)
+
     inst = Instance("mesh", "mesh", {"id": "mesh", "shape": "mesh"}, False, None, np.eye(4))
     inst.world = np.eye(4)
     inst.rest_local = np.eye(4)
     inst.faces = faces
     inst.src_faces = faces
-    cent_lab = cent / np.array([0.35, 1.0, 1.0])
-    for fi, (face, (px0, py0)) in enumerate(zip(faces, pos)):
-        face.rect = (px0, py0)
-        W, H = face.W, face.H
-        S, T = face.texel_grid(W, H)
-        Pt = face.sample(S, T)
-        col = field((Pt / q_scale + q_off).reshape(-1, 3)).reshape(H, W, 3)
-        lab_t = _srgb_to_lab(col)
-        ft = lab_t * np.array([0.35, 1.0, 1.0])
-        rid = np.argmin(((ft[..., None, :] - (cent_lab * np.array([0.35, 1.0, 1.0]))[None, None]) ** 2).sum(-1), axis=-1)
-        mid = (steps - 1) / 2.0
-        rel = np.clip((lab_t[..., 0] - np.array(Lmid)[rid]) / np.array(Lspread)[rid], -1.0, 1.0)
-        tone = mid + detail * rel * (steps - 1) * 0.45
-        Nt = face.sample(S, T, face.attrs["n"])
-        Nt /= np.maximum(np.linalg.norm(Nt, axis=-1, keepdims=True), 1e-12)
-        ndl = Nt @ L
-        tone += light * 1.25 * ndl
-        tone += 0.5 * np.clip(Pt[..., 1] / 3.0 - 1.0, -1.0, 0.0)          # painted ground occlusion
-        if grain:  # clustered hand-painted variation (2-4 px blobs), breaks up flat bands
-            tone += grain * (fbm(Pt, density / 1.6, 2, 7) - 0.5) * 2
-        tone += 0.25 * (Pt[..., 1] / yspan - 0.5)                         # top-lit gradient
-        # rims & outlines on crease edges (pixel distance to each triangle edge)
-        f = F[fi]
-        ex = [(f[0], f[1]), (f[1], f[2]), (f[2], f[0])]
-        cpos = face.pts.mean(0)
-        dark = np.zeros((H, W), bool)
-        for ei, (a, b) in enumerate(ex):
-            if not crease_of[tuple(sorted((a, b)))]:
-                continue
-            pa, pb = face.pts[ei], face.pts[(ei + 1) % 3]
-            e = pb - pa
-            d = np.linalg.norm(np.cross(e, Pt - pa), axis=-1) / max(np.linalg.norm(e), 1e-9) * density
-            mvec = (pa + pb) / 2 - cpos
-            mvec = mvec - e * np.dot(mvec, e) / max(np.dot(e, e), 1e-12)
-            sdot = float(np.dot(normalize(mvec), L))
-            near = d < 1.0
-            if sdot > 0.2:
-                tone[near] += 1.0
-            elif outline and sdot < 0.05 and hard_of[tuple(sorted((a, b)))]:
-                dark |= near
-            else:
-                tone[near] -= 0.8
-        thr = (1 - dither) * 0.5 + dither * BAYER4[np.arange(H)[:, None] % 4, np.arange(W)[None] % 4]
-        # fills never use the darkest step: pixel artists keep it for outlines and deep creases
-        idx = np.clip(np.floor(tone + thr).astype(int), 1, pal.lengths[rid] - 1)
-        idx[dark] = 0
-        rgb = pal.table[rid, idx]
-        x, y = face.rect
-        atlas[y:y + H, x:x + W, :3] = rgb
-        atlas[y:y + H, x:x + W, 3] = 255
-        atlas[y - 1, x:x + W] = atlas[y, x:x + W]
-        atlas[y + H, x:x + W] = atlas[y + H - 1, x:x + W]
-        atlas[y - 1:y + H + 1, x - 1] = atlas[y - 1:y + H + 1, x]
-        atlas[y - 1:y + H + 1, x + W] = atlas[y - 1:y + H + 1, x + W - 1]
-
-    spec = {"name": name, "density": density, "palette": {"ramps": pal.as_hex()},
+    spec = {"name": name, "density": round(density, 3), "palette": {"ramps": pal.as_hex()},
             "render": {"background": background, "hero": [35, 22], "shadow": 0.45},
-            "description": f"Converted with lowpix from {os.path.basename(src)}",
-            "convert": {"source": os.path.basename(src), "tris": tris, "height": height, "density": density,
-                        "ramps": ramps, "steps": steps, "light": light, "detail": detail, "crease": crease,
-                        "outline": outline, "dither": dither, "yaw": yaw, "source_triangles": int(len(mesh.F))}}
+            "material": {"unlit": bool(o["unlit"]), "filter": o["filter"]},
+            "description": f"Converted with lowpix ({style}) from {os.path.basename(src)}",
+            "convert": {"source": os.path.basename(src), "style": style, "height": height, "yaw": yaw,
+                        "source_triangles": int(len(mesh.F)), "charts": len(faces),
+                        **{k: (v if not isinstance(v, np.generic) else v.item()) for k, v in o.items()}}}
     return Model(spec, pal, [inst], atlas, density)

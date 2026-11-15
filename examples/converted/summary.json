@@ -1,0 +1,207 @@
+{
+  "items": 7,
+  "ok": 7,
+  "failed": 0,
+  "seconds": 58.9,
+  "results": [
+    {
+      "source": "polyhaven:street_rat",
+      "kind": "model",
+      "name": "Street Rat",
+      "style": "pixel",
+      "status": "ok",
+      "out": "examples/converted/street_rat",
+      "triangles": 900,
+      "colors": 8,
+      "atlas": [
+        128,
+        256
+      ],
+      "warnings": [],
+      "animations": [],
+      "files": {
+        "street_rat.glb": "street_rat/street_rat.glb",
+        "street_rat.obj": "street_rat/street_rat.obj",
+        "street_rat.mtl": "street_rat/street_rat.mtl",
+        "street_rat.bbmodel": "street_rat/street_rat.bbmodel",
+        "street_rat_texture.png": "street_rat/street_rat_texture.png",
+        "street_rat_texture_x4.png": "street_rat/street_rat_texture_x4.png",
+        "street_rat_hero.png": "street_rat/street_rat_hero.png",
+        "street_rat_sheet.png": "street_rat/street_rat_sheet.png",
+        "street_rat_turntable.gif": "street_rat/street_rat_turntable.gif",
+        "street_rat_report.json": "street_rat/street_rat_report.json"
+      },
+      "seconds": 7.53
+    },
+    {
+      "source": "polyhaven:street_rat",
+      "kind": "model",
+      "name": "Street Rat",
+      "style": "pixel-hd",
+      "status": "ok",
+      "out": "examples/converted/street_rat_pixel_hd",
+      "triangles": 3000,
+      "colors": 15,
+      "atlas": [
+        512,
+        512
+      ],
+      "warnings": [],
+      "animations": [],
+      "files": {
+        "street_rat.glb": "street_rat_pixel_hd/street_rat.glb",
+        "street_rat.obj": "street_rat_pixel_hd/street_rat.obj",
+        "street_rat.mtl": "street_rat_pixel_hd/street_rat.mtl",
+        "street_rat.bbmodel": "street_rat_pixel_hd/street_rat.bbmodel",
+        "street_rat_texture.png": "street_rat_pixel_hd/street_rat_texture.png",
+        "street_rat_texture_x2.png": "street_rat_pixel_hd/street_rat_texture_x2.png",
+        "street_rat_hero.png": "street_rat_pixel_hd/street_rat_hero.png",
+        "street_rat_sheet.png": "street_rat_pixel_hd/street_rat_sheet.png",
+        "street_rat_turntable.gif": "street_rat_pixel_hd/street_rat_turntable.gif",
+        "street_rat_report.json": "street_rat_pixel_hd/street_rat_report.json"
+      },
+      "seconds": 12.19
+    },
+    {
+      "source": "polyhaven:street_rat",
+      "kind": "model",
+      "name": "Street Rat",
+      "style": "realistic",
+      "status": "ok",
+      "out": "examples/converted/street_rat_realistic",
+      "triangles": 19999,
+      "colors": 8402,
+      "atlas": [
+        1024,
+        1024
+      ],
+      "warnings": [],
+      "animations": [],
+      "files": {
+        "street_rat.glb": "street_rat_realistic/street_rat.glb",
+        "street_rat.obj": "street_rat_realistic/street_rat.obj",
+        "street_rat.mtl": "street_rat_realistic/street_rat.mtl",
+        "street_rat_texture.png": "street_rat_realistic/street_rat_texture.png",
+        "street_rat_hero.png": "street_rat_realistic/street_rat_hero.png",
+        "street_rat_sheet.png": "street_rat_realistic/street_rat_sheet.png",
+        "street_rat_turntable.gif": "street_rat_realistic/street_rat_turntable.gif",
+        "street_rat_report.json": "street_rat_realistic/street_rat_report.json"
+      },
+      "seconds": 51.52
+    },
+    {
+      "source": "polyhaven:street_rat",
+      "kind": "model",
+      "name": "Street Rat",
+      "style": "painted",
+      "status": "ok",
+      "out": "examples/converted/street_rat_painted",
+      "triangles": 5999,
+      "colors": 2466,
+      "atlas": [
+        1024,
+        1024
+      ],
+      "warnings": [],
+      "animations": [],
+      "files": {
+        "street_rat.glb": "street_rat_painted/street_rat.glb",
+        "street_rat.obj": "street_rat_painted/street_rat.obj",
+        "street_rat.mtl": "street_rat_painted/street_rat.mtl",
+        "street_rat_texture.png": "street_rat_painted/street_rat_texture.png",
+        "street_rat_hero.png": "street_rat_painted/street_rat_hero.png",
+        "street_rat_sheet.png": "street_rat_painted/street_rat_sheet.png",
+        "street_rat_turntable.gif": "street_rat_painted/street_rat_turntable.gif",
+        "street_rat_report.json": "street_rat_painted/street_rat_report.json"
+      },
+      "seconds": 58.88
+    },
+    {
+      "source": "polyhaven:rubber_duck_toy",
+      "kind": "model",
+      "name": "Rubber Duck",
+      "style": "pixel",
+      "status": "ok",
+      "out": "examples/converted/rubber_duck",
+      "triangles": 500,
+      "colors": 15,
+      "atlas": [
+        128,
+        128
+      ],
+      "warnings": [],
+      "animations": [],
+      "files": {
+        "rubber_duck.glb": "rubber_duck/rubber_duck.glb",
+        "rubber_duck.obj": "rubber_duck/rubber_duck.obj",
+        "rubber_duck.mtl": "rubber_duck/rubber_duck.mtl",
+        "rubber_duck.bbmodel": "rubber_duck/rubber_duck.bbmodel",
+        "rubber_duck_texture.png": "rubber_duck/rubber_duck_texture.png",
+        "rubber_duck_texture_x8.png": "rubber_duck/rubber_duck_texture_x8.png",
+        "rubber_duck_hero.png": "rubber_duck/rubber_duck_hero.png",
+        "rubber_duck_sheet.png": "rubber_duck/rubber_duck_sheet.png",
+        "rubber_duck_turntable.gif": "rubber_duck/rubber_duck_turntable.gif",
+        "rubber_duck_report.json": "rubber_duck/rubber_duck_report.json"
+      },
+      "seconds": 7.51
+    },
+    {
+      "source": "polyhaven:horse_statue_01",
+      "kind": "model",
+      "name": "Horse Statue",
+      "style": "pixel",
+      "status": "ok",
+      "out": "examples/converted/horse_statue",
+      "triangles": 1193,
+      "colors": 9,
+      "atlas": [
+        128,
+        128
+      ],
+      "warnings": [],
+      "animations": [],
+      "files": {
+        "horse_statue.glb": "horse_statue/horse_statue.glb",
+        "horse_statue.obj": "horse_statue/horse_statue.obj",
+        "horse_statue.mtl": "horse_statue/horse_statue.mtl",
+        "horse_statue.bbmodel": "horse_statue/horse_statue.bbmodel",
+        "horse_statue_texture.png": "horse_statue/horse_statue_texture.png",
+        "horse_statue_texture_x8.png": "horse_statue/horse_statue_texture_x8.png",
+        "horse_statue_hero.png": "horse_statue/horse_statue_hero.png",
+        "horse_statue_sheet.png": "horse_statue/horse_statue_sheet.png",
+        "horse_statue_turntable.gif": "horse_statue/horse_statue_turntable.gif",
+        "horse_statue_report.json": "horse_statue/horse_statue_report.json"
+      },
+      "seconds": 8.43
+    },
+    {
+      "source": "polyhaven:concrete_cat_statue",
+      "kind": "model",
+      "name": "Cat Statue",
+      "style": "pixel-hd",
+      "status": "ok",
+      "out": "examples/converted/cat_statue_pixel_hd",
+      "triangles": 3000,
+      "colors": 8,
+      "atlas": [
+        256,
+        512
+      ],
+      "warnings": [],
+      "animations": [],
+      "files": {
+        "cat_statue.glb": "cat_statue_pixel_hd/cat_statue.glb",
+        "cat_statue.obj": "cat_statue_pixel_hd/cat_statue.obj",
+        "cat_statue.mtl": "cat_statue_pixel_hd/cat_statue.mtl",
+        "cat_statue.bbmodel": "cat_statue_pixel_hd/cat_statue.bbmodel",
+        "cat_statue_texture.png": "cat_statue_pixel_hd/cat_statue_texture.png",
+        "cat_statue_texture_x2.png": "cat_statue_pixel_hd/cat_statue_texture_x2.png",
+        "cat_statue_hero.png": "cat_statue_pixel_hd/cat_statue_hero.png",
+        "cat_statue_sheet.png": "cat_statue_pixel_hd/cat_statue_sheet.png",
+        "cat_statue_turntable.gif": "cat_statue_pixel_hd/cat_statue_turntable.gif",
+        "cat_statue_report.json": "cat_statue_pixel_hd/cat_statue_report.json"
+      },
+      "seconds": 16.0
+    }
+  ]
+}

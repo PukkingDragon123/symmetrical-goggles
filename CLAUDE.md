@@ -1,14 +1,45 @@
-# lowpix
+# lowpix: make 3D models from a request
 
-Code-first low-poly modeller with procedurally painted pixel-art textures (numpy + Pillow only).
+Code-first modeller, rigger, animator and converter (numpy + Pillow only, no Blender).
+Everything you need is a CLI command (`python -m lowpix ...`) or an MCP tool (`.mcp.json` →
+`lowpix_*`). Every build writes a `.glb` (plus `.obj`, `.bbmodel`) and a `_sheet.png` you
+can look at.
 
-* Package: `lowpix/` (`geometry` shapes and hierarchy, `painter` texel painting, `model` build
-  pipeline, `render` software rasteriser, `export` glb/obj/bbmodel, `cli`, `mcp_server`).
-* Specs: `examples/*.json`; reference `docs/SPEC.md`; art rules `docs/STYLE_GUIDE.md`;
-  loop `docs/AGENT_WORKFLOW.md`; skill `.claude/skills/lowpix-modeling/SKILL.md`.
-* Tests: `python -m unittest discover -s tests -v` (they require every example to build with
-  zero warnings and a strictly in-palette atlas).
-* After changing an example, regenerate its committed outputs:
+## Pick the route (cheapest first)
+
+| the user wants | do this |
+|---|---|
+| a realistic / real-world thing (animal, prop, furniture, statue) | **convert**: `python -m lowpix polyhaven <words>` → `python -m lowpix convert polyhaven:<id> --style <style> -o out/<name>` |
+| their own detailed model in this style | `python -m lowpix convert path/to/model.glb --style pixel -o out/<name>` |
+| many models / a whole set | **batch**: `python -m lowpix batch <files, folders, globs, polyhaven?<query>> --style <style> -o out/<set>` → open `out/<set>/contact.png` |
+| an original stylised character or creature, rigged and animated | **spec**: `python -m lowpix new <template> "<Name>"` → edit `examples/<name>.json` → `python -m lowpix build examples/<name>.json -o out/<name>` → look → iterate |
+| animations on a spec | add `animations` (docs/SPEC.md "Rigging and animation") → `python -m lowpix animate <spec> --anim <clip> -o strip.png` |
+
+Styles (`--style`): `pixel` (chunky pixel art, unlit, the house style), `pixel-hd`
+(high-resolution pixel art), `painted` (smooth hand-painted, unlit, linear filtering) and
+`realistic` (high-res source texture, lit PBR material, smooth normals: a game-ready LOD).
+For more detail use `--tris`, and `--atlas 2048` on the HD styles.
+
+Templates for `new`: `creature` (chain-loft body, walk), `quadruped`, `bird` (wings, fly),
+`robot` (hard surface), `figure` (gacha figure on a plinth), `critter`, `prop`.
+
+## Always
+* **Look at the image** (`*_sheet.png`, or `animate` filmstrips) after every build before you
+  claim it's good. Fix every `warnings` entry in the report.
+* Don't copy another artist's model. Poly Haven assets are CC0 and fine to convert.
+  Don't make trademarked characters.
+* Convert/batch outputs go to `out/` (gitignored). Only commit curated results.
+
+## Repo map
+* `lowpix/`: `geometry` (shapes, lofts, chains, attach), `painter` (texel painting), `anim`
+  (rigid-bone clips), `model` (build pipeline, report and lint), `render` (software rasteriser,
+  filmstrips, GIFs), `export` (glb/obj/bbmodel), `convert` (detailed model → style), `batch`
+  (parallel mass production, gallery, templates), `cli`, `mcp_server`.
+* Docs: `docs/SPEC.md` (spec + animation reference), `docs/STYLE_GUIDE.md` (art and animation rules),
+  `docs/AGENT_WORKFLOW.md`, `docs/CONVERT.md`, `docs/BATCH.md`. Skill: `.claude/skills/lowpix-modeling/`.
+* Tests: `python -m unittest discover -s tests -v` (every example must build with zero warnings
+  and a strictly in-palette atlas).
+* After changing an example spec, regenerate its committed outputs:
   `python -m lowpix build examples/<name>.json -o examples/output --gif`.
-* Conventions: Y up, model faces +Z, ground at y=0. A face's painted image is never flipped by
-  mirroring. Pattern seeds key on layer `id`.
+* Conventions: Y up, model faces +Z, ground at y=0. Mirroring never flips painted images.
+  Pattern seeds key on layer `id`.

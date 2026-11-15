@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>lowpix batch</title>
+<style>
+:root{--bg:#14151c;--panel:#1c1e28;--fg:#e8e6f0;--muted:#9a98ad;--accent:#f0a83a}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:14px/1.4 system-ui,sans-serif}
+.app{display:grid;grid-template-columns:320px 1fr;height:100%}
+.list{overflow:auto;background:var(--panel);padding:12px;display:flex;flex-direction:column;gap:8px}
+.item{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;padding:6px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+.item:hover,.item.on{border-color:var(--accent)}
+.item img{width:96px;height:72px;object-fit:cover;border-radius:4px;image-rendering:pixelated}
+.item small{color:var(--muted)}
+.stage{position:relative}canvas{display:block;width:100%;height:100%}
+.bar{position:absolute;left:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap}
+.bar button{background:#0008;color:var(--fg);border:1px solid #fff3;border-radius:999px;padding:6px 12px;cursor:pointer}
+.err{color:#ff8a7a}
+@media(max-width:760px){.app{grid-template-columns:1fr;grid-template-rows:55vh 1fr}.stage{order:-1}}
+</style></head><body><div class="app"><div class="list" id="list"></div><div class="stage" id="stage"><div class="bar" id="bar"></div></div></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';import {OrbitControls} from 'three/addons/controls/OrbitControls.js';import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const ITEMS=[{"ok": true, "name": "Street Rat", "style": "pixel", "tris": 900, "colors": 8, "anims": "", "glb": "street_rat/street_rat.glb", "hero": "street_rat/street_rat_hero.png"}, {"ok": true, "name": "Street Rat", "style": "pixel-hd", "tris": 3000, "colors": 15, "anims": "", "glb": "street_rat_pixel_hd/street_rat.glb", "hero": "street_rat_pixel_hd/street_rat_hero.png"}, {"ok": true, "name": "Street Rat", "style": "realistic", "tris": 19999, "colors": 8402, "anims": "", "glb": "street_rat_realistic/street_rat.glb", "hero": "street_rat_realistic/street_rat_hero.png"}, {"ok": true, "name": "Street Rat", "style": "painted", "tris": 5999, "colors": 2466, "anims": "", "glb": "street_rat_painted/street_rat.glb", "hero": "street_rat_painted/street_rat_hero.png"}, {"ok": true, "name": "Rubber Duck", "style": "pixel", "tris": 500, "colors": 15, "anims": "", "glb": "rubber_duck/rubber_duck.glb", "hero": "rubber_duck/rubber_duck_hero.png"}, {"ok": true, "name": "Horse Statue", "style": "pixel", "tris": 1193, "colors": 9, "anims": "", "glb": "horse_statue/horse_statue.glb", "hero": "horse_statue/horse_statue_hero.png"}, {"ok": true, "name": "Cat Statue", "style": "pixel-hd", "tris": 3000, "colors": 8, "anims": "", "glb": "cat_statue_pixel_hd/cat_statue.glb", "hero": "cat_statue_pixel_hd/cat_statue_hero.png"}];
+const stage=document.getElementById('stage'),r=new THREE.WebGLRenderer({antialias:true});r.outputColorSpace=THREE.SRGBColorSpace;stage.prepend(r.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color('#1d2230');scene.add(new THREE.HemisphereLight(0xffffff,0x334455,1.4));
+const sun=new THREE.DirectionalLight(0xffffff,1.6);sun.position.set(-5,10,6);scene.add(sun);
+const cam=new THREE.PerspectiveCamera(30,1,0.1,5000),ctl=new OrbitControls(cam,r.domElement);ctl.enableDamping=true;ctl.autoRotate=true;
+let cur=null,mixer=null;const clock=new THREE.Clock(),loader=new GLTFLoader();
+function size(){const b=stage.getBoundingClientRect();r.setSize(b.width,b.height,false);cam.aspect=b.width/Math.max(b.height,1);cam.updateProjectionMatrix()}
+new ResizeObserver(size).observe(stage);
+function show(it,el){document.querySelectorAll('.item').forEach(e=>e.classList.toggle('on',e===el));
+ loader.load(it.glb,g=>{if(cur)scene.remove(cur);cur=g.scene;scene.add(cur);const box=new THREE.Box3().setFromObject(cur),c=box.getCenter(new THREE.Vector3()),d=box.getSize(new THREE.Vector3()).length()*1.9;
+ cam.position.set(c.x+d*0.55,c.y+d*0.35,c.z+d*0.75);ctl.target.copy(c);cam.near=d/200;cam.far=d*20;cam.updateProjectionMatrix();
+ mixer=new THREE.AnimationMixer(cur);const bar=document.getElementById('bar');bar.innerHTML='';
+ g.animations.forEach((a,i)=>{const b=document.createElement('button');b.textContent=a.name;b.onclick=()=>{mixer.stopAllAction();mixer.clipAction(a).play()};bar.append(b);if(i===0)mixer.clipAction(a).play()});},
+ undefined,e=>{document.getElementById('bar').innerHTML='<span class="err">Could not load '+it.glb+' - serve this folder with python -m http.server</span>'})}
+const list=document.getElementById('list');
+ITEMS.forEach((it,i)=>{const el=document.createElement('div');el.className='item';
+ el.innerHTML=it.ok?`<img src="${it.hero}" alt=""><div><b>${it.name}</b><br><small>${it.style} · ${it.tris} tris · ${it.colors} colours${it.anims?' · '+it.anims:''}</small></div>`:`<div></div><div><b>${it.name}</b><br><small class="err">${it.error}</small></div>`;
+ if(it.ok)el.onclick=()=>show(it,el);list.append(el);if(i===0&&it.ok)show(it,el)});
+r.setAnimationLoop(()=>{if(mixer)mixer.update(Math.min(clock.getDelta(),.1));ctl.update();r.render(scene,cam)});
+</script></body></html>

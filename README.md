@@ -28,23 +28,49 @@ chain lofts for spines and tails) and animated. Clips are baked into each `.glb`
 The creatures and gacha-style figures were inspired by reference concepts (a crystal dragon, an
 owl hybrid, capsule-toy lines) but are original designs, not copies. All are CC0.
 
-### Convert any detailed model
+### Convert any detailed model, in four styles
 
-| ![rat](examples/converted/street_rat_turntable.gif) | ![duck](examples/converted/rubber_duck_turntable.gif) | ![horse](examples/converted/horse_statue_turntable.gif) |
-|---|---|---|
-| Poly Haven *Street Rat*, 900 tris | Poly Haven *Rubber Duck*, 500 tris | Poly Haven *Horse Statue*, 1200 tris |
+![styles](examples/converted/contact.png)
 
 ```bash
 python -m lowpix polyhaven rat
 ```
 
 ```bash
-python -m lowpix convert polyhaven:street_rat -o out/rat --tris 900 --height 14
+python -m lowpix convert polyhaven:street_rat --style pixel -o out/rat
 ```
 
-This decimates the mesh, bakes the texture at a uniform pixel density, remaps colours to
-hue-shifted ramps, and paints in light, rims and outlines. It works on any `.glb`, `.gltf` or `.obj`.
-See [`docs/CONVERT.md`](docs/CONVERT.md). Source models are CC0 from [Poly Haven](https://polyhaven.com).
+The first command searches Poly Haven's CC0 models. `--style` is `pixel`, `pixel-hd`, `painted` or `realistic`.
+
+The pipeline uses feature-preserving quadric decimation, seamless chart unwrapping, exact
+closest-point texture transfer, then per-style shading. It works on any `.glb`, `.gltf` or
+`.obj`. `pixel` gives the house pixel-art style. `pixel-hd` is high-resolution pixel art.
+`painted` is smooth and hand-painted. `realistic` gives a high-res texture, a lit PBR material and
+smooth normals, i.e. a game-ready LOD. See [`docs/CONVERT.md`](docs/CONVERT.md). The set above
+is reproducible with `python -m lowpix batch examples/converted/manifest.json -o examples/converted`.
+Source models are CC0 from [Poly Haven](https://polyhaven.com).
+
+### Mass production
+
+```bash
+python -m lowpix batch "polyhaven?statue" --limit 12 --style painted -o out/statues
+```
+
+```bash
+python -m lowpix batch my_models/ examples/*.json --style pixel-hd -j 4 -o out/set
+```
+
+Mix specs, model files, folders, globs, Poly Haven searches and manifests with per-item
+options. Items run in parallel, and failures are recorded without stopping the batch. You get
+`summary.json`/`.csv`, a `contact.png` of every result and an `index.html` gallery that plays each
+`.glb` and its clips. See [`docs/BATCH.md`](docs/BATCH.md).
+
+### Give the repo to Claude
+
+[`CLAUDE.md`](CLAUDE.md) maps each kind of request to its route: convert, batch, or a
+`python -m lowpix new <template> "<Name>"` spec to rig and animate. The `.mcp.json` MCP
+server returns images to the agent at every step. Open the repo in Claude Code and ask for
+what you want.
 
 ## Why it's built for agents
 
@@ -58,11 +84,11 @@ and critiquing images. lowpix closes that loop:
   views, atlas, palette and stats). `render --part head` gives pixel-level close-ups.
 * **An MCP server** (`.mcp.json` included) whose tools return those images straight into the
   agent's context: `lowpix_build`, `lowpix_render`, `lowpix_animate` (filmstrips of a clip),
-  `lowpix_convert`, `lowpix_polyhaven_search`, `lowpix_texture`, `lowpix_ramp`, `lowpix_guide`.
+  `lowpix_convert`, `lowpix_batch`, `lowpix_polyhaven_search`, `lowpix_texture`, `lowpix_ramp`, `lowpix_guide`.
 * **Animation it can judge**: filmstrips show timing and arcs as one image, and `lint` samples
   every clip for feet sinking through the floor.
-* **Cheap realism**: `convert` turns an existing detailed model into the style in one call
-  instead of thousands of tokens of hand-modelling.
+* **Cheap realism**: `convert` turns an existing detailed model into any of four styles in one call
+  instead of thousands of tokens of hand-modelling, and `batch` does it for whole sets in parallel.
 * **Stable randomness**: pattern seeds key on layer ids, so iterating doesn't reshuffle the art.
 * **Genre knowledge built in**: [`docs/STYLE_GUIDE.md`](docs/STYLE_GUIDE.md) breaks the look down
   into rules, each mapped to a feature, and ends with a critique checklist.
@@ -111,13 +137,14 @@ low-poly pixel-art frog; iterate until the critique checklist passes."* The
 |---|---|
 | Shapes | `loft` (smooth tubes through control rings: Catmull-Rom subdivision, rounded or chamfered profiles, parallel-transport frames), `box`/`taper` with optional `chamfer`, `prism` (n-gon cylinders with tapered caps), `card` (double-sided alpha cut-outs from ASCII art) |
 | Animation | clips of keyframes (ease/smooth/back/elastic/step), oscillators (sine/bounce/square/pulse), `wave` chains with lag and growth (overlap and follow-through), squash and stretch via scale, mirror-phased gaits. Baked to glTF clips, GIFs and filmstrips |
-| Converter | `.glb`/`.gltf`/`.obj` or `polyhaven:<id>` → decimated, pixel-painted, palette-quantised lowpix model |
+| Converter | `.glb`/`.gltf`/`.obj` or `polyhaven:<id>` → quadric-decimated, chart-unwrapped, closest-point re-baked model in `pixel`, `pixel-hd`, `painted` or `realistic` (lit PBR) style |
+| Production | `batch` (parallel, mixed sources, manifests, summary, contact grid, HTML gallery), `new` (spec templates), batched software rasteriser for high-poly previews |
 | Rigging | every part is a joint at its pivot, `chain` lofts split into posable segments, `bone` (empty joint), pivot hierarchy, Euler rotations, `attach` (stick parts onto a loft's curved surface by path position and angle), `mirror` (whole subtrees, correct on asymmetric bodies, images stay un-flipped), `orient: "world"` for limbs, `snap_ground` for feet, `hide` for buried faces |
 | Painting | hue-shifted ramps, tone-space shading, painted key light, local gradient, ground occlusion, lit and dark edge rims, outlines, `band`, `stripes` (can follow a loft's path), `spots` (3D, wrapping, tapering), `patches`, `noise`, `gradient`, `speckle`, `gloss` (wet dashes), hard-surface `panel`, `rivets`, `wear`, `grille`, `rect`, pattern `bevel`s, ASCII `stamps`, Bayer dithering |
 | Output | `.glb` (unlit, nearest, alpha mask, node per part, passes the Khronos validator), `.obj/.mtl`, `.bbmodel` (experimental), PNG atlas, hero, contact sheet, turntable GIF, JSON report |
 | Agent I/O | CLI, Python API, MCP server, JSON Schema (`python -m lowpix schema`) |
 
-Docs: [spec reference](docs/SPEC.md) (incl. rigging and animation) · [style guide](docs/STYLE_GUIDE.md) (incl. animation principles) · [agent workflow](docs/AGENT_WORKFLOW.md) · [converter](docs/CONVERT.md)
+Docs: [spec reference](docs/SPEC.md) (incl. rigging and animation) · [style guide](docs/STYLE_GUIDE.md) (incl. animation principles) · [agent workflow](docs/AGENT_WORKFLOW.md) · [converter](docs/CONVERT.md) · [batch](docs/BATCH.md)
 
 ## About the reference and originality
 

@@ -1,0 +1,62 @@
+{
+  "name": "Cat Statue",
+  "parts": 1,
+  "instances": 1,
+  "faces": 155,
+  "triangles": 3000,
+  "vertices_flat": 2482,
+  "vertices_unique": 1491,
+  "atlas": [
+    256,
+    512
+  ],
+  "atlas_fill": 0.52,
+  "texel_density": 6.0,
+  "colors_used": 8,
+  "palette": {
+    "m0": [
+      "#46372d",
+      "#5a4b3d",
+      "#6c5f4e",
+      "#7d7360",
+      "#8d8673",
+      "#99968a",
+      "#a7a69f",
+      "#b5b5b3",
+      "#c6c6c6"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -5.403,
+      0.0,
+      -8.827
+    ],
+    "max": [
+      5.403,
+      20.0,
+      8.827
+    ],
+    "size": [
+      10.805,
+      20.0,
+      17.654
+    ]
+  },
+  "warnings": [],
+  "animations": {},
+  "joints": [
+    "mesh"
+  ],
+  "files": {
+    "cat_statue.glb": "examples/converted/cat_statue_pixel_hd/cat_statue.glb",
+    "cat_statue.obj": "examples/converted/cat_statue_pixel_hd/cat_statue.obj",
+    "cat_statue.mtl": "examples/converted/cat_statue_pixel_hd/cat_statue.mtl",
+    "cat_statue.bbmodel": "examples/converted/cat_statue_pixel_hd/cat_statue.bbmodel",
+    "cat_statue_texture.png": "examples/converted/cat_statue_pixel_hd/cat_statue_texture.png",
+    "cat_statue_texture_x2.png": "examples/converted/cat_statue_pixel_hd/cat_statue_texture_x2.png",
+    "cat_statue_hero.png": "examples/converted/cat_statue_pixel_hd/cat_statue_hero.png",
+    "cat_statue_sheet.png": "examples/converted/cat_statue_pixel_hd/cat_statue_sheet.png",
+    "cat_statue_turntable.gif": "examples/converted/cat_statue_pixel_hd/cat_statue_turntable.gif"
+  }
+}

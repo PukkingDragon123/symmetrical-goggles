@@ -40,10 +40,10 @@ class Model:
         for f in inst.faces:
             if double_sided is not None and f.double_sided != double_sided:
                 continue
-            n = f.normal
             uv = self.face_uvs(f)
             P.append(f.pts)
-            N.append(np.repeat(n[None], len(f.pts), axis=0))
+            # smooth vertex normals when a face carries them (converted meshes), else flat
+            N.append(f.attrs["n"] if "n" in f.attrs else np.repeat(f.normal[None], len(f.pts), axis=0))
             UV.append(uv)
             for a, b, c in f.tris:
                 I.append((base + a, base + b, base + c))
@@ -66,6 +66,25 @@ class Model:
                     tris.append(wp[[a, b, c]])
                     uvs.append(uv[[a, b, c]])
         return np.array(tris), np.array(uvs)
+
+    def world_normals(self, worlds=None):
+        """(T,3,3) per-vertex world normals matching world_triangles (for lit previews)."""
+        out = []
+        for inst in self.instances:
+            W = worlds[inst.id] if worlds is not None else inst.world
+            R = W[:3, :3]
+            for f in inst.faces:
+                n = f.attrs["n"] if "n" in f.attrs else np.repeat(f.normal[None], len(f.pts), axis=0)
+                n = n @ R.T
+                for a, b, c in f.tris:
+                    out.append(n[[a, b, c]])
+        return np.array(out)
+
+    @property
+    def material(self):
+        m = {"unlit": True, "filter": "nearest"}
+        m.update(self.spec.get("material", {}))
+        return m
 
     def animator(self):
         from .anim import Animator

@@ -68,19 +68,30 @@ TOOLS = [
     },
     {
         "name": "lowpix_convert",
-        "description": ("Turn a detailed model into the lowpix pixel style in one call (the cheap way to get a "
-                        "realistic shape): source is a .glb/.gltf/.obj path or 'polyhaven:<asset_id>' (CC0). "
-                        "Decimates to `tris`, bakes the texture at a uniform pixel density, remaps colours to "
-                        "hue-shifted ramps with painted light, rims and outlines. Returns the report and contact "
-                        "sheet; writes .glb/.obj/.bbmodel/previews to out_dir."),
+        "description": ("Turn a detailed model into a lowpix model in one call (cheap realism). source: a "
+                        ".glb/.gltf/.obj path or 'polyhaven:<asset_id>' (CC0). style: 'pixel' (chunky pixel art, "
+                        "default), 'pixel-hd', 'painted' (smooth hand-painted) or 'realistic' (high-res texture, lit "
+                        "material - a game-ready LOD). Options override the style preset. Returns the report and "
+                        "contact sheet; writes .glb/.obj/.bbmodel/previews to out_dir."),
         "inputSchema": {"type": "object", "required": ["source"], "properties": {
             "source": {"type": "string"}, "out_dir": {"type": "string"},
-            "tris": {"type": "integer", "default": 900}, "height": {"type": "number", "default": 24},
-            "density": {"type": "number", "default": 2}, "ramps": {"type": "integer", "default": 6},
-            "steps": {"type": "integer", "default": 6}, "light": {"type": "number", "default": 1.0},
-            "detail": {"type": "number", "default": 1.0}, "crease": {"type": "number", "default": 38},
-            "outline": {"type": "boolean", "default": True}, "yaw": {"type": "number", "default": 0},
+            "style": {"type": "string", "enum": ["pixel", "pixel-hd", "painted", "realistic"], "default": "pixel"},
+            "height": {"type": "number", "default": 24}, "tris": {"type": "integer"}, "density": {"type": "number"},
+            "atlas": {"type": "integer"}, "ramps": {"type": "integer"}, "steps": {"type": "integer"},
+            "light": {"type": "number"}, "detail": {"type": "number"}, "grain": {"type": "number"},
+            "crease": {"type": "number"}, "outline": {"type": "boolean"}, "yaw": {"type": "number", "default": 0},
             "name": {"type": "string"}}},
+    },
+    {
+        "name": "lowpix_batch",
+        "description": ("Mass-produce: build/convert many sources in parallel. sources: spec .json files, manifests, "
+                        "model files, folders, globs, 'polyhaven:<id>' or 'polyhaven?<query>'. Returns the summary and a "
+                        "contact grid of every result; writes per-item outputs, summary.json/csv and index.html."),
+        "inputSchema": {"type": "object", "required": ["sources"], "properties": {
+            "sources": {"type": "array", "items": {"type": "string"}}, "out_dir": {"type": "string"},
+            "style": {"type": "string", "enum": ["pixel", "pixel-hd", "painted", "realistic"]},
+            "height": {"type": "number"}, "tris": {"type": "integer"}, "jobs": {"type": "integer"},
+            "limit": {"type": "integer", "default": 12}}},
     },
     {
         "name": "lowpix_polyhaven_search",
@@ -170,16 +181,27 @@ def call_tool(name: str, args: dict):
         src = args["source"]
         slug = os.path.splitext(os.path.basename(src.split(":", 1)[-1]))[0]
         out = args.get("out_dir") or os.path.join("out", slug)
-        m = convert(src, tris=int(args.get("tris", 900)), height=float(args.get("height", 24)),
-                    density=float(args.get("density", 2)), ramps=int(args.get("ramps", 6)),
-                    steps=int(args.get("steps", 6)), light=float(args.get("light", 1.0)),
-                    detail=float(args.get("detail", 1.0)), crease=float(args.get("crease", 38)),
-                    outline=bool(args.get("outline", True)), yaw=float(args.get("yaw", 0)), name=args.get("name"),
-                    work_dir=os.path.join(out, "_source"))
+        opts = {k: args[k] for k in ("tris", "density", "atlas", "ramps", "steps", "light", "detail", "grain",
+                                     "crease", "outline") if k in args}
+        m = convert(src, style=args.get("style", "pixel"), height=float(args.get("height", 24)),
+                    yaw=float(args.get("yaw", 0)), name=args.get("name"), work_dir=os.path.join(out, "_source"), **opts)
         rep = export_model(m, out)
         rep.pop("palette", None)
         sheet = [p for k, p in rep["files"].items() if k.endswith("_sheet.png")][0]
         return [_text(rep), _png(Image.open(sheet))]
+    if name == "lowpix_batch":
+        from .batch import batch
+        defaults = {k: args[k] for k in ("style", "height", "tris") if k in args}
+        out = args.get("out_dir") or "out/batch"
+        s = batch(args["sources"], out, jobs=int(args.get("jobs", 0)), limit=int(args.get("limit", 12)),
+                  defaults=defaults, log=lambda *_: None)
+        brief = {k: s[k] for k in ("items", "ok", "failed", "seconds", "gallery")}
+        brief["results"] = [{k: r.get(k) for k in ("name", "status", "style", "triangles", "colors", "out", "error")}
+                            for r in s["results"]]
+        content = [_text(brief)]
+        if s.get("contact"):
+            content.append(_png(Image.open(s["contact"]), max_w=1600))
+        return content
     if name == "lowpix_polyhaven_search":
         from .convert import polyhaven_search
         hits = polyhaven_search(args.get("query", ""), int(args.get("limit", 30)))

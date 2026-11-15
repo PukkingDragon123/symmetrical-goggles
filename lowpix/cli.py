@@ -103,21 +103,30 @@ def main(argv=None):
     an.add_argument("--target", type=_vec3, default=None, help="fixed close-up centre x,y,z")
     an.add_argument("--radius", type=float, default=None)
 
-    cv = sub.add_parser("convert", help="turn a detailed .glb/.gltf/.obj (or polyhaven:<id>) into the lowpix pixel style")
+    cv = sub.add_parser("convert", help="turn a detailed .glb/.gltf/.obj (or polyhaven:<id>) into a lowpix model")
     cv.add_argument("source", help="path to .glb/.gltf/.obj, or polyhaven:<asset_id>")
     cv.add_argument("-o", "--out", default=None)
-    cv.add_argument("--tris", type=int, default=900, help="target triangle count")
-    cv.add_argument("--height", type=float, default=24.0, help="model height in units (sets pixel scale)")
-    cv.add_argument("--density", type=float, default=2.0, help="texels per unit")
-    cv.add_argument("--ramps", type=int, default=6, help="colour groups (one hue-shifted ramp each)")
-    cv.add_argument("--steps", type=int, default=6, help="colours per ramp")
-    cv.add_argument("--light", type=float, default=1.0, help="painted light strength")
-    cv.add_argument("--detail", type=float, default=0.7, help="how much of the source texture's light/dark to keep")
-    cv.add_argument("--crease", type=float, default=60.0, help="dihedral angle (deg) that gets rims/outlines")
+    cv.add_argument("--style", default="pixel", choices=["pixel", "pixel-hd", "painted", "realistic"],
+                    help="pixel (chunky), pixel-hd, painted (smooth hand-painted) or realistic (high-res, lit)")
+    cv.add_argument("--height", type=float, default=24.0, help="model height in units")
+    for flag, typ, hlp in (("--tris", int, "target triangles (0 = keep the source mesh)"),
+                           ("--density", float, "texels per unit (pixel styles)"),
+                           ("--atlas", int, "texture size budget for HD styles, e.g. 1024 or 2048"),
+                           ("--ramps", int, "max colour groups (pixel styles)"),
+                           ("--steps", int, "colours per ramp (pixel styles)"),
+                           ("--light", float, "painted light strength"),
+                           ("--detail", float, "how much of the source texture's light/dark to keep"),
+                           ("--smooth", float, "colour low-pass in texels"),
+                           ("--grain", float, "clustered painterly variation"),
+                           ("--crease", float, "edge angle that gets rims"),
+                           ("--dither", float, "ordered dithering 0..1"),
+                           ("--posterize", int, "value bands (painted style)"),
+                           ("--saturation", float, "chroma multiplier (painted style)"),
+                           ("--chart-angle", float, "max normal spread inside one texture chart"),
+                           ("--spread", float, "ramp value range 0..1 (pixel styles; lower = subtler steps)")):
+        cv.add_argument(flag, type=typ, default=None, help=hlp)
+    cv.add_argument("--outline", action="store_true", help="dark outlines on very sharp folds (pixel styles)")
     cv.add_argument("--no-outline", action="store_true")
-    cv.add_argument("--dither", type=float, default=0.0)
-    cv.add_argument("--smooth", type=float, default=2.5, help="colour smoothing in texels (bigger = cleaner clusters)")
-    cv.add_argument("--grain", type=float, default=0.45, help="clustered painterly variation (0 = flat bands)")
     cv.add_argument("--yaw", type=float, default=0.0, help="rotate the source so it faces +Z")
     cv.add_argument("--name", default=None)
     cv.add_argument("--background", default="#1d2230")
@@ -126,6 +135,22 @@ def main(argv=None):
     ph = sub.add_parser("polyhaven", help="search Poly Haven's CC0 models")
     ph.add_argument("query", nargs="*", default=[])
     ph.add_argument("--limit", type=int, default=30)
+
+    bt = sub.add_parser("batch", help="build/convert many specs or models in parallel (mass production)")
+    bt.add_argument("sources", nargs="+", help="specs, manifests, model files, folders, globs, polyhaven:<id>, polyhaven?<query>")
+    bt.add_argument("-o", "--out", default="out/batch")
+    bt.add_argument("-j", "--jobs", type=int, default=0, help="parallel workers (default: min(4, cpus))")
+    bt.add_argument("--style", default=None, choices=["pixel", "pixel-hd", "painted", "realistic"])
+    bt.add_argument("--height", type=float, default=None)
+    bt.add_argument("--tris", type=int, default=None)
+    bt.add_argument("--atlas", type=int, default=None)
+    bt.add_argument("--limit", type=int, default=12, help="results per polyhaven?<query>")
+    bt.add_argument("--gif", action="store_true")
+
+    nw = sub.add_parser("new", help="start a new spec from a template")
+    nw.add_argument("template", help="creature, quadruped, bird, robot, figure, critter or prop")
+    nw.add_argument("name")
+    nw.add_argument("-o", "--out", default=None)
 
     sub.add_parser("schema", help="print the JSON schema for specs")
 
@@ -186,14 +211,28 @@ def main(argv=None):
     elif a.cmd == "convert":
         from .build import export_model
         from .convert import convert
-        slug = a.source.split(":", 1)[-1]
-        slug = os.path.splitext(os.path.basename(slug))[0]
+        slug = os.path.splitext(os.path.basename(a.source.split(":", 1)[-1]))[0]
         out = a.out or os.path.join("out", slug)
-        m = convert(a.source, tris=a.tris, height=a.height, density=a.density, ramps=a.ramps, steps=a.steps,
-                    light=a.light, detail=a.detail, crease=a.crease, outline=not a.no_outline, dither=a.dither,
-                    yaw=a.yaw, name=a.name, background=a.background, work_dir=os.path.join(out, "_source"),
-                    smooth=a.smooth, grain=a.grain)
+        opts = {k: getattr(a, k) for k in ("tris", "density", "atlas", "ramps", "steps", "light", "detail", "smooth",
+                                           "grain", "crease", "dither", "posterize", "saturation", "chart_angle", "spread")}
+        if a.outline:
+            opts["outline"] = True
+        if a.no_outline:
+            opts["outline"] = False
+        m = convert(a.source, style=a.style, height=a.height, yaw=a.yaw, name=a.name, background=a.background,
+                    work_dir=os.path.join(out, "_source"), **opts)
         print(_summary(export_model(m, out, gif=a.gif)))
+    elif a.cmd == "batch":
+        from .batch import batch
+        defaults = {k: v for k, v in (("style", a.style), ("height", a.height), ("tris", a.tris), ("atlas", a.atlas))
+                    if v is not None}
+        s = batch(a.sources, a.out, jobs=a.jobs, gif=a.gif, limit=a.limit, defaults=defaults)
+        print(f"done: {s['ok']}/{s['items']} ok in {s['seconds']}s -> {a.out}/summary.json, contact.png, index.html")
+        return 0 if not s["failed"] else 1
+    elif a.cmd == "new":
+        from .batch import new_spec
+        p = new_spec(a.template, a.name, a.out)
+        print(f"created {p}\nnext: edit it, then python -m lowpix build {p} -o out/{os.path.splitext(os.path.basename(p))[0]}")
     elif a.cmd == "polyhaven":
         from .convert import polyhaven_search
         for aid, name, dl in polyhaven_search(" ".join(a.query), a.limit):
