@@ -38,6 +38,27 @@
     "grass": {"ramp": "grass", "tone": 2.6, "rim": {"light": 0, "dark": 0}, "art_key": {"t": "grass:4", "d": "grass:1"}}
   },
 
+  "animations": {
+    "idle": {"length": 3.0, "loop": true, "tracks": [
+      {"part": "stem", "osc": {"axis": "x", "amp": 2.5, "cycles": 1}},
+      {"part": "stem", "osc": {"axis": "y", "amp": 2.0, "cycles": 1, "phase": 0.25}},
+      {"part": "cap", "osc": {"axis": "x", "amp": 3.0, "cycles": 1, "phase": 0.12}},
+      {"part": "cap", "channel": "scale", "osc": {"amp": [0.04, 0.04, -0.05], "cycles": 2}},
+      {"part": "crown", "channel": "scale", "osc": {"amp": [0.08, 0.08, 0.12], "cycles": 2, "phase": 0.1}},
+      {"part": "baby_stem", "osc": {"axis": "y", "amp": 4.0, "cycles": 1, "phase": 0.4}},
+      {"part": "baby_cap", "channel": "scale", "osc": {"amp": [0.06, 0.06, -0.08], "cycles": 3}},
+      {"parts": ["tuft_a", "tuft_b", "tuft_c"], "wave": {"axis": "z", "amp": 6, "cycles": 1, "lag": 0.3}}
+    ]},
+    "boing": {"length": 1.6, "loop": true, "tracks": [
+      {"part": "stem", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.25, [0.12, 0.12, -0.22]], [0.45, [-0.08, -0.08, 0.2]], [0.75, [0.05, 0.05, -0.08]], [1.0, [0, 0, 0]]], "ease": "ease"},
+      {"part": "cap", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [0.14, 0.14, -0.2]], [0.5, [-0.1, -0.1, 0.18]], [0.8, [0.06, 0.06, -0.06]], [1.1, [0, 0, 0]]], "ease": "ease"},
+      {"part": "cap", "keys": [[0, [0, 0, 0]], [0.5, [6, 0, 0]], [0.8, [-4, 0, 0]], [1.1, [2, 0, 0]], [1.4, [0, 0, 0]]], "ease": "ease"},
+      {"part": "crown", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.45, [0.3, 0.3, 0.4]], [0.9, [0, 0, 0]]], "ease": "out"},
+      {"part": "baby_stem", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.5, [0, 0, 0]], [0.7, [0.15, 0.15, -0.25]], [0.9, [-0.1, -0.1, 0.22]], [1.2, [0, 0, 0]]], "ease": "ease"},
+      {"parts": ["tuft_a", "tuft_b", "tuft_c"], "wave": {"axis": "z", "amp": 10, "cycles": 1, "lag": 0.2}}
+    ]}
+  },
+
   "parts": [
     {"id": "stem", "shape": "prism", "sides": 7, "size": [3.6, 3.6, 8.0], "pivot": [0, 0, 0], "offset": [0, 0, 4.0],
      "rotation": [-90, 0, 0], "front_scale": [0.8, 0.8], "back_scale": [1.2, 1.2], "hide": ["front", "back"], "style": "stem"},

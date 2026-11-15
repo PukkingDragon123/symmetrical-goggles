@@ -22,6 +22,7 @@
 <div id="hud">
   <span id="name">drop a .glb, or open ?model=path/to/model.glb</span>
   <button id="spin">auto-rotate: on</button>
+  <label>clip <select id="clip"><option value="">rest pose</option></select></label>
   <label><input type="color" id="bgc" value="#1f2b26"> bg</label>
   <span id="hint">drag to orbit · scroll to zoom · right-drag to pan</span>
 </div>
@@ -47,7 +48,16 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 1.2;
-let current = null;
+let current = null, mixer = null, clips = [];
+const clock = new THREE.Clock();
+const clipSel = document.getElementById('clip');
+function playClip(name) {
+  if (!mixer) return;
+  mixer.stopAllAction();
+  const c = clips.find(a => a.name === name);
+  if (c) mixer.clipAction(c).reset().play();
+}
+clipSel.onchange = () => playClip(clipSel.value);
 
 function resize() {
   renderer.setSize(innerWidth, innerHeight, false);
@@ -83,6 +93,11 @@ function show(gltf, label) {
   });
   scene.add(current);
   frame(current);
+  mixer = new THREE.AnimationMixer(current);
+  clips = gltf.animations || [];
+  clipSel.innerHTML = '<option value="">rest pose</option>' + clips.map(c => `<option>${c.name}</option>`).join('');
+  const first = clips.find(c => c.name === 'idle') || clips[0];
+  if (first) { clipSel.value = first.name; playClip(first.name); }
   document.getElementById('name').textContent = label;
   window.__lowpixReady = true;
 }
@@ -105,7 +120,11 @@ spin.onclick = () => { controls.autoRotate = !controls.autoRotate; spin.textCont
 spin.textContent = 'auto-rotate: ' + (controls.autoRotate ? 'on' : 'off');
 document.getElementById('bgc').oninput = e => bg.set(e.target.value);
 
-renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+renderer.setAnimationLoop(() => {
+  if (mixer) mixer.update(Math.min(clock.getDelta(), 0.1));
+  controls.update();
+  renderer.render(scene, camera);
+});
 </script>
 </body>
 </html>

@@ -54,20 +54,60 @@
     }
   },
 
+  "animations": {
+    "idle": {"length": 3.2, "loop": true, "tracks": [
+      {"part": "hips", "channel": "position", "osc": {"axis": "y", "amp": 0.12, "cycles": 1}},
+      {"part": "helmet", "keys": [[0, [0, 0, 0]], [0.5, [0, -16, -3]], [1.3, [0, -16, -3]], [1.8, [3, 12, 4]], [2.6, [3, 12, 4]], [3.2, [0, 0, 0]]], "ease": "back"},
+      {"part": "lens", "channel": "scale", "osc": {"amp": [0.1, 0.1, 0.0], "cycles": 2}},
+      {"part": "antenna", "osc": {"axis": "z", "amp": 5, "cycles": 2, "phase": 0.1}},
+      {"part": "antenna", "osc": {"axis": "x", "amp": 3, "cycles": 3}},
+      {"part": "bulb", "channel": "scale", "osc": {"amp": [0.35, 0.35, 0.35], "cycles": 2, "shape": "pulse"}},
+      {"part": "handle", "osc": {"axis": "z", "amp": 7, "cycles": 1}},
+      {"part": "handle", "osc": {"axis": "x", "amp": 3, "cycles": 1, "phase": 0.25}},
+      {"part": "ember", "channel": "scale", "osc": {"amp": [0.25, 0.25, 0.5], "cycles": 5}},
+      {"part": "l_upper", "osc": {"axis": "x", "amp": 4, "cycles": 1, "phase": 0.15}},
+      {"part": "l_fore", "osc": {"axis": "x", "amp": 5, "cycles": 1, "phase": 0.3}}
+    ]},
+    "wave": {"length": 2.4, "loop": true, "tracks": [
+      {"part": "l_upper", "keys": [[0, [0, 0, 0]], [0.35, [12, 0, 0]], [0.7, [-112, 0, -40]], [1.9, [-112, 0, -40]], [2.4, [0, 0, 0]]], "ease": "back"},
+      {"part": "l_fore", "keys": [[0, [0, 0, 0]], [0.7, [-20, 0, 0]], [1.9, [-20, 0, 0]], [2.4, [0, 0, 0]]], "ease": "ease"},
+      {"part": "l_fore", "keys": [[0, [0, 0, 0]], [0.7, [0, 0, 0]], [0.95, [0, 0, 26]], [1.2, [0, 0, -22]], [1.45, [0, 0, 26]], [1.7, [0, 0, -22]], [1.9, [0, 0, 0]], [2.4, [0, 0, 0]]], "ease": "ease"},
+      {"part": "l_claw_a", "keys": [[0, 0], [0.7, -25], [1.9, -25], [2.4, 0]], "axis": "x", "ease": "back"},
+      {"part": "l_claw_b", "keys": [[0, 0], [0.7, 25], [1.9, 25], [2.4, 0]], "axis": "x", "ease": "back"},
+      {"part": "helmet", "keys": [[0, [0, 0, 0]], [0.7, [-4, -14, -9]], [1.9, [-4, -14, -9]], [2.4, [0, 0, 0]]], "ease": "back"},
+      {"part": "lens", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.7, [0.18, 0.18, 0]], [1.9, [0.18, 0.18, 0]], [2.4, [0, 0, 0]]], "ease": "ease"},
+      {"part": "chest", "keys": [[0, [0, 0, 0]], [0.7, [0, 0, 3]], [1.9, [0, 0, 3]], [2.4, [0, 0, 0]]], "ease": "ease"},
+      {"part": "handle", "osc": {"axis": "z", "amp": 6, "cycles": 2}}
+    ]},
+    "walk": {"length": 1.2, "loop": true, "tracks": [
+      {"part": "thigh", "osc": {"axis": "x", "amp": 20, "cycles": 1}, "mirror_phase": 0.5},
+      {"part": "shin", "osc": {"axis": "x", "amp": 13, "bias": 13, "cycles": 1, "phase": 0.3}, "mirror_phase": 0.5},
+      {"part": "boot", "osc": {"axis": "x", "amp": 8, "cycles": 1, "phase": 0.55}, "mirror_phase": 0.5},
+      {"part": "hips", "channel": "position", "osc": {"axis": "y", "amp": 0.55, "cycles": 2, "phase": 0.25, "shape": "bounce"}},
+      {"part": "hips", "osc": {"axis": "z", "amp": 3, "cycles": 1}},
+      {"part": "chest", "osc": {"axis": "y", "amp": 5, "cycles": 1, "phase": 0.5}},
+      {"part": "helmet", "osc": {"axis": "z", "amp": -3, "cycles": 1, "phase": 0.1}},
+      {"part": "r_upper", "osc": {"axis": "x", "amp": 12, "cycles": 1, "phase": 0.5}},
+      {"part": "l_upper", "osc": {"axis": "x", "amp": 12, "cycles": 1}},
+      {"part": "handle", "osc": {"axis": "x", "amp": 12, "cycles": 1, "phase": 0.65}},
+      {"part": "antenna", "osc": {"axis": "z", "amp": 7, "cycles": 2, "phase": 0.2}},
+      {"part": "ember", "channel": "scale", "osc": {"amp": [0.25, 0.25, 0.5], "cycles": 4}}
+    ]}
+  },
+
   "parts": [
-    {"id": "boot", "shape": "taper", "chamfer": 0.9, "size": [5.6, 3.2, 8.4], "pivot": [4.0, 1.6, 0.8], "mirror": true,
+    {"id": "hips", "shape": "box", "chamfer": 1.0, "size": [12.6, 3.8, 8.6], "pivot": [0, 16.2, 0], "style": "enamel"},
+    {"id": "thigh", "parent": "hips", "shape": "prism", "sides": 8, "size": [3.6, 3.6, 5.0], "pivot": [4.0, -1.0, 0.2], "offset": [0, 0, 2.5],
+     "rotation": [90, 0, 0], "hide": ["front", "back"], "mirror": true, "style": "gun"},
+    {"id": "knee", "parent": "thigh", "shape": "prism", "sides": 8, "size": [4.4, 4.4, 4.4], "pivot": [0, 0, 5.3], "rotation": [0, 90, 0],
+     "style": "teal", "paint": {"layers": [{"id": "hub", "op": "rect", "rect": [0.3, 0.3, 0.7, 0.7], "ramp": "metal", "tone": 3.0, "faces": ["caps"], "bevel": true}]}},
+    {"id": "shin", "parent": "thigh", "shape": "prism", "sides": 8, "size": [3.2, 3.2, 6.6], "pivot": [0, 0, 5.3], "offset": [0, 0, 3.3],
+     "hide": ["front", "back"], "style": "gun",
+     "paint": {"layers": [{"id": "rings", "op": "stripes", "axis": "z", "period": 2.2, "width": 0.18, "shift": -1.2}]}},
+    {"id": "boot", "parent": "shin", "shape": "taper", "chamfer": 0.9, "size": [5.6, 3.2, 8.4], "pivot": [0, 0.6, 8.3], "orient": "world",
      "front_scale": [0.86, 0.72], "front_shift": [0, -0.45], "style": "gun",
      "paint": {"layers": [{"id": "toecap", "op": "band", "axis": "z", "from": 0.45, "to": 1.0, "ramp": "teal", "tone": 3.4, "faces": ["-bottom"], "bevel": true}],
        "stamps": [{"face": "front", "at": "center", "offset": [0, 1], "art": ["kyykkyyk", "yykkyykk"], "key": {"y": "warn:3", "k": "metal:0"}}]}},
-    {"id": "shin", "shape": "prism", "sides": 8, "size": [3.2, 3.2, 6.6], "pivot": [4.0, 3.0, 0.2], "offset": [0, 0, 3.3],
-     "rotation": [-90, 0, 0], "hide": ["front", "back"], "mirror": true, "style": "gun",
-     "paint": {"layers": [{"id": "rings", "op": "stripes", "axis": "z", "period": 2.2, "width": 0.18, "shift": -1.2}]}},
-    {"id": "knee", "shape": "prism", "sides": 8, "size": [4.4, 4.4, 4.4], "pivot": [4.0, 9.9, 0.2], "rotation": [0, 90, 0],
-     "mirror": true, "style": "teal", "paint": {"layers": [{"id": "hub", "op": "rect", "rect": [0.3, 0.3, 0.7, 0.7], "ramp": "metal", "tone": 3.0, "faces": ["caps"], "bevel": true}]}},
-    {"id": "thigh", "shape": "prism", "sides": 8, "size": [3.6, 3.6, 5.0], "pivot": [4.0, 10.2, 0.2], "offset": [0, 0, 2.5],
-     "rotation": [-90, 0, 0], "hide": ["front", "back"], "mirror": true, "style": "gun"},
-
-    {"id": "hips", "shape": "box", "chamfer": 1.0, "size": [12.6, 3.8, 8.6], "pivot": [0, 16.2, 0], "style": "enamel"},
     {"id": "abdomen", "parent": "hips", "shape": "box", "chamfer": 0.8, "size": [10.4, 3.4, 7.4], "pivot": [0, 3.2, 0], "style": "gun",
      "paint": {"layers": [{"id": "vents", "op": "grille", "rect": [0.12, 0.2, 0.88, 0.85], "period": 2, "faces": ["front", "back", "left", "right"]}]}},
 
