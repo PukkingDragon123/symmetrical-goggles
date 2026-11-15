@@ -163,7 +163,8 @@
       "minecraft:red_mushroom_normal"
     ],
     [
-      "minecraft:freeze_top_layer"
+      "minecraft:freeze_top_layer",
+      "winterworks:ice_cave_surface"
     ]
   ]
 }
