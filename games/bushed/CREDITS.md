@@ -278,6 +278,7 @@ no third-party model, texture or sound files are used.
 |---|---|---|---|
 | Anatomy library (`src/creatures/anatomy/`: control cages, Catmull-Clark creases, chart packing, pixel painter, limbs, locks) | ported from the ODDWORLD project (`src/life/anatomy`, `kit.ts`, `cage.ts`, `art/palette.ts`) | the BUSHED project owner (own code) | project-internal |
 | The Axehandle Hound, Gumberoo and Bigfoot lore | William T. Cox, *Fearsome Creatures of the Lumberwoods* (1910); North American folklore | William T. Cox | public domain |
+| Dingbats (`dingbat.ts`, `dingbat/`) and Granny Tamarack (`granny.ts`, `granny/`): models, painted pages, card atlases for feathers, bark strips, lichen and larch needles (`cards.ts`), dithered fog dissolve (`fade.ts`), clips and AI | procedural, written for BUSHED; the dingbat after lumber-camp "fearsome critter" yarns, Granny Tamarack an original character | the BUSHED project (own code) | project-internal |
 
 ## Humans
 
@@ -464,7 +465,7 @@ All CC0 1.0 (public domain). Thank you, Poly Haven and its artists.
 | `wall_clock` | [wall_clock](https://polyhaven.com/a/wall_clock) | PierreB3D | CC0 1.0 |
 | `wicker_basket_01` | [wicker_basket_01](https://polyhaven.com/a/wicker_basket_01) | Kuutti Siitonen | CC0 1.0 |
 | `wicker_basket_02` | [wicker_basket_02](https://polyhaven.com/a/wicker_basket_02) | Kuutti Siitonen | CC0 1.0 |
-| `wine_bottle_bordeaux`, `wine_bottle_champagne` | [wine_bottles_01](https://polyhaven.com/a/wine_bottles_01) | Rico Cilliers, Jurita Burger | CC0 1.0 |
+| `wine_bottle_alsace`, `wine_bottle_bordeaux`, `wine_bottle_burgundy`, `wine_bottle_champagne` | [wine_bottles_01](https://polyhaven.com/a/wine_bottles_01) | Rico Cilliers, Jurita Burger | CC0 1.0 |
 | `wooden_axe` | [wooden_axe](https://polyhaven.com/a/wooden_axe) | Ulan Cabanilla | CC0 1.0 |
 | `wooden_axe_02` | [wooden_axe_02](https://polyhaven.com/a/wooden_axe_02) | Ulan Cabanilla | CC0 1.0 |
 | `wooden_axe_03` | [wooden_axe_03](https://polyhaven.com/a/wooden_axe_03) | Ulan Cabanilla | CC0 1.0 |
