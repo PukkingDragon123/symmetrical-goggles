@@ -355,7 +355,12 @@ export class Hands {
       return;
     }
 
-    // items: LMB uses them (eat, drink, offer, toggle)
+    // items: LMB uses them (eat, drink, offer, toggle), Q sets one down where you look
+    if (h.kind === 'item' && input.pressed('KeyQ')) {
+      const at = surface && surface.distanceTo(origin) < 2.6 ? surface : this.g.player.pos.clone().add(new THREE.Vector3(0, 0.05, 0)).addScaledVector(new THREE.Vector3(0, 0, -1).applyQuaternion(cam.quaternion).setY(0).normalize(), 0.7);
+      this.g.game.setDown?.(h.item, at);
+      return;
+    }
     if (h.kind === 'item') {
       if (input.pressed('Mouse0')) {
         if (this.focus) {

@@ -31,6 +31,7 @@ import { WeatherFx } from '../gfx/weather';
 import { fitTool } from '../player/arms';
 import { Backpack } from '../ui/backpack';
 import { makeSlashGatherable } from './cabinplay';
+import { makePhysical } from './physprops';
 import { writeSave, type SaveData } from './save';
 
 export type Mode = 'loading' | 'menu' | 'drive' | 'walk' | 'cutscene' | 'sleep';
@@ -271,6 +272,17 @@ export class Game {
     h.userData.slash = undefined;
   }
   private slashSeen = new WeakSet<THREE.Object3D>();
+
+  /** put one of a held item down in the world as a physical object (offerings, bait, leaving the jerky out) */
+  setDown(id: string, at: THREE.Vector3): void {
+    const m = this.toolModel(id);
+    if (!m || !this.take(id)) return;
+    m.position.copy(at).add(new THREE.Vector3(0, 0.06, 0));
+    this.scene.add(m);
+    makePhysical(m, { mass: ITEMS[id]?.mass ?? 0.3, itemId: id, asleep: false });
+    if (!this.owns(id)) this.hands.equip(null);
+    this.sound('place_wood', at, 0.3, 1.6);
+  }
 
   /** a carried object goes into the backpack (bought goods become owned only at the register) */
   pocket(id: string, obj: THREE.Object3D): void {

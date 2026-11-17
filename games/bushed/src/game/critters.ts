@@ -8,7 +8,8 @@ import { SPOTS, heightAt } from '../world/layout';
 import { audio } from '../audio/audio';
 import { SOUNDS } from '../audio/bank';
 import { hud } from '../ui/hud';
-import { makePhysical } from './physprops';
+import { makePhysical, propsNear, removeProp } from './physprops';
+import { ITEMS } from './items';
 import { anchorPos } from './flow';
 
 /** fallbacks while a creature sound id is missing from the bank */
@@ -38,6 +39,7 @@ export class Critters {
   private lastPlayer = new THREE.Vector3();
   private seenBigfoot = 0;
   introActive = false;
+  private offerT = 5;
 
   constructor(private game: Game) {
     game.events.on('offer', (o: { item: string; obj: THREE.Object3D; taken: boolean }) => {
@@ -273,6 +275,19 @@ export class Critters {
       if (d < 260) this.gumberoo.update(ctx);
     }
     this.wildlife?.update(ctx);
+    // food left out by the hollow is gone by morning: the big one noticed
+    this.offerT -= dt;
+    if (this.offerT <= 0) {
+      this.offerT = 5;
+      const night = g.hour > 21 || g.hour < 5;
+      const far = g.player.pos.distanceTo(new THREE.Vector3(SPOTS.hollow.x, g.player.pos.y, SPOTS.hollow.z)) > 60;
+      if (night && far) for (const p of propsNear(new THREE.Vector3(SPOTS.hollow.x, heightAt(SPOTS.hollow.x, SPOTS.hollow.z), SPOTS.hollow.z), SPOTS.hollow.r)) {
+        if (!p.itemId || p.obj.userData.unpaid || !ITEMS[p.itemId]?.food) continue;
+        removeProp(p);
+        this.kindness = Math.min(1, this.kindness + 0.3);
+        g.flags.add('left_offering');
+      }
+    }
     if (this.bigfoot) {
       this.bigfoot.update(ctx);
       const d = this.bigfoot.object.position.distanceTo(g.player.pos);
