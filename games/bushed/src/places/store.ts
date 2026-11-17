@@ -100,7 +100,7 @@ function shell(ms: Mesher, cols: Cols, glass: string): void {
       const split = FLOOR + 1.05;
       const parts: [number, number, string][] = [];
       if (ya < split) parts.push([ya, Math.min(yb, split), 'boards_green']);
-      if (yb > split) parts.push([Math.max(ya, split), yb, 'board_warm']);
+      if (yb > split) parts.push([Math.max(ya, split), yb, 'trim_cream']);
       for (const [pa, pb, m] of parts) {
         // vertical boards: u along y (grain), v along x
         ms.quad(m, V(xb, pa, zi), V(xa, pa, zi), V(xa, pb, zi), V(xb, pb, zi), [pa, xb], [pa, xa], [pb, xa], [pb, xb]);
@@ -544,7 +544,8 @@ export async function buildStore(): Promise<Place> {
       jm.pop();
       const jar = jm.build({ name: 'jerky_jar' });
       // make the jar glass see-through
-      jar.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && (m.material as THREE.Material).name === 'place_lab_gloss') { m.material = glassMaterial('jar'); m.renderOrder = 3; } });
+      const jg = new THREE.MeshStandardMaterial({ color: 0xc8d8d0, roughness: 0.12, transparent: true, opacity: 0.32, depthWrite: false, side: THREE.DoubleSide });
+      jar.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && (m.material as THREE.Material).name === 'place_lab_gloss') { m.material = jg; m.renderOrder = 3; m.castShadow = false; } });
       group.add(jar);
       for (let i = 0; i < 6; i++) stock('jerky', jx + (i % 2 ? 0.02 : -0.02), ch + 0.02 + i * 0.025, jz, i * 0.9).scale.set(0.6, 0.6, 0.6);
       anchors.jerky_jar = anchor(group, 'jerky_jar', jx, ch, jz, 0);
@@ -662,7 +663,7 @@ export async function buildStore(): Promise<Place> {
     anchors.stove_fire = stove.fire;
     product(group, 'coffeepot', sx + 0.08, F + 0.06 + STOVE.AXIS_Y + STOVE.R - 0.01, sz + 0.12, -0.6);
     cols.box(sx, F + 0.5, sz, 0.38, 0.5, STOVE.L / 2 + 0.05);
-    pending.push(prop(group, 'WoodenChair_01', sx + 1.15, F, sz + 0.9, -2.2).then((o) => fitHeight(o, 1.0)));
+    pending.push(prop(group, 'Rockingchair_01', sx + 1.15, F, sz + 0.95, -2.3));
     pending.push(prop(group, 'wooden_stool_01', sx - 1.0, F, sz + 1.0, 0.6));
     pending.push(prop(group, 'Barrel_01', sx + 0.95, F, sz + 2.0, 0.3).then((o) => {
       if (!o) return;
@@ -781,7 +782,7 @@ export async function buildStore(): Promise<Place> {
       lathe(ms, 'enamel', [[0.0, 0.05], [0.03, 0.05], [0.05, 0.03], [0.2, -0.08], [0.21, -0.09], [0.205, -0.095], [0.19, -0.085], [0.045, 0.02], [0.0, 0.03]], 18);
       ms.pop();
       // the bulb: emissive
-      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), new THREE.MeshStandardMaterial({ color: 0x302010, emissive: new THREE.Color(1.0, 0.75, 0.42), emissiveIntensity: 3 }));
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), new THREE.MeshStandardMaterial({ color: 0x302010, emissive: new THREE.Color(1.0, 0.75, 0.42), emissiveIntensity: 1.6 }));
       bulb.position.set(x, CEIL - 0.79, z);
       group.add(bulb);
       const l = new THREE.PointLight(0xffc98a, 0, sh ? 10 : 7, 1.5);
@@ -942,7 +943,7 @@ export async function buildStore(): Promise<Place> {
     for (const s of spill) s.intensity = 7 * lampLevel;
     glassM.emissiveIntensity = 0.45 * lampLevel;
   });
-  group.traverse((o) => { if (o.userData.lamp) ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = 3; });
+  group.traverse((o) => { if (o.userData.lamp) ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = 1.6; });
 
   const cull = lightCuller(new THREE.Vector3(sp.x, gy + 1.5, sp.z), lights, 90);
   updaters.push(() => {
@@ -961,7 +962,7 @@ export async function buildStore(): Promise<Place> {
     pins,
     setLamps: (l: number) => {
       lampLevel = Math.max(0, Math.min(1, l));
-      group.traverse((o) => { if (o.userData.lamp) ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = 3 * lampLevel; });
+      group.traverse((o) => { if (o.userData.lamp) ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = 1.6 * lampLevel; });
     },
   };
 

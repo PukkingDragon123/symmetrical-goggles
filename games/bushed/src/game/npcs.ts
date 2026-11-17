@@ -10,6 +10,9 @@ import { hud } from '../ui/hud';
 import { ODILE, DOUG, line, speak } from './dialogue';
 import { flameCards } from '../places/fixtures';
 import { campfire } from './flow';
+import { buildPieceGeometry, barkMaterial } from '../chop/wood';
+import { woodMaterial } from '../chop/woodtex';
+import { physics, RAPIER } from '../physics/physics';
 
 interface Stop { from: number; to: number; at: THREE.Vector3; face: number; anim: NpcAnim }
 interface NpcDef { id: string; name: string; look: LookId | HumanLook; stops: Stop[]; talk: (g: Game, n: Npc) => string; ambient?: string[] }
@@ -124,7 +127,7 @@ export function spawnNpcs(g: Game): Npc[] {
     },
     {
       id: 'camper', name: 'Camper', look: variant(makeLook('camper'), 4242),
-      stops: [{ from: 0, to: 24, at: P(cs.x + 1.7, cs.z + 1.1), face: -2.0, anim: 'sit' }],
+      stops: [{ from: 0, to: 24, at: P(cs.x + (1.7 / Math.hypot(1.7, 1.1)) * 2.0, cs.z + (1.1 / Math.hypot(1.7, 1.1)) * 2.0, -0.1), face: Math.atan2(-1.7, -1.1), anim: 'sit' }],
       talk: () => line(CAMPERS, 'campers'), ambient: CAMPERS,
     },
     {
@@ -138,6 +141,21 @@ export function spawnNpcs(g: Game): Npc[] {
       talk: () => line(HUNTER, 'hunter'),
     },
   ];
+  // log benches round the fire (the camper sits on the first)
+  for (const [a, sp] of [[Math.atan2(1.1, 1.7), 'spruce'], [Math.atan2(1.1, 1.7) + 2.1, 'pine'], [Math.atan2(1.1, 1.7) + 4.1, 'birch']] as [number, 'spruce' | 'pine' | 'birch'][]) {
+    const bx = cs.x + Math.cos(a) * 2.05, bz = cs.z + Math.sin(a) * 2.05;
+    const g0 = buildPieceGeometry({ species: sp, stem: [{ y: 0, r: 0.2, x: 0, z: 0 }, { y: 2, r: 0.18, x: 0, z: 0 }], y0: 0, y1: 1.7, seed: Math.round(a * 100) });
+    const bench = new THREE.Mesh(g0.geo, [barkMaterial(sp), woodMaterial('end', sp, 2), woodMaterial('split', sp)]);
+    bench.position.set(bx, heightAt(bx, bz) + 0.17, bz);
+    // lie along the tangent of the ring
+    bench.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(-Math.sin(a), 0, Math.cos(a)));
+    bench.castShadow = bench.receiveShadow = true;
+    g.scene.add(bench);
+    const body = physics.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(bench.position.x, bench.position.y, bench.position.z)
+      .setRotation({ x: bench.quaternion.x, y: bench.quaternion.y, z: bench.quaternion.z, w: bench.quaternion.w }));
+    physics.world.createCollider(RAPIER.ColliderDesc.cylinder(0.85, 0.19), body);
+    registerInteractable(bench, { kind: 'seat', label: () => 'Sit by the fire', use: (ctx) => g.placeAction('sit_firepit', ctx) });
+  }
   // the campground's fire burns from dusk
   const fire = campfire(g, P(cs.x, cs.z, 0.02), true);
   g.updaters.push(() => { fire.level = g.hour > 17.5 || g.hour < 1.5 ? 1 : 0; });
