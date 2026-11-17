@@ -175,7 +175,7 @@ export class Game {
     if (!m) return null;
     const c = m.clone();
     // tools and lights are re-framed so the grip sits in the palm (handle +Y, edge +Z)
-    return ITEMS[id]?.tool || id === 'flashlight' ? fitTool(c) : c;
+    return ITEMS[id]?.tool || id === 'flashlight' ? fitTool(c) : id === 'beer' ? fitTool(c, 0.3) : c;
   }
 
   /** load the models of every item that maps to a Poly Haven prop (tools, lights, pots) */
@@ -529,6 +529,11 @@ export class Game {
       shiver: this.survival.shiver, aimPitch: this.player.pitch, swingCharge: this.hands?.charge ?? 0,
     });
     this.journal.update(dt);
+    // empty hands rest out of sight unless they're doing something (grabbing, pushing, offering)
+    if (this.arms && this.mode !== 'drive') {
+      const a = this.arms as unknown as { held: string; action: string | null; object: THREE.Object3D };
+      a.object.visible = !(a.held === 'none' && !a.action) || this.mode === 'menu';
+    }
     // audio
     audio.setListener(cam);
     // the old 4x4's engine: idle and drive loops crossfaded by RPM, gravel under the tyres by speed

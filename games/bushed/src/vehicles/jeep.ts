@@ -31,6 +31,7 @@ export class Jeep {
   private wheelBase: THREE.Quaternion[] = [];
   private steerWheel: THREE.Object3D | null = null;
   private steerBase = new THREE.Quaternion();
+  private steerAxis = new THREE.Vector3(0, 0, 1);
   readonly lights: THREE.SpotLight[] = [];
   readonly seat = new THREE.Object3D();
   rpm = 800;
@@ -44,7 +45,16 @@ export class Jeep {
   onEnter: () => void = () => {};
 
   async load(): Promise<void> {
-    const meta = (await (await fetch('assets/models/jeep.json')).json()) as JeepMeta;
+    const raw = await (await fetch('assets/models/jeep.json')).json();
+    // the props pipeline writes wheels as an object keyed by node name
+    const wheels = Array.isArray(raw.wheels) ? raw.wheels : Object.entries(raw.wheels as Record<string, { pos: [number, number, number]; radius: number }>)
+      .map(([name, w]) => ({ name, pos: w.pos, radius: w.radius, front: w.pos[2] > 0, left: w.pos[0] > 0 }));
+    const meta: JeepMeta = {
+      wheels, size: raw.size,
+      steeringWheel: typeof raw.steeringWheel === 'string' ? raw.steeringWheel : 'steering_wheel',
+      seat: raw.driverEye ?? raw.seat,
+    };
+    if (raw.steeringWheel?.axis) this.steerAxis.fromArray(raw.steeringWheel.axis).normalize();
     this.meta = meta;
     const gltf = await new GLTFLoader().loadAsync('assets/models/jeep.glb');
     const m = gltf.scene;
@@ -65,7 +75,7 @@ export class Jeep {
       this.steerWheel = m.getObjectByName(meta.steeringWheel) ?? null;
       if (this.steerWheel) this.steerBase.copy(this.steerWheel.quaternion);
     }
-    const seat = meta.seat ?? [-0.35, 1.35, 0.1];
+    const seat = meta.seat ?? [0.33, 1.5, -0.35];
     this.seat.position.set(seat[0], seat[1], seat[2]);
     this.root.add(this.seat);
     // headlights
@@ -154,7 +164,11 @@ export class Jeep {
         .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), rot)).multiply(this.wheelBase[i]);
       o.position.y = w.pos[1] + 0.32 - susp;
     }
-    if (this.steerWheel) this.steerWheel.quaternion.copy(this.steerBase).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), -this.steer * 4.2));
+    if (this.steerWheel) {
+      // the axis is given in the parent's frame: rotate about it, then apply the rest pose
+      const axisLocal = this.steerAxis.clone().applyQuaternion(this.steerBase.clone().invert());
+      this.steerWheel.quaternion.copy(this.steerBase).multiply(new THREE.Quaternion().setFromAxisAngle(axisLocal, this.steer * 4.2));
+    }
     for (const l of this.lights) l.intensity = this.headlights ? 120 : 0;
     // tyre tracks, dust and mud
     this.trackT += Math.abs(this.speed) * dt;

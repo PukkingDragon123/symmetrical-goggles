@@ -445,9 +445,9 @@ export class GroundCover {
       this.push(c, g, rng.next(), x, y, z, rng.range(0, 6.28), rng.range(0.75, 1.25));
     });
     // ferns: shade and moisture, in patches
-    tryN(80, (x, z, r) => {
+    tryN(150, (x, z, r) => {
       const b = bAt(x, z), cv = can(x, z);
-      const p = (0.15 + 0.85 * cv.cover) * (0.25 + 0.95 * b.wet) * (1 - b.burn) * smoothstep(-0.25, 0.35, patch(x, z, 14, 3));
+      const p = (0.15 + 0.85 * cv.cover) * (0.2 + 1.0 * b.wet + 0.4 * b.old) * (1 - b.burn) * smoothstep(-0.45, 0.25, patch(x, z, 14, 3));
       if (r > p) return;
       if (ok(x, z, 0.6, 0.35) < 0) return;
       this.push(c, 'fern', rng.next(), x, hAt(x, z), z, rng.range(0, 6.28), rng.range(0.75, 1.3));
@@ -506,9 +506,9 @@ export class GroundCover {
       this.push(c, `sapling_${sp}`, rng.next(), x, hAt(x, z) - 0.02, z, rng.range(0, 6.28), rng.range(0.7, 1.35));
     });
     // moss mounds and cushions: wet shade, old growth
-    tryN(30, (x, z, r) => {
+    tryN(60, (x, z, r) => {
       const b = bAt(x, z), cv = can(x, z);
-      const p = (0.1 + 0.7 * b.wet * cv.cover + 0.6 * b.old) * smoothstep(-0.3, 0.3, patch(x, z, 12, 17));
+      const p = (0.1 + 0.8 * b.wet * cv.cover + 0.7 * b.old) * smoothstep(-0.3, 0.3, patch(x, z, 12, 17));
       if (r > p || ok(x, z, 0.6, 0.2) < 0) return;
       const u = rng.next();
       if (u < 0.45) {
@@ -577,11 +577,11 @@ export class GroundCover {
       c.solids.push({ id: this.solidId++, kind: 'rock', shape: 'sphere', x, y: y + size * 0.35, z, r: set ? 1.2 : size * 0.85, h: 0 });
     }
     // fallen logs: deadfall everywhere, giant mossy cedar logs in old growth, charred in the burn
-    for (let i = 0; i < Math.round(6 * D); i++) {
+    for (let i = 0; i < Math.round(12 * D); i++) {
       const x = x0 + rng.next() * S, z = z0 + rng.next() * S;
       if (Math.abs(x) > lim || Math.abs(z) > lim) continue;
       const b = bAt(x, z);
-      const p = 0.35 + 0.9 * b.old + 0.4 * b.burn + 0.2 * b.wet;
+      const p = 0.3 + 0.9 * b.old + 0.4 * b.burn + 0.2 * b.wet;
       if (rng.next() > p) continue;
       if (clearance(x, z) < 0.8) continue;
       const giant = b.old > 0.35 && rng.chance(0.45 + b.old * 0.3);
@@ -781,6 +781,8 @@ export class GroundCover {
       const cnt = new Map<string, number>();
       for (const c of this.chunks.values()) for (const [gi, arr] of c.items) cnt.set(this.groups[gi].name, (cnt.get(this.groups[gi].name) ?? 0) + arr.length / REC);
       for (const [k, v] of cnt) per.push(`${k}:${v}`);
+      per.push('| visible:');
+      for (const pr of this.protos) if (pr.count) per.push(`${pr.name}:${pr.count}`);
     }
     this.statsText = (per.length ? per.join(' ') + '\n' : '') + `groundcover: ${n} instances, ${this.protos.length} prototypes, ${this.chunks.size} chunks (gen ${this.genMs.toFixed(0)} ms) ~${(tris / 1e6).toFixed(2)}M tris`;
   }

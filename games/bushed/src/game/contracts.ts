@@ -29,12 +29,12 @@ export function initialContracts(): Contract[] {
       pay: 40, due: 3, goal: { kind: 'splits', count: 10, where: 'campsite' }, state: 'posted', progress: 0, hand: 'patrick', paperSeed: 11,
     },
     {
-      id: 'birch_logs', from: 'O. Pruneau', title: 'BOULEAU / BIRCH',
+      id: 'birch_logs', from: 'G. Pruneau', title: 'BOULEAU / BIRCH',
       body: '3 paper birch logs, 2 m or longer, delivered to the log deck behind the store. Straight ones. I pay the scale price plus a bonus.',
       pay: 30, goal: { kind: 'logs', count: 3, species: 'birch', minLen: 2, where: 'log_deck' }, state: 'posted', progress: 0, hand: 'caveat', paperSeed: 12,
     },
     {
-      id: 'store_cord', from: 'O. Pruneau', title: 'Bois pour le poêle',
+      id: 'store_cord', from: 'G. Pruneau', title: 'Bois pour le poêle',
       body: "The store stove eats like a teenager. 20 splits stacked on the store porch, any species but cedar (it spits).",
       pay: 60, due: 6, goal: { kind: 'splits', count: 20, where: 'store_porch' }, state: 'posted', progress: 0, hand: 'caveat', paperSeed: 13,
     },
@@ -49,7 +49,7 @@ export function initialContracts(): Contract[] {
       pay: 50, goal: { kind: 'item', count: 1, where: 'hollow' }, state: 'posted', progress: 0, hand: 'apple', paperSeed: 15,
     },
     {
-      id: 'chanterelles', from: 'O. Pruneau', title: 'CHANTERELLES',
+      id: 'chanterelles', from: 'G. Pruneau', title: 'CHANTERELLES',
       body: 'Buying golden chanterelles, $15 a kilo, as many as you find. They like the moss under the old spruce. Not the false ones (gills like a knife).',
       pay: 0, goal: { kind: 'mushrooms', count: 0, where: 'store' }, state: 'posted', progress: 0, hand: 'caveat', paperSeed: 16,
     },

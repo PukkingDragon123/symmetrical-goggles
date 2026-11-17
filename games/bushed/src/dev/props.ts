@@ -238,8 +238,18 @@ async function layoutJeep(): Promise<void> {
         for (const mat of mats) { const s = mat as THREE.MeshStandardMaterial; if (s.map) applyPixelTex(s.map); }
         m.castShadow = m.receiveShadow = true;
       }
-      if (/^wheel_/.test(o.name)) spinners.push({ o, axis: 'x', speed: q.get('spin') === '1' ? 3 : 0 });
-      if (o.name === 'steering_wheel') spinners.push({ o, axis: 'z', speed: q.get('spin') === '1' ? 1 : 0 });
+      // pivot checks: ?spin=1 animates, ?steer=deg turns the steering wheel and the front wheels, ?roll=deg rolls wheels
+      const deg = THREE.MathUtils.degToRad;
+      if (/^wheel_/.test(o.name)) {
+        spinners.push({ o, axis: 'x', speed: q.get('spin') === '1' ? 3 : 0 });
+        o.rotation.x = deg(Number(q.get('roll') ?? 0));
+        if (/^wheel_f/.test(o.name)) o.rotation.y = deg(Number(q.get('steer') ?? 0)) / 12;
+      }
+      if (o.name === 'steering_wheel') {
+        spinners.push({ o, axis: 'z', speed: q.get('spin') === '1' ? 1 : 0 });
+        // the node's own rotation orients the column; turning is about its local Z
+        o.rotateZ(deg(Number(q.get('steer') ?? 0)));
+      }
     });
     const b = new THREE.Box3().setFromObject(g.scene);
     g.scene.position.x = x - b.min.x;
@@ -301,7 +311,10 @@ const timer = new THREE.Timer();
 renderer.setAnimationLoop(() => {
   timer.update();
   const dt = timer.getDelta();
-  for (const s of spinners) s.o.rotation[s.axis] += s.speed * dt;
+  for (const s of spinners) {
+    if (!s.speed) continue;
+    if (s.axis === 'z') s.o.rotateZ(s.speed * dt); else s.o.rotation[s.axis] += s.speed * dt;
+  }
   if (night) fire.intensity = 26 + Math.sin(performance.now() * 0.013) * 3 + Math.sin(performance.now() * 0.031) * 2;
   controls.update();
   renderer.render(scene, camera);

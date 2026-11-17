@@ -1,5 +1,5 @@
-// What people say. Lines are picked by context and never repeat back-to-back. Odile Pruneau runs the general
-// store; she has opinions about wood, weather, your uncle, and the things in the bush.
+// What people say. Lines are picked by context and never repeat back-to-back. Gérard Pruneau runs the general
+// store; he has opinions about wood, weather, your uncle, and the things in the bush.
 import { Rng } from '../core/rng';
 
 type Pool = string[];

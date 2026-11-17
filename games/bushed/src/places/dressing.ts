@@ -66,10 +66,11 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
   // ================================================================================ hearth + stove corner
   const hx0 = 0.7, hx1 = 2.22, hz0 = -2.93, hz1 = -1.4;
   {
-    // raised stone platform with a board kerb
-    ms.pushT((hx0 + hx1) / 2, F + 0.05, (hz0 + hz1) / 2);
-    box(ms, 'stone', hx1 - hx0, 0.1, hz1 - hz0, { uv: [0.3, 0.7] });
+    // raised platform: mortar bed with flagstones laid on top, a board kerb around it
+    ms.pushT((hx0 + hx1) / 2, F + 0.04, (hz0 + hz1) / 2);
+    box(ms, 'chink', hx1 - hx0, 0.08, hz1 - hz0, { uv: [0.3, 0.7] });
     ms.pop();
+    flagstones(ms, new Rand(66), hx0 + 0.02, hx1 - 0.02, hz0 + 0.02, hz1 - 0.02, F + 0.08);
     board(ms, 'board_dark', rnd, (hx0 + hx1) / 2, F + 0.05, hz1 + 0.02, hx1 - hx0 + 0.04, 0.11, 0.04, 0, { grain: 'x' });
     board(ms, 'board_dark', rnd, hx0 - 0.02, F + 0.05, (hz0 + hz1) / 2, 0.04, 0.11, hz1 - hz0, 0, { grain: 'z' });
     // heat shield: stacked fieldstone wall on the back logs, capped with a board shelf
@@ -89,8 +90,10 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
     product(group, 'syrup', hx1 - 0.3, F + 1.39, hz0 + 0.12, 0.1);
     // a cast pan hanging from a nail on the shield, poker + shovel leaning
     pending.push(prop(group, 'brass_pan_01', hx1 - 0.35, F + 0.85, hz0 + 0.17, 0).then((o) => { if (o) { o.rotation.x = -Math.PI / 2 + 0.08; o.position.y = F + 1.0; } }));
-    tube(ms, 'iron', [V(hx0 + 0.22, F + 0.1, hz1 - 0.12), V(hx0 + 0.26, F + 0.75, hz0 + 0.28)], 0.008, 5);
-    tube(ms, 'iron', [V(hx0 + 0.26, F + 0.75, hz0 + 0.28), V(hx0 + 0.25, F + 0.8, hz0 + 0.26), V(hx0 + 0.27, F + 0.83, hz0 + 0.29)], 0.01, 5);
+    // poker leaning against the stone cheek
+    tube(ms, 'iron', [V(hx0 + 0.2, F + 0.11, hz0 + 0.62), V(hx0 + 0.17, F + 0.8, hz0 + 0.55)], 0.007, 5, { smooth: false });
+    tube(ms, 'iron', [V(hx0 + 0.17, F + 0.8, hz0 + 0.55), V(hx0 + 0.16, F + 0.86, hz0 + 0.53), V(hx0 + 0.19, F + 0.88, hz0 + 0.55), V(hx0 + 0.19, F + 0.84, hz0 + 0.56)], 0.009, 5);
+    tube(ms, 'iron', [V(hx0 + 0.2, F + 0.11, hz0 + 0.62), V(hx0 + 0.23, F + 0.13, hz0 + 0.66)], 0.008, 5, { smooth: false });
     // the stove top: coffee pot and a pot
     product(group, 'coffeepot', stoveAt.x - 0.12, F + 0.1 + STOVE.AXIS_Y + STOVE.R - 0.01, stoveAt.z + 0.18, 0.8);
     pending.push(prop(group, 'pot_enamel_01', stoveAt.x + 0.1, F + 0.1 + STOVE.AXIS_Y + STOVE.R - 0.015, stoveAt.z - 0.15, 0.4));
@@ -99,13 +102,23 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
   {
     const x0 = 1.74, x1 = wallX - 0.01, z0 = -1.32, z1 = -0.5, h = 0.56;
     const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
-    for (const z of [z0, z1]) board(ms, 'board_warm', rnd, cx, F + h / 2, z, x1 - x0, h, 0.025, 0, { grain: 'x' });
-    board(ms, 'board_warm', rnd, x0, F + h / 2, cz, 0.025, h, z1 - z0, 0, { grain: 'z' });
-    board(ms, 'board_warm', rnd, x1, F + h / 2, cz, 0.025, h, z1 - z0, 0, { grain: 'z' });
+    // three boards per side with gaps, corner posts, a worn top rim
+    for (let b = 0; b < 3; b++) {
+      const y = F + 0.04 + b * 0.175 + 0.08;
+      for (const z of [z0, z1]) board(ms, 'board_warm', rnd, cx, y, z, x1 - x0 - 0.02, 0.165, 0.022, 0, { grain: 'x' });
+      board(ms, 'board_warm', rnd, x0, y, cz, 0.022, 0.165, z1 - z0 - 0.02, 0, { grain: 'z' });
+    }
+    for (const [px, pz] of [[x0, z0], [x0, z1], [x1, z0], [x1, z1]] as [number, number][]) board(ms, 'board_dark', rnd, px, F + h / 2 + 0.01, pz, 0.045, h + 0.02, 0.045, 0, { grain: 'y' });
+    board(ms, 'board_dark', rnd, cx, F + h + 0.012, z0, x1 - x0 + 0.04, 0.024, 0.05, 0, { grain: 'x' });
+    board(ms, 'board_dark', rnd, cx, F + h + 0.012, z1, x1 - x0 + 0.04, 0.024, 0.05, 0, { grain: 'x' });
+    board(ms, 'board_dark', rnd, x0, F + h + 0.012, cz, 0.05, 0.024, z1 - z0 + 0.04, 0, { grain: 'z' });
     board(ms, 'board_dark', rnd, cx, F + 0.03, cz, x1 - x0, 0.03, z1 - z0, 0, { grain: 'z' });
+    // bark bits and chips on the floor around it
+    for (let i = 0; i < 7; i++) boxAt(ms, i % 2 ? 'bark' : 'wood_fresh', x0 - 0.1 + rnd.range(-0.15, 0.1), F + 0.004, z0 + rnd.range(0, 0.8), rnd.range(0.02, 0.06), 0.008, rnd.range(0.02, 0.05), rnd.range(0, 3));
     // splits inside, lying along z
     const wr = new Rand(88);
-    for (let layer = 0; layer < 4; layer++) for (let i = 0; i < 3; i++) {
+    for (let layer = 0; layer < 5; layer++) for (let i = 0; i < 3; i++) {
+      if (layer === 4 && i === 2) continue;
       const x = x0 + 0.08 + i * 0.13 + wr.range(-0.02, 0.02);
       const y = F + 0.1 + layer * 0.11;
       ms.pushT(x, y, z0 + 0.04, -Math.PI / 2 + wr.range(-0.1, 0.1), 0, wr.range(0, 6.28));
@@ -371,9 +384,9 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
   // wall map (runtime canvas from the world layout) on the back wall
   {
     const g = new THREE.Group();
-    g.position.set(-0.35, F + 1.48, -wallZ + 0.02);
+    g.position.set(-0.3, F + 1.42, -wallZ + 0.02);
     group.add(g);
-    const mw = 0.95, mh = 0.68;
+    const mw = 0.62, mh = 0.85;
     const tex = wallMapTexture();
     const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85 });
     const geo = new THREE.PlaneGeometry(mw, mh, 6, 4);
@@ -480,7 +493,7 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
   porchLamp.position.set(0.32, CABIN_GEOM.EAVE - 0.5, D / 2 + CABIN.PORCH - 0.22);
   group.add(porchLamp);
   c.lights.push(porchLamp);
-  const lantern = new THREE.PointLight(0xffb366, 4, 10, 1.7);
+  const lantern = new THREE.PointLight(0xffc183, 4, 10, 1.7);
   lantern.position.set(-wallX + 0.42, F + 0.76 + 0.2, (-0.8 + 1.05) / 2 - 0.25);
   shadowy(lantern, 512, -0.003);
   lantern.shadow.camera.far = 10;
@@ -503,6 +516,42 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
 }
 
 // ---------------------------------------------------------------------------------------------- pieces
+/** irregular flagstones (jittered grid cells, each a thick slab with chamfered edges) over [x0,x1]x[z0,z1] at height y */
+export function flagstones(ms: Mesher, rnd: Rand, x0: number, x1: number, z0: number, z1: number, y: number, cell = 0.32): void {
+  const nx = Math.max(1, Math.round((x1 - x0) / cell)), nz = Math.max(1, Math.round((z1 - z0) / cell));
+  const gx = (i: number) => x0 + (x1 - x0) * (i / nx), gz = (j: number) => z0 + (z1 - z0) * (j / nz);
+  // jittered lattice points (edges stay on the border)
+  const P: [number, number][][] = [];
+  for (let i = 0; i <= nx; i++) {
+    P.push([]);
+    for (let j = 0; j <= nz; j++) {
+      const jx = i === 0 || i === nx ? 0 : rnd.range(-0.3, 0.3) * cell, jz = j === 0 || j === nz ? 0 : rnd.range(-0.3, 0.3) * cell;
+      P[i].push([gx(i) + jx, gz(j) + jz]);
+    }
+  }
+  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+    const quad = [P[i][j], P[i + 1][j], P[i + 1][j + 1], P[i][j + 1]];
+    const c = [quad.reduce((s, p) => s + p[0], 0) / 4, quad.reduce((s, p) => s + p[1], 0) / 4];
+    // shrink toward the centre (mortar joint) and cut corners into an irregular octagon
+    const pts: [number, number][] = [];
+    for (let k = 0; k < 4; k++) {
+      const a = quad[k], b = quad[(k + 1) % 4];
+      for (const t of [0.18 + rnd.range(-0.06, 0.06), 0.82 + rnd.range(-0.06, 0.06)]) {
+        const x = a[0] + (b[0] - a[0]) * t, z = a[1] + (b[1] - a[1]) * t;
+        pts.push([c[0] + (x - c[0]) * 0.9, c[1] + (z - c[1]) * 0.9]);
+      }
+    }
+    const shape = new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z)));
+    const th = rnd.range(0.025, 0.045);
+    const g = new THREE.ExtrudeGeometry(shape, { depth: th, bevelEnabled: true, bevelSize: 0.008, bevelThickness: 0.006, bevelSegments: 1 });
+    const uv = g.attributes.uv as THREE.BufferAttribute;
+    const uo = rnd.range(0, 2), vo = rnd.range(0, 2);
+    for (let k = 0; k < uv.count; k++) uv.setXY(k, uv.getX(k) * 0.6 + uo, uv.getY(k) * 0.6 + vo);
+    ms.geom('stone', g, tf(0, y - 0.01 + rnd.range(-0.004, 0.004), 0, 0, -Math.PI / 2, 0).multiply(new THREE.Matrix4().makeRotationZ(0)));
+    g.dispose();
+  }
+}
+
 /** a soft cushion: a subdivided box with rounded (pillowed) faces */
 export function cushion(ms: Mesher, mat: string, x: number, y: number, z: number, w: number, h: number, d: number, puff: number, seg = 4): void {
   const g = new THREE.BoxGeometry(w, h, d, seg * 2, 2, seg * 3);

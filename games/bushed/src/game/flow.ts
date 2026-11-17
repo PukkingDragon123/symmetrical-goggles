@@ -33,13 +33,16 @@ export function campfire(game: Game, pos: THREE.Vector3): { level: number; updat
   light.shadow.mapSize.set(512, 512);
   light.shadow.bias = -0.002;
   game.scene.add(light);
+  const pitAnchor = game.cabin?.anchors?.firepit as THREE.Object3D | undefined;
+  const setFire = pitAnchor?.userData.setFire as ((l: number) => void) | undefined;
   let t = 0, sparkT = 0, smokeT = 0;
   const fire = {
     level: 1, light,
     update(dt: number) {
       t += dt;
       const f = 0.82 + 0.1 * Math.sin(t * 13.1) + 0.06 * Math.sin(t * 23.7 + 1) + 0.05 * Math.sin(t * 5.3);
-      light.intensity = 26 * fire.level * f;
+      light.intensity = (setFire ? 14 : 26) * fire.level * f;
+      setFire?.(fire.level);
       light.position.x = pos.x + Math.sin(t * 7) * 0.03;
       sparkT -= dt; smokeT -= dt;
       if (sparkT <= 0 && fire.level > 0.2) {
@@ -69,6 +72,7 @@ export async function runMenu(game: Game, d: Director): Promise<'new' | 'continu
   const baseYaw = Math.atan2(-look.x, -look.z);
   game.player.teleport(chair.x, chair.y - 0.45, chair.z, baseYaw);
   game.player.pitch = -0.05;
+  game.arms?.setHeld('bottle', game.toolModel('beer') ?? undefined);
   const cam = game.camera;
   const eye = chair.clone().add(new THREE.Vector3(0, 0.75, 0));
   // menu objects sit on a stump to the right of the chair
@@ -121,7 +125,8 @@ export async function runMenu(game: Game, d: Director): Promise<'new' | 'continu
   await d.until(() => choice !== null);
   hud.setLabel('');
   game.arms?.play('drop');
-  game.sound('place_wood', table, 0.4, 1.6);
+  game.sound('bottle_set', table, 0.7);
+  game.arms?.setHeld('none');
   await d.sleep(0.8);
   hud.fadeTo(true, 1.6);
   await d.sleep(1.8);

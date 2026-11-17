@@ -113,8 +113,10 @@ async function main(): Promise<void> {
     places.push(cabin);
     scene.add(groundPatch(SPOTS.cabin.x + 4, SPOTS.cabin.z + 4, 60, 1));
     if (q.get('forest') !== '1') scene.add(treeRing(SPOTS.cabin.x + 3, SPOTS.cabin.z + 3, 24, 60, 220, 11));
-    localView(cabin, 'cabin_ext', [-6.8, 1.75, 12.5], [0.4, 1.9, 2.0]);
-    localView(cabin, 'cabin_int', [-0.95, 1.95, 2.35], [1.0, 1.0, -2.2]);
+    localView(cabin, 'cabin_ext', [-5.2, 1.7, 10.2], [0.3, 2.0, 1.5]);
+    localView(cabin, 'cabin_int', [-0.7, 1.95, 2.45], [0.9, 1.1, -2.2]);
+    localView(cabin, 'stove', [0.1, 1.35, -0.4], [1.45, 0.75, -2.2]);
+    localView(cabin, 'bunk', [0.3, 1.6, 0.2], [-1.8, 0.7, -2.0]);
     localView(cabin, 'cabin_int2', [1.6, 1.85, -0.6], [-1.8, 1.1, 1.4]);
     localView(cabin, 'porch', [3.6, 1.45, 6.6], [-1.5, 1.4, 3.6]);
     localView(cabin, 'woodyard', [9.6, 1.8, 5.6], [15.5, 0.9, 1.0]);

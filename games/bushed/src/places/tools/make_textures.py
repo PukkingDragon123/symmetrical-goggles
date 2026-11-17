@@ -239,7 +239,7 @@ def t_log_int():
     tone, crack, knot, hgt = log_skin(8)
     f = Photo("wood_table_worn", 282, 282, res="2k", rot=1, flat=0.6, ao=0.0)
     lf = tile_to(f.lum, 512, 256); lf = (lf - lf.mean()) / (lf.std() + 1e-6)
-    honey_hi = np.array([0.80, 0.52, 0.24]); honey_lo = np.array([0.34, 0.17, 0.07])
+    honey_hi = np.array([0.80, 0.58, 0.32]); honey_lo = np.array([0.33, 0.20, 0.10])
     t = np.clip(tone + 0.05 * lf, 0, 1)[..., None]
     rgb = honey_lo * (1 - t) + honey_hi * t
     sm = fbm(512, 256, 160, 51)[..., None]

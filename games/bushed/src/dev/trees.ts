@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import { G } from '../gfx/globals';
 import { applyPixelTex, loadTex } from '../gfx/tex';
-import { heightAt, normalAt } from '../world/layout';
+import { heightAt, normalAt, biome } from '../world/layout';
 import { buildTree, type TreeForm } from '../trees/build';
 import { SPECIES_IDS, type SpeciesId } from '../trees/species';
 import { endGrainTexture } from '../trees/textures';
@@ -61,22 +61,57 @@ function placeSun(): void {
 
 // ------------------------------------------------------------------------------------------- ground
 const cx = num('x', lineup ? 0 : 60), cz = num('z', lineup ? 0 : 330);
-function terrainPatch(size: number, seg: number, ox: number, oz: number): THREE.Mesh {
-  const g = new THREE.PlaneGeometry(size, size, seg, seg);
+function terrainPatch(size: number, seg: number, ox: number, oz: number, hole = 0): THREE.Mesh {
+  let g: THREE.BufferGeometry = new THREE.PlaneGeometry(size, size, seg, seg);
   g.rotateX(-Math.PI / 2);
   const p = g.attributes.position as THREE.BufferAttribute;
   const nrm = g.attributes.normal as THREE.BufferAttribute;
   const uv = g.attributes.uv as THREE.BufferAttribute;
+  const col = new Float32Array(p.count * 3);
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i) + ox, z = p.getZ(i) + oz;
     p.setXYZ(i, x, lineup ? 0 : heightAt(x, z), z);
     const n = lineup ? [0, 1, 0] : normalAt(x, z);
     nrm.setXYZ(i, n[0], n[1], n[2]);
     uv.setXY(i, x / 3, z / 3);
+    // test-page stand-in for the real terrain shader: moss on wet / old ground (vertex colour r = moss weight)
+    const b = lineup ? null : biome(x, z);
+    const m = b ? Math.min(1, Math.max(0, 0.9 * b.wet + 0.5 * b.old - 0.35 + 0.35 * Math.sin(x * 0.21) * Math.cos(z * 0.17))) : 0;
+    col[i * 3] = m; col[i * 3 + 1] = b ? b.burn : 0; col[i * 3 + 2] = 0;
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  if (hole > 0) {
+    // drop the triangles under the detailed patch (a coarse grid would poke through it in valleys)
+    const idx = g.index!.array;
+    const keep: number[] = [];
+    for (let t = 0; t < idx.length; t += 3) {
+      let inside = true;
+      for (let k = 0; k < 3; k++) {
+        const v = idx[t + k];
+        if (Math.abs(p.getX(v) - ox) > hole || Math.abs(p.getZ(v) - oz) > hole) inside = false;
+      }
+      if (!inside) keep.push(idx[t], idx[t + 1], idx[t + 2]);
+    }
+    g.setIndex(keep);
   }
   const tex = loadTex('veg/forest_floor.png', { repeat: true });
   const ntex = loadTex('veg/forest_floor_n.png', { repeat: true, srgb: false });
+  const moss = loadTex('veg/moss.png', { repeat: true });
   const m = new THREE.MeshStandardMaterial({ map: tex, normalMap: ntex, roughness: 0.97 });
+  m.onBeforeCompile = (sh) => {
+    sh.uniforms.uMoss = { value: moss };
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute vec3 color;\nvarying vec3 vGc;').replace('#include <uv_vertex>', '#include <uv_vertex>\nvGc = color;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform sampler2D uMoss;\nvarying vec3 vGc;')
+      .replace('#include <map_fragment>', `#include <map_fragment>
+        {
+          vec2 q = floor(vMapUv * 128.0) / 128.0;
+          float n = fract(sin(dot(floor(q * 40.0), vec2(12.9898, 78.233))) * 43758.5453);
+          float mm = vGc.r + (n - 0.5) * 0.25;
+          vec3 mc = texture2D(uMoss, vMapUv * 1.9).rgb;
+          diffuseColor.rgb = mix(diffuseColor.rgb, mc, step(0.45, mm) * 0.9);
+          diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.45, 0.42, 0.4), vGc.g * 0.8);
+        }`);
+  };
   const mesh = new THREE.Mesh(g, m);
   mesh.receiveShadow = true;
   return mesh;
@@ -85,7 +120,7 @@ if (Q.get('noground') !== '1') {
   scene.add(terrainPatch(lineup ? 200 : 520, lineup ? 20 : 260, cx, cz));
   if (!lineup) {
     // distant land so the horizon isn't empty
-    const far = terrainPatch(2000, 200, cx, cz);
+    const far = terrainPatch(2000, 200, cx, cz, 250);
     far.position.y = -0.05;
     scene.add(far);
   }
@@ -150,6 +185,7 @@ if (cam.length >= 3 && !cam.some(isNaN)) {
   }
   camera.position.set(bx, heightAt(bx, bz) + 1.7, bz);
 }
+if (forest && Q.get('prewarm')) forest.prewarm(camera.position.x, camera.position.z, num('prewarm', 400));
 let walk = Q.get('walk') === '1';
 const keys = new Set<string>();
 addEventListener('keydown', (e) => {

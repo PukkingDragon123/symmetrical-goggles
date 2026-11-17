@@ -221,7 +221,7 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const BIGFOOT_MODEL_VERSION = 'bigfoot@5';
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@6';
 export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
@@ -330,12 +330,14 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
   });
   // arms: long hair hanging off the backs of the upper arms and forearms
   for (const lp of limbs) {
-    const isArm = lp.name.startsWith('arm');
+    const isArm = lp.name.startsWith('arm'), sd = lp.name.endsWith('L') ? 1 : -1;
+    // the joint the hair must stop short of (a lock rigid on the forearm must not reach past a bending wrist)
+    const end: V3 = isArm ? mir(BF.arm.wr, sd) : mir(BF.leg.an, sd), reach = (p: V3) => Math.hypot(p[0] - end[0], p[1] - end[1], p[2] - end[2]) * 0.7;
     // limb hair lies along the limb toward the hand or foot (it hangs when the arm hangs, and stays laid along a
     // raised arm instead of sticking out), longest off the backs of the forearms and the outsides of the upper arms
     sow(lp, 0, isArm ? 130 : 95, {
-      u0: 0, u1: 1, v0: 0.05, v1: isArm ? 0.74 : 0.74, wid: 0.024, seed: isArm ? 11 : 17, skin: lp.skin, droop: 0.12, lift: 0.12,
-      len: (p, n) => (isArm ? (0.16 + 0.07 * cl(-n[2] * 1.5, 0, 1)) * cl((p[1] - 1.08) / 0.25, 0.35, 1) : 0.14 * cl((p[1] - 0.3) / 0.4, 0.3, 1)),
+      u0: 0, u1: 1, v0: 0.05, v1: 0.85, wid: 0.024, seed: isArm ? 11 : 17, skin: lp.skin, droop: 0.12, lift: 0.12,
+      len: (p, n) => Math.min(reach(p), isArm ? 0.16 + 0.07 * cl(-n[2] * 1.5, 0, 1) : 0.14 * cl((p[1] - 0.3) / 0.4, 0.3, 1)),
       dir: (_p, n, dv) => norm([dv[0] + n[0] * 0.18, dv[1] + n[1] * 0.18, dv[2] + n[2] * 0.18]),
     });
   }

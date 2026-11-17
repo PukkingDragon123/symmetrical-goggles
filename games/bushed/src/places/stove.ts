@@ -41,9 +41,27 @@ export function buildStove(o: { pipeTop: number; seed?: number; legs?: number })
     lathe(ms, 'iron', prof, 20, { phase: r.range(0, 1) });
     // inner skin (normals inward): reversed profile, slightly smaller
     const ri = R - 0.008;
-    lathe(ms, 'iron', [[ri, hz], [ri, -hz + 0.01], [0, -hz + 0.01]].reverse().map(([a, b]) => [a, b] as [number, number]).reverse(), 14);
+    lathe(ms, 'iron', [[ri, hz], [ri, -hz + 0.01], [0, -hz + 0.01]], 14);
   }
   ms.pop();
+  // ---- cradle legs: two arched cast frames with splayed feet
+  for (const z of [-L / 2 + 0.16, L / 2 - 0.16]) {
+    const pts: THREE.Vector3[] = [];
+    for (let k = 0; k <= 10; k++) {
+      const a = Math.PI * (1.05 + 0.9 * k / 10);
+      pts.push(V(Math.cos(a) * (R + 0.012), ay + Math.sin(a) * (R + 0.012), z));
+    }
+    tube(ms, 'iron', pts, 0.018, 6, { smooth: false });
+    for (const s of [-1, 1]) {
+      const top = V(s * (R * 0.82), ay - R * 0.55, z);
+      const foot = V(s * (R + 0.05), 0.03, z + (z > 0 ? 0.03 : -0.03));
+      tube(ms, 'iron', [top, V(s * (R * 0.98), ay * 0.4, z), foot], 0.022, 6);
+      ms.pushT(foot.x, 0.012, foot.z);
+      box(ms, 'iron', 0.08, 0.024, 0.07);
+      ms.pop();
+    }
+    tube(ms, 'iron', [V(-R * 0.9, ay * 0.35, z), V(R * 0.9, ay * 0.35, z)], 0.012, 5);
+  }
   // ---- door kit on the front (+Z) end: cast faceplate with the door opening, hinge pins
   const fz = hz + 0.004;
   ms.pushT(0, ay, hz);
@@ -94,7 +112,8 @@ export function buildStove(o: { pipeTop: number; seed?: number; legs?: number })
     ms.pop();
     ms.pop();
   }
-  const body = ms.build({ name: 'stove_body' });
+  // the stove does not cast shadows: its own fire light sits right in front of the door
+  const body = ms.build({ name: 'stove_body', cast: false });
   group.add(body);
 
   // ---- door (separate: it can swing), with a spin-draft disc and holes
@@ -131,7 +150,7 @@ export function buildStove(o: { pipeTop: number; seed?: number; legs?: number })
     boxAt(dms, 'iron', 0.04, 0.07, 0.008, 0.06, 0.02, 0.012);
     boxAt(dms, 'iron', 0.04, -0.07, 0.008, 0.06, 0.02, 0.012);
   }
-  const doorMesh = dms.build({ name: 'stove_door_mesh' });
+  const doorMesh = dms.build({ name: 'stove_door_mesh', cast: false });
   doorPivot.add(doorMesh);
   group.add(doorPivot);
 

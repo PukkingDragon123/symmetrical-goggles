@@ -647,6 +647,16 @@ export class Forest {
     return out;
   }
 
+  /** generate every chunk within r of (x, z) now (loading screens, tests); normally chunks stream in */
+  prewarm(x: number, z: number, r: number): void {
+    for (let cx = Math.floor((x - r) / CHUNK); cx <= Math.floor((x + r) / CHUNK); cx++) {
+      for (let cz = Math.floor((z - r) / CHUNK); cz <= Math.floor((z + r) / CHUNK); cz++) {
+        if (Math.hypot((cx + 0.5) * CHUNK - x, (cz + 0.5) * CHUNK - z) < r + CHUNK) this.chunk(cx, cz);
+      }
+    }
+    this.dirty = true;
+  }
+
   /** number of placed trees so far (grows as chunks stream in) */
   get count(): number { return this.n; }
 

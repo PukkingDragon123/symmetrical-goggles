@@ -121,7 +121,7 @@ function pick(name: string) {
   if (!made[name]) made[name] = name === 'hound' ? new AxehandleHound({ state: 'companion', trust: 1 }) : new Bigfoot({});
   const ms = performance.now() - t0;
   if (cur) scene.remove(cur.object);
-  cur = made[name]!; curName = name; ui.who.value = name;
+  cur = made[name]!; curName = name; ui.who.value = name; (window as unknown as { __dbg: Beast }).__dbg = cur;
   scene.add(cur.object);
   cur.play(cur.clips.includes('idle') ? 'idle' : cur.clips[0]);
   const tall = name === 'bigfoot';
