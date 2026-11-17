@@ -159,6 +159,8 @@ export interface CardSpec {
   windBase: Wind;
   windTip: Wind;
   flipV?: boolean;
+  /** flat quad (2 triangles) instead of the V-fold (far LODs) */
+  flat?: boolean;
 }
 
 const _s = new THREE.Vector3(), _u = new THREE.Vector3(), _tmp = new THREE.Vector3();
@@ -182,6 +184,15 @@ export function card(mb: MeshBuilder, c: CardSpec): void {
   const nl = nn(1), nr = nn(-1), nc = _u.clone().multiplyScalar(1 - c.bendAmt).addScaledVector(c.bend, c.bendAmt).normalize();
   const off = (side: number) => _s.clone().multiplyScalar(side * hw * cf).addScaledVector(_u, hw * sf);
   const ct = c.colTip ?? c.col;
+  if (c.flat) {
+    const o1 = _s.clone().multiplyScalar(hw), o2 = _s.clone().multiplyScalar(-hw);
+    const a0 = mb.vert(c.p.clone().add(o1), nc, u0, L, c.col, c.windBase);
+    const a1 = mb.vert(tip.clone().add(o1), nc, u1, L, ct, c.windTip);
+    const a2 = mb.vert(tip.clone().add(o2), nc, u1, R, ct, c.windTip);
+    const a3 = mb.vert(c.p.clone().add(o2), nc, u0, R, c.col, c.windBase);
+    mb.quad(a0, a1, a2, a3);
+    return;
+  }
   const b0 = mb.vert(c.p, nc, u0, vm, c.col, c.windBase);
   const b1 = mb.vert(tip, nc, u1, vm, ct, c.windTip);
   const l0 = mb.vert(c.p.clone().add(off(1)), nl, u0, L, c.col, c.windBase);

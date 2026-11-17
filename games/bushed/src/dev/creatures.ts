@@ -104,7 +104,7 @@ function setLight(mode: string) {
     scene.background = new THREE.Color(0x5b5470); scene.fog = new THREE.Fog(0x4a4558, 12, 60); scene.environment = ENV.dusk; renderer.toneMappingExposure = 1.1;
   } else {
     hour = 23.5; hemi.intensity = 0.06; hemi.color.set(0x5a6a9a); hemi.groundColor.set(0x0a0a0a);
-    sun.intensity = 0.12; sun.color.set(0x8fa6ff); sun.position.set(-3, 7, -4); flash.intensity = 60;
+    sun.intensity = 0.12; sun.color.set(0x8fa6ff); sun.position.set(-3, 7, -4); flash.intensity = 32;
     scene.background = new THREE.Color(0x05070b); scene.fog = new THREE.Fog(0x05070b, 6, 30); scene.environment = ENV.night; renderer.toneMappingExposure = 1.2;
   }
 }
@@ -215,4 +215,35 @@ loop();
     return ui.info.textContent;
   },
   info: () => ui.info.textContent,
+  /** run a creature's AI for `seconds` (60 Hz) with a scripted stand-in player; returns the state/event log */
+  sim(o: { who: string; script: string; seconds: number; hour?: number }) {
+    const log: string[] = [];
+    const pl = { pos: new THREE.Vector3(0, 1.7, 0), dir: new THREE.Vector3(0, 0, 1), held: 'none', crouch: false, noise: 0.1, light: false, action: undefined as string | undefined, speed: 0 };
+    const its: GroundItem[] = [];
+    let T0 = 0, last = '';
+    const trunks = (x: number, z: number, r: number) => { const out: { x: number; z: number; r: number }[] = []; for (let i = -6; i <= 6; i++) for (let j = -6; j <= 6; j++) { const tx = Math.round(x / 9) * 9 + i * 9 + ((i * 7 + j * 3) % 4), tz = Math.round(z / 9) * 9 + j * 9 + ((i * 5 + j * 11) % 4); if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: 0.35 }); } return out; };
+    const c: Beast = o.who === 'hound' ? new AxehandleHound({ pos: new THREE.Vector3(0, 0, 14), state: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 'companion' : 'wild_lurk', trust: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 1 : 0 }) : new Bigfoot({ pos: new THREE.Vector3(0, 0, 100) });
+    const ev = (e: string) => log.push(`${T0.toFixed(1)} ${e}`);
+    for (let k = 0; k < o.seconds * 60; k++) {
+      const dt = 1 / 60; T0 += dt;
+      const toC = new THREE.Vector3().subVectors(c.pos, pl.pos).setY(0);
+      pl.speed = 0; pl.action = undefined;
+      switch (o.script) {
+        case 'tame': pl.held = T0 > 5 ? 'jerky' : 'none'; if (c instanceof AxehandleHound && c.offer && T0 > 5 && toC.length() < 2.0 && c.state === 'curious' && k % 30 === 0) { if (c.offer('jerky')) ev('offer accepted'); } break;
+        case 'rush': if (T0 > 8 && T0 < 12) { const d = toC.clone().normalize(); pl.pos.addScaledVector(d, 4 * dt); pl.speed = 4; } break;
+        case 'flash': pl.light = T0 > 20; pl.dir.copy(toC).setY(1.5).normalize(); if (T0 > 20 && toC.length() > 42) { pl.pos.addScaledVector(toC.clone().normalize(), 1.2 * dt); pl.speed = 1.2; } break;
+        case 'chop': pl.action = T0 > 10 ? 'chop' : undefined; break;
+        case 'handle': if (k === 600) its.push({ id: 'h1', kind: 'axe_handle', pos: new THREE.Vector3(4, 0, -3) }); break;
+        case 'kind': pl.pos.set(60, 1.7, 40); break;
+        default: break;
+      }
+      c.update({ dt, time: T0, hour: o.hour ?? 23, player: pl, heightAt: () => 0, emit: (e, d) => { if (e !== 'step' && e !== 'crunch' && e !== 'sniff') ev(e + (d && (d as { item?: string }).item ? ':' + (d as { item?: string }).item : '')); },
+        items: its, takeItem: (id) => { const i = its.findIndex((x) => x.id === id); if (i < 0) return false; its.splice(i, 1); return true; },
+        dropItem: (kind, pos) => { its.push({ id: kind, kind, pos: pos.clone() }); return kind; },
+        trunks, kindness: o.script === 'kind' ? 0.9 : 0.2, stove: new THREE.Vector3(0, 0, 0), threats: [] });
+      const st = `${c.state}${'trust' in c ? ' trust=' + c.trust.toFixed(2) : ''} clip=${c.anim.current} d=${toC.length().toFixed(1)}`;
+      if (c.state + c.anim.current !== last) { log.push(`${T0.toFixed(1)} ${st}`); last = c.state + c.anim.current; }
+    }
+    return log.join('\n');
+  },
 };

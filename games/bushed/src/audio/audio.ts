@@ -70,8 +70,7 @@ const calm = (w: Weather) => Math.max(0, 1 - w.rain * 0.8 - w.wind * 0.5 - w.sto
 export const WILDLIFE: WildEntry[] = [
   { id: 'bird_raven', rate: 0.9, dist: [40, 140], height: [8, 30], weight: (h, w) => band(h, 6, 19) * calm(w) },
   { id: 'bird_woodpecker', rate: 0.6, dist: [30, 100], height: [3, 12], weight: (h, w) => band(h, 7, 17) * calm(w) },
-  { id: 'bird_chickadee', rate: 1.4, dist: [12, 45], height: [2, 10], weight: (h, w) => band(h, 6, 18) * calm(w) },
-  { id: 'bird_nuthatch', rate: 0.8, dist: [15, 50], height: [4, 15], weight: (h, w) => band(h, 7, 17) * calm(w) },
+  { id: 'bird_songbird', rate: 1.6, dist: [12, 45], height: [2, 10], weight: (h, w) => band(h, 5, 18) * calm(w) },
   { id: 'animal_red_squirrel', rate: 0.8, dist: [10, 45], height: [1, 8], weight: (h, w) => band(h, 6, 19) * calm(w) },
   { id: 'bird_grouse_drum', rate: 0.35, dist: [50, 160], weight: (h, w) => band(h, 5, 11, 2) * calm(w) },
   { id: 'bird_thrush', rate: 0.9, dist: [30, 110], height: [3, 12], weight: (h, w) => band(h, 19, 21.5, 1) * calm(w) },
@@ -252,6 +251,8 @@ export class AudioEngine {
   private lastT = 0;
   private spatialTick = 0;
   wildlifeEnabled = true;
+  /** Optional debug hook: called whenever the wildlife scheduler places a sound. */
+  onWildlife?: (id: string, pos: THREE.Vector3) => void;
   private armed = false;
 
   constructor() {
@@ -349,6 +350,8 @@ export class AudioEngine {
     if (!def) { console.warn('[audio] unknown sound', id); return null; }
     const ctx = this.init();
     if (ctx.state === 'closed') return null;
+    // before unlock() the clock is frozen: one-shots would all fire at once on resume, so drop them (loops wait)
+    if (ctx.state !== 'running' && !(opts.loop ?? def.loop)) return null;
     const spatial = !!opts.pos;
     if (spatial) {
       const d = toVec(opts.pos!, _v).distanceTo(this.listenerPos);
@@ -435,8 +438,8 @@ export class AudioEngine {
     for (const [name, a] of this.amb) {
       const step = dt / 1.5;
       a.cur += THREE.MathUtils.clamp(a.target - a.cur, -step, step);
-      if (a.cur > 0.001 && a.voices.length === 0) this.startBed(name, a);
-      for (const v of a.voices) (v as VoiceImpl).setVol(a.cur * a.cur * (3 - 2 * a.cur), 0.1);
+      if (a.cur > 0.001 && a.voices.length === 0 && !this.startBed(name, a)) { this.amb.delete(name); continue; }
+      for (const v of a.voices) (v as VoiceImpl).setVol(Math.sin((a.cur * Math.PI) / 2), 0.1); // equal-power
       if (a.cur <= 0.001 && a.target <= 0 && a.voices.length) {
         for (const v of a.voices) v.stop(0.1);
         a.voices = [];
@@ -454,7 +457,7 @@ export class AudioEngine {
       if (w <= 0) return;
       a = { target: w, cur: 0, voices: [] };
       this.amb.set(name, a);
-      if (this.ctx) this.startBed(name, a);
+      if (this.ctx && !this.startBed(name, a)) this.amb.delete(name);
       return;
     }
     a.target = w;
@@ -466,7 +469,7 @@ export class AudioEngine {
     return o;
   }
 
-  private startBed(name: string, a: { voices: Voice[] }): void {
+  private startBed(name: string, a: { voices: Voice[] }): boolean {
     const spec = AMBIENCES[name] ?? { ids: [SOUNDS[name] ? name : `amb_${name}`], outdoor: true };
     for (const id of spec.ids) {
       const def = SOUNDS[id];
@@ -480,6 +483,7 @@ export class AudioEngine {
       }
       if (v) a.voices.push(v);
     }
+    return a.voices.length > 0;
   }
 
   /** 0 = outside, 1 = inside a closed building: muffles and lowers outdoor beds. */
@@ -524,7 +528,9 @@ export class AudioEngine {
     const d = e.dist[0] + Math.random() * (e.dist[1] - e.dist[0]);
     const hy = e.height ? e.height[0] + Math.random() * (e.height[1] - e.height[0]) : 1;
     const p = new THREE.Vector3(this.listenerPos.x + Math.cos(a) * d, this.listenerPos.y + hy, this.listenerPos.z + Math.sin(a) * d);
-    return this.play(e.id, { pos: p });
+    const v = this.play(e.id, { pos: p });
+    if (v) this.onWildlife?.(e.id, p);
+    return v;
   }
 
   /** Fire one wildlife / weather one-shot now (for testing or scripted moments). */

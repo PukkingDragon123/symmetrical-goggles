@@ -20,7 +20,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'h
 renderer.setPixelRatio(num('res', Math.min(1, window.devicePixelRatio)));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -101,12 +101,14 @@ if (lineup) {
     { age: 0.08 }, { age: 0.25 }, { age: 0.5 }, { age: 0.8 }, { age: 1.0 }, { age: 1.0, form: 'broken' }, { age: 0.9, form: 'snag' },
   ];
   let tris = 0;
+  const only = Q.get('only');
   SPECIES_IDS.forEach((sp, si) => {
+    if (only && only !== sp) return;
     forms.forEach((f, fi) => {
       const m = buildTree(sp, 11 + fi * 7 + si, { age: sp === 'cedar' ? f.age * 1.15 : f.age, form: f.form });
       const o = m.object();
       const spacing = sp === 'cedar' ? 16 : 10;
-      o.position.set((fi - 3) * spacing, 0, (si - 2) * 22);
+      o.position.set((fi - 3) * spacing, 0, only ? 0 : (si - 2) * 22);
       scene.add(o);
       o.traverse((c) => { if ((c as THREE.Mesh).isMesh) tris += ((c as THREE.Mesh).geometry.index!.count / 3); });
       if (fi === 4) info.push(`${sp}: h ${m.height.toFixed(1)} m dbh ${m.dbh.toFixed(2)} m mass ${(m.mass / 1000).toFixed(1)} t limbs ${m.branches.length}`);
@@ -124,6 +126,7 @@ if (lineup) {
 } else {
   if (Q.get('noforest') !== '1') forest = new Forest(scene, camera, renderer);
   if (Q.get('nogc') !== '1') ground = new GroundCover(scene, camera);
+  if (forest && Q.get('vstats') === '1') info.push(forest.variantStats());
 }
 
 // ------------------------------------------------------------------------------------------- camera control
@@ -135,7 +138,16 @@ if (cam.length >= 3 && !cam.some(isNaN)) {
 } else if (lineup) {
   camera.position.set(0, 9, 95); yaw = 0; pitch = -0.08;
 } else {
-  camera.position.set(cx, heightAt(cx, cz) + 1.7, cz);
+  // spawn somewhere not inside a trunk
+  let bx = cx, bz = cz;
+  if (forest) {
+    for (let k = 0; k < 200; k++) {
+      const a = k * 2.4, r = Math.sqrt(k) * 1.5;
+      const x = cx + Math.cos(a) * r, z = cz + Math.sin(a) * r;
+      if (!forest.trunkColliders(x, z, 3).length) { bx = x; bz = z; break; }
+    }
+  }
+  camera.position.set(bx, heightAt(bx, bz) + 1.7, bz);
 }
 let walk = Q.get('walk') === '1';
 const keys = new Set<string>();
@@ -205,7 +217,8 @@ function tick(): void {
     (forest ? forest.stats() + '\n' : '') + (ground ? ground.stats() + '\n' : '') + info.join('\n');
   (window as unknown as { __frame: number }).__frame = frame;
   (window as unknown as { __hud: string }).__hud = hud.textContent;
-  requestAnimationFrame(tick);
+  if (frame < stopAt) requestAnimationFrame(tick);
 }
+const stopAt = num('stop', 1e12);
 requestAnimationFrame(tick);
 void applyPixelTex;

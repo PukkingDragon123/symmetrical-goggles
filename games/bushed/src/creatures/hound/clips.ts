@@ -324,10 +324,10 @@ export function houndClips(bones: BoneDef[]): Record<string, Clip> {
       loop: true, dur: 11, fade: 1.2,
       fn: (p, t) => {
         const c = t % 11, b = sin(t * 0.22 * TAU);
-        p.t[1] += -0.2 + 0.004 * b; p.rr[2] += 0.28; p.rr[1] += 0.15;
-        R(p, B.chest, -0.025 * b, 0.42); R(p, B.neck, 0.95, 0.5); R(p, B.neck2, 0.45, 0.45); R(p, B.head, 0.2, 0.35, -1.25);
-        R(p, B.loin, 0.0, 0.55); R(p, B.pelvis, 0.0, 0.62);
-        B.tail.forEach((bb, k) => R(p, bb, k === 0 ? -0.05 : -0.06, 0.45 + k * 0.05));
+        p.t[1] += -0.2 + 0.004 * b; p.rr[2] += 0.12; p.rr[1] += 0.2;
+        R(p, B.chest, -0.025 * b, 0.5); R(p, B.neck, 0.95, 0.6); R(p, B.neck2, 0.45, 0.5); R(p, B.head, 0.2, 0.4, -1.25);
+        R(p, B.loin, 0.0, 0.62); R(p, B.pelvis, 0.0, 0.7);
+        B.tail.forEach((bb, k) => R(p, bb, k === 0 ? 0.05 : -0.03, 0.5 + k * 0.06));
         // forelegs folded out in front, hind legs tucked along the curl
         foot(p, FL, 0.04, 0, 0.1, 1, -0.3); foot(p, FR, -0.02, 0, 0.14, 1, -0.3);
         for (let k = 0; k < 2; k++) { foot(p, 2 + k, 0, 0, 0, 0); R(p, B.hu[k], -1.1, 0, k ? 0.5 : -0.2); R(p, B.hl[k], 1.5); R(p, B.hm[k], -1.2); R(p, B.hf[k], 0.5); }

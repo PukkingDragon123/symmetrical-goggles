@@ -273,7 +273,15 @@ export class Hands {
       h.obj.position.copy(p).add(new THREE.Vector3(sway, -Math.abs(sway) * 0.6 - h.mass * 0.0015, 0));
       h.obj.quaternion.copy(q).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(this.rotX, this.rotY, 0)));
       g.spendStamina(dt * h.mass * 0.0006);
+      const pid = h.obj.userData.itemId as string | undefined;
       if (input.pressed('KeyQ')) this.release('drop');
+      else if (input.pressed('KeyB') && !h.piece && pid && ITEMS[pid]?.pocket) {
+        h.obj.removeFromParent();
+        this.held = { kind: 'none' };
+        this.g.player.burden = 0;
+        this.g.arms?.setHeld('none');
+        this.g.game.pocket?.(pid, h.obj);
+      }
       else if (input.pressed('Mouse2') && h.mass < 15) this.release('throw');
       else if ((input.pressed('Mouse0') || input.pressed('KeyE')) && this.focus && findInteractable(this.focus.obj)?.it.kind !== 'pickup') {
         findInteractable(this.focus.obj)!.it.use(this.ctx(this.focus.point));
@@ -354,7 +362,9 @@ export class Hands {
     if (h.kind === 'drag') return 'Q  let go';
     if (h.kind === 'carry') {
       if (this.focus) { const f = findInteractable(this.focus.obj); if (f && f.it.kind !== 'pickup') return f.it.label(this.ctx(this.focus.point)); }
-      return h.mass < 15 ? 'Click  place     Q  drop     RMB  throw' : 'Click  set down     Q  drop';
+      const pid = h.obj.userData.itemId as string | undefined;
+      const pocket = !h.piece && pid && ITEMS[pid]?.pocket ? '     B  pocket' : '';
+      return h.mass < 15 ? `Click  place     Q  drop     RMB  throw${pocket}` : 'Click  set down     Q  drop';
     }
     return this.focus?.label ?? '';
   }

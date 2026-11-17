@@ -34,14 +34,25 @@ export const TILE: Record<string, [number, number]> = {
   log_ext: [2, 1], log_int: [2, 1], chink: [1, 1], floor: [2, 2], planks_grey: [1.5, 1.5], board_warm: [2, 1],
   board_grey: [2, 1], stone: [2, 2], iron: [2, 2], galv: [2, 2], corrugated: [2, 2], shakes: [2, 1], endgrain: [1, 1],
   woodchips: [2, 2], blanket: [1, 1], wool_grey: [1, 1], siding_red: [1.57, 1.57], trim_cream: [2, 2],
-  boards_green: [2, 2], glass_grime: [0.5, 0.5], rope: [0.1, 0.05],
+  boards_green: [2, 2], glass_grime: [0.5, 0.5], rope: [0.1, 0.05], wood_fresh: [2, 1], ticking: [1, 1], canvas: [1, 1],
+  rug: [2, 0.5], leather: [1, 1], enamel: [0.5, 0.5], enamel_blue: [0.5, 0.5],
 };
 const HAS_NORMAL = new Set(['log_ext', 'log_int', 'chink', 'floor', 'planks_grey', 'board_warm', 'board_grey', 'stone', 'iron', 'galv',
-  'corrugated', 'shakes', 'endgrain', 'woodchips', 'blanket', 'wool_grey', 'siding_red', 'trim_cream', 'boards_green']);
+  'corrugated', 'shakes', 'endgrain', 'woodchips', 'blanket', 'wool_grey', 'siding_red', 'trim_cream', 'boards_green',
+  'wood_fresh', 'canvas', 'leather']);
+
+/** textures borrowed from other modules (read-only use): name -> [path under assets/textures, tile] */
+const EXTERNAL: Record<string, [string, [number, number]]> = {
+  bark_spruce: ['trees/bark_spruce', [1.5, 1.5]],
+  bark_birch: ['trees/bark_birch', [1.5, 1.5]],
+  bark_pine: ['trees/bark_pine', [1.5, 1.5]],
+};
 
 export function placeTex(name: string, normal = false): THREE.Texture {
-  const t = loadTex(`places/${name}${normal ? '_n' : ''}.png`, { repeat: true, srgb: !normal });
-  const tile = TILE[name] ?? [1, 1];
+  const ext = EXTERNAL[name];
+  const path = ext ? ext[0] : `places/${name}`;
+  const t = loadTex(`${path}${normal ? '_n' : ''}.png`, { repeat: true, srgb: !normal });
+  const tile = ext ? ext[1] : TILE[name] ?? [1, 1];
   t.repeat.set(1 / tile[0], 1 / tile[1]);
   return t;
 }
@@ -76,6 +87,16 @@ const MATDEF: Record<string, { tex?: string; o?: MatOpts }> = {
   boards_green: { tex: 'boards_green', o: { rough: 0.8 } },
   rope: { tex: 'rope', o: { rough: 1 } },
   woodchips: { tex: 'woodchips', o: { rough: 1, alphaTest: 0.5 } },
+  wood_fresh: { tex: 'wood_fresh', o: { rough: 0.85 } },
+  ticking: { tex: 'ticking', o: { rough: 1 } },
+  canvas: { tex: 'canvas', o: { rough: 0.95 } },
+  rug: { tex: 'rug', o: { rough: 1 } },
+  leather: { tex: 'leather', o: { rough: 0.7 } },
+  enamel: { tex: 'enamel', o: { rough: 0.3 } },
+  enamel_blue: { tex: 'enamel_blue', o: { rough: 0.3 } },
+  bark: { tex: 'bark_spruce', o: { rough: 0.95 } },
+  bark_birch: { tex: 'bark_birch', o: { rough: 0.9 } },
+  soot: { tex: 'iron', o: { rough: 1, color: 0x2a2622 } },
 };
 
 export function placeMat(name: string): THREE.Material {
@@ -87,7 +108,7 @@ export function placeMat(name: string): THREE.Material {
   const sm = new THREE.MeshStandardMaterial({
     name: `place_${name}`,
     map: d.tex ? placeTex(d.tex) : null,
-    normalMap: d.tex && HAS_NORMAL.has(d.tex) ? placeTex(d.tex, true) : null,
+    normalMap: d.tex && (HAS_NORMAL.has(d.tex) || d.tex in EXTERNAL) ? placeTex(d.tex, true) : null,
     roughness: o.rough ?? 0.85, metalness: o.metal ?? 0,
     color: o.color ?? 0xffffff, side: o.side ?? THREE.FrontSide,
     transparent: o.transparent ?? false, opacity: o.opacity ?? 1, alphaTest: o.alphaTest ?? 0,

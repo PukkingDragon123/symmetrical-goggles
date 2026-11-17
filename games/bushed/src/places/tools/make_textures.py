@@ -582,11 +582,75 @@ def t_rope():
     save("rope", col, [0.1, 0.05], None, note="procedural")
 
 
+def t_wood_fresh():
+    """freshly split spruce: pale cream with honey grain (split faces, kindling, new boards)"""
+    p = Photo("fine_grained_wood", 154, 154, res="1k", rot=1, flat=0.7, ao=0.2)
+    lum = tile_to(p.lum, 512, 256)
+    lum = (lum - lum.mean()) / (lum.std() + 1e-6)
+    gr = anoise(512, 256, 120, 2, 201) * 0.6 + anoise(512, 256, 30, 1, 202) * 0.4
+    t = np.clip(0.55 + 0.12 * lum + 0.35 * (gr - 0.5), 0, 1)[..., None]
+    lo = np.array([0.62, 0.46, 0.26]); hi = np.array([0.93, 0.82, 0.60])
+    rgb = lo * (1 - t) + hi * t
+    # splinters: thin bright/dark streaks along the grain
+    sp = anoise(512, 256, 60, 1, 203)
+    rgb[sp > 0.82] *= 1.08
+    rgb[sp < 0.12] *= 0.82
+    rgb = quant(np.clip(rgb, 0, 1), 18, seed=31)
+    save("wood_fresh", rgb, [2.0, 1.0], tile_to(p.nor, 512, 256), note="fine_grained_wood lightened (fresh split)")
+
+
+def t_fabric():
+    """mattress ticking, duck canvas, braided rag rug, leather, white enamel"""
+    w = Photo("poly_wool_herringbone", 70, 70, res="1k", flat=0.6, ao=0.2)
+    weave = tile_to(pix.luminance(w.rgb), 256, 256)
+    weave = (weave - weave.mean()) / (weave.std() + 1e-6)
+    yy, xx = np.mgrid[0:256, 0:256]
+    # ticking: off-white with navy pin stripes (vertical)
+    st = ((xx % 32) < 3) | ((xx % 32 > 6) & (xx % 32 < 8))
+    col = np.where(st[..., None], np.array([0.16, 0.2, 0.32]), np.array([0.74, 0.70, 0.60]))
+    col = col * (1 + 0.1 * weave[..., None]) * (0.85 + 0.2 * fbm(256, 256, 80, 211)[..., None])
+    stain = np.clip((fbm(256, 256, 60, 212) - 0.62) * 4, 0, 1)[..., None]
+    col = col * (1 - 0.3 * stain) + np.array([0.5, 0.4, 0.25]) * 0.3 * stain
+    save("ticking", quant(np.clip(col, 0, 1), 12, seed=32, despeckle=0), [1.0, 1.0], None, note="procedural ticking on wool weave")
+    # canvas: waxed duck, tan/olive
+    can = np.array([0.50, 0.44, 0.30]) * (1 + 0.12 * weave[..., None]) * (0.85 + 0.25 * fbm(256, 256, 64, 213)[..., None])
+    save("canvas", quant(np.clip(can, 0, 1), 12, seed=33, despeckle=0), [1.0, 1.0], tile_to(w.nor, 256, 256), note="procedural duck canvas")
+    # braided rag rug: concentric braids (u = around in metres, v = radius): bands of 3 cm, chevron braid texture
+    W, H = 512, 128  # tile 2 m around x 0.5 m across (radius)
+    yy2, xx2 = np.mgrid[0:H, 0:W]
+    band = yy2 // 8
+    r = rng(214)
+    pal = np.array([[0.48, 0.12, 0.10], [0.30, 0.25, 0.18], [0.62, 0.52, 0.34], [0.20, 0.24, 0.30], [0.42, 0.36, 0.26], [0.55, 0.30, 0.14]])
+    bc = pal[(band * 7 + 3) % len(pal)]
+    chev = ((xx2 + np.abs((yy2 % 8) - 3.5) * 2) % 6) < 3
+    rug = bc * np.where(chev[..., None], 1.0, 0.72)
+    rug[(yy2 % 8) == 0] *= 0.55
+    rug *= (0.85 + 0.25 * vnoise(W, H, 4, 215))[..., None]
+    save("rug", quant(np.clip(rug, 0, 1), 20, seed=34, despeckle=0), [2.0, 0.5], None, note="procedural braided rug")
+    # leather: brown_leather photo
+    lp = Photo("brown_leather", 256, 256, res="1k", flat=0.6, ao=0.4)
+    lc = grade(lp.rgb, sat=0.9, val=1.1)
+    save("leather", quant(np.clip(lc, 0, 1), 16, seed=35), [1.0, 1.0], lp.nor, note="brown_leather")
+    # white enamel with chips (basins, pots, coffee pot)
+    en = np.array([0.86, 0.86, 0.82]) * (0.92 + 0.1 * fbm(256, 256, 64, 216)[..., None])
+    chip = (vnoise(256, 256, 5, 217) > 0.86) & (fbm(256, 256, 40, 218) > 0.5)
+    en[chip] = np.array([0.12, 0.11, 0.12])
+    rim = (vnoise(256, 256, 3, 219) > 0.9)
+    en[rim & ~chip] *= 0.85
+    save("enamel", quant(np.clip(en, 0, 1), 8, seed=36, despeckle=0), [0.5, 0.5], None, note="procedural white enamel")
+    # blue speckle enamel (coffee pot, mugs)
+    be = np.array([0.12, 0.2, 0.36]) * (0.9 + 0.15 * fbm(256, 256, 64, 220)[..., None])
+    spk = vnoise(256, 256, 2, 221) > 0.8
+    be[spk] = np.array([0.82, 0.84, 0.86])
+    be[chip] = np.array([0.08, 0.07, 0.08])
+    save("enamel_blue", quant(np.clip(be, 0, 1), 8, seed=37, despeckle=0), [0.5, 0.5], None, note="procedural speckled enamel")
+
+
 ALL = {
     "log_ext": t_log_ext, "log_int": t_log_int, "chink": t_chink, "floor": t_floor, "planks_grey": t_planks_grey,
     "board": t_board, "stone": t_stone, "iron": t_iron, "corrugated": t_corrugated, "shakes": t_shakes,
     "endgrain": t_endgrain, "woodchips": t_woodchips, "blanket": t_blanket, "siding": t_siding, "glass": t_glass,
-    "rope": t_rope,
+    "rope": t_rope, "wood_fresh": t_wood_fresh, "fabric": t_fabric,
 }
 
 

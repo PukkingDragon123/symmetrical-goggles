@@ -180,6 +180,14 @@ export class Game {
   /** register a model for an item id (generated products) */
   setItemModel(id: string, m: THREE.Object3D): void { this.models.set(id, m); }
 
+  /** a carried object goes into the backpack (bought goods become owned only at the register) */
+  pocket(id: string, obj: THREE.Object3D): void {
+    if (obj.userData.unpaid) { this.events.emit('shoplift', { id, obj }); return; }
+    this.give(id);
+    this.sound('foliage_rustle', undefined, 0.4, 1.3);
+    hud.say(`<i>${ITEMS[id]?.name ?? id} in the pack.</i>`, 1.8);
+  }
+
   owns(id: string): boolean { return (this.inv.items.get(id) ?? 0) > 0; }
 
   /** hold a sheet of paper up in both hands to read it; any click or E puts it down */

@@ -125,7 +125,7 @@ export class Forest {
     this.camera = camera;
     this.renderer = renderer ?? null;
     const o = {
-      lod0: 34, lod1: 100, far: 520, shadow: 60, band: 6, density: 1, genRadius: 0,
+      lod0: 32, lod1: 85, far: 520, shadow: 55, band: 6, density: 1, genRadius: 0,
       ...opts,
     };
     if (!o.genRadius) o.genRadius = o.far + CHUNK;
@@ -635,4 +635,9 @@ export class Forest {
   get count(): number { return this.n; }
 
   stats(): string { return this.statsText; }
+
+  /** per-variant triangle counts (debug) */
+  variantStats(): string {
+    return this.variants.map((v) => `${v.def.species}${v.def.form !== 'normal' ? '/' + v.def.form : ''} a${v.def.age} h${v.height.toFixed(0)} L0 ${(v.lod0.tris / 1000).toFixed(1)}k L1 ${(v.lod1.tris / 1000).toFixed(1)}k`).join('\n');
+  }
 }

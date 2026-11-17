@@ -242,7 +242,7 @@ function hickoryPaint(F: Frame, knots: Knot[], o: { bristle?: (s: number, a: num
       const streak = nz2(s * 0.55 + 7, a * 3.2) * 0.6 + nz2(s * 2.1, a * 7) * 0.25;
       const band = (Math.abs(a) < 0.62 + nz2(s * 3, 1) * 0.12 ? 0.75 : 0) + streak - (Math.abs(a) > 2.1 ? 0.6 : 0);
       const R = band > 0.55 ? HEART : HICK;
-      let st = (R === HEART ? 3.9 : 4.6) + (Math.abs(a) > 2.2 ? 0.8 : 0) - (R === HICK && band > 0.38 ? 0.6 : 0);
+      let st = (R === HEART ? 3.2 : 3.75) + (Math.abs(a) > 2.2 ? 0.7 : 0) - (R === HICK && band > 0.38 ? 0.5 : 0);
       if (g < 0.11) st -= 1.15; else if (g < 0.17) st -= 0.45; else if (g > 0.92 && h3(Math.floor(s * 40), Math.floor(across), 2) < 0.4) st += 0.5;
       // pores: short dark dashes along the grain
       if (h3(Math.floor(s / (mpt * 3)), Math.floor(across * 2), 7) < 0.04) st -= 1;
@@ -280,7 +280,7 @@ function legPaint(sole: V3, fore: boolean) {
       const g = ((across % 1) + 1) % 1;
       const sock = py < 0.1 + nz2(P[i * 3] * 30, P[i * 3 + 2] * 30) * 0.015;
       const R = sock ? HEART : HICK;
-      let st = sock ? 2.8 : 4.1;
+      let st = sock ? 2.3 : 3.5;
       if (g < 0.14) st -= 1.2; else if (g < 0.22) st -= 0.5;
       if (h3(Math.floor(Y * 120), Math.floor(across * 2), 5) < 0.04) st -= 1;
       px.put(i, R, st); px.rough[i] = 160;
@@ -313,8 +313,9 @@ export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundM
   body.seed = 1871;
 
   // the spine (tail root .. head) for skinning and the painters
-  const J: V3[] = [[0, 0.372, -0.66], [0, 0.35, -0.47], [0, 0.345, -0.28], [0, 0.33, -0.05], [0, 0.34, 0.2], [0, 0.42, 0.455], [0, 0.5, 0.545], [0, 0.585, 0.665], [0, 0.66, 0.7]];
-  const spineSkin = chainSkin(J, [bi('pelvis'), bi('loin'), bi('root'), bi('root'), bi('chest'), bi('neck'), bi('neck2'), bi('head')], 0.35);
+  // the neck's top runs up inside the poll (the handle through the axe's eye): from the poll's underside it rides the head
+  const J: V3[] = [[0, 0.372, -0.66], [0, 0.35, -0.47], [0, 0.345, -0.28], [0, 0.33, -0.05], [0, 0.34, 0.2], [0, 0.42, 0.455], [0, 0.5, 0.545], [0, 0.535, 0.585], [0, 0.66, 0.7]];
+  const spineSkin = chainSkin(J, [bi('pelvis'), bi('loin'), bi('root'), bi('root'), bi('chest'), bi('neck'), bi('neck2'), bi('head')], 0.3);
   const F = spineFrame([[0, 0.372, -0.66], [0, 0.35, -0.47], [0, 0.345, -0.28], [0, 0.33, -0.05], [0, 0.31, 0.2], [0, 0.36, 0.4], [0, 0.44, 0.48], [0, 0.52, 0.56], [0, 0.585, 0.64]]);
   const knots: Knot[] = [{ s: 0.38, a: 1.55, r: 0.022 }, { s: 0.74, a: -1.2, r: 0.016 }, { s: 0.95, a: 1.9, r: 0.012 }, { s: 0.2, a: -2.0, r: 0.014 }];
   const sNeck = locate(F, [0, 0.44, 0.48]).s, sRump = locate(F, [0, 0.36, -0.58]).s, sChest = locate(F, [0, 0.38, 0.38]).s;

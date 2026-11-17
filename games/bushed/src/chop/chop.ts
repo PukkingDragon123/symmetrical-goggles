@@ -217,7 +217,7 @@ export class ChopSystem {
       const am = (ca + cb) / 2;
       const off = new THREE.Vector3(Math.cos(am), 0, Math.sin(am)).applyQuaternion(q);
       np.quality = p.quality;
-      np.spawn(center.clone().addScaledVector(off, p.r * 0.35).add(new THREE.Vector3(0, 0.02, 0)), q, off.clone().multiplyScalar(1.6).add(new THREE.Vector3(0, 0.8, 0)), new THREE.Vector3(off.z * 2, 0, -off.x * 2));
+      np.spawn(center.clone().addScaledVector(off, p.r * 0.35).add(new THREE.Vector3(0, 0.02, 0)), q, off.clone().multiplyScalar(0.9).add(new THREE.Vector3(0, 0.5, 0)), new THREE.Vector3(off.z * 1.2, 0, -off.x * 1.2));
       this.addPiece(np);
       out.push(np);
     }

@@ -398,7 +398,8 @@ export class ChopTree {
           puffs.emit(p, new THREE.Vector3(0, 0.6, 0), { size: 1.2, grow: 2.5, life: 2.4, color: new THREE.Color(0.55, 0.5, 0.42), alpha: 0.35, n: 2, spread: 1.2 });
         }
       }
-      if (this.fallT > 2.5 && (body.isSleeping() || (Math.hypot(av.x, av.y, av.z) < 0.08 && this.fallT > 4))) {
+      const lvv = body.linvel();
+      if (this.fallT > 2.5 && this.landed && (body.isSleeping() || (Math.hypot(av.x, av.y, av.z) < 0.15 && Math.hypot(lvv.x, lvv.y, lvv.z) < 0.3))) {
         this.state = 'fallen';
         this.ev.felled(this);
       }

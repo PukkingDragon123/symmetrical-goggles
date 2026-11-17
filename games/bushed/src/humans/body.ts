@@ -158,13 +158,13 @@ export function buildBody(L: HumanLook, d: Dims, o: BuildOpts = {}): BodyBuild {
     const al = b.armLen;
     const breaks: number[] = [];
     if (sh.sleeveY > -0.53) breaks.push(sh.sleeveY);
-    const extra = [-0.035, -0.09, -0.16, -0.23, -0.27, -0.285, -0.31, -0.37, -0.43, -0.475, -0.52];
+    const extra = [-0.01, -0.035, -0.09, -0.16, -0.23, -0.27, -0.285, -0.31, -0.37, -0.43, -0.475, -0.52];
     if (sh.rolled) extra.push(sh.sleeveY + 0.006, sh.sleeveY + 0.012, sh.sleeveY + 0.02, sh.sleeveY + 0.028, sh.sleeveY + 0.036);
     if (sh.sleeveY < -0.45) extra.push(sh.sleeveY + 0.012, sh.sleeveY + 0.028, sh.sleeveY + 0.042);
     const ys = ringYs(ARM_ROWS, breaks, extra);
     const fm = (1 - fem * 0.14) * (0.62 + 0.38 * mass) * (1 + b.chest * 0.06);
     const wOfA = (y: number): Wt => {
-      if (y > 0.025) return [U, 0.6, C, 0.4];
+      if (y > 0.0) return [U, 0.6, C, 0.4];
       if (y > -0.25) return [U, 1];
       if (y > -0.32) { const t = (y + 0.25) / -0.07; return [U, 1 - t, Fm, t]; }
       if (y > -0.5) { const t = clamp01((y + 0.32) / -0.18); return [Fm, 1 - t * 0.85, Tw, t * 0.85]; }
@@ -192,7 +192,7 @@ export function buildBody(L: HumanLook, d: Dims, o: BuildOpts = {}): BodyBuild {
       return { pts, v: vOf(VMAP.ARM, y), w: wOfA(y) };
     });
     B.loft(rings, usFor(NA), R(('ARM_' + side) as RegKey), 10 + (k > 0 ? 0 : 1), {
-      start: [ua[0] - k * 0.018 * s, ua[1] + 0.046 * s, ua[2]], startW: [U, 0.6, C, 0.4], alt: true,
+      start: [ua[0] - k * 0.024 * s, ua[1] + 0.034 * s, ua[2]], startW: [U, 0.45, C, 0.55], alt: true,
     });
     buildHand(B, L, d, side, k, sh);
   }
@@ -398,9 +398,9 @@ function buildCollar(B: Loft, L: HumanLook, d: Dims, sh: Shape, nr: number) {
     const big = sh.collar === 'coverall' ? 0.008 : 0;
     const cr = nr + 0.012 + big;
     const rr = [
-      { pts: ringPts(14, ny(1.452), 0, -0.012 * s, (cr + 0.024 + big) * s, (cr + 0.03 + big) * s, (cr + 0.01) * s, 2, 1), v: 0.0, w: [BI.chest, 1] as Wt },
-      { pts: ringPts(14, ny(1.49), 0, -0.014 * s, (cr + 0.008) * s, (cr + 0.011) * s, (cr + 0.006) * s, 2, 1), v: 0.62, w: [BI.chest, 0.7, BI.neck, 0.3] as Wt },
-      { pts: ringPts(14, ny(1.515), 0, -0.016 * s, (cr + 0.001) * s, (cr + 0.0) * s, (cr + 0.003) * s, 2, 1), v: 1.0, w: [BI.chest, 0.5, BI.neck, 0.5] as Wt },
+      { pts: ringPts(14, ny(1.448), 0, -0.012 * s, (cr + 0.03 + big) * s, (cr + 0.034 + big) * s, (cr + 0.012) * s, 2, 1), v: 0.0, w: [BI.chest, 1] as Wt },
+      { pts: ringPts(14, ny(1.474), 0, -0.014 * s, (cr + 0.011) * s, (cr + 0.014) * s, (cr + 0.007) * s, 2, 1), v: 0.62, w: [BI.chest, 0.75, BI.neck, 0.25] as Wt },
+      { pts: ringPts(14, ny(1.497), 0, -0.016 * s, (cr + 0.002) * s, (cr + 0.002) * s, (cr + 0.003) * s, 2, 1), v: 1.0, w: [BI.chest, 0.55, BI.neck, 0.45] as Wt },
     ];
     const sk = (j: number) => j === 6 || j === 7;
     B.loft(rr, usFor(14), reg, 3, { skip: sk });

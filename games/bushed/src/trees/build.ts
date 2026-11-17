@@ -132,7 +132,8 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
 
   let broken = form === 'broken' || (form === 'snag' && rng.chance(0.7));
   if (form === 'normal' && age > 0.6 && rng.chance(sp.brokenTopChance * 0.5)) broken = true;
-  const Htop = broken ? H * rng.range(0.5, 0.85) : H;
+  const cbGuess = (1 - sp.crownRatio) * H;
+  const Htop = broken ? (dead ? H * rng.range(0.45, 0.85) : Math.max(H * rng.range(0.55, 0.85), cbGuess + (H - cbGuess) * 0.45)) : H;
   // cedar veterans: dead spike top above a living candelabra crown
   const spike = species === 'cedar' && age > 0.85 && !dead && rng.chance(0.55);
   const liveTop = spike ? Htop * rng.range(0.78, 0.88) : Htop;
@@ -234,7 +235,7 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
   for (const rg of rings) {
     const y = Math.max(0, rg.y);
     let ao = 0.6 + 0.4 * smoothstep(-0.3, 1.4, rg.y);
-    if (sp.conifer && y > crownBase && species !== 'pine') ao *= lerp(1, 0.72, smoothstep(crownBase, crownBase + 2, y));
+    if (sp.conifer && y > crownBase && species !== 'pine') ao *= lerp(1, 0.82, smoothstep(crownBase, crownBase + 2, y));
     const ut = smoothstep(crownBase * 0.6, crownBase + (H - crownBase) * 0.3, y);
     let col: Col = [lerp(1, sp.upperBarkTint[0], ut) * ao, lerp(1, sp.upperBarkTint[1], ut) * ao, lerp(1, sp.upperBarkTint[2], ut) * ao];
     if (dead) col = [col[0] * 0.92 + 0.04, col[1] * 0.92 + 0.04, col[2] * 0.95 + 0.05];
@@ -391,7 +392,7 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
       const upL = sideAx.clone().cross(t).normalize(); // local up, perpendicular to the branch
       const ax = axisAt(p.y);
       const radial = clamp(Math.hypot(p.x - ax.x, p.z - ax.z) / Math.max(0.2, crownR * crownEnv(hrel) + 0.2), 0, 1);
-      let ao = (0.5 + 0.5 * Math.pow(radial, 0.8)) * lerp(0.74, 1.0, hrel);
+      let ao = (0.6 + 0.4 * Math.pow(radial, 0.8)) * lerp(0.8, 1.0, hrel);
       if (k === 0) ao = Math.min(1.08, ao + 0.12);
       const keep = (cards.length * 7919 + seed) % 100 < 36;
       if (k === 0) {
@@ -428,8 +429,8 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
 
   // ---- pine tufts at tips
   const pineTuft = (part: number, p: V3, t: V3, wxv: number, wy0: number, phase: number, ao: number, scale = 1) => {
-    const cl = sp.card[0] * cardScale * 0.8 * scale, cw = sp.card[1] * cardScale * 0.9 * scale;
-    const n0 = rng.int(3, 4);
+    const cl = sp.card[0] * cardScale * 1.05 * scale, cw = sp.card[1] * cardScale * 1.1 * scale;
+    const n0 = rng.int(4, 5);
     for (let i = 0; i < n0; i++) {
       const ax = rot(UP, t, (i / n0) * Math.PI * 2 + rng.range(-0.3, 0.3));
       const d = rot(t, ax.clone().cross(t).normalize(), rng.range(0.15, 0.6)).normalize();
@@ -490,7 +491,7 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
     if (species === 'pine') {
       // forks with needle tufts at every tip
       const tips: { p: V3; t: V3; s: number }[] = [{ p: pts[pts.length - 1], t: tangentAt(pts, 0.999), s: 1 }];
-      const nf = L > 0.8 ? rng.int(2, 4) : L > 0.4 ? 1 : 0;
+      const nf = L > 0.8 ? rng.int(3, 5) : L > 0.4 ? 2 : 1;
       for (let f = 0; f < nf; f++) {
         const s = rng.range(0.35, 0.9);
         const p = pointAt(pts, s);
@@ -502,10 +503,21 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
         const sp2 = [p, p.clone().addScaledVector(d, ln * 0.5).addScaledVector(UP, ln * 0.06), p.clone().addScaledVector(d, ln).addScaledVector(UP, ln * 0.16)];
         branches.push({ id: -1, part: br.part, pts: sp2, radii: [r * 0.45, r * 0.3, r * 0.15 + 0.002], level: 1, dead: false, wx: br.wx, phase: br.phase, len: ln, col: br.col, moss: 0 });
         tips.push({ p: sp2[2], t: sp2[2].clone().sub(sp2[1]).normalize(), s });
+        if (ln > 0.5) {
+          // a sub-fork from the fork
+          const q0 = sp2[1];
+          const d2 = rot(d, UP, (f % 2 ? -1 : 1) * rng.range(0.5, 0.9));
+          d2.y += rng.range(0.1, 0.4);
+          d2.normalize();
+          const l2 = ln * rng.range(0.4, 0.6);
+          const q2 = q0.clone().addScaledVector(d2, l2);
+          branches.push({ id: -1, part: br.part, pts: [q0, q0.clone().lerp(q2, 0.5), q2], radii: [r * 0.25, r * 0.15, 0.002], level: 1, dead: false, wx: br.wx, phase: br.phase, len: l2, col: br.col, moss: 0 });
+          tips.push({ p: q2, t: d2.clone(), s: (s + 1) / 2 });
+        }
       }
       const ao0 = lerp(0.8, 1.05, hrel);
       for (const tp of tips) pineTuft(br.part, tp.p, tp.t, br.wx, Math.pow(tp.s, 1.4) * L * 0.14, br.phase, ao0, tp.s === 1 ? 1.1 : 0.9);
-      if (L > 1.0) coniferCards(br, br.part, hrel, L * 0.8, false);
+      if (L > 0.7) coniferCards(br, br.part, hrel, L, false);
     } else {
       coniferCards(br, br.part, hrel, L, hrel < 0.35);
     }
@@ -522,7 +534,7 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
     for (let i = 0; i <= n; i++) {
       pts.push(p.clone());
       // phototropism early, gravity late (birch: graceful drooping tips)
-      d.addScaledVector(UP, i < n * 0.4 ? 0.06 : -g * (i / n));
+      d.addScaledVector(UP, i < n * 0.3 ? 0.03 : -g * (i / n));
       d.add(v3(rng.range(-0.12, 0.12), rng.range(-0.05, 0.05), rng.range(-0.12, 0.12))).normalize();
       p = p.clone().addScaledVector(d, seg);
     }
@@ -542,8 +554,8 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
     }
     // leaf clusters along the outer part of this branch
     const cl = sp.card[0] * cardScale * rng.range(0.85, 1.1), cw = sp.card[1] * cardScale;
-    const s0 = level === 0 ? 0.55 : 0.15;
-    const stepS = Math.max(0.12, (cl * 0.55) / L);
+    const s0 = level === 0 ? 0.4 : 0.05;
+    const stepS = Math.max(0.08, (cl * 0.36) / L);
     for (let s = 1; s >= s0; s -= stepS) {
       const pp = pointAt(pts, s), t = tangentAt(pts, Math.min(0.99, s));
       const tw = rot(t, UP, rng.range(-1.2, 1.2));
@@ -575,10 +587,11 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
     addMass(br.part, Math.PI * r * r * L / 3 * sp.density);
     if (dead) return;
     const before = cards.length;
-    const cl = sp.card[0] * cardScale * rng.range(0.85, 1.1), cw = sp.card[1] * cardScale;
+    const cs = clamp(L / 2.6, 0.85, 1.7);
+    const cl = sp.card[0] * cardScale * rng.range(0.85, 1.1) * cs, cw = sp.card[1] * cardScale * cs;
     const wy = (s: number) => Math.pow(s, 1.3) * L * 0.16;
     // hanging laterals along the outer part
-    const nLat = reit ? 0 : Math.max(1, Math.round(L / 0.55));
+    const nLat = reit ? 0 : Math.max(1, Math.round(L / 0.36));
     for (let i = 0; i < nLat; i++) {
       const s = 0.3 + 0.68 * (i + rng.range(0, 0.7)) / nLat;
       const p = pointAt(pts, s), t = tangentAt(pts, s);
@@ -592,7 +605,7 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
       const radial = clamp(Math.hypot(p.x - ax.x, p.z - ax.z) / (crownR + 0.3), 0, 1);
       const ao = (0.55 + 0.45 * radial) * lerp(0.78, 1.05, hrel);
       // fronds hanging from the lateral, fanning sideways
-      const nF = rng.int(2, 3);
+      const nF = rng.int(3, 4);
       for (let f = 0; f < nF; f++) {
         const ff = f / nF;
         const pp = p.clone().lerp(q1, ff * 0.7);
@@ -735,10 +748,22 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
       const part = newLimb(tmp, r);
       decidBranch(part, 0, base, dir, L, r, trunkWx(y), phase, hrel);
       addMass(part, Math.PI * r * r * L / 3 * sp.density);
-      y += rng.range(0.3, 0.6) * clamp(H / 18, 0.5, 1.1);
+      y += rng.range(0.2, 0.42) * clamp(H / 18, 0.5, 1.1);
     }
   }
 
+  // card budget (keeps LOD0 near 12-20k triangles): drop a deterministic subset, enlarge the rest
+  const budget = Math.round(lerp(1500, 3000, clamp((H - 8) / 30, 0, 1)));
+  if (cards.length > budget) {
+    const keepP = budget / cards.length;
+    const grow = Math.min(1.45, 1 / Math.sqrt(keepP));
+    const kept: Cd[] = [];
+    for (const c of cards) {
+      if (rng.next() < keepP) { c.len *= grow; c.wid *= grow; kept.push(c); }
+    }
+    cards.length = 0;
+    cards.push(...kept);
+  }
   // resolve MISC part index
   const misc = nextPart;
   for (const b of branches) if (b.part === MISC) b.part = misc;
@@ -843,8 +868,13 @@ function emitTrunk(sk: Skeleton, mb: MeshBuilder, lod: 0 | 1): void {
 
 function emitTube(b: Br, mb: MeshBuilder, sp: Species, lod: 0 | 1): void {
   const r0 = b.radii[0];
-  let sides = r0 > 0.06 ? 8 : r0 > 0.025 ? 6 : r0 > 0.012 ? 4 : 3;
+  let sides = r0 > 0.07 ? 8 : r0 > 0.04 ? 6 : r0 > 0.016 ? 4 : 3;
   let pts = b.pts, radii = b.radii;
+  if (lod === 0 && pts.length > 5 && r0 < 0.03) {
+    const keep = pts.map((_, i) => i).filter((i) => i % 2 === 0 || i === pts.length - 1);
+    pts = keep.map((i) => b.pts[i]);
+    radii = keep.map((i) => b.radii[i]);
+  }
   if (lod === 1) {
     sides = r0 > 0.08 ? 5 : 3;
     if (pts.length > 4) {
@@ -864,8 +894,9 @@ function emitTube(b: Br, mb: MeshBuilder, sp: Species, lod: 0 | 1): void {
   });
 }
 
-function emitCard(c: Cd, mb: MeshBuilder, scale = 1): void {
+function emitCard(c: Cd, mb: MeshBuilder, scale = 1, flat = false): void {
   card(mb, {
+    flat,
     p: c.p, d: c.d, n: c.n, len: c.len * scale, wid: c.wid * scale, rect: cellRect(c.cell), fold: c.fold,
     bend: c.bend, bendAmt: 0.72, col: c.col, colTip: c.colTip, windBase: c.wb, windTip: c.wt, flipV: c.flipV,
   });
@@ -886,14 +917,15 @@ function emitAll(sk: Skeleton, o: EmitOpts): { wood: MeshBuilder[]; leaves: Mesh
     });
   }
   for (const b of sk.branches) {
-    if (o.lod === 1 && (b.radii[0] < 0.014 || (b.level > 0 && b.radii[0] < 0.02))) continue;
+    if (o.lod === 1 && (b.radii[0] < 0.02 || (b.level > 0 && b.radii[0] < 0.03))) continue;
+    if (b.radii[0] < 0.0055 && !b.dead) continue;
     emitTube(b, wood[P(b.part)], sk.sp, o.lod);
   }
   const s1 = 1 / Math.sqrt(0.36);
   for (const c of sk.cards) {
     if (o.lod === 1) {
       if (!c.keep1) continue;
-      emitCard(c, leaves[P(c.part)], Math.min(s1, 1.75));
+      emitCard(c, leaves[P(c.part)], Math.min(s1, 1.75), true);
     } else emitCard(c, leaves[P(c.part)]);
   }
   return { wood, leaves };

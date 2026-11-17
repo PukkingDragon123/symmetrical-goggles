@@ -111,6 +111,26 @@ async function main() {
     await new Promise<void>((r) => { const c = () => (W.ff > 0 ? setTimeout(c, 100) : r()); c(); });
   }
   W.after2 = { pieces: game.chop.pieces.size, sections: t?.sections.length, slash: t?.slash.length };
+  // splitting: a spruce round on end, struck from above with the maul
+  const { WoodPiece } = await import('../chop/wood');
+  const rx = tx + 1.5, rz = tz + 4;
+  const round = new WoodPiece({ species: 'spruce', stem: [{ y: 0, r: 0.15, x: 0, z: 0 }, { y: 2, r: 0.14, x: 0, z: 0 }], y0: 0, y1: 0.42, seed: 5 });
+  round.spawn(new THREE.Vector3(rx, heightAt(rx, rz) + 0.25, rz), new THREE.Quaternion());
+  game.chop.addPiece(round);
+  W.ff = 60; await new Promise<void>((r) => { const c = () => (W.ff > 0 ? setTimeout(c, 100) : r()); c(); });
+  const maul = { ...ITEMS.maul.tool! };
+  const results: string[] = [];
+  for (let k = 0; k < 8; k++) {
+    let target: any = null;
+    for (const p of game.chop.pieces) if (p.kind === 'round' || p.kind === 'half') { if (p.mesh.position.distanceTo(new THREE.Vector3(rx, p.mesh.position.y, rz)) < 1.2) target = p; }
+    if (!target) break;
+    const top = target.mesh.position.clone().add(new THREE.Vector3(0, 0.6, 0));
+    const r = game.chop.swing(top, new THREE.Vector3(0.02, -1, 0.01).normalize(), 1.5, new THREE.Vector3(0, -1, 0), maul, 1, 1);
+    results.push(r.kind + ((r as any).done ? '!' : ''));
+    W.ff = 50; await new Promise<void>((res) => { const c = () => (W.ff > 0 ? setTimeout(c, 100) : res()); c(); });
+  }
+  W.split = { results, kinds: [...game.chop.pieces].map((p) => p.kind) };
+  cam.position.set(rx - 1.2, heightAt(rx, rz) + 1.3, rz + 1.2); cam.lookAt(rx, heightAt(rx, rz), rz);
   cam.position.set(tx + 2, ref.y + 2.5, tz + 6); cam.lookAt(tx + 5, ref.y, tz);
   await wait(3);
   W.shot2 = true;

@@ -14,7 +14,8 @@
 //   befriended the moment it decides: a whole-body wiggle ('befriended')
 //   companion  follows, sniffs about, sits while you chop, barks at danger, steals and chews axe handles left on the
 //              ground, begs for jerky, sleeps by the stove at night, howls at the moon now and then
-// Events (ctx.emit): growl, snarl, snap, bite, bark, whine, sniff, chew, crunch, howl, yip, steal, befriended, dig, step.
+// Events (ctx.emit(ev, { pos, who: 'hound', sound, ... })): growl, snarl, snap, bite (damage), lunge_feint, bark, whine,
+// sniff, chew, crunch, howl, yip, steal, befriended, dig. `sound` is a suggested src/audio/bank.ts id (HOUND_SOUND).
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, smooth, type CreatureFx } from './rig';
 import { Animator, FOOT, type AnimParams } from './animator';
@@ -24,6 +25,11 @@ import { setPusher } from '../gfx/globals';
 import { SPOTS } from '../world/layout';
 import type { CreatureCtx, GroundItem } from './types';
 
+/** the sound-bank id (src/audio/bank.ts) suggested for each event; events without one are story beats */
+export const HOUND_SOUND: Record<string, string | undefined> = {
+  growl: 'hound_growl', snarl: 'hound_snarl', bark: 'hound_bark', whine: 'hound_whine', sniff: 'hound_sniff', yip: 'hound_yip',
+  chew: 'hound_chew', crunch: 'hound_chew', snap: 'hound_ting', bite: 'hound_ting', lunge_feint: 'hound_snarl', steal: 'hound_ting',
+};
 export type HoundState = 'wild_lurk' | 'lunge' | 'curious' | 'eat' | 'befriended' | 'companion';
 
 let SHARED: HoundModel | null = null;
@@ -125,10 +131,10 @@ export class AxehandleHound {
   // ------------------------------------------------------------------------------------------------ AI
   private go(s: HoundState) { if (s !== this.state) { this.state = s; this.st = 0; this.sub = ''; this.holdClip = null; } }
   private think(ctx: CreatureCtx, dt: number, dist: number, night: number) {
-    const P = ctx.player, toP = Math.atan2(P.pos.x - this.pos.x, P.pos.z - this.pos.z);
+    const P = ctx.player;
     const jerky = P.held === 'jerky';
     const stillPlayer = this.playerSpeed < 0.35;
-    const emit = (ev: string, extra: Record<string, unknown> = {}) => ctx.emit(ev, { pos: this.object.position.clone(), who: 'hound', ...extra });
+    const emit = (ev: string, extra: Record<string, unknown> = {}) => ctx.emit(ev, { pos: this.object.position.clone(), who: 'hound', sound: HOUND_SOUND[ev], ...extra });
     switch (this.state) {
       case 'wild_lurk': {
         // keep to the edge of the light: close at night, far by day
@@ -194,18 +200,18 @@ export class AxehandleHound {
       }
       case 'befriended': {
         this.wantSpeed = 0; this.lookAtPlayer = true; this.holdClip = 'wiggle';
-        if (Math.random() < dt * 2) emit('yip');
+        if (Math.random() < dt * 0.7) emit('yip');
         if (this.st > 3.5) this.go('companion');
         break;
       }
-      case 'companion': this.companion(ctx, dt, dist, night, toP, emit); break;
+      case 'companion': this.companion(ctx, dt, dist, night, emit); break;
     }
   }
   private lookAtPlayer = true;
   private lungeHit: boolean | null = null;
   private poi = new THREE.Vector3(); private hasPoi = false;
 
-  private companion(ctx: CreatureCtx, dt: number, dist: number, night: number, toP: number, emit: (ev: string, x?: Record<string, unknown>) => void) {
+  private companion(ctx: CreatureCtx, dt: number, dist: number, night: number, emit: (ev: string, x?: Record<string, unknown>) => void) {
     const P = ctx.player;
     this.lookAtPlayer = false;
     // 1. danger first: bark at threats
@@ -261,7 +267,8 @@ export class AxehandleHound {
     }
     // 5. the player is chopping: sit and watch
     if ((P.action === 'chop' || P.action === 'swing' || P.action === 'split') && dist < 12) {
-      const a = toP + Math.PI + 0.9;
+      // a spot 3 m off to the side of the player, on the hound's side, clear of the swing
+      const a = Math.atan2(this.pos.x - P.pos.x, this.pos.z - P.pos.z);
       this.target.set(P.pos.x + Math.sin(a) * 3.2, 0, P.pos.z + Math.cos(a) * 3.2);
       const far = Math.hypot(this.target.x - this.pos.x, this.target.z - this.pos.z) > 0.6;
       this.wantSpeed = far ? 1.2 : 0; this.gait = 'walk'; this.holdClip = far ? null : 'sit'; this.lookAtPlayer = true;

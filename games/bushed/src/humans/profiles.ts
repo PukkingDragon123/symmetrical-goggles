@@ -19,10 +19,9 @@ export const TORSO_ROWS: Row[] = [
 ];
 // arms: a deltoid cap, the upper arm, a bony elbow, the forearm's belly tapering to the wrist
 export const ARM_ROWS: Row[] = [
-  { y: 0.04, rx: 0.014, rf: 0.017, rb: 0.017 },
-  { y: 0.028, rx: 0.028, rf: 0.031, rb: 0.031 },
-  { y: 0.01, rx: 0.036, rf: 0.039, rb: 0.039 },
-  { y: -0.02, rx: 0.039, rf: 0.041, rb: 0.041 },
+  { y: 0.012, rx: 0.02, rf: 0.026, rb: 0.026 },
+  { y: 0.0, rx: 0.031, rf: 0.035, rb: 0.035 },
+  { y: -0.02, rx: 0.038, rf: 0.04, rb: 0.04 },
   { y: -0.06, rx: 0.039, rf: 0.04, rb: 0.04 },
   { y: -0.12, rx: 0.036, rf: 0.038, rb: 0.036 },
   { y: -0.2, rx: 0.031, rf: 0.032, rb: 0.033 },

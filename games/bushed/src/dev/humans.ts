@@ -8,15 +8,153 @@ import * as THREE from 'three';
 import { buildHuman, makeLook, variant, LOOK_IDS, NPC_ANIMS } from '../humans';
 import type { HumanModel, NpcAnim, LookId } from '../humans';
 import { humanParts } from '../humans/model';
+import { FPArms, fitTool } from '../player/arms';
+import type { HeldKind, ArmsAction, ArmsInput } from '../player/arms';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const Q = new URLSearchParams(location.search);
 const num = (k: string, d: number) => (Q.has(k) ? parseFloat(Q.get(k)!) : d);
 declare global { interface Window { __ready?: boolean; __step?: (dt: number) => void } }
 
-if (Q.get('arms') === '1') runArms();
-else runLineup();
 
-function runArms() { /* filled in below once the arms exist */ }
+// ------------------------------------------------------------------ first-person arms viewer
+interface Step { label: string; held: HeldKind; dur: number; action?: ArmsAction; at?: number; charge?: (t: number) => number; speed?: number; sprint?: boolean; shiver?: number; breath?: number; crouch?: boolean }
+const STEPS: Step[] = [
+  { label: 'empty hands, idle sway + breathing', held: 'none', dur: 2.5 },
+  { label: 'empty hands, walking', held: 'none', dur: 2.5, speed: 1.6 },
+  { label: 'grab', held: 'none', dur: 1.0, action: 'grab', at: 0.1 },
+  { label: 'drop', held: 'item', dur: 1.0, action: 'drop', at: 0.1 },
+  { label: 'push', held: 'none', dur: 1.1, action: 'push', at: 0.1 },
+  { label: 'felling axe, ready', held: 'axe', dur: 2.0 },
+  { label: 'axe wind-up (swingCharge 0..1)', held: 'axe', dur: 1.6, charge: (t) => Math.min(1, t / 1.1) },
+  { label: 'axe swing -> impact', held: 'axe', dur: 0.9, action: 'swing', at: 0.0, charge: (t) => (t < 0.0 ? 1 : 0) },
+  { label: 'axe stuck: chop_recover', held: 'axe', dur: 1.0, action: 'chop_recover', at: 0.0 },
+  { label: 'axe swing, miss (overswing)', held: 'axe', dur: 1.2, action: 'miss', at: 0.15 },
+  { label: 'axe, running', held: 'axe', dur: 2.0, speed: 4.5, sprint: true },
+  { label: 'maul: overhead split', held: 'maul', dur: 1.4, action: 'split', at: 0.1 },
+  { label: 'hatchet: one-hand swing', held: 'hatchet', dur: 1.0, action: 'swing', at: 0.0 },
+  { label: 'saw: stroke', held: 'saw', dur: 1.2, action: 'swing', at: 0.1 },
+  { label: 'carry a heavy round (two_hand), walking, winded', held: 'two_hand', dur: 2.5, speed: 1.2, breath: 0.8 },
+  { label: 'drag a log end (log)', held: 'log', dur: 2.2, speed: 1.0, breath: 0.6 },
+  { label: 'drag behind (drag), one arm back', held: 'drag', dur: 2.2, speed: 1.0, breath: 0.5 },
+  { label: 'small item, one hand', held: 'item', dur: 1.8 },
+  { label: 'beer: drink', held: 'bottle', dur: 2.9, action: 'drink', at: 0.1 },
+  { label: 'beef jerky: offer', held: 'jerky', dur: 2.5, action: 'offer', at: 0.1 },
+  { label: 'flashlight, walking', held: 'flashlight', dur: 2.2, speed: 1.4 },
+  { label: 'axe, freezing: shiver', held: 'axe', dur: 2.2, shiver: 1 },
+];
+
+function runArms() {
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  document.body.appendChild(renderer.domElement);
+  // the world behind (a sky and a forest floor) and the viewmodel scene drawn over it with its own camera
+  const world = new THREE.Scene();
+  world.background = new THREE.Color(0x8d9a9c);
+  world.fog = new THREE.Fog(0x8d9a9c, 4, 30);
+  const wcam = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.05, 100);
+  wcam.position.set(0, 1.7, 0);
+  wcam.lookAt(0, 1.45, -3);
+  world.add(new THREE.HemisphereLight(0xc8d4dc, 0x4a4034, 1.4));
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: 0x4a4432, roughness: 1 }));
+  ground.rotation.x = -Math.PI / 2; world.add(ground);
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 8, 14), new THREE.MeshStandardMaterial({ color: 0x5a4636, roughness: 1 }));
+  trunk.position.set(-0.4, 4, -1.6); world.add(trunk);
+
+  const view = new THREE.Scene();
+  const vcam = new THREE.PerspectiveCamera(58, window.innerWidth / window.innerHeight, 0.01, 10);
+  view.add(new THREE.HemisphereLight(0xbfc8d8, 0x3a3026, 0.9));
+  const key = new THREE.DirectionalLight(0xfff2e0, 1.6); key.position.set(0.5, 1, 0.6); view.add(key);
+  const rim = new THREE.DirectionalLight(0x9ab0ff, 0.5); rim.position.set(-0.6, 0.3, -0.5); view.add(rim);
+
+  const arms = new FPArms();
+  view.add(arms.object);
+  if (Q.has('orbit')) {
+    // debug: look at the viewmodel rig from outside (yaw degrees)
+    const a = num('orbit', 60) * Math.PI / 180;
+    vcam.position.set(Math.sin(a) * 1.4, 0.1, -0.3 + Math.cos(a) * 1.4);
+    vcam.lookAt(0, -0.25, -0.3);
+  }
+  const hud = document.getElementById('hud')!;
+  const events: string[] = [];
+  arms.onEvent((ev, d) => { events.unshift(`${ev}${d?.power !== undefined ? ' power ' + d.power.toFixed(2) : ''}`); events.length = Math.min(events.length, 5); flash = ev === 'impact' ? 0.25 : flash; });
+  let flash = 0;
+
+  // held items: the props engineer's models when present, quick stand-ins otherwise
+  const models: Partial<Record<HeldKind, THREE.Object3D>> = {};
+  const stand: Partial<Record<HeldKind, () => THREE.Object3D>> = {
+    axe: standInAxe, maul: standInAxe, hatchet: () => { const a = standInAxe(); a.scale.setScalar(0.55); return a; },
+    bottle: () => { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.2, 12), new THREE.MeshStandardMaterial({ color: 0x4a2a10, roughness: 0.2 })); m.position.y = 0.0; return m; },
+    jerky: () => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.006, 0.11), new THREE.MeshStandardMaterial({ color: 0x5a2a1a, roughness: 0.8 })); m.position.set(0, 0.005, 0.02); return m; },
+    item: () => new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.04, 0.09), new THREE.MeshStandardMaterial({ color: 0xa08050 })),
+    flashlight: () => { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.026, 0.22, 10), new THREE.MeshStandardMaterial({ color: 0x303236, metalness: 0.6, roughness: 0.4 })); m.position.y = 0.04; return m; },
+    saw: () => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.08, 0.55), new THREE.MeshStandardMaterial({ color: 0x8a8e94, metalness: 0.7, roughness: 0.4 })); m.position.set(0, 0.0, 0.3); return m; },
+    two_hand: () => { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.42, 16), new THREE.MeshStandardMaterial({ color: 0x8a6a46, roughness: 0.9 })); m.rotation.z = Math.PI / 2; return m; },
+  };
+  const files: Partial<Record<HeldKind, [string, number]>> = { axe: ['wooden_axe.glb', 0.42], hatchet: ['hatchet.glb', 0.3], maul: ['sledgehammer_01.glb', 0.3], flashlight: ['vintage_flashlight.glb', 0.5], bottle: ['wine_bottle_bordeaux.glb', 0.35], saw: ['handsaw_wood.glb', 0.15] };
+  const loader = new GLTFLoader();
+  let pending = 0;
+  for (const [k, [f, grip]] of Object.entries(files) as [HeldKind, [string, number]][]) {
+    if (Q.get('standin') === '1') continue;
+    pending++;
+    loader.load(`assets/models/${f}`, (g) => { g.scene.traverse((o) => { (o as THREE.Mesh).castShadow = false; }); models[k] = fitTool(g.scene, grip); pending--; if (k === cur.held) applyHeld(cur.held); }, undefined, () => { pending--; });
+  }
+  const itemFor = (k: HeldKind) => models[k] ?? (stand[k] ? (models[k] = stand[k]!()) : undefined);
+  function applyHeld(k: HeldKind) { arms.setHeld(k, itemFor(k)); }
+
+  // a single step (?held=..&action=..&t=..) or the full cycle
+  const only = Q.get('held') as HeldKind | null;
+  const stepIdx = Q.has('step') ? num('step', 0) : -1;
+  const steps: Step[] = stepIdx >= 0 ? [STEPS[stepIdx]] : only ? [{ label: `${only}${Q.get('action') ? ' + ' + Q.get('action') : ''}`, held: only, dur: 3, action: (Q.get('action') as ArmsAction) || undefined, at: 0, charge: Q.has('charge') ? () => num('charge', 0) : undefined, speed: num('speed', 0), shiver: num('shiver', 0) }] : STEPS;
+  let si = 0, st = 0, cur = steps[0];
+  let started = false;
+  function enter(i: number) {
+    si = i % steps.length; cur = steps[si]; st = 0; started = false;
+    applyHeld(cur.held);
+  }
+  enter(0);
+  const input = (): ArmsInput => ({
+    speed: cur.speed ?? 0, sprint: !!cur.sprint, crouch: !!cur.crouch, breath: cur.breath ?? 0.1, shiver: cur.shiver ?? 0,
+    aimPitch: 0, swingCharge: cur.charge ? cur.charge(st) : 0,
+  });
+  function step(dt: number) {
+    st += dt;
+    if (cur.action && !started && st >= (cur.at ?? 0)) { started = true; arms.play(cur.action, { power: 1 }); }
+    arms.update(dt, input());
+    if (st >= cur.dur && steps.length > 1) enter(si + 1);
+    flash = Math.max(0, flash - dt);
+  }
+  // shot mode: settle the spring, then run to ?t= seconds into the step at 60 Hz
+  const shot = Q.get('shot') === '1';
+  window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); wcam.aspect = vcam.aspect = window.innerWidth / window.innerHeight; wcam.updateProjectionMatrix(); vcam.updateProjectionMatrix(); });
+  const clock = new THREE.Clock();
+  let frames = 0, ran = false;
+  function frame() {
+    if (shot) {
+      if (!ran && pending === 0) {
+        applyHeld(cur.held);
+        for (let i = 0; i < 40; i++) arms.update(1 / 60, { ...input(), swingCharge: 0 });
+        st = 0; started = false;
+        const T = num('t', 0.5);
+        while (st < T) step(1 / 60);
+        ran = true;
+      }
+    } else step(Math.min(0.05, clock.getDelta()));
+    renderer.autoClear = true;
+    renderer.render(world, wcam);
+    renderer.autoClear = false;
+    renderer.clearDepth();
+    renderer.render(view, vcam);
+    hud.textContent = `FP arms  [${si + 1}/${steps.length}] ${cur.label}\nheld: ${arms.held}  action: ${arms.action ?? '-'}  t ${st.toFixed(2)}\n${events.join('\n')}${flash > 0 ? '\n*** IMPACT ***' : ''}`;
+    if (ran && ++frames === 3) window.__ready = true;
+    requestAnimationFrame(frame);
+  }
+  window.addEventListener('keydown', (e) => { if (e.code === 'ArrowRight') enter(si + 1); if (e.code === 'ArrowLeft') enter(si - 1 + steps.length); });
+  frame();
+}
 
 function runLineup() {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -200,3 +338,6 @@ export function standInAxe(): THREE.Object3D {
   g.traverse((o) => { o.castShadow = true; });
   return g;
 }
+
+if (Q.get('arms') === '1') runArms();
+else runLineup();

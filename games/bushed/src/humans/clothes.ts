@@ -26,11 +26,15 @@ const D2R = Math.PI / 180;
 const perim = (a: number, b: number) => Math.PI * (3 * (a + b) - Math.sqrt((3 * a + b) * (a + 3 * b)));
 const g = (x: number, c: number, s: number) => Math.exp(-((x - c) * (x - c)) / (2 * s * s));
 
-/** cavity shading from a fold field's curvature (cavities darker, ridges a touch lighter) */
-function foldShade(f: (th: number, y: number) => number, th: number, y: number, dth: number, dy: number, k: number): number {
-  const c = f(th, y);
-  const lap = (f(th + dth, y) + f(th - dth, y) - 2 * c) + (f(th, y + dy) + f(th, y - dy) - 2 * c);
-  return 1 - clamp01(Math.abs(lap) * k) * Math.sign(lap) * 0.5;
+/**
+ * Cavity shading from a fold field's curvature: f(th, y) is a radial offset (m), mpr converts radians to metres
+ * round the part, h the sample step (m). Valleys (positive Laplacian) darken, ridges lighten a little.
+ */
+function foldShade(f: (th: number, y: number) => number, th: number, y: number, mpr: number, h: number, k = 0.00055): number {
+  const c = f(th, y), dth = h / mpr;
+  const lap = (f(th + dth, y) + f(th - dth, y) - 2 * c + f(th, y + h) + f(th, y - h) - 2 * c) / (h * h);
+  const v = lap * k;
+  return 1 - Math.max(-0.12, Math.min(0.32, v));
 }
 
 /** the button: a disc with a rim and two thread holes; returns colour or null */
@@ -84,7 +88,7 @@ export function paintTorso(P: Page, C: Ctx) {
   const s = d.s, b = L.build;
   const [, , w, h] = LAYOUT.TORSO;
   const rng = VMAP.TORSO;
-  const dth = (Math.PI * 2) / w, dy = (rng[1] - rng[0]) / h;
+  const dy = (rng[1] - rng[0]) / h;
   const susp = L.suspenders ? hex(L.suspenders) : null;
   const beltC = L.belt ? hex(L.belt) : null;
   const coverall = sh.topKind === 'coveralls';
@@ -176,7 +180,7 @@ export function paintTorso(P: Page, C: Ctx) {
       if (sh.tuck) ao -= 0.3 * g(yy, sh.waist + 0.004, 0.006);
       ao -= 0.15 * g(yy, 1.0, 0.025) * g(deg, 0, 40) * (b.belly + Math.max(0, b.mass - 1));
       if (coverall) ao -= 0.15 * g(yy, 1.0, 0.008);
-      c = shade(c, ao * foldShade((t, q) => torsoFold(t, q, sh, L), th, yy, dth, dy, 2200));
+      c = shade(c, ao * foldShade((t, q) => torsoFold(t, q, sh, L), th, yy, circ / (Math.PI * 2), dy * 2));
       c = soil(C, c, x, y, clamp01((1.15 - yy) / 0.3), 0);
     } else {
       // ---- trousers top: waistband, belt loops, pockets, fly, the back yoke and patch pockets
@@ -282,7 +286,7 @@ export function paintOuter(P: Page, C: Ctx) {
   const kind = sh.outer;
   const col = hex(L.outer.color ?? '#886644'), col2 = hex(L.outer.color2 ?? '#443322');
   const [, , w, h] = LAYOUT.OUTER;
-  const dth = (Math.PI * 2) / w, dy = (rng[1] - rng[0]) / h;
+  const dy = (rng[1] - rng[0]) / h;
   eachIn(P, 'OUTER', (x, y, u, v) => {
     const deg = (u - 0.5) * 360, yy = rng[0] + v * (rng[1] - rng[0]);
     const r = sampleRows(TORSO_ROWS, yy);
@@ -371,7 +375,7 @@ export function paintOuter(P: Page, C: Ctx) {
     // occlusion: under the collar, the armholes of vests; fold shading for the jacket's drape
     let ao = 1 - 0.25 * clamp01((yy - 1.445) / 0.02);
     if (kind === 'quiltVest' || kind === 'blazeVest') ao -= 0.2 * g(Math.abs(deg), 90, 12) * g(yy, 1.34, 0.05);
-    if (kind === 'chore') ao *= foldShade((t, q) => Math.sin(t * 9 + q * 24) * 0.0016 + g(q, 1.3, 0.05) * Math.sin(t * 5 + q * 60) * 0.002, deg * D2R, yy, dth, dy, 2000);
+    if (kind === 'chore') ao *= foldShade((t, q) => Math.sin(t * 9 + q * 24) * 0.0016 + g(q, 1.3, 0.05) * Math.sin(t * 5 + q * 60) * 0.002, deg * D2R, yy, circ / (Math.PI * 2), dy * 2);
     c = shade(c, ao);
     c = soil(C, c, x, y, clamp01((1.1 - yy) / 0.3), edge);
     return c;
@@ -399,7 +403,7 @@ export function paintArms(P: Page, C: Ctx) {
   const fm = (1 - b.fem * 0.14) * (0.62 + 0.38 * b.mass);
   for (const key of ['ARM_L', 'ARM_R'] as RegKey[]) {
     const [, , w, h] = LAYOUT[key];
-    const dth = (Math.PI * 2) / w, dy = (rng[1] - rng[0]) / h;
+    const dy = (rng[1] - rng[0]) / h;
     const seed = C.seed + (key === 'ARM_L' ? 200 : 220);
     eachIn(P, key, (x, y, u, v) => {
       const deg = (u - 0.5) * 360, th = deg * D2R, yy = rng[0] + v * (rng[1] - rng[0]);
@@ -449,7 +453,7 @@ export function paintArms(P: Page, C: Ctx) {
       if (Math.abs(yy - 0.012) < 0.0028) c = shade(c, 0.7);
       if (Math.abs(yy - 0.004) < 0.0015 && stitchOn(x, 3, 2)) c = shade(c, 0.82);
       // fold cavities (elbow buckling, cuff stacking, the roll), armpit occlusion
-      c = shade(c, foldShade((t, q) => armFold(t, q, sh), th, yy, dth, dy, 2600));
+      c = shade(c, foldShade((t, q) => armFold(t, q, sh), th, yy, circ / (Math.PI * 2), dy * 2));
       c = shade(c, 1 - 0.18 * g(Math.abs(deg), 90, 30) * clamp01((yy + 0.02) / 0.06) * (deg < 0 ? 1 : 0.4));
       c = soil(C, c, x, y, clamp01((-0.25 - yy) / 0.25), edge);
       return c;
@@ -466,13 +470,12 @@ export function paintLegs(P: Page, C: Ctx) {
   const bootC = hex(L.feet.color);
   for (const key of ['LEG_L', 'LEG_R'] as RegKey[]) {
     const [, , w, h] = LAYOUT[key];
-    const dth = (Math.PI * 2) / w, dy = (rng[1] - rng[0]) / h;
+    const dy = (rng[1] - rng[0]) / h;
     const seed = C.seed + (key === 'LEG_L' ? 300 : 320);
     eachIn(P, key, (x, y, u, v) => {
       const deg = (u - 0.5) * 360, th = deg * D2R, yy = rng[0] + v * (rng[1] - rng[0]);
       const r = sampleRows(LEG_ROWS, yy);
       const circ = perim(r.rx * fm, (r.rf + r.rb) * 0.5 * fm) * s;
-      void circ;
       const a = Math.abs(deg);
       if (yy < sh.bootTop) {
         // ---- the boot shaft: oiled leather, laces criss-crossing up the front between speed hooks, a pull loop
@@ -539,7 +542,7 @@ export function paintLegs(P: Page, C: Ctx) {
         if (ph(x, 0, seed + 13) < 0.5 && hem < 0.008 * ph(x, 1, seed + 14) + 0.002) c = mix(c, [220, 216, 206], 0.7);
       } else if (hem < 0.015) { c = shade(c, 0.86); if (Math.abs(hem - 0.012) < 0.0012 && stitchOn(x, 3, 2)) c = stitch; }
       // knees, seat wear; mud spatter low on the legs
-      c = shade(c, foldShade((t, q) => legFold(t, q, sh), th, yy, dth, dy, 2600));
+      c = shade(c, foldShade((t, q) => legFold(t, q, sh), th, yy, circ / (Math.PI * 2), dy * 2));
       c = shade(c, 1 - 0.18 * g(a, 180, 40) * g(yy, 0.03, 0.04));                  // crotch / seat occlusion
       c = soil(C, c, x, y, clamp01((-0.45 - yy) / 0.35), g(yy, -0.43, 0.05) * g(a, 0, 40));
       if (yy < -0.55 && ph(x >> 1, y >> 1, seed + 15) < 0.03 * L.wear) c = mix(c, [74, 58, 40], 0.7);

@@ -112,7 +112,7 @@ export function limb(s: LimbSpec): LimbOut {
     const pts = angles.map((deg) => { const a = (deg * Math.PI) / 180, k = 1 + lobes(a) * lk; return [Math.sin(a) * ft.pad * rk * k, Math.cos(a) * ft.pad * rk * k * 1.04]; });
     rings.push({ c, x: [s.side, 0, 0], y: [0, 0, 1], pts });
   }
-  const g = tube(m, rings, { tag: 0, capE: true });
+  const g = tube(m, rings, { tag: 0, capS: true, capE: true }); // BUSHED: the buried top is capped (a swinging arm never shows a hole)
   const R = rings.length;
   // creases: folds round the knee and the station rings asked for, the sole's rim, tendons down the back
   s.rings.forEach((st, i) => { if (st.crease) creaseRow(m, g, i, st.crease, !!st.ink); });

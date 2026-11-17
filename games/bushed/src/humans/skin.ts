@@ -37,7 +37,7 @@ export function skinTexel(K: SkinPal, x: number, y: number, seed: number, ao = 1
   let c = mul(K.base, 1 + m * 0.12);
   c = mix(c, K.warm, clamp01(fbm(x, y, 16, 2, seed + 9) - 0.45) * 0.5);
   const p = ph(x, y, seed + 77);
-  if (p < 0.035) c = shade(c, 0.9); else if (p > 0.985) c = shade(c, 1.06);
+  if (p < 0.012) c = shade(c, 0.95); else if (p > 0.99) c = shade(c, 1.04);
   return ao === 1 ? c : shade(c, ao);
 }
 
@@ -105,7 +105,7 @@ export function paintHead(P: Page, L: HumanLook, K: SkinPal) {
         c = mix(c, hc, thin * (0.75 + 0.25 * ph(x, y, seed + 2)));
       } else if (yy > hl - 0.006 + rag && ph(x, y, 5) < (yy - hl + 0.006) / 0.009) c = mix(c, K.hairD, 0.55 * thin);
       // sideburns down in front of the ears
-      if (a > 78 && a < 92 && yy > 0.075 && yy < hl + 0.01 && style !== 'ponytail') c = mix(c, mix(K.hairD, K.hair, ph(x, y, 4)), 0.8);
+      if (a > 76 && a < 87 && yy > 0.078 && yy < hl + 0.01 && style !== 'ponytail') c = mix(c, mix(K.hairD, K.hair, ph(x, y, 4)), 0.8);
     } else if (yy > 0.12) {
       // bald pate: a little shine-free mottling and age spots
       if (ph(x >> 1, y >> 1, seed + 41) < 0.03 * age) c = mix(c, [150, 110, 80], 0.4);
@@ -157,8 +157,6 @@ export function paintHead(P: Page, L: HumanLook, K: SkinPal) {
           e = ring ? shade(iris, 0.5) : mix(shade(iris, 1.15), shade(iris, 0.8), t);
           if (ph(x, y, seed + 21) < 0.25 && !ring) e = shade(e, 1.18);
           if (t < 0.36) e = [16, 12, 12];
-          // catchlight
-          if (Math.abs(dx + ex * 0.12) < pxPerDeg ? false : false) e = [255, 255, 255];
         }
         c = e;
         // upper lid shadow band and lashes along the upper edge
@@ -217,13 +215,13 @@ export function paintHead(P: Page, L: HumanLook, K: SkinPal) {
       for (const k of [-1, 1]) if (Math.abs(deg - k * 2.2) < 0.7 && yy > 0.108 && yy < 0.122 && age > 0.5) c = shade(c, 0.88);
     }
     if (age > 0.6 && ph(x >> 1, y >> 1, seed + 61) < (age - 0.6) * 0.06) c = mix(c, [150, 108, 78], 0.35);
-    // ---- ears: the inner bowl and the canal
-    if (a > 96 && a < 118 && yy > 0.05 && yy < 0.112) {
-      const ey = (yy - 0.08) / 0.024, ea = (a - 106) / 7;
+    // ---- ears (the ear shells sample 88..118 degrees): skin, a warm rim, the inner bowl and the canal
+    if (a > 87 && a < 120 && yy > 0.04 && yy < 0.118) {
+      c = mix(skinTexel(K, x, y, seed + 5), K.warm, 0.3);
+      const ey = (yy - 0.079) / 0.022, ea = (a - 104) / 8;
       const r = ey * ey + ea * ea;
-      if (r < 0.5) c = shade(c, 0.78);
-      else if (r < 0.75) c = shade(c, 0.9);
-      c = mix(c, K.warm, 0.25);
+      if (r < 0.35) c = shade(c, 0.74);
+      else if (r < 0.7) c = shade(c, 0.88);
     }
     return ao === 1 ? c : shade(c, Math.max(0.35, ao));
   });
@@ -321,6 +319,8 @@ export function paintBeard(P: Page, L: HumanLook, K: SkinPal) {
     const tip = ph(x, 0, seed + 21) * 0.08 + ph(x >> 1, 0, seed + 22) * 0.05;
     if (v < 0.75 && v < 0.04 + tip) return 0;
     if (v >= 0.78 && v < 0.78 + tip * 0.6) return 0;
+    // the beard's upper edge on the cheeks thins out into the painted stubble
+    if (v < 0.75 && v > 0.75 - 0.05 - tip * 0.5 && ph(x, Math.floor(v * 200), seed + 23) < sstep(0.75 - 0.06 - tip * 0.5, 0.75, v)) return 0;
     if (u < 0.015 || u > 0.985) return 0;
     return 255;
   });
