@@ -178,8 +178,8 @@ export function roadInfo(x: number, z: number): RoadInfo {
 // ---------------------------------------------------------------- clearings (flattened pads)
 interface Pad { x: number; z: number; r: number; fall: number; h?: number }
 const PADS: Pad[] = [
-  { x: SPOTS.cabin.x, z: SPOTS.cabin.z, r: 15, fall: 16 },
-  { x: SPOTS.store.x, z: SPOTS.store.z, r: 30, fall: 18 },
+  { x: SPOTS.cabin.x, z: SPOTS.cabin.z, r: 16, fall: 48 },
+  { x: SPOTS.store.x, z: SPOTS.store.z, r: 32, fall: 34 },
   { x: SPOTS.campsite.x, z: SPOTS.campsite.z, r: 9, fall: 8 },
 ];
 for (const p of PADS) p.h = Math.max(baseHeight(p.x, p.z), WORLD.waterY + 1.5);
@@ -201,7 +201,8 @@ export function heightAt(x: number, z: number): number {
     if (d < p.r + p.fall) h = lerp(p.h!, h, smoothstep(p.r, p.r + p.fall, d));
   }
   const r = roadInfo(x, z);
-  if (r.road >= 0) {
+  // only real roads are graded; trails follow the ground
+  if (r.road >= 0 && (r.id === 'highway' || r.id === 'cabin_road')) {
     const shoulder = r.w + 7;
     if (r.d < shoulder) {
       // slight crown on the road surface, ditches just past the shoulder

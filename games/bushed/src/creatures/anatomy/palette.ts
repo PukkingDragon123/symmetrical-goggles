@@ -1,0 +1,122 @@
+// THE MASTER PALETTE (ported from ODDWORLD src/art/palette.ts, with BUSHED's creature ramps added at the end).
+// ODDWORLD: (v2: richer colour, user asked for more colourful pixel art). Every 2D painter in the game (plants, ground, rock, creatures, icons, VFX, UI art) draws from
+// these ramps and nothing else. Hand-picked, rich but natural saturation, hue-shifted: shadows lean cool (blue-violet), lights lean
+// warm (straw), mid-tones carry the local colour. No ramp reaches pure black, pure white or full saturation.
+// Ramps run dark -> light. Pick a ramp by material, then index it by light; do not mix or tint at runtime.
+
+const hex = (s: string) => parseInt(s.slice(1), 16);
+const R = (...c: string[]) => c.map(hex);
+
+export const RAMPS = {
+  // foliage
+  moss: R('#1a2720', '#283c22', '#3e552b', '#597033', '#7f8b3f', '#aea94f', '#d4c272'),
+  sage: R('#1c2829', '#264039', '#375a49', '#507858', '#77976b', '#a3b888'),
+  teal: R('#16262e', '#1e3c40', '#2b5550', '#407162', '#5f9075', '#8aae92'),
+  violet: R('#201b2d', '#362145', '#50305d', '#664575', '#86628a', '#a98aa0'),
+  plum: R('#2b1826', '#451f33', '#642a3f', '#833b4e', '#a2555c', '#c37c76'),
+  rust: R('#2f1a13', '#4e2817', '#773717', '#9f4621', '#c36530', '#de8f4e', '#efb67b'),
+  coral: R('#2f181c', '#501f1f', '#752b2b', '#9b4238', '#bf6346', '#da876a'),
+  ochre: R('#312715', '#503e1a', '#745820', '#99702a', '#bc913a', '#d8ac5b', '#e9cb89'),
+  straw: R('#42391c', '#635b2a', '#877b3c', '#a99c51', '#c5b36e', '#decd93'),
+  // ground and stone
+  soil: R('#1f1813', '#30251a', '#453624', '#604b31', '#7c6141', '#997c56', '#b89d74'),
+  clay: R('#291912', '#422a1b', '#613b22', '#7f4b2c', '#9d643b', '#b98453'),
+  sand: R('#413925', '#645435', '#887448', '#a9945f', '#c6ad7b', '#ddc799'),
+  stone: R('#1a1b20', '#292a2f', '#3c3d3f', '#525150', '#6c6862', '#898278', '#a9a194'),
+  slate: R('#171b25', '#212d38', '#2d404c', '#3f5362', '#566f79', '#759090'),
+  basalt: R('#18181b', '#222225', '#2f2e31', '#3f3d3f', '#524f4f', '#6a645e'),
+  snow: R('#5c6876', '#798590', '#96a0a8', '#b4bbbc', '#cfd3cb', '#e3e1d7'),
+  // water and sky
+  water: R('#0f2028', '#14323b', '#1d494f', '#2a625e', '#427d74', '#639e8b', '#92bca6'),
+  sky: R('#26394a', '#395165', '#536e7d', '#729097', '#97b0ab', '#bfcbb8'),
+  // flesh, fur, bone, blood
+  fur: R('#231912', '#3a2a18', '#563d20', '#72502d', '#916b3f', '#b18e59', '#cba97d'),
+  hide: R('#251819', '#3e2824', '#5a3e32', '#765245', '#966b5a', '#b38c7a'),
+  flesh: R('#301416', '#501b1d', '#74252a', '#973537', '#b75248', '#d37867'),
+  bone: R('#453e2b', '#65583d', '#877853', '#a9986c', '#c7b589', '#e0cfa6'),
+  blood: R('#230b0d', '#3c0e0f', '#5c100f', '#7c1814', '#9e1e1a'),
+  ichor: R('#202512', '#353e17', '#525d1b', '#6b7d22', '#8b9d30'),
+  // made things
+  steel: R('#1c1e20', '#2a2f32', '#3d4346', '#54595c', '#6e7373', '#8e9190', '#b1b2aa'),
+  olive: R('#222316', '#35351e', '#4b4c28', '#616436', '#7b7e48', '#999b5f'),
+  brass: R('#31260f', '#4f3e13', '#705719', '#946c21', '#b38737', '#cea457'),
+  paper: R('#726955', '#8f856e', '#aa9e84', '#c1b59b', '#d6cab0', '#e5dbc3'),
+  ink: R('#13161c', '#1e232c', '#2a323e'),
+  // minerals and gems (realistic, for items and deposits)
+  iron: R('#1d1b1c', '#2f2c2c', '#47413d', '#625952', '#82776c', '#a39689', '#c6b9a9'),
+  copper: R('#2a160f', '#4a2516', '#6f3a1f', '#96522a', '#b8703a', '#d39859', '#e8c08a'),
+  gold: R('#2e220c', '#4f3a12', '#76581b', '#9c7a27', '#c19e3b', '#dcc066', '#f0dea0'),
+  quartz: R('#3c4148', '#5c636a', '#7f878b', '#a3aaab', '#c6cbc8', '#e3e6df'),
+  malachite: R('#0f2219', '#173a25', '#1f5532', '#2c7240', '#459155', '#73b073', '#a8d09d'),
+  amethyst: R('#1f1530', '#33204d', '#4b2e6c', '#66408a', '#8a5ea8', '#b089c4', '#d6b9de'),
+  ruby: R('#250b12', '#43111d', '#66182a', '#8c2238', '#b0354a', '#cf6066', '#e7a092'),
+  sapphire: R('#0d1730', '#15264f', '#1e3a72', '#2b5292', '#4472ad', '#6f99c5', '#a8c4db'),
+  // the few lit things: used sparingly, never as a fill
+  glowTeal: R('#274f47', '#3e7a6c', '#62a88f', '#95ccb0', '#c7e6ce'),
+  glowAmber: R('#503a1a', '#825722', '#b27d34', '#d7a856', '#eecc8e'),
+  stampRed: R('#401913', '#672319', '#8c2920', '#b13c2b'),
+  // ---- BUSHED creatures
+  /** hickory sapwood: the pale, straight-grained wood of a good axe handle */
+  hickory: R('#2b1a10', '#4a2f1b', '#6c4527', '#8f6037', '#b0804c', '#cba066', '#e0c08c', '#f0dcb0'),
+  /** hickory heartwood: the darker red-brown streaks and the oiled, handled places */
+  heart: R('#22120d', '#3b1e14', '#59301e', '#774229', '#935636', '#ad6d45', '#c48a5e'),
+  /** polished tool steel: cool grey, a little blue in the darks, near white where it is honed */
+  axeSteel: R('#101317', '#1c2228', '#2a3239', '#3c464e', '#545f67', '#717c82', '#949ea1', '#bcc4c4', '#e2e6e2'),
+  /** forge scale and black oxide on the cheeks of the axe head */
+  forge: R('#0b0c0f', '#14161a', '#1d2025', '#282c32', '#363b42', '#474d53', '#5c6166'),
+  /** the dark claws, bristles, the hound's nose leather */
+  horn: R('#0f0b0a', '#1a1412', '#29201b', '#3a2e26', '#4f4034', '#665446'),
+  /** sasquatch hair: near-black brown with a red-brown sheen at the tips */
+  squatch: R('#0f0b09', '#1b1410', '#281d16', '#36271c', '#483323', '#5e432c', '#775636', '#8f6a42'),
+  /** leathery dark skin: Bigfoot's face, palms and soles */
+  leather: R('#14100e', '#231a17', '#352722', '#48362e', '#5e473c', '#77594b', '#8f6d5c'),
+  /** mouth lining, gums */
+  gum: R('#1e0c0e', '#381417', '#57201f', '#77302b', '#94473a', '#ad6352'),
+} as const;
+export type RampName = keyof typeof RAMPS;
+
+/** every colour in the master palette */
+export const PALETTE: number[] = [...new Set(Object.values(RAMPS).flat())];
+
+/** a ramp by name, or the closest ramp to an arbitrary colour (for porting old code that picked free colours) */
+export function ramp(name: RampName): readonly number[] { return RAMPS[name]; }
+
+const ch = (c: number) => [(c >> 16) & 255, (c >> 8) & 255, c & 255] as const;
+function dist(a: number, b: number) {
+  const [r1, g1, b1] = ch(a), [r2, g2, b2] = ch(b);
+  const rm = (r1 + r2) / 2, dr = r1 - r2, dg = g1 - g2, db = b1 - b2;
+  return (2 + rm / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rm) / 256) * db * db; // "redmean" perceptual weighting
+}
+/** the ramp whose mid-tones are nearest a colour */
+export function nearestRamp(c: number): RampName {
+  let best: RampName = 'stone', bd = Infinity;
+  for (const k of Object.keys(RAMPS) as RampName[]) {
+    if (k.startsWith('glow') || k === 'stampRed' || k === 'ink') continue;
+    for (const v of RAMPS[k]) { const d = dist(c, v); if (d < bd) { bd = d; best = k; } }
+  }
+  return best;
+}
+
+// snapping arbitrary colours into the palette (a 32^3 lookup, built on first use)
+let LUT: Uint32Array | null = null;
+function lut() {
+  if (LUT) return LUT;
+  LUT = new Uint32Array(32 * 32 * 32);
+  for (let r = 0; r < 32; r++) for (let g = 0; g < 32; g++) for (let b = 0; b < 32; b++) {
+    const c = ((r * 8 + 4) << 16) | ((g * 8 + 4) << 8) | (b * 8 + 4);
+    let best = PALETTE[0], bd = Infinity;
+    for (const p of PALETTE) { const d = dist(c, p); if (d < bd) { bd = d; best = p; } }
+    LUT[(r << 10) | (g << 5) | b] = best;
+  }
+  return LUT;
+}
+/** the nearest palette colour to 0xRRGGBB */
+export function snap(c: number): number { return lut()[(((c >> 19) & 31) << 10) | (((c >> 11) & 31) << 5) | ((c >> 3) & 31)]; }
+/** snap an RGBA buffer in place (alpha untouched) */
+export function snapRGBA(d: Uint8Array | Uint8ClampedArray) {
+  const L = lut();
+  for (let i = 0; i < d.length; i += 4) {
+    const p = L[((d[i] >> 3) << 10) | ((d[i + 1] >> 3) << 5) | (d[i + 2] >> 3)];
+    d[i] = (p >> 16) & 255; d[i + 1] = (p >> 8) & 255; d[i + 2] = p & 255;
+  }
+}

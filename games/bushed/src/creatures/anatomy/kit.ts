@@ -1,0 +1,449 @@
+// ANATOMY KIT (ported from ODDWORLD src/life/kit.ts): the texture page (regions requested while modelling, scaled to
+// fill the page and skyline-packed), the skinned geometry builder (one vertex per point, region-local UVs resolved
+// once the page is packed) and pixel-art textures whose mips are drawn, not blurred.
+// BUSHED additions: every page carries a second buffer of surface data (R = eye shine mask, G = roughness,
+// B = metalness, A = 255) laid out exactly like the colour page, so a MeshStandardMaterial can read
+// roughnessMap/metalnessMap from it (the polished steel of the Axehandle Hound's head).
+import * as THREE from 'three';
+
+/** a minimal RGBA pixel buffer (ODDWORLD's PixelCanvas, only what the anatomy painters use) */
+export class PixelCanvas {
+  readonly w: number; readonly h: number;
+  readonly data: Uint8ClampedArray;
+  wrap = true;
+  constructor(w: number, h: number) { this.w = w; this.h = h; this.data = new Uint8ClampedArray(w * h * 4); }
+  private idx(x: number, y: number): number {
+    if (this.wrap) { x = ((x % this.w) + this.w) % this.w; y = ((y % this.h) + this.h) % this.h; }
+    else if (x < 0 || y < 0 || x >= this.w || y >= this.h) return -1;
+    return ((y | 0) * this.w + (x | 0)) * 4;
+  }
+  set(x: number, y: number, c: number, a = 255) {
+    const i = this.idx(Math.floor(x), Math.floor(y)); if (i < 0) return;
+    this.data[i] = (c >> 16) & 255; this.data[i + 1] = (c >> 8) & 255; this.data[i + 2] = c & 255; this.data[i + 3] = a;
+  }
+  setRGBA(x: number, y: number, r: number, g: number, b: number, a = 255) {
+    const i = this.idx(Math.floor(x), Math.floor(y)); if (i < 0) return;
+    this.data[i] = r; this.data[i + 1] = g; this.data[i + 2] = b; this.data[i + 3] = a;
+  }
+  get(x: number, y: number): number {
+    const i = this.idx(Math.floor(x), Math.floor(y)); if (i < 0) return 0;
+    return (this.data[i] << 16) | (this.data[i + 1] << 8) | this.data[i + 2];
+  }
+  blend(x: number, y: number, c: number, t: number) {
+    if (t <= 0) return;
+    const i = this.idx(Math.floor(x), Math.floor(y)); if (i < 0) return;
+    if (t >= 1) { this.set(x, y, c); return; }
+    this.data[i] += (((c >> 16) & 255) - this.data[i]) * t;
+    this.data[i + 1] += (((c >> 8) & 255) - this.data[i + 1]) * t;
+    this.data[i + 2] += ((c & 255) - this.data[i + 2]) * t;
+    if (this.data[i + 3] < 255) this.data[i + 3] = Math.max(this.data[i + 3], 255 * t);
+  }
+}
+
+export type V3 = number[];
+/** skin weights: [boneIndex, weight, ...] (up to 4 pairs) */
+export type Wt = number[];
+
+export const KPAD = 2;
+/** global loft style: superellipse squareness (2 = round, higher = boxier) and a multiplier on sides around */
+export const KIT = { sq: 2, nMul: 1 };
+export const hash = (a: number, b = 0) => { const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return s - Math.floor(s); };
+
+/** a rectangle of the page; u wraps (tubes), v clamps. Regions are requested at a nominal size while the geometry
+ *  is built (UVs are stored region-local) and only placed when the page is packed, so the page is always filled */
+export class Region {
+  /** alpha-cut region (fur cards): keeps transparent texels */
+  cut = false;
+  x = 0; y = 0; w: number; h: number;
+  /** stored transposed on the page (long bodies lie across it) */
+  rot = false;
+  /** nominal size and texel-density priority (faces and eyes paint finer than flanks) */
+  readonly bw: number; readonly bh: number;
+  constructor(public page: Page, public name: string, w: number, h: number, public k = 1) { this.bw = this.w = w; this.bh = this.h = h; }
+  /** angle in degrees of a column (0 = the centre column, which lofts put on top) */
+  deg(x: number) { return ((x + 0.5) / this.w - 0.5) * 360; }
+  th(x: number) { return ((x + 0.5) / this.w - 0.5) * Math.PI * 2; }
+  X(deg: number) { return (0.5 + deg / 360) * this.w; }
+  private ix(x: number, y: number) {
+    const xx = ((Math.floor(x) % this.w) + this.w) % this.w, yy = Math.min(this.h - 1, Math.max(0, Math.floor(y)));
+    return this.rot ? [this.x + yy, this.y + xx] : [this.x + xx, this.y + yy];
+  }
+  /** page texel of a region-local texel (no wrapping) */
+  at(x: number, y: number) { return this.rot ? [this.x + y, this.y + x] : [this.x + x, this.y + y]; }
+  /** page UV of region-local (u, v) in 0..1 */
+  uv(u: number, v: number): [number, number] { return this.rot ? [this.x + v * this.h, this.y + u * this.w] : [this.x + u * this.w, this.y + v * this.h]; }
+  get pw() { return this.rot ? this.h : this.w; }
+  get ph() { return this.rot ? this.w : this.h; }
+  inside(y: number) { return y >= 0 && y < this.h; }
+  set(x: number, y: number, c: number, a = 255) { if (!this.inside(Math.floor(y))) return; const [p, q] = this.ix(x, y); this.page.pc.set(p, q, c, a); }
+  /** surface data of a texel: eye shine mask, roughness, metalness (0..255) */
+  setSD(x: number, y: number, shine: number, rough: number, metal: number) { if (!this.inside(Math.floor(y))) return; const [p, q] = this.ix(x, y); this.page.sd.setRGBA(p, q, shine, rough, metal, 255); }
+  get(x: number, y: number) { const [p, q] = this.ix(x, y); return this.page.pc.get(p, q); }
+  alpha(x: number, y: number, a: number) { if (!this.inside(Math.floor(y))) return; const [p, q] = this.ix(x, y); this.page.pc.data[(q * this.page.W + p) * 4 + 3] = a; }
+  blend(x: number, y: number, c: number, t: number) { if (!this.inside(Math.floor(y))) return; const [p, q] = this.ix(x, y); this.page.pc.blend(p, q, c, t); }
+  /** write a ramp step: the value rounds to one step (hard cluster edges; no dither as fill) */
+  put(x: number, y: number, R: number[], v: number, _dither = 0) {
+    const i = Math.round(v);
+    this.set(x, y, R[i < 0 ? 0 : i >= R.length ? R.length - 1 : i]);
+  }
+  fill(R: number[], fn: (x: number, y: number) => number, mask?: (x: number, y: number) => boolean, dither = 0.5) {
+    for (let y = 0; y < this.h; y++) for (let x = 0; x < this.w; x++) { if (mask && !mask(x, y)) continue; this.put(x, y, R, fn(x, y), dither); }
+  }
+  line(x0: number, y0: number, x1: number, y1: number, c: number, t = 1) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+    let err = dx + dy;
+    for (let n = 0; n < 2000; n++) {
+      this.blend(x0, y0, c, t);
+      if (x0 === x1 && y0 === y1) break;
+      const e2 = 2 * err;
+      if (e2 >= dy) { err += dy; x0 += sx; }
+      if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+  }
+  /** an octagonal stamp (drawn, angular: never a disc) */
+  ellipse(cx: number, cy: number, rx: number, ry: number, c: number, t = 1) {
+    for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
+      if (oct((x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry) <= 1) this.blend(x, y, c, t);
+    }
+  }
+  /** a solid octagonal patch */
+  blob(cx: number, cy: number, rx: number, ry: number, c: number, _strength = 1) {
+    for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
+      if (oct((x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry) <= 1) this.set(x, y, c);
+    }
+  }
+  /** two flat steps of light: a core and a rim (no radial falloff) */
+  glow(cx: number, cy: number, rx: number, ry: number, c: number, t: number) {
+    for (let y = Math.floor(cy - ry); y <= Math.ceil(cy + ry); y++) for (let x = Math.floor(cx - rx); x <= Math.ceil(cx + rx); x++) {
+      const d = oct((x + 0.5 - cx) / rx, (y + 0.5 - cy) / ry);
+      if (d <= 1) this.blend(x, y, c, d < 0.5 ? t : t * 0.5);
+    }
+  }
+  /** tileable fbm over the region (cached on the region, so it goes when the page does) */
+  private nz = new Map<number, Float32Array>();
+  private nzK = -1; private nzF: Float32Array | null = null;
+  fbm(x: number, y: number, cells = 3, oct = 2, seed = 0) {
+    const w = this.w, h = this.h;
+    const key = cells * 1e8 + oct * 1e7 + (seed % 1e7);
+    let f = key === this.nzK ? this.nzF! : this.nz.get(key);
+    if (!f) { f = planarCells(w, h, cells, oct, seed); this.nz.set(key, f); }
+    this.nzK = key; this.nzF = f;
+    const xi = ((Math.floor(x) % w) + w) % w, yi = ((Math.floor(y) % h) + h) % h;
+    return f[yi * w + xi];
+  }
+  /** a wandering hairline (veins, cracks, wet partings) */
+  crack(x: number, y: number, len: number, dirDeg: number, c: number, seed: number, t = 1, branch = 0.12) {
+    let a = (dirDeg * Math.PI) / 180, px = x, py = y;
+    for (let i = 0; i < len; i++) {
+      this.blend(px, py, c, t);
+      a += (hash(i, seed) - 0.5) * 0.9;
+      px += Math.cos(a); py += Math.sin(a);
+      if (branch > 0 && hash(i, seed + 7) < branch && len > 6) this.crack(px, py, Math.floor(len * 0.4), (a * 180) / Math.PI + (hash(i, seed + 3) < 0.5 ? 50 : -50), c, seed * 3 + i, t * 0.8, 0);
+    }
+  }
+}
+
+/** the octagon norm: level sets are drawn octagons rather than circles */
+export const oct = (x: number, y: number) => { const ax = Math.abs(x), ay = Math.abs(y); return Math.max(ax, ay, (ax + ay) * 0.7071); };
+/** planar tone clusters in place of noise: the region tiled into irregular polygons (cells about size/cells/oct
+ *  texels across, wrapping in u), each one flat value in 0..1 */
+function planarCells(w: number, h: number, cells: number, octv: number, seed: number) {
+  const cs = Math.max(4, Math.min(w, h * 1.5) / (cells * (1 + octv * 0.35))), nx = Math.max(2, Math.round(w / cs)), ny = Math.max(2, Math.ceil(h / cs) + 1), cw = w / nx;
+  const f = new Float32Array(w * h);
+  for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
+    if ((i & 1) || (j & 1)) { f[j * w + i] = f[(j & ~1) * w + (i & ~1)]; continue; } // half resolution: odd texels copy their even neighbour
+    const gx = Math.floor(i / cw), gy = Math.floor(j / cs);
+    let bd = Infinity, bv = 0;
+    for (let b = -1; b <= 1; b++) for (let a = -1; a <= 1; a++) {
+      const X = gx + a, Y = gy + b, Xm = ((X % nx) + nx) % nx;
+      const px = (X + 0.15 + hash(Xm, Y * 7 + seed) * 0.7) * cw, py = (Y + 0.15 + hash(Xm * 3 + 1, Y + seed * 5) * 0.7) * cs;
+      const dx = i + 0.5 - px, dy = j + 0.5 - py, dd = dx * dx + dy * dy;
+      if (dd < bd) { bd = dd; bv = hash(Xm * 17 + 3, Y * 29 + seed); }
+    }
+    f[j * w + i] = bv;
+  }
+  void ny;
+  return f;
+}
+
+/** a page split into regions: requested while modelling, then scaled to fill the page and skyline-packed */
+export class Page {
+  pc: PixelCanvas;
+  regs = new Map<string, Region>();
+  /** the scale the last pack settled on (texels per nominal texel) and the fraction of the page it covers */
+  scale = 1; fill = 0;
+  /** surface data laid out like the colour page: R eye shine, G roughness, B metalness (A = 255) */
+  sd: PixelCanvas;
+  constructor(public W = 256, public H = 256) {
+    this.pc = new PixelCanvas(W, H); this.pc.wrap = false;
+    this.sd = new PixelCanvas(W, H); this.sd.wrap = false;
+    const d = this.sd.data; for (let i = 0; i < d.length; i += 4) { d[i] = 0; d[i + 1] = 230; d[i + 2] = 0; d[i + 3] = 255; }
+  }
+  reg(name: string, w: number, h: number, k = 1): Region {
+    w = Math.max(2, Math.round(w)); h = Math.max(2, Math.round(h));
+    const r = new Region(this, name, w, h, k);
+    this.regs.set(name, r);
+    return r;
+  }
+  R(name: string) { const r = this.regs.get(name); if (!r) throw new Error('no region ' + name); return r; }
+  /** size every region at the largest common scale (up to maxScale) that still packs, then place them */
+  pack(maxScale = 3) {
+    const rs = [...this.regs.values()];
+    let area = 0;
+    for (const r of rs) area += (r.bw * r.k + KPAD * 2) * (r.bh * r.k + KPAD * 2);
+    let s = Math.min(maxScale, Math.sqrt((this.W * this.H * 0.94) / Math.max(1, area)));
+    for (let n = 0; n < 60; n++, s *= 0.96) if (this.tryPack(rs, s)) { this.scale = s; return s; }
+    throw new Error('page overflow');
+  }
+  private tryPack(rs: Region[], s: number) {
+    const W = this.W, H = this.H;
+    for (const r of rs) {
+      r.w = Math.max(4, Math.min(W - KPAD * 2, Math.round(r.bw * r.k * s)));
+      r.h = Math.max(4, Math.min(H - KPAD * 2, Math.round(r.bh * r.k * s)));
+    }
+    // longest first, either way round; each goes where its top edge ends lowest on the skyline (bottom-left rule)
+    const order = [...rs].sort((a, b) => Math.max(b.h, b.w) - Math.max(a.h, a.w) || b.w * b.h - a.w * a.h);
+    let sky: { x: number; y: number; w: number }[] = [{ x: 0, y: 0, w: W }];
+    let used = 0;
+    for (const r of order) {
+      let bx = -1, by = Infinity, bt = Infinity, brot = false;
+      for (const rot of r.w === r.h ? [false] : [false, true]) {
+        const rw = (rot ? r.h : r.w) + KPAD * 2, rh = (rot ? r.w : r.h) + KPAD * 2;
+        for (let i = 0; i < sky.length; i++) {
+          const x = sky[i].x; if (x + rw > W) break;
+          let y = 0;
+          for (let j = i; j < sky.length && sky[j].x < x + rw; j++) y = Math.max(y, sky[j].y);
+          if (y + rh <= H && (y + rh < bt || (y + rh === bt && y < by))) { by = y; bx = x; bt = y + rh; brot = rot; }
+        }
+      }
+      if (bx < 0) return false;
+      r.rot = brot;
+      const rw = r.pw + KPAD * 2, rh = r.ph + KPAD * 2;
+      r.x = bx + KPAD; r.y = by + KPAD; used += rw * rh;
+      // raise the skyline under the new rectangle
+      const next: { x: number; y: number; w: number }[] = [];
+      for (const g of sky) {
+        const g1 = g.x + g.w;
+        if (g1 <= bx || g.x >= bx + rw) { next.push(g); continue; }
+        if (g.x < bx) next.push({ x: g.x, y: g.y, w: bx - g.x });
+        if (g1 > bx + rw) next.push({ x: bx + rw, y: g.y, w: g1 - bx - rw });
+      }
+      next.push({ x: bx, y: by + rh, w: rw });
+      next.sort((a, b) => a.x - b.x);
+      sky = [];
+      for (const g of next) { const l = sky[sky.length - 1]; if (l && l.y === g.y && l.x + l.w === g.x) l.w += g.w; else sky.push(g); }
+    }
+    this.fill = used / (W * H);
+    return true;
+  }
+  /** extend every region into its padding (u wraps, v clamps) so mips never bleed */
+  finish() {
+    this.pad(this.pc.data);
+    this.pad(this.sd.data);
+    const d = this.pc.data, W = this.W;
+    // gaps between regions stay opaque so distant mips never punch holes (alpha < 1 marks glow); cut regions keep theirs
+    const keep = new Uint8Array(this.W * this.H);
+    for (const r of this.regs.values()) if (r.cut) for (let y = r.y - KPAD; y < r.y + r.ph + KPAD; y++) for (let x = r.x - KPAD; x < r.x + r.pw + KPAD; x++) if (x >= 0 && y >= 0 && x < W && y < this.H) keep[y * W + x] = 1;
+    for (let i = 3, p = 0; i < d.length; i += 4, p++) if (d[i] < 128 && !keep[p]) d[i] = 255;
+  }
+  /** extend every region of a buffer into its padding (u wraps, v clamps) */
+  private pad(d: Uint8ClampedArray) {
+    const W = this.W;
+    for (const r of this.regs.values()) {
+      for (let y = -KPAD; y < r.h + KPAD; y++) {
+        const sy = Math.min(r.h - 1, Math.max(0, y));
+        for (let x = -KPAD; x < r.w + KPAD; x++) {
+          if (y >= 0 && y < r.h && x >= 0 && x < r.w) continue;
+          const [px, py] = r.at(x, y);
+          if (py < 0 || py >= this.H || px < 0 || px >= W) continue;
+          const [qx, qy] = r.at(((x % r.w) + r.w) % r.w, sy);
+          const si = (qy * W + qx) * 4, di = (py * W + px) * 4;
+          d[di] = d[si]; d[di + 1] = d[si + 1]; d[di + 2] = d[si + 2]; d[di + 3] = d[si + 3];
+        }
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------------------------------------- vector helpers
+export const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+export const addV = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+export const scl = (a: V3, k: number): V3 => [a[0] * k, a[1] * k, a[2] * k];
+export const cross = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+export const dot = (a: V3, b: V3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+export const len = (a: V3) => Math.hypot(a[0], a[1], a[2]);
+export const norm = (a: V3): V3 => { const l = len(a) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+export const mid = (a: V3, b: V3): V3 => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+export const lerpV = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+export function centroid(ps: V3[]): V3 { let x = 0, y = 0, z = 0; for (const p of ps) { x += p[0]; y += p[1]; z += p[2]; } const n = Math.max(1, ps.length); return [x / n, y / n, z / n]; }
+export const gauss = (x: number, c: number, s: number) => Math.exp(-((x - c) * (x - c)) / (2 * s * s));
+export const angd = (a: number, b: number) => { let d = a - b; while (d > Math.PI) d -= Math.PI * 2; while (d < -Math.PI) d += Math.PI * 2; return d; };
+export const usFor = (n: number) => Array.from({ length: n + 1 }, (_, i) => i / n);
+
+// ------------------------------------------------------------------------------------------- geometry builder
+export class SkinB {
+  P: number[] = []; UV: number[] = []; SI: number[] = []; SW: number[] = []; I: number[] = []; G: number[] = [];
+  /** the region each vertex's (region-local, 0..1) UV lives in: resolved to page UVs once the page is packed */
+  RG: Region[] = [];
+  constructor(public W = 256, public H = 256) {}
+  /** a vertex at region-local (u, v): u across the region's columns, v down its rows (0 = first row) */
+  vert(p: V3, reg: Region, u: number, v: number, w: Wt, g: number): number {
+    this.P.push(p[0], p[1], p[2]);
+    this.UV.push(u, v); this.RG.push(reg);
+    this.G.push(g);
+    let tot = 0;
+    const si = [0, 0, 0, 0], sw = [0, 0, 0, 0];
+    for (let k = 0; k < 4 && k * 2 < w.length; k++) { si[k] = w[k * 2]; sw[k] = Math.max(0, w[k * 2 + 1]); tot += sw[k]; }
+    for (let k = 0; k < 4; k++) sw[k] = tot > 0 ? sw[k] / tot : k === 0 ? 1 : 0;
+    this.SI.push(si[0], si[1], si[2], si[3]); this.SW.push(sw[0], sw[1], sw[2], sw[3]);
+    return this.P.length / 3 - 1;
+  }
+  tri(a: number, b: number, c: number) { this.I.push(a, b, c); }
+  pos(i: number): V3 { return [this.P[i * 3], this.P[i * 3 + 1], this.P[i * 3 + 2]]; }
+  triOut(a: number, b: number, c: number, inside: V3, flip = false) {
+    const A = this.pos(a), B = this.pos(b), C = this.pos(c);
+    const n = cross(sub(B, A), sub(C, A));
+    const m = sub(centroid([A, B, C]), inside);
+    if ((dot(n, m) >= 0) !== flip) this.tri(a, b, c); else this.tri(a, c, b);
+  }
+  /** loft through rings of equal point count (seam point duplicated at the end); poles close the ends */
+  loft(rings: { pts: V3[]; v: number; w: Wt | ((j: number) => Wt) }[], us: number[], reg: Region, g: number,
+    o: { start?: V3 | null; end?: V3 | null; startV?: number; endV?: number; startW?: Wt; endW?: Wt; double?: boolean; flip?: boolean } = {}) {
+    const n = us.length;
+    const cents: V3[] = rings.map((r) => centroid(r.pts.slice(0, n - 1)));
+    const W = (r: { w: Wt | ((j: number) => Wt) }, j: number) => (typeof r.w === 'function' ? r.w(j) : r.w);
+    const mk = (gg: number) => rings.map((r) => r.pts.map((p, j) => this.vert(p, reg, us[j], 1 - r.v, W(r, j), gg)));
+    const emit = (flip: boolean, rows: number[][]) => {
+      for (let i = 0; i + 1 < rows.length; i++) {
+        const ins = mid(cents[i], cents[i + 1]);
+        for (let j = 0; j + 1 < n; j++) {
+          const a = rows[i][j], b = rows[i][j + 1], c = rows[i + 1][j + 1], d = rows[i + 1][j];
+          const A = this.pos(a), B = this.pos(b), C = this.pos(c), D = this.pos(d);
+          let nrm = cross(sub(B, A), sub(C, A));
+          if (len(nrm) < 1e-12) nrm = cross(sub(C, A), sub(D, A));
+          const out = dot(nrm, sub(mid(A, C), ins)) >= 0;
+          if (out !== flip) { this.tri(a, b, c); this.tri(a, c, d); } else { this.tri(a, c, b); this.tri(a, d, c); }
+        }
+      }
+    };
+    const idx = mk(g);
+    emit(!!o.flip, idx); // (o.double is moot: the material is double-sided and flat shading takes its normal from the screen)
+    const all = centroid(cents);
+    const pole = (P: V3, ring: number[], v: number, w: Wt | ((j: number) => Wt)) => {
+      for (let j = 0; j + 1 < n; j++) {
+        const pi = this.vert(P, reg, (us[j] + us[j + 1]) / 2, 1 - v, typeof w === 'function' ? w(j) : w, g);
+        this.triOut(pi, ring[j], ring[j + 1], all, !!o.flip);
+      }
+    };
+    if (o.start) pole(o.start, idx[0], o.startV ?? rings[0].v, o.startW ?? rings[0].w);
+    if (o.end) pole(o.end, idx[idx.length - 1], o.endV ?? rings[rings.length - 1].v, o.endW ?? rings[rings.length - 1].w);
+    return idx;
+  }
+  /** a quad a-b-c-d with a region sub-rect (a = u0v0, b = u1v0, c = u1v1, d = u0v1) */
+  quad(a: V3, b: V3, c: V3, d: V3, reg: Region, subr: [number, number, number, number], w: Wt[], double = false, g = -1) {
+    const [u0, v0, u1, v1] = subr;
+    const uv = [[u0, v0], [u1, v0], [u1, v1], [u0, v1]];
+    const mk = (gg: number) => [a, b, c, d].map((p, i) => this.vert(p, reg, uv[i][0], 1 - uv[i][1], w[i], gg));
+    const f = mk(g);
+    this.tri(f[0], f[1], f[2]); this.tri(f[0], f[2], f[3]);
+    void double;
+  }
+  get tris() { return this.I.length / 3; }
+  build(): THREE.BufferGeometry {
+    const nv = this.P.length / 3;
+    const N = new Float32Array(nv * 3);
+    for (let t = 0; t < this.I.length; t += 3) {
+      const a = this.I[t], b = this.I[t + 1], c = this.I[t + 2];
+      const n = cross(sub(this.pos(b), this.pos(a)), sub(this.pos(c), this.pos(a)));
+      for (const k of [a, b, c]) { N[k * 3] += n[0]; N[k * 3 + 1] += n[1]; N[k * 3 + 2] += n[2]; }
+    }
+    // weld normals across seams and poles of the same loft
+    const groups = new Map<string, number[]>();
+    for (let i = 0; i < nv; i++) {
+      const g = this.G[i]; if (g < 0) continue;
+      const key = g + ':' + Math.round(this.P[i * 3] * 4000) + ',' + Math.round(this.P[i * 3 + 1] * 4000) + ',' + Math.round(this.P[i * 3 + 2] * 4000);
+      let l = groups.get(key); if (!l) groups.set(key, l = []); l.push(i);
+    }
+    for (const l of groups.values()) {
+      if (l.length < 2) continue;
+      let x = 0, y = 0, z = 0;
+      for (const i of l) { x += N[i * 3]; y += N[i * 3 + 1]; z += N[i * 3 + 2]; }
+      for (const i of l) { N[i * 3] = x; N[i * 3 + 1] = y; N[i * 3 + 2] = z; }
+    }
+    for (let i = 0; i < nv; i++) { const l = Math.hypot(N[i * 3], N[i * 3 + 1], N[i * 3 + 2]) || 1; N[i * 3] /= l; N[i * 3 + 1] /= l; N[i * 3 + 2] /= l; }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(this.P, 3));
+    g.setAttribute('normal', new THREE.BufferAttribute(N, 3));
+    const UV = new Float32Array(nv * 2);
+    for (let i = 0; i < nv; i++) { const [px, py] = this.RG[i].uv(this.UV[i * 2], this.UV[i * 2 + 1]); UV[i * 2] = px / this.W; UV[i * 2 + 1] = py / this.H; } // flipY = false: page row 0 is v = 0
+    g.setAttribute('uv', new THREE.BufferAttribute(UV, 2));
+    g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(this.SI, 4));
+    g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(this.SW, 4));
+    g.setIndex(nv > 65535 ? new THREE.Uint32BufferAttribute(this.I, 1) : new THREE.Uint16BufferAttribute(this.I, 1));
+    g.computeBoundingSphere();
+    return g;
+  }
+}
+const mixC = (a: number, b: number, t: number) => {
+  t = Math.max(0, Math.min(1, t));
+  const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255, br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+  return (Math.round(ar + (br - ar) * t) << 16) | (Math.round(ag + (bg - ag) * t) << 8) | Math.round(ab + (bb - ab) * t);
+};
+export { mixC };
+
+export function pageTexture(page: Page): THREE.DataTexture {
+  const d = page.pc.data;
+  return pixelTexture(new Uint8Array(d.buffer, d.byteOffset, d.byteLength), page.W, page.H);
+}
+/** the surface-data page as a linear texture (roughnessMap reads G, metalnessMap reads B, the eye shine patch reads R) */
+export function surfaceTexture(page: Page): THREE.DataTexture {
+  const d = page.sd.data;
+  const tex = new THREE.DataTexture(new Uint8Array(d.buffer, d.byteOffset, d.byteLength), page.W, page.H, THREE.RGBAFormat, THREE.UnsignedByteType);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.generateMipmaps = true;
+  tex.flipY = false;
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
+/** a page as a texture whose smaller levels are drawn, not blurred: each mip level takes the most frequent colour of
+ *  every 2x2 block of the level above (the darkest on a tie, so outlines survive), so a creature seen small stays in
+ *  palette colours and clean clusters, and its alpha markers (glow, wet eyes, cut hair) are never averaged */
+export function pixelTexture(data: Uint8Array, W: number, H: number): THREE.DataTexture {
+  const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat, THREE.UnsignedByteType);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.NearestMipmapNearestFilter;
+  tex.mipmaps = pixelMips(data, W, H) as unknown as typeof tex.mipmaps;
+  tex.generateMipmaps = false;
+  tex.flipY = false;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
+export function pixelMips(data: Uint8Array, W: number, H: number): { data: Uint8Array; width: number; height: number }[] {
+  const out = [{ data, width: W, height: H }];
+  let src = data, w = W, h = H;
+  const lum = (a: Uint8Array, i: number) => a[i] * 3 + a[i + 1] * 6 + a[i + 2];
+  while (w > 1 || h > 1) {
+    const w2 = Math.max(1, w >> 1), h2 = Math.max(1, h >> 1), dst = new Uint8Array(w2 * h2 * 4);
+    const k = [0, 0, 0, 0];
+    for (let y = 0; y < h2; y++) for (let x = 0; x < w2; x++) {
+      const x0 = Math.min(w - 1, x * 2), x1 = Math.min(w - 1, x * 2 + 1), y0 = Math.min(h - 1, y * 2), y1 = Math.min(h - 1, y * 2 + 1);
+      k[0] = (y0 * w + x0) * 4; k[1] = (y0 * w + x1) * 4; k[2] = (y1 * w + x0) * 4; k[3] = (y1 * w + x1) * 4;
+      let best = k[0], bn = -1, bl = Infinity;
+      for (let a = 0; a < 4; a++) {
+        let n = 0;
+        for (let b = 0; b < 4; b++) if (src[k[a]] === src[k[b]] && src[k[a] + 1] === src[k[b] + 1] && src[k[a] + 2] === src[k[b] + 2] && src[k[a] + 3] === src[k[b] + 3]) n++;
+        const l = lum(src, k[a]);
+        if (n > bn || (n === bn && l < bl)) { bn = n; best = k[a]; bl = l; }
+      }
+      const o = (y * w2 + x) * 4;
+      dst[o] = src[best]; dst[o + 1] = src[best + 1]; dst[o + 2] = src[best + 2]; dst[o + 3] = src[best + 3];
+    }
+    out.push({ data: dst, width: w2, height: h2 });
+    src = dst; w = w2; h = h2;
+  }
+  return out;
+}
