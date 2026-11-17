@@ -3,7 +3,7 @@
 // hound lunges, Ray's axe goes flying, the hound runs off with it to chew the handle, and jerky settles it.
 import * as THREE from 'three';
 import type { Game } from './game';
-import { AxehandleHound, Bigfoot, Gumberoo, Wildlife, HOUND_SOUND, BIGFOOT_SOUND, GUMBEROO_SOUND, giftMesh, preloadCreatures, type CreatureCtx, type GroundItem } from '../creatures';
+import { AxehandleHound, Bigfoot, Gumberoo, Wildlife, DingbatRoost, GrannyTamarack, HOUND_SOUND, BIGFOOT_SOUND, GUMBEROO_SOUND, DINGBAT_SOUND, GRANNY_SOUND, giftMesh, preloadCreatures, type CreatureCtx, type GroundItem } from '../creatures';
 import { SPOTS, heightAt } from '../world/layout';
 import { audio } from '../audio/audio';
 import { SOUNDS } from '../audio/bank';
@@ -28,6 +28,8 @@ export class Critters {
   hound: AxehandleHound | null = null;
   bigfoot: Bigfoot | null = null;
   gumberoo: Gumberoo | null = null;
+  dingbats: DingbatRoost | null = null;
+  granny: GrannyTamarack | null = null;
   wildlife: Wildlife | null = null;
   readonly items: GroundItem[] = [];
   private itemObjs = new Map<string, THREE.Object3D>();
@@ -43,6 +45,10 @@ export class Critters {
 
   constructor(private game: Game) {
     game.events.on('offer', (o: { item: string; obj: THREE.Object3D; taken: boolean }) => {
+      if (o.item === 'cookies' && this.granny) {
+        for (let p: THREE.Object3D | null = o.obj; p; p = p.parent) if (p === this.granny.object) { if (this.granny.offer('cookies')) o.taken = true; return; }
+        return;
+      }
       if (!this.hound) return;
       for (let p: THREE.Object3D | null = o.obj; p; p = p.parent) if (p === this.hound.object) {
         if (this.hound.offer('jerky')) {
@@ -75,6 +81,19 @@ export class Critters {
     this.game.scene.add(this.gumberoo.object);
     this.wildlife = new Wildlife();
     this.game.scene.add(this.wildlife.object);
+    await yieldFrame();
+    // a roost of dingbats under the cabin's porch eave
+    const porch = (this.game.cabin?.anchors?.porch as THREE.Object3D | undefined);
+    if (porch) {
+      const eave = porch.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 2.35, 0));
+      this.dingbats = new DingbatRoost({ pos: eave, heading: SPOTS.cabin.rot ?? 0, count: 8, span: 3 });
+      this.game.scene.add(this.dingbats.object);
+    }
+    await yieldFrame();
+    // Granny Tamarack keeps to the hollow; home is the cabin she walks lost people back to
+    const home = new THREE.Vector3(SPOTS.cabin.x, heightAt(SPOTS.cabin.x, SPOTS.cabin.z), SPOTS.cabin.z);
+    this.granny = new GrannyTamarack({ home, secrets: ['chanterelles', 'lost_axe', 'bigfoot_stump'] });
+    this.game.scene.add(this.granny.object);
   }
 
   dropItem(kind: string, pos: THREE.Vector3, obj?: THREE.Object3D): string {
@@ -108,6 +127,8 @@ export class Critters {
         light: g.flashOn, speed, action: performance.now() - g.lastSwingAt < 450 ? 'swing' : g.hands?.charging ? 'chop' : undefined,
       },
       fires: g.fires.filter((f) => f.level() > 0.1).map((f) => f.pos),
+      fog: g.weather.fog,
+      lost: g.player.pos.distanceTo(new THREE.Vector3(SPOTS.cabin.x, g.player.pos.y, SPOTS.cabin.z)) > 260 && (g.hour > 20 || g.hour < 5 || g.weather.fog > 0.7),
       heightAt,
       emit: (ev, data) => this.onEvent(ev, data as Record<string, unknown> | undefined),
       stove: anchorPos(g, 'stove', new THREE.Vector3(SPOTS.cabin.x, heightAt(SPOTS.cabin.x, SPOTS.cabin.z), SPOTS.cabin.z)),
@@ -141,9 +162,25 @@ export class Critters {
   private onEvent(ev: string, data?: Record<string, unknown>): void {
     const pos = (data?.pos as THREE.Vector3 | undefined) ?? this.hound?.object.position ?? this.game.player.pos;
     const who = data?.who as string | undefined;
-    const table = (who === 'gumberoo' ? GUMBEROO_SOUND : who === 'bigfoot' ? BIGFOOT_SOUND : who === 'hound' || !who ? HOUND_SOUND : {}) as Record<string, string | undefined>;
+    const table = (who === 'gumberoo' ? GUMBEROO_SOUND : who === 'bigfoot' ? BIGFOOT_SOUND : who === 'dingbat' ? DINGBAT_SOUND : who === 'granny' ? GRANNY_SOUND : who === 'hound' || !who ? HOUND_SOUND : {}) as Record<string, string | undefined>;
     const snd = data?.sound as string | undefined ?? table[ev];
     playSound(snd, pos);
+    const jr = this.game.journal;
+    if (who === 'dingbat' && ev === 'screech') jr.sawCritter('dingbat');
+    if (who === 'granny') {
+      jr.sawCritter('granny');
+      if (ev === 'take') { this.kindness = Math.min(1, this.kindness + 0.2); hud.say('<i>Long cold fingers take the tin. She smells like rain on cedar.</i>', 4); }
+      if (ev === 'beckon') hud.say('<i>She wants me to follow.</i>', 2.5);
+      if (ev === 'vanish') hud.say('<i>...Gone. Just fog where she was standing.</i>', 3);
+      if (ev === 'secret') {
+        const sec = data?.secret as string;
+        const text = sec === 'chanterelles' ? 'She points down into the moss under the old spruce by the lake. Gold, everywhere.'
+          : sec === 'lost_axe' ? 'She points toward the edge of the hollow. A red handle in the ferns, she seems to say.'
+            : 'She points at the big stump in the hollow, then at her mouth. Leave food there.';
+        hud.say(`<i>${text}</i>`, 5);
+        if (sec === 'bigfoot_stump') jr.learn('bigfoot', 'gift');
+      }
+    }
     if (who === 'gumberoo') {
       const imp = data?.impulse as THREE.Vector3 | undefined;
       if (ev === 'bounce' && imp) {
@@ -275,6 +312,8 @@ export class Critters {
       if (d < 260) this.gumberoo.update(ctx);
     }
     this.wildlife?.update(ctx);
+    if (this.dingbats) { const d = this.dingbats.object.position.distanceTo(g.player.pos); this.dingbats.object.visible = d < 120; if (d < 120) this.dingbats.update(ctx); }
+    if (this.granny) this.granny.update(ctx);
     // food left out by the hollow is gone by morning: the big one noticed
     this.offerT -= dt;
     if (this.offerT <= 0) {

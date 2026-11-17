@@ -444,6 +444,11 @@ export class Game {
     const def = ITEMS[id];
     if (!def) return false;
     if (id === 'flashlight') { this.flashOn = !this.flashOn; this.sound('flashlight_click', undefined, 0.6); return true; }
+    if (id === 'cookies' && t.obj) {
+      const offer = { item: 'cookies', obj: t.obj, taken: false };
+      this.events.emit('offer', offer);
+      if (offer.taken) { this.take('cookies'); this.arms?.play('offer'); if (!this.owns('cookies')) this.hands.equip(null); return true; }
+    }
     if (id === 'jerky' && t.obj) {
       const offer = { item: 'jerky', obj: t.obj, taken: false };
       this.events.emit('offer', offer);
