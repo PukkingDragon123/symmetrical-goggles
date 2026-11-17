@@ -52,7 +52,7 @@ npx tsc --noEmit -p .                              # typecheck
 | `src/creatures` | creature anatomy (ported from Oddworld), Axehandle Hound, Bigfoot, ... and their AI |
 | `src/vehicles` | the Jeep (model, interior, physics) |
 | `src/places` | cabin, general store, campsites (buildings + dressing) |
-| `src/game` | survival (hunger, stamina, warmth), economy, contracts, journal, dialogue, intro script, save |
+| `src/game` | `game.ts` (loop, time, weather, survival feedback, vehicles, places, saves), `flow.ts` (porch menu, intro), `director.ts`, `cabinplay.ts` (stove, woodbox, woodshed, block, cooking, sleep), `storeplay.ts` (register, receipts, log scale, contracts board, world jobs), `critters.ts` (creature ctx, events, intro hound beat), `npcs.ts`, `physprops.ts`, `zones.ts`, `survival.ts`, `economy.ts`, `contracts.ts`, `dialogue.ts`, `story.ts`, `items.ts`, `save.ts` |
 | `src/audio` | Web Audio engine (spatial, occlusion, reverb zones, ambience) and the sound bank |
 | `src/ui` | the few physical UI pieces (journal, papers, money, prompts) |
 
@@ -117,3 +117,14 @@ audio.play(id, { pos?, vol?, rate?, loop? }): Voice | null;   // pos = spatial
 audio.ambience(name, weight);                                  // 'forest_day', 'forest_night', 'cabin', 'rain', 'wind'
 audio.setListener(camera); audio.setReverb('outdoor' | 'cabin' | 'store');
 ```
+
+## Boot and play
+
+`src/main.ts` builds everything behind a black loading card (terrain, forest, ground cover, props, cabin, store,
+Jeep + trailer, FP arms, products, creatures, NPCs), then runs the porch menu (`flow.runMenu`) and either the intro
+(`flow.runIntro`) or a saved game. Places call back into the game through `game.placeAction(name, ctx)`; creatures
+get a `CreatureCtx` built by `critters.ts` every frame and report through `ctx.emit`.
+
+Headless testing: `npx vite --config vite.test.config.ts` (port 5190, no HMR so other edits don't reload the page),
+then Playwright scripts against `?play`, `?intro`, `?test`, `chop.html`. SwiftShader is slow: step the simulation
+with `game.update(1/60)` in `page.evaluate` rather than waiting on frames.
