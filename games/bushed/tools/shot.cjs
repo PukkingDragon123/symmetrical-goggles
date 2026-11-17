@@ -7,7 +7,7 @@ const { chromium } = require('playwright');
   const logs = [];
   p.on('console', (m) => { if (['error', 'warning'].includes(m.type())) logs.push(m.type() + ': ' + m.text()); });
   p.on('pageerror', (e) => logs.push('pageerror: ' + e.message));
-  const url = q.startsWith('http') ? q : `http://localhost:5173/${q}`;
+  const url = q.startsWith('http') ? q : `http://localhost:5190/${q}`;
   await p.goto(url);
   await p.waitForTimeout(+wait);
   await p.screenshot({ path: out });

@@ -39,14 +39,16 @@ export class Notch {
     this.species = species;
     this.R = profile.radiusAt(y);
     this.barkMat = barkMat;
-    this.mesh = new THREE.Mesh(new THREE.BufferGeometry(), [barkMat, woodMaterial('split', species)]);
+    const inner = woodMaterial('split', species).clone();
+    inner.side = THREE.DoubleSide;
+    this.mesh = new THREE.Mesh(new THREE.BufferGeometry(), [barkMat, inner]);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
     this.rebuild();
   }
 
   /** height band the trunk material must hide (trunk-local) */
-  get band(): [number, number] { return [this.y - 0.03, this.y + this.maxOpen() + 0.03]; }
+  get band(): [number, number] { return [this.y - 0.022, this.y + this.maxOpen() + 0.022]; }
 
   maxOpen(): number { let m = 0.02; for (let i = 0; i < SECTORS; i++) m = Math.max(m, this.depth[i]); return Math.min(m * 1.0 + 0.01, this.R * 1.2); }
 
@@ -55,7 +57,9 @@ export class Notch {
    * Returns the depth of wood actually removed (for chips) and whether the strike bruised.
    */
   strike(theta: number, type: StrikeType, amount: number, bladeHalfWidth = 0.065): { removed: number; bruised: boolean } {
-    const ang = bladeHalfWidth / Math.max(0.04, this.R);
+    // a deeper notch has to be wider: the face opens up as you chop in
+    const ci = Math.round((((theta % TAU) + TAU) % TAU) / TAU * SECTORS) % SECTORS;
+    const ang = Math.min(1.5, (bladeHalfWidth + 0.85 * this.depth[ci]) / Math.max(0.04, this.R));
     let removed = 0;
     const alt = this.lastType !== null && this.lastType !== type;
     const eff = this.lastType === null ? 1 : alt ? 1.2 : 0.75;

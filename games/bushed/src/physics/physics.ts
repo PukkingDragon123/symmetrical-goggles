@@ -105,7 +105,7 @@ class Physics {
     }
   }
 
-  ray(origin: THREE.Vector3, dir: THREE.Vector3, max: number, filter = 0xffff, exclude?: RAPIER.RigidBody):
+  ray(origin: THREE.Vector3, dir: THREE.Vector3, max: number, filter = 0xffff & ~GROUP.PLAYER & ~GROUP.HELD, exclude?: RAPIER.RigidBody):
     { point: THREE.Vector3; normal: THREE.Vector3; collider: RAPIER.Collider; toi: number } | null {
     const r = new RAPIER.Ray(origin, dir);
     const hit = this.world.castRayAndGetNormal(r, max, true, undefined, groups(0xffff, filter), undefined, exclude);

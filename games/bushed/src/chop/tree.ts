@@ -51,6 +51,7 @@ export class ChopTree {
   rotten: boolean;
   protectedTree: boolean;
   private object: THREE.Object3D;
+  private barkMat: THREE.Material | null = null;
   private trunk: THREE.Mesh | null = null;
   private clip: ReturnType<typeof clipMaterial> | null = null;
   private sway = 0;
@@ -58,6 +59,7 @@ export class ChopTree {
   private fallDir = new THREE.Vector2(1, 0);
   private creakT = 0;
   private stumpBody: RAPIER.RigidBody | null = null;
+  private stumpCol: RAPIER.Collider | null = null;
   private joint: RAPIER.ImpulseJoint | null = null;
   private landed = false;
   private fallT = 0;
@@ -77,7 +79,8 @@ export class ChopTree {
     this.stem = model.trunk.map((s) => ({ ...s }));
     this.trunk = (object.getObjectByName('trunk') as THREE.Mesh) ?? null;
     if (this.trunk) {
-      this.clip = clipMaterial(this.trunk.material as THREE.Material);
+      this.barkMat = this.trunk.material as THREE.Material;
+      this.clip = clipMaterial(this.barkMat);
       this.trunk.material = this.clip.mat;
       this.trunk.customDepthMaterial = clipDepthMaterial(this.clip.bands, this.clip.keep);
     }
@@ -94,7 +97,7 @@ export class ChopTree {
       return this.notches.reduce((a, b) => (Math.abs(a.y - y) < Math.abs(b.y - y) ? a : b));
     }
     const prof = { radiusAt: (yy: number) => this.model.radiusAt(yy), outlineAt: this.model.outlineAt?.bind(this.model) };
-    const bark = (this.clip ? this.clip.mat : new THREE.MeshStandardMaterial({ color: 0x554433 }));
+    const bark = this.barkMat ?? new THREE.MeshStandardMaterial({ color: 0x554433 });
     const n = new Notch(y, prof, this.species, bark);
     const c = this.model.centerAt(y);
     n.mesh.position.set(c[0], 0, c[1]);
@@ -124,10 +127,11 @@ export class ChopTree {
     // above an existing cut line by 3..30 cm -> the angled (diag) kerf, else a flat kerf
     let type: StrikeType = 'flat';
     let ny = y;
+    // strikes on the line drive the flat kerf; strikes off the line (above or below) drive the angled kerf
     for (const n of this.notches) {
-      const dy = y - n.y;
-      if (dy > 0.025 && dy < 0.3 + n.maxOpen()) { type = 'diag'; ny = n.y; break; }
-      if (Math.abs(dy) <= 0.025) { ny = n.y; break; }
+      const dy = Math.abs(y - n.y);
+      if (dy <= 0.03) { ny = n.y; break; }
+      if (dy < 0.3 + n.maxOpen()) { type = 'diag'; ny = n.y; break; }
     }
     const notch = this.notchAt(ny);
     if (notch.hits === 0 && notch.lastType === null && type === 'flat') {
@@ -151,7 +155,7 @@ export class ChopTree {
     const lean = this.leanVec();
     const leanAlong = lean.dot(open);
     // the hinge fails when enough wood is gone; lean toward the notch helps, lean away holds it back
-    const threshold = THREE.MathUtils.clamp(0.66 - leanAlong * 4 - (this.rotten ? 0.15 : 0), 0.42, 0.82);
+    const threshold = THREE.MathUtils.clamp(0.5 - leanAlong * 4 - (this.rotten ? 0.12 : 0), 0.32, 0.72);
     const f = Math.max(...this.notches.map((x) => x.removedFraction()));
     this.tension = THREE.MathUtils.clamp((f - (threshold - 0.16)) / 0.16, 0, 1);
     if (this.tension > 0 && this.state === 'standing') this.state = 'creaking';
@@ -184,7 +188,7 @@ export class ChopTree {
     const stumpObj = this.object.clone(false);
     const stumpTrunk = this.trunk ? this.trunk.clone() : null;
     if (stumpTrunk && this.clip) {
-      const cl = clipMaterial((this.trunk!.material as any));
+      const cl = clipMaterial(this.barkMat!);
       cl.keep.set(-10, n.y - 0.03);
       stumpTrunk.material = cl.mat;
       stumpTrunk.customDepthMaterial = clipDepthMaterial(cl.bands, cl.keep);
@@ -200,9 +204,10 @@ export class ChopTree {
     this.root.parent?.add(stumpGroup);
     this.stumpGroup = stumpGroup;
     // static stump collider
-    this.stumpBody = physics.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(cutWorld.x, (this.root.position.y + cutWorld.y) / 2, cutWorld.z));
-    const stH = Math.max(0.05, (cutWorld.y - this.root.position.y) / 2);
-    physics.world.createCollider(RAPIER.ColliderDesc.cylinder(stH, n.R * s).setCollisionGroups(groups(GROUP.STATIC, 0xffff)), this.stumpBody);
+    this.stumpBody = physics.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(cutWorld.x, (this.root.position.y + cutWorld.y) / 2 - 0.02, cutWorld.z));
+    const stH = Math.max(0.05, (cutWorld.y - this.root.position.y) / 2 - 0.02);
+    // the stump ignores the falling stem until the hinge lets go
+    this.stumpCol = physics.world.createCollider(RAPIER.ColliderDesc.cylinder(stH, n.R * s).setCollisionGroups(groups(GROUP.STATIC, 0xffff & ~GROUP.DYNAMIC)), this.stumpBody);
 
     // the falling section: the tree object with the stump part clipped away
     n.mesh.removeFromParent();
@@ -221,7 +226,8 @@ export class ChopTree {
     this.sections = [sec];
     // revolute hinge to the stump
     const body = sec.body!;
-    const axisW = new THREE.Vector3(-fd.z, 0, fd.x);
+    // positive rotation about this axis tips the top toward fd
+    const axisW = new THREE.Vector3(fd.z, 0, -fd.x);
     const bq = body.rotation();
     const bodyQ = new THREE.Quaternion(bq.x, bq.y, bq.z, bq.w);
     const invQ = bodyQ.clone().invert();
@@ -286,8 +292,10 @@ export class ChopTree {
         .setRotation({ x: wq.x, y: wq.y, z: wq.z, w: wq.w }).setLinearDamping(0.15).setAngularDamping(0.6).setCcdEnabled(true),
     );
     const toBody = (p: THREE.Vector3) => p.clone().sub(local).multiplyScalar(s);
-    const sp = this.stem.filter((q) => q.y >= y0 - 0.01 && q.y <= y1 + 0.01);
-    if (sp.length < 2) sp.push(...this.stem.slice(-2));
+    // stem samples clipped to [y0 + 4 cm, y1] so the section never starts inside the stump
+    const yA = y0 + 0.04;
+    const interp = (y: number) => { const r = this.model.radiusAt(y); const c = this.model.centerAt(y); return { y, r, x: c[0], z: c[1] }; };
+    const sp = [interp(yA), ...this.stem.filter((q) => q.y > yA + 0.05 && q.y < y1 - 0.05), interp(Math.min(y1, this.model.height))];
     let totalMass = 0;
     for (let i = 0; i < sp.length - 1; i++) {
       const a = toBody(new THREE.Vector3(sp[i].x, sp[i].y, sp[i].z)), b = toBody(new THREE.Vector3(sp[i + 1].x, sp[i + 1].y, sp[i + 1].z));
@@ -367,6 +375,7 @@ export class ChopTree {
       if (this.joint && tilt > 0.62) {
         physics.world.removeImpulseJoint(this.joint, true);
         this.joint = null;
+        this.stumpCol?.setCollisionGroups(groups(GROUP.STATIC, 0xffff));
         this.ev.sound('tree_crack', this.root.position.clone(), 0.7, 0.8);
       }
       // tip and crush check
@@ -469,7 +478,7 @@ export class ChopTree {
     let kerf = (sec as any).kerfs?.find((k: Notch) => Math.abs(k.y - y) < 0.15) as Notch | undefined;
     if (!kerf) {
       const prof = { radiusAt: (yy: number) => this.model.radiusAt(yy), outlineAt: this.model.outlineAt?.bind(this.model) };
-      kerf = new Notch(y, prof, this.species, sec.trunk ? (sec.trunk.material as THREE.Material) : new THREE.MeshStandardMaterial());
+      kerf = new Notch(y, prof, this.species, this.barkMat ?? new THREE.MeshStandardMaterial());
       const c = this.model.centerAt(y);
       kerf.mesh.position.set(c[0], 0, c[1]);
       sec.object.add(kerf.mesh);
@@ -535,7 +544,7 @@ export class ChopTree {
         }
         let clip: ReturnType<typeof clipMaterial> | null = null;
         if (tr) {
-          clip = clipMaterial((this.trunk?.material as THREE.Material) ?? (tr as THREE.Mesh).material as THREE.Material);
+          clip = clipMaterial(this.barkMat ?? ((tr as THREE.Mesh).material as THREE.Material));
           clip.keep.set(a, b);
           (tr as THREE.Mesh).material = clip.mat;
           (tr as THREE.Mesh).customDepthMaterial = clipDepthMaterial(clip.bands, clip.keep);
