@@ -102,6 +102,8 @@ interface Skeleton {
   mass: number;
   crownRadius: number;
   lean: THREE.Vector2;
+  /** bark scars: angle (rad), half width (rad), y0..y1 (m), kind 0 = bleached wood (frost crack / old wound), 1 = charred catface */
+  scars: { a: number; w: number; y0: number; y1: number; kind: number }[];
 }
 
 const UP = new THREE.Vector3(0, 1, 0);
@@ -668,31 +670,47 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
       y += ws * rng.range(0.82, 1.18) * (species === 'pine' ? rng.range(0.8, 1.3) : 1);
       wi++;
     }
-    // leader: crossed vertical sprays at the very top (conifers)
+    // leader: a dense spire of upward sprays around the top of the stem (no bare stem tip poking out)
     if (!dead && !broken) {
+      const cl = sp.card[0] * cardScale * 0.95;
+      const spire = Math.min(2.4, Math.max(0.6, H * 0.08));
+      const n = Math.max(4, Math.round(spire / 0.16));
+      for (let i = 0; i < n; i++) {
+        const t = i / (n - 1);
+        const y = Htop - spire * (1 - t) - cl * 0.25;
+        const a = i * 2.39996 + rng.range(-0.3, 0.3);
+        const out = v3(Math.cos(a), 0, Math.sin(a));
+        const d = UP.clone().multiplyScalar(0.55 + 0.4 * t).addScaledVector(out, 0.75 - 0.5 * t).normalize();
+        const base = axisAt(Math.max(0, y)).addScaledVector(out, -0.02);
+        const len = cl * (1.0 - 0.45 * t);
+        addCard(MISC, base, d, rot(UP, d, rng.range(-0.4, 0.4)).cross(d).cross(d).negate().normalize(), len, sp.card[1] * cardScale * (1 - 0.3 * t),
+          rng.pick(cellsOf.tip.concat(cellsOf.live)), trunkWx(Math.max(0, y)), 0.05, 0.12, 0.5, 1.04, cardTint(), i % 2 === 0);
+      }
+      // the very tip
       const top = axisAt(Htop);
-      const cl = sp.card[0] * cardScale * 0.9;
-      for (let i = 0; i < 3; i++) {
-        const nrm = v3(Math.cos(i * 2.1), 0, Math.sin(i * 2.1));
-        addCard(MISC, top.clone().addScaledVector(UP, -cl * 0.85), UP.clone().add(v3(rng.range(-0.08, 0.08), 0, rng.range(-0.08, 0.08))).normalize(), nrm, cl, sp.card[1] * cardScale,
-          rng.pick(cellsOf.tip), trunkWx(Htop * 0.95), 0.05, 0.15, 0.5, 1.02, cardTint(), true);
+      for (let i = 0; i < 2; i++) {
+        const nrm = v3(Math.cos(i * 1.57), 0, Math.sin(i * 1.57));
+        addCard(MISC, top.clone().addScaledVector(UP, -cl * 0.7), UP, nrm, cl * 0.85, sp.card[1] * cardScale * 0.7,
+          rng.pick(cellsOf.tip), trunkWx(Htop * 0.95), 0.05, 0.15, 0.5, 1.05, cardTint(), true);
       }
     }
-    // broken top on a living conifer: one or two lateral branches turn up into new leaders
-    if (broken && !dead && Htop > crownBase + 1) {
-      for (let i = 0; i < rng.int(1, 2); i++) {
-        const y0 = Htop - rng.range(0.3, 1.2);
+    // broken top on a living conifer (one or two laterals turn up into new leaders), or an occasional fork
+    const forked = !broken && !dead && age > 0.5 && rng.chance(sp.forkChance);
+    if ((broken || forked) && !dead && Htop > crownBase + 1) {
+      for (let i = 0; i < (forked ? 1 : rng.int(1, 2)); i++) {
+        const y0 = forked ? lerp(crownBase, Htop, rng.range(0.55, 0.8)) : Htop - rng.range(0.3, 1.2);
         const az = rng.range(0, 6.28);
         const base = trunkPoint(y0, az, 0.8);
-        const L = rng.range(1.2, 2.4) * small;
-        const pts = pathOf(base, az, 1.2, L, 0, 0.3, 0.03, 5);
+        const L = forked ? (Htop - y0) * rng.range(0.6, 0.85) : rng.range(1.2, 2.4) * small;
+        const pts = pathOf(base, az, forked ? 1.32 : 1.2, L, 0, 0.3, 0.03, 5);
         const r = branchR(y0, L) * 0.8;
         const br: Br = { id: -1, part: MISC, pts, radii: pts.map((_, j) => r * (1 - j / 6) + 0.003), level: 0, dead: false, wx: trunkWx(y0), phase: rng.next(), len: L, col: barkColAt(y0), moss: 0 };
         br.part = newLimb(br, r);
         branches.push(br);
         const cl = sp.card[0] * cardScale;
-        for (let j = 0; j < 5; j++) {
-          const p = pointAt(pts, 0.35 + j * 0.15);
+        const nj = forked ? Math.max(5, Math.round(L / 0.3)) : 5;
+        for (let j = 0; j < nj; j++) {
+          const p = pointAt(pts, 0.3 + (j / (nj - 1)) * 0.65);
           const az2 = rng.range(0, 6.28);
           const d = v3(Math.cos(az2), rng.range(-0.3, 0.4), Math.sin(az2)).normalize();
           addCard(br.part, p, d, rot(UP, d, 0.3), cl, sp.card[1] * cardScale, rng.pick(cellsOf.live), br.wx, 0.05 + j * 0.03, 0.15 + j * 0.03, br.phase, 0.95, cardTint(), j % 2 === 0);
@@ -753,7 +771,7 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
   }
 
   // card budget (keeps LOD0 near 12-20k triangles): drop a deterministic subset, enlarge the rest
-  const budget = Math.round(lerp(1500, 3000, clamp((H - 8) / 30, 0, 1)));
+  const budget = Math.round(lerp(1300, 2300, clamp((H - 8) / 26, 0, 1)));
   if (cards.length > budget) {
     const keepP = budget / cards.length;
     const grow = Math.min(1.45, 1 / Math.sqrt(keepP));
@@ -796,9 +814,15 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
   if (crownMass > 0) cc.divideScalar(crownMass); else cc.set(0, H * 0.6, 0);
   const mass = stemVol * sp.density + crownMass;
 
+  // scars: an old healed wound / frost crack on some mature stems; fire catfaces in the burn
+  const scars: Skeleton['scars'] = [];
+  if (dbh > 0.18 && rng.chance(0.22 + 0.3 * (opts.charred ?? 0))) {
+    const y0 = rng.range(0.1, 0.6);
+    scars.push({ a: rng.range(0, 6.28), w: rng.range(0.12, 0.35), y0, y1: y0 + rng.range(0.8, Math.min(4, H * 0.25)), kind: (opts.charred ?? 0) > 0 ? 1 : 0 });
+  }
   return {
     sp, H, Htop, dbh, rings, sides, roots, branches, cards, parts: misc + 1, limbs,
-    trunkWrap, trunkCol, trunkMoss, trunkWind, crownCenter: cc, crownMass, mass, crownRadius, lean,
+    trunkWrap, trunkCol, trunkMoss, trunkWind, crownCenter: cc, crownMass, mass, crownRadius, lean, scars,
   };
 }
 
@@ -841,7 +865,17 @@ function emitTrunk(sk: Skeleton, mb: MeshBuilder, lod: 0 | 1): void {
         const n = tV.clone().cross(tA).normalize();
         const outw = v3(x - rg.cx, 0, z - rg.cz);
         if (n.dot(outw) < 0) n.negate();
-        row.push(mb.vert(v3(x, rg.y, z), n, (j / N) * wr, len[i] / sp.barkTile[1], sk.trunkCol[i], sk.trunkWind[i], sk.trunkMoss[i]));
+        let col = sk.trunkCol[i];
+        for (const sc of sk.scars) {
+          const a = (j / N) * Math.PI * 2;
+          const da = Math.abs(Math.atan2(Math.sin(a - sc.a), Math.cos(a - sc.a)));
+          const t = (rg.y - sc.y0) / Math.max(0.01, sc.y1 - sc.y0);
+          // lens-shaped wound, widest a third of the way up
+          const half = sc.w * Math.sin(Math.PI * Math.min(1, Math.max(0, t)) ** 0.8);
+          if (t > 0 && t < 1 && da < half) col = sc.kind === 1 ? [0.12, 0.11, 0.1] : [1.45, 1.25, 1.0];
+          else if (t > -0.05 && t < 1.05 && da < half + 0.12) col = [col[0] * 0.75, col[1] * 0.72, col[2] * 0.7]; // callus roll
+        }
+        row.push(mb.vert(v3(x, rg.y, z), n, (j / N) * wr, len[i] / sp.barkTile[1], col, sk.trunkWind[i], sk.trunkMoss[i]));
       }
       return row;
     };
@@ -860,7 +894,7 @@ function emitTrunk(sk: Skeleton, mb: MeshBuilder, lod: 0 | 1): void {
   // top cap (pointed for intact tops, splintered for broken ones)
   const last = sk.rings[sk.rings.length - 1];
   const broken = sk.Htop < sk.H - 0.01;
-  const tipY = last.y + (broken ? last.r * 0.6 : last.r * 3 + 0.05);
+  const tipY = last.y + (broken ? last.r * 0.6 : last.r * 2 + 0.02);
   const cap = mb.vert(v3(last.cx, tipY, last.cz), UP, 0.5, (len[len.length - 1] + 0.1) / sp.barkTile[1],
     broken ? [1.25, 1.12, 0.95] : sk.trunkCol[sk.trunkCol.length - 1], sk.trunkWind[sk.trunkWind.length - 1], 0);
   for (let j = 0; j < N; j++) mb.tri(prevRow![j], prevRow![j + 1], cap);
@@ -921,13 +955,16 @@ function emitAll(sk: Skeleton, o: EmitOpts): { wood: MeshBuilder[]; leaves: Mesh
     if (b.radii[0] < 0.0055 && !b.dead) continue;
     emitTube(b, wood[P(b.part)], sk.sp, o.lod);
   }
-  const s1 = 1 / Math.sqrt(0.36);
-  for (const c of sk.cards) {
+  // LOD1: ~1/4 of the cards (tips first), each scaled up to keep the crown's coverage
+  let kept = 0;
+  sk.cards.forEach((c, i) => { if (c.keep1 && ((i * 2654435761) >>> 0) % 100 < 72) kept++; });
+  const s1 = Math.min(1.95, Math.sqrt(sk.cards.length / Math.max(1, kept)));
+  sk.cards.forEach((c, i) => {
     if (o.lod === 1) {
-      if (!c.keep1) continue;
-      emitCard(c, leaves[P(c.part)], Math.min(s1, 1.75), true);
+      if (!c.keep1 || ((i * 2654435761) >>> 0) % 100 >= 72) return;
+      emitCard(c, leaves[P(c.part)], s1, true);
     } else emitCard(c, leaves[P(c.part)]);
-  }
+  });
   return { wood, leaves };
 }
 

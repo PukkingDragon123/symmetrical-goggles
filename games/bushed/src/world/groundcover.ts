@@ -162,9 +162,9 @@ export class GroundCover {
     const GR: [number, number] = [26, 36], SM: [number, number] = [34, 46], FE: [number, number] = [46, 60], BU: [number, number] = [62, 80];
     const LITTER: [number, number] = [22, 32];
     // grass
-    this.plant('grass', 'grass_a', P.grassClump(11, ['grass_green'], 22, 0.38, 0.2), GR, false, 2048);
-    this.plant('grass', 'grass_b', P.grassClump(12, ['grass_green', 'grass_yellow'], 26, 0.48, 0.24), GR, false, 2048);
-    this.plant('grass', 'grass_c', P.grassClump(13, ['grass_yellow', 'grass_dry', 'grass_green'], 18, 0.32, 0.16, [1.05, 1, 0.9]), GR, false, 2048);
+    this.plant('grass', 'grass_a', P.grassClump(11, ['grass_green'], 30, 0.4, 0.22), GR, false, 2048);
+    this.plant('grass', 'grass_b', P.grassClump(12, ['grass_green', 'grass_yellow'], 34, 0.5, 0.26), GR, false, 2048);
+    this.plant('grass', 'grass_c', P.grassClump(13, ['grass_yellow', 'grass_dry', 'grass_green'], 24, 0.34, 0.18, [1.05, 1, 0.9]), GR, false, 2048);
     this.plant('grass_dry', 'grass_dry', P.grassClump(14, ['grass_dry', 'grass_yellow'], 22, 0.42, 0.2), GR, false, 1024);
     this.plant('sedge', 'sedge', P.grassClump(15, ['grass_sedge', 'grass_green'], 16, 0.62, 0.18), GR, false, 1024);
     this.plant('grass_tall', 'grass_tall', P.grassClump(16, ['grass_green', 'grass_yellow', 'grass_dry'], 30, 0.75, 0.3), GR, false, 1024);
@@ -228,7 +228,7 @@ export class GroundCover {
     const BIG: [number, number] = [200, 228];
     const rock = this.solidMat('rock', {
       kind: 'rock', map: loadTex('veg/mossy_rock.png', { repeat: true }), normalMap: loadTex('veg/mossy_rock_n.png', { repeat: true, srgb: false }),
-      triplanar: 2.6, moss: 0.62, fade: BIG, vertexColors: true, roughness: 0.88,
+      triplanar: 2.6, moss: 0.42, fade: BIG, vertexColors: true, roughness: 0.88,
     });
     for (let i = 0; i < 6; i++) {
       const mb = P.boulder(81 + i, 1, [0.55, 0.7, 0.45, 0.8, 0.6, 0.5][i]);
@@ -830,4 +830,28 @@ export class GroundCover {
   }
 
   stats(): string { return this.statsText; }
+
+  /** debug: one plain mesh of every prototype in a grid (lineup pages) */
+  showcase(origin: THREE.Vector3, spacing = 4, cols = 10): THREE.Group {
+    const g = new THREE.Group();
+    this.protos.forEach((pr, i) => {
+      const o = new THREE.Group();
+      for (const pt of pr.parts) {
+        const m = new THREE.Mesh(pt.geo, pt.mat);
+        m.castShadow = true;
+        m.receiveShadow = true;
+        if (pt.depth) m.customDepthMaterial = pt.depth;
+        o.add(m);
+      }
+      const big = /log|boulder|stump|rock|deadlog|glb_dead/.test(pr.name);
+      o.position.set(origin.x + (i % cols) * spacing * (big ? 1 : 1), origin.y, origin.z + Math.floor(i / cols) * spacing);
+      if (pr.name.startsWith('boulder') || pr.name.startsWith('glb_rock') || pr.name.startsWith('glb_boulder') || pr.name.startsWith('glb_stone')) o.scale.setScalar(1.2);
+      o.name = pr.name;
+      g.add(o);
+    });
+    return g;
+  }
+
+  /** prototype names (debug) */
+  protoNames(): string[] { return this.protos.map((p) => p.name); }
 }

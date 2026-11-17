@@ -337,7 +337,10 @@ export class Game {
     this.sound('veh_door_close', p, 0.8);
   }
 
+  lastSwingAt = -1e9;
+
   swing(tool: ToolStats, charge: number, origin: THREE.Vector3, dir: THREE.Vector3, swingDir: THREE.Vector3): void {
+    this.lastSwingAt = performance.now();
     const reach = 1.25 + tool.reach;
     const r = this.chop.swing(origin, dir, reach, swingDir, tool, charge, this.survival.stamina);
     const held = this.hands.heldItem;

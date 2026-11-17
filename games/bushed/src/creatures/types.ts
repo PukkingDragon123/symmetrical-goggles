@@ -45,6 +45,8 @@ export interface CreatureCtx {
   threats?: THREE.Vector3[];
   /** tree trunks near a point, for hiding behind (Bigfoot): { x, z, r } */
   trunks?(x: number, z: number, r: number): { x: number; z: number; r: number }[];
+  /** burning things in the world (campfires, a lit stove's open door outside, torches): the gumberoo fears them */
+  fires?: THREE.Vector3[];
   /** 0..1 how kind the player has been lately (fed the hound, left food out, did not chase); Bigfoot gifts */
   kindness?: number;
 }

@@ -107,6 +107,7 @@ function setView(name: string): void {
 // ---------------------------------------------------------------------------------------------- build
 async function main(): Promise<void> {
   const only = q.get('only');
+  if (q.get('products') === '1') { await productLineup(); return; }
   if (only !== 'store') {
     const cabin = await buildCabin();
     scene.add(cabin.group);
@@ -118,7 +119,9 @@ async function main(): Promise<void> {
     localView(cabin, 'stove', [0.1, 1.35, -0.4], [1.45, 0.75, -2.2]);
     localView(cabin, 'bunk', [0.3, 1.6, 0.2], [-1.8, 0.7, -2.0]);
     localView(cabin, 'cabin_int2', [1.6, 1.85, -0.6], [-1.8, 1.1, 1.4]);
-    localView(cabin, 'porch', [3.6, 1.45, 6.6], [-1.5, 1.4, 3.6]);
+    localView(cabin, 'porch', [3.0, 1.55, 7.2], [-1.2, 1.3, 3.4]);
+    localView(cabin, 'front', [0.4, 1.6, 9.0], [0.0, 2.0, 3.0]);
+    localView(cabin, 'back', [-6.5, 2.0, -7.5], [0, 1.8, 0]);
     localView(cabin, 'woodyard', [9.6, 1.8, 5.6], [15.5, 0.9, 1.0]);
     localView(cabin, 'firepit', [2.0, 1.6, 4.3], [6.2, 0.4, 7.4]);
     if (q.get('night') === '1' || hour > 20 || hour < 5) { cabin.stove?.setFire(0.85); (cabin.anchors.firepit?.userData.setFire as ((l: number) => void) | undefined)?.(q.get('pit') === '0' ? 0 : 1); }
@@ -132,10 +135,11 @@ async function main(): Promise<void> {
       places.push(store);
       scene.add(groundPatch(SPOTS.store.x, SPOTS.store.z, 60, 1));
       if (q.get('forest') !== '1') scene.add(treeRing(SPOTS.store.x, SPOTS.store.z, 34, 70, 220, 23));
-      localView(store, 'store_ext', [-8.5, 1.7, 16], [0, 2.5, 3]);
-      localView(store, 'store_int', [-2.6, 1.7, 4.2], [1.5, 1.2, -3.0]);
+      localView(store, 'store_ext', [-4.5, 1.7, 14.5], [0.6, 2.6, 4.5]);
+      localView(store, 'store_int', [-2.9, 1.95, 4.4], [1.0, 1.2, -2.6]);
+      localView(store, 'store_counter', [0.1, 1.75, 1.6], [2.2, 1.2, 0.6]);
       localView(store, 'store_int2', [2.2, 1.7, -3.5], [-2.0, 1.3, 3.0]);
-      localView(store, 'log_deck', [12, 2.2, 10], [6.5, 0.6, 0]);
+      localView(store, 'log_deck', [12.5, 2.4, 7.5], [8.0, 0.6, -0.5]);
     } catch (e) { W.__errors!.push('store: ' + String(e)); }
   }
   if (q.get('forest') === '1') {
@@ -176,6 +180,40 @@ async function main(): Promise<void> {
   // let textures land, then flag ready after a few frames
   let frames = 0;
   const go = () => { frames++; if (frames > Number(q.get('frames') ?? 12)) { W.__ready = true; if (q.get('shot') === '1') stopAfter = 2; } else requestAnimationFrame(go); };
+  setTimeout(() => requestAnimationFrame(go), 1500);
+}
+
+// ---------------------------------------------------------------------------------------------- product lineup
+async function productLineup(): Promise<void> {
+  const { buildProduct, GEN_PRODUCTS, DECOR_PRODUCTS, productSize } = await import('../places/products');
+  const ids = [...new Set([...GEN_PRODUCTS, ...DECOR_PRODUCTS])];
+  const ox = SPOTS.cabin.x + 30, oz = SPOTS.cabin.z - 30;
+  const y0 = heightAt(ox, oz) + 0.8;
+  const table = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.04, 2.6), new THREE.MeshStandardMaterial({ color: 0x5a4a3a, roughness: 0.9 }));
+  table.position.set(ox, y0 - 0.02, oz);
+  table.receiveShadow = true;
+  scene.add(table);
+  let x = -2.0, z = -1.0, row = 0;
+  for (const id of ids) {
+    const o = buildProduct(id);
+    const [w, , d] = productSize(id);
+    if (x + w > 2.1) { x = -2.0; z += row + 0.12; row = 0; }
+    o.position.set(ox + x + w / 2, y0, oz + z + d / 2);
+    o.rotation.y = 0.35;
+    scene.add(o);
+    x += w + 0.1;
+    row = Math.max(row, d);
+  }
+  const key = new THREE.PointLight(0xfff0dd, 25, 12, 1.5);
+  key.position.set(ox - 1.5, y0 + 2.2, oz + 2.5);
+  key.castShadow = true;
+  scene.add(key);
+  views.products = { pos: new THREE.Vector3(ox, y0 + 1.5, oz + 2.6), look: new THREE.Vector3(ox, y0, oz + 0.1) };
+  views.products_close = { pos: new THREE.Vector3(ox - 1.0, y0 + 0.55, oz + 0.3), look: new THREE.Vector3(ox - 1.0, y0 + 0.05, oz - 0.8) };
+  scene.add(groundPatch(ox, oz, 20, 1));
+  setView(q.get('view') ?? 'products');
+  let frames = 0;
+  const go = () => { frames++; if (frames > 10) { W.__ready = true; if (q.get('shot') === '1') stopAfter = 2; } else requestAnimationFrame(go); };
   setTimeout(() => requestAnimationFrame(go), 1500);
 }
 

@@ -489,7 +489,7 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
     ms.pop();
   }
   // porch lamp light (the lantern on the post) and the table lantern light
-  const porchLamp = new THREE.PointLight(0xffa14a, 1.6, 4.2, 1.8);
+  const porchLamp = new THREE.PointLight(0xffa14a, 3.2, 6.5, 1.7);
   porchLamp.position.set(0.32, CABIN_GEOM.EAVE - 0.5, D / 2 + CABIN.PORCH - 0.22);
   group.add(porchLamp);
   c.lights.push(porchLamp);
@@ -842,13 +842,18 @@ async function woodyard(c: DressCtx): Promise<void> {
     hit.position.set(bx, g + 0.25, bz);
     yard.add(hit);
     registerInteractable(hit, { kind: 'block', label: () => 'Chopping block', use: (ctx) => ctx.game?.placeAction?.('block', ctx) });
-    // the axe bitten into the top
-    prop(yard, 'wooden_axe_02', bx, g + 0.5, bz, 0.6).then((o) => {
-      if (!o) return;
-      const sz = PROP_META.wooden_axe_02?.size ?? [0.2, 0.9, 0.05];
-      o.rotation.set(0, 0.6, -1.15);
-      o.position.set(bx + 0.18, g + 0.48 + sz[1] * 0.18, bz + 0.02);
-    });
+    // the axe bitten into the top: blade down in the wood, handle raised toward the yard
+    loadProp('wooden_axe_02').then((o) => {
+      const pivot = new THREE.Group();
+      pivot.position.set(bx - 0.05, g + 0.49, bz + 0.03);
+      pivot.rotation.set(0.45, 2.3, 0, 'YXZ');
+      yard.add(pivot);
+      const bb = new THREE.Box3().setFromObject(o);
+      const headY = bb.max.y - 0.07; // the head sits at the top of the upright prop
+      o.rotation.x = Math.PI / 2;     // handle -> +z, blade (+z side) -> down
+      o.position.set(0, 0, -headY);
+      pivot.add(o);
+    }).catch(() => {});
     // woodchips decal + chips and split pieces around
     const chip = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 3.2), placeMat('woodchips'));
     chip.rotation.x = -Math.PI / 2;

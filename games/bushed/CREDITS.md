@@ -271,13 +271,13 @@ Licences: CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/); Public D
 
 ## Creatures
 
-All creature models, textures and animations (`src/creatures/`) are generated procedurally at runtime; no third-party
-model, texture or sound files are used.
+All creature and wildlife models, textures and animations (`src/creatures/`) are generated procedurally at runtime;
+no third-party model, texture or sound files are used.
 
 | what | source | author | licence |
 |---|---|---|---|
 | Anatomy library (`src/creatures/anatomy/`: control cages, Catmull-Clark creases, chart packing, pixel painter, limbs, locks) | ported from the ODDWORLD project (`src/life/anatomy`, `kit.ts`, `cage.ts`, `art/palette.ts`) | the BUSHED project owner (own code) | project-internal |
-| The Axehandle Hound and Bigfoot lore | William T. Cox, *Fearsome Creatures of the Lumberwoods* (1910); North American folklore | William T. Cox | public domain |
+| The Axehandle Hound, Gumberoo and Bigfoot lore | William T. Cox, *Fearsome Creatures of the Lumberwoods* (1910); North American folklore | William T. Cox | public domain |
 
 ## Humans
 
@@ -291,3 +291,40 @@ model, texture or sound files are used.
   twist, and all-new procedurally painted Canadian bush clothing (no image files).
 * The arms viewer on `humans.html?arms=1` loads the props listed above (`wooden_axe.glb`, `hatchet.glb`,
   `sledgehammer_01.glb`, `vintage_flashlight.glb`, `wine_bottle_bordeaux.glb`, `handsaw_wood.glb`) when present.
+
+## Forest
+
+Trees, ground cover and their textures (`src/trees/`, `src/world/forest.ts`, `src/world/groundcover.ts`, `src/world/veg/`). All third-party sources are **CC0 1.0** from [Poly Haven](https://polyhaven.com) (credit appreciated, not required). Everything else (tree / plant / log / rock geometry, birch bark, cedar sprays, dead twigs, beard lichen, flowers, mushrooms, end grain) is procedural. Textures are re-made as high-resolution pixel art by `tools/forest/*.py` (download -> flatten light -> k-means photo palette -> quantise); models are converted with **lowpix** (`python -m lowpix convert polyhaven:<id> --style realistic`) and their atlases pixelised by `tools/forest/models.py`.
+
+### Textures (`public/assets/textures/trees/`, `public/assets/textures/veg/`)
+
+| Used for | Source | Author | Licence |
+|---|---|---|---|
+| `bark_spruce.png` (+ `_n`) | [Bark Platanus](https://polyhaven.com/a/bark_platanus) | Dimitrios Savva | CC0 |
+| `bark_fir.png` (+ `_n`) | [Chinese Hackberry Bark](https://polyhaven.com/a/chinese_hackberry_bark) (+ procedural resin blisters, lichen) | Charlotte Baglioni | CC0 |
+| `bark_pine.png` (+ `_n`) | [Pine Bark](https://polyhaven.com/a/pine_bark) | Dimitrios Savva | CC0 |
+| `bark_cedar.png` (+ `_n`) | [Metasequoia Bark](https://polyhaven.com/a/metasequoia_bark) | Charlotte Baglioni | CC0 |
+| `bark_birch.png` (+ `_n`) | procedural, surface detail from [Japanese Sycamore](https://polyhaven.com/a/japanese_sycamore) | Charlotte Baglioni | CC0 |
+| `foliage_spruce/fir.png`, `veg_atlas.png` (juniper) | needle sprigs from [Fir Tree 01](https://polyhaven.com/a/fir_tree_01) twig maps | Rob Tuytel, Rico Cilliers | CC0 |
+| `foliage_pine.png` | needle sprig from [Pine Tree 01](https://polyhaven.com/a/pine_tree_01) twig maps | Rob Tuytel, Rico Cilliers | CC0 |
+| `foliage_birch.png` | leaf colour / veins from [Shrub 01](https://polyhaven.com/a/shrub_01) | Rico Cilliers | CC0 |
+| `veg_atlas.png` (sword fern, bracken) | fronds from [Fern 02](https://polyhaven.com/a/fern_02) | Rob Tuytel, Rico Cilliers | CC0 |
+| `veg_atlas.png` (alder, blueberry) | leaves from [Shrub 03](https://polyhaven.com/a/shrub_03), [Shrub 04](https://polyhaven.com/a/shrub_04) | Rico Cilliers | CC0 |
+| `veg/moss.png` | colour from [Concrete Moss](https://polyhaven.com/a/concrete_moss) (+ procedural cushions) | Rob Tuytel | CC0 |
+| `veg/forest_floor.png` (+ `_n`, test page ground) | [Forest Leaves 02](https://polyhaven.com/a/forest_leaves_02) | Rob Tuytel | CC0 |
+| `veg/mossy_rock.png` (+ `_n`, boulders) | [Mossy Rock](https://polyhaven.com/a/mossy_rock) | Rob Tuytel | CC0 |
+| `veg/litter.png` | [Forrest Ground 03](https://polyhaven.com/a/forrest_ground_03) | Rob Tuytel | CC0 |
+
+### Models (`public/assets/models/nature/`, converted with lowpix, atlases pixelised)
+
+| File | Source | Author | Licence |
+|---|---|---|---|
+| `tree_stump_01.glb`, `tree_stump_02.glb` | [Tree Stump 01](https://polyhaven.com/a/tree_stump_01), [Tree Stump 02](https://polyhaven.com/a/tree_stump_02) | Rob Tuytel | CC0 |
+| `dead_tree_trunk.glb` | [Dead Tree Trunk](https://polyhaven.com/a/dead_tree_trunk) | Rob Tuytel | CC0 |
+| `dead_tree_trunk_02.glb` | [Dead Tree Trunk 02](https://polyhaven.com/a/dead_tree_trunk_02) | Jenelle van Heerden, Rico Cilliers | CC0 |
+| `dry_branches_medium_01.glb` | [Dry Branches Medium 01](https://polyhaven.com/a/dry_branches_medium_01) | Rico Cilliers | CC0 |
+| `bark_debris_01.glb` | [Bark Debris 01](https://polyhaven.com/a/bark_debris_01) | Greg Zaal, Jenelle van Heerden | CC0 |
+| `boulder_01.glb` | [Boulder 01](https://polyhaven.com/a/boulder_01) | Rico Cilliers | CC0 |
+| `rock_07.glb`, `rock_09.glb` | [Rock 07](https://polyhaven.com/a/rock_07), [Rock 09](https://polyhaven.com/a/rock_09) | Jenelle van Heerden | CC0 |
+| `stone_01.glb` | [Stone 01](https://polyhaven.com/a/stone_01) | Dario Barresi, Rico Cilliers | CC0 |
+| `rock_moss_set_01.glb`, `rock_moss_set_02.glb` | [Rock Moss Set 01](https://polyhaven.com/a/rock_moss_set_01), [Rock Moss Set 02](https://polyhaven.com/a/rock_moss_set_02) | Kless Gyzen | CC0 |

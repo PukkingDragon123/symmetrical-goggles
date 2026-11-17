@@ -5,8 +5,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { AxehandleHound } from '../creatures/hound';
 import { Bigfoot } from '../creatures/bigfoot';
+import { Gumberoo } from '../creatures/gumberoo';
 import type { CreatureCtx, GroundItem } from '../creatures/types';
 import { preloadCreatures } from '../creatures/preload';
+import { Wildlife, Critter } from '../creatures/wildlife';
+import type { Species } from '../creatures/wildlife/models';
 import { PROFILE } from '../creatures/anatomy';
 import { G } from '../gfx/globals';
 
@@ -112,21 +115,37 @@ function setLight(mode: string) {
 }
 
 // ------------------------------------------------------------------------------------------------ creatures
-type Beast = AxehandleHound | Bigfoot;
+type Beast = AxehandleHound | Bigfoot | Gumberoo;
 const made: Partial<Record<string, Beast>> = {};
 let cur: Beast | null = null, curName = '';
 let spinA = 0;
+// wildlife: a lineup of every species to look at, and a live population round the stand-in player (AI demo)
+const SPECIES: Species[] = ['squirrel', 'hare', 'grouse', 'raven', 'jay', 'chickadee'];
+const lineup = new THREE.Group(); const lineCritters: Critter[] = [];
+const wild = new Wildlife({ max: 12, radius: [6, 14], despawn: 30, waterY: -10 });
+function showWildlife() {
+  if (cur) scene.remove(cur.object);
+  cur = null; curName = 'wildlife'; ui.who.value = 'wildlife';
+  if (!lineCritters.length) SPECIES.forEach((k, i) => { const c = new Critter(k); c.reset((i - 2.5) * 0.55, 0, 0); c.heading = 0.6; lineCritters.push(c); lineup.add(c.object); });
+  scene.add(lineup); scene.add(wild.object);
+  controls.target.set(0, 0.15, 0); camera.position.set(0.6, 0.9, 2.6);
+  ui.anims.innerHTML = '';
+  for (const st of ['perch', 'move', 'fly', 'freeze']) { const b = document.createElement('button'); b.textContent = st; b.onclick = () => { for (const c of lineCritters) c.state = (st === 'fly' && !c.bird) ? 'move' : (st === 'perch' && !c.bird) ? 'idle' : st as Critter['state']; }; ui.anims.appendChild(b); }
+  ui.info.textContent = 'wildlife: ' + SPECIES.map((k) => k + ' ' + (lineCritters[SPECIES.indexOf(k)].mesh.geometry.index!.count / 3) + ' tris').join(', ');
+}
 function pick(name: string) {
+  if (name === 'wildlife') { showWildlife(); return; }
+  scene.remove(lineup); scene.remove(wild.object);
   const t0 = performance.now();
-  if (!made[name]) made[name] = name === 'hound' ? new AxehandleHound({ state: 'companion', trust: 1 }) : new Bigfoot({});
+  if (!made[name]) made[name] = name === 'hound' ? new AxehandleHound({ state: 'companion', trust: 1 }) : name === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3() }) : new Bigfoot({});
   const ms = performance.now() - t0;
   if (cur) scene.remove(cur.object);
   cur = made[name]!; curName = name; ui.who.value = name; (window as unknown as { __dbg: Beast }).__dbg = cur;
   scene.add(cur.object);
   cur.play(cur.clips.includes('idle') ? 'idle' : cur.clips[0]);
-  const tall = name === 'bigfoot';
-  controls.target.set(0, tall ? 1.4 : 0.4, 0);
-  camera.position.set(tall ? 5.5 : 2.4, tall ? 2.0 : 1.0, tall ? 5.5 : 2.4);
+  const tall = name === 'bigfoot', big = name === 'gumberoo';
+  controls.target.set(0, tall ? 1.4 : big ? 0.7 : 0.4, 0);
+  camera.position.set(tall ? 5.5 : big ? 3.6 : 2.4, tall ? 2.0 : big ? 1.6 : 1.0, tall ? 5.5 : big ? 3.6 : 2.4);
   ui.anims.innerHTML = '';
   for (const c of cur.clips) {
     const b = document.createElement('button'); b.textContent = c;
@@ -159,6 +178,18 @@ function ctxFor(dt: number, t: number): CreatureCtx {
 let last = performance.now(), T = 0, frozen = false;
 function frame(dt: number) {
   T += dt; G.uTime.value = T;
+  if (curName === 'wildlife') {
+    for (const c of lineCritters) { c.t += dt; if (c.state === 'move' || c.state === 'fly') c.phase = (c.phase + dt * 2.2) % 1; c.speed = c.state === 'move' ? 1 : 0; if (c.state === 'fly') { c.alt = 0.35; } else c.alt = 0; c.object.position.set(c.pos.x, c.alt, c.pos.z); c.object.rotation.set(0, c.heading, 0); c.pose(dt); }
+    if (ui.ai.checked) {
+      lineup.visible = false;
+      const a = T * 0.15; player.pos.set(Math.sin(a) * 5, 1.7, Math.cos(a) * 5); player.dir.set(Math.cos(a), 0, -Math.sin(a));
+      wild.forced = { squirrel: 2, hare: 1, raven: 1, jay: 1, chickadee: 2, grouse: 1 };
+      const tr = (x: number, z: number, r: number) => [[-3.5, -4, 0.28], [4.2, -5.5, 0.35], [-6, 2, 0.4], [5.5, 3.5, 0.3]].filter(([tx, tz]) => Math.hypot(tx - x, tz - z) < r).map(([tx, tz, tr2]) => ({ x: tx, z: tz, r: tr2 }));
+      wild.update({ ...ctxFor(dt, T), trunks: tr });
+      ui.info.textContent = `wildlife: ${wild.count} active\nevents: ${events.join(' ')}`;
+    } else lineup.visible = true;
+    return;
+  }
   if (!cur) return;
   if (ui.ai.checked) {
     if (cur.manual) cur.play(null);
@@ -224,6 +255,14 @@ loop();
   pose(o: { who?: string; clip?: string; t?: number; heading?: number; light?: string; cam?: [number, number, number]; target?: [number, number, number]; fov?: number }) {
     frozen = true;
     if (o.who && o.who !== curName) pick(o.who);
+    if (curName === 'wildlife') {
+      if (o.light) setLight(o.light);
+      if (o.clip) for (const c of lineCritters) c.state = (o.clip === 'fly' && !c.bird) ? 'move' : (o.clip === 'perch' && !c.bird) ? 'idle' : o.clip as Critter['state'];
+      if (o.heading !== undefined) for (const c of lineCritters) c.heading = o.heading;
+      const steps = Math.round((o.t ?? 1) * 60); for (let i = 0; i < steps; i++) frame(1 / 60);
+      if (o.cam) camera.position.set(...o.cam); if (o.target) controls.target.set(...o.target);
+      controls.update(); renderer.render(scene, camera); return ui.info.textContent;
+    }
     if (o.light) setLight(o.light);
     ui.ai.checked = false; ui.spin.checked = false;
     spinA = o.heading ?? 0;
@@ -240,11 +279,27 @@ loop();
   /** run a creature's AI for `seconds` (60 Hz) with a scripted stand-in player; returns the state/event log */
   sim(o: { who: string; script: string; seconds: number; hour?: number }) {
     const log: string[] = [];
+    if (o.who === 'wildlife') {
+      // the player walks a straight line through a forced population, past a few trunks
+      const w = new Wildlife({ max: 12, radius: [8, 16], despawn: 40, waterY: -10 });
+      w.forced = { squirrel: 2, hare: 2, raven: 1, jay: 1, chickadee: 2, grouse: 1 };
+      const pl = { pos: new THREE.Vector3(0, 1.7, -30), dir: new THREE.Vector3(0, 0, -1), held: 'none', crouch: false, noise: 0.2, light: false, speed: 1.4 };
+      const trunks = (x: number, z: number, r: number) => { const out: { x: number; z: number; r: number }[] = []; for (let i = -8; i <= 8; i++) for (let j = -8; j <= 8; j++) { const tx = i * 6 + 1, tz = j * 6 + 2; if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: 0.3 }); } return out; };
+      const seen = new Map<Critter, string>();
+      let T1 = 0;
+      for (let k = 0; k < o.seconds * 60; k++) {
+        const dt = 1 / 60; T1 += dt;
+        if (T1 > 8) pl.pos.z += 1.4 * dt;
+        w.update({ dt, time: T1, hour: o.hour ?? 10, player: pl, heightAt: () => 0, emit: (e, d) => log.push(`${T1.toFixed(1)} ${(d as { who: string }).who} ${e}${(d as { sound?: string }).sound ? ' [' + (d as { sound?: string }).sound + ']' : ''}`), trunks });
+        for (const c of w.active) { const st = c.state + (c.alt > 0.5 ? ' alt=' + c.alt.toFixed(1) : ''); const was = seen.get(c); if (!was || was.split(' ')[0] !== c.state) { seen.set(c, st); log.push(`${T1.toFixed(1)} ${c.kind} -> ${st} d=${Math.hypot(c.pos.x - pl.pos.x, c.pos.z - pl.pos.z).toFixed(1)}`); } }
+      }
+      return log.join('\n');
+    }
     const pl = { pos: new THREE.Vector3(0, 1.7, 0), dir: new THREE.Vector3(0, 0, 1), held: 'none', crouch: false, noise: 0.1, light: false, action: undefined as string | undefined, speed: 0 };
     const its: GroundItem[] = [];
     let T0 = 0, last = '';
     const trunks = (x: number, z: number, r: number) => { const out: { x: number; z: number; r: number }[] = []; for (let i = -6; i <= 6; i++) for (let j = -6; j <= 6; j++) { const tx = Math.round(x / 9) * 9 + i * 9 + ((i * 7 + j * 3) % 4), tz = Math.round(z / 9) * 9 + j * 9 + ((i * 5 + j * 11) % 4); if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: 0.35 }); } return out; };
-    const c: Beast = o.who === 'hound' ? new AxehandleHound({ pos: new THREE.Vector3(0, 0, 14), state: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 'companion' : 'wild_lurk', trust: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 1 : 0 }) : new Bigfoot({ pos: new THREE.Vector3(0, 0, 100) });
+    const c: Beast = o.who === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3(0, 0, 12) }) : o.who === 'hound' ? new AxehandleHound({ pos: new THREE.Vector3(0, 0, 14), state: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 'companion' : 'wild_lurk', trust: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 1 : 0 }) : new Bigfoot({ pos: new THREE.Vector3(0, 0, 100) });
     const ev = (e: string) => log.push(`${T0.toFixed(1)} ${e}`);
     for (let k = 0; k < o.seconds * 60; k++) {
       const dt = 1 / 60; T0 += dt;
@@ -257,6 +312,8 @@ loop();
         case 'chop': pl.action = T0 > 10 ? 'chop' : undefined; break;
         case 'handle': if (k === 600) its.push({ id: 'h1', kind: 'axe_handle', pos: new THREE.Vector3(4, 0, -3) }); break;
         case 'kind': pl.pos.set(60, 1.7, 40); break;
+        case 'swing': if (T0 > 3 && T0 < 9) { pl.pos.addScaledVector(toC.clone().normalize(), 1.5 * dt); pl.dir.copy(toC).normalize(); } pl.action = toC.length() < 2.5 && T0 < 9 ? 'swing' : undefined; break;
+        case 'torch': pl.held = T0 > 20 ? 'torch' : 'none'; if (T0 > 20) pl.pos.addScaledVector(toC.clone().normalize(), 1.2 * dt); break;
         default: break;
       }
       c.update({ dt, time: T0, hour: o.hour ?? 23, player: pl, heightAt: () => 0, emit: (e, d) => { if (e !== 'step' && e !== 'crunch' && e !== 'sniff') ev(e + (d && (d as { item?: string }).item ? ':' + (d as { item?: string }).item : '')); },

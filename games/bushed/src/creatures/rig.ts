@@ -22,6 +22,8 @@ export class Skel {
   /** model-space rotation and position of every bone after fk() */
   readonly Q: THREE.Quaternion[];
   readonly P: THREE.Vector3[];
+  /** accumulated scale (component-wise; exact while scaled bones are not rotated against their children) */
+  readonly Sc: THREE.Vector3[];
   readonly inverses: THREE.Matrix4[];
   constructor(defs: BoneDef[]) {
     this.defs = defs;
@@ -31,6 +33,7 @@ export class Skel {
     defs.forEach((d, i) => { if (d.parent >= 0) { if (d.parent >= i) throw new Error('bones must follow their parents: ' + d.name); this.bones[d.parent].add(this.bones[i]); } });
     this.Q = defs.map(() => new THREE.Quaternion());
     this.P = defs.map(() => new THREE.Vector3());
+    this.Sc = defs.map(() => new THREE.Vector3(1, 1, 1));
     this.inverses = this.restWorld.map((p) => new THREE.Matrix4().makeTranslation(-p.x, -p.y, -p.z));
   }
   i(name: string): number { const k = this.idx[name]; if (k === undefined) throw new Error('no bone ' + name); return k; }
@@ -42,20 +45,20 @@ export class Skel {
     return mesh;
   }
   /** reset every bone to rest */
-  rest() { this.bones.forEach((b, i) => { b.position.copy(this.restLocal[i]); b.quaternion.identity(); }); }
+  rest() { this.bones.forEach((b, i) => { b.position.copy(this.restLocal[i]); b.quaternion.identity(); b.scale.set(1, 1, 1); }); }
   /** model-space transforms of every bone from the bones' local position/quaternion (from bone `from` on) */
   fk(from = 0) {
     for (let i = from; i < this.bones.length; i++) {
       const b = this.bones[i], p = this.defs[i].parent;
-      if (p < 0) { this.Q[i].copy(b.quaternion); this.P[i].copy(b.position); }
-      else { this.Q[i].multiplyQuaternions(this.Q[p], b.quaternion); this.P[i].copy(b.position).applyQuaternion(this.Q[p]).add(this.P[p]); }
+      if (p < 0) { this.Q[i].copy(b.quaternion); this.P[i].copy(b.position); this.Sc[i].copy(b.scale); }
+      else { this.Q[i].multiplyQuaternions(this.Q[p], b.quaternion); this.P[i].copy(b.position).multiply(this.Sc[p]).applyQuaternion(this.Q[p]).add(this.P[p]); this.Sc[i].copy(this.Sc[p]).multiply(b.scale); }
     }
   }
   /** fk for one bone (its parent must be current) */
   fk1(i: number) {
     const b = this.bones[i], p = this.defs[i].parent;
-    if (p < 0) { this.Q[i].copy(b.quaternion); this.P[i].copy(b.position); return; }
-    this.Q[i].multiplyQuaternions(this.Q[p], b.quaternion); this.P[i].copy(b.position).applyQuaternion(this.Q[p]).add(this.P[p]);
+    if (p < 0) { this.Q[i].copy(b.quaternion); this.P[i].copy(b.position); this.Sc[i].copy(b.scale); return; }
+    this.Q[i].multiplyQuaternions(this.Q[p], b.quaternion); this.P[i].copy(b.position).multiply(this.Sc[p]).applyQuaternion(this.Q[p]).add(this.P[p]); this.Sc[i].copy(this.Sc[p]).multiply(b.scale);
   }
   /** set a bone's local rotation so its model-space rotation is `q` (its parent must be current) */
   orient(i: number, q: THREE.Quaternion) {

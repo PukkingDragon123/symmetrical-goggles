@@ -172,7 +172,7 @@ export function buildStove(o: { pipeTop: number; seed?: number; legs?: number })
   group.add(flames);
 
   const light = new THREE.PointLight(0xff8a3c, 0, 9, 1.8);
-  light.position.set(0, ay - 0.02, fz + 0.28);
+  light.position.set(0, ay - 0.22, fz + 0.55);
   shadowy(light, 512, -0.004);
   light.shadow.camera.far = 9;
   group.add(light);

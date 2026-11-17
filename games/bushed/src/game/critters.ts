@@ -3,7 +3,7 @@
 // hound lunges, Ray's axe goes flying, the hound runs off with it to chew the handle, and jerky settles it.
 import * as THREE from 'three';
 import type { Game } from './game';
-import { AxehandleHound, Bigfoot, HOUND_SOUND, BIGFOOT_SOUND, giftMesh, preloadCreatures, type CreatureCtx, type GroundItem } from '../creatures';
+import { AxehandleHound, Bigfoot, Gumberoo, Wildlife, HOUND_SOUND, BIGFOOT_SOUND, GUMBEROO_SOUND, giftMesh, preloadCreatures, type CreatureCtx, type GroundItem } from '../creatures';
 import { SPOTS, heightAt } from '../world/layout';
 import { audio } from '../audio/audio';
 import { SOUNDS } from '../audio/bank';
@@ -26,6 +26,8 @@ function playSound(id: string | undefined, pos: THREE.Vector3, vol = 1): void {
 export class Critters {
   hound: AxehandleHound | null = null;
   bigfoot: Bigfoot | null = null;
+  gumberoo: Gumberoo | null = null;
+  wildlife: Wildlife | null = null;
   readonly items: GroundItem[] = [];
   private itemObjs = new Map<string, THREE.Object3D>();
   private kindness = 0.2;
@@ -65,6 +67,11 @@ export class Critters {
     await yieldFrame();
     this.bigfoot = new Bigfoot({ pos: new THREE.Vector3(SPOTS.hollow.x, heightAt(SPOTS.hollow.x, SPOTS.hollow.z), SPOTS.hollow.z) });
     this.game.scene.add(this.bigfoot.object);
+    await yieldFrame();
+    this.gumberoo = new Gumberoo({ pos: new THREE.Vector3(SPOTS.burn.x, heightAt(SPOTS.burn.x, SPOTS.burn.z), SPOTS.burn.z) });
+    this.game.scene.add(this.gumberoo.object);
+    this.wildlife = new Wildlife();
+    this.game.scene.add(this.wildlife.object);
   }
 
   dropItem(kind: string, pos: THREE.Vector3, obj?: THREE.Object3D): string {
@@ -93,7 +100,11 @@ export class Critters {
     this.lastPlayer.copy(p.pos);
     return {
       dt, time: performance.now() / 1000, hour: g.hour,
-      player: { pos: p.pos.clone(), dir, held: heldKind, crouch: p.crouch, noise: Math.min(1, p.speed / 5 + (g.hands?.charging ? 0.3 : 0)), light: g.flashOn, speed },
+      player: {
+        pos: p.pos.clone(), dir, held: heldKind, crouch: p.crouch, noise: Math.min(1, p.speed / 5 + (g.hands?.charging ? 0.3 : 0) + (performance.now() - g.lastSwingAt < 500 ? 0.4 : 0)),
+        light: g.flashOn, speed, action: performance.now() - g.lastSwingAt < 450 ? 'swing' : g.hands?.charging ? 'chop' : undefined,
+      },
+      fires: g.fires.filter((f) => f.level() > 0.1).map((f) => f.pos),
       heightAt,
       emit: (ev, data) => this.onEvent(ev, data as Record<string, unknown> | undefined),
       stove: anchorPos(g, 'stove', new THREE.Vector3(SPOTS.cabin.x, heightAt(SPOTS.cabin.x, SPOTS.cabin.z), SPOTS.cabin.z)),
@@ -126,8 +137,21 @@ export class Critters {
 
   private onEvent(ev: string, data?: Record<string, unknown>): void {
     const pos = (data?.pos as THREE.Vector3 | undefined) ?? this.hound?.object.position ?? this.game.player.pos;
-    const snd = (HOUND_SOUND as Record<string, string | undefined>)[ev] ?? (BIGFOOT_SOUND as Record<string, string | undefined>)[ev];
-    playSound(snd ?? (data?.sound as string | undefined), pos);
+    const who = data?.who as string | undefined;
+    const table = (who === 'gumberoo' ? GUMBEROO_SOUND : who === 'bigfoot' ? BIGFOOT_SOUND : who === 'hound' || !who ? HOUND_SOUND : {}) as Record<string, string | undefined>;
+    const snd = data?.sound as string | undefined ?? table[ev];
+    playSound(snd, pos);
+    if (who === 'gumberoo') {
+      const imp = data?.impulse as THREE.Vector3 | undefined;
+      if (ev === 'bounce' && imp) {
+        this.game.player.vel.add(imp.clone().multiplyScalar(1.2));
+        this.game.player.addShake(1.2);
+        this.game.survival.spend(0.25);
+        this.game.journal.sawCritter('gumberoo');
+        hud.say('<i>It just... bounced me. Like a beach ball made of a truck tire.</i>', 3.5);
+      }
+      if (ev === 'deflect') { this.game.arms?.play('chop_recover'); this.game.player.addShake(0.6); hud.say('<i>The axe bounces off it like it hit a tire.</i>', 3); }
+    }
     const j = this.game.journal;
     switch (ev) {
       case 'growl': if (this.game.hour > 19 || this.game.hour < 6) j.learn('hound', 'night'); break;
@@ -207,6 +231,12 @@ export class Critters {
       }
       this.wasCarrying = carrying;
     }
+    if (this.gumberoo) {
+      const d = this.gumberoo.object.position.distanceTo(g.player.pos);
+      this.gumberoo.object.visible = d < 260;
+      if (d < 260) this.gumberoo.update(ctx);
+    }
+    this.wildlife?.update(ctx);
     if (this.bigfoot) {
       this.bigfoot.update(ctx);
       const d = this.bigfoot.object.position.distanceTo(g.player.pos);

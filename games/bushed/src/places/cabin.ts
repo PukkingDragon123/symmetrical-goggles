@@ -466,8 +466,8 @@ export async function buildCabin(): Promise<Place> {
     dress.lantern.intensity = 4.2 * lamp * (0.94 + 0.06 * f);
     fill.intensity = 0.9 * lamp;
     for (const s of spill) s.intensity = 5 * lamp * (0.6 + 0.4 * stove.level);
-    glassM.emissiveIntensity = 0.55 * lamp;
-    dress.porchLamp.intensity = 1.6 * lamp * (0.92 + 0.08 * f);
+    glassM.emissiveIntensity = 1.3 * lamp;
+    dress.porchLamp.intensity = 3.2 * lamp * (0.92 + 0.08 * f);
   });
 
   // ---- interior volume, anchors

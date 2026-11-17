@@ -10,6 +10,14 @@ import { loadProp, PROP_META, type PropMeta } from '../places/props';
 import { loadTex, applyPixelTex } from '../gfx/tex';
 
 const q = new URLSearchParams(location.search);
+// track every loader (textures, glbs) so screenshot scripts wait for them
+let loading = 0;
+THREE.DefaultLoadingManager.onStart = () => { loading++; };
+THREE.DefaultLoadingManager.onLoad = () => { loading = 0; };
+const settled = (): Promise<void> => new Promise((res) => {
+  const tick = () => (loading === 0 ? res() : setTimeout(tick, 100));
+  setTimeout(tick, 100);
+});
 const W = window as unknown as { __ready?: boolean; __errors?: string[]; __stats?: unknown };
 W.__errors = [];
 
@@ -206,16 +214,16 @@ async function layoutTextures(): Promise<void> {
     for (let k = 0; k < uv.count; k++) uv.setXY(k, uv.getX(k) * slabW / t.tile, uv.getY(k) * slabW / t.tile);
     const slab = new THREE.Mesh(g, mat);
     const col = i % 6, row = Math.floor(i / 6);
-    slab.position.set(col * 3.6, 0.01, row * 4.2);
+    slab.position.set(col * 3.6, 0.01, row * 6);
     slab.rotation.x = -Math.PI / 2;
     slab.receiveShadow = true;
     scene.add(slab);
     const wall = new THREE.Mesh(g.clone(), mat);
-    wall.position.set(col * 3.6, slabW / 2, row * 4.2 - slabW / 2);
+    wall.position.set(col * 3.6, slabW / 2, row * 6 - slabW / 2);
     wall.receiveShadow = true;
     scene.add(wall);
     const l = label(`${t.set}/${t.name} (${t.tile} m)`);
-    l.position.set(col * 3.6, 0.1, row * 4.2 + slabW / 2 + 0.2);
+    l.position.set(col * 3.6, 0.1, row * 6 + slabW / 2 + 0.2);
     scene.add(l);
     picked.push(slab, wall);
     i++;
@@ -289,6 +297,7 @@ async function main(): Promise<void> {
   controls.update();
   // let textures upload, then signal screenshot scripts
   renderer.render(scene, camera);
+  await settled();
   setTimeout(() => {
     if (q.get('still') === '1') {   // screenshot scripts: draw one frame and stop the loop (SwiftShader is slow)
       renderer.setAnimationLoop(null);

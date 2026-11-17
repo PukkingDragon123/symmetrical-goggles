@@ -334,7 +334,7 @@ const BUILD: Record<string, Builder> = {
     }
     const uvOf = (p: THREE.Vector3): [number, number] => {
       const u = (p.x + len / 2) / len, v = (p.y - 0.0) / 0.13;
-      return [t[0] + (t[2] - t[0]) * u, t[1] + (t[3] - t[1]) * (1 - v)];
+      return [t[0] + (t[2] - t[0]) * u, t[1] + (t[3] - t[1]) * v];
     };
     for (let i = 0; i < n; i++) for (let k = 0; k < seg; k++) {
       const a = rings[i][k], b = rings[i][k + 1], c = rings[i + 1][k + 1], d = rings[i + 1][k];
@@ -415,12 +415,15 @@ const BUILD: Record<string, Builder> = {
   },
   bundle(ms) {
     const r = new Rand(43);
-    const pos: [number, number][] = [[-0.075, 0.07], [0, 0.065], [0.075, 0.07], [-0.04, 0.18], [0.04, 0.185], [0, 0.27]];
-    pos.forEach(([x, y], i) => {
-      ms.pushT(x, y, 0, Math.PI / 2, 0, i * 1.7 + r.range(-0.3, 0.3));
-      writeSplit(ms, r, 0.4 + r.range(-0.02, 0.02), 0.11, 4300 + i);
+    // six splits in a ring, bark outward, along z
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2 + 0.3;
+      const x = Math.cos(a) * 0.075, y = 0.15 + Math.sin(a) * 0.075;
+      // writeSplit: length along x, bark toward +y; yaw to run along z, then roll so +y points outward
+      ms.push(tf(x, y, 0, Math.PI / 2, 0, 0).multiply(new THREE.Matrix4().makeRotationX(a - Math.PI / 2)));
+      writeSplit(ms, r, 0.4 + r.range(-0.02, 0.02), 0.13, 4300 + i);
       ms.pop();
-    });
+    }
     for (const z of [-0.12, 0.12]) {
       tube(ms, 'rope', Array.from({ length: 14 }, (_, k) => V(Math.cos(k / 14 * Math.PI * 2) * 0.15, 0.16 + Math.sin(k / 14 * Math.PI * 2) * 0.15, z)), 0.003, 4, { closed: true });
     }

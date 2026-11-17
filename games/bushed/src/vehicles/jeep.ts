@@ -103,6 +103,9 @@ export class Jeep {
     physics.world.createCollider(RAPIER.ColliderDesc.cuboid(S[0] / 2 * 0.85, 0.35, S[2] * 0.22).setTranslation(0, 1.35, -0.15)
       .setMass(150).setCollisionGroups(groups(GROUP.VEHICLE, 0xffff & ~GROUP.PLAYER)), this.body);
     this.ctl = physics.world.createVehicleController(this.body);
+    // chassis frame: +Y up, +Z forward (Rapier defaults to +X forward)
+    this.ctl.indexUpAxis = 1;
+    this.ctl.setIndexForwardAxis = 2;
     this.meta.wheels.forEach((w, i) => {
       // suspension attaches above the wheel centre
       const rest = 0.32;

@@ -21,11 +21,11 @@ const SOUND: Record<string, Partial<Record<Species, string>>> = {
   chatter: { squirrel: 'animal_red_squirrel' }, caw: { raven: 'bird_raven' }, chirp: { jay: 'bird_songbird', chickadee: 'bird_songbird' },
   flush: { grouse: 'bird_grouse_drum', raven: 'bird_raven' },
 };
-const _e = new THREE.Euler(), _m = new THREE.Matrix4(), _x = new THREE.Vector3(), _y = new THREE.Vector3(), _z = new THREE.Vector3();
+const _e = new THREE.Euler(), _eo = new THREE.Euler(0, 0, 0, 'YXZ'), _m = new THREE.Matrix4(), _x = new THREE.Vector3(), _y = new THREE.Vector3(), _z = new THREE.Vector3();
 const TAU = Math.PI * 2;
 
 type State = 'idle' | 'move' | 'alert' | 'freeze' | 'flee' | 'climb' | 'perch' | 'fly' | 'gone';
-class Critter {
+export class Critter {
   readonly object = new THREE.Group();
   readonly mesh: THREE.SkinnedMesh;
   readonly skel: Skel;
@@ -96,7 +96,7 @@ class Critter {
   }
 }
 
-export interface WildlifeOpts { max?: number; radius?: [number, number]; despawn?: number }
+export interface WildlifeOpts { max?: number; radius?: [number, number]; despawn?: number; /** no spawning below this ground height (the lake) */ waterY?: number }
 export class Wildlife {
   readonly object = new THREE.Group();
   readonly active: Critter[] = [];
@@ -105,7 +105,7 @@ export class Wildlife {
   private o: Required<WildlifeOpts>;
   /** test pages: force the population (null = by biome and hour) */
   forced: Partial<Record<Species, number>> | null = null;
-  constructor(o: WildlifeOpts = {}) { this.o = { max: o.max ?? 12, radius: o.radius ?? [16, 34], despawn: o.despawn ?? 70 }; this.object.name = 'Wildlife'; }
+  constructor(o: WildlifeOpts = {}) { this.o = { max: o.max ?? 12, radius: o.radius ?? [16, 34], despawn: o.despawn ?? 70, waterY: o.waterY ?? WORLD.waterY }; this.object.name = 'Wildlife'; }
   get count() { return this.active.length; }
 
   /** how many of each species the place and hour call for */
@@ -153,7 +153,7 @@ export class Wildlife {
         let x = P.x + Math.sin(a) * d, z = P.z + Math.cos(a) * d;
         if (k === 'squirrel' && ctx.trunks) { const ts = ctx.trunks(x, z, 8); if (ts.length) { const t = ts[0], ta = Math.random() * TAU; x = t.x + Math.sin(ta) * (t.r + 0.6); z = t.z + Math.cos(ta) * (t.r + 0.6); } }
         const h = ctx.heightAt(x, z);
-        if (h < WORLD.waterY + 0.3) continue;
+        if (h < this.o.waterY + 0.3) continue;
         const c = this.take(k);
         c.reset(x, z, h); c.phase = Math.random();
         this.active.push(c);
@@ -163,7 +163,7 @@ export class Wildlife {
     for (const c of this.active) this.think(c, ctx, dt);
   }
 
-  private emit(c: Critter, ctx: CreatureCtx, ev: string) { ctx.emit(ev, { pos: c.object.position.clone(), who: c.kind, sound: SOUND[ev]?.[c.kind] }); }
+  private emit(c: Critter, ctx: CreatureCtx, ev: string) { if (ev) ctx.emit(ev, { pos: c.object.position.clone(), who: c.kind, sound: SOUND[ev]?.[c.kind] }); }
 
   private think(c: Critter, ctx: CreatureCtx, dt: number) {
     c.t += dt; c.st += dt;
@@ -177,7 +177,7 @@ export class Wildlife {
           // spiral up the trunk to a scolding height, then sit there chattering
           const tr = c.trunk!;
           if (c.alt < 3 + (c.phase * 2)) { c.alt += dt * 1.6; c.turn += dt * 0.9; c.speed = 1; c.phase = (c.phase + dt * 4) % 1; }
-          else { c.speed = 0; if (c.st > c.next) { c.next = c.st + 1.5 + Math.random() * 3; this.emit(c, ctx, 'chatter'); } }
+          else { c.speed = 0; if (c.st > c.next) { c.next = c.st + 3 + Math.random() * 5; this.emit(c, ctx, 'chatter'); } }
           if (dist > 30 && c.st > 8) { c.state = 'gone'; }
           const ang = c.turn, nx = Math.sin(ang), nz = Math.cos(ang);
           c.pos.set(tr.x + nx * (tr.r + 0.03), ctx.heightAt(tr.x, tr.z), tr.z + nz * (tr.r + 0.03));
@@ -268,7 +268,7 @@ export class Wildlife {
       // on a trunk: head up, belly to the bark, back facing out
       _z.set(0, 1, 0); _y.set(o.out[0], 0, o.out[1]); _x.crossVectors(_y, _z);
       c.object.quaternion.setFromRotationMatrix(_m.makeBasis(_x, _y, _z));
-    } else c.object.quaternion.setFromEuler(_e.set(o.pitch ?? 0, c.heading, o.roll ?? 0, 'YXZ'));
+    } else c.object.quaternion.setFromEuler(_eo.set(o.pitch ?? 0, c.heading, o.roll ?? 0, 'YXZ'));
     void clamp; void wrapAngle;
   }
 }

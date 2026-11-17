@@ -646,11 +646,17 @@ def t_fabric():
     save("enamel_blue", quant(np.clip(be, 0, 1), 8, seed=37, despeckle=0), [0.5, 0.5], None, note="procedural speckled enamel")
 
 
+def t_rusty_red():
+    p = Photo("rusty_painted_metal", 256, 256, res="1k", flat=0.5, ao=0.4)
+    rgb = grade(p.rgb, sat=1.0, val=1.05)
+    save("rusty_red", quant(np.clip(rgb, 0, 1), 20, seed=41), [1.0, 1.0], p.nor, note="rusty_painted_metal")
+
+
 ALL = {
     "log_ext": t_log_ext, "log_int": t_log_int, "chink": t_chink, "floor": t_floor, "planks_grey": t_planks_grey,
     "board": t_board, "stone": t_stone, "iron": t_iron, "corrugated": t_corrugated, "shakes": t_shakes,
     "endgrain": t_endgrain, "woodchips": t_woodchips, "blanket": t_blanket, "siding": t_siding, "glass": t_glass,
-    "rope": t_rope, "wood_fresh": t_wood_fresh, "fabric": t_fabric,
+    "rope": t_rope, "wood_fresh": t_wood_fresh, "fabric": t_fabric, "rusty_red": t_rusty_red,
 }
 
 

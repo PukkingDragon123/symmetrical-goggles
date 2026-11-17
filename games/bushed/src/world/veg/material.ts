@@ -166,10 +166,11 @@ export function vegMaterial(o: VegMatOpts): THREE.Material {
     if (o.kind !== 'plant') {
       fs = fs.replace('#include <color_fragment>', `#include <color_fragment>
         {
-          vec2 q = floor(vVegW.xz * 20.0 + vVegW.y * 7.0) / 20.0;
-          float n = vegVN(q * 1.7) * 0.6 + vegVN(q * 6.0) * 0.4;
+          vec3 qq = floor(vVegW * 20.0) / 20.0;
+          vec2 q = qq.xz + qq.y * 0.37;
+          float n = vegVN(q * 1.3) * 0.55 + vegVN(q * 4.0) * 0.3 + vegVN(q * 11.0) * 0.15;
           float up = vVegN.y;
-          float mm = uMoss * (0.2 + 1.1 * smoothstep(0.1, 0.8, up)) + (n - 0.5) * 0.8;
+          float mm = uMoss * (0.15 + 1.15 * smoothstep(0.2, 0.85, up)) + (n - 0.5) * 1.3;
           if (mm > 0.55) {
             vec3 an = abs(vVegN);
             vec2 muv = an.y > max(an.x, an.z) ? vVegW.xz : (an.x > an.z ? vVegW.zy : vVegW.xy);

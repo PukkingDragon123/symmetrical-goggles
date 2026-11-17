@@ -11,3 +11,6 @@ export type { CreatureCtx, PlayerView, GroundItem } from './types';
 export { houndModelAsync } from './hound';
 export { bigfootModelAsync } from './bigfoot';
 export { preloadCreatures } from './preload';
+export { Wildlife, Critter } from './wildlife';
+export { wildModel, wildModelsAsync, type Species } from './wildlife/models';
+export { Gumberoo, gumberooModel, gumberooModelAsync, GUMBEROO_SOUND, type GumberooState } from './gumberoo';

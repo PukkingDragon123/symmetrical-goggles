@@ -54,17 +54,17 @@ export function grassClump(seed: number, cells: VegCell[], n: number, h: number,
     const f = rng.range(0, Math.PI);
     const side = v3(Math.cos(f), 0, Math.sin(f));
     const pts: V3[] = [], ws: number[] = [];
-    const w = rng.range(0.05, 0.085) * (h > 0.5 ? 1.3 : 1);
+    const w = rng.range(0.09, 0.14) * (h > 0.5 ? 1.25 : 1);
     for (let k = 0; k <= 2; k++) {
       const t = k / 2;
       pts.push(base.clone().addScaledVector(lean, lk * hh * t * t).addScaledVector(UP, hh * t * (1 - 0.18 * lk * t)));
       ws.push(w * (1 - 0.25 * t));
     }
     const cell = rng.pick(cells);
-    const us = rng.range(0, 0.55);
+    const us = rng.range(0, 0.3);
     const c0 = jitterCol(rng, [0.62 * tint[0], 0.62 * tint[1], 0.6 * tint[2]], 0.1);
     const c1: Col = [c0[0] * 1.7, c0[1] * 1.7, c0[2] * 1.65];
-    strip(mb, pts, side, ws, vegRect(cell), [us, us + 0.45], c0, c1, (t) => [t * t * hh * 0.35, t * t * hh, t * 0.25, phase], 0.75);
+    strip(mb, pts, side, ws, vegRect(cell), [us, us + 0.7], c0, c1, (t) => [t * t * hh * 0.35, t * t * hh, t * 0.25, phase], 0.75);
   }
   return mb;
 }

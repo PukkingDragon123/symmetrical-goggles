@@ -35,11 +35,11 @@ export const TILE: Record<string, [number, number]> = {
   board_grey: [2, 1], stone: [2, 2], iron: [2, 2], galv: [2, 2], corrugated: [2, 2], shakes: [2, 1], endgrain: [1, 1],
   woodchips: [2, 2], blanket: [1, 1], wool_grey: [1, 1], siding_red: [1.57, 1.57], trim_cream: [2, 2],
   boards_green: [2, 2], glass_grime: [0.5, 0.5], rope: [0.1, 0.05], wood_fresh: [2, 1], ticking: [1, 1], canvas: [1, 1],
-  rug: [2, 0.5], leather: [1, 1], enamel: [0.5, 0.5], enamel_blue: [0.5, 0.5],
+  rug: [2, 0.5], leather: [1, 1], enamel: [0.5, 0.5], enamel_blue: [0.5, 0.5], rusty_red: [1, 1],
 };
 const HAS_NORMAL = new Set(['log_ext', 'log_int', 'chink', 'floor', 'planks_grey', 'board_warm', 'board_grey', 'stone', 'iron', 'galv',
   'corrugated', 'shakes', 'endgrain', 'woodchips', 'blanket', 'wool_grey', 'siding_red', 'trim_cream', 'boards_green',
-  'wood_fresh', 'canvas', 'leather']);
+  'wood_fresh', 'canvas', 'leather', 'rusty_red']);
 
 /** textures borrowed from other modules (read-only use): name -> [path under assets/textures, tile] */
 const EXTERNAL: Record<string, [string, [number, number]]> = {
@@ -97,6 +97,7 @@ const MATDEF: Record<string, { tex?: string; o?: MatOpts }> = {
   bark: { tex: 'bark_spruce', o: { rough: 0.95 } },
   bark_birch: { tex: 'bark_birch', o: { rough: 0.9 } },
   soot: { tex: 'iron', o: { rough: 1, color: 0x2a2622 } },
+  rusty_red: { tex: 'rusty_red', o: { rough: 0.6, metal: 0.3 } },
 };
 
 export function placeMat(name: string): THREE.Material {

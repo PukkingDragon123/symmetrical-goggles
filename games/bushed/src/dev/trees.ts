@@ -14,7 +14,8 @@ import { GroundCover } from '../world/groundcover';
 
 const Q = new URLSearchParams(location.search);
 const num = (k: string, d: number) => (Q.has(k) ? parseFloat(Q.get(k)!) : d);
-const lineup = Q.get('lineup') === '1';
+const lineup = Q.get('lineup') === '1' || Q.get('lineup') === 'gc';
+const gcLineup = Q.get('lineup') === 'gc';
 if (Q.get('gcdebug') === '1') (globalThis as unknown as { __gcdebug: boolean }).__gcdebug = true;
 
 const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
@@ -30,7 +31,7 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 const fogCol = new THREE.Color(0xa9b5b4);
 scene.background = fogCol.clone();
-scene.fog = new THREE.FogExp2(fogCol, lineup ? 0.004 : 0.0125);
+scene.fog = new THREE.FogExp2(fogCol, num('fog', lineup ? 0.004 : 0.0125));
 
 const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 1500);
 
@@ -132,7 +133,15 @@ let ground: GroundCover | null = null;
 const info: string[] = [];
 const t0 = performance.now();
 
-if (lineup) {
+if (gcLineup) {
+  ground = new GroundCover(scene, camera, {});
+  const show = ground.showcase(new THREE.Vector3(-27, 0, -30), 6, 10);
+  scene.add(show);
+  ground.group.visible = false;
+  info.push(ground.protoNames().map((n, i) => `${i}:${n}`).join(' '));
+  // the glb prototypes arrive asynchronously: re-run the showcase after a moment
+  setTimeout(() => { scene.remove(show); scene.add(ground!.showcase(new THREE.Vector3(-27, 0, -30), 6, 10)); }, num('glbwait', 2500));
+} else if (lineup) {
   const forms: { age: number; form?: TreeForm }[] = [
     { age: 0.08 }, { age: 0.25 }, { age: 0.5 }, { age: 0.8 }, { age: 1.0 }, { age: 1.0, form: 'broken' }, { age: 0.9, form: 'snag' },
   ];
@@ -186,6 +195,62 @@ if (cam.length >= 3 && !cam.some(isNaN)) {
   camera.position.set(bx, heightAt(bx, bz) + 1.7, bz);
 }
 if (forest && Q.get('prewarm')) forest.prewarm(camera.position.x, camera.position.z, num('prewarm', 400));
+// ?apitest=1 : exercise the Forest / GroundCover API and print the results in the HUD
+if (forest && Q.get('apitest') === '1') {
+  const p0 = camera.position;
+  const t1 = performance.now();
+  const near = forest.near(p0.x, p0.z, 12);
+  const cols = forest.trunkColliders(p0.x, p0.z, 12);
+  info.push(`near(12): ${near.length} trees, nearest ${near[0]?.species} id ${near[0]?.id} at ${near[0] ? Math.hypot(near[0].x - p0.x, near[0].z - p0.z).toFixed(1) : '-'} m; colliders ${cols.length}`);
+  if (near.length) {
+    const t = near[0];
+    const m = t.model();
+    // aim at the trunk centre 1.2 m up (lean / sweep included, rotated into the world)
+    const [lx, lz] = m.centerAt(1.2);
+    const cr = Math.cos(t.rotY), sr = Math.sin(t.rotY);
+    const tx = t.x + cr * lx + sr * lz, tz = t.z - sr * lx + cr * lz;
+    const o = new THREE.Vector3(t.x + (p0.x - t.x) * 3, t.y + 1.2, t.z + (p0.z - t.z) * 3);
+    const dir = new THREE.Vector3(tx - o.x, 0, tz - o.z).normalize();
+    const hit = forest.raycastTrunk(o, dir, 30);
+    info.push(`model: ${m.species} h ${m.height.toFixed(1)} dbh ${m.dbh.toFixed(2)} r(1.3) ${m.radiusAt(1.3).toFixed(3)} outline ${m.outlineAt(1.3).length} pts, limbs ${m.branches.length}, mass ${m.mass.toFixed(0)} kg`);
+    info.push(hit ? `raycast (target ${t.id}): id ${hit.ref.id} h ${hit.h.toFixed(2)} dist ${hit.point.distanceTo(o).toFixed(2)} normal ${hit.normal.x.toFixed(2)},${hit.normal.z.toFixed(2)}` : 'raycast: miss');
+    if (Q.get('detach') === '1') {
+      const d = forest.detach(t.id);
+      scene.add(d.object);
+      const names = d.object.children.map((c) => c.name);
+      info.push(`detach: ${names.length} children: ${names.slice(0, 4).join(', ')} ... ${names[names.length - 1]}; near now ${forest.near(p0.x, p0.z, 12).length}`);
+      // tilt it a little so the detached copy is obviously separate from the instanced forest
+      d.object.rotation.z = 0.25;
+      (d.object.userData.setWind as (k: number) => void)(0);
+    }
+    if (near[1]) { forest.remove(near[1].id); info.push(`remove: id ${near[1].id} gone -> treeAt ${forest.treeAt(near[1].id)}`); }
+  }
+  if (ground) {
+    const so = ground.solids(p0.x, p0.z, 40);
+    const k: Record<string, number> = {};
+    for (const x of so) k[x.kind] = (k[x.kind] ?? 0) + 1;
+    info.push(`solids(40): ${JSON.stringify(k)}`);
+  }
+  info.push(`api calls ${(performance.now() - t1).toFixed(1)} ms`);
+}
+// ?look=log|rock|stump : frame the nearest such thing
+if (ground && Q.get('look')) {
+  const kind = Q.get('look');
+  const p0 = camera.position;
+  const all = ground.solids(p0.x, p0.z, 90).filter((s) => s.kind === kind && (kind !== 'log' || s.r > num('minr', 0)));
+  all.sort((a, b) => Math.hypot(a.x - p0.x, a.z - p0.z) - Math.hypot(b.x - p0.x, b.z - p0.z));
+  const t = all[num('pick', 0)];
+  if (t) {
+    const tx = t.x2 !== undefined ? (t.x + t.x2) / 2 : t.x, tz = t.z2 !== undefined ? (t.z + t.z2) / 2 : t.z;
+    const ty = t.y2 !== undefined ? (t.y + t.y2) / 2 : t.y;
+    const dist = num('dist', 3 + t.r * 3), a = num('ang', 0.7);
+    const ex = tx + Math.cos(a) * dist, ez = tz + Math.sin(a) * dist;
+    camera.position.set(ex, Math.max(heightAt(ex, ez) + 1.6, ty + 0.8), ez);
+    yaw = Math.atan2(-(tx - ex), -(tz - ez));
+    pitch = Math.atan2(ty - camera.position.y, dist);
+    info.push(`looking at ${t.kind} r ${t.r.toFixed(2)} at ${tx.toFixed(1)}, ${tz.toFixed(1)}`);
+  }
+}
 let walk = Q.get('walk') === '1';
 const keys = new Set<string>();
 addEventListener('keydown', (e) => {
@@ -246,7 +311,7 @@ function tick(): void {
   G.uPushers.value[0].set(camera.position.x, camera.position.y - 1.6, camera.position.z, walk ? 0.6 : 0);
   placeSun();
   forest?.update(dt);
-  ground?.update(camera);
+  if (!gcLineup) ground?.update(camera);
   renderer.render(scene, camera);
   const ri = renderer.info.render;
   hud.textContent = `${fps.toFixed(0)} fps  ${(ri.triangles / 1000).toFixed(0)}k tris  ${ri.calls} calls  ${walk ? 'walk' : 'fly'}  wind ${G.uWindStrength.value.toFixed(2)}\n` +

@@ -10,7 +10,7 @@ import { loader } from '../cache';
 export type Species = 'squirrel' | 'hare' | 'raven' | 'jay' | 'chickadee' | 'grouse';
 export const BIRDS: Species[] = ['raven', 'jay', 'chickadee', 'grouse'];
 export interface WildModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number }
-export const WILD_MODEL_VERSION = 'wild@1';
+export const WILD_MODEL_VERSION = 'wild@2';
 
 type Paint = (c: Chart, p: Piece, b: Body) => void;
 const B = (b: BoneDef[], name: string, parent: string | null, pos: V3) => b.push({ name, parent: parent ? b.findIndex((x) => x.name === parent) : -1, pos: pos as [number, number, number] });
@@ -72,7 +72,7 @@ function* mammalGen(kind: 'squirrel' | 'hare'): Generator<string | void, WildMod
   const hz = S.st[4].z, eye = (p: V3) => (r: number) => eyeAt(p, S.eye, r);
   const paint = zonePaint((p, n) => S.paint(p, n, eye(p)), { fur: { len: kind === 'hare' ? 0.03 : 0.02, width: 0.006 } });
   const st: Station[] = S.st.map((s) => ({ c: [0, s.y, s.z] as V3, s: [s.w, s.h] as [number, number], p: s.p ?? 'round' }));
-  body.add(trunk({ name: 'body', stations: st, tween: 0, capS: true, capE: true, levels: 1, k: 1.3, skin: (p) => (p[2] > hz ? [idx(bones, 'head'), 1] : p[2] > hz - 0.03 ? [idx(bones, 'head'), 0.5, 0, 0.5] : [0, 1]), paint }));
+  body.add(trunk({ name: 'body', stations: st, tween: 0, capS: true, capE: true, levels: 0, k: 1.3, skin: (p) => (p[2] > hz ? [idx(bones, 'head'), 1] : p[2] > hz - 0.03 ? [idx(bones, 'head'), 0.5, 0, 0.5] : [0, 1]), paint }));
   yield 'body';
   for (const [n, s] of [['L', 1], ['R', -1]] as const) {
     const f = S.legF, h = S.legH;
@@ -85,7 +85,7 @@ function* mammalGen(kind: 'squirrel' | 'hare'): Generator<string | void, WildMod
   }
   yield 'legs';
   const t0 = idx(bones, 'tail0'), t1 = idx(bones, 'tail1');
-  body.add(stalk({ name: 'tail', path: curve(S.tail, kind === 'squirrel' ? 7 : 3), r: S.tailR, around: 7, capS: true, capE: true, levels: kind === 'squirrel' ? 1 : 0, k: 1, skin: (p) => (p[1] > S.tail[Math.floor(S.tail.length / 2)][1] ? [t1, 1] : [t0, 1]), paint: zonePaint((p, n) => S.paint(p, n, () => false), { fur: { len: 0.03, width: 0.006, flow: 1 } }) }));
+  body.add(stalk({ name: 'tail', path: curve(S.tail, kind === 'squirrel' ? 7 : 3), r: S.tailR, around: 7, capS: true, capE: true, levels: 0, k: 1, skin: (p) => (p[1] > S.tail[Math.floor(S.tail.length / 2)][1] ? [t1, 1] : [t0, 1]), paint: zonePaint((p, n) => S.paint(p, n, () => false), { fur: { len: 0.03, width: 0.006, flow: 1 } }) }));
   const out = yield* body.buildGen({ den: 900, maxScale: 2 });
   return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris };
 }
@@ -107,7 +107,7 @@ const BIRD: Record<'raven' | 'jay' | 'chickadee' | 'grouse', BirdSpec> = {
 };
 function* birdGen(kind: 'raven' | 'jay' | 'chickadee' | 'grouse'): Generator<string | void, WildModel> {
   const S = BIRD[kind], L = S.L, f = S.fat, bones: BoneDef[] = [];
-  const cy = L * 0.42;
+  const cy = L * (kind === 'grouse' ? 0.2 : 0.23);
   B(bones, 'root', null, [0, cy, 0]);
   B(bones, 'head', 'root', [0, cy + L * 0.12, L * 0.26]);
   B(bones, 'wingL', 'root', [L * 0.08 * f, cy + L * 0.06, L * 0.1]); B(bones, 'wingR', 'root', [-L * 0.08 * f, cy + L * 0.06, L * 0.1]);
@@ -125,7 +125,7 @@ function* birdGen(kind: 'raven' | 'jay' | 'chickadee' | 'grouse'): Generator<str
     { c: [0, cy + L * 0.15, L * 0.3], s: [r * 0.62, r * 0.6], p: 'round', tw: S.crest ? [[0, 0, 0.6], [1, 0, 0.3]] : undefined },
     { c: [0, cy + L * 0.15, L * 0.37], s: [r * 0.4, r * 0.4], p: 'round' },
   ];
-  body.add(trunk({ name: 'body', stations: st, tween: 0, capS: true, capE: true, levels: 1, k: 1.3, skin: (p) => (p[2] > L * 0.24 ? [hb, 1] : p[2] > L * 0.17 ? [hb, 0.5, 0, 0.5] : [0, 1]), paint }));
+  body.add(trunk({ name: 'body', stations: st, tween: 0, capS: true, capE: true, levels: 0, k: 1.3, skin: (p) => (p[2] > L * 0.24 ? [hb, 1] : p[2] > L * 0.17 ? [hb, 0.5, 0, 0.5] : [0, 1]), paint }));
   const bz = L * 0.38;
   body.add(stalk({ name: 'beak', path: [[0, cy + L * 0.15, bz - L * 0.02], [0, cy + L * 0.145, bz + S.beak * 0.5], [0, cy + L * 0.13 - (kind === 'raven' ? L * 0.02 : 0), bz + S.beak]], r: (t) => S.beakR * (1 - t * 0.9), sec: (a) => (Math.cos(a) > 0 ? 1.2 : 0.9), around: 5, capE: true, levels: 0, k: 1.5, skin: () => [hb, 1], paint: zonePaint(() => [kind === 'grouse' ? SOIL : INK, 1.4, 80]) }));
   yield 'body';

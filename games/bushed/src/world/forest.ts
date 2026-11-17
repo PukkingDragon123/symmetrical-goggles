@@ -15,6 +15,7 @@ import { buildTree, scaledModel, type TreeModel, type TreeForm, type TreeLod } f
 import { SPECIES, type SpeciesId } from '../trees/species';
 import { createTreeMaterials, type TreeMaterialSet } from '../trees/materials';
 import { ImpostorAtlas, type Impostor } from '../trees/impostor';
+import { barkTexture, foliageTexture } from '../trees/textures';
 
 export interface TreeRef {
   id: number;
@@ -128,7 +129,7 @@ export class Forest {
     this.camera = camera;
     this.renderer = renderer ?? null;
     const o = {
-      lod0: 32, lod1: 85, far: 520, shadow: 55, band: 6, density: 1, genRadius: 0,
+      lod0: 28, lod1: 75, far: 520, shadow: 46, band: 5, density: 1, genRadius: 0,
       ...opts,
     };
     if (!o.genRadius) o.genRadius = o.far + CHUNK;
@@ -140,14 +141,12 @@ export class Forest {
     this.buildVariants();
     this.buildMs = performance.now() - t0;
     if (!this.renderer) {
-      // bake impostors on the first render (we need the renderer)
+      // grab the renderer on the first render (impostors are baked once the textures have loaded, see update)
       const prev = scene.onBeforeRender;
       scene.onBeforeRender = (r, s, c, g, m, gr) => {
         prev.call(scene, r, s, c, g, m, gr);
-        if (!this.baked) { this.renderer = r; this.bakeImpostors(); }
+        if (!this.renderer) this.renderer = r;
       };
-    } else {
-      this.bakeImpostors();
     }
     // synchronously generate the chunks around the camera
     const p = camera.position;
@@ -207,8 +206,18 @@ export class Forest {
     return { meshes, count: 0, cap, shadow };
   }
 
+  private texturesReady(): boolean {
+    for (const sp of ['spruce', 'fir', 'pine', 'birch', 'cedar'] as SpeciesId[]) {
+      for (const t of [barkTexture(sp), foliageTexture(sp)]) {
+        const img = t.image as HTMLImageElement | undefined;
+        if (!img || !img.width) return false;
+      }
+    }
+    return true;
+  }
+
   private bakeImpostors(): void {
-    if (!this.renderer || this.baked) return;
+    if (!this.renderer || this.baked || !this.texturesReady()) return;
     this.baked = true;
     const o = this.opt;
     const L2 = new THREE.Vector4(o.lod1 - o.band, o.lod1 + o.band, o.far - 30, o.far);
@@ -349,6 +358,7 @@ export class Forest {
   // --------------------------------------------------------------------------------------------- update
   update(_dt = 0): void {
     this.frame++;
+    if (!this.baked) this.bakeImpostors();
     const cam = this.camera;
     const p = cam.position;
     // stream chunks: nearest first, ~3 ms per frame
