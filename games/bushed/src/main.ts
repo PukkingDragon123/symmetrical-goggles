@@ -92,6 +92,7 @@ async function boot() {
   const critters = new Critters(game);
   await step('creatures', () => critters.spawn());
   game.updaters.push((dt) => critters.update(dt));
+  game.critters = critters as never;
   await step('npcs', async () => { const npcs = spawnNpcs(game); game.updaters.push((dt) => npcs.forEach((n) => n.update(dt))); });
 
   let last = performance.now();
@@ -132,6 +133,9 @@ async function boot() {
   const choice = params.has('intro') ? 'new' : await runMenu(game, d);
   if (choice === 'continue' && readSave()) {
     game.load(readSave()!);
+    if (critters.hound && game.savedHoundTrust >= 99) { critters.hound.state = 'companion'; critters.hound.object.visible = true; game.flags.add('free'); }
+    else if (critters.hound) critters.hound.trust = game.savedHoundTrust;
+    game.flags.add('free');
     game.player.teleport(SPOTS.cabin.x + 2, null, SPOTS.cabin.z + 4);
     game.mode = 'walk';
     hud.fadeTo(false, 2);

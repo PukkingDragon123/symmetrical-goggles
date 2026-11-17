@@ -15,7 +15,7 @@ import { nz2, nz3, fbm3 } from '../paintkit';
 import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 
-export const GRANNY_MODEL_VERSION = 'granny@4';
+export const GRANNY_MODEL_VERSION = 'granny@5';
 export interface GrannyModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (the left side; the right is the mirror in x unless given) */
@@ -487,12 +487,13 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     // it falls from the scalp outward and back, then down
     const rad = nrm([rel[0] + (rel[0] >= 0 ? 0.01 : -0.01), 0, rel[2] - 0.035]);
     const crown = rel[1] > 0.1;
-    const dir = crown ? nrm([rad[0] * 0.8, -0.25, rad[2] * 0.8 - 0.35]) : nrm([rad[0] * 0.5, -1, rad[2] * 0.5 - 0.1]);
+    const dir = crown ? nrm([rad[0] * 0.6, -0.55, rad[2] * 0.5 - 0.15]) : nrm([rad[0] * 0.5, -1, rad[2] * 0.5 - 0.1]);
     const temple = rel[2] > -0.01;
     const len = (temple ? 0.34 : 0.5) + 0.18 * h3(k, 3, 51);
-    hairSeats.push({ p: sub(q.p, scl(q.n, 0.004)), n: q.n, dir, len: crown ? len * 0.8 : len, wid: 0.009 + 0.005 * h3(k, 4, 51), lift: crown ? 0.12 : 0.22, droop: crown ? 0.9 : 0.4, col: h3(k, 5, 51) < 0.25 ? 1 : h3(k, 6, 51) < 0.3 ? 2 : 0, w: headSkin(q.p) });
+    hairSeats.push({ p: sub(q.p, scl(q.n, 0.004)), n: q.n, dir, len: crown ? len * 0.8 : len, wid: 0.009 + 0.005 * h3(k, 4, 51), lift: crown ? 0.1 : 0.2, droop: crown ? 0.55 : 0.4, col: h3(k, 5, 51) < 0.25 ? 1 : h3(k, 6, 51) < 0.3 ? 2 : 0, w: headSkin(q.p) });
   }
   const hairTiles = [STONE, SNOW, STONE];
+  void SNOW;
   const hair = locks({ name: 'hair', seats: hairSeats, tiles: hairTiles, steps: [4, 3, 3], seed: 13 });
   if (hair) { hair.k = 0.45; body.add(hair); }
   const strip: LockSeat[] = [];

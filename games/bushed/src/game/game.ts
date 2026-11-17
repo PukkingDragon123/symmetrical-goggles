@@ -79,6 +79,7 @@ export class Game {
   arms: ArmsLike | null = null;
   jeep: Jeep | null = null;
   trailer: import('../vehicles/trailer').Trailer | null = null;
+  critters: { hound: { trust: number; state: string } | null } | null = null;
   updaters: ((dt: number) => void)[] = [];
   cabin: Place | null = null;
   store: Place | null = null;
@@ -212,7 +213,7 @@ export class Game {
     const d: SaveData = {
       v: 1, day: this.day, hour: this.hour, money: this.inv.money, items: [...this.inv.items.entries()],
       contracts: this.contracts.map((c) => ({ id: c.id, state: c.state, progress: c.progress })),
-      journal: this.journal.dump(), houndTrust: 0, stove: { fuel: this.stove.fuel, roomTemp: this.stove.roomTemp },
+      journal: this.journal.dump(), houndTrust: this.critters?.hound ? (this.critters.hound.state === 'companion' ? 99 : this.critters.hound.trust) : 0, stove: { fuel: this.stove.fuel, roomTemp: this.stove.roomTemp },
       stacked: 0, sharp: Object.values(ITEMS).filter((i) => i.tool).map((i) => [i.id, i.tool!.sharp]), flags: [...this.flags],
     };
     writeSave(d);
@@ -226,6 +227,7 @@ export class Game {
     this.stove.fuel = d.stove.fuel; this.stove.roomTemp = d.stove.roomTemp;
     for (const [id, s] of d.sharp) if (ITEMS[id]?.tool) ITEMS[id].tool!.sharp = s;
     for (const f of d.flags) this.flags.add(f);
+    this.savedHoundTrust = d.houndTrust;
     this.survival.day = this.day;
   }
 
@@ -246,6 +248,7 @@ export class Game {
     this.updaters.push((dt) => place.update(dt));
   }
   readonly interiors: THREE.Box3[] = [];
+  savedHoundTrust = 0;
 
   /** each day rolls its own weather (late September: mostly cool and grey, fog in the mornings, the odd storm) */
   private targetWeather: Weather = { cloud: 0.35, rain: 0, fog: 0.12, storm: 0 };
