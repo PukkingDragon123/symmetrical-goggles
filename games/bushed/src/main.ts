@@ -16,6 +16,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(68, 16 / 9, 0.08, 1400);
 const sky = new Sky(scene);
 const terrain = new Terrain();
+terrain.loadDefault();
 scene.add(terrain.group, makeLake());
 const params = new URLSearchParams(location.search);
 let hour = Number(params.get('hour') ?? 17.8);

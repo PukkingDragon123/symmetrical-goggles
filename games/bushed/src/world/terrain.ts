@@ -177,9 +177,10 @@ export class Terrain {
       tLayers: { value: this.albedo },
       tMarks: { value: marks.texture },
       uMarksOrigin: marks.uOrigin, uMarksSize: marks.uSize,
-      uTile: { value: TILE_M.map((t) => 1 / t) },
+      uTile: { value: null as unknown as number[] },
       uWet: G.uWet, uSnow: G.uSnow, uCamPos: G.uCamPos,
     };
+    uniforms.uTile.value = this.tiles;
     this.material.onBeforeCompile = (sh) => {
       Object.assign(sh.uniforms, uniforms);
       sh.vertexShader = sh.vertexShader
@@ -220,9 +221,9 @@ export class Terrain {
           vec2 muv = (wp - uMarksOrigin) / uMarksSize;
           vec3 mk = vec3(0.0);
           if (muv.x > 0.0 && muv.y > 0.0 && muv.x < 1.0 && muv.y < 1.0) mk = texture2D(tMarks, muv).rgb;
-          w[4] += rut * 0.8 + mk.r * 0.9 + mk.b * 1.4;
+          w[4] += rut * 0.3 + mk.r * 0.9 + mk.b * 1.4;
           w[5] += mk.g * 1.6 + rut * 0.15;
-          w[6] *= 1.0 - rut * 0.5;
+          w[6] *= 1.0 - rut * 0.15;
           w[3] += crown * 0.25 * step(0.5, w[6]);
           for (int i = 0; i < 4; i++) w[i] *= 1.0 - clamp(mk.r * 0.7 + mk.b + mk.g, 0.0, 0.9);
           vec4 acc = vec4(0.0); float tw = 0.0; float best = -1.0;
@@ -239,6 +240,7 @@ export class Terrain {
           }
           vec3 terr = acc.rgb / max(tw, 1e-4);
           terr *= 0.92 + 0.16 * n1;
+          terr *= 1.0 - rut * 0.16;
           // fresh disturbance is darker and wetter
           terr *= 1.0 - 0.18 * clamp(mk.g + mk.r * 0.5, 0.0, 1.0);
           float wetness = clamp(uWet + mk.g * 0.6 + w[5] * 0.5, 0.0, 1.0);
@@ -252,6 +254,20 @@ export class Terrain {
     };
     this.material.customProgramCacheKey = () => 'terrain-v1';
   }
+
+  /** load the photo-based layer set from public/assets/textures/terrain (index.json gives tile sizes) */
+  async loadDefault(): Promise<void> {
+    const map: Record<(typeof LAYERS)[number], string> = {
+      needles: 'forest_floor', leaves: 'dead_leaves', moss: 'moss', grass: 'grass', dirt: 'dirt', mud: 'mud', gravel: 'gravel_road', rock: 'granite',
+    };
+    try {
+      const idx = (await (await fetch('assets/textures/index.json')).json()) as { set: string; name: string; tile: number }[];
+      LAYERS.forEach((l, i) => { const e = idx.find((x) => x.set === 'terrain' && x.name === map[l]); if (e) this.tiles[i] = 1 / e.tile; });
+    } catch { /* keep defaults */ }
+    await this.loadLayers(Object.fromEntries(LAYERS.map((l) => [l, `assets/textures/terrain/${map[l]}_albedo.png`])));
+  }
+
+  readonly tiles = TILE_M.map((t) => 1 / t);
 
   /** replace the fallback layers with the photo-based textures (name -> image url). Missing ones keep the fallback. */
   async loadLayers(urls: Partial<Record<(typeof LAYERS)[number], string>>): Promise<void> {
