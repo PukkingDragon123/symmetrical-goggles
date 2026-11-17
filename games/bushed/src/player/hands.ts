@@ -215,12 +215,12 @@ export class Hands {
   /** take a carried wood piece away (stacking, burning, selling) */
   consumeCarried(): WoodPiece | null {
     const h = this.held;
-    if (h.kind !== 'carry' || !h.piece) return null;
+    if (h.kind !== 'carry') return null;
     h.obj.removeFromParent();
     this.held = { kind: 'none' };
     this.g.player.burden = 0;
     this.g.arms?.setHeld('none');
-    return h.piece;
+    return h.piece ?? null;
   }
 
   private impact(): void {

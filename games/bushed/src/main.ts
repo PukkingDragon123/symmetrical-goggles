@@ -122,7 +122,7 @@ async function boot() {
     }
     return;
   }
-  const choice = await runMenu(game, d);
+  const choice = params.has('intro') ? 'new' : await runMenu(game, d);
   if (choice === 'continue' && readSave()) {
     game.load(readSave()!);
     game.player.teleport(SPOTS.cabin.x + 2, null, SPOTS.cabin.z + 4);

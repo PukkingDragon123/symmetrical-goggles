@@ -7,6 +7,7 @@ import { AxehandleHound } from '../creatures/hound';
 import { Bigfoot } from '../creatures/bigfoot';
 import { Gumberoo } from '../creatures/gumberoo';
 import { Dingbat, DingbatRoost } from '../creatures/dingbat';
+import { GrannyTamarack } from '../creatures/granny';
 import type { CreatureCtx, GroundItem } from '../creatures/types';
 import { preloadCreatures } from '../creatures/preload';
 import { Wildlife, Critter } from '../creatures/wildlife';
@@ -125,7 +126,7 @@ function setLight(mode: string) {
 }
 
 // ------------------------------------------------------------------------------------------------ creatures
-type Beast = AxehandleHound | Bigfoot | Gumberoo;
+type Beast = AxehandleHound | Bigfoot | Gumberoo | GrannyTamarack;
 const made: Partial<Record<string, Beast>> = {};
 let cur: Beast | null = null, curName = '';
 let spinA = 0;
@@ -203,13 +204,13 @@ function pick(name: string) {
   if (name === 'dingbat') { showDingbat(); return; }
   scene.remove(lineup); scene.remove(wild.object); scene.remove(batStage); scene.remove(eave); if (roost) scene.remove(roost.object);
   const t0 = performance.now();
-  if (!made[name]) made[name] = name === 'hound' ? new AxehandleHound({ state: 'companion', trust: 1 }) : name === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3() }) : new Bigfoot({});
+  if (!made[name]) made[name] = name === 'hound' ? new AxehandleHound({ state: 'companion', trust: 1 }) : name === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3() }) : name === 'granny' ? new GrannyTamarack({ pos: new THREE.Vector3(), present: true }) : new Bigfoot({});
   const ms = performance.now() - t0;
   if (cur) scene.remove(cur.object);
   cur = made[name]!; curName = name; ui.who.value = name; (window as unknown as { __dbg: Beast }).__dbg = cur;
   scene.add(cur.object);
   cur.play(cur.clips.includes('idle') ? 'idle' : cur.clips[0]);
-  const tall = name === 'bigfoot', big = name === 'gumberoo';
+  const tall = name === 'bigfoot' || name === 'granny', big = name === 'gumberoo';
   controls.target.set(0, tall ? 1.4 : big ? 0.7 : 0.4, 0);
   camera.position.set(tall ? 5.5 : big ? 3.6 : 2.4, tall ? 2.0 : big ? 1.6 : 1.0, tall ? 5.5 : big ? 3.6 : 2.4);
   ui.anims.innerHTML = '';
@@ -237,6 +238,7 @@ function ctxFor(dt: number, t: number): CreatureCtx {
     items, takeItem: (id) => { const k = items.findIndex((i) => i.id === id); if (k < 0) return false; items.splice(k, 1); return true; },
     dropItem: (kind, pos) => { const id = kind + Math.random().toString(36).slice(2, 6); items.push({ id, kind, pos: pos.clone() }); return id; },
     kindness: 0.8, threats: [], stove: new THREE.Vector3(-2, 0, -2),
+    fog: lightMode === 'fog' || lightMode === 'nightfog' ? 0.9 : 0.1, lost: true,
   };
 }
 
@@ -274,7 +276,11 @@ function frame(dt: number) {
     // the player strolls a slow figure-eight round the creature's area, holding jerky half the time
     const a = T * 0.12;
     player.pos.set(Math.sin(a) * 6, 1.7, Math.sin(a * 2) * 3.5);
-    player.held = Math.floor(T / 12) % 2 ? 'jerky' : 'none';
+    player.held = Math.floor(T / 12) % 2 ? (cur instanceof GrannyTamarack ? 'cookies' : 'jerky') : 'none';
+    if (cur instanceof GrannyTamarack) {
+      if (!cur.present) cur.appear(new THREE.Vector3(0, 0, 0));
+      if (player.held === 'cookies' && Math.floor(T * 2) !== Math.floor((T - dt) * 2) && cur.offer('cookies')) events.push('(offered)');
+    }
     player.light = lightMode === 'night';
     player.dir.copy(cur.object.position).sub(player.pos).normalize();
   } else {
@@ -286,7 +292,7 @@ function frame(dt: number) {
   }
   cur.update(ctxFor(dt, T));
   if (!ui.ai.checked) { cur.pos.set(0, 0, 0); cur.object.position.set(0, 0, 0); cur.heading = spinA; cur.object.rotation.y = spinA; }
-  if (ui.ai.checked) ui.info.textContent = `${curName}: ${cur.state}${'trust' in cur ? ' trust ' + cur.trust.toFixed(2) : ''}  clip ${cur.anim.current}\nevents: ${events.join(' ')}`;
+  if (ui.ai.checked) ui.info.textContent = `${curName}: ${cur.state}${'trust' in cur ? ' trust ' + cur.trust.toFixed(2) : ''}${cur instanceof GrannyTamarack ? ' fade ' + cur.fade.value.toFixed(2) + (cur.fed ? ' fed' : '') : ''}  clip ${cur.anim.current}\nevents: ${events.join(' ')}`;
 }
 function render() { controls.update(); renderer.render(scene, camera); }
 function loop() {

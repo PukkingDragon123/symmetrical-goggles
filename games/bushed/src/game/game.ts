@@ -594,7 +594,7 @@ export class Game {
     audio.ambience('wind', 0.2 + G.uWindStrength.value * 0.6);
     audio.ambience('cabin', this.indoors ? 1 : 0);
     // hud
-    if (this.mode === 'walk' && !this.journal.open && !this.pack.open) {
+    if (this.mode === 'walk' && !this.journal.open && !this.pack.open && !this.reading) {
       hud.setLabel(this.hands.label);
       hud.setCharge(this.hands.charging ? this.hands.charge : 0);
       hud.showDot(true);

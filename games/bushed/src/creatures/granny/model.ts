@@ -327,7 +327,7 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     return { c: [0, HG[1] + h, HG[2] + zc], s: [1, 1], p: half };
   });
   const headSkin = (p: V3): Wt => (p[1] < GT.head[1] + 0.02 && p[2] < HG[2] - 0.02 ? [HEAD, 0.6, bi('neck'), 0.4] : [HEAD, 1]);
-  const head = body.add(trunk({ name: 'skull', stations: headSt, tween: 0, capS: true, capE: true, levels: 1, k: 2.6, rings: [{ at: 5, s: 0.8, ink: true, arc: [21, 27] }], skin: headSkin, paint: facePaint() }));
+  const head = body.add(trunk({ name: 'skull', stations: headSt, tween: 0, capS: true, capE: true, levels: 1, k: 2.6, rings: [{ at: 5, s: 0.8, ink: true, arc: [22, 26] }], skin: headSkin, paint: facePaint() }));
   body.finalize(head);
   yield 'head';
   const E = eyeAt();
@@ -489,8 +489,8 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   // robe rows (v) by height: v = row / rows of the tweened, subdivided tube
   const vAt = (y: number) => { let best = 0, bd = 9; for (let k = 0; k <= 200; k++) { const v = k / 200, p = gridSurf(robe.m, rg, 0.5, v).p; if (Math.abs(p[1] - y) < bd) { bd = Math.abs(p[1] - y); best = v; } } return best; };
   sowRobe(150, vAt(1.5), vAt(1.95), (p) => 0.32 + 0.4 * h3(Math.floor(p[0] * 50), Math.floor(p[1] * 50), 3) * (p[2] < 0 ? 1.2 : 0.8), 0.034, 61);
-  sowRobe(60, vAt(0.95), vAt(1.45), () => 0.25 + 0.25 * Math.random(), 0.03, 63);
-  sowRobe(90, vAt(0.06), vAt(0.3), () => 0.12 + 0.1 * Math.random(), 0.032, 65);
+  sowRobe(60, vAt(0.95), vAt(1.45), (p) => 0.25 + 0.25 * h3(Math.floor(p[0] * 70), Math.floor(p[1] * 70), 4), 0.03, 63);
+  sowRobe(90, vAt(0.06), vAt(0.3), (p) => 0.12 + 0.1 * h3(Math.floor(p[0] * 70), Math.floor(p[2] * 70), 5), 0.032, 65);
   for (const sl of sleeves) {
     const g = sl.grids[0];
     for (let k = 0; k < 26; k++) {

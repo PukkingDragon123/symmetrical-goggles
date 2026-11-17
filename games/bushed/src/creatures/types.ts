@@ -49,6 +49,11 @@ export interface CreatureCtx {
   fires?: THREE.Vector3[];
   /** 0..1 how kind the player has been lately (fed the hound, left food out, did not chase); Bigfoot gifts */
   kindness?: number;
+  /** 0..1 how thick the fog is (the weather's fog); Granny Tamarack walks in heavy fog */
+  fog?: number;
+  /** the player is lost (far from the cabin and the roads); Granny Tamarack comes to lost people. When absent she
+   *  judges it by the distance from the cabin */
+  lost?: boolean;
 }
 
 export type Emit = CreatureCtx['emit'];
