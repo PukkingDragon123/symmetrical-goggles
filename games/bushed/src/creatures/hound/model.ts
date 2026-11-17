@@ -119,10 +119,11 @@ function jawStations(): Station[] {
 // ------------------------------------------------------------------------------------------------ paint: steel
 const NICKS = [{ y: 0.078, d: 0.006, w: 0.006 }, { y: 0.021, d: 0.004, w: 0.004 }, { y: -0.052, d: 0.008, w: 0.007 }, { y: -0.108, d: 0.005, w: 0.005 }];
 // long scratches on the cheeks (head-local z, y, both sides)
-const SCRATCH: { a: [number, number]; b: [number, number]; side: number }[] = [];
+const SCRATCH: { a: [number, number]; b: [number, number]; side: number; z0: number; z1: number; y0: number; y1: number }[] = [];
 for (let k = 0; k < 34; k++) {
   const z = 0.02 + h3(k, 1, 9) * 0.21, y = -0.1 + h3(k, 2, 9) * 0.19, ang = (h3(k, 3, 9) - 0.5) * 1.4 + (h3(k, 6, 9) < 0.3 ? 1.4 : 0), L = 0.01 + h3(k, 4, 9) * 0.045;
-  SCRATCH.push({ a: [z, y], b: [z + Math.cos(ang) * L, y + Math.sin(ang) * L], side: h3(k, 5, 9) < 0.5 ? 1 : -1 });
+  const z2 = z + Math.cos(ang) * L, y2 = y + Math.sin(ang) * L, m = 0.004;
+  SCRATCH.push({ a: [z, y], b: [z2, y2], side: h3(k, 5, 9) < 0.5 ? 1 : -1, z0: Math.min(z, z2) - m, z1: Math.max(z, z2) + m, y0: Math.min(y, y2) - m, y1: Math.max(y, y2) + m });
 }
 function segD(pz: number, py: number, a: [number, number], b: [number, number]) {
   const ab0 = b[0] - a[0], ab1 = b[1] - a[1], t = cl(((pz - a[0]) * ab0 + (py - a[1]) * ab1) / (ab0 * ab0 + ab1 * ab1 || 1e-9), 0, 1);
@@ -138,10 +139,11 @@ function edgeZ(y: number): number {
 const STEEL = RP('axeSteel'), FORGE = RP('forge'), RUST = RP('rust'), GUM = RP('gum'), HICK = RP('hickory'), HEART = RP('heart'), HORN = RP('horn');
 
 function steelPaint(part: 'skull' | 'jaw' | 'tooth' | 'lid') {
-  return (ch: Chart, _p: Piece, b: Body) => {
+  return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt / K;
     px.lightK = 0.55;
     for (let i = 0; i < px.n; i++) {
+      if ((i & 4095) === 0) yield;
       // head-local, in axe units
       const x = (P[i * 3] - H[0]) / K, y = (P[i * 3 + 1] - H[1]) / K, z = (P[i * 3 + 2] - H[2]) / K, ny = N[i * 3 + 1], nz = N[i * 3 + 2], ax = Math.abs(x);
       if (part === 'tooth') {
@@ -205,7 +207,7 @@ function steelPaint(part: 'skull' | 'jaw' | 'tooth' | 'lid') {
         if (part === 'skull' && ax > wAt(z) * 0.7 && ((sx > 0.0105 && sx < 0.0105 + mpt * 1.3) || Math.hypot(z - 0.085, y - 0.02) < mpt * 1.2)) { st = 1.2; R = FORGE; }
       }
       // long scratches across the cheeks
-      for (const s of SCRATCH) if (Math.sign(x) === s.side && segD(z, y, s.a, s.b) < mpt * 0.55) { st += 2; rough = 45; R = STEEL; break; }
+      for (const s of SCRATCH) if (Math.sign(x) === s.side && z > s.z0 && z < s.z1 && y > s.y0 && y < s.y1 && segD(z, y, s.a, s.b) < mpt * 0.55) { st += 2; rough = 45; R = STEEL; break; }
       if (nick === 2) { st = 1; R = FORGE; rough = 160; } else if (nick === 1) { st = 7.6; rough = 30; }
       if (rust > 0) {
         const pit = cell3(x, y, z, 0.004, 8);
@@ -215,7 +217,9 @@ function steelPaint(part: 'skull' | 'jaw' | 'tooth' | 'lid') {
       if (ed < 0.022) { R = RUST; st = Math.min(st, 0.6 + (ed - 0.016) * 160); metal = 0; rough = 240; }
       px.put(i, R, st); px.metal[i] = metal; px.rough[i] = rough;
     }
+    yield;
     px.creaseInk(1.4, { dark: 1, lit: 0.5 });
+    yield;
     px.flush();
   };
 }
@@ -223,11 +227,12 @@ function steelPaint(part: 'skull' | 'jaw' | 'tooth' | 'lid') {
 // ------------------------------------------------------------------------------------------------ paint: hickory
 interface Knot { s: number; a: number; r: number }
 function hickoryPaint(F: Frame, knots: Knot[], o: { bristle?: (s: number, a: number) => number; zone?: 'body' | 'tail' } = {}) {
-  return (ch: Chart, _p: Piece, b: Body) => {
+  return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, mpt = px.mpt;
     px.lightK = 0.8;
     const bm = new Float32Array(px.n);
     for (let i = 0; i < px.n; i++) {
+      if ((i & 8191) === 0) yield;
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], L = locate(F, p), s = L.s, a = L.a;
       // grain: long streaks along the body, deflected round knots
       let warp = 0, knotT = -1;
@@ -256,12 +261,16 @@ function hickoryPaint(F: Frame, knots: Knot[], o: { bristle?: (s: number, a: num
       px.rough[i] = 150 - (Math.abs(a) < 1.2 ? 25 : 0); // the back is worn smooth and a little glossy
       if (o.bristle) bm[i] = o.bristle(s, a);
     }
+    yield;
     if (o.bristle) {
       // coarse dark bristle laid along the body where the bristles grow (the lock geometry stands over it)
       for (let i = 0; i < px.n; i++) if (bm[i] > 0.02) { const k = bm[i]; if (k > 0.5) { px.rampI[i] = px.ramp(HORN); px.step[i] = 3.2; } else if (h3(i, 9, 1) < k * 1.6) { px.rampI[i] = px.ramp(HORN); px.step[i] = 3.6; } }
+      yield;
       px.pelt({ len: 0.022, width: 0.006, mask: (i) => (bm[i] > 0.5 ? 1 : 0), tooth: 1.2, clump: 0.35, strands: 0.25, flow: -1 });
     }
+    yield;
     px.creaseInk(1.6, { dark: 0.8, lit: 0.4 });
+    yield;
     px.flush();
   };
 }
@@ -306,7 +315,7 @@ function clawPaint(ch: Chart, _p: Piece, b: Body) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const HOUND_MODEL_VERSION = 'hound@1';
+export const HOUND_MODEL_VERSION = 'hound@3';
 export interface HoundModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
@@ -314,7 +323,7 @@ export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundM
 /** build the model in slices of ~30 ms, yielding to the event loop between them */
 export function buildHoundModelAsync(o: { page?: number; den?: number } = {}): Promise<HoundModel> { return runAsync(houndModelGen(o)); }
 /** the build as steps (see Body.buildGen) */
-export function* houndModelGen(o: { page?: number; den?: number } = {}): Generator<void, HoundModel> {
+export function* houndModelGen(o: { page?: number; den?: number } = {}): Generator<string | void, HoundModel> {
   const bones = houndBones(), bi = (n: string) => bones.findIndex((b) => b.name === n);
   const body = new Body(o.page ?? 1024);
   body.seed = 1871;
@@ -428,7 +437,7 @@ export function* houndModelGen(o: { page?: number; den?: number } = {}): Generat
   const tail = body.add(stalk({
     name: 'tail', path: tailPath, r: (t) => 0.034 * Math.pow(1 - t, 1.25) + 0.0035, around: 8, capS: false, capE: true, levels: 1, k: 1,
     skin: (p) => { const L = locate(TF, p); return L.s < 0.02 ? [bi('pelvis'), 0.5, tailBones[0], 0.5] : tailSkin(p); },
-    paint: (ch, pp, b) => hickoryPaint(TF, [], { bristle: (s) => cl((s - TF.L * 0.72) / (TF.L * 0.06), 0, 1) })(ch, pp, b),
+    paint: hickoryPaint(TF, [], { bristle: (s) => cl((s - TF.L * 0.72) / (TF.L * 0.06), 0, 1) }),
   }));
   body.finalize(tail);
   yield;

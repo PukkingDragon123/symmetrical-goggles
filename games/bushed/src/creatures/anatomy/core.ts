@@ -41,7 +41,7 @@ export interface Piece {
   /** charts of the finalized mesh (default: one per grid, caps planar) */
   charts?: (p: Piece) => Chart[];
   /** paint one chart (after the page is packed and the chart rasterised) */
-  paint: (c: Chart, p: Piece, body: Body) => void;
+  paint: (c: Chart, p: Piece, body: Body) => void | Iterator<unknown>;
   /** texel density priority (faces > flanks > hidden undersides) */
   k?: number;
   done?: boolean; ch?: Chart[];
@@ -65,13 +65,18 @@ export interface BuildOut { geo: THREE.BufferGeometry; tex: THREE.DataTexture; s
 export function runSync<T>(g: Generator<unknown, T>): T { for (;;) { const r = g.next(); if (r.done) return r.value; } }
 const macrotask = () => new Promise<void>((res) => { if (typeof MessageChannel !== 'undefined') { const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); res(); }; c.port2.postMessage(0); } else setTimeout(res, 0); });
 /** run a step generator in slices: after `budget` ms of work it yields to the event loop (a macrotask) */
+/** slow-step log for runAsync (dev pages switch it on) */
+export const PROFILE = { on: false, min: 60, slow: [] as string[] };
 export async function runAsync<T>(g: Generator<unknown, T>, budget = 30): Promise<T> {
   const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
-  let t0 = now();
+  let t0 = now(), tl = t0;
   for (;;) {
     const r = g.next();
     if (r.done) return r.value;
-    if (now() - t0 > budget) { await macrotask(); t0 = now(); }
+    const t1 = now();
+    if (PROFILE.on && t1 - tl > PROFILE.min) PROFILE.slow.push(`${(t1 - tl).toFixed(0)}ms ${String(r.value ?? '')}`);
+    tl = t1;
+    if (t1 - t0 > budget) { await macrotask(); t0 = now(); tl = t0; }
   }
 }
 export interface Tone { ramp: number[]; step: number; belly?: { ramp: number[]; step: number; below: number } }
@@ -269,27 +274,33 @@ export class Body {
   build(o: BuildOpts = {}): BuildOut { return runSync(this.buildGen(o)); }
   /** the build as steps: yields between pieces (subdivision, occlusion, raster, paint), so runAsync() can slice it
    *  across frames; build() runs it straight through */
-  *buildGen(o: BuildOpts = {}): Generator<void, BuildOut> {
+  *buildGen(o: BuildOpts = {}): Generator<string | void, BuildOut> {
     if (o.budget) this.fit(o.budget);
-    for (const p of this.pieces) { this.finalize(p); p.ch = (p.charts ?? defaultCharts)(p); surfaceInfo(p); yield; }
+    for (const p of this.pieces) { this.finalize(p); p.ch = (p.charts ?? defaultCharts)(p); surfaceInfo(p); yield 'subdiv ' + p.name; }
     if (o.occlusion !== false) yield* occlusionGen(this.pieces.filter((p) => !p.noOcc));
     const den = o.den ?? this.den;
     for (const p of this.pieces) for (const ch of p.ch!) { ch.reg = this.page.reg(p.name + '.' + ch.name, Math.max(4, ch.wm * den), Math.max(4, ch.hm * den), ch.k); ch.reg.cut = !!p.cut; }
     const scale = this.page.pack(o.maxScale ?? 3);
     this.den = den * scale;
-    for (const p of this.pieces) { rasterPiece(p); yield; }
-    for (const p of this.pieces) for (const ch of p.ch!) { p.paint(ch, p, this); yield; }
+    yield 'pack';
+    for (const p of this.pieces) { yield* rasterGen(p); yield 'raster ' + p.name; }
+    for (const p of this.pieces) for (const ch of p.ch!) {
+      // a painter may be a generator (it yields every few thousand texels)
+      const it = p.paint(ch, p, this);
+      if (it && typeof (it as Iterator<unknown>).next === 'function') { const g = it as Iterator<unknown>; for (let r = g.next(); !r.done; r = g.next()) yield 'paint ' + p.name; }
+      yield 'paint ' + p.name + '.' + ch.name;
+    }
     o.snap?.(this.page.pc.data as unknown as Uint8ClampedArray);
     this.page.finish();
-    yield;
+    yield 'finish';
     for (const p of this.pieces) { const t0 = this.B.tris, v0 = this.B.P.length / 3; emitPiece(this.B, p, this.gid++); if (p.reg) this.tagRegs(v0, p.reg); const k = p.name.replace(/[0-9_lrs.-]+$/, ''); this.stats.set(k, (this.stats.get(k) ?? 0) + this.B.tris - t0); }
     // the surface buffers are big: let them go
     for (const p of this.pieces) for (const ch of p.ch!) ch.gb = undefined;
-    yield;
+    yield 'emit';
     const geo = this.withRegs(this.B.build());
-    yield;
+    yield 'geometry';
     const tex = pageTexture(this.page);
-    yield;
+    yield 'mips';
     return { geo, tex, sd: surfaceTexture(this.page), tris: this.B.tris, scale };
   }
 }
@@ -320,7 +331,7 @@ export function surfaceInfo(p: Piece) {
 
 /** ambient occlusion per vertex over all pieces: rays marched through a voxel grid of the whole model */
 export function occlusion(pieces: Piece[], res = 80, reach = 0.2, rays = 14) { runSync(occlusionGen(pieces, res, reach, rays)); }
-export function* occlusionGen(pieces: Piece[], res = 80, reach = 0.2, rays = 14): Generator<void, void> {
+export function* occlusionGen(pieces: Piece[], res = 80, reach = 0.2, rays = 14): Generator<string | void, void> {
   let x0 = Infinity, y0 = Infinity, z0 = Infinity, x1 = -Infinity, y1 = -Infinity, z1 = -Infinity;
   for (const p of pieces) for (const v of p.m.V) { x0 = Math.min(x0, v[0]); y0 = Math.min(y0, v[1]); z0 = Math.min(z0, v[2]); x1 = Math.max(x1, v[0]); y1 = Math.max(y1, v[1]); z1 = Math.max(z1, v[2]); }
   const span = Math.max(x1 - x0, y1 - y0, z1 - z0) * 1.02 + 1e-6, cs = span / res, nx = Math.ceil((x1 - x0) / cs) + 3, ny = Math.ceil((y1 - y0) / cs) + 3, nz = Math.ceil((z1 - z0) / cs) + 3;
@@ -352,12 +363,13 @@ export function* occlusionGen(pieces: Piece[], res = 80, reach = 0.2, rays = 14)
       A[i] = hit / rays;
     });
     p.A = A;
-    yield;
+    yield 'occlusion ' + p.name;
   }
 }
 
 /** rasterise each chart of a piece into its surface buffer */
-export function rasterPiece(p: Piece) {
+export function rasterPiece(p: Piece) { runSync(rasterGen(p)); }
+export function* rasterGen(p: Piece): Generator<string | void, void> {
   const { V, F } = p.m, nv = V.length;
   // flat copies (monomorphic, fast)
   const VP = new Float32Array(nv * 3), VN = new Float32Array(nv * 3), VK = new Float32Array(nv), VA = p.A ?? new Float32Array(nv);
@@ -367,7 +379,9 @@ export function rasterPiece(p: Piece) {
     const gb: GBuf = ch.gb = { w, h, P: new Float32Array(n * 3), N: new Float32Array(n * 3), K: new Float32Array(n), A: new Float32Array(n), M: new Uint8Array(n), F: new Int32Array(n).fill(-1) };
     const best = new Float32Array(n).fill(-1e9);
     const GP = gb.P, GN = gb.N, GK = gb.K, GA = gb.A, GM = gb.M, GF = gb.F;
+    let nf = 0;
     for (const f of ch.faces) {
+      if ((++nf & 1023) === 0) yield;
       const c = F[f], mat = p.m.mat[f] + 1, nc = c.length;
       const us = new Float64Array(nc), vs = new Float64Array(nc);
       for (let k = 0; k < nc; k++) { const q = ch.uv(f, k); us[k] = q[0] * w; vs[k] = q[1] * h; }

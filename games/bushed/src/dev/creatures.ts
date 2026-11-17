@@ -6,6 +6,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { AxehandleHound } from '../creatures/hound';
 import { Bigfoot } from '../creatures/bigfoot';
 import type { CreatureCtx, GroundItem } from '../creatures/types';
+import { preloadCreatures } from '../creatures/preload';
+import { PROFILE } from '../creatures/anatomy';
 import { G } from '../gfx/globals';
 
 const ui = {
@@ -191,13 +193,33 @@ ui.wire.onchange = () => { if (cur) (cur.mesh.material as THREE.MeshStandardMate
 window.addEventListener('resize', () => { camera.aspect = W() / Hh(); camera.updateProjectionMatrix(); renderer.setSize(W(), Hh()); });
 
 setLight(lightMode);
-pick(qs.get('who') ?? 'hound');
-if (qs.get('clip')) cur!.play(qs.get('clip'));
+// load the models without stalling: from the IndexedDB cache, or built in ~30 ms slices; a meter records the worst
+// gap between frames while that happens (?nocache=1 forces a rebuild, ?sync=1 builds on the spot as before)
+let loadInfo = '';
+async function start() {
+  if (!qs.has('sync')) {
+    ui.info.textContent = 'loading creature models...';
+    const t0 = performance.now();
+    let worst = 0, lastF = t0, loading = true;
+    const meter = () => { const n = performance.now(); worst = Math.max(worst, n - lastF); lastF = n; if (loading) requestAnimationFrame(meter); };
+    requestAnimationFrame(meter);
+    PROFILE.on = true;
+    await preloadCreatures({ cache: !qs.has('nocache'), onProgress: (d, n, name) => { ui.info.textContent = `loaded ${name} (${d}/${n})`; } });
+    loading = false;
+    console.log('slow steps:', PROFILE.slow.join(' | '));
+    loadInfo = `preloaded in ${(performance.now() - t0).toFixed(0)} ms (${qs.has('nocache') ? 'built' : 'cache or built'}), worst frame gap ${worst.toFixed(0)} ms`;
+  }
+  pick(qs.get('who') ?? 'hound');
+  if (qs.get('clip')) cur!.play(qs.get('clip'));
+  ui.info.textContent += '\n' + loadInfo;
+  (window as unknown as { __creatures: { ready: boolean } }).__creatures.ready = true;
+}
 loop();
 
 // ------------------------------------------------------------------------------------------------ hooks for screenshots
 (window as unknown as Record<string, unknown>).__creatures = {
-  ready: true,
+  ready: false,
+  loadInfo: () => loadInfo,
   /** freeze the clock and pose a creature: clip at time t (stepped at 60 Hz), heading, camera orbit */
   pose(o: { who?: string; clip?: string; t?: number; heading?: number; light?: string; cam?: [number, number, number]; target?: [number, number, number]; fov?: number }) {
     frozen = true;
@@ -247,3 +269,4 @@ loop();
     return log.join('\n');
   },
 };
+void start();

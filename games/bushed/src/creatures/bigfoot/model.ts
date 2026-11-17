@@ -53,11 +53,12 @@ export function bigfootBones(): BoneDef[] {
 const FUR = RP('squatch'), LEA = RP('leather'), GUM = RP('gum');
 /** the coat: a dark pelt combed down the body, red-brown tips where the hair catches, darker in the creases */
 function furPaint(o: { flow: number; len?: number; bare?: (p: V3, n: V3) => number; tone?: (p: V3) => number }) {
-  return (ch: Chart, _p: Piece, b: Body) => {
+  return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
     px.lightK = 0.8;
     const bare = new Float32Array(px.n);
     for (let i = 0; i < px.n; i++) {
+      if ((i & 8191) === 0) yield;
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], n: V3 = [N[i * 3], N[i * 3 + 1], N[i * 3 + 2]];
       const bk = o.bare ? o.bare(p, n) : 0;
       bare[i] = bk;
@@ -65,43 +66,70 @@ function furPaint(o: { flow: number; len?: number; bare?: (p: V3, n: V3) => numb
       if (bk > 0.5) { const c = cell3(p[0], p[1], p[2], 0.012, 4); px.put(i, LEA, 2.6 + mott * 0.6 - ((c.f2 - c.f1) < px.mpt * 0.8 ? 0.9 : 0)); px.rough[i] = 170; continue; }
       px.put(i, FUR, 2.2 + mott * 0.7 + (o.tone ? o.tone(p) : 0)); px.rough[i] = 235;
     }
+    yield;
     px.pelt({ len: o.len ?? 0.12, width: 0.011, flow: o.flow, down: 0.5, mask: (i) => (bare[i] > 0.5 ? 0 : 1), tooth: 1.9, clump: 0.55, strands: 0.3 });
+    yield;
     px.creaseInk(1.4, { dark: 1, lit: 0.3 });
+    yield;
     px.flush();
   };
 }
 /** the face: bare dark leather, folds across the brow and round the muzzle, nostrils, lips, the hairline */
 function facePaint(H: V3) {
-  return (ch: Chart, _p: Piece, b: Body) => {
+  return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt;
     px.lightK = 0.75;
     const fur = new Float32Array(px.n);
+    const E = EYE;
     for (let i = 0; i < px.n; i++) {
+      if ((i & 8191) === 0) yield;
       const x = P[i * 3] - H[0], y = P[i * 3 + 1] - H[1], z = P[i * 3 + 2] - H[2], ax = Math.abs(x), nz = N[i * 3 + 2];
-      // the bare face: a mask from the brow to the chin, the hair framing it
+      // the bare face: from the brow down to the chin, framed by hair that thins out over its edge
       const hairline = 0.105 + nz2(x * 40, y * 40) * 0.008 - Math.max(0, ax - 0.06) * 0.6;
-      const faceZone = z > hairline - 0.005 && y < 0.1 && y > -0.19 && nz > 0.1 && ax < 0.12 - Math.max(0, -y - 0.05) * 0.4 - Math.max(0, y - 0.06) * 0.8;
-      if (!faceZone) { fur[i] = 1; const m = fbm3(x * 9, y * 9, z * 9, 2); px.put(i, FUR, 2.2 + m * 0.6 + (y > 0.15 ? 0.3 : 0)); px.rough[i] = 235; continue; }
-      let st = 2.1 + fbm3(x * 30, y * 30, z * 30, 2) * 0.5;
-      // the brow ridge: a lit roll, a deep shadow under it into the orbits
-      if (y > 0.075 && z > 0.1) st += 0.7;
-      if (y > 0.035 && y < 0.07 && z > 0.1 && ax < 0.1) st -= 1.2;
-      // horizontal folds over the brow and the nose bridge, curved folds round the muzzle
-      const fold = Math.abs(Math.sin(y * 260 + nz2(x * 30, 1) * 1.5)) < 0.16 && y > 0.07;
-      const muz = Math.hypot(ax * 1.2, (y + 0.06) * 1.6), mfold = Math.abs(Math.sin(muz * 120 + Math.atan2(y + 0.06, ax) * 0.8)) < 0.1 && muz > 0.07 && muz < 0.11 && y < -0.02 && ax > 0.03;
-      if (fold || mfold) st -= 0.9;
-      const eo = Math.hypot(ax - EYE[0], y - EYE[1]);
-      if (eo < 0.03 && z > 0.12) st -= (0.03 - eo) * 60;
-      // nostrils: two dark flared slots on the broad nose
-      const nx = ax - 0.024, ny = y + 0.032;
-      if (z > 0.17 && Math.hypot(nx * 1.0, ny * 1.8) < 0.011) st = 0.4;
-      // the lips: a dark line with a pale lower lip
-      if (z > 0.18 && Math.abs(y + 0.085 + ax * ax * 3) < mpt * 1.1) { px.put(i, GUM, 0.5); px.rough[i] = 120; continue; }
-      if (z > 0.18 && y < -0.085 && y > -0.1) st += 0.5;
-      px.put(i, LEA, st); px.rough[i] = 150;
+      const edge = Math.min(z - (hairline - 0.005), 0.1 - y, y + 0.19, nz - 0.1, 0.12 - Math.max(0, -y - 0.05) * 0.4 - Math.max(0, y - 0.06) * 0.8 - ax);
+      const m = fbm3(x * 9, y * 9, z * 9, 2);
+      if (edge < 0 || (edge < 0.012 && h3(Math.floor(x / mpt / 2), Math.floor(y / mpt / 3), 5) < 1 - edge / 0.012)) {
+        fur[i] = 1; px.put(i, FUR, 2.2 + m * 0.6 + (y > 0.15 ? 0.3 : 0)); px.rough[i] = 235; continue;
+      }
+      // leather: cooler and darker round the eyes, warmer on the cheeks and the muzzle, darker toward the hair
+      let R = LEA, st = 2.2 + fbm3(x * 30, y * 30, z * 30, 2) * 0.45 + cl((0.02 - edge) * 40, 0, 0.8) * -1;
+      let rough = 150;
+      const ex = ax - E[0], ey = y - E[1], ed = Math.hypot(ex, ey);
+      // the brow ridge: its top catches the light, a deep shadow under its shelf sinks into the orbits
+      if (y > 0.074 && z > 0.1) st += 0.7 - (y > 0.09 ? 0.3 : 0);
+      if (y > 0.05 && y < 0.074 && z > 0.11) st -= 1.3 * cl((0.074 - y) / 0.012, 0.3, 1) * cl((0.085 - ax) / 0.03, 0, 1);
+      // deep-set eyes: a dark socket, an upper lid fold, puffed lower lids, crow's feet
+      if (ed < 0.034 && z > 0.12) st -= (0.034 - ed) * 55;
+      if (Math.abs(ed - 0.022) < mpt * 0.7 && ey > 0) st -= 0.8;
+      if (Math.abs(ed - 0.026) < mpt * 0.8 && ey < -0.004 && Math.abs(ex) < 0.02) st += 0.6;
+      if (Math.abs(ed - 0.031) < mpt * 0.7 && ey < -0.006 && Math.abs(ex) < 0.022) st -= 0.7;
+      if (ex > 0.022 && ex < 0.04 && Math.abs(Math.sin(Math.atan2(ey, ex) * 9)) < 0.18 && Math.abs(ey) < 0.014) st -= 0.6;
+      // horizontal folds over the brow and the bridge of the nose
+      if (y > 0.074 && Math.abs(Math.sin(y * 260 + nz2(x * 30, 1) * 1.5)) < 0.14) st -= 0.8;
+      if (ax < 0.018 && y > 0.0 && y < 0.04 && Math.abs(Math.sin(y * 330)) < 0.15) st -= 0.7;
+      // the broad nose: a lit bridge, wings round flared nostrils (dark holes with a lit rim), a wet tip
+      const nx = ax - 0.024, ny = y + 0.032, nd = Math.hypot(nx, ny * 1.8);
+      if (z > 0.16 && nd < 0.011) { st = 0.3; rough = 90; }
+      else if (z > 0.16 && nd < 0.016) { st += ny < 0 ? 1.0 : 0.4; rough = 110; }
+      else if (z > 0.17 && ax < 0.03 && y > -0.03 && y < 0.005) { st += 0.6; rough = 100; }
+      // folds from the nose wings round the muzzle
+      const nl = Math.abs(ax - (0.045 + (-0.03 - y) * 0.45));
+      if (y < -0.025 && y > -0.11 && nl < mpt * 0.8 && z > 0.15) st -= 1.0;
+      // the mouth: a dark line, deep corners, the upper lip creased vertically, a fleshy lower lip catching light
+      const ml = y + 0.085 + ax * ax * 3;
+      if (z > 0.18 && Math.abs(ml) < mpt * 1.1) { px.put(i, GUM, 0.4); px.rough[i] = 90; continue; }
+      if (z > 0.17 && ax > 0.05 && ax < 0.062 && Math.abs(ml) < 0.006) st -= 1.2;
+      if (z > 0.18 && ml > 0 && ml < 0.018 && Math.abs(Math.sin(x * 420)) < 0.2) st -= 0.6;
+      if (z > 0.18 && ml < -mpt && ml > -0.014) { st += 0.7; rough = 95; R = LEA; }
+      // the chin's pad of skin, stubble at its edges
+      if (y < -0.12 && h3(Math.floor(x / mpt), Math.floor(y / mpt), 8) < 0.12) st -= 0.8;
+      px.put(i, R, st); px.rough[i] = rough;
     }
-    px.pelt({ len: 0.05, width: 0.014, flow: 1, down: 0.4, mask: (i) => fur[i], tooth: 1.5, clump: 0.5 });
+    yield;
+    px.pelt({ len: 0.05, width: 0.012, flow: 1, down: 0.4, mask: (i) => fur[i], tooth: 1.6, clump: 0.5, strands: 0.3 });
+    yield;
     px.creaseInk(1.3, { dark: 1.1, lit: 0.6 });
+    yield;
     px.flush();
   };
 }
@@ -193,7 +221,7 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const BIGFOOT_MODEL_VERSION = 'bigfoot@1';
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@4';
 export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
@@ -201,7 +229,7 @@ export function buildBigfootModel(o: { page?: number; den?: number } = {}): Bigf
 /** build the model in slices of ~30 ms, yielding to the event loop between them */
 export function buildBigfootModelAsync(o: { page?: number; den?: number } = {}): Promise<BigfootModel> { return runAsync(bigfootModelGen(o)); }
 /** the build as steps (see Body.buildGen) */
-export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Generator<void, BigfootModel> {
+export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Generator<string | void, BigfootModel> {
   const bones = bigfootBones(), bi = (n: string) => { const k = bones.findIndex((b) => b.name === n); if (k < 0) throw new Error(n); return k; };
   const body = new Body(o.page ?? 1024);
   body.seed = 2701;
@@ -289,23 +317,26 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
     }
   };
   // torso: long over the shoulders and back, shorter on the belly, the buttocks shaggy
-  sow(torso, 0, 300, {
-    u0: 0, u1: 1, v0: 0.04, v1: 0.97, wid: 0.024, seed: 3, skin: torsoSkin, droop: 0.5, lift: 0.25,
-    len: (p) => { const back = p[2] < 0.02 ? 1 : 0.6; return (0.13 + 0.08 * cl((p[1] - 1.7) / 0.5, 0, 1)) * back * (p[1] < 1.2 ? 0.6 : 1); },
+  sow(torso, 0, 420, {
+    u0: 0, u1: 1, v0: 0.04, v1: 0.97, wid: 0.026, seed: 3, skin: torsoSkin, droop: 0.55, lift: 0.18,
+    // longest over the shoulders and the back (a mantle), shorter on the chest and belly
+    len: (p) => { const back = p[2] < 0.02 ? 1 : 0.55; const sh = cl((p[1] - 1.75) / 0.4, 0, 1) * (1 - cl((p[1] - 2.22) / 0.1, 0, 1)); return (0.15 + 0.13 * sh) * back * (p[1] < 1.2 ? 0.6 : 1); },
   });
   // head: a cap of hair over the crown and crest, the cheeks' side-whiskers
-  sow(skull, 0, 80, {
-    u0: 0.2, u1: 0.8, v0: 0.0, v1: 0.72, wid: 0.02, seed: 5, skin: () => [bi('head'), 1], lift: 0.4, droop: 0.4,
+  sow(skull, 0, 110, {
+    u0: 0.12, u1: 0.88, v0: 0.0, v1: 0.8, wid: 0.02, seed: 5, skin: () => [bi('head'), 1], lift: 0.4, droop: 0.4,
     len: (p, n) => (p[2] > H[2] + 0.1 && p[1] > H[1] - 0.15 && p[1] < H[1] + 0.1 ? 0 : n[2] > 0.6 ? 0 : 0.075),
     dir: (_p, n) => norm([n[0] * 0.6, -0.8, -0.5 + n[2] * 0.3]),
   });
   // arms: long hair hanging off the backs of the upper arms and forearms
   for (const lp of limbs) {
     const isArm = lp.name.startsWith('arm');
-    sow(lp, 0, isArm ? 95 : 80, {
-      u0: 0, u1: 1, v0: 0.05, v1: isArm ? 0.9 : 0.75, wid: 0.022, seed: isArm ? 11 : 17, skin: lp.skin, droop: 0.5,
-      len: (p) => (isArm ? 0.15 + 0.04 * cl((p[1] - 1.1) / 0.6, 0, 1) : 0.12 * cl((p[1] - 0.3) / 0.4, 0.3, 1)),
-      dir: (_p, n, dv) => norm([n[0] * 0.3 + dv[0] * 0.4, -1, n[2] * 0.3 + dv[2] * 0.4]),
+    // limb hair lies along the limb toward the hand or foot (it hangs when the arm hangs, and stays laid along a
+    // raised arm instead of sticking out), longest off the backs of the forearms and the outsides of the upper arms
+    sow(lp, 0, isArm ? 130 : 95, {
+      u0: 0, u1: 1, v0: 0.05, v1: isArm ? 0.92 : 0.78, wid: 0.024, seed: isArm ? 11 : 17, skin: lp.skin, droop: 0.12, lift: 0.12,
+      len: (p, n) => (isArm ? (0.17 + 0.07 * cl(-n[2] * 1.5, 0, 1)) * (p[1] < 1.15 ? 0.7 : 1) : 0.14 * cl((p[1] - 0.3) / 0.4, 0.3, 1)),
+      dir: (_p, n, dv) => norm([dv[0] + n[0] * 0.18, dv[1] + n[1] * 0.18, dv[2] + n[2] * 0.18]),
     });
   }
   const lk = locks({ name: 'hair', seats, tiles: [FUR, FUR, FUR], steps: [1, 2, 3], seed: 9 });

@@ -66,7 +66,7 @@ export class Game {
   day = 0;
   /** game seconds per real second */
   timeScale = 30;
-  weather: Weather = { cloud: 0.35, rain: 0, fog: 0.35, storm: 0 };
+  weather: Weather = { cloud: 0.35, rain: 0, fog: 0.12, storm: 0 };
   indoors = false;
   // plug-ins
   forest: (ForestLike & { update(dt: number): void; trunkColliders?(x: number, z: number, r: number): { id: number | string; x: number; z: number; r: number; h: number }[] }) | null = null;

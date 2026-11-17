@@ -415,11 +415,11 @@ export function surfaceTextureFrom(data: Uint8Array, W: number, H: number): THRE
 /** a page as a texture whose smaller levels are drawn, not blurred: each mip level takes the most frequent colour of
  *  every 2x2 block of the level above (the darkest on a tie, so outlines survive), so a creature seen small stays in
  *  palette colours and clean clusters, and its alpha markers (glow, wet eyes, cut hair) are never averaged */
-export function pixelTexture(data: Uint8Array, W: number, H: number): THREE.DataTexture {
+export function pixelTexture(data: Uint8Array, W: number, H: number, mips?: { data: Uint8Array; width: number; height: number }[]): THREE.DataTexture {
   const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat, THREE.UnsignedByteType);
   tex.magFilter = THREE.NearestFilter;
   tex.minFilter = THREE.NearestMipmapNearestFilter;
-  tex.mipmaps = pixelMips(data, W, H) as unknown as typeof tex.mipmaps;
+  tex.mipmaps = (mips ?? pixelMips(data, W, H)) as unknown as typeof tex.mipmaps;
   tex.generateMipmaps = false;
   tex.flipY = false;
   tex.colorSpace = THREE.SRGBColorSpace;

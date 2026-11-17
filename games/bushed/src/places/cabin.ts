@@ -235,8 +235,8 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
     const y0 = deckY(0), y1 = deckY(XE) - K * 0; // eave edge
     const a = V(x0, y0, ZB), b = V(x1, deckY(XE), ZB), c = V(x1, deckY(XE), ZF), d = V(x0, y0, ZF);
     const L = XE * hyp;
-    if (s > 0) ms.quad('board_dark', a, d, c, b, [0, 0], [ZF - ZB, 0], [ZF - ZB, L], [0, L]);
-    else ms.quad('board_dark', a, b, c, d, [0, 0], [0, L], [ZF - ZB, L], [ZF - ZB, 0]);
+    if (s > 0) ms.quad('board_dark', a, b, c, d, [0, 0], [0, L], [ZF - ZB, L], [ZF - ZB, 0]);
+    else ms.quad('board_dark', a, d, c, b, [0, 0], [ZF - ZB, 0], [ZF - ZB, L], [0, L]);
     void y1;
     // ---- shake courses on top
     const top0 = ROOF_T + 0.012; // above the deck underside
@@ -263,8 +263,8 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
       // butt face
       const A0 = P(t0, 0, zs0), B0 = P(t0, 0, zs1);
       const bu: [number, number][] = [[uo, vb], [uo + (zs1 - zs0), vb], [uo + (zs1 - zs0), vb + 0.02], [uo, vb + 0.02]];
-      if (s > 0) ms.quad('shakes', A0, B0, B, A, bu[0], bu[1], bu[2], bu[3]);
-      else ms.quad('shakes', B0, A0, A, B, bu[1], bu[0], bu[3], bu[2]);
+      if (s > 0) ms.quad('shakes', B0, A0, A, B, bu[1], bu[0], bu[3], bu[2]);
+      else ms.quad('shakes', A0, B0, B, A, bu[0], bu[1], bu[2], bu[3]);
     }
     // eave fascia and the underside of the eave edge
     const fx = s * XE;

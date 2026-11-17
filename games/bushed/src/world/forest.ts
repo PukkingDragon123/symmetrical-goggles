@@ -26,6 +26,9 @@ export interface TreeRef {
   model(): TreeModel;
 }
 
+/** a lightweight standing-tree record (no model) for placement queries */
+export interface Stand { id: number; species: SpeciesId; x: number; y: number; z: number; r: number; h: number; crown: number; conifer: boolean; dead: boolean }
+
 export interface TrunkHit { ref: TreeRef; point: THREE.Vector3; normal: THREE.Vector3; h: number }
 export interface TrunkCollider { id: number; x: number; z: number; r: number; h: number }
 
@@ -627,6 +630,19 @@ export class Forest {
       if (rr < 0.035) return; // saplings: walk through them
       const [cx, cz] = this.trunkCentre(id, 1);
       out.push({ id, x: cx, z: cz, r: rr, h: v.height * s });
+    });
+    return out;
+  }
+
+  /** standing trees near (x, z) as plain records: trunk radius at 1 m, height, crown radius (ground cover, AI) */
+  stands(x: number, z: number, r: number): Stand[] {
+    const out: Stand[] = [];
+    this.forEachNear(x, z, r, (id) => {
+      if (this.tstate[id] !== 0) return;
+      const v = this.variants[this.tvar[id]];
+      const s = this.tscale[id];
+      out.push({ id, species: v.def.species, x: this.tx[id], y: this.ty[id], z: this.tz[id], r: v.r1 * s, h: v.height * s,
+        crown: v.def.form === 'snag' ? 0.5 : v.model.crownRadius * s, conifer: SPECIES[v.def.species].conifer, dead: v.def.form === 'snag' });
     });
     return out;
   }

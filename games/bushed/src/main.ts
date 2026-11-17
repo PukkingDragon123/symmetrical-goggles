@@ -76,6 +76,7 @@ async function boot() {
     game.player.pitch = Number(params.get('pitch') ?? 0);
     game.terrain.prime(new THREE.Vector3(sx, 0, sz));
     game.mode = 'walk';
+    game.flags.add('free');
     hud.fadeTo(false, 0.5);
     if (game.jeep && params.has('jeep')) { game.jeep.spawn(sx + 4, sz, 0); }
     if (params.has('test')) {

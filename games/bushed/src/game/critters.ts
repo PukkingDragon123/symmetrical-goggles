@@ -3,7 +3,7 @@
 // hound lunges, Ray's axe goes flying, the hound runs off with it to chew the handle, and jerky settles it.
 import * as THREE from 'three';
 import type { Game } from './game';
-import { AxehandleHound, Bigfoot, HOUND_SOUND, BIGFOOT_SOUND, giftMesh, type CreatureCtx, type GroundItem } from '../creatures';
+import { AxehandleHound, Bigfoot, HOUND_SOUND, BIGFOOT_SOUND, giftMesh, preloadCreatures, type CreatureCtx, type GroundItem } from '../creatures';
 import { SPOTS, heightAt } from '../world/layout';
 import { audio } from '../audio/audio';
 import { SOUNDS } from '../audio/bank';
@@ -54,9 +54,9 @@ export class Critters {
   }
 
   /** build models (slow: a few seconds each) */
-  async spawn(): Promise<void> {
+  async spawn(onProgress?: (f: number) => void): Promise<void> {
     const yieldFrame = () => new Promise((r) => setTimeout(r, 0));
-    await yieldFrame();
+    await preloadCreatures({ onProgress } as never);
     const c = SPOTS.cabin;
     this.hound = new AxehandleHound({ pos: new THREE.Vector3(c.x + 40, heightAt(c.x + 40, c.z + 30), c.z + 30) });
     this.hound.object.visible = false;
@@ -186,11 +186,10 @@ export class Critters {
     const ctx = this.ctx(dt);
     if (this.hound) {
       const h = this.hound;
-      // before the intro beat the hound stays out of the world
-      if (h.object.visible || g.flags.has('first_fire') || !g.flags.has('ray_note')) {
-        if (!h.object.visible && g.hour > 20 && g.flags.has('first_fire')) h.object.visible = true;
-        if (h.object.visible) h.update(ctx);
-      }
+      // the hound stays out of the world until the intro's first fire (or free play) and the night
+      const allowed = g.flags.has('first_fire') || g.flags.has('free');
+      if (!h.object.visible && allowed && (g.hour > 20 || g.hour < 5 || h.state === 'companion')) h.object.visible = true;
+      if (h.object.visible) h.update(ctx);
       // the axe comes back when it is done chewing (or fed)
       const carrying = !!(h as unknown as { carrying: unknown }).carrying;
       if (this.wasCarrying && !carrying && this.carried) {

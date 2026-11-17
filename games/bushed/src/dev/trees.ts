@@ -15,6 +15,7 @@ import { GroundCover } from '../world/groundcover';
 const Q = new URLSearchParams(location.search);
 const num = (k: string, d: number) => (Q.has(k) ? parseFloat(Q.get(k)!) : d);
 const lineup = Q.get('lineup') === '1';
+if (Q.get('gcdebug') === '1') (globalThis as unknown as { __gcdebug: boolean }).__gcdebug = true;
 
 const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
 renderer.setPixelRatio(num('res', Math.min(1, window.devicePixelRatio)));
@@ -125,7 +126,7 @@ if (lineup) {
   });
 } else {
   if (Q.get('noforest') !== '1') forest = new Forest(scene, camera, renderer);
-  if (Q.get('nogc') !== '1') ground = new GroundCover(scene, camera);
+  if (Q.get('nogc') !== '1') ground = new GroundCover(scene, camera, { forest });
   if (forest && Q.get('vstats') === '1') info.push(forest.variantStats());
 }
 

@@ -186,6 +186,6 @@ export class Sky {
     grade.saturation = k.sat * (1 - 0.25 * rain);
     grade.lift.set(k.lift[0], k.lift[1], k.lift[2]);
     grade.shafts = 0.75 * (1 - cloud * 0.7);
-    grade.mie = 0.7 * (1 - 0.5 * cloud) * (1 + weather.fog);
+    grade.mie = 0.42 * (1 - 0.5 * cloud) * (1 + weather.fog);
   }
 }

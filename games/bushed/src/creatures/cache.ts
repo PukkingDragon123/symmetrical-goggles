@@ -7,6 +7,8 @@ import { pixelTexture, surfaceTextureFrom } from './anatomy';
 export interface Packed {
   attrs: { name: string; a: Float32Array | Uint16Array | Uint32Array; n: number }[];
   index: Uint16Array | Uint32Array; tex: Uint8Array; sd: Uint8Array; W: number; H: number; meta: Record<string, unknown>;
+  /** the colour page's drawn mip chain (level 0 is tex) */
+  mips?: { data: Uint8Array; width: number; height: number }[];
 }
 export interface Built { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture }
 
@@ -17,14 +19,16 @@ export function pack(m: Built, meta: Record<string, unknown> = {}): Packed {
     attrs.push({ name, a: a.slice(), n: (at as THREE.BufferAttribute).itemSize });
   }
   const img = (t: THREE.DataTexture) => (t.image as { data: Uint8Array; width: number; height: number });
-  return { attrs, index: (m.geo.index!.array as Uint16Array | Uint32Array).slice(), tex: img(m.tex).data.slice(), sd: img(m.sd).data.slice(), W: img(m.tex).width, H: img(m.tex).height, meta };
+  const mips = (m.tex.mipmaps as unknown as { data: Uint8Array; width: number; height: number }[] | undefined)?.map((l) => ({ data: l.data.slice(), width: l.width, height: l.height }));
+  return { attrs, index: (m.geo.index!.array as Uint16Array | Uint32Array).slice(), tex: img(m.tex).data.slice(), sd: img(m.sd).data.slice(), W: img(m.tex).width, H: img(m.tex).height, meta, mips };
 }
 export function unpack(p: Packed): Built {
   const geo = new THREE.BufferGeometry();
   for (const a of p.attrs) geo.setAttribute(a.name, new THREE.BufferAttribute(a.a, a.n));
   geo.setIndex(new THREE.BufferAttribute(p.index, 1));
   geo.computeBoundingSphere();
-  return { geo, tex: pixelTexture(p.tex, p.W, p.H), sd: surfaceTextureFrom(p.sd, p.W, p.H) };
+  const mips = p.mips && p.mips.length ? [{ data: p.tex, width: p.W, height: p.H }, ...p.mips.slice(1)] : undefined;
+  return { geo, tex: pixelTexture(p.tex, p.W, p.H, mips), sd: surfaceTextureFrom(p.sd, p.W, p.H) };
 }
 
 const DB = 'bushed-creatures', STORE = 'models';

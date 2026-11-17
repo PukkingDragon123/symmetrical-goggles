@@ -10,6 +10,7 @@ import { loadTex } from '../gfx/tex';
 import { heightAt, SPOTS } from '../world/layout';
 import { buildCabin } from '../places/cabin';
 import type { Place } from '../places/kit';
+import { Forest } from '../world/forest';
 
 const q = new URLSearchParams(location.search);
 const W = window as unknown as { __ready?: boolean; __errors?: string[]; __places?: unknown };
@@ -50,11 +51,21 @@ function groundPatch(cx: number, cz: number, half: number, step: number): THREE.
 
 /** dark conifer silhouettes around a clearing (dev-page stand-in for the forest module) */
 function treeRing(cx: number, cz: number, r0: number, r1: number, n: number, seed: number): THREE.InstancedMesh {
-  const g = new THREE.ConeGeometry(1, 1, 7, 1);
-  g.translate(0, 0.5, 0);
-  const trunk = new THREE.CylinderGeometry(0.12, 0.18, 1, 6);
-  void trunk;
-  const mat = new THREE.MeshStandardMaterial({ color: 0x1c2a1e, roughness: 1 });
+  const parts: THREE.BufferGeometry[] = [];
+  for (let k = 0; k < 4; k++) {
+    const c = new THREE.ConeGeometry(1 - k * 0.2, 0.42, 8, 1);
+    c.translate(0, 0.21 + 0.14 + k * 0.19, 0);
+    parts.push(c.toNonIndexed());
+  }
+  const tr = new THREE.CylinderGeometry(0.05, 0.08, 0.4, 6);
+  tr.translate(0, 0.2, 0);
+  parts.push(tr.toNonIndexed());
+  const pos: number[] = [];
+  for (const p of parts) pos.push(...(p.attributes.position.array as Float32Array));
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x18241a, roughness: 1 });
   const im = new THREE.InstancedMesh(g, mat, n);
   let s = seed;
   const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
@@ -62,8 +73,8 @@ function treeRing(cx: number, cz: number, r0: number, r1: number, n: number, see
   for (let i = 0; i < n; i++) {
     const a = rnd() * Math.PI * 2, d = r0 + (r1 - r0) * Math.sqrt(rnd());
     const x = cx + Math.cos(a) * d, z = cz + Math.sin(a) * d;
-    const h = 12 + rnd() * 14, w = h * (0.16 + rnd() * 0.06);
-    m.compose(new THREE.Vector3(x, heightAt(x, z) + 1.2, z), new THREE.Quaternion(), new THREE.Vector3(w, h, w));
+    const h = 12 + rnd() * 14, w = h * (0.17 + rnd() * 0.05);
+    m.compose(new THREE.Vector3(x, heightAt(x, z) - 0.2, z), new THREE.Quaternion(), new THREE.Vector3(w, h, w));
     im.setMatrixAt(i, m);
   }
   im.castShadow = true;
@@ -80,6 +91,7 @@ function localView(place: Place, name: string, p: [number, number, number], l: [
 }
 
 const places: Place[] = [];
+let forest: Forest | null = null;
 let yaw = 0, pitch = 0;
 function setView(name: string): void {
   const v = views[name];
@@ -100,7 +112,7 @@ async function main(): Promise<void> {
     scene.add(cabin.group);
     places.push(cabin);
     scene.add(groundPatch(SPOTS.cabin.x + 4, SPOTS.cabin.z + 4, 60, 1));
-    scene.add(treeRing(SPOTS.cabin.x + 3, SPOTS.cabin.z + 3, 24, 60, 220, 11));
+    if (q.get('forest') !== '1') scene.add(treeRing(SPOTS.cabin.x + 3, SPOTS.cabin.z + 3, 24, 60, 220, 11));
     localView(cabin, 'cabin_ext', [-6.8, 1.75, 12.5], [0.4, 1.9, 2.0]);
     localView(cabin, 'cabin_int', [-0.95, 1.95, 2.35], [1.0, 1.0, -2.2]);
     localView(cabin, 'cabin_int2', [1.6, 1.85, -0.6], [-1.8, 1.1, 1.4]);
@@ -117,12 +129,17 @@ async function main(): Promise<void> {
       scene.add(store.group);
       places.push(store);
       scene.add(groundPatch(SPOTS.store.x, SPOTS.store.z, 60, 1));
-      scene.add(treeRing(SPOTS.store.x, SPOTS.store.z, 34, 70, 220, 23));
+      if (q.get('forest') !== '1') scene.add(treeRing(SPOTS.store.x, SPOTS.store.z, 34, 70, 220, 23));
       localView(store, 'store_ext', [-8.5, 1.7, 16], [0, 2.5, 3]);
       localView(store, 'store_int', [-2.6, 1.7, 4.2], [1.5, 1.2, -3.0]);
       localView(store, 'store_int2', [2.2, 1.7, -3.5], [-2.0, 1.3, 3.0]);
       localView(store, 'log_deck', [12, 2.2, 10], [6.5, 0.6, 0]);
     } catch (e) { W.__errors!.push('store: ' + String(e)); }
+  }
+  if (q.get('forest') === '1') {
+    try {
+      forest = new Forest(scene, camera, R.gl, { far: Number(q.get('far') ?? 140), shadow: 40 });
+    } catch (e) { W.__errors!.push('forest: ' + String(e)); }
   }
   const lamps = q.get('lamps') ?? (hour > 17 || hour < 7 ? '1' : '0.25');
   for (const p of places) p.setLamps?.(Number(lamps));
@@ -146,9 +163,17 @@ async function main(): Promise<void> {
   addEventListener('keydown', (e) => { const i = Number(e.key) - 1; const k = Object.keys(views)[i]; if (k) setView(k); });
 
   setView(q.get('view') ?? Object.keys(views)[0]);
+  const lc = q.get('lc');
+  if (lc && places[0]) {
+    const v = lc.split(',').map(Number);
+    localView(places[0], '_lc', [v[0], v[1], v[2]], [v[3], v[4], v[5]]);
+    const keep = q.get('view');
+    setView('_lc');
+    if (keep) q.set('view', keep);
+  }
   // let textures land, then flag ready after a few frames
   let frames = 0;
-  const go = () => { frames++; if (frames > 30) W.__ready = true; else requestAnimationFrame(go); };
+  const go = () => { frames++; if (frames > Number(q.get('frames') ?? 12)) { W.__ready = true; if (q.get('shot') === '1') stopAfter = 2; } else requestAnimationFrame(go); };
   setTimeout(() => requestAnimationFrame(go), 1500);
 }
 
@@ -175,7 +200,10 @@ addEventListener('resize', onResize);
 onResize();
 
 let last = performance.now();
+let stopAfter = -1;
 function frame(now: number): void {
+  if (stopAfter === 0) return;
+  if (stopAfter > 0) stopAfter--;
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
   G.uTime.value += dt;
@@ -191,6 +219,7 @@ function frame(now: number): void {
   camera.rotation.set(pitch, yaw, 0, 'YXZ');
   G.uCamPos.value.copy(camera.position);
   for (const p of places) p.update(dt);
+  forest?.update(dt);
   sky.update(hour, camera.position, { cloud: 0.3, rain: 0, fog: Number(q.get('fog') ?? 0.05), storm: 0 }, R.grade, G.uTime.value);
   R.sunDir.copy(sky.sunDir); R.sunColor.copy(sky.sun.color); R.fogColor.copy(sky.fogColor);
   R.render(scene, camera);

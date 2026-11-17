@@ -47,7 +47,7 @@ if (!showLabels) labels.domElement.style.display = 'none';
 // ---- lights
 const key = new THREE.DirectionalLight(night ? 0x8fa6d8 : 0xffd2a0, night ? 0.25 : 2.6);
 key.castShadow = true;
-key.shadow.mapSize.set(4096, 4096);
+key.shadow.mapSize.set(2048, 2048);
 key.shadow.bias = -0.0004;
 key.shadow.normalBias = 0.02;
 scene.add(key, key.target);
@@ -279,7 +279,15 @@ async function main(): Promise<void> {
   controls.update();
   // let textures upload, then signal screenshot scripts
   renderer.render(scene, camera);
-  setTimeout(() => { W.__ready = true; }, 300);
+  setTimeout(() => {
+    if (q.get('still') === '1') {   // screenshot scripts: draw one frame and stop the loop (SwiftShader is slow)
+      renderer.setAnimationLoop(null);
+      controls.update();
+      renderer.render(scene, camera);
+      labels.render(scene, camera);
+    }
+    W.__ready = true;
+  }, 300);
 }
 main().catch((e) => { W.__errors!.push(String(e)); W.__ready = true; });
 
