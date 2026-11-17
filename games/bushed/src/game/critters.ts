@@ -53,6 +53,7 @@ export class Critters {
       }
     });
     game.events.on('intro_hound', () => this.introHound());
+    game.events.on('menu_scare', (e: { pos: THREE.Vector3 }) => this.menuScare(e.pos));
   }
 
   /** build models (slow: a few seconds each) */
@@ -161,6 +162,41 @@ export class Critters {
       case 'knock': if (this.game.player.pos.distanceTo(pos) < 120) j.learn('bigfoot', 'knock'); break;
       case 'flee': if (this.game.flashOn) j.learn('bigfoot', 'light'); break;
     }
+  }
+
+  /** the porch at night: eyes in the dark, or the big one watching from the treeline */
+  private eyes: THREE.Group | null = null;
+  private menuScare(pos: THREE.Vector3): void {
+    const g = this.game;
+    if (Math.random() < 0.45 && this.bigfoot) {
+      const b = this.bigfoot;
+      const p = pos.clone(); p.y = heightAt(p.x, p.z);
+      b.object.position.copy(p);
+      (b as unknown as { pos?: THREE.Vector3 }).pos?.copy(p);
+      b.object.visible = true;
+      playSound('bigfoot_branch_break', p, 0.8);
+      return;
+    }
+    if (!this.eyes) {
+      this.eyes = new THREE.Group();
+      const mat = new THREE.MeshBasicMaterial({ color: 0xffd27a, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+      for (const x of [-0.07, 0.07]) { const e = new THREE.Mesh(new THREE.PlaneGeometry(0.035, 0.022), mat); e.position.x = x; this.eyes.add(e); }
+      g.scene.add(this.eyes);
+    }
+    const e = this.eyes;
+    const p = pos.clone().multiplyScalar(0.6).add(g.camera.position.clone().multiplyScalar(0.4));
+    p.y = heightAt(p.x, p.z) + 0.5 + Math.random() * 1.6;
+    e.position.copy(p);
+    e.lookAt(g.camera.position);
+    e.visible = true;
+    e.scale.setScalar(1 + Math.random());
+    let t = 0;
+    const blink = setInterval(() => {
+      t += 0.1;
+      e.visible = !(t > 1.2 && t < 1.32) && t < 3.4 + Math.random() * 0.1;
+      if (t > 3.6) { clearInterval(blink); e.visible = false; }
+    }, 100);
+    if (Math.random() < 0.5) playSound('hound_growl', p, 0.35);
   }
 
   /** the intro: the hound comes for the axe */
