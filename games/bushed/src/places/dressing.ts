@@ -222,6 +222,8 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
     product(group, 'enamel_mug', tcx - 0.1, ty, tcz + 0.12, 2.5);
     product(group, 'beer', tcx + 0.15, ty, tcz - 0.55, 0.2);
     product(group, 'bread', tcx - 0.12, ty, tcz + 0.62, 0.4);
+    product(group, 'candle', tcx + 0.2, ty, tcz + 0.05, 0);
+    candleFlame(c, tcx + 0.2, ty + 0.072, tcz + 0.05);
     pending.push(prop(group, 'wooden_cutting_board', tcx - 0.1, ty, tcz + 0.62, 0.3).then((o) => { if (o) o.position.y = ty; }));
     // bench
     const bx = tx1 + 0.3, bz0 = -0.62, bz1 = 0.9, by = F + 0.45;
@@ -272,6 +274,7 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
     board(ms, 'board_warm', rnd, -wallX + 0.12, F + 1.62, cz + 0.25, 0.22, 0.03, 0.9, 0, { grain: 'z' });
     product(group, 'book_stack', -wallX + 0.12, F + 1.635, cz + 0.05, Math.PI / 2);
     product(group, 'candle', -wallX + 0.12, F + 1.635, cz + 0.5, 0);
+    candleFlame(c, -wallX + 0.12, F + 1.635 + 0.072, cz + 0.5);
     // boots under the bunk
     pending.push(prop(group, 'rubber_boots', cx + 0.15, F, bz1 + 0.22, 0.3));
   }
@@ -516,6 +519,14 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
 }
 
 // ---------------------------------------------------------------------------------------------- pieces
+/** a small flickering candle flame (emissive card pair, no light of its own) */
+function candleFlame(c: DressCtx, x: number, y: number, z: number): void {
+  const f = flameCards(0.025, 0.05, Math.round(x * 100));
+  f.position.set(x, y, z);
+  c.group.add(f);
+  c.updaters.push((dt) => f.userData.tick(dt, 0.9));
+}
+
 /** irregular flagstones (jittered grid cells, each a thick slab with chamfered edges) over [x0,x1]x[z0,z1] at height y */
 export function flagstones(ms: Mesher, rnd: Rand, x0: number, x1: number, z0: number, z1: number, y: number, cell = 0.32): void {
   const nx = Math.max(1, Math.round((x1 - x0) / cell)), nz = Math.max(1, Math.round((z1 - z0) / cell));
@@ -708,7 +719,7 @@ function rug(ms: Mesher, rx: number, rz: number): void {
       const P = (t: number, a: number) => V(Math.cos(a) * rx * t, 0.002 * Math.sin(t * 40), Math.sin(a) * rz * t);
       const arc = (t: number, a: number) => a * (rx + rz) / 2 * t * 2;
       const up = V(0, 1, 0);
-      ms.quad('rug', P(t0, a0), P(t1, a0), P(t1, a1), P(t0, a1), [arc(t0, a0), t0 * 0.5], [arc(t1, a0), t1 * 0.5], [arc(t1, a1), t1 * 0.5], [arc(t0, a1), t0 * 0.5], up);
+      ms.quad('rug', P(t0, a0), P(t0, a1), P(t1, a1), P(t1, a0), [arc(t0, a0), t0 * 0.5], [arc(t0, a1), t0 * 0.5], [arc(t1, a1), t1 * 0.5], [arc(t1, a0), t1 * 0.5], up);
     }
   }
 }

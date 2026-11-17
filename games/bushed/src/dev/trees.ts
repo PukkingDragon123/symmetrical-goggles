@@ -57,6 +57,7 @@ const SH = 45;
 Object.assign(sun.shadow.camera, { left: -SH, right: SH, top: SH, bottom: -SH, near: 1, far: 260 });
 sun.shadow.bias = -0.0004;
 sun.shadow.normalBias = 0.04;
+sun.shadow.camera.layers.enable(1); // Forest shadow-only proxies (trees behind the camera)
 scene.add(sun, sun.target);
 let hour = num('hour', 10.5);
 function placeSun(): void {

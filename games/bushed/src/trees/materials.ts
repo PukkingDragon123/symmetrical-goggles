@@ -237,7 +237,7 @@ const FOLIAGE_OPTS: Record<SpeciesId, FoliageOpts> = {
 export function createTreeMaterials(species: SpeciesId, lod?: THREE.Vector4): TreeMaterialSet {
   const u = makeUniforms(lod);
   const bark = new THREE.MeshStandardMaterial({
-    map: barkTexture(species), normalMap: barkNormal(species), normalScale: new THREE.Vector2(1.1, 1.1),
+    map: barkTexture(species), normalMap: barkNormal(species), normalScale: new THREE.Vector2(1.7, 1.7),
     vertexColors: true, roughness: 0.93, metalness: 0,
   });
   bark.name = `bark_${species}`;

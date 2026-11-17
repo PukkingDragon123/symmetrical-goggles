@@ -11,7 +11,7 @@ import * as THREE from 'three';
 import { SPOTS, heightAt } from '../world/layout';
 import {
   Place, Mesher, Rand, Cols, V, tf, box, boxAt, board, logAB, log, lathe, tube, rectsMinus, anchor, interiorBoxes,
-  flicker, shadowy, defineMat, placeTex, hasMat,
+  flicker, shadowy, defineMat, placeTex, hasMat, lightCuller,
 } from './kit';
 import { windowUnit, doorFrame, glassMat, glassMaterial } from './fixtures';
 import { buildStove, STOVE } from './stove';
@@ -43,8 +43,8 @@ const HOLES: Hole[] = [
   { wall: 'front', c: 0, w: 1.0, y0: FLOOR, y1: FLOOR + 2.15, kind: 'door' },
   { wall: 'front', c: -2.45, w: 1.9, y0: FLOOR + 0.75, y1: FLOOR + 2.35, kind: 'display' },
   { wall: 'front', c: 2.45, w: 1.9, y0: FLOOR + 0.75, y1: FLOOR + 2.35, kind: 'display' },
-  { wall: 'left', c: 1.2, w: 0.9, y0: FLOOR + 1.1, y1: FLOOR + 2.15, kind: 'window' },
-  { wall: 'left', c: -2.8, w: 0.9, y0: FLOOR + 1.1, y1: FLOOR + 2.15, kind: 'window' },
+  { wall: 'left', c: 2.15, w: 0.9, y0: FLOOR + 1.1, y1: FLOOR + 2.15, kind: 'window' },
+  { wall: 'left', c: -4.5, w: 0.9, y0: FLOOR + 1.1, y1: FLOOR + 2.15, kind: 'window' },
   { wall: 'right', c: -1.6, w: 0.9, y0: FLOOR + 1.3, y1: FLOOR + 2.15, kind: 'window' },
   { wall: 'right', c: 3.0, w: 0.9, y0: FLOOR + 1.3, y1: FLOOR + 2.15, kind: 'window' },
   { wall: 'back', c: -2.2, w: 0.95, y0: FLOOR, y1: FLOOR + 2.1, kind: 'pass' },
@@ -441,6 +441,25 @@ export async function buildStore(): Promise<Place> {
     }
     cols.box(gx, F + 0.75, gz, 0.45, 0.75, len / 2);
   }
+  // ---- a low table of camp goods by the window: lantern, pot, pan, gloves, first aid kit (props)
+  {
+    const tx = -2.35, tz = 4.72;
+    board(ms, 'board_warm', rnd, tx, F + 0.72, tz, 1.2, 0.04, 0.6, 0, { grain: 'x' });
+    for (const [lx, lz] of [[-0.55, -0.25], [0.55, -0.25], [-0.55, 0.25], [0.55, 0.25]] as [number, number][]) boxAt(ms, 'board_warm', tx + lx, F + 0.35, tz + lz, 0.05, 0.7, 0.05, 0, { grain: 'y' });
+    board(ms, 'board_dark', rnd, tx, F + 0.2, tz, 1.1, 0.025, 0.5, 0, { grain: 'x' });
+    cols.box(tx, F + 0.37, tz, 0.6, 0.37, 0.3);
+    const goods: [string, number, number, number][] = [['lantern', -0.4, 0.0, 0.3], ['pot', 0.0, 0.05, 0.4], ['first_aid', 0.42, -0.05, -0.2], ['gloves', 0.3, 0.15, 0.9], ['pan', -0.1, 0.0, 0.2]];
+    for (const [id, ox, oz, ry] of goods) {
+      const it = ITEMS[id];
+      const y = id === 'pan' ? F + 0.2 : F + 0.74;
+      pending.push(prop(group, it.model, tx + ox, y + 0.012, tz + oz, ry).then((o) => {
+        if (!o) return;
+        o.userData.itemId = id;
+        stockList.push({ obj: o, itemId: id });
+      }));
+    }
+    anchors.camp_table = anchor(group, 'camp_table', tx, F + 0.74, tz, 0);
+  }
   // ---- the counter (right side) with the register, scale, jerky jar; display case at its front end
   const cx = 2.05, cz0 = -2.4, cz1 = 1.9, ch = F + 0.96, cd = 0.62;
   {
@@ -577,17 +596,19 @@ export async function buildStore(): Promise<Place> {
       }
     }
     anchors.display_case = anchor(group, 'display_case', dcx, gy0, dz, 0);
+    // the chainsaw sits on top of the case where everybody can covet it
+    stock('chainsaw', dcx + 0.1, gy1 + 0.012, dz, -1.9);
   }
   // ---- pegboard (back wall, right): axes, saws, rope, maul
   {
-    const px0 = 0.6, px1 = IX - 0.1, py0 = F + 0.9, py1 = F + 2.5, pz = -IZ + 0.015;
+    const px0 = -IX + 0.15, px1 = -1.45, py0 = F + 0.95, py1 = F + 2.55, pz = -IZ + 0.015;
     ms.quad('board_dark', V(px1, py0, pz), V(px0, py0, pz), V(px0, py1, pz), V(px1, py1, pz), [0, 0], [px1 - px0, 0], [px1 - px0, py1 - py0], [0, py1 - py0]);
     boxAt(ms, 'board_warm', (px0 + px1) / 2, py1 + 0.03, pz + 0.02, px1 - px0 + 0.06, 0.06, 0.04);
     boxAt(ms, 'board_warm', (px0 + px1) / 2, py0 - 0.03, pz + 0.02, px1 - px0 + 0.06, 0.06, 0.04);
     // peg holes: a grid of dark dots
     ensurePegMat();
     ms.quad('pegholes', V(px0 + 0.02, py0 + 0.02, pz + 0.002), V(px1 - 0.02, py0 + 0.02, pz + 0.002), V(px1 - 0.02, py1 - 0.02, pz + 0.002), V(px0 + 0.02, py1 - 0.02, pz + 0.002), [0, 0], [(px1 - px0) / 0.05, 0], [(px1 - px0) / 0.05, (py1 - py0) / 0.05], [0, (py1 - py0) / 0.05]);
-    const hang: [string, number, number, number][] = [['axe_felling', 0.9, F + 1.75, 0], ['axe_felling', 1.15, F + 1.75, 0], ['axe_splitting', 1.5, F + 1.75, 0], ['hatchet', 1.85, F + 2.0, 0], ['hatchet', 2.05, F + 2.0, 0], ['bucksaw', 2.5, F + 1.6, 0], ['maul', 3.3, F + 1.55, 0]];
+    const hang: [string, number, number, number][] = [['axe_felling', -3.45, F + 1.75, 0], ['axe_felling', -3.2, F + 1.75, 0], ['axe_splitting', -2.9, F + 1.75, 0], ['hatchet', -2.55, F + 2.05, 0], ['hatchet', -2.35, F + 2.05, 0], ['bucksaw', -1.95, F + 1.6, 0]];
     for (const [id, x, y] of hang) {
       const it = ITEMS[id];
       // pegs
@@ -606,10 +627,19 @@ export async function buildStore(): Promise<Place> {
       }));
     }
     // rope coils on pegs
-    for (const [x, y] of [[2.9, F + 2.15], [3.2, F + 2.15]] as [number, number][]) {
+    for (const [x, y] of [[-2.0, F + 2.25], [-1.7, F + 2.25]] as [number, number][]) {
       const o = stock('rope', x, y, pz + 0.07, 0);
       o.rotation.set(Math.PI / 2, 0, 0);
     }
+    // log tongs on a hook, the maul leaning below
+    const lt = stock('log_tongs', -2.4, F + 1.0, pz + 0.07, 0);
+    lt.scale.setScalar(1);
+    pending.push(prop(group, ITEMS.maul.model, -1.75, F, pz + 0.2, 0).then((o) => {
+      if (!o) return;
+      o.userData.itemId = 'maul';
+      o.rotation.set(-0.22, 0, 0);
+      stockList.push({ obj: o, itemId: 'maul' });
+    }));
     anchors.pegboard = anchor(group, 'pegboard', (px0 + px1) / 2, (py0 + py1) / 2, pz + 0.1, 0);
   }
   // ---- the barrel stove with the coffee pot, chairs around it, checkerboard on a barrel
@@ -665,14 +695,16 @@ export async function buildStore(): Promise<Place> {
       ms.pop(); ms.pop();
     };
     // wall-frame "along" is mirrored for interior viewing (the frame looks from outside)
-    sign('coffee_poster', 0.45, 0.6, 'right', -(-0.2), F + 1.75, 0.02);
-    sign('chainsaw_poster', 0.45, 0.6, 'back', -(-0.1), F + 1.8, -0.02);
-    sign('beer_sign', 0.5, 0.35, 'back', -(-1.0), F + 1.65, 0.0);
-    sign('price_board', 0.8, 0.6, 'right', -(1.2), F + 1.85, 0);
-    sign('sign_credit', 0.4, 0.15, 'right', -(0.4), F + 2.45, 0);
+    // 'along' is the wall frame's x: front = local x, back = -local x, right = -local z, left = +local z
+    sign('coffee_poster', 0.45, 0.6, 'right', -0.45, F + 1.75, 0.02);
+    sign('chainsaw_poster', 0.45, 0.6, 'back', -0.05, F + 1.8, -0.02);
+    sign('beer_sign', 0.5, 0.35, 'back', -1.1, F + 1.65, 0.0);
+    sign('price_board', 0.8, 0.6, 'right', 1.0, F + 1.75, 0);
+    sign('sign_credit', 0.4, 0.15, 'right', 1.0, F + 2.35, 0);
     sign('sign_hours', 0.2, 0.28, 'front', 0.75, F + 1.5, 0.03);
-    sign('sign_bait', 0.4, 0.2, 'back', -(-3.2), F + 2.3, 0.01);
+    sign('sign_bait', 0.4, 0.2, 'back', -2.2, F + 2.32, 0.01);
     sign('dog_poster', 0.22, 0.3, 'front', -0.78, F + 1.55, -0.04);
+    sign('fire_danger', 0.42, 0.28, 'left', -1.25, F + 2.78, 0.0);
     pending.push(prop(group, 'wall_clock', IX - 0.03, F + 2.45, -0.3, -Math.PI / 2));
   }
   // ---- the noticeboard (left wall near the front): cork-ish board with contract pins
@@ -762,12 +794,14 @@ export async function buildStore(): Promise<Place> {
     }
   }
   // the gooseneck lamps over the sign
-  for (const x of [-1.8, 1.8]) {
-    const l = new THREE.PointLight(0xffd6a0, 0, 4.5, 1.6);
-    l.position.set(x, 4.75 + 0.78, D / 2 + 0.5);
+  {
+    const l = new THREE.PointLight(0xffd6a0, 0, 6, 1.5);
+    l.position.set(0, 4.75 + 0.8, D / 2 + 0.75);
     group.add(l);
     lights.push(l);
-    lamps.push({ light: l, base: 2.6 });
+    lamps.push({ light: l, base: 4.5 });
+  }
+  for (const x of [-1.8, 1.8]) {
     const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), new THREE.MeshStandardMaterial({ color: 0x302010, emissive: new THREE.Color(1.0, 0.8, 0.5), emissiveIntensity: 3 }));
     bulb.position.set(x, 4.75 + 0.84, D / 2 + 0.47);
     bulb.userData.lamp = true;
@@ -775,10 +809,10 @@ export async function buildStore(): Promise<Place> {
   }
   // window spill toward the porch at night (warm dusty light)
   const spill: THREE.SpotLight[] = [];
-  for (const h of HOLES.filter((q) => q.kind === 'display')) {
-    const s = new THREE.SpotLight(0xffb366, 0, 9, 0.7, 0.8, 1.5);
-    s.position.set(h.c, (h.y0 + h.y1) / 2, D / 2 - 0.3);
-    s.target.position.set(h.c, 0, D / 2 + 4);
+  {
+    const s = new THREE.SpotLight(0xffb366, 0, 10, 1.05, 0.85, 1.5);
+    s.position.set(0, FLOOR + 1.6, D / 2 - 0.4);
+    s.target.position.set(0, 0, D / 2 + 4.5);
     group.add(s, s.target);
     spill.push(s);
     lights.push(s);
@@ -910,6 +944,11 @@ export async function buildStore(): Promise<Place> {
   });
   group.traverse((o) => { if (o.userData.lamp) ((o as THREE.Mesh).material as THREE.MeshStandardMaterial).emissiveIntensity = 3; });
 
+  const cull = lightCuller(new THREE.Vector3(sp.x, gy + 1.5, sp.z), lights, 90);
+  updaters.push(() => {
+    const k = cull();
+    if (k < 1) for (const l of lights) l.intensity *= k;
+  });
   const interior = interiorBoxes(sp.x, gy, sp.z, rot, -IX, IX, -IZ, IZ, FLOOR - 0.1, CEIL + 0.1);
   return {
     group,

@@ -140,7 +140,7 @@ export const SPECIES: Record<SpeciesId, Species> = {
     conifer: false, crownRatio: 0.55, crownWidth: 0.26, crownShape: 0.6, crownWidest: 0.45,
     whorlSpacing: 0, branchesPerWhorl: [1, 1], branchAngle: [0.55, 0.95], droop: 0.2, upturn: -0.3,
     taper: 0.8, flare: 0.25, flareHeight: 0.4, lobes: [2, 4], deadBranches: 0.35, lichen: 0.0,
-    card: [0.62, 0.31], leafDensity: 1.0, barkTile: [1.6, 1.6], upperBarkTint: [1.0, 1.0, 1.0],
+    card: [0.62, 0.31], leafDensity: 1.0, barkTile: [0.8, 1.6], upperBarkTint: [1.0, 1.0, 1.0],
     foliageTint: [1.0, 1.0, 1.0], forkChance: 0.3, brokenTopChance: 0.05, flex: 0.04,
   },
   cedar: {

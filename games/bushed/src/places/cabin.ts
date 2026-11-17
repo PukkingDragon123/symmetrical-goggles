@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import { SPOTS, heightAt } from '../world/layout';
 import {
   Place, Mesher, Rand, Cols, V, tf, box, boxAt, board, log, logAB, lathe, tube, poly, rectsMinus, anchor,
-  interiorBoxes, flicker, shadowy, placeMat,
+  interiorBoxes, flicker, shadowy, placeMat, lightCuller,
 } from './kit';
 import { windowUnit, doorFrame, doorLeaf, glassMat, glassMaterial } from './fixtures';
 import { buildStove, STOVE } from './stove';
@@ -475,6 +475,13 @@ export async function buildCabin(): Promise<Place> {
   anchors.porch = anchor(group, 'porch', -0.9, FLOOR, D / 2 + 1.0, 0);
   const tmp = new THREE.Vector3();
   void tmp;
+
+  // lights far from the camera go dark and stop rendering shadows (applied after every other updater)
+  const cull = lightCuller(new THREE.Vector3(sp.x, gy + 1.5, sp.z), lights, 80);
+  updaters.push(() => {
+    const k = cull();
+    if (k < 1) for (const l of lights) l.intensity *= k;
+  });
 
   const place: Place = {
     group,

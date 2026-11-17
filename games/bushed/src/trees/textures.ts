@@ -57,7 +57,7 @@ function mix3(a: RGB, b: RGB, t: number): RGB {
  * clamped to 32..512 px.
  */
 export function endGrainTexture(species: SpeciesId, radius: number, seed = 1): THREE.Texture {
-  const size = Math.max(32, Math.min(512, Math.round((radius * 2 * 256) / 8) * 8));
+  const size = Math.max(64, Math.min(768, Math.round((radius * 2 * 400) / 8) * 8));
   const key = `${species}:${size}:${seed}:${radius.toFixed(3)}`;
   const hit = egCache.get(key);
   if (hit) return hit;
@@ -79,9 +79,10 @@ export function endGrainTexture(species: SpeciesId, radius: number, seed = 1): T
   const checks: { a: number; r0: number; w: number }[] = [];
   const nChecks = R > 0.08 ? rng.int(1, R > 0.25 ? 5 : 3) : 0;
   for (let i = 0; i < nChecks; i++) checks.push({ a: rng.range(0, Math.PI * 2), r0: rng.range(0.25, 0.7), w: rng.range(0.006, 0.014) });
-  const sp2 = sp.ringSpacing;
+  // rings narrower than ~2.6 texels would alias away: draw them at least that wide (ringCount() stays true)
+  const sp2 = Math.max(sp.ringSpacing, (2.6 * 2 * R) / size);
   const knotA = rng.range(0, Math.PI * 2);
-  const steps = 7; // value quantisation (pixel-art bands)
+  const steps = 9; // value quantisation (pixel-art bands)
   for (let j = 0; j < size; j++) {
     for (let i = 0; i < size; i++) {
       const x = ((i + 0.5) / size * 2 - 1) * R;
@@ -113,8 +114,8 @@ export function endGrainTexture(species: SpeciesId, radius: number, seed = 1): T
         // transition zone
         if (!isHeart && rr < heartEdge + 0.01) col = mix3(sp.heartwood, sp.sapwood, 0.6);
         let k = 1;
-        if (late) k *= species === 'birch' ? 0.93 : 0.8;
-        else k *= 1 + 0.06 * (f - 0.5);
+        if (late) k *= species === 'birch' ? 0.86 : 0.64;
+        else k *= 0.94 + 0.1 * f;
         // fine fibre noise
         k *= 1 + 0.05 * noise.n2(x * 400, z * 400);
         col = [col[0] * k, col[1] * k, col[2] * k];

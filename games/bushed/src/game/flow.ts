@@ -13,6 +13,8 @@ import { paintPaper, paperMesh } from '../ui/paper';
 import { RAY_NOTE } from './story';
 import { hasSave } from './save';
 import { debris, puffs } from '../gfx/particles';
+import { flameCards } from '../places/fixtures';
+import { loadProp } from '../places/props';
 
 const think = (t: string, s = 3.5) => hud.say(`<i>${t}</i>`, s);
 
@@ -26,15 +28,23 @@ export function anchorPos(game: Game, name: string, fallback: THREE.Vector3): TH
 }
 
 /** a crackling campfire: flame cards from the places kit when present, light flicker, sparks, smoke */
-export function campfire(game: Game, pos: THREE.Vector3): { level: number; update(dt: number): void; light: THREE.PointLight } {
+export function campfire(game: Game, pos: THREE.Vector3, own = false): { level: number; update(dt: number): void; light: THREE.PointLight } {
   const light = new THREE.PointLight(0xff9a4a, 0, 14, 1.6);
   light.position.copy(pos).add(new THREE.Vector3(0, 0.6, 0));
   light.castShadow = true;
   light.shadow.mapSize.set(512, 512);
   light.shadow.bias = -0.002;
   game.scene.add(light);
-  const pitAnchor = game.cabin?.anchors?.firepit as THREE.Object3D | undefined;
-  const setFire = pitAnchor?.userData.setFire as ((l: number) => void) | undefined;
+  const pitAnchor = own ? undefined : game.cabin?.anchors?.firepit as THREE.Object3D | undefined;
+  let setFire = pitAnchor?.userData.setFire as ((l: number) => void) | undefined;
+  if (own) {
+    // a stone ring and its own flames
+    const flames = flameCards(0.55, 0.75, 11);
+    flames.position.copy(pos);
+    game.scene.add(flames);
+    setFire = (l: number) => flames.userData.tick(1 / 60, l);
+    loadProp('stone_fire_pit' as never).then((m) => { m.position.copy(pos); game.scene.add(m); }).catch(() => {});
+  }
   let t = 0, sparkT = 0, smokeT = 0;
   const fire = {
     level: 1, light,

@@ -77,7 +77,7 @@ async function main() {
   };
   let last = performance.now();
   const loop = (now: number) => {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = Math.max(last, now);
     if (W.ff > 0) { for (let k = 0; k < 20 && W.ff > 0; k++) { game.update(1 / 60); W.ff--; } } else game.update(dt);
     game.render();
     requestAnimationFrame(loop);

@@ -39,6 +39,11 @@ export interface ForestOptions {
   density?: number;
   /** only generate within this distance of the camera (default far + chunk) */
   genRadius?: number;
+  /**
+   * layer for shadow-only proxies of trees outside the view frustum (their shadows still fall into view).
+   * Enable it on the sun's shadow camera: `sun.shadow.camera.layers.enable(1)`. -1 disables the proxies.
+   */
+  shadowLayer?: number;
 }
 
 interface VariantDef { species: SpeciesId; age: number; form: TreeForm; moss?: number; charred?: number }
@@ -66,7 +71,7 @@ interface Variant {
   imp: Impostor | null;
   /** trunk radius at 1 m, height, bounding radius */
   r1: number; height: number; bound: number;
-  mats: TreeMaterialSet[]; // per bucket (0, 1n, 1f)
+  mats: TreeMaterialSet[]; // per bucket (0, 1n, 1f, shadow proxy)
   buckets: Bucket[];
 }
 
@@ -78,6 +83,8 @@ interface Bucket {
 }
 
 const CHUNK = 48;
+// bucket indices
+const PROXY = 3, IMP = 4;
 const ckey = (cx: number, cz: number) => (cx + 4096) * 8192 + (cz + 4096);
 
 interface Chunk {
@@ -129,7 +136,7 @@ export class Forest {
     this.camera = camera;
     this.renderer = renderer ?? null;
     const o = {
-      lod0: 28, lod1: 75, far: 520, shadow: 46, band: 5, density: 1, genRadius: 0,
+      lod0: 24, lod1: 72, far: 520, shadow: 44, band: 5, density: 1, genRadius: 0, shadowLayer: 1,
       ...opts,
     };
     if (!o.genRadius) o.genRadius = o.far + CHUNK;
@@ -170,21 +177,23 @@ export class Forest {
         index: i, def, model, lod0, lod1, imp: null,
         r1: model.radiusAt(1.0), height: model.height,
         bound: Math.max(model.height * 0.55, model.crownRadius),
-        mats: [createTreeMaterials(def.species, L0), createTreeMaterials(def.species, L1n), createTreeMaterials(def.species, L1f)],
+        mats: [createTreeMaterials(def.species, L0), createTreeMaterials(def.species, L1n), createTreeMaterials(def.species, L1f),
+          createTreeMaterials(def.species, new THREE.Vector4(-2, -1, o.shadow + 10, o.shadow + 20))],
         buckets: [],
       };
       // buckets: 0 = LOD0, 1 = LOD1 near (shadows), 2 = LOD1 far, 3 = impostor
       v.buckets.push(this.makeBucket(v, 0, 64, true));
       v.buckets.push(this.makeBucket(v, 1, 256, true));
       v.buckets.push(this.makeBucket(v, 2, 512, false));
+      v.buckets.push(this.makeBucket(v, 1, 64, true, true));
       this.variants.push(v);
       this.bySpecies[def.species].push(i);
     });
   }
 
-  private makeBucket(v: Variant, level: 0 | 1 | 2, cap: number, shadow: boolean): Bucket {
+  private makeBucket(v: Variant, level: 0 | 1 | 2, cap: number, shadow: boolean, proxy = false): Bucket {
     const lod = level === 0 ? v.lod0 : v.lod1;
-    const mats = v.mats[level];
+    const mats = v.mats[proxy ? 3 : level];
     const meshes: THREE.InstancedMesh[] = [];
     const mk = (g: THREE.BufferGeometry, m: THREE.Material, d: THREE.Material) => {
       const im = new THREE.InstancedMesh(g, m, cap);
@@ -197,7 +206,11 @@ export class Forest {
       im.receiveShadow = true;
       im.customDepthMaterial = d;
       im.visible = false;
-      im.name = `tree_${v.def.species}_${v.index}_L${level}`;
+      im.name = `tree_${v.def.species}_${v.index}_L${level}${proxy ? '_shadow' : ''}`;
+      if (proxy) {
+        if (this.opt.shadowLayer < 0) im.castShadow = false;
+        else im.layers.set(this.opt.shadowLayer);
+      }
       this.group.add(im);
       meshes.push(im);
     };
@@ -405,9 +418,12 @@ export class Forest {
       const x0 = c.cx * CHUNK, z0 = c.cz * CHUNK;
       const dx = Math.max(x0 - px, 0, px - (x0 + CHUNK)), dz = Math.max(z0 - pz, 0, pz - (z0 + CHUNK));
       if (dx * dx + dz * dz > far * far) continue;
-      _box.min.set(x0 - 6, c.minY - 2, z0 - 6);
-      _box.max.set(x0 + CHUNK + 6, c.maxY + 2, z0 + CHUNK + 6);
-      if (!_frustum.intersectsBox(_box)) continue;
+      const dch = Math.hypot(dx, dz);
+      const pad = 6 + dch * 0.08; // angular margin: no popping at the screen edges between rebuilds
+      _box.min.set(x0 - pad, c.minY - 2, z0 - pad);
+      _box.max.set(x0 + CHUNK + pad, c.maxY + 2, z0 + CHUNK + pad);
+      const inView = _frustum.intersectsBox(_box);
+      if (!inView && dch > o.shadow) continue;
       for (const id of c.ids) {
         total++;
         if (this.tstate[id] !== 0) continue;
@@ -416,19 +432,23 @@ export class Forest {
         if (d > far) continue;
         const v = this.variants[this.tvar[id]];
         const s = this.tscale[id];
-        if (d < o.lod1 + b) {
+        if (d < o.lod1 + b || !inView) {
           _sph.center.set(x, this.ty[id] + v.height * s * 0.5, z);
-          _sph.radius = v.bound * s + 1;
-          if (!_frustum.intersectsSphere(_sph)) continue;
+          _sph.radius = v.bound * s + 1 + d * 0.08;
+          if (!inView || !_frustum.intersectsSphere(_sph)) {
+            // off screen: only its shadow matters
+            if (d < o.shadow && this.opt.shadowLayer >= 0) this.push(v, PROXY, id);
+            continue;
+          }
         }
         drawn++;
         if (d < o.lod0 + b) this.push(v, 0, id);
         if (d > o.lod0 - b && d < o.lod1 + b) this.push(v, d < o.shadow ? 1 : 2, id);
-        if (d > o.lod1 - b && v.buckets[3]) this.push(v, 3, id);
+        if (d > o.lod1 - b && v.buckets[IMP]) this.push(v, IMP, id);
       }
     }
     let tris = 0;
-    const counts = [0, 0, 0, 0];
+    const counts = [0, 0, 0, 0, 0];
     for (const v of this.variants) {
       v.buckets.forEach((bk, bi) => {
         counts[bi] += bk.count;
@@ -448,7 +468,7 @@ export class Forest {
       });
     }
     this.statsText = `forest: ${this.n} trees, ${this.chunks.size} chunks, ${this.variants.length} variants (built ${this.buildMs.toFixed(0)} ms, placed ${this.genMs.toFixed(0)} ms)\n` +
-      `  visible ${drawn}/${total}: L0 ${counts[0]} L1 ${counts[1]}+${counts[2]} imp ${counts[3]}  ~${(tris / 1e6).toFixed(2)}M tris`;
+      `  visible ${drawn}/${total}: L0 ${counts[0]} L1 ${counts[1]}+${counts[2]} imp ${counts[IMP]} shadow-only ${counts[PROXY]}  ~${(tris / 1e6).toFixed(2)}M tris`;
   }
 
   private push(v: Variant, bi: number, id: number): void {
@@ -471,7 +491,7 @@ export class Forest {
       a[o + 12] = this.tx[id]; a[o + 13] = this.ty[id]; a[o + 14] = this.tz[id]; a[o + 15] = 1;
       const ca = im.instanceColor!.array as Float32Array;
       // bark gets a softer version of the tint
-      const soft = mi === 0 && bi < 3 ? 0.5 : 1;
+      const soft = mi === 0 && bi < IMP ? 0.5 : 1;
       ca[k * 3] = 1 + (tr - 1) * soft; ca[k * 3 + 1] = 1 + (tg - 1) * soft; ca[k * 3 + 2] = 1 + (tb - 1) * soft;
     }
   }

@@ -288,7 +288,7 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
         pts.push(p);
         radii.push(r0 * Math.pow(1 - t * 0.92, 1.1) + 0.012);
       }
-      roots.push({ id: -1, part: 0, pts, radii, level: 0, dead: false, wx: 0, phase: 0, len, col: [0.72, 0.7, 0.68], moss: mossBase * 1.2 + 0.2 });
+      roots.push({ id: -1, part: 0, pts, radii, level: 0, dead: false, wx: 0, phase: 0, len, col: [0.72, 0.7, 0.68], moss: mossBase * 0.75 + 0.05 });
     }
   }
 

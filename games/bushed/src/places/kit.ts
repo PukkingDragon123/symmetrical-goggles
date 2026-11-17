@@ -4,6 +4,7 @@
 // 1 / tile so every surface gets ~256 texels per metre (public/assets/textures/places/index.json).
 import * as THREE from 'three';
 import { loadTex } from '../gfx/tex';
+import { G } from '../gfx/globals';
 
 // ---------------------------------------------------------------------------------------------- contract
 export type Collider =
@@ -567,6 +568,23 @@ export function anchor(parent: THREE.Object3D, name: string, x: number, y: numbe
 /** a flickering fire light helper */
 export function flicker(t: number, seed: number): number {
   return 0.82 + 0.1 * Math.sin(t * 13.1 + seed) + 0.06 * Math.sin(t * 27.3 + seed * 2.1) + 0.05 * Math.sin(t * 5.7 + seed * 0.7);
+}
+
+/**
+ * Distance culling for a place's lights: beyond `far` metres from the camera (G.uCamPos) every light is dimmed to 0
+ * and shadow maps stop re-rendering (shadow.autoUpdate = false), so a place on the other side of the map costs
+ * almost nothing. Light count never changes (no shader recompiles). Returns a function giving the 0..1 activity.
+ */
+export function lightCuller(center: THREE.Vector3, lights: THREE.Light[], far = 70): () => number {
+  return () => {
+    const d = G.uCamPos.value.distanceTo(center);
+    const k = d < far ? 1 : d < far + 15 ? 1 - (d - far) / 15 : 0;
+    for (const l of lights) {
+      const sh = (l as THREE.PointLight).shadow as THREE.LightShadow | undefined;
+      if (sh && l.castShadow) sh.autoUpdate = k > 0;
+    }
+    return k;
+  };
 }
 
 /** set common shadow parameters */

@@ -740,7 +740,7 @@ export class GroundCover {
       const x0 = c.cx * S, z0 = c.cz * S;
       const dx = Math.max(x0 - px, 0, px - (x0 + S)), dz = Math.max(z0 - pz, 0, pz - (z0 + S));
       const dc = Math.hypot(dx, dz);
-      const pad = c.tier === 1 ? 12 : 2;
+      const pad = (c.tier === 1 ? 12 : 2) + dc * 0.1;
       _box.min.set(x0 - pad, c.minY, z0 - pad);
       _box.max.set(x0 + S + pad, c.maxY, z0 + S + pad);
       if (!_frustum.intersectsBox(_box)) continue;

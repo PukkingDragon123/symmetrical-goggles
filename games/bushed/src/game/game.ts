@@ -440,6 +440,7 @@ export class Game {
 
   // ------------------------------------------------------------------ the loop
   update(dt: number): void {
+    dt = Math.max(0, Math.min(0.1, dt));
     G.uTime.value += dt;
     const dtGame = dt * this.timeScale;
     if (this.mode !== 'menu' && this.mode !== 'loading') {

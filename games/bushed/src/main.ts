@@ -17,6 +17,7 @@ import { buildProduct } from './places/products';
 import { ITEMS } from './game/items';
 import { CabinPlay } from './game/cabinplay';
 import { Pause } from './ui/pause';
+import { spawnNpcs } from './game/npcs';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const params = new URLSearchParams(location.search);
@@ -67,10 +68,11 @@ async function boot() {
   const critters = new Critters(game);
   await step('creatures', () => critters.spawn());
   game.updaters.push((dt) => critters.update(dt));
+  await step('npcs', async () => { const npcs = spawnNpcs(game); game.updaters.push((dt) => npcs.forEach((n) => n.update(dt))); });
 
   let last = performance.now();
   const frame = (now: number) => {
-    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = Math.max(last, now);
     pause.armed = game.mode === 'walk' || game.mode === 'drive';
     if (!pause.open) { d.update(dt); game.update(dt); }
     game.render();
