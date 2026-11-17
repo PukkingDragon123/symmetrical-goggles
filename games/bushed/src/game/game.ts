@@ -19,10 +19,15 @@ import { WoodPiece } from '../chop/wood';
 import { Survival, Stove, outdoorTemp } from './survival';
 import { ITEMS, type ToolStats } from './items';
 import { initialContracts, type Contract } from './contracts';
+import { registerInteractable } from './interact';
 import { Journal } from '../ui/journal';
 import { hud } from '../ui/hud';
 import { audio } from '../audio/audio';
 import type { Jeep } from '../vehicles/jeep';
+import type { Place } from '../places/kit';
+import { loadProp, PROP_META } from '../places/props';
+import { paintPaper, paperMesh, type Block } from '../ui/paper';
+import { WeatherFx } from '../gfx/weather';
 
 export type Mode = 'loading' | 'menu' | 'drive' | 'walk' | 'cutscene' | 'sleep';
 
@@ -51,6 +56,7 @@ export class Game {
   readonly survival = new Survival();
   readonly stove = new Stove();
   readonly journal = new Journal();
+  readonly wfx = new WeatherFx();
   contracts: Contract[] = initialContracts();
   inv: Inventory = { items: new Map([['axe_old', 1], ['matches', 1], ['jerky', 3], ['beer', 2], ['flashlight', 1]]), money: 120 };
   mode: Mode = 'loading';
@@ -66,6 +72,11 @@ export class Game {
   arms: ArmsLike | null = null;
   jeep: Jeep | null = null;
   updaters: ((dt: number) => void)[] = [];
+  cabin: Place | null = null;
+  store: Place | null = null;
+  readonly flags = new Set<string>();
+  private models = new Map<string, THREE.Object3D>();
+  private reading: THREE.Object3D | null = null;
   flashlight: THREE.SpotLight;
   flashOn = false;
   private breathT = 0;
@@ -75,7 +86,7 @@ export class Game {
     this.R = new Renderer(canvas);
     this.sky = new Sky(this.scene);
     this.terrain.loadDefault();
-    this.scene.add(this.terrain.group, makeLake(), debris.mesh, puffs.mesh);
+    this.scene.add(this.terrain.group, makeLake(), debris.mesh, puffs.mesh, this.wfx.group);
     puffs.setCamera(this.camera);
     this.scene.add(this.camera);
     this.player = new Player(this.camera);
@@ -155,10 +166,109 @@ export class Game {
   }
 
   toolModel(id: string): THREE.Object3D | null {
-    const def = ITEMS[id];
-    if (!def) return null;
-    const cache = (this as any)._models ??= new Map<string, THREE.Object3D>();
-    return cache.get(id) ?? null;
+    return this.models.get(id)?.clone() ?? null;
+  }
+
+  /** load the models of every item that maps to a Poly Haven prop (tools, lights, pots) */
+  async preloadItemModels(): Promise<void> {
+    await Promise.all(Object.values(ITEMS).map(async (d) => {
+      if (d.model.startsWith('gen:') || !(d.model in PROP_META)) return;
+      try { const m = await loadProp(d.model as never); this.models.set(d.id, m); } catch { /* missing prop */ }
+    }));
+  }
+
+  /** register a model for an item id (generated products) */
+  setItemModel(id: string, m: THREE.Object3D): void { this.models.set(id, m); }
+
+  owns(id: string): boolean { return (this.inv.items.get(id) ?? 0) > 0; }
+
+  /** hold a sheet of paper up in both hands to read it; any click or E puts it down */
+  readPaper(blocks: Block[], seed = 1): void {
+    if (this.reading) return;
+    const m = paperMesh(paintPaper(blocks, { style: 'notebook', seed }), 0.2);
+    m.position.set(0, -0.03, -0.3);
+    m.rotation.set(-0.12, 0, 0.03);
+    this.view.add(m);
+    this.reading = m;
+    this.sound('pickup', undefined, 0.5, 1.4);
+  }
+
+  /** Ray's axe, buried in the chopping block, waiting to be pulled out */
+  axeInBlock(top: THREE.Vector3): THREE.Object3D | null {
+    const m = this.models.get('axe_old')?.clone();
+    if (!m) { this.give('axe_old'); return null; }
+    const g = new THREE.Group();
+    g.add(m);
+    g.position.copy(top).add(new THREE.Vector3(0, 0.02, 0));
+    g.rotation.set(0, 0.6, -1.1);
+    this.scene.add(g);
+    registerInteractable(g, {
+      kind: 'pickup', label: () => 'Pull the axe out',
+      use: () => {
+        this.give('axe_old');
+        this.sound('axe_pull', top, 0.9);
+        debris.emit('chip', top, new THREE.Vector3(0, 1, 0), 3);
+        g.removeFromParent();
+        this.hands.equip('axe_old');
+      },
+    });
+    return g;
+  }
+
+  /** tie orange flagging tape on a small spruce behind the woodshed (the tree Ray picked) */
+  flagIntroTree(): void {
+    const f = this.forest as any;
+    if (!f?.near) return;
+    const c = new THREE.Vector3(SPOTS.woodyard.x + 10, 0, SPOTS.woodyard.z + 8);
+    const refs = (f.near(c.x, c.z, 30) as any[]).filter((r) => { const m = r.model(); return m.dbh * r.scale > 0.13 && m.dbh * r.scale < 0.26; });
+    refs.sort((a, b) => Math.hypot(a.x - c.x, a.z - c.z) - Math.hypot(b.x - c.x, b.z - c.z));
+    const r = refs[0];
+    if (!r) return;
+    const m = r.model();
+    const rad = m.radiusAt(1.4) * r.scale;
+    const tape = new THREE.Group();
+    const mat = new THREE.MeshStandardMaterial({ color: 0xff5a14, roughness: 0.6, emissive: 0x3a0a00, side: THREE.DoubleSide });
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(rad + 0.005, 0.012, 4, 24), mat);
+    ring.rotation.x = Math.PI / 2; ring.scale.set(1, 1, 1.8);
+    tape.add(ring);
+    for (let k = 0; k < 2; k++) {
+      const tail = new THREE.Mesh(new THREE.PlaneGeometry(0.03, 0.42, 1, 6), mat);
+      tail.geometry.translate(0, -0.21, 0);
+      tail.position.set(rad, 0, k * 0.03);
+      tail.userData.tail = k;
+      tape.add(tail);
+    }
+    tape.position.set(r.x, r.y + 1.4 * r.scale, r.z);
+    this.scene.add(tape);
+    this.updaters.push(() => {
+      const t = G.uTime.value;
+      tape.children.forEach((ch) => { if (ch.userData.tail !== undefined) ch.rotation.set(0.3 + Math.sin(t * 3 + ch.userData.tail) * 0.25, Math.sin(t * 2.3) * 0.4, 0.2); });
+      if (this.chop.trees.get(String(r.id))?.state === 'falling') tape.visible = false;
+    });
+    this.introTree = r;
+  }
+  introTree: unknown = null;
+
+  enterVehicle(): void {
+    if (!this.jeep) return;
+    this.mode = 'drive';
+    this.jeep.occupied = true;
+    this.player.enabled = false;
+    if (this.arms) this.arms.object.visible = false;
+    this.hands.equip(null);
+  }
+
+  exitVehicle(): void {
+    if (!this.jeep) return;
+    const j = this.jeep;
+    const side = new THREE.Vector3(-1, 0, 0).applyQuaternion(j.root.quaternion).multiplyScalar(1.6);
+    const p = j.root.position.clone().add(side);
+    this.player.teleport(p.x, null, p.z, this.player.yaw);
+    this.player.enabled = true;
+    j.occupied = false;
+    this.mode = 'walk';
+    if (this.arms) this.arms.object.visible = true;
+    this.sound('stove_door_close', p, 0.6, 0.7);
   }
 
   swing(tool: ToolStats, charge: number, origin: THREE.Vector3, dir: THREE.Vector3, swingDir: THREE.Vector3): void {
@@ -270,8 +380,24 @@ export class Game {
       if (this.journal.open) {
         if (input.pressed('KeyA') || input.pressed('ArrowLeft')) this.journal.turn(-1);
         if (input.pressed('KeyD') || input.pressed('ArrowRight')) this.journal.turn(1);
-      } else this.hands.update(dt);
+      } else if (!this.reading) this.hands.update(dt);
       if (input.pressed('KeyF') && (this.inv.items.get('flashlight') ?? 0) > 0) { this.flashOn = !this.flashOn; this.sound('equip', undefined, 0.3, 2); }
+    }
+    if (this.mode === 'drive' && this.jeep) {
+      const j = this.jeep;
+      if (input.locked) { this.player.yaw -= input.mouseDX * input.sensitivity; this.player.pitch = THREE.MathUtils.clamp(this.player.pitch - input.mouseDY * input.sensitivity, -1.0, 0.8); }
+      this.player.yaw = THREE.MathUtils.clamp(this.player.yaw, -1.9, 1.9);
+      const eye = j.eye();
+      cam.position.copy(eye);
+      const bump = j.bump();
+      cam.quaternion.copy(j.root.quaternion).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(this.player.pitch + bump * 0.01, Math.PI + this.player.yaw, 0, 'YXZ')));
+      this.player.pos.set(eye.x, eye.y - 1.2, eye.z);
+      if (input.pressed('KeyE') && Math.abs(j.speed) < 1.5) this.exitVehicle();
+      if (input.pressed('KeyH')) j.headlights = !j.headlights;
+    }
+    if (this.reading && (input.pressed('Mouse0') || input.pressed('KeyE') || input.pressed('Escape') || input.pressed('Tab'))) {
+      this.reading.removeFromParent(); this.reading = null; this.sound('pickup', undefined, 0.4, 1.2);
+      input.endFrame();
     }
     physics.streamTerrain([{ x: this.player.pos.x, z: this.player.pos.z }, ...(this.jeep?.body ? [{ x: this.jeep.root.position.x, z: this.jeep.root.position.z }] : [])]);
     this.syncTreeColliders();
@@ -310,6 +436,12 @@ export class Game {
     this.viewKey.color.copy(this.sky.sun.color);
     this.viewKey.intensity = this.indoors ? 0.25 : this.sky.sun.intensity * 0.45;
     this.flashlight.intensity = this.flashOn ? 60 : 0;
+    // weather particles and wet ground
+    G.uWet.value += ((this.weather.rain > 0.1 ? 1 : 0) - G.uWet.value) * Math.min(1, dtGame * (this.weather.rain > 0.1 ? 0.0006 : 0.00012));
+    const amb = this.sky.hemi.color.clone().multiplyScalar(this.sky.hemi.intensity * 1.4).add(this.sky.sun.color.clone().multiplyScalar(this.sky.sun.intensity * 0.12));
+    const dusk = THREE.MathUtils.smoothstep(this.sky.darkness, 0.35, 0.75);
+    this.wfx.update(cam.position, this.indoors ? 0 : this.weather.rain, this.indoors ? 0 : this.weather.storm * 0, this.indoors ? 0.15 : 0.35 + 0.4 * (1 - this.weather.rain),
+      this.indoors ? 0 : 0.08 + G.uWindStrength.value * 0.45, amb, dusk);
     // viewmodel
     this.arms?.update(dt, {
       speed: this.player.speed, sprint: this.player.sprinting, crouch: this.player.crouch, breath: this.survival.winded,
