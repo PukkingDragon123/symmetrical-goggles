@@ -29,6 +29,7 @@ import { loadProp, PROP_META } from '../places/props';
 import { paintPaper, paperMesh, type Block } from '../ui/paper';
 import { WeatherFx } from '../gfx/weather';
 import { fitTool } from '../player/arms';
+import { Backpack } from '../ui/backpack';
 import { makeSlashGatherable } from './cabinplay';
 import { writeSave, type SaveData } from './save';
 
@@ -60,6 +61,9 @@ export class Game {
   readonly stove = new Stove();
   readonly journal = new Journal();
   readonly wfx = new WeatherFx();
+  readonly pack = new Backpack((id) => this.toolModel(id));
+  private packCursor = new THREE.Vector2();
+  private packMouse: [number, number] = [0, 0];
   contracts: Contract[] = initialContracts();
   inv: Inventory = { items: new Map([['axe_old', 1], ['matches', 1], ['jerky', 3], ['beer', 2], ['flashlight', 1]]), money: 120 };
   mode: Mode = 'loading';
@@ -107,7 +111,7 @@ export class Game {
     this.view.add(new THREE.HemisphereLight(0xbfc8d8, 0x3a3026, 0.9));
     const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(0.5, 1, 0.6); this.view.add(key);
     this.viewKey = key;
-    this.view.add(this.journal.object);
+    this.view.add(this.journal.object, this.pack.object);
     // flashlight (world)
     this.flashlight = new THREE.SpotLight(0xfff4e0, 0, 45, 0.38, 0.6, 1.5);
     this.flashlight.castShadow = true;
@@ -327,7 +331,7 @@ export class Game {
   exitVehicle(): void {
     if (!this.jeep) return;
     const j = this.jeep;
-    const side = new THREE.Vector3(-1, 0, 0).applyQuaternion(j.root.quaternion).multiplyScalar(1.6);
+    const side = new THREE.Vector3(1, 0, 0).applyQuaternion(j.root.quaternion).multiplyScalar(1.5); // driver's side (+x is the left of the truck)
     const p = j.root.position.clone().add(side);
     this.player.teleport(p.x, null, p.z, this.player.yaw);
     this.player.enabled = true;
@@ -445,13 +449,29 @@ export class Game {
     const cam = this.camera;
     // control
     if (this.mode === 'walk') {
+      if (this.pack.open) { this.packMouse = [input.mouseDX, input.mouseDY]; input.mouseDX = 0; input.mouseDY = 0; }
       this.player.update(dt);
-      if (input.pressed('Tab')) { this.journal.toggle(); this.sound('page_turn', undefined, 0.6); }
+      if (this.pack.open) { input.mouseDX = this.packMouse[0]; input.mouseDY = this.packMouse[1]; }
+      if (input.pressed('Tab') && !this.pack.open) { this.journal.toggle(); this.sound('page_turn', undefined, 0.6); }
+      if (input.pressed('KeyI') && !this.journal.open && !this.hands.busy) {
+        this.pack.toggle(this.inv.items); this.packCursor.set(0, -0.2);
+        this.sound(this.pack.open ? 'zip' : 'bag_rustle', undefined, 0.6);
+      }
+      if (this.pack.open) {
+        this.packCursor.x = THREE.MathUtils.clamp(this.packCursor.x + input.mouseDX * 0.0025, -0.9, 0.9);
+        this.packCursor.y = THREE.MathUtils.clamp(this.packCursor.y - input.mouseDY * 0.0035, -0.9, 0.9);
+        const id = this.pack.pick(this.packCursor, this.viewCam);
+        this.pack.hover = id;
+        hud.dotAt(this.packCursor.x, this.packCursor.y);
+        hud.setLabel(id ? (ITEMS[id]?.name ?? id) : '');
+        if (input.pressed('Mouse0') && id) { this.pack.open = false; this.hands.equip(id); hud.dotAt(0, 0); }
+        if (input.pressed('Escape') || input.pressed('KeyQ')) { this.pack.open = false; hud.dotAt(0, 0); }
+      }
       if (this.journal.open) {
         if (input.pressed('KeyA') || input.pressed('ArrowLeft')) this.journal.turn(-1);
         if (input.pressed('KeyD') || input.pressed('ArrowRight')) this.journal.turn(1);
         if (input.pressed('KeyA') || input.pressed('KeyD') || input.pressed('ArrowLeft') || input.pressed('ArrowRight')) this.sound('page_turn', undefined, 0.4);
-      } else if (!this.reading) this.hands.update(dt);
+      } else if (!this.reading && !this.pack.open) this.hands.update(dt);
       if (input.pressed('KeyF') && (this.inv.items.get('flashlight') ?? 0) > 0) { this.flashOn = !this.flashOn; this.sound('flashlight_click', undefined, 0.6); }
     }
     if (this.mode === 'drive' && this.jeep) {
@@ -532,6 +552,7 @@ export class Game {
       shiver: this.survival.shiver, aimPitch: this.player.pitch, swingCharge: this.hands?.charge ?? 0,
     });
     this.journal.update(dt);
+    this.pack.update(dt);
     // empty hands rest out of sight unless they're doing something (grabbing, pushing, offering)
     if (this.arms && this.mode !== 'drive') {
       const a = this.arms as unknown as { held: string; action: string | null; object: THREE.Object3D };
@@ -571,11 +592,12 @@ export class Game {
     audio.ambience('wind', 0.2 + G.uWindStrength.value * 0.6);
     audio.ambience('cabin', this.indoors ? 1 : 0);
     // hud
-    if (this.mode === 'walk' && !this.journal.open) {
+    if (this.mode === 'walk' && !this.journal.open && !this.pack.open) {
       hud.setLabel(this.hands.label);
       hud.setCharge(this.hands.charging ? this.hands.charge : 0);
       hud.showDot(true);
-    } else { hud.setLabel(''); hud.showDot(false); hud.setCharge(0); }
+    } else if (this.pack.open) { hud.showDot(true); hud.setCharge(0); }
+    else { hud.setLabel(''); hud.showDot(false); hud.setCharge(0); }
     hud.update(dt);
   }
 

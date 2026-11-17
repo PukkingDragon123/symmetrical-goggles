@@ -46,6 +46,7 @@ const HOLES: Hole[] = [
   { wall: 'left', c: 1.2, w: 0.9, y0: FLOOR + 1.1, y1: FLOOR + 2.15, kind: 'window' },
   { wall: 'left', c: -2.8, w: 0.9, y0: FLOOR + 1.1, y1: FLOOR + 2.15, kind: 'window' },
   { wall: 'right', c: -1.6, w: 0.9, y0: FLOOR + 1.3, y1: FLOOR + 2.15, kind: 'window' },
+  { wall: 'right', c: 3.0, w: 0.9, y0: FLOOR + 1.3, y1: FLOOR + 2.15, kind: 'window' },
   { wall: 'back', c: -2.2, w: 0.95, y0: FLOOR, y1: FLOOR + 2.1, kind: 'pass' },
 ];
 
@@ -79,9 +80,9 @@ function shell(ms: Mesher, cols: Cols, glass: string): void {
         const butt = 0.022, thin = 0.004;
         const A = V(xa, sa, z0 + butt), B = V(xb, sa, z0 + butt), C = V(xb, sb, z0 + thin), Dd = V(xa, sb, z0 + thin);
         const uo = rnd.range(0, 1.5);
-        ms.quad(wall === 'front' && y > WALL_TOP ? 'siding_cream' : 'siding_red', A, B, C, Dd, [xa + uo, sa], [xb + uo, sa], [xb + uo, sb], [xa + uo, sb]);
+        ms.quad('siding_red', A, B, C, Dd, [xa + uo, sa], [xb + uo, sa], [xb + uo, sb], [xa + uo, sb]);
         // butt face
-        ms.quad(wall === 'front' && y > WALL_TOP ? 'siding_cream' : 'siding_red', V(xa, sa, z0), V(xb, sa, z0), B, A, [xa, sa], [xb, sa], [xb, sa + 0.02], [xa, sa + 0.02]);
+        ms.quad('siding_red', V(xa, sa, z0), V(xb, sa, z0), B, A, [xa, sa], [xb, sa], [xb, sa + 0.02], [xa, sa + 0.02]);
       }
     }
     // corner boards and the frieze under the eaves
@@ -760,6 +761,18 @@ export async function buildStore(): Promise<Place> {
       bulb.userData.lamp = true;
     }
   }
+  // the gooseneck lamps over the sign
+  for (const x of [-1.8, 1.8]) {
+    const l = new THREE.PointLight(0xffd6a0, 0, 4.5, 1.6);
+    l.position.set(x, 4.75 + 0.78, D / 2 + 0.5);
+    group.add(l);
+    lights.push(l);
+    lamps.push({ light: l, base: 2.6 });
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), new THREE.MeshStandardMaterial({ color: 0x302010, emissive: new THREE.Color(1.0, 0.8, 0.5), emissiveIntensity: 3 }));
+    bulb.position.set(x, 4.75 + 0.84, D / 2 + 0.47);
+    bulb.userData.lamp = true;
+    group.add(bulb);
+  }
   // window spill toward the porch at night (warm dusty light)
   const spill: THREE.SpotLight[] = [];
   for (const h of HOLES.filter((q) => q.kind === 'display')) {
@@ -817,6 +830,19 @@ export async function buildStore(): Promise<Place> {
       const jx = 0.5, jz = D / 2 + PORCH + 5.5;
       anchors.jeep_park = anchor(group, 'jeep_park', jx, heightAt(...toWorld(sp, jx, jz)) - gy, jz, Math.PI);
     }
+  }
+  // ---- clutter along the right side wall
+  {
+    const x = W / 2 + 0.45;
+    const gh = (lz: number) => heightAt(...toWorld(sp, x, lz)) - gy;
+    pending.push(prop(group, 'Barrel_01', x, gh(-4.6), -4.6, 0.4));
+    pending.push(prop(group, 'old_tyre', x + 0.05, gh(-3.6), -3.6, Math.PI / 2).then((o) => { if (o) { o.rotation.set(0.25, Math.PI / 2, 0); } }));
+    pending.push(prop(group, 'wooden_crate_01', x, gh(1.0), 1.0, Math.PI / 2 + 0.1));
+    pending.push(prop(group, 'wooden_crate_02', x + 0.05, gh(1.0) + 0.35, 1.0, Math.PI / 2 - 0.15));
+    pending.push(prop(group, 'metal_trash_can', x, gh(2.4), 2.4, 0.3));
+    pending.push(prop(group, 'wooden_ladder', W / 2 + 0.15, gh(-1.0), -1.0, -Math.PI / 2).then((o) => { if (o) o.rotation.set(-0.28, -Math.PI / 2, 0, 'YXZ'); }));
+    cols.box(x, 0.45, -4.6, 0.3, 0.45, 0.3);
+    cols.box(x, 0.4, 1.0, 0.25, 0.4, 0.45);
   }
   // ---- log deck (right side): skids on the ground, a few logs already sold, a sign
   {

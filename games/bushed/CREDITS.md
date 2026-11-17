@@ -328,3 +328,23 @@ Trees, ground cover and their textures (`src/trees/`, `src/world/forest.ts`, `sr
 | `rock_07.glb`, `rock_09.glb` | [Rock 07](https://polyhaven.com/a/rock_07), [Rock 09](https://polyhaven.com/a/rock_09) | Jenelle van Heerden | CC0 |
 | `stone_01.glb` | [Stone 01](https://polyhaven.com/a/stone_01) | Dario Barresi, Rico Cilliers | CC0 |
 | `rock_moss_set_01.glb`, `rock_moss_set_02.glb` | [Rock Moss Set 01](https://polyhaven.com/a/rock_moss_set_01), [Rock Moss Set 02](https://polyhaven.com/a/rock_moss_set_02) | Kless Gyzen | CC0 |
+
+## Fonts (`public/assets/fonts`)
+
+| Font | Author | Licence |
+|---|---|---|
+| Caveat | Impallari Type | SIL OFL 1.1 (`Caveat-OFL.txt`) |
+| Patrick Hand | Patrick Wagesreiter | SIL OFL 1.1 (`PatrickHand-OFL.txt`) |
+| IM Fell English | Igino Marini | SIL OFL 1.1 (`IMFell-OFL.txt`) |
+| Special Elite | Astigmatic | Apache 2.0 (`SpecialElite-LICENSE.txt`) |
+| Homemade Apple | Font Diner | Apache 2.0 (`HomemadeApple-LICENSE.txt`) |
+
+All downloaded from the Google Fonts repository (github.com/google/fonts).
+
+## Code
+
+* Rendering: [three.js](https://threejs.org) (MIT). Physics: [Rapier](https://rapier.rs) (`@dimforge/rapier3d-compat`, Apache 2.0).
+* The renderer, post chain, sky, terrain, chopping (notches, hinge felling, limbing, bucking, splitting), wood pieces,
+  physics props, hands, survival, Jeep driving and game flow were written for BUSHED.
+* Human builder and first-person arms: ported from the user's **Limbophobia** (see "Humans").
+  Creature anatomy: ported from the user's **ODDWORLD** (see "Creatures"). Props converted with the user's **lowpix**.

@@ -47,6 +47,13 @@ class Hud {
     this.dot.classList.toggle('charge', c > 0);
   }
 
+  /** move the dot (normalised device coords, 0,0 = centre) for the backpack pointer */
+  dotAt(x: number, y: number): void {
+    if (!this.dot) return;
+    this.dot.style.left = `${50 + x * 50}%`; this.dot.style.top = `${50 - y * 50}%`;
+    this.label.style.left = `${50 + x * 50}%`; this.label.style.top = `calc(${50 - y * 50}% + 22px)`;
+  }
+
   showDot(v: boolean): void { if (this.dot) this.dot.style.opacity = v && this.visible ? '1' : '0'; }
 
   /** a spoken line or a thought: "<b>Odile:</b> ..." */

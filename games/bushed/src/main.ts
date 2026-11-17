@@ -16,6 +16,7 @@ import { FPArms } from './player/arms';
 import { buildProduct } from './places/products';
 import { ITEMS } from './game/items';
 import { CabinPlay } from './game/cabinplay';
+import { Pause } from './ui/pause';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const params = new URLSearchParams(location.search);
@@ -35,6 +36,14 @@ async function boot() {
   canvas.addEventListener('click', () => { input.lock(); audio.unlock(); });
   (window as any).__game = game;
   const d = new Director();
+  const pause = new Pause();
+  pause.onChange = (st) => {
+    input.sensitivity = 0.0022 * st.sensitivity;
+    audio.setVolume('master', st.volume);
+    if (game.R.pixel !== st.pixel) { game.R.pixel = st.pixel; game.onResize(); }
+    game.R.gl.shadowMap.enabled = st.shadows;
+  };
+  pause.mount(document.getElementById('ui')!, canvas);
 
   // load the world
   game.terrain.prime(new THREE.Vector3(SPOTS.cabin.x, 0, SPOTS.cabin.z));
@@ -62,8 +71,8 @@ async function boot() {
   let last = performance.now();
   const frame = (now: number) => {
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    d.update(dt);
-    game.update(dt);
+    pause.armed = game.mode === 'walk' || game.mode === 'drive';
+    if (!pause.open) { d.update(dt); game.update(dt); }
     game.render();
     input.endFrame();
     requestAnimationFrame(frame);

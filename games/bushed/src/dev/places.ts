@@ -124,6 +124,7 @@ async function main(): Promise<void> {
     localView(cabin, 'back', [-6.5, 2.0, -7.5], [0, 1.8, 0]);
     localView(cabin, 'woodyard', [9.6, 1.8, 5.6], [15.5, 0.9, 1.0]);
     localView(cabin, 'firepit', [2.0, 1.6, 4.3], [6.2, 0.4, 7.4]);
+    localView(cabin, 'menu', [-1.95, 1.2, 4.35], [3.5, 0.6, 9.5]);
     if (q.get('night') === '1' || hour > 20 || hour < 5) { cabin.stove?.setFire(0.85); (cabin.anchors.firepit?.userData.setFire as ((l: number) => void) | undefined)?.(q.get('pit') === '0' ? 0 : 1); }
     cabin.setThermometer?.(Number(q.get('temp') ?? 21));
   }

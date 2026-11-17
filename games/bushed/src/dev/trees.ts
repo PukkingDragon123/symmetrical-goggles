@@ -30,7 +30,19 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 const fogCol = new THREE.Color(0xa9b5b4);
-scene.background = fogCol.clone();
+{
+  // test-page sky: a vertical gradient that meets the fog colour at the horizon (the real sky is src/gfx/sky.ts)
+  const c = document.createElement('canvas');
+  c.width = 4; c.height = 256;
+  const g = c.getContext('2d')!;
+  const gr = g.createLinearGradient(0, 0, 0, 256);
+  gr.addColorStop(0, '#6f8fae'); gr.addColorStop(0.42, '#9fb4bf'); gr.addColorStop(0.5, '#' + fogCol.getHexString()); gr.addColorStop(1, '#' + fogCol.getHexString());
+  g.fillStyle = gr; g.fillRect(0, 0, 4, 256);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = t;
+}
 scene.fog = new THREE.FogExp2(fogCol, num('fog', lineup ? 0.004 : 0.0125));
 
 const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 1500);
