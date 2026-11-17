@@ -203,7 +203,7 @@ export async function runIntro(game: Game, d: Director): Promise<void> {
   note.removeFromParent();
   game.flags.add('ray_note');
   // the matches really are in the table drawer
-  game.take('matches', 99);
+  game.inv.items.set('matches', 0);
   const drawer = game.cabin?.group.getObjectByName('drawer_0') ?? null;
   const box = game.toolModel('matches');
   if (box) {

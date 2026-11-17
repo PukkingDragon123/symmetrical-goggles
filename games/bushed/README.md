@@ -24,7 +24,9 @@ Dev shortcuts: `?play` skips the porch menu and intro, `?test` also drops some r
 | Place what you carry / drop / throw | Left mouse, Q, right mouse |
 | Rotate a carried object | hold R + mouse |
 | Pocket a small carried item | B |
-| Axe, hatchet, maul or saw, flashlight, empty hands | 1, 2, 3, 4, 0 |
+| Axe, hatchet, maul or saw, flashlight, jerky, empty hands | 1, 2, 3, 4, 5, 0 |
+| Backpack (pick an item to hold) | I |
+| Set a held item down | Q |
 | Flashlight on/off | F |
 | Field journal (A/D to turn pages) | Tab |
 | Drive: throttle, brake/reverse, steer, handbrake, headlights, get out | W, S, A/D, Space, H, E |

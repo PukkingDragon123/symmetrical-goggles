@@ -43,7 +43,7 @@ export class Pause {
       <label>Pixel size <input id="p-px" type="range" min="1" max="4" step="1"></label>
       <label>Shadows <input id="p-sh" type="checkbox"></label>
       <div style="margin-top:14px"><button id="p-back">Back to the bush</button></div>
-      <div class="keys">WASD walk · Shift run · E use · LMB swing/place · Q drop · R rotate · B pocket<br>1 axe · 2 hatchet · 3 maul/saw · 4 light · F flashlight · Tab journal · I pack</div>
+      <div class="keys">WASD walk · Shift run · E use · LMB swing/place · Q drop · R rotate · B pocket<br>1 axe · 2 hatchet · 3 maul/saw · 4 light · 5 jerky · F flashlight · Tab journal · I pack</div>
     </div>`;
     root.appendChild(this.el);
     root.style.pointerEvents = 'none';

@@ -239,7 +239,7 @@ export class Critters {
       return false;
     };
     await new Promise<void>((r) => { const tick = () => { if (check()) r(); else setTimeout(tick, 100); }; tick(); });
-    if (!this.game.flags.has('hound_fed')) setTimeout(() => { if (!this.game.flags.has('hound_fed')) hud.say('<i>Ray said jerky. Hold some out. Don\'t move.</i>', 4); }, 9000);
+    if (!this.game.flags.has('hound_fed')) setTimeout(() => { if (!this.game.flags.has('hound_fed')) hud.say('<i>Ray said jerky. Hold some out (5). Don\'t move.</i>', 4); }, 9000);
   }
 
   update(dt: number): void {
