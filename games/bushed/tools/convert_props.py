@@ -196,6 +196,88 @@ def ao_bake(js: dict, base: str) -> dict:
     return js
 
 
+# ------------------------------------------------------------------ chroma boost around lowpix's palette stage
+# lowpix's pixel styles cluster the source colours into material groups and merge groups closer than 14 units in
+# (0.35 L, a, b). Low-chroma materials (olive drab, grey-green paint, weathered wood next to rust) then collapse
+# into one grey-brown ramp. We scale a/b up before the conversion and back down on the finished atlas: the groups
+# stay apart, the palette stays a palette (each colour maps to one colour), and the hues stay true.
+def scale_chroma(rgb: np.ndarray, k: float) -> np.ndarray:
+    """rgb float 0..1 (..., 3) -> same with Lab chroma multiplied by k (gamut-clipped)"""
+    from lowpix.convert import _lab_to_srgb, _srgb_to_lab
+    lab = _srgb_to_lab(np.clip(rgb, 0, 1))
+    lab[..., 1:] *= k
+    return _lab_to_srgb(lab)
+
+
+def chroma_factor(image_paths: list[str], flat_colours: list = ()) -> float:
+    """boost for an asset: low-chroma assets get up to 2.2x, saturated ones none"""
+    from lowpix.convert import _srgb_to_lab
+    C = []
+    for p in image_paths:
+        a = np.asarray(Image.open(p).convert("RGB").resize((96, 96), Image.BILINEAR), np.float64) / 255
+        lab = _srgb_to_lab(a.reshape(-1, 3))
+        C.append(np.hypot(lab[:, 1], lab[:, 2]))
+    for c in flat_colours:
+        lab = _srgb_to_lab(np.asarray(c, np.float64).reshape(1, 3))
+        C.append(np.hypot(lab[:, 1], lab[:, 2]))
+    if not C:
+        return 1.0
+    med = float(np.median(np.concatenate(C)))
+    return float(np.clip(30.0 / max(med, 1e-3), 1.0, 2.2))
+
+
+def boost_colours(js: dict, base: str, tag: str = "") -> tuple[dict, float]:
+    """Replace base-colour images (and flat base-colour factors) with chroma-boosted copies. Returns (js, k)."""
+    tex_src = {i: t.get("source") for i, t in enumerate(js.get("textures", []))}
+    imgs, flats = {}, []
+    for m in js.get("materials", []):
+        if m.get("alphaMode") == "BLEND":
+            continue
+        pbr = m.setdefault("pbrMetallicRoughness", {})
+        bt = pbr.get("baseColorTexture")
+        if bt:
+            ci = tex_src.get(bt["index"])
+            if ci is not None and "uri" in js["images"][ci]:
+                imgs[ci] = os.path.join(base, urllib.parse.unquote(js["images"][ci]["uri"]))
+        else:
+            flats.append(pbr.get("baseColorFactor", [1, 1, 1, 1])[:3])
+    k = chroma_factor(list(imgs.values()), flats)
+    if k <= 1.001:
+        return js, 1.0
+    os.makedirs(os.path.join(base, "ao"), exist_ok=True)
+    for ci, p in imgs.items():
+        name = "ao/" + os.path.basename(p).rsplit(".", 1)[0] + f"_c{k:.2f}.png"
+        dst = os.path.join(base, name)
+        if not os.path.exists(dst):
+            im = Image.open(p).convert("RGB")
+            if max(im.size) > 2048:
+                im.thumbnail((2048, 2048), Image.LANCZOS)
+            a = scale_chroma(np.asarray(im, np.float64) / 255, k)
+            tmp = f"{dst}.{os.getpid()}.png"
+            Image.fromarray((np.clip(a, 0, 1) * 255 + 0.5).astype(np.uint8)).save(tmp)
+            os.replace(tmp, dst)
+        js["images"][ci] = {"uri": os.path.relpath(dst, base), "name": js["images"][ci].get("name", "")}
+    for m in js.get("materials", []):
+        if m.get("alphaMode") == "BLEND":
+            continue
+        pbr = m["pbrMetallicRoughness"]
+        if not pbr.get("baseColorTexture"):
+            f = pbr.get("baseColorFactor", [1, 1, 1, 1])
+            pbr["baseColorFactor"] = [*scale_chroma(np.array(f[:3], np.float64), k).tolist(), *f[3:4]] or f
+    return js, k
+
+
+def unboost_atlas(atlas: np.ndarray, k: float) -> np.ndarray:
+    if k <= 1.001:
+        return atlas
+    out = atlas.copy()
+    rgb = out[..., :3].reshape(-1, 3)
+    cols, inv = np.unique(rgb, axis=0, return_inverse=True)       # per palette colour: exact, fast
+    new = np.clip(scale_chroma(cols / 255.0, 1.0 / k) * 255 + 0.5, 0, 255).astype(np.uint8)
+    out[..., :3] = new[inv.reshape(-1)].reshape(out.shape[:2] + (3,))
+    return out
+
+
 def material_kind(m: dict, opaque_blend: bool) -> str:
     if m.get("alphaMode") == "BLEND" and not opaque_blend:
         return "flame" if "flame" in m.get("name", "").lower() else "glass"
@@ -484,6 +566,7 @@ def convert_one(pid: str, force: bool = False) -> dict:
     src = fetch(asset, job.get("res", "2k"))
     base = os.path.dirname(src)
     js = ao_bake(json.load(open(src)), base)
+    js, chroma_k = boost_colours(js, base)
 
     def _load_image(data: bytes, _cap=2048):   # lowpix caps palette styles at 1k; keep 2k sources
         im = Image.open(io.BytesIO(data)).convert("RGB")
@@ -525,6 +608,8 @@ def convert_one(pid: str, force: bool = False) -> dict:
                        tris=0 if nsrc <= tris * 1.15 else tris, light=0.0, crease=0.0, outline=False, smooth=0.0,
                        chart_angle=40.0, **kw)
         m.spec["material"] = {"unlit": False, "filter": "nearest", "roughness": 0.85}
+        if kind == "body":
+            m.atlas = unboost_atlas(m.atlas, chroma_k)
         m.atlas = dilate(m.atlas)
         tr = [float((lo[0] + hi[0]) / 2 - fc[0]), float(lo[1] - fc[1]), float((lo[2] + hi[2]) / 2 - fc[2])]
         parts.append((kind, glb_bytes(m), tr, kind))
@@ -548,7 +633,7 @@ def convert_one(pid: str, force: bool = False) -> dict:
     open(out_glb, "wb").write(data)
     rep = {"id": pid, "asset": asset, "name": meta.get("name", pid), "category": job["category"],
            "parts": [p[0] for p in parts], "tris": int(total_tris), "size": size, "atlas": atlases,
-           "density": round(body_density, 1), "rough": round(rough, 2), "metal": round(metal, 2), "bytes": len(data), "seconds": round(time.time() - t0, 1)}
+           "density": round(body_density, 1), "chroma_k": round(chroma_k, 2), "rough": round(rough, 2), "metal": round(metal, 2), "bytes": len(data), "seconds": round(time.time() - t0, 1)}
     json.dump(rep, open(os.path.join(pdir, "report.json"), "w"), indent=1)
     return rep
 
@@ -575,13 +660,19 @@ def main():
             print(json.dumps(r), flush=True)
             results.append(r)
     else:
-        with ProcessPoolExecutor(a.jobs) as ex:
-            futs = {ex.submit(convert_one, i, a.force): i for i in ids}
-            for f in as_completed(futs):
-                try:
-                    r = f.result()
-                except Exception as e:
-                    r = {"id": futs[f], "error": repr(e)}
+        # one subprocess per prop: an out-of-memory kill takes down one prop, not the whole pool
+        import subprocess
+        from concurrent.futures import ThreadPoolExecutor
+
+        def run(i):
+            cmd = [sys.executable, os.path.abspath(__file__), i, "--jobs", "1"] + (["--force"] if a.force else [])
+            p = subprocess.run(cmd, capture_output=True, text=True)
+            lines = [ln for ln in p.stdout.splitlines() if ln.startswith('{"id"')]
+            if p.returncode == 0 and lines:
+                return json.loads(lines[-1])
+            return {"id": i, "error": f"exit {p.returncode}: {p.stderr.strip().splitlines()[-1:] if p.stderr else ''}"}
+        with ThreadPoolExecutor(a.jobs) as ex:
+            for r in ex.map(run, ids):
                 print(json.dumps(r), flush=True)
                 results.append(r)
     bad = [r for r in results if "error" in r]

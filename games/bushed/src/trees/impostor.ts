@@ -11,9 +11,8 @@ export const IMP = { cellW: 128, cellH: 256, cols: 16, rows: 8, views: 3 };
 export interface Impostor { geometry: THREE.BufferGeometry; slot: number }
 
 const NORMAL_VS = /* glsl */ `
-varying vec3 vN; varying vec2 vUv; varying vec3 vCol;
-attribute vec3 color;
-void main() { vUv = uv; vCol = color; vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+varying vec3 vN; varying vec2 vUv;
+void main() { vUv = uv; vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
 const NORMAL_FS = /* glsl */ `
 uniform sampler2D map; uniform float useMap;
 varying vec3 vN; varying vec2 vUv;

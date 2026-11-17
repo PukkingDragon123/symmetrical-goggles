@@ -348,3 +348,35 @@ All downloaded from the Google Fonts repository (github.com/google/fonts).
   physics props, hands, survival, Jeep driving and game flow were written for BUSHED.
 * Human builder and first-person arms: ported from the user's **Limbophobia** (see "Humans").
   Creature anatomy: ported from the user's **ODDWORLD** (see "Creatures"). Props converted with the user's **lowpix**.
+
+
+## Places
+
+The cabin, the woodyard and Pruneau's General Store (`src/places/`). Building and furniture textures in
+`public/assets/textures/places/` are made by `src/places/tools/make_textures.py` from the Poly Haven (CC0) photo
+textures below (downsampled to 256 px/m, lighting flattened, quantised onto photo palettes, procedural layouts for
+shakes, end grain, siding paint, plaid wool, grime). Signs, posters, labels and product surfaces (`signs.png`,
+`labels.png`) are original pixel art drawn by `src/places/tools/make_print.py`; every brand, slogan and character on
+them is invented. Their text is set in DejaVu Serif/Sans (Bitstream Vera licence), Caladea and Carlito (SIL OFL 1.1)
+and FreeSerif (GPL with font exception), rasterised to pixels. Firewood bark reuses the trees module's
+`textures/trees/bark_spruce.png`. Furniture props (stools, lanterns, rocker, register, barrels, crates...) are the
+converted Poly Haven models credited with the props.
+
+| Source | Author | Licence | Used by |
+|---|---|---|---|
+| [Brown Leather](https://polyhaven.com/a/brown_leather) (`brown_leather`) | Rob Tuytel | CC0 1.0 | `leather` |
+| [Fine Grained Wood](https://polyhaven.com/a/fine_grained_wood) (`fine_grained_wood`) | Rob Tuytel | CC0 1.0 | `board_warm`, `wood_fresh` |
+| [Mossy Rock](https://polyhaven.com/a/mossy_rock) (`mossy_rock`) | Rob Tuytel | CC0 1.0 | `shakes` |
+| [Old Stone Wall](https://polyhaven.com/a/old_stone_wall) (`old_stone_wall`) | Charlotte Baglioni | CC0 1.0 | `stone` |
+| [Old Wood Floor](https://polyhaven.com/a/old_wood_floor) (`old_wood_floor`) | Guillaume Monsergent | CC0 1.0 | `floor` |
+| [Poly Wool Herringbone](https://polyhaven.com/a/poly_wool_herringbone) (`poly_wool_herringbone`) | colormass, Rico Cilliers | CC0 1.0 | `blanket`, `wool_grey` |
+| [Rough Wood](https://polyhaven.com/a/rough_wood) (`rough_wood`) | Rob Tuytel | CC0 1.0 | `log_ext`, `shakes` |
+| [Rust Coarse 01](https://polyhaven.com/a/rust_coarse_01) (`rust_coarse_01`) | Dimitrios Savva, Rico Cilliers | CC0 1.0 | `galv`, `iron` |
+| [Rusty Corrugated Iron](https://polyhaven.com/a/rusty_corrugated_iron) (`rusty_corrugated_iron`) | Charlotte Baglioni | CC0 1.0 | `corrugated` |
+| [Rusty Painted Metal](https://polyhaven.com/a/rusty_painted_metal) (`rusty_painted_metal`) | Amal Kumar | CC0 1.0 | `rusty_red` |
+| [Weathered Plank Siding](https://polyhaven.com/a/weathered_plank_siding) (`weathered_plank_siding`) | Dimitrios Savva | CC0 1.0 | `siding_red` |
+| [Weathered Planks](https://polyhaven.com/a/weathered_planks) (`weathered_planks`) | Dario Barresi, Dimitrios Savva | CC0 1.0 | `boards_green`, `trim_cream` |
+| [White Rough Plaster](https://polyhaven.com/a/white_rough_plaster) (`white_rough_plaster`) | Rob Tuytel | CC0 1.0 | `chink` |
+| [Wood Chips](https://polyhaven.com/a/wood_chips) (`wood_chips`) | eye-candy.xyz | CC0 1.0 | `woodchips` |
+| [Wood Planks Grey](https://polyhaven.com/a/wood_planks_grey) (`wood_planks_grey`) | Rob Tuytel | CC0 1.0 | `planks_grey` |
+| [Wood Table Worn](https://polyhaven.com/a/wood_table_worn) (`wood_table_worn`) | Dimitrios Savva, Rico Cilliers | CC0 1.0 | `board_grey`, `board_warm`, `log_int` |

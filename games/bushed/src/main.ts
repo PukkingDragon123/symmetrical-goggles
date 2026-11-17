@@ -18,6 +18,10 @@ import { ITEMS } from './game/items';
 import { CabinPlay } from './game/cabinplay';
 import { Pause } from './ui/pause';
 import { spawnNpcs } from './game/npcs';
+import { Forest } from './world/forest';
+import { GroundCover } from './world/groundcover';
+import { treeMaterials } from './trees/materials';
+import { setBarkSource } from './chop/wood';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const params = new URLSearchParams(location.search);
@@ -48,6 +52,14 @@ async function boot() {
 
   // load the world
   game.terrain.prime(new THREE.Vector3(SPOTS.cabin.x, 0, SPOTS.cabin.z));
+  await step('forest', async () => {
+    const forest = new Forest(game.scene, game.camera, game.R.gl);
+    forest.prewarm(SPOTS.cabin.x, SPOTS.cabin.z, 140);
+    game.setForest(forest as never);
+    game.ground = new GroundCover(game.scene, game.camera, { forest });
+    game.sky.sun.shadow.camera.layers.enable(1);
+    setBarkSource((sp) => treeMaterials(sp as never).bark);
+  });
   await Promise.all([
     step('props', () => game.preloadItemModels()),
     step('cabin', async () => { const c = await buildCabin(); game.cabin = c; game.addPlace(c); }),

@@ -55,9 +55,11 @@ def paint_out(img_path: str, rects: list[tuple[int, int, int, int]], out_path: s
     """Remove light-coloured markings (stars, numbers) inside rects (x0, y0, x1, y1 in image pixels)."""
     im = np.asarray(Image.open(img_path).convert("RGB")).astype(np.float64)
     hole = np.zeros(im.shape[:2], bool)
-    for x0, y0, x1, y1 in rects:
+    for r in rects:
+        x0, y0, x1, y1 = r[:4]
+        thr = r[4] if len(r) > 4 else min_bright
         sub = im[y0:y1, x0:x1]
-        m = sub.min(-1) > min_bright
+        m = sub.min(-1) > thr
         hole[y0:y1, x0:x1] |= m
     # grow the mask a little (anti-aliased edges)
     for _ in range(grow):
@@ -66,7 +68,8 @@ def paint_out(img_path: str, rects: list[tuple[int, int, int, int]], out_path: s
         hole = h
     # fill per rect region (with margin) so far-away texels don't bleed in
     out = im.copy()
-    for x0, y0, x1, y1 in rects:
+    for r in rects:
+        x0, y0, x1, y1 = r[:4]
         m = 48
         X0, Y0, X1, Y1 = max(0, x0 - m), max(0, y0 - m), min(im.shape[1], x1 + m), min(im.shape[0], y1 + m)
         out[Y0:Y1, X0:X1] = push_pull_fill(im[Y0:Y1, X0:X1], hole[Y0:Y1, X0:X1])
@@ -139,13 +142,16 @@ def quat_from_matrix(R: np.ndarray) -> list[float]:
 _PARTS: dict = {}
 
 
-def convert_part(key: str, mesh, kind: str, tris: int, density: float, atlas: int = 2048, name: str = "part"):
+def convert_part(key: str, mesh, kind: str, tris: int, density: float, atlas: int = 2048, name: str = "part",
+                 chroma_k: float = 1.0):
     """lowpix-convert an in-memory MeshData. Returns (glb bytes, n0) where n0 = (cx, ymin, cz) of the mesh
     bounds: lowpix re-centres the result, so adding n0 back restores the input coordinates."""
     import lowpix.convert as LC
     from lowpix.export import glb_bytes
 
-    LC.load_model = lambda p, _orig=LC.load_model: _PARTS[p] if p in _PARTS else _orig(p)
+    if not getattr(LC, "_bushed_parts", False):
+        LC.load_model = lambda p, _orig=LC.load_model: _PARTS[p] if p in _PARTS else _orig(p)
+        LC._bushed_parts = True
     CP.install_normal_aware_sampling(LC)
 
     def _load_image(data: bytes, _cap=2048):
@@ -167,6 +173,8 @@ def convert_part(key: str, mesh, kind: str, tris: int, density: float, atlas: in
                    density=density, atlas=atlas, light=0.0, crease=0.0, outline=False, smooth=0.0, detail=1.0,
                    chart_angle=40.0, **kw)
     m.spec["material"] = {"unlit": False, "filter": "nearest", "roughness": 0.8}
+    if kind != "glass":
+        m.atlas = CP.unboost_atlas(m.atlas, chroma_k)
     m.atlas = CP.dilate(m.atlas)
     tris_out = sum(len(f.tris) for i in m.instances for f in i.faces)
     return glb_bytes(m), n0, tris_out, m
@@ -250,7 +258,7 @@ def assemble(name: str, parts: list[dict], extras: dict) -> bytes:
 
 
 # ------------------------------------------------------------------ vehicles
-def prepare_source(uid: str, patches: dict, ao: bool = True, drop_materials: tuple = ()) -> str:
+def prepare_source(uid: str, patches: dict, ao: bool = True, drop_materials: tuple = ()) -> tuple[str, float]:
     """Copy of the source glTF with patched / AO-multiplied base colours. Returns its path."""
     d = os.path.join(SFDL, uid)
     src = os.path.join(d, "scene.gltf")
@@ -282,15 +290,17 @@ def prepare_source(uid: str, patches: dict, ao: bool = True, drop_materials: tup
     for mi in drop_materials:
         for me in js["meshes"]:
             me["primitives"] = [p for p in me["primitives"] if p.get("material") != mi]
+    js, k = CP.boost_colours(js, d)
     p = os.path.join(d, "_bushed.gltf")
     json.dump(js, open(p, "w"))
-    return p
+    return p, k
 
 
 def build(cfg: dict) -> dict:
     import lowpix.convert as LC
     uid = cfg["uid"]
-    src = prepare_source(uid, cfg.get("paint_out", {}), drop_materials=cfg.get("drop_materials", ()))
+    src, chroma_k = prepare_source(uid, cfg.get("paint_out", {}), drop_materials=cfg.get("drop_materials", ()))
+    print("chroma boost", round(chroma_k, 2))
     mesh = LC.load_gltf(src)
     s = cfg["scale"]
     V = mesh.V * s
@@ -319,8 +329,8 @@ def build(cfg: dict) -> dict:
     part_of[~keep] = "drop"
     info = {"wheels": {}}
     wheels = cfg["find_wheels"](clo, chi, np.bincount(lab), lab, mesh, V)
-    for wname, (cids, centre, radius, width) in wheels.items():
-        sel = np.isin(lab, cids) & keep
+    for wname, (wmask, centre, radius, width) in wheels.items():
+        sel = wmask & keep
         part_of[sel] = wname
         info["wheels"][wname] = {"pos": [round(float(v), 4) for v in centre], "radius": round(float(radius), 4),
                                  "width": round(float(width), 4)}
@@ -370,7 +380,8 @@ def build(cfg: dict) -> dict:
         budget = cfg["tris"].get(pname.split("_")[0] if pname.startswith(("wheel", "door")) else pname, 1000)
         dens = cfg.get("density", 256.0) if kind != "glass" else 32.0
         glb, n0, ntri, m = convert_part(f"{cfg['out']}:{pname}", sm, kind, budget, dens,
-                                        atlas=cfg.get("atlas", 2048) if pname == "body" else 1024, name=pname)
+                                        atlas=cfg.get("atlas", 2048) if pname == "body" else 1024, name=pname,
+                                        chroma_k=chroma_k)
         total += ntri
         from lowpix.render import render
         try:
@@ -407,54 +418,104 @@ def build(cfg: dict) -> dict:
         "attribution": f"This work is based on \"{att.get('name')}\" ({att.get('source')}) by {att.get('author')} "
                        f"({att.get('author_url')}) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
     }
+    if "steeringWheel" in meta:   # where the driver's eyes are: behind the wheel, a head above it
+        sw = meta["steeringWheel"]
+        back = np.array(sw["axis"]) * [1, 0, 1]
+        back /= max(np.linalg.norm(back), 1e-6)
+        eye = np.array(sw["pos"]) + back * 0.55 + [0, 0.32, 0]
+        meta["driverEye"] = [round(float(v), 3) for v in eye]
+    if cfg["out"] == "trailer":   # hitch: the front tip of the drawbar
+        Vb = V[mesh.F[part_of == "body"]].reshape(-1, 3)
+        tip = Vb[Vb[:, 2] > Vb[:, 2].max() - 0.03]
+        meta["hitch"] = [round(float(v), 4) for v in (tip.mean(0) * [1, 0, 0] + [0, tip[:, 1].mean(), Vb[:, 2].max()])]
     json.dump(meta, open(os.path.join(CP.MODELS, f"{cfg['out']}.json"), "w"), indent=1)
     print(json.dumps({k: v for k, v in meta.items() if k not in ("attribution",)}, indent=None)[:1500])
     return meta
 
 
-# ------------------------------------------------------------------ the Jeep
-def _jeep_wheels(clo, chi, cnt, lab, mesh, V):
-    sz = chi - clo
-    tyres = np.nonzero((sz[:, 1] > 0.6) & (np.abs(sz[:, 1] - sz[:, 2]) < 0.05) & (sz[:, 0] < 0.3) & (cnt > 2000))[0]
-    out = {}
-    for c in tyres:
-        ctr = (clo[c] + chi[c]) / 2
-        inside = np.nonzero(np.all(clo >= clo[c] - 0.02, 1) & np.all(chi <= chi[c] + 0.02, 1))[0]
-        side = "l" if ctr[0] > 0 else "r"
-        end = "f" if ctr[2] > 0 else "r"
-        out[f"wheel_{end}{side}"] = (inside, ctr, sz[c, 1] / 2, sz[c, 0])
-    assert len(out) == 4, f"found {len(out)} tyres"
-    return out
+# ------------------------------------------------------------------ part finders
+def wheel_finder(min_d=0.45, max_w=0.45, min_tris=1000, single_axle=False, inward=0.12):
+    """Tyres: components about as tall as they are long, narrow along x (spin axis). A wheel also takes every
+    triangle of the smaller components that sit inside the tyre's y/z bounds (rims, hubs, wheel nuts) and lie on
+    its side of the car, up to `inward` metres inside the tyre (a rim welded to its axle is cut off there).
+    Spare wheels (axis along z) stay on the body. Returns {name: (triangle mask, centre, radius, width)}."""
+    def find(clo, chi, cnt, lab, mesh, V):
+        sz = chi - clo
+        tyres = np.nonzero((sz[:, 1] > min_d) & (np.abs(sz[:, 1] - sz[:, 2]) < 0.06 * sz[:, 1]) & (sz[:, 0] < max_w)
+                           & (cnt > min_tris))[0]
+        cen = V[mesh.F].mean(1)
+        out = {}
+        for c in tyres:
+            ctr = (clo[c] + chi[c]) / 2
+            r = (sz[c, 1] + sz[c, 2]) / 4
+            pad = 0.02
+            yz_in = (clo[:, 1] >= clo[c, 1] - pad) & (chi[:, 1] <= chi[c, 1] + pad) & \
+                    (clo[:, 2] >= clo[c, 2] - pad) & (chi[:, 2] <= chi[c, 2] + pad)
+            touch = (chi[:, 0] >= clo[c, 0] - inward) & (clo[:, 0] <= chi[c, 0] + inward)
+            comps = np.nonzero(yz_in & touch)[0]
+            if ctr[0] > 0:
+                xin = (cen[:, 0] >= clo[c, 0] - inward) & (cen[:, 0] <= chi[c, 0] + pad)
+            else:
+                xin = (cen[:, 0] <= chi[c, 0] + inward) & (cen[:, 0] >= clo[c, 0] - pad)
+            rad = np.hypot(cen[:, 1] - ctr[1], cen[:, 2] - ctr[2]) <= r + pad
+            mask = np.isin(lab, comps) & xin & rad
+            side = "l" if ctr[0] > 0 else "r"
+            end = "" if single_axle else ("f" if ctr[2] > 0 else "r")
+            out[f"wheel_{end}{side}"] = (mask, ctr, r, sz[c, 0])
+        assert len(out) == (2 if single_axle else 4), f"found {len(out)} tyres: {sorted(out)}"
+        return out
+    return find
 
 
-def _jeep_steering(clo, chi, cnt, lab, mesh, V):
-    sz = chi - clo
-    # the rim: ~0.4 m across, above the seat, on the driver's (+x) side, in the front half
-    cand = np.nonzero((sz.max(1) > 0.35) & (sz.max(1) < 0.45) & (clo[:, 1] > 0.5) & ((clo[:, 0] + chi[:, 0]) / 2 > 0.1)
-                      & ((clo[:, 2] + chi[:, 2]) / 2 > -0.3) & ((clo[:, 2] + chi[:, 2]) / 2 < 0.6) & (cnt > 800))[0]
-    rim = cand[np.argmax(cnt[cand])]
-    inside = np.nonzero(np.all(clo >= clo[rim] - 0.02, 1) & np.all(chi <= chi[rim] + 0.02, 1))[0]
-    # rim centre and plane normal from its vertices (PCA: smallest variance = axis)
-    P = V[mesh.F[lab == rim]].reshape(-1, 3)
-    c = P.mean(0)
-    w, U = np.linalg.eigh(np.cov((P - c).T))
-    axis = U[:, 0]
-    if axis[2] > 0:          # point from the column towards the driver (backwards, up)
-        axis = -axis
-    radius = float(np.median(np.linalg.norm((P - c) - np.outer((P - c) @ axis, axis), axis=1)))
-    return inside, c, axis, radius
+def steering_finder(size=(0.33, 0.47), min_y=0.5, min_tris=200):
+    def find(clo, chi, cnt, lab, mesh, V):
+        sz = chi - clo
+        cx, cz = (clo[:, 0] + chi[:, 0]) / 2, (clo[:, 2] + chi[:, 2]) / 2
+        cand = np.nonzero((sz.max(1) > size[0]) & (sz.max(1) < size[1]) & (clo[:, 1] > min_y) & (cx > 0.1)
+                          & (cz > -0.4) & (cz < 1.0) & (cnt > min_tris) & (np.sort(sz, 1)[:, 1] > size[0] * 0.6))[0]
+        assert len(cand), "no steering wheel candidate"
+        rim = cand[np.argmax(cnt[cand])]
+        inside = np.nonzero(np.all(clo >= clo[rim] - 0.02, 1) & np.all(chi <= chi[rim] + 0.02, 1))[0]
+        P = V[mesh.F[lab == rim]].reshape(-1, 3)
+        c = (P.min(0) + P.max(0)) / 2
+        w, U = np.linalg.eigh(np.cov((P - c).T))
+        axis = U[:, 0]
+        if axis[2] > 0:          # point from the column towards the driver (backwards)
+            axis = -axis
+        radius = float(np.median(np.linalg.norm((P - c) - np.outer((P - c) @ axis, axis), axis=1)))
+        print("steering wheel: components", inside.tolist(), "centre", c.round(3), "axis", axis.round(3), "r", round(radius, 3))
+        return inside, c, axis, radius
+    return find
 
 
 VEHICLES = {
     "jeep": dict(
         uid="d6e73ec5537e49269ec92b8ab78230c2", out="jeep", name="Jeep", scale=0.2346,
         # US stars on the hood and flanks painted out (a civilian surplus jeep); x0, y0, x1, y1 in the 4k texture
-        paint_out={"lambert2614SG_baseColor": [(240, 1780, 720, 2250), (180, 1460, 340, 1610), (2540, 0, 2700, 200)]},
-        glass_materials=(0,), find_wheels=_jeep_wheels, find_steering=_jeep_steering,
+        # plus the modeller's stencilled signature on the rear panel (grey on black, threshold 70)
+        paint_out={"lambert2614SG_baseColor": [(240, 1780, 720, 2250), (180, 1460, 340, 1610), (2540, 0, 2700, 200)],
+                   "lambert2617SG_baseColor": [(2380, 220, 2760, 640, 70), (3540, 255, 3860, 660, 70)]},
+        glass_materials=(0,), find_wheels=wheel_finder(0.6, 0.3, 2000), find_steering=steering_finder(min_tris=800),
         tris={"body": 26000, "wheel": 1400, "steering_wheel": 600, "glass": 300},
-        density=256.0, atlas=2048, mass=1100, rough=0.7,
-        meta={"driverEye": None},
-        notes="Open WWII-pattern 4x4 with folding windshield, no doors. The axe and shovel on the flank are part of the body.",
+        density=256.0, atlas=4096, mass=1100, rough=0.7,
+        notes="Open WWII-pattern 4x4 with a folding windshield and no doors; US stars painted out. The axe and shovel on "
+              "the left flank and the spare wheel are part of the body. Wheels spin about local X; the steering wheel "
+              "turns about local Z.",
+    ),
+    "npc_pickup": dict(
+        uid="43394652043a4387be183ef75d7af5a1", out="npc_pickup", name="Old pickup", scale=1.0,
+        find_wheels=wheel_finder(0.6, 0.45, 1000), find_steering=steering_finder(min_tris=200),
+        tris={"body": 15000, "wheel": 800, "steering_wheel": 300, "glass": 200},
+        density=256.0, atlas=2048, mass=1500, rough=0.7,
+        notes="1960s-style pickup for the NPCs. No glass in the windows (open frames). Wheels spin about local X.",
+    ),
+    "trailer": dict(
+        uid="5a53a60a27144183ab825f559ed73a80", out="trailer", name="Utility trailer", scale=0.7, yaw=-90.0,
+        find_wheels=wheel_finder(0.4, 0.3, 1000, single_axle=True),
+        tris={"body": 5000, "wheel": 700},
+        density=256.0, atlas=2048, mass=260, rough=0.75,
+        notes="Single-axle box trailer; the drawbar points +Z (hitch at the front tip, see 'hitch'). The jockey wheel is "
+              "part of the body. Wheels spin about local X.",
     ),
 }
 

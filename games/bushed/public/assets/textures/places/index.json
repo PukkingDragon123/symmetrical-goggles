@@ -10,6 +10,7 @@
   "rough_wood": "https://polyhaven.com/a/rough_wood",
   "rust_coarse_01": "https://polyhaven.com/a/rust_coarse_01",
   "rusty_corrugated_iron": "https://polyhaven.com/a/rusty_corrugated_iron",
+  "rusty_painted_metal": "https://polyhaven.com/a/rusty_painted_metal",
   "weathered_plank_siding": "https://polyhaven.com/a/weathered_plank_siding",
   "weathered_planks": "https://polyhaven.com/a/weathered_planks",
   "white_rough_plaster": "https://polyhaven.com/a/white_rough_plaster",
@@ -256,6 +257,18 @@
    "tile": [
     2.0,
     0.5
+   ]
+  },
+  "rusty_red": {
+   "normal": true,
+   "note": "rusty_painted_metal",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
    ]
   },
   "shakes": {

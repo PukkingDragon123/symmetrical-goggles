@@ -370,7 +370,7 @@ const BUILD: Record<string, Builder> = {
       const r = 0.1 + 0.006 * Math.sin(i * 0.7);
       pts.push(V(Math.cos(a) * r, 0.012 + (i / N) * 0.05 + 0.004 * Math.sin(a * 2), Math.sin(a) * r));
     }
-    tube(ms, 'rope', pts, 0.008, 6, { samples: N * 2 });
+    tube(ms, 'rope', pts, 0.008, 5, { samples: N });
     const b = L('rope_band');
     ms.pushT(0.1, 0.04, 0, Math.PI / 2);
     boxR(ms, 'lab', 0.04, 0.075, 0.03, { pz: b, nz: b }, L('kraft'));

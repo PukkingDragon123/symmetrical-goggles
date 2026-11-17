@@ -67,11 +67,11 @@
   "species": "birch",
   "asset": "japanese_sycamore (detail only) + procedural",
   "tile": [
-   1.6,
+   0.8,
    1.6
   ],
   "px": [
-   256,
+   128,
    256
   ],
   "authors": [

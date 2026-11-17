@@ -1,0 +1,86 @@
+{
+ "name": "Jeep",
+ "file": "assets/models/jeep.glb",
+ "size": [
+  1.72,
+  1.63,
+  3.4
+ ],
+ "mass": 1100,
+ "tris": 32420,
+ "frontAxis": "+z",
+ "leftAxis": "+x",
+ "up": "+y",
+ "wheels": {
+  "wheel_rr": {
+   "pos": [
+    -0.6446,
+    0.3893,
+    -0.8888
+   ],
+   "radius": 0.3893,
+   "width": 0.2075
+  },
+  "wheel_fr": {
+   "pos": [
+    -0.6446,
+    0.3893,
+    1.1573
+   ],
+   "radius": 0.3893,
+   "width": 0.2075
+  },
+  "wheel_rl": {
+   "pos": [
+    0.645,
+    0.3893,
+    -0.8888
+   ],
+   "radius": 0.3893,
+   "width": 0.2075
+  },
+  "wheel_fl": {
+   "pos": [
+    0.645,
+    0.3893,
+    1.1573
+   ],
+   "radius": 0.3893,
+   "width": 0.2075
+  }
+ },
+ "wheelbase": 2.0461,
+ "track": 1.2896,
+ "steeringWheel": {
+  "pos": [
+   0.332,
+   1.2161,
+   0.0311
+  ],
+  "axis": [
+   -0.0,
+   0.6647,
+   -0.7471
+  ],
+  "radius": 0.1821
+ },
+ "nodes": [
+  "body",
+  "glass",
+  "wheel_fl",
+  "wheel_fr",
+  "wheel_rl",
+  "wheel_rr",
+  "steering_wheel"
+ ],
+ "notes": "Open WWII-pattern 4x4 with a folding windshield and no doors; US stars painted out. The axe and shovel on the left flank and the spare wheel are part of the body. Wheels spin about local X; the steering wheel turns about local Z.",
+ "source": "https://sketchfab.com/3d-models/willys-jeep-d6e73ec5537e49269ec92b8ab78230c2",
+ "author": "snjvsngh_negi",
+ "licence": "CC-BY-4.0",
+ "attribution": "This work is based on \"Willys Jeep\" (https://sketchfab.com/3d-models/willys-jeep-d6e73ec5537e49269ec92b8ab78230c2) by snjvsngh_negi (https://sketchfab.com/snjvsngh_negi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+ "driverEye": [
+  0.332,
+  1.536,
+  -0.519
+ ]
+}

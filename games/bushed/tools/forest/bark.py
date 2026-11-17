@@ -25,7 +25,7 @@ def px_for(metres):
     return int(round(metres * PPM / 16.0)) * 16
 
 
-def photo_bark(asset, out, colours=28, hue=0.0, sat=1.0, val=1.0, flatten=0.75, tint=None, extra=None, seed=1):
+def photo_bark(asset, out, colours=28, hue=0.0, sat=1.0, val=1.0, flatten=0.75, tint=None, extra=None, seed=1, contrast=1.0):
     info = ph.info(asset)
     w_m = info["dimensions"][0] / 1000.0
     h_m = info["dimensions"][1] / 1000.0
@@ -36,6 +36,9 @@ def photo_bark(asset, out, colours=28, hue=0.0, sat=1.0, val=1.0, flatten=0.75, 
     rgb = hsv_adjust(rgb, hue, sat, val)
     if tint is not None:
         rgb = np.clip(rgb * np.array(tint)[None, None], 0, 1)
+    if contrast != 1.0:
+        m = rgb.mean(axis=(0, 1), keepdims=True)
+        rgb = np.clip(m + (rgb - m) * contrast, 0, 1)
     if extra:
         rgb, nrm = extra(rgb, nrm, np.random.default_rng(seed))
     # pixel-art: sharpen a touch, then quantise onto a photo palette, despeckle
@@ -79,10 +82,10 @@ def fir_extra(rgb, nrm, rng):
     return rgb, combine_normals(nrm, nb)
 
 
-def birch(out="birch", size_m=1.6, seed=7):
+def birch(out="birch", size_m=(0.8, 1.6), seed=7):
     """paper birch: chalky white papery bark, horizontal lenticels, dark scars, peeling curls with salmon underbark"""
     rng = np.random.default_rng(seed)
-    W = H = px_for(size_m)
+    W, H = px_for(size_m[0]), px_for(size_m[1])
     base_src = load_rgb(ph.fetch("japanese_sycamore", "diff", "1k", prefer=("jpg", "png")), (W, H))
     det = luminance(base_src)
     det = (det - blur(det, W / 6)) * 1.0
@@ -102,9 +105,9 @@ def birch(out="birch", size_m=1.6, seed=7):
         return (a - b + m / 2) % m - m / 2
 
     # peeled patches: salmon/tan inner bark, with a curled white edge above
-    for _ in range(int(W * H / 9000)):
+    for _ in range(int(W * H / 16000)):
         cx, cy = rng.uniform(0, W), rng.uniform(0, H)
-        rx, ry = rng.uniform(8, 26), rng.uniform(3, 8)
+        rx, ry = rng.uniform(6, 20), rng.uniform(2.5, 6)
         dx, dy = wrapd(xx, cx, W), wrapd(yy, cy, H)
         jag = 1 + 0.25 * np.sin(dx * 0.5 + rng.uniform(0, 6)) + 0.15 * np.sin(dx * 1.3)
         d = (dx / rx) ** 2 + (dy / (ry * jag)) ** 2
@@ -134,7 +137,7 @@ def birch(out="birch", size_m=1.6, seed=7):
         r2 = (row + len(rows)) % H
         rgb[r2, span] = rgb[r2, span] * 0.7 + 0.3
     # black branch scars ("eyebrows"/chevrons) and rough dark patches
-    for _ in range(int(W * H / 26000) + 2):
+    for _ in range(int(W * H / 30000) + 1):
         cx, cy = rng.uniform(0, W), rng.uniform(0, H)
         s = rng.uniform(6, 16)
         dx, dy = wrapd(xx, cx, W), wrapd(yy, cy, H)
@@ -152,7 +155,7 @@ def birch(out="birch", size_m=1.6, seed=7):
     nrm = normal_from_height(blur(hgt, 0.7), strength=1.3)
     save_rgb(os.path.join(OUT, f"bark_{out}.png"), q)
     save_rgb(os.path.join(OUT, f"bark_{out}_n.png"), nrm)
-    return {"species": out, "asset": "japanese_sycamore (detail only) + procedural", "tile": [size_m, size_m], "px": [W, H],
+    return {"species": out, "asset": "japanese_sycamore (detail only) + procedural", "tile": list(size_m), "px": [W, H],
             "authors": list(ph.info("japanese_sycamore").get("authors", {}).keys()),
             "url": "https://polyhaven.com/a/japanese_sycamore"}
 
@@ -161,13 +164,13 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     meta = []
     # black/white spruce: thin, scaly grey-brown plates
-    meta.append(photo_bark("bark_platanus", "spruce", hue=-0.01, sat=0.55, val=1.38, tint=(0.97, 0.95, 0.95)))
+    meta.append(photo_bark("bark_platanus", "spruce", hue=-0.01, sat=0.55, val=1.38, tint=(0.97, 0.95, 0.95), contrast=1.25))
     # balsam fir: smooth grey with resin blisters and lichen
     meta.append(photo_bark("chinese_hackberry_bark", "fir", hue=0.02, sat=0.32, val=1.32, extra=fir_extra, colours=24))
     # red / jack pine: flaky red-brown plates with dark fissures
     meta.append(photo_bark("pine_bark", "pine", sat=1.05, val=1.02))
     # western red cedar: fibrous vertical strips, red-brown weathering to silver
-    meta.append(photo_bark("metasequoia_bark", "cedar", hue=0.0, sat=0.72, val=1.08, tint=(1.0, 0.94, 0.9)))
+    meta.append(photo_bark("metasequoia_bark", "cedar", hue=0.0, sat=0.78, val=1.1, tint=(1.0, 0.94, 0.9), contrast=1.45))
     meta.append(birch())
     json.dump(meta, open(os.path.join(OUT, "bark.json"), "w"), indent=1)
     for m in meta:

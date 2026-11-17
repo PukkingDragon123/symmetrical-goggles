@@ -125,6 +125,7 @@ async function main(): Promise<void> {
     localView(cabin, 'woodyard', [9.6, 1.8, 5.6], [15.5, 0.9, 1.0]);
     localView(cabin, 'firepit', [2.0, 1.6, 4.3], [6.2, 0.4, 7.4]);
     localView(cabin, 'menu', [-1.95, 1.2, 4.35], [3.5, 0.6, 9.5]);
+    localView(cabin, 'top', [4, 22, 9], [5, 0, 2]);
     if (q.get('night') === '1' || hour > 20 || hour < 5) { cabin.stove?.setFire(0.85); (cabin.anchors.firepit?.userData.setFire as ((l: number) => void) | undefined)?.(q.get('pit') === '0' ? 0 : 1); }
     cabin.setThermometer?.(Number(q.get('temp') ?? 21));
   }
@@ -141,12 +142,36 @@ async function main(): Promise<void> {
       localView(store, 'store_counter', [0.1, 1.75, 1.6], [2.2, 1.2, 0.6]);
       localView(store, 'store_int2', [2.2, 1.7, -3.5], [-2.0, 1.3, 3.0]);
       localView(store, 'log_deck', [12.5, 2.4, 7.5], [8.0, 0.6, -0.5]);
+      localView(store, 'store_top', [3, 24, 14], [3, 0, 0]);
     } catch (e) { W.__errors!.push('store: ' + String(e)); }
   }
   if (q.get('forest') === '1') {
     try {
       forest = new Forest(scene, camera, R.gl, { far: Number(q.get('far') ?? 140), shadow: 40 });
     } catch (e) { W.__errors!.push('forest: ' + String(e)); }
+  }
+  if (q.get('cols') === '1') {
+    const mat = new THREE.MeshBasicMaterial({ color: 0x40ff60, wireframe: true, fog: false });
+    const imat = new THREE.MeshBasicMaterial({ color: 0x4080ff, wireframe: true, fog: false });
+    for (const p of places) {
+      for (const c of p.colliders) {
+        if (c.kind !== 'box') continue;
+        const m = new THREE.Mesh(new THREE.BoxGeometry(c.half[0] * 2, c.half[1] * 2, c.half[2] * 2), mat);
+        m.position.set(...c.pos);
+        m.rotation.y = c.rotY;
+        scene.add(m);
+      }
+      for (const b of p.interior) {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(...b.getSize(new THREE.Vector3()).toArray()), imat);
+        m.position.copy(b.getCenter(new THREE.Vector3()));
+        scene.add(m);
+      }
+      for (const [k, a] of Object.entries(p.anchors)) {
+        const ax = new THREE.AxesHelper(0.3);
+        a.add(ax);
+        void k;
+      }
+    }
   }
   const lamps = q.get('lamps') ?? (hour > 17 || hour < 7 ? '1' : '0.25');
   for (const p of places) p.setLamps?.(Number(lamps));

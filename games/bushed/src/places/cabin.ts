@@ -309,12 +309,13 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
     }
     ms.pop();
   }
-  // roof colliders (so things can land on it, and the porch roof stops the player jumping through)
+  // roof colliders: one convex hull per slope (things can land on it; the porch roof stops jumps)
   for (const s of [-1, 1]) {
-    const cx = s * XE / 2, cy = (deckY(0) + deckY(XE)) / 2 + 0.05;
-    const ang = Math.atan(K);
-    void ang;
-    cols.box(cx, cy, (ZB + ZF) / 2, XE / 2, 0.08, (ZF - ZB) / 2, 0);
+    const pts: number[] = [];
+    for (const [x, y] of [[0, RIDGE + ROOF_T + 0.06], [s * XE, deckY(XE) + ROOF_T + 0.04]] as [number, number][]) {
+      for (const z of [ZB, ZF]) pts.push(x, y, z, x, y - 0.14, z);
+    }
+    cols.hull(pts);
   }
 }
 

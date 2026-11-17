@@ -777,7 +777,8 @@ function skeleton(species: SpeciesId, seed: number, opts: TreeOpts): Skeleton {
     const grow = Math.min(1.45, 1 / Math.sqrt(keepP));
     const kept: Cd[] = [];
     for (const c of cards) {
-      if (rng.next() < keepP) { c.len *= grow; c.wid *= grow; kept.push(c); }
+      if (c.part === MISC) kept.push(c); // the leader spire always stays
+      else if (rng.next() < keepP) { c.len *= grow; c.wid *= grow; kept.push(c); }
     }
     cards.length = 0;
     cards.push(...kept);
@@ -834,7 +835,7 @@ function emitTrunk(sk: Skeleton, mb: MeshBuilder, lod: 0 | 1): void {
   const N = lod === 0 ? sk.sides : Math.max(5, Math.round(sk.sides / 3));
   const step = Math.max(1, Math.round(sk.sides / N));
   let ringIdx = sk.rings.map((_, i) => i);
-  if (lod === 1) ringIdx = ringIdx.filter((i) => i === 0 || i === sk.rings.length - 1 || i % 2 === 1 || sk.rings[i].y > 1.5 && i % 2 === 0 && false);
+  if (lod === 1) ringIdx = ringIdx.filter((i) => i === 0 || i === sk.rings.length - 1 || i % 2 === 1);
   // arc length along the centreline (v coordinate)
   const len: number[] = [0];
   for (let i = 1; i < sk.rings.length; i++) {

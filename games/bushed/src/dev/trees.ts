@@ -4,7 +4,7 @@
 //             nogc=1 (no ground cover), noforest=1, shot=1 (sets window.__ready when the scene has settled)
 import * as THREE from 'three';
 import { G } from '../gfx/globals';
-import { applyPixelTex, loadTex } from '../gfx/tex';
+import { loadTex } from '../gfx/tex';
 import { heightAt, normalAt, biome } from '../world/layout';
 import { buildTree, type TreeForm } from '../trees/build';
 import { SPECIES_IDS, type SpeciesId } from '../trees/species';
@@ -177,7 +177,6 @@ if (gcLineup) {
   SPECIES_IDS.forEach((sp, i) => {
     const t = endGrainTexture(sp, sp === 'cedar' ? 0.6 : 0.25, 3);
     const disc = new THREE.Mesh(new THREE.CircleGeometry(0.6, 32).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ map: t, roughness: 0.9 }));
-    disc.geometry.attributes.uv.array.forEach((_, k, arr) => { /* circle uvs already 0..1 */ void arr; void k; });
     disc.position.set(-38 + i * 1.6, 0.02, 48);
     scene.add(disc);
   });
@@ -292,6 +291,7 @@ G.uWindStrength.value = num('wind', 0.35);
 
 // ------------------------------------------------------------------------------------------- loop
 const hud = document.getElementById('hud')!;
+if (Q.get('hud') === '0') { hud.style.display = 'none'; document.getElementById('help')!.style.display = 'none'; }
 let last = performance.now(), fpsAcc = 0, fpsN = 0, fps = 0, frame = 0;
 const clock = { t: num('t', 0) };
 function tick(): void {
@@ -336,4 +336,3 @@ function tick(): void {
 }
 const stopAt = num('stop', 1e12);
 requestAnimationFrame(tick);
-void applyPixelTex;

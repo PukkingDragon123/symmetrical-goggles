@@ -170,6 +170,7 @@ export class ChopTree {
   // ------------------------------------------------------------------ falling
   private fell(n: Notch): void {
     this.state = 'falling';
+    (this.object.userData.setWind as ((w: number) => void) | undefined)?.(0);
     this.fallT = 0;
     const s = this.scale;
     // world-space fall direction (trunk-local xz -> world via the root's yaw)

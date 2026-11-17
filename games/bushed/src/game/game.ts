@@ -75,7 +75,7 @@ export class Game {
   indoors = false;
   // plug-ins
   forest: (ForestLike & { update(dt: number): void; trunkColliders?(x: number, z: number, r: number): { id: number | string; x: number; z: number; r: number; h: number }[] }) | null = null;
-  ground: { update(cam: THREE.Camera | THREE.Vector3): void } | null = null;
+  ground: { update(cam: THREE.Camera): void; solids?(x: number, z: number, r: number): { kind: string; shape: string; x: number; y: number; z: number; r: number; h: number; x2?: number; y2?: number; z2?: number }[] } | null = null;
   arms: ArmsLike | null = null;
   jeep: Jeep | null = null;
   updaters: ((dt: number) => void)[] = [];
@@ -289,12 +289,12 @@ export class Game {
     const f = this.forest as any;
     if (!f?.near) return;
     const c = new THREE.Vector3(SPOTS.woodyard.x + 10, 0, SPOTS.woodyard.z + 8);
-    const refs = (f.near(c.x, c.z, 30) as any[]).filter((r) => { const m = r.model(); return m.dbh * r.scale > 0.13 && m.dbh * r.scale < 0.26; });
+    const refs = (f.near(c.x, c.z, 30) as any[]).filter((r) => { const m = r.model(); return m.dbh > 0.13 && m.dbh < 0.26; });
     refs.sort((a, b) => Math.hypot(a.x - c.x, a.z - c.z) - Math.hypot(b.x - c.x, b.z - c.z));
     const r = refs[0];
     if (!r) return;
     const m = r.model();
-    const rad = m.radiusAt(1.4) * r.scale;
+    const rad = m.radiusAt(1.4);
     const tape = new THREE.Group();
     const mat = new THREE.MeshStandardMaterial({ color: 0xff5a14, roughness: 0.6, emissive: 0x3a0a00, side: THREE.DoubleSide });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(rad + 0.005, 0.012, 4, 24), mat);
@@ -307,7 +307,7 @@ export class Game {
       tail.userData.tail = k;
       tape.add(tail);
     }
-    tape.position.set(r.x, r.y + 1.4 * r.scale, r.z);
+    tape.position.set(r.x + m.centerAt(1.4)[0], r.y + 1.4, r.z + m.centerAt(1.4)[1]);
     this.scene.add(tape);
     this.updaters.push(() => {
       const t = G.uTime.value;
@@ -493,6 +493,7 @@ export class Game {
     }
     physics.streamTerrain([{ x: this.player.pos.x, z: this.player.pos.z }, ...(this.jeep?.body ? [{ x: this.jeep.root.position.x, z: this.jeep.root.position.z }] : [])]);
     this.syncTreeColliders();
+    this.syncSolids();
     physics.update(dt, (h) => { if (this.jeep && this.mode === 'drive') this.jeep.update(h, this.driveInput()); else if (this.jeep) this.jeep.update(h, { throttle: 0, brake: 0.2, steer: 0, handbrake: true }); });
     this.chop.update(dt, cam.position);
     for (const t of this.chop.trees.values()) for (const h of t.slash) if (!this.slashSeen.has(h)) { this.slashSeen.add(h); makeSlashGatherable(this, h); }
@@ -635,6 +636,32 @@ export class Game {
       const st = this.chop.trees.get(k)?.state;
       if (!keep.has(k) || st === 'falling' || st === 'fallen' || st === 'gone') { physics.world.removeRigidBody(b); this.treeCols.delete(k); }
     }
+  }
+
+  /** rocks, fallen logs and stumps from the ground cover become static colliders near the player */
+  private solidCols = new Map<string, RAPIER.RigidBody>();
+  private solidT = 0;
+  private syncSolids(): void {
+    if (!this.ground?.solids || (this.solidT -= 1) > 0) return;
+    this.solidT = 20;
+    const p = this.player.pos, keep = new Set<string>();
+    for (const s of this.ground.solids(p.x, p.z, 36)) {
+      const k = `${s.kind}:${s.x.toFixed(1)},${s.z.toFixed(1)}`;
+      keep.add(k);
+      if (this.solidCols.has(k)) continue;
+      let cd: RAPIER.ColliderDesc;
+      const body = physics.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(s.x, s.y, s.z));
+      if (s.shape === 'sphere') cd = RAPIER.ColliderDesc.ball(s.r);
+      else if (s.shape === 'capsule' && s.x2 !== undefined) {
+        const a = new THREE.Vector3(0, 0, 0), b = new THREE.Vector3(s.x2 - s.x, (s.y2 ?? s.y) - s.y, (s.z2 ?? s.z) - s.z);
+        const len = b.length(), q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().normalize());
+        const mid = a.add(b).multiplyScalar(0.5);
+        cd = RAPIER.ColliderDesc.capsule(Math.max(0.01, len / 2), s.r).setTranslation(mid.x, mid.y, mid.z).setRotation({ x: q.x, y: q.y, z: q.z, w: q.w });
+      } else cd = RAPIER.ColliderDesc.cylinder(Math.max(0.05, s.h / 2), s.r).setTranslation(0, s.h / 2, 0);
+      physics.world.createCollider(cd.setCollisionGroups(groups(GROUP.STATIC, 0xffff)).setFriction(0.9), body);
+      this.solidCols.set(k, body);
+    }
+    for (const [k, b] of this.solidCols) if (!keep.has(k)) { physics.world.removeRigidBody(b); this.solidCols.delete(k); }
   }
 
   render(): void {

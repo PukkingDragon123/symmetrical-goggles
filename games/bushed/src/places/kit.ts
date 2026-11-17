@@ -532,25 +532,25 @@ export class Cols {
   }
 }
 
-/** world AABBs approximating a rotated local rectangle (for Place.interior) */
+/**
+ * World AABBs covering a rotated local rectangle (for Place.interior). Axis-aligned placements give one exact box;
+ * otherwise the rectangle is tiled with cells of at most `cell` metres and each cell's world AABB is returned (they
+ * poke a few centimetres past the rectangle, into the walls, never outside a wall thicker than ~0.1 m).
+ */
 export function interiorBoxes(ox: number, oy: number, oz: number, rot: number, x0: number, x1: number, z0: number, z1: number, y0: number, y1: number, cell = 0.5): THREE.Box3[] {
   const c = Math.cos(rot), s = Math.sin(rot);
-  const corners = [[x0, z0], [x1, z0], [x1, z1], [x0, z1]].map(([x, z]) => [ox + c * x + s * z, oz - s * x + c * z]);
-  const minX = Math.min(...corners.map((p) => p[0])), maxX = Math.max(...corners.map((p) => p[0]));
-  const minZ = Math.min(...corners.map((p) => p[1])), maxZ = Math.max(...corners.map((p) => p[1]));
-  const inside = (wx: number, wz: number) => {
-    const dx = wx - ox, dz = wz - oz;
-    const lx = c * dx - s * dz, lz = s * dx + c * dz;
-    return lx >= x0 && lx <= x1 && lz >= z0 && lz <= z1;
-  };
+  const toW = (x: number, z: number) => [ox + c * x + s * z, oz - s * x + c * z];
+  const nx = Math.abs(s) < 1e-4 || Math.abs(c) < 1e-4 ? 1 : Math.ceil((x1 - x0) / cell);
+  const nz = nx === 1 ? 1 : Math.ceil((z1 - z0) / cell);
   const out: THREE.Box3[] = [];
-  for (let wz = minZ; wz < maxZ; wz += cell) {
-    let run = -1;
-    for (let wx = minX; wx <= maxX + cell; wx += cell) {
-      const ok = wx <= maxX && inside(wx + cell / 2, wz + cell / 2) && inside(wx, wz) && inside(wx + cell, wz) && inside(wx, wz + cell) && inside(wx + cell, wz + cell);
-      if (ok && run < 0) run = wx;
-      if (!ok && run >= 0) { out.push(new THREE.Box3(new THREE.Vector3(run, oy + y0, wz), new THREE.Vector3(wx, oy + y1, wz + cell))); run = -1; }
-    }
+  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+    const ax = x0 + (x1 - x0) * (i / nx), bx = x0 + (x1 - x0) * ((i + 1) / nx);
+    const az = z0 + (z1 - z0) * (j / nz), bz = z0 + (z1 - z0) * ((j + 1) / nz);
+    const pts = [toW(ax, az), toW(bx, az), toW(bx, bz), toW(ax, bz)];
+    out.push(new THREE.Box3(
+      new THREE.Vector3(Math.min(...pts.map((p) => p[0])), oy + y0, Math.min(...pts.map((p) => p[1]))),
+      new THREE.Vector3(Math.max(...pts.map((p) => p[0])), oy + y1, Math.max(...pts.map((p) => p[1]))),
+    ));
   }
   return out;
 }

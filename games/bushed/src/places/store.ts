@@ -185,8 +185,12 @@ function shell(ms: Mesher, cols: Cols, glass: string): void {
       box(ms, 'trim_cream', a0.distanceTo(a1), 0.16, 0.03, { grain: 'x' });
       ms.pop();
     }
-    // stovepipe through the roof
-    cols.box(0, (WALL_TOP + RIDGE) / 2, 0, xe, (RIDGE - WALL_TOP) / 2 + 0.1, (z1 - z0) / 2, 0);
+    // roof colliders: a convex hull per slope
+    for (const s of [-1, 1]) {
+      const pts: number[] = [];
+      for (const [x, y] of [[0, RIDGE + 0.05], [s * xe, yAt(xe) + 0.05]] as [number, number][]) for (const z of [z0, z1]) pts.push(x, y, z, x, y - 0.12, z);
+      cols.hull(pts);
+    }
   }
   // ---- floor and ceiling
   {
@@ -379,6 +383,8 @@ export async function buildStore(): Promise<Place> {
     parent.add(o);
     const itemId = o.userData.itemId as string;
     if (ITEMS[itemId]) stockList.push({ obj: o, itemId });
+    // shelf goods do not cast shadows (hundreds of small meshes into a point-light shadow map is not worth it)
+    o.traverse((m) => { if ((m as THREE.Mesh).isMesh) m.castShadow = false; });
     return o;
   };
   /** fill a shelf row (unit frame: x along, +z toward the aisle) with products in facings */
@@ -394,8 +400,7 @@ export async function buildStore(): Promise<Place> {
       const facing = Math.min(n, 1 + r.int(1, 3));
       for (let i = 0; i < facing && x + span < len / 2; i++) {
         // two deep when it fits
-        const rows = Math.max(1, Math.min(2, Math.floor((depth - 0.04) / (d + 0.01))));
-        for (let j = 0; j < rows; j++) stock(id, x + span / 2, y, depth / 2 - 0.03 - d / 2 - j * (d + 0.01), r.range(-0.08, 0.08), unit);
+        stock(id, x + span / 2, y, depth / 2 - 0.03 - d / 2, r.range(-0.08, 0.08), unit);
         x += span;
       }
       x += 0.03;

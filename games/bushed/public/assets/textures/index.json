@@ -143,6 +143,22 @@
   "licence": "CC0"
  },
  {
+  "set": "terrain",
+  "name": "gravel_road_ruts",
+  "tile": 4.0,
+  "px": 1024,
+  "density": 256,
+  "source": "rocky_trail + dirt + forrest_ground_01",
+  "url": "https://polyhaven.com/a/rocky_trail",
+  "authors": [
+   "Amal Kumar",
+   "Charlotte Baglioni",
+   "Rob Tuytel"
+  ],
+  "licence": "CC0",
+  "note": "synthesised road tile: U across the road (ruts at u = 0.34 / 0.66, 1.3 m apart), V along it"
+ },
+ {
   "set": "building",
   "name": "log_wall",
   "tile": 1.25,

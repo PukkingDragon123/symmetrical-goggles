@@ -318,7 +318,6 @@ export class GroundCover {
           const s = 1 / Math.max(1e-3, Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z) / 2);
           geo.scale(s, s, s);
         }
-        if (group === 'log') geo.rotateY(0);
         const t = tex as THREE.Texture | null;
         if (t) { applyPixelTex(t, {}); }
         const o: VegMatOpts = kind === 'rock'

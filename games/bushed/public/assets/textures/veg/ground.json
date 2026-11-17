@@ -1,8 +1,8 @@
 [
  {
   "file": "veg/moss.png",
-  "asset": "concrete_moss",
-  "tile_m": 3.0,
+  "asset": "concrete_moss (colour) + procedural cushions",
+  "tile_m": 1.6,
   "authors": [
    "Rob Tuytel"
   ],

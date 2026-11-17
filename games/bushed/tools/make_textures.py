@@ -57,6 +57,7 @@ TEX: dict[str, tuple[str, str, int, dict]] = {
     "concrete": ("building", "concrete_floor_02", 512, dict(grade=(1.0, 1.0, (1, 1, 1)), k=40)),
 }
 SYNTH = {
+    "gravel_road_ruts": ("terrain", "rocky_trail", 1024),
     "cedar_shakes": ("building", "weathered_planks", 512),
     "window_grime": ("building", "dirty_concrete", 512),
 }
@@ -338,6 +339,63 @@ def make_cedar_shakes() -> dict:
             "note": "synthesised: 8 courses x 0.2 m exposure of shakes cut from the scan"}
 
 
+def _photo_maps(asset: str, n: int, grade_=(1, 1, (1, 1, 1))):
+    diff = load(fetch(asset, "Diffuse"))
+    aop = fetch(asset, "AO")
+    ao = load(aop, "L") if aop else np.ones(diff.shape[:2])
+    nor = load(fetch(asset, "nor_gl")) * 2 - 1
+    alb = grade(flatten_lowfreq(diff * (0.35 + 0.65 * ao)[..., None], 0.45), *grade_)
+    return box_down(alb, n), box_down(nor, n)
+
+
+def make_gravel_road_ruts() -> dict:
+    """A 4 m x 4 m road tile: gravel (rocky_trail) with two packed-dirt wheel ruts 1.3 m apart (the Jeep's track)
+    and a grassy crown, tiling along V (the road's length); U runs across the road, ruts at u = 0.34 and 0.66."""
+    tset, asset, n = SYNTH["gravel_road_ruts"]
+    tile = 4.0
+    half = n // 2                                  # each 2 m source covers half the tile
+    g_alb, g_nor = _photo_maps("rocky_trail", half, (1.05, 0.95, (1, 1, 1)))
+    d_alb, d_nor = _photo_maps("dirt", half, (1.0, 0.8, (1, 0.97, 0.94)))
+    r_alb, r_nor = _photo_maps("forrest_ground_01", half, (1.1, 0.95, (1, 1, 1)))
+    T = lambda a: np.tile(a, (2, 2, 1))          # noqa: E731
+    g_alb, g_nor, d_alb, d_nor, r_alb, r_nor = map(T, (g_alb, g_nor, d_alb, d_nor, r_alb, r_nor))
+    y = np.arange(n)[:, None] / n * tile          # along the road (periodic)
+    x = np.arange(n)[None, :] / n * tile          # across
+    wob = 0.05 * np.sin(2 * np.pi * y / tile * 3 + 1.0) + 0.03 * np.sin(2 * np.pi * y / tile * 7 + 2.0)
+    rng = np.random.default_rng(11)
+    noise = blur_wrap(rng.standard_normal((n, n)), 6.0)
+    noise = (noise - noise.mean()) / (noise.std() + 1e-9)
+    track = 1.3
+    rut = np.zeros((n, n))
+    for c in (tile / 2 - track / 2, tile / 2 + track / 2):
+        dx = np.abs(x - c - wob)
+        rut = np.maximum(rut, np.clip((0.24 - dx) / 0.08, 0, 1))
+    crown = np.clip((0.32 - np.abs(x - tile / 2 + wob * 0.5)) / 0.18, 0, 1) * np.clip(0.55 + 0.45 * noise, 0, 1)
+    edge = np.clip((np.abs(x - tile / 2) - 1.55) / 0.35, 0, 1) * np.clip(0.6 + 0.5 * noise, 0, 1)
+    grassm = np.clip(np.maximum(crown, edge), 0, 1)[..., None]
+    rutm = (rut * np.clip(0.8 + 0.25 * noise, 0, 1))[..., None]
+    alb = g_alb * (1 - rutm) + d_alb * rutm
+    alb = alb * (1 - grassm) + r_alb * grassm
+    # height: ruts 4 cm deep with soft walls -> normals (+ the photo normals of whatever is on top)
+    h = -0.04 * blur_wrap(rut, 3.0)
+    gy, gx = np.gradient(h, tile / n)
+    hn = np.dstack([-gx, gy, np.ones_like(h)])
+    base_n = g_nor * (1 - rutm) + d_nor * rutm
+    base_n = base_n * (1 - grassm) + r_nor * grassm
+    nrm = base_n / np.maximum(np.linalg.norm(base_n, axis=-1, keepdims=True), 1e-9)
+    nrm = nrm + hn - np.array([0, 0, 1.0])
+    labels, pal = pixelise(sharpen(alb, 0.6), 56, seed=4)
+    d = os.path.join(OUT, tset)
+    os.makedirs(d, exist_ok=True)
+    save_albedo(os.path.join(d, "gravel_road_ruts_albedo.png"), labels, pal)
+    save_normal(os.path.join(d, "gravel_road_ruts_normal.png"), nrm, k=256)
+    authors = sorted({a for k in ("rocky_trail", "dirt", "forrest_ground_01") for a in (info(k).get("authors") or {})})
+    return {"set": tset, "name": "gravel_road_ruts", "tile": tile, "px": n, "density": round(n / tile),
+            "source": "rocky_trail + dirt + forrest_ground_01", "url": "https://polyhaven.com/a/rocky_trail",
+            "authors": authors, "licence": "CC0",
+            "note": "synthesised road tile: U across the road (ruts at u = 0.34 / 0.66, 1.3 m apart), V along it"}
+
+
 def make_window_grime() -> dict:
     """Old window glass: RGBA albedo (alpha = how opaque the grime is; use transparent + alphaMap or the A
     channel), with rain-run streaks and blotchy film from a dirty-concrete scan; faint waviness in the normal."""
@@ -397,6 +455,8 @@ def main():
             e = make_photo(name)
         elif name == "cedar_shakes":
             e = make_cedar_shakes()
+        elif name == "gravel_road_ruts":
+            e = make_gravel_road_ruts()
         else:
             e = make_window_grime()
         index[f"{e['set']}/{e['name']}"] = e

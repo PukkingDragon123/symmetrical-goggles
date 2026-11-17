@@ -102,9 +102,9 @@ TABLE: dict[str, tuple[str, float, float | None, str, str]] = {
     # storage / outdoor
     "wooden_crate_01": ("Crate", 8, None, B, "A wooden crate with a hinged lid."),
     "wooden_crate_02": ("Large crate", 12, None, B, "A large wooden crate."),
-    "Barrel_01": ("Wooden barrel", 30, None, H, "An oak barrel."),
-    "Barrel_02": ("Old barrel", 30, None, H, "A weathered oak barrel."),
-    "barrel_03": ("Barrel", 28, None, H, "A wooden barrel."),
+    "Barrel_01": ("Oil drum", 18, None, H, "A red 200-litre steel drum with a hazard label. Empty."),
+    "Barrel_02": ("Plastic drum", 9, None, H, "A blue plastic drum."),
+    "barrel_03": ("Steel drum", 18, None, H, "A dented blue steel drum."),
     "metal_jerrycan": ("Jerrycan", 4, 15, H, "A steel jerrycan. 20 litres, about 19 kg when full."),
     "propane_tank": ("Propane tank", 18, 35, H, "A propane cylinder."),
     "small_lpg_tank": ("Small LPG tank", 12, 22, H, "A small LPG cylinder."),

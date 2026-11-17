@@ -41,7 +41,6 @@ MODELS = {
     "stone_01": (600, 256, 32, None),
     "rock_moss_set_01": (2600, 1024, 40, None),
     "rock_moss_set_02": (2400, 1024, 40, None),
-    "root_cluster_02": (1800, 512, 36, None),
 }
 
 

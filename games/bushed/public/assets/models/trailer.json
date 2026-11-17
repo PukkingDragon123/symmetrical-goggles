@@ -1,0 +1,51 @@
+{
+ "name": "Utility trailer",
+ "file": "assets/models/trailer.glb",
+ "size": [
+  1.666,
+  0.876,
+  2.809
+ ],
+ "mass": 260,
+ "tris": 5148,
+ "frontAxis": "+z",
+ "leftAxis": "+x",
+ "up": "+y",
+ "wheels": {
+  "wheel_r": {
+   "pos": [
+    -0.6996,
+    0.3018,
+    -0.4499
+   ],
+   "radius": 0.2846,
+   "width": 0.2153
+  },
+  "wheel_l": {
+   "pos": [
+    0.6979,
+    0.3018,
+    -0.5222
+   ],
+   "radius": 0.2846,
+   "width": 0.2151
+  }
+ },
+ "wheelbase": null,
+ "track": 1.3975,
+ "nodes": [
+  "body",
+  "wheel_l",
+  "wheel_r"
+ ],
+ "notes": "Single-axle box trailer; the drawbar points +Z (hitch at the front tip, see 'hitch'). The jockey wheel is part of the body. Wheels spin about local X.",
+ "source": "https://sketchfab.com/3d-models/trailer-5a53a60a27144183ab825f559ed73a80",
+ "author": "svartfilin",
+ "licence": "CC-BY-4.0",
+ "attribution": "This work is based on \"Trailer\" (https://sketchfab.com/3d-models/trailer-5a53a60a27144183ab825f559ed73a80) by svartfilin (https://sketchfab.com/svartfilin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+ "hitch": [
+  0.0973,
+  0.2169,
+  1.4043
+ ]
+}

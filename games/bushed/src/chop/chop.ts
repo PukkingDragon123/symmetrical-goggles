@@ -111,14 +111,19 @@ export class ChopSystem {
       if (!t) {
         // giants are beyond an axe
         const model = fhit.ref.model();
-        if (model.dbh * fhit.ref.scale > 1.1 && tool.kind !== 'chainsaw') {
+        // the forest's models already carry the instance scale
+        if (model.dbh > 1.1 && tool.kind !== 'chainsaw') {
           this.ev.sound('axe_glance', fhit.point, 0.8);
           debris.emit('bark', fhit.point, fhit.normal.clone().multiplyScalar(1.5), 3);
           return { kind: 'refused', reason: 'too_big' };
         }
         const d = this.forest!.detach(fhit.ref.id);
+        // the detached object arrives placed in the world; the ChopTree root carries that transform instead
+        const ref = { id: fhit.ref.id, species: fhit.ref.species, x: d.object.position.x, y: d.object.position.y, z: d.object.position.z, rotY: d.object.rotation.y, scale: 1 };
+        d.object.removeFromParent();
+        d.object.position.set(0, 0, 0); d.object.rotation.set(0, 0, 0); d.object.scale.set(1, 1, 1);
         const rot = (Number(fhit.ref.id) * 2654435761 % 1000) / 1000;
-        t = new ChopTree(fhit.ref, d.model, d.object, this.ev, { rotten: model.height > 18 && rot < 0.08 });
+        t = new ChopTree(ref, d.model, d.object, this.ev, { rotten: model.height > 18 && rot < 0.08 });
         this.trees.set(id, t);
         this.group.add(t.root);
         this.group.updateMatrixWorld(true);

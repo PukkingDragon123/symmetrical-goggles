@@ -21,14 +21,16 @@ const page = await browser.newPage({ viewport: { width: W, height: H } });
 page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.log('[page]', m.text()); });
 page.on('pageerror', (e) => console.log('[pageerror]', e.message));
 for (const q of queries.length ? queries : ['']) {
-  await page.goto(`${base}?${q}`, { waitUntil: 'load' });
+  await page.goto(`${base}?still=1&${q}`, { waitUntil: 'load' });
   await page.waitForFunction(() => (window).__ready === true, null, { timeout: 240000 });
   await page.waitForTimeout(Number(process.env.WAIT ?? 1500));
   const errs = await page.evaluate(() => (window).__errors ?? []);
   if (errs.length) console.log(q, 'errors:', errs);
+  const stats = await page.evaluate(() => (window).__stats);
+  if (stats && process.env.STATS) console.log(JSON.stringify(stats));
   const name = (q || 'all').replace(/[^a-z0-9_,.=-]+/gi, '_').slice(0, 120);
   const file = path.join(outDir, `${name}.png`);
-  await page.screenshot({ path: file });
+  await page.screenshot({ path: file, timeout: 180000 });
   console.log(file);
 }
 await browser.close();

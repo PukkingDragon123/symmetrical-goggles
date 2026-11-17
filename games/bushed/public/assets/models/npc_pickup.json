@@ -1,0 +1,85 @@
+{
+ "name": "Old pickup",
+ "file": "assets/models/npc_pickup.glb",
+ "size": [
+  1.955,
+  2.191,
+  4.721
+ ],
+ "mass": 1500,
+ "tris": 18469,
+ "frontAxis": "+z",
+ "leftAxis": "+x",
+ "up": "+y",
+ "wheels": {
+  "wheel_rr": {
+   "pos": [
+    -0.811,
+    0.4728,
+    -1.3338
+   ],
+   "radius": 0.4728,
+   "width": 0.3331
+  },
+  "wheel_fr": {
+   "pos": [
+    -0.811,
+    0.4728,
+    1.7443
+   ],
+   "radius": 0.4728,
+   "width": 0.3331
+  },
+  "wheel_rl": {
+   "pos": [
+    0.811,
+    0.4728,
+    -1.3338
+   ],
+   "radius": 0.4728,
+   "width": 0.3331
+  },
+  "wheel_fl": {
+   "pos": [
+    0.811,
+    0.4728,
+    1.7443
+   ],
+   "radius": 0.4728,
+   "width": 0.3331
+  }
+ },
+ "wheelbase": 3.0781,
+ "track": 1.622,
+ "steeringWheel": {
+  "pos": [
+   0.3294,
+   1.5052,
+   0.5561
+  ],
+  "axis": [
+   0.0,
+   0.4336,
+   -0.9011
+  ],
+  "radius": 0.1969
+ },
+ "nodes": [
+  "body",
+  "wheel_fl",
+  "wheel_fr",
+  "wheel_rl",
+  "wheel_rr",
+  "steering_wheel"
+ ],
+ "notes": "1960s-style pickup for the NPCs. No glass in the windows (open frames). Wheels spin about local X.",
+ "source": "https://sketchfab.com/3d-models/1962-willys-jeep-pick-up-43394652043a4387be183ef75d7af5a1",
+ "author": "LxNazarov",
+ "licence": "CC-BY-4.0",
+ "attribution": "This work is based on \"1962 Willys Jeep Pick-Up\" (https://sketchfab.com/3d-models/1962-willys-jeep-pick-up-43394652043a4387be183ef75d7af5a1) by LxNazarov (https://sketchfab.com/LxNazarov) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+ "driverEye": [
+  0.329,
+  1.825,
+  0.006
+ ]
+}

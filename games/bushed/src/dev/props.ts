@@ -260,8 +260,16 @@ async function layoutJeep(): Promise<void> {
       }
     });
     const b = new THREE.Box3().setFromObject(g.scene);
-    g.scene.position.x = x - b.min.x;
-    x += b.getSize(new THREE.Vector3()).x + 1.5;
+    const stats: Record<string, number[]> = {};
+    g.scene.updateMatrixWorld(true);
+    for (const c of g.scene.children[0]?.children ?? []) {
+      const bb = new THREE.Box3().setFromObject(c);
+      stats[c.name] = [...bb.min.toArray(), ...bb.max.toArray()].map((v) => Math.round(v * 1000) / 1000);
+    }
+    (W.__stats as Record<string, unknown>) = { ...(W.__stats as object ?? {}), [f]: stats };
+    // the first vehicle stays at the origin (so ?cam= coordinates are the vehicle's own), the rest line up to its -x
+    g.scene.position.x = files.indexOf(f) === 0 ? 0 : x - b.max.x;
+    x = g.scene.position.x + b.min.x - 1.5;
     scene.add(g.scene);
     picked.push(g.scene);
     const l = label(f);

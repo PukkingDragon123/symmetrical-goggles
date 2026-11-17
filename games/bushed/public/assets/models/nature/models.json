@@ -75,21 +75,6 @@
   "url": "https://polyhaven.com/a/rock_moss_set_02",
   "license": "CC0"
  },
- "root_cluster_02": {
-  "asset": "root_cluster_02",
-  "file": "models/nature/root_cluster_02.glb",
-  "height": 0.199,
-  "size_mm": [
-   2382,
-   2705,
-   199
-  ],
-  "authors": [
-   "Jenelle van Heerden"
-  ],
-  "url": "https://polyhaven.com/a/root_cluster_02",
-  "license": "CC0"
- },
  "tree_stump_01": {
   "asset": "tree_stump_01",
   "file": "models/nature/tree_stump_01.glb",
