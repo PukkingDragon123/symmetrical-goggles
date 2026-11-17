@@ -30,7 +30,8 @@ export type SwingResult =
   | { kind: 'split'; done: boolean; stuck: boolean }
   | { kind: 'ground'; rock: boolean }
   | { kind: 'refused'; reason: string }
-  | { kind: 'object'; obj: THREE.Object3D };
+  | { kind: 'object'; obj: THREE.Object3D }
+  | { kind: 'kindling' };
 
 export class ChopSystem {
   readonly trees = new Map<string, ChopTree>();
@@ -161,6 +162,14 @@ export class ChopSystem {
     const up = new THREE.Vector3(0, 1, 0).applyQuaternion(new THREE.Quaternion(r.x, r.y, r.z, r.w));
     const upright = Math.abs(up.y) > 0.82;
     const fromAbove = swingDir.y < -0.35 || dir.y < -0.45;
+    // the hatchet shaves a split into kindling
+    if (p.kind === 'split' && tool.kind === 'hatchet') {
+      this.chips(p.spec.species, point, new THREE.Vector3(0, 1, 0), 0.01, false);
+      debris.emit('splinter', point, new THREE.Vector3(0, 1.2, 0), 5, { spread: 1.5 });
+      this.ev.sound('wood_chop_kindling', point, 0.9);
+      this.removePiece(p);
+      return { kind: 'kindling' };
+    }
     if ((p.kind === 'round' || p.kind === 'half') && upright && fromAbove && p.r > 0.06) {
       // splitting along the grain
       const knots = 1 + ((p.id * 7919) % 10) / 22;

@@ -15,6 +15,7 @@ import { readSave } from './game/save';
 import { FPArms } from './player/arms';
 import { buildProduct } from './places/products';
 import { ITEMS } from './game/items';
+import { CabinPlay } from './game/cabinplay';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const params = new URLSearchParams(location.search);
@@ -52,6 +53,8 @@ async function boot() {
       try { const m = buildProduct(it.model.slice(4) as never); if (m) game.setItemModel(it.id, m); } catch { /* not built yet */ }
     }
   });
+  const cabinPlay = new CabinPlay(game);
+  cabinPlay.attach();
   const critters = new Critters(game);
   await step('creatures', () => critters.spawn());
   game.updaters.push((dt) => critters.update(dt));

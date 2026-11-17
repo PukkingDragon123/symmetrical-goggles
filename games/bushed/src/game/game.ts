@@ -29,6 +29,7 @@ import { loadProp, PROP_META } from '../places/props';
 import { paintPaper, paperMesh, type Block } from '../ui/paper';
 import { WeatherFx } from '../gfx/weather';
 import { fitTool } from '../player/arms';
+import { makeSlashGatherable } from './cabinplay';
 import { writeSave, type SaveData } from './save';
 
 export type Mode = 'loading' | 'menu' | 'drive' | 'walk' | 'cutscene' | 'sleep';
@@ -39,7 +40,7 @@ const SFX: Record<string, string> = {
   axe_rock: 'axe_glance', axe_dirt: 'foot_mud', wood_split: 'wood_split', tree_creak: 'tree_creak', tree_crack: 'branch_break_big',
   tree_fall: 'tree_fall_big', branch_snap: 'branch_snap', log_thud: 'log_thud', log_lift: 'log_drag', wood_pickup: 'log_roll',
   place_wood: 'wood_stack', drop: 'log_thud', saw_stroke: 'saw_hand', equip: 'branch_swish', pickup: 'bag_rustle',
-  match: 'match_strike', ignite: 'fire_ignite', stove_open: 'stove_door_open', stove_close: 'stove_door_close',
+  match: 'match_strike', ignite: 'fire_ignite', door_open: 'door_creak_open', door_close: 'door_creak_close', stove_open: 'stove_door_open', stove_close: 'stove_door_close',
 };
 
 export interface Inventory { items: Map<string, number>; money: number }
@@ -226,6 +227,15 @@ export class Game {
     this.updaters.push((dt) => place.update(dt));
   }
   readonly interiors: THREE.Box3[] = [];
+  /** set by CabinPlay / StorePlay: the places' interactables call this */
+  placeAction: (name: string, ctx: import('./interact').InteractCtx) => void = () => {};
+
+  removeSlash(h: THREE.Object3D): void {
+    const d = h.userData.slash as { body: RAPIER.RigidBody } | undefined;
+    if (d?.body) physics.removeBody(d.body);
+    h.userData.slash = undefined;
+  }
+  private slashSeen = new WeakSet<THREE.Object3D>();
 
   /** a carried object goes into the backpack (bought goods become owned only at the register) */
   pocket(id: string, obj: THREE.Object3D): void {
@@ -346,6 +356,7 @@ export class Game {
         this.arms?.play('chop_recover');
         break;
       case 'ground': this.player.addShake(0.35); this.arms?.play('chop_recover'); break;
+      case 'kindling': this.give('kindling', 3); hud.say('<i>Kindling.</i>', 1.2); break;
       case 'split': this.player.addShake(r.done ? 0.2 : 0.3); if (r.stuck) this.arms?.play('chop_recover'); break;
       default: this.player.addShake(0.15);
     }
@@ -460,6 +471,7 @@ export class Game {
     this.syncTreeColliders();
     physics.update(dt, (h) => { if (this.jeep && this.mode === 'drive') this.jeep.update(h, this.driveInput()); else if (this.jeep) this.jeep.update(h, { throttle: 0, brake: 0.2, steer: 0, handbrake: true }); });
     this.chop.update(dt, cam.position);
+    for (const t of this.chop.trees.values()) for (const h of t.slash) if (!this.slashSeen.has(h)) { this.slashSeen.add(h); makeSlashGatherable(this, h); }
     debris.update(dt); puffs.update(dt);
     for (const u of this.updaters) u(dt);
     G.uCamPos.value.copy(cam.position);

@@ -89,6 +89,8 @@ export function handProp(kind: PropKind): THREE.Object3D {
   // the fist sits a hand's length below the wrist; sticks point forward out of it, the fish hangs by its tail
   if (kind === 'fish') { m.rotation.set(Math.PI / 2, 0, 0); m.position.set(0, -0.05, 0.23); }
   else if (kind === 'berries') m.rotation.set(0.3, 0, 0);
+  // sticks run down and back out of the fist: raised overhead they point up behind the head, brought down they strike ahead
+  else m.rotation.set(1.92, 0, 0);
   return g;
 }
 /** a gift lying on the ground (origin on the ground under its middle) */

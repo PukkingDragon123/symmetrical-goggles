@@ -109,9 +109,9 @@ function facePaint(H: V3) {
       if (ax < 0.018 && y > 0.0 && y < 0.04 && Math.abs(Math.sin(y * 330)) < 0.15) st -= 0.7;
       // the broad nose: a lit bridge, wings round flared nostrils (dark holes with a lit rim), a wet tip
       const nx = ax - 0.024, ny = y + 0.032, nd = Math.hypot(nx, ny * 1.8);
-      if (z > 0.16 && nd < 0.011) { st = 0.3; rough = 90; }
-      else if (z > 0.16 && nd < 0.016) { st += ny < 0 ? 1.0 : 0.4; rough = 110; }
-      else if (z > 0.17 && ax < 0.03 && y > -0.03 && y < 0.005) { st += 0.6; rough = 100; }
+      if (z > 0.16 && nd < 0.011) { st = 0.3; rough = 140; }
+      else if (z > 0.16 && nd < 0.016) { st += ny < 0 ? 1.0 : 0.4; rough = 165; }
+      else if (z > 0.17 && ax < 0.03 && y > -0.03 && y < 0.005) { st += 0.5; rough = 170; }
       // folds from the nose wings round the muzzle
       const nl = Math.abs(ax - (0.045 + (-0.03 - y) * 0.45));
       if (y < -0.025 && y > -0.11 && nl < mpt * 0.8 && z > 0.15) st -= 1.0;
@@ -120,7 +120,7 @@ function facePaint(H: V3) {
       if (z > 0.18 && Math.abs(ml) < mpt * 1.1) { px.put(i, GUM, 0.4); px.rough[i] = 90; continue; }
       if (z > 0.17 && ax > 0.05 && ax < 0.062 && Math.abs(ml) < 0.006) st -= 1.2;
       if (z > 0.18 && ml > 0 && ml < 0.018 && Math.abs(Math.sin(x * 420)) < 0.2) st -= 0.6;
-      if (z > 0.18 && ml < -mpt && ml > -0.014) { st += 0.7; rough = 95; R = LEA; }
+      if (z > 0.18 && ml < -mpt && ml > -0.014) { st += 0.7; rough = 140; R = LEA; }
       // the chin's pad of skin, stubble at its edges
       if (y < -0.12 && h3(Math.floor(x / mpt), Math.floor(y / mpt), 8) < 0.12) st -= 0.8;
       px.put(i, R, st); px.rough[i] = rough;
@@ -193,7 +193,7 @@ function hand(body: Body, s: number, bi: (n: string) => number, wr: V3) {
     const base: V3 = add(wr, [0, -0.175, fz]);
     const path = curve([base, add(base, [0, -len * 0.45, 0.004]), add(base, [-s * 0.012, -len * 0.85, 0.006]), add(base, [-s * 0.026, -len, 0.004])], 5);
     const sk = chainSkin([add(base, [0, 0.03, 0]), add(base, [0, -len * 0.42, 0]), add(base, [0, -len * 1.2, 0])], [f1, f2], 0.3);
-    body.add(stalk({ name: 'fin' + S + k, path, r: (t) => 0.019 * (1 - t * 0.25), around: 6, capS: false, capE: true, levels: 1, k: 1.2, skin: sk, paint: leatherPaint({ palm: (p) => p[1] < base[1] - len * 0.3 }) }));
+    body.add(stalk({ name: 'fin' + S + k, path, r: (t) => 0.019 * (1 - t * 0.25), around: 5, capS: false, capE: true, levels: 1, k: 1.2, skin: sk, paint: leatherPaint({ palm: (p) => p[1] < base[1] - len * 0.3 }) }));
     nails.push({ c: path[path.length - 1], d: norm([-s * 0.4, -1, 0.1]) });
   }
   // the thumb: from the heel of the palm, forward and down
@@ -221,7 +221,7 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const BIGFOOT_MODEL_VERSION = 'bigfoot@4';
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@5';
 export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
@@ -334,8 +334,8 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
     // limb hair lies along the limb toward the hand or foot (it hangs when the arm hangs, and stays laid along a
     // raised arm instead of sticking out), longest off the backs of the forearms and the outsides of the upper arms
     sow(lp, 0, isArm ? 130 : 95, {
-      u0: 0, u1: 1, v0: 0.05, v1: isArm ? 0.92 : 0.78, wid: 0.024, seed: isArm ? 11 : 17, skin: lp.skin, droop: 0.12, lift: 0.12,
-      len: (p, n) => (isArm ? (0.17 + 0.07 * cl(-n[2] * 1.5, 0, 1)) * (p[1] < 1.15 ? 0.7 : 1) : 0.14 * cl((p[1] - 0.3) / 0.4, 0.3, 1)),
+      u0: 0, u1: 1, v0: 0.05, v1: isArm ? 0.74 : 0.74, wid: 0.024, seed: isArm ? 11 : 17, skin: lp.skin, droop: 0.12, lift: 0.12,
+      len: (p, n) => (isArm ? (0.16 + 0.07 * cl(-n[2] * 1.5, 0, 1)) * cl((p[1] - 1.08) / 0.25, 0.35, 1) : 0.14 * cl((p[1] - 0.3) / 0.4, 0.3, 1)),
       dir: (_p, n, dv) => norm([dv[0] + n[0] * 0.18, dv[1] + n[1] * 0.18, dv[2] + n[2] * 0.18]),
     });
   }

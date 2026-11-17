@@ -177,6 +177,16 @@ export async function runIntro(game: Game, d: Director): Promise<void> {
   unregisterInteractable(note);
   note.removeFromParent();
   game.flags.add('ray_note');
+  // the matches really are in the table drawer
+  game.take('matches', 99);
+  const drawer = game.cabin?.group.getObjectByName('drawer_0') ?? null;
+  const box = game.toolModel('matches');
+  if (box) {
+    box.scale.setScalar(1);
+    if (drawer) { drawer.add(box); box.position.set(0.05, 0.03, 0.05); }
+    else { box.position.copy(anchorPos(game, 'table', door)); game.scene.add(box); }
+    registerInteractable(box, { kind: 'pickup', label: () => 'Take the matches', use: () => { game.give('matches'); box.removeFromParent(); game.sound('pickup', undefined, 0.5); } });
+  } else game.give('matches');
   // the axe in the block (Ray's axe is held until pulled)
   game.take('axe_old');
   const block = anchorPos(game, 'chopping_block', new THREE.Vector3(SPOTS.woodyard.x, heightAt(SPOTS.woodyard.x, SPOTS.woodyard.z) + 0.55, SPOTS.woodyard.z));

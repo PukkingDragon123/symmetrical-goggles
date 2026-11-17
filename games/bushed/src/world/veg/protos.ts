@@ -55,8 +55,8 @@ export function grassClump(seed: number, cells: VegCell[], n: number, h: number,
     const side = v3(Math.cos(f), 0, Math.sin(f));
     const pts: V3[] = [], ws: number[] = [];
     const w = rng.range(0.05, 0.085) * (h > 0.5 ? 1.3 : 1);
-    for (let k = 0; k <= 3; k++) {
-      const t = k / 3;
+    for (let k = 0; k <= 2; k++) {
+      const t = k / 2;
       pts.push(base.clone().addScaledVector(lean, lk * hh * t * t).addScaledVector(UP, hh * t * (1 - 0.18 * lk * t)));
       ws.push(w * (1 - 0.25 * t));
     }

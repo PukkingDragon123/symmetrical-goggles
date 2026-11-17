@@ -211,6 +211,9 @@ export class GroundCover {
       for (const [seed, r, h] of [[51, 0.5, 0.16], [52, 0.9, 0.24], [53, 1.4, 0.3]] as [number, number, number][]) {
         this.addProto('mossmound', 0, FE[1], `moss_${seed}`, [{ geo: P.mossMound(seed, r, h).build({ moss: false }), mat: mm.mat, depth: mm.depth }], false, 512);
       }
+      for (const [seed, r, h] of [[55, 1.8, 0.1], [56, 2.6, 0.12], [57, 1.3, 0.09]] as [number, number, number][]) {
+        this.addProto('mosscarpet', 0, FE[1], `mosscarpet_${seed}`, [{ geo: P.mossMound(seed, r, h).build({ moss: false }), mat: mm.mat, depth: mm.depth }], false, 512);
+      }
       this.plant('mosstuft', 'moss_tufts', P.crossed(54, 'moss_tuft', 6, 0.1, 0.3, 0.5, 2, [1, 1, 1], 0), SM);
     }
     // mushrooms, litter, twigs, cones
@@ -425,7 +428,7 @@ export class GroundCover {
     };
     const patch = (x: number, z: number, f: number, o: number) => this.noise.n2(x / f + o, z / f - o);
     // grass: gaps, verges, birch stands, the burn; sedge in the wet
-    tryN(150, (x, z, r) => {
+    tryN(420, (x, z, r) => {
       const cl = clearance(x, z);
       const y = hAt(x, z);
       if (y < WORLD.waterY + 0.05) return;
@@ -442,7 +445,7 @@ export class GroundCover {
       this.push(c, g, rng.next(), x, y, z, rng.range(0, 6.28), rng.range(0.75, 1.25));
     });
     // ferns: shade and moisture, in patches
-    tryN(26, (x, z, r) => {
+    tryN(80, (x, z, r) => {
       const b = bAt(x, z), cv = can(x, z);
       const p = (0.15 + 0.85 * cv.cover) * (0.25 + 0.95 * b.wet) * (1 - b.burn) * smoothstep(-0.25, 0.35, patch(x, z, 14, 3));
       if (r > p) return;
@@ -450,7 +453,7 @@ export class GroundCover {
       this.push(c, 'fern', rng.next(), x, hAt(x, z), z, rng.range(0, 6.28), rng.range(0.75, 1.3));
     });
     // bracken: drier, half-open ground, big patches
-    tryN(18, (x, z, r) => {
+    tryN(40, (x, z, r) => {
       const b = bAt(x, z), cv = can(x, z);
       const p = (0.25 + 0.6 * (1 - cv.cover)) * (1 - 0.6 * b.wet) * smoothstep(0.05, 0.5, patch(x, z, 22, 7)) + 0.3 * b.burn;
       if (r > p) return;
@@ -467,14 +470,14 @@ export class GroundCover {
       this.push(c, 'fireweed', rng.next(), x, hAt(x, z), z, rng.range(0, 6.28), rng.range(0.8, 1.2));
     });
     // forest-floor herbs (bunchberry, asters, clubmoss) under the canopy
-    tryN(16, (x, z, r) => {
+    tryN(70, (x, z, r) => {
       const cv = can(x, z);
       const p = 0.15 + 0.6 * cv.cover * smoothstep(-0.2, 0.4, patch(x, z, 8, 5));
       if (r > p || ok(x, z, 0.6, 0.15) < 0) return;
       this.push(c, 'herb', rng.next(), x, hAt(x, z), z, rng.range(0, 6.28), rng.range(0.8, 1.3));
     });
     // reindeer lichen and blueberry: dry pine ground
-    tryN(14, (x, z, r) => {
+    tryN(40, (x, z, r) => {
       const b = bAt(x, z);
       const pineF = b.pine / (b.spruce + b.fir + b.pine + b.birch + b.cedar);
       const dry = 1 - b.wet;
@@ -491,7 +494,7 @@ export class GroundCover {
       else if (b.wet > 0.55 && r < 0.5 * b.wet) this.push(c, 'alder', rng.next(), x, hAt(x, z) - 0.05, z, rng.range(0, 6.28), rng.range(0.8, 1.2));
     });
     // saplings and seedlings: advance regeneration, more in gaps
-    tryN(7, (x, z, r) => {
+    tryN(12, (x, z, r) => {
       const b = bAt(x, z), cv = can(x, z);
       const p = 0.18 + 0.5 * (1 - cv.cover);
       if (r > p || ok(x, z, 0.6, 0.6) < 0) return;
@@ -503,30 +506,35 @@ export class GroundCover {
       this.push(c, `sapling_${sp}`, rng.next(), x, hAt(x, z) - 0.02, z, rng.range(0, 6.28), rng.range(0.7, 1.35));
     });
     // moss mounds and cushions: wet shade, old growth
-    tryN(10, (x, z, r) => {
+    tryN(30, (x, z, r) => {
       const b = bAt(x, z), cv = can(x, z);
       const p = (0.1 + 0.7 * b.wet * cv.cover + 0.6 * b.old) * smoothstep(-0.3, 0.3, patch(x, z, 12, 17));
       if (r > p || ok(x, z, 0.6, 0.2) < 0) return;
-      this.push(c, rng.chance(0.7) ? 'mossmound' : 'mosstuft', rng.next(), x, hAt(x, z) - 0.03, z, rng.range(0, 6.28), rng.range(0.7, 1.4));
+      const u = rng.next();
+      if (u < 0.45) {
+        const e = 0.8;
+        const nx = hAt(x - e, z) - hAt(x + e, z), nz = hAt(x, z - e) - hAt(x, z + e);
+        this.push(c, 'mosscarpet', rng.next(), x, hAt(x, z) - 0.05, z, rng.range(0, 6.28), rng.range(0.7, 1.5), new THREE.Vector3(nx, 2 * e, nz).normalize());
+      } else this.push(c, u < 0.8 ? 'mossmound' : 'mosstuft', rng.next(), x, hAt(x, z) - 0.03, z, rng.range(0, 6.28), rng.range(0.7, 1.4));
     });
     // litter under the trees: needles under conifers, leaves under birch; twigs and cones everywhere
-    tryN(14, (x, z, r) => {
+    tryN(40, (x, z, r) => {
       const cv = can(x, z);
       if (r > 0.2 + 0.8 * cv.cover || ok(x, z, 0.4, 0.1) < 0) return;
       const y = hAt(x, z);
       this.push(c, cv.birch > 0.5 ? 'leaves' : 'needles', rng.next(), x, y, z, rng.range(0, 6.28), rng.range(0.8, 1.4));
     });
-    tryN(6, (x, z) => {
+    tryN(16, (x, z) => {
       if (ok(x, z, 0.4, 0.1) < 0) return;
       this.push(c, 'twigs', rng.next(), x, hAt(x, z), z, rng.range(0, 6.28), rng.range(0.8, 1.3));
     });
-    tryN(4, (x, z, r) => {
+    tryN(10, (x, z, r) => {
       const cv = can(x, z);
       if (r > cv.cover * cv.conifer || ok(x, z, 0.4, 0.05) < 0) return;
       this.push(c, 'cones', rng.next(), x, hAt(x, z), z, rng.range(0, 6.28), rng.range(0.8, 1.2));
     });
     // mushrooms: fly agaric with birch / spruce, chanterelles in moist moss
-    tryN(2, (x, z, r) => {
+    tryN(5, (x, z, r) => {
       const b = bAt(x, z), cv = can(x, z);
       if (r > 0.35 * cv.cover || ok(x, z, 0.6, 0.1) < 0) return;
       this.push(c, b.wet > 0.55 && rng.chance(0.6) ? 'chanterelle' : 'agaric', rng.next(), x, hAt(x, z), z, rng.range(0, 6.28), rng.range(0.8, 1.3));
