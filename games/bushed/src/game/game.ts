@@ -350,6 +350,7 @@ export class Game {
     if (!this.jeep) return;
     if (!this.jeep.running) { this.jeep.running = true; this.sound('veh_door_open', this.jeep.root.position, 0.7); audio.play('veh_start', { pos: this.jeep.root.position, vol: 0.9, delay: 0.6 }); }
     this.mode = 'drive';
+    this.player.yaw = 0; this.player.pitch = -0.08;
     this.jeep.occupied = true;
     this.player.enabled = false;
     if (this.arms) this.arms.object.visible = false;

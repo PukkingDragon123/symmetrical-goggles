@@ -15,6 +15,8 @@ import { hasSave } from './save';
 import { debris, puffs } from '../gfx/particles';
 import { flameCards } from '../places/fixtures';
 import { loadProp } from '../places/props';
+import { buildPieceGeometry, barkMaterial } from '../chop/wood';
+import { woodMaterial } from '../chop/woodtex';
 
 const think = (t: string, s = 3.5) => hud.say(`<i>${t}</i>`, s);
 
@@ -88,7 +90,14 @@ export async function runMenu(game: Game, d: Director): Promise<'new' | 'continu
   // menu objects sit on a stump to the right of the chair
   const right = new THREE.Vector3(-look.z, 0, look.x);
   const table = chair.clone().addScaledVector(right, 0.75).addScaledVector(look, 0.25);
-  table.y = heightAt(table.x, table.z) + 0.48;
+  // a big spruce round stood on end beside the chair is the side table
+  const groundY = Math.max(heightAt(table.x, table.z), chair.y - 0.45);
+  const rg = buildPieceGeometry({ species: 'spruce', stem: [{ y: 0, r: 0.3, x: 0, z: 0 }, { y: 1, r: 0.29, x: 0, z: 0 }], y0: 0, y1: 0.46, seed: 77 });
+  const stump = new THREE.Mesh(rg.geo, [barkMaterial('spruce'), woodMaterial('end', 'spruce', 3), woodMaterial('split', 'spruce')]);
+  stump.position.set(table.x, groundY + 0.23, table.z);
+  stump.castShadow = stump.receiveShadow = true;
+  game.scene.add(stump);
+  table.y = groundY + 0.465;
   const options: { obj: THREE.Object3D; label: string; act: string }[] = [];
   const mk = (canvasBlocks: Parameters<typeof paintPaper>[0], label: string, act: string, off: THREE.Vector3, rot: number, style: 'notebook' | 'kraft' | 'card') => {
     const m = paperMesh(paintPaper(canvasBlocks, { style, w: 192, h: 256, seed: options.length + 3 }), 0.12);
@@ -141,6 +150,7 @@ export async function runMenu(game: Game, d: Director): Promise<'new' | 'continu
   hud.fadeTo(true, 1.6);
   await d.sleep(1.8);
   for (const o of options) { unregisterInteractable(o.obj); o.obj.removeFromParent(); }
+  if (choice !== 'continue') stump.removeFromParent();
   game.updaters.splice(game.updaters.indexOf(tick), 1);
   fire.level = choice === 'continue' ? 1 : 0;
   return choice!;
