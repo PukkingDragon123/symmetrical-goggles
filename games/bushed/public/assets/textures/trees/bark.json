@@ -1,0 +1,82 @@
+[
+ {
+  "species": "spruce",
+  "asset": "bark_platanus",
+  "tile": [
+   1.5,
+   1.5
+  ],
+  "px": [
+   240,
+   240
+  ],
+  "authors": [
+   "Dimitrios Savva"
+  ],
+  "url": "https://polyhaven.com/a/bark_platanus"
+ },
+ {
+  "species": "fir",
+  "asset": "chinese_hackberry_bark",
+  "tile": [
+   1.8,
+   1.8
+  ],
+  "px": [
+   288,
+   288
+  ],
+  "authors": [
+   "Charlotte Baglioni"
+  ],
+  "url": "https://polyhaven.com/a/chinese_hackberry_bark"
+ },
+ {
+  "species": "pine",
+  "asset": "pine_bark",
+  "tile": [
+   2.0,
+   2.0
+  ],
+  "px": [
+   320,
+   320
+  ],
+  "authors": [
+   "Dimitrios Savva"
+  ],
+  "url": "https://polyhaven.com/a/pine_bark"
+ },
+ {
+  "species": "cedar",
+  "asset": "metasequoia_bark",
+  "tile": [
+   1.94,
+   1.94
+  ],
+  "px": [
+   304,
+   304
+  ],
+  "authors": [
+   "Charlotte Baglioni"
+  ],
+  "url": "https://polyhaven.com/a/metasequoia_bark"
+ },
+ {
+  "species": "birch",
+  "asset": "japanese_sycamore (detail only) + procedural",
+  "tile": [
+   1.6,
+   1.6
+  ],
+  "px": [
+   256,
+   256
+  ],
+  "authors": [
+   "Charlotte Baglioni"
+  ],
+  "url": "https://polyhaven.com/a/japanese_sycamore"
+ }
+]

@@ -4,7 +4,8 @@
 // Coordinates are the cabin's local frame (see cabin.ts).
 import * as THREE from 'three';
 import { Mesher, Rand, Cols, V, tf, box, boxAt, board, log, logAB, lathe, tube, anchor, shadowy, flicker, placeMat, defineMat } from './kit';
-import { CABIN, CABIN_GEOM, rock, halfLog } from './cabin';
+import { CABIN, CABIN_GEOM } from './cabinplan';
+import { rock, halfLog } from './cabin';
 import { registerInteractable, slidingDrawer } from '../game/interact';
 import { loadProp, PROP_META } from './props';
 import { buildProduct, writeSplit, writeRound } from './products';

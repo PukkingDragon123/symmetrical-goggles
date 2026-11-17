@@ -191,7 +191,7 @@ function frame(now: number): void {
   camera.rotation.set(pitch, yaw, 0, 'YXZ');
   G.uCamPos.value.copy(camera.position);
   for (const p of places) p.update(dt);
-  sky.update(hour, camera.position, { cloud: 0.3, rain: 0, fog: 0.25, storm: 0 }, R.grade, G.uTime.value);
+  sky.update(hour, camera.position, { cloud: 0.3, rain: 0, fog: Number(q.get('fog') ?? 0.05), storm: 0 }, R.grade, G.uTime.value);
   R.sunDir.copy(sky.sunDir); R.sunColor.copy(sky.sun.color); R.fogColor.copy(sky.fogColor);
   R.render(scene, camera);
   requestAnimationFrame(frame);

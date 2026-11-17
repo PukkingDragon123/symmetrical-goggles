@@ -28,6 +28,8 @@ import type { Place } from '../places/kit';
 import { loadProp, PROP_META } from '../places/props';
 import { paintPaper, paperMesh, type Block } from '../ui/paper';
 import { WeatherFx } from '../gfx/weather';
+import { fitTool } from '../player/arms';
+import { writeSave, type SaveData } from './save';
 
 export type Mode = 'loading' | 'menu' | 'drive' | 'walk' | 'cutscene' | 'sleep';
 
@@ -36,7 +38,7 @@ const SFX: Record<string, string> = {
   axe_chop: 'axe_chop', axe_chop_hard: 'axe_chop_hard', axe_glance: 'axe_glance', axe_whoosh: 'axe_whoosh', axe_stuck: 'axe_stuck',
   axe_rock: 'axe_glance', axe_dirt: 'foot_mud', wood_split: 'wood_split', tree_creak: 'tree_creak', tree_crack: 'branch_break_big',
   tree_fall: 'tree_fall_big', branch_snap: 'branch_snap', log_thud: 'log_thud', log_lift: 'log_drag', wood_pickup: 'log_roll',
-  place_wood: 'wood_stack', drop: 'log_thud', saw_stroke: 'saw_hand', equip: 'branch_swish', pickup: 'foliage_rustle',
+  place_wood: 'wood_stack', drop: 'log_thud', saw_stroke: 'saw_hand', equip: 'branch_swish', pickup: 'bag_rustle',
   match: 'match_strike', ignite: 'fire_ignite', stove_open: 'stove_door_open', stove_close: 'stove_door_close',
 };
 
@@ -81,6 +83,8 @@ export class Game {
   flashOn = false;
   private breathT = 0;
   private stepVoices = 0;
+  private bodyT = 3;
+  private engine: { idle: ReturnType<typeof audio.play>; drive: ReturnType<typeof audio.play>; gravel: ReturnType<typeof audio.play> } | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.R = new Renderer(canvas);
@@ -166,7 +170,11 @@ export class Game {
   }
 
   toolModel(id: string): THREE.Object3D | null {
-    return this.models.get(id)?.clone() ?? null;
+    const m = this.models.get(id);
+    if (!m) return null;
+    const c = m.clone();
+    // tools and lights are re-framed so the grip sits in the palm (handle +Y, edge +Z)
+    return ITEMS[id]?.tool || id === 'flashlight' ? fitTool(c) : c;
   }
 
   /** load the models of every item that maps to a Poly Haven prop (tools, lights, pots) */
@@ -179,6 +187,45 @@ export class Game {
 
   /** register a model for an item id (generated products) */
   setItemModel(id: string, m: THREE.Object3D): void { this.models.set(id, m); }
+
+  save(): SaveData {
+    const d: SaveData = {
+      v: 1, day: this.day, hour: this.hour, money: this.inv.money, items: [...this.inv.items.entries()],
+      contracts: this.contracts.map((c) => ({ id: c.id, state: c.state, progress: c.progress })),
+      journal: this.journal.dump(), houndTrust: 0, stove: { fuel: this.stove.fuel, roomTemp: this.stove.roomTemp },
+      stacked: 0, sharp: Object.values(ITEMS).filter((i) => i.tool).map((i) => [i.id, i.tool!.sharp]), flags: [...this.flags],
+    };
+    writeSave(d);
+    return d;
+  }
+
+  load(d: SaveData): void {
+    this.day = d.day; this.hour = d.hour; this.inv.money = d.money; this.inv.items = new Map(d.items);
+    for (const c of d.contracts) { const k = this.contracts.find((x) => x.id === c.id); if (k) { k.state = c.state as Contract['state']; k.progress = c.progress; } }
+    this.journal.restore(d.journal);
+    this.stove.fuel = d.stove.fuel; this.stove.roomTemp = d.stove.roomTemp;
+    for (const [id, s] of d.sharp) if (ITEMS[id]?.tool) ITEMS[id].tool!.sharp = s;
+    for (const f of d.flags) this.flags.add(f);
+    this.survival.day = this.day;
+  }
+
+  /** add a building: its group, static colliders, interior volumes and per-frame update */
+  addPlace(place: Place): void {
+    this.scene.add(place.group);
+    for (const c of place.colliders) {
+      if (c.kind === 'box') {
+        const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), c.rotY);
+        const body = physics.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(c.pos[0], c.pos[1], c.pos[2]).setRotation({ x: q.x, y: q.y, z: q.z, w: q.w }));
+        physics.world.createCollider(RAPIER.ColliderDesc.cuboid(c.half[0], c.half[1], c.half[2]).setCollisionGroups(groups(GROUP.STATIC, 0xffff)).setFriction(0.8), body);
+      } else {
+        const cd = RAPIER.ColliderDesc.convexHull(new Float32Array(c.points));
+        if (cd) physics.world.createCollider(cd.setCollisionGroups(groups(GROUP.STATIC, 0xffff)), physics.world.createRigidBody(RAPIER.RigidBodyDesc.fixed()));
+      }
+    }
+    this.interiors.push(...place.interior);
+    this.updaters.push((dt) => place.update(dt));
+  }
+  readonly interiors: THREE.Box3[] = [];
 
   /** a carried object goes into the backpack (bought goods become owned only at the register) */
   pocket(id: string, obj: THREE.Object3D): void {
@@ -198,7 +245,7 @@ export class Game {
     m.rotation.set(-0.12, 0, 0.03);
     this.view.add(m);
     this.reading = m;
-    this.sound('pickup', undefined, 0.5, 1.4);
+    this.sound('paper_rustle', undefined, 0.7);
   }
 
   /** Ray's axe, buried in the chopping block, waiting to be pulled out */
@@ -259,6 +306,7 @@ export class Game {
 
   enterVehicle(): void {
     if (!this.jeep) return;
+    if (!this.jeep.running) { this.jeep.running = true; this.sound('veh_door_open', this.jeep.root.position, 0.7); audio.play('veh_start', { pos: this.jeep.root.position, vol: 0.9, delay: 0.6 }); }
     this.mode = 'drive';
     this.jeep.occupied = true;
     this.player.enabled = false;
@@ -276,7 +324,7 @@ export class Game {
     j.occupied = false;
     this.mode = 'walk';
     if (this.arms) this.arms.object.visible = true;
-    this.sound('stove_door_close', p, 0.6, 0.7);
+    this.sound('veh_door_close', p, 0.8);
   }
 
   swing(tool: ToolStats, charge: number, origin: THREE.Vector3, dir: THREE.Vector3, swingDir: THREE.Vector3): void {
@@ -333,7 +381,7 @@ export class Game {
   useItem(id: string, t: { obj: THREE.Object3D | null; point: THREE.Vector3 | null }): boolean {
     const def = ITEMS[id];
     if (!def) return false;
-    if (id === 'flashlight') { this.flashOn = !this.flashOn; this.sound('equip', undefined, 0.4, 1.8); return true; }
+    if (id === 'flashlight') { this.flashOn = !this.flashOn; this.sound('flashlight_click', undefined, 0.6); return true; }
     if (id === 'jerky' && t.obj) {
       const offer = { item: 'jerky', obj: t.obj, taken: false };
       this.events.emit('offer', offer);
@@ -343,7 +391,7 @@ export class Game {
       this.take(id);
       this.survival.eat(def.food.kcal, def.food.warmth ?? 0);
       this.arms?.play(def.food.drink ? 'drink' : 'offer');
-      this.sound(def.food.drink ? 'foliage_rustle' : 'foliage_rustle', undefined, 0.3);
+      this.sound(def.food.drink ? (id === 'beer' ? 'drink_gulp' : 'drink_gulp') : (id === 'jerky' ? 'eat_chew' : 'eat_crunch'), undefined, 0.7);
       hud.say(def.food.drink ? `<i>${def.name}. Good.</i>` : `<i>${def.name}.</i>`, 2);
       if ((this.inv.items.get(id) ?? 0) <= 0) this.hands.equip(null);
       return true;
@@ -384,12 +432,13 @@ export class Game {
     // control
     if (this.mode === 'walk') {
       this.player.update(dt);
-      if (input.pressed('Tab')) { this.journal.toggle(); this.sound(this.journal.open ? 'stove_door_open' : 'stove_door_close', undefined, 0.15, 2.2); }
+      if (input.pressed('Tab')) { this.journal.toggle(); this.sound('page_turn', undefined, 0.6); }
       if (this.journal.open) {
         if (input.pressed('KeyA') || input.pressed('ArrowLeft')) this.journal.turn(-1);
         if (input.pressed('KeyD') || input.pressed('ArrowRight')) this.journal.turn(1);
+        if (input.pressed('KeyA') || input.pressed('KeyD') || input.pressed('ArrowLeft') || input.pressed('ArrowRight')) this.sound('page_turn', undefined, 0.4);
       } else if (!this.reading) this.hands.update(dt);
-      if (input.pressed('KeyF') && (this.inv.items.get('flashlight') ?? 0) > 0) { this.flashOn = !this.flashOn; this.sound('equip', undefined, 0.3, 2); }
+      if (input.pressed('KeyF') && (this.inv.items.get('flashlight') ?? 0) > 0) { this.flashOn = !this.flashOn; this.sound('flashlight_click', undefined, 0.6); }
     }
     if (this.mode === 'drive' && this.jeep) {
       const j = this.jeep;
@@ -404,7 +453,7 @@ export class Game {
       if (input.pressed('KeyH')) j.headlights = !j.headlights;
     }
     if (this.reading && (input.pressed('Mouse0') || input.pressed('KeyE') || input.pressed('Escape') || input.pressed('Tab'))) {
-      this.reading.removeFromParent(); this.reading = null; this.sound('pickup', undefined, 0.4, 1.2);
+      this.reading.removeFromParent(); this.reading = null; this.sound('paper_rustle', undefined, 0.5, 1.1);
       input.endFrame();
     }
     physics.streamTerrain([{ x: this.player.pos.x, z: this.player.pos.z }, ...(this.jeep?.body ? [{ x: this.jeep.root.position.x, z: this.jeep.root.position.z }] : [])]);
@@ -419,6 +468,18 @@ export class Game {
     this.ground?.update(cam);
     marks.follow(this.player.pos.x, this.player.pos.z); marks.flush();
 
+    // indoors?
+    const head = this.mode === 'drive' ? null : this.player.pos.clone().add(new THREE.Vector3(0, 1, 0));
+    const wasIn = this.indoors;
+    this.indoors = !!head && this.interiors.some((b) => b.containsPoint(head));
+    this.player.indoor = this.indoors;
+    if (this.indoors !== wasIn) {
+      const inStore = this.store?.interior.some((b) => head && b.containsPoint(head));
+      audio.setReverb(this.indoors ? (inStore ? 'store' : 'cabin') : 'outdoor');
+      audio.setIndoors(this.indoors ? 1 : 0);
+    }
+    if (this.cabin?.setThermometer) this.cabin.setThermometer(this.indoors ? this.stove.roomTemp : outdoorTemp(this.hour, this.day, this.weather.rain));
+    this.cabin?.stove?.setFire(this.stove.lit ? Math.max(0.15, this.stove.level) : 0);
     // survival
     const out = outdoorTemp(this.hour, this.day, this.weather.rain);
     this.stove.update(dtGame, out);
@@ -458,6 +519,31 @@ export class Game {
     this.journal.update(dt);
     // audio
     audio.setListener(cam);
+    // the old 4x4's engine: idle and drive loops crossfaded by RPM, gravel under the tyres by speed
+    const j = this.jeep;
+    if (j?.body && j.running) {
+      const at = j.root.position;
+      if (!this.engine) this.engine = { idle: audio.play('veh_idle', { pos: at, loop: true, vol: 0 }), drive: audio.play('veh_drive', { pos: at, loop: true, vol: 0 }), gravel: audio.play('veh_gravel', { pos: at, loop: true, vol: 0 }) };
+      const r = (j.rpm - 750) / 3800;
+      this.engine.idle?.setPos(at); this.engine.drive?.setPos(at); this.engine.gravel?.setPos(at);
+      this.engine.idle?.setVol(0.8 * (1 - Math.min(1, r * 2.5))); this.engine.idle?.setRate(0.9 + r * 0.6);
+      this.engine.drive?.setVol(Math.min(1, 0.15 + r * 1.6)); this.engine.drive?.setRate(0.7 + r * 0.9);
+      this.engine.gravel?.setVol(Math.min(0.9, Math.abs(j.speed) / 12)); this.engine.gravel?.setRate(0.8 + Math.min(0.5, Math.abs(j.speed) / 30));
+      if (j.bump() > 0.9 && Math.random() < 0.2) audio.play('veh_suspension', { pos: at, vol: 0.5 });
+    } else if (this.engine) { this.engine.idle?.stop(0.4); this.engine.drive?.stop(0.4); this.engine.gravel?.stop(0.3); this.engine = null; }
+    audio.setHour(this.hour);
+    audio.setWeather({ rain: this.weather.rain, wind: G.uWindStrength.value, storm: this.weather.storm });
+    audio.setDread(Math.max(0, this.sky.darkness - 0.4) * (this.indoors ? 0.2 : 1));
+    // the body: breathing after effort, chattering teeth in the cold, the floor answering your boots
+    this.bodyT -= dt;
+    if (this.bodyT <= 0 && this.mode === 'walk') {
+      this.bodyT = 2.5 + Math.random() * 2;
+      if (this.survival.winded > 0.55) this.sound('breath_heavy', undefined, 0.35 * this.survival.winded);
+      else if (this.survival.shiver > 0.45 && Math.random() < 0.5) this.sound('teeth_chatter', undefined, 0.3 * this.survival.shiver);
+      else if (this.survival.breath > 0.4 && Math.random() < 0.3) this.sound('breath_cold', undefined, 0.2);
+    }
+    if (this.indoors && this.stepVoices > 0 && Math.random() < 0.08) this.sound('floor_creak', this.player.pos, 0.35);
+    this.stepVoices = 0;
     const night = this.sky.darkness;
     audio.ambience('forest_day', this.indoors ? 0 : Math.max(0, 1 - night * 1.6));
     audio.ambience('forest_dusk', this.indoors ? 0 : Math.max(0, 1 - Math.abs(night - 0.55) * 3));

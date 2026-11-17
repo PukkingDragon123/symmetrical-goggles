@@ -287,6 +287,7 @@ export class AudioEngine {
     }
     this.applyVolumes();
     this.setReverb(this.zone, 0);
+    this.setIndoors(this.indoors);
     return ctx;
   }
 
@@ -399,7 +400,7 @@ export class AudioEngine {
 
   stopAll(fade = 0.1): void {
     for (const v of [...this.voices]) v.stop(fade);
-    for (const a of this.amb.values()) a.voices = [];
+    this.amb.clear();
   }
 
   // ------------------------------------------------------------------ listener + per-frame update

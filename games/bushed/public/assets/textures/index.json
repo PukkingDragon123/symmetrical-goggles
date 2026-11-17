@@ -1,0 +1,267 @@
+[
+ {
+  "set": "terrain",
+  "name": "forest_floor",
+  "tile": 2.0,
+  "px": 1024,
+  "density": 512,
+  "source": "forrest_ground_03",
+  "url": "https://polyhaven.com/a/forrest_ground_03",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "dead_leaves",
+  "tile": 3.0,
+  "px": 512,
+  "density": 171,
+  "source": "forest_leaves_02",
+  "url": "https://polyhaven.com/a/forest_leaves_02",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "moss",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "sparse_grass",
+  "url": "https://polyhaven.com/a/sparse_grass",
+  "authors": [
+   "Amal Kumar"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "grass",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "forrest_ground_01",
+  "url": "https://polyhaven.com/a/forrest_ground_01",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "dirt",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "dirt",
+  "url": "https://polyhaven.com/a/dirt",
+  "authors": [
+   "Charlotte Baglioni"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "mud",
+  "tile": 1.3,
+  "px": 512,
+  "density": 394,
+  "source": "brown_mud_02",
+  "url": "https://polyhaven.com/a/brown_mud_02",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "mud_ruts",
+  "tile": 2.25,
+  "px": 512,
+  "density": 228,
+  "source": "muddy_tracks",
+  "url": "https://polyhaven.com/a/muddy_tracks",
+  "authors": [
+   "Amal Kumar"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "gravel_road",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "rocky_trail",
+  "url": "https://polyhaven.com/a/rocky_trail",
+  "authors": [
+   "Amal Kumar"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "granite",
+  "tile": 1.5,
+  "px": 512,
+  "density": 341,
+  "source": "rock_08",
+  "url": "https://polyhaven.com/a/rock_08",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "lichen_rock",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "lichen_rock",
+  "url": "https://polyhaven.com/a/lichen_rock",
+  "authors": [
+   "Rico Cilliers"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "terrain",
+  "name": "pebbles",
+  "tile": 2.16,
+  "px": 512,
+  "density": 237,
+  "source": "ganges_river_pebbles",
+  "url": "https://polyhaven.com/a/ganges_river_pebbles",
+  "authors": [
+   "Amal Kumar"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "log_wall",
+  "tile": 1.25,
+  "px": 512,
+  "density": 410,
+  "source": "wood_trunk_wall",
+  "url": "https://polyhaven.com/a/wood_trunk_wall",
+  "authors": [
+   "Amal Kumar"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "rough_planks",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "weathered_planks",
+  "url": "https://polyhaven.com/a/weathered_planks",
+  "authors": [
+   "Dario Barresi",
+   "Dimitrios Savva"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "floor_boards",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "wood_floor_worn",
+  "url": "https://polyhaven.com/a/wood_floor_worn",
+  "authors": [
+   "Dimitrios Savva"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "corrugated_rust",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "rusty_corrugated_iron",
+  "url": "https://polyhaven.com/a/rusty_corrugated_iron",
+  "authors": [
+   "Charlotte Baglioni"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "fieldstone",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "stone_wall",
+  "url": "https://polyhaven.com/a/stone_wall",
+  "authors": [
+   "Dario Barresi",
+   "Charlotte Baglioni"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "painted_siding",
+  "tile": 1.6,
+  "px": 512,
+  "density": 320,
+  "source": "distressed_painted_planks",
+  "url": "https://polyhaven.com/a/distressed_painted_planks",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "concrete",
+  "tile": 2.0,
+  "px": 512,
+  "density": 256,
+  "source": "concrete_floor_02",
+  "url": "https://polyhaven.com/a/concrete_floor_02",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0"
+ },
+ {
+  "set": "building",
+  "name": "cedar_shakes",
+  "tile": 1.6,
+  "px": 512,
+  "density": 320,
+  "source": "weathered_planks",
+  "url": "https://polyhaven.com/a/weathered_planks",
+  "authors": [
+   "Dario Barresi",
+   "Dimitrios Savva"
+  ],
+  "licence": "CC0",
+  "note": "synthesised: 8 courses x 0.2 m exposure of shakes cut from the scan"
+ },
+ {
+  "set": "building",
+  "name": "window_grime",
+  "tile": 1.0,
+  "px": 512,
+  "density": 512,
+  "source": "dirty_concrete",
+  "url": "https://polyhaven.com/a/dirty_concrete",
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "licence": "CC0",
+  "note": "synthesised; RGBA albedo, alpha = grime opacity"
+ }
+]

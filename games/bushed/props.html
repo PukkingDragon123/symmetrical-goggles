@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BUSHED props</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #14110e; color: #e8dcc8; font: 12px/1.35 ui-monospace, Menlo, Consolas, monospace; overflow: hidden; }
+    #ui { position: fixed; left: 8px; top: 8px; z-index: 2; background: rgba(20, 16, 12, 0.82); padding: 8px 10px; border: 1px solid #4a3f33; max-width: 340px; }
+    #ui select, #ui button, #ui input { font: inherit; background: #2a231c; color: #e8dcc8; border: 1px solid #5a4d3e; }
+    #info { margin-top: 6px; white-space: pre-wrap; }
+    .lbl { color: #f3e6cf; background: rgba(0, 0, 0, 0.55); padding: 1px 4px; font-size: 10px; white-space: nowrap; pointer-events: none; }
+    .lbl.cat { font-size: 14px; color: #ffcf85; background: none; }
+  </style>
+</head>
+<body>
+  <div id="ui">
+    <b>BUSHED props</b> &middot; <span id="count"></span><br />
+    <label>category <select id="cat"><option value="">all</option></select></label>
+    <label><input type="checkbox" id="night" /> night</label>
+    <label><input type="checkbox" id="labels" checked /> labels</label>
+    <div id="info">click a prop to inspect it</div>
+  </div>
+  <script type="module" src="./src/dev/props.ts"></script>
+</body>
+</html>

@@ -8,3 +8,6 @@ export { AxehandleHound, houndModel, daylight, HOUND_SOUND, type HoundState } fr
 export { Bigfoot, bigfootModel, BIGFOOT_SOUND, type BigfootState } from './bigfoot';
 export { giftMesh, handProp, GIFTS, type PropKind } from './bigfoot/props';
 export type { CreatureCtx, PlayerView, GroundItem } from './types';
+export { houndModelAsync } from './hound';
+export { bigfootModelAsync } from './bigfoot';
+export { preloadCreatures } from './preload';

@@ -18,7 +18,8 @@
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, type CreatureFx } from './rig';
 import { Animator, FOOT, type AnimParams } from './animator';
-import { buildBigfootModel, type BigfootModel } from './bigfoot/model';
+import { buildBigfootModel, buildBigfootModelAsync, bigfootBones, BIGFOOT_MODEL_VERSION, type BigfootModel } from './bigfoot/model';
+import { loader } from './cache';
 import { bigfootClips, CH_PROP, CH_KNOCK, CH_PLACE } from './bigfoot/clips';
 import { handProp, GIFTS, type PropKind } from './bigfoot/props';
 import { daylight } from './hound';
@@ -29,8 +30,11 @@ import type { CreatureCtx } from './types';
 /** the sound-bank id (src/audio/bank.ts) suggested for each event */
 export const BIGFOOT_SOUND: Record<string, string | undefined> = { knock: 'bigfoot_wood_knock', whoop: 'bigfoot_whoop', step: 'bigfoot_step', crash: 'bigfoot_branch_break', grunt: 'bigfoot_grunt' };
 export type BigfootState = 'roam' | 'watch' | 'knock' | 'gift' | 'flee';
-let SHARED: BigfootModel | null = null;
-export function bigfootModel(): BigfootModel { return SHARED ?? (SHARED = buildBigfootModel()); }
+const BIGFOOT = loader<BigfootModel>(BIGFOOT_MODEL_VERSION, () => buildBigfootModelAsync(), (b, m) => ({ ...b, bones: bigfootBones(), tris: m.tris as number, den: m.den as number, stats: m.stats as string }), (m) => ({ tris: m.tris, den: m.den, stats: m.stats }));
+/** Bigfoot's shared model: preloaded (bigfootModelAsync / preloadCreatures) or built now (blocks) */
+export function bigfootModel(): BigfootModel { let m = BIGFOOT.get(); if (!m) { m = buildBigfootModel(); BIGFOOT.set(m); } return m; }
+/** load Bigfoot's model without stalling (IndexedDB cache, else built in slices) */
+export function bigfootModelAsync(o: { cache?: boolean } = {}): Promise<BigfootModel> { return BIGFOOT.load(o); }
 const STRIDE: Record<string, number> = { walk: 1.7, run: 3.2 };
 const _e = new THREE.Euler(), _t = new THREE.Vector3(), _v = new THREE.Vector3(), _w = new THREE.Vector3(), _q = new THREE.Quaternion(), _pole = new THREE.Vector3();
 

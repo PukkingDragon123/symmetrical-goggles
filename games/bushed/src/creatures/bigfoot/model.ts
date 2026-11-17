@@ -8,7 +8,7 @@
 // Creature space: metres, +z forward, +y up, ground y = 0.
 import * as THREE from 'three';
 import {
-  Body, trunk, limb, legRings, eyeball, locks, stalk, curve, chainSkin, addWeights, gridSurf, Px, RP, cell3, h3, cl,
+  Body, runSync, runAsync, trunk, limb, legRings, eyeball, locks, stalk, curve, chainSkin, addWeights, gridSurf, Px, RP, cell3, h3, cl,
   type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing,
 } from '../anatomy';
 import { spineFrame, locate, nz2, nz3, fbm3, type Frame } from '../paintkit';
@@ -192,9 +192,16 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
 }
 
 // ------------------------------------------------------------------------------------------------ the build
+/** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@1';
 export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
-export function buildBigfootModel(o: { page?: number; den?: number } = {}): BigfootModel {
+/** build the model straight through (blocks for a few seconds) */
+export function buildBigfootModel(o: { page?: number; den?: number } = {}): BigfootModel { return runSync(bigfootModelGen(o)); }
+/** build the model in slices of ~30 ms, yielding to the event loop between them */
+export function buildBigfootModelAsync(o: { page?: number; den?: number } = {}): Promise<BigfootModel> { return runAsync(bigfootModelGen(o)); }
+/** the build as steps (see Body.buildGen) */
+export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Generator<void, BigfootModel> {
   const bones = bigfootBones(), bi = (n: string) => { const k = bones.findIndex((b) => b.name === n); if (k < 0) throw new Error(n); return k; };
   const body = new Body(o.page ?? 1024);
   body.seed = 2701;
@@ -226,6 +233,7 @@ export function buildBigfootModel(o: { page?: number; den?: number } = {}): Bigf
     skin: torsoSkin, paint: furPaint({ flow: -1, len: 0.13, tone: (p) => (p[1] > 1.95 ? 0.35 : 0) + (p[2] > 0.2 && p[1] < 1.95 && p[1] > 1.6 ? 0.25 : 0) }),
   }));
   body.finalize(torso);
+  yield;
   // the head
   const hst: Station[] = HEAD.map((h) => ({ c: add(H, [0, 0, h.z]), s: [1, 1], p: h.p }));
   const skull = body.add(trunk({
@@ -235,6 +243,7 @@ export function buildBigfootModel(o: { page?: number; den?: number } = {}): Bigf
     paint: facePaint(H),
   }));
   body.finalize(skull);
+  yield;
   for (const [S, s] of [['L', 1], ['R', -1]] as const) body.add(eyeball({ name: 'eye' + S, c: add(H, [s * EYE[0], EYE[1], EYE[2]]), ax: [s * 0.3, -0.05, 1], r: 0.017, bone: bi('eye' + S), iris: RP('rust'), pupil: 'round', irisA: 0.6, sclera: RP('leather'), k: 2.5, levels: 0, around: 10 }));
   // arms and legs
   const limbs: Piece[] = [];
@@ -261,8 +270,9 @@ export function buildBigfootModel(o: { page?: number; den?: number } = {}): Bigf
     });
     body.add(leg.skin); limbs.push(leg.skin);
     foot(body, s, bi, an);
+    yield;
   }
-  for (const p of limbs) body.finalize(p);
+  for (const p of limbs) { body.finalize(p); yield; }
 
   // ---- hair: locks standing off the coat
   const seats: LockSeat[] = [];
@@ -301,7 +311,7 @@ export function buildBigfootModel(o: { page?: number; den?: number } = {}): Bigf
   const lk = locks({ name: 'hair', seats, tiles: [FUR, FUR, FUR], steps: [1, 2, 3], seed: 9 });
   if (lk) body.add(lk);
   void locate; void F;
-  const out = body.build({ den: o.den ?? 240, maxScale: 2, budget: 24000 });
+  const out = yield* body.buildGen({ den: o.den ?? 240, maxScale: 2, budget: 24000 });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris, den: body.den, stats };
 }

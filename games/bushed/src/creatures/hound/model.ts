@@ -8,7 +8,7 @@
 // Creature space: metres, +z forward, +y up, ground y = 0. Built with the anatomy library (src/creatures/anatomy).
 import * as THREE from 'three';
 import {
-  Body, trunk, limb, legRings, eyeball, eyelid, locks, stalk, spine, curve, chainSkin, gridSurf,
+  Body, runSync, runAsync, trunk, limb, legRings, eyeball, eyelid, locks, stalk, spine, curve, chainSkin, gridSurf,
   Px, RP, cell3, h3, cl, type V3, type Wt, type Piece, type Chart, type Station, type FootSpec, type LockSeat, type LimbRing,
 } from '../anatomy';
 import { spineFrame, locate, nz2, nz3, fbm3, seatsOn, type Frame } from '../paintkit';
@@ -305,9 +305,16 @@ function clawPaint(ch: Chart, _p: Piece, b: Body) {
 }
 
 // ------------------------------------------------------------------------------------------------ the build
+/** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
+export const HOUND_MODEL_VERSION = 'hound@1';
 export interface HoundModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
-export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundModel {
+/** build the model straight through (blocks for a few seconds) */
+export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundModel { return runSync(houndModelGen(o)); }
+/** build the model in slices of ~30 ms, yielding to the event loop between them */
+export function buildHoundModelAsync(o: { page?: number; den?: number } = {}): Promise<HoundModel> { return runAsync(houndModelGen(o)); }
+/** the build as steps (see Body.buildGen) */
+export function* houndModelGen(o: { page?: number; den?: number } = {}): Generator<void, HoundModel> {
   const bones = houndBones(), bi = (n: string) => bones.findIndex((b) => b.name === n);
   const body = new Body(o.page ?? 1024);
   body.seed = 1871;
@@ -348,6 +355,7 @@ export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundM
     skin: (p) => spineSkin(p), paint: hickoryPaint(F, knots, { bristle }),
   }));
   body.finalize(torso);
+  yield;
 
   // ---- the axe head: the upper blade and poll on the head bone, the lower blade on the jaw
   const hb = bi('head'), jb = bi('jaw');
@@ -358,6 +366,7 @@ export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundM
     skin: () => [hb, 1], paint: steelPaint('skull'),
   }));
   body.finalize(skull);
+  yield;
   const jaw = body.add(trunk({
     name: 'jaw', stations: jawStations(), tween: 0, capS: true, capE: true, k: 2.4, levels: 1,
     rings: [{ at: 6, s: 1.5 }, { at: LO.length - 1, s: 3 }],
@@ -408,6 +417,7 @@ export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundM
     });
     out.claws.levels = 0; out.toes.levels = 0;
     body.add(out.skin); body.add(out.toes); body.add(out.claws);
+    yield;
   }
 
   // ---- the whip tail
@@ -421,6 +431,7 @@ export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundM
     paint: (ch, pp, b) => hickoryPaint(TF, [], { bristle: (s) => cl((s - TF.L * 0.72) / (TF.L * 0.06), 0, 1) })(ch, pp, b),
   }));
   body.finalize(tail);
+  yield;
 
   // ---- bristle locks: the hackles down the spine, the chest tuft, the tail's tip
   const seats: LockSeat[] = [];
@@ -449,7 +460,7 @@ export function buildHoundModel(o: { page?: number; den?: number } = {}): HoundM
   const lk = locks({ name: 'bristle', seats, tiles: [HORN, HEART], steps: [3, 2], seed: 7 });
   if (lk) body.add(lk);
 
-  const out = body.build({ den: o.den ?? 300, maxScale: 2.2, budget: 21000 });
+  const out = yield* body.buildGen({ den: o.den ?? 300, maxScale: 2.2, budget: 21000 });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris, den: body.den, stats };
 }

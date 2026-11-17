@@ -1,0 +1,200 @@
+{
+ "rock_07": {
+  "asset": "rock_07",
+  "file": "models/nature/rock_07.glb",
+  "height": 0.144,
+  "size_mm": [
+   169,
+   321,
+   144
+  ],
+  "authors": [
+   "Jenelle van Heerden"
+  ],
+  "url": "https://polyhaven.com/a/rock_07",
+  "license": "CC0"
+ },
+ "rock_09": {
+  "asset": "rock_09",
+  "file": "models/nature/rock_09.glb",
+  "height": 0.033,
+  "size_mm": [
+   74,
+   145,
+   33
+  ],
+  "authors": [
+   "Jenelle van Heerden"
+  ],
+  "url": "https://polyhaven.com/a/rock_09",
+  "license": "CC0"
+ },
+ "stone_01": {
+  "asset": "stone_01",
+  "file": "models/nature/stone_01.glb",
+  "height": 0.072,
+  "size_mm": [
+   147,
+   89,
+   72
+  ],
+  "authors": [
+   "Dario Barresi",
+   "Rico Cilliers"
+  ],
+  "url": "https://polyhaven.com/a/stone_01",
+  "license": "CC0"
+ },
+ "rock_moss_set_01": {
+  "asset": "rock_moss_set_01",
+  "file": "models/nature/rock_moss_set_01.glb",
+  "height": 1.768,
+  "size_mm": [
+   8005,
+   6949,
+   1768
+  ],
+  "authors": [
+   "Kless Gyzen"
+  ],
+  "url": "https://polyhaven.com/a/rock_moss_set_01",
+  "license": "CC0"
+ },
+ "rock_moss_set_02": {
+  "asset": "rock_moss_set_02",
+  "file": "models/nature/rock_moss_set_02.glb",
+  "height": 1.368,
+  "size_mm": [
+   8278,
+   3410,
+   1368
+  ],
+  "authors": [
+   "Kless Gyzen"
+  ],
+  "url": "https://polyhaven.com/a/rock_moss_set_02",
+  "license": "CC0"
+ },
+ "root_cluster_02": {
+  "asset": "root_cluster_02",
+  "file": "models/nature/root_cluster_02.glb",
+  "height": 0.199,
+  "size_mm": [
+   2382,
+   2705,
+   199
+  ],
+  "authors": [
+   "Jenelle van Heerden"
+  ],
+  "url": "https://polyhaven.com/a/root_cluster_02",
+  "license": "CC0"
+ },
+ "tree_stump_01": {
+  "asset": "tree_stump_01",
+  "file": "models/nature/tree_stump_01.glb",
+  "height": 0.573,
+  "size_mm": [
+   1426,
+   1590,
+   573
+  ],
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "url": "https://polyhaven.com/a/tree_stump_01",
+  "license": "CC0"
+ },
+ "tree_stump_02": {
+  "asset": "tree_stump_02",
+  "file": "models/nature/tree_stump_02.glb",
+  "height": 0.522,
+  "size_mm": [
+   1522,
+   1393,
+   522
+  ],
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "url": "https://polyhaven.com/a/tree_stump_02",
+  "license": "CC0"
+ },
+ "dead_tree_trunk": {
+  "asset": "dead_tree_trunk",
+  "file": "models/nature/dead_tree_trunk.glb",
+  "height": 0.29,
+  "size_mm": [
+   3051,
+   278,
+   290
+  ],
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "url": "https://polyhaven.com/a/dead_tree_trunk",
+  "license": "CC0"
+ },
+ "dead_tree_trunk_02": {
+  "asset": "dead_tree_trunk_02",
+  "file": "models/nature/dead_tree_trunk_02.glb",
+  "height": 1.055,
+  "size_mm": [
+   4054,
+   1057,
+   1055
+  ],
+  "authors": [
+   "Jenelle van Heerden",
+   "Rico Cilliers"
+  ],
+  "url": "https://polyhaven.com/a/dead_tree_trunk_02",
+  "license": "CC0"
+ },
+ "dry_branches_medium_01": {
+  "asset": "dry_branches_medium_01",
+  "file": "models/nature/dry_branches_medium_01.glb",
+  "height": 0.341,
+  "size_mm": [
+   1059,
+   1299,
+   341
+  ],
+  "authors": [
+   "Rico Cilliers"
+  ],
+  "url": "https://polyhaven.com/a/dry_branches_medium_01",
+  "license": "CC0"
+ },
+ "bark_debris_01": {
+  "asset": "bark_debris_01",
+  "file": "models/nature/bark_debris_01.glb",
+  "height": 0.112,
+  "size_mm": [
+   1210,
+   675,
+   112
+  ],
+  "authors": [
+   "Greg Zaal",
+   "Jenelle van Heerden"
+  ],
+  "url": "https://polyhaven.com/a/bark_debris_01",
+  "license": "CC0"
+ },
+ "boulder_01": {
+  "asset": "boulder_01",
+  "file": "models/nature/boulder_01.glb",
+  "height": 1.004,
+  "size_mm": [
+   1273,
+   1831,
+   1004
+  ],
+  "authors": [
+   "Rico Cilliers"
+  ],
+  "url": "https://polyhaven.com/a/boulder_01",
+  "license": "CC0"
+ }
+}

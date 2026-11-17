@@ -93,7 +93,7 @@ const V_BEGIN = /* glsl */ `
   }
   #endif
   #ifdef VEG_PUSH
-  off += vegPush(o, wp, aWind.x * 3.0 + aWind.y);
+  off += vegPush(o, wp, aWind.y);
   #endif
   mat3 vM3 = mat3(vM);
   float vS2 = max(1e-6, dot(vM3[0], vM3[0]));

@@ -1,0 +1,38 @@
+[
+ {
+  "file": "veg/moss.png",
+  "asset": "concrete_moss",
+  "tile_m": 3.0,
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "url": "https://polyhaven.com/a/concrete_moss"
+ },
+ {
+  "file": "veg/forest_floor.png",
+  "asset": "forest_leaves_02",
+  "tile_m": 3.001,
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "url": "https://polyhaven.com/a/forest_leaves_02"
+ },
+ {
+  "file": "veg/mossy_rock.png",
+  "asset": "mossy_rock",
+  "tile_m": 3.0,
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "url": "https://polyhaven.com/a/mossy_rock"
+ },
+ {
+  "file": "veg/litter.png",
+  "asset": "forrest_ground_03",
+  "tile_m": 2.0,
+  "authors": [
+   "Rob Tuytel"
+  ],
+  "url": "https://polyhaven.com/a/forrest_ground_03"
+ }
+]

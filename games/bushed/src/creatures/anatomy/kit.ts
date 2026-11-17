@@ -399,7 +399,11 @@ export function pageTexture(page: Page): THREE.DataTexture {
 /** the surface-data page as a linear texture (roughnessMap reads G, metalnessMap reads B, the eye shine patch reads R) */
 export function surfaceTexture(page: Page): THREE.DataTexture {
   const d = page.sd.data;
-  const tex = new THREE.DataTexture(new Uint8Array(d.buffer, d.byteOffset, d.byteLength), page.W, page.H, THREE.RGBAFormat, THREE.UnsignedByteType);
+  return surfaceTextureFrom(new Uint8Array(d.buffer, d.byteOffset, d.byteLength), page.W, page.H);
+}
+/** surface data (R shine, G roughness, B metalness) as a linear texture */
+export function surfaceTextureFrom(data: Uint8Array, W: number, H: number): THREE.DataTexture {
+  const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat, THREE.UnsignedByteType);
   tex.magFilter = THREE.NearestFilter;
   tex.minFilter = THREE.LinearMipmapLinearFilter;
   tex.generateMipmaps = true;

@@ -1,0 +1,358 @@
+{
+ "density": 256,
+ "sources": {
+  "brown_leather": "https://polyhaven.com/a/brown_leather",
+  "fine_grained_wood": "https://polyhaven.com/a/fine_grained_wood",
+  "mossy_rock": "https://polyhaven.com/a/mossy_rock",
+  "old_stone_wall": "https://polyhaven.com/a/old_stone_wall",
+  "old_wood_floor": "https://polyhaven.com/a/old_wood_floor",
+  "poly_wool_herringbone": "https://polyhaven.com/a/poly_wool_herringbone",
+  "rough_wood": "https://polyhaven.com/a/rough_wood",
+  "rust_coarse_01": "https://polyhaven.com/a/rust_coarse_01",
+  "rusty_corrugated_iron": "https://polyhaven.com/a/rusty_corrugated_iron",
+  "weathered_plank_siding": "https://polyhaven.com/a/weathered_plank_siding",
+  "weathered_planks": "https://polyhaven.com/a/weathered_planks",
+  "white_rough_plaster": "https://polyhaven.com/a/white_rough_plaster",
+  "wood_chips": "https://polyhaven.com/a/wood_chips",
+  "wood_planks_grey": "https://polyhaven.com/a/wood_planks_grey",
+  "wood_table_worn": "https://polyhaven.com/a/wood_table_worn"
+ },
+ "textures": {
+  "blanket": {
+   "normal": true,
+   "note": "poly_wool_herringbone, buffalo check",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "board_grey": {
+   "normal": true,
+   "note": "wood_table_worn silvered",
+   "px": [
+    512,
+    256
+   ],
+   "tile": [
+    2.0,
+    1.0
+   ]
+  },
+  "board_warm": {
+   "normal": true,
+   "note": "wood_table_worn + fine_grained_wood",
+   "px": [
+    512,
+    256
+   ],
+   "tile": [
+    2.0,
+    1.0
+   ]
+  },
+  "boards_green": {
+   "normal": true,
+   "note": "weathered_planks painted green",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "canvas": {
+   "normal": true,
+   "note": "procedural duck canvas",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "chink": {
+   "normal": true,
+   "note": "white_rough_plaster (mortar chinking)",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "corrugated": {
+   "normal": true,
+   "note": "rusty_corrugated_iron",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "enamel": {
+   "normal": false,
+   "note": "procedural white enamel",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    0.5,
+    0.5
+   ]
+  },
+  "enamel_blue": {
+   "normal": false,
+   "note": "procedural speckled enamel",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    0.5,
+    0.5
+   ]
+  },
+  "endgrain": {
+   "normal": true,
+   "note": "procedural rings + bark_spruce rim",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "floor": {
+   "normal": true,
+   "note": "old_wood_floor",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "galv": {
+   "normal": true,
+   "note": "rust_coarse_01 as galvanised steel",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "glass_grime": {
+   "normal": false,
+   "note": "procedural",
+   "px": [
+    128,
+    128
+   ],
+   "tile": [
+    0.5,
+    0.5
+   ]
+  },
+  "iron": {
+   "normal": true,
+   "note": "rust_coarse_01 blackened",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "leather": {
+   "normal": true,
+   "note": "brown_leather",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "log_ext": {
+   "normal": true,
+   "note": "procedural log skin + rough_wood detail, silvered",
+   "px": [
+    512,
+    256
+   ],
+   "tile": [
+    2.0,
+    1.0
+   ]
+  },
+  "log_int": {
+   "normal": true,
+   "note": "procedural log skin + wood_table_worn detail, honey",
+   "px": [
+    512,
+    256
+   ],
+   "tile": [
+    2.0,
+    1.0
+   ]
+  },
+  "planks_grey": {
+   "normal": true,
+   "note": "wood_planks_grey",
+   "px": [
+    384,
+    384
+   ],
+   "tile": [
+    1.5,
+    1.5
+   ]
+  },
+  "rope": {
+   "normal": false,
+   "note": "procedural",
+   "px": [
+    64,
+    32
+   ],
+   "tile": [
+    0.1,
+    0.05
+   ]
+  },
+  "rug": {
+   "normal": false,
+   "note": "procedural braided rug",
+   "px": [
+    512,
+    128
+   ],
+   "tile": [
+    2.0,
+    0.5
+   ]
+  },
+  "shakes": {
+   "normal": true,
+   "note": "rough_wood shakes + mossy_rock moss (composite)",
+   "px": [
+    512,
+    256
+   ],
+   "tile": [
+    2.0,
+    1.0
+   ]
+  },
+  "siding_red": {
+   "normal": true,
+   "note": "weathered_plank_siding painted red",
+   "px": [
+    402,
+    402
+   ],
+   "tile": [
+    1.57,
+    1.57
+   ]
+  },
+  "stone": {
+   "normal": true,
+   "note": "old_stone_wall (fieldstone hearth, piers)",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "ticking": {
+   "normal": false,
+   "note": "procedural ticking on wool weave",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "trim_cream": {
+   "normal": true,
+   "note": "weathered_planks painted cream",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "wood_fresh": {
+   "normal": true,
+   "note": "fine_grained_wood lightened (fresh split)",
+   "px": [
+    512,
+    256
+   ],
+   "tile": [
+    2.0,
+    1.0
+   ]
+  },
+  "woodchips": {
+   "normal": true,
+   "note": "wood_chips decal",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "wool_grey": {
+   "normal": true,
+   "note": "poly_wool_herringbone grey",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  }
+ }
+}

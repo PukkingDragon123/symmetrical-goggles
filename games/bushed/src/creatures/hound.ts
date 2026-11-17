@@ -19,7 +19,8 @@
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, smooth, type CreatureFx } from './rig';
 import { Animator, FOOT, type AnimParams } from './animator';
-import { buildHoundModel, houndBones, LEGS, H, type HoundModel } from './hound/model';
+import { buildHoundModel, buildHoundModelAsync, houndBones, LEGS, H, HOUND_MODEL_VERSION, type HoundModel } from './hound/model';
+import { loader } from './cache';
 import { houndClips, CH_BLINK, CH_SHINE } from './hound/clips';
 import { setPusher } from '../gfx/globals';
 import { SPOTS } from '../world/layout';
@@ -32,9 +33,11 @@ export const HOUND_SOUND: Record<string, string | undefined> = {
 };
 export type HoundState = 'wild_lurk' | 'lunge' | 'curious' | 'eat' | 'befriended' | 'companion';
 
-let SHARED: HoundModel | null = null;
-/** the hound's model is built once and shared by every hound */
-export function houndModel(): HoundModel { return SHARED ?? (SHARED = buildHoundModel()); }
+const HOUND = loader<HoundModel>(HOUND_MODEL_VERSION, () => buildHoundModelAsync(), (b, m) => ({ ...b, bones: houndBones(), tris: m.tris as number, den: m.den as number, stats: m.stats as string }), (m) => ({ tris: m.tris, den: m.den, stats: m.stats }));
+/** the hound's model, shared by every hound: preloaded (houndModelAsync / preloadCreatures) or built now (blocks) */
+export function houndModel(): HoundModel { let m = HOUND.get(); if (!m) { m = buildHoundModel(); HOUND.set(m); } return m; }
+/** load the hound's model without stalling: from IndexedDB if cached, else built in ~30 ms slices (then cached) */
+export function houndModelAsync(o: { cache?: boolean } = {}): Promise<HoundModel> { return HOUND.load(o); }
 
 const STRIDE: Record<string, number> = { walk: 0.46, trot: 0.64, run: 1.0, stalk: 0.32 };
 const GAITS = new Set(['walk', 'trot', 'run', 'stalk']);

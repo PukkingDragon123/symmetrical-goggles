@@ -71,6 +71,9 @@ export class Journal {
     return true;
   }
 
+  dump(): [string, string[]][] { return [...this.known.entries()].map(([k, v]) => [k, [...v]]); }
+  restore(d: [string, string[]][]): void { for (const [k, v] of d) this.known.set(k, new Set(v)); this.rebuild(); }
+
   sawCritter(id: string): void { if (!this.seen.has(id)) { this.seen.add(id); this.rebuild(); } }
 
   knows(critter: string, rule: string): boolean { return this.known.get(critter)?.has(rule) ?? false; }

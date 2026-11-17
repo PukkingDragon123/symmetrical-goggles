@@ -85,7 +85,7 @@ export class Hands {
     const obj = this.g.toolModel(item);
     if (def?.tool) {
       this.held = { kind: 'tool', item, obj };
-      const k = def.tool.kind === 'axe' ? 'axe' : def.tool.kind === 'splitter' ? 'axe' : def.tool.kind;
+      const k = def.tool.kind === 'splitter' ? 'axe' : def.tool.kind === 'chainsaw' ? 'saw' : def.tool.kind;
       this.g.arms?.setHeld(k, obj ?? undefined);
     } else {
       this.held = { kind: 'item', item, obj };
