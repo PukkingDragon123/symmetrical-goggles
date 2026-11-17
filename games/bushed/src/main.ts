@@ -44,6 +44,7 @@ async function boot() {
   canvas.addEventListener('click', () => { input.lock(); audio.unlock(); });
   (window as any).__game = game;
   const d = new Director();
+  (window as any).__director = d;
   const pause = new Pause();
   pause.onChange = (st) => {
     input.sensitivity = 0.0022 * st.sensitivity;

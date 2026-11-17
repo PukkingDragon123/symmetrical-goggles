@@ -179,9 +179,12 @@ export async function runIntro(game: Game, d: Director): Promise<void> {
   await d.sleep(4);
   think("Ray's letter said: left at Pruneau's store, then follow the logging road till it gives up.", 5);
   if (jeep) {
-    await d.until(() => game.player.pos.distanceTo(new THREE.Vector3(SPOTS.store.x, game.player.pos.y, SPOTS.store.z)) < 45);
-    think('Pruneau\'s. Lights on. Somebody\'s still awake out here.', 4);
-    await d.until(() => game.player.pos.distanceTo(new THREE.Vector3(SPOTS.cabin.x, game.player.pos.y, SPOTS.cabin.z)) < 30);
+    const near = (x: number, z: number, r: number) => Math.hypot(game.player.pos.x - x, game.player.pos.z - z) < r;
+    await d.until(() => near(SPOTS.store.x, SPOTS.store.z, 45) || near(SPOTS.cabin.x, SPOTS.cabin.z, 30));
+    if (!near(SPOTS.cabin.x, SPOTS.cabin.z, 30)) {
+      think('Pruneau\'s. Lights on. Somebody\'s still awake out here.', 4);
+      await d.until(() => near(SPOTS.cabin.x, SPOTS.cabin.z, 30));
+    }
     think('That must be it.', 3);
     await d.until(() => game.mode === 'walk');
   }
