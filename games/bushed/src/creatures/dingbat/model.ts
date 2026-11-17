@@ -17,7 +17,7 @@ import { fbm3 } from '../paintkit';
 import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 
-export const DINGBAT_MODEL_VERSION = 'dingbat@1';
+export const DINGBAT_MODEL_VERSION = 'dingbat@4';
 export interface DingbatModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (left side; the right is the mirror in x) */
@@ -28,7 +28,7 @@ export const DB = {
   hw: 0.05, hh: 0.046, hd: 0.043,
   /** the jaw hinge (back corners of the gape) */
   hinge: [0, 0.011, 0.072] as V3,
-  eye: [0.021, 0.039, 0.132] as V3, eyeR: 0.0135,
+  eye: [0.021, 0.038, 0.1345] as V3, eyeR: 0.0135,
   antler: [0.024, 0.066, 0.094] as V3,
   /** shoulder, elbow, wrist; the finger tips (digit 2 the wingtip .. 5 the innermost), the membrane's body attachment */
   S: [0.032, 0.014, 0.03] as V3, E: [0.09, 0.016, 0.012] as V3, W: [0.148, 0.014, 0.03] as V3,
@@ -73,6 +73,8 @@ function plumage(o: { flow?: number; size?: number } = {}) {
       if ((i & 4095) === 0) yield;
       const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ny = N[i * 3 + 1];
       const m = fbm3(x * 60, y * 60, z * 60, 2);
+      // the throat at the back of the gape: dark wet red
+      if (z > 0.058) { px.put(i, BLOOD, 1.6 + m); px.rough[i] = 110; continue; }
       // the belly: pale buff with dark drop-streaks; the back tawny, darker along the spine
       if (ny < -0.25 && z < 0.07) {
         const streak = Math.abs(((x * 140 + h3(Math.floor(z * 90), 1, 3) * 0.6) % 1 + 1) % 1 - 0.5) < 0.09;
@@ -106,8 +108,9 @@ function headPaint() {
       if (ny < -0.6 && y < -0.012) {
         const back = cl((DB.hd - z) / (DB.hd * 2), 0, 1);
         const ridge = Math.abs(Math.sin(z * 520)) < 0.25 && ax < 0.032;
-        px.put(i, back > 0.55 ? BLOOD : FLESH, 4 - back * 3.4 + (ridge ? 0.9 : 0) - (ax > 0.036 ? 0.8 : 0)); px.rough[i] = 60;
-        if (ax > 0.038 && z > -0.02) { px.put(i, INK, 1); px.rough[i] = 120; }
+        // (drawn straight to colour: the closed mouth's ambient occlusion would bury it in black)
+        const st = Math.round(cl(4.6 - back * 3.4 + (ridge ? 1 : 0) - (ax > 0.032 ? 1 : 0) + m * 0.5, 0, 5));
+        px.over[i] = ax > 0.039 && z > -0.02 ? INK[1] : back > 0.7 ? BLOOD[Math.min(4, st + 1)] : FLESH[st]; px.rough[i] = 130;
         continue;
       }
       // the facial disc: an oval on the face, its rim a ring of dark feathers
@@ -116,14 +119,16 @@ function headPaint() {
       if (onFace && rd < 1.06) {
         disc[i] = 1;
         const ang = Math.atan2(dy, dx), ray = Math.abs(Math.sin(ang * 26 + rd * 3)) < 0.22;
-        let R = BONE, st = 3.6 - rd * 0.9 + m * 0.4 - (ray ? 0.7 : 0);
+        let R = BONE, st = 4.1 - rd * 0.8 + m * 0.4 - (ray ? 0.6 : 0);
         if (rd > 0.86) { R = SOIL; st = 1.4 + (Math.abs(Math.sin(ang * 30)) < 0.4 ? 0.7 : 0); }
         // sooty rings round the eyes, dark brows sweeping up to the antlers (a frown of a face)
         const ex = ax - DB.eye[0], ey = y - (DB.eye[1] - H[1]), ed = Math.hypot(ex, ey);
-        if (ed < 0.021) { R = SOIL; st = 1.2 + ed * 40; }
-        if (ey > 0.008 && ey < 0.022 && ex > -0.016 && ex < 0.018 && ey - 0.008 < 0.6 * (0.018 - ex) && ey > 0.011 - ex * 0.25) { R = SOIL; st = 0.8; }
-        // the white "eyebrows" over the beak
-        if (ax < 0.012 && y > 0.0 && y < 0.02 && ey < 0.012) { R = BONE; st = 4.6; }
+        if (ed < 0.0158) { R = SOIL; st = 0.9 + ed * 60; }
+        // dark brows slanting up from the beak to the antlers: a frown
+        const bl = ey - (0.012 + (ax - 0.006) * 0.55);
+        if (ax > 0.004 && ax < 0.042 && bl > -0.0035 && bl < 0.003) { R = SOIL; st = 0.7; }
+        // pale feathers between the eyes over the beak
+        if (ax < 0.007 && ey > -0.01 && ey < 0.01) { R = BONE; st = 4.4 - Math.abs(ey) * 60; }
         px.put(i, R, st); px.rough[i] = 220; continue;
       }
       px.put(i, FUR, 2.5 + m * 0.7 + (y > 0.02 ? -0.3 : 0)); px.rough[i] = 235;
@@ -148,8 +153,9 @@ function jawPaint(ch: Chart, _p: Piece, b: Body) {
     if (top && !rim && ny > 0.3) {
       // the mouth floor: the tongue down the middle, dark sides, the throat at the back
       const back = cl((H[2] + DB.hd - z) / 0.07, 0, 1);
-      const tongue = ax < 0.016 * (1 - back * 0.4) && back < 0.75;
-      px.put(i, tongue ? CORAL : back > 0.5 ? BLOOD : FLESH, tongue ? 3.6 - back * 2 + (ax < 0.003 ? -1 : 0) : 3 - back * 3); px.rough[i] = 50;
+      const tongue = ax < 0.016 * (1 - back * 0.4) && back < 0.75, m = fbm3(x * 200, y * 200, z * 200, 2);
+      const st = Math.round(cl((tongue ? 5 - back * 1.6 - (ax > 0.012 ? 1 : 0) : 3.6 - back * 3) + m * 0.6, 0, 5));
+      px.over[i] = !tongue && back > 0.6 ? BLOOD[Math.min(4, st + 1)] : FLESH[st]; px.rough[i] = 120;
       continue;
     }
     if (rim) {
@@ -158,9 +164,11 @@ function jawPaint(ch: Chart, _p: Piece, b: Body) {
       px.put(i, tooth ? BONE : INK, tooth ? 4.6 : 1.4); px.rough[i] = tooth ? 70 : 110;
       continue;
     }
-    // outside: pale chin feathers, a dark collar band under the jaw
+    // outside: a pale margin under the lips, then the tawny barred feathers of the throat
     const m = fbm3(x * 90, y * 90, z * 90, 2);
-    px.put(i, BONE, 3.4 + m * 0.5 - (y < -0.004 && z < H[2] ? 1.2 : 0)); px.rough[i] = 230;
+    if (y > DB.hinge[1] - 0.008) px.put(i, BONE, 3.6 + m * 0.4);
+    else px.put(i, FUR, 2.4 + m * 0.6 - (Math.abs(Math.sin(z * 300 + ax * 80)) < 0.2 ? 0.9 : 0));
+    px.rough[i] = 230;
   }
   px.scales({ size: 0.005, kind: 'shield', flow: -1, ink: 1.2, lit: 0.6, mask: (i) => (P[i * 3 + 1] < DB.hinge[1] - 0.004 ? 1 : 0), seed: 13 });
   void mpt; px.flush();
@@ -185,7 +193,7 @@ function wingPaint(side: number) {
         // membrane: veins radiating from the wrist, wrinkles across between the fingers
         const dx = x - DB.W[0], dz = z - DB.W[2], a = Math.atan2(dz, dx), r = Math.hypot(dx, dz);
         const vein = Math.abs(Math.sin(a * 23 + r * 40)) < 0.09, wr = Math.abs(Math.sin(r * 420 + a * 3)) < 0.16;
-        px.put(i, under ? HIDE : LEA, (under ? 2.6 : 2.2) + m * 0.5 - (vein ? 1 : 0) - (wr ? 0.5 : 0)); px.rough[i] = 150;
+        px.put(i, under ? HIDE : LEA, (under ? 2.6 : 2.4) + m * 0.5 - (vein ? 1 : 0) - (wr ? 0.5 : 0)); px.rough[i] = 205;
       }
     }
     yield;
@@ -201,8 +209,9 @@ function antlerPaint(ch: Chart, _p: Piece, b: Body) {
   for (let i = 0; i < px.n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], up = y - DB.antler[1];
     const c = cell3(x, y, z, 0.0025, 3), pearl = c.f1 < 0.0007 && up < 0.022;
-    if (up < 0.005) { px.put(i, HORN, 2.6 + (pearl ? 1.2 : 0)); px.rough[i] = 200; continue; }
-    px.put(i, up > 0.028 ? BONE : SOIL, up > 0.028 ? 3.8 + (up - 0.028) * 40 : 3.2 + up * 30 + (pearl ? 1 : 0)); px.rough[i] = up > 0.028 ? 120 : 220;
+    if (up < 0.004) { px.put(i, HORN, 2.4 + (pearl ? 1.4 : 0)); px.rough[i] = 200; continue; }
+    const tip = up > 0.022 || (up > 0.014 && z > DB.antler[2] + 0.001);
+    px.put(i, tip ? BONE : SOIL, tip ? 4.2 : 2.4 + up * 40 + (pearl ? 1 : 0)); px.rough[i] = tip ? 120 : 225;
   }
   px.creaseInk(1, { dark: 1.2, lit: 0.8 }); px.flush();
 }
@@ -233,7 +242,7 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   const bodySkin = chainSkin([[0, 0, -0.11], [0, 0.003, -0.062], [0, 0.01, 0.05], [0, 0.02, 0.12]], [TAIL, ROOT, HEAD], 0.3);
   const torso = body.add(trunk({
     name: 'trunk', stations: [bst(-0.088, 0.004, 0.01, 0.008, 'round'), bst(-0.072, 0.002, 0.026, 0.022, 'round'), bst(-0.045, 0, 0.04, 0.036), bst(-0.012, 0, 0.047, 0.043), bst(0.02, 0.003, 0.046, 0.044), bst(0.045, 0.008, 0.04, 0.04, 'round'), bst(0.062, 0.012, 0.03, 0.03, 'round'), bst(0.074, 0.014, 0.012, 0.012, 'round')],
-    tween: 1, capS: true, capE: true, levels: 1, k: 1, skin: bodySkin, paint: plumage(),
+    tween: 0, capS: true, capE: true, levels: 1, k: 1, skin: bodySkin, paint: plumage(),
   }));
   body.finalize(torso);
   yield 'body';
@@ -253,24 +262,24 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   const jst = (z: number, w: number, h: number, y: number): Station => ({ c: [0, y, z], s: [w, h], p: JP });
   body.add(trunk({
     name: 'jaw', stations: [jst(0.058, 0.026, 0.01, 0.001), jst(0.072, 0.04, 0.0145, -0.001), jst(0.092, 0.0475, 0.0165, -0.0025), jst(0.112, 0.0455, 0.016, -0.0025), jst(0.13, 0.036, 0.013, -0.0005), jst(0.139, 0.02, 0.008, 0.0015)],
-    tween: 1, capS: true, capE: true, levels: 1, k: 1.8, cols: [{ j: 2, a: 1, b: 5, s: 1.5, ink: true }], skin: () => [bi('jaw'), 1], paint: jawPaint,
+    tween: 0, capS: true, capE: true, levels: 1, k: 1.8, cols: [{ j: 2, a: 1, b: 5, s: 1.5, ink: true }], skin: () => [bi('jaw'), 1], paint: jawPaint,
   }));
   // a little hooked beak over the middle of the gape
   body.add(stalk({ name: 'beak', path: curve([[0, H[1] - 0.004, H[2] + 0.036], [0, H[1] - 0.006, H[2] + 0.044], [0, H[1] - 0.014, H[2] + 0.048], [0, H[1] - 0.022, H[2] + 0.045]], 5), r: (t) => 0.0065 * (1 - t * 0.85) + 0.0006, sec: (a) => (Math.abs(Math.sin(a)) > 0.7 ? 0.7 : 1), around: 6, levels: 1, k: 2, skin: () => [HEAD, 1], paint: flat(HORN, 2.4, 90) }));
   // eyes, lids
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(DB.eye, s), ax: V3 = [s * 0.22, 0.04, 1];
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: DB.eyeR, bone: HEAD, iris: GOLD, pupil: 'round', irisA: 0.78, sclera: SOIL, k: 2.6, levels: 1, around: 10 }));
-    const lid = body.add(eyelid({ name: 'lid' + S, c, ax, r: DB.eyeR, bone: bi('lid' + S), paint: flat(SOIL, 2.2, 220), cover: 0.95, root: 2.2 }));
+    body.add(eyeball({ name: 'eye' + S, c, ax, r: DB.eyeR, bone: HEAD, iris: GOLD, pupil: 'round', irisA: 0.82, sclera: SOIL, k: 2.6, levels: 1, around: 8 }));
+    const lid = body.add(eyelid({ name: 'lid' + S, c, ax, r: DB.eyeR, bone: bi('lid' + S), paint: flat(SOIL, 1.6, 220), cover: 1.25, root: 2.3 }));
     lid.levels = 0;
   }
   // antler nubs: a short beam with a burr, forking once into a front tine
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const b0 = mir(DB.antler, s);
-    const ctrl: V3[] = [add(b0, [0, -0.004, 0]), add(b0, [s * 0.003, 0.008, -0.002]), add(b0, [s * 0.011, 0.021, -0.007]), add(b0, [s * 0.02, 0.032, -0.014]), add(b0, [s * 0.029, 0.039, -0.024])];
-    body.add(horn({ name: 'antler' + S, ctrl, r0: 0.0058, skin: () => [HEAD, 1], paint: antlerPaint, flat: 0.9, rings: 3, k: 1.6 }));
+    const ctrl: V3[] = [add(b0, [0, -0.004, 0]), add(b0, [s * 0.003, 0.007, -0.002]), add(b0, [s * 0.01, 0.016, -0.007]), add(b0, [s * 0.019, 0.022, -0.016]), add(b0, [s * 0.025, 0.025, -0.026])];
+    body.add(horn({ name: 'antler' + S, ctrl, r0: 0.0072, skin: () => [HEAD, 1], paint: antlerPaint, flat: 0.88, rings: 3, k: 1.6 }));
     const pt = curve(ctrl, 10)[4];
-    body.add(horn({ name: 'tine' + S, ctrl: [add(pt, [0, -0.002, -0.001]), add(pt, [s * 0.001, 0.007, 0.006]), add(pt, [-s * 0.001, 0.016, 0.01])], r0: 0.0034, skin: () => [HEAD, 1], paint: antlerPaint, rings: 3, k: 1.6 }));
+    body.add(horn({ name: 'tine' + S, ctrl: [add(pt, [0, -0.002, -0.001]), add(pt, [s * 0.002, 0.006, 0.004]), add(pt, [s * 0.001, 0.013, 0.005])], r0: 0.0042, skin: () => [HEAD, 1], paint: antlerPaint, rings: 3, k: 1.6 }));
   }
   yield 'face';
 
@@ -293,11 +302,11 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
     body.add(stalk({ name: 'digit' + S, path: curve([mir(add(DB.W, [0.012, 0.0005, -0.004]), s), mir(add(DB.W, [0.06, 0.0005, -0.012]), s), mir(DB.D2, s)], 6), r: (t) => 0.0027 - t * 0.0017, around: 5, levels: 1, k: 1, skin: ws, paint: flat(LEA, 1.6, 150) }));
     body.add(spine({ name: 'thumb' + S, at: mir(add(DB.W, [0.002, 0.003, 0.004]), s), dir: [s * 0.25, 0.35, 1], len: 0.012, r: 0.0022, skin: ws, paint: flat(HORN, 1.4, 90), levels: 1 }));
     // a fringe of soft flight feathers along the inner wing's trailing edge
-    for (let k = 0; k < 8; k++) {
-      const f = (k + 0.5) / 8, a = mir(DB.B, s), c = mir(DB.D5, s), mid = mir(DB.T1, s);
+    for (let k = 0; k < 11; k++) {
+      const f = (k + 0.5) / 11, a = mir(DB.B, s), c = mir(DB.D5, s), mid = mir(DB.T1, s);
       const p = f < 0.5 ? add(a, scl(sub(mid, a), f * 2)) : add(mid, scl(sub(c, mid), (f - 0.5) * 2));
-      const pp = add(p, [0, 0, 0.012]);
-      seats.push({ p: pp, n: [0, 1, 0], dir: nrm([s * 0.15 * f, -0.05, -1]), len: 0.03 + 0.012 * Math.sin(f * Math.PI), wid: 0.0085, lift: 0.04, droop: 0.05, col: k % 3 === 0 ? 1 : 0, w: ws(pp) });
+      const pp = add(p, [0, 0.0015 * (k % 2), 0.018]);
+      seats.push({ p: pp, n: [0, 1, 0], dir: nrm([s * 0.2 * f, -0.04, -1]), len: 0.034 + 0.01 * Math.sin(f * Math.PI), wid: 0.012, lift: 0.03, droop: 0.04, col: k % 3 === 0 ? 3 : 0, w: ws(pp) });
     }
     yield 'wing';
   }
@@ -327,7 +336,7 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   };
   // the body coat lies back along the body and a little down the flanks
   sow(torso, 120, {
-    u0: 0, u1: 1, v0: 0.1, v1: 0.88, wid: 0.0085, seed: 3, skin: bodySkin, lift: 0.22, droop: 0.18,
+    u0: 0, u1: 1, v0: 0.1, v1: 0.88, wid: 0.011, seed: 3, skin: bodySkin, lift: 0.22, droop: 0.18,
     len: (p) => (p[2] > 0.045 && p[1] < 0.0 ? 0 : 0.026 + (p[2] < -0.02 ? 0.006 : 0)),
     dir: (_p, n, dv) => nrm([-dv[0] + n[0] * 0.25, -dv[1] + n[1] * 0.1 - 0.15, -dv[2]]),
     col: (p, n) => (n[1] < -0.3 ? 2 : h3(Math.floor(p[0] * 300), Math.floor(p[2] * 300), 5) < 0.3 ? 1 : 0),
@@ -335,7 +344,7 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   });
   // the crown and nape
   sow(head, 46, {
-    u0: 0.2, u1: 0.8, v0: 0.02, v1: 0.55, wid: 0.0075, seed: 7, skin: headSkin, lift: 0.3, droop: 0.12,
+    u0: 0.2, u1: 0.8, v0: 0.02, v1: 0.55, wid: 0.0095, seed: 7, skin: headSkin, lift: 0.3, droop: 0.12,
     len: () => 0.017, dir: (_p, n, dv) => nrm([-dv[0] + n[0] * 0.3, -dv[1] - 0.1, -dv[2]]), col: () => 0,
   });
   // the ruff: a ring of short dark-tipped feathers round the disc, standing forward to frame the face
@@ -352,16 +361,16 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
     seats.push({ p, n: [0, 1, 0], dir: [Math.sin(a), -0.04, -Math.cos(a)], len: 0.06 - Math.abs(k - 4) * 0.003, wid: 0.0095, lift: 0.04, droop: 0.04, col: 1, w: [TAIL, 1] });
   }
   // fluffy breast down
-  for (let k = 0; k < 18; k++) {
-    const a = (h3(k, 1, 31) - 0.5) * 2.2, zz = 0.0 + h3(k, 2, 31) * 0.05;
+  for (let k = 0; k < 12; k++) {
+    const a = (h3(k, 1, 31) - 0.5) * 2.2, zz = -0.03 + h3(k, 2, 31) * 0.05;
     const p: V3 = [Math.sin(a) * 0.04, -0.03 - Math.cos(a) * 0.008, zz];
     seats.push({ p, n: nrm([Math.sin(a), -1, 0.3]), dir: nrm([Math.sin(a) * 0.3, -0.5, -0.8]), len: 0.02, wid: 0.01, lift: 0.4, droop: 0.2, col: 4, w: bodySkin(p) });
   }
-  const tiles = [FUR, STONE, BONE, SOIL, BONE];
+  const tiles = [FUR, FUR, BONE, SOIL, BONE];
   const lk = locks({ name: 'feathers', seats, tiles, steps: [3, 3, 4, 2, 4], seed: 21 });
-  if (lk) { lk.paint = cardPaint(['feather', 'plume', 'feather', 'feather', 'down'], tiles, { steps: [3.2, 3.4, 3.6, 2.2, 4] }); lk.k = 1.1; body.add(lk); }
+  if (lk) { lk.paint = cardPaint(['feather', 'plume', 'feather', 'feather', 'down'], tiles, { steps: [3.2, 2.6, 3.6, 2.2, 4] }); lk.k = 1.1; body.add(lk); }
   void INK; void BLOOD;
-  const out = yield* body.buildGen({ den: o.den ?? 700, maxScale: 2, budget: 9000 });
+  const out = yield* body.buildGen({ den: o.den ?? 700, maxScale: 2, budget: 11000 });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris, den: body.den, stats };
 }

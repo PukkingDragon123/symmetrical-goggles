@@ -215,8 +215,9 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
       const u = rnd.range(0, 3);
       // exterior board (quad with sloped top)
       const a = V(xa, gTop, z), b = V(xb, gTop, z), c = V(xb, yTopB, z), d = V(xa, yTopA, z);
-      if (out > 0) ms.quad('planks_grey', a, b, c, d, [u, gTop], [u + (xb - xa), gTop], [u + (xb - xa), yTopB], [u, yTopA]);
-      else ms.quad('planks_grey', b, a, d, c, [u, gTop], [u + (xb - xa), gTop], [u + (xb - xa), yTopA], [u, yTopB]);
+      // vertical boards: grain (texture u) runs up the board
+      if (out > 0) ms.quad('planks_grey', a, b, c, d, [gTop, u], [gTop, u + (xb - xa)], [yTopB, u + (xb - xa)], [yTopA, u]);
+      else ms.quad('planks_grey', b, a, d, c, [gTop, u], [gTop, u + (xb - xa)], [yTopA, u + (xb - xa)], [yTopB, u]);
       // batten over the joint
       if (xb < W / 2 + R - 0.01) {
         const hb = Math.max(0.05, deckY(xb) - gTop - 0.02);
@@ -225,8 +226,8 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
       // interior face
       const zi = zs - out * 0.04;
       const ai = V(xa, gTop, zi), bi = V(xb, gTop, zi), ci = V(xb, yTopB, zi), di = V(xa, yTopA, zi);
-      if (out > 0) ms.quad('board_dark', bi, ai, di, ci, [u, gTop], [u + (xb - xa), gTop], [u + (xb - xa), yTopA], [u, yTopB]);
-      else ms.quad('board_dark', ai, bi, ci, di, [u, gTop], [u + (xb - xa), gTop], [u + (xb - xa), yTopB], [u, yTopA]);
+      if (out > 0) ms.quad('board_dark', bi, ai, di, ci, [gTop, u], [gTop, u + (xb - xa)], [yTopA, u + (xb - xa)], [yTopB, u]);
+      else ms.quad('board_dark', ai, bi, ci, di, [gTop, u], [gTop, u + (xb - xa)], [yTopB, u + (xb - xa)], [yTopA, u]);
     }
   }
   // ---- roof boards (underside, seen from inside and from the porch)
@@ -386,7 +387,7 @@ function porch(ms: Mesher, cols: Cols): void {
 }
 
 /** a half log (flat face up) along +X, top at height y */
-export function halfLog(ms: Mesher, rnd: Rand, len: number, r: number, y: number, seed: number, mat = 'board_grey'): void {
+export function halfLog(ms: Mesher, rnd: Rand, len: number, r: number, y: number, seed: number, mat = 'planks_grey'): void {
   ms.pushT(0, y - 0.01, 0);
   // round part: lower half of a log (use log() and rely on the flat top to hide the upper half)
   log(ms, len, r, { seed, seg: 12, capA: 3, capB: 3, matFor: (_x, n) => (n.y > 0.2 ? mat : 'log_ext') });

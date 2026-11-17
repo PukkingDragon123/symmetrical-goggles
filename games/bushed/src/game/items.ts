@@ -106,6 +106,7 @@ export const ITEMS: Record<string, ItemDef> = {
   knife: { id: 'knife', name: 'Fillet knife', desc: 'For fish, bacon, and opening stubborn jerky.', price: 12, mass: 0.15, model: 'fish_knife', pocket: true },
   sleeping_bag: { id: 'sleeping_bag', name: 'Wool sleeping bag', desc: 'Rated to minus twenty. Rated by whom, nobody knows.', price: 60, mass: 2.4, model: 'gen:sleeping_bag', pocket: false },
   backpack_big: { id: 'backpack_big', name: 'Canvas pack (large)', desc: 'More pockets than you will ever remember.', price: 45, mass: 1.2, model: 'gen:backpack', pocket: false, unlockAt: 100 },
+  lachance_axe: { id: 'lachance_axe', name: "J. Lachance's axe", desc: 'Red handle, initials burned in. Somebody misses it.', price: 0, mass: 2.3, model: 'wooden_axe', pocket: true },
   // ---------------------------------------------------------------- resources (sold at the store)
   kindling: { id: 'kindling', name: 'Kindling', desc: 'Dry twigs and splinters.', price: 0, sell: 1, mass: 0.4, model: 'gen:kindling', pocket: true },
   firewood: { id: 'firewood', name: 'Split firewood', desc: 'A good quartered split.', price: 0, sell: 2, mass: 2.5, model: 'gen:split', pocket: false },

@@ -629,7 +629,8 @@ export class Game {
       keep.add(k);
       if (this.treeCols.has(k)) continue;
       const body = physics.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(t.x, heightAt(t.x, t.z) + t.h / 2, t.z));
-      physics.world.createCollider(RAPIER.ColliderDesc.cylinder(t.h / 2, t.r).setCollisionGroups(groups(GROUP.STATIC, 0xffff)).setFriction(0.8), body);
+      const col = physics.world.createCollider(RAPIER.ColliderDesc.cylinder(t.h / 2, t.r).setCollisionGroups(groups(GROUP.STATIC, 0xffff)).setFriction(0.8), body);
+      physics.owner.set(col.handle, 'tree');
       this.treeCols.set(k, body);
     }
     for (const [k, b] of this.treeCols) {

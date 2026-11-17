@@ -86,6 +86,9 @@ export class ChopTree {
     }
   }
 
+  /** meshes a swing can land on while the tree stands */
+  hitMeshes(): THREE.Object3D[] { return [...(this.trunk ? [this.trunk] : []), ...this.notches.map((n) => n.mesh)]; }
+
   /** world point -> trunk-local */
   toLocal(p: THREE.Vector3): THREE.Vector3 { return this.object.worldToLocal(p.clone()); }
 

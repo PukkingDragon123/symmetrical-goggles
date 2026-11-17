@@ -73,14 +73,16 @@ export class ChopSystem {
   swing(origin: THREE.Vector3, dir: THREE.Vector3, reach: number, swingDir: THREE.Vector3, tool: ToolStats, charge: number, stamina: number): SwingResult {
     const base = this.power(tool, charge, stamina);
     // 1. physics: pieces, fallen sections, stumps, ground, props
-    const phit = physics.ray(origin, dir, reach);
+    // standing trees are resolved against their meshes, not their static proxy colliders
+    const phit = physics.ray(origin, dir, reach, undefined, undefined, (c) => physics.owner.get(c.handle) !== 'tree');
     // 2. standing trees (instanced, not in physics)
     const fhit = this.forest?.raycastTrunk(origin, dir, reach) ?? null;
     // 3. detached standing trees we're already working on (mesh raycast)
     let shit: { tree: ChopTree; point: THREE.Vector3; dist: number; obj: THREE.Object3D } | null = null;
     this.ray.set(origin, dir); this.ray.far = reach;
     for (const t of this.trees.values()) {
-      const roots = t.state === 'fallen' ? t.sections.map((s) => s.root) : t.state === 'standing' || t.state === 'creaking' ? [t.root] : [];
+      // standing: only the trunk and the notch bands count (not branches or needles in the way)
+      const roots: THREE.Object3D[] = t.state === 'fallen' ? t.sections.map((s) => s.root) : t.state === 'standing' || t.state === 'creaking' ? t.hitMeshes() : [];
       for (const r of roots) {
         const hits = this.ray.intersectObject(r, true);
         if (hits.length && (!shit || hits[0].distance < shit.dist)) shit = { tree: t, point: hits[0].point, dist: hits[0].distance, obj: hits[0].object };

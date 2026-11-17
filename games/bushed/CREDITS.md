@@ -358,8 +358,8 @@ textures below (downsampled to 256 px/m, lighting flattened, quantised onto phot
 shakes, end grain, siding paint, plaid wool, grime). Signs, posters, labels and product surfaces (`signs.png`,
 `labels.png`) are original pixel art drawn by `src/places/tools/make_print.py`; every brand, slogan and character on
 them is invented. Their text is set in DejaVu Serif/Sans (Bitstream Vera licence), Caladea and Carlito (SIL OFL 1.1)
-and FreeSerif (GPL with font exception), rasterised to pixels. Firewood bark reuses the trees module's
-`textures/trees/bark_spruce.png`. Furniture props (stools, lanterns, rocker, register, barrels, crates...) are the
+and FreeSerif (GPL with font exception), rasterised to pixels. Firewood bark (`bark_light`) is the trees module's
+`textures/trees/bark_spruce.png` (Poly Haven `bark_platanus`, Dimitrios Savva, CC0) brightened. Furniture props (stools, lanterns, rocker, register, barrels, crates...) are the
 converted Poly Haven models credited with the props.
 
 | Source | Author | Licence | Used by |

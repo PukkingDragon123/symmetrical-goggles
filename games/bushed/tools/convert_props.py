@@ -518,11 +518,24 @@ def install_normal_aware_sampling(LC) -> None:
         mesh = self.mesh
         out = np.zeros((len(Q), 3))
         found = np.zeros(len(Q), bool)
-        for s0 in range(0, len(Q), chunk):
-            q = Q[s0:s0 + chunk]
-            key = self._key(np.floor((q - self.lo) / self.h).astype(np.int64))
-            pos = np.clip(np.searchsorted(self.ukeys, key), 0, len(self.ukeys) - 1)
-            hit = self.ukeys[pos] == key
+        # chunks sized by candidate pairs, not by queries: dense ornaments put thousands of triangles in a cell
+        key_all = self._key(np.floor((Q - self.lo) / self.h).astype(np.int64))
+        pos_all = np.clip(np.searchsorted(self.ukeys, key_all), 0, len(self.ukeys) - 1)
+        hit_all = self.ukeys[pos_all] == key_all
+        pairs = np.where(hit_all, self.count[pos_all], 0)
+        cum = np.cumsum(pairs)
+        bounds, s0 = [], 0
+        budget = 800_000
+        while s0 < len(Q):
+            base = cum[s0 - 1] if s0 else 0
+            e = int(np.searchsorted(cum, base + budget, side="right"))
+            e = min(max(e, s0 + 1), s0 + chunk, len(Q))
+            bounds.append((s0, e))
+            s0 = e
+        for s0, s1 in bounds:
+            q = Q[s0:s1]
+            pos = pos_all[s0:s1]
+            hit = hit_all[s0:s1]
             qi = np.nonzero(hit)[0]
             if not len(qi):
                 continue

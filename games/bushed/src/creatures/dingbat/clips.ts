@@ -26,7 +26,9 @@ export function dingbatClips(bones: BoneDef[]): Record<string, Clip> {
   const look = (p: Pose, a: AnimParams, k = 1) => R(p, B.head, -a.lookPitch * 0.6 * k, a.lookYaw * 0.8 * k);
   /** the hanging wrap: wings folded down round the belly, the head turned out from the chest */
   const wrap = (p: Pose, k = 1, breath = 0) => {
-    for (let w = 0; w < 2; w++) wing(p, w, (-1.05 + breath * 0.04) * k, 0.55 * k, -0.35 * k, 0.92 * k, 0.95 * k);
+    // the arm turned back along the flank with the wing laid flat against it, feathered side out (leading edge low
+    // on the belly side, trailing edge up the back), the hand folded back along it
+    for (let w = 0; w < 2; w++) wing(p, w, (-1.32 + breath * 0.03) * k, 0.1 * k, 1.57 * k, 0.06 * k, 0.32 * k);
     R(p, B.tail, 0.55 * k);
     for (let w = 0; w < 2; w++) R(p, B.leg[w], 0.15 * k, 0, 0);
   };

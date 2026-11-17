@@ -291,8 +291,8 @@ def t_floor():
 
 
 def t_planks_grey():
-    # weathered grey boards (porch deck, door, gables, woodshed). Boards run along v (vertical).
-    p = Photo("wood_planks_grey", 384, 384, res="1k", flat=0.5, ao=0.5)
+    # weathered grey boards (porch deck, door, gables, woodshed). Rotated so the grain runs along u like the others.
+    p = Photo("wood_planks_grey", 384, 384, res="1k", rot=1, flat=0.5, ao=0.5)
     rgb = grade(p.rgb, sat=0.7, val=1.08)
     rgb = quant(np.clip(rgb, 0, 1), 26, seed=6)
     save("planks_grey", rgb, [1.5, 1.5], p.nor, note="wood_planks_grey")
@@ -538,11 +538,11 @@ def t_siding():
     # drips of rust/dirt below
     rgb = quant(np.clip(rgb, 0, 1), 26, seed=18)
     save("siding_red", rgb, [1.57, 1.57], p.nor, note="weathered_plank_siding painted red")
-    q = Photo("weathered_planks", 512, 512, res="2k", flat=0.5, ao=0.5)
+    q = Photo("weathered_planks", 512, 512, res="2k", rot=1, flat=0.5, ao=0.5)  # grain along u
     lum2 = q.lum[..., None]
     wood2 = lum2 * np.array([0.6, 0.57, 0.53]) / 0.4
-    n3 = fbm(512, 512, 60, 175) * 0.6 + anoise(512, 512, 4, 30, 178) * 0.4; n4 = anoise(512, 512, 2, 8, 176)
-    peel2 = np.clip((n3 * 0.8 + n4 * 0.35 - 0.66) * 8, 0, 1)[..., None]
+    n3 = fbm(512, 512, 60, 175) * 0.6 + anoise(512, 512, 30, 4, 178) * 0.4; n4 = anoise(512, 512, 8, 2, 176)
+    peel2 = np.clip((n3 * 0.8 + n4 * 0.35 - 0.74) * 8, 0, 1)[..., None]
     cream = np.array([0.80, 0.74, 0.60]) * (0.75 + 0.45 * lum2)
     rgb2 = (cream * (1 - peel2) + wood2 * peel2) * (0.6 + 0.4 * q.ao[..., None] ** 1.5)
     rgb2 = quant(np.clip(rgb2, 0, 1), 22, seed=19)
@@ -652,11 +652,23 @@ def t_rusty_red():
     save("rusty_red", quant(np.clip(rgb, 0, 1), 20, seed=41), [1.0, 1.0], p.nor, note="rusty_painted_metal")
 
 
+def t_bark_light():
+    """bark for bucked rounds and splits: the trees module's spruce bark, lifted (cut wood lies in the open and
+    reads lighter than standing trunks in the forest shade)"""
+    src = os.path.join(GAME, "public", "assets", "textures", "trees")
+    rgb = pix.load_rgb(os.path.join(src, "bark_spruce.png"))
+    nor = pix.load_rgb(os.path.join(src, "bark_spruce_n.png"))
+    rgb = grade(rgb, sat=0.85, val=1.0, gamma=0.72)
+    rgb = rgb * np.array([1.05, 1.0, 0.95])
+    h, w = rgb.shape[:2]
+    save("bark_light", quant(np.clip(rgb, 0, 1), 20, seed=51), [1.5, 1.5], nor, note="trees/bark_spruce (bark_platanus) lifted")
+
+
 ALL = {
     "log_ext": t_log_ext, "log_int": t_log_int, "chink": t_chink, "floor": t_floor, "planks_grey": t_planks_grey,
     "board": t_board, "stone": t_stone, "iron": t_iron, "corrugated": t_corrugated, "shakes": t_shakes,
     "endgrain": t_endgrain, "woodchips": t_woodchips, "blanket": t_blanket, "siding": t_siding, "glass": t_glass,
-    "rope": t_rope, "wood_fresh": t_wood_fresh, "fabric": t_fabric, "rusty_red": t_rusty_red,
+    "rope": t_rope, "wood_fresh": t_wood_fresh, "fabric": t_fabric, "rusty_red": t_rusty_red, "bark_light": t_bark_light,
 }
 
 

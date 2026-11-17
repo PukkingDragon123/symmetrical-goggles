@@ -105,10 +105,10 @@ class Physics {
     }
   }
 
-  ray(origin: THREE.Vector3, dir: THREE.Vector3, max: number, filter = 0xffff & ~GROUP.PLAYER & ~GROUP.HELD, exclude?: RAPIER.RigidBody):
+  ray(origin: THREE.Vector3, dir: THREE.Vector3, max: number, filter = 0xffff & ~GROUP.PLAYER & ~GROUP.HELD, exclude?: RAPIER.RigidBody, pred?: (c: RAPIER.Collider) => boolean):
     { point: THREE.Vector3; normal: THREE.Vector3; collider: RAPIER.Collider; toi: number } | null {
     const r = new RAPIER.Ray(origin, dir);
-    const hit = this.world.castRayAndGetNormal(r, max, true, undefined, groups(0xffff, filter), undefined, exclude);
+    const hit = this.world.castRayAndGetNormal(r, max, true, undefined, groups(0xffff, filter), undefined, exclude, pred);
     if (!hit) return null;
     const p = origin.clone().addScaledVector(dir, hit.timeOfImpact);
     return { point: p, normal: new THREE.Vector3(hit.normal.x, hit.normal.y, hit.normal.z), collider: hit.collider, toi: hit.timeOfImpact };

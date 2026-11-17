@@ -6,6 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { AxehandleHound } from '../creatures/hound';
 import { Bigfoot } from '../creatures/bigfoot';
 import { Gumberoo } from '../creatures/gumberoo';
+import { Dingbat, DingbatRoost } from '../creatures/dingbat';
 import type { CreatureCtx, GroundItem } from '../creatures/types';
 import { preloadCreatures } from '../creatures/preload';
 import { Wildlife, Critter } from '../creatures/wildlife';
@@ -107,6 +108,15 @@ function setLight(mode: string) {
     hour = 19.6; hemi.intensity = 0.45; hemi.color.set(0x7c7ea8); hemi.groundColor.set(0x2a1d14);
     sun.intensity = 1.6; sun.color.set(0xffa060); sun.position.set(-6, 1.6, 2); flash.intensity = 0;
     scene.background = new THREE.Color(0x5b5470); scene.fog = new THREE.Fog(0x4a4558, 12, 60); scene.environment = ENV.dusk; renderer.toneMappingExposure = 1.1;
+  } else if (mode === 'fog') {
+    // a thick grey fog by day: silhouettes at 15-30 m
+    hour = 9; hemi.intensity = 0.8; hemi.color.set(0xb4bcc0); hemi.groundColor.set(0x3a3a32);
+    sun.intensity = 0.5; sun.color.set(0xe8ecf0); sun.position.set(2, 8, 3); flash.intensity = 0;
+    scene.background = new THREE.Color(0x8d9597); scene.fog = new THREE.Fog(0x8d9597, 1.5, 24); scene.environment = ENV.dusk; renderer.toneMappingExposure = 1.0;
+  } else if (mode === 'nightfog') {
+    hour = 23.5; hemi.intensity = 0.09; hemi.color.set(0x6a7890); hemi.groundColor.set(0x0a0a0a);
+    sun.intensity = 0.08; sun.color.set(0x8fa6ff); sun.position.set(-3, 7, -4); flash.intensity = 32;
+    scene.background = new THREE.Color(0x0e1216); scene.fog = new THREE.Fog(0x0e1216, 1.0, 16); scene.environment = ENV.night; renderer.toneMappingExposure = 1.25;
   } else {
     hour = 23.5; hemi.intensity = 0.06; hemi.color.set(0x5a6a9a); hemi.groundColor.set(0x0a0a0a);
     sun.intensity = 0.12; sun.color.set(0x8fa6ff); sun.position.set(-3, 7, -4); flash.intensity = 32;
@@ -125,6 +135,7 @@ const lineup = new THREE.Group(); const lineCritters: Critter[] = [];
 const wild = new Wildlife({ max: 12, radius: [6, 14], despawn: 30, waterY: -10 });
 function showWildlife() {
   if (cur) scene.remove(cur.object);
+  scene.remove(batStage); scene.remove(eave); if (roost) scene.remove(roost.object);
   cur = null; curName = 'wildlife'; ui.who.value = 'wildlife';
   if (!lineCritters.length) SPECIES.forEach((k, i) => { const c = new Critter(k); c.reset((i - 2.5) * 0.55, 0, 0); c.heading = 0.6; lineCritters.push(c); lineup.add(c.object); });
   scene.add(lineup); scene.add(wild.object);
@@ -133,9 +144,64 @@ function showWildlife() {
   for (const st of ['perch', 'move', 'fly', 'freeze']) { const b = document.createElement('button'); b.textContent = st; b.onclick = () => { for (const c of lineCritters) c.state = (st === 'fly' && !c.bird) ? 'move' : (st === 'perch' && !c.bird) ? 'idle' : st as Critter['state']; }; ui.anims.appendChild(b); }
   ui.info.textContent = 'wildlife: ' + SPECIES.map((k) => k + ' ' + (lineCritters[SPECIES.indexOf(k)].mesh.geometry.index!.count / 3) + ' tris').join(', ');
 }
+// dingbats: one bat on the turntable (hung from a test beam for the roost clips), and the roost under a test eave
+// (AI demo): a wall, an eave beam, and the stand-in player strolling about with a flashlight
+const batStage = new THREE.Group();
+let bat: Dingbat | null = null, roost: DingbatRoost | null = null, batClip = 'hang';
+const eave = new THREE.Group();
+{
+  const wood = new THREE.MeshStandardMaterial({ color: 0x4a3b2c, roughness: 0.9 });
+  const wall = new THREE.Mesh(new THREE.BoxGeometry(6, 2.6, 0.3), wood); wall.position.set(0, 1.3, -1.9); wall.castShadow = wall.receiveShadow = true;
+  const beam = new THREE.Mesh(new THREE.BoxGeometry(6, 0.16, 0.5), wood); beam.position.set(0, 2.68, -1.55); beam.castShadow = beam.receiveShadow = true;
+  const roof = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.08, 1.4), wood); roof.position.set(0, 2.85, -1.4); roof.rotation.x = 0.25; roof.castShadow = true;
+  eave.add(wall, beam, roof);
+}
+const turnBeam = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.05, 0.08), new THREE.MeshStandardMaterial({ color: 0x4a3b2c, roughness: 0.9 }));
+turnBeam.position.set(0, 1.275, 0); batStage.add(turnBeam);
+function showDingbat() {
+  if (cur) scene.remove(cur.object);
+  scene.remove(lineup); scene.remove(wild.object);
+  cur = null; curName = 'dingbat'; ui.who.value = 'dingbat';
+  const t0 = performance.now();
+  if (!bat) { bat = new Dingbat(); batStage.add(bat.object); }
+  if (!roost) { roost = new DingbatRoost({ pos: new THREE.Vector3(0, 2.6, -1.5), heading: 0, count: 9, span: 3.2 }); roost.alwaysOut = true; }
+  scene.add(batStage);
+  controls.target.set(0, 1.0, 0); camera.position.set(0.75, 1.15, 0.85);
+  ui.anims.innerHTML = '';
+  for (const c of bat.clips) { const b = document.createElement('button'); b.textContent = c; b.onclick = () => { ui.ai.checked = false; batClip = c; bat!.play(c); refreshBat(); }; ui.anims.appendChild(b); }
+  bat.play(batClip); refreshBat();
+  const geo = bat.mesh.geometry as THREE.BufferGeometry, st = bat.model;
+  ui.info.textContent = `dingbat: ${geo.index!.count / 3} tris, ${bat.skel.bones.length} bones, built in ${(performance.now() - t0).toFixed(0)} ms\n${st.den.toFixed(0)} px/m\n${st.stats}`;
+  (window as unknown as { __info: string }).__info = ui.info.textContent;
+}
+function refreshBat() { for (const b of Array.from(ui.anims.children) as HTMLButtonElement[]) b.classList.toggle('on', b.textContent === batClip); }
+/** the single bat on the turntable: hung from the test beam for the roost clips, level for the flight clips */
+function batPreview(dt: number) {
+  if (!bat) return;
+  const hang = batClip === 'hang' || batClip === 'wake' || batClip === 'land';
+  bat.spot.set(0, 1.25, 0); bat.spotHeading = spinA; bat.yaw = spinA; bat.vel.set(0, 0, 0);
+  bat.hangW = hang ? 1 : 0;
+  if (hang) bat.hangPos(bat.pos); else bat.pos.set(0, 0.95, 0);
+  turnBeam.visible = hang; turnBeam.rotation.y = spinA;
+  bat.place(dt); bat.pose(dt, camera.position);
+}
+/** the roost demo: the stand-in player strolls in front of the cabin wall, now and then shining the light up at the eave */
+function roostDemo(dt: number, t: number, script = 'demo') {
+  if (!roost) return;
+  const a = t * 0.18;
+  player.pos.set(Math.sin(a) * 4, 1.7, 3 + Math.cos(a) * 1.5);
+  const cyc = t % 24;
+  player.light = lightMode === 'night' || lightMode === 'nightfog' || script === 'light';
+  const aim = script === 'light' ? t > 2 && t < 4.5 : cyc > 6 && cyc < 8.5;
+  if (aim) player.dir.set(0, 2.6, -1.5).sub(player.pos).normalize();
+  else player.dir.set(-Math.cos(a), -0.1, Math.sin(a)).normalize();
+  player.noise = 0.1; player.held = 'flashlight';
+  roost.update({ ...ctxFor(dt, t), hour: hour > 6 && hour < 18 ? 23 : hour, player: { ...player, speed: 1 } });
+}
 function pick(name: string) {
   if (name === 'wildlife') { showWildlife(); return; }
-  scene.remove(lineup); scene.remove(wild.object);
+  if (name === 'dingbat') { showDingbat(); return; }
+  scene.remove(lineup); scene.remove(wild.object); scene.remove(batStage); scene.remove(eave); if (roost) scene.remove(roost.object);
   const t0 = performance.now();
   if (!made[name]) made[name] = name === 'hound' ? new AxehandleHound({ state: 'companion', trust: 1 }) : name === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3() }) : new Bigfoot({});
   const ms = performance.now() - t0;
@@ -188,6 +254,18 @@ function frame(dt: number) {
       wild.update({ ...ctxFor(dt, T), trunks: tr });
       ui.info.textContent = `wildlife: ${wild.count} active\nevents: ${events.join(' ')}`;
     } else lineup.visible = true;
+    return;
+  }
+  if (curName === 'dingbat') {
+    if (ui.ai.checked && roost) {
+      scene.remove(batStage); scene.add(eave); scene.add(roost.object);
+      roostDemo(dt, T);
+      ui.info.textContent = `dingbats: ${roost.state} irritation ${roost.irritation.toFixed(2)} agitation ${roost.agitation.toFixed(1)}\n${roost.bats.map((b) => b.mode).join(' ')}\nevents: ${events.join(' ')}`;
+    } else {
+      scene.add(batStage); scene.remove(eave); if (roost) scene.remove(roost.object);
+      if (ui.spin.checked) spinA += dt * 0.35;
+      batPreview(dt);
+    }
     return;
   }
   if (!cur) return;
@@ -252,9 +330,32 @@ loop();
   ready: false,
   loadInfo: () => loadInfo,
   /** freeze the clock and pose a creature: clip at time t (stepped at 60 Hz), heading, camera orbit */
-  pose(o: { who?: string; clip?: string; t?: number; heading?: number; light?: string; cam?: [number, number, number]; target?: [number, number, number]; fov?: number }) {
+  pose(o: { who?: string; clip?: string; t?: number; heading?: number; light?: string; cam?: [number, number, number]; target?: [number, number, number]; fov?: number; roost?: string; ai?: boolean; screech?: boolean }) {
     frozen = true;
     if (o.who && o.who !== curName) pick(o.who);
+    if (curName === 'dingbat') {
+      if (o.light) setLight(o.light);
+      ui.spin.checked = false; spinA = o.heading ?? 0;
+      if (o.roost) {
+        // a fresh roost and the scripted player from t = 0 ('light': the beam on the eave at 2-4.5 s; 'demo')
+        if (roost) scene.remove(roost.object);
+        roost = new DingbatRoost({ pos: new THREE.Vector3(0, 2.6, -1.5), heading: 0, count: 9, span: 3.2 }); roost.alwaysOut = true;
+        ui.ai.checked = true; T = 0; events.length = 0;
+        scene.remove(batStage); scene.add(eave); scene.add(roost.object);
+        const steps = Math.round((o.t ?? 1) * 60);
+        for (let i = 0; i < steps; i++) { T += 1 / 60; roostDemo(1 / 60, T, o.roost); }
+      } else {
+        ui.ai.checked = false;
+        if (o.clip) { batClip = o.clip; bat!.play(o.clip); }
+        const steps = Math.round((o.t ?? 1) * 60); for (let i = 0; i < steps; i++) frame(1 / 60);
+        if (o.screech && bat) { bat.screech = 0.35; batPreview(0); }
+      }
+      if (o.cam) camera.position.set(...o.cam);
+      if (o.target) controls.target.set(...o.target);
+      if (o.fov) { camera.fov = o.fov; camera.updateProjectionMatrix(); }
+      controls.update(); renderer.render(scene, camera);
+      return roost && o.roost ? `${roost.state} ${roost.bats.map((b) => b.mode).join(' ')} | ${events.join(' ')}` : ui.info.textContent;
+    }
     if (curName === 'wildlife') {
       if (o.light) setLight(o.light);
       if (o.clip) for (const c of lineCritters) c.state = (o.clip === 'fly' && !c.bird) ? 'move' : (o.clip === 'perch' && !c.bird) ? 'idle' : o.clip as Critter['state'];

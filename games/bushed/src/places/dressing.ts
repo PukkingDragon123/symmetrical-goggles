@@ -920,7 +920,7 @@ async function woodyard(c: DressCtx): Promise<void> {
 
   // ---- fire pit with log seats, out in front of the porch
   {
-    const fx = 6.2, fz = 7.4;
+    const fx = 3.6, fz = 8.3;
     const pit = new THREE.Group();
     pit.position.set(fx, hAt(fx, fz), fz);
     group.add(pit);
@@ -957,7 +957,7 @@ async function woodyard(c: DressCtx): Promise<void> {
         sms.pop();
       }
       sms.pushT(-len / 2, 0, 0);
-      halfLog(sms, sr, len, 0.17, 0.44, sr.int(0, 9999), 'board_grey');
+      halfLog(sms, sr, len, 0.17, 0.44, sr.int(0, 9999), 'planks_grey');
       sms.pop();
       sg.add(sms.build());
       const lp = V(fx + sx, 0, fz + sz);

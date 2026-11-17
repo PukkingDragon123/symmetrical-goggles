@@ -123,7 +123,7 @@ export class Dingbat {
     B[0].position.x += p.t[0]; B[0].position.y += p.t[1]; B[0].position.z += p.t[2];
     B[0].quaternion.setFromEuler(_e.set(p.rr[0], p.rr[1], p.rr[2], 'XYZ'));
     for (let i = 1; i < B.length; i++) { const x = p.r[i * 3], y = p.r[i * 3 + 1], z = p.r[i * 3 + 2]; if (x || y || z) B[i].quaternion.setFromEuler(_e.set(x, y, z, 'XYZ')); }
-    B[bi.jaw].quaternion.setFromEuler(_e.set(p.r[bi.jaw * 3] + jaw * 0.95, 0, 0, 'XYZ'));
+    B[bi.jaw].quaternion.setFromEuler(_e.set(p.r[bi.jaw * 3] + jaw * 1.05, 0, 0, 'XYZ'));
     // lids: rotate down over the eyes about the side axis
     const lid = clamp(p.c[CH_LID], 0, 1);
     B[bi.lidL].quaternion.setFromEuler(_e.set(-0.2 + lid * 1.5, 0, 0, 'XYZ'));

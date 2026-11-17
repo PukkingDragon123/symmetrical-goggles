@@ -72,7 +72,7 @@ export function buildStove(o: { pipeTop: number; seed?: number; legs?: number })
     hole.moveTo(-dw / 2, -dh / 2); hole.lineTo(-dw / 2, dh / 2); hole.lineTo(dw / 2, dh / 2); hole.lineTo(dw / 2, -dh / 2); hole.lineTo(-dw / 2, -dh / 2);
     sh.holes.push(hole);
     const g = new THREE.ExtrudeGeometry(sh, { depth: 0.014, bevelEnabled: false, curveSegments: 10 });
-    ms.geom('iron', g);
+    ms.geom('soot', g);
     g.dispose();
     for (let k = 0; k < 8; k++) {
       const a = (k / 8) * Math.PI * 2 + 0.2;
@@ -134,7 +134,7 @@ export function buildStove(o: { pipeTop: number; seed?: number; legs?: number })
       sh.holes.push(hole);
     }
     const g = new THREE.ExtrudeGeometry(sh, { depth: 0.016, bevelEnabled: false, curveSegments: 6 });
-    dms.geom('iron', g);
+    dms.geom('soot', g);
     g.dispose();
     // raised border ribs + a cast "sunburst" boss
     boxAt(dms, 'iron', (x0 + x1) / 2, dh / 2 - 0.01, 0.022, x1 - x0 - 0.02, 0.016, 0.012);
@@ -172,7 +172,7 @@ export function buildStove(o: { pipeTop: number; seed?: number; legs?: number })
   group.add(flames);
 
   const light = new THREE.PointLight(0xff8a3c, 0, 9, 1.8);
-  light.position.set(0, ay - 0.22, fz + 0.55);
+  light.position.set(0, ay - 0.36, fz + 0.5);
   shadowy(light, 512, -0.004);
   light.shadow.camera.far = 9;
   group.add(light);

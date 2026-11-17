@@ -19,6 +19,18 @@
   "wood_table_worn": "https://polyhaven.com/a/wood_table_worn"
  },
  "textures": {
+  "bark_light": {
+   "normal": true,
+   "note": "trees/bark_spruce (bark_platanus) lifted",
+   "px": [
+    240,
+    240
+   ],
+   "tile": [
+    1.5,
+    1.5
+   ]
+  },
   "blanket": {
    "normal": true,
    "note": "poly_wool_herringbone, buffalo check",

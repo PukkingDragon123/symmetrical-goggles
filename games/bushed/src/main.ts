@@ -10,6 +10,8 @@ import { audio } from './audio/audio';
 import { SPOTS, heightAt } from './world/layout';
 import { WoodPiece } from './chop/wood';
 import { buildCabin } from './places/cabin';
+import { buildStore } from './places/store';
+import { StorePlay } from './game/storeplay';
 import { Jeep } from './vehicles/jeep';
 import { readSave } from './game/save';
 import { FPArms } from './player/arms';
@@ -63,6 +65,7 @@ async function boot() {
   await Promise.all([
     step('props', () => game.preloadItemModels()),
     step('cabin', async () => { const c = await buildCabin(); game.cabin = c; game.addPlace(c); }),
+    step('store', async () => { const st = await buildStore(); game.store = st; game.addPlace(st); st.group.traverse((o) => { o.userData.game = game; }); }),
     step('jeep', async () => {
       const j = new Jeep(); await j.load(); game.jeep = j; game.scene.add(j.root);
       j.onEnter = () => game.enterVehicle();
@@ -77,6 +80,8 @@ async function boot() {
   });
   const cabinPlay = new CabinPlay(game);
   cabinPlay.attach();
+  const storePlay = new StorePlay(game, (n, c) => cabinPlay.act(n, c));
+  await step('store play', async () => storePlay.attach());
   const critters = new Critters(game);
   await step('creatures', () => critters.spawn());
   game.updaters.push((dt) => critters.update(dt));
