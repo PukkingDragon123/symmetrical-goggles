@@ -9,6 +9,9 @@ import { anchorPos } from './flow';
 import { input } from '../core/input';
 import { debris } from '../gfx/particles';
 import { WoodPiece } from '../chop/wood';
+import { ITEMS } from './items';
+import { audio } from '../audio/audio';
+import { puffs } from '../gfx/particles';
 
 const think = (t: string, s = 3) => hud.say(`<i>${t}</i>`, s);
 
@@ -24,9 +27,52 @@ export class CabinPlay {
     g.updaters.push((dt) => this.update(dt));
   }
 
-  /** after the cabin is built: let its doors make noise through the game */
+  /** after the cabin is built: let its doors make noise through the game; the stove top cooks */
   attach(): void {
-    this.g.cabin?.group.traverse((o) => { o.userData.game = this.g; });
+    const g = this.g;
+    g.cabin?.group.traverse((o) => { o.userData.game = g; });
+    const top = g.cabin?.anchors?.stove_top as THREE.Object3D | undefined;
+    if (!top) return;
+    const hot = new THREE.Mesh(new THREE.SphereGeometry(0.28, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
+    top.add(hot);
+    registerInteractable(hot, {
+      kind: 'custom',
+      label: () => {
+        const raw = this.rawFood();
+        if (this.cooking > 0) return 'Cooking…';
+        if (!g.stove.lit) return raw ? 'The stove is cold' : '';
+        return raw ? `Cook the ${ITEMS[raw].name.toLowerCase()}` : g.owns('coffee') ? 'Boil some coffee' : '';
+      },
+      use: () => this.cook(),
+    });
+  }
+
+  private cooking = 0;
+  private rawFood(): string | null {
+    for (const id of ['bacon', 'eggs', 'fish', 'beans']) if (this.g.owns(id)) return id;
+    return null;
+  }
+
+  /** fry what you have on the stove top: a hot meal fills you and warms you right through */
+  private cook(): void {
+    const g = this.g;
+    if (this.cooking > 0 || !g.stove.lit) return;
+    const raw = this.rawFood();
+    const what = raw ?? (g.owns('coffee') ? 'coffee' : null);
+    if (!what) return;
+    g.take(what);
+    this.cooking = what === 'coffee' ? 8 : 14;
+    const at = (g.cabin!.anchors.stove_top as THREE.Object3D).getWorldPosition(new THREE.Vector3());
+    const v = audio.play(what === 'coffee' ? 'pot_boil' : 'pan_fry', { pos: at, loop: true, vol: 0.8 });
+    const iv = setInterval(() => puffs.emit(at.clone().add(new THREE.Vector3(0, 0.15, 0)), new THREE.Vector3(0, 0.4, 0), { size: 0.15, grow: 3, life: 2, color: new THREE.Color(0.85, 0.85, 0.85), alpha: 0.3, rise: 0.3 }), 300);
+    setTimeout(() => {
+      clearInterval(iv); v?.stop(0.5);
+      this.cooking = 0;
+      const def = ITEMS[what].food!;
+      g.survival.eat(def.kcal * 1.25, (def.warmth ?? 0) + 0.25);
+      if (what === 'coffee') { g.sound('drink_gulp', undefined, 0.7); think('Black coffee, boiled with the grounds. Terrible. Perfect.', 4); }
+      else { g.sound('eat_chew', undefined, 0.7); think(what === 'bacon' ? 'Back bacon in a hot pan. The whole cabin smells like a Saturday.' : what === 'fish' ? 'Trout fried in butter. Better than any restaurant.' : what === 'beans' ? 'Hot beans out of the can. Lumberjack cuisine.' : 'Fried eggs. Simple. Warm.', 4); }
+    }, this.cooking * 1000);
   }
 
   private carriedPiece(): WoodPiece | null {

@@ -395,6 +395,14 @@ export class ChopTree {
         const big = THREE.MathUtils.clamp(this.model.mass / 1500, 0.3, 1.5);
         this.ev.sound('tree_fall', mid, Math.min(1, 0.5 + big * 0.4), 1.1 - big * 0.2);
         this.ev.shake(Math.min(1.2, big), mid);
+        // a few branches snap off on impact
+        const sec0 = this.sections[0];
+        const ids = [...sec0.branches.keys()];
+        for (let k = 0; k < Math.min(ids.length, 1 + Math.floor(Math.random() * 3)); k++) {
+          const id = ids.splice(Math.floor(Math.random() * ids.length), 1)[0];
+          const b = sec0.branches.get(id);
+          if (b) this.strikeBranch(sec0, id, 99, sec0.object.localToWorld(b.info.base.clone()));
+        }
         for (let k = 0; k < 6; k++) {
           const p = new THREE.Vector3(t.x, t.y, t.z).lerp(tip, 0.4 + k * 0.1);
           debris.emit(this.species === 'birch' ? 'leaf' : 'needle', p.clone().add(new THREE.Vector3(0, 1, 0)), new THREE.Vector3(0, 2, 0), 18, { spread: 4 });

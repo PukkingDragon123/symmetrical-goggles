@@ -78,6 +78,7 @@ export class Game {
   ground: { update(cam: THREE.Camera): void; solids?(x: number, z: number, r: number): { kind: string; shape: string; x: number; y: number; z: number; r: number; h: number; x2?: number; y2?: number; z2?: number }[] } | null = null;
   arms: ArmsLike | null = null;
   jeep: Jeep | null = null;
+  trailer: import('../vehicles/trailer').Trailer | null = null;
   updaters: ((dt: number) => void)[] = [];
   cabin: Place | null = null;
   store: Place | null = null;
@@ -120,9 +121,23 @@ export class Game {
     this.camera.add(this.flashlight, this.flashlight.target);
     this.flashlight.position.set(0.18, -0.12, 0);
     this.flashlight.target.position.set(0.05, -0.05, -10);
+    // a faint visible beam, so the light cuts through fog and dust
+    const beamGeo = new THREE.ConeGeometry(2.4, 14, 20, 1, true);
+    beamGeo.translate(0, -7, 0); beamGeo.rotateX(Math.PI / 2);
+    const beamMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+      uniforms: { uI: { value: 0 } },
+      vertexShader: 'varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ vZ = -position.z / 14.0; vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
+      fragmentShader: 'uniform float uI; varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ float rim = pow(abs(dot(vN, vV)), 2.0); gl_FragColor = vec4(vec3(1.0,0.95,0.82) * uI * rim * (1.0 - vZ) * (1.0 - vZ) * 0.05, 1.0); }',
+    });
+    this.beam = new THREE.Mesh(beamGeo, beamMat);
+    this.beam.position.set(0.18, -0.14, -0.2);
+    this.beam.frustumCulled = false;
+    this.camera.add(this.beam);
     this.journal.contracts = this.contracts;
   }
   private viewKey: THREE.DirectionalLight;
+  private beam: THREE.Mesh;
 
   async init(): Promise<void> {
     await physics.init();
@@ -231,6 +246,19 @@ export class Game {
     this.updaters.push((dt) => place.update(dt));
   }
   readonly interiors: THREE.Box3[] = [];
+
+  /** each day rolls its own weather (late September: mostly cool and grey, fog in the mornings, the odd storm) */
+  private targetWeather: Weather = { cloud: 0.35, rain: 0, fog: 0.12, storm: 0 };
+  newDay(): void {
+    const r = Math.abs(Math.sin(this.day * 91.7 + 3.3)) % 1;
+    this.targetWeather = r < 0.35 ? { cloud: 0.2, rain: 0, fog: 0.15, storm: 0 }
+      : r < 0.6 ? { cloud: 0.7, rain: 0, fog: 0.3, storm: 0 }
+        : r < 0.75 ? { cloud: 0.5, rain: 0, fog: 0.9, storm: 0 }
+          : r < 0.92 ? { cloud: 0.9, rain: 0.7, fog: 0.4, storm: 0 }
+            : { cloud: 1, rain: 1, fog: 0.3, storm: 1 };
+    for (const c of this.contracts) if (c.state === 'taken' && c.due !== undefined && this.day > c.due) { c.state = 'failed'; hud.say(`<i>${c.title}: too late. Somebody else did it.</i>`, 4); }
+    this.journal.rebuild();
+  }
   /** set by CabinPlay / StorePlay: the places' interactables call this */
   placeAction: (name: string, ctx: import('./interact').InteractCtx) => void = () => {};
 
@@ -445,7 +473,7 @@ export class Game {
     const dtGame = dt * this.timeScale;
     if (this.mode !== 'menu' && this.mode !== 'loading') {
       this.hour += dtGame / 3600;
-      if (this.hour >= 24) { this.hour -= 24; this.day++; this.survival.day = this.day; }
+      if (this.hour >= 24) { this.hour -= 24; this.day++; this.survival.day = this.day; this.newDay(); }
     }
     const cam = this.camera;
     // control
@@ -494,7 +522,11 @@ export class Game {
     physics.streamTerrain([{ x: this.player.pos.x, z: this.player.pos.z }, ...(this.jeep?.body ? [{ x: this.jeep.root.position.x, z: this.jeep.root.position.z }] : [])]);
     this.syncTreeColliders();
     this.syncSolids();
-    physics.update(dt, (h) => { if (this.jeep && this.mode === 'drive') this.jeep.update(h, this.driveInput()); else if (this.jeep) this.jeep.update(h, { throttle: 0, brake: 0.2, steer: 0, handbrake: true }); });
+    physics.update(dt, (h) => {
+      if (this.jeep?.body && this.mode === 'drive') this.jeep.update(h, this.driveInput());
+      else if (this.jeep?.body) this.jeep.update(h, { throttle: 0, brake: 0.2, steer: 0, handbrake: true });
+      this.trailer?.update(h);
+    });
     this.chop.update(dt, cam.position);
     for (const t of this.chop.trees.values()) for (const h of t.slash) if (!this.slashSeen.has(h)) { this.slashSeen.add(h); makeSlashGatherable(this, h); }
     debris.update(dt); puffs.update(dt);
@@ -542,6 +574,12 @@ export class Game {
     this.viewKey.color.copy(this.sky.sun.color);
     this.viewKey.intensity = this.indoors ? 0.25 : this.sky.sun.intensity * 0.45;
     this.flashlight.intensity = this.flashOn ? 60 : 0;
+    (this.beam.material as THREE.ShaderMaterial).uniforms.uI.value = this.flashOn ? 1 + this.weather.fog * 2 + this.sky.darkness : 0;
+    this.beam.visible = this.flashOn;
+    // weather drifts toward the day's target
+    if (this.mode !== 'menu') for (const k of ['cloud', 'rain', 'fog', 'storm'] as const) this.weather[k] += (this.targetWeather[k] - this.weather[k]) * Math.min(1, dtGame * 0.0004);
+    if (this.weather.storm > 0.5 && Math.random() < dt * 0.03 * this.weather.storm) { this.R.fx.flash = 0.9; setTimeout(() => this.sound('weather_thunder', undefined, 0.9), 600 + Math.random() * 2500); }
+    this.R.fx.flash = Math.max(0, this.R.fx.flash - dt * 4);
     // weather particles and wet ground
     G.uWet.value += ((this.weather.rain > 0.1 ? 1 : 0) - G.uWet.value) * Math.min(1, dtGame * (this.weather.rain > 0.1 ? 0.0006 : 0.00012));
     const amb = this.sky.hemi.color.clone().multiplyScalar(this.sky.hemi.intensity * 1.4).add(this.sky.sun.color.clone().multiplyScalar(this.sky.sun.intensity * 0.12));

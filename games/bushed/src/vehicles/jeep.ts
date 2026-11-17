@@ -92,6 +92,14 @@ export class Jeep {
   }
 
   spawn(x: number, z: number, heading: number): void {
+    if (this.body) {
+      // already in the world: move it
+      const q0 = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), heading);
+      this.body.setTranslation({ x, y: heightAt(x, z) + 1.2, z }, true);
+      this.body.setRotation({ x: q0.x, y: q0.y, z: q0.z, w: q0.w }, true);
+      this.body.setLinvel({ x: 0, y: 0, z: 0 }, true); this.body.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      return;
+    }
     const y = heightAt(x, z) + 1.2;
     const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), heading);
     this.body = physics.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(x, y, z)

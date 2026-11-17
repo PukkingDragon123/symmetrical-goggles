@@ -334,7 +334,7 @@ export class GrannyTamarack {
     B[0].position.x += p.t[0]; B[0].position.y += p.t[1] + lift; B[0].position.z += p.t[2];
     B[0].quaternion.setFromEuler(_e.set(p.rr[0], p.rr[1], p.rr[2]));
     for (let i = 1; i < B.length; i++) { const x = p.r[i * 3], y = p.r[i * 3 + 1], z = p.r[i * 3 + 2]; if (x || y || z) B[i].quaternion.setFromEuler(_e.set(x, y, z)); }
-    for (let k = 0; k < 2; k++) B[this.lid[k]].quaternion.setFromAxisAngle(this.lidAxis[k], 0.1 + lid * 1.0);
+    for (let k = 0; k < 2; k++) B[this.lid[k]].quaternion.setFromAxisAngle(this.lidAxis[k], 0.12 + lid * 0.9);
     S.fk();
     const fwd = _v.set(0, 0, 1).applyQuaternion(S.Q[0]);
     const yawQ = _q.setFromAxisAngle(_w.set(0, 1, 0), Math.atan2(fwd.x, fwd.z));

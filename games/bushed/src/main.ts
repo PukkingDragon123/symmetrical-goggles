@@ -13,6 +13,7 @@ import { buildCabin } from './places/cabin';
 import { buildStore } from './places/store';
 import { StorePlay } from './game/storeplay';
 import { Jeep } from './vehicles/jeep';
+import { Trailer } from './vehicles/trailer';
 import { readSave } from './game/save';
 import { FPArms } from './player/arms';
 import { buildProduct } from './places/products';
@@ -69,6 +70,12 @@ async function boot() {
     step('jeep', async () => {
       const j = new Jeep(); await j.load(); game.jeep = j; game.scene.add(j.root);
       j.onEnter = () => game.enterVehicle();
+      // the Jeep waits at the cabin with the trailer beside it (the intro respawns it on the highway)
+      const park = SPOTS.cabin;
+      j.spawn(park.x - 11.5, park.z - 6.5, 2.4);
+      const t = new Trailer(); await t.load(); game.scene.add(t.root);
+      t.spawn(park.x - 15, park.z - 3.5, 2.4);
+      game.trailer = t;
     }),
   ]);
   await step('arms', async () => { const a = new FPArms(); game.setArms(a as never); });

@@ -9,6 +9,7 @@ import { physics, RAPIER, GROUP, groups } from '../physics/physics';
 import { input } from '../core/input';
 import { findInteractable, type InteractCtx } from '../game/interact';
 import { WoodPiece } from '../chop/wood';
+import { marks } from '../world/marks';
 import { ITEMS, type ToolStats } from '../game/items';
 
 export interface ArmsLike {
@@ -60,6 +61,7 @@ export class Hands {
   private rotX = 0;
   private rotY = 0;
   private g: HandsGame;
+  private lastDrag: THREE.Vector3 | null = null;
   /** objects the interaction ray should test (scene by default) */
   targets: THREE.Object3D[] = [];
 
@@ -175,6 +177,7 @@ export class Hands {
   release(mode: 'drop' | 'place' | 'throw', at?: THREE.Vector3): void {
     const h = this.held;
     if (h.kind === 'drag') {
+      this.lastDrag = null;
       physics.world.removeImpulseJoint(h.joint, true);
       physics.world.removeRigidBody(h.anchor);
       h.piece.body?.setAngularDamping(0.25);
@@ -291,6 +294,19 @@ export class Hands {
     if (h.kind === 'drag') {
       const a = this.handAnchorWorld();
       h.anchor.setNextKinematicTranslation({ x: a.x, y: a.y, z: a.z });
+      // the far end gouges a drag mark through the litter
+      const b = h.piece.body;
+      if (b) {
+        const t = b.translation(), r = b.rotation();
+        const ax = new THREE.Vector3(0, 1, 0).applyQuaternion(new THREE.Quaternion(r.x, r.y, r.z, r.w));
+        const c = new THREE.Vector3(t.x, t.y, t.z);
+        const e1 = c.clone().addScaledVector(ax, h.piece.len / 2), e2 = c.clone().addScaledVector(ax, -h.piece.len / 2);
+        const tail = e1.distanceTo(a) > e2.distanceTo(a) ? e1 : e2;
+        if (!this.lastDrag || this.lastDrag.distanceTo(tail) > 0.25) {
+          if (this.lastDrag) marks.line(2, this.lastDrag.x, this.lastDrag.z, tail.x, tail.z, h.piece.r * 1.2, 0.18);
+          this.lastDrag = tail.clone();
+        }
+      }
       g.spendStamina(dt * 0.025 * (h.piece.mass / 100));
       if (g.stamina() <= 0.01) { g.hint('Too winded to keep hauling'); this.release('drop'); return; }
       if (input.pressed('KeyQ') || input.pressed('KeyE') || input.pressed('Mouse2')) this.release('drop');

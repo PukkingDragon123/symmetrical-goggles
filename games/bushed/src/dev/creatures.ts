@@ -331,6 +331,76 @@ async function start() {
 }
 loop();
 
+// ------------------------------------------------------------------------------------------------ headless AI sims
+/** the dingbat roost under an eave at (0, 2.6, -1.5) facing +z; the player stands 6 m out in front.
+ *  scripts: 'quiet' (dark and still: nothing happens), 'light' (the flashlight on the roost at 5-7 s, then off and
+ *  still), 'lit' (the light left on the swarm), 'noise' (sprinting past at 5-8 s), 'chop' (chopping 4 m from the wall
+ *  at 5-9 s), 'day' (noon: tucked away) */
+function simRoost(script: string, seconds: number, hr: number): string {
+  const log: string[] = [];
+  const r = new DingbatRoost({ pos: new THREE.Vector3(0, 2.6, -1.5), heading: 0, count: 9, span: 3.2 });
+  const pl = { pos: new THREE.Vector3(1, 1.7, 6), dir: new THREE.Vector3(0, 0, -1), held: 'flashlight', crouch: false, noise: 0.05, light: false, action: undefined as string | undefined, speed: 0 };
+  let T1 = 0, last = '', near = 0;
+  const hour = script === 'day' ? 12 : hr;
+  for (let k = 0; k < seconds * 60; k++) {
+    const dt = 1 / 60; T1 += dt;
+    pl.light = false; pl.action = undefined; pl.noise = 0.05; pl.speed = 0;
+    pl.dir.set(0, -0.2, -1).normalize();
+    if (script === 'light' && T1 > 5 && T1 < 7) { pl.light = true; pl.dir.set(0, 2.6, -1.5).sub(pl.pos).normalize(); }
+    if (script === 'lit' && T1 > 5) { pl.light = true; pl.dir.set(0, 2.6, -1.5).sub(pl.pos).normalize(); if (T1 > 9) pl.dir.set(0, 0.3, -1).normalize(); }
+    if (script === 'noise' && T1 > 5 && T1 < 8) { pl.noise = 1; pl.speed = 5; pl.pos.x = -6 + (T1 - 5) * 4; }
+    if (script === 'chop' && T1 > 5 && T1 < 9) { pl.pos.set(2, 1.7, 2.5); pl.action = Math.floor(T1 * 1.2) % 2 ? 'chop' : 'swing'; pl.noise = 0.7; }
+    r.update({ dt, time: T1, hour, player: pl, heightAt: () => 0, emit: (e, d) => { const x = d as { left?: number }; log.push(`${T1.toFixed(1)} ${e}${x.left !== undefined ? ' left=' + x.left : ''}`); } });
+    for (const b of r.bats) if (b.mode !== 'hang' && b.mode !== 'hidden') near = Math.max(near, 0) + (b.pos.distanceTo(pl.pos) < 2.5 ? 1 : 0);
+    const st = `${r.state} irr=${r.irritation.toFixed(2)} agit=${r.agitation.toFixed(1)} [${r.bats.map((b) => b.mode[0]).join('')}]`;
+    if (r.state + r.bats.map((b) => b.mode[0]).join('') !== last) { log.push(`${T1.toFixed(1)} ${st}`); last = r.state + r.bats.map((b) => b.mode[0]).join(''); }
+  }
+  log.push(`bat-frames within 2.5 m of the player: ${near}`);
+  // squash runs of screeches into counts
+  const out: string[] = []; let run = 0;
+  for (const l of log) { if (/ screech$/.test(l)) { run++; continue; } if (run) { out.push(`   (${run} screeches)`); run = 0; } out.push(l); }
+  if (run) out.push(`   (${run} screeches)`);
+  return out.join('\n');
+}
+/** Granny in the fog by the hollow (the player at the hollow's centre, home 70 m north).
+ *  scripts: 'watch' (the player stands), 'slow' (walks slowly up to her), 'rush' (runs at her at 12 s), 'flash'
+ *  (the flashlight in her face at 12 s), 'cookies' (holds out cookies from 8 s, offers them when she is close,
+ *  then follows her home lagging behind now and then), 'clear' (no fog, daytime: she never comes) */
+function simGranny(script: string, seconds: number, hr: number): string {
+  const log: string[] = [];
+  const home = new THREE.Vector3(80, 0, 360);
+  const g = new GrannyTamarack({ home });
+  const pl = { pos: new THREE.Vector3(80, 1.7, 430), dir: new THREE.Vector3(0, 0, -1), held: 'none', crouch: false, noise: 0.1, light: false, action: undefined as string | undefined, speed: 0 };
+  let T2 = 0, last = '', offered = false;
+  const fog = script === 'clear' ? 0 : 0.85, hour = script === 'clear' ? 12 : hr;
+  const trunks = (x: number, z: number, r: number) => { const out: { x: number; z: number; r: number }[] = []; for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) { const tx = Math.round(x / 7) * 7 + i * 7 + 2, tz = Math.round(z / 7) * 7 + j * 7 + 3; if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: 0.4 }); } return out; };
+  for (let k = 0; k < seconds * 60; k++) {
+    const dt = 1 / 60; T2 += dt;
+    const toG = new THREE.Vector3().subVectors(g.pos, pl.pos).setY(0), d = toG.length();
+    pl.speed = 0; pl.light = false;
+    const walk = (v: number, to: THREE.Vector3) => { const dd = to.clone().sub(pl.pos).setY(0); if (dd.length() > 0.05) { pl.pos.addScaledVector(dd.normalize(), Math.min(v * dt, dd.length())); pl.speed = v; } };
+    if (g.present && T2 > 6) pl.dir.copy(toG).normalize().setY(-0.15).normalize();
+    switch (script) {
+      case 'slow': if (T2 > 10 && g.present && d > 3) walk(1.0, g.pos); break;
+      case 'rush': if (T2 > 12 && g.present && d > 1) walk(5.5, g.pos); break;
+      case 'flash': if (T2 > 12) { pl.light = true; pl.dir.copy(g.pos).add(new THREE.Vector3(0, 2.15, 0)).sub(pl.pos).normalize(); } break;
+      case 'cookies': {
+        pl.held = T2 > 8 && !g.fed ? 'cookies' : 'none';
+        if (pl.held === 'cookies' && d < 2.5 && !offered && (g.state === 'approach' || g.state === 'watch')) { offered = g.offer('cookies'); log.push(`${T2.toFixed(1)} offer -> ${offered}`); }
+        // follow her home, dawdling now and then
+        if (g.fed && g.state !== 'take' && g.present) { const dawdle = Math.floor(T2 / 25) % 3 === 2; if (!dawdle && d > 2.5) walk(1.15, g.pos); }
+        break;
+      }
+      default: break;
+    }
+    g.update({ dt, time: T2, hour, player: pl, heightAt: () => 0, fog, trunks, stove: home,
+      emit: (e, dd) => { if (e === 'step') return; const x = dd as { secret?: string; reason?: string; item?: string }; log.push(`${T2.toFixed(1)} ${e}${x.secret ? ':' + x.secret : ''}${x.reason ? ':' + x.reason : ''}${x.item ? ':' + x.item : ''}`); } });
+    const st = `${g.state} clip=${g.anim.current} d=${d.toFixed(1)} fade=${g.fade.value.toFixed(2)} home=${Math.hypot(g.pos.x - home.x, g.pos.z - home.z).toFixed(0)}`;
+    if (g.state + g.anim.current !== last) { log.push(`${T2.toFixed(1)} ${st}`); last = g.state + g.anim.current; }
+  }
+  return log.join('\n');
+}
+
 // ------------------------------------------------------------------------------------------------ hooks for screenshots
 (window as unknown as Record<string, unknown>).__creatures = {
   ready: false,
@@ -402,6 +472,8 @@ loop();
       }
       return log.join('\n');
     }
+    if (o.who === 'dingbats') return simRoost(o.script, o.seconds, o.hour ?? 23);
+    if (o.who === 'granny') return simGranny(o.script, o.seconds, o.hour ?? 23);
     const pl = { pos: new THREE.Vector3(0, 1.7, 0), dir: new THREE.Vector3(0, 0, 1), held: 'none', crouch: false, noise: 0.1, light: false, action: undefined as string | undefined, speed: 0 };
     const its: GroundItem[] = [];
     let T0 = 0, last = '';
