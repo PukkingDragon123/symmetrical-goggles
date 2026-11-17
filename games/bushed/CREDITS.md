@@ -380,3 +380,157 @@ converted Poly Haven models credited with the props.
 | [Wood Chips](https://polyhaven.com/a/wood_chips) (`wood_chips`) | eye-candy.xyz | CC0 1.0 | `woodchips` |
 | [Wood Planks Grey](https://polyhaven.com/a/wood_planks_grey) (`wood_planks_grey`) | Rob Tuytel | CC0 1.0 | `planks_grey` |
 | [Wood Table Worn](https://polyhaven.com/a/wood_table_worn) (`wood_table_worn`) | Dimitrios Savva, Rico Cilliers | CC0 1.0 | `board_grey`, `board_warm`, `log_int` |
+
+## Models and textures
+
+Made by `tools/convert_props.py`, `tools/make_textures.py` and `tools/make_vehicle.py`: every model is converted to BUSHED's pixel-art look with lowpix (re-meshed, re-textured, rescaled), every texture is re-sampled and palette-quantised from the scans named here.
+
+### Props (`public/assets/models/<id>.glb`) from Poly Haven
+
+All CC0 1.0 (public domain). Thank you, Poly Haven and its artists.
+
+| Prop id(s) | Source | Author(s) | Licence |
+|---|---|---|---|
+| `ammo_box` | [ammo_box](https://polyhaven.com/a/ammo_box) | DanKit | CC0 1.0 |
+| `Barrel_01` | [Barrel_01](https://polyhaven.com/a/Barrel_01) | Jorge Camacho | CC0 1.0 |
+| `Barrel_02` | [Barrel_02](https://polyhaven.com/a/Barrel_02) | Jorge Camacho | CC0 1.0 |
+| `barrel_03` | [barrel_03](https://polyhaven.com/a/barrel_03) | Serhii Khromov | CC0 1.0 |
+| `barrel_stove` | [barrel_stove](https://polyhaven.com/a/barrel_stove) | MP | CC0 1.0 |
+| `binoculars` | [binoculars](https://polyhaven.com/a/binoculars) | Derek Wight | CC0 1.0 |
+| `bolt_cutters_01` | [bolt_cutters_01](https://polyhaven.com/a/bolt_cutters_01) | Yann Kervran, Antanas Kep | CC0 1.0 |
+| `brass_pan_01` | [brass_pan_01](https://polyhaven.com/a/brass_pan_01) | Rico Cilliers | CC0 1.0 |
+| `brass_pot_01` | [brass_pot_01](https://polyhaven.com/a/brass_pot_01) | Rico Cilliers | CC0 1.0 |
+| `caged_hanging_light` | [caged_hanging_light](https://polyhaven.com/a/caged_hanging_light) | Ulan Cabanilla | CC0 1.0 |
+| `can_rusted` | [can_rusted](https://polyhaven.com/a/can_rusted) | Rahul Chaudhary | CC0 1.0 |
+| `cardboard_box_01` | [cardboard_box_01](https://polyhaven.com/a/cardboard_box_01) | Rahul Chaudhary | CC0 1.0 |
+| `CashRegister_01` | [CashRegister_01](https://polyhaven.com/a/CashRegister_01) | Joe Seabuhr | CC0 1.0 |
+| `CheeseBox_01` | [CheeseBox_01](https://polyhaven.com/a/CheeseBox_01) | Gabriel Radić | CC0 1.0 |
+| `cleaner_tin_01` | [cleaner_tin_01](https://polyhaven.com/a/cleaner_tin_01) | Tom Phillips | CC0 1.0 |
+| `crowbar_01` | [crowbar_01](https://polyhaven.com/a/crowbar_01) | Alexander Otterbeck | CC0 1.0 |
+| `drawer_cabinet` | [drawer_cabinet](https://polyhaven.com/a/drawer_cabinet) | Ulan Cabanilla | CC0 1.0 |
+| `electricity_pole_01`, `electricity_pole_02`, `electricity_pole_03` | [modular_electricity_poles](https://polyhaven.com/a/modular_electricity_poles) | James Ray Cock | CC0 1.0 |
+| `fish_knife` | [fish_knife](https://polyhaven.com/a/fish_knife) | Mateusz Sadek | CC0 1.0 |
+| `fishermans_hat` | [fishermans_hat](https://polyhaven.com/a/fishermans_hat) | PierreB3D | CC0 1.0 |
+| `garden_gloves_01` | [garden_gloves_01](https://polyhaven.com/a/garden_gloves_01) | Satyaki Mandal | CC0 1.0 |
+| `hand_plane_no4` | [hand_plane_no4](https://polyhaven.com/a/hand_plane_no4) | Satyaki Mandal | CC0 1.0 |
+| `handsaw_wood` | [handsaw_wood](https://polyhaven.com/a/handsaw_wood) | Konrad Szałankiewicz | CC0 1.0 |
+| `hatchet` | [hatchet](https://polyhaven.com/a/hatchet) | James Ray Cock, Ulan Cabanilla | CC0 1.0 |
+| `industrial_wall_lamp` | [industrial_wall_lamp](https://polyhaven.com/a/industrial_wall_lamp) | Kuutti Siitonen | CC0 1.0 |
+| `jug_01` | [jug_01](https://polyhaven.com/a/jug_01) | Kuutti Siitonen | CC0 1.0 |
+| `Lantern_01` | [Lantern_01](https://polyhaven.com/a/Lantern_01) | Rajil Jose Macatangay | CC0 1.0 |
+| `long_life_food_beans`, `long_life_food_milk`, `long_life_food_sardines`, `long_life_food_tomatoes` | [long_life_food](https://polyhaven.com/a/long_life_food) | Mia Pecina Zorko | CC0 1.0 |
+| `machete` | [machete](https://polyhaven.com/a/machete) | Ulan Cabanilla | CC0 1.0 |
+| `mantel_clock_01` | [mantel_clock_01](https://polyhaven.com/a/mantel_clock_01) | Yann Kervran, Rico Cilliers | CC0 1.0 |
+| `measuring_tape_01` | [measuring_tape_01](https://polyhaven.com/a/measuring_tape_01) | Kuutti Siitonen | CC0 1.0 |
+| `medical_box` | [medical_box](https://polyhaven.com/a/medical_box) | Ulan Cabanilla | CC0 1.0 |
+| `medical_tape` | [medical_tape](https://polyhaven.com/a/medical_tape) | Miroslav Turura | CC0 1.0 |
+| `metal_jerrycan` | [metal_jerrycan](https://polyhaven.com/a/metal_jerrycan) | Sean Buckley | CC0 1.0 |
+| `metal_jug` | [metal_jug](https://polyhaven.com/a/metal_jug) | Anzor Lezhava | CC0 1.0 |
+| `metal_trash_can`, `metal_trash_can_rust` | [metal_trash_can](https://polyhaven.com/a/metal_trash_can) | GurJas Studios | CC0 1.0 |
+| `mousetrap` | [mousetrap](https://polyhaven.com/a/mousetrap) | GreenPixel | CC0 1.0 |
+| `oil_tin` | [oil_tin](https://polyhaven.com/a/oil_tin) | Niklas | CC0 1.0 |
+| `old_bed_frame` | [old_bed_frame](https://polyhaven.com/a/old_bed_frame) | Luca B | CC0 1.0 |
+| `old_tyre` | [old_tyre](https://polyhaven.com/a/old_tyre) | MP | CC0 1.0 |
+| `painted_wooden_bench` | [painted_wooden_bench](https://polyhaven.com/a/painted_wooden_bench) | Kirill Sannikov | CC0 1.0 |
+| `painted_wooden_cabinet` | [painted_wooden_cabinet](https://polyhaven.com/a/painted_wooden_cabinet) | Kirill Sannikov | CC0 1.0 |
+| `picke_dirty_01` | [picke_dirty_01](https://polyhaven.com/a/picke_dirty_01) | Dennis Halbeck | CC0 1.0 |
+| `plastic_bottle_gallon` | [plastic_bottle_gallon](https://polyhaven.com/a/plastic_bottle_gallon) | Rahul Chaudhary | CC0 1.0 |
+| `pliers` | [pliers](https://polyhaven.com/a/pliers) | PierreB3D | CC0 1.0 |
+| `portable_generator` | [portable_generator](https://polyhaven.com/a/portable_generator) | James Ray Cock | CC0 1.0 |
+| `pot_enamel_01` | [pot_enamel_01](https://polyhaven.com/a/pot_enamel_01) | Kuutti Siitonen | CC0 1.0 |
+| `propane_tank` | [propane_tank](https://polyhaven.com/a/propane_tank) | Slinc | CC0 1.0 |
+| `Rockingchair_01` | [Rockingchair_01](https://polyhaven.com/a/Rockingchair_01) | Jorge Camacho | CC0 1.0 |
+| `rubber_boots`, `rubber_boots_clean` | [rubber_boots](https://polyhaven.com/a/rubber_boots) | L | CC0 1.0 |
+| `rusted_hacksaw` | [rusted_hacksaw](https://polyhaven.com/a/rusted_hacksaw) | Dabou Master | CC0 1.0 |
+| `rusted_spade_01` | [rusted_spade_01](https://polyhaven.com/a/rusted_spade_01) | Blemonade | CC0 1.0 |
+| `seadogs_compass` | [seadogs_compass](https://polyhaven.com/a/seadogs_compass) | Benny Weimer | CC0 1.0 |
+| `Shelf_01` | [Shelf_01](https://polyhaven.com/a/Shelf_01) | Gabriel Radić | CC0 1.0 |
+| `signal_flashlight` | [signal_flashlight](https://polyhaven.com/a/signal_flashlight) | Jiří Ptáček | CC0 1.0 |
+| `sledgehammer_01` | [sledgehammer_01](https://polyhaven.com/a/sledgehammer_01) | Dylan Guzman | CC0 1.0 |
+| `small_lpg_tank` | [small_lpg_tank](https://polyhaven.com/a/small_lpg_tank) | Ulan Cabanilla | CC0 1.0 |
+| `small_oil_can_01` | [small_oil_can_01](https://polyhaven.com/a/small_oil_can_01) | Raven van de Werken | CC0 1.0 |
+| `steel_frame_shelves_01` | [steel_frame_shelves_01](https://polyhaven.com/a/steel_frame_shelves_01) | James Ray Cock | CC0 1.0 |
+| `stone_fire_pit` | [stone_fire_pit](https://polyhaven.com/a/stone_fire_pit) | Sebastian Platen | CC0 1.0 |
+| `street_lamp_01` | [street_lamp_01](https://polyhaven.com/a/street_lamp_01) | Josh Dean | CC0 1.0 |
+| `tire_pump` | [tire_pump](https://polyhaven.com/a/tire_pump) | Garrison Gager | CC0 1.0 |
+| `vintage_cabinet_01` | [vintage_cabinet_01](https://polyhaven.com/a/vintage_cabinet_01) | Rico Cilliers | CC0 1.0 |
+| `vintage_day_bed` | [vintage_day_bed](https://polyhaven.com/a/vintage_day_bed) | Aron Łyczek | CC0 1.0 |
+| `vintage_flashlight` | [vintage_flashlight](https://polyhaven.com/a/vintage_flashlight) | Omar M. El-Safy | CC0 1.0 |
+| `vintage_lighter` | [vintage_lighter](https://polyhaven.com/a/vintage_lighter) | Slinc | CC0 1.0 |
+| `vintage_oil_lamp` | [vintage_oil_lamp](https://polyhaven.com/a/vintage_oil_lamp) | Monsta3D | CC0 1.0 |
+| `vintage_radio_transceiver` | [vintage_radio_transceiver](https://polyhaven.com/a/vintage_radio_transceiver) | Mateusz Sadek | CC0 1.0 |
+| `vintage_suitcase`, `vintage_suitcase_02` | [vintage_suitcase](https://polyhaven.com/a/vintage_suitcase) | Maximilian Schuster | CC0 1.0 |
+| `vintage_wooden_drawer_01` | [vintage_wooden_drawer_01](https://polyhaven.com/a/vintage_wooden_drawer_01) | James Ray Cock | CC0 1.0 |
+| `wall_clock` | [wall_clock](https://polyhaven.com/a/wall_clock) | PierreB3D | CC0 1.0 |
+| `wicker_basket_01` | [wicker_basket_01](https://polyhaven.com/a/wicker_basket_01) | Kuutti Siitonen | CC0 1.0 |
+| `wicker_basket_02` | [wicker_basket_02](https://polyhaven.com/a/wicker_basket_02) | Kuutti Siitonen | CC0 1.0 |
+| `wine_bottle_bordeaux`, `wine_bottle_champagne` | [wine_bottles_01](https://polyhaven.com/a/wine_bottles_01) | Rico Cilliers, Jurita Burger | CC0 1.0 |
+| `wooden_axe` | [wooden_axe](https://polyhaven.com/a/wooden_axe) | Ulan Cabanilla | CC0 1.0 |
+| `wooden_axe_02` | [wooden_axe_02](https://polyhaven.com/a/wooden_axe_02) | Ulan Cabanilla | CC0 1.0 |
+| `wooden_axe_03` | [wooden_axe_03](https://polyhaven.com/a/wooden_axe_03) | Ulan Cabanilla | CC0 1.0 |
+| `wooden_bookshelf_worn` | [wooden_bookshelf_worn](https://polyhaven.com/a/wooden_bookshelf_worn) | Ulan Cabanilla | CC0 1.0 |
+| `wooden_bowl_01` | [wooden_bowl_01](https://polyhaven.com/a/wooden_bowl_01) | Oliver Harries | CC0 1.0 |
+| `wooden_bowl_02` | [wooden_bowl_02](https://polyhaven.com/a/wooden_bowl_02) | Kuutti Siitonen | CC0 1.0 |
+| `wooden_bucket_01` | [wooden_bucket_01](https://polyhaven.com/a/wooden_bucket_01) | James Ray Cock | CC0 1.0 |
+| `wooden_bucket_02` | [wooden_bucket_02](https://polyhaven.com/a/wooden_bucket_02) | James Ray Cock | CC0 1.0 |
+| `wooden_candlestick` | [wooden_candlestick](https://polyhaven.com/a/wooden_candlestick) | Josh Dean | CC0 1.0 |
+| `wooden_crate_01` | [wooden_crate_01](https://polyhaven.com/a/wooden_crate_01) | James Ray Cock | CC0 1.0 |
+| `wooden_crate_02` | [wooden_crate_02](https://polyhaven.com/a/wooden_crate_02) | James Ray Cock, Jurita Burger | CC0 1.0 |
+| `wooden_cutting_board` | [wooden_cutting_board](https://polyhaven.com/a/wooden_cutting_board) | Kuutti Siitonen | CC0 1.0 |
+| `wooden_display_shelves_01` | [wooden_display_shelves_01](https://polyhaven.com/a/wooden_display_shelves_01) | James Ray Cock | CC0 1.0 |
+| `wooden_hammer_01` | [wooden_hammer_01](https://polyhaven.com/a/wooden_hammer_01) | James Ray Cock | CC0 1.0 |
+| `wooden_ladder` | [wooden_ladder](https://polyhaven.com/a/wooden_ladder) | Miroslav Turura | CC0 1.0 |
+| `wooden_lantern_01` | [wooden_lantern_01](https://polyhaven.com/a/wooden_lantern_01) | James Ray Cock | CC0 1.0 |
+| `wooden_military_crate` | [wooden_military_crate](https://polyhaven.com/a/wooden_military_crate) | Prabhjinder Singh | CC0 1.0 |
+| `wooden_picnic_table` | [wooden_picnic_table](https://polyhaven.com/a/wooden_picnic_table) | Ulan Cabanilla | CC0 1.0 |
+| `wooden_pier_section_01`, `wooden_pier_section_02`, `wooden_pier_section_03`, `wooden_pier_section_04`, `wooden_pier_section_05` | [modular_wooden_pier](https://polyhaven.com/a/modular_wooden_pier) | Rico Cilliers | CC0 1.0 |
+| `wooden_spoon` | [wooden_spoon](https://polyhaven.com/a/wooden_spoon) | Ronnie Barter | CC0 1.0 |
+| `wooden_stool_01` | [wooden_stool_01](https://polyhaven.com/a/wooden_stool_01) | Kuutti Siitonen | CC0 1.0 |
+| `wooden_stool_02` | [wooden_stool_02](https://polyhaven.com/a/wooden_stool_02) | Kuutti Siitonen | CC0 1.0 |
+| `WoodenChair_01` | [WoodenChair_01](https://polyhaven.com/a/WoodenChair_01) | Jake Mobley | CC0 1.0 |
+| `WoodenTable_01` | [WoodenTable_01](https://polyhaven.com/a/WoodenTable_01) | Ethan Place | CC0 1.0 |
+| `WoodenTable_02` | [WoodenTable_02](https://polyhaven.com/a/WoodenTable_02) | Fran Calvente | CC0 1.0 |
+| `WoodenTable_03` | [WoodenTable_03](https://polyhaven.com/a/WoodenTable_03) | Gabriel Radić | CC0 1.0 |
+| `worn_metal_rack` | [worn_metal_rack](https://polyhaven.com/a/worn_metal_rack) | Luca B | CC0 1.0 |
+
+### Tiling textures (`public/assets/textures/`) from Poly Haven
+
+| Texture | Source scan(s) | Author(s) | Licence |
+|---|---|---|---|
+| `terrain/forest_floor` | [forrest_ground_03](https://polyhaven.com/a/forrest_ground_03) | Rob Tuytel | CC0 1.0 |
+| `terrain/dead_leaves` | [forest_leaves_02](https://polyhaven.com/a/forest_leaves_02) | Rob Tuytel | CC0 1.0 |
+| `terrain/moss` | [sparse_grass](https://polyhaven.com/a/sparse_grass) | Amal Kumar | CC0 1.0 |
+| `terrain/grass` | [forrest_ground_01](https://polyhaven.com/a/forrest_ground_01) | Rob Tuytel | CC0 1.0 |
+| `terrain/dirt` | [dirt](https://polyhaven.com/a/dirt) | Charlotte Baglioni | CC0 1.0 |
+| `terrain/mud` | [brown_mud_02](https://polyhaven.com/a/brown_mud_02) | Rob Tuytel | CC0 1.0 |
+| `terrain/mud_ruts` | [muddy_tracks](https://polyhaven.com/a/muddy_tracks) | Amal Kumar | CC0 1.0 |
+| `terrain/gravel_road` | [rocky_trail](https://polyhaven.com/a/rocky_trail) | Amal Kumar | CC0 1.0 |
+| `terrain/granite` | [rock_08](https://polyhaven.com/a/rock_08) | Rob Tuytel | CC0 1.0 |
+| `terrain/lichen_rock` | [lichen_rock](https://polyhaven.com/a/lichen_rock) | Rico Cilliers | CC0 1.0 |
+| `terrain/pebbles` | [ganges_river_pebbles](https://polyhaven.com/a/ganges_river_pebbles) | Amal Kumar | CC0 1.0 |
+| `terrain/gravel_road_ruts` | [rocky_trail](https://polyhaven.com/a/rocky_trail), [dirt](https://polyhaven.com/a/dirt), [forrest_ground_01](https://polyhaven.com/a/forrest_ground_01) | Amal Kumar, Charlotte Baglioni, Rob Tuytel | CC0 1.0 |
+| `building/log_wall` | [wood_trunk_wall](https://polyhaven.com/a/wood_trunk_wall) | Amal Kumar | CC0 1.0 |
+| `building/rough_planks` | [weathered_planks](https://polyhaven.com/a/weathered_planks) | Dario Barresi, Dimitrios Savva | CC0 1.0 |
+| `building/floor_boards` | [wood_floor_worn](https://polyhaven.com/a/wood_floor_worn) | Dimitrios Savva | CC0 1.0 |
+| `building/corrugated_rust` | [rusty_corrugated_iron](https://polyhaven.com/a/rusty_corrugated_iron) | Charlotte Baglioni | CC0 1.0 |
+| `building/fieldstone` | [stone_wall](https://polyhaven.com/a/stone_wall) | Dario Barresi, Charlotte Baglioni | CC0 1.0 |
+| `building/painted_siding` | [distressed_painted_planks](https://polyhaven.com/a/distressed_painted_planks) | Rob Tuytel | CC0 1.0 |
+| `building/concrete` | [concrete_floor_02](https://polyhaven.com/a/concrete_floor_02) | Rob Tuytel | CC0 1.0 |
+| `building/cedar_shakes` | [weathered_planks](https://polyhaven.com/a/weathered_planks) | Dario Barresi, Dimitrios Savva | CC0 1.0 |
+| `building/window_grime` | [dirty_concrete](https://polyhaven.com/a/dirty_concrete) | Rob Tuytel | CC0 1.0 |
+
+### Vehicles from Sketchfab (CC BY 4.0, attribution required)
+
+Converted, re-meshed, re-textured, split into parts (wheels, steering wheel, glass) and rescaled; the Jeep's insignia and the modeller's stencilled signature painted out. Changes were made.
+
+| File | Source | Author | Licence |
+|---|---|---|---|
+| `jeep.glb` | [willys-jeep-d6e73ec5537e49269ec92b8ab78230c2](https://sketchfab.com/3d-models/willys-jeep-d6e73ec5537e49269ec92b8ab78230c2) | snjvsngh_negi | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `npc_pickup.glb` | [1962-willys-jeep-pick-up-43394652043a4387be183ef75d7af5a1](https://sketchfab.com/3d-models/1962-willys-jeep-pick-up-43394652043a4387be183ef75d7af5a1) | LxNazarov | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `trailer.glb` | [trailer-5a53a60a27144183ab825f559ed73a80](https://sketchfab.com/3d-models/trailer-5a53a60a27144183ab825f559ed73a80) | svartfilin | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+
+Required attribution (reproduce it wherever the game's credits are shown):
+
+* `jeep.glb`: This work is based on "Willys Jeep" (https://sketchfab.com/3d-models/willys-jeep-d6e73ec5537e49269ec92b8ab78230c2) by snjvsngh_negi (https://sketchfab.com/snjvsngh_negi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts, markings painted out).
+* `npc_pickup.glb`: This work is based on "1962 Willys Jeep Pick-Up" (https://sketchfab.com/3d-models/1962-willys-jeep-pick-up-43394652043a4387be183ef75d7af5a1) by LxNazarov (https://sketchfab.com/LxNazarov) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts).
+* `trailer.glb`: This work is based on "Trailer" (https://sketchfab.com/3d-models/trailer-5a53a60a27144183ab825f559ed73a80) by svartfilin (https://sketchfab.com/svartfilin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts).

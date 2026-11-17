@@ -58,17 +58,18 @@ def section() -> str:
         lines.append(f"| `{t['set']}/{t['name']}` | {links} | {', '.join(t.get('authors') or ['Poly Haven'])} | CC0 1.0 |")
     lines += ["", "### Vehicles from Sketchfab (CC BY 4.0, attribution required)", "",
               "Converted, re-meshed, re-textured, split into parts (wheels, steering wheel, glass) and rescaled; "
-              "insignia painted out. Changes were made.", "",
+              "the Jeep's insignia and the modeller's stencilled signature painted out. Changes were made.", "",
               "| File | Source | Author | Licence |", "|---|---|---|---|"]
     for v in sorted(vehicles):
         m = json.load(open(os.path.join(MODELS, f"{v}.json")))
         lines.append(f"| `{v}.glb` | [{m['source'].rsplit('/', 1)[-1]}]({m['source']}) | {m['author']} | "
                      f"[CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |")
-    lines += ["", "Required attribution (also shown in the game's credits screen):", ""]
+    lines += ["", "Required attribution (reproduce it wherever the game's credits are shown):", ""]
     for v in sorted(vehicles):
         m = json.load(open(os.path.join(MODELS, f"{v}.json")))
+        marks = ", markings painted out" if "painted out" in m.get("notes", "") else ""
         lines.append(f"* `{v}.glb`: {m['attribution']}. Modified for BUSHED (converted to pixel art, re-meshed, "
-                     f"split into parts, markings removed).")
+                     f"split into parts{marks}).")
     return "\n".join(lines) + "\n"
 
 
