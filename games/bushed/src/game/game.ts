@@ -130,7 +130,7 @@ export class Game {
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
       uniforms: { uI: { value: 0 } },
       vertexShader: 'varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ vZ = -position.z / 14.0; vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
-      fragmentShader: 'uniform float uI; varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ float rim = pow(abs(dot(vN, vV)), 2.0); gl_FragColor = vec4(vec3(1.0,0.95,0.82) * uI * rim * (1.0 - vZ) * (1.0 - vZ) * 0.05, 1.0); }',
+      fragmentShader: 'uniform float uI; varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ float face = abs(dot(vN, vV)); float soft = smoothstep(0.25, 0.9, face) * smoothstep(0.04, 0.35, vZ) * (1.0 - vZ) * (1.0 - vZ); gl_FragColor = vec4(vec3(1.0,0.95,0.82) * uI * soft * 0.018, 1.0); }',
     });
     this.beam = new THREE.Mesh(beamGeo, beamMat);
     this.beam.position.set(0.18, -0.14, -0.2);
