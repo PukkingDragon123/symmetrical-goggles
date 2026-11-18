@@ -334,6 +334,7 @@ Trees, ground cover and their textures (`src/trees/`, `src/world/forest.ts`, `sr
 
 | Font | Author | Licence |
 |---|---|---|
+| Alagard (the game's typeface: all UI and floating text) | Hewett Tsoi | free for personal and commercial use (supplied by the user) |
 | Caveat | Impallari Type | SIL OFL 1.1 (`Caveat-OFL.txt`) |
 | Patrick Hand | Patrick Wagesreiter | SIL OFL 1.1 (`PatrickHand-OFL.txt`) |
 | IM Fell English | Igino Marini | SIL OFL 1.1 (`IMFell-OFL.txt`) |

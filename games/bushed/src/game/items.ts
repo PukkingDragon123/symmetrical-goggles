@@ -115,3 +115,6 @@ export const ITEMS: Record<string, ItemDef> = {
 
 /** timber value per cubic metre by species (dollars), before quality */
 export const TIMBER_PRICE: Record<string, number> = { spruce: 70, fir: 60, pine: 80, birch: 95, cedar: 140 };
+
+/** modules register their own items (rifle, ammo, meat, forged parts, cryptid treats...) */
+export function addItems(defs: Record<string, ItemDef>): void { Object.assign(ITEMS, defs); }
