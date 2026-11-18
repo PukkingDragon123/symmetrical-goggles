@@ -17,13 +17,13 @@ function saveSettings(s: Settings): void { try { localStorage.setItem(KEY, JSON.
 const css = `
 #pause { position: fixed; left: 50%; top: 50%; width: 384px; height: 512px; transform: translate(-50%, -46%) rotate(-1.2deg);
   background-size: cover; image-rendering: pixelated; box-shadow: 0 18px 40px rgba(0,0,0,.6); opacity: 0; pointer-events: none;
-  transition: opacity .25s, transform .25s; font: 22px Caveat, cursive; color: #1f2433; }
+  transition: opacity .25s, transform .25s; font: 16px Alagard, monospace; color: #1f2433; }
 #pause.on { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) rotate(-1.2deg); }
 #pause .in { position: absolute; left: 40px; right: 30px; top: 132px; }
 #pause label { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
 #pause input[type=range] { width: 150px; accent-color: #6b3a22; }
-#pause button { font: 26px Caveat, cursive; background: none; border: none; border-bottom: 2px solid #6b3a22; color: #6b3a22; cursor: pointer; padding: 0 2px; }
-#pause .keys { font-size: 18px; color: #3a3a46; margin-top: 18px; line-height: 1.25; }
+#pause button { font: 16px Alagard, monospace; background: none; border: none; border-bottom: 2px solid #6b3a22; color: #6b3a22; cursor: pointer; padding: 0 2px; }
+#pause .keys { font-size: 16px; color: #3a3a46; margin-top: 18px; line-height: 1.25; }
 `;
 
 export class Pause {

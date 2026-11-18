@@ -109,7 +109,7 @@ export class Backpack {
       // count tag: a little paper label for stacks
       if (n > 1) {
         const c = document.createElement('canvas'); c.width = 32; c.height = 16;
-        const g = c.getContext('2d')!; g.fillStyle = '#e6dcc0'; g.fillRect(0, 0, 32, 16); g.fillStyle = '#222'; g.font = '13px Caveat, cursive'; g.fillText(`x${n}`, 6, 12);
+        const g = c.getContext('2d')!; g.fillStyle = '#e6dcc0'; g.fillRect(0, 0, 32, 16); g.fillStyle = '#222'; g.font = '16px Alagard, monospace'; g.fillText(`x${n}`, 6, 12);
         const tag = new THREE.Mesh(new THREE.PlaneGeometry(0.03, 0.015), new THREE.MeshBasicMaterial({ map: canvasTex(c) }));
         tag.position.set(0.03, 0.03, 0.03); tag.rotation.x = -0.6;
         holder.add(tag);

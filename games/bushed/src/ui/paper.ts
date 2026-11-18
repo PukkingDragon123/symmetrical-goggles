@@ -9,6 +9,7 @@ let fontsReady: Promise<void> | null = null;
 export function loadFonts(): Promise<void> {
   if (fontsReady) return fontsReady;
   const faces: [string, string][] = [
+    ['Alagard', 'assets/fonts/Alagard.ttf'],
     ['Caveat', 'assets/fonts/Caveat.ttf'], ['SpecialElite', 'assets/fonts/SpecialElite.ttf'],
     ['IMFell', 'assets/fonts/IMFellEnglish.ttf'], ['HomemadeApple', 'assets/fonts/HomemadeApple.ttf'], ['PatrickHand', 'assets/fonts/PatrickHand.ttf'],
   ];
@@ -79,15 +80,8 @@ export function paintPaper(blocks: Block[], o: { style?: PaperStyle; w?: number;
   }
   // text
   let y = style === 'notebook' || style === 'journal' ? 64 : 44;
-  const fontOf = (b: Block) => {
-    const hnd = b.hand ?? (style === 'receipt' ? 'type' : 'caveat');
-    if (hnd === 'type') return b.t === 'h' ? 'bold 22px SpecialElite, monospace' : '15px SpecialElite, monospace';
-    if (hnd === 'fell') return b.t === 'h' ? '26px IMFell, serif' : '17px IMFell, serif';
-    if (hnd === 'apple') return b.t === 'h' ? '22px HomemadeApple, cursive' : '14px HomemadeApple, cursive';
-    if (hnd === 'patrick') return b.t === 'h' ? '28px PatrickHand, cursive' : b.t === 'small' ? '17px PatrickHand, cursive' : '20px PatrickHand, cursive';
-    return b.t === 'h' ? 'bold 30px Caveat, cursive' : b.t === 'small' ? '18px Caveat, cursive' : b.t === 'sig' ? '26px Caveat, cursive' : '22px Caveat, cursive';
-  };
-  const lh = (b: Block) => (b.t === 'h' ? 32 : b.hand === 'type' ? 19 : 22);
+  const fontOf = (b: Block) => (b.t === 'h' ? '32px Alagard, monospace' : '16px Alagard, monospace');
+  const lh = (b: Block) => (b.t === 'h' ? 34 : 20);
   for (const b of blocks) {
     if (b.t === 'gap') { y += b.h ?? 14; continue; }
     if (b.t === 'line') { g.strokeStyle = 'rgba(30,30,40,0.5)'; g.lineWidth = 1.5; g.beginPath(); g.moveTo(left, y - 8); g.lineTo(W - left, y - 6); g.stroke(); y += 10; continue; }

@@ -7,6 +7,7 @@ import { buildHuman, makeLook, variant, type HumanModel, type NpcAnim, type Look
 import { SPOTS, heightAt } from '../world/layout';
 import { registerInteractable } from './interact';
 import { hud } from '../ui/hud';
+import { floatText } from '../ui/float';
 import { ODILE, DOUG, line, speak } from './dialogue';
 import { flameCards } from '../places/fixtures';
 import { campfire } from './flow';
@@ -46,6 +47,7 @@ export class Npc {
   constructor(readonly def: NpcDef, private g: Game) {
     this.model = buildHuman(def.look);
     g.scene.add(this.model.root);
+    floatText.speakers.set(def.name, this.model.root);
     const s = def.stops[0];
     this.model.root.position.copy(s.at);
     registerInteractable(this.model.root, {

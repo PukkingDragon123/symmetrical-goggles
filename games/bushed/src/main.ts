@@ -20,6 +20,7 @@ import { buildProduct } from './places/products';
 import { ITEMS } from './game/items';
 import { CabinPlay } from './game/cabinplay';
 import { Pause } from './ui/pause';
+import { floatText } from './ui/float';
 import { spawnNpcs } from './game/npcs';
 import { Forest } from './world/forest';
 import { GroundCover } from './world/groundcover';
@@ -36,9 +37,11 @@ async function step<T>(label: string, f: () => Promise<T>): Promise<T | null> {
 async function boot() {
   await loadFonts();
   hud.mount(document.getElementById('ui')!);
+  floatText.mount(document.getElementById('ui')!, null);
   hud.fadeTo(true, 0);
   hud.title('BUSHED', 'loading the bush…', 999);
   const game = new Game(canvas);
+  floatText.setCamera(game.camera);
   await game.init();
   input.attach(canvas);
   canvas.addEventListener('click', () => { input.lock(); audio.unlock(); });
@@ -101,12 +104,13 @@ async function boot() {
     const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = Math.max(last, now);
     pause.armed = game.mode === 'walk' || game.mode === 'drive';
     if (!pause.open) { d.update(dt); game.update(dt); }
+    floatText.update(dt);
     game.render();
     input.endFrame();
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
-  hud.title('', '', 0);
+  floatText.clearTitles();
 
   // dev shortcuts: ?play skips menu and intro, ?test adds pieces to play with
   if (params.has('play') || params.has('test')) {

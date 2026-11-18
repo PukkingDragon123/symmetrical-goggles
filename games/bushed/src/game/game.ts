@@ -654,6 +654,8 @@ export class Game {
     audio.ambience('cabin', this.indoors ? 1 : 0);
     // hud
     if (this.mode === 'walk' && !this.journal.open && !this.pack.open && !this.reading) {
+      // the label floats beside what you look at (or just ahead when carrying)
+      hud.labelAt = this.hands.focus?.point ?? (this.hands.busy ? new THREE.Vector3(0.25, -0.3, -1.2).applyMatrix4(cam.matrixWorld) : null);
       hud.setLabel(this.hands.label);
       hud.setCharge(this.hands.charging ? this.hands.charge : 0);
       hud.showDot(true);
