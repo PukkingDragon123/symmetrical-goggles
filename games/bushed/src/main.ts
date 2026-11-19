@@ -24,6 +24,7 @@ import { floatText } from './ui/float';
 import { QUALITY, guessQuality, storedQuality, storeQuality, applyRuntime, type QualityName } from './game/quality';
 import { spawnNpcs } from './game/npcs';
 import { install as installHunting } from './game/hunting';
+import { install as installBook } from './ui/bookofcryptids';
 import { Forest } from './world/forest';
 import { GroundCover } from './world/groundcover';
 import { treeMaterials } from './trees/materials';
@@ -128,6 +129,7 @@ async function boot() {
   await step('creatures', () => critters.spawn());
   game.updaters.push((dt) => critters.update(dt));
   game.critters = critters as never;
+  installBook(game);
   await step('npcs', async () => { const npcs = spawnNpcs(game); game.updaters.push((dt) => npcs.forEach((n) => n.update(dt))); });
 
   let last = performance.now();

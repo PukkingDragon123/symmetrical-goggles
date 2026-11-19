@@ -3,13 +3,13 @@
 // hound lunges, Ray's axe goes flying, the hound runs off with it to chew the handle, and jerky settles it.
 import * as THREE from 'three';
 import type { Game } from './game';
-import { AxehandleHound, Bigfoot, Gumberoo, Wildlife, DingbatRoost, GrannyTamarack, HOUND_SOUND, BIGFOOT_SOUND, GUMBEROO_SOUND, DINGBAT_SOUND, GRANNY_SOUND, giftMesh, preloadCreatures, type CreatureCtx, type GroundItem } from '../creatures';
+import { AxehandleHound, Bigfoot, Gumberoo, Wildlife, DingbatRoost, GrannyTamarack, HOUND_SOUND, BIGFOOT_SOUND, GUMBEROO_SOUND, DINGBAT_SOUND, GRANNY_SOUND, giftMesh, preloadCreatures, spawnNewCryptids, type CreatureCtx, type GroundItem } from '../creatures';
 import { SPOTS, heightAt } from '../world/layout';
 import { audio } from '../audio/audio';
 import { SOUNDS } from '../audio/bank';
 import { hud } from '../ui/hud';
 import { floatText } from '../ui/float';
-import { makePhysical, propsNear, removeProp } from './physprops';
+import { makePhysical, propsNear, removeProp, type PhysProp } from './physprops';
 import { ITEMS } from './items';
 import { anchorPos } from './flow';
 
@@ -24,6 +24,26 @@ function playSound(id: string | undefined, pos: THREE.Vector3, vol = 1): void {
   const real = id in SOUNDS ? id : FALLBACK[id];
   if (real) audio.play(real, { pos, vol });
 }
+
+/** cryptid event -> the Book of Cryptids rule it teaches (rule ids from src/ui/bookofcryptids/bestiary.ts) */
+const CRYPTID_RULES: Record<string, Record<string, string>> = {
+  hodag: { growl: 'r0', bellow: 'r1', snap: 'r2', gore: 'r2', eat: 'r3', befriended: 'r4', stink: 'r5' },
+  squonk: { sob: 'r0', flee: 'r2', dissolve: 'r3', wail: 'r3', reform: 'r4', eat: 'r5', befriended: 'r5' },
+  hidebehind: { hiss: 'r0', glimpse: 'r1', creep: 'r2', attack: 'r2', repelled: 'r3', gag: 'r3', steal: 'r4' },
+  agropelter: { throw: 'r1', hit: 'r1', jeer: 'r2', eat: 'r3', befriended: 'r4', gift: 'r4' },
+  teakettler: { whistle: 'r0', back_away: 'r2', drink: 'r3', befriended: 'r4' },
+  wasset: { burrow: 'r0', popup: 'r1', nip: 'r2', dive: 'r3', eat: 'r4', befriended: 'r4' },
+};
+
+/** what the lumberjack thinks the first time (and now and then after) */
+const CRYPTID_LINES: Record<string, Record<string, string>> = {
+  hodag: { bellow: 'Something in the swamp just bellowed like a bull in a barrel.', snap: 'It stopped short. That was a warning.', gore: 'The horns. THE HORNS.', stink: 'What died in here? ...Oh. It\'s alive.', befriended: 'It rolled over. It wants its belly scratched.' },
+  squonk: { sob: 'Someone is crying out there.', dissolve: 'It... melted. It just cried itself into a puddle.', reform: 'The puddle is pulling itself back together.', befriended: 'It stopped crying. It\'s following me.' },
+  hidebehind: { creep: 'A twig snapped. Right behind me.', glimpse: 'Something just ducked behind that trunk.', hiss: 'Don\'t turn around. Turn around. Don\'t.', attack: 'Claws. Out of nowhere.', repelled: 'It doesn\'t like the light.', steal: 'The jerky\'s gone. Fair trade.' },
+  agropelter: { throw: 'Somebody up there is throwing branches at me.', hit: 'Ow. OW. Keep moving.', jeer: 'Is that tree laughing at me?', befriended: 'It dropped kindling instead of a branch. Progress.' },
+  teakettler: { whistle: 'A kettle boiling? Out here?', back_away: 'It walks backwards. Always watching.', befriended: 'It\'s following me, steaming like a pot.' },
+  wasset: { popup: 'The snow just stood up and looked at me.', nip: 'It\'s untying my bootlaces!', dive: 'Gone under like a diving duck.', befriended: 'It keeps popping up wherever I stop. I think it likes me.' },
+};
 
 export class Critters {
   hound: AxehandleHound | null = null;
@@ -45,23 +65,29 @@ export class Critters {
   private seenBigfoot = 0;
   introActive = false;
   private offerT = 5;
+  /** knocks taken from cryptids (decays); past 1 you black out */
+  private hurt = 0;
+  private said = new Map<string, number>();
+  /** food the player set down in the world, as ground items the creatures can find (id 'prop:N') */
+  private propItems = new Map<string, PhysProp>();
+  private propT = 0;
 
   constructor(private game: Game) {
     // any food held out goes to the creature you're looking at; each one has a favourite (see its offer())
     game.events.on('offer', (o: { item: string; obj: THREE.Object3D; taken: boolean }) => {
       const within = (root: THREE.Object3D | undefined) => { for (let p: THREE.Object3D | null = o.obj; p; p = p.parent) if (p === root) return true; return false; };
-      const item = o.item === 'syrup' ? 'maple_syrup' : o.item;
+      const old = o.item === 'syrup' ? 'maple_syrup' : o.item;
       const targets: [string, { object: THREE.Object3D; offer(i: string): boolean } | null][] = [
         ['hound', this.hound], ['bigfoot', this.bigfoot as never], ['granny', this.granny], ['gumberoo', this.gumberoo as never],
         ['dingbat', this.dingbats as never], ['wildlife', this.wildlife as never], ...this.extra.map((c) => [c.id, c] as [string, never]),
       ];
       for (const [id, c] of targets) {
         if (!c || !within(c.object)) continue;
-        if (!c.offer(item)) { hud.say(`<i>It sniffs the ${o.item} and turns away.</i>`, 2.5); return; }
+        if (!c.offer(this.extra.includes(c as never) ? o.item : old)) { hud.say(`<i>It sniffs the ${o.item} and turns away.</i>`, 2.5); return; }
         o.taken = true;
         this.kindness = Math.min(1, this.kindness + 0.2);
         game.journal.sawCritter(id);
-        game.journal.learn(id, 'food');
+        if (!this.extra.includes(c as never)) game.journal.learn(id, 'food');
         if (id === 'hound') { game.journal.learn('hound', 'jerky'); if (this.introActive) game.flags.add('hound_fed'); }
         return;
       }
@@ -100,6 +126,9 @@ export class Critters {
     const home = new THREE.Vector3(SPOTS.cabin.x, heightAt(SPOTS.cabin.x, SPOTS.cabin.z), SPOTS.cabin.z);
     this.granny = new GrannyTamarack({ home, secrets: ['chanterelles', 'lost_axe', 'bigfoot_stump'] });
     this.game.scene.add(this.granny.object);
+    await yieldFrame();
+    // the six from the old camp stories: hodag, squonk, hidebehind, agropelter, teakettler, snow wasset
+    for (const c of spawnNewCryptids(this.game.scene)) this.extra.push(c);
   }
 
   dropItem(kind: string, pos: THREE.Vector3, obj?: THREE.Object3D): string {
@@ -144,6 +173,8 @@ export class Critters {
         if (i < 0) return false;
         const it = this.items[i];
         this.items.splice(i, 1);
+        const pp = this.propItems.get(id);
+        if (pp) { this.propItems.delete(id); removeProp(pp); return true; }
         const o = this.itemObjs.get(id);
         if (o) {
           this.itemObjs.delete(id);
@@ -165,6 +196,48 @@ export class Critters {
     return s.x || 1;
   }
 
+  /** the six from the camp stories: hurt the player, teach the Book, think out loud (sparingly) */
+  private onCryptid(ev: string, who: string, pos: THREE.Vector3, data: Record<string, unknown>): void {
+    const g = this.game, near = g.player.pos.distanceTo(pos) < 45;
+    const rule = CRYPTID_RULES[who][ev];
+    if (near) { g.journal.sawCritter(who); if (rule) g.journal.learn(who, rule); }
+    const imp = data.impulse as THREE.Vector3 | undefined, dmg = (data.damage as number | undefined) ?? 0;
+    if (dmg > 0) {
+      g.R.fx.damage = Math.max(g.R.fx.damage, Math.min(1, 0.4 + dmg * 1.6));
+      if (imp) g.player.vel.add(imp);
+      g.player.addShake(0.6 + dmg * 3);
+      g.survival.spend(dmg);
+      this.hurt += dmg;
+      if (this.hurt >= 1) { this.hurt = 0; this.think('blackout', 'Everything goes grey at the edges...', 0); g.blackout(); return; }
+    }
+    if (ev === 'nip') { g.player.addShake(0.25); g.survival.spend(0.03); }
+    const line = CRYPTID_LINES[who]?.[ev];
+    if (line && near) this.think(`${who}:${ev}`, line, ev === 'gore' || ev === 'attack' || ev === 'hit' ? 12 : 90);
+  }
+
+  /** a floating thought, at most once per `every` seconds per key (0: always) */
+  private think(key: string, text: string, every: number): void {
+    const now = performance.now() / 1000, t = this.said.get(key);
+    if (every && t !== undefined && now - t < every) return;
+    this.said.set(key, now);
+    floatText.say(text, { kind: 'thought', dur: 3.5 });
+  }
+
+  /** mirror food the player has set down nearby into the creatures' ground items */
+  private syncPropItems(): void {
+    for (const id of this.propItems.keys()) { const i = this.items.findIndex((x) => x.id === id); if (i >= 0) this.items.splice(i, 1); }
+    this.propItems.clear();
+    let n = 0;
+    for (const p of propsNear(this.game.player.pos, 70)) {
+      if (!p.itemId || p.obj.userData.unpaid || !ITEMS[p.itemId]?.food) continue;
+      let root: THREE.Object3D = p.obj; while (root.parent) root = root.parent;
+      if (root !== this.game.scene) continue; // in the hands, not on the ground
+      const id = `prop:${n++}`;
+      this.propItems.set(id, p);
+      this.items.push({ id, kind: p.itemId, pos: p.obj.getWorldPosition(new THREE.Vector3()) });
+    }
+  }
+
   private onEvent(ev: string, data?: Record<string, unknown>): void {
     const pos = (data?.pos as THREE.Vector3 | undefined) ?? this.hound?.object.position ?? this.game.player.pos;
     const who = data?.who as string | undefined;
@@ -172,6 +245,7 @@ export class Critters {
     const snd = data?.sound as string | undefined ?? table[ev];
     playSound(snd ?? ({ eat: who === 'hound' ? 'hound_chew' : 'eat_crunch', chew: who === 'hound' ? 'hound_chew' : 'eat_chew', happy: who === 'hound' ? 'hound_yip' : who === 'bigfoot' ? 'bigfoot_grunt' : who === 'gumberoo' ? 'gumberoo_squeak' : undefined, shake: 'foliage_rustle' } as Record<string, string | undefined>)[ev], pos);
     if (ev === 'happy') floatText.pop('♥', pos.clone().add(new THREE.Vector3(0, 1.2, 0)), '#ffb0a0');
+    if (who && who in CRYPTID_RULES) { this.onCryptid(ev, who, pos, data ?? {}); return; }
     const jr = this.game.journal;
     if (who === 'dingbat' && ev === 'screech') jr.sawCritter('dingbat');
     if (who === 'granny') {
@@ -289,6 +363,8 @@ export class Critters {
   update(dt: number): void {
     const g = this.game;
     if (!this.hound && !this.bigfoot) return;
+    this.propT -= dt;
+    if (this.propT <= 0) { this.propT = 0.5; this.syncPropItems(); }
     const ctx = this.ctx(dt);
     if (this.hound) {
       const h = this.hound;
@@ -319,7 +395,12 @@ export class Critters {
       if (d < 260) this.gumberoo.update(ctx);
     }
     this.wildlife?.update(ctx);
-    for (const c of this.extra) c.update(ctx);
+    this.hurt = Math.max(0, this.hurt - dt * 0.01);
+    for (const c of this.extra) {
+      const d = c.object.position.distanceTo(g.player.pos);
+      c.object.visible = d < 220;
+      if (d < 220) c.update(ctx);
+    }
     if (this.dingbats) { const d = this.dingbats.object.position.distanceTo(g.player.pos); this.dingbats.object.visible = d < 120; if (d < 120) this.dingbats.update(ctx); }
     if (this.granny) this.granny.update(ctx);
     // food left out by the hollow is gone by morning: the big one noticed

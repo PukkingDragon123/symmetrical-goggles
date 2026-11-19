@@ -20,7 +20,7 @@ import { Survival, Stove, outdoorTemp } from './survival';
 import { ITEMS, type ToolStats } from './items';
 import { initialContracts, type Contract } from './contracts';
 import { registerInteractable } from './interact';
-import { Journal } from '../ui/journal';
+import { BookOfCryptids } from '../ui/bookofcryptids';
 import { hud } from '../ui/hud';
 import { audio } from '../audio/audio';
 import type { Jeep } from '../vehicles/jeep';
@@ -61,7 +61,7 @@ export class Game {
   readonly chop: ChopSystem;
   readonly survival = new Survival();
   readonly stove = new Stove();
-  readonly journal = new Journal();
+  readonly journal = new BookOfCryptids();
   readonly wfx = new WeatherFx();
   readonly pack = new PackUI((id) => this.toolModel(id));
   private packMouse: [number, number] = [0, 0];
