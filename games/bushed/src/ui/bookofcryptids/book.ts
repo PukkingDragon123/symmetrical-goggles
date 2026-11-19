@@ -280,7 +280,6 @@ export class BookOfCryptids {
 
   private paint(i: number, v = this.view(), ver = this.ver): Painted {
     const c = this.cache.get(i);
-    if (c && c.ver === ver && v === undefined) return c.p;
     if (c && c.ver === ver) return c.p;
     const kind = this.pages[i] ?? { k: 'blank' as const };
     const p = paintPage(kind, i % 2 ? 'R' : 'L', v, i, () => { if (this.cache.get(i)?.p.pending) { this.cache.delete(i); this.shown = { L: -1, R: -1, F: -1, B: -1 }; } });
@@ -424,7 +423,7 @@ export class BookOfCryptids {
       this.startWriting();
       this.show('L', this.page); this.show('R', this.page + 1);
     }
-    q.through = this.pages.length > 2 ? Math.min(1, Math.max(0, (this.page + (q.turn ?? 0) * 2 * (this.turnDir || 1) * 0) / (this.pages.length - 2))) : 0.5;
+    q.through = this.pages.length > 2 ? Math.min(1, Math.max(0, this.page / (this.pages.length - 2))) : 0.5;
     // ink being written
     for (const w of this.writing) {
       w.t += dt;
@@ -451,7 +450,7 @@ export class BookOfCryptids {
     q.squint = Math.max(grum, this.writing.length ? 0.35 : 0, lick > 0 ? 0.6 : 0);
     this.lookHold -= dt;
     if (this.lookHold <= 0) this.lookAt = null;
-    q.look = this.lookAt ? this.object.worldToLocal(this.lookAt.clone()) : null;
+    q.look = this.lookAt ? this.model.object.worldToLocal(this.lookAt.clone()) : null;
     // grumbling when left alone too long
     if (this.openFlag && this.o > 0.95) {
       this.grumbleIn -= dt;

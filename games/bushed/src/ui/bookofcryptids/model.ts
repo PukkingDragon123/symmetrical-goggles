@@ -595,7 +595,10 @@ export class GrimoireModel {
     g.computeBoundingSphere();
   }
 
+  private strapLast = -1;
   private strapUpdate(closed: number): void {
+    if (Math.abs(closed - this.strapLast) < 1e-4 && this.straps[0].mesh.geometry.getAttribute('position')) return;
+    this.strapLast = closed;
     const mR = this.rightPivot.matrix;
     const mL = this._m.multiplyMatrices(this.leftPivot.matrix, this.leftHalf.matrix);
     for (const st of this.straps) {
@@ -684,7 +687,8 @@ export class GrimoireModel {
     if (this.coverEye) {
       const ce = this.coverEye;
       const shut = Math.max(q.blink, smooth(clamp01(o * 2.2)));
-      const local = this.object.localToWorld(look.clone());
+      // it stares at you, whatever the other two are looking at
+      const local = new THREE.Vector3(0, 0, 0);
       ce.holder.updateMatrixWorld();
       const dir = ce.holder.worldToLocal(local).normalize();
       // the iris faces the ball's +z; here the eye looks out along the holder's +y

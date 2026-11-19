@@ -391,6 +391,8 @@ export class Game {
   }
 
   lastSwingAt = -1e9;
+  /** the last rifle shot (every creature for a kilometre hears it) */
+  lastShotAt = -1e9;
 
   swing(tool: ToolStats, charge: number, origin: THREE.Vector3, dir: THREE.Vector3, swingDir: THREE.Vector3): void {
     this.lastSwingAt = performance.now();

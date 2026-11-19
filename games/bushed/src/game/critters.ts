@@ -129,7 +129,7 @@ export class Critters {
     return {
       dt, time: performance.now() / 1000, hour: g.hour,
       player: {
-        pos: p.pos.clone(), dir, held: heldKind, crouch: p.crouch, noise: Math.min(1, p.speed / 5 + (g.hands?.charging ? 0.3 : 0) + (performance.now() - g.lastSwingAt < 500 ? 0.4 : 0)),
+        pos: p.pos.clone(), dir, held: heldKind, crouch: p.crouch, noise: Math.min(1, p.speed / 5 + (g.hands?.charging ? 0.3 : 0) + (performance.now() - g.lastSwingAt < 500 ? 0.4 : 0) + (performance.now() - g.lastShotAt < 2500 ? 1 : 0)),
         light: g.flashOn, speed, action: performance.now() - g.lastSwingAt < 450 ? 'swing' : g.hands?.charging ? 'chop' : undefined,
       },
       fires: g.fires.filter((f) => f.level() > 0.1).map((f) => f.pos),

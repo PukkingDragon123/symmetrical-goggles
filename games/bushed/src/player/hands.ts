@@ -47,7 +47,7 @@ type Held =
   | { kind: 'drag'; obj: THREE.Object3D; piece: WoodPiece; anchor: RAPIER.RigidBody; joint: RAPIER.ImpulseJoint };
 
 const TOOL_KEYS: Record<string, string[]> = {
-  Digit1: ['axe_felling', 'axe_old', 'axe_splitting'], Digit2: ['hatchet'], Digit3: ['maul', 'bucksaw', 'axe_splitting'], Digit4: ['flashlight'], Digit5: ['jerky'],
+  Digit1: ['axe_felling', 'axe_old', 'axe_splitting'], Digit2: ['hatchet'], Digit3: ['maul', 'bucksaw', 'axe_splitting'], Digit4: ['flashlight'], Digit5: ['jerky'], Digit6: ['rifle'],
 };
 
 export class Hands {

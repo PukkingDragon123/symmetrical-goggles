@@ -23,6 +23,7 @@ import { Pause } from './ui/pause';
 import { floatText } from './ui/float';
 import { QUALITY, guessQuality, storedQuality, storeQuality, applyRuntime, type QualityName } from './game/quality';
 import { spawnNpcs } from './game/npcs';
+import { install as installHunting } from './game/hunting';
 import { Forest } from './world/forest';
 import { GroundCover } from './world/groundcover';
 import { treeMaterials } from './trees/materials';
@@ -120,6 +121,8 @@ async function boot() {
   cabinPlay.attach();
   const storePlay = new StorePlay(game, (n, c) => cabinPlay.act(n, c));
   await step('store play', async () => storePlay.attach());
+  await step('hunting', async () => { await installHunting(game, { hotkey: null } as never); });
+  game.events.on('gunshot', () => { game.lastShotAt = performance.now(); });
   applyRuntime(game.quality, game.R.gl, game.scene, game.sky.sun);
   const critters = new Critters(game);
   await step('creatures', () => critters.spawn());
