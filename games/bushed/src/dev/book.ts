@@ -164,7 +164,7 @@ async function firstPerson() {
     const fwd = camera.getWorldDirection(new THREE.Vector3());
     if (book.open && fwd.angleTo(v.clone().sub(camera.position)) < 0.3 && v.distanceTo(camera.position) < 24) {
       book.look(v.clone().applyMatrix4(camera.matrixWorldInverse), 0.4);
-      tasteT += dt; book.tasting = Math.min(1, tasteT / 1.4);
+      tasteT += dt; book.tasting = book.tastedIt(who) ? 0 : Math.min(1, tasteT / 1.4);
       if (tasteT > 1.4 && !book.tastedIt(who)) { book.observe(who, { dist: v.distanceTo(camera.position) }); }
     } else { tasteT = 0; book.tasting = 0; }
     arms.update(dt, { speed: 0, sprint: false, crouch: false, breath: 0.1, shiver: 0, aimPitch: pitch, swingCharge: 0 });
