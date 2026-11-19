@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BUSHED inventory</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; color: #e8dcc8; }
+    #game { width: 100vw; height: 100vh; display: block; image-rendering: pixelated; cursor: none; }
+    #ui { position: fixed; inset: 0; pointer-events: none; }
+    #help { position: fixed; left: 10px; bottom: 8px; font: 16px Alagard, monospace; color: #cdbf9f; text-shadow: 0 2px 0 #000; opacity: .8; }
+    body.shot #help { display: none; }
+    #sheet { position: fixed; inset: 0; background: #2a2119; display: none; overflow: auto; padding: 16px; box-sizing: border-box; }
+    #sheet .cell { display: inline-block; width: 150px; margin: 4px; text-align: center; font: 16px Alagard, monospace; color: #e9dcc0; vertical-align: top; }
+    #sheet canvas { image-rendering: pixelated; background: #3b2f24; display: block; margin: 0 auto 4px; }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="ui"></div>
+  <div id="sheet"></div>
+  <div id="help">I  open / close     drag  move     R  rotate     RMB  use / take     Q  drop     shift-click  quick move     T  tidy</div>
+  <script type="module" src="./src/dev/inventory.ts"></script>
+</body>
+</html>

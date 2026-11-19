@@ -1,0 +1,21 @@
+{
+ "source": "https://polyhaven.com/a/bolt_action_rifle_7_62",
+ "licence": "CC0",
+ "offsets": {
+  "bolt_action_rifle_7_62": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "bolt_action_rifle_7_62_bolt": [
+   -0.21803,
+   0.12383,
+   0.01779
+  ],
+  "bolt_action_rifle_7_62_round": [
+   -0.18113,
+   0.04689,
+   0.00245
+  ]
+ }
+}

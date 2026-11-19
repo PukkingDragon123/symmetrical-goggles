@@ -2361,6 +2361,155 @@
    "license": "CC0 1.0",
    "archive": "zip",
    "sha256": "6d251aeaaaa9c2fffed8fc2f64bab3104725ceabf9259a8441994e7a20cfe22f"
+  },
+  "bsb_0397": {
+   "site": "bigsoundbank.com",
+   "title": "Shot of Winchester Magnum XTR",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/shot-of-winchester-magnum-xtr-s0397.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0397.wav",
+   "license": "CC0 1.0",
+   "desc": "One shot of Winchester Magnum XTR model.",
+   "sha256": "1731564e3fc12f928ef8037937d2e17b1091f298c487ba96d8cad9da98237e79"
+  },
+  "bsb_2853": {
+   "site": "bigsoundbank.com",
+   "title": "Rifle shot #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/rifle-shot-1-s2853.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/2853.wav",
+   "license": "CC0 1.0",
+   "desc": "A shotgun shot, recorded during a clay pigeon shoot. Echo of the shot in the plain.",
+   "sha256": "e521fdb2c48ba54b7ba1e51b864891b70e2f64724dac5575fb36c36a42a8cd11"
+  },
+  "bsb_2854": {
+   "site": "bigsoundbank.com",
+   "title": "Rifle shot #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/rifle-shot-2-s2854.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/2854.wav",
+   "license": "CC0 1.0",
+   "desc": "A shotgun shot, recorded during a clay pigeon shoot. Echo of the shot in the plain.",
+   "sha256": "55baf467d3e5b1a9faded470d538aaebe213aae402f47fbc409a640261a238df"
+  },
+  "bsb_1984": {
+   "site": "bigsoundbank.com",
+   "title": "Pistol cocking #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pistol-cocking-1-s1984.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1984.wav",
+   "license": "CC0 1.0",
+   "desc": "Pistol cocking.",
+   "sha256": "e017942eaeb58280dec5e0d55e6d8cb7ec150ffe658b866a6af002905d98549c"
+  },
+  "bsb_1985": {
+   "site": "bigsoundbank.com",
+   "title": "Pistol cocking #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pistol-cocking-2-s1985.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1985.wav",
+   "license": "CC0 1.0",
+   "desc": "Pistol cocking.",
+   "sha256": "36bd10b656553a253801a25ce63b4135564b422fce2a834e1eb00398fe4eec05"
+  },
+  "bsb_1988": {
+   "site": "bigsoundbank.com",
+   "title": "Gun loading #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/gun-loading-1-s1988.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1988.wav",
+   "license": "CC0 1.0",
+   "desc": "Loading of a semi-automatic pistol magazine.",
+   "sha256": "4f752adea78fc7a3aa6c06a13dbd563eadb7c0a5e4d083748306f79b8a963265"
+  },
+  "bsb_1994": {
+   "site": "bigsoundbank.com",
+   "title": "Pistol disarming hammer #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/pistol-disarming-hammer-1-s1994.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1994.wav",
+   "license": "CC0 1.0",
+   "desc": "Manual disarming of the hammer with a semi-automatic pistol.",
+   "sha256": "35127006f22b12be93eca1de7cf5776e13fe21b3fb328d88ded4c04d99e8f7f1"
+  },
+  "bsb_1367": {
+   "site": "bigsoundbank.com",
+   "title": "Bullet case 7.62mm on concrete #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bullet-case-7-62mm-on-concrete-1-s1367.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1367.wav",
+   "license": "CC0 1.0",
+   "desc": "A 7.62 mm bullet case falling on concrete.",
+   "sha256": "32b91f41785d61b68a5174a231314d8912c7065f263bd13ff30260dbd7f770df"
+  },
+  "bsb_1368": {
+   "site": "bigsoundbank.com",
+   "title": "Bullet case 7.62mm on concrete #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bullet-case-7-62mm-on-concrete-2-s1368.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1368.wav",
+   "license": "CC0 1.0",
+   "desc": "A 7.62 mm bullet case falling on concrete.",
+   "sha256": "a03d377323bfd1ad2f3d453ebcf78e016aa5b2588655e793a6687a38d559f4ab"
+  },
+  "bsb_0285": {
+   "site": "bigsoundbank.com",
+   "title": "Breath of a horse #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breath-of-a-horse-1-s0285.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0285.wav",
+   "license": "CC0 1.0",
+   "desc": "A horse blowing through its nose.",
+   "sha256": "56e93bef3255e356d9a51bdb14f95e228d9e40b83f0a0bc226100a60a944bcab"
+  },
+  "bsb_0286": {
+   "site": "bigsoundbank.com",
+   "title": "Breath of a horse #2",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breath-of-a-horse-2-s0286.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0286.wav",
+   "license": "CC0 1.0",
+   "desc": "A horse blowing through its nose.",
+   "sha256": "5d54df9bdbacf45a57625cef944130d32f77b16284ed8154ffe930cedf5261be"
+  },
+  "bsb_1543": {
+   "site": "bigsoundbank.com",
+   "title": "Breath horse #4",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/breath-horse-4-s1543.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1543.wav",
+   "license": "CC0 1.0",
+   "desc": "A horse blowing through its nose.",
+   "sha256": "45f3458b4028b28ddf40456e921a76b4d834f87c268db760cf7cef32ddb54db7"
+  },
+  "bsb_1247": {
+   "site": "bigsoundbank.com",
+   "title": "Bread knife #1",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/bread-knife-1-s1247.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/1247.wav",
+   "license": "CC0 1.0",
+   "desc": "Cutting with a bread knife.",
+   "sha256": "102354c3abb1bdb01b87bd4e89f5045b57aa7ada3cbb807a77670c930641f887"
+  },
+  "wm_moose_mate": {
+   "site": "commons.wikimedia.org",
+   "title": "Moose mate (Moose_mate.ogg)",
+   "author": "Bwells",
+   "page": "https://commons.wikimedia.org/wiki/File:Moose_mate.ogg",
+   "url": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Moose_mate.ogg",
+   "license": "Public domain (PD-self)",
+   "desc": "Remote camera recording of moose in the mating season."
+  },
+  "bsb_0546": {
+   "site": "bigsoundbank.com",
+   "title": "Cow moos",
+   "author": "Joseph Sardin",
+   "page": "https://bigsoundbank.com/cow-moos-s0546.html",
+   "url": "https://bigsoundbank.com/UPLOAD/bwf-en/0546.wav",
+   "license": "CC0 1.0",
+   "desc": "Cow mooing.",
+   "sha256": "a76075ae826b7a38c26ebadbdd4526ba156c1970247c89afb1d0587b73f6f4d0"
   }
  },
  "events": {
@@ -8950,6 +9099,503 @@
     }
    ],
    "hpf": 250
+  },
+  "rifle_shot": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": false,
+   "refDist": 4,
+   "maxDist": 2500,
+   "rateJitter": 0.03,
+   "loud": -7,
+   "vol": 1.0,
+   "len": 3.2,
+   "lenfade": 1.2,
+   "layers": [
+    {
+     "src": "bsb_0397",
+     "t": 0.97,
+     "d": 2.2,
+     "fo": 0.8
+    },
+    {
+     "synth": "thump",
+     "f": 130,
+     "f1": 38,
+     "d": 0.7,
+     "decay": 0.16,
+     "click": 0.5,
+     "gain": -2
+    },
+    {
+     "src": "bsb_2853",
+     "t": 0.0,
+     "d": 1.1,
+     "gain": -7,
+     "hp": 120
+    }
+   ],
+   "fx": [
+    {
+     "t": "comp",
+     "thr": -14,
+     "ratio": 4,
+     "att": 0.001,
+     "rel": 0.15
+    },
+    {
+     "t": "reverb",
+     "rt": 2.2,
+     "mix": 0.18,
+     "lp": 3200,
+     "pre": 0.03,
+     "er": true
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "pitch": 0.96,
+     "2.src": "bsb_2854"
+    },
+    {
+     "pitch": 1.03,
+     "1.f": 150
+    }
+   ]
+  },
+  "rifle_echo": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": false,
+   "refDist": 4,
+   "maxDist": 3000,
+   "rateJitter": 0.04,
+   "loud": -17,
+   "vol": 0.9,
+   "len": 6.0,
+   "lenfade": 2.5,
+   "layers": [
+    {
+     "src": "bsb_2853",
+     "t": 0.06,
+     "d": 1.05,
+     "pitch": 0.82,
+     "lp": 1400,
+     "fi": 0.02
+    },
+    {
+     "src": "bsb_2854",
+     "t": 0.05,
+     "d": 1.05,
+     "pitch": 0.74,
+     "lp": 900,
+     "at": 0.65,
+     "gain": -5,
+     "fi": 0.05
+    },
+    {
+     "src": "bsb_2853",
+     "t": 0.05,
+     "d": 1.05,
+     "pitch": 0.66,
+     "lp": 600,
+     "at": 1.5,
+     "gain": -10,
+     "fi": 0.08
+    },
+    {
+     "synth": "rumble",
+     "d": 4.2,
+     "cut": 110,
+     "rate": 2.0,
+     "gain": -4,
+     "at": 0.15
+    }
+   ],
+   "fx": [
+    {
+     "t": "reverb",
+     "rt": 4.5,
+     "mix": 0.7,
+     "lp": 1800,
+     "pre": 0.08,
+     "er": false
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "pitch": 0.92,
+     "1.at": 0.85,
+     "2.at": 1.9
+    }
+   ]
+  },
+  "rifle_bolt_open": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": false,
+   "refDist": 1,
+   "maxDist": 30,
+   "rateJitter": 0.05,
+   "loud": -15,
+   "vol": 0.9,
+   "len": 0.5,
+   "layers": [
+    {
+     "src": "bsb_1984",
+     "t": 0.02,
+     "d": 0.3,
+     "pitch": 0.78,
+     "fo": 0.06
+    },
+    {
+     "src": "bsb_1985",
+     "t": 0.06,
+     "d": 0.14,
+     "pitch": 0.7,
+     "at": 0.12,
+     "gain": -4,
+     "fo": 0.05
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "pitch": 0.94
+    }
+   ]
+  },
+  "rifle_bolt_close": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": false,
+   "refDist": 1,
+   "maxDist": 30,
+   "rateJitter": 0.05,
+   "loud": -14,
+   "vol": 0.9,
+   "len": 0.4,
+   "layers": [
+    {
+     "src": "bsb_1984",
+     "t": 1.42,
+     "d": 0.2,
+     "pitch": 0.72,
+     "fo": 0.06
+    },
+    {
+     "src": "bsb_1994",
+     "t": 0.09,
+     "d": 0.12,
+     "pitch": 0.8,
+     "at": 0.11,
+     "gain": -3
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "pitch": 0.95
+    }
+   ]
+  },
+  "rifle_dry": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": false,
+   "refDist": 1,
+   "maxDist": 15,
+   "rateJitter": 0.05,
+   "loud": -20,
+   "vol": 0.8,
+   "len": 0.25,
+   "layers": [
+    {
+     "src": "bsb_1994",
+     "t": 0.08,
+     "d": 0.16,
+     "pitch": 0.85
+    }
+   ]
+  },
+  "rifle_load": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": false,
+   "refDist": 1,
+   "maxDist": 15,
+   "rateJitter": 0.06,
+   "loud": -20,
+   "vol": 0.8,
+   "len": 0.45,
+   "layers": [
+    {
+     "src": "bsb_1988",
+     "t": 0.28,
+     "d": 0.32,
+     "pitch": 0.85
+    }
+   ]
+  },
+  "shell_drop": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": true,
+   "refDist": 1,
+   "maxDist": 18,
+   "rateJitter": 0.08,
+   "loud": -24,
+   "vol": 0.7,
+   "len": 0.6,
+   "layers": [
+    {
+     "src": "bsb_1367",
+     "t": 0.06,
+     "d": 0.5,
+     "lp": 4200,
+     "pitch": 0.92,
+     "fo": 0.2
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "0.src": "bsb_1368"
+    }
+   ]
+  },
+  "deer_snort": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": true,
+   "refDist": 6,
+   "maxDist": 260,
+   "rateJitter": 0.05,
+   "loud": -11,
+   "vol": 1.0,
+   "len": 0.7,
+   "layers": [
+    {
+     "src": "bsb_0285",
+     "t": 0.08,
+     "d": 0.36,
+     "pitch": 1.3,
+     "bp": [
+      350,
+      4200
+     ],
+     "fo": 0.12
+    },
+    {
+     "src": "bsb_1602",
+     "t": 0.27,
+     "d": 0.24,
+     "pitch": 1.15,
+     "hp": 500,
+     "gain": -3,
+     "fo": 0.1
+    }
+   ],
+   "fx": [
+    {
+     "t": "reverb",
+     "rt": 1.6,
+     "mix": 0.15,
+     "lp": 3000,
+     "pre": 0.02
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "0.src": "bsb_0286",
+     "0.t": 0.18
+    },
+    {
+     "0.src": "bsb_1543",
+     "0.t": 0.12,
+     "0.d": 0.3,
+     "pitch": 1.08
+    }
+   ]
+  },
+  "deer_stomp": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": true,
+   "refDist": 3,
+   "maxDist": 70,
+   "rateJitter": 0.08,
+   "loud": -18,
+   "vol": 0.8,
+   "len": 0.35,
+   "layers": [
+    {
+     "synth": "thump",
+     "f": 95,
+     "f1": 42,
+     "d": 0.3,
+     "decay": 0.06,
+     "click": 0.15
+    },
+    {
+     "src": "bsb_2452",
+     "t": 0.07,
+     "d": 0.25,
+     "lp": 700,
+     "pitch": 1.2,
+     "gain": -5
+    }
+   ]
+  },
+  "moose_call": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": true,
+   "refDist": 25,
+   "maxDist": 900,
+   "rateJitter": 0.04,
+   "loud": -13,
+   "vol": 1.0,
+   "len": 2.6,
+   "lenfade": 0.5,
+   "layers": [
+    {
+     "src": "bsb_0546",
+     "t": 0.75,
+     "d": 1.6,
+     "pitch": 0.8,
+     "lp": 1300,
+     "hp": 90,
+     "fi": 0.08,
+     "fo": 0.35,
+     "stretch": 1.15
+    }
+   ],
+   "fx": [
+    {
+     "t": "reverb",
+     "rt": 3.2,
+     "mix": 0.32,
+     "lp": 2400,
+     "pre": 0.05,
+     "er": false
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "0.t": 3.66,
+     "pitch": 0.94
+    },
+    {
+     "0.t": 6.25,
+     "pitch": 0.88
+    }
+   ]
+  },
+  "moose_grunt": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": true,
+   "refDist": 10,
+   "maxDist": 300,
+   "rateJitter": 0.06,
+   "loud": -14,
+   "vol": 0.9,
+   "len": 0.6,
+   "layers": [
+    {
+     "src": "bsb_0546",
+     "t": 0.8,
+     "d": 0.32,
+     "pitch": 0.62,
+     "lp": 700,
+     "fo": 0.12
+    },
+    {
+     "synth": "thump",
+     "f": 70,
+     "f1": 45,
+     "d": 0.3,
+     "decay": 0.12,
+     "gain": -9
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "0.t": 3.72
+    },
+    {
+     "0.t": 6.33,
+     "pitch": 0.94
+    }
+   ]
+  },
+  "field_dress": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": true,
+   "refDist": 1.5,
+   "maxDist": 20,
+   "rateJitter": 0.06,
+   "loud": -18,
+   "vol": 0.8,
+   "len": 0.6,
+   "layers": [
+    {
+     "src": "bsb_1247",
+     "t": 0.02,
+     "d": 0.48,
+     "lp": 2600,
+     "pitch": 0.8,
+     "fo": 0.1
+    }
+   ],
+   "vary": [
+    {},
+    {
+     "0.t": 0.63
+    },
+    {
+     "0.t": 2.5
+    },
+    {
+     "0.t": 3.17
+    }
+   ]
+  },
+  "bullet_hit": {
+   "dir": "hunting",
+   "cat": "sfx",
+   "spatial": true,
+   "refDist": 4,
+   "maxDist": 120,
+   "rateJitter": 0.08,
+   "loud": -15,
+   "vol": 0.9,
+   "len": 0.3,
+   "layers": [
+    {
+     "synth": "thump",
+     "f": 160,
+     "f1": 60,
+     "d": 0.22,
+     "decay": 0.04,
+     "click": 0.6
+    },
+    {
+     "src": "bsb_2452",
+     "t": 0.08,
+     "d": 0.18,
+     "lp": 1200,
+     "pitch": 1.4,
+     "gain": -4
+    }
+   ]
   }
  }
 }
