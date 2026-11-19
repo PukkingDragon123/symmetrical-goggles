@@ -1,0 +1,122 @@
+{
+ "density": 256,
+ "sources": {
+  "burned_ground_01": "https://polyhaven.com/a/burned_ground_01",
+  "dark_rock_02": "https://polyhaven.com/a/dark_rock_02",
+  "dirt_floor": "https://polyhaven.com/a/dirt_floor",
+  "metal_plate": "https://polyhaven.com/a/metal_plate",
+  "old_sandstone_02": "https://polyhaven.com/a/old_sandstone_02",
+  "red_bricks_04": "https://polyhaven.com/a/red_bricks_04",
+  "rust_coarse_01": "https://polyhaven.com/a/rust_coarse_01"
+ },
+ "textures": {
+  "anvil": {
+   "normal": true,
+   "note": "rust_coarse_01 as mill scale",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    0.5,
+    0.5
+   ]
+  },
+  "anvil_face": {
+   "normal": true,
+   "note": "procedural polished steel",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    0.4,
+    0.4
+   ]
+  },
+  "ash": {
+   "normal": true,
+   "note": "burned_ground_01 as ash",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    0.6,
+    0.6
+   ]
+  },
+  "brick": {
+   "normal": true,
+   "note": "red_bricks_04",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "brick_soot": {
+   "normal": true,
+   "note": "red_bricks_04 sooted",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "cinder_floor": {
+   "normal": true,
+   "note": "dirt_floor + burned_ground_01",
+   "px": [
+    512,
+    512
+   ],
+   "tile": [
+    2.0,
+    2.0
+   ]
+  },
+  "coal": {
+   "normal": true,
+   "note": "dark_rock_02 as coal",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    0.25,
+    0.25
+   ]
+  },
+  "firebrick": {
+   "normal": true,
+   "note": "red_bricks_04 as fire brick",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    1.0,
+    1.0
+   ]
+  },
+  "sandstone": {
+   "normal": true,
+   "note": "old_sandstone_02 palette, procedural grain",
+   "px": [
+    256,
+    256
+   ],
+   "tile": [
+    0.5,
+    0.5
+   ]
+  }
+ }
+}

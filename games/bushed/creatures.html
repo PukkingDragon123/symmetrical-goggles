@@ -6,6 +6,7 @@
   <title>BUSHED creatures</title>
   <style>
     html, body { margin: 0; height: 100%; background: #0d0f0e; color: #d8d2c0; font: 13px/1.35 ui-monospace, Menlo, Consolas, monospace; overflow: hidden; }
+    body.clean #ui { display: none; }
     #ui { position: absolute; top: 8px; left: 8px; background: rgba(10, 12, 11, 0.78); padding: 8px 10px; border: 1px solid #333; max-width: 340px; }
     #ui label { display: inline-block; margin-right: 8px; }
     #ui select, #ui button { background: #1c201e; color: #d8d2c0; border: 1px solid #444; font: inherit; margin: 2px 0; }
@@ -25,7 +26,13 @@
       <label><input type="checkbox" id="spin" checked /> turntable</label>
       <label><input type="checkbox" id="ai" /> AI demo</label>
       <label><input type="checkbox" id="wire" /> wire</label>
+      <label><input type="checkbox" id="fur" checked /> fur</label>
     </div>
+    <div>
+      <label>mood <select id="mood"><option value="">(AI)</option><option>neutral</option><option>happy</option><option>joy</option><option>angry</option><option>scared</option><option>curious</option><option>pleading</option><option>sad</option><option>sleepy</option><option>eating</option></select></label>
+      <label>wind <input type="range" id="wind" min="0" max="1" step="0.05" value="0.35" style="width:80px" /></label>
+    </div>
+    <div><button id="offer">offer favourite food</button> <button id="shake">shake</button> <button id="wet">wet</button> <button id="snow">snow</button></div>
     <div id="anims"></div>
     <div id="info">building...</div>
   </div>

@@ -319,6 +319,20 @@ export function houndClips(bones: BoneDef[]): Record<string, Clip> {
         tail(p, t, { amp: 0.4, freq: 2.2, lift: 0.5 });
       },
     },
+    shake: {
+      // a wet-dog shake: it starts at the head and rolls back down the long body to the tail; the coat flies
+      loop: true, dur: 1.4, fade: 0.12,
+      fn: (p, t) => {
+        const c = t % 1.4, e = env(c, 0, 0.12, 1.0, 1.35), w = t * 6.5 * TAU;
+        p.t[1] -= 0.015 * e; p.rr[2] += 0.1 * e * sin(w - 1.3);
+        R(p, B.head, 0.05 * e, 0.45 * e * sin(w), 0.4 * e * sin(w)); R(p, B.neck2, 0, 0.28 * e * sin(w - 0.5)); R(p, B.neck, 0.08 * e, 0.2 * e * sin(w - 0.9));
+        R(p, B.chest, 0, 0.1 * e * sin(w - 1.3), 0.22 * e * sin(w - 1.3)); R(p, B.loin, 0, 0.14 * e * sin(w - 1.8), 0.3 * e * sin(w - 1.8)); R(p, B.pelvis, 0, 0.14 * e * sin(w - 2.3), 0.26 * e * sin(w - 2.3));
+        foot(p, FL, 0.02, 0, 0.01); foot(p, FR, -0.02, 0, 0.01); foot(p, HL, 0.02, 0, 0); foot(p, HR, -0.02, 0, 0);
+        R(p, B.jaw, 0.06 * e);
+        tail(p, t, { amp: 0.9 * e + 0.1, freq: 6.5, lift: 0.1, lag: 0.4 });
+        p.c[CH_BLINK] = 0.75 * e;
+      },
+    },
     sleep: {
       // curled nose to tail by the stove, lying on its side, slow breaths, a dreaming twitch now and then
       loop: true, dur: 11, fade: 1.2,

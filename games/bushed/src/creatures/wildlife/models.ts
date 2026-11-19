@@ -6,11 +6,20 @@ import * as THREE from 'three';
 import { Body, trunk, stalk, curve, Px, RP, h3, cl, cell3, runAsync, runSync, type V3, type Chart, type Piece, type Station } from '../anatomy';
 import type { BoneDef } from '../rig';
 import { loader } from '../cache';
+import { furZones } from '../fur/paint';
 
 export type Species = 'squirrel' | 'hare' | 'raven' | 'jay' | 'chickadee' | 'grouse';
 export const BIRDS: Species[] = ['raven', 'jay', 'chickadee', 'grouse'];
-export interface WildModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number }
-export const WILD_MODEL_VERSION = 'wild@2';
+export interface WildModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number }
+export const WILD_MODEL_VERSION = 'wild@3';
+/** fur lengths (m) at fur-page length 1: the squirrel's coat and the hare's (src/creatures/fur) */
+export const WILD_FUR_LEN: Partial<Record<Species, number>> = { squirrel: 0.022, hare: 0.026 };
+const WILD_FUR = {
+  // a red squirrel: a short dense coat, ear tufts, and a huge bushy tail
+  squirrel: furZones([{ piece: /^body/, len: 0.45, clump: 0.5, tip: 0.6 }, { piece: /^body/, a: [0, 0.1, 0.17], r: 0.02, bare: true }, { piece: /^tail/, len: 1, clump: 0.8, tip: 0.7 }, { piece: /^ear/, len: 0.5, clump: 0.95, tip: 0.8 }, { piece: /^[fh]l/, len: 0.25 }, { piece: /^[fh]l/, y: [-1, 0.02], bare: true }]),
+  // a snowshoe hare: thick soft fur everywhere, a cottony tail, big furred hind feet
+  hare: furZones([{ piece: /^body/, len: 0.6, clump: 0.45, tip: 0.5 }, { piece: /^body/, a: [0, 0.172, 0.25], r: 0.02, bare: true }, { piece: /^tail/, len: 1, clump: 0.7, tip: 0.8 }, { piece: /^ear/, len: 0.2 }, { piece: /^[fh]l/, len: 0.45 }]),
+};
 
 type Paint = (c: Chart, p: Piece, b: Body) => void;
 const B = (b: BoneDef[], name: string, parent: string | null, pos: V3) => b.push({ name, parent: parent ? b.findIndex((x) => x.name === parent) : -1, pos: pos as [number, number, number] });
@@ -86,8 +95,8 @@ function* mammalGen(kind: 'squirrel' | 'hare'): Generator<string | void, WildMod
   yield 'legs';
   const t0 = idx(bones, 'tail0'), t1 = idx(bones, 'tail1');
   body.add(stalk({ name: 'tail', path: curve(S.tail, kind === 'squirrel' ? 7 : 3), r: S.tailR, around: 7, capS: true, capE: true, levels: 0, k: 1, skin: (p) => (p[1] > S.tail[Math.floor(S.tail.length / 2)][1] ? [t1, 1] : [t0, 1]), paint: zonePaint((p, n) => S.paint(p, n, () => false), { fur: { len: 0.03, width: 0.006, flow: 1 } }) }));
-  const out = yield* body.buildGen({ den: 900, maxScale: 2 });
-  return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris };
+  const out = yield* body.buildGen({ den: 900, maxScale: 2, fur: WILD_FUR[kind] });
+  return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris };
 }
 
 // ------------------------------------------------------------------------------------------------ birds

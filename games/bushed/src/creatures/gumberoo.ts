@@ -11,7 +11,11 @@
 //           ('bounce' with { impulse }); it calms down after a while if left alone
 //   flee    fire is the one thing it fears: a campfire (ctx.fires), a torch or lantern held near it -> it squeals and
 //           waddles off as fast as it can
-// Events (ctx.emit(ev, { pos, who: 'gumberoo', sound, ... })): boing, deflect, bounce, squeak, grunt, step.
+//   tempted (v3) beans in the player's hand: it waddles over, bouncing on the spot with its brows up, and begs
+//   eat     offer('beans') close by: it takes them, munches with its face in them, bouncing with joy
+// Events (ctx.emit(ev, { pos, who: 'gumberoo', sound, ... })): boing, deflect, bounce, squeak, grunt, step, eat (item),
+// happy. v3 is a SCALY BEAST (gumberoo/model.ts): armour plates, a spiked crest, brow plates that glower or lift,
+// eyelids, a jaw that opens on its grin; the face follows its mood (expression.ts).
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, type CreatureFx } from './rig';
 import { Animator, FOOT, TAU, sin, cos, env, wander, footCycle, type AnimParams, type Clip, type Pose } from './animator';
@@ -22,14 +26,18 @@ import { daylight } from './hound';
 import { SPOTS } from '../world/layout';
 import { setPusher } from '../gfx/globals';
 import type { CreatureCtx } from './types';
+import { GB_EYE_AX } from './gumberoo/model';
+import { Expression, type Mood } from './expression';
 
-export const GUMBEROO_SOUND: Record<string, string | undefined> = { boing: 'gumberoo_boing', deflect: 'gumberoo_boing', bounce: 'gumberoo_boing', squeak: 'gumberoo_squeak', grunt: 'gumberoo_squeak', scorch: 'gumberoo_deflate' };
+export const GUMBEROO_SOUND: Record<string, string | undefined> = { boing: 'gumberoo_boing', deflect: 'gumberoo_boing', bounce: 'gumberoo_boing', squeak: 'gumberoo_squeak', grunt: 'gumberoo_squeak', scorch: 'gumberoo_deflate', eat: 'eat_crunch', chew: 'eat_chew', happy: 'gumberoo_boing' };
+/** what the gumberoo takes from the hand (its favourite first) */
+export const GUMBEROO_FOODS = ['beans', 'baked_beans', 'can_beans'];
 const GM = loader<GumberooModel>(GUMBEROO_MODEL_VERSION, () => buildGumberooModelAsync(), (b, m) => ({ ...b, bones: gumberooBones(), tris: m.tris as number, den: m.den as number, stats: m.stats as string }), (m) => ({ tris: m.tris, den: m.den, stats: m.stats }));
 export function gumberooModel(): GumberooModel { let m = GM.get(); if (!m) { m = buildGumberooModel(); GM.set(m); } return m; }
 export const gumberooModelAsync = (o: { cache?: boolean } = {}) => GM.load(o);
 registerPreload('gumberoo', gumberooModelAsync);
 
-export type GumberooState = 'graze' | 'watch' | 'angry' | 'flee' | 'sleep';
+export type GumberooState = 'graze' | 'watch' | 'angry' | 'flee' | 'sleep' | 'tempted' | 'eat';
 const CH_SQUASH = 0, CH_BLINK = 1;
 const STRIDE: Record<string, number> = { walk: 0.7, charge: 1.3, flee: 1.2 };
 const FIRE_ITEMS = /torch|lantern|flare|fire|brand/;
@@ -80,6 +88,18 @@ function gumberooClips(bones: { name: string }[]): Record<string, Clip> {
       R(p, BE, -0.25 * ram); R(p, H, -0.3 * ram); R(p, JW, 0.3 * ram);
       foot(p, 0, 0, 0, 0.12 * ram); foot(p, 1, 0, 0, 0.12 * ram);
     } },
+    beg: { loop: true, dur: 1, fade: 0.3, fn: (p, t, a) => {
+      // bouncing on the spot, face up, tail going: beans!
+      const w = t * 2.4 * TAU;
+      p.c[CH_SQUASH] += 0.12 * cos(w); p.t[1] += 0.05 * Math.max(0, sin(w)); p.rr[0] -= 0.08;
+      R(p, H, -0.15 + 0.04 * sin(w)); R(p, JW, 0.12 + 0.05 * Math.max(0, sin(w))); R(p, T, 0.2, 0.5 * sin(w * 1.5)); look(p, a);
+    } },
+    eat: { loop: true, dur: 2, fade: 0.4, fn: (p, t) => {
+      // face down in the beans, munching, little bounces of joy
+      const ch = Math.max(0, sin(t * 3.2 * TAU)), b = Math.max(0, sin(t * 1.1 * TAU));
+      p.rr[0] += 0.14; R(p, H, 0.45); R(p, JW, 0.05 + 0.2 * ch); p.c[CH_SQUASH] += 0.05 * ch + 0.1 * b; p.t[1] += 0.03 * b;
+      R(p, T, 0.15, 0.6 * sin(t * 2 * TAU));
+    } },
     sleep: { loop: true, dur: 10, fade: 1.2, fn: (p, t) => {
       // flat on its belly like a dropped pudding, legs splayed, slow deep breaths
       const b = sin(t * 0.18 * TAU);
@@ -98,6 +118,10 @@ export class Gumberoo {
   readonly anim: Animator;
   readonly fx: CreatureFx;
   readonly model: GumberooModel;
+  readonly face = new Expression({ seed: 31 });
+  /** test pages: hold a mood (null: follows the AI) */
+  faceMood: Mood | null = null;
+  readonly favoriteFood = 'beans';
   state: GumberooState = 'graze';
   readonly pos = new THREE.Vector3(); heading = 0; speed = 0;
   /** 0 placid .. 1 furious */
@@ -119,6 +143,19 @@ export class Gumberoo {
     this.legs = ['fL', 'fR', 'hL', 'hR'].map((n) => ({ up: S.i(n[0] + 'u' + n[1]), lo: S.i(n[0] + 'l' + n[1]), foot: S.i(n[0] + 'f' + n[1]), ankle: S.restWorld[S.i(n[0] + 'f' + n[1])].clone() }));
     if (o.pos) this.pos.copy(o.pos); else this.pos.set(SPOTS.burn.x, 0, SPOTS.burn.z);
     this.heading = o.heading ?? 0;
+    // the scales' relief: the painted page's light and dark (each scale's lit rim, its dark outline) as a bump map
+    mat.bumpMap = m.tex; mat.bumpScale = 1.4; mat.needsUpdate = true;
+    this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * GB_EYE_AX[0], GB_EYE_AX[1], GB_EYE_AX[2]).normalize()).normalize());
+  }
+  private lidAxis: THREE.Vector3[];
+  private pendingEv: { ev: string; item?: string }[] = []; private playerDist = 99; private eatItem = 'beans';
+  /** the player holds out food: true if the gumberoo takes it (beans, its favourite, within reach and not angry) */
+  offer(item: string): boolean {
+    if (!GUMBEROO_FOODS.includes(item)) return false;
+    if (this.state === 'flee' || this.state === 'angry' || this.state === 'eat' || this.playerDist > 3) return false;
+    this.go('eat'); this.eatItem = item; this.hold = 'eat'; this.anger = 0; this.kick(0.3);
+    this.pendingEv.push({ ev: 'eat', item });
+    return true;
   }
   play(clip: string | null) { this.manual = clip; if (clip) this.anim.play(clip, { restart: !this.anim.clips[clip].loop }); if (clip === 'hit') this.kick(-0.45); if (clip === 'bounce') this.kick(0.2); }
   get clips(): string[] { return Object.keys(this.anim.clips); }
@@ -147,6 +184,10 @@ export class Gumberoo {
     for (const f of ctx.fires ?? []) if (Math.hypot(f.x - this.pos.x, f.z - this.pos.z) < 14) fire = f;
     if (!fire && FIRE_ITEMS.test(P.held) && dist < 8) fire = P.pos;
     if (fire && this.state !== 'flee') { this.go('flee'); this.anger = 0; emit('squeak'); this.kick(-0.3); }
+    this.playerDist = dist;
+    for (const e of this.pendingEv.splice(0)) emit(e.ev, { item: e.item });
+    // beans in the player's hand: over it comes
+    if (!fire && GUMBEROO_FOODS.includes(P.held) && dist < 14 && (this.state === 'graze' || this.state === 'watch' || this.state === 'sleep')) { this.go('tempted'); emit('squeak'); this.kick(0.25); }
     // struck: an axe swing at it within reach bounces off
     const toMe = _v.set(this.pos.x - P.pos.x, 0, this.pos.z - P.pos.z).normalize();
     const facing = P.dir.x * toMe.x + P.dir.z * toMe.z;
@@ -159,6 +200,21 @@ export class Gumberoo {
     // barged into
     if (dist < 1.5 && this.pSpeed > 3 && this.state !== 'flee' && this.state !== 'angry') { this.anger = Math.min(1, this.anger + 0.5); this.go('angry'); emit('grunt'); }
     switch (this.state) {
+      case 'tempted': {
+        if (!GUMBEROO_FOODS.includes(P.held)) { this.go('watch'); break; }
+        const a = Math.atan2(this.pos.x - P.pos.x, this.pos.z - P.pos.z);
+        this.target.set(P.pos.x + Math.sin(a) * 2.1, 0, P.pos.z + Math.cos(a) * 2.1);
+        const d2 = Math.hypot(this.target.x - this.pos.x, this.target.z - this.pos.z);
+        this.want = d2 > 0.4 ? 1.1 : 0; this.hold = this.want === 0 ? 'beg' : null;
+        if (this.want === 0 && Math.random() < dt * 0.8) { emit('squeak'); this.kick(0.15); }
+        break;
+      }
+      case 'eat': {
+        this.want = 0; this.hold = 'eat';
+        if (Math.random() < dt * 1.5) emit('chew', { item: this.eatItem });
+        if (this.st > 6) { emit('happy', { item: this.eatItem }); this.kick(0.35); this.go('watch'); }
+        break;
+      }
       case 'flee': {
         const from = fire ?? P.pos;
         const a = Math.atan2(this.pos.x - from.x, this.pos.z - from.z);
@@ -213,7 +269,7 @@ export class Gumberoo {
       const tx = this.target.x - this.pos.x, tz = this.target.z - this.pos.z, d = Math.hypot(tx, tz);
       let w = d < 0.3 ? 0 : this.want;
       if (w > 0) this.heading = dampAngle(this.heading, Math.atan2(tx, tz), this.state === 'angry' ? 2.5 : 1.6, dt);
-      else if (this.state === 'watch' || this.state === 'angry') this.heading = dampAngle(this.heading, Math.atan2(ctx.player.pos.x - this.pos.x, ctx.player.pos.z - this.pos.z), 1.2, dt);
+      else if (this.state === 'watch' || this.state === 'angry' || this.state === 'tempted' || this.state === 'eat') this.heading = dampAngle(this.heading, Math.atan2(ctx.player.pos.x - this.pos.x, ctx.player.pos.z - this.pos.z), 1.2, dt);
       w *= clamp(1.2 - Math.abs(wrapAngle(Math.atan2(tx, tz) - this.heading)) * 0.5, 0.3, 1);
       this.speed = damp(this.speed, w, w > this.speed ? 2 : 4, dt);
       this.pos.x += Math.sin(this.heading) * this.speed * dt; this.pos.z += Math.cos(this.heading) * this.speed * dt;
@@ -238,8 +294,12 @@ export class Gumberoo {
     const target = p.c[CH_SQUASH];
     this.sqv += (-(this.sq - target) * 180 - this.sqv * 7) * dt; this.sq += this.sqv * dt;
     this.sq = clamp(this.sq, -0.45, 0.45);
-    this.blinkT -= dt; if (this.blinkT < 0) { this.blink = 0.2; this.blinkT = 2.5 + Math.random() * 4; } this.blink = Math.max(0, this.blink - dt);
-    this.apply(p, Math.max(p.c[CH_BLINK], this.blink > 0 ? 1 : 0));
+    void this.blink; void this.blinkT;
+    const st = this.state, mood: Mood = this.faceMood ?? (this.manual ? (this.manual === 'charge' || this.manual === 'bounce' ? 'angry' : this.manual === 'flee' || this.manual === 'hit' ? 'scared' : this.manual === 'beg' ? 'pleading' : this.manual === 'eat' ? 'joy' : this.manual === 'sleep' ? 'sleepy' : 'happy')
+      : st === 'angry' ? 'angry' : st === 'flee' ? 'scared' : st === 'sleep' ? 'sleepy' : st === 'eat' ? (this.st > 3 ? 'joy' : 'eating') : st === 'tempted' ? 'pleading' : st === 'watch' ? 'curious' : 'happy');
+    this.face.set(mood, mood === 'happy' && st === 'graze' ? 0.5 : 1);
+    const F = this.face.update(dt);
+    this.apply(p, Math.min(1, Math.max(p.c[CH_BLINK], F.blink + F.lid)));
   }
   private apply(p: Pose, blink: number) {
     const S = this.skel, B = S.bones;
@@ -248,8 +308,13 @@ export class Gumberoo {
     B[0].position.x += p.t[0]; B[0].position.y += p.t[1] - (1 - sy) * 0.55; B[0].position.z += p.t[2];
     B[0].quaternion.setFromEuler(_e.set(p.rr[0], p.rr[1], p.rr[2])); B[0].scale.set(sxz, sy, sxz);
     for (let i = 1; i < B.length; i++) { const x = p.r[i * 3], y = p.r[i * 3 + 1], z = p.r[i * 3 + 2]; if (x || y || z) B[i].quaternion.setFromEuler(_e.set(x, y, z)); }
-    // eyes: lids are its own rubber, squeezed shut by flattening the eyeballs into the head
-    for (const n of ['eyeL', 'eyeR']) B[S.i(n)].scale.set(1, 1 - blink * 0.85, 1);
+    // the face: lids, brow plates (a glower, lifted in surprise or begging), the jaw opening on the grin, a tilt
+    const F = this.face.face, I = S.idx;
+    B[I.lidL].quaternion.setFromAxisAngle(this.lidAxis[0], 0.15 + blink * 1.3);
+    B[I.lidR].quaternion.setFromAxisAngle(this.lidAxis[1], 0.15 + blink * 1.3);
+    for (const [nm, sd] of [['browL', 1], ['browR', -1]] as const) { const b = B[I[nm]]; b.position.y += F.brow * 0.035 + F.squint * 0.01; b.position.z += F.brow * 0.01; b.quaternion.setFromEuler(_e.set(-F.brow * 0.2, 0, -sd * F.browIn * 0.38)); }
+    const j = I.jaw; B[j].quaternion.setFromEuler(_e.set(p.r[j * 3] + F.jaw * 0.22 + F.smile * 0.04, p.r[j * 3 + 1], p.r[j * 3 + 2]));
+    const h = I.head; B[h].quaternion.setFromEuler(_e.set(p.r[h * 3], p.r[h * 3 + 1], p.r[h * 3 + 2] + F.tilt * 0.22));
     // legs: keep the feet unscaled and planted (the legs are children of the squashed root)
     for (let k = 0; k < 4; k++) B[this.legs[k].up].scale.set(1 / sxz, 1 / sy, 1 / sxz);
     S.fk();

@@ -130,6 +130,7 @@ export class StationHands {
     out.grip = GRIP.relax;
     return out;
   }
+  private meshInv = new THREE.Matrix4();
   private restT = { L: { pos: new THREE.Vector3(), q: new THREE.Quaternion(), grip: GRIP.relax as readonly number[] }, R: { pos: new THREE.Vector3(), q: new THREE.Quaternion(), grip: GRIP.relax as readonly number[] } };
 
   update(dt: number, cam: THREE.Camera): void {
@@ -137,7 +138,7 @@ export class StationHands {
     this.time += dt;
     if (!this.object.visible) { this.first = true; return; }
     this.object.updateMatrixWorld(true);
-    const meshInv = _m.copy(this.mesh.matrixWorld).invert();
+    const meshInv = this.meshInv.copy(this.mesh.matrixWorld).invert();
     const meshQ = this.mesh.getWorldQuaternion(new THREE.Quaternion());
     const meshQi = meshQ.clone().invert();
     for (const sd of ['L', 'R'] as const) {
@@ -167,6 +168,22 @@ export class StationHands {
       this.sgrip[sd] = this.sgrip[sd].map((v, i) => v + (grip[i] - v) * (1 - Math.exp(-dt * 16)));
     }
     this.first = false;
+    // lean the body toward far work (the shoulders follow, the eye stays): beyond arm's reach, shift the rig
+    const want = new THREE.Vector3();
+    let wsum = 0;
+    const camInv = new THREE.Matrix4().copy(cam.matrixWorld).invert();
+    for (const sd of ['L', 'R'] as const) {
+      const tg = this.tgt[sd];
+      if (!tg || this.w[sd] < 0.3) continue;
+      const t = _v1.copy(tg.pos).applyMatrix4(camInv);
+      const sh = _v2.set(sd === 'R' ? 0.2 : -0.2, -0.26, 0.14);
+      const d = t.sub(sh), l = d.length(), reach = 0.56;
+      if (l > reach) want.addScaledVector(d.normalize(), (l - reach) * this.w[sd]);
+      wsum += this.w[sd];
+    }
+    if (wsum > 0) want.multiplyScalar(1 / Math.max(1, wsum));
+    if (want.length() > 0.38) want.setLength(0.38);
+    this.object.position.lerp(want, Math.min(1, dt * 4));
     const b = this.bones;
     for (const n of ['hips', 'spine', 'chest', 'neck', 'head']) b[n].quaternion.identity();
     b.clavL.quaternion.identity(); b.clavR.quaternion.identity();

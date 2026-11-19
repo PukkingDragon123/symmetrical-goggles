@@ -60,10 +60,10 @@ function paintAtlases(kind: string): Atlas {
       const flake = (x: number, y: number) => ((x + Math.floor(y * 0.25)) % 9) === 0;
       const skinR = (x: number, y: number, i: number): RGB => {
         const back = 1 - Math.abs(y / 64 - 0.5) * 2; // 1 at the back, 0 at the belly
-        const belly = ['#c8ccc0', '#b8beb4', '#a8b0a6'].map(hex);
-        const side = ['#3a4a40', '#465848', '#56684e', '#687a5a'].map(hex);
+        const belly = ['#d8dcd0', '#c8cec2', '#b4bcb0'].map(hex);
+        const side = ['#4a5c4c', '#5a6e56', '#6c8062', '#80946e'].map(hex);
         let c = back > 0.45 ? ramp(side, mot[i] * 0.7 + sp[i] * 0.3) : ramp(belly, mot[i]);
-        if (back > 0.35 && spots[i] > 0.72) c = hex('#d8d4b0');
+        if (back > 0.35 && spots[i] > 0.7) c = hex(spots[i] > 0.8 ? '#f0ecc8' : '#d8d4b0');
         if (back > 0.92) c = mul(c, 0.75);
         void x;
         return c;
@@ -361,7 +361,7 @@ const LIQ: Record<LiquidKind, { cols: string[]; rough: number; bumps: number }> 
   beans: { cols: ['#6a2a10', '#84381a', '#a04a22', '#c46a34', '#d8884a'], rough: 0.35, bumps: 1 },
   stew: { cols: ['#3a2210', '#4e2e16', '#64401e', '#7a5028', '#8a6a3a'], rough: 0.3, bumps: 0.6 },
   syrup: { cols: ['#5a2a08', '#7a3a0c', '#9a5214', '#c07020'], rough: 0.1, bumps: 0 },
-  fat: { cols: ['#b8902a', '#d0a838', '#e8c860', '#f4e0a0'], rough: 0.05, bumps: 0 },
+  fat: { cols: ['#3a2610', '#4a3214', '#5e421c', '#8a6a34'], rough: 0.04, bumps: 0 },
 };
 const liqTex = new Map<string, THREE.Texture>();
 

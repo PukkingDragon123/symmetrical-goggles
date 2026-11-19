@@ -295,7 +295,7 @@ export class Hodag extends Cryptid {
     this.sac = damp(this.sac, clamp(p.c[CH.A], 0, 1.2), 7, dt);
     this.tongue = damp(this.tongue, clamp(p.c[CH.B], 0, 1.3), p.c[CH.B] > this.tongue ? 22 : 9, dt);
     const s = this.sac;
-    B[this.bi('sac')].scale.set(1 + s * 0.9, 1 + s * 1.25, 1 + s * 0.8);
+    B[this.bi('sac')].scale.set(1 + s * 0.7, 1 + s * 0.95, 1 + s * 0.65);
     const tg = 0.02 + this.tongue;
     B[this.bi('tongue')].scale.set(Math.min(1, tg * 1.2), Math.min(1, tg * 1.2), tg);
     // frog lids: the upper lid closes down over the bulging eye; contentment half-closes it

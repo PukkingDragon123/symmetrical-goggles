@@ -82,8 +82,14 @@ export abstract class Station {
   /** the camera drifts a little toward the cursor (presence); 0 disables */
   protected parallax = 0.05;
 
+  /** a soft work light riding with the eye while at a station (the hearth and the lamp aren't enough to read food by) */
+  protected fill = new THREE.PointLight(0xffe0c0, 0, 2.6, 1.6);
+  protected fillLevel = 0.9;
+
   constructor(protected g: Game) {
     g.camera.add(this.hands.object);
+    this.fill.position.set(0.15, 0.25, 0.1);
+    g.camera.add(this.fill);
     g.updaters.push((dt) => this.tick(dt));
     onLate(g, (dt) => this.late(dt));
   }
@@ -100,6 +106,13 @@ export abstract class Station {
   protected onExit(): void {}
   /** where the player stands when leaving (world x, z and yaw) */
   protected abstract standSpot(): { x: number; z: number; yaw: number };
+
+  /** put the player at the station's standing spot, facing the work (dev pages, tests) */
+  standAt(): void {
+    const s = this.standSpot();
+    this.g.player.teleport(s.x, null, s.z, s.yaw);
+    this.g.player.pitch = -0.35;
+  }
 
   /** step up to the work */
   enter(): boolean {
@@ -153,6 +166,8 @@ export abstract class Station {
   // ------------------------------------------------------------------------------------------ per frame
   private tick(dt: number): void {
     this.simulate(dt);
+    const fk = this.phase === 'on' || this.phase === 'in' ? this.fillLevel : 0;
+    this.fill.intensity += (fk - this.fill.intensity) * Math.min(1, dt * 3);
     if (this.phase === 'off') return;
     const g = this.g, cam = g.camera;
     this.readPointer(dt);

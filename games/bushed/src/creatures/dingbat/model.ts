@@ -16,9 +16,10 @@ import {
 import { fbm3 } from '../paintkit';
 import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
+import { furZones } from '../fur/paint';
 
-export const DINGBAT_MODEL_VERSION = 'dingbat@4';
-export interface DingbatModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
+export const DINGBAT_MODEL_VERSION = 'dingbat@5';
+export interface DingbatModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (left side; the right is the mirror in x) */
 export const DB = {
@@ -370,7 +371,20 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   const lk = locks({ name: 'feathers', seats, tiles, steps: [3, 3, 4, 2, 4], seed: 21 });
   if (lk) { lk.paint = cardPaint(['feather', 'plume', 'feather', 'feather', 'down'], tiles, { steps: [3.2, 2.6, 3.6, 2.2, 4] }); lk.k = 1.1; body.add(lk); }
   void INK; void BLOOD;
-  const out = yield* body.buildGen({ den: o.den ?? 700, maxScale: 2, budget: 11000 });
+  const out = yield* body.buildGen({ den: o.den ?? 700, maxScale: 2, budget: 11000, fur: DINGBAT_FUR });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k, v]) => k + ':' + v).join(' ');
-  return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris, den: body.den, stats };
+  return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
 }
+
+/** fluffy feathered fur (lengths in DINGBAT_FUR_LEN): a puffball body, a ruff round the head, feathered trousers, down
+ *  on the arms; the facial disc short and the gape, the wings' membrane, beak and talons bare */
+export const DINGBAT_FUR_LEN = 0.014;
+const DINGBAT_FUR = furZones([
+  { piece: /^trunk/, len: 0.85, clump: 0.75, tip: 0.7 },
+  { piece: /^trunk/, a: [0, 0.015, 0.05], b: [0, 0.015, 0.075], r: 0.05, len: 1, clump: 0.85, tip: 0.8 },
+  { piece: /^skull/, len: 0.6, clump: 0.7, tip: 0.6 },
+  { piece: /^skull/, a: [0, 0.03, 0.14], r: 0.045, facing: [0, 0, 1], min: 0.25, len: 0.22, clump: 0.3 },
+  { piece: /^skull/, y: [-1, DB.hinge[1] + 0.004], bare: true },
+  { piece: /^leg/, len: 0.9, clump: 0.8, tip: 0.6 },
+  { piece: /^arm/, len: 0.5, clump: 0.6 },
+]);

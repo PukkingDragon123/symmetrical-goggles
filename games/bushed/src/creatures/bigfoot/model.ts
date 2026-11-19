@@ -8,11 +8,12 @@
 // Creature space: metres, +z forward, +y up, ground y = 0.
 import * as THREE from 'three';
 import {
-  Body, runSync, runAsync, trunk, limb, legRings, eyeball, locks, stalk, curve, chainSkin, addWeights, gridSurf, Px, RP, cell3, h3, cl,
+  Body, runSync, runAsync, trunk, limb, legRings, eyeball, eyelid, locks, stalk, curve, chainSkin, addWeights, gridSurf, Px, RP, cell3, h3, cl,
   type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing,
 } from '../anatomy';
 import { spineFrame, locate, nz2, nz3, fbm3, type Frame } from '../paintkit';
 import type { BoneDef } from '../rig';
+import { furZones } from '../fur/paint';
 
 export const BF = {
   head: [0, 2.4, 0.13] as V3,
@@ -23,6 +24,9 @@ const mir = (p: V3, s: number): V3 => [p[0] * s, p[1], p[2]];
 const add = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const norm = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
 const EYE: V3 = [0.047, 0.036, 0.146];
+/** v7: the face's moving parts (head-local): brows over the eyes, the upper lip; the eyes a little bigger */
+const BROW: V3 = [0.046, 0.082, 0.15], LIP: V3 = [0, -0.07, 0.2], EYER = 0.0195;
+export const BF_EYE_AX: V3 = [0.3, -0.05, 1];
 
 export function bigfootBones(): BoneDef[] {
   const b: BoneDef[] = [];
@@ -46,6 +50,8 @@ export function bigfootBones(): BoneDef[] {
     A('thigh' + s, 'hips', mir(l.hip, k)); A('shin' + s, 'thigh' + s, mir(l.kn, k)); A('foot' + s, 'shin' + s, mir(l.an, k));
     A('toes' + s, 'foot' + s, mir([l.an[0], 0.03, 0.22], k));
   }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('brow' + s, 'head', add(BF.head, [k * BROW[0], BROW[1], BROW[2]])); A('lid' + s, 'head', add(BF.head, [k * EYE[0], EYE[1], EYE[2]])); }
+  A('lip', 'head', add(BF.head, LIP));
   return b;
 }
 
@@ -85,8 +91,7 @@ function facePaint(H: V3) {
       if ((i & 8191) === 0) yield;
       const x = P[i * 3] - H[0], y = P[i * 3 + 1] - H[1], z = P[i * 3 + 2] - H[2], ax = Math.abs(x), nz = N[i * 3 + 2];
       // the bare face: from the brow down to the chin, framed by hair that thins out over its edge
-      const hairline = 0.105 + nz2(x * 40, y * 40) * 0.008 - Math.max(0, ax - 0.06) * 0.6;
-      const edge = Math.min(z - (hairline - 0.005), 0.1 - y, y + 0.19, nz - 0.1, 0.12 - Math.max(0, -y - 0.05) * 0.4 - Math.max(0, y - 0.06) * 0.8 - ax);
+      const edge = faceEdge(x, y, z, nz);
       const m = fbm3(x * 9, y * 9, z * 9, 2);
       if (edge < 0 || (edge < 0.012 && h3(Math.floor(x / mpt / 2), Math.floor(y / mpt / 3), 5) < 1 - edge / 0.012)) {
         fur[i] = 1; px.put(i, FUR, 2.2 + m * 0.6 + (y > 0.15 ? 0.3 : 0)); px.rough[i] = 235; continue;
@@ -132,6 +137,11 @@ function facePaint(H: V3) {
     yield;
     px.flush();
   };
+}
+/** > 0 inside the bare face (head-local), < 0 in the hair */
+function faceEdge(x: number, y: number, z: number, nz: number) {
+  const ax = Math.abs(x), hairline = 0.105 + nz2(x * 40, y * 40) * 0.008 - Math.max(0, ax - 0.06) * 0.6;
+  return Math.min(z - (hairline - 0.005), 0.1 - y, y + 0.19, nz - 0.1, 0.12 - Math.max(0, -y - 0.05) * 0.4 - Math.max(0, y - 0.06) * 0.8 - ax);
 }
 function leatherPaint(o: { palm?: (p: V3, n: V3) => boolean } = {}) {
   return (ch: Chart, _p: Piece, b: Body) => {
@@ -221,8 +231,8 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const BIGFOOT_MODEL_VERSION = 'bigfoot@6';
-export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@7';
+export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
 export function buildBigfootModel(o: { page?: number; den?: number } = {}): BigfootModel { return runSync(bigfootModelGen(o)); }
@@ -267,12 +277,30 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
   const skull = body.add(trunk({
     name: 'skull', stations: hst, tween: 1, capS: true, capE: true, levels: 1, k: 2.2,
     rings: [{ at: 5, s: 1.2 }], cols: [{ j: 0, a: 1, b: 3, s: 1.5 }, { j: 3, a: 5, b: 7, s: 1 }],
-    skin: (p) => (p[1] < H[1] - 0.15 && p[2] < H[2] + 0.05 ? [bi('head'), 0.6, bi('neck'), 0.4] : [bi('head'), 1]),
+    skin: (p) => {
+      if (p[1] < H[1] - 0.15 && p[2] < H[2] + 0.05) return [bi('head'), 0.6, bi('neck'), 0.4];
+      // the face moves: the brow shelf rides the brows, the muzzle's upper lip the lip, below the mouth the jaw
+      const x = p[0] - H[0], y = p[1] - H[1], z = p[2] - H[2], ax = Math.abs(x);
+      const ml = y + 0.085 + ax * ax * 3;
+      const extra: [number, number][] = [];
+      const bw = cl(1 - Math.hypot(ax - BROW[0], (y - BROW[1]) * 1.4, z - BROW[2]) / 0.055, 0, 1) * (z > 0.07 ? 1 : 0);
+      if (bw > 0) extra.push([bi(x > 0 ? 'browL' : 'browR'), bw * 0.85]);
+      const lw = ml > 0 && z > 0.13 ? cl(1 - Math.hypot(x * 0.8, (y - LIP[1]) * 1.6, z - LIP[2]) / 0.06, 0, 1) : 0;
+      if (lw > 0) extra.push([bi('lip'), lw * 0.9]);
+      const jw = ml < 0 && z > 0.06 ? cl(-ml / 0.02, 0, 1) * cl((z - 0.06) / 0.06, 0, 1) : 0;
+      if (jw > 0) extra.push([bi('jaw'), jw]);
+      return extra.length ? addWeights([bi('head'), 1], extra) : [bi('head'), 1];
+    },
     paint: facePaint(H),
   }));
   body.finalize(skull);
   yield;
-  for (const [S, s] of [['L', 1], ['R', -1]] as const) body.add(eyeball({ name: 'eye' + S, c: add(H, [s * EYE[0], EYE[1], EYE[2]]), ax: [s * 0.3, -0.05, 1], r: 0.017, bone: bi('eye' + S), iris: RP('rust'), pupil: 'round', irisA: 0.6, sclera: RP('leather'), k: 2.5, levels: 0, around: 10 }));
+  for (const [S, s] of [['L', 1], ['R', -1]] as const) {
+    const c = add(H, [s * EYE[0], EYE[1], EYE[2]]), ax: V3 = [s * BF_EYE_AX[0], BF_EYE_AX[1], BF_EYE_AX[2]];
+    body.add(eyeball({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: RP('ochre'), pupil: 'round', pupilR: 0.42, irisA: 0.74, sclera: RP('bone'), k: 3.2, levels: 1, around: 10, catchlight: { side: s, at: [0.3, 0.4] } }));
+    // heavy leather lids (a slow, considering blink)
+    body.add(eyelid({ name: 'lid' + S, c, ax, r: EYER, bone: bi('lid' + S), paint: leatherPaint(), cover: 0.9, root: 2.2 })).levels = 0;
+  }
   // arms and legs
   const limbs: Piece[] = [];
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
@@ -317,13 +345,13 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
     }
   };
   // torso: long over the shoulders and back, shorter on the belly, the buttocks shaggy
-  sow(torso, 0, 420, {
+  sow(torso, 0, 240, {
     u0: 0, u1: 1, v0: 0.04, v1: 0.97, wid: 0.026, seed: 3, skin: torsoSkin, droop: 0.55, lift: 0.18,
     // longest over the shoulders and the back (a mantle), shorter on the chest and belly
     len: (p) => { const back = p[2] < 0.02 ? 1 : 0.55; const sh = cl((p[1] - 1.75) / 0.4, 0, 1) * (1 - cl((p[1] - 2.22) / 0.1, 0, 1)); return (0.15 + 0.13 * sh) * back * (p[1] < 1.2 ? 0.6 : 1); },
   });
   // head: a cap of hair over the crown and crest, the cheeks' side-whiskers
-  sow(skull, 0, 110, {
+  sow(skull, 0, 70, {
     u0: 0.12, u1: 0.88, v0: 0.0, v1: 0.8, wid: 0.02, seed: 5, skin: () => [bi('head'), 1], lift: 0.4, droop: 0.4,
     len: (p, n) => (p[2] > H[2] + 0.1 && p[1] > H[1] - 0.15 && p[1] < H[1] + 0.1 ? 0 : n[2] > 0.6 ? 0 : 0.075),
     dir: (_p, n) => norm([n[0] * 0.6, -0.8, -0.5 + n[2] * 0.3]),
@@ -335,7 +363,7 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
     const end: V3 = isArm ? mir(BF.arm.wr, sd) : mir(BF.leg.an, sd), reach = (p: V3) => Math.hypot(p[0] - end[0], p[1] - end[1], p[2] - end[2]) * 0.7;
     // limb hair lies along the limb toward the hand or foot (it hangs when the arm hangs, and stays laid along a
     // raised arm instead of sticking out), longest off the backs of the forearms and the outsides of the upper arms
-    sow(lp, 0, isArm ? 130 : 95, {
+    sow(lp, 0, isArm ? 90 : 60, {
       u0: 0, u1: 1, v0: 0.05, v1: 0.85, wid: 0.024, seed: isArm ? 11 : 17, skin: lp.skin, droop: 0.12, lift: 0.12,
       len: (p, n) => Math.min(reach(p), isArm ? 0.16 + 0.07 * cl(-n[2] * 1.5, 0, 1) : 0.14 * cl((p[1] - 0.3) / 0.4, 0.3, 1)),
       dir: (_p, n, dv) => norm([dv[0] + n[0] * 0.18, dv[1] + n[1] * 0.18, dv[2] + n[2] * 0.18]),
@@ -344,7 +372,29 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
   const lk = locks({ name: 'hair', seats, tiles: [FUR, FUR, FUR], steps: [1, 2, 3], seed: 9 });
   if (lk) body.add(lk);
   void locate; void F;
-  const out = yield* body.buildGen({ den: o.den ?? 240, maxScale: 2, budget: 24000 });
+  const out = yield* body.buildGen({ den: o.den ?? 240, maxScale: 2, budget: 24000, fur: bigfootFur(H) });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, v]) => k + ':' + v).join(' ');
-  return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris, den: body.den, stats };
+  return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
+}
+
+/** Bigfoot's coat (lengths in BIGFOOT_FUR_LEN): shaggy all over, a long mantle over the shoulders and back, long
+ *  hair off the backs of the forearms and the outsides of the thighs, a cap over the crown; the face, palms, fingers
+ *  and soles bare */
+export const BIGFOOT_FUR_LEN = 0.12;
+function bigfootFur(H: V3) {
+  const zones = furZones([
+    { piece: /^trunk/, len: 0.55, clump: 0.7, tip: 0.6 },
+    { piece: /^trunk/, a: [0, 1.95, -0.05], b: [0, 2.3, 0.0], r: 0.42, len: 1.0, clump: 0.85, tip: 0.7 },
+    { piece: /^trunk/, a: [0, 1.4, -0.15], b: [0, 1.95, -0.2], r: 0.3, len: 0.8, clump: 0.8 },
+    { piece: /^arm/, len: 0.55, clump: 0.7 },
+    { piece: /^arm/, a: [0, 1.6, -0.2], b: [0, 1.0, -0.15], r: 0.6, facing: [0, 0, -1], min: -0.2, len: 0.9, clump: 0.85, tip: 0.7 },
+    { piece: /^leg/, len: 0.55, clump: 0.7 },
+    { piece: /^leg/, y: [-1, 0.16], bare: true },
+    { piece: /^skull/, len: 0.42, clump: 0.75, tip: 0.6 },
+  ]);
+  return (p: V3, n: V3, piece: string, k: { k: number; occ: number }) => {
+    if (/^(palm|fin|thm|foot|toe|eye|lid|hair)/.test(piece)) return null;
+    if (/^skull/.test(piece) && faceEdge(p[0] - H[0], p[1] - H[1], p[2] - H[2], n[2]) > -0.012) return null;
+    return zones(p, n, piece, k);
+  };
 }

@@ -14,7 +14,6 @@ import { Wildlife, Critter } from '../creatures/wildlife';
 import type { Species } from '../creatures/wildlife/models';
 import { PROFILE } from '../creatures/anatomy';
 import { G } from '../gfx/globals';
-import { addFur, type Fur } from '../creatures/fur';
 import { CRYPTID_DEV, isCryptid, cryptidDemo, simCryptid, testTrunks } from '../creatures/cryptids/dev';
 import { Cryptid } from '../creatures/cryptids/base';
 import { puffs, debris } from '../gfx/particles';
@@ -25,10 +24,18 @@ const ui = {
   spin: document.getElementById('spin') as HTMLInputElement,
   ai: document.getElementById('ai') as HTMLInputElement,
   wire: document.getElementById('wire') as HTMLInputElement,
+  fur: document.getElementById('fur') as HTMLInputElement,
+  mood: document.getElementById('mood') as HTMLSelectElement,
+  wind: document.getElementById('wind') as HTMLInputElement,
+  offer: document.getElementById('offer') as HTMLButtonElement,
+  shake: document.getElementById('shake') as HTMLButtonElement,
+  wet: document.getElementById('wet') as HTMLButtonElement,
+  snow: document.getElementById('snow') as HTMLButtonElement,
   anims: document.getElementById('anims') as HTMLDivElement,
   info: document.getElementById('info') as HTMLDivElement,
 };
 const qs = new URLSearchParams(location.search);
+if (qs.has('clean')) document.body.classList.add('clean');
 const W = () => window.innerWidth, Hh = () => window.innerHeight;
 const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, Number(qs.get('pr') ?? 1)));
@@ -216,10 +223,7 @@ function pick(name: string) {
   const ms = performance.now() - t0;
   if (cur) scene.remove(cur.object);
   cur = made[name]!; curName = name; ui.who.value = name; (window as unknown as { __dbg: Beast }).__dbg = cur;
-  if (name === 'hound' && !testFur) {
-    testFur = addFur(cur.mesh, { length: 0.05, shells: 16, where: (p) => (p[2] > 0.15 && p[2] < 0.5 && p[1] < 0.42) || p[2] < -0.75 ? 1 : 0 });
-    console.log('FUR tris', testFur.tris, 'cards', testFur.cards);
-  }
+
   scene.add(cur.object);
   cur.play(cur.clips.includes('idle') ? 'idle' : cur.clips[0]);
   const tall = name === 'bigfoot' || name === 'granny', big = name === 'gumberoo';
@@ -235,7 +239,9 @@ function pick(name: string) {
   refreshButtons();
   const geo = (cur.mesh.geometry as THREE.BufferGeometry);
   const st = (cur as unknown as { model?: { stats: string; den: number } }).model;
-  ui.info.textContent = `${name}: ${geo.index!.count / 3} tris, ${cur.skel.bones.length} bones, built in ${ms.toFixed(0)} ms` + (st ? `\n${st.den.toFixed(0)} px/m\n${st.stats}` : '');
+  const fur = (cur as unknown as Furry).fur;
+  ui.info.textContent = `${name}: ${geo.index!.count / 3} tris, ${cur.skel.bones.length} bones, built in ${ms.toFixed(0)} ms` + (fur ? `\nfur: ${fur.tris} tris x ${fur.shellCount} shells (1 draw), ${fur.cards} fin cards` : '') + (st ? `\n${st.den.toFixed(0)} px/m\n${st.stats}` : '');
+  applyFurUi();
   (window as unknown as { __info: string }).__info = ui.info.textContent;
 }
 function refreshButtons() { for (const b of Array.from(ui.anims.children) as HTMLButtonElement[]) b.classList.toggle('on', b.textContent === cur?.manual); }
@@ -257,7 +263,6 @@ function ctxFor(dt: number, t: number): CreatureCtx {
 
 // ------------------------------------------------------------------------------------------------ loop
 let last = performance.now(), T = 0, frozen = false;
-let testFur: Fur | null = null;
 function frame(dt: number) {
   puffs.update(dt); debris.update(dt);
   T += dt; G.uTime.value = T; G.uCamPos.value.copy(camera.position);
@@ -307,7 +312,6 @@ function frame(dt: number) {
     cur.heading = spinA;
   }
   cur.update(cur instanceof Cryptid ? { ...ctxFor(dt, T), trunks: testTrunks } : ctxFor(dt, T));
-  if (curName === 'hound' && testFur) testFur.update(dt);
   if (!ui.ai.checked) { cur.pos.set(0, 0, 0); cur.object.position.set(0, 0, 0); cur.heading = spinA; cur.object.rotation.y = spinA; }
   if (ui.ai.checked) ui.info.textContent = `${curName}: ${cur.state}${'trust' in cur ? ' trust ' + cur.trust.toFixed(2) : ''}${cur instanceof GrannyTamarack ? ' fade ' + cur.fade.value.toFixed(2) + (cur.fed ? ' fed' : '') : ''}  clip ${cur.anim.current}\nevents: ${events.join(' ')}`;
 }
@@ -323,6 +327,31 @@ ui.who.onchange = () => pick(ui.who.value);
 ui.light.onchange = () => setLight(ui.light.value);
 ui.wire.onchange = () => { if (cur) (cur.mesh.material as THREE.MeshStandardMaterial).wireframe = ui.wire.checked; };
 window.addEventListener('resize', () => { camera.aspect = W() / Hh(); camera.updateProjectionMatrix(); renderer.setSize(W(), Hh()); });
+
+// ---- fur, faces and food
+type Furry = { fur?: { shells: THREE.Object3D; fins: THREE.Object3D | null; tris: number; cards: number; shellCount: number; distance: number; wet: number | null; snow: number | null } | null; faceMood?: string | null; favoriteFood?: string; offer?: (item: string) => boolean; shakeOff?: () => void };
+/** every furry thing on stage (the current creature, the bat, the wildlife lineup) */
+function furries(): Furry[] {
+  const out: Furry[] = [];
+  if (cur) out.push(cur as unknown as Furry);
+  if (curName === 'dingbat') { if (bat) out.push(bat as unknown as Furry); if (roost) for (const b of roost.bats) out.push(b as unknown as Furry); }
+  if (curName === 'wildlife') for (const c of [...lineCritters, ...wild.active]) out.push(c as unknown as Furry);
+  return out;
+}
+function applyFurUi() { for (const f of furries()) if (f.fur) { f.fur.shells.visible = ui.fur.checked; if (f.fur.fins) f.fur.fins.visible = ui.fur.checked; } }
+ui.fur.onchange = applyFurUi;
+ui.mood.onchange = () => { for (const f of furries()) if ('faceMood' in f) f.faceMood = ui.mood.value || null; };
+ui.wind.oninput = () => { G.uWindStrength.value = Number(ui.wind.value); };
+ui.offer.onclick = () => {
+  if (curName === 'dingbat' && roost) { player.pos.set(0, 1.7, 1.5); events.push('offer maple_syrup -> ' + roost.offer('maple_syrup')); return; }
+  if (curName === 'wildlife') { events.push('offer nuts -> ' + wild.offer('nuts')); return; }
+  const c = cur as unknown as Furry;
+  if (c?.offer && c.favoriteFood) { (cur as unknown as { pos: THREE.Vector3 }).pos.set(0, 0, 0); player.pos.set(0, 1.7, 1.6); events.push('offer ' + c.favoriteFood + ' -> ' + c.offer(c.favoriteFood)); ui.info.textContent = events.join(' '); }
+};
+ui.shake.onclick = () => { const c = cur as unknown as Furry; c?.shakeOff?.(); };
+let wetOn = false, snowOn = false;
+ui.wet.onclick = () => { wetOn = !wetOn; G.uWet.value = wetOn ? 1 : 0; };
+ui.snow.onclick = () => { snowOn = !snowOn; G.uSnow.value = snowOn ? 1 : 0; };
 
 setLight(lightMode);
 // load the models without stalling: from the IndexedDB cache, or built in ~30 ms slices; a meter records the worst
@@ -367,6 +396,11 @@ function simRoost(script: string, seconds: number, hr: number): string {
     if (script === 'lit' && T1 > 5) { pl.light = true; pl.dir.set(0, 2.6, -1.5).sub(pl.pos).normalize(); if (T1 > 9) pl.dir.set(0, 0.3, -1).normalize(); }
     if (script === 'noise' && T1 > 5 && T1 < 8) { pl.noise = 1; pl.speed = 5; pl.pos.x = -6 + (T1 - 5) * 4; }
     if (script === 'chop' && T1 > 5 && T1 < 9) { pl.pos.set(2, 1.7, 2.5); pl.action = Math.floor(T1 * 1.2) % 2 ? 'chop' : 'swing'; pl.noise = 0.7; }
+    // 'syrup': the light sets them off at 5 s; at 9 s the player walks under the eave and holds out maple syrup
+    if (script === 'syrup') {
+      if (T1 > 5 && T1 < 7) { pl.light = true; pl.dir.set(0, 2.6, -1.5).sub(pl.pos).normalize(); }
+      if (T1 > 9) { pl.pos.set(0.5, 1.7, 1.5); pl.held = 'maple_syrup'; pl.light = T1 > 12; if (Math.abs(T1 - 9.5) < 1 / 120) log.push(`${T1.toFixed(1)} offer syrup -> ${r.offer('maple_syrup')}`); }
+    }
     r.update({ dt, time: T1, hour, player: pl, heightAt: () => 0, emit: (e, d) => { const x = d as { left?: number }; log.push(`${T1.toFixed(1)} ${e}${x.left !== undefined ? ' left=' + x.left : ''}`); } });
     for (const b of r.bats) if (b.mode !== 'hang' && b.mode !== 'hidden') near = Math.max(near, 0) + (b.pos.distanceTo(pl.pos) < 2.5 ? 1 : 0);
     const st = `${r.state} irr=${r.irritation.toFixed(2)} agit=${r.agitation.toFixed(1)} [${r.bats.map((b) => b.mode[0]).join('')}]`;
@@ -423,11 +457,14 @@ function simGranny(script: string, seconds: number, hr: number): string {
   ready: false,
   loadInfo: () => loadInfo,
   /** freeze the clock and pose a creature: clip at time t (stepped at 60 Hz), heading, camera orbit */
-  pose(o: { who?: string; clip?: string; t?: number; heading?: number; light?: string; cam?: [number, number, number]; target?: [number, number, number]; fov?: number; roost?: string; ai?: boolean; screech?: boolean }) {
+  pose(o: { who?: string; clip?: string; t?: number; heading?: number; light?: string; cam?: [number, number, number]; target?: [number, number, number]; fov?: number; roost?: string; ai?: boolean; screech?: boolean; mood?: string | null; offer?: string; shake?: boolean; wind?: number }) {
     frozen = true;
+    if (o.wind !== undefined) G.uWindStrength.value = o.wind;
     if (o.who && o.who !== curName) pick(o.who);
+    if (o.mood !== undefined) { ui.mood.value = o.mood ?? ''; }
     if (curName === 'dingbat') {
       if (o.light) setLight(o.light);
+      if (o.mood !== undefined && bat) bat.faceMood = (o.mood || null) as typeof bat.faceMood;
       ui.spin.checked = false; spinA = o.heading ?? 0;
       if (o.roost) {
         // a fresh roost and the scripted player from t = 0 ('light': the beam on the eave at 2-4.5 s; 'demo')
@@ -461,6 +498,10 @@ function simGranny(script: string, seconds: number, hr: number): string {
     ui.ai.checked = false; ui.spin.checked = false;
     spinA = o.heading ?? 0;
     if (o.clip) cur!.play(o.clip);
+    const c = cur as unknown as { faceMood?: string | null; offer?: (i: string) => boolean; shakeOff?: () => void };
+    if (o.mood !== undefined && 'faceMood' in c) c.faceMood = o.mood;
+    if (o.offer && c.offer) events.push('offer ' + o.offer + ' -> ' + c.offer(o.offer));
+    if (o.shake && c.shakeOff) c.shakeOff();
     const steps = Math.round((o.t ?? 1) * 60);
     for (let i = 0; i < steps; i++) frame(1 / 60);
     if (o.cam) camera.position.set(...o.cam);
@@ -496,13 +537,20 @@ function simGranny(script: string, seconds: number, hr: number): string {
     const its: GroundItem[] = [];
     let T0 = 0, last = '';
     const trunks = (x: number, z: number, r: number) => { const out: { x: number; z: number; r: number }[] = []; for (let i = -6; i <= 6; i++) for (let j = -6; j <= 6; j++) { const tx = Math.round(x / 9) * 9 + i * 9 + ((i * 7 + j * 3) % 4), tz = Math.round(z / 9) * 9 + j * 9 + ((i * 5 + j * 11) % 4); if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: 0.35 }); } return out; };
-    const c: Beast = o.who === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3(0, 0, 12) }) : o.who === 'hound' ? new AxehandleHound({ pos: new THREE.Vector3(0, 0, 14), state: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 'companion' : 'wild_lurk', trust: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 1 : 0 }) : new Bigfoot({ pos: new THREE.Vector3(0, 0, 100) });
+    const c: Beast = o.who === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3(0, 0, 12) }) : o.who === 'hound' ? new AxehandleHound({ pos: new THREE.Vector3(0, 0, 14), state: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 'companion' : 'wild_lurk', trust: o.script === 'companion' || o.script === 'handle' || o.script === 'chop' ? 1 : 0 }) : new Bigfoot({ pos: new THREE.Vector3(0, 0, o.script === 'feed' ? 40 : 100) });
     const ev = (e: string) => log.push(`${T0.toFixed(1)} ${e}`);
     for (let k = 0; k < o.seconds * 60; k++) {
       const dt = 1 / 60; T0 += dt;
       const toC = new THREE.Vector3().subVectors(c.pos, pl.pos).setY(0);
       pl.speed = 0; pl.action = undefined;
       switch (o.script) {
+        case 'feed': {
+          // the player stands still holding the creature's favourite food, and offers it when it is close
+          const cc = c as unknown as { favoriteFood: string; offer(i: string): boolean };
+          pl.held = T0 > 3 ? cc.favoriteFood : 'none';
+          if (T0 > 3 && toC.length() < 3.3 && k % 30 === 0 && cc.offer(cc.favoriteFood)) ev('offer accepted: ' + cc.favoriteFood);
+          break;
+        }
         case 'tame': pl.held = T0 > 5 ? 'jerky' : 'none'; if (c instanceof AxehandleHound && c.offer && T0 > 5 && toC.length() < 2.0 && c.state === 'curious' && k % 30 === 0) { if (c.offer('jerky')) ev('offer accepted'); } break;
         case 'rush': if (T0 > 8 && T0 < 12) { const d = toC.clone().normalize(); pl.pos.addScaledVector(d, 4 * dt); pl.speed = 4; } break;
         case 'flash': pl.light = T0 > 20; pl.dir.copy(toC).setY(1.5).normalize(); if (T0 > 20 && toC.length() > 42) { pl.pos.addScaledVector(toC.clone().normalize(), 1.2 * dt); pl.speed = 1.2; } break;
@@ -513,7 +561,7 @@ function simGranny(script: string, seconds: number, hr: number): string {
         case 'torch': pl.held = T0 > 20 ? 'torch' : 'none'; if (T0 > 20) pl.pos.addScaledVector(toC.clone().normalize(), 1.2 * dt); break;
         default: break;
       }
-      c.update({ dt, time: T0, hour: o.hour ?? 23, player: pl, heightAt: () => 0, emit: (e, d) => { if (e !== 'step' && e !== 'crunch' && e !== 'sniff') ev(e + (d && (d as { item?: string }).item ? ':' + (d as { item?: string }).item : '')); },
+      c.update({ dt, time: T0, hour: o.hour ?? 23, player: pl, heightAt: () => 0, emit: (e, d) => { if (e !== 'step' && e !== 'crunch' && e !== 'sniff' && e !== 'chew') ev(e + (d && (d as { item?: string }).item ? ':' + (d as { item?: string }).item : '')); },
         items: its, takeItem: (id) => { const i = its.findIndex((x) => x.id === id); if (i < 0) return false; its.splice(i, 1); return true; },
         dropItem: (kind, pos) => { its.push({ id: kind, kind, pos: pos.clone() }); return kind; },
         trunks, kindness: o.script === 'kind' ? 0.9 : 0.2, stove: new THREE.Vector3(0, 0, 0), threats: [] });

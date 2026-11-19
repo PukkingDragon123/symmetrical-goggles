@@ -9,22 +9,30 @@
 //
 //   const wild = new Wildlife(); scene.add(wild.object);
 //   wild.update(ctx);          // every frame (CreatureCtx; uses ctx.trunks if present)
-// Events (ctx.emit(ev, { pos, who, sound })): chatter, bolt, caw, chirp, flush. `sound` is a src/audio/bank.ts id.
+// v3: the squirrel and the hare wear real fur (src/creatures/fur: a bushy squirrel tail that bounces as it bounds).
+// Squirrels love nuts and berries: a player standing still holding them (SQUIRREL_FOODS) is approached by a brave
+// squirrel that sits up and begs at arm's length; wild.offer('nuts') hands them over: it nibbles, sitting up, then
+// chatters happily. Events (ctx.emit(ev, { pos, who, sound })): chatter, bolt, caw, chirp, flush, eat (item), happy.
+// `sound` is a src/audio/bank.ts id.
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle } from './rig';
-import { wildModel, BIRDS, type Species } from './wildlife/models';
+import { wildModel, BIRDS, WILD_FUR_LEN, type Species } from './wildlife/models';
+import { addFur, type Fur } from './fur';
 import { daylight } from './hound';
 import { biome, WORLD } from '../world/layout';
 import type { CreatureCtx } from './types';
 
 const SOUND: Record<string, Partial<Record<Species, string>>> = {
   chatter: { squirrel: 'animal_red_squirrel' }, caw: { raven: 'bird_raven' }, chirp: { jay: 'bird_songbird', chickadee: 'bird_songbird' },
+  eat: { squirrel: 'eat_crunch' }, chew: { squirrel: 'eat_chew' }, happy: { squirrel: 'animal_red_squirrel' },
   flush: { grouse: 'bird_grouse_drum', raven: 'bird_raven' },
 };
 const _e = new THREE.Euler(), _eo = new THREE.Euler(0, 0, 0, 'YXZ'), _m = new THREE.Matrix4(), _x = new THREE.Vector3(), _y = new THREE.Vector3(), _z = new THREE.Vector3();
 const TAU = Math.PI * 2;
 
-type State = 'idle' | 'move' | 'alert' | 'freeze' | 'flee' | 'climb' | 'perch' | 'fly' | 'gone';
+type State = 'idle' | 'move' | 'alert' | 'freeze' | 'flee' | 'climb' | 'perch' | 'fly' | 'gone' | 'beg' | 'eat';
+/** what a squirrel comes for (its favourites) */
+export const SQUIRREL_FOODS = ['nuts', 'hazelnuts', 'acorns', 'seeds', 'berries', 'blueberries'];
 export class Critter {
   readonly object = new THREE.Group();
   readonly mesh: THREE.SkinnedMesh;
@@ -41,6 +49,8 @@ export class Critter {
     this.mesh = this.skel.mesh(m.geo, mat);
     this.mesh.castShadow = true; this.mesh.customDepthMaterial = depth; this.mesh.frustumCulled = false;
     this.object.add(this.mesh); this.object.name = kind;
+    const fl = WILD_FUR_LEN[kind];
+    if (m.fur && fl) this.fur = addFur(this.mesh, { length: fl, mask: m.fur, shells: 9, density: 0.9, clump: 4, clumpPull: 0.5, rootDark: 0.5, tipK: 0.5, fins: 0.4, comb: [0, -0.1, -0.5], droop: 0.12, hz: 3.5, inertia: 0.02, springs: [{ bones: ['tail0'], hz: 2.6, inertia: 2 }, { bones: ['earL', 'earR'], hz: 5 }], lod: [3, 10, 22], minShells: 3 });
     this.bird = BIRDS.includes(kind);
     this.b = this.skel.idx;
   }
@@ -49,7 +59,15 @@ export class Critter {
     this.state = this.bird ? 'perch' : 'idle'; this.trunk = null; this.vel.set(0, 0, 0); this.object.visible = true;
   }
   /** pose the skeleton for the current state */
+  /** the coat (squirrel, hare) */
+  fur: Fur | null = null;
+  /** what it is eating (a squirrel given nuts) */
+  food = '';
   pose(dt: number) {
+    this.poseBones(dt);
+    this.fur?.update(dt);
+  }
+  private poseBones(dt: number) {
     const S = this.skel, B = S.bones, b = this.b, t = this.t;
     S.rest();
     const R = (n: string, x: number, y = 0, z = 0) => { const k = b[n]; if (k !== undefined) B[k].quaternion.setFromEuler(_e.set(x, y, z)); };
@@ -82,6 +100,14 @@ export class Critter {
       B[0].quaternion.setFromEuler(_e.set(Math.cos(p) * 0.18, 0, 0));
       R('tail0', this.kind === 'squirrel' ? 0.3 + Math.cos(p) * 0.3 : 0.2);
       R('earL', -0.6); R('earR', -0.6);
+    } else if (this.state === 'beg' || this.state === 'eat') {
+      // sat up on its haunches, forepaws to its mouth, nibbling (begging: the paws held up, the nose working)
+      const eat = this.state === 'eat', nib = Math.sin(t * (eat ? 26 : 14)) * (eat ? 0.08 : 0.04);
+      B[0].quaternion.setFromEuler(_e.set(-0.85, 0, 0)); B[0].position.y += 0.035; B[0].position.z -= 0.02;
+      R('head', 0.75 + nib, eat ? 0 : Math.sin(t * 1.3) * 0.3, eat ? 0 : Math.sin(t * 0.9) * 0.25);
+      R('fL', -1.5 + nib * 2); R('fR', -1.5 + nib * 2); R('hL', 0.9); R('hR', 0.9);
+      R('tail0', 0.9 + Math.sin(t * 2) * 0.1); R('tail1', -0.9);
+      R('earL', 0.1); R('earR', 0.1);
     } else {
       const frozen = this.state === 'freeze';
       const nib = !frozen && Math.sin(t * 0.8 + this.phase * 5) > 0.4 ? Math.sin(t * 22) * 0.06 + 0.25 : 0;
@@ -160,9 +186,22 @@ export class Wildlife {
         break; // one per tick
       }
     }
+    this.lastP.copy(P); this.fedT = Math.max(0, this.fedT - dt);
+    if (this.pendingEat) { const e = this.pendingEat; this.pendingEat = null; ctx.emit('eat', { pos: e.c.object.position.clone(), who: 'squirrel', sound: SOUND.eat.squirrel, item: e.item }); }
     for (const c of this.active) this.think(c, ctx, dt);
   }
 
+  /** after a squirrel has eaten, the squirrels are tamer for a while (seconds left) */
+  private fedT = 0;
+  private lastP = new THREE.Vector3(0, -999, 0); private pendingEat: { c: Critter; item: string } | null = null;
+  /** the player holds out food: true if a begging squirrel within reach takes it (nuts, seeds or berries) */
+  offer(item: string): boolean {
+    if (!SQUIRREL_FOODS.includes(item)) return false;
+    const c = this.active.find((k) => k.kind === 'squirrel' && k.state === 'beg' && Math.hypot(k.pos.x - this.lastP.x, k.pos.z - this.lastP.z) < 2.2);
+    if (!c) return false;
+    c.state = 'eat'; c.st = 0; c.food = item; this.pendingEat = { c, item };
+    return true;
+  }
   private emit(c: Critter, ctx: CreatureCtx, ev: string) { if (ev) ctx.emit(ev, { pos: c.object.position.clone(), who: c.kind, sound: SOUND[ev]?.[c.kind] }); }
 
   private think(c: Critter, ctx: CreatureCtx, dt: number) {
@@ -185,7 +224,28 @@ export class Wildlife {
           c.pose(dt);
           return;
         }
-        if (c.state !== 'flee' && (dist < 9 || (loud && dist < 20))) {
+        // nuts held out by a still player: one brave squirrel comes to beg, and eats what it is given
+        const food = SQUIRREL_FOODS.includes(P.held) && ps < 0.8 && !loud;
+        if (c.state === 'eat') {
+          c.speed = damp(c.speed, 0, 8, dt); wantH = Math.atan2(-dx, -dz);
+          if (c.st > 5) { this.emit(c, ctx, 'happy'); this.emit(c, ctx, 'chatter'); go('idle'); this.fedT = 60; }
+          else if (Math.random() < dt * 2) this.emit(c, ctx, 'chew');
+          c.heading = dampAngle(c.heading, wantH, 3, dt); c.pos.y = ctx.heightAt(c.pos.x, c.pos.z); this.place(c, ctx); c.pose(dt);
+          return;
+        }
+        if (food && (c.state === 'beg' || (dist < 14 && c.state !== 'flee' && !this.active.some((o) => o !== c && o.state === 'beg')))) {
+          if (c.state !== 'beg') { go('beg'); this.emit(c, ctx, 'chatter'); }
+          const stop = 0.9;
+          if (dist > stop + 0.15) { wantH = Math.atan2(-dx, -dz); want = 2.2; c.state = 'beg'; }
+          c.heading = dampAngle(c.heading, Math.atan2(-dx, -dz), 6, dt);
+          c.speed = damp(c.speed, dist > stop + 0.15 ? want : 0, 6, dt);
+          c.pos.x += Math.sin(c.heading) * c.speed * dt; c.pos.z += Math.cos(c.heading) * c.speed * dt; c.pos.y = ctx.heightAt(c.pos.x, c.pos.z);
+          c.phase = (c.phase + dt * (c.speed / 0.35)) % 1;
+          this.place(c, ctx); c.pose(dt);
+          return;
+        }
+        if (c.state === 'beg') go('idle');
+        if (c.state !== 'flee' && (dist < 9 || (loud && dist < 20)) && !(this.fedT > 0 && !loud && ps < 2)) {
           go('flee'); this.emit(c, ctx, 'chatter');
           const ts = ctx.trunks ? ctx.trunks(c.pos.x, c.pos.z, 12) : [];
           let best: typeof c.trunk = null, bd = Infinity;

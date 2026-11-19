@@ -19,7 +19,12 @@
 //            player not moving, quiet) calm them about twice as fast, a light kept on them slows it, more noise
 //            renews it
 //   settle   they straggle back one by one to their places on the eave and hang up again ('settle' per bat)
-// Events (ctx.emit(ev, { pos, who: 'dingbat', sound })): screech, flutter (a bat passing the player's head), settle
+//   sated    (v5) they LOVE maple syrup: roost.offer('maple_syrup') near the eave (within 5 m) settles a swarm at once
+//            and keeps the roost happy for two minutes (light and noise do not bother them; they chirp and squint)
+// v5: fluffy feathered fur on every bat (src/creatures/fur, 10 shells, physics: the fluff streams in flight), a face
+// (expression.ts): sleepy lids hanging, an owl's head tilt when something interests them, a wide angry gape on the wing.
+// Events (ctx.emit(ev, { pos, who: 'dingbat', sound })): screech, flutter (a bat passing the player's head), settle,
+// eat (item), happy
 // ({ left }: bats still out). `sound` is a src/audio/bank.ts id (DINGBAT_SOUND).
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, wrapAngle, type CreatureFx } from './rig';
@@ -30,8 +35,13 @@ import { loader } from './cache';
 import { registerPreload } from './preload';
 import { daylight } from './hound';
 import type { CreatureCtx } from './types';
+import { DINGBAT_FUR_LEN } from './dingbat/model';
+import { addFur, type Fur } from './fur';
+import { Expression, type Mood } from './expression';
 
-export const DINGBAT_SOUND: Record<string, string | undefined> = { screech: 'dingbat_screech', flutter: 'dingbat_flutter', settle: 'dingbat_flutter' };
+export const DINGBAT_SOUND: Record<string, string | undefined> = { screech: 'dingbat_screech', flutter: 'dingbat_flutter', settle: 'dingbat_flutter', eat: 'dingbat_flutter', happy: 'dingbat_screech' };
+/** what the roost takes (its favourite first) */
+export const DINGBAT_FOODS = ['maple_syrup', 'syrup', 'maple'];
 const DM = loader<DingbatModel>(DINGBAT_MODEL_VERSION, () => buildDingbatModelAsync(), (b, m) => ({ ...b, bones: dingbatBones(), tris: m.tris as number, den: m.den as number, stats: m.stats as string }), (m) => ({ tris: m.tris, den: m.den, stats: m.stats }));
 /** the dingbat's shared model: preloaded (dingbatModelAsync / preloadCreatures) or built now (blocks) */
 export function dingbatModel(): DingbatModel { let m = DM.get(); if (!m) { m = buildDingbatModel(); DM.set(m); } return m; }
@@ -40,6 +50,7 @@ registerPreload('dingbat', dingbatModelAsync);
 
 export type DingbatMode = 'hidden' | 'hang' | 'wake' | 'fly' | 'return' | 'land';
 export type RoostState = 'tucked' | 'roost' | 'swarm' | 'settle';
+const _q3 = new THREE.Quaternion();
 const _e = new THREE.Euler(), _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _v = new THREE.Vector3(), _w = new THREE.Vector3(), _ax = new THREE.Vector3();
 const GRIP = new THREE.Vector3(...(DB.grip as [number, number, number]));
 /** the hanging orientation (model space): head down, back to the wall, belly and face out */
@@ -68,6 +79,11 @@ export class Dingbat {
   yaw = 0; private yawRate = 0; private roll = 0; private pitch = 0;
   readonly params: AnimParams = { speed: 0, phase: 0, lookYaw: 0, lookPitch: 0, alert: 0 };
   private bones: Record<string, number>;
+  /** the fluff (null if the model has no fur page) */
+  readonly fur: Fur | null;
+  readonly face: Expression;
+  /** the roost (or a test page) sets the mood; null follows the bat's own mode */
+  faceMood: Mood | null = null;
   constructor(o: { model?: DingbatModel; mat?: { mat: THREE.Material; depth: THREE.Material } } = {}) {
     const m = o.model ?? dingbatModel(); this.model = m;
     this.skel = new Skel(m.bones);
@@ -78,6 +94,11 @@ export class Dingbat {
     this.anim = new Animator(dingbatClips(this.skel.defs), this.skel.bones.length, 0, 4);
     this.anim.play('hang');
     this.bones = this.skel.idx;
+    this.face = new Expression({ seed: 51 + Math.floor(Math.random() * 100), rate: 7 });
+    this.fur = m.fur ? addFur(this.mesh, {
+      length: DINGBAT_FUR_LEN, mask: m.fur, shells: 10, density: 0.88, clump: 4, clumpPull: 0.55, rootDark: 0.5, tipK: 0.6, fins: 0,
+      comb: [0, 0.05, -0.5], droop: 0.15, hz: 4, inertia: 0.01, drag: 0.04, lod: [2.5, 8, 16], minShells: 3,
+    }) : null;
   }
   get clips(): string[] { return Object.keys(this.anim.clips); }
   play(clip: string | null) { this.manual = clip; if (clip) this.anim.play(clip, { restart: !this.anim.clips[clip].loop }); }
@@ -124,10 +145,19 @@ export class Dingbat {
     B[0].quaternion.setFromEuler(_e.set(p.rr[0], p.rr[1], p.rr[2], 'XYZ'));
     for (let i = 1; i < B.length; i++) { const x = p.r[i * 3], y = p.r[i * 3 + 1], z = p.r[i * 3 + 2]; if (x || y || z) B[i].quaternion.setFromEuler(_e.set(x, y, z, 'XYZ')); }
     B[bi.jaw].quaternion.setFromEuler(_e.set(p.r[bi.jaw * 3] + jaw * 1.05, 0, 0, 'XYZ'));
+    // the face: sleepy hanging, an owl's tilt when alert, an angry gape on the wing, a happy squint when sated
+    const mood: Mood = this.faceMood ?? (this.mode === 'hang' ? (this.alert > 0.4 ? 'curious' : 'sleepy') : this.mode === 'wake' ? 'scared' : this.mode === 'fly' ? 'angry' : 'neutral');
+    this.face.set(mood);
+    const F = this.face.update(dt);
+    // the gape: the screech (the clips' jaw), a chattering snap when angry, a happy open beak when sated
+    const chatter = F.lip * 0.18 * Math.max(0, Math.sin(this.t * 23 + this.seed));
+    B[bi.jaw].quaternion.setFromEuler(_e.set(p.r[bi.jaw * 3] + Math.min(1.25, jaw * 1.2 + chatter + F.jaw * 0.45), 0, 0, 'XYZ'));
+    B[bi.head].quaternion.multiply(_q3.setFromEuler(_e.set(0, 0, F.tilt * 0.75, 'XYZ')));
     // lids: rotate down over the eyes about the side axis
-    const lid = clamp(p.c[CH_LID], 0, 1);
+    const lid = clamp(Math.max(p.c[CH_LID] * (mood === 'curious' ? 0.3 : 1), F.blink, F.lid * 0.85 + F.squint * 0.4), 0, 1);
     B[bi.lidL].quaternion.setFromEuler(_e.set(-0.2 + lid * 1.5, 0, 0, 'XYZ'));
     B[bi.lidR].quaternion.setFromEuler(_e.set(-0.2 + lid * 1.5, 0, 0, 'XYZ'));
+    this.fur?.update(dt, null);
   }
 }
 
@@ -186,6 +216,20 @@ export class DingbatRoost {
     this.object.name = 'DingbatRoost';
   }
   get count() { return this.bats.length; }
+  /** maple syrup, their favourite */
+  readonly favoriteFood = 'maple_syrup';
+  /** seconds of syrup contentment left (light and noise do not bother them) */
+  sated = 0;
+  private pendingEv: { ev: string; item: string }[] = []; private lastP = new THREE.Vector3(0, -999, 0);
+  /** the player holds out maple syrup near the eave (within 5 m): true when the roost takes it. A swarm settles at
+   *  once and the roost stays content for two minutes ('eat', 'happy') */
+  offer(item: string): boolean {
+    if (!DINGBAT_FOODS.includes(item) || this.state === 'tucked') return false;
+    if (Math.hypot(this.lastP.x - this.pos.x, this.lastP.z - this.pos.z) > 5) return false;
+    this.sated = 120; this.irritation = 0; this.agitation = 0;
+    this.pendingEv.push({ ev: 'eat', item }, { ev: 'happy', item });
+    return true;
+  }
   /** set them off now (scripted scares, tests) */
   disturb() { if (this.state === 'roost') this.irritation = 1; else if (this.state === 'swarm' || this.state === 'settle') this.agitation = Math.max(this.agitation, 10); }
 
@@ -194,6 +238,14 @@ export class DingbatRoost {
     const P = ctx.player, day = daylight(ctx.hour);
     const emit = (ev: string, at: THREE.Vector3, x: Record<string, unknown> = {}) => ctx.emit(ev, { pos: at.clone(), who: 'dingbat', sound: DINGBAT_SOUND[ev], ...x });
     const dRoost = Math.hypot(P.pos.x - this.pos.x, P.pos.z - this.pos.z);
+    this.lastP.copy(P.pos);
+    for (const e of this.pendingEv.splice(0)) emit(e.ev, this.pos, { item: e.item });
+    // syrup: contentment (no irritation; a swarm winds down at once); the hanging bats squint and chirp
+    if (this.sated > 0) {
+      this.sated -= dt; this.irritation = 0; if (this.state === 'swarm') this.agitation = Math.min(this.agitation, 0);
+      for (const b of this.bats) b.faceMood = b.mode === 'hang' ? 'happy' : null;
+      if (this.sated <= 0) for (const b of this.bats) b.faceMood = null;
+    }
     const lightOn = P.light || /lantern|torch/.test(P.held);
     const lantern = /lantern|torch/.test(P.held);
     // which hanging bats are in the beam

@@ -12,6 +12,7 @@ export interface SaveData {
   stacked: number;
   sharp: [string, number][];
   flags: string[];
+  pack?: import('../ui/inventory/grid').PackSave;
 }
 
 const KEY = 'bushed.save.v1';

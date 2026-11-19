@@ -198,9 +198,7 @@ export class PackGrid {
       const q = [...under][0];
       if (q.id === p.id && q.n < footprint(q.id).stack) return { r: 'merge', other: q };
       // swap: q goes to where p was (p's old cells), if it fits there with p in its new spot
-      const qd = this.dims(q);
-      const tx = p.x, ty = p.y;
-      if (this.canPlaceWith(q.id, tx, ty, q.rot, [p, q], { id: p.id, x, y, rot }) && qd) return { r: 'swap', other: q };
+      if (this.canPlaceWith(q.id, p.x, p.y, q.rot, [p, q], { id: p.id, x, y, rot })) return { r: 'swap', other: q };
     }
     return { r: 'blocked' };
   }
@@ -262,7 +260,7 @@ export class PackGrid {
       p.n += k; n -= k;
     }
     while (n > 0) {
-      const s = this.findFree(id, f.h > f.w ? 0 : 0);
+      const s = this.findFree(id);
       if (!s) break;
       const k = Math.min(n, f.stack);
       this.items.push({ uid: this.nextUid++, id, x: s.x, y: s.y, rot: s.rot, n: k });
@@ -346,7 +344,10 @@ export class PackGrid {
     return q;
   }
 
-  /** move a placement to the best free spot elsewhere (shift-click quick move); merges into stacks first */
+  /**
+   * Shift-click quick move: tops up another stack of the same thing first; otherwise hops the item to the first free
+   * spot in reading order (top-left), or, if it is already the frontmost, to the last free spot (bottom-right).
+   */
   quickMove(uid: number): boolean {
     const p = this.byUid(uid);
     if (!p) return false;
@@ -358,8 +359,19 @@ export class PackGrid {
       this.version++;
       return true;
     }
-    const s = this.findFree(p.id, p.rot, [p]);
-    if (!s || (s.x === p.x && s.y === p.y && s.rot === p.rot)) return false;
+    const spots: { x: number; y: number; rot: 0 | 1 }[] = [];
+    for (const rot of (f.w === f.h ? [p.rot] : [p.rot, (1 - p.rot) as 0 | 1])) {
+      const d = dimsOf(p.id, rot);
+      for (let y = 0; y + d.h <= this.h; y++) for (let x = 0; x + d.w <= this.w; x++) {
+        if (x === p.x && y === p.y && rot === p.rot) continue;
+        if (this.canPlace(p.id, x, y, rot, [p])) spots.push({ x, y, rot });
+      }
+    }
+    if (!spots.length) return false;
+    const key = (s: { x: number; y: number }) => s.y * this.w + s.x;
+    spots.sort((a, b) => key(a) - key(b) || (a.rot === p.rot ? -1 : 1));
+    const front = spots[0];
+    const s = key(front) < key(p) ? front : spots[spots.length - 1];
     p.x = s.x; p.y = s.y; p.rot = s.rot;
     this.version++;
     return true;

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BUSHED hunting</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #0d0f0e; color: #d8d2c0; font: 13px/1.35 ui-monospace, Menlo, Consolas, monospace; overflow: hidden; }
+    #dev { position: absolute; top: 8px; left: 8px; background: rgba(10, 12, 11, 0.78); padding: 8px 10px; border: 1px solid #333; max-width: 360px; z-index: 5; }
+    #dev select, #dev button { background: #1c201e; color: #d8d2c0; border: 1px solid #444; font: inherit; margin: 2px 0; }
+    #dev button.on { background: #5a4a26; }
+    #info { white-space: pre; margin-top: 6px; color: #9a9584; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #ui { position: absolute; inset: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+  <div id="ui"></div>
+  <div id="dev">
+    <div>
+      <label>view <select id="who"><option value="buck">White-tailed buck</option><option value="doe">White-tailed doe</option><option value="bull">Bull moose</option><option value="cow">Cow moose</option><option value="world">In the bush (rifle)</option></select></label>
+      <label><input type="checkbox" id="spin" checked /> turntable</label>
+      <label><input type="checkbox" id="zones" /> hit zones</label>
+    </div>
+    <div id="anims"></div>
+    <div id="info">building...</div>
+  </div>
+  <script type="module" src="./src/dev/hunting.ts"></script>
+</body>
+</html>

@@ -117,7 +117,7 @@ export const FONT = 'Alagard, monospace';
  * The grid area is [x0, x0 + n * cs] square in texture pixels.
  */
 export function paintBoard(size: number, cols: number, rows: number, x0: number, y0: number, cs: number, seed: number): HTMLCanvasElement {
-  const c = paintDuck(size, [166, 150, 112], seed, { grime: 0.9, slub: 0.8, weave: 0.8 });
+  const c = paintDuck(size, [152, 136, 100], seed, { grime: 0.9, slub: 0.8, weave: 0.8 });
   const g = c.getContext('2d')!;
   const r = new Rng(seed + 3);
   const W = cols * cs, H = rows * cs;
@@ -158,8 +158,8 @@ export function paintBoard(size: number, cols: number, rows: number, x0: number,
   stitchLine(g, x0 - tape / 2 - 2, y0 - tape + 1, x0 - tape / 2 - 2, y0 + H + tape + 1, r, '#d8c49a', 5, 3);
   stitchLine(g, x0 + W + tape / 2 + 2, y0 - tape + 1, x0 + W + tape / 2 + 2, y0 + H + tape + 1, r, '#d8c49a', 5, 3);
   // cell seams: a dark thread running stitch, slightly hand-wobbled, with a lit top pixel
-  for (let i = 1; i < cols; i++) stitchLine(g, x0 + i * cs, y0 + 2, x0 + i * cs, y0 + H - 2, r, '#3a2d1c', 4, 3, true);
-  for (let j = 1; j < rows; j++) stitchLine(g, x0 + 2, y0 + j * cs, x0 + W - 2, y0 + j * cs, r, '#3a2d1c', 4, 3, true);
+  for (let i = 1; i < cols; i++) stitchLine(g, x0 + i * cs - 1, y0 + 2, x0 + i * cs - 1, y0 + H - 2, r, '#2e2416', 5, 2, true);
+  for (let j = 1; j < rows; j++) stitchLine(g, x0 + 2, y0 + j * cs - 1, x0 + W - 2, y0 + j * cs - 1, r, '#2e2416', 5, 2, true);
   // cross-stitches where the seams meet
   for (let j = 1; j < rows; j++) for (let i = 1; i < cols; i++) {
     const x = x0 + i * cs, y = y0 + j * cs;
@@ -198,8 +198,6 @@ function stencil(g: CanvasRenderingContext2D, t: string, x: number, y: number, r
   g.fillStyle = `rgba(30,24,18,${r.range(0.55, 0.75).toFixed(2)})`;
   g.fillText(t, Math.round(x), Math.round(y));
   // stencil bridge: a thin unpainted bar through the glyph
-  const s = g.getImageData(Math.round(x) - 8, Math.round(y) - 1, 16, 1);
-  g.putImageData(s, Math.round(x) - 8, Math.round(y) - 1);
   g.fillStyle = 'rgba(170,152,112,0.6)';
   g.fillRect(Math.round(x) - 6, Math.round(y), 12, 1);
 }
@@ -426,5 +424,36 @@ export function paintGlove(kind: 'point' | 'open' | 'grab'): HTMLCanvasElement {
   const g = c.getContext('2d')!;
   const pal: Record<string, string> = { k: '#20140c', h: '#ecd29a', w: '#c49a5c', s: '#86643a' };
   GLOVES[kind].forEach((row, y) => [...row].forEach((ch, x) => { if (pal[ch]) { g.fillStyle = pal[ch]; g.fillRect(x, y, 1, 1); } }));
+  return c;
+}
+
+/** a folded topographic map of the lake country: contours, a lake, a creek, a pencilled route, fold creases */
+export function paintMap(w: number, h: number, seed: number): HTMLCanvasElement {
+  const c = mkCanvas(w, h);
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(w, h);
+  const field = (x: number, y: number) => vnoise(x / w * 3, y / h * 3, seed) * 0.7 + vnoise(x / w * 7, y / h * 7, seed + 1) * 0.3;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const k = (y * w + x) * 4, f = field(x, y);
+    let col: C3 = [176, 160, 122];
+    if (f < 0.26) col = [96, 118, 120];                                   // lake
+    else if (Math.abs((f * 9) % 1 - 0.5) < 0.06) col = [168, 128, 86];   // contour
+    else if (f > 0.62) col = [170, 166, 128];                            // high ground tint
+    const v = (hash2(x, y, seed) - 0.5) * 10;
+    img.data[k] = clamp255(col[0] + v); img.data[k + 1] = clamp255(col[1] + v); img.data[k + 2] = clamp255(col[2] + v); img.data[k + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  // the route, in red pencil
+  const r = new Rng(seed);
+  g.fillStyle = '#a3261a';
+  let x = w * 0.1, y = h * 0.8;
+  for (let i = 0; i < 60; i++) { x += r.range(0.2, 1.2) * w / 60; y -= r.range(-0.6, 1.2) * h / 70; if (i % 3 !== 2) g.fillRect(Math.round(x), Math.round(y), 1, 1); }
+  g.fillRect(Math.round(x) - 1, Math.round(y) - 1, 3, 3);
+  // fold creases
+  g.fillStyle = 'rgba(70,56,36,0.35)';
+  g.fillRect(Math.round(w / 2), 0, 1, h); g.fillRect(0, Math.round(h / 2), w, 1);
+  g.fillStyle = 'rgba(255,250,230,0.35)';
+  g.fillRect(Math.round(w / 2) + 1, 0, 1, h); g.fillRect(0, Math.round(h / 2) + 1, w, 1);
+  g.strokeStyle = 'rgba(60,44,24,0.6)'; g.strokeRect(0.5, 0.5, w - 1, h - 1);
   return c;
 }

@@ -37,6 +37,8 @@ no third-party model, texture or sound files are used.
 | Anatomy library (`src/creatures/anatomy/`: control cages, Catmull-Clark creases, chart packing, pixel painter, limbs, locks) | ported from the ODDWORLD project (`src/life/anatomy`, `kit.ts`, `cage.ts`, `art/palette.ts`) | the BUSHED project owner (own code) | project-internal |
 | The Axehandle Hound, Gumberoo and Bigfoot lore | William T. Cox, *Fearsome Creatures of the Lumberwoods* (1910); North American folklore | William T. Cox | public domain |
 | Dingbats (`dingbat.ts`, `dingbat/`) and Granny Tamarack (`granny.ts`, `granny/`): models, painted pages, card atlases for feathers, bark strips, lichen and larch needles (`cards.ts`), dithered fog dissolve (`fade.ts`), clips and AI | procedural, written for BUSHED; the dingbat after lumber-camp "fearsome critter" yarns, Granny Tamarack an original character | the BUSHED project (own code) | project-internal |
+| The six cryptids (`cryptids/`: Hodag, Squonk, Hidebehind, Agropelter and its snag, Teakettler, Snow Wasset): models, painted pages, fur pages, clips, AI | procedural, written for BUSHED; original designs | the BUSHED project (own code) | project-internal |
+| Cryptid lore: Squonk, Agropelter, Snow Wasset, Hidebehind; Hodag; Teakettler | William T. Cox, *Fearsome Creatures of the Lumberwoods* (1910); the Rhinelander (Wisconsin) Hodag yarns of Eugene Shepard (1893); Henry H. Tryon, *Fearsome Critters* (1939) and lumber-camp folklore | Cox, Shepard, Tryon; oral tradition | Cox 1910 and the 1893 newspaper yarns public domain; Tryon used for folklore only (no text or art copied) |
 
 ## Humans
 

@@ -16,7 +16,7 @@ import { bonesKit, boneIndex, coat, solid, warts, wet, finishModel, REG, type Cr
 import { furZones, type FurZone } from '../../fur';
 import type { BoneDef } from '../../rig';
 
-export const HODAG_MODEL_VERSION = 'hodag@2';
+export const HODAG_MODEL_VERSION = 'hodag@5';
 /** the head bone (the back of the skull over the jaw hinge) */
 export const HH: V3 = [0, 0.66, 0.6];
 export const HODAG_EYE: V3 = [0.168, 0.795, 0.675];
@@ -78,7 +78,7 @@ const jawStations = (): Station[] => LO.map((s) => {
 const wAt = (z: number) => { for (let i = 0; i + 1 < UP.length; i++) if (z <= UP[i + 1].z) { const f = cl((z - UP[i].z) / (UP[i + 1].z - UP[i].z), 0, 1); return UP[i].w + (UP[i + 1].w - UP[i].w) * f; } return 0.02; };
 
 // ------------------------------------------------------------------------------------------------ paint
-const HIDE = RP('olive'), DARK = RP('basalt'), MOSS = RP('moss'), BELLY = RP('straw'), FUR = RP('squatch'), FUR2 = RP('fur'), BONE = RP('bone'), HORN = RP('horn'), GOLD = RP('gold');
+const HIDE = RP('olive'), HIDE2 = RP('hide'), DARK = RP('basalt'), MOSS = RP('moss'), BELLY = RP('straw'), FUR = RP('squatch'), FUR2 = RP('fur'), BONE = RP('bone'), HORN = RP('horn'), GOLD = RP('gold');
 /** the warty dinosaur back, the fur on the flanks, the ridged frog belly */
 const hidePaint = (part: 'body' | 'leg' | 'tail') => coat({
   lightK: 0.85,
@@ -97,19 +97,22 @@ const hidePaint = (part: 'body' | 'leg' | 'tail') => coat({
     if (part === 'body' && z > 0.15 && z < 0.5 && ny > -0.2) furK = Math.max(furK, cl((0.8 - y) * 5, 0, 1) * 0.9);
     furK *= cl(0.75 + m, 0, 1);
     if (furK > 0.35) { px.put(i, m > 0.15 ? FUR2 : FUR, (m > 0.15 ? 1.4 : 2.3) + blot * 0.8); px.rough[i] = 235; return furK; }
-    // the hide: olive-black, darker blotches, a mossy green cast on top, scaly lower legs
-    let R = HIDE, st = 1.5 + m * 1.0;
-    if (blot > 0.25) { R = DARK; st = 1.6 + blot; }
-    if (ny > 0.7 && fbm3(x * 2 + 7, z * 2, y, 2) > 0.2) { R = MOSS; st = 1.2 + m * 0.6; }
+    // the hide: olive-brown going warmer in patches, dark frog blotches with a paler rim, a little lichen on top,
+    // scaly lower legs
+    let R = HIDE, st = 2.4 + m * 0.7 - (ny > 0.75 ? 0.3 : 0);
+    if (blot > 0.3) st = 1.0 - (blot - 0.3) * 2; else if (blot > 0.23) st += 0.8;
+    if (ny < 0.2 && fbm3(x * 1.5 + 4, y * 1.5, z * 1.5, 2) > 0.25) { R = HIDE2; st -= 0.2; }
+    if (ny > 0.6 && fbm3(x * 7 + 7, z * 7, y * 7, 2) > 0.5) { R = MOSS; st = 2 + m * 0.5; }
     if (part === 'leg' && y < 0.24) { const c = cell3(x, y, z, 0.022, 3); st = 2 + (c.id % 3) * 0.4 - ((c.f2 - c.f1) < px.mpt * 1.1 ? 1.3 : 0); R = c.id % 5 === 0 ? DARK : HIDE; }
-    px.put(i, R, st); px.rough[i] = 175;
+    px.put(i, R, st); px.rough[i] = 205;
     return 0;
   },
   pelt: { len: 0.075, width: 0.012, flow: part === 'body' ? -1 : 1, down: 0.85, tooth: 1.7, clump: 0.6, strands: 0.3 },
   ink: [1.2, 1.2, 0.6],
   after: (px, fur) => {
-    warts(px, 0.045, 0.55, (i) => (fur[i] < 0.2 && px.rampT[px.rampI[i]] !== BELLY ? 1 : 0), 11);
-    px.glints(HIDE, { every: 0.2, size: 0.3, mask: (i) => (fur[i] < 0.2 ? 1 : 0) });
+    const hide = (i: number) => (fur[i] < 0.2 && px.rampT[px.rampI[i]] !== BELLY ? 1 : 0);
+    px.pebbles(0.016, { mask: hide, depth: 0.7, seed: 4 });
+    warts(px, 0.045, 0.55, hide, 11);
   },
 });
 /** the head: a frog's olive crown mottled darker, folds over the snout, pale yellow lips, nostrils, the throat */
@@ -131,10 +134,11 @@ function headPaint(part: 'skull' | 'jaw') {
         if (ny < -0.3 || y < m - 0.1) { const fold = Math.abs(Math.sin(x * 60 + nz2(x * 10, z * 10) * 2)) < 0.14; px.put(i, BELLY, 2.6 + mot * 0.7 - (fold ? 1 : 0)); px.rough[i] = 140; return 0; }
         px.put(i, big > 0.2 ? DARK : HIDE, 1.8 + mot); px.rough[i] = 160; return 0;
       }
-      // the crown: olive-green, dark frog blotches with a pale rim, a lighter ridge round each eye turret
-      let R = HIDE, st = 2 + mot * 0.9;
-      if (big > 0.28) { R = DARK; st = 1.4 + big; } else if (big > 0.22) st += 0.8;
-      if (ny > 0.6 && mot > 0.1) { R = MOSS; st = 1.6 + mot; }
+      // the crown: olive-brown, dark frog blotches with a pale rim, a lighter ridge round each eye turret
+      const spot = fbm3(X * 11 + 2, Y * 11, Z * 11, 2);
+      let R = HIDE, st = 2.6 + mot * 0.6 + (big > 0.25 ? 0.4 : 0);
+      if (spot > 0.3) st = 1.0 - (spot - 0.3) * 2; else if (spot > 0.23) st += 0.8;
+      if (big < -0.3) R = HIDE2;
       const ed = Math.hypot(ax - (HODAG_EYE[0] - HH[0]), y - (HODAG_EYE[1] - HH[1]), z - (HODAG_EYE[2] - HH[2]));
       if (ed < 0.09 && ed > 0.065) st += 0.8;
       // the elephant's snout: deep wrinkles across the bridge, a broad nose pad
@@ -144,11 +148,12 @@ function headPaint(part: 'skull' | 'jaw') {
       if (nd < 0.026) st += z > 0.355 ? 1 : 0.4;
       // the folds under the eyes and behind the grin's corners
       if (z < 0.1 && y < 0.02 && y > m && Math.abs(Math.sin(y * 150 + z * 40)) < 0.14) st -= 0.9;
-      px.put(i, R, st); px.rough[i] = 165;
+      px.put(i, R, st); px.rough[i] = 190;
       return 0;
     },
     ink: [1.3, 1.2, 0.7],
     after: (px) => {
+      px.pebbles(0.012, { mask: (i) => { const P = px.gb.P; return P[i * 3 + 1] - HH[1] > mouthY(P[i * 3 + 2] - HH[2]) + 0.025 ? 1 : 0; }, depth: 0.6, seed: 8 });
       warts(px, 0.03, 0.45, (i) => { const P = px.gb.P; const y = P[i * 3 + 1] - HH[1]; return y > mouthY(P[i * 3 + 2] - HH[2]) + 0.03 ? 1 : 0; }, 17);
       wet(px, (i) => { const P = px.gb.P; return Math.hypot(Math.abs(P[i * 3]) - 0.06, P[i * 3 + 2] - HH[2] - 0.355) < 0.05 && P[i * 3 + 1] > HH[1] ? 1 : 0; }, HIDE, 1.5);
     },
@@ -167,9 +172,9 @@ const hornPaint = (tipZ: (x: number, y: number, z: number) => number) => (ch: Ch
   px.lightK = 0.6;
   for (let i = 0; i < px.n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], t = tipZ(x, y, z);
-    const ring = Math.abs(Math.sin(t * 46 + nz2(x * 40, z * 40))) < 0.2;
+    const ring = Math.abs(Math.sin(t * 30 + nz2(x * 30, z * 30) * 0.35)) < 0.16;
     if (t > 0.78) px.put(i, HORN, 2.6 + (t - 0.78) * 4 + (N[i * 3 + 1] > 0.3 ? 0.6 : 0));
-    else px.put(i, BONE, 3.4 - t * 0.6 - (ring ? 1.1 : 0) + (N[i * 3 + 1] > 0.3 ? 0.5 : 0) - (t < 0.1 ? 1.4 : 0) + fbm3(x * 30, y * 30, z * 30, 2) * 0.6);
+    else px.put(i, BONE, 3.4 - t * 0.6 - (ring ? 1.1 : 0) + (N[i * 3 + 1] > 0.3 ? 0.5 : 0) - (t < 0.1 ? 1.4 : 0) + fbm3(x * 12, y * 12, z * 12, 2) * 0.35);
     px.rough[i] = 105;
   }
   px.creaseInk(1, { dark: 1.2, lit: 1 });
@@ -242,7 +247,7 @@ export function* hodagModelGen(o: { page?: number; den?: number } = {}): ModelGe
   // the bulging frog eyes on their turrets (the lids ring them), gold irises with a bar pupil
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(HODAG_EYE, s), ax: V3 = [s * 0.62, 0.55, 0.56];
-    const e = body.add(eyeball({ name: 'eye' + S, c, ax, r: 0.052, bone: bi('eye' + S), iris: GOLD, pupil: 'bar', irisA: 0.82, sclera: RP('ochre'), k: 2.6, levels: 1, around: 12 }));
+    const e = body.add(eyeball({ name: 'eye' + S, c, ax, r: 0.056, bone: bi('eye' + S), iris: GOLD, pupil: 'bar', irisA: 0.82, sclera: RP('ochre'), k: 2.6, levels: 1, around: 12 }));
     e.reg = REG.eye;
     const l = body.add(eyelid({ name: 'lid' + S, c, ax, r: 0.052, bone: bi('lid' + S), paint: lidPaint, cover: 0.9, root: 2.5 }));
     l.reg = REG.head;
@@ -295,9 +300,9 @@ export function* hodagModelGen(o: { page?: number; den?: number } = {}): ModelGe
   // ---- the row of spines down the back and the tail: hooked back, tallest over the middle of the back
   const tg0 = torso.grids[0], R0 = tg0.v.length;
   const along = (z: number) => { let best = 0, bd = Infinity; for (let i = 0; i < R0; i++) { const q = gridSurfTop(torso, i / (R0 - 1)); const d = Math.abs(q.p[2] - z); if (d < bd) { bd = d; best = i; } } return gridSurfTop(torso, best / (R0 - 1)); };
-  const zs = [0.44, 0.33, 0.21, 0.09, -0.04, -0.17, -0.3, -0.43, -0.56, -0.68];
+  const zs = [0.4, 0.3, 0.19, 0.08, -0.04, -0.17, -0.3, -0.43, -0.56, -0.68];
   zs.forEach((z, k) => {
-    const q = along(z), n = q.n, len = 0.13 + 0.17 * Math.exp(-(((z + 0.02) / 0.32) ** 2)), back: V3 = [0, 0, -1];
+    const q = along(z), n = nrm(add(q.n, [0, 0, -0.25])), len = (0.13 + 0.17 * Math.exp(-(((z + 0.02) / 0.32) ** 2))) * cl((0.52 - z) / 0.2, 0.55, 1), back: V3 = [0, 0, -1];
     const b0 = add(q.p, scl(n, -0.03)), c1 = add(add(q.p, scl(n, len * 0.45)), scl(back, len * 0.08)), c2 = add(add(q.p, scl(n, len * 0.85)), scl(back, len * 0.32)), c3 = add(add(q.p, scl(n, len)), scl(back, len * 0.62));
     body.add(thorn('spine' + k, [b0, q.p, c1, c2, c3], 0.045 + len * 0.1, () => spineSkin(q.p), hornPaint((x, y, zz) => cl(Math.hypot(x - q.p[0], y - q.p[1], zz - q.p[2]) / (len * 1.15), 0, 1)), { n: 6, flat: 0.55 }));
   });

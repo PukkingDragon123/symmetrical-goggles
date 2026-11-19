@@ -18,10 +18,10 @@ import { furZones } from '../fur/paint';
 // ------------------------------------------------------------------------------------------------ the skeleton
 export const H: V3 = [0, 0.585, 0.665];
 /** the axe head's scale: its tables below are in 'axe units' (a big felling axe), this many metres each */
-const K = 1.25;
-const EYE0: V3 = [0.034, 0.037, 0.04];
+const K = 1.1;
+const EYE0: V3 = [0.036, 0.038, 0.042];
 /** the eyes' radius (axe units): big puppy eyes */
-const EYER = 0.0215;
+const EYER = 0.0255;
 /** the face's moving parts (axe units, head-local, +x side): brow tufts, ear roots, the tongue's root */
 const BROW0: V3 = [0.032, 0.066, 0.043], EAR0: V3 = [0.05, 0.05, -0.072];
 const HL = (x: number, y: number, z: number): V3 => [H[0] + x * K, H[1] + y * K, H[2] + z * K];
@@ -83,11 +83,11 @@ const UP0: { z: number; top: number; w: number; bot?: number; sock?: number; bro
   { z: 0.025, top: 0.07, w: 0.046, sock: 0.3, brow: 0.08 },
   { z: 0.065, top: 0.06, w: 0.038, sock: 0.06, brow: 0.02 },
   { z: 0.105, top: 0.058, w: 0.03 },
-  { z: 0.145, top: 0.074, w: 0.026 },
-  { z: 0.18, top: 0.098, w: 0.021 },
-  { z: 0.208, top: 0.118, w: 0.016 },
-  { z: 0.232, top: 0.108, w: 0.011 },
-  { z: 0.25, top: 0.06, w: 0.006 },
+  { z: 0.145, top: 0.07, w: 0.027 },
+  { z: 0.18, top: 0.084, w: 0.022 },
+  { z: 0.208, top: 0.095, w: 0.017 },
+  { z: 0.232, top: 0.087, w: 0.012 },
+  { z: 0.25, top: 0.05, w: 0.0065 },
 ];
 const LO0: { z: number; bot: number; w: number }[] = [
   { z: -0.04, bot: -0.058, w: 0.042 },
@@ -95,11 +95,11 @@ const LO0: { z: number; bot: number; w: number }[] = [
   { z: 0.025, bot: -0.072, w: 0.044 },
   { z: 0.065, bot: -0.074, w: 0.038 },
   { z: 0.105, bot: -0.086, w: 0.03 },
-  { z: 0.145, bot: -0.108, w: 0.026 },
-  { z: 0.18, bot: -0.134, w: 0.021 },
-  { z: 0.206, bot: -0.156, w: 0.016 },
-  { z: 0.23, bot: -0.148, w: 0.011 },
-  { z: 0.248, bot: -0.086, w: 0.006 },
+  { z: 0.145, bot: -0.098, w: 0.027 },
+  { z: 0.18, bot: -0.114, w: 0.022 },
+  { z: 0.206, bot: -0.126, w: 0.017 },
+  { z: 0.23, bot: -0.118, w: 0.012 },
+  { z: 0.248, bot: -0.072, w: 0.0065 },
 ];
 const UP = UP0.map((s) => ({ ...s, z: s.z * K, top: s.top * K, w: s.w * K, bot: s.bot === undefined ? undefined : s.bot * K }));
 const LO = LO0.map((s) => ({ ...s, z: s.z * K, bot: s.bot * K, w: s.w * K }));
@@ -132,7 +132,7 @@ function jawStations(): Station[] {
 }
 
 // ------------------------------------------------------------------------------------------------ paint: steel
-const NICKS = [{ y: 0.078, d: 0.006, w: 0.006 }, { y: 0.021, d: 0.004, w: 0.004 }, { y: -0.052, d: 0.008, w: 0.007 }, { y: -0.108, d: 0.005, w: 0.005 }];
+const NICKS = [{ y: 0.068, d: 0.005, w: 0.005 }, { y: -0.052, d: 0.006, w: 0.006 }, { y: -0.1, d: 0.004, w: 0.004 }];
 // long scratches on the cheeks (head-local z, y, both sides)
 const SCRATCH: { a: [number, number]; b: [number, number]; side: number; z0: number; z1: number; y0: number; y1: number }[] = [];
 for (let k = 0; k < 34; k++) {
@@ -438,11 +438,12 @@ export function* houndModelGen(o: { page?: number; den?: number } = {}): Generat
   // teeth: a row of steel fangs down each side of the mouth, both jaws
   let tk = 0;
   for (const side of [1, -1]) for (const up of [1, -1]) {
-    const zs = up > 0 ? [0.04, 0.07, 0.1, 0.13, 0.158, 0.184] : [0.055, 0.085, 0.115, 0.142, 0.17];
+    // small and few: two little fangs and a few pegs (a puppy's grin, not a trap)
+    const zs = up > 0 ? [0.1, 0.13, 0.158, 0.184] : [0.115, 0.17];
     zs.forEach((z, k) => {
       const w = wAt(z) * K, fang = up > 0 && k === zs.length - 2;
       const at: V3 = [H[0] + side * w * 0.62, H[1] + up * MOUTH * 0.6, H[2] + z * K];
-      body.add(spine({ name: 'tooth' + tk++, at, dir: [side * 0.12, -up, 0.15 * up], len: (fang ? 0.02 : 0.011 + 0.003 * h3(k, side, up)) * K, r: Math.min(w * 0.36, (fang ? 0.0055 : 0.0042) * K), skin: () => [up > 0 ? hb : jb, 1], paint: steelPaint('tooth'), levels: 0, around: 4, k: 1.2 }));
+      body.add(spine({ name: 'tooth' + tk++, at, dir: [side * 0.12, -up, 0.15 * up], len: (fang ? 0.012 : 0.0055 + 0.002 * h3(k, side, up)) * K, r: Math.min(w * 0.36, (fang ? 0.0045 : 0.0034) * K), skin: () => [up > 0 ? hb : jb, 1], paint: steelPaint('tooth'), levels: 0, around: 4, k: 1.2 }));
     });
   }
   // eyes, deep in their sockets, and steel lids that close over them
@@ -459,12 +460,12 @@ export function* houndModelGen(o: { page?: number; den?: number } = {}): Generat
   // floppy ears: soft flaps hanging from the sides of the poll, dark heartwood leather under long fur
   for (const [s, side] of [['L', 1], ['R', -1]] as const) {
     const root = HL(side * EAR0[0], EAR0[1], EAR0[2]), n = norm([side * 0.32, -1, -0.12]), eb = bi('ear' + s);
-    body.add(sac({ name: 'ear' + s, at: root, n, up: [0, 0, 1], r: [0.011, 0.04, 0.066], sink: 0.12, levels: 2, k: 1.4,
+    body.add(sac({ name: 'ear' + s, at: root, n, up: [0, 0, 1], r: [0.011, 0.046, 0.074], sink: 0.12, levels: 1, k: 1.4,
       skin: (p) => { const d = (root[1] - p[1]) / 0.028; const t = cl(d, 0, 1); return t <= 0 ? [hb, 1] : t >= 1 ? [eb, 1] : [hb, 1 - t, eb, t]; },
       paint: softPaint(HEART, 3.6, { pelt: true, ear: true }) }));
   }
   // a nose: a glossy black leather button on the tip of the blade
-  body.add(sac({ name: 'nose', at: HL(0, 0.016, 0.248), n: norm([0, 0.3, 1]), up: [0, 1, 0], r: [0.019, 0.015, 0.012], sink: 0.2, levels: 2, k: 3, skin: () => [hb, 1], paint: softPaint(HORN, 2.4, { nose: true }) }));
+  body.add(sac({ name: 'nose', at: HL(0, 0.016, 0.248), n: norm([0, 0.3, 1]), up: [0, 1, 0], r: [0.019, 0.015, 0.012], sink: 0.2, levels: 1, k: 3, skin: () => [hb, 1], paint: softPaint(HORN, 2.4, { nose: true }) }));
   // the tongue, folded in the lower jaw until it lolls out of the side of the mouth
   body.add(sac({ name: 'tongue', at: HL(0, -0.013, 0.07), n: [0, 0, 1], up: [0, 1, 0], r: [0.019, 0.0055, 0.042], sink: 0.1, levels: 1, k: 1.6, skin: () => [bi('tongue'), 1], paint: softPaint(RP('flesh'), 3.6, { tongue: true }) }));
 
@@ -526,7 +527,7 @@ export function* houndModelGen(o: { page?: number; den?: number } = {}): Generat
   const lk = locks({ name: 'bristle', seats, tiles: [HORN, HEART], steps: [3, 2], seed: 7 });
   if (lk) body.add(lk);
 
-  const out = yield* body.buildGen({ den: o.den ?? 300, maxScale: 2.2, budget: 21000, fur: HOUND_FUR });
+  const out = yield* body.buildGen({ den: o.den ?? 300, maxScale: 2.2, budget: 23500, fur: HOUND_FUR });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
 }
@@ -549,6 +550,6 @@ const HOUND_FUR = furZones([
   { piece: /^[fh]leg/, y: [-1, 0.045], bare: true },
   { piece: /^tail/, len: 0.55, clump: 0.6 },
   { piece: /^tail/, a: [0, 0.35, -1.0], b: [0, 0.25, -1.3], r: 0.12, len: 1.0, clump: 0.95, tip: 0.9 },
-  { piece: /^ear/, len: 0.7, clump: 0.85, tip: 0.5 },
+  { piece: /^ear/, len: 0.4, clump: 0.85, tip: 0.5 },
   { piece: /^brow/, len: 0.32, clump: 0.9, tip: 0.8 },
 ]);

@@ -88,6 +88,7 @@ export class FPBody {
     const h = this.human, b = h.bones, bs = this.scale;
     // only while the camera is in our head (not in the menu, the truck or a cutscene camera)
     const eyeW = _v.set(s.pos.x, s.pos.y + 1.0 * bs, s.pos.z);
+    s.camera.updateMatrixWorld();
     const camP = _v2.setFromMatrixPosition(s.camera.matrixWorld);
     const near = Math.hypot(camP.x - eyeW.x, camP.z - eyeW.z) < 0.5 && camP.y > s.pos.y + 0.6 && camP.y < s.pos.y + 2.3;
     this.shown = this.root.visible = near;
@@ -102,7 +103,7 @@ export class FPBody {
     this.legYaw += (off - this.legYaw) * (1 - Math.exp(-dt * 7));
     // the eyes sit just behind the face; looking down, slide the body back so the belly and boots show
     const down = Math.max(0, -s.pitch);
-    const zb = this.eyeZ - 0.012 + sm(down / 1.3) * 0.1 + s.crouch * 0.06;
+    const zb = this.eyeZ - 0.012 + sm(down / 1.25) * 0.2 + s.crouch * 0.06;
     h.root.position.set(0, 0, 0);
     this.root.position.set(s.pos.x + sy * zb, s.pos.y, s.pos.z + cy * zb);
     this.root.rotation.set(0, s.yaw + Math.PI + this.legYaw, 0);
@@ -115,16 +116,15 @@ export class FPBody {
       // walk clip footfalls: left at phase 1.35 (mod 2 pi), right half a cycle later; odd step counts are right feet
       let ph = 1.35 + Math.PI * (s.steps + s.step);
       if (back) ph = -ph + 2.7;
-      (anim as unknown as { phase: number }).phase = ph;
-      anim.speed = 1e-6;                                    // the phase is ours; don't let update() advance it
-      anim.update(dt);
-      anim.speed = 1;
-      (anim as unknown as { time: number }).time += dt;
-    } else anim.update(dt);
+      // the phase is ours: pre-subtract the advance update() is about to add (HumanAnimator walk rate)
+      const inc = anim.state === 'walk' ? dt * Math.PI * (anim.walkSpeed / (0.72 * h.dims.s * h.dims.b.legLen)) * 0.98 : 0;
+      (anim as unknown as { phase: number }).phase = ph - inc;
+    }
+    anim.update(dt);
     // upper body keeps facing the view; arches back when you look down
     const arch = sm(down / 1.2);
-    b.spine.quaternion.premultiply(_q.setFromAxisAngle(Y, -this.legYaw * 0.45)).multiply(_q.setFromAxisAngle(X, -arch * 0.3 + s.crouch * 0.28));
-    b.chest.quaternion.premultiply(_q.setFromAxisAngle(Y, -this.legYaw * 0.55)).multiply(_q.setFromAxisAngle(X, -arch * 0.22 + s.crouch * 0.12));
+    b.spine.quaternion.premultiply(_q.setFromAxisAngle(Y, -this.legYaw * 0.45)).multiply(_q.setFromAxisAngle(X, -arch * 0.42 + s.crouch * 0.28));
+    b.chest.quaternion.premultiply(_q.setFromAxisAngle(Y, -this.legYaw * 0.55)).multiply(_q.setFromAxisAngle(X, -arch * 0.3 + s.crouch * 0.12));
     b.neck.quaternion.setFromEuler(_e.set(-s.pitch * 0.3, 0, 0));
     b.head.quaternion.setFromEuler(_e.set(-s.pitch * 0.6, 0, 0));
     // crouch: drop the hips and re-solve the legs so the boots stay where the gait put them

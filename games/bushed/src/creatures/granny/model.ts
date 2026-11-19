@@ -14,9 +14,10 @@ import {
 import { nz2, nz3, fbm3 } from '../paintkit';
 import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
+import { furZones } from '../fur/paint';
 
-export const GRANNY_MODEL_VERSION = 'granny@5';
-export interface GrannyModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
+export const GRANNY_MODEL_VERSION = 'granny@6';
+export interface GrannyModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (the left side; the right is the mirror in x unless given) */
 export const GT = {
@@ -54,6 +55,8 @@ export function grannyBones(): BoneDef[] {
     const l = GT.leg;
     A('thigh' + s, 'hips', mir(l.hip, k)); A('shin' + s, 'thigh' + s, mir(l.kn, k)); A('foot' + s, 'shin' + s, mir(l.an, k)); A('toes' + s, 'foot' + s, mir([l.an[0], 0.025, 0.16], k));
   }
+  // v6: the face moves: brows, the corners of the mouth (a smile that widens)
+  for (const [nm, k] of [['L', 1], ['R', -1]] as const) { const f = faceMarks(k); A('brow' + nm, 'head', f.brow); A('smile' + nm, 'head', f.smile); }
   return b;
 }
 
@@ -103,9 +106,14 @@ export function headPt(h: number, th: number): [number, number] {
   z += 0.013 * front * g2(h, -0.122, 0.014) * g2(x0, 0, 0.028);
   return [x, z];
 }
+/** where the brows and the mouth corners sit (side k: +1 left) */
+export function faceMarks(k: number): { brow: V3; smile: V3 } {
+  const E = eyeAt(), H = GT.hg;
+  return { brow: [k * (E.c[0] - 0.002), E.c[1] + 0.021, E.c[2] + 0.012], smile: [k * 0.026, H[1] - 0.084, H[2] + 0.075] };
+}
 /** the eye: centre and look axis (left) */
 export function eyeAt(): { c: V3; ax: V3; r: number } {
-  const h = 0.012, H = GT.hg, r = 0.0145;
+  const h = 0.012, H = GT.hg, r = 0.0162;
   // find the socket surface at the eye's x
   let best = 0, bd = 1;
   for (let k = 0; k <= 400; k++) { const th = Math.PI * (0.5 + 0.5 * k / 400), [x] = headPt(h, th), d = Math.abs(x - 0.037); if (d < bd) { bd = d; best = th; } }
@@ -342,15 +350,28 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     half[0][0] = 0; half[HN - 1][0] = 0;
     return { c: [0, HG[1] + h, HG[2] + zc], s: [1, 1], p: half };
   });
-  const headSkin = (p: V3): Wt => (p[1] < GT.head[1] + 0.02 && p[2] < HG[2] - 0.02 ? [HEAD, 0.6, bi('neck'), 0.4] : [HEAD, 1]);
+  const FL = faceMarks(1);
+  const headSkin = (p: V3): Wt => {
+    if (p[1] < GT.head[1] + 0.02 && p[2] < HG[2] - 0.02) return [HEAD, 0.6, bi('neck'), 0.4];
+    // the brows and the mouth corners carry the skin round them (they rise, knit, and lift into a smile)
+    const ax = Math.abs(p[0]), sd = p[0] >= 0 ? 'L' : 'R', extra: [number, number][] = [];
+    if (p[2] > HG[2] + 0.02) {
+      const bw = cl(1 - Math.hypot(ax - FL.brow[0], (p[1] - FL.brow[1]) * 1.6, (p[2] - FL.brow[2]) * 0.6) / 0.028, 0, 1);
+      if (bw > 0) extra.push([bi('brow' + sd), bw * 0.85]);
+      const sw = cl(1 - Math.hypot(ax - FL.smile[0], (p[1] - FL.smile[1]) * 1.2, (p[2] - FL.smile[2]) * 0.5) / 0.026, 0, 1);
+      if (sw > 0) extra.push([bi('smile' + sd), sw * 0.8]);
+    }
+    return extra.length ? addWeights([HEAD, 1], extra) : [HEAD, 1];
+  };
   const head = body.add(trunk({ name: 'skull', stations: headSt, tween: 0, capS: true, capE: true, levels: 1, k: 2.6, rings: [{ at: 5, s: 0.8, ink: true, arc: [22, 26] }], skin: headSkin, paint: facePaint() }));
   body.finalize(head);
   yield 'head';
   const E = eyeAt();
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(E.c, s), ax = mir(E.ax, s);
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: E.r, bone: HEAD, iris: FUR, pupil: 'round', irisA: 0.56, sclera: SKIN, k: 3, levels: 1, around: 10 }));
-    const lid = body.add(eyelid({ name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), paint: lidPaint(c, ax), cover: 0.42, root: 2.15 }));
+    // kind eyes: a soft moss-green hazel, wide pupils, the wet shine of a living eye
+    body.add(eyeball({ name: 'eye' + S, c, ax, r: E.r, bone: HEAD, iris: SAGE, pupil: 'round', pupilR: 0.44, irisA: 0.62, sclera: SKIN, k: 3.4, levels: 1, around: 10, catchlight: { side: s, at: [0.3, 0.38] } }));
+    const lid = body.add(eyelid({ name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), paint: lidPaint(c, ax), cover: 0.46, root: 2.15 }));
     lid.levels = 1;
     const low = body.add(eyelid({ name: 'llid' + S, c, ax, r: E.r, bone: HEAD, paint: lidPaint(c, ax), cover: 0.92, root: 2.2, lower: true }));
     low.levels = 0;
@@ -529,7 +550,30 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   if (needles) { needles.paint = cardPaint(['needles', 'needles', 'needles'], needleTiles, { steps: [4, 4, 3.6], rough: 200 }); needles.k = 0.7; body.add(needles); }
   yield 'locks';
   void PLUM; void INK; void cell3; void FUR;
-  const out = yield* body.buildGen({ den: o.den ?? 260, maxScale: 2, budget: 30000 });
+  const out = yield* body.buildGen({ den: o.den ?? 260, maxScale: 2, budget: 30000, fur: GRANNY_FUR });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, v]) => k + ':' + v).join(' ');
-  return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris, den: body.den, stats };
+  return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
+}
+
+/** her shawl of moss grows real fur (lengths in GRANNY_FUR_LEN): deep and tufted over the shoulders, ragged at its
+ *  edge; moss on the sleeves' shoulders; long grey hair from under the antlers (the same rules as the painters) */
+export const GRANNY_FUR_LEN = 0.075;
+const GRANNY_SLEEVES = furZones([{ piece: /^sleeve/, a: [0, 1.85, -0.04], b: [0, 1.62, -0.05], r: 0.32, len: 0.65, clump: 0.85, tip: 0.6 }]);
+function GRANNY_FUR(p: V3, n: V3, piece: string, k: { k: number; occ: number }): readonly number[] | null {
+  if (piece === 'trunk') {
+    const a = Math.atan2(p[0], p[2]);
+    const collar = 1.975 + nz2(a * 3, 1) * 0.012;
+    const edge = 1.5 - 0.06 * Math.cos(a) + nz2(a * 5, 3) * 0.05 - (Math.abs(a) < 0.35 ? (0.35 - Math.abs(a)) * 0.4 : 0);
+    if (p[1] > collar - 0.008 || p[1] < edge) return null;
+    const lich = fbm3(p[0] * 14 + 3, p[1] * 14, p[2] * 14, 2) > 0.32;
+    const deep = cl((p[1] - edge) / 0.12, 0.35, 1) * cl((collar - p[1]) / 0.06, 0.3, 1);
+    return [lich ? 0.7 : 0.95, (lich ? 0.45 : 1) * deep, 0.85, lich ? 0.3 : 0.65];
+  }
+  if (piece === 'skull') {
+    const H = GT.hg, x = p[0] - H[0], y = p[1] - H[1], ax = Math.abs(x), nz = n[2];
+    const hl = 0.068 + nz2(x * 50, 1) * 0.004 + ax * 0.12 - Math.max(0, ax - 0.05) * 0.9;
+    if (y > hl + 0.006 || nz < -0.2 - Math.max(0, -y) * 2 || (ax > 0.075 && nz < 0.3 && y > -0.08)) return [0.9, y > hl + 0.02 ? 0.32 : 0.2, 0.7, 0.35];
+    return null;
+  }
+  return GRANNY_SLEEVES(p, n, piece, k);
 }

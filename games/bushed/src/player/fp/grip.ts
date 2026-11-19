@@ -208,11 +208,13 @@ export function solveWrap(S: Surface, d: Dims, side: 'L' | 'R', a: Fingers, o: W
     for (let s = 0; s < 3; s++) {
       const r = fingerFK(d, side, fi, a) * sq;
       if (touches(S, s, r)) continue;              // already resting on it
-      const max = MAXJ[s] * mc;
-      while (a[fi * 3 + s] < max) {
-        a[fi * 3 + s] = Math.min(max, a[fi * 3 + s] + step);
+      // (a double counter: a Float32Array angle can round just under the limit and never reach it)
+      const max = MAXJ[s] * mc, i = fi * 3 + s;
+      for (let v = a[i]; v < max - 1e-6;) {
+        v = Math.min(max, v + step);
+        a[i] = v;
         fingerFK(d, side, fi, a);
-        if (touches(S, s, r)) { a[fi * 3 + s] -= step * 0.35; break; }
+        if (touches(S, s, r)) { a[i] = v - step * 0.35; break; }
       }
     }
   }
@@ -222,10 +224,12 @@ export function solveWrap(S: Surface, d: Dims, side: 'L' | 'R', a: Fingers, o: W
     for (let s = 0; s < 3; s++) {
       const r = thumbFK(d, side, a) * sq;
       if (touches(S, s, r)) continue;
-      while (a[14 + s] < lim[s] * mc) {
-        a[14 + s] += step;
+      const max = lim[s] * mc;
+      for (let v = a[14 + s]; v < max - 1e-6;) {
+        v = Math.min(max, v + step);
+        a[14 + s] = v;
         thumbFK(d, side, a);
-        if (touches(S, s, r)) { a[14 + s] -= step * 0.35; break; }
+        if (touches(S, s, r)) { a[14 + s] = v - step * 0.35; break; }
       }
     }
   }

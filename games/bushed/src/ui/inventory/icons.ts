@@ -62,12 +62,22 @@ function entry(id: string): Entry {
   return ent;
 }
 
-// one icon at a time through the shared offscreen renderer
+// one icon at a time through the shared offscreen renderer; its WebGL context is released when the queue idles
 let chain: Promise<unknown> = Promise.resolve();
+let pending = 0;
+let idleTimer: ReturnType<typeof setTimeout> | null = null;
 function enqueue<T>(f: () => Promise<T>): Promise<T> {
+  pending++;
+  if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
   const p = chain.then(f, f);
-  chain = p.catch(() => undefined);
+  chain = p.catch(() => undefined).then(() => { if (--pending === 0) idleTimer = setTimeout(release, 4000); });
   return p;
+}
+function release(): void {
+  if (!R || pending) return;
+  R.dispose();
+  R.forceContextLoss();
+  R = null; scene = null; cam = null; readback = null;
 }
 
 async function modelFor(id: string): Promise<THREE.Object3D | null> {
@@ -162,6 +172,8 @@ function pose(m: THREE.Object3D, id: string): THREE.Group {
   holder.add(inner);
   inner.add(m);
   m.position.set(0, 0, 0); m.quaternion.identity(); m.scale.setScalar(1);
+  // glow cards (lantern flames) stay out of the icon
+  m.traverse((o) => { if (o.name === 'flame') o.visible = false; });
   m.updateMatrixWorld(true);
   const pts = verts(m);
   const box = new THREE.Box3().setFromPoints(pts);
@@ -330,7 +342,7 @@ export function pixelArt(src: ImageData, seedId = ''): ImageData {
       a += w; r += d[k] * w; g += d[k + 1] * w; b += d[k + 2] * w;
     }
     const cov = a / (S * S);
-    if (cov >= 0.42 && a > 0) { alpha[y * N + x] = 1; col[y * N + x] = stylise([r / a / 255, g / a / 255, b / a / 255]); }
+    if (cov >= 0.3 && a > 0) { alpha[y * N + x] = 1; col[y * N + x] = stylise([r / a / 255, g / a / 255, b / a / 255]); }
   }
   // remove one-pixel specks and fill pinholes in the silhouette
   for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {

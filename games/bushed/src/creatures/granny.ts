@@ -36,9 +36,12 @@ import { daylight } from './hound';
 import { SPOTS } from '../world/layout';
 import { setPusher } from '../gfx/globals';
 import type { CreatureCtx } from './types';
+import { GRANNY_FUR_LEN } from './granny/model';
+import { addFur, type Fur } from './fur';
+import { Expression, type Mood } from './expression';
 
 /** suggested sound-bank ids (none of her own yet; undefined = silent until one exists) */
-export const GRANNY_SOUND: Record<string, string | undefined> = { hum: undefined, beckon: 'foliage_rustle', take: 'paper_rustle', secret: undefined, vanish: 'branch_swish', step: 'foot_forest' };
+export const GRANNY_SOUND: Record<string, string | undefined> = { hum: undefined, beckon: 'foliage_rustle', take: 'paper_rustle', secret: undefined, vanish: 'branch_swish', step: 'foot_forest', eat: 'eat_crunch', happy: 'sigh_satisfied' };
 export type GrannyState = 'absent' | 'appear' | 'watch' | 'approach' | 'take' | 'lead' | 'pause' | 'secret' | 'farewell' | 'vanish';
 export type GrannySecret = 'chanterelles' | 'lost_axe' | 'bigfoot_stump';
 const GM = loader<GrannyModel>(GRANNY_MODEL_VERSION, () => buildGrannyModelAsync(), (b, m) => ({ ...b, bones: grannyBones(), tris: m.tris as number, den: m.den as number, stats: m.stats as string }), (m) => ({ tris: m.tris, den: m.den, stats: m.stats }));
@@ -61,6 +64,14 @@ export class GrannyTamarack {
   readonly model: GrannyModel;
   /** 0 gone .. 1 solid (a dithered dissolve) */
   readonly fade: { value: number };
+  /** her shawl of moss and her long grey hair (null if the model has no fur page) */
+  readonly fur: Fur | null;
+  /** her face: kind, a smile that widens, brows that lift (expression.ts) */
+  readonly face = new Expression({ seed: 41, rate: 3 });
+  /** test pages: hold a mood (null: follows the AI) */
+  faceMood: Mood | null = null;
+  /** oatmeal cookies (never raisin) */
+  readonly favoriteFood = 'cookies';
   state: GrannyState = 'absent';
   readonly pos = new THREE.Vector3(); heading = 0; speed = 0;
   /** she has had cookies this encounter */
@@ -74,7 +85,7 @@ export class GrannyTamarack {
   private legs: { up: number; lo: number; foot: number; ankle: THREE.Vector3 }[];
   private arm: { up: number; lo: number; hand: number };
   private lidAxis: THREE.Vector3[]; private lid: number[];
-  private t = 0; private st = 0; private hold: string | null = null; private fadeT = 0; private wantSpeed = 0; private target = new THREE.Vector3(); private face: number | null = null;
+  private t = 0; private st = 0; private hold: string | null = null; private fadeT = 0; private wantSpeed = 0; private target = new THREE.Vector3(); private faceTo: number | null = null;
   private lastPlayer = new THREE.Vector3(); private pSpeed = 0; private closing = 0; private litT = 0; private stillT = 0; private noCookieT = 0;
   private cooldown = 0; private eligT = 0; private nextAppear = 20; private humT = 6; private beckonT = 0; private blink = 0; private blinkT = 3; private lastHum = 0;
   private reason = 'gone'; private ground = new Float32Array(3); private took = false;
@@ -82,8 +93,14 @@ export class GrannyTamarack {
     const m = o.model ?? grannyModel(); this.model = m;
     this.skel = new Skel(m.bones);
     const { mat, depth, fx } = creatureMaterial(m.tex, m.sd, { shineCol: 0xffd27a }); this.fx = fx;
-    this.fade = dissolve(mat, depth);
     this.mesh = this.skel.mesh(m.geo, mat);
+    this.fur = m.fur ? addFur(this.mesh, {
+      length: GRANNY_FUR_LEN, mask: m.fur, shells: 14, density: 0.8, clump: 6, clumpPull: 0.6, rootDark: 0.42, tipK: 0.5, fins: 0.5,
+      comb: (p) => (p[1] > 2.05 ? [0, -1.3, -0.55] : [0, -0.55, -0.1]),
+      springs: [{ bones: ['head'], hz: 2.2, inertia: 1.3 }, { bones: ['armL', 'armR'], hz: 2.4 }],
+      droop: 0.5, hz: 2.0, damping: 0.25, lod: [6, 30, 50],
+    }) : null;
+    this.fade = dissolve(mat, depth, ...(this.fur?.materials ?? []));
     this.mesh.castShadow = true; this.mesh.receiveShadow = true; this.mesh.customDepthMaterial = depth; this.mesh.frustumCulled = false;
     this.object.add(this.mesh); this.object.name = 'GrannyTamarack';
     this.anim = new Animator(grannyClips(this.skel.defs), this.skel.bones.length, 3, 4);
@@ -145,7 +162,7 @@ export class GrannyTamarack {
   }
 
   // ------------------------------------------------------------------------------------------------ AI
-  private go(s: GrannyState) { if (s !== this.state) { this.state = s; this.st = 0; this.hold = null; this.face = null; } }
+  private go(s: GrannyState) { if (s !== this.state) { this.state = s; this.st = 0; this.hold = null; this.faceTo = null; } }
   private homeOf(ctx: CreatureCtx) { return this.home ?? ctx.stove ?? _w.set(SPOTS.cabin.x, 0, SPOTS.cabin.z); }
   /** the conditions she comes in: fog or night, near the hollow or with the player lost */
   eligible(ctx: CreatureCtx): boolean {
@@ -221,8 +238,8 @@ export class GrannyTamarack {
       }
       case 'take': {
         this.wantSpeed = 0; this.hold = 'take';
-        if (!this.took && this.st > TAKE_AT) { this.took = true; emit('take', { item: 'cookies' }); }
-        if (this.st > 3.1) { this.go('pause'); this.stillT = 0; }
+        if (!this.took && this.st > TAKE_AT) { this.took = true; emit('take', { item: 'cookies' }); emit('eat', { item: 'cookies' }); }
+        if (this.st > 3.1) { emit('happy', { item: 'cookies' }); this.go('pause'); this.stillT = 0; }
         break;
       }
       case 'lead': {
@@ -250,7 +267,7 @@ export class GrannyTamarack {
         if (this.st < dt * 1.5) {
           // point off into the trees, away from the path home
           const a = Math.atan2(H.x - this.pos.x, H.z - this.pos.z) + (this.told % 2 ? 1 : -1) * (1.0 + Math.random() * 0.8);
-          this.secretDir.set(Math.sin(a), 0, Math.cos(a)); this.face = a;
+          this.secretDir.set(Math.sin(a), 0, Math.cos(a)); this.faceTo = a;
           this.anim.play('point', { restart: true });
         }
         if (this.st > 1.3 && this.secretT < this.t - 5) {
@@ -284,7 +301,7 @@ export class GrannyTamarack {
       let want = d < 0.3 ? 0 : Math.min(this.wantSpeed, d * 1.2 + 0.2);
       if (want > 0) this.heading = dampAngle(this.heading, Math.atan2(tx, tz), 1.4, dt);
       else {
-        const face = this.face ?? Math.atan2(P.pos.x - this.pos.x, P.pos.z - this.pos.z);
+        const face = this.faceTo ?? Math.atan2(P.pos.x - this.pos.x, P.pos.z - this.pos.z);
         this.heading = dampAngle(this.heading, face, 1.0, dt);
       }
       want *= clamp(1.3 - Math.abs(wrapAngle(Math.atan2(tx, tz) - this.heading)) * 0.6, 0.15, 1);
@@ -318,15 +335,21 @@ export class GrannyTamarack {
     a.lookYaw = damp(a.lookYaw, ly, 2, dt); a.lookPitch = damp(a.lookPitch, lp, 2, dt);
     const p = this.anim.update(dt, a);
     if (p.c[CH_HUM] > 0.6 && this.t - this.lastHum > 14 && !this.manual && (this.state === 'watch' || this.state === 'pause')) { this.lastHum = this.t; ctx.emit('hum', { pos: this.object.position.clone(), who: 'granny', sound: GRANNY_SOUND.hum }); }
-    // blinks: slow, heavy lids
-    this.blinkT -= dt; if (this.blinkT < 0) { this.blink = 0.28; this.blinkT = 3 + Math.random() * 5; } this.blink = Math.max(0, this.blink - dt);
-    const lid = Math.max(p.c[CH_LID], this.blink > 0 ? Math.sin((this.blink / 0.28) * Math.PI) : 0);
+    // the face: kind and smiling, joy at cookies, curious as she appears, a little sad as she goes, startled by a light
+    void this.blink; void this.blinkT;
+    const st = this.state, cl0 = this.manual ?? '';
+    const mood: Mood = this.faceMood ?? (cl0 ? (cl0 === 'take' ? 'joy' : cl0 === 'vanish' ? 'sad' : cl0 === 'point' ? 'curious' : 'happy')
+      : this.litT > 0.4 ? 'scared' : st === 'take' ? 'joy' : st === 'vanish' || st === 'farewell' ? 'sad' : st === 'secret' || st === 'appear' ? 'curious' : 'happy');
+    this.face.set(mood, mood === 'sad' ? 0.5 : mood === 'happy' && st === 'watch' ? 0.6 : 1);
+    const F = this.face.update(dt);
+    const lid = Math.max(p.c[CH_LID], Math.min(1, F.blink + F.lid * 0.6 + F.squint * 0.35));
     // feet and the staff on the ground
     const c = Math.cos(this.heading), s = Math.sin(this.heading), g0 = this.pos.y;
     const gnd = (fx: number, fz: number) => clamp(ctx.heightAt(this.pos.x + fx * c + fz * s, this.pos.z - fx * s + fz * c) - g0, -0.4, 0.4);
     for (let k = 0; k < 2; k++) { const L = this.legs[k]; this.ground[k] = gnd(L.ankle.x + p.f[k * FOOT], L.ankle.z + p.f[k * FOOT + 2]); }
     this.ground[2] = gnd(TIP0.x + p.f[STAFF * FOOT], TIP0.z + p.f[STAFF * FOOT + 2]);
     this.apply(p, Math.min(this.ground[0], this.ground[1]), lid);
+    this.fur?.update(dt, this.manual ? null : _v.set(Math.sin(this.heading) * this.speed, 0, Math.cos(this.heading) * this.speed));
   }
   private apply(p: Pose, lift: number, lid: number) {
     const S = this.skel, B = S.bones;
@@ -335,6 +358,12 @@ export class GrannyTamarack {
     B[0].quaternion.setFromEuler(_e.set(p.rr[0], p.rr[1], p.rr[2]));
     for (let i = 1; i < B.length; i++) { const x = p.r[i * 3], y = p.r[i * 3 + 1], z = p.r[i * 3 + 2]; if (x || y || z) B[i].quaternion.setFromEuler(_e.set(x, y, z)); }
     for (let k = 0; k < 2; k++) B[this.lid[k]].quaternion.setFromAxisAngle(this.lidAxis[k], 0.12 + lid * 0.9);
+    const F = this.face.face, I = S.idx;
+    for (const [nm, sd] of [['L', 1], ['R', -1]] as const) {
+      const b = B[I['brow' + nm]]; b.position.y += F.brow * 0.006; b.quaternion.setFromEuler(_e.set(0, 0, -sd * F.browIn * 0.25));
+      const m = B[I['smile' + nm]]; m.position.y += (F.smile - 0.3) * 0.006 + F.squint * 0.002; m.position.x += sd * F.smile * 0.003;
+    }
+    const h = I.head; B[h].quaternion.setFromEuler(_e.set(p.r[h * 3], p.r[h * 3 + 1], p.r[h * 3 + 2] + F.tilt * 0.22));
     S.fk();
     const fwd = _v.set(0, 0, 1).applyQuaternion(S.Q[0]);
     const yawQ = _q.setFromAxisAngle(_w.set(0, 1, 0), Math.atan2(fwd.x, fwd.z));

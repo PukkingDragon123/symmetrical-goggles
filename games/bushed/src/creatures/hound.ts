@@ -15,11 +15,19 @@
 //   companion  follows, sniffs about, sits while you chop, barks at danger, steals and chews axe handles left on the
 //              ground, begs for jerky, sleeps by the stove at night, howls at the moon now and then
 // Events (ctx.emit(ev, { pos, who: 'hound', sound, ... })): growl, snarl, snap, bite (damage), lunge_feint, bark, whine,
-// sniff, chew, crunch, howl, yip, steal, befriended, dig. `sound` is a suggested src/audio/bank.ts id (HOUND_SOUND).
+// sniff, chew, crunch, howl, yip, steal, befriended, dig, eat (item), happy, shake. `sound` is a suggested
+// src/audio/bank.ts id (HOUND_SOUND).
+// v4 (cuter): big puppy eyes with catchlights under tufted brows, floppy ears on springs, a nose, a tongue that lolls
+// out when it is happy, real fur (src/creatures/fur: a plush coat, a ruff where the neck meets the steel, a cream bib,
+// a plume of a tail) with fur physics, and a face (expression.ts) that follows its mood: a happy squint and a pant
+// as a companion, pleading brows when it begs, a scowl and pinned ears when it lurks, a curious tilt.
+// favoriteFood 'jerky': offer('jerky') (or sausage / bacon / meat) returns true when it takes it.
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, smooth, type CreatureFx } from './rig';
 import { Animator, FOOT, type AnimParams } from './animator';
-import { buildHoundModel, buildHoundModelAsync, houndBones, LEGS, H, HOUND_MODEL_VERSION, type HoundModel } from './hound/model';
+import { buildHoundModel, buildHoundModelAsync, houndBones, LEGS, H, HOUND_MODEL_VERSION, HOUND_FUR_LEN, EYE_AX, type HoundModel } from './hound/model';
+import { addFur, type Fur } from './fur';
+import { Expression, Dangle, type Mood } from './expression';
 import { loader } from './cache';
 import { houndClips, CH_BLINK, CH_SHINE } from './hound/clips';
 import { setPusher } from '../gfx/globals';
@@ -30,10 +38,14 @@ import type { CreatureCtx, GroundItem } from './types';
 export const HOUND_SOUND: Record<string, string | undefined> = {
   growl: 'hound_growl', snarl: 'hound_snarl', bark: 'hound_bark', whine: 'hound_whine', sniff: 'hound_sniff', yip: 'hound_yip',
   chew: 'hound_chew', crunch: 'hound_chew', snap: 'hound_ting', bite: 'hound_ting', lunge_feint: 'hound_snarl', steal: 'hound_ting',
+  eat: 'hound_chew', happy: 'hound_yip', shake: 'hound_sniff',
 };
+/** what the hound will take from the hand (the first is its favourite) */
+export const HOUND_FOODS = ['jerky', 'sausage', 'bacon', 'meat'];
 export type HoundState = 'wild_lurk' | 'lunge' | 'curious' | 'eat' | 'befriended' | 'companion';
 
 const HOUND = loader<HoundModel>(HOUND_MODEL_VERSION, () => buildHoundModelAsync(), (b, m) => ({ ...b, bones: houndBones(), tris: m.tris as number, den: m.den as number, stats: m.stats as string }), (m) => ({ tris: m.tris, den: m.den, stats: m.stats }));
+const _hq = new THREE.Quaternion(), _hp = new THREE.Vector3(), _rv = new THREE.Vector3();
 /** the hound's model, shared by every hound: preloaded (houndModelAsync / preloadCreatures) or built now (blocks) */
 export function houndModel(): HoundModel { let m = HOUND.get(); if (!m) { m = buildHoundModel(); HOUND.set(m); } return m; }
 /** load the hound's model without stalling: from IndexedDB if cached, else built in ~30 ms slices (then cached) */
@@ -51,6 +63,14 @@ export class AxehandleHound {
   readonly anim: Animator;
   readonly fx: CreatureFx;
   readonly model: HoundModel;
+  /** the coat (null if the model has no fur page) */
+  readonly fur: Fur | null;
+  /** the face: mood, blinks, brows, ears */
+  readonly face = new Expression({ seed: 11 });
+  /** test pages: hold a mood on the face (null: the face follows the AI) */
+  faceMood: Mood | null = null;
+  /** its favourite food (see HOUND_FOODS for the rest it takes) */
+  readonly favoriteFood = 'jerky';
   state: HoundState = 'wild_lurk';
   /** 0..1: rises with every jerky; at 1 the hound is the player's */
   trust = 0;
@@ -69,6 +89,9 @@ export class AxehandleHound {
   private orbitDir = 1; private lastPlayer = new THREE.Vector3(); private playerSpeed = 0; private playerNear = 99;
   private carrying: GroundItem | null = null; private eatsLeft = 0; private lastGrowl = 0; private sub = '';
   private ground = new Float32Array(4);
+  private ears = [new Dangle(2.4, 0.18, 0.045, 0.7, 1.2), new Dangle(2.5, 0.18, 0.045, 0.7, 1.2)];
+  private pending: { ev: string; item?: string }[] = [];
+  private joyT = 0;
 
   constructor(o: { pos?: THREE.Vector3; heading?: number; model?: HoundModel; state?: HoundState; trust?: number } = {}) {
     const m = o.model ?? houndModel();
@@ -88,7 +111,15 @@ export class AxehandleHound {
     this.legs = [['fuL', 'flL', '', 'ffL', true, 1], ['fuR', 'flR', '', 'ffR', true, -1], ['huL', 'hlL', 'hmL', 'hfL', false, 1], ['huR', 'hlR', 'hmR', 'hfR', false, -1]].map(([u, l, m2, f, fore, side]) => ({
       up: S.i(u as string), lo: S.i(l as string), mid: m2 ? S.i(m2 as string) : -1, foot: S.i(f as string), ankle: rw[S.i(f as string)].clone(), hock: m2 ? rw[S.i(m2 as string)].clone() : new THREE.Vector3(), fore: fore as boolean, side: side as number,
     }));
-    this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * 0.8, 0.08, 0.6).normalize()).normalize());
+    this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * EYE_AX[0], EYE_AX[1], EYE_AX[2]).normalize()).normalize());
+    // the coat: fur where the fur page says, combed back along the handle, down the legs and ears
+    const earB = [S.i('earL'), S.i('earR')], legTop = 0.27;
+    this.fur = m.fur ? addFur(this.mesh, {
+      length: HOUND_FUR_LEN, mask: m.fur, shells: 16, density: 0.85, clump: 5, clumpPull: 0.6, rootDark: 0.45, tipK: 0.55, fins: 0.55,
+      comb: (p, _n, b) => (earB.includes(b) ? [0, -0.55, -0.05] : p[1] < legTop && Math.abs(p[2] - 0) < 0.6 && Math.abs(p[0]) > 0.05 ? [0, -0.5, -0.12] : p[2] < -0.7 ? [0, -0.15, -0.55] : [0, -0.22, -0.42]),
+      springs: [{ bones: ['tail1'], hz: 2.2, inertia: 1.4 }, { bones: ['earL', 'earR'], hz: 3, inertia: 1.2 }, { bones: ['neck2'], hz: 3.2 }],
+      droop: 0.22, inertia: 0.045,
+    }) : null;
     if (o.pos) this.pos.copy(o.pos);
     this.heading = o.heading ?? 0;
     if (o.state) this.state = o.state;
@@ -100,17 +131,23 @@ export class AxehandleHound {
   play(clip: string | null) { this.manual = clip; if (clip) this.anim.play(clip, { restart: !this.anim.clips[clip].loop }); }
   get clips(): string[] { return Object.keys(this.anim.clips); }
 
-  /** the player holds out an item: true if the hound takes it (jerky, when it is near enough and willing) */
+  /** the player holds out an item: true if the hound takes it (its favourite, jerky, or other meat, when it is near
+   *  enough and willing). It catches it, chews (an 'eat' event next update), and wags with joy ('happy') after */
   offer(item: string): boolean {
-    if (item !== 'jerky') return false;
+    if (!HOUND_FOODS.includes(item)) return false;
     if (this.state === 'eat' || this.state === 'lunge') return false;
     if (this.playerNear > 3.2) return false;
     if (this.state === 'wild_lurk' && this.playerNear > 2.2) return false;
     this.state = 'eat'; this.st = 0; this.eatsLeft = 0;
     this.anim.play('catch', { restart: true });
     this.holdClip = 'catch';
+    this.pending.push({ ev: 'eat', item });
+    this.face.set('joy'); this.ears[0].kick(-6, 3); this.ears[1].kick(-6, -3);
     return true;
   }
+  /** a wet-dog shake: the whole coat flies (fur physics), ears flap */
+  shakeOff() { if (this.state === 'eat' || this.state === 'lunge') return; this.shakeT = 1.4; this.fur?.shake(1.3); this.pending.push({ ev: 'shake' }); }
+  private shakeT = 0;
 
   // ------------------------------------------------------------------------------------------------ per frame
   update(ctx: CreatureCtx) {
@@ -123,6 +160,7 @@ export class AxehandleHound {
     this.playerSpeed = damp(this.playerSpeed, Math.min(ps, 12), 6, dt);
     this.lastPlayer.copy(P.pos);
     const night = 1 - daylight(ctx.hour);
+    for (const e of this.pending.splice(0)) ctx.emit(e.ev, { pos: this.object.position.clone(), who: 'hound', sound: HOUND_SOUND[e.ev], item: e.item });
     if (!this.manual) this.think(ctx, dt, dist, night);
     this.move(ctx, dt);
     // eye shine: strong at night when a light is by the viewer
@@ -196,6 +234,7 @@ export class AxehandleHound {
         if (this.st > 4.6) {
           const before = this.trust;
           this.trust = Math.min(1, this.trust + (this.trust >= 1 ? 0 : 0.34));
+          emit('happy', { item: 'jerky' }); this.joyT = 3;
           if (before < 1 && this.trust >= 1) { this.go('befriended'); emit('befriended'); }
           else this.go(this.trust >= 1 ? 'companion' : 'curious');
         }
@@ -356,6 +395,9 @@ export class AxehandleHound {
     else if (this.gait === 'stalk' && sp < 1.2) clip = 'stalk';
     else clip = sp < 1.5 ? 'walk' : sp < 3.6 ? 'trot' : 'run';
     if (this.state === 'wild_lurk' && !this.manual && clip === 'snarl' && this.playerNear > 9) clip = 'idle';
+    // a wet-dog shake, a wiggle of joy after a treat
+    if (this.shakeT > 0) { this.shakeT -= dt; if (!this.manual) clip = 'shake'; }
+    if (this.joyT > 0) { this.joyT -= dt; if (!this.manual && sp < 0.3 && this.state !== 'eat' && !this.holdClip) clip = 'wiggle'; }
     this.anim.play(clip);
     if (GAITS.has(this.anim.current)) a.phase = (a.phase + (sp / (STRIDE[this.anim.current] ?? 0.5)) * dt) % 1;
     a.speed = sp;
@@ -370,11 +412,21 @@ export class AxehandleHound {
     }
     a.lookYaw = damp(a.lookYaw, ly, 4, dt); a.lookPitch = damp(a.lookPitch, lp, 4, dt);
     const p = this.anim.update(dt, a);
-    // blinking
-    this.blinkT -= dt;
-    if (this.blinkT < 0) { this.blink = 0.18; this.blinkT = 2 + Math.random() * 4; }
-    this.blink = Math.max(0, this.blink - dt);
-    const blinkK = Math.max(p.c[CH_BLINK], this.blink > 0 ? Math.sin((this.blink / 0.18) * Math.PI) : 0);
+    // the face: the mood from the clip and the state, blinks, brows, ears
+    const night = 1 - daylight(ctx.hour);
+    const mood = this.faceMood ?? this.moodNow(this.anim.current, night);
+    this.face.set(mood, mood === 'curious' && this.state === 'wild_lurk' ? 0.6 : 1);
+    const F = this.face.update(dt);
+    void this.blink; void this.blinkT;
+    const blinkK = Math.max(p.c[CH_BLINK], Math.min(1, F.blink + F.lid));
+    // floppy ears: springs that lag the head and hang toward the ground
+    this.object.updateMatrixWorld();
+    const S = this.skel, hi = this.bi.head;
+    for (let k = 0; k < 2; k++) {
+      const e = k ? this.bi.earR : this.bi.earL;
+      _hp.copy(S.P[e]).applyMatrix4(this.object.matrixWorld); _hq.copy(this.object.quaternion).multiply(S.Q[hi]);
+      this.ears[k].update(dt, _hp, _hq);
+    }
     this.fx.shine.value *= 1 + p.c[CH_SHINE] * 0.5;
     // ground under each foot (IK adapts the feet to the slope)
     const g0 = this.pos.y;
@@ -386,6 +438,33 @@ export class AxehandleHound {
     // the body pitches with the slope between the fore and hind feet
     const slope = Math.atan2((this.ground[0] + this.ground[1]) * 0.5 - (this.ground[2] + this.ground[3]) * 0.5, 0.83);
     this.applyPose(p, blinkK, slope, (this.ground[0] + this.ground[1] + this.ground[2] + this.ground[3]) * 0.25);
+    // the coat follows: the root's velocity from the heading and speed
+    if (this.fur) { _rv.set(Math.sin(this.heading) * this.speed, 0, Math.cos(this.heading) * this.speed); this.fur.update(dt, this.manual ? null : _rv); }
+  }
+  /** the face for a clip (and, between clips, for the state) */
+  private moodNow(clip: string, night: number): Mood {
+    if (this.shakeT > 0) return 'joy';
+    switch (clip) {
+      case 'snarl': case 'lunge': case 'stalk': return 'angry';
+      case 'flinch': return 'scared';
+      case 'beg': return 'pleading';
+      case 'wiggle': case 'shake': return 'joy';
+      case 'catch': case 'chew': return 'eating';
+      case 'sleep': return 'sleepy';
+      case 'howl': return 'sad';
+      case 'alert': case 'bark': return this.state === 'companion' || this.manual ? 'curious' : 'angry';
+      case 'dig': return 'happy';
+    }
+    if (this.manual) return clip === 'idle' || clip === 'sit' || GAITS.has(clip) ? 'happy' : 'neutral';
+    switch (this.state) {
+      case 'wild_lurk': return night > 0.5 ? 'angry' : 'curious';
+      case 'lunge': return 'angry';
+      case 'curious': return this.trust > 0.4 ? 'pleading' : 'curious';
+      case 'eat': return 'eating';
+      case 'befriended': return 'joy';
+      case 'companion': return this.sub === 'explore' || this.sub === 'sniff' ? 'curious' : 'happy';
+    }
+    return 'neutral';
   }
 
   private applyPose(p: ReturnType<Animator['update']>, blink: number, slope: number, lift: number) {
@@ -398,9 +477,29 @@ export class AxehandleHound {
       const x = p.r[i * 3], y = p.r[i * 3 + 1], z = p.r[i * 3 + 2];
       if (x !== 0 || y !== 0 || z !== 0) B[i].quaternion.setFromEuler(_e.set(x, y, z));
     }
-    // lids close about their side axis
-    B[this.bi.lidL].quaternion.setFromAxisAngle(this.lidAxis[0], 0.12 + blink * 1.45);
-    B[this.bi.lidR].quaternion.setFromAxisAngle(this.lidAxis[1], 0.12 + blink * 1.45);
+    const F = this.face.face, bi = this.bi;
+    // the jaw hangs open in a pant (the tongue lolls), the head tilts with curiosity
+    const pant = F.tongue * (0.5 + 0.5 * Math.sin(this.t * Math.PI * 2 * 2.7));
+    const j = bi.jaw; B[j].quaternion.setFromEuler(_e.set(p.r[j * 3] + F.jaw * 0.28 + pant * 0.05, p.r[j * 3 + 1], p.r[j * 3 + 2]));
+    const hd = bi.head; B[hd].quaternion.setFromEuler(_e.set(p.r[hd * 3] - F.brow * 0.03, p.r[hd * 3 + 1], p.r[hd * 3 + 2] + F.tilt * 0.34));
+    // lids close about their side axis; the lower lids rise in the happy squint
+    B[bi.lidL].quaternion.setFromAxisAngle(this.lidAxis[0], 0.1 + blink * 1.45);
+    B[bi.lidR].quaternion.setFromAxisAngle(this.lidAxis[1], 0.1 + blink * 1.45);
+    B[bi.lidLoL].quaternion.setFromAxisAngle(this.lidAxis[0], -F.squint * 0.62);
+    B[bi.lidLoR].quaternion.setFromAxisAngle(this.lidAxis[1], -F.squint * 0.62);
+    // brows: up and down, the inner ends lifting (pleading) or dropping (a scowl)
+    for (const [b, sd] of [[bi.browL, 1], [bi.browR, -1]] as const) {
+      B[b].position.y += F.brow * 0.011 + F.squint * 0.003; B[b].position.z += F.brow * 0.003;
+      B[b].quaternion.setFromEuler(_e.set(-F.brow * 0.12, 0, -sd * F.browIn * 0.42));
+    }
+    // ears: perked forward and out, or pinned back, plus their dangle
+    for (let k = 0; k < 2; k++) {
+      const sd = k ? -1 : 1, d = this.ears[k], b = k ? bi.earR : bi.earL, ear = F.ear;
+      B[b].quaternion.setFromEuler(_e.set(d.pitch - ear * 0.32, 0, sd * (ear > 0 ? ear * 0.5 : ear * 0.12) + d.roll));
+    }
+    // the tongue: out of the left side of the mouth, bobbing with the pant
+    const tg = F.tongue * clamp((F.jaw + p.r[j * 3]) * 4, 0, 1);
+    if (tg > 0.01) { B[bi.tongue].position.x += 0.03 * tg; B[bi.tongue].position.y -= 0.01 * tg; B[bi.tongue].position.z += 0.045 * tg; B[bi.tongue].quaternion.setFromEuler(_e.set(0.35 * tg + pant * 0.12, 0.25 * tg, -0.75 * tg)); }
     // eyes follow the look a little
     B[this.bi.eyeL].quaternion.setFromEuler(_e.set(-this.params.lookPitch * 0.3, this.params.lookYaw * 0.3, 0));
     B[this.bi.eyeR].quaternion.copy(B[this.bi.eyeL].quaternion);

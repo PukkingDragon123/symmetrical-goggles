@@ -30,7 +30,7 @@ import { paintPaper, paperMesh, type Block } from '../ui/paper';
 import { WeatherFx } from '../gfx/weather';
 import { fitTool } from '../player/arms';
 import { QUALITY, type Quality } from './quality';
-import { Backpack } from '../ui/backpack';
+import { PackUI } from '../ui/inventory/pack3d';
 import { makeSlashGatherable } from './cabinplay';
 import { makePhysical } from './physprops';
 import { writeSave, type SaveData } from './save';
@@ -63,8 +63,7 @@ export class Game {
   readonly stove = new Stove();
   readonly journal = new Journal();
   readonly wfx = new WeatherFx();
-  readonly pack = new Backpack((id) => this.toolModel(id));
-  private packCursor = new THREE.Vector2();
+  readonly pack = new PackUI((id) => this.toolModel(id));
   private packMouse: [number, number] = [0, 0];
   contracts: Contract[] = initialContracts();
   inv: Inventory = { items: new Map([['axe_old', 1], ['matches', 1], ['jerky', 3], ['beer', 2], ['flashlight', 1]]), money: 120 };
@@ -158,6 +157,7 @@ export class Game {
       owns: (id) => (this.inv.items.get(id) ?? 0) > 0,
       game: this,
     });
+    this.pack.install(this);
     this.player.onStep = (surf, str, pos) => {
       const id = { forest: 'foot_forest', grass: 'foot_grass', gravel: 'foot_gravel', mud: 'foot_mud', wood: 'foot_wood', snow: 'foot_snow', water: 'foot_mud' }[surf];
       this.sound(id, pos, 0.35 + str * 0.45);
@@ -217,7 +217,7 @@ export class Game {
     const d: SaveData = {
       v: 1, day: this.day, hour: this.hour, money: this.inv.money, items: [...this.inv.items.entries()],
       contracts: this.contracts.map((c) => ({ id: c.id, state: c.state, progress: c.progress })),
-      journal: this.journal.dump(), houndTrust: this.critters?.hound ? (this.critters.hound.state === 'companion' ? 99 : this.critters.hound.trust) : 0, stove: { fuel: this.stove.fuel, roomTemp: this.stove.roomTemp },
+      journal: this.journal.dump(), pack: this.pack.serialize(), houndTrust: this.critters?.hound ? (this.critters.hound.state === 'companion' ? 99 : this.critters.hound.trust) : 0, stove: { fuel: this.stove.fuel, roomTemp: this.stove.roomTemp },
       stacked: 0, sharp: Object.values(ITEMS).filter((i) => i.tool).map((i) => [i.id, i.tool!.sharp]), flags: [...this.flags],
     };
     writeSave(d);
@@ -226,6 +226,7 @@ export class Game {
 
   load(d: SaveData): void {
     this.day = d.day; this.hour = d.hour; this.inv.money = d.money; this.inv.items = new Map(d.items);
+    if (d.pack) this.pack.deserialize(d.pack);
     for (const c of d.contracts) { const k = this.contracts.find((x) => x.id === c.id); if (k) { k.state = c.state as Contract['state']; k.progress = c.progress; } }
     this.journal.restore(d.journal);
     this.stove.fuel = d.stove.fuel; this.stove.roomTemp = d.stove.roomTemp;
@@ -506,20 +507,8 @@ export class Game {
       this.player.update(dt);
       if (this.pack.open) { input.mouseDX = this.packMouse[0]; input.mouseDY = this.packMouse[1]; }
       if (input.pressed('Tab') && !this.pack.open) { this.journal.toggle(); this.sound('page_turn', undefined, 0.6); }
-      if (input.pressed('KeyI') && !this.journal.open && !this.hands.busy) {
-        this.pack.toggle(this.inv.items); this.packCursor.set(0, -0.2);
-        this.sound(this.pack.open ? 'zip' : 'bag_rustle', undefined, 0.6);
-      }
-      if (this.pack.open) {
-        this.packCursor.x = THREE.MathUtils.clamp(this.packCursor.x + input.mouseDX * 0.0025, -0.9, 0.9);
-        this.packCursor.y = THREE.MathUtils.clamp(this.packCursor.y - input.mouseDY * 0.0035, -0.9, 0.9);
-        const id = this.pack.pick(this.packCursor, this.viewCam);
-        this.pack.hover = id;
-        hud.dotAt(this.packCursor.x, this.packCursor.y);
-        hud.setLabel(id ? (ITEMS[id]?.name ?? id) : '');
-        if (input.pressed('Mouse0') && id) { this.pack.open = false; this.hands.equip(id); hud.dotAt(0, 0); }
-        if (input.pressed('Escape') || input.pressed('KeyQ')) { this.pack.open = false; hud.dotAt(0, 0); }
-      }
+      if (input.pressed('KeyI') && !this.journal.open && !this.hands.busy) this.pack.toggle(this.inv.items);
+      if (this.pack.open) this.pack.control(dt);
       if (this.journal.open) {
         if (input.pressed('KeyA') || input.pressed('ArrowLeft')) this.journal.turn(-1);
         if (input.pressed('KeyD') || input.pressed('ArrowRight')) this.journal.turn(1);
@@ -620,7 +609,7 @@ export class Game {
     // empty hands rest out of sight unless they're doing something (grabbing, pushing, offering)
     if (this.arms && this.mode !== 'drive') {
       const a = this.arms as unknown as { held: string; action: string | null; object: THREE.Object3D };
-      a.object.visible = !(a.held === 'none' && !a.action) || this.mode === 'menu';
+      a.object.visible = (!(a.held === 'none' && !a.action) || this.mode === 'menu') && !this.pack.open;
     }
     // audio
     audio.setListener(cam);
@@ -662,7 +651,7 @@ export class Game {
       hud.setLabel(this.hands.label);
       hud.setCharge(this.hands.charging ? this.hands.charge : 0);
       hud.showDot(true);
-    } else if (this.pack.open) { hud.showDot(true); hud.setCharge(0); }
+    } else if (this.pack.open) { hud.showDot(false); hud.setCharge(0); hud.setLabel(''); }
     else { hud.setLabel(''); hud.showDot(false); hud.setCharge(0); }
     hud.update(dt);
   }

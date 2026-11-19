@@ -141,6 +141,50 @@ export function bigfootClips(bones: BoneDef[]): Record<string, Clip> {
         look(p, a, (1 - down) * 0.6);
       },
     },
+    // ---- food (v7): tempted by fish or berries held out, it creeps close and reaches; takes; eats with relish
+    reach: {
+      loop: true, dur: 6, fade: 0.8,
+      fn: (p, t, a) => {
+        stand(p); breathe(p, t, 1.4);
+        const c = t % 6, sn = env(c, 1.0, 1.4, 2.4, 2.9);
+        // stooped low, one big hand held out palm up, the head cocked; a sniff now and then
+        p.t[1] -= 0.18; R(p, B.spine, 0.22); R(p, B.chest, 0.12);
+        arm(p, 1, -0.75 + 0.05 * sin(t * 1.3), 0.08, 0.55, -0.3, 0.9);
+        R(p, B.fing[1], -0.15); R(p, B.fing2[1], -0.2);
+        arm(p, 0, -0.1, 0.12, 0.35);
+        R(p, B.head, -0.08 * sn + 0.03 * sin(t * 9) * sn, 0, 0.25 * (1 - sn) * sin(t * 0.4 + 1));
+        foot(p, LF, 0, 0, 0.1); foot(p, RF, 0, 0, -0.06);
+        look(p, a, 1);
+      },
+    },
+    take: {
+      // a careful pinch of the offering from the hand, drawn in to the chest
+      loop: false, dur: 1.4, fade: 0.3, next: 'eat',
+      fn: (p, t, a) => {
+        stand(p);
+        const out = env(t, 0, 0.4, 0.55, 1.2), g = env(t, 0.4, 0.55, 2, 3);
+        p.t[1] -= 0.18; R(p, B.spine, 0.22 * out); R(p, B.chest, 0.12);
+        arm(p, 1, -0.95 * out - 0.3, 0.08, 0.4 + 0.9 * (1 - out), -0.2, 0.6);
+        grip(p, 1, g);
+        look(p, a, 0.8);
+        p.c[CH_PROP] = t > 0.5 ? 3 : 0;
+      },
+    },
+    eat: {
+      // sat back on its heels: the food to its mouth in both hands, big chews, a rocking contentment
+      loop: true, dur: 3, fade: 0.5,
+      fn: (p, t) => {
+        stand(p);
+        const ch = Math.max(0, sin(t * 2.3 * TAU)), rock = sin(t * 0.9 * TAU);
+        p.t[1] -= 0.55; p.t[2] -= 0.08; p.rr[0] -= 0.08 + 0.03 * rock;
+        foot(p, LF, 0.05, 0, 0.16, 1, 0.3); foot(p, RF, -0.05, 0, 0.16, 1, 0.3);
+        R(p, B.spine, 0.1); R(p, B.chest, 0.05);
+        for (let k = 0; k < 2; k++) { arm(p, k, -1.0, -0.15, 1.95, 0.4, 0.4); grip(p, k, 0.8); }
+        R(p, B.head, 0.12 + 0.03 * ch, 0.04 * rock, 0.1 * rock);
+        R(p, B.jaw, 0.1 * ch);
+        p.c[CH_PROP] = 3;
+      },
+    },
   };
   return clips;
 }

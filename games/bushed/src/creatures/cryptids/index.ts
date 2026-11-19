@@ -17,9 +17,19 @@ import * as THREE from 'three';
 import { SPOTS, WORLD, biome, heightAt, clearance, roadInfo } from '../../world/layout';
 import type { NewCryptid } from './base';
 import { Hodag } from './hodag';
+import { Squonk } from './squonk';
+import { Hidebehind } from './hidebehind';
+import { Agropelter } from './agropelter';
+import { Teakettler } from './teakettler';
+import { SnowWasset } from './wasset';
 
 export { Cryptid, CH, daylight, type NewCryptid } from './base';
 export { Hodag, hodagModel, hodagModelAsync, HODAG_SOUND, type HodagState } from './hodag';
+export { Squonk, squonkModel, squonkModelAsync, SQUONK_SOUND, type SquonkState } from './squonk';
+export { Hidebehind, hidebehindModel, hidebehindModelAsync, HIDEBEHIND_SOUND, type HidebehindState } from './hidebehind';
+export { Agropelter, agropelterModel, agropelterModelAsync, snagModelAsync, AGROPELTER_SOUND, type AgropelterState } from './agropelter';
+export { Teakettler, teakettlerModel, teakettlerModelAsync, TEAKETTLER_SOUND, type TeakettlerState } from './teakettler';
+export { SnowWasset, wassetModel, wassetModelAsync, WASSET_SOUND, type WassetState } from './wasset';
 
 export type CryptidId = 'hodag' | 'squonk' | 'hidebehind' | 'agropelter' | 'teakettler' | 'wasset';
 
@@ -59,7 +69,7 @@ export function cryptidSpots(): Record<CryptidId, THREE.Vector3> {
 }
 
 type Ctor = new (o: { pos?: THREE.Vector3; heading?: number }) => NewCryptid;
-const CTORS: Partial<Record<CryptidId, Ctor>> = { hodag: Hodag };
+const CTORS: Partial<Record<CryptidId, Ctor>> = { hodag: Hodag, squonk: Squonk, hidebehind: Hidebehind, agropelter: Agropelter, teakettler: Teakettler, wasset: SnowWasset };
 /** register a cryptid class (each module does this for itself) */
 export function registerCryptid(id: CryptidId, c: Ctor) { CTORS[id] = c; }
 
