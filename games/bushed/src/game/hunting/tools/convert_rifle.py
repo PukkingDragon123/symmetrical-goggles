@@ -10,7 +10,9 @@ three separate props so the bolt can be cycled and the cartridge used for loose 
 Differences from the stock props job: 640 px/m (the rifle is a first-person hero object seen from 25 cm down the
 sights), no chroma boost and a 6 degree ramp hue shift instead of 20 (the boost + yellow-shifted highlights turned
 the khaki cheek wrap and the orange birch stock green). Each prop is re-centred by the pipeline, so the bolt's and
-the round's offsets from the rifle's origin (all in the rifle glb's frame) go to bolt_action_rifle_7_62.json.
+the round's offsets from the rifle's origin (all in the rifle glb's frame) are printed (and written to
+out/bushed/props/bolt_action_rifle_7_62/offsets.json): src/game/hunting/rifle.ts carries them as constants. (A .json
+next to the glb in public/assets/models would read as a Sketchfab vehicle to tools/gen_credits_models.py.)
 
     cd /home/user/symmetrical-goggles
     python games/bushed/src/game/hunting/tools/convert_rifle.py [--force]
@@ -70,7 +72,8 @@ def main():
     base = np.array(o[ASSET])
     meta = {"source": "https://polyhaven.com/a/" + ASSET, "licence": "CC0",
             "offsets": {pid: [round(float(v), 5) for v in (np.array(o[pid]) - base)] for pid, _ in SPLITS}}
-    out = os.path.join(CP.MODELS, ASSET + ".json")
+    out = os.path.join(CP.PREVIEW, ASSET, "offsets.json")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump(meta, open(out, "w"), indent=1)
     print(json.dumps(meta))
 

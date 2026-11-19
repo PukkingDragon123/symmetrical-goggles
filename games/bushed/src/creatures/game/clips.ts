@@ -88,8 +88,8 @@ export function cervidClips(bones: BoneDef[], species: 'deer' | 'moose'): Record
         const up = env(c, 5.6, 6.1, 6.9, 7.5); // the head comes up to look round, chewing, then goes back down
         const down = 1 - up;
         if (deer) {
-          R(p, B.chest, 0.28 * down); R(p, B.neck, 0.62 * down - 0.05 * up); R(p, B.neck2, 0.32 * down); R(p, B.head, 0.3 * down);
-          p.t[1] -= 0.035 * down; p.rr[0] += 0.05 * down;
+          R(p, B.chest, 0.36 * down); R(p, B.neck, 0.86 * down - 0.05 * up); R(p, B.neck2, 0.42 * down); R(p, B.head, 0.22 * down);
+          p.t[1] -= 0.06 * down; p.rr[0] += 0.09 * down;
           // nibbling: small jerks of the head as it crops
           R(p, B.head, down * 0.06 * Math.max(0, sin(t * 6)) * (sin(t * 0.8) > 0 ? 1 : 0), down * 0.08 * sin(t * 1.3));
           foot(p, FL, 0, 0, -0.05 * down); foot(p, FR, 0, 0, 0.03 * down);
@@ -253,6 +253,22 @@ export function cervidClips(bones: BoneDef[], species: 'deer' | 'moose'): Record
       },
     },
     // ------------------------------------------------------------------------------------- down
+    bed: {
+      // bedded: the body let down onto folded legs (the hooves stay put, the leg IK folds them), the head up, the
+      // ears turning on their own, the occasional look back along its trail
+      loop: true, dur: 8, fade: 1.2,
+      fn: (p, t, a) => {
+        p.t[1] -= (deer ? 0.44 : 0.8); p.t[2] -= 0.04 * K; p.rr[0] += 0.04;
+        for (let k = 0; k < 4; k++) foot(p, k, 0, 0, k < 2 ? 0.06 * K : -0.05 * K, 1, k < 2 ? -1.2 : 0.6);
+        R(p, B.chest, -0.1); R(p, B.neck, -0.2); R(p, B.head, 0.05);
+        const back = env(t % 8, 4.5, 5.2, 6.4, 7.0);
+        R(p, B.neck, 0, 0.9 * back); R(p, B.head, 0, 0.5 * back);
+        lookAt(p, a, 1 - back);
+        ears(p, t, a, { swivel: 0.4, droop: 0.3 });
+        tail(p, t, a, { flick: 0.05 });
+        breathe(p, t, 0.4, 1.6);
+      },
+    },
     death: {
       // the legs paddling as it goes over (the animal applies the fall itself)
       loop: false, dur: 3.5, fade: 0.15,

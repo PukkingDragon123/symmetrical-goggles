@@ -26,12 +26,25 @@ export const isCryptid = (who: string) => who in CRYPTID_DEV;
 export function testTrunks(x: number, z: number, r: number) {
   const out: { x: number; z: number; r: number }[] = [];
   for (const [tx, tz, tr] of [[-3.5, -4, 0.28], [4.2, -5.5, 0.35], [-6, 2, 0.4], [5.5, 3.5, 0.3]] as const) if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: tr });
-  for (let i = -6; i <= 6; i++) for (let j = -6; j <= 6; j++) {
-    const tx = i * 7 + ((i * 7 + j * 3) % 3) - 1, tz = j * 7 + ((i * 5 + j * 11) % 3) - 1;
+  // an endless jittered grid round the query point (the AI sims walk a long way)
+  for (let i = Math.floor((x - r) / 7) - 1; i <= Math.ceil((x + r) / 7) + 1; i++) for (let j = Math.floor((z - r) / 7) - 1; j <= Math.ceil((z + r) / 7) + 1; j++) {
+    const tx = i * 7 + (((i * 7 + j * 3) % 3) + 3) % 3 - 1, tz = j * 7 + (((i * 5 + j * 11) % 3) + 3) % 3 - 1;
     if (Math.abs(i) < 2 && Math.abs(j) < 2) continue;
-    if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: 0.22 + ((i * 13 + j * 7) & 3) * 0.04 });
+    if (Math.hypot(tx - x, tz - z) < r) out.push({ x: tx, z: tz, r: 0.22 + (((i * 13 + j * 7) % 4 + 4) % 4) * 0.04 });
   }
   return out;
+}
+
+/** test scenery a cryptid's AI demo needs (the hidebehind's forest of trunks to hide behind), or null */
+export function cryptidStage(who: string): THREE.Object3D | null {
+  if (who !== 'hidebehind') return null;
+  const g = new THREE.Group(); g.name = 'cryptidStage';
+  const mat = new THREE.MeshStandardMaterial({ color: 0x3a2c22, roughness: 0.9 });
+  for (const t of testTrunks(0, 0, 40)) {
+    if ([[-3.5, -4], [4.2, -5.5], [-6, 2], [5.5, 3.5]].some(([x, z]) => Math.hypot(x - t.x, z - t.z) < 0.5)) continue;
+    const m = new THREE.Mesh(new THREE.CylinderGeometry(t.r * 0.85, t.r, 9, 9), mat); m.position.set(t.x, 4.5, t.z); m.castShadow = true; g.add(m);
+  }
+  return g;
 }
 
 /** the AI demo on the page: the player strolls round holding the cryptid's favourite food half the time and offers
@@ -45,7 +58,7 @@ export function cryptidDemo(c: Cryptid, player: PlayerView & { action?: string }
 export function simCryptid(who: string, script: string, seconds: number, hour = 14): string {
   const log: string[] = [];
   const items: GroundItem[] = [];
-  const pl: PlayerView & { action?: string } = { pos: new THREE.Vector3(0, 1.7, 40), dir: new THREE.Vector3(0, 0, -1), held: 'none', crouch: false, noise: 0.1, light: false, speed: 0 };
+  const pl: PlayerView & { action?: string } = { pos: new THREE.Vector3(0, 1.7, who === 'hodag' ? 30 : who === 'squonk' || who === 'teakettler' ? 14 : 40), dir: new THREE.Vector3(0, 0, -1), held: 'none', crouch: false, noise: 0.1, light: false, speed: 0 };
   const c = CRYPTID_DEV[who].make();
   c.pos.set(0, 0, 0); c.home.set(0, 0, 0);
   let T = 0, last = '';
@@ -96,6 +109,7 @@ function scriptStep(who: string, script: string, T: number, dt: number, pl: Play
     // the tree is at the origin, its hollow facing +z; a path runs past it at x = 0
     switch (script) {
       case 'walk_under': pl.pos.set(-20 + T * 1.3, 1.7, 5); pl.speed = 1.3; pl.dir.set(1, 0, 0); break;
+      case 'stand_under': pl.pos.set(1, 1.7, 4); break;
       case 'leave_syrup': if (T < 0.02) pl.pos.set(0, 1.7, 3); if (T > 1 && T < 1.05 && !items.length) items.push({ id: 's1', kind: 'syrup', pos: new THREE.Vector3(0.3, 0, 1.2) }); if (T > 1) walk(1.4, new THREE.Vector3(0, 1.7, 14), dt); break;
       case 'offer_syrup': pl.held = 'syrup'; if (T < 0.02) pl.pos.set(-12, 1.7, 2); walk(1.2, new THREE.Vector3(0, 1.7, 1.6), dt); offer('syrup'); if (T > 25) pl.pos.set(-20 + (T - 25) * 1.3, 1.7, 5); break;
       case 'friend': (c as Agropelter).trust = 1; pl.pos.set(-12 + Math.min(T, 14) * 0.9, 1.7, 2.5); break;
@@ -106,7 +120,7 @@ function scriptStep(who: string, script: string, T: number, dt: number, pl: Play
       case 'approach': if (T > 2) walk(1.3, toC, dt, 1); break;
       case 'crouch': pl.crouch = true; if (T > 2) walk(0.7, toC, dt, 1); break;
       case 'coffee': pl.held = 'coffee'; if (T < 0.02) pl.pos.set(0, 1.7, 9); offer('coffee'); if (T > 12) { pl.pos.x += 1.2 * dt; pl.speed = 1.2; } break;
-      case 'leave_coffee': if (T < 0.02) pl.pos.set(0, 1.7, 9); if (T > 1 && !items.length && T < 2) items.push({ id: 'c1', kind: 'coffee', pos: new THREE.Vector3(1, 0, 6) }); break;
+      case 'leave_coffee': if (T < 0.02) pl.pos.set(0, 1.7, 9); if (T > 1 && !items.length && T < 2) items.push({ id: 'c1', kind: 'coffee', pos: new THREE.Vector3(1, 0, 6) }); if (T > 2) walk(1.2, new THREE.Vector3(0, 1.7, 22), dt); break;
       case 'night': if (T > 6) walk(0.4, toC, dt, 2.5); break;
     }
   }

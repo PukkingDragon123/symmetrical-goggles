@@ -441,16 +441,16 @@ function addAntlers(body: Body, S: CervidSpec, bone: number) {
       const base = skullPt(S, 1.0, 1.3, side, -0.01).p;
       const o = (x: number, y: number, z: number): V3 => add(base, [x * side, y, z]);
       // the beam: out sideways and a little back
-      const beam = curve([o(0, -0.01, 0), o(0.08, 0.03, -0.02), o(0.17, 0.07, -0.05)], 6);
+      const beam = curve([o(0, -0.01, 0), o(0.1, 0.02, -0.02), o(0.22, 0.05, -0.04)], 6);
       const skinH = () => [bone, 1];
       body.add(stalk({ name: 'antler', path: beam, r: (t) => 0.034 * (1 - t * 0.25) * (t < 0.08 ? 1.2 : 1), around: 8, capS: true, capE: true, levels: 1, k: 1.1, skin: skinH, paint: antlerPaint(base, 0.75, 1.5) }));
       // the palm: rays fanning from the beam's end, outward and up, from a forward brow tine round to the back
-      const e1 = nrm([side * 1, 0.55, 0.12]), e2 = nrm([side * 0.25, 0.5, -0.85]);
+      const e1 = nrm([side * 1, 0.3, 0.12]), e2 = nrm([side * 0.3, 0.22, -0.95]);
       const N = 9, roots: V3[] = [], dirs: V3[] = [], lens: number[] = [], sides: V3[] = [];
       const nrmP = nrm(cross(e1, e2));
       const end = beam[beam.length - 1];
       for (let k = 0; k < N; k++) {
-        const f = k / (N - 1), th = -0.55 + f * 1.9;
+        const f = k / (N - 1), th = -0.4 + f * 1.45;
         roots.push(add(add(end, scl(e2, (f - 0.35) * 0.16)), scl(e1, -0.03)));
         dirs.push(nrm(add(scl(e1, Math.cos(th)), scl(e2, Math.sin(th)))));
         // the rim: longest across the middle of the palm, short brow points at the front
@@ -463,7 +463,7 @@ function addAntlers(body: Body, S: CervidSpec, bone: number) {
 }
 
 // ------------------------------------------------------------------------------------------------ the build
-export const CERVID_MODEL_VERSION = 'cervid@4';
+export const CERVID_MODEL_VERSION = 'cervid@5';
 export function* cervidGen(species: Species, male: boolean): Generator<string | void, CervidModel> {
   const S = species === 'deer' ? DEER(male) : MOOSE(male);
   const hd = S.head, B = S.bones;

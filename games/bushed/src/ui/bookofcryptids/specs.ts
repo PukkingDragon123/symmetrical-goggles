@@ -4,6 +4,8 @@
 import { ramp, hex, type RGB, type Pix } from './pix';
 import { PAT, both, chain, cone, ell, type Mat, type Prim, type SdfSpec, type V3 } from './sdf';
 import { hash2 } from '../../core/rng';
+import { Noise } from '../../core/noise';
+const NZ2 = new Noise(4242);
 
 const EYE_GLOW = ramp('#3a0a04', '#7a1a08', '#c04010', '#f08a20', '#ffd060', '#fff4c0');
 const BONE = ramp('#241e1a', '#4a4036', '#756a56', '#a3967a', '#cbbf9e', '#ebe2c4');
@@ -83,14 +85,14 @@ function hodag(): SdfSpec {
   // tail, ending in a spear
   P.push(...chain([[0, 0.66, -0.7], [0, 0.6, -1.1], [0.06, 0.48, -1.42], [0.12, 0.36, -1.66]], [0.18, 0.12, 0.08, 0.05], 0, 0.1, 0.15));
   P.push(cone([0.12, 0.36, -1.66], [0.16, 0.3, -1.92], 0.07, 0.004, 2, 0.02));
-  return { prims: P, mats, yaw: 1.05, pitch: 0.2, center: [0.02, 0.72, -0.2], scale: 102 };
+  return { prims: P, mats, yaw: 0.78, pitch: 0.2, center: [0.0, 0.68, -0.15], scale: 92 };
 }
 
 // ------------------------------------------------------------------------------------------------ Squonk
 function squonk(): SdfSpec {
   const SKIN = ramp('#1a1216', '#2e2026', '#463036', '#5e4244', '#7a5852', '#967066', '#b08a7a', '#c8a694', '#dcc0ac');
   const EYE = ramp('#06060a', '#141824', '#283448', '#4c6688', '#90b4d8', '#e4f2ff');
-  const NOSE = ramp('#24121a', '#462430', '#683840', '#8c5052', '#ac6c68');
+  const NOSE = ramp('#3a1e24', '#5e3236', '#80484a', '#a06460', '#bc8478', '#d4a294');
   const mats: Mat[] = [
     { ramp: SKIN, pat: PAT.warts(34, 1) },
     { ramp: EYE, glow: true },
@@ -109,8 +111,8 @@ function squonk(): SdfSpec {
   P.push(...both([ell([0.12, 0.25, 0.48], [0.09, 0.11, 0.1], 0, 0.06)]));
   P.push(ell([0, 0.19, 0.42], [0.1, 0.09, 0.08], 0, 0.06));
   // a pig snout, pink and wet
-  P.push(cone([0, 0.33, 0.58], [0, 0.31, 0.7], 0.085, 0.075, 2, 0.05));
-  P.push(...both([{ ...ell([0.032, 0.31, 0.745], [0.018, 0.022, 0.02], 2), sub: true, s: 0.008 }]));
+  P.push(cone([0, 0.33, 0.58], [0, 0.315, 0.665], 0.07, 0.062, 2, 0.04));
+  P.push(...both([{ ...ell([0.026, 0.312, 0.73], [0.014, 0.018, 0.02], 2), sub: true, s: 0.006 }]));
   // drooping ears
   P.push(...both(chain([[0.13, 0.48, 0.4], [0.22, 0.46, 0.38], [0.27, 0.36, 0.42]], [0.05, 0.045, 0.02], 0, 0.02)));
   // big sorrowful eyes under heavy lids
@@ -142,10 +144,14 @@ function hidebehind(): SdfSpec {
   const EYE = ramp('#2a2a10', '#6a6420', '#b8ac40', '#eee07a', '#fffbd8');
   const birchPat = (p: V3) => {
     // black lenticel dashes across, and the odd dark knot
-    const band = Math.abs(Math.sin(p[1] * 31 + Math.sin(p[1] * 7) * 2));
-    const dash = band > 0.93 && hash2(Math.floor(Math.atan2(p[2], p[0]) * 6), Math.floor(p[1] * 31 / Math.PI), 4) < 0.6;
-    const knot = hash2(Math.floor(Math.atan2(p[2], p[0]) * 2.5), Math.floor(p[1] * 3), 9) < 0.18 && band > 0.7;
-    return knot ? -4 : dash ? -3 : 0;
+    const a = Math.atan2(p[2], p[0]);
+    const band = Math.abs(Math.sin(p[1] * 23 + Math.sin(p[1] * 5 + a) * 2));
+    const dash = band > 0.965 && hash2(Math.floor(a * 4), Math.floor(p[1] * 23 / Math.PI), 4) < 0.45;
+    // black chevron scars where old branches were
+    const cy = p[1] * 1.6, ci = Math.floor(cy), cf = cy - ci;
+    const scar = hash2(ci, 7, 3) < 0.5 && Math.abs(a - (hash2(ci, 2, 5) * 4 - 2)) < 0.5 && Math.abs(cf - 0.5 - Math.abs(a - (hash2(ci, 2, 5) * 4 - 2)) * 0.25) < 0.035;
+    const peel = NZ2.n3(p[0] * 30, p[1] * 8, p[2] * 30) > 0.55 ? 1 : 0;
+    return scar ? -5 : dash ? -3 : peel ? 0.6 : 0;
   };
   const mats: Mat[] = [
     { ramp: BIRCH, pat: birchPat, bias: 0.4 },
@@ -165,6 +171,7 @@ function hidebehind(): SdfSpec {
   P.push(ell([0.24, 1.62, -0.1], [0.1, 0.17, 0.12], 1));
   P.push(ell([0.27, 1.5, -0.05], [0.07, 0.1, 0.08], 1, 0.05));
   P.push(ell([0.315, 1.66, 0.0], [0.03, 0.022, 0.02], 2));
+  for (let k = 0; k < 5; k++) P.push(cone([0.3 + k * 0.006, 1.545 - k * 0.006, -0.02 + k * 0.012], [0.302 + k * 0.006, 1.528 - k * 0.006, -0.018 + k * 0.012], 0.004, 0.001, 2));
   // its shoulder, and one long arm reaching round the trunk at chest height, fingers splayed over the bark
   P.push(ell([0.26, 1.3, -0.2], [0.12, 0.16, 0.1], 1, 0.06));
   const R = 0.3;
@@ -179,7 +186,7 @@ function hidebehind(): SdfSpec {
     P.push(cone(tip, dir, 0.008, 0.002, 3));
   }
   P.push(cone(around(1.75, 1.24, 0.02), [0.3, 1.27, -0.12], 0.035, 0.06, 1, 0.04));
-  return { prims: P, mats, yaw: 0.45, pitch: 0.06, center: [0.08, 1.15, 0], scale: 96 };
+  return { prims: P, mats, yaw: 0.45, pitch: 0.06, center: [0.1, 1.42, 0], scale: 210 };
 }
 
 // ------------------------------------------------------------------------------------------------ Agropelter
@@ -210,13 +217,16 @@ function agropelter(): SdfSpec {
   P.push(...both([ell([0.03, 1.215, 0.28], [0.017, 0.009, 0.01], 2)]).map((p) => ({ ...p, a: [p.a[0] + 0.04, p.a[1], p.a[2]] as V3 })));
   P.push(...both([cone([0.06, 1.28, 0.18], [0.12, 1.36, 0.12], 0.02, 0.004, 1, 0.01)]).map((p) => ({ ...p, a: [p.a[0] + 0.04, p.a[1], p.a[2]] as V3, b: [p.b![0] + 0.04, p.b![1], p.b![2]] as V3 })));
   for (const x of [0.02, 0.05, 0.08]) P.push(cone([x, 1.115, 0.3], [x, 1.095, 0.305], 0.006, 0.002, 5));   // snaggle teeth
-  // shoulders, then a whip of an arm cocked back over its head with a branch to throw
+  // shoulders, then a whip of an arm cocked back over its head, fist round a branch to throw
   P.push(ell([0.1, 1.06, 0.18], [0.09, 0.07, 0.07], 1, 0.03));
-  P.push(...chain([[0.15, 1.06, 0.2], [0.34, 1.2, 0.28], [0.42, 1.46, 0.22], [0.36, 1.66, 0.12]], [0.03, 0.022, 0.018, 0.015], 1, 0.01, 0.02));
-  P.push(...chain([[0.36, 1.66, 0.12], [0.28, 1.75, -0.02]], [0.024, 0.018], 1, 0.01));
-  P.push(cone([0.2, 1.52, 0.3], [0.48, 1.92, -0.18], 0.028, 0.02, 3, 0.0));       // the branch
-  P.push(cone([0.36, 1.74, 0.03], [0.42, 1.84, 0.14], 0.012, 0.004, 3));
-  P.push(cone([0.28, 1.62, 0.2], [0.2, 1.72, 0.26], 0.01, 0.003, 3));
+  P.push(...chain([[0.14, 1.07, 0.2], [0.36, 1.2, 0.32]], [0.028, 0.02], 1, 0.01, 0.02));          // upper arm
+  P.push(...chain([[0.36, 1.2, 0.32], [0.42, 1.43, 0.24], [0.4, 1.58, 0.16]], [0.02, 0.016, 0.014], 1, 0.008));  // forearm
+  P.push(ell([0.4, 1.61, 0.15], [0.026, 0.022, 0.022], 1, 0.01));                                   // fist
+  for (const dz of [-0.012, 0, 0.012]) P.push(cone([0.42, 1.6, 0.15 + dz], [0.43, 1.585, 0.17 + dz], 0.008, 0.006, 1));
+  P.push(cone([0.18, 1.43, 0.36], [0.58, 1.79, -0.06], 0.026, 0.017, 3, 0.0));                   // the branch, through the fist
+  P.push(cone([0.46, 1.68, 0.06], [0.52, 1.79, 0.16], 0.011, 0.003, 3));
+  P.push(cone([0.3, 1.54, 0.25], [0.24, 1.64, 0.33], 0.009, 0.003, 3));
+  P.push(cone([0.53, 1.75, -0.02], [0.62, 1.78, 0.08], 0.008, 0.002, 3));
   // the other arm draped over the lip of the hollow, long fingers hooked on the bark
   P.push(...chain([[-0.04, 1.04, 0.2], [-0.12, 0.96, 0.26], [-0.1, 0.9, 0.3]], [0.025, 0.02, 0.014], 1, 0.01, 0.02));
   for (const dx of [-0.02, 0, 0.02]) P.push(cone([-0.1 + dx, 0.9, 0.3], [-0.1 + dx * 1.6, 0.84, 0.27], 0.008, 0.004, 1));
@@ -231,7 +241,7 @@ function teakettler(): SdfSpec {
   const mats: Mat[] = [
     { ramp: FUR, pat: PAT.fur(140, [0, -0.4, -1], 0.8) },
     { ramp: CREAM, pat: PAT.fur(160, [0, -1, 0], 0.5) },
-    { ramp: ramp('#040404', '#14121a', '#2e2c3a', '#8a8aa0', '#f0f0ff'), glow: true },
+    { ramp: ramp('#040404', '#100e14', '#1e1c26', '#3a3848', '#f0f0ff'), bias: -1.2, gloss: 3 },
     { ramp: COPPER, gloss: 1.2 },
     { ramp: CLAW },
   ];
@@ -250,11 +260,11 @@ function teakettler(): SdfSpec {
   P.push(ell([0.115, 0.274, -0.275], [0.02, 0.016, 0.016], 3, 0.01));
   // ears like kettle-lid knobs, eyes beady and bright
   P.push(...both([ell([0.055, 0.33, -0.13], [0.03, 0.035, 0.02], 3, 0.02)]).map((p) => ({ ...p, a: [p.a[0] + 0.01, p.a[1], p.a[2]] as V3 })));
-  P.push(ell([0.075, 0.27, -0.205], [0.014, 0.016, 0.012], 2));
-  P.push(ell([-0.03, 0.275, -0.2], [0.012, 0.015, 0.011], 2));
+  P.push(ell([0.08, 0.272, -0.2], [0.017, 0.019, 0.014], 2));
+  P.push(ell([0.02, 0.278, -0.215], [0.015, 0.018, 0.013], 2));
   const STEAM = ramp('#7a7e88', '#a6aab4', '#d0d4dc', '#f2f4f8');
   return {
-    prims: P, mats, yaw: 0.95, pitch: 0.14, center: [0.02, 0.2, -0.05], scale: 520,
+    prims: P, mats, yaw: 1.85, pitch: 0.16, center: [0.0, 0.19, -0.04], scale: 400,
     post: (p, at) => {
       const [x, y] = at([0.13, 0.285, -0.29]);
       puff(p, Math.round(x + 10), Math.round(y - 12), 6, STEAM, 1);
@@ -278,9 +288,11 @@ function wasset(): SdfSpec {
   ];
   const P: Prim[] = [];
   // a drift of snow it is swimming through
-  P.push(ell([0, -0.1, -0.3], [1.5, 0.22, 1.6], 1));
-  P.push(ell([0.25, 0.04, 0.2], [0.34, 0.12, 0.3], 1, 0.12));
-  P.push(ell([-0.2, 0.06, -0.85], [0.3, 0.12, 0.28], 1, 0.12));
+  P.push(ell([0, -0.32, -0.3], [4.5, 0.4, 4.5], 1));
+  P.push(ell([0.25, 0.03, 0.2], [0.36, 0.12, 0.32], 1, 0.14));
+  P.push(ell([-0.2, 0.05, -0.85], [0.34, 0.13, 0.3], 1, 0.14));
+  P.push(ell([0.6, 0.02, -0.6], [0.4, 0.1, 0.35], 1, 0.14));
+  P.push(ell([-0.7, 0.0, 0.1], [0.45, 0.1, 0.4], 1, 0.14));
   // the long body: up out of the snow in an arch, head raised to look
   P.push(...chain([[0, -0.05, -0.38], [0, 0.18, -0.2], [0, 0.36, 0.05], [0.02, 0.5, 0.26], [0.04, 0.56, 0.4]], [0.12, 0.125, 0.115, 0.095, 0.08], 0, 0.06, 0.08));
   // a second loop further back, and the black-tipped tail
@@ -297,7 +309,7 @@ function wasset(): SdfSpec {
   for (const x of [0.04, 0.08]) P.push(cone([x, 0.556, 0.635], [x, 0.535, 0.64], 0.006, 0.0015, 4));
   // forepaws on the crust
   P.push(...chain([[0.08, 0.38, 0.22], [0.14, 0.2, 0.3], [0.15, 0.1, 0.36]], [0.035, 0.03, 0.025], 0, 0.02, 0.04));
-  return { prims: P, mats, yaw: 0.95, pitch: 0.22, center: [-0.06, 0.28, -0.45], scale: 118 };
+  return { prims: P, mats, yaw: 0.95, pitch: 0.24, center: [-0.08, 0.3, -0.45], scale: 132 };
 }
 
 export const SDF_SPECS: Record<string, () => SdfSpec> = { hodag, squonk, hidebehind, agropelter, teakettler, wasset };

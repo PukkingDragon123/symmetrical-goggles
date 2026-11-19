@@ -18,7 +18,7 @@ import { bonesKit, boneIndex, coat, solid, finishModel, REG, type ModelGen } fro
 import type { BoneDef } from '../../rig';
 
 export const AGROPELTER_MODEL_VERSION = 'agropelter@1';
-export const SNAG_MODEL_VERSION = 'agrosnag@1';
+export const SNAG_MODEL_VERSION = 'agrosnag@2';
 export const AG_HEAD: V3 = [0, 1.04, 0.16];
 export const AG_EYE: V3 = [0.038, 1.065, 0.262];
 export const AG_EYE_AX: V3 = [0.25, 0.05, 0.97];
@@ -247,7 +247,7 @@ export function* snagModelGen(o: { page?: number; den?: number } = {}): ModelGen
   }
   // the hollow: a lip of curled bark round a black hole (painted on the trunk), facing +z at SNAG.holeY
   const hc: V3 = [0.05, SNAG.holeY, -0.04 + SNAG.r * 0.97];
-  const lip: V3[] = Array.from({ length: 13 }, (_, k) => { const a = (k / 12) * Math.PI * 2; return add(hc, [Math.sin(a) * 0.17, Math.cos(a) * 0.25, 0.02 + 0.02 * Math.cos(a)]); });
+  const lip: V3[] = Array.from({ length: 13 }, (_, k) => { const a = (k / 12) * Math.PI * 2; return add(hc, [Math.sin(a) * 0.23, Math.cos(a) * 0.33, 0.0 + 0.02 * Math.cos(a)]); });
   body.add(stalk({ name: 'lip', path: lip, r: () => 0.045, around: 6, capS: false, capE: false, levels: 1, k: 1, skin, paint: snagPaint }));
   // dead limb stubs
   for (const [y, a, L] of [[1.6, 2.2, 0.35], [2.4, -1.0, 0.6], [3.9, 1.2, 0.5], [4.5, -2.4, 0.3], [2.9, 3.6, 0.25]] as const) {
@@ -268,8 +268,8 @@ const snagPaint = coat({
   lightK: 0.85,
   texel: (px, i, x, y, z, nx, ny, nz) => {
     const hx = x - 0.05, hy = y - SNAG.holeY;
-    const hole = Math.hypot(hx / 0.15, hy / 0.23) < 1 && nz > 0.4;
-    if (hole) { const d = Math.hypot(hx / 0.15, hy / 0.23); px.put(i, RP('ink'), d > 0.85 ? 2 : 0); px.rough[i] = 255; return 0; }
+    const hole = Math.hypot(hx / 0.21, hy / 0.31) < 1 && nz > 0.3;
+    if (hole) { const d = Math.hypot(hx / 0.21, hy / 0.31); px.put(i, RP('ink'), d > 0.85 ? 2 : 0); px.rough[i] = 255; return 0; }
     const m = fbm3(x * 3, y * 1.4, z * 3, 3), plate = fbm3(x * 10, y * 3, z * 10, 2), bare = fbm3(x * 1.5 + 9, y * 0.5, z * 1.5, 2) > 0.18;
     let R = BARK, st: number;
     if (bare) {

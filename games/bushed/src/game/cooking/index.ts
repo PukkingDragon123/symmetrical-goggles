@@ -1168,7 +1168,7 @@ export class CookingStation extends Station {
         if (!g.take(take)) { home(); return; }
         this.consumePantry(pp);
         audio.play('paper_rustle', { pos: this.W(this.boardPos), vol: 0.5 });
-        if (id === 'bacon') this.setStock(new Stock('bacon', 0.14));
+        if (id === 'bacon') this.setStock(new Stock('bacon', 0.2));
         else if (meatIds().includes(id)) this.setStock(new Stock('meat', 0.15));
         else if (id === 'chanterelle') this.setStock(new Stock('shroom', 1));
         else if (id === 'fish') { const f = makeFood('trout'); f.where = 'board'; f.local.set(0, 0); this.addFood(f); }
@@ -1186,7 +1186,7 @@ export class CookingStation extends Station {
 
   private setStock(s: Stock): void {
     this.stock = s;
-    s.obj.position.copy(this.boardSurface(new THREE.Vector2(-0.13 + s.len / 2, -0.01)));
+    s.obj.position.copy(this.boardSurface(new THREE.Vector2(-0.17 + s.len / 2, -0.01)));
     s.obj.rotation.y = 0.03;
     this.root.add(s.obj);
   }
@@ -1320,7 +1320,7 @@ export class CookingStation extends Station {
       this.addFood(f);
       st.len -= t;
       if (st.len < 0.012) { st.obj.removeFromParent(); this.stock = null; }
-      else { st.rebuild(); st.obj.position.copy(this.boardSurface(new THREE.Vector2(-0.13 + st.len / 2, -0.01))); }
+      else { st.rebuild(); st.obj.position.copy(this.boardSurface(new THREE.Vector2(-0.17 + st.len / 2, -0.01))); }
       const ideal = st.kind === 'bacon' ? 0.01 : 0.02;
       const msg = t < ideal * 0.6 ? 'Thin' : t > ideal * 1.6 ? 'Thick' : 'Even';
       this.pop(msg, this.W(this.boardSurface(f.local)).add(V3(0, 0.04, 0)), msg === 'Even' ? '#ffe08a' : '#e0c8a0');
@@ -1501,13 +1501,12 @@ export class CookingStation extends Station {
     H.stiff.R = 24; H.stiff.L = 22;
     if (!d) {
       // an open hand hovering over what the cursor is on
-      // a relaxed hand ready beside the cursor (low and to the right of it, never on top of the work)
-      const at = this.carryPoint(0.06);
-      if (at && this.viewName !== 'door') {
-        const w = this.W(at);
-        const toCam = this.g.camera.position.clone().sub(w).normalize();
-        const pos = w.clone().addScaledVector(side, 0.075).addScaledVector(toCam, 0.1).add(V3(0, 0.02, 0));
-        const f = w.clone().sub(pos).normalize();
+      // over something you can take, the hand comes up ready beside it; otherwise it stays out of the way
+      const at = this.hover?.at;
+      if (at && this.viewName !== 'door' && this.hover?.text) {
+        const toCam = this.g.camera.position.clone().sub(at).normalize();
+        const pos = at.clone().addScaledVector(side, 0.07).addScaledVector(toCam, 0.04).add(V3(0, 0.035, 0));
+        const f = at.clone().sub(pos).normalize();
         H.set('R', { pos, q: H.freeQ('R', f, down.clone().addScaledVector(side, -0.4).normalize()), grip: GRIP.relax });
       } else H.rest('R');
       H.rest('L');
@@ -1553,7 +1552,7 @@ export class CookingStation extends Station {
         const len = d.target === 'stock' && this.stock ? this.stock.len : d.f ? (d.f.u1 - d.f.u0) * 0.42 : 0.1;
         const blade = this.W(center).addScaledVector(along, d.at).add(V3(0, 0.075 * (1 - d.depth) + 0.004, 0));
         // knife: the blade points away over the board, edge down; the grip sits back toward the cook
-        const bladeDir = fwd.clone().add(V3(0, -0.18, 0)).normalize();
+        const bladeDir = fwd.clone().multiplyScalar(0.72).addScaledVector(side, -0.69).add(V3(0, -0.16, 0)).normalize();
         H.set('R', { pos: blade.clone().addScaledVector(bladeDir, -0.135).add(V3(0, 0.035, 0)), q: StationHands.toolQ(bladeDir, V3(0, -1, 0)), grip: GRIP.handle });
         // the left hand clawed on the far end of the food, fingertips tucked
         const claw = this.W(center).addScaledVector(along, -len / 2 + 0.02).add(V3(0, 0.055, 0)).addScaledVector(fwd, -0.02);
@@ -1627,7 +1626,7 @@ export class CookingStation extends Station {
 
   /** dev: set up a cutting moment on the board */
   devBoard(what: 'bacon' | 'trout' | 'dough'): void {
-    if (what === 'bacon') this.setStock(new Stock('bacon', 0.12));
+    if (what === 'bacon') this.setStock(new Stock('bacon', 0.2));
     else if (what === 'trout') { const f = makeFood('trout'); f.where = 'board'; this.addFood(f); }
     else { const f = makeFood('dough', { flat: 0.3 }); f.knead = 0.3; f.where = 'board'; this.addFood(f); }
   }

@@ -4,7 +4,7 @@ import { addItems, ITEMS, type ItemDef } from '../items';
 
 export const HUNT_ITEMS: Record<string, ItemDef> = {
   rifle: {
-    id: 'rifle', name: 'Bolt-action rifle, 7.62x54R', price: 340, mass: 4.1, model: 'bolt_action_rifle_7_62', pocket: false, unlockAt: 250,
+    id: 'rifle', name: 'Bolt-action rifle, 7.62x54R', price: 340, mass: 4.1, model: 'bolt_action_rifle_7_62', pocket: true, unlockAt: 250,
     desc: 'A surplus Mosin with a little side scope and a birch stock somebody loved once. Five in the box magazine, one at a time through the bolt.',
     tags: ['hunting', 'weapon'],
   },

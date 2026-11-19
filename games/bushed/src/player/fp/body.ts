@@ -125,6 +125,8 @@ export class FPBody {
     const arch = sm(down / 1.2);
     b.spine.quaternion.premultiply(_q.setFromAxisAngle(Y, -this.legYaw * 0.45)).multiply(_q.setFromAxisAngle(X, -arch * 0.42 + s.crouch * 0.28));
     b.chest.quaternion.premultiply(_q.setFromAxisAngle(Y, -this.legYaw * 0.55)).multiply(_q.setFromAxisAngle(X, -arch * 0.3 + s.crouch * 0.12));
+    // the arms keep hanging straight while the chest arches back
+    if (!s.armsShown) for (const sd of ['L', 'R']) b['uarm' + sd].quaternion.premultiply(_q.setFromAxisAngle(X, arch * 0.62));
     b.neck.quaternion.setFromEuler(_e.set(-s.pitch * 0.3, 0, 0));
     b.head.quaternion.setFromEuler(_e.set(-s.pitch * 0.6, 0, 0));
     // crouch: drop the hips and re-solve the legs so the boots stay where the gait put them

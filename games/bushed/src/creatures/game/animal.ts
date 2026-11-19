@@ -282,7 +282,7 @@ export class GameAnimal {
 
   // ------------------------------------------------------------------------------------------------ per frame
   update(ctx: HuntCtx) {
-    const dt = Math.min(0.1, Math.max(0, ctx.dt));
+    const dt = Math.min(0.3, Math.max(0, ctx.dt));
     this.t += dt; this.st += dt;
     this.params.chew = 0;
     if (!this.manual) { this.sense(ctx, dt); this.think(ctx, dt); }
@@ -521,7 +521,7 @@ export class GameAnimal {
     else if (this.state === 'dead') clip = 'dead';
     else if (this.anim.current === 'kick' && !this.anim.done) clip = 'kick';
     else if (this.anim.current === 'flinch' && !this.anim.done) clip = 'flinch';
-    else if (this.hold && sp < 0.15) clip = this.hold === 'limp_idle' ? 'alert' : this.hold;
+    else if (this.hold && sp < 0.15) clip = this.hold === 'limp_idle' ? (this.st > 2 ? 'bed' : 'alert') : this.hold;
     else if (sp < 0.12) clip = this.state === 'alert' ? 'alert' : 'idle';
     else if (this.gait === 'limp') clip = 'limp';
     else if (sp < (this.species === 'deer' ? 1.7 : 2.6)) clip = 'walk';

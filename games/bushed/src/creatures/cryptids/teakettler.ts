@@ -154,8 +154,8 @@ export class Teakettler extends Cryptid {
     if (friend && (ctx.threats ?? []).some((t) => Math.hypot(t.x - this.pos.x, t.z - this.pos.z) < 22) && ctx.time - this.lastWarn > 12) { this.lastWarn = ctx.time; this.once('whistle'); this.whistle(ctx, 2.2, true); }
     // coffee left out
     const gc = this.itemNear(ctx, COFFEE, this.pos, 15);
-    if (gc && d > 4 && this.state !== 'drink' && this.state !== 'happy' && this.state !== 'sleep') {
-      this.target.copy(gc.pos); this.want = 0.3; this.reverse = true; this.arrive = 0.25;
+    if (gc && Math.hypot(gc.pos.x - P.pos.x, gc.pos.z - P.pos.z) > 4 && this.state !== 'drink' && this.state !== 'happy' && this.state !== 'sleep') {
+      this.target.copy(gc.pos); this.want = 0.55; this.reverse = true; this.arrive = 0.25;
       if (Math.hypot(gc.pos.x - this.pos.x, gc.pos.z - this.pos.z) < 0.35 && ctx.takeItem?.(gc.id) !== false) { this.go('drink'); this.once('drink'); this.reverse = false; this.emit('drink', { item: 'coffee', from: 'ground' }); }
       return;
     }
@@ -193,15 +193,15 @@ export class Teakettler extends Cryptid {
       case 'curious': {
         if (!coffee) { this.go(friend ? 'friend' : d < shyR ? 'retreat' : 'wander'); break; }
         // bum first toward you, peeking over its shoulder; at arm's length it turns round to face you
-        if (d > 1.4) { this.target.copy(P.pos); this.want = 0.35; this.reverse = true; this.arrive = 1.2; this.lookAt = P.pos; }
+        if (d > 1.4) { this.target.copy(P.pos); this.want = d > 4 ? 0.8 : 0.45; this.reverse = true; this.arrive = 1.2; this.lookAt = P.pos; }
         else { this.want = 0; this.reverse = false; this.faceToward(P.pos); this.hold = 'sniff'; if (Math.random() < dt * 0.4) this.emit('sniff'); }
         break;
       }
       case 'drink': {
         this.want = 0;
         if (this.anim.current === 'happy' || this.st > 3.7) {
-          this.trust = Math.min(1, this.trust + 0.5); this.go('happy'); this.hold = 'happy'; this.anim.play('happy');
-          this.whistle(ctx, 3.2); this.emit('happy'); if (this.trust >= 1) this.emit('befriended');
+          const now = this.gainTrust(0.5); this.go('happy'); this.holdClip('happy');
+          this.whistle(ctx, 3.2); this.emit('happy'); if (now) this.emit('befriended');
         }
         break;
       }

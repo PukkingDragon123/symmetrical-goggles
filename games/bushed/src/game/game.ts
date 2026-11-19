@@ -304,8 +304,9 @@ export class Game {
     const m = paperMesh(paintPaper(blocks, { style: 'notebook', seed }), 0.2);
     m.position.set(0, -0.03, -0.3);
     m.rotation.set(-0.12, 0, 0.03);
-    this.view.add(m);
     this.reading = m;
+    const a = this.arms as unknown as { setHeld(k: string, o?: THREE.Object3D, opts?: unknown): void } | null;
+    if (a) a.setHeld('read', m, { own: false }); else this.view.add(m);
     this.sound('paper_rustle', undefined, 0.7);
   }
 
@@ -448,20 +449,17 @@ export class Game {
     const def = ITEMS[id];
     if (!def) return false;
     if (id === 'flashlight') { this.flashOn = !this.flashOn; this.sound('flashlight_click', undefined, 0.6); return true; }
-    if (id === 'cookies' && t.obj) {
-      const offer = { item: 'cookies', obj: t.obj, taken: false };
+    // food held out to a creature: it decides whether it's interested
+    if (def.food && t.obj) {
+      const offer = { item: id, obj: t.obj, taken: false };
       this.events.emit('offer', offer);
-      if (offer.taken) { this.take('cookies'); this.arms?.play('offer'); if (!this.owns('cookies')) this.hands.equip(null); return true; }
-    }
-    if (id === 'jerky' && t.obj) {
-      const offer = { item: 'jerky', obj: t.obj, taken: false };
-      this.events.emit('offer', offer);
-      if (offer.taken) { this.take('jerky'); this.arms?.play('offer'); return true; }
+      if (offer.taken) { this.take(id); this.arms?.play('offer', { target: t.point ?? undefined } as never); if (!this.owns(id)) this.hands.equip(null); return true; }
+      for (let p: THREE.Object3D | null = t.obj; p; p = p.parent) if (p.userData.creature) return true;
     }
     if (def.food) {
       this.take(id);
       this.survival.eat(def.food.kcal, def.food.warmth ?? 0);
-      this.arms?.play(def.food.drink ? 'drink' : 'offer');
+      this.arms?.play(def.food.drink ? 'drink' : 'eat');
       this.sound(def.food.drink ? (id === 'beer' ? 'drink_gulp' : 'drink_gulp') : (id === 'jerky' ? 'eat_chew' : 'eat_crunch'), undefined, 0.7);
       hud.say(def.food.drink ? `<i>${def.name}. Good.</i>` : `<i>${def.name}.</i>`, 2);
       if ((this.inv.items.get(id) ?? 0) <= 0) this.hands.equip(null);
@@ -530,6 +528,7 @@ export class Game {
     }
     if (this.reading && (input.pressed('Mouse0') || input.pressed('KeyE') || input.pressed('Escape') || input.pressed('Tab'))) {
       this.reading.removeFromParent(); this.reading = null; this.sound('paper_rustle', undefined, 0.5, 1.1);
+      const cur = this.hands.heldItem; this.hands.equip(null); if (cur && ITEMS[cur]) this.hands.equip(cur);
       input.endFrame();
     }
     physics.streamTerrain([{ x: this.player.pos.x, z: this.player.pos.z }, ...(this.jeep?.body ? [{ x: this.jeep.root.position.x, z: this.jeep.root.position.z }] : [])]);
@@ -609,7 +608,7 @@ export class Game {
     // empty hands rest out of sight unless they're doing something (grabbing, pushing, offering)
     if (this.arms && this.mode !== 'drive') {
       const a = this.arms as unknown as { held: string; action: string | null; object: THREE.Object3D };
-      a.object.visible = (!(a.held === 'none' && !a.action) || this.mode === 'menu') && !this.pack.open;
+      a.object.visible = !this.pack.open;
     }
     // audio
     audio.setListener(cam);

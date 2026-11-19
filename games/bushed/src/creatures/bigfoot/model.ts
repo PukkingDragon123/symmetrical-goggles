@@ -231,7 +231,7 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const BIGFOOT_MODEL_VERSION = 'bigfoot@7';
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@8';
 export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */

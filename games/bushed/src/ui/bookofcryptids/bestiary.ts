@@ -94,61 +94,75 @@ export const FIELD: FieldEntry[] = [
     ],
   },
   {
-    id: 'hidebehind', habitat: 'Always behind the tree you are not looking at.',
-    active: 'Whenever you turn round', size: 'Unknown. Thin enough to hide behind a birch.',
-    food: { icon: 'plaid', name: 'Lumberjacks', note: 'the soft middle bits' },
+    id: 'hidebehind', habitat: 'The deep woods past the hollow. Always behind the tree you are not looking at.',
+    active: 'Nights, whenever you turn round', size: 'Unknown. Thin enough to hide behind a birch.',
+    food: { icon: 'jerky', name: 'Stolen jerky', note: 'never from your hand' },
     taste: 'Nothing. I tasted NOTHING. It is right behind you.', danger: 5, scene: 'night',
     rules: [
-      { id: 'unseen', text: 'Cannot be looked at. Turn round and it is already behind something else.' },
-      { id: 'drink', text: 'Hates the smell of drink. A splash of beer and it keeps off.' },
-      { id: 'tracks', text: 'Its tracks always end at a tree trunk.' },
+      { id: 'r0', text: 'It only hunts at night, in the deep woods: old timber, far from the roads and the cabin. By day it is nowhere.' },
+      { id: 'r1', text: 'It never moves while you are looking at it. Look straight at it and it stops dead, behind whatever is nearest.' },
+      { id: 'r2', text: 'Turn your back and it comes closer, tree by tree. A snapped twig behind you means turn around now.' },
+      { id: 'r3', text: 'Firelight keeps it off: carry a lit lantern or stay by a fire. It cannot abide the smell of liquor either.' },
+      { id: 'r4', text: 'It is no friend and takes nothing from your hand. Set jerky down and walk away: it steals it and leaves you be for the night.' },
     ],
   },
   {
     id: 'hodag', name: 'Hodag', latin: 'Bufocornus horribilis',
     ray: ['Big as an ox. Frog face, a grin full of tusks, horns, spikes all down the back.', 'Smells like a skunk that died in a dead skunk.', 'Marcel says it only eats white bulldogs, and only on Sundays. Marcel says a lot.'],
     rules: [
-      { id: 'smell', text: 'You smell it a long way before you see it.' },
-      { id: 'sunday', text: 'Eats on Sundays. The rest of the week it just sits and grins.' },
-      { id: 'horns', text: 'Can not turn its head past its horns. Get round behind it.' },
+      { id: 'r0', text: 'Its den is a muddy wallow in the alder swamp. About twenty-five paces round it is its yard, and it guards every inch.' },
+      { id: 'r1', text: 'It warns before it fights: the yellow throat swells, it bellows, the spines go up. Back away and it lets you go.' },
+      { id: 'r2', text: 'Its first two charges stop short with a snap. Swing an axe at it, or crowd it a third time, and the horns are real.' },
+      { id: 'r3', text: 'It cannot think about anything else when it smells bacon. Feed it and it is calm for the day.' },
+      { id: 'r4', text: 'Feed it twice and it rolls over for a belly scratch, and follows you about its swamp like a big ugly dog.' },
+      { id: 'r5', text: 'It sleeps in the den from midnight to dawn. You will smell it long before you see it.' },
     ],
-    habitat: 'Tamarack swamps and deep windfalls. Dens under the roots.', active: 'Sundays', size: 'An ox. A grinning ox.',
-    food: { icon: 'bacon', name: 'White bulldogs', note: 'Sundays only. Bacon will do.' },
+    habitat: 'The alder swamp south-east of the cabin: a muddy wallow and a big yard round it.', active: 'All day. Sleeps midnight to dawn', size: 'An ox. A grinning ox.',
+    food: { icon: 'bacon', name: 'Back bacon', note: 'white bulldogs, Marcel says' },
     taste: 'Swamp, skunk and smoke. It grinned at me. I did not care for the grin.', danger: 4, scene: 'swamp',
   },
   {
     id: 'squonk', name: 'Squonk', latin: 'Lacrimacorpus dissolvens',
     ray: ['Weeps. All the time. Skin two sizes too big, all warts and moles.', 'Hides in the hemlocks at dusk. Ashamed of how it looks, poor thing.', 'J.P. Wentling bagged one once. When he got home the sack was just tears and bubbles.'],
     rules: [
-      { id: 'tears', text: 'Follow the sobbing on a cold night and you will find it.' },
-      { id: 'dissolve', text: 'Corner it and it melts away into a puddle of tears.' },
-      { id: 'look', text: 'Hates being looked at. Look away and it calms down.' },
+      { id: 'r0', text: 'It weeps all the time. Listen for the sobbing in the wet fir woods at dusk, and follow the trail of tear spots.' },
+      { id: 'r1', text: 'By day it hides curled up under the ferns. It wanders from dusk through the night.' },
+      { id: 'r2', text: 'It runs from anyone who comes close standing up. Crouch, go slowly, and it only watches you from behind a tree.' },
+      { id: 'r3', text: 'Corner it, chase it, grab at it or shine a light in its face and it dissolves into a puddle of tears.' },
+      { id: 'r4', text: 'Leave the puddle alone. When nobody is near, it pulls itself back together.' },
+      { id: 'r5', text: 'Wild blueberries stop the crying. Crouch and hold some out; feed it three times and it follows you at dusk.' },
     ],
-    habitat: 'Hemlock stands, at twilight. Follow the crying.', active: 'Twilight', size: 'A sad pig.',
-    food: { icon: 'syrup', name: 'Maple syrup', note: 'cheers it up a little' },
+    habitat: 'The dark wet fir woods north of the hollow. Follow the crying.', active: 'Dusk through the night', size: 'A sad pig.',
+    food: { icon: 'berries', name: 'Wild blueberries', note: 'stops the crying' },
     taste: 'Salt. Pure salt. Tears, I think. Do not let it see you looking.', danger: 0, scene: 'dusk',
   },
   {
     id: 'agropelter', name: 'Agropelter', latin: 'Anthropohurlus zobius',
     ray: ['Something up in the dead snags throws branches. Big ones.', 'Thin as a rake, arms like buggy whips, face like a jailbird.', 'Lives in hollow trees. Eats owls and woodpeckers, they say.'],
     rules: [
-      { id: 'throws', text: 'Throws limbs from the top of a hollow snag. Listen for the crack.' },
-      { id: 'sun', text: 'Can not aim into the sun. Come at it from the east in the morning.' },
-      { id: 'fell', text: 'Drop its snag and it has nowhere to throw from.' },
+      { id: 'r0', text: 'It lives in the knot-hole of a dead, broken-topped snag. A heap of broken branches round the foot of a tree means one lives there.' },
+      { id: 'r1', text: 'Walk under its tree and it leans out and pelts you with dead branches. It throws where you are, not where you are going: keep moving.' },
+      { id: 'r2', text: 'Keep walking: once you are past, it ducks back into its hole, jeering.' },
+      { id: 'r3', text: 'Leave maple syrup at the foot of its tree and walk away: it climbs down for it and leaves you alone for the day.' },
+      { id: 'r4', text: 'Feed it twice and it is your friend: it drops dry kindling for you instead of throwing branches.' },
+      { id: 'r5', text: 'It sleeps in its hole from one in the morning until dawn.' },
     ],
-    habitat: 'Hollow snags and lightning-struck trees.', active: 'Whenever you walk under it', size: 'A broom with a grudge.',
-    food: { icon: 'feather', name: 'Owls and woodpeckers' },
+    habitat: 'A broken-topped snag by the hollow path. Look for the heap of branches.', active: 'Days. Sleeps from one till dawn', size: 'A broom with a grudge.',
+    food: { icon: 'syrup', name: 'Maple syrup', note: 'left at its tree' },
     taste: 'Rotten wood and owl feathers. Mean as a wet cat. Watch the treetops.', danger: 3, scene: 'dusk',
   },
   {
     id: 'teakettler', name: 'Teakettler', latin: 'Ollacalida retrogradiens',
     ray: ['Little thing about the size of a cat. Walks backwards.', 'Whistles steam out of its nose like a kettle on the boil. You hear it before you see it.', 'Never seen one from the front.'],
     rules: [
-      { id: 'steam', text: 'Follow the whistling. The steam hangs where it has been.' },
-      { id: 'backwards', text: 'Walks backwards. Come up on it from the front.' },
-      { id: 'frost', text: 'Only out on frosty mornings.' },
+      { id: 'r0', text: 'You hear it first: a kettle coming to the boil somewhere in the brush, and little puffs of steam.' },
+      { id: 'r1', text: 'It walks backwards, so it is always looking at whatever it is walking away from. It never turns its back on you.' },
+      { id: 'r2', text: 'It is shy: come within seven paces standing up (three crouching) and it whistles in alarm and backs off.' },
+      { id: 'r3', text: 'It is mad for coffee. Hold some out and it backs right up to you, bum first, looking over its shoulder.' },
+      { id: 'r4', text: 'Give it coffee twice and it follows you, and whistles like a kettle when something dangerous is near.' },
+      { id: 'r5', text: 'At night it sleeps curled up by the campsite, steaming gently like a pot left to cool.' },
     ],
-    habitat: 'Clearings and creek sides on frosty mornings.', active: 'Frosty mornings', size: 'A cat. A steaming cat.',
+    habitat: 'The woods behind the lake campsite.', active: 'Days. Sleeps by the campsite', size: 'A cat. A steaming cat.',
     food: { icon: 'coffee', name: 'Coffee', note: 'boiled, black, too hot' },
     taste: 'Hot copper and stewed tea. It walked backwards out of my mouth.', danger: 0, scene: 'day',
   },
@@ -156,12 +170,15 @@ export const FIELD: FieldEntry[] = [
     id: 'wasset', alias: ['snow_wasset', 'snowwasset', 'snow-wasset', 'snowWasset'], name: 'Snow Wasset', latin: 'Mustela hiemalis',
     ray: ['Long and white, like a weasel the length of a canoe.', 'Swims under the snow like an otter in water and comes up under you.', 'Goes brown and heads north in summer. Back with the first snow.'],
     rules: [
-      { id: 'under', text: 'Travels under the snow. Watch for the crust heaving.' },
-      { id: 'ice', text: 'Stand on bare ice. It can not come up through ice.' },
-      { id: 'summer', text: 'Gone north all summer. Comes back with the snow.' },
+      { id: 'r0', text: 'It lives under the ground and the snow on the north shore of the lake. Watch for a line of heaving snow or earth.' },
+      { id: 'r1', text: 'It is curious: it tunnels toward you, pops up a few paces away and stands up tall to stare.' },
+      { id: 'r2', text: 'Stand still and it darts in to nip at your bootlaces. Harmless, but it unties them.' },
+      { id: 'r3', text: 'Swing at it or rush it and it dives under. It comes up again somewhere else a while later.' },
+      { id: 'r4', text: 'It loves lake trout. Hold one out and it sits up and begs; feed it twice and it follows you, popping up wherever you stop.' },
+      { id: 'r5', text: 'At night it sleeps under the snow.' },
     ],
-    habitat: 'Under the snow. Open meadows and frozen bogs.', active: 'Winter', size: 'A canoe, with teeth.',
-    food: { icon: 'hare', name: 'Snowshoe hares' },
+    habitat: 'Under the snow and the ground on the north shore of the lake.', active: 'Days. Sleeps under the snow', size: 'A canoe, with teeth.',
+    food: { icon: 'fish', name: 'Lake trout' },
     taste: 'Cold. Musk and frozen hare. Its legs drop off in winter. It does not need them.', danger: 3, scene: 'snow',
   },
 ];
@@ -214,6 +231,26 @@ export function entries(): Entry[] {
   }
   out.forEach((e, i) => { e.plate = i + 1; });
   return out;
+}
+
+/** a rule given as its id, its index ('0', 2) or its text: the rule id */
+export function ruleId(e: Entry | undefined, rule: string | number): string {
+  const r = String(rule);
+  if (!e) return r;
+  if (e.rules.some((x) => x.id === r)) return r;
+  if (/^\d+$/.test(r) && e.rules[Number(r)]) return e.rules[Number(r)].id;
+  const low = r.toLowerCase();
+  const t = e.rules.find((x) => x.text.toLowerCase() === low) ?? (low.length > 12 ? e.rules.find((x) => x.text.toLowerCase().startsWith(low.slice(0, 40))) : undefined);
+  return t ? t.id : r;
+}
+
+/** a live creature's own data (src/creatures/cryptids NewCryptid: id, name, favoriteFood, rules[]) */
+export interface Adoptable { id: string; name?: string; favoriteFood?: string; rules?: readonly string[] }
+/** fold a creature's own rules and favourite food into an entry (rule ids r0.. by position, kept when texts match) */
+export function adoptInto(e: Entry, c: Adoptable): void {
+  if (c.rules?.length) e.rules = c.rules.map((t, i) => ({ id: e.rules.find((x) => x.text === t)?.id ?? e.rules[i]?.id ?? `r${i}`, text: t }));
+  if (c.favoriteFood) e.food = foodOf(c.favoriteFood, e.food);
+  if (c.name && !e.name) e.name = c.name;
 }
 
 /** resolve an id or alias to the canonical entry id */

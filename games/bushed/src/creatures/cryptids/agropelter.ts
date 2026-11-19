@@ -37,7 +37,7 @@ export const AGROPELTER_SOUND: Record<string, string | undefined> = {
 export type AgropelterState = 'lurk' | 'out' | 'throw' | 'hide' | 'reach' | 'down' | 'fetch' | 'up' | 'eat' | 'friend';
 const SYRUP = /syrup/i;
 /** the creature's origin when it sits in the hollow, relative to the tree base (in the snag's frame: the hole faces +z) */
-const HOLE = new THREE.Vector3(0.05, SNAG.holeY - 0.47, -0.04 + SNAG.r * 0.86);
+const HOLE = new THREE.Vector3(0.05, SNAG.holeY - 0.56, -0.04 + SNAG.r * 0.62);
 const THROW_AT = 0.74;
 
 function agropelterClips(defs: BoneDef[]): Record<string, Clip> {
@@ -57,8 +57,8 @@ function agropelterClips(defs: BoneDef[]): Record<string, Clip> {
   return {
     lurk: { loop: true, dur: 6, fade: 0.4, fn: (p, t, a) => {
       // down in the hollow: only the brow and the eyes at the hole, watching
-      tuck(p); p.t[2] -= 0.36; p.t[1] -= 0.12; R(p, CHEST, 0.15); R(p, NECK, -0.25); R(p, HEAD, -0.05 + 0.04 * sin(t * 0.7));
-      for (let k = 0; k < 2; k++) arm(p, k, 0.6, -0.1, 1.6, 0, 0.6);
+      tuck(p); p.t[2] -= 0.3; p.t[1] -= 0.4; R(p, CHEST, 0.1); R(p, NECK, -0.2); R(p, HEAD, -0.05 + 0.04 * sin(t * 0.7));
+      for (let k = 0; k < 2; k++) arm(p, k, 0.2, -0.25, 2.2, 0, 0.8);
       look(p, a, 0.7); ears(p, 0.1 * sin(t * 2));
     } },
     idle: { loop: true, dur: 5, fade: 0.4, fn: (p, t, a) => {
@@ -85,7 +85,7 @@ function agropelterClips(defs: BoneDef[]): Record<string, Clip> {
     } },
     hide: { loop: false, dur: 0.6, fade: 0.1, next: 'lurk', fn: (p, t) => {
       // a quick duck back into the hole
-      const k = sm(t / 0.5); tuck(p); p.t[2] -= 0.36 * k; p.t[1] -= 0.12 * k; R(p, CHEST, 0.15); for (let j = 0; j < 2; j++) arm(p, j, 0.6, 0, 1.6 * k, 0, 0.6);
+      const k = sm(t / 0.5); tuck(p); p.t[2] -= 0.3 * k; p.t[1] -= 0.4 * k; R(p, CHEST, 0.1); for (let j = 0; j < 2; j++) arm(p, j, 0.2 + 0.4 * (1 - k), -0.25 * k, 2.2 * k, 0, 0.8);
     } },
     reach: { loop: false, dur: 1.8, fade: 0.15, next: 'eat', fn: (p, t) => {
       // syrup held up under the tree: it pours half out of the hole, one arm unrolling down the trunk to snatch it
@@ -217,7 +217,7 @@ export class Agropelter extends Cryptid {
       }
       case 'hide': if (this.holdDone || this.st > 0.7) this.go('lurk'); break;
       case 'reach': {
-        if (this.anim.current === 'eat' || this.st > 1.8) { this.go('eat'); this.hold = 'eat'; this.anim.play('eat'); }
+        if (this.anim.current === 'eat' || this.st > 1.8) { this.go('eat'); this.holdClip('eat'); }
         break;
       }
       case 'down': {
@@ -246,8 +246,8 @@ export class Agropelter extends Cryptid {
       }
       case 'eat': {
         if ((this.anim.current === 'happy' || this.st > 4.2) && !this.fed) {
-          this.fed = true; this.hold = 'happy'; this.anim.play('happy'); this.trust = Math.min(1, this.trust + 0.5); this.calmUntil = ctx.time + 1800; this.emit('happy');
-          if (this.trust >= 1) this.emit('befriended');
+          this.fed = true; this.holdClip('happy'); const now = this.gainTrust(0.5); this.calmUntil = ctx.time + 1800; this.emit('happy');
+          if (now) this.emit('befriended');
         }
         if (this.fed && (this.holdDone || this.st > 8)) { this.fed = false; this.go(this.trust >= 1 ? 'friend' : 'out'); this.hold = null; }
         break;
@@ -265,13 +265,13 @@ export class Agropelter extends Cryptid {
       }
     }
   }
-  private pendingEat = false; private fed = false;
+  private pendingEat = false; private fed = false; private hitDone = false;
   /** let go of the branch: aimed at the player's head (where they are now), flying a short arc */
   private release(ctx: CreatureCtx) {
     const from = this.handWorld(_a), P = ctx.player.pos, to = _b.set(P.x, P.y - 0.25, P.z);
     const d = Math.hypot(to.x - from.x, to.z - from.z), T = clamp(0.35 + d / 14, 0.4, 1.3);
     const vel = new THREE.Vector3((to.x - from.x) / T, (to.y - from.y + 0.5 * 9.8 * T * T) / T, (to.z - from.z) / T);
-    this.branch = { pos: from.clone(), vel };
+    this.branch = { pos: from.clone(), vel }; this.hitDone = false;
     this.stickMode = 'air'; this.stickT = 0;
     this.stickSpin.set(Math.random() * 10 - 5, Math.random() * 6 - 3, 8 + Math.random() * 6);
     this.emit('throw', { from: from.clone(), vel: vel.clone(), branch: true });
@@ -336,7 +336,8 @@ export class Agropelter extends Cryptid {
     this.stickRot.multiply(_q.setFromEuler(_e.set(this.stickSpin.x * dt, this.stickSpin.y * dt, this.stickSpin.z * dt)));
     // the player: a capsule from the feet to the eyes
     const P = ctx.player.pos, cy = clamp(b.pos.y, P.y - 1.6, P.y), hd = Math.hypot(b.pos.x - P.x, cy - b.pos.y, b.pos.z - P.z);
-    if (hd < 0.38 && this.stickT > 0.1) {
+    if (hd < 0.38 && this.stickT > 0.1 && !this.hitDone) {
+      this.hitDone = true;
       this.emit('hit', { damage: 0.12, impulse: new THREE.Vector3(b.vel.x, 0, b.vel.z).multiplyScalar(0.25).setY(0.5) });
       b.vel.multiplyScalar(-0.25); b.vel.y = 1.5;
     }

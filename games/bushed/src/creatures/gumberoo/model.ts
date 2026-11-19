@@ -10,7 +10,7 @@ import { Body, trunk, limb, legRings, eyeball, eyelid, sac, bulbs, spine, gridSu
 import { fbm3, nz2 } from '../paintkit';
 import type { BoneDef } from '../rig';
 
-export const GUMBEROO_MODEL_VERSION = 'gumberoo@3';
+export const GUMBEROO_MODEL_VERSION = 'gumberoo@4';
 export interface GumberooModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 export const GB = { root: [0, 0.82, 0] as V3, head: [0, 0.86, 0.5] as V3, eye: [0.18, 1.04, 0.75] as V3,
   fl: { hip: [0.36, 0.42, 0.36] as V3, knee: [0.4, 0.22, 0.4] as V3, sole: [0.42, 0.0, 0.42] as V3 },
@@ -49,11 +49,13 @@ function* hideGen(ch: Chart, b: Body) {
     if ((i & 8191) === 0) yield;
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ny = N[i * 3 + 1], ax = Math.abs(x);
     const m = fbm3(x * 3, y * 3, z * 3, 3);
-    const face = z > 0.56 && ax < 0.4 && y > 0.45;
+    const face = z > 0.74 && ax < 0.3 && y > 0.5 && y < 0.95;
     const leg = y < 0.42;
     // the colour: charcoal and dark olive patches, an ember stripe down the spine, pale sand scutes underneath
-    let R = m > 0.05 ? HIDE : BLACK, st = (R === HIDE ? 2.4 : 2.8) + m * 0.3, rough = 120;
-    if (ny > 0.55 && ax < 0.13 + nz2(z * 6, 1) * 0.04 && !face) { R = EMBER; st = 2.2 + m * 0.6; }
+    // two broad tones (dark olive on the back, charcoal down the flanks), the scales carry the detail
+    const flank = ny < 0.35 + nz2(x * 3, z * 3) * 0.25;
+    let R = flank ? BLACK : HIDE, st = (flank ? 2.6 : 2.2) + (m > 0.3 ? 0.4 : 0), rough = 120;
+    if (ny > 0.6 && ax < 0.1 + nz2(z * 6, 1) * 0.03 && !face) { R = EMBER; st = 1.3 + m * 0.4; }
     if (ny < -0.35 && !leg) { R = BELLY; st = 2.8 + m * 0.4; rough = 170; }
     // the mouth: a long crooked grin across the blunt face, gum dark inside, a scaly lip above it
     const grin = y - (0.66 + 0.06 * Math.pow(ax / 0.34, 2) + 0.01 * Math.sin(x * 9));
@@ -73,7 +75,7 @@ function* hideGen(ch: Chart, b: Body) {
   }
   yield;
   // big keeled scales on the back and flanks (biggest along the spine), broad scutes on the belly, beads elsewhere
-  px.scales({ size: 0.14, kind: 'keel', flow: -1, mask: (i) => back[i], sizeK: (i) => 0.7 + 0.45 * Math.max(0, px.gb.N[i * 3 + 1]), ink: 2.6, lit: 1.3, shade: 1.3, seed: 5 });
+  px.scales({ size: 0.16, kind: 'keel', flow: -1, mask: (i) => back[i], sizeK: (i) => 0.65 + 0.5 * Math.max(0, px.gb.N[i * 3 + 1]), ink: 3, lit: 1.8, shade: 1.6, seed: 5 });
   yield;
   px.scales({ size: 0.1, kind: 'scute', flow: -1, mask: (i) => belly[i], ink: 2, lit: 0.9, shade: 0.9, seed: 9 });
   yield;

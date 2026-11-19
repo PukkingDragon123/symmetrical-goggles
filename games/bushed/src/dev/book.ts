@@ -124,7 +124,8 @@ async function firstPerson() {
   view.add(book.object);
   book.attach({ camera, viewCam });
   bookPose(arms, book);
-  book.onOpenChange = (open) => arms.setHeld(open ? 'book' : 'none');
+  book.onOpenChange = (open) => { if (open) arms.setHeld('book'); };
+  book.onPutAway = () => arms.setHeld('none');
   floatText.mount(document.getElementById('ui')!, camera);
   setPortraitRenderer(R.gl);
   // a critter to taste
@@ -142,7 +143,7 @@ async function firstPerson() {
   // state for screenshots
   if (q.has('demo')) {
     book.day = 2;
-    for (const [id, r] of [['hound', 'night'], ['hound', 'jerky'], ['hound', 'handles'], ['bigfoot', 'light'], ['squonk', 'tears'], ['hodag', 'smell']] as const) book.learn(id, r);
+    for (const [id, r] of [['hound', 'night'], ['hound', 'jerky'], ['hound', 'handles'], ['bigfoot', 'light'], ['squonk', 'tears'], ['hodag', 'smell']] as const) book.learn(id, r, { silent: true });
     for (const id of ['hound', 'bigfoot', 'squonk', 'hodag', 'teakettler', 'wasset', 'agropelter', 'dingbat']) book.observe(id, { silent: true });
     book.sawCritter('hidebehind');
     (book as unknown as { pendingWrites: unknown[] }).pendingWrites = [];
@@ -208,8 +209,27 @@ async function firstPerson() {
   W.__ready = true;
 }
 
+// ?sheet=models: every registered model portrait next to its painted (SDF) fallback
+async function sheetModels() {
+  document.body.classList.add('sheet');
+  const host = document.getElementById('sheet')!;
+  const gl = new THREE.WebGLRenderer({ antialias: false });
+  setPortraitRenderer(gl);
+  await preloadCreatures();
+  const P = await import('../ui/bookofcryptids/portrait');
+  const ids = (q.get('ids') ?? 'hodag,squonk,hidebehind,agropelter,teakettler,wasset').split(',');
+  for (const id of ids) {
+    const row = document.createElement('div'); host.appendChild(row);
+    const a = await P.portrait(id);
+    for (const pix of a ? [a.color, a.sketch] : []) { const c = pix.toCanvas(); c.style.width = `${c.width * 2}px`; c.style.background = '#cdb68a'; row.appendChild(c); }
+    if (SDF_SPECS[id]) { const r = await renderSdf(SDF_SPECS[id](), 320, 228); outline(r.pix); const c = r.pix.toCanvas(); c.style.width = `${c.width * 2}px`; c.style.background = '#cdb68a'; row.appendChild(c); }
+  }
+  W.__ready = true;
+}
+
 async function main() {
   await loadFonts();
+  if (q.get('sheet') === 'models') return sheetModels();
   const sheet = q.get('sheet');
   if (sheet === 'sdf') return sheetSdf();
   if (sheet === 'pages') return sheetPages();

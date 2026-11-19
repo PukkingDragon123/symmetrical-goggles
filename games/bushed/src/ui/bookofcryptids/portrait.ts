@@ -22,6 +22,10 @@ export interface ModelSource {
   yaw?: number; pitch?: number;
   /** fraction of the plate the model may fill */
   fill?: number;
+  /** frame only this band of the model's height (fractions, bottom to top), e.g. a creature up a tall snag */
+  crop?: [number, number];
+  /** paint over the pixel art before it is outlined (props in front: a tree to hide behind) */
+  post?: (p: Pix) => void;
 }
 
 const models = new Map<string, ModelSource>();
@@ -84,19 +88,20 @@ async function renderModel(src: ModelSource): Promise<Pix | null> {
   const scene = new THREE.Scene();
   scene.add(obj);
   // a studio for a field-guide plate: warm key from the upper left, cool fill, a rim behind
-  scene.add(new THREE.HemisphereLight(0xd8d4c8, 0x3a3226, 1.1));
+  scene.add(new THREE.HemisphereLight(0xe8e0d0, 0x4a4030, 1.7));
   const yaw = src.yaw ?? 0.75, pitch = src.pitch ?? 0.16;
   const back = new THREE.Vector3(Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch));
   const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
   const up = new THREE.Vector3().crossVectors(right, back.clone().negate());
-  const key = new THREE.DirectionalLight(0xffeedd, 2.2);
+  const key = new THREE.DirectionalLight(0xffeedd, 3.2);
   key.position.copy(back).multiplyScalar(0.5).addScaledVector(up, 0.8).addScaledVector(right, -0.6).multiplyScalar(10);
-  const rim = new THREE.DirectionalLight(0xc8d4ff, 1.4);
+  const rim = new THREE.DirectionalLight(0xc8d4ff, 2.0);
   rim.position.copy(back).multiplyScalar(-0.8).addScaledVector(right, 0.6).addScaledVector(up, 0.4).multiplyScalar(10);
   scene.add(key, rim);
   // frame the bounds in an orthographic camera
   _box.setFromObject(obj, true);
   if (_box.isEmpty()) return null;
+  if (src.crop) { const h = _box.max.y - _box.min.y, y0 = _box.min.y; _box.min.y = y0 + h * src.crop[0]; _box.max.y = y0 + h * src.crop[1]; }
   const c = _box.getCenter(new THREE.Vector3());
   const corners: THREE.Vector3[] = [];
   for (let i = 0; i < 8; i++) corners.push(new THREE.Vector3(i & 1 ? _box.max.x : _box.min.x, i & 2 ? _box.max.y : _box.min.y, i & 4 ? _box.max.z : _box.min.z));
@@ -137,6 +142,7 @@ async function renderModel(src: ModelSource): Promise<Pix | null> {
     out.set(x, y, [rr / aa, gg / aa, bb / aa]);
   }
   pixelise(out, 22);
+  src.post?.(out);
   return out;
 }
 

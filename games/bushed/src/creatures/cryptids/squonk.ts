@@ -269,9 +269,9 @@ export class Squonk extends Cryptid {
       case 'eat': {
         this.want = 0;
         if (this.anim.current === 'happy' || this.st > 3.5) {
-          this.trust = Math.min(1, this.trust + 0.34); this.dryUntil = ctx.time + 240;
+          const now = this.gainTrust(0.34); this.dryUntil = ctx.time + 240;
           this.go('happy'); this.once('happy'); this.emit('happy');
-          if (this.trust >= 1) this.emit('befriended');
+          if (now) this.emit('befriended');
         }
         break;
       }

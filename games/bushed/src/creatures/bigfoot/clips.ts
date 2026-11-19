@@ -179,7 +179,8 @@ export function bigfootClips(bones: BoneDef[]): Record<string, Clip> {
         p.t[1] -= 0.55; p.t[2] -= 0.08; p.rr[0] -= 0.08 + 0.03 * rock;
         foot(p, LF, 0.05, 0, 0.16, 1, 0.3); foot(p, RF, -0.05, 0, 0.16, 1, 0.3);
         R(p, B.spine, 0.1); R(p, B.chest, 0.05);
-        for (let k = 0; k < 2; k++) { arm(p, k, -1.0, -0.15, 1.95, 0.4, 0.4); grip(p, k, 0.8); }
+        // both big hands up under the chin, the food between them, a nibble at each chew
+        for (let k = 0; k < 2; k++) { arm(p, k, -1.15 - 0.05 * ch, -0.42, 2.25, 0.55, -0.35); grip(p, k, 0.8); }
         R(p, B.head, 0.12 + 0.03 * ch, 0.04 * rock, 0.1 * rock);
         R(p, B.jaw, 0.1 * ch);
         p.c[CH_PROP] = 3;

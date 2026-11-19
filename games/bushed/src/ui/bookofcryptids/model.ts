@@ -7,7 +7,7 @@
 //
 // Book space: x across the spread (spine at x = 0), y out of the pages, z down the page (head at -z), metres.
 import * as THREE from 'three';
-import { frontCoverTex, backCoverTex, spineTex, edgeLeatherTex, pastedownTex, pageEdgeTex, lipTex, gumTex, tongueTex, eyeTex, brassTex } from './textures';
+import { frontCoverTex, backCoverTex, spineTex, edgeLeatherTex, pastedownTex, pageEdgeTex, lipTex, gumTex, tongueTex, eyeTex, brassTex, lidTex } from './textures';
 import { canvasTex } from '../../gfx/tex';
 import { hash2 } from '../../core/rng';
 
@@ -141,8 +141,9 @@ export class GrimoireModel {
     this.leafF.visible = this.leafB.visible = false;
     this.leafF.frustumCulled = this.leafB.frustumCulled = false;
     this.object.add(this.leafF, this.leafB);
-    // ---- the face: a leather brow at the head of the spine, two goat eyes
+    // ---- the face: a leather brow at the head of the spine, two goat eyes; and a third in the front cover
     this.buildFace(leather);
+    this.buildCoverEye();
     this.object.add(this.face);
     // ---- the tongue
     const tg = new THREE.BufferGeometry();
@@ -152,6 +153,30 @@ export class GrimoireModel {
     this.object.add(this.tongue);
     this.object.traverse((o) => { o.castShadow = false; o.receiveShadow = false; });
     this.update(restPose());
+  }
+
+  /** where a hand holds a board (model space): a point under the fore-edge, the direction in toward the spine,
+   *  and the palm normal (pointing from the palm into the board) */
+  handFrame(side: 'L' | 'R', out: { p: THREE.Vector3; x: THREE.Vector3; n: THREE.Vector3 }, open = 1): void {
+    const mR = this.rightPivot.matrix;
+    if (side === 'R') {
+      out.p.set(G + BW - 0.014, -BT - 0.006, 0.05).applyMatrix4(mR);
+      out.x.set(-1, 0, 0).transformDirection(mR);
+      out.n.set(0, 1, 0).transformDirection(mR);
+      return;
+    }
+    // the left hand: under the spine while the book is shut, under the front board's fore-edge once it is open;
+    // it slides between the two rather than riding the cover through the air
+    const k = smooth(clamp01((open - 0.15) / 0.75));
+    const mL = this._m.multiplyMatrices(this.leftPivot.matrix, this.leftHalf.matrix);
+    const pShut = this._v.set(-G - 0.012, -BT - 0.008, 0.05).applyMatrix4(mR);
+    const pOpen = this._v2.set(-(G + BW - 0.014), -BT - 0.006, 0.05);
+    // the open position, as if fully open (the right half's frame mirrored)
+    pOpen.set(-(G + BW - 0.014) * Math.cos(this.rightPivot.rotation.z), (G + BW - 0.014) * Math.sin(this.rightPivot.rotation.z) - BT - 0.006, 0.05);
+    out.p.copy(pShut).lerp(pOpen, k);
+    out.x.set(1, 0, 0).transformDirection(mR).lerp(new THREE.Vector3(1, 0, 0).transformDirection(mL), k * k).normalize();
+    out.n.set(0, 1, 0).transformDirection(mR);
+    void mL;
   }
 
   /** mark the page textures changed */
@@ -362,7 +387,8 @@ export class GrimoireModel {
         const cy = 0.0012 + h * t * (1 - Math.abs(lean) * 0.45 * t), cx = s * xt + lean * h * t * t * 0.9, cz = z;
         for (let si = 0; si < sides; si++) {
           const a = (si / sides) * Math.PI * 2;
-          pos.push(cx + Math.cos(a) * rr * 1.05, cy, cz + Math.sin(a) * rr * 0.9);
+          const crook = (hash2(k, s, 9) - 0.5) * 0.5 * t;
+          pos.push(cx + Math.cos(a) * rr * 0.75, cy, cz + Math.sin(a) * rr * 1.25 + crook * h);
           // enamel: stained at the root, ivory at the tip, a darker back
           const shade = 0.6 + t * 0.42 - (Math.cos(a) * s > 0.5 ? 0.14 : 0);
           if (gold) col.push(0.95 * shade + 0.05, 0.7 * shade + 0.04, 0.25 * shade);
@@ -399,26 +425,49 @@ export class GrimoireModel {
     for (let i = 0; i < p.count; i++) {
       const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
       const ridge = Math.max(0, 1 - Math.abs(z + 0.35) / 0.4) * 0.25;
-      p.setXYZ(i, x * 0.03, y * (0.0075 + ridge * 0.006) + Math.sin(x * 11) * 0.0004, z * 0.016);
+      p.setXYZ(i, x * 0.026, y * (0.005 + ridge * 0.003) + Math.sin(x * 11) * 0.0004, z * 0.014);
     }
     bg.computeVertexNormals();
-    const brow = new THREE.Mesh(bg, new THREE.MeshStandardMaterial({ map: edgeLeatherTex(), roughness: 0.6, color: 0xd8a888 }));
-    brow.position.set(0, -0.0015, -0.003);
+    const brow = new THREE.Mesh(bg, new THREE.MeshStandardMaterial({ map: lidTex(), roughness: 0.6, color: 0xc89880 }));
+    brow.position.set(0, -0.0015, -0.006);
     this.face.add(brow);
     const eyeM = new THREE.MeshStandardMaterial({ map: eyeTex(), roughness: 0.12, metalness: 0.0, emissive: 0x3a1c06, emissiveIntensity: 0.9 });
-    const lidM = new THREE.MeshStandardMaterial({ map: edgeLeatherTex(), roughness: 0.55, color: 0xd8a888, side: THREE.DoubleSide });
+    const lidM = new THREE.MeshStandardMaterial({ map: lidTex(), roughness: 0.5, side: THREE.DoubleSide });
     for (const s of [-1, 1]) {
       const holder = new THREE.Group();
-      holder.position.set(s * 0.0118, 0.0062, 0.002);
-      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.0074, 18, 14), eyeM);
-      const lid = new THREE.Mesh(new THREE.SphereGeometry(0.0081, 16, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), lidM);
-      const lower = new THREE.Mesh(new THREE.SphereGeometry(0.008, 16, 6, 0, Math.PI * 2, Math.PI * 0.66, Math.PI * 0.34), lidM);
+      holder.position.set(s * 0.0122, 0.0066, -0.003);
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(0.0082, 18, 14), eyeM);
+      const lid = new THREE.Mesh(new THREE.SphereGeometry(0.0089, 16, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), lidM);
+      const lower = new THREE.Mesh(new THREE.SphereGeometry(0.0088, 16, 6, 0, Math.PI * 2, Math.PI * 0.66, Math.PI * 0.34), lidM);
       holder.add(ball, lid, lower);
       this.face.add(holder);
       this.eyes.push({ ball, lid, lower });
     }
     this.mouthAnchor.position.set(0, 0.016, 0);
     this.face.add(this.mouthAnchor);
+  }
+
+  private coverEye: { holder: THREE.Group; ball: THREE.Mesh; lid: THREE.Mesh; lower: THREE.Mesh } | null = null;
+  private buildCoverEye(): void {
+    // in the front cover's tooled eye (texture 448 x 592, eye at 224, 380): the left board's outer face
+    const u = 0.5, v = 380 / 592;
+    const x = -(G + u * BW), z = -BH / 2 + v * BH;
+    const holder = new THREE.Group();
+    holder.position.set(x, -BT - 0.0025, z);
+    holder.rotation.x = Math.PI;           // facing out of the outer face (-y)
+    const eyeM = new THREE.MeshStandardMaterial({ map: eyeTex(), roughness: 0.1, emissive: 0x3a1c06, emissiveIntensity: 0.9 });
+    const lidM = new THREE.MeshStandardMaterial({ map: lidTex(), roughness: 0.5, side: THREE.DoubleSide });
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.0115, 20, 16), eyeM);
+    const lid = new THREE.Mesh(new THREE.SphereGeometry(0.0124, 18, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), lidM);
+    const lower = new THREE.Mesh(new THREE.SphereGeometry(0.0123, 18, 6, 0, Math.PI * 2, Math.PI * 0.62, Math.PI * 0.38), lidM);
+    lid.scale.set(1.25, 1, 0.9); lower.scale.set(1.25, 1, 0.9);
+    // the socket rim: a squashed leather ring around it
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.0128, 0.0032, 8, 24).rotateX(Math.PI / 2), lidM);
+    rim.scale.set(1.35, 0.6, 1);
+    rim.position.y = 0.0012;
+    holder.add(ball, lid, lower, rim);
+    this.leftHalf.add(holder);
+    this.coverEye = { holder, ball, lid, lower };
   }
 
   // ------------------------------------------------------------------------------------------------ tongue
@@ -628,8 +677,20 @@ export class GrimoireModel {
       e.ball.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir);
       const close = Math.max(q.blink, q.squint * 0.5);
       // the lids sit over the iris: the upper one comes down from the head side of the book
-      e.lid.rotation.set(-0.35 - 1.0 * (1 - close), 0, 0);
+      e.lid.rotation.set(-0.3 - 1.25 * (1 - close), 0, 0);
       e.lower.rotation.set(-1.2 - q.squint * 0.45, 0, 0);
+    }
+    // the cover eye: open and watching while the book is shut, shut tight once it opens
+    if (this.coverEye) {
+      const ce = this.coverEye;
+      const shut = Math.max(q.blink, smooth(clamp01(o * 2.2)));
+      const local = this.object.localToWorld(look.clone());
+      ce.holder.updateMatrixWorld();
+      const dir = ce.holder.worldToLocal(local).normalize();
+      // the iris faces the ball's +z; here the eye looks out along the holder's +y
+      ce.ball.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir.lengthSq() > 0 ? dir : new THREE.Vector3(0, 1, 0));
+      ce.lid.rotation.set(0.15 + 2.25 * (1 - shut), 0, 0);
+      ce.lower.rotation.set(1.3 + 0.45 * shut + q.squint * 0.3, 0, 0);
     }
     // tongue: hidden while the book is shut
     this.tongue.visible = o > 0.55;

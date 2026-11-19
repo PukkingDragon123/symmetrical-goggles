@@ -83,7 +83,7 @@ export class BloodDecals {
     const [nx, ny, nz] = normalAt(p.x, p.z);
     this._n.set(nx, ny, nz);
     this._q.setFromUnitVectors(new THREE.Vector3(0, 1, 0), this._n).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.random() * Math.PI * 2));
-    const s = 0.05 + amount * 0.22 * (0.7 + Math.random() * 0.6);
+    const s = 0.07 + amount * 0.26 * (0.7 + Math.random() * 0.6);
     this._s.set(s, 1, s * (0.7 + Math.random() * 0.6));
     this._m.compose(new THREE.Vector3(p.x, y + 0.015, p.z), this._q, this._s);
     this.mesh.setMatrixAt(i, this._m);

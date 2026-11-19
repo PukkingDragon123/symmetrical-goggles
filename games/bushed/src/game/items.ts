@@ -93,6 +93,7 @@ export const ITEMS: Record<string, ItemDef> = {
   eggs: { id: 'eggs', name: 'Eggs (half dozen)', desc: 'From the hens out back of the store.', price: 5, mass: 0.4, model: 'gen:eggs', pocket: true, food: { kcal: 420, raw: true } },
   bacon: { id: 'bacon', name: 'Back bacon', desc: 'Peameal, wrapped in paper.', price: 9, mass: 0.5, model: 'gen:bacon', pocket: true, food: { kcal: 900, raw: true } },
   syrup: { id: 'syrup', name: 'Maple syrup', desc: 'Dark, from the sugar shack down the highway.', price: 11, mass: 0.6, model: 'gen:syrup', pocket: true, food: { kcal: 520 } },
+  nuts: { id: 'nuts', name: 'Hazelnuts', desc: 'A paper twist of roasted hazelnuts. Squirrels will sell their souls for these.', price: 4, mass: 0.15, model: 'gen:berries', pocket: true, food: { kcal: 320 } },
   cookies: { id: 'cookies', name: 'Oatmeal cookies', desc: 'A tin of a dozen. Somebody out there has a sweet tooth.', price: 7, mass: 0.35, model: 'gen:cookies', pocket: true, food: { kcal: 600 } },
   berries: { id: 'berries', name: 'Wild blueberries', desc: 'Picked from the burn.', price: 0, sell: 6, mass: 0.2, model: 'gen:berries', pocket: true, food: { kcal: 90 } },
   chanterelle: { id: 'chanterelle', name: 'Chanterelles', desc: 'Golden, apricot-scented. The store pays well.', price: 0, sell: 14, mass: 0.2, model: 'gen:chanterelle', pocket: true, food: { kcal: 40, raw: true } },

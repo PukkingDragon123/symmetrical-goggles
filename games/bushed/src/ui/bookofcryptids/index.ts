@@ -42,11 +42,20 @@ export function install(game: any, book: BookOfCryptids = game.journal): () => v
   let prevHeld: string | null = null, holding = false;
   book.onOpenChange = (open) => {
     const arms = game.arms as ArmsInternals | null;
-    if (!arms || game.hands?.busy) return;
-    if (open) { prevHeld = game.hands?.heldItem || null; holding = true; arms.setHeld('book'); }
-    else if (holding) { holding = false; try { game.hands?.equip(prevHeld); } catch { arms.setHeld('none'); } }
+    if (!arms || game.hands?.busy || !open) return;
+    if (!holding) prevHeld = game.hands?.heldItem || null;
+    holding = true;
+    arms.setHeld('book');
+  };
+  // the hands let go once the book is down out of sight (it bites first)
+  book.onPutAway = () => {
+    const arms = game.arms as ArmsInternals | null;
+    if (!arms || !holding) return;
+    holding = false;
+    try { game.hands?.equip(prevHeld); } catch { arms.setHeld('none'); }
   };
   const tasteT = new Map<string, number>();
+  const adopted = new WeakSet<object>();
   const list = () => entries();
   const v = new THREE.Vector3(), fwd = new THREE.Vector3();
   const tick = (dt: number) => {
@@ -56,13 +65,12 @@ export function install(game: any, book: BookOfCryptids = game.journal): () => v
     cam.getWorldDirection(fwd);
     let best: { id: string; obj: THREE.Object3D; ang: number; d: number } | null = null;
     const L = list();
-    for (const [key, val] of Object.entries(game.critters as Record<string, unknown>)) {
-      const c = val as { object?: THREE.Object3D; fade?: { value: number } } | null;
-      const obj = c?.object;
-      if (!obj || !(obj instanceof THREE.Object3D)) continue;
-      const id = canonical(L, key) ?? canonical(L, key.replace(/s$/, ''));
+    for (const { key, c } of creatures(game)) {
+      const obj = c.object as THREE.Object3D;
+      const id = canonical(L, (c.id as string | undefined) ?? key) ?? canonical(L, key.replace(/s$/, ''));
       if (!id) continue;
-      if (!visibleInWorld(obj) || (c.fade && c.fade.value < 0.3)) continue;
+      if (c.rules && !adopted.has(c)) { adopted.add(c); book.adopt({ ...(c as object), id } as never); }
+      if (!visibleInWorld(obj) || (c.fade && (c.fade as { value: number }).value < 0.3)) continue;
       obj.getWorldPosition(v); v.y += 0.6;
       const d = v.distanceTo(cam.position);
       if (d > (TASTE_RANGE[id] ?? 24)) continue;
@@ -82,6 +90,20 @@ export function install(game: any, book: BookOfCryptids = game.journal): () => v
   };
   game.updaters?.push(tick);
   return () => { const i = game.updaters?.indexOf(tick) ?? -1; if (i >= 0) game.updaters.splice(i, 1); };
+}
+
+/** every creature the game knows: game.critters' fields (objects with .object, or arrays of them) and game.cryptids */
+function creatures(game: any): { key: string; c: Record<string, unknown> }[] {
+  const out: { key: string; c: Record<string, unknown> }[] = [];
+  const add = (key: string, v: unknown) => {
+    if (!v || typeof v !== 'object') return;
+    if (Array.isArray(v)) { for (const x of v) add((x as { id?: string })?.id ?? key, x); return; }
+    const c = v as Record<string, unknown>;
+    if (c.object instanceof THREE.Object3D) out.push({ key, c });
+  };
+  for (const [k, v] of Object.entries((game.critters ?? {}) as Record<string, unknown>)) if (k !== 'game') add(k, v);
+  if (game.cryptids) add('cryptids', game.cryptids);
+  return out;
 }
 
 function visibleInWorld(o: THREE.Object3D): boolean { for (let p: THREE.Object3D | null = o; p; p = p.parent) if (!p.visible) return false; return true; }
@@ -106,11 +128,11 @@ export function bookPose(arms: unknown, book?: BookOfCryptids): void {
     const b = book ?? current;
     if (!b) return;
     const H = b.hands;
-    // left hand: fingers in under the board, pointing in and up the page; palm against the back of the board
-    const fL = H.x.clone().multiplyScalar(0.75).addScaledVector(H.z, -0.45).addScaledVector(H.n, -0.2);
-    const fR = H.x.clone().multiplyScalar(-0.75).addScaledVector(H.z, -0.45).addScaledVector(H.n, -0.2);
-    a.free(p, 'L', toBody(H.L), dirBody(fL), dirBody(H.n.clone().addScaledVector(H.x, 0.35)), GRIP);
-    a.free(p, 'R', toBody(H.R), dirBody(fR), dirBody(H.n.clone().addScaledVector(H.x, -0.35)), GRIP);
+    // each hand: fingers in under its board toward the spine and up the page; palm against the back of the board
+    const fL = H.xL.clone().multiplyScalar(0.75).addScaledVector(H.z, -0.45).addScaledVector(H.nL, -0.2);
+    const fR = H.xR.clone().multiplyScalar(0.75).addScaledVector(H.z, -0.45).addScaledVector(H.nR, -0.2);
+    a.free(p, 'L', toBody(H.L), dirBody(fL), dirBody(H.nL.clone().addScaledVector(H.xL, -0.35)), GRIP);
+    a.free(p, 'R', toBody(H.R), dirBody(fR), dirBody(H.nR.clone().addScaledVector(H.xR, -0.35)), GRIP);
   };
 }
 

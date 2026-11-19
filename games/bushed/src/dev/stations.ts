@@ -44,11 +44,19 @@ async function boot(): Promise<void> {
   const cooking = installCooking(game);
   const forge = await installForge(game);
   W.__st = { game, cooking, forge };
+  // dev: a fixed camera in forge-local (or cabin-stove-local with stove=true) coordinates, for overview shots
+  (W as unknown as { __look: (p: number[], l: number[], where?: string) => void }).__look = (p, l, where = 'forge') => {
+    const frame = where === 'forge' ? forge?.place.group : cooking?.root;
+    if (!frame) return;
+    game.mode = 'cutscene';
+    const P = frame.localToWorld(new THREE.Vector3(p[0], p[1], p[2])), L = frame.localToWorld(new THREE.Vector3(l[0], l[1], l[2]));
+    game.camera.position.copy(P); game.camera.lookAt(L); game.camera.fov = 60; game.camera.updateProjectionMatrix();
+  };
   // a warm evening at the cabin, the stove going
   game.hour = Number(q.get('hour') ?? 18.2);
   game.flags.add('free');
   game.stove.lit = true; game.stove.fuel = 6; game.stove.level = 0.7; game.stove.roomTemp = 19;
-  if (q.has('full')) for (const id of ['bacon', 'eggs', 'fish', 'bannock_mix', 'berries', 'beans', 'syrup', 'coffee', 'chanterelle', 'kindling', 'iron_stock', 'tool_steel', 'axe_handle', 'coal', 'charcoal']) if (ITEMS[id]) game.give(id, 2);
+  if (q.has('full')) for (const id of ['bacon', 'eggs', 'fish', 'bannock_mix', 'berries', 'beans', 'syrup', 'coffee', 'chanterelle', 'kindling', 'iron_stock', 'tool_steel', 'axe_handle', 'charcoal']) if (ITEMS[id]) game.give(id, 1);
   game.mode = 'walk';
   const at = q.get('at');
   const go = (w: string) => {

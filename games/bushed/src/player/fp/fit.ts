@@ -83,7 +83,10 @@ export function gripStyle(s: ObjShape, kind: string): GripStyle {
   if (L > 2.2 * M && M < 0.11) return 'handle';                       // splits, files, knives, fish, kindling
   if (S < 0.035 && L < 0.32) return 'flat';                            // pouches, papers, packets
   // upright cans, jars and bottles (products are built y-up): narrow and taller than wide
-  if (s.size.y >= 0.75 * Math.max(s.size.x, s.size.z) && Math.max(s.size.x, s.size.z) < 0.095) return 'wrap';
+  const w = Math.max(s.size.x, s.size.z);
+  if (s.size.y >= 0.75 * w && w < 0.095) return 'wrap';
+  // wide tins, loaves and boxes: taken by the rim from the side (the hand stays in view, not hidden under it)
+  if (w > 0.13 && w < 0.3 && s.size.y > 0.035) return 'wrap';
   return 'cradle';
 }
 

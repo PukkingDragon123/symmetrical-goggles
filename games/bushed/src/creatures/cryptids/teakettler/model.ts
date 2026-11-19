@@ -14,10 +14,10 @@ import { furZones } from '../../fur';
 import { bonesKit, boneIndex, coat, solid, wet, finishModel, REG, type ModelGen } from '../kit';
 import type { BoneDef } from '../../rig';
 
-export const TEAKETTLER_MODEL_VERSION = 'teakettler@1';
+export const TEAKETTLER_MODEL_VERSION = 'teakettler@3';
 export const TK_HEAD: V3 = [0, 0.33, 0.21];
-export const TK_EYE: V3 = [0.038, 0.348, 0.283];
-export const TK_EYE_AX: V3 = [0.55, 0.12, 0.83];
+export const TK_EYE: V3 = [0.046, 0.35, 0.29];
+export const TK_EYE_AX: V3 = [0.5, 0.12, 0.86];
 /** where the steam comes out (the nostrils, creature space) */
 export const TK_NOSTRIL: V3 = [0.012, 0.318, 0.37];
 const TAIL_CTRL: V3[] = [[0, 0.27, -0.19], [0, 0.36, -0.24], [0, 0.45, -0.19], [0, 0.49, -0.09], [0, 0.47, 0.01], [0, 0.42, 0.06]];
@@ -47,7 +47,7 @@ export function teakettlerBones(): BoneDef[] {
 }
 
 // ------------------------------------------------------------------------------------------------ paint
-const GINGER = RP('rust'), COPPER = RP('copper'), CREAM = RP('straw'), SOOT = RP('basalt'), NOSE = RP('leather');
+const GINGER = RP('rust'), COPPER = RP('copper'), CREAM = RP('sand'), SOOT = RP('basalt'), NOSE = RP('leather');
 /** the coat: ginger-copper with darker ticking along the back, a cream belly and bib, soot-black socks */
 const coatPaint = (part: 'body' | 'leg' | 'tail' | 'head' | 'ear') => coat({
   lightK: 0.85,
@@ -65,11 +65,11 @@ const coatPaint = (part: 'body' | 'leg' | 'tail' | 'head' | 'ear') => coat({
     }
     if (part === 'head') {
       // the soot mask: dark round the snout and the nostrils, fading back between the eyes
-      const hz = z - TK_HEAD[2], sootK = cl((hz - 0.08) * 14, 0, 1) + (Math.abs(x) < 0.025 && y > TK_HEAD[1] - 0.02 ? cl((hz - 0.03) * 8, 0, 0.6) : 0);
-      if (sootK > 0.5 + m * 0.3) { R = SOOT; st = 2 + m * 0.8; }
-      // pale eyebrows (the shy look), cheek tufts
-      const ed = Math.hypot(Math.abs(x) - TK_EYE[0], y - TK_EYE[1] - 0.024, (z - TK_EYE[2]) * 0.6);
-      if (ed < 0.012 && R !== SOOT) { R = CREAM; st = 4; }
+      const hz = z - TK_HEAD[2], sootK = cl((hz - 0.1) * 16, 0, 1) + (Math.abs(x) < 0.016 && y > TK_HEAD[1] - 0.01 ? cl((hz - 0.06) * 8, 0, 0.5) : 0);
+      // a cream ring round each eye (so the dark eyes read against the ginger), soot only on the snout
+      const er = Math.hypot(Math.abs(x) - TK_EYE[0], y - TK_EYE[1], (z - TK_EYE[2]) * 0.8);
+      if (er < 0.026) { R = CREAM; st = 4.2 + m * 0.4; }
+      else if (sootK > 0.5 + m * 0.3) { R = SOOT; st = 2 + m * 0.8; }
     }
     if (part === 'ear') { if (nx * Math.sign(x) < -0.2 || nz2(x * 99, y * 99) > 2) { R = RP('coral'); st = 3.6 + m * 0.5; } else if (y > 0.43) { R = SOOT; st = 2.2; } }
     px.put(i, R, st); px.rough[i] = 235;
@@ -127,8 +127,8 @@ export function* teakettlerModelGen(o: { page?: number; den?: number } = {}): Mo
   // big shy eyes, pale-browed lids
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(TK_EYE, s), ax: V3 = [s * TK_EYE_AX[0], TK_EYE_AX[1], TK_EYE_AX[2]];
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: 0.019, bone: bi('eye' + S), iris: RP('fur'), pupil: 'round', pupilR: 0.62, irisA: 0.92, sclera: RP('ink'), k: 3.4, levels: 1, around: 12, catchlight: { side: s, at: [0.35, 0.45] } })).reg = REG.eye;
-    body.add(eyelid({ name: 'lid' + S, c, ax, r: 0.019, bone: bi('lid' + S), paint: lidPaint, cover: 0.85, root: 2.2 })).reg = REG.head;
+    body.add(eyeball({ name: 'eye' + S, c, ax, r: 0.021, bone: bi('eye' + S), iris: RP('fur'), pupil: 'round', pupilR: 0.62, irisA: 0.92, sclera: RP('ink'), k: 3.4, levels: 1, around: 12, catchlight: { side: s, at: [0.35, 0.45] } })).reg = REG.eye;
+    body.add(eyelid({ name: 'lid' + S, c, ax, r: 0.021, bone: bi('lid' + S), paint: lidPaint, cover: 0.85, root: 2.2 })).reg = REG.head;
     // round cat ears
     const er: V3 = [s * 0.04, 0.37, 0.205];
     body.add(stalk({ name: 'ear' + S, path: curve([er, [s * 0.052, 0.4, 0.204], [s * 0.062, 0.428, 0.2], [s * 0.066, 0.446, 0.198]], 5), r: (t) => 0.026 * Math.sqrt(Math.max(0.02, 1 - t * t)) + 0.002, around: 10, up: [0, 0, 1],

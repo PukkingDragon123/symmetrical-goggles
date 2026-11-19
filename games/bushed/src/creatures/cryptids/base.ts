@@ -179,10 +179,16 @@ export abstract class Cryptid implements NewCryptid {
   protected postIK(_p: Pose) { /* */ }
   protected after(_ctx: CreatureCtx, _dt: number) { /* */ }
 
-  protected go(s: string) { if (s !== this.state) { this.state = s; this.st = 0; this.hold = null; } }
-  /** a one-shot clip, held until it ends */
-  protected once(clip: string) { this.hold = clip; this.anim.play(clip, { restart: true }); }
-  protected get holdDone() { return this.anim.current === this.hold && this.anim.done; }
+  protected go(s: string) { if (s !== this.state) { this.state = s; this.st = 0; this.hold = null; this.holdEnd = -1; } }
+  /** when the held one-shot ends (creature seconds; -1 for a held loop) */
+  protected holdEnd = -1;
+  /** a one-shot clip, held until it ends (then the hold lets go by itself) */
+  protected once(clip: string) { this.hold = clip; this.holdEnd = this.t + this.anim.clips[clip].dur; this.anim.play(clip, { restart: true }); }
+  /** hold a one-shot that is already playing (an animator `next`), without restarting it */
+  protected holdClip(clip: string) { this.hold = clip; this.holdEnd = this.t + this.anim.clips[clip].dur; this.anim.play(clip); }
+  protected get holdDone() { return this.hold !== null && this.holdEnd >= 0 && this.t >= this.holdEnd; }
+  /** raise trust; true the moment it reaches 1 (befriended) */
+  protected gainTrust(k: number) { const was = this.trust; this.trust = Math.min(1, this.trust + k); return was < 1 && this.trust >= 1; }
   protected emit(ev: string, extra: Record<string, unknown> = {}) {
     this.ctx?.emit(ev, { pos: this.object.position.clone(), who: this.id, sound: this.sounds[ev], ...extra });
   }
@@ -223,6 +229,9 @@ export abstract class Cryptid implements NewCryptid {
 
   protected animate(ctx: CreatureCtx, dt: number) {
     const a = this.params, sp = this.speed;
+    // a finished one-shot lets go (its `next` clip or the locomotion takes over)
+    if (this.hold && this.holdEnd >= 0 && this.t > this.holdEnd + 0.1) { this.hold = null; this.holdEnd = -1; }
+    if (this.hold && this.holdEnd < 0 && !this.anim.clips[this.hold]?.loop) this.holdEnd = this.t + (this.anim.clips[this.hold]?.dur ?? 0) - this.anim.time;
     const clip = this.manual ?? this.hold ?? this.clipFor(sp);
     this.anim.play(clip);
     const cur = this.anim.current, str = this.stride[cur];

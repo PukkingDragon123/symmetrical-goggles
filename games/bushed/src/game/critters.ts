@@ -8,6 +8,7 @@ import { SPOTS, heightAt } from '../world/layout';
 import { audio } from '../audio/audio';
 import { SOUNDS } from '../audio/bank';
 import { hud } from '../ui/hud';
+import { floatText } from '../ui/float';
 import { makePhysical, propsNear, removeProp } from './physprops';
 import { ITEMS } from './items';
 import { anchorPos } from './flow';
@@ -29,6 +30,8 @@ export class Critters {
   bigfoot: Bigfoot | null = null;
   gumberoo: Gumberoo | null = null;
   dingbats: DingbatRoost | null = null;
+  /** more cryptids plugged in by other modules: { id, object, offer, update } */
+  readonly extra: { id: string; object: THREE.Object3D; offer(i: string): boolean; update(ctx: CreatureCtx): void }[] = [];
   granny: GrannyTamarack | null = null;
   wildlife: Wildlife | null = null;
   readonly items: GroundItem[] = [];
@@ -44,19 +47,22 @@ export class Critters {
   private offerT = 5;
 
   constructor(private game: Game) {
+    // any food held out goes to the creature you're looking at; each one has a favourite (see its offer())
     game.events.on('offer', (o: { item: string; obj: THREE.Object3D; taken: boolean }) => {
-      if (o.item === 'cookies' && this.granny) {
-        for (let p: THREE.Object3D | null = o.obj; p; p = p.parent) if (p === this.granny.object) { if (this.granny.offer('cookies')) o.taken = true; return; }
-        return;
-      }
-      if (!this.hound) return;
-      for (let p: THREE.Object3D | null = o.obj; p; p = p.parent) if (p === this.hound.object) {
-        if (this.hound.offer('jerky')) {
-          o.taken = true;
-          this.kindness = Math.min(1, this.kindness + 0.25);
-          game.journal.learn('hound', 'jerky');
-          if (this.introActive) game.flags.add('hound_fed');
-        }
+      const within = (root: THREE.Object3D | undefined) => { for (let p: THREE.Object3D | null = o.obj; p; p = p.parent) if (p === root) return true; return false; };
+      const item = o.item === 'syrup' ? 'maple_syrup' : o.item;
+      const targets: [string, { object: THREE.Object3D; offer(i: string): boolean } | null][] = [
+        ['hound', this.hound], ['bigfoot', this.bigfoot as never], ['granny', this.granny], ['gumberoo', this.gumberoo as never],
+        ['dingbat', this.dingbats as never], ['wildlife', this.wildlife as never], ...this.extra.map((c) => [c.id, c] as [string, never]),
+      ];
+      for (const [id, c] of targets) {
+        if (!c || !within(c.object)) continue;
+        if (!c.offer(item)) { hud.say(`<i>It sniffs the ${o.item} and turns away.</i>`, 2.5); return; }
+        o.taken = true;
+        this.kindness = Math.min(1, this.kindness + 0.2);
+        game.journal.sawCritter(id);
+        game.journal.learn(id, 'food');
+        if (id === 'hound') { game.journal.learn('hound', 'jerky'); if (this.introActive) game.flags.add('hound_fed'); }
         return;
       }
     });
@@ -164,7 +170,8 @@ export class Critters {
     const who = data?.who as string | undefined;
     const table = (who === 'gumberoo' ? GUMBEROO_SOUND : who === 'bigfoot' ? BIGFOOT_SOUND : who === 'dingbat' ? DINGBAT_SOUND : who === 'granny' ? GRANNY_SOUND : who === 'hound' || !who ? HOUND_SOUND : {}) as Record<string, string | undefined>;
     const snd = data?.sound as string | undefined ?? table[ev];
-    playSound(snd, pos);
+    playSound(snd ?? ({ eat: who === 'hound' ? 'hound_chew' : 'eat_crunch', chew: who === 'hound' ? 'hound_chew' : 'eat_chew', happy: who === 'hound' ? 'hound_yip' : who === 'bigfoot' ? 'bigfoot_grunt' : who === 'gumberoo' ? 'gumberoo_squeak' : undefined, shake: 'foliage_rustle' } as Record<string, string | undefined>)[ev], pos);
+    if (ev === 'happy') floatText.pop('♥', pos.clone().add(new THREE.Vector3(0, 1.2, 0)), '#ffb0a0');
     const jr = this.game.journal;
     if (who === 'dingbat' && ev === 'screech') jr.sawCritter('dingbat');
     if (who === 'granny') {
@@ -312,6 +319,7 @@ export class Critters {
       if (d < 260) this.gumberoo.update(ctx);
     }
     this.wildlife?.update(ctx);
+    for (const c of this.extra) c.update(ctx);
     if (this.dingbats) { const d = this.dingbats.object.position.distanceTo(g.player.pos); this.dingbats.object.visible = d < 120; if (d < 120) this.dingbats.update(ctx); }
     if (this.granny) this.granny.update(ctx);
     // food left out by the hollow is gone by morning: the big one noticed

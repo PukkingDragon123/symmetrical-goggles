@@ -16,10 +16,10 @@ export const PANTRY = { x0: -0.74, x1: -0.38, z0: -0.04, z1: 0.4, y: 0.74 };
 export function ensureCookMats(): void {
   if (hasMat('castiron')) return;
   const iron = placeTex('iron'), ironN = placeTex('iron', true);
-  defineMat('castiron', new THREE.MeshStandardMaterial({ name: 'castiron', map: iron, normalMap: ironN, color: 0x7a7470, roughness: 0.42, metalness: 0.45 }));
-  defineMat('castiron_in', new THREE.MeshStandardMaterial({ name: 'castiron_in', map: iron, normalMap: ironN, color: 0x5a5450, roughness: 0.32, metalness: 0.5 }));
-  defineMat('steel', new THREE.MeshStandardMaterial({ name: 'steel', map: placeTex('galv'), color: 0xd8d8d6, roughness: 0.32, metalness: 0.72 }));
-  defineMat('brass', new THREE.MeshStandardMaterial({ name: 'brass', color: 0xb08a48, roughness: 0.35, metalness: 0.8 }));
+  defineMat('castiron', new THREE.MeshStandardMaterial({ name: 'castiron', map: iron, normalMap: ironN, color: 0x8a8480, roughness: 0.45, metalness: 0.25 }));
+  defineMat('castiron_in', new THREE.MeshStandardMaterial({ name: 'castiron_in', map: iron, normalMap: ironN, color: 0x6a6460, roughness: 0.35, metalness: 0.3 }));
+  defineMat('steel', new THREE.MeshStandardMaterial({ name: 'steel', map: placeTex('galv'), color: 0xe0e0de, roughness: 0.3, metalness: 0.4 }));
+  defineMat('brass', new THREE.MeshStandardMaterial({ name: 'brass', color: 0xc09a58, roughness: 0.35, metalness: 0.4 }));
   defineMat('lard', new THREE.MeshStandardMaterial({ name: 'lard', color: 0xf2ece0, roughness: 0.55 }));
   defineMat('handle_wood', new THREE.MeshStandardMaterial({ name: 'handle_wood', map: placeTex('board_warm'), color: 0x8a6a50, roughness: 0.6 }));
 }

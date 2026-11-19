@@ -12,7 +12,7 @@
 // turn, update. Save data keeps the journal's shape ([critter, rules[]][]) with extra '@' rows for the rest.
 import * as THREE from 'three';
 import { GrimoireModel, restPose, PAGE, type BookPose } from './model';
-import { entries, canonical, type Entry } from './bestiary';
+import { entries, canonical, ruleId, adoptInto, type Entry, type Adoptable } from './bestiary';
 import { layout, paintPage, PAGE_W, PAGE_H, type BookView, type PageKind, type Painted, type Region } from './pages';
 import { Pix } from './pix';
 import type { Contract } from '../../game/contracts';
@@ -67,8 +67,11 @@ export class BookOfCryptids {
   onOpenChange: ((open: boolean) => void) | null = null;
 
   private openFlag = false;
-  private o = 0;              // animated openness 0..1
+  private o = 0;              // animated openness 0..1 (the jaw)
   private oVel = 0;
+  private r = 0;              // raised 0 (put away) .. 1 (held up)
+  private holdUp = 0;
+  private yawnDue = false;
   private list: Entry[] = entries();
   private known = new Map<string, Set<string>>();
   private seen = new Set<string>();
@@ -94,7 +97,10 @@ export class BookOfCryptids {
   private lookHold = 0;
   private cam: { camera: THREE.PerspectiveCamera; viewCam: THREE.PerspectiveCamera } | null = null;
   /** hand targets for the FP arms (view space), refreshed every frame */
-  readonly hands = { L: new THREE.Vector3(), R: new THREE.Vector3(), x: new THREE.Vector3(), n: new THREE.Vector3(), z: new THREE.Vector3() };
+  readonly hands = { L: new THREE.Vector3(), R: new THREE.Vector3(), xL: new THREE.Vector3(), xR: new THREE.Vector3(), nL: new THREE.Vector3(), nR: new THREE.Vector3(), z: new THREE.Vector3() };
+  private handF = { L: { p: new THREE.Vector3(), x: new THREE.Vector3(), n: new THREE.Vector3() }, R: { p: new THREE.Vector3(), x: new THREE.Vector3(), n: new THREE.Vector3() } };
+  /** fired once the book has been lowered out of sight after shutting (give the hands back) */
+  onPutAway: (() => void) | null = null;
 
   constructor() {
     this.object.name = 'BookOfCryptids';
@@ -109,15 +115,16 @@ export class BookOfCryptids {
   // ------------------------------------------------------------------------------------------------ journal API
   get open(): boolean { return this.openFlag; }
 
-  learn(critter: string, rule: string): boolean {
+  learn(critter: string, rule: string | number, o: { silent?: boolean } = {}): boolean {
     const id = canonical(this.list, critter) ?? critter;
+    rule = ruleId(this.list.find((x) => x.id === id), rule);
     let s = this.known.get(id);
     if (!s) { s = new Set(); this.known.set(id, s); }
     if (s.has(rule)) return false;
     s.add(rule);
     this.seen.add(id);
     const e = this.list.find((x) => x.id === id);
-    if (e && e.rules.some((r) => r.id === rule)) {
+    if (e && e.rules.some((r) => r.id === rule) && !o.silent) {
       this.pendingWrites.push({
         id, keys: [`rule:${id}:${rule}`],
         before: (v) => ({ ...v, known: new Map([...v.known].map(([k, ss]) => [k, k === id ? new Set([...ss].filter((x) => x !== rule)) : ss])) }),
@@ -135,7 +142,19 @@ export class BookOfCryptids {
     this.invalidate();
   }
 
-  knows(critter: string, rule: string): boolean { return this.known.get(canonical(this.list, critter) ?? critter)?.has(rule) ?? false; }
+  knows(critter: string, rule: string | number): boolean {
+    const id = canonical(this.list, critter) ?? critter;
+    return this.known.get(id)?.has(ruleId(this.list.find((x) => x.id === id), rule)) ?? false;
+  }
+
+  /** take a live creature's own rules and favourite food (src/creatures/cryptids instances); install() does this */
+  adopt(c: Adoptable): void {
+    const id = canonical(this.list, c.id) ?? c.id;
+    this.adopted.set(id, c);
+    const e = this.list.find((x) => x.id === id);
+    if (e) { adoptInto(e, c); this.pages = []; this.rebuild(); }
+  }
+  private adopted = new Map<string, Adoptable>();
 
   /** has the Book tasted it (a full entry with portrait)? */
   tastedIt(id: string): boolean { return this.tasted.has(canonical(this.list, id) ?? id); }
@@ -183,6 +202,7 @@ export class BookOfCryptids {
   /** re-read the cryptid list, contracts and state; repaint */
   rebuild(): void {
     this.list = entries();
+    for (const [id, c] of this.adopted) { const e = this.list.find((x) => x.id === id); if (e) adoptInto(e, c); }
     for (const e of this.list) if (!this.known.has(e.id)) this.known.set(e.id, new Set());
     this.pages = layout(this.view());
     this.page = Math.min(this.page, Math.max(0, this.pages.length - 2)) & ~1;
@@ -193,15 +213,15 @@ export class BookOfCryptids {
     this.openFlag = !this.openFlag;
     if (this.openFlag) {
       this.rebuild();
-      this.play('yawn', 0.55);
+      this.yawnDue = true;
       this.sfx('page_turn', 0.5, 0.7);
-      this.sfx('hound_growl', 0.18, 1.9);
       // something new to write: go straight there
       if (this.pendingWrites.length) this.page = this.spreadOf(this.pendingWrites[0].id);
       else if (Math.random() < 0.35) this.say(pick(LINES.open), 2.4);
       this.grumbleIn = 14 + Math.random() * 20;
     } else {
       this.play('snap', 0.22);
+      this.holdUp = 0.42;
       this.turnT = null; this.turnQueue = [];
       this.writing = [];
     }
@@ -350,21 +370,27 @@ export class BookOfCryptids {
     for (const a of this.anims) a.t += dt;
     if (this.events.length) { const due = this.events.filter((e) => e.at <= this.t); this.events = this.events.filter((e) => e.at > this.t); for (const e of due) e.f(); }
     this.anims = this.anims.filter((a) => a.t < a.dur);
-    // openness: a spring with a hitch (the yawn) when opening, a fast snap with a bounce when shutting
-    const target = this.openFlag ? 1 : 0;
+    // raising: the book comes up shut, cover toward you; after it shuts it stays up a moment (the bite), then drops
+    const wantUp = this.openFlag || this.holdUp > 0;
+    this.holdUp = Math.max(0, this.holdUp - dt);
+    this.r += ((wantUp ? 1 : 0) - this.r) * Math.min(1, dt * (wantUp ? 9 : 6));
+    if (this.openFlag && this.r > 0.78 && this.yawnDue) { this.yawnDue = false; this.play('yawn', 0.6); this.sfx('hound_growl', 0.18, 1.9); }
+    // openness (the jaw): a spring with a hitch (the yawn) when opening, a fast snap with a bounce when shutting
     const yawn = this.animK('yawn');
     if (this.openFlag) {
-      const goal = yawn > 0 && yawn < 0.55 ? 0.42 : 1;
-      this.oVel += ((goal - this.o) * 90 - this.oVel * 13) * dt;
+      const goal = this.yawnDue ? 0 : yawn > 0 && yawn < 0.5 ? 0.38 : 1;
+      this.oVel += ((goal - this.o) * 110 - this.oVel * 14) * dt;
     } else {
-      this.oVel += ((target - this.o) * 420 - this.oVel * 22) * dt;
+      this.oVel += ((0 - this.o) * 520 - this.oVel * 24) * dt;
     }
-    const was = this.o;
     this.o += this.oVel * dt;
-    if (this.o < 0) { if (this.oVel < -1.5 && !this.openFlag) { this.sfx('door_shut', 0.35, 2.4); this.sfx('eat_crunch', 0.35, 1.3); this.play('chomp', 0.35); } this.o = 0; this.oVel = Math.abs(this.oVel) * 0.18; }
+    if (this.o < 0) {
+      if (this.oVel < -1.5 && !this.openFlag) { this.sfx('door_shut', 0.35, 2.4); this.sfx('eat_crunch', 0.35, 1.3); this.play('chomp', 0.35); }
+      this.o = 0; this.oVel = Math.abs(this.oVel) * 0.22;
+    }
     if (this.o > 1) { this.o = 1; this.oVel = 0; }
-    void was;
-    const vis = this.o > 0.001 || this.openFlag || this.animK('chomp') > 0;
+    const vis = this.r > 0.01;
+    if (!vis && this.object.visible && !this.openFlag) this.onPutAway?.();
     this.object.visible = vis;
     this.place(dt);
     if (!vis) return;
@@ -445,8 +471,8 @@ export class BookOfCryptids {
 
   /** viewmodel placement: shut and low when put away; open, either held up to read or lowered toward a critter */
   private place(dt: number): void {
-    const o = this.o, k = Math.min(1, o * 1.4);
-    const rise = THREE.MathUtils.smoothstep(k, 0, 1);
+    const o = this.o;
+    const rise = THREE.MathUtils.smoothstep(this.r, 0, 1);
     const chomp = this.animK('chomp');
     const bob = Math.sin(this.t * 1.35) * 0.0015 * rise;
     this.aimK += ((this.tasting > 0.02 || this.animK('taste') > 0 ? 1 : this.aim) - this.aimK) * Math.min(1, dt * 4);
@@ -454,26 +480,30 @@ export class BookOfCryptids {
     // read: the spread fills most of the view, tipped back a little; aim: lower, flatter, the world above it
     const ry = THREE.MathUtils.lerp(-0.006, -0.2, a), rz = THREE.MathUtils.lerp(-0.268, -0.36, a), rx = THREE.MathUtils.lerp(1.34, 0.8, a);
     const y = THREE.MathUtils.lerp(-0.5, ry, rise) + bob + chomp * 0.015 * Math.sin(chomp * Math.PI * 3);
-    this.object.position.set(0, y, THREE.MathUtils.lerp(-0.34, rz, rise));
+    this.object.position.set(0, y - (1 - THREE.MathUtils.smoothstep(o, 0, 1)) * 0.02, THREE.MathUtils.lerp(-0.34, rz, rise) - (1 - o) * 0.04);
     // when shut, it lies front cover up in the hands
     this.object.rotation.set(THREE.MathUtils.lerp(0.55, rx, rise) + this.animK('grumble') * 0.01 * Math.sin(this.t * 37), 0, 0);
     // centre the spread: the book's x = 0 is the spine; when shut, slide so the cover is centred
-    this.model.object.position.x = -(1 - THREE.MathUtils.smoothstep(o, 0, 0.6)) * (PAGE.w * 0.55);
+    this.model.object.position.x = -(1 - THREE.MathUtils.smoothstep(o, 0, 0.7)) * (PAGE.w * 0.58);
     this.object.updateMatrixWorld(true);
-    // hand targets: under the outer edges of the boards, a little below the middle
+    // hand targets: under the fore-edge of each board, following the covers as they swing
     const m = this.object.matrixWorld;
-    const half = THREE.MathUtils.lerp(PAGE.w * 0.62, PAGE.w + 0.012, THREE.MathUtils.smoothstep(o, 0.3, 1));
-    this.hands.x.set(1, 0, 0).transformDirection(m);
-    this.hands.n.set(0, 1, 0).transformDirection(m);
+    this.model.object.updateMatrixWorld(true);
+    const mm = this.model.object.matrixWorld;
+    for (const side of ['L', 'R'] as const) {
+      const f = this.handF[side];
+      this.model.handFrame(side, f, o);
+      this.hands[side].copy(f.p).applyMatrix4(mm);
+      this.hands[side === 'L' ? 'xL' : 'xR'].copy(f.x).transformDirection(mm);
+      this.hands[side === 'L' ? 'nL' : 'nR'].copy(f.n).transformDirection(mm);
+    }
     this.hands.z.set(0, 0, 1).transformDirection(m);
-    this.hands.L.set(-half + this.model.object.position.x, -0.012, 0.05).applyMatrix4(m);
-    this.hands.R.set(half + this.model.object.position.x, -0.012, 0.05).applyMatrix4(m);
     // the speech anchor: above the head of the book, as seen through the main camera
     if (this.cam) {
       const top = new THREE.Vector3(0, 0.01, -PAGE.h / 2 - 0.01).applyMatrix4(m);
       if (!this.object.visible) top.set(0, -0.3, -0.5);
       const fv = THREE.MathUtils.degToRad(this.cam.viewCam.fov) / 2, fm = THREE.MathUtils.degToRad(this.cam.camera.fov) / 2;
-      const nx = top.x / -top.z / Math.tan(fv), ny = Math.min(0.82, top.y / -top.z / Math.tan(fv));
+      const nx = top.x / -top.z / Math.tan(fv), ny = Math.min(0.58, top.y / -top.z / Math.tan(fv));
       this.anchor.position.set(nx * Math.tan(fm), ny * Math.tan(fm), -1);
     }
   }

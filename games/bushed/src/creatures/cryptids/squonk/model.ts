@@ -14,7 +14,7 @@ import { fbm3, nz2 } from '../../paintkit';
 import { bonesKit, boneIndex, coat, solid, warts, wet, finishModel, REG, type ModelGen } from '../kit';
 import type { BoneDef } from '../../rig';
 
-export const SQUONK_MODEL_VERSION = 'squonk@4';
+export const SQUONK_MODEL_VERSION = 'squonk@5';
 export const SQ_HEAD: V3 = [0, 0.37, 0.24];
 export const SQ_EYE: V3 = [0.058, 0.42, 0.38];
 export const SQ_EYE_AX: V3 = [0.36, 0.06, 0.93];
@@ -190,10 +190,10 @@ export function* squonkModelGen(o: { page?: number; den?: number } = {}): ModelG
     body.add(sac({ name: 'tear' + S, at: tc, n: [s * 0.4, -0.1, 1], up: [0, 1, 0], r: [0.0065, 0.008, 0.0065], skin: () => [bi('tear' + S), 1], paint: dropPaint, sink: 0.2, levels: 1, k: 2.5 })).noOcc = true;
     // long basset ears hanging from the sides of the head: flat, thick-edged, curled a little at the tips
     const root: V3 = [s * 0.1, 0.46, 0.25];
-    const path = curve([root, [s * 0.135, 0.455, 0.252], [s * 0.152, 0.41, 0.258], [s * 0.158, 0.33, 0.266], [s * 0.152, 0.25, 0.27]], 7);
+    const path = curve([root, [s * 0.128, 0.455, 0.252], [s * 0.14, 0.41, 0.258], [s * 0.143, 0.33, 0.268], [s * 0.138, 0.25, 0.274]], 7);
     const earSkin = chainSkin([root, [s * 0.155, 0.37, 0.26], [s * 0.15, 0.22, 0.27]], [bi('ear' + S), bi('ear2' + S)], 0.4);
-    const ear = body.add(stalk({ name: 'ear' + S, path, r: (t) => 0.05 * (t < 0.15 ? 0.6 + t * 2.6 : 1 - (t - 0.15) * 0.3), around: 12, up: [0, 0, 1],
-      sec: (a) => 1 / Math.sqrt((Math.sin(a) / 0.3) ** 2 + Math.cos(a) ** 2), capS: true, capE: true, levels: 1, k: 1.3, skin: (p) => (p[1] > 0.43 ? [hb, 0.6, bi('ear' + S), 0.4] : earSkin(p)), paint: skinPaint('ear') }));
+    const ear = body.add(stalk({ name: 'ear' + S, path, r: (t) => 0.058 * (t < 0.15 ? 0.6 + t * 2.6 : 1 - (t - 0.15) * 0.25), around: 12, up: [0, 0, 1],
+      sec: (a) => 1 / Math.sqrt((Math.sin(a) / 0.18) ** 2 + Math.cos(a) ** 2), capS: true, capE: true, levels: 1, k: 1.3, skin: (p) => (p[1] > 0.43 ? [hb, 0.6, bi('ear' + S), 0.4] : earSkin(p)), paint: skinPaint('ear') }));
     ear.reg = REG.head;
   }
   yield 'head';

@@ -365,7 +365,7 @@ function clawPaint(ch: Chart, _p: Piece, b: Body) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const HOUND_MODEL_VERSION = 'hound@4';
+export const HOUND_MODEL_VERSION = 'hound@5';
 export interface HoundModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */

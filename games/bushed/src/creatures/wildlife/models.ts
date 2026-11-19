@@ -11,7 +11,7 @@ import { furZones } from '../fur/paint';
 export type Species = 'squirrel' | 'hare' | 'raven' | 'jay' | 'chickadee' | 'grouse';
 export const BIRDS: Species[] = ['raven', 'jay', 'chickadee', 'grouse'];
 export interface WildModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number }
-export const WILD_MODEL_VERSION = 'wild@3';
+export const WILD_MODEL_VERSION = 'wild@4';
 /** fur lengths (m) at fur-page length 1: the squirrel's coat and the hare's (src/creatures/fur) */
 export const WILD_FUR_LEN: Partial<Record<Species, number>> = { squirrel: 0.022, hare: 0.026 };
 const WILD_FUR = {

@@ -232,7 +232,7 @@ export class Hodag extends Cryptid {
           } else {
             const toP = _v.set(P.pos.x - this.pos.x, 0, P.pos.z - this.pos.z).normalize();
             this.once('gore'); this.emit('gore', { damage: 0.35, impulse: new THREE.Vector3(toP.x * 8, 4, toP.z * 8) });
-            this.provoked = false; this.bluffs = 0; this.go('retreat'); this.hold = 'gore';
+            this.provoked = false; this.bluffs = 0; this.go('retreat'); this.once('gore');
           }
         } else if (this.st > 6 || !inYard) { this.arrive = 0.35; this.go('warn'); }
         break;
@@ -254,9 +254,9 @@ export class Hodag extends Cryptid {
       case 'eat': {
         this.want = 0;
         if (this.holdDone || this.st > 4) {
-          this.trust = Math.min(1, this.trust + 0.5); this.calmUntil = ctx.time + 900; this.bluffs = 0; this.provoked = false;
+          const now = this.gainTrust(0.5); this.calmUntil = ctx.time + 900; this.bluffs = 0; this.provoked = false;
           this.go(this.trust >= 1 ? 'friend' : 'content'); this.once('happy'); this.emit('happy');
-          if (this.trust >= 1) this.emit('befriended');
+          if (now) this.emit('befriended');
         }
         break;
       }

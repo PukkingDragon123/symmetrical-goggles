@@ -116,7 +116,10 @@ let aim = 0, swingCharge = 0;
 
 // ------------------------------------------------------------------ item models, exactly as game.toolModel() makes them
 const gltf = new GLTFLoader();
+const cache = new Map<string, THREE.Object3D | null>();
+async function preload(id: string) { if (!cache.has(id)) cache.set(id, await modelFor(id)); }
 async function modelFor(id: string): Promise<THREE.Object3D | null> {
+  if (cache.has(id)) { const c = cache.get(id); cache.delete(id); return c ?? null; }
   const def = ITEMS[id];
   if (!def) return null;
   let m: THREE.Object3D;
@@ -162,6 +165,12 @@ async function hold(id: string | null, instant = false) {
   handsStub.held.kind = ITEMS[id]?.tool ? 'tool' : 'item';
   arms.setHeld(kindFor(id), m ?? undefined, { instant });
 }
+/** equip synchronously from the preloaded cache (scripted slot switches) */
+function holdNow(id: string) {
+  const m = cache.get(id) ?? null; cache.delete(id);
+  heldId = id; handsStub.held.kind = ITEMS[id]?.tool ? 'tool' : 'item';
+  arms.setHeld(kindFor(id), m ?? undefined);
+}
 async function holdKind(kind: HeldKind) {
   handsStub.held.kind = kind === 'two_hand' ? 'carry' : kind === 'log' || kind === 'drag' ? 'drag' : 'item';
   if (kind === 'two_hand') {
@@ -199,9 +208,13 @@ function scenario() {
   for (const k of keys) keyDown(k);
   if (Q.has('jump')) script.push({ t: num('jump', 0.3), f: () => { keyDown('Space'); script.push({ t: simT + 0.05, f: () => keyUp('Space') }); } });
   if (Q.has('action')) script.push({ t: num('at', 0.2), f: () => arms.play(Q.get('action') as ArmsAction, { power: 1 }) });
-  if (Q.has('switch')) script.push({ t: num('at', 0.6), f: () => { void hold(Q.get('switch')); } });
+  if (Q.has('switch')) script.push({ t: num('at', 0.6), f: () => { holdNow(Q.get('switch')!); } });
   if (Q.has('reach')) {
     const o = props[Q.get('reach')!];
+    // look at it first, the way you would to use it
+    const look = o.position.clone().sub(new THREE.Vector3(player.pos.x, player.pos.y + 1.66, player.pos.z));
+    player.yaw = Math.atan2(-look.x, -look.z);
+    player.pitch = Math.atan2(look.y, Math.hypot(look.x, look.z));
     script.push({ t: num('at', 0.3), f: () => {
       const p = o.position.clone().add(new THREE.Vector3(0, 0.05, 0.22 + (o === props.door ? -0.19 : 0)));
       if (o === props.register) p.y += 0.06;
@@ -285,6 +298,7 @@ async function main() {
   if (SHOT) input.locked = true;
   // what to hold
   if (Q.has('item')) await hold(Q.get('item'), true);
+  if (Q.has('switch')) await preload(Q.get('switch')!);
   else if (Q.has('kind')) await holdKind(Q.get('kind') as HeldKind);
   // label atlases and prop textures load asynchronously: give them a moment before a shot
   if (SHOT) await new Promise((r) => setTimeout(r, 900));

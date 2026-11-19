@@ -15,7 +15,7 @@ import { furZones, type FurZone } from '../../fur';
 import { bonesKit, boneIndex, coat, solid, wet, finishModel, REG, type ModelGen } from '../kit';
 import type { BoneDef } from '../../rig';
 
-export const HIDEBEHIND_MODEL_VERSION = 'hidebehind@3';
+export const HIDEBEHIND_MODEL_VERSION = 'hidebehind@4';
 export const HB_HEAD: V3 = [0, 2.3, 0.31];
 export const HB_EYE: V3 = [0.05, 2.338, 0.425];
 export const HB_EYE_AX: V3 = [0.5, 0.1, 0.86];
@@ -65,9 +65,9 @@ function facePaint(part: 'skull' | 'jaw') {
       // the back of the head and the neck: fur (the mane)
       const face = nz > 0.05 && z > 0.06 && !(ny > 0.55 && z < 0.12);
       if (!face) { px.put(i, DARK, 1.2 + fbm3(X * 6, Y * 6, Z * 6, 2) * 0.8); px.rough[i] = 240; return 1; }
-      if (part === 'jaw' && ny > 0.6) { px.put(i, GUM, 1.4 - cl((0.2 - z) * 6, 0, 1.2)); px.rough[i] = 50; return 0; }
-      if (part === 'skull' && ny < -0.6 && y < -0.02) { px.put(i, GUM, 1.2 - cl((0.2 - z) * 6, 0, 1)); px.rough[i] = 50; return 0; }
-      let R = SKIN, st = 1.0 + m * 0.6, rough = 120;
+      if (part === 'jaw' && ny > 0.6) { px.put(i, GUM, 0.8 - cl((0.2 - z) * 6, 0, 0.8)); px.rough[i] = 90; return 0; }
+      if (part === 'skull' && ny < -0.6 && y < -0.02) { px.put(i, GUM, 0.7 - cl((0.2 - z) * 6, 0, 0.7)); px.rough[i] = 90; return 0; }
+      let R = SKIN, st = 1.0 + m * 0.6, rough = 200;
       // the bones under the skin: brow ridge, cheekbones and the bridge catch a paler sheen
       if ((y > 0.045 && y < 0.07 && ax < 0.08) || (Math.abs(y + 0.005) < 0.012 && ax > 0.05 && ax < 0.085) || (ax < 0.012 && y > -0.02 && y < 0.05)) st += 1.4;
       // the eye pits: deep, dark rims round the huge eyes

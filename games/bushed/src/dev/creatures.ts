@@ -14,7 +14,7 @@ import { Wildlife, Critter } from '../creatures/wildlife';
 import type { Species } from '../creatures/wildlife/models';
 import { PROFILE } from '../creatures/anatomy';
 import { G } from '../gfx/globals';
-import { CRYPTID_DEV, isCryptid, cryptidDemo, simCryptid, testTrunks } from '../creatures/cryptids/dev';
+import { CRYPTID_DEV, isCryptid, cryptidDemo, simCryptid, testTrunks, cryptidStage } from '../creatures/cryptids/dev';
 import { Cryptid } from '../creatures/cryptids/base';
 import { puffs, debris } from '../gfx/particles';
 
@@ -213,7 +213,10 @@ function roostDemo(dt: number, t: number, script = 'demo') {
   player.noise = 0.1; player.held = 'flashlight';
   roost.update({ ...ctxFor(dt, t), hour: hour > 6 && hour < 18 ? 23 : hour, player: { ...player, speed: 1 } });
 }
+let stageObj: THREE.Object3D | null = null;
 function pick(name: string) {
+  if (stageObj) scene.remove(stageObj);
+  stageObj = cryptidStage(name); if (stageObj) scene.add(stageObj);
   if (name === 'wildlife') { showWildlife(); return; }
   if (name === 'dingbat') { showDingbat(); return; }
   scene.remove(lineup); scene.remove(wild.object); scene.remove(batStage); scene.remove(eave); if (roost) scene.remove(roost.object);
@@ -511,6 +514,16 @@ function simGranny(script: string, seconds: number, hr: number): string {
     return ui.info.textContent;
   },
   info: () => ui.info.textContent,
+  /** fur cost on the current stage: ms per render with the fur on and off, ms per fur.update (CPU), shells and tris */
+  perf(n = 6) {
+    const fs = furries().filter((f) => f.fur);
+    const render1 = () => { const g = renderer.getContext(); renderer.render(scene, camera); g.finish(); };
+    const time = (on: boolean) => { ui.fur.checked = on; applyFurUi(); render1(); const t0 = performance.now(); for (let i = 0; i < n; i++) render1(); return (performance.now() - t0) / n; };
+    const withFur = time(true), without = time(false); ui.fur.checked = true; applyFurUi();
+    let upd = 0;
+    for (const f of fs) { const fu = f.fur as unknown as { update(dt: number): void }; const t0 = performance.now(); for (let i = 0; i < 50; i++) fu.update(1 / 60); upd += (performance.now() - t0) / 50; }
+    return { renderMsWithFur: +withFur.toFixed(1), renderMsWithout: +without.toFixed(1), furUpdateMs: +upd.toFixed(3), furs: fs.map((f) => ({ tris: f.fur!.tris, shells: f.fur!.shellCount, cards: f.fur!.cards })) };
+  },
   /** run a creature's AI for `seconds` (60 Hz) with a scripted stand-in player; returns the state/event log */
   sim(o: { who: string; script: string; seconds: number; hour?: number }) {
     const log: string[] = [];

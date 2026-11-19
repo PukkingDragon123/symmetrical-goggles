@@ -9,7 +9,7 @@ import { hash2 } from '../../core/rng';
 import { canvasTex } from '../../gfx/tex';
 
 const NZ = new Noise(901);
-const LEATHER = ramp('#140808', '#1e0c0a', '#2a120e', '#381a12', '#462216', '#552c1a', '#66371f', '#784526', '#8c5530');
+const LEATHER = ramp('#1e0c0a', '#2c120e', '#3c1a12', '#4e2416', '#602e1a', '#723a20', '#864828', '#9a5832', '#b06c40');
 const GILT = ramp('#3a2408', '#6a4612', '#9a6c1e', '#c8962e', '#e8c05a', '#fbe8a0');
 const BRASS = ramp('#2a1e0c', '#4a3614', '#6e5420', '#957430', '#b89446', '#d6b664', '#f0dc98');
 const VERDI = hex('#4a7a62');
@@ -132,6 +132,18 @@ export function spineTex(): THREE.Texture {
 
 /** leather for board edges, straps and the eye-brow */
 export function edgeLeatherTex(): THREE.Texture { return tex(leather(64, 64, 19, { base: 0.38 }), { repeat: true }); }
+
+/** eyelid skin: soft pale leather going pink at the rims, fine wrinkles */
+export function lidTex(): THREE.Texture {
+  const W = 64, H = 64, p = new Pix(W, H);
+  const R = ramp('#3a1a14', '#5a2a1e', '#7a3e2a', '#965238', '#ae684a', '#c4805e', '#d89a78');
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const wr = Math.abs(Math.sin(y * 0.9 + NZ.n2(x / 6, y / 6) * 2)) < 0.15 ? -0.2 : 0;
+    const v = 0.55 + NZ.n2(x / 5, y / 5) * 0.12 + wr - (y > H * 0.85 ? 0.25 : 0);
+    p.set(x, y, R[Math.max(0, Math.min(6, Math.round(v * 6 + bayer(x, y) * 0.7)))]);
+  }
+  return tex(p, { repeat: true });
+}
 
 /** marbled pastedown on the inside of the boards */
 export function pastedownTex(): THREE.Texture {

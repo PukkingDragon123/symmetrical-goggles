@@ -50,7 +50,7 @@ def t_anvil():
     p = Photo("rust_coarse_01", 256, 256, res="1k", flat=0.6, ao=0.5)
     lum = pix.luminance(p.rgb)[..., None]
     r = fbm(256, 256, 48, 111)[..., None]
-    steel = np.array([0.11, 0.115, 0.125]) * (0.65 + lum * 1.3)
+    steel = np.array([0.2, 0.21, 0.23]) * (0.7 + lum * 1.2)
     rust = p.rgb * 0.55
     m = np.clip((r - 0.6) * 3.5, 0, 1) * (1 - lum)
     rgb = steel * (1 - m) + rust * m

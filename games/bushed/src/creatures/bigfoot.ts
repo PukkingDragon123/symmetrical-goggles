@@ -167,8 +167,8 @@ export class Bigfoot {
         if (!food) { if (this.st > 2) this.go('watch'); this.wantSpeed = 0; break; }
         const a = Math.atan2(this.pos.x - P.pos.x, this.pos.z - P.pos.z);
         this.target.set(P.pos.x + Math.sin(a) * 2.3, 0, P.pos.z + Math.cos(a) * 2.3);
-        const pause = (this.st % 5) > 3.6;
-        this.wantSpeed = dist > 2.6 && !pause ? (dist > 15 ? 1.2 : 0.55) : 0;
+        const pause = dist < 15 && (this.st % 5) > 4.1;
+        this.wantSpeed = dist > 2.6 && !pause ? (dist > 15 ? 1.6 : 0.8) : 0;
         this.hold = this.wantSpeed === 0 && dist < 4 ? 'reach' : null;
         if (pause && Math.random() < dt * 0.5) emit('grunt');
         break;

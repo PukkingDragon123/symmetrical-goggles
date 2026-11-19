@@ -338,9 +338,12 @@ export class FPArms {
     if (!obj && kind === 'two_hand') obj = this.adopt() ?? undefined;
     const prev = this.hold;
     const visible = this.object.visible && this.presence > 0.9;
+    // a slot switch (hotkeys, the pack): fresh models in and out. Picking something up from the world (it already
+    // has a parent) or letting go of it (the game took it back) cross-fades instead, under the grab / drop actions
+    const prevGone = !!prev.obj && !!prev.obj.parent && prev.obj.parent !== this.holderOf(prev);
     const swap = !opts.instant && visible && !this.first && kind !== prev.kind && !this.action
       && ![prev.kind, kind].some((k) => k === 'two_hand' || k === 'log' || k === 'drag' || k === 'read')
-      && (prev.obj !== null || obj !== undefined);
+      && (prev.obj !== null || obj !== undefined) && (!obj || !obj.parent) && !prevGone;
     // the old object: keep showing it while it dips out, unless the game has already put it somewhere else
     if (this.dip?.old) { this.dip.old.removeFromParent(); }
     let old: THREE.Object3D | null = null;
@@ -526,14 +529,16 @@ export class FPArms {
     const upI = s.short !== 1 ? 1 : s.long;
     const up = axisVec(upI);
     const across = new THREE.Vector3().crossVectors(up, thin);
-    const t = s.size.getComponent(s.short), hgt = s.size.getComponent(upI);
+    const t = s.size.getComponent(s.short), hgt = s.size.getComponent(upI), wid = across.clone().set(Math.abs(across.x), Math.abs(across.y), Math.abs(across.z)).dot(s.size);
     // canonical frame: X = the face normal (out of the palm), Y = across (thumb side), Z = up (along the fingers)
     const F = new THREE.Matrix4().makeBasis(thin, across, up).setPosition(s.center);
-    // palm surface at socket -k*X*gap; the object's back face rests on it; its bottom edge at the heel of the hand
-    const zc = -0.085 + Math.min(hgt * 0.5, 0.11);
+    // palm surface at socket -k*X*gap, the object's back face resting on it; taken by its lower corner (Gacha
+    // Garage's 'card' grip): its bottom edge across the palm, the rest reaching up past the thumb, so the hand shows
+    const zc = -0.05 + Math.min(hgt * 0.5, 0.12);
+    const yc = Math.max(0, wid / 2 - 0.035);
     const xc = -k * (-PALM_GAP + t / 2 + 0.002);
     // the socket's +X is the palm normal only for the right hand: mirror the face direction for the left
-    const M = new THREE.Matrix4().makeBasis(new THREE.Vector3(-k, 0, 0), new THREE.Vector3(0, -k, 0), new THREE.Vector3(0, 0, 1)).setPosition(xc, 0.0, zc);
+    const M = new THREE.Matrix4().makeBasis(new THREE.Vector3(-k, 0, 0), new THREE.Vector3(0, -k, 0), new THREE.Vector3(0, 0, 1)).setPosition(xc, yc, zc);
     h.place.copy(M).multiply(F.invert());
   }
 
@@ -639,9 +644,17 @@ export class FPArms {
     const at = (x: number, y: number, z: number) => V(x, y + LIFT, z).add(e);
     // low ready: muzzle forward and a little down and left, the stock under the right arm
     const pose = new THREE.Matrix4().compose(at(0.12, -0.2, 0.22), new THREE.Quaternion().setFromEuler(new THREE.Euler(0.12, 0.1, -0.1, 'YXZ')), new THREE.Vector3(1, 1, 1));
-    // aiming: the scope's axis through the eye, its ocular a hand's width ahead of it
-    const zs = bo.t - wr.t;
-    const ads = new THREE.Matrix4().makeTranslation(e.x, e.y - (scopeY - wristY), e.z + 0.1 - zs);
+    // aiming: cheek on the stock, the sight line (scope axis, or the top of the action) just under the eye, the
+    // ocular a hand's width ahead (the scope picture itself is the rifle's own overlay)
+    let top = -Infinity;
+    const dd = new THREE.Vector3();
+    for (const p of s.pts) { dd.subVectors(p, c); const u = (dd.dot(Zc) - butt) / L; if (u > 0.3 && u < 0.65) top = Math.max(top, dd.dot(up)); }
+    let ocu = Infinity;
+    for (const p of s.pts) { dd.subVectors(p, c); const u = (dd.dot(Zc) - butt) / L; if (u > 0.25 && u < 0.7 && dd.dot(up) > top - 0.03) ocu = Math.min(ocu, dd.dot(Zc)); }
+    const sight = top - 0.022;
+    if (!Number.isFinite(ocu)) ocu = sc.t;
+    const ads = new THREE.Matrix4().makeTranslation(e.x, e.y - (sight - wristY) - 0.03, e.z + 0.12 - (ocu - wr.t));
+    void scopeY;
     h.carry = { pose, ads, gR, gL, bolt: new THREE.Vector3(-bo.xs - 0.03, bo.yhi - wristY + 0.01, bo.t - wr.t), size: new THREE.Vector3(0.06, wr.ymax - wr.ymin, L) };
     this.carryPose.copy(pose);
   }
@@ -784,7 +797,8 @@ export class FPArms {
     const run = this.sprintK;
     const stepK = Math.abs(Math.sin(u)) * this.walkAmt;
     let x = sd * (0.27 - Math.max(0, sw) * 0.03), y = -0.4 + br * 0.004 + sw * 0.035 - stepK * 0.01, z = 0.4 + sw * 0.07;
-    x = lerp(x, sd * 0.23, run); y = lerp(y, -0.4 + Math.max(0, sw) * 0.09 - stepK * 0.012, run); z = lerp(z, 0.38 + sw * 0.13, run);
+    // running: loose fists pump up into view with the stride
+    x = lerp(x, sd * 0.22, run); y = lerp(y, -0.36 + Math.max(0, sw) * 0.13 - stepK * 0.012, run); z = lerp(z, 0.4 + sw * 0.12, run);
     // looking down they drop out of view (the body's own arms hang at your sides there)
     y -= this.lookDownK * 0.24;
     let grip = G_RELAX.map((v, i) => lerp(v, G_FIST[i] * 0.95, run));
@@ -833,8 +847,8 @@ export class FPArms {
       case 'jerky': case 'book': case 'item': {
         const st = H.style;
         if (st === 'flat') {
-          // held up on the palm facing you, fingers up the back, thumb on the front (a phone grip)
-          this.free(p, 'R', at(0.15, -0.2, 0.38), V(-0.28, 0.92, 0.18), V(0.25, 0.1, -0.96), G_FLAT);
+          // held up by its lower corner facing you, fingers up the back, thumb on the front
+          this.free(p, 'R', at(0.2, -0.24, 0.4), V(-0.15, 0.95, 0.2), V(0.3, 0.05, -0.95), G_FLAT);
           p.R.w = 1;
         } else if (st === 'cradle') {
           // sitting on the upturned palm, fingers curled round it
@@ -842,6 +856,9 @@ export class FPArms {
           p.R.w = 1;
         } else if (st === 'wrap') {
           this.tool(p, at(0.16, -0.24, 0.4), V(-0.1, 0.97, -0.1), V(-0.75, 0.0, 0.65), null, G_BOTTLE);
+        } else if (st === 'none') {
+          // nothing to show (no model): a loosely cupped hand
+          this.free(p, 'R', at(0.17, -0.25, 0.4), V(-0.45, 0.15, 0.88), V(-0.12, 0.95, -0.25), G_CUP);
         } else {
           // a stick-like thing: like the hatchet carry, a little lower
           this.tool(p, at(0.2, -0.28, 0.42), V(0.1, 0.8, 0.6), V(-0.55, -0.35, 0.75), null);
@@ -1105,8 +1122,8 @@ export class FPArms {
         const dur = ACTIONS[a].dur, tc = ACTIONS[a].events[0][0];
         const out = t < tc ? outCubic(t / tc) : 1 - sm((t - (dur - 0.3)) / 0.3);
         const tgt0 = R ? R.p.clone() : at(sd * 0.05, -0.1, 0.62);
-        const sh = this.shoulder(hand);
-        const dir = _y.copy(tgt0).sub(sh).normalize().clone();
+        // along the line of sight from the eye (the hand lands on the thing on screen)
+        const dir = _y.copy(tgt0).sub(this.eye).normalize().clone();
         const o = newPose(); copyPose(o, base);
         let tgt: THREE.Vector3, grip = G_OPEN, f: THREE.Vector3, n: THREE.Vector3;
         const act = cl((t - tc) / 0.18) * (t < dur - 0.3 ? 1 : 1 - sm((t - (dur - 0.3)) / 0.15));
@@ -1156,13 +1173,21 @@ export class FPArms {
   }
 
   private shoulder(hand: 'L' | 'R') { const r = this.dims.rest['uarm' + hand]; return _v3.set(r[0], r[1], r[2]); }
-  /** never a stretched pole: anything farther than the arm reaches is brought back to `frac` of the arm's reach */
+  /**
+   * Never a stretched pole (Gacha Garage reachCap / 'tap'): the hand goes along the line of sight toward the thing,
+   * at most `frac` of an arm's length from the eye, so on screen it lands on what you look at; then it is kept
+   * within what the arm can reach from its shoulder.
+   */
   private capReach(hand: 'L' | 'R', tgt: THREE.Vector3, frac: number): THREE.Vector3 {
+    const e = this.eye, arm = this.dims.L.uarm + this.dims.L.farm;
+    const d = tgt.clone().sub(e);
+    const maxEye = arm * frac + 0.05;
+    if (d.length() > maxEye) d.setLength(maxEye);
+    const p = e.clone().add(d);
     const sh = this.shoulder(hand).clone();
-    const max = (this.dims.L.uarm + this.dims.L.farm) * frac + 0.04;
-    const d = tgt.clone().sub(sh);
-    if (d.length() > max) d.setLength(max);
-    return sh.add(d);
+    const ds = p.clone().sub(sh), maxSh = arm + 0.04;
+    if (ds.length() > maxSh) p.copy(sh).add(ds.setLength(maxSh));
+    return p;
   }
 
   /** player footstep phase (steps + phase), or our own cadence when unbound */

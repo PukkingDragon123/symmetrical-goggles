@@ -136,7 +136,7 @@ export class Hidebehind extends Cryptid {
   /** the player can see it right now (in the cone, not behind a trunk) */
   seen = false;
   private D = 24; private spot = new THREE.Vector3(); private hasSpot = false; private sideK = 1; private cool = 0; private satedTonight = false; private lastGlimpse = -99;
-  private fadeT = 0; private lastCreep = 0; private seenT = 0; private steal: { id: string; pos: THREE.Vector3 } | null = null; private repelT = 0;
+  private fadeT = 0; private wait = 4; private backT = 0; private warned = false; private lastHiss = -99; private lastCreep = 0; private seenT = 0; private steal: { id: string; pos: THREE.Vector3 } | null = null; private repelT = 0;
   private lidAxis: THREE.Vector3[];
   constructor(o: { pos?: THREE.Vector3; heading?: number } = {}) {
     super(hidebehindModel(), hidebehindClips(hidebehindBones()), { pos: o.pos, heading: o.heading, shineCol: 0x9cff86, fur: HB_FUR_SPEC,
@@ -227,11 +227,15 @@ export class Hidebehind extends Cryptid {
         if (!active) { this.go('retreat'); this.awayFrom(P.pos, 40, this.target); break; }
         if (this.seen) { this.go('frozen'); this.want = 0; this.speed = 0; break; }
         const behind = ang > 2.0, atSpot = this.hasSpot && Math.hypot(this.spot.x - this.pos.x, this.spot.z - this.pos.z) < 0.35;
+        // a back turned on it for too long, close enough: a hiss (the last warning), then the rush
+        this.backT = behind && d < 16 ? this.backT + dt : 0;
+        if (this.backT > 9 && !this.warned) { this.warned = true; this.lastHiss = ctx.time; this.emit('hiss'); }
+        if (this.backT > 11 && !fire) { this.go('attack'); this.backT = 0; this.warned = false; break; }
         if (atSpot) {
           this.want = 0; this.faceToward(P.pos);
           // the player's back is turned: the next tree closer; looking round: settle further off
-          if (behind && this.st > 1.2 + Math.random() * 2.5) {
-            this.D = Math.max(3, this.D - 4.5); this.st = 0;
+          if (behind && this.st > this.wait) {
+            this.D = Math.max(3, this.D - 4); this.st = 0; this.wait = 3 + Math.random() * 4;
             if (this.D <= 3 && d < 6 && !fire) { this.go('attack'); break; }
             if (this.pickSpot(ctx, T, true) && ctx.time - this.lastCreep > 2) { this.lastCreep = ctx.time; if (Math.random() < 0.5) this.emit('creep'); }
           } else if (!behind && ang < 1.3) { this.D = Math.min(26, this.D + dt * 1.5); }
@@ -240,7 +244,7 @@ export class Hidebehind extends Cryptid {
           if (!this.hasSpot) this.pickSpot(ctx, T, true);
           this.target.copy(this.spot); this.want = 6.5;
         }
-        if (d < 9 && behind && Math.random() < dt * 0.3) this.emit('hiss');
+        if (d < 9 && behind && ctx.time - this.lastHiss > 6 && Math.random() < dt * 0.3) { this.lastHiss = ctx.time; this.emit('hiss'); }
         break;
       }
       case 'frozen': {

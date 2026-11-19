@@ -62,10 +62,48 @@ function studio() {
   scene.add(hemi, sun, sun.target);
   const zoneGroup = new THREE.Group(); scene.add(zoneGroup);
 
-  const species = view === 'bull' || view === 'cow' ? 'moose' : 'deer', male = view === 'buck' || view === 'bull';
+  const species = view === 'bull' || view === 'cow' ? 'moose' : 'deer', male = view === 'buck' || view === 'bull' || view === 'trophy';
   let animal: GameAnimal | null = null, clip = qs.get('clip') ?? 'idle', spinA = Number(qs.get('yaw') ?? 0.6);
   const t0 = performance.now();
-  GameAnimal.create(species, male).then((a) => {
+  if (view === 'arms') {
+    // the FP arms holding the rifle, seen from outside (or from the eye with ?fp): ?aim=0..1
+    Promise.all([import('../player/arms'), import('../places/props')]).then(async ([A, Pr]) => {
+      const arms = new A.FPArms();
+      const rig = new THREE.Group(); rig.position.set(0, 1.6, 0); rig.add(arms.object); scene.add(rig);
+      const [body, bolt] = await Promise.all([Pr.loadProp('bolt_action_rifle_7_62'), Pr.loadProp('bolt_action_rifle_7_62_bolt')]);
+      const model = new THREE.Group(); model.add(body); bolt.position.set(-0.21803, 0.12383, 0.01779); model.add(bolt);
+      arms.setHeld('rifle', model, { instant: true });
+      const aim = Number(qs.get('aim') ?? 0);
+      const fp = qs.has('fp');
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.02), new THREE.MeshBasicMaterial({ color: 0xff0000 })); eye.position.set(0, 1.6, 0); scene.add(eye);
+      const ax = new THREE.ArrowHelper(new THREE.Vector3(0, 0, -1), new THREE.Vector3(0, 1.6, 0), 1.2, 0x00ff00); scene.add(ax);
+      if (fp) { camera.position.set(0, 1.6, 0); camera.fov = 58; camera.updateProjectionMatrix(); controls.target.set(0, 1.6, -1); }
+      else { camera.position.set(1.4, 1.9, 0.6); controls.target.set(0, 1.45, -0.3); }
+      const s = { speed: 0, sprint: false, crouch: false, breath: 0, shiver: 0, aimPitch: 0, swingCharge: 0, aim };
+      for (let i = 0; i < 90; i++) arms.update(1 / 30, s);
+      if (qs.get('act')) { arms.play(qs.get('act') as never); for (let i = 0; i < Number(qs.get('actf') ?? 12); i++) arms.update(1 / 30, s); }
+      controls.update();
+      ui.info.textContent = `arms + rifle, aim ${aim}`;
+      (window as unknown as { __ready: boolean }).__ready = true;
+    });
+  } else if (view === 'trophy' || view === 'items') {
+    // the trophies on a wall, and the item models on a table
+    const wall = new THREE.Mesh(new THREE.PlaneGeometry(4, 3), new THREE.MeshStandardMaterial({ color: 0x5a4532, roughness: 0.9 }));
+    wall.position.set(0, 1.5, -0.02); wall.receiveShadow = true; scene.add(wall);
+    camera.position.set(0.2, 1.45, 1.7); controls.target.set(0, 1.35, 0);
+    Promise.all([import('../creatures/game/model'), import('../creatures/anatomy'), import('../creatures/rig'), import('../game/hunting/fx')]).then(async ([M, A, R, F]) => {
+      for (const [sp, x] of [['deer', -0.55], ['moose', 0.5]] as const) {
+        const t = await A.runAsync(M.trophyGen(sp));
+        const m = new THREE.Mesh(t.geo, R.creatureMaterial(t.tex, t.sd).mat); m.castShadow = true;
+        m.position.set(x, sp === 'deer' ? 1.45 : 1.2, 0); scene.add(m);
+      }
+      const items = [F.meatParcel('venison'), F.meatParcel('moose_meat'), F.meatParcel('deer_liver'), F.hideRoll('deer_hide'), F.cartridgeBox(), F.tagCard('tag_deer')];
+      items.forEach((o, i) => { o.position.set(-0.9 + i * 0.36, 0.86, 0.45); scene.add(o); });
+      const table = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.04, 0.5), new THREE.MeshStandardMaterial({ color: 0x6a4a30 })); table.position.set(0, 0.84, 0.45); scene.add(table);
+      ui.info.textContent = 'trophies and items';
+      (window as unknown as { __ready: boolean }).__ready = true;
+    });
+  } else GameAnimal.create(species, male).then((a) => {
     animal = a; scene.add(a.object);
     a.place(0, 0, 0, 0);
     const big = species === 'moose' ? 2 : 1;
@@ -128,4 +166,106 @@ function studio() {
 }
 
 // ------------------------------------------------------------------------------------------------ the world
-async function runWorld() { ui.info.textContent = 'world: todo'; }
+// The real game, trimmed: terrain, forest, ground cover, (the store with ?store), the FP arms, the hunt installed with
+// spawning off. ?x=&z=&yaw=&hour= place the player; ?spawn=buck,doe,bull,cow puts animals ahead at ?dist= metres.
+async function runWorld() {
+  const { Game } = await import('../game/game');
+  const { input } = await import('../core/input');
+  const { hud } = await import('../ui/hud');
+  const { floatText } = await import('../ui/float');
+  const { loadFonts } = await import('../ui/paper');
+  const { audio } = await import('../audio/audio');
+  const { Forest } = await import('../world/forest');
+  const { GroundCover } = await import('../world/groundcover');
+  const { treeMaterials } = await import('../trees/materials');
+  const { setBarkSource } = await import('../chop/wood');
+  const { FPArms } = await import('../player/arms');
+  const { QUALITY, applyRuntime } = await import('../game/quality');
+  const { heightAt } = await import('../world/layout');
+  const { install } = await import('../game/hunting');
+  (document.getElementById('dev') as HTMLDivElement).style.display = qs.has('clean') ? 'none' : '';
+  await loadFonts();
+  const uiRoot = document.getElementById('ui')!;
+  hud.mount(uiRoot); floatText.mount(uiRoot, null);
+  const game = new Game(document.getElementById('game') as HTMLCanvasElement);
+  floatText.setCamera(game.camera);
+  game.quality = QUALITY[(qs.get('quality') as 'low') ?? 'low'] ?? QUALITY.low;
+  game.R.pixel = game.quality.pixel;
+  await game.init();
+  input.attach(document.getElementById('game')!);
+  document.getElementById('game')!.addEventListener('click', () => { input.lock(); audio.unlock(); });
+  const x = Number(qs.get('x') ?? 52), z = Number(qs.get('z') ?? 64), yaw = Number(qs.get('yaw') ?? 0);
+  game.terrain.prime(new THREE.Vector3(x, 0, z));
+  const fq = game.quality.forest;
+  const forest = new Forest(game.scene, game.camera, game.R.gl, { lod0: fq.lod0, lod1: fq.lod1, far: fq.far, shadow: fq.shadow, density: fq.density });
+  forest.prewarm(x, z, 70);
+  game.setForest(forest as never);
+  game.ground = new GroundCover(game.scene, game.camera, { forest, density: game.quality.ground });
+  game.sky.sun.shadow.camera.layers.enable(1);
+  setBarkSource((sp) => treeMaterials(sp as never).bark);
+  if (qs.has('store')) { const { buildStore } = await import('../places/store'); const st = await buildStore(); game.store = st; game.addPlace(st); st.group.traverse((o) => { o.userData.game = game; }); }
+  game.setArms(new FPArms() as never);
+  applyRuntime(game.quality, game.R.gl, game.scene, game.sky.sun);
+  const hunt = await install(game, { spawn: qs.has('spawnAuto'), trace: true });
+  game.hour = Number(qs.get('hour') ?? 8);
+  game.player.teleport(x, null, z, yaw);
+  game.player.pitch = Number(qs.get('pitch') ?? 0);
+  game.mode = 'walk'; game.flags.add('free');
+  hud.fadeTo(false, 0);
+  for (const [id, n] of [['rifle', 1], ['ammo_762', 15], ['hunting_knife', 1], ['tag_deer', 1], ['licence', 1]] as const) game.give(id, n);
+  game.hands.equip(qs.get('hold') ?? 'rifle');
+  hunt.rifle.mag = 5; hunt.rifle.chamber = 'live';
+  // animals ahead of the player
+  const fwd = game.player.forward();
+  const dist = Number(qs.get('dist') ?? 30);
+  const list = (qs.get('spawn') ?? '').split(',').filter(Boolean);
+  await Promise.all(list.map(async (k, i) => {
+    const side = (i - (list.length - 1) / 2) * 4;
+    const ax = x + fwd.x * dist - fwd.z * side, az = z + fwd.z * dist + fwd.x * side;
+    const a = await hunt.spawn(k === 'bull' || k === 'cow' ? 'moose' : 'deer', k === 'buck' || k === 'bull', ax, az, Number(qs.get('aheading') ?? Math.atan2(fwd.z, -fwd.x)));
+    if (qs.has('freeze')) a.play(qs.get('freeze') || 'idle');
+    return a;
+  }));
+  // a frame loop like main.ts; the Playwright hooks step it by hand
+  let last = performance.now(), auto = !qs.has('manual');
+  const press = (k: string) => (input as unknown as { pressedSet: Set<string> }).pressedSet.add(k);
+  const hold = (k: string, on: boolean) => { const d = (input as unknown as { down: Set<string> }).down; if (on) d.add(k); else d.delete(k); };
+  const step = (dt: number) => { game.update(dt); floatText.update(dt); input.endFrame(); };
+  const frame = (now: number) => {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (auto) step(dt);
+    game.render();
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+  // warm up: a few frames so the terrain, trees and arms settle
+  for (let i = 0; i < 20; i++) step(1 / 30);
+  const lookAt = (p: THREE.Vector3) => {
+    const e = game.camera.position, d = p.clone().sub(e);
+    game.player.yaw = Math.atan2(-d.x, -d.z); game.player.pitch = Math.atan2(d.y, Math.hypot(d.x, d.z));
+  };
+  const api = {
+    game, hunt, input,
+    step: (n: number, dt = 1 / 30) => { auto = false; for (let i = 0; i < n; i++) step(dt); game.render(); return hunt.status(); },
+    run: (b: boolean) => { auto = b; },
+    press, hold,
+    /** aim (hold RMB) for n frames */
+    aim: (on: boolean) => hold('Mouse2', on),
+    fire: () => { press('Mouse0'); },
+    key: (k: string) => press(k),
+    lookAt: (x2: number, y2: number, z2: number) => lookAt(new THREE.Vector3(x2, y2, z2)),
+    lookAtAnimal: (i = 0, dy = 0.75, dz = 0) => { const a = hunt.animals[i]; if (!a) return null; const p = a.object.localToWorld(new THREE.Vector3(0, a.model.dims.chestY + dy - 0.75, a.model.dims.chestZ + dz)); lookAt(p); return p.toArray(); },
+    status: () => hunt.status(),
+    /** a clean head shot on animal i (the dressing test) */
+    kill: (i = 0) => { const a = hunt.animals[i]; if (!a) return null; a.shot('head', a.object.position.clone().setY(a.pos.y + 1), new THREE.Vector3(1, 0, 0), (hunt as unknown as { ctx(dt: number): never }).ctx(0)); return a.state; },
+    /** hold E on whatever the crosshair is on */
+    holdE: (on: boolean) => { if (on) press('KeyE'); hold('KeyE', on); },
+    focus: () => game.hands.focus ? { label: game.hands.label, at: game.hands.focus.point.toArray() } : null,
+    teleport: (x2: number, z2: number, yaw2 = 0) => game.player.teleport(x2, null, z2, yaw2),
+    traces: () => hunt.ballistics.traces.map((t) => t.map((p) => p.toArray().map((v) => +v.toFixed(2)))),
+    heightAt,
+  };
+  (window as unknown as { __hunt: unknown }).__hunt = api;
+  ui.info.textContent = `world at ${x}, ${z}; ${list.length} animals`;
+  (window as unknown as { __ready: boolean }).__ready = true;
+}

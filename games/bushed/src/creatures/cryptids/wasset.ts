@@ -129,7 +129,7 @@ export class SnowWasset extends Cryptid {
   declare state: WassetState;
   /** 0 on the surface .. 1 under the ground */
   depth = 0;
-  private wantDepth = 0; private dug = 0; private nips = 0; private puffT = 0; private lastBurrow = 0; private popAt = new THREE.Vector3(); private hasPop = false; private fleeT = 0;
+  private wantDepth = 0; private dug = 0; private nips = 0; private nipPhase = 0; private puffT = 0; private lastBurrow = 0; private popAt = new THREE.Vector3(); private hasPop = false; private fleeT = 0;
   constructor(o: { pos?: THREE.Vector3; heading?: number } = {}) {
     super(wassetModel(), wassetClips(wassetBones()), { pos: o.pos, heading: o.heading, shineCol: 0xc8e0ff, fur: WS_FUR_SPEC, legs: [
       { up: 'fuL', lo: 'flL', foot: 'ffL', fore: true }, { up: 'fuR', lo: 'flR', foot: 'ffR', fore: true },
@@ -178,7 +178,7 @@ export class SnowWasset extends Cryptid {
         break;
       }
       case 'roam': {
-        if (!this.under) { if (this.holdDone || this.hold !== 'dive') this.dive(ctx); this.want = 0; break; }
+        if (!this.under) { if (this.wantDepth < 1) this.dive(ctx); this.want = 0; break; }
         this.hold = null;
         if (night && this.pos.distanceTo(this.home) < 2) { this.go('sleep'); break; }
         // where to come up: near the player (curious), or somewhere round its home
@@ -199,20 +199,25 @@ export class SnowWasset extends Cryptid {
         if (friend) { this.go('friend'); break; }
         if (d > 22 || this.st > 14 || night) { this.dive(ctx); this.go('roam'); break; }
         // the player stands still close by: in for the laces
-        if (this.st > 2.5 && d < 6 && this.pSpeed < 0.6 && this.nips < 3) { this.go('nip'); this.hold = null; }
+        if (this.st > 2.5 && d < 6 && this.pSpeed < 0.6 && this.nips < 3) { this.go('nip'); this.hold = null; this.nipPhase = 0; }
         break;
       }
       case 'nip': {
-        // dart to the boots, nip, dart back a few metres; two or three goes, then away under
-        const back = this.st > 0.3 && this.hold === 'nip';
-        if (!back) { this.target.set(P.pos.x, 0, P.pos.z); this.want = 4.5; this.arrive = 0.55; }
-        if (!back && d < 0.75) { this.once('nip'); this.nips++; this.emit('nip', { tug: true, item: 'bootlace' }); this.st = 0.31; }
-        if (back) {
+        // dart to the boots, nip and tug, dart back a few metres; two or three goes, then away under
+        if (fish) { this.go('beg'); break; }
+        if (this.nipPhase === 0) {
+          this.target.set(P.pos.x, 0, P.pos.z); this.want = 4.5; this.arrive = 0.55;
+          if (d < 0.75) { this.once('nip'); this.nips++; this.emit('nip', { tug: true, item: 'bootlace' }); this.nipPhase = 1; }
+          else if (this.st > 4) { this.go('surface'); }
+        } else if (this.nipPhase === 1) {
           this.want = 0;
-          if (this.holdDone) { this.hold = null; this.awayFrom(P.pos, 3, this.target); this.want = 4; this.reverse = false; }
-          if (this.st > 1.6) { this.go(this.nips >= 3 ? 'roam' : 'surface'); if (this.nips >= 3) this.dive(ctx); this.st = this.nips >= 3 ? 0 : 1.5; }
+          if (this.holdDone || this.st > 3) { this.nipPhase = 2; this.awayFrom(P.pos, 3.5, this.target); }
+        } else {
+          this.want = 4; this.arrive = 0.3;
+          if (Math.hypot(this.target.x - this.pos.x, this.target.z - this.pos.z) < 0.5 || this.st > 5) {
+            if (this.nips >= 3) { this.dive(ctx); this.go('roam'); } else { this.go('surface'); this.st = 1; }
+          }
         }
-        if (fish) this.go('beg');
         break;
       }
       case 'beg': {
@@ -225,8 +230,8 @@ export class SnowWasset extends Cryptid {
       case 'eat': {
         this.want = 0; this.wantDepth = 0;
         if (this.anim.current === 'happy' || this.st > 3.5) {
-          this.trust = Math.min(1, this.trust + 0.5); this.go('happy'); this.hold = 'happy'; this.anim.play('happy'); this.emit('happy');
-          if (this.trust >= 1) this.emit('befriended');
+          const now = this.gainTrust(0.5); this.go('happy'); this.holdClip('happy'); this.emit('happy');
+          if (now) this.emit('befriended');
         }
         break;
       }

@@ -113,7 +113,7 @@ interface Ctx { p: Pix; regions: Region[]; seed: number }
 const LH = 18;
 
 /** wrapped paragraph; returns the y of the next line. firstIndent shortens the first line (inline labels) */
-function para(c: Ctx, text: string, x: number, y: number, w: number, o: { color?: RGB; fade?: number; wet?: boolean; indent?: number; key?: string; align?: 'left' | 'center' | 'right'; struck?: boolean } = {}): number {
+function para(c: Ctx, text: string, x: number, y: number, w: number, o: { color?: RGB; fade?: number; wet?: boolean; indent?: number; key?: string; align?: 'left' | 'center' | 'right'; struck?: boolean; lh?: number } = {}): number {
   const ind = o.indent ?? 0;
   const lines = wrapIndented(text, w, ind);
   const y0 = y;
@@ -124,7 +124,7 @@ function para(c: Ctx, text: string, x: number, y: number, w: number, o: { color?
     const ax = o.align === 'center' ? x + w / 2 : o.align === 'right' ? x + w : lx;
     const tw = c.p.text(ln, ax, y + bob, { color: o.color ?? INK, fade: o.fade, wet: o.wet, seed: c.seed + i, align: o.align });
     if (o.struck) { const sx = o.align === 'center' ? ax - tw / 2 : ax; c.p.line(sx - 2, y - 5 + bob, sx + tw + 2, y - 7 + bob, RED); c.p.line(sx - 2, y - 4 + bob, sx + tw + 2, y - 6 + bob, RED); }
-    y += LH;
+    y += o.lh ?? LH;
   });
   if (o.key) c.regions.push({ key: o.key, x: x - 2, y: y0 - 14, w: w + 4, h: y - y0 + 2, kind: 'ink' });
   return y;
@@ -392,7 +392,10 @@ export function paintPage(kind: PageKind, side: 'L' | 'R', v: BookView, index: n
       const sy0 = y;
       const stat = (lab: string, text: string, key: string) => {
         const lw = label(c, lab, sx, y);
-        y = para(c, t ? text : '???', sx, y, sw, { color: t ? BOOK_INK : FADED, indent: lw, wet: t, fade: t ? 0 : 0.3, key });
+        const y0 = y, lines = wrapIndented(text, sw, lw).length;
+        para(c, t ? text : '???', sx, y, sw, { color: t ? BOOK_INK : FADED, indent: lw, wet: t, fade: t ? 0 : 0.3 });
+        y = y0 + lines * LH;
+        c.regions.push({ key, x: sx - 2, y: y0 - 14, w: sw + 4, h: y - y0 + 2, kind: 'ink' });
       };
       stat('Habitat', e.habitat, `habitat:${e.id}`);
       stat('Abroad', e.active, `active:${e.id}`);
@@ -420,42 +423,55 @@ export function paintPage(kind: PageKind, side: 'L' | 'R', v: BookView, index: n
       let y = 34;
       p.text(e.name.toUpperCase(), CX, y, { color: FADED, align: 'center' });
       y += 22;
-      // Ray's scrap: measure first, then paint the paper, then the words on it
-      const notes = e.ray.length ? e.ray : ['Never wrote anything down about this one.'];
+      // fit: the layout is the same whatever is known (so ink can be written into it), sized as if every rule were
+      // known; long lists tighten the leading, then drop Ray's later notes
+      const allNotes = e.ray.length ? e.ray : ['Never wrote anything down about this one.'];
       const sw = CW - 6;
+      const tasteLines = Math.max(2, wrap(`"${e.taste}"`, 16, CW - 8).length);
+      const ruleLines = e.rules.map((r) => wrap(r.text, 16, CW - 14).length);
+      let lh = LH, nNotes = allNotes.length;
+      const height = (l: number, n: number) => {
+        let h = 56 + (1 + allNotes.slice(0, n).reduce((a, t) => a + wrap(t, 16, sw - 30).length, 0)) * l + 22 + 30;
+        h += LH + 2 + tasteLines * LH + 14 + LH + 6;
+        for (const k of ruleLines) h += k * l + (l < LH ? 3 : 6);
+        return h;
+      };
+      search: for (const l of [LH, 16, 15]) for (let n = allNotes.length; n >= 1; n--) { lh = l; nNotes = n; if (height(l, n) <= PAGE_H - 8) break search; }
+      const notes = allNotes.slice(0, nNotes);
       let lines = 1;
       for (const n of notes) lines += wrap(n, 16, sw - 30).length;
-      const sh = lines * LH + 22;
+      const sh = lines * lh + 22;
       scrap(c, X0 + 3, y, sw, sh);
       let sy = y + 22;
       p.text('Ray:', X0 + 12, sy, { color: RAY_INK, fade: 0.2 });
-      sy += LH;
-      for (const n of notes) { p.text('-', X0 + 12, sy, { color: RAY_INK }); sy = para(c, n, X0 + 22, sy, sw - 30, { color: RAY_INK, fade: 0.18 }); }
+      sy += lh;
+      for (const n of notes) { p.text('-', X0 + 12, sy, { color: RAY_INK }); sy = para(c, n, X0 + 22, sy, sw - 30, { color: RAY_INK, fade: 0.18, lh }); }
       y += sh + 30;
       // the Book's own remark
       label(c, 'The Book says', X0, y);
       y += LH + 2;
-      if (t) y = para(c, `"${e.taste}"`, X0 + 8, y, CW - 8, { color: BOOK_INK, wet: true, key: `taste:${e.id}` });
-      else { y = para(c, 'Not tasted. Hold me up to one.', X0 + 8, y, CW - 8, { color: FADED, fade: 0.3, key: `taste:${e.id}` }); }
+      {
+        const y0 = y;
+        if (t) para(c, `"${e.taste}"`, X0 + 8, y, CW - 8, { color: BOOK_INK, wet: true });
+        else para(c, 'Not tasted. Hold me up to one.', X0 + 8, y, CW - 8, { color: FADED, fade: 0.3 });
+        y = y0 + tasteLines * LH;
+        c.regions.push({ key: `taste:${e.id}`, x: X0 + 6, y: y0 - 14, w: CW - 4, h: y - y0 + 2, kind: 'ink' });
+      }
       y += 14;
-      // the rules
+      // the rules: each in its own slot, inked when known, a smudge of "???" until then
       const nk = e.rules.filter((r) => known.has(r.id)).length;
       const lw = label(c, 'Rules', X0, y);
       p.text(e.rules.length ? `${nk} of ${e.rules.length}` : 'none yet', X0 + lw, y, { color: FADED });
       rule(p, X0 + lw + 70, X1 - 4, y - 5, FADED);
       y += LH + 6;
-      for (const r of e.rules) {
-        if (y > PAGE_H - 30) break;
-        if (known.has(r.id)) {
-          tooth(p, X0, y - 11, true);
-          y = para(c, r.text, X0 + 14, y, CW - 14, { color: BOOK_INK, wet: true, key: `rule:${e.id}:${r.id}` }) + 6;
-        } else {
-          tooth(p, X0, y - 11, false);
-          smudge(c, X0 + 14, y, CW * 0.6 + hash2(y, 3, 1) * CW * 0.3);
-          c.regions.push({ key: `rule:${e.id}:${r.id}`, x: X0 + 12, y: y - 14, w: CW - 12, h: 18, kind: 'ink' });
-          y += LH + 6;
-        }
-      }
+      e.rules.forEach((r, i) => {
+        if (y > PAGE_H - 14) return;
+        const y0 = y, slot = ruleLines[i] * lh;
+        if (known.has(r.id)) { tooth(p, X0, y - 11, true); para(c, r.text, X0 + 14, y, CW - 14, { color: BOOK_INK, wet: true, lh }); }
+        else { tooth(p, X0, y - 11, false); smudge(c, X0 + 14, y, CW * 0.6 + hash2(y, 3, 1) * CW * 0.3); }
+        c.regions.push({ key: `rule:${e.id}:${r.id}`, x: X0 + 12, y: y0 - 14, w: CW - 12, h: slot + 2, kind: 'ink' });
+        y = y0 + slot + (lh < LH ? 3 : 6);
+      });
       if (hash2(index, 5, 9) < 0.4) bite(p, PAGE_W - 4, PAGE_H - 4, 18, seed);
       break;
     }

@@ -66,3 +66,25 @@ registerPortraitModel('dingbat', {
   },
   yaw: 0.5, pitch: 0.3, fill: 0.8,
 });
+
+// the lumber-camp cryptids (src/creatures/cryptids): their real models replace the painted SDF plates. Not the
+// hidebehind: nobody has ever seen it, so its plate stays the Book's painting of it peering round a birch.
+type CryptidMod = typeof import('../../creatures/cryptids');
+const CRYPTID_VIEW: Record<string, { cls: keyof CryptidMod; clips: string[]; yaw?: number; pitch?: number; fill?: number; crop?: [number, number]; post?: (p: import('./pix').Pix) => void }> = {
+  hodag: { cls: 'Hodag', clips: ['idle', 'warn'], yaw: 0.8, pitch: 0.18, fill: 0.86 },
+  squonk: { cls: 'Squonk', clips: ['idle', 'weep', 'cry'], yaw: 0.75, pitch: 0.2, fill: 0.8 },
+  // up its snag: frame the top of the tree where it lives
+  agropelter: { cls: 'Agropelter', clips: ['idle', 'jeer', 'throw'], yaw: 0.6, pitch: 0.05, fill: 0.92, crop: [0.42, 1.0] },
+  teakettler: { cls: 'Teakettler', clips: ['idle', 'look'], yaw: 0.9, pitch: 0.18, fill: 0.82 },
+  wasset: { cls: 'SnowWasset', clips: ['idle', 'stand', 'stare', 'look'], yaw: 0.8, pitch: 0.2, fill: 0.84 },
+};
+for (const [id, v] of Object.entries(CRYPTID_VIEW)) {
+  registerPortraitModel(id, {
+    make: async () => {
+      const M = await import('../../creatures/cryptids');
+      const C = M[v.cls] as unknown as new (o: { pos?: THREE.Vector3 }) => Posable;
+      return posed(new C({ pos: new THREE.Vector3() }), v.clips);
+    },
+    yaw: v.yaw, pitch: v.pitch, fill: v.fill, crop: v.crop, post: v.post,
+  });
+}

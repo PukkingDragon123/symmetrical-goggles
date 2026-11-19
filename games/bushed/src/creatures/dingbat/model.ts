@@ -18,7 +18,7 @@ import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 import { furZones } from '../fur/paint';
 
-export const DINGBAT_MODEL_VERSION = 'dingbat@5';
+export const DINGBAT_MODEL_VERSION = 'dingbat@6';
 export interface DingbatModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (left side; the right is the mirror in x) */

@@ -16,7 +16,7 @@ import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 import { furZones } from '../fur/paint';
 
-export const GRANNY_MODEL_VERSION = 'granny@6';
+export const GRANNY_MODEL_VERSION = 'granny@7';
 export interface GrannyModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (the left side; the right is the mirror in x unless given) */
@@ -558,6 +558,8 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
 /** her shawl of moss grows real fur (lengths in GRANNY_FUR_LEN): deep and tufted over the shoulders, ragged at its
  *  edge; moss on the sleeves' shoulders; long grey hair from under the antlers (the same rules as the painters) */
 export const GRANNY_FUR_LEN = 0.075;
+/** fur on her head too (off: her long grey hair is lock geometry; a shell cap read as a wig) */
+const GRANNY_HAIR_FUR = false;
 const GRANNY_SLEEVES = furZones([{ piece: /^sleeve/, a: [0, 1.85, -0.04], b: [0, 1.62, -0.05], r: 0.32, len: 0.65, clump: 0.85, tip: 0.6 }]);
 function GRANNY_FUR(p: V3, n: V3, piece: string, k: { k: number; occ: number }): readonly number[] | null {
   if (piece === 'trunk') {
@@ -569,7 +571,7 @@ function GRANNY_FUR(p: V3, n: V3, piece: string, k: { k: number; occ: number }):
     const deep = cl((p[1] - edge) / 0.12, 0.35, 1) * cl((collar - p[1]) / 0.06, 0.3, 1);
     return [lich ? 0.7 : 0.95, (lich ? 0.45 : 1) * deep, 0.85, lich ? 0.3 : 0.65];
   }
-  if (piece === 'skull') {
+  if (piece === 'skull' && GRANNY_HAIR_FUR) {
     const H = GT.hg, x = p[0] - H[0], y = p[1] - H[1], ax = Math.abs(x), nz = n[2];
     const hl = 0.068 + nz2(x * 50, 1) * 0.004 + ax * 0.12 - Math.max(0, ax - 0.05) * 0.9;
     if (y > hl + 0.006 || nz < -0.2 - Math.max(0, -y) * 2 || (ax > 0.075 && nz < 0.3 && y > -0.08)) return [0.9, y > hl + 0.02 ? 0.32 : 0.2, 0.7, 0.35];

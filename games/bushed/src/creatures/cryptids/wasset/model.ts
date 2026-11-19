@@ -15,7 +15,7 @@ import { furZones } from '../../fur';
 import { bonesKit, boneIndex, coat, solid, wet, finishModel, REG, type ModelGen } from '../kit';
 import type { BoneDef } from '../../rig';
 
-export const WASSET_MODEL_VERSION = 'wasset@1';
+export const WASSET_MODEL_VERSION = 'wasset@2';
 export const WS_HEAD: V3 = [0, 0.25, 0.5];
 export const WS_EYE: V3 = [0.032, 0.272, 0.585];
 export const WS_EYE_AX: V3 = [0.62, 0.22, 0.75];
@@ -53,16 +53,16 @@ export function wassetBones(): BoneDef[] {
 const WHITE = RP('snow'), BROWN = RP('fur'), DARK = RP('squatch'), PINK = RP('coral'), INK = RP('ink');
 /** how brown the coat is at a point: a saddle along the back and the mantle over the shoulders, ragged at its edge */
 const saddle = (x: number, y: number, z: number, ny: number) => {
-  const edge = fbm3(x * 9, y * 9, z * 9, 2) * 0.35;
-  const along = z > -0.5 && z < 0.36 ? 1 : 0;
-  return along * cl((ny - 0.25 + edge) * 3, 0, 1) * cl((0.38 - z) * 8, 0, 1);
+  const edge = fbm3(x * 14, y * 14, z * 14, 2) * 0.18;
+  const along = z > -0.5 && z < 0.4 ? 1 : 0;
+  return along * cl((ny - 0.05 + edge) * 4, 0, 1) * cl((0.4 - z) * 8, 0, 1);
 };
 const coatPaint = (part: 'body' | 'leg' | 'tail' | 'head') => coat({
   lightK: 0.85,
   texel: (px, i, x, y, z, nx, ny) => {
     const m = fbm3(x * 10, y * 10, z * 10, 3), br = part === 'leg' ? cl((y - 0.08) * 12, 0, 1) * 0.6 : part === 'head' ? cl((ny - 0.6) * 3, 0, 1) * cl((0.52 - z) * 10, 0, 1) * 0.8 : saddle(x, y, z, ny);
     let R = WHITE, st = 4 + m * 0.8 - (ny < -0.3 ? 0.6 : 0);
-    if (br > 0.45 + m * 0.2) { R = m > 0.25 ? DARK : BROWN; st = 3.2 + m * 0.8 + (br < 0.6 ? 0.8 : 0); }
+    if (br > 0.5) { R = BROWN; st = 2.8 + m * 0.8 + (br < 0.75 ? 0.9 : 0) - (ny > 0.85 ? 0.6 : 0); }
     if (part === 'tail') { const t = cl((-z - 0.44) / 0.6, 0, 1); if (t > 0.72) { R = DARK; st = 1.6 + m * 0.6; } else if (ny > 0.3 && t < 0.4) { R = BROWN; st = 3.6 + m; } }
     if (part === 'head') {
       const hx = Math.abs(x), hz = z - WS_HEAD[2];

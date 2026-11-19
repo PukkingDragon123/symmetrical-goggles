@@ -26,6 +26,7 @@ import { spawnNpcs } from './game/npcs';
 import { Forest } from './world/forest';
 import { GroundCover } from './world/groundcover';
 import { treeMaterials } from './trees/materials';
+import { barkTexture, barkNormal } from './trees/textures';
 import { setBarkSource } from './chop/wood';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -76,7 +77,18 @@ async function boot() {
     game.setForest(forest as never);
     game.ground = new GroundCover(game.scene, game.camera, { forest, density: game.quality.ground });
     game.sky.sun.shadow.camera.layers.enable(1);
-    setBarkSource((sp) => treeMaterials(sp as never).bark);
+    // logs and firewood use the forest's bark textures in a plain lit material (the tree material's distance
+    // fade would darken pieces carried in the viewmodel)
+    const barks = new Map<string, THREE.MeshStandardMaterial>();
+    setBarkSource((sp) => {
+      let m = barks.get(sp);
+      if (!m) {
+        const base = treeMaterials(sp as never).bark as THREE.MeshStandardMaterial;
+        m = new THREE.MeshStandardMaterial({ map: barkTexture(sp as never), normalMap: barkNormal(sp as never), roughness: 0.95, color: base.color });
+        barks.set(sp, m);
+      }
+      return m;
+    });
   });
   await Promise.all([
     step('props', () => game.preloadItemModels()),
@@ -93,7 +105,11 @@ async function boot() {
       game.trailer = t;
     }),
   ]);
-  await step('arms', async () => { const a = new FPArms(); game.setArms(a as never); });
+  await step('arms', async () => {
+    const a = new FPArms(); game.setArms(a as never);
+    // the Gacha Garage port: body under the camera, footstep-synced hands, reach, inspect
+    a.bind?.({ player: game.player, scene: game.scene, camera: game.camera, hands: game.hands } as never);
+  });
   // generated products (jerky packs, beer bottles, tins...) become the item models
   await step('products', async () => {
     for (const it of Object.values(ITEMS)) if (it.model.startsWith('gen:')) {

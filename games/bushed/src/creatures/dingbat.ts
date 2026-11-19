@@ -96,8 +96,8 @@ export class Dingbat {
     this.bones = this.skel.idx;
     this.face = new Expression({ seed: 51 + Math.floor(Math.random() * 100), rate: 7 });
     this.fur = m.fur ? addFur(this.mesh, {
-      length: DINGBAT_FUR_LEN, mask: m.fur, shells: 10, density: 0.88, clump: 4, clumpPull: 0.55, rootDark: 0.5, tipK: 0.6, fins: 0,
-      comb: [0, 0.05, -0.5], droop: 0.15, hz: 4, inertia: 0.01, drag: 0.04, lod: [2.5, 8, 16], minShells: 3,
+      length: DINGBAT_FUR_LEN, mask: m.fur, shells: 8, density: 0.88, clump: 4, clumpPull: 0.55, rootDark: 0.5, tipK: 0.6, fins: 0,
+      comb: [0, 0.05, -0.5], droop: 0.15, hz: 4, inertia: 0.01, drag: 0.04, lod: [2, 6, 12], minShells: 2,
     }) : null;
   }
   get clips(): string[] { return Object.keys(this.anim.clips); }
