@@ -108,11 +108,14 @@ export class Player {
     this.pitch = THREE.MathUtils.clamp(this.pitch, -1.45, 1.45);
   }
 
+  /** A/D turn the Book's pages instead of strafing */
+  noStrafe = false;
+
   update(dt: number): void {
     if (!this.enabled) return;
     this.landImpulse = 0;
     this.look();
-    const f = input.axis('KeyS', 'KeyW'), s = input.axis('KeyA', 'KeyD');
+    const f = input.axis('KeyS', 'KeyW'), s = this.noStrafe ? 0 : input.axis('KeyA', 'KeyD');
     this.crouch = input.held('ControlLeft') || input.held('KeyC');
     const wantSprint = input.held('ShiftLeft') && f > 0 && !this.crouch && this.canSprint;
     this.sprinting = wantSprint;

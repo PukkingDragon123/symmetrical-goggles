@@ -504,6 +504,7 @@ export class Game {
     // control
     if (this.mode === 'walk') {
       if (this.pack.open) { this.packMouse = [input.mouseDX, input.mouseDY]; input.mouseDX = 0; input.mouseDY = 0; }
+      this.player.noStrafe = this.journal.open;
       this.player.update(dt);
       if (this.pack.open) { input.mouseDX = this.packMouse[0]; input.mouseDY = this.packMouse[1]; }
       if (input.pressed('Tab') && !this.pack.open) { this.journal.toggle(); this.sound('page_turn', undefined, 0.6); }
