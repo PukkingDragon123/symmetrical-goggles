@@ -597,6 +597,90 @@ const BUILD: Record<string, Builder> = {
   enamel_plate(ms) {
     lathe(ms, 'enamel', [[0, 0.002], [0.07, 0.002], [0.1, 0.016], [0.118, 0.022], [0.12, 0.024], [0.116, 0.024], [0.098, 0.019], [0.068, 0.006], [0, 0.006]], 20);
   },
+  bannock_mix(ms) {
+    // a paper flour sack, top folded over twice
+    ms.pushT(0, 0.1, 0);
+    boxR(ms, 'lab', 0.13, 0.2, 0.085, { pz: L('flour_label'), py: L('kraft'), ny: L('kraft') }, L('kraft'));
+    ms.pop();
+    ms.pushT(0, 0.208, 0.004, 0, -0.25);
+    boxR(ms, 'lab', 0.132, 0.018, 0.07, {}, L('kraft'));
+    ms.pop();
+  },
+  charcoal_sack(ms, r) {
+    // heavy kraft sack of lump charcoal, the top rolled down, a few lumps showing
+    ms.pushT(0, 0.16, 0);
+    boxR(ms, 'lab', 0.28, 0.32, 0.13, { py: L('kraft') }, L('kraft'));
+    ms.pop();
+    ms.pushT(0, 0.33, 0, 0, 0, Math.PI / 2);
+    latheR(ms, 'lab', [[0, -0.142], [0.022, -0.142], [0.024, -0.13], [0.024, 0.13], [0.022, 0.142], [0, 0.142]], 8, L('kraft'));
+    ms.pop();
+    for (let i = 0; i < 7; i++) boxAt(ms, 'soot', r.range(-0.1, 0.1), 0.33 + r.range(0, 0.02), r.range(-0.04, 0.04), r.range(0.03, 0.05), r.range(0.02, 0.035), r.range(0.03, 0.05), r.range(0, 3), {}, r.range(-0.4, 0.4));
+  },
+  coal_sack(ms, r) {
+    // a canvas sack of smithing coal, gathered and tied at the neck
+    lathe(ms, 'canvas', [[0, 0], [0.12, 0], [0.155, 0.03], [0.17, 0.12], [0.165, 0.24], [0.13, 0.3], [0.05, 0.335], [0.035, 0.345], [0.05, 0.37], [0.075, 0.385], [0.06, 0.39], [0, 0.385]], 14);
+    tube(ms, 'rope', Array.from({ length: 10 }, (_, k) => V(Math.sin(k / 10 * 6.283) * 0.04, 0.343, Math.cos(k / 10 * 6.283) * 0.04)), 0.005, 4, { closed: true });
+    tube(ms, 'rope', [V(0.03, 0.343, 0.03), V(0.06, 0.3, 0.07), V(0.07, 0.26, 0.09)], 0.005, 4);
+    // coal dust grimed into the weave
+    for (let i = 0; i < 5; i++) boxAt(ms, 'soot', r.range(-0.03, 0.03), 0.39 + r.range(0, 0.01), r.range(-0.03, 0.03), 0.025, 0.02, 0.025, r.range(0, 3));
+  },
+  iron_bar(ms) {
+    // three lengths of half-inch square mild steel, wired together
+    for (let i = 0; i < 3; i++) boxAt(ms, 'iron', 0, 0.0065 + (i === 2 ? 0.013 : 0), (i === 2 ? 0 : i - 0.5) * 0.0135, 0.62, 0.0127, 0.0127, 0, { grain: 'x' });
+    for (const x of [-0.22, 0.22]) tube(ms, 'galv', Array.from({ length: 8 }, (_, k) => V(x, 0.013 + Math.sin(k / 8 * 6.283) * 0.019, Math.cos(k / 8 * 6.283) * 0.019)), 0.0015, 3, { closed: true });
+  },
+  leaf_spring(ms) {
+    // an old truck leaf spring: three stacked curved leaves, the top one with rolled eyes
+    for (let l = 0; l < 3; l++) {
+      const half = 0.3 - l * 0.07, pts: THREE.Vector3[] = [];
+      for (let k = 0; k <= 8; k++) { const x = -half + (2 * half * k) / 8; pts.push(V(x, 0.012 + l * 0.009 + (1 - (x / 0.3) ** 2) * 0.05 - (0.05 - l * 0.004), 0)); }
+      for (let k = 0; k < 8; k++) {
+        const a = pts[k], b = pts[k + 1], mid = a.clone().add(b).multiplyScalar(0.5);
+        boxAt(ms, 'soot', mid.x, mid.y + 0.045, 0, a.distanceTo(b) + 0.002, 0.008, 0.05, 0, { grain: 'x' }, 0, Math.atan2(b.y - a.y, b.x - a.x));
+      }
+    }
+    for (const s of [-1, 1]) {
+      ms.pushT(s * 0.3, 0.059, 0, 0, Math.PI / 2);
+      lathe(ms, 'soot', [[0.016, -0.025], [0.016, 0.025]], 8);
+      ms.pop();
+    }
+    boxAt(ms, 'iron', 0, 0.036, 0, 0.03, 0.03, 0.06);
+  },
+  axe_handle(ms) {
+    // a 32 inch hickory handle lying on its side: swelled knob, a gentle S, the slotted eye end
+    const pts = [V(-0.4, 0.02, 0.0), V(-0.3, 0.017, -0.006), V(-0.1, 0.015, -0.004), V(0.1, 0.015, 0.003), V(0.3, 0.016, 0.006), V(0.37, 0.018, 0.004)];
+    tube(ms, 'board_warm', pts, 0.015, 7, { rEnd: 0.013 });
+    ms.pushT(-0.405, 0.02, 0, 0, 0, Math.PI / 2);
+    lathe(ms, 'board_warm', [[0, -0.018], [0.018, -0.015], [0.022, 0.0], [0.016, 0.015]], 8);
+    ms.pop();
+    boxAt(ms, 'board_warm', 0.4, 0.02, 0.004, 0.06, 0.028, 0.018, 0, { grain: 'x' });
+    boxAt(ms, 'board_warm', 0.42, 0.034, 0.004, 0.05, 0.004, 0.006, 0, { grain: 'x' });
+  },
+  s_hooks(ms) {
+    // three hand-forged S hooks on a loop of wire
+    for (let i = 0; i < 3; i++) {
+      const pts: THREE.Vector3[] = [];
+      for (let k = 0; k <= 16; k++) { const t = k / 16, a = t * Math.PI * 2; const top = t < 0.5; const c = top ? 0.05 : -0.05; const aa = top ? a * 0.95 : a * 0.95 + Math.PI; pts.push(V(Math.cos(aa) * 0.03 + 0, 0.11 + c * 0.9 + Math.sin(aa) * 0.03 * (top ? 1 : -1), 0)); }
+      ms.pushT((i - 1) * 0.045, 0, 0, 0.3 * (i - 1));
+      tube(ms, 'iron', pts, 0.004, 4);
+      ms.pop();
+    }
+  },
+  nails(ms) {
+    // a paper twist of square-cut nails, some spilled
+    ms.pushT(0, 0.035, 0);
+    latheR(ms, 'lab', [[0, -0.035], [0.035, -0.035], [0.04, 0.0], [0.03, 0.03], [0.012, 0.045], [0, 0.05]], 10, L('kraft'));
+    ms.pop();
+    for (let i = 0; i < 5; i++) {
+      ms.pushT(0.05 + i * 0.012, 0.004, -0.02 + i * 0.011, i * 0.9, 0, Math.PI / 2);
+      lathe(ms, 'iron', [[0, -0.035], [0.0025, -0.03], [0.0025, 0.032], [0.005, 0.033], [0.005, 0.036], [0, 0.036]], 4);
+      ms.pop();
+    }
+  },
+  log_dog(ms) {
+    // a forged log dog: a square staple, both points turned down
+    tube(ms, 'iron', [V(-0.12, 0.0, 0), V(-0.12, 0.06, 0), V(-0.1, 0.075, 0), V(0.1, 0.075, 0), V(0.12, 0.06, 0), V(0.12, 0.0, 0)], 0.008, 4, { smooth: false });
+  },
   jar_preserves(ms) {
     latheR(ms, 'lab_gloss', [[0, 0], [0.036, 0], [0.038, 0.006], [0.038, 0.016]], 14, L('blueberry'));
     latheR(ms, 'lab', [[0.0385, 0.016], [0.0385, 0.056]], 14, L('jar_label'));

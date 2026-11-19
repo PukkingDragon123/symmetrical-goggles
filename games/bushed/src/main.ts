@@ -25,6 +25,8 @@ import { QUALITY, guessQuality, storedQuality, storeQuality, applyRuntime, type 
 import { spawnNpcs } from './game/npcs';
 import { install as installHunting } from './game/hunting';
 import { install as installBook } from './ui/bookofcryptids';
+import { installCooking, registerCookItems } from './game/cooking';
+import { installForge, registerForgeItems } from './game/forge';
 import { Forest } from './world/forest';
 import { GroundCover } from './world/groundcover';
 import { treeMaterials } from './trees/materials';
@@ -40,6 +42,8 @@ async function step<T>(label: string, f: () => Promise<T>): Promise<T | null> {
 
 async function boot() {
   await loadFonts();
+  // modules' items go in the catalogue before the store stocks its shelves
+  registerCookItems(); registerForgeItems();
   hud.mount(document.getElementById('ui')!);
   floatText.mount(document.getElementById('ui')!, null);
   hud.fadeTo(true, 0);
@@ -120,6 +124,8 @@ async function boot() {
   });
   const cabinPlay = new CabinPlay(game);
   cabinPlay.attach();
+  await step('kitchen', async () => { installCooking(game); });
+  await step('forge', async () => { await installForge(game); });
   const storePlay = new StorePlay(game, (n, c) => cabinPlay.act(n, c));
   await step('store play', async () => storePlay.attach());
   await step('hunting', async () => { await installHunting(game, { hotkey: null } as never); });

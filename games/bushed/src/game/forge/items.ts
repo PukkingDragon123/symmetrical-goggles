@@ -10,14 +10,14 @@ import { addItems, ITEMS, type ItemDef, type ToolStats } from '../items';
 import type { Game } from '../game';
 
 export const FORGE_ITEMS: Record<string, ItemDef> = {
-  iron_stock: { id: 'iron_stock', name: 'Mild steel bar', desc: 'A metre of half-inch square bar. Hooks, nails, dogs and wedges.', price: 5, mass: 1.0, model: 'gen:file', pocket: true, tags: ['smithing'] },
-  tool_steel: { id: 'tool_steel', name: 'High-carbon steel', desc: 'An old leaf spring, the best steel there is for an axe bit. Hardens like glass.', price: 16, mass: 1.2, model: 'gen:file', pocket: true, tags: ['smithing'] },
-  axe_handle: { id: 'axe_handle', name: 'Hickory axe handle', desc: '32 inches of straight-grained hickory with a wooden wedge. Something out there would love to chew it.', price: 14, mass: 0.9, model: 'gen:kindling', pocket: false, tags: ['smithing', 'handle'] },
-  coal: { id: 'coal', name: 'Smithing coal', desc: 'A sack of bituminous coal. Burns hotter and longer than charcoal.', price: 12, mass: 9, model: 'gen:bundle', pocket: false, tags: ['fuel'] },
-  charcoal: { id: 'charcoal', name: 'Lump charcoal', desc: 'A sack of hardwood charcoal. Clean and quick. Make your own in the retort.', price: 7, sell: 4, mass: 4, model: 'gen:bundle', pocket: false, tags: ['fuel'] },
-  iron_hooks: { id: 'iron_hooks', name: 'Iron S-hooks', desc: 'Three hand-forged hooks. Hang meat to smoke, pots over the fire, the lantern.', price: 0, sell: 7, mass: 0.3, model: 'gen:file', pocket: true, tags: ['forged'] },
-  nails: { id: 'nails', name: 'Hand-forged nails', desc: 'A dozen square nails with rosehead tops. Pruneau pays well for them.', price: 0, sell: 9, mass: 0.3, model: 'gen:file', pocket: true, tags: ['forged'] },
-  log_dogs: { id: 'log_dogs', name: 'Log dogs', desc: 'A pair of iron staples that pin a log to the sawbuck. The saw runs straight and fast.', price: 0, sell: 12, mass: 1.2, model: 'gen:log_tongs', pocket: true, tags: ['forged'] },
+  iron_stock: { id: 'iron_stock', name: 'Mild steel bar', desc: 'A metre of half-inch square bar. Hooks, nails, dogs and wedges.', price: 5, mass: 1.0, model: 'gen:iron_bar', pocket: true, tags: ['smithing'] },
+  tool_steel: { id: 'tool_steel', name: 'High-carbon steel', desc: 'An old leaf spring, the best steel there is for an axe bit. Hardens like glass.', price: 16, mass: 1.2, model: 'gen:leaf_spring', pocket: true, tags: ['smithing'] },
+  axe_handle: { id: 'axe_handle', name: 'Hickory axe handle', desc: '32 inches of straight-grained hickory with a wooden wedge. Something out there would love to chew it.', price: 14, mass: 0.9, model: 'gen:axe_handle', pocket: false, tags: ['smithing', 'handle'] },
+  coal: { id: 'coal', name: 'Smithing coal', desc: 'A sack of bituminous coal. Burns hotter and longer than charcoal.', price: 12, mass: 9, model: 'gen:coal_sack', pocket: false, tags: ['fuel'] },
+  charcoal: { id: 'charcoal', name: 'Lump charcoal', desc: 'A sack of hardwood charcoal. Clean and quick. Make your own in the retort.', price: 7, sell: 4, mass: 4, model: 'gen:charcoal_sack', pocket: false, tags: ['fuel'] },
+  iron_hooks: { id: 'iron_hooks', name: 'Iron S-hooks', desc: 'Three hand-forged hooks. Hang meat to smoke, pots over the fire, the lantern.', price: 0, sell: 7, mass: 0.3, model: 'gen:s_hooks', pocket: true, tags: ['forged'] },
+  nails: { id: 'nails', name: 'Hand-forged nails', desc: 'A dozen square nails with rosehead tops. Pruneau pays well for them.', price: 0, sell: 9, mass: 0.3, model: 'gen:nails', pocket: true, tags: ['forged'] },
+  log_dogs: { id: 'log_dogs', name: 'Log dogs', desc: 'A pair of iron staples that pin a log to the sawbuck. The saw runs straight and fast.', price: 0, sell: 12, mass: 1.2, model: 'gen:log_dog', pocket: true, tags: ['forged'] },
   wedge: { id: 'wedge', name: 'Splitting wedge', desc: 'A hardened steel wedge. Knotty rounds give up.', price: 0, sell: 14, mass: 2.0, model: 'gen:file', pocket: true, tags: ['forged'] },
 };
 

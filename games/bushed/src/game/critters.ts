@@ -12,6 +12,7 @@ import { floatText } from '../ui/float';
 import { makePhysical, propsNear, removeProp, type PhysProp } from './physprops';
 import { ITEMS } from './items';
 import { anchorPos } from './flow';
+import { chewHandle } from './forge/items';
 
 /** fallbacks while a creature sound id is missing from the bank */
 const FALLBACK: Record<string, string> = {
@@ -76,7 +77,8 @@ export class Critters {
     // any food held out goes to the creature you're looking at; each one has a favourite (see its offer())
     game.events.on('offer', (o: { item: string; obj: THREE.Object3D; taken: boolean }) => {
       const within = (root: THREE.Object3D | undefined) => { for (let p: THREE.Object3D | null = o.obj; p; p = p.parent) if (p === root) return true; return false; };
-      const old = o.item === 'syrup' ? 'maple_syrup' : o.item;
+      // home-smoked cryptid jerky counts as jerky to the older creatures
+      const old = o.item === 'syrup' ? 'maple_syrup' : o.item === 'cryptid_jerky' ? 'jerky' : o.item;
       const targets: [string, { object: THREE.Object3D; offer(i: string): boolean } | null][] = [
         ['hound', this.hound], ['bigfoot', this.bigfoot as never], ['granny', this.granny], ['gumberoo', this.gumberoo as never],
         ['dingbat', this.dingbats as never], ['wildlife', this.wildlife as never], ...this.extra.map((c) => [c.id, c] as [string, never]),
@@ -384,7 +386,7 @@ export class Critters {
         o.rotation.set(Math.PI / 2, 0, Math.random() * 6);
         g.scene.add(o);
         import('./interact').then(({ registerInteractable }) => registerInteractable(o, {
-          kind: 'pickup', label: () => 'Take back the axe (slobbery)', use: () => { o.removeFromParent(); g.give('axe_old'); g.hands.equip('axe_old'); hud.say('<i>Teeth marks all down the handle. It still works.</i>', 3); },
+          kind: 'pickup', label: () => 'Take back the axe (slobbery)', use: () => { o.removeFromParent(); g.give('axe_old'); chewHandle(g, 'axe_old'); g.hands.equip('axe_old'); hud.say('<i>Teeth marks all down the handle. It still works.</i>', 3); },
         }));
       }
       this.wasCarrying = carrying;

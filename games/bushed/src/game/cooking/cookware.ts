@@ -10,7 +10,7 @@ import { STOVE } from '../../places/stove';
 
 export const PLATE = { x0: -0.21, x1: 0.21, z0: -0.1, z1: 0.42, y: STOVE.AXIS_Y + STOVE.R + 0.022 };
 export const COUNTER = { x0: 0.345, x1: 0.785, z0: -0.3, z1: 0.3, y: 0.76 };
-export const PANTRY = { x0: -0.74, x1: -0.38, z0: -0.04, z1: 0.4, y: 0.74 };
+export const PANTRY = { x0: -0.74, x1: -0.38, z0: -0.04, z1: 0.54, y: 0.74 };
 
 /** extra materials for cookware (registered once with the places kit) */
 export function ensureCookMats(): void {

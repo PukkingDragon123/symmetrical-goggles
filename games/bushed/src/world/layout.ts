@@ -192,6 +192,14 @@ for (const p of PADS) p.h = Math.max(baseHeight(p.x, p.z), WORLD.waterY + 1.5);
   const r = roadInfo(SPOTS.store.x, SPOTS.store.z - 37);
   if (r.road >= 0) PADS[1].h = r.h;
 }
+// the forge lean-to beside the woodshed (src/places/forge.ts forgePlacement): a small level clearing, kept at
+// the height the ground already has there so nothing around it moves
+{
+  const rot = (SPOTS.cabin.rot ?? 0) - Math.PI / 2, c = Math.cos(rot), s = Math.sin(rot), lx = 4.75, lz = -1.45;
+  const fp: Pad = { x: SPOTS.woodyard.x + c * lx + s * lz, z: SPOTS.woodyard.z - s * lx + c * lz, r: 4.5, fall: 6 };
+  fp.h = heightAt(fp.x, fp.z);
+  PADS.push(fp);
+}
 
 // ---------------------------------------------------------------- public queries
 export function heightAt(x: number, z: number): number {

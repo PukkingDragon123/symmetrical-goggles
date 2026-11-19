@@ -129,11 +129,15 @@ export class BookOfCryptids {
         id, keys: [`rule:${id}:${rule}`],
         before: (v) => ({ ...v, known: new Map([...v.known].map(([k, ss]) => [k, k === id ? new Set([...ss].filter((x) => x !== rule)) : ss])) }),
       });
-      if (!this.openFlag) this.say(pick(LINES.shut), 2);
+      // it wants to write something down: a muffled mumble from the pack (not every time)
+      const now = performance.now();
+      if (!this.openFlag && now - this.mumbledAt > 25000) { this.mumbledAt = now; this.say(pick(LINES.shut), 2); }
     }
     this.invalidate();
     return true;
   }
+
+  private mumbledAt = -1e9;
 
   sawCritter(id: string): void {
     const c = canonical(this.list, id) ?? id;

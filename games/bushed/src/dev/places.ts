@@ -212,7 +212,7 @@ async function main(): Promise<void> {
 // ---------------------------------------------------------------------------------------------- product lineup
 async function productLineup(): Promise<void> {
   const { buildProduct, GEN_PRODUCTS, DECOR_PRODUCTS, productSize } = await import('../places/products');
-  const ids = [...new Set([...GEN_PRODUCTS, ...DECOR_PRODUCTS])];
+  const ids = q.get('ids') ? q.get('ids')!.split(',') : [...new Set([...GEN_PRODUCTS, ...DECOR_PRODUCTS])];
   const ox = SPOTS.cabin.x + 30, oz = SPOTS.cabin.z - 30;
   const y0 = heightAt(ox, oz) + 0.8;
   const table = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.04, 2.6), new THREE.MeshStandardMaterial({ color: 0x5a4a3a, roughness: 0.9 }));

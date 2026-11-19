@@ -82,6 +82,8 @@ export class Game {
   trailer: import('../vehicles/trailer').Trailer | null = null;
   critters: { hound: { trust: number; state: string } | null } | null = null;
   updaters: ((dt: number) => void)[] = [];
+  /** run after the HUD is set up each frame */
+  readonly lateUpdaters: ((dt: number) => void)[] = [];
   cabin: Place | null = null;
   store: Place | null = null;
   readonly flags = new Set<string>();
@@ -655,6 +657,8 @@ export class Game {
       hud.showDot(true);
     } else if (this.pack.open) { hud.showDot(false); hud.setCharge(0); hud.setLabel(''); }
     else { hud.setLabel(''); hud.showDot(false); hud.setCharge(0); }
+    // close-up stations (stove, forge) draw their own cursor and label after the HUD block
+    for (const u of this.lateUpdaters) u(dt);
     hud.update(dt);
   }
 

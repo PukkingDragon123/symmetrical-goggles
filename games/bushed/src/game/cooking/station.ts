@@ -254,6 +254,8 @@ export abstract class Station {
     cam.updateMatrixWorld(true);
     this.ray.setFromCamera(new THREE.Vector2(this.ptr.x, this.ptr.y), cam);
     this.ray.far = 4;
+    // things moved this frame: bring their matrices up to date before testing
+    for (const o of objects) o.updateWorldMatrix(true, true);
     const hits = this.ray.intersectObjects(objects, recursive);
     for (const h of hits) if (h.object.visible || (h.object as THREE.Mesh).userData.pickProxy) return h;
     return null;

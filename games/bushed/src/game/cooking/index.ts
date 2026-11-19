@@ -20,7 +20,7 @@ import { audio, type Voice } from '../../audio/audio';
 import { puffs } from '../../gfx/particles';
 import { G } from '../../gfx/globals';
 import { registerInteractable, findInteractable } from '../interact';
-import { Mesher, Rand } from '../../places/kit';
+import { Mesher, Rand, Cols } from '../../places/kit';
 import { STOVE } from '../../places/stove';
 import { buildProduct } from '../../places/products';
 import { loadProp } from '../../places/props';
@@ -226,7 +226,7 @@ type Drag =
 const VIEWS = {
   stove: { pos: V3(0.03, 1.27, 0.56), look: V3(0.01, 0.86, 0.12), fov: 50 },
   prep: { pos: V3(0.52, 1.42, 0.64), look: V3(0.57, 0.77, 0.02), fov: 52 },
-  pantry: { pos: V3(-0.46, 1.22, 0.7), look: V3(-0.56, 0.75, 0.2), fov: 50 },
+  pantry: { pos: V3(-0.46, 1.3, 0.86), look: V3(-0.56, 0.75, 0.22), fov: 52 },
   door: { pos: V3(0.08, 0.96, 0.95), look: V3(0.0, 0.6, 0.44), fov: 50 },
 };
 type ViewName = keyof typeof VIEWS;
@@ -324,10 +324,10 @@ export class CookingStation extends Station {
     this.pantry.push({ id: 'lard', obj: lard, home: lard.position.clone(), yaw: 0, uses: 999, hit: this.hitFor(lard, 0.12, 0.1, 0.12) });
     // ---- serving plate and mug on the pantry table
     this.plateObj = buildProduct('enamel_plate');
-    this.plateObj.position.set(PANTRY.x0 + 0.13, PANTRY.y, PANTRY.z1 - 0.12);
+    this.plateObj.position.set(PANTRY.x0 + 0.13, PANTRY.y, PANTRY.z1 - 0.13);
     this.root.add(this.plateObj);
     this.mugObj = buildProduct('enamel_mug');
-    this.mugObj.position.set(PANTRY.x1 - 0.06, PANTRY.y, PANTRY.z1 - 0.07);
+    this.mugObj.position.set(PANTRY.x1 - 0.06, PANTRY.y, PANTRY.z1 - 0.08);
     this.mugObj.rotation.y = -0.6;
     this.root.add(this.mugObj);
     // ---- jerky rack hung from the stovepipe above the plate
@@ -375,6 +375,14 @@ export class CookingStation extends Station {
     registerInteractable(hot, { kind: 'stove', label: () => 'Cook', use: () => { this.enter(); } });
     this.setView(VIEWS.stove);
     this.parallax = 0.03;
+    // the counter and the pantry table are solid
+    this.root.updateWorldMatrix(true, false);
+    const wp = this.root.getWorldPosition(new THREE.Vector3());
+    const e = new THREE.Euler().setFromQuaternion(this.root.getWorldQuaternion(new THREE.Quaternion()), 'YXZ');
+    const cols = new Cols();
+    cols.box((COUNTER.x0 + COUNTER.x1) / 2, COUNTER.y / 2, (COUNTER.z0 + COUNTER.z1) / 2, (COUNTER.x1 - COUNTER.x0) / 2, COUNTER.y / 2, (COUNTER.z1 - COUNTER.z0) / 2);
+    cols.box((PANTRY.x0 + PANTRY.x1) / 2, PANTRY.y / 2, (PANTRY.z0 + PANTRY.z1) / 2, (PANTRY.x1 - PANTRY.x0) / 2, PANTRY.y / 2, (PANTRY.z1 - PANTRY.z0) / 2);
+    g.addPlace({ group: new THREE.Group(), colliders: cols.toWorld(wp.x, wp.y, wp.z, e.y), anchors: {}, lights: [], update: () => {}, interior: [] });
   }
 
   private rest(o: THREE.Object3D, p: THREE.Vector3, e: THREE.Euler): void {
@@ -434,10 +442,17 @@ export class CookingStation extends Station {
     for (const p of this.pantry) if (p.id !== 'lard') p.obj.removeFromParent();
     this.pantry = this.pantry.filter((p) => p.id === 'lard');
     const ids = ['bacon', 'eggs', 'bannock_mix', 'berries', 'beans', 'syrup', 'coffee', 'chanterelle', ...meatIds(), 'fish', 'kindling'];
+    // the first six owned (by importance) get a place on the table; the fish lies on the counter
+    const owned = (id: string) => g.owns(id) || (id === 'eggs' && this.eggsLeft > 0) || (id === 'syrup' && this.syrupLeft > 0) || (id === 'coffee' && this.coffeeLeft > 0);
+    const picked = ids.filter((id) => id !== 'fish' && owned(id)).slice(0, 6);
+    ids.length = 0;
+    ids.push('fish', ...picked);
+    // three rows of two in front of the plate and mug: the tall things at the back so nothing hides behind them
     const slots: [number, number, number][] = [
-      [-0.65, 0.04, 0], [-0.47, 0.05, 0.1], [-0.66, 0.17, 0.2], [-0.47, 0.18, -0.1], [-0.66, 0.29, 0], [-0.47, 0.3, 0.3],
-      [-0.66, 0.41, 0], [-0.47, 0.42, 0],
+      [-0.65, -0.0, 0.05], [-0.465, 0.005, -0.1], [-0.655, 0.105, 0.1], [-0.465, 0.11, -0.05], [-0.65, 0.21, 0], [-0.47, 0.205, 0.2],
     ];
+    const tall: Record<string, number> = { syrup: 3, coffee: 3, beans: 3, bannock_mix: 3, kindling: 2, berries: 2 };
+    ids.sort((a, b) => (a === 'fish' ? -9 : b === 'fish' ? 9 : (tall[b] ?? 1) - (tall[a] ?? 1)));
     let si = 0;
     for (const id of ids) {
       if (!g.owns(id) && !((id === 'eggs' && this.eggsLeft) || (id === 'syrup' && this.syrupLeft) || (id === 'coffee' && this.coffeeLeft))) continue;
@@ -463,7 +478,7 @@ export class CookingStation extends Station {
       this.root.add(obj);
       const b = new THREE.Box3().setFromObject(obj);
       const sz = b.getSize(new THREE.Vector3());
-      const hit = proxy(new THREE.BoxGeometry(Math.max(0.06, sz.x / Math.max(1e-3, obj.scale.x)), Math.max(0.05, sz.y), Math.max(0.06, sz.z)));
+      const hit = proxy(new THREE.BoxGeometry(Math.max(0.05, sz.x * 0.8 / Math.max(1e-3, obj.scale.x)), Math.max(0.04, sz.y * 0.85), Math.max(0.05, sz.z * 0.8)));
       hit.position.y = sz.y / 2;
       obj.add(hit);
       this.pantry.push({ id, obj, home: pos.clone(), yaw, uses: 1, hit });
@@ -480,6 +495,8 @@ export class CookingStation extends Station {
       const host = this.stoveObj.parent!;
       const topW = (g.cabin!.anchors.stove_top as THREE.Object3D).getWorldPosition(new THREE.Vector3());
       for (const c of host.children) if ((c.name === 'coffeepot' || c.name === 'pot_enamel_01') && c.getWorldPosition(this.tmp).distanceTo(topW) < 0.6) c.visible = false;
+      // the old one-click cook on the stove top gives way to the station, whichever was installed first
+      clearInteractables(g.cabin!.anchors.stove_top as THREE.Object3D);
     }
     // the draft: the real stove's fire level follows the air you give it (an open draft burns wood faster)
     if (s.lit) {
@@ -776,7 +793,7 @@ export class CookingStation extends Station {
     for (const f of this.foods) if (f.where !== 'gone' && f.where !== 'hand') list.push(f.obj);
     if (this.stock) list.push(this.stock.obj);
     for (const v of [this.skillet, this.pot, this.coffee]) list.push(v.obj);
-    for (const pp of this.pantry) list.push(pp.hit);
+    for (const pp of this.pantry) list.push(pp.obj);
     list.push(this.boardHit, this.plateObj, this.mugObj, this.rack);
     if (this.served) list.push(this.served.hit);
     if (this.viewName === 'door' && this.doorPivot) list.push(this.doorPivot);

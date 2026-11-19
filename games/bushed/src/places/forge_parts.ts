@@ -135,13 +135,11 @@ export function buildAnvil(): { group: THREE.Group; faceY: number; faceX0: numbe
   cap(secs[0], -1);
   cap(secs[secs.length - 1], 1);
   // the feet: four splayed blocks under the waist
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-    const fx = 0.03 + sx * 0.13, fz = sz * 0.1;
-    ms.pushT(fx, 0.035, fz, 0, sz * 0.12, -sx * 0.25);
-    box(ms, 'f_anvil', 0.12, 0.07, 0.09, { uv: [fx, fz] });
-    ms.pop();
-  }
-  boxAt(ms, 'f_anvil', 0.03, 0.06, 0, 0.2, 0.08, 0.16, 0, { uv: [0.1, 0.3] });
+  // the base: a flared block under the waist with four short feet at its corners
+  ms.pushT(0.03, 0, 0);
+  lathe(ms, 'f_anvil', [[0.0, 0.0], [0.17, 0.0], [0.17, 0.03], [0.13, 0.07], [0.1, 0.11], [0.0, 0.11]], 4, { phase: Math.PI / 4 });
+  ms.pop();
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) boxAt(ms, 'f_anvil', 0.03 + sx * 0.115, 0.015, sz * 0.09, 0.07, 0.03, 0.06, 0, { uv: [sx, sz] });
   // hardy hole (square) and pritchel hole (round) near the heel: dark recesses with walls
   const hardyX = xHeel - 0.07, pritchelX = xHeel - 0.13;
   const hole = (x: number, sq: boolean) => {
