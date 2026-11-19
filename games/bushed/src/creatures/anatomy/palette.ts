@@ -112,6 +112,36 @@ function lut() {
 }
 /** the nearest palette colour to 0xRRGGBB */
 export function snap(c: number): number { return lut()[(((c >> 19) & 31) << 10) | (((c >> 11) & 31) << 5) | ((c >> 3) & 31)]; }
+/** a ramp with its ends hue-shifted (handpaint.ts): the darkest steps pushed toward blue-violet, the lightest toward
+ *  straw and orange, each snapped back into the master palette; mid-tones keep the ramp's local colour and the steps
+ *  keep their order of lightness. `k` scales the shift (0 = the ramp itself). Memoised per ramp array. */
+const HUE = new WeakMap<readonly number[], Map<number, number[]>>();
+/** where a shifted step may land: shadows in the cool darks (violet, plum, slate, ink...), lights in the warm lights */
+const COOL: RampName[] = ['violet', 'plum', 'slate', 'ink', 'stone', 'basalt', 'sky', 'hide', 'leather'];
+const WARM: RampName[] = ['ochre', 'straw', 'sand', 'bone', 'gold', 'brass', 'paper', 'rust', 'clay', 'hickory', 'fur'];
+let COOLC: number[] | null = null, WARMC: number[] | null = null;
+export function hueRamp(R: readonly number[], k = 1): number[] {
+  if (k <= 0) return R as number[];
+  let m = HUE.get(R); if (!m) HUE.set(R, (m = new Map()));
+  const kk = Math.round(k * 4) / 4, hit = m.get(kk); if (hit) return hit;
+  COOLC ??= [...new Set(COOL.flatMap((n) => RAMPS[n] as readonly number[]))];
+  WARMC ??= [...new Set(WARM.flatMap((n) => RAMPS[n] as readonly number[]))];
+  const n = R.length, lum = (c: number) => ((c >> 16) & 255) * 0.3 + ((c >> 8) & 255) * 0.59 + (c & 255) * 0.11;
+  const out = R.map((c, j) => {
+    const t = n > 1 ? j / (n - 1) : 0.5, cool = Math.max(0, 1 - t / 0.3) * kk, warm = Math.max(0, (t - 0.7) / 0.3) * kk;
+    if (cool <= 0.05 && warm <= 0.05) return c;
+    let r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
+    r += -10 * cool + 18 * warm; g += -8 * cool + 8 * warm; b += 16 * cool - 22 * warm;
+    const tgt = (Math.max(0, Math.min(255, Math.round(r))) << 16) | (Math.max(0, Math.min(255, Math.round(g))) << 8) | Math.max(0, Math.min(255, Math.round(b)));
+    let best = c, bd = dist(tgt, c) * 1.15; // the step itself unless a shifted colour is clearly nearer the target
+    for (const q of cool > warm ? COOLC! : WARMC!) { if (Math.abs(lum(q) - lum(c)) > 12) continue; const d = dist(tgt, q); if (d < bd) { bd = d; best = q; } }
+    return best;
+  });
+  // the order of lightness must survive (a ramp is indexed by light)
+  for (let j = 1; j < n; j++) if (lum(out[j]) < lum(out[j - 1]) - 2) out[j] = R[j];
+  m.set(kk, out);
+  return out;
+}
 /** snap an RGBA buffer in place (alpha untouched) */
 export function snapRGBA(d: Uint8Array | Uint8ClampedArray) {
   const L = lut();

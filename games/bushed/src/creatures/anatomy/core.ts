@@ -58,6 +58,9 @@ export interface Piece {
   tone?: Tone;
   /** left out of the quick build (teeth, whiskers, pupils: nothing a far silhouette needs) */
   farSkip?: boolean;
+  /** run once on the subdivided cage when the piece is finalized, before anything seats on it or charts it
+   *  (sculpt.ts displace: wrinkles, folds, scale plates pushed into the real surface) */
+  post?: (p: Piece) => void;
 }
 /** paints the fur page: for a texel of a piece (its creature-space point, normal, curvature and ambient occlusion),
  *  [density, length, clump, tip] in 0..1, or null for bare skin. See src/creatures/fur. */
@@ -249,6 +252,7 @@ export class Body {
     const n = Math.min(this.levelCap, p.levels);
     for (let l = 0; l < n; l++) m = subdivide(m, p.grids);
     p.m = m; p.done = true;
+    p.post?.(p);
     return p;
   }
   /** pieces the budget never coarsens (the body, the skull and the face read every frame up close) */

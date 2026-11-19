@@ -11,7 +11,7 @@
 //   px.base((i) => [RP('slate'), 3]);            // ramp + step per texel, before light
 //   px.scales({ size: 0.4, ... });                // marks add to the step
 //   px.flush();                                   // light + marks -> ramp steps -> page
-import { RAMPS, type RampName } from './palette';
+import { RAMPS, hueRamp, type RampName } from './palette';
 import { hash, oct, type V3 } from './kit';
 import type { Body, Chart, GBuf } from './core';
 
@@ -71,6 +71,10 @@ export class Px {
   over: Int32Array; alpha: Uint8Array;
   /** strength of the baked sky occlusion for this chart (1 = full) */
   lightK = 1;
+  /** the hand-painted form light (handpaint.ts Hand.form): when set it replaces the default sky/AO/curvature shading */
+  form: Float32Array | null = null;
+  /** hue-shift the ends of every ramp at flush (palette.ts hueRamp): shadows cooler, lights warmer (0 = off) */
+  hue = 0;
   /** surface data per texel (0..255): roughness, metalness, eye shine; defaults from the body */
   rough: Uint8Array; metal: Uint8Array; shine: Uint8Array;
   rampT: number[][] = [];
@@ -106,6 +110,7 @@ export class Px {
   private _lastR: number[] | null = null; private _lastK = 0;
   /** the baked shading: sky occlusion (undersides a step darker), ambient occlusion, ridges and valleys; no sun */
   shadeAt(i: number) {
+    if (this.form) return this.form[i];
     const ny = this.gb.N[i * 3 + 1];
     const k = this.gb.K[i], a = this.gb.A[i];
     return (ny * 0.55 - 0.1) * this.lightK + cl(k * 1.2, -0.8, 0.8) - a * 2.0;
@@ -505,7 +510,7 @@ export class Px {
       let c: number;
       if (this.over[i] >= 0) c = this.over[i];
       else {
-        const R = this.rampT[this.rampI[i]] ?? RP('stone');
+        const R0 = this.rampT[this.rampI[i]] ?? RP('stone'), R = this.hue > 0 ? hueRamp(R0, this.hue) : R0;
         const v = this.step[i] + this.shadeAt(i) + this.mark[i];
         c = R[cl(Math.round(v), 0, R.length - 1)];
       }

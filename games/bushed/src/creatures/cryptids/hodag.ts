@@ -15,7 +15,7 @@
 import * as THREE from 'three';
 import { Cryptid, CH, clipKit, isNight, clamp, damp, type Pose, type Clip, type AnimParams } from './base';
 import { cryptidLoader } from './kit';
-import { hodagModelGen, hodagBones, HODAG_MODEL_VERSION, HODAG_EYE, HODAG_FUR_SPEC } from './hodag/model';
+import { hodagModelGen, hodagBones, HODAG_MODEL_VERSION, HODAG_EYE, HODAG_EYE_AX, HODAG_FUR_SPEC } from './hodag/model';
 import type { BoneDef } from '../rig';
 import type { CreatureCtx } from '../types';
 
@@ -160,7 +160,7 @@ export class Hodag extends Cryptid {
     this.stride = { walk: STRIDE.walk, run: STRIDE.run, back: STRIDE.back };
     this.manualSpeed = { walk: 0.9, run: 5, back: 0.6 };
     this.stepSound = 'foot_mud';
-    this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * 0.62, 0.55, 0.56)).normalize());
+    this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * HODAG_EYE_AX[0], HODAG_EYE_AX[1], HODAG_EYE_AX[2])).normalize());
     void HODAG_EYE;
   }
   /** calm (fed today) or befriended */
@@ -298,10 +298,10 @@ export class Hodag extends Cryptid {
     B[this.bi('sac')].scale.set(1 + s * 0.7, 1 + s * 0.95, 1 + s * 0.65);
     const tg = 0.02 + this.tongue;
     B[this.bi('tongue')].scale.set(Math.min(1, tg * 1.2), Math.min(1, tg * 1.2), tg);
-    // frog lids: the upper lid closes down over the bulging eye; contentment half-closes it
+    // the heavy upper lid rolls down over the narrow almond of eye to meet the lower one; contentment half-closes it
     const blink = clamp(Math.max(p.c[CH.BLINK], p.c[CH.SAD] * 0.55), 0, 1);
-    B[this.bi('lidL')].quaternion.setFromAxisAngle(this.lidAxis[0], 0.1 + blink * 1.35);
-    B[this.bi('lidR')].quaternion.setFromAxisAngle(this.lidAxis[1], 0.1 + blink * 1.35);
+    B[this.bi('lidL')].quaternion.setFromAxisAngle(this.lidAxis[0], blink * 0.9);
+    B[this.bi('lidR')].quaternion.setFromAxisAngle(this.lidAxis[1], blink * 0.9);
     const e = new THREE.Euler(-this.params.lookPitch * 0.4, this.params.lookYaw * 0.4, 0);
     B[this.bi('eyeL')].quaternion.setFromEuler(e); B[this.bi('eyeR')].quaternion.setFromEuler(e);
   }

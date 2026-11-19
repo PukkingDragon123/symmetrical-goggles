@@ -1,22 +1,30 @@
 // GRANNY TAMARACK: model. An old forest grandmother, about 2.4 m to the crown and taller by her antlers: gaunt and
-// long-limbed, a little stooped over a gnarled walking staff. A long dark robe of bark-cloth falls to her bare feet,
-// under a shawl of moss; strips of peeled bark, hanks of moss and beard lichen hang off her shoulders, her back, her
-// sleeves and her ragged hem. Long thin grey hair falls from under crooked tamarack-branch antlers that sprout tufts
-// of autumn-yellow needles. Her face is pale and deeply lined but kind: soft heavy-lidded eyes deep under the brow
-// with laughter creases at their corners, a long nose, a gentle mouth. Long pale fingers with dark nails. In fog
-// she is a tall antlered shape on a staff; up close she is somebody's grandmother.
+// long-limbed, a little stooped over a gnarled walking staff. A long dark robe of bark-cloth hangs in real folds to her
+// bare feet (sculpted drapery: round-backed folds with sharp valleys, fanning out and deepening toward a ragged hem),
+// under a cushioned shawl of moss; strips of peeled bark, hanks of moss and beard lichen hang off her shoulders, her
+// back, her sleeves and her hem. Long thin grey hair falls from under antlers of living tamarack: barked branches that
+// grow out of knobbly bosses on her skull, furrowed and knotted, crusted with lichen, beard lichen hanging off them,
+// tufts of autumn-yellow needles at the spurs. Her face is sculpted (granny/face.ts): an old woman's long face, sunken
+// cheeks under high cheekbones, heavy hooded lids over deep-set kind eyes, crow's feet, a long nose with a drooping
+// tip, nasolabial folds, a sunken mouth with thin lips in a tight smile, soft jowls, a jutting chin. Long knuckly
+// fingers with dark nails. Painted warm to cool: ruddy nose and cheeks, cool grey-violet in the sockets and temples,
+// weathered with spots and veins, a little uncanny. In fog she is a tall antlered shape on a staff; up close she is
+// somebody's grandmother.
 // Creature space: metres, +z forward, +y up, ground y = 0. The staff is part of the skin, on the right hand.
 import * as THREE from 'three';
 import {
-  Body, runSync, runAsync, trunk, limb, legRings, eyeball, eyelid, locks, stalk, curve, chainSkin, addWeights, gridSurf, Px, RP, cell3, h3, cl,
-  type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing,
+  Body, runSync, runAsync, limb, legRings, eyeball, locks, stalk, curve, chainSkin, addWeights, gridSurf, trunk, Px, RP, cell3, h3, cl,
+  newCM, tube, PROFILES,
+  type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing, type Ring,
 } from '../anatomy';
 import { nz2, nz3, fbm3 } from '../paintkit';
 import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 import { furZones } from '../fur/paint';
+import { headSurf, HEAD_COLS, HEAD_ROWS, eyeLocal, lipY, EYE } from './face';
+import { almondLid, lidCoords, strokes, formLight, downFlow, alongFlow, type LidSpec } from '../wildlife/organic';
 
-export const GRANNY_MODEL_VERSION = 'granny@7';
+export const GRANNY_MODEL_VERSION = 'granny@8';
 export interface GrannyModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (the left side; the right is the mirror in x unless given) */
@@ -36,8 +44,10 @@ const add = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 const scl = (a: V3, k: number): V3 => [a[0] * k, a[1] * k, a[2] * k];
 const nrm = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
+const crs = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 const lerp1 = (a: number, b: number, t: number) => a + (b - a) * t;
 const g2 = (x: number, c: number, w: number) => Math.exp(-((x - c) * (x - c)) / (w * w));
+const ss = (a: number, b: number, x: number) => { const t = cl((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 
 export function grannyBones(): BoneDef[] {
   const b: BoneDef[] = [];
@@ -60,82 +70,64 @@ export function grannyBones(): BoneDef[] {
   return b;
 }
 
-// ------------------------------------------------------------------------------------------------ the head's shape
-/** head dimensions by height above the head centre: half width, half depth, centre z */
-const HEADK: [number, number, number, number][] = [
-  [0.172, 0.022, 0.03, -0.022], [0.16, 0.05, 0.066, -0.016], [0.135, 0.066, 0.092, -0.012], [0.1, 0.077, 0.106, -0.008], [0.06, 0.082, 0.112, -0.004],
-  [0.02, 0.083, 0.112, 0.0], [-0.02, 0.08, 0.108, 0.002], [-0.05, 0.071, 0.1, 0.007], [-0.08, 0.061, 0.088, 0.013], [-0.11, 0.05, 0.072, 0.023],
-  [-0.135, 0.036, 0.055, 0.035], [-0.152, 0.02, 0.036, 0.045],
-];
-function headDims(h: number): [number, number, number] {
-  for (let i = 0; i + 1 < HEADK.length; i++) {
-    const a = HEADK[i], b = HEADK[i + 1];
-    if (h <= a[0] && h >= b[0]) { const t = (a[0] - h) / (a[0] - b[0]); return [lerp1(a[1], b[1], t), lerp1(a[2], b[2], t), lerp1(a[3], b[3], t)]; }
-  }
-  const e = h > HEADK[0][0] ? HEADK[0] : HEADK[HEADK.length - 1];
-  return [e[1], e[2], e[3]];
-}
-const HN = 13;
-/** a point of the head (head-centre relative x, z) at height h and angle th round from the back (0) to the face (pi):
- *  an ellipse modelled with the face's landmarks: deep eye sockets under a soft brow, high cheekbones over hollow
- *  cheeks, a long nose with a rounded tip, a gentle mouth, a long chin */
-export function headPt(h: number, th: number): [number, number] {
-  const [W, D, zc] = headDims(h);
-  const u = th / Math.PI;
-  let x = W * Math.sin(th), z = zc - D * Math.cos(th);
-  const x0 = x, front = cl((u - 0.55) / 0.2, 0, 1);
-  // the face is flatter than the skull: pull the front corners forward
-  z += front * 0.012 * Math.sin(th) * (h < 0.07 && h > -0.12 ? 1 : 0.4);
-  // eye sockets
-  z -= 0.016 * front * Math.exp(-((h - 0.012) ** 2) / 0.016 ** 2 - ((x0 - 0.037) ** 2) / 0.018 ** 2);
-  // the brow, soft
-  z += 0.006 * front * g2(h, 0.038, 0.011) * (x0 < 0.065 ? 1 : 0.4);
-  // the nose: a bridge from between the eyes down to a long rounded tip, the wings either side, the philtrum
-  const nose = h > 0.034 ? 0 : h > -0.05 ? lerp1(0.008, 0.046, Math.pow((0.034 - h) / 0.084, 0.9)) : h > -0.062 ? lerp1(0.046, 0.012, (-0.05 - h) / 0.012) : h > -0.074 ? 0.006 : 0;
-  const nw = Math.exp(-(x0 * x0) / (h > -0.042 ? 0.0095 : 0.0145) ** 2);
-  z += nose * nw * front;
-  // the nostril wings
-  z += 0.009 * front * g2(h, -0.05, 0.008) * g2(x0, 0.02, 0.008);
-  // cheekbones up, hollow cheeks under them, hollow temples
-  x += 0.005 * g2(h, -0.015, 0.02) * g2(u, 0.7, 0.08);
-  z += 0.004 * g2(h, -0.015, 0.02) * g2(u, 0.74, 0.08);
-  x -= 0.011 * g2(h, -0.072, 0.022) * g2(u, 0.68, 0.11);
-  x -= 0.004 * g2(h, 0.05, 0.025) * g2(u, 0.52, 0.07);
-  // lips and the chin
-  z += 0.005 * front * g2(h, -0.083, 0.008) * g2(x0, 0, 0.026);
-  z += 0.013 * front * g2(h, -0.122, 0.014) * g2(x0, 0, 0.028);
-  return [x, z];
+// ------------------------------------------------------------------------------------------------ the head
+/** the face's surface z at (|x|, h) in head space (searching round the front half) */
+function faceZ(x: number, h: number): number {
+  let best = Math.PI, bd = 1;
+  for (let k = 0; k <= 300; k++) { const th = Math.PI * (0.55 + 0.45 * k / 300), [X] = headSurf(h, th), d = Math.abs(X - x); if (d < bd) { bd = d; best = th; } }
+  return headSurf(h, best)[1];
 }
 /** where the brows and the mouth corners sit (side k: +1 left) */
 export function faceMarks(k: number): { brow: V3; smile: V3 } {
-  const E = eyeAt(), H = GT.hg;
-  return { brow: [k * (E.c[0] - 0.002), E.c[1] + 0.021, E.c[2] + 0.012], smile: [k * 0.026, H[1] - 0.084, H[2] + 0.075] };
+  const E = eyeAt(), H = GT.hg, mx = 0.0285, my = lipY(mx);
+  return { brow: [k * (E.c[0] - 0.002), E.c[1] + 0.021, E.c[2] + 0.012], smile: [k * mx, H[1] + my, H[2] + faceZ(mx, my) - 0.004] };
 }
 /** the eye: centre and look axis (left) */
 export function eyeAt(): { c: V3; ax: V3; r: number } {
-  const h = 0.012, H = GT.hg, r = 0.0162;
-  // find the socket surface at the eye's x
-  let best = 0, bd = 1;
-  for (let k = 0; k <= 400; k++) { const th = Math.PI * (0.5 + 0.5 * k / 400), [x] = headPt(h, th), d = Math.abs(x - 0.037); if (d < bd) { bd = d; best = th; } }
-  const [, z] = headPt(h, best);
-  return { c: [0.037, H[1] + h, H[2] + z - r * 0.45], ax: nrm([0.16, -0.08, 1]), r };
+  const e = eyeLocal(), H = GT.hg;
+  return { c: add(H, e.c), ax: e.ax, r: e.r };
 }
+/** a point (creature space) and outward normal of the sculpted head at head-space height h, angle th, side s */
+function headPoint(h: number, th: number, s: number): { p: V3; n: V3 } {
+  const H = GT.hg, P = (hh: number, t: number): V3 => { const [x, z] = headSurf(hh, t); return [H[0] + x * s, H[1] + hh, H[2] + z]; };
+  const p = P(h, th), a = sub(P(h, th + 0.01), P(h, th - 0.01)), b = sub(P(h + 0.002, th), P(h - 0.002, th));
+  let n = nrm(crs(b, a)); const out = sub(p, [H[0], H[1] + h, H[2] - 0.01]);
+  if (n[0] * out[0] + n[1] * out[1] + n[2] * out[2] < 0) n = scl(n, -1);
+  return { p, n };
+}
+/** is a creature-space point inside the head? */
+function insideHead(p: V3): boolean {
+  const H = GT.hg, x = Math.abs(p[0] - H[0]), h = p[1] - H[1], z = p[2] - H[2];
+  if (h > 0.176 || h < -0.159) return false;
+  const th = Math.atan2(x, -(z + 0.005)), [X, Z] = headSurf(h, th);
+  return Math.hypot(x, z + 0.005) < Math.hypot(X, Z + 0.005);
+}
+/** where the antlers grow from (left; the bony bosses on the skull) */
+const ANTLER_ROOT: V3 = [0.05, 0.118, -0.006];
 
 // ------------------------------------------------------------------------------------------------ colour
 const hex = (s: string) => parseInt(s.slice(1), 16);
 /** pale, lined old skin: hue-shifted cool mauve in the creases, warm parchment in the light */
 const SKIN = ['#2a2327', '#43383b', '#625453', '#83736d', '#a3928a', '#c1b2a6', '#d9ccbe', '#eae0d3'].map(hex);
+/** where the blood shows: the nose, the apples of the cheeks, the knuckles, the ears: ruddy parchment */
+const SKINW = ['#2b1e1e', '#47302d', '#694740', '#8b6153', '#a97d6b', '#c39a85', '#d8b7a0', '#e8cfb9'].map(hex);
+/** where it is thin and cold: the sockets, the temples, under the jaw: grey-violet with a green undertone */
+const SKINC = ['#1f1e25', '#33323d', '#4b4955', '#65626b', '#7f7a82', '#9a949a', '#b6afb0', '#cdc7c3'].map(hex);
 /** her robe: bark-cloth, near black-brown, a little red in the light */
 const CLOTH = ['#110d0c', '#1b1513', '#271e1a', '#352822', '#45342b', '#584336', '#6c5443'].map(hex);
+/** tamarack bark: red-brown under grey plates */
+const BARK = ['#140f0e', '#221917', '#33251f', '#47332a', '#5d4537', '#755a48', '#8e735f', '#a68f7b'].map(hex);
 const MOSS = RP('moss'), SAGE = RP('sage'), SOIL = RP('soil'), HEART = RP('heart'), STONE = RP('stone'), SNOW = RP('snow');
 const GOLD = RP('gold'), OCHRE = RP('ochre'), STRAW = RP('straw'), HORN = RP('horn'), PLUM = RP('plum'), HIDE = RP('hide'), INK = RP('ink'), FUR = RP('fur');
+const VIOLET = RP('violet'), FLESH = RP('flesh');
 
 /** the robe: bark-cloth falling in long folds, mud and wet at the hem; above the ribs a shawl of moss with lichen */
 function robePaint() {
   return function* (ch: Chart, _p: Piece, b: Body) {
-    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt;
+    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt, K = px.gb.K;
     px.lightK = 0.8;
     const shawl = new Float32Array(px.n), skin = new Uint8Array(px.n);
+    const st = strokes(px, { flow: downFlow(), len: [6, 16], width: [2, 3.5], amp: 0.55, density: 0.7, seed: 41, apply: false });
     for (let i = 0; i < px.n; i++) {
       if ((i & 8191) === 0) yield;
       const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2];
@@ -145,165 +137,284 @@ function robePaint() {
       if (y > collar) {
         skin[i] = 1;
         const tendon = Math.abs(Math.abs(x) - 0.022) < mpt * 1.2 && z > 0.01, fold = Math.abs(Math.sin(y * 260 + nz2(a * 4, y * 9) * 2)) < 0.12;
-        px.put(i, SKIN, 4 + m * 0.5 - (tendon ? 0.8 : 0) - (fold ? 0.9 : 0) - (y < collar + 0.015 ? 1.2 : 0)); px.rough[i] = 175; continue;
+        px.put(i, z > 0.0 ? SKIN : SKINC, 4 + m * 0.5 - (tendon ? 0.8 : 0) - (fold ? 0.9 : 0) - (y < collar + 0.015 ? 1.2 : 0)); px.rough[i] = 175; continue;
       }
       // the shawl's lower edge: ragged, lower at the back, a point down the front
-      const edge = 1.5 - 0.06 * Math.cos(a) + nz2(a * 5, 3) * 0.05 - (Math.abs(a) < 0.35 ? (0.35 - Math.abs(a)) * 0.4 : 0);
+      const edge = shawlEdge(a);
       if (y > edge) {
         shawl[i] = 1;
         const lich = fbm3(x * 14 + 3, y * 14, z * 14, 2);
-        if (lich > 0.32) { px.put(i, SAGE, 2.6 + lich * 2); px.rough[i] = 240; continue; }
-        px.put(i, MOSS, 0.7 + m * 1.0 + (N[i * 3 + 1] > 0.5 ? 0.5 : 0) - (y < edge + 0.03 ? 0.8 : 0)); px.rough[i] = 245; continue;
+        if (lich > 0.32) { px.put(i, SAGE, 2.6 + lich * 2 + st.v[i] * 0.6); px.rough[i] = 240; continue; }
+        // moss cushions: lit on top, dark in the gaps between them
+        const c = cell3(x, y, z, 0.035, 9), gap = (c.f2 - c.f1) < mpt * 2.2;
+        px.put(i, MOSS, 0.9 + m * 1.0 + (N[i * 3 + 1] > 0.5 ? 0.5 : 0) - (y < edge + 0.03 ? 0.8 : 0) - (gap ? 0.9 : 0) + st.v[i] * 0.5); px.rough[i] = 245; continue;
       }
-      // the bark-cloth: long folds hanging from the shawl, wider and deeper toward the hem
-      const k = 7 + nz2(y * 0.8, 2) * 1.5, fo = Math.sin(a * k + nz2(y * 2, a) * 1.2 + y * 0.6);
-      let st = 2.2 + m * 0.6 + fo * 0.55 * cl((edge - y) / 0.4, 0.3, 1);
-      if (Math.abs(fo) < 0.12 && y < edge - 0.05) st -= 1.1;
-      // the weave of the bark-cloth: fine fibres down it, a darker band of wet and mud along the hem
-      if (h3(Math.floor((a + 4) * 120), Math.floor(y * 30), 7) < 0.2) st -= 0.6;
-      if (y < 0.32 + nz2(a * 6, 9) * 0.06) { st -= 0.9; if (fbm3(x * 20, y * 20, z * 20, 2) > 0.15) { px.put(i, SOIL, 1.6 + m); px.rough[i] = 200; continue; } }
-      px.put(i, CLOTH, st); px.rough[i] = 235;
+      // the bark-cloth: dark in the fold valleys, lit along the round backs of the folds; fibres; mud at the hem
+      let s = 2.4 + m * 0.5 + cl(K[i] * 0.9, -1.2, 0.9) + st.v[i];
+      if (h3(Math.floor((a + 4) * 160), Math.floor(y * 40), 7) < 0.14) s -= 0.6;
+      if (y < 0.34 + nz2(a * 6, 9) * 0.07) { s -= 0.9; if (fbm3(x * 20, y * 20, z * 20, 2) > 0.15) { px.put(i, SOIL, 1.6 + m + st.v[i] * 0.5); px.rough[i] = 200; continue; } }
+      px.put(i, CLOTH, s); px.rough[i] = 235;
     }
     yield;
+    formLight(px, 0.55);
     px.pelt({ len: 0.06, width: 0.02, flow: -1, down: 0.6, mask: (i) => shawl[i], tooth: 1.4, clump: 0.6, strands: 0.25 });
     yield;
-    px.creaseInk(1.2, { dark: 1, lit: 0.4, mask: (i) => 1 - skin[i] });
+    px.creaseInk(1.0, { dark: 1, lit: 0.4, mask: (i) => 1 - skin[i] });
     px.flush();
   };
 }
+/** the shawl's ragged lower edge by angle round the body (0 = front) */
+const shawlEdge = (a: number) => 1.5 - 0.06 * Math.cos(a) + nz2(a * 5, 3) * 0.05 - (Math.abs(a) < 0.35 ? (0.35 - Math.abs(a)) * 0.4 : 0);
 /** the sleeves: bark-cloth with moss on the shoulders, a ragged cuff */
 function sleevePaint(ch: Chart, _p: Piece, b: Body) {
-  const px = new Px(ch, b), P = px.gb.P;
+  const px = new Px(ch, b), P = px.gb.P, K = px.gb.K;
   px.lightK = 0.8;
   const moss = new Float32Array(px.n);
+  const st = strokes(px, { flow: downFlow(), len: [5, 12], width: [2, 3], amp: 0.5, density: 0.7, seed: 43, apply: false });
   for (let i = 0; i < px.n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], m = fbm3(x * 8, y * 8, z * 8, 3);
-    if (y > 1.66 + m * 0.08) { moss[i] = 1; px.put(i, MOSS, 1.4 + m * 1.2); px.rough[i] = 245; continue; }
-    const fold = Math.abs(Math.sin(y * 40 + nz3(x * 9, y * 3, z * 9) * 2.5)) < 0.15;
-    px.put(i, CLOTH, 2.3 + m * 0.6 - (fold ? 1 : 0)); px.rough[i] = 235;
+    if (y > 1.66 + m * 0.08) { moss[i] = 1; px.put(i, MOSS, 1.4 + m * 1.2 + st.v[i] * 0.5); px.rough[i] = 245; continue; }
+    px.put(i, CLOTH, 2.4 + m * 0.5 + cl(K[i] * 0.9, -1.2, 0.9) + st.v[i]); px.rough[i] = 235;
   }
+  formLight(px, 0.5);
   px.pelt({ len: 0.05, width: 0.018, flow: -1, mask: (i) => moss[i], tooth: 1.3, clump: 0.6 });
   px.creaseInk(1.2, { dark: 1, lit: 0.4 });
   px.flush();
 }
-/** pale old skin: veins, knuckle creases and age spots on hands and feet, dark long nails, earth on the soles */
-function skinPaint(o: { nails?: (p: V3) => boolean; sole?: (p: V3, n: V3) => boolean } = {}) {
+/** old skin on the hands and feet: ruddy knuckles, blue veins over the backs, a few age spots, creased knuckles, dark
+ *  long nails, earth on the soles */
+function skinPaint(o: { nails?: (p: V3) => boolean; sole?: (p: V3, n: V3) => boolean; knuckles?: V3[]; flow?: V3 } = {}) {
   return (ch: Chart, _p: Piece, b: Body) => {
-    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
+    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, K = px.gb.K;
     px.lightK = 0.6;
+    const st = strokes(px, { flow: alongFlow(o.flow ?? [0, -1, 0]), len: [3, 7], width: [2, 3], amp: 0.45, density: 0.6, seed: 47, apply: false });
     for (let i = 0; i < px.n; i++) {
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], n: V3 = [N[i * 3], N[i * 3 + 1], N[i * 3 + 2]];
-      if (o.nails && o.nails(p)) { px.put(i, HORN, 3 + (n[1] > 0.3 ? 1 : 0)); px.rough[i] = 90; continue; }
+      if (o.nails && o.nails(p)) { px.put(i, HORN, 3 + (n[1] > 0.3 ? 1 : 0) + (K[i] > 0.5 ? 0.6 : 0)); px.rough[i] = 90; continue; }
       if (o.sole && o.sole(p, n)) { px.put(i, SOIL, 2.2 + fbm3(p[0] * 60, p[1] * 60, p[2] * 60, 2)); px.rough[i] = 220; continue; }
       const m = fbm3(p[0] * 40, p[1] * 40, p[2] * 40, 2), c = cell3(p[0], p[1], p[2], 0.006, 5);
-      const vein = Math.abs(nz3(p[0] * 30, p[1] * 12, p[2] * 30)) < 0.05, spot = (c.id % 23) === 0 && c.f1 < 0.002;
-      px.put(i, spot ? HIDE : SKIN, (spot ? 3.4 : 4.2) + m * 0.5 - (vein ? 0.8 : 0) - ((c.f2 - c.f1) < px.mpt * 0.7 ? 0.5 : 0)); px.rough[i] = 175;
+      const vein = Math.abs(nz3(p[0] * 30, p[1] * 12, p[2] * 30)) < 0.045, spot = (c.id % 23) === 0 && c.f1 < 0.002;
+      let kn = 0; for (const q of o.knuckles ?? []) kn = Math.max(kn, g2(Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]), 0, 0.009));
+      const warm = kn + (st.id[i] >= 0 && st.id[i] < 0.12 ? 0.6 : 0);
+      const R = spot ? HIDE : vein ? SKINC : warm > 0.45 ? SKINW : SKIN;
+      px.put(i, R, (spot ? 3.4 : vein ? 3.6 : 4.2) + m * 0.4 + st.v[i] * 0.8 + (K[i] > 0.7 ? 0.6 : 0)); px.rough[i] = 175;
     }
-    px.creaseInk(1.1, { dark: 1.2, lit: 0.6 });
+    formLight(px, 0.5);
+    px.creaseInk(0.9, { dark: 1.3, lit: 0.6 });
     px.flush();
   };
 }
-/** an eyelid: skin, a dark line of lashes along the margin (the texel nearest the eye's axis) */
-function lidPaint(c: V3, ax: V3) {
+/** an eyelid: skin (warmer and a little pink at the inner corner), a crease in the lid's fold, lashes along the upper
+ *  margin, the lower lid's wet line along its rim */
+function lidPaint(L: LidSpec) {
   return (ch: Chart, _p: Piece, b: Body) => {
     const px = new Px(ch, b), P = px.gb.P;
-    px.lightK = 0.4;
+    px.lightK = 0.45;
     for (let i = 0; i < px.n; i++) {
-      const d: V3 = nrm([P[i * 3] - c[0], P[i * 3 + 1] - c[1], P[i * 3 + 2] - c[2]]), a = Math.acos(cl(d[0] * ax[0] + d[1] * ax[1] + d[2] * ax[2], -1, 1));
-      px.put(i, a < 0.62 ? INK : SKIN, a < 0.62 ? 1.4 : 4.1 - (a < 0.85 ? 0.8 : 0)); px.rough[i] = 170;
+      const { s, off } = lidCoords(L, [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
+      let R = s < -0.75 ? SKINW : SKIN, st = 4.1;
+      if (!L.lower) {
+        if (off < 0.06) { R = INK; st = 1.2 - (Math.abs(Math.sin(s * 23)) < 0.4 ? 0.6 : 0); } // the lash line
+        else if (off < 0.13) { R = SKINC; st = 3.4; }
+        else if (Math.abs(off - 0.5) < 0.07) { R = SKINC; st = 2.6; } // the fold
+        else st = 4.2 - (off < 0.4 ? 0.5 : 0);
+      } else {
+        if (off < 0.05) { R = FLESH; st = 4.2; } // the wet rim
+        else if (off < 0.1) { R = SKINC; st = 2.8; }
+        else st = 3.9 + (off > 0.35 ? 0.3 : 0);
+      }
+      px.put(i, R, st); px.rough[i] = !L.lower || off > 0.05 ? 170 : 60;
     }
     px.flush();
   };
 }
-/** the face: pale and lined. The kindness is in the lines: crow's feet fanning from the eye corners, cheeks lifted
- *  by a smile, soft creases from the nose wings to the mouth corners, which turn up; the forehead lined across, the
- *  brows thin and grey; the eyes deep in their sockets under heavy lids, the sockets shadowed, not black */
+/** the face: weathered old skin painted warm to cool (ruddy where the blood shows, grey-violet where it is thin), the
+ *  lines drawn into the sculpted creases, thin grey brows, mauve thin lips, dark nostrils, age spots, veins at the
+ *  temples; grey hair over the scalp under her locks */
 function facePaint() {
-  const H = GT.hg, E = eyeAt();
+  const H = GT.hg, E = eyeLocal();
   return function* (ch: Chart, _p: Piece, b: Body) {
-    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt;
+    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, K = px.gb.K, mpt = px.mpt;
     px.lightK = 0.6;
     const hairM = new Float32Array(px.n);
+    const hairLine = (x: number, ax: number) => 0.074 + nz2(x * 50, 1) * 0.004 + ax * 0.12 - Math.max(0, ax - 0.05) * 0.9;
+    const isHair = (x: number, y: number, ax: number, nz: number) => y > hairLine(x, ax) || nz < -0.15 - Math.max(0, -y) * 2 || (ax > 0.072 && nz < 0.35 && y > -0.08);
+    // strokes down the face, outward over the cheeks (the way the skin hangs); hair strokes fall down the head
+    const st = strokes(px, {
+      flow: (p, n) => { const x = p[0] - H[0], y = p[1] - H[1]; if (isHair(x, y, Math.abs(x), n[2])) return downFlow()(p, n); return alongFlow([Math.sign(x) * 0.35, -1, 0.2])(p, n); },
+      len: [3, 8], width: [2, 3], amp: 0.5, lift: 0.3, density: 0.75, seed: 53, apply: false,
+    });
+    yield;
     for (let i = 0; i < px.n; i++) {
       if ((i & 8191) === 0) yield;
-      const x = P[i * 3] - H[0], y = P[i * 3 + 1] - H[1], z = P[i * 3 + 2] - H[2], ax = Math.abs(x), nz = N[i * 3 + 2];
-      const m = fbm3(x * 22, y * 22, z * 22, 2) * 0.6;
-      // the hairline: grey hair over the crown and down the back and sides, the face bare
-      const hl = 0.068 + nz2(x * 50, 1) * 0.004 + ax * 0.12 - Math.max(0, ax - 0.05) * 0.9;
-      if (y > hl || nz < -0.15 - Math.max(0, -y) * 2 || (ax > 0.07 && nz < 0.35 && y > -0.08)) {
-        hairM[i] = 1; px.put(i, STONE, 3.4 + m * 0.6 + (y > 0.12 ? 0.5 : 0)); px.rough[i] = 220; continue;
+      const x = P[i * 3] - H[0], y = P[i * 3 + 1] - H[1], z = P[i * 3 + 2] - H[2], ax = Math.abs(x), nz = N[i * 3 + 2], ny = N[i * 3 + 1];
+      const m = fbm3(x * 22, y * 22, z * 22, 2) * 0.5;
+      if (isHair(x, y, ax, nz)) {
+        hairM[i] = 1; px.put(i, STONE, 3.6 + m * 0.6 + (y > 0.12 ? 0.4 : 0) + st.v[i] * 0.9); px.rough[i] = 220; continue;
       }
-      let R = SKIN, st = 4.4 + m * 0.4, rough = 170;
-      const ex = ax - (E.c[0] - H[0]), ey = y - (E.c[1] - H[1]), ed = Math.hypot(ex, ey * 1.25);
-      // the sockets: a soft shadow (never black), deepest at the inner corner; the lid crease above, bags below
-      if (ed < 0.028) st -= (0.028 - ed) * 32 * (ex < 0 ? 1.2 : 0.8);
-      if (Math.abs(ed - 0.021) < mpt * 0.8 && ey > 0.003) st -= 0.9;
-      if (Math.abs(ed - 0.022) < mpt * 0.9 && ey < -0.007 && Math.abs(ex) < 0.017) st -= 0.7;
-      if (Math.abs(ed - 0.028) < mpt * 0.8 && ey < -0.01 && Math.abs(ex) < 0.019) st -= 0.5;
-      // crow's feet: laughter fans from the outer corners
-      if (ex > 0.017 && ex < 0.042 && Math.abs(ey) < 0.018) { const ang = Math.atan2(ey, ex); if (Math.abs(Math.sin(ang * 10 + 0.4)) < 0.14 && ed > 0.019) st -= 0.8; }
-      // thin grey brows that fall away at the outer ends: gentle, a little sad
-      const by = ey - (0.02 + 0.004 * Math.cos((ex + 0.006) * 70) - Math.max(0, ex - 0.008) * 0.25);
-      if (Math.abs(by) < 0.0024 && ex > -0.017 && ex < 0.03) { R = STONE; st = 4 + h3(Math.floor(x / mpt), 1, 3) * 0.8; }
-      // the forehead lined across
-      if (y > 0.04 && y < hl - 0.012 && ax < 0.05 && Math.abs(Math.sin(y * 300 + nz2(x * 30, 2) * 1.1)) < 0.09) st -= 0.6;
-      // the long nose: a lit ridge, shadow along its sides, a rounded tip a touch warmer, small nostrils
-      if (ax < 0.006 && y < 0.024 && y > -0.05 && nz > 0.3) st += 0.6;
-      if (ax > 0.008 && ax < 0.016 && y < 0.01 && y > -0.045 && nz > 0.2 && nz < 0.85) st -= 0.6;
-      if (Math.hypot(x, (y + 0.05) * 1.2) < 0.011 && nz > 0.3) { R = HIDE; st = 4.6; }
-      const nd = Math.hypot(ax - 0.009, (y + 0.06) * 1.8);
-      if (nd < 0.005 && N[i * 3 + 1] < 0.1) { R = SKIN; st = 1.4; }
-      // smile lines: from the nose wings round the mouth corners
-      const sl = ax - (0.024 + (-0.056 - y) * 0.42);
-      if (y < -0.056 && y > -0.1 && Math.abs(sl) < mpt * 0.9) st -= 0.9;
-      if (y < -0.056 && y > -0.1 && sl > mpt * 0.9 && sl < mpt * 2.6) st += 0.4;
-      // the mouth: a closed, gentle smile; thin lips the colour of the skin a shade warmer
-      const ml = y + 0.086 - ax * ax * 3.2;
-      if (ax < 0.027 && Math.abs(ml) < mpt * 0.9) { R = PLUM; st = 1.3; rough = 120; }
-      else if (ax < 0.024 && ml > 0 && ml < 0.0045) { R = HIDE; st = 3.6 + m * 0.5; rough = 140; }
-      else if (ax < 0.021 && ml < 0 && ml > -0.0065) { R = HIDE; st = 4.2 + m * 0.5 - (ml < -0.005 ? 0.8 : 0); rough = 130; }
-      else if (ax < 0.022 && ml > 0.0045 && ml < 0.014 && Math.abs(Math.sin(x * 420)) < 0.14) st -= 0.5;
-      if (ax > 0.024 && ax < 0.03 && Math.abs(ml) < 0.004) st -= 0.7;
-      // the apples of the cheeks lifted by the smile, a faint warmth on them
-      const ck = Math.hypot(ax - 0.043, (y + 0.03) * 1.2);
-      if (ck < 0.018 && nz > 0.3) { st += 0.3; if (h3(Math.floor(x / mpt / 2), Math.floor(y / mpt / 2), 4) < 0.35 * (1 - ck / 0.018)) { R = HIDE; st = 4.4; } }
-      // a few faint age spots
-      const c = cell3(x, y, z, 0.014, 7);
-      if ((c.id % 29) === 0 && c.f1 < 0.0018 && y > -0.03) { R = FUR; st = 5; }
-      // the chin, the jaw line under it
-      if (y < -0.12 && N[i * 3 + 1] < -0.3) st -= 0.6;
-      px.put(i, R, st); px.rough[i] = rough;
+      // warm to cool
+      const ex = ax - E.c[0], ey = y - E.c[1], ed = Math.hypot(ex, ey * 1.25);
+      let warm = 0.45 + 0.4 * g2(Math.hypot(ax, y + 0.036), 0, 0.016) + 0.3 * g2(Math.hypot(ax - 0.046, y + 0.026), 0, 0.016) + 0.22 * g2(Math.hypot(ax, y + 0.125), 0, 0.016)
+        + 0.12 * g2(Math.hypot(ax, y - 0.06), 0, 0.02) - 0.42 * g2(ed, 0, 0.026) - 0.3 * g2(Math.hypot(ax - 0.074, y - 0.04), 0, 0.02)
+        - 0.22 * g2(Math.hypot(ax, y - lipY(ax)), 0, 0.02) * (ax < 0.035 ? 1 : 0) - (ny < -0.45 ? 0.35 : 0) + st.v[i] * 0.35 + m * 0.3;
+      if (st.id[i] >= 0 && st.id[i] < 0.06) warm += 0.4; // dabs of rose
+      let R = warm > 0.66 ? SKINW : warm < 0.3 ? SKINC : SKIN, s = 4.25 + m * 0.4 + st.v[i] * 0.7, rough = 170;
+      // the sockets: shadowed, never black; deepest at the inner corner
+      if (ed < 0.03) s -= (0.03 - ed) * 28 * (ex < 0 ? 1.15 : 0.85);
+      // bags under the eyes: lit on top, the tear trough dark under them
+      const bag = Math.abs(y + 0.0165 - 0.0015 * Math.cos(ex * 90)) < mpt * 1.2 && ax > 0.022 && ax < 0.05;
+      if (bag) { R = SKINC; s -= 0.9; }
+      // crow's feet: three lines fanning from the outer corner, each with a lit lip above it
+      const cx = ax - 0.057, cy = y - 0.008;
+      if (cx > 0.002 && cx < 0.024) {
+        for (const a0 of [-0.5, 0.02, 0.5]) {
+          const a = a0 + nz2(cx * 120, a0 * 3) * 0.12, d = cy - Math.tan(a) * cx;
+          if (Math.abs(d) < mpt * 0.7 * (1.4 - cx / 0.024)) { s -= 1.0; R = SKINC; } else if (d > 0 && d < mpt * 1.8) s += 0.35;
+        }
+      }
+      // thin grey brows, sparse, falling away at the outer ends: hairs drawn as short slanted marks
+      const by = ey - (0.0215 + 0.004 * Math.cos((ex + 0.006) * 70) - Math.max(0, ex - 0.008) * 0.32);
+      if (Math.abs(by) < 0.0032 && ex > -0.019 && ex < 0.032 && nz > 0.2) {
+        const hair = Math.abs(((x * 330 * Math.sign(x) + by * 900) % 1 + 1) % 1 - 0.5) < 0.3;
+        if (hair) { R = SNOW; s = 2.6 + h3(Math.floor(ax / mpt), 1, 3) * 1.4; }
+      }
+      // the forehead lines (sculpted: the creases carry them), crossed by the vertical frown lines
+      if (y > 0.05 && y < 0.095 && ax < 0.05) for (const k of [0.058, 0.071, 0.086]) { const d = y - (k + 0.0025 * Math.cos(ax * 90)); if (Math.abs(d) < mpt * 0.8 && h3(Math.floor(ax / 0.012), Math.floor(k * 100), 5) > 0.2) { s -= 0.8; R = SKINC; } else if (d > mpt * 0.8 && d < mpt * 2.2) s += 0.3; }
+      if (Math.abs(ax - 0.0055) < mpt * 0.7 && y > 0.022 && y < 0.04) { s -= 0.9; R = SKINC; }
+      // the nose: the lit ridge, its shadowed sides, the warm bulbous tip with a highlight, dark nostrils
+      if (ax < 0.005 && y < 0.02 && y > -0.04 && nz > 0.3) s += 0.4;
+      if (Math.hypot(ax, (y + 0.033) * 1.3) < 0.0045 && nz > 0.4) s += 0.7;
+      const nd = Math.hypot((ax - 0.0075) * 1.1, (y + 0.0478) * 1.6);
+      if (nd < 0.0052 && ny < 0.35) { R = SKINC; s = nd < 0.003 ? 0.6 : 1.6; }
+      // the mouth: thin mauve lips, the line between them dark, the corners tucked in; fine lines over the upper lip
+      const ly = lipY(ax), dl = y - ly;
+      if (ax < 0.029 && Math.abs(dl) < mpt * 0.9) { R = PLUM; s = 0.8; rough = 120; }
+      else if (ax < 0.024 && dl > 0 && dl < 0.0058) { R = PLUM; s = 2.9 + m * 0.5 + (dl > 0.0045 ? -0.6 : 0); rough = 130; }
+      else if (ax < 0.021 && dl < 0 && dl > -0.0072) { R = PLUM; s = 3.6 + m * 0.5 - (dl < -0.006 ? 0.9 : 0) + (dl > -0.003 && ax < 0.012 ? 0.5 : 0); rough = 110; }
+      else if (ax < 0.024 && dl > 0.0058 && y < -0.059 && Math.abs(((ax / 0.0042) % 1) - 0.5) < 0.16 && h3(Math.floor(ax / 0.0042), 1, 9) > 0.25) { s -= 0.8; R = SKINC; }
+      if (ax > 0.026 && ax < 0.033 && Math.abs(dl) < 0.0035) { s -= 0.6; R = SKINC; }
+      // age spots: a few soft brown dabs over the temples, the forehead and the cheekbones
+      const c = cell3(x, y, z, 0.013, 7);
+      if ((c.id % 17) === 0 && c.f1 < 0.0024 + (c.id % 3) * 0.0006 && (y > -0.03 || ax > 0.05)) { R = HIDE; s = 3.2 + (c.f1 < 0.0012 ? -0.4 : 0); }
+      // blue-violet veins at the temples, a little uncanny
+      if (ax > 0.06 && y > 0.015 && y < 0.075 && Math.abs(nz3(x * 70, y * 25, z * 70)) < 0.04) { R = VIOLET; s = 3.6; }
+      // one mole by the left corner of the mouth
+      if (Math.hypot(x - 0.036, y - lipY(0.036) - 0.006) < 0.0021) { R = FUR; s = 1.6; }
+      // the jaw's underside and the chin's shadow
+      if (ny < -0.45) s -= 0.5;
+      px.put(i, R, s); px.rough[i] = rough;
     }
     yield;
+    formLight(px, 0.6);
     px.pelt({ len: 0.08, width: 0.007, flow: -1, down: 0.9, mask: (i) => hairM[i], tooth: 1.2, clump: 0.4, strands: 0.45 });
-    px.creaseInk(1.4, { dark: 0.8, lit: 0.4, mask: (i) => hairM[i] }); px.creaseInk(1.6, { dark: 0.6, lit: 0.3, mask: (i) => 1 - hairM[i] });
+    px.creaseInk(1.4, { dark: 0.8, lit: 0.4, mask: (i) => hairM[i] }); px.creaseInk(0.75, { dark: 1.0, lit: 0.45, mask: (i) => 1 - hairM[i] });
     yield;
     px.flush();
   };
 }
-/** tamarack bark on the antlers: thin flaking scales, red-brown under grey, a few crusts of lichen */
-function antlerPaint(ch: Chart, _p: Piece, b: Body) {
-  const px = new Px(ch, b), P = px.gb.P;
-  px.lightK = 0.7;
-  for (let i = 0; i < px.n; i++) {
-    const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], c = cell3(x, y, z, 0.012, 11, 1, 0.6, 1), m = fbm3(x * 30, y * 30, z * 30, 2);
-    const edge = (c.f2 - c.f1) < px.mpt * 1.2;
-    if (fbm3(x * 25 + 7, y * 25, z * 25, 2) > 0.5) { px.put(i, SAGE, 2.8 + m); px.rough[i] = 240; continue; }
-    px.put(i, (c.id % 5) === 0 ? HEART : STONE, (c.id % 3 === 0 ? 2.6 : 2.4) + m * 0.6 - (edge ? 1.2 : 0) + ((c.id % 5) === 0 ? 0.6 : 0)); px.rough[i] = 230;
-  }
-  px.creaseInk(1, { dark: 1.2, lit: 0.7 }); px.flush();
+/** tamarack bark on the antlers: long grey plates over red-brown furrows running along the branch, flaking at their
+ *  edges, a scatter of lichen rosettes and crust on the upper sides; the burrs dark and knotted */
+function antlerPaint(sites: { c: V3; n: V3; r: number; R: number[]; cup?: number[] }[]) {
+  return (ch: Chart, _p: Piece, b: Body) => {
+    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, K = px.gb.K;
+    px.lightK = 0.7;
+    // the run of the branch on this chart: from the first row's centre to the last row's
+    const cen = (y: number) => { let sx = 0, sy = 0, sz = 0; for (let x = 0; x < px.w; x++) { const i = (y * px.w + x) * 3; sx += P[i]; sy += P[i + 1]; sz += P[i + 2]; } return [sx / px.w, sy / px.w, sz / px.w] as V3; };
+    const dir = nrm(sub(cen(px.h - 1), cen(0)));
+    const st = strokes(px, { flow: alongFlow(dir), len: [5, 12], width: [2, 3], amp: 0.8, lift: 0.4, density: 0.9, seed: 61, apply: false });
+    for (let i = 0; i < px.n; i++) {
+      const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], m = fbm3(x * 30, y * 30, z * 30, 2);
+      // the furrows: where the bark cracks between plates (the sculpted valleys), red-brown deep inside
+      const furrow = K[i] < -0.35;
+      let R = BARK, s = 4.0 + m * 0.6 + st.v[i] * 1.1;
+      if (furrow) { s = 1.6 + m * 0.4; if (K[i] > -0.8) { R = HEART; s = 2.6; } }
+      else if (st.id[i] >= 0 && st.id[i] < 0.14) { R = STONE; s = 4.6 + m * 0.5; } // weathered grey plate faces
+      // crust lichen on the upper sides
+      if (N[i * 3 + 1] > 0.25 && fbm3(x * 25 + 7, y * 25, z * 25, 2) > 0.38) { R = SAGE; s = 3.2 + m + (st.v[i] > 0 ? 0.6 : 0); px.rough[i] = 240; px.put(i, R, s); continue; }
+      px.put(i, R, s); px.rough[i] = 230;
+    }
+    px.rosettes(sites, { seed: 5 });
+    formLight(px, 0.55);
+    px.creaseInk(0.9, { dark: 1.0, lit: 0.8 }); px.flush();
+  };
 }
 /** the staff: grey weathered wood, a twist of grain, knots; worn smooth and darker where her hand holds it */
 function staffPaint(ch: Chart, _p: Piece, b: Body) {
   const px = new Px(ch, b), P = px.gb.P;
   px.lightK = 0.7;
+  const st = strokes(px, { flow: alongFlow([0, 1, 0]), len: [6, 14], width: [2, 3], amp: 0.6, density: 0.8, seed: 67, apply: false });
   for (let i = 0; i < px.n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], a = Math.atan2(x - GT.staff.x, z - GT.staff.z), m = fbm3(x * 40, y * 12, z * 40, 2);
     const grain = Math.abs(Math.sin(a * 5 + y * 9 + m * 3)) < 0.14, knot = cell3(x, y * 0.6, z, 0.05, 2).f1 < 0.006;
     const worn = Math.abs(y - GT.grip[1]) < 0.09;
-    px.put(i, worn ? FUR : STONE, worn ? 3 + m : 3.4 + m * 0.8 - (grain ? 1 : 0) - (knot ? 1.6 : 0) - (y < 0.15 ? 1 : 0)); px.rough[i] = worn ? 120 : 220;
+    px.put(i, worn ? FUR : STONE, worn ? 3 + m : 3.4 + m * 0.8 - (grain ? 1 : 0) - (knot ? 1.6 : 0) - (y < 0.15 ? 1 : 0) + st.v[i]); px.rough[i] = worn ? 120 : 220;
   }
+  formLight(px, 0.45);
   px.creaseInk(1, { dark: 1.2, lit: 0.6 }); px.flush();
+}
+
+// ------------------------------------------------------------------------------------------------ the robe's drapery
+const ROBE: [number, number, number, number, string][] = [
+  // y, half width, half depth, centre z, profile (top of the profile = her back)
+  [0.035, 0.36, 0.3, -0.03, 'round'], [0.3, 0.315, 0.27, -0.025, 'round'], [0.62, 0.268, 0.243, -0.02, 'round'], [0.92, 0.222, 0.202, -0.02, 'round'],
+  [1.15, 0.18, 0.148, -0.03, 'barrel'], [1.42, 0.19, 0.14, -0.04, 'barrel'], [1.62, 0.225, 0.15, -0.045, 'barrel'],
+  [1.78, 0.27, 0.165, -0.05, 'shoulder'], [1.885, 0.23, 0.15, -0.045, 'shoulder'], [1.955, 0.13, 0.11, -0.03, 'round'],
+  [1.99, 0.062, 0.062, -0.012, 'neck'], [2.06, 0.056, 0.058, 0.0, 'neck'], [2.13, 0.05, 0.05, 0.012, 'round'],
+];
+/** a half profile (nine points, top = her back, down the +x side to her front) sampled at u in 0..1 (Catmull-Rom) */
+function profAt(name: string, u: number): [number, number] {
+  const Q = PROFILES[name], f = cl(u, 0, 1) * (Q.length - 1), i = Math.min(Q.length - 2, Math.floor(f)), t = f - i;
+  const P = (k: number) => Q[Math.max(0, Math.min(Q.length - 1, k))];
+  const cr = (a: number, b: number, c: number, d: number) => 0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (-a + 3 * b - 3 * c + d) * t * t * t);
+  return [cr(P(i - 1)[0], P(i)[0], P(i + 1)[0], P(i + 2)[0]), cr(P(i - 1)[1], P(i)[1], P(i + 1)[1], P(i + 2)[1])];
+}
+/** the robe at height y and angle phi round her (0 her back, pi her front, +x side first): a creature-space point */
+function robePt(y: number, phi: number): V3 {
+  let k = 0; while (k + 2 < ROBE.length && y > ROBE[k + 1][0]) k++;
+  const A = ROBE[k], B = ROBE[k + 1], t = cl((y - A[0]) / (B[0] - A[0]), 0, 1), tt = t * t * (3 - 2 * t);
+  const w = lerp1(A[1], B[1], tt), d = lerp1(A[2], B[2], tt), zc = lerp1(A[3], B[3], tt);
+  const side = phi <= Math.PI ? 1 : -1, u = (side > 0 ? phi : Math.PI * 2 - phi) / Math.PI;
+  const pa = profAt(A[4], u), pb = profAt(B[4], u), qx = lerp1(pa[0], pb[0], t), qy = lerp1(pa[1], pb[1], t);
+  let x = qx * w * side, z = zc - qy * d;
+  const a = Math.atan2(x, z);
+  // the folds: round-backed tubes of cloth with sharp valleys between, hanging from under the shawl and fanning out,
+  // deepening toward the hem; a few gather at the waist where a cord holds the robe
+  const hang = cl((1.5 - y) / 1.42, 0, 1), sh = shawlEdge(a);
+  let f = Math.sin(phi * 6 + 1.3 + nz2(y * 1.4, 2) * 1.4) + 0.6 * Math.sin(phi * 9 + 0.4 + y * 0.9 + nz2(y * 2 + 5, 1) * 1.1) + 0.32 * Math.sin(phi * 15 + 2.1 + y * 2.6);
+  f /= 1.92; f = f > 0 ? Math.pow(f, 0.65) : -Math.pow(-f, 1.7);
+  let out = (0.003 + 0.034 * Math.pow(hang, 1.1)) * f;
+  // the cord at the waist: a pinch, the cloth bunching over it
+  out -= 0.012 * g2(y, 1.16, 0.018) - 0.006 * g2(y, 1.2, 0.03) * (1 + f);
+  // the shawl of moss lies over the robe: a lip at its ragged edge, lumpy cushions over the shoulders
+  if (y > sh - 0.04 && y < 1.97) {
+    const on = ss(sh - 0.04, sh + 0.01, y) * ss(1.975, 1.94, y);
+    out += on * (0.016 + 0.012 * Math.max(0, fbm3(x * 9, y * 9, z * 9, 2) + 0.2)) + 0.006 * g2(y, sh + 0.005, 0.012);
+  }
+  // a ragged, flared hem
+  if (y < 0.12) out += 0.022 * (1 - y / 0.12) * (1 + 0.5 * Math.sin(phi * 7));
+  const r = Math.hypot(x, z - zc) || 1;
+  x += (x / r) * out; z += ((z - zc) / r) * out;
+  return [x, y, z];
+}
+function robePiece(skin: (p: V3) => Wt, paint: Piece['paint']): Piece {
+  const m = newCM(), C = 52;
+  const ys = [0.03, 0.07, 0.13, 0.21, 0.3, 0.4, 0.51, 0.62, 0.73, 0.84, 0.94, 1.03, 1.1, 1.145, 1.175, 1.21, 1.27, 1.34, 1.41, 1.46, 1.5, 1.54, 1.58, 1.62, 1.66, 1.7, 1.74, 1.775, 1.81, 1.84, 1.87, 1.895, 1.92, 1.94, 1.958, 1.972, 1.985, 2.0, 2.03, 2.07, 2.1, 2.13];
+  const rings: Ring[] = ys.map((y, ri) => {
+    const pts: number[][] = [];
+    for (let j = 0; j < C; j++) {
+      const phi = (j / C) * Math.PI * 2;
+      // the hem's ragged line
+      const yy = ri === 0 ? y + (h3(j, 5, 77) - 0.5) * 0.05 + nz2(phi * 2, 4) * 0.03 : y;
+      const p = robePt(yy, phi);
+      pts.push([p[0], p[2] - 0, p[1] - y]);
+    }
+    return { c: [0, y, 0], x: [1, 0, 0], y: [0, 0, 1], pts: pts.map((q) => [q[0], q[1]]), dy: pts.map((q) => q[2]) } as Ring & { dy: number[] };
+  });
+  const g = tube(m, rings, { tag: 0, capS: true, capE: false });
+  // the ragged hem: each point of the first ring at its own height
+  const r0 = rings[0] as Ring & { dy: number[] };
+  g.v[0].forEach((vi, j) => { m.V[vi][1] += r0.dy[j]; });
+  return { name: 'trunk', m, grids: [g], levels: 0, skin, paint, k: 0.85 };
 }
 
 // ------------------------------------------------------------------------------------------------ the build
@@ -317,13 +428,6 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   const HG = GT.hg, HEAD = bi('head');
 
   // ---- the robe: hem to neck, one skin; the skirt follows the legs, the shoulders ride the arms
-  const rst = (y: number, w: number, d: number, z: number, p: string | number[][] = 'round', tw?: [number, number, number][]): Station => ({ c: [0, y, z], s: [w, d], p, tw });
-  const robeSt: Station[] = [
-    rst(0.035, 0.35, 0.29, -0.03), rst(0.3, 0.31, 0.265, -0.025), rst(0.62, 0.265, 0.24, -0.02), rst(0.92, 0.22, 0.2, -0.02),
-    rst(1.18, 0.18, 0.145, -0.03, 'barrel'), rst(1.42, 0.19, 0.14, -0.04, 'barrel'), rst(1.62, 0.225, 0.15, -0.045, 'barrel'),
-    rst(1.78, 0.27, 0.165, -0.05, 'shoulder'), rst(1.885, 0.23, 0.15, -0.045, 'shoulder'), rst(1.955, 0.13, 0.11, -0.03),
-    rst(1.99, 0.062, 0.062, -0.012, 'neck'), rst(2.06, 0.056, 0.058, 0.0, 'neck'), rst(2.13, 0.05, 0.05, 0.012),
-  ];
   const J: V3[] = [[0, 0.9, -0.02], GT.hips, GT.spine, GT.chest, GT.neck, GT.head, [0, 2.3, 0.02]];
   const spineSkin = chainSkin(J, [bi('hips'), bi('hips'), bi('spine'), bi('chest'), bi('neck'), HEAD], 0.35);
   const robeSkin = (p: V3): Wt => {
@@ -338,18 +442,11 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     }
     return w;
   };
-  const robe = body.add(trunk({ name: 'trunk', stations: robeSt, tween: [2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], capS: true, capE: false, levels: 1, k: 0.85, skin: robeSkin, paint: robePaint() }));
+  const robe = body.add(robePiece(robeSkin, robePaint()));
   body.finalize(robe);
   yield 'robe';
 
-  // ---- the head: rings from the chin to the crown (the face carried in headPt)
-  const hs = [-0.152, -0.14, -0.125, -0.11, -0.097, -0.086, -0.075, -0.063, -0.052, -0.042, -0.03, -0.017, -0.004, 0.009, 0.021, 0.033, 0.046, 0.065, 0.09, 0.115, 0.138, 0.157, 0.17];
-  const headSt: Station[] = hs.map((h) => {
-    const [, , zc] = headDims(h);
-    const half = Array.from({ length: HN }, (_, j) => { const [x, z] = headPt(h, (j / (HN - 1)) * Math.PI); return [Math.max(0, x), -(z - zc)]; });
-    half[0][0] = 0; half[HN - 1][0] = 0;
-    return { c: [0, HG[1] + h, HG[2] + zc], s: [1, 1], p: half };
-  });
+  // ---- the head: the sculpted rings (granny/face.ts), from under the chin to the crown, the seam at the back
   const FL = faceMarks(1);
   const headSkin = (p: V3): Wt => {
     if (p[1] < GT.head[1] + 0.02 && p[2] < HG[2] - 0.02) return [HEAD, 0.6, bi('neck'), 0.4];
@@ -363,25 +460,60 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     }
     return extra.length ? addWeights([HEAD, 1], extra) : [HEAD, 1];
   };
-  const head = body.add(trunk({ name: 'skull', stations: headSt, tween: 0, capS: true, capE: true, levels: 1, k: 2.6, rings: [{ at: 5, s: 0.8, ink: true, arc: [22, 26] }], skin: headSkin, paint: facePaint() }));
-  body.finalize(head);
+  {
+    const m = newCM(), half = HEAD_COLS;
+    // bony bosses where the antlers grow from: the scalp swells round them
+    const boss = (h: number, th: number, x: number, z: number): number => { const d = Math.hypot(x - ANTLER_ROOT[0], h - ANTLER_ROOT[1], z - ANTLER_ROOT[2]); void th; return 0.012 * g2(d, 0, 0.026); };
+    const rings: Ring[] = HEAD_ROWS.map((h) => {
+      const pts: number[][] = [];
+      const pt = (th: number, s: number) => { let [x, z] = headSurf(h, th); const b = boss(h, th, x, z); if (b > 1e-5) { const r = Math.hypot(x, z + 0.005) || 1; x += (x / r) * b; z += ((z + 0.005) / r) * b; } return [x * s, z]; };
+      for (let j = 0; j < half.length; j++) pts.push(pt(half[j], 1));
+      for (let j = half.length - 2; j >= 1; j--) pts.push(pt(half[j], -1));
+      return { c: [HG[0], HG[1] + h, HG[2]], x: [1, 0, 0], y: [0, 0, 1], pts };
+    });
+    const g = tube(m, rings, { tag: 0, capS: true, capE: true });
+    body.add({ name: 'skull', m, grids: [g], levels: 0, skin: headSkin, paint: facePaint(), k: 2.6 } as Piece);
+  }
   yield 'head';
   const E = eyeAt();
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(E.c, s), ax = mir(E.ax, s);
-    // kind eyes: a soft moss-green hazel, wide pupils, the wet shine of a living eye
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: E.r, bone: HEAD, iris: SAGE, pupil: 'round', pupilR: 0.44, irisA: 0.62, sclera: SKIN, k: 3.4, levels: 1, around: 10, catchlight: { side: s, at: [0.3, 0.38] } }));
-    const lid = body.add(eyelid({ name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), paint: lidPaint(c, ax), cover: 0.46, root: 2.15 }));
-    lid.levels = 1;
-    const low = body.add(eyelid({ name: 'llid' + S, c, ax, r: E.r, bone: HEAD, paint: lidPaint(c, ax), cover: 0.92, root: 2.2, lower: true }));
-    low.levels = 0;
+    // kind eyes: a soft moss-green hazel, wide pupils, the wet shine of a living eye; the whites old and yellowed
+    body.add(eyeball({ name: 'eye' + S, c, ax, r: E.r, bone: HEAD, iris: SAGE, pupil: 'round', pupilR: 0.42, irisA: 0.6, sclera: RP('bone'), k: 3.4, levels: 1, around: 10, catchlight: { side: s, at: [0.3, 0.38] } }));
+    // heavy hooded upper lids (modelled 0.12 rad higher: the creature rests them that much lower), the lower lids
+    // with a wet rim; their corners meet in an almond, the outer corners drooping with age
+    const up: LidSpec = { name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), side: s, open: 0.38, wide: 0.98, inner: 0.08, outer: 0.03, ri: 1.03, ro: 1.17, swell: 0.07, root: 1.5, k: 2.2, paint: () => undefined };
+    up.paint = lidPaint(up);
+    body.add(almondLid(up));
+    const lo: LidSpec = { name: 'llid' + S, c, ax, r: E.r, bone: HEAD, side: s, lower: true, open: 0.36, wide: 0.98, inner: -0.04, outer: -0.09, ri: 1.02, ro: 1.1, swell: 0.04, root: 1.35, k: 2.0, paint: () => undefined };
+    lo.paint = lidPaint(lo);
+    body.add(almondLid(lo));
   }
 
-  // ---- antlers: crooked tamarack branches from the temples, forking, kinked where they grew round something
-  const needleSeats: LockSeat[] = [];
-  const twig = (name: string, ctrl: V3[], r0: number, r1: number, n: number, tufts: number, seed: number) => {
+  // ---- antlers: living tamarack branches growing out of bosses on her skull: a knotted burr where they break the
+  // scalp, barked and furrowed, forking, kinked where they grew round something; beard lichen and needles on them
+  const needleSeats: LockSeat[] = [], lichenSeats: LockSeat[] = [];
+  const rosettes: { c: V3; n: V3; r: number; R: number[]; cup?: number[] }[] = [];
+  const twig = (name: string, ctrl: V3[], r0: number, r1: number, n: number, tufts: number, seed: number, beard: number) => {
     const path = curve(ctrl, n);
-    body.add(stalk({ name, path, r: (t) => lerp1(r0, r1, Math.pow(t, 0.8)) * (1 + 0.15 * Math.sin(t * 17 + seed)), around: 6, capS: true, capE: true, levels: 1, k: 1.2, skin: () => [HEAD, 1], paint: antlerPaint }));
+    // where it breaks out of the scalp: the burr
+    let tEx = -1; for (let k = 0; k < path.length; k++) if (!insideHead(path[k])) { tEx = k / (path.length - 1); break; }
+    const knots = [0.3 + 0.1 * h3(seed, 1, 5), 0.62 + 0.1 * h3(seed, 2, 5)];
+    body.add(stalk({
+      name, path, around: 9, capS: true, capE: true, levels: 1, k: 1.25, skin: () => [HEAD, 1], paint: () => undefined,
+      r: (t) => lerp1(r0, r1, Math.pow(t, 0.8)) * (1 + 0.12 * Math.sin(t * 17 + seed) + (tEx >= 0 ? 0.6 * g2(t, tEx + 0.03, 0.05) : 0) + 0.22 * g2(t, knots[0], 0.03) + 0.16 * g2(t, knots[1], 0.025)),
+      // the bark: ridged plates between furrows that twist a little along the branch
+      sec: (a, t) => 1 + 0.12 * Math.pow(Math.abs(Math.cos(a * 2 + t * 5 + seed)), 4) - 0.06 * Math.pow(Math.abs(Math.sin(a * 2 + t * 5 + seed)), 6) + (tEx >= 0 ? 0.18 * g2(t, tEx + 0.03, 0.05) * Math.sin(a * 3 + seed) : 0),
+    }));
+    // lichen rosettes on the upper side, beard lichen hanging from under it
+    for (let k = 0; k < 3; k++) {
+      const t = 0.25 + 0.6 * h3(k, 7, seed), q = path[Math.round(t * (path.length - 1))], rr = lerp1(r0, r1, Math.pow(t, 0.8));
+      rosettes.push({ c: add(q, [0, rr * 0.8, 0]), n: [0, 1, 0], r: rr * (0.9 + 0.6 * h3(k, 8, seed)), R: k % 2 ? SAGE : SNOW, cup: OCHRE });
+    }
+    for (let k = 0; k < beard; k++) {
+      const t = 0.2 + 0.7 * h3(k, 11, seed), q = path[Math.round(t * (path.length - 1))], rr = lerp1(r0, r1, Math.pow(t, 0.8));
+      lichenSeats.push({ p: add(q, [0, -rr * 0.6, 0]), n: [0, -1, 0], dir: nrm([h3(k, 12, seed) - 0.5, -1, h3(k, 13, seed) - 0.5]), len: 0.07 + 0.08 * h3(k, 14, seed), wid: 0.018, lift: 0.0, droop: 0.05, col: k % 2, w: [HEAD, 1] });
+    }
     // short spurs with tufts of needles along the outer half, a crown of them at the tip
     for (let k = 0; k < tufts; k++) {
       const t = 0.35 + 0.65 * (k + 0.5) / tufts, f = t * (path.length - 1), i0 = Math.min(path.length - 2, Math.floor(f)), q = f - i0;
@@ -396,53 +528,68 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   };
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const j = (k: number, a: number) => (h3(k, s > 0 ? 1 : 2, 77) - 0.5) * a;
-    const b0: V3 = mir([0.052, HG[1] + 0.1, HG[2] + 0.0], s);
-    const beam: V3[] = [add(b0, [0, -0.025, 0]), add(b0, [s * 0.025, 0.06, -0.01]), add(b0, [s * (0.09 + j(1, 0.02)), 0.12, -0.04]), add(b0, [s * 0.13, 0.22, -0.02 + j(2, 0.03)]), add(b0, [s * (0.22 + j(3, 0.02)), 0.29, -0.07]), add(b0, [s * 0.28, 0.4, -0.06]), add(b0, [s * 0.38, 0.45, -0.1 + j(4, 0.03)]), add(b0, [s * 0.44, 0.55, -0.09]), add(b0, [s * 0.5, 0.6, -0.12])];
-    twig('antler' + S, beam, 0.03, 0.007, 18, 6, 1 + s);
+    const b0 = add(HG, mir(ANTLER_ROOT, s));
+    const beam: V3[] = [add(b0, [-s * 0.012, -0.03, 0]), add(b0, [s * 0.012, 0.045, -0.008]), add(b0, [s * (0.08 + j(1, 0.02)), 0.11, -0.04]), add(b0, [s * 0.13, 0.21, -0.02 + j(2, 0.03)]), add(b0, [s * (0.22 + j(3, 0.02)), 0.28, -0.07]), add(b0, [s * 0.28, 0.39, -0.06]), add(b0, [s * 0.38, 0.44, -0.1 + j(4, 0.03)]), add(b0, [s * 0.44, 0.54, -0.09]), add(b0, [s * 0.5, 0.59, -0.12])];
+    twig('antler' + S, beam, 0.036, 0.008, 20, 6, 1 + s, 5);
     const bp = curve(beam, 18);
     // forks: forward and up off the low bend, back off the middle, up off the high bend, out at the crown
-    twig('fork' + S + 0, [bp[4], add(bp[4], [s * 0.01, 0.07, 0.05]), add(bp[4], [s * 0.05, 0.15, 0.06 + j(5, 0.02)]), add(bp[4], [s * 0.03, 0.24, 0.11]), add(bp[4], [s * 0.06, 0.29, 0.1])], 0.015, 0.004, 8, 4, 3 + s);
-    twig('fork' + S + 1, [bp[8], add(bp[8], [s * 0.04, 0.05, -0.06]), add(bp[8], [s * 0.07, 0.12, -0.13]), add(bp[8], [s * 0.13, 0.15, -0.2 + j(6, 0.03)])], 0.013, 0.004, 8, 3, 5 + s);
-    twig('fork' + S + 2, [bp[11], add(bp[11], [s * 0.0, 0.08, 0.02]), add(bp[11], [-s * 0.03, 0.16, 0.0]), add(bp[11], [s * 0.01, 0.25, 0.04 + j(7, 0.03)])], 0.012, 0.0035, 8, 4, 7 + s);
-    twig('fork' + S + 3, [bp[14], add(bp[14], [s * 0.06, 0.03, 0.04]), add(bp[14], [s * 0.13, 0.08, 0.06]), add(bp[14], [s * 0.17, 0.06, 0.1])], 0.009, 0.003, 6, 3, 9 + s);
-    twig('fork' + S + 4, [bp[6], add(bp[6], [s * 0.05, -0.01, 0.05]), add(bp[6], [s * 0.11, 0.02, 0.09])], 0.008, 0.003, 5, 2, 11 + s);
+    twig('fork' + S + 0, [bp[4], add(bp[4], [s * 0.01, 0.07, 0.05]), add(bp[4], [s * 0.05, 0.15, 0.06 + j(5, 0.02)]), add(bp[4], [s * 0.03, 0.24, 0.11]), add(bp[4], [s * 0.06, 0.29, 0.1])], 0.017, 0.004, 9, 4, 3 + s, 2);
+    twig('fork' + S + 1, [bp[8], add(bp[8], [s * 0.04, 0.05, -0.06]), add(bp[8], [s * 0.07, 0.12, -0.13]), add(bp[8], [s * 0.13, 0.15, -0.2 + j(6, 0.03)])], 0.014, 0.004, 8, 3, 5 + s, 2);
+    twig('fork' + S + 2, [bp[11], add(bp[11], [s * 0.0, 0.08, 0.02]), add(bp[11], [-s * 0.03, 0.16, 0.0]), add(bp[11], [s * 0.01, 0.25, 0.04 + j(7, 0.03)])], 0.013, 0.0035, 8, 4, 7 + s, 1);
+    twig('fork' + S + 3, [bp[14], add(bp[14], [s * 0.06, 0.03, 0.04]), add(bp[14], [s * 0.13, 0.08, 0.06]), add(bp[14], [s * 0.17, 0.06, 0.1])], 0.01, 0.003, 6, 3, 9 + s, 1);
+    twig('fork' + S + 4, [bp[6], add(bp[6], [s * 0.05, -0.01, 0.05]), add(bp[6], [s * 0.11, 0.02, 0.09])], 0.009, 0.003, 5, 2, 11 + s, 1);
   }
+  const barkPaint = antlerPaint(rosettes);
+  for (const p of body.pieces) if (/^(antler|fork)/.test(p.name)) p.paint = barkPaint;
   yield 'antlers';
 
   // ---- arms: long sleeves to the wrist, hands; the right fist round the staff
   const sleeves: Piece[] = [];
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const a = s > 0 ? GT.armL : GT.armR;
-    const segA = [Math.hypot(...(sub(a.sh, a.el) as [number, number, number])), Math.hypot(...(sub(a.el, a.wr) as [number, number, number]))];
-    void segA;
+    // wrinkled cloth: ridges and valleys that wander round the sleeve, gathering at the elbow; a flared ragged cuff
+    const wr = (k: number): [number, number, number][] => [[((k * 97) % 360) - 180, 0.09, 22], [((k * 61 + 120) % 360) - 180, -0.07, 26], [((k * 41 + 250) % 360) - 180, 0.07, 18]];
     const rings: LimbRing[] = [
-      { t: -0.25, r: 0.075 }, { t: -0.08, r: 0.074 }, { t: 0.05, r: 0.068 }, { t: 0.25, r: 0.06 }, { t: 0.45, r: 0.056, crease: 0.6 }, { t: 0.55, r: 0.058 },
-      { t: 0.72, r: 0.064 }, { t: 0.86, r: 0.074 }, { t: 0.96, r: 0.085 }, { t: 1.0, r: 0.088 }, { t: 1.01, r: 0.03 },
+      { t: -0.25, r: 0.075 }, { t: -0.08, r: 0.074, b: wr(1) }, { t: 0.05, r: 0.068, b: wr(2) }, { t: 0.25, r: 0.06, b: wr(3) }, { t: 0.45, r: 0.056, crease: 0.6, b: wr(4) }, { t: 0.55, r: 0.058, b: [[0, 0.12, 30], [180, -0.08, 30], [90, 0.08, 20]] },
+      { t: 0.72, r: 0.064, b: wr(6) }, { t: 0.86, r: 0.074, b: wr(7) }, { t: 0.96, r: 0.085, b: wr(8) }, { t: 1.0, r: 0.088, b: [[30, 0.1, 20], [-60, 0.08, 18], [150, 0.12, 22], [-150, -0.06, 20]] }, { t: 1.01, r: 0.03 },
     ];
     const arm = limb({
-      name: 'sleeve' + S, side: s, hip: a.sh, knee: a.el, sole: [a.wr[0], a.wr[1] - 0.012, a.wr[2]], tj: [0, 0.5, 1], rings, around: 12, levels: 1, rise: 0.06,
+      name: 'sleeve' + S, side: s, hip: a.sh, knee: a.el, sole: [a.wr[0], a.wr[1] - 0.012, a.wr[2]], tj: [0, 0.5, 1], rings, around: 16, levels: 1, rise: 0.06,
       foot: { pad: 0.03, h: 0.01, nail: 'nail', toes: [], noPad: true },
       bones: { parent: bi('chest'), up: bi('arm' + S), lo: bi('elb' + S), foot: bi('hand' + S) }, paint: sleevePaint, clawPaint: sleevePaint, k: 0.8,
     });
     body.add(arm.skin); sleeves.push(arm.skin);
   }
-  // the left hand: hanging open, long fingers a little curled
+  /** a long old finger: three phalanges, the knuckles swollen (the middle one most), thinner between, flatter on the
+   *  palm side, a dark nail at the tip */
+  const finger = (name: string, joints: V3[], r0: number, skin: (p: V3) => Wt, palm: V3) => {
+    const path = curve(joints, 12), cum = [0];
+    for (let k = 1; k < joints.length; k++) cum.push(cum[k - 1] + Math.hypot(...(sub(joints[k], joints[k - 1]) as [number, number, number])));
+    const tj = cum.map((c) => c / cum[cum.length - 1]);
+    const tip = joints[joints.length - 1], dTip = nrm(sub(tip, joints[joints.length - 2]));
+    const kn = joints.slice(1, joints.length - 1);
+    body.add(stalk({
+      name, path, around: 7, capE: true, levels: 1, k: 1.7, skin, up: palm,
+      r: (t) => r0 * (1 - t * 0.3) * (1 + 0.2 * g2(t, tj[1], 0.05) + 0.26 * g2(t, tj[2], 0.045) + 0.16 * g2(t, tj[3] ?? 0.8, 0.04) - 0.08 * g2(t, ((tj[2] + (tj[3] ?? 0.8)) / 2), 0.05) - 0.07 * g2(t, (tj[1] + tj[2]) / 2, 0.06)),
+      sec: (a) => (Math.cos(a) > 0 ? 1 : 0.84),
+      paint: skinPaint({ knuckles: kn, flow: dTip, nails: (p) => { const d = sub(p, tip), along = d[0] * dTip[0] + d[1] * dTip[1] + d[2] * dTip[2], back = (p[0] - tip[0]) * palm[0] + (p[1] - tip[1]) * palm[1] + (p[2] - tip[2]) * palm[2]; return along > -0.016 && back > -0.001 && Math.hypot(...(sub(d, scl(dTip, along)) as [number, number, number])) < r0 * 1.2; } }),
+    }));
+  };
+  // the left hand: hanging open, long fingers a little curled toward the palm (-x)
   {
     const wr = GT.armL.wr, hb = bi('handL');
-    const pal = (d: number, w: number, t: number): Station => ({ c: add(wr, [0, -d, 0.004 + d * 0.05]), s: [t, w], p: 'flat' });
-    body.add(trunk({ name: 'palmL', stations: [pal(-0.03, 0.03, 0.026), pal(0.0, 0.036, 0.024), pal(0.04, 0.042, 0.021), pal(0.08, 0.045, 0.019), pal(0.11, 0.041, 0.017)], tween: 0, capS: true, capE: true, levels: 1, k: 1.6, skin: (p) => (p[1] > wr[1] - 0.005 ? [bi('elbL'), 0.35, hb, 0.65] : [hb, 1]), paint: skinPaint() }));
+    const pal = (d: number, w: number, t: number): Station => ({ c: add(wr, [0, -d, 0.004 + d * 0.05]), s: [t, w], p: 'flat', tw: d > 0.06 ? [[3, 0.08, 0], [5, 0.08, 0]] : undefined });
+    body.add(trunk({ name: 'palmL', stations: [pal(-0.03, 0.03, 0.026), pal(0.0, 0.036, 0.024), pal(0.04, 0.042, 0.021), pal(0.08, 0.045, 0.019), pal(0.11, 0.041, 0.018)], tween: 0, capS: true, capE: true, levels: 1, k: 1.6, skin: (p) => (p[1] > wr[1] - 0.005 ? [bi('elbL'), 0.35, hb, 0.65] : [hb, 1]), paint: skinPaint({ knuckles: [0, 1, 2, 3].map((k) => add(wr, [0.012, -0.108, 0.03 - k * 0.0215])) }) }));
     const fl = [0.135, 0.15, 0.142, 0.115];
     for (let k = 0; k < 4; k++) {
-      const fz = 0.03 - k * 0.0215, L = fl[k], base: V3 = add(wr, [0, -0.108, fz]);
-      const path = curve([add(base, [0, 0.02, 0]), base, add(base, [-0.004, -L * 0.45, 0.002]), add(base, [-0.012, -L * 0.82, 0.004]), add(base, [-0.022, -L, 0.003])], 7);
+      const fz = 0.03 - k * 0.0215, L = fl[k], base: V3 = add(wr, [0, -0.106, fz]);
+      const joints: V3[] = [add(base, [0.002, 0.02, 0]), base, add(base, [-0.003, -L * 0.44, 0.002]), add(base, [-0.011, -L * 0.74, 0.004]), add(base, [-0.021, -L, 0.003])];
       const [b1, b2] = k === 0 ? [bi('indexL'), bi('index2L')] : [bi('fingL'), bi('fing2L')];
       const sk = chainSkin([add(base, [0, 0.03, 0]), add(base, [0, -L * 0.42, 0]), add(base, [0, -L * 1.3, 0])], [b1, b2], 0.3);
-      const tip = add(base, [-0.022, -L, 0.003]);
-      body.add(stalk({ name: 'fingL' + k, path, r: (t) => (0.0105 - t * 0.003) * (1 + 0.12 * g2(t, 0.42, 0.06)), around: 6, capE: true, levels: 1, k: 1.6, skin: sk, paint: skinPaint({ nails: (p) => Math.hypot(p[0] - tip[0] - 0.004, p[1] - tip[1] - 0.008, p[2] - tip[2]) < 0.014 && p[0] < tip[0] + 0.012 }) }));
+      finger('fingL' + k, joints, 0.0104, sk, [1, 0, 0]);
     }
     const tb: V3 = add(wr, [-0.012, -0.04, 0.036]);
-    const tip = add(tb, [-0.03, -0.08, 0.02]);
-    body.add(stalk({ name: 'thumbL', path: curve([add(tb, [0.004, 0.02, -0.01]), tb, add(tb, [-0.014, -0.04, 0.018]), tip], 6), r: (t) => 0.012 - t * 0.003, around: 6, capE: true, levels: 1, k: 1.6, skin: () => [bi('thumbL'), 1], paint: skinPaint({ nails: (p) => Math.hypot(p[0] - tip[0], p[1] - tip[1], p[2] - tip[2]) < 0.012 }) }));
+    finger('thumbL', [add(tb, [0.004, 0.02, -0.01]), tb, add(tb, [-0.012, -0.036, 0.016]), add(tb, [-0.03, -0.08, 0.02])], 0.0118, () => [bi('thumbL'), 1], nrm([0.6, 0, -0.8]));
   }
   // the right fist round the staff
   {
@@ -451,17 +598,16 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     body.add(trunk({ name: 'palmR', stations: [{ c: add(wr, scl(ax, -0.03)), s: [0.026, 0.03], p: 'flat' }, { c: wr, s: [0.028, 0.036], p: 'flat' }, { c: add(wr, scl(ax, 0.045)), s: [0.03, 0.044], p: 'flat' }, { c: add(add(wr, scl(ax, 0.085)), [-0.012, 0, 0]), s: [0.026, 0.044], p: 'flat' }], tween: 0, capS: true, capE: true, levels: 1, k: 1.5, skin: () => [hb, 1], paint: skinPaint() }));
     for (let k = 0; k < 4; k++) {
       const y = G[1] + 0.032 - k * 0.022, R = 0.034;
-      const pts: V3[] = [-2.0, -1.2, -0.4, 0.4, 1.1].map((a, q) => [S.x + Math.sin(a) * R * (q === 0 ? 1.15 : 1), y - q * 0.002, S.z + Math.cos(a) * R * (q === 0 ? 1.15 : 1)]);
+      const pts: V3[] = [-2.0, -1.2, -0.4, 0.4, 1.1].map((a, q) => [S.x + Math.sin(a) * R * (q === 0 ? 1.18 : 1.04), y - q * 0.002, S.z + Math.cos(a) * R * (q === 0 ? 1.18 : 1.04)]);
       pts[0] = add(pts[0], [-0.012, 0.0, -0.01]);
-      const tip = pts[4];
-      body.add(stalk({ name: 'fingR' + k, path: curve(pts, 7), r: (t) => 0.0105 - t * 0.0025, around: 6, capE: true, levels: 1, k: 1.4, skin: () => [hb, 1], paint: skinPaint({ nails: (p) => Math.hypot(p[0] - tip[0], p[1] - tip[1], p[2] - tip[2]) < 0.012 }) }));
+      finger('fingR' + k, pts, 0.0104, () => [hb, 1], nrm([pts[1][0] - S.x, 0, pts[1][2] - S.z]));
     }
     const ty = G[1] + 0.04;
-    const tpts: V3[] = [-1.9, -2.6, -3.3, -3.9].map((a) => [S.x + Math.sin(a) * 0.033, ty - 0.004, S.z + Math.cos(a) * 0.033]);
-    body.add(stalk({ name: 'thumbR', path: curve([add(wr, [-0.01, -0.03, 0.01]), ...tpts], 6), r: (t) => 0.012 - t * 0.003, around: 6, capE: true, levels: 1, k: 1.4, skin: () => [hb, 1], paint: skinPaint({ nails: (p) => Math.hypot(p[0] - tpts[3][0], p[1] - tpts[3][1], p[2] - tpts[3][2]) < 0.012 }) }));
+    const tpts: V3[] = [-1.9, -2.6, -3.3, -3.9].map((a) => [S.x + Math.sin(a) * 0.035, ty - 0.004, S.z + Math.cos(a) * 0.035]);
+    finger('thumbR', [add(wr, [-0.01, -0.03, 0.01]), ...tpts], 0.0118, () => [hb, 1], nrm([tpts[0][0] - S.x, 0, tpts[0][2] - S.z]));
     // the staff: a crooked length of grey tamarack, a knot or two, a forked top
     const sp: V3[] = [[S.x, -0.01, S.z], [S.x + 0.006, 0.4, S.z - 0.004], [S.x - 0.004, 0.85, S.z + 0.006], [S.x + 0.003, 1.3, S.z - 0.002], [S.x - 0.006, 1.58, S.z + 0.004], [S.x + 0.004, S.top, S.z - 0.01]];
-    body.add(stalk({ name: 'staff', path: curve(sp, 22), r: (t) => (0.021 - t * 0.005) * (1 + 0.22 * g2(t, 0.31, 0.02) + 0.18 * g2(t, 0.62, 0.015) + 0.25 * g2(t, 0.9, 0.03)), around: 7, capS: true, capE: true, levels: 1, k: 0.9, skin: () => [hb, 1], paint: staffPaint }));
+    body.add(stalk({ name: 'staff', path: curve(sp, 22), r: (t) => (0.021 - t * 0.005) * (1 + 0.22 * g2(t, 0.31, 0.02) + 0.18 * g2(t, 0.62, 0.015) + 0.25 * g2(t, 0.9, 0.03)), sec: (a, t) => 1 + 0.06 * Math.sin(a * 3 + t * 20), around: 7, capS: true, capE: true, levels: 1, k: 0.9, skin: () => [hb, 1], paint: staffPaint }));
     const top: V3 = [S.x + 0.004, S.top - 0.03, S.z - 0.01];
     body.add(stalk({ name: 'staffF', path: curve([top, add(top, [0.03, 0.06, 0.01]), add(top, [0.07, 0.1, -0.01]), add(top, [0.08, 0.15, 0.02])], 6), r: (t) => 0.012 - t * 0.008, around: 6, capE: true, levels: 1, k: 0.9, skin: () => [hb, 1], paint: staffPaint }));
   }
@@ -480,16 +626,17 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     });
     body.add(leg.skin);
     const fb = bi('foot' + S), tb = bi('toes' + S);
-    const st = (z: number, y: number, w: number, h: number): Station => ({ c: [an[0] + s * (z > 0.08 ? 0.008 : 0), y, z], s: [w, h], p: 'flat', tw: [[6, 0, -0.25], [7, 0, -0.3], [8, 0, -0.3]] });
+    const st = (z: number, y: number, w: number, h: number, tw?: [number, number, number][]): Station => ({ c: [an[0] + s * (z > 0.08 ? 0.008 : 0), y, z], s: [w, h], p: 'flat', tw: tw ?? [[6, 0, -0.25], [7, 0, -0.3], [8, 0, -0.3]] });
+    // bony old feet: the ankle knobs, the tendons over the instep, the ball of the foot
     body.add(trunk({
-      name: 'foot' + S, stations: [st(-0.1, 0.045, 0.035, 0.045), st(-0.07, 0.06, 0.045, 0.06), st(-0.01, 0.07, 0.048, 0.065), st(0.06, 0.05, 0.05, 0.048), st(0.13, 0.032, 0.054, 0.032), st(0.17, 0.024, 0.05, 0.022)],
+      name: 'foot' + S, stations: [st(-0.1, 0.045, 0.035, 0.045), st(-0.07, 0.06, 0.047, 0.06, [[3, 0.12, 0], [6, 0, -0.25], [7, 0, -0.3], [8, 0, -0.3]]), st(-0.01, 0.07, 0.048, 0.065, [[1, 0.06, 0.08], [6, 0, -0.25], [7, 0, -0.3], [8, 0, -0.3]]), st(0.06, 0.05, 0.05, 0.048, [[1, 0.08, 0.1], [6, 0, -0.25], [7, 0, -0.3], [8, 0, -0.3]]), st(0.13, 0.032, 0.056, 0.034), st(0.17, 0.024, 0.05, 0.022)],
       tween: 0, capS: true, capE: true, levels: 1, k: 0.9, skin: (p) => (p[2] > 0.12 ? [tb, 0.6, fb, 0.4] : p[1] > 0.1 ? [bi('shin' + S), 0.5, fb, 0.5] : [fb, 1]),
-      paint: skinPaint({ sole: (_p, n) => n[1] < -0.3 }),
+      paint: skinPaint({ sole: (_p, n) => n[1] < -0.3, flow: [0, 0, 1] }),
     }));
     for (let k = 0; k < 5; k++) {
       const x = an[0] + s * (0.01 + (k - 2) * 0.02), L = k === 0 ? 0.075 : 0.07 - k * 0.008, base: V3 = [x, 0.024, 0.165];
       const tip: V3 = [x + s * (k - 2) * 0.006, 0.008, base[2] + L];
-      body.add(stalk({ name: 'toe' + S + k, path: curve([base, [x + s * (k - 2) * 0.003, 0.03, base[2] + L * 0.45], [x + s * (k - 2) * 0.005, 0.02, base[2] + L * 0.8], tip], 5), r: (t) => (k === 0 ? 0.013 : 0.0095) * (1 - t * 0.3), around: 5, capE: true, levels: 1, k: 0.9, skin: () => [tb, 1], paint: skinPaint({ nails: (p) => Math.hypot(p[0] - tip[0], p[1] - tip[1] - 0.004, p[2] - tip[2]) < 0.012, sole: (_p, n) => n[1] < -0.5 }) }));
+      body.add(stalk({ name: 'toe' + S + k, path: curve([base, [x + s * (k - 2) * 0.003, 0.032, base[2] + L * 0.45], [x + s * (k - 2) * 0.005, 0.021, base[2] + L * 0.8], tip], 6), r: (t) => (k === 0 ? 0.013 : 0.0095) * (1 - t * 0.3) * (1 + 0.18 * g2(t, 0.45, 0.08)), around: 7, capE: true, levels: 0, k: 0.9, skin: () => [tb, 1], paint: skinPaint({ flow: [0, 0, 1], knuckles: [[x + s * (k - 2) * 0.003, 0.032, base[2] + L * 0.45]], nails: (p) => Math.hypot(p[0] - tip[0], p[1] - tip[1] - 0.004, p[2] - tip[2]) < 0.012, sole: (_p, n) => n[1] < -0.5 }) }));
     }
   }
   for (const p of sleeves) body.finalize(p);
@@ -497,14 +644,13 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
 
   // ---- hair, and the strips of her shawl
   const hairSeats: LockSeat[] = [];
-  const hg = head.grids[0];
-  for (let k = 0; k < 400; k++) {
-    // round the back and sides of the scalp (v up the head, u round from the front seam); the forehead and face clear
-    const v = 0.45 + h3(k, 1, 51) * 0.53, u = h3(k, 2, 51);
-    const q = gridSurf(head.m, hg, u, v);
-    const rel = sub(q.p, HG), side = Math.abs(rel[0]);
-    if (rel[2] > 0.025 && side < 0.072 && rel[1] < 0.08) continue;
-    if (rel[2] > 0.06 && side < 0.04) continue;
+  for (let k = 0; k < 380; k++) {
+    // over the back and sides of the scalp; the forehead and face clear, parted round the antlers
+    const h = -0.05 + h3(k, 1, 51) * 0.22, th = h3(k, 2, 51) * Math.PI, sd = h3(k, 7, 51) < 0.5 ? 1 : -1;
+    const q = headPoint(h, th, sd), rel = sub(q.p, HG), side = Math.abs(rel[0]);
+    if (rel[2] > 0.025 && side < 0.074 && rel[1] < 0.085) continue;
+    if (rel[2] > 0.055 && side < 0.045) continue;
+    if (Math.hypot(side - ANTLER_ROOT[0], rel[1] - ANTLER_ROOT[1], rel[2] - ANTLER_ROOT[2]) < 0.03) continue;
     // it falls from the scalp outward and back, then down
     const rad = nrm([rel[0] + (rel[0] >= 0 ? 0.01 : -0.01), 0, rel[2] - 0.035]);
     const crown = rel[1] > 0.1;
@@ -514,7 +660,6 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     hairSeats.push({ p: sub(q.p, scl(q.n, 0.004)), n: q.n, dir, len: crown ? len * 0.8 : len, wid: 0.009 + 0.005 * h3(k, 4, 51), lift: crown ? 0.1 : 0.2, droop: crown ? 0.55 : 0.4, col: h3(k, 5, 51) < 0.25 ? 1 : h3(k, 6, 51) < 0.3 ? 2 : 0, w: headSkin(q.p) });
   }
   const hairTiles = [STONE, SNOW, STONE];
-  void SNOW;
   const hair = locks({ name: 'hair', seats: hairSeats, tiles: hairTiles, steps: [4, 3, 3], seed: 13 });
   if (hair) { hair.k = 0.45; body.add(hair); }
   const strip: LockSeat[] = [];
@@ -525,19 +670,18 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
       const u = h3(k, 1, seed), v = v0 + (v1 - v0) * h3(k, 2, seed);
       const q = gridSurf(robe.m, rg, u, v);
       const L = len(q.p); if (L < 0.03) continue;
-      // keep the face of the robe under the arms clear where the hands hang
       const rad = nrm([q.p[0], 0, q.p[2] + 0.04]);
       strip.push({ p: sub(q.p, scl(q.n, 0.006)), n: q.n, dir: nrm([rad[0] * 0.15, -1, rad[2] * 0.15]), len: L, wid: wid * (0.75 + 0.5 * h3(k, 3, seed)), lift: 0.02, droop: 0.3, col: kindAt(k, seed), w: robeSkin(q.p) });
     }
   };
-  // robe rows (v) by height: v = row / rows of the tweened, subdivided tube
+  // robe rows (v) by height
   const vAt = (y: number) => { let best = 0, bd = 9; for (let k = 0; k <= 200; k++) { const v = k / 200, p = gridSurf(robe.m, rg, 0.5, v).p; if (Math.abs(p[1] - y) < bd) { bd = Math.abs(p[1] - y); best = v; } } return best; };
-  sowRobe(150, vAt(1.5), vAt(1.95), (p) => 0.32 + 0.4 * h3(Math.floor(p[0] * 50), Math.floor(p[1] * 50), 3) * (p[2] < 0 ? 1.2 : 0.8), 0.034, 61);
-  sowRobe(60, vAt(0.95), vAt(1.45), (p) => 0.25 + 0.25 * h3(Math.floor(p[0] * 70), Math.floor(p[1] * 70), 4), 0.03, 63);
-  sowRobe(90, vAt(0.06), vAt(0.3), (p) => 0.12 + 0.1 * h3(Math.floor(p[0] * 70), Math.floor(p[2] * 70), 5), 0.032, 65);
+  sowRobe(130, vAt(1.5), vAt(1.95), (p) => 0.32 + 0.4 * h3(Math.floor(p[0] * 50), Math.floor(p[1] * 50), 3) * (p[2] < 0 ? 1.2 : 0.8), 0.034, 61);
+  sowRobe(48, vAt(0.95), vAt(1.45), (p) => 0.25 + 0.25 * h3(Math.floor(p[0] * 70), Math.floor(p[1] * 70), 4), 0.03, 63);
+  sowRobe(70, vAt(0.06), vAt(0.3), (p) => 0.12 + 0.1 * h3(Math.floor(p[0] * 70), Math.floor(p[2] * 70), 5), 0.032, 65);
   for (const sl of sleeves) {
     const g = sl.grids[0];
-    for (let k = 0; k < 26; k++) {
+    for (let k = 0; k < 22; k++) {
       const q = gridSurf(sl.m, g, h3(k, 1, 71), 0.15 + 0.8 * h3(k, 2, 71));
       strip.push({ p: sub(q.p, scl(q.n, 0.005)), n: q.n, dir: nrm([q.n[0] * 0.3, -1, q.n[2] * 0.3]), len: 0.12 + 0.16 * h3(k, 3, 71), wid: 0.026, lift: 0.05, droop: 0.06, col: kindAt(k, 71), w: sl.skin(q.p) });
     }
@@ -548,9 +692,12 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   const needleTiles = [GOLD, OCHRE, STRAW];
   const needles = locks({ name: 'needles', seats: needleSeats, tiles: needleTiles, seed: 19 });
   if (needles) { needles.paint = cardPaint(['needles', 'needles', 'needles'], needleTiles, { steps: [4, 4, 3.6], rough: 200 }); needles.k = 0.7; body.add(needles); }
+  const lichenTiles = [SAGE, SNOW];
+  const beard = locks({ name: 'lichen', seats: lichenSeats, tiles: lichenTiles, seed: 23 });
+  if (beard) { beard.paint = cardPaint(['lichen', 'lichen'], lichenTiles, { steps: [4, 2.6], rough: 240 }); beard.k = 0.5; body.add(beard); }
   yield 'locks';
-  void PLUM; void INK; void cell3; void FUR;
-  const out = yield* body.buildGen({ den: o.den ?? 260, maxScale: 2, budget: 30000, fur: GRANNY_FUR });
+  void PLUM; void INK; void cell3; void FUR; void EYE; void HORN; void BARK;
+  const out = yield* body.buildGen({ den: o.den ?? 260, maxScale: 2, budget: 38500, fur: GRANNY_FUR });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
 }
@@ -565,7 +712,7 @@ function GRANNY_FUR(p: V3, n: V3, piece: string, k: { k: number; occ: number }):
   if (piece === 'trunk') {
     const a = Math.atan2(p[0], p[2]);
     const collar = 1.975 + nz2(a * 3, 1) * 0.012;
-    const edge = 1.5 - 0.06 * Math.cos(a) + nz2(a * 5, 3) * 0.05 - (Math.abs(a) < 0.35 ? (0.35 - Math.abs(a)) * 0.4 : 0);
+    const edge = shawlEdge(a);
     if (p[1] > collar - 0.008 || p[1] < edge) return null;
     const lich = fbm3(p[0] * 14 + 3, p[1] * 14, p[2] * 14, 2) > 0.32;
     const deep = cl((p[1] - edge) / 0.12, 0.35, 1) * cl((collar - p[1]) / 0.06, 0.3, 1);

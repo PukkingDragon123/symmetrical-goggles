@@ -13,6 +13,9 @@
 // texel carries roughness / metalness / eye shine in a second page (kit.ts surfaceTexture) for MeshStandardMaterial.
 // PAINT (paint.ts): Px.base / put, scales, fur, locks, pelt, pebbles, folds, spots, mud, rosettes, scar, glints,
 // outlineMat, creaseInk, flush. Colours are ramp steps (palette.ts RAMPS).
+// HAND PAINT (handpaint.ts): hand(px).zones / form / strokes / hollows / wet, handpaint(px, {...}) in one call,
+// paintedEye, lids, lidPaint. SCULPT (sculpt.ts): displace, relief (scale plates), foldsFn, earFlap; organic ring
+// profiles in trunk.ts PROFILES (keel, pear, slab, hump, sack, crest).
 export * from './kit';
 export * from './cage';
 export * from './core';
@@ -23,4 +26,7 @@ export * from './legs';
 export * from './locks';
 export { curve, stalk, horn, fin, sac, bulbs, spine, type FinSpec } from './append';
 export { Px, RP, cell3, h3, cl, ss } from './paint';
-export { RAMPS, type RampName } from './palette';
+export { RAMPS, hueRamp, type RampName } from './palette';
+// hand painting and organic sculpting (the art brief's paint and shape rules): see handpaint.ts and sculpt.ts
+export { Hand, hand, handpaint, paintedEye, lids, lidPaint, KEY, type Flow, type FormOpts, type StrokeOpts, type Zone, type Hollow, type PaintedEyeSpec, type LidSpec, type EyePupil } from './handpaint';
+export { displace, relief, scaleAt, gridMetrics, cageNormals, foldsFn, earFlap, earInner, type ReliefOpts, type EarSpec } from './sculpt';

@@ -26,6 +26,19 @@ export const PROFILES: Record<string, number[][]> = {
   neck: [[0, 1], [0.36, 0.94], [0.7, 0.7], [0.94, 0.34], [1, -0.06], [0.94, -0.44], [0.7, -0.76], [0.3, -0.96], [0, -1]],
   /** a flattened, wide section (the tail root of a swimmer, a flat-backed armoured animal) */
   flat: [[0, 1], [0.44, 0.97], [0.8, 0.82], [0.98, 0.46], [1, 0], [0.96, -0.44], [0.8, -0.8], [0.42, -0.97], [0, -1]],
+  // ---- organic sections (handpaint/sculpt pass): never a circle
+  /** a keeled back: the spine a soft ridge, the flanks falling away flat, a rounded belly */
+  keel: [[0, 1], [0.22, 0.92], [0.58, 0.7], [0.88, 0.36], [1, -0.04], [0.95, -0.42], [0.76, -0.74], [0.4, -0.95], [0, -1]],
+  /** pear-shaped: narrow over the back, the weight of the gut low and wide (a heavy belly sagging under gravity) */
+  pear: [[0, 1], [0.32, 0.95], [0.58, 0.76], [0.78, 0.42], [0.94, 0.0], [1, -0.38], [0.9, -0.72], [0.5, -0.97], [0, -1]],
+  /** squared shoulders: a broad flat top between muscle masses, steep sides, a deep chest */
+  slab: [[0, 0.94], [0.36, 1], [0.74, 0.94], [0.95, 0.62], [1, 0.12], [0.94, -0.34], [0.74, -0.7], [0.36, -0.94], [0, -1]],
+  /** a hump of muscle over the shoulders: the top raised and broad, the flanks pinched under it, a heavy keel below */
+  hump: [[0, 1], [0.42, 0.98], [0.78, 0.82], [0.92, 0.46], [0.9, 0.06], [0.88, -0.34], [0.72, -0.7], [0.38, -0.95], [0, -1]],
+  /** a sagging belly in a heavy low beast: a flat back, the flanks bulging below the middle, a flat sole of belly */
+  sack: [[0, 0.92], [0.44, 0.94], [0.76, 0.8], [0.94, 0.46], [1, 0.02], [0.98, -0.42], [0.84, -0.76], [0.46, -0.96], [0, -0.98]],
+  /** a muscular neck: the crest high, a groove down the side between the muscle and the windpipe, the throat */
+  crest: [[0, 1], [0.34, 0.96], [0.7, 0.74], [0.9, 0.4], [0.86, 0.02], [0.92, -0.36], [0.74, -0.72], [0.36, -0.94], [0, -1]],
 };
 export interface Station {
   /** centre */ c: V3;
