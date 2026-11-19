@@ -18,7 +18,7 @@ import { bonesKit, boneIndex, coat, solid, finishModel, REG, type ModelGen } fro
 import type { BoneDef } from '../../rig';
 
 export const AGROPELTER_MODEL_VERSION = 'agropelter@1';
-export const SNAG_MODEL_VERSION = 'agrosnag@2';
+export const SNAG_MODEL_VERSION = 'agrosnag@3';
 export const AG_HEAD: V3 = [0, 1.04, 0.16];
 export const AG_EYE: V3 = [0.038, 1.065, 0.262];
 export const AG_EYE_AX: V3 = [0.25, 0.05, 0.97];
@@ -237,8 +237,8 @@ export function* snagModelGen(o: { page?: number; den?: number } = {}): ModelGen
   const ctrl: V3[] = [[0, -0.2, 0], [0, 0.6, 0.0], [0.02, 1.8, -0.02], [0.05, 3.3, -0.04], [0.08, 4.4, -0.05], [0.1, SNAG.top, -0.06]];
   const path = curve(ctrl, 22);
   const R = (t: number) => { const y = -0.2 + t * (SNAG.top + 0.2); return SNAG.r * (1 + 0.55 * Math.exp(-Math.max(0, y) / 0.35) - 0.18 * (y / SNAG.top)) * (1 + 0.04 * Math.sin(y * 3.1)); };
-  const tr = body.add(stalk({ name: 'trunk', path, r: R, around: 18, sec: (a, t) => 1 + 0.06 * Math.sin(a * 5 + t * 9) + (t < 0.12 ? 0.18 * Math.max(0, Math.cos(a * 4)) : 0), capS: true, capE: false, levels: 1, k: 0.8, skin, paint: snagPaint }));
-  void tr;
+  const tr = body.add(stalk({ name: 'trunk', path, r: R, around: 24, sec: (a, t) => 1 + 0.06 * Math.sin(a * 5 + t * 9) + (t < 0.12 ? 0.18 * Math.max(0, Math.cos(a * 4)) : 0), capS: true, capE: false, levels: 1, k: 0.8, skin, paint: snagPaint }));
+  tr.cut = true; // keeps the hollow's alpha (core.ts: cut regions keep their texel alpha)
   // the broken top: splinters standing up round the rim
   for (let k = 0; k < 9; k++) {
     const a = (k / 9) * Math.PI * 2 + h3(k, 1, 9) * 0.4, r0 = R(1) * 0.8, base: V3 = [0.1 + Math.sin(a) * r0, SNAG.top - 0.05, -0.06 + Math.cos(a) * r0];
@@ -269,7 +269,8 @@ const snagPaint = coat({
   texel: (px, i, x, y, z, nx, ny, nz) => {
     const hx = x - 0.05, hy = y - SNAG.holeY;
     const hole = Math.hypot(hx / 0.21, hy / 0.31) < 1 && nz > 0.3;
-    if (hole) { const d = Math.hypot(hx / 0.21, hy / 0.31); px.put(i, RP('ink'), d > 0.85 ? 2 : 0); px.rough[i] = 255; return 0; }
+    // the hollow is a real opening (alpha-cut): its owner, and its eyes, show inside; a charred dark rim
+    if (hole) { const d = Math.hypot(hx / 0.21, hy / 0.31); px.put(i, RP('ink'), d > 0.85 ? 2 : 0); px.rough[i] = 255; if (d < 0.86) px.alpha[i] = 0; return 0; }
     const m = fbm3(x * 3, y * 1.4, z * 3, 3), plate = fbm3(x * 10, y * 3, z * 10, 2), bare = fbm3(x * 1.5 + 9, y * 0.5, z * 1.5, 2) > 0.18;
     let R = BARK, st: number;
     if (bare) {
