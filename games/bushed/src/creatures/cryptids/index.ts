@@ -73,13 +73,19 @@ const CTORS: Partial<Record<CryptidId, Ctor>> = { hodag: Hodag, squonk: Squonk, 
 /** register a cryptid class (each module does this for itself) */
 export function registerCryptid(id: CryptidId, c: Ctor) { CTORS[id] = c; }
 
+/** the heading from a point toward the nearest road or path (the agropelter's hollow faces the people it pelts) */
+function towardRoad(p: THREE.Vector3): number {
+  let best = 0, bd = Infinity;
+  for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, d = roadInfo(p.x + Math.sin(a) * 4, p.z + Math.cos(a) * 4).d; if (d < bd) { bd = d; best = a; } }
+  return best;
+}
 /** make every cryptid at its home and add it to the scene (preload the models first, or this builds them now) */
 export function spawnNewCryptids(scene: THREE.Object3D, o: { only?: CryptidId[] } = {}): NewCryptid[] {
   const S = cryptidSpots(), out: NewCryptid[] = [];
   for (const id of Object.keys(S) as CryptidId[]) {
     if (o.only && !o.only.includes(id)) continue;
     const C = CTORS[id]; if (!C) continue;
-    const c = new C({ pos: S[id].clone(), heading: (id.length * 1.7) % (Math.PI * 2) });
+    const c = new C({ pos: S[id].clone(), heading: id === 'agropelter' ? towardRoad(S[id]) : (id.length * 1.7) % (Math.PI * 2) });
     scene.add(c.object); out.push(c);
   }
   return out;
