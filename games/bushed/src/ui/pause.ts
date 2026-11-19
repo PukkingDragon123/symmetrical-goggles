@@ -4,7 +4,7 @@ import { paintPaper } from './paper';
 import { input } from '../core/input';
 import { audio } from '../audio/audio';
 
-export interface Settings { sensitivity: number; volume: number; pixel: number; shadows: boolean }
+export interface Settings { sensitivity: number; volume: number; pixel: number; shadows: boolean; quality?: string }
 
 const KEY = 'bushed.settings';
 export function loadSettings(): Settings {
@@ -22,6 +22,7 @@ const css = `
 #pause .in { position: absolute; left: 40px; right: 30px; top: 132px; }
 #pause label { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
 #pause input[type=range] { width: 150px; accent-color: #6b3a22; }
+#pause select { font: 16px Alagard, monospace; background: #e8dcc0; border: 2px solid #6b3a22; color: #2a1d14; }
 #pause button { font: 16px Alagard, monospace; background: none; border: none; border-bottom: 2px solid #6b3a22; color: #6b3a22; cursor: pointer; padding: 0 2px; }
 #pause .keys { font-size: 16px; color: #3a3a46; margin-top: 18px; line-height: 1.25; }
 `;
@@ -40,6 +41,7 @@ export class Pause {
     this.el.innerHTML = `<div class="in">
       <label>Mouse <input id="p-sens" type="range" min="0.3" max="2.5" step="0.05"></label>
       <label>Volume <input id="p-vol" type="range" min="0" max="1" step="0.02"></label>
+      <label>Quality <select id="p-q"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="ultra">Ultra</option></select></label>
       <label>Pixel size <input id="p-px" type="range" min="1" max="4" step="1"></label>
       <label>Shadows <input id="p-sh" type="checkbox"></label>
       <div style="margin-top:14px"><button id="p-back">Back to the bush</button></div>
@@ -49,6 +51,9 @@ export class Pause {
     root.style.pointerEvents = 'none';
     const q = (id: string) => this.el.querySelector(`#${id}`) as HTMLInputElement;
     q('p-sens').value = String(this.s.sensitivity); q('p-vol').value = String(this.s.volume); q('p-px').value = String(this.s.pixel); q('p-sh').checked = this.s.shadows;
+    const qs = this.el.querySelector('#p-q') as HTMLSelectElement;
+    try { qs.value = localStorage.getItem('bushed.quality') ?? 'high'; } catch { qs.value = 'high'; }
+    qs.addEventListener('change', () => { this.s.quality = qs.value; this.onChange(this.s); q('p-px').value = String(this.s.pixel); saveSettings(this.s); });
     const apply = () => {
       this.s.sensitivity = Number(q('p-sens').value); this.s.volume = Number(q('p-vol').value);
       this.s.pixel = Number(q('p-px').value); this.s.shadows = q('p-sh').checked;

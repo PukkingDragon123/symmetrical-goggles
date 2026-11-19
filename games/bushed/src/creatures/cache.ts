@@ -2,15 +2,17 @@
 // the two texture pages, keyed by the model's version string. A cached model loads in a few milliseconds instead of
 // being rebuilt (seconds). Bump a model's *_MODEL_VERSION whenever its builder changes.
 import * as THREE from 'three';
-import { pixelTexture, surfaceTextureFrom } from './anatomy';
+import { pixelTexture, surfaceTextureFrom, furTextureFrom } from './anatomy';
 
 export interface Packed {
   attrs: { name: string; a: Float32Array | Uint16Array | Uint32Array; n: number }[];
   index: Uint16Array | Uint32Array; tex: Uint8Array; sd: Uint8Array; W: number; H: number; meta: Record<string, unknown>;
   /** the colour page's drawn mip chain (level 0 is tex) */
   mips?: { data: Uint8Array; width: number; height: number }[];
+  /** the fur page (src/creatures/fur), when the model has one */
+  fd?: Uint8Array;
 }
-export interface Built { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture }
+export interface Built { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture }
 
 export function pack(m: Built, meta: Record<string, unknown> = {}): Packed {
   const attrs: Packed['attrs'] = [];
@@ -20,7 +22,7 @@ export function pack(m: Built, meta: Record<string, unknown> = {}): Packed {
   }
   const img = (t: THREE.DataTexture) => (t.image as { data: Uint8Array; width: number; height: number });
   const mips = (m.tex.mipmaps as unknown as { data: Uint8Array; width: number; height: number }[] | undefined)?.map((l) => ({ data: l.data.slice(), width: l.width, height: l.height }));
-  return { attrs, index: (m.geo.index!.array as Uint16Array | Uint32Array).slice(), tex: img(m.tex).data.slice(), sd: img(m.sd).data.slice(), W: img(m.tex).width, H: img(m.tex).height, meta, mips };
+  return { attrs, index: (m.geo.index!.array as Uint16Array | Uint32Array).slice(), tex: img(m.tex).data.slice(), sd: img(m.sd).data.slice(), W: img(m.tex).width, H: img(m.tex).height, meta, mips, fd: m.fur ? img(m.fur).data.slice() : undefined };
 }
 export function unpack(p: Packed): Built {
   const geo = new THREE.BufferGeometry();
@@ -28,7 +30,7 @@ export function unpack(p: Packed): Built {
   geo.setIndex(new THREE.BufferAttribute(p.index, 1));
   geo.computeBoundingSphere();
   const mips = p.mips && p.mips.length ? [{ data: p.tex, width: p.W, height: p.H }, ...p.mips.slice(1)] : undefined;
-  return { geo, tex: pixelTexture(p.tex, p.W, p.H, mips), sd: surfaceTextureFrom(p.sd, p.W, p.H) };
+  return { geo, tex: pixelTexture(p.tex, p.W, p.H, mips), sd: surfaceTextureFrom(p.sd, p.W, p.H), fur: p.fd ? furTextureFrom(p.fd, p.W, p.H) : undefined };
 }
 
 const DB = 'bushed-creatures', STORE = 'models';

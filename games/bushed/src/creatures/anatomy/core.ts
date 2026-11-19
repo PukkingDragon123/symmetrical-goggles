@@ -14,7 +14,7 @@
 //   body.add(plateRow(torso, {...}));
 //   const { geo, tex, tris } = body.build();        // skinned BufferGeometry + painted DataTexture
 import * as THREE from 'three';
-import { Page, SkinB, pageTexture, surfaceTexture, type Region, type V3, type Wt } from './kit';
+import { Page, PixelCanvas, SkinB, pageTexture, surfaceTexture, furTextureFrom, type Region, type V3, type Wt } from './kit';
 import { type CM, type Grid, subdivide } from './cage';
 
 export interface Chart {
@@ -59,8 +59,11 @@ export interface Piece {
   /** left out of the quick build (teeth, whiskers, pupils: nothing a far silhouette needs) */
   farSkip?: boolean;
 }
-export interface BuildOpts { den?: number; maxScale?: number; occlusion?: boolean; budget?: number; snap?: (d: Uint8ClampedArray) => void }
-export interface BuildOut { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; tris: number; scale: number }
+/** paints the fur page: for a texel of a piece (its creature-space point, normal, curvature and ambient occlusion),
+ *  [density, length, clump, tip] in 0..1, or null for bare skin. See src/creatures/fur. */
+export type FurPaint = (p: V3, n: V3, piece: string, s: { k: number; occ: number }) => readonly number[] | null;
+export interface BuildOpts { den?: number; maxScale?: number; occlusion?: boolean; budget?: number; snap?: (d: Uint8ClampedArray) => void; fur?: FurPaint }
+export interface BuildOut { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; tris: number; scale: number; fur?: THREE.DataTexture }
 /** run a step generator to the end */
 export function runSync<T>(g: Generator<unknown, T>): T { for (;;) { const r = g.next(); if (r.done) return r.value; } }
 const macrotask = () => new Promise<void>((res) => { if (typeof MessageChannel !== 'undefined') { const c = new MessageChannel(); c.port1.onmessage = () => { c.port1.close(); res(); }; c.port2.postMessage(0); } else setTimeout(res, 0); });
@@ -290,6 +293,7 @@ export class Body {
       if (it && typeof (it as Iterator<unknown>).next === 'function') { const g = it as Iterator<unknown>; for (let r = g.next(); !r.done; r = g.next()) yield 'paint ' + p.name; }
       yield 'paint ' + p.name + '.' + ch.name;
     }
+    if (o.fur) { yield* this.furPage(o.fur); yield 'fur page'; }
     o.snap?.(this.page.pc.data as unknown as Uint8ClampedArray);
     this.page.finish();
     yield 'finish';
@@ -301,7 +305,28 @@ export class Body {
     yield 'geometry';
     const tex = pageTexture(this.page);
     yield 'mips';
-    return { geo, tex, sd: surfaceTexture(this.page), tris: this.B.tris, scale };
+    const fd = this.page.fd ? furTextureFrom(new Uint8Array(this.page.fd.data.buffer, this.page.fd.data.byteOffset, this.page.fd.data.byteLength), this.page.W, this.page.H) : undefined;
+    return { geo, tex, sd: surfaceTexture(this.page), tris: this.B.tris, scale, fur: fd };
+  }
+  /** paint the fur page from every chart's surface (before the surface buffers go) */
+  private *furPage(fn: FurPaint): Generator<string | void, void> {
+    const pg = this.page, fd = pg.fd = new PixelCanvas(pg.W, pg.H); fd.wrap = false;
+    const P: V3 = [0, 0, 0], N: V3 = [0, 0, 0], s = { k: 0, occ: 0 };
+    for (const p of this.pieces) {
+      for (const ch of p.ch!) {
+        const gb = ch.gb, r = ch.reg; if (!gb || !r) continue;
+        for (let y = 0, i = 0; y < gb.h; y++) for (let x = 0; x < gb.w; x++, i++) {
+          if (!gb.M[i]) continue;
+          P[0] = gb.P[i * 3]; P[1] = gb.P[i * 3 + 1]; P[2] = gb.P[i * 3 + 2]; N[0] = gb.N[i * 3]; N[1] = gb.N[i * 3 + 1]; N[2] = gb.N[i * 3 + 2];
+          s.k = gb.K[i]; s.occ = gb.A[i];
+          const v = fn(P, N, p.name, s); if (!v) continue;
+          const [px, py] = r.at(x, y);
+          const c = (q: number) => Math.max(0, Math.min(255, Math.round(q * 255)));
+          fd.setRGBA(px, py, c(v[0]), c(v[1]), c(v[2] ?? 0.5), c(v[3] ?? 0.5));
+        }
+        yield;
+      }
+    }
   }
 }
 

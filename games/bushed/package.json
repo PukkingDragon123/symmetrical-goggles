@@ -8,13 +8,16 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p ."
+    "typecheck": "tsc --noEmit -p .",
+    "package:win": "node tools/package-desktop.mjs win32 x64",
+    "package:linux": "node tools/package-desktop.mjs linux x64"
   },
   "dependencies": {
     "@dimforge/rapier3d-compat": "0.21.0",
     "three": "0.187.0"
   },
   "devDependencies": {
+    "@electron/packager": "20.3.0",
     "@types/three": "0.187.0",
     "typescript": "5.9.3",
     "vite": "8.3.8"

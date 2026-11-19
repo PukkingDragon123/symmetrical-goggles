@@ -175,6 +175,8 @@ export class Page {
   scale = 1; fill = 0;
   /** surface data laid out like the colour page: R eye shine, G roughness, B metalness (A = 255) */
   sd: PixelCanvas;
+  /** the fur page (only when a build asks for one, see BuildOpts.fur): R density, G length, B clump, A tip */
+  fd: PixelCanvas | null = null;
   constructor(public W = 256, public H = 256) {
     this.pc = new PixelCanvas(W, H); this.pc.wrap = false;
     this.sd = new PixelCanvas(W, H); this.sd.wrap = false;
@@ -241,6 +243,7 @@ export class Page {
   finish() {
     this.pad(this.pc.data);
     this.pad(this.sd.data);
+    if (this.fd) this.pad(this.fd.data);
     const d = this.pc.data, W = this.W;
     // gaps between regions stay opaque so distant mips never punch holes (alpha < 1 marks glow); cut regions keep theirs
     const keep = new Uint8Array(this.W * this.H);
@@ -406,6 +409,17 @@ export function surfaceTextureFrom(data: Uint8Array, W: number, H: number): THRE
   const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat, THREE.UnsignedByteType);
   tex.magFilter = THREE.NearestFilter;
   tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.generateMipmaps = true;
+  tex.flipY = false;
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
+/** the fur page (R density, G length, B clump, A tip; linear): nearest up close, averaged mips far off */
+export function furTextureFrom(data: Uint8Array, W: number, H: number): THREE.DataTexture {
+  const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat, THREE.UnsignedByteType);
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.NearestMipmapNearestFilter;
   tex.generateMipmaps = true;
   tex.flipY = false;
   tex.colorSpace = THREE.NoColorSpace;

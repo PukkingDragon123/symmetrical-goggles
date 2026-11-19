@@ -21,6 +21,7 @@ import { ITEMS } from './game/items';
 import { CabinPlay } from './game/cabinplay';
 import { Pause } from './ui/pause';
 import { floatText } from './ui/float';
+import { QUALITY, guessQuality, storedQuality, storeQuality, applyRuntime, type QualityName } from './game/quality';
 import { spawnNpcs } from './game/npcs';
 import { Forest } from './world/forest';
 import { GroundCover } from './world/groundcover';
@@ -42,6 +43,9 @@ async function boot() {
   hud.title('BUSHED', 'loading the bush…', 999);
   const game = new Game(canvas);
   floatText.setCamera(game.camera);
+  const qName: QualityName = (params.get('quality') as QualityName) ?? storedQuality() ?? guessQuality(game.R.gl);
+  game.quality = QUALITY[qName] ?? QUALITY.high;
+  game.R.pixel = game.quality.pixel;
   await game.init();
   input.attach(canvas);
   canvas.addEventListener('click', () => { input.lock(); audio.unlock(); });
@@ -52,6 +56,12 @@ async function boot() {
   pause.onChange = (st) => {
     input.sensitivity = 0.0022 * st.sensitivity;
     audio.setVolume('master', st.volume);
+    if (st.quality && st.quality !== game.quality.name) {
+      game.quality = QUALITY[st.quality as QualityName] ?? game.quality;
+      storeQuality(game.quality.name);
+      applyRuntime(game.quality, game.R.gl, game.scene, game.sky.sun);
+      st.pixel = game.quality.pixel;
+    }
     if (game.R.pixel !== st.pixel) { game.R.pixel = st.pixel; game.onResize(); }
     game.R.gl.shadowMap.enabled = st.shadows;
   };
@@ -60,10 +70,11 @@ async function boot() {
   // load the world
   game.terrain.prime(new THREE.Vector3(SPOTS.cabin.x, 0, SPOTS.cabin.z));
   await step('forest', async () => {
-    const forest = new Forest(game.scene, game.camera, game.R.gl);
+    const fq = game.quality.forest;
+    const forest = new Forest(game.scene, game.camera, game.R.gl, { lod0: fq.lod0, lod1: fq.lod1, far: fq.far, shadow: fq.shadow, density: fq.density });
     forest.prewarm(SPOTS.cabin.x, SPOTS.cabin.z, 140);
     game.setForest(forest as never);
-    game.ground = new GroundCover(game.scene, game.camera, { forest });
+    game.ground = new GroundCover(game.scene, game.camera, { forest, density: game.quality.ground });
     game.sky.sun.shadow.camera.layers.enable(1);
     setBarkSource((sp) => treeMaterials(sp as never).bark);
   });
@@ -93,6 +104,7 @@ async function boot() {
   cabinPlay.attach();
   const storePlay = new StorePlay(game, (n, c) => cabinPlay.act(n, c));
   await step('store play', async () => storePlay.attach());
+  applyRuntime(game.quality, game.R.gl, game.scene, game.sky.sun);
   const critters = new Critters(game);
   await step('creatures', () => critters.spawn());
   game.updaters.push((dt) => critters.update(dt));

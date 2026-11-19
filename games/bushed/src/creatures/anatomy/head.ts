@@ -314,7 +314,12 @@ export function mandible(o: { name: string; skull: Skull; at: V3; hl: number; hw
 }
 
 export type PupilKind = 'slit' | 'bar' | 'round' | 'w' | 'pin';
-export interface EyeSpec { name: string; c: V3; ax: V3; r: number; bone: number; iris: number[]; pupil: PupilKind; irisA?: number; sclera?: number[]; k?: number; levels?: number; around?: number }
+export interface EyeSpec { name: string; c: V3; ax: V3; r: number; bone: number; iris: number[]; pupil: PupilKind; irisA?: number; sclera?: number[]; k?: number; levels?: number;
+  /** round pupils: radius as a fraction of the iris (default 0.34) */
+  pupilR?: number;
+  /** painted catchlights (a big one up and to the inside, a small one below): [x, y] of the big one on the iris (-1..1), and the eye's side (+1 left) */
+  catchlight?: { at?: [number, number]; side?: number; ramp?: number[] };
+  around?: number }
 /** an eyeball: a sphere on its own bone, painted wet (the shader lights its cornea with the sun's specular) */
 export function eyeball(o: EyeSpec): Piece {
   const m = newCM(), ax = nrm(o.ax), side = nrm(crs([0, 1, 0], ax)), up = crs(ax, side), rings: Ring[] = [];
@@ -335,7 +340,14 @@ export function eyeball(o: EyeSpec): Piece {
         if (a > irisA) return [RP('ink'), 1];
         // the pupil
         const X = ux / Math.sin(irisA), Y = uy / Math.sin(irisA);
-        const pup = o.pupil === 'slit' ? Math.abs(X) < 0.13 * (1 - Y * Y * 0.7) : o.pupil === 'bar' ? Math.abs(Y) < 0.12 && Math.abs(X) < 0.78 : o.pupil === 'w' ? Math.abs(Y + 0.18 * Math.abs(Math.sin(X * 4.2))) < 0.12 && Math.abs(X) < 0.72 : o.pupil === 'pin' ? Math.hypot(X, Y) < 0.12 : Math.hypot(X, Y) < 0.34;
+        const pup = o.pupil === 'slit' ? Math.abs(X) < 0.13 * (1 - Y * Y * 0.7) : o.pupil === 'bar' ? Math.abs(Y) < 0.12 && Math.abs(X) < 0.78 : o.pupil === 'w' ? Math.abs(Y + 0.18 * Math.abs(Math.sin(X * 4.2))) < 0.12 && Math.abs(X) < 0.72 : o.pupil === 'pin' ? Math.hypot(X, Y) < 0.12 : Math.hypot(X, Y) < (o.pupilR ?? 0.34);
+        if (o.catchlight) {
+          // the wet shine of a living eye: a big square-ish highlight and a small one, drawn, not lit
+          const cs = o.catchlight.side ?? 1, [cx, cy] = o.catchlight.at ?? [0.32, 0.42], hx = X * cs;
+          const big = Math.max(Math.abs(hx + cx), Math.abs(Y - cy)) < 0.2 && Math.abs(hx + cx) + Math.abs(Y - cy) < 0.3;
+          const small = Math.hypot(hx - cx * 0.9, Y + cy * 0.75) < 0.1;
+          if (big || small) return [o.catchlight.ramp ?? RP('paper'), big ? 5 : 4];
+        }
         if (pup) return [RP('ink'), 0];
         // the iris: darker under the lid, lit low, dark spokes, a pale ring round the pupil
         const r = Math.hypot(X, Y), sp = Math.abs(Math.sin(Math.atan2(Y, X) * 7 + r * 3)) < 0.18;

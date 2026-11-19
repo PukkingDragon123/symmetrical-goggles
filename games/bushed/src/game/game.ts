@@ -29,6 +29,7 @@ import { loadProp, PROP_META } from '../places/props';
 import { paintPaper, paperMesh, type Block } from '../ui/paper';
 import { WeatherFx } from '../gfx/weather';
 import { fitTool } from '../player/arms';
+import { QUALITY, type Quality } from './quality';
 import { Backpack } from '../ui/backpack';
 import { makeSlashGatherable } from './cabinplay';
 import { makePhysical } from './physprops';
@@ -85,6 +86,8 @@ export class Game {
   cabin: Place | null = null;
   store: Place | null = null;
   readonly flags = new Set<string>();
+  quality: Quality = QUALITY.high;
+  private frameNo = 0;
   private models = new Map<string, THREE.Object3D>();
   private reading: THREE.Object3D | null = null;
   flashlight: THREE.SpotLight;
@@ -727,6 +730,10 @@ export class Game {
   }
 
   render(): void {
+    // shadows re-render every N frames on lower presets (the sun moves slowly; lamps rarely)
+    const sm = this.R.gl.shadowMap;
+    sm.autoUpdate = false;
+    if (this.frameNo++ % this.quality.shadowEvery === 0) sm.needsUpdate = true;
     this.R.render(this.scene, this.camera, this.view, this.viewCam);
   }
 

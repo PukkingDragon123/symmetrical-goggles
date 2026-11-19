@@ -1,0 +1,9 @@
+{
+  "name": "bushed",
+  "productName": "BUSHED",
+  "version": "0.2.0",
+  "description": "A first-person lumberjack survival game among the fearsome critters of the Canadian bush.",
+  "main": "main.cjs",
+  "author": "BUSHED",
+  "license": "UNLICENSED"
+}

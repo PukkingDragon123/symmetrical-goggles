@@ -14,6 +14,10 @@ import { Wildlife, Critter } from '../creatures/wildlife';
 import type { Species } from '../creatures/wildlife/models';
 import { PROFILE } from '../creatures/anatomy';
 import { G } from '../gfx/globals';
+import { addFur, type Fur } from '../creatures/fur';
+import { CRYPTID_DEV, isCryptid, cryptidDemo, simCryptid, testTrunks } from '../creatures/cryptids/dev';
+import { Cryptid } from '../creatures/cryptids/base';
+import { puffs, debris } from '../gfx/particles';
 
 const ui = {
   who: document.getElementById('who') as HTMLSelectElement,
@@ -70,10 +74,11 @@ sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
 Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 0.5, far: 40 });
 sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
 scene.add(hemi, sun, sun.target);
+scene.add(puffs.mesh, debris.mesh); // steam, snow spray, thrown bark (the cryptids use the game's particles)
 const flash = new THREE.SpotLight(0xfff1d6, 0, 40, 0.42, 0.45, 1.4);
 flash.castShadow = true; flash.shadow.mapSize.set(1024, 1024); flash.shadow.bias = -0.0005;
 camera.add(flash); flash.position.set(0.15, -0.12, 0); camera.add(flash.target); flash.target.position.set(0, -0.05, -1);
-scene.add(camera);
+scene.add(camera); puffs.setCamera(camera);
 
 // environment maps for the steel: a sky-and-forest gradient by day, a dark one by night
 const pmrem = new THREE.PMREMGenerator(renderer);
@@ -126,7 +131,9 @@ function setLight(mode: string) {
 }
 
 // ------------------------------------------------------------------------------------------------ creatures
-type Beast = AxehandleHound | Bigfoot | Gumberoo | GrannyTamarack;
+type Beast = AxehandleHound | Bigfoot | Gumberoo | GrannyTamarack | Cryptid;
+// the six lumber-camp cryptids (src/creatures/cryptids) join the picker
+for (const [k, d] of Object.entries(CRYPTID_DEV)) ui.who.add(new Option(d.label, k));
 const made: Partial<Record<string, Beast>> = {};
 let cur: Beast | null = null, curName = '';
 let spinA = 0;
@@ -204,15 +211,21 @@ function pick(name: string) {
   if (name === 'dingbat') { showDingbat(); return; }
   scene.remove(lineup); scene.remove(wild.object); scene.remove(batStage); scene.remove(eave); if (roost) scene.remove(roost.object);
   const t0 = performance.now();
+  if (!made[name] && isCryptid(name)) made[name] = CRYPTID_DEV[name].make();
   if (!made[name]) made[name] = name === 'hound' ? new AxehandleHound({ state: 'companion', trust: 1 }) : name === 'gumberoo' ? new Gumberoo({ pos: new THREE.Vector3() }) : name === 'granny' ? new GrannyTamarack({ pos: new THREE.Vector3(), present: true }) : new Bigfoot({});
   const ms = performance.now() - t0;
   if (cur) scene.remove(cur.object);
   cur = made[name]!; curName = name; ui.who.value = name; (window as unknown as { __dbg: Beast }).__dbg = cur;
+  if (name === 'hound' && !testFur) {
+    testFur = addFur(cur.mesh, { length: 0.05, shells: 16, where: (p) => (p[2] > 0.15 && p[2] < 0.5 && p[1] < 0.42) || p[2] < -0.75 ? 1 : 0 });
+    console.log('FUR tris', testFur.tris, 'cards', testFur.cards);
+  }
   scene.add(cur.object);
   cur.play(cur.clips.includes('idle') ? 'idle' : cur.clips[0]);
   const tall = name === 'bigfoot' || name === 'granny', big = name === 'gumberoo';
   controls.target.set(0, tall ? 1.4 : big ? 0.7 : 0.4, 0);
   camera.position.set(tall ? 5.5 : big ? 3.6 : 2.4, tall ? 2.0 : big ? 1.6 : 1.0, tall ? 5.5 : big ? 3.6 : 2.4);
+  if (isCryptid(name)) { controls.target.set(...CRYPTID_DEV[name].target); camera.position.set(...CRYPTID_DEV[name].cam); }
   ui.anims.innerHTML = '';
   for (const c of cur.clips) {
     const b = document.createElement('button'); b.textContent = c;
@@ -244,8 +257,10 @@ function ctxFor(dt: number, t: number): CreatureCtx {
 
 // ------------------------------------------------------------------------------------------------ loop
 let last = performance.now(), T = 0, frozen = false;
+let testFur: Fur | null = null;
 function frame(dt: number) {
-  T += dt; G.uTime.value = T;
+  puffs.update(dt); debris.update(dt);
+  T += dt; G.uTime.value = T; G.uCamPos.value.copy(camera.position);
   if (curName === 'wildlife') {
     for (const c of lineCritters) { c.t += dt; if (c.state === 'move' || c.state === 'fly') c.phase = (c.phase + dt * 2.2) % 1; c.speed = c.state === 'move' ? 1 : 0; if (c.state === 'fly') { c.alt = 0.35; } else c.alt = 0; c.object.position.set(c.pos.x, c.alt, c.pos.z); c.object.rotation.set(0, c.heading, 0); c.pose(dt); }
     if (ui.ai.checked) {
@@ -277,6 +292,7 @@ function frame(dt: number) {
     const a = T * 0.12;
     player.pos.set(Math.sin(a) * 6, 1.7, Math.sin(a * 2) * 3.5);
     player.held = Math.floor(T / 12) % 2 ? (cur instanceof GrannyTamarack ? 'cookies' : 'jerky') : 'none';
+    if (cur instanceof Cryptid) cryptidDemo(cur, player, T, events);
     if (cur instanceof GrannyTamarack) {
       if (!cur.present) cur.appear(new THREE.Vector3(0, 0, 0));
       if (player.held === 'cookies' && Math.floor(T * 2) !== Math.floor((T - dt) * 2) && cur.offer('cookies')) events.push('(offered)');
@@ -290,7 +306,8 @@ function frame(dt: number) {
     if (ui.spin.checked) spinA += dt * 0.35;
     cur.heading = spinA;
   }
-  cur.update(ctxFor(dt, T));
+  cur.update(cur instanceof Cryptid ? { ...ctxFor(dt, T), trunks: testTrunks } : ctxFor(dt, T));
+  if (curName === 'hound' && testFur) testFur.update(dt);
   if (!ui.ai.checked) { cur.pos.set(0, 0, 0); cur.object.position.set(0, 0, 0); cur.heading = spinA; cur.object.rotation.y = spinA; }
   if (ui.ai.checked) ui.info.textContent = `${curName}: ${cur.state}${'trust' in cur ? ' trust ' + cur.trust.toFixed(2) : ''}${cur instanceof GrannyTamarack ? ' fade ' + cur.fade.value.toFixed(2) + (cur.fed ? ' fed' : '') : ''}  clip ${cur.anim.current}\nevents: ${events.join(' ')}`;
 }
@@ -474,6 +491,7 @@ function simGranny(script: string, seconds: number, hr: number): string {
     }
     if (o.who === 'dingbats') return simRoost(o.script, o.seconds, o.hour ?? 23);
     if (o.who === 'granny') return simGranny(o.script, o.seconds, o.hour ?? 23);
+    if (isCryptid(o.who)) return simCryptid(o.who, o.script, o.seconds, o.hour ?? 14);
     const pl = { pos: new THREE.Vector3(0, 1.7, 0), dir: new THREE.Vector3(0, 0, 1), held: 'none', crouch: false, noise: 0.1, light: false, action: undefined as string | undefined, speed: 0 };
     const its: GroundItem[] = [];
     let T0 = 0, last = '';
