@@ -186,7 +186,8 @@ export abstract class RealCryptid implements NewCryptid {
     if (!next) return;
     if (name === this.clip && !o.restart) { if (o.speed !== undefined) next.timeScale = o.speed; return; }
     const fade = o.fade ?? 0.3;
-    for (const [k, a] of this.actions) if (k !== name && a.isRunning() && a.getEffectiveWeight() > 0) a.fadeOut(fade);
+    // (a finished one-shot holds its last frame paused at full weight: it must fade too)
+    for (const [k, a] of this.actions) if (k !== name && a.enabled && a.getEffectiveWeight() > 0.001) a.fadeOut(fade);
     next.reset();
     next.setLoop(o.once ? THREE.LoopOnce : THREE.LoopRepeat, Infinity);
     next.clampWhenFinished = !!o.once;

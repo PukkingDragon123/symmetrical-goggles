@@ -53,6 +53,7 @@ export class SidehillGouger extends RealCryptid {
   private seen = false;
   private lean = 0;
   private kick = 0;
+  private holdT = 0;
   private readonly side = new THREE.Vector3();
 
   constructor(o: { pos?: THREE.Vector3; heading?: number } = {}) {
@@ -127,6 +128,8 @@ export class SidehillGouger extends RealCryptid {
     const need = Math.atan2(SHORT - this.sideRise(ctx), FEET);
     switch (this.state) {
       case 'circle': case 'graze': {
+        // let a butt play out
+        if (this.holdT > 0) { this.holdT -= dt; this.want = 0; break; }
         if (night) { this.go('liedown'); this.anim('liedown', { once: true }); this.want = 0; this.emit('sleep'); break; }
         if (lured) { this.go('lured'); break; }
         if (!friend && this.calm <= 0 && ahead < 15 && this.dist < 15) { this.go('snort'); this.anim('stamp', { once: true, fade: 0.2 }); this.want = 0; this.emit('snort'); break; }
@@ -149,7 +152,7 @@ export class SidehillGouger extends RealCryptid {
         if (this.dist < 1.7) {
           const f = new THREE.Vector3(Math.sin(this.heading), 0, Math.cos(this.heading));
           this.emit('butt', { damage: 0.28, impulse: f.multiplyScalar(6.5).add(new THREE.Vector3(0, 3, 0)) });
-          this.anim('butt', { once: true, fade: 0.1 });
+          this.anim('butt', { once: true, fade: 0.1 }); this.holdT = 1.3;
           this.calm = 25; this.go('circle');
         }
         if (this.st > 9) { this.calm = 10; this.go('circle'); }
