@@ -146,7 +146,7 @@ function squonkClips(defs: BoneDef[]): Record<string, Clip> {
 
 const _v = new THREE.Vector3(), _e = new THREE.Euler(), _q2 = new THREE.Quaternion();
 /** tears per second from each eye: a quiet weep, its ordinary misery, fear's flood, the wail as it melts */
-const RATE = { quiet: 0.12, weep: 0.4, scared: 1.8, wail: 6 };
+const RATE = { quiet: 0.2, weep: 0.55, scared: 2.2, wail: 7 };
 /** beyond this (m) nobody can see the tears: no new drops, just the trail of spots */
 const SIM_R = 60;
 

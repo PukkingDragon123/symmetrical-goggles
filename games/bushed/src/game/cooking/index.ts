@@ -81,7 +81,7 @@ const FOOD_RATE: Record<FoodKind, { rate: number; top: number; wet: number }> = 
   pastry: { rate: 0.024, top: 0.06, wet: 0.3 },
 };
 /** piles of cut pieces: base browning rate and how fast they burn past golden */
-const PILE_RATE: Record<string, number> = { onion: 0.05, scallion: 0.06, potato: 0.024, carrot: 0.03, garlic: 0.085, meat: 0.04, beef: 0.05, cheese: 0.03, chanterelle: 0.06 };
+const PILE_RATE: Record<string, number> = { onion: 0.034, scallion: 0.045, potato: 0.026, carrot: 0.028, garlic: 0.06, meat: 0.04, beef: 0.045, cheese: 0.03, chanterelle: 0.05 };
 
 class Food {
   readonly obj = new THREE.Group();
@@ -324,7 +324,7 @@ type Drag =
 
 const VIEWS = {
   stove: { pos: V3(0.03, 1.33, 0.62), look: V3(0.0, 0.85, 0.02), fov: 52 },
-  prep: { pos: V3(0.5, 1.52, 1.0), look: V3(0.57, 0.76, 0.1), fov: 54 },
+  prep: { pos: V3(0.54, 1.3, 0.74), look: V3(0.57, 0.74, 0.1), fov: 50 },
   pantry: { pos: V3(-0.56, 1.45, 1.12), look: V3(-0.62, 0.74, 0.3), fov: 54 },
   larder: { pos: V3(-0.8, 1.27, 0.42), look: V3(-1.12, 0.78, -0.58), fov: 54 },
   door: { pos: V3(0.08, 0.96, 0.95), look: V3(0.0, 0.6, 0.44), fov: 50 },
@@ -812,7 +812,7 @@ export class CookingStation extends Station {
     const g = this.g, s = g.stove;
     this.time += dt;
     // hide the cabin's decorative coffee pot and pot (ours sit on the plate now)
-    if (Math.floor(this.time) !== Math.floor(this.time - dt)) {
+    if (Math.floor(this.time) !== Math.floor(this.time - dt) || this.time === dt) {
       const host = this.stoveObj.parent!;
       const topW = (g.cabin!.anchors.stove_top as THREE.Object3D).getWorldPosition(_t1);
       for (const c of host.children) if ((c.name === 'coffeepot' || c.name === 'pot_enamel_01') && c.getWorldPosition(_t2).distanceTo(topW) < 0.6) c.visible = false;
@@ -1001,7 +1001,9 @@ export class CookingStation extends Station {
       P.progress += dt * smooth(85, 100, T) * 0.016;
       P.sinceStir += dt;
       const thick = grains + v.has('beans') + v.has('tomatoes') * 0.5 + (v.has('cheese') > 0 ? 0.5 : 0);
-      if (T > 95 && P.sinceStir > (v.water < 0.12 || thick > 1 ? 10 : 20)) P.scorch = Math.min(1.5, P.scorch + dt * (v.water < 0.05 ? 0.06 : 0.025));
+      // it catches on the bottom when it isn't stirred: thick things fast, a watery stew hardly at all
+      const catchK = v.water < 0.05 ? 0.06 : v.water < 0.15 || thick > 1 ? 0.025 : 0.0018;
+      if (T > 95 && P.sinceStir > (v.water < 0.12 || thick > 1 ? 10 : 30)) P.scorch = Math.min(1.5, P.scorch + dt * catchK);
       // things in the pot cook through (no browning in liquid)
       const k = 0.02 * smooth(80, 100, T);
       for (const f of v.foods) {
@@ -1186,7 +1188,7 @@ export class CookingStation extends Station {
     const o = p.obj;
     o.position.set(v.pos.x, v.pos.y + v.floor, v.pos.z);
     if (v.kind === 'pot' && v.wet > 0.05) {
-      o.position.y = v.pos.y + this.liquidY(v) - 0.008 + Math.sin(this.time * 1.7 + p.units) * 0.002;
+      o.position.y = v.pos.y + this.liquidY(v) - 0.013 + Math.sin(this.time * 1.7 + p.units) * 0.002;
       o.rotation.y += v.pot.spin * dt * 0.6;
     }
   }
@@ -1612,7 +1614,7 @@ export class CookingStation extends Station {
         } else {
           const v = d.v!;
           v.pot.spin = v.pot.spin * 0.9 + (da / Math.max(dt, 1e-3)) * 0.1;
-          if (d.amt > 1.5) { d.amt = 0; v.pot.sinceStir = 0; v.pot.scorch = Math.max(0, v.pot.scorch - 0.05); audio.play('pot_lid', { pos: this.W(_t1.copy(v.pos)), vol: 0.12, rate: 1.7 }); for (const pl of v.piles) pl.stir(0.3); if (!v.calls.has('stirlog')) { v.calls.add('stirlog'); this.log.push({ k: 'stir', v: v.kind }); } }
+          if (d.amt > 1.5) { d.amt = 0; v.pot.sinceStir = 0; v.pot.scorch = Math.max(0, v.pot.scorch - 0.05); audio.play('pot_lid', { pos: this.W(_t1.copy(v.pos)), vol: 0.12, rate: 1.7 }); for (const pl of v.piles) pl.stir(0.3); if (v.wet < 0.05) for (const f of v.foods) if (Math.random() < 0.5) f.flipped = !f.flipped; if (!v.calls.has('stirlog')) { v.calls.add('stirlog'); this.log.push({ k: 'stir', v: v.kind }); } }
           this.inHand(this.spoon);
           this.hover = { text: 'Stirring', at: this.W(_t1.copy(v.pos).add(_t2.set(0, 0.13, 0))).clone() };
         }
@@ -2026,7 +2028,7 @@ export class CookingStation extends Station {
   }
   private setProduce(p: Produce): void {
     this.produce = p;
-    p.local.set(-0.02, 0);
+    p.local.set(-0.02, 0.035);
     p.obj.position.copy(this.boardSurface(p.local));
     this.root.add(p.obj);
     this.pop(p.needsPeel ? `Peel the ${p.def.name}` : p.def.halve ? 'Halve it' : 'Chop it', this.W(_t1.copy(p.obj.position)).add(_t2.set(0, 0.1, 0)).clone(), '#ffe08a');
@@ -2351,7 +2353,19 @@ export class CookingStation extends Station {
     if (at && !d.done) {
       const l = this.L(at);
       d.at = clamp(l.x - c.x, -len / 2 + 0.004, len / 2 - 0.004);
-      if (d.f && d.depth < 0.25 && Math.abs(p.x - d.x0) > 0.08) { this.putBack(this.knife); const f = d.f; this.drag = null; this.startFoodDrag(f); return; }
+      if (d.depth < 0.25 && Math.abs(p.x - d.x0) > 0.08) {
+        // a sideways tug before the knife bites picks the piece up instead (the end of a loin: the whole lot)
+        this.putBack(this.knife); this.drag = null;
+        if (d.f) { this.startFoodDrag(d.f); return; }
+        if (this.stock && this.stock.kind !== 'shroom') {
+          const st = this.stock;
+          const f = makeFood(st.kind === 'bacon' ? 'bacon' : 'meat', { thick: st.kind === 'bacon' ? Math.min(0.03, st.len) : Math.min(0.02, st.len * 0.4) });
+          f.key = st.key; f.units = st.len / (st.kind === 'bacon' ? 0.2 : 0.15); f.where = 'board';
+          st.obj.removeFromParent(); this.stock = null;
+          this.addFood(f); this.startFoodDrag(f);
+        }
+        return;
+      }
     }
     const depth = clamp((d.y0 - p.y) / 0.16, 0, 1);
     if (depth > d.depth) {
@@ -2858,7 +2872,7 @@ export class CookingStation extends Station {
    * station's own code paths (use(), applyPortion(), cut(), produceInto(), serve()...).
    */
   readonly dev = {
-    view: (n: ViewName) => this.goView(n),
+    view: (n: ViewName, snap = true) => { this.goView(n); if (snap) this.snapView(); },
     /** pour / measure / shake an ingredient into 'skillet' | 'pot' | 'coffee' | 'bowl' for n portions */
     give: (id: string, where: 'skillet' | 'pot' | 'coffee' | 'bowl', n = 1): boolean => {
       const pp = this.pantry.find((x) => x.id === id) ?? this.fixtures.find((x) => x.id === id) ?? ({ id, obj: new THREE.Object3D(), home: new THREE.Vector3(), yaw: 0, hit: new THREE.Mesh(), ing: ING[id] ?? null } as Pantry);
@@ -2900,14 +2914,15 @@ export class CookingStation extends Station {
       return st;
     },
     scrape: (where: 'skillet' | 'pot') => { if (this.produce) this.produceInto(this.produce, this.vesselByKind(where)); },
-    slice: (n: number, thick = 0.01) => { for (let i = 0; i < n && this.stock; i++) { const len = this.stock.len; this.doCut({ kind: 'cut', at: len / 2 - thick, depth: 1, y0: 0, x0: 0, done: true, target: 'stock' }, len, this.stock.obj.position.clone()); } },
+    slice: (n: number, thick = 0.01) => { for (let i = 0; i < n && this.stock; i++) {
+      if (this.stock.len < thick * 1.6 && this.stock.kind !== 'shroom') { const st = this.stock; const f = makeFood(st.kind === 'bacon' ? 'bacon' : 'meat', { thick: Math.min(0.012, st.len * 0.5) }); f.key = st.key; f.units = st.len / 0.15; f.where = 'board'; f.local.set(-0.12, 0.06); st.obj.removeFromParent(); this.stock = null; this.addFood(f); break; } const len = this.stock.len; this.doCut({ kind: 'cut', at: len / 2 - thick, depth: 1, y0: 0, x0: 0, done: true, target: 'stock' }, len, this.stock.obj.position.clone()); } },
     boardTo: (where: 'skillet' | 'pot') => { const v = this.vesselByKind(where); for (const f of this.foods.filter((x) => x.where === 'board')) this.intoVessel(f, v); },
     egg: (where: 'skillet' | 'bowl') => { if (!this.use('eggs')) return false; const shell = new THREE.Mesh(eggShellGeo(), eggShellMat()); this.root.add(shell); if (where === 'bowl') { shell.removeFromParent(); this.bowl.add('egg', 1); this.log.push({ k: 'crack', v: 'bowl' }); } else this.crackEgg(shell, this.skillet); return true; },
     stirBowl: (k = 1) => { this.bowl.stir(k); const kk = this.bowl.kind; if (this.bowl.mix >= 0.6) this.log.push({ k: 'mix', s: kk }); return kk; },
     bowlTo: (where: 'skillet' | 'pot' | 'board') => { if (where === 'board') this.doughOut(); else this.bowlInto(this.vesselByKind(where), this.vesselByKind(where).pos.clone()); },
     knead: () => { const f = this.foods.find((x) => x.kind === 'dough' && x.where === 'board'); if (f) { f.knead = 1; const mesh = f.obj.children[0] as THREE.Mesh; mesh.geometry = f.dough === 'pastry' ? pastryGeo(31) : doughGeo(1, 31); f.h = f.dough === 'pastry' ? 0.01 : 0.024; this.log.push({ k: 'knead', s: f.dough }); } },
     flipAll: (where: 'skillet' | 'pot' = 'skillet') => { const v = this.vesselByKind(where); for (const f of v.foods) if (!['egg', 'pastry', 'dumpling', 'shroom'].includes(f.kind)) this.doFlip(f, v, 3); for (const p of v.piles) p.stir(1); },
-    stir: (where: 'skillet' | 'pot') => { const v = this.vesselByKind(where); v.pot.sinceStir = 0; v.pot.scorch = Math.max(0, v.pot.scorch - 0.1); for (const p of v.piles) { p.stir(0.6); if (v.wet < 0.05) p.layout(v.inner - 0.012); } this.log.push({ k: 'stir', v: v.kind }); },
+    stir: (where: 'skillet' | 'pot') => { const v = this.vesselByKind(where); v.pot.sinceStir = 0; v.pot.scorch = Math.max(0, v.pot.scorch - 0.1); if (v.wet < 0.05) for (const f of v.foods) f.flipped = !f.flipped; for (const p of v.piles) { p.stir(0.6); if (v.wet < 0.05) p.layout(v.inner - 0.012); } this.log.push({ k: 'stir', v: v.kind }); },
     lid: (where: 'skillet' | 'pot', on = true) => { const lid = this.lids.find((l) => l.kind === where)!; if (on) { if (lid.on) return; this.liftLid(lid); this.dropLid(lid, this.vesselByKind(where).pos.clone()); } else if (lid.on) { this.liftLid(lid); this.dropLid(lid, null); } },
     move: (where: 'skillet' | 'pot' | 'coffee', x: number, z: number) => { const v = this.vesselByKind(where); v.pos.set(x, PLATE.y, z); v.obj.position.copy(v.pos); },
     taste: (where: 'skillet' | 'pot' | 'coffee') => { const v = this.vesselByKind(where); v.tasted = true; const s = this.tasteVerdict(v); this.log.push({ k: 'taste', v: v.kind, s }); return s; },
@@ -2925,6 +2940,16 @@ export class CookingStation extends Station {
       return this.ndc(this.W(p.clone().add(V3(0, 0.03, 0))));
     },
     state: () => this.debug(),
+    /** fast-forward the stove's simulation (tests): secs of cooking in small steps, no rendering */
+    hands: (on: boolean) => { this.hands.object.visible = on; },
+    /** NDC of a point on the board, dx metres along it from the produce (scripted knife strokes) */
+    boardNdc: (dx: number, dz = 0) => { const pr = this.produce; const l = pr ? pr.local : _v2.set(0, 0); return this.ndc(this.W(this.boardSurface(_v2.set(l.x + dx, l.y + dz)).clone().add(V3(0, 0.03, 0)))); },
+    /** NDC of a pantry / fixture / served thing by id */
+    itemNdc: (id: string) => { const pp = this.pantry.find((x) => x.id === id) ?? this.fixtures.find((x) => x.id === id); return pp ? this.ndc(pp.obj.getWorldPosition(new THREE.Vector3()).add(V3(0, 0.06, 0))) : null; },
+    /** the station's pointer script (tests drive the real input path with it) */
+    point: (x: number, y: number, down = false, rdown = false) => { this.script = { x, y, down, rdown }; },
+    release: () => { this.script = null; },
+    run: (secs: number, step = 0.05) => { for (let t = 0; t < secs; t += step) this.simulate(step); return this.debug(); },
   };
   private vesselByKind(k: VKind): Vessel { return k === 'skillet' ? this.skillet : k === 'pot' ? this.pot : this.coffee; }
 }

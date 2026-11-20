@@ -14,7 +14,9 @@ import { G } from '../../gfx/globals';
 export type FatKind = 'oil' | 'butter' | 'lard' | 'drip';
 
 const SMOKE: Record<FatKind, number> = { oil: 225, butter: 155, lard: 190, drip: 200 };
-const COLOR: Record<FatKind, [number, number, number]> = { oil: [0.86, 0.66, 0.2], butter: [0.98, 0.86, 0.42], lard: [0.94, 0.88, 0.7], drip: [0.8, 0.56, 0.26] };
+const COLOR: Record<FatKind, [number, number, number]> = { oil: [0.72, 0.5, 0.12], butter: [0.96, 0.82, 0.4], lard: [0.86, 0.8, 0.62], drip: [0.66, 0.42, 0.18] };
+
+const LARD_SET = new THREE.Color(0.95, 0.93, 0.86);
 
 interface Pat { kind: 'butter' | 'lard'; g: number; g0: number; mesh: THREE.Mesh; x: number; z: number }
 
@@ -52,10 +54,11 @@ function fatMaterial(): FatMat {
         // a bright meniscus at the rim
         float rim = smoothstep(0.8, 0.96, r) * (1.0 - smoothstep(0.96, 1.0, r));
         col += rim * 0.25;
-        // shimmer: wavering bright streaks drifting over the surface
-        float w = sin(q.x * 70.0 + sin(q.y * 23.0 + uFT * 2.7) * 3.2 + uFT * 4.5) * sin(q.y * 53.0 - uFT * 3.1 + sin(q.x * 17.0 - uFT * 1.7) * 2.0);
-        float streak = step(0.82, w) * uShimmer;
-        col = mix(col, vec3(1.0, 0.96, 0.8), streak * 0.85);
+        // shimmer: thin wavering lines of light drifting over the surface (the heat haze in the oil)
+        float w1 = abs(sin(q.x * 19.0 + sin(q.y * 9.0 + uFT * 2.3) * 2.2 + uFT * 2.1));
+        float w2 = abs(sin(q.y * 15.0 - uFT * 1.7 + sin(q.x * 7.0 - uFT * 1.3) * 1.8));
+        float streak = max(step(w1, 0.07), step(w2, 0.05) * 0.7) * uShimmer;
+        col = mix(col, vec3(1.0, 0.94, 0.72), streak * 0.7);
         // foam: little white bubbles that pop and come back
         vec2 g = floor(vFU * 30.0);
         float h = fh(g);
@@ -66,10 +69,11 @@ function fatMaterial(): FatMat {
         // smoke haze
         col = mix(col, vec3(0.35, 0.33, 0.3), clamp(uSmoke, 0.0, 1.0) * 0.35);
         diffuseColor.rgb = col;
-        diffuseColor.a = (0.62 + 0.3 * uFoam + 0.25 * clamp(uBrown, 0.0, 1.0)) * (1.0 - smoothstep(0.9, 1.0, r));
+        // thin oil is a clear amber film (the black iron shows through); foam and browned butter are opaque
+        diffuseColor.a = (0.38 + 0.12 * uShimmer + 0.45 * uFoam + 0.35 * clamp(uBrown, 0.0, 1.0) + 0.2 * clamp(uSmoke, 0.0, 1.0)) * (1.0 - smoothstep(0.92, 1.0, r));
         if (r > 1.0) discard;`)
       .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
-        totalEmissiveRadiance += vec3(1.0, 0.9, 0.6) * streak * 0.6;`);
+        totalEmissiveRadiance += vec3(1.0, 0.9, 0.6) * streak * 0.25;`);
   };
   m.customProgramCacheKey = () => 'cook_fat';
   return m;
@@ -88,18 +92,22 @@ function flameMaterial(): THREE.ShaderMaterial {
       float n(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
         return mix(mix(h(i), h(i + vec2(1, 0)), f.x), mix(h(i + vec2(0, 1)), h(i + vec2(1, 1)), f.x), f.y); }
       void main() {
-        vec2 u = floor(vU * vec2(20.0, 28.0)) / vec2(20.0, 28.0);
+        vec2 u = floor(vU * vec2(24.0, 30.0)) / vec2(24.0, 30.0);
         float x = (u.x - 0.5) * 2.0, y = u.y;
-        float flick = n(vec2(u.x * 5.0, y * 4.0 - uT * 5.0)) * 0.6 + n(vec2(u.x * 11.0, y * 9.0 - uT * 9.0)) * 0.4;
-        float width = (1.0 - y) * (0.75 + 0.35 * flick);
-        float m = width - abs(x) - y * 0.25;
-        if (m < 0.0) discard;
-        float core = smoothstep(0.0, 0.5, m) * (1.0 - y);
-        vec3 col = mix(vec3(0.75, 0.12, 0.02), vec3(1.0, 0.55, 0.1), smoothstep(0.0, 0.25, m));
-        col = mix(col, vec3(1.0, 0.92, 0.55), smoothstep(0.25, 0.6, core));
-        gl_FragColor = vec4(col * 1.6, uK);
+        // ragged tongues: each column of the flame reaches its own flickering height
+        float col = floor(u.x * 7.0);
+        float n1 = n(vec2(col * 1.7, uT * 6.0)), n2 = n(vec2(u.x * 11.0, y * 6.0 - uT * 9.0));
+        float h = (1.0 - abs(x) * 0.85) * (0.35 + 0.65 * n1) + (n2 - 0.5) * 0.18;
+        float m = h - y;
+        if (m < 0.0 || abs(x) > 0.98) discard;
+        float k = m / max(h, 0.05);
+        vec3 c = vec3(0.72, 0.16, 0.03);
+        c = mix(c, vec3(1.0, 0.45, 0.08), step(0.18, k));
+        c = mix(c, vec3(1.0, 0.72, 0.22), step(0.45, k));
+        c = mix(c, vec3(1.0, 0.93, 0.62), step(0.75, k) * step(y, 0.45));
+        gl_FragColor = vec4(c, uK * (0.7 + 0.3 * step(0.18, k)));
       }`,
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+    transparent: true, depthWrite: false, side: THREE.DoubleSide,
   });
   return flameMat;
 }
@@ -280,7 +288,7 @@ export class Fat {
         const col = COLOR[k];
         c.r += col[0] * v / t; c.g += col[1] * v / t; c.b += col[2] * v / t;
       }
-      if (T < 40 && this.lard / t > 0.5) c.lerp(new THREE.Color(0.95, 0.93, 0.86), 0.5);
+      if (T < 40 && this.lard / t > 0.5) c.lerp(LARD_SET, 0.5);
       U.uShimmer.value = this.shimmer;
       U.uFoam.value = this.foam;
       U.uBrown.value = this.butter * 0.82 / t > 0.25 ? this.brown : this.brown * 0.3;

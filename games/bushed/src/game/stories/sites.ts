@@ -32,7 +32,7 @@ export function campXZ(lx: number, lz: number): [number, number] {
   return [CAMP.pos.x + lx * c + lz * s, CAMP.pos.z - lx * s + lz * c];
 }
 
-/** where the trapline starts (the split birch just north of the lake trail) and its five sets */
+/** where the trapline starts (the split rock just north of the lake trail) and its five sets */
 export const TRAP_HEAD = dryNear(56, -34, 10);
 export const SETS = [[48, -60], [46, -90], [62, -116], [82, -138], [100, -142]].map(([x, z]) => dryNear(x, z, 10));
 

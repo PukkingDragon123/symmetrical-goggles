@@ -13,15 +13,14 @@
 //   smell    you smell it before you see it ('stink' when you are close)
 // Events: bellow, grunt, growl, snap (bluff), gore { damage, impulse }, sniff, eat, happy, befriended, stink, step.
 import * as THREE from 'three';
-import { Cryptid, CH, clipKit, isNight, clamp, damp, type Pose, type Clip, type AnimParams } from './base';
-import { cryptidLoader } from './kit';
-import { hodagModelGen, hodagBones, HODAG_MODEL_VERSION, HODAG_EYE, HODAG_EYE_AX, HODAG_FUR_SPEC } from './hodag/model';
+import { Cryptid, CH, clipKit, clamp, damp, type Pose, type Clip, type AnimParams } from './base';
+import { HODAG_LOADER } from './hodag/model';
 import type { BoneDef } from '../rig';
 import type { CreatureCtx } from '../types';
 
-const HM = cryptidLoader(HODAG_MODEL_VERSION, () => hodagModelGen(), hodagBones);
-export const hodagModel = () => HM.get();
-export const hodagModelAsync = (o: { cache?: boolean } = {}) => HM.load(o);
+/** the shared low-poly model (preloadCreatures loads it; hodagModelAsync() to load it yourself) */
+export const hodagModel = () => HODAG_LOADER.get();
+export const hodagModelAsync = (_o: { cache?: boolean } = {}) => HODAG_LOADER.load();
 
 export const HODAG_SOUND: Record<string, string | undefined> = {
   bellow: 'hound_growl', grunt: 'bigfoot_grunt', growl: 'hound_growl', snap: 'hound_snarl', gore: 'hound_snarl', sniff: 'hound_sniff',
@@ -150,9 +149,9 @@ export class Hodag extends Cryptid {
   readonly sounds = HODAG_SOUND;
   declare state: HodagState;
   private bluffs = 0; private provoked = false; private calmUntil = -1; private lastBellow = -99; private lastStink = -99; private lastGrunt = 0;
-  private lidAxis: THREE.Vector3[];
   constructor(o: { pos?: THREE.Vector3; heading?: number } = {}) {
-    super(hodagModel(), hodagClips(hodagBones()), { pos: o.pos, heading: o.heading, shineCol: 0xe8d070, fur: HODAG_FUR_SPEC, legs: [
+    const m = hodagModel();
+    super(m, hodagClips(m.bones), { pos: o.pos, heading: o.heading, shineCol: 0xe8d070, legs: [
       { up: 'fuL', lo: 'flL', foot: 'ffL', fore: true }, { up: 'fuR', lo: 'flR', foot: 'ffR', fore: true },
       { up: 'huL', lo: 'hlL', foot: 'hfL' }, { up: 'huR', lo: 'hlR', foot: 'hfR' }] });
     this.object.name = 'Hodag';
@@ -160,8 +159,6 @@ export class Hodag extends Cryptid {
     this.stride = { walk: STRIDE.walk, run: STRIDE.run, back: STRIDE.back };
     this.manualSpeed = { walk: 0.9, run: 5, back: 0.6 };
     this.stepSound = 'foot_mud';
-    this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * HODAG_EYE_AX[0], HODAG_EYE_AX[1], HODAG_EYE_AX[2])).normalize());
-    void HODAG_EYE;
   }
   /** calm (fed today) or befriended */
   get calm() { return this.state === 'friend' || (this.ctx && this.ctx.time < this.calmUntil); }
@@ -298,11 +295,9 @@ export class Hodag extends Cryptid {
     B[this.bi('sac')].scale.set(1 + s * 0.7, 1 + s * 0.95, 1 + s * 0.65);
     const tg = 0.02 + this.tongue;
     B[this.bi('tongue')].scale.set(Math.min(1, tg * 1.2), Math.min(1, tg * 1.2), tg);
-    // the heavy upper lid rolls down over the narrow almond of eye to meet the lower one; contentment half-closes it
+    // a blink (and contentment's half-closed eyes): the bead eyes squeeze shut
     const blink = clamp(Math.max(p.c[CH.BLINK], p.c[CH.SAD] * 0.55), 0, 1);
-    B[this.bi('lidL')].quaternion.setFromAxisAngle(this.lidAxis[0], blink * 0.9);
-    B[this.bi('lidR')].quaternion.setFromAxisAngle(this.lidAxis[1], blink * 0.9);
-    const e = new THREE.Euler(-this.params.lookPitch * 0.4, this.params.lookYaw * 0.4, 0);
-    B[this.bi('eyeL')].quaternion.setFromEuler(e); B[this.bi('eyeR')].quaternion.setFromEuler(e);
+    const ey = 1 - 0.85 * blink;
+    B[this.bi('eyeL')].scale.set(1, ey, 1); B[this.bi('eyeR')].scale.set(1, ey, 1);
   }
 }

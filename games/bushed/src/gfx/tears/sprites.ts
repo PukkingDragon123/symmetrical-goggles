@@ -3,7 +3,7 @@
 // (pale blue-white, a darker blue-grey rim, a 1 px white highlight), nearest filtering.
 //
 // Atlas: 8 x 4 cells of 16 px.
-//   0-3    droplets, 3 / 4 / 5 / 6 px wide (a teardrop, the highlight top left)
+//   0-3    droplets, 3 / 4 / 5 / 6 px wide (a teardrop, the highlight top left), centred in the cell
 //   4-7    the splash where a drop hits the ground (drawn standing on the cell's bottom edge)
 //   8-10   a small puddle, top-down, a ripple ring spreading out; 11 the puddle still
 //   12     a tear spot: the ground darkened where tears soaked in, a glint of water left
@@ -21,7 +21,7 @@ const PAL: Record<string, string> = {
   s: '#86a9c3', // shaded water
   o: '#5d7f9b', // the dark rim (the bent view of darker surroundings)
 };
-// droplets, bottom-aligned in their cell, centred
+// droplets, centred in their cell
 const DROPS = [
   ['.b.', 'bhb', 'bls', '.o.'],
   ['..b.', '.bb.', 'bhbs', 'blbs', 'bbss', '.oo.'],
@@ -45,7 +45,7 @@ export function tearAtlas(): THREE.CanvasTexture {
   const px = (x: number, y: number, col: string, a = 1) => { g.globalAlpha = a; g.fillStyle = col; g.fillRect(x, y, 1, 1); };
   const cell = (i: number) => [(i % COLS) * CELL, Math.floor(i / COLS) * CELL] as const;
   const rows = (i: number, art: string[], center = true) => {
-    const [cx, cy] = cell(i), w = art[0].length, ox = center ? Math.floor((CELL - w) / 2) : 0, oy = CELL - art.length;
+    const [cx, cy] = cell(i), w = art[0].length, ox = center ? Math.floor((CELL - w) / 2) : 0, oy = center ? Math.floor((CELL - art.length) / 2) : CELL - art.length;
     art.forEach((row, y) => [...row].forEach((ch, x) => { if (ch !== '.') px(cx + ox + x, cy + oy + y, PAL[ch]); }));
   };
   DROPS.forEach((d, k) => rows(F.drop + k, d));

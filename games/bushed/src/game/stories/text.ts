@@ -26,7 +26,7 @@ const lineMap: Sketch = (g, x, y, w, h) => {
   // the camp: two little rectangles and an X
   g.strokeRect(x + w * 0.66, y + h * 0.2, 16, 9); g.strokeRect(x + w * 0.72, y + h * 0.3, 20, 8);
   g.fillText('camp?', x + w * 0.74, y + h * 0.16);
-  g.fillText('split birch', x + w * 0.27, y + h * 0.8);
+  g.fillText('split rock', x + w * 0.27, y + h * 0.8);
 };
 
 /** a grainy trail-camera still, printed on the ranger's portable printer */
@@ -86,7 +86,7 @@ export const PAGES: Record<string, { title: string; blocks: Block[] }> = {
       R('The jaws are wired shut. The plates are for them.'),
       R('Put something on a plate, come back in the morning. They pay. Always. More than I can say for the Township.'),
       sk(150, lineMap),
-      R('Tin lids on the trees, numbered. Start at the split birch.'),
+      R('Tin lids on the trees, numbered. Start at the split rock.'),
     ],
   },
   ray3: {

@@ -109,7 +109,7 @@ const GIFTS: { item: string; n: number; text: string }[] = [
 
 export class Arc {
   private t = 0;
-  private finale: Finale | null = null;
+  finale: Finale | null = null;
   constructor(private g: Game, private W: StoryWorld) {
     this.wire();
   }
@@ -293,6 +293,7 @@ export class Arc {
     const g = this.g, W = this.W;
     tickStove(W, dt, g.player.pos.distanceTo(CAMP.pos) < 120);
     W.stove.level += ((has(g, 'camp_stove') ? 1 : 0) - W.stove.level) * Math.min(1, dt * 0.8);
+    W.lamp.level += (((has(g, 'supper') || has(g, 'ending')) && (g.hour > 17 || g.hour < 7) ? 1 : 0) - W.lamp.level) * Math.min(1, dt * 1.5);
     this.finale?.update(dt);
     this.t -= dt;
     if (this.t > 0) return;
@@ -431,11 +432,9 @@ class Finale {
     from.y = heightAt(from.x, from.z);
     ray.model.root.position.copy(from);
     ray.override = { at: W.doorOut.clone(), face: CAMP.yaw + Math.PI, anim: 'idle', speed: 0.9 };
-    // a lantern in his hand
-    loadProp('wooden_lantern_01').then((o) => {
-      try { o.scale.setScalar(0.8); o.position.set(0, -0.28, 0); ray.model.socket('L').add(o); this.lantern = o; } catch { /* no socket */ }
-      const l = new THREE.PointLight(0xffb060, 3, 7, 1.8); l.position.set(0, 0.25, 0); o.add(l);
-    }).catch(() => undefined);
+    // he carries the table's lantern up from the dock (its light goes with it: no new lights)
+    const lamp = W.lamp.obj;
+    try { this.lantern = lamp; ray.model.socket('L').add(lamp); lamp.position.set(0, -0.3, 0); lamp.rotation.set(0, 0, 0); lamp.scale.setScalar(0.85); } catch { /* no socket: it stays on the table */ }
     think('Somebody\'s coming up from the dock. A lantern.', 3.5);
     void g;
   }
@@ -463,8 +462,11 @@ class Finale {
         'Sit, sit. You found the line, the camp and the hammer. Took me till I was forty to find the hammer, and it was hanging in the kitchen.',
       ]);
     }
+    if (this.lantern && this.stage <= 4) { this.lantern.getWorldPosition(W.lamp.light.position); W.lamp.light.position.y += 0.2; W.lamp.level = 1; }
     if (this.stage === 4 && ray && !ray.busy) {
       this.stage = 5;
+      // the lantern back on the table
+      if (this.lantern) { W.lamp.light.position.copy(W.lamp.home); this.lantern.removeFromParent(); this.lantern.position.copy(W.lamp.home).add(new THREE.Vector3(0, -0.42, 0)); this.lantern.scale.setScalar(1); this.g.scene.add(this.lantern); this.lantern = null; }
       ray.override = { at: W.rayChair, face: W.rayFace, anim: 'sit', speed: 0.9 };
       ray.say([
         'My grandmother cooked here. When the Company left, she stayed. Somebody had to feed them.',

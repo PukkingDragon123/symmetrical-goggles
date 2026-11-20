@@ -25,6 +25,8 @@ export interface StoryWorld {
   ammoCan: THREE.Object3D | null;
   plates: { root: THREE.Object3D; food: THREE.Object3D | null; pos: THREE.Vector3 }[];
   stove: { fire: THREE.Object3D; light: THREE.PointLight; pipeTop: THREE.Vector3; level: number };
+  /** the lantern on the cookhouse table (lit for supper; Ray carries its light up from the dock) */
+  lamp: { obj: THREE.Object3D; light: THREE.PointLight; level: number; home: THREE.Vector3 };
   hammerAtDock: THREE.Object3D;
   hammerOnPost: THREE.Object3D;
   table: THREE.Vector3;
@@ -49,8 +51,8 @@ function ensureMats(): void {
     m.color = new THREE.Color(color);
     defineMat(name, m);
   };
-  tint('log_ext', 'log_old', 0x8c8478);
-  tint('planks_grey', 'planks_old', 0x8a8478);
+  tint('log_ext', 'log_old', 0xa89e90);
+  tint('planks_grey', 'planks_old', 0xa29a8e);
   tint('stone', 'stone_moss', 0x9aa88a);
   tint('canvas', 'camo', 0x6a6a44);
 }
@@ -124,7 +126,8 @@ export function buildStoryWorld(g: Game): StoryWorld {
   ensureMats();
   const W: StoryWorld = {
     on: {}, label: {}, ammoCan: null, plates: [], pickups: {},
-    stove: { fire: new THREE.Group(), light: new THREE.PointLight(0xff8a3a, 0, 9, 1.8), pipeTop: new THREE.Vector3(), level: 0 },
+    stove: { fire: new THREE.Group(), light: new THREE.PointLight(0xff8a3a, 0, 11, 1.6), pipeTop: new THREE.Vector3(), level: 0 },
+    lamp: { obj: new THREE.Group(), light: new THREE.PointLight(0xffb060, 0, 9, 1.5), level: 0, home: new THREE.Vector3() },
     hammerAtDock: new THREE.Group(), hammerOnPost: new THREE.Group(), table: new THREE.Vector3(), supper: null,
     postTop: new THREE.Vector3(), doorOut: new THREE.Vector3(), rayChair: new THREE.Vector3(), rayFace: 0, dockEnd: new THREE.Vector3(),
   };
@@ -162,6 +165,7 @@ export function buildStoryWorld(g: Game): StoryWorld {
     W.pickups.coffeeCan = can;
     registerInteractable(can, { kind: 'container', reach: 2.4, ...act('can2', 'A coffee can, wedged in the crack') });
     // the tape from the woodshed to here, every dozen metres on the nearest trunk
+    (g.forest as unknown as { prewarm?(x: number, z: number, r: number): void } | null)?.prewarm?.(h.x, h.z, 50);
     const from = WOODYARD.clone(), to = h.clone();
     const L = Math.hypot(to.x - from.x, to.z - from.z);
     let i = 0;
@@ -175,15 +179,21 @@ export function buildStoryWorld(g: Game): StoryWorld {
   }
 
   // ---- 3. the trapline: five sets
+  const forest = g.forest as unknown as { prewarm?(x: number, z: number, r: number): void } | null;
   SETS.forEach((p, i) => {
     const prev = i ? SETS[i - 1] : TRAP_HEAD;
-    const tree = treesNear(g, p.x, p.z, 7)[0] ?? { x: p.x + 0.8, z: p.z, r: 0.18, id: -1, h: 10 };
+    // Ray set his cubbies against a good trunk: take the nearest real tree to where the map says (and move the
+    // set there), so the tape and the tin lid are on a tree that exists
+    forest?.prewarm?.(p.x, p.z, 40);
+    const near = treesNear(g, p.x, p.z, 26).filter((t) => t.r > 0.13 && t.r < 0.6 && heightAt(t.x, t.z) > WORLD.waterY + 0.8);
+    const tree = near[0] ?? { x: p.x + 0.8, z: p.z, r: 0.18, id: -1, h: 10 };
     const a = Math.atan2(prev.x - tree.x, prev.z - tree.z); // the cubby opens toward where you came from
     const root = new THREE.Group();
     const base = new THREE.Vector3(tree.x + Math.sin(a) * (tree.r + 0.35), 0, tree.z + Math.cos(a) * (tree.r + 0.35));
     base.y = heightAt(base.x, base.z);
     root.position.copy(base); root.rotation.y = a;
     g.scene.add(root);
+    p.copy(base);
     // the cubby: sticks leaned against the trunk in a little lean-to
     const ms = new Mesher(), r = new Rand(100 + i);
     for (let k = 0; k < 9; k++) {
@@ -205,8 +215,7 @@ export function buildStoryWorld(g: Game): StoryWorld {
     const plateHit = hitBox(root, 0.36, 0.14, 0.36, V(-0.05, 0.07, 0.42));
     registerInteractable(plateHit, { kind: 'custom', reach: 2.3, ...act(`plate${i}`, 'Ray\'s plate') });
     W.plates.push({ root, food: null, pos: root.localToWorld(V(-0.05, 0.05, 0.42)) });
-    tapeOn(g, tree, 20 + i);
-    lidOn(g, tree, i + 1, prev);
+    if (near[0]) { tapeOn(g, tree, 20 + i); lidOn(g, tree, i + 1, prev); }
   });
 
   // ---- 4. the old camp
@@ -215,6 +224,7 @@ export function buildStoryWorld(g: Game): StoryWorld {
   // ---- 5. Ray's dock below the camp, and the gut hammer hanging at the end of it
   {
     const e = SHORE.edge, dir = SHORE.dir, s = Math.sin(dir), c = Math.cos(dir);
+    (g.forest as unknown as { prewarm?(x: number, z: number, r: number): void } | null)?.prewarm?.(e.x, e.z, 30);
     clearTrees(g, e.x - s * 3, e.z - c * 3, 5);
     const deckY = WORLD.waterY + 0.55;
     const grp = new THREE.Group();
@@ -251,6 +261,7 @@ export function buildStoryWorld(g: Game): StoryWorld {
 // ---------------------------------------------------------------------------------------------- the camp
 function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => string)) => { label: () => string; use: () => void }): void {
   const C = CAMP.pos, yaw = CAMP.yaw;
+  (g.forest as unknown as { prewarm?(x: number, z: number, r: number): void } | null)?.prewarm?.(C.x, C.z, 60);
   clearTrees(g, C.x, C.z, 19);
   const grp = new THREE.Group();
   grp.position.set(C.x, 0, C.z); grp.rotation.y = yaw;
@@ -354,7 +365,10 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
   pending.push(propIn(grp, 'pot_enamel_01', tx + 1.2, ty + 0.03, tz - 0.1, 0.4));
   pending.push(propIn(grp, 'wooden_bowl_01', tx - 0.2, ty + 0.03, tz + 0.15, 0));
   pending.push(propIn(grp, 'wooden_spoon', tx + 0.1, ty + 0.035, tz - 0.2, 1.1));
-  pending.push(propIn(grp, 'wooden_lantern_01', bed.x + 0.5, ckBase + 0.02, bed.z + 0.2, 0.3));
+  pending.push(propIn(grp, 'wooden_lantern_01', tx + tl / 2 - 0.35, ty + 0.03, tz - 0.15, 0.3).then((o) => { if (o) W.lamp.obj = o; }));
+  W.lamp.home.copy(toW(tx + tl / 2 - 0.35, ty + 0.45, tz - 0.15));
+  W.lamp.light.position.copy(W.lamp.home);
+  g.scene.add(W.lamp.light);
   pending.push(propIn(grp, 'wooden_bucket_01', ck.x - ck.w / 2 + 0.5, ckBase, ck.z + ck.d / 2 - 0.6, 0.2));
   pending.push(propIn(grp, 'jug_01', stoveL.x + 1.4, ckBase, stoveL.z + 0.05, 2));
   // the stove's fire (lit by the story) and its light
@@ -462,7 +476,8 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
     const c = document.createElement('canvas'); c.width = 256; c.height = 54;
     const gg = c.getContext('2d')!;
     gg.clearRect(0, 0, 256, 54);
-    gg.fillStyle = 'rgba(30,22,16,0.92)'; gg.textAlign = 'center';
+    // carved letters show the paler wood under the weathered face
+    gg.fillStyle = 'rgba(222,204,168,0.95)'; gg.textAlign = 'center';
     gg.font = 'bold 26px Alagard, serif'; gg.fillText(CAMP_SIGN[0], 128, 26);
     gg.font = '14px Alagard, serif'; gg.fillText(`${CAMP_SIGN[1]}  ·  ${CAMP_SIGN[2]}`, 128, 46);
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.magFilter = THREE.NearestFilter;
@@ -524,7 +539,10 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
 export function tickStove(W: StoryWorld, dt: number, playerNear: boolean): void {
   const s = W.stove;
   (s.fire.userData.tick as ((dt: number, l: number) => void) | undefined)?.(dt, s.level);
-  s.light.intensity = s.level * (6 + Math.sin(performance.now() * 0.013) * 0.8);
+  // lights fade out with distance (the light count never changes: no shader recompiles)
+  const k = playerNear ? 1 : 0;
+  s.light.intensity = k * s.level * (14 + Math.sin(performance.now() * 0.013) * 1.6);
+  W.lamp.light.intensity = k * W.lamp.level * (9 + Math.sin(performance.now() * 0.021 + 1) * 0.6);
   if (s.level > 0.1 && playerNear && Math.random() < dt * 3) {
     puffs.emit(s.pipeTop, new THREE.Vector3(0.1, 0.6, 0.05), { size: 0.35, grow: 3.5, life: 6, color: new THREE.Color(0.36, 0.34, 0.33), alpha: 0.25, rise: 0.3 });
   }

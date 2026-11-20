@@ -81,59 +81,68 @@ bead = next(o for o in outm if o['src'] == 'beads')
 bead.data.materials.clear(); bead.data.materials.append(K.bead_material())
 
 # ---------------------------------------------------------------------------------- high (bake source) and low
+# the high: one smooth Catmull-Clark level (more and the thin tail and ears shrink away from the low); the low: that,
+# decimated, the head and paws spared
 HEAD = ['spine_006']
-hi = L._copy_join([body], 'hi'); K.weld(hi, 1e-4); K.subdivide(hi, 2)
+hi = L._copy_join([body], 'hi'); K.weld(hi, 0.0025); L.outward(hi); K.subdivide(hi, 1)
 for p in hi.data.polygons:
     p.use_smooth = True
-mid1 = L._copy_join([body], 'mid'); K.weld(mid1, 1e-4); K.subdivide(mid1, 1)
-low = L.lowpoly([mid1], TRIS, 'splintercat', protect=(HEAD + ['f_toe_L', 'f_toe_R', 'hand_L', 'hand_R'], 0.75))
-bpy.data.objects.remove(mid1, do_unlink=True)
+low = L.lowpoly([hi], TRIS, 'splintercat', protect=(HEAD + ['f_toe_L', 'f_toe_R', 'hand_L', 'hand_R'], 0.75))
 lb = L._copy_join([bead], 'lowbeads')
+for p in lb.data.polygons:
+    p.use_smooth = True  # the beads stay round
 low = C.join([low, lb], 'splintercat_mesh')
-for p in low.data.polygons:
-    p.use_smooth = False
 L.unwrap(low, boost={'spine_006': 2.5})
-M = L.bake_maps(low, [hi, bead], TEX)
+M = L.bake_maps(low, [hi, bead], TEX, extrude=0.015, ray=0.05, pose=(acts[0], 0))  # standing (idle, frame 0)
 print(f'BAKED {time.time() - T0:.0f}s')
 
 
 # ---------------------------------------------------------------------------------- paint: a crisper face
 def paint(M):
     P, N, rgb = M['pos'], M['nrm'], M['base'].copy()
-    # the source's warm grey-tan, a little more contrast, as the realism pass had it
-    rgb = np.clip(((rgb - 0.5) * 1.12 + 0.5) * np.array([0.98, 0.91, 0.82]), 0, 1)
-    hp = np.array(L.C_head)  # the head bone, game space
-    d = P - hp
-    # black ear tufts and ear tips; a black tail tip
-    ear = (d[..., 1] > 0.085) & (np.abs(d[..., 0]) > 0.03) & (d[..., 2] < 0.06)
-    tip = L.smooth(d[..., 1], 0.10, 0.135) * ear
-    rgb = rgb * (1 - 0.85 * tip[..., None]) + np.array([0.05, 0.04, 0.035]) * 0.85 * tip[..., None]
-    tail = L.smooth(-(P[..., 2] - L.C_tailtip[2]), -0.02, 0.05) * (P[..., 2] < L.C_tailtip[2] + 0.06)
-    rgb = rgb * (1 - 0.8 * tail[..., None]) + 0.04 * 0.8 * tail[..., None]
-    # a dark line from each eye's back corner, and a darker lip line round the muzzle
-    for side in (1, -1):
-        e = np.array(L.C_eyes[0 if side > 0 else 1])
+    # the source's warm grey-tan, a little more contrast, as the realism pass had it (in sRGB)
+    rgb = L.to_linear(np.clip(((L.to_srgb(rgb) - 0.5) * 1.12 + 0.5) * np.array([0.98, 0.91, 0.82]), 0, 1))
+    # landmarks from the bake itself: the eyes (the shine mask), the top of the head, the tail tip
+    sh = (M['shine'] > 0.5) & M['valid']
+    E = [P[sh & (P[..., 0] * k > 0)].mean(0) for k in (1, -1)]
+    em = (E[0] + E[1]) / 2
+    print('EYES', np.round(E, 3).tolist())
+    d = P - em
+    near = (np.abs(d[..., 2]) < 0.14) & (np.abs(d[..., 0]) < 0.14) & M['valid']
+    top = float(P[..., 1][near & (d[..., 1] > 0)].max())
+    # the ears: black tips (the lynx's tufts), the backs of the ears darker
+    ear = near & (d[..., 1] > 0.045) & (d[..., 2] < 0.02)
+    tip = L.smooth(P[..., 1], top - 0.045, top - 0.015) * ear
+    back = ear * L.smooth(-N[..., 2], 0.2, 0.6) * 0.5
+    k = np.maximum(tip, back)[..., None]
+    rgb = rgb * (1 - 0.88 * k) + np.array([0.012, 0.01, 0.009]) * 0.88 * k
+    # a black tail tip: the bottom of the tail (behind the rump, on the midline)
+    V = M['valid']
+    zmin = float(P[..., 2][V].min())
+    tl = V & (P[..., 2] < zmin + 0.1) & (np.abs(P[..., 0]) < 0.05) & (P[..., 1] > 0.25)
+    ty = P[..., 1][tl]
+    t = (tl * L.smooth(-P[..., 1], -(ty.min() + 0.07), -(ty.min() + 0.035)))[..., None]
+    rgb = rgb * (1 - 0.85 * t) + 0.01 * 0.85 * t
+    # a dark line from each eye's back corner, down and back
+    for e, side in zip(E, (1, -1)):
         q = P - e
-        along = -q[..., 2]  # backward from the eye
-        line = (along > 0) & (along < 0.05) & (np.abs(q[..., 1] + along * 0.35) < 0.006) & (q[..., 0] * side > -0.005)
-        rgb[line] *= 0.35
-    # mottled spots on the flanks and legs (the lynx's), sharpened
-    sp = L.fbm(P, 0.05, 2, 7)
-    body_m = (d[..., 2] < -0.12) & (N[..., 1] < 0.7) & (P[..., 1] > 0.12)
-    rgb[body_m & (sp > 0.68)] *= 0.62
+        along = -q[..., 2]
+        line = (along > 0.004) & (along < 0.05) & (np.abs(q[..., 1] + along * 0.4) < 0.005) & (q[..., 0] * side > 0)
+        rgb[line] *= 0.3
+    # warmer lower legs (the source's are blue-white)
+    legs = L.smooth(-P[..., 1], -0.22, -0.12)[..., None] * (np.abs(d[..., 2]) > 0.2)[..., None]
+    rgb = rgb * (1 - legs * 0.35) + rgb * np.array([1.05, 0.92, 0.78]) * legs * 0.35
+    # crisper spots on the flanks and legs
+    sp = L.fbm(P, 0.045, 2, 7)
+    body_m = (d[..., 2] < -0.15) & (N[..., 1] < 0.75) & (P[..., 1] > 0.1)
+    rgb[body_m & (sp > 0.7)] *= 0.6
     return rgb
 
 
-# the head bone, the eyes and the tail tip in game space (paint() reads them)
-hb = ao.data.bones['spine_006'].head_local
-L.C_head = (hb.x, hb.z, -hb.y)
-eyesG = []
-for c, r, _ in sorted(K.islands(bead), key=lambda e: -e[0].x)[:2]:
-    eyesG.append((c.x, c.z, -c.y))
-L.C_eyes = eyesG
-tt = ao.data.bones[[n for n, _ in keep if n.startswith('tail')][-1]].tail_local
-L.C_tailtip = (tt.x, tt.z, -tt.y)
 col = L.finish(M, paint=paint, ao_k=0.5, cav_k=1.8)
+_dk = M['valid'] & (col.max(-1) < 0.02)
+print('DARK', int(_dk.sum()), np.round(M['pos'][_dk][::max(1, int(_dk.sum()) // 12)], 3).tolist())
+print('DARKBASE', int((M['valid'] & (M['base'].max(-1) < 0.01)).sum()), 'AO<0.05', int((M['valid'] & (M['ao'] < 0.05)).sum()))
 mat = L.save_material('splintercat', col, M['shine'])
 L.apply_material(low, mat)
 C.limit_weights(low, 4)

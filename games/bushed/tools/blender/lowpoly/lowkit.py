@@ -9,7 +9,8 @@
 #   mat = save_material(col, M['shine'], ...)                # <name>_col.png + <name>_sd.png -> one material
 # then export with ../cryptids4/common.py (C.export). Blender 4.2, headless.
 #
-# M's arrays are (H, W, C) float32, rows bottom-up (Blender's pixel order). M['pos'] holds each texel's position in
+# M's arrays are (H, W, C) float32, rows bottom-up (Blender's pixel order); colours are LINEAR (paint in linear, or
+# convert with to_srgb / to_linear). M['pos'] holds each texel's position in
 # GAME space (metres, x left, y up, z forward) and M['nrm'] its smooth normal (game space), so a creature script can
 # paint anatomy-aware detail in numpy: bands down the back, a pale belly, mottling, scars, lip lines.
 import bpy, bmesh, math, os, sys
@@ -22,6 +23,13 @@ BUILD = os.path.join(HERE, '_build')
 sys.path.insert(0, os.path.join(HERE, '..', 'cryptids4'))
 import common as C  # noqa: E402  (the shared rebake / atlas / export pipeline)
 import kit as K4     # noqa: E402
+
+
+def outward(o):
+    """recalculate face normals outward (sources and decimators leave some flipped: they bake and shade black)"""
+    bm = bmesh.new(); bm.from_mesh(o.data)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+    bm.to_mesh(o.data); bm.free()
 
 
 def tris(o):
@@ -40,12 +48,12 @@ def _copy_join(objs, name):
     return C.join(cs, name)
 
 
-def head_group(o, bones, name='protect'):
-    """a vertex group: the summed weight of `bones` per vertex (0..1)"""
+def head_group(o, bones, name='protect', strength=1.0):
+    """a vertex group: the summed weight of `bones` per vertex (0..1), times strength"""
     g = o.vertex_groups.get(name) or o.vertex_groups.new(name=name)
     idx = {o.vertex_groups[b].index for b in bones if b in o.vertex_groups}
     for v in o.data.vertices:
-        w = min(1.0, sum(x.weight for x in v.groups if x.group in idx))
+        w = min(1.0, sum(x.weight for x in v.groups if x.group in idx)) * strength
         if w > 0:
             g.add([v.index], w, 'REPLACE')
     return g.name
@@ -53,11 +61,13 @@ def head_group(o, bones, name='protect'):
 
 def lowpoly(highs, tris_target, name, protect=None, weld=0.0015):
     """a decimated, skinned copy of the high meshes (joined, seams welded) at about `tris_target` triangles.
-    protect: ({bone names}, factor 0..1): those bones' vertices are decimated less (the head, the paws)."""
+    protect: ({bone names}, strength 0..0.95): those bones' vertices are decimated less (the head, the paws): the
+    decimator divides a collapse's cost by the summed (inverted) weights of its two vertices, so at 0.75 a head edge
+    costs 4x a body edge (at 1.0 the head would never collapse at all)."""
     base = _copy_join(highs, name + '_low_src')
     K4.weld(base, weld)
     n0 = tris(base)
-    grp = head_group(base, protect[0]) if protect else None
+    grp = head_group(base, protect[0], strength=min(0.95, protect[1])) if protect else None
     lo_r, hi_r, best = 0.0, 1.0, None
     r = min(1.0, tris_target / max(1, n0))
     for _ in range(7):
@@ -66,10 +76,11 @@ def lowpoly(highs, tris_target, name, protect=None, weld=0.0015):
             bpy.ops.object.select_all(action='DESELECT'); c.select_set(True); bpy.context.view_layer.objects.active = c
             d = c.modifiers.new('dec', 'DECIMATE'); d.ratio = r; d.use_collapse_triangulate = True
             if grp:
-                d.vertex_group = grp; d.invert_vertex_group = True; d.vertex_group_factor = protect[1]
+                d.vertex_group = grp; d.invert_vertex_group = True; d.vertex_group_factor = 1.0
             bpy.ops.object.modifier_move_to_index(modifier='dec', index=0)
             bpy.ops.object.modifier_apply(modifier='dec')
         n = tris(c)
+        print(f'  decimate r={r:.4f} -> {n}')
         if best is None or abs(n - tris_target) < abs(tris(best) - tris_target):
             if best is not None:
                 bpy.data.objects.remove(best, do_unlink=True)
@@ -85,6 +96,7 @@ def lowpoly(highs, tris_target, name, protect=None, weld=0.0015):
         r = (lo_r + hi_r) / 2 if hi_r < 1.0 or lo_r > 0 else r * tris_target / n
     bpy.data.objects.remove(base, do_unlink=True)
     best.name = name + '_low'
+    outward(best)
     for p in best.data.polygons:
         p.use_smooth = False  # faceted
     print(f'LOWPOLY {name}: {n0} -> {tris(best)} tris')
@@ -188,13 +200,15 @@ def _restore(keep):
             s.material = mats[i]
 
 
-def bake_maps(low, highs, size, extrude=0.02, ao_samples=32, shine_mats=('BeadEye',), ray=0.06):
+def bake_maps(low, highs, size, extrude=0.02, ao_samples=32, shine_mats=('BeadEye',), ray=0.06, pose=None):
     """bake onto low's UVs: base (rgb), ao (r), cav (r: 0.5 flat, < concave, > convex), shine (r), pos (game xyz),
-    nrm (game xyz, smooth, from the highs)"""
+    nrm (game xyz, the low's, smoothed), valid (bool: texels the low covers). Colour, AO and cavity are baked at the
+    armature's rest pose; pos and nrm at pose = (action, frame) when the rest pose is not the creature standing in
+    game space (a rebake whose rest is the source's bind pose: the cryptids4 / fauna rigs)"""
     sc = bpy.context.scene
     sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'
     arms = {a for a in (o.find_armature() for o in [low] + list(highs)) if a}
-    for a in arms:  # bake at the bind pose, whatever clip the armature holds
+    for a in arms:  # colour, AO and cavity at the bind pose: low and high agree best there (their weights differ)
         a.data.pose_position = 'REST'
     sc.render.bake.margin = 4; sc.render.bake.margin_type = 'EXTEND'
     # the low's bake target
@@ -225,6 +239,15 @@ def bake_maps(low, highs, size, extrude=0.02, ao_samples=32, shine_mats=('BeadEy
     keep = _swap(highs, lambda m: white if (m and m.name in shine_mats) else black)
     out['shine'] = run('EMIT', _img('bk_shine', size))[..., 0]
     _restore(keep)
+    # which high material each texel shows: M['part'] indexes M['parts'] (material names)
+    names = sorted({sl.material.name for h in highs for sl in h.material_slots if sl.material})
+    idm = {n: _emit_mat('bk_id_' + n, lambda nt, i, k=k: setattr(i, 'default_value', ((k + 1) / (len(names) + 1), 0, 0, 1)))
+           for k, n in enumerate(names)}
+    keep = _swap(highs, lambda m: idm[m.name] if m else black)
+    pid = run('EMIT', _img('bk_part', size))[..., 0]
+    _restore(keep)
+    out['part'] = np.clip(np.round(pid * (len(names) + 1)).astype(np.int32) - 1, -1, len(names) - 1)
+    out['parts'] = names
     # cavity: Cycles' pointiness of the high surface
 
     def cav(nt, inp):
@@ -236,10 +259,20 @@ def bake_maps(low, highs, size, extrude=0.02, ao_samples=32, shine_mats=('BeadEy
     _restore(keep)
     # ambient occlusion
     out['ao'] = run('AO', _img('bk_ao', size), samples=ao_samples)[..., 0]
-    # smooth normals from the highs (object space: Blender x, y, z -> game x, z, -y)
-    n = run('NORMAL', _img('bk_nrm', size), normal_space='OBJECT')[..., :3] * 2 - 1
+    # position and normal for painting: the low's own, standing (pose), smooth-shaded for the normal
+    for a in arms:
+        a.data.pose_position = 'POSE'
+        if pose:
+            a.animation_data_create(); a.animation_data.action = pose[0]; C.set_frame(pose[1])
+    flat = [p.use_smooth for p in low.data.polygons]
+    for p in low.data.polygons:
+        p.use_smooth = True
+    n = run('NORMAL', _img('bk_nrm', size), sel_to_active=False, normal_space='OBJECT')[..., :3] * 2 - 1
+    for p, f in zip(low.data.polygons, flat):
+        p.use_smooth = f
     out['nrm'] = np.stack([n[..., 0], n[..., 2], -n[..., 1]], -1)
-    # the low's own position (encoded 0..1 over its bounding box)
+    # (object space: Blender x, y, z -> game x, z, -y); the position, encoded 0..1 over the low's bounding box
+    bpy.context.view_layer.update()
     lo, hi = K4.extent([low])
     span = max(hi - lo)
 
@@ -256,9 +289,22 @@ def bake_maps(low, highs, size, extrude=0.02, ao_samples=32, shine_mats=('BeadEy
     tn = pt
     p = run('EMIT', _img('bk_pos', size), sel_to_active=False)[..., :3] * span + np.array(tuple(lo))
     out['pos'] = np.stack([p[..., 0], p[..., 2], -p[..., 1]], -1)
+    # which texels the low's faces cover (no margin)
+    wm = _emit_mat('bk_valid', lambda nt, i: setattr(i, 'default_value', (1, 1, 1, 1)))
+    low.data.materials.clear(); low.data.materials.append(wm)
+    vt = wm.node_tree.nodes.new('ShaderNodeTexImage'); wm.node_tree.nodes.active = vt
+    tn = vt
+    sc.render.bake.margin = 0
+    tn.image = _img('bk_valid', size)
+    bpy.ops.object.select_all(action='DESELECT'); low.select_set(True); bpy.context.view_layer.objects.active = low
+    bpy.ops.object.bake(type='EMIT', use_selected_to_active=False, margin=0, target='IMAGE_TEXTURES')
+    out['valid'] = _px(tn.image)[..., 0] > 0.5
+    sc.render.bake.margin = 4
     low.data.materials.clear()
     for a in arms:
         a.data.pose_position = 'POSE'
+        if pose:
+            a.animation_data.action = None
     return out
 
 
@@ -306,10 +352,21 @@ def finish(M, paint=None, ao_k=0.55, cav_k=1.6, levels=None):
     return rgb
 
 
+def to_srgb(x):
+    x = np.clip(x, 0, 1)
+    return np.where(x <= 0.0031308, x * 12.92, 1.055 * np.power(x, 1 / 2.4) - 0.055)
+
+
+def to_linear(x):
+    x = np.clip(x, 0, 1)
+    return np.where(x <= 0.04045, x / 12.92, np.power((x + 0.055) / 1.055, 2.4))
+
+
 def save_material(name, rgb, shine, rough=0.88, rough_eye=0.12, out_dir=BUILD, extra_rough=None):
-    """<name>_col.png and <name>_sd.png (R eye shine, G roughness, B metalness 0) -> one material"""
+    """<name>_col.png and <name>_sd.png (R eye shine, G roughness, B metalness 0) -> one material. rgb is LINEAR
+    (as baked); it is written as sRGB."""
     H, W = rgb.shape[:2]
-    col = np.ones((H, W, 4), np.float32); col[..., :3] = rgb
+    col = np.ones((H, W, 4), np.float32); col[..., :3] = to_srgb(rgb)
     sd = np.zeros((H, W, 4), np.float32); sd[..., 3] = 1
     s = np.clip(shine, 0, 1)
     sd[..., 0] = s

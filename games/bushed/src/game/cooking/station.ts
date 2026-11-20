@@ -157,6 +157,16 @@ export abstract class Station {
     this.label = null;
   }
 
+  /** jump the camera straight to the current framing (tests, screenshots) */
+  snapView(): void {
+    if (this.phase === 'in') this.phase = 'on';
+    this.camPos.copy(this.view.pos); this.camLook.copy(this.view.look); this.fov = this.view.fov ?? 52;
+    this.lookOff.set(0, 0);
+    const cam = this.g.camera;
+    cam.position.copy(this.camPos); cam.lookAt(this.camLook); cam.fov = this.fov; cam.updateProjectionMatrix(); cam.updateMatrixWorld(true);
+    this.hands.snap();
+  }
+
   /** move the camera to another framing of the work (eases there) */
   setView(v: StationView): void {
     this.view.pos.copy(v.pos); this.view.look.copy(v.look);

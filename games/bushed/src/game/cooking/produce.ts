@@ -88,6 +88,15 @@ export function shapeVolume(s: Shape): number {
   }
 }
 function extentX(s: Shape): number { return s.a; }
+function shapeHeight(s: Shape): number { return s.kind === 'ell' ? 2 * s.b : s.kind === 'cyl' ? 2 * Math.max(s.r0 ?? 0, s.r1 ?? 0.014) : s.b; }
+/** mean spacing between knife cuts (the outline counts as an edge too) */
+function meanGap(cuts: number[], ext: number): number {
+  if (!cuts.length) return ext * 2;
+  const all = [-ext, ...cuts, ext];
+  let sum = 0;
+  for (let i = 1; i < all.length; i++) sum += all[i] - all[i - 1];
+  return sum / (all.length - 1);
+}
 function extentZ(s: Shape): number { return s.kind === 'cyl' ? Math.max(s.r0 ?? 0, s.r1 ?? 0.014) : s.c; }
 
 // ---------------------------------------------------------------------------------------------- cells
@@ -108,14 +117,14 @@ const _sp: [number, number] = [0, 0], _cl: [number, number] = [0, 0], _np = new 
  * of the four sides are knife cuts (flesh) rather than the shape's own outline. flatSkin: the underside of a dome
  * is skin (a clove lying on its side), not a cut face.
  */
-export function cellGeo(s: Shape, x0: number, x1: number, z0: number, z1: number, cut: { x0: boolean; x1: boolean; z0: boolean; z1: boolean }, res = 0.0045, flatSkin = false): Cell | null {
+export function cellGeo(s: Shape, x0: number, x1: number, z0: number, z1: number, cut: { x0: boolean; x1: boolean; z0: boolean; z1: boolean }, res = 0.0045, flatSkin = false, ya = -1, yb = 99): Cell | null {
   // quick reject + measure on a fine grid
   let any = false, vol = 0, hmax = 0;
   const qn = 6;
   for (let i = 0; i < qn; i++) for (let j = 0; j < qn; j++) {
     const x = x0 + (i + 0.5) / qn * (x1 - x0), z = z0 + (j + 0.5) / qn * (z1 - z0);
     span(s, x, z, _sp);
-    const h = _sp[1] - _sp[0];
+    const h = Math.min(_sp[1], yb) - Math.max(_sp[0], ya);
     if (h > 0.0004) { any = true; vol += h; hmax = Math.max(hmax, h); }
   }
   if (!any) return null;
@@ -123,13 +132,18 @@ export function cellGeo(s: Shape, x0: number, x1: number, z0: number, z1: number
   if (vol < 4e-9) return null;
   const nx = Math.max(2, Math.min(14, Math.ceil((x1 - x0) / res))), nz = Math.max(2, Math.min(14, Math.ceil((z1 - z0) / res)));
   // grid of (clamped) points
-  const gx: number[] = [], gz: number[] = [], top: number[] = [], bot: number[] = [];
+  const gx: number[] = [], gz: number[] = [], top: number[] = [], bot: number[] = [], tcut: number[] = [], bcut: number[] = [];
   for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) {
     const x = x0 + (i / nx) * (x1 - x0), z = z0 + (j / nz) * (z1 - z0);
     clampIn(s, x, z, _cl);
     const cx = THREE.MathUtils.clamp(_cl[0], x0, x1), cz = THREE.MathUtils.clamp(_cl[1], z0, z1);
     span(s, cx, cz, _sp);
-    gx.push(cx); gz.push(cz); bot.push(_sp[0]); top.push(_sp[1]);
+    // a horizontal slab of it (layered dice): clipped faces are cut flesh
+    let b0 = _sp[0], t0 = _sp[1];
+    tcut.push(t0 > yb ? 1 : 0); bcut.push(b0 < ya ? 1 : 0);
+    t0 = Math.min(t0, yb); b0 = Math.max(b0, ya);
+    if (t0 < b0) { const m = THREE.MathUtils.clamp((t0 + b0) / 2, ya, yb); t0 = b0 = m; }
+    gx.push(cx); gz.push(cz); bot.push(b0); top.push(t0);
   }
   const at = (i: number, j: number) => j * (nx + 1) + i;
   // centroid
@@ -151,8 +165,9 @@ export function cellGeo(s: Shape, x0: number, x1: number, z0: number, z1: number
     UV.push(0.5 + (((x + z * 0.7) * 9) % 1 + 1) % 1 * 0.48, 0.02 + (((y + z) * 9) % 1 + 1) % 1 * 0.96);
   };
   const nrm = (i: number, j: number, which: 0 | 1, o: THREE.Vector3) => {
-    // surface normal from the heightfield gradient
+    // surface normal from the heightfield gradient (flat where the slab was cut)
     const k = at(i, j), arr = which ? top : bot;
+    if ((which ? tcut : bcut)[k]) return o.set(0, which ? 1 : -1, 0);
     const il = Math.max(0, i - 1), ir = Math.min(nx, i + 1), jl = Math.max(0, j - 1), jr = Math.min(nz, j + 1);
     const dx = gx[at(ir, j)] - gx[at(il, j)] || 1e-6, dz = gz[at(i, jr)] - gz[at(i, jl)] || 1e-6;
     const hx = (arr[at(ir, j)] - arr[at(il, j)]) / dx, hz = (arr[at(i, jr)] - arr[at(i, jl)]) / dz;
@@ -169,13 +184,15 @@ export function cellGeo(s: Shape, x0: number, x1: number, z0: number, z1: number
     if (top[A] - bot[A] < 1e-5 && top[B] - bot[B] < 1e-5 && top[C] - bot[C] < 1e-5 && top[D] - bot[D] < 1e-5) continue;
     // top (counter-clockwise from above: A D C, A C B)
     nrm(i, j, 1, na); nrm(i + 1, j, 1, nb); nrm(i + 1, j + 1, 1, nc); nrm(i, j + 1, 1, nd);
-    push(gx[A], top[A], gz[A], na.x, na.y, na.z, topSkin, 0); push(gx[D], top[D], gz[D], nd.x, nd.y, nd.z, topSkin, 0); push(gx[C], top[C], gz[C], nc.x, nc.y, nc.z, topSkin, 0);
-    push(gx[A], top[A], gz[A], na.x, na.y, na.z, topSkin, 0); push(gx[C], top[C], gz[C], nc.x, nc.y, nc.z, topSkin, 0); push(gx[B], top[B], gz[B], nb.x, nb.y, nb.z, topSkin, 0);
+    const ts = tcut[A] + tcut[B] + tcut[C] + tcut[D] >= 2 ? 0 : topSkin, bs = bcut[A] + bcut[B] + bcut[C] + bcut[D] >= 2 ? 0 : -1;
+    push(gx[A], top[A], gz[A], na.x, na.y, na.z, ts, 0); push(gx[D], top[D], gz[D], nd.x, nd.y, nd.z, ts, 0); push(gx[C], top[C], gz[C], nc.x, nc.y, nc.z, ts, 0);
+    push(gx[A], top[A], gz[A], na.x, na.y, na.z, ts, 0); push(gx[C], top[C], gz[C], nc.x, nc.y, nc.z, ts, 0); push(gx[B], top[B], gz[B], nb.x, nb.y, nb.z, ts, 0);
     // bottom
     nrm(i, j, 0, na); nrm(i + 1, j, 0, nb); nrm(i + 1, j + 1, 0, nc); nrm(i, j + 1, 0, nd);
-    if (botSkin === 0) { na.set(0, -1, 0); nb.set(0, -1, 0); nc.set(0, -1, 0); nd.set(0, -1, 0); }
-    push(gx[A], bot[A], gz[A], na.x, na.y, na.z, botSkin, 0); push(gx[C], bot[C], gz[C], nc.x, nc.y, nc.z, botSkin, 0); push(gx[D], bot[D], gz[D], nd.x, nd.y, nd.z, botSkin, 0);
-    push(gx[A], bot[A], gz[A], na.x, na.y, na.z, botSkin, 0); push(gx[B], bot[B], gz[B], nb.x, nb.y, nb.z, botSkin, 0); push(gx[C], bot[C], gz[C], nc.x, nc.y, nc.z, botSkin, 0);
+    const bsk = bs === 0 ? 0 : botSkin;
+    if (bsk === 0) { na.set(0, -1, 0); nb.set(0, -1, 0); nc.set(0, -1, 0); nd.set(0, -1, 0); }
+    push(gx[A], bot[A], gz[A], na.x, na.y, na.z, bsk, 0); push(gx[C], bot[C], gz[C], nc.x, nc.y, nc.z, bsk, 0); push(gx[D], bot[D], gz[D], nd.x, nd.y, nd.z, bsk, 0);
+    push(gx[A], bot[A], gz[A], na.x, na.y, na.z, bsk, 0); push(gx[B], bot[B], gz[B], nb.x, nb.y, nb.z, bsk, 0); push(gx[C], bot[C], gz[C], nc.x, nc.y, nc.z, bsk, 0);
   }
   // side walls along the four edges: (i, j) runs along the edge; outward normal n
   const wall = (pts: number[], n: [number, number, number], flesh: boolean) => {
@@ -549,8 +566,16 @@ export class Produce {
       const parts: { geo: THREE.BufferGeometry; m: THREE.Matrix4 }[] = [];
       const ang = (b.turn * Math.PI) / 2;
       const rot = new THREE.Matrix4().makeRotationY(ang);
-      for (let i = 0; i < xs.length - 1; i++) for (let j = 0; j < zs.length - 1; j++) {
-        const cell = cellGeo(s, xs[i], xs[i + 1], zs[j], zs[j + 1], { x0: i > 0, x1: i < xs.length - 2, z0: j > 0, z1: j < zs.length - 2 }, 0.0045, b.flatSkin);
+      // cut both ways and it falls apart into layers too (the onion's own layers, the cook's flat cuts): dice
+      let ys = [-1, 99];
+      if (b.xs.length && b.zs.length) {
+        const sp = (meanGap(b.xs, ex) + meanGap(b.zs, ez)) / 2, H = shapeHeight(s);
+        const n = Math.max(1, Math.min(10, Math.round(H / Math.max(0.0035, sp * 1.05))));
+        ys = Array.from({ length: n + 1 }, (_, k) => (k * H) / n);
+        ys[0] = -1; ys[n] = 99;
+      }
+      for (let i = 0; i < xs.length - 1; i++) for (let j = 0; j < zs.length - 1; j++) for (let k = 0; k < ys.length - 1; k++) {
+        const cell = cellGeo(s, xs[i], xs[i + 1], zs[j], zs[j + 1], { x0: i > 0, x1: i < xs.length - 2, z0: j > 0, z1: j < zs.length - 2 }, ys.length > 2 ? 0.006 : 0.0045, b.flatSkin, ys[k], ys[k + 1]);
         if (!cell) continue;
         b.cells.push(cell);
         // open the cut gaps: each piece sits a hair away from its neighbours
@@ -639,8 +664,16 @@ export class Pile {
       const b = this.bits[i];
       const a = R.next() * Math.PI * 2, d = Math.sqrt(R.next()) * Math.max(0.002, r - Math.max(b.dx, b.dz) * 0.4);
       const layer = Math.floor(R.next() * layers);
-      const y = b.dy / 2 + layer * b.dy * 0.8 + heap * (1 - d / Math.max(r, 1e-3)) * 0.02;
-      e.set((R.next() - 0.5) * 0.3, R.next() * Math.PI * 2, (R.next() - 0.5) * 0.3);
+      const mn = Math.min(b.dx, b.dy, b.dz), mx = Math.max(b.dx, b.dy, b.dz);
+      let rest = b.dy;
+      if (mx / mn < 2.2) {
+        // a chunky die tumbles any which way
+        e.set(R.next() * 6.28, R.next() * 6.28, R.next() * 6.28);
+        rest = (b.dx + b.dy + b.dz) / 3;
+      } else if (b.dx === mn && b.dx < 0.7 * b.dy) { e.set(0, R.next() * 6.28, Math.PI / 2 * (R.next() < 0.5 ? 1 : -1) + (R.next() - 0.5) * 0.3); rest = b.dx; }
+      else if (b.dz === mn && b.dz < 0.7 * b.dy) { e.set(Math.PI / 2 * (R.next() < 0.5 ? 1 : -1) + (R.next() - 0.5) * 0.3, R.next() * 6.28, 0); rest = b.dz; }
+      else e.set((R.next() - 0.5) * 0.3, R.next() * Math.PI * 2, (R.next() - 0.5) * 0.3);
+      const y = rest / 2 + layer * rest * 0.8 + heap * (1 - d / Math.max(r, 1e-3)) * 0.02;
       q.setFromEuler(e);
       parts.push({ geo: b.geo, m: new THREE.Matrix4().compose(new THREE.Vector3(Math.cos(a) * d, y, Math.sin(a) * d), q, new THREE.Vector3(1, 1, 1)) });
     }

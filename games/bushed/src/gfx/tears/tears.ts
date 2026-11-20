@@ -7,15 +7,16 @@
 //   t.dissolve(pos)     a creature melting: a spray of drops and a pool of water that grows and fades
 //   t.spot(x, z, h)     a tear spot left on the ground (the trail; lasts two minutes)
 //
-// Simple physics: a drop leaves the eye with a small outward kick (plus the face's own motion), falls under gravity
-// with a little air drag, and splashes where it meets the ground (4 frames), leaving a little puddle (a ripple, then it
-// fades in a few seconds). The eyes ride the head bone, so a sharp head shake flings drops off. Mesh-agnostic: any
-// SkinnedMesh with a head bone and the eye points in its bind space.
+// Simple physics: a drop swells in the corner of each eye (riding the head), lets go with a small outward kick (plus
+// the face's own motion), falls under gravity with a little air drag, and splashes where it meets the ground (4
+// frames), leaving a little puddle (a ripple, then it fades in a few seconds). A sob lets the welling drops go at once
+// and spills more; a sharp head shake flings them off. Mesh-agnostic: any SkinnedMesh with a head bone and the eye
+// points in its bind space.
 import * as THREE from 'three';
 import { tearAtlas, tearMaterial, CELL, F } from './sprites';
 
 const G = 9.81;
-const FREE = 0, DROP = 1, SPLASH = 2, PUDDLE = 3, SPOT = 4, POOL = 5;
+const FREE = 0, DROP = 1, SPLASH = 2, PUDDLE = 3, SPOT = 4, POOL = 5, WELL = 6;
 
 export interface TearSpriteOpts {
   /** the creature's skinned mesh */
@@ -40,32 +41,45 @@ export interface TearFrame {
   sim?: boolean;
 }
 
-const _m = new THREE.Matrix4(), _p = new THREE.Vector3(), _c = new THREE.Vector3(), _q = new THREE.Quaternion(), _s = new THREE.Vector3();
+const _m = new THREE.Matrix4(), _p = new THREE.Vector3();
 
 export class TearSprites {
   readonly mesh: THREE.Mesh;
-  /** tears per second from each eye; the owner sets it from the mood every frame */
+  /** tears per second from each eye (each one swells for 1/rate seconds, at most 3); set from the mood every frame */
   rate = 0;
   /** what has happened (tests) */
   readonly stats = { dropped: 0, flung: 0, splashed: 0, live: 0 };
   private readonly max: number; private readonly px: number;
-  private readonly src: THREE.Vector3[]; private readonly head: number; private readonly skin: THREE.SkinnedMesh;
+  /** the sources on the skin (bind pose), and the skin's outward normal there */
+  private readonly src: THREE.Vector3[]; private readonly srcN: THREE.Vector3[]; private readonly head: number; private readonly skin: THREE.SkinnedMesh;
   private kind: Uint8Array; private P: Float32Array; private V: Float32Array; private age: Float32Array; private life: Float32Array; private size: Float32Array; private frame: Float32Array;
   private aPS: THREE.InstancedBufferAttribute; private aFA: THREE.InstancedBufferAttribute;
-  /** the eyes this frame and last, and the mesh's own origin (to tell a head shake from walking along) */
-  private eye: Float32Array; private eyeWas: Float32Array; private org = new THREE.Vector3(); private orgWas = new THREE.Vector3();
-  private acc: Float32Array; private flingT: Float32Array; private fresh = true;
+  /** the eyes this frame and last (and the skin's normal there), and the mesh's own origin (to tell a head shake from
+   *  walking along) */
+  private eye: Float32Array; private eyeWas: Float32Array; private eyeN: Float32Array; private org = new THREE.Vector3(); private orgWas = new THREE.Vector3();
+  private well: Int16Array; private flingT: Float32Array; private fresh = true;
   private mat: THREE.ShaderMaterial;
   constructor(o: TearSpriteOpts) {
-    this.max = o.max ?? 96; this.px = o.px ?? 0.0022;
-    this.skin = o.mesh; this.src = o.sources.map((v) => v.clone());
+    this.max = o.max ?? 96; this.px = o.px ?? 0.0026;
+    this.skin = o.mesh;
+    // each source settles onto the skin: the nearest vertex, a few millimetres out along its normal (so the drop sits on
+    // the skin, not inside a puffy lid)
+    const pos = o.mesh.geometry.attributes.position, nrm = o.mesh.geometry.attributes.normal;
+    this.srcN = o.sources.map(() => new THREE.Vector3(0, 0, 1));
+    this.src = o.sources.map((v, k) => {
+      let best = -1, bd = Infinity;
+      for (let i = 0; i < pos.count; i++) { const d = (pos.getX(i) - v.x) ** 2 + (pos.getY(i) - v.y) ** 2 + (pos.getZ(i) - v.z) ** 2; if (d < bd) { bd = d; best = i; } }
+      if (best < 0 || !nrm || bd > 0.03 * 0.03) return v.clone();
+      this.srcN[k].set(nrm.getX(best), nrm.getY(best), nrm.getZ(best)).normalize();
+      return new THREE.Vector3(pos.getX(best), pos.getY(best), pos.getZ(best)).addScaledVector(this.srcN[k], 0.005);
+    });
     const bones = o.mesh.skeleton.bones, h = o.head ?? 'head';
     this.head = typeof h === 'number' ? h : Math.max(0, bones.findIndex((b) => b.name === h));
     const n = this.max;
     this.kind = new Uint8Array(n); this.P = new Float32Array(n * 3); this.V = new Float32Array(n * 3);
     this.age = new Float32Array(n); this.life = new Float32Array(n); this.size = new Float32Array(n); this.frame = new Float32Array(n);
-    this.eye = new Float32Array(this.src.length * 3); this.eyeWas = new Float32Array(this.src.length * 3);
-    this.acc = new Float32Array(this.src.length); this.flingT = new Float32Array(this.src.length);
+    this.eye = new Float32Array(this.src.length * 3); this.eyeWas = new Float32Array(this.src.length * 3); this.eyeN = new Float32Array(this.src.length * 3);
+    this.well = new Int16Array(this.src.length).fill(-1); this.flingT = new Float32Array(this.src.length);
     const geo = new THREE.InstancedBufferGeometry();
     const quad = new THREE.PlaneGeometry(1, 1);
     geo.index = quad.index; geo.setAttribute('position', quad.attributes.position);
@@ -91,21 +105,26 @@ export class TearSprites {
     this.kind[i] = k; this.age[i] = 0; this.life[i] = life; this.size[i] = size; this.frame[i] = frame;
     this.P[i * 3] = x; this.P[i * 3 + 1] = y; this.P[i * 3 + 2] = z; this.V[i * 3] = vx; this.V[i * 3 + 1] = vy; this.V[i * 3 + 2] = vz;
   }
-  /** a drop leaves eye e: a small kick outward from the face (and down a little), plus the face's own motion */
-  private drop(e: number, dt: number, fling = 0) {
-    const i = this.alloc(); if (i < 0) return;
-    const o = e * 3, ex = this.eye[o], ey = this.eye[o + 1], ez = this.eye[o + 2];
-    // outward: away from the head bone, level
-    let ox = ex - _c.x, oz = ez - _c.z; const l = Math.hypot(ox, oz) || 1; ox /= l; oz /= l;
-    const k = 0.08 + Math.random() * 0.16, idt = dt > 0 ? 1 / dt : 0;
-    const fx = (ex - this.eyeWas[o]) * idt, fy = (ey - this.eyeWas[o + 1]) * idt, fz = (ez - this.eyeWas[o + 2]) * idt;
-    const sx = Math.random() - 0.5, sz = Math.random() - 0.5;
-    const big = fling ? Math.floor(Math.random() * 2) : 1 + Math.floor(Math.random() * 3);
-    this.put(i, DROP, ex, ey, ez, ox * k + sx * 0.05 + fx * (fling ? 1.15 : 1), -0.05 + Math.random() * 0.12 + fy, oz * k + sz * 0.05 + fz * (fling ? 1.15 : 1), CELL * this.px, F.drop + big, 6);
+  /** where a drop sits in the corner of eye e (on the skin) */
+  private corner(e: number, out: THREE.Vector3) { return out.set(this.eye[e * 3], this.eye[e * 3 + 1], this.eye[e * 3 + 2]); }
+  /** a drop leaves eye e: a small kick outward from the face (and down a little), plus the face's own motion. `i` is
+   *  the drop that welled there, or -1 for a new one (a sob spilling more, a fling) */
+  private launch(i: number, e: number, dt: number, fling = 0) {
+    if (i < 0) { i = this.alloc(); if (i < 0) return; this.frame[i] = F.drop + (fling ? Math.floor(Math.random() * 2) : 1 + Math.floor(Math.random() * 3)); }
+    if (this.well[e] === i) this.well[e] = -1;
+    const o = e * 3, p = this.corner(e, _p);
+    // outward: off the skin, level
+    let ox = this.eyeN[o], oz = this.eyeN[o + 2]; const l = Math.hypot(ox, oz) || 1; ox /= l; oz /= l;
+    const k = 0.08 + Math.random() * 0.16, idt = dt > 0 ? 1 / dt : 0, f = fling ? 1.15 : 1;
+    const fx = (this.eye[o] - this.eyeWas[o]) * idt, fy = (this.eye[o + 1] - this.eyeWas[o + 1]) * idt, fz = (this.eye[o + 2] - this.eyeWas[o + 2]) * idt;
+    this.put(i, DROP, p.x, p.y, p.z, ox * k + (Math.random() - 0.5) * 0.05 + fx * f, -0.05 + Math.random() * 0.12 + fy, oz * k + (Math.random() - 0.5) * 0.05 + fz * f, CELL * this.px, this.frame[i], 6);
     if (fling) this.stats.flung++; else this.stats.dropped++;
   }
-  /** a burst of sobbing: n drops from each eye now */
-  sob(n = 2) { if (this.fresh) return; for (let e = 0; e < this.src.length; e++) for (let k = 0; k < n; k++) this.drop(e, 0); }
+  /** a sob: the welling drops let go at once and n more spill from each eye */
+  sob(n = 2) {
+    if (this.fresh) return;
+    for (let e = 0; e < this.src.length; e++) { if (this.well[e] >= 0) this.launch(this.well[e], e, 0); for (let k = 0; k < n; k++) this.launch(-1, e, 0); }
+  }
   /** a creature melting where it stands: a spray of drops from all over it and a pool that grows and then fades */
   dissolve(at: THREE.Vector3, heightAt: (x: number, z: number) => number, n = 26) {
     for (let k = 0; k < n; k++) {
@@ -126,10 +145,16 @@ export class TearSprites {
   update(f: TearFrame) {
     const dt = Math.min(0.1, Math.max(0, f.dt));
     this.mat.uniforms.uLight.value = f.light ?? 1; this.mat.uniforms.uGlint.value = f.glint ?? 0;
-    if (f.sim !== false) this.eyes(dt); else this.fresh = true;
+    if (f.sim !== false) this.eyes(dt);
+    else if (!this.fresh) {
+      // nobody near: the drops in the eyes go, and the eyes are found afresh next time
+      this.fresh = true;
+      for (let e = 0; e < this.well.length; e++) { if (this.well[e] >= 0) this.kind[this.well[e]] = FREE; this.well[e] = -1; }
+    }
     for (let i = 0; i < this.max; i++) {
       const k = this.kind[i]; if (k === FREE) continue;
       this.age[i] += dt;
+      if (k === WELL) continue;
       if (this.age[i] > this.life[i]) {
         // a splash leaves a small puddle that ripples once and fades
         if (k === SPLASH) this.put(i, PUDDLE, this.P[i * 3], this.P[i * 3 + 1] + 0.004, this.P[i * 3 + 2], 0, 0, 0, this.size[i] * 0.8, F.ripple, 3.2 + Math.random());
@@ -157,26 +182,37 @@ export class TearSprites {
     // the head bone's skinning to world, as the GPU does it
     _mm.multiplyMatrices(sk.matrixWorld, sk.bindMatrixInverse);
     _m.multiplyMatrices(bone.matrixWorld, sk.skeleton.boneInverses[this.head]).multiply(sk.bindMatrix).premultiply(_mm);
-    bone.matrixWorld.decompose(_c, _q, _s);
     this.orgWas.copy(this.org); this.org.setFromMatrixPosition(sk.matrixWorld);
     for (let e = 0; e < this.src.length; e++) {
       const o = e * 3;
       this.eyeWas[o] = this.eye[o]; this.eyeWas[o + 1] = this.eye[o + 1]; this.eyeWas[o + 2] = this.eye[o + 2];
       _p.copy(this.src[e]).applyMatrix4(_m);
       this.eye[o] = _p.x; this.eye[o + 1] = _p.y; this.eye[o + 2] = _p.z;
+      _p.copy(this.srcN[e]).transformDirection(_m);
+      this.eyeN[o] = _p.x; this.eyeN[o + 1] = _p.y; this.eyeN[o + 2] = _p.z;
     }
     if (this.fresh) { this.fresh = false; this.eyeWas.set(this.eye); this.orgWas.copy(this.org); return; }
     if (dt <= 0) return;
     for (let e = 0; e < this.src.length; e++) {
       const o = e * 3;
-      // the steady weeping
-      this.acc[e] += this.rate * dt * (e ? 0.9 : 1.1);
-      while (this.acc[e] >= 1) { this.acc[e] -= 1; this.drop(e, dt); }
+      // the steady weeping: a drop swells in the corner (growing through the droplet frames), then lets go
+      let w = this.well[e];
+      if (w >= 0 && this.kind[w] !== WELL) w = this.well[e] = -1;
+      if (w < 0 && this.rate > 0) {
+        w = this.alloc();
+        if (w >= 0) { this.well[e] = w; this.corner(e, _p); this.put(w, WELL, _p.x, _p.y, _p.z, 0, 0, 0, CELL * this.px, F.drop, Math.min(3, 1 / this.rate) * (e ? 0.9 : 1.1)); }
+      }
+      if (w >= 0) {
+        this.corner(e, _p); this.P[w * 3] = _p.x; this.P[w * 3 + 1] = _p.y; this.P[w * 3 + 2] = _p.z;
+        this.frame[w] = F.drop + Math.min(3, Math.floor((this.age[w] / this.life[w]) * 4));
+        if (this.rate <= 0 && this.age[w] > 2) { this.kind[w] = FREE; this.well[e] = -1; }
+        else if (this.age[w] >= this.life[w] && this.rate > 0) this.launch(w, e, dt);
+      }
       // the eye's speed against the body's: a head shake (not walking along) throws drops off
       const vx = (this.eye[o] - this.eyeWas[o] - (this.org.x - this.orgWas.x)) / dt, vy = (this.eye[o + 1] - this.eyeWas[o + 1] - (this.org.y - this.orgWas.y)) / dt, vz = (this.eye[o + 2] - this.eyeWas[o + 2] - (this.org.z - this.orgWas.z)) / dt;
       const v = Math.hypot(vx, vy, vz);
       this.flingT[e] -= dt;
-      if (v > 0.9 && this.flingT[e] <= 0 && Math.random() < (v - 0.9) * 0.6) { this.flingT[e] = 0.07; this.drop(e, dt, 1); }
+      if (v > 0.9 && this.flingT[e] <= 0 && Math.random() < (v - 0.9) * 0.6) { this.flingT[e] = 0.07; this.launch(this.well[e], e, dt, 1); }
     }
   }
   private draw() {
@@ -186,7 +222,7 @@ export class TearSprites {
       const k = this.kind[i]; if (k === FREE) continue;
       const a = this.age[i], L = this.life[i], o = i * 3;
       let fr = this.frame[i], al = 1, flat = 0, span = 1, size = this.size[i], y = this.P[o + 1];
-      if (k === DROP) { /* as drawn */ }
+      if (k === DROP || k === WELL) { /* as drawn */ }
       else if (k === SPLASH) { fr = F.splash + Math.min(3, Math.floor((a / L) * 4)); y += size * 0.5; }
       else if (k === PUDDLE) { flat = 1; fr = a < 0.36 ? F.ripple + Math.floor(a / 0.12) : F.puddle; al = 1 - smooth(L - 1.6, L, a); }
       else if (k === SPOT) { flat = 1; al = 0.9 * (1 - smooth(L * 0.6, L, a)); }

@@ -243,7 +243,7 @@ CHAINS.push(
         nag: ['Two trout.', 'Trout. Two.'],
         done: (g) => (g.inv.items.get('fish') ?? 0) >= 2,
         take: (g) => g.take('fish', 2),
-        thanks: ['Good fish.', 'Ray\'s line starts at the split birch, here. He thinks I don\'t know he hasn\'t caught anything since \'89. I know.', 'Thirty dollars. Buy jerky.'],
+        thanks: ['Good fish.', 'Ray\'s line starts at the split rock. Here. He thinks I don\'t know he hasn\'t caught anything since \'89. I know.', 'Thirty dollars. Buy jerky.'],
         reward: (g) => pay(g, 30),
       },
       {

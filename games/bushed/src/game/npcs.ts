@@ -32,6 +32,8 @@ export interface NpcDef {
 export const npcTalkHooks: ((g: Game, n: Npc) => string | string[] | null)[] = [];
 /** everybody, by id */
 export const NPCS = new Map<string, Npc>();
+/** no overheard chatter near this point (a tale is being told) */
+export const chatter: { quietAt: THREE.Vector3 | null } = { quietAt: null };
 
 /** ground point (feet) */
 export const P = (x: number, z: number, dy = 0) => new THREE.Vector3(x, heightAt(x, z) + dy, z);
@@ -168,7 +170,7 @@ export class Npc {
     m.anim.lookAt(dist < 6 ? g.camera.position : null);
     if (this.talkT > 0) { this.talkT -= dt; if (this.talkT <= 0) m.anim.talking = false; }
     // overheard lines
-    if (this.def.ambient && dist < 9 && !this.busy) {
+    if (this.def.ambient && dist < 9 && !this.busy && !(chatter.quietAt && root.position.distanceTo(chatter.quietAt) < 14)) {
       this.ambientT -= dt;
       if (this.ambientT <= 0 && !hud.speaking) {
         this.ambientT = 22 + Math.random() * 25;

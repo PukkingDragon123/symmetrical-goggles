@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import type { Game } from '../game';
 import type { Block } from '../../ui/paper';
 import { SPOTS } from '../../world/layout';
-import { NPCS, type Npc } from '../npcs';
+import { NPCS, chatter, type Npc } from '../npcs';
 import { registerInteractable } from '../interact';
 import { has, set, num, setNum, think, noted, setBookPages, storyDirty, cleanStory } from './kit';
 import { LETTERS, PAGES } from './text';
@@ -103,6 +103,8 @@ export class Campfire {
   start(tale: Tale, npc: Npc): void {
     this.telling = { tale, npc };
     npc.hush();
+    const cs = SPOTS.campsite;
+    chatter.quietAt = new THREE.Vector3(cs.x, npc.model.root.position.y, cs.z);
     think(`${npc.name} leans in to the fire. "${tale.title}."`, 3.5);
     setTimeout(() => { if (this.telling?.npc === npc) npc.say(tale.lines, 1.0); }, 2600);
   }
@@ -116,7 +118,7 @@ export class Campfire {
     const nightId = g.hour < 12 ? g.day - 1 : g.day;
     if (this.telling) {
       const { tale, npc } = this.telling;
-      if (d > 18) { npc.hush(); this.telling = null; return; }
+      if (d > 18) { npc.hush(); this.telling = null; chatter.quietAt = null; return; }
       if (!npc.busy && this.telling.npc.model) {
         // a beat after the last line
         if (!has(g, `tale:${tale.id}`)) {
@@ -126,6 +128,7 @@ export class Campfire {
           noted(g, `Told at the fire: "${tale.title}".`);
         }
         this.telling = null;
+        chatter.quietAt = null;
       }
       return;
     }
