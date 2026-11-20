@@ -164,9 +164,9 @@ const bodyPaint = (part: 'trunk' | 'arm' | 'leg') => brush({
     let R = HIDE, st = 2.5 + (hair > 0.3 ? -0.4 : 0);
     if (part === 'trunk') {
       const rb = ribAt(x, y, z);
-      if (rb.w > 0.2) { const k = rb.f + s.sv * 0.04; if (k > 0.3 && k < 0.5) st += 0.75 * rb.w; else if (k > 0.64 && k < 0.88) { st -= 0.8 * rb.w; if (rb.w > 0.6 && s.sid < 0.12) R = BRUISE; } }
+      if (rb.w > 0.2) { const k = rb.f + s.sv * 0.04; if (k > 0.3 && k < 0.5) st += 0.75 * rb.w; else if (k > 0.64 && k < 0.88) { st -= 0.8 * rb.w; } }
     }
-    if (s.sid < 0.04 && ny < 0.3) { R = BRUISE; st = 2.0; }
+    if (s.sid < 0.03 && ny < 0.3) { R = BRUISE; st = 1.4; }
     px.put(i, R, st); px.rough[i] = 175;
     return 0;
   },
@@ -198,7 +198,7 @@ function facePaint(part: 'skull' | 'jaw' | 'ear') {
       if (part === 'skull' && rho < 0.03 && a < 0.03) {
         if (rho < 0.023 || a < 0.014) { R = rho < 0.019 ? INK : DARK; st = rho < 0.019 ? 0.5 : 1.2; }
         else { R = HIDE; st = 1.4 + s.sv * 0.5; }
-      } else if (part === 'skull' && y < SOCK[1] - 0.02 && y > -0.035 && Math.abs(z - (SOCK[2] + 0.004 + (SOCK[1] - y) * 0.15)) < 0.0055 + s.sv * 0.002 && ax > 0.035) { R = HIDE; st = 1.8; }
+      } else if (part === 'skull' && y < SOCK[1] - 0.02 && y > -0.035 && Math.abs(z - (SOCK[2] + 0.004 + (SOCK[1] - y) * 0.15)) < 0.0055 + s.sv * 0.002 && ax > 0.035) { R = FACE; st = 1.6; }
       // the nasal pit: an upturned heart of black on the snout's front, rimmed with a pale lip of bone
       if (part === 'skull' && z > 0.13 && nz > 0.15) {
         const hy = y - 0.004, lobe = Math.min(Math.hypot(ax - 0.0055, hy - 0.004), 99), tri = ax < (hy + 0.016) * 0.42 && hy < 0.006 && hy > -0.016;

@@ -16,7 +16,7 @@
 // hang it by the talons (DB.grip).
 import * as THREE from 'three';
 import {
-  Body, runSync, runAsync, trunk, eyeball, locks, stalk, horn, fin, curve, chainSkin, gridSurf, Px, RP, cell3, h3, cl, newCM, tube,
+  Body, runSync, runAsync, trunk, eyeball, locks, stalk, horn, fin, spine, curve, chainSkin, gridSurf, Px, RP, cell3, h3, cl, newCM, tube,
   type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type Ring,
 } from '../anatomy';
 import { fbm3 } from '../paintkit';
@@ -77,7 +77,7 @@ export function dingbatBones(): BoneDef[] {
 
 // ------------------------------------------------------------------------------------------------ colour
 const FUR = RP('fur'), BONE = RP('bone'), SOIL = RP('soil'), INK = RP('ink'), STONE = RP('stone'), LEA = RP('leather'), HORN = RP('horn');
-const FLESH = RP('flesh'), BLOOD = RP('blood'), CORAL = RP('coral'), GOLD = RP('gold'), OCHRE = RP('ochre'), HIDE = RP('hide');
+const GUM = RP('gum'), FLESH = RP('flesh'), BLOOD = RP('blood'), CORAL = RP('coral'), GOLD = RP('gold'), OCHRE = RP('ochre'), HIDE = RP('hide');
 
 /** plumage over the body and the back of the head: shingled contour feathers, tawny with dark bars on the back,
  *  pale streaked buff on the belly */
@@ -137,10 +137,13 @@ function headPaint() {
       // throat at the back (drawn straight to colour: the closed mouth's ambient occlusion would bury it in black)
       if (ny < -0.6 && y < -0.018) {
         zone[i] = 4;
-        const back = cl((DB.hd - z) / (DB.hd * 2), 0, 1);
-        const ridge = Math.abs(Math.sin(z * 520)) < 0.25 && ax < 0.032;
-        const s = Math.round(cl(4.6 - back * 3.4 + (ridge ? 1 : 0) - (ax > 0.032 ? 1 : 0) + m * 0.5, 0, 5));
-        px.over[i] = ax > 0.039 && z > -0.02 ? INK[1] : back > 0.7 ? BLOOD[Math.min(4, s + 1)] : FLESH[s]; px.rough[i] = 130;
+        // the palate: wet gum, a few soft ridges across it, going dark into the throat at the back; outside the
+        // narrow jaw's reach the lip's dark skin
+        const back = cl((DB.hd * 0.9 - z) / (DB.hd * 1.7), 0, 1), w0 = 0.03 - back * 0.006;
+        if (ax > w0 + 0.004) { px.put(i, LEA, 2 + m * 0.4); px.rough[i] = 150; continue; }
+        if (ax > w0) { px.put(i, INK, 1); px.rough[i] = 90; continue; }
+        const rug = Math.abs(Math.sin(z * 330 + ax * 60)) < 0.18 && back < 0.6;
+        px.put(i, back > 0.72 ? INK : GUM, back > 0.72 ? 0.6 + (1 - back) * 2 : 3.6 - back * 2.6 + (rug ? 0.7 : 0) + m * 0.3); px.rough[i] = 60;
         continue;
       }
       const w = where(x, y, z, nz); zone[i] = w;
@@ -212,37 +215,46 @@ function lidPaint(L: LidSpec) {
     px.flush();
   };
 }
-/** the lower jaw: feathered pale chin outside; inside the scoop a red tongue in a dark wet throat, lips edged black,
- *  a row of tiny needle teeth along the rim */
+/** the lower jaw's stations: z, half width, half height, centre y (the lip at y + h, the mouth floor at y + 0.15 h) */
+const JAW: [number, number, number, number][] = [[0.06, 0.02, 0.008, 0.002], [0.074, 0.029, 0.011, 0.0], [0.094, 0.034, 0.0125, -0.002], [0.113, 0.033, 0.012, -0.002], [0.13, 0.027, 0.0105, -0.0005], [0.142, 0.016, 0.0075, 0.001], [0.149, 0.006, 0.004, 0.002]];
+const jawAt = (z: number): [number, number, number] => {
+  let k = 0; while (k + 2 < JAW.length && z > JAW[k + 1][0]) k++;
+  const A = JAW[k], B = JAW[k + 1], t = cl((z - A[0]) / (B[0] - A[0]), 0, 1);
+  return [A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t, A[3] + (B[3] - A[3]) * t];
+};
+/** the lower jaw: buff feathers on the chin, the lips a dark rim, inside wet dark gum going black into the throat */
 function jawPaint(ch: Chart, _p: Piece, b: Body) {
-  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt;
+  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
   px.lightK = 0.6;
-  const H = DB.hc;
+  const st = strokes(px, { flow: alongFlow([0, -0.3, -1]), len: [2, 5], width: [1.5, 2.5], amp: 0.6, density: 0.8, seed: 15, apply: false });
+  const inside = new Uint8Array(px.n);
   for (let i = 0; i < px.n; i++) {
-    const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ax = Math.abs(x), ny = N[i * 3 + 1];
-    const top = y > DB.hinge[1] - 0.004 && ny > -0.2, rim = y > DB.hinge[1] + 0.001;
-    if (top && !rim && ny > 0.3) {
-      // the mouth floor: the tongue down the middle, dark sides, the throat at the back
-      const back = cl((H[2] + DB.hd - z) / 0.07, 0, 1);
-      const tongue = ax < 0.016 * (1 - back * 0.4) && back < 0.75, m = fbm3(x * 200, y * 200, z * 200, 2);
-      const st = Math.round(cl((tongue ? 5 - back * 1.6 - (ax > 0.012 ? 1 : 0) : 3.6 - back * 3) + m * 0.6, 0, 5));
-      px.over[i] = !tongue && back > 0.6 ? BLOOD[Math.min(4, st + 1)] : FLESH[st]; px.rough[i] = 120;
-      continue;
+    const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ax = Math.abs(x), ny = N[i * 3 + 1], inw = -N[i * 3] * Math.sign(x || 1);
+    const [w, h, yc] = jawAt(z), back = cl((0.1 - z) / 0.045, 0, 1), m = fbm3(x * 90, y * 90, z * 90, 2) * 0.4;
+    if (z < 0.064 && N[i * 3 + 2] < -0.5) { px.put(i, INK, 0.5); px.rough[i] = 80; inside[i] = 1; continue; } // the throat
+    if (y > yc + h * 0.82) { px.put(i, INK, 1.2 + (ny > 0.6 ? 0.6 : 0)); px.rough[i] = 90; continue; } // the lip
+    if (y > yc + h * 0.05 && (ny > 0.3 || (inw > 0.25 && ax < w * 0.92))) {
+      inside[i] = 1;
+      px.put(i, back > 0.8 ? INK : GUM, back > 0.8 ? 0.8 : 3.2 - back * 2.2 + m); px.rough[i] = 55; continue;
     }
-    if (rim) {
-      // the lips: black edged, the teeth a row of pale points along the inner edge
-      const tooth = Math.abs(((x * 330) % 1 + 1) % 1 - 0.5) < 0.22 && ny > 0.4 && z > H[2] - 0.01;
-      px.put(i, tooth ? BONE : INK, tooth ? 4.6 : 1.4); px.rough[i] = tooth ? 70 : 110;
-      continue;
-    }
-    // outside: a pale margin under the lips, then the tawny barred feathers of the throat
-    const m = fbm3(x * 90, y * 90, z * 90, 2);
-    if (y > DB.hinge[1] - 0.008) px.put(i, BONE, 3.6 + m * 0.4);
-    else px.put(i, FUR, 2.4 + m * 0.6 - (Math.abs(Math.sin(z * 300 + ax * 80)) < 0.2 ? 0.9 : 0));
+    // outside: a pale chin and lip margin, tawny feathers under the jaw
+    if (y > yc - h * 0.2) px.put(i, BONE, 3.4 + st.v[i] * 0.6 + m);
+    else px.put(i, FUR, 2.5 + st.v[i] * 0.8 + m);
     px.rough[i] = 230;
   }
-  px.scales({ size: 0.005, kind: 'shield', flow: -1, ink: 1.2, lit: 0.6, mask: (i) => (P[i * 3 + 1] < DB.hinge[1] - 0.004 ? 1 : 0), seed: 13 });
-  void mpt; px.flush();
+  px.scales({ size: 0.005, kind: 'shield', flow: -1, ink: 1.0, lit: 0.6, mask: (i) => (inside[i] ? 0 : P[i * 3 + 1] < jawAt(P[i * 3 + 2])[2] ? 1 : 0), seed: 13 });
+  formLight(px, 0.5, { cavity: 0.6 });
+  px.flush();
+}
+/** the tongue: pink, a groove down its middle, the tip lighter, wet */
+function tonguePaint(ch: Chart, _p: Piece, b: Body) {
+  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
+  for (let i = 0; i < px.n; i++) {
+    const ax = Math.abs(P[i * 3]), z = P[i * 3 + 2], top = N[i * 3 + 1] > 0.3;
+    px.put(i, FLESH, (top ? 3.6 : 2.4) + (z > 0.12 ? 0.6 : 0) - (top && ax < 0.0012 ? 1.2 : 0) - (z < 0.085 ? 1.2 : 0)); px.rough[i] = 40;
+  }
+  formLight(px, 0.5);
+  px.flush();
 }
 /** the wing: coverts and barred flight feathers drawn over the arm and the inner wing, the hand's membrane bare dark
  *  leather with veins and fine wrinkles running to the finger tips; paler underneath */
@@ -340,13 +352,25 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
     body.add({ name: 'skull', m, grids: [g], levels: 0, skin: headSkin, paint: headPaint(), k: 2.3 } as Piece);
   }
   yield 'head';
-  // the jaw: a wide scoop under the palate, hinged at the back corners of the gape
-  const JP = [[0, 0.1], [0.42, 0.42], [0.8, 0.95], [1.0, 0.5], [0.98, -0.1], [0.86, -0.58], [0.62, -0.88], [0.32, -1.0], [0, -1.0]];
-  const jst = (z: number, w: number, h: number, y: number): Station => ({ c: [0, y, z], s: [w, h], p: JP });
+  // the jaw: a narrow mandible under the palate, hinged at the back corners of the gape: a U in section (the lips
+  // standing up either side of a hollow mouth floor), a rolled chin; a tongue in the floor; needle teeth along the
+  // lips above and below
+  const JU = [[0, 0.15], [0.42, 0.22], [0.66, 0.56], [0.8, 1.0], [0.97, 0.78], [1.0, 0.1], [0.86, -0.55], [0.5, -0.92], [0, -1.0]];
+  const JAWB = bi('jaw');
   body.add(trunk({
-    name: 'jaw', stations: [jst(0.058, 0.026, 0.01, 0.001), jst(0.072, 0.04, 0.0145, -0.001), jst(0.092, 0.0475, 0.0165, -0.0025), jst(0.112, 0.0455, 0.016, -0.0025), jst(0.13, 0.036, 0.013, -0.0005), jst(0.14, 0.022, 0.0085, 0.0015)],
-    tween: 0, capS: true, capE: true, levels: 1, k: 1.8, cols: [{ j: 2, a: 1, b: 5, s: 1.5, ink: true }], skin: () => [bi('jaw'), 1], paint: jawPaint,
+    name: 'jaw', stations: JAW.map(([z, w, h, y]) => ({ c: [0, y, z] as V3, s: [w, h] as [number, number], p: JU })),
+    tween: 0, capS: true, capE: true, levels: 1, k: 1.8, cols: [{ j: 3, a: 0, b: JAW.length - 1, s: 1.2, ink: true }], skin: () => [JAWB, 1], paint: jawPaint,
   }));
+  body.add(stalk({ name: 'tongue', path: curve([[0, 0.0005, 0.066], [0, 0.0014, 0.09], [0, 0.0018, 0.115], [0, 0.0016, 0.131]], 6), up: [0, 1, 0], r: (t) => 0.0105 * (1 - t * 0.45) * (t > 0.85 ? 1 - (t - 0.85) * 2.5 : 1), sec: (a) => 0.36 + 0.64 * Math.abs(Math.sin(a)), around: 8, capS: true, capE: true, levels: 1, k: 1.6, skin: () => [JAWB, 1], paint: tonguePaint }));
+  const tooth = (name: string, at: V3, dir: V3, len: number, r: number, bone: number) => body.add(spine({ name, at, dir, len, r, around: 4, levels: 0, k: 0.8, skin: () => [bone, 1], paint: flat(BONE, 4.4, 60) }));
+  for (const sd of [1, -1]) {
+    for (let k = 0; k < 5; k++) {
+      const z = 0.088 + k * 0.012, [w, h, yc] = jawAt(z);
+      tooth('toothJ', [sd * w * 0.78, yc + h * 0.9, z], [sd * 0.1, 1, 0.15], 0.0035 + (k === 4 ? 0.0012 : 0), 0.0011, JAWB);
+      const zu = 0.09 + k * 0.0115, wu = 0.029 - k * 0.002;
+      tooth('toothU', [sd * wu, H[1] - 0.0212, zu], [sd * 0.1, -1, 0.2], 0.0035 + (k === 4 ? 0.0022 : 0), 0.0011 + (k === 4 ? 0.0003 : 0), HEAD);
+    }
+  }
   // the nose leaf: a little spear of skin standing up off the nose pad
   {
     const np = headPt(DB_NOSE.h + 0.004, Math.PI, 1).p;
@@ -397,7 +421,7 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
     const roots = rays.map(([r]) => mir(r, s)), tips = rays.map(([, t]) => mir(t, s));
     body.add(fin({
       name: 'wing' + S, roots, dirs: roots.map((r, k) => nrm(sub(tips[k], r))), lens: roots.map((r, k) => len3(sub(tips[k], r))), side: roots.map(() => [0, 1, 0] as V3),
-      ray: 0.0014, web: 0.0008, scallop: 0.34, steps: 5, skin: (p) => ws(p), paint: wingPaint(s), levels: 1, k: 1,
+      ray: 0.0014, web: 0.0008, scallop: 0.34, steps: 7, skin: (p) => ws(p), paint: wingPaint(s), levels: 0, k: 1,
     }));
     // the arm along the leading edge: the upper arm's muscle, the elbow's knob, the forearm, the wrist
     body.add(stalk({ name: 'arm' + S, path: curve([mir([0.018, 0.012, 0.032], s), mir(DB.S, s), mir([0.062, 0.018, 0.026], s), mir(DB.E, s), mir([0.12, 0.017, 0.026], s), mir(DB.W, s), mir(add(DB.W, [0.016, 0, -0.006]), s)], 12), r: (t) => (0.0068 - t * 0.0038) * (1 + 0.25 * Math.exp(-(((t - 0.18) / 0.1) ** 2)) + 0.3 * Math.exp(-(((t - 0.45) / 0.04) ** 2)) + 0.35 * Math.exp(-(((t - 0.86) / 0.045) ** 2)) - 0.12 * Math.exp(-(((t - 0.66) / 0.1) ** 2))), around: 6, capS: true, levels: 1, k: 1, skin: ws, paint: plumage({ flow: 1, size: 0.006 }) }));

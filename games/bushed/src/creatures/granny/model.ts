@@ -14,8 +14,8 @@
 import * as THREE from 'three';
 import {
   Body, runSync, runAsync, limb, legRings, eyeball, locks, stalk, curve, chainSkin, addWeights, gridSurf, trunk, Px, RP, cell3, h3, cl,
-  newCM, tube, PROFILES,
-  type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing, type Ring,
+  newCM, tube, sheetGrid, PROFILES,
+  type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing, type Ring, type Grid,
 } from '../anatomy';
 import { nz2, nz3, fbm3 } from '../paintkit';
 import { cardPaint } from '../cards';
@@ -114,6 +114,11 @@ const SKIN = ['#2a2327', '#43383b', '#625453', '#83736d', '#a3928a', '#c1b2a6', 
 const SKINW = ['#2e2120', '#4c3530', '#704d44', '#93685a', '#b28675', '#caa48e', '#dec0a9', '#ecd7c2'].map(hex);
 /** where it is thin and cold: the sockets, the temples, under the jaw: grey-violet with a green undertone */
 const SKINC = ['#25242b', '#3a3843', '#55525d', '#716d77', '#8e8992', '#aba5aa', '#c6bfbf', '#dcd6d1'].map(hex);
+/** the face's ramps: ten gentle steps each (soft value changes): a warm parchment, a ruddy rose where the blood
+ *  shows, a cool grey-violet where the skin is thin */
+const FACE = ['#2c2022', '#453236', '#5f4748', '#7a5e5b', '#94766e', '#ad8e83', '#c4a697', '#d7bdab', '#e6d2c0', '#efe1d2'].map(hex);
+const FACEW = ['#301d1e', '#4e2e2d', '#6f433d', '#905a4f', '#ab7262', '#c38b77', '#d6a48d', '#e4bca5', '#eed2bd', '#f5e3d2'].map(hex);
+const FACEC = ['#211d27', '#352f3d', '#4b4454', '#625a6a', '#7a717f', '#928894', '#aa9fa8', '#bfb4b9', '#d2c8c9', '#e1d9d6'].map(hex);
 /** her robe: bark-cloth, near black-brown, a little red in the light */
 const CLOTH = ['#110d0c', '#1b1513', '#271e1a', '#352822', '#45342b', '#584336', '#6c5443'].map(hex);
 /** tamarack bark: red-brown under grey plates */
@@ -213,16 +218,16 @@ function lidPaint(L: LidSpec) {
     px.lightK = 0.45;
     for (let i = 0; i < px.n; i++) {
       const { s, off } = lidCoords(L, [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
-      let R = s < -0.75 ? SKINW : SKIN, st = 4.1;
+      let R = s < -0.75 ? FACEW : FACE, st = 4.4;
       if (!L.lower) {
         if (off < 0.06) { R = INK; st = 1.2 - (Math.abs(Math.sin(s * 23)) < 0.4 ? 0.6 : 0); } // the lash line
-        else if (off < 0.13) { R = SKINC; st = 3.4; }
-        else if (Math.abs(off - 0.5) < 0.07) { R = SKINC; st = 2.6; } // the fold
-        else st = 4.2 - (off < 0.4 ? 0.5 : 0);
+        else if (off < 0.13) { R = FACEC; st = 4.0; }
+        else if (Math.abs(off - 0.5) < 0.07) { R = FACEC; st = 3.4; } // the fold
+        else st = 5.0 - (off < 0.4 ? 0.6 : 0);
       } else {
-        if (off < 0.05) { R = SKINW; st = 4.4; } // the wet rim
-        else if (off < 0.1) { R = SKINC; st = 2.8; }
-        else st = 3.9 + (off > 0.35 ? 0.3 : 0);
+        if (off < 0.05) { R = FACEW; st = 5.4; } // the wet rim
+        else if (off < 0.1) { R = FACEC; st = 3.6; }
+        else st = 4.8 + (off > 0.35 ? 0.3 : 0);
       }
       px.put(i, R, st); px.rough[i] = !L.lower || off > 0.05 ? 170 : 60;
     }
@@ -255,13 +260,13 @@ function facePaint() {
       }
       // warm to cool
       const ex = ax - E.c[0], ey = y - E.c[1], ed = Math.hypot(ex, ey * 1.25);
-      let warm = 0.45 + 0.4 * g2(Math.hypot(ax, y + 0.036), 0, 0.016) + 0.3 * g2(Math.hypot(ax - 0.046, y + 0.026), 0, 0.016) + 0.22 * g2(Math.hypot(ax, y + 0.125), 0, 0.016)
+      let warm = 0.47 + 0.45 * g2(Math.hypot(ax, y + 0.034), 0, 0.02) + 0.42 * g2(Math.hypot(ax - 0.046, y + 0.028), 0, 0.022) + 0.25 * g2(Math.hypot(ax, y + 0.125), 0, 0.018) + 0.2 * g2(Math.hypot(ax - 0.08, y + 0.01), 0, 0.02)
         + 0.12 * g2(Math.hypot(ax, y - 0.06), 0, 0.02) - 0.42 * g2(ed, 0, 0.026) - 0.3 * g2(Math.hypot(ax - 0.074, y - 0.04), 0, 0.02)
         - 0.2 * g2(Math.hypot(ax, y - lipY(ax) - 0.01), 0, 0.016) * (ax < 0.035 ? 1 : 0) - 0.45 * ss(-0.3, -0.6, ny) * ss(-0.095, -0.115, y) + st.v[i] * 0.2 + m * 0.15;
       if (st.id[i] >= 0 && st.id[i] < 0.04 && warm > 0.45) warm += 0.3; // dabs of rose
-      let R = warm > 0.66 ? SKINW : warm < 0.3 ? SKINC : SKIN, s = 4.3 + m * 0.3 + st.v[i] * 0.45, rough = 170;
+      let R = warm > 0.6 ? SKINW : warm < 0.24 ? SKINC : SKIN, s = 4.3 + m * 0.3 + st.v[i] * 0.4, rough = 170;
       // the sockets: shadowed, never black; deepest at the inner corner
-      if (ed < 0.03) s -= (0.03 - ed) * 28 * (ex < 0 ? 1.15 : 0.85);
+      if (ed < 0.032) { s -= (0.032 - ed) * 34 * (ex < 0 ? 1.15 : 0.85); if (ed < 0.026) R = SKINC; }
       // bags under the eyes: lit on top, the tear trough dark under them
       const bag = Math.abs(y + 0.0165 - 0.0015 * Math.cos(ex * 90)) < mpt * 1.2 && ax > 0.022 && ax < 0.05;
       if (bag) { R = SKINC; s -= 0.9; }
@@ -303,13 +308,17 @@ function facePaint() {
       if (Math.hypot(x - 0.036, y - lipY(0.036) - 0.006) < 0.0021) { R = FUR; s = 1.6; }
       // the jaw's underside and the chin's shadow
       if (ny < -0.45) s -= 0.5;
-      px.put(i, R, s); px.rough[i] = rough;
+      // the skin ramps are drawn in their ten-step face versions (the same steps, scaled)
+      if (R === SKIN || R === SKINW || R === SKINC) { px.put(i, R === SKIN ? FACE : R === SKINW ? FACEW : FACEC, s * 1.24 + 0.15); } else px.put(i, R, s);
+      px.rough[i] = rough;
     }
     yield;
     // the face's rings are dense up and down and sparser across: soften the curvature terms (they band along rings)
-    formLight(px, 0.6, { cavity: 0.35, ridge: 0.25, crease: 1.0, ao: 1.4 });
+    // the form from the light and the occlusion only: the face's rings are dense up and down and sparse across, so
+    // the curvature terms band along them (the creases are drawn by hand above instead)
+    formLight(px, 0.45, { cavity: 0, ridge: 0, ao: 1.1, wrap: 0.8 });
     px.pelt({ len: 0.08, width: 0.007, flow: -1, down: 0.9, mask: (i) => hairM[i], tooth: 1.2, clump: 0.4, strands: 0.45 });
-    px.creaseInk(1.4, { dark: 0.8, lit: 0.4, mask: (i) => hairM[i] }); px.creaseInk(1.6, { dark: 0.8, lit: 0.3, mask: (i) => 1 - hairM[i] });
+    px.creaseInk(1.4, { dark: 0.8, lit: 0.4, mask: (i) => hairM[i] }); void K;
     yield;
     px.flush();
   };
@@ -364,12 +373,13 @@ function hairCards(tiles: number[][], steps: number[]) {
     for (let y = 0; y < r.h; y++) for (let x = 0; x < r.w; x++) {
       const v = Math.min(LOCK_VARIANTS - 1, Math.floor(x / TW)), row = Math.min(tiles.length - 1, Math.floor(y / TH)), R = tiles[row];
       const e = ((x - v * TW) / TW - 0.5) / 0.44, t = cl(((y - row * TH) / TH - 0.03) / 0.94, 0, 1);
-      const n = 6 + v, pxW = 1.6 / (TW * 0.88);
+      const n = 8 + v, pxW = 1.6 / (TW * 0.88);
       let hit = -1, edge = 0;
       for (let k = 0; k < n; k++) {
-        const s0 = ((k + 0.5) / n) * 1.7 - 0.85 + (h3(k, v, 81) - 0.5) * 0.18, len = 0.72 + 0.28 * h3(k, v, 82);
+        const s0 = ((k + 0.5) / n) * 1.7 - 0.85 + (h3(k, v, 81) - 0.5) * 0.12, len = 0.86 + 0.14 * h3(k, v, 82);
         if (t > len) continue;
-        const xk = s0 * (1 + t * 0.25) + Math.sin(t * (5 + k * 0.7) + k * 1.9 + v) * 0.05 * t, w = Math.max(pxW * 0.6, 0.075 * (1 - (t / len) * 0.55));
+        // the strands gather toward the lock's tip, waving gently together
+        const xk = s0 * (1 - t * 0.55) + Math.sin(t * 6 + v) * 0.06 * t + Math.sin(t * (9 + k)) * 0.015, w = Math.max(pxW * 0.6, 0.085 * (1 - (t / len) * 0.5));
         const d = Math.abs(e - xk); if (d < w) { hit = k; edge = d / w; }
       }
       if (hit < 0 || Math.abs(e) > 1 || t < 0.01) { r.set(x, y, R[0], 0); r.setSD(x, y, 0, 200, 0); continue; }
@@ -377,6 +387,63 @@ function hairCards(tiles: number[][], steps: number[]) {
       r.set(x, y, R[Math.round(cl(st, 0, R.length - 1))], 255); r.setSD(x, y, 0, 200, 0);
     }
   };
+}
+
+/** long hair that hangs: each lock a ribbon traced down from its root under gravity, step by step, pushed out of the
+ *  skull, the neck and the shawl (so it lies over them and slides off the shoulders), waving across its fall, tapering
+ *  to a point; all the locks share one atlas of strand tiles (like anatomy locks()) */
+function hangingHair(roots: { p: V3; n: V3; len: number; wid: number; col: number; seed: number }[], tiles: number[][], skin: (p: V3) => Wt): Piece {
+  const m = newCM(), grids: Grid[] = [], lockOf: { vari: number; col: number }[] = [], R = 7;
+  let maxL = 0, maxW = 0;
+  // the surfaces the hair lies on: the head (sculpted), then the robe, the neck and the moss over the shoulders
+  const outOf = (p: V3): { p: V3; n: V3 | null } => {
+    const H = GT.hg, rel = sub(p, H), h = rel[1];
+    if (h > -0.16 && h < 0.176) {
+      const x = Math.abs(rel[0]), z = rel[2] + 0.005, th = Math.atan2(x, -z), [X, Z] = headSurf(h, th), rr = Math.hypot(X, Z + 0.005) + 0.007, cur = Math.hypot(x, z);
+      if (cur < rr) { const k = rr / Math.max(1e-4, cur), q: V3 = [H[0] + rel[0] * k, p[1], H[2] - 0.005 + z * k]; return { p: q, n: nrm([rel[0], 0.25, z]) }; }
+    }
+    if (p[1] < 2.0 && p[1] > 1.3) {
+      const zc = -0.04, x = p[0], z = p[2] - zc, a0 = Math.atan2(Math.abs(x), -z), phi = x >= 0 ? a0 : Math.PI * 2 - a0;
+      const rp = robePt(p[1], phi), rr = Math.hypot(rp[0], rp[2] - zc) + 0.045, cur = Math.hypot(x, z);
+      if (cur < rr) { const k = rr / Math.max(1e-4, cur); return { p: [x * k, p[1], zc + z * k], n: nrm([x, 0.4, z]) }; }
+    }
+    return { p, n: null };
+  };
+  roots.forEach((r, k) => {
+    const seg = r.len / R, rows: V3[][] = [];
+    let p = r.p, d = nrm(add(scl(r.n, 0.7), [0, -0.5, 0])), sideV = nrm(crs(r.n, [0, -1, 0]));
+    if (Math.hypot(...(sideV as [number, number, number])) < 0.5) sideV = [1, 0, 0];
+    for (let i = 0; i <= R; i++) {
+      const t = i / R;
+      if (i > 0) {
+        d = nrm(add(scl(d, 0.55), [0, -0.75, 0]));
+        let q = add(p, scl(d, seg));
+        const o = outOf(q);
+        if (o.n) { q = o.p; const dn = d[0] * o.n[0] + d[1] * o.n[1] + d[2] * o.n[2]; if (dn < 0) d = nrm(sub(d, scl(o.n, dn))); }
+        p = q;
+      }
+      // across the lock: level, square to its fall; it waves across that
+      let across = nrm(sub(sideV, scl(d, sideV[0] * d[0] + sideV[1] * d[1] + sideV[2] * d[2])));
+      if (!isFinite(across[0])) across = [1, 0, 0];
+      const outN = nrm(crs(across, d)), wave = Math.sin(t * 7.5 + r.seed * 1.7) * r.wid * 0.9 * t;
+      const c = add(p, scl(across, wave));
+      const w = r.wid * (t < 0.12 ? 0.7 + t * 2.5 : 1 - ((t - 0.12) / 0.88) * 0.8);
+      rows.push([add(c, scl(across, -w)), add(c, scl(outN, r.wid * 0.22 * (1 - t))), add(c, scl(across, w))]);
+    }
+    grids.push(sheetGrid(m, rows, { tag: 0, out: () => r.n }));
+    lockOf.push({ vari: Math.floor(h3(k, 3, 13) * LOCK_VARIANTS), col: Math.min(tiles.length - 1, r.col) });
+    maxL = Math.max(maxL, r.len); maxW = Math.max(maxW, r.wid * 2);
+    void k;
+  });
+  const nT = tiles.length;
+  const charts = (p: Piece): Chart[] => {
+    const faces: number[] = []; for (const g of p.grids) for (const row of g.f) for (const f of row) faces.push(f);
+    const vIdx = new Map<number, [number, number, number]>();
+    p.grids.forEach((g, k) => { const Rr = g.v.length, C = g.v[0].length; g.v.forEach((row, i) => row.forEach((vi, j) => vIdx.set(vi, [k, i / (Rr - 1), j / (C - 1)]))); });
+    return [{ name: 'atlas', k: 1, faces, wm: maxW * LOCK_VARIANTS * 1.1, hm: maxL * nT * 1.05, wrap: false, grid: -1,
+      uv: (f, c) => { const [k, along, acr] = vIdx.get(p.m.F[f][c])!, L = lockOf[k]; return [(L.vari + 0.06 + acr * 0.88) / LOCK_VARIANTS, (L.col + 0.03 + along * 0.94) / nT]; } }];
+  };
+  return { name: 'hair', m, grids, levels: 0, cut: true, noOcc: true, reg: 2, k: 0.55, charts, skin, paint: () => undefined };
 }
 
 // ------------------------------------------------------------------------------------------------ the robe's drapery
@@ -670,25 +737,26 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   yield 'legs';
 
   // ---- hair, and the strips of her shawl
-  const hairSeats: LockSeat[] = [];
-  for (let k = 0; k < 380; k++) {
-    // over the back and sides of the scalp; the forehead and face clear, parted round the antlers
-    const h = -0.05 + h3(k, 1, 51) * 0.22, th = h3(k, 2, 51) * Math.PI, sd = h3(k, 7, 51) < 0.5 ? 1 : -1;
+  // her hair: long grey locks that hang under their own weight from the back and sides of the scalp, clumped and
+  // waving, lying over the skull, the neck and the moss of the shawl, tapering to points
+  const hairRoots: { p: V3; n: V3; len: number; wid: number; col: number; seed: number }[] = [];
+  for (let k = 0, made = 0; k < 400 && made < 52; k++) {
+    const h = -0.04 + h3(k, 1, 51) * 0.2, th = h3(k, 2, 51) * Math.PI, sd = h3(k, 7, 51) < 0.5 ? 1 : -1;
     const q = headPoint(h, th, sd), rel = sub(q.p, HG), side = Math.abs(rel[0]);
-    if (rel[2] > 0.025 && side < 0.074 && rel[1] < 0.085) continue;
-    if (rel[2] > 0.055 && side < 0.045) continue;
-    if (Math.hypot(side - ANTLER_ROOT[0], rel[1] - ANTLER_ROOT[1], rel[2] - ANTLER_ROOT[2]) < 0.03) continue;
-    // it falls from the scalp outward and back, then down
-    const rad = nrm([rel[0] + (rel[0] >= 0 ? 0.01 : -0.01), 0, rel[2] - 0.035]);
-    const crown = rel[1] > 0.1;
-    const dir = crown ? nrm([rad[0] * 0.6, -0.55, rad[2] * 0.5 - 0.15]) : nrm([rad[0] * 0.5, -1, rad[2] * 0.5 - 0.1]);
-    const temple = rel[2] > -0.01;
-    const len = (temple ? 0.34 : 0.5) + 0.18 * h3(k, 3, 51);
-    hairSeats.push({ p: sub(q.p, scl(q.n, 0.004)), n: q.n, dir, len: crown ? len * 0.8 : len, wid: 0.009 + 0.005 * h3(k, 4, 51), lift: crown ? 0.1 : 0.2, droop: crown ? 0.55 : 0.4, col: h3(k, 5, 51) < 0.25 ? 1 : h3(k, 6, 51) < 0.3 ? 2 : 0, w: headSkin(q.p) });
+    if (rel[2] > 0.02 && side < 0.076 && rel[1] < 0.09) continue;
+    if (rel[2] > 0.05 && side < 0.05) continue;
+    if (Math.hypot(side - ANTLER_ROOT[0], rel[1] - ANTLER_ROOT[1], rel[2] - ANTLER_ROOT[2]) < 0.032) continue;
+    made++;
+    // a clump: three locks from nearly the same place, the same fall, their own wave
+    const temple = rel[2] > -0.015, len = (temple ? 0.36 : 0.55) + 0.2 * h3(k, 3, 51), col = h3(k, 5, 51) < 0.25 ? 1 : h3(k, 6, 51) < 0.3 ? 2 : 0;
+    for (let c = 0; c < 3; c++) {
+      const off = add(scl([h3(k, 10 + c, 3) - 0.5, h3(k, 20 + c, 3) - 0.5, h3(k, 30 + c, 3) - 0.5], 0.012), [0, 0, 0]);
+      hairRoots.push({ p: add(sub(q.p, scl(q.n, 0.003)), off), n: q.n, len: len * (0.88 + 0.2 * h3(k, 40 + c, 3)), wid: 0.011 + 0.006 * h3(k, 50 + c, 3), col: c === 2 && col === 0 ? 1 : col, seed: k * 3 + c });
+    }
   }
   const hairTiles = [STONE, SNOW, STONE];
-  const hair = locks({ name: 'hair', seats: hairSeats, tiles: hairTiles, steps: [4, 3, 3], seed: 13 });
-  if (hair) { hair.paint = hairCards(hairTiles, [4, 3.4, 3]); hair.k = 0.5; body.add(hair); }
+  const hair = hangingHair(hairRoots, hairTiles, (p) => { const t = cl((p[1] - 1.88) / 0.17, 0, 1); return t >= 1 ? [HEAD, 1] : t <= 0 ? [bi('chest'), 0.8, bi('neck'), 0.2] : [HEAD, t, bi('neck'), (1 - t) * 0.6, bi('chest'), (1 - t) * 0.4]; });
+  hair.paint = hairCards(hairTiles, [4, 3.4, 3]); body.add(hair);
   const strip: LockSeat[] = [];
   const rg = robe.grids[0];
   const kindAt = (k: number, seed: number) => { const r = h3(k, 9, seed); return r < 0.34 ? 0 : r < 0.6 ? 1 : r < 0.84 ? 2 : 3; };
@@ -724,7 +792,7 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   if (beard) { beard.paint = cardPaint(['lichen', 'lichen'], lichenTiles, { steps: [4, 2.6], rough: 240 }); beard.k = 0.5; body.add(beard); }
   yield 'locks';
   void PLUM; void INK; void cell3; void FUR; void EYE; void HORN; void BARK;
-  const out = yield* body.buildGen({ den: o.den ?? 260, maxScale: 2, budget: 38500, fur: GRANNY_FUR });
+  const out = yield* body.buildGen({ den: o.den ?? 260, maxScale: 2, budget: 40000, fur: GRANNY_FUR });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
 }
