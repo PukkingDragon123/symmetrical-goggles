@@ -580,3 +580,44 @@ Required attribution (reproduce it wherever the game's credits are shown):
 * `jeep.glb`: This work is based on "Willys Jeep" (https://sketchfab.com/3d-models/willys-jeep-d6e73ec5537e49269ec92b8ab78230c2) by snjvsngh_negi (https://sketchfab.com/snjvsngh_negi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts, markings painted out).
 * `npc_pickup.glb`: This work is based on "1962 Willys Jeep Pick-Up" (https://sketchfab.com/3d-models/1962-willys-jeep-pick-up-43394652043a4387be183ef75d7af5a1) by LxNazarov (https://sketchfab.com/LxNazarov) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts).
 * `trailer.glb`: This work is based on "Trailer" (https://sketchfab.com/3d-models/trailer-5a53a60a27144183ab825f559ed73a80) by svartfilin (https://sketchfab.com/svartfilin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts).
+
+### Camp-story cryptids from Sketchfab (CC BY 4.0, attribution required)
+
+The sidehill gouger, hoop snake, splinter cat and goofus bird (`public/assets/models/creatures/cryptids/`), rebuilt by `tools/blender/cryptids4/*.py`: rebaked onto a game skeleton, rescaled, decimated or smoothed, textures merged into one atlas and recoloured, small bead eyes added, clips cut and renamed. The gouger is a kitbash (a doe with a goat's horns, its right legs shortened). Changes were made. Details in `ATTRIBUTION.json` there.
+
+| File | Source | Author | Licence |
+|---|---|---|---|
+| `gouger.glb` | [Realistic Animated Doe 3D Model](https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218) | [WildMesh 3D](https://sketchfab.com/WildMesh_3D) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `gouger.glb` (horns) | [Goat](https://sketchfab.com/3d-models/goat-5d7431517b634f4e9e8c0f3729cd9c59) | [GerardoA400](https://sketchfab.com/GerardoA400) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `hoopsnake.glb` | [Black Mamba - Rigged Snake, 6 Science Anims](https://sketchfab.com/3d-models/black-mamba-rigged-snake-6-science-anims-7427c67d7c954cb3a05c0830a8de8da6) | [Animal Animator](https://sketchfab.com/animalanimator) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `splintercat.glb` | [lynx](https://sketchfab.com/3d-models/lynx-aff6767399cf4daca1a82b43ccaa1252) | [Paleo Modelist](https://sketchfab.com/victory_) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `goofus.glb` | [Crow](https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) | [Alexei Ostapenko](https://sketchfab.com/alexanders823) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+
+Required attribution:
+
+* `gouger.glb`: This work is based on "Realistic Animated Doe 3D Model" (https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) and "Goat" (https://sketchfab.com/3d-models/goat-5d7431517b634f4e9e8c0f3729cd9c59) by GerardoA400 (https://sketchfab.com/GerardoA400), licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `hoopsnake.glb`: This work is based on "Black Mamba - Rigged Snake, 6 Science Anims" (https://sketchfab.com/3d-models/black-mamba-rigged-snake-6-science-anims-7427c67d7c954cb3a05c0830a8de8da6) by Animal Animator (https://sketchfab.com/animalanimator) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `splintercat.glb`: This work is based on "lynx" (https://sketchfab.com/3d-models/lynx-aff6767399cf4daca1a82b43ccaa1252) by Paleo Modelist (https://sketchfab.com/victory_) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `goofus.glb`: This work is based on "Crow" (https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) by Alexei Ostapenko (https://sketchfab.com/alexanders823) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+
+### Real animals from Sketchfab (CC BY 4.0, attribution required)
+
+The camp dog (the Axehandle Hound), the white-tailed deer and moose of the hunt, the red squirrel and the snowshoe hare (`public/assets/models/creatures/dog|deer|moose|squirrel|hare/`), rebuilt by `tools/blender/fauna/*.py`: rebaked onto game skeletons, rescaled, decimated, textures merged into one atlas and repainted where cel-shaded, eyes darkened to small beads, clips trimmed, renamed and (where missing) authored. Changes were made. Details in `ATTRIBUTION.json` in each folder.
+
+| File | Source | Author | Licence |
+|---|---|---|---|
+| `dog/dog.glb` | [Police Dog](https://sketchfab.com/3d-models/police-dog-414a3970c7674bc0bedbab32350f56b6) | [Chenchanchong](https://sketchfab.com/Chenchanchong) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `deer/doe.glb, deer/buck.glb` | [Realistic Animated Doe 3D Model](https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218) | [WildMesh 3D](https://sketchfab.com/WildMesh_3D) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `deer/buck.glb (antlers)` | [Deer Animated Cel Shading 3D Model](https://sketchfab.com/3d-models/deer-animated-cel-shading-3d-model-f798cc7ee1214ddcb3417329636c4433) | [WildMesh 3D](https://sketchfab.com/WildMesh_3D) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `moose/bull.glb, moose/cow.glb` | [Moose Animated Cel Shading 3D Model](https://sketchfab.com/3d-models/moose-animated-cel-shading-3d-model-33ce37106a24493ba4a6a6e2a9433bb6) | [WildMesh 3D](https://sketchfab.com/WildMesh_3D) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `squirrel/squirrel.glb` | [Realistic_squirrel_3d_model](https://sketchfab.com/3d-models/realistic-squirrel-3d-model-b492079385ff407ab68aa7f72c88f828) | [mgddeldeen9020](https://sketchfab.com/mgddeldeen9020) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `hare/hare.glb` | [Rabbit Rigged](https://sketchfab.com/3d-models/rabbit-rigged-e7213589744d436b9d96e2dbb31198a5) | [FourthGreen](https://sketchfab.com/FourthGreen) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+
+Required attribution:
+
+* `dog/dog.glb`: This work is based on "Police Dog" (https://sketchfab.com/3d-models/police-dog-414a3970c7674bc0bedbab32350f56b6) by Chenchanchong (https://sketchfab.com/Chenchanchong) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `deer/doe.glb, deer/buck.glb`: This work is based on "Realistic Animated Doe 3D Model" (https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `deer/buck.glb (antlers)`: This work is based on "Deer Animated Cel Shading 3D Model" (https://sketchfab.com/3d-models/deer-animated-cel-shading-3d-model-f798cc7ee1214ddcb3417329636c4433) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `moose/bull.glb, moose/cow.glb`: This work is based on "Moose Animated Cel Shading 3D Model" (https://sketchfab.com/3d-models/moose-animated-cel-shading-3d-model-33ce37106a24493ba4a6a6e2a9433bb6) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `squirrel/squirrel.glb`: This work is based on "Realistic_squirrel_3d_model" (https://sketchfab.com/3d-models/realistic-squirrel-3d-model-b492079385ff407ab68aa7f72c88f828) by mgddeldeen9020 (https://sketchfab.com/mgddeldeen9020) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `hare/hare.glb`: This work is based on "Rabbit Rigged" (https://sketchfab.com/3d-models/rabbit-rigged-e7213589744d436b9d96e2dbb31198a5) by FourthGreen (https://sketchfab.com/FourthGreen) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.

@@ -1,0 +1,13 @@
+[
+ {
+  "file": "dog.glb",
+  "title": "Police Dog",
+  "author": "Chenchanchong",
+  "author_url": "https://sketchfab.com/Chenchanchong",
+  "source": "https://sketchfab.com/3d-models/police-dog-414a3970c7674bc0bedbab32350f56b6",
+  "licence": "CC BY 4.0",
+  "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+  "changes": "Police vest removed; the 839-bone Rigify rig rebaked onto a 69-bone game skeleton; body decimated 55k -> 11k triangles; textures merged into one atlas with a roughness/eye-shine page; eyes darkened; rescaled; clips trimmed and renamed, more clips authored (beg, catch, chew, shake, howl, dig, lunge, flinch, wiggle). Built by games/bushed/tools/blender/fauna/dog.py",
+  "attribution": "This work is based on \"Police Dog\" (https://sketchfab.com/3d-models/police-dog-414a3970c7674bc0bedbab32350f56b6) by Chenchanchong (https://sketchfab.com/Chenchanchong) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED."
+ }
+]

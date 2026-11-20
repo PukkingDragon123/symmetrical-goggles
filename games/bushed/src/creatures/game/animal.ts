@@ -1,7 +1,11 @@
-// GAME ANIMALS: white-tailed deer and moose in the world. Model (model.ts), clips (clips.ts), shell fur
-// (src/creatures/fur), senses, behaviour and hit zones.
+// GAME ANIMALS: white-tailed deer and moose in the world. Real rigged, animated bodies (realbody.ts): a whitetail
+// doe and buck and a bull and cow moose, from WildMesh 3D's animated doe, stag and moose (Sketchfab, CC-BY 4.0),
+// rebuilt by tools/blender/fauna/cervids.py (public/assets/models/creatures/deer|moose/). Clips: idle, alert,
+// graze, walk, limp, trot, run, sprint, flinch, kick, death, dead, lie, bed, rise; a stomp, a snort and a bull's call
+// are layered on the alert stance here, with the head turned to the danger, ears swivelled and a deer's white flag.
+// Senses, behaviour and hit zones as before.
 //
-//   const deer = await GameAnimal.create('deer', true);     // a buck (models build once, cached in IndexedDB)
+//   const deer = await GameAnimal.create('deer', true);     // a buck (each model loads once, then is cloned)
 //   scene.add(deer.object); deer.place(x, z, heading);
 //   deer.update(ctx);                                          // every frame (HuntCtx below)
 //   const hit = deer.hitTest(a, b);                           // a bullet's path segment -> { zone, t, point } | null
@@ -11,21 +15,17 @@
 // the rifle (everything for 700 m). Sight: a wide field of view; movement is what it sees (a walking hunter at 70 m,
 // crouched and slow at 15, standing still only close up or with a light at night). Scent: downwind of the hunter
 // it smells you out to 120 m and is gone. Awareness builds and decays; herd members share it.
-// BEHAVIOUR. calm (graze, idle, walk on between patches), alert (head up, ears locked on, a stomp, a snort, the
-// white-tail's head bob), flee (a deer bounds off with its flag up; a moose trots away, crashing through), and a
-// bull moose in the rut that is crowded may bluff-charge. Shot: vitals (heart, lungs) run 30-80 m and fall; the
-// head, neck or spine drop it where it stands; a gut or flank shot runs far, beds down and dies slowly (or gets up
-// again if pushed); a leg limps off and may live. Every wound bleeds onto the ground (ctx.blood).
+// BEHAVIOUR. calm (graze, idle, walk on between patches), alert (head up, ears locked on, a stomp, a snort), flee
+// (a deer bounds off with its flag up; a moose trots away, crashing through), and a bull moose in the rut that is
+// crowded may bluff-charge. Shot: vitals (heart, lungs) run 30-80 m and fall; the head, neck or spine drop it where it
+// stands; a gut or flank shot runs far, beds down and dies slowly (or gets up again if pushed); a leg limps off and
+// may live. Every wound bleeds onto the ground (ctx.blood). Hit zones ride the skeleton's bones.
 import * as THREE from 'three';
-import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, type CreatureFx } from '../rig';
-import { Animator, FOOT, type AnimParams } from '../animator';
-import { cacheGet, cachePut, pack, unpack } from '../cache';
-import { furTextureFrom } from '../anatomy';
-import { addFur, type Fur } from '../fur';
-import { buildCervidAsync, CERVID_MODEL_VERSION, type CervidModel, type Species } from './model';
-import { cervidClips, CH_BLINK } from './clips';
+import { clamp, damp, dampAngle, wrapAngle } from '../rig';
+import type { Fur } from '../fur';
+import { RealBody, realAsset, AX, type RealAsset } from './realbody';
 
-export type { Species };
+export type Species = 'deer' | 'moose';
 export type AnimalState = 'calm' | 'alert' | 'flee' | 'charge' | 'wounded' | 'bedded' | 'dying' | 'dead';
 export type HitZone = 'heart' | 'lungs' | 'head' | 'neck' | 'spine' | 'gut' | 'flank' | 'haunch' | 'leg';
 
@@ -48,32 +48,51 @@ export interface HuntCtx {
   print?(x: number, z: number, heading: number, depth: number): void;
 }
 
+
 // ------------------------------------------------------------------------------------------------ models
+export interface CervidModel {
+  species: Species; male: boolean; asset: RealAsset; file: string;
+  /** withers height, nose-to-rump length, chest (vitals) height and z, head length, half the body's width, hoof radius */
+  dims: { withers: number; length: number; chestY: number; chestZ: number; headLen: number; width: number; hoofR: number };
+  tris: number;
+  /** texels per metre on the coat (test page) */
+  den: number;
+}
+export const CERVID_FILES: Record<string, string> = { deerM: 'deer/buck.glb', deerF: 'deer/doe.glb', mooseM: 'moose/bull.glb', mooseF: 'moose/cow.glb' };
+const SIZE: Record<string, { withers: number; width: number; den: number }> = {
+  deerM: { withers: 1.0, width: 0.19, den: 560 }, deerF: { withers: 0.9, width: 0.17, den: 560 },
+  mooseM: { withers: 1.85, width: 0.36, den: 380 }, mooseF: { withers: 1.72, width: 0.33, den: 380 },
+};
 const models = new Map<string, Promise<CervidModel>>();
-/** a species' model (built once in ~30 ms slices, then cached in IndexedDB) */
+/** a species' model (loaded once; every animal is a clone) */
 export function cervidModelAsync(species: Species, male: boolean, o: { cache?: boolean } = {}): Promise<CervidModel> {
-  const key = `${species}${male ? 'M' : 'F'}@${CERVID_MODEL_VERSION}`;
+  void o;
+  const key = species + (male ? 'M' : 'F');
   let p = models.get(key);
   if (!p) {
-    p = (async () => {
-      if (o.cache !== false) {
-        const c = await cacheGet(key);
-        if (c) {
-          const b = unpack(c), m = c.meta as Record<string, unknown>;
-          const fd = m.fur as Uint8Array | null;
-          return { ...b, species, male, bones: m.bones as CervidModel['bones'], tris: m.tris as number, den: m.den as number, furLen: m.furLen as number, dims: m.dims as CervidModel['dims'], fur: fd ? furTextureFrom(fd, c.W, c.H) : undefined };
-        }
-      }
-      const m = await buildCervidAsync(species, male);
-      if (o.cache !== false) {
-        const fd = m.fur ? new Uint8Array((m.fur.image as { data: Uint8Array }).data) : null;
-        cachePut(key, pack(m, { bones: m.bones, tris: m.tris, den: m.den, furLen: m.furLen, dims: m.dims, fur: fd })).catch(() => undefined);
-      }
-      return m;
-    })();
+    p = realAsset(CERVID_FILES[key], { shineCol: 0xe8f2c0, cull: 1.8 }).then((asset) => {
+      const z = SIZE[key], box = asset.box;
+      // the vitals: low in the chest just behind the elbow (the top of the foreleg)
+      const fl = restPos(asset, 'fl1L'), head = restPos(asset, 'head'), jaw = restPos(asset, 'jaw');
+      return {
+        species, male, asset, file: CERVID_FILES[key], tris: asset.tris, den: z.den,
+        dims: { withers: z.withers, length: box.max.z - box.min.z, chestY: z.withers * 0.6, chestZ: fl.z - z.withers * 0.06, headLen: head.distanceTo(jaw) * 2.2, width: z.width, hoofR: z.width * 0.2 },
+      };
+    });
     models.set(key, p);
   }
   return p;
+}
+/** a bone's rest position (model space) from the skin's bind matrices */
+function restPos(a: RealAsset, name: string): THREE.Vector3 {
+  let out = new THREE.Vector3();
+  a.scene.traverse((o) => {
+    const m = o as THREE.SkinnedMesh;
+    if (!m.isSkinnedMesh) return;
+    const i = m.skeleton.bones.findIndex((b) => b.name === name);
+    if (i >= 0) out = new THREE.Vector3().setFromMatrixPosition(new THREE.Matrix4().copy(m.skeleton.boneInverses[i]).invert());
+  });
+  return out;
 }
 
 // ------------------------------------------------------------------------------------------------ tuning
@@ -85,7 +104,7 @@ const KIND: Record<Species, Kind> = {
   deer: { walk: 1.0, trot: 3.2, flee: 10.5, stride: { walk: 0.95, trot: 1.5, bound: 3.4, gallop: 2.6 }, hear: 1, see: 1, smell: 1, flight: 1, blood: 1, mass: 70 },
   moose: { walk: 1.5, trot: 4.6, flee: 8.5, stride: { walk: 1.8, trot: 2.85, bound: 6.4, gallop: 4.9 }, hear: 0.8, see: 0.55, smell: 1.2, flight: 0.6, blood: 2.5, mass: 420 },
 };
-const _v = new THREE.Vector3(), _w = new THREE.Vector3(), _q = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _e = new THREE.Euler(), _t = new THREE.Vector3(), _pole = new THREE.Vector3();
+const _v = new THREE.Vector3(), _w = new THREE.Vector3(), _t = new THREE.Vector3();
 const _m = new THREE.Matrix4();
 
 /** a herd: members follow the leader and share their alarm */
@@ -100,13 +119,27 @@ export class Herd {
 
 interface Zone { name: HitZone; bone: number; a: THREE.Vector3; b: THREE.Vector3; r: number; pri: number }
 
+/** clip names the AI uses -> the model's clips; stomp, snort and call are layers on the alert stance */
+const ALIAS: Record<string, string> = { bound: 'sprint', gallop: 'run', stomp: 'alert', snort: 'alert', call: 'alert', limp_idle: 'alert' };
+const ONCE = new Set(['flinch', 'kick', 'death', 'lie', 'rise']);
+/** how long the layered one-shots last (s) */
+const LAYER: Record<string, number> = { stomp: 1.3, snort: 0.9, call: 2.6 };
+/** each gait's ground speed at playback rate 1 (m/s, from the clips' hoof travel) */
+const NATURAL: Record<Species, Record<string, number>> = {
+  deer: { walk: 1.4, limp: 1.0, trot: 2.3, run: 4.6, sprint: 5.8 },
+  moose: { walk: 2.0, limp: 1.5, trot: 3.6, run: 7.0, sprint: 9.2 },
+};
+const GAITS = new Set(['walk', 'limp', 'trot', 'run', 'sprint']);
+
 export class GameAnimal {
   readonly object = new THREE.Group();
+  readonly body: RealBody;
   readonly mesh: THREE.SkinnedMesh;
-  readonly skel: Skel;
-  readonly anim: Animator;
-  readonly fx: CreatureFx;
-  readonly fur: Fur | null;
+  readonly skel: { bones: THREE.Bone[] };
+  /** the clip driver: current (the AI's clip name), done (a one-shot finished), play(name, { restart }) */
+  readonly anim: { current: string; done: boolean; clips: Record<string, { loop: boolean }>; play: (name: string, o?: { restart?: boolean }) => void };
+  /** no shell fur on the real coats (kept for the hunt code, which turns raycasts off on it) */
+  readonly fur: Fur | null = null;
   readonly k: Kind;
   state: AnimalState = 'calm';
   /** 0 calm .. 1 bolting; where it thinks the danger is */
@@ -124,44 +157,41 @@ export class GameAnimal {
   /** time since it last moved its home patch; the patch it grazes round */
   readonly home = new THREE.Vector3();
   id = 0;
-  private params: AnimParams = { speed: 0, phase: 0, lookYaw: 0, lookPitch: 0, ear: 0, earYaw: 0, flag: 0, chew: 0 };
-  private legs: { up: number; lo: number; mid: number; foot: number; ankle: THREE.Vector3; mid0: THREE.Vector3; fore: boolean }[];
-  private bi: Record<string, number>;
+  private params = { lookYaw: 0, lookPitch: 0, ear: 0, earYaw: 0, flag: 0, chew: 0 };
   private zones: Zone[] = [];
-  private t = 0; private st = 0; private next = 0; private sub = ''; private blinkT = 2; private blink = 0;
+  private t = 0; private st = 0; private next = 0; private sub = '';
   private target = new THREE.Vector3(); private wantSpeed = 0; private gait = 'walk'; private hold: string | null = null;
   private fleeFrom = new THREE.Vector3(); private fleeLeft = 0; private dieAt = -1; private fallK = 0; private fallSide = 1;
   private bloodDist = 0; private lastPos = new THREE.Vector3(); private stepAcc = 0; private callT = 0;
-  private ground = new Float32Array(4);
-  private vel = new THREE.Vector3(); private prevRoot = new THREE.Vector3();
   private lookAt: THREE.Vector3 | null = null;
+  private oneShot: string | null = null; private layer = ''; private layerT = 0; private pitchG = 0;
+  private boneInv: THREE.Matrix4[];
 
   static async create(species: Species, male: boolean): Promise<GameAnimal> { return new GameAnimal(await cervidModelAsync(species, male)); }
 
   constructor(readonly model: CervidModel) {
     this.k = KIND[model.species];
-    this.skel = new Skel(model.bones);
-    const { mat, depth, fx } = creatureMaterial(model.tex, model.sd, { shineCol: 0xe8f2c0 });
-    this.fx = fx;
-    this.mesh = this.skel.mesh(model.geo, mat);
-    this.mesh.castShadow = true; this.mesh.receiveShadow = true; this.mesh.customDepthMaterial = depth;
-    this.mesh.frustumCulled = false;
-    this.object.add(this.mesh);
+    this.body = new RealBody(model.asset);
+    this.mesh = this.body.mesh;
+    this.skel = this.body.skel;
+    this.boneInv = this.mesh.skeleton.boneInverses;
+    this.object.add(this.body.object);
     this.object.name = model.species === 'deer' ? (model.male ? 'WhitetailBuck' : 'WhitetailDoe') : model.male ? 'BullMoose' : 'CowMoose';
-    this.anim = new Animator(cervidClips(this.skel.defs, model.species), this.skel.bones.length, 4);
-    this.anim.play('idle');
-    this.bi = this.skel.idx;
-    const S = this.skel, rw = S.restWorld;
-    this.legs = (['f', 'h'] as const).flatMap((pre) => (['L', 'R'] as const).map((s) => ({
-      up: S.i(pre + 'u' + s), lo: S.i(pre + 'l' + s), mid: S.i(pre + 'm' + s), foot: S.i(pre + 'f' + s),
-      ankle: rw[S.i(pre + 'f' + s)].clone(), mid0: rw[S.i(pre + 'm' + s)].clone(), fore: pre === 'f',
-    })));
-    // fur: shells over the coat, springs on the tail and the ears
-    this.fur = model.fur ? addFur(this.mesh, {
-      length: model.furLen, mask: model.fur, shells: model.species === 'deer' ? 12 : 14, density: 0.85, clump: 5, rootDark: 0.55,
-      comb: [0, -0.2, -0.5], hz: model.species === 'deer' ? 3.2 : 2.2, damping: 0.3, droop: 0.25, wind: 0.5, fins: 0.35,
-      springs: [{ bones: ['tail0'], hz: 3.5 }, { bones: ['earL', 'earR'], hz: 4.5 }], lod: [6, 28, 48],
-    }) : null;
+    const clips: Record<string, { loop: boolean }> = {};
+    for (const n of model.asset.clips.keys()) clips[n] = { loop: !ONCE.has(n) };
+    for (const n of Object.keys(ALIAS)) clips[n] = { loop: !(n in LAYER) };
+    const self = this;
+    this.anim = {
+      current: 'idle', done: false, clips,
+      play(name: string, o: { restart?: boolean } = {}) {
+        if (name in LAYER) { self.layer = name; self.layerT = 0; this.current = name; this.done = false; return; }
+        const real = ALIAS[name] ?? name;
+        if (ONCE.has(real) && o.restart) self.oneShot = real;
+        self.body.play(real, { once: ONCE.has(real), restart: o.restart, fade: ONCE.has(real) ? 0.15 : 0.35 });
+        this.current = name; this.done = false;
+      },
+    };
+    this.body.play('idle', { fade: 0 });
     this.buildZones();
   }
 
@@ -174,40 +204,43 @@ export class GameAnimal {
     this.pos.set(x, y ?? 0, z); this.heading = heading; this.home.copy(this.pos); this.lastPos.copy(this.pos);
     this.object.position.copy(this.pos); this.object.rotation.set(0, heading, 0);
   }
-  play(clip: string | null) { this.manual = clip; if (clip) this.anim.play(clip, { restart: !this.anim.clips[clip].loop }); }
+  play(clip: string | null) { this.manual = clip; if (clip) this.anim.play(clip, { restart: !this.anim.clips[clip]?.loop }); }
   get clips(): string[] { return Object.keys(this.anim.clips); }
 
   // ------------------------------------------------------------------------------------------------ hit zones
   private buildZones() {
-    const S = this.skel, rw = S.restWorld, d = this.model.dims, w = d.width;
-    const P = (n: string) => rw[S.i(n)];
-    const z = (name: HitZone, bone: string, a: THREE.Vector3, b: THREE.Vector3, r: number, pri: number) => this.zones.push({ name, bone: S.i(bone), a: a.clone(), b: b.clone(), r, pri });
-    const deer = this.species === 'deer', s = deer ? 1 : 1.9;
+    const bones = this.mesh.skeleton.bones, d = this.model.dims, w = d.width;
+    const bi = (n: string) => Math.max(0, bones.findIndex((b) => b.name === n));
+    const P = (n: string) => new THREE.Vector3().setFromMatrixPosition(new THREE.Matrix4().copy(this.boneInv[bi(n)]).invert());
+    const z = (name: HitZone, bone: string, a: THREE.Vector3, b: THREE.Vector3, r: number, pri: number) => this.zones.push({ name, bone: bi(bone), a: a.clone(), b: b.clone(), r, pri });
+    const s = this.species === 'deer' ? d.withers : d.withers * 1.03;
     // the vitals sit low in the chest, just behind the elbow: heart lowest and forward, lungs above and behind it
     const heart = new THREE.Vector3(0, d.chestY - 0.05 * s, d.chestZ + 0.02 * s);
     z('heart', 'chest', heart, heart, 0.055 * s, 9);
     z('lungs', 'chest', new THREE.Vector3(0, d.chestY + 0.04 * s, d.chestZ - 0.08 * s), new THREE.Vector3(0, d.chestY + 0.05 * s, d.chestZ + 0.06 * s), 0.1 * s, 8);
-    z('head', 'head', P('head').clone().add(new THREE.Vector3(0, -0.02 * s, 0.04 * s)), P('head').clone().add(new THREE.Vector3(0, -0.08 * s, 0.16 * s)), 0.065 * s, 10);
-    z('neck', 'neck', P('neck'), P('neck2'), 0.07 * s, 7);
-    z('spine', 'root', new THREE.Vector3(0, P('chest').y + 0.13 * s, P('chest').z), new THREE.Vector3(0, P('loin').y + 0.13 * s, P('loin').z), 0.035 * s, 7.5);
-    z('gut', 'root', new THREE.Vector3(0, P('root').y - 0.06 * s, P('root').z + 0.06 * s), new THREE.Vector3(0, P('loin').y - 0.06 * s, P('loin').z), w * 0.85, 5);
-    z('flank', 'root', new THREE.Vector3(0, P('root').y, P('chest').z + 0.12 * s), new THREE.Vector3(0, P('pelvis').y, P('pelvis').z), w * 1.08, 1);
+    const hd = P('head'), jw = P('jaw'), fwd = new THREE.Vector3(0, 0, 1);
+    z('head', 'head', hd.clone().add(new THREE.Vector3(0, 0.0, -0.02 * s)), jw.clone().addScaledVector(fwd, 0.1 * s), 0.065 * s, 10);
+    z('neck', 'neck2', P('neck1'), P('neck3'), 0.075 * s, 7);
+    const ch = P('chest'), pv = P('pelvis');
+    z('spine', 'spine2', ch.clone().add(new THREE.Vector3(0, 0.03 * s, 0)), pv.clone().add(new THREE.Vector3(0, 0.03 * s, 0)), 0.04 * s, 7.5);
+    z('gut', 'spine1', new THREE.Vector3(0, d.withers * 0.56, ch.z - 0.12 * s), new THREE.Vector3(0, d.withers * 0.6, pv.z + 0.1 * s), w * 0.85, 5);
+    z('flank', 'spine1', new THREE.Vector3(0, d.withers * 0.66, d.chestZ + 0.1 * s), new THREE.Vector3(0, d.withers * 0.68, pv.z), w * 1.08, 1);
     for (const sd of ['L', 'R']) {
-      z('haunch', 'hu' + sd, P('hu' + sd), P('hl' + sd), 0.07 * s, 4);
-      z('leg', 'fl' + sd, P('fl' + sd), P('fm' + sd), 0.035 * s, 3);
-      z('leg', 'fm' + sd, P('fm' + sd), P('ff' + sd), 0.025 * s, 3);
-      z('leg', 'hl' + sd, P('hl' + sd), P('hm' + sd), 0.045 * s, 3);
-      z('leg', 'hm' + sd, P('hm' + sd), P('hf' + sd), 0.025 * s, 3);
+      z('haunch', 'hl1' + sd, P('hl1' + sd), P('hl2' + sd), 0.07 * s, 4);
+      z('leg', 'fl2' + sd, P('fl2' + sd), P('fl3' + sd), 0.035 * s, 3);
+      z('leg', 'fl3' + sd, P('fl3' + sd), P('ff' + sd), 0.025 * s, 3);
+      z('leg', 'hl2' + sd, P('hl2' + sd), P('hl3' + sd), 0.045 * s, 3);
+      z('leg', 'hl3' + sd, P('hl3' + sd), P('hf' + sd), 0.025 * s, 3);
     }
   }
   /** the zones in world space now (debug drawing, the test page) */
   zonesWorld(): { name: HitZone; a: THREE.Vector3; b: THREE.Vector3; r: number }[] {
     this.object.updateMatrixWorld(true);
-    const S = this.skel;
+    const bones = this.mesh.skeleton.bones;
     return this.zones.map((z) => {
-      const bm = S.bones[z.bone].matrixWorld, rest = S.restWorld[z.bone];
+      _m.multiplyMatrices(bones[z.bone].matrixWorld, this.boneInv[z.bone]);
       const sc = this.object.scale.x;
-      return { name: z.name, a: _v.copy(z.a).sub(rest).applyMatrix4(bm).clone(), b: _v.copy(z.b).sub(rest).applyMatrix4(bm).clone(), r: z.r * sc };
+      return { name: z.name, a: z.a.clone().applyMatrix4(_m), b: z.b.clone().applyMatrix4(_m), r: z.r * sc };
     });
   }
   /** a bullet's path segment a -> b against the zones: the most telling zone it crosses, where it went in (t 0..1) */
@@ -289,15 +322,10 @@ export class GameAnimal {
     this.move(ctx, dt);
     this.bleedOut(ctx, dt);
     this.animate(ctx, dt);
-    // eye shine at night when a light is on the player
+    // eye shine at night when a light is on the player (the material is shared by the species: the brightest wins)
     const night = ctx.hour > 20 || ctx.hour < 5.5 ? 1 : ctx.hour > 18.5 || ctx.hour < 7 ? 0.4 : 0;
-    this.fx.shine.value = this.alive ? night * (ctx.player.light ? 1 : 0.15) : 0;
-    if (this.fur) {
-      this.object.updateMatrixWorld(true);
-      const rv = _v.copy(this.object.position).sub(this.prevRoot).divideScalar(Math.max(dt, 1e-3));
-      this.prevRoot.copy(this.object.position);
-      this.fur.update(dt, rv);
-    }
+    this.model.asset.fx.shine.value = night * (ctx.player.light ? 1 : 0.15);
+    void this.fallSide;
   }
 
   // ------------------------------------------------------------------------------------------------ senses
@@ -514,109 +542,72 @@ export class GameAnimal {
 
   // ------------------------------------------------------------------------------------------------ animation
   private animate(ctx: HuntCtx, dt: number) {
-    const a = this.params, sp = this.speed, St = this.k.stride;
+    const a = this.params, sp = this.speed, b = this.body;
     let clip: string;
-    if (this.manual) clip = this.manual;
-    else if (this.state === 'dying') clip = 'death';
-    else if (this.state === 'dead') clip = 'dead';
-    else if (this.anim.current === 'kick' && !this.anim.done) clip = 'kick';
-    else if (this.anim.current === 'flinch' && !this.anim.done) clip = 'flinch';
-    else if (this.hold && sp < 0.15) clip = this.hold === 'limp_idle' ? (this.st > 2 ? 'bed' : 'alert') : this.hold;
-    else if (sp < 0.12) clip = this.state === 'alert' ? 'alert' : 'idle';
+    if (this.manual) clip = ALIAS[this.manual] ?? this.manual;
+    else if (this.state === 'dying') clip = this.st < 0 ? (b.current || 'alert') : 'death';
+    else if (this.state === 'dead') clip = b.current === 'death' && !b.done ? 'death' : 'dead';
+    else if (this.oneShot && b.current === this.oneShot && !b.done) clip = this.oneShot;
+    else if (this.hold && sp < 0.15) {
+      if (this.hold === 'limp_idle') clip = this.st > 2 ? (b.current === 'bed' || (b.current === 'lie' && b.done) ? 'bed' : 'lie') : 'alert';
+      else clip = ALIAS[this.hold] ?? this.hold;
+    } else if (sp < 0.12) clip = this.state === 'alert' ? 'alert' : 'idle';
     else if (this.gait === 'limp') clip = 'limp';
-    else if (sp < (this.species === 'deer' ? 1.7 : 2.6)) clip = 'walk';
+    else if (sp < (this.species === 'deer' ? 1.9 : 2.8)) clip = 'walk';
     else if (sp < (this.species === 'deer' ? 4.2 : 6.5) || this.species === 'moose' && this.gait === 'trot') clip = 'trot';
-    else clip = this.species === 'deer' ? 'bound' : 'gallop';
-    if (!this.anim.clips[clip]) clip = 'idle';
-    this.anim.play(clip);
-    const stride = clip === 'walk' || clip === 'limp' ? St.walk : clip === 'trot' ? St.trot : clip === 'bound' ? St.bound : clip === 'gallop' ? St.gallop : 1;
-    if (['walk', 'trot', 'bound', 'gallop', 'limp'].includes(this.anim.current)) a.phase = (a.phase + (sp / stride) * dt) % 1;
-    a.speed = sp;
+    else clip = this.species === 'deer' ? 'sprint' : 'run';
+    if (!b.has(clip)) clip = 'idle';
+    if (this.oneShot && clip !== this.oneShot) this.oneShot = null;
+    if (clip !== b.current) b.play(clip, { once: ONCE.has(clip), fade: clip === 'dead' ? 0.6 : ONCE.has(clip) ? 0.2 : 0.35 });
+    b.speed = GAITS.has(clip) ? clamp(Math.max(sp, 0.3) / NATURAL[this.species][clip], 0.6, 1.9) : 1;
+    // the layered one-shots (stomp, snort, call) time out on their own
+    if (this.layer) { this.layerT += dt; if (this.layerT > LAYER[this.layer]) { this.layer = ''; this.anim.done = true; } }
+    else this.anim.done = b.done;
+    if (!this.manual || !(this.manual in LAYER)) this.anim.current = this.layer || clip;
+    b.update(dt);
+    // the body pitches with the slope under it
+    const c = Math.cos(this.heading), s = Math.sin(this.heading), half = this.model.dims.length * 0.3;
+    const hf = ctx.heightAt(this.pos.x + s * half, this.pos.z + c * half), hb = ctx.heightAt(this.pos.x - s * half, this.pos.z - c * half);
+    this.pitchG = damp(this.pitchG, this.alive && !this.dragged ? clamp(-Math.atan2(hf - hb, half * 2), -0.35, 0.35) : 0, 6, dt);
+    this.object.rotation.set(this.pitchG, this.heading, 0, 'YXZ');
+    if (!this.alive) return;
     // the look: toward the danger (or the player on the test page)
     const look = this.manual ? ctx.player.pos : this.lookAt;
     let ly = 0, lp = 0;
     if (look) {
-      const hx = this.pos.x + Math.sin(this.heading) * this.model.dims.length * 0.45, hz = this.pos.z + Math.cos(this.heading) * this.model.dims.length * 0.45;
+      const hx = this.pos.x + s * this.model.dims.length * 0.45, hz = this.pos.z + c * this.model.dims.length * 0.45;
       const yaw = wrapAngle(Math.atan2(look.x - hx, look.z - hz) - this.heading);
-      ly = clamp(yaw, -1.3, 1.3) * (Math.abs(yaw) < 2.4 ? 1 : 0);
-      lp = clamp(Math.atan2(look.y + 1.2 - (this.pos.y + this.model.dims.withers * 1.2), Math.hypot(look.x - hx, look.z - hz)), -0.5, 0.5);
+      ly = clamp(yaw, -1.2, 1.2) * (Math.abs(yaw) < 2.4 ? 1 : 0);
+      lp = clamp(Math.atan2(look.y + 1.2 - (this.pos.y + this.model.dims.withers * 1.2), Math.hypot(look.x - hx, look.z - hz)), -0.4, 0.4);
     }
-    a.lookYaw = damp(a.lookYaw, ly, 3, dt); a.lookPitch = damp(a.lookPitch, lp, 3, dt);
-    a.earYaw = damp(a.earYaw ?? 0, ly * 0.8, 5, dt);
-    const p = this.anim.update(dt, a);
-    // blinking
-    this.blinkT -= dt;
-    if (this.blinkT < 0) { this.blink = 0.16; this.blinkT = 2 + Math.random() * 5; }
-    this.blink = Math.max(0, this.blink - dt);
-    const blinkK = this.alive ? Math.max(p.c[CH_BLINK], this.blink > 0 ? Math.sin((this.blink / 0.16) * Math.PI) : 0) : 0.35;
-    // ground under each hoof
-    const g0 = this.pos.y;
-    const c = Math.cos(this.heading), s = Math.sin(this.heading);
-    for (let k = 0; k < 4; k++) {
-      const L = this.legs[k], fx = L.ankle.x + p.f[k * FOOT], fz = L.ankle.z + p.f[k * FOOT + 2];
-      this.ground[k] = this.alive ? clamp(ctx.heightAt(this.pos.x + fx * c + fz * s, this.pos.z - fx * s + fz * c) - g0, -0.35, 0.35) : 0;
+    const free = clip === 'idle' || clip === 'alert' || clip === 'walk' || clip === 'limp';
+    a.lookYaw = damp(a.lookYaw, free ? ly : 0, 3, dt); a.lookPitch = damp(a.lookPitch, free ? lp : 0, 3, dt);
+    a.earYaw = damp(a.earYaw, ly * 0.8, 5, dt);
+    const B = (n: string) => b.bone(n);
+    b.turn(B('neck2'), AX.y, a.lookYaw * 0.35); b.turn(B('head'), AX.y, a.lookYaw * 0.5);
+    b.turn(B('head'), AX.x, -a.lookPitch * 0.5);
+    // ears: swivelled toward the danger, laid back in flight
+    const earBack = this.params.ear < 0 ? this.params.ear * 0.6 : 0;
+    b.turn(B('earL'), AX.y, a.earYaw * 0.6); b.turn(B('earR'), AX.y, a.earYaw * 0.6);
+    b.turn(B('earL'), AX.x, earBack); b.turn(B('earR'), AX.x, earBack);
+    // the white flag: a whitetail's tail goes up when it runs
+    a.flag = damp(a.flag, this.params.flag, 6, dt);
+    if (this.species === 'deer') { b.turn(B('tail1'), AX.x, a.flag * 1.1); b.turn(B('tail2'), AX.x, a.flag * 0.4); }
+    // the layers on the alert stance
+    const lt = this.layerT;
+    if (this.layer === 'stomp') {
+      const lift = Math.max(0, Math.sin(Math.min(1, lt / 0.45) * Math.PI)) + Math.max(0, Math.sin(Math.min(1, Math.max(0, lt - 0.6) / 0.45) * Math.PI));
+      b.turn(B('fl1L'), AX.x, -0.45 * lift); b.turn(B('fl2L'), AX.x, 0.7 * lift);
+    } else if (this.layer === 'snort') {
+      const k = Math.sin(Math.min(1, lt / 0.5) * Math.PI);
+      b.turn(B('neck1'), AX.x, -0.25 * k); b.turn(B('head'), AX.x, 0.2 * Math.sin(lt * 30) * k);
+    } else if (this.layer === 'call') {
+      const k = Math.sin(Math.min(1, lt / LAYER.call) * Math.PI);
+      b.turn(B('neck1'), AX.x, -0.4 * k); b.turn(B('head'), AX.x, -0.35 * k); b.turn(B('jaw'), AX.x, 0.25 * k);
     }
-    const span = this.legs[0].ankle.z - this.legs[2].ankle.z;
-    const slope = Math.atan2((this.ground[0] + this.ground[1]) * 0.5 - (this.ground[2] + this.ground[3]) * 0.5, span);
-    this.applyPose(p, blinkK, slope, (this.ground[0] + this.ground[1] + this.ground[2] + this.ground[3]) * 0.25);
   }
 
-  private applyPose(p: ReturnType<Animator['update']>, blink: number, slope: number, lift: number) {
-    const S = this.skel, B = S.bones;
-    S.rest();
-    const root = B[0];
-    root.position.x += p.t[0]; root.position.y += p.t[1] + lift; root.position.z += p.t[2];
-    root.quaternion.setFromEuler(_e.set(p.rr[0] - slope, p.rr[1], p.rr[2]));
-    for (let i = 1; i < B.length; i++) {
-      const x = p.r[i * 3], y = p.r[i * 3 + 1], z = p.r[i * 3 + 2];
-      if (x !== 0 || y !== 0 || z !== 0) B[i].quaternion.setFromEuler(_e.set(x, y, z));
-    }
-    // the fall: over onto one side, the head and the legs laid out
-    const fk = this.state === 'dead' ? 1 : this.fallK;
-    if (fk > 0) {
-      const e = fk * fk * (3 - 2 * fk), side = this.fallSide;
-      const w = this.model.dims.width;
-      root.position.y = root.position.y * (1 - e) + (w * 1.05 + 0.02) * e;
-      _q.setFromEuler(_e.set(0, 0, side * e * 1.45));
-      root.quaternion.premultiply(_q);
-      for (const n of ['neck', 'neck2', 'head']) B[this.bi[n]].quaternion.multiply(_q2.setFromEuler(_e.set(0.15 * e, -side * 0.35 * e, 0)));
-      // the upper legs droop onto the lower ones
-      for (const L of this.legs) { const up = (this.skel.restWorld[L.up].x > 0 ? 1 : -1) === side; B[L.up].quaternion.multiply(_q2.setFromEuler(_e.set(0, 0, (up ? -0.25 : 0.1) * side * e))); }
-    }
-    // lids and eyes
-    const lid = 0.12 + blink * 1.35;
-    for (const sd of ['L', 'R']) {
-      const sgn = sd === 'L' ? 1 : -1;
-      // the lid closes about the axis across the eye (up x the eye's axis)
-      _w.set(sgn * 0.85, -0.15, 0.5).normalize();
-      B[this.bi['lid' + sd]].quaternion.setFromAxisAngle(_v.set(0, 1, 0).cross(_w).normalize(), lid);
-      B[this.bi['eye' + sd]].quaternion.setFromEuler(_e.set(-this.params.lookPitch * 0.3, this.params.lookYaw * 0.25, 0));
-    }
-    S.fk();
-    if (fk >= 0.999 && this.state === 'dead') return;
-    // legs: two-bone IK to the cannon's top, the cannon keeping its rest slant tipped by the clip
-    for (let k = 0; k < 4; k++) {
-      const L = this.legs[k], o = k * FOOT, w = clamp(p.f[o + 3], 0, 1) * (1 - fk);
-      if (w < 0.002) continue;
-      const par = S.defs[L.up].parent;
-      _t.set(L.ankle.x + p.f[o], L.ankle.y + p.f[o + 1] + this.ground[k] - lift, L.ankle.z + p.f[o + 2]);
-      const fwd = _v.set(0, 0, 1).applyQuaternion(S.Q[par]);
-      const yawQ = _q.setFromAxisAngle(_w.set(0, 1, 0), Math.atan2(fwd.x, fwd.z));
-      _pole.set(0, 0, L.fore ? -1 : 1).applyQuaternion(yawQ);
-      const qm = new THREE.Quaternion().copy(yawQ).multiply(_q2.setFromEuler(_e.set(-p.f[o + 4], 0, 0)));
-      const midT = _w.copy(L.ankle).sub(L.mid0).applyQuaternion(qm).multiplyScalar(-1).add(_t);
-      S.ik2(L.up, L.lo, L.mid, midT, _pole, w);
-      const fkm = S.Q[L.mid].clone();
-      S.orient(L.mid, qm.slerp(fkm, 1 - w));
-      S.fk1(L.foot);
-      const fkf = S.Q[L.foot].clone();
-      // the pastern and hoof: level on the ground in stance, flipped back in the swing
-      S.orient(L.foot, new THREE.Quaternion().copy(yawQ).multiply(_q2.setFromEuler(_e.set(clamp(-p.f[o + 4] * 0.9, -0.2, 1.6), 0, 0))).slerp(fkf, 1 - w));
-    }
-    void _m;
-  }
-
-  dispose() { this.fur?.dispose(); this.object.removeFromParent(); }
+  dispose() { this.body.dispose(); this.object.removeFromParent(); }
 }
 
 // ------------------------------------------------------------------------------------------------ geometry

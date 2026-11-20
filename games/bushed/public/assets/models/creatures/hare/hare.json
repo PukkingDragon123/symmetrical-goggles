@@ -1,0 +1,17 @@
+{
+ "tris": 2578,
+ "bones": 33,
+ "dims": {
+  "length": 0.439999982714653,
+  "height": 0.3661032314412296,
+  "width": 0.19740767776966095
+ },
+ "clips": [
+  "idle",
+  "hop",
+  "run",
+  "freeze",
+  "alert",
+  "graze"
+ ]
+}

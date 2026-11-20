@@ -1,0 +1,13 @@
+[
+ {
+  "file": "bull.glb, cow.glb",
+  "title": "Moose Animated Cel Shading 3D Model",
+  "author": "WildMesh 3D",
+  "author_url": "https://sketchfab.com/WildMesh_3D",
+  "source": "https://sketchfab.com/3d-models/moose-animated-cel-shading-3d-model-33ce37106a24493ba4a6a6e2a9433bb6",
+  "licence": "CC BY 4.0",
+  "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+  "changes": "Rebaked onto a 34-bone game skeleton, rescaled, clips put in place, trimmed and renamed, the cel-shaded texture repainted to a real moose coat, textures merged into one atlas; cow.glb has the antlers removed. Built by games/bushed/tools/blender/fauna/cervids.py",
+  "attribution": "This work is based on \"Moose Animated Cel Shading 3D Model\" (https://sketchfab.com/3d-models/moose-animated-cel-shading-3d-model-33ce37106a24493ba4a6a6e2a9433bb6) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED."
+ }
+]

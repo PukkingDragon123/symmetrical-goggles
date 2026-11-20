@@ -1,0 +1,24 @@
+[
+ {
+  "file": "doe.glb, buck.glb",
+  "title": "Realistic Animated Doe 3D Model",
+  "author": "WildMesh 3D",
+  "author_url": "https://sketchfab.com/WildMesh_3D",
+  "source": "https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218",
+  "licence": "CC BY 4.0",
+  "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+  "changes": "Rebaked onto a 34-bone game skeleton, rescaled to a white-tailed deer, clips put in place, trimmed and renamed, textures merged into one atlas, eyes darkened; buck.glb is this doe body carrying the stag's antlers. Built by games/bushed/tools/blender/fauna/cervids.py",
+  "attribution": "This work is based on \"Realistic Animated Doe 3D Model\" (https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED."
+ },
+ {
+  "file": "buck.glb (antlers)",
+  "title": "Deer Animated Cel Shading 3D Model",
+  "author": "WildMesh 3D",
+  "author_url": "https://sketchfab.com/WildMesh_3D",
+  "source": "https://sketchfab.com/3d-models/deer-animated-cel-shading-3d-model-f798cc7ee1214ddcb3417329636c4433",
+  "licence": "CC BY 4.0",
+  "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+  "changes": "Only the antlers are used: shrunk to a whitetail rack, moved onto the doe's head, repainted from the cel-shaded texture. Built by games/bushed/tools/blender/fauna/cervids.py",
+  "attribution": "This work is based on \"Deer Animated Cel Shading 3D Model\" (https://sketchfab.com/3d-models/deer-animated-cel-shading-3d-model-f798cc7ee1214ddcb3417329636c4433) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED."
+ }
+]

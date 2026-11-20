@@ -1,0 +1,13 @@
+[
+ {
+  "file": "hare.glb",
+  "title": "Rabbit Rigged",
+  "author": "FourthGreen",
+  "author_url": "https://sketchfab.com/FourthGreen",
+  "source": "https://sketchfab.com/3d-models/rabbit-rigged-e7213589744d436b9d96e2dbb31198a5",
+  "licence": "CC BY 4.0",
+  "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+  "changes": "Rebaked onto a 33-bone skeleton, rescaled to a snowshoe hare, coat recoloured to a grey-brown summer coat, clips authored (idle, hop, run, freeze, alert, graze). Built by games/bushed/tools/blender/fauna/small.py",
+  "attribution": "This work is based on \"Rabbit Rigged\" (https://sketchfab.com/3d-models/rabbit-rigged-e7213589744d436b9d96e2dbb31198a5) by FourthGreen (https://sketchfab.com/FourthGreen) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED."
+ }
+]

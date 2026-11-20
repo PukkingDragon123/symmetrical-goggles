@@ -9,7 +9,9 @@
 //
 //   const wild = new Wildlife(); scene.add(wild.object);
 //   wild.update(ctx);          // every frame (CreatureCtx; uses ctx.trunks if present)
-// v3: the squirrel and the hare wear real fur (src/creatures/fur: a bushy squirrel tail that bounces as it bounds).
+// v4: the squirrel and the hare are real animals (wildlife/mammals.ts: rigged, animated glTF models, a red squirrel and
+// a snowshoe hare in its brown summer coat, built by tools/blender/fauna/small.py); the birds keep their own code below
+// (the new flocks live in src/creatures/birds). Until the real models have loaded the old sculpted bodies stand in.
 // Squirrels love nuts and berries: a player standing still holding them (SQUIRREL_FOODS) is approached by a brave
 // squirrel that sits up and begs at arm's length; wild.offer('nuts') hands them over: it nibbles, sitting up, then
 // chatters happily. Events (ctx.emit(ev, { pos, who, sound })): chatter, bolt, caw, chirp, flush, eat (item), happy.
@@ -19,6 +21,7 @@ import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle } from './rig
 import { wildModel, BIRDS, WILD_FUR_LEN, type Species } from './wildlife/models';
 import { addFur, type Fur } from './fur';
 import { daylight } from './hound';
+import { MammalBody, mammalAssetNow, isMammal } from './wildlife/mammals';
 import { biome, WORLD } from '../world/layout';
 import type { CreatureCtx } from './types';
 
@@ -36,13 +39,23 @@ export const SQUIRREL_FOODS = ['nuts', 'hazelnuts', 'acorns', 'seeds', 'berries'
 export class Critter {
   readonly object = new THREE.Group();
   readonly mesh: THREE.SkinnedMesh;
-  readonly skel: Skel;
+  /** the sculpted body's skeleton (null on a real mammal) */
+  readonly skel: Skel | null;
+  /** the real squirrel or hare (null: a bird, or the sculpted stand-in while the model loads) */
+  readonly real: MammalBody | null = null;
   readonly bird: boolean;
   state: State = 'idle';
   pos = new THREE.Vector3(); heading = 0; speed = 0; alt = 0; t = 0; st = 0; next = 0; phase = 0;
   vel = new THREE.Vector3(); turn = 0; trunk: { x: number; z: number; r: number } | null = null; called = 0;
   private b: Record<string, number>;
   constructor(readonly kind: Species) {
+    const ra = isMammal(kind) ? mammalAssetNow(kind) : null;
+    if (ra) {
+      this.real = new MammalBody(kind as 'squirrel' | 'hare', ra);
+      this.mesh = this.real.body.mesh; this.skel = null; this.b = {};
+      this.object.add(this.real.body.object); this.object.name = kind; this.bird = false;
+      return;
+    }
     const m = wildModel(kind);
     this.skel = new Skel(m.bones);
     const { mat, depth } = creatureMaterial(m.tex, m.sd);
@@ -64,11 +77,12 @@ export class Critter {
   /** what it is eating (a squirrel given nuts) */
   food = '';
   pose(dt: number) {
+    if (this.real) { this.real.pose(this, dt); return; }
     this.poseBones(dt);
     this.fur?.update(dt);
   }
   private poseBones(dt: number) {
-    const S = this.skel, B = S.bones, b = this.b, t = this.t;
+    const S = this.skel!, B = S.bones, b = this.b, t = this.t;
     S.rest();
     const R = (n: string, x: number, y = 0, z = 0) => { const k = b[n]; if (k !== undefined) B[k].quaternion.setFromEuler(_e.set(x, y, z)); };
     if (this.bird) {
@@ -143,11 +157,11 @@ export class Wildlife {
     return {
       squirrel: Math.round(3 * day * (0.3 + conifer) * b.density),
       hare: Math.round(0.6 + 1.6 * dusk + (1 - day) * 0.4),
-      raven: Math.round(day * (0.7 + b.burn * 2)),
-      jay: Math.round(day * (0.8 + conifer * 0.6)),
-      chickadee: Math.round(day * (1 + birch * 2.5)),
-      grouse: Math.round(day * (0.2 + birch * 1.6) * b.density),
+      // the birds moved to src/creatures/birds (real rigged models; installFauna in src/world/fauna spawns them); the
+      // sculpted bird bodies here only show on test pages that force them
+      raven: 0, jay: 0, chickadee: 0, grouse: 0,
     };
+    void birch;
   }
   private take(k: Species): Critter {
     const p = this.pool.get(k);

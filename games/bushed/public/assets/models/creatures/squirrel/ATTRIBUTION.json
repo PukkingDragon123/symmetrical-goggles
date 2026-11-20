@@ -1,0 +1,13 @@
+[
+ {
+  "file": "squirrel.glb",
+  "title": "Realistic_squirrel_3d_model",
+  "author": "mgddeldeen9020",
+  "author_url": "https://sketchfab.com/mgddeldeen9020",
+  "source": "https://sketchfab.com/3d-models/realistic-squirrel-3d-model-b492079385ff407ab68aa7f72c88f828",
+  "licence": "CC BY 4.0",
+  "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+  "changes": "Rigged (23 bones, automatic weights) and animated (idle, run, eat, beg, alert, freeze); textures merged into one atlas; eyes darkened. Built by games/bushed/tools/blender/fauna/small.py",
+  "attribution": "This work is based on \"Realistic_squirrel_3d_model\" (https://sketchfab.com/3d-models/realistic-squirrel-3d-model-b492079385ff407ab68aa7f72c88f828) by mgddeldeen9020 (https://sketchfab.com/mgddeldeen9020) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED."
+ }
+]

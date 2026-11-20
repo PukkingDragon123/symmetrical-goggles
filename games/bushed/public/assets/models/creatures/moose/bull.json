@@ -1,0 +1,27 @@
+{
+ "tris": 6394,
+ "bones": 34,
+ "dims": {
+  "withers": 1.85,
+  "length": 2.703825831413269,
+  "height": 2.3914419836364686,
+  "width": 1.354573130607605
+ },
+ "clips": [
+  "idle",
+  "alert",
+  "graze",
+  "walk",
+  "limp",
+  "trot",
+  "run",
+  "sprint",
+  "flinch",
+  "kick",
+  "death",
+  "dead",
+  "lie",
+  "bed",
+  "rise"
+ ]
+}
