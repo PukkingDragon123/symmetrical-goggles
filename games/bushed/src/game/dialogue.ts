@@ -1,5 +1,7 @@
 // What people say. Lines are picked by context and never repeat back-to-back. Gérard Pruneau runs the general
-// store; he has opinions about wood, weather, your uncle, and the things in the bush.
+// store; he has opinions about wood, weather, your uncle, and the things in the bush. (The pool is still called
+// ODILE from before the store had two Pruneaus: those are Gérard's lines. His wife Odile runs the post wicket
+// and the night radio show; her lines, and everybody's quest lines, are in src/game/stories.)
 import { Rng } from '../core/rng';
 
 type Pool = string[];
@@ -73,8 +75,22 @@ export const DOUG = {
   paid: ['Beautiful splits. These are going straight into the fire pit and onto my resume.'],
   story: [
     "Kids keep asking about the glowing eyes out past the tent pads. I tell them it's raccoons. Big raccoons. Tall raccoons.",
+    "Bought this campground off a guy in Kapuskasing. He said it 'basically runs itself'. It does. It runs itself into the lake.",
+    "Jojo's mum has the school year, I get the summers and the long weekends. This year I asked for September too. Don't ask why. It's going great.",
+    "Eleven sites, four campers, one picnic table that hasn't been burned yet. We're a destination.",
+    "Your uncle came by every Sunday with a bag of flapjack mix and no explanation. Kid thinks he's a wizard.",
   ],
 };
+
+/** more from Gérard: the town, the people in it, and Ray */
+export const GERARD_MORE = [
+  "My wife Odile does the mail and the radio. Thirty-one years on the air. She has a voice like a warm stove and opinions like a cold one.",
+  "Lucien cooked in the bush camps for thirty years. Now he cooks for the church suppers. The church has never been so full, or so quiet.",
+  "Old Hollis was a cookee at the Kettle camp when he was a boy. Ninety-three now. He still won't sit with his back to the woods.",
+  "The Finn, Esko, runs a trapline up past the lake. He says two words a week. Usually 'no' and 'thanks'.",
+  "The new ranger, Kowalchuk, asked me if Ray had any enemies. I said only the bank and the beaver on Rang 4.",
+  "Ray's been gone before. Never this long. Never without telling Odile. ...I'm not worried. Odile's worried enough for the both of us.",
+];
 
 const last = new Map<string, string>();
 const rng = new Rng(77);

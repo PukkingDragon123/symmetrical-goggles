@@ -1,11 +1,16 @@
-// Looks: everything that makes one person: build, age, face, hair, and a bush-country outfit. The painter
-// (paint.ts / clothes.ts) and the geometry (body.ts, hands.ts, head.ts) both read a HumanLook.
+// Looks: everything that makes one person: build, age, face, hair, and a bush-country outfit. spec.ts turns a
+// HumanLook into the Gacha Garage people Spec (./gg) that builds the body, paints the atlas and the face.
 //
 // Presets: the PLAYER (a burly bearded lumberjack), the SHOPKEEPER (Gérard, the elderly French-Canadian
 // storekeeper), a hunter in blaze orange, a mechanic in stained coveralls, a camper and an old logger.
 // `variant(look, seed)` jitters a preset into a different face and colourway for crowds.
-import type { Build } from './rig';
 import { Rng } from '../core/rng';
+
+/** body build of one person (1 = the reference ~1.78 m adult) */
+export interface Build {
+  s: number; bw: number; mass: number; belly: number; chest: number; fem: number; headS: number;
+  legLen: number; armLen: number; handS: number; footS: number; shoulders: number; neckLen: number; hunch: number;
+}
 
 export type RGBH = string;
 
@@ -13,7 +18,7 @@ export type RGBH = string;
 export interface Sett { stripes: [RGBH, number][]; twill?: boolean; brushed?: number }
 
 export type ShirtKind = 'flannel' | 'henley' | 'thermal' | 'tee' | 'coveralls' | 'wool';
-export type OuterKind = 'none' | 'chore' | 'quiltVest' | 'blazeVest' | 'cardigan';
+export type OuterKind = 'none' | 'chore' | 'quiltVest' | 'blazeVest' | 'cardigan' | 'parka' | 'mackinaw';
 export type LegKind = 'jeans' | 'canvas' | 'wool' | 'khaki' | 'coveralls';
 export type FeetKind = 'logger' | 'hiker' | 'work' | 'shoe';
 export type HandKind = 'bare' | 'leather' | 'knit';
@@ -37,7 +42,7 @@ export interface HumanLook {
   hair: { style: HairStyle; color: RGBH; grey: number };
   facial: FacialHair;
   shirt: { kind: ShirtKind; sett?: Sett; color?: RGBH; sleeve: 'long' | 'rolled' | 'short'; tucked: boolean; undershirt?: RGBH };
-  outer: { kind: OuterKind; color?: RGBH; color2?: RGBH; open: boolean };
+  outer: { kind: OuterKind; color?: RGBH; color2?: RGBH; open: boolean; sett?: Sett };
   legs: { kind: LegKind; color: RGBH; stagged?: boolean };
   suspenders?: RGBH;
   belt?: RGBH;
@@ -75,8 +80,10 @@ export const SETTS = {
 };
 
 // ------------------------------------------------------------------ presets
-export type LookId = 'player' | 'shopkeeper' | 'hunter' | 'mechanic' | 'camper' | 'oldLogger';
-export const LOOK_IDS: LookId[] = ['player', 'shopkeeper', 'hunter', 'mechanic', 'camper', 'oldLogger'];
+export type LookId = 'player' | 'shopkeeper' | 'hunter' | 'mechanic' | 'camper' | 'oldLogger'
+  | 'trapper' | 'camp_cook' | 'old_timer' | 'ranger' | 'kid';
+export const LOOK_IDS: LookId[] = ['player', 'shopkeeper', 'hunter', 'mechanic', 'camper', 'oldLogger',
+  'trapper', 'camp_cook', 'old_timer', 'ranger', 'kid'];
 
 export function makeLook(id: LookId): HumanLook {
   switch (id) {
@@ -176,6 +183,86 @@ export function makeLook(id: LookId): HumanLook {
       hands: { kind: 'leather', color: '#8a6038' },
       hat: { kind: 'toque', color: '#6a1e1a', color2: '#6a1e1a' },
       glasses: 'none', wear: 0.8,
+    };
+    case 'trapper': return {
+      name: 'Trapper', seed: 707,
+      build: B({ s: 1.0, bw: 1.06, mass: 1.04, chest: 0.4, belly: 0.1, handS: 1.06 }),
+      age: 0.55, skin: { tone: 0.3, ruddy: 0.65 },
+      face: { jaw: 1.06, chin: 1.0, cheek: 0.98, wide: 1.0, long: 1.06, hollow: 0.4, brow: 1.4, nose: { w: 1.1, len: 1.1, bump: 0.003, crook: 0.002, bulb: 0.3 }, ears: 1.05, eye: '#4a5a3a', eyeTilt: -0.1, lips: 0.85 },
+      hair: { style: 'shaggy', color: '#5a3a22', grey: 0.3 },
+      facial: 'beard',
+      shirt: { kind: 'wool', sett: SETTS.greenCheck, sleeve: 'long', tucked: true },
+      outer: { kind: 'mackinaw', color: '#7a2a1e', color2: '#2a1a12', open: true, sett: SETTS.buffalo },
+      legs: { kind: 'wool', color: '#4a4236', stagged: true },
+      belt: '#2a1c12',
+      feet: { kind: 'logger', color: '#3a2618' },
+      hands: { kind: 'leather', color: '#7a5434' },
+      hat: { kind: 'capFlaps', color: '#5a4430', color2: '#8a6a48' },
+      glasses: 'none', wear: 0.75,
+    };
+    case 'camp_cook': return {
+      name: 'Camp Cook', seed: 808,
+      build: B({ s: 0.97, bw: 1.08, mass: 1.24, belly: 0.9, chest: 0.2, neckLen: 0.92 }),
+      age: 0.55, skin: { tone: 0.2, ruddy: 0.6 },
+      face: { jaw: 1.08, chin: 0.96, cheek: 1.08, wide: 1.06, long: 0.96, hollow: 0, brow: 1.1, nose: { w: 1.2, len: 1.0, bump: 0, crook: 0, bulb: 0.7 }, ears: 1.05, eye: '#5a4a3a', eyeTilt: 0.1, lips: 1.05 },
+      hair: { style: 'short', color: '#3a2a1c', grey: 0.4 },
+      facial: 'moustache',
+      shirt: { kind: 'thermal', color: '#d8ccb4', sleeve: 'rolled', tucked: true },
+      outer: { kind: 'none', open: true },
+      legs: { kind: 'canvas', color: '#6a5a40' },
+      suspenders: '#2a2a2a',
+      apron: '#e8e0cc',
+      feet: { kind: 'work', color: '#3a2a1c' },
+      hands: { kind: 'bare' },
+      hat: { kind: 'toque', color: '#e6e0d2' },
+      glasses: 'none', wear: 0.45,
+    };
+    case 'old_timer': return {
+      name: 'Old-Timer', seed: 909,
+      build: B({ s: 0.96, bw: 0.96, mass: 0.86, hunch: 0.5, handS: 1.08, shoulders: 0.96, neckLen: 0.92 }),
+      age: 0.96, skin: { tone: 0.18, ruddy: 0.55 },
+      face: { jaw: 0.98, chin: 1.04, cheek: 0.94, wide: 0.96, long: 1.1, hollow: 0.9, brow: 1.6, nose: { w: 1.1, len: 1.25, bump: 0.004, crook: 0.002, bulb: 0.8 }, ears: 1.25, eye: '#7a8a96', eyeTilt: -0.3, lips: 0.6 },
+      hair: { style: 'thin', color: '#ece8e0', grey: 1 },
+      facial: 'fullBeard',
+      shirt: { kind: 'wool', sett: SETTS.rustPlaid, sleeve: 'long', tucked: true },
+      outer: { kind: 'cardigan', color: '#5a4a3a', color2: '#3a2c20', open: true },
+      legs: { kind: 'wool', color: '#3a3a36' },
+      suspenders: '#6a1e1a',
+      feet: { kind: 'logger', color: '#2a1e14' },
+      hands: { kind: 'bare' },
+      hat: { kind: 'none' },
+      glasses: 'reading', wear: 0.55,
+    };
+    case 'ranger': return {
+      name: 'Ranger', seed: 1010,
+      build: B({ s: 0.98, bw: 0.96, mass: 0.96, fem: 0.8, headS: 0.94, handS: 0.95, footS: 0.95 }),
+      age: 0.35, skin: { tone: 0.62, ruddy: 0.15 },
+      face: { jaw: 0.96, chin: 0.98, cheek: 1.02, wide: 0.98, long: 1.02, hollow: 0, brow: 0.8, nose: { w: 1.0, len: 0.95, bump: 0, crook: 0, bulb: 0.1 }, ears: 0.95, eye: '#3a2614', eyeTilt: 0.1, lips: 1.1 },
+      hair: { style: 'ponytail', color: '#1e1612', grey: 0 },
+      facial: 'none',
+      shirt: { kind: 'henley', color: '#8a7a50', sleeve: 'long', tucked: true },
+      outer: { kind: 'parka', color: '#3a4a2a', color2: '#6a5a44', open: false },
+      legs: { kind: 'khaki', color: '#4e5038' },
+      belt: '#2a1c12',
+      feet: { kind: 'hiker', color: '#4a3020' },
+      hands: { kind: 'knit', color: '#4a4a44' },
+      hat: { kind: 'toque', color: '#2f4a2a', color2: '#c8a020' },
+      glasses: 'none', wear: 0.3,
+    };
+    case 'kid': return {
+      name: 'Kid', seed: 1111,
+      build: B({ s: 0.72, bw: 0.86, mass: 0.84, fem: 0.2, headS: 1.08, legLen: 0.9, armLen: 0.92, handS: 0.85, footS: 0.85, shoulders: 0.85 }),
+      age: 0, skin: { tone: 0.35, ruddy: 0.45 },
+      face: { jaw: 0.9, chin: 0.94, cheek: 1.1, wide: 1.0, long: 0.94, hollow: 0, brow: 0.6, nose: { w: 0.9, len: 0.85, bump: 0, crook: 0, bulb: 0.1 }, ears: 1.0, eye: '#4a6a8a', eyeTilt: 0, lips: 1.0 },
+      hair: { style: 'shaggy', color: '#8a5a32', grey: 0 },
+      facial: 'none',
+      shirt: { kind: 'flannel', sett: SETTS.buffalo, sleeve: 'long', tucked: false, undershirt: '#d8d0bc' },
+      outer: { kind: 'none', open: true },
+      legs: { kind: 'jeans', color: '#3a4e70' },
+      feet: { kind: 'hiker', color: '#6a4a2a' },
+      hands: { kind: 'bare' },
+      hat: { kind: 'toquePom', color: '#2a5a8a', color2: '#e8e0cc' },
+      glasses: 'none', wear: 0.35,
     };
   }
 }

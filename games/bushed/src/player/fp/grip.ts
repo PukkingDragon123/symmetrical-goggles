@@ -1,4 +1,4 @@
-// Finger grips that wrap the actual object (ported in spirit from Gacha Garage's FPBody.js hand rig, where every hold
+// Finger grips that wrap the actual object (on Gacha Garage's FPBody.js hand: src/humans/fprig.ts, where every hold
 // is built from the held thing's own bounds): the fingers and thumb are posed joint by joint, and a contact solver
 // closes each finger around the object's real surface - the proximal joint bends until that phalanx touches, then
 // the middle joint, then the tip - so a fat bottle, a thin axe handle, a split of firewood or a jerky pouch each get
@@ -14,13 +14,13 @@
 // fingers, thumbOpp (0..1) swings the thumb across the palm and th1..th3 flex its joints toward the fingers.
 import * as THREE from 'three';
 import type { Dims } from '../../humans/rig';
-import { FINGERS, FING, PHAL, THUMB, tdir } from '../../humans/rig';
+import { FINGERS, FING, THUMB, tdir } from '../../humans/rig';
 
 export const NF = 17;
 export type Fingers = Float32Array;
 const CURL = [1.45, 1.6, 1.15];
 const MAXJ = [1.62, 1.8, 1.3];
-const GLOVE = 0.0032;
+const GLOVE = 0.0012;
 
 /** the classic grip channels [curl, index, thumb, spread, cup] as joint angles (same mapping as setGrip) */
 export function gripAngles(curl: number, index: number, thumb: number, spread: number, cup: number, out: Fingers = new Float32Array(NF)): Fingers {
@@ -32,6 +32,12 @@ export function gripAngles(curl: number, index: number, thumb: number, spread: n
   return out;
 }
 export const gripOf = (g: number[], out?: Fingers) => gripAngles(g[0], g[1], g[2], g[3], g[4], out);
+
+const _g = new Float32Array(NF);
+/** pose one hand from the classic grip channels (curl 0 open .. 1 fist, index, thumb, spread, cup) */
+export function setGrip(b: Record<string, THREE.Bone>, side: 'L' | 'R', curl: number, index: number, thumb: number, spread: number, cup: number) {
+  applyFingers(b, side, gripAngles(curl, index, thumb, spread, cup, _g));
+}
 
 export function mixFingers(out: Fingers, a: Fingers, b: Fingers, t: number): Fingers {
   for (let i = 0; i < NF; i++) out[i] = a[i] + (b[i] - a[i]) * t;
@@ -149,7 +155,7 @@ const _axis = new THREE.Vector3();
 function fingerFK(d: Dims, side: 'L' | 'R', fi: number, a: Fingers) {
   const k = side === 'L' ? 1 : -1, f = FINGERS[fi], F = FING[f], h = d.hand;
   const o = d.off[f + '1' + side];
-  const L = [F.len * PHAL[0] * h, F.len * PHAL[1] * h, F.len * PHAL[2] * h];
+  const L = _L; L[0] = F.len[0] * h; L[1] = F.len[1] * h; L[2] = F.len[2] * h + F.w * 0.5 * h;
   _axis.set(0, 0, -k);
   const sp = (fi - 1.4) * 0.09 * a[12];
   _q[0].setFromAxisAngle(X, sp).multiply(_qa.setFromAxisAngle(_axis, a[fi * 3]));
@@ -157,8 +163,9 @@ function fingerFK(d: Dims, side: 'L' | 'R', fi: number, a: Fingers) {
   _q[2].copy(_q[1]).multiply(_qa.setFromAxisAngle(_axis, a[fi * 3 + 2]));
   _j[0].set(o[0], o[1], o[2]);
   for (let s = 0; s < 3; s++) _j[s + 1].copy(_j[s]).add(_v.set(0, -L[s], 0).applyQuaternion(_q[s]));
-  return (F.r + GLOVE * 0.7) * h;
+  return (F.t + GLOVE) * h;
 }
+const _L = [0, 0, 0];
 function thumbFK(d: Dims, side: 'L' | 'R', a: Fingers) {
   const k = side === 'L' ? 1 : -1, h = d.hand, fl = FLEX[side];
   const o = d.off['th1' + side], o2 = d.off['th2' + side], o3 = d.off['th3' + side];
@@ -169,8 +176,8 @@ function thumbFK(d: Dims, side: 'L' | 'R', a: Fingers) {
   _j[0].set(o[0], o[1], o[2]);
   _j[1].copy(_j[0]).add(_v.set(o2[0], o2[1], o2[2]).applyQuaternion(_q[0]));
   _j[2].copy(_j[1]).add(_v.set(o3[0], o3[1], o3[2]).applyQuaternion(_q[1]));
-  _j[3].copy(_j[2]).add(_v.set(dir[0], dir[1], dir[2]).multiplyScalar(THUMB.seg[2] * h).applyQuaternion(_q[2]));
-  return (THUMB.r * 0.85 + GLOVE * 0.7) * h;
+  _j[3].copy(_j[2]).add(_v.set(dir[0], dir[1], dir[2]).multiplyScalar((THUMB.len[2] + THUMB.w * 0.5) * h).applyQuaternion(_q[2]));
+  return (THUMB.t + GLOVE) * h;
 }
 
 const _p = new THREE.Vector3();

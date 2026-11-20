@@ -1,13 +1,13 @@
-// Test page for the humans: a lineup of every look (player, storekeeper, hunter, mechanic, camper, old logger,
-// plus a few variants), a turntable, an animation picker and the texture page viewer; ?arms=1 switches to the
-// first-person arms viewer that cycles every arms action.
-// URL params: look=<id> (single person), anim=<clip>, turn=1 (turntable), close=face|hands|feet|body,
+// Test page for the humans (Gacha Garage's model in bush clothes): a lineup of every look (player, storekeeper,
+// hunter, mechanic, camper, old logger, trapper, camp cook, old-timer, ranger, kid, plus a few variants), a
+// turntable, an animation picker and the painted atlas viewer; ?arms=1 switches to the first-person arms viewer that
+// cycles every arms action.
+// URL params: look=<id>[,<id>...] (who), anim=<clip>, expr=<face>, turn=1 (turntable), close=face|hands|feet|body,
 //             page=1 (show the painted page), t=<seconds to pre-run>, yaw=<deg>, variants=1, talk=1,
 //             arms=1 (FP arms), action=<arms action>, held=<kind>, shot=1 (sets window.__ready when settled)
 import * as THREE from 'three';
 import { buildHuman, makeLook, variant, LOOK_IDS, NPC_ANIMS } from '../humans';
 import type { HumanModel, NpcAnim, LookId } from '../humans';
-import { humanParts } from '../humans/model';
 import { FPArms, fitTool } from '../player/arms';
 import type { HeldKind, ArmsAction, ArmsInput } from '../player/arms';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -198,12 +198,12 @@ function runLineup() {
   scene.add(ground);
 
   // ---- people
-  const single = Q.get('look') as LookId | null;
-  const ids: LookId[] = single ? [single] : LOOK_IDS;
+  const single = Q.get('look');
+  const ids: LookId[] = single ? single.split(',') as LookId[] : LOOK_IDS;
   const people: HumanModel[] = [];
   const t0 = performance.now();
-  for (const id of ids) people.push(buildHuman(makeLook(id)));
-  if (Q.get('variants') === '1') for (const [id, sd] of [['hunter', 7], ['player', 11], ['camper', 23], ['oldLogger', 31]] as [LookId, number][]) people.push(buildHuman(variant(makeLook(id), sd)));
+  for (const id of ids) people.push(buildHuman(makeLook(id), { lazy: false }));
+  if (Q.get('variants') === '1') for (const [id, sd] of [['hunter', 7], ['player', 11], ['camper', 23], ['oldLogger', 31]] as [LookId, number][]) people.push(buildHuman(variant(makeLook(id), sd), { lazy: false }));
   const buildMs = performance.now() - t0;
   const spacing = 0.95;
   people.forEach((p, i) => {
@@ -211,8 +211,7 @@ function runLineup() {
     p.root.rotation.y = num('yaw', 0) * Math.PI / 180;
     scene.add(p.root);
   });
-  // props for the clips: an axe in the chopper's hand, bills for counting, a bottle
-  const axe = standInAxe();
+  // props for the clips: bills for counting (the chop clip brings its own axe)
   const bills = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.006, 0.15), new THREE.MeshStandardMaterial({ color: 0x6a8a5a, roughness: 0.9 }));
   bills.position.set(0, 0.02, 0.0);
 
@@ -225,13 +224,11 @@ function runLineup() {
       p.anim.play(a, { restart: true });
       p.anim.talking = talk || a === 'talk';
       p.anim.lookAt(null);
+      if (Q.has('expr')) p.anim.expression(Q.get('expr')!);
     }
-    const holder = people[Math.min(people.length - 1, single ? 0 : 0)];
-    axe.removeFromParent(); bills.removeFromParent();
-    if (a === 'chop') for (const p of people) { const ax = p === holder ? axe : axe.clone(); p.socket('R').add(ax); }
-    if (a === 'count') for (const p of people) p.socket('L').add(p === holder ? bills : bills.clone());
-    if (a !== 'chop') for (const p of people) for (const c of [...p.socket('R').children]) c.removeFromParent();
-    if (a !== 'count') for (const p of people) for (const c of [...p.socket('L').children]) c.removeFromParent();
+    bills.removeFromParent();
+    for (const p of people) for (const c of [...p.socket('L').children]) c.removeFromParent();
+    if (a === 'count') people.forEach((p, i) => p.socket('L').add(i ? bills.clone() : bills));
     refreshUI();
   }
 
@@ -240,7 +237,7 @@ function runLineup() {
   const target = new THREE.Vector3(0, 0.95, 0);
   let dist = people.length > 1 ? people.length * 0.95 + 1.2 : 3.2;
   let camYaw = 0, camPitch = 0.08;
-  if (close === 'face') { target.set(people[0].root.position.x, people[0].height - 0.12, 0); dist = 0.75; camPitch = 0.02; }
+  if (close === 'face') { target.set(people[0].root.position.x, people[0].human.P.eyeY - 0.03, 0); dist = 0.75; camPitch = 0.02; }
   if (close === 'hands') { target.set(people[0].root.position.x, 0.95, 0.05); dist = 1.1; camPitch = 0.25; }
   if (close === 'feet') { target.set(people[0].root.position.x, 0.18, 0); dist = 1.1; camPitch = 0.3; }
   if (close === 'body') { target.set(people[0].root.position.x, 1.1, 0); dist = 1.9; }
@@ -280,7 +277,7 @@ function runLineup() {
   };
   function showPage(i: number) {
     if (i < 0) { pageCv.style.display = 'none'; return; }
-    const img = humanParts(people[i].look).tex.image as HTMLCanvasElement;
+    const img = people[i].human.pix.canvas;
     pageCv.width = img.width; pageCv.height = img.height;
     pageCv.getContext('2d')!.drawImage(img, 0, 0);
     pageCv.style.display = 'block';

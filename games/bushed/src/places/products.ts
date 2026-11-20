@@ -9,6 +9,10 @@ import * as THREE from 'three';
 import { ITEMS } from '../game/items';
 import { Mesher, Rand, V, tf, box, boxAt, lathe, tube, log, hasMat } from './kit';
 import { LABELS, ensurePrintMats } from './signs';
+import { GROCERY_RECTS, GROCERY_W, GROCERY_H } from '../game/cooking/grocery_atlas';
+import groceriesUrl from '../game/cooking/groceries.png';
+import { applyPixelTex } from '../gfx/tex';
+import { defineMat } from './kit';
 
 type Rect = [number, number, number, number];
 const L = (k: string): Rect => LABELS.uv(k);
@@ -18,6 +22,77 @@ const sub = (r: Rect, a: number, b: number, c: number, d: number): Rect => [r[0]
 /** lathe whose u (around) and v (along) span an atlas rect; the rect's horizontal centre faces +Z */
 function latheR(ms: Mesher, mat: string, profile: [number, number][], seg: number, r: Rect): void {
   lathe(ms, mat, profile, seg, { uNorm: true, vNorm: true, uv: r, phase: -Math.PI });
+}
+
+// ---------------------------------------------------------------------------------------------- grocery atlas
+// the kitchen's own label atlas (src/game/cooking/tools/make_groceries.py): groc (matte print), groc_gloss (PET
+// bottles, film), groc_metal (tins)
+const GR = (k: string): Rect => {
+  const r = GROCERY_RECTS[k];
+  if (!r) throw new Error(`no grocery atlas entry ${k}`);
+  const e = 0.3;
+  return [(r[0] + e) / GROCERY_W, 1 - (r[1] + r[3] - e) / GROCERY_H, (r[0] + r[2] - e) / GROCERY_W, 1 - (r[1] + e) / GROCERY_H];
+};
+let grocDone = false;
+function ensureGroceryMats(): void {
+  if (grocDone) return;
+  grocDone = true;
+  const t = applyPixelTex(new THREE.TextureLoader().load(groceriesUrl), { repeat: false });
+  defineMat('groc', new THREE.MeshStandardMaterial({ name: 'groc', map: t, roughness: 0.78 }));
+  defineMat('groc_gloss', new THREE.MeshStandardMaterial({ name: 'groc_gloss', map: t, roughness: 0.2 }));
+  defineMat('groc_metal', new THREE.MeshStandardMaterial({ name: 'groc_metal', map: t, roughness: 0.38, metalness: 0.5 }));
+}
+
+/** a flat disc at height y facing up with an atlas rect mapped across it (lids, tray tops) */
+function discR(ms: Mesher, mat: string, y: number, r: number, rect: Rect, seg = 20): void {
+  const U = (x: number, z: number): [number, number] => [rect[0] + (rect[2] - rect[0]) * (0.5 + x / (2 * r)), rect[1] + (rect[3] - rect[1]) * (0.5 - z / (2 * r))];
+  const up = V(0, 1, 0);
+  for (let k = 0; k < seg; k++) {
+    const a0 = (k / seg) * Math.PI * 2, a1 = ((k + 1) / seg) * Math.PI * 2;
+    const p0 = V(Math.sin(a0) * r, y, Math.cos(a0) * r), p1 = V(Math.sin(a1) * r, y, Math.cos(a1) * r);
+    ms.tri(mat, V(0, y, 0), p0, p1, up, up, up, U(0, 0), U(p0.x, p0.z), U(p1.x, p1.z));
+  }
+}
+
+/** a flat quad facing +Z centred at the current frame origin, mapped to a whole rect */
+function quadR(ms: Mesher, mat: string, w: number, h: number, r: Rect): void {
+  ms.quad(mat, V(-w / 2, -h / 2, 0), V(w / 2, -h / 2, 0), V(w / 2, h / 2, 0), V(-w / 2, h / 2, 0), [r[0], r[1]], [r[2], r[1]], [r[2], r[3]], [r[0], r[3]]);
+}
+
+/** an onion bulb (papery skin), origin at the root end, axis +Y */
+function onionBulb(ms: Mesher, s = 1): void {
+  latheR(ms, 'groc', [[0, 0], [0.012 * s, 0.002 * s], [0.03 * s, 0.012 * s], [0.04 * s, 0.03 * s], [0.038 * s, 0.045 * s], [0.026 * s, 0.06 * s], [0.01 * s, 0.07 * s], [0.004 * s, 0.08 * s], [0, 0.083 * s]], 12, GR('onion_skin'));
+}
+/** a yellow potato lying along X, centred at the origin */
+function potatoLump(ms: Mesher, len: number, r: Rand): void {
+  ms.push(new THREE.Matrix4().makeRotationZ(Math.PI / 2).multiply(new THREE.Matrix4().makeScale(1, 1, r.range(0.75, 0.9))));
+  latheR(ms, 'groc', [[0, -len / 2], [0.018, -len * 0.45], [0.03, -len * 0.3], [0.034, 0], [0.031, len * 0.28], [0.02, len * 0.44], [0, len / 2]], 10, GR('potato_skin'));
+  ms.pop();
+}
+/** a carrot lying along +X from the tip at x = 0 to the shoulder at x = len, with a tuft of tops */
+function carrot(ms: Mesher, len: number, r: Rand): void {
+  ms.push(new THREE.Matrix4().makeRotationZ(-Math.PI / 2));
+  latheR(ms, 'groc', [[0, 0], [0.004, len * 0.12], [0.009, len * 0.42], [0.013, len * 0.78], [0.0145, len * 0.95], [0.011, len], [0, len + 0.003]], 9, GR('carrot'));
+  ms.pop();
+  const lf = GR('leaf');
+  for (let k = 0; k < 3; k++) {
+    const a = r.range(-0.5, 0.5), L = r.range(0.07, 0.11);
+    ms.pushT(len + L * 0.45, 0.004 + k * 0.002, (k - 1) * 0.006, a, 0, Math.PI / 2 + r.range(-0.15, 0.15));
+    ms.quad('groc', V(-0.006, -L / 2, 0), V(0.006, -L / 2, 0), V(0.012, L / 2, 0), V(-0.012, L / 2, 0), [lf[0], lf[1]], [lf[2], lf[1]], [lf[2], lf[3]], [lf[0], lf[3]], V(0, 0, 1));
+    ms.quad('groc', V(0.006, -L / 2, 0), V(-0.006, -L / 2, 0), V(-0.012, L / 2, 0), V(0.012, L / 2, 0), [lf[0], lf[1]], [lf[2], lf[1]], [lf[2], lf[3]], [lf[0], lf[3]], V(0, 0, -1));
+    ms.pop();
+  }
+}
+/** a garlic bulb standing on its root, lobed */
+function garlicBulb(ms: Mesher, s = 1): void {
+  const g = GR('garlic');
+  for (let k = 0; k < 5; k++) {
+    const a = (k / 5) * Math.PI * 2;
+    ms.pushT(Math.sin(a) * 0.009 * s, 0, Math.cos(a) * 0.009 * s, a, 0, 0);
+    latheR(ms, 'groc', [[0, 0], [0.012 * s, 0.004 * s], [0.017 * s, 0.016 * s], [0.014 * s, 0.03 * s], [0.006 * s, 0.04 * s], [0, 0.044 * s]], 8, g);
+    ms.pop();
+  }
+  latheR(ms, 'groc', [[0.004 * s, 0.04 * s], [0.003 * s, 0.056 * s], [0, 0.058 * s]], 6, g);
 }
 
 type Face = 'px' | 'nx' | 'py' | 'ny' | 'pz' | 'nz';
@@ -584,6 +659,239 @@ const BUILD: Record<string, Builder> = {
     ms.quad('lab', V(-0.04, -0.024, 0), V(0.04, -0.024, 0), V(0.04, 0.024, 0), V(-0.04, 0.024, 0), [pt[0], pt[1]], [pt[2], pt[1]], [pt[2], pt[3]], [pt[0], pt[3]]);
     ms.pop();
   },
+
+  // ---------------------------------------------------------------- groceries (src/game/cooking/groceries.png)
+  oil(ms) { BUILD.oil_open(ms, new Rand(1)); BUILD.oil_cap(ms, new Rand(1)); },
+  oil_open(ms) {
+    // 1 L canola oil, a round PET bottle with a wrap label
+    ensureGroceryMats();
+    const b = GR('oil_body');
+    latheR(ms, 'groc_gloss', [[0, 0.004], [0.03, 0], [0.036, 0.005], [0.037, 0.03]], 16, b);
+    latheR(ms, 'groc_gloss', [[0.0373, 0.03], [0.0373, 0.13]], 18, GR('oil'));
+    latheR(ms, 'groc_gloss', [[0.037, 0.13], [0.037, 0.17], [0.031, 0.2], [0.016, 0.224], [0.0135, 0.236], [0.0108, 0.236], [0.0108, 0.226]], 16, b);
+  },
+  oil_cap(ms) {
+    ensureGroceryMats();
+    latheR(ms, 'groc', [[0.0142, 0.229], [0.0148, 0.232], [0.0148, 0.252], [0.0125, 0.256], [0, 0.257]], 12, GR('cap_red'));
+  },
+  butter(ms) {
+    ensureGroceryMats();
+    const f = GR('butter'), e = GR('paper_gold');
+    ms.pushT(0, 0.03, 0);
+    boxR(ms, 'groc', 0.125, 0.06, 0.065, { pz: f, nz: f, py: f }, e);
+    ms.pop();
+  },
+  lard(ms) {
+    ensureGroceryMats();
+    const f = GR('lard'), e = GR('paper_white');
+    ms.pushT(0, 0.0325, 0);
+    boxR(ms, 'groc', 0.12, 0.065, 0.06, { pz: f, nz: f, py: f }, e);
+    ms.pop();
+  },
+  flour(ms) {
+    ensureGroceryMats();
+    ms.pushT(0, 0.12, 0);
+    pouch(ms, 'groc', 0.16, 0.24, 0.085, 0.01, GR('flour'), GR('flour'), GR('paper_white'), { pinchTop: 0.1 });
+    ms.pop();
+  },
+  sugar(ms) {
+    ensureGroceryMats();
+    ms.pushT(0, 0.09, 0);
+    pouch(ms, 'groc', 0.12, 0.18, 0.07, 0.01, GR('sugar'), GR('sugar'), GR('paper_white'), { pinchTop: 0.1 });
+    ms.pop();
+  },
+  salt(ms) {
+    ensureGroceryMats();
+    latheR(ms, 'groc', [[0, 0], [0.044, 0], [0.045, 0.004]], 16, GR('paper_blue'));
+    latheR(ms, 'groc', [[0.045, 0.004], [0.045, 0.134]], 18, GR('salt'));
+    latheR(ms, 'groc', [[0.045, 0.134], [0.046, 0.139], [0, 0.139]], 16, GR('paper_blue'));
+    // the pour spout
+    ms.pushT(0.02, 0.141, 0, 0.3);
+    boxR(ms, 'groc_metal', 0.03, 0.004, 0.014, {}, GR('tin'));
+    ms.pop();
+  },
+  pepper(ms) {
+    ensureGroceryMats();
+    latheR(ms, 'groc_metal', [[0, 0], [0.024, 0], [0.025, 0.003]], 12, GR('tin'));
+    latheR(ms, 'groc', [[0.025, 0.003], [0.025, 0.075]], 14, GR('pepper'));
+    latheR(ms, 'groc_metal', [[0.025, 0.075], [0.026, 0.08], [0.02, 0.086], [0, 0.087]], 12, GR('tin'));
+  },
+  baking_powder(ms) {
+    ensureGroceryMats();
+    latheR(ms, 'groc_metal', [[0, 0], [0.036, 0], [0.039, 0.004], [0.038, 0.007]], 14, GR('tin'));
+    latheR(ms, 'groc_metal', [[0.0385, 0.007], [0.0385, 0.09]], 16, GR('bpowder'));
+    latheR(ms, 'groc_metal', [[0.038, 0.09], [0.0395, 0.094], [0.036, 0.097], [0, 0.097]], 14, GR('tin'));
+  },
+  oats(ms) {
+    ensureGroceryMats();
+    latheR(ms, 'groc', [[0, 0], [0.061, 0], [0.062, 0.004]], 18, GR('paper_red'));
+    latheR(ms, 'groc', [[0.062, 0.004], [0.062, 0.17]], 22, GR('oats'));
+    latheR(ms, 'groc', [[0.0635, 0.162], [0.0635, 0.18]], 20, GR('paper_red'));
+    discR(ms, 'groc', 0.18, 0.0635, GR('oats_lid'));
+  },
+  rice(ms) {
+    ensureGroceryMats();
+    ms.pushT(0, 0.085, 0);
+    pouch(ms, 'groc_gloss', 0.11, 0.17, 0.05, 0.008, GR('rice'), GR('rice'), GR('paper_white'), { pinchTop: 0.08 });
+    ms.pop();
+  },
+  peas(ms) {
+    ensureGroceryMats();
+    ms.pushT(0, 0.085, 0);
+    pouch(ms, 'groc_gloss', 0.11, 0.17, 0.05, 0.008, GR('peas'), GR('peas'), GR('paper_white'), { pinchTop: 0.08 });
+    ms.pop();
+  },
+  macaroni(ms) {
+    ensureGroceryMats();
+    const f = GR('macaroni');
+    ms.pushT(0, 0.0825, 0);
+    boxR(ms, 'groc', 0.11, 0.165, 0.045, { pz: f, nz: f }, GR('paper_blue'));
+    ms.pop();
+  },
+  milk(ms) {
+    // 1 L gable-top carton
+    ensureGroceryMats();
+    const f = GR('milk'), w = GR('cap_white');
+    ms.pushT(0, 0.095, 0);
+    boxR(ms, 'groc', 0.07, 0.19, 0.07, { pz: f, nz: f, px: f, nx: f }, w);
+    ms.pop();
+    const y0 = 0.19, y1 = 0.222, h = 0.035;
+    ms.quad('groc', V(-h, y0, h), V(h, y0, h), V(h, y1, 0.003), V(-h, y1, 0.003), [w[0], w[1]], [w[2], w[1]], [w[2], w[3]], [w[0], w[3]]);
+    ms.quad('groc', V(h, y0, -h), V(-h, y0, -h), V(-h, y1, -0.003), V(h, y1, -0.003), [w[0], w[1]], [w[2], w[1]], [w[2], w[3]], [w[0], w[3]]);
+    for (const s of [-1, 1]) ms.tri('groc', V(s * h, y0, s * h), V(s * h, y0, -s * h), V(s * h, y1, 0), V(s, 0, 0), V(s, 0, 0), V(s, 0, 0), [w[0], w[1]], [w[2], w[1]], [w[0], w[3]]);
+    ms.pushT(0, y1 + 0.007, 0);
+    boxR(ms, 'groc', 0.07, 0.014, 0.006, {}, w);
+    ms.pop();
+  },
+  onions(ms, r) {
+    // three yellow onions, a paper tag tied on with twine
+    ensureGroceryMats();
+    const spots: [number, number, number, number][] = [[-0.035, 0, 0.0, 1], [0.035, 0, 0.01, 0.95], [0.0, 0.05, -0.028, 0.9]];
+    for (const [x, y, z, s] of spots) {
+      ms.pushT(x, y + 0.04 * s, z, r.range(0, 6), r.range(-0.4, 0.4) + Math.PI / 2 - 0.3, 0);
+      ms.pushT(0, -0.04 * s, 0);
+      onionBulb(ms, s);
+      ms.pop(); ms.pop();
+    }
+    ms.pushT(0.02, 0.06, 0.05, 0.3, -0.4);
+    quadR(ms, 'groc', 0.045, 0.024, GR('onion_tag'));
+    ms.pop();
+  },
+  potatoes(ms, r) {
+    ensureGroceryMats();
+    ms.pushT(0, 0.11, 0);
+    pouch(ms, 'groc', 0.16, 0.22, 0.1, 0.012, GR('potatoes'), GR('kraft'), GR('kraft'), { pinchTop: 0.05 });
+    ms.pop();
+    for (const [x, z, a] of [[-0.035, 0.005, 0.3], [0.03, -0.01, -0.5]] as [number, number, number][]) {
+      ms.pushT(x, 0.225, z, a, 0.2);
+      potatoLump(ms, 0.085, r);
+      ms.pop();
+    }
+  },
+  carrots(ms, r) {
+    ensureGroceryMats();
+    for (let k = 0; k < 4; k++) {
+      ms.pushT(-0.1, 0.014 + (k === 3 ? 0.022 : 0), (k - 1.5) * 0.026 * (k === 3 ? 0 : 1), r.range(-0.12, 0.12));
+      carrot(ms, 0.16 + r.range(-0.015, 0.01), r);
+      ms.pop();
+    }
+  },
+  garlic(ms) {
+    ensureGroceryMats();
+    garlicBulb(ms);
+    ms.pushT(0.05, 0, 0.012, 1.2);
+    garlicBulb(ms, 0.9);
+    ms.pop();
+  },
+  tomatoes(ms) {
+    ensureGroceryMats();
+    latheR(ms, 'groc_metal', [[0, 0.0], [0.047, 0.0], [0.051, 0.004], [0.05, 0.008]], 16, GR('tin'));
+    latheR(ms, 'groc', [[0.0505, 0.008], [0.0505, 0.108]], 20, GR('tomatoes'));
+    latheR(ms, 'groc_metal', [[0.05, 0.108], [0.051, 0.112], [0.047, 0.115], [0, 0.114]], 16, GR('tin'));
+  },
+  tomatoes_open(ms) {
+    ensureGroceryMats();
+    latheR(ms, 'groc_metal', [[0, 0.0], [0.047, 0.0], [0.051, 0.004], [0.05, 0.008]], 16, GR('tin'));
+    latheR(ms, 'groc', [[0.0505, 0.008], [0.0505, 0.108]], 20, GR('tomatoes'));
+    latheR(ms, 'groc_metal', [[0.05, 0.108], [0.051, 0.113], [0.048, 0.113], [0.047, 0.106]], 16, GR('tin'));
+    discR(ms, 'groc', 0.104, 0.047, GR('tomato_red'), 14);
+  },
+  bouillon(ms) {
+    ensureGroceryMats();
+    const f = GR('bouillon');
+    ms.pushT(0, 0.03, 0);
+    boxR(ms, 'groc', 0.09, 0.06, 0.04, { pz: f, nz: f }, GR('paper_gold'));
+    ms.pop();
+  },
+  ground_beef(ms) {
+    // a pound of lean ground beef on a foam tray under film, butcher's sticker
+    ensureGroceryMats();
+    ms.pushT(0, 0.011, 0);
+    boxR(ms, 'groc', 0.18, 0.022, 0.13, {}, GR('foam'));
+    ms.pop();
+    ms.pushT(0, 0.036, 0);
+    pouch(ms, 'groc_gloss', 0.155, 0.03, 0.105, 0.012, GR('beef'), GR('beef'), GR('beef'), { seg: 3 });
+    ms.pop();
+    ms.pushT(0.035, 0.0525, 0.02, 0.2, -Math.PI / 2);
+    quadR(ms, 'groc', 0.05, 0.03, GR('beef_sticker'));
+    ms.pop();
+  },
+  sausage(ms) {
+    // four pork sausages on a tray
+    ensureGroceryMats();
+    ms.pushT(0, 0.008, 0);
+    boxR(ms, 'groc', 0.17, 0.016, 0.11, {}, GR('foam'));
+    ms.pop();
+    for (let k = 0; k < 4; k++) {
+      ms.pushT(-0.07, 0.03, -0.039 + k * 0.026, 0, 0, -Math.PI / 2);
+      latheR(ms, 'groc_gloss', [[0, 0], [0.008, 0.004], [0.012, 0.014], [0.012, 0.126], [0.008, 0.136], [0, 0.14]], 9, GR('sausage'));
+      ms.pop();
+    }
+    ms.pushT(0.04, 0.046, 0.025, -0.15, -Math.PI / 2);
+    quadR(ms, 'groc', 0.05, 0.03, GR('sausage_sticker'));
+    ms.pop();
+  },
+  cheese(ms) {
+    // a brick of old cheddar, red wax at the ends, a paper band
+    ensureGroceryMats();
+    ms.pushT(0, 0.0225, 0);
+    boxR(ms, 'groc', 0.12, 0.045, 0.07, { px: GR('wax_red'), nx: GR('wax_red') }, GR('cheese_body'));
+    ms.pop();
+    ms.pushT(0, 0.0225, 0.0352);
+    quadR(ms, 'groc', 0.09, 0.038, GR('cheese'));
+    ms.pop();
+  },
+  tea(ms) {
+    ensureGroceryMats();
+    const f = GR('tea');
+    ms.pushT(0, 0.0325, 0);
+    boxR(ms, 'groc', 0.12, 0.065, 0.06, { pz: f, nz: f, py: f }, GR('paper_green'));
+    ms.pop();
+  },
+  labrador_tea(ms) {
+    // hand-picked Labrador tea leaves in a stamped kraft bag, the top rolled
+    ensureGroceryMats();
+    ms.pushT(0, 0.075, 0);
+    pouch(ms, 'groc', 0.1, 0.15, 0.06, 0.012, GR('labtea'), GR('kraft'), GR('kraft'), { pinchTop: 0.22 });
+    ms.pop();
+  },
+  wild_onion(ms, r) {
+    // a bunch of wild onions (slender white bulbs, long flat leaves) tied with a grass stem
+    ensureGroceryMats();
+    const lf = GR('leaf');
+    for (let k = 0; k < 4; k++) {
+      ms.pushT(-0.08, 0.008 + (k % 2) * 0.008, (k - 1.5) * 0.012, r.range(-0.08, 0.08), 0, -Math.PI / 2);
+      latheR(ms, 'groc', [[0, 0], [0.006, 0.006], [0.008, 0.016], [0.004, 0.03], [0.003, 0.04]], 7, GR('green_onion'));
+      for (const s of [-1, 1]) {
+        const L = r.range(0.16, 0.22), w = 0.006;
+        ms.pushT(0, 0.04 + L / 2, 0, s * 0.2 + k, r.range(-0.08, 0.08) * s, 0);
+        ms.quad('groc', V(-w / 2, -L / 2, 0), V(w / 2, -L / 2, 0), V(w * 0.3, L / 2, 0), V(-w * 0.3, L / 2, 0), [lf[0], lf[1]], [lf[2], lf[1]], [lf[2], lf[3]], [lf[0], lf[3]], V(0, 0, 1));
+        ms.quad('groc', V(w / 2, -L / 2, 0), V(-w / 2, -L / 2, 0), V(-w * 0.3, L / 2, 0), V(w * 0.3, L / 2, 0), [lf[0], lf[1]], [lf[2], lf[1]], [lf[2], lf[3]], [lf[0], lf[3]], V(0, 0, -1));
+        ms.pop();
+      }
+      ms.pop();
+    }
+  },
   // ---------------------------------------------------------------- decor (not items)
   coffeepot(ms) {
     lathe(ms, 'enamel_blue', [[0, 0], [0.07, 0], [0.072, 0.006], [0.064, 0.12], [0.05, 0.17], [0.046, 0.175], [0.042, 0.175], [0.04, 0.19], [0.02, 0.2], [0.012, 0.2], [0.012, 0.212], [0, 0.215]], 16);
@@ -593,6 +901,9 @@ const BUILD: Record<string, Builder> = {
   enamel_mug(ms) {
     lathe(ms, 'enamel', [[0, 0], [0.04, 0], [0.042, 0.004], [0.042, 0.085], [0.044, 0.088], [0.039, 0.088], [0.038, 0.01], [0, 0.01]], 16);
     tube(ms, 'enamel', [V(0.04, 0.072, 0), V(0.068, 0.068, 0), V(0.07, 0.03, 0), V(0.04, 0.02, 0)], 0.006, 6);
+  },
+  enamel_bowl(ms) {
+    lathe(ms, 'enamel', [[0, 0], [0.04, 0], [0.042, 0.004], [0.06, 0.03], [0.072, 0.052], [0.074, 0.056], [0.069, 0.056], [0.067, 0.052], [0.055, 0.03], [0.038, 0.008], [0, 0.007]], 18, { matFor: (i) => (i >= 4 && i <= 6 ? 'enamel_blue' : 'enamel') });
   },
   enamel_plate(ms) {
     lathe(ms, 'enamel', [[0, 0.002], [0.07, 0.002], [0.1, 0.016], [0.118, 0.022], [0.12, 0.024], [0.116, 0.024], [0.098, 0.019], [0.068, 0.006], [0, 0.006]], 20);
@@ -769,5 +1080,5 @@ export function productSize(id: string): [number, number, number] {
 
 /** every gen: product id in the item catalogue */
 export const GEN_PRODUCTS: string[] = Object.values(ITEMS).filter((it) => it.model.startsWith('gen:')).map((it) => it.model.slice(4));
-export const DECOR_PRODUCTS = ['coffeepot', 'enamel_mug', 'enamel_plate', 'jar_preserves', 'jar_flour', 'soap', 'book_stack', 'candle', 'inkwell', 'pencil'];
+export const DECOR_PRODUCTS = ['coffeepot', 'enamel_mug', 'enamel_plate', 'enamel_bowl', 'jar_preserves', 'jar_flour', 'soap', 'book_stack', 'candle', 'inkwell', 'pencil'];
 void hasMat; void box;

@@ -1,7 +1,7 @@
-// First-person arms (the viewmodel): the player's own arms, sleeves, cuffs and gloved hands, built from the same
-// lofted body and painted page as the third-person human (src/humans), posed every frame by two-bone IK onto
-// hand targets authored in view space, with articulated fingers that close on the real surface of whatever the
-// hands hold.
+// First-person arms (the viewmodel): the player's own arms, sleeves, cuffs and gloved hands on Gacha Garage's human
+// model (src/humans/fprig.ts: the sleeves cut from the player's painted GG human, GG's articulated FPBody hands),
+// posed every frame by two-bone IK onto hand targets authored in view space, with articulated fingers that close on
+// the real surface of whatever the hands hold.
 //
 // The hand system follows Gacha Garage's (src/game/FPBody.js + Held.js, the author's own game): every hold is built
 // from the held object's own shape (fp/fit.ts), fingers wrap it joint by joint (fp/grip.ts), the hands trail the
@@ -31,10 +31,8 @@
 import * as THREE from 'three';
 import { makeLook } from '../humans/looks';
 import type { HumanLook } from '../humans/looks';
-import { armsGeometry, makeSocket } from '../humans/model';
-import { makeSkeleton } from '../humans/rig';
+import { FPRig } from '../humans/fprig';
 import type { Dims } from '../humans/rig';
-import { HumanAnimator } from '../humans/anim';
 import { input } from '../core/input';
 import { findInteractable } from '../game/interact';
 import { ITEMS } from '../game/items';
@@ -247,8 +245,9 @@ export class FPArms {
   private holders: { L: THREE.Group; R: THREE.Group; carry: THREE.Group; oldL: THREE.Group; oldR: THREE.Group; oldC: THREE.Group };
   private carry = new THREE.Object3D();
   private rig = new THREE.Group();
-  private ik: HumanAnimator;
+  private fp: FPRig;
   private eye = new THREE.Vector3();
+  private clavE = new THREE.Euler(0, 0, 0, 'XZY');
   private time = 0; private walkPh = 0; private walkAmt = 0; private crouchK = 0; private sprintK = 0; private aimK = 0;
   private charge = 0; private shiverK = 0; private strain = 0; private lastPitch = 0; private lastYaw = NaN;
   private heldPose = newPose(); private actPose = newPose(); private outPose = newPose(); private prevHeld = newPose(); private basePose = newPose();
@@ -275,32 +274,25 @@ export class FPArms {
 
   constructor(look: HumanLook = makeLook('player')) {
     this.look = look;
-    const { geometry, parts } = armsGeometry(look);
-    this.dims = parts.dims;
-    const { bones, byName, skeleton } = makeSkeleton(this.dims);
-    this.bones = byName;
-    this.mesh = new THREE.SkinnedMesh(geometry, parts.mat);
-    this.mesh.add(bones[0]);
-    this.mesh.bind(skeleton);
-    this.mesh.frustumCulled = false;
-    this.mesh.castShadow = false;
-    this.mesh.receiveShadow = true;
-    // the eye: between the eyes, in body space
+    this.fp = new FPRig(look);
+    this.dims = this.fp.dims;
+    this.bones = this.fp.bones;
+    this.mesh = this.fp.mesh;
+    // the eye: between the eyes, just behind the face (body space)
     const d = this.dims;
-    this.eye.set(0, d.rest.head[1] + 0.1 * d.hs, d.rest.head[2] + 0.085 * d.hs);
+    this.eye.set(d.eye[0], d.eye[1], d.eye[2]);
     this.mesh.position.copy(this.eye).negate();
     this.rig.rotation.y = Math.PI;        // body +z (forward) -> camera -z
     this.rig.add(this.mesh);
     this.object.add(this.rig);
     this.object.name = 'FPArms';
-    this.sockets = { L: makeSocket(byName.handL, 'L', d), R: makeSocket(byName.handR, 'R', d) };
+    this.sockets = { L: this.fp.socket('L'), R: this.fp.socket('R') };
     const mk = (name: string, parent: THREE.Object3D) => { const g = new THREE.Group(); g.name = name; g.matrixAutoUpdate = false; parent.add(g); return g; };
     this.mesh.add(this.carry);
     this.holders = {
       L: mk('holdL', this.sockets.L), R: mk('holdR', this.sockets.R), carry: mk('holdCarry', this.carry),
       oldL: mk('oldL', this.sockets.L), oldR: mk('oldR', this.sockets.R), oldC: mk('oldC', this.carry),
     };
-    this.ik = new HumanAnimator(byName, d, this.mesh, look.seed);
     // a soft key light rides along while inspecting so every detail reads (Held.js)
     this.keyLight = new THREE.PointLight(0xfff2e0, 0, 1.4, 2);
     this.keyLight.position.set(0.18, 0.12, -0.05);
@@ -1393,15 +1385,15 @@ export class FPArms {
     // pose the rig: clavicles, then each arm onto its socket target
     const b = this.bones;
     for (const n of ['hips', 'spine', 'chest', 'neck', 'head']) b[n].quaternion.identity();
-    b.clavL.quaternion.setFromEuler(new THREE.Euler(0, 0, P.clavL, 'XZY'));
-    b.clavR.quaternion.setFromEuler(new THREE.Euler(0, 0, -P.clavR, 'XZY'));
+    b.clavL.quaternion.setFromEuler(this.clavE.set(0, 0, P.clavL, 'XZY'));
+    b.clavR.quaternion.setFromEuler(this.clavE.set(0, 0, -P.clavR, 'XZY'));
     this.mesh.updateMatrixWorld(true);
     for (const sd of ['L', 'R'] as const) {
       // socket target -> hand bone frame and wrist position
       const sock = this.sockets[sd];
       const hq = _q1.copy(this.sq[sd]).multiply(_q2.copy(sock.quaternion).invert());
       const wrist = _v1.copy(this.sp[sd]).sub(_v2.copy(sock.position).applyQuaternion(hq));
-      this.ik.armIK(sd, wrist, hq, 1);
+      this.fp.armIK(sd, wrist, hq, 1);
       applyFingers(b, sd, this.sfing[sd]);
     }
     // the carry anchor (legacy: objects parented to it by older code ride between the palms)

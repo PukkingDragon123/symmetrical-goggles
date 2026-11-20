@@ -1,5 +1,5 @@
-// Station hands: the player's own arms (same lofted body, painted page and rig as the FP viewmodel in
-// src/player/arms.ts), but living in the WORLD scene and posed by two-bone IK onto world-space palm-socket
+// Station hands: the player's own arms (the same Gacha Garage sleeves and articulated hands as the FP viewmodel,
+// src/humans/fprig.ts), but living in the WORLD scene and posed by two-bone IK onto world-space palm-socket
 // targets, so a close-up station (the stove top, the anvil) can put the hands exactly on a pan handle, a knife,
 // a pair of tongs or a hammer. The rig hangs off the camera (the shoulders follow the eye) and every target is
 // given in world space; springs give the hands weight and a little overshoot.
@@ -12,9 +12,8 @@
 //   hands.socket('R').add(knife);                        // tools: grip at the origin, handle +Y, edge +Z
 import * as THREE from 'three';
 import { makeLook } from '../../humans/looks';
-import { armsGeometry, makeSocket } from '../../humans/model';
-import { makeSkeleton } from '../../humans/rig';
-import { HumanAnimator, setGrip } from '../../humans/anim';
+import { FPRig } from '../../humans/fprig';
+import { setGrip } from '../../player/fp/grip';
 
 /** finger channels: [curl, index, thumb, spread, cup] */
 export const GRIP = {
@@ -45,7 +44,7 @@ export class StationHands {
   private bones: Record<string, THREE.Bone>;
   private sockets: { L: THREE.Object3D; R: THREE.Object3D };
   private rig = new THREE.Group();
-  private ik: HumanAnimator;
+  private fp: FPRig;
   private eye = new THREE.Vector3();
   private tgt: { L: HandTarget | null; R: HandTarget | null } = { L: null, R: null };
   private w = { L: 0, R: 0 };
@@ -61,26 +60,18 @@ export class StationHands {
   shiver = 0;
 
   constructor() {
-    const look = makeLook('player');
-    const { geometry, parts } = armsGeometry(look);
-    const d = parts.dims;
-    const { bones, byName, skeleton } = makeSkeleton(d);
-    this.bones = byName;
-    this.mesh = new THREE.SkinnedMesh(geometry, parts.mat);
-    this.mesh.add(bones[0]);
-    this.mesh.bind(skeleton);
-    this.mesh.frustumCulled = false;
-    this.mesh.castShadow = false;
-    this.mesh.receiveShadow = true;
-    this.eye.set(0, d.rest.head[1] + 0.1 * d.hs, d.rest.head[2] + 0.085 * d.hs);
+    this.fp = new FPRig(makeLook('player'));
+    const d = this.fp.dims;
+    this.bones = this.fp.bones;
+    this.mesh = this.fp.mesh;
+    this.eye.set(d.eye[0], d.eye[1], d.eye[2]);
     // the body stands a little behind the eye so elbows and forearms come into view naturally
     this.mesh.position.copy(this.eye).negate().add(new THREE.Vector3(0, 0, -0.04));
     this.rig.rotation.y = Math.PI;
     this.rig.add(this.mesh);
     this.object.add(this.rig);
     this.object.name = 'StationHands';
-    this.sockets = { L: makeSocket(byName.handL, 'L', d), R: makeSocket(byName.handR, 'R', d) };
-    this.ik = new HumanAnimator(byName, d, this.mesh, look.seed);
+    this.sockets = { L: this.fp.socket('L'), R: this.fp.socket('R') };
     this.object.visible = false;
   }
 
@@ -131,6 +122,9 @@ export class StationHands {
     return out;
   }
   private meshInv = new THREE.Matrix4();
+  private meshQi = new THREE.Quaternion();
+  private want = new THREE.Vector3();
+  private camInv = new THREE.Matrix4();
   private restT = { L: { pos: new THREE.Vector3(), q: new THREE.Quaternion(), grip: GRIP.relax as readonly number[] }, R: { pos: new THREE.Vector3(), q: new THREE.Quaternion(), grip: GRIP.relax as readonly number[] } };
 
   update(dt: number, cam: THREE.Camera): void {
@@ -139,8 +133,7 @@ export class StationHands {
     if (!this.object.visible) { this.first = true; return; }
     this.object.updateMatrixWorld(true);
     const meshInv = this.meshInv.copy(this.mesh.matrixWorld).invert();
-    const meshQ = this.mesh.getWorldQuaternion(new THREE.Quaternion());
-    const meshQi = meshQ.clone().invert();
+    const meshQi = this.mesh.getWorldQuaternion(this.meshQi).invert();
     for (const sd of ['L', 'R'] as const) {
       const tg = this.tgt[sd];
       this.w[sd] += ((tg ? 1 : 0) - this.w[sd]) * Math.min(1, dt * 7);
@@ -165,13 +158,14 @@ export class StationHands {
         this.sp[sd].addScaledVector(this.sv[sd], h);
       }
       this.sq[sd].slerp(Q, 1 - Math.exp(-dt * om * 0.75));
-      this.sgrip[sd] = this.sgrip[sd].map((v, i) => v + (grip[i] - v) * (1 - Math.exp(-dt * 16)));
+      const sg = this.sgrip[sd], kg = 1 - Math.exp(-dt * 16);
+      for (let i = 0; i < sg.length; i++) sg[i] += (grip[i] - sg[i]) * kg;
     }
     this.first = false;
     // lean the body toward far work (the shoulders follow, the eye stays): beyond arm's reach, shift the rig
-    const want = new THREE.Vector3();
+    const want = this.want.set(0, 0, 0);
     let wsum = 0;
-    const camInv = new THREE.Matrix4().copy(cam.matrixWorld).invert();
+    const camInv = this.camInv.copy(cam.matrixWorld).invert();
     for (const sd of ['L', 'R'] as const) {
       const tg = this.tgt[sd];
       if (!tg || this.w[sd] < 0.3) continue;
@@ -192,7 +186,7 @@ export class StationHands {
       const sock = this.sockets[sd];
       const hq = _q1.copy(this.sq[sd]).multiply(_q2.copy(sock.quaternion).invert());
       const wrist = _v1.copy(this.sp[sd]).sub(_v2.copy(sock.position).applyQuaternion(hq));
-      this.ik.armIK(sd, wrist, hq, 1);
+      this.fp.armIK(sd, wrist, hq, 1);
       const g = this.sgrip[sd];
       setGrip(b, sd, g[0], g[1], g[2], g[3], g[4]);
     }

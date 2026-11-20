@@ -1,0 +1,148 @@
+// Gesture library. Each gesture returns arm IK targets (wrist positions + elbow poles, in the chest bone's
+// space, metres for a 1.72 m adult — scaled by height) and / or extra joint angles. t = seconds since start,
+// k = 0..1 envelope (already blended by the caller), h = the Human (for proportions / look targets).
+// Defaults: dur (one-shot length; Infinity = hold until clearGesture), expr (face while it plays),
+// legs (full-body: also drives the hips and feet before the leg IK; see dancePose).
+
+import type { GestureDef, GPose, ArmT } from './types';
+import type { Human } from './Human';
+
+export const GESTURES: Record<string, GestureDef> = {
+  wave: { dur: 2.4, expr: 'smile' },
+  bow: { dur: 2.2, expr: 'smile' },
+  point: { dur: 2.6 },
+  cheer: { dur: 2.0, expr: 'happy' },
+  think: { dur: 3.2 },
+  photo: { dur: Infinity },
+  talk: { dur: 2.6 },
+  clap: { dur: 1.8, expr: 'happy' },
+  shrug: { dur: 1.7, expr: 'surprised' },
+  browse: { dur: Infinity },
+  carry: { dur: Infinity },
+  // idle fidgets (played automatically by Human while standing around)
+  _watch: { dur: 1.7 }, _neck: { dur: 1.9 }, _clasp: { dur: 3.2 }, _look: { dur: 2.2 },
+};
+export const FIDGETS = ['_watch', '_neck', '_clasp', '_look'];
+/** More poses registered by other modules (name -> fn(t, h, g, opts)); see poses.js. */
+export type PoseFn = (t: number, h: Human, g: GPose, opts: GestureOpts) => void;
+export interface GestureOpts { dur?: number; hold?: boolean; dir?: number[]; side?: number; [k: string]: unknown }
+export const EXTRA_POSES: Record<string, PoseFn> = {};
+
+const S = (v: number, k: number) => v * k;
+/**
+ * Fill g (a pose record) for gesture `name` at time t.
+ * g: { L: {t:[x,y,z], p:[x,y,z], hand:[x,y,z]} | null, R: ..., spine, chest, neck, head (euler x,y,z arrays, additive),
+ *      hips: [dx, dy, dz] offset, prop, box (bools), shoulders: lift }
+ */
+export function gesturePose(name: string, t: number, h: Human, g: GPose, opts: GestureOpts) {
+  const P = h.P, k = P.H / 1.72;
+  const sy = P.shoulderY - P.waistY, sx = P.shX; // shoulder in chest space
+  const chinY = P.chin - P.waistY, zf = P.zf;
+  g.L = g.R = null; g.prop = null; g.box = false; g.lift = 0;
+  g.spine[0] = g.spine[1] = g.spine[2] = 0; g.chest[0] = g.chest[1] = g.chest[2] = 0;
+  g.neck[0] = g.neck[1] = g.neck[2] = 0; g.head[0] = g.head[1] = g.head[2] = 0; g.hips[0] = g.hips[1] = g.hips[2] = 0;
+  g.eyes = null; g.hipsR[0] = g.hipsR[1] = g.hipsR[2] = 0;
+  g.hands = null; g.grip = null; g.tool = false; g.home = true; for (const f of g.feet) f.fill(0);
+  const arm = (x: number, y: number, z: number, px: number, py: number, pz: number, hx = 0, hy = 0, hz = 0): ArmT => ({ t: [x, y, z], p: [px, py, pz], hand: [hx, hy, hz] });
+  switch (name) {
+    case 'wave': {
+      const w = Math.sin(t * 9);
+      g.R = arm(-sx - S(0.16, k) - w * S(0.045, k), sy + S(0.27, k), S(0.06, k), -1, -1.1, -0.4, 0.15, -0.3, -0.25 + w * 0.4);
+      g.head[2] = 0.08; g.chest[2] = 0.05; g.head[1] = -0.1;
+      break;
+    }
+    case 'bow': {
+      const env = t < 0.7 ? smooth(t / 0.7) : t < 1.4 ? 1 : 1 - smooth((t - 1.4) / 0.7);
+      g.spine[0] = 0.38 * env; g.chest[0] = 0.22 * env; g.neck[0] = 0.08 * env; g.head[0] = 0.12 * env; g.hips[2] = -S(0.03, k) * env;
+      if (h.spec.sex === 'f') { g.L = arm(S(0.035, k), -S(0.3, k), S(0.15, k), 1, 0, -1, 0.1, 0.6, 0); g.R = arm(-S(0.035, k), -S(0.31, k), S(0.15, k), -1, 0, -1, 0.1, -0.6, 0); }
+      break;
+    }
+    case 'point': {
+      const d = opts.dir || [-0.35, 0.15, 1];
+      const n = Math.hypot(d[0], d[1], d[2]);
+      const reach = (P.shoulderY - P.wristY) * 0.97;
+      g.R = arm(-sx + d[0] / n * reach, sy + d[1] / n * reach, d[2] / n * reach, -0.6, -1, -0.2, 0, -0.3, 0);
+      g.chest[1] = -0.12; g.head[1] = -0.2;
+      g.eyes = [-1.2, 0];
+      break;
+    }
+    case 'cheer': {
+      const b = Math.abs(Math.sin(t * 7));
+      g.L = arm(sx + S(0.08, k), sy + S(0.48, k) + b * S(0.03, k), S(0.06, k), 1, -0.2, -0.3, 0, 0.3, 0);
+      g.R = arm(-sx - S(0.08, k), sy + S(0.48, k) + b * S(0.03, k), S(0.06, k), -1, -0.2, -0.3, 0, -0.3, 0);
+      g.hips[1] = b * S(0.025, k); g.head[0] = -0.15; g.chest[0] = -0.05;
+      break;
+    }
+    case 'think': {
+      g.R = arm(-S(0.035, k), chinY - S(0.075, k), zf + S(0.07, k), -1, -1.2, 0.2, -0.6, 0, 0.4);
+      g.L = arm(-S(0.06, k), sy - S(0.24, k), S(0.17, k), 1, -0.5, -0.4, 0, 0.9, 0);
+      g.head[0] = -0.1; g.head[2] = -0.12; g.head[1] = 0.12;
+      g.eyes = [1.5, -1.2];
+      break;
+    }
+    case 'photo': {
+      const y = P.eyeY - P.waistY - S(0.06, k), z = zf + S(0.25, k);
+      g.R = arm(-S(0.06, k), y, z, -1, -1, -0.2, -0.25, -0.5, 0);
+      g.L = arm(S(0.06, k), y, z, 1, -1, -0.2, -0.25, 0.5, 0);
+      g.prop = [0, y + S(0.05, k), z + S(0.02, k)]; g.head[0] = 0.04;
+      break;
+    }
+    case 'talk': {
+      const a = Math.sin(t * 3.1), b = Math.sin(t * 2.3 + 1.5), beat = Math.max(0, Math.sin(t * 6.2)) * 0.3;
+      g.R = arm(-sx * 0.7 - S(0.04, k) * a, -S(0.02, k) + S(0.07, k) * (a * 0.5 + beat), S(0.24, k), -1, -0.6, -0.6, 0, -0.9 + a * 0.3, 0.3);
+      g.L = arm(sx * 0.75 + S(0.03, k) * b, -S(0.09, k) + S(0.05, k) * b, S(0.19, k), 1, -0.6, -0.6, 0, 0.9 - b * 0.3, -0.3);
+      g.head[2] = 0.05 * a; g.head[0] = 0.04 * Math.sin(t * 4.3);
+      break;
+    }
+    case 'clap': {
+      const c = Math.max(0, Math.sin(t * 13)) ** 0.6;
+      const y = sy - S(0.1, k), z = S(0.3, k);
+      g.R = arm(-S(0.025, k) - c * S(0.07, k), y, z, -1, -1, -0.5, -0.5, -0.35, 0);
+      g.L = arm(S(0.025, k) + c * S(0.07, k), y, z, 1, -1, -0.5, -0.5, 0.35, 0);
+      g.head[0] = -0.05;
+      break;
+    }
+    case 'shrug': {
+      const env = t < 0.35 ? smooth(t / 0.35) : t < 1.2 ? 1 : 1 - smooth((t - 1.2) / 0.5);
+      g.R = arm(-sx - S(0.12, k), -S(0.1, k), S(0.17, k), -1, -0.8, -0.6, 0, -1.6, 0.2);
+      g.L = arm(sx + S(0.12, k), -S(0.1, k), S(0.17, k), 1, -0.8, -0.6, 0, 1.6, -0.2);
+      g.lift = S(0.035, k) * env; g.head[2] = 0.14 * env; g.head[0] = -0.05 * env;
+      break;
+    }
+    case 'browse': {
+      g.spine[0] = 0.2; g.chest[0] = 0.08; g.neck[0] = 0.12; g.head[0] = 0.32 + Math.sin(t * 0.7) * 0.05; g.head[1] = Math.sin(t * 0.45) * 0.3;
+      g.R = arm(-S(0.05, k), -S(0.16, k), -P.chestZ - S(0.1, k), -1, 0.2, 0.8, 0.3, 0, 0);
+      g.L = arm(S(0.05, k), -S(0.16, k), -P.chestZ - S(0.1, k), 1, 0.2, 0.8, 0.3, 0, 0);
+      g.eyes = [Math.sin(t * 0.45 + 0.6) * 1.5, 1.2];
+      break;
+    }
+    case 'carry': {
+      const C = h.boxPos;
+      g.R = arm(-S(0.205, k), C[1] - S(0.04, k), C[2], -1, -1, -0.2, 0, -1.57, 0);
+      g.L = arm(S(0.205, k), C[1] - S(0.04, k), C[2], 1, -1, -0.2, 0, 1.57, 0);
+      g.box = true; g.spine[0] = -0.06;
+      break;
+    }
+    case '_watch': {
+      g.L = arm(S(0.03, k), sy - S(0.17, k), S(0.23, k), 1, -1, -0.3, -0.3, 1.4, 0);
+      g.head[0] = 0.28; g.neck[0] = 0.06; g.eyes = [0.5, 1.5];
+      break;
+    }
+    case '_neck': {
+      const r = Math.sin(t * 7) * S(0.012, k);
+      g.R = arm(-S(0.035, k) + r, P.neckBase - P.waistY + S(0.035, k), -P.chestZ * 0.6, -1, 0.6, 0.2, 0.4, 0, 0);
+      g.head[0] = 0.12; g.head[2] = -0.06;
+      break;
+    }
+    case '_clasp': {
+      g.R = arm(-S(0.02, k), -S(0.3, k), S(0.13, k), -1, 0, -0.6, 0.2, -0.9, 0);
+      g.L = arm(S(0.02, k), -S(0.3, k), S(0.14, k), 1, 0, -0.6, 0.2, 0.9, 0);
+      break;
+    }
+    case '_look': { g.head[1] = Math.sin(t * 1.4) * 0.5; g.chest[1] = Math.sin(t * 1.4) * 0.12; g.eyes = [Math.sin(t * 1.4) * 1.5, 0]; break; }
+    default: EXTRA_POSES[name]?.(t, h, g, opts); break;
+  }
+}
+
+function smooth(x: number) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+

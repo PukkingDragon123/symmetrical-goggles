@@ -1,0 +1,296 @@
+// The skinned surface a tear runs on: a patch of a creature's mesh (the face), welded across its UV seams into one
+// connected surface with triangle adjacency, skinned on the CPU (only the vertices a drop is on, once per frame) so a
+// drop can be carried along the actual deforming skin and walked across triangle edges.
+//
+//   const patch = SkinPatch.from(mesh.geometry, { regs: [3], box, seeds: [anchorL, anchorR] });
+//   patch.begin(skel, pos, heading);           // once per frame, after the pose
+//   patch.point(t, b1, b2, out);                // world position of a surface point
+//   patch.walk(s, d, v);                        // move a surface point by a world displacement (tangent)
+//
+// Creature space: metres, +y up, +z forward (the rig's convention). World = yaw(heading) * creature + pos.
+import * as THREE from 'three';
+import type { Skel } from '../../creatures/rig';
+
+export interface PatchOpts {
+  /** keep triangles whose vertices all carry one of these aReg region tags (all when absent) */
+  regs?: number[];
+  /** and lie inside this creature-space box */
+  box?: { min: [number, number, number]; max: [number, number, number] };
+  /** keep only the connected pieces of surface nearest these points (the skull, not the lids or the nose) */
+  seeds?: THREE.Vector3[];
+}
+
+/** a point on the patch: triangle, barycentric weights of its 2nd and 3rd corners */
+export interface SurfPt { t: number; b1: number; b2: number }
+
+const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3(), _d = new THREE.Vector3(), _n = new THREE.Vector3(), _n2 = new THREE.Vector3();
+
+export class SkinPatch {
+  /** welded vertices: rest position, rest normal (creature space), 4 bone indices and weights */
+  readonly nv: number;
+  readonly rest: Float32Array;
+  readonly restN: Float32Array;
+  readonly sIdx: Uint16Array;
+  readonly sW: Float32Array;
+  /** triangles (welded vertex ids) and their neighbours across the edge opposite each corner (-1: open edge) */
+  readonly nt: number;
+  readonly tri: Uint32Array;
+  readonly adj: Int32Array;
+  /** skinned world positions and normals (valid where stamp == frame) */
+  readonly W: Float32Array;
+  readonly WN: Float32Array;
+  private stamp: Uint32Array;
+  private frame = 1;
+  /** bones the patch is skinned to, and their world 3x4 matrices this frame (row-major, 12 per used bone) */
+  private boneOf: Int16Array;
+  private usedBones: number[];
+  private M: Float32Array;
+
+  private constructor(rest: Float32Array, restN: Float32Array, sIdx: Uint16Array, sW: Float32Array, tri: Uint32Array) {
+    this.nv = rest.length / 3; this.nt = tri.length / 3;
+    this.rest = rest; this.restN = restN; this.sIdx = sIdx; this.sW = sW; this.tri = tri;
+    this.adj = new Int32Array(this.nt * 3).fill(-1);
+    const edges = new Map<number, number>();
+    const N = this.nv;
+    for (let t = 0; t < this.nt; t++) for (let k = 0; k < 3; k++) {
+      const a = tri[t * 3 + (k + 1) % 3], b = tri[t * 3 + (k + 2) % 3];
+      const key = Math.min(a, b) * N + Math.max(a, b);
+      const o = edges.get(key);
+      if (o === undefined) edges.set(key, t * 3 + k);
+      else if (o >= 0) { const ot = Math.floor(o / 3); this.adj[t * 3 + k] = ot; this.adj[o] = t; edges.set(key, -1); }
+    }
+    this.W = new Float32Array(this.nv * 3); this.WN = new Float32Array(this.nv * 3); this.stamp = new Uint32Array(this.nv);
+    const used = new Set<number>();
+    for (let i = 0; i < this.nv * 4; i++) if (sW[i] > 0) used.add(sIdx[i]);
+    this.usedBones = [...used].sort((a, b) => a - b);
+    this.boneOf = new Int16Array(Math.max(...this.usedBones, 0) + 1).fill(-1);
+    this.usedBones.forEach((b, i) => { this.boneOf[b] = i; });
+    this.M = new Float32Array(this.usedBones.length * 12);
+  }
+
+  /** cut a patch out of a skinned geometry (position, normal, skinIndex, skinWeight, aReg, index) */
+  static from(geo: THREE.BufferGeometry, o: PatchOpts = {}): SkinPatch {
+    const P = geo.attributes.position.array as ArrayLike<number>, Nn = geo.attributes.normal.array as ArrayLike<number>;
+    const SI = geo.attributes.skinIndex.array as ArrayLike<number>, SW = geo.attributes.skinWeight.array as ArrayLike<number>;
+    const REG = geo.attributes.aReg?.array as ArrayLike<number> | undefined;
+    const I = geo.index!.array as ArrayLike<number>;
+    const ok = (v: number) => {
+      if (o.regs && REG && !o.regs.includes(REG[v])) return false;
+      if (o.box) { for (let k = 0; k < 3; k++) { const x = P[v * 3 + k]; if (x < o.box.min[k] || x > o.box.max[k]) return false; } }
+      return true;
+    };
+    // weld the seams: vertices at the same place become one
+    const weld = new Map<string, number>(), map = new Map<number, number>();
+    const wp: number[] = [], wn: number[] = [], wi: number[] = [], ww: number[] = [], wc: number[] = [];
+    const id = (v: number) => {
+      let w = map.get(v); if (w !== undefined) return w;
+      const key = Math.round(P[v * 3] * 2e4) + ',' + Math.round(P[v * 3 + 1] * 2e4) + ',' + Math.round(P[v * 3 + 2] * 2e4);
+      w = weld.get(key);
+      if (w === undefined) {
+        w = wp.length / 3; weld.set(key, w);
+        wp.push(P[v * 3], P[v * 3 + 1], P[v * 3 + 2]); wn.push(0, 0, 0); wc.push(0);
+        for (let k = 0; k < 4; k++) { wi.push(SI[v * 4 + k]); ww.push(SW[v * 4 + k]); }
+      }
+      wn[w * 3] += Nn[v * 3]; wn[w * 3 + 1] += Nn[v * 3 + 1]; wn[w * 3 + 2] += Nn[v * 3 + 2]; wc[w]++;
+      map.set(v, w); return w;
+    };
+    const tris: number[] = [];
+    for (let f = 0; f < I.length; f += 3) {
+      const a = I[f], b = I[f + 1], c = I[f + 2];
+      if (!ok(a) || !ok(b) || !ok(c)) continue;
+      const A = id(a), B = id(b), C = id(c);
+      if (A === B || B === C || A === C) continue;
+      tris.push(A, B, C);
+    }
+    let patch = new SkinPatch(new Float32Array(wp), normalise(new Float32Array(wn)), new Uint16Array(wi), new Float32Array(ww), new Uint32Array(tris));
+    if (o.seeds?.length) {
+      // keep the connected pieces nearest the seeds
+      const comp = new Int32Array(patch.nt).fill(-1);
+      let nc = 0;
+      for (let t = 0; t < patch.nt; t++) {
+        if (comp[t] >= 0) continue;
+        const st = [t]; comp[t] = nc;
+        while (st.length) { const u = st.pop()!; for (let k = 0; k < 3; k++) { const w = patch.adj[u * 3 + k]; if (w >= 0 && comp[w] < 0) { comp[w] = nc; st.push(w); } } }
+        nc++;
+      }
+      const keep = new Set<number>();
+      for (const s of o.seeds) keep.add(comp[patch.nearestRest(s)]);
+      const kt: number[] = [], vmap = new Int32Array(patch.nv).fill(-1), kp: number[] = [], kn: number[] = [], ki: number[] = [], kw: number[] = [];
+      for (let t = 0; t < patch.nt; t++) {
+        if (!keep.has(comp[t])) continue;
+        for (let k = 0; k < 3; k++) {
+          const v = patch.tri[t * 3 + k];
+          if (vmap[v] < 0) {
+            vmap[v] = kp.length / 3;
+            kp.push(patch.rest[v * 3], patch.rest[v * 3 + 1], patch.rest[v * 3 + 2]); kn.push(patch.restN[v * 3], patch.restN[v * 3 + 1], patch.restN[v * 3 + 2]);
+            for (let j = 0; j < 4; j++) { ki.push(patch.sIdx[v * 4 + j]); kw.push(patch.sW[v * 4 + j]); }
+          }
+          kt.push(vmap[v]);
+        }
+      }
+      patch = new SkinPatch(new Float32Array(kp), new Float32Array(kn), new Uint16Array(ki), new Float32Array(kw), new Uint32Array(kt));
+    }
+    return patch;
+  }
+
+  /** the triangle whose centre (rest pose) is nearest a creature-space point */
+  nearestRest(p: THREE.Vector3): number {
+    let best = 0, bd = Infinity;
+    for (let t = 0; t < this.nt; t++) {
+      let x = 0, y = 0, z = 0;
+      for (let k = 0; k < 3; k++) { const v = this.tri[t * 3 + k]; x += this.rest[v * 3]; y += this.rest[v * 3 + 1]; z += this.rest[v * 3 + 2]; }
+      const d = (x / 3 - p.x) ** 2 + (y / 3 - p.y) ** 2 + (z / 3 - p.z) ** 2;
+      if (d < bd) { bd = d; best = t; }
+    }
+    return best;
+  }
+  /** the surface point (rest pose) nearest a creature-space point: projected into the nearest triangles */
+  closestRest(p: THREE.Vector3, out: SurfPt): SurfPt {
+    let bd = Infinity;
+    for (let t = 0; t < this.nt; t++) {
+      const i0 = this.tri[t * 3], i1 = this.tri[t * 3 + 1], i2 = this.tri[t * 3 + 2];
+      _a.fromArray(this.rest, i0 * 3); _b.fromArray(this.rest, i1 * 3); _c.fromArray(this.rest, i2 * 3);
+      const cx = (_a.x + _b.x + _c.x) / 3 - p.x, cy = (_a.y + _b.y + _c.y) / 3 - p.y, cz = (_a.z + _b.z + _c.z) / 3 - p.z;
+      if (cx * cx + cy * cy + cz * cz > 0.0004 && bd < Infinity) continue;
+      bary(_a, _b, _c, _d.copy(p), _n);
+      const b1 = Math.max(0, _n.y), b2 = Math.max(0, _n.z), s = b1 + b2 > 1 ? 1 / (b1 + b2) : 1;
+      const u1 = b1 * s, u2 = b2 * s, u0 = 1 - u1 - u2;
+      const qx = _a.x * u0 + _b.x * u1 + _c.x * u2, qy = _a.y * u0 + _b.y * u1 + _c.y * u2, qz = _a.z * u0 + _b.z * u1 + _c.z * u2;
+      const d = (qx - p.x) ** 2 + (qy - p.y) ** 2 + (qz - p.z) ** 2;
+      if (d < bd) { bd = d; out.t = t; out.b1 = u1; out.b2 = u2; }
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------------------------------------- skinning
+  /** start a frame: the bones' world matrices from the skeleton's model-space pose and the creature's placement */
+  begin(skel: Skel, pos: THREE.Vector3, heading: number) {
+    this.frame++;
+    const ch = Math.cos(heading), sh = Math.sin(heading), M = this.M;
+    for (let u = 0; u < this.usedBones.length; u++) {
+      const k = this.usedBones[u], q = skel.Q[k], P = skel.P[k], S = skel.Sc[k], R0 = skel.restWorld[k];
+      // rotation matrix of q, its columns scaled by the bone's scale
+      const x = q.x, y = q.y, z = q.z, w = q.w;
+      let m00 = 1 - 2 * (y * y + z * z), m01 = 2 * (x * y - z * w), m02 = 2 * (x * z + y * w);
+      let m10 = 2 * (x * y + z * w), m11 = 1 - 2 * (x * x + z * z), m12 = 2 * (y * z - x * w);
+      let m20 = 2 * (x * z - y * w), m21 = 2 * (y * z + x * w), m22 = 1 - 2 * (x * x + y * y);
+      m00 *= S.x; m10 *= S.x; m20 *= S.x; m01 *= S.y; m11 *= S.y; m21 *= S.y; m02 *= S.z; m12 *= S.z; m22 *= S.z;
+      // creature space: v -> m (v - rest) + P
+      const tx = P.x - (m00 * R0.x + m01 * R0.y + m02 * R0.z), ty = P.y - (m10 * R0.x + m11 * R0.y + m12 * R0.z), tz = P.z - (m20 * R0.x + m21 * R0.y + m22 * R0.z);
+      // world: yaw by the heading, then the position
+      const o = u * 12;
+      M[o] = ch * m00 + sh * m20; M[o + 1] = ch * m01 + sh * m21; M[o + 2] = ch * m02 + sh * m22; M[o + 3] = ch * tx + sh * tz + pos.x;
+      M[o + 4] = m10; M[o + 5] = m11; M[o + 6] = m12; M[o + 7] = ty + pos.y;
+      M[o + 8] = -sh * m00 + ch * m20; M[o + 9] = -sh * m01 + ch * m21; M[o + 10] = -sh * m02 + ch * m22; M[o + 11] = -sh * tx + ch * tz + pos.z;
+    }
+  }
+  /** skin one welded vertex (once per frame) */
+  vtx(v: number) {
+    if (this.stamp[v] === this.frame) return;
+    this.stamp[v] = this.frame;
+    const r = this.rest, n = this.restN, M = this.M, W = this.W, WN = this.WN;
+    const px = r[v * 3], py = r[v * 3 + 1], pz = r[v * 3 + 2], nx = n[v * 3], ny = n[v * 3 + 1], nz = n[v * 3 + 2];
+    let x = 0, y = 0, z = 0, a = 0, b = 0, c = 0;
+    for (let k = 0; k < 4; k++) {
+      const w = this.sW[v * 4 + k]; if (w <= 0) continue;
+      const o = this.boneOf[this.sIdx[v * 4 + k]] * 12;
+      x += w * (M[o] * px + M[o + 1] * py + M[o + 2] * pz + M[o + 3]);
+      y += w * (M[o + 4] * px + M[o + 5] * py + M[o + 6] * pz + M[o + 7]);
+      z += w * (M[o + 8] * px + M[o + 9] * py + M[o + 10] * pz + M[o + 11]);
+      a += w * (M[o] * nx + M[o + 1] * ny + M[o + 2] * nz);
+      b += w * (M[o + 4] * nx + M[o + 5] * ny + M[o + 6] * nz);
+      c += w * (M[o + 8] * nx + M[o + 9] * ny + M[o + 10] * nz);
+    }
+    const l = Math.hypot(a, b, c) || 1;
+    W[v * 3] = x; W[v * 3 + 1] = y; W[v * 3 + 2] = z; WN[v * 3] = a / l; WN[v * 3 + 1] = b / l; WN[v * 3 + 2] = c / l;
+  }
+  private corners(t: number) {
+    const i0 = this.tri[t * 3], i1 = this.tri[t * 3 + 1], i2 = this.tri[t * 3 + 2];
+    this.vtx(i0); this.vtx(i1); this.vtx(i2);
+    _a.fromArray(this.W, i0 * 3); _b.fromArray(this.W, i1 * 3); _c.fromArray(this.W, i2 * 3);
+  }
+  /** world position of a surface point */
+  point(t: number, b1: number, b2: number, out: THREE.Vector3): THREE.Vector3 {
+    this.corners(t);
+    const b0 = 1 - b1 - b2;
+    return out.set(_a.x * b0 + _b.x * b1 + _c.x * b2, _a.y * b0 + _b.y * b1 + _c.y * b2, _a.z * b0 + _b.z * b1 + _c.z * b2);
+  }
+  /** the smooth (interpolated, skinned) normal at a surface point */
+  normal(t: number, b1: number, b2: number, out: THREE.Vector3): THREE.Vector3 {
+    const i0 = this.tri[t * 3], i1 = this.tri[t * 3 + 1], i2 = this.tri[t * 3 + 2], WN = this.WN, b0 = 1 - b1 - b2;
+    this.vtx(i0); this.vtx(i1); this.vtx(i2);
+    return out.set(WN[i0 * 3] * b0 + WN[i1 * 3] * b1 + WN[i2 * 3] * b2, WN[i0 * 3 + 1] * b0 + WN[i1 * 3 + 1] * b1 + WN[i2 * 3 + 1] * b2, WN[i0 * 3 + 2] * b0 + WN[i1 * 3 + 2] * b1 + WN[i2 * 3 + 2] * b2).normalize();
+  }
+  /** the flat normal of a triangle (world, outward) */
+  faceNormal(t: number, out: THREE.Vector3): THREE.Vector3 {
+    this.corners(t);
+    return out.subVectors(_b, _a).cross(_d.subVectors(_c, _a)).normalize();
+  }
+  /** rest-pose (creature space) position and normal of a surface point */
+  restPoint(t: number, b1: number, b2: number, out: THREE.Vector3, outN?: THREE.Vector3): THREE.Vector3 {
+    const i0 = this.tri[t * 3], i1 = this.tri[t * 3 + 1], i2 = this.tri[t * 3 + 2], r = this.rest, n = this.restN, b0 = 1 - b1 - b2;
+    out.set(r[i0 * 3] * b0 + r[i1 * 3] * b1 + r[i2 * 3] * b2, r[i0 * 3 + 1] * b0 + r[i1 * 3 + 1] * b1 + r[i2 * 3 + 1] * b2, r[i0 * 3 + 2] * b0 + r[i1 * 3 + 2] * b1 + r[i2 * 3 + 2] * b2);
+    outN?.set(n[i0 * 3] * b0 + n[i1 * 3] * b1 + n[i2 * 3] * b2, n[i0 * 3 + 1] * b0 + n[i1 * 3 + 1] * b1 + n[i2 * 3 + 1] * b2, n[i0 * 3 + 2] * b0 + n[i1 * 3 + 2] * b1 + n[i2 * 3 + 2] * b2).normalize();
+    return out;
+  }
+
+  /** move a surface point by a world displacement `d` (projected into the surface as it goes), walking across
+   *  triangle edges and carrying the velocity `v` round each fold (its speed kept). Returns false when the point ran
+   *  off an open edge of the patch (it is left on that edge). */
+  walk(s: SurfPt, d: THREE.Vector3, v: THREE.Vector3): boolean {
+    let t = s.t, b1 = s.b1, b2 = s.b2;
+    const rem = _n2.copy(d);
+    for (let it = 0; it < 10; it++) {
+      this.corners(t);
+      const n = _n.subVectors(_b, _a).cross(_d.subVectors(_c, _a)).normalize();
+      const len = rem.length();
+      rem.addScaledVector(n, -rem.dot(n));
+      const l2 = rem.length(); if (l2 > 1e-12) rem.multiplyScalar(len / l2);
+      if (len < 1e-9) break;
+      // the barycentric change of the displacement
+      bary(_a, _b, _c, _d.copy(_a).add(rem), _c2);
+      const d1 = _c2.y, d2 = _c2.z, d0 = -d1 - d2;
+      const b0 = 1 - b1 - b2;
+      const e0 = b0 + d0, e1 = b1 + d1, e2 = b2 + d2;
+      if (e0 >= 0 && e1 >= 0 && e2 >= 0) { b1 = e1; b2 = e2; break; }
+      // it leaves through the edge whose opposite corner's weight reaches zero first
+      let sMin = 1, k = -1;
+      if (e0 < 0) { const q = b0 / (b0 - e0); if (q < sMin) { sMin = q; k = 0; } }
+      if (e1 < 0) { const q = b1 / (b1 - e1); if (q < sMin) { sMin = q; k = 1; } }
+      if (e2 < 0) { const q = b2 / (b2 - e2); if (q < sMin) { sMin = q; k = 2; } }
+      if (k < 0) { b1 = Math.max(0, e1); b2 = Math.max(0, e2); break; }
+      sMin = Math.max(0, sMin);
+      let w0 = b0 + d0 * sMin, w1 = b1 + d1 * sMin, w2 = b2 + d2 * sMin;
+      if (k === 0) w0 = 0; else if (k === 1) w1 = 0; else w2 = 0;
+      const tot = w0 + w1 + w2 || 1; w0 /= tot; w1 /= tot; w2 /= tot;
+      rem.multiplyScalar(1 - sMin);
+      const nb = this.adj[t * 3 + k];
+      if (nb < 0) { s.t = t; s.b1 = w1; s.b2 = w2; return false; }
+      // into the neighbour: the shared edge's two corners keep their weights
+      _wv[0] = w0; _wv[1] = w1; _wv[2] = w2;
+      const ia = this.tri[t * 3 + (k + 1) % 3], ib = this.tri[t * 3 + (k + 2) % 3];
+      const wa = _wv[(k + 1) % 3], wb = _wv[(k + 2) % 3];
+      let nb1 = 0, nb2 = 0;
+      for (let j = 0; j < 3; j++) { const vj = this.tri[nb * 3 + j]; const wj = vj === ia ? wa : vj === ib ? wb : 0; if (j === 1) nb1 = wj; else if (j === 2) nb2 = wj; }
+      // the velocity folds over the edge into the new face (its speed kept)
+      this.faceNormal(nb, _n3);
+      const sp = v.length(); v.addScaledVector(_n3, -v.dot(_n3)); const sv = v.length(); if (sv > 1e-9) v.multiplyScalar(sp / sv);
+      t = nb; b1 = nb1; b2 = nb2;
+    }
+    s.t = t; s.b1 = Math.max(0, Math.min(1, b1)); s.b2 = Math.max(0, Math.min(1 - s.b1, b2));
+    return true;
+  }
+}
+const _c2 = new THREE.Vector3(), _n3 = new THREE.Vector3(), _wv = new Float32Array(3);
+/** barycentric weights of p in triangle (a, b, c), projected into its plane: out = (w0, w1, w2) */
+function bary(a: THREE.Vector3, b: THREE.Vector3, c: THREE.Vector3, p: THREE.Vector3, out: THREE.Vector3): THREE.Vector3 {
+  const v0x = b.x - a.x, v0y = b.y - a.y, v0z = b.z - a.z, v1x = c.x - a.x, v1y = c.y - a.y, v1z = c.z - a.z, v2x = p.x - a.x, v2y = p.y - a.y, v2z = p.z - a.z;
+  const d00 = v0x * v0x + v0y * v0y + v0z * v0z, d01 = v0x * v1x + v0y * v1y + v0z * v1z, d11 = v1x * v1x + v1y * v1y + v1z * v1z;
+  const d20 = v2x * v0x + v2y * v0y + v2z * v0z, d21 = v2x * v1x + v2y * v1y + v2z * v1z, den = d00 * d11 - d01 * d01 || 1e-12;
+  const w1 = (d11 * d20 - d01 * d21) / den, w2 = (d00 * d21 - d01 * d20) / den;
+  return out.set(1 - w1 - w2, w1, w2);
+}
+function normalise(a: Float32Array): Float32Array {
+  for (let i = 0; i < a.length; i += 3) { const l = Math.hypot(a[i], a[i + 1], a[i + 2]) || 1; a[i] /= l; a[i + 1] /= l; a[i + 2] /= l; }
+  return a;
+}

@@ -414,8 +414,10 @@ export async function buildStore(): Promise<Place> {
   {
     const levels = [F + 0.35, F + 0.8, F + 1.25, F + 1.7, F + 2.12];
     const units: [number, number, string[][]][] = [
-      [-2.6, 2.1, [['beans', 'coffee'], ['cookies', 'syrup'], ['coffee', 'beans', 'beans'], ['matches', 'batteries', 'matches'], ['syrup', 'cookies']]],
-      [0.1, 2.1, [['eggs', 'bacon'], ['jerky', 'jerky', 'beer'], ['beer', 'beer'], ['firestarter', 'rope'], ['kindling', 'bannock_mix', 'bannock_mix']]],
+      // groceries: sacks low, cans and bottles at eye level, the small tins up top
+      [-2.6, 2.1, [['flour', 'sugar', 'potatoes'], ['oats', 'rice', 'macaroni', 'peas'], ['oil', 'syrup', 'beans', 'tomatoes'], ['coffee', 'tea', 'labrador_tea', 'bouillon'], ['salt', 'pepper', 'baking_powder', 'cookies']]],
+      // fresh: produce bins low, the cool shelf (eggs, milk, butter, cheese) and the butcher's case above
+      [0.1, 2.1, [['onions', 'carrots', 'garlic'], ['eggs', 'milk', 'butter', 'cheese'], ['bacon', 'ground_beef', 'sausage', 'lard'], ['firestarter', 'rope', 'beer'], ['kindling', 'matches', 'batteries']]],
     ];
     for (const [z, len, rows] of units) {
       const x = -IX + 0.2, ry = Math.PI / 2;
@@ -437,7 +439,7 @@ export async function buildStore(): Promise<Place> {
       const x = gx + s * 0.22;
       shelfUnit(ms, rnd, x, gz, ry, len, 0.42, levels, s > 0);
       const fr = unitFrame(x, gz, ry);
-      const rows = s > 0 ? [['sleeping_bag', 'coal', 'charcoal'], ['backpack_big', 'axe_handle', 'iron_stock', 'tool_steel'], ['batteries', 'matches', 'file']] : [['bundle'], ['bread', 'cookies', 'bannock_mix'], ['jerky', 'coffee', 'syrup']];
+      const rows = s > 0 ? [['sleeping_bag', 'coal', 'charcoal'], ['backpack_big', 'axe_handle', 'iron_stock', 'tool_steel'], ['batteries', 'matches', 'file']] : [['bundle'], ['bread', 'cookies', 'bannock_mix'], ['jerky', 'beer', 'jerky']];
       levels.forEach((y, i) => {
         fillRow(fr, y, len, 0.42, rows[i], shelfN * 31 + 11);
         anchors[`shelf_${shelfN}`] = anchor(fr, `shelf_${shelfN}`, 0, y, 0, 0);
