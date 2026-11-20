@@ -203,7 +203,7 @@ export class Renderer {
             vec3 p = uCamPos + rd * t;
             float lit = sunLit(p);
             float air = uAir * 0.0018 * (1.0 - smoothstep(42.0, 60.0, t));
-            float dm = mistOn > 0.001 ? mistOn * 0.011 * mistAt(p) : 0.0;
+            float dm = mistOn > 0.001 ? mistOn * 0.0045 * mistAt(p) : 0.0;
             vec3 Ls = uSunCol * phase * lit;
             S += T * (air * Ls + dm * (min(Ls * 0.25, vec3(0.35)) + uAmb)) * dt;
             T *= exp(-dm * dt);
