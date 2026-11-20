@@ -477,8 +477,13 @@ export class Produce {
   done = { a: 0, b: 0 };
   /** where it lies on the board (board frame x, z) */
   local = new THREE.Vector2();
+  /** an invisible box over the whole produce for the pointer (the halves have a gap between them) */
+  readonly hit: THREE.Mesh;
   constructor(readonly id: string, readonly def: ProduceDef, shape?: Shape) {
     this.mat = produceMat(def.kind);
+    this.hit = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ visible: false }));
+    this.hit.userData.pickProxy = true;
+    this.obj.add(this.hit);
     const s = shape ?? def.shape;
     this.blocks.push({ shape: s, x: 0, z: 0, turn: 0, xs: [], zs: [], cells: [], mesh: null, flatSkin: def.kind === 'garlic' });
     if (def.peel) {
@@ -589,6 +594,11 @@ export class Produce {
       this.obj.add(b.mesh);
     }
     if (this.skin) this.skin.visible = this.peel < 1;
+    const e = this.extent();
+    let h = 0.01;
+    for (const b of this.blocks) h = Math.max(h, shapeHeight(b.shape));
+    this.hit.scale.set(e.x1 - e.x0 + 0.02, h + 0.01, e.z1 - e.z0 + 0.02);
+    this.hit.position.set((e.x0 + e.x1) / 2, (h + 0.01) / 2, (e.z0 + e.z1) / 2);
   }
 
   /** all the pieces (for a pile) */

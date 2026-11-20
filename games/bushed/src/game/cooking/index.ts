@@ -2946,6 +2946,8 @@ export class CookingStation extends Station {
     boardNdc: (dx: number, dz = 0) => { const pr = this.produce; const l = pr ? pr.local : _v2.set(0, 0); return this.ndc(this.W(this.boardSurface(_v2.set(l.x + dx, l.y + dz)).clone().add(V3(0, 0.03, 0)))); },
     /** NDC of a pantry / fixture / served thing by id */
     itemNdc: (id: string) => { const pp = this.pantry.find((x) => x.id === id) ?? this.fixtures.find((x) => x.id === id); return pp ? this.ndc(pp.obj.getWorldPosition(new THREE.Vector3()).add(V3(0, 0.06, 0))) : null; },
+    /** what the pointer would pick at an NDC point (tests) */
+    pickAt: (x: number, y: number) => { const keep = { x: this.ptr.x, y: this.ptr.y }; this.ptr.x = x; this.ptr.y = y; const h = this.pick(this.pickables()); this.ptr.x = keep.x; this.ptr.y = keep.y; const c = this.classify(h); return c ? `${c.kind}${c.v ? ':' + c.v.kind : ''}${c.pp ? ':' + c.pp.id : ''} (${h?.object.name || h?.object.parent?.name || ''})` : 'none'; },
     /** the station's pointer script (tests drive the real input path with it) */
     point: (x: number, y: number, down = false, rdown = false) => { this.script = { x, y, down, rdown }; },
     release: () => { this.script = null; },
