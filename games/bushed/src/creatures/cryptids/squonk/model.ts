@@ -8,8 +8,9 @@
 // jaw either side, a soft double chin, and long leathery ear flaps, cupped and rimmed, hanging down past the jowls.
 // Paint: a dusky mauve hide going grey and mottled on the back, pinker and paler underneath and in the face, dark
 // rings round the eyes, flushed nose and cheeks, faint stains where the tears always run, every fold shadowed in plum,
-// warts and moles everywhere. The tears themselves (drops, the wet film they leave, the puddles, the melt into a sheet
-// of water) are not painted: they are simulated (src/gfx/tears) from the anchors SQ_TEAR at the inner eye corners.
+// warts and moles everywhere. The tears themselves are pixel-art particles (src/gfx/tears) from the anchors SQ_TEAR at
+// the inner eye corners. It melts into a puddle of tears (the puddle is part of the model, on its own bone at the
+// feet, painted clear water: dark and still, pale ripple rings, a lit rim).
 // Creature space: metres, +z forward, +y up, ground y = 0.
 import {
   Body, trunk, limb, legRings, paintedEye, stalk, curve, chainSkin, sac, bulbs, gridSurf, hand, Px, RP, h3, cl,
@@ -25,8 +26,6 @@ export const SQ_EYE: V3 = [0.056, 0.413, 0.378];
 export const SQ_EYE_AX: V3 = [0.3, 0.12, 0.95];
 /** where the tears well up: the inner corner of the left eye (mirror x for the right), creature space */
 export const SQ_TEAR: V3 = [0.047, 0.392, 0.402];
-/** drip edges, where hanging tears let go: the chin, and the bottom of the left jowl (mirror x for the right) */
-export const SQ_DRIPS: [V3, V3] = [[0, 0.297, 0.392], [0.1, 0.268, 0.335]];
 const EYE_R = 0.03;
 /** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
 const BEAD_R = 0.0135, SQ_BEAD: V3 = SQ_EYE.map((v, i) => v + SQ_EYE_AX[i] * (EYE_R - BEAD_R) * 0.75 / Math.hypot(...SQ_EYE_AX)) as V3;
@@ -42,8 +41,9 @@ const H = (x: number, y: number, z: number): V3 => [SQ_HEAD[0] + x, SQ_HEAD[1] +
 
 export function squonkBones(): BoneDef[] {
   const { b, A } = bonesKit();
-  // the root sits on the ground (it rocks on its feet); the body hangs from 'body'
+  // the root sits on the ground (it rocks on its feet); the body hangs from 'body', which squashes to melt
   A('root', null, [0, 0, -0.03]);
+  A('puddle', 'root', [0, 0.004, -0.03]);
   A('body', 'root', [0, 0.0, -0.04]);
   A('belly', 'body', [0, 0.2, -0.08]);
   A('chest', 'body', [0, 0.27, 0.1]);
@@ -78,7 +78,7 @@ const tearTrack = (ax: number, y: number, z: number) => {
 type Part = 'body' | 'head' | 'jaw' | 'leg' | 'ear' | 'tail';
 /** the ill-fitting hide: dusky mauve, a grey mottled back, pinker and paler underneath and in the face, dark rings
  *  round the eyes, a flush on the cheeks, every fold shadowed plum; strokes run with the skin's sag (downward, and
- *  round the neck rolls); warts and moles drawn over it; faint tear stains (the wet film itself is simulated) */
+ *  round the neck rolls); warts and moles drawn over it; faint tear stains where the tears always run */
 function skinPaint(part: Part, earInner?: (p: V3, n: V3) => boolean) {
   return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
@@ -142,6 +142,18 @@ const nosePaint = (ch: Chart, _p: Piece, b: Body) => {
   }
   px.creaseInk(1.1, { dark: 1, lit: 0.8 });
   wet(px, () => 0.8, SKIN, 1.2);
+  px.flush();
+};
+const puddlePaint = (ch: Chart, _p: Piece, b: Body) => {
+  // tears: clear water, dark where it reflects the canopy, pale ripple rings where drops fell, a lit rim (no teal)
+  const px = new Px(ch, b), P = px.gb.P, DEEP = RP('slate'), LIT = RP('snow');
+  px.lightK = 0.3;
+  for (let i = 0; i < px.n; i++) {
+    const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], r = Math.hypot(x, z + 0.03), ring = Math.abs(Math.sin(r * 120 + fbm3(x * 20, 1, z * 20, 2) * 3)) < 0.1;
+    if (ring || r > 0.31) px.put(i, LIT, 2.6 + (r > 0.31 ? 1.2 : 0) + fbm3(x * 30, y, z * 30, 2) * 0.4);
+    else px.put(i, DEEP, 1.4 + fbm3(x * 30, y, z * 30, 2) * 0.8);
+    px.rough[i] = 10;
+  }
   px.flush();
 };
 const clawPaint = solid(RP('bone'), (x, y, z, ny) => 2.8 + (ny > 0.3 ? 0.6 : 0) + fbm3(x * 90, y * 90, z * 90, 2) * 0.5, 120);
@@ -317,6 +329,9 @@ export function* squonkModelGen(o: { page?: number; den?: number } = {}): ModelG
     seats.push({ p: q.p, n: q.n, r, h: r * 0.9 });
   }
   body.add(bulbs({ name: 'warts', seats, skin: (p) => (p[2] > 0.2 && p[1] > 0.3 ? [hb, 1] : spineSkin(p)), paint: wartPaint, levels: 1, k: 1.4 })).reg = REG.torso;
+  // ---- the puddle it melts into (scaled to nothing until then)
+  body.add(stalk({ name: 'puddle', path: [[0, 0.0, -0.03], [0, 0.006, -0.03], [0, 0.009, -0.03]], up: [0, 0, 1], r: (t) => 0.34 * (1 - t * 0.12), around: 24,
+    sec: (a) => 1 + 0.13 * Math.sin(a * 3 + 0.4) + 0.08 * Math.sin(a * 5 + 1.3) + 0.05 * Math.sin(a * 9), capS: false, capE: true, levels: 1, k: 0.5, skin: () => [bi('puddle'), 1], paint: puddlePaint })).noOcc = true;
   const out = yield* body.buildGen({ den: o.den ?? 380, maxScale: 2, budget: 26000 });
   return finishModel(body, out, bones);
 }

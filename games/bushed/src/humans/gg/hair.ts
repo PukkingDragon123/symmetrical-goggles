@@ -99,7 +99,7 @@ export function hairSegments(spec: Spec, P: Props, J: Joints): Seg[] {
     const drop = (0.05 + 0.13 * beard) * hu, jw = P.hw * (0.62 + 0.18 * beard);
     add('beard', 'head', 'hair', P.chin - drop, P.chin + 0.12 * hu, [0, P.zf - 0.11 * hu, jw * 0.48, 0.08 * hu], [0, P.zf - 0.19 * hu + 0.012 * hu, jw * 1.02, 0.19 * hu + 0.012 * hu], { ch: 0.45, caps: 'bot', cut: 'messy' });
   }
-  if (spec.face.mustache === 'walrus') add('stache', 'head', 'hair', P.mouthY - 0.035 * hu, P.noseY - 0.035 * hu, [0, P.zf + 0.012 * hu, 0.17 * hu, 0.016 * hu], [0, P.zf + 0.004 * hu, 0.14 * hu, 0.016 * hu], { ch: 0.45, caps: 'bot', cut: 'messy' });
+  if (spec.face.mustache === 'walrus') add('stache', 'head', 'hair', P.mouthY - 0.02 * hu, P.noseY - 0.04 * hu, [0, P.zf + 0.004 * hu, 0.16 * hu, 0.012 * hu], [0, P.zf - 0.002 * hu, 0.13 * hu, 0.012 * hu], { ch: 0.45, caps: 'bot', cut: 'messy' });
   // a rounder skull top for bald heads (skin)
   if (st === 'bald' && (!hat || hat === 'headband')) add('scalp', 'head', 'head', P.hairY + 0.02 * hu, P.crown + 0.04 * hu, cs(P, P.hairY + 0.02 * hu, 0.003 * hu, 0.003 * hu), (() => { const c = cs(P, P.crown, 0, 0, -0.04 * hu); c[2] *= 0.62; c[3] *= 0.64; return c; })(), { ch: 0.45, caps: 'top' });
   if (!hat) return S;

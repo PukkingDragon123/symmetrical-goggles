@@ -334,7 +334,7 @@ type ViewName = keyof typeof VIEWS;
 const SERVE = V3(0.5, COUNTER.y, 0.42), MUG = V3(0.72, COUNTER.y, 0.5), BOX = V3(0.73, COUNTER.y, 0.33);
 const BOWL_AT = V3(-0.74, PANTRY.y, 0.6), PAIL_AT = V3(-0.47, PANTRY.y, 0.6), CUP_AT = V3(-0.6, PANTRY.y, 0.5), SPOON_AT = V3(-0.6, PANTRY.y, 0.68);
 /** continuous pours: portions per second (water: litres per second into pots, cups into the bowl) */
-const FLOW: Record<string, number> = { oil: 1.4, milk: 2.2, syrup: 1.6, tomatoes: 0.9, beans: 0.8, water: 0.6, flour: 2.4, sugar: 2.4, oats: 2.4, rice: 2.4, macaroni: 2.4, peas: 2.4, baking_powder: 1.6 };
+const FLOW: Record<string, number> = { oil: 1.4, milk: 2.2, syrup: 1.6, tomatoes: 0.9, beans: 0.8, water: 1.2, flour: 2.4, sugar: 2.4, oats: 2.4, rice: 2.4, macaroni: 2.4, peas: 2.4, baking_powder: 1.6 };
 const START_RECIPES = ['bacon_eggs', 'fried_trout', 'hash_browns', 'camp_coffee', 'beans_bacon'];
 
 // ---------------------------------------------------------------------------------------------- the station
@@ -356,6 +356,7 @@ export class CookingStation extends Station {
   private cup: THREE.Object3D;
   private tsp: THREE.Object3D;
   private dipper: THREE.Object3D;
+  private pailObj: THREE.Object3D;
   private toolRest = new Map<THREE.Object3D, { p: THREE.Vector3; q: THREE.Quaternion }>();
   private foods: Food[] = [];
   private stock: Stock | null = null;
@@ -368,7 +369,7 @@ export class CookingStation extends Station {
   private plateObj: THREE.Object3D;
   private dishBowl: THREE.Object3D;
   private mugObj: THREE.Object3D;
-  private served: { v: Verdict; foods: Food[]; piles: Pile[]; obj: THREE.Object3D; hit: THREE.Mesh; extra: THREE.Object3D[] } | null = null;
+  private served: { v: Verdict; foods: Food[]; piles: Pile[]; obj: THREE.Object3D; hit: THREE.Mesh; extra: THREE.Mesh[] } | null = null;
   private poured: { v: Verdict } | null = null;
   private rack: THREE.Group;
   private rackStrips: Food[] = [];
@@ -473,8 +474,11 @@ export class CookingStation extends Station {
     this.fixture('pepper', buildPepperMill(), V3(0.71, SHELF.y, -0.12), 0, 0.05, 0.14, 0.05);
     const pail = buildPail();
     this.fixture('water', pail, PAIL_AT, 0.4, 0.2, 0.22, 0.2);
+    this.pailObj = pail;
     this.dipper = pail.userData.dipper as THREE.Object3D;
     this.rest(this.dipper, PAIL_AT.clone().add(V3(0.0, 0.21, 0.02)), new THREE.Euler(0, 0.4 - Math.PI / 2, -0.3));
+    const wf = this.fixtures.find((x) => x.id === 'water')!;
+    wf.obj = this.dipper; wf.home = this.dipper.position.clone(); wf.yaw = 0.4 - Math.PI / 2;
     this.left.set('salt', 40); this.left.set('pepper', 30);
     // ---- the mixing bowl
     this.bowlObj = buildMixBowl();
@@ -707,7 +711,7 @@ export class CookingStation extends Station {
     if (this.cardOpen !== null) this.closeCards();
     this.cardMini.mesh.visible = false;
     this.streamOn = 0; this.stream.visible = false;
-    for (const p of this.pantry) p.obj.removeFromParent();
+    for (const p of this.pantry) { p.obj.removeFromParent(); p.cap?.removeFromParent(); }
     this.pantry = [];
     for (const t of [this.knife, this.turner, this.spoon, this.cup, this.tsp, this.dipper]) this.putBack(t);
   }
@@ -737,10 +741,10 @@ export class CookingStation extends Station {
   /** set out what the player owns: fresh food on the pantry table, staples in the larder, oil and butter on the shelf */
   private layPantry(): void {
     const g = this.g;
-    for (const p of this.pantry) p.obj.removeFromParent();
+    for (const p of this.pantry) { p.obj.removeFromParent(); p.cap?.removeFromParent(); }
     this.pantry = [];
     const meats = meatIds();
-    const table = [...TABLE_ORDER.filter((id) => !meats.includes(id) || TABLE_ORDER.includes(id)), ...meats.filter((m) => !TABLE_ORDER.includes(m)), 'kindling'];
+    const table = [...TABLE_ORDER, ...meats.filter((m) => !TABLE_ORDER.includes(m)), 'kindling'];
     const put = (id: string, pos: THREE.Vector3, yaw: number, fit: number, obj?: THREE.Object3D) => {
       const o = obj ?? (id === 'bannock_mix' ? buildMixSack() : meats.includes(id) ? buildMeatPack() : buildProduct(id));
       // scale wide things down to their slot
@@ -925,7 +929,7 @@ export class CookingStation extends Station {
     const at = this.W(_t3.copy(v.pos).add(_t2.set(0, 0.03, 0)));
     const fry = v.kind === 'skillet' || v.wet < 0.05;
     const sizzle = fry ? clamp((T - 110) / 90, 0, 1) * clamp(wet * 0.6 + Math.min(1, fat.total / 20) * 0.8 + meat * 0.2, 0, 1.2) : 0;
-    if (v.kind === 'skillet' || fry) this.loop(v, 'voice', 'pan_fry', sizzle * 0.9, 0.9 + sizzle * 0.2);
+    this.loop(v, 'voice', 'pan_fry', sizzle * 0.9, 0.9 + sizzle * 0.2);
     if (sizzle > 0.05 && Math.random() < dt * 14 * sizzle) puffs.emit(_t1.copy(at).add(_t2.set((Math.random() - 0.5) * 0.14, 0.02, (Math.random() - 0.5) * 0.14)), V3(0, 0.18, 0), { size: 0.022, grow: 2.2, life: 1.1, color: new THREE.Color(0.86, 0.86, 0.84), alpha: 0.18 * sizzle, rise: 0.15 });
     // spitting fat: more of it with wet food and as the oil gets hotter; past 250 C it really splatters
     const spit = fry ? clamp((T - 150) / 70, 0, 1.6) * (Math.min(1, fat.total / 15) * 4 + meat * 1.2 + (v.foods.length + v.piles.length ? 0.5 : 0)) : 0;
@@ -973,7 +977,7 @@ export class CookingStation extends Station {
     const at = () => this.W(_t1.copy(v.pos).add(_t2.set(p.obj.position.x - v.pos.x, 0.05, p.obj.position.z - v.pos.z))).clone();
     const once = (k: string, t: string, c?: string) => { if (!p.calls.has(k)) { p.calls.add(k); if (this.active) this.pop(t, at(), c); } };
     if (p.b > 0.75 && p.a < 0.4) once('stir', `Stir the ${KEY_NAME[p.key] ?? p.key}`, '#ffe08a');
-    if (p.least() > 0.7 && p.worst < 1.08) once('golden', 'Golden', '#ffd070');
+    if (Math.min(p.a, p.b) > 0.7 && p.worst < 1.08) once('golden', 'Golden', '#ffd070');
     if (p.worst > 1.1) once('brown', 'Catching', '#e0a060');
     if (p.worst > 1.32) once('burn', 'Burning!', '#ff7050');
   }
@@ -1137,7 +1141,7 @@ export class CookingStation extends Station {
     const o = f.obj;
     const base = _t1;
     if (f.where === 'board') this.boardSurface(f.local, base);
-    else if (f.where === 'plate') base.copy(this.served?.obj.position ?? SERVE).add(_t2.set(f.local.x, this.served?.obj === this.dishBowl ? 0.045 : 0.022, f.local.y));
+    else if (f.where === 'plate') base.copy(this.served?.obj.position ?? SERVE).add(_t2.set(f.local.x, (this.served?.obj === this.dishBowl ? 0.045 : 0.022) + f.lift0, f.local.y));
     else if (f.where === 'rack') base.copy(this.rack.position).add(_t2.set(f.local.x, -0.004, 0.025));
     else {
       const v = this.vesselOf(f)!;
@@ -1254,7 +1258,7 @@ export class CookingStation extends Station {
     for (const l of this.lids) list.push(l.obj);
     for (const pp of this.pantry) list.push(pp.obj);
     for (const pp of this.fixtures) list.push(pp.obj);
-    list.push(this.boardHit, this.plateObj, this.mugObj, this.rack, this.bowlObj, this.recipeBox, this.dipper);
+    list.push(this.boardHit, this.plateObj, this.mugObj, this.rack, this.bowlObj, this.recipeBox, this.pailObj);
     if (this.cardMini.mesh.visible) list.push(this.cardMini.mesh);
     if (this.served) list.push(this.served.hit);
     if (this.viewName === 'door' && this.doorPivot) list.push(this.doorPivot);
@@ -1274,7 +1278,7 @@ export class CookingStation extends Station {
       if (lid) return { kind: 'lid', lid };
       const pp = this.pantry.find((x) => x.hit === o || x.obj === o) ?? this.fixtures.find((x) => x.hit === o || x.obj === o);
       if (pp) return { kind: 'pantry', pp };
-      if (o === this.dipper) return { kind: 'pantry', pp: this.fixtures.find((x) => x.id === 'water') };
+      if (o === this.dipper || o === this.pailObj) return { kind: 'pantry', pp: this.fixtures.find((x) => x.id === 'water') };
       if (o === this.boardHit || o === this.board) return { kind: 'board' };
       if (o === this.bowlObj) return { kind: 'bowl' };
       if (o === this.recipeBox) return { kind: 'box' };
@@ -1719,7 +1723,6 @@ export class CookingStation extends Station {
     if (id === 'kindling') return none;
     if (id === 'fish' || id === 'bannock_mix' || how === 'produce' || how === 'unwrap') {
       if (overBoard) return { kind: 'board', label: id === 'bannock_mix' ? 'Mix the dough' : how === 'produce' ? (id === 'garlic' ? 'Break off a clove' : `A ${PRODUCE[id]?.name ?? id} on the board`) : 'Unwrap it on the board' };
-      if (id === 'berries') break_;
       return null;
     }
     switch (how) {
@@ -1773,7 +1776,7 @@ export class CookingStation extends Station {
         tilt = pp.ing?.how === 'shake' ? 2.4 : -1.15;
         this.flowStep(d, tgt, at, dt);
       }
-      const amount = this.amountText(pp, d.total);
+      const amount = this.amountText(pp, d.total, d.tgt?.kind === 'bowl');
       this.hover = { text: d.total > 0 ? amount : tgt?.label ?? '', at: this.W(at) };
     }
     const how = pp.ing?.how;
@@ -1783,14 +1786,15 @@ export class CookingStation extends Station {
     if (p.released) this.carryRelease(d, at);
   }
 
-  private amountText(pp: Pantry, total: number): string {
+  private amountText(pp: Pantry, total: number, bowl = false): string {
     const ing = pp.ing;
-    if (pp.id === 'water') return total < 1 ? `${Math.round(total * 4)} cups of water` : `${total.toFixed(1)} L of water`;
+    if (pp.id === 'water') return bowl ? `${total} cup${total > 1 ? 's' : ''} of water` : total < 1 ? `${Math.round(total * 4)} cups of water` : `${total.toFixed(2)} L of water`;
     if (!ing) return '';
     const n = total;
     if (ing.unit === '¼ cup') { const cups = n / 4; const w = Math.floor(cups), q = Math.round((cups - w) * 4); return `${w ? w + ' ' : ''}${['', '¼', '½', '¾'][q] ?? ''}${w || q ? '' : '0'} cup${cups > 1 ? 's' : ''} of ${ing.name}`; }
     if (ing.unit === 'pinch') return `${Math.round(n)} pinch${n >= 2 ? 'es' : ''} of ${ing.name}`;
-    return `${Math.round(n * 10) / 10} ${ing.unit}${n >= 2 && !ing.unit.endsWith('s') ? 's' : ''} of ${ing.name}`;
+    const pl = n >= 2 && !['tsp', 'tbsp', 'third of the can', 'half can'].includes(ing.unit) && !ing.unit.endsWith('s');
+    return `${Math.round(n * 10) / 10} ${ing.unit}${pl ? 's' : ''} of ${ing.name}`;
   }
 
   /** a continuous pour, measure or shake over a target */
@@ -1905,12 +1909,13 @@ export class CookingStation extends Station {
     const pp = d.p;
     this.drag = null;
     const tgt = at ? this.carryTarget(pp, at) : null;
-    if (d.total > 0 && pp.ing) this.pop(this.amountText(pp, d.total), this.W(_t1.copy(pp.obj.position)).add(_t2.set(0, 0.08, 0)).clone(), '#fff0c0');
+    if (d.total > 0 && (pp.ing || pp.id === 'water')) this.pop(this.amountText(pp, d.total, d.tgt?.kind === 'bowl'), this.W(_t1.copy(pp.obj.position)).add(_t2.set(0, 0.08, 0)).clone(), '#fff0c0');
     if (!tgt || tgt.flow || tgt.kind === 'none') { this.goHome(pp); return; }
     this.dropIngredient(pp, tgt, at!);
   }
 
   private goHome(pp: Pantry): void {
+    if (pp.id === 'water') { this.putBack(this.dipper); return; }
     if (!pp.obj.parent) return;
     pp.obj.position.copy(pp.home);
     pp.obj.rotation.set(0, pp.yaw, 0);
@@ -2327,7 +2332,7 @@ export class CookingStation extends Station {
     if (v.kind === 'pot') {
       for (const [k, q] of b.take(b.volume)) {
         if (k === 'water') v.water += q * 0.25;
-        else if (k === 'milk') v.add('milk', q * 4);
+        else if (k === 'milk') v.add('milk', q);
         else v.add(k === 'bp' ? 'bp' : k, q);
       }
       b.clear();
@@ -2558,7 +2563,7 @@ export class CookingStation extends Station {
     const dish = bowl ? this.dishBowl : this.plateObj;
     this.plateObj.visible = !bowl; this.dishBowl.visible = bowl;
     const foods = v.foods.slice(), piles = v.piles.slice();
-    const extra: THREE.Object3D[] = [];
+    const extra: THREE.Mesh[] = [], onPlate: Pile[] = [];
     for (const f of foods) { f.where = 'plate'; f.local.set((Math.random() - 0.5) * 0.07, (Math.random() - 0.5) * 0.05); f.lift0 = 0; f.obj.scale.setScalar(bowl ? 0.75 : 1); }
     // flapjacks stack up
     let stack = 0;
@@ -2569,7 +2574,7 @@ export class CookingStation extends Station {
       p.layout(bowl ? 0.05 : 0.065, Math.random() * 999, bowl ? 0 : 1);
       p.obj.position.copy(dish.position).add(V3(0, bowl ? 0.04 : 0.012, 0));
       p.obj.rotation.set(0, 0, 0); p.obj.scale.setScalar(bowl ? 0.8 : 1);
-      extra.push(p.obj);
+      onPlate.push(p);
     }
     if (bowl && v.liquid) {
       const m = new THREE.Mesh(discGeo(0.062, 18), v.liquid.mat);
@@ -2577,11 +2582,10 @@ export class CookingStation extends Station {
       this.root.add(m);
       extra.push(m);
     }
-    for (const f of foods) if (f.lift0) f.obj.position.y += f.lift0;
     const hit = proxy(new THREE.CylinderGeometry(0.12, 0.12, 0.07, 12));
     hit.position.copy(dish.position).add(V3(0, 0.035, 0));
     this.root.add(hit);
-    this.served = { v: verdict, foods, piles: [], obj: dish, hit, extra };
+    this.served = { v: verdict, foods, piles: onPlate, obj: dish, hit, extra };
     v.reset(v.kind === 'skillet' ? 15 : 0);
     audio.play('bottle_clink', { pos: this.W(_t1.copy(dish.position)), vol: 0.35, rate: 0.7 });
     const stars = '★'.repeat(GRADE_STARS[verdict.grade]) + '☆'.repeat(3 - GRADE_STARS[verdict.grade]);
@@ -2660,13 +2664,12 @@ export class CookingStation extends Station {
     const s = this.served!;
     for (const f of s.foods) { f.where = 'gone'; f.obj.removeFromParent(); }
     this.foods = this.foods.filter((f) => f.where !== 'gone');
-    for (const o of s.extra) { o.removeFromParent(); const m = o as THREE.Mesh; if (m.isMesh && m.geometry && !(o.name.startsWith('pile'))) m.geometry.dispose(); }
-    for (const p of this.allPilesOn(s)) p.dispose();
+    for (const m of s.extra) { m.removeFromParent(); m.geometry.dispose(); }
+    for (const p of s.piles) p.dispose();
     s.hit.removeFromParent();
     this.served = null;
     this.plateObj.visible = true; this.dishBowl.visible = false;
   }
-  private allPilesOn(s: NonNullable<CookingStation['served']>): Pile[] { return s.extra.map((o) => (o as THREE.Object3D & { __pile?: Pile }).__pile).filter(Boolean) as Pile[]; }
 
   // ------------------------------------------------------------------------------------------ hands
   private handsIdle(): void {
@@ -2723,7 +2726,6 @@ export class CookingStation extends Station {
           this.inHand(tool, 'L');
           H.set('L', { pos: w.clone().add(_t2.set(0, -0.1, 0)).addScaledVector(side, -0.03), q: StationHands.toolQ(side.clone().negate(), V3(0, 1, 0)), grip: GRIP.handle });
         } else { if (this.cup.parent !== this.root) this.putBack(this.cup); if (this.tsp.parent !== this.root) this.putBack(this.tsp); H.rest('L'); }
-        if (d.kind === 'carry' && d.p.id === 'water') this.inHand(this.dipper);
         break;
       }
       case 'board': case 'bowl': {
@@ -2919,7 +2921,7 @@ export class CookingStation extends Station {
     draft: (k: number) => { this.draft = k; },
     summary: (where: 'skillet' | 'pot' | 'coffee') => this.summarize(this.vesselByKind(where)),
     ndc: (what: string) => {
-      const p = what === 'board' ? this.boardPos : what === 'bowl' ? BOWL_AT : what === 'serve' ? SERVE : what === 'produce' && this.produce ? this.boardSurface(this.produce.local) : this.vesselByKind(what as VKind)?.pos ?? this.pantry.find((x) => x.id === what)?.home ?? this.boardPos;
+      const p = what === 'board' ? this.boardPos : what === 'bowl' ? BOWL_AT : what === 'serve' ? SERVE : what === 'produce' && this.produce ? this.boardSurface(this.produce.local) : ['skillet', 'pot', 'coffee'].includes(what) ? this.vesselByKind(what as VKind).pos : this.pantry.find((x) => x.id === what)?.home ?? this.fixtures.find((x) => x.id === what)?.home ?? this.boardPos;
       return this.ndc(this.W(p.clone().add(V3(0, 0.03, 0))));
     },
     state: () => this.debug(),
@@ -2930,7 +2932,6 @@ export class CookingStation extends Station {
 const _v2 = new THREE.Vector2(), _v2zero = new THREE.Vector2();
 const _hd = new THREE.Vector3(), _hf = new THREE.Vector3(), _hs = new THREE.Vector3();
 function how(pp: Pantry): string | undefined { return pp.ing?.how; }
-const break_ = undefined;
 
 /** dish models for the backpack and setDown: an enamel plate (or bowl, or mug) with a little of the food */
 export function cookedModels(g: Game): void {
@@ -2955,9 +2956,9 @@ export function cookedModels(g: Game): void {
       o.add(d);
     }
     kinds.forEach(([kind, key], i) => {
-      const pr = new Produce(key, { ...PRODUCE[kind] ?? PRODUCE.onions, kind: (PRODUCE[kind]?.kind ?? kind) as never } as ProduceDef);
-      if (pr.def.halve) pr.cut(0);
+      const pr = new Produce(key, PRODUCE[kind]);
       pr.peel = 1;
+      if (pr.def.halve) pr.cut(0);
       const e = pr.extent();
       for (let x = e.x0 + 0.014; x < e.x1; x += 0.014) pr.cut(x);
       pr.turn();

@@ -576,9 +576,10 @@ function makePainters(spec: Spec, P: Props): Record<string, Painter> {
   function bodyPx(c: Tex, o: Float32Array) {
     const p = c.part, y = c.y;
     if (p === 'uarm' || p === 'farm') {
-      if (gloves && y < gloveTop) glovePx(c, o);
-      else if (outerSleeves && y > outerCuff) outerPx(c, o);
-      else if (y > cuffY) topPx(c, o); else skinPx(c, o);
+      // sleeves over the glove gauntlets; the gloves show below the cuffs (all of the gauntlet under rolled sleeves)
+      if (outerSleeves && y > outerCuff) outerPx(c, o);
+      else if (y > cuffY) topPx(c, o);
+      else if (gloves && y < gloveTop) glovePx(c, o); else skinPx(c, o);
       straps(c, o);
       dirt(c, o);
       return;

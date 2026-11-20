@@ -456,6 +456,8 @@ export class Produce {
   skin: THREE.Mesh | null = null;
   halved = false;
   cuts = 0;
+  /** doneness carried over (a strip of meat already seared before it was cubed) */
+  done = { a: 0, b: 0 };
   /** where it lies on the board (board frame x, z) */
   local = new THREE.Vector2();
   constructor(readonly id: string, readonly def: ProduceDef, shape?: Shape) {

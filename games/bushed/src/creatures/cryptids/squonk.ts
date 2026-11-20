@@ -4,22 +4,21 @@
 //
 // Rules (learnable, gentle):
 //   weeps    it sobs all the time (you hear it before you see it) and leaves a trail of tear spots behind it. The tears
-//            are a fluid simulation (src/gfx/tears): they well up in the inner corners of its eyes, run down its face,
-//            drip from its jowls, splash and puddle on the ground; it sobs in bursts, fear floods them, and now and then
-//            it shakes its head and sprays them about
+//            are pixel-art particles (src/gfx/tears): they spill from the inner corners of its eyes, fall, splash and
+//            leave little puddles; it sobs in bursts, fear floods them, and now and then it shakes its head and flings
+//            them about
 //   dusk     it wanders at dusk and through the night; by day it hides curled up under the ferns, crying quietly
 //   shy      it flees anyone who comes within ~9 m standing up (~4 m crouching) and cowers behind a tree, peeking out
-//   melts    corner it, chase it, grab at it or shine a light in its face and it dissolves into a puddle of tears (its
-//            body sags and runs, a sheet of water slumps out over the ground and runs downhill); the puddle pulls itself
-//            back together once you have been gone for a while
+//   melts    corner it, chase it, grab at it or shine a light in its face and it dissolves into a puddle of tears;
+//            the puddle pulls itself back together once you have been gone for a while
 //   berries  wild blueberries stop the crying: crouch and hold them out and it creeps up to you; feed it and it smiles
 //            (the tears stop for a while); feed it three times and it follows you about at dusk
 // Events: sob, wail, flee, cower, peek, dissolve, reform, sniff, eat, happy, befriended, step.
 import * as THREE from 'three';
 import { Cryptid, CH, clipKit, daylight, clamp, damp, type Pose, type Clip, type AnimParams } from './base';
-import { cryptidLoader, REG } from './kit';
-import { squonkModelGen, squonkBones, SQUONK_MODEL_VERSION, SQ_EYE_AX, SQ_TEAR, SQ_DRIPS } from './squonk/model';
-import { TearFluid } from '../../gfx/tears';
+import { cryptidLoader } from './kit';
+import { squonkModelGen, squonkBones, SQUONK_MODEL_VERSION, SQ_EYE_AX, SQ_TEAR } from './squonk/model';
+import { TearSprites, type TearFrame } from '../../gfx/tears';
 import type { BoneDef } from '../rig';
 import type { CreatureCtx } from '../types';
 
@@ -128,8 +127,7 @@ function squonkClips(defs: BoneDef[]): Record<string, Clip> {
       p.c[CH.SAD] = 0.8; p.c[CH.FX] = 1; p.c[CH.BLINK] = Math.max(p.c[CH.BLINK], k);
     } },
     melt: { loop: false, dur: 2.6, fade: 0.1, next: 'puddle', fn: (p, t) => {
-      // cornered: a wail, the whole body shudders, sags, and runs down into a spreading puddle of tears (the slump and
-      // the water are the tear system's, driven by channel A)
+      // cornered: a wail, the whole body shudders, sags, and runs down into a spreading puddle of tears
       const wail = env(t, 0, 0.2, 0.9, 1.2), shud = sin(t * 40) * 0.03 * env(t, 0.1, 0.3, 1.4, 1.8), m = sm((t - 0.7) / 1.8);
       R(p, HEAD, -0.3 * wail, shud); R(p, JAW, 0.45 * wail); R(p, NECK, -0.15 * wail); ears(p, shud * 3, 0.6 * m);
       p.rr[2] += shud; p.c[CH.SAD] = 1; p.c[CH.FX] = 1; p.c[CH.A] = m;
@@ -147,13 +145,13 @@ function squonkClips(defs: BoneDef[]): Record<string, Clip> {
 }
 
 const _v = new THREE.Vector3(), _e = new THREE.Euler(), _q2 = new THREE.Quaternion();
-/** tear production per eye (m3/s): a quiet weep, its ordinary misery, fear's flood, the wail as it melts */
-const RATE = { quiet: 14e-9, weep: 34e-9, scared: 120e-9, wail: 320e-9 };
-/** beyond this (m) nobody can see the tears: no simulation, just the trail of spots */
+/** tears per second from each eye: a quiet weep, its ordinary misery, fear's flood, the wail as it melts */
+const RATE = { quiet: 0.12, weep: 0.4, scared: 1.8, wail: 6 };
+/** beyond this (m) nobody can see the tears: no new drops, just the trail of spots */
 const SIM_R = 60;
 
 const _up = new THREE.Vector3(0, 1, 0);
-const _tf: { dt: number; heightAt(x: number, z: number): number } = { dt: 0, heightAt: () => 0 };
+const _tf: TearFrame = { dt: 0, heightAt: () => 0, light: 1, glint: 0, sim: true };
 
 export class Squonk extends Cryptid {
   readonly id = 'squonk';
@@ -169,13 +167,13 @@ export class Squonk extends Cryptid {
   ] as const;
   readonly sounds = SQUONK_SOUND;
   declare state: SquonkState;
-  /** the tears: drops on its face and in the air, the wet film on its skin, the puddles and the sheet it melts into */
-  readonly tears: TearFluid;
-  /** the trail of tear spots (the puddles' instanced mesh) */
-  get trail(): { mesh: THREE.InstancedMesh } { return this.tears.puddles; }
+  /** the tears: drops, splashes, puddles and the trail of tear spots, one instanced draw */
+  readonly tears: TearSprites;
+  /** the trail of tear spots (drawn by the tears' mesh) */
+  get trail(): { mesh: THREE.Mesh } { return this.tears; }
   private dryUntil = -1; private glare = 0; private chaseT = 0; private lastSob = 0; private trailD = 0; private puddleT = 0; private lastPos = new THREE.Vector3();
   private lidAxis: THREE.Vector3[]; private eyeAxis: THREE.Vector3[];
-  private melt = 0; private cry = 0; private nextShake = 12;
+  private melt = 0; private cry = 0; private heave = 0; private heaveUp = false; private melted = false; private nextShake = 12;
   constructor(o: { pos?: THREE.Vector3; heading?: number } = {}) {
     super(squonkModel(), squonkClips(squonkBones()), { pos: o.pos, heading: o.heading, shineCol: 0xa8c8ff, legs: [
       { up: 'fuL', lo: 'flL', foot: 'ffL', fore: true }, { up: 'fuR', lo: 'flR', foot: 'ffR', fore: true },
@@ -188,14 +186,8 @@ export class Squonk extends Cryptid {
     this.shineK = 0.8;
     this.eyeAxis = [1, -1].map((s) => new THREE.Vector3(s * SQ_EYE_AX[0], SQ_EYE_AX[1], SQ_EYE_AX[2]).normalize());
     this.lidAxis = this.eyeAxis.map((ax) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), ax).normalize());
-    // the tears run on the skinned mesh from its anchors (mesh-agnostic: a new body only needs the same anchors)
-    const v = (p: readonly number[], sx = 1) => new THREE.Vector3(p[0] * sx, p[1], p[2]);
-    this.tears = new TearFluid({
-      mesh: this.mesh, head: 'head',
-      sources: [v(SQ_TEAR), v(SQ_TEAR, -1)], drips: [v(SQ_DRIPS[0]), v(SQ_DRIPS[1]), v(SQ_DRIPS[1], -1)],
-      regs: [REG.head], bodyRegs: [REG.torso, REG.head, REG.jaw, REG.legs, REG.tail],
-      melt: { x: 0, z: -0.04, r: 0.42, ground: 0 },
-    });
+    // the tears come from the inner corners of the eyes, riding the head bone (any skinned body with these anchors)
+    this.tears = new TearSprites({ mesh: this.mesh, head: 'head', sources: [new THREE.Vector3(...SQ_TEAR), new THREE.Vector3(-SQ_TEAR[0], SQ_TEAR[1], SQ_TEAR[2])] });
   }
   get crying() { return !(this.ctx && this.ctx.time < this.dryUntil) && this.state !== 'puddle' && this.state !== 'happy' && this.state !== 'eat'; }
 
@@ -223,7 +215,7 @@ export class Squonk extends Cryptid {
     if (this.crying && ctx.time - this.lastSob > 3.2 && d < 40 && this.state !== 'hide') { this.lastSob = ctx.time + Math.random() * 2; this.emit('sob'); }
     // too many tears: it stops and shakes them off (they fly)
     if (this.hold === 'shake') { if (!this.holdDone) { this.want = 0; return; } this.hold = null; }
-    if (this.crying && !this.hold && this.t > this.nextShake && this.tears.stats.onFace >= 5 && (this.state === 'wander' || this.state === 'cower' || this.state === 'friend')) {
+    if (this.cry > 0 && !this.hold && this.t > this.nextShake && (this.state === 'wander' || this.state === 'cower' || this.state === 'friend')) {
       this.nextShake = this.t + 14 + Math.random() * 18; this.once('shake'); this.want = 0; return;
     }
     // berries left on the ground: it creeps over when nobody is near
@@ -337,9 +329,13 @@ export class Squonk extends Cryptid {
   }
   protected pre(p: Pose) {
     const S = this.skel, B = S.bones, dt = Math.min(0.1, this.ctx?.dt ?? 0.016);
-    // melting: the tear system slumps the body in the skin shader and runs it out into a sheet of water
+    // melting: the body sinks and spreads into the puddle; the puddle grows under it
     this.melt = damp(this.melt, clamp(p.c[CH.A], 0, 1), 6, dt);
-    B[this.bi('body')].position.y -= 0.012 * this.melt;
+    const m = this.melt, body = B[this.bi('body')];
+    body.scale.set(1 + 0.2 * m, Math.max(0.02, 1 - m * 0.985), 1 + 0.2 * m); body.position.y -= 0.02 * m;
+    if (m > 0.97) body.scale.setScalar(0.001);
+    const pud = m > 0.02 ? 0.3 + 0.9 * Math.min(1, m * 1.5) : 0.001;
+    B[this.bi('puddle')].scale.set(pud * (1 + p.c[CH.B]), 1, pud * (1 - p.c[CH.B]));
     // the face: sad lids slant down at the outer corners and droop; the mouth corners turn down (or, rarely, up)
     const sad = clamp(p.c[CH.SAD], -1, 1), blink = clamp(Math.max(p.c[CH.BLINK], 0.08 + 0.22 * Math.max(0, sad)), 0, 1);
     for (let k = 0; k < 2; k++) {
@@ -351,33 +347,34 @@ export class Squonk extends Cryptid {
     _e.set(-this.params.lookPitch * 0.4 + 0.12, this.params.lookYaw * 0.4, 0);
     B[this.bi('eyeL')].quaternion.setFromEuler(_e); B[this.bi('eyeR')].quaternion.setFromEuler(_e);
     // how hard it cries (tears per eye per second): none when it is happy or fed; quiet hidden away; its ordinary
-    // misery; floods when it is frightened (running, cowering) or wailing; every sob squeezes out a gush
+    // misery; floods when it is frightened (running, cowering) or wailing; every sob squeezes out more
     const clip = this.anim.current;
     let rate = 0;
+    this.heave = clamp(p.c[CH.C], 0, 1);
     if (p.c[CH.FX] > 0.5 && this.crying) {
       rate = clip === 'melt' ? RATE.wail : this.state === 'flee' || this.state === 'cower' || clip === 'run' || clip === 'peek' ? RATE.scared
         : this.state === 'hide' || this.state === 'curious' ? RATE.quiet : RATE.weep;
-      rate *= 0.55 + 2.4 * clamp(p.c[CH.C], 0, 1);
+      rate *= 0.5 + 1.5 * this.heave;
     }
     this.cry = rate;
   }
   protected after(ctx: CreatureCtx, dt: number) {
-    const T = this.tears;
+    const T = this.tears, P = ctx.player;
     if (this.object.parent) T.addTo(this.object.parent);
-    T.rate = this.cry; T.melt = this.melt;
-    // the body is gone into the water by the end of the melt (and comes back out of it as it re-forms)
-    const m = clamp((this.melt - 0.68) / 0.3, 0, 1);
-    this.fade.value = 1 - m * m * (3 - 2 * m);
-    _tf.dt = dt; _tf.heightAt = ctx.heightAt;
-    const moved = this.pos.distanceTo(this.lastPos); this.lastPos.copy(this.pos);
-    if (this.dist < SIM_R || this.manual) { T.update(_tf); this.trailD = 0; return; }
-    // nobody near: no drops simulated, but the tears still fall somewhere: a spot under its chin every half metre
-    T.idle(_tf);
-    this.trailD += moved;
-    if (this.trailD > 0.55 && this.cry > 0) {
-      this.trailD = 0;
-      _v.set(Math.sign(Math.random() - 0.5) * 0.09, 0, 0.33).applyQuaternion(_q2.setFromAxisAngle(_up, this.heading)).add(this.pos);
-      T.spot(_v.x, _v.z, 1.4e-7, ctx.heightAt);
-    }
+    T.rate = this.cry;
+    // a sob squeezes out a burst
+    if (this.heave > 0.55 && !this.heaveUp) { this.heaveUp = true; if (this.cry > 0) T.sob(this.cry > RATE.weep * 1.5 ? 2 : 1); }
+    else if (this.heave < 0.3) this.heaveUp = false;
+    // melting: a spray of tears off it and a pool spreading round it, once, as it goes
+    if (this.melt > 0.35 && !this.melted) { this.melted = true; T.dissolve(_v.set(0, 0.2, -0.04).applyQuaternion(_q2.setFromAxisAngle(_up, this.heading)).add(this.pos), ctx.heightAt); }
+    else if (this.melt < 0.05) this.melted = false;
+    // dimmed in the dark; a flashlight catches the highlights
+    const day = daylight(ctx.hour), lit = P.light && this.dist < 18;
+    _tf.dt = dt; _tf.heightAt = ctx.heightAt; _tf.light = lit ? Math.max(0.9, 0.3 + 0.7 * day) : 0.3 + 0.7 * day; _tf.glint = lit ? 1 : 0;
+    _tf.sim = this.dist < SIM_R || !!this.manual;
+    T.update(_tf);
+    // the trail of tear spots: a spot every metre or so while it weeps on the move
+    this.trailD += this.pos.distanceTo(this.lastPos); this.lastPos.copy(this.pos);
+    if (this.trailD > 1.1 && this.crying && !this.manual) { this.trailD = 0; T.spot(this.pos.x + (Math.random() - 0.5) * 0.15, this.pos.z + (Math.random() - 0.5) * 0.15, ctx.heightAt); }
   }
 }

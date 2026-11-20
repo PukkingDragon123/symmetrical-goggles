@@ -41,7 +41,7 @@ export class Bowl {
   get flour(): number { return this.get('flour') + this.get('oats') * 0.5; }
   /** liquid in cups (an egg is about ¼ cup) */
   get wet(): number { return this.get('milk') + this.get('water') + this.get('egg') * 0.22 + this.get('syrup') / 16 + this.get('butter_melt') / 16; }
-  get fatTbsp(): number { return this.get('butter') + this.get('lard'); }
+  get fatTbsp(): number { return this.get('butter') + this.get('lard') + this.get('oil'); }
   get volume(): number { return this.flour + this.get('sugar') + this.wet + this.fatTbsp / 16 + this.get('berries') * 0.25; }
 
   /** what the proportions make (once stirred) */

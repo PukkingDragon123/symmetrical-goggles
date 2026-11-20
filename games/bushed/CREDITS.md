@@ -298,14 +298,13 @@ no third-party model, texture or sound files are used.
 
 ## Humans
 
-* `src/humans/` (people: lofted skinned bodies, hands, heads, rig, NPC animation, painted clothing) and
-  `src/player/arms.ts` (first-person arms) are ported from the author's own earlier games:
-  **Limbophobia** (`automatic-disco/src/limbo/entities/`: humanModel.ts body / head / hand / foot lofts and
-  faceRelief, humanRig.ts skeleton conventions, humanIK.ts two-bone IK, humanPaint.ts face and hair painting,
-  gfx/pixel.ts) by way of the cleaned-up port in **Blobfish** (`ubiquitous-happiness/src/humans/` rig.ts, body.ts,
-  head.ts beards and hair shells, anim.ts pose-channel animation; `src/gfx/loft.ts`, `src/gfx/px.ts`). Same author,
-  no third-party assets. Redesigned for BUSHED: realistic proportions, per-finger bones, clavicles and forearm
-  twist, and all-new procedurally painted Canadian bush clothing (no image files).
+* `src/humans/` (people: body plan, one-draw skinned mesh and painted atlas, face expressions, blinks and talking
+  mouths, hair and hats, accessories, gestures, poses, walk with IK-planted feet) is a TypeScript port of the author's
+  own **Gacha Garage** people system (`didactic-broccoli/src/people/`: body, mesh, paint, face, hair, acc, gestures,
+  poses, Human) and its first-person hands (`src/game/FPBody.js`, `rig.js`). Same author, code only, no assets. Bush
+  clothing (plaid and wool shirts, suspenders, parkas, mackinaws, vests, toques, trapper caps, logger boots, gloves),
+  beards and the NPC clips were added for BUSHED. An earlier version used lofted humans from the author's
+  **Limbophobia** by way of **Blobfish**.
 * The arms viewer on `humans.html?arms=1` loads the props listed above (`wooden_axe.glb`, `hatchet.glb`,
   `sledgehammer_01.glb`, `vintage_flashlight.glb`, `wine_bottle_bordeaux.glb`, `handsaw_wood.glb`) when present.
 * The first-person hand system and movement feel (`src/player/arms.ts`, `src/player/fp/`, `src/player/player.ts`) are
@@ -313,7 +312,7 @@ no third-party model, texture or sound files are used.
   the held object's bounds, reach-to-target taps, free hands swinging with the stride, the body walking under the
   camera with head and arms hidden from the colour pass; `Held.js` look sway, walk bob, slot dip-and-rise, RMB inspect
   with mouse turn and wheel zoom; `Player.js` damped acceleration and footsteps by stride distance). Same author, code
-  only, no assets; rewritten in TypeScript for BUSHED's lofted human, gloves and lumberjack clothes, with a
+  only, no assets; rewritten in TypeScript for BUSHED's Gacha Garage human, gloves and lumberjack clothes, with a
   joint-by-joint finger contact solver, mass-weighted springs, footstep-locked bob, strafe lean, landing squash,
   crouch leg IK and step-up smoothing added. Test page: `fp.html`.
 
@@ -372,7 +371,7 @@ All downloaded from the Google Fonts repository (github.com/google/fonts).
 * Rendering: [three.js](https://threejs.org) (MIT). Physics: [Rapier](https://rapier.rs) (`@dimforge/rapier3d-compat`, Apache 2.0).
 * The renderer, post chain, sky, terrain, chopping (notches, hinge felling, limbing, bucking, splitting), wood pieces,
   physics props, hands, survival, Jeep driving and game flow were written for BUSHED.
-* Human builder and first-person arms: ported from the user's **Limbophobia** (see "Humans").
+* Humans and first-person hands: ported from the user's **Gacha Garage** (see "Humans").
   Creature anatomy: ported from the user's **ODDWORLD** (see "Creatures"). Props converted with the user's **lowpix**.
 
 
