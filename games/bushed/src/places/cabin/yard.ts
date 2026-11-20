@@ -10,14 +10,15 @@
 //   fire pit    two stump seats more, a webbed lawn chair, a grill across the stones, the black coffee pot
 // Coordinates: the cabin's local frame. Everything static is merged; the wash has its own wind shader.
 import * as THREE from 'three';
-import { Mesher, Rand, V, box, boxAt, board, log, logAB, lathe, tube, extrude, defineMat, hasMat, placeMat } from '../kit';
+import { Mesher, Rand, V, box, boxAt, board, log, logAB, lathe, extrude, defineMat, hasMat, placeMat } from '../kit';
+import { ltube as tube } from './bake';
 import { writeRound, writeSplit } from '../products';
 import { G } from '../../gfx/globals';
 import type { DressCtx } from '../dressing';
 import { CLOTH } from './tex';
 import { fieldstone } from './structure';
 import {
-  bakeProduct, bakeProp, cellBox, cellLathe, cellTube, cellGeom, cellUV, atlasQuad, groundDecal, tuft, noRay, farCull,
+  bakeProduct, bakeProp, tire, lowSplit, cellBox, cellLathe, cellTube, cellGeom, cellUV, atlasQuad, groundDecal, tuft, noRay, farCull,
 } from './bake';
 
 type HAt = (x: number, z: number) => number;
@@ -185,7 +186,7 @@ function outhouse(ms: Mesher, c: DressCtx, x: number, z: number, ry: number, r: 
   board(ms, 'board_grey', r, 0, 0.36, -d / 2 + 0.57, w - 0.05, 0.44, 0.022, 0, { grain: 'x' });
   ms.pushT(0, 0.596, -d / 2 + 0.28, 0, -Math.PI / 2);
   ms.push(new THREE.Matrix4().makeScale(1, 0.8, 1));
-  lathe(ms, 'soot', [[0.12, 0], [0, 0.001]], 12);
+  lathe(ms, 'soot', [[0.12, 0], [0, 0.001]], 9);
   ms.pop(); ms.pop();
   // a snow shovel leaning on the side
   ms.pushT(w / 2 + 0.12, 0.0, 0.2, Math.PI / 2, 0, -0.2);
@@ -312,8 +313,8 @@ function satelliteDish(ms: Mesher, c: DressCtx, x: number, z: number, yaw: numbe
   prof.push([Rd + 0.02, (Rd * Rd) / (4 * f) + 0.005]);
   const M = new THREE.Matrix4().compose(V(0, 1.85, 0.25), new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2 - el, 0, 0)), V(1, 1, 1));
   ms.push(M);
-  cellLathe(ms, 'cab_paint', 'paint', 'dish', prof, 20);
-  cellLathe(ms, 'cab_paint', 'paint', 'dish', prof.slice().reverse().map(([a, b]) => [a, b - 0.012] as [number, number]), 20);
+  cellLathe(ms, 'cab_paint', 'paint', 'dish', prof, 9);
+  cellLathe(ms, 'cab_paint', 'paint', 'dish', prof.slice().reverse().map(([a, b]) => [a, b - 0.012] as [number, number]), 9);
   // back ribs and hub
   for (let k = 0; k < 8; k++) {
     const a = (k / 8) * Math.PI * 2;
@@ -473,7 +474,7 @@ function cordRow(ms: Mesher, c: DressCtx, xa: number, xb: number, z: number, r: 
     while (x < xEnd) {
       const rr = fr.range(0.06, 0.085);
       ms.pushT(x + rr, g + 0.15 + layer * 0.13 + fr.range(-0.01, 0.01), z, Math.PI / 2 + fr.range(-0.06, 0.06), 0, fr.range(0, 6.28));
-      writeSplit(ms, fr, 0.42 + fr.range(-0.03, 0.02), rr * 1.6, fr.int(0, 99999));
+      lowSplit(ms, fr, 0.42 + fr.range(-0.03, 0.02), rr * 1.6);
       ms.pop();
       x += rr * 2 + 0.008;
     }
@@ -481,7 +482,7 @@ function cordRow(ms: Mesher, c: DressCtx, xa: number, xb: number, z: number, r: 
   // crib ends: crossed splits
   for (const ex of [xa - 0.12, xb + 0.12]) for (let layer = 0; layer < 7; layer++) {
     ms.pushT(ex + (layer % 2 ? 0.08 : -0.08) * 0, g + 0.15 + layer * 0.13, z, layer % 2 ? 0 : Math.PI / 2);
-    writeSplit(ms, fr, 0.5, 0.11, fr.int(0, 9999));
+    lowSplit(ms, fr, 0.5, 0.11);
     ms.pop();
   }
   // old tin over the top, rocks to hold it
@@ -523,8 +524,8 @@ function burnBarrel(ms: Mesher, c: DressCtx, x: number, z: number): void {
   const g = c.hAt(x, z);
   ms.pushT(x, g, z, 0.3);
   const prof: [number, number][] = [[0, 0.02], [0.28, 0.02], [0.29, 0.04], [0.29, 0.3], [0.3, 0.32], [0.29, 0.34], [0.29, 0.62], [0.3, 0.64], [0.29, 0.66], [0.29, 0.88], [0.275, 0.88], [0.275, 0.4]];
-  lathe(ms, 'cab_rust', prof, 16);
-  lathe(ms, 'soot', [[0.275, 0.62], [0, 0.6]], 12);
+  lathe(ms, 'cab_rust', prof, 10);
+  lathe(ms, 'soot', [[0.275, 0.62], [0, 0.6]], 9);
   // punched draft holes near the bottom (dark spots)
   for (let k = 0; k < 8; k++) {
     const a = (k / 8) * Math.PI * 2;
@@ -584,8 +585,8 @@ function tarpPile(ms: Mesher, c: DressCtx, x: number, z: number, ry: number, pen
   }
   // tires on top, rope over it to stakes
   const top = (px: number, pz: number) => { const i = Math.round((px / W2 + 0.5) * NX), j = Math.round((pz / D2 + 0.5) * NZ); return g + H[i][j]; };
-  pending.push(bakeProp(ms, 'old_tyre', x + cs * -0.4, top(-0.4, 0.1) + 0.06, z - sn * -0.4, ry + 0.3, Math.PI / 2 - 0.05));
-  pending.push(bakeProp(ms, 'old_tyre', x + cs * 1.0 + sn * 0.15, top(1.0, 0.15) + 0.06, z - sn * 1.0 + cs * 0.15, ry + 1.2, Math.PI / 2 + 0.05));
+  tire(ms, x + cs * -0.4, top(-0.4, 0.1) + 0.06, z - sn * -0.4, ry + 0.3, Math.PI / 2 - 0.05);
+  tire(ms, x + cs * 1.0 + sn * 0.15, top(1.0, 0.15) + 0.06, z - sn * 1.0 + cs * 0.15, ry + 1.2, Math.PI / 2 + 0.05);
   for (const px of [-0.6, 0.6]) {
     const pts: THREE.Vector3[] = [];
     for (let j = -2; j <= NZ + 2; j++) {
@@ -602,7 +603,7 @@ function tarpPile(ms: Mesher, c: DressCtx, x: number, z: number, ry: number, pen
 /** a red coffee can full of nails and spikes (optionally knocked over, nails spilled) */
 function nailCan(ms: Mesher, x: number, y: number, z: number, spilled = false): void {
   ms.pushT(x, y + (spilled ? 0.075 : 0), z, 0.4, spilled ? Math.PI / 2 : 0);
-  cellLathe(ms, 'cab_paint', 'paint', 'coffee_can', [[0, 0.002], [0.075, 0.002], [0.076, 0.01], [0.076, 0.165], [0.073, 0.168], [0.071, 0.165], [0.071, 0.02]], 12);
+  cellLathe(ms, 'cab_paint', 'paint', 'coffee_can', [[0, 0.002], [0.075, 0.002], [0.076, 0.01], [0.076, 0.165], [0.073, 0.168], [0.071, 0.165], [0.071, 0.02]], 9);
   cellLathe(ms, 'cab_paint', 'paint', 'nails', [[0.071, 0.13], [0.04, 0.15], [0, 0.155]], 10);
   ms.pop();
   if (spilled) for (let k = 0; k < 10; k++) {
@@ -652,7 +653,7 @@ function wheelbarrow(ms: Mesher, c: DressCtx, x: number, z: number, ry: number):
     cellTube(ms, 'cab_paint', 'paint', 'barrow', [V(-0.25, 0.3, s * 0.22), V(-0.3, 0.0, s * 0.24)], 0.014, 4, 2);
   }
   const fr = new Rand(4321);
-  for (let k = 0; k < 4; k++) { ms.pushT(fr.range(-0.15, 0.25), 0.4 + k * 0.05, fr.range(-0.12, 0.12), fr.range(-0.3, 0.3), 0, fr.range(0, 6)); writeSplit(ms, fr, 0.4, 0.12, fr.int(0, 9999)); ms.pop(); }
+  for (let k = 0; k < 4; k++) { ms.pushT(fr.range(-0.15, 0.25), 0.4 + k * 0.05, fr.range(-0.12, 0.12), fr.range(-0.3, 0.3), 0, fr.range(0, 6)); lowSplit(ms, fr, 0.4, 0.12); ms.pop(); }
   ms.pop();
   c.cols.box(x, g + 0.35, z, 0.75, 0.35, 0.35, ry);
 }
@@ -717,7 +718,7 @@ function firePitExtras(ms: Mesher, c: DressCtx, fx: number, fz: number, r: Rand,
   // a pile of kindling and birch bark by the near bench
   {
     const a = 0.6, x = fx + Math.cos(a) * 1.15, z = fz + Math.sin(a) * 1.15;
-    for (let k = 0; k < 6; k++) { ms.pushT(x + r.range(-0.1, 0.1), hA(x, z) + 0.03 + k * 0.02, z + r.range(-0.1, 0.1), r.range(0, 6), 0, Math.PI / 2 * 0); writeSplit(ms, r, 0.35, 0.05, r.int(0, 9999)); ms.pop(); }
+    for (let k = 0; k < 6; k++) { ms.pushT(x + r.range(-0.1, 0.1), hA(x, z) + 0.03 + k * 0.02, z + r.range(-0.1, 0.1), r.range(0, 6), 0, Math.PI / 2 * 0); lowSplit(ms, r, 0.35, 0.05); ms.pop(); }
   }
 }
 
@@ -742,7 +743,7 @@ function lawnChair(ms: Mesher, x: number, y: number, z: number, ry: number): voi
 /** a 100 lb propane bottle, white, chained to a stake */
 function propane(ms: Mesher, x: number, y: number, z: number): void {
   ms.pushT(x, y, z);
-  cellLathe(ms, 'cab_paint', 'paint', 'propane', [[0, 0], [0.17, 0], [0.18, 0.04], [0.18, 0.95], [0.15, 1.05], [0.08, 1.1], [0, 1.1]], 14);
+  cellLathe(ms, 'cab_paint', 'paint', 'propane', [[0, 0], [0.17, 0], [0.18, 0.04], [0.18, 0.95], [0.15, 1.05], [0.08, 1.1], [0, 1.1]], 9);
   cellLathe(ms, 'cab_paint', 'paint', 'propane', [[0.12, 1.08], [0.12, 1.25], [0.0, 1.25]], 10);
   cellLathe(ms, 'cab_paint', 'paint', 'brass', [[0, 1.12], [0.03, 1.12], [0.03, 1.2], [0, 1.2]], 6);
   ms.pop();
@@ -757,7 +758,7 @@ function wallWood(ms: Mesher, c: DressCtx): void {
     while (z < z1 - 0.08 - layer * 0.03) {
       const rr = fr.range(0.06, 0.085);
       ms.pushT(x0 + 0.24 + row * 0.44, c.hAt(x0 + 0.3, z) + 0.08 + layer * 0.125 + fr.range(-0.01, 0.01), z + rr, fr.range(-0.06, 0.06), 0, fr.range(0, 6.28));
-      writeSplit(ms, fr, 0.42 + fr.range(-0.03, 0.02), rr * 1.6, fr.int(0, 99999));
+      lowSplit(ms, fr, 0.42 + fr.range(-0.03, 0.02), rr * 1.6);
       ms.pop();
       z += rr * 2 + 0.008;
     }
@@ -772,13 +773,13 @@ function fuelDrum(ms: Mesher, c: DressCtx, x: number, z: number, ry: number): vo
   for (const dx of [-0.3, 0.3]) logAB(ms, V(dx, 0.12, -0.45), V(dx, 0.12, 0.45), 0.11, { seed: 1300 + dx * 10, seg: 7, capA: 0, capB: 0 });
   ms.pushT(0, 0.52, 0, 0, 0, Math.PI / 2);
   ms.pushT(0, -0.44, 0);
-  lathe(ms, 'cab_rust', [[0, 0], [0.28, 0], [0.29, 0.02], [0.29, 0.28], [0.3, 0.3], [0.29, 0.32], [0.29, 0.56], [0.3, 0.58], [0.29, 0.6], [0.29, 0.86], [0.28, 0.88], [0, 0.88]], 16);
+  lathe(ms, 'cab_rust', [[0, 0], [0.28, 0], [0.29, 0.02], [0.29, 0.28], [0.3, 0.3], [0.29, 0.32], [0.29, 0.56], [0.3, 0.58], [0.29, 0.6], [0.29, 0.86], [0.28, 0.88], [0, 0.88]], 9);
   ms.pop(); ms.pop();
   cellTube(ms, 'cab_paint', 'paint', 'steel', [V(0.32, 0.62, 0.1), V(0.45, 0.66, 0.1), V(0.55, 0.9, 0.1)], 0.018, 5, 6);
   cellBox(ms, 'cab_paint', 'paint', 'black_paint', 0.55, 0.95, 0.1, 0.07, 0.12, 0.07);
   cellTube(ms, 'cab_paint', 'paint', 'rubber', [V(0.55, 0.9, 0.13), V(0.7, 0.6, 0.25), V(0.75, 0.15, 0.3)], 0.01, 4, 10);
   ms.pushT(0.7, 0.0, 0.32);
-  lathe(ms, 'galv', [[0, 0], [0.18, 0], [0.2, 0.05], [0.19, 0.05], [0.17, 0.005], [0, 0.005]], 12);
+  lathe(ms, 'galv', [[0, 0], [0.18, 0], [0.2, 0.05], [0.19, 0.05], [0.17, 0.005], [0, 0.005]], 9);
   ms.pop();
   ms.pop();
   groundDecal(c.dms, 'oil', x + 0.3, z + 0.2, 1.4, 1.2, ry, c.hAt, 0.016, 2);
@@ -788,7 +789,8 @@ function fuelDrum(ms: Mesher, c: DressCtx, x: number, z: number, ry: number): vo
 /** old tires stacked by the shed */
 function tireStack(ms: Mesher, c: DressCtx, x: number, z: number, pending: Promise<unknown>[]): void {
   const g = c.hAt(x, z);
-  for (let k = 0; k < 4; k++) pending.push(bakeProp(ms, 'old_tyre', x + (k % 2) * 0.05, g + 0.085 + k * 0.165, z + (k === 3 ? 0.12 : 0), k * 0.7, Math.PI / 2 + (k === 3 ? 0.15 : 0)));
+  for (let k = 0; k < 4; k++) tire(ms, x + (k % 2) * 0.05, g + 0.08 + k * 0.155, z + (k === 3 ? 0.12 : 0), k * 0.7, Math.PI / 2 + (k === 3 ? 0.15 : 0));
+  void pending;
   c.cols.box(x, g + 0.35, z, 0.32, 0.35, 0.32);
 }
 

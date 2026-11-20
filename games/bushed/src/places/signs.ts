@@ -26,7 +26,7 @@ export function ensurePrintMats(): void {
   defineMat('signs', new THREE.MeshStandardMaterial({ name: 'place_signs', map: signTex(), roughness: 0.8 }));
   defineMat('signs_ds', new THREE.MeshStandardMaterial({ name: 'place_signs_ds', map: signTex(), roughness: 0.8, side: THREE.DoubleSide }));
   defineMat('lab', new THREE.MeshStandardMaterial({ name: 'place_lab', map: labelTex(), roughness: 0.75 }));
-  defineMat('lab_gloss', new THREE.MeshStandardMaterial({ name: 'place_lab_gloss', map: labelTex(), roughness: 0.22 }));
-  defineMat('lab_metal', new THREE.MeshStandardMaterial({ name: 'place_lab_metal', map: labelTex(), roughness: 0.38, metalness: 0.55 }));
+  defineMat('lab_gloss', new THREE.MeshStandardMaterial({ name: 'place_lab_gloss', map: labelTex(), roughness: 0.6 }));
+  defineMat('lab_metal', new THREE.MeshStandardMaterial({ name: 'place_lab_metal', map: labelTex(), roughness: 0.7, metalness: 0.1 }));
   defineMat('lab_ds', new THREE.MeshStandardMaterial({ name: 'place_lab_ds', map: labelTex(), roughness: 0.8, side: THREE.DoubleSide }));
 }

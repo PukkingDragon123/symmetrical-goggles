@@ -12,7 +12,7 @@ export function glassMat(key: string): string {
   if (!glassMats.has(name)) {
     const t = placeTex('glass_grime');
     const m = new THREE.MeshStandardMaterial({
-      name, map: t, color: 0xd8e0d8, roughness: 0.18, metalness: 0.0, transparent: true, opacity: 1,
+      name, map: t, color: 0xd8e0d8, roughness: 0.55, metalness: 0.0, transparent: true, opacity: 1,
       depthWrite: false, side: THREE.DoubleSide, emissive: new THREE.Color(0xffa040), emissiveMap: t, emissiveIntensity: 0,
     });
     // keep a minimum opacity so clean areas still read as glass (reflections, slight tint)

@@ -74,7 +74,7 @@ vec3 waterNormal(vec2 xz, float s) {
   vec2 p = floor(xz * 8.0) / 8.0;
   float e = 0.12;
   float a = wWave(p), bx = wWave(p + vec2(e, 0.0)), bz = wWave(p + vec2(0.0, e));
-  float k = (0.12 + uWind * 0.55) * (0.3 + 1.4 * wPatch(xz)) * s;
+  float k = (0.06 + uWind * 0.32) * (0.35 + 1.1 * wPatch(xz)) * s;
   return normalize(vec3(-(bx - a) * k / e, 1.0, -(bz - a) * k / e));
 }
 `;

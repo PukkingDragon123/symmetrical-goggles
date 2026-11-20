@@ -24,6 +24,7 @@ import { G } from '../gfx/globals';
 import { qualityLevel, prop, flagstones, rock } from './store/inst';
 import { dressExterior, type DressStore } from './store/dress_ext';
 import { dressInterior } from './store/dress_int';
+import * as LP from './store/lowprops';
 
 // ---------------------------------------------------------------------------------------------- plan
 export const STORE = {
@@ -503,7 +504,7 @@ export async function buildStore(): Promise<Place> {
     anchors.shopkeeper_spot = anchor(group, 'shopkeeper_spot', cx + 0.85, F, (cz0 + cz1) / 2 + 0.4, -Math.PI / 2);
     // the register
     const regZ = czc + 0.55;
-    pending.push(prop(group, 'CashRegister_01', cx + 0.05, ch, regZ, -Math.PI / 2).then((o) => { if (o) anchors.register.add(new THREE.Object3D()); }));
+    LP.register(ms, cx + 0.05, ch, regZ, -Math.PI / 2);
     anchors.register = anchor(group, 'register', cx + 0.05, ch, regZ, -Math.PI / 2);
     const regHit = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.4, 0.45), new THREE.MeshBasicMaterial({ visible: false }));
     regHit.position.set(cx + 0.05, ch + 0.2, regZ);
@@ -568,7 +569,7 @@ export async function buildStore(): Promise<Place> {
       jm.pop();
       const jar = jm.build({ name: 'jerky_jar' });
       // make the jar glass see-through
-      const jg = new THREE.MeshStandardMaterial({ color: 0xc8d8d0, roughness: 0.12, transparent: true, opacity: 0.32, depthWrite: false, side: THREE.DoubleSide });
+      const jg = new THREE.MeshStandardMaterial({ color: 0xc8d8d0, roughness: 0.5, transparent: true, opacity: 0.32, depthWrite: false, side: THREE.DoubleSide });
       jar.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh && (m.material as THREE.Material).name === 'place_lab_gloss') { m.material = jg; m.renderOrder = 3; m.castShadow = false; } });
       group.add(jar);
       for (let i = 0; i < 6; i++) stock('jerky', jx + (i % 2 ? 0.02 : -0.02), ch + 0.02 + i * 0.025, jz, i * 0.9).scale.set(0.6, 0.6, 0.6);
@@ -576,8 +577,20 @@ export async function buildStore(): Promise<Place> {
     }
     // a spike of receipts, a pencil, the radio behind the counter
     product(group, 'pencil', cx - 0.15, ch, czc - 0.05, 0.6);
-    pending.push(prop(group, 'vintage_radio_transceiver', cx + 0.15, F + 0.46, czc - 1.2, -Math.PI / 2, 0.8));
-    pending.push(prop(group, 'drawer_cabinet', IX - 0.3, F, czc - 0.6, -Math.PI / 2));
+    // the radio behind the counter: a cabinet set, two knobs, a cloth grille
+    boxAt(ms, 'board_dark', cx + 0.15, F + 0.6, czc - 1.2, 0.3, 0.28, 0.42);
+    boxAt(ms, 'blanket', cx + 0.15 - 0.151, F + 0.62, czc - 1.25, 0.004, 0.18, 0.22);
+    for (const dz of [-0.12, 0.12]) boxAt(ms, 'iron', cx + 0.15 - 0.16, F + 0.5, czc - 1.2 + dz, 0.03, 0.04, 0.04);
+    // Ray's cubbyhole: the drawer cabinet (its own little mesh: the story finds it by propId)
+    {
+      const cm = new Mesher();
+      LP.drawerCabinet(cm, 0, 0, 0, 0);
+      const cab = cm.build({ name: 'drawer_cabinet' });
+      cab.position.set(IX - 0.3, F, czc - 0.6);
+      cab.rotation.y = -Math.PI / 2;
+      cab.userData.propId = 'drawer_cabinet';
+      group.add(cab);
+    }
   }
   // ---- the glass display case at the front end of the counter: knives, files, flashlights
   {
@@ -687,18 +700,18 @@ export async function buildStore(): Promise<Place> {
     anchors.stove_fire = stove.fire;
     product(group, 'coffeepot', sx + 0.08, F + 0.06 + STOVE.AXIS_Y + STOVE.R - 0.01, sz + 0.12, -0.6);
     cols.box(sx, F + 0.5, sz, 0.38, 0.5, STOVE.L / 2 + 0.05);
-    pending.push(prop(group, 'Rockingchair_01', sx + 1.15, F, sz + 0.95, -2.3));
-    pending.push(prop(group, 'wooden_stool_01', sx - 1.0, F, sz + 1.0, 0.6));
-    pending.push(prop(group, 'Barrel_01', sx + 0.95, F, sz + 2.0, 0.3).then((o) => {
-      if (!o) return;
+    LP.rocker(ms, sx + 1.15, F, sz + 0.95, -2.3, 3);
+    LP.stool(ms, sx - 1.0, F, sz + 1.0, 0.6);
+    LP.drum(ms, sx + 0.95, F, sz + 2.0, 0.3);
+    {
       // a checkerboard on the barrel head
-      const top = new THREE.Box3().setFromObject(o).max.y;
+      const top = F + 0.885;
       const g = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.015, 0.36), new THREE.MeshStandardMaterial({ map: checkerTex(), roughness: 0.6 }));
       g.position.set(sx + 0.95, top + 0.008, sz + 2.0);
       g.rotation.y = 0.4;
       g.castShadow = g.receiveShadow = true;
       group.add(g);
-    }));
+    }
     cols.box(sx + 0.95, F + 0.45, sz + 2.0, 0.3, 0.45, 0.3);
     // kindling and a split pile beside the stove
     const wr = new Rand(55);
@@ -787,12 +800,12 @@ export async function buildStore(): Promise<Place> {
     }
     ensureDsBlanket();
     tube(ms, 'iron', [V(pc - 0.55, F + 2.12, cz + 0.03), V(pc + 0.55, F + 2.12, cz + 0.03)], 0.008, 4);
-    pending.push(prop(group, 'wooden_crate_01', pc + 1.05, F, -IZ + 0.35, 0.1));
-    pending.push(prop(group, 'wooden_crate_02', pc + 1.0, F + 0.35, -IZ + 0.35, -0.2));
-    pending.push(prop(group, 'CheeseBox_01', pc + 1.05, F + 0.7, -IZ + 0.33, 0.4));
-    pending.push(prop(group, 'Barrel_02', -IX + 0.4, F, -IZ + 0.5, 0));
+    LP.crate(ms, pc + 1.05, F, -IZ + 0.35, 0.1, 11);
+    LP.crate(ms, pc + 1.0, F + 0.41, -IZ + 0.35, -0.2, 12);
+    pending.push(prop(group, 'CheeseBox_01', pc + 1.05, F + 0.82, -IZ + 0.33, 0.4));
+    LP.drum(ms, -IX + 0.4, F, -IZ + 0.5, 0);
     pending.push(prop(group, 'metal_jerrycan', 0.3, F, -IZ + 0.25, 0.2));
-    pending.push(prop(group, 'propane_tank', -0.15, F, -IZ + 0.25, 0));
+    LP.propane(ms, -0.15, F, -IZ + 0.25, 0);
     cols.box(pc + 1.05, F + 0.5, -IZ + 0.35, 0.42, 0.5, 0.25);
     cols.box(-IX + 0.4, F + 0.45, -IZ + 0.5, 0.3, 0.45, 0.3);
   }
@@ -847,14 +860,12 @@ export async function buildStore(): Promise<Place> {
   {
     // porch bench, a crate of empties, a barrel, a dog bowl
     const pz = D / 2 + 0.55;
-    pending.push(prop(group, 'painted_wooden_bench', -2.3, FLOOR - 0.02, pz, 0));
+    LP.bench(ms, -2.3, FLOOR - 0.02, pz, 0, 5);
     anchors.porch_bench = anchor(group, 'porch_bench', -2.3, FLOOR + 0.45, pz + 0.1, 0);
     cols.box(-2.3, FLOOR + 0.45, pz, 0.6, 0.45, 0.25);
-    pending.push(prop(group, 'wooden_crate_02', 3.1, FLOOR - 0.02, pz, 0.2).then((o) => {
-      if (!o) return;
-      for (let i = 0; i < 6; i++) stock('beer', 3.1 - 0.15 + (i % 3) * 0.1, FLOOR + 0.06, pz - 0.05 + Math.floor(i / 3) * 0.1, i);
-    }));
-    pending.push(prop(group, 'metal_trash_can_rust', 3.8, FLOOR - 0.02, pz + 0.9, 0.4));
+    LP.crate(ms, 3.1, FLOOR - 0.02, pz, 0.2, 13);
+    for (let i = 0; i < 6; i++) stock('beer', 3.1 - 0.15 + (i % 3) * 0.1, FLOOR + 0.02, pz - 0.05 + Math.floor(i / 3) * 0.1, i);
+    LP.trashCan(ms, 3.8, FLOOR - 0.02, pz + 0.9, 0.4);
     // bait sign on the right post, fire danger sign by the road
     {
       const [u0, v0, u1, v1] = SIGNS.uv('sign_bait');
@@ -894,12 +905,16 @@ export async function buildStore(): Promise<Place> {
   {
     const x = W / 2 + 0.45;
     const gh = (lz: number) => heightAt(...toWorld(sp, x, lz)) - gy;
-    pending.push(prop(group, 'Barrel_01', x, gh(-4.6), -4.6, 0.4));
-    pending.push(prop(group, 'old_tyre', x + 0.05, gh(-3.6), -3.6, Math.PI / 2).then((o) => { if (o) { o.rotation.set(0.25, Math.PI / 2, 0); } }));
-    pending.push(prop(group, 'wooden_crate_01', x, gh(1.0), 1.0, Math.PI / 2 + 0.1));
-    pending.push(prop(group, 'wooden_crate_02', x + 0.05, gh(1.0) + 0.35, 1.0, Math.PI / 2 - 0.15));
-    pending.push(prop(group, 'metal_trash_can', x, gh(2.4), 2.4, 0.3));
-    pending.push(prop(group, 'wooden_ladder', W / 2 + 0.15, gh(-1.0), -1.0, -Math.PI / 2).then((o) => { if (o) o.rotation.set(-0.28, -Math.PI / 2, 0, 'YXZ'); }));
+    LP.drum(ms, x, gh(-4.6), -4.6, 0.4);
+    ms.pushT(x + 0.05, gh(-3.6) + 0.29, -3.6, Math.PI / 2, Math.PI / 2 - 0.25);
+    LP.tyre(ms, 0, 0, 0, 0);
+    ms.pop();
+    LP.crate(ms, x, gh(1.0), 1.0, Math.PI / 2 + 0.1, 14);
+    LP.crate(ms, x + 0.05, gh(1.0) + 0.41, 1.0, Math.PI / 2 - 0.15, 15);
+    LP.trashCan(ms, x, gh(2.4), 2.4, 0.3);
+    ms.pushT(W / 2 + 0.55, gh(-1.0), -1.0, -Math.PI / 2, 0.2);
+    LP.ladder(ms, 0, 0, 0, 0);
+    ms.pop();
     cols.box(x, 0.45, -4.6, 0.3, 0.45, 0.3);
     cols.box(x, 0.4, 1.0, 0.25, 0.4, 0.45);
   }

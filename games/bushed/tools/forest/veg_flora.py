@@ -202,7 +202,7 @@ def everlasting(seed):
             r = rng.uniform(2, 11) * SS
             hx, hy = tx + np.cos(a) * r, ty + np.sin(a) * r * 0.45 - 2 * SS
             c.dr.line([(tx, ty), (hx, hy)], fill=(150, 160, 140, 255), width=SS)
-            rr = rng.uniform(2.6, 3.4) * SS
+            rr = rng.uniform(4.0, 5.2) * SS
             dot(c, hx, hy, rr, jit(rng, (0.93, 0.92, 0.86), 0.05))
             dot(c, hx, hy - rr * 0.1, rr * 0.4, (0.72, 0.62, 0.3))
     return c.final()
@@ -231,7 +231,7 @@ def aster_purple(seed):
             l = rng.uniform(6, 16) * SS
             ex, ey = x + np.cos(ang) * l, y + np.sin(ang) * l
             c.dr.line([(x, y), (ex, ey)], fill=(90, 90, 60, 255), width=SS)
-            rayed(c, rng, ex, ey, rng.uniform(4.5, 6.5) * SS, rng.choice([(0.55, 0.42, 0.85), (0.62, 0.5, 0.9), (0.48, 0.36, 0.78)]), (0.95, 0.75, 0.15), n=18)
+            rayed(c, rng, ex, ey, rng.uniform(7, 9.5) * SS, rng.choice([(0.55, 0.42, 0.85), (0.62, 0.5, 0.9), (0.48, 0.36, 0.78)]), (0.95, 0.75, 0.15), n=18)
     return c.final()
 
 
@@ -254,7 +254,7 @@ def daisy(seed):
             side = rng.choice([-1, 1])
             blade(c, arc(p, -np.pi / 2 + side * 0.9, 9 * SS, side * 0.5, 5), 3 * SS, (0.2, 0.36, 0.12), (0.28, 0.45, 0.16), midrib=0)
         x, y = stem[-1]
-        rayed(c, rng, x, y, rng.uniform(9, 12) * SS, (0.97, 0.97, 0.93), (0.98, 0.8, 0.1), n=22, tilt=rng.uniform(0.45, 0.8))
+        rayed(c, rng, x, y, rng.uniform(14, 18) * SS, (0.97, 0.97, 0.93), (0.98, 0.8, 0.1), n=24, tilt=rng.uniform(0.5, 0.85))
     return c.final()
 
 
@@ -282,8 +282,8 @@ def yarrow(seed):
             r = rng.uniform(4, 12) * SS
             hx, hy = tx + np.cos(a) * r, ty + np.sin(a) * r * 0.35 - 3 * SS
             c.dr.line([(tx, ty), (hx, hy)], fill=(110, 120, 80, 255), width=SS)
-            for m in range(7):
-                dot(c, hx + rng.uniform(-3, 3) * SS, hy + rng.uniform(-1.6, 1.0) * SS, 1.3 * SS, jit(rng, (0.95, 0.94, 0.88), 0.05))
+            for m in range(9):
+                dot(c, hx + rng.uniform(-4.5, 4.5) * SS, hy + rng.uniform(-2.2, 1.2) * SS, 2.0 * SS, jit(rng, (0.95, 0.94, 0.88), 0.05))
     return c.final()
 
 
@@ -303,7 +303,7 @@ def hawkweed(seed):
         for k in range(rng.integers(2, 5)):
             hx, hy = tx + rng.uniform(-6, 6) * SS, ty + rng.uniform(-4, 2) * SS
             c.dr.line([(tx, ty), (hx, hy)], fill=(70, 80, 45, 255), width=SS)
-            rayed(c, rng, hx, hy, rng.uniform(3.5, 4.5) * SS, rng.choice([(0.95, 0.38, 0.08), (0.9, 0.3, 0.06), (0.98, 0.5, 0.12)]), (0.95, 0.62, 0.1), n=16, tilt=0.7)
+            rayed(c, rng, hx, hy, rng.uniform(5.5, 7) * SS, rng.choice([(0.95, 0.38, 0.08), (0.9, 0.3, 0.06), (0.98, 0.5, 0.12)]), (0.95, 0.62, 0.1), n=18, tilt=0.7)
     return c.final()
 
 
@@ -321,8 +321,8 @@ def vetch(seed):
             for s in (-1, 1):
                 dot(c, x + s * 2.6 * SS, y + rng.uniform(-1, 1) * SS, 1.6 * SS, jit(rng, (0.3, 0.48, 0.18)), 0.8 * SS)
         x, y = stem[-1]
-        for k in range(10):
-            dot(c, x + rng.uniform(-1.5, 1.5) * SS + k * 0.4 * SS, y + k * 1.6 * SS - 6 * SS, 1.6 * SS, jit(rng, (0.42, 0.32, 0.82), 0.1), 1.2 * SS)
+        for k in range(12):
+            dot(c, x + rng.uniform(-2, 2) * SS + k * 0.5 * SS, y + k * 2.2 * SS - 8 * SS, 2.5 * SS, jit(rng, (0.42, 0.32, 0.82), 0.1), 1.8 * SS)
     return c.final()
 
 
@@ -385,12 +385,12 @@ def labrador(seed):
             la = a + rng.choice([-1, 1]) * rng.uniform(0.5, 1.9)
             l = rng.uniform(16, 26) * SS * (0.7 + 0.3 * t)
             lp = arc((px, py), la, l, rng.uniform(-0.5, 0.5), 7)
-            rust = rng.random() < 0.28
-            blade(c, lp, 5.5 * SS, (0.42, 0.24, 0.12) if rust else jit(rng, (0.13, 0.22, 0.08)), (0.62, 0.36, 0.16) if rust else jit(rng, (0.24, 0.36, 0.13)), w1=2.2 * SS, midrib=0.55)
+            rust = rng.random() < 0.18
+            blade(c, lp, 5.5 * SS, (0.42, 0.24, 0.12) if rust else jit(rng, (0.12, 0.24, 0.07)), (0.62, 0.36, 0.16) if rust else jit(rng, (0.2, 0.36, 0.1)), w1=2.2 * SS, midrib=0.55)
         flowers.append(pts[-1])
     for (tx, ty) in flowers:
-        if rng.random() < 0.7:
-            for m in range(22):
+        if rng.random() < 0.35:
+            for m in range(18):
                 r = rng.uniform(0, 9) * SS
                 b = rng.uniform(0, 2 * np.pi)
                 dot(c, tx + np.cos(b) * r, ty + np.sin(b) * r * 0.7 - 3 * SS, 2.0 * SS, jit(rng, (0.97, 0.96, 0.9), 0.04))

@@ -1,7 +1,7 @@
 // Helpers for dressing the cabin cheaply: bake products and props into merged meshes (one draw call per
 // material however many copies), groups that switch off with distance, quality tiers, and decal quads.
 import * as THREE from 'three';
-import { Mesher, Rand, V, defineMat, hasMat } from '../kit';
+import { Mesher, Rand, V, defineMat, hasMat, tube, lathe } from '../kit';
 import { buildProduct } from '../products';
 import { loadProp, type PropId } from '../props';
 import { G } from '../../gfx/globals';
@@ -160,6 +160,54 @@ export function cellLathe(ms: Mesher, mat: string, which: 'decal' | 'paper' | 'c
 /** a tube along points mapped into an atlas rect (u along, v around) */
 export function cellTube(ms: Mesher, mat: string, which: 'decal' | 'paper' | 'cloth' | 'paint', key: string, pts: THREE.Vector3[], r: number, seg = 6, samples?: number): void {
   const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5);
-  const g = new THREE.TubeGeometry(curve, samples ?? Math.max(2, Math.ceil(curve.getLength() / 0.05)), r, seg, false);
+  const g = new THREE.TubeGeometry(curve, samples ?? Math.max(2, Math.min(10, (pts.length - 1) * 3)), r, Math.min(seg, 6), false);
   cellGeom(ms, mat, which, key, g);
+}
+
+/** the kit's tube, kept low-poly: few rings along (3 per control segment, at most 10) */
+export function ltube(ms: Mesher, mat: string, pts: THREE.Vector3[], r: number, seg = 4, o: { smooth?: boolean; samples?: number; closed?: boolean; rEnd?: number } = {}): void {
+  tube(ms, mat, pts, r, Math.min(seg, 6), { ...o, samples: Math.min(o.samples ?? 99, Math.max(2, Math.min(10, (pts.length - 1) * 3))) });
+}
+
+/** an old car tire, low-poly (torus 6 x 12 + rusty rim), centre (x, y, z), axis along local z after ry/rx */
+export function tire(ms: Mesher, x: number, y: number, z: number, ry = 0, rx = 0, s = 1): void {
+  ms.pushT(x, y, z, ry, rx);
+  const t = new THREE.TorusGeometry(0.24 * s, 0.075 * s, 6, 12);
+  ms.geom('cab_rubber', t);
+  t.dispose();
+  ms.push(new THREE.Matrix4().makeRotationX(Math.PI / 2));
+  lathe(ms, 'cab_rust', [[0.17 * s, -0.06 * s], [0.17 * s, 0.06 * s]], 10);
+  lathe(ms, 'cab_rust', [[0, 0.0], [0.17 * s, 0.0]].reverse() as [number, number][], 10);
+  ms.pop();
+  ms.pop();
+}
+
+/**
+ * A low-poly firewood split along X (14 triangles): a wedge of the round with the bark arc as two facets, two
+ * split faces and end-grain caps. For stacks where only the ends and the bark show; r = the round's radius.
+ */
+export function lowSplit(ms: Mesher, rnd: Rand, len: number, r: number): void {
+  const span = rnd.range(1.0, 1.5), c = r * 0.55;
+  const a0 = Math.PI / 2 - span / 2, a1 = Math.PI / 2 + span / 2, am = Math.PI / 2 + rnd.range(-0.15, 0.15);
+  const pts: [number, number][] = [[Math.cos(a0) * r, Math.sin(a0) * r - c], [Math.cos(am) * r * 1.03, Math.sin(am) * r * 1.03 - c], [Math.cos(a1) * r, Math.sin(a1) * r - c], [0, -c]];
+  const x0 = -len / 2, x1 = len / 2;
+  const P = (x: number, q: [number, number]) => V(x, q[1], q[0]);
+  const uo = rnd.range(0, 2);
+  for (let k = 0; k < 3; k++) {
+    const a = pts[k], b = pts[k + 1];
+    const mat = k < 2 ? 'bark' : 'wood_fresh';
+    const d = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    ms.quad(mat, P(x0, a), P(x1, a), P(x1, b), P(x0, b), [uo, 0], [uo + len, 0], [uo + len, d], [uo, d]);
+  }
+  { const a = pts[3], b = pts[0], d = Math.hypot(b[0] - a[0], b[1] - a[1]); ms.quad('wood_fresh', P(x0, a), P(x1, a), P(x1, b), P(x0, b), [uo, 0], [uo + len, 0], [uo + len, d], [uo, d]); }
+  const cu = 0.75, cv = 0.75, uvq = (q: [number, number]): [number, number] => [cu + (q[0] / (r * 1.12)) * 0.245, cv + ((q[1] + c) / (r * 1.12)) * 0.245];
+  for (const [x, nx] of [[x1, 1], [x0, -1]] as [number, number][]) {
+    const n = V(nx, 0, 0);
+    for (const [i, j] of [[0, 1], [1, 2]] as [number, number][]) {
+      const A = pts[3], B = pts[nx > 0 ? j : i], C = pts[nx > 0 ? i : j];
+      ms.tri('endgrain', P(x, A), P(x, B), P(x, C), n, n, n, uvq(A), uvq(B), uvq(C));
+    }
+    const A = pts[3], B = pts[nx > 0 ? 0 : 2], C = pts[nx > 0 ? 2 : 0];
+    void A; void B; void C;
+  }
 }

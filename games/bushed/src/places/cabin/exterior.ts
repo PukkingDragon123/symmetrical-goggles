@@ -5,10 +5,11 @@
 // and on the road side of the cabin a two-man crosscut saw, a toboggan and a NO HUNTING sign hung on the logs.
 // Ground: worn paths, mud at the steps, needle drifts and the drip line under the eaves.
 import * as THREE from 'three';
-import { Mesher, Rand, V, box, boxAt, lathe, tube, extrude } from '../kit';
+import { Mesher, Rand, V, box, boxAt, lathe, extrude } from '../kit';
+import { ltube as tube } from './bake';
 import { CABIN, CABIN_GEOM } from '../cabinplan';
 import type { DressCtx } from '../dressing';
-import { bakeProduct, bakeProp, cellBox, cellLathe, cellTube, atlasQuad, groundDecal, tuft, noRay, farCull } from './bake';
+import { tire, bakeProduct, bakeProp, cellBox, cellLathe, cellTube, atlasQuad, groundDecal, tuft, noRay, farCull } from './bake';
 
 const { W, D, R, FLOOR: F, PORCH, OH } = CABIN;
 const { EAVE } = CABIN_GEOM;
@@ -42,7 +43,7 @@ export async function cabinExterior(c: DressCtx): Promise<void> {
   {
     const x = -W / 2 - 0.02, y = F + 1.45, z = z1 - 0.08 + 0.1;
     ms.pushT(x, y, z, 0, Math.PI / 2);
-    cellLathe(ms, 'cab_paint', 'paint', 'enamel_white', [[0, 0], [0.085, 0], [0.09, 0.012], [0.085, 0.022], [0, 0.022]], 16);
+    cellLathe(ms, 'cab_paint', 'paint', 'enamel_white', [[0, 0], [0.085, 0], [0.09, 0.012], [0.085, 0.022], [0, 0.022]], 9);
     ms.pop();
     ms.pushT(x, y, z + 0.024, 0, 0, 0.6);
     boxAt(ms, 'rusty_red', 0, 0.03, 0, 0.006, 0.07, 0.003);
@@ -53,8 +54,8 @@ export async function cabinExterior(c: DressCtx): Promise<void> {
   {
     const ax = -2.3, az = 4.72;
     ms.pushT(ax, F, az);
-    cellLathe(ms, 'cab_paint', 'paint', 'coffee_can', [[0, 0.002], [0.075, 0.002], [0.076, 0.01], [0.076, 0.165], [0.073, 0.168], [0.071, 0.165], [0.071, 0.02]], 14);
-    lathe(ms, 'soot', [[0.071, 0.12], [0, 0.125]], 12);
+    cellLathe(ms, 'cab_paint', 'paint', 'coffee_can', [[0, 0.002], [0.075, 0.002], [0.076, 0.01], [0.076, 0.165], [0.073, 0.168], [0.071, 0.165], [0.071, 0.02]], 9);
+    lathe(ms, 'soot', [[0.071, 0.12], [0, 0.125]], 9);
     for (let k = 0; k < 7; k++) {
       const a = r.range(0, 6.28), d = r.range(0, 0.05);
       ms.pushT(Math.cos(a) * d, 0.13, Math.sin(a) * d, r.range(0, 6), r.range(0.6, 1.4));
@@ -71,14 +72,13 @@ export async function cabinExterior(c: DressCtx): Promise<void> {
     bakeProduct(ms, 'beer', -1.5, F, 4.05, 0.3);
     // the dog's bowl by the steps
     ms.pushT(-0.25, F, 4.75);
-    lathe(ms, 'galv', [[0, 0], [0.09, 0], [0.11, 0.05], [0.115, 0.055], [0.11, 0.055], [0.085, 0.006], [0, 0.006]], 14);
+    lathe(ms, 'galv', [[0, 0], [0.09, 0], [0.11, 0.05], [0.115, 0.055], [0.11, 0.055], [0.085, 0.006], [0, 0.006]], 9);
     ms.pop();
   }
   // ---- boot tray and coir mat at the door, a rubber boot pair, a broom leaning
   {
     cellBox(ms, 'cab_paint', 'paint', 'tan_canvas', door.c, F + 0.006, wallZ + 0.33, 0.62, 0.012, 0.4, 0.04);
     boxAt(ms, 'cab_rubber', door.c + 0.78, F + 0.01, wallZ + 0.22, 0.62, 0.02, 0.34, -0.03);
-    pending.push(bakeProp(ms, 'rubber_boots', door.c + 0.7, F + 0.02, wallZ + 0.22, 0.2));
     if (hi) pending.push(bakeProp(ms, 'garden_gloves_01', 1.2, F + 0.92 + 0.045, z1 - 0.08, 0.4));
     // the broom
     tube(ms, 'board_warm', [V(door.c + 0.55, F + 0.18, wallZ + 0.06), V(door.c + 0.62, F + 1.3, wallZ + 0.03)], 0.013, 5);
@@ -91,7 +91,7 @@ export async function cabinExterior(c: DressCtx): Promise<void> {
     cellBox(ms, 'cab_paint', 'paint', 'hose', 1.85, F + 0.17, 4.55, 0.6, 0.32, 0.36, 0.12);
     cellBox(ms, 'cab_paint', 'paint', 'enamel_white', 1.85, F + 0.35, 4.55, 0.62, 0.06, 0.38, 0.12);
     ms.pushT(1.25, F, 4.62);
-    lathe(ms, 'galv', [[0, 0], [0.12, 0], [0.135, 0.24], [0.14, 0.25], [0.13, 0.25], [0.12, 0.02], [0, 0.02]], 12);
+    lathe(ms, 'galv', [[0, 0], [0.12, 0], [0.135, 0.24], [0.14, 0.25], [0.13, 0.25], [0.12, 0.02], [0, 0.02]], 9);
     ms.pop();
     tube(ms, 'iron', [V(1.13, F + 0.25, 4.62), V(1.25, F + 0.36, 4.62), V(1.37, F + 0.25, 4.62)], 0.004, 3);
     for (let k = 0; k < 3; k++) {
@@ -121,7 +121,7 @@ export async function cabinExterior(c: DressCtx): Promise<void> {
   groundDeck(dms, 'leaves', 0.9, z1 - 0.2, 0.7, 0.4);
   // ---- stored under the porch: an old tire, cinder blocks, a sheet of tin, scrap boards (seen through the gaps)
   if (hi) {
-    pending.push(bakeProp(ms, 'old_tyre', 1.6, 0.08, 4.2, 0.3, Math.PI / 2 - 0.15));
+    tire(ms, 1.6, 0.09, 4.2, 0.3, Math.PI / 2 - 0.15);
     cellBox(ms, 'cab_paint', 'paint', 'cinder', -0.6, 0.1, 4.4, 0.4, 0.2, 0.2, 0.4);
     for (let k = 0; k < 4; k++) boxAt(ms, k % 2 ? 'board_grey' : 'planks_grey', -1.9 + k * 0.05, 0.03 + k * 0.025, 4.3 + r.range(-0.1, 0.1), 1.6, 0.025, 0.14, r.range(-0.15, 0.15), { grain: 'x' });
   }

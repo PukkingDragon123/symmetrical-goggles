@@ -29,6 +29,7 @@ export function makeLake(): THREE.Mesh {
   geo.rotateX(-Math.PI / 2);
   const depthTex = bakeDepth(L.x, L.z, R * 2, 256);
   const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.06, metalness: 0.0, transparent: true });
+  mat.name = 'water';
   // alpha out = the water's own opacity (< 1), the Renderer's water mask
   mat.blending = THREE.CustomBlending;
   mat.blendEquation = THREE.AddEquation;
@@ -70,7 +71,7 @@ export function makeLake(): THREE.Mesh {
         diffuseColor.a = max(diffuseColor.a, max(foam * 0.995, scum * 0.9));
         diffuseColor.a = min(diffuseColor.a, 0.99);`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
-        roughnessFactor = mix(0.05 + 0.08 * wpat, 0.7, foam);`)
+        roughnessFactor = mix(0.16 + 0.1 * wpat, 0.8, foam);`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
         vec3 wnW = waterNormal(vWP.xz, 1.0 - foam);
         normal = normalize((viewMatrix * vec4(wnW, 0.0)).xyz);`)
@@ -82,7 +83,7 @@ export function makeLake(): THREE.Mesh {
           float s = max(dot(rr, uSunDirW), 0.0);
           float cell = wH(wxz * 1.37 + floor(uTime * 6.0) * 0.173);
           float sp = step(0.9965 - 0.004 * uWind, s) * step(0.55, cell) + pow(s, 400.0) * 0.4;
-          totalEmissiveRadiance += uSunColW * sp * 2.2 * (1.0 - foam) * smoothstep(0.05, 0.4, wdep) * step(0.02, uSunDirW.y);
+          totalEmissiveRadiance += uSunColW * sp * 1.3 * (1.0 - foam) * smoothstep(0.05, 0.4, wdep) * step(0.02, uSunDirW.y);
         }`);
   };
   mat.customProgramCacheKey = () => 'lake-v2';

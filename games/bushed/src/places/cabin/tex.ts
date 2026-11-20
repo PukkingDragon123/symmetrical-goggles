@@ -130,7 +130,7 @@ export function ensureCabinTex(): void {
   const tex = (a: Atlas) => canvasTex(a.c, {});
   // dev: the painted atlases, for inspection (places.html)
   try { (window as unknown as { __cabTex?: unknown }).__cabTex = { PAINT, CLOTH, PAPER, DECAL }; } catch { /* no window */ }
-  defineMat('cab_paint', new THREE.MeshStandardMaterial({ name: 'cab_paint', map: tex(PAINT), roughness: 0.62, metalness: 0.12 }));
+  defineMat('cab_paint', new THREE.MeshStandardMaterial({ name: 'cab_paint', map: tex(PAINT), roughness: 0.9, metalness: 0 }));
   defineMat('cab_cloth', new THREE.MeshStandardMaterial({ name: 'cab_cloth', map: tex(CLOTH), roughness: 1, side: THREE.DoubleSide }));
   const pt = tex(PAPER);
   defineMat('cab_paper', new THREE.MeshStandardMaterial({ name: 'cab_paper', map: pt, roughness: 0.85, alphaTest: 0.5 }));
@@ -156,7 +156,7 @@ function tileMat(name: string, px: number, f: (x: number, y: number) => RGBA, ti
   a.px(name, [0, 0, px, px], (x, y) => f(x, y));
   const t = canvasTex(a.c, { repeat: true });
   t.repeat.set(1 / tile, 1 / tile);
-  defineMat(name, new THREE.MeshStandardMaterial({ name, map: t, roughness: 0.8, metalness: metal }));
+  defineMat(name, new THREE.MeshStandardMaterial({ name, map: t, roughness: 0.92, metalness: metal * 0 }));
 }
 
 // ---------------------------------------------------------------------------------------------- tin roofing
@@ -188,7 +188,7 @@ function tinMat(): void {
   });
   const t = canvasTex(a.c, { repeat: true });
   t.repeat.set(1, 0.5);
-  defineMat('cab_tin', new THREE.MeshStandardMaterial({ name: 'cab_tin', map: t, roughness: 0.62, metalness: 0.28 }));
+  defineMat('cab_tin', new THREE.MeshStandardMaterial({ name: 'cab_tin', map: t, roughness: 0.88, metalness: 0 }));
 }
 
 // ---------------------------------------------------------------------------------------------- paint
@@ -813,7 +813,7 @@ function glassMat(): void {
   n.repeat.set(2, 2);
   const t = placeTex('glass_grime');
   const m = new THREE.MeshStandardMaterial({
-    name: 'cab_glass', map: t, normalMap: n, color: 0xd0dcd4, roughness: 0.08, metalness: 0.0, transparent: true, opacity: 1,
+    name: 'cab_glass', map: t, normalMap: n, color: 0xd0dcd4, roughness: 0.4, metalness: 0.0, transparent: true, opacity: 1,
     depthWrite: false, side: THREE.DoubleSide, emissive: new THREE.Color(0xffa040), emissiveMap: t, emissiveIntensity: 0,
   });
   m.normalScale.set(0.9, 0.9);

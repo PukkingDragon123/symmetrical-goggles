@@ -409,7 +409,7 @@ def main():
         "seed_timothy": F.seedhead(34, "timothy"), "seed_bluejoint": F.seedhead(35, "bluejoint"), "seed_hair": F.seedhead(36, "hair"),
         "goldenrod": F.goldenrod(37), "everlasting": F.everlasting(38),
         "aster_purple": F.aster_purple(39), "daisy": F.daisy(40), "yarrow": F.yarrow(41), "cattail_leaf": F.cattail_leaves(42),
-        "reed": F.reed(43), "fern_ostrich": frond_cell(ferns, 2, tint=(1.0, 1.2, 0.8)),
+        "reed": F.reed(43), "fern_ostrich": frond_cell(ferns, 2, tint=(0.92, 1.06, 0.8)),
         "raspberry": F.raspberry(round_leaves, 44), "labrador": F.labrador(45),
         "sarsaparilla": F.sarsaparilla(small_leaves, 46), "hawkweed": F.hawkweed(47), "vetch": F.vetch(48),
         "lilypad": F.lilypad(49), "lilypad_old": F.lilypad(50, old=True), "water_lily": F.water_lily(51), "cattail": F.cap(52, "cattail"),

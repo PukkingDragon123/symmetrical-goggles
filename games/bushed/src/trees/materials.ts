@@ -193,7 +193,7 @@ export function patchTreeMaterial(m: THREE.MeshStandardMaterial, kind: TreeMatKi
         }
         #endif
         diffuseColor.rgb *= 1.0 - 0.32 * uWet;`);
-      fs = fs.replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.35, uWet);');
+      fs = fs.replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.6, uWet);');
     }
     shader.fragmentShader = fs;
   };
@@ -238,13 +238,13 @@ export function createTreeMaterials(species: SpeciesId, lod?: THREE.Vector4): Tr
   const u = makeUniforms(lod);
   const bark = new THREE.MeshStandardMaterial({
     map: barkTexture(species), normalMap: barkNormal(species), normalScale: new THREE.Vector2(1.7, 1.7),
-    vertexColors: true, roughness: 0.93, metalness: 0,
+    vertexColors: true, roughness: 1, metalness: 0, envMapIntensity: 0.4,
   });
   bark.name = `bark_${species}`;
   patchTreeMaterial(bark, 'bark', u);
   const ftex = foliageTexture(species);
   const foliage = new THREE.MeshStandardMaterial({
-    map: ftex, alphaTest: 0.5, side: THREE.DoubleSide, vertexColors: true, roughness: 0.82, metalness: 0,
+    map: ftex, alphaTest: 0.5, side: THREE.DoubleSide, vertexColors: true, roughness: 1, metalness: 0, envMapIntensity: 0.3,
   });
   foliage.name = `foliage_${species}`;
   patchTreeMaterial(foliage, 'foliage', u, FOLIAGE_OPTS[species]);

@@ -1,7 +1,7 @@
 // Ground-cover materials: Lambert (masses of small plants) or Standard (rocks, logs, stumps) patched with
 //   * wind: sway by height (aWind.x metres at full strength), leaf flutter (aWind.z), and gusts that roll across the
-//     ground as wavy, patchy fronts travelling with the wind (G.uWindStrength / uGust); bent blades show their paler
-//     sides, so you can watch a gust cross a meadow
+//     ground as wavy, patchy fronts travelling with the wind (G.uWindStrength / uGust), so you can watch a gust
+//     cross a meadow. Matte: Lambert plants, rough (1.0) rocks and wood, low environment reflection
 //   * colour: world-space patches (dry / lush, light / dark) plus a per-clump jitter (uTintAmt: grass 1, flowers less)
 //   * pushers: plants bend away from G.uPushers (player = slot 0, hound, creatures, Jeep, trailer) and from a short
 //     trail of the player's recent positions, so brushed grass springs back over ~1.5 s with a little overshoot
@@ -51,7 +51,7 @@ uniform float uTime; uniform vec2 uWindDir; uniform float uWindStrength; uniform
 uniform vec3 uCamPos; uniform vec4 uPushers[${MAX_PUSHERS}]; uniform vec4 uTrail[${TRAIL_N}];
 uniform vec2 uFade; uniform float uTintAmt;
 uniform sampler2D uFlatMap; uniform vec3 uFlatWin; uniform sampler2D uMarksMap; uniform vec2 uMarksOrigin; uniform float uMarksSize;
-varying float vVegFade; varying vec3 vVegW; varying vec3 vVegN; varying vec3 vVegTint; varying float vVegBend;
+varying float vVegFade; varying vec3 vVegW; varying vec3 vVegN; varying vec3 vVegTint;
 float vegHv(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vegVNv(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(vegHv(i), vegHv(i + vec2(1, 0)), f.x), mix(vegHv(i + vec2(0, 1)), vegHv(i + vec2(1, 1)), f.x), f.y); }
@@ -123,7 +123,6 @@ const V_BEGIN = /* glsl */ `
   vec3 wp = (vM * vec4(transformed, 1.0)).xyz;
   vec3 off = vec3(0.0);
   vVegTint = vec3(1.0);
-  vVegBend = 0.0;
   #ifdef VEG_WIND
   {
     float ws = uWindStrength;
@@ -134,7 +133,6 @@ const V_BEGIN = /* glsl */ `
     off += vec3(wd.x, 0.0, wd.y) * sway * aWind.x;
     off.y -= abs(sway) * aWind.x * 0.3;
     off += vec3(sin(uTime * 6.7 + ph * 3.0 + wp.y * 3.0), sin(uTime * 8.3 + ph * 2.0) * 0.6, sin(uTime * 7.4 + ph * 2.7 + wp.x * 3.0)) * aWind.z * (0.012 + 0.05 * ws + 0.07 * gust);
-    vVegBend = clamp(gust * 1.6, 0.0, 1.0) * smoothstep(0.0, 0.25, aWind.y);
     // colour patches: dry / lush over ~25 m, light / dark over ~6 m, a little per-clump jitter
     float n1 = vegVNv(o.xz / 23.0 + 7.1), n2 = vegVNv(o.xz / 6.5 - 3.3), h1 = vegHv(o.xz * 0.731);
     vec3 t = mix(vec3(0.84, 1.03, 0.8), vec3(1.17, 1.04, 0.72), smoothstep(0.38, 0.82, n1));
@@ -157,7 +155,7 @@ const V_BEGIN = /* glsl */ `
 const F_COMMON = /* glsl */ `
 uniform vec2 uFade; uniform float uWet; uniform float uSnow; uniform float uMoss; uniform float uTri; uniform float uTrans; uniform float uLichen;
 uniform sampler2D uMossMap;
-varying float vVegFade; varying vec3 vVegW; varying vec3 vVegN; varying vec3 vVegTint; varying float vVegBend;
+varying float vVegFade; varying vec3 vVegW; varying vec3 vVegN; varying vec3 vVegTint;
 float vegIGN(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
 float vegH(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float vegVN(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
@@ -179,7 +177,7 @@ export function vegMaterial(o: VegMatOpts): THREE.Material {
   const m: THREE.MeshLambertMaterial | THREE.MeshStandardMaterial = isPlant
     ? new THREE.MeshLambertMaterial({ map: o.map ?? null, alphaTest: o.alphaTest ?? 0.5, side: o.side ?? THREE.DoubleSide, vertexColors: o.vertexColors ?? true })
     : new THREE.MeshStandardMaterial({
-      map: o.map ?? null, normalMap: o.normalMap ?? null, roughness: o.roughness ?? 0.92, metalness: 0,
+      map: o.map ?? null, normalMap: o.normalMap ?? null, roughness: o.roughness ?? 1, metalness: 0, envMapIntensity: 0.35,
       vertexColors: o.vertexColors ?? false, side: o.side ?? THREE.FrontSide, alphaTest: o.alphaTest ?? 0,
     });
   if (!mossTex) mossTex = loadTex('veg/moss.png', { repeat: true });
@@ -243,11 +241,10 @@ export function vegMaterial(o: VegMatOpts): THREE.Material {
           diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.88, 0.91, 0.95), step(0.6, uSnow * (0.3 + 0.9 * max(up, 0.0)) + (n - 0.5) * 0.3));
           diffuseColor.rgb *= 1.0 - 0.3 * uWet;
         }`);
-      fs = fs.replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.3, uWet);');
+      fs = fs.replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.55, uWet);');
     } else {
       fs = fs.replace('#include <color_fragment>', `#include <color_fragment>
         diffuseColor.rgb *= vVegTint;
-        diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(1.22, 1.2, 1.04) + vec3(0.03, 0.03, 0.02), vVegBend * 0.8);
         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.86, 0.9, 0.95), step(0.7, uSnow * (0.5 + 0.6 * vVegN.y)));
         diffuseColor.rgb *= 1.0 - 0.2 * uWet;`);
       if (o.keepNormal !== false) {

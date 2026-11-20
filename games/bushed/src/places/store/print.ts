@@ -40,8 +40,18 @@ export function ensureStoreMats(): void {
     name: 'place_sp_soft', map: t, roughness: 0.9, transparent: true, depthWrite: false,
     polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
   }));
-  defineMat('sp_tin', new THREE.MeshStandardMaterial({ name: 'place_sp_tin', map: t, roughness: 0.45, metalness: 0.35, alphaTest: 0.5 }));
-  glowMat = new THREE.MeshStandardMaterial({ name: 'place_sp_glow', map: t, emissiveMap: t, emissive: new THREE.Color(1, 0.95, 0.85), emissiveIntensity: 1.1, roughness: 0.35 });
+  defineMat('sp_tin', new THREE.MeshStandardMaterial({ name: 'place_sp_tin', map: t, roughness: 0.8, metalness: 0.05, alphaTest: 0.5 }));
+  // a welded wire mesh (alpha-tested, 5 cm cells), shrink wrap (milky, matte)
+  const c = document.createElement('canvas');
+  c.width = c.height = 8;
+  const cg = c.getContext('2d')!;
+  cg.fillStyle = '#9aa0a4'; cg.fillRect(0, 0, 8, 1); cg.fillRect(0, 0, 1, 8);
+  const wt = new THREE.CanvasTexture(c);
+  wt.magFilter = THREE.NearestFilter; wt.minFilter = THREE.LinearMipmapLinearFilter; wt.wrapS = wt.wrapT = THREE.RepeatWrapping; wt.colorSpace = THREE.SRGBColorSpace;
+  wt.repeat.set(20, 20);
+  defineMat('wiremesh', new THREE.MeshStandardMaterial({ name: 'place_wiremesh', map: wt, alphaTest: 0.5, roughness: 0.8, metalness: 0.1, side: THREE.DoubleSide }));
+  defineMat('wrap', new THREE.MeshStandardMaterial({ name: 'place_wrap', color: 0xe8eef0, roughness: 0.55, transparent: true, opacity: 0.22, depthWrite: false }));
+  glowMat = new THREE.MeshStandardMaterial({ name: 'place_sp_glow', map: t, emissiveMap: t, emissive: new THREE.Color(1, 0.95, 0.85), emissiveIntensity: 1.1, roughness: 0.85 });
   defineMat('sp_glow', glowMat);
   const grime = new THREE.MeshStandardMaterial({
     name: 'place_grime', map: g, roughness: 1, transparent: true, depthWrite: false,
@@ -53,7 +63,7 @@ export function ensureStoreMats(): void {
     polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3, toneMapped: false, fog: false,
   }));
   defineMat('puddle', new THREE.MeshStandardMaterial({
-    name: 'place_puddle', map: g, color: 0x8a9298, roughness: 0.06, metalness: 0.5, transparent: true, depthWrite: false,
+    name: 'place_puddle', map: g, color: 0x6a7276, roughness: 0.42, metalness: 0, transparent: true, depthWrite: false,
     polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3,
   }));
 }

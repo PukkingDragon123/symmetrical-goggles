@@ -8,7 +8,8 @@ import * as THREE from 'three';
 import { Mesher, Rand, V, boxAt, board, logAB, lathe } from '../../places/kit';
 import { ensurePrintMats } from '../../places/signs';
 import { ensureStoreMats, card, cardAt, floorDecal } from '../../places/store/print';
-import { colorMat, propInstances, tb, type Xf } from '../../places/store/inst';
+import { colorMat, tb } from '../../places/store/inst';
+import * as LP from '../../places/store/lowprops';
 import { PSUB } from '../../places/store/print';
 
 export interface KettleFrame {
@@ -77,7 +78,7 @@ export function dressKettle(grp: THREE.Group, f: KettleFrame): Promise<unknown> 
       dms.pop();
     }
     dms.pushT(x + 0.3, ckBase + 0.02, z0 + 1.1);
-    lathe(dms, 'soot', [[0.0001, 0], [0.13, 0.01], [0.17, 0.08], [0.16, 0.22], [0.15, 0.23], [0.0001, 0.2]], 12);
+    lathe(dms, 'soot', [[0.0001, 0], [0.13, 0.01], [0.17, 0.08], [0.16, 0.22], [0.15, 0.23], [0.0001, 0.2]], 8);
     boxAt(dms, 'soot', 0.19, 0.2, 0, 0.06, 0.02, 0.02);
     dms.pop();
     f.solid(x + 0.3, ckBase + 0.12, z0 + 1.1, [0.17, 0.12, 0.17]);
@@ -119,12 +120,12 @@ export function dressKettle(grp: THREE.Group, f: KettleFrame): Promise<unknown> 
     for (const [lx, lz] of [[-0.17, -0.17], [0.17, -0.17], [0.17, 0.17]] as [number, number][]) boxAt(ms, 'planks_old', lx, 0.1, lz, 0.035, 0.2, 0.035);
     ms.pop();
     boxAt(ms, 'planks_old', cx + 0.6, cg + 0.02, cz + 0.3, 0.5, 0.03, 0.07, 0.4);
-    const cans: Xf[] = [];
     for (let i = 0; i < 8; i++) {
       const px = r.range(-10, 11), pz = r.range(-7, 5);
-      cans.push({ x: px, y: hAt(px, pz) + 0.01, z: pz, ry: r.range(0, 6), rx: i % 2 ? Math.PI / 2 : 0 });
+      dms.pushT(px, hAt(px, pz) + (i % 2 ? 0.045 : 0.0), pz, r.range(0, 6), i % 2 ? Math.PI / 2 : 0);
+      LP.rustyCan(dms, 0, 0, 0, 0);
+      dms.pop();
     }
-    pending.push(propInstances(grp, 'can_rusted', cans, { cast: false }));
     for (let i = 0; i < 6; i++) {
       const px = r.range(-9, 10), pz = r.range(-6, 5);
       dms.pushT(px, hAt(px, pz) + 0.035, pz, r.range(0, 6), Math.PI / 2, 0);
@@ -141,7 +142,7 @@ export function dressKettle(grp: THREE.Group, f: KettleFrame): Promise<unknown> 
     for (const s of [-1, 1]) { boxAt(ms, rust, s * 0.3, 0.12, 0, 0.03, 0.24, 0.8, 0, {}, 0, s * 0.25); boxAt(ms, rust, 0, 0.12, s * 0.4, 0.6, 0.24, 0.03, 0, {}, s * 0.25); }
     for (const s of [-1, 1]) logAB(ms, V(s * 0.22, -0.05, -0.2), V(s * 0.28, -0.1, -1.05), 0.022, { seed: 60 + s, seg: 5, capA: 1, capB: 1, matFor: () => 'log_old' });
     ms.pushT(0, -0.12, 0.55, 0, 0, Math.PI / 2);
-    lathe(ms, 'iron', [[0.0001, -0.03], [0.17, -0.03], [0.18, 0], [0.17, 0.03], [0.0001, 0.03]], 12);
+    lathe(ms, 'iron', [[0.0001, -0.03], [0.17, -0.03], [0.18, 0], [0.17, 0.03], [0.0001, 0.03]], 8);
     ms.pop();
     ms.pop();
     f.solid(x, g + 0.3, z, [0.45, 0.3, 0.6], 2.2);

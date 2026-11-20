@@ -17,7 +17,9 @@ import { CAMP, campXZ, SETS, TRAP_HEAD, SHORE, WOODYARD } from './sites';
 import { solidBox, propIn, treesNear, clearTrees, tapeOn, lod } from './kit';
 import { CAMP_SIGN } from './text';
 import { dressKettle } from './kettle_dress';
+import * as LP from '../../places/store/lowprops';
 import { buildCampground } from '../../places/store/campground';
+import { r5off } from '../../places/store/inst';
 
 export interface StoryWorld {
   /** interact hooks: the arc fills these in */
@@ -225,7 +227,7 @@ export function buildStoryWorld(g: Game): StoryWorld {
   // ---- 4. the old camp
   buildCamp(g, W, act);
   // ---- the lakeside campground round Doug's fire (the tales are told there): tents, the table, the woodbox
-  try { g.addPlace(buildCampground()); } catch (e) { console.warn('[story] campground dressing failed', e); }
+  if (!r5off()) try { g.addPlace(buildCampground()); } catch (e) { console.warn('[story] campground dressing failed', e); }
 
   // ---- 5. Ray's dock below the camp, and the gut hammer hanging at the end of it
   {
@@ -444,13 +446,16 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
     logAB(ms3, V(bk.x - 3, bb + 0.1, bk.z - 2), V(bk.x + 1.2, bb + 0.9, bk.z + 1.1), 0.07, { seed: 950, matFor: () => 'log_old' });
     logAB(ms3, V(bk.x + 1.5, bb + 0.08, bk.z - 2.5), V(bk.x + 3.8, bb + 0.1, bk.z + 2.2), 0.07, { seed: 951, matFor: () => 'log_old' });
     grp.add(ms3.build({ name: 'bunkhouse' }));
-    pending.push(propIn(grp, 'old_bed_frame', bk.x - 3, bb, bk.z - 1.6, Math.PI / 2 + 0.05));
-    pending.push(propIn(grp, 'old_bed_frame', bk.x + 2.4, bb, bk.z - 1.7, Math.PI / 2 - 0.12, 1, [0, 0.06]));
-    pending.push(propIn(grp, 'metal_trash_can_rust', bk.x + 4.2, bb, bk.z + 2.1, 0.6));
-    pending.push(propIn(grp, 'wooden_military_crate', bk.x - 0.4, bb, bk.z + 1.9, 0.3));
+    // low-poly stand-ins (lowprops.ts) for the heavy conversions: bed frames, the bin, the army crate
+    const lp = new Mesher();
+    LP.bedFrame(lp, bk.x - 3, bb, bk.z - 1.6, 0.05);
+    lp.pushT(bk.x + 2.4, bb, bk.z - 1.7, -0.12, 0, 0.06); LP.bedFrame(lp, 0, 0, 0, 0); lp.pop();
+    LP.trashCan(lp, bk.x + 4.2, bb, bk.z + 2.1, 0.6);
+    LP.armyCrate(lp, bk.x - 0.4, bb, bk.z + 1.9, 0.3, 7);
     pending.push(propIn(grp, 'picke_dirty_01', bk.x - bk.w / 2 + 0.35, bb, bk.z + 1.5, 1.2, 1, [0.25, 0]));
     pending.push(propIn(grp, 'rusted_spade_01', bk.x + bk.w / 2 - 0.3, bb, bk.z - 1, -0.6, 1, [0.3, 0]));
-    for (let k = 0; k < 6; k++) pending.push(propIn(grp, 'can_rusted', bk.x - 2 + rnd.range(-2, 3), bb + 0.01, bk.z + rnd.range(-2, 2), rnd.range(0, 6), 1, k % 2 ? [Math.PI / 2, 0] : undefined));
+    for (let k = 0; k < 6; k++) { lp.pushT(bk.x - 2 + rnd.range(-2, 3), bb + (k % 2 ? 0.05 : 0.01), bk.z + rnd.range(-2, 2), rnd.range(0, 6), k % 2 ? Math.PI / 2 : 0); LP.rustyCan(lp, 0, 0, 0, 0); lp.pop(); }
+    grp.add(lp.build({ name: 'kettle_lowprops' }));
     solidBox(toW(bk.x - 3, bb + 0.3, bk.z - 1.6), [0.45, 0.3, 1.0], yaw + Math.PI / 2);
     solidBox(toW(bk.x + 2.4, bb + 0.3, bk.z - 1.7), [0.45, 0.3, 1.0], yaw + Math.PI / 2);
     // the notice, nailed inside the back wall
@@ -538,7 +543,7 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
   }
 
   // ---- seventy-five years of neglect on top (kettle_dress.ts): moss, fallen boards, the cook's shelf, the outhouse
-  pending.push(dressKettle(grp, {
+  if (!r5off()) pending.push(dressKettle(grp, {
     hAt, ck, ckBase, bk: { x: 6, z: -3.6, w: 10, d: 6 },
     solid: (x, y, z, half, ry = 0) => solidBox(toW(x, y, z), half, yaw + ry),
   }).catch((e) => console.warn('[story] kettle dressing', e)));

@@ -14,6 +14,7 @@ import { wallMapTexture } from './wallmap';
 import { STOVE } from './stove';
 import { flameCards } from './fixtures';
 import { CLOTH } from './cabin/tex';
+import { lowSplit } from './cabin/bake';
 import { cabinExterior } from './cabin/exterior';
 import { cabinYard } from './cabin/yard';
 import { cabinInterior } from './cabin/interior';
@@ -469,7 +470,7 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
       while (x < fx1 - 0.08) {
         const rr = fr.range(0.06, 0.08);
         ms.pushT(x + rr, F + 0.075 + layer * 0.125 + fr.range(-0.01, 0.01), pz + 0.02 + row * 0.42, Math.PI / 2 + fr.range(-0.06, 0.06), 0, fr.range(0, 6.28));
-        writeSplit(ms, fr, 0.4 + fr.range(-0.03, 0.03), rr * 1.6, fr.int(0, 99999));
+        lowSplit(ms, fr, 0.4 + fr.range(-0.03, 0.03), rr * 1.6);
         ms.pop();
         x += rr * 2 + 0.01;
       }
@@ -841,7 +842,7 @@ async function woodyard(c: DressCtx): Promise<void> {
         const rr = fr.range(0.06, 0.085);
         ms.pushT(x + rr, gh(x, zc) + 0.15 + layer * 0.13 + fr.range(-0.01, 0.01), zc - 0.21, 0, 0, 0);
         ms.push(tf(0, 0, 0, -Math.PI / 2, 0, fr.range(0, 6.28)));
-        writeSplit(ms, fr, 0.42 + fr.range(-0.03, 0.02), rr * 1.6, fr.int(0, 99999));
+        lowSplit(ms, fr, 0.42 + fr.range(-0.03, 0.02), rr * 1.6);
         ms.pop(); ms.pop();
         x += rr * 2 + 0.008;
       }

@@ -332,8 +332,8 @@ Trees, ground cover and their textures (`src/trees/`, `src/world/forest.ts`, `sr
 | `foliage_spruce/fir.png`, `veg_atlas.png` (juniper) | needle sprigs from [Fir Tree 01](https://polyhaven.com/a/fir_tree_01) twig maps | Rob Tuytel, Rico Cilliers | CC0 |
 | `foliage_pine.png` | needle sprig from [Pine Tree 01](https://polyhaven.com/a/pine_tree_01) twig maps | Rob Tuytel, Rico Cilliers | CC0 |
 | `foliage_birch.png` | leaf colour / veins from [Shrub 01](https://polyhaven.com/a/shrub_01) | Rico Cilliers | CC0 |
-| `veg_atlas.png` (sword fern, bracken) | fronds from [Fern 02](https://polyhaven.com/a/fern_02) | Rob Tuytel, Rico Cilliers | CC0 |
-| `veg_atlas.png` (alder, blueberry) | leaves from [Shrub 03](https://polyhaven.com/a/shrub_03), [Shrub 04](https://polyhaven.com/a/shrub_04) | Rico Cilliers | CC0 |
+| `veg_atlas.png` (sword fern, bracken, ostrich fern) | fronds from [Fern 02](https://polyhaven.com/a/fern_02) | Rob Tuytel, Rico Cilliers | CC0 |
+| `veg_atlas.png` (alder, blueberry, raspberry, wild sarsaparilla) | leaves from [Shrub 03](https://polyhaven.com/a/shrub_03), [Shrub 04](https://polyhaven.com/a/shrub_04) | Rico Cilliers | CC0 |
 | `veg/moss.png` | colour from [Concrete Moss](https://polyhaven.com/a/concrete_moss) (+ procedural cushions) | Rob Tuytel | CC0 |
 | `veg/forest_floor.png` (+ `_n`, test page ground) | [Forest Leaves 02](https://polyhaven.com/a/forest_leaves_02) | Rob Tuytel | CC0 |
 | `veg/mossy_rock.png` (+ `_n`, boulders) | [Mossy Rock](https://polyhaven.com/a/mossy_rock) | Rob Tuytel | CC0 |

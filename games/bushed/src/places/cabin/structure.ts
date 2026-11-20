@@ -4,7 +4,8 @@
 // green screen door that follows the plank door.
 // Coordinates: the cabin's local frame (see cabin.ts).
 import * as THREE from 'three';
-import { Mesher, Rand, Cols, V, tf, box, boxAt, board, tube, lathe, defineMat, hasMat } from '../kit';
+import { Mesher, Rand, Cols, V, tf, box, boxAt, board, lathe, defineMat, hasMat } from '../kit';
+import { ltube as tube } from './bake';
 import { CABIN, EAVE, deckY, RIDGE, ROOF_T, ZB, ZF, ySide, yEnd } from '../cabinplan';
 import { cellBox, cellLathe, cellTube, bakeProp } from './bake';
 import { DECAL } from './tex';
@@ -23,7 +24,7 @@ export function roofP(s: number, t: number, h: number, z: number): THREE.Vector3
 
 // ---------------------------------------------------------------------------------------------- stones
 /** a flat-bedded fieldstone: bottom at y0, top at y1, length along local x, depth along z, yaw ry */
-export function fieldstone(ms: Mesher, r: Rand, x: number, y0: number, y1: number, z: number, len: number, dep: number, ry: number, mat = 'stone', detail = 1): void {
+export function fieldstone(ms: Mesher, r: Rand, x: number, y0: number, y1: number, z: number, len: number, dep: number, ry: number, mat = 'stone', detail = 0): void {
   const g = new THREE.IcosahedronGeometry(1, detail);
   const p = g.attributes.position as THREE.BufferAttribute;
   const seen = new Map<string, number>();
@@ -248,7 +249,7 @@ export function gutters(ms: Mesher, dms: Mesher, cols: Cols, hAt: (x: number, z:
     for (const dz of [-0.14, 0.14]) cellBox(ms, 'cab_paint', 'paint', 'cinder', bx, g + 0.1, bz + dz, 0.4, 0.2, 0.19, 0.05 * dz);
     ms.pushT(bx, g + 0.2, bz, 0.4);
     const prof: [number, number][] = [[0, 0], [0.27, 0], [0.285, 0.02], [0.285, 0.2], [0.295, 0.22], [0.285, 0.24], [0.285, 0.62], [0.295, 0.64], [0.285, 0.66], [0.285, 0.84], [0.27, 0.87], [0.26, 0.87], [0.26, 0.82]];
-    cellLathe(ms, 'cab_paint', 'paint', 'drum_blue', prof, 18);
+    cellLathe(ms, 'cab_paint', 'paint', 'drum_blue', prof, 9);
     ms.pop();
     ms.pushT(bx, g + 0.2 + 0.78, bz);
     lathe(ms, 'soot', [[0, 0], [0.262, 0]].reverse() as [number, number][], 16);
@@ -276,7 +277,7 @@ let screenDone = false;
 function screenMat(): void {
   if (screenDone || hasMat('cab_screen')) return;
   screenDone = true;
-  defineMat('cab_screen', new THREE.MeshStandardMaterial({ name: 'cab_screen', color: 0x16181a, roughness: 0.7, metalness: 0.3, transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide }));
+  defineMat('cab_screen', new THREE.MeshStandardMaterial({ name: 'cab_screen', color: 0x16181a, roughness: 0.95, metalness: 0, transparent: true, opacity: 0.5, depthWrite: false, side: THREE.DoubleSide }));
 }
 
 /** a green wooden screen door leaf; pivot on the hinge line (leaf extends +x), face toward +z */

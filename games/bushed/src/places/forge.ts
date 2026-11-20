@@ -10,7 +10,7 @@
 import * as THREE from 'three';
 import { SPOTS, heightAt } from '../world/layout';
 import { Mesher, Rand, Cols, V, box, boxAt, board, logAB, log, lathe, tube, flicker, shadowy, lightCuller, anchor, placeMat, type Place } from './kit';
-import { rock, colorMat, tb, prop } from './store/inst';
+import { rock, colorMat, tb, prop, r5off } from './store/inst';
 import { ensurePrintMats, LABELS } from './signs';
 import { G as GFX } from '../gfx/globals';
 import { ensureStoreMats, card, cardAt, floorDecal, groundDecal } from './store/print';
@@ -394,7 +394,7 @@ export async function buildForge(): Promise<ForgePlace> {
   const tub = buildSlackTub();
   tub.group.position.set(T.x, 0, T.z);
   group.add(tub.group);
-  const waterMat = new THREE.MeshStandardMaterial({ color: 0x0c1418, roughness: 0.05, metalness: 0.3, transparent: true, opacity: 0.92 });
+  const waterMat = new THREE.MeshStandardMaterial({ color: 0x0c1418, roughness: 0.35, metalness: 0, transparent: true, opacity: 0.92 });
   const water = new THREE.Mesh(new THREE.CircleGeometry(tub.r, 24).rotateX(-Math.PI / 2), waterMat);
   water.position.set(T.x, tub.waterY, T.z);
   group.add(water);
@@ -508,7 +508,7 @@ export async function buildForge(): Promise<ForgePlace> {
 
   // ---- round 5: soot, scale, scrap, sacks, the apron, the rain barrel, paper on the wall
   const dms = new Mesher();
-  dressForge(ms, dms, cols, group, gh, hw, hd, ya, yb, za, zb);
+  if (!r5off()) dressForge(ms, dms, cols, group, gh, hw, hd, ya, yb, za, zb);
 
   // ---- static mesh and the hit proxies the station / interactables use
   group.add(ms.build({ name: 'forge_static', noCast: ['grime', 'sp'] }));

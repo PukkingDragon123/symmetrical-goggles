@@ -76,6 +76,19 @@ const _e = new THREE.Euler(), _frustum = new THREE.Frustum(), _box = new THREE.B
 const _tq = new THREE.Quaternion(), _dir = new THREE.Vector3(), _v = new THREE.Vector3();
 const UP = new THREE.Vector3(0, 1, 0);
 
+/**
+ * Ground cover is drawn into the sun's shadow map but not into lamp shadows: a point light renders six cube faces
+ * and every instanced prototype spans the whole streamed area, so each lamp would redraw all of it six times.
+ * Lamp shadow cameras are square perspective frustums (90 deg for point lights); the sun's is orthographic and the
+ * view camera is not square, so a frustum test can tell them apart.
+ */
+function notLampFrustum(this: THREE.Object3D, f: THREE.Frustum): boolean {
+  const p = f.planes;
+  const lr = p[0].normal.dot(p[1].normal), tb = p[2].normal.dot(p[3].normal);
+  if (lr < -0.999) return true; // orthographic: the sun
+  return Math.abs(lr - tb) > 0.02;
+}
+
 export class GroundCover {
   readonly group = new THREE.Group();
   private camera: THREE.Camera;
@@ -171,7 +184,8 @@ export class GroundCover {
       const im = new THREE.InstancedMesh(pt.geo, pt.mat, cap);
       im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
       im.count = 0;
-      im.frustumCulled = false;
+      im.frustumCulled = true;
+      im.intersectsFrustum = notLampFrustum;
       im.castShadow = shadow;
       im.receiveShadow = true;
       if (pt.depth) im.customDepthMaterial = pt.depth;
@@ -210,15 +224,15 @@ export class GroundCover {
     // ---- grass: forest-gap mixes, lush meadow with seed heads, dry, sedge, shade wisps
     this.grass('grass', 'grass_a', 11, { blades: [['grass_green', 3], ['grass_fine', 2], ['grass_short', 2]], n: 34, h: [0.18, 0.45], spread: 0.26 }, GR);
     this.grass('grass', 'grass_b', 12, {
-      blades: [['grass_green', 2], ['grass_yellow', 2], ['grass_fine', 2]], n: 40, h: [0.25, 0.55], spread: 0.3,
+      blades: [['grass_green', 2], ['grass_yellow', 2], ['grass_fine', 2]], n: 42, h: [0.25, 0.55], spread: 0.36,
       heads: { cells: ['seed_timothy', 'seed_hair'], n: 2, h: [0.55, 0.8] },
     }, GR);
     this.grass('meadow', 'meadow_a', 13, {
-      blades: [['grass_lush', 2], ['grass_green', 2], ['grass_fine', 1]], n: 48, h: [0.35, 0.8], spread: 0.36,
+      blades: [['grass_lush', 2], ['grass_green', 2], ['grass_fine', 1]], n: 52, h: [0.35, 0.8], spread: 0.44,
       heads: { cells: ['seed_bluejoint'], n: 3, h: [0.85, 1.15] },
     }, GR);
     this.grass('meadow', 'meadow_b', 14, {
-      blades: [['grass_yellow', 2], ['grass_fine', 2], ['grass_green', 1]], n: 44, h: [0.3, 0.7], spread: 0.34,
+      blades: [['grass_yellow', 2], ['grass_fine', 2], ['grass_green', 1]], n: 50, h: [0.3, 0.7], spread: 0.42,
       heads: { cells: ['seed_timothy', 'seed_hair', 'seed_timothy'], n: 4, h: [0.6, 0.95] },
     }, GR);
     this.grass('meadow', 'meadow_c', 15, {
@@ -234,18 +248,18 @@ export class GroundCover {
     // ---- ferns
     this.plant('fern', 'fern_a', P.swordFern(21, 'fern_a', 12, 0.85), FE, true);
     this.plant('fern', 'fern_b', P.swordFern(22, 'fern_b', 15, 1.05), FE, true);
-    this.plant('ostrich', 'ostrich_a', P.ostrich(26, 9, 1.15), FE, true);
-    this.plant('ostrich', 'ostrich_b', P.ostrich(27, 7, 0.85), FE, true);
+    this.plant('ostrich', 'ostrich_a', P.ostrich(26, 12, 1.15), FE, true);
+    this.plant('ostrich', 'ostrich_b', P.ostrich(27, 9, 0.85), FE, true);
     this.plant('bracken', 'bracken_a', P.bracken(24, 3, 0.75), FE, true);
     this.plant('bracken', 'bracken_b', P.bracken(25, 5, 0.95), FE, true);
     // ---- wildflowers: in grass, so they read as part of the sward
     const tuft: [P.MeadowSpec['blades'][number], P.MeadowSpec['blades'][number]] = [['grass_green', 2], ['grass_fine', 1]];
     this.plant('fireweed', 'fireweed', P.crossed(31, 'fireweed', 5, 1.2, 0.55, 0.3, 2, [1, 1, 1], 0.5), FE, true, 512, 0.3);
-    this.plant('goldenrod', 'goldenrod', P.meadow(32, { blades: [...tuft], n: 14, h: [0.2, 0.45], spread: 0.28, heads: { cells: ['goldenrod'], n: 4, h: [0.75, 1.05] } }), SM, false, 512, 0.5);
-    this.plant('asters', 'asters', P.meadow(33, { blades: [...tuft], n: 12, h: [0.2, 0.4], spread: 0.26, heads: { cells: ['aster_purple'], n: 4, h: [0.5, 0.75] } }), SM, false, 512, 0.5);
-    this.plant('everlasting', 'everlasting', P.meadow(34, { blades: [['grass_dry', 1], ['grass_fine', 1]], n: 10, h: [0.15, 0.35], spread: 0.24, heads: { cells: ['everlasting'], n: 5, h: [0.35, 0.5] } }), SM, false, 512, 0.5);
-    this.plant('roadside', 'roadside_a', P.meadow(35, { blades: [...tuft, ['grass_lush', 1]], n: 22, h: [0.25, 0.5], spread: 0.32, heads: { cells: ['daisy', 'daisy', 'hawkweed', 'yarrow'], n: 6, h: [0.4, 0.65] } }), SM, false, 1024, 0.5);
-    this.plant('roadside', 'roadside_b', P.meadow(36, { blades: [...tuft], n: 18, h: [0.2, 0.45], spread: 0.3, heads: { cells: ['vetch', 'hawkweed', 'vetch', 'yarrow'], n: 6, h: [0.4, 0.55] } }), SM, false, 1024, 0.5);
+    this.plant('goldenrod', 'goldenrod', P.meadow(32, { blades: [...tuft], n: 14, h: [0.2, 0.45], spread: 0.28, heads: { cells: ['goldenrod'], n: 5, h: [0.75, 1.05] } }), SM, false, 512, 0.5);
+    this.plant('asters', 'asters', P.meadow(33, { blades: [...tuft], n: 12, h: [0.2, 0.4], spread: 0.26, heads: { cells: ['aster_purple'], n: 6, h: [0.5, 0.8] } }), SM, false, 512, 0.5);
+    this.plant('everlasting', 'everlasting', P.meadow(34, { blades: [['grass_dry', 1], ['grass_fine', 1]], n: 10, h: [0.15, 0.35], spread: 0.24, heads: { cells: ['everlasting'], n: 7, h: [0.38, 0.55] } }), SM, false, 512, 0.5);
+    this.plant('roadside', 'roadside_a', P.meadow(35, { blades: [...tuft, ['grass_lush', 1]], n: 22, h: [0.25, 0.5], spread: 0.32, heads: { cells: ['daisy', 'daisy', 'hawkweed', 'yarrow'], n: 10, h: [0.45, 0.7] } }), SM, false, 1024, 0.5);
+    this.plant('roadside', 'roadside_b', P.meadow(36, { blades: [...tuft], n: 18, h: [0.2, 0.45], spread: 0.3, heads: { cells: ['vetch', 'hawkweed', 'vetch', 'yarrow'], n: 9, h: [0.45, 0.6] } }), SM, false, 1024, 0.5);
     this.plant('herb', 'bunch_a', P.flats(37, ['bunch_flower', 'bunch_flower', 'bunch_berry'], 9, [0.12, 0.17], 0.35, [0.05, 0.11], 0.25), SM, false, 512, 0.3);
     this.plant('herb', 'aster', P.crossed(38, 'aster', 3, 0.35, 0.3, 0.2, 2), SM, false, 512, 0.3);
     this.plant('herb', 'clubmoss', P.crossed(39, 'clubmoss', 6, 0.16, 0.16, 0.3, 2), SM, false, 512, 0.6);
@@ -319,7 +333,7 @@ export class GroundCover {
     const BIG: [number, number] = [200, 228];
     const rock = this.solidMat('rock', {
       kind: 'rock', map: loadTex('veg/mossy_rock.png', { repeat: true }), normalMap: loadTex('veg/mossy_rock_n.png', { repeat: true, srgb: false }),
-      triplanar: 2.6, moss: 0.42, lichen: 1, fade: BIG, vertexColors: true, roughness: 0.88,
+      triplanar: 2.6, moss: 0.42, lichen: 1, fade: BIG, vertexColors: true, roughness: 0.96,
     });
     for (let i = 0; i < 6; i++) {
       const mb = P.boulder(91 + i, 1, [0.55, 0.7, 0.45, 0.8, 0.6, 0.5][i]);
@@ -582,23 +596,23 @@ export class GroundCover {
     };
     // ---- grass: everywhere the sky opens; lush meadow in clearings and verges, dry on the burn and pine ridges,
     // sedge in the wet, thin wisps under the canopy, trail centres worn bare
-    tryN(620, (x, z, r) => {
+    tryN(940, (x, z, r) => {
       const zn = zone(x, z);
-      if (zn.y < W + 0.12 || zn.cl < 0.1) return;
+      if (zn.y < W + 0.12 || zn.cl < (zn.verge > 0.3 ? 0.03 : 0.1)) return;
       const b = zn.b;
       const pn = patch(x, z, 9, 1);
       const shoreBand = 1 - smoothstep(W + 0.6, W + 3.5, zn.y);
       let p = (0.02 + 0.9 * Math.pow(zn.open, 1.7)) * (0.55 + 0.7 * pn) + 1.2 * zn.verge + 0.5 * b.burn + 0.25 * zn.cv.birch + 0.6 * shoreBand;
       p *= 1 - 0.97 * smoothstep(0.45, 0.85, zn.trail);
       if (zn.cl < 0.35 && zn.verge < 0.2) p *= zn.cl / 0.35;
-      if (r > p * 0.62) return;
+      if (r > p * 0.66) return;
       const lush = zn.verge + zn.open * smoothstep(0.1, 0.6, pn) + shoreBand * 0.5;
       let g = 'grass';
       if (b.wet > 0.7 && rng.chance(0.55) || shoreBand > 0.6 && rng.chance(0.5)) g = 'sedge';
       else if (b.burn > 0.4 || (b.wet < 0.32 && b.pine > 1.2 && rng.chance(0.5))) g = 'grass_dry';
       else if (zn.cv.cover > 0.72 && rng.chance(0.75)) g = 'wisp';
-      else if (lush > 0.55 && rng.chance(0.75)) g = 'meadow';
-      const sc = g === 'meadow' ? rng.range(0.8, 1.3) * (1 + 0.25 * zn.verge) : rng.range(0.75, 1.25);
+      else if (lush > 0.45 && rng.chance(0.8)) g = 'meadow';
+      const sc = g === 'meadow' ? rng.range(0.9, 1.4) * (1 + 0.2 * zn.verge) : rng.range(0.8, 1.3);
       this.push(c, g, rng.next(), x, zn.y, z, rng.range(0, 6.28), sc * (zn.trail > 0.3 ? 0.7 : 1));
     });
     // ---- wildflowers: roadside mix on the verges, goldenrod / asters / everlasting / fireweed in clearings,
@@ -1122,7 +1136,8 @@ export class GroundCover {
       const im = new THREE.InstancedMesh(old.geometry, old.material, cap);
       im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
       (im.instanceMatrix.array as Float32Array).set(old.instanceMatrix.array as Float32Array);
-      im.frustumCulled = false;
+      im.frustumCulled = true;
+      im.intersectsFrustum = notLampFrustum;
       im.castShadow = old.castShadow;
       im.receiveShadow = true;
       im.customDepthMaterial = old.customDepthMaterial;

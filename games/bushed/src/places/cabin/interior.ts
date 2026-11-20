@@ -6,7 +6,8 @@
 // hole at the foot of the back wall with Ray's trap set in front of it.
 // The cooking corner (the stove top, the hearth front) and the desk's radio spot are left clear.
 import * as THREE from 'three';
-import { Mesher, Rand, V, box, boxAt, board, lathe, tube, extrude } from '../kit';
+import { Mesher, Rand, V, box, boxAt, board, lathe, extrude } from '../kit';
+import { ltube as tube } from './bake';
 import { CABIN, CABIN_GEOM } from '../cabinplan';
 import type { DressCtx } from '../dressing';
 import { CLOTH } from './tex';
@@ -44,7 +45,7 @@ export async function cabinInterior(c: DressCtx): Promise<void> {
     // shelf 2 (mugs, a jar, batteries, the clock): sugar, a coffee tin (old, for nails), tins of milk, a lamp
     bakeProduct(ms, 'sugar', x + 0.0, top[2], 0.7, -1.6);
     bakeProduct(ms, 'milk', x + 0.05, top[2], 0.92, -1.5);
-    cellLathe(ms, 'cab_paint', 'paint', 'coffee_can', [[0, 0], [0.075, 0], [0.075, 0.165], [0, 0.165]], 12, new THREE.Matrix4().makeTranslation(x + 0.02, top[2], -0.05));
+    cellLathe(ms, 'cab_paint', 'paint', 'coffee_can', [[0, 0], [0.075, 0], [0.075, 0.165], [0, 0.165]], 9, new THREE.Matrix4().makeTranslation(x + 0.02, top[2], -0.05));
     // mugs hanging on cup hooks under the bottom shelf
     for (let k = 0; k < 5; k++) {
       const z = -0.05 + k * 0.13;
@@ -55,7 +56,7 @@ export async function cabinInterior(c: DressCtx): Promise<void> {
     // a dish towel over the washstand edge and a kettle on its board
     clothSheet(ms, 'towel', wallX - 0.5, F + 0.72, 0.95, 0.24, 0.26, Math.PI / 2, 0.015);
     ms.pushT(wallX - 0.25, F + 0.86, 1.1);
-    lathe(ms, 'soot', [[0, 0], [0.1, 0], [0.11, 0.1], [0.08, 0.15], [0.03, 0.16], [0.03, 0.17], [0, 0.17]], 12);
+    lathe(ms, 'soot', [[0, 0], [0.1, 0], [0.11, 0.1], [0.08, 0.15], [0.03, 0.16], [0.03, 0.17], [0, 0.17]], 9);
     ms.pop();
     cellTube(ms, 'cab_paint', 'paint', 'steel', [V(wallX - 0.33, F + 0.95, 1.1), V(wallX - 0.25, F + 1.08, 1.1), V(wallX - 0.17, F + 0.95, 1.1)], 0.006, 4);
   }
@@ -214,8 +215,8 @@ export async function cabinInterior(c: DressCtx): Promise<void> {
   // ---- by the stove: an ash bucket, a stove glove on the shield shelf edge, a stovetop toaster on a nail
   {
     ms.pushT(0.55, F, -1.55);
-    lathe(ms, 'galv', [[0, 0], [0.13, 0], [0.15, 0.28], [0.155, 0.285], [0.145, 0.285], [0.125, 0.02], [0, 0.02]], 14);
-    lathe(ms, 'soot', [[0.14, 0.22], [0.0, 0.24]], 12);
+    lathe(ms, 'galv', [[0, 0], [0.13, 0], [0.15, 0.28], [0.155, 0.285], [0.145, 0.285], [0.125, 0.02], [0, 0.02]], 9);
+    lathe(ms, 'soot', [[0.14, 0.22], [0.0, 0.24]], 9);
     ms.pop();
     cellTube(ms, 'cab_paint', 'paint', 'steel', [V(0.42, F + 0.28, -1.55), V(0.55, F + 0.42, -1.55), V(0.68, F + 0.28, -1.55)], 0.005, 4);
     clothSheet(ms, 'duck', 0.85, F + 1.27, -2.73, 0.12, 0.2, 0, 0.01);
@@ -388,7 +389,7 @@ function vest(ms: Mesher, x: number, y: number, z: number): void {
 /** a striped toque with a pompom hanging off a peg */
 function toque(ms: Mesher, x: number, y: number, z: number, tilt: number): void {
   ms.pushT(x, y, z, 0, tilt + Math.PI, 0);
-  cellLathe(ms, 'cab_cloth', 'cloth', 'toque', [[0.0, -0.17], [0.07, -0.16], [0.095, -0.1], [0.1, 0.0], [0.1, 0.03]], 12);
+  cellLathe(ms, 'cab_cloth', 'cloth', 'toque', [[0.0, -0.17], [0.07, -0.16], [0.095, -0.1], [0.1, 0.0], [0.1, 0.03]], 9);
   ms.pushT(0, -0.19, 0);
   ms.push(new THREE.Matrix4().makeScale(0.04, 0.04, 0.04));
   const s = new THREE.IcosahedronGeometry(1, 1);

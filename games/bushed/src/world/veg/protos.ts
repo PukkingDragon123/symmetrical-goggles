@@ -121,7 +121,7 @@ export function meadow(seed: number, o: MeadowSpec, lod = false): MeshBuilder {
     const side = v3(Math.cos(f), 0, Math.sin(f));
     let pick = rng.next() * tot, cell: VegCell = o.blades[0][0];
     for (const [c, wgt] of o.blades) { pick -= wgt; if (pick <= 0) { cell = c; break; } }
-    const w = rng.range(0.1, 0.16) * (o.w ?? 1) * (hh > 0.5 ? 1.2 : 1);
+    const w = rng.range(0.19, 0.28) * (o.w ?? 1) * (hh > 0.5 ? 1.15 : 1);
     const us = rng.range(0, 0.3);
     const c0 = jitterCol(rng, [0.58 * tint[0], 0.6 * tint[1], 0.56 * tint[2]], 0.1);
     const c1: Col = [c0[0] * 1.75, c0[1] * 1.75, c0[2] * 1.7];
@@ -170,7 +170,7 @@ export function ostrich(seed: number, n: number, len: number): MeshBuilder {
   const phase = rng.next();
   for (let i = 0; i < n; i++) {
     const az = (i / n) * Math.PI * 2 + rng.range(-0.25, 0.25);
-    const el = rng.range(1.15, 1.42);
+    const el = rng.range(1.05, 1.35);
     const L = len * rng.range(0.75, 1.1);
     const hd = v3(Math.cos(az), 0, Math.sin(az));
     const side = v3(-hd.z, 0, hd.x).applyAxisAngle(hd, rng.range(-0.3, 0.3));
@@ -181,11 +181,11 @@ export function ostrich(seed: number, n: number, len: number): MeshBuilder {
     for (let k = 0; k <= N; k++) {
       pts.push(p.clone());
       p = p.clone().addScaledVector(hd, Math.cos(a) * L / N).addScaledVector(UP, Math.sin(a) * L / N);
-      a -= rng.range(0.07, 0.14) * (k > 2 ? 2.2 : 0.6);
+      a -= rng.range(0.1, 0.18) * (k > 2 ? 2.6 : 0.7);
     }
     // ostrich fern fronds are narrow at the base, widest above the middle
-    const ws = pts.map((_, k) => L * 0.3 * (0.35 + 0.65 * Math.sin(Math.PI * Math.min(1, (k / N) * 0.85 + 0.1))));
-    const c0 = jitterCol(rng, [0.55, 0.62, 0.48], 0.1), c1 = jitterCol(rng, [1.05, 1.12, 0.95], 0.08);
+    const ws = pts.map((_, k) => L * 0.42 * (0.3 + 0.7 * Math.sin(Math.PI * Math.min(1, (k / N) * 0.85 + 0.1))));
+    const c0 = jitterCol(rng, [0.5, 0.56, 0.44], 0.1), c1 = jitterCol(rng, [0.95, 1.0, 0.86], 0.08);
     strip(mb, pts, side, ws, vegRect('fern_ostrich'), [0, 1], c0, c1, (t) => [t * t * L * 0.15, t * L * 0.6, t * 0.45, phase], 0.5);
   }
   return mb;
@@ -226,7 +226,7 @@ export function umbrella(seed: number, plants: number, spread: number): MeshBuil
 /** cattails: strap leaves (blade strips) and brown spikes on stiff stalks */
 export function cattails(seed: number, leaves: number, spikes: number, spread: number): MeshBuilder {
   const rng = new Rng(seed);
-  const mb = meadow(seed, { blades: [['cattail_leaf', 1]], n: leaves, h: [1.3, 2.0], spread, w: 1.6, lean: 0.4 });
+  const mb = meadow(seed, { blades: [['cattail_leaf', 1]], n: leaves, h: [1.3, 2.0], spread, w: 0.9, lean: 0.4 });
   const phase = rng.next();
   const rect = vegRect('cattail');
   for (let i = 0; i < spikes; i++) {
@@ -748,24 +748,24 @@ export function stump(species: SpeciesId, seed: number, r: number, h: number, cu
   }
   for (let i = 0; i < rows.length - 1; i++) for (let j = 0; j < N; j++) wood.quad(rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]);
   // root flare: surface roots run out from the buttress lobes, snake over the ground and dive back in
-  const nRoots = lobes + rng.int(0, 2);
+  const nRoots = Math.min(5, lobes) + rng.int(0, 1);
   for (let k = 0; k < nRoots; k++) {
     const a = (k < lobes ? (2 * Math.PI * (k + 0.5)) / lobes - lph * 2 / lobes : rng.range(0, Math.PI * 2)) + rng.range(-0.15, 0.15);
-    const L = r * rng.range(1.6, 3.2) + 0.2;
-    const r0 = r * rng.range(0.2, 0.32);
+    const L = r * rng.range(1.0, 2.0) + 0.12;
+    const r0 = r * rng.range(0.22, 0.3);
     const pts: V3[] = [];
     const M = 6;
     for (let m = 0; m <= M; m++) {
       const t = m / M;
       const wob = 0.12 * Math.sin(t * 5 + k) * t;
       const d = r * 0.85 + L * t;
-      const lift = r0 * (0.9 - 1.6 * t * t) + 0.04 * Math.sin(t * 9 + k * 2) * (1 - t);
-      pts.push(v3(Math.cos(a + wob) * d, Math.max(-r0, r0 * 0.2 + lift) + 0.06 * (1 - t) * h, Math.sin(a + wob) * d));
+      const lift = r0 * (0.5 - 1.9 * t * t) + 0.02 * Math.sin(t * 9 + k * 2) * (1 - t);
+      pts.push(v3(Math.cos(a + wob) * d, Math.max(-r0 * 1.2, lift), Math.sin(a + wob) * d));
     }
-    pts[0].y = Math.min(h * 0.35, r0 * 1.5);
+    pts[0].y = Math.min(h * 0.3, r0 * 1.2);
     tube(wood, pts, pts.map((_, m) => r0 * (1 - 0.75 * m / M)), {
       sides: 5, tile: sp.barkTile, col: (_, t) => { const ao = 0.62 + 0.25 * (1 - t); return [ao, ao, ao]; }, wind: () => [0, 0, 0, 0],
-      moss: (_, t) => moss * (0.6 + 0.6 * t), rough: 0.15, roughSeed: seed + k,
+      moss: (_, t) => moss * 0.3 * (0.5 + 0.5 * t), rough: 0.15, roughSeed: seed + k,
     });
   }
   const last = rows[rows.length - 1];

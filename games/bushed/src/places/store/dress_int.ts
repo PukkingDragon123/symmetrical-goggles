@@ -11,18 +11,19 @@ import { SIGNS, LABELS } from '../signs';
 import { G } from '../../gfx/globals';
 import { loadTex } from '../../gfx/tex';
 import { PUV, PSUB, card, cardAt, floorDecal } from './print';
-import { colorMat, propInstances, blob, tb } from './inst';
+import { colorMat, blob, tb } from './inst';
 import { printBox, type DressStore } from './dress_ext';
 import { PRINT_RECTS } from './print_rects';
 import { sleepingCat } from './cat';
 import { coolerHum } from './hum';
+import * as LP from './lowprops';
 
 const sz = (k: string, ppm = 300): [number, number] => [PRINT_RECTS[k][2] / ppm, PRINT_RECTS[k][3] / ppm];
 const lUV = (k: string) => LABELS.uv(k);
 
 function ensureIntMats(): void {
   if (hasMat('water')) return;
-  defineMat('water', new THREE.MeshStandardMaterial({ name: 'place_water', color: 0x4a6a5a, roughness: 0.04, metalness: 0.1, transparent: true, opacity: 0.38, depthWrite: false }));
+  defineMat('water', new THREE.MeshStandardMaterial({ name: 'place_water', color: 0x4a6a5a, roughness: 0.5, metalness: 0, transparent: true, opacity: 0.38, depthWrite: false }));
   defineMat('cool_lit', new THREE.MeshStandardMaterial({ name: 'place_cool_lit', color: 0xdfe8ee, emissive: new THREE.Color(0.75, 0.85, 1.0), emissiveIntensity: 0.9, roughness: 0.6 }));
   defineMat('glowcool', new THREE.MeshBasicMaterial({
     name: 'place_glowcool', map: loadTex('places/store_grime.png', { repeat: false }), transparent: true, depthWrite: false,
@@ -80,7 +81,7 @@ export function dressInterior(c: DressStore): void {
     for (let i = 0; i < 4; i++) { boxAt(ms, 'board_warm', -0.06 + i * 0.04, 0.06, 0, 0.012, 0.09, 0.012); boxAt(ms, black, -0.06 + i * 0.04, 0.02, 0, 0.025, 0.012, 0.02); }
     ms.pop();
     ms.pushT(x + 0.15, ch, zm - 0.02);
-    lathe(ms, 'galv', [[0.0001, 0], [0.06, 0], [0.05, 0.02], [0.015, 0.03], [0.012, 0.12], [0.045, 0.13], [0.0001, 0.135]], 10);
+    lathe(ms, 'galv', [[0.0001, 0], [0.06, 0], [0.05, 0.02], [0.015, 0.03], [0.012, 0.12], [0.045, 0.13], [0.0001, 0.135]], 8);
     ms.pop();
     ms.pop();
     cols.box(x, (ch + top) / 2 + 0.1, zm, 0.05, (top - ch) / 2 + 0.15, (z1 - z0) / 2);
@@ -150,7 +151,7 @@ export function dressInterior(c: DressStore): void {
       hook(x, z, 3.02);
       for (let k = 0; k < 3; k++) {
         ms.pushT(x, 2.62 + k * 0.035, z, k * 0.7);
-        lathe(ms, 'galv', [[0.0001, 0], [0.12, 0], [0.155, 0.3], [0.15, 0.3], [0.115, 0.008], [0.0001, 0.008]], 12);
+        lathe(ms, 'galv', [[0.0001, 0], [0.12, 0], [0.155, 0.3], [0.15, 0.3], [0.115, 0.008], [0.0001, 0.008]], 8);
         ms.pop();
       }
       tb(ms, 'galv', [V(x - 0.15, 2.95, z), V(x, 3.03, z), V(x + 0.15, 2.95, z)], 0.003, 3);
@@ -229,10 +230,8 @@ export function dressInterior(c: DressStore): void {
       }
     }
     // lanterns on hooks over the counter end, rubber boots by their pull loops (props, instanced)
-    const lanterns = [[1.0, 3.66], [1.35, 3.66], [-1.3, 4.86]].map(([x, z]) => { hook(x, z, 3.25); return { x, y: 2.93, z, ry: r.range(0, 6) }; });
-    c.pending.push(propInstances(group, 'Lantern_01', lanterns, { cast: false, nearOnly: true }));
-    const boots = [[-2.45, 0.06], [-2.2, 0.06], [-1.95, 0.06]].map(([x, z], i) => { hook(x, z, 3.05); return { x, y: 2.68, z, ry: i * 0.6 + 0.3 }; });
-    c.pending.push(propInstances(group, 'rubber_boots_clean', boots, { cast: false, nearOnly: true }));
+    for (const [x, z] of [[1.0, 3.66], [1.35, 3.66], [-1.3, 4.86]]) { hook(x, z, 3.25); LP.lantern(ms, x, 2.98, z, r.range(0, 6)); }
+    [[-2.45, 0.06], [-2.15, 0.06], [-1.85, 0.06]].forEach(([x, z], i) => { hook(x, z, 3.05); LP.boots(ms, x, 2.7, z, i * 0.6 + 0.3); });
     // fly paper spirals: one over the counter, one by the stove, a few flies stuck
     for (const [x, z] of [[2.2, 0.9], [-1.6, -3.0]] as [number, number][]) {
       tb(ms, 'galv', [V(x, CEIL, z), V(x, 3.05, z)], 0.002, 3);
@@ -325,7 +324,7 @@ export function dressInterior(c: DressStore): void {
     const fishGeo = new THREE.OctahedronGeometry(1, 0);
     fishGeo.scale(0.008, 0.007, 0.024);
     const nF = q === 0 ? 10 : 26;
-    const fish = new THREE.InstancedMesh(fishGeo, new THREE.MeshStandardMaterial({ color: 0x9aa4a0, roughness: 0.3, metalness: 0.6 }), nF);
+    const fish = new THREE.InstancedMesh(fishGeo, new THREE.MeshStandardMaterial({ color: 0x9aa4a0, roughness: 0.7, metalness: 0.05 }), nF);
     fish.castShadow = false;
     const bubGeo = new THREE.IcosahedronGeometry(0.004, 0);
     const nB = 14;
@@ -466,8 +465,8 @@ export function dressInterior(c: DressStore): void {
     for (let j = 0; j < 3; j++) {
       const jz = z0 + 0.25 + j * 0.4, jx = x + 0.16;
       ms.pushT(jx, F + h + 0.36, jz);
-      lathe(ms, gm, [[0.0001, 0], [0.07, 0], [0.075, 0.02], [0.075, 0.17], [0.05, 0.2], [0.05, 0.215], [0.0001, 0.215]], 10);
-      lathe(ms, 'lab_metal', [[0.055, 0.21], [0.055, 0.235], [0.0001, 0.24]], 10, { uNorm: true, vNorm: true, uv: lUV('tin_gold') });
+      lathe(ms, gm, [[0.0001, 0], [0.07, 0], [0.075, 0.02], [0.075, 0.17], [0.05, 0.2], [0.05, 0.215], [0.0001, 0.215]], 8);
+      lathe(ms, 'lab_metal', [[0.055, 0.21], [0.055, 0.235], [0.0001, 0.24]], 8, { uNorm: true, vNorm: true, uv: lUV('tin_gold') });
       for (let i = 0; i < (q === 0 ? 4 : 16); i++) {
         const a = i * 2.4, rr = 0.045 * Math.sqrt((i % 6) / 6 + 0.1);
         boxAt(ms, candy[(i + j * 3) % candy.length], Math.cos(a) * rr, 0.02 + Math.floor(i / 6) * 0.025, Math.sin(a) * rr, 0.022, 0.022, 0.022, a);
@@ -529,11 +528,11 @@ export function dressInterior(c: DressStore): void {
     for (let k = 0; k < 5; k++) tb(ms, candy[k], [V(0.0, 0.01, 0), V(Math.cos(k * 1.3) * 0.02, 0.17 + k * 0.006, Math.sin(k * 1.3) * 0.02)], 0.004, 3, { smooth: false });
     ms.pop();
     ms.pushT(2.25, ch, -0.95 + 0.5);
-    lathe(ms, glassMat('case'), [[0.0001, 0], [0.06, 0], [0.065, 0.15], [0.045, 0.18], [0.0001, 0.18]], 10);
+    lathe(ms, glassMat('case'), [[0.0001, 0], [0.06, 0], [0.065, 0.15], [0.045, 0.18], [0.0001, 0.18]], 8);
     for (let k = 0; k < 8; k++) boxAt(ms, k % 2 ? colorMat('coin', 0xb0a890, 0.4, 0.6) : colorMat('bill', 0x6a8a5a, 0.9), Math.cos(k) * 0.03, 0.01 + k * 0.006, Math.sin(k) * 0.03, 0.03, 0.004, k % 2 ? 0.03 : 0.05, k);
     ms.pop();
     ms.pushT(1.84, ch, 0.04);
-    lathe(ms, 'galv', [[0.0001, 0], [0.04, 0], [0.04, 0.008], [0.035, 0.03], [0.02, 0.045], [0.0001, 0.05]], 10);
+    lathe(ms, 'galv', [[0.0001, 0], [0.04, 0], [0.04, 0.008], [0.035, 0.03], [0.02, 0.045], [0.0001, 0.05]], 8);
     tb(ms, 'galv', [V(0, 0.05, 0), V(0, 0.062, 0)], 0.004, 3);
     ms.pop();
     // the jerky display box at the counter's front edge
@@ -571,8 +570,8 @@ export function dressInterior(c: DressStore): void {
     boxAt(ms, black, 0, 0.015, 0.05, 0.18, 0.03, 0.16);
     boxAt(ms, colorMat('led', 0xff3020, 0.5, 0, 2), 0.06, 0.06, 0.011, 0.012, 0.008, 0.004);
     ms.pushT(0, 0.03, 0.05);
-    lathe(ms, glassMat('case'), [[0.0001, 0], [0.065, 0], [0.07, 0.06], [0.05, 0.13], [0.045, 0.15], [0.0001, 0.15]], 10);
-    lathe(ms, colorMat('coffee', 0x2a160c, 0.15), [[0.0001, 0.005], [0.062, 0.005], [0.066, 0.05], [0.0001, 0.05]], 10);
+    lathe(ms, glassMat('case'), [[0.0001, 0], [0.065, 0], [0.07, 0.06], [0.05, 0.13], [0.045, 0.15], [0.0001, 0.15]], 8);
+    lathe(ms, colorMat('coffee', 0x2a160c, 0.15), [[0.0001, 0.005], [0.062, 0.005], [0.066, 0.05], [0.0001, 0.05]], 8);
     ms.pop();
     ms.pop();
     for (let k = 0; k < 2; k++) {
@@ -586,7 +585,7 @@ export function dressInterior(c: DressStore): void {
     lathe(ms, 'galv', [[0.042, 0.12], [0.03, 0.15], [0.008, 0.17], [0.0001, 0.17]], 8);
     ms.pop();
     ms.pushT(x + 0.3, ty + 0.015, z + 0.1);
-    lathe(ms, 'lab_metal', [[0.0001, 0], [0.065, 0], [0.065, 0.16], [0.0001, 0.16]], 10, { uNorm: true, vNorm: true, uv: lUV('coffee') });
+    lathe(ms, 'lab_metal', [[0.0001, 0], [0.065, 0], [0.065, 0.16], [0.0001, 0.16]], 8, { uNorm: true, vNorm: true, uv: lUV('coffee') });
     boxAt(ms, black, 0, 0.162, 0, 0.06, 0.004, 0.012);
     ms.pop();
     ms.pushT(x + 0.08, ty + 0.015, z - 0.1);
@@ -662,7 +661,8 @@ export function dressInterior(c: DressStore): void {
     boxAt(ms, colorMat('mat', 0x2a2622, 1), 0, F + 0.007, IZ - 0.42, 0.95, 0.014, 0.6);
     for (let i = 0; i < 4; i++) floorDecal(ms, 'g_mud', r.range(-0.3, 0.3), F + 0.016, IZ - 0.42 + r.range(-0.2, 0.2), 0.32, 0.32, r.range(0, 6));
     boxAt(ms, black, -1.0, F + 0.02, IZ - 0.25, 0.7, 0.03, 0.38);
-    c.pending.push(propInstances(group, 'rubber_boots', [{ x: -1.18, y: F + 0.035, z: IZ - 0.26, ry: 0.15 }, { x: -0.85, y: F + 0.035, z: IZ - 0.24, ry: -0.2, rz: 1.4 }], { cast: false, nearOnly: true }));
+    LP.boots(ms, -1.18, F + 0.035, IZ - 0.26, 0.15);
+    LP.boots(ms, -0.82, F + 0.035, IZ - 0.24, -0.4);
     floorDecal(ms, 'g_mud', -1.0, F + 0.037, IZ - 0.25, 0.65, 0.34, 0);
     // broom leaning in the corner by the door
     tb(ms, 'board_warm', [V(0.78, F + 0.2, IZ - 0.08), V(0.86, F + 1.45, IZ - 0.06)], 0.012, 5);

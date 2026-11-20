@@ -258,13 +258,13 @@ function bakeMist(): THREE.DataTexture {
   const L = SPOTS.lake;
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
     const k = j * n + i, x = -WORLD.half + (i + 0.5) * cell, z = -WORLD.half + (j + 0.5) * cell;
-    let top = Math.max(g[k] + 1.3, Math.min(gb[k] - 0.8, g[k] + 9));
+    let top = Math.max(g[k] + 0.9, Math.min(gb[k] - 1.5, g[k] + 4.5));
     // a thick bank over the lake that spills onto the low shore
     const dl = Math.hypot(x - L.x, z - L.z) / L.r;
-    top = Math.max(top, WORLD.waterY + 4.5 * (1 - smoothstep(1.0, 1.5, dl)));
+    top = Math.max(top, WORLD.waterY + 3.5 * (1 - smoothstep(1.0, 1.4, dl)));
     // the old-growth hollow is the wettest, mistiest place in the bush
     const dh = Math.hypot(x - SPOTS.hollow.x, z - SPOTS.hollow.z) / SPOTS.hollow.r;
-    top += 3 * (1 - smoothstep(0.3, 1.0, dh));
+    top += 2 * (1 - smoothstep(0.3, 1.0, dh));
     data[k * 2] = THREE.DataUtils.toHalfFloat(top);
     data[k * 2 + 1] = THREE.DataUtils.toHalfFloat(g[k]);
   }
@@ -621,6 +621,7 @@ export class Terrain {
     G.uMistBox.value.set(-WORLD.half, -WORLD.half, WORLD.half * 2, WORLD.half * 2);
 
     this.material = new THREE.MeshStandardMaterial({ roughness: 0.95, metalness: 0 });
+    this.material.name = 'terrain';
     const uniforms = {
       tLayers: { value: this.albedo }, tNormals: { value: this.normals },
       tMarks: { value: marks.texture },

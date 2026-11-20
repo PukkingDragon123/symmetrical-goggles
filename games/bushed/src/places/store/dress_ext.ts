@@ -11,6 +11,7 @@ import { writeSplit } from '../products';
 import { PUV, PSUB, card, cardAt, floorDecal, groundDecal } from './print';
 import { colorMat, propInstances, blob, prop, tb, type Xf } from './inst';
 import { neonMats, neonWord, neonRect, neonHalo } from './neon';
+import * as LP from './lowprops';
 import { PRINT_RECTS } from './print_rects';
 
 export interface StoreDims { W: number; D: number; T: number; FLOOR: number; CEIL: number; IX: number; IZ: number; PORCH: number }
@@ -31,22 +32,7 @@ const px = (k: string) => PRINT_RECTS[k];
 /** physical size of a print entry at `ppm` pixels per metre */
 const sz = (k: string, ppm = 300): [number, number] => [px(k)[2] / ppm, px(k)[3] / ppm];
 
-function ensureExtMats(): void {
-  if (hasMat('wiremesh')) return;
-  // a welded wire mesh (alpha-tested): 5 cm cells
-  const c = document.createElement('canvas');
-  c.width = c.height = 8;
-  const g = c.getContext('2d')!;
-  g.clearRect(0, 0, 8, 8);
-  g.fillStyle = '#9aa0a4'; g.fillRect(0, 0, 8, 1); g.fillRect(0, 0, 1, 8);
-  g.fillStyle = '#5c6064'; g.fillRect(1, 1, 7, 0.0001);
-  const t = new THREE.CanvasTexture(c);
-  t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace;
-  t.repeat.set(20, 20);
-  defineMat('wiremesh', new THREE.MeshStandardMaterial({ name: 'place_wiremesh', map: t, alphaTest: 0.5, roughness: 0.5, metalness: 0.5, side: THREE.DoubleSide }));
-  // shrink wrap on firewood bundles: clear, glossy, a little milky
-  defineMat('wrap', new THREE.MeshStandardMaterial({ name: 'place_wrap', color: 0xe8eef0, roughness: 0.12, metalness: 0.1, transparent: true, opacity: 0.22, depthWrite: false }));
-}
+function ensureExtMats(): void { /* the shared materials live in print.ts */ }
 
 /** an open-top carton of print `key` on its sides (store_print atlas), w x h x d, at the current frame */
 function printBox(ms: Mesher, key: string, w: number, h: number, d: number, top = 'board_grey'): void {
@@ -128,7 +114,7 @@ export function dressExterior(c: DressStore): void {
   {
     const bx = -2.3, bz = D / 2 + 0.55;
     ms.pushT(bx + 0.78, deck, bz + 0.05);
-    lathe(ms, 'lab_metal', [[0.0001, 0], [0.075, 0], [0.075, 0.16], [0.07, 0.165], [0.0001, 0.15]], 10, { uNorm: true, vNorm: true, uv: lUV('coffee') });
+    lathe(ms, 'lab_metal', [[0.0001, 0], [0.075, 0], [0.075, 0.16], [0.07, 0.165], [0.0001, 0.15]], 8, { uNorm: true, vNorm: true, uv: lUV('coffee') });
     ms.pop();
     floorDecal(ms, 'g_butts', bx + 0.6, deck + 0.004, bz + 0.35, 0.7, 0.6, 0.5);
     floorDecal(ms, 'g_leaves', -3.9, deck + 0.004, D / 2 + PORCH - 0.35, 0.7, 0.7, 0.3);
@@ -286,7 +272,7 @@ export function dressExterior(c: DressStore): void {
       const lx = -0.4 + i * 0.4 + r.range(-0.03, 0.03), lz = r.range(-0.05, 0.05);
       tanks.push({ x: x + cc * lx + ss * lz, y: gy + (row ? 0.725 : 0.1), z: z - ss * lx + cc * lz, ry: r.range(0, 6) });
     }
-    c.pending.push(propInstances(group, 'propane_tank', tanks));
+    for (const t of tanks) LP.propane(ms, t.x, t.y, t.z, t.ry);
     cols.box(x, gy + h / 2, z, w / 2 + 0.05, h / 2 + 0.05, d / 2 + 0.05, 0.06);
   }
   // ---- firewood bundles on a steel rack by the steps
@@ -334,7 +320,7 @@ export function dressExterior(c: DressStore): void {
     cardAt(ms, 'no_smoking', px0 - 0.62, gy + 0.55, pz + 0.41, 0, 0.2, 0.15, 0.04);
     // squeegee bucket on the island
     ms.pushT(px0 - 0.5, gy + 0.16, pz + 0.15);
-    lathe(ms, 'enamel_blue', [[0.0001, 0], [0.12, 0], [0.15, 0.3], [0.145, 0.3], [0.115, 0.01], [0.0001, 0.01]], 12);
+    lathe(ms, 'enamel_blue', [[0.0001, 0], [0.12, 0], [0.15, 0.3], [0.145, 0.3], [0.115, 0.01], [0.0001, 0.01]], 8);
     floorDecal(ms, 'g_puddle', 0, 0.27, 0, 0.26, 0.26, 0, 'puddle');
     tb(ms, 'board_warm', [V(0.03, 0.15, 0.02), V(0.12, 0.85, 0.08)], 0.012, 5);
     boxAt(ms, black, 0.03, 0.18, 0.02, 0.22, 0.05, 0.03, 0.4);
@@ -354,8 +340,8 @@ export function dressExterior(c: DressStore): void {
   // ---- power drop: a pole by the road and the service wire to a mast on the false front's back
   {
     const plx = 6.6, plz = D / 2 + PORCH + 8.5, gy = ground(plx, plz);
-    c.pending.push(prop(group, 'electricity_pole_02', plx, gy - 0.1, plz, Math.PI / 2 + 0.2));
-    const top = V(plx, gy + 5.6, plz), mast = V(3.3, 6.05, D / 2 - 0.25);
+    LP.powerPole(ms, plx, gy, plz, -0.6);
+    const top = V(plx, gy + 5.98, plz), mast = V(3.3, 6.05, D / 2 - 0.25);
     tb(ms, 'galv', [V(3.3, 5.0, D / 2 - 0.25), V(3.3, 6.3, D / 2 - 0.25)], 0.025, 6);
     const pts: THREE.Vector3[] = [];
     for (let i = 0; i <= 10; i++) { const t = i / 10; pts.push(top.clone().lerp(mast, t).add(V(0, -Math.sin(Math.PI * t) * 0.55, 0))); }

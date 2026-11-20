@@ -4,7 +4,7 @@ import * as THREE from 'three';
 
 const loader = new THREE.TextureLoader();
 const cache = new Map<string, THREE.Texture>();
-let maxAniso = 4;
+let maxAniso = 8;
 export function setMaxAnisotropy(n: number): void { maxAniso = Math.min(8, n); }
 
 export interface TexOpts { srgb?: boolean; repeat?: boolean; nearest?: boolean; aniso?: number }

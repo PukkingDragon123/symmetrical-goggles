@@ -30,16 +30,16 @@ export function ensureForgeMats(): void {
   std('f_brick', 'brick', { roughness: 0.9 });
   std('f_brick_soot', 'brick_soot', { roughness: 0.95 });
   std('f_firebrick', 'firebrick', { roughness: 0.9 });
-  std('f_anvil', 'anvil', { roughness: 0.6, metalness: 0.25, color: 0xb8bcc4 });
-  std('f_face', 'anvil_face', { roughness: 0.32, metalness: 0.3, color: 0xe8eaee });
-  std('f_coal', 'coal', { roughness: 0.45, metalness: 0.05 });
+  std('f_anvil', 'anvil', { roughness: 0.75, metalness: 0.08, color: 0xb8bcc4 });
+  std('f_face', 'anvil_face', { roughness: 0.6, metalness: 0.08, color: 0xe8eaee });
+  std('f_coal', 'coal', { roughness: 0.8, metalness: 0 });
   std('f_ash', 'ash', { roughness: 1 });
   std('f_floor', 'cinder_floor', { roughness: 1 });
   std('f_sandstone', 'sandstone', { roughness: 0.95 });
   defineMat('f_hole', new THREE.MeshStandardMaterial({ name: 'f_hole', color: 0x060505, roughness: 1 }));
   defineMat('f_soot_board', new THREE.MeshStandardMaterial({ name: 'f_soot_board', map: loadTex('places/board_grey.png', { repeat: true }), color: 0x6a625a, roughness: 0.95 }));
   defineMat('f_horn', new THREE.MeshStandardMaterial({ name: 'f_horn', color: 0xc8b896, roughness: 0.5 }));
-  defineMat('f_chain', new THREE.MeshStandardMaterial({ name: 'f_chain', color: 0x3a3634, roughness: 0.6, metalness: 0.6 }));
+  defineMat('f_chain', new THREE.MeshStandardMaterial({ name: 'f_chain', color: 0x3a3634, roughness: 0.75, metalness: 0.1 }));
   if (!hasMat('handle_wood')) defineMat('handle_wood', new THREE.MeshStandardMaterial({ name: 'handle_wood', map: loadTex('places/board_warm.png', { repeat: true }), color: 0x8a6a50, roughness: 0.6 }));
 }
 

@@ -62,7 +62,7 @@ function walls(ms: Mesher, cols: Cols): void {
       ms.push(m);
       const inA = ohA - s0, inB = ohA + along - s0; // interior span in segment coords
       log(ms, len, R * (sill ? 1.12 : rnd.range(0.95, 1.05)), {
-        seed, capA, capB, seg: 12, ring: 0.4, taper: 0.04, bend: 0.006, lump: sill ? 0.045 : 0.03,
+        seed, capA, capB, seg: 8, ring: 0.9, taper: 0.04, bend: 0.006, lump: sill ? 0.045 : 0.03,
         breaks: [inA, inB],
         matFor: (xm, n) => {
           if (xm < inA || xm > inB) return 'log_ext';
@@ -198,14 +198,14 @@ function roof(ms: Mesher, dms: Mesher, cols: Cols, pipe: { x: number; z: number 
     const rp = x === 0 ? 0.14 : 0.12;
     const y = deckY(x) - rp * 0.9;
     logAB(ms, V(x, y, ZB + 0.05), V(x, y, ZF - 0.12), rp, {
-      seed: 300 + x * 10, seg: 10, ring: 0.5, capA: 0, capB: 0, taper: 0.05, bend: 0.004,
+      seed: 300 + x * 10, seg: 8, ring: 1.2, capA: 0, capB: 0, taper: 0.05, bend: 0.004,
       matFor: (_xm, _n) => 'log_ext',
     });
   }
   // interior honey for purlins: (exterior skin is fine: they are inside and outside) -> darken inside with soot via board_dark deck
   // ---- tie beams inside (across x), for hanging things
   for (const z of [-1.05, 1.35]) {
-    logAB(ms, V(-W / 2, EAVE - 0.2, z), V(W / 2, EAVE - 0.2, z), 0.12, { seed: 330 + z * 10, seg: 10, capA: -1, capB: -1, matFor: () => 'log_int' });
+    logAB(ms, V(-W / 2, EAVE - 0.2, z), V(W / 2, EAVE - 0.2, z), 0.12, { seed: 330 + z * 10, seg: 7, ring: 1.2, capA: -1, capB: -1, matFor: () => 'log_int' });
   }
   // ---- gable fill above the top front/back logs: vertical boards outside, boards inside
   const gTop = yEnd(NC - 1) + R * 0.6;
@@ -312,7 +312,7 @@ function porch(ms: Mesher, cols: Cols): void {
   }
   {
     const pts = [V(x0 - 0.25, deck - 0.16, z1 - 0.05), V(0, deck - 0.16 - 0.04, z1 - 0.05), V(x1 + 0.25, deck - 0.16, z1 - 0.05)];
-    tube(ms, 'log_ext', pts, 0.13, 10);
+    tube(ms, 'log_ext', pts, 0.13, 8, { samples: 6 });
     for (const p of [pts[0], pts[2]]) { ms.pushT(p.x, p.y, p.z, Math.PI / 2 * (p.x < 0 ? 1 : -1)); ms.pop(); }
   }
   // deck boards along z (drain away from the wall), worn grey, two replaced with newer lumber, one cracked short
@@ -366,8 +366,8 @@ function porch(ms: Mesher, cols: Cols): void {
   logAB(ms, V(0.32, deck - 0.02 + sag(0.32, z1), z1 - 0.08), V(0.32, EAVE - 0.14, z1 - 0.08), 0.09, { seed: 615, seg: 9, capA: -1, capB: -1, taper: 0.1 });
   cols.box(0.32, (deck + EAVE) / 2, z1 - 0.08, 0.09, (EAVE - deck) / 2, 0.09);
   // front beam at plate height, side plates continuing the walls' top logs
-  logAB(ms, V(-XE - 0.1, EAVE - 0.07, z1 - 0.08), V(XE + 0.1, EAVE - 0.07, z1 - 0.08), 0.13, { seed: 620, seg: 10, capA: 0, capB: 0, bend: 0.004 });
-  for (const x of postX) logAB(ms, V(x, EAVE - 0.07, D / 2 + OH), V(x, EAVE - 0.07, z1 + 0.1), 0.12, { seed: 630 + x, seg: 10, capA: -1, capB: 0 });
+  logAB(ms, V(-XE - 0.1, EAVE - 0.07, z1 - 0.08), V(XE + 0.1, EAVE - 0.07, z1 - 0.08), 0.13, { seed: 620, seg: 8, ring: 1.0, capA: 0, capB: 0, bend: 0.004 });
+  for (const x of postX) logAB(ms, V(x, EAVE - 0.07, D / 2 + OH), V(x, EAVE - 0.07, z1 + 0.1), 0.12, { seed: 630 + x, seg: 8, ring: 1.0, capA: -1, capB: 0 });
   // open gable truss at the porch front: king post from the beam to the ridge, two struts
   logAB(ms, V(0, EAVE + 0.02, z1 - 0.08), V(0, RIDGE - 0.2, z1 - 0.08), 0.085, { seed: 640, seg: 8, capA: -1, capB: -1 });
   for (const s of [-1, 1]) logAB(ms, V(0, EAVE + 0.5, z1 - 0.08), V(s * 1.2, deckY(1.2) - 0.2, z1 - 0.08), 0.07, { seed: 645 + s, seg: 8, capA: -1, capB: -1 });
@@ -398,7 +398,7 @@ function porch(ms: Mesher, cols: Cols): void {
 export function halfLog(ms: Mesher, rnd: Rand, len: number, r: number, y: number, seed: number, mat = 'planks_grey'): void {
   ms.pushT(0, y - 0.01, 0);
   // round part: lower half of a log (use log() and rely on the flat top to hide the upper half)
-  log(ms, len, r, { seed, seg: 12, capA: 3, capB: 3, matFor: (_x, n) => (n.y > 0.2 ? mat : 'log_ext') });
+  log(ms, len, r, { seed, seg: 8, ring: 0.8, capA: 3, capB: 3, matFor: (_x, n) => (n.y > 0.2 ? mat : 'log_ext') });
   ms.pop();
   // flat top
   boxAt(ms, mat, len / 2, y + 0.0, 0, len, 0.02, r * 1.9, 0, { grain: 'x', uv: [rnd.range(0, 2), rnd.range(0, 2)], faces: { ny: null } });

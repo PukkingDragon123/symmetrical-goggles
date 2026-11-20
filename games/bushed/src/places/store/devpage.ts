@@ -47,12 +47,6 @@ async function main(): Promise<void> {
     scene.add(st.group); places.push(st); frames.store = st.group;
     scene.add(groundPatch(SPOTS.store.x, SPOTS.store.z, 50, 1));
   }
-  if (only === 'storehead') {
-    const { buildStore } = await import('./_head_store');
-    const st = await buildStore();
-    scene.add(st.group); places.push(st); frames.store = st.group;
-    scene.add(groundPatch(SPOTS.store.x, SPOTS.store.z, 50, 1));
-  }
   if (!only || only === 'forge') {
     const { buildForge } = await import('../forge');
     const f = await buildForge();

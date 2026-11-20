@@ -18,7 +18,8 @@ export function qualityLevel(): number {
 export function colorMat(name: string, color: number, rough = 0.6, metal = 0, emissive = 0): string {
   const key = `c_${name}`;
   if (!hasMat(key)) {
-    const m = new THREE.MeshStandardMaterial({ name: `place_${key}`, color, roughness: rough, metalness: metal });
+    // matte throughout (no shiny or reflective looks): paint, plastic and metal alike
+    const m = new THREE.MeshStandardMaterial({ name: `place_${key}`, color, roughness: Math.max(0.72, rough), metalness: Math.min(0.08, metal) });
     if (emissive) { m.emissive = new THREE.Color(color); m.emissiveIntensity = emissive; }
     defineMat(key, m);
   }
@@ -142,7 +143,10 @@ export function tb(ms: Mesher, mat: string, pts: THREE.Vector3[], r: number, seg
   if (o.samples == null && o.smooth !== false) {
     let L = 0;
     for (let i = 1; i < pts.length; i++) L += pts[i].distanceTo(pts[i - 1]);
-    o = { ...o, samples: pts.length === 2 ? 1 : Math.max(pts.length - 1, Math.min(32, Math.ceil(L / 0.08))) };
+    o = { ...o, samples: pts.length === 2 ? 1 : Math.max(pts.length - 1, Math.min(20, Math.ceil(L / 0.12))) };
   }
   tube(ms, mat, pts, r, seg, o);
 }
+
+/** ?r5off: build the places without the round-5 dressing (before/after comparisons) */
+export function r5off(): boolean { try { return new URLSearchParams(location.search).has('r5off'); } catch { return false; } }

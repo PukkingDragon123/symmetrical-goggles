@@ -6,13 +6,14 @@
 // and the trampled ground: packed dirt, ash, chips, leaves, a puddle.
 // Local frame: origin at the fire on the ground, +X east, +Z south (world axes; no rotation).
 import * as THREE from 'three';
-import { Mesher, Rand, Cols, V, boxAt, board, logAB, lathe, anchor, type Place } from '../kit';
+import { Mesher, Rand, Cols, V, boxAt, board, logAB, lathe, anchor, placeMat, defineMat, hasMat, type Place } from '../kit';
 import { heightAt, SPOTS } from '../../world/layout';
 import { writeSplit, writeRound } from '../products';
 import { LABELS } from '../signs';
 import { ensurePrintMats } from '../signs';
 import { ensureStoreMats, card, cardAt, floorDecal, groundDecal } from './print';
-import { colorMat, propInstances, qualityLevel, prop, tb } from './inst';
+import { colorMat, qualityLevel, prop, tb } from './inst';
+import * as LP from './lowprops';
 import { PRINT_RECTS } from './print_rects';
 import { G } from '../../gfx/globals';
 
@@ -33,7 +34,9 @@ export function buildCampground(): Place {
   const updaters: ((dt: number) => void)[] = [];
   const q = qualityLevel();
   const ground = (x: number, z: number) => heightAt(cs.x + x, cs.z + z) - gy0;
-  const tarpBlue = colorMat('tarp', 0x2a5ab0, 0.7);
+  // a sun-faded blue tarp: the canvas weave tinted, matte
+  if (!hasMat('tarp')) { const m = (placeMat('canvas') as THREE.MeshStandardMaterial).clone(); m.color = new THREE.Color(0x5a86c8); m.roughness = 0.95; m.side = THREE.DoubleSide; defineMat('tarp', m); }
+  const tarpBlue = 'tarp';
   const nylon = colorMat('nylon_o', 0xd8622a, 0.55);
   const nylonG = colorMat('nylon_g', 0x3a6a3a, 0.6);
   const cooler = colorMat('cooler_r', 0xb82a24, 0.5);
@@ -57,11 +60,11 @@ export function buildCampground(): Place {
     for (const z of [-0.55, 0.05]) tb(ms, 'soot', [V(-0.12, g, z), V(0.32, g, z)], 0.007, 4, { smooth: false });
     for (const [x, z] of [[-0.12, -0.55], [0.32, -0.55], [-0.12, 0.05], [0.32, 0.05]] as [number, number][]) tb(ms, 'soot', [V(x, g, z), V(x, g - 0.38, z)], 0.006, 3);
     ms.pushT(0.08, g + 0.005, -0.38);
-    lathe(ms, 'soot', [[0.0001, 0], [0.07, 0], [0.08, 0.06], [0.06, 0.15], [0.035, 0.18], [0.04, 0.2], [0.0001, 0.2]], 10);
+    lathe(ms, 'soot', [[0.0001, 0], [0.07, 0], [0.08, 0.06], [0.06, 0.15], [0.035, 0.18], [0.04, 0.2], [0.0001, 0.2]], 8);
     tb(ms, 'soot', [V(0.06, 0.14, 0), V(0.11, 0.16, 0), V(0.1, 0.05, 0)], 0.006, 4);
     ms.pop();
     ms.pushT(0.15, g + 0.005, -0.08);
-    lathe(ms, 'soot', [[0.0001, 0], [0.11, 0], [0.12, 0.04], [0.115, 0.045], [0.0001, 0.01]], 12);
+    lathe(ms, 'soot', [[0.0001, 0], [0.11, 0], [0.12, 0.04], [0.115, 0.045], [0.0001, 0.01]], 8);
     boxAt(ms, 'soot', 0.2, 0.025, 0, 0.16, 0.012, 0.025);
     ms.pop();
   }
@@ -116,7 +119,7 @@ export function buildCampground(): Place {
     floorDecal(ms, 'g_blob', x, g + 0.03, z, Wd + 0.6, L + 0.6, ry);
     // boots at the door, a cooler beside
     const door = toW(0, 0, L / 2 + 0.45);
-    pending.push(propInstances(group, 'rubber_boots', [{ x: door.x - 0.15, y: ground(door.x, door.z), z: door.z, ry: ry + 0.2 }, { x: door.x + 0.12, y: ground(door.x, door.z), z: door.z + 0.05, ry: ry - 0.3, rz: 1.4 }]));
+    LP.boots(ms, door.x, ground(door.x, door.z), door.z, ry + 0.2);
     const cl = toW(Wd / 2 + 0.45, 0, L / 2 - 0.2);
     ms.pushT(cl.x, ground(cl.x, cl.z), cl.z, ry + 0.2);
     boxAt(ms, cooler, 0, 0.19, 0, 0.6, 0.36, 0.38);
@@ -158,7 +161,7 @@ export function buildCampground(): Place {
   // ---- the picnic table under a blue tarp: stove, cooler, lantern, marshmallows, cans, a pot
   {
     const x = 2.6, z = 6.6, g = ground(x, z), ry = 0.15;
-    pending.push(prop(group, 'wooden_picnic_table', x, g, z, ry));
+    LP.picnicTable(ms, x, g, z, ry, 21);
     cols.box(x, g + 0.38, z, 1.12, 0.38, 1.5, ry);
     const ty = g + 0.75;
     const c = Math.cos(ry), s = Math.sin(ry);
@@ -175,7 +178,7 @@ export function buildCampground(): Place {
     boxAt(ms, green, 0, 0.25, -0.16, 0.55, 0.3, 0.015, 0, {}, -0.12);
     for (const k of [-0.13, 0.13]) { ms.pushT(k, 0.1, 0.02); lathe(ms, 'soot', [[0.0001, 0], [0.06, 0], [0.06, 0.01], [0.0001, 0.01]], 8); ms.pop(); }
     ms.pushT(-0.13, 0.11, 0.02);
-    lathe(ms, 'enamel_blue', [[0.0001, 0], [0.09, 0], [0.095, 0.12], [0.1, 0.125], [0.0001, 0.12]], 10);
+    lathe(ms, 'enamel_blue', [[0.0001, 0], [0.09, 0], [0.095, 0.12], [0.1, 0.125], [0.0001, 0.12]], 8);
     ms.pop();
     lathe(ms, colorMat('fuel', 0x2a50a0, 0.4, 0.4), [[0.0001, 0], [0.04, 0], [0.04, 0.16], [0.02, 0.2], [0.0001, 0.2]], 8);
     ms.pop();
@@ -191,7 +194,7 @@ export function buildCampground(): Place {
     ms.pop();
     const [px2, pz2] = at(0.25, 0.4);
     ms.pushT(px2, ty, pz2);
-    lathe(ms, white, [[0.0001, 0], [0.06, 0], [0.06, 0.25], [0.0001, 0.25]], 10);
+    lathe(ms, white, [[0.0001, 0], [0.06, 0], [0.06, 0.25], [0.0001, 0.25]], 8);
     ms.pop();
     for (let k = 0; k < 4; k++) {
       const [bx, bz] = at(-0.25 + k * 0.09, 0.65 + (k % 2) * 0.07);
@@ -200,7 +203,7 @@ export function buildCampground(): Place {
       ms.pop();
     }
     const [lx, lz] = at(0.0, -0.05);
-    pending.push(propInstances(group, 'Lantern_01', [{ x: lx, y: ty, z: lz, ry: 0.4 }]));
+    LP.lantern(ms, lx, ty, lz, 0.4);
     floorDecal(ms, 'g_pool', lx, ty + 0.005, lz, 1.0, 1.0, 0, 'glowadd');
     // the tarp: four ropes to trees that aren't quite where you'd want them, a pole holding the middle up
     const corners = [at(-1.4, -1.9), at(1.5, -1.8), at(1.6, 1.9), at(-1.3, 1.8)];

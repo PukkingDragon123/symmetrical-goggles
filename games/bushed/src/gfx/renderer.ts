@@ -13,6 +13,7 @@
 import * as THREE from 'three';
 import { G, WATER_GLSL } from './globals';
 import { SKY_GLSL, SKY_UNIFORMS } from './sky';
+import { mattePass } from './matte';
 
 const VERT = /* glsl */`
 varying vec2 vUv;
@@ -145,7 +146,7 @@ export class Renderer {
         uniform mat4 uInvProj; uniform mat4 uCamWorld; uniform vec3 uCamPos; uniform float uNear; uniform float uFar;
         uniform vec3 uSunDir; uniform vec3 uSunCol; uniform vec3 uAmb; uniform float uAir; uniform vec2 uRes;
         uniform float uTime; uniform vec2 uWindDir;
-        uniform vec4 uL[${MAX_LIGHTS}]; uniform vec4 uLC[${MAX_LIGHTS}]; uniform vec4 uLS[${MAX_LIGHTS}]; uniform int uNL;
+        uniform vec4 uL[${MAX_LIGHTS}]; uniform vec4 uLC[${MAX_LIGHTS}]; uniform vec4 uLS[${MAX_LIGHTS}]; uniform int uNL; uniform int uSteps;
         varying vec2 vUv;
         ${COMMON}
         float vh(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -160,7 +161,7 @@ export class Renderer {
         }
         float mistAt(vec3 p) {
           vec2 m = texture2D(tMist, (p.xz - uMistBox.xy) / uMistBox.zw).rg;
-          float k = clamp((m.r - p.y) / 2.6 + 0.2, 0.0, 1.0);
+          float k = clamp((m.r - p.y) / 2.2, 0.0, 1.0);
           if (k <= 0.0) return 0.0;
           vec2 q = p.xz * 0.045 - uWindDir * uTime * 0.25;
           float n = vn(q) * 0.6 + vn(q * 2.7 + vec2(uTime * 0.05, 3.0)) * 0.4;
@@ -174,22 +175,23 @@ export class Renderer {
           vec3 rd = normalize((uCamWorld * vec4(vp.xyz, 0.0)).xyz);
           float mu = dot(rd, uSunDir);
           // Henyey-Greenstein, forward lobe + a little isotropic
-          float g = 0.62, hg = (1.0 - g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5);
+          float g = 0.5, hg = (1.0 - g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5);
           float phase = 0.08 + 0.92 * hg * 0.25;
           float jit = bayer4(gl_FragCoord.xy) + vh(gl_FragCoord.xy + fract(uTime) * 61.0) * 0.25;
           float maxT = min(dist, 150.0);
           float T = 1.0; vec3 S = vec3(0.0);
           float mistOn = uMist;
-          const int N = 22;
-          for (int i = 0; i < N; i++) {
-            float f0 = (float(i) + jit) / float(N);
-            float t = maxT * f0 * f0, dt = maxT * 2.0 * f0 / float(N);
+          float N = float(uSteps);
+          for (int i = 0; i < 32; i++) {
+            if (i >= uSteps) break;
+            float f0 = (float(i) + jit) / N;
+            float t = maxT * f0 * f0, dt = maxT * 2.0 * f0 / N;
             vec3 p = uCamPos + rd * t;
             float lit = sunLit(p);
-            float air = uAir * 0.0032 * (1.0 - smoothstep(42.0, 60.0, t));
-            float dm = mistOn > 0.001 ? mistOn * 0.055 * mistAt(p) : 0.0;
+            float air = uAir * 0.0022 * (1.0 - smoothstep(42.0, 60.0, t));
+            float dm = mistOn > 0.001 ? mistOn * 0.011 * mistAt(p) : 0.0;
             vec3 Ls = uSunCol * phase * lit;
-            S += T * (air * Ls + dm * (Ls * 0.8 + uAmb)) * dt;
+            S += T * (air * Ls + dm * (Ls * 0.45 + uAmb)) * dt;
             T *= exp(-dm * dt);
           }
           // practical lights: analytic single scattering along the ray (lantern and campfire halos in the air)
@@ -217,7 +219,7 @@ export class Renderer {
         uNear: { value: 0.1 }, uFar: { value: 1000 },
         uSunDir: G.uSunDir, uSunCol: G.uSunCol, uAmb: { value: new THREE.Color() }, uAir: { value: 1 }, uRes: { value: new THREE.Vector2() },
         uTime: G.uTime, uWindDir: G.uWindDir,
-        uL: lightsU, uLC: lightsC, uLS: lightsS, uNL: { value: 0 },
+        uL: lightsU, uLC: lightsC, uLS: lightsS, uNL: { value: 0 }, uSteps: { value: 22 },
       },
       depthTest: false, depthWrite: false,
     });
@@ -377,7 +379,7 @@ export class Renderer {
             }
             refl = mix(refl, hitC, hitK);
             // the cold dark lake: reflections dominate at grazing angles, the body colour looking down
-            float k = clamp(F * 1.15, 0.0, 1.0) * (1.0 - 0.35 * (1.0 - src.a) / 0.5);
+            float k = min(F * 0.85, 0.72) * (1.0 - 0.35 * (1.0 - src.a) / 0.5);
             col = mix(col, refl, k);
           }
 
@@ -536,6 +538,12 @@ export class Renderer {
   render(world: THREE.Scene, camera: THREE.PerspectiveCamera, view?: THREE.Scene, viewCam?: THREE.Camera): void {
     const gl = this.gl;
     this.frame++;
+    // new materials (places, props, creatures streaming in) get the matte shading model
+    if (this.frame % 45 === 1) {
+      const an = Math.min(8, this.gl.capabilities.getMaxAnisotropy());
+      mattePass(world, an);
+      if (view) mattePass(view, an);
+    }
     // sky probe first: the lake and wet ground read it this frame
     this.pass(this.mProbe, this.probe);
     G.uSkyProbe.value = this.probe.texture;
@@ -571,6 +579,8 @@ export class Renderer {
       u.uAir.value = g.air;
       u.uRes.value.set(this.volRT.width, this.volRT.height);
       u.uNL.value = this.pickLights(world, camera);
+      // the low preset (3 px pixels) marches fewer steps
+      u.uSteps.value = this.pixel >= 3 ? 10 : 22;
       this.pass(this.mVol, this.volRT);
     }
 
@@ -618,7 +628,7 @@ export class Renderer {
     u.uExposure.value = g.exposure; u.uLift.value.copy(g.lift); u.uGamma.value.copy(g.gamma); u.uGain.value.copy(g.gain);
     u.uSat.value = g.saturation; u.uWarm.value = g.warm; u.uCon.value = g.contrast;
     u.uVig.value = g.vignette; u.uGrain.value = g.grain; u.uShafts.value = g.shafts * vis;
-    u.uBloom.value = g.bloom; u.uMie.value = g.mie * THREE.MathUtils.smoothstep(this.sunDir.y, -0.1, 0.05) * (volOn ? 0.75 : 1); u.uQuant.value = g.quant;
+    u.uBloom.value = g.bloom; u.uMie.value = g.mie * THREE.MathUtils.smoothstep(this.sunDir.y, -0.1, 0.05) * (volOn ? 0.5 : 1); u.uQuant.value = g.quant;
     u.uFlash.value = this.fx.flash; u.uDamage.value = this.fx.damage; u.uCold.value = this.fx.cold; u.uFade.value = this.fx.fade;
     this.pass(this.mComp, this.ldr);
     this.mBlit.uniforms.tSrc.value = this.ldr.texture;
