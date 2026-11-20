@@ -200,7 +200,7 @@ export function* agropelterModelGen(o: { page?: number; den?: number } = {}): Mo
   yield 'trunk';
   // ---- the head
   const H = AG_HEAD, hb = bi('head');
-  const skull = body.add(trunk({ name: 'skull', stations: HS.map(([z, cy, w, h, p]) => ({ c: [0, H[1] + cy, H[2] + z], s: [w, h], p })), tween: 1, capS: true, capE: true, k: 2.4, levels: 2,
+  const skull = body.add(trunk({ name: 'skull', stations: HS.map(([z, cy, w, h, p]) => ({ c: [0, H[1] + cy, H[2] + z], s: [w, h], p })), tween: 0, capS: true, capE: true, k: 2.4, levels: 2,
     skin: (p) => (p[2] < H[2] - 0.04 ? [hb, 0.6, bi('neck'), 0.4] : [hb, 1]), paint: facePaint('skull') }));
   skull.reg = REG.head;
   for (const s of [1, -1]) carve(body, skull, add(H, [s * SOCK[0], SOCK[1], SOCK[2]]), [s * SOCK_AX[0], SOCK_AX[1], SOCK_AX[2]], 0.02, 0.003, 0.02);

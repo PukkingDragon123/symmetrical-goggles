@@ -74,6 +74,12 @@ const tab = (rows: [number, number][]) => (z: number) => {
   for (let i = 0; i + 1 < rows.length; i++) if (z <= rows[i + 1][0]) { const f = (z - rows[i][0]) / (rows[i + 1][0] - rows[i][0]), s = f * f * (3 - 2 * f); return lerp(rows[i][1], rows[i + 1][1], s); }
   return rows[rows.length - 1][1];
 };
+/** distance (m, head-local) from the fold running from a nostril down and back round the muzzle to the lip */
+const nasoFold = (ax: number, hy: number, hz: number) => {
+  if (hz < 0.36 || hy > 0.03 || hy < mouthY(hz) - 0.005) return 1;
+  const t = cl((0.03 - hy) / (0.03 - mouthY(hz)), 0, 1), x = 0.11 + t * 0.07, z = 0.475 - t * 0.07;
+  return Math.hypot(ax - x, (hz - z) * 0.6);
+};
 export const mouthY = (z: number) => -0.08 + 0.058 * Math.pow(cl((0.13 - z) / 0.2, 0, 1), 1.35);
 const topY = tab([[-0.17, 0.08], [-0.1, 0.14], [-0.04, 0.172], [0.04, 0.184], [0.12, 0.17], [0.2, 0.14], [0.28, 0.112], [0.36, 0.09], [0.42, 0.074], [0.47, 0.058], [0.5, 0.03]]);
 const halfW = tab([[-0.17, 0.17], [-0.1, 0.235], [-0.03, 0.275], [0.05, 0.29], [0.12, 0.282], [0.2, 0.242], [0.28, 0.196], [0.36, 0.186], [0.42, 0.19], [0.47, 0.18], [0.5, 0.14]]);
@@ -180,10 +186,12 @@ function hidePaint(part: Part) {
           if (maneAt(x, y, z) > 0.3 - s * 0.08) { R = MANE; st = 2.6 + s * 0.8; mane[i] = 1; }
           // the nose pad: bare dark leather
           // the bare nose plate on the front of the muzzle, dark and wet, the nostrils comma slits in it
-          const plate = Math.hypot(ax / 0.13, (hy - 0.008) / 0.05, (hz - 0.5) / 0.05) < 1 + s * 0.12 + big * 0.1 && hy > m + 0.02;
-          if (plate) { R = LEATHER; st = 3.6 + s * 0.5 + (N[i * 3 + 1] > 0.2 ? 0.8 : 0) - cl(1 - Math.abs(ax - 0.07) / 0.03, 0, 1) * 0.8; }
+          // the bare muzzle: dark wet leather on the front of the nose, bleeding back into the scales through the
+          // folds that run from the nostrils down to the lip (no hard edge)
+          const pd = Math.hypot(ax / 0.15, (hy - 0.0) / 0.07, (hz - 0.5) / 0.06), fold = nasoFold(ax, hy, hz);
+          if (pd < 1.05 + s * 0.18 + big * 0.12 || fold < 0.006 + s * 0.002) { R = LEATHER; st = 2.0 + s * 0.5 + cl(pd - 0.6, 0, 0.6) * 1.2 + (N[i * 3 + 1] > 0.3 ? 0.8 : 0) - (fold < 0.004 ? 1.2 : 0); }
           const nos = Math.hypot((ax - 0.07 - (hy - 0.005) * 0.25) / 0.012, (hy - 0.004) / 0.03);
-          if (hz > 0.46 && nos < 1) { R = LEATHER; st = 0.2; }
+          if (hz > 0.46 && nos < 1) { R = LEATHER; st = 0; }
           // the bridge's wrinkles
           if (hz > 0.25 && hz < 0.4 && ny > 0.45 && Math.abs(Math.sin(hz * 150 + Math.sin(x * 40) * 0.6)) < 0.22) st -= 1.1;
           // under the eyes: a band of paler scales
@@ -228,7 +236,7 @@ function hidePaint(part: Part) {
     if (part === 'skull' || part === 'jaw') hp.hollows([{ c: HODAG_EYE, r: 0.075, k: 1.4 }, { c: mir(HODAG_EYE, -1), r: 0.075, k: 1.4 }, ...[1, -1].flatMap((s2) => [{ c: H(s2 * 0.07, 0.004, 0.49), r: 0.03, k: 1.4 }, { c: H(s2 * 0.25, mouthY(-0.05), -0.05), r: 0.06, k: 1.2 }])]);
     if (part === 'skull') {
       // wet nostrils and a scar across the snout
-      wet(px, (i) => (isR(i, LEATHER) && px.step[i] < 1 ? 1 : 0), LEATHER, 1.2);
+      hp.wet((i) => (isR(i, LEATHER) ? 1 : 0), { ramp: RP('slate'), thr: 0.86, rough: 45 });
       px.scar([H(0.17, 0.08, 0.27), H(0.12, 0.09, 0.31), H(0.07, 0.085, 0.36)], 0.006, BONE);
     }
     px.flush();
@@ -350,7 +358,9 @@ export function* hodagModelGen(o: { page?: number; den?: number } = {}): ModelGe
     const hz = q[2] - HH[2], hy = q[1] - HH[1];
     const bridge = cl((hz - 0.24) / 0.04, 0, 1) * cl((0.42 - hz) / 0.04, 0, 1) * cl(n[1] * 2 - 0.6, 0, 1);
     const crow = cl(1 - Math.hypot(Math.abs(q[0]) - 0.25, hy - 0.04, hz - 0.03) / 0.05, 0, 1);
-    return -0.006 * bridge * Math.pow(Math.abs(Math.sin(hz * 150 + Math.sin(q[0] * 30) * 0.6)), 4) - 0.004 * crow * Math.pow(Math.abs(Math.sin(hy * 160 + hz * 40)), 4);
+    // the folds from the nostrils down round the muzzle to the lip (they tie the nose plate into the face)
+    const nf = nasoFold(Math.abs(q[0]), hy, hz);
+    return -0.006 * bridge * Math.pow(Math.abs(Math.sin(hz * 150 + Math.sin(q[0] * 30) * 0.6)), 4) - 0.004 * crow * Math.pow(Math.abs(Math.sin(hy * 160 + hz * 40)), 4) - 0.007 * cl(1 - nf / 0.008, 0, 1) + 0.004 * cl(1 - Math.abs(nf - 0.012) / 0.006, 0, 1);
   });
   const jawP = body.add(trunk({ name: 'jaw', stations: JAW_Z.map((z) => ({ c: H(0, 0, z), s: [1, 1], p: jawRing(z) })), tween: 0, capS: true, capE: true, k: 1.8, levels: 2,
     rings: [{ at: JAW_Z.length - 1, s: 1.2 }], cols: [{ j: 2, a: 1, b: JAW_Z.length - 1, s: 2, ink: true }, { j: 4, a: 1, b: JAW_Z.length - 1, s: 1, ink: true }],

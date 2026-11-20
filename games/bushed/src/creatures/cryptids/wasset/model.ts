@@ -86,7 +86,7 @@ const JS: [number, number, number, number][] = [[0.03, -0.022, 0.034, 0.014], [0
 const JAWP = [[0, 0.5], [0.35, 0.62], [0.7, 0.78], [0.96, 0.5], [1, 0.0], [0.92, -0.45], [0.7, -0.8], [0.36, -0.97], [0, -1]];
 
 // ------------------------------------------------------------------------------------------------ paint
-const WHITE = RP('snow'), CREAM = RP('paper'), WARM = RP('ochre'), DARK = RP('squatch'), PINK = RP('coral'), INK = RP('ink'), PAD = RP('horn');
+const WHITE = RP('snow'), CREAM = RP('paper'), WARM = RP('ochre'), DARK = RP('squatch'), PINK = RP('hide'), INK = RP('ink'), PAD = RP('horn');
 const hl = (x: number, y: number, z: number): V3 => [x - WS_HEAD[0], y - WS_HEAD[1], z - WS_HEAD[2]];
 /** the winter coat: white locks laid on along the body with cool blue shadow between them, a warm cream bib from the
  *  chin down the throat and chest to the belly, a buttery wash on the crown and down the spine with a few ginger
@@ -116,7 +116,7 @@ const coatPaint = (part: 'body' | 'leg' | 'tail' | 'head' | 'ear') => brush({
     if (part === 'head') {
       const [hx, hy, hz] = hl(x, y, z), ax = Math.abs(hx);
       // the nose: a pink rhinarium, two dark nostril commas, a wet glint
-      if (hz > 0.104 && hy > -0.02) { const nd = Math.hypot(ax - 0.005, hy + 0.009); px.put(i, nd < 0.003 ? INK : PINK, nd < 0.003 ? 1 : 3.6); px.rough[i] = 60; return 0; }
+      if (hz > 0.106 && nz > 0.35 && hy > -0.02 && ax < 0.016) { const nd = Math.hypot(ax - 0.005, hy + 0.009); px.put(i, nd < 0.0028 ? INK : PINK, nd < 0.0028 ? 1 : 4.0); px.rough[i] = 60; return 0; }
       // the mouth line and the lips
       if (Math.abs(hy + 0.019 - Math.max(0, hz - 0.09) * 0.2) < 0.0022 && hz > 0.05 && ny < 0.3) { px.put(i, INK, 1.2); px.rough[i] = 100; return 0; }
       // a dark ring round the eye (the lids' rim), whisker dots in rows on the pads
@@ -162,7 +162,7 @@ export function* wassetModelGen(o: { page?: number; den?: number } = {}): ModelG
   yield 'trunk';
   // ---- the head
   const H = WS_HEAD, hb = bi('head');
-  const skull = body.add(trunk({ name: 'skull', stations: HS.map(([z, cy, w, h, p]) => ({ c: [0, H[1] + cy, H[2] + z], s: [w, h], p })), tween: 1, capS: true, capE: true, k: 2.6, levels: 2,
+  const skull = body.add(trunk({ name: 'skull', stations: HS.map(([z, cy, w, h, p]) => ({ c: [0, H[1] + cy, H[2] + z], s: [w, h], p })), tween: 0, capS: true, capE: true, k: 2.6, levels: 2,
     skin: (p) => (p[2] < H[2] - 0.025 ? [hb, 0.6, bi('neck2'), 0.4] : [hb, 1]), paint: coatPaint('head') }));
   skull.reg = REG.head;
   for (const s of [1, -1]) carve(body, skull, add(H, [s * SOCK[0], SOCK[1], SOCK[2]]), [s * SOCK_AX[0], SOCK_AX[1], SOCK_AX[2]], 0.016, 0.002, 0.006);

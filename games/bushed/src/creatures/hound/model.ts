@@ -106,9 +106,9 @@ const LO0: { z: number; bot: number; w: number }[] = [
   { z: 0.066, bot: -0.068, w: 0.036 },
   { z: 0.099, bot: -0.08, w: 0.032 },
   { z: 0.13, bot: -0.096, w: 0.029 },
-  { z: 0.158, bot: -0.112, w: 0.027 },
-  { z: 0.18, bot: -0.124, w: 0.025 },
-  { z: 0.198, bot: -0.112, w: 0.022 },
+  { z: 0.158, bot: -0.106, w: 0.028 },
+  { z: 0.18, bot: -0.112, w: 0.026 },
+  { z: 0.198, bot: -0.102, w: 0.023 },
   { z: 0.209, bot: -0.07, w: 0.016 },
 ];
 const UP = UP0.map((s) => ({ ...s, z: s.z * K, top: s.top * K, w: s.w * K, bot: s.bot === undefined ? undefined : s.bot * K }));
@@ -195,7 +195,7 @@ function headPaint(part: 'skull' | 'jaw') {
       // chin (the beard), with grinding marks; the edge itself brightest
       const de = edgeZ(y) - z;
       const band = 0.03 + 0.004 * Math.sin(y * 90);
-      if (part === 'jaw' && de < band * 0.4 && y < MOUTH - 0.03) steel[i] = de < 0.005 ? 2 : 1;
+      void de; void band;
     }
     yield;
     const hp = hand(px, { flow: headFlow, seed: part === 'skull' ? 41 : 43 });
@@ -267,6 +267,9 @@ function hickoryPaint(F: Frame, knots: Knot[], o: { bib?: (s: number, a: number)
       { w: (_p, _n, i) => ss01((0.7 + wob(S[i], A[i]) - Math.abs(A[i])) / 0.18 + 0.5), ramp: HEART, step: 4.2 },
       // two narrow streaks lower on the flanks (the grain showing through)
       { w: (_p, _n, i) => ss01((0.07 - Math.abs(Math.abs(A[i]) - 1.45 - wob(S[i] * 1.7, 0) * 1.5)) / 0.05) * ss01((S[i] - 0.15) / 0.1), ramp: HEART, step: 4.6 },
+      // the steel-grey of the head running down the top and sides of the neck, breaking up along the strokes
+      { w: (p) => (o.zone === 'tail' ? 0 : ss01((p[2] - 0.4) / 0.13) * ss01((p[1] - 0.36) / 0.08)), ramp: STEEL, step: 4.4, soft: 0.95 },
+      { w: (p) => (o.zone === 'tail' ? 0 : ss01((p[2] - 0.33) / 0.1) * ss01((p[1] - 0.4) / 0.06) * 0.62), ramp: STEEL, step: 4.0, soft: 1 },
       // the cream bib, belly and fringe
       { w: (_p, _n, i) => (o.bib ? o.bib(S[i], A[i]) : 0), ramp: HICK, step: 5.7 },
       // knots: dark swirled spots
@@ -372,7 +375,7 @@ function toothPaint(ch: Chart, _p: Piece, b: Body) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const HOUND_MODEL_VERSION = 'hound@6';
+export const HOUND_MODEL_VERSION = 'hound@7';
 export interface HoundModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
@@ -575,7 +578,7 @@ const HOUND_FUR = furZones([
   // the head: short velvet, fluffy cheeks, a beard on the chin; bare round the eyes, on the lips, nose and bevel
   { piece: /^(skull|jaw)/, a: HL(0.057, -0.01, -0.005), b: HL(0.054, -0.016, 0.06), r: 0.03, len: 0.45, clump: 0.85, tip: 0.85 },
   { piece: /^(skull|jaw)/, a: HL(-0.057, -0.01, -0.005), b: HL(-0.054, -0.016, 0.06), r: 0.03, len: 0.45, clump: 0.85, tip: 0.85 },
-  { piece: /^jaw/, a: HL(0, -0.1, 0.15), b: HL(0, -0.115, 0.18), r: 0.035, len: 0.32, clump: 0.9, tip: 0.8 },
+  { piece: /^jaw/, a: HL(0, -0.07, -0.02), b: HL(0, -0.1, 0.17), r: 0.05, facing: [0, -1, 0], min: -0.2, len: 0.16, clump: 0.7, tip: 0.6 },
   { piece: /^(skull|jaw)/, a: EYEL, r: EYER * K * 1.6, soft: 0.3, bare: true },
   { piece: /^(skull|jaw)/, a: EYER_, r: EYER * K * 1.6, soft: 0.3, bare: true },
   { piece: /^(skull|jaw)/, y: [H[1] + (MOUTH - 0.009) * K, H[1] + (MOUTH + 0.009) * K], bare: true },

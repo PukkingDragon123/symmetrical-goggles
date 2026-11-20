@@ -11,7 +11,7 @@
 // coat (shell fur grows over it), a wet nose, bright catchlights.
 // Creature space: metres, +z forward (it mostly walks the other way), +y up, ground y = 0.
 import {
-  Body, trunk, limb, legRings, paintedEye, stalk, curve, chainSkin, sac, hand, Px, RP, h3, cl,
+  Body, trunk, limb, legRings, paintedEye, stalk, curve, chainSkin, hand, Px, RP, h3, cl,
   type V3, type Station, type FootSpec, type LimbRing, type Chart, type Piece,
 } from '../../anatomy';
 import { fbm3 } from '../../paintkit';
@@ -124,20 +124,20 @@ function coatPaint(part: Part, earInner?: (p: V3, n: V3) => boolean) {
     px.flush();
   };
 }
-/** the nose: wet black leather, pebbled, the nostrils deep and sooty with a copper scald round their rims */
+/** the nose pad: matte black leather in fine pebbles, a lighter top plane, the comma nostrils deep and sooty with a
+ *  copper scald round their rims, one small wet highlight on top */
 const nosePaint = (ch: Chart, _p: Piece, b: Body) => {
   const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
-  px.lightK = 0.9; px.hue = 1;
   for (let i = 0; i < px.n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ax = Math.abs(x);
-    const nd = Math.hypot((ax - TK_NOSTRIL[0]) / 0.0065, (y - TK_NOSTRIL[1]) / 0.0045);
-    if (nd < 1 && N[i * 3 + 2] > 0.3) { px.put(i, RP('ink'), 0); px.rough[i] = 80; continue; }
-    px.put(i, nd < 1.6 && N[i * 3 + 2] > 0.2 ? COPPER : NOSE, (nd < 1.6 ? 1.4 : 1.6) + (N[i * 3 + 1] > 0.3 ? 1.0 : 0) + fbm3(x * 120, y * 120, z * 120, 2) * 0.6 - (ax < 0.0025 ? 0.8 : 0)); px.rough[i] = 150;
+    const dx = ax - TK_NOSTRIL[0], dy = y - TK_NOSTRIL[1];
+    const nd = Math.min(Math.hypot(dx / 0.006, dy / 0.005), Math.hypot((dx - 0.006) / 0.0045, (dy + 0.004) / 0.003));
+    if (nd < 1 && N[i * 3 + 2] > 0.2) { px.put(i, RP('ink'), 0); px.rough[i] = 200; continue; }
+    px.put(i, nd < 1.5 ? COPPER : NOSE, (nd < 1.5 ? 1.2 : 1.8) + (N[i * 3 + 1] > 0.45 ? 1.0 : 0) + fbm3(x * 120, y * 120, z * 120, 2) * 0.5 - (ax < 0.002 ? 0.9 : 0)); px.rough[i] = 185;
   }
-  px.pebbles(0.0035, { depth: 0.6, seed: 9 });
-  px.creaseInk(1, { dark: 1.2, lit: 1 });
-  // wet only on top of the leather, where it catches the sky
-  wet(px, (i) => (N[i * 3 + 1] > 0.35 ? 0.7 : 0), NOSE, 1.2);
+  px.pebbles(0.0032, { depth: 0.7, seed: 9 });
+  hand(px, { flow: 'sweep', seed: 4 }).form({ light: 2.0, ao: 1.4, cavity: 1.6, ridge: 0.8 })
+    .wet((i) => (N[i * 3 + 1] > 0.55 && Math.abs(P[i * 3]) > 0.004 && Math.abs(P[i * 3]) < 0.016 ? 1 : 0), { ramp: RP('slate'), thr: 0.95, rough: 60 });
   px.flush();
 };
 const clawPaint = solid(RP('horn'), (x, y, z, ny) => 2.6 + (ny > 0.3 ? 0.8 : 0) + fbm3(x * 90, y * 90, z * 90, 2) * 0.4, 110);
@@ -213,14 +213,24 @@ export function* teakettlerModelGen(o: { page?: number; den?: number } = {}): Mo
     const at: V3 = H(s * 0.012, -0.026, 0.138);
     body.add(stalk({ name: 'tooth' + (s > 0 ? 'L' : 'R'), path: [add(at, [0, -0.004, 0]), at, add(at, [0, 0.005, 0.001]), add(at, [0, 0.009, 0.002])], r: (t) => 0.0032 * (1 - t * 0.85), around: 5, capS: true, capE: true, levels: 0, k: 1.2, skin: () => [bi('jaw'), 1], paint: toothPaint })).reg = REG.mouth;
   }
-  // the spout: a big leather nose with flared nostrils on the nose bone
-  const nose = body.add(sac({ name: 'nose', at: H(0, -0.012, 0.147), n: [0, 0.15, 1], up: [0, 1, 0], r: [0.028 * HK, 0.019 * HK, 0.018 * HK], skin: () => [bi('nose'), 1], paint: nosePaint, sink: 0.35, levels: 2, k: 3 }));
+  // the spout: a leather nose pad on the nose bone, wider than tall, a groove down its middle and a notch under it
+  // (the philtrum), flat in front, comma nostrils curling out and down either side
+  const NOSE_HALF = [[0, 0.78], [0.3, 0.98], [0.66, 0.96], [0.9, 0.72], [1, 0.18], [0.94, -0.38], [0.7, -0.82], [0.3, -0.96], [0, -0.7]];
+  const nose = body.add(trunk({ name: 'nose', stations: [
+    { c: H(0, -0.01, 0.126), s: [0.024 * HK, 0.016 * HK], p: NOSE_HALF },
+    { c: H(0, -0.01, 0.142), s: [0.03 * HK, 0.02 * HK], p: NOSE_HALF },
+    { c: H(0, -0.011, 0.156), s: [0.031 * HK, 0.021 * HK], p: NOSE_HALF },
+    { c: H(0, -0.012, 0.166), s: [0.028 * HK, 0.019 * HK], p: NOSE_HALF },
+    { c: H(0, -0.013, 0.171), s: [0.02 * HK, 0.014 * HK], p: NOSE_HALF },
+  ], tween: 0, capS: true, capE: true, k: 3, levels: 2, cols: [{ j: 0, a: 1, b: 4, s: 1.5, ink: true }, { j: 8, a: 1, b: 4, s: 1.5, ink: true }], rings: [{ at: 3, s: 0.6 }],
+    skin: () => [bi('nose'), 1], paint: nosePaint }));
   nose.reg = REG.head;
   body.finalize(nose);
   sculpt(nose, [
-    { c: TK_NOSTRIL, r: [0.009, 0.007, 0.012], out: -0.006, sym: true },
-    { c: H(0.017, -0.012, 0.162), r: [0.012, 0.01, 0.014], out: 0.004, sym: true },
-    { c: H(0, -0.022, 0.163), r: [0.005, 0.014, 0.012], out: -0.003 },
+    // the nostrils: a round pit with a tail curling out and down (a comma), a flared wing over each
+    { c: TK_NOSTRIL, r: [0.0055 * HK, 0.0045 * HK, 0.012], out: -0.006, sym: true, k: 1.5 },
+    { c: add(TK_NOSTRIL, [0.006, -0.004, -0.003]), r: [0.004 * HK, 0.0028 * HK, 0.01], out: -0.004, sym: true, k: 1.5 },
+    { c: add(TK_NOSTRIL, [0.003, 0.006, -0.002]), r: [0.009, 0.005, 0.01], out: 0.003, sym: true },
   ]);
   // big bright eyes: round dark irises, wide open lids (it is curious about everything), dark rims
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
@@ -253,7 +263,7 @@ export function* teakettlerModelGen(o: { page?: number; den?: number } = {}): Mo
     sec: (a) => (Math.cos(a) > 0.6 ? 1.08 : 1) * (1 + 0.05 * Math.sin(a * 4)),
     skin: (p) => (p[2] < -0.19 && p[1] < 0.3 ? [bi('hips'), 0.6, tb[0], 0.4] : tailSkin(p)), paint: coatPaint('tail') })).reg = REG.tail;
   void h3;
-  const out = yield* body.buildGen({ den: o.den ?? 500, maxScale: 2, budget: 21000, fur: TK_FUR });
+  const out = yield* body.buildGen({ den: o.den ?? 500, maxScale: 2, budget: 21900, fur: TK_FUR });
   return finishModel(body, out, bones);
 }
 /** fluffy all over (the tail and the cheek ruffs most), short on the muzzle and the socks, none on the nose, the eyes'

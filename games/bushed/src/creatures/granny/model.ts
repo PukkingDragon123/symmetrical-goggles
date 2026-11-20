@@ -411,7 +411,7 @@ function hangingHair(roots: { p: V3; n: V3; len: number; wid: number; col: numbe
   };
   roots.forEach((r, k) => {
     const seg = r.len / R, rows: V3[][] = [];
-    let p = r.p, d = nrm(add(scl(r.n, 0.7), [0, -0.5, 0])), sideV = nrm(crs(r.n, [0, -1, 0]));
+    let p = r.p, d = nrm(add(add(scl(r.n, 0.6), [0, -0.45, 0]), [0, 0, -0.45])), sideV = nrm(crs(r.n, [0, -1, 0]));
     if (Math.hypot(...(sideV as [number, number, number])) < 0.5) sideV = [1, 0, 0];
     for (let i = 0; i <= R; i++) {
       const t = i / R;
@@ -743,8 +743,8 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   for (let k = 0, made = 0; k < 400 && made < 52; k++) {
     const h = -0.04 + h3(k, 1, 51) * 0.2, th = h3(k, 2, 51) * Math.PI, sd = h3(k, 7, 51) < 0.5 ? 1 : -1;
     const q = headPoint(h, th, sd), rel = sub(q.p, HG), side = Math.abs(rel[0]);
-    if (rel[2] > 0.02 && side < 0.076 && rel[1] < 0.09) continue;
-    if (rel[2] > 0.05 && side < 0.05) continue;
+    // parted off the face: nothing roots in front of the ears, the crown is combed back
+    if (rel[2] > -0.005 && !(side > 0.074 && rel[1] < 0.05)) continue;
     if (Math.hypot(side - ANTLER_ROOT[0], rel[1] - ANTLER_ROOT[1], rel[2] - ANTLER_ROOT[2]) < 0.032) continue;
     made++;
     // a clump: three locks from nearly the same place, the same fall, their own wave

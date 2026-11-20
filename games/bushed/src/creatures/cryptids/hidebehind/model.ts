@@ -236,7 +236,7 @@ export function* hidebehindModelGen(o: { page?: number; den?: number } = {}): Mo
   yield 'trunk';
   // ---- the head: a bare skull of a head
   const H = HB_HEAD, hb = bi('head');
-  const skull = body.add(trunk({ name: 'skull', stations: HS.map(([z, cy, w, h, p]) => ({ c: [0, H[1] + cy, H[2] + z], s: [w, h], p })), tween: 1, capS: true, capE: true, k: 2.2, levels: 2,
+  const skull = body.add(trunk({ name: 'skull', stations: HS.map(([z, cy, w, h, p]) => ({ c: [0, H[1] + cy, H[2] + z], s: [w, h], p })), tween: 0, capS: true, capE: true, k: 2.2, levels: 2,
     rings: [{ at: 4, s: 0.6, ink: true }], skin: (p) => (p[2] < H[2] - 0.05 ? [hb, 0.6, bi('neck2'), 0.4] : [hb, 1]), paint: facePaint('skull') }));
   skull.reg = REG.head;
   // the sockets: carved deep round the eyes, under a brow; the cheekbones, the bridge, the nasal pit
