@@ -16,7 +16,7 @@ import {
 } from '../anatomy';
 import type { BoneDef } from '../rig';
 
-export const GUMBEROO_MODEL_VERSION = 'gumberoo@5';
+export const GUMBEROO_MODEL_VERSION = 'gumberoo@6';
 export interface GumberooModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 export const GB = { root: [0, 0.74, 0] as V3, head: [0, 0.88, 0.56] as V3, jaw: [0, 0.76, 0.66] as V3, eye: [0.205, 1.0, 0.86] as V3,
   fl: { hip: [0.4, 0.5, 0.36] as V3, knee: [0.49, 0.26, 0.43] as V3, sole: [0.5, 0.0, 0.42] as V3 },
@@ -113,18 +113,29 @@ function* hideGen(ch: Chart, b: Body) {
 /** the armour plates: slate horn with growth rings round the root, a lit keel, ember-rust worn edges, soot in the
  *  rings; glossy */
 function platePaint(ch: Chart, p: Piece, b: Body) {
-  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, K = px.gb.K;
-  const roots = (p as Piece & { roots?: V3[] }).roots ?? [];
+  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
+  const fr = (p as Piece & { frames?: PlateFrame[] }).frames ?? [];
   for (let i = 0; i < px.n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2];
-    let d = 1e9; for (const r of roots) d = Math.min(d, Math.hypot(x - r[0], y - r[1], z - r[2]));
-    const ring = (d * 70) % 1 < 0.22;
-    let R = DARK, st = 3.0 - (ring ? 1.0 : 0);
-    if (K[i] > 0.45) { R = EMBER; st = N[i * 3 + 1] > 0.3 ? 3.4 : 2.2; } // the worn keel and the rim scorched ember-red
+    // the plate under the texel: the nearest centre
+    let bf = fr[0], bd = Infinity;
+    for (const f of fr) { const d = (x - f.mid[0]) ** 2 + (y - f.mid[1]) ** 2 + (z - f.mid[2]) ** 2; if (d < bd) { bd = d; bf = f; } }
+    let R = DARK, st = 3.0;
+    if (bf) {
+      const dx = x - bf.at[0], dy = y - bf.at[1], dz = z - bf.at[2];
+      const e = (dx * bf.S[0] + dy * bf.S[1] + dz * bf.S[2]) / bf.w, f = (dx * bf.D[0] + dy * bf.D[1] + dz * bf.D[2]) / bf.l;
+      const top = N[i * 3] * bf.U[0] + N[i * 3 + 1] * bf.U[1] + N[i * 3 + 2] * bf.U[2] > 0.2;
+      const half = plateHalf(f), edge = (half - Math.abs(e)) * bf.w, tip = (1 - f) * bf.l;
+      // growth rings round the root, a worn bright keel, ember-red worn edges along the free rim
+      if (top && ((f * 0.85 + Math.abs(e) * 0.5) * 5) % 1 < 0.18) st -= 1.0;
+      if (top && Math.abs(e) < 0.09 && f > 0.15) st += 0.9;
+      if (top && (edge < 0.012 || tip < 0.016) && f > 0.25) { R = EMBER; st = 2.6 + (edge < 0.006 ? 0.8 : 0); }
+      if (!top) st = 1.6;
+    }
     px.put(i, R, st); px.rough[i] = 95;
   }
   const hp = hand(px, { flow: 'sweep', seed: 31 });
-  hp.zones([{ w: (q) => 0.5 + 0.6 * Math.sin(q[0] * 11 + q[2] * 9) - 0.4, ramp: SOOT, step: 2.0 }, { w: (q) => 0.6 * Math.sin(q[0] * 7 - q[2] * 13 + 2) - 0.1, ramp: HIDE, step: 2.2 }], { soft: 0.8 });
+  hp.zones([{ w: (q) => 0.5 + 0.6 * Math.sin(q[0] * 11 + q[2] * 9) - 0.4, ramp: SOOT, step: 2.0 }, { w: (q) => 0.6 * Math.sin(q[0] * 7 - q[2] * 13 + 2) - 0.1, ramp: HIDE, step: 2.2 }], { soft: 0.8, mask: (i) => (px.rampT[px.rampI[i]] === EMBER ? 0 : 1) });
   hp.form({ light: 2.4, ao: 2.6, cavity: 1.8, ridge: 1.3 });
   hp.strokes({ len: [3, 6], width: [1, 2], amp: 0.5 });
   px.glints(PLATE, { every: 0.35, size: 0.25 });
@@ -163,8 +174,15 @@ function clawPaint(ch: Chart, _p: Piece, b: Body) {
 /** thick keeled shield plates, each lying on the surface with its free edge toward the tail and lifted off it, its root
  *  tucked under the plate before: `at` its root, `n` the surface normal there, `d` the direction along the body toward
  *  the tail, w/l/t half width, length, thickness. One piece of many grids. */
+interface PlateFrame { at: V3; mid: V3; S: V3; D: V3; U: V3; w: number; l: number }
+/** the plate's half width (x w) at f along it: a pointed diamond, widest a third of the way, tapering to the tip */
+const PLATE_ST: [number, number][] = [[-0.06, 0.28], [0.12, 0.66], [0.34, 1.0], [0.58, 0.7], [0.8, 0.36], [1.0, 0.04]];
+function plateHalf(f: number) { for (let k = 0; k + 1 < PLATE_ST.length; k++) if (f <= PLATE_ST[k + 1][0]) { const [f0, a] = PLATE_ST[k], [f1, c] = PLATE_ST[k + 1]; return a + (c - a) * cl((f - f0) / (f1 - f0), 0, 1); } return 0.04; }
+/** thick keeled plates, pointed diamonds lying on the surface with their tips toward the tail, lifted off it, each
+ *  root tucked under the plate before (shingles): `at` the root, `n` the surface normal there, `d` along the body
+ *  toward the tail, w/l/t half width, length, thickness. One piece of many grids. */
 function plates(name: string, seats: { at: V3; n: V3; d: V3; w: number; l: number; t: number; lift?: number }[], skin: (p: V3) => Wt, paint: (c: Chart, p: Piece, b: Body) => void): Piece {
-  const m = newCM(), grids: Grid[] = [];
+  const m = newCM(), grids: Grid[] = [], frames: PlateFrame[] = [];
   const nr = (a: V3): V3 => { const q = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / q, a[1] / q, a[2] / q]; };
   const cr = (a: V3, c: V3): V3 => [a[1] * c[2] - a[2] * c[1], a[2] * c[0] - a[0] * c[2], a[0] * c[1] - a[1] * c[0]];
   for (const s of seats) {
@@ -172,19 +190,18 @@ function plates(name: string, seats: { at: V3; n: V3; d: V3; w: number; l: numbe
     // the plate's own up: the surface normal tipped back so the free edge stands off the hide
     const U = nr([N0[0] - D[0] * lift, N0[1] - D[1] * lift, N0[2] - D[2] * lift]), Dd = nr(cr(S, U));
     const rings: Ring[] = [];
-    const ST: [number, number][] = [[-0.05, 0.55], [0.3, 0.96], [0.65, 0.9], [0.9, 0.5], [1.0, 0.12]];
-    for (const [f, k] of ST) {
+    for (const [f, k] of PLATE_ST) {
       const c: V3 = [s.at[0] + Dd[0] * s.l * f - N0[0] * s.t * 0.6, s.at[1] + Dd[1] * s.l * f - N0[1] * s.t * 0.6, s.at[2] + Dd[2] * s.l * f - N0[2] * s.t * 0.6];
-      const w = s.w * k, t = s.t * (0.55 + 0.45 * k);
-      // a lens of a section with a keel on top and a flat underside
-      rings.push({ c, x: S, y: U, pts: [[-w, 0], [-w * 0.55, t * 0.66], [0, t * 1.15], [w * 0.55, t * 0.66], [w, 0], [w * 0.45, -t * 0.36], [-w * 0.45, -t * 0.36]] });
+      const w = s.w * k, t = s.t * (0.4 + 0.6 * Math.min(1, k * 1.3));
+      // a keeled section: a ridge down the middle, bevelled flanks, a thin edge, a flat underside
+      rings.push({ c, x: S, y: U, pts: [[-w, 0], [-w * 0.5, t * 0.55], [0, t * 1.25], [w * 0.5, t * 0.55], [w, 0], [w * 0.45, -t * 0.32], [-w * 0.45, -t * 0.32]] });
     }
     const g = tube(m, rings, { tag: 0, capS: true, capE: true });
-    creaseCol(m, g, 2, 0, ST.length - 1, 1.5, true); creaseRow(m, g, ST.length - 2, 1);
+    creaseCol(m, g, 2, 0, PLATE_ST.length - 1, 3, true); creaseCol(m, g, 0, 0, PLATE_ST.length - 1, 2); creaseCol(m, g, 4, 0, PLATE_ST.length - 1, 2);
     grids.push(g);
+    frames.push({ at: s.at, mid: [s.at[0] + Dd[0] * s.l * 0.45, s.at[1] + Dd[1] * s.l * 0.45, s.at[2] + Dd[2] * s.l * 0.45], S, D: Dd, U, w: s.w, l: s.l });
   }
-  const roots = seats.map((s) => s.at);
-  return { name, m, grids, levels: 1, skin, paint, k: 1.15, ...{ roots } } as Piece;
+  return { name, m, grids, levels: 1, skin, paint, k: 1.15, ...{ frames } } as Piece;
 }
 
 // ------------------------------------------------------------------------------------------------ the build
@@ -256,7 +273,7 @@ export function* gumberooModelGen(o: { page?: number; den?: number } = {}): Gene
   // eyes on top of the skull under heavy keeled brow plates; lids close down over them
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(GB.eye, s), ax: V3 = [s * GB_EYE_AX[0], GB_EYE_AX[1], GB_EYE_AX[2]];
-    body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: AMBER, pupil: 'slit', irisA: 0.82, pupilR: 0.13, side: s, glint: [0.3, 0.42], glintR: 0.2, k: 3, around: 10 }));
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: AMBER, pupil: 'slit', irisA: 0.82, pupilR: 0.13, side: s, glint: [0.3, 0.42], glintR: 0.2, k: 3, around: 8 }));
     const lp = lids({ name: 'lid' + S, c, ax, r: EYER, bone: bi('lid' + S), lowBone: hb, upper: 0.5, lower: 0.72, corner: 1.25, tilt: 0.12, side: s, thick: 0.28, thickLo: 0.2, k: 1.6,
       paint: lidPaint(HIDE, 3, { c, ax, r: EYER, lash: SOOT }) });
     lp[0].name = 'lid' + S; lp[1].name = 'lidLo' + S; lp[1].paint = lidPaint(DARK, 3, { c, ax, r: EYER, lower: true });
@@ -273,16 +290,16 @@ export function* gumberooModelGen(o: { page?: number; den?: number } = {}): Gene
   const g = torso.grids[0], seats: { at: V3; n: V3; d: V3; w: number; l: number; t: number; lift?: number }[] = [];
   // small plates down the top of the tail
   for (const v of [0.07, 0.11, 0.15]) { const q = gridSurf(torso.m, g, 0.5, v), q2 = gridSurf(torso.m, g, 0.5, v - 0.02); seats.push({ at: q.p, n: q.n, d: [q2.p[0] - q.p[0], q2.p[1] - q.p[1], q2.p[2] - q.p[2]], w: 0.035 + v * 0.2, l: 0.09 + v * 0.4, t: 0.016 + v * 0.06, lift: 0.35 }); }
-  const rowsV = [0.2, 0.25, 0.3, 0.355, 0.41, 0.465, 0.52, 0.575, 0.63, 0.685, 0.74, 0.79, 0.835];
+  const rowsV = [0.2, 0.26, 0.32, 0.38, 0.44, 0.5, 0.56, 0.615, 0.665, 0.715, 0.765, 0.81, 0.85];
   rowsV.forEach((v, r) => {
-    const cols = v < 0.3 ? [0.5] : v > 0.78 ? [0.5, 0.435, 0.565] : r % 3 === 1 ? [0.5, 0.435, 0.565, 0.37, 0.63, 0.305, 0.695] : [0.5, 0.435, 0.565, 0.37, 0.63];
+    const cols = v < 0.3 ? [0.5] : v > 0.78 ? [0.5, 0.43, 0.57] : [0.5, 0.43, 0.57, 0.36, 0.64];
     for (const u0 of cols) {
       const u = u0 + (u0 === 0.5 ? 0 : (r % 2 ? 0.02 : -0.02));
       const q = gridSurf(torso.m, g, u, v), q2 = gridSurf(torso.m, g, u, Math.max(0, v - 0.02));
       if (q.n[1] < 0.15) continue;
       const dir: V3 = [q2.p[0] - q.p[0], q2.p[1] - q.p[1], q2.p[2] - q.p[2]];
-      const spineK = 1 - Math.abs(u - 0.5) * 2.4, sz = (v < 0.3 ? 0.6 : v > 0.78 ? 0.8 : 1) * (0.62 + 0.38 * spineK);
-      seats.push({ at: q.p, n: q.n, d: dir, w: 0.1 * sz, l: 0.22 * sz, t: 0.03 * sz + (u === 0.5 ? 0.012 : 0), lift: 0.32 });
+      const spineK = 1 - Math.abs(u - 0.5) * 2.4, hump = Math.exp(-(((v - 0.7) / 0.1) ** 2)), sz = (v < 0.3 ? 0.62 : v > 0.8 ? 0.82 : 1) * (0.58 + 0.42 * spineK) * (1 + 0.3 * hump * spineK);
+      seats.push({ at: q.p, n: q.n, d: dir, w: 0.11 * sz, l: 0.27 * sz, t: 0.034 * sz + (u === 0.5 ? 0.014 : 0), lift: 0.34 });
     }
   });
   body.add(plates('plates', seats, skin, platePaint));
@@ -291,12 +308,24 @@ export function* gumberooModelGen(o: { page?: number; den?: number } = {}): Gene
   for (const [k, leg] of [['f', GB.fl], ['h', GB.hl]] as const) for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const hip = mir(leg.hip, s), knee = mir(leg.knee, s), sole = mir(leg.sole, s);
     const segL = [Math.hypot(hip[0] - knee[0], hip[1] - knee[1], hip[2] - knee[2]), Math.hypot(knee[0] - sole[0], knee[1] - sole[1], knee[2] - sole[2])];
-    let rings: LimbRing[] = legRings('bear', k === 'f', 0.14, [0, 0.5, 1], segL, 0.045);
-    rings = rings.map((r) => ({ ...r, r: r.r * (r.t < 0 ? 1.15 : r.t < 0.5 ? 1.08 : 1.0) }));
+    const fore = k === 'f', r0 = 0.14, J = fore ? 180 : 0; // the elbow points back, the knee forward
+    const R = (t: number, k2: number, e: number, bb?: [number, number, number][], crease?: number): LimbRing => ({ t, r: r0 * k2, e, b: bb, crease, ink: !!crease });
+    void segL; void legRings;
+    const rings: LimbRing[] = [
+      R(-0.32, 0.95, 1.5), R(-0.1, 1.28, 1.4, [[0, 0.12, 50], [180, 0.16, 50]]),
+      R(0.14, 1.32, 1.25, [[fore ? 20 : 170, 0.22, 45], [fore ? 170 : 20, 0.14, 45], [-90, -0.06, 40]]), // the upper arm's or thigh's muscle mass
+      R(0.33, 1.02, 1.1, [[10, 0.06, 40]]),
+      R(0.42, 0.98, 1.08, [[J, 0.12, 40]], 1.2), // a fold above the joint
+      R(0.5, 1.12, 1.14, [[J, 0.36, 32], [J + 180, -0.08, 40]]), // the elbow or knee knob
+      R(0.58, 1.0, 1.08, [[J, 0.1, 40]], 1.2), // a fold below it
+      R(0.68, 1.14, 1.15, [[fore ? 15 : 175, 0.24, 50], [90, 0.08, 40]]), // the forearm's or calf's muscle
+      R(0.8, 0.86, 1.06, [[180, 0.08, 40]]),
+      R(0.88, 0.66, 1.0, [[90, 0.14, 25], [-90, 0.14, 25]], 1), // the wrist or ankle, knobs either side
+    ];
     const out = limb({ name: k + 'leg' + S, side: s, hip, knee, sole, tj: [0, 0.5, 1], rings, around: 10, levels: 1, rise: 0.22,
-      foot: { pad: 0.15, h: 0.045, fwd: 0.22, nail: 'claw', lobe: 0.2, toeAround: 6, toes: [-50, -25, 0, 25, 50].map((a, q) => ({ a, len: 0.065 - Math.abs(q - 2) * 0.01, r: 0.034 - Math.abs(q - 2) * 0.003, claw: 0.1 - Math.abs(q - 2) * 0.012, curl: 0.6, drop: 0.3 })) },
+      foot: { pad: 0.105, h: 0.05, fwd: 0.18, nail: 'claw', lobe: 0.42, toeAround: 5, toes: [-62, -20, 20, 62].map((a, q) => ({ a, len: q === 1 || q === 2 ? 0.12 : 0.09, r: q === 1 || q === 2 ? 0.042 : 0.036, claw: q === 1 || q === 2 ? 0.11 : 0.085, curl: 0.75, drop: 0.25 })) },
       bones: { parent: bi('root'), up: bi(k + 'u' + S), lo: bi(k + 'l' + S), foot: bi(k + 'f' + S) }, paint: hidePaint, clawPaint, k: 1 });
-    out.toes.levels = 0; out.claws.levels = 0;
+    out.toes.levels = 1; out.claws.levels = 0;
     body.add(out.skin); body.add(out.toes); body.add(out.claws);
     yield 'leg';
   }
