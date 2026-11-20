@@ -95,6 +95,7 @@ export class Bugs {
   forced: Partial<Record<BugKind, number>> | null = null;
   private _m = new THREE.Matrix4(); private _q = new THREE.Quaternion(); private _e = new THREE.Euler(0, 0, 0, 'YXZ'); private _s = new THREE.Vector3(); private _v = new THREE.Vector3(); private _w = new THREE.Vector3();
   private lastPlayer = new THREE.Vector3(1e9, 0, 0);
+  private eye = new THREE.Vector3();
 
   constructor() {
     this.object.name = 'Bugs';
@@ -241,6 +242,7 @@ export class Bugs {
     this.nearEar = near;
     this.webUpdate(w, dt);
     this.lastPlayer.copy(P);
+    this.eye.copy(w.player.eye);
     this.write();
   }
 
@@ -563,7 +565,8 @@ export class Bugs {
       n++;
       if (a.kind === 'firefly' && a.glow > 0.02 && g < MAX) {
         this.glowPos[g * 3] = a.pos.x; this.glowPos[g * 3 + 1] = a.pos.y; this.glowPos[g * 3 + 2] = a.pos.z;
-        const k = a.glow;
+        // a halo is a far-off thing: right by the eye only the lantern itself glows
+        const de = a.pos.distanceTo(this.eye), k = a.glow * Math.min(1, Math.max(0, (de - 0.4) / 1.6));
         this.glowCol[g * 3] = 0.9 * k; this.glowCol[g * 3 + 1] = 1.2 * k; this.glowCol[g * 3 + 2] = 0.3 * k;
         g++;
       }
