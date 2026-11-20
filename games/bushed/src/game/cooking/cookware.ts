@@ -9,8 +9,12 @@ import { Mesher, Rand, V, box, boxAt, board, lathe, tube, extrude, placeTex, def
 import { STOVE } from '../../places/stove';
 
 export const PLATE = { x0: -0.21, x1: 0.21, z0: -0.1, z1: 0.42, y: STOVE.AXIS_Y + STOVE.R + 0.022 };
-export const COUNTER = { x0: 0.345, x1: 0.785, z0: -0.3, z1: 0.3, y: 0.76 };
-export const PANTRY = { x0: -0.74, x1: -0.38, z0: -0.04, z1: 0.54, y: 0.74 };
+export const COUNTER = { x0: 0.345, x1: 0.785, z0: -0.3, z1: 0.56, y: 0.76 };
+export const PANTRY = { x0: -0.86, x1: -0.38, z0: -0.04, z1: 0.72, y: 0.74 };
+/** the larder: open shelves against the back wall left of the hearth (shelf tops) */
+export const LARDER = { x0: -1.3, x1: -0.88, z0: -0.72, z1: -0.44, ys: [0.36, 0.72, 1.08] };
+/** the spice shelf on the log wall above the counter */
+export const SHELF = { x0: 0.64, x1: 0.78, z0: -0.27, z1: 0.27, y: 1.08 };
 
 /** extra materials for cookware (registered once with the places kit) */
 export function ensureCookMats(): void {
@@ -22,6 +26,10 @@ export function ensureCookMats(): void {
   defineMat('brass', new THREE.MeshStandardMaterial({ name: 'brass', color: 0xc09a58, roughness: 0.35, metalness: 0.4 }));
   defineMat('lard', new THREE.MeshStandardMaterial({ name: 'lard', color: 0xf2ece0, roughness: 0.55 }));
   defineMat('handle_wood', new THREE.MeshStandardMaterial({ name: 'handle_wood', map: placeTex('board_warm'), color: 0x8a6a50, roughness: 0.6 }));
+  defineMat('paper', new THREE.MeshStandardMaterial({ name: 'card_paper', color: 0xeae0c8, roughness: 0.9 }));
+  defineMat('glass_cook', new THREE.MeshStandardMaterial({ name: 'glass_cook', color: 0xd8e4e0, roughness: 0.08, metalness: 0.1, transparent: true, opacity: 0.45 }));
+  defineMat('salt_fill', new THREE.MeshStandardMaterial({ name: 'salt_fill', color: 0xf4f4f0, roughness: 0.95 }));
+  defineMat('water_cook', new THREE.MeshStandardMaterial({ name: 'water_cook', color: 0x4a6470, roughness: 0.05, metalness: 0.1, transparent: true, opacity: 0.8 }));
 }
 
 // ---------------------------------------------------------------------------------------------- the plate on the stove
@@ -240,12 +248,143 @@ export function buildCounter(ms: Mesher, rnd: Rand): void {
 export function buildPantry(ms: Mesher, rnd: Rand): void {
   const { x0, x1, z0, z1, y } = PANTRY;
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
-  for (let i = 0; i < 2; i++) board(ms, 'board_grey', rnd, cx, y - 0.02, z0 + (z1 - z0) * (i + 0.5) / 2, x1 - x0, 0.04, (z1 - z0) / 2 - 0.004, 0, { grain: 'x' });
+  for (let i = 0; i < 3; i++) board(ms, 'board_grey', rnd, cx, y - 0.02, z0 + (z1 - z0) * (i + 0.5) / 3, x1 - x0, 0.04, (z1 - z0) / 3 - 0.004, 0, { grain: 'x' });
   for (const x of [x0 + 0.05, x1 - 0.05]) {
-    board(ms, 'board_dark', rnd, x, (y - 0.04) / 2, cz, 0.04, y - 0.04, z1 - z0 - 0.08, 0, { grain: 'y' });
-    board(ms, 'board_dark', rnd, x, 0.03, cz, 0.06, 0.05, z1 - z0 - 0.02, 0, { grain: 'z' });
+    // the left trestle stands on the floor beside the hearth, the right one on the flagstones
+    const f = x < -0.75 ? -0.1 : 0;
+    board(ms, 'board_dark', rnd, x, (y - 0.04 + f) / 2, cz, 0.04, y - 0.04 - f, z1 - z0 - 0.08, 0, { grain: 'y' });
+    board(ms, 'board_dark', rnd, x, f + 0.03, cz, 0.06, 0.05, z1 - z0 - 0.02, 0, { grain: 'z' });
   }
   board(ms, 'board_dark', rnd, cx, 0.3, cz, x1 - x0 - 0.1, 0.05, 0.03, 0, { grain: 'x' });
+}
+
+/** the larder: an open pine shelf unit standing on the floor against the back wall */
+export function buildLarder(ms: Mesher, rnd: Rand): void {
+  const { x0, x1, z0, z1, ys } = LARDER;
+  const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, F = -0.1, top = 1.42;
+  for (const x of [x0 + 0.012, x1 - 0.012]) board(ms, 'board_warm', rnd, x, (F + top) / 2, cz, 0.024, top - F, z1 - z0, 0, { grain: 'y' });
+  for (const y of [F + 0.05, ...ys, top]) board(ms, 'board_warm', rnd, cx, y - 0.011, cz, x1 - x0 - 0.024, 0.022, z1 - z0, 0, { grain: 'x' });
+  board(ms, 'board_dark', rnd, cx, (F + top) / 2, z0 + 0.006, x1 - x0, top - F, 0.012, 0, { grain: 'y' });
+  // a lip on each shelf so tins don't walk off
+  for (const y of ys) board(ms, 'board_dark', rnd, cx, y + 0.012, z1 - 0.008, x1 - x0 - 0.03, 0.02, 0.012, 0, { grain: 'x' });
+}
+
+/** the spice shelf on the wall above the counter: a board on two brackets */
+export function buildSpiceShelf(ms: Mesher, rnd: Rand): void {
+  const { x0, x1, z0, z1, y } = SHELF;
+  const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+  board(ms, 'board_warm', rnd, cx, y - 0.011, cz, x1 - x0, 0.022, z1 - z0, 0, { grain: 'z' });
+  for (const z of [z0 + 0.05, z1 - 0.05]) {
+    boxAt(ms, 'board_dark', x1 - 0.012, y - 0.08, z, 0.02, 0.14, 0.02);
+    ms.pushT(x1 - 0.06, y - 0.06, z, 0, 0, 0.75);
+    box(ms, 'board_dark', 0.13, 0.018, 0.018, { grain: 'x' });
+    ms.pop();
+  }
+}
+
+/** a lid for the skillet (cast iron, a loop handle) or the pot (white enamel, a knob). Origin at the rim plane */
+export function buildLid(kind: 'skillet' | 'pot'): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  if (kind === 'skillet') {
+    lathe(ms, 'castiron', [[0, 0.03], [0.04, 0.028], [0.09, 0.016], [0.122, 0.003], [0.127, 0], [0.12, -0.002], [0.09, 0.012], [0.04, 0.024], [0, 0.026]], 28);
+    tube(ms, 'castiron', [V(-0.03, 0.029, 0), V(-0.02, 0.05, 0), V(0.02, 0.05, 0), V(0.03, 0.029, 0)], 0.006, 6);
+  } else {
+    lathe(ms, 'enamel', [[0, 0.022], [0.04, 0.02], [0.08, 0.008], [0.098, 0.001], [0.1, 0], [0.094, -0.002], [0.078, 0.005], [0.04, 0.016], [0, 0.018]], 24, { matFor: (i) => (i >= 3 && i <= 5 ? 'enamel_blue' : 'enamel') });
+    ms.pushT(0, 0.02, 0);
+    lathe(ms, 'enamel_blue', [[0, 0], [0.012, 0], [0.008, 0.012], [0.014, 0.02], [0, 0.022]], 10);
+    ms.pop();
+  }
+  const g = ms.build({ name: `lid_${kind}` });
+  g.userData.r = kind === 'skillet' ? 0.127 : 0.1;
+  return g;
+}
+
+/** a mixing bowl (white enamel, blue rim): inner radius ~0.1, depth 0.085 */
+export function buildMixBowl(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  lathe(ms, 'enamel', [[0, 0], [0.06, 0], [0.064, 0.004], [0.095, 0.05], [0.112, 0.09], [0.115, 0.094], [0.11, 0.094], [0.107, 0.09], [0.09, 0.05], [0.058, 0.008], [0, 0.007]], 24, { matFor: (i) => (i >= 4 && i <= 6 ? 'enamel_blue' : 'enamel') });
+  return ms.build({ name: 'mix_bowl' });
+}
+
+/** a tin measuring cup with a side handle (1 cup), grip at the origin, cup toward +Y */
+export function buildMeasureCup(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  ms.pushT(0.05, -0.02, 0);
+  lathe(ms, 'galv', [[0, 0], [0.034, 0], [0.036, 0.004], [0.04, 0.058], [0.042, 0.061], [0.038, 0.061], [0.035, 0.006], [0, 0.005]], 16);
+  ms.pop();
+  boxAt(ms, 'galv', 0.0, 0.02, 0, 0.022, 0.08, 0.005, 0, {}, 0, 0.35);
+  return ms.build({ name: 'measure_cup' });
+}
+
+/** a tin measuring spoon (a teaspoon), grip at the origin, bowl toward +Y */
+export function buildMeasureSpoon(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  boxAt(ms, 'galv', 0, 0.04, 0, 0.012, 0.09, 0.003);
+  ms.pushT(0, 0.095, 0, 0, Math.PI / 2);
+  lathe(ms, 'galv', [[0, -0.006], [0.012, -0.004], [0.017, 0.002], [0.016, 0.003], [0, -0.002]], 10);
+  ms.pop();
+  return ms.build({ name: 'measure_spoon' });
+}
+
+/** a glass salt shaker with a dented steel top */
+export function buildSaltShaker(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  lathe(ms, 'glass_cook', [[0, 0], [0.022, 0], [0.024, 0.006], [0.022, 0.07], [0.018, 0.078]], 12);
+  lathe(ms, 'salt_fill', [[0, 0.004], [0.02, 0.004], [0.02, 0.045], [0, 0.048]], 10);
+  lathe(ms, 'steel', [[0.0185, 0.074], [0.0195, 0.09], [0.012, 0.098], [0, 0.1]], 12);
+  return ms.build({ name: 'salt_shaker' });
+}
+
+/** a turned wooden pepper mill */
+export function buildPepperMill(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  lathe(ms, 'handle_wood', [[0, 0], [0.024, 0], [0.026, 0.01], [0.02, 0.05], [0.017, 0.08], [0.022, 0.11], [0.024, 0.12], [0.018, 0.13], [0.008, 0.138], [0, 0.14]], 12);
+  lathe(ms, 'steel', [[0, 0.14], [0.004, 0.14], [0.006, 0.148], [0, 0.152]], 8);
+  return ms.build({ name: 'pepper_mill' });
+}
+
+/** a butter dish: a little enamel plate with the brick on it (the brick is shown separately) */
+export function buildButterDish(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  lathe(ms, 'enamel', [[0, 0.002], [0.05, 0.002], [0.075, 0.01], [0.078, 0.012], [0.074, 0.012], [0.05, 0.005], [0, 0.005]], 16);
+  return ms.build({ name: 'butter_dish' });
+}
+
+/** a galvanized water pail with a tin dipper hooked on the rim (the dipper separate: userData.dipper) */
+export function buildPail(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  lathe(ms, 'galv', [[0, 0], [0.085, 0], [0.088, 0.004], [0.1, 0.2], [0.104, 0.205], [0.098, 0.205], [0.094, 0.196], [0.082, 0.008], [0, 0.007]], 20);
+  ms.pushT(0, 0.17, 0);
+  lathe(ms, 'water_cook', [[0, 0], [0.094, 0], [0, 0.0001]], 18);
+  ms.pop();
+  const bail: THREE.Vector3[] = [];
+  for (let i = 0; i <= 12; i++) { const a = Math.PI * (i / 12); bail.push(V(-Math.cos(a) * 0.103, 0.19 + Math.sin(a) * 0.1, 0)); }
+  tube(ms, 'galv', bail, 0.0025, 4);
+  const g = ms.build({ name: 'water_pail' });
+  const d = new Mesher();
+  d.pushT(0, 0, 0);
+  lathe(d, 'galv', [[0, 0], [0.034, 0], [0.036, 0.004], [0.036, 0.045], [0.033, 0.045], [0.032, 0.005], [0, 0.004]], 14);
+  d.pop();
+  tube(d, 'galv', [V(0.034, 0.04, 0), V(0.1, 0.08, 0), V(0.17, 0.11, 0)], 0.005, 5);
+  const dip = d.build({ name: 'dipper' });
+  g.userData.dipper = dip;
+  return g;
+}
+
+/** a card holder: a split block of pine the pinned card stands in */
+export function buildCardStand(): THREE.Group {
+  ensureCookMats();
+  const ms = new Mesher();
+  boxAt(ms, 'board_warm', 0, 0.012, 0, 0.09, 0.024, 0.04, 0, { grain: 'x' });
+  return ms.build({ name: 'card_stand' });
 }
 
 /** stovepipe damper handle (spins about the pipe axis); the pipe centre is (0, y, pz) */

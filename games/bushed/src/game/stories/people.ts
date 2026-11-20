@@ -80,7 +80,7 @@ export function spawnPeople(g: Game): Npc[] {
   const odileNight: Stop = sf ? { from: 21, to: 7, at: sf.at(2.85, -1.5), face: sf.yaw(-Math.PI / 2), anim: 'count' } : { ...odileDay, from: 21, to: 7 };
   // Lucien: the porch bench by day, warming his hands at the store stove by night
   const porch = g.store?.anchors?.porch_bench as THREE.Object3D | undefined;
-  const porchAt = porch ? porch.getWorldPosition(new THREE.Vector3()) : P(st.x + 3, st.z - 9);
+  const porchAt = porch ? porch.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0.45, -0.47, 0)) : P(st.x + 3, st.z - 9);
   const lucienDay: Stop = { from: 8, to: 20, at: porchAt, face: yawOf(porch, Math.PI), anim: 'sit' };
   const lucienNight: Stop = sf ? { from: 20, to: 8, at: sf.at(0.25, -3.4), face: sf.yaw(-Math.PI / 2), anim: 'warm' } : { ...lucienDay, from: 20, to: 8, anim: 'idle' };
   stumpSeat(g, HOLLIS_SEAT);
@@ -92,7 +92,7 @@ export function spawnPeople(g: Game): Npc[] {
     { id: 'lucien', name: 'Lucien', look: lookOr('camp_cook', 'shopkeeper', 808), stops: [lucienDay, lucienNight], talk: () => pick(LUCIEN) },
     {
       id: 'hollis', name: 'Hollis', look: lookOr('old_timer', 'oldLogger', 909),
-      stops: [{ from: 8, to: 18, at: HOLLIS_SEAT.clone().setY(HOLLIS_SEAT.y + 0.32), face: toLake(HOLLIS_SEAT), anim: 'sit' }, fireSlot(FIRE_BENCH[1], 2.0, 'sit', 18, 8)],
+      stops: [{ from: 8, to: 18, at: HOLLIS_SEAT.clone().setY(heightAt(HOLLIS_SEAT.x, HOLLIS_SEAT.z) - 0.07), face: toLake(HOLLIS_SEAT), anim: 'sit' }, fireSlot(FIRE_BENCH[1], 2.0, 'sit', 18, 8)],
       talk: () => pick(HOLLIS),
     },
     {

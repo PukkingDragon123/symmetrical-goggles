@@ -48,8 +48,10 @@ export function buildHuman(look: HumanLook | LookId, opts: { lazy?: boolean } = 
   human.root.name = 'human:' + L.name;
   const anim = new NpcAnimator(human);
   anim.update(0);
-  return {
+  const model: HumanModel = {
     look: L, root: human.root, mesh: human.mesh, human, bones: human.b, anim,
     socket: (h) => human.sockets[h], height: human.height, dispose: () => human.dispose(),
   };
+  human.root.userData.humanModel = model;
+  return model;
 }

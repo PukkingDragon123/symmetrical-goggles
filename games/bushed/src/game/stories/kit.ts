@@ -41,6 +41,8 @@ export function noted(g: Game, what: string): void {
 }
 export let storyDirty = false;
 export function cleanStory(): void { storyDirty = false; }
+/** the book should open at the story page next time */
+export function dirty(): void { storyDirty = true; }
 
 export const RECIPE_NAMES: Record<string, string> = {
   bannock: 'Bannock', flapjacks: 'Flapjacks', venison_stew: 'Venison stew (mojakka)', moose_chili: 'Moose chili', tourtiere: 'Tourtière',

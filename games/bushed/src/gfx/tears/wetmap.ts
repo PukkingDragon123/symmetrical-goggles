@@ -1,22 +1,23 @@
 // The wet film a tear leaves on the skin, and the skin shader that shows it (and the melt).
 //
-// The film is painted into a small texture laid over the face in three planar charts by rest-pose (creature space)
-// position: the front (x, y), the left side and the right side (z, y), a fragment picking its chart by its rest normal,
-// so the film stays on the skin wherever the skin moves. Each texel keeps the time it was last wetted (16 bits, 1/16 s)
+// The film is painted into a small texture laid over the face in three planar charts by bind-pose (mesh-local)
+// position inside a box round the face: the front (x, y), the left side and the right side (z, y), a fragment picking
+// its chart by its bind normal, so the film stays on the skin wherever the skin moves. Any skinned mesh whose material
+// is a MeshStandardMaterial (or one with its chunks) can take it. Each texel keeps the time it was last wetted (16 bits, 1/16 s)
 // and how wet (8 bits); the shader dries it from that, so nothing is decayed on the CPU: a fresh film is dark and
 // glossy (a sharp highlight runs along it), the gloss goes first, then the darkening.
 //
 // The same patch slumps the body when it melts (a vertex function after skinning: everything falls by a share of its
-// height, the overhanging head first, in runs, and what falls spreads out over the ground) and wets all of it.
+// height above the ground, the overhanging parts first, in runs, and what falls spreads out over the ground) and wets
+// all of it. The body's centre, radius and ground are uniforms (mesh-local), so it fits any body.
 //
-//   const wet = new WetMap();  patchSkin(mat, depth, wet.uniforms);  wet.paint(restP, restN, r, amount, now);  wet.flush();
+//   const wet = new WetMap(box);  patchSkin(mat, depth, wet.uniforms);  wet.paint(restP, restN, r, amount, now);  wet.flush();
 import * as THREE from 'three';
 
-/** the box over the face the charts cover (creature space) */
-export const WET_BOX = { x0: -0.15, x1: 0.15, y0: 0.2, y1: 0.48, z0: 0.18, z1: 0.48 };
 const CW = 128, CHH = 120, TW = CW * 3;
-const TEX_X = (WET_BOX.x1 - WET_BOX.x0) / CW, TEX_Y = (WET_BOX.y1 - WET_BOX.y0) / CHH, TEX_Z = (WET_BOX.z1 - WET_BOX.z0) / CW;
 const MAXR = 160;
+/** the melt's body: centre (x, z), radius, ground height, all mesh-local */
+export interface MeltShape { x: number; z: number; r: number; ground: number }
 
 export interface WetUniforms {
   uTearWet: { value: THREE.DataTexture };
@@ -26,6 +27,10 @@ export interface WetUniforms {
   uTearDry: { value: number };
   /** 0 solid .. 1 melted flat */
   uMelt: { value: number };
+  /** the box the charts cover (bind pose, mesh-local): its low corner and its size */
+  uTearBox0: { value: THREE.Vector3 }; uTearBoxS: { value: THREE.Vector3 };
+  /** the melt's body: centre x, centre z, radius, ground */
+  uMeltC: { value: THREE.Vector4 };
 }
 
 export class WetMap {
@@ -34,12 +39,15 @@ export class WetMap {
   readonly uniforms: WetUniforms;
   private ranges: { start: number; count: number }[] = [];
   private nr = 0; private full = 2; private dirty = false; private sweepT = 0;
-  constructor(dry = 34) {
+  private b0: THREE.Vector3; private bs: THREE.Vector3;
+  constructor(box: THREE.Box3, melt: MeltShape, dry = 34) {
+    this.b0 = box.min.clone(); this.bs = box.getSize(new THREE.Vector3());
     this.tex = new THREE.DataTexture(this.data, TW, CHH, THREE.RGBAFormat, THREE.UnsignedByteType);
     this.tex.magFilter = THREE.NearestFilter; this.tex.minFilter = THREE.NearestFilter; this.tex.generateMipmaps = false;
     this.tex.colorSpace = THREE.NoColorSpace; this.tex.needsUpdate = true;
     for (let i = 0; i < MAXR; i++) this.ranges.push({ start: 0, count: 0 });
-    this.uniforms = { uTearWet: { value: this.tex }, uTearNow: { value: 0 }, uTearDry: { value: dry }, uMelt: { value: 0 } };
+    this.uniforms = { uTearWet: { value: this.tex }, uTearNow: { value: 0 }, uTearDry: { value: dry }, uMelt: { value: 0 },
+      uTearBox0: { value: this.b0 }, uTearBoxS: { value: this.bs }, uMeltC: { value: new THREE.Vector4(melt.x, melt.z, melt.r, melt.ground) } };
   }
   private tick(now: number) { return Math.floor(now * 16) & 0xffff; }
   /** how wet a texel is now (0..1), as the shader sees it */
@@ -48,13 +56,15 @@ export class WetMap {
     const age = ((nowT - ((this.data[o] << 8) | this.data[o + 1]) + 65536) & 0xffff) / 16;
     return (b / 255) * (1 - smooth(this.uniforms.uTearDry.value * 0.2, this.uniforms.uTearDry.value, age));
   }
-  /** wet a spot of skin: rest-pose position and normal (creature space), radius (m), wetness 0..1 */
+  /** wet a spot of skin: bind-pose position and normal (mesh-local), radius (m), wetness 0..1 */
   paint(p: THREE.Vector3, n: THREE.Vector3, r: number, amount: number, now: number) {
-    if (p.x < WET_BOX.x0 || p.x > WET_BOX.x1 || p.y < WET_BOX.y0 || p.y > WET_BOX.y1 || p.z < WET_BOX.z0 || p.z > WET_BOX.z1) return;
+    const b0 = this.b0, bs = this.bs;
+    const u = (p.x - b0.x) / bs.x, v = (p.y - b0.y) / bs.y, w = (p.z - b0.z) / bs.z;
+    if (u < 0 || u > 1 || v < 0 || v > 1 || w < 0 || w > 1) return;
     const ax = Math.abs(n.x), az = Math.abs(n.z);
     // the chart the shader will pick, and the neighbouring one too near the seam between them
-    if (ax > az || ax > az * 0.7) this.disc(n.x > 0 ? 1 : 2, (p.z - WET_BOX.z0) / TEX_Z, (p.y - WET_BOX.y0) / TEX_Y, r / TEX_Z, amount, now);
-    if (az >= ax || az > ax * 0.7) this.disc(0, (p.x - WET_BOX.x0) / TEX_X, (p.y - WET_BOX.y0) / TEX_Y, r / TEX_X, amount, now);
+    if (ax > az || ax > az * 0.7) this.disc(n.x > 0 ? 1 : 2, w * CW, v * CHH, (r / bs.z) * CW, amount, now);
+    if (az >= ax || az > ax * 0.7) this.disc(0, u * CW, v * CHH, (r / bs.x) * CW, amount, now);
   }
   private disc(chart: number, u: number, v: number, rt: number, amount: number, now: number) {
     const nowT = this.tick(now), rr = Math.max(0.75, rt), a8 = Math.round(Math.min(1, amount) * 255);
@@ -100,36 +110,37 @@ const smooth = (a: number, b: number, x: number) => { const t = Math.min(1, Math
 // ------------------------------------------------------------------------------------------------ the skin shader
 const COMMON_V = /* glsl */ `
 varying vec3 vTearP; varying vec3 vTearN;
-uniform float uMelt;
-// the melt: everything falls by a share of its height (the overhanging head and jowls first, in runs), and what falls
-// spreads out over the ground; creature space, ground y = 0, the body over (0, -0.04)
+uniform float uMelt; uniform vec4 uMeltC;
+// the melt: everything falls by a share of its height above the ground (the overhanging parts first, in runs), and
+// what falls spreads out over the ground; mesh-local, the body round (uMeltC.x, uMeltC.y), radius uMeltC.z, ground
+// at y = uMeltC.w
 vec3 tearMelt(vec3 p, vec3 r) {
-  vec2 c = vec2(0.0, -0.04), d = p.xz - c;
-  float n = 0.5 + 0.5 * sin(r.x * 31.0 + sin(r.z * 23.0) * 1.7 + r.y * 13.0);
-  float lag = clamp(length(r.xz - c) / 0.42, 0.0, 1.0);
+  vec2 c = uMeltC.xy, d = p.xz - c;
+  float G0 = uMeltC.w, S = uMeltC.z / 0.42;
+  p.y -= G0;
+  float n = 0.5 + 0.5 * sin(r.x * 31.0 / S + sin(r.z * 23.0 / S) * 1.7 + r.y * 13.0 / S);
+  float lag = clamp(length(r.xz - c) / uMeltC.z, 0.0, 1.0);
   float delay = 0.32 * (1.0 - lag) * (0.45 + 0.55 * n);
   float mm = clamp((uMelt - delay) / (1.0 - delay), 0.0, 1.0);
   float e = mm * mm * (3.0 - 2.0 * mm);
   float ang = atan(d.y, d.x);
-  float run = pow(max(0.0, sin(ang * 7.0 + r.y * 11.0 + sin(r.x * 37.0) * 1.5)), 5.0);
+  float run = pow(max(0.0, sin(ang * 7.0 + r.y * 11.0 / S + sin(r.x * 37.0 / S) * 1.5)), 5.0);
   float h = max(p.y, 0.0);
   float fall = h * clamp(e * 0.955 + run * e * (1.0 - e) * 0.9, 0.0, 0.985);
   float y = h - fall;
-  float spread = 1.0 + e * (0.25 + 1.05 * (1.0 - smoothstep(0.0, 0.16, y))) * (0.8 + 0.4 * n);
+  float spread = 1.0 + e * (0.25 + 1.05 * (1.0 - smoothstep(0.0, 0.16 * S, y))) * (0.8 + 0.4 * n);
   p.xz = c + d * spread;
-  p.y = y + min(p.y, 0.0) + 0.002 * e;
+  p.y = y + min(p.y, 0.0) + 0.002 * e + G0;
   return p;
 }`;
 const COMMON_F = /* glsl */ `
 varying vec3 vTearP; varying vec3 vTearN;
-uniform sampler2D uTearWet; uniform float uTearNow; uniform float uTearDry; uniform float uMelt;
+uniform sampler2D uTearWet; uniform float uTearNow; uniform float uTearDry; uniform float uMelt; uniform vec4 uMeltC; uniform vec3 uTearBox0; uniform vec3 uTearBoxS;
 // the film here: x = darkening (0..1), y = gloss (0..1)
 vec2 tearFilm() {
-  vec3 p = vTearP, n = normalize(vTearN);
-  if (p.x < ${WET_BOX.x0.toFixed(3)} || p.x > ${WET_BOX.x1.toFixed(3)} || p.y < ${WET_BOX.y0.toFixed(3)} || p.y > ${WET_BOX.y1.toFixed(3)} || p.z < ${WET_BOX.z0.toFixed(3)} || p.z > ${WET_BOX.z1.toFixed(3)}) return vec2(0.0);
-  vec2 uv;
-  if (abs(n.x) > abs(n.z)) uv = vec2(((p.z - ${WET_BOX.z0.toFixed(3)}) / ${(WET_BOX.z1 - WET_BOX.z0).toFixed(3)} + (n.x > 0.0 ? 1.0 : 2.0)) / 3.0, (p.y - ${WET_BOX.y0.toFixed(3)}) / ${(WET_BOX.y1 - WET_BOX.y0).toFixed(3)});
-  else uv = vec2((p.x - ${WET_BOX.x0.toFixed(3)}) / ${(WET_BOX.x1 - WET_BOX.x0).toFixed(3)} / 3.0, (p.y - ${WET_BOX.y0.toFixed(3)}) / ${(WET_BOX.y1 - WET_BOX.y0).toFixed(3)});
+  vec3 q = (vTearP - uTearBox0) / uTearBoxS, n = normalize(vTearN);
+  if (q.x < 0.0 || q.x > 1.0 || q.y < 0.0 || q.y > 1.0 || q.z < 0.0 || q.z > 1.0) return vec2(0.0);
+  vec2 uv = abs(n.x) > abs(n.z) ? vec2((q.z + (n.x > 0.0 ? 1.0 : 2.0)) / 3.0, q.y) : vec2(q.x / 3.0, q.y);
   vec4 t = texture2D(uTearWet, uv);
   if (t.b <= 0.0) return vec2(0.0);
   float t16 = floor(t.r * 255.0 + 0.5) * 256.0 + floor(t.g * 255.0 + 0.5);
@@ -155,7 +166,7 @@ vec2 tearF = tearFilm();
 {
   // the melt wets all of it, in runs down the hide, and turns it to clear dark water
   float mw = smoothstep(0.03, 0.4, uMelt);
-  float runs = pow(abs(sin(atan(vTearP.z + 0.04, vTearP.x) * 9.0 + sin(vTearP.y * 40.0) * 0.7)), 10.0);
+  float runs = pow(abs(sin(atan(vTearP.z - uMeltC.y, vTearP.x - uMeltC.x) * 9.0 + sin(vTearP.y * 16.8 / uMeltC.z) * 0.7)), 10.0);
   tearF = max(tearF, vec2(mw * (0.6 + 0.4 * runs), mw));
   vec3 c = diffuseColor.rgb;
   float l = dot(c, vec3(0.299, 0.587, 0.114));
@@ -170,7 +181,7 @@ vec2 tearF = tearFilm();
     const pd = depth.onBeforeCompile, kd = depth.customProgramCacheKey();
     depth.onBeforeCompile = (sh, r) => {
       pd.call(depth, sh, r);
-      sh.uniforms.uMelt = u.uMelt;
+      sh.uniforms.uMelt = u.uMelt; sh.uniforms.uMeltC = u.uMeltC;
       sh.vertexShader = sh.vertexShader
         .replace('#include <common>', '#include <common>' + COMMON_V)
         .replace('#include <skinning_vertex>', '#include <skinning_vertex>\nif (uMelt > 0.001) transformed = tearMelt(transformed, position);');
@@ -180,17 +191,18 @@ vec2 tearF = tearFilm();
   }
 }
 
-/** the melt on the CPU (the same function as the shader): where a rest/skinned creature-space point is drawn to */
-export function meltPoint(p: THREE.Vector3, r: THREE.Vector3, melt: number): THREE.Vector3 {
+/** the melt on the CPU (the same function as the shader): where a skinned mesh-local point `p` with bind position
+ *  `r` is drawn to */
+export function meltPoint(p: THREE.Vector3, r: THREE.Vector3, melt: number, M: MeltShape): THREE.Vector3 {
   if (melt <= 0.001) return p;
-  const cx = 0, cz = -0.04, dx = p.x - cx, dz = p.z - cz;
-  const n = 0.5 + 0.5 * Math.sin(r.x * 31 + Math.sin(r.z * 23) * 1.7 + r.y * 13);
-  const lag = Math.min(1, Math.hypot(r.x - cx, r.z - cz) / 0.42);
+  const cx = M.x, cz = M.z, S = M.r / 0.42, dx = p.x - cx, dz = p.z - cz, py = p.y - M.ground;
+  const n = 0.5 + 0.5 * Math.sin((r.x * 31) / S + Math.sin((r.z * 23) / S) * 1.7 + (r.y * 13) / S);
+  const lag = Math.min(1, Math.hypot(r.x - cx, r.z - cz) / M.r);
   const delay = 0.32 * (1 - lag) * (0.45 + 0.55 * n);
   const mm = Math.min(1, Math.max(0, (melt - delay) / (1 - delay))), e = mm * mm * (3 - 2 * mm);
-  const ang = Math.atan2(dz, dx), run = Math.pow(Math.max(0, Math.sin(ang * 7 + r.y * 11 + Math.sin(r.x * 37) * 1.5)), 5);
-  const h = Math.max(p.y, 0), fall = h * Math.min(0.985, Math.max(0, e * 0.955 + run * e * (1 - e) * 0.9)), y = h - fall;
-  const yy = Math.min(1, Math.max(0, y / 0.16)), sp = 1 + e * (0.25 + 1.05 * (1 - yy * yy * (3 - 2 * yy))) * (0.8 + 0.4 * n);
-  p.x = cx + dx * sp; p.z = cz + dz * sp; p.y = y + Math.min(p.y, 0) + 0.002 * e;
+  const ang = Math.atan2(dz, dx), run = Math.pow(Math.max(0, Math.sin(ang * 7 + (r.y * 11) / S + Math.sin((r.x * 37) / S) * 1.5)), 5);
+  const h = Math.max(py, 0), fall = h * Math.min(0.985, Math.max(0, e * 0.955 + run * e * (1 - e) * 0.9)), y = h - fall;
+  const yy = Math.min(1, Math.max(0, y / (0.16 * S))), sp = 1 + e * (0.25 + 1.05 * (1 - yy * yy * (3 - 2 * yy))) * (0.8 + 0.4 * n);
+  p.x = cx + dx * sp; p.z = cz + dz * sp; p.y = y + Math.min(py, 0) + 0.002 * e + M.ground;
   return p;
 }

@@ -100,6 +100,30 @@ function paintAtlases(kind: string): Atlas {
       };
       break;
     }
+    case 'sausage': {
+      // pork sausage: pink casing that browns and blisters, coarse pink meat inside
+      const n = N(12, 51), sp = S(52);
+      const cR = ['#c88478', '#d4948a', '#dea29a'].map(hex), cC = ['#7a3a1c', '#8e4a24', '#a45c2e', '#b8703a'].map(hex);
+      const mR = ['#d89a90', '#e2aaa0', '#ecbab0'].map(hex), mC = ['#b8826a', '#c89278', '#d4a288'].map(hex);
+      out = {
+        raw: atlas((_x, _y, i) => (sp[i] > 0.86 ? hex('#f4e4dc') : ramp(mR, n[i] * 0.6 + sp[i] * 0.4)), (_x, _y, i) => ramp(cR, n[i] * 0.7 + sp[i] * 0.3)),
+        cooked: atlas((_x, _y, i) => (sp[i] > 0.86 ? hex('#e8d0b8') : ramp(mC, n[i] * 0.6 + sp[i] * 0.4)), (_x, _y, i) => (sp[i] > 0.94 ? hex('#5a2810') : ramp(cC, n[i] * 0.7 + sp[i] * 0.3))),
+      };
+      break;
+    }
+    case 'flapjack': case 'dumpling': case 'pastry': {
+      // batter: pale cream with bubbles; cooked: golden brown with a lacy darker ring
+      const n = N(16, 61 + kind.length), sp = S(62), b = vnoise(64, 64, 4, 63);
+      const pastry = kind === 'pastry';
+      const R0 = (pastry ? ['#e8dcc0', '#eee4cc', '#f4ecd8'] : ['#eedcaa', '#f2e2b6', '#f6eac4']).map(hex);
+      const C0 = (pastry ? ['#c88c40', '#d49c4c', '#dcae60', '#e8c27a'] : ['#a8682a', '#b87834', '#c88c40', '#d8a050']).map(hex);
+      const bub = (i: number, raw: boolean) => (!pastry && b[i] > 0.78 ? hex(raw ? '#d8c088' : '#8a5420') : null);
+      out = {
+        raw: atlas((_x, _y, i) => bub(i, true) ?? ramp(R0, n[i] * 0.6 + sp[i] * 0.4), (_x, _y, i) => ramp(R0, n[i] * 0.5 + sp[i] * 0.5)),
+        cooked: atlas((_x, _y, i) => bub(i, false) ?? ramp(C0, n[i] * 0.6 + sp[i] * 0.4), (_x, _y, i) => ramp(['#c89458', '#d8a868', '#e4bc80'].map(hex), n[i] * 0.5 + sp[i] * 0.5)),
+      };
+      break;
+    }
     default: {
       const t = new Pix(4, 4).each(() => [200, 200, 200]).tex();
       out = { raw: t, cooked: t };
@@ -317,6 +341,49 @@ export function doughGeo(flat: number, seed: number): THREE.BufferGeometry {
   return slab(blob(r, r * 0.95, seed, 20, 0.12 * (1 - flat) + 0.03), t, { round: t * 0.45, dome: 0.012 * (1 - flat * 0.5) });
 }
 
+/** a pork sausage lying along X (a capsule with a little bend); the casing is the rim square, the ends the face */
+export function sausageGeo(seed: number): THREE.BufferGeometry {
+  const len = 0.12, r = 0.0115, seg = 10, rings = 12;
+  const P: number[] = [], NN: number[] = [], UV: number[] = [], E: number[] = [];
+  const bend = 0.008 * (0.5 + (Math.sin(seed * 9.1) * 0.5 + 0.5) * 0.5);
+  const at = (u: number, a: number) => {
+    const x = -len / 2 + u * len;
+    const rr = r * Math.sqrt(Math.max(0.05, 1 - Math.pow(Math.abs(u - 0.5) * 2, 6)));
+    const zc = bend * (1 - (2 * u - 1) ** 2);
+    return { p: new THREE.Vector3(x, r + Math.sin(a) * rr, zc + Math.cos(a) * rr), n: new THREE.Vector3(0, Math.sin(a), Math.cos(a)) };
+  };
+  for (let i = 0; i < rings; i++) for (let k = 0; k < seg; k++) {
+    const u0 = i / rings, u1 = (i + 1) / rings, a0 = (k / seg) * Math.PI * 2, a1 = ((k + 1) / seg) * Math.PI * 2;
+    const A = at(u0, a0), B = at(u1, a0), C = at(u1, a1), D = at(u0, a1);
+    const uv = (u: number, a: number): [number, number] => [0.52 + u * 0.46, 0.04 + (a / (Math.PI * 2)) * 0.92];
+    for (const [q, u, a] of [[A, u0, a0], [C, u1, a1], [B, u1, a0], [A, u0, a0], [D, u0, a1], [C, u1, a1]] as [typeof A, number, number][]) {
+      P.push(q.p.x, q.p.y, q.p.z); NN.push(q.n.x, q.n.y, q.n.z); const t = uv(u, a); UV.push(t[0], t[1]); E.push(u < 0.1 || u > 0.9 ? 0.6 : 0);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(NN, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(UV, 2));
+  g.setAttribute('aEdge', new THREE.Float32BufferAttribute(E, 1));
+  g.computeBoundingSphere();
+  return g;
+}
+
+/** a flapjack: a thin round of batter that spreads where it was poured (r grows with the pour) */
+export function flapjackGeo(r: number, seed: number): THREE.BufferGeometry {
+  return slab(blob(r, r * 0.95, seed, 20, 0.07), 0.009, { round: 0.004, dome: 0.003 });
+}
+
+/** a dumpling (a spoonful of dough, steamed): a soft lump */
+export function dumplingGeo(seed: number): THREE.BufferGeometry {
+  return slab(blob(0.024, 0.021, seed, 14, 0.14), 0.026, { round: 0.011, dome: 0.008 });
+}
+
+/** a pressed-flat round of pastry (a pie lid for the skillet) */
+export function pastryGeo(seed: number): THREE.BufferGeometry {
+  return slab(blob(0.092, 0.09, seed, 26, 0.04), 0.008, { round: 0.003, dome: 0.006 });
+}
+
 /** a fried egg's white (flat, wobbly, lacy edge) */
 export function eggWhiteGeo(seed: number, spread = 1): THREE.BufferGeometry {
   const r = 0.05 * spread;
@@ -354,7 +421,7 @@ export function eggShellMat(): THREE.MeshStandardMaterial {
 }
 
 // ---------------------------------------------------------------------------------------------- liquids
-export type LiquidKind = 'water' | 'coffee' | 'beans' | 'stew' | 'syrup' | 'fat';
+export type LiquidKind = 'water' | 'coffee' | 'beans' | 'stew' | 'syrup' | 'fat' | 'mix';
 const LIQ: Record<LiquidKind, { cols: string[]; rough: number; bumps: number }> = {
   water: { cols: ['#20303a', '#2a3c46', '#34505a', '#5a7a84'], rough: 0.08, bumps: 0 },
   coffee: { cols: ['#120a06', '#1c1008', '#2a180c', '#4a2c18'], rough: 0.12, bumps: 0 },
@@ -362,10 +429,12 @@ const LIQ: Record<LiquidKind, { cols: string[]; rough: number; bumps: number }> 
   stew: { cols: ['#3a2210', '#4e2e16', '#64401e', '#7a5028', '#8a6a3a'], rough: 0.3, bumps: 0.6 },
   syrup: { cols: ['#5a2a08', '#7a3a0c', '#9a5214', '#c07020'], rough: 0.1, bumps: 0 },
   fat: { cols: ['#3a2610', '#4a3214', '#5e421c', '#8a6a34'], rough: 0.04, bumps: 0 },
+  // neutral light ramp, tinted by material.color (soups, sauces, batter)
+  mix: { cols: ['#bcbcbc', '#cacaca', '#d8d8d8', '#e6e6e6', '#f2f2f2'], rough: 0.25, bumps: 1 },
 };
 const liqTex = new Map<string, THREE.Texture>();
 
-export interface LiquidMat extends THREE.MeshStandardMaterial { userData: { uBoil: { value: number }; uSpin: { value: number }; uTime: { value: number }; uScorch: { value: number } } }
+export interface LiquidMat extends THREE.MeshStandardMaterial { userData: { uBoil: { value: number }; uSpin: { value: number }; uTime: { value: number }; uScorch: { value: number }; uBumps: { value: number } } }
 
 /** a liquid surface: painted ramp, stir swirl (uSpin), rolling boil (uBoil: bubbles pop as pixel rings), scorch */
 export function liquidMat(kind: LiquidKind): LiquidMat {
@@ -378,26 +447,33 @@ export function liquidMat(kind: LiquidKind): LiquidMat {
     liqTex.set(kind, t);
   }
   const m = new THREE.MeshStandardMaterial({ map: t, roughness: d.rough, metalness: 0 }) as LiquidMat;
-  m.userData = { uBoil: { value: 0 }, uSpin: { value: 0 }, uTime: { value: 0 }, uScorch: { value: 0 } };
+  m.userData = { uBoil: { value: 0 }, uSpin: { value: 0 }, uTime: { value: 0 }, uScorch: { value: 0 }, uBumps: { value: d.bumps } };
   const U = m.userData;
   m.onBeforeCompile = (sh) => {
-    Object.assign(sh.uniforms, { uBoil: U.uBoil, uSpin: U.uSpin, uLT: U.uTime, uScorch: U.uScorch, uNoise: { value: noiseTex() } });
+    Object.assign(sh.uniforms, { uBoil: U.uBoil, uSpin: U.uSpin, uLT: U.uTime, uScorch: U.uScorch, uBumps: U.uBumps, uNoise: { value: noiseTex() } });
     sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', '#include <common>\nuniform float uBoil; uniform float uSpin; uniform float uLT; uniform float uScorch; uniform sampler2D uNoise;')
+      .replace('#include <common>', '#include <common>\nuniform float uBoil; uniform float uSpin; uniform float uLT; uniform float uScorch; uniform float uBumps; uniform sampler2D uNoise;')
       .replace('#include <map_fragment>', `
         vec2 cuv = vMapUv - 0.5;
         float ang = uSpin * (1.2 - length(cuv) * 1.5);
         cuv = mat2(cos(ang), -sin(ang), sin(ang), cos(ang)) * cuv;
         vec4 sampledDiffuseColor = texture2D(map, cuv + 0.5);
         diffuseColor *= sampledDiffuseColor;
-        // rolling boil: pixel bubbles (rings) appearing and popping
-        vec2 g = floor((vMapUv) * 24.0);
+        // bubbles by heat: uBoil 0..0.35 a shiver of tiny bubbles at the edge, ..0.7 a simmer, ..1 a rolling boil
+        float cells = mix(34.0, 14.0, smoothstep(0.35, 1.0, uBoil));
+        vec2 g = floor((vMapUv) * cells);
         float h = fract(sin(dot(g, vec2(12.9898, 78.233))) * 43758.5453);
-        float ph = fract(uLT * (0.6 + h * 1.4) + h * 7.0);
-        float on = step(1.0 - uBoil * 0.55, h) * step(ph, 0.55);
-        vec2 f = fract(vMapUv * 24.0) - 0.5;
+        float ph = fract(uLT * (0.5 + h * 1.6) * (0.6 + uBoil) + h * 7.0);
+        float edge = smoothstep(0.25, 0.42, length(vMapUv - 0.5));
+        float dens = uBoil < 0.35 ? uBoil * 0.5 * edge : uBoil * 0.62;
+        float on = step(1.0 - dens, h) * step(ph, 0.55);
+        vec2 f = fract(vMapUv * cells) - 0.5;
         float ring = step(abs(length(f) - ph * 0.5), 0.12);
-        diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 1.6 + 0.08, on * ring * 0.8);
+        float dome = step(length(f), ph * 0.45) * step(0.75, uBoil);
+        diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * 1.6 + 0.08, on * max(ring * 0.8, dome * 0.35));
+        // thick mixes (chili, porridge, stew) are lumpy
+        float lump = texture2D(uNoise, cuv * 2.5 + 0.5).r;
+        diffuseColor.rgb *= 1.0 - uBumps * 0.22 * step(0.62, lump) + uBumps * 0.1 * step(lump, 0.3);
         float nz = texture2D(uNoise, vMapUv * 1.5).r;
         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.06, 0.04, 0.03), step(nz, uScorch * 0.7) * smoothstep(0.3, 0.5, length(vMapUv - 0.5)));`);
   };

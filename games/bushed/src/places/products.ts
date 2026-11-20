@@ -10,8 +10,7 @@ import { ITEMS } from '../game/items';
 import { Mesher, Rand, V, tf, box, boxAt, lathe, tube, log, hasMat } from './kit';
 import { LABELS, ensurePrintMats } from './signs';
 import { GROCERY_RECTS, GROCERY_W, GROCERY_H } from '../game/cooking/grocery_atlas';
-import groceriesUrl from '../game/cooking/groceries.png';
-import { applyPixelTex } from '../gfx/tex';
+import { loadTex } from '../gfx/tex';
 import { defineMat } from './kit';
 
 type Rect = [number, number, number, number];
@@ -25,7 +24,7 @@ function latheR(ms: Mesher, mat: string, profile: [number, number][], seg: numbe
 }
 
 // ---------------------------------------------------------------------------------------------- grocery atlas
-// the kitchen's own label atlas (src/game/cooking/tools/make_groceries.py): groc (matte print), groc_gloss (PET
+// the kitchen's own label atlas (public/assets/textures/cooking/groceries.png, src/game/cooking/tools/make_groceries.py): groc (matte print), groc_gloss (PET
 // bottles, film), groc_metal (tins)
 const GR = (k: string): Rect => {
   const r = GROCERY_RECTS[k];
@@ -37,7 +36,7 @@ let grocDone = false;
 function ensureGroceryMats(): void {
   if (grocDone) return;
   grocDone = true;
-  const t = applyPixelTex(new THREE.TextureLoader().load(groceriesUrl), { repeat: false });
+  const t = loadTex('cooking/groceries.png', { repeat: false });
   defineMat('groc', new THREE.MeshStandardMaterial({ name: 'groc', map: t, roughness: 0.78 }));
   defineMat('groc_gloss', new THREE.MeshStandardMaterial({ name: 'groc_gloss', map: t, roughness: 0.2 }));
   defineMat('groc_metal', new THREE.MeshStandardMaterial({ name: 'groc_metal', map: t, roughness: 0.38, metalness: 0.5 }));

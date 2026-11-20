@@ -166,7 +166,7 @@ function handGeometry(d: Dims, byName: Record<string, THREE.Bone>, bones: THREE.
   // a glove's cuff over the wrist
   if (cuff) {
     const cc = cuff.clone();
-    prism(G, [[S(0.045), S(0.019), S(0.027)], [S(0.004), S(0.0175), S(0.029)], [S(-0.012), S(0.0145), S(0.026)]], bi('handL'), at([0, 0, 0]), () => cc);
+    prism(G, [[S(0.026), S(0.0142), S(0.021)], [S(0.004), S(0.0138), S(0.0235)], [S(-0.008), S(0.0128), S(0.0225)]], bi('handL'), at([0, 0, 0]), () => cc);
   }
   // fingers
   FINGERS.forEach((fn) => {
@@ -191,7 +191,6 @@ function handGeometry(d: Dims, byName: Record<string, THREE.Bone>, bones: THREE.
   // the right hand mirrors the left (vertices reflected through x = 0; the rest pose is symmetric)
   const L2R = (b: number) => bones.indexOf(byName[bones[b].name.replace(/L$/, 'R')]);
   G.mirror(L2R);
-  // keep only the right hand's half reflected correctly: positions mirrored through x = 0 already land on the right
   return G.geometry();
 }
 

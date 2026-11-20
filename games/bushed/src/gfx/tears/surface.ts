@@ -1,23 +1,23 @@
-// The skinned surface a tear runs on: a patch of a creature's mesh (the face), welded across its UV seams into one
-// connected surface with triangle adjacency, skinned on the CPU (only the vertices a drop is on, once per frame) so a
-// drop can be carried along the actual deforming skin and walked across triangle edges.
+// The skinned surface a tear runs on: a patch of any THREE.SkinnedMesh (the face), welded across its UV seams into one
+// connected surface with triangle adjacency, skinned on the CPU exactly as the GPU skins it (bone.matrixWorld x
+// boneInverse, the bind matrices), only for the vertices a drop is on, once per frame, so a drop is carried along the
+// actual deforming skin and walked across triangle edges. Nothing here knows which creature it is.
 //
-//   const patch = SkinPatch.from(mesh.geometry, { regs: [3], box, seeds: [anchorL, anchorR] });
-//   patch.begin(skel, pos, heading);           // once per frame, after the pose
+//   const patch = SkinPatch.from(mesh, { box, seeds: [tearL, tearR] });   // bind-pose (mesh-local) positions
+//   patch.begin(mesh);                          // once per frame, after the pose is set on the bones
 //   patch.point(t, b1, b2, out);                // world position of a surface point
 //   patch.walk(s, d, v);                        // move a surface point by a world displacement (tangent)
-//
-// Creature space: metres, +y up, +z forward (the rig's convention). World = yaw(heading) * creature + pos.
 import * as THREE from 'three';
-import type { Skel } from '../../creatures/rig';
 
 export interface PatchOpts {
-  /** keep triangles whose vertices all carry one of these aReg region tags (all when absent) */
+  /** keep triangles whose vertices all carry one of these aReg region tags (when the geometry has aReg) */
   regs?: number[];
-  /** and lie inside this creature-space box */
+  /** and lie inside this bind-pose (mesh-local) box */
   box?: { min: [number, number, number]; max: [number, number, number] };
-  /** keep only the connected pieces of surface nearest these points (the skull, not the lids or the nose) */
+  /** keep only the connected pieces of surface at these points: for each, the biggest piece within `seedR` of it (the
+   *  skull, not an eyelid or a wart that happens to be nearer) */
   seeds?: THREE.Vector3[];
+  seedR?: number;
 }
 
 /** a point on the patch: triangle, barycentric weights of its 2nd and 3rd corners */
@@ -26,7 +26,7 @@ export interface SurfPt { t: number; b1: number; b2: number }
 const _a = new THREE.Vector3(), _b = new THREE.Vector3(), _c = new THREE.Vector3(), _d = new THREE.Vector3(), _n = new THREE.Vector3(), _n2 = new THREE.Vector3();
 
 export class SkinPatch {
-  /** welded vertices: rest position, rest normal (creature space), 4 bone indices and weights */
+  /** welded vertices: rest (bind-pose, mesh-local) position and normal, 4 bone indices and weights */
   readonly nv: number;
   readonly rest: Float32Array;
   readonly restN: Float32Array;
@@ -43,8 +43,10 @@ export class SkinPatch {
   private frame = 1;
   /** bones the patch is skinned to, and their world 3x4 matrices this frame (row-major, 12 per used bone) */
   private boneOf: Int16Array;
-  private usedBones: number[];
+  readonly usedBones: number[];
   private M: Float32Array;
+  /** total skin weight per used bone (the bone that carries the patch most) */
+  readonly boneWeight: Float32Array;
 
   private constructor(rest: Float32Array, restN: Float32Array, sIdx: Uint16Array, sW: Float32Array, tri: Uint32Array) {
     this.nv = rest.length / 3; this.nt = tri.length / 3;
@@ -66,14 +68,17 @@ export class SkinPatch {
     this.boneOf = new Int16Array(Math.max(...this.usedBones, 0) + 1).fill(-1);
     this.usedBones.forEach((b, i) => { this.boneOf[b] = i; });
     this.M = new Float32Array(this.usedBones.length * 12);
+    this.boneWeight = new Float32Array(this.usedBones.length);
+    for (let i = 0; i < this.nv * 4; i++) if (sW[i] > 0) this.boneWeight[this.boneOf[sIdx[i]]] += sW[i];
   }
 
-  /** cut a patch out of a skinned geometry (position, normal, skinIndex, skinWeight, aReg, index) */
-  static from(geo: THREE.BufferGeometry, o: PatchOpts = {}): SkinPatch {
+  /** cut a patch out of a skinned mesh's geometry (position, normal, skinIndex, skinWeight, index; aReg optional) */
+  static from(mesh: THREE.SkinnedMesh, o: PatchOpts = {}): SkinPatch {
+    const geo = mesh.geometry;
     const P = geo.attributes.position.array as ArrayLike<number>, Nn = geo.attributes.normal.array as ArrayLike<number>;
     const SI = geo.attributes.skinIndex.array as ArrayLike<number>, SW = geo.attributes.skinWeight.array as ArrayLike<number>;
     const REG = geo.attributes.aReg?.array as ArrayLike<number> | undefined;
-    const I = geo.index!.array as ArrayLike<number>;
+    const I = geo.index ? geo.index.array as ArrayLike<number> : Uint32Array.from({ length: geo.attributes.position.count }, (_, i) => i);
     const ok = (v: number) => {
       if (o.regs && REG && !o.regs.includes(REG[v])) return false;
       if (o.box) { for (let k = 0; k < 3; k++) { const x = P[v * 3 + k]; if (x < o.box.min[k] || x > o.box.max[k]) return false; } }
@@ -113,8 +118,18 @@ export class SkinPatch {
         while (st.length) { const u = st.pop()!; for (let k = 0; k < 3; k++) { const w = patch.adj[u * 3 + k]; if (w >= 0 && comp[w] < 0) { comp[w] = nc; st.push(w); } } }
         nc++;
       }
-      const keep = new Set<number>();
-      for (const s of o.seeds) keep.add(comp[patch.nearestRest(s)]);
+      // per seed: the biggest piece with a triangle near it
+      const size = new Int32Array(nc); for (let t = 0; t < patch.nt; t++) size[comp[t]]++;
+      const keep = new Set<number>(), R2 = (o.seedR ?? 0.012) ** 2;
+      for (const s of o.seeds) {
+        let best = comp[patch.nearestRest(s)];
+        for (let t = 0; t < patch.nt; t++) {
+          let x = 0, y = 0, z = 0;
+          for (let k = 0; k < 3; k++) { const v = patch.tri[t * 3 + k]; x += patch.rest[v * 3]; y += patch.rest[v * 3 + 1]; z += patch.rest[v * 3 + 2]; }
+          if ((x / 3 - s.x) ** 2 + (y / 3 - s.y) ** 2 + (z / 3 - s.z) ** 2 < R2 && size[comp[t]] > size[best]) best = comp[t];
+        }
+        keep.add(best);
+      }
       const kt: number[] = [], vmap = new Int32Array(patch.nv).fill(-1), kp: number[] = [], kn: number[] = [], ki: number[] = [], kw: number[] = [];
       for (let t = 0; t < patch.nt; t++) {
         if (!keep.has(comp[t])) continue;
@@ -133,7 +148,9 @@ export class SkinPatch {
     return patch;
   }
 
-  /** the triangle whose centre (rest pose) is nearest a creature-space point */
+  /** the patch's bind-pose bounding box */
+  bounds(out = new THREE.Box3()): THREE.Box3 { out.makeEmpty(); for (let v = 0; v < this.nv; v++) out.expandByPoint(_a.fromArray(this.rest, v * 3)); return out; }
+  /** the triangle whose centre (rest pose) is nearest a bind-pose point */
   nearestRest(p: THREE.Vector3): number {
     let best = 0, bd = Infinity;
     for (let t = 0; t < this.nt; t++) {
@@ -144,7 +161,7 @@ export class SkinPatch {
     }
     return best;
   }
-  /** the surface point (rest pose) nearest a creature-space point: projected into the nearest triangles */
+  /** the surface point (rest pose) nearest a bind-pose point: projected into the nearest triangles */
   closestRest(p: THREE.Vector3, out: SurfPt): SurfPt {
     let bd = Infinity;
     for (let t = 0; t < this.nt; t++) {
@@ -163,25 +180,22 @@ export class SkinPatch {
   }
 
   // ---------------------------------------------------------------------------------------------- skinning
-  /** start a frame: the bones' world matrices from the skeleton's model-space pose and the creature's placement */
-  begin(skel: Skel, pos: THREE.Vector3, heading: number) {
+  /** start a frame: every used bone's skinning matrix to world, exactly as the GPU applies it
+   *  (matrixWorld x bindMatrixInverse x bone.matrixWorld x boneInverse x bindMatrix). The bones' world matrices are
+   *  brought up to date first (the pose was set on them this frame, before the renderer gets to them). */
+  begin(mesh: THREE.SkinnedMesh) {
     this.frame++;
-    const ch = Math.cos(heading), sh = Math.sin(heading), M = this.M;
+    mesh.parent?.updateWorldMatrix(true, false);
+    mesh.updateMatrixWorld(true);
+    const sk = mesh.skeleton, M = this.M;
+    _pre.multiplyMatrices(mesh.matrixWorld, mesh.bindMatrixInverse);
     for (let u = 0; u < this.usedBones.length; u++) {
-      const k = this.usedBones[u], q = skel.Q[k], P = skel.P[k], S = skel.Sc[k], R0 = skel.restWorld[k];
-      // rotation matrix of q, its columns scaled by the bone's scale
-      const x = q.x, y = q.y, z = q.z, w = q.w;
-      let m00 = 1 - 2 * (y * y + z * z), m01 = 2 * (x * y - z * w), m02 = 2 * (x * z + y * w);
-      let m10 = 2 * (x * y + z * w), m11 = 1 - 2 * (x * x + z * z), m12 = 2 * (y * z - x * w);
-      let m20 = 2 * (x * z - y * w), m21 = 2 * (y * z + x * w), m22 = 1 - 2 * (x * x + y * y);
-      m00 *= S.x; m10 *= S.x; m20 *= S.x; m01 *= S.y; m11 *= S.y; m21 *= S.y; m02 *= S.z; m12 *= S.z; m22 *= S.z;
-      // creature space: v -> m (v - rest) + P
-      const tx = P.x - (m00 * R0.x + m01 * R0.y + m02 * R0.z), ty = P.y - (m10 * R0.x + m11 * R0.y + m12 * R0.z), tz = P.z - (m20 * R0.x + m21 * R0.y + m22 * R0.z);
-      // world: yaw by the heading, then the position
-      const o = u * 12;
-      M[o] = ch * m00 + sh * m20; M[o + 1] = ch * m01 + sh * m21; M[o + 2] = ch * m02 + sh * m22; M[o + 3] = ch * tx + sh * tz + pos.x;
-      M[o + 4] = m10; M[o + 5] = m11; M[o + 6] = m12; M[o + 7] = ty + pos.y;
-      M[o + 8] = -sh * m00 + ch * m20; M[o + 9] = -sh * m01 + ch * m21; M[o + 10] = -sh * m02 + ch * m22; M[o + 11] = -sh * tx + ch * tz + pos.z;
+      const k = this.usedBones[u];
+      _bm.multiplyMatrices(sk.bones[k].matrixWorld, sk.boneInverses[k]).multiply(mesh.bindMatrix).premultiply(_pre);
+      const e = _bm.elements, o = u * 12;
+      M[o] = e[0]; M[o + 1] = e[4]; M[o + 2] = e[8]; M[o + 3] = e[12];
+      M[o + 4] = e[1]; M[o + 5] = e[5]; M[o + 6] = e[9]; M[o + 7] = e[13];
+      M[o + 8] = e[2]; M[o + 9] = e[6]; M[o + 10] = e[10]; M[o + 11] = e[14];
     }
   }
   /** skin one welded vertex (once per frame) */
@@ -226,7 +240,7 @@ export class SkinPatch {
     this.corners(t);
     return out.subVectors(_b, _a).cross(_d.subVectors(_c, _a)).normalize();
   }
-  /** rest-pose (creature space) position and normal of a surface point */
+  /** rest-pose (bind, mesh-local) position and normal of a surface point */
   restPoint(t: number, b1: number, b2: number, out: THREE.Vector3, outN?: THREE.Vector3): THREE.Vector3 {
     const i0 = this.tri[t * 3], i1 = this.tri[t * 3 + 1], i2 = this.tri[t * 3 + 2], r = this.rest, n = this.restN, b0 = 1 - b1 - b2;
     out.set(r[i0 * 3] * b0 + r[i1 * 3] * b1 + r[i2 * 3] * b2, r[i0 * 3 + 1] * b0 + r[i1 * 3 + 1] * b1 + r[i2 * 3 + 1] * b2, r[i0 * 3 + 2] * b0 + r[i1 * 3 + 2] * b1 + r[i2 * 3 + 2] * b2);
@@ -281,7 +295,7 @@ export class SkinPatch {
     return true;
   }
 }
-const _c2 = new THREE.Vector3(), _n3 = new THREE.Vector3(), _wv = new Float32Array(3);
+const _c2 = new THREE.Vector3(), _n3 = new THREE.Vector3(), _wv = new Float32Array(3), _pre = new THREE.Matrix4(), _bm = new THREE.Matrix4();
 /** barycentric weights of p in triangle (a, b, c), projected into its plane: out = (w0, w1, w2) */
 function bary(a: THREE.Vector3, b: THREE.Vector3, c: THREE.Vector3, p: THREE.Vector3, out: THREE.Vector3): THREE.Vector3 {
   const v0x = b.x - a.x, v0y = b.y - a.y, v0z = b.z - a.z, v1x = c.x - a.x, v1y = c.y - a.y, v1z = c.z - a.z, v2x = p.x - a.x, v2y = p.y - a.y, v2z = p.z - a.z;

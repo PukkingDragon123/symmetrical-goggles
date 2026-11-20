@@ -151,7 +151,7 @@ Object.assign(EXTRA_POSES, {
     g.L = arm(m(0.02) - dir[0] * m(0.22), y - dir[1] * m(0.22), z - dir[2] * m(0.22), 1, -0.5, -0.3);
     // fingers wrap the handle: finger direction across it, palms facing each other around it
     const f = nrm(crs(dir, [1, 0, 0]).map((v) => -v));
-    H.R = [...f, -1, 0, 0]; H.L = [...f, -1, 0, 0];
+    H.R = [...f, 1, 0, 0]; H.L = [...f, -1, 0, 0];
     g.grip = [1, 1];
     g.tool = true;
     const drive = key(u, [[0, 0.3], [0.55, -0.08], [0.95, -0.14], [1.18, 0.42], [1.45, 0.3], [1.9, 0.3]]);

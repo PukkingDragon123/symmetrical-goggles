@@ -116,6 +116,9 @@ export class Npc {
     if (this.queueT <= 0) this.next();
   }
 
+  /** stop talking (the rest of the queue is dropped) */
+  hush(): void { this.queue = []; this.queueT = 0; this.talkT = 0; this.model.anim.talking = false; }
+
   private next(): void {
     const n = this.queue.shift();
     if (!n) { this.queueT = 0; return; }
@@ -187,7 +190,10 @@ export function spawnNpcs(g: Game): Npc[] {
   const st = SPOTS.store, cs = SPOTS.campsite;
   // the shopkeeper's spot comes from the store if it is built
   const counter = (g.store?.anchors?.shopkeeper_spot as THREE.Object3D | undefined)?.getWorldPosition(new THREE.Vector3()) ?? P(st.x, st.z + 3);
-  const porch = (g.store?.anchors?.porch_bench as THREE.Object3D | undefined)?.getWorldPosition(new THREE.Vector3()) ?? P(st.x + 3, st.z - 9);
+  // the sit pose puts the hips 0.47 m above the feet: the porch anchor is the seat, so the feet go below it
+  const porchObj = g.store?.anchors?.porch_bench as THREE.Object3D | undefined;
+  const porch = porchObj ? porchObj.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, -0.47, 0)) : P(st.x + 3, st.z - 9);
+  const porchYaw = porchObj ? new THREE.Euler().setFromQuaternion(porchObj.getWorldQuaternion(new THREE.Quaternion()), 'YXZ').y : 0;
   const shopFace = (g.store?.anchors?.shopkeeper_spot as THREE.Object3D | undefined)?.getWorldQuaternion(new THREE.Quaternion());
   const shopYaw = shopFace ? new THREE.Euler().setFromQuaternion(shopFace).y : Math.PI;
   const defs: NpcDef[] = [
@@ -195,7 +201,7 @@ export function spawnNpcs(g: Game): Npc[] {
       id: 'gerard', name: 'Gérard', look: 'shopkeeper',
       stops: [
         { from: 7, to: 21, at: counter, face: shopYaw, anim: 'lean' },
-        { from: 21, to: 23, at: porch, face: 0, anim: 'sit' },
+        { from: 21, to: 23, at: porch, face: porchYaw, anim: 'sit' },
         { from: 23, to: 7, at: counter, face: shopYaw, anim: 'count' },
       ],
       talk: (game) => {

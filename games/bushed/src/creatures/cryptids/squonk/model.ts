@@ -25,6 +25,8 @@ export const SQ_EYE: V3 = [0.056, 0.413, 0.378];
 export const SQ_EYE_AX: V3 = [0.3, 0.12, 0.95];
 /** where the tears well up: the inner corner of the left eye (mirror x for the right), creature space */
 export const SQ_TEAR: V3 = [0.047, 0.392, 0.402];
+/** drip edges, where hanging tears let go: the chin, and the bottom of the left jowl (mirror x for the right) */
+export const SQ_DRIPS: [V3, V3] = [[0, 0.297, 0.392], [0.1, 0.268, 0.335]];
 const EYE_R = 0.03;
 /** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
 const BEAD_R = 0.0135, SQ_BEAD: V3 = SQ_EYE.map((v, i) => v + SQ_EYE_AX[i] * (EYE_R - BEAD_R) * 0.75 / Math.hypot(...SQ_EYE_AX)) as V3;

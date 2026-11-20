@@ -18,7 +18,7 @@
 import * as THREE from 'three';
 import { Cryptid, CH, clipKit, daylight, clamp, damp, type Pose, type Clip, type AnimParams } from './base';
 import { cryptidLoader, REG } from './kit';
-import { squonkModelGen, squonkBones, SQUONK_MODEL_VERSION, SQ_EYE_AX, SQ_TEAR } from './squonk/model';
+import { squonkModelGen, squonkBones, SQUONK_MODEL_VERSION, SQ_EYE_AX, SQ_TEAR, SQ_DRIPS } from './squonk/model';
 import { TearFluid } from '../../gfx/tears';
 import type { BoneDef } from '../rig';
 import type { CreatureCtx } from '../types';
@@ -153,7 +153,7 @@ const RATE = { quiet: 14e-9, weep: 34e-9, scared: 120e-9, wail: 320e-9 };
 const SIM_R = 60;
 
 const _up = new THREE.Vector3(0, 1, 0);
-const _tf: { dt: number; pos: THREE.Vector3; heading: number; heightAt(x: number, z: number): number } = { dt: 0, pos: new THREE.Vector3(), heading: 0, heightAt: () => 0 };
+const _tf: { dt: number; heightAt(x: number, z: number): number } = { dt: 0, heightAt: () => 0 };
 
 export class Squonk extends Cryptid {
   readonly id = 'squonk';
@@ -188,12 +188,13 @@ export class Squonk extends Cryptid {
     this.shineK = 0.8;
     this.eyeAxis = [1, -1].map((s) => new THREE.Vector3(s * SQ_EYE_AX[0], SQ_EYE_AX[1], SQ_EYE_AX[2]).normalize());
     this.lidAxis = this.eyeAxis.map((ax) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), ax).normalize());
+    // the tears run on the skinned mesh from its anchors (mesh-agnostic: a new body only needs the same anchors)
+    const v = (p: readonly number[], sx = 1) => new THREE.Vector3(p[0] * sx, p[1], p[2]);
     this.tears = new TearFluid({
-      geo: this.mesh.geometry, skel: this.skel, head: this.bi('head'),
-      anchors: [new THREE.Vector3(...SQ_TEAR), new THREE.Vector3(-SQ_TEAR[0], SQ_TEAR[1], SQ_TEAR[2])],
-      regs: [REG.head], box: { min: [-0.2, 0.18, 0.2], max: [0.2, 0.5, 0.5] },
-      bodyRegs: [REG.torso, REG.head, REG.jaw, REG.legs, REG.tail],
-      mat: this.mesh.material as THREE.Material, depth: this.mesh.customDepthMaterial ?? null,
+      mesh: this.mesh, head: 'head',
+      sources: [v(SQ_TEAR), v(SQ_TEAR, -1)], drips: [v(SQ_DRIPS[0]), v(SQ_DRIPS[1]), v(SQ_DRIPS[1], -1)],
+      regs: [REG.head], bodyRegs: [REG.torso, REG.head, REG.jaw, REG.legs, REG.tail],
+      melt: { x: 0, z: -0.04, r: 0.42, ground: 0 },
     });
   }
   get crying() { return !(this.ctx && this.ctx.time < this.dryUntil) && this.state !== 'puddle' && this.state !== 'happy' && this.state !== 'eat'; }
@@ -367,7 +368,7 @@ export class Squonk extends Cryptid {
     // the body is gone into the water by the end of the melt (and comes back out of it as it re-forms)
     const m = clamp((this.melt - 0.68) / 0.3, 0, 1);
     this.fade.value = 1 - m * m * (3 - 2 * m);
-    _tf.dt = dt; _tf.pos = this.pos; _tf.heading = this.heading; _tf.heightAt = ctx.heightAt;
+    _tf.dt = dt; _tf.heightAt = ctx.heightAt;
     const moved = this.pos.distanceTo(this.lastPos); this.lastPos.copy(this.pos);
     if (this.dist < SIM_R || this.manual) { T.update(_tf); this.trailD = 0; return; }
     // nobody near: no drops simulated, but the tears still fall somewhere: a spot under its chin every half metre

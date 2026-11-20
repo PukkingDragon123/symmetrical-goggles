@@ -2,7 +2,7 @@
 // hunter, mechanic, camper, old logger, trapper, camp cook, old-timer, ranger, kid, plus a few variants), a
 // turntable, an animation picker and the painted atlas viewer; ?arms=1 switches to the first-person arms viewer that
 // cycles every arms action.
-// URL params: look=<id>[,<id>...] (who), anim=<clip>, expr=<face>, turn=1 (turntable), close=face|hands|feet|body,
+// URL params: look=<id>[,<id>...] (who), anim=<clip>, anims=<clip>,<clip>... (one per person), expr=<face>, turn=1 (turntable), close=face|hands|feet|body,
 //             page=1 (show the painted page), t=<seconds to pre-run>, yaw=<deg>, variants=1, talk=1,
 //             arms=1 (FP arms), action=<arms action>, held=<kind>, shot=1 (sets window.__ready when settled)
 import * as THREE from 'three';
@@ -72,6 +72,7 @@ function runArms() {
 
   const arms = new FPArms();
   view.add(arms.object);
+  (window as unknown as { __arms: FPArms }).__arms = arms;
   if (Q.has('orbit')) {
     // debug: look at the viewmodel rig from outside (yaw degrees)
     const a = num('orbit', 60) * Math.PI / 180;
@@ -220,8 +221,9 @@ function runLineup() {
   const talk = Q.get('talk') === '1';
   function setAnim(a: NpcAnim) {
     anim = a;
-    for (const p of people) {
-      p.anim.play(a, { restart: true });
+    const per = Q.get('anims')?.split(',') as NpcAnim[] | undefined;
+    for (const [i, p] of people.entries()) {
+      p.anim.play(per?.[i] ?? a, { restart: true });
       p.anim.talking = talk || a === 'talk';
       p.anim.lookAt(null);
       if (Q.has('expr')) p.anim.expression(Q.get('expr')!);
@@ -312,6 +314,7 @@ function runLineup() {
     requestAnimationFrame(frame);
   }
   window.__step = (dt: number) => { for (const p of people) p.anim.update(dt); };
+  (window as unknown as { __people: HumanModel[] }).__people = people;
   frame();
 }
 
