@@ -267,7 +267,9 @@ export abstract class Station {
     // things moved this frame: bring their matrices up to date before testing
     for (const o of objects) o.updateWorldMatrix(true, true);
     const hits = this.ray.intersectObjects(objects, recursive);
-    for (const h of hits) if (h.object.visible || (h.object as THREE.Mesh).userData.pickProxy) return h;
+    // raycasting ignores visibility: skip anything hidden (itself or a parent), keep invisible pick proxies
+    const shown = (o: THREE.Object3D | null): boolean => { for (let p = o; p; p = p.parent) if (!p.visible && !p.userData.pickProxy) return false; return true; };
+    for (const h of hits) if ((h.object as THREE.Mesh).userData.pickProxy ? shown(h.object.parent) : shown(h.object)) return h;
     return null;
   }
 

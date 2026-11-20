@@ -583,9 +583,20 @@ export class Produce {
         const cell = cellGeo(s, xs[i], xs[i + 1], zs[j], zs[j + 1], { x0: i > 0, x1: i < xs.length - 2, z0: j > 0, z1: j < zs.length - 2 }, ys.length > 2 ? 0.006 : 0.0045, b.flatSkin, ys[k], ys[k + 1]);
         if (!cell) continue;
         b.cells.push(cell);
-        // open the cut gaps: each piece sits a hair away from its neighbours
-        const gap = new THREE.Vector3(i - (xs.length - 2) / 2, 0, j - (zs.length - 2) / 2).multiplyScalar(0.0016);
-        const m = new THREE.Matrix4().makeTranslation(b.x, 0, b.z).multiply(rot).multiply(new THREE.Matrix4().makeTranslation(cell.c.x + gap.x, cell.c.y, cell.c.z + gap.z));
+        // open the cut gaps: each piece sits a hair away from its neighbours; diced, the pieces loosen and
+        // the outer ones tip over (a cut onion falls apart along its layers)
+        const diced = ys.length > 2;
+        const gap = new THREE.Vector3(i - (xs.length - 2) / 2, 0, j - (zs.length - 2) / 2).multiplyScalar(diced ? 0.0024 : 0.0016);
+        const m = new THREE.Matrix4().makeTranslation(b.x, 0, b.z).multiply(rot);
+        if (diced) {
+          const R = new Rnd(i * 131 + j * 17 + k * 7 + 3);
+          const out = new THREE.Vector3(cell.c.x, 0, cell.c.z);
+          const edge = Math.min(1, out.length() / Math.max(ex, ez));
+          const lean = edge > 0.6 && cell.c.y < shapeHeight(s) * 0.6 ? (edge - 0.6) * 1.6 : 0;
+          const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(out.z * lean * 18, (R.next() - 0.5) * 0.35, -out.x * lean * 18));
+          const jit = new THREE.Vector3((R.next() - 0.5) * 0.002, 0, (R.next() - 0.5) * 0.002).addScaledVector(out.normalize(), 0.003 * edge);
+          m.multiply(new THREE.Matrix4().compose(new THREE.Vector3(cell.c.x + gap.x + jit.x, cell.c.y - lean * 0.003, cell.c.z + gap.z + jit.z), q, new THREE.Vector3(1, 1, 1)));
+        } else m.multiply(new THREE.Matrix4().makeTranslation(cell.c.x + gap.x, cell.c.y, cell.c.z + gap.z));
         parts.push({ geo: cell.geo, m });
       }
       if (!parts.length) continue;

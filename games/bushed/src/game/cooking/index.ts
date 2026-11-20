@@ -50,7 +50,7 @@ import {
   buildCounter, buildPantry, buildRack, buildLarder, buildSpiceShelf, buildLid, buildMixBowl, buildMeasureCup, buildMeasureSpoon, buildSaltShaker, buildPepperMill,
   buildButterDish, buildPail,
 } from './cookware';
-import { registerCookItems, meatIds, meatKey, RECIPES, RECIPE_BY_ID, resolveRecipe, judge, matchRecipe, GRADE_NAME, GRADE_STARS, GRADE_MULT, DISH_LINES, type FoodKind, type Dish, type Log, type Verdict, type Grade, type Recipe } from './recipes';
+import { registerCookItems, meatIds, meatKey, RECIPES, RECIPE_BY_ID, STORY_CARDS, resolveRecipe, judge, matchRecipe, GRADE_NAME, GRADE_STARS, GRADE_MULT, DISH_LINES, type FoodKind, type Dish, type Log, type Verdict, type Grade, type Recipe } from './recipes';
 import { ING, TABLE_ORDER, LARDER_ORDER, KEY_NAME, type IngDef } from './ingredients';
 import { Produce, Pile, PRODUCE, bitsOf, crumbleBits, produceMat, type ProduceDef } from './produce';
 import { Fat } from './fat';
@@ -279,6 +279,8 @@ class Vessel {
   boilVoice: Voice | null = null;
   fireVoice: Voice | null = null;
   calls = new Set<string>();
+  /** tests: hold the temperature here */
+  pinT: number | null = null;
   constructor(readonly kind: VKind, readonly obj: THREE.Group, public pos: THREE.Vector3) {}
   get r(): number { return this.kind === 'skillet' ? 0.128 : this.kind === 'pot' ? 0.098 : 0.068; }
   get floor(): number { return (this.obj.userData.floor as number | undefined) ?? 0.008; }
@@ -335,7 +337,7 @@ const SERVE = V3(0.5, COUNTER.y, 0.42), MUG = V3(0.72, COUNTER.y, 0.5), BOX = V3
 const BOWL_AT = V3(-0.74, PANTRY.y, 0.6), PAIL_AT = V3(-0.47, PANTRY.y, 0.6), CUP_AT = V3(-0.6, PANTRY.y, 0.5), SPOON_AT = V3(-0.6, PANTRY.y, 0.68);
 /** continuous pours: portions per second (water: litres per second into pots, cups into the bowl) */
 const FLOW: Record<string, number> = { oil: 1.4, milk: 2.2, syrup: 1.6, tomatoes: 0.9, beans: 0.8, water: 1.2, flour: 2.4, sugar: 2.4, oats: 2.4, rice: 2.4, macaroni: 2.4, peas: 2.4, baking_powder: 1.6 };
-const START_RECIPES = ['bacon_eggs', 'fried_trout', 'hash_browns', 'camp_coffee', 'beans_bacon'];
+const START_RECIPES = RECIPES.filter((r) => r.start && !STORY_CARDS.includes(r.id)).map((r) => r.id);
 
 // ---------------------------------------------------------------------------------------------- the station
 export class CookingStation extends Station {
@@ -375,6 +377,13 @@ export class CookingStation extends Station {
   private rackStrips: Food[] = [];
   private drag: Drag | null = null;
   private viewName: ViewName = 'stove';
+  /** leaning in over the work (the board while cutting, a pan while stirring or flipping) */
+  private lean: 'board' | 'skillet' | 'pot' | null = null;
+  /** a lean set from outside (dev / screenshots) holds until the view changes */
+  private leanPinned = false;
+  private vpool: THREE.Vector3[] = []; private vi = 0;
+  private qpool: THREE.Quaternion[] = []; private qi = 0;
+  private overBoard = false;
   private edgeT = 0;
   private draft = 0.5;
   private flare = 0;
@@ -638,6 +647,8 @@ export class CookingStation extends Station {
   unlock(raw: string, from?: string): string | null {
     const id = resolveRecipe(raw);
     if (!id) { console.warn(`[cook] no recipe card for '${raw}'`); return null; }
+    // remember who gave it: the card says so
+    if (from && !this.giver(id)) this.g.flags.add(`cook:from:${id}:${from}`);
     if (this.unlocked(id) && this.g.flags.has(`cook:recipe:${id}`)) return id;
     this.g.flags.add(`cook:recipe:${id}`);
     this.fresh.add(id);
@@ -645,9 +656,18 @@ export class CookingStation extends Station {
     if (!from) hud.say(`<i>New recipe card in the box: ${r.name}.</i>`, 3.5);
     return id;
   }
+  /** who handed over a card (the story's 'recipe' event), if anyone */
+  private giver(id: string): string | null {
+    const pre = `cook:from:${id}:`;
+    for (const f of this.g.flags) if (f.startsWith(pre)) return f.slice(pre.length);
+    return null;
+  }
   private cardState(r: Recipe): CardState {
     const pinned = this.pinned === r.id;
-    return { unlocked: this.unlocked(r.id), best: this.best.get(r.id) ?? null, ticks: pinned ? this.ticks : r.steps.map(() => false), pinned, fresh: this.fresh.has(r.id) };
+    const story = STORY_CARDS.includes(r.id);
+    const given = this.g.flags.has(`st:recipe:${r.id}`) || this.g.flags.has(`recipe:${r.id}`);
+    const from = this.giver(r.id) ?? (story ? (this.unlocked(r.id) ? (given ? 'a card somebody gave you' : 'what you worked out at the stove') : null) : r.from);
+    return { unlocked: this.unlocked(r.id), best: this.best.get(r.id) ?? null, ticks: pinned ? this.ticks : r.steps.map(() => false), pinned, fresh: this.fresh.has(r.id), from };
   }
   private openCards(at?: string): void {
     const order = this.cardOrder();
@@ -860,6 +880,7 @@ export class CookingStation extends Station {
 
   private heatVessel(v: Vessel, dt: number, stoveHeat: number): void {
     v.heat = this.heatAt(v.pos);
+    if (v.pinT !== null) { v.T = v.pinT; return; }
     const lid = !!v.lid;
     const wet = v.kind === 'coffee' ? v.water > 0.05 : v.wet > 0.05;
     // a lid keeps the heat in: a pot under a lid comes to the boil sooner
@@ -1224,8 +1245,30 @@ export class CookingStation extends Station {
     if (this.drag) this.dragUpdate(dt);
     else this.idle(dt);
     if (p.rpressed && !this.drag) this.secondary();
+    this.leanIn();
     this.label = this.hover;
     this.handsIdle();
+  }
+
+  /** lean in over the board while cutting (or with the cursor on what's there), over a pan while stirring */
+  private leanIn(): void {
+    if (this.leanPinned) return;
+    const d = this.drag;
+    let want: CookingStation['lean'] = null;
+    if (this.viewName === 'prep') {
+      if (d && ['chop', 'peel', 'press', 'cut', 'knead'].includes(d.kind)) want = 'board';
+      else if (d && d.kind === 'scrape' && !d.carried) want = 'board';
+      else if (!d && this.overBoard) want = 'board';
+    }
+    if (this.viewName === 'stove' && d && ((d.kind === 'stir' && d.v) || d.kind === 'toss' || d.kind === 'flip')) want = d.v!.kind === 'skillet' ? 'skillet' : 'pot';
+    if (want === this.lean) return;
+    this.lean = want;
+    this.setView(want ? this.leanView(want) : this.worldView(this.viewName));
+  }
+  private leanView(k: 'board' | 'skillet' | 'pot'): { pos: THREE.Vector3; look: THREE.Vector3; fov: number } {
+    if (k === 'board') return { pos: this.W(V3(0.565, 1.17, 0.42)), look: this.W(V3(0.565, 0.79, 0.0)), fov: 46 };
+    const v = k === 'skillet' ? this.skillet : this.pot;
+    return { pos: this.W(v.pos.clone().add(k === 'pot' ? V3(0.04, 0.36, 0.28) : V3(0.03, 0.33, 0.26))), look: this.W(v.pos.clone().add(V3(0, 0.03, 0))), fov: 48 };
   }
 
   private edgeScroll(dt: number): void {
@@ -1243,6 +1286,7 @@ export class CookingStation extends Station {
     const from = this.viewName;
     const order: ViewName[] = ['larder', 'pantry', 'stove', 'prep'];
     this.viewName = n;
+    this.lean = null; this.leanPinned = false;
     this.setView(this.worldView(n));
     const fi = order.indexOf(from), ni = order.indexOf(n);
     if (fi >= 0 && ni >= 0) this.ptr.x = ni > fi ? -0.3 : 0.3;
@@ -1312,6 +1356,7 @@ export class CookingStation extends Station {
     const c = this.classify(h);
     const at = h?.point.clone() ?? null;
     const say = (t: string) => { if (at) this.hover = { text: t, at }; };
+    this.overBoard = !!c && (c.kind === 'produce' || c.kind === 'stock' || (c.kind === 'food' && c.f!.where === 'board') || (c.kind === 'board' && !!(this.produce || this.stock)));
     if (!c) return;
     switch (c.kind) {
       case 'card': say('The pinned card (look closer)'); if (p.pressed) this.openCards(this.pinned ?? undefined); break;
@@ -1394,7 +1439,7 @@ export class CookingStation extends Station {
         const kind = b.kind;
         const desc = kind === 'dry' ? 'dry goods' : kind === 'crumbly' ? (b.mix < 0.6 ? 'needs stirring' : 'crumbly: more liquid') : kind;
         if (h && this.L(h.point).y > BOWL_AT.y + 0.03 && b.mix < 1 && b.volume > 0.1) {
-          say(`Stir (${desc})  ·  drag the rim to tip it`);
+          say(`Stir (${desc})  ·  drag the rim to tip it  ·  RMB empty it`);
           if (p.pressed) { this.inHand(this.spoon); this.drag = { kind: 'stir', v: null, last: this.bowlAngle(), amt: 0, bowl: true }; }
         } else {
           say(`Bowl: ${desc}  ·  drag to tip it`);
@@ -1437,6 +1482,7 @@ export class CookingStation extends Station {
     const h = this.pick(this.pickables());
     const c = this.classify(h);
     if (!c) return;
+    if (c.kind === 'bowl' && !this.bowl.empty) { this.bowl.clear(); audio.play('pot_lid', { pos: this.W(_t1.copy(BOWL_AT)), vol: 0.3, rate: 1.2 }); this.say('Scraped the bowl out into the slop pail.', 2); return; }
     if (c.kind === 'produce' && this.produce && !this.produce.needsPeel) { this.produce.turn(); audio.play('knife_chop', { pos: this.W(_t1.copy(this.boardPos)), vol: 0.1, rate: 0.6 }); return; }
     if ((c.kind === 'served' || c.kind === 'plate' || (c.kind === 'food' && c.f!.where === 'plate')) && this.served) { this.packServed('plate'); return; }
     if (c.kind === 'mug' && this.poured) { this.packServed('mug'); return; }
@@ -2688,6 +2734,14 @@ export class CookingStation extends Station {
   // ------------------------------------------------------------------------------------------ hands
   private handsIdle(): void {
     const H = this.hands, d = this.drag, p = this.ptr;
+    // scratch vectors and quaternions from a pool (no allocation per frame; the hands copy their targets)
+    this.vi = 0; this.qi = 0;
+    const vp = (): THREE.Vector3 => this.vpool[this.vi++] ?? (this.vpool[this.vi - 1] = new THREE.Vector3());
+    const qp = (): THREE.Quaternion => this.qpool[this.qi++] ?? (this.qpool[this.qi - 1] = new THREE.Quaternion());
+    const fq = (sd: 'L' | 'R', f: THREE.Vector3, n: THREE.Vector3): THREE.Quaternion => H.freeQ(sd, f, n, qp());
+    const tq = (y: THREE.Vector3, z: THREE.Vector3): THREE.Quaternion => StationHands.toolQ(y, z, qp());
+    const Wp = (q: THREE.Vector3): THREE.Vector3 => this.root.localToWorld(vp().copy(q));
+    const dW = (q: THREE.Vector3): THREE.Vector3 => vp().copy(q).applyQuaternion(this.root.getWorldQuaternion(_q1)).normalize();
     const cam = this.g.camera;
     const down = _hd.set(0, -1, 0);
     const fwd = _hf.set(0, 0, -1).applyQuaternion(cam.quaternion).setY(0).normalize();
@@ -2697,33 +2751,27 @@ export class CookingStation extends Station {
       // tasting: the spoon dips into the pot, comes up to the mouth, goes back
       const a = this.act, t = a.t;
       const v = a.v === 'served' ? null : a.v;
-      const potP = v ? this.W(_t1.copy(v.pos).add(_t2.set(0, v.kind === 'pot' ? this.liquidY(v) + 0.01 : 0.03, 0))) : this.W(_t1.copy(SERVE).add(_t2.set(0, 0.04, 0)));
+      const potP = v ? Wp(_t1.copy(v.pos).add(_t2.set(0, v.kind === 'pot' ? this.liquidY(v) + 0.01 : 0.03, 0))) : Wp(_t1.copy(SERVE).add(_t2.set(0, 0.04, 0)));
       const mouth = _t2.set(0.02, -0.06, -0.14).applyMatrix4(cam.matrixWorld);
       const k = t < 0.5 ? 0 : t < 0.9 ? (t - 0.5) / 0.4 : t < 1.15 ? 1 : Math.max(0, 1 - (t - 1.15) / 0.35);
       const tip = _t3.copy(potP).lerp(mouth, smooth(0, 1, k));
-      const up = V3(0, 1, 0).addScaledVector(fwd, -0.4).normalize();
-      H.set('R', { pos: tip.clone().addScaledVector(up, 0.17), q: StationHands.toolQ(up.clone().negate(), fwd), grip: GRIP.handle });
+      const up = vp().set(0, 1, 0).addScaledVector(fwd, -0.4).normalize();
+      H.set('R', { pos: vp().copy(tip).addScaledVector(up, 0.17), q: tq(vp().copy(up).negate(), fwd), grip: GRIP.handle });
       H.rest('L');
       return;
     }
     if (this.cardOpen !== null) {
-      // both hands hold the card up
-      const c = this.cardView.mesh.getWorldPosition(_t1);
-      const right = _t2.set(1, 0, 0).applyQuaternion(cam.quaternion);
-      const camFwd = _t3.set(0, 0, -1).applyQuaternion(cam.quaternion);
-      for (const sd of ['L', 'R'] as const) {
-        const s = sd === 'R' ? 1 : -1;
-        H.set(sd, { pos: c.clone().addScaledVector(right, s * 0.115).addScaledVector(camFwd, 0.01).add(V3(0, -0.04, 0)), q: H.freeQ(sd, V3(0, 1, 0).addScaledVector(right, -s * 0.3), camFwd.clone().negate()), grip: GRIP.pinch });
-      }
+      // reading: the hands drop out of the way (the card is held up close to the eye)
+      H.rest('L'); H.rest('R');
       return;
     }
     if (!d) {
       const at = this.hover?.at;
       if (at && this.viewName !== 'door' && this.hover?.text) {
         const toCam = _t1.copy(cam.position).sub(at).normalize();
-        const pos = at.clone().addScaledVector(side, 0.07).addScaledVector(toCam, 0.04).add(_t2.set(0, 0.035, 0));
-        const f = at.clone().sub(pos).normalize();
-        H.set('R', { pos, q: H.freeQ('R', f, down.clone().addScaledVector(side, -0.4).normalize()), grip: GRIP.relax });
+        const pos = vp().copy(at).addScaledVector(side, 0.07).addScaledVector(toCam, 0.04).add(_t2.set(0, 0.035, 0));
+        const f = vp().copy(at).sub(pos).normalize();
+        H.set('R', { pos, q: fq('R', f, vp().copy(down).addScaledVector(side, -0.4).normalize()), grip: GRIP.relax });
       } else H.rest('R');
       H.rest('L');
       return;
@@ -2731,105 +2779,105 @@ export class CookingStation extends Station {
     switch (d.kind) {
       case 'carry': case 'food': case 'egg': {
         const o = d.kind === 'carry' ? d.p.obj : d.kind === 'food' ? d.f.obj : d.shell;
-        const w = o.getWorldPosition(new THREE.Vector3()).add(_t1.set(0, d.kind === 'egg' ? 0.03 : 0.05, 0)).addScaledVector(fwd, -0.03);
+        const w = o.getWorldPosition(vp()).add(_t1.set(0, d.kind === 'egg' ? 0.03 : 0.05, 0)).addScaledVector(fwd, -0.03);
         const shaking = d.kind === 'carry' && d.p.ing?.how === 'shake' && d.tgt?.flow && p.down;
-        H.set('R', { pos: w, q: H.freeQ('R', fwd.clone().add(_t2.set(0, shaking ? 1.1 : -1.1, 0)), down.clone().addScaledVector(fwd, 0.25).normalize()), grip: d.kind === 'egg' ? GRIP.cup : d.kind === 'carry' && d.tgt?.flow ? GRIP.handle : GRIP.claw });
+        H.set('R', { pos: w, q: fq('R', vp().copy(fwd).add(_t2.set(0, shaking ? 1.1 : -1.1, 0)), vp().copy(down).addScaledVector(fwd, 0.25).normalize()), grip: d.kind === 'egg' ? GRIP.cup : d.kind === 'carry' && d.tgt?.flow ? GRIP.handle : GRIP.claw });
         // measuring: the left hand holds the cup (or the spoon) over the target
         if (d.kind === 'carry' && d.p.ing?.how === 'measure' && d.tgt?.flow && p.down) {
           const tool = d.p.id === 'baking_powder' ? this.tsp : this.cup;
           this.inHand(tool, 'L');
-          H.set('L', { pos: w.clone().add(_t2.set(0, -0.1, 0)).addScaledVector(side, -0.03), q: StationHands.toolQ(side.clone().negate(), V3(0, 1, 0)), grip: GRIP.handle });
+          H.set('L', { pos: vp().copy(w).add(_t2.set(0, -0.1, 0)).addScaledVector(side, -0.03), q: tq(vp().copy(side).negate(), vp().set(0, 1, 0)), grip: GRIP.handle });
         } else { if (this.cup.parent !== this.root) this.putBack(this.cup); if (this.tsp.parent !== this.root) this.putBack(this.tsp); H.rest('L'); }
         break;
       }
       case 'board': case 'bowl': {
-        const c = (d.kind === 'board' ? this.board : this.bowlObj).getWorldPosition(new THREE.Vector3());
+        const c = (d.kind === 'board' ? this.board : this.bowlObj).getWorldPosition(vp());
         const half = d.kind === 'board' ? 0.12 : 0.1;
-        H.set('R', { pos: c.clone().addScaledVector(side, half).add(_t1.set(0, 0.05, 0)), q: H.freeQ('R', fwd.clone().addScaledVector(side, -0.3), side.clone().negate()), grip: GRIP.pinch });
-        H.set('L', { pos: c.clone().addScaledVector(side, -half).add(_t1.set(0, 0.05, 0)), q: H.freeQ('L', fwd.clone().addScaledVector(side, 0.3), side.clone()), grip: GRIP.pinch });
+        H.set('R', { pos: vp().copy(c).addScaledVector(side, half).add(_t1.set(0, 0.05, 0)), q: fq('R', vp().copy(fwd).addScaledVector(side, -0.3), vp().copy(side).negate()), grip: GRIP.pinch });
+        H.set('L', { pos: vp().copy(c).addScaledVector(side, -half).add(_t1.set(0, 0.05, 0)), q: fq('L', vp().copy(fwd).addScaledVector(side, 0.3), vp().copy(side)), grip: GRIP.pinch });
         break;
       }
       case 'vessel': {
         const v = d.v;
-        const hp = this.W(_t1.copy(v.pos).add(v.kind === 'skillet' ? _t2.set(0, 0.06, 0.21) : v.kind === 'pot' ? _t2.set(0, 0.13, 0) : _t2.set(0, 0.12, -0.085)));
-        const ax = v.kind === 'skillet' ? this.dirW(V3(0, 0.15, -1)) : V3(0, 1, 0);
-        H.set('R', { pos: hp.clone(), q: StationHands.toolQ(v.kind === 'skillet' ? ax.clone().negate() : side.clone().negate(), V3(0, 1, 0)), grip: GRIP.handle });
+        const hp = Wp(_t1.copy(v.pos).add(v.kind === 'skillet' ? _t2.set(0, 0.06, 0.21) : v.kind === 'pot' ? _t2.set(0, 0.13, 0) : _t2.set(0, 0.12, -0.085)));
+        const ax = v.kind === 'skillet' ? dW(vp().set(0, 0.15, -1)) : vp().set(0, 1, 0);
+        H.set('R', { pos: vp().copy(hp), q: tq(v.kind === 'skillet' ? vp().copy(ax).negate() : vp().copy(side).negate(), vp().set(0, 1, 0)), grip: GRIP.handle });
         H.rest('L');
         break;
       }
       case 'lid': {
-        const c = d.lid.obj.getWorldPosition(new THREE.Vector3()).add(_t1.set(0, 0.05, 0));
-        H.set('R', { pos: c, q: H.freeQ('R', fwd.clone().add(_t2.set(0, -1.2, 0)), down), grip: [0.7, 0.68, 0.6, 0.05, 0.1] });
+        const c = d.lid.obj.getWorldPosition(vp()).add(_t1.set(0, 0.05, 0));
+        H.set('R', { pos: c, q: fq('R', vp().copy(fwd).add(_t2.set(0, -1.2, 0)), down), grip: GRIP_KNOB });
         H.rest('L');
         break;
       }
       case 'flip': case 'toss': {
         const v = d.v;
-        const fp = d.kind === 'flip' ? this.W(this.foodWorldLocal(d.f, v)).add(_t1.set(0, 0.01 + d.lift, 0)) : this.W(_t1.copy(v.pos).add(_t2.set(Math.sin(this.time * 6) * 0.03, v.floor + 0.012, Math.cos(this.time * 6) * 0.03)));
+        const fp = d.kind === 'flip' ? Wp(this.foodWorldLocal(d.f, v, vp())).add(_t1.set(0, 0.01 + d.lift, 0)) : Wp(_t1.copy(v.pos).add(_t2.set(Math.sin(this.time * 6) * 0.03, v.floor + 0.012, Math.cos(this.time * 6) * 0.03)));
         const lift = d.kind === 'flip' ? d.lift : 0;
-        const along = fwd.clone().add(_t2.set(0, -0.35 - lift * 4, 0)).normalize();
-        H.set('R', { pos: fp.clone().addScaledVector(along, -0.2).addScaledVector(side, 0.02), q: StationHands.toolQ(along, V3(0, 1, 0)), grip: GRIP.handle });
-        const hp = this.W(_t1.copy(v.pos).add(_t2.set(0, 0.06, 0.21)));
-        H.set('L', { pos: hp.clone(), q: StationHands.toolQ(this.dirW(V3(0, -0.15, 1)), V3(0, 1, 0)), grip: GRIP.handle });
+        const along = vp().copy(fwd).add(_t2.set(0, -0.35 - lift * 4, 0)).normalize();
+        H.set('R', { pos: vp().copy(fp).addScaledVector(along, -0.2).addScaledVector(side, 0.02), q: tq(along, vp().set(0, 1, 0)), grip: GRIP.handle });
+        const hp = Wp(_t1.copy(v.pos).add(_t2.set(0, 0.06, 0.21)));
+        H.set('L', { pos: vp().copy(hp), q: tq(dW(vp().set(0, -0.15, 1)), vp().set(0, 1, 0)), grip: GRIP.handle });
         H.stiff.R = 40;
         break;
       }
       case 'cut': case 'chop': {
         let center: THREE.Vector3, len: number, at: number, depth: number;
         if (d.kind === 'cut') {
-          center = d.target === 'stock' && this.stock ? this.stock.obj.position.clone() : d.f ? this.boardSurface(d.f.local).clone() : this.boardPos.clone();
+          center = d.target === 'stock' && this.stock ? vp().copy(this.stock.obj.position) : d.f ? this.boardSurface(d.f.local, vp()) : vp().copy(this.boardPos);
           len = d.target === 'stock' && this.stock ? this.stock.len : d.f ? (d.f.u1 - d.f.u0) * 0.42 : 0.1;
           at = d.at; depth = d.depth;
         } else {
-          center = this.boardSurface(d.p.local).clone();
+          center = this.boardSurface(d.p.local, vp());
           const e = d.p.extent(); len = e.x1 - e.x0; at = d.at; depth = d.depth;
         }
-        const along = this.dirW(V3(1, 0, 0));
-        const blade = this.W(center).addScaledVector(along, at).add(_t1.set(0, 0.075 * (1 - depth) + 0.004, 0));
-        const bladeDir = fwd.clone().multiplyScalar(0.72).addScaledVector(side, -0.69).add(_t1.set(0, -0.16, 0)).normalize();
-        H.set('R', { pos: blade.clone().addScaledVector(bladeDir, -0.135).add(_t1.set(0, 0.035, 0)), q: StationHands.toolQ(bladeDir, V3(0, -1, 0)), grip: GRIP.handle });
-        const claw = this.W(center).addScaledVector(along, -len / 2 + 0.02).add(_t1.set(0, 0.055, 0)).addScaledVector(fwd, -0.02);
-        H.set('L', { pos: claw, q: H.freeQ('L', down.clone().addScaledVector(fwd, 0.5).addScaledVector(side, 0.2), down.clone().addScaledVector(side, 0.3)), grip: GRIP.claw });
+        const along = dW(vp().set(1, 0, 0));
+        const blade = Wp(center).addScaledVector(along, at).add(_t1.set(0, 0.075 * (1 - depth) + 0.004, 0));
+        const bladeDir = vp().copy(fwd).multiplyScalar(0.72).addScaledVector(side, -0.69).add(_t1.set(0, -0.16, 0)).normalize();
+        H.set('R', { pos: vp().copy(blade).addScaledVector(bladeDir, -0.135).add(_t1.set(0, 0.035, 0)), q: tq(bladeDir, vp().set(0, -1, 0)), grip: GRIP.handle });
+        const claw = Wp(center).addScaledVector(along, -len / 2 + 0.02).add(_t1.set(0, 0.055, 0)).addScaledVector(fwd, -0.02);
+        H.set('L', { pos: claw, q: fq('L', vp().copy(down).addScaledVector(fwd, 0.5).addScaledVector(side, 0.2), vp().copy(down).addScaledVector(side, 0.3)), grip: GRIP.claw });
         H.stiff.R = 34;
         break;
       }
       case 'scrape': {
         // the knife flat on the board, spine leading
-        const c = d.p.obj.getWorldPosition(new THREE.Vector3());
-        const across = this.dirW(V3(0, 0, 1));
-        const dir = p.dx >= 0 ? this.dirW(V3(1, 0, 0)) : this.dirW(V3(-1, 0, 0));
-        const grip = c.clone().addScaledVector(across, 0.14).addScaledVector(dir, -0.03).add(_t1.set(0, 0.012, 0));
-        H.set('R', { pos: grip, q: StationHands.toolQ(across.clone().negate(), dir.clone().negate()), grip: GRIP.handle });
+        const c = d.p.obj.getWorldPosition(vp());
+        const across = dW(vp().set(0, 0, 1));
+        const dir = p.dx >= 0 ? dW(vp().set(1, 0, 0)) : dW(vp().set(-1, 0, 0));
+        const grip = vp().copy(c).addScaledVector(across, 0.14).addScaledVector(dir, -0.03).add(_t1.set(0, 0.012, 0));
+        H.set('R', { pos: grip, q: tq(vp().copy(across).negate(), vp().copy(dir).negate()), grip: GRIP.handle });
         H.rest('L');
         break;
       }
       case 'peel': case 'press': {
-        const c = (d.kind === 'peel' ? d.p.obj : d.p?.obj ?? d.f?.obj ?? this.board).getWorldPosition(new THREE.Vector3());
+        const c = (d.kind === 'peel' ? d.p.obj : d.p?.obj ?? d.f?.obj ?? this.board).getWorldPosition(vp());
         const wob = Math.sin(this.time * 12) * 0.01;
-        H.set('R', { pos: c.clone().add(_t1.set(wob, 0.06, 0)).addScaledVector(side, 0.03), q: H.freeQ('R', fwd.clone().add(_t2.set(0, -1, 0)), down), grip: GRIP.pinch });
-        H.set('L', { pos: c.clone().add(_t1.set(0, 0.05, 0)).addScaledVector(side, -0.05), q: H.freeQ('L', fwd.clone().add(_t2.set(0, -1, 0)), down), grip: GRIP.claw });
+        H.set('R', { pos: vp().copy(c).add(_t1.set(wob, 0.06, 0)).addScaledVector(side, 0.03), q: fq('R', vp().copy(fwd).add(_t2.set(0, -1, 0)), down), grip: GRIP.pinch });
+        H.set('L', { pos: vp().copy(c).add(_t1.set(0, 0.05, 0)).addScaledVector(side, -0.05), q: fq('L', vp().copy(fwd).add(_t2.set(0, -1, 0)), down), grip: GRIP.claw });
         break;
       }
       case 'knead': {
-        const c = d.f.obj.getWorldPosition(new THREE.Vector3());
+        const c = d.f.obj.getWorldPosition(vp());
         const wob = Math.sin(this.time * 9) * 0.015;
-        H.set('R', { pos: c.clone().add(_t1.set(0, 0.05 + wob, 0)).addScaledVector(side, 0.035).addScaledVector(fwd, -0.03), q: H.freeQ('R', fwd, down), grip: GRIP.flat });
-        H.set('L', { pos: c.clone().add(_t1.set(0, 0.05 - wob, 0)).addScaledVector(side, -0.035).addScaledVector(fwd, -0.03), q: H.freeQ('L', fwd, down), grip: GRIP.flat });
+        H.set('R', { pos: vp().copy(c).add(_t1.set(0, 0.05 + wob, 0)).addScaledVector(side, 0.035).addScaledVector(fwd, -0.03), q: fq('R', fwd, down), grip: GRIP.flat });
+        H.set('L', { pos: vp().copy(c).add(_t1.set(0, 0.05 - wob, 0)).addScaledVector(side, -0.035).addScaledVector(fwd, -0.03), q: fq('L', fwd, down), grip: GRIP.flat });
         break;
       }
       case 'stir': {
         const center = d.bowl ? BOWL_AT : d.v!.pos;
         const a = d.bowl ? this.bowlAngle() : this.vesselAngle(d.v!);
-        const tip = this.W(_t1.copy(center).add(_t2.set(Math.cos(a) * 0.04, 0.05, Math.sin(a) * 0.04)));
-        const up = V3(0, 1, 0).addScaledVector(fwd, -0.35).normalize();
-        H.set('R', { pos: tip.clone().addScaledVector(up, 0.2), q: StationHands.toolQ(up.clone().negate(), fwd), grip: GRIP.handle });
-        const hp = this.W(_t1.copy(center).add(_t2.set(-0.1, 0.1, 0)));
-        H.set('L', { pos: hp.clone(), q: H.freeQ('L', side, down), grip: GRIP.pinch });
+        const tip = Wp(_t1.copy(center).add(_t2.set(Math.cos(a) * 0.04, 0.05, Math.sin(a) * 0.04)));
+        const up = vp().set(0, 1, 0).addScaledVector(fwd, -0.35).normalize();
+        H.set('R', { pos: vp().copy(tip).addScaledVector(up, 0.2), q: tq(vp().copy(up).negate(), fwd), grip: GRIP.handle });
+        const hp = Wp(_t1.copy(center).add(_t2.set(-0.1, 0.1, 0)));
+        H.set('L', { pos: vp().copy(hp), q: fq('L', side, down), grip: GRIP.pinch });
         break;
       }
       case 'draft': {
-        const c = this.draftDisc!.getWorldPosition(new THREE.Vector3());
-        H.set('R', { pos: c.clone().add(_t1.set(0, 0, 0.04)).addScaledVector(fwd, -0.02), q: H.freeQ('R', V3(0, 1, 0).addScaledVector(fwd, 0.5), fwd), grip: GRIP.pinch });
+        const c = this.draftDisc!.getWorldPosition(vp());
+        H.set('R', { pos: vp().copy(c).add(_t1.set(0, 0, 0.04)).addScaledVector(fwd, -0.02), q: fq('R', vp().set(0, 1, 0).addScaledVector(fwd, 0.5), fwd), grip: GRIP.pinch });
         H.rest('L');
         break;
       }
@@ -2859,7 +2907,7 @@ export class CookingStation extends Station {
       phase: this.phase, view: this.viewName, draft: this.draft, level: +this.g.stove.level.toFixed(2),
       skillet: vs(this.skillet), pot: vs(this.pot), coffee: { T: Math.round(this.coffee.T), ...this.coffee.coffee },
       board: this.foods.filter((f) => f.where === 'board').map((f) => f.kind), stock: this.stock?.kind ?? null,
-      produce: this.produce ? { id: this.produce.id, peel: this.produce.peel, cuts: this.produce.cuts, ...this.produce.stats() } : null,
+      produce: this.produce ? { id: this.produce.id, peel: this.produce.peel, cuts: this.produce.cuts, ext: this.produce.extent(), ...this.produce.stats() } : null,
       bowl: { kind: this.bowl.kind, mix: +this.bowl.mix.toFixed(2), c: Object.fromEntries([...this.bowl.c].map(([k, n]) => [k, +n.toFixed(2)])) },
       served: this.served ? { item: this.served.v.item, name: this.served.v.name, grade: this.served.v.grade, q: +this.served.v.q.toFixed(2), notes: this.served.v.notes, steps: this.served.v.steps } : null,
       drag: this.drag?.kind ?? null, pinned: this.pinned, cards: RECIPES.filter((r) => this.unlocked(r.id)).map((r) => r.id), buffs: this.buffs.list.map((b) => `${b.kind}:${b.k.toFixed(2)}`),
@@ -2872,7 +2920,9 @@ export class CookingStation extends Station {
    * station's own code paths (use(), applyPortion(), cut(), produceInto(), serve()...).
    */
   readonly dev = {
-    view: (n: ViewName, snap = true) => { this.goView(n); if (snap) this.snapView(); },
+    view: (n: ViewName, snap = true) => { this.goView(n); this.lean = null; this.leanPinned = false; this.setView(this.worldView(n)); if (snap) this.snapView(); },
+    /** lean in over the board or a pan (as the cursor work does) and snap there */
+    leanTo: (k: 'board' | 'skillet' | 'pot') => { this.lean = k; this.leanPinned = true; this.setView(this.leanView(k)); this.snapView(); },
     /** pour / measure / shake an ingredient into 'skillet' | 'pot' | 'coffee' | 'bowl' for n portions */
     give: (id: string, where: 'skillet' | 'pot' | 'coffee' | 'bowl', n = 1): boolean => {
       const pp = this.pantry.find((x) => x.id === id) ?? this.fixtures.find((x) => x.id === id) ?? ({ id, obj: new THREE.Object3D(), home: new THREE.Vector3(), yaw: 0, hit: new THREE.Mesh(), ing: ING[id] ?? null } as Pantry);
@@ -2933,9 +2983,12 @@ export class CookingStation extends Station {
     pin: (id: string) => { this.pinned = id; this.tickT = 0; },
     cards: (id?: string) => { if (id === undefined) { this.closeCards(); return; } this.openCards(id); },
     heat: (where: 'skillet' | 'pot' | 'coffee', T: number) => { this.vesselByKind(where).T = T; },
+    /** hold a vessel at a temperature (null lets the stove drive it again) */
+    hold: (where: 'skillet' | 'pot' | 'coffee', T: number | null) => { const v = this.vesselByKind(where); v.pinT = T; if (T !== null) v.T = T; },
     draft: (k: number) => { this.draft = k; },
     summary: (where: 'skillet' | 'pot' | 'coffee') => this.summarize(this.vesselByKind(where)),
     ndc: (what: string) => {
+      if (what === 'handle') return this.ndc(this.W(this.skillet.pos.clone().add(V3(0, 0.06, 0.21))));
       const p = what === 'board' ? this.boardPos : what === 'bowl' ? BOWL_AT : what === 'serve' ? SERVE : what === 'produce' && this.produce ? this.boardSurface(this.produce.local) : ['skillet', 'pot', 'coffee'].includes(what) ? this.vesselByKind(what as VKind).pos : this.pantry.find((x) => x.id === what)?.home ?? this.fixtures.find((x) => x.id === what)?.home ?? this.boardPos;
       return this.ndc(this.W(p.clone().add(V3(0, 0.03, 0))));
     },
@@ -2948,6 +3001,8 @@ export class CookingStation extends Station {
     itemNdc: (id: string) => { const pp = this.pantry.find((x) => x.id === id) ?? this.fixtures.find((x) => x.id === id); return pp ? this.ndc(pp.obj.getWorldPosition(new THREE.Vector3()).add(V3(0, 0.06, 0))) : null; },
     /** what the pointer would pick at an NDC point (tests) */
     pickAt: (x: number, y: number) => { const keep = { x: this.ptr.x, y: this.ptr.y }; this.ptr.x = x; this.ptr.y = y; const h = this.pick(this.pickables()); this.ptr.x = keep.x; this.ptr.y = keep.y; const c = this.classify(h); return c ? `${c.kind}${c.v ? ':' + c.v.kind : ''}${c.pp ? ':' + c.pp.id : ''} (${h?.object.name || h?.object.parent?.name || ''})` : 'none'; },
+    /** where the pointer meets the work surfaces and what vessel is under it (tests) */
+    probe: () => { const at = this.carryPoint(0.1); const cam = this.g.camera.position; return { at: at ? at.toArray().map((v) => +v.toFixed(3)) : null, v: at ? this.vesselUnder(at)?.kind ?? null : null, cam: this.L(cam.clone()).toArray().map((v) => +v.toFixed(3)), mode: this.g.mode, phase: this.phase, ptr: [+this.ptr.x.toFixed(2), +this.ptr.y.toFixed(2)] }; },
     /** the station's pointer script (tests drive the real input path with it) */
     point: (x: number, y: number, down = false, rdown = false) => { this.script = { x, y, down, rdown }; },
     release: () => { this.script = null; },
@@ -2958,6 +3013,7 @@ export class CookingStation extends Station {
 
 const _v2 = new THREE.Vector2(), _v2zero = new THREE.Vector2();
 const _hd = new THREE.Vector3(), _hf = new THREE.Vector3(), _hs = new THREE.Vector3();
+const GRIP_KNOB = [0.7, 0.68, 0.6, 0.05, 0.1] as const;
 function how(pp: Pantry): string | undefined { return pp.ing?.how; }
 
 /** dish models for the backpack and setDown: an enamel plate (or bowl, or mug) with a little of the food */

@@ -240,9 +240,9 @@ export class Fat {
       if (p.g <= 0.05) { p.mesh.removeFromParent(); this.pats.splice(i, 1); }
     }
     // butter: water boils off as foam, then the solids toast
-    if (this.bwater > 0 && T > 98) this.bwater = Math.max(0, this.bwater - dt * (0.35 + (T - 98) / 60));
+    if (this.bwater > 0 && T > 98) this.bwater = Math.max(0, this.bwater - dt * (0.12 + (T - 98) / 150));
     this.foam += ((this.bwater > 0.05 && T > 96 ? Math.min(1, this.bwater / 2 + 0.4) : 0) - this.foam) * Math.min(1, dt * 3);
-    if (this.butter > 0.5 && this.bwater < 0.2 && T > 125) this.brown += dt * Math.pow((T - 125) / 45, 1.4) * 0.05;
+    if (this.butter > 0.5 && this.bwater < 0.2 && T > 125) this.brown += dt * Math.pow((T - 125) / 45, 1.4) * 0.035;
     // the pool spreads (thinner, faster when hot) and drifts to cover the floor
     const V = this.total;
     if (V > 0.3) {

@@ -126,6 +126,7 @@ export interface Recipe {
   buff: BuffSpec;
   kcal: number;
   lines: [string, string, string];
+  /** in the box from the start (the story hands out the others with the 'recipe' event) */
   start?: boolean;
   /** extra names the story might use for the card */
   alias?: string[];
@@ -133,7 +134,7 @@ export interface Recipe {
 
 export const RECIPES: Recipe[] = [
   {
-    id: 'bannock', name: 'Bannock', item: 'meal_bannock', vessel: 'skillet', cook: 'fry', from: 'Ray\'s card, in pencil', start: true,
+    id: 'bannock', name: 'Bannock', item: 'meal_bannock', vessel: 'skillet', cook: 'fry', from: 'Ray\'s card, in pencil',
     need: [['dough']], want: [['lard', 'butter', 'oil']],
     ingredients: ['3 cups flour', '1 tbsp baking powder', '1 tsp salt', '2 tbsp lard', 'about 1 cup water', 'lard for the pan'],
     steps: [
@@ -189,7 +190,7 @@ export const RECIPES: Recipe[] = [
     lines: ['The skin crackles. The flesh falls off the bone.', 'Trout fried in fat. Better than any restaurant.', 'A little dry. Still a lake trout.'],
   },
   {
-    id: 'venison_stew', name: 'Venison stew', item: 'meal_venison_stew', vessel: 'pot', cook: 'simmer', from: 'Ray\'s card, gravy on it', start: true, alias: ['stew', 'deer_stew'],
+    id: 'venison_stew', name: 'Venison stew', item: 'meal_venison_stew', vessel: 'pot', cook: 'simmer', from: 'Ray\'s card, gravy on it', alias: ['stew', 'deer_stew'],
     need: [MEAT, ['water']], want: [['onion'], ['carrot'], ['potato'], ['bouillon'], ['salt'], ['pepper']],
     ingredients: ['a pound of venison (or moose)', '1 onion, diced', '2 carrots, sliced', '2 potatoes, cubed', 'water, a bouillon cube', 'salt and pepper'],
     steps: [
@@ -245,7 +246,7 @@ export const RECIPES: Recipe[] = [
     lines: ['Thick enough to stand a spoon in. Madame Lachance would nod.', 'Yellow pea soup. Warm and filling.', 'Peas still hard.'],
   },
   {
-    id: 'beans_bacon', name: 'Beans and bacon', item: 'meal_beans_bacon', vessel: 'pot', cook: 'simmer', from: 'a card tucked in the beans', alias: ['beans_and_bacon', 'pork_and_beans'],
+    id: 'beans_bacon', name: 'Beans and bacon', item: 'meal_beans_bacon', vessel: 'pot', cook: 'simmer', from: 'a card tucked in the beans', start: true, alias: ['beans_and_bacon', 'pork_and_beans'],
     need: [['beans'], ['bacon']], want: [['onion'], ['syrup']],
     ingredients: ['a can of beans', 'back bacon, sliced', '1 onion, diced', 'a glug of maple syrup'],
     steps: [
@@ -258,7 +259,7 @@ export const RECIPES: Recipe[] = [
     lines: ['Smoky, sweet and sticky. Lumberjack candy.', 'Beans and bacon. Honest food.', 'Burnt on the bottom.'],
   },
   {
-    id: 'mac_cheese', name: 'Mac and cheese', item: 'meal_mac_cheese', vessel: 'pot', cook: 'simmer', from: 'the kid at the gas pump', alias: ['mac_and_cheese', 'macaroni'],
+    id: 'mac_cheese', name: 'Mac and cheese', item: 'meal_mac_cheese', vessel: 'pot', cook: 'simmer', from: 'a card stuck in the macaroni box', start: true, alias: ['mac_and_cheese', 'macaroni'],
     need: [['macaroni'], ['cheese']], want: [['milk'], ['butter'], ['salt'], ['pepper']],
     ingredients: ['1 cup macaroni', '1½ cups milk, a little water', 'a brick of cheddar, cubed', 'a pat of butter', 'salt and pepper'],
     steps: [
@@ -324,7 +325,7 @@ export const RECIPES: Recipe[] = [
     lines: ['Black, strong, no grounds in the teeth. Perfect.', 'Black coffee, boiled with the grounds. Terrible. Perfect.', 'Bitter as tar and full of grit.'],
   },
   {
-    id: 'labrador_tea', name: 'Labrador tea', item: 'meal_labrador_tea', vessel: 'coffee', cook: 'brew', from: 'a trapper on the Kesagami', alias: ['labtea', 'the_du_labrador'],
+    id: 'labrador_tea', name: 'Labrador tea', item: 'meal_labrador_tea', vessel: 'coffee', cook: 'brew', from: 'Ray\'s card, in pencil', start: true, alias: ['labtea', 'the_du_labrador'],
     need: [['labtea']], want: [],
     ingredients: ['the coffee pot of water', 'a pinch of Labrador tea leaves'],
     steps: [
@@ -352,6 +353,8 @@ export const RECIPES: Recipe[] = [
 ];
 
 export const RECIPE_BY_ID = new Map(RECIPES.map((r) => [r.id, r]));
+/** the cards the story hands out (src/game/stories: giveRecipe); never in the box from the start */
+export const STORY_CARDS = ['bannock', 'flapjacks', 'venison_stew', 'moose_chili', 'tourtiere', 'pouding_chomeur', 'blueberry_grunt', 'pea_soup', 'hunters_breakfast'];
 
 /** a story id for a card ('tourtière', 'Pouding Chômeur', 'pancakes') -> recipe id */
 export function resolveRecipe(id: string): string | null {
@@ -446,7 +449,8 @@ export function matchRecipe(d: Dish): Recipe | null {
 
 /** freestyle: name a dish after what's in it */
 export function freestyle(d: Dish): { item: string; name: string } | null {
-  const main = Object.entries(d.has).filter(([k, v]) => v > 0 && !SEASONING.has(k)).sort((a, b) => (KCAL[b[0]] ?? 50) * b[1] - (KCAL[a[0]] ?? 50) * a[1]).map(([k]) => k);
+  const cooked = (k: string) => (k === 'batter' && has(d, 'flapjack')) || (k === 'dumpling' && false);
+  const main = Object.entries(d.has).filter(([k, v]) => v > 0 && !SEASONING.has(k) && !cooked(k)).sort((a, b) => (KCAL[b[0]] ?? 50) * b[1] - (KCAL[a[0]] ?? 50) * a[1]).map(([k]) => k);
   if (!main.length) return null;
   const nm = (k: string) => KEY_NAME[k] ?? k;
   const two = main.length > 1 ? `${nm(main[0])} and ${nm(main[1])}` : nm(main[0]);

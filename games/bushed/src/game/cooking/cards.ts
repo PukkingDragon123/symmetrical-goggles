@@ -13,7 +13,7 @@ const CW = 480, CH = 300;
 
 function hash(n: number): number { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); }
 
-export interface CardState { unlocked: boolean; best: Grade | null; ticks: boolean[]; pinned: boolean; fresh: boolean }
+export interface CardState { unlocked: boolean; best: Grade | null; ticks: boolean[]; pinned: boolean; fresh: boolean; /** who gave the card (null: nobody yet) */ from: string | null }
 
 /** paint a recipe card (front) or its back (locked) */
 export function paintCard(r: Recipe, st: CardState, c?: HTMLCanvasElement): HTMLCanvasElement {
@@ -45,10 +45,10 @@ export function paintCard(r: Recipe, st: CardState, c?: HTMLCanvasElement): HTML
     g.fillStyle = ink; g.font = '30px Alagard, serif'; g.textAlign = 'center';
     g.fillText('?', CW / 2, 130);
     g.font = '20px PatrickHand, Caveat, cursive';
-    g.fillText(`A card for ${r.name.toLowerCase().startsWith('the') ? r.name : 'a recipe'}...`, CW / 2, 175);
+    g.fillText('A blank card in the box...', CW / 2, 175);
     g.font = '17px PatrickHand, Caveat, cursive';
     g.fillStyle = '#4a3a2a';
-    g.fillText(`Somebody knows this one: ${r.from}.`, CW / 2, 205);
+    g.fillText(st.from ? `${st.from} knows this one.` : 'Somebody around here knows this one.', CW / 2, 205);
     g.fillText('Or work it out yourself at the stove.', CW / 2, 230);
     g.textAlign = 'left';
     quant(g);
@@ -63,8 +63,10 @@ export function paintCard(r: Recipe, st: CardState, c?: HTMLCanvasElement): HTML
   g.fillStyle = ink; g.font = '26px Alagard, serif';
   g.fillText(r.name, 16, 36);
   g.font = '15px PatrickHand, Caveat, cursive'; g.fillStyle = '#5a4a3a';
-  const fromW = g.measureText(`from ${r.from}`).width;
-  g.fillText(`from ${r.from}`, CW - 16 - fromW, 18);
+  const giver = st.from ?? r.from;
+  const fromTxt = /^(Ray's card|a card|what you)/.test(giver) ? giver : `from ${giver}`;
+  const fromW = g.measureText(fromTxt).width;
+  g.fillText(fromTxt, CW - 16 - fromW, 18);
   const stars = st.best ? GRADE_STARS[st.best] : -1;
   for (let i = 0; i < 3; i++) star(g, CW - 70 + i * 20, 36, 7, i < stars ? '#c88a1c' : 'rgba(80,70,60,0.3)');
   if (st.pinned) { g.fillStyle = red; g.font = '13px Alagard, serif'; g.fillText('PINNED', CW - 150, 40); }
@@ -133,7 +135,7 @@ export class CardMesh {
     this.mesh.frustumCulled = false;
   }
   show(r: Recipe, st: CardState): void {
-    const key = `${r.id}|${st.unlocked}|${st.best}|${st.ticks.join('')}|${st.pinned}`;
+    const key = `${r.id}|${st.unlocked}|${st.best}|${st.ticks.join('')}|${st.pinned}|${st.from}`;
     if (key === this.key) return;
     this.key = key;
     paintCard(r, st, this.canvas);
