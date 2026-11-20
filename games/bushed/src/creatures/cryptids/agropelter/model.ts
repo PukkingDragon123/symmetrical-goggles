@@ -20,13 +20,15 @@ import { bonesKit, boneIndex, finishModel, REG, type ModelGen } from '../kit';
 import { ring, displace, carve, ridge, flap, digit, brush, bone, gs, sm, add, nrm } from '../sculpt';
 import type { BoneDef } from '../../rig';
 
-export const AGROPELTER_MODEL_VERSION = 'agropelter@2';
+export const AGROPELTER_MODEL_VERSION = 'agropelter@3';
 export const SNAG_MODEL_VERSION = 'agrosnag@4';
 export const AG_HEAD: V3 = [0, 1.04, 0.16];
 /** the eye, small and deep under the brow (head-local SOCK) */
 export const AG_EYE: V3 = [0.033, 1.066, 0.226];
 export const AG_EYE_AX: V3 = [0.22, 0.02, 0.97];
 const SOCK: V3 = [0.033, 0.026, 0.066], SOCK_AX: V3 = nrm([0.22, 0.02, 0.97]);
+/** a nostril (head-local, +x side): on the top front of the muzzle under the eyes */
+const NOS: V3 = [0.01, 0.017, 0.12];
 const JAW_HINGE: V3 = [0, 0.995, 0.175];
 const ARM = { sh: [0.15, 0.9, 0.05] as V3, el: [0.24, 0.45, -0.02] as V3, wr: [0.26, 0.02, 0.06] as V3, r: 0.042 };
 const LEG = { hip: [0.1, 0.46, -0.02] as V3, knee: [0.17, 0.25, 0.09] as V3, sole: [0.15, 0, 0.02] as V3, r: 0.055 };
@@ -45,7 +47,7 @@ export function agropelterBones(): BoneDef[] {
   A('neck', 'chest', [0, 0.97, 0.1]);
   A('head', 'neck', AG_HEAD);
   A('jaw', 'head', JAW_HINGE);
-  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(AG_EYE, k)); A('lid' + s, 'head', mir(AG_EYE, k)); A('ear' + s, 'head', [k * 0.072, 1.07, 0.155]); }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(AG_EYE, k)); A('lid' + s, 'head', mir(AG_EYE, k)); A('ear' + s, 'head', [k * 0.06, 1.058, 0.162]); }
   for (const [s, k] of [['L', 1], ['R', -1]] as const) {
     A('cla' + s, 'chest', [k * 0.06, 0.9, 0.06]);
     A('arm' + s, 'cla' + s, mir(ARM.sh, k)); A('elb' + s, 'arm' + s, mir(ARM.el, k)); A('hand' + s, 'elb' + s, mir(ARM.wr, k));
@@ -95,23 +97,24 @@ function torsoForms(p: V3, n: V3): number {
 }
 /** the head (head-local stations along z): a low sloping skull, the brow bar, a dished face under it, a long muzzle */
 const HS: [number, number, number, number, number[][]][] = [
-  [-0.07, 0.02, 0.04, 0.045, ring()],
-  [-0.045, 0.018, 0.064, 0.058, ring([[0, 0.06, 12]])],
-  [-0.01, 0.02, 0.074, 0.062, ring([[0, 0.05, 12], [150, -0.1, 25]])],
-  [0.024, 0.02, 0.077, 0.062, ring([[60, -0.08, 15], [100, 0.08, 15]])],
-  [0.048, 0.02, 0.08, 0.066, ring([[100, 0.12, 16]])],
-  [0.068, 0.006, 0.07, 0.06, ring([[0, -0.1, 25], [100, 0.12, 16]])],
-  [0.092, -0.012, 0.058, 0.054, ring([[0, 0.05, 15], [100, 0.1, 20]], { sq: 0.5 })],
-  [0.112, -0.022, 0.05, 0.045, ring([], { sq: 0.6 })],
-  [0.128, -0.027, 0.04, 0.035, ring([], { sq: 0.5 })],
-  [0.138, -0.03, 0.024, 0.021, ring()],
-  [0.143, -0.032, 0.008, 0.008, ring()],
+  [-0.072, 0.0, 0.034, 0.04, ring([[0, 0.2, 8]])],
+  [-0.048, 0.008, 0.048, 0.052, ring([[0, 0.34, 7], [150, -0.1, 25]])],                        // a narrow vault under a sagittal crest
+  [-0.015, 0.014, 0.054, 0.056, ring([[0, 0.36, 7], [60, -0.06, 15], [150, -0.1, 25]])],
+  [0.018, 0.016, 0.058, 0.056, ring([[0, 0.24, 8], [55, -0.12, 14], [100, 0.26, 14]])],        // hollow temples, the arches start
+  [0.045, 0.016, 0.066, 0.058, ring([[0, 0.08, 10], [100, 0.42, 14]])],                        // cheekbones flaring wider than the skull
+  [0.068, 0.004, 0.062, 0.056, ring([[0, -0.16, 25], [45, -0.12, 15], [100, 0.34, 14]])],      // the face falling back under the brow
+  [0.095, -0.014, 0.054, 0.05, ring([[0, 0.04, 15], [100, 0.12, 20]], { sq: 0.5 })],
+  [0.122, -0.024, 0.05, 0.045, ring([], { sq: 0.6 })],                                         // the muzzle juts
+  [0.145, -0.03, 0.044, 0.038, ring([], { sq: 0.6 })],
+  [0.162, -0.034, 0.03, 0.026, ring([], { sq: 0.4 })],
+  [0.17, -0.036, 0.01, 0.01, ring()],
 ];
 /** the underslung jaw (head-local): deep at the hinge, jutting past the upper lip, a square chin */
-const JS: [number, number, number, number][] = [[0.0, -0.046, 0.058, 0.03], [0.04, -0.056, 0.056, 0.026], [0.08, -0.064, 0.05, 0.025], [0.118, -0.066, 0.044, 0.024], [0.146, -0.063, 0.036, 0.021], [0.16, -0.06, 0.02, 0.014], [0.166, -0.058, 0.008, 0.006]];
+const JS: [number, number, number, number][] = [[0.0, -0.05, 0.058, 0.03], [0.04, -0.06, 0.056, 0.026], [0.085, -0.068, 0.05, 0.025], [0.13, -0.072, 0.046, 0.024], [0.165, -0.069, 0.038, 0.021], [0.183, -0.065, 0.022, 0.014], [0.19, -0.063, 0.008, 0.006]];
 const JAWP = [[0, 0.62], [0.32, 0.7], [0.66, 0.84], [0.95, 0.66], [1, 0.12], [0.96, -0.4], [0.78, -0.8], [0.4, -0.98], [0, -1]];
 
 // ------------------------------------------------------------------------------------------------ paint
+const WARMF = RP('hide'), COOLF = RP('slate');
 const FUR = RP('squatch'), GRIZ = RP('stone'), DARK = RP('basalt'), FACE = RP('stone'), SKIN = RP('leather'), GUM = RP('gum'), HORN = RP('horn'), INK = RP('ink'), BARK = RP('stone'), WOOD = RP('paper');
 const hl = (x: number, y: number, z: number): V3 => [x - AG_HEAD[0], y - AG_HEAD[1], z - AG_HEAD[2]];
 /** the coat: black-brown, laid on in long shaggy strokes, grizzled grey over the hump, the crown and the outsides of
@@ -144,28 +147,32 @@ function facePaint(part: 'skull' | 'jaw' | 'ear') {
     texel: (px, i, X, Y, Z, nx, ny, nz, s) => {
       const [x, y, z] = hl(X, Y, Z), ax = Math.abs(x);
       if (part === 'ear') { const bowl = nx * Math.sign(X || 1) < 0.15; px.put(i, bowl ? SKIN : FACE, bowl ? 1.6 : 2.6); px.rough[i] = 170; return 0; }
-      // the hair: over the crown and the back of the head, framing the face in a grizzled ruff
-      const face = nz > -0.1 && z > 0.035 - (y < -0.01 ? 0.03 : 0) && !(ny > 0.55 && z < 0.07);
-      if (part === 'skull' && !face && z < 0.06 + s.fv * 0.006) { px.put(i, sm(-0.01, 0.06, y) + s.fv * 0.4 > 0.7 ? GRIZ : FUR, 1.6); px.rough[i] = 245; return 1; }
-      if (part === 'jaw' && ny > 0.7 && ax < 0.03) { px.put(i, GUM, 1.4 - cl((0.13 - z) * 9, 0, 1.2)); px.rough[i] = 60; return 0; }
-      let R = FACE, st = 2.8 + (s.sid < 0.06 ? -0.6 : 0);
-      // under the brow: the sockets black, the squint's creases fanning out from the corners
+      // the bare mask: down the front of the face between the cheekbones, brow to chin; everything else is hair
+      const mask = (z > 0.05 && ax < 0.046 + (z - 0.05) * 0.25 && !(ny > 0.6 && z < 0.085)) || z > 0.11;
+      const jawMask = z > 0.11 && ax < 0.034;
+      if ((part === 'skull' && !mask) || (part === 'jaw' && !jawMask && !(ny > 0.6 && ax < 0.03))) {
+        const g = part === 'skull' ? sm(0.0, 0.05, y) * sm(-0.3, 0.4, ny) : 0;
+        px.put(i, g + s.fv * 0.4 > 0.6 ? GRIZ : FUR, g > 0.3 ? 2.2 : 1.5); px.rough[i] = 245; return 1;
+      }
+      if (part === 'jaw' && ny > 0.7 && ax < 0.03) { px.put(i, GUM, 1.4 - cl((0.15 - z) * 9, 0, 1.2)); px.rough[i] = 60; return 0; }
+      // ash-grey over the bone, cool slate in the shadow under the brow and round the eyes, warm and flushed over the
+      // muzzle and the lips; the zone edges break along the brush strokes
+      let R = FACE, st = 3.0 + (s.sid < 0.06 ? -0.6 : 0);
+      if (z > 0.128 + s.sv * 0.012 && y < 0.0) { R = WARMF; st = 2.5; }
       const d = [ax - SOCK[0], y - SOCK[1], z - SOCK[2]], a = d[0] * SOCK_AX[0] + d[1] * SOCK_AX[1] + d[2] * SOCK_AX[2];
       const rho = Math.hypot(d[0] - SOCK_AX[0] * a, d[1] - SOCK_AX[1] * a, d[2] - SOCK_AX[2] * a);
-      if (part === 'skull' && rho < 0.024 && a < 0.024) { R = rho < 0.016 ? INK : DARK; st = rho < 0.016 ? 0.6 : 1.4 + s.sv * 0.3; }
-      else if (part === 'skull' && rho < 0.034 && ax > SOCK[0] && Math.abs(Math.sin(Math.atan2(y - SOCK[1], ax - SOCK[0]) * 5)) < 0.2) st -= 1.1;
+      if (part === 'skull' && rho < 0.022 && a < 0.024) { R = rho < 0.015 ? INK : DARK; st = rho < 0.015 ? 0.6 : 1.4 + s.sv * 0.3; }
+      else if (part === 'skull' && rho < 0.034 + s.sv * 0.004 && a < 0.03 && y < 0.04) { R = COOLF; st = 2.2; }
       // frown furrows between the brows, wrinkles across the bridge
       if (part === 'skull' && ax < 0.012 && y > 0.02 && y < 0.05 && z > 0.05 && Math.abs(ax - 0.005) < px.mpt * 1.2) st -= 1.4;
-      if (part === 'skull' && ax < 0.02 && y < 0.02 && y > -0.005 && z > 0.07 && Math.abs(Math.sin(y * 700)) < 0.25) st -= 0.8;
-      // the nose: a flat pad, two flared nostrils
-      if (part === 'skull' && z > 0.08 && nz > 0.2) {
-        const nd = Math.hypot((ax - 0.011) * 1.0, (y + 0.004) * 1.5);
-        if (nd < 0.0055) { R = INK; st = 0.5; } else if (nd < 0.009) st += 0.7;
-        // the long upper lip: creased down its length, darker at the mouth's edge
-        if (y < -0.012 && y > -0.045 && Math.abs(Math.sin(ax * 520)) < 0.18 && s.sid > 0.3) st -= 0.8;
-      }
-      if (part === 'skull' && y < -0.043 && y > -0.055) { R = SKIN; st = 1.3; }
-      if (part === 'jaw' && y > -0.05 && ny > 0.0) { R = SKIN; st = 1.4; }
+      if (part === 'skull' && ax < 0.02 && y < 0.03 && y > 0.0 && z > 0.07 && z < 0.11 && Math.abs(Math.sin(y * 700)) < 0.25) st -= 0.8;
+      // the nostrils: two flared black pits on the top of the muzzle, a lit rim round each
+      const nd = Math.hypot(ax - NOS[0], y - NOS[1], z - NOS[2]);
+      if (part === 'skull' && nd < 0.0045) { R = INK; st = 0.5; } else if (part === 'skull' && nd < 0.0075) st += 0.6;
+      // the long upper lip: creased down its length; the lips dark leather along the mouth
+      if (part === 'skull' && z > 0.12 && y < 0.005 && y > -0.05 && Math.abs(Math.sin(ax * 520)) < 0.18 && s.sid > 0.3) st -= 0.8;
+      if (part === 'skull' && ny < -0.3 && z > 0.07) { R = SKIN; st = 1.4; }
+      if (part === 'jaw' && ny > 0.0 && z > 0.08) { R = SKIN; st = 1.5; }
       px.put(i, R, st); px.rough[i] = 175;
       return 0;
     },
@@ -207,22 +214,22 @@ export function* agropelterModelGen(o: { page?: number; den?: number } = {}): Mo
   displace(body, skull, (p) => {
     const [x, y, z] = hl(p[0], p[1], p[2]), q: V3 = [Math.abs(x), y, z];
     // the brow: one heavy bar across both eyes, pulled down in the middle (the scowl)
-    let d = ridge([[0, 0.036, 0.074], [0.02, 0.044, 0.08], [0.04, 0.047, 0.076], [0.058, 0.04, 0.06], [0.072, 0.026, 0.04]], q, 0.015, 0.017);
-    d += ridge([[0.052, 0.005, 0.07], [0.068, 0.008, 0.045], [0.076, 0.016, 0.01]], q, 0.009, 0.006);                 // the cheekbones
-    d += ridge([[0.012, -0.004, 0.098], [0.016, -0.008, 0.094]], q, 0.006, 0.004);                                     // the flare of the nostrils
-    d -= 0.004 * gs(Math.hypot(q[0] - 0.011, (y + 0.004) * 1.5, z - 0.098), 0, 0.004);                                 // the nostrils
-    d += 0.004 * gs(Math.hypot(q[0] * 0.5, y + 0.03, z - 0.118), 0, 0.012);                                           // the long upper lip pushed out
+    let d = ridge([[0, 0.038, 0.076], [0.02, 0.046, 0.082], [0.04, 0.048, 0.078], [0.058, 0.04, 0.062], [0.07, 0.026, 0.042]], q, 0.016, 0.022);
+    d += ridge([[0.06, 0.006, 0.072], [0.084, 0.01, 0.046], [0.09, 0.016, 0.016]], q, 0.009, 0.006);                  // the cheekbones
+    d += ridge([[NOS[0] + 0.004, NOS[1] - 0.002, NOS[2] - 0.002], [NOS[0] + 0.006, NOS[1] - 0.006, NOS[2] + 0.002]], q, 0.005, 0.003); // the flare of the nostrils
+    d -= 0.004 * gs(Math.hypot(q[0] - NOS[0], y - NOS[1], z - NOS[2]), 0, 0.0035);                                    // the nostrils
+    d += 0.004 * gs(Math.hypot(q[0] * 0.5, y + 0.04, z - 0.15), 0, 0.014);                                            // the long upper lip pushed out
     return d;
   });
   const jawSkin = () => [bi('jaw'), 1];
   const jaw = body.add(trunk({ name: 'jaw', stations: JS.map(([z, cy, w, h]) => ({ c: [0, H[1] + cy, H[2] + z], s: [w, h], p: JAWP })), tween: [1, 1, 1, 1, 1, 0], capS: true, capE: true, k: 2, levels: 1, skin: jawSkin, paint: facePaint('jaw') }));
   jaw.reg = REG.jaw;
-  displace(body, jaw, (p) => { const [x, y, z] = hl(p[0], p[1], p[2]); return 0.004 * gs(Math.hypot(x * 0.6, y + 0.075, z - 0.15), 0, 0.012); }); // the chin
+  displace(body, jaw, (p) => { const [x, y, z] = hl(p[0], p[1], p[2]); return 0.004 * gs(Math.hypot(x * 0.6, y + 0.082, z - 0.175), 0, 0.012); }); // the chin
   // crooked yellow teeth along the jutting lower jaw, two tusks standing up outside the upper lip
   let tk = 0;
   for (let k = 0; k < 8; k++) {
-    const f = k / 7 - 0.5, z = 0.15 - Math.abs(f) * 0.05, w = 0.03 * f * 2, top = -0.041;
-    const tusk = k === 0 || k === 7, len = tusk ? 0.03 : 0.009 + h3(k, 2, 5) * 0.006, at: V3 = add(H, [w, top, z]);
+    const tusk = k === 0 || k === 7, f = k / 7 - 0.5, z = tusk ? 0.166 : 0.182 - Math.abs(f) * 0.04, w = tusk ? Math.sign(f) * 0.027 : 0.026 * f * 2, top = -0.05;
+    const len = tusk ? 0.034 : 0.009 + h3(k, 2, 5) * 0.006, at: V3 = add(H, [w, top, z]);
     const lean = [(h3(k, 3, 5) - 0.5) * 0.008 + (tusk ? Math.sign(f) * 0.006 : 0), 0, tusk ? -0.004 : 0.002];
     body.add(stalk({ name: 'tooth' + tk++, path: [add(at, [0, -0.006, 0]), at, add(at, [lean[0] * 0.6, len * 0.6, lean[2]]), add(at, [lean[0], len, lean[2] * 1.4])], r: (t) => (tusk ? 0.0055 : 0.0042) * (1 - t * (tusk ? 0.85 : 0.5)), around: 5, capS: true, capE: true, levels: 0, k: 1.3, skin: jawSkin, paint: toothPaint })).reg = REG.mouth;
   }
@@ -231,9 +238,9 @@ export function* agropelterModelGen(o: { page?: number; den?: number } = {}): Mo
     const c = mir(AG_EYE, s), ax: V3 = [s * AG_EYE_AX[0], AG_EYE_AX[1], AG_EYE_AX[2]];
     body.add(paintedEye({ name: 'eye' + S, c, ax, r: 0.0115, bone: bi('eye' + S), iris: RP('glowAmber'), pupil: 'round', pupilR: 0.32, irisA: 0.66, sclera: RP('ochre'), side: s, glintR: 0.18, k: 3 })).reg = REG.eye;
     for (const l of lids({ name: 'lid' + S, c, ax, r: 0.0115, bone: bi('lid' + S), lowBone: hb, upper: 0.24, lower: 0.36, tilt: 0.22, side: s, thick: 0.3, thickLo: 0.2, paint: lidPaint(FACE, 2.0, { c, ax, r: 0.0115, lash: INK }) })) body.add(l).reg = REG.head;
-    const er: V3 = add(H, [s * 0.068, 0.03, 0.0]);
+    const er: V3 = add(H, [s * 0.056, 0.02, -0.002]);
     body.add(flap({ name: 'ear' + S, path: curve([add(er, [-s * 0.012, 0, 0.004]), er, add(er, [s * 0.016, 0.01, -0.012]), add(er, [s * 0.024, 0.022, -0.026])], 6), front: nrm([s * 0.5, 0.2, 1]),
-      w: (t) => 0.042 * Math.sin(Math.min(1, 0.3 + t * 0.85) * Math.PI) + 0.005, cup: (t) => 0.01 * (1 - t * 0.6), thick: 0.005, skin: () => [bi('ear' + S), 1], paint: facePaint('ear'), levels: 1, k: 1.3 })).reg = REG.head;
+      w: (t) => 0.032 * Math.sin(Math.min(1, 0.3 + t * 0.85) * Math.PI) + 0.004, cup: (t) => 0.009 * (1 - t * 0.6), thick: 0.0045, skin: () => [bi('ear' + S), 1], paint: facePaint('ear'), levels: 1, k: 1.3 })).reg = REG.head;
   }
   yield 'head';
   // ---- whiplash arms to the ground: a knot of shoulder, a ropy forearm tapering to a thin wrist, long hands
@@ -313,8 +320,11 @@ const AG_FUR = furZones([
   { piece: /^trunk$/, a: [0, 0.86, -0.05], b: [0, 1.0, 0.05], r: 0.14, len: 1, clump: 0.85 },
   { piece: /^trunk$/, y: [0.52, 0.86], facing: [0, 0, 1], min: 0.25, len: 0.18, den: 0.5, clump: 0.5 },
   ...[1, -1].flatMap((s): FurZone[] => [{ piece: /^arm[LR]$/, a: [s * 0.17, 0.85, 0.02], b: [s * 0.25, 0.1, 0.02], r: 0.06, len: 1, clump: 0.85, facing: [0, 0, -1], min: -0.3 }]),
-  { piece: /^skull$/, a: [0, 1.1, 0.12], b: [0, 1.07, 0.1], r: 0.065, len: 0.8, clump: 0.8 },
-  { piece: /^skull$/, facing: [0, 0, 1], min: 0.05, bare: true },
+  { piece: /^skull$/, len: 0.55, clump: 0.75 },
+  { piece: /^skull$/, a: [0, 1.1, 0.12], b: [0, 1.07, 0.1], r: 0.065, len: 0.85, clump: 0.8 },
+  { piece: /^skull$/, a: [0, 1.072, 0.228], b: [0, 1.005, 0.335], r: 0.052, soft: 0.25, bare: true },
+  { piece: /^jaw$/, len: 0.4, clump: 0.7 },
+  { piece: /^jaw$/, a: [0, 0.99, 0.27], b: [0, 0.98, 0.36], r: 0.036, soft: 0.3, bare: true },
   { piece: /^arm[LR]$/, y: [-0.2, 0.08], bare: true },
   { piece: /^leg[LR]$/, a: [0, 0.06, 0], b: [0, -0.1, 0], r: 0.5, soft: 0.3, bare: true, len: 0 },
 ]);

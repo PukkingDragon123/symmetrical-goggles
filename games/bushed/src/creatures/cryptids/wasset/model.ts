@@ -17,7 +17,7 @@ import { bonesKit, boneIndex, finishModel, REG, type ModelGen } from '../kit';
 import { ring, displace, carve, ridge, flap, brush, bone, gs, sm, add, nrm } from '../sculpt';
 import type { BoneDef } from '../../rig';
 
-export const WASSET_MODEL_VERSION = 'wasset@3';
+export const WASSET_MODEL_VERSION = 'wasset@4';
 export const WS_HEAD: V3 = [0, 0.25, 0.5];
 /** the eye (head-local SOCK) */
 export const WS_EYE: V3 = [0.035, 0.271, 0.547];
@@ -79,8 +79,8 @@ const HS: [number, number, number, number, number[][]][] = [
   [0.066, 0.002, 0.042, 0.033, ring([[0, -0.04, 18]], { sq: 0.3 })],
   [0.086, -0.006, 0.033, 0.027, ring([[115, 0.16, 28]], { sq: 0.3 })],                              // the whisker pads
   [0.101, -0.01, 0.024, 0.02, ring([[115, 0.12, 26]])],
-  [0.111, -0.012, 0.014, 0.012, ring()],
-  [0.116, -0.012, 0.005, 0.005, ring()],
+  [0.111, -0.011, 0.019, 0.014, ring([[115, 0.1, 26]], { sq: 0.5 })],
+  [0.116, -0.011, 0.012, 0.009, ring([], { sq: 0.6 })],
 ];
 const JS: [number, number, number, number][] = [[0.03, -0.022, 0.034, 0.014], [0.06, -0.026, 0.028, 0.012], [0.085, -0.027, 0.02, 0.01], [0.1, -0.026, 0.012, 0.008], [0.106, -0.025, 0.005, 0.004]];
 const JAWP = [[0, 0.5], [0.35, 0.62], [0.7, 0.78], [0.96, 0.5], [1, 0.0], [0.92, -0.45], [0.7, -0.8], [0.36, -0.97], [0, -1]];
@@ -116,7 +116,13 @@ const coatPaint = (part: 'body' | 'leg' | 'tail' | 'head' | 'ear') => brush({
     if (part === 'head') {
       const [hx, hy, hz] = hl(x, y, z), ax = Math.abs(hx);
       // the nose: a pink rhinarium, two dark nostril commas, a wet glint
-      if (hz > 0.106 && nz > 0.35 && hy > -0.02 && ax < 0.016) { const nd = Math.hypot(ax - 0.005, hy + 0.009); px.put(i, nd < 0.0028 ? INK : PINK, nd < 0.0028 ? 1 : 4.0); px.rough[i] = 60; return 0; }
+      // the nose: a small flat triangle of dusky pink set between the pads, two comma nostrils, the lip split below it
+      if (hz > 0.105 && nz > 0.3) {
+        const tri = hy < -0.003 && hy > -0.015 && ax < (hy + 0.015) * 0.8;
+        const comma = Math.hypot(ax - 0.0045, hy + 0.0068) < 0.0017 || (hy < -0.0068 && hy > -0.0098 && Math.abs(ax - (0.0058 + (-0.0068 - hy) * 0.5)) < 0.0008);
+        if (tri) { px.put(i, comma ? INK : PINK, comma ? 1 : 4.0 + (hy > -0.007 ? 0.5 : 0)); px.rough[i] = 50; return 0; }
+        if (ax < 0.0009 && hy <= -0.015 && hy > -0.021) { px.put(i, INK, 1.2); px.rough[i] = 100; return 0; }
+      }
       // the mouth line and the lips
       if (Math.abs(hy + 0.019 - Math.max(0, hz - 0.09) * 0.2) < 0.0022 && hz > 0.05 && ny < 0.3) { px.put(i, INK, 1.2); px.rough[i] = 100; return 0; }
       // a dark ring round the eye (the lids' rim), whisker dots in rows on the pads
@@ -169,7 +175,9 @@ export function* wassetModelGen(o: { page?: number; den?: number } = {}): ModelG
   displace(body, skull, (p) => {
     const [x, y, z] = [p[0] - H[0], p[1] - H[1], p[2] - H[2]], q: V3 = [Math.abs(x), y, z];
     let d = ridge([[0.022, 0.034, 0.05], [0.036, 0.036, 0.048], [0.048, 0.03, 0.04]], q, 0.008, 0.003);   // a soft brow over each eye
-    d += 0.003 * gs(Math.hypot(q[0] - 0.014, y + 0.008, z - 0.094), 0, 0.007);                            // the whisker pads
+    d += 0.0048 * gs(Math.hypot(q[0] - 0.012, (y + 0.011) * 0.9, z - 0.098), 0, 0.0055);                 // two puffy whisker pads
+    d -= 0.0026 * gs(q[0], 0, 0.0022) * sm(-0.008, -0.012, y) * sm(0.092, 0.104, z);                         // the split between them
+    d += 0.0012 * (y < -0.003 && y > -0.015 && q[0] < (y + 0.015) * 0.8 && z > 0.11 ? 1 : 0);                 // the nose pad
     d -= 0.002 * gs(Math.hypot(q[0], y - 0.02, z - 0.07), 0, 0.012);                                        // the stop
     return d;
   });
