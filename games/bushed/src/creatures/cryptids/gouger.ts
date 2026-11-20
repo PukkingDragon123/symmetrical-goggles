@@ -20,7 +20,7 @@ export const GOUGER_SOUND: Record<string, string | undefined> = {
 };
 
 /** its legs: how much shorter the right ones are (m, from the Blender build) and the spread of its feet */
-const SHORT = 0.185, FEET = 0.23;
+const SHORT = 0.26, FEET = 0.23;
 /** radius (m) of its track round the knoll, walking and charging speeds (m/s) and their clips' natural speeds */
 const R = 10, WALK = 0.95, RUN = 5.2, WALK_CLIP = 1.15, TROT_CLIP = 2.4, RUN_CLIP = 5.5;
 
@@ -167,7 +167,8 @@ export class SidehillGouger extends RealCryptid {
         this.target.copy(P.pos); this.want = this.dist > 2 ? 1.0 : 0; this.arrive = 1.8;
         this.anim(this.speed > 0.15 ? 'walk' : 'idle', { fade: 0.3 }); this.rate(Math.max(0.5, this.speed / WALK_CLIP));
         // off its hill (flat ground, or well off its track) the short legs give way
-        if (need > 0.5 && (this.slope(ctx) < 0.16 || Math.abs(this.offTrack(this.pos)) > 4)) { this.lean += dt; if (this.lean > 0.7) this.topple(); } else this.lean = 0;
+        // it limps and staggers for a couple of seconds before it goes over
+        if (need > 0.68 && (this.slope(ctx) < 0.16 || Math.abs(this.offTrack(this.pos)) > 4)) { this.lean += dt; if (this.lean > 2.2) this.topple(); } else this.lean = Math.max(0, this.lean - dt);
         if (!lured && this.st > 2) this.go('return');
         break;
       }
@@ -209,9 +210,14 @@ export class SidehillGouger extends RealCryptid {
     }
     // the lean: on its track it leans into the hill; flat ground or the wrong way round and it is over
     const lying = this.state === 'fall' || this.state === 'toppled' || this.state === 'getup' || this.state === 'sleep' || this.state === 'liedown';
-    this.roll = damp(this.roll, lying ? 0 : clamp(need, -0.2, 0.42), 4, dt);
-    if (!lying && this.state !== 'lured' && this.state !== 'return' && this.state !== 'eat' && need > 0.62) { this.lean += dt; if (this.lean > 1.2) this.topple(); }
-    else if (this.state !== 'lured') this.lean = 0;
+    // it leans hard into its hill (the short legs uphill), hitches at every step on the short side, and off its
+    // hill the hitch grows into a stagger before it falls over
+    const stagger = clamp(this.lean / 2.2, 0, 1), stepping = this.speed > 0.15 ? 1 : 0;
+    const hitch = Math.sin(this.t * (this.speed > 2 ? 11 : 6.5));
+    this.roll = damp(this.roll, lying ? 0 : clamp(need * 0.9, -0.2, 0.75) + hitch * (0.05 * stepping + 0.2 * stagger), 7, dt);
+    this.holder.position.y = lying ? 0 : -Math.max(0, hitch) * (0.025 * stepping + 0.07 * stagger);
+    if (!lying && this.state !== 'lured' && this.state !== 'return' && this.state !== 'eat' && need > 0.8) { this.lean += dt; if (this.lean > 2.2) this.topple(); }
+    else if (this.state !== 'lured') this.lean = Math.max(0, this.lean - dt);
     this.kick = this.state === 'toppled' ? 1 : damp(this.kick, 0, 3, dt);
   }
 

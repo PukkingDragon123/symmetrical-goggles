@@ -12,7 +12,7 @@ import kit as K
 
 DL = K.args()[0]
 DOE, GOAT = 'b6172618aa304473a4cf7b9246c0a218', '5d7431517b634f4e9e8c0f3729cd9c59'
-SHORT = 0.8          # the right legs keep this much of their length above the hoof
+SHORT = 0.72         # the right legs keep this much of their length above the hoof (~0.27 m short)
 SIZE = 0.95          # the doe is a little smaller than life: a gouger is goat-sized
 
 C.reset()

@@ -145,14 +145,15 @@ const made: Partial<Record<string, Beast>> = {};
 let cur: Beast | null = null, curName = '';
 let spinA = 0;
 // wildlife: a lineup of every species to look at, and a live population round the stand-in player (AI demo)
-const SPECIES: Species[] = ['squirrel', 'hare', 'grouse', 'raven', 'jay', 'chickadee'];
+// the mammals only: the birds are real models now (src/creatures/birds; their test page is src/world/fauna/dev.html)
+const SPECIES: Species[] = ['squirrel', 'hare'];
 const lineup = new THREE.Group(); const lineCritters: Critter[] = [];
 const wild = new Wildlife({ max: 12, radius: [6, 14], despawn: 30, waterY: -10 });
 function showWildlife() {
   if (cur) scene.remove(cur.object);
   scene.remove(batStage); scene.remove(eave); if (roost) scene.remove(roost.object);
   cur = null; curName = 'wildlife'; ui.who.value = 'wildlife';
-  if (!lineCritters.length) SPECIES.forEach((k, i) => { const c = new Critter(k); c.reset((i - 2.5) * 0.55, 0, 0); c.heading = 0.6; lineCritters.push(c); lineup.add(c.object); });
+  if (!lineCritters.length) SPECIES.forEach((k, i) => { const c = new Critter(k); c.reset((i - 0.5) * 0.55, 0, 0); c.heading = 0.6; lineCritters.push(c); lineup.add(c.object); });
   scene.add(lineup); scene.add(wild.object);
   controls.target.set(0, 0.15, 0); camera.position.set(0.6, 0.9, 2.6);
   ui.anims.innerHTML = '';
@@ -274,7 +275,7 @@ function frame(dt: number) {
     if (ui.ai.checked) {
       lineup.visible = false;
       const a = T * 0.15; player.pos.set(Math.sin(a) * 5, 1.7, Math.cos(a) * 5); player.dir.set(Math.cos(a), 0, -Math.sin(a));
-      wild.forced = { squirrel: 2, hare: 1, raven: 1, jay: 1, chickadee: 2, grouse: 1 };
+      wild.forced = { squirrel: 2, hare: 1 };
       const tr = (x: number, z: number, r: number) => [[-3.5, -4, 0.28], [4.2, -5.5, 0.35], [-6, 2, 0.4], [5.5, 3.5, 0.3]].filter(([tx, tz]) => Math.hypot(tx - x, tz - z) < r).map(([tx, tz, tr2]) => ({ x: tx, z: tz, r: tr2 }));
       wild.update({ ...ctxFor(dt, T), trunks: tr });
       ui.info.textContent = `wildlife: ${wild.count} active\nevents: ${events.join(' ')}`;

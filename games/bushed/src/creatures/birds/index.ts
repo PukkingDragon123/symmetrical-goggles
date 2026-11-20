@@ -281,7 +281,8 @@ export class Birds {
     }
     b.state = p.kind === 'ground' || p.kind === 'log' ? 'ground' : 'perch';
     if (p.tx !== undefined) b.heading = Math.atan2(p.x - p.tx, p.z - (p.tz ?? p.z)) + rnd(-0.6, 0.6); // facing out of the crown
-    b.play(b.model.has('idle') ? 'idle' : 'idle', 0.3);
+    // the raven folds up from its landing; the rest settle straight into standing about
+    if (b.body.has('land') && b.body.cur !== '' ) b.play('land', 0.1, 1, true); else b.play('idle', 0.3);
     void w;
   }
   /** take off toward a perch (or away, leaving: it despawns once far) */
@@ -531,7 +532,7 @@ export class Birds {
         const p = this.findPerch(b, w, cx + rnd(-3, 3), cz + rnd(-3, 3), 7);
         if (p && Math.hypot(p.x - b.pos.x, p.z - b.pos.z) > 0.8) { this.flyTo(b, p, w); return; }
       }
-      if (b.state === 'ground' && b.kind !== 'chickadee' && r < 0.6) {
+      if (b.state === 'ground' && b.kind !== 'chickadee' && r < 0.6 && b.body.has('walk')) {
         // a few steps (or hops) and a peck
         b.heading += rnd(-1.6, 1.6);
         b.vel.set(Math.sin(b.heading), 0, Math.cos(b.heading)).multiplyScalar(b.kind === 'grouse' ? 0.45 : b.kind === 'raven' ? 0.7 : 0.4);
@@ -553,6 +554,8 @@ export class Birds {
       if (Math.random() < dt * 0.5) b.vel.set(0, 0, 0);
     }
     if (b.kind === 'grouse' && dist < flushAt * 3 && b.body.cur !== 'alert') b.play('alert', 0.3, 1, true);
+    // a call, a caw or a landing played through: back to standing about
+    if (b.body.done) b.play('idle', 0.3);
   }
   private stealing = new Map<Bird, GroundFood>();
   private tame(b: Bird, w: BirdWorld): boolean {

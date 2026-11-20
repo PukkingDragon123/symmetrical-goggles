@@ -45,6 +45,8 @@ export class SplinterCat extends RealCryptid {
   private pounce = false;
   private warnT = 0;
   private wob = 0;
+  private curl = 0;
+  private readonly side = new THREE.Vector3(); private readonly up = new THREE.Vector3(0, 1, 0);
 
   constructor(o: { pos?: THREE.Vector3; heading?: number } = {}) {
     super('splintercat', o);
@@ -83,8 +85,8 @@ export class SplinterCat extends RealCryptid {
     }
     switch (this.state) {
       case 'sleep':
-        // curled low, head down, barely breathing
-        this.want = 0; this.anim('eat', { fade: 0.6, speed: 0.12 });
+        // lying down, chin on its paws, tail wrapped round (pose() tucks them)
+        this.want = 0; this.anim('sleep', { fade: 0.8 });
         if (!day || this.dist < 4) { this.go('prowl'); if (this.dist < 4 && !friend) this.go('warn'); }
         break;
       case 'prowl': {
@@ -190,6 +192,15 @@ export class SplinterCat extends RealCryptid {
   }
 
   protected pose(ctx: CreatureCtx) {
+    // asleep: the head goes down onto the paws, the tail curls round its side, it breathes
+    this.curl = damp(this.curl, this.clip === 'sleep' ? 1 : 0, 2, 1 / 60);
+    if (this.curl > 0.01) {
+      const k = this.curl, rt = this.side.set(-Math.cos(this.heading), 0, Math.sin(this.heading)), up = this.up;
+      this.swingBone('spine_004', rt, 0.28 * k); this.swingBone('spine_005', rt, 0.3 * k); this.swingBone('spine_006', rt, 0.32 * k + Math.sin(this.t * 1.3) * 0.02 * k);
+      this.swingBone('tail_001', up, 0.55 * k); this.swingBone('tail_002', up, 0.7 * k); this.swingBone('tail_003', up, 0.8 * k);
+      this.swingBone('tail_001', rt, 0.35 * k);
+      return;
+    }
     // seeing stars: the head wobbles round in circles
     if (this.wob > 0.02) {
       const h = this.bones.spine_006;

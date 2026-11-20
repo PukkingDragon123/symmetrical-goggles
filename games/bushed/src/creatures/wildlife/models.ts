@@ -355,5 +355,7 @@ function Ld(k: Species) {
 /** a species' shared model (built now if it was not preloaded) */
 export function wildModel(k: Species): WildModel { const l = Ld(k); let m = l.get(); if (!m) { m = runSync(gen(k)); l.set(m); } return m; }
 /** load every wildlife model without stalling (cache, else built in slices) */
-export async function wildModelsAsync(o: { cache?: boolean } = {}): Promise<void> { for (const k of ['squirrel', 'hare', 'raven', 'jay', 'chickadee', 'grouse'] as Species[]) await Ld(k).load(o); }
+/** preload the mammals' stand-in bodies (the birds are real models now: src/creatures/birds; the sculpted bird builders
+ *  below only run if a test page forces one) */
+export async function wildModelsAsync(o: { cache?: boolean } = {}): Promise<void> { for (const k of ['squirrel', 'hare'] as Species[]) await Ld(k).load(o); }
 export { cl };

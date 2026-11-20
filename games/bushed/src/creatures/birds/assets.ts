@@ -4,7 +4,8 @@
 //   songbird.glb   one feathered small-bird rig worn by the chickadee, the Canada jay, and the flying doubles of the
 //                  woodpecker and the grouse; each gets its own painted coat (coat_*.webp) and size
 //                  clips: idle, idle2, call, call2, eat, eat2, walk, fly, glide
-//   raven.glb      idle, idle2, walk, run, hop, fly, glide, takeoff, caw
+//   raven          the clean crow the goofus bird wears (cryptids/goofus.glb, "Crow" by Alexei Ostapenko, CC BY;
+//                  loaded read-only), 1.2x up and glossy blue-black: idle, look, peck, takeoff, fly, glide, land
 //   woodpecker.glb a hairy woodpecker scan: idle, drum, peck, hitch (it clings to bark; it flies as the songbird double)
 //   grouse.glb     a ruffed grouse scan: idle, walk, drum, alert (it bursts away as the songbird double)
 //   loon.glb       a swimming common loon: idle (head turns)
@@ -22,8 +23,10 @@ interface BodySpec {
   lift: number;
   /** extra bone scales (tail length, bill) applied after load: [bone name prefix, x, y, z] */
   bones?: [string, number, number, number][];
-  /** material look */
-  rough?: number; tint?: number;
+  /** material look (tint: a grey level or an rgb multiplier) */
+  rough?: number; tint?: number | [number, number, number];
+  /** clip names this body lacks, played as another of its clips */
+  alias?: Record<string, string>;
 }
 const BASE = 'assets/models/creatures/birds/';
 export const BODY: Record<BodyId, BodySpec> = {
@@ -32,7 +35,7 @@ export const BODY: Record<BodyId, BodySpec> = {
   jay: { file: 'songbird.glb', coat: 'coat_jay.webp', scale: 2.55, lift: 0.0095, bones: [['Tail_1', 1, 1.35, 1], ['Head', 1.08, 1.08, 1.08]], rough: 0.9 },
   woodfly: { file: 'songbird.glb', coat: 'coat_woodpecker.webp', scale: 2.1, lift: 0.0095, bones: [['Tail_1', 1, 1.2, 1]], rough: 0.8 },
   grousefly: { file: 'songbird.glb', coat: 'coat_grouse.webp', scale: 3.9, lift: 0.0095, bones: [['Tail_1', 1.3, 1.3, 1.3]], rough: 0.9 },
-  raven: { file: 'raven.glb', scale: 1, lift: 0, rough: 0.45, tint: 0.8 },
+  raven: { file: 'assets/models/creatures/cryptids/goofus.glb', scale: 1.2, lift: 0, rough: 0.36, tint: [0.62, 0.68, 0.86], alias: { idle2: 'look', eat: 'peck', eat2: 'peck', call: 'look', call2: 'look', caw: 'look' } },
   woodpecker: { file: 'woodpecker.glb', scale: 1, lift: 0, rough: 0.85 },
   grouse: { file: 'grouse.glb', scale: 1, lift: 0, rough: 0.9 },
   loon: { file: 'loon.glb', scale: 1, lift: 0, rough: 0.55 },
@@ -90,10 +93,10 @@ function loadFile(f: string): Promise<Loaded> {
   let p = files.get(f);
   if (!p) {
     gltf ??= new GLTFLoader();
-    p = gltf.loadAsync(BASE + f).then((g) => {
+    p = gltf.loadAsync(f.startsWith('assets/') ? f : BASE + f).then((g) => {
       // clips without scale tracks, so the per-species bone scales (tail, head) survive the mixer
       for (const c of g.animations) c.tracks = c.tracks.filter((t) => !t.name.endsWith('.scale'));
-      if (f === 'songbird.glb' || f === 'raven.glb') featherNormals(g.scene);
+      if (f === 'songbird.glb') featherNormals(g.scene);
       return { scene: g.scene, clips: g.animations };
     });
     files.set(f, p);
@@ -127,8 +130,8 @@ export async function loadBodies(ids: BodyId[]): Promise<void> {
       const map = coat ?? (src as THREE.MeshStandardMaterial | null)?.map ?? null;
       if (map && !coat) pixelish(map);
       const m = new THREE.MeshStandardMaterial({ map, alphaTest: 0.4, side: THREE.DoubleSide, roughness: s.rough ?? 0.85, metalness: 0 });
-      if (s.tint !== undefined) m.color.setScalar(s.tint);
-      if (s.file === 'songbird.glb' || s.file === 'raven.glb') oneNormal(m);
+      if (typeof s.tint === 'number') m.color.setScalar(s.tint); else if (s.tint) m.color.setRGB(...s.tint);
+      if (s.file === 'songbird.glb') oneNormal(m);
       mat = m; mats.set(id, m);
     }
     const clips = new Map<string, THREE.AnimationClip>();
@@ -167,9 +170,10 @@ export class Body {
     this.mixer = new THREE.AnimationMixer(this.model);
     for (const [n, c] of r.clips) this.actions.set(n, this.mixer.clipAction(c));
   }
-  has(name: string): boolean { return this.actions.has(name); }
+  has(name: string): boolean { return this.actions.has(BODY[this.id].alias?.[name] ?? name); }
   /** cross-fade to a clip (loops); timeScale for gait speed */
   play(name: string, fade = 0.25, timeScale = 1, once = false): void {
+    name = BODY[this.id].alias?.[name] ?? name;
     const a = this.actions.get(name);
     if (!a) return;
     a.timeScale = timeScale;

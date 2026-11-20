@@ -1,9 +1,9 @@
 #!/bin/bash
-# Rebuild every BUSHED bird and the insect atlas from the Sketchfab sources (all CC BY 4.0; credits in CREDITS.md).
+# Rebuild every BUSHED bird (the raven wears the cryptids' goofus.glb crow, built by tools/blender/cryptids4) and the insect atlas from the Sketchfab sources (all CC BY 4.0; credits in CREDITS.md).
 #   bash build_all.sh <work dir>        downloads into <work dir>/dl (needs `python -m lowpix auth set sketchfab` or the
 #                                       session proxy), writes public/assets/models/creatures/birds/ and models/bugs/
 # Steps: songbird.py (the small-bird rig) -> paint_birds.py (coats) -> songbird.py again (the chickadee coat
-# embedded); raven.py; scan_bird.py woodpecker | grouse; loon.py; bug_views.py per insect -> bugs_atlas.py.
+# embedded); scan_bird.py woodpecker | grouse; loon.py; bug_views.py per insect -> bugs_atlas.py.
 set -e
 W=${1:?work dir}
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -14,7 +14,6 @@ B=$GAME/public/assets/models/bugs
 mkdir -p "$W/dl" "$W/paint" "$W/coats" "$W/bugs" "$A" "$B"
 fetch() { [ -d "$W/dl/$1" ] || (cd "$REPO" && python -m lowpix sketchfab fetch "$2" -o "$W/dl/$1" >&2); ls "$W"/dl/$1/sketchfab_*/scene.gltf | head -1; }
 ROBIN=$(fetch robin ec1c6e2250824c3987cde64ea29ccd52)        # "Robin_ Bird", Assets_Animated
-CROW=$(fetch crow 0609852ae9084d8a8643517e4eae68e1)          # "Animated Crow", emptypen2477
 WOODP=$(fetch hairywp c2347b204cfe45f8bc46886f006de9cd)      # "Hairy Woodpecker", oneillbeck
 GROUSE=$(fetch grouse e0f2d244cdd74403a9a1796eb9951981)      # "Ruffed Grouse", Carnegie Museum of Natural History
 LOON=$(fetch loon c9663fb0a6ed4cc7aa60045459d4fa54)          # "Common Loon", OSU.Multimedia
@@ -25,7 +24,6 @@ $BL "$HERE/songbird.py" -- "$ROBIN" "$W/songbird_plain.glb" "$W/paint/songbird" 
 python3 "$HERE/paint_birds.py" "$W/paint/songbird" "$W/coats"
 $BL "$HERE/songbird.py" -- "$ROBIN" "$A/songbird.glb" "$W/paint/songbird" 4000 "$W/coats/chickadee.png"
 for c in chickadee jay woodpecker grouse; do python3 -c "from PIL import Image; Image.open('$W/coats/$c.png').save('$A/coat_$c.webp', quality=90, method=6)"; done
-$BL "$HERE/raven.py" -- "$CROW" "$A/raven.glb"
 $BL "$HERE/scan_bird.py" -- woodpecker "$WOODP" "$A/woodpecker.glb"
 $BL "$HERE/scan_bird.py" -- grouse "$GROUSE" "$A/grouse.glb"
 $BL "$HERE/loon.py" -- "$LOON" "$LOONF" "$W"

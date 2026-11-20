@@ -1,5 +1,5 @@
 {
- "note": "Bird models for BUSHED, built by tools/blender/birds_bugs (songbird.py, raven.py, scan_bird.py, loon.py, paint_birds.py). Credit the authors.",
+ "note": "Bird models for BUSHED, built by tools/blender/birds_bugs (songbird.py, scan_bird.py, loon.py, paint_birds.py); the raven wears ../cryptids/goofus.glb. Credit the authors.",
  "models": [
   {
    "file": "songbird.glb, coat_*.webp",
@@ -13,15 +13,15 @@
    "changes": "rebuilt as the small-bird rig (lean skeleton, clips re-baked, glide pose added, decimated), repainted as black-capped chickadee, Canada jay, hairy woodpecker and ruffed grouse coats"
   },
   {
-   "file": "raven.glb",
-   "title": "Animated Crow",
-   "author": "emptypen2477",
-   "author_url": "https://sketchfab.com/emptypen2477",
-   "source": "https://sketchfab.com/3d-models/animated-crow-0609852ae9084d8a8643517e4eae68e1",
+   "file": "raven (uses ../cryptids/goofus.glb, read-only)",
+   "title": "Crow",
+   "author": "Alexei Ostapenko",
+   "author_url": "https://sketchfab.com/alexanders823",
+   "source": "https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2",
    "licence": "CC BY 4.0",
    "licence_url": "http://creativecommons.org/licenses/by/4.0/",
    "spdx": "CC-BY-4.0",
-   "changes": "rebuilt as a common raven (lean skeleton, clips re-baked and renamed, folded wing feathers lowered on the ground clips, decimated, rescaled)"
+   "changes": "the goofus bird model (tools/blender/cryptids4) shown 1.2x larger in a glossy blue-black material; its idle, look, peck, takeoff, fly, glide and land clips"
   },
   {
    "file": "woodpecker.glb",

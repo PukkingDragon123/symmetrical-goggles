@@ -629,7 +629,7 @@ The forest birds (`public/assets/models/creatures/birds/`) and the insect sprite
 | File | Source | Author | Licence |
 |---|---|---|---|
 | `songbird.glb, coat_*.webp` | [Robin_ Bird](https://sketchfab.com/3d-models/robin--bird-ec1c6e2250824c3987cde64ea29ccd52) | [Assets_Animated](https://sketchfab.com/Assets_Animated) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
-| `raven.glb` | [Animated Crow](https://sketchfab.com/3d-models/animated-crow-0609852ae9084d8a8643517e4eae68e1) | [emptypen2477](https://sketchfab.com/emptypen2477) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `raven` (wears `../cryptids/goofus.glb`, credited above) | [Crow](https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) | [Alexei Ostapenko](https://sketchfab.com/alexanders823) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `woodpecker.glb` | [Hairy Woodpecker (Leuconotopicus villosus)](https://sketchfab.com/3d-models/hairy-woodpecker-leuconotopicus-villosus-c2347b204cfe45f8bc46886f006de9cd) | [oneillbeck](https://sketchfab.com/oneillbeck) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `grouse.glb` | [Ruffed Grouse](https://sketchfab.com/3d-models/ruffed-grouse-e0f2d244cdd74403a9a1796eb9951981) | [Innovation Studio](https://sketchfab.com/cmp_innovation_studio) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `loon.glb` | [Common Loon](https://sketchfab.com/3d-models/common-loon-c9663fb0a6ed4cc7aa60045459d4fa54) | [osuecampus](https://sketchfab.com/OSU.Multimedia) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
@@ -644,7 +644,7 @@ The forest birds (`public/assets/models/creatures/birds/`) and the insect sprite
 Required attribution:
 
 * `songbird.glb, coat_*.webp`: This work is based on "Robin_ Bird" (https://sketchfab.com/3d-models/robin--bird-ec1c6e2250824c3987cde64ea29ccd52) by Assets_Animated (https://sketchfab.com/Assets_Animated) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
-* `raven.glb`: This work is based on "Animated Crow" (https://sketchfab.com/3d-models/animated-crow-0609852ae9084d8a8643517e4eae68e1) by emptypen2477 (https://sketchfab.com/emptypen2477) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `raven` (the goofus bird's `goofus.glb`, shown larger and blue-black): This work is based on "Crow" (https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) by Alexei Ostapenko (https://sketchfab.com/alexanders823) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `woodpecker.glb`: This work is based on "Hairy Woodpecker (Leuconotopicus villosus)" (https://sketchfab.com/3d-models/hairy-woodpecker-leuconotopicus-villosus-c2347b204cfe45f8bc46886f006de9cd) by oneillbeck (https://sketchfab.com/oneillbeck) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `grouse.glb`: This work is based on "Ruffed Grouse" (https://sketchfab.com/3d-models/ruffed-grouse-e0f2d244cdd74403a9a1796eb9951981) by Innovation Studio (https://sketchfab.com/cmp_innovation_studio) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `loon.glb`: This work is based on "Common Loon" (https://sketchfab.com/3d-models/common-loon-c9663fb0a6ed4cc7aa60045459d4fa54) by osuecampus (https://sketchfab.com/OSU.Multimedia) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.

@@ -76,7 +76,7 @@ setLight(qs.get('light') ?? 'day');
 const LINE: { name: string; id: BodyId; clip: string; t: number; at: [number, number, number]; yaw: number; size: number; walk: string; cling?: boolean }[] = [
   { name: 'chickadee', id: 'chickadee', clip: 'idle', t: 0.8, at: [-1.6, 0, 0], yaw: 0.6, size: 0.14, walk: 'fly' },
   { name: 'jay', id: 'jay', clip: 'idle', t: 0.8, at: [-0.9, 0, 0], yaw: 0.6, size: 0.3, walk: 'walk' },
-  { name: 'raven', id: 'raven', clip: 'idle', t: 1.0, at: [0, 0, 0], yaw: 0.6, size: 0.62, walk: 'walk' },
+  { name: 'raven', id: 'raven', clip: 'idle', t: 1.0, at: [0, 0, 0], yaw: 0.6, size: 0.67, walk: 'fly' },
   { name: 'grouse', id: 'grouse', clip: 'idle', t: 1.0, at: [1.1, 0, 0], yaw: 0.6, size: 0.45, walk: 'walk' },
   { name: 'woodpecker', id: 'woodpecker', clip: 'idle', t: 1.0, at: [2.2, 0, 0], yaw: 0.6, size: 0.23, walk: 'drum' },
   { name: 'loon', id: 'loon', clip: 'idle', t: 0.5, at: [LAKE.x - LAKE.r + 3, waterY, LAKE.z], yaw: 0.9, size: 0.8, walk: 'idle' },

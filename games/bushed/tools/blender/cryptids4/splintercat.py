@@ -1,4 +1,4 @@
-# SPLINTER CAT: a real Eurasian lynx (Paleo Modelist, CC-BY 4.0: rigged; 5 of its 8 clips kept), turned to face +Z, scaled up a little
+# SPLINTER CAT: a real Eurasian lynx (Paleo Modelist, CC-BY 4.0: rigged; 6 of its 8 clips kept), turned to face +Z, scaled up a little
 # (a splinter cat is a big lynx), small bead eyes for its painted ones.
 #   python -m lowpix sketchfab fetch aff6767399cf4daca1a82b43ccaa1252 -o <dl>/aff67673
 #   blender -b --python tools/blender/cryptids4/splintercat.py -- <dl>
@@ -44,7 +44,9 @@ clips = [
     dict(name='walk', action=A('walk'), drift=True),
     dict(name='run', action=A('run'), drift=True),
     dict(name='eat', action=A('eating')),
-]  # (the source's jump, sleep and dig clips lose their root motion and tear the belly: left out)
+    # lying down (the game tucks the head onto the paws and wraps the tail on top of it)
+    dict(name='sleep', action=A('sleep'), f0=9, f1=9, pose=True),
+]
 for c in clips:  # the source's root motion lived on an empty we drop: put every clip back on the ground
     c['floor'] = True
 ao, outm, acts = C.rebake(arm, meshes, keep, ref, clips, T=T, src_fps=fps, name='splintercat', obj_bone={'beads': head})

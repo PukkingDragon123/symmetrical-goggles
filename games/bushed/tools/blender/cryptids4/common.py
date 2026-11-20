@@ -15,6 +15,7 @@ import numpy as np
 from mathutils import Matrix, Vector, Quaternion
 
 FPS = 30
+INIT_POSE = {}
 MX = Matrix.Diagonal((-1.0, 1.0, 1.0, 1.0))
 
 
@@ -30,6 +31,8 @@ def load(path):
             bpy.data.objects.remove(o, do_unlink=True)
     arms = [o for o in bpy.data.objects if o.type == 'ARMATURE']
     meshes = [o for o in bpy.data.objects if o.type == 'MESH']
+    for a in arms:  # (cryptids4) the imported pose, before any clip touches it
+        INIT_POSE[a.name] = {pb.name: pb.matrix_basis.copy() for pb in a.pose.bones}
     return (arms[0] if arms else None), meshes, bpy.context.scene.render.fps
 
 
@@ -163,6 +166,12 @@ def rebake(arm, meshes, keep, ref, clips, T=Matrix.Identity(4), src_fps=24, name
     made = []
     for c in clips:
         act = c['action']
+        # (cryptids4) bones a clip does not key keep the last clip's pose in Blender: start every clip from the
+        # imported pose (glTF: an unanimated joint holds its node transform)
+        arm.animation_data.action = None
+        for pb in arm.pose.bones:
+            if pb.name in INIT_POSE.get(arm.name, {}):
+                pb.matrix_basis = INIT_POSE[arm.name][pb.name]
         arm.animation_data.action = act
         f0, f1 = c.get('f0', act.frame_range[0]), c.get('f1', act.frame_range[1])
         dur = max((f1 - f0) / src_fps, 1 / FPS)
