@@ -201,7 +201,8 @@ export function brush(o: BrushOpts) {
     hp.form({ light: o.light ?? 2.4, ao: o.ao ?? 2.0, cavity: o.cavity ?? 1.4, ridge: o.ridge ?? 0.8 });
     if (fu) hp.strokes({ flow: fu.flow ?? 'sweep', len: lens(fu), width: wids(fu), amp: fu.amp ?? 0.7, tip: fu.tip ?? 0.8, root: fu.root ?? 0.7, gap: fu.gap ?? 0.5, dabs: fu.dabs, seed: seed + 21, mask: (i) => fur[i] });
     yield;
-    hp.strokes({ flow: sk.flow ?? 'across', len: lens(sk), width: wids(sk), amp: sk.amp ?? 0.5, dabs: sk.dabs, seed: seed + 29, mask: (i) => 1 - fur[i] });
+    let bare = false; for (let i = 0; i < px.n && !bare; i++) bare = fur[i] < 0.95;
+    if (bare) hp.strokes({ flow: sk.flow ?? 'across', len: lens(sk), width: wids(sk), amp: sk.amp ?? 0.5, dabs: sk.dabs, seed: seed + 29, mask: (i) => 1 - fur[i] });
     o.after?.(px, fur, hp);
     yield;
     px.flush(o.glow ? { glow: (i) => o.glow!(px, i) } : {});

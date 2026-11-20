@@ -188,8 +188,9 @@ function hidePaint(part: Part) {
           // the bare nose plate on the front of the muzzle, dark and wet, the nostrils comma slits in it
           // the bare muzzle: dark wet leather on the front of the nose, bleeding back into the scales through the
           // folds that run from the nostrils down to the lip (no hard edge)
-          const pd = Math.hypot(ax / 0.15, (hy - 0.0) / 0.07, (hz - 0.5) / 0.06), fold = nasoFold(ax, hy, hz);
-          if (pd < 1.05 + s * 0.18 + big * 0.12 || fold < 0.006 + s * 0.002) { R = LEATHER; st = 2.0 + s * 0.5 + cl(pd - 0.6, 0, 0.6) * 1.2 + (N[i * 3 + 1] > 0.3 ? 0.8 : 0) - (fold < 0.004 ? 1.2 : 0); }
+          const pd = Math.hypot(ax / 0.105, (hy - 0.004) / 0.05, (hz - 0.5) / 0.045), fold = nasoFold(ax, hy, hz);
+          if (pd < 1 + s * 0.15 + big * 0.1) { R = LEATHER; st = 1.8 + s * 0.4 + cl(pd - 0.55, 0, 0.5) * 1.6 + (N[i * 3 + 1] > 0.4 ? 0.7 : 0); }
+          else if (fold < 0.005) st -= 1.2;
           const nos = Math.hypot((ax - 0.07 - (hy - 0.005) * 0.25) / 0.012, (hy - 0.004) / 0.03);
           if (hz > 0.46 && nos < 1) { R = LEATHER; st = 0; }
           // the bridge's wrinkles
@@ -236,7 +237,7 @@ function hidePaint(part: Part) {
     if (part === 'skull' || part === 'jaw') hp.hollows([{ c: HODAG_EYE, r: 0.075, k: 1.4 }, { c: mir(HODAG_EYE, -1), r: 0.075, k: 1.4 }, ...[1, -1].flatMap((s2) => [{ c: H(s2 * 0.07, 0.004, 0.49), r: 0.03, k: 1.4 }, { c: H(s2 * 0.25, mouthY(-0.05), -0.05), r: 0.06, k: 1.2 }])]);
     if (part === 'skull') {
       // wet nostrils and a scar across the snout
-      hp.wet((i) => (isR(i, LEATHER) ? 1 : 0), { ramp: RP('slate'), thr: 0.86, rough: 45 });
+      hp.wet((i) => (isR(i, LEATHER) ? 1 : 0), { ramp: RP('slate'), thr: 0.95, rough: 55 });
       px.scar([H(0.17, 0.08, 0.27), H(0.12, 0.09, 0.31), H(0.07, 0.085, 0.36)], 0.006, BONE);
     }
     px.flush();

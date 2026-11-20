@@ -221,7 +221,7 @@ export function* wassetModelGen(o: { page?: number; den?: number } = {}): ModelG
   const tailSkin = chainSkin(TAIL, tb, 0.4);
   body.add(stalk({ name: 'tail', path: curve([[0, 0.172, -0.4], ...TAIL_CTRL], 14), r: (t) => 0.036 * (1 - t * 0.55) * (t < 0.06 ? 1.15 : 1) * (t > 0.92 ? 1 - (t - 0.92) * 9 : 1) + 0.003, around: 12, capS: false, capE: true, levels: 1, k: 1,
     skin: (p) => (p[2] > -0.46 ? [bi('hips'), 0.6, tb[0], 0.4] : tailSkin(p)), paint: coatPaint('tail') })).reg = REG.tail;
-  const out = yield* body.buildGen({ den: o.den ?? 360, maxScale: 2, budget: 22000, fur: WS_FUR });
+  const out = yield* body.buildGen({ den: o.den ?? 300, maxScale: 2, budget: 22000, fur: WS_FUR });
   return finishModel(body, out, bones);
 }
 /** a dense winter coat: longest on the neck ruff, the back and the tail, short on the face, the ears and the paws */
