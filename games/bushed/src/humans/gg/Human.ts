@@ -40,6 +40,8 @@ const MOOD: Record<string, number[]> = { neutral: [0, 0, 0], smile: [0, 0, 0], s
 
 // time-sliced texture painting shared by all humans: ~3 ms of painting per frame in total
 const JOBS = new Set<Human>();
+// talking mouth shapes: open, round, width
+const MOUTHS = [[0, 0, 1], [1.3, 0, 1], [2.5, 0.1, 1.04], [2.1, 0.9, 0.8], [3.1, 0.3, 1]];
 let pumpAt = -1;
 function pump(budget = 3) {
   const now = performance.now();
@@ -605,8 +607,8 @@ export class Human {
       if (this.mouthT < 0) {
         this.mouthT = 0.065 + Math.random() * 0.07;
         const r = Math.random();
-        this.mouth = r < 0.16 ? [0, 0, 1] : r < 0.42 ? [1.3, 0, 1] : r < 0.68 ? [2.5, 0.1, 1.04] : r < 0.84 ? [2.1, 0.9, 0.8] : [3.1, 0.3, 1];
-        if (Math.random() < 0.07) { this.mouth = [0, 0, 1]; this.mouthT += 0.22; }
+        this.mouth = r < 0.16 ? MOUTHS[0] : r < 0.42 ? MOUTHS[1] : r < 0.68 ? MOUTHS[2] : r < 0.84 ? MOUTHS[3] : MOUTHS[4];
+        if (Math.random() < 0.07) { this.mouth = MOUTHS[0]; this.mouthT += 0.22; }
       }
       [mo, mr, mw] = this.mouth;
     }

@@ -83,10 +83,11 @@ export class NpcAnimator {
     } else this.talkT = 0.4;
     h.update(dt, { speed, lookAt: this.hasTarget ? this.target : null, talking: this.talking });
     // events
-    if (this.state === 'chop') {
-      const g = h.gestures.find((x) => x.name === 'chop' && !x.out);
-      if (g) { const u = g.t % CHOP_T; if (this.chopPrev < CHOP_IMPACT && u >= CHOP_IMPACT) this.emit('impact'); this.chopPrev = u; }
+    if (this.state === 'chop' || this.state === 'flinch') {
+      let g = null;
+      for (const x of h.gestures) if (x.name === this.state && !x.out) g = x;
+      if (this.state === 'chop' && g) { const u = g.t % CHOP_T; if (this.chopPrev < CHOP_IMPACT && u >= CHOP_IMPACT) this.emit('impact'); this.chopPrev = u; }
+      if (this.state === 'flinch' && !g) { this.state = 'idle'; this.emit('flinch_end'); }
     }
-    if (this.state === 'flinch' && !h.gestures.some((x) => x.name === 'flinch' && !x.out)) { this.state = 'idle'; this.emit('flinch_end'); }
   }
 }
