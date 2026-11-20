@@ -205,7 +205,7 @@ export class Renderer {
             float air = uAir * 0.0018 * (1.0 - smoothstep(42.0, 60.0, t));
             float dm = mistOn > 0.001 ? mistOn * 0.011 * mistAt(p) : 0.0;
             vec3 Ls = uSunCol * phase * lit;
-            S += T * (air * Ls + dm * (Ls * 0.45 + uAmb)) * dt;
+            S += T * (air * Ls + dm * (min(Ls * 0.25, vec3(0.35)) + uAmb)) * dt;
             T *= exp(-dm * dt);
           }
           // practical lights: analytic single scattering along the ray (lantern and campfire halos in the air)
@@ -661,7 +661,7 @@ export class Renderer {
     u.uExposure.value = g.exposure; u.uLift.value.copy(g.lift); u.uGamma.value.copy(g.gamma); u.uGain.value.copy(g.gain);
     u.uSat.value = g.saturation; u.uWarm.value = g.warm; u.uCon.value = g.contrast;
     u.uVig.value = g.vignette; u.uGrain.value = g.grain; u.uShafts.value = g.shafts * vis;
-    u.uBloom.value = g.bloom; u.uMie.value = g.mie * THREE.MathUtils.smoothstep(this.sunDir.y, -0.1, 0.05) * (volOn ? 0.5 : 1); u.uQuant.value = g.quant;
+    u.uBloom.value = g.bloom; u.uMie.value = g.mie * THREE.MathUtils.smoothstep(this.sunDir.y, -0.1, 0.05) * (volOn ? 0.35 : 1); u.uQuant.value = g.quant;
     u.uFlash.value = this.fx.flash; u.uDamage.value = this.fx.damage; u.uCold.value = this.fx.cold; u.uFade.value = this.fx.fade;
     this.pass(this.mComp, this.ldr);
     this.mBlit.uniforms.tSrc.value = this.ldr.texture;

@@ -100,6 +100,7 @@ export class Game {
 
   constructor(canvas: HTMLCanvasElement) {
     this.R = new Renderer(canvas);
+    this.R.mistHoles = this.interiors;
     this.sky = new Sky(this.scene);
     this.terrain.loadDefault();
     this.scene.add(this.terrain.group, makeLake(), debris.mesh, puffs.mesh, this.wfx.group);
@@ -586,7 +587,7 @@ export class Game {
     // sky and light
     G.uWindStrength.value = 0.3 + 0.25 * Math.sin(G.uTime.value * 0.05) + this.weather.storm * 0.6;
     G.uGust.value += dt * (0.5 + G.uWindStrength.value);
-    this.sky.update(this.hour, this.player.pos, this.weather, this.R.grade, G.uTime.value);
+    this.sky.update(this.hour, this.player.pos, this.weather, this.R.grade, G.uTime.value, this.day);
     this.R.sunDir.copy(this.sky.sunDir); this.R.sunColor.copy(this.sky.sun.color); this.R.fogColor.copy(this.sky.fogColor);
     this.viewKey.color.copy(this.sky.sun.color);
     this.viewKey.intensity = this.indoors ? 0.25 : this.sky.sun.intensity * 0.45;

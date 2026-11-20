@@ -596,8 +596,11 @@ const TERRAIN_MAP = /* glsl */`
   terr *= 1.0 - 0.38 * wetness;
   // puddles: in road ruts, in the wet low spots, where the wear map pools water; deeper after rain
   float rutMask = isRoad * (1.0 - smoothstep(0.08, 0.35, abs(abs(vRoad.w < 0.5 ? ar - 1.8 : ar) - 0.64)));
-  float pool = rutMask * 0.85 + wr.b * 0.9 + siteWet * 0.35 * vSite.w + mk.g * 0.5;
-  float puddle = smoothstep(0.62, 0.7, pool * (0.55 + 0.6 * tvn(wp * 0.6 + 5.0)) + uWet * 0.35 - hgt * 0.35) * step(camD, 120.0);
+  // standing water needs a reason: rain, a wet site, a muddy spot; and only in patches (ruts hold water in places)
+  float damp = max(uWet, smoothstep(0.45, 0.9, siteWet));
+  float gate = smoothstep(0.5, 0.72, tvn(wp * 0.3 + 5.0)) * (0.7 + 0.3 * tvn(wp * 1.1));
+  float pool = rutMask * gate * (0.35 + 0.75 * damp) + wr.b * (0.55 + 0.45 * gate) + siteWet * 0.3 * vSite.w * gate + mk.g * 0.4 * damp;
+  float puddle = smoothstep(0.6, 0.68, pool + uWet * 0.2 - hgt * 0.3) * step(camD, 120.0);
   terr = mix(terr, terr * 0.35 + vec3(0.01, 0.012, 0.012), puddle);
   terr = mix(terr, vec3(0.86, 0.9, 0.95), uSnow * smoothstep(0.55, 0.75, vWNor.y));
   diffuseColor.rgb *= terr;
@@ -671,7 +674,7 @@ export class Terrain {
             if (uWet > 0.1) { vec2 rp = floor(wp * 10.0) / 10.0; pn.xz += (vec2(tvn(rp * 3.0 + uTime * 4.0), tvn(rp * 3.0 - uTime * 4.0 + 9.0)) - 0.5) * 0.12 * uWet; pn = normalize(pn); }
             vec3 rr = reflect(vd, pn);
             float F = 0.03 + 0.97 * pow(1.0 - max(dot(-vd, pn), 0.0), 5.0);
-            totalEmissiveRadiance += probeSky(rr) * F * puddle * 0.9;
+            totalEmissiveRadiance += probeSky(rr) * F * puddle * 0.55;
           }`);
     };
     this.material.customProgramCacheKey = () => 'terrain-v2';
