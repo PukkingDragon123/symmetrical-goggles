@@ -13,7 +13,8 @@ import { G } from './globals';
 
 const KEEP = /eye|glint|cornea|pupil|nose|glass|window|bottle|jar|water|lake|ice|lens|mirror|chrome_keep/i;
 const METAL = /metal|steel|iron|blade|axe|saw|knife|tin\b|chrome|brass|copper|rifle|barrel|gun|anvil|tong|hammer|nail|wire|bolt|hinge|kettle|pot\b|pan\b|stove|tool/i;
-const SKIP = /^(terrain|water)$/;
+/** materials that own their look: the terrain and lake shaders, the kitchen's food, fat and liquids */
+const SKIP = /^(terrain|water)$|cook|fat|produce|liquid|food|broth|soup|stew/i;
 
 const done = new WeakSet<THREE.Material>();
 const upTex = new WeakSet<THREE.Texture>();
@@ -35,7 +36,7 @@ function sharpen(t: THREE.Texture | null | undefined, aniso: number): void {
 function matteOne(m: THREE.Material, owner: THREE.Object3D, aniso: number): void {
   done.add(m);
   const std = m as THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial;
-  if (SKIP.test(m.name)) return;
+  if (SKIP.test(m.name) || (m as THREE.ShaderMaterial).isShaderMaterial || m.userData.noMatte) return;
   const keep = !!m.userData.keepGloss || KEEP.test(m.name) || KEEP.test(owner.name) || (m.transparent && m.opacity < 0.9);
   if ((m as THREE.MeshPhongMaterial).isMeshPhongMaterial) {
     const p = m as THREE.MeshPhongMaterial;
@@ -94,6 +95,26 @@ function matteOne(m: THREE.Material, owner: THREE.Object3D, aniso: number): void
   };
   std.customProgramCacheKey = () => (baseKey ?? prevKey.call(std)) + tag;
   std.needsUpdate = true;
+}
+
+/**
+ * Watch a scene: objects added to it are queued and given the matte model on the next flush (no per-frame sweeps
+ * over the whole scene; a slow safety sweep catches children added deeper inside groups later).
+ */
+export class MatteWatcher {
+  private queue: THREE.Object3D[] = [];
+  private roots = new Set<THREE.Object3D>();
+  private sweepAt = 0;
+  watch(root: THREE.Object3D): void {
+    if (this.roots.has(root)) return;
+    this.roots.add(root);
+    this.queue.push(root);
+    root.addEventListener('childadded', (e) => { this.queue.push((e as unknown as { child: THREE.Object3D }).child); });
+  }
+  flush(frame: number, aniso: number): void {
+    if (frame >= this.sweepAt) { this.sweepAt = frame + 900; for (const r of this.roots) this.queue.push(r); }
+    while (this.queue.length) mattePass(this.queue.pop()!, aniso);
+  }
 }
 
 /** apply the matte model to every not-yet-seen material under root */

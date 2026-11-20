@@ -14,7 +14,7 @@ import { wallMapTexture } from './wallmap';
 import { STOVE } from './stove';
 import { flameCards } from './fixtures';
 import { CLOTH } from './cabin/tex';
-import { lowSplit, noRay, farCull } from './cabin/bake';
+import { lowSplit, noRay, farCull, bakeObject } from './cabin/bake';
 import { cabinExterior } from './cabin/exterior';
 import { cabinYard } from './cabin/yard';
 import { cabinInterior } from './cabin/interior';
@@ -528,6 +528,30 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
   }
 
   await Promise.all(pending);
+  // bake the static decor (products and props placed above) into one no-shadow mesh per material: dozens of
+  // little objects were a draw call each per pass. Kept live: whatever cooking hides by name, anything with
+  // glass or a flame.
+  {
+    const keep = new Set(['coffeepot', 'pot_enamel_01', 'Lantern_01']);
+    const pms = new Mesher(), oms = new Mesher();
+    const done: THREE.Object3D[] = [];
+    for (const o of group.children) {
+      if (keep.has(o.name) || !(o.userData.decor || o.userData.propId)) continue;
+      let clear = true;
+      o.traverse((m) => { const mm = m as THREE.Mesh; if (mm.isMesh) { const mt = (Array.isArray(mm.material) ? mm.material[0] : mm.material) as THREE.Material; if (mt.transparent || m.name === 'glass' || m.name === 'flame') clear = false; } });
+      if (!clear) continue;
+      o.updateMatrix();
+      bakeObject(o.position.z > D / 2 ? oms : pms, o, o.matrix.clone());
+      done.push(o);
+    }
+    for (const o of done) group.remove(o);
+    const g = noRay(pms.build({ name: 'cabin_decor', cast: false }));
+    group.add(g);
+    c.updaters.push(farCull(g, V(0, 1.4, 0.5), 45));
+    const og = noRay(oms.build({ name: 'cabin_porch_decor' }));
+    group.add(og);
+    c.updaters.push(farCull(og, V(0, 1, 4), 110));
+  }
   // flames in the lanterns (the props carry a flame card; make sure it glows) + mark decor
   group.traverse((o) => {
     if (o.name === 'flame') {

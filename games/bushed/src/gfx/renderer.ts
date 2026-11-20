@@ -13,7 +13,7 @@
 import * as THREE from 'three';
 import { G, WATER_GLSL } from './globals';
 import { SKY_GLSL, SKY_UNIFORMS } from './sky';
-import { mattePass } from './matte';
+import { MatteWatcher } from './matte';
 
 const VERT = /* glsl */`
 varying vec2 vUv;
@@ -106,6 +106,11 @@ export class Renderer {
   private lights: THREE.PointLight[] = [];
   private lightScanAt = -1;
   private lightPick: { l: THREE.PointLight; s: number }[] = [];
+  private matte = new MatteWatcher();
+  /** indoor volumes where the ground mist must not reach (the game's interior boxes); null = look for them on the
+   *  game object (window.__game.interiors) */
+  mistHoles: THREE.Box3[] | null = null;
+  private holeCount = -1;
 
   constructor(canvas: HTMLCanvasElement) {
     this.gl = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', stencil: false });
@@ -146,7 +151,7 @@ export class Renderer {
         uniform mat4 uInvProj; uniform mat4 uCamWorld; uniform vec3 uCamPos; uniform float uNear; uniform float uFar;
         uniform vec3 uSunDir; uniform vec3 uSunCol; uniform vec3 uAmb; uniform float uAir; uniform vec2 uRes;
         uniform float uTime; uniform vec2 uWindDir;
-        uniform vec4 uL[${MAX_LIGHTS}]; uniform vec4 uLC[${MAX_LIGHTS}]; uniform vec4 uLS[${MAX_LIGHTS}]; uniform int uNL; uniform int uSteps;
+        uniform vec4 uL[${MAX_LIGHTS}]; uniform vec4 uLC[${MAX_LIGHTS}]; uniform vec4 uLS[${MAX_LIGHTS}]; uniform int uNL; uniform int uSteps; uniform vec3 uHoleMin[4]; uniform vec3 uHoleMax[4];
         varying vec2 vUv;
         ${COMMON}
         float vh(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -159,13 +164,22 @@ export class Renderer {
           if (sc.x < 0.001 || sc.y < 0.001 || sc.x > 0.999 || sc.y > 0.999 || sc.z > 1.0) return 1.0;
           return texture(tShadow, vec3(sc.xy, sc.z - 0.0015));
         }
+        float indoor(vec3 p) {
+          float k = 0.0;
+          for (int i = 0; i < 4; i++) {
+            vec3 a = smoothstep(uHoleMin[i] - 0.4, uHoleMin[i] + 0.2, p) * (1.0 - smoothstep(uHoleMax[i] - 0.2, uHoleMax[i] + 0.4, p));
+            k = max(k, a.x * a.y * a.z);
+          }
+          return k;
+        }
         float mistAt(vec3 p) {
+          if (indoor(p) > 0.99) return 0.0;
           vec2 m = texture2D(tMist, (p.xz - uMistBox.xy) / uMistBox.zw).rg;
           float k = clamp((m.r - p.y) / 2.2, 0.0, 1.0);
           if (k <= 0.0) return 0.0;
           vec2 q = p.xz * 0.045 - uWindDir * uTime * 0.25;
           float n = vn(q) * 0.6 + vn(q * 2.7 + vec2(uTime * 0.05, 3.0)) * 0.4;
-          return k * k * (0.25 + 0.75 * smoothstep(0.2, 0.75, n));
+          return k * k * (0.25 + 0.75 * smoothstep(0.2, 0.75, n)) * (1.0 - indoor(p));
         }
         void main() {
           float d = texture2D(tDepth, vUv).r;
@@ -175,8 +189,8 @@ export class Renderer {
           vec3 rd = normalize((uCamWorld * vec4(vp.xyz, 0.0)).xyz);
           float mu = dot(rd, uSunDir);
           // Henyey-Greenstein, forward lobe + a little isotropic
-          float g = 0.5, hg = (1.0 - g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5);
-          float phase = 0.08 + 0.92 * hg * 0.25;
+          float g = 0.6, hg = (1.0 - g * g) / pow(1.0 + g * g - 2.0 * g * mu, 1.5);
+          float phase = 0.02 + hg * 0.12;
           float jit = bayer4(gl_FragCoord.xy) + vh(gl_FragCoord.xy + fract(uTime) * 61.0) * 0.25;
           float maxT = min(dist, 150.0);
           float T = 1.0; vec3 S = vec3(0.0);
@@ -188,7 +202,7 @@ export class Renderer {
             float t = maxT * f0 * f0, dt = maxT * 2.0 * f0 / N;
             vec3 p = uCamPos + rd * t;
             float lit = sunLit(p);
-            float air = uAir * 0.0022 * (1.0 - smoothstep(42.0, 60.0, t));
+            float air = uAir * 0.0018 * (1.0 - smoothstep(42.0, 60.0, t));
             float dm = mistOn > 0.001 ? mistOn * 0.011 * mistAt(p) : 0.0;
             vec3 Ls = uSunCol * phase * lit;
             S += T * (air * Ls + dm * (Ls * 0.45 + uAmb)) * dt;
@@ -220,6 +234,7 @@ export class Renderer {
         uSunDir: G.uSunDir, uSunCol: G.uSunCol, uAmb: { value: new THREE.Color() }, uAir: { value: 1 }, uRes: { value: new THREE.Vector2() },
         uTime: G.uTime, uWindDir: G.uWindDir,
         uL: lightsU, uLC: lightsC, uLS: lightsS, uNL: { value: 0 }, uSteps: { value: 22 },
+        uHoleMin: { value: Array.from({ length: 4 }, () => new THREE.Vector3(1e6, 1e6, 1e6)) }, uHoleMax: { value: Array.from({ length: 4 }, () => new THREE.Vector3(-1e6, -1e6, -1e6)) },
       },
       depthTest: false, depthWrite: false,
     });
@@ -409,7 +424,7 @@ export class Renderer {
           float l = dot(col, vec3(0.2126, 0.7152, 0.0722));
           // split toning: warm highlights / teal shadows by day, blue shadows at night (firelight stays orange)
           col += max(uWarm, 0.0) * vec3(0.055, 0.022, -0.04) * smoothstep(0.25, 0.85, l);
-          col += (0.35 + max(-uWarm, 0.0) * 2.0) * vec3(-0.010, 0.003, 0.016) * (1.0 - smoothstep(0.0, 0.32, l));
+          col += (0.35 + max(-uWarm, 0.0) * 1.0) * vec3(-0.010, 0.003, 0.016) * (1.0 - smoothstep(0.0, 0.32, l));
           col = max(col, 0.0);
           l = dot(col, vec3(0.2126, 0.7152, 0.0722));
           col = mix(vec3(l), col, uSat);
@@ -497,6 +512,26 @@ export class Renderer {
     this.pass(this.mBlur, dst);
   }
 
+  /** merge the interior boxes into at most four volumes (one per building) for the mist mask */
+  private updateHoles(): void {
+    const boxes = this.mistHoles ?? ((globalThis as unknown as { __game?: { interiors?: THREE.Box3[] } }).__game?.interiors ?? null);
+    if (!boxes || boxes.length === this.holeCount) return;
+    this.holeCount = boxes.length;
+    const cl: THREE.Box3[] = [];
+    const c = new THREE.Vector3(), cc = new THREE.Vector3();
+    for (const b of boxes) {
+      b.getCenter(c);
+      let hit = cl.find((k) => k.getCenter(cc).distanceTo(c) < 30);
+      if (!hit && cl.length < 4) { hit = b.clone(); cl.push(hit); continue; }
+      (hit ?? cl[cl.length - 1]).union(b);
+    }
+    const u = this.mVol.uniforms;
+    for (let i = 0; i < 4; i++) {
+      if (cl[i]) { u.uHoleMin.value[i].copy(cl[i].min); u.uHoleMax.value[i].copy(cl[i].max); }
+      else { u.uHoleMin.value[i].set(1e6, 1e6, 1e6); u.uHoleMax.value[i].set(-1e6, -1e6, -1e6); }
+    }
+  }
+
   /** the brightest point lights near the camera (lanterns, windows, fires) for the air halos */
   private pickLights(world: THREE.Scene, camera: THREE.PerspectiveCamera): number {
     if (this.frame >= this.lightScanAt) {
@@ -538,12 +573,9 @@ export class Renderer {
   render(world: THREE.Scene, camera: THREE.PerspectiveCamera, view?: THREE.Scene, viewCam?: THREE.Camera): void {
     const gl = this.gl;
     this.frame++;
-    // new materials (places, props, creatures streaming in) get the matte shading model
-    if (this.frame % 45 === 1) {
-      const an = Math.min(8, this.gl.capabilities.getMaxAnisotropy());
-      mattePass(world, an);
-      if (view) mattePass(view, an);
-    }
+    // newly added objects (places, props, creatures streaming in) get the matte shading model
+    this.matte.watch(world); if (view) this.matte.watch(view);
+    this.matte.flush(this.frame, Math.min(8, this.gl.capabilities.getMaxAnisotropy()));
     // sky probe first: the lake and wet ground read it this frame
     this.pass(this.mProbe, this.probe);
     G.uSkyProbe.value = this.probe.texture;
@@ -579,6 +611,7 @@ export class Renderer {
       u.uAir.value = g.air;
       u.uRes.value.set(this.volRT.width, this.volRT.height);
       u.uNL.value = this.pickLights(world, camera);
+      if (this.frame % 60 === 1) this.updateHoles();
       // the low preset (3 px pixels) marches fewer steps
       u.uSteps.value = this.pixel >= 3 ? 10 : 22;
       this.pass(this.mVol, this.volRT);

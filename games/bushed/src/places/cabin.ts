@@ -505,6 +505,12 @@ export async function buildCabin(): Promise<Place> {
   const tmp = new THREE.Vector3();
   void tmp;
 
+  // the lamps' cube shadow maps only draw the cabin shell, the furniture and the stove (layer 4), not the yard,
+  // the porch junk or the little decor (each cube map renders every caster it sees six times)
+  const LAMP_LAYER = 4;
+  for (const l of lights) { const sh = (l as THREE.PointLight).shadow; if (sh && (l.castShadow || l.userData.wantsShadow)) sh.camera.layers.set(LAMP_LAYER); }
+  mesh.traverse((o) => o.layers.enable(LAMP_LAYER));
+  stove.group.traverse((o) => o.layers.enable(LAMP_LAYER));
   // lights far from the camera go dark and stop rendering shadows (applied after every other updater)
   const cull = lightCuller(new THREE.Vector3(sp.x, gy + 1.5, sp.z), lights, 80);
   updaters.push(() => {

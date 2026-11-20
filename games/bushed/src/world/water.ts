@@ -65,7 +65,7 @@ export function makeLake(): THREE.Mesh {
         float lap = 0.05 + 0.035 * sin(uTime * 1.1 + wN(wxz * 0.7) * 6.0) + 0.02 * sin(uTime * 2.3 + vWP.x * 0.9);
         float fn = wN(wxz * 2.3 + vec2(uTime * 0.05, 0.0)) * 0.6 + wN(wxz * 7.0) * 0.4;
         float foam = (1.0 - smoothstep(lap * 0.5, lap, wdep)) * smoothstep(0.38, 0.62, fn);
-        float scum = (1.0 - smoothstep(0.0, lap * 2.6, wdep)) * smoothstep(0.55, 0.7, wN(wxz * 1.3 + 11.0)) * 0.6;
+        float scum = (1.0 - smoothstep(0.0, lap * 1.4, wdep)) * smoothstep(0.6, 0.72, wN(wxz * 1.3 + 11.0)) * 0.5;
         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.62, 0.62, 0.56), foam * 0.85);
         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.16, 0.14, 0.09), scum * (1.0 - foam));
         diffuseColor.a = max(diffuseColor.a, max(foam * 0.995, scum * 0.9));
