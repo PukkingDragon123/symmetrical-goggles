@@ -21,12 +21,12 @@ import {
 } from '../anatomy';
 import { fbm3 } from '../paintkit';
 import { dbHeadSurf, DB_COLS, DB_ROWS, DB_EYE, DB_NOSE } from './face';
-import { almondLid, cupEar, eyePaint, strokes, formLight, alongFlow, lidCoords, type LidSpec } from '../wildlife/organic';
+import { almondLid, cupEar, strokes, formLight, alongFlow, lidCoords, type LidSpec } from '../wildlife/organic';
 import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 import { furZones } from '../fur/paint';
 
-export const DINGBAT_MODEL_VERSION = 'dingbat@7';
+export const DINGBAT_MODEL_VERSION = 'dingbat@8';
 export interface DingbatModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (left side; the right is the mirror in x) */
@@ -49,6 +49,10 @@ export const DB = {
   grip: [0, -0.036, -0.104] as V3,
 };
 /** the eye's centre z (creature space): sitting in the sculpted socket, bulging out of it as an owl's eyes do */
+/** the eye is a small dark bead (a bat's eye): its radius, and its centre on side s pushed out along the look axis so
+ *  it sits in the old eye's socket */
+const DB_BEAD_R = 0.0058;
+function dbBead(s: number): V3 { const ax = nrm([s * 0.2, 0.03, 1]), d = (DB.eyeR - DB_BEAD_R) * 0.75, c = mir(DB.eye, s); return [c[0] + ax[0] * d, c[1] + ax[1] * d, c[2] + ax[2] * d]; }
 function dbEyeZ(): number {
   let best = Math.PI, bd = 1;
   for (let k = 0; k <= 400; k++) { const th = Math.PI * (0.55 + 0.45 * k / 400), [x] = dbHeadSurf(DB_EYE.h, th), d = Math.abs(x - DB_EYE.x); if (d < bd) { bd = d; best = th; } }
@@ -68,7 +72,7 @@ export function dingbatBones(): BoneDef[] {
   A('root', null, [0, 0, 0]);
   A('head', 'root', DB.neck);
   A('jaw', 'head', DB.hinge);
-  A('lidL', 'head', DB.eye); A('lidR', 'head', mir(DB.eye, -1));
+  A('lidL', 'head', dbBead(1)); A('lidR', 'head', dbBead(-1));
   A('tail', 'root', DB.tail);
   for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('arm' + s, 'root', mir(DB.S, k)); A('fore' + s, 'arm' + s, mir(DB.E, k)); A('hand' + s, 'fore' + s, mir(DB.W, k)); }
   for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('leg' + s, 'root', mir(DB.hip, k)); A('foot' + s, 'leg' + s, mir(DB.foot, k)); }
@@ -77,7 +81,7 @@ export function dingbatBones(): BoneDef[] {
 
 // ------------------------------------------------------------------------------------------------ colour
 const FUR = RP('fur'), BONE = RP('bone'), SOIL = RP('soil'), INK = RP('ink'), STONE = RP('stone'), LEA = RP('leather'), HORN = RP('horn');
-const GUM = RP('gum'), FLESH = RP('flesh'), BLOOD = RP('blood'), CORAL = RP('coral'), GOLD = RP('gold'), OCHRE = RP('ochre'), HIDE = RP('hide');
+const GUM = RP('gum'), FLESH = RP('flesh'), BLOOD = RP('blood'), CORAL = RP('coral'), OCHRE = RP('ochre'), HIDE = RP('hide');
 
 /** plumage over the body and the back of the head: shingled contour feathers, tawny with dark bars on the back,
  *  pale streaked buff on the belly */
@@ -384,12 +388,11 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   // eyes, lids: big amber owl's eyes in their sockets, the lids leaving a lens (the upper modelled 0.2 rad low: the
   // creature rests it that much higher)
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(DB.eye, s), ax: V3 = nrm([s * 0.2, 0.03, 1]);
-    const eye = body.add(eyeball({ name: 'eye' + S, c, ax, r: DB.eyeR, bone: HEAD, iris: GOLD, pupil: 'round', irisA: 0.82, sclera: SOIL, k: 2.6, levels: 1, around: 8 }));
-    eye.paint = eyePaint({ c, ax, side: s, irisA: 0.86, iris: GOLD, pupil: 'round', pupilR: 0.42, sclera: null, collar: OCHRE, glint: [0.32, 0.4], shine: 230 });
-    const up: LidSpec = { name: 'lid' + S, c, ax, r: DB.eyeR, bone: bi('lid' + S), side: s, open: 0.42, wide: 1.0, inner: -0.28, outer: -0.15, ri: 1.03, ro: 1.16, swell: 0.06, root: 1.5, k: 1.8, across: 8, down: 4, levels: 0, paint: () => undefined };
+    const c = dbBead(s), ax: V3 = nrm([s * 0.2, 0.03, 1]);
+    body.add(eyeball({ name: 'eye' + S, c, ax, r: DB_BEAD_R, bone: HEAD, iris: SOIL, pupil: 'round', bead: true, catchlight: { side: s }, k: 3, levels: 1, around: 8 }));
+    const up: LidSpec = { name: 'lid' + S, c, ax, r: DB_BEAD_R, bone: bi('lid' + S), side: s, open: 0.42, wide: 1.0, inner: -0.28, outer: -0.15, ri: 1.03, ro: 1.16, swell: 0.06, root: 1.5, k: 1.8, across: 8, down: 4, levels: 0, paint: () => undefined };
     up.paint = lidPaint(up); body.add(almondLid(up));
-    const lo: LidSpec = { name: 'llid' + S, c, ax, r: DB.eyeR, bone: HEAD, side: s, lower: true, open: 0.5, wide: 1.0, inner: -0.08, outer: 0.05, ri: 1.02, ro: 1.1, root: 1.35, k: 1.6, across: 8, down: 4, levels: 0, paint: () => undefined };
+    const lo: LidSpec = { name: 'llid' + S, c, ax, r: DB_BEAD_R, bone: HEAD, side: s, lower: true, open: 0.5, wide: 1.0, inner: -0.08, outer: 0.05, ri: 1.02, ro: 1.1, root: 1.35, k: 1.6, across: 8, down: 4, levels: 0, paint: () => undefined };
     lo.paint = lidPaint(lo); body.add(almondLid(lo));
   }
   // antler nubs: a short beam with a burr, forking once into a front tine

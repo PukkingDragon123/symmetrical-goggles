@@ -1,0 +1,18 @@
+{
+ "note": "The four camp-story cryptids (sidehill gouger, hoop snake, splinter cat, goofus bird). Rebuilt by tools/blender/cryptids4/*.py from these CC BY 4.0 Sketchfab models; changes were made (rebaked onto a game skeleton, rescaled, decimated or smoothed, textures merged into one atlas and recoloured, bead eyes added, clips cut and renamed). Credit the authors wherever the game's credits are shown.",
+ "files": {
+  "gouger.glb": [
+   {"name": "Realistic Animated Doe 3D Model", "author": "WildMesh 3D", "author_url": "https://sketchfab.com/WildMesh_3D", "source": "https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218", "licence": "CC-BY-4.0", "used": "body, rig and clips; right legs shortened"},
+   {"name": "Goat", "author": "GerardoA400", "author_url": "https://sketchfab.com/GerardoA400", "source": "https://sketchfab.com/3d-models/goat-5d7431517b634f4e9e8c0f3729cd9c59", "licence": "CC-BY-4.0", "used": "horns (kitbashed onto the doe, darkened)"}
+  ],
+  "hoopsnake.glb": [
+   {"name": "Black Mamba - Rigged Snake, 6 Science Anims", "author": "Animal Animator", "author_url": "https://sketchfab.com/animalanimator", "source": "https://sketchfab.com/3d-models/black-mamba-rigged-snake-6-science-anims-7427c67d7c954cb3a05c0830a8de8da6", "licence": "CC-BY-4.0", "used": "body, rig and clips; straightened rest pose, thickened, texture rebaked and darkened"}
+  ],
+  "splintercat.glb": [
+   {"name": "lynx", "author": "Paleo Modelist", "author_url": "https://sketchfab.com/victory_", "source": "https://sketchfab.com/3d-models/lynx-aff6767399cf4daca1a82b43ccaa1252", "licence": "CC-BY-4.0", "used": "body, rig and clips; smoothed, scaled up, bead eyes"}
+  ],
+  "goofus.glb": [
+   {"name": "Crow", "author": "Alexei Ostapenko", "author_url": "https://sketchfab.com/alexanders823", "source": "https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2", "licence": "CC-BY-4.0", "used": "body, rig; one long take cut into clips; darkened, bead eyes"}
+  ]
+ }
+}

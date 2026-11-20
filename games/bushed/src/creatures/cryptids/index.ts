@@ -6,6 +6,11 @@
 //   Agropelter  a hollow snag beside the hollow path       maple syrup left at its tree
 //   Teakettler  the woods behind the lake campsite         coffee
 //   Snow Wasset the north shore of the lake                lake trout ('fish')
+// and four more on real models (real.ts; tools/blender/cryptids4 builds them):
+//   Sidehill Gouger  round a steep knoll by the lake (one way only)      chanterelles
+//   Hoop Snake       the top of the steep bank south of the lake           eggs
+//   Splinter Cat     the old timber west of the hollow                     maple syrup (left by a tree or a log)
+//   Goofus Bird      a big pine by the cabin road (it nests upside down)   bannock ('bread')
 //
 //   await preloadCreatures();                       // builds or loads every model (registered by each module)
 //   const cryptids = spawnNewCryptids(scene);       // NewCryptid[]: placed at their homes, added to the scene
@@ -14,7 +19,7 @@
 //   c.name, c.favoriteFood, c.rules                  // for the journal / Book of Cryptids
 // Events go through ctx.emit(ev, { pos, who: c.id, sound, ... }) like the other creatures; `sound` is a bank id.
 import * as THREE from 'three';
-import { SPOTS, WORLD, biome, heightAt, clearance, roadInfo } from '../../world/layout';
+import { SPOTS, WORLD, biome, heightAt, clearance, roadInfo, normalAt } from '../../world/layout';
 import type { NewCryptid } from './base';
 import { Hodag } from './hodag';
 import { Squonk } from './squonk';
@@ -22,6 +27,10 @@ import { Hidebehind } from './hidebehind';
 import { Agropelter } from './agropelter';
 import { Teakettler } from './teakettler';
 import { SnowWasset } from './wasset';
+import { SidehillGouger } from './gouger';
+import { HoopSnake } from './hoopsnake';
+import { SplinterCat } from './splintercat';
+import { GoofusBird } from './goofus';
 
 export { Cryptid, CH, daylight, type NewCryptid } from './base';
 export { Hodag, hodagModel, hodagModelAsync, HODAG_SOUND, type HodagState } from './hodag';
@@ -30,8 +39,13 @@ export { Hidebehind, hidebehindModel, hidebehindModelAsync, HIDEBEHIND_SOUND, ty
 export { Agropelter, agropelterModel, agropelterModelAsync, snagModelAsync, AGROPELTER_SOUND, type AgropelterState } from './agropelter';
 export { Teakettler, teakettlerModel, teakettlerModelAsync, TEAKETTLER_SOUND, type TeakettlerState } from './teakettler';
 export { SnowWasset, wassetModel, wassetModelAsync, WASSET_SOUND, type WassetState } from './wasset';
+export { RealCryptid, loadReal, realModel } from './real';
+export { SidehillGouger, GOUGER_SOUND, type GougerState } from './gouger';
+export { HoopSnake, HOOPSNAKE_SOUND, type HoopState } from './hoopsnake';
+export { SplinterCat, SPLINTERCAT_SOUND, type SplinterState } from './splintercat';
+export { GoofusBird, GOOFUS_SOUND, type GoofusState } from './goofus';
 
-export type CryptidId = 'hodag' | 'squonk' | 'hidebehind' | 'agropelter' | 'teakettler' | 'wasset';
+export type CryptidId = 'hodag' | 'squonk' | 'hidebehind' | 'agropelter' | 'teakettler' | 'wasset' | 'gouger' | 'hoopsnake' | 'splintercat' | 'goofus';
 
 /** the best point in a disc by a score over the layout (deterministic grid search; never water, roads or clearings) */
 export function findSpot(cx: number, cz: number, r: number, score: (x: number, z: number) => number, step = 6): THREE.Vector3 {
@@ -46,6 +60,16 @@ export function findSpot(cx: number, cz: number, r: number, score: (x: number, z
 }
 const far = (x: number, z: number, p: { x: number; z: number }, d: number) => Math.min(1, Math.hypot(x - p.x, z - p.z) / d);
 const lakeEdge = (x: number, z: number) => { const L = SPOTS.lake; return Math.hypot(x - L.x, z - L.z) / L.r; };
+/** a knoll: how steep the ground stays all the way round a ring of radius r about (x, z), and how high it stands */
+function knollScore(x: number, z: number, r: number): number {
+  let minS = 9, mean = 0;
+  for (let k = 0; k < 12; k++) {
+    const a = (k / 12) * Math.PI * 2, px = x + Math.sin(a) * r, pz = z + Math.cos(a) * r;
+    minS = Math.min(minS, 1 - normalAt(px, pz, 1.5)[1]); mean += heightAt(px, pz) / 12;
+    if (heightAt(px, pz) < WORLD.waterY + 0.5) return -9;
+  }
+  return minS * 10 + Math.min(2, heightAt(x, z) - mean) * 0.5;
+}
 
 /** where each cryptid lives (computed once from the layout) */
 let spots: Record<CryptidId, THREE.Vector3> | null = null;
@@ -64,12 +88,23 @@ export function cryptidSpots(): Record<CryptidId, THREE.Vector3> {
     teakettler: findSpot(SPOTS.campsite.x + 20, SPOTS.campsite.z + 14, 16, (x, z) => -Math.abs(Math.hypot(x - SPOTS.campsite.x, z - SPOTS.campsite.z) - 22) + biome(x, z).density, 3),
     // the north shore of the lake: dry ground right at the water's edge
     wasset: findSpot(SPOTS.lake.x, SPOTS.lake.z - 110, 60, (x, z) => -Math.abs(lakeEdge(x, z) - 1.12) * 4 + biome(x, z).density * 0.3, 4),
+    // the top of a steep knoll west of the lake: a ring 10 m out from it steep all the way round (its track)
+    gouger: findSpot(132, 12, 24, (x, z) => knollScore(x, z, 10), 2),
+    // the top of the steep bank south of the lake, with a long run down below it
+    hoopsnake: findSpot(214, 28, 30, (x, z) => { const [, ny] = normalAt(x, z, 6); return (1 - ny) * 6 + heightAt(x, z) * 0.08 - (Math.hypot(x - 132, z - 12) < 40 ? 3 : 0); }, 3),
+    // old timber west of the hollow, no roads (it smashes trees: keep it off the paths)
+    splintercat: findSpot(-150, 250, 80, (x, z) => { const b = biome(x, z); return b.density * 1.5 + b.old + Math.min(1, roadInfo(x, z).d / 40) + far(x, z, SPOTS.cabin, 200); }, 6),
+    // a big pine a little way off the cabin road, where you walk past it
+    goofus: findSpot(-100, -100, 30, (x, z) => -Math.abs(roadInfo(x, z).d - 14) * 0.3 + biome(x, z).density + biome(x, z).pine * 0.5, 3),
   };
   return spots;
 }
 
 type Ctor = new (o: { pos?: THREE.Vector3; heading?: number }) => NewCryptid;
-const CTORS: Partial<Record<CryptidId, Ctor>> = { hodag: Hodag, squonk: Squonk, hidebehind: Hidebehind, agropelter: Agropelter, teakettler: Teakettler, wasset: SnowWasset };
+const CTORS: Partial<Record<CryptidId, Ctor>> = {
+  hodag: Hodag, squonk: Squonk, hidebehind: Hidebehind, agropelter: Agropelter, teakettler: Teakettler, wasset: SnowWasset,
+  gouger: SidehillGouger, hoopsnake: HoopSnake, splintercat: SplinterCat, goofus: GoofusBird,
+};
 /** register a cryptid class (each module does this for itself) */
 export function registerCryptid(id: CryptidId, c: Ctor) { CTORS[id] = c; }
 

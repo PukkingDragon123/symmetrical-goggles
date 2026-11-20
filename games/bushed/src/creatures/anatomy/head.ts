@@ -319,14 +319,17 @@ export interface EyeSpec { name: string; c: V3; ax: V3; r: number; bone: number;
   pupilR?: number;
   /** painted catchlights (a big one up and to the inside, a small one below): [x, y] of the big one on the iris (-1..1), and the eye's side (+1 left) */
   catchlight?: { at?: [number, number]; side?: number; ramp?: number[] };
-  around?: number }
+  around?: number;
+  /** a real animal's eye: a small dark wet bead in the iris ramp's darkest steps with one tiny hard highlight (from
+   *  `catchlight`, default up and toward the light); no sclera or pupil */
+  bead?: boolean }
 /** an eyeball: a sphere on its own bone, painted wet (the shader lights its cornea with the sun's specular) */
 export function eyeball(o: EyeSpec): Piece {
   const m = newCM(), ax = nrm(o.ax), side = nrm(crs([0, 1, 0], ax)), up = crs(ax, side), rings: Ring[] = [];
   const st = (o.levels ?? 1) === 0 ? [-0.7, 0.0, 0.6, 0.92] : [-0.92, -0.6, -0.2, 0.2, 0.55, 0.8, 0.95], C = o.around ?? 12;
   for (const f of st) { const k = Math.sqrt(Math.max(0.02, 1 - f * f)); rings.push({ c: add(o.c, scl(ax, f * o.r)), x: side, y: up, pts: Array.from({ length: C }, (_, j) => { const a = (j / C) * TAU; return [Math.sin(a) * o.r * k, Math.cos(a) * o.r * k]; }) }); }
   const g = tube(m, rings, { tag: 0, capS: true, capE: true });
-  const irisA = o.irisA ?? 0.62, sclera = o.sclera ?? RP('bone');
+  const irisA = o.irisA ?? (o.bead ? 0.95 : 0.62), sclera = o.sclera ?? RP('bone');
   return {
     name: o.name, m, grids: [g], levels: o.levels ?? 1, k: o.k ?? 2.4, noOcc: true, skin: () => [o.bone, 1],
     paint: (ch, _p, b) => {
@@ -336,6 +339,11 @@ export function eyeball(o: EyeSpec): Piece {
         const dx = P[i * 3] - o.c[0], dy = P[i * 3 + 1] - o.c[1], dz = P[i * 3 + 2] - o.c[2], l = Math.hypot(dx, dy, dz) || 1;
         const cz = (dx * ax[0] + dy * ax[1] + dz * ax[2]) / l, a = Math.acos(cl(cz, -1, 1));
         const ux = (dx * side[0] + dy * side[1] + dz * side[2]) / l, uy = (dx * up[0] + dy * up[1] + dz * up[2]) / l;
+        if (o.bead) {
+          const X = ux / Math.sin(irisA), Y = uy / Math.sin(irisA), cs = o.catchlight?.side ?? 1, [cx, cy] = o.catchlight?.at ?? [0.3, 0.4];
+          if (Math.max(Math.abs(X * cs + cx), Math.abs(Y - cy)) < 0.14 && a < irisA) return [o.catchlight?.ramp ?? RP('paper'), 5];
+          return [o.iris, Math.max(0, 0.35 + (Y < -0.3 && a > irisA * 0.3 && a < irisA * 0.95 ? 0.9 : 0) - (Y > 0.35 || a > irisA ? 0.35 : 0))];
+        }
         if (a > irisA + 0.06) return [sclera, uy > 0.2 ? 2 : 3];
         if (a > irisA) return [RP('ink'), 1];
         // the pupil

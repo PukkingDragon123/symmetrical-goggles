@@ -19,7 +19,7 @@ import { furZones } from '../../fur';
 import { bonesKit, boneIndex, solid, wet, finishModel, sculpt, almondLid, flap, REG, type ModelGen } from '../kit';
 import type { BoneDef } from '../../rig';
 
-export const TEAKETTLER_MODEL_VERSION = 'teakettler@4';
+export const TEAKETTLER_MODEL_VERSION = 'teakettler@5';
 export const TK_HEAD: V3 = [0, 0.35, 0.198];
 /** the head is drawn in head-local units scaled by HK about the head bone */
 const HK = 1.18;
@@ -32,6 +32,8 @@ export const TK_NOSTRIL: V3 = H(0.011, -0.012, 0.17);
 /** the corners of the mouth (left; creature space, on the jaw bone): puffs while it whistles */
 export const TK_MOUTH: V3 = H(0.026, -0.037, 0.113);
 const EYE_R = 0.019 * HK;
+/** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
+const BEAD_R = 0.0105 * HK, TK_BEAD: V3 = TK_EYE.map((v, i) => v + TK_EYE_AX[i] * (EYE_R - BEAD_R) * 0.75 / Math.hypot(...TK_EYE_AX)) as V3;
 const TAIL_CTRL: V3[] = [[0, 0.27, -0.2], [0, 0.35, -0.245], [0, 0.44, -0.205], [0, 0.48, -0.11], [0, 0.465, -0.02], [0, 0.42, 0.03]];
 const TAIL = curve(TAIL_CTRL, 6);
 const LEGS = {
@@ -50,7 +52,7 @@ export function teakettlerBones(): BoneDef[] {
   A('head', 'neck', TK_HEAD);
   A('jaw', 'head', H(0, -0.03, 0.063));
   A('nose', 'head', H(0, -0.012, 0.146));
-  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(TK_EYE, k)); A('lid' + s, 'head', mir(TK_EYE, k)); A('ear' + s, 'head', H(k * 0.047, 0.047, -0.005)); }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(TK_BEAD, k)); A('lid' + s, 'head', mir(TK_BEAD, k)); A('ear' + s, 'head', H(k * 0.047, 0.047, -0.005)); }
   A('hips', 'root', [0, 0.23, -0.12]);
   for (let k = 0; k < 5; k++) A('tail' + k, k === 0 ? 'hips' : 'tail' + (k - 1), TAIL[k]);
   for (const [s, k] of [['L', 1], ['R', -1]] as const) { const f = LEGS.f; A('fu' + s, 'chest', mir(f.hip, k)); A('fl' + s, 'fu' + s, mir(f.knee, k)); A('ff' + s, 'fl' + s, mir([f.sole[0], PADH * 1.6, f.sole[2]], k)); }
@@ -106,8 +108,8 @@ function coatPaint(part: Part, earInner?: (p: V3, n: V3) => boolean) {
         if (sootK > 0.5 + s * 0.15 + big * 0.1) { R = SOOT; st = 2.3 + s * 0.6; }
         // bushy brows: a lighter tuft over each eye
         if (Math.hypot(ax - TK_EYE[0] + 0.004, y - TK_EYE[1] - 0.022, z - TK_EYE[2] + 0.004) < 0.014 + s * 0.003) { R = CREAM; st = 4.0 + s * 0.5; }
-        // a dark rim right round the eye
-        if (Math.hypot(ax - TK_EYE[0], y - TK_EYE[1], z - TK_EYE[2]) < EYE_R * (1.18 + s * 0.06)) { R = SOOT; st = 2.4; }
+        // a thin dark rim right round the bead
+        if (Math.hypot(ax - TK_BEAD[0], y - TK_BEAD[1], z - TK_BEAD[2]) < BEAD_R * (1.4 + s * 0.08)) { R = SOOT; st = 2.4; }
       }
       if (part === 'ear') {
         if (earInner?.([x, y, z], [N[i * 3], ny, N[i * 3 + 2]])) { R = RP('plum'); st = 4.2 + s * 0.4 - (Math.abs(Math.sin(y * 300)) < 0.15 ? 0.8 : 0); }
@@ -234,10 +236,10 @@ export function* teakettlerModelGen(o: { page?: number; den?: number } = {}): Mo
   ]);
   // big bright eyes: round dark irises, wide open lids (it is curious about everything), dark rims
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(TK_EYE, s), ax: V3 = [s * TK_EYE_AX[0], TK_EYE_AX[1], TK_EYE_AX[2]];
-    body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYE_R, bone: bi('eye' + S), iris: RP('fur'), pupil: 'round', pupilR: 0.45, irisA: 0.85, sclera: RP('paper'), side: s, k: 3.4 })).reg = REG.eye;
-    body.add(almondLid({ name: 'lid' + S, c, ax, r: EYE_R, bone: bi('lid' + S), side: s, open: 0.72, w: 0.95, tilt: 0.04, peak: 0.1, thick: 0.3, root: 2.0, skin: { R: SOOT, step: 2.6, lash: RP('ink') } })).reg = REG.head;
-    body.add(almondLid({ name: 'llid' + S, c, ax, r: EYE_R, bone: hb, side: s, lower: true, open: 0.55, w: 0.95, tilt: 0.04, thick: 0.28, root: 2.0, skin: { R: SOOT, step: 2.8, wet: CREAM } })).reg = REG.head;
+    const c = mir(TK_BEAD, s), ax: V3 = [s * TK_EYE_AX[0], TK_EYE_AX[1], TK_EYE_AX[2]];
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEAD_R, bone: bi('eye' + S), iris: RP('soil'), pupil: 'round', bead: true, side: s, k: 3.4 })).reg = REG.eye;
+    body.add(almondLid({ name: 'lid' + S, c, ax, r: BEAD_R, bone: bi('lid' + S), side: s, open: 0.72, w: 0.95, tilt: 0.04, peak: 0.1, thick: 0.3, root: 2.0, skin: { R: SOOT, step: 2.6, lash: RP('ink') } })).reg = REG.head;
+    body.add(almondLid({ name: 'llid' + S, c, ax, r: BEAD_R, bone: hb, side: s, lower: true, open: 0.55, w: 0.95, tilt: 0.04, thick: 0.28, root: 2.0, skin: { R: SOOT, step: 2.8, wet: SOOT } })).reg = REG.head;
     // cupped ears, standing up and out, the tips folded over forward
     const ef = flap({ name: 'ear' + S, path: curve([H(s * 0.038, 0.026, -0.006), H(s * 0.052, 0.052, -0.01), H(s * 0.067, 0.078, -0.008), H(s * 0.078, 0.094, 0.004), H(s * 0.08, 0.09, 0.024)], 8), face: [s * 0.4, 0.1, -1], across: 7,
       w: (t) => 0.032 * Math.sin(Math.min(1, 0.32 + t * 0.8) * Math.PI) + 0.004, cup: (t) => 0.012 * Math.sin(Math.min(1, t * 1.3) * Math.PI), th: () => 0.0045,

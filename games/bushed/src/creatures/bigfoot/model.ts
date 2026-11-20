@@ -27,6 +27,8 @@ const EYE: V3 = [0.047, 0.036, 0.15];
 /** v7: the face's moving parts (head-local): brows over the eyes, the upper lip; the eyes a little bigger */
 const BROW: V3 = [0.046, 0.082, 0.15], LIP: V3 = [0, -0.07, 0.2], EYER = 0.0205;
 export const BF_EYE_AX: V3 = [0.3, -0.05, 1];
+/** the eye is a small dark bead (an ape's eye, not a cartoon's): its radius and centre (head-local), in the old eye's socket */
+const BEADR = 0.0105, EYE_B: V3 = EYE.map((v, i) => v + BF_EYE_AX[i] * (EYER - BEADR) * 0.75 / Math.hypot(...BF_EYE_AX)) as V3;
 
 export function bigfootBones(): BoneDef[] {
   const b: BoneDef[] = [];
@@ -37,7 +39,7 @@ export function bigfootBones(): BoneDef[] {
   A('neck', 'chest', [0, 2.22, 0.07]);
   A('head', 'neck', BF.head);
   A('jaw', 'head', add(BF.head, [0, -0.07, 0.03]));
-  A('eyeL', 'head', add(BF.head, EYE)); A('eyeR', 'head', add(BF.head, [-EYE[0], EYE[1], EYE[2]]));
+  A('eyeL', 'head', add(BF.head, EYE_B)); A('eyeR', 'head', add(BF.head, [-EYE_B[0], EYE_B[1], EYE_B[2]]));
   for (const [s, k] of [['L', 1], ['R', -1]] as const) {
     const a = BF.arm;
     A('cla' + s, 'chest', [0.12 * k, 2.16, 0.05]);
@@ -50,7 +52,7 @@ export function bigfootBones(): BoneDef[] {
     A('thigh' + s, 'hips', mir(l.hip, k)); A('shin' + s, 'thigh' + s, mir(l.kn, k)); A('foot' + s, 'shin' + s, mir(l.an, k));
     A('toes' + s, 'foot' + s, mir([l.an[0], 0.03, 0.22], k));
   }
-  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('brow' + s, 'head', add(BF.head, [k * BROW[0], BROW[1], BROW[2]])); A('lid' + s, 'head', add(BF.head, [k * EYE[0], EYE[1], EYE[2]])); }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('brow' + s, 'head', add(BF.head, [k * BROW[0], BROW[1], BROW[2]])); A('lid' + s, 'head', add(BF.head, [k * EYE_B[0], EYE_B[1], EYE_B[2]])); }
   A('lip', 'head', add(BF.head, LIP));
   return b;
 }
@@ -298,7 +300,7 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const BIGFOOT_MODEL_VERSION = 'bigfoot@9';
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@10';
 export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
@@ -364,11 +366,11 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
   yield;
   // the face's sculpted parts: deep-set eyes under heavy lids, a brow shelf, a broad flat nose, thick lips
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = add(H, [s * EYE[0], EYE[1], EYE[2]]), ax: V3 = [s * BF_EYE_AX[0], BF_EYE_AX[1], BF_EYE_AX[2]];
-    body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: RP('ochre'), pupil: 'round', pupilR: 0.42, irisA: 0.72, side: s, glint: [0.32, 0.4], glintR: 0.2, k: 3.2, around: 10 }));
-    const lp = lids({ name: 'lid' + S, c, ax, r: EYER, bone: bi('lid' + S), lowBone: bi('head'), upper: 0.46, lower: 0.72, corner: 1.25, tilt: 0.05, side: s, thick: 0.3, thickLo: 0.2, k: 1.8,
-      paint: lidPaint(LEA, 3, { c, ax, r: EYER, lash: RP('ink') }) });
-    lp[0].name = 'lid' + S; lp[1].name = 'lidLo' + S; lp[1].paint = lidPaint(LEA, 3, { c, ax, r: EYER, lower: true });
+    const c = add(H, [s * EYE_B[0], EYE_B[1], EYE_B[2]]), ax: V3 = [s * BF_EYE_AX[0], BF_EYE_AX[1], BF_EYE_AX[2]];
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEADR, bone: bi('eye' + S), iris: RP('soil'), pupil: 'round', bead: true, side: s, k: 3.2, around: 10 }));
+    const lp = lids({ name: 'lid' + S, c, ax, r: BEADR, bone: bi('lid' + S), lowBone: bi('head'), upper: 0.46, lower: 0.72, corner: 1.25, tilt: 0.05, side: s, thick: 0.3, thickLo: 0.2, k: 1.8,
+      paint: lidPaint(LEA, 3, { c, ax, r: BEADR, lash: RP('ink') }) });
+    lp[0].name = 'lid' + S; lp[1].name = 'lidLo' + S; lp[1].paint = lidPaint(LEA, 3, { c, ax, r: BEADR, lower: true });
     for (const q of lp) body.add(q);
     // the brow shelf: a thick roll of bone and leather over the eye, from the bridge of the nose out to the temple
     const br = (x: number, y: number, z: number): V3 => add(H, [s * x, y, z]);

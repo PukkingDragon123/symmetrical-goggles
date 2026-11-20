@@ -17,11 +17,13 @@ import { bonesKit, boneIndex, finishModel, REG, type ModelGen } from '../kit';
 import { ring, displace, carve, ridge, flap, brush, bone, gs, sm, add, nrm } from '../sculpt';
 import type { BoneDef } from '../../rig';
 
-export const WASSET_MODEL_VERSION = 'wasset@4';
+export const WASSET_MODEL_VERSION = 'wasset@5';
 export const WS_HEAD: V3 = [0, 0.25, 0.5];
 /** the eye (head-local SOCK) */
 export const WS_EYE: V3 = [0.035, 0.271, 0.547];
 export const WS_EYE_AX: V3 = [0.62, 0.2, 0.76];
+/** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
+const BEAD_R = 0.0078, WS_BEAD: V3 = WS_EYE.map((v, i) => v + WS_EYE_AX[i] * (0.0105 - BEAD_R) * 1.2 / Math.hypot(...WS_EYE_AX)) as V3;
 const SOCK: V3 = [0.035, 0.021, 0.047], SOCK_AX: V3 = nrm([0.62, 0.2, 0.76]);
 /** the spine joints, tail root to the head (the body is a chain of four bones) */
 const SPINE: V3[] = [[0, 0.17, -0.44], [0, 0.17, -0.28], [0, 0.18, -0.1], [0, 0.185, 0.1], [0, 0.2, 0.28], [0, 0.23, 0.41], [0, 0.25, 0.5]];
@@ -46,7 +48,7 @@ export function wassetBones(): BoneDef[] {
   A('neck2', 'neck', SPINE[5]);
   A('head', 'neck2', WS_HEAD);
   A('jaw', 'head', [0, 0.233, 0.535]);
-  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(WS_EYE, k)); A('ear' + s, 'head', [k * 0.043, 0.284, 0.494]); }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(WS_BEAD, k)); A('ear' + s, 'head', [k * 0.043, 0.284, 0.494]); }
   for (let k = 0; k < 4; k++) A('tail' + k, k === 0 ? 'hips' : 'tail' + (k - 1), TAIL[k]);
   for (const [s, k] of [['L', 1], ['R', -1]] as const) { const f = LEGS.f; A('fu' + s, 'chest', mir(f.hip, k)); A('fl' + s, 'fu' + s, mir(f.knee, k)); A('ff' + s, 'fl' + s, mir([f.sole[0], PADH * 1.6, f.sole[2]], k)); }
   for (const [s, k] of [['L', 1], ['R', -1]] as const) { const h = LEGS.h; A('hu' + s, 'hips', mir(h.hip, k)); A('hl' + s, 'hu' + s, mir(h.knee, k)); A('hf' + s, 'hl' + s, mir([h.sole[0], PADH * 1.6, h.sole[2]], k)); }
@@ -186,9 +188,9 @@ export function* wassetModelGen(o: { page?: number; den?: number } = {}): ModelG
   for (const s of [1, -1]) body.add(stalk({ name: 'fang' + s, path: [add(H, [s * 0.009, -0.006, 0.098]), add(H, [s * 0.009, -0.012, 0.1]), add(H, [s * 0.0095, -0.021, 0.102])], r: (t) => 0.0025 * (1 - t * 0.85), around: 4, capS: true, capE: true, levels: 0, k: 1.2, skin: () => [hb, 1], paint: bone(RP('bone'), { root: 3, tipStep: 5.5, rough: 70 }) })).reg = REG.mouth;
   // bright eyes under soft lids, round cupped ears, whiskers off the pads
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(WS_EYE, s), ax: V3 = [s * WS_EYE_AX[0], WS_EYE_AX[1], WS_EYE_AX[2]];
-    body.add(paintedEye({ name: 'eye' + S, c, ax, r: 0.0105, bone: bi('eye' + S), iris: RP('heart'), pupil: 'round', pupilR: 0.5, irisA: 0.9, sclera: INK, side: s, glintR: 0.24, k: 3.6 })).reg = REG.eye;
-    for (const l of lids({ name: 'lid' + S, c, ax, r: 0.0105, bone: hb, lowBone: hb, upper: 0.78, lower: 0.92, side: s, thick: 0.18, paint: lidPaint(INK, 1.4, { c, ax, r: 0.0105 }) })) body.add(l).reg = REG.head;
+    const c = mir(WS_BEAD, s), ax: V3 = [s * WS_EYE_AX[0], WS_EYE_AX[1], WS_EYE_AX[2]];
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEAD_R, bone: bi('eye' + S), iris: RP('soil'), pupil: 'round', bead: true, side: s, k: 3.6 })).reg = REG.eye;
+    for (const l of lids({ name: 'lid' + S, c, ax, r: BEAD_R, bone: hb, lowBone: hb, upper: 0.78, lower: 0.92, side: s, thick: 0.18, paint: lidPaint(INK, 1.4, { c, ax, r: BEAD_R }) })) body.add(l).reg = REG.head;
     const er: V3 = add(H, [s * 0.04, 0.03, -0.006]);
     body.add(flap({ name: 'ear' + S, path: curve([add(er, [-s * 0.006, -0.008, 0.002]), er, add(er, [s * 0.008, 0.012, -0.004]), add(er, [s * 0.012, 0.02, -0.006])], 5), front: nrm([s * 0.35, 0.2, 1]),
       w: (t) => 0.036 * Math.sqrt(Math.max(0.02, Math.sin(Math.min(1, 0.35 + t * 0.65) * Math.PI))) + 0.003, cup: (t) => 0.007 * (1 - t * 0.5), thick: 0.004, rim: 1.8, skin: () => [bi('ear' + S), 1], paint: coatPaint('ear'), levels: 1, k: 1.6 })).reg = REG.head;
@@ -241,8 +243,8 @@ const WS_FUR = furZones([
   { piece: /^tail$/, a: [0, 0.13, -0.86], b: [0, 0.12, -1.06], r: 0.06, len: 1, clump: 0.7, tip: 0.3 },
   { piece: /^skull$/, len: 0.32, clump: 0.4 },
   { piece: /^skull$/, a: [0, 0.236, 0.585], b: [0, 0.238, 0.63], r: 0.03, bare: true, len: 0 },
-  { piece: /^skull$/, a: WS_EYE, r: 0.018, bare: true, len: 0 },
-  { piece: /^skull$/, a: mir(WS_EYE, -1), r: 0.018, bare: true, len: 0 },
+  { piece: /^skull$/, a: WS_BEAD, r: 0.023, bare: true, len: 0 },
+  { piece: /^skull$/, a: mir(WS_BEAD, -1), r: 0.023, bare: true, len: 0 },
   { piece: /^ear[LR]$/, len: 0.2, clump: 0.3 },
   { piece: /^[fh]leg[LR]$/, a: [0, 0.02, 0], b: [0, -0.1, 0], r: 0.4, soft: 0.3, bare: true, len: 0 },
 ]);

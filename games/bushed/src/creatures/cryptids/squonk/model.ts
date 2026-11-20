@@ -19,11 +19,13 @@ import { fbm3 } from '../../paintkit';
 import { bonesKit, boneIndex, solid, warts, wet, finishModel, sculpt, almondLid, flap, REG, type ModelGen } from '../kit';
 import type { BoneDef } from '../../rig';
 
-export const SQUONK_MODEL_VERSION = 'squonk@6';
+export const SQUONK_MODEL_VERSION = 'squonk@7';
 export const SQ_HEAD: V3 = [0, 0.36, 0.24];
 export const SQ_EYE: V3 = [0.056, 0.413, 0.378];
 export const SQ_EYE_AX: V3 = [0.3, 0.12, 0.95];
 const EYE_R = 0.03;
+/** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
+const BEAD_R = 0.0135, SQ_BEAD: V3 = SQ_EYE.map((v, i) => v + SQ_EYE_AX[i] * (EYE_R - BEAD_R) * 0.75 / Math.hypot(...SQ_EYE_AX)) as V3;
 const SQ_LEGS = {
   f: { hip: [0.09, 0.19, 0.08] as V3, knee: [0.105, 0.1, 0.09] as V3, sole: [0.115, 0, 0.115] as V3, r: 0.044 },
   h: { hip: [0.105, 0.2, -0.17] as V3, knee: [0.12, 0.11, -0.13] as V3, sole: [0.125, 0, -0.18] as V3, r: 0.048 },
@@ -48,7 +50,7 @@ export function squonkBones(): BoneDef[] {
   A('nose', 'head', [0, 0.37, 0.4]);
   A('mouthL', 'head', [0.03, 0.31, 0.385]); A('mouthR', 'head', [-0.03, 0.31, 0.385]);
   for (const [s, k] of [['L', 1], ['R', -1]] as const) {
-    A('eye' + s, 'head', mir(SQ_EYE, k)); A('lid' + s, 'head', mir(SQ_EYE, k));
+    A('eye' + s, 'head', mir(SQ_BEAD, k)); A('lid' + s, 'head', mir(SQ_BEAD, k));
     A('ear' + s, 'head', [k * 0.105, 0.44, 0.25]); A('ear2' + s, 'ear' + s, [k * 0.15, 0.35, 0.265]);
     A('tear' + s, 'head', [k * 0.047, 0.392, 0.402]);
   }
@@ -300,11 +302,11 @@ export function* squonkModelGen(o: { page?: number; den?: number } = {}): ModelG
   // eyes: wet and brown, deep in the sockets; heavy upper lids sagging at the outer corners and swollen lower lids
   // leave a small, worried almond of eye
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(SQ_EYE, s), ax: V3 = [s * SQ_EYE_AX[0], SQ_EYE_AX[1], SQ_EYE_AX[2]];
-    const e = body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYE_R, bone: bi('eye' + S), iris: RP('fur'), pupil: 'round', pupilR: 0.42, irisA: 0.78, sclera: RP('paper'), side: s, k: 3.4 }));
+    const c = mir(SQ_BEAD, s), ax: V3 = [s * SQ_EYE_AX[0], SQ_EYE_AX[1], SQ_EYE_AX[2]];
+    const e = body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEAD_R, bone: bi('eye' + S), iris: RP('soil'), pupil: 'round', bead: true, side: s, k: 3.4 }));
     e.reg = REG.eye;
-    body.add(almondLid({ name: 'lid' + S, c, ax, r: EYE_R, bone: bi('lid' + S), side: s, open: 0.46, w: 0.96, tilt: -0.14, peak: -0.35, thick: 0.36, root: 2.1, skin: { R: SKIN, step: 3.2, lash: RP('ink') } })).reg = REG.head;
-    body.add(almondLid({ name: 'llid' + S, c, ax, r: EYE_R, bone: hb, side: s, lower: true, open: 0.36, w: 0.96, tilt: -0.14, thick: 0.5, root: 2.2, skin: { R: SKIN, step: 3.6, wet: RP('flesh') } })).reg = REG.head;
+    body.add(almondLid({ name: 'lid' + S, c, ax, r: BEAD_R, bone: bi('lid' + S), side: s, open: 0.46, w: 0.96, tilt: -0.14, peak: -0.35, thick: 0.36, root: 2.1, skin: { R: SKIN, step: 3.2, lash: RP('ink') } })).reg = REG.head;
+    body.add(almondLid({ name: 'llid' + S, c, ax, r: BEAD_R, bone: hb, side: s, lower: true, open: 0.36, w: 0.96, tilt: -0.14, thick: 0.5, root: 2.2, skin: { R: SKIN, step: 3.6, wet: RP('flesh') } })).reg = REG.head;
     // a tear drop (it slides down the cheek on its bone)
     const tc: V3 = [s * 0.047, 0.392, 0.402];
     body.add(sac({ name: 'tear' + S, at: tc, n: [s * 0.4, -0.1, 1], up: [0, 1, 0], r: [0.0065, 0.008, 0.0065], skin: () => [bi('tear' + S), 1], paint: dropPaint, sink: 0.2, levels: 1, k: 2.5 })).noOcc = true;

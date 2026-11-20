@@ -16,7 +16,7 @@ import {
 } from '../anatomy';
 import type { BoneDef } from '../rig';
 
-export const GUMBEROO_MODEL_VERSION = 'gumberoo@6';
+export const GUMBEROO_MODEL_VERSION = 'gumberoo@7';
 export interface GumberooModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 export const GB = { root: [0, 0.74, 0] as V3, head: [0, 0.88, 0.56] as V3, jaw: [0, 0.76, 0.66] as V3, eye: [0.205, 1.0, 0.86] as V3,
   fl: { hip: [0.4, 0.5, 0.36] as V3, knee: [0.49, 0.26, 0.43] as V3, sole: [0.5, 0.0, 0.42] as V3 },
@@ -30,20 +30,22 @@ export function gumberooBones(): BoneDef[] {
   A('belly', 'root', [0, 0.42, 0]);
   A('head', 'root', GB.head);
   A('jaw', 'head', GB.jaw);
-  A('eyeL', 'head', GB.eye); A('eyeR', 'head', mir(GB.eye, -1));
+  A('eyeL', 'head', GB_BEAD); A('eyeR', 'head', mir(GB_BEAD, -1));
   A('tail', 'root', [0, 0.74, -0.72]);
-  for (const [s, sd] of [['L', 1], ['R', -1]] as const) { A('brow' + s, 'head', mir(BROWS, sd)); A('lid' + s, 'head', mir(GB.eye, sd)); }
+  for (const [s, sd] of [['L', 1], ['R', -1]] as const) { A('brow' + s, 'head', mir(BROWS, sd)); A('lid' + s, 'head', mir(GB_BEAD, sd)); }
   for (const [k, leg] of [['f', GB.fl], ['h', GB.hl]] as const) for (const [s, sd] of [['L', 1], ['R', -1]] as const) {
     A(k + 'u' + s, 'root', mir(leg.hip, sd)); A(k + 'l' + s, k + 'u' + s, mir(leg.knee, sd)); A(k + 'f' + s, k + 'l' + s, mir([leg.sole[0], 0.05, leg.sole[2]], sd));
   }
   return b;
 }
 
-const HIDE = RP('olive'), DARK = RP('basalt'), SOOT = RP('ink'), ASH = RP('stone'), AMBER = RP('glowAmber'), GUM = RP('gum'), BELLY = RP('sand'), EMBER = RP('rust'), PLATE = RP('slate'), BONE = RP('bone'), HORN = RP('horn');
+const HIDE = RP('olive'), DARK = RP('basalt'), SOOT = RP('ink'), ASH = RP('stone'), GUM = RP('gum'), BELLY = RP('sand'), EMBER = RP('rust'), PLATE = RP('slate'), BONE = RP('bone'), HORN = RP('horn');
 /** the face's moving parts: heavy brow plates over the eyes, eyelids */
 export const GB_EYE_AX: V3 = [0.5, 0.32, 0.8];
 const BROWS: V3 = [0.2, 1.065, 0.84];
 const EYER = 0.05;
+/** the eye is a small dark bead (a bear's eye): its radius and centre, in the old eye's socket */
+const BEADR = 0.021, GB_BEAD: V3 = GB.eye.map((v, i) => v + GB_EYE_AX[i] * (EYER - BEADR) * 0.5 / Math.hypot(...GB_EYE_AX)) as V3;
 /** the lower jaw's half width at z (for the painters) */
 const wJaw = (z: number) => (z < 0.62 ? 0.29 : z > 1.095 ? 0.06 : 0.29 + (z - 0.62) * 0.05 - Math.max(0, z - 0.8) * 0.75);
 /** the mouth line (y) at z: a long crooked grin, the corners low, rising a little to the front */
@@ -272,11 +274,11 @@ export function* gumberooModelGen(o: { page?: number; den?: number } = {}): Gene
   yield 'head';
   // eyes on top of the skull under heavy keeled brow plates; lids close down over them
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(GB.eye, s), ax: V3 = [s * GB_EYE_AX[0], GB_EYE_AX[1], GB_EYE_AX[2]];
-    body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: AMBER, pupil: 'slit', irisA: 0.82, pupilR: 0.13, side: s, glint: [0.3, 0.42], glintR: 0.2, k: 3, around: 8 }));
-    const lp = lids({ name: 'lid' + S, c, ax, r: EYER, bone: bi('lid' + S), lowBone: hb, upper: 0.5, lower: 0.72, corner: 1.25, tilt: 0.12, side: s, thick: 0.28, thickLo: 0.2, k: 1.6,
-      paint: lidPaint(HIDE, 3, { c, ax, r: EYER, lash: SOOT }) });
-    lp[0].name = 'lid' + S; lp[1].name = 'lidLo' + S; lp[1].paint = lidPaint(DARK, 3, { c, ax, r: EYER, lower: true });
+    const c = mir(GB_BEAD, s), ax: V3 = [s * GB_EYE_AX[0], GB_EYE_AX[1], GB_EYE_AX[2]];
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEADR, bone: bi('eye' + S), iris: RP('soil'), pupil: 'round', bead: true, side: s, k: 3, around: 8 }));
+    const lp = lids({ name: 'lid' + S, c, ax, r: BEADR, bone: bi('lid' + S), lowBone: hb, upper: 0.5, lower: 0.72, corner: 1.25, tilt: 0.12, side: s, thick: 0.28, thickLo: 0.2, k: 1.6,
+      paint: lidPaint(HIDE, 3, { c, ax, r: BEADR, lash: SOOT }) });
+    lp[0].name = 'lid' + S; lp[1].name = 'lidLo' + S; lp[1].paint = lidPaint(DARK, 3, { c, ax, r: BEADR, lower: true });
     for (const q of lp) { q.levels = 0; body.add(q); }
     // the brow plate: a thick keeled shield over the eye on the brow bone
     const bc = mir(BROWS, s);

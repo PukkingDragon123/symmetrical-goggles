@@ -6,8 +6,10 @@
 //   - add a FieldEntry here (habitat, food, taste line, portrait). Entries merge by id (or alias).
 // Optional fields on a story.ts Critter are honoured too: habitat, food (an item id like 'bacon' or { name, icon }),
 // taste, danger, active.
+import * as THREE from 'three';
 import { CRITTERS, type Critter, type CritterRule } from '../../game/story';
 import { ITEMS } from '../../game/items';
+import { registerPortraitModel } from './portrait';
 
 export interface Food { icon: string; name: string; note?: string }
 
@@ -181,6 +183,68 @@ export const FIELD: FieldEntry[] = [
     food: { icon: 'fish', name: 'Lake trout' },
     taste: 'Cold. Musk and frozen hare. Its legs drop off in winter. It does not need them.', danger: 3, scene: 'snow',
   },
+  // ---- four more on real models (src/creatures/cryptids: gouger, hoopsnake, splintercat, goofus). Rule texts match the
+  // creatures' own `rules` (the Book adopts them live), ids r0.. by position, as critters.ts CRYPTID_RULES teaches them.
+  {
+    id: 'gouger', alias: ['sidehill_gouger', 'sidehill', 'gowger', 'sidehill_dodger'], name: 'Sidehill Gouger', latin: 'Declivicola inaequipes',
+    ray: ['Goat-ish. Grazes round and round the steep knoll by the lake, leaning into the hill like a drunk on a stair.', 'Legs shorter on one side, the old-timers say, so it can only go round one way. If it ever gets onto flat ground it falls over.', 'Don\'t stand in its path. It cannot stop and it cannot turn.'],
+    rules: [
+      { id: 'r0', text: 'Its right legs are shorter than its left. It can only stand on a hillside with the uphill on its right, so it only ever walks round its hill one way.' },
+      { id: 'r1', text: 'Stand on its path ahead of it and it snorts, then charges along the hillside to butt you. Step up or down off its path: it cannot turn to follow.' },
+      { id: 'r2', text: 'Lure it onto flat ground (it follows chanterelles) and it falls over and cannot get up again.' },
+      { id: 'r3', text: 'Tip a fallen gouger back onto its feet and it gouges fatwood out of the old pine roots for you.' },
+      { id: 'r4', text: 'Feed it chanterelles twice from your hand and it stops butting you.' },
+      { id: 'r5', text: 'At night it lies down on its hillside and sleeps.' },
+    ],
+    habitat: 'Round and round the steep knoll on the west shore of the lake. Look for the groove its feet have worn.', active: 'Days. Sleeps on its hill', size: 'A goat that leans.',
+    food: { icon: 'mushroom', name: 'Chanterelles', note: 'it follows them anywhere, even off its hill' },
+    taste: 'Goat, wet moss and pine pitch. One side of it tastes taller than the other.', danger: 2, scene: 'day',
+  },
+  {
+    id: 'hoopsnake', alias: ['hoop_snake', 'hoop', 'snake'], name: 'Hoop Snake', latin: 'Rotaserpens caudistimulus',
+    ray: ['Lies coiled on the bank above the lake. Bites its own tail and comes ROLLING down at you like a wagon wheel.', 'Stinger in the tail. Marcel swears it stung a hoe handle once and the handle swelled up and split.', 'Get out of the way sideways. Or jump. Jumping works, Marcel says.'],
+    rules: [
+      { id: 'r0', text: 'It lies coiled at the top of a steep bank, and comes for whatever walks below it.' },
+      { id: 'r1', text: 'It bites its own tail and rolls downhill after you like a wheel. It can hardly steer: step aside at the last moment and it rolls right past.' },
+      { id: 'r2', text: 'Jump as it reaches you and you go clean through the hoop.' },
+      { id: 'r3', text: 'Its tail is a stinger. Whatever it stings withers and dies, trees included: dodge it in front of a tree and the tree falls. Mind which way.' },
+      { id: 'r4', text: 'On flat ground it wobbles, falls over and slithers back up its hill.' },
+      { id: 'r5', text: 'Eggs, held out or left by its coil, stop it rolling at you. Twice, and it stings the tree you are chopping for you.' },
+    ],
+    habitat: 'The top of the steep bank on the south side of the lake. A long run down below it.', active: 'Days. Sleeps coiled', size: 'A wagon wheel. A biting one.',
+    food: { icon: 'eggs', name: 'Eggs', note: 'swallowed whole, shell and all' },
+    taste: 'Dry scales and bad intentions. The tail end tastes of nettles. Do not let it near the axe handle.', danger: 3, scene: 'day',
+  },
+  {
+    id: 'splintercat', alias: ['splinter_cat', 'splinter'], name: 'Splinter Cat', latin: 'Felis ligniclastes',
+    ray: ['Whole stands of timber west of the hollow smashed to matchwood, stumps split from the top down. Not lightning.', 'A big lynx that climbs and comes down head first through the trees, Ray says, hunting honey. Then it sits there stunned.', 'Leave a jug of syrup by a log and it\'ll buck it for you. Don\'t stand in between.'],
+    rules: [
+      { id: 'r0', text: 'Where the trunks are smashed to matchwood and the stumps splintered from the top down, a splinter cat lives.' },
+      { id: 'r1', text: 'At night it picks a tree, crouches and rockets head first straight through it, looking for honey. Then it sits there seeing stars.' },
+      { id: 'r2', text: 'Never stand between it and the tree it is staring at. It does not stop for you.' },
+      { id: 'r3', text: 'Set maple syrup down by a standing tree and it smashes the tree down for you. Set it by a log or a felled trunk and it smashes that to firewood.' },
+      { id: 'r4', text: 'Hold syrup out while it sits dazed. Twice, and it stops pouncing on whoever comes close.' },
+      { id: 'r5', text: 'By day it sleeps curled up at the foot of a smashed stump.' },
+    ],
+    habitat: 'The old timber west of the hollow, among the smashed trees.', active: 'Nights. Sleeps by day', size: 'A lynx that has been fired from a cannon.',
+    food: { icon: 'syrup', name: 'Maple syrup', note: 'it is after honey, really' },
+    taste: 'Pitch, sawdust and a headache. It has been head-first through a hundred trees and it tastes like it.', danger: 4, scene: 'night',
+  },
+  {
+    id: 'goofus', alias: ['goofus_bird', 'goofang', 'goofus-bird'], name: 'Goofus Bird', latin: 'Corvus retrovolans',
+    ray: ['Crow that flies backwards. Doesn\'t care where it\'s going, only where it\'s been.', 'Nests upside down in the big pine by the cabin road.', 'Follows a man\'s tracks. Brought Ray back his pipe once, he says. Two miles of it.'],
+    rules: [
+      { id: 'r0', text: 'It flies backwards. It does not care where it is going, only where it has been.' },
+      { id: 'r1', text: 'It follows your old footprints, a little way behind you, tail first.' },
+      { id: 'r2', text: 'Anything you leave lying on your trail, it picks up and brings back, and drops at your feet.' },
+      { id: 'r3', text: 'It cannot see what is in front of it. Now and then it flies smack into a tree.' },
+      { id: 'r4', text: 'Hold out bannock and it lands, backwards, and takes it. Feed it twice and it brings you little things it finds.' },
+      { id: 'r5', text: 'Lost? A tame one knows where you have been: it flies back along your trail toward home. Follow it.' },
+    ],
+    habitat: 'A big pine by the cabin road. It hangs upside down under its nest at night.', active: 'Days. Roosts upside down', size: 'A crow, facing the wrong way.',
+    food: { icon: 'bread', name: 'Bannock', note: 'camp robber' },
+    taste: 'Crow, woodsmoke and yesterday. It tastes of where it has been.', danger: 0, scene: 'dusk',
+  },
 ];
 
 /** default field data for a story.ts critter with no FieldEntry */
@@ -265,3 +329,31 @@ export const ROMAN = (n: number): string => {
   for (const [v, r] of t) while (n >= v) { s += r; n -= v; }
   return s;
 };
+
+// ---- plate portraits of the four real-model cryptids (src/creatures/cryptids/real.ts): the posed model, rendered
+interface RealPosable { object: THREE.Object3D; ready: boolean; play(c: string | null): void; update(c: unknown): void; pos: THREE.Vector3; heading: number }
+const REAL_VIEW: Record<string, { cls: 'SidehillGouger' | 'HoopSnake' | 'SplinterCat' | 'GoofusBird'; model: string; clip: string; t: number; yaw: number; pitch: number; fill: number }> = {
+  gouger: { cls: 'SidehillGouger', model: 'gouger', clip: 'idle', t: 0.6, yaw: 0.8, pitch: 0.12, fill: 0.86 },
+  hoopsnake: { cls: 'HoopSnake', model: 'hoopsnake', clip: 'idle', t: 1.2, yaw: 0.9, pitch: 0.3, fill: 0.84 },
+  splintercat: { cls: 'SplinterCat', model: 'splintercat', clip: 'idle2', t: 0.3, yaw: 0.75, pitch: 0.14, fill: 0.84 },
+  goofus: { cls: 'GoofusBird', model: 'goofus', clip: 'idle', t: 0.4, yaw: 0.7, pitch: 0.12, fill: 0.8 },
+};
+for (const [id, v] of Object.entries(REAL_VIEW)) {
+  registerPortraitModel(id, {
+    make: async () => {
+      const M = await import('../../creatures/cryptids');
+      await M.loadReal(v.model);
+      const c = new M[v.cls]({ pos: new THREE.Vector3() }) as unknown as RealPosable;
+      c.play(v.clip);
+      const ctx = {
+        dt: 1 / 30, time: 2, hour: 13, heightAt: () => 0, emit: () => undefined, items: [], fires: [],
+        player: { pos: new THREE.Vector3(3, 1.7, 40), dir: new THREE.Vector3(0, 0, -1), held: 'none', crouch: false, noise: 0, light: false, speed: 0 },
+      };
+      for (let i = 0; i < Math.round(v.t * 30); i++) { c.update(ctx); c.pos.set(0, 0, 0); c.heading = 0; }
+      c.object.position.set(0, 0, 0); c.object.rotation.set(0, 0, 0);
+      c.object.updateMatrixWorld(true);
+      return c.object;
+    },
+    yaw: v.yaw, pitch: v.pitch, fill: v.fill,
+  });
+}

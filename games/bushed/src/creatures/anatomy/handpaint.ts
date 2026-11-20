@@ -378,13 +378,16 @@ export interface PaintedEyeSpec {
   around?: number; levels?: number; k?: number;
   /** the tapetum's eye shine through the pupil and iris (default true) */
   shine?: boolean;
+  /** a real animal's eye: a small dark wet bead (the iris ramp's darkest steps), a faint warm glow low in the lens and one
+   *  tiny hard highlight; no sclera, iris pattern or pupil. irisA then spans the whole visible cap (default 0.95) */
+  bead?: boolean;
 }
 /** an eyeball with a bulging cornea, painted: a wet sclera shadowed under the lid, a dark limbal ring, the iris dark
  *  under the lid and lit in a lower crescent with fibres and a pale collarette, a species pupil, one hard glint and a
  *  small second one. Rides its eye bone. */
 export function paintedEye(o: PaintedEyeSpec): Piece {
   const m = newCM(), ax = nrm(o.ax), side0 = crs([0, 1, 0], ax), side = Math.hypot(...side0) > 0.2 ? nrm(side0) : nrm(crs([0, 0, 1], ax)), up = crs(ax, side), rings: Ring[] = [];
-  const C = o.around ?? 12, bulge = o.bulge ?? 0.08, irisA = o.irisA ?? 0.7;
+  const C = o.around ?? 12, bulge = o.bulge ?? 0.08, irisA = o.irisA ?? (o.bead ? 0.95 : 0.7);
   const st = [-0.92, -0.6, -0.2, 0.2, 0.5, 0.74, 0.9, 0.98];
   for (const f of st) {
     const k = Math.sqrt(Math.max(0.02, 1 - f * f)), b = f > 0.5 ? bulge * ss(0.5, 0.98, f) : 0;
@@ -392,7 +395,7 @@ export function paintedEye(o: PaintedEyeSpec): Piece {
   }
   const g = tube(m, rings, { tag: 0, capS: true, capE: true });
   const sclera = o.sclera ?? RP('bone'), limbal = o.limbal ?? RP('ink'), pr = o.pupilR ?? (o.pupil === 'round' ? 0.38 : 0.14);
-  const gs = o.side ?? 1, [gx, gy] = o.glint ?? [0.32, 0.42], gr = o.glintR ?? 0.2, white = RP('paper');
+  const gs = o.side ?? 1, [gx, gy] = o.glint ?? [0.32, 0.42], gr = o.glintR ?? (o.bead ? 0.15 : 0.2), white = RP('paper');
   return {
     name: o.name, m, grids: [g], levels: o.levels ?? 1, k: o.k ?? 3, noOcc: true, skin: () => [o.bone, 1],
     paint: (ch, _p, b) => {
@@ -409,6 +412,13 @@ export function paintedEye(o: PaintedEyeSpec): Piece {
         // the glints: a hard square-ish one up and toward the light, a small one low on the other side
         const big = Math.max(Math.abs(hx + gx), Math.abs(Y - gy)) < gr && Math.abs(hx + gx) + Math.abs(Y - gy) < gr * 1.45;
         const small = Math.max(Math.abs(hx - gx * 0.75), Math.abs(Y + gy * 0.7)) < gr * 0.42;
+        if (o.bead) {
+          // the bead: one dark wet ball, a faint warm glow low in the lens, a shade darker under the lid; one hard highlight
+          if (big && r < 1.0) { px.put(i, white, 5); px.over[i] = white[white.length - 1]; continue; }
+          px.shine[i] = o.shine === false ? 0 : r < 0.5 ? 255 : r < 0.85 ? 120 : 0;
+          px.put(i, o.iris, Math.max(0, 0.35 + (Y < -0.3 && r > 0.3 && r < 0.95 ? 0.9 : 0) - (Y > 0.35 || r > 1 ? 0.35 : 0)));
+          continue;
+        }
         if (big && r < 1.25) { px.put(i, white, 5); px.over[i] = white[white.length - 1]; continue; }
         if (small && r < 1.0) { px.put(i, white, 4); continue; }
         if (r > 1.0) {

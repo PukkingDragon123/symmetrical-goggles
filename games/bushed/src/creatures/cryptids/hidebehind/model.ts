@@ -18,11 +18,13 @@ import { bonesKit, boneIndex, finishModel, REG, type ModelGen } from '../kit';
 import { ring, displace, carve, ridge, flap, digit, brush, bone, gs, sm, add, sub, nrm } from '../sculpt';
 import type { BoneDef } from '../../rig';
 
-export const HIDEBEHIND_MODEL_VERSION = 'hidebehind@5';
+export const HIDEBEHIND_MODEL_VERSION = 'hidebehind@6';
 export const HB_HEAD: V3 = [0, 2.3, 0.3];
 /** the eye, deep in its socket (head-local SOCK) */
 export const HB_EYE: V3 = [0.04, 2.347, 0.363];
 export const HB_EYE_AX: V3 = [0.42, 0.06, 0.9];
+/** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
+const BEAD_R = 0.0085, HB_BEAD: V3 = HB_EYE.map((v, i) => v + HB_EYE_AX[i] * (0.0125 - BEAD_R) * 0.75 / Math.hypot(...HB_EYE_AX)) as V3;
 const JAW_HINGE: V3 = [0, 2.255, 0.296];
 const ARM = { sh: [0.17, 2.0, 0.09] as V3, el: [0.26, 1.48, -0.02] as V3, wr: [0.29, 0.98, 0.09] as V3, r: 0.05 };
 const LEG = { hip: [0.105, 1.17, 0.0] as V3, knee: [0.14, 0.76, 0.2] as V3, hock: [0.14, 0.33, -0.1] as V3, sole: [0.14, 0, 0.02] as V3, r: 0.085 };
@@ -40,7 +42,7 @@ export function hidebehindBones(): BoneDef[] {
   A('neck2', 'neck', [0, 2.2, 0.205]);
   A('head', 'neck2', HB_HEAD);
   A('jaw', 'head', JAW_HINGE);
-  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(HB_EYE, k)); A('lid' + s, 'head', mir(HB_EYE, k)); A('ear' + s, 'head', [k * 0.07, 2.365, 0.27]); }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(HB_BEAD, k)); A('lid' + s, 'head', mir(HB_BEAD, k)); A('ear' + s, 'head', [k * 0.07, 2.365, 0.27]); }
   for (const [s, k] of [['L', 1], ['R', -1]] as const) {
     A('cla' + s, 'chest', [k * 0.07, 1.99, 0.1]);
     A('arm' + s, 'cla' + s, mir(ARM.sh, k)); A('elb' + s, 'arm' + s, mir(ARM.el, k)); A('hand' + s, 'elb' + s, mir(ARM.wr, k));
@@ -267,9 +269,9 @@ export function* hidebehindModelGen(o: { page?: number; den?: number } = {}): Mo
   }
   // the eyes: small, sunk deep in the sockets, black with a green ring that throws the light back
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(HB_EYE, s), ax: V3 = [s * HB_EYE_AX[0], HB_EYE_AX[1], HB_EYE_AX[2]];
-    body.add(paintedEye({ name: 'eye' + S, c, ax, r: 0.0125, bone: bi('eye' + S), iris: RP('ichor'), pupil: 'round', pupilR: 0.42, irisA: 0.78, sclera: RP('basalt'), side: s, glintR: 0.16, k: 3 })).reg = REG.eye;
-    for (const l of lids({ name: 'lid' + S, c, ax, r: 0.0125, bone: bi('lid' + S), lowBone: hb, upper: 0.5, lower: 0.66, tilt: -0.12, side: s, thick: 0.24, paint: lidPaint(HIDE, 1.6, { c, ax, r: 0.0125, lash: INK }) })) body.add(l).reg = REG.head;
+    const c = mir(HB_BEAD, s), ax: V3 = [s * HB_EYE_AX[0], HB_EYE_AX[1], HB_EYE_AX[2]];
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEAD_R, bone: bi('eye' + S), iris: RP('ichor'), pupil: 'round', bead: true, side: s, k: 3 })).reg = REG.eye;
+    for (const l of lids({ name: 'lid' + S, c, ax, r: BEAD_R, bone: bi('lid' + S), lowBone: hb, upper: 0.5, lower: 0.66, tilt: -0.12, side: s, thick: 0.24, paint: lidPaint(HIDE, 1.6, { c, ax, r: BEAD_R, lash: INK }) })) body.add(l).reg = REG.head;
     // small torn ears flattened back along the skull: cupped, rimmed, a dark bowl
     const er: V3 = add(H, [s * 0.07, 0.066, -0.03]);
     body.add(flap({ name: 'ear' + S, path: curve([add(er, [-s * 0.012, -0.004, 0.008]), er, add(er, [s * 0.014, 0.018, -0.03]), add(er, [s * 0.02, 0.03, -0.062])], 6), front: nrm([s, 0.4, 0.5]),

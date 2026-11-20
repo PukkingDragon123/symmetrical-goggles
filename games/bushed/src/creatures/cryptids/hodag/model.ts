@@ -21,13 +21,15 @@ import { fbm3, seatsOn } from '../../paintkit';
 import { bonesKit, boneIndex, solid, wet, finishModel, sculpt, almondLid, REG, type CryptidModel, type ModelGen, type Dab } from '../kit';
 import type { BoneDef } from '../../rig';
 
-export const HODAG_MODEL_VERSION = 'hodag@6';
+export const HODAG_MODEL_VERSION = 'hodag@7';
 /** the head bone (the back of the skull over the jaw hinge) */
 export const HH: V3 = [0, 0.66, 0.6];
 /** the eye's centre (left; head-local + HH) */
 export const HODAG_EYE: V3 = [0.232, 0.748, 0.735];
 export const HODAG_EYE_AX: V3 = [0.8, 0.2, 0.57];
 const EYE_R = 0.05;
+/** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
+const BEAD_R = 0.021, HODAG_BEAD: V3 = HODAG_EYE.map((v, i) => v + HODAG_EYE_AX[i] * (EYE_R - BEAD_R) * 0.75 / Math.hypot(...HODAG_EYE_AX)) as V3;
 const TAIL_CTRL: V3[] = [[0, 0.62, -0.8], [0, 0.58, -1.02], [0, 0.5, -1.27], [0, 0.45, -1.52], [0, 0.46, -1.74], [0, 0.5, -1.9]];
 const TAIL = curve(TAIL_CTRL, 7);
 export const HODAG_LEGS = {
@@ -52,7 +54,7 @@ export function hodagBones(): BoneDef[] {
   A('jaw', 'head', [0, 0.615, 0.55]);
   A('sac', 'jaw', [0, 0.46, 0.68]);
   A('tongue', 'jaw', [0, 0.598, 0.6]);
-  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(HODAG_EYE, k)); A('lid' + s, 'head', mir(HODAG_EYE, k)); }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(HODAG_BEAD, k)); A('lid' + s, 'head', mir(HODAG_BEAD, k)); }
   A('hips', 'root', [0, 0.61, -0.5]);
   for (let k = 0; k < 5; k++) A('tail' + k, k === 0 ? 'hips' : 'tail' + (k - 1), TAIL[k]);
   for (const [s, k] of [['L', 1], ['R', -1]] as const) {
@@ -126,7 +128,7 @@ function jawRing(z: number): number[][] {
 }
 
 // ------------------------------------------------------------------------------------------------ paint
-const HIDE = RP('olive'), UMBER = RP('hide'), BELLY = RP('straw'), OCHRE = RP('ochre'), BONE = RP('bone'), HORN = RP('horn'), GOLD = RP('gold'), MANE = RP('squatch'), MOSS = RP('moss'), LIP = RP('flesh'), LEATHER = RP('leather');
+const HIDE = RP('olive'), UMBER = RP('hide'), BELLY = RP('straw'), OCHRE = RP('ochre'), BONE = RP('bone'), HORN = RP('horn'), MANE = RP('squatch'), MOSS = RP('moss'), LIP = RP('flesh'), LEATHER = RP('leather');
 /** where the coarse black mane grows (0..1): over the shoulder hump and down the sides of the neck, the forelock */
 const maneAt = (x: number, y: number, z: number) => Math.max(
   cl(1.4 - Math.hypot(x / 0.3, (y - 0.9) / 0.16, (z - 0.34) / 0.22) * 1.4, 0, 1),
@@ -403,11 +405,11 @@ export function* hodagModelGen(o: { page?: number; den?: number } = {}): ModelGe
   // the eyes, deep in their sockets under the brow: gold with a slit pupil; thick upper and lower lids leave a narrow
   // almond of eye, the outer corner dropped (the brute looks sullen)
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(HODAG_EYE, s), ax: V3 = [s * HODAG_EYE_AX[0], HODAG_EYE_AX[1], HODAG_EYE_AX[2]];
-    const e = body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYE_R, bone: bi('eye' + S), iris: GOLD, pupil: 'slit', irisA: 0.8, pupilR: 0.16, sclera: RP('ochre'), side: s, k: 2.8 }));
+    const c = mir(HODAG_BEAD, s), ax: V3 = [s * HODAG_EYE_AX[0], HODAG_EYE_AX[1], HODAG_EYE_AX[2]];
+    const e = body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEAD_R, bone: bi('eye' + S), iris: RP('soil'), pupil: 'round', bead: true, side: s, k: 2.8 }));
     e.reg = REG.eye;
-    body.add(almondLid({ name: 'lid' + S, c, ax, r: EYE_R, bone: bi('lid' + S), side: s, open: 0.58, w: 0.95, tilt: -0.08, peak: -0.15, thick: 0.34, root: 2.1, skin: { R: HIDE, step: 2.4, lash: RP('ink') } })).reg = REG.head;
-    body.add(almondLid({ name: 'llid' + S, c, ax, r: EYE_R, bone: hb, side: s, lower: true, open: 0.42, w: 0.95, tilt: -0.08, thick: 0.3, root: 2.1, skin: { R: HIDE, step: 2.8, wet: BELLY } })).reg = REG.head;
+    body.add(almondLid({ name: 'lid' + S, c, ax, r: BEAD_R, bone: bi('lid' + S), side: s, open: 0.58, w: 0.95, tilt: -0.08, peak: -0.15, thick: 0.34, root: 2.1, skin: { R: HIDE, step: 2.4, lash: RP('ink') } })).reg = REG.head;
+    body.add(almondLid({ name: 'llid' + S, c, ax, r: BEAD_R, bone: hb, side: s, lower: true, open: 0.42, w: 0.95, tilt: -0.08, thick: 0.3, root: 2.1, skin: { R: HIDE, step: 2.8, wet: UMBER } })).reg = REG.head;
   }
   // the horns: out of knobby bosses of bone either side of the poll, sweeping out, then forward and up, twisting as
   // they go, ringed with growth near the root, black and polished at the tips

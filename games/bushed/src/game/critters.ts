@@ -13,6 +13,10 @@ import { makePhysical, propsNear, removeProp, type PhysProp } from './physprops'
 import { ITEMS } from './items';
 import { anchorPos } from './flow';
 import { chewHandle } from './forge/items';
+import type { ToolStats } from './items';
+
+/** the strength of a hoop snake's sting or a splinter cat going through a tree, as an axe (critters' fellTreeAt) */
+const CRYPTID_AXE: ToolStats = { kind: 'axe', sharp: 1, headMass: 2.4, reach: 1, swingTime: 1, fell: 7, split: 2, limb: 2, stamina: 0 };
 
 /** fallbacks while a creature sound id is missing from the bank */
 const FALLBACK: Record<string, string> = {
@@ -34,6 +38,10 @@ const CRYPTID_RULES: Record<string, Record<string, string>> = {
   agropelter: { throw: 'r1', hit: 'r1', jeer: 'r2', eat: 'r3', befriended: 'r4', gift: 'r4' },
   teakettler: { whistle: 'r0', back_away: 'r2', drink: 'r3', befriended: 'r4' },
   wasset: { burrow: 'r0', popup: 'r1', nip: 'r2', dive: 'r3', eat: 'r4', befriended: 'r4' },
+  gouger: { circle: 'r0', snort: 'r1', stuck: 'r1', butt: 'r1', topple: 'r2', righted: 'r3', reward: 'r3', eat: 'r4', befriended: 'r4', sleep: 'r5' },
+  hoopsnake: { hiss: 'r0', coil: 'r0', roll: 'r1', miss: 'r1', sting: 'r1', through: 'r2', wither: 'r3', tree: 'r3', flop: 'r4', eat: 'r5', befriended: 'r5' },
+  splintercat: { growl: 'r0', yowl: 'r1', smash: 'r1', dazed: 'r1', ram: 'r2', launch: 'r2', smashlure: 'r3', eat: 'r4', befriended: 'r4', sleep: 'r5' },
+  goofus: { caw: 'r0', trail: 'r1', fetch: 'r2', drop: 'r2', bonk: 'r3', eat: 'r4', befriended: 'r4', guide: 'r5' },
 };
 
 /** what the lumberjack thinks the first time (and now and then after) */
@@ -44,6 +52,10 @@ const CRYPTID_LINES: Record<string, Record<string, string>> = {
   agropelter: { throw: 'Somebody up there is throwing branches at me.', hit: 'Ow. OW. Keep moving.', jeer: 'Is that tree laughing at me?', befriended: 'It dropped kindling instead of a branch. Progress.' },
   teakettler: { whistle: 'A kettle boiling? Out here?', back_away: 'It walks backwards. Always watching.', befriended: 'It\'s following me, steaming like a pot.' },
   wasset: { popup: 'The snow just stood up and looked at me.', nip: 'It\'s untying my bootlaces!', dive: 'Gone under like a diving duck.', befriended: 'It keeps popping up wherever I stop. I think it likes me.' },
+  gouger: { circle: 'That goat walks round the hill leaning in... its legs are SHORTER on one side.', stuck: 'It can\'t turn round. It has to go the long way.', butt: 'Butted by a lopsided goat.', topple: 'It fell over on the flat. It\'s just lying there kicking.', righted: 'Up you get, you lopsided thing.', reward: 'It\'s gouging at the old pine roots... fatwood!', befriended: 'It leans on me now. Literally.' },
+  hoopsnake: { hiss: 'Something hissed up on the bank.', roll: 'IT BIT ITS OWN TAIL AND IT\'S ROLLING AT ME.', miss: 'Missed! It can\'t steer.', through: 'Straight through the hoop. Ha!', sting: 'The tail. The TAIL has a stinger.', tree: 'The tree it stung just died. And it\'s coming down.', flop: 'It fell over on the flat. Just a snake again.', befriended: 'It ate the eggs. Now it watches me chop.' },
+  splintercat: { growl: 'Big cat. Ears flat. Back away slowly.', yowl: 'Something screamed in the dark timber.', smash: 'It went THROUGH the tree. Through it.', smashlure: 'It smashed it for the syrup. Firewood, delivered.', ram: 'Like being hit by a woodstove.', dazed: 'It\'s sitting there seeing stars.', befriended: 'It licked the syrup and rumbled. A purr, I think.' },
+  goofus: { caw: 'A crow flying... backwards?', trail: 'That bird is following my footprints. Tail first.', drop: 'It dropped something at my feet.', bonk: 'It flew straight into a tree. Of course it did.', befriended: 'It ate the bannock. It wants to help.', guide: 'It\'s flying back the way I came. Follow the bird.' },
 };
 
 export class Critters {
@@ -129,8 +141,13 @@ export class Critters {
     this.granny = new GrannyTamarack({ home, secrets: ['chanterelles', 'lost_axe', 'bigfoot_stump'] });
     this.game.scene.add(this.granny.object);
     await yieldFrame();
-    // the six from the old camp stories: hodag, squonk, hidebehind, agropelter, teakettler, snow wasset
-    for (const c of spawnNewCryptids(this.game.scene)) this.extra.push(c);
+    // the ten from the old camp stories: hodag, squonk, hidebehind, agropelter, teakettler, snow wasset, sidehill
+    // gouger, hoop snake, splinter cat, goofus bird (a creature with `interact` can be used with E: tip the gouger up)
+    for (const c of spawnNewCryptids(this.game.scene)) {
+      this.extra.push(c);
+      const it = (c as { interact?: { label(): string; use(): void; enabled(): boolean } }).interact;
+      if (it) import('./interact').then(({ registerInteractable }) => registerInteractable(c.object, { kind: 'creature', reach: 2.8, label: () => it.label(), use: () => it.use(), enabled: () => it.enabled() }));
+    }
   }
 
   dropItem(kind: string, pos: THREE.Vector3, obj?: THREE.Object3D): string {
@@ -200,6 +217,7 @@ export class Critters {
 
   /** the six from the camp stories: hurt the player, teach the Book, think out loud (sparingly) */
   private onCryptid(ev: string, who: string, pos: THREE.Vector3, data: Record<string, unknown>): void {
+    this.cryptidWorld(pos, data);
     const g = this.game, near = g.player.pos.distanceTo(pos) < 45;
     const rule = CRYPTID_RULES[who][ev];
     if (near) { g.journal.sawCritter(who); if (rule) g.journal.learn(who, rule); }
@@ -215,6 +233,67 @@ export class Critters {
     if (ev === 'nip') { g.player.addShake(0.25); g.survival.spend(0.03); }
     const line = CRYPTID_LINES[who]?.[ev];
     if (line && near) this.think(`${who}:${ev}`, line, ev === 'gore' || ev === 'attack' || ev === 'hit' ? 12 : 90);
+  }
+
+  /** what a cryptid does to the world: data.fell (a hoop snake's sting: the tree falls toward dx, dz), data.smash (a
+   *  splinter cat: the tree there falls, logs there are bucked to rounds and rounds split), data.give (items dropped
+   *  as pickups: the gouger's fatwood, the goofus bird's finds) */
+  private cryptidWorld(pos: THREE.Vector3, data: Record<string, unknown>): void {
+    const fell = data.fell as { x: number; z: number; dx: number; dz: number } | undefined;
+    if (fell) this.fellTreeAt(fell.x, fell.z, new THREE.Vector3(fell.dx, 0, fell.dz), 1.8);
+    const sm = data.smash as { x: number; z: number; dx: number; dz: number } | undefined;
+    if (sm) this.smashWood(sm.x, sm.z, new THREE.Vector3(sm.dx, 0, sm.dz));
+    const give = data.give as { item: string; n?: number; at?: THREE.Vector3 } | undefined;
+    if (give) for (let i = 0; i < (give.n ?? 1); i++) this.spawnPickup(give.item, (give.at ?? pos).clone().add(new THREE.Vector3((Math.random() - 0.5) * 0.6, 0.25 + i * 0.12, (Math.random() - 0.5) * 0.6)));
+  }
+
+  /** an axe no one swings: the standing tree nearest (x, z) is notched from the side it should fall to until it goes */
+  private fellTreeAt(x: number, z: number, dir: THREE.Vector3, r: number): boolean {
+    const g = this.game, f = g.forest;
+    if (!f?.trunkColliders) return false;
+    const t = f.trunkColliders(x, z, r).filter((c) => c.r < 0.55).sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
+    if (!t) return false;
+    const d = dir.clone().setY(0); if (d.lengthSq() < 1e-4) d.set(1, 0, 0); d.normalize();
+    const y = heightAt(t.x, t.z) + 0.75;
+    for (let k = 0; k < 14; k++) {
+      // level and downward strikes in turn, so the notch opens toward the fall
+      const o = new THREE.Vector3(t.x + d.x * (t.r + 1.1), y + (k % 2 ? 0.22 : 0), t.z + d.z * (t.r + 1.1));
+      const ray = new THREE.Vector3(t.x, y, t.z).sub(o).normalize();
+      const swing = k % 2 ? new THREE.Vector3(-d.x, -0.7, -d.z).normalize() : new THREE.Vector3(-d.z, 0, d.x);
+      const res = g.chop.swing(o, ray, t.r + 2, swing, CRYPTID_AXE, 1, 1);
+      if (res.kind === 'standing' && res.felled) return true;
+      if (res.kind !== 'standing') return false;
+    }
+    return false;
+  }
+
+  /** a splinter cat through wood: a tree there falls, logs are bucked into rounds, rounds split, a felled trunk cut */
+  private smashWood(x: number, z: number, dir: THREE.Vector3): void {
+    const g = this.game;
+    this.fellTreeAt(x, z, dir, 1.6);
+    const at = new THREE.Vector3(x, heightAt(x, z), z);
+    for (const p of [...g.chop.pieces]) {
+      if (!p.body) continue;
+      const tr = p.body.translation();
+      if (Math.hypot(tr.x - x, tr.z - z) > 2.6) continue;
+      if (p.kind === 'log') { for (const q of g.chop.buckPiece(p, 0, false)) if (q.kind === 'log') g.chop.buckPiece(q, 0, false); }
+      else if (p.kind === 'round') g.chop.splitPiece(p, at, dir);
+    }
+    // a felled trunk lying there: cut through it in three places
+    const down = new THREE.Vector3(0, -1, 0);
+    for (const off of [-1.3, 0, 1.3]) {
+      const o = new THREE.Vector3(x + dir.x * off, at.y + 2.4, z + dir.z * off);
+      for (let k = 0; k < 6; k++) { const res = g.chop.swing(o, down, 3.2, dir, CRYPTID_AXE, 1, 1); if (res.kind !== 'buck' || res.done) break; }
+    }
+  }
+
+  /** an item dropped into the world as a pickup (its own model, physical) */
+  private spawnPickup(item: string, at: THREE.Vector3): void {
+    const m = ITEMS[item] ? this.game.toolModel(item) : null;
+    if (!m) { this.dropItem(item, at); return; }
+    m.position.copy(at);
+    this.game.scene.add(m);
+    makePhysical(m, { mass: ITEMS[item].mass ?? 0.3, itemId: item, asleep: false });
   }
 
   /** a floating thought, at most once per `every` seconds per key (0: always) */

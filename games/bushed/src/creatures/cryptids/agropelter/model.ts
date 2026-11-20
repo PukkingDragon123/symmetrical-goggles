@@ -20,12 +20,14 @@ import { bonesKit, boneIndex, finishModel, REG, type ModelGen } from '../kit';
 import { ring, displace, carve, ridge, flap, digit, brush, bone, gs, sm, add, nrm } from '../sculpt';
 import type { BoneDef } from '../../rig';
 
-export const AGROPELTER_MODEL_VERSION = 'agropelter@3';
+export const AGROPELTER_MODEL_VERSION = 'agropelter@4';
 export const SNAG_MODEL_VERSION = 'agrosnag@4';
 export const AG_HEAD: V3 = [0, 1.04, 0.16];
 /** the eye, small and deep under the brow (head-local SOCK) */
 export const AG_EYE: V3 = [0.033, 1.066, 0.226];
 export const AG_EYE_AX: V3 = [0.22, 0.02, 0.97];
+/** the eye is a small dark bead (a real animal's eye): its radius and centre, in the old eye's socket */
+const BEAD_R = 0.008, AG_BEAD: V3 = AG_EYE.map((v, i) => v + AG_EYE_AX[i] * (0.0115 - BEAD_R) * 0.75 / Math.hypot(...AG_EYE_AX)) as V3;
 const SOCK: V3 = [0.033, 0.026, 0.066], SOCK_AX: V3 = nrm([0.22, 0.02, 0.97]);
 /** a nostril (head-local, +x side): on the top front of the muzzle under the eyes */
 const NOS: V3 = [0.01, 0.017, 0.12];
@@ -47,7 +49,7 @@ export function agropelterBones(): BoneDef[] {
   A('neck', 'chest', [0, 0.97, 0.1]);
   A('head', 'neck', AG_HEAD);
   A('jaw', 'head', JAW_HINGE);
-  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(AG_EYE, k)); A('lid' + s, 'head', mir(AG_EYE, k)); A('ear' + s, 'head', [k * 0.06, 1.058, 0.162]); }
+  for (const [s, k] of [['L', 1], ['R', -1]] as const) { A('eye' + s, 'head', mir(AG_BEAD, k)); A('lid' + s, 'head', mir(AG_BEAD, k)); A('ear' + s, 'head', [k * 0.06, 1.058, 0.162]); }
   for (const [s, k] of [['L', 1], ['R', -1]] as const) {
     A('cla' + s, 'chest', [k * 0.06, 0.9, 0.06]);
     A('arm' + s, 'cla' + s, mir(ARM.sh, k)); A('elb' + s, 'arm' + s, mir(ARM.el, k)); A('hand' + s, 'elb' + s, mir(ARM.wr, k));
@@ -235,9 +237,9 @@ export function* agropelterModelGen(o: { page?: number; den?: number } = {}): Mo
   }
   // small amber eyes squeezed to slits under the brow; small cupped ears with a ragged rim
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(AG_EYE, s), ax: V3 = [s * AG_EYE_AX[0], AG_EYE_AX[1], AG_EYE_AX[2]];
-    body.add(paintedEye({ name: 'eye' + S, c, ax, r: 0.0115, bone: bi('eye' + S), iris: RP('glowAmber'), pupil: 'round', pupilR: 0.32, irisA: 0.66, sclera: RP('ochre'), side: s, glintR: 0.18, k: 3 })).reg = REG.eye;
-    for (const l of lids({ name: 'lid' + S, c, ax, r: 0.0115, bone: bi('lid' + S), lowBone: hb, upper: 0.24, lower: 0.36, tilt: 0.22, side: s, thick: 0.3, thickLo: 0.2, paint: lidPaint(FACE, 2.0, { c, ax, r: 0.0115, lash: INK }) })) body.add(l).reg = REG.head;
+    const c = mir(AG_BEAD, s), ax: V3 = [s * AG_EYE_AX[0], AG_EYE_AX[1], AG_EYE_AX[2]];
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: BEAD_R, bone: bi('eye' + S), iris: RP('soil'), pupil: 'round', bead: true, side: s, k: 3 })).reg = REG.eye;
+    for (const l of lids({ name: 'lid' + S, c, ax, r: BEAD_R, bone: bi('lid' + S), lowBone: hb, upper: 0.42, lower: 0.56, tilt: 0.22, side: s, thick: 0.3, thickLo: 0.2, paint: lidPaint(FACE, 2.0, { c, ax, r: BEAD_R, lash: INK }) })) body.add(l).reg = REG.head;
     const er: V3 = add(H, [s * 0.056, 0.02, -0.002]);
     body.add(flap({ name: 'ear' + S, path: curve([add(er, [-s * 0.012, 0, 0.004]), er, add(er, [s * 0.016, 0.01, -0.012]), add(er, [s * 0.024, 0.022, -0.026])], 6), front: nrm([s * 0.5, 0.2, 1]),
       w: (t) => 0.032 * Math.sin(Math.min(1, 0.3 + t * 0.85) * Math.PI) + 0.004, cup: (t) => 0.009 * (1 - t * 0.6), thick: 0.0045, skin: () => [bi('ear' + S), 1], paint: facePaint('ear'), levels: 1, k: 1.3 })).reg = REG.head;
