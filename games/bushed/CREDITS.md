@@ -662,3 +662,7 @@ Required attribution:
 
 Grocery labels (`public/assets/textures/cooking/groceries.png`) are original art made by
 `src/game/cooking/tools/make_groceries.py`; the brands are invented.
+
+Store dust motes (additive floating points in the lamplight, `src/places/store/`) are adapted from Gacha Garage
+`src/world/Garage.js` buildDust (same author). Store signs, flyers, labels and grime (`store_print.png`,
+`store_grime.png`, made by `src/places/store/make_store_print.py`) are original; the beer brands are invented.
