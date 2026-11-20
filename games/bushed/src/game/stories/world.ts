@@ -9,7 +9,7 @@ import { Mesher, Rand, log, logAB, board, boxAt, lathe, tube, placeMat, defineMa
 import { buildProduct } from '../../places/products';
 import { flameCards } from '../../places/fixtures';
 import { heightAt, WORLD } from '../../world/layout';
-import { registerInteractable, unregisterInteractable } from '../interact';
+import { registerInteractable } from '../interact';
 import { puffs } from '../../gfx/particles';
 import { Noise } from '../../core/noise';
 import { anchorPos } from '../flow';
@@ -251,7 +251,7 @@ export function buildStoryWorld(g: Game): StoryWorld {
     W.dockEnd.set(e.x + s * 6.6, deckY, e.z + c * 6.6);
     const hm = gutHammerModel();
     hm.position.set(w / 2 + 0.07, deckY + 1.37 - 0.42, 7);
-    hm.rotation.y = Math.PI / 2;
+    hm.rotation.y = 0.3; // face the shore: you see it from the bank
     grp.add(hm);
     W.hammerAtDock = hm;
     const hit = hitBox(grp, 0.6, 0.7, 0.5, V(w / 2 + 0.05, deckY + 1.15, 7));
@@ -565,4 +565,3 @@ export function showOnPlate(g: Game, W: StoryWorld, i: number, item: string | nu
   p.food = m;
 }
 
-export function unregister(o: THREE.Object3D | undefined): void { if (o) unregisterInteractable(o); }

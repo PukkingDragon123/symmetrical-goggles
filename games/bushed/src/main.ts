@@ -28,6 +28,7 @@ import { install as installBook } from './ui/bookofcryptids';
 import { installCooking, registerCookItems } from './game/cooking';
 import { installForge, registerForgeItems } from './game/forge';
 import { installFauna } from './world/fauna';
+import { installStories } from './game/stories';
 import { Forest } from './world/forest';
 import { GroundCover } from './world/groundcover';
 import { treeMaterials } from './trees/materials';
@@ -139,6 +140,7 @@ async function boot() {
   installBook(game);
   await step('fauna', async () => { installFauna(game as never); });
   await step('npcs', async () => { const npcs = spawnNpcs(game); game.updaters.push((dt) => npcs.forEach((n) => n.update(dt))); });
+  await step('stories', () => installStories(game));
 
   let last = performance.now();
   const frame = (now: number) => {

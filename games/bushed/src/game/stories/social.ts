@@ -66,7 +66,7 @@ export class Mail {
     if (this.t > 0) return;
     this.t = 1;
     const g = this.g, st = SPOTS.store;
-    if (Math.hypot(g.player.pos.x - st.x, g.player.pos.z - st.z) > 26) return;
+    if (g.mode !== 'walk' || Math.hypot(g.player.pos.x - st.x, g.player.pos.z - st.z) > 26) return;
     for (const id of waitingMail(g)) if (set(g, `mailseen:${id}`)) { think(id === 'ray' ? 'Ray said Pruneau\'s does the mail. Something in his cubbyhole?' : 'There\'s mail in Ray\'s cubbyhole.', 3); break; }
   }
 }

@@ -45,9 +45,10 @@ function complete(g: Game, c: Chain, s: QStep, n: Npc, pre: string[] = []): void
   s.take?.(g);
   set(g, key(c, s, 'done'));
   n.say([...pre, ...s.thanks]);
-  // the reward lands as the thanks finish, not before
-  const delay = [...pre, ...s.thanks].reduce((t, l) => t + Math.min(9, 2.2 + l.split(/\s+/).length * 0.3) + 0.6, 0);
-  setTimeout(() => { s.reward?.(g); noted(g, `${c.who}: ${s.todo.charAt(0).toLowerCase()}${s.todo.slice(1)}. Done.`); }, Math.max(0, delay - 2) * 1000);
+  // the reward lands with the last line of thanks ("Here: my dad's flapjacks"), not before
+  const lines = [...pre, ...s.thanks];
+  const delay = lines.slice(0, -1).reduce((t, l) => t + Math.min(9, 2.2 + l.split(/\s+/).length * 0.3) + 0.6, 0);
+  setTimeout(() => { s.reward?.(g); noted(g, `${c.who}: ${s.todo.charAt(0).toLowerCase()}${s.todo.slice(1)}. Done.`); }, (delay + 0.8) * 1000);
 }
 
 function talk(g: Game, n: Npc): string[] | null {

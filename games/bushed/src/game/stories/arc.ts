@@ -363,7 +363,7 @@ export class Arc {
 /** cryptid voices from the treeline, by what you've made friends with */
 const VOICES: [critter: string, rule: string, sound: string][] = [
   ['hound', 'friend', 'hound_yip'], ['bigfoot', 'gift', 'bigfoot_whoop'], ['teakettler', 'r4', 'kettle_whistle'], ['gumberoo', 'fire', 'gumberoo_boing'],
-  ['dingbat', 'dark', 'dingbat_flutter'], ['goofus', 'r4', 'bird_raven'], ['hodag', 'r4', 'moose_grunt'], ['squonk', 'r5', 'creature_distant_scream'],
+  ['dingbat', 'dark', 'dingbat_flutter'], ['goofus', 'r4', 'bird_raven'], ['hodag', 'r4', 'moose_grunt'], ['squonk', 'r5', 'bird_loon'],
 ];
 
 class Finale {
