@@ -332,9 +332,10 @@ export const ROMAN = (n: number): string => {
 
 // ---- plate portraits of the four real-model cryptids (src/creatures/cryptids/real.ts): the posed model, rendered
 interface RealPosable { object: THREE.Object3D; ready: boolean; play(c: string | null): void; update(c: unknown): void; pos: THREE.Vector3; heading: number }
-const REAL_VIEW: Record<string, { cls: 'SidehillGouger' | 'HoopSnake' | 'SplinterCat' | 'GoofusBird'; model: string; clip: string; t: number; yaw: number; pitch: number; fill: number }> = {
+const REAL_VIEW: Record<string, { cls: 'SidehillGouger' | 'HoopSnake' | 'SplinterCat' | 'GoofusBird'; model: string; clip: string; t: number; yaw: number; pitch: number; fill: number; set?: Record<string, unknown> }> = {
   gouger: { cls: 'SidehillGouger', model: 'gouger', clip: 'idle', t: 0.6, yaw: 0.8, pitch: 0.12, fill: 0.86 },
-  hoopsnake: { cls: 'HoopSnake', model: 'hoopsnake', clip: 'idle', t: 1.2, yaw: 0.9, pitch: 0.3, fill: 0.84 },
+  // the hoop snake as everyone tells it: a wheel, tail in its mouth
+  hoopsnake: { cls: 'HoopSnake', model: 'hoopsnake', clip: 'idle', t: 0.5, yaw: 1.1, pitch: 0.12, fill: 0.84, set: { hoop: 1 } },
   splintercat: { cls: 'SplinterCat', model: 'splintercat', clip: 'idle2', t: 0.3, yaw: 0.75, pitch: 0.14, fill: 0.84 },
   goofus: { cls: 'GoofusBird', model: 'goofus', clip: 'idle', t: 0.4, yaw: 0.7, pitch: 0.12, fill: 0.8 },
 };
@@ -345,6 +346,7 @@ for (const [id, v] of Object.entries(REAL_VIEW)) {
       await M.loadReal(v.model);
       const c = new M[v.cls]({ pos: new THREE.Vector3() }) as unknown as RealPosable;
       c.play(v.clip);
+      if (v.set) Object.assign(c, v.set);
       const ctx = {
         dt: 1 / 30, time: 2, hour: 13, heightAt: () => 0, emit: () => undefined, items: [], fires: [],
         player: { pos: new THREE.Vector3(3, 1.7, 40), dir: new THREE.Vector3(0, 0, -1), held: 'none', crouch: false, noise: 0, light: false, speed: 0 },

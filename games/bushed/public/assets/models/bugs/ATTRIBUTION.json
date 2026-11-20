@@ -1,0 +1,82 @@
+{
+ "note": "Insect sprites for BUSHED (bugs_atlas.png), rendered from these models by tools/blender/birds_bugs (bug_views.py, bugs_atlas.py). Cells 8-12 (mosquito, midge, spider, glow, dew) are drawn by bugs_atlas.py. Credit the authors.",
+ "models": [
+  {
+   "file": "bugs_atlas.png cell 0 (monarch)",
+   "title": "Monarch Butterfly",
+   "author": "dudecon",
+   "author_url": "https://sketchfab.com/dudecon",
+   "source": "https://sketchfab.com/3d-models/monarch-butterfly-ed0a10f2aa4b41bb9b7a1bcb82cb369b",
+   "licence": "CC BY 4.0",
+   "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+   "spdx": "CC-BY-4.0",
+   "changes": "rendered from above (flat-lit from its own texture) into the insect sprite atlas by tools/blender/birds_bugs/bug_views.py and bugs_atlas.py"
+  },
+  {
+   "file": "cell 1 (tiger swallowtail)",
+   "title": "Tiger Swallowtail",
+   "author": "University Libraries at Virginia Tech",
+   "author_url": "https://sketchfab.com/VirginiaTechUnivLibraries",
+   "source": "https://sketchfab.com/3d-models/tiger-swallowtail-4119ac2975e84a659f164b37025c558e",
+   "licence": "CC BY 4.0",
+   "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+   "spdx": "CC-BY-4.0",
+   "changes": "rendered from above (flat-lit from its own texture) into the insect sprite atlas by tools/blender/birds_bugs/bug_views.py and bugs_atlas.py"
+  },
+  {
+   "file": "cell 2 (peppered moth)",
+   "title": "Peppered Moth - Biston Betularia",
+   "author": "The Watt Institution",
+   "author_url": "https://sketchfab.com/wattinstitution",
+   "source": "https://sketchfab.com/3d-models/peppered-moth-biston-betularia-67fb9bcd3bc94bd89089430e0590a3d4",
+   "licence": "CC BY 4.0",
+   "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+   "spdx": "CC-BY-4.0",
+   "changes": "rendered from above (flat-lit from its own texture) into the insect sprite atlas by tools/blender/birds_bugs/bug_views.py and bugs_atlas.py"
+  },
+  {
+   "file": "cell 3 (blue darner)",
+   "title": "Blue Darner Dragonfly",
+   "author": "Ethan Cragun",
+   "author_url": "https://sketchfab.com/EDIIIC",
+   "source": "https://sketchfab.com/3d-models/blue-darner-dragonfly-d509ecdc7f114380819d1a682c82292f",
+   "licence": "CC BY 4.0",
+   "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+   "spdx": "CC-BY-4.0",
+   "changes": "rendered from above (flat-lit from its own texture) into the insect sprite atlas by tools/blender/birds_bugs/bug_views.py and bugs_atlas.py"
+  },
+  {
+   "file": "cell 4 (honey bee)",
+   "title": "Honey Bee",
+   "author": "Tony's Classics",
+   "author_url": "https://sketchfab.com/marlborobenz",
+   "source": "https://sketchfab.com/3d-models/honey-bee-aaf957992c1142bb8e3ad52c457ab014",
+   "licence": "CC BY 4.0",
+   "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+   "spdx": "CC-BY-4.0",
+   "changes": "rendered from above (flat-lit from its own texture) into the insect sprite atlas by tools/blender/birds_bugs/bug_views.py and bugs_atlas.py"
+  },
+  {
+   "file": "cell 5 (ant)",
+   "title": "Ant",
+   "author": "Ergin ERYILDIR",
+   "author_url": "https://sketchfab.com/ergin3d.com",
+   "source": "https://sketchfab.com/3d-models/ant-6ea6dfb45845443b9f99b2fe4456f9a3",
+   "licence": "CC BY 4.0",
+   "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+   "spdx": "CC-BY-4.0",
+   "changes": "rendered from above (flat-lit from its own texture) into the insect sprite atlas by tools/blender/birds_bugs/bug_views.py and bugs_atlas.py"
+  },
+  {
+   "file": "cells 6-7 (ground beetle; the firefly is recoloured from it)",
+   "title": "Carabus auronitens",
+   "author": "Digital Archive of Natural History (DiNArDa)",
+   "author_url": "https://sketchfab.com/disc3d",
+   "source": "https://sketchfab.com/3d-models/carabus-auronitens-138f12e0c10549bba03ec372e0e945dd",
+   "licence": "CC BY 4.0",
+   "licence_url": "http://creativecommons.org/licenses/by/4.0/",
+   "spdx": "CC-BY-4.0",
+   "changes": "rendered from above (flat-lit from its own texture) into the insect sprite atlas by tools/blender/birds_bugs/bug_views.py and bugs_atlas.py"
+  }
+ ]
+}

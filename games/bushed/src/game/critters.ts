@@ -251,12 +251,13 @@ export class Critters {
   private fellTreeAt(x: number, z: number, dir: THREE.Vector3, r: number): boolean {
     const g = this.game, f = g.forest;
     if (!f?.trunkColliders) return false;
-    const t = f.trunkColliders(x, z, r).filter((c) => c.r < 0.55).sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
+    const t = f.trunkColliders(x, z, r).filter((c) => c.r < 0.55 && c.r > 0.1).sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
     if (!t) return false;
-    const d = dir.clone().setY(0); if (d.lengthSq() < 1e-4) d.set(1, 0, 0); d.normalize();
-    const y = heightAt(t.x, t.z) + 0.75;
-    for (let k = 0; k < 14; k++) {
-      // level and downward strikes in turn, so the notch opens toward the fall
+    const d0 = dir.clone().setY(0); if (d0.lengthSq() < 1e-4) d0.set(1, 0, 0); d0.normalize();
+    const y = heightAt(t.x, t.z) + 0.75, d = new THREE.Vector3();
+    for (let k = 0; k < 24; k++) {
+      // level and downward strikes in turn, fanned across the side it should fall to, so the notch opens there
+      d.copy(d0).applyAxisAngle(new THREE.Vector3(0, 1, 0), [0, 0.7, -0.7][k % 3]);
       const o = new THREE.Vector3(t.x + d.x * (t.r + 1.1), y + (k % 2 ? 0.22 : 0), t.z + d.z * (t.r + 1.1));
       const ray = new THREE.Vector3(t.x, y, t.z).sub(o).normalize();
       const swing = k % 2 ? new THREE.Vector3(-d.x, -0.7, -d.z).normalize() : new THREE.Vector3(-d.z, 0, d.x);

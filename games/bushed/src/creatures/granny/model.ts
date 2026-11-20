@@ -576,10 +576,10 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
     eye.paint = eyePaint({ c, ax, side: s, irisA: 0.44, iris: RP('moss'), pupil: 'round', pupilR: 0.3, sclera: RP('bone'), arcus: RP('snow'), collar: RP('ochre'), glint: [0.36, 0.42], shine: 160 });
     // heavy hooded upper lids (modelled 0.12 rad higher: the creature rests them that much lower), the lower lids
     // with a wet rim; their corners meet in an almond, the outer corners drooping with age
-    const up: LidSpec = { name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), side: s, open: 0.25, wide: 0.92, inner: 0.09, outer: 0.04, ri: 1.03, ro: 1.2, swell: 0.09, root: 1.5, k: 2.2, paint: () => undefined };
+    const up: LidSpec = { name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), side: s, open: 0.27, wide: 0.8, inner: 0.09, outer: 0.04, ri: 1.03, ro: 1.2, swell: 0.09, root: 1.5, k: 2.2, paint: () => undefined };
     up.paint = lidPaint(up);
     body.add(almondLid(up));
-    const lo: LidSpec = { name: 'llid' + S, c, ax, r: E.r, bone: HEAD, side: s, lower: true, open: 0.23, wide: 0.92, inner: -0.03, outer: -0.08, ri: 1.02, ro: 1.12, swell: 0.05, root: 1.35, k: 2.0, paint: () => undefined };
+    const lo: LidSpec = { name: 'llid' + S, c, ax, r: E.r, bone: HEAD, side: s, lower: true, open: 0.24, wide: 0.8, inner: -0.03, outer: -0.08, ri: 1.02, ro: 1.12, swell: 0.05, root: 1.35, k: 2.0, paint: () => undefined };
     lo.paint = lidPaint(lo);
     body.add(almondLid(lo));
   }
