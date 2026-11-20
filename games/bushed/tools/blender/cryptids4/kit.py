@@ -130,10 +130,12 @@ def bead_eyes(pairs, name='beads', seg=10, rings=7):
     return o
 
 
-def bead_from_socket(c, r_src, r_new, mid, push=0.0):
+def bead_from_socket(c, r_src, r_new, mid, push=0.0, flat=True):
     """a bead of radius r_new sitting where an eye sphere (centre c, radius r_src) shows: its outer surface where the
     old eye's was (pushed out of the head by `push` m), on the line from the eyes' midpoint through the old centre"""
-    n = (c - mid); n.z = 0
+    n = (c - mid)
+    if flat:
+        n.z = 0
     n = n.normalized() if n.length > 1e-6 else Vector((1, 0, 0))
     return c + n * (r_src - r_new * 0.85 + push)
 

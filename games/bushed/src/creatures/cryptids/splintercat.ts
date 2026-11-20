@@ -192,13 +192,12 @@ export class SplinterCat extends RealCryptid {
   }
 
   protected pose(ctx: CreatureCtx) {
-    // asleep: the head goes down onto the paws, the tail curls round its side, it breathes
+    // asleep: lying down, the tail tip curled round
     this.curl = damp(this.curl, this.clip === 'sleep' ? 1 : 0, 2, 1 / 60);
     if (this.curl > 0.01) {
-      const k = this.curl, rt = this.side.set(-Math.cos(this.heading), 0, Math.sin(this.heading)), up = this.up;
-      this.swingBone('spine_004', rt, 0.28 * k); this.swingBone('spine_005', rt, 0.3 * k); this.swingBone('spine_006', rt, 0.32 * k + Math.sin(this.t * 1.3) * 0.02 * k);
-      this.swingBone('tail_001', up, 0.55 * k); this.swingBone('tail_002', up, 0.7 * k); this.swingBone('tail_003', up, 0.8 * k);
-      this.swingBone('tail_001', rt, 0.35 * k);
+      // (its lying pose is a clean one from the source; only the tail tip curls round, gently)
+      const k = this.curl;
+      this.swingBone('tail_002', this.up, 0.35 * k); this.swingBone('tail_003', this.up, 0.45 * k);
       return;
     }
     // seeing stars: the head wobbles round in circles

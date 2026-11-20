@@ -77,6 +77,13 @@ def action(name):
     raise KeyError(name)
 
 
+def _shift(m, M):
+    """(cryptids4) move a whole sampled pose: every bone, not just the root (moving the root alone moves only what the
+    root skins: the children keep their world place, and the hips tear away from the legs)"""
+    for n in m:
+        m[n] = M @ m[n]
+
+
 def rebake(arm, meshes, keep, ref, clips, T=Matrix.Identity(4), src_fps=24, name='rig', check=True, obj_bone=None):
     """keep: [(new_name, src_bone)] parent-first; ref: (action, frame) = the new rest pose; clips: [dict(name, action,
     f0, f1, drift=False)]; T: a world transform applied to everything (scale to size, move to the ground). obj_bone:
@@ -189,6 +196,8 @@ def rebake(arm, meshes, keep, ref, clips, T=Matrix.Identity(4), src_fps=24, name
                 set_frame(f)
                 dg = bpy.context.evaluated_depsgraph_get()
                 for o in meshes:
+                    if not any(md.type == 'ARMATURE' for md in o.modifiers):
+                        continue  # a static part (bead eyes) stands still in the source: not the floor
                     e = o.evaluated_get(dg); me = e.to_mesh()
                     if len(me.vertices):
                         co = np.empty(len(me.vertices) * 3, np.float32); me.vertices.foreach_get('co', co)
@@ -197,24 +206,25 @@ def rebake(arm, meshes, keep, ref, clips, T=Matrix.Identity(4), src_fps=24, name
                         low = min(low, float(z.min()))
                     e.to_mesh_clear()
             for m in mats:
-                m[root] = Matrix.Translation((0, 0, -low)) @ m[root]
+                _shift(m, Matrix.Translation((0, 0, -low)))
         if c.get('center_bone'):  # (cryptids4) an in-place clip: keep this bone, on average, over its rest spot
             cb = c['center_bone']
-            d = sum((m[cb].translation for m in mats), Vector()) / len(mats) - restW[cb].translation
+            to = Vector((*c['center_to'], 0)) if c.get('center_to') else restW[cb].translation
+            d = sum((m[cb].translation for m in mats), Vector()) / len(mats) - to
             d.z = 0
             for m in mats:
-                m[root] = Matrix.Translation(-d) @ m[root]
+                _shift(m, Matrix.Translation(-d))
         if c.get('drift'):
             d = mats[-1][c.get('drift_bone', root)].translation - mats[0][c.get('drift_bone', root)].translation
             d.z = 0
             for k, m in enumerate(mats):
-                m[root] = Matrix.Translation(-d * (k / nfr)) @ m[root]
+                _shift(m, Matrix.Translation(-d * (k / nfr)))
         if c.get('recenter'):  # (kit.py) a clip that ends somewhere else (a fall): slide it back over the rest spot
             rb = c.get('recenter_bone', root)
             d = mats[-1][rb].translation - restW[rb].translation
             d.z = 0
             for k, m in enumerate(mats):
-                m[root] = Matrix.Translation(-d * (1.0 if c.get('pose') else k / nfr)) @ m[root]
+                _shift(m, Matrix.Translation(-d * (1.0 if c.get('pose') else k / nfr)))
         if c.get('pose'):  # a held pose: one sample, looped
             mats = mats[:1]
             frames = frames[:1]

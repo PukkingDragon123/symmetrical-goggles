@@ -20,7 +20,7 @@ ref = (C.action('metarig|idle_Object'), 0)
 arm.animation_data_create(); arm.animation_data.action = ref[0]; C.set_frame(0)
 eye_obj = next(o for o in meshes if o.material_slots[0].material.name == 'Material.003')
 for o in meshes:  # 1.3k tris of hard facets: one level of smoothing
-    if o != eye_obj:
+    if o != eye_obj and not os.environ.get('NOSUB'):
         K.subdivide(o, 1)
 eyes = K.islands(eye_obj)
 mid = (eyes[0][0] + eyes[1][0]) / 2
@@ -28,15 +28,41 @@ hips = arm.matrix_world @ arm.pose.bones['spine_01'].head
 f = (mid - hips); f.z = 0
 R = Matrix.Rotation(Vector((0, -1, 0)).to_2d().angle_signed(f.to_2d()), 4, 'Z')  # hips->eyes turned to -Y
 s = BODY / (mid - hips).length
-beads = K.bead_eyes([(K.bead_from_socket(c, r, r * 0.55, mid, 0.0), r * 0.55) for c, r, _ in eyes], 'beads')
+lo = K.ground_z([m for m in meshes if m != eye_obj])
+eyes_ref = K.islands(eye_obj)
+H_ref = arm.matrix_world @ arm.pose.bones['spine.006_010'].matrix  # the head, at the reference frame
+c0 = (hips + mid) / 2
+back_src = arm.matrix_world @ arm.pose.bones['spine.003_07'].head  # mid-back at the reference (idle) frame
+# the new rest pose is the source's bind pose (the skin is then exact in every clip: a rest taken from a clip frame
+# tears the hips in far poses like lying down); the beads go where the eyes are in it
+bind = bpy.data.actions.new('bind')
+arm.animation_data.action = bind
+for pb in arm.pose.bones:
+    pb.matrix_basis = Matrix.Identity(4)
+C.set_frame(0)
+# the eye mesh has its own skin, which only agrees with the body's in the imported pose: place the beads by the eyes at
+# the reference frame and carry them with the head bone into the bind pose
+H_bind = arm.matrix_world @ arm.pose.bones['spine.006_010'].matrix
+M = H_bind @ H_ref.inverted()
+rmid = (eyes_ref[0][0] + eyes_ref[1][0]) / 2
+fwd = (rmid - hips); fwd.z = 0; fwd.normalize()
+
+
+def socket(c, r):
+    # a cat's eyes look forward: the visible cap of the eye ball is forward and out, not straight out sideways
+    side = (c - rmid); side.z = 0
+    d = (side.normalized() * 0.55 + fwd).normalized()
+    return c + d * (r - r * 0.55 * 0.85)
+
+
+beads = K.bead_eyes([(M @ socket(c, r), r * 0.55 * M.to_scale().x) for c, r, _ in eyes_ref], 'beads')
 meshes = [m for m in meshes if m != eye_obj] + [beads]
 bpy.data.objects.remove(eye_obj, do_unlink=True)
 keep = K.auto_keep(arm, [m for m in meshes if m.vertex_groups])
 print('KEEP', len(keep), [k[0] for k in keep])
 head = next(sn for n, sn in keep if n.startswith('spine_006'))
-lo = K.ground_z([m for m in meshes if m.name != 'beads'])
-c0 = (hips + mid) / 2
 T = Matrix.Translation((0, 0, 0)) @ Matrix.Scale(s, 4) @ R @ Matrix.Translation(Vector((-c0.x, -c0.y, -lo)))
+back = T @ back_src
 A = lambda n: C.action('metarig|' + n + '_Object')
 clips = [
     dict(name='idle', action=A('idle')),
@@ -45,11 +71,11 @@ clips = [
     dict(name='run', action=A('run'), drift=True),
     dict(name='eat', action=A('eating')),
     # lying down (the game tucks the head onto the paws and wraps the tail on top of it)
-    dict(name='sleep', action=A('sleep'), f0=9, f1=9, pose=True),
+    dict(name='sleep', action=A('sleep'), f0=9, f1=9, pose=True, center_bone='spine_003', center_to=(back.x, back.y)),
 ]
 for c in clips:  # the source's root motion lived on an empty we drop: put every clip back on the ground
     c['floor'] = True
-ao, outm, acts = C.rebake(arm, meshes, keep, ref, clips, T=T, src_fps=fps, name='splintercat', obj_bone={'beads': head})
+ao, outm, acts = C.rebake(arm, meshes, keep, (bind, 0), clips, T=T, src_fps=fps, name='splintercat', obj_bone={'beads': head})
 C.drop_source([ao] + outm)
 K.ensure_uv(outm)
 mat = C.atlas(outm, {'Material.001': (0, 0, 1024, 1008), 'BeadEye': (0, 1012, 8, 8)}, (1024, 1024), os.path.join(K.HERE, '_build'), 'splintercat',
