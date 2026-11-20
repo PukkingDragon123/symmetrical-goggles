@@ -15,7 +15,7 @@ const { W, D, R, FLOOR: F, PORCH, OH } = CABIN;
 const { EAVE } = CABIN_GEOM;
 
 export async function cabinExterior(c: DressCtx): Promise<void> {
-  const ms = new Mesher();         // details that cast shadows
+  const ms = c.xms ?? new Mesher(); // details that cast shadows (shared with the yard)
   const dms = c.dms;               // decals
   const r = new Rand(8080);
   const pending: Promise<unknown>[] = [];
@@ -178,9 +178,11 @@ export async function cabinExterior(c: DressCtx): Promise<void> {
   }
 
   await Promise.all(pending);
-  const g = noRay(ms.build({ name: 'cabin_exterior', noCast: ['cab_card'] }));
-  c.group.add(g);
-  c.updaters.push(farCull(g, V(0, 1, 2), c.detail > 1 ? 150 : 100));
+  if (!c.xms) {
+    const g = noRay(ms.build({ name: 'cabin_exterior', noCast: ['cab_card'] }));
+    c.group.add(g);
+    c.updaters.push(farCull(g, V(0, 1, 2), c.detail > 1 ? 150 : 100));
+  }
   void OH;
 }
 

@@ -24,7 +24,7 @@ import {
 type HAt = (x: number, z: number) => number;
 
 export async function cabinYard(c: DressCtx): Promise<void> {
-  const ms = new Mesher();
+  const ms = c.xms ?? new Mesher();
   const r = new Rand(31337);
   const hA = c.hAt;
   const pending: Promise<unknown>[] = [];
@@ -112,9 +112,11 @@ export async function cabinYard(c: DressCtx): Promise<void> {
   }
 
   await Promise.all(pending);
-  const g = noRay(ms.build({ name: 'cabin_yard', noCast: ['cab_card'] }));
-  c.group.add(g);
-  c.updaters.push(farCull(g, V(0, 1, 0), full ? 170 : 110));
+  if (!c.xms) {
+    const g = noRay(ms.build({ name: 'cabin_yard', noCast: ['cab_card'] }));
+    c.group.add(g);
+    c.updaters.push(farCull(g, V(0, 1, 0), full ? 170 : 110));
+  }
   if (wash) {
     c.group.add(wash);
     c.updaters.push(farCull(wash, V(-7.4, 1.5, -4), 90));

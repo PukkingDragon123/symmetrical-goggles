@@ -551,6 +551,8 @@ const TERRAIN_MAP = /* glsl */`
       q = vec2(lane * tl + 0.5, vRoad.y * tl);
       gx = rdx * tl; gy = rdy * tl;
     } else { q = wp * tl; gx = dpx * tl; gy = dpy * tl; }
+    // a slight negative mip bias: crisper texels at game distance (anisotropic filtering keeps it from shimmering)
+    gx *= 0.72; gy *= 0.72;
     vec4 a = textureGrad(tLayers, vec3(q, float(L)), gx, gy);
     if (far > 0.0) {
       vec2 r = mat2(0.8, -0.6, 0.6, 0.8) * q * 0.37 + 17.3;

@@ -657,3 +657,8 @@ Required attribution:
 * `cell 4 (honey bee)`: This work is based on "Honey Bee" (https://sketchfab.com/3d-models/honey-bee-aaf957992c1142bb8e3ad52c457ab014) by Tony's Classics (https://sketchfab.com/marlborobenz) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `cell 5 (ant)`: This work is based on "Ant" (https://sketchfab.com/3d-models/ant-6ea6dfb45845443b9f99b2fe4456f9a3) by Ergin ERYILDIR (https://sketchfab.com/ergin3d.com) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `cells 6-7 (ground beetle; the firefly is recoloured from it)`: This work is based on "Carabus auronitens" (https://sketchfab.com/3d-models/carabus-auronitens-138f12e0c10549bba03ec372e0e945dd) by Digital Archive of Natural History (DiNArDa) (https://sketchfab.com/disc3d) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+
+## Groceries
+
+Grocery labels (`public/assets/textures/cooking/groceries.png`) are original art made by
+`src/game/cooking/tools/make_groceries.py`; the brands are invented.

@@ -14,7 +14,7 @@ import { wallMapTexture } from './wallmap';
 import { STOVE } from './stove';
 import { flameCards } from './fixtures';
 import { CLOTH } from './cabin/tex';
-import { lowSplit } from './cabin/bake';
+import { lowSplit, noRay, farCull } from './cabin/bake';
 import { cabinExterior } from './cabin/exterior';
 import { cabinYard } from './cabin/yard';
 import { cabinInterior } from './cabin/interior';
@@ -32,6 +32,8 @@ export interface DressCtx {
   detail: number;
   /** ground height (cabin-local, relative to the cabin's origin) */
   hAt: (x: number, z: number) => number;
+  /** shared writer for everything outside (porch dressing + yard): one mesh per material for both */
+  xms?: Mesher;
 }
 
 /** load a prop and place it (local coords); resolves null if the prop is missing */
@@ -517,7 +519,13 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
   // ================================================================================ woodyard + fire pit
   await woodyard(c);
   // ================================================================================ forty years of living here
+  c.xms = new Mesher();
   await Promise.all([cabinExterior(c), cabinYard(c), cabinInterior(c)]);
+  {
+    const g = noRay(c.xms.build({ name: 'cabin_outside', noCast: ['cab_card', 'cab_paper'] }));
+    group.add(g);
+    c.updaters.push(farCull(g, V(2, 1, 0), c.detail > 1 ? 160 : 110));
+  }
 
   await Promise.all(pending);
   // flames in the lanterns (the props carry a flame card; make sure it glows) + mark decor

@@ -287,7 +287,7 @@ export async function cabinInterior(c: DressCtx): Promise<void> {
   }
 
   await Promise.all(pending);
-  const g = noRay(ms.build({ name: 'cabin_interior', noCast: ['cab_card', 'cab_paper', 'cab_paper_ds'] }));
+  const g = noRay(ms.build({ name: 'cabin_interior', cast: false })); // clutter: no shadow passes (the lamp cube maps would draw it 6x)
   c.group.add(g);
   c.updaters.push(farCull(g, V(0, 1.4, 0), 32));
 }
