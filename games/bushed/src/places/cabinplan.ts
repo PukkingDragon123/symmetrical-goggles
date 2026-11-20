@@ -6,8 +6,8 @@ export const CABIN = {
   R: 0.165,        // log radius
   S: 0.3,          // course spacing (per wall)
   OH: 0.42,        // log ends overhang the corner centrelines
-  FLOOR: 0.36,     // top of the floorboards above grade
-  Y0: 0.17,        // first side-wall log centre
+  FLOOR: 0.56,     // top of the floorboards above grade (the sills sit on a dry-stacked fieldstone footing)
+  Y0: 0.37,        // first side-wall log centre (the sill logs)
   NC: 9,           // courses per wall
   PORCH: 1.95,     // porch depth in front of the front wall centreline
   K: 0.72,         // roof slope (rise / run)

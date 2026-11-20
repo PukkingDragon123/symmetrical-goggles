@@ -10,7 +10,10 @@
 import * as THREE from 'three';
 import { SPOTS, heightAt } from '../world/layout';
 import { Mesher, Rand, Cols, V, box, boxAt, board, logAB, log, lathe, tube, flicker, shadowy, lightCuller, anchor, placeMat, type Place } from './kit';
-import { rock } from './cabin';
+import { rock, colorMat, tb, prop } from './store/inst';
+import { ensurePrintMats, LABELS } from './signs';
+import { G as GFX } from '../gfx/globals';
+import { ensureStoreMats, card, cardAt, floorDecal, groundDecal } from './store/print';
 import { writeRound, writeSplit } from './products';
 import { loadProp } from './props';
 import { flameCards } from './fixtures';
@@ -69,6 +72,8 @@ function hitBox(parent: THREE.Object3D, w: number, h: number, d: number, x: numb
 
 export async function buildForge(): Promise<ForgePlace> {
   ensureForgeMats();
+  ensurePrintMats();
+  ensureStoreMats();
   const pl = forgePlacement();
   const F = FORGE;
   const c = Math.cos(pl.rot), s = Math.sin(pl.rot);
@@ -501,8 +506,18 @@ export async function buildForge(): Promise<ForgePlace> {
   ms.pop();
   cols.box(-0.4, 0.21, 0.95, 0.2, 0.21, 0.2);
 
+  // ---- round 5: soot, scale, scrap, sacks, the apron, the rain barrel, paper on the wall
+  const dms = new Mesher();
+  dressForge(ms, dms, cols, group, gh, hw, hd, ya, yb, za, zb);
+
   // ---- static mesh and the hit proxies the station / interactables use
-  group.add(ms.build({ name: 'forge_static' }));
+  group.add(ms.build({ name: 'forge_static', noCast: ['grime', 'sp'] }));
+  const clutter = dms.build({ name: 'forge_clutter', cast: false });
+  group.add(clutter);
+  {
+    const centre = new THREE.Vector3(pl.x, floorY + 1, pl.z);
+    updaters.push(() => { clutter.visible = GFX.uCamPos.value.distanceToSquared(centre) < 45 * 45; });
+  }
   const hits = {
     fire: hitBox(group, P.s + 0.1, 0.25, P.s + 0.1, P.x, H.top + 0.05, P.z),
     anvil: hitBox(group, 0.72, 0.3, 0.3, A.x, A.stump + 0.2, A.z),
@@ -552,3 +567,125 @@ function writeStumpAt(ms: Mesher, x: number, z: number, h: number): void {
 }
 
 void log;
+
+/**
+ * The forge's lived-in layer: soot up the back wall and on the rafters by the chimney, black ground round the
+ * hearth, mill scale round the anvil, a scrap heap and a rack of bar stock, coal sacks, the leather apron on its
+ * nail, horseshoes over the beam for luck, a rain barrel under the drip line, the burned FORGE board, notes and an
+ * old hardware calendar by the slate, a quench bucket, hardy tools at the stump, a chain off a rafter.
+ */
+function dressForge(ms: Mesher, dms: Mesher, cols: Cols, group: THREE.Group, gh: (x: number, z: number) => number, hw: number, hd: number,
+  ya: number, yb: number, za: number, zb: number): void {
+  const F = FORGE, r = new Rand(4242);
+  const sack = colorMat('sack', 0x9a8a68, 0.95);
+  const rust = 'rusty_red';
+  // ---- soot and grime
+  for (const [x, y, w, h] of [[-0.85, 1.75, 1.3, 1.1], [-0.4, 1.5, 0.6, 0.8], [-1.5, 1.4, 0.7, 0.9]] as [number, number, number, number][]) {
+    dms.pushT(x, y, -hd + 0.012); card(dms, 'g_soot', w, h, 'grime'); dms.pop();
+  }
+  // under the roof near the chimney (facing down)
+  const roofY = (z: number) => yb + (ya - yb) * ((z - zb) / (za - zb));
+  dms.pushT(-0.85, roofY(-0.6) - 0.03, -0.6, 0, Math.PI / 2 + Math.atan2(ya - yb, za - zb));
+  card(dms, 'g_soot', 2.0, 1.6, 'grime');
+  dms.pop();
+  floorDecal(dms, 'g_soot', -0.85, 0.008, -0.2, 1.6, 1.0, 0);
+  floorDecal(dms, 'g_gravel', F.anvil.x, 0.009, F.anvil.z + 0.05, 1.3, 1.0, 0.4);
+  floorDecal(dms, 'g_gravel', F.anvil.x - 0.6, 0.009, F.anvil.z - 0.3, 0.8, 0.7, 1.2);
+  floorDecal(dms, 'g_blob', F.tub.x, 0.01, F.tub.z, 0.9, 0.9, 0);
+  floorDecal(dms, 'g_puddle', F.tub.x + 0.3, 0.011, F.tub.z + 0.35, 0.6, 0.45, 0.6, 'puddle');
+  floorDecal(dms, 'g_leaves', hw - 0.2, 0.01, hd - 0.1, 0.8, 0.6, 0.3);
+  floorDecal(dms, 'g_leaves', -hw + 0.3, 0.01, hd - 0.2, 0.7, 0.7, 2.1);
+  // ---- the burned FORGE board on the front beam, horseshoes over it (ends up, the luck stays in)
+  cardAt(ms, 'forge_board', -1.0, F.hf - 0.2, hd + 0.04, 0, 0.7, 0.18, 0.03);
+  boxAt(ms, 'board_warm', -1.0, F.hf - 0.2, hd + 0.025, 0.74, 0.2, 0.025);
+  for (let i = 0; i < 3; i++) writeHorseshoe(dms, 0.9 + i * 0.16, F.hf + 0.02, hd + 0.08, 0);
+  // ---- paper by the slate: jobs, the hardware calendar, a feed-store card
+  cardAt(dms, 'forge_note', 0.35, 1.5, -hd + 0.045, 0, 0.22, 0.12, 0.05);
+  cardAt(dms, 'forge_cal', 0.36, 1.18, -hd + 0.045, 0, 0.17, 0.25, -0.03);
+  cardAt(dms, 'fl_card2', 1.3, 1.02, -hd + 0.045, 0, 0.12, 0.07, 0.08);
+  // ---- the apron on a nail at the front-left post, a pair of gloves stuffed in its pocket
+  dms.pushT(-hw + 0.09, 1.55, hd - 0.05, Math.PI / 2 + 0.2);
+  for (const s of [1, -1]) {
+    dms.pushT(0, 0, s * 0.003, s > 0 ? 0 : Math.PI);
+    const n = V(0, 0, 1);
+    const P = [V(-0.16, -0.62, 0), V(0.16, -0.62, 0), V(0.17, -0.1, 0), V(0.1, 0.02, 0), V(0.08, 0.18, 0), V(-0.08, 0.18, 0), V(-0.1, 0.02, 0), V(-0.17, -0.1, 0)];
+    for (let i = 1; i < P.length - 1; i++) dms.tri('leather', P[0], P[i], P[i + 1], n, n, n, [P[0].x, P[0].y], [P[i].x, P[i].y], [P[i + 1].x, P[i + 1].y]);
+    dms.pop();
+  }
+  tb(dms, 'leather', [V(-0.08, 0.18, 0), V(0, 0.28, -0.01), V(0.08, 0.18, 0)], 0.008, 3);
+  boxAt(dms, 'leather', 0.05, -0.3, 0.012, 0.14, 0.12, 0.012);
+  dms.pop();
+  boxAt(dms, 'iron', -hw + 0.09, 1.84, hd - 0.05, 0.01, 0.01, 0.05);
+  // ---- bar stock across two brackets on the side wall, above the charcoal bin
+  for (const z of [-0.2, 0.25]) { boxAt(ms, 'iron', -hw + 0.06, 1.3, z, 0.12, 0.02, 0.02); boxAt(ms, 'iron', -hw + 0.06, 1.62, z, 0.12, 0.02, 0.02); }
+  for (let i = 0; i < 6; i++) boxAt(dms, i % 2 ? 'f_anvil' : rust, -hw + 0.04 + (i % 3) * 0.03, 1.32 + Math.floor(i / 3) * 0.32 + 0.015, 0.05, 0.016, 0.016, 1.15 + (i % 2) * 0.2, 0, {}, r.range(-0.02, 0.02));
+  // ---- coal sacks slumped by the bin, one open with lumps spilling
+  for (const [x, z, s, open] of [[-1.85, 1.0, 1, false], [-1.45, 1.12, 0.85, true]] as [number, number, number, boolean][]) {
+    dms.pushT(x, 0, z, r.range(0, 3), 0, open ? 0.15 : 0);
+    lathe(dms, sack, [[0.0001, 0], [0.2 * s, 0.01], [0.23 * s, 0.14], [0.2 * s, 0.32 * s], [open ? 0.17 * s : 0.08 * s, 0.42 * s], [open ? 0.18 * s : 0.03 * s, 0.46 * s], [0.0001, open ? 0.38 * s : 0.48 * s]], 9);
+    if (open) for (let k = 0; k < 8; k++) boxAt(dms, 'f_coal', r.range(-0.08, 0.08), 0.39 * s, r.range(-0.08, 0.08), 0.04, 0.03, 0.04, r.range(0, 3));
+    dms.pop();
+    floorDecal(dms, 'g_blob', x, 0.01, z, 0.6 * s, 0.6 * s, 0);
+  }
+  floorDecal(dms, 'g_soot', -1.6, 0.012, 0.85, 0.8, 0.5, 0.4);
+  for (let k = 0; k < 9; k++) boxAt(dms, 'f_coal', -1.55 + r.range(-0.3, 0.3), 0.012, 0.85 + r.range(-0.2, 0.2), 0.035, 0.022, 0.03, r.range(0, 3));
+  cols.box(-1.65, 0.22, 1.06, 0.4, 0.22, 0.2);
+  // ---- hardy tools and a fuller at the stump, a quench bucket, a wire brush and a rag on the bench
+  for (let i = 0; i < 3; i++) boxAt(dms, 'f_anvil', F.anvil.x - 0.3 + i * 0.07, 0.04, F.anvil.z + 0.3, 0.04, 0.08, 0.04, r.range(0, 1));
+  dms.pushT(F.tub.x + 0.45, 0, F.tub.z + 0.15);
+  lathe(dms, 'galv', [[0.0001, 0], [0.12, 0], [0.15, 0.3], [0.145, 0.3], [0.115, 0.008], [0.0001, 0.008]], 12);
+  lathe(dms, colorMat('water_d', 0x10181c, 0.05, 0.3), [[0.0001, 0.22], [0.138, 0.22], [0.0001, 0.221]], 12);
+  tb(dms, 'galv', [V(-0.15, 0.29, 0), V(0, 0.42, 0), V(0.15, 0.29, 0)], 0.004, 3);
+  dms.pop();
+  cols.box(F.tub.x + 0.45, 0.15, F.tub.z + 0.15, 0.15, 0.15, 0.15);
+  const B = F.bench;
+  boxAt(dms, 'board_warm', B.x0 + 0.95, B.y + 0.02, (B.z0 + B.z1) / 2 + 0.12, 0.2, 0.03, 0.05, 0.3);
+  for (let k = 0; k < 6; k++) boxAt(dms, 'iron', B.x0 + 0.88 + k * 0.025, B.y + 0.045, (B.z0 + B.z1) / 2 + 0.12, 0.004, 0.02, 0.04, 0.3);
+  dms.pushT(B.x0 + 0.3, B.y, B.z1 - 0.08);
+  lathe(dms, 'lab_metal', [[0.0001, 0], [0.05, 0], [0.05, 0.12], [0.0001, 0.12]], 8, { uNorm: true, vNorm: true, uv: lUV('tin') });
+  for (let k = 0; k < 6; k++) boxAt(dms, 'iron', Math.cos(k) * 0.02, 0.13, Math.sin(k) * 0.02, 0.004, 0.06, 0.004, k, {}, 0.3);
+  dms.pop();
+  // ---- a chain off the rafter over the anvil with an S-hook and a bundle of finished hooks
+  {
+    const x = 0.7, z = 0.9, top = roofY(z) - 0.05;
+    for (let k = 0; k < 9; k++) { dms.pushT(x, top - 0.03 - k * 0.045, z, k * 1.57); lathe(dms, 'f_chain', [[0.008, -0.022], [0.012, 0], [0.008, 0.022]], 5); dms.pop(); }
+    tb(dms, 'iron', [V(x, top - 0.44, z), V(x + 0.03, top - 0.48, z), V(x, top - 0.52, z), V(x - 0.03, top - 0.56, z)], 0.006, 4, { samples: 6 });
+    for (let k = 0; k < 4; k++) tb(dms, 'iron', [V(x - 0.02 + k * 0.012, top - 0.56, z), V(x - 0.03 + k * 0.02, top - 0.85, z + 0.01 * k), V(x + k * 0.02, top - 0.9, z + 0.02)], 0.005, 4, { samples: 5 });
+  }
+  // ---- outside: the scrap heap at the back corner, a rain barrel under the drip line, an old wheel rim
+  {
+    const sx = hw + 0.55, sz = -0.95, g = gh(sx, sz);
+    for (let i = 0; i < 14; i++) {
+      const a = r.range(0, 6.28), d = r.range(0, 0.45);
+      dms.pushT(sx + Math.cos(a) * d, g + 0.03 + r.range(0, 0.1) * (1 - d), sz + Math.sin(a) * d * 0.7, r.range(0, 6), r.range(-0.3, 0.3), r.range(-0.3, 0.3));
+      const k = i % 4;
+      if (k === 0) boxAt(dms, rust, 0, 0, 0, r.range(0.4, 0.9), 0.02, 0.02);
+      else if (k === 1) writeHorseshoe(dms, 0, 0, 0, 0);
+      else if (k === 2) boxAt(dms, rust, 0, 0, 0, 0.3, 0.012, 0.06);
+      else boxAt(dms, 'iron', 0, 0, 0, 0.12, 0.05, 0.08);
+      dms.pop();
+    }
+    const rim: THREE.Vector3[] = [];
+    for (let i = 0; i <= 18; i++) { const a = (i / 18) * Math.PI * 2; rim.push(V(Math.cos(a) * 0.42, Math.sin(a) * 0.42, 0)); }
+    dms.pushT(sx + 0.3, g + 0.38, sz - 0.35, 0.4, 0, 0.12);
+    tb(dms, rust, rim, 0.018, 4, { closed: true, samples: 18 });
+    for (let k = 0; k < 6; k++) { const a = k * Math.PI / 3; tb(dms, 'board_grey', [V(0, 0, 0), V(Math.cos(a) * 0.4, Math.sin(a) * 0.4, 0)], 0.016, 4); }
+    lathe(dms, 'board_grey', [[0.0001, -0.07], [0.06, -0.07], [0.06, 0.07], [0.0001, 0.07]], 8);
+    dms.pop();
+    groundDecal(dms, 'g_drip', sx, sz, 1.4, 1.2, 0.3, (x, z) => gh(x, z), { nx: 2, nz: 2, lift: 0.02 });
+    cols.box(sx, g + 0.2, sz, 0.45, 0.2, 0.35);
+    // rain barrel at the back-left corner: staves and two hoops, a dark water disc
+    const bx = -hw - 0.35, bz = -hd - 0.3, bg = gh(bx, bz);
+    dms.pushT(bx, bg, bz);
+    lathe(dms, 'board_dark', [[0.0001, 0.02], [0.24, 0.02], [0.27, 0.35], [0.24, 0.7], [0.0001, 0.7]], 14);
+    for (const y of [0.15, 0.55]) lathe(dms, 'iron', [[0.255, y - 0.02], [0.268, y - 0.02], [0.268, y + 0.02], [0.255, y + 0.02]], 14);
+    lathe(dms, colorMat('water_d', 0x10181c, 0.05, 0.3), [[0.0001, 0.66], [0.235, 0.66], [0.0001, 0.661]], 14);
+    dms.pop();
+    floorDecal(dms, 'g_moss', bx + 0.2, bg + 0.02, bz + 0.3, 0.9, 0.7, 0.2);
+    cols.box(bx, bg + 0.35, bz, 0.27, 0.35, 0.27);
+    // the drip line along the front of the roof
+    groundDecal(dms, 'g_mud', 0, hd + 0.55, F.W + 0.6, 0.5, 0, (x, z) => gh(x, z), { nx: 4, nz: 1, lift: 0.02 });
+  }
+  void prop;
+}
+function lUV(k: string): [number, number, number, number] { return LABELS.uv(k); }

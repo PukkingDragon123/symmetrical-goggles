@@ -18,6 +18,7 @@ import ph  # noqa: E402
 from foliage import (SS, Cell, Sprite, birch_cluster, clean_leaf, conifer_spray, dead_twigs, extract,  # noqa: E402
                      leaf_sprites, twig_col)
 from pix import bleed, hsv_adjust, kmeans, quantize, save_rgba  # noqa: E402
+import veg_flora as F  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
 OUT = os.path.join(ROOT, "public", "assets", "textures", "veg")
@@ -31,6 +32,15 @@ UNITS = {
     "twig": (0, 4, 2, 1), "agaric": (2, 4, 1, 1), "chanterelle": (3, 4, 1, 1), "bracket": (4, 4, 1, 1),
     "clubmoss": (5, 4, 1, 1), "aster": (6, 4, 1, 1), "cone": (7, 4, 1, 1),
     "moss_tuft": (0, 5, 2, 1), "lichen": (2, 5, 2, 1), "litter": (4, 5, 2, 1), "needles": (6, 5, 2, 1),
+    # page 2 (veg_flora.py)
+    "grass_fine": (0, 6, 1, 2), "grass_lush": (1, 6, 1, 2), "grass_thatch": (2, 6, 1, 2), "seed_timothy": (3, 6, 1, 2),
+    "seed_bluejoint": (4, 6, 1, 2), "seed_hair": (5, 6, 1, 2), "goldenrod": (6, 6, 1, 2), "everlasting": (7, 6, 1, 2),
+    "aster_purple": (0, 8, 1, 2), "daisy": (1, 8, 1, 2), "yarrow": (2, 8, 1, 2), "cattail_leaf": (3, 8, 1, 2),
+    "reed": (4, 8, 1, 2), "fern_ostrich": (5, 8, 1, 4), "raspberry": (6, 8, 2, 1), "labrador": (6, 9, 2, 1),
+    "sarsaparilla": (0, 10, 1, 1), "hawkweed": (1, 10, 1, 1), "vetch": (2, 10, 1, 1), "lilypad": (3, 10, 1, 1),
+    "lilypad_old": (4, 10, 1, 1), "water_lily": (6, 10, 1, 1), "cattail": (7, 10, 1, 1),
+    "bolete": (0, 11, 1, 1), "honey": (1, 11, 1, 1), "puffball": (2, 11, 1, 1), "litter_mixed": (3, 11, 2, 1),
+    "grass_short": (6, 11, 1, 1), "seedling": (7, 11, 1, 1),
 }
 
 
@@ -38,13 +48,13 @@ def cell(size, seed):
     return Cell(seed, size)
 
 
-def grass(seed, base, tip, n=5, width=1.0, curl=0.25):
-    c = cell((U, 2 * U), seed)
+def grass(seed, base, tip, n=5, width=1.0, curl=0.25, hrange=(0.82, 0.98), size=(U, 2 * U)):
+    c = cell(size, seed)
     rng = c.rng
-    W, H = U * SS, 2 * U * SS
+    W, H = size[0] * SS, size[1] * SS
     for i in range(n):
         x0 = W * (i + 0.5) / n + rng.uniform(-6, 6) * SS
-        ln = H * rng.uniform(0.82, 0.98)
+        ln = H * rng.uniform(*hrange)
         bend = rng.uniform(-curl, curl) * W
         w0 = (W / n) * 0.42 * width * rng.uniform(0.8, 1.1)
         pts_l, pts_r = [], []
@@ -392,8 +402,22 @@ def main():
         "clubmoss": clubmoss(17), "aster": aster(18), "cone": cap_texture(19, "cone"),
         "moss_tuft": tufts(20, "moss"), "lichen": tufts(21, "lichen"),
         "litter": litter(22, "leaves"), "needles": litter(23, "needles"),
+        # page 2
+        "grass_fine": grass(31, (0.2, 0.33, 0.12), (0.52, 0.66, 0.27), n=11, width=0.75, curl=0.35, hrange=(0.45, 0.98)),
+        "grass_lush": grass(32, (0.11, 0.27, 0.08), (0.34, 0.58, 0.15), n=8, width=1.0, curl=0.3, hrange=(0.55, 0.98)),
+        "grass_thatch": F.thatch(33),
+        "seed_timothy": F.seedhead(34, "timothy"), "seed_bluejoint": F.seedhead(35, "bluejoint"), "seed_hair": F.seedhead(36, "hair"),
+        "goldenrod": F.goldenrod(37), "everlasting": F.everlasting(38),
+        "aster_purple": F.aster_purple(39), "daisy": F.daisy(40), "yarrow": F.yarrow(41), "cattail_leaf": F.cattail_leaves(42),
+        "reed": F.reed(43), "fern_ostrich": frond_cell(ferns, 2, tint=(1.0, 1.2, 0.8)),
+        "raspberry": F.raspberry(round_leaves, 44), "labrador": F.labrador(45),
+        "sarsaparilla": F.sarsaparilla(small_leaves, 46), "hawkweed": F.hawkweed(47), "vetch": F.vetch(48),
+        "lilypad": F.lilypad(49), "lilypad_old": F.lilypad(50, old=True), "water_lily": F.water_lily(51), "cattail": F.cap(52, "cattail"),
+        "bolete": F.cap(53, "bolete"), "honey": F.cap(54, "honey"), "puffball": F.cap(55, "puffball"), "litter_mixed": F.litter_mixed(56),
+        "grass_short": grass(57, (0.16, 0.3, 0.1), (0.42, 0.6, 0.2), n=9, width=0.9, curl=0.4, hrange=(0.5, 0.97), size=(U, U)),
+        "seedling": F.seedlings(58),
     }
-    atlas = Image.new("RGBA", (8 * U, 6 * U), (0, 0, 0, 0))
+    atlas = Image.new("RGBA", (8 * U, 12 * U), (0, 0, 0, 0))
     for k, im in cells.items():
         x, y, w, h = UNITS[k]
         if im.size != (w * U, h * U):
@@ -403,7 +427,7 @@ def main():
     rgb, alpha = a[..., :3], a[..., 3]
     rgb = hsv_adjust(rgb, 0.0, 1.05, 1.08)
     hard = (alpha > 0.42).astype(np.float32)
-    pal = kmeans(rgb[hard > 0].reshape(-1, 3), 64, seed=3)
+    pal = kmeans(rgb[hard > 0].reshape(-1, 3), 112, seed=3)
     q, _ = quantize(rgb, pal)
     q = bleed(q, hard)
     save_rgba(os.path.join(OUT, "veg_atlas.png"), q, hard)

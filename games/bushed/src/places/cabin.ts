@@ -14,8 +14,11 @@ import {
 } from './kit';
 import { windowUnit, doorFrame, doorLeaf, glassMat, glassMaterial } from './fixtures';
 import { buildStove, STOVE } from './stove';
-import { hingedDoor } from '../game/interact';
+import { hingedDoor, registerInteractable } from '../game/interact';
 import { dressing } from './dressing';
+import { footing, tinRoof, gutters, screenDoor, fieldstone } from './cabin/structure';
+import { ensureCabinTex, cabinGlass } from './cabin/tex';
+import { detailTier, noRay } from './cabin/bake';
 
 import { CABIN, EAVE, deckY, RIDGE, ROOF_T, ZB, ZF, ySide, yEnd, IN, OPENINGS, openingY, type Opening } from './cabinplan';
 const { W, D, R, S, OH, FLOOR, NC, PORCH, K, XE } = CABIN;
@@ -24,15 +27,19 @@ export { CABIN };
 // ---------------------------------------------------------------------------------------------- walls
 function walls(ms: Mesher, cols: Cols): void {
   const rnd = new Rand(41);
-  // inside a wall span the side facing the room is honey, outside silver
+  // inside a wall span the side facing the room is honey, outside silver. Every log end is cut by hand: the
+  // overhangs vary course to course (axe and bucksaw, not a jig), the sills are fatter, the ends grey and checked.
   const wallLog = (wall: Opening['wall'], k: number, y: number) => {
     const along = wall === 'front' || wall === 'back' ? W : D;
-    const total = along + 2 * OH;
+    const er = new Rand(k * 97 + (wall === 'front' ? 1 : wall === 'back' ? 2 : wall === 'left' ? 3 : 4) * 1301);
+    const ohA = OH + er.range(-0.12, 0.12) + (k === 0 ? 0.06 : 0), ohB = OH + er.range(-0.12, 0.12) + (k === 0 ? 0.06 : 0);
+    const total = along + ohA + ohB;
+    const start = -along / 2 - ohA; // wall coordinate of the log's start
     const ops = OPENINGS.filter((o) => o.wall === wall && k >= o.k0 && k <= o.k1);
-    // segments along the log (in log coordinates 0..total, wall coordinate = s - total/2)
+    // segments along the log (in log coordinates 0..total, wall coordinate = s + start)
     let segs: [number, number][] = [[0, total]];
     for (const o of ops) {
-      const a = o.c - o.w / 2 + total / 2, b = o.c + o.w / 2 + total / 2;
+      const a = o.c - o.w / 2 - start, b = o.c + o.w / 2 - start;
       segs = segs.flatMap(([s0, s1]) => {
         const out: [number, number][] = [];
         if (a > s0) out.push([s0, Math.min(a, s1)]);
@@ -41,20 +48,21 @@ function walls(ms: Mesher, cols: Cols): void {
       });
     }
     const inward = wall === 'front' ? V(0, 0, -1) : wall === 'back' ? V(0, 0, 1) : wall === 'left' ? V(1, 0, 0) : V(-1, 0, 0);
+    const sill = k === 0 && (wall === 'left' || wall === 'right');
     for (const [s0, s1] of segs) {
       const len = s1 - s0;
       if (len < 0.05) continue;
       const seed = rnd.int(1, 1e6);
-      const capA = s0 < 0.01 ? 0 : -1, capB = s1 > total - 0.01 ? 0 : -1;
+      const capA = s0 < 0.01 ? (er.next() < 0.5 ? 0 : 3) : -1, capB = s1 > total - 0.01 ? (er.next() < 0.5 ? 0 : 3) : -1;
       // wall frame: X along the wall, origin at the log start
       let m: THREE.Matrix4;
-      const sw = s0 - total / 2; // wall coordinate of the segment start
+      const sw = s0 + start; // wall coordinate of the segment start
       if (wall === 'front' || wall === 'back') m = tf(sw, y, wall === 'front' ? D / 2 : -D / 2);
       else m = tf(wall === 'left' ? -W / 2 : W / 2, y, -sw, Math.PI / 2); // along -Z after yaw: start at +z side
       ms.push(m);
-      const inA = OH - s0, inB = OH + along - s0; // interior span in segment coords
-      log(ms, len, R * rnd.range(0.95, 1.05), {
-        seed, capA, capB, seg: 12, ring: 0.4, taper: 0.04, bend: 0.006, lump: 0.03,
+      const inA = ohA - s0, inB = ohA + along - s0; // interior span in segment coords
+      log(ms, len, R * (sill ? 1.12 : rnd.range(0.95, 1.05)), {
+        seed, capA, capB, seg: 12, ring: 0.4, taper: 0.04, bend: 0.006, lump: sill ? 0.045 : 0.03,
         breaks: [inA, inB],
         matFor: (xm, n) => {
           if (xm < inA || xm > inB) return 'log_ext';
@@ -155,10 +163,8 @@ function floorAndBase(ms: Mesher, cols: Cols): void {
   ms.quad('board_dark', V(IN.x0 - 0.1, FLOOR - 0.045, D / 2), V(IN.x1 + 0.1, FLOOR - 0.045, D / 2), V(IN.x1 + 0.1, FLOOR - 0.045, -D / 2), V(IN.x0 - 0.1, FLOOR - 0.045, -D / 2),
     [0, 0], [W, 0], [W, D], [0, D]);
   cols.box(0, FLOOR / 2, 0, W / 2, FLOOR / 2, D / 2);
-  // fieldstone piers under the corners and mid-walls
-  const stones: [number, number][] = [];
-  for (const x of [-W / 2, 0, W / 2]) for (const z of [-D / 2, -D / 6, D / 6, D / 2]) if (Math.abs(x) > 0.1 || Math.abs(z) > D / 2 - 0.1) stones.push([x, z]);
-  for (const [x, z] of stones) rock(ms, rnd, x, 0.02, z, 0.3, 0.2, 0.3);
+  // the dry-stacked fieldstone footing under the sills
+  footing(ms, cols);
 }
 
 /** a lumpy fieldstone (jittered icosahedron) */
@@ -183,7 +189,7 @@ export function rock(ms: Mesher, rnd: Rand, x: number, y: number, z: number, sx:
 }
 
 // ---------------------------------------------------------------------------------------------- roof
-function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
+function roof(ms: Mesher, dms: Mesher, cols: Cols, pipe: { x: number; z: number }, detail: number): void {
   const rnd = new Rand(77);
   const hyp = Math.sqrt(1 + K * K);
   // ---- purlins + ridge pole (logs along z, resting on the gable walls, out to the porch truss)
@@ -239,34 +245,6 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
     if (s > 0) ms.quad('board_dark', a, b, c, d, [0, 0], [0, L], [ZF - ZB, L], [ZF - ZB, 0]);
     else ms.quad('board_dark', a, d, c, b, [0, 0], [ZF - ZB, 0], [ZF - ZB, L], [0, L]);
     void y1;
-    // ---- shake courses on top
-    const top0 = ROOF_T + 0.012; // above the deck underside
-    const e = 0.25, Ls = XE * hyp;
-    const nCourse = Math.ceil(Ls / e);
-    const P = (t: number, h: number, z: number) => {
-      // t = distance up the slope from the eave edge, h = height above the base plane
-      const x = s * (XE - t / hyp);
-      const yb = deckY(x) + top0;
-      return V(x + s * (K / hyp) * h, yb + (1 / hyp) * h, z);
-    };
-    for (let i = 0; i < nCourse; i++) {
-      const t0 = i * e, t1 = Math.min(Ls, (i + 1) * e + 0.02);
-      const row = rnd.int(0, 3), uo = rnd.range(0, 2);
-      const vb = 1 - (row + 1) * 0.25;
-      const butt = 0.03 + rnd.range(-0.004, 0.004), thin = 0.006;
-      const vis = Math.min(e, Ls - t0);
-      const zs0 = ZB - 0.04, zs1 = ZF + 0.04;
-      const A = P(t0, butt, zs0), B = P(t0, butt, zs1), C = P(t1, thin, zs1), Dd = P(t1, thin, zs0);
-      const uvA: [number, number] = [uo, vb], uvB: [number, number] = [uo + (zs1 - zs0), vb];
-      const uvC: [number, number] = [uo + (zs1 - zs0), vb + vis], uvD: [number, number] = [uo, vb + vis];
-      if (s > 0) ms.quad('shakes', A, Dd, C, B, uvA, uvD, uvC, uvB);
-      else ms.quad('shakes', A, B, C, Dd, uvA, uvB, uvC, uvD);
-      // butt face
-      const A0 = P(t0, 0, zs0), B0 = P(t0, 0, zs1);
-      const bu: [number, number][] = [[uo, vb], [uo + (zs1 - zs0), vb], [uo + (zs1 - zs0), vb + 0.02], [uo, vb + 0.02]];
-      if (s > 0) ms.quad('shakes', B0, A0, A, B, bu[1], bu[0], bu[3], bu[2]);
-      else ms.quad('shakes', A0, B0, B, A, bu[0], bu[1], bu[2], bu[3]);
-    }
     // eave fascia and the underside of the eave edge
     const fx = s * XE;
     const fy0 = deckY(XE) - 0.1, fy1 = deckY(XE) + ROOF_T + 0.04;
@@ -283,13 +261,8 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
       ms.pop();
     }
   }
-  // ridge cap: two boards in an inverted V
-  for (const s of [-1, 1]) {
-    const ang = Math.atan(K);
-    ms.pushT(s * 0.07, RIDGE + ROOF_T + 0.06, (ZB + ZF) / 2, 0, 0, -s * ang);
-    box(ms, 'board_grey', 0.17, 0.025, ZF - ZB + 0.1, { grain: 'z', uv: [rnd.range(0, 2), 0] });
-    ms.pop();
-  }
+  // green ribbed steel over the deck (moss, needles, soot, a dead branch)
+  tinRoof(ms, dms, pipe, detail > 0);
   // ---- stovepipe through the roof: flashing boot, storm collar, rain cap on three legs
   {
     const y = deckY(pipe.x) + ROOF_T + 0.05;
@@ -301,14 +274,19 @@ function roof(ms: Mesher, cols: Cols, pipe: { x: number; z: number }): void {
     lathe(ms, 'galv', [[0.16, 0.0], [0.1, 0.14], [0.085, 0.2], [0.085, 0.22]], 14);
     ms.pop();
     const top = RIDGE + 0.55;
-    ms.pushT(pipe.x, top, pipe.z);
-    lathe(ms, 'galv', [[0.0, 0.16], [0.17, 0.08], [0.18, 0.065], [0.0, 0.07]].reverse() as [number, number][], 14);
-    lathe(ms, 'galv', [[0.0, 0.07], [0.18, 0.065], [0.17, 0.08], [0.0, 0.16]], 14);
+    ms.pushT(pipe.x, top, pipe.z, 0, 0, 0.04);
+    // the rain cap: tarred black with creosote, a bit crooked
+    lathe(ms, 'soot', [[0.0, 0.16], [0.17, 0.08], [0.18, 0.065], [0.0, 0.07]].reverse() as [number, number][], 14);
+    lathe(ms, 'soot', [[0.0, 0.07], [0.18, 0.065], [0.17, 0.08], [0.0, 0.16]], 14);
     for (let k = 0; k < 3; k++) {
       const a = (k / 3) * Math.PI * 2;
-      boxAt(ms, 'galv', Math.cos(a) * 0.09, 0.04, Math.sin(a) * 0.09, 0.012, 0.09, 0.02, -a);
+      boxAt(ms, 'soot', Math.cos(a) * 0.09, 0.04, Math.sin(a) * 0.09, 0.012, 0.09, 0.02, -a);
     }
     ms.pop();
+    // guy wires from a band on the pipe to the ridge, against the winter wind
+    const band = top - 0.35;
+    boxAt(ms, 'iron', pipe.x, band, pipe.z, 0.19, 0.03, 0.19);
+    for (const dz of [-1.1, 1.0]) tube(ms, 'iron', [V(pipe.x, band, pipe.z), V(0.02, RIDGE + ROOF_T + 0.08, pipe.z + dz)], 0.003, 3, { smooth: false });
   }
   // roof colliders: one convex hull per slope (things can land on it; the porch roof stops jumps)
   for (const s of [-1, 1]) {
@@ -326,47 +304,69 @@ function porch(ms: Mesher, cols: Cols): void {
   const z0 = D / 2 + R + 0.01, z1 = D / 2 + PORCH;
   const x0 = -W / 2 - R - 0.02, x1 = W / 2 + R + 0.02;
   const deck = FLOOR;
-  // joists: logs along z under the deck, a rim log along x at the front
+  // forty winters: the front rim has settled, so the deck sags toward the middle of the front edge
+  const sag = (x: number, z: number) => -0.045 * (1 - Math.pow((x - (x0 + x1) / 2) / ((x1 - x0) / 2), 2)) * Math.max(0, (z - z0) / (z1 - z0));
+  // joists: logs along z under the deck, a rim log along x at the front (bowed down in the middle)
   for (const x of [x0 + 0.12, -1.2, 0, 1.2, x1 - 0.12]) {
-    logAB(ms, V(x, deck - 0.14, z0 - 0.1), V(x, deck - 0.14, z1 + 0.05), 0.1, { seed: 500 + x * 7, seg: 8, capA: -1, capB: 0 });
+    logAB(ms, V(x, deck - 0.14, z0 - 0.1), V(x, deck - 0.14 + sag(x, z1), z1 + 0.05), 0.1, { seed: 500 + x * 7, seg: 8, capA: -1, capB: 0 });
   }
-  logAB(ms, V(x0 - 0.25, deck - 0.16, z1 - 0.05), V(x1 + 0.25, deck - 0.16, z1 - 0.05), 0.13, { seed: 520, seg: 10, capA: 0, capB: 0 });
-  // deck boards along z (drain away from the wall), slightly irregular
+  {
+    const pts = [V(x0 - 0.25, deck - 0.16, z1 - 0.05), V(0, deck - 0.16 - 0.04, z1 - 0.05), V(x1 + 0.25, deck - 0.16, z1 - 0.05)];
+    tube(ms, 'log_ext', pts, 0.13, 10);
+    for (const p of [pts[0], pts[2]]) { ms.pushT(p.x, p.y, p.z, Math.PI / 2 * (p.x < 0 ? 1 : -1)); ms.pop(); }
+  }
+  // deck boards along z (drain away from the wall), worn grey, two replaced with newer lumber, one cracked short
   const bw = 0.145;
-  for (let x = x0; x < x1 - 0.02; x += bw) {
+  let bi = 0;
+  for (let x = x0; x < x1 - 0.02; x += bw, bi++) {
     const w = Math.min(bw - 0.012, x1 - x);
-    const len = z1 + 0.06 - z0 + rnd.range(-0.03, 0.02);
-    ms.pushT(x + w / 2, deck - 0.018 + rnd.range(-0.004, 0.004), z0 + len / 2, Math.PI / 2 + rnd.range(-0.006, 0.006), 0, rnd.range(-0.01, 0.01));
-    box(ms, 'planks_grey', len, 0.036, w, { grain: 'x', uv: [rnd.range(0, 2), rnd.range(0, 2)] });
+    const xc = x + w / 2;
+    let len = z1 + 0.06 - z0 + rnd.range(-0.03, 0.02);
+    const fresh = bi === 7 || bi === 21;
+    if (bi === 14) len -= 0.32; // the broken one: a gap at the front edge you can see the dirt through
+    const dropF = sag(xc, z1);
+    const tilt = Math.atan2(-dropF, len);
+    ms.pushT(xc, deck - 0.018 + rnd.range(-0.004, 0.004), z0, Math.PI / 2 + rnd.range(-0.006, 0.006), tilt, rnd.range(-0.012, 0.012));
+    ms.pushT(len / 2, 0, 0);
+    box(ms, fresh ? 'board_warm' : 'planks_grey', len, 0.036, w, { grain: 'x', uv: [rnd.range(0, 2), rnd.range(0, 2)] });
     ms.pop();
-    // nail heads at the joists
-    for (const nz of [z0 + 0.05, z1 - 0.06]) boxAt(ms, 'iron', x + w / 2, deck + 0.001, nz, 0.012, 0.004, 0.012);
+    // nail heads at the joists (a few popped up)
+    for (const nz of [0.05, len - 0.06]) boxAt(ms, 'iron', nz, 0.019 + (rnd.next() < 0.1 ? 0.006 : 0), 0, 0.012, 0.004 + (rnd.next() < 0.1 ? 0.01 : 0), 0.012);
+    ms.pop();
   }
-  // stones under the rim log
-  for (const x of [x0 - 0.1, -1.5, 0.6, x1 + 0.1]) rock(ms, rnd, x, 0.0, z1 - 0.05, 0.32, 0.18, 0.3);
-  // half-log steps up to the door
+  // stacked fieldstone piers under the rim log and the joist ends
+  for (const x of [x0 - 0.1, -1.2, 0, 1.2, x1 + 0.1]) {
+    const top = deck - 0.16 - 0.13 + sag(x, z1) * 0.8;
+    fieldstone(ms, rnd, x, -0.05, top * 0.55, z1 - 0.05, 0.42, 0.4, rnd.range(0, 3));
+    fieldstone(ms, rnd, x + rnd.range(-0.03, 0.03), top * 0.55 - 0.01, top + 0.01, z1 - 0.05, 0.32, 0.3, rnd.range(0, 3));
+  }
+  // half-log steps up to the door: three risers of ~0.19 m on stone
   const door = OPENINGS[0];
-  for (let i = 0; i < 2; i++) {
-    const zz = z1 + 0.22 + i * 0.3, yy = deck - 0.12 - i * 0.12;
-    const hl = (deck - 0.04) - i * 0.12;
-    // a split half log, flat face up
-    ms.pushT(door.c - 0.62, 0, zz);
-    halfLog(ms, rnd, 1.24, 0.16, hl - 0.1 * 0, 900 + i);
+  const nSteps = Math.max(2, Math.round(deck / 0.19));
+  for (let i = 0; i < nSteps - 1; i++) {
+    const zz = z1 + 0.2 + i * 0.3;
+    const top = deck - (deck / nSteps) * (i + 1);
+    const sw = 1.24 - i * 0.06;
+    ms.pushT(door.c - sw / 2 + rnd.range(-0.03, 0.03), 0, zz, rnd.range(-0.03, 0.03));
+    halfLog(ms, rnd, sw, 0.16, top, 900 + i);
     ms.pop();
-    void yy;
-    cols.box(door.c, hl / 2, zz, 0.62, hl / 2, 0.16);
+    fieldstone(ms, rnd, door.c - sw / 2 + 0.15, -0.04, top - 0.12, zz, 0.3, 0.3, rnd.range(0, 3));
+    fieldstone(ms, rnd, door.c + sw / 2 - 0.15, -0.04, top - 0.12, zz, 0.3, 0.3, rnd.range(0, 3));
+    cols.box(door.c, top / 2, zz, sw / 2, top / 2, 0.16);
   }
-  // posts and the porch front beam/side plates
+  // posts and the porch front beam/side plates (the left post leans a little and has a shim under it)
   const postX = [-W / 2 - 0.02, W / 2 + 0.02];
   for (const x of postX) {
-    logAB(ms, V(x, deck - 0.02, z1 - 0.08), V(x + rnd.range(-0.01, 0.01), EAVE - 0.14, z1 - 0.08), 0.1, { seed: 610 + x, seg: 9, capA: -1, capB: -1, taper: 0.1 });
+    const lean = x < 0 ? 0.035 : 0.0;
+    logAB(ms, V(x, deck - 0.02 + sag(x, z1), z1 - 0.08), V(x + lean + rnd.range(-0.01, 0.01), EAVE - 0.14, z1 - 0.08), 0.1, { seed: 610 + x, seg: 9, capA: -1, capB: -1, taper: 0.1 });
     cols.box(x, (deck + EAVE) / 2, z1 - 0.08, 0.1, (EAVE - deck) / 2, 0.1);
   }
+  boxAt(ms, 'wood_fresh', -W / 2 - 0.02, deck + sag(-W / 2, z1) - 0.005, z1 - 0.08, 0.16, 0.018, 0.07, 0.3);
   // middle post off-centre (between the steps and the chair)
-  logAB(ms, V(0.32, deck - 0.02, z1 - 0.08), V(0.32, EAVE - 0.14, z1 - 0.08), 0.09, { seed: 615, seg: 9, capA: -1, capB: -1, taper: 0.1 });
+  logAB(ms, V(0.32, deck - 0.02 + sag(0.32, z1), z1 - 0.08), V(0.32, EAVE - 0.14, z1 - 0.08), 0.09, { seed: 615, seg: 9, capA: -1, capB: -1, taper: 0.1 });
   cols.box(0.32, (deck + EAVE) / 2, z1 - 0.08, 0.09, (EAVE - deck) / 2, 0.09);
   // front beam at plate height, side plates continuing the walls' top logs
-  logAB(ms, V(-XE - 0.1, EAVE - 0.07, z1 - 0.08), V(XE + 0.1, EAVE - 0.07, z1 - 0.08), 0.13, { seed: 620, seg: 10, capA: 0, capB: 0 });
+  logAB(ms, V(-XE - 0.1, EAVE - 0.07, z1 - 0.08), V(XE + 0.1, EAVE - 0.07, z1 - 0.08), 0.13, { seed: 620, seg: 10, capA: 0, capB: 0, bend: 0.004 });
   for (const x of postX) logAB(ms, V(x, EAVE - 0.07, D / 2 + OH), V(x, EAVE - 0.07, z1 + 0.1), 0.12, { seed: 630 + x, seg: 10, capA: -1, capB: 0 });
   // open gable truss at the porch front: king post from the beam to the ridge, two struts
   logAB(ms, V(0, EAVE + 0.02, z1 - 0.08), V(0, RIDGE - 0.2, z1 - 0.08), 0.085, { seed: 640, seg: 8, capA: -1, capB: -1 });
@@ -375,9 +375,17 @@ function porch(ms: Mesher, cols: Cols): void {
   const rail = (a: THREE.Vector3, b: THREE.Vector3, seed: number) => logAB(ms, a, b, 0.042, { seed, seg: 7, capA: 0, capB: 0, ring: 0.6, lump: 0.05, bend: 0.01 });
   const ry = [deck + 0.48, deck + 0.92];
   for (const y of ry) {
-    rail(V(0.32, y, z1 - 0.08), V(W / 2 + 0.02, y, z1 - 0.08), 700 + y * 10);
+    rail(V(0.32, y + sag(0.32, z1), z1 - 0.08), V(W / 2 + 0.02, y, z1 - 0.08), 700 + y * 10);
     rail(V(W / 2 + 0.02, y, z1 - 0.08), V(W / 2 + 0.02, y, D / 2 + R + 0.05), 710 + y * 10);
     rail(V(-W / 2 - 0.02, y, z1 - 0.08), V(-W / 2 - 0.02, y, D / 2 + R + 0.05), 720 + y * 10);
+  }
+  // balusters: crooked peeled saplings between the rails
+  for (const [xa, za, xb, zb] of [[0.32, z1 - 0.08, W / 2 + 0.02, z1 - 0.08], [W / 2 + 0.02, z1 - 0.08, W / 2 + 0.02, D / 2 + R + 0.05], [-W / 2 - 0.02, z1 - 0.08, -W / 2 - 0.02, D / 2 + R + 0.05]] as [number, number, number, number][]) {
+    const n = Math.floor(Math.hypot(xb - xa, zb - za) / 0.42);
+    for (let k = 1; k < n; k++) {
+      const t = k / n + rnd.range(-0.03, 0.03), x = xa + (xb - xa) * t, z = za + (zb - za) * t;
+      logAB(ms, V(x, deck + sag(x, z), z), V(x + rnd.range(-0.03, 0.03), deck + 0.95, z + rnd.range(-0.02, 0.02)), 0.026, { seed: 760 + k * 3 + xa * 10, seg: 6, capA: -1, capB: 0, lump: 0.08, bend: 0.03 });
+    }
   }
   cols.box((0.32 + W / 2) / 2, deck + 0.5, z1 - 0.08, (W / 2 - 0.32) / 2, 0.5, 0.05);
   cols.box(W / 2 + 0.02, deck + 0.5, (z1 + D / 2) / 2, 0.05, 0.5, (z1 - D / 2) / 2);
@@ -411,21 +419,39 @@ export async function buildCabin(): Promise<Place> {
   const lights: THREE.Light[] = [];
   const updaters: ((dt: number) => void)[] = [];
 
-  const glass = glassMat('cabin');
+  ensureCabinTex();
+  const detail = detailTier();
+  const glass = 'cab_glass';
+  const dms = new Mesher(); // decals: grime, moss, soot, needles (no shadows, no raycasts)
+  const hAt = (lx: number, lz: number) => {
+    const c = Math.cos(rot), s = Math.sin(rot);
+    return heightAt(sp.x + c * lx + s * lz, sp.z - s * lx + c * lz) - gy;
+  };
   const stoveAt = { x: 1.45, z: -2.2 };
   walls(ms, cols);
   const { door, doorPos } = openings(ms, glass);
   floorAndBase(ms, cols);
-  roof(ms, cols, { x: stoveAt.x, z: stoveAt.z - STOVE.L / 2 + 0.2 });
+  roof(ms, dms, cols, { x: stoveAt.x, z: stoveAt.z - STOVE.L / 2 + 0.2 }, detail);
   porch(ms, cols);
+  gutters(ms, dms, cols, hAt);
 
-  // ---- door
+  // ---- door, and the screen door outside it that swings out when the plank door swings in
   door.pivot.position.copy(doorPos);
   group.add(door.pivot);
   const doorCtl = hingedDoor(door.pivot, { openAngle: 1.75, onSound: (open) => door.pivot.userData.game?.sound?.(open ? 'door_open' : 'door_close') });
   updaters.push((dt) => doorCtl.update(dt));
   anchors.door = anchor(group, 'door', OPENINGS[0].c, FLOOR, D / 2 + 0.6, 0);
   anchors.door.userData.interactable = doorCtl;
+  {
+    const o = OPENINGS[0];
+    const [y0, y1] = openingY(o);
+    const depth = 2 * R + 0.01;
+    const sd = screenDoor(o.w + 0.04, y1 - y0 + 0.03);
+    sd.position.set(o.c - o.w / 2 - 0.02, y0 + 0.005, D / 2 + depth / 2 + 0.045);
+    group.add(sd);
+    registerInteractable(sd, doorCtl);
+    updaters.push(() => { sd.rotation.y = -Math.min(1.5, Math.max(0, door.pivot.rotation.y)) * 0.92; });
+  }
 
   // ---- stove
   const stove = buildStove({ pipeTop: deckY(stoveAt.x) + 0.1, seed: 9 });
@@ -438,11 +464,12 @@ export async function buildCabin(): Promise<Place> {
   anchors.stove_top = stove.top;
 
   // ---- interior dressing (furniture, hearth, bunk, shelves, wall things) + woodyard + fire pit
-  const dress = await dressing({ ms, cols, group, anchors, lights, updaters, stoveAt, glass });
+  const dress = await dressing({ ms, dms, cols, group, anchors, lights, updaters, stoveAt, glass, detail, hAt });
 
   // ---- static mesh
   const mesh = ms.build({ name: 'cabin_static' });
   group.add(mesh);
+  group.add(noRay(dms.build({ name: 'cabin_decals', cast: false })));
 
   // ---- lamps: table lantern (shadowed), ceiling fill, window spill
   const fill = new THREE.PointLight(0xffb070, 0.9, 3.4, 1.5);
@@ -460,7 +487,7 @@ export async function buildCabin(): Promise<Place> {
     lights.push(sl);
   }
   let lamp = 1;
-  const glassM = glassMaterial('cabin');
+  const glassM = cabinGlass();
   let t = 0;
   updaters.push((dt) => {
     t += dt;

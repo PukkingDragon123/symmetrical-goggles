@@ -130,8 +130,9 @@ export class CardMesh {
     const p = geo.attributes.position as THREE.BufferAttribute;
     for (let i = 0; i < p.count; i++) p.setZ(i, -0.004 * Math.cos((p.getX(i) / w) * Math.PI));
     geo.computeVertexNormals();
-    this.mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: this.tex, side: THREE.DoubleSide, depthTest: false, depthWrite: false, toneMapped: false }));
-    this.mesh.renderOrder = 20;
+    // drawn last, over steam and smoke (transparent queue, highest order), never fogged
+    this.mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: this.tex, side: THREE.DoubleSide, depthTest: false, depthWrite: false, toneMapped: false, transparent: true, fog: false }));
+    this.mesh.renderOrder = 999;
     this.mesh.frustumCulled = false;
   }
   show(r: Recipe, st: CardState): void {

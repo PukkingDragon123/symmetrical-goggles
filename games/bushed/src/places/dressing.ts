@@ -13,6 +13,10 @@ import { SIGNS, ensurePrintMats } from './signs';
 import { wallMapTexture } from './wallmap';
 import { STOVE } from './stove';
 import { flameCards } from './fixtures';
+import { CLOTH } from './cabin/tex';
+import { cabinExterior } from './cabin/exterior';
+import { cabinYard } from './cabin/yard';
+import { cabinInterior } from './cabin/interior';
 import { SPOTS, heightAt } from '../world/layout';
 
 const { W, D, R, FLOOR } = CABIN;
@@ -21,6 +25,12 @@ const { IN } = CABIN_GEOM;
 export interface DressCtx {
   ms: Mesher; cols: Cols; group: THREE.Group; anchors: Record<string, THREE.Object3D>; lights: THREE.Light[];
   updaters: ((dt: number) => void)[]; stoveAt: { x: number; z: number }; glass: string;
+  /** decal writer (no shadows, no raycasts) */
+  dms: Mesher;
+  /** 0 low .. 2 high: how much small clutter to build */
+  detail: number;
+  /** ground height (cabin-local, relative to the cabin's origin) */
+  hAt: (x: number, z: number) => number;
 }
 
 /** load a prop and place it (local coords); resolves null if the prop is missing */
@@ -262,7 +272,7 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
     cushion(ms, 'ticking', cx, deck + mh / 2, cz, bx1 - bx0 - 0.12, mh, bz1 - bz0 - 0.12, 0.03, 4);
     // blanket: drapes over the top from the foot to 0.45 m from the head, folds down the room side
     const bl = { x0: bx0 + 0.02, x1: bx1 + 0.04, z0: bz0 + 0.42, z1: bz1 - 0.02, y: deck + mh + 0.012 };
-    blanket(ms, rnd, bl.x0, bl.x1, bl.z0, bl.z1, bl.y, deck - 0.04);
+    blanket(ms, rnd, bl.x0, bl.x1, bl.z0, bl.z1, bl.y, deck - 0.04, CLOTH.uv('point'));
     cushion(ms, 'ticking', cx + 0.02, deck + mh + 0.05, bz0 + 0.24, 0.55, 0.1, 0.3, 0.04, 3);
     cols.box(cx, (F + deck + mh) / 2, cz, (bx1 - bx0) / 2, (deck + mh - F) / 2, (bz1 - bz0) / 2);
     anchors.bed = anchor(group, 'bed', cx, deck + mh + 0.1, cz, 0);
@@ -505,6 +515,8 @@ export async function dressing(c: DressCtx): Promise<{ lantern: THREE.PointLight
 
   // ================================================================================ woodyard + fire pit
   await woodyard(c);
+  // ================================================================================ forty years of living here
+  await Promise.all([cabinExterior(c), cabinYard(c), cabinInterior(c)]);
 
   await Promise.all(pending);
   // flames in the lanterns (the props carry a flame card; make sure it glows) + mark decor
@@ -584,7 +596,7 @@ export function cushion(ms: Mesher, mat: string, x: number, y: number, z: number
 }
 
 /** a wool blanket over a bed: top sheet with soft rumples, folding down the +x (room) side */
-function blanket(ms: Mesher, rnd: Rand, x0: number, x1: number, z0: number, z1: number, y: number, yDrop: number): void {
+function blanket(ms: Mesher, rnd: Rand, x0: number, x1: number, z0: number, z1: number, y: number, yDrop: number, rect?: [number, number, number, number]): void {
   const nx = 10, nz = 16, nd = 4;
   const ph = rnd.range(0, 6);
   // grid over the top, then rows hanging down at x1
@@ -606,17 +618,22 @@ function blanket(ms: Mesher, rnd: Rand, x0: number, x1: number, z0: number, z1: 
   }
   const cols = pts[0].length;
   const uvAt = (i: number, j: number): [number, number] => {
-    // distance-ish UVs in metres
+    // distance-ish UVs in metres, or the point blanket's atlas rect (u across incl. the drop, v along the bed)
     const p = pts[i][j];
+    if (rect) {
+      const u = j <= nx ? (j / nx) * 0.78 : 0.78 + ((j - nx) / nd) * 0.2, v = i / nz;
+      return [rect[0] + (rect[2] - rect[0]) * u, rect[1] + (rect[3] - rect[1]) * (0.06 + v * 0.9)];
+    }
     return [p.z, (j <= nx ? p.x : x1 + (y - p.y))];
   };
+  const mat = rect ? 'cab_cloth' : 'blanket';
   for (let i = 0; i < nz; i++) for (let j = 0; j < cols - 1; j++) {
     const a = pts[i][j], b = pts[i][j + 1], cc = pts[i + 1][j + 1], d = pts[i + 1][j];
     const n = new THREE.Vector3().subVectors(d, a).cross(new THREE.Vector3().subVectors(b, a)).normalize();
-    ms.quad('blanket', a, d, cc, b, uvAt(i, j), uvAt(i + 1, j), uvAt(i + 1, j + 1), uvAt(i, j + 1), n);
+    ms.quad(mat, a, d, cc, b, uvAt(i, j), uvAt(i + 1, j), uvAt(i + 1, j + 1), uvAt(i, j + 1), n);
   }
   // folded-back edge at the head (z0): a rolled lip
-  tube(ms, 'blanket', [V(x0, y + 0.01, z0 + 0.02), V((x0 + x1) / 2, y + 0.02, z0 + 0.01), V(x1 - 0.02, y + 0.005, z0 + 0.02), V(x1 + 0.005, y - 0.05, z0 + 0.025)], 0.022, 6);
+  tube(ms, rect ? 'wool_grey' : 'blanket', [V(x0, y + 0.01, z0 + 0.02), V((x0 + x1) / 2, y + 0.02, z0 + 0.01), V(x1 - 0.02, y + 0.005, z0 + 0.02), V(x1 + 0.005, y - 0.05, z0 + 0.025)], 0.022, 6);
 }
 
 function chair(ms: Mesher, rnd: Rand, x: number, y: number, z: number, ry: number): void {

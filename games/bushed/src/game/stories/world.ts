@@ -16,6 +16,8 @@ import { anchorPos } from '../flow';
 import { CAMP, campXZ, SETS, TRAP_HEAD, SHORE, WOODYARD } from './sites';
 import { solidBox, propIn, treesNear, clearTrees, tapeOn, lod } from './kit';
 import { CAMP_SIGN } from './text';
+import { dressKettle } from './kettle_dress';
+import { buildCampground } from '../../places/store/campground';
 
 export interface StoryWorld {
   /** interact hooks: the arc fills these in */
@@ -222,6 +224,8 @@ export function buildStoryWorld(g: Game): StoryWorld {
 
   // ---- 4. the old camp
   buildCamp(g, W, act);
+  // ---- the lakeside campground round Doug's fire (the tales are told there): tents, the table, the woodbox
+  try { g.addPlace(buildCampground()); } catch (e) { console.warn('[story] campground dressing failed', e); }
 
   // ---- 5. Ray's dock below the camp, and the gut hammer hanging at the end of it
   {
@@ -533,8 +537,13 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
     }
   }
 
-  // tidy: everything static casts and receives
-  Promise.all(pending).then(() => grp.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } }));
+  // ---- seventy-five years of neglect on top (kettle_dress.ts): moss, fallen boards, the cook's shelf, the outhouse
+  pending.push(dressKettle(grp, {
+    hAt, ck, ckBase, bk: { x: 6, z: -3.6, w: 10, d: 6 },
+    solid: (x, y, z, half, ry = 0) => solidBox(toW(x, y, z), half, yaw + ry),
+  }).catch((e) => console.warn('[story] kettle dressing', e)));
+  // tidy: everything static casts and receives (except the small clutter, which stays shadowless)
+  Promise.all(pending).then(() => grp.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh) { m.castShadow = m.parent?.name !== 'kettle_clutter' && !(m instanceof THREE.InstancedMesh); m.receiveShadow = true; } }));
 }
 
 /** the cookhouse stove: fire level 0..1, smoke from the pipe while lit (call every frame) */

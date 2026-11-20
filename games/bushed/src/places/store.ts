@@ -11,7 +11,7 @@ import * as THREE from 'three';
 import { SPOTS, heightAt } from '../world/layout';
 import {
   Place, Mesher, Rand, Cols, V, tf, box, boxAt, board, logAB, log, lathe, tube, rectsMinus, anchor, interiorBoxes,
-  flicker, shadowy, defineMat, placeTex, hasMat, lightCuller,
+  flicker, shadowy, defineMat, placeTex, hasMat, lightCuller, placeMat,
 } from './kit';
 import { windowUnit, doorFrame, glassMat, glassMaterial } from './fixtures';
 import { buildStove, STOVE } from './stove';
@@ -19,8 +19,11 @@ import { hingedDoor, registerInteractable } from '../game/interact';
 import { ITEMS } from '../game/items';
 import { buildProduct, productSize, writeSplit } from './products';
 import { SIGNS, ensurePrintMats } from './signs';
-import { prop, cushion, flagstones } from './dressing';
-import { rock } from './cabin';
+import { ensureStoreMats, setGlow, PUV, PSUB } from './store/print';
+import { G } from '../gfx/globals';
+import { qualityLevel, prop, flagstones, rock } from './store/inst';
+import { dressExterior, type DressStore } from './store/dress_ext';
+import { dressInterior } from './store/dress_int';
 
 // ---------------------------------------------------------------------------------------------- plan
 export const STORE = {
@@ -134,8 +137,8 @@ function shell(ms: Mesher, cols: Cols, glass: string): void {
     // the sign board itself (painted), framed
     const sw = 5.6, sh = 1.15, sy = 4.75;
     ms.pushT(0, sy, z + 0.045);
-    const [u0, v0, u1, v1] = SIGNS.uv('store_sign');
-    ms.quad('signs', V(-sw / 2, -sh / 2, 0), V(sw / 2, -sh / 2, 0), V(sw / 2, sh / 2, 0), V(-sw / 2, sh / 2, 0), [u0, v0], [u1, v0], [u1, v1], [u0, v1]);
+    const [u0, v0, u1, v1] = PUV('ff_sign');
+    ms.quad('sp', V(-sw / 2, -sh / 2, 0), V(sw / 2, -sh / 2, 0), V(sw / 2, sh / 2, 0), V(-sw / 2, sh / 2, 0), [u0, v0], [u1, v0], [u1, v1], [u0, v1]);
     ms.pop();
     board(ms, 'trim_cream', rnd, 0, sy + sh / 2 + 0.04, z + 0.05, sw + 0.16, 0.08, 0.05, 0, { grain: 'x' });
     board(ms, 'trim_cream', rnd, 0, sy - sh / 2 - 0.04, z + 0.05, sw + 0.16, 0.08, 0.05, 0, { grain: 'x' });
@@ -283,6 +286,14 @@ function shelfUnit(ms: Mesher, rnd: Rand, x: number, z: number, ry: number, len:
   for (const y of levels) {
     board(ms, 'board_warm', rnd, 0, y - 0.012, 0, len, 0.024, depth, 0, { grain: 'x' });
     board(ms, 'board_dark', rnd, 0, y - 0.04, depth / 2 - 0.01, len, 0.05, 0.02, 0, { grain: 'x' });
+    // price tags along the lip, not quite straight, a few missing
+    for (let tx = -len / 2 + 0.12; tx < len / 2 - 0.08; tx += rnd.range(0.2, 0.42)) {
+      if (rnd.next() < 0.15) continue;
+      const k = rnd.int(0, 7);
+      ms.pushT(tx, y - 0.04 + rnd.range(-0.004, 0.004), depth / 2 + 0.0015, 0, 0, rnd.range(-0.05, 0.05));
+      ms.quad('sp', V(-0.022, -0.014, 0), V(0.022, -0.014, 0), V(0.022, 0.014, 0), V(-0.022, 0.014, 0), ...tagUV(k));
+      ms.pop();
+    }
   }
   board(ms, 'board_dark', rnd, 0, top + 0.05, 0.02, len + 0.08, 0.1, depth + 0.06, 0, { grain: 'x' });
   board(ms, 'board_warm', rnd, 0, FLOOR + 0.06, depth / 2 - 0.02, len, 0.12, 0.02, 0, { grain: 'x' });
@@ -291,9 +302,15 @@ function shelfUnit(ms: Mesher, rnd: Rand, x: number, z: number, ry: number, len:
   return levels.map((y) => ({ y, len, depth }));
 }
 
+function tagUV(k: number): [[number, number], [number, number], [number, number], [number, number]] {
+  const [u0, v0, u1, v1] = PSUB('price_tags', (k * 17) / 136, (k * 17 + 16) / 136);
+  return [[u0, v0], [u1, v0], [u1, v1], [u0, v1]];
+}
+
 // ---------------------------------------------------------------------------------------------- build
 export async function buildStore(): Promise<Place> {
   ensurePrintMats();
+  ensureStoreMats();
   if (!hasMat('siding_cream')) defineMat('siding_cream', new THREE.MeshStandardMaterial({ name: 'place_siding_cream', map: placeTex('trim_cream'), normalMap: placeTex('trim_cream', true), roughness: 0.85 }));
   ensureDsBlanket();
   const sp = SPOTS.store;
@@ -704,16 +721,16 @@ export async function buildStore(): Promise<Place> {
     };
     // wall-frame "along" is mirrored for interior viewing (the frame looks from outside)
     // 'along' is the wall frame's x: front = local x, back = -local x, right = -local z, left = +local z
-    sign('coffee_poster', 0.45, 0.6, 'right', -0.45, F + 1.75, 0.02);
+    sign('coffee_poster', 0.45, 0.6, 'back', 0.55, F + 1.85, 0.02);
     sign('chainsaw_poster', 0.45, 0.6, 'back', -0.05, F + 1.8, -0.02);
-    sign('beer_sign', 0.5, 0.35, 'back', -1.1, F + 1.65, 0.0);
-    sign('price_board', 0.8, 0.6, 'right', 1.0, F + 1.75, 0);
-    sign('sign_credit', 0.4, 0.15, 'right', 1.0, F + 2.35, 0);
+    sign('beer_sign', 0.5, 0.35, 'right', 4.3, F + 1.6, 0.02);
+    sign('price_board', 0.8, 0.6, 'right', -0.6, F + 1.7, 0);
+    sign('sign_credit', 0.4, 0.15, 'right', -0.6, F + 2.25, -0.02);
     sign('sign_hours', 0.2, 0.28, 'front', 0.75, F + 1.5, 0.03);
     sign('sign_bait', 0.4, 0.2, 'back', -2.2, F + 2.32, 0.01);
     sign('dog_poster', 0.22, 0.3, 'front', -0.78, F + 1.55, -0.04);
     sign('fire_danger', 0.42, 0.28, 'left', -1.25, F + 2.78, 0.0);
-    pending.push(prop(group, 'wall_clock', IX - 0.03, F + 2.45, -0.3, -Math.PI / 2));
+    pending.push(prop(group, 'wall_clock', IX - 0.03, F + 2.45, 0.05, -Math.PI / 2));
   }
   // ---- the noticeboard (left wall near the front): cork-ish board with contract pins
   const pins: THREE.Object3D[] = [];
@@ -846,7 +863,7 @@ export async function buildStore(): Promise<Place> {
       ms.pop();
     }
     {
-      const fx = -6.2, fz = D / 2 + 6.5;
+      const fx = -8.2, fz = D / 2 + 10.5;
       const g = heightAt(...toWorld(sp, fx, fz)) - gy;
       for (const x of [fx - 0.55, fx + 0.55]) logAB(ms, V(x, g - 0.2, fz), V(x, g + 2.4, fz), 0.06, { seed: 900 + x, seg: 7, capA: -1, capB: 3 });
       const [u0, v0, u1, v1] = SIGNS.uv('fire_danger');
@@ -923,8 +940,32 @@ export async function buildStore(): Promise<Place> {
     cols.box(lx, g + 0.6, lz - 2.9, 0.9, 0.5, 2.9);
   }
 
+  // ---- round 5: the lived-in layer (src/places/store/): porch, lot, community corner, post office, merchandise
+  const q = qualityLevel();
+  const glow: DressStore['glow'] = { flick: [], halos: [] };
+  const dms = new Mesher();
+  const dctx: DressStore = {
+    ms, dms, cols, group, anchors, pending, updaters, q, glow,
+    ground: (x, z) => heightAt(...toWorld(sp, x, z)) - gy,
+    dims: { W, D, T, FLOOR, CEIL, IX, IZ, PORCH },
+  };
+  dressExterior(dctx);
+  dressInterior(dctx);
+
   // ---- static mesh
-  const mesh = ms.build({ name: 'store_static' });
+  const mesh = ms.build({ name: 'store_static', noCast: ['sp', 'sp_ds', 'grime', 'glowadd', 'glowcool', 'puddle', 'sp_glow'] });
+  const clutter = dms.build({ name: 'store_clutter', cast: false });
+  group.add(clutter);
+  // the small stuff inside only exists when you're close enough to see it through a window
+  {
+    const centre = new THREE.Vector3(sp.x, gy + 1.5, sp.z);
+    clutter.userData.nearOnly = true;
+    let shown = true;
+    updaters.push(() => {
+      const v = G.uCamPos.value.distanceToSquared(centre) < 24 * 24;
+      if (v !== shown) { shown = v; for (const o of group.children) if (o.userData.nearOnly) o.visible = v; }
+    });
+  }
   group.add(mesh);
   await Promise.all(pending);
 
@@ -944,8 +985,25 @@ export async function buildStore(): Promise<Place> {
   let lampLevel = 1;
   const glassM = glassMaterial('store');
   let t = 0;
+  const haloBase = glow.halos.map((m) => (m as THREE.MeshBasicMaterial).color.clone());
+  const poolMats = ['glowadd', 'glowcool'].map((k) => placeMat(k) as THREE.MeshBasicMaterial);
+  const poolBase = poolMats.map((m) => m.color.clone());
+  const flickBase = glow.flick.map((m) => m.color.clone());
+  let stutter = 0, nextStutter = 3;
   updaters.push((dt) => {
     t += dt;
+    // the tired N: dead for a beat, buzzes back
+    nextStutter -= dt;
+    if (nextStutter < 0) { stutter = 0.25 + (t * 7.3 % 1) * 0.9; nextStutter = 4 + (t * 13.7 % 1) * 9; }
+    stutter = Math.max(0, stutter - dt);
+    const on = stutter > 0 ? (Math.sin(t * 90) > 0.3 ? 0.15 : 0.9) : 1;
+    for (let i = 0; i < glow.flick.length; i++) glow.flick[i].color.copy(flickBase[i]).multiplyScalar(on * lampLevel);
+    const h = (group.userData.game as { hour?: number } | undefined)?.hour ?? 20;
+    const night = h > 19.5 || h < 6 ? 1 : h > 18 ? (h - 18) / 1.5 : h < 7.5 ? (7.5 - h) / 1.5 : 0;
+    const k = (0.3 + 0.7 * night) * lampLevel;
+    for (let i = 0; i < glow.halos.length; i++) (glow.halos[i] as THREE.MeshBasicMaterial).color.copy(haloBase[i]).multiplyScalar(k);
+    for (let i = 0; i < poolMats.length; i++) poolMats[i].color.copy(poolBase[i]).multiplyScalar(0.45 + 0.55 * night);
+    setGlow((0.75 + 0.5 * night) * lampLevel);
     for (const l of lamps) l.light.intensity = l.base * lampLevel * (0.97 + 0.03 * flicker(t * 0.3, l.base));
     for (const s of spill) s.intensity = 7 * lampLevel;
     glassM.emissiveIntensity = 0.45 * lampLevel;
@@ -1084,4 +1142,3 @@ function checkerTex(): THREE.Texture {
   checker.magFilter = THREE.NearestFilter; checker.colorSpace = THREE.SRGBColorSpace;
   return checker;
 }
-void cushion;

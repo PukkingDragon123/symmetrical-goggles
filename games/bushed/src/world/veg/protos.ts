@@ -1,12 +1,14 @@
-// Ground-cover prototypes: procedural geometry for grass clumps (curved blade strips), sword ferns and bracken
-// (arched fronds), fireweed, bunchberry, blueberry, juniper, alder, moss mounds, mushrooms, bracket fungi, cones,
-// twigs, litter, lichen, clubmoss, fractured granite boulders, fallen mossy logs and stumps.
+// Ground-cover prototypes: procedural geometry for grass clumps (curved blade strips) and mixed meadow clumps with
+// seed heads (two LODs), sword, ostrich and bracken ferns (arched fronds), wildflower clumps, raspberry canes,
+// Labrador tea, wild sarsaparilla, fireweed, bunchberry, blueberry, juniper, alder, cattails, reeds, lily pads, moss
+// mounds, mushroom clusters, bracket fungi, cones, twigs, litter, lichen, clubmoss, fractured granite boulders, fallen
+// mossy logs, driftwood, fallen branches and stumps with root flare.
 // Every function returns MeshBuilders in local space (origin on the ground, +Y up).
 import * as THREE from 'three';
 import { Rng } from '../../core/rng';
 import { Noise, clamp, lerp, smoothstep } from '../../core/noise';
 import { MeshBuilder, card, tube, v3, type Col, type V3 } from '../../trees/geom';
-import { vegRect, type VegCell } from './atlas';
+import { vegRect, vegAspect, type VegCell } from './atlas';
 import { SPECIES, type SpeciesId } from '../../trees/species';
 
 const UP = new THREE.Vector3(0, 1, 0);
@@ -39,6 +41,16 @@ function strip(mb: MeshBuilder, pts: V3[], side: V3, widths: number[], rect: [nu
   }
 }
 
+/** a thin stalk tube whose uvs all point at an opaque texel (the olive stalk rows of the cattail cell) */
+function stalk(mb: MeshBuilder, pts: V3[], radii: number[], col: Col, wind: (i: number, s: number) => [number, number, number, number]): void {
+  const tb = new MeshBuilder();
+  tube(tb, pts, radii, { sides: 3, tile: [1, 1], col: () => col, wind });
+  const [u0, v0, u1, v1] = vegRect('cattail');
+  const u = (u0 + u1) / 2, v = lerp(v1, v0, 0.92);
+  for (let i = 0; i < tb.uv.length; i += 2) { tb.uv[i] = u; tb.uv[i + 1] = v; }
+  mb.append(tb);
+}
+
 // --------------------------------------------------------------------------------------------- plants
 export function grassClump(seed: number, cells: VegCell[], n: number, h: number, spread: number, tint: Col = [1, 1, 1]): MeshBuilder {
   const rng = new Rng(seed);
@@ -66,6 +78,215 @@ export function grassClump(seed: number, cells: VegCell[], n: number, h: number,
     const c1: Col = [c0[0] * 1.7, c0[1] * 1.7, c0[2] * 1.65];
     strip(mb, pts, side, ws, vegRect(cell), [us, us + 0.7], c0, c1, (t) => [t * t * hh * 0.35, t * t * hh, t * 0.25, phase], 0.75);
   }
+  return mb;
+}
+
+export interface MeadowSpec {
+  /** blade cells with relative weights */
+  blades: [VegCell, number][];
+  n: number;
+  /** blade height range (m) */
+  h: [number, number];
+  spread: number;
+  /** blade width multiplier */
+  w?: number;
+  /** flowering culms / flowers as crossed cards in the clump */
+  /** w multiplies the card width (height x the cell's aspect) */
+  heads?: { cells: VegCell[]; n: number; h: [number, number]; w?: number };
+  tint?: Col;
+  /** lean outward 0..1 */
+  lean?: number;
+}
+
+/**
+ * a mixed meadow clump: blade strips of several grasses (tall in the middle, short at the rim) plus seed heads or
+ * flowers. lod = true: the same layout with every other blade, one segment per blade, wider (12 m+).
+ */
+export function meadow(seed: number, o: MeadowSpec, lod = false): MeshBuilder {
+  const rng = new Rng(seed);
+  const mb = new MeshBuilder();
+  const phase = rng.next();
+  const tot = o.blades.reduce((a, b) => a + b[1], 0);
+  const tint = o.tint ?? [1, 1, 1];
+  for (let i = 0; i < o.n; i++) {
+    const a = rng.range(0, Math.PI * 2), rr = Math.sqrt(rng.next());
+    const r0 = rr * o.spread;
+    const base = v3(Math.cos(a) * r0, -0.03, Math.sin(a) * r0);
+    const la = a + rng.range(-0.7, 0.7);
+    const lean = v3(Math.cos(la), 0, Math.sin(la));
+    // taller towards the centre of the clump
+    const hh = lerp(o.h[0], o.h[1], rng.next()) * (1.08 - 0.35 * rr);
+    const lk = rng.range(0.12, 0.5) * (0.4 + rr) * (o.lean ?? 1);
+    const f = rng.range(0, Math.PI);
+    const side = v3(Math.cos(f), 0, Math.sin(f));
+    let pick = rng.next() * tot, cell: VegCell = o.blades[0][0];
+    for (const [c, wgt] of o.blades) { pick -= wgt; if (pick <= 0) { cell = c; break; } }
+    const w = rng.range(0.1, 0.16) * (o.w ?? 1) * (hh > 0.5 ? 1.2 : 1);
+    const us = rng.range(0, 0.3);
+    const c0 = jitterCol(rng, [0.58 * tint[0], 0.6 * tint[1], 0.56 * tint[2]], 0.1);
+    const c1: Col = [c0[0] * 1.75, c0[1] * 1.75, c0[2] * 1.7];
+    if (lod && i % 2) continue;
+    const segs = lod ? 1 : 2;
+    const pts: V3[] = [], ws: number[] = [];
+    for (let k = 0; k <= segs; k++) {
+      const t = k / segs;
+      pts.push(base.clone().addScaledVector(lean, lk * hh * t * t).addScaledVector(UP, hh * t * (1 - 0.18 * lk * t)));
+      ws.push(w * (lod ? 1.45 : 1) * (1 - 0.25 * t));
+    }
+    strip(mb, pts, side, ws, vegRect(cell), [us, us + 0.7], c0, c1, (t) => [t * t * hh * 0.35, t * t * hh, t * 0.25, phase], 0.75);
+  }
+  if (o.heads) {
+    const hd = o.heads;
+    for (let i = 0; i < hd.n; i++) {
+      const a = rng.range(0, Math.PI * 2), r0 = Math.sqrt(rng.next()) * o.spread * 0.8;
+      const bx = Math.cos(a) * r0, bz = Math.sin(a) * r0;
+      const hc = rng.pick(hd.cells);
+      const hh = lerp(hd.h[0], hd.h[1], rng.next()) * (vegAspect(hc) >= 1 ? 0.55 : 1), ww = hh * vegAspect(hc) * (hd.w ?? 1) * rng.range(0.85, 1.12);
+      const [u0, v0, u1, v1] = vegRect(hc);
+      const rot0 = rng.range(0, Math.PI);
+      const lean = v3(rng.range(-0.12, 0.12), 0, rng.range(-0.12, 0.12)).multiplyScalar(hh);
+      const col = jitterCol(rng, [1, 1, 1], 0.08);
+      for (let p = 0; p < (lod ? 1 : 2); p++) {
+        const f = rot0 + p * Math.PI / 2;
+        const sv = v3(Math.cos(f), 0, Math.sin(f)).multiplyScalar(ww / 2);
+        const nrm = v3(-Math.sin(f), 0.6, Math.cos(f)).normalize();
+        const b = v3(bx, -0.03, bz), t = b.clone().add(lean).setY(hh);
+        const dk: Col = [col[0] * 0.75, col[1] * 0.75, col[2] * 0.75];
+        const i0 = mb.vert(b.clone().sub(sv), nrm, u0, v0, dk, [0, 0, 0, phase]);
+        const i1 = mb.vert(b.clone().add(sv), nrm, u1, v0, dk, [0, 0, 0, phase]);
+        const i2 = mb.vert(t.clone().add(sv), nrm, u1, v1, col, [hh * 0.45, hh, 0.5, phase]);
+        const i3 = mb.vert(t.clone().sub(sv), nrm, u0, v1, col, [hh * 0.45, hh, 0.5, phase]);
+        mb.quad(i0, i1, i2, i3);
+      }
+    }
+  }
+  return mb;
+}
+
+/** ostrich fern: a vase of upright fronds arching out at the top */
+export function ostrich(seed: number, n: number, len: number): MeshBuilder {
+  const rng = new Rng(seed);
+  const mb = new MeshBuilder();
+  const phase = rng.next();
+  for (let i = 0; i < n; i++) {
+    const az = (i / n) * Math.PI * 2 + rng.range(-0.25, 0.25);
+    const el = rng.range(1.15, 1.42);
+    const L = len * rng.range(0.75, 1.1);
+    const hd = v3(Math.cos(az), 0, Math.sin(az));
+    const side = v3(-hd.z, 0, hd.x).applyAxisAngle(hd, rng.range(-0.3, 0.3));
+    const pts: V3[] = [];
+    let p = hd.clone().multiplyScalar(0.05).setY(0.0);
+    let a = el;
+    const N = 6;
+    for (let k = 0; k <= N; k++) {
+      pts.push(p.clone());
+      p = p.clone().addScaledVector(hd, Math.cos(a) * L / N).addScaledVector(UP, Math.sin(a) * L / N);
+      a -= rng.range(0.07, 0.14) * (k > 2 ? 2.2 : 0.6);
+    }
+    // ostrich fern fronds are narrow at the base, widest above the middle
+    const ws = pts.map((_, k) => L * 0.3 * (0.35 + 0.65 * Math.sin(Math.PI * Math.min(1, (k / N) * 0.85 + 0.1))));
+    const c0 = jitterCol(rng, [0.55, 0.62, 0.48], 0.1), c1 = jitterCol(rng, [1.05, 1.12, 0.95], 0.08);
+    strip(mb, pts, side, ws, vegRect('fern_ostrich'), [0, 1], c0, c1, (t) => [t * t * L * 0.15, t * L * 0.6, t * 0.45, phase], 0.5);
+  }
+  return mb;
+}
+
+/** wild sarsaparilla: each plant is a bare stalk carrying three near-horizontal leaf divisions (umbrella) */
+export function umbrella(seed: number, plants: number, spread: number): MeshBuilder {
+  const rng = new Rng(seed);
+  const mb = new MeshBuilder();
+  const phase = rng.next();
+  const [u0, v0, u1, v1] = vegRect('sarsaparilla');
+  for (let p = 0; p < plants; p++) {
+    const a0 = rng.range(0, Math.PI * 2), r0 = Math.sqrt(rng.next()) * spread;
+    const base = v3(Math.cos(a0) * r0, -0.02, Math.sin(a0) * r0);
+    const h = rng.range(0.22, 0.42);
+    const top = base.clone().add(v3(rng.range(-0.04, 0.04), h, rng.range(-0.04, 0.04)));
+    stalk(mb, [base, base.clone().lerp(top, 0.5), top], [0.004, 0.0035, 0.003], [0.62, 0.55, 0.42], (_, s) => [s * h * 0.15, s * h, 0, phase]);
+    const rot = rng.range(0, Math.PI * 2);
+    for (let k = 0; k < 3; k++) {
+      const az = rot + (k / 3) * Math.PI * 2 + rng.range(-0.25, 0.25);
+      const d = v3(Math.cos(az), 0, Math.sin(az));
+      const sd = v3(-d.z, 0, d.x);
+      const L = rng.range(0.2, 0.28);
+      const droop = rng.range(0.04, 0.09);
+      const tip = top.clone().addScaledVector(d, L).add(v3(0, -droop, 0));
+      const col = jitterCol(rng, [1, 1, 1], 0.1);
+      const w: [number, number, number, number] = [h * 0.15 + 0.02, h + 0.05, 0.7, phase];
+      const i0 = mb.vert(top.clone().addScaledVector(sd, -L * 0.5), UP, u0, v0, col, [h * 0.15, h, 0.3, phase]);
+      const i1 = mb.vert(top.clone().addScaledVector(sd, L * 0.5), UP, u1, v0, col, [h * 0.15, h, 0.3, phase]);
+      const i2 = mb.vert(tip.clone().addScaledVector(sd, L * 0.5), UP, u1, v1, col, w);
+      const i3 = mb.vert(tip.clone().addScaledVector(sd, -L * 0.5), UP, u0, v1, col, w);
+      mb.quad(i0, i1, i2, i3);
+    }
+  }
+  return mb;
+}
+
+/** cattails: strap leaves (blade strips) and brown spikes on stiff stalks */
+export function cattails(seed: number, leaves: number, spikes: number, spread: number): MeshBuilder {
+  const rng = new Rng(seed);
+  const mb = meadow(seed, { blades: [['cattail_leaf', 1]], n: leaves, h: [1.3, 2.0], spread, w: 1.6, lean: 0.4 });
+  const phase = rng.next();
+  const rect = vegRect('cattail');
+  for (let i = 0; i < spikes; i++) {
+    const a = rng.range(0, Math.PI * 2), r0 = Math.sqrt(rng.next()) * spread * 0.7;
+    const b = v3(Math.cos(a) * r0, -0.05, Math.sin(a) * r0);
+    const h = rng.range(1.4, 1.9);
+    const lean = v3(rng.range(-0.08, 0.08), 0, rng.range(-0.08, 0.08));
+    const top = b.clone().addScaledVector(lean, h).setY(h);
+    stalk(mb, [b, b.clone().lerp(top, 0.5), top], [0.007, 0.006, 0.005], [0.85, 0.9, 0.8], (_, s) => [s * s * h * 0.25, s * h, 0, phase]);
+    // the spike (female, dark brown) and the thin male spike above it, as one lathe along the stalk
+    const sl = rng.range(0.14, 0.2), sr = rng.range(0.016, 0.022);
+    const prof: [number, number][] = [[0.006, 0], [sr * 0.9, 0.012], [sr, sl * 0.3], [sr, sl * 0.8], [sr * 0.85, sl], [0.004, sl + 0.005], [0.003, sl + 0.11], [0.001, sl + 0.13]];
+    const rows: number[][] = [];
+    for (let k = 0; k < prof.length; k++) {
+      const [r, y] = prof[k];
+      const row: number[] = [];
+      for (let j = 0; j <= 6; j++) {
+        const an = (j / 6) * Math.PI * 2;
+        const p = top.clone().add(v3(Math.cos(an) * r, y - 0.02, Math.sin(an) * r));
+        const yy = y <= sl ? 0.8 - 0.62 * Math.max(0, y) / sl : 0.16 - 0.16 * Math.min(1, (y - sl) / 0.13);
+        const vv = lerp(rect[3], rect[1], yy);
+        row.push(mb.vert(p, v3(Math.cos(an), 0.2, Math.sin(an)).normalize(), lerp(rect[0], rect[2], j / 6), vv, [1, 1, 1], [h * 0.25 + 0.02, h + y, 0, phase]));
+      }
+      rows.push(row);
+    }
+    for (let k = 0; k < rows.length - 1; k++) for (let j = 0; j < 6; j++) mb.quad(rows[k][j], rows[k][j + 1], rows[k + 1][j + 1], rows[k + 1][j]);
+  }
+  return mb;
+}
+
+/** fallen branches: a forked dead limb with side twigs lying on the ground (bark material) */
+export function branches(seed: number, len: number, r: number): MeshBuilder {
+  const rng = new Rng(seed);
+  const nz = new Noise(seed + 9);
+  const mb = new MeshBuilder();
+  const limb = (p0: V3, dir: V3, L: number, r0: number, depth: number) => {
+    const pts: V3[] = [];
+    const N = Math.max(3, Math.round(L / 0.35));
+    const d = dir.clone();
+    let p = p0.clone();
+    for (let k = 0; k <= N; k++) {
+      pts.push(p.clone());
+      d.applyAxisAngle(UP, nz.n2(k * 0.7, seed) * 0.25).normalize();
+      p = p.clone().addScaledVector(d, L / N);
+      p.y = Math.max(r0 * 0.4, p.y + rng.range(-0.02, 0.02));
+    }
+    const radii = pts.map((_, k) => Math.max(0.006, r0 * (1 - 0.7 * k / N)));
+    tube(mb, pts, radii, { sides: depth === 0 ? 6 : 4, tile: [0.4, 0.6], col: (_, s) => [0.8 - 0.1 * s, 0.76 - 0.1 * s, 0.72 - 0.1 * s], wind: () => [0, 0, 0, 0], moss: () => rng.range(0, 0.4), capTip: true });
+    if (depth < 2) {
+      const nb = rng.int(2, 4 - depth);
+      for (let b = 0; b < nb; b++) {
+        const t = rng.range(0.25, 0.85);
+        const q = pts[Math.floor(t * (pts.length - 1))];
+        const bd = d.clone().applyAxisAngle(UP, rng.chance(0.5) ? rng.range(0.5, 1.1) : -rng.range(0.5, 1.1));
+        bd.y = rng.range(0.05, depth === 0 ? 0.6 : 0.3);
+        limb(q, bd.normalize(), L * rng.range(0.3, 0.5), r0 * 0.45, depth + 1);
+      }
+    }
+  };
+  limb(v3(-len / 2, r * 0.8, 0), v3(1, 0, 0), len, r, 0);
   return mb;
 }
 
@@ -108,9 +329,7 @@ export function bracken(seed: number, n: number, hgt: number): MeshBuilder {
     const hd = v3(Math.cos(az), 0, Math.sin(az));
     const top = v3(bx, hs, bz).addScaledVector(hd, hs * 0.18);
     const stipe = [v3(bx, -0.02, bz), v3(bx, hs * 0.5, bz).addScaledVector(hd, hs * 0.04), top];
-    tube(mb, stipe, [0.006, 0.005, 0.004], {
-      sides: 3, tile: [0.2, 0.6], col: () => [0.45, 0.42, 0.22], wind: (_, s) => [s * s * hs * 0.2, s * hs, 0, phase],
-    });
+    stalk(mb, stipe, [0.006, 0.005, 0.004], [0.6, 0.55, 0.3], (_, s) => [s * s * hs * 0.2, s * hs, 0, phase]);
     // the blade: near-horizontal triangular card, rachis continuing from the stipe, drooping
     const L = hs * rng.range(0.7, 1.0);
     const side = v3(-hd.z, 0, hd.x);
@@ -268,24 +487,39 @@ function lathe(mb: MeshBuilder, prof: [number, number][], segs: number, rect: [n
   for (let i = 0; i < rows.length - 1; i++) for (let j = 0; j < segs; j++) mb.quad(rows[i][j], rows[i][j + 1], rows[i + 1][j + 1], rows[i + 1][j]);
 }
 
-export function mushrooms(seed: number, kind: 'agaric' | 'chanterelle', n: number): MeshBuilder {
+export function mushrooms(seed: number, kind: 'agaric' | 'chanterelle' | 'bolete' | 'honey' | 'puffball', n: number): MeshBuilder {
   const rng = new Rng(seed);
   const mb = new MeshBuilder();
   const rect = vegRect(kind);
+  const cx = rng.range(-0.05, 0.05), cz = rng.range(-0.05, 0.05);
   for (let i = 0; i < n; i++) {
-    const off = v3(rng.range(-0.12, 0.12), 0, rng.range(-0.12, 0.12));
+    // clustered: honey mushrooms grow in tight tufts from one point, others scatter
+    const sp = kind === 'honey' ? 0.07 : kind === 'puffball' ? 0.14 : 0.13;
+    const off = v3(cx + rng.range(-sp, sp), 0, cz + rng.range(-sp, sp));
     const s = rng.range(0.6, 1.2);
     const tiltAx = v3(rng.range(-1, 1), 0, rng.range(-1, 1)).normalize();
-    const tilt = rng.range(0, 0.25);
+    const tilt = kind === 'honey' ? rng.range(0.15, 0.55) : rng.range(0, 0.25);
     if (kind === 'agaric') {
       const h = 0.14 * s, r = 0.06 * s;
       const flat = rng.next(); // young (domed) .. old (flat)
       lathe(mb, [[0.012 * s, -0.02], [0.016 * s, h * 0.1], [0.011 * s, h * 0.6], [0.01 * s, h]], 6, rect, [0.78, 1], [1, 1, 1], [0, 0, 0, 0], 0, Math.PI * 2, off, tiltAx, tilt);
       const dome = lerp(0.75, 0.25, flat);
       lathe(mb, [[0.001, h + r * dome], [r * 0.5, h + r * dome * 0.86], [r * 0.85, h + r * dome * 0.45], [r, h + r * 0.05], [r * 0.95, h - r * 0.08], [0.01 * s, h - r * 0.02]], 10, rect, [0, 1], [1, 1, 1], [0, 0, 0, 0], 0, Math.PI * 2, off, tiltAx, tilt);
-    } else {
+    } else if (kind === 'chanterelle') {
       const h = 0.07 * s, r = 0.035 * s;
       lathe(mb, [[0.008 * s, -0.01], [0.01 * s, h * 0.5], [r * 0.6, h * 0.85], [r, h], [r * 1.05, h + r * 0.2], [r * 0.6, h + r * 0.12], [0.002, h + r * 0.05]], 9, rect, [1, 0], [1, 1, 1], [0, 0, 0, 0], 0, Math.PI * 2, off, tiltAx, tilt);
+    } else if (kind === 'bolete') {
+      // chunky: a fat club stem and a thick bun cap
+      const h = 0.09 * s, r = 0.065 * s;
+      lathe(mb, [[0.018 * s, -0.02], [0.026 * s, h * 0.3], [0.02 * s, h * 0.8], [0.016 * s, h]], 7, rect, [0.75, 1], [0.95, 0.9, 0.8], [0, 0, 0, 0], 0, Math.PI * 2, off, tiltAx, tilt);
+      lathe(mb, [[0.001, h + r * 0.7], [r * 0.55, h + r * 0.62], [r * 0.9, h + r * 0.35], [r, h + r * 0.08], [r * 0.92, h - r * 0.12], [0.016 * s, h - r * 0.1]], 10, rect, [0, 1], [1, 1, 1], [0, 0, 0, 0], 0, Math.PI * 2, off, tiltAx, tilt);
+    } else if (kind === 'honey') {
+      const h = rng.range(0.05, 0.1) * s, r = 0.028 * s;
+      lathe(mb, [[0.005 * s, -0.01], [0.006 * s, h * 0.5], [0.005 * s, h]], 5, rect, [0.75, 1], [0.9, 0.82, 0.7], [0, 0, 0, 0], 0, Math.PI * 2, off, tiltAx, tilt);
+      lathe(mb, [[0.001, h + r * 0.5], [r * 0.6, h + r * 0.4], [r, h + r * 0.05], [r * 0.9, h - r * 0.1], [0.005 * s, h - r * 0.05]], 8, rect, [0, 1], jitterCol(rng, [1, 1, 1], 0.12), [0, 0, 0, 0], 0, Math.PI * 2, off, tiltAx, tilt);
+    } else {
+      const r = rng.range(0.025, 0.05) * s;
+      lathe(mb, [[0.004, -0.005], [r * 0.8, r * 0.25], [r, r * 0.8], [r * 0.75, r * 1.45], [0.001, r * 1.6]], 9, rect, [0.7, 0], [1, 1, 1], [0, 0, 0, 0], 0, Math.PI * 2, off);
     }
   }
   return mb;
@@ -389,7 +623,7 @@ export function boulder(seed: number, size: number, flat = 0.6): MeshBuilder {
 }
 
 // --------------------------------------------------------------------------------------------- deadwood
-export interface LogSpec { species: SpeciesId; len: number; r: number; seed: number; rot: number; moss: number }
+export interface LogSpec { species: SpeciesId; len: number; r: number; seed: number; rot: number; moss: number; drift?: boolean }
 
 /**
  * fallen log lying along local +X from x = 0 to len, partly sunk, with a rotten broken end and a few stubs.
@@ -420,9 +654,10 @@ export function fallenLog(o: LogSpec): { wood: MeshBuilder; tufts: MeshBuilder; 
       const y = cy + Math.sin(a) * r * m * 0.92, z = cz + Math.cos(a) * r * m;
       const n = v3(0, Math.sin(a), Math.cos(a));
       // missing bark patches (bleached wood) on old logs
-      const bare = nz.n2(t * 4 + 11, a * 0.8) > 0.45 ? 1 : 0;
+      const bare = o.drift || nz.n2(t * 4 + 11, a * 0.8) > 0.45 ? 1 : 0;
       const ao = 0.6 + 0.4 * smoothstep(-0.6, 0.6, Math.sin(a));
-      const col: Col = bare ? [1.25 * ao, 1.05 * ao, 0.82 * ao] : [ao, ao, ao];
+      // driftwood: barkless, sun-bleached silver-grey, darker where it lies in the wet sand
+      const col: Col = o.drift ? [1.55 * ao, 1.5 * ao, 1.42 * ao] : bare ? [1.25 * ao, 1.05 * ao, 0.82 * ao] : [ao, ao, ao];
       const mossv = o.moss * (0.5 + 0.7 * Math.max(0, Math.sin(a)));
       row.push(wood.vert(v3(x, y, z), n, (j / N) * wraps, x / tile[1], col, [0, 0, 0, 0], mossv));
     }
@@ -512,6 +747,27 @@ export function stump(species: SpeciesId, seed: number, r: number, h: number, cu
     rows.push(row);
   }
   for (let i = 0; i < rows.length - 1; i++) for (let j = 0; j < N; j++) wood.quad(rows[i][j], rows[i + 1][j], rows[i + 1][j + 1], rows[i][j + 1]);
+  // root flare: surface roots run out from the buttress lobes, snake over the ground and dive back in
+  const nRoots = lobes + rng.int(0, 2);
+  for (let k = 0; k < nRoots; k++) {
+    const a = (k < lobes ? (2 * Math.PI * (k + 0.5)) / lobes - lph * 2 / lobes : rng.range(0, Math.PI * 2)) + rng.range(-0.15, 0.15);
+    const L = r * rng.range(1.6, 3.2) + 0.2;
+    const r0 = r * rng.range(0.2, 0.32);
+    const pts: V3[] = [];
+    const M = 6;
+    for (let m = 0; m <= M; m++) {
+      const t = m / M;
+      const wob = 0.12 * Math.sin(t * 5 + k) * t;
+      const d = r * 0.85 + L * t;
+      const lift = r0 * (0.9 - 1.6 * t * t) + 0.04 * Math.sin(t * 9 + k * 2) * (1 - t);
+      pts.push(v3(Math.cos(a + wob) * d, Math.max(-r0, r0 * 0.2 + lift) + 0.06 * (1 - t) * h, Math.sin(a + wob) * d));
+    }
+    pts[0].y = Math.min(h * 0.35, r0 * 1.5);
+    tube(wood, pts, pts.map((_, m) => r0 * (1 - 0.75 * m / M)), {
+      sides: 5, tile: sp.barkTile, col: (_, t) => { const ao = 0.62 + 0.25 * (1 - t); return [ao, ao, ao]; }, wind: () => [0, 0, 0, 0],
+      moss: (_, t) => moss * (0.6 + 0.6 * t), rough: 0.15, roughSeed: seed + k,
+    });
+  }
   const last = rows[rows.length - 1];
   let top: MeshBuilder | null = null;
   if (cut) {

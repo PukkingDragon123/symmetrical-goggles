@@ -116,9 +116,16 @@ class Debris {
     }
   }
 
+  private dq = new THREE.Quaternion();
+  private axis = new THREE.Vector3();
+  private tmpCol = new THREE.Color();
+  private settleE = new THREE.Euler();
+  private t = 0;
+
   update(dt: number): void {
     const wind = G.uWindDir.value, ws = G.uWindStrength.value;
-    const dq = new THREE.Quaternion();
+    const dq = this.dq;
+    this.t += dt;
     let n = 0;
     for (let i = this.list.length - 1; i >= 0; i--) {
       const d = this.list[i];
@@ -130,9 +137,14 @@ class Debris {
         d.v.x += (wind.x * ws * 2.5 - d.v.x) * Math.min(1, drag * dt) * (d.flutter ? 1 : 0.2);
         d.v.z += (wind.y * ws * 2.5 - d.v.z) * Math.min(1, drag * dt) * (d.flutter ? 1 : 0.2);
         if (d.flutter) { d.v.x += Math.sin(d.life * 7 + i) * dt * 1.5; d.v.z += Math.cos(d.life * 6 + i) * dt * 1.5; d.v.y *= 1 - dt * 2.5; }
+        if (d.kind === 'ember') {
+          // embers ride the fire's updraft in lazy spirals, then wink out
+          d.v.x += Math.sin(this.t * 3.1 + i * 1.7) * dt * 1.8; d.v.z += Math.cos(this.t * 2.7 + i * 2.3) * dt * 1.8;
+          d.v.y += dt * 0.6 * Math.max(0, d.life / d.max);
+        }
         d.p.addScaledVector(d.v, dt);
         const wl = d.w.length();
-        if (wl > 1e-3) { dq.setFromAxisAngle(d.w.clone().divideScalar(wl), wl * dt); d.q.premultiply(dq); }
+        if (wl > 1e-3) { dq.setFromAxisAngle(this.axis.copy(d.w).divideScalar(wl), wl * dt); d.q.premultiply(dq); }
         const gy = heightAt(d.p.x, d.p.z) + 0.004;
         if (d.p.y < gy) {
           d.p.y = gy;
@@ -140,7 +152,7 @@ class Debris {
           if (Math.abs(d.v.y) < 0.8 || d.flutter) {
             d.settled = true;
             // lie flat on the ground with a random yaw
-            d.q.setFromEuler(new THREE.Euler(-Math.PI / 2, 0, Math.random() * 6.28));
+            d.q.setFromEuler(this.settleE.set(-Math.PI / 2, 0, Math.random() * 6.28));
           } else {
             d.v.y = -d.v.y * 0.25; d.v.x *= 0.5; d.v.z *= 0.5; d.w.multiplyScalar(0.5);
           }
@@ -152,7 +164,13 @@ class Debris {
       this.dummy.scale.copy(d.s).multiplyScalar(d.glow ? fade : Math.max(0.2, fade));
       this.dummy.updateMatrix();
       this.mesh.setMatrixAt(n, this.dummy.matrix);
-      this.mesh.setColorAt(n, d.glow ? d.col.clone().multiplyScalar(fade) : d.col);
+      if (d.glow) {
+        // hot embers cool from white-gold through orange to a dull red as they fly; sparks flicker
+        const age = 1 - d.life / d.max;
+        const fl = d.kind === 'ember' ? 0.75 + 0.25 * Math.sin(this.t * 31 + i * 7.3) : 1;
+        this.tmpCol.setRGB(1, Math.max(0.12, 0.85 - age * 0.9), Math.max(0.02, 0.45 - age * 0.8)).multiply(d.col).multiplyScalar(fade * fl);
+        this.mesh.setColorAt(n, this.tmpCol);
+      } else this.mesh.setColorAt(n, d.col);
       this.tileAttr.setX(n, d.tile);
       this.glowAttr.setX(n, d.glow * fade);
       n++;

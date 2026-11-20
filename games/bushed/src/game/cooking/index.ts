@@ -409,6 +409,8 @@ export class CookingStation extends Station {
   private best = new Map<string, Grade>();
   private tickT = 0;
   private ticks: boolean[] = [];
+  /** the card's ticks as they stood when its dish was served (shown until that vessel is used again) */
+  private servedTicks = new Map<string, boolean[]>();
   private fresh = new Set<string>();
   private wantCards = false;
   private packed = new Map<string, Grade[]>();
@@ -705,8 +707,13 @@ export class CookingStation extends Station {
     if ((this.tickT -= dt) <= 0) {
       this.tickT = 0.5;
       const v = r.vessel === 'skillet' ? this.skillet : r.vessel === 'pot' ? this.pot : this.coffee;
-      const d = this.summarize(v);
-      this.ticks = r.steps.map((s) => { try { return s.ok(d, this.log); } catch { return false; } });
+      const kept = this.servedTicks.get(r.id);
+      if (kept && v.empty && v.wet < 0.05) this.ticks = kept;
+      else {
+        if (kept) this.servedTicks.delete(r.id);
+        const d = this.summarize(v);
+        this.ticks = r.steps.map((s) => { try { return s.ok(d, this.log); } catch { return false; } });
+      }
     }
     if (on) {
       const cam = this.g.camera;
@@ -2654,6 +2661,7 @@ export class CookingStation extends Station {
     this.say(`${verdict.name}: ${GRADE_NAME[verdict.grade].toLowerCase()}${notes}. Eat it hot, or right-click to pack it.`, 3.5);
     if (verdict.recipe) {
       const r = verdict.recipe;
+      this.servedTicks.set(r.id, verdict.steps.slice());
       const prev = this.best.get(r.id);
       if (!prev || GRADE_STARS[verdict.grade] > GRADE_STARS[prev]) this.best.set(r.id, verdict.grade);
       if (!this.unlocked(r.id)) { this.unlock(r.id); this.say(`You worked it out: ${r.name}. A new card for the box.`, 3.5); }
@@ -2671,6 +2679,7 @@ export class CookingStation extends Station {
     const verdict = judge(this.summarize(v), this.log, (id) => this.unlocked(id));
     if (!verdict) return;
     this.poured = { v: verdict };
+    this.log.push({ k: 'serve', s: verdict.item, n: verdict.q, v: 'coffee' });
     C.poured++;
     if (C.poured >= 3) { C.grounds = ''; C.boil = 0; C.settle = 0; C.poured = 0; C.steep = 0; v.added.clear(); v.calls.clear(); }
     audio.play('drink_gulp', { pos: this.W(_t1.copy(this.mugObj.position)), vol: 0.25, rate: 0.6 });
@@ -2977,7 +2986,7 @@ export class CookingStation extends Station {
     move: (where: 'skillet' | 'pot' | 'coffee', x: number, z: number) => { const v = this.vesselByKind(where); v.pos.set(x, PLATE.y, z); v.obj.position.copy(v.pos); },
     taste: (where: 'skillet' | 'pot' | 'coffee') => { const v = this.vesselByKind(where); v.tasted = true; const s = this.tasteVerdict(v); this.log.push({ k: 'taste', v: v.kind, s }); return s; },
     serve: (where: 'skillet' | 'pot') => { const v = this.serve(this.vesselByKind(where)); return v ? { item: v.item, name: v.name, grade: v.grade, q: +v.q.toFixed(2), notes: v.notes, steps: v.steps } : null; },
-    pour: () => this.pourCup(),
+    pour: () => { this.pourCup(); const v = this.poured?.v; return v ? { item: v.item, name: v.name, grade: v.grade, q: +v.q.toFixed(2) } : null; },
     eat: () => this.eatServed('plate'),
     pack: () => this.packServed('plate'),
     pin: (id: string) => { this.pinned = id; this.tickT = 0; },
