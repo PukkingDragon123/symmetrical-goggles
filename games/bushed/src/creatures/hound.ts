@@ -17,7 +17,8 @@
 // Events (ctx.emit(ev, { pos, who: 'hound', sound, ... })): growl, snarl, snap, bite (damage), lunge_feint, bark, whine,
 // sniff, chew, crunch, howl, yip, steal, befriended, dig, eat (item), happy, shake. `sound` is a suggested
 // src/audio/bank.ts id (HOUND_SOUND).
-// v4 (cuter): big puppy eyes with catchlights under tufted brows, floppy ears on springs, a nose, a tongue that lolls
+// v6 (hand-painted, model hound@6): a soft hatchet-shaped head (hound/model.ts) with big lidded eyes, a wet nose, fluffy
+// cheeks and cupped floppy ears. v4 (cuter): big puppy eyes with catchlights under tufted brows, floppy ears on springs, a nose, a tongue that lolls
 // out when it is happy, real fur (src/creatures/fur: a plush coat, a ruff where the neck meets the steel, a cream bib,
 // a plume of a tail) with fur physics, and a face (expression.ts) that follows its mood: a happy squint and a pant
 // as a companion, pleading brows when it begs, a scowl and pinned ears when it lurks, a curious tilt.
@@ -113,10 +114,10 @@ export class AxehandleHound {
     }));
     this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * EYE_AX[0], EYE_AX[1], EYE_AX[2]).normalize()).normalize());
     // the coat: fur where the fur page says, combed back along the handle, down the legs and ears
-    const earB = [S.i('earL'), S.i('earR')], legTop = 0.27;
+    const earB = [S.i('earL'), S.i('earR')], legTop = 0.27, jawB = S.i('jaw'), headB = S.i('head');
     this.fur = m.fur ? addFur(this.mesh, {
       length: HOUND_FUR_LEN, mask: m.fur, shells: 16, density: 0.85, clump: 5, clumpPull: 0.6, rootDark: 0.45, tipK: 0.55, fins: 0.55,
-      comb: (p, _n, b) => (earB.includes(b) ? [0, -0.55, -0.05] : p[1] < legTop && Math.abs(p[2] - 0) < 0.6 && Math.abs(p[0]) > 0.05 ? [0, -0.5, -0.12] : p[2] < -0.7 ? [0, -0.15, -0.55] : [0, -0.22, -0.42]),
+      comb: (p, _n, b) => (earB.includes(b) ? [0, -0.55, -0.05] : b === jawB ? [0, -0.6, 0.06] : b === headB ? [0, -0.35, -0.38] : p[1] < legTop && Math.abs(p[2] - 0) < 0.6 && Math.abs(p[0]) > 0.05 ? [0, -0.5, -0.12] : p[2] < -0.7 ? [0, -0.15, -0.55] : [0, -0.22, -0.42]),
       springs: [{ bones: ['tail1'], hz: 2.2, inertia: 1.4 }, { bones: ['earL', 'earR'], hz: 3, inertia: 1.2 }, { bones: ['neck2'], hz: 3.2 }],
       droop: 0.22, inertia: 0.045,
     }) : null;

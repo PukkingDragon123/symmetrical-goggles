@@ -4,14 +4,13 @@
 //   flap(...)       an ear: a cupped flap with a rolled rim, thickness and an inner bowl, swept along a path
 //   digit(...)      a knuckled finger or toe (phalanges with bulging joints, flattened, a pad underneath) and its
 //                   hooked, keeled claw
-//   brush(...)      the hand painter: per texel a material (ramp, step) and a fur amount; the form lit from above
-//                   (top planes a step lighter and warmer, undersides cooler), AO and cavities, and the whole chart
-//                   laid in with visible strokes that follow the fur flow (or run round the form on bare skin):
-//                   2-4 texels wide, varied length, tapered, overlapping, so ramp steps break into stroke-shaped
-//                   clusters. The texel callback reads the strokes too (wet, broken edges between colour zones, dabs)
+//   brush(...)      the hand painter (over anatomy/handpaint.ts): per texel a material (ramp, step) and a fur amount,
+//                   then the form lit from above (lit warm tops, cool undersides, AO, cavities) and visible strokes:
+//                   fur locks along the creature's comb, skin strokes round the form. The texel callback reads the
+//                   strokes too (wet, broken edges between colour zones, dabs of variation colour)
 //   bone(...)       the same painter for claws, teeth and horn: dark root to pale tip, strokes along the length
 // Creature space: metres, +z forward, +y up.
-import { Px, h3, cl, newCM, tube, creaseRow, creaseCol, type V3, type Wt, type Chart, type Piece, type Body, type CM, type Ring } from '../anatomy';
+import { Px, h3, cl, newCM, tube, creaseRow, creaseCol, hand, type Hand, type Flow, type StrokeOpts, type V3, type Wt, type Chart, type Piece, type Body, type CM, type Ring } from '../anatomy';
 
 const TAU = Math.PI * 2;
 const add = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
@@ -60,6 +59,19 @@ export function displace<T extends Piece>(body: Body, p: T, d: (p: V3, n: V3) =>
   const N = cageNormals(p.m);
   p.m.V = p.m.V.map((v, i) => { const k = d(v, N[i]); return k ? add(v, scl(N[i], k)) : v; });
   return p;
+}
+/** carve a socket into a finalized piece: points within `R` of the axis line through `c` (along `ax`) that stand in
+ *  front of a bowl (its floor `floor` along the axis behind c, its rim `rim` in front of c at radius R) are pushed
+ *  back onto it, so an eye at c sits deep under a rim */
+export function carve(body: Body, p: Piece, c: V3, ax: V3, R: number, floor: number, rim: number) {
+  body.finalize(p);
+  const a0 = nrm(ax);
+  p.m.V = p.m.V.map((v) => {
+    const d = sub(v, c), a = dot(d, a0), rho = Math.hypot(...sub(d, scl(a0, a)));
+    if (rho >= R || a < -R) return v;
+    const bowl = -floor + (rim + floor) * (rho / R) ** 2, w = 1 - sm(0.82, 1, rho / R);
+    return a > bowl ? sub(v, scl(a0, (a - bowl) * w)) : v;
+  });
 }
 /** a raised ridge along a polyline: the height at a point (0 off it), a smooth bump `w` wide */
 export function ridge(pts: V3[], p: V3, w: number, h: number): number {
@@ -143,105 +155,67 @@ export function digit(o: {
 }
 
 // ------------------------------------------------------------------------------------------------ the hand painter
-/** a stroke layer: strokes `len` long and `wid` wide (m), running along the chart (v, `flow` +1 or -1) or round it
- *  (`across`), leaning down the flanks by `lean`; `jag` wobbles their sides */
-export interface StrokeOpt { len: number; wid: number; flow?: number; lean?: number; across?: boolean; seed?: number }
-/** per texel: the stroke's value (-1..1), its position along the stroke (0 root .. 1 tip) and its id (0..1) */
-export interface Strokes { v: Float32Array; f: Float32Array; id: Float32Array }
-export function strokes(px: Px, o: StrokeOpt): Strokes {
-  const { w, h, n } = px, tpm = 1 / px.mpt, seed = o.seed ?? 5, flow = o.flow ?? 1;
-  const out: Strokes = { v: new Float32Array(n), f: new Float32Array(n), id: new Float32Array(n) };
-  const lenT = Math.max(2, o.len * tpm), widT = Math.max(1.6, o.wid * tpm), wrap = px.ch.wrap;
-  let cm = 0; for (let y = 0; y < h; y++) cm += px.circ[y]; cm /= Math.max(1, h);
-  const circT = cm * tpm, nc = Math.max(3, Math.round(circT / widT));
-  const one = (A: number, B: number, c: number, r0: { f: number; r: number }) => {
-    const Lc = lenT * (0.6 + 0.8 * h3(c, 1, seed)), s = (B + h3(c, 2, seed) * Lc) / Lc, r = Math.floor(s);
-    r0.f = s - r; r0.r = r; void A;
-  };
-  const q = { f: 0, r: 0 };
-  for (let y = 0; y < h; y++) {
-    const Yt = px.Y[y] * tpm, rowC = px.circ[y] * tpm;
-    for (let x = 0; x < w; x++) {
-      const i = y * w + x, u = (x + 0.5) / w;
-      let A: number, B: number;
-      if (!o.across) {
-        A = wrap ? u * nc : (u * rowC) / widT;
-        B = Yt * flow;
-        if (o.lean && wrap) A += Math.sin((u - 0.5) * TAU) * o.lean * (B / widT) * 0.35;
-        A += Math.sin(B * 0.21 + h3(Math.floor(A), 3, seed) * 6) * 0.18; // a wobble down the stroke
-      } else {
-        A = Yt / widT + Math.sin(u * 37 + h3(Math.floor(Yt / widT), 3, seed) * 6) * 0.18;
-        B = wrap ? u * circT : u * rowC;
-      }
-      let c = Math.floor(A); const e = (A - c) * 2 - 1;
-      one(A, B, wrap && !o.across ? ((c % nc) + nc) % nc : c, q);
-      // tapered ends: near either end of a stroke its neighbour's stroke shows through at the sides
-      const tw = 0.4 + 0.6 * Math.sqrt(Math.max(0, 1 - (2 * q.f - 1) ** 2));
-      if (Math.abs(e) > tw) { c += e > 0 ? 1 : -1; one(A, B, wrap && !o.across ? ((c % nc) + nc) % nc : c, q); }
-      const cc = wrap && !o.across ? ((c % nc) + nc) % nc : c;
-      out.v[i] = h3(cc, q.r, seed) * 2 - 1; out.f[i] = q.f; out.id[i] = h3(cc * 7 + 3, q.r, seed + 11);
-    }
-  }
-  return out;
-}
-
-/** what the texel callback reads: the skin strokes (sv, sf, sid) and the fur strokes (fv, ff, fid) under the texel */
-export interface StrokeAt { sv: number; sf: number; sid: number; fv: number; ff: number; fid: number }
+// brush() is a thin layer over the shared hand-painting pass (anatomy/handpaint.ts): the creature's texel callback lays
+// the local colour (it reads per-texel stroke fields, so colour zones break along the brush strokes: wet edges, dabs),
+// then Hand.form() lights the form from above (lit tops, cool undersides, AO, cavities, ridge highlights, hue-shifted
+// ramps) and Hand.strokes() lays the fur locks along the creature's comb and the skin strokes round the form.
+/** a stroke layer: strokes `len` long and `wid` wide (m) along `flow` (a creature-space comb direction, 'sweep' along
+ *  the chart, 'across' round it); amp = steps of variation, tip/root light the lock's tip and darken its root */
+export interface StrokeOpt { len: number; wid: number; flow?: Flow; amp?: number; tip?: number; root?: number; gap?: number; seed?: number; dabs?: StrokeOpts['dabs'] }
+/** what the texel callback reads: a value constant along each skin stroke (sv -1..1) and its id (sid 0..1), the same
+ *  for the fur locks (fv, fid) */
+export interface StrokeAt { sv: number; sid: number; fv: number; fid: number }
 export interface BrushOpts {
-  /** baked sky occlusion (Px.lightK) and the baked key light from above (steps per unit of normal.y) */
-  lightK?: number; key?: number;
-  /** strokes on bare skin (default: short, round the form) and on fur (along the flow); amp = steps of variation */
-  skin?: StrokeOpt & { amp?: number };
-  fur?: StrokeOpt & { amp?: number; tip?: number; root?: number };
+  /** the form light: steps between lit top and underside (default 2.4), AO (default 2.2), cavity ink (default 1.4) */
+  light?: number; ao?: number; cavity?: number; ridge?: number;
+  /** skin strokes (default short, round the form) and fur locks (only where the texel callback returns fur) */
+  skin?: StrokeOpt;
+  fur?: StrokeOpt;
   /** per texel: choose the material (px.put, px.rough ...) and return how furry it is (0 bare .. 1 coat) */
   texel: (px: Px, i: number, x: number, y: number, z: number, nx: number, ny: number, nz: number, s: StrokeAt) => number;
-  /** crease ink: [threshold, dark, lit] */
-  ink?: [number, number, number];
   /** last marks before the flush */
-  after?: (px: Px, fur: Float32Array, S: { skin: Strokes; fur: Strokes | null }) => void;
+  after?: (px: Px, fur: Float32Array, hp: Hand) => void;
   glow?: (px: Px, i: number) => boolean;
+  seed?: number;
 }
+const toT = (px: Px, m: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, m / px.mpt));
 export function brush(o: BrushOpts) {
   return function* (ch: Chart, _p: Piece, b: Body) {
-    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
-    px.lightK = o.lightK ?? 0.7;
-    const so = o.skin ?? { len: 0.03, wid: 0.008, across: true };
-    const S = strokes(px, so);
+    const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, seed = o.seed ?? 17;
+    const sk = o.skin ?? { len: 0.03, wid: 0.007, flow: 'across' as Flow }, fu = o.fur;
+    const hp = hand(px, { flow: sk.flow ?? 'across', seed });
+    const lens = (s: StrokeOpt): [number, number] => { const L = toT(px, s.len, 3, 30); return [Math.max(3, L * 0.55), L * 1.25]; };
+    const wids = (s: StrokeOpt): [number, number] => { const W = toT(px, s.wid, 1.5, 4); return [Math.max(1.5, W * 0.75), Math.min(4.5, W * 1.3)]; };
+    const fS = hp.field({ flow: sk.flow ?? 'across', len: lens(sk), width: wids(sk), seed: seed + 3 });
     yield;
-    const F = o.fur ? strokes(px, o.fur) : null;
+    const fF = fu ? hp.field({ flow: fu.flow ?? 'sweep', len: lens(fu), width: wids(fu), seed: seed + 9 }) : null;
     yield;
-    const fur = new Float32Array(px.n), at: StrokeAt = { sv: 0, sf: 0, sid: 0, fv: 0, ff: 0, fid: 0 };
-    const key = o.key ?? 0.7, sA = so.amp ?? 0.45, fA = o.fur?.amp ?? 0.7, tip = o.fur?.tip ?? 0.9, root = o.fur?.root ?? 0.8;
+    const fur = new Float32Array(px.n), at: StrokeAt = { sv: 0, sid: 0, fv: 0, fid: 0 };
     for (let i = 0; i < px.n; i++) {
       if ((i & 8191) === 0) yield;
-      at.sv = S.v[i]; at.sf = S.f[i]; at.sid = S.id[i];
-      if (F) { at.fv = F.v[i]; at.ff = F.f[i]; at.fid = F.id[i]; }
-      const k = fur[i] = o.texel(px, i, P[i * 3], P[i * 3 + 1], P[i * 3 + 2], N[i * 3], N[i * 3 + 1], N[i * 3 + 2], at);
-      // the form, lit from above: top planes lighter, undersides darker (the ramps carry the warm/cool shift)
-      let mk = key * N[i * 3 + 1];
-      mk += (1 - k) * sA * at.sv;
-      if (F && k > 0) mk += k * (fA * at.fv + (at.ff > 0.72 ? tip : 0) - (at.ff < 0.16 ? root : 0));
-      px.mark[i] += mk;
+      at.sv = fS[i] * 2 - 1; at.sid = (fS[i] * 7.31) % 1;
+      if (fF) { at.fv = fF[i] * 2 - 1; at.fid = (fF[i] * 7.31) % 1; }
+      fur[i] = o.texel(px, i, P[i * 3], P[i * 3 + 1], P[i * 3 + 2], N[i * 3], N[i * 3 + 1], N[i * 3 + 2], at);
     }
     yield;
-    const ik = o.ink ?? [1.2, 1.1, 0.6];
-    px.creaseInk(ik[0], { dark: ik[1], lit: ik[2] });
-    o.after?.(px, fur, { skin: S, fur: F });
+    hp.form({ light: o.light ?? 2.4, ao: o.ao ?? 2.0, cavity: o.cavity ?? 1.4, ridge: o.ridge ?? 0.8 });
+    if (fu) hp.strokes({ flow: fu.flow ?? 'sweep', len: lens(fu), width: wids(fu), amp: fu.amp ?? 0.7, tip: fu.tip ?? 0.8, root: fu.root ?? 0.7, gap: fu.gap ?? 0.5, dabs: fu.dabs, seed: seed + 21, mask: (i) => fur[i] });
+    yield;
+    hp.strokes({ flow: sk.flow ?? 'across', len: lens(sk), width: wids(sk), amp: sk.amp ?? 0.5, dabs: sk.dabs, seed: seed + 29, mask: (i) => 1 - fur[i] });
+    o.after?.(px, fur, hp);
     yield;
     px.flush(o.glow ? { glow: (i) => o.glow!(px, i) } : {});
   };
 }
-/** claws, teeth, horn: one ramp from a dark root to a pale tip along the chart (v), strokes along the length, a
- *  lit ridge; `root` and `tipStep` the steps at either end */
-export function bone(R: number[], o: { root?: number; tipStep?: number; rough?: number; flip?: boolean; key?: number; wet?: boolean } = {}) {
+/** claws, teeth, horn: one ramp from a dark root to a pale tip along the chart (v), strokes along the length */
+export function bone(R: number[], o: { root?: number; tipStep?: number; rough?: number; flip?: boolean; wet?: boolean } = {}) {
   return brush({
-    lightK: 0.6, key: o.key ?? 0.5,
-    skin: { len: 0.02, wid: 0.003, amp: 0.5 },
+    light: 1.8, ao: 1.2, cavity: 1.0, ridge: 1.0,
+    skin: { len: 0.02, wid: 0.003, amp: 0.45, flow: 'sweep' },
     texel: (px, i) => {
       const y = Math.floor(i / px.w), t = px.h > 1 ? y / (px.h - 1) : 0, f = o.flip ? 1 - t : t;
       px.put(i, R, (o.root ?? 1.2) + ((o.tipStep ?? R.length - 1.5) - (o.root ?? 1.2)) * f); px.rough[i] = o.rough ?? 110;
       return 0;
     },
-    ink: [1.1, 1.0, 1.0],
   });
 }

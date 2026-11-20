@@ -30,8 +30,13 @@
 // and a small second one), lids() an almond pair of thick lids with rolled margins whose opening is a lens, never a
 // disc; lidPaint() paints a lid in the creature's skin with a lash line or a wet lower rim.
 //
+// Zones paint over whatever is under them: pass zones(zs, { mask: (i) => ... }) to keep them off texels you set yourself
+// (a mouth's gum, a nose). Strokes take a `mask` too. Cost: about a second for a 1024 page of strokes and zones.
+//
 // Sculpting (geometry, see sculpt.ts): displace(), relief() (scale plates pushed into a finalized trunk, laid out like
-// Px.scales so the paint and the plates agree), earFlap() (a cupped flap with a rim, thickness and inner bowl), folds.
+// Px.scales so the paint and the plates agree), earFlap() (a cupped flap with a rim, thickness and inner bowl),
+// foldsFn() (skin folds as a displacement), mouthWebs() (cheeks and a throat wall that stretch shut the sides and back of
+// a mouth as the jaw drops). Organic ring profiles for trunk(): PROFILES keel, pear, slab, hump, sack, crest.
 import { Px, h3, cl } from './paint';
 import { RAMPS } from './palette';
 import { newCM, tube, sheetGrid, creaseRow, type Ring } from './cage';
@@ -82,6 +87,9 @@ export interface StrokeOpts {
   spacing?: number;
   /** how much a stroke lightens or darkens (steps, default 0.7) */
   amp?: number;
+  /** crisp strokes: each stroke is a whole ramp step lighter or darker (a clean 2-4 texel cluster) or not shown at all,
+   *  shown with a chance of amp / 0.7 (default false: fractional strokes that show where the light bands turn) */
+  crisp?: boolean;
   /** 0..1: how much the key light decides a stroke's sign (lighter where lit, darker in shadow; default 0.7) */
   lit?: number;
   /** darken texels no stroke covers (the underfur between clumps; default 0) */
@@ -138,24 +146,26 @@ export class Hand {
       if (flow === 'sweep') dy.fill(1); else dx.fill(1);
     } else {
       const P = px.gb.P, N = px.gb.N, wrap = px.ch.wrap;
-      const f3: V3 = [0, 0, 0], q: V3 = [0, 0, 0], nn: V3 = [0, 0, 0];
+      const q: V3 = [0, 0, 0], nn: V3 = [0, 0, 0];
       const fn = typeof flow === 'function' ? flow : null;
       const fixed: V3 = Array.isArray(flow) ? nrm(flow as V3) : flow === 'across' ? [1, 0, 0] : [0, -0.45, -1];
-      for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i++) {
+      // directions vary slowly: solve on every other texel each way and copy across the 2x2 block
+      for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
+        const i = y * w + x;
         const xl = x > 0 ? x - 1 : wrap ? w - 1 : x, xr = x < w - 1 ? x + 1 : wrap ? 0 : x, yl = y > 0 ? y - 1 : y, yr = y < h - 1 ? y + 1 : y;
         const a = (y * w + xl) * 3, b = (y * w + xr) * 3, c = (yl * w + x) * 3, d = (yr * w + x) * 3;
         const ux = P[b] - P[a], uy = P[b + 1] - P[a + 1], uz = P[b + 2] - P[a + 2], vx = P[d] - P[c], vy = P[d + 1] - P[c + 1], vz = P[d + 2] - P[c + 2];
         let fx: number, fy: number, fz: number;
         if (fn) { q[0] = P[i * 3]; q[1] = P[i * 3 + 1]; q[2] = P[i * 3 + 2]; nn[0] = N[i * 3]; nn[1] = N[i * 3 + 1]; nn[2] = N[i * 3 + 2]; const r = fn(q, nn); fx = r[0]; fy = r[1]; fz = r[2]; }
         else { fx = fixed[0]; fy = fixed[1]; fz = fixed[2]; }
-        void f3;
         // least squares: flow ~ a*U + b*V (U, V the texel tangents)
         const uu = ux * ux + uy * uy + uz * uz, vv = vx * vx + vy * vy + vz * vz, uv = ux * vx + uy * vy + uz * vz;
         const fu = fx * ux + fy * uy + fz * uz, fv = fx * vx + fy * vy + fz * vz, det = uu * vv - uv * uv;
         let A = 0, B = 1;
         if (det > 1e-14) { A = (fu * vv - fv * uv) / det; B = (fv * uu - fu * uv) / det; }
         const l = Math.hypot(A, B);
-        if (l > 1e-9) { dx[i] = A / l; dy[i] = B / l; } else { dx[i] = 0; dy[i] = 1; }
+        const ddx = l > 1e-9 ? A / l : 0, ddy = l > 1e-9 ? B / l : 1;
+        for (let yy = y; yy < Math.min(h, y + 2); yy++) for (let xx = x; xx < Math.min(w, x + 2); xx++) { dx[yy * w + xx] = ddx; dy[yy * w + xx] = ddy; }
       }
     }
     const out = { dx, dy };
@@ -163,109 +173,108 @@ export class Hand {
     return out;
   }
 
-  /** lay strokes and call `stamp` for every texel each covers (the last stroke over a texel wins) */
-  private lay(o: StrokeOpts, stamp: (i: number, k: number, t: number, e: number) => void, begin: (k: number, i0: number) => boolean) {
-    const px = this.px, { w, h } = px, { dx, dy } = this.dirs(o.flow ?? this.flow), wrap = px.ch.wrap;
+  /** lay strokes: per texel the id of the last stroke over it (-1 none), where along it (0 root .. 1 tip) and across
+   *  it (-1..1). `begin` accepts or rejects each stroke (by id and seed texel) before it is laid */
+  private lay(o: StrokeOpts, begin: (k: number, i0: number) => boolean, want: { t?: boolean; e?: boolean } = {}) {
+    const px = this.px, { w, h, n } = px, { dx, dy } = this.dirs(o.flow ?? this.flow), wrap = px.ch.wrap;
     const sp = Math.max(1.5, o.spacing ?? 3), [l0, l1] = o.len ?? [5, 12], [w0, w1] = o.width ?? [2, 3], curl = o.curl ?? 0.12, taper = o.taper ?? 0.6, seed = o.seed ?? this.seed;
+    const sid = new Int32Array(n).fill(-1), ta = want.t ? new Float32Array(n) : null, ea = want.e ? new Float32Array(n) : null;
     // seeds on a jittered grid, laid in a shuffled order
-    const seeds: number[] = [];
-    for (let gy = 0; gy < h + sp; gy += sp) for (let gx = 0; gx < w; gx += sp) seeds.push(gx, gy);
-    const ns = seeds.length / 2, order = new Uint32Array(ns), key = new Float32Array(ns);
+    const gw = Math.ceil(w / sp), gh = Math.ceil((h + sp) / sp), ns = gw * gh;
+    const order = new Uint32Array(ns), key = new Float32Array(ns);
     for (let k = 0; k < ns; k++) { order[k] = k; key[k] = h3(k, 7, seed); }
     order.sort((a, b) => key[a] - key[b]);
+    const stepL = 0.6;
     for (let q = 0; q < ns; q++) {
       const k = order[q];
-      const sx = seeds[k * 2] + h3(k, 1, seed) * sp, sy = seeds[k * 2 + 1] + h3(k, 2, seed) * sp - sp * 0.5;
+      // a small xorshift per stroke for its jitter, size and wander
+      let r = (Math.imul(k + 1, 0x9e3779b1) ^ Math.imul(seed + 7, 0x85ebca6b)) >>> 0 || 1;
+      const rnd = () => { r ^= r << 13; r >>>= 0; r ^= r >>> 17; r ^= r << 5; r >>>= 0; return r / 4294967296; };
+      const sx = (k % gw) * sp + rnd() * sp, sy = Math.floor(k / gw) * sp + rnd() * sp - sp * 0.5;
       const ix = Math.floor(sx) % w, iy = Math.floor(sy);
       if (iy < 0 || iy >= h) continue;
-      const i0 = iy * w + ix;
-      if (!begin(k, i0)) continue;
-      const L = l0 + (l1 - l0) * h3(k, 3, seed), W = w0 + (w1 - w0) * h3(k, 4, seed), half = L / 2, stepL = 0.6;
-      const ns2 = Math.max(1, Math.ceil(half / stepL));
+      if (!begin(k, iy * w + ix)) continue;
+      const L = l0 + (l1 - l0) * rnd(), W = w0 + (w1 - w0) * rnd(), half = L / 2;
+      const ns2 = Math.max(1, Math.ceil(half / stepL)), invL = 1 / Math.max(1e-6, L);
       // trace both ways from the seed along the flow
-      for (const sgn of [-1, 1]) {
+      for (let sgn = -1; sgn <= 1; sgn += 2) {
         let x = sx, y = sy, pdx = 0, pdy = 0, ang = 0;
-        for (let s = 0; s <= ns2; s++) {
-          let xi = Math.floor(x), yi = Math.floor(y);
+        for (let s2 = 0; s2 <= ns2; s2++) {
+          let xi = Math.floor(x); const yi = Math.floor(y);
           if (yi < 0 || yi >= h) break;
           if (xi < 0 || xi >= w) { if (!wrap) break; xi = ((xi % w) + w) % w; }
           const i = yi * w + xi;
           let ddx = dx[i] * sgn, ddy = dy[i] * sgn;
-          if (s > 0 && ddx * pdx + ddy * pdy < 0) { ddx = -ddx; ddy = -ddy; }
-          ang += (h3(k * 31 + s, sgn, seed) - 0.5) * curl * 2;
-          const ca = Math.cos(ang), sa = Math.sin(ang), rx = ddx * ca - ddy * sa, ry = ddx * sa + ddy * ca;
+          if (s2 > 0 && ddx * pdx + ddy * pdy < 0) { ddx = -ddx; ddy = -ddy; }
           pdx = ddx; pdy = ddy;
+          ang += (rnd() - 0.5) * curl * 2;
+          const ca = Math.cos(ang), sa = Math.sin(ang), rx = ddx * ca - ddy * sa, ry = ddx * sa + ddy * ca;
           // along the stroke 0 (its root, against the flow) .. 1 (its tip, with the flow)
-          const tAlong = 0.5 + (sgn * s * stepL) / Math.max(1e-6, L), tt = Math.abs(tAlong - 0.5) * 2;
-          const ww = Math.max(1, W * (1 - taper * tt * tt));
-          const hw = (ww - 1) / 2;
+          const tAlong = 0.5 + sgn * s2 * stepL * invL, tt = Math.abs(tAlong - 0.5) * 2;
+          const hw = (Math.max(1, W * (1 - taper * tt * tt)) - 1) / 2, ie = hw > 0 ? 1 / (hw + 0.5) : 0;
           for (let e = -hw; e <= hw + 1e-6; e += 1) {
-            let X = Math.floor(x - ry * e), Y = Math.floor(y + rx * e);
+            let X = Math.floor(x - ry * e); const Y = Math.floor(y + rx * e);
             if (Y < 0 || Y >= h) continue;
             if (X < 0 || X >= w) { if (!wrap) continue; X = ((X % w) + w) % w; }
-            stamp(Y * w + X, k, tAlong, hw > 0 ? e / (hw + 0.5) : 0);
+            const j = Y * w + X;
+            sid[j] = k; if (ta) ta[j] = tAlong; if (ea) ea[j] = e * ie;
           }
           x += rx * stepL; y += ry * stepL;
         }
       }
     }
+    return { sid, ta, ea, ns };
   }
 
   /** directional brush strokes along the flow (see StrokeOpts) */
   strokes(o: StrokeOpts = {}) {
     const px = this.px, n = px.n, amp = o.amp ?? 0.7, lit = o.lit ?? 0.7, seed = o.seed ?? this.seed;
-    const sv = new Float32Array(n), cov = new Uint8Array(n), ta = new Float32Array(n), ed = new Float32Array(n);
-    const dabR = o.dabs ? new Int16Array(n).fill(-1) : null, dabS = o.dabs ? new Float32Array(n) : null;
     const dabK = o.dabs ? o.dabs.map((d) => px.ramp(d.ramp)) : [];
-    let cur = 0, curDab = -1, curSide = 1;
-    this.lay(o, (i, _k, t, e) => {
-      if (o.mask && o.mask(i) <= 0.02) return;
-      sv[i] = cur; cov[i] = 1; ta[i] = t; ed[i] = e * curSide;
-      if (dabR) { dabR[i] = curDab; }
-    }, (k, i0) => {
+    const sp = Math.max(1.5, o.spacing ?? 3), maxK = Math.ceil(px.w / sp) * Math.ceil((px.h + sp) / sp);
+    const val = new Float32Array(maxK), dab = new Int8Array(maxK).fill(-1), side = new Int8Array(maxK);
+    const tip = o.tip ?? 0, root = o.root ?? 0, gap = o.gap ?? 0, edge = o.edge ?? 0;
+    const { sid, ta, ea } = this.lay(o, (k, i0) => {
       const m = o.mask ? o.mask(i0) : 1;
       if (m <= 0.05 || h3(k, 9, seed) > m * 1.2 + 0.05) return false;
       // lighter where the key light falls, darker in shadow, by a step or a little under
       const l = this.lam(i0), pLit = cl(0.5 + (l - 0.15) * lit * 0.9, 0.12, 0.88);
-      cur = (h3(k, 5, seed) < pLit ? 1 : -1) * amp * (0.55 + 0.45 * h3(k, 6, seed));
-      curDab = -1;
-      if (o.dabs) { let r = h3(k, 8, seed); for (let d = 0; d < o.dabs.length; d++) { if (r < o.dabs[d].share) { curDab = d; break; } r -= o.dabs[d].share; } }
-      // the shadow side of a stroke: the one facing away from the key light in texel space (approximate: +e is to
-      // the right of the flow; pick by hash so it alternates with the form)
-      curSide = l > 0.3 ? 1 : -1;
+      val[k] = (h3(k, 5, seed) < pLit ? 1 : -1) * (o.crisp ? (h3(k, 6, seed) < amp / 0.7 ? 1 : 0) : amp * (0.55 + 0.45 * h3(k, 6, seed)));
+      if (o.dabs) { let r = h3(k, 8, seed); for (let d = 0; d < o.dabs.length; d++) { if (r < o.dabs[d].share) { dab[k] = d; break; } r -= o.dabs[d].share; } }
+      side[k] = l > 0.3 ? 1 : -1;
       return true;
-    });
-    const tip = o.tip ?? 0, root = o.root ?? 0, gap = o.gap ?? 0, edge = o.edge ?? 0;
+    }, { t: !!(tip || root), e: !!edge });
     for (let i = 0; i < n; i++) {
       const m = o.mask ? o.mask(i) : 1; if (m <= 0.02) continue;
-      if (!cov[i]) { px.mark[i] -= gap * m; continue; }
-      let v = sv[i];
-      if (tip && ta[i] > 0.72) v += tip * ss(0.72, 0.95, ta[i]);
-      if (root && ta[i] < 0.28) v -= root * (1 - ss(0.05, 0.28, ta[i]));
-      if (edge && ed[i] < -0.6) v -= edge;
+      const k = sid[i];
+      if (k < 0) { px.mark[i] -= gap * m; continue; }
+      let v = val[k];
+      if (ta) { const t = ta[i]; if (tip && t > 0.72) v += tip * ss(0.72, 0.95, t); if (root && t < 0.28) v -= root * (1 - ss(0.05, 0.28, t)); }
+      if (ea && ea[i] * side[k] < -0.6) v -= edge;
       px.mark[i] += v * m;
-      if (dabR && dabR[i] >= 0) { const d = o.dabs![dabR[i]]; px.rampI[i] = dabK[dabR[i]]; px.step[i] = d.step; }
+      if (dab[k] >= 0) { const d = o.dabs![dab[k]]; px.rampI[i] = dabK[dab[k]]; px.step[i] = d.step; }
     }
     return this;
   }
 
   /** a per-texel random value (0..1) constant along each brush stroke: zones break their edges on it */
   field(o: StrokeOpts = {}): Float32Array {
-    if (this.fieldCache && !o.len && !o.width && !o.flow) return this.fieldCache;
-    const px = this.px, n = px.n, f = new Float32Array(n), seed = (o.seed ?? this.seed) + 101;
-    for (let i = 0; i < n; i++) f[i] = h3(Math.floor((i % px.w) / 3), Math.floor(i / px.w / 3), seed);
-    let cur = 0;
-    this.lay({ spacing: 3, len: [6, 14], width: [2, 4], ...o, seed }, (i) => { f[i] = cur; }, (k) => { cur = h3(k, 11, seed); return true; });
-    if (!o.len && !o.width && !o.flow) this.fieldCache = f;
+    const dflt = !o.len && !o.width && !o.flow;
+    if (this.fieldCache && dflt) return this.fieldCache;
+    const px = this.px, n = px.n, seed = (o.seed ?? this.seed) + 101;
+    const { sid } = this.lay({ spacing: 4, len: [7, 15], width: [3, 4], ...o, seed }, () => true);
+    const f = new Float32Array(n);
+    for (let i = 0; i < n; i++) { const k = sid[i]; f[i] = k >= 0 ? h3(k, 11, seed) : h3(i >> 2, 3, seed); }
+    if (dflt) this.fieldCache = f;
     return f;
   }
 
   /** big colour masses with soft, brush-broken wet edges (see Zone). Later zones paint over earlier ones */
-  zones(zs: Zone[], o: { soft?: number; edge?: number; edgeW?: number } = {}) {
+  zones(zs: Zone[], o: { soft?: number; edge?: number; edgeW?: number; mask?: (i: number) => number } = {}) {
     const px = this.px, n = px.n, f = this.field(), soft = o.soft ?? 0.5, edge = o.edge ?? 0.45, ew = o.edgeW ?? 0.07;
     const P = px.gb.P, N = px.gb.N, p: V3 = [0, 0, 0], nn: V3 = [0, 0, 0];
     const ks = zs.map((z) => (z.ramp ? px.ramp(z.ramp) : -1));
     for (let i = 0; i < n; i++) {
+      if (o.mask && o.mask(i) <= 0.5) continue;
       p[0] = P[i * 3]; p[1] = P[i * 3 + 1]; p[2] = P[i * 3 + 2]; nn[0] = N[i * 3]; nn[1] = N[i * 3 + 1]; nn[2] = N[i * 3 + 2];
       for (let k = 0; k < zs.length; k++) {
         const z = zs[k], w = z.w(p, nn, i);
@@ -419,9 +428,9 @@ export function paintedEye(o: PaintedEyeSpec): Piece {
         if (pup) { px.put(i, limbal, 0); continue; }
         // the iris: dark under the lid, a lit crescent low (light through the cornea), fibres radiating, a pale ring
         // round the pupil (the collarette)
-        const ang = Math.atan2(Y, X), fib = h3(Math.floor(((ang + Math.PI) / TAU) * 28), 3, 7), R = o.iris, top = R.length - 1;
+        const ang = Math.atan2(Y, X), wedge = Math.floor(((ang + Math.PI) / TAU) * 40), fib = h3(wedge, Math.floor(r * (2 + h3(wedge, 5, 7) * 3)), 7), R = o.iris, top = R.length - 1;
         let s = top * 0.5 - (Y > 0.25 ? 1.2 : Y > 0 ? 0.5 : 0) + (Y < -0.2 && r > 0.4 ? 1.1 : 0) + (Y < -0.45 && r > 0.55 ? 0.6 : 0);
-        s += fib < 0.25 ? -0.7 : fib > 0.8 ? 0.6 : 0;
+        s += fib < 0.18 ? -0.7 : fib > 0.86 ? 0.6 : 0;
         const rp = o.pupil === 'round' ? Math.hypot(X, Y) / Math.max(0.05, pr) : Math.abs(X) / Math.max(0.05, pr * 1.6);
         if (rp < 1.45 && rp > 1.0) s += 0.9;
         if (r > 0.74) s -= 0.7;
@@ -461,7 +470,7 @@ export function lids(o: LidSpec): Piece[] {
   const corner = o.corner ?? 1.2;
   const mk = (lower: boolean): Piece => {
     const U = lower ? scl(up, -1) : up, th1m = lower ? o.lower ?? 0.62 : o.upper ?? 0.42, T = (lower ? o.thickLo ?? 0.13 : o.thick ?? 0.2) * o.r;
-    const m = newCM(), rows: V3[][] = [], NR = 9, th0 = lower ? 1.95 : 2.2;
+    const m = newCM(), rows: V3[][] = [], NR = 7, th0 = lower ? 1.95 : 2.2;
     for (let k = 0; k <= NR; k++) {
       const ph = -Math.PI / 2 + (Math.PI * k) / NR, sph = Math.abs(Math.sin(ph));
       // the margin: closest to the axis at the middle, out to the canthi at the corners (an almond)

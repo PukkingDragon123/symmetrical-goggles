@@ -15,7 +15,9 @@
 //   eat     offer('beans') close by: it takes them, munches with its face in them, bouncing with joy
 // Events (ctx.emit(ev, { pos, who: 'gumberoo', sound, ... })): boing, deflect, bounce, squeak, grunt, step, eat (item),
 // happy. v3 is a SCALY BEAST (gumberoo/model.ts): armour plates, a spiked crest, brow plates that glower or lift,
-// eyelids, a jaw that opens on its grin; the face follows its mood (expression.ts).
+// eyelids, a jaw that opens on its grin; the face follows its mood (expression.ts). v4 (model gumberoo@5): hulking and
+// low-slung on heavy shoulders, a thick neck, a broad head with real jaws and tusks, overlapping keeled plates down the
+// back and tail, belly scutes, short clawed legs; hand-painted, still glossy and rubbery (it squashes and bounces).
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, type CreatureFx } from './rig';
 import { Animator, FOOT, TAU, sin, cos, env, wander, footCycle, type AnimParams, type Clip, type Pose } from './animator';
@@ -144,7 +146,7 @@ export class Gumberoo {
     if (o.pos) this.pos.copy(o.pos); else this.pos.set(SPOTS.burn.x, 0, SPOTS.burn.z);
     this.heading = o.heading ?? 0;
     // the scales' relief: the painted page's light and dark (each scale's lit rim, its dark outline) as a bump map
-    mat.bumpMap = m.tex; mat.bumpScale = 1.4; mat.needsUpdate = true;
+    mat.bumpMap = m.tex; mat.bumpScale = 1.1; mat.needsUpdate = true;
     this.lidAxis = [1, -1].map((s) => new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(s * GB_EYE_AX[0], GB_EYE_AX[1], GB_EYE_AX[2]).normalize()).normalize());
   }
   private lidAxis: THREE.Vector3[];

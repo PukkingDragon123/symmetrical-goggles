@@ -339,7 +339,7 @@ export class Squonk extends Cryptid {
     const sad = clamp(p.c[CH.SAD], -1, 1), blink = clamp(Math.max(p.c[CH.BLINK], 0.08 + 0.22 * Math.max(0, sad)), 0, 1);
     for (let k = 0; k < 2; k++) {
       const s = k ? -1 : 1, lid = B[this.bi(k ? 'lidR' : 'lidL')];
-      lid.quaternion.setFromAxisAngle(this.lidAxis[k], 0.05 + blink * 1.25).premultiply(_q2.setFromAxisAngle(this.eyeAxis[k], -s * 0.38 * sad));
+      lid.quaternion.setFromAxisAngle(this.lidAxis[k], blink * 0.85).premultiply(_q2.setFromAxisAngle(this.eyeAxis[k], -s * 0.3 * sad));
       const mc = B[this.bi(k ? 'mouthR' : 'mouthL')];
       mc.position.y += -0.007 * sad; mc.position.x += s * 0.003 * Math.max(0, -sad);
     }

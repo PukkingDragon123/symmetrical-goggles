@@ -7,11 +7,14 @@
 //                 fur's lie, the run of a fold, down a cheek), overlapping, each nudging the step lighter or darker;
 //                 returns the stroke buffer so a painter can break zone edges along the strokes (wet edges) and drop
 //                 dabs of a variation colour
-//   formLight()   the baked form light the brief asks for: a soft key from above and in front (top planes lighter and
-//                 warmer, undersides darker and cooler: the ramps are hue-shifted), on top of the sky occlusion
+//   formLight()   the baked form light (the shared hand-painting pass, anatomy/handpaint.ts Hand.form): a soft key
+//                 from above and in front, AO, cavities, ridges; the ramps hue-shifted (cool shadows, warm lights)
 //   cupEar()      an ear as a cupped flap: a rim, thickness and an inner bowl, a root that grows out of the head
+//   eyePaint()    a living eye drawn on an anatomy eyeball: the iris with spokes and a collarette, a dark limbal ring
+//                 (or an old eye's pale arcus inside it), the species' pupil, the whites shadowed under the lid and
+//                 veined at the corners, a hard glint and a small second one
 import {
-  newCM, sheetGrid, tube, creaseRow, type V3, type Wt, type Piece, type Chart, type Body, type Px, type Ring,
+  newCM, sheetGrid, tube, creaseRow, Px, RP, hand, type V3, type Wt, type Piece, type Chart, type Body, type Ring, type FormOpts,
 } from '../anatomy';
 
 const add = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
@@ -44,14 +47,14 @@ export interface LidSpec {
   ri?: number; ro?: number; swell?: number;
   /** how far the lid wraps back from the axis (rad) */
   root?: number;
-  /** points across */
-  across?: number;
+  /** points across, points down each face (root to margin), subdivision steps */
+  across?: number; down?: number; levels?: number;
   k?: number;
 }
 /** an eyelid shaped by its margin: lens-shaped openings, corners that meet (see LidSpec) */
 export function almondLid(o: LidSpec): Piece {
   const m = newCM(), F = eyeFrame(o.ax, o.side), sg = o.lower ? -1 : 1;
-  const ri = o.ri ?? 1.04, ro = o.ro ?? 1.14, root = o.root ?? 1.45, N = o.across ?? 6, K = 3;
+  const ri = o.ri ?? 1.04, ro = o.ro ?? 1.14, root = o.root ?? 1.45, N = o.across ?? 6, K = o.down ?? 3;
   const dir = (al: number, be: number): V3 => nrm(add(scl(add(scl(F.ax, Math.cos(al)), scl(F.out, Math.sin(al))), Math.cos(be)), scl(F.up, Math.sin(be))));
   const margin = (s: number) => { const t = (Math.max(-1, Math.min(1, s)) + 1) / 2, base = o.inner + (o.outer - o.inner) * t; return base + sg * o.open * Math.pow(Math.max(0, 1 - s * s), 0.72); };
   const rows: V3[][] = [];
@@ -70,7 +73,7 @@ export function almondLid(o: LidSpec): Piece {
   }
   const g = sheetGrid(m, rows, { tag: 0, out: (p) => sub(p, o.c), wrapCols: true, capS: true, capE: true });
   void creaseRow;
-  return { name: o.name, m, grids: [g], levels: 1, skin: () => [o.bone, 1], paint: o.paint, k: o.k ?? 1.8, noOcc: true };
+  return { name: o.name, m, grids: [g], levels: o.levels ?? 1, skin: () => [o.bone, 1], paint: o.paint, k: o.k ?? 1.8, noOcc: true };
 }
 /** where a point sits on a lid: across (-1 inner corner .. 1 outer) and the angle above (upper) or below the margin */
 export function lidCoords(o: LidSpec, p: V3): { s: number; off: number; be: number } {
@@ -82,13 +85,11 @@ export function lidCoords(o: LidSpec, p: V3): { s: number; off: number; be: numb
 }
 
 // ------------------------------------------------------------------------------------------------ painting
-/** the baked key light: + toward the light (from above and a little in front), soft, scaled by k (ramp steps) */
-export function formLight(px: Px, k = 0.9, from: V3 = [0.25, 1, 0.55]) {
-  const L = nrm(from), N = px.gb.N;
-  for (let i = 0; i < px.n; i++) {
-    const l = N[i * 3] * L[0] + N[i * 3 + 1] * L[1] + N[i * 3 + 2] * L[2];
-    px.mark[i] += (l > 0 ? l * 0.9 : l * 0.6) * k;
-  }
+/** the baked form light: the shared hand-painting pass's form (anatomy/handpaint.ts Hand.form: a soft key from
+ *  above and in front, ambient occlusion, cavity ink, ridge highlights, the ramps hue-shifted at flush); k scales how
+ *  far the light runs from the lit tops to the undersides */
+export function formLight(px: Px, k = 0.9, o: FormOpts = {}) {
+  hand(px).form({ light: 1.3 + k * 1.5, wrap: 0.6, ao: 1.9, cavity: 1.0, ridge: 0.6, ...o });
 }
 export interface StrokeOpt {
   /** the direction strokes run at a surface point (creature space); null leaves the texel unstroked */
@@ -173,13 +174,15 @@ export interface EarSpec {
   /** the outline: half width by t (0 root .. 1 tip), the tip's lean back (m) */
   shape?: (t: number) => number; lean?: number;
   skin: (p: V3) => Wt; paint: Paint; k?: number; levels?: number;
+  /** points round each ring, rings from root to tip */
+  around?: number; rings?: number;
 }
 /** a cupped ear: rings from the root to the tip, each a U of a bowl (a rim rolled forward at the edges, a thin back),
  *  so the ear has a rim, thickness and an inner bowl; never a tube */
 export function cupEar(o: EarSpec): Piece {
   const m = newCM(), up = nrm(o.dir), fc = nrm(sub(o.face, scl(up, dot(o.face, up)))), sd = nrm(crs(up, fc));
   const shape = o.shape ?? ((t: number) => Math.pow(Math.sin(Math.PI * Math.min(1, 0.12 + t * 0.92)), 0.75));
-  const C = 12, cup = o.cup ?? 0.45, NR = 7, rings: Ring[] = [];
+  const C = o.around ?? 12, cup = o.cup ?? 0.45, NR = o.rings ?? 7, rings: Ring[] = [];
   for (let k = 0; k <= NR; k++) {
     const t = k / NR, hw = o.wid * Math.max(0.12, shape(t)) * (k === 0 ? 0.7 : 1), c = add(add(o.root, scl(up, o.len * (t * 1.05 - 0.05))), scl(fc, -(o.lean ?? 0) * t * t));
     const pts: number[][] = [];
@@ -197,3 +200,56 @@ export function cupEar(o: EarSpec): Piece {
   return { name: o.name, m, grids: [g], levels: o.levels ?? 1, skin: o.skin, paint: o.paint, k: o.k ?? 1.3 };
 }
 export { h3 as hash3 };
+
+// ------------------------------------------------------------------------------------------------ eyes
+export interface EyePaintSpec {
+  c: V3; ax: V3; side: number;
+  /** the iris's angular radius (rad from the axis), its ramp, the pupil ('round' radius x iris, 'bar' a goat's or
+   *  a deer's horizontal bar, 'slit' a cat's), the whites' ramp (null: no whites, the iris fills the eye: birds, deer) */
+  irisA: number; iris: number[]; pupil: 'round' | 'bar' | 'slit'; pupilR?: number; sclera?: number[] | null;
+  /** an old eye's pale ring inside the limbus */
+  arcus?: number[];
+  /** the collarette round the pupil (a lighter ring) */
+  collar?: number[];
+  /** where the big glint sits on the iris ([x, y], -1..1; mirrored by side) */
+  glint?: [number, number];
+  /** eye shine through the pupil (tapetum): 0..255 */
+  shine?: number;
+}
+/** paint an anatomy eyeball as a living eye (replace the piece's paint with this) */
+export function eyePaint(o: EyePaintSpec): Paint {
+  const F = eyeFrame(o.ax, o.side), INK = RP('ink'), PAPER = RP('paper'), FLESH = RP('flesh');
+  return (ch, _p, b) => {
+    const px = new Px(ch, b), P = px.gb.P;
+    px.lightK = 0.45;
+    const sA = Math.sin(o.irisA), [gx, gy] = o.glint ?? [0.34, 0.4];
+    for (let i = 0; i < px.n; i++) {
+      const d = nrm([P[i * 3] - o.c[0], P[i * 3 + 1] - o.c[1], P[i * 3 + 2] - o.c[2]]);
+      const cz = dot(d, F.ax), a = Math.acos(Math.max(-1, Math.min(1, cz)));
+      const X = dot(d, F.out) / sA, Y = dot(d, F.up) / sA, r = Math.hypot(X, Y);
+      px.mark[i] = 0; px.rough[i] = 25;
+      px.shine[i] = 0;
+      if (a > o.irisA + 0.05 || (o.sclera === null && a > o.irisA)) {
+        if (o.sclera === null) { px.put(i, o.iris, 1); continue; }
+        const R = o.sclera ?? RP('bone');
+        // the whites: shadowed under the upper lid, a little pink and veined toward the corners
+        const vein = Math.abs(X) > 1.25 && Math.abs(Math.sin(Math.atan2(Y, X) * 9 + r * 4)) < 0.1;
+        px.put(i, vein ? FLESH : R, vein ? 3 : 3.4 - (Y > 0.6 ? 1.1 : Y > 0.25 ? 0.5 : 0) - (Math.abs(X) > 1.55 ? 0.6 : 0)); continue;
+      }
+      if (a > o.irisA) { px.put(i, INK, 1); continue; }
+      // the glints: a hard square highlight up and toward the light, a small one low on the other side
+      const hx = X * o.side;
+      if ((Math.max(Math.abs(hx + gx), Math.abs(Y - gy)) < 0.16 && Math.abs(hx + gx) + Math.abs(Y - gy) < 0.24) || Math.hypot(hx - gx * 0.8, Y + gy * 0.7) < 0.07) { px.put(i, PAPER, 5); continue; }
+      const pr = o.pupilR ?? 0.36;
+      const pup = o.pupil === 'bar' ? Math.abs(Y) < 0.13 && Math.abs(X) < 0.7 : o.pupil === 'slit' ? Math.abs(X) < 0.12 * (1 - Y * Y * 0.7) : r < pr;
+      if (pup) { px.put(i, INK, 0); px.shine[i] = o.shine ?? 200; continue; }
+      if (o.arcus && r > 0.86) { px.put(i, o.arcus, 2.6 + (Y < 0 ? 0.6 : 0)); continue; }
+      // the iris: spokes, a lighter collarette round the pupil, darker at its rim and under the lid's shadow
+      const sp = Math.abs(Math.sin(Math.atan2(Y, X) * 9 + r * 4)) < 0.2;
+      if (o.collar && r < pr + 0.13 && r > pr) { px.put(i, o.collar, 3.4); px.shine[i] = 60; continue; }
+      px.put(i, o.iris, 3 + (Y < -0.3 ? 0.8 : 0) - (Y > 0.4 ? 1 : 0) - (sp && r > pr + 0.15 ? 0.9 : 0) - (r > 0.8 ? 0.8 : 0) + (r < 0.6 && !sp ? 0.4 : 0));
+      px.shine[i] = 90;
+    }
+    px.flush({ eye: () => true });
+  };
+}

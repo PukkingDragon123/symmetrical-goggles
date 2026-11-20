@@ -29,4 +29,4 @@ export { Px, RP, cell3, h3, cl, ss } from './paint';
 export { RAMPS, hueRamp, type RampName } from './palette';
 // hand painting and organic sculpting (the art brief's paint and shape rules): see handpaint.ts and sculpt.ts
 export { Hand, hand, handpaint, paintedEye, lids, lidPaint, KEY, type Flow, type FormOpts, type StrokeOpts, type Zone, type Hollow, type PaintedEyeSpec, type LidSpec, type EyePupil } from './handpaint';
-export { displace, relief, scaleAt, gridMetrics, cageNormals, foldsFn, earFlap, earInner, type ReliefOpts, type EarSpec } from './sculpt';
+export { displace, relief, scaleAt, gridMetrics, cageNormals, foldsFn, earFlap, earInner, mouthWebs, type ReliefOpts, type EarSpec } from './sculpt';

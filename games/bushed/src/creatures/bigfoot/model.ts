@@ -8,8 +8,8 @@
 // Creature space: metres, +z forward, +y up, ground y = 0.
 import * as THREE from 'three';
 import {
-  Body, runSync, runAsync, trunk, limb, legRings, eyeball, eyelid, locks, stalk, curve, chainSkin, addWeights, gridSurf, Px, RP, cell3, h3, cl,
-  type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing,
+  Body, runSync, runAsync, trunk, limb, legRings, paintedEye, lids, lidPaint, locks, stalk, curve, chainSkin, addWeights, gridSurf, Px, RP, cell3, h3, cl,
+  hand as handP, newCM, tube, creaseCol, type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type LimbRing, type Ring, type Grid,
 } from '../anatomy';
 import { spineFrame, locate, nz2, nz3, fbm3, type Frame } from '../paintkit';
 import type { BoneDef } from '../rig';
@@ -23,9 +23,9 @@ export const BF = {
 const mir = (p: V3, s: number): V3 => [p[0] * s, p[1], p[2]];
 const add = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const norm = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
-const EYE: V3 = [0.047, 0.036, 0.146];
+const EYE: V3 = [0.047, 0.036, 0.15];
 /** v7: the face's moving parts (head-local): brows over the eyes, the upper lip; the eyes a little bigger */
-const BROW: V3 = [0.046, 0.082, 0.15], LIP: V3 = [0, -0.07, 0.2], EYER = 0.0195;
+const BROW: V3 = [0.046, 0.082, 0.15], LIP: V3 = [0, -0.07, 0.2], EYER = 0.0205;
 export const BF_EYE_AX: V3 = [0.3, -0.05, 1];
 
 export function bigfootBones(): BoneDef[] {
@@ -57,25 +57,33 @@ export function bigfootBones(): BoneDef[] {
 
 // ------------------------------------------------------------------------------------------------ paint
 const FUR = RP('squatch'), LEA = RP('leather'), GUM = RP('gum');
-/** the coat: a dark pelt combed down the body, red-brown tips where the hair catches, darker in the creases */
+/** the coat: a dark pelt painted in long brush strokes combed down the body (along `flow`), red-brown where the hair
+ *  catches the light (shoulders, forearms, the crown), darker in the creases and on the lower legs, dark underfur
+ *  between the clumps (the shell fur grows from these colours) */
 function furPaint(o: { flow: number; len?: number; bare?: (p: V3, n: V3) => number; tone?: (p: V3) => number }) {
   return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
-    px.lightK = 0.8;
     const bare = new Float32Array(px.n);
     for (let i = 0; i < px.n; i++) {
       if ((i & 8191) === 0) yield;
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], n: V3 = [N[i * 3], N[i * 3 + 1], N[i * 3 + 2]];
       const bk = o.bare ? o.bare(p, n) : 0;
       bare[i] = bk;
-      const mott = fbm3(p[0] * 3, p[1] * 3, p[2] * 3, 2);
-      if (bk > 0.5) { const c = cell3(p[0], p[1], p[2], 0.012, 4); px.put(i, LEA, 2.6 + mott * 0.6 - ((c.f2 - c.f1) < px.mpt * 0.8 ? 0.9 : 0)); px.rough[i] = 170; continue; }
-      px.put(i, FUR, 2.2 + mott * 0.7 + (o.tone ? o.tone(p) : 0)); px.rough[i] = 235;
+      if (bk > 0.5) { const c = cell3(p[0], p[1], p[2], 0.012, 4); px.put(i, LEA, 2.8 - ((c.f2 - c.f1) < px.mpt * 0.8 ? 0.9 : 0)); px.rough[i] = 170; continue; }
+      px.put(i, FUR, 2.0 + (o.tone ? o.tone(p) * 0.5 : 0)); px.rough[i] = 235;
     }
     yield;
-    px.pelt({ len: o.len ?? 0.12, width: 0.011, flow: o.flow, down: 0.5, mask: (i) => (bare[i] > 0.5 ? 0 : 1), tooth: 1.9, clump: 0.55, strands: 0.3 });
+    const hp = handP(px, { flow: [0, -1, -0.12 * o.flow], seed: 101 });
+    const ss = (x: number) => { const t = cl(x, 0, 1); return t * t * (3 - 2 * t); };
+    hp.zones([
+      // a red-brown sheen over the shoulders and the crown, down the outsides of the arms
+      { w: (p, n) => ss((p[1] - 1.9) / 0.2) * ss((n[1] + 0.2) / 0.4) + ss((Math.abs(p[0]) - 0.45) / 0.08) * ss((p[1] - 1.1) / 0.2) * 0.8, add: 0.5 },
+      // darker down the spine, in the small of the back and on the shins
+      { w: (p, n) => ss((-n[2] - 0.6) / 0.3) * ss((p[1] - 1.3) / 0.2) * ss((1.95 - p[1]) / 0.2) + ss((0.6 - p[1]) / 0.2), add: -0.8 },
+    ], { soft: 0.7, mask: (i) => (bare[i] > 0.5 ? 0 : 1) });
+    hp.form({ light: 1.8, ao: 2.2, cavity: 1.3, ridge: 0.5, hue: 0.25 });
     yield;
-    px.creaseInk(1.4, { dark: 1, lit: 0.3 });
+    hp.strokes({ len: [6, 14], width: [2, 4], amp: 0.5, crisp: true, gap: 0.8, tip: 0.3, root: 0.5, mask: (i) => (bare[i] > 0.5 ? 0 : 1) });
     yield;
     px.flush();
   };
@@ -131,9 +139,13 @@ function facePaint(H: V3) {
       px.put(i, R, st); px.rough[i] = rough;
     }
     yield;
-    px.pelt({ len: 0.05, width: 0.012, flow: 1, down: 0.4, mask: (i) => fur[i], tooth: 1.6, clump: 0.5, strands: 0.3 });
+    const hp = handP(px, { flow: [0, -1, -0.3], seed: 103 });
+    hp.form({ light: 2.4, ao: 2.0, cavity: 1.6, ridge: 0.9 });
+    hp.hollows([1, -1].map((sd) => ({ c: add(H, [sd * E[0], E[1], E[2]]), r: 0.04, k: 1.0 })));
+    hp.hollows([{ c: add(H, [0, -0.085, 0.2]), r: 0.03, k: 0.6 }]);
     yield;
-    px.creaseInk(1.3, { dark: 1.1, lit: 0.6 });
+    hp.strokes({ len: [5, 11], width: [2, 3], amp: 0.55, crisp: true, gap: 0.6, tip: 0.6, mask: (i) => fur[i] });
+    hp.strokes({ flow: 'across', len: [3, 6], width: [1, 2], amp: 0.35, seed: 7, mask: (i) => 1 - fur[i] });
     yield;
     px.flush();
   };
@@ -156,15 +168,45 @@ function leatherPaint(o: { palm?: (p: V3, n: V3) => boolean } = {}) {
       const crease = Math.abs(Math.sin((p[1] * 0.8 + p[2] * 0.6) * 120 + nz3(p[0] * 20, p[1] * 20, p[2] * 20) * 2)) < 0.12;
       px.put(i, LEA, 2.5 + (c.id % 3) * 0.25 - ((c.f2 - c.f1) < px.mpt * 0.7 ? 0.7 : 0) - (crease ? 1 : 0)); px.rough[i] = 175;
     }
-    px.pelt({ len: 0.035, width: 0.012, flow: 1, mask: (i) => fur[i], tooth: 1.4, clump: 0.4 });
-    px.creaseInk(1.2, { dark: 1.2, lit: 0.6 });
+    const hp = handP(px, { flow: [0, -1, 0], seed: 107 });
+    hp.form({ light: 2.2, ao: 2.0, cavity: 1.6, ridge: 1.0 });
+    hp.strokes({ len: [4, 9], width: [2, 3], amp: 0.55, crisp: true, gap: 0.6, tip: 0.6, mask: (i) => fur[i] });
+    hp.strokes({ flow: 'across', len: [2, 5], width: [1, 2], amp: 0.35, seed: 9, mask: (i) => 1 - fur[i] });
+    px.flush();
+  };
+}
+/** the nose: dark leather, two big nostrils (dark holes with a lit rim), a lit bridge and a cool shadow under it */
+function nosePaint(H: V3) {
+  return (ch: Chart, _p: Piece, b: Body) => {
+    const px = new Px(ch, b), P = px.gb.P;
+    px.base(() => [LEA, 2.8]);
+    for (let i = 0; i < px.n; i++) {
+      const x = P[i * 3] - H[0], y = P[i * 3 + 1] - H[1], z = P[i * 3 + 2] - H[2], ax = Math.abs(x);
+      const nd = Math.hypot((ax - 0.022) * 1.0, (y + 0.034) * 1.7);
+      if (nd < 0.011 && z > 0.19) px.put(i, RP('ink'), 0);
+      else if (nd < 0.015) px.mark[i] += y < -0.034 ? -0.6 : 0.9;
+      if (ax < 0.004 && y > -0.02) px.mark[i] += 0.7;
+      px.rough[i] = 120;
+    }
+    const hp = handP(px, { flow: 'across', seed: 109 }).form({ light: 2.4, ao: 1.4, cavity: 2, ridge: 1.1 });
+    hp.strokes({ len: [2, 4], width: [1, 2], amp: 0.4 });
+    hp.wet(() => 1, { thr: 0.95, rough: 70 });
+    px.flush();
+  };
+}
+/** a lip: leather, fleshy and a shade lighter on its rounded top, the inner edge dark */
+function lipPaint(upper: boolean) {
+  return (ch: Chart, _p: Piece, b: Body) => {
+    const px = new Px(ch, b), N = px.gb.N;
+    for (let i = 0; i < px.n; i++) { const ny = N[i * 3 + 1]; px.put(i, upper ? LEA : RP('hide'), (upper ? 2.8 : 2.6) + (upper ? (ny < -0.5 ? -1.4 : 0) : (ny > 0.5 ? -1.2 : 0.4))); px.rough[i] = 110; }
+    handP(px, { flow: 'across', seed: 113 }).form({ light: 2.2, ao: 1, ridge: 1 }).strokes({ flow: 'sweep', len: [2, 4], width: [1, 1], amp: 0.4 });
     px.flush();
   };
 }
 function nailPaint(ch: Chart, _p: Piece, b: Body) {
   const px = new Px(ch, b);
   for (let i = 0; i < px.n; i++) { px.put(i, RP('horn'), 2.4 + (h3(i, 1, 2) < 0.1 ? 1 : 0)); px.rough[i] = 110; }
-  px.creaseInk(1, { dark: 1, lit: 1 }); px.flush();
+  handP(px, { flow: 'sweep' }).form({ light: 1.8, ao: 0.6, ridge: 1.2 }); px.flush();
 }
 
 // ------------------------------------------------------------------------------------------------ the head
@@ -196,21 +238,40 @@ function hand(body: Body, s: number, bi: (n: string) => number, wr: V3) {
     paint: leatherPaint({ palm: (p, n) => n[0] * s < 0.1 || p[1] < wr[1] - 0.17 }),
   }));
   void palm;
-  // fingers: four in a row across the palm's width (along z), slightly curled toward the palm
-  const nails: { c: V3; d: V3 }[] = [];
+  // fingers: four in a row across the palm's width (along z), curled toward the palm, each with two knuckles and a
+  // nail on its back
+  const nails: { at: V3; d: V3; up: V3; w: number; l: number; bone: number }[] = [];
   for (let k = 0; k < 4; k++) {
     const fz = 0.02 + (k - 1.5) * 0.034 + 0.008, len = [0.13, 0.15, 0.145, 0.12][k];
     const base: V3 = add(wr, [0, -0.175, fz]);
-    const path = curve([base, add(base, [0, -len * 0.45, 0.004]), add(base, [-s * 0.012, -len * 0.85, 0.006]), add(base, [-s * 0.026, -len, 0.004])], 5);
+    const path = curve([base, add(base, [0, -len * 0.45, 0.004]), add(base, [-s * 0.014, -len * 0.82, 0.006]), add(base, [-s * 0.03, -len, 0.004])], 7);
     const sk = chainSkin([add(base, [0, 0.03, 0]), add(base, [0, -len * 0.42, 0]), add(base, [0, -len * 1.2, 0])], [f1, f2], 0.3);
-    body.add(stalk({ name: 'fin' + S + k, path, r: (t) => 0.019 * (1 - t * 0.25), around: 5, capS: false, capE: true, levels: 1, k: 1.2, skin: sk, paint: leatherPaint({ palm: (p) => p[1] < base[1] - len * 0.3 }) }));
-    nails.push({ c: path[path.length - 1], d: norm([-s * 0.4, -1, 0.1]) });
+    body.add(stalk({ name: 'fin' + S + k, path, r: (t) => 0.019 * (1 - t * 0.22) * (1 + 0.14 * Math.exp(-(((t - 0.36) / 0.08) ** 2)) + 0.1 * Math.exp(-(((t - 0.7) / 0.07) ** 2))), around: 6, capS: false, capE: true, levels: 1, k: 1.2, skin: sk,
+      sec: (a2) => (Math.sin(a2) * s > 0.3 ? 1.08 : 0.86), paint: leatherPaint({ palm: (p) => p[1] < base[1] - len * 0.3 }) }));
+    const tip = path[path.length - 1], pre = path[path.length - 3];
+    nails.push({ at: add(pre, [s * 0.014, 0, 0]), d: norm([tip[0] - pre[0], tip[1] - pre[1], tip[2] - pre[2]]), up: [s, 0, 0], w: 0.011, l: 0.028, bone: f2 });
   }
-  // the thumb: from the heel of the palm, forward and down
+  // the thumb: from the heel of the palm, forward and down, a knuckle and a nail
   const tbase: V3 = add(wr, [-s * 0.02, -0.06, 0.07]);
-  const tpath = curve([tbase, add(tbase, [-s * 0.012, -0.05, 0.03]), add(tbase, [-s * 0.02, -0.1, 0.035]), add(tbase, [-s * 0.024, -0.125, 0.03])], 5);
-  body.add(stalk({ name: 'thm' + S, path: tpath, r: (t) => 0.023 * (1 - t * 0.3), around: 6, capS: false, capE: true, levels: 1, k: 1.2, skin: () => [tb, 1], paint: leatherPaint({ palm: () => true }) }));
-  void nails;
+  const tpath = curve([tbase, add(tbase, [-s * 0.012, -0.05, 0.03]), add(tbase, [-s * 0.02, -0.1, 0.035]), add(tbase, [-s * 0.024, -0.125, 0.03])], 6);
+  body.add(stalk({ name: 'thm' + S, path: tpath, r: (t) => 0.023 * (1 - t * 0.28) * (1 + 0.12 * Math.exp(-(((t - 0.5) / 0.09) ** 2))), around: 6, capS: false, capE: true, levels: 1, k: 1.2, skin: () => [tb, 1], paint: leatherPaint({ palm: () => true }) }));
+  { const tip = tpath[tpath.length - 1], pre = tpath[tpath.length - 3]; nails.push({ at: add(pre, [0, 0, 0.016]), d: norm([tip[0] - pre[0], tip[1] - pre[1], tip[2] - pre[2]]), up: [0, 0, 1], w: 0.013, l: 0.03, bone: tb }); }
+  body.add(nailPlates('nail' + S, nails));
+}
+/** curved horn nails lying on the backs of finger and toe tips: `at` the nail's root, `d` along the digit, `up` the
+ *  digit's back */
+function nailPlates(name: string, ns: { at: V3; d: V3; up: V3; w: number; l: number; bone: number }[]): Piece {
+  const m = newCM(), grids: Grid[] = [], owner: { p: V3; b: number }[] = [];
+  for (const q of ns) {
+    const D = norm(q.d), U0 = q.up, S = norm([D[1] * U0[2] - D[2] * U0[1], D[2] * U0[0] - D[0] * U0[2], D[0] * U0[1] - D[1] * U0[0]]), U = norm([S[1] * D[2] - S[2] * D[1], S[2] * D[0] - S[0] * D[2], S[0] * D[1] - S[1] * D[0]]);
+    const rings: Ring[] = [0, 0.45, 0.85, 1].map((f, k) => ({ c: add(q.at, [D[0] * q.l * f, D[1] * q.l * f, D[2] * q.l * f]), x: S, y: U,
+      pts: [[-q.w, -q.w * 0.3], [-q.w * 0.6, q.w * 0.25], [0, q.w * 0.36], [q.w * 0.6, q.w * 0.25], [q.w, -q.w * 0.3], [0, -q.w * 0.05]].map(([x, y]) => [x * [0.8, 1, 0.92, 0.6][k], y * [0.8, 1, 0.92, 0.6][k]]) }));
+    const g = tube(m, rings, { tag: 0, capS: true, capE: true });
+    creaseCol(m, g, 0, 0, 3, 1); creaseCol(m, g, 4, 0, 3, 1);
+    grids.push(g); owner.push({ p: q.at, b: q.bone });
+  }
+  return { name, m, grids, levels: 1, k: 1.4, noOcc: true, paint: nailPaint,
+    skin: (p) => { let bi = 0, bd = Infinity; owner.forEach((o, k) => { const d = Math.hypot(p[0] - o.p[0], p[1] - o.p[1], p[2] - o.p[2]); if (d < bd) { bd = d; bi = k; } }); return [owner[bi].b, 1]; } };
 }
 /** a long flat foot: heel to the ball along z, five toes, leathery soles */
 function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
@@ -222,16 +283,22 @@ function foot(body: Body, s: number, bi: (n: string) => number, an: V3) {
     skin: (p) => (p[2] > 0.17 ? [tb, 0.6, fb, 0.4] : p[1] > 0.14 ? [bi('shin' + S), 0.5, fb, 0.5] : [fb, 1]),
     paint: leatherPaint({ palm: (_p, n) => n[1] < -0.2 }),
   }));
+  const nails: { at: V3; d: V3; up: V3; w: number; l: number; bone: number }[] = [];
   for (let k = 0; k < 5; k++) {
     const x = an[0] + s * (0.012 + (k - 2) * 0.034) * (k === 0 ? 1.08 : 1), base: V3 = [x, 0.035, 0.225], len = k === 0 ? 0.075 : 0.06 - k * 0.006;
-    const path = curve([base, [x + s * (k - 2) * 0.004, 0.03, base[2] + len * 0.6], [x + s * (k - 2) * 0.006, 0.018, base[2] + len]], 4);
-    body.add(stalk({ name: 'toe' + S + k, path, r: (t) => (k === 0 ? 0.026 : 0.019) * (1 - t * 0.3), around: 5, capS: false, capE: true, levels: 1, k: 1, skin: () => [tb, 1], paint: leatherPaint({ palm: (_p, n) => n[1] < 0.3 }) }));
+    const path = curve([base, [x + s * (k - 2) * 0.004, 0.034, base[2] + len * 0.55], [x + s * (k - 2) * 0.006, 0.02, base[2] + len]], 5);
+    const r0 = k === 0 ? 0.026 : 0.019;
+    body.add(stalk({ name: 'toe' + S + k, path, r: (t) => r0 * (1 - t * 0.25) * (1 + 0.12 * Math.exp(-(((t - 0.5) / 0.1) ** 2))), around: 6, capS: false, capE: true, levels: 1, k: 1, skin: () => [tb, 1],
+      sec: (a2) => (Math.cos(a2) < -0.4 ? 0.82 : 1), paint: leatherPaint({ palm: (_p, n) => n[1] < 0.3 }) }));
+    const tip = path[path.length - 1], pre = path[path.length - 3];
+    nails.push({ at: add(pre, [0, r0 * 0.55, 0]), d: norm([tip[0] - pre[0], tip[1] - pre[1], tip[2] - pre[2]]), up: [0, 1, 0], w: r0 * 0.55, l: len * 0.45, bone: tb });
   }
+  body.add(nailPlates('tnail' + S, nails));
 }
 
 // ------------------------------------------------------------------------------------------------ the build
 /** the IndexedDB cache key: bump it whenever anything that shapes or paints this model changes */
-export const BIGFOOT_MODEL_VERSION = 'bigfoot@8';
+export const BIGFOOT_MODEL_VERSION = 'bigfoot@9';
 export interface BigfootModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** build the model straight through (blocks for a few seconds) */
@@ -295,11 +362,36 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
   }));
   body.finalize(skull);
   yield;
+  // the face's sculpted parts: deep-set eyes under heavy lids, a brow shelf, a broad flat nose, thick lips
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = add(H, [s * EYE[0], EYE[1], EYE[2]]), ax: V3 = [s * BF_EYE_AX[0], BF_EYE_AX[1], BF_EYE_AX[2]];
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: RP('ochre'), pupil: 'round', pupilR: 0.42, irisA: 0.74, sclera: RP('bone'), k: 3.2, levels: 1, around: 10, catchlight: { side: s, at: [0.3, 0.4] } }));
-    // heavy leather lids (a slow, considering blink)
-    body.add(eyelid({ name: 'lid' + S, c, ax, r: EYER, bone: bi('lid' + S), paint: leatherPaint(), cover: 0.9, root: 2.2 })).levels = 0;
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: RP('ochre'), pupil: 'round', pupilR: 0.42, irisA: 0.72, side: s, glint: [0.32, 0.4], glintR: 0.2, k: 3.2, around: 10 }));
+    const lp = lids({ name: 'lid' + S, c, ax, r: EYER, bone: bi('lid' + S), lowBone: bi('head'), upper: 0.46, lower: 0.72, corner: 1.25, tilt: 0.05, side: s, thick: 0.3, thickLo: 0.2, k: 1.8,
+      paint: lidPaint(LEA, 3, { c, ax, r: EYER, lash: RP('ink') }) });
+    lp[0].name = 'lid' + S; lp[1].name = 'lidLo' + S; lp[1].paint = lidPaint(LEA, 3, { c, ax, r: EYER, lower: true });
+    for (const q of lp) body.add(q);
+    // the brow shelf: a thick roll of bone and leather over the eye, from the bridge of the nose out to the temple
+    const br = (x: number, y: number, z: number): V3 => add(H, [s * x, y, z]);
+    body.add(stalk({ name: 'brow' + S, path: curve([br(0.008, 0.064, 0.152), br(0.03, 0.072, 0.156), br(0.056, 0.071, 0.151), br(0.08, 0.063, 0.136), br(0.094, 0.05, 0.116)], 7),
+      r: (t) => 0.0135 * (1 - 0.35 * t) * (t < 0.1 ? 0.7 + t * 3 : 1), around: 6, capS: true, capE: true, levels: 1, k: 2,
+      sec: (a2) => (Math.cos(a2) > 0 ? 1.15 : 0.75), skin: (p) => { const k = cl((Math.abs(p[0] - H[0]) - 0.01) / 0.03, 0, 1); return [bi('brow' + S), 0.4 + 0.5 * k, bi('head'), 0.6 - 0.5 * k]; }, paint: leatherPaint() }));
+  }
+  // the nose: a broad, flat pad between the eyes and the lip, its wings flared round two big nostrils
+  {
+    const ns: Station[] = [[0.152, 0.6, 0.8], [0.172, 0.92, 0.95], [0.188, 1.0, 1.0], [0.198, 0.9, 0.86], [0.204, 0.62, 0.55]].map(([z, kw, kh]) => ({
+      c: add(H, [0, -0.026, z]), s: [0.044 * kw, 0.024 * kh] as [number, number],
+      p: [[0, 1], [0.34, 0.96], [0.62, 0.74], [0.9, 0.42], [1, 0.0], [0.94, -0.42], [0.66, -0.74], [0.3, -0.86], [0, -0.7]],
+    }));
+    body.add(trunk({ name: 'nose', stations: ns, tween: 0, capS: true, capE: true, levels: 1, k: 2.6, skin: () => [bi('head'), 1], paint: nosePaint(H) }));
+    // the bridge: a ridge down from between the brows to the nose
+    body.add(stalk({ name: 'bridge', path: curve([add(H, [0, 0.045, 0.152]), add(H, [0, 0.018, 0.163]), add(H, [0, -0.01, 0.174])], 5), r: (t) => 0.008 + t * 0.006, around: 6, capS: true, capE: true, levels: 1, k: 2, sec: (a2) => (Math.abs(Math.sin(a2)) > 0.7 ? 1.3 : 0.8), skin: () => [bi('head'), 1], paint: leatherPaint() }));
+  }
+  // thick lips along the mouth line: the upper on the lip bone, the lower on the jaw
+  for (const [nm, dy, bone, r0] of [['lipU', 0.008, 'lip', 0.0105], ['lipD', -0.01, 'jaw', 0.0125]] as [string, number, string, number][]) {
+    const pts: V3[] = [];
+    for (let k = 0; k <= 8; k++) { const x = -0.058 + (0.116 * k) / 8, y = -0.085 - x * x * 3 + dy, z = 0.205 - x * x * 9; pts.push(add(H, [x, y, z])); }
+    body.add(stalk({ name: nm, path: pts, r: (t) => r0 * (0.35 + 0.65 * Math.sin(Math.PI * t)), around: 6, capS: true, capE: true, levels: 1, k: 2.2, up: [0, 0, 1],
+      skin: () => [bi(bone), 1], paint: lipPaint(dy > 0) }));
   }
   // arms and legs
   const limbs: Piece[] = [];
@@ -372,7 +464,7 @@ export function* bigfootModelGen(o: { page?: number; den?: number } = {}): Gener
   const lk = locks({ name: 'hair', seats, tiles: [FUR, FUR, FUR], steps: [1, 2, 3], seed: 9 });
   if (lk) body.add(lk);
   void locate; void F;
-  const out = yield* body.buildGen({ den: o.den ?? 240, maxScale: 2, budget: 24000, fur: bigfootFur(H) });
+  const out = yield* body.buildGen({ den: o.den ?? 240, maxScale: 2, budget: 26500, fur: bigfootFur(H) });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
 }
@@ -393,7 +485,7 @@ function bigfootFur(H: V3) {
     { piece: /^skull/, len: 0.42, clump: 0.75, tip: 0.6 },
   ]);
   return (p: V3, n: V3, piece: string, k: { k: number; occ: number }) => {
-    if (/^(palm|fin|thm|foot|toe|eye|lid|hair)/.test(piece)) return null;
+    if (/^(palm|fin|thm|foot|toe|eye|lid|hair|nose|bridge|lip|nail|tnail|brow)/.test(piece)) return null;
     if (/^skull/.test(piece) && faceEdge(p[0] - H[0], p[1] - H[1], p[2] - H[2], n[2]) > -0.012) return null;
     return zones(p, n, piece, k);
   };

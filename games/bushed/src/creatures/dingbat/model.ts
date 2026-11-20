@@ -5,20 +5,28 @@
 // of a thumb at the wrist, scalloped between the finger tips) but feathered: coverts over the arm, a fringe of soft
 // owl flight feathers along the trailing edge, a barred fan of a tail, feathered trousers down to taloned toes.
 // Body and head feathers are real geometry (locks drawn as feathers, cards.ts).
+// v7 (sculpted): the head is carved (dingbat/face.ts): a concave owl's dish of a face ringed by a raised ruff, the big
+// eyes deep in sockets under heavy scowling brow ridges, lens-shaped between thick lids, a short pug bat's muzzle with
+// an upturned nose pad, flared nostrils, a split lip and a leaf of skin standing on the nose, big cupped bat's ears
+// with ridged bowls; the wing's membrane stretched between real finger bones (metacarpals and phalanges with knuckles,
+// a clawed thumb at the wrist, the elbow and wrist standing out); feet of four knuckled toes with hooked, keeled
+// talons. Painted from the form with brush strokes along the feathers' lie.
 // Creature space: metres, +z forward, +y up, in FLIGHT REST POSE: the body level, wings spread flat, legs trailing
 // back under the tail; the root bone (the body's centre) is the origin. The roost turns the whole bat head-down to
 // hang it by the talons (DB.grip).
 import * as THREE from 'three';
 import {
-  Body, runSync, runAsync, trunk, eyeball, eyelid, locks, stalk, horn, fin, spine, curve, chainSkin, gridSurf, Px, RP, cell3, h3, cl,
-  type V3, type Wt, type Piece, type Chart, type Station, type LockSeat,
+  Body, runSync, runAsync, trunk, eyeball, locks, stalk, horn, fin, curve, chainSkin, gridSurf, Px, RP, cell3, h3, cl, newCM, tube,
+  type V3, type Wt, type Piece, type Chart, type Station, type LockSeat, type Ring,
 } from '../anatomy';
 import { fbm3 } from '../paintkit';
+import { dbHeadSurf, DB_COLS, DB_ROWS, DB_EYE, DB_NOSE } from './face';
+import { almondLid, cupEar, eyePaint, strokes, formLight, alongFlow, lidCoords, type LidSpec } from '../wildlife/organic';
 import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 import { furZones } from '../fur/paint';
 
-export const DINGBAT_MODEL_VERSION = 'dingbat@6';
+export const DINGBAT_MODEL_VERSION = 'dingbat@7';
 export interface DingbatModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
 
 /** landmarks (left side; the right is the mirror in x) */
@@ -29,7 +37,7 @@ export const DB = {
   hw: 0.05, hh: 0.046, hd: 0.043,
   /** the jaw hinge (back corners of the gape) */
   hinge: [0, 0.011, 0.072] as V3,
-  eye: [0.021, 0.038, 0.1345] as V3, eyeR: 0.0135,
+  eye: [0.021, 0.038, dbEyeZ()] as V3, eyeR: 0.0135,
   antler: [0.024, 0.066, 0.094] as V3,
   /** shoulder, elbow, wrist; the finger tips (digit 2 the wingtip .. 5 the innermost), the membrane's body attachment */
   S: [0.032, 0.014, 0.03] as V3, E: [0.09, 0.016, 0.012] as V3, W: [0.148, 0.014, 0.03] as V3,
@@ -40,12 +48,19 @@ export const DB = {
   /** between the talons: the point the bat hangs from */
   grip: [0, -0.036, -0.104] as V3,
 };
+/** the eye's centre z (creature space): sitting in the sculpted socket, bulging out of it as an owl's eyes do */
+function dbEyeZ(): number {
+  let best = Math.PI, bd = 1;
+  for (let k = 0; k <= 400; k++) { const th = Math.PI * (0.55 + 0.45 * k / 400), [x] = dbHeadSurf(DB_EYE.h, th), d = Math.abs(x - DB_EYE.x); if (d < bd) { bd = d; best = th; } }
+  return 0.098 + dbHeadSurf(DB_EYE.h, best)[1] + DB_EYE.r * 0.3;
+}
 const mir = (p: V3, s: number): V3 => [p[0] * s, p[1], p[2]];
 const add = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 const scl = (a: V3, k: number): V3 => [a[0] * k, a[1] * k, a[2] * k];
 const nrm = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
 const len3 = (a: V3) => Math.hypot(a[0], a[1], a[2]);
+const cross3 = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 
 export function dingbatBones(): BoneDef[] {
   const b: BoneDef[] = [];
@@ -92,53 +107,108 @@ function plumage(o: { flow?: number; size?: number } = {}) {
     px.flush();
   };
 }
-/** the upper head: crown and nape in plumage, the pale facial disc (fine radiating feathers, a dark rim, dark brows
- *  running up to the antlers, sooty rings round the eyes), and underneath the red palate of the gape */
+/** the head: crown and nape in tawny plumage; the dish of the face pale buff feathers radiating from the eyes, sooty
+ *  round the eyes, the ruff round it dark-tipped; the brows dark over their ridges; the muzzle bare dark leather with
+ *  a paler, pinkish nose pad, black nostrils, the lip black at the gape; underneath, the red palate of the gape */
 function headPaint() {
   const H = DB.hc;
   return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt;
     px.lightK = 0.6;
-    const disc = new Float32Array(px.n);
+    const zone = new Uint8Array(px.n); // 0 plumage, 1 dish, 2 ruff, 3 muzzle, 4 palate
+    const where = (x: number, y: number, z: number, nz: number) => {
+      const ax = Math.abs(x), rd = Math.hypot(ax / 0.043, (y - 0.004) / 0.03);
+      const mw = y > -0.002 ? 0.0065 + 0.0025 * Math.min(1, Math.max(0, (0.012 - y) / 0.014)) : 0.009 + 0.0035 * Math.min(1, (-0.002 - y) / 0.015);
+      if (z > 0.015 && nz > 0.05 && ax < mw * 1.35 && y < 0.008 && y > -0.022) return 3;
+      if (z > 0.012 && nz > 0.15 && rd < 0.9) return 1;
+      if (z > 0.004 && rd < 1.12 && nz > -0.2) return 2;
+      return 0;
+    };
+    // strokes radiate from the eyes over the dish, lie back over the crown
+    const st = strokes(px, {
+      flow: (p, n) => { const x = p[0] - H[0], y = p[1] - H[1], z = p[2] - H[2], ax = Math.abs(x); const w = where(x, y, z, n[2]); if (w === 1 || w === 2) return alongFlow([Math.sign(x) * (ax - DB_EYE.x), y - DB_EYE.h, 0.002])(p, n); return alongFlow([0, -0.2, -1])(p, n); },
+      len: [3, 6], width: [1.6, 2.6], amp: 0.6, density: 0.8, seed: 31, apply: false,
+    });
     for (let i = 0; i < px.n; i++) {
       if ((i & 4095) === 0) yield;
       const x = P[i * 3] - H[0], y = P[i * 3 + 1] - H[1], z = P[i * 3 + 2] - H[2], ax = Math.abs(x), ny = N[i * 3 + 1], nz = N[i * 3 + 2];
       const m = fbm3(x * 80, y * 80, z * 80, 2);
-      // the palate: the flat underside of the head, seen only when the gape opens: wet red ridges going dark to
-      // the throat at the back
-      if (ny < -0.6 && y < -0.012) {
+      // the palate: the flat underside of the head, seen only when the gape opens: wet red ridges going dark to the
+      // throat at the back (drawn straight to colour: the closed mouth's ambient occlusion would bury it in black)
+      if (ny < -0.6 && y < -0.018) {
+        zone[i] = 4;
         const back = cl((DB.hd - z) / (DB.hd * 2), 0, 1);
         const ridge = Math.abs(Math.sin(z * 520)) < 0.25 && ax < 0.032;
-        // (drawn straight to colour: the closed mouth's ambient occlusion would bury it in black)
-        const st = Math.round(cl(4.6 - back * 3.4 + (ridge ? 1 : 0) - (ax > 0.032 ? 1 : 0) + m * 0.5, 0, 5));
-        px.over[i] = ax > 0.039 && z > -0.02 ? INK[1] : back > 0.7 ? BLOOD[Math.min(4, st + 1)] : FLESH[st]; px.rough[i] = 130;
+        const s = Math.round(cl(4.6 - back * 3.4 + (ridge ? 1 : 0) - (ax > 0.032 ? 1 : 0) + m * 0.5, 0, 5));
+        px.over[i] = ax > 0.039 && z > -0.02 ? INK[1] : back > 0.7 ? BLOOD[Math.min(4, s + 1)] : FLESH[s]; px.rough[i] = 130;
         continue;
       }
-      // the facial disc: an oval on the face, its rim a ring of dark feathers
-      const dx = x / 0.047, dy = (y + 0.004) / 0.042, rd = Math.hypot(dx, dy);
-      const onFace = z > 0.022 && nz > 0.35;
-      if (onFace && rd < 1.06) {
-        disc[i] = 1;
-        const ang = Math.atan2(dy, dx), ray = Math.abs(Math.sin(ang * 26 + rd * 3)) < 0.22;
-        let R = BONE, st = 4.1 - rd * 0.8 + m * 0.4 - (ray ? 0.6 : 0);
-        if (rd > 0.86) { R = SOIL; st = 1.4 + (Math.abs(Math.sin(ang * 30)) < 0.4 ? 0.7 : 0); }
-        // sooty rings round the eyes, dark brows sweeping up to the antlers (a frown of a face)
-        const ex = ax - DB.eye[0], ey = y - (DB.eye[1] - H[1]), ed = Math.hypot(ex, ey);
-        if (ed < 0.0158) { R = SOIL; st = 0.9 + ed * 60; }
-        // dark brows slanting up from the beak to the antlers: a frown
-        const bl = ey - (0.012 + (ax - 0.006) * 0.55);
-        if (ax > 0.004 && ax < 0.042 && bl > -0.0035 && bl < 0.003) { R = SOIL; st = 0.7; }
-        // pale feathers between the eyes over the beak
-        if (ax < 0.007 && ey > -0.01 && ey < 0.01) { R = BONE; st = 4.4 - Math.abs(ey) * 60; }
-        px.put(i, R, st); px.rough[i] = 220; continue;
+      const w = where(x, y, z, nz); zone[i] = w;
+      const ex = ax - DB_EYE.x, ey = y - DB_EYE.h, ed = Math.hypot(ex, ey);
+      if (w === 3) {
+        // the muzzle: bare leather; the nose pad paler and pinkish, the nostrils black, the split lip, the lip line
+        const pad = Math.hypot(ax - 0.0045, (y - DB_NOSE.h) * 0.8) < 0.0062 && nz > 0.4;
+        let R = LEA, s = 2.6 + m * 0.4 + st.v[i] * 0.4;
+        if (pad) { R = LEA; s = 3.6 + (ny > 0.3 ? 0.8 : 0) + st.v[i] * 0.3; if (h3(Math.floor(x / mpt), Math.floor(y / mpt), 3) < 0.25) R = HIDE; }
+        if (Math.hypot(ax - 0.0042, y - DB_NOSE.h - 0.0005) < 0.0021) { R = INK; s = 0.4; }
+        if (ax < mpt * 0.8 && y < -0.011) { R = INK; s = 1; }
+        if (y < -0.0195) { R = INK; s = 1.2; }
+        px.put(i, R, s); px.rough[i] = pad ? 80 : 150; continue;
       }
-      px.put(i, FUR, 2.5 + m * 0.7 + (y > 0.02 ? -0.3 : 0)); px.rough[i] = 235;
+      if (w === 1) {
+        // the dish: pale buff, radiating feather lines, sooty round the eyes, darker toward the ruff
+        const rd = Math.hypot(ax / 0.043, (y - 0.004) / 0.03), ang = Math.atan2(ey, ex), ray = Math.abs(Math.sin(ang * 13 + ed * 260)) < 0.18;
+        let R = BONE, s = 4.2 - rd * 0.9 + m * 0.3 + st.v[i] * 0.7 - (ray ? 0.5 : 0);
+        if (ed < 0.0175) { R = SOIL; s = 1.0 + ed * 70 + st.v[i] * 0.4; }
+        // the brows: dark feathers over the ridges, slanting down to the nose
+        const by = y - (0.0175 + (ax - 0.008) * 0.42);
+        if (Math.abs(by) < 0.0032 && ax > 0.003 && ax < 0.041) { R = SOIL; s = 1.3 + (by > 0 ? 0.6 : 0) + st.v[i] * 0.4; }
+        // pale feathers between the eyes over the muzzle
+        if (ax < 0.006 && y > 0.002 && y < 0.016) { R = BONE; s = 4.5 + st.v[i] * 0.4; }
+        px.put(i, R, s); px.rough[i] = 220; continue;
+      }
+      if (w === 2) {
+        // the ruff: dark-tipped feathers framing the face
+        const ang = Math.atan2(y - 0.004, x), tip = Math.abs(Math.sin(ang * 22)) < 0.45;
+        px.put(i, SOIL, 1.6 + (tip ? 0.8 : 0) + st.v[i] * 0.6 + m * 0.3); px.rough[i] = 225; continue;
+      }
+      px.put(i, FUR, 2.6 + m * 0.6 + (y > 0.02 ? -0.3 : 0) + st.v[i] * 0.7); px.rough[i] = 235;
     }
     yield;
-    px.scales({ size: 0.0065, kind: 'shield', flow: -1, ink: 1.5, lit: 0.8, mask: (i) => (disc[i] ? 0 : 1), seed: 9 });
-    // the gape's lip line along the front of the palate: a dark rim
-    for (let i = 0; i < px.n; i++) { const y = P[i * 3 + 1] - H[1]; if (Math.abs(y + 0.018) < mpt * 1.2 && N[i * 3 + 2] > 0.2 && N[i * 3 + 1] < 0.1) px.over[i] = INK[0]; }
-    px.creaseInk(1.1, { dark: 1, lit: 0.6 });
+    px.scales({ size: 0.0062, kind: 'shield', flow: -1, ink: 1.4, lit: 0.8, mask: (i) => (zone[i] === 0 ? 1 : 0), seed: 9 });
+    formLight(px, 0.6);
+    px.creaseInk(0.8, { dark: 1.1, lit: 0.6, mask: (i) => (zone[i] === 4 ? 0 : 1) });
+    px.flush();
+  };
+}
+/** a bat's ear: dark leather outside with a fringe of fur at its root; inside a ruddy bowl crossed by fine ridges, the
+ *  rim darker */
+function earPaint(root: V3, len: number) {
+  return (ch: Chart, _p: Piece, b: Body) => {
+    const px = new Px(ch, b), P = px.gb.P, K = px.gb.K;
+    px.lightK = 0.5;
+    // the bowl faces forward and out: tell the faces apart by which side of the ear's mid-plane the texel lies
+    for (let i = 0; i < px.n; i++) {
+      const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], t = cl(Math.hypot(p[0] - root[0], p[1] - root[1], p[2] - root[2]) / len, 0, 1);
+      const inner = px.gb.N[i * 3 + 2] > 0.1;
+      if (t < 0.18) { px.put(i, FUR, 2.4 + (h3(i, 3, 5) < 0.3 ? 0.8 : 0)); px.rough[i] = 230; continue; }
+      if (inner) { const ridge = Math.abs(Math.sin(t * 46)) < 0.25; px.put(i, HIDE, 2.6 + t * 0.8 - (ridge ? 0.9 : 0) + (K[i] > 0.6 ? 0.8 : 0)); px.rough[i] = 150; }
+      else { px.put(i, LEA, 2.3 + (K[i] > 0.6 ? 0.8 : 0) + (h3(i, 5, 7) < 0.1 ? 0.6 : 0)); px.rough[i] = 170; }
+    }
+    formLight(px, 0.5);
+    px.creaseInk(0.9, { dark: 1.2, lit: 0.8 });
+    px.flush();
+  };
+}
+/** the lids: feathered buff over sooty, the margin dark */
+function lidPaint(L: LidSpec) {
+  return (ch: Chart, _p: Piece, b: Body) => {
+    const px = new Px(ch, b), P = px.gb.P;
+    px.lightK = 0.4;
+    for (let i = 0; i < px.n; i++) {
+      const { off } = lidCoords(L, [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
+      px.put(i, off < 0.07 ? INK : SOIL, off < 0.07 ? 1.3 : 1.8 + (off > 0.3 ? 0.8 : 0) + (h3(i, 2, 1) < 0.2 ? 0.6 : 0)); px.rough[i] = off < 0.07 ? 90 : 220;
+    }
     px.flush();
   };
 }
@@ -248,60 +318,102 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   body.finalize(torso);
   yield 'body';
 
-  // ---- the head: a big round owl's head down to the gape's flat red palate; the facial disc on its front
-  const UP = [[0, 1], [0.4, 0.95], [0.74, 0.76], [0.95, 0.42], [1.0, 0.05], [0.97, -0.24], [0.84, -0.4], [0.46, -0.46], [0, -0.47]];
-  const hst = (dz: number, sx: number, sy: number, dy = 0): Station => ({ c: [0, H[1] + dy, H[2] + dz], s: [DB.hw * sx, DB.hh * sy], p: UP });
+  // ---- the head: the sculpted rings (dingbat/face.ts) from the palate (the flat roof of the gape: the bottom cap) to
+  // the crown, the seam at the back
   const headSkin = (p: V3): Wt => (p[2] < DB.neck[2] + 0.004 ? [HEAD, 0.6, ROOT, 0.4] : [HEAD, 1]);
-  const head = body.add(trunk({
-    name: 'skull', stations: [hst(-0.043, 0.36, 0.42, 0.004), hst(-0.034, 0.74, 0.78), hst(-0.018, 0.94, 0.96), hst(0.002, 1, 1), hst(0.02, 0.98, 0.98), hst(0.032, 0.9, 0.92), hst(0.0395, 0.75, 0.8), hst(0.0425, 0.42, 0.5, -0.002)],
-    tween: 1, capS: true, capE: true, levels: 1, k: 2.2, rings: [{ at: 6, s: 1.2 }], skin: headSkin, paint: headPaint(),
-  }));
-  body.finalize(head);
+  const headPt = (h: number, th: number, sd: number): { p: V3; n: V3 } => {
+    const P = (hh: number, t: number): V3 => { const [x, z] = dbHeadSurf(hh, t); return [H[0] + x * sd, H[1] + hh, H[2] + z]; };
+    const p = P(h, th), u = sub(P(h, th + 0.01), P(h, th - 0.01)), v = sub(P(h + 0.001, th), P(h - 0.001, th));
+    let n = nrm([v[1] * u[2] - v[2] * u[1], v[2] * u[0] - v[0] * u[2], v[0] * u[1] - v[1] * u[0]]);
+    const out = sub(p, [H[0], H[1] + h, H[2]]); if (n[0] * out[0] + n[1] * out[1] + n[2] * out[2] < 0) n = scl(n, -1);
+    return { p, n };
+  };
+  {
+    const m = newCM(), half = DB_COLS;
+    const rings: Ring[] = DB_ROWS.map((h) => {
+      const pts: number[][] = [];
+      for (let j = 0; j < half.length; j++) { const [x, z] = dbHeadSurf(h, half[j]); pts.push([x, z]); }
+      for (let j = half.length - 2; j >= 1; j--) { const [x, z] = dbHeadSurf(h, half[j]); pts.push([-x, z]); }
+      return { c: [H[0], H[1] + h, H[2]], x: [1, 0, 0], y: [0, 0, 1], pts };
+    });
+    const g = tube(m, rings, { tag: 0, capS: true, capE: true });
+    body.add({ name: 'skull', m, grids: [g], levels: 0, skin: headSkin, paint: headPaint(), k: 2.3 } as Piece);
+  }
   yield 'head';
   // the jaw: a wide scoop under the palate, hinged at the back corners of the gape
   const JP = [[0, 0.1], [0.42, 0.42], [0.8, 0.95], [1.0, 0.5], [0.98, -0.1], [0.86, -0.58], [0.62, -0.88], [0.32, -1.0], [0, -1.0]];
   const jst = (z: number, w: number, h: number, y: number): Station => ({ c: [0, y, z], s: [w, h], p: JP });
   body.add(trunk({
-    name: 'jaw', stations: [jst(0.058, 0.026, 0.01, 0.001), jst(0.072, 0.04, 0.0145, -0.001), jst(0.092, 0.0475, 0.0165, -0.0025), jst(0.112, 0.0455, 0.016, -0.0025), jst(0.13, 0.036, 0.013, -0.0005), jst(0.139, 0.02, 0.008, 0.0015)],
+    name: 'jaw', stations: [jst(0.058, 0.026, 0.01, 0.001), jst(0.072, 0.04, 0.0145, -0.001), jst(0.092, 0.0475, 0.0165, -0.0025), jst(0.112, 0.0455, 0.016, -0.0025), jst(0.13, 0.036, 0.013, -0.0005), jst(0.14, 0.022, 0.0085, 0.0015)],
     tween: 0, capS: true, capE: true, levels: 1, k: 1.8, cols: [{ j: 2, a: 1, b: 5, s: 1.5, ink: true }], skin: () => [bi('jaw'), 1], paint: jawPaint,
   }));
-  // a little hooked beak over the middle of the gape
-  body.add(stalk({ name: 'beak', path: curve([[0, H[1] - 0.004, H[2] + 0.036], [0, H[1] - 0.006, H[2] + 0.044], [0, H[1] - 0.014, H[2] + 0.048], [0, H[1] - 0.022, H[2] + 0.045]], 5), r: (t) => 0.0065 * (1 - t * 0.85) + 0.0006, sec: (a) => (Math.abs(Math.sin(a)) > 0.7 ? 0.7 : 1), around: 6, levels: 1, k: 2, skin: () => [HEAD, 1], paint: flat(HORN, 2.4, 90) }));
-  // eyes, lids
+  // the nose leaf: a little spear of skin standing up off the nose pad
+  {
+    const np = headPt(DB_NOSE.h + 0.004, Math.PI, 1).p;
+    body.add(cupEar({ name: 'noseleaf', root: add(np, [0, 0.0005, -0.003]), dir: [0, 1, 0.42], face: [0, 0.3, 1], len: 0.017, wid: 0.0058, th: 0.0011, cup: 0.3, lean: 0.002, shape: (t) => Math.pow(Math.sin(Math.PI * Math.min(1, 0.2 + t * 0.85)), 0.6) * (1 - t * 0.35), skin: () => [HEAD, 1], paint: earPaint(np, 0.017), levels: 1, k: 1.8, around: 8, rings: 4 }));
+  }
+  // big cupped bat's ears out of the sides of the skull, the bowls turned forward and out
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
-    const c = mir(DB.eye, s), ax: V3 = [s * 0.22, 0.04, 1];
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: DB.eyeR, bone: HEAD, iris: GOLD, pupil: 'round', irisA: 0.82, sclera: SOIL, k: 2.6, levels: 1, around: 8 }));
-    const lid = body.add(eyelid({ name: 'lid' + S, c, ax, r: DB.eyeR, bone: bi('lid' + S), paint: flat(SOIL, 1.6, 220), cover: 1.25, root: 2.3 }));
-    lid.levels = 0;
+    const root = headPt(0.02, Math.PI * 0.52, s).p, r0 = add(root, [-s * 0.004, 0, 0]);
+    body.add(cupEar({ name: 'ear' + S, root: r0, dir: [s * 0.78, 0.82, -0.12], face: [s * 0.55, 0.05, 1], len: 0.052, wid: 0.017, th: 0.0018, cup: 0.55, lean: 0.006, skin: () => [HEAD, 1], paint: earPaint(r0, 0.052), levels: 1, k: 1.4, around: 10, rings: 6 }));
+  }
+  // eyes, lids: big amber owl's eyes in their sockets, the lids leaving a lens (the upper modelled 0.2 rad low: the
+  // creature rests it that much higher)
+  for (const [S, s] of [['L', 1], ['R', -1]] as const) {
+    const c = mir(DB.eye, s), ax: V3 = nrm([s * 0.2, 0.03, 1]);
+    const eye = body.add(eyeball({ name: 'eye' + S, c, ax, r: DB.eyeR, bone: HEAD, iris: GOLD, pupil: 'round', irisA: 0.82, sclera: SOIL, k: 2.6, levels: 1, around: 8 }));
+    eye.paint = eyePaint({ c, ax, side: s, irisA: 0.86, iris: GOLD, pupil: 'round', pupilR: 0.42, sclera: null, collar: OCHRE, glint: [0.32, 0.4], shine: 230 });
+    const up: LidSpec = { name: 'lid' + S, c, ax, r: DB.eyeR, bone: bi('lid' + S), side: s, open: 0.42, wide: 1.0, inner: -0.28, outer: -0.15, ri: 1.03, ro: 1.16, swell: 0.06, root: 1.5, k: 1.8, across: 8, down: 4, levels: 0, paint: () => undefined };
+    up.paint = lidPaint(up); body.add(almondLid(up));
+    const lo: LidSpec = { name: 'llid' + S, c, ax, r: DB.eyeR, bone: HEAD, side: s, lower: true, open: 0.5, wide: 1.0, inner: -0.08, outer: 0.05, ri: 1.02, ro: 1.1, root: 1.35, k: 1.6, across: 8, down: 4, levels: 0, paint: () => undefined };
+    lo.paint = lidPaint(lo); body.add(almondLid(lo));
   }
   // antler nubs: a short beam with a burr, forking once into a front tine
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const b0 = mir(DB.antler, s);
     const ctrl: V3[] = [add(b0, [0, -0.004, 0]), add(b0, [s * 0.003, 0.007, -0.002]), add(b0, [s * 0.01, 0.016, -0.007]), add(b0, [s * 0.019, 0.022, -0.016]), add(b0, [s * 0.025, 0.025, -0.026])];
-    body.add(horn({ name: 'antler' + S, ctrl, r0: 0.0072, skin: () => [HEAD, 1], paint: antlerPaint, flat: 0.88, rings: 3, k: 1.6 }));
+    body.add(horn({ name: 'antler' + S, ctrl, r0: 0.0072, skin: () => [HEAD, 1], paint: antlerPaint, flat: 0.88, rings: 3, k: 1.6 })).levels = 0;
     const pt = curve(ctrl, 10)[4];
-    body.add(horn({ name: 'tine' + S, ctrl: [add(pt, [0, -0.002, -0.001]), add(pt, [s * 0.002, 0.006, 0.004]), add(pt, [s * 0.001, 0.013, 0.005])], r0: 0.0042, skin: () => [HEAD, 1], paint: antlerPaint, rings: 3, k: 1.6 }));
+    body.add(horn({ name: 'tine' + S, ctrl: [add(pt, [0, -0.002, -0.001]), add(pt, [s * 0.002, 0.006, 0.004]), add(pt, [s * 0.001, 0.013, 0.005])], r0: 0.0042, skin: () => [HEAD, 1], paint: antlerPaint, rings: 3, k: 1.6 })).levels = 0;
   }
   yield 'face';
 
-  // ---- wings: a bat's membrane over long fingers, feathered over the arm
+  // ---- wings: a bat's membrane stretched between real finger bones, feathered over the arm
   const wingSkin = (s: number) => {
     const ch = chainSkin([[0, 0, 0], [DB.S[0], 0, 0], [DB.E[0], 0, 0], [DB.W[0] + 0.004, 0, 0], [0.3, 0, 0]], [ROOT, bi('arm' + (s > 0 ? 'L' : 'R')), bi('fore' + (s > 0 ? 'L' : 'R')), bi('hand' + (s > 0 ? 'L' : 'R'))], 0.3);
     return (p: V3) => ch([Math.abs(p[0]), 0, 0]);
   };
   const seats: LockSeat[] = [];
+  /** a bone under the skin: a tapering stalk through its joints, swollen at each knuckle */
+  const boneStalk = (name: string, joints: V3[], r0: number, r1: number, skin: (p: V3) => Wt, paint: Piece['paint'], knob = 0.45, n = 9, levels = 1, around = 5) => {
+    const cum = [0]; for (let k = 1; k < joints.length; k++) cum.push(cum[k - 1] + len3(sub(joints[k], joints[k - 1])));
+    const tj = cum.map((c) => c / cum[cum.length - 1]);
+    body.add(stalk({ name, path: curve(joints, n), around, capS: true, capE: true, levels, k: 1.1, skin, paint,
+      r: (t) => (r0 + (r1 - r0) * t) * (1 + tj.slice(1, -1).reduce((a, tk) => a + knob * Math.exp(-(((t - tk) / 0.045) ** 2)), 0) - 0.12 * Math.sin(Math.PI * t)) }));
+  };
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const ws = wingSkin(s);
     const rays: [V3, V3][] = [[DB.S, DB.B], [DB.E, DB.T1], [DB.W, DB.D5], [add(DB.W, [0.005, 0, -0.002]), DB.D4], [add(DB.W, [0.01, 0, -0.004]), DB.D3], [add(DB.W, [0.015, 0, -0.006]), DB.D2]];
     const roots = rays.map(([r]) => mir(r, s)), tips = rays.map(([, t]) => mir(t, s));
     body.add(fin({
       name: 'wing' + S, roots, dirs: roots.map((r, k) => nrm(sub(tips[k], r))), lens: roots.map((r, k) => len3(sub(tips[k], r))), side: roots.map(() => [0, 1, 0] as V3),
-      ray: 0.0021, web: 0.0009, scallop: 0.3, steps: 5, skin: (p) => ws(p), paint: wingPaint(s), levels: 1, k: 1,
+      ray: 0.0014, web: 0.0008, scallop: 0.34, steps: 5, skin: (p) => ws(p), paint: wingPaint(s), levels: 1, k: 1,
     }));
-    // the arm along the leading edge, the leading finger, the thumb's hook
-    body.add(stalk({ name: 'arm' + S, path: curve([mir([0.018, 0.012, 0.032], s), mir(DB.S, s), mir([0.062, 0.018, 0.026], s), mir(DB.E, s), mir([0.12, 0.017, 0.026], s), mir(DB.W, s), mir(add(DB.W, [0.016, 0, -0.006]), s)], 10), r: (t) => 0.0065 - t * 0.0036, around: 6, capS: true, levels: 1, k: 1, skin: ws, paint: plumage({ flow: 1, size: 0.006 }) }));
-    body.add(stalk({ name: 'digit' + S, path: curve([mir(add(DB.W, [0.012, 0.0005, -0.004]), s), mir(add(DB.W, [0.06, 0.0005, -0.012]), s), mir(DB.D2, s)], 6), r: (t) => 0.0027 - t * 0.0017, around: 5, levels: 1, k: 1, skin: ws, paint: flat(LEA, 1.6, 150) }));
-    body.add(spine({ name: 'thumb' + S, at: mir(add(DB.W, [0.002, 0.003, 0.004]), s), dir: [s * 0.25, 0.35, 1], len: 0.012, r: 0.0022, skin: ws, paint: flat(HORN, 1.4, 90), levels: 1 }));
+    // the arm along the leading edge: the upper arm's muscle, the elbow's knob, the forearm, the wrist
+    body.add(stalk({ name: 'arm' + S, path: curve([mir([0.018, 0.012, 0.032], s), mir(DB.S, s), mir([0.062, 0.018, 0.026], s), mir(DB.E, s), mir([0.12, 0.017, 0.026], s), mir(DB.W, s), mir(add(DB.W, [0.016, 0, -0.006]), s)], 12), r: (t) => (0.0068 - t * 0.0038) * (1 + 0.25 * Math.exp(-(((t - 0.18) / 0.1) ** 2)) + 0.3 * Math.exp(-(((t - 0.45) / 0.04) ** 2)) + 0.35 * Math.exp(-(((t - 0.86) / 0.045) ** 2)) - 0.12 * Math.exp(-(((t - 0.66) / 0.1) ** 2))), around: 6, capS: true, levels: 1, k: 1, skin: ws, paint: plumage({ flow: 1, size: 0.006 }) }));
+    // the fingers: a metacarpal and two phalanges each, knuckled, bowing back a little, along the membrane's rays
+    for (const [k, tipP] of [[2, DB.D2], [3, DB.D3], [4, DB.D4], [5, DB.D5]] as [number, V3][]) {
+      const w0 = add(DB.W, [0.004 + (5 - k) * 0.004, 0.0008, -0.002 - (5 - k) * 0.0015]), d = sub(tipP, w0), L = len3(d), side: V3 = nrm([-d[2], 0, d[0]]);
+      const j1 = add(add(w0, scl(d, 0.5)), scl(side, L * 0.03)), j2 = add(add(w0, scl(d, 0.78)), scl(side, L * 0.025));
+      boneStalk('digit' + S + k, [mir(w0, s), mir(j1, s), mir(j2, s), mir(tipP, s)], 0.0021 + (k === 2 ? 0.0004 : 0), 0.0008, ws, flat(LEA, 1.8, 150), 0.38, 11, 0, 6);
+    }
+    // the thumb: a short stub off the wrist with a hooked claw
+    {
+      const t0 = add(DB.W, [0.0, 0.003, 0.004]), t1 = add(t0, [0.004, 0.003, 0.009]);
+      boneStalk('thumb' + S, [mir(t0, s), mir(t1, s), mir(add(t1, [0.001, 0.0015, 0.005]), s)], 0.0022, 0.0014, ws, flat(LEA, 1.8, 150), 0.3, 5);
+      const c0 = add(t1, [0.001, 0.0015, 0.005]);
+      body.add(stalk({ name: 'tclaw' + S, path: curve([mir(c0, s), mir(add(c0, [0.0005, 0.001, 0.004]), s), mir(add(c0, [0.0005, -0.001, 0.0075]), s), mir(add(c0, [0.0, -0.004, 0.0085]), s)], 5), r: (t) => 0.0015 * (1 - t * 0.85) + 0.0002, sec: (a) => (Math.cos(a) > 0.5 ? 1.15 : Math.cos(a) < -0.5 ? 0.6 : 0.85), around: 5, levels: 0, k: 1, skin: ws, paint: flat(HORN, 1.2, 70) }));
+    }
     // a fringe of soft flight feathers along the inner wing's trailing edge
     for (let k = 0; k < 11; k++) {
       const f = (k + 0.5) / 11, a = mir(DB.B, s), c = mir(DB.D5, s), mid = mir(DB.T1, s);
@@ -312,15 +424,19 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
     yield 'wing';
   }
 
-  // ---- legs: feathered trousers, three toes with hooked talons (they curl toward the back: the grip on the eave)
+  // ---- legs: feathered trousers; four knuckled toes (three back, one forward) with hooked, keeled talons that curl to
+  // grip (the eave)
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const hip = mir(DB.hip, s), ft = mir(DB.foot, s), LB = bi('leg' + S), FB = bi('foot' + S);
-    body.add(stalk({ name: 'leg' + S, path: curve([add(hip, [0, 0.008, 0.01]), hip, mir([0.021, -0.03, -0.062], s), ft], 6), r: (t) => 0.0095 - t * 0.004, around: 6, capS: true, levels: 1, k: 1, skin: (p) => (p[2] < ft[2] + 0.012 ? [FB, 1] : [LB, 1]), paint: plumage({ flow: 1, size: 0.005 }) }));
-    for (let k = 0; k < 3; k++) {
-      const a = (k - 1) * 0.5, d: V3 = [Math.sin(a) * s * 0.8, -0.1, -Math.cos(a)];
-      const tip = add(ft, scl(nrm(d), 0.016));
-      body.add(stalk({ name: 'toe' + S + k, path: [add(ft, [0, 0.002, 0.004]), add(ft, scl(nrm(d), 0.008)), tip], r: (t) => 0.0026 - t * 0.0008, around: 5, levels: 0, k: 1, skin: () => [FB, 1], paint: toePaint }));
-      body.add(stalk({ name: 'talon' + S + k, path: curve([add(tip, scl(nrm(d), -0.002)), add(tip, scl(nrm(d), 0.004)), add(tip, add(scl(nrm(d), 0.007), [0, 0.004, 0])), add(tip, add(scl(nrm(d), 0.007), [0, 0.009, 0]))], 5), r: (t) => 0.0018 * (1 - t * 0.85), around: 5, levels: 0, k: 1, skin: () => [FB, 1], paint: flat(HORN, 1.2, 80) }));
+    body.add(stalk({ name: 'leg' + S, path: curve([add(hip, [0, 0.008, 0.01]), hip, mir([0.021, -0.03, -0.062], s), ft], 6), r: (t) => (0.0095 - t * 0.004) * (1 + 0.15 * Math.exp(-(((t - 0.85) / 0.06) ** 2))), around: 6, capS: true, levels: 1, k: 1, skin: (p) => (p[2] < ft[2] + 0.012 ? [FB, 1] : [LB, 1]), paint: plumage({ flow: 1, size: 0.005 }) }));
+    for (let k = 0; k < 4; k++) {
+      const a = k === 3 ? Math.PI * 0.92 : (k - 1) * 0.42, d = nrm([Math.sin(a) * s * 0.8, -0.12, -Math.cos(a)]), L = k === 3 ? 0.011 : 0.016 - Math.abs(k - 1) * 0.002;
+      const j0 = add(ft, [0, 0.002, 0.002]), j1 = add(ft, scl(d, L * 0.45)), j2 = add(add(ft, scl(d, L * 0.78)), [0, 0.0012, 0]), tip = add(ft, scl(d, L));
+      boneStalk('toe' + S + k, [j0, j1, j2, tip], 0.0028, 0.0019, () => [FB, 1], toePaint, 0.22, 7, 0, 6);
+      // the talon: keeled on top, flat beneath, hooking down and under toward the grip
+      const up = nrm(cross3(cross3(d, [0, 1, 0]), d));
+      const tc = curve([add(tip, scl(d, -0.0015)), add(add(tip, scl(d, 0.003)), scl(up, 0.0012)), add(add(tip, scl(d, 0.0062)), scl(up, -0.0005)), add(add(tip, scl(d, 0.0075)), scl(up, -0.0045))], 6);
+      body.add(stalk({ name: 'talon' + S + k, path: tc, up, r: (t) => 0.0019 * Math.pow(1 - t * 0.92, 0.9) + 0.00015, sec: (aa) => (Math.cos(aa) > 0.6 ? 1.2 : Math.cos(aa) < -0.4 ? 0.55 : 0.8), around: 6, levels: 0, k: 1.2, skin: () => [FB, 1], paint: flat(HORN, 1.2, 70) }));
     }
   }
   yield 'legs';
@@ -343,18 +459,20 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
     col: (p, n) => (n[1] < -0.3 ? 2 : h3(Math.floor(p[0] * 300), Math.floor(p[2] * 300), 5) < 0.3 ? 1 : 0),
     keep: (p, n) => !(Math.abs(p[0]) > 0.025 && n[1] > 0.1 && p[2] > -0.02 && p[2] < 0.05),
   });
-  // the crown and nape
-  sow(head, 46, {
-    u0: 0.2, u1: 0.8, v0: 0.02, v1: 0.55, wid: 0.0095, seed: 7, skin: headSkin, lift: 0.3, droop: 0.12,
-    len: () => 0.017, dir: (_p, n, dv) => nrm([-dv[0] + n[0] * 0.3, -dv[1] - 0.1, -dv[2]]), col: () => 0,
-  });
-  // the ruff: a ring of short dark-tipped feathers round the disc, standing forward to frame the face
+  // the crown and nape: feathers lying back over the skull
+  for (let k = 0; k < 46; k++) {
+    const h = 0.012 + h3(k, 1, 7) * 0.034, th = h3(k, 2, 7) * Math.PI * 0.62, sd = h3(k, 3, 7) < 0.5 ? 1 : -1;
+    const q = headPt(h, th, sd);
+    seats.push({ p: sub(q.p, scl(q.n, 0.002)), n: q.n, dir: nrm([q.n[0] * 0.3, -0.25 + q.n[1] * 0.2, -1]), len: 0.017 * (0.8 + 0.4 * h3(k, 4, 7)), wid: 0.0095 * (0.8 + 0.4 * h3(k, 5, 7)), lift: 0.3, droop: 0.12, col: 0, w: headSkin(q.p) });
+  }
+  // the ruff: a ring of short dark-tipped feathers round the dish, standing forward to frame the face
   for (let k = 0; k < 34; k++) {
     const a = (k / 34) * Math.PI * 2, ca = Math.cos(a), sa = Math.sin(a);
     if (sa < -0.55) continue; // not across the gape
-    const p: V3 = [H[0] + ca * DB.hw * 0.86, H[1] - 0.004 + sa * DB.hh * 0.86, H[2] + 0.028 - Math.abs(ca) * 0.004];
-    const n = nrm([ca, sa, 0.35]);
-    seats.push({ p, n, dir: nrm([ca * 0.5, sa * 0.5, 1]), len: 0.016 + (sa > 0.3 ? 0.004 : 0), wid: 0.0068, lift: 0.5, droop: 0.05, col: 3, w: [HEAD, 1] });
+    const x = ca * 0.043 * 1.04, h = 0.004 + sa * 0.03 * 1.04;
+    let best = Math.PI, bd = 1; for (let j = 0; j <= 200; j++) { const th = Math.PI * (0.5 + 0.5 * j / 200), [xx] = dbHeadSurf(h, th), dd = Math.abs(xx - Math.abs(x)); if (dd < bd) { bd = dd; best = th; } }
+    const q = headPt(h, best, x >= 0 ? 1 : -1);
+    seats.push({ p: sub(q.p, scl(q.n, 0.002)), n: nrm(add(q.n, [ca * 0.5, sa * 0.5, 0])), dir: nrm([ca * 0.45, sa * 0.45, 1]), len: 0.014 + (sa > 0.3 ? 0.004 : 0), wid: 0.0062, lift: 0.5, droop: 0.05, col: 3, w: [HEAD, 1] });
   }
   // the tail: a barred fan
   for (let k = 0; k < 9; k++) {
@@ -371,7 +489,7 @@ export function* dingbatModelGen(o: { page?: number; den?: number } = {}): Gener
   const lk = locks({ name: 'feathers', seats, tiles, steps: [3, 3, 4, 2, 4], seed: 21 });
   if (lk) { lk.paint = cardPaint(['feather', 'plume', 'feather', 'feather', 'down'], tiles, { steps: [3.2, 2.6, 3.6, 2.2, 4] }); lk.k = 1.1; body.add(lk); }
   void INK; void BLOOD;
-  const out = yield* body.buildGen({ den: o.den ?? 700, maxScale: 2, budget: 11000, fur: DINGBAT_FUR });
+  const out = yield* body.buildGen({ den: o.den ?? 700, maxScale: 2, budget: 30000, fur: DINGBAT_FUR });
   const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, fur: out.fur, bones, tris: out.tris, den: body.den, stats };
 }
@@ -385,6 +503,8 @@ const DINGBAT_FUR = furZones([
   { piece: /^skull/, len: 0.6, clump: 0.7, tip: 0.6 },
   { piece: /^skull/, a: [0, 0.03, 0.14], r: 0.045, facing: [0, 0, 1], min: 0.25, len: 0.22, clump: 0.3 },
   { piece: /^skull/, y: [-1, DB.hinge[1] + 0.004], bare: true },
+  // the bare leather muzzle
+  { piece: /^skull/, a: [0, 0.022, 0.138], b: [0, 0.012, 0.142], r: 0.016, soft: 0.3, bare: true },
   { piece: /^leg/, len: 0.9, clump: 0.8, tip: 0.6 },
   { piece: /^arm/, len: 0.5, clump: 0.6 },
 ]);

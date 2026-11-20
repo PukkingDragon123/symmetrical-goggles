@@ -16,7 +16,7 @@
 import * as THREE from 'three';
 import { Cryptid, CH, clipKit, clamp, damp, type Pose, type Clip, type AnimParams } from './base';
 import { cryptidLoader } from './kit';
-import { teakettlerModelGen, teakettlerBones, TEAKETTLER_MODEL_VERSION, TK_EYE_AX, TK_FUR_SPEC, TK_NOSTRIL } from './teakettler/model';
+import { teakettlerModelGen, teakettlerBones, TEAKETTLER_MODEL_VERSION, TK_EYE_AX, TK_FUR_SPEC, TK_NOSTRIL, TK_MOUTH } from './teakettler/model';
 import { puffs } from '../../gfx/particles';
 import { audio, type Voice } from '../../audio/audio';
 import type { BoneDef } from '../rig';
@@ -118,7 +118,7 @@ export class Teakettler extends Cryptid {
   readonly sounds = TEAKETTLER_SOUND;
   declare state: TeakettlerState;
   private voice: Voice | null = null; private whistleT = 0; private puffT = 0; private lastWhistle = -99; private lastWarn = -99;
-  private lidAxis: THREE.Vector3[]; private steam = 0; private jet = 0; private lookSide = 1;
+  private lidAxis: THREE.Vector3[]; private steam = 0; private jet = 0; private lookSide = 1; private mouthT = 0;
   constructor(o: { pos?: THREE.Vector3; heading?: number } = {}) {
     super(teakettlerModel(), teakettlerClips(teakettlerBones()), { pos: o.pos, heading: o.heading, shineCol: 0xffd090, fur: TK_FUR_SPEC, legs: [
       { up: 'fuL', lo: 'flL', foot: 'ffL', fore: true }, { up: 'fuR', lo: 'flR', foot: 'ffR', fore: true },
@@ -237,8 +237,8 @@ export class Teakettler extends Cryptid {
   protected pre(p: Pose) {
     const B = this.skel.bones, dt = Math.min(0.1, this.ctx?.dt ?? 0.016);
     const blink = clamp(Math.max(p.c[CH.BLINK], this.state === 'alert' || this.state === 'retreat' ? 0 : 0.1), 0, 1);
-    B[this.bi('lidL')].quaternion.setFromAxisAngle(this.lidAxis[0], 0.05 + blink * 1.3);
-    B[this.bi('lidR')].quaternion.setFromAxisAngle(this.lidAxis[1], 0.05 + blink * 1.3);
+    B[this.bi('lidL')].quaternion.setFromAxisAngle(this.lidAxis[0], blink * 1.3);
+    B[this.bi('lidR')].quaternion.setFromAxisAngle(this.lidAxis[1], blink * 1.3);
     _e.set(-this.params.lookPitch * 0.5, this.params.lookYaw * 0.5, 0);
     B[this.bi('eyeL')].quaternion.setFromEuler(_e); B[this.bi('eyeR')].quaternion.setFromEuler(_e);
     // the nostrils flare as the steam comes
@@ -254,12 +254,18 @@ export class Teakettler extends Cryptid {
     if (this.puffT >= 1 && this.object.visible) {
       this.puffT = 0;
       this.object.updateMatrixWorld(true);
-      const nose = this.bi('nose'), S = this.skel;
+      const nose = this.bi('nose'), jaw = this.bi('jaw'), S = this.skel;
       for (const s of [1, -1]) {
         // the nostril tip in world space, blowing out along the snout
         _v.set(s * TK_NOSTRIL[0], TK_NOSTRIL[1], TK_NOSTRIL[2]).sub(S.restWorld[nose]).applyQuaternion(S.Q[nose]).add(S.P[nose]).applyMatrix4(this.mesh.matrixWorld);
         _w.set(0, 0, 1).applyQuaternion(S.Q[nose]).transformDirection(this.mesh.matrixWorld).multiplyScalar(0.25 + this.jet * 1.1);
         puffs.emit(_v, _w, { size: 0.025 + this.jet * 0.03, grow: 3 + this.jet * 2, life: 0.9 + this.jet * 0.6, color: STEAM, alpha: 0.35 + this.jet * 0.25, rise: 0.25, spread: 0.04 });
+        // and out of the corners of its mouth, sideways, when it really boils
+        if (this.jet > 0.3 || this.mouthT++ % 3 === 0) {
+          _v.set(s * TK_MOUTH[0], TK_MOUTH[1], TK_MOUTH[2]).sub(S.restWorld[jaw]).applyQuaternion(S.Q[jaw]).add(S.P[jaw]).applyMatrix4(this.mesh.matrixWorld);
+          _w.set(s * 0.8, 0.1, 0.6).applyQuaternion(S.Q[jaw]).transformDirection(this.mesh.matrixWorld).multiplyScalar(0.15 + this.jet * 0.6);
+          puffs.emit(_v, _w, { size: 0.02 + this.jet * 0.02, grow: 2.5 + this.jet * 2, life: 0.7 + this.jet * 0.5, color: STEAM, alpha: 0.25 + this.jet * 0.2, rise: 0.3, spread: 0.05 });
+        }
       }
     }
   }

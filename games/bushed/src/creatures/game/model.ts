@@ -11,15 +11,20 @@
 // and the dark tarsal and metatarsal tufts; a moose near-black over the hump with grey-brown stockings and a brown
 // muzzle. A fur page (src/creatures/fur) grows shell fur: short on the body, longer on the neck, the moose's mane and
 // bell, the deer's tail; bare noses, hooves, antlers and eyes.
+// v6 (organic pass): painted from the form (the shared hand-painting pass's key light, AO and hue-shifted ramps), the
+// coat laid in brush strokes along the lie of the hair (back along the body, down the flanks and legs), its colour
+// masses with brush-broken edges (no stickers, no noise); eyes painted wet and dark with the pupil's bar, seated
+// between thick almond lids; ears cupped flaps with a rim and a bowl; a moose's palms cupped and pearled.
 // Creature space: metres, +z forward, +y up, ground y = 0.
 import * as THREE from 'three';
 import {
-  Body, runAsync, trunk, limb, legRings, hoof, skull, mandible, eyeball, eyelid, stalk, curve, fin, chainSkin,
+  Body, runAsync, trunk, limb, legRings, hoof, skull, mandible, eyeball, stalk, curve, fin, chainSkin,
   Px, RP, cell3, h3, cl, SKULLS, type V3, type Chart, type Piece, type Station, type Skull, type FootSpec, type FurPaint,
 } from '../anatomy';
 import { spineFrame, locate, nz2, nz3, fbm3, type Frame } from '../paintkit';
 import type { BoneDef } from '../rig';
 import { furZones } from '../fur';
+import { almondLid, lidCoords, cupEar, eyePaint, strokes, formLight, alongFlow, type LidSpec } from '../wildlife/organic';
 
 export type Species = 'deer' | 'moose';
 export interface CervidModel {
@@ -208,10 +213,13 @@ function coatPaint(S: CervidSpec, F: Frame, part: 'trunk' | 'tail') {
   return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
     px.lightK = 0.75;
+    // the hair lies back along the body and down the flanks: strokes follow it, and break the edges of the white
+    const st = strokes(px, { flow: (q, n) => alongFlow([q[0] * 2.5, -0.5, -1])(q, n), len: [4, 9], width: [2, 3], amp: 0.55, lift: 0.35, density: 0.9, seed: S.seed % 97, apply: false });
+    yield;
     for (let i = 0; i < px.n; i++) {
       if ((i & 8191) === 0) yield;
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], L = locate(F, p), s = L.s, a = Math.abs(L.a), ny = N[i * 3 + 1];
-      const mott = fbm3(p[0] * 9, p[1] * 9, p[2] * 9, 3), fine = nz3(p[0] * 60, p[1] * 60, p[2] * 60);
+      const mott = fbm3(p[0] * 5, p[1] * 5, p[2] * 5, 2) * 0.5 + st.v[i] * 0.9, fine = st.v[i] * 0.4;
       let z: Zone;
       if (deer) {
         if (part === 'tail') {
@@ -245,14 +253,15 @@ function coatPaint(S: CervidSpec, F: Frame, part: 'trunk' | 'tail') {
         const saddle = s > sHip - 0.1 && s < sChest - 0.2 && a < 0.9 + mott * 0.3;
         z = { R: RAMP.moose, st: 3.4 - (hump ? 1.1 : 0) + (saddle ? 1.3 : 0) + (belly ? -0.6 : 0) + (rump ? 0.4 : 0) + (a > 1.4 && a < 2.3 ? 0.5 : 0) + mott * 1.1 + fine * 0.35 + (S.male ? 0 : 0.6) };
       }
-      px.put(i, z.R, z.st);
+      px.put(i, z.R, z.st + (deer ? 0.8 : 0.6));
       px.rough[i] = 225;
     }
     yield;
     // short hair laid back along the body, the locks leaning down the flanks
-    px.pelt({ len: deer ? 0.018 : 0.03, width: deer ? 0.005 : 0.008, tooth: 0.9, clump: 0.3, strands: 0.18, flow: -1, down: 0.6 });
+    px.pelt({ len: deer ? 0.018 : 0.03, width: deer ? 0.005 : 0.008, tooth: 0.55, clump: 0.2, strands: 0.12, flow: -1, down: 0.6 });
+    formLight(px, 0.6);
     yield;
-    px.creaseInk(1.1, { dark: 0.9, lit: 0.5 });
+    px.creaseInk(1.1, { dark: 0.7, lit: 0.4 });
     px.flush();
   };
 }
@@ -262,9 +271,10 @@ function legPaint(S: CervidSpec, fore: boolean, side: number) {
   return (ch: Chart, _p: Piece, b: Body) => {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
     px.lightK = 0.75;
+    const sk = strokes(px, { flow: alongFlow([0, -1, 0]), len: [4, 8], width: [2, 3], amp: 0.5, density: 0.9, seed: fore ? 7 : 9, apply: false });
     for (let i = 0; i < px.n; i++) {
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], nx = N[i * 3] * side, nz = N[i * 3 + 2];
-      const mott = fbm3(p[0] * 14, p[1] * 14, p[2] * 14, 2);
+      const mott = fbm3(p[0] * 6, p[1] * 6, p[2] * 6, 2) * 0.4 + sk.v[i];
       const inner = nx < -0.35, y = p[1];
       const upper = y > L.mid2[1] + (L.mid1[1] - L.mid2[1]) * 0.45;
       let R = RAMP.coat, st = 3.8 + mott * 0.7;
@@ -282,10 +292,11 @@ function legPaint(S: CervidSpec, fore: boolean, side: number) {
         else { R = RAMP.moose; st = 3.2 + mott * 0.8 + (inner ? 0.8 : 0); }
         if (y < L.fet[1] + 0.04) { R = RAMP.moose; st = 2.4; }
       }
-      px.put(i, R, st); px.rough[i] = 225;
+      px.put(i, R, st + 0.3); px.rough[i] = 225;
     }
-    px.pelt({ len: deer ? 0.014 : 0.024, width: deer ? 0.004 : 0.007, tooth: 0.8, clump: 0.25, strands: 0.15, flow: 1, down: 0.2 });
-    px.creaseInk(1.3, { dark: 1.1, lit: 0.4 });
+    px.pelt({ len: deer ? 0.014 : 0.024, width: deer ? 0.004 : 0.007, tooth: 0.5, clump: 0.2, strands: 0.12, flow: 1, down: 0.2 });
+    formLight(px, 0.6);
+    px.creaseInk(1.3, { dark: 0.9, lit: 0.4 });
     px.flush();
   };
 }
@@ -299,7 +310,8 @@ function hoofPaint(ch: Chart, _p: Piece, b: Body) {
     px.put(i, ny < -0.6 ? RP('stone') : RAMP.nose, (ny < -0.6 ? 2.5 : 2.6) - (ring ? 0.8 : 0) + (h3(i, 7, 3) < 0.06 ? 0.8 : 0));
     px.rough[i] = ny < -0.6 ? 240 : 120;
   }
-  px.creaseInk(1, { dark: 1, lit: 0.8 });
+  formLight(px, 0.5);
+  px.creaseInk(1, { dark: 0.8, lit: 0.8 });
   px.flush();
 }
 /** the head: a deer's brown face with a darker forehead (bucks), the white eye rings and muzzle band, a black nose
@@ -310,6 +322,8 @@ function headPaint(S: CervidSpec, part: 'skull' | 'jaw') {
   return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
     px.lightK = 0.7;
+    const fw = headFwd(S);
+    const sk = strokes(px, { flow: alongFlow([-fw[0], -fw[1] - 0.3, -fw[2]]), len: [3, 6], width: [1.6, 2.6], amp: 0.5, density: 0.8, seed: 21, apply: false });
     for (let i = 0; i < px.n; i++) {
       if ((i & 8191) === 0) yield;
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]];
@@ -317,7 +331,7 @@ function headPaint(S: CervidSpec, part: 'skull' | 'jaw') {
       const d = sub(p, S.bones.head), z = (d[2] * cp - d[1] * sp) / hd.hl, y = (d[1] * cp + d[2] * sp) / hd.hh;
       const nyl = N[i * 3 + 1] * cp + N[i * 3 + 2] * sp, nzl = N[i * 3 + 2] * cp - N[i * 3 + 1] * sp;
       const ex = Math.min(dist(p, eyes[0]), dist(p, eyes[1]));
-      const mott = fbm3(p[0] * 20, p[1] * 20, p[2] * 20, 2);
+      const mott = fbm3(p[0] * 9, p[1] * 9, p[2] * 9, 2) * 0.45 + sk.v[i] * 0.9;
       let R: number[], st: number, rough = 220;
       if (deer) {
         const tip = z > 0.74, top = nyl > 0.2;
@@ -354,11 +368,12 @@ function headPaint(S: CervidSpec, part: 'skull' | 'jaw') {
         } else if (ex < hd.eyeR * 1.5) { R = RAMP.moose; st = 1.2; }
         else { R = tip ? RAMP.tan : RAMP.moose; st = (tip ? 2.4 : 3.5) + mott * 0.8 + (nyl > 0.4 && z < 0.3 ? -0.8 : 0) + (S.male ? 0 : 0.6); }
       }
-      px.put(i, R, st); px.rough[i] = rough;
+      px.put(i, R, st + 0.3); px.rough[i] = rough;
     }
     yield;
-    px.pelt({ len: deer ? 0.008 : 0.016, width: deer ? 0.003 : 0.006, tooth: 0.6, clump: 0.2, strands: 0.12, flow: -1, mask: (i) => (px.rough[i] > 150 ? 1 : 0) });
-    px.creaseInk(1.2, { dark: 1, lit: 0.6 });
+    px.pelt({ len: deer ? 0.008 : 0.016, width: deer ? 0.003 : 0.006, tooth: 0.45, clump: 0.2, strands: 0.12, flow: -1, mask: (i) => (px.rough[i] > 150 ? 1 : 0) });
+    formLight(px, 0.6);
+    px.creaseInk(1.0, { dark: 0.9, lit: 0.6 });
     px.flush();
   };
 }
@@ -370,8 +385,8 @@ function earPaint(S: CervidSpec, side: number, root: V3) {
     px.lightK = 0.6;
     for (let i = 0; i < px.n; i++) {
       const p: V3 = [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]], t = cl(dist(p, root) / S.head.earLen, 0, 1);
-      // the cup faces forward and out: its normal toward +z
-      const inside = N[i * 3 + 2] > 0.25;
+      // the bowl faces forward and out
+      const inside = N[i * 3] * side * 0.55 + N[i * 3 + 2] > 0.3;
       const rim = (x: number) => x; void rim; void side;
       if (deer) {
         if (inside) { px.put(i, RAMP.white, 3.6 + (t > 0.2 && t < 0.85 ? 1 : 0) - (t < 0.15 ? 1.5 : 0)); }
@@ -379,8 +394,9 @@ function earPaint(S: CervidSpec, side: number, root: V3) {
       } else px.put(i, inside ? RAMP.stocking : RAMP.moose, inside ? 2.6 - (t < 0.3 ? 1 : 0) : 3.2);
       px.rough[i] = 220;
     }
-    px.pelt({ len: 0.008, width: 0.003, tooth: 0.7, clump: 0.3, strands: 0.2 });
-    px.creaseInk(1.2, { dark: 1, lit: 0.5 });
+    px.pelt({ len: 0.008, width: 0.003, tooth: 0.5, clump: 0.3, strands: 0.2 });
+    formLight(px, 0.5);
+    px.creaseInk(0.9, { dark: 1, lit: 0.6 });
     px.flush();
   };
 }
@@ -400,16 +416,24 @@ function antlerPaint(base: V3, span: number, light = 0) {
       px.put(i, RAMP.antler, st);
       px.rough[i] = t > 0.7 || along > 0.85 ? 90 : 190;
     }
-    px.creaseInk(1.2, { dark: 0.9, lit: 0.6 });
+    formLight(px, 0.6);
+    px.creaseInk(0.9, { dark: 0.9, lit: 0.7 });
     px.flush();
   };
 }
-function lidPaint(ch: Chart, _p: Piece, b: Body) {
-  const px = new Px(ch, b);
-  px.lightK = 0.5;
-  for (let i = 0; i < px.n; i++) { px.put(i, RAMP.coat, 2.2 + (h3(i, 2, 1) < 0.2 ? 0.6 : 0)); px.rough[i] = 200; }
-  px.creaseInk(1.4, { dark: 1.4, lit: 0.3 });
-  px.flush();
+/** a lid: the face's coat, a dark bare rim along the margin (the deer's black eye-line), lashes on the upper */
+function lidPaint(L: LidSpec, coat: number[], st: number) {
+  return (ch: Chart, _p: Piece, b: Body) => {
+    const px = new Px(ch, b), P = px.gb.P;
+    px.lightK = 0.5;
+    for (let i = 0; i < px.n; i++) {
+      const { off } = lidCoords(L, [P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
+      if (off < 0.08) { px.put(i, RAMP.nose, 1.2 + (L.lower ? 0.6 : 0)); px.rough[i] = 80; continue; }
+      px.put(i, coat, st + (off > 0.35 ? 0.4 : 0) + (h3(i, 2, 1) < 0.2 ? 0.5 : 0)); px.rough[i] = 210;
+    }
+    formLight(px, 0.4);
+    px.flush();
+  };
 }
 function mouthPaint(ch: Chart, _p: Piece, b: Body) {
   const px = new Px(ch, b);
@@ -457,13 +481,13 @@ function addAntlers(body: Body, S: CervidSpec, bone: number) {
         lens.push((0.4 + 0.16 * Math.sin(Math.PI * Math.min(1, f * 1.15))) * (k === 0 ? 0.75 : 1) * (0.93 + 0.14 * h3(k, side, 5)));
         sides.push(nrmP);
       }
-      body.add(fin({ name: 'palm', roots, dirs, lens, side: sides, ray: 0.016, web: 0.009, scallop: 0.32, steps: 6, droop: -0.25, skin: () => skinH(), paint: antlerPaint(base, 0.8, 2.2), levels: 1, k: 1.0 }));
+      body.add(fin({ name: 'palm', roots, dirs, lens, side: sides, ray: 0.024, web: 0.014, scallop: 0.36, steps: 6, droop: -0.75, skin: () => skinH(), paint: antlerPaint(base, 1.6, 0.4), levels: 1, k: 1.0 }));
     }
   }
 }
 
 // ------------------------------------------------------------------------------------------------ the build
-export const CERVID_MODEL_VERSION = 'cervid@5';
+export const CERVID_MODEL_VERSION = 'cervid@6';
 export function* cervidGen(species: Species, male: boolean): Generator<string | void, CervidModel> {
   const S = species === 'deer' ? DEER(male) : MOOSE(male);
   const hd = S.head, B = S.bones;
@@ -498,18 +522,21 @@ export function* cervidGen(species: Species, male: boolean): Generator<string | 
   for (const [s, side] of [['L', 1], ['R', -1]] as const) {
     const e = skullPt(S, hd.eye[0], hd.eye[1], side, -hd.eyeR * 0.45);
     const ax = nrm(add(scl(e.n, 1), scl(fwd, 0.35)));
-    body.add(eyeball({ name: 'eye' + s, c: e.p, ax, r: hd.eyeR, bone: bi('eye' + s), iris: RAMP.iris, pupil: 'bar', irisA: 1.05, sclera: RAMP.iris, k: 3, levels: 0, around: 10 }));
-    body.add(eyelid({ name: 'lid' + s, c: e.p, ax, r: hd.eyeR, bone: bi('lid' + s), paint: lidPaint, cover: 0.95, root: 2.2 })).levels = 0;
-    // the ear: a long cupped leaf from its root behind the eye, standing up and out
+    const eye = body.add(eyeball({ name: 'eye' + s, c: e.p, ax, r: hd.eyeR, bone: bi('eye' + s), iris: RAMP.iris, pupil: 'bar', irisA: 1.05, sclera: RAMP.iris, k: 3, levels: 0, around: 10 }));
+    // a deer's eye is all iris: near-black brown, the bar of the pupil, a hard glint; almond lids with a dark rim
+    eye.paint = eyePaint({ c: e.p, ax, side, irisA: 1.1, iris: RAMP.iris, pupil: 'bar', sclera: null, glint: [0.3, 0.42], shine: 200 });
+    const deer = S.species === 'deer', coat = deer ? RAMP.coat : RAMP.moose;
+    const up: LidSpec = { name: 'lid' + s, c: e.p, ax, r: hd.eyeR, bone: bi('lid' + s), side, open: 0.5, wide: 1.05, inner: 0.02, outer: 0.18, ri: 1.04, ro: 1.18, swell: 0.05, root: 1.5, k: 1.8, across: 7, down: 3, levels: 1, paint: () => undefined };
+    up.paint = lidPaint(up, coat, 3.4); body.add(almondLid(up));
+    const lo: LidSpec = { name: 'llid' + s, c: e.p, ax, r: hd.eyeR, bone: bi('head'), side, lower: true, open: 0.42, wide: 1.05, inner: -0.1, outer: 0.06, ri: 1.03, ro: 1.12, root: 1.35, k: 1.6, across: 7, down: 3, levels: 1, paint: () => undefined };
+    lo.paint = lidPaint(lo, coat, 3.6); body.add(almondLid(lo));
+    // the ear: a long cupped leaf from its root behind the eye, standing up and out, the bowl turned forward
     const er = skullPt(S, hd.earAt[0], hd.earAt[1], side, -0.012).p;
     const out = nrm([side * 1.0, S.species === 'deer' ? 0.62 : 0.5, -0.22]), L = hd.earLen;
-    const path = curve([er, add(er, scl(out, L * 0.3)), add(add(er, scl(out, L * 0.7)), [side * 0.01, 0.01, 0]), add(add(er, scl(out, L)), [side * 0.005, 0.0, -0.02])], 8);
-    body.add(stalk({
-      name: 'ear' + s, path, around: 8, capS: true, capE: true, levels: 1, k: 1.3,
-      r: (t) => hd.earW * Math.pow(Math.sin(Math.PI * Math.min(1, 0.18 + t * 0.82)), 0.8) * (t < 0.12 ? 0.7 : 1),
-      // flat leaf, cupped toward the front: thin front-to-back, wide side-to-side
-      sec: (a) => 0.18 + 0.82 * Math.abs(Math.sin(a)) - (Math.cos(a) > 0.6 ? 0.08 : 0), up: [0, 0, 1],
-      skin: () => [bi('ear' + s), 1], paint: earPaint(S, side, er),
+    body.add(cupEar({
+      name: 'ear' + s, root: er, dir: out, face: [side * 0.45, 0.15, 1], len: L, wid: hd.earW, th: hd.earW * 0.14, cup: 0.5, lean: L * 0.06,
+      shape: (t) => Math.pow(Math.sin(Math.PI * Math.min(1, 0.16 + t * 0.86)), 0.8) * (t < 0.12 ? 0.75 : 1),
+      skin: () => [bi('ear' + s), 1], paint: earPaint(S, side, er), levels: 1, around: 10, rings: 6, k: 1.3,
     }));
   }
   yield 'head';
@@ -580,7 +607,7 @@ export function* cervidGen(species: Species, male: boolean): Generator<string | 
     // bare: the nose, the lips, inside the ears' cups
     { piece: /^skull/, a: add(S.bones.head, scl(headFwd(S), hd.hl * 0.78)), r: hd.hl * 0.22, bare: true, len: 0 },
   ]);
-  const fur: FurPaint = (p, n, piece, s) => (/^(hoof|antler|tine|palm|eye|lid|mouth)/.test(piece) ? null : zones(p, n, piece, s));
+  const fur: FurPaint = (p, n, piece, s) => (/^(hoof|antler|tine|palm|eye|l?lid|mouth)/.test(piece) ? null : zones(p, n, piece, s));
   const built = yield* body.buildGen({ den: S.den, maxScale: 2.2, budget: S.budget, fur });
   const fl = S.fore, hl = S.hind;
   return {

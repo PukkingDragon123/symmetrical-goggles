@@ -14,20 +14,20 @@
 // strokes running with the form, cool violet in the deep shadows, pale bone plates with growth bands.
 // Creature space: metres, +z forward, +y up, ground y = 0.
 import {
-  Body, trunk, limb, legRings, eyeball, locks, stalk, curve, chainSkin, sac, gridSurf, Px, RP, cell3, h3, cl,
+  Body, trunk, limb, legRings, paintedEye, locks, stalk, curve, chainSkin, sac, gridSurf, hand, Px, RP, cell3, h3, cl,
   type V3, type Station, type FootSpec, type LockSeat, type LimbRing, type Chart, type Piece, type FurPaint,
 } from '../../anatomy';
 import { fbm3, seatsOn } from '../../paintkit';
-import { bonesKit, boneIndex, solid, wet, finishModel, sculpt, almondLid, strokeField, REG, type CryptidModel, type ModelGen, type Dab } from '../kit';
+import { bonesKit, boneIndex, solid, wet, finishModel, sculpt, almondLid, REG, type CryptidModel, type ModelGen, type Dab } from '../kit';
 import type { BoneDef } from '../../rig';
 
 export const HODAG_MODEL_VERSION = 'hodag@6';
 /** the head bone (the back of the skull over the jaw hinge) */
 export const HH: V3 = [0, 0.66, 0.6];
 /** the eye's centre (left; head-local + HH) */
-export const HODAG_EYE: V3 = [0.238, 0.708, 0.722];
-export const HODAG_EYE_AX: V3 = [0.8, 0.1, 0.59];
-const EYE_R = 0.044;
+export const HODAG_EYE: V3 = [0.232, 0.748, 0.735];
+export const HODAG_EYE_AX: V3 = [0.8, 0.2, 0.57];
+const EYE_R = 0.05;
 const TAIL_CTRL: V3[] = [[0, 0.62, -0.8], [0, 0.58, -1.02], [0, 0.5, -1.27], [0, 0.45, -1.52], [0, 0.46, -1.74], [0, 0.5, -1.9]];
 const TAIL = curve(TAIL_CTRL, 7);
 export const HODAG_LEGS = {
@@ -74,41 +74,43 @@ const tab = (rows: [number, number][]) => (z: number) => {
   for (let i = 0; i + 1 < rows.length; i++) if (z <= rows[i + 1][0]) { const f = (z - rows[i][0]) / (rows[i + 1][0] - rows[i][0]), s = f * f * (3 - 2 * f); return lerp(rows[i][1], rows[i + 1][1], s); }
   return rows[rows.length - 1][1];
 };
-export const mouthY = (z: number) => -0.074 + 0.052 * Math.pow(cl((0.13 - z) / 0.2, 0, 1), 1.35);
-const topY = tab([[-0.17, 0.08], [-0.1, 0.13], [-0.03, 0.152], [0.05, 0.155], [0.12, 0.138], [0.2, 0.104], [0.28, 0.08], [0.36, 0.072], [0.42, 0.064], [0.465, 0.042], [0.49, 0.012]]);
-const halfW = tab([[-0.17, 0.17], [-0.1, 0.235], [-0.03, 0.278], [0.05, 0.296], [0.12, 0.288], [0.2, 0.25], [0.28, 0.206], [0.36, 0.192], [0.42, 0.18], [0.465, 0.15], [0.49, 0.1]]);
-const jawBot = tab([[-0.08, -0.2], [-0.02, -0.226], [0.06, -0.226], [0.16, -0.2], [0.26, -0.17], [0.35, -0.142], [0.42, -0.122], [0.47, -0.1], [0.49, -0.088]]);
+export const mouthY = (z: number) => -0.08 + 0.058 * Math.pow(cl((0.13 - z) / 0.2, 0, 1), 1.35);
+const topY = tab([[-0.17, 0.08], [-0.1, 0.14], [-0.04, 0.172], [0.04, 0.184], [0.12, 0.17], [0.2, 0.14], [0.28, 0.112], [0.36, 0.09], [0.42, 0.074], [0.47, 0.058], [0.5, 0.03]]);
+const halfW = tab([[-0.17, 0.17], [-0.1, 0.235], [-0.03, 0.275], [0.05, 0.29], [0.12, 0.282], [0.2, 0.242], [0.28, 0.196], [0.36, 0.186], [0.42, 0.19], [0.47, 0.18], [0.5, 0.14]]);
+const jawBot = tab([[-0.08, -0.2], [-0.02, -0.228], [0.06, -0.23], [0.16, -0.214], [0.26, -0.192], [0.35, -0.172], [0.42, -0.158], [0.47, -0.14], [0.5, -0.118]]);
 /** the half width of the upper lip's outer roll at z */
 const lipW = (z: number) => halfW(z) * (z < 0 ? 0.9 : 0.97);
-const UPPER_Z = [-0.17, -0.12, -0.07, -0.03, 0.01, 0.05, 0.09, 0.13, 0.17, 0.21, 0.25, 0.29, 0.33, 0.37, 0.41, 0.44, 0.465, 0.49];
-const JAW_Z = [-0.07, -0.03, 0.01, 0.06, 0.11, 0.17, 0.23, 0.29, 0.35, 0.4, 0.44, 0.47, 0.49];
+const UPPER_Z = [-0.17, -0.12, -0.07, -0.03, 0.01, 0.05, 0.09, 0.13, 0.17, 0.21, 0.25, 0.29, 0.33, 0.37, 0.41, 0.445, 0.475, 0.5];
+const JAW_Z = [-0.07, -0.03, 0.02, 0.08, 0.15, 0.22, 0.29, 0.35, 0.4, 0.44, 0.475, 0.5];
 /** the upper head's ring at z: crown, crown side, brow corner, temple, cheek, lower cheek, the upper lip's roll, its
  *  margin (hanging just below the mouth line), the palate */
 function upperRing(z: number): number[][] {
   const T = topY(z), W = halfW(z), m = mouthY(z), lw = lipW(z);
   const brow = cl((z + 0.06) / 0.08, 0, 1) * cl((0.24 - z) / 0.08, 0, 1); // the brow shelf runs from the bosses to the stop
-  const back = z < -0.05 ? cl((-0.05 - z) / 0.12, 0, 1) : 0;
+  const back = z < -0.05 ? cl((-0.05 - z) / 0.12, 0, 1) : 0, box = cl((z - 0.24) / 0.1, 0, 1);
   return [
     [0, T],
     [W * 0.44, T - 0.004 + brow * 0.004],
-    [W * (0.8 + brow * 0.08), T - 0.03 - brow * 0.004],
-    [W * (0.98 + brow * 0.03), T - 0.085 - brow * 0.01],
+    [W * (0.8 + brow * 0.08 + box * 0.12), T - 0.03 - brow * 0.004 + box * 0.014],
+    [W * (0.98 + brow * 0.03), T - 0.085 - brow * 0.01 + box * 0.03],
     [W * 1.0, m + 0.07],
     [W * 0.985, m + 0.032],
     [lw, m + 0.01],
     [lw - 0.013 - back * 0.02, m - 0.006],
-    [0, m + 0.024],
+    // the palate; at the front the upper lip's margin runs right across under the nose (the mouth closes there too)
+    [0, m + 0.024 - 0.03 * cl((z - 0.38) / 0.08, 0, 1)],
   ];
 }
 /** the lower jaw's ring at z: the tongue bed, the gum, the lower lip's top, its outer roll, the crease under it, the
  *  jaw's side (the masseter at the back), its underside, the throat */
 function jawRing(z: number): number[][] {
   const m = mouthY(z), jw = lipW(z) * 0.93, b = jawBot(z), mass = cl((0.08 - z) / 0.14, 0, 1);
+  const front = cl((z - 0.38) / 0.08, 0, 1);
   return [
-    [0, m - 0.016],
-    [jw * 0.58, m - 0.012],
-    [jw * 0.88, m + 0.003],
-    [jw * 0.99, m - 0.016],
+    [0, m - 0.016 + front * 0.008],
+    [jw * 0.6, m - 0.006 + front * 0.008],
+    [jw * 0.92, m + 0.011],
+    [jw * 1.0, m - 0.012],
     [jw * 0.965, m - 0.036],
     [jw * (1.01 + mass * 0.06), (m + b) * 0.5 - 0.01],
     [jw * (0.84 + mass * 0.06), b * 0.9 + m * 0.1],
@@ -128,36 +130,29 @@ const maneAt = (x: number, y: number, z: number) => Math.max(
  *  the flanks, a straw belly in transverse scutes, the dewlap and throat paler; a darker mask over the face; scales in
  *  rows down the flanks and the legs, pebbles on the head; brush strokes along the form; violet in the deep shadow */
 type Part = 'body' | 'leg' | 'tail' | 'skull' | 'jaw' | 'sac' | 'lid';
-const spineFlow = (P: V3, N: V3): V3 | null => {
-  // along the body toward the tail, bending down the flanks and round the legs
-  const d: V3 = P[1] < 0.42 && Math.abs(P[0]) > 0.2 ? [0, -1, 0.15] : [0, -0.15 * Math.sign(N[1]), -1];
-  return d;
-};
 function hidePaint(part: Part) {
   return function* (ch: Chart, _p: Piece, b: Body) {
     const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
-    px.lightK = 1.15;
-    const flow = part === 'leg' ? ((): V3 => [0, -1, 0]) : part === 'skull' || part === 'jaw' ? ((_q: V3, n: V3): V3 => [0, n[1] > 0.5 ? 0 : -0.4, -1]) : part === 'sac' ? ((): V3 => [0, -1, 0.3]) : spineFlow;
-    const sf = strokeField(px, { flow, len: 0.1, wid: 0.016, seed: part.length * 7 + 3 });
-    px.hue = 1;
+    const hp = hand(px, { flow: part === 'sac' ? [0, -1, 0.3] : part === 'lid' ? 'across' : 'sweep', seed: part.length * 7 + 3 });
+    const fld = hp.field();
     yield;
     const mane = new Float32Array(px.n);
     for (let i = 0; i < px.n; i++) {
-      const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ny = N[i * 3 + 1], ax = Math.abs(x), s = sf[i];
+      const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ny = N[i * 3 + 1], ax = Math.abs(x), s = (fld[i] - 0.5) * 2;
       const big = fbm3(x * 2.2 + 3, y * 2.2, z * 2.2, 2);
       let R = HIDE, st = 2.6;
       if (part === 'body' || part === 'tail' || part === 'leg') {
         // the belly: straw scutes below a wet, stroke-broken edge; the dewlap and throat paler still
         const bellyT = (part === 'tail' ? -0.55 : part === 'leg' ? -2 : -0.32) + s * 0.12 + big * 0.1;
         const bandZ = z + Math.sin(x * 9) * 0.03;
-        if (ny < bellyT && y < 0.62) { R = BELLY; st = 3.1 + s * 0.45 + (y > 0.5 ? 0.3 : 0) - cl((ax - 0.12) / 0.2, 0, 1) * 0.8; }
+        if (ny < bellyT && y < 0.62) { R = BELLY; st = 3.9 + s * 0.45 + (y > 0.5 ? 0.3 : 0) - cl((ax - 0.12) / 0.2, 0, 1) * 0.8; }
         else {
           // the back: dark olive, crossed by darker bands that fade down the flanks, warming to umber low on the flanks
           const band = Math.abs(Math.sin(bandZ * 9 + 0.6)) < 0.3 + big * 0.14 + s * 0.06 && ny > -0.25;
           const flank = cl((0.3 - ny) * 1.6 + s * 0.2, 0, 1);
           R = flank > 0.55 ? UMBER : HIDE;
-          st = (R === UMBER ? 3.0 : 2.6) + s * 0.6 + big * 0.4 - (band ? 1.2 * cl(ny + 0.45, 0, 1) : 0);
-          if (part === 'leg') { R = y < 0.2 ? UMBER : HIDE; st = 2.4 + s * 0.5 - (y < 0.07 ? 0.6 : 0); }
+          st = (R === UMBER ? 2.8 : 2.3) + s * 0.6 + big * 0.4 - (band ? 1.4 * cl(ny + 0.45, 0, 1) : 0);
+          if (part === 'leg') { R = HIDE; st = 2.3 + s * 0.5 + cl((y - 0.15) / 0.3, 0, 1) * 0.4; }
           // lichen-green where the swamp dries on its back
           if (ny > 0.7 && fbm3(x * 6 + 7, z * 6, y * 6, 2) > 0.42) { R = MOSS; st = 2.4 + s * 0.4; }
         }
@@ -169,30 +164,33 @@ function hidePaint(part: Part) {
       } else if (part === 'skull' || part === 'jaw') {
         const hx = ax - HH[0], hy = y - HH[1], hz = z - HH[2], m = mouthY(hz);
         const inside = part === 'skull' ? ny < -0.6 && hy < m + 0.03 && ax < lipW(hz) - 0.014 : ny > 0.55 && hy > m - 0.022 && ax < lipW(hz) * 0.84;
-        if (inside) { const deep = cl((0.4 - hz) / 0.45, 0, 1); px.put(i, RP('gum'), 3.2 - deep * 2.3 - (Math.abs(Math.sin(hz * 150)) < 0.2 && ax < 0.12 ? 0.8 : 0)); px.rough[i] = 50; continue; }
+        if (inside) { const deep = cl((0.4 - hz) / 0.45, 0, 1); px.put(i, RP('gum'), 2.6 - deep * 2.0 - (Math.abs(Math.sin(hz * 150)) < 0.2 && ax < 0.12 ? 0.8 : 0)); px.rough[i] = 210; continue; }
         // the lips: rubbery, warm and pale, a dark seam where they meet
         const dl = hy - m;
         if (Math.abs(dl) < px.mpt * 1.3 && ax > 0.03) { px.put(i, RP('ink'), 1); px.rough[i] = 70; continue; }
-        if (Math.abs(dl) < 0.006 && ax > 0.03) { px.put(i, LIP, 2.6 + s * 0.3); px.rough[i] = 50; continue; }
-        if (dl > -0.03 && dl < 0.022) { px.put(i, UMBER, 4.0 + (dl > 0 ? 0.3 : -0.3) + s * 0.4); px.rough[i] = 110; continue; }
+        if (dl > -0.03 && dl < 0.022) { px.put(i, dl > 0 ? HIDE : BELLY, (dl > 0 ? 3.6 : 2.6) + s * 0.4 + (Math.abs(dl) < 0.007 ? -0.6 : 0)); px.rough[i] = 150; continue; }
         if (part === 'jaw') {
           // the throat: straw, long folds; the jaw's sides olive
-          if (ny < -0.25 || hy < m - 0.11) { R = BELLY; st = 3.0 + s * 0.45 + (ny < -0.8 ? 0.2 : 0); }
+          if (ny < -0.25 || hy < m - 0.11) { R = BELLY; st = 3.7 + s * 0.45 + (ny < -0.8 ? 0.2 : 0); }
           else { R = HIDE; st = 2.5 + s * 0.5 + big * 0.3; }
         } else {
           // the face: olive, the crown and the brow darker (a mask through the eyes), the muzzle warmer and paler
           const mask = cl(1 - Math.hypot((hx - 0.2) / 0.16, (hy - 0.07) / 0.09, (hz - 0.1) / 0.18), 0, 1) + cl((hy - 0.1) / 0.06, 0, 1) * cl((0.2 - hz) / 0.1, 0, 1);
-          R = hz > 0.3 ? UMBER : HIDE; st = 2.9 + s * 0.5 - mask * 1.2 + (hz > 0.38 ? 0.3 : 0);
+          R = HIDE; st = 2.9 + s * 0.5 - mask * 1.2 + cl((hz - 0.3) / 0.12, 0, 1) * 0.7;
           if (maneAt(x, y, z) > 0.3 - s * 0.08) { R = MANE; st = 2.6 + s * 0.8; mane[i] = 1; }
           // the nose pad: bare dark leather
-          if (hz > 0.448 && hy < 0.045 && hy > m + 0.03 && N[i * 3 + 2] > 0.35) { R = LEATHER; st = 3.2 + s * 0.4; }
+          // the bare nose plate on the front of the muzzle, dark and wet, the nostrils comma slits in it
+          const plate = Math.hypot(ax / 0.13, (hy - 0.008) / 0.05, (hz - 0.5) / 0.05) < 1 + s * 0.12 + big * 0.1 && hy > m + 0.02;
+          if (plate) { R = LEATHER; st = 3.6 + s * 0.5 + (N[i * 3 + 1] > 0.2 ? 0.8 : 0) - cl(1 - Math.abs(ax - 0.07) / 0.03, 0, 1) * 0.8; }
+          const nos = Math.hypot((ax - 0.07 - (hy - 0.005) * 0.25) / 0.012, (hy - 0.004) / 0.03);
+          if (hz > 0.46 && nos < 1) { R = LEATHER; st = 0.2; }
           // the bridge's wrinkles
           if (hz > 0.25 && hz < 0.4 && ny > 0.45 && Math.abs(Math.sin(hz * 150 + Math.sin(x * 40) * 0.6)) < 0.22) st -= 1.1;
           // under the eyes: a band of paler scales
           if (hz > 0.04 && hz < 0.2 && hy < 0.03 && hy > m + 0.03) st += 0.4;
         }
       } else if (part === 'sac') {
-        R = BELLY; st = 3.2 + s * 0.5;
+        R = BELLY; st = 3.8 + s * 0.5;
       }
       px.put(i, R, st); px.rough[i] = R === BELLY ? 150 : 200;
     }
@@ -201,11 +199,13 @@ function hidePaint(part: Part) {
     // the legs and the face, the mane's hair over the hump
     const isR = (i: number, R: number[]) => px.rampT[px.rampI[i]] === R;
     if (part === 'body' || part === 'tail') {
-      px.scales({ size: part === 'tail' ? 0.05 : 0.065, kind: 'keel', flow: -1, mask: (i) => (isR(i, HIDE) || isR(i, UMBER) || isR(i, MOSS) ? 1 : 0), ink: 1.1, lit: 0.6, shade: 0.5, seed: 5 });
+      px.scales({ size: part === 'tail' ? 0.06 : 0.085, kind: 'keel', flow: -1, mask: (i) => (isR(i, HIDE) || isR(i, UMBER) || isR(i, MOSS) ? 1 : 0), ink: 0.9, lit: 0.55, shade: 0.45, seed: 5 });
       px.scales({ size: 0.085, kind: 'scute', flow: -1, mask: (i) => (isR(i, BELLY) ? 1 : 0), ink: 1.1, lit: 0.5, shade: 0.4, seed: 9 });
       px.pelt({ len: 0.08, width: 0.014, flow: -1, down: 0.9, tooth: 1.6, clump: 0.6, strands: 0.3, mask: (i) => mane[i] });
     } else if (part === 'leg') {
       px.pebbles(0.026, { mask: (i) => (P[i * 3 + 1] < 0.36 ? 1 : 0), depth: 0.5, seed: 4 });
+      // swamp mud caked up the feet to a ragged line, a few splashes above it
+      px.mud((i) => 0.11 + Math.sin(P[i * 3 + 2] * 30) * 0.015, RP('soil'), { clump: 0.03, seed: 7 });
       px.scales({ size: 0.05, kind: 'shield', flow: 1, mask: (i) => (P[i * 3 + 1] >= 0.36 ? 1 : 0), ink: 1.0, lit: 0.5, shade: 0.5, seed: 6 });
     } else if (part === 'skull' || part === 'jaw') {
       px.pebbles(0.02, { mask: (i) => (isR(i, HIDE) || isR(i, UMBER) ? 1 : 0), depth: 0.5, seed: 8 });
@@ -216,17 +216,19 @@ function hidePaint(part: Part) {
       // the throat sac: folds of loose skin, a web of veins
       for (let i = 0; i < px.n; i++) {
         const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2];
-        const c = cell3(x, y * 0.6, z, 0.035, 11);
-        if (c.f2 - c.f1 < px.mpt * 1.2) { px.rampI[i] = px.ramp(LIP); px.step[i] = 2.2; }
-        if (Math.abs(Math.sin(x * 70 + Math.sin(z * 25) * 2)) < 0.16) px.mark[i] -= 0.9;
+        const c = cell3(x, y * 0.6, z, 0.04, 11);
+        if (c.f2 - c.f1 < px.mpt * 0.9) { px.rampI[i] = px.ramp(UMBER); px.step[i] = 2.6; }
       }
       wet(px, () => 0.5, BELLY, 0.7);
     }
     yield;
-    px.creaseInk(1.15, { dark: 1.3, lit: 0.7 });
+    // the form under the key light, then strokes along the sweep (none over the hair: the pelt has its own)
+    hp.form({ light: 2.2, ao: 2.0, cavity: 1.3, ridge: 0.7, lift: 0.2 });
+    hp.strokes({ len: [6, 14], width: [2, 3], amp: 0.55, mask: (i) => (mane[i] > 0.2 ? 0 : 1) });
+    if (part === 'skull' || part === 'jaw') hp.hollows([{ c: HODAG_EYE, r: 0.075, k: 1.4 }, { c: mir(HODAG_EYE, -1), r: 0.075, k: 1.4 }, ...[1, -1].flatMap((s2) => [{ c: H(s2 * 0.07, 0.004, 0.49), r: 0.03, k: 1.4 }, { c: H(s2 * 0.25, mouthY(-0.05), -0.05), r: 0.06, k: 1.2 }])]);
     if (part === 'skull') {
       // wet nostrils and a scar across the snout
-      wet(px, (i) => (isR(i, LEATHER) ? 1 : 0), LEATHER, 1.6);
+      wet(px, (i) => (isR(i, LEATHER) && px.step[i] < 1 ? 1 : 0), LEATHER, 1.2);
       px.scar([H(0.17, 0.08, 0.27), H(0.12, 0.09, 0.31), H(0.07, 0.085, 0.36)], 0.006, BONE);
     }
     px.flush();
@@ -235,14 +237,15 @@ function hidePaint(part: Part) {
 /** horn and plate: pale bone with growth bands near the root, darkening to a polished horn tip */
 const bonePaint = (tipAt: (x: number, y: number, z: number) => number, dark = 0.78) => (ch: Chart, _p: Piece, b: Body) => {
   const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
-  px.lightK = 0.8;
+  const hp = hand(px, { flow: 'sweep', seed: 13 });
   for (let i = 0; i < px.n; i++) {
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], t = tipAt(x, y, z);
     const ring = Math.abs(Math.sin(t * 34 + fbm3(x * 30, y * 30, z * 30, 2) * 0.6)) < 0.18;
     if (t > dark) { px.put(i, HORN, 2.4 + (t - dark) * 5 + (N[i * 3 + 1] > 0.3 ? 0.6 : 0)); px.rough[i] = 60; }
-    else { px.put(i, t < 0.15 ? OCHRE : BONE, 3.3 - t * 0.7 - (ring ? 1.1 : 0) - (t < 0.08 ? 1.2 : 0) + fbm3(x * 40, y * 40, z * 40, 2) * 0.4); px.rough[i] = 110; }
+    else { px.put(i, BONE, 3.3 - t * 0.7 - (ring ? 1.1 : 0) - (t < 0.08 ? 1.0 : 0) + fbm3(x * 40, y * 40, z * 40, 2) * 0.5); px.rough[i] = 120; }
   }
-  px.creaseInk(1, { dark: 1.2, lit: 1 });
+  hp.form({ light: 2.0, ao: 1.6, cavity: 1.4, ridge: 0.9, lift: 0.3 });
+  hp.strokes({ len: [5, 10], width: [2, 3], amp: 0.45 });
   px.glints(BONE, { mask: (i) => (tipAt(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]) > dark ? 1 : 0), every: 0.6, size: 0.05 });
   px.flush();
 };
@@ -321,10 +324,13 @@ export function* hodagModelGen(o: { page?: number; den?: number } = {}): ModelGe
   const E = HODAG_EYE;
   const skullDabs: Dab[] = [
     // the eye's socket, the heavy brow shelf over it (overhanging forward and out), the cheekbone under it
-    { c: E, r: 0.066, out: -0.03, sym: true, k: 2 },
-    { c: H(0.225, 0.1, 0.13), r: [0.065, 0.04, 0.1], out: 0.022, move: [0.03, -0.004, 0.022], sym: true, k: 2 },
-    { c: H(0.16, 0.135, 0.08), r: [0.07, 0.03, 0.1], out: 0.012, sym: true },
-    { c: H(0.275, 0.0, 0.07), r: [0.04, 0.03, 0.11], out: 0.022, sym: true },
+    { c: E, r: [0.09, 0.08, 0.11], out: 0.022, sym: true, k: 1.5 },
+    { c: E, r: 0.052, out: -0.02, sym: true, k: 2 },
+    { c: H(0.228, 0.14, 0.15), r: [0.075, 0.036, 0.095], out: 0.026, move: [0.034, -0.008, 0.03], sym: true, k: 2 },
+    { c: H(0.2, 0.15, 0.2), r: [0.035, 0.025, 0.03], out: 0.012, sym: true, k: 3 },
+    { c: H(0.24, 0.135, 0.1), r: [0.035, 0.025, 0.03], out: 0.012, sym: true, k: 3 },
+    { c: H(0.15, 0.17, 0.09), r: [0.07, 0.03, 0.11], out: 0.012, sym: true },
+    { c: H(0.272, 0.01, 0.06), r: [0.04, 0.032, 0.11], out: 0.02, sym: true },
     // the poll: a bony ridge across the back of the crown between the bosses, a dip down the forehead's midline
     { c: H(0, 0.15, -0.06), r: [0.18, 0.03, 0.04], out: 0.015 },
     { c: H(0, 0.16, 0.08), r: [0.05, 0.03, 0.12], out: -0.008 },
@@ -369,7 +375,7 @@ export function* hodagModelGen(o: { page?: number; den?: number } = {}): ModelGe
     return -0.007 * Math.pow(Math.abs(Math.sin(a * 7 + q[1] * 30)), 3) - 0.005 * Math.pow(Math.abs(Math.sin(q[1] * 90)), 6);
   });
   // a fat tongue lying in the jaw
-  const tg = body.add(stalk({ name: 'tongue', path: curve([[0, 0.594, 0.6], [0, 0.598, 0.74], [0, 0.6, 0.86], [0, 0.597, 0.97]], 5), r: (t) => 0.052 * (1 - t * 0.5), around: 8, sec: (a) => (Math.cos(a) > 0 ? 0.42 : 0.6), capS: true, capE: true, levels: 1, k: 1.1, skin: () => [bi('tongue'), 1], paint: tonguePaint }));
+  const tg = body.add(stalk({ name: 'tongue', path: curve([[0, 0.582, 0.6], [0, 0.572, 0.74], [0, 0.566, 0.86], [0, 0.562, 0.96]], 5), r: (t) => 0.046 * (1 - t * 0.5), around: 8, sec: (a) => (Math.cos(a) > 0 ? 0.36 : 0.5), capS: true, capE: true, levels: 1, k: 1.1, skin: () => [bi('tongue'), 1], paint: tonguePaint }));
   tg.reg = REG.mouth;
   // teeth: fangs at the front corners that stand over the lips, rows of pegs along both jaws
   let tk = 0;
@@ -387,10 +393,10 @@ export function* hodagModelGen(o: { page?: number; den?: number } = {}): ModelGe
   // almond of eye, the outer corner dropped (the brute looks sullen)
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(HODAG_EYE, s), ax: V3 = [s * HODAG_EYE_AX[0], HODAG_EYE_AX[1], HODAG_EYE_AX[2]];
-    const e = body.add(eyeball({ name: 'eye' + S, c, ax, r: EYE_R, bone: bi('eye' + S), iris: GOLD, pupil: 'slit', irisA: 0.78, sclera: RP('ochre'), k: 2.8, levels: 1, around: 12, catchlight: { side: s, at: [0.3, 0.42] } }));
+    const e = body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYE_R, bone: bi('eye' + S), iris: GOLD, pupil: 'slit', irisA: 0.8, pupilR: 0.16, sclera: RP('ochre'), side: s, k: 2.8 }));
     e.reg = REG.eye;
-    body.add(almondLid({ name: 'lid' + S, c, ax, r: EYE_R, bone: bi('lid' + S), side: s, open: 0.5, w: 0.95, tilt: -0.08, peak: -0.15, thick: 0.34, root: 2.1, skin: { R: HIDE, step: 2.4, lash: RP('ink') } })).reg = REG.head;
-    body.add(almondLid({ name: 'llid' + S, c, ax, r: EYE_R, bone: hb, side: s, lower: true, open: 0.36, w: 0.95, tilt: -0.08, thick: 0.3, root: 2.1, skin: { R: HIDE, step: 2.8, wet: LIP } })).reg = REG.head;
+    body.add(almondLid({ name: 'lid' + S, c, ax, r: EYE_R, bone: bi('lid' + S), side: s, open: 0.58, w: 0.95, tilt: -0.08, peak: -0.15, thick: 0.34, root: 2.1, skin: { R: HIDE, step: 2.4, lash: RP('ink') } })).reg = REG.head;
+    body.add(almondLid({ name: 'llid' + S, c, ax, r: EYE_R, bone: hb, side: s, lower: true, open: 0.42, w: 0.95, tilt: -0.08, thick: 0.3, root: 2.1, skin: { R: HIDE, step: 2.8, wet: BELLY } })).reg = REG.head;
   }
   // the horns: out of knobby bosses of bone either side of the poll, sweeping out, then forward and up, twisting as
   // they go, ringed with growth near the root, black and polished at the tips

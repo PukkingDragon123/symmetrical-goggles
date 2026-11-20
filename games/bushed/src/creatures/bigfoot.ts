@@ -20,6 +20,8 @@
 // eat (item), happy. `sound` is a suggested src/audio/bank.ts id (BIGFOOT_SOUND).
 // v7: a shaggy coat of real fur with physics (src/creatures/fur) and a face that moves (expression.ts): heavy
 // brows that rise and knit, slow blinks under leather lids, a curious head tilt, a lip that curls.
+// v9 (model bigfoot@9): a sculpted brow shelf over deep-set painted eyes in almond lids, a broad flat nose with flared
+// nostrils, thick lips, knuckled fingers and toes with nails, the coat hand-painted in brush strokes (handpaint.ts).
 import * as THREE from 'three';
 import { Skel, creatureMaterial, clamp, damp, dampAngle, wrapAngle, type CreatureFx } from './rig';
 import { Animator, FOOT, type AnimParams } from './animator';

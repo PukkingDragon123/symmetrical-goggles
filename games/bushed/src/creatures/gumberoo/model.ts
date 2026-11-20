@@ -1,181 +1,309 @@
 // THE GUMBEROO (Cox 1910: a big, round creature of the burned-over lands whose tough hide makes bullets and axes
-// bounce off; a forest fire is the only thing that can harm it). v3, a SCALY BEAST: a huge round body on four stumpy
-// pillar legs, no neck, a broad blunt face with a wide crooked grin; heavy armour: rows of thick domed plates
-// shingled down the back, a crest of keeled spikes, two blunt horns, heavy brow plates over big amber slit eyes; the
-// hide between is painted as overlapping keeled scales (big on the back, scutes on the belly, beads on the face and
-// legs), relief from the page as a bump map. Still rubbery: the whole armoured ball squashes and bounces.
-// Creature space: metres, +z forward, +y up, ground y = 0.
+// bounce off; a forest fire is the only thing that can harm it). v4, a SCALY BEAST: hulking and low-slung, the weight
+// on heavy shoulders under a hump of muscle, a sagging belly between short, powerful bowed legs on broad clawed feet; a
+// thick creased neck into a broad flat head with real jaws (an upper jaw over a heavy lower one, a crooked grin of
+// blunt pegs and two lower tusks), amber slit eyes on top of the skull under keeled brow plates, two blunt ringed horns
+// out of bony bosses. Armour: rows of thick keeled plates shingled down the back and the short tail, each tucked under
+// the one before (geometry, free edges toward the tail), smaller toward the flanks; the hide between is painted as
+// keeled scales running with the body, broad pale scutes across the belly and throat, beads on the face and legs, an
+// ember-rust stripe down the spine, soot and ash from the burn. Still rubbery: glossy, and the whole beast squashes and
+// bounces (gumberoo.ts).
+// Creature space: metres, +z forward, +y up, ground y = 0. Built with the anatomy library, hand-painted (handpaint.ts).
 import * as THREE from 'three';
-import { Body, trunk, limb, legRings, eyeball, eyelid, sac, bulbs, spine, gridSurf, chainSkin, Px, RP, h3, cl, runSync, runAsync, type V3, type Chart, type Piece, type Station, type LimbRing } from '../anatomy';
-import { fbm3, nz2 } from '../paintkit';
+import {
+  Body, trunk, limb, legRings, paintedEye, lids, lidPaint, mouthWebs, stalk, gridSurf, chainSkin, newCM, tube, creaseRow, creaseCol, curve,
+  Px, RP, hand, h3, cl, runSync, runAsync, type V3, type Chart, type Piece, type Station, type LimbRing, type Ring, type Grid, type Wt,
+} from '../anatomy';
 import type { BoneDef } from '../rig';
 
-export const GUMBEROO_MODEL_VERSION = 'gumberoo@4';
+export const GUMBEROO_MODEL_VERSION = 'gumberoo@5';
 export interface GumberooModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
-export const GB = { root: [0, 0.82, 0] as V3, head: [0, 0.86, 0.5] as V3, eye: [0.18, 1.04, 0.75] as V3,
-  fl: { hip: [0.36, 0.42, 0.36] as V3, knee: [0.4, 0.22, 0.4] as V3, sole: [0.42, 0.0, 0.42] as V3 },
-  hl: { hip: [0.38, 0.42, -0.36] as V3, knee: [0.42, 0.22, -0.4] as V3, sole: [0.43, 0.0, -0.42] as V3 } };
+export const GB = { root: [0, 0.74, 0] as V3, head: [0, 0.88, 0.56] as V3, jaw: [0, 0.76, 0.66] as V3, eye: [0.205, 1.0, 0.86] as V3,
+  fl: { hip: [0.4, 0.5, 0.36] as V3, knee: [0.49, 0.26, 0.43] as V3, sole: [0.5, 0.0, 0.42] as V3 },
+  hl: { hip: [0.38, 0.5, -0.42] as V3, knee: [0.47, 0.25, -0.5] as V3, sole: [0.48, 0.0, -0.44] as V3 } };
 const mir = (p: V3, s: number): V3 => [p[0] * s, p[1], p[2]];
 
 export function gumberooBones(): BoneDef[] {
   const b: BoneDef[] = [];
   const A = (name: string, parent: string | null, pos: V3) => b.push({ name, parent: parent ? b.findIndex((x) => x.name === parent) : -1, pos: pos as [number, number, number] });
   A('root', null, GB.root);
-  A('belly', 'root', [0, 0.5, 0]);
+  A('belly', 'root', [0, 0.42, 0]);
   A('head', 'root', GB.head);
-  A('jaw', 'head', [0, 0.68, 0.62]);
+  A('jaw', 'head', GB.jaw);
   A('eyeL', 'head', GB.eye); A('eyeR', 'head', mir(GB.eye, -1));
-  A('tail', 'root', [0, 0.85, -0.78]);
+  A('tail', 'root', [0, 0.74, -0.72]);
   for (const [s, sd] of [['L', 1], ['R', -1]] as const) { A('brow' + s, 'head', mir(BROWS, sd)); A('lid' + s, 'head', mir(GB.eye, sd)); }
   for (const [k, leg] of [['f', GB.fl], ['h', GB.hl]] as const) for (const [s, sd] of [['L', 1], ['R', -1]] as const) {
-    A(k + 'u' + s, 'root', mir(leg.hip, sd)); A(k + 'l' + s, k + 'u' + s, mir(leg.knee, sd)); A(k + 'f' + s, k + 'l' + s, mir([leg.sole[0], 0.045, leg.sole[2]], sd));
+    A(k + 'u' + s, 'root', mir(leg.hip, sd)); A(k + 'l' + s, k + 'u' + s, mir(leg.knee, sd)); A(k + 'f' + s, k + 'l' + s, mir([leg.sole[0], 0.05, leg.sole[2]], sd));
   }
   return b;
 }
 
-const HIDE = RP('olive'), BLACK = RP('basalt'), SOOT = RP('ink'), ASH = RP('stone'), AMBER = RP('glowAmber'), GUM = RP('gum'), BELLY = RP('sand'), EMBER = RP('rust'), PLATE = RP('slate');
-/** the face's moving parts (v3): heavy brow plates, eyelids */
-export const GB_EYE_AX: V3 = [0.55, 0.15, 0.82];
-const BROWS: V3 = [0.18, 1.105, 0.735];
-/** the scaly hide: big keeled scales shingled down the back (tips to the tail), broad pale scutes across the belly,
- *  small beaded scales on the face and legs; dark olive and charcoal, an ember-rust stripe down the spine, soot and
- *  ash from the burn, each scale lit on its upper edge with a dark outline, glossy where it is worn */
+const HIDE = RP('olive'), DARK = RP('basalt'), SOOT = RP('ink'), ASH = RP('stone'), AMBER = RP('glowAmber'), GUM = RP('gum'), BELLY = RP('sand'), EMBER = RP('rust'), PLATE = RP('slate'), BONE = RP('bone'), HORN = RP('horn');
+/** the face's moving parts: heavy brow plates over the eyes, eyelids */
+export const GB_EYE_AX: V3 = [0.5, 0.32, 0.8];
+const BROWS: V3 = [0.2, 1.065, 0.84];
+const EYER = 0.05;
+/** the lower jaw's half width at z (for the painters) */
+const wJaw = (z: number) => (z < 0.62 ? 0.29 : z > 1.095 ? 0.06 : 0.29 + (z - 0.62) * 0.05 - Math.max(0, z - 0.8) * 0.75);
+/** the mouth line (y) at z: a long crooked grin, the corners low, rising a little to the front */
+const mouthY = (z: number, x = 0) => 0.775 + cl((z - 0.7) / 0.4, 0, 1) * 0.02 - 0.012 * Math.sin(x * 7);
+
+// ------------------------------------------------------------------------------------------------ paint
+/** the hide: dark olive and charcoal, an ember stripe down the spine, pale sand scutes across the belly and throat,
+ *  keeled scales running with the body on the back and flanks, beads on the face and legs; soot low down, ash caked on
+ *  the feet; painted light, brush-broken colour masses, glossy */
 function hidePaint(ch: Chart, _p: Piece, b: Body) { return hideGen(ch, b); }
 function* hideGen(ch: Chart, b: Body) {
-  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, mpt = px.mpt;
-  px.lightK = 0.8;
-  const back = new Float32Array(px.n), belly = new Float32Array(px.n), small = new Float32Array(px.n);
-  for (let i = 0; i < px.n; i++) {
+  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, n = px.n;
+  const back = new Float32Array(n), belly = new Float32Array(n), small = new Float32Array(n), mouth = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
     if ((i & 8191) === 0) yield;
     const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], ny = N[i * 3 + 1], ax = Math.abs(x);
-    const m = fbm3(x * 3, y * 3, z * 3, 3);
-    const face = z > 0.74 && ax < 0.3 && y > 0.5 && y < 0.95;
-    const leg = y < 0.42;
-    // the colour: charcoal and dark olive patches, an ember stripe down the spine, pale sand scutes underneath
-    // two broad tones (dark olive on the back, charcoal down the flanks), the scales carry the detail
-    const flank = ny < 0.35 + nz2(x * 3, z * 3) * 0.25;
-    let R = flank ? BLACK : HIDE, st = (flank ? 2.6 : 2.2) + (m > 0.3 ? 0.4 : 0), rough = 120;
-    if (ny > 0.6 && ax < 0.1 + nz2(z * 6, 1) * 0.03 && !face) { R = EMBER; st = 1.3 + m * 0.4; }
-    if (ny < -0.35 && !leg) { R = BELLY; st = 2.8 + m * 0.4; rough = 170; }
-    // the mouth: a long crooked grin across the blunt face, gum dark inside, a scaly lip above it
-    const grin = y - (0.66 + 0.06 * Math.pow(ax / 0.34, 2) + 0.01 * Math.sin(x * 9));
-    if (z > 0.55 && ax < 0.36) {
-      if (Math.abs(grin) < mpt * 1.6) { px.put(i, GUM, 0.6); px.rough[i] = 60; continue; }
-      if (grin > 0 && grin < 0.02) st += 0.8;
-      if (grin < 0 && grin > -0.012) st -= 0.7;
+    const head = z > 0.6 && y > 0.55;
+    const leg = y < 0.36 && ax > 0.25;
+    px.put(i, HIDE, 2.7); px.rough[i] = 120;
+    // the mouth: the grin's dark seam, the gum showing inside
+    if (head && z > 0.62) {
+      const g = y - mouthY(z, x);
+      if (ny > 0.45 && g < 0.012 && g > -0.07 && ax < wJaw(z) * 0.86) { px.put(i, GUM, 3.2 - Math.abs(x) * 4); px.rough[i] = 150; mouth[i] = 1; continue; } // the tongue bed
+      if (Math.abs(g) < px.mpt * 1.5 && ax < 0.33) { px.put(i, GUM, 0.8); px.rough[i] = 150; mouth[i] = 1; continue; }
+      if (ny < -0.6 && g < 0.02 && g > -0.06 && ax < 0.26) { px.put(i, GUM, 2.4); mouth[i] = 1; continue; } // the palate
     }
-    // nostrils: two dark slots on the blunt snout
-    for (const sx of [1, -1]) if (z > 0.7 && Math.hypot((x - sx * 0.07) * 1.0, (y - 0.82) * 2.2) < 0.022) { st = 0.2; R = BLACK; }
-    // soot and ash from the burn: dark smudges low down, grey ash caked on the feet
-    const soot = fbm3(x * 5 + 9, y * 5, z * 5, 3);
-    if (soot > 0.38 && y < 0.75) { R = SOOT; st = 1 + soot; rough = 200; }
-    if (y < 0.1) { R = ASH; st = 2.4 + m; rough = 230; }
-    px.put(i, R, st); px.rough[i] = rough;
-    if (face || leg) small[i] = 1; else if (ny < -0.35) belly[i] = 1; else back[i] = 1;
+    // nostrils: two dark pits on the snout, a rim lit above
+    for (const sx of [1, -1]) { const d = Math.hypot((x - sx * 0.07) * 1.2, (y - 0.875) * 2.0, (z - 1.07) * 0.8); if (d < 0.018) { px.put(i, SOOT, 0.2); mouth[i] = 1; } else if (d < 0.03) px.mark[i] += y > 0.875 ? 1.0 : -0.6; }
+    if (mouth[i]) continue;
+    if (head || leg) small[i] = 1; else if (ny < -0.3) belly[i] = 1; else back[i] = 1;
   }
   yield;
-  // big keeled scales on the back and flanks (biggest along the spine), broad scutes on the belly, beads elsewhere
-  px.scales({ size: 0.16, kind: 'keel', flow: -1, mask: (i) => back[i], sizeK: (i) => 0.65 + 0.5 * Math.max(0, px.gb.N[i * 3 + 1]), ink: 3, lit: 1.8, shade: 1.6, seed: 5 });
+  const hp = hand(px, { flow: [0, -0.15, -1], seed: 23 });
+  const ss = (x: number) => { const t = cl(x, 0, 1); return t * t * (3 - 2 * t); };
+  hp.zones([
+    // the charred back: a dark saddle the plates lie on, its edge wandering down the flanks
+    { w: (p, nn) => ss((nn[1] - 0.42 + 0.12 * Math.sin(p[2] * 5 + p[0] * 3)) / 0.2 + 0.5) * (p[1] > 0.6 ? 1 : 0), ramp: DARK, step: 2.4 },
+    // a dark mask round the eyes and down the snout
+    { w: (p) => (p[2] > 0.7 ? 1.3 - Math.hypot((Math.abs(p[0]) - 0.19) / 0.11, (p[1] - 1.0) / 0.07, (p[2] - 0.86) / 0.12) : 0), ramp: DARK, step: 2.2 },
+    // the pale belly and throat scutes
+    { w: (p, nn) => ss((-0.28 - nn[1]) / 0.2 + 0.5) * (p[1] < 0.7 || p[2] > 0.3 ? 1 : 0), ramp: BELLY, step: 3.0 },
+    // the ember stripe down the spine and the tail
+    { w: (p, nn) => ss((0.07 + 0.015 * Math.sin(p[2] * 13) - Math.abs(p[0])) / 0.03 + 0.5) * ss((nn[1] - 0.5) / 0.2) * ss((0.22 - p[2]) / 0.1), ramp: EMBER, step: 2.4 },
+    // a paler lip line and chin
+    { w: (p) => (p[2] > 0.7 && p[1] < mouthY(p[2], p[0]) && p[1] > 0.6 ? ss((p[2] - 0.75) / 0.1) : 0), ramp: HIDE, step: 3.8 },
+    // soot from the burn low on the flanks and legs, ash caked on the feet
+    { w: (p) => ss((0.17 - p[1]) / 0.08) * (0.55 + 0.45 * Math.sin(p[0] * 9 + p[2] * 7)), ramp: DARK, step: 2.0 },
+    { w: (p) => ss((0.05 - p[1]) / 0.02 + 0.5), ramp: ASH, step: 4.0 },
+  ], { soft: 0.7, edge: 0.35, mask: (i) => (mouth[i] ? 0 : 1) });
   yield;
-  px.scales({ size: 0.1, kind: 'scute', flow: -1, mask: (i) => belly[i], ink: 2, lit: 0.9, shade: 0.9, seed: 9 });
+  hp.form({ light: 2.2, ao: 2.4, cavity: 1.5, ridge: 0.9 });
   yield;
-  px.pebbles(0.022, { mask: (i) => small[i], depth: 1.2, seed: 13 });
+  // keeled scales on the back and flanks (biggest along the spine), scutes on the belly, beads on the face and legs
+  px.scales({ size: 0.1, kind: 'keel', flow: -1, mask: (i) => back[i], sizeK: (i) => 0.75 + 0.4 * Math.max(0, px.gb.N[i * 3 + 1]), ink: 2.2, lit: 1.2, shade: 1.1, seed: 5 });
   yield;
-  px.creaseInk(1.2, { dark: 1.1, lit: 0.6 });
-  px.glints(PLATE, { every: 0.3, size: 0.3 });
+  px.scales({ size: 0.1, kind: 'scute', flow: -1, mask: (i) => belly[i], ink: 1.8, lit: 0.8, shade: 0.8, seed: 9 });
+  yield;
+  px.pebbles(0.024, { mask: (i) => small[i], depth: 1.0, seed: 13 });
+  yield;
+  hp.strokes({ flow: 'across', len: [3, 6], width: [2, 3], amp: 0.4, lit: 0.8, mask: (i) => (mouth[i] ? 0 : 1) });
+  hp.hollows([1, -1].map((s) => ({ c: mir(GB.eye, s), r: 0.09, k: 1.4 })));
+  hp.hollows([1, -1].map((s) => ({ c: [s * 0.3, mouthY(0.7), 0.7] as V3, r: 0.07, k: 1.2 })));
+  px.glints(PLATE, { every: 0.3, size: 0.3, mask: (i) => (mouth[i] ? 0 : 1) });
   yield;
   px.flush();
 }
-/** the armour plates: thick slate shields with growth ridges, ember-rust worn edges, soot */
-function platePaint(ch: Chart, _p: Piece, b: Body) {
-  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N;
-  px.lightK = 0.9;
+/** the armour plates: slate horn with growth rings round the root, a lit keel, ember-rust worn edges, soot in the
+ *  rings; glossy */
+function platePaint(ch: Chart, p: Piece, b: Body) {
+  const px = new Px(ch, b), P = px.gb.P, N = px.gb.N, K = px.gb.K;
+  const roots = (p as Piece & { roots?: V3[] }).roots ?? [];
   for (let i = 0; i < px.n; i++) {
-    const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], m = fbm3(x * 8, y * 8, z * 8, 2);
-    const ridge = Math.abs(Math.sin((x * 3 + y * 7 + z * 5) * 40 + m * 3)) < 0.18;
-    let R = PLATE, st = 1.8 + m * 0.7 - (ridge ? 0.8 : 0) + (N[i * 3 + 1] > 0.7 ? 0.6 : 0) + (px.gb.K[i] > 0.6 ? 0.9 : 0);
-    // scorched: soot in the hollows, a few rust-red flecks where the fire licked it
-    if (fbm3(x * 6 + 3, y * 6, z * 6, 2) > 0.3) { R = SOOT; st = 1.2 + m; }
-    else if (fbm3(x * 20, y * 20 + 7, z * 20, 2) > 0.42) { R = EMBER; st = 1.6 + m; }
-    px.put(i, R, st); px.rough[i] = 110;
+    const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2];
+    let d = 1e9; for (const r of roots) d = Math.min(d, Math.hypot(x - r[0], y - r[1], z - r[2]));
+    const ring = (d * 70) % 1 < 0.22;
+    let R = DARK, st = 3.0 - (ring ? 1.0 : 0);
+    if (K[i] > 0.45) { R = EMBER; st = N[i * 3 + 1] > 0.3 ? 3.4 : 2.2; } // the worn keel and the rim scorched ember-red
+    px.put(i, R, st); px.rough[i] = 95;
   }
-  px.creaseInk(1.3, { dark: 1.2, lit: 0.8 });
-  px.glints(PLATE, { every: 0.2, size: 0.3 });
+  const hp = hand(px, { flow: 'sweep', seed: 31 });
+  hp.zones([{ w: (q) => 0.5 + 0.6 * Math.sin(q[0] * 11 + q[2] * 9) - 0.4, ramp: SOOT, step: 2.0 }, { w: (q) => 0.6 * Math.sin(q[0] * 7 - q[2] * 13 + 2) - 0.1, ramp: HIDE, step: 2.2 }], { soft: 0.8 });
+  hp.form({ light: 2.4, ao: 2.6, cavity: 1.8, ridge: 1.3 });
+  hp.strokes({ len: [3, 6], width: [1, 2], amp: 0.5 });
+  px.glints(PLATE, { every: 0.35, size: 0.25 });
+  px.flush();
+}
+function hornPaint(ch: Chart, _p: Piece, b: Body) {
+  const px = new Px(ch, b);
+  for (let i = 0; i < px.n; i++) { px.put(i, BONE, 2.6 + (px.Y[Math.floor(i / px.w)] * 60 % 1 < 0.25 ? -0.8 : 0)); px.rough[i] = 120; }
+  const hp = hand(px, { flow: 'sweep', seed: 37 });
+  hp.zones([{ w: (_q, _n, i) => 1 - px.Y[Math.floor(i / px.w)] / Math.max(0.01, px.Y[px.h - 1]) * 1.6 + 0.4, ramp: DARK, step: 2.2 }], { soft: 0.6 });
+  hp.form({ light: 2.2, ao: 1.6, ridge: 1.2 }).strokes({ len: [4, 8], width: [1, 2], amp: 0.5 });
+  px.flush();
+}
+function gumPaint(ch: Chart, _p: Piece, b: Body) {
+  const px = new Px(ch, b);
+  px.base(() => [GUM, 2.0]);
+  hand(px, { flow: 'sweep' }).form({ light: 1.2, ao: 0.4 }).strokes({ len: [3, 5], width: [1, 2], amp: 0.5 });
+  for (let i = 0; i < px.n; i++) px.rough[i] = 150;
+  px.flush();
+}
+function toothPaint(ch: Chart, _p: Piece, b: Body) {
+  const px = new Px(ch, b);
+  px.base(() => [BONE, 3.8]);
+  hand(px, { flow: 'sweep' }).form({ light: 1.6, ao: 0.6, ridge: 1 });
+  for (let i = 0; i < px.n; i++) px.rough[i] = 70;
+  px.flush();
+}
+function clawPaint(ch: Chart, _p: Piece, b: Body) {
+  const px = new Px(ch, b), N = px.gb.N;
+  for (let i = 0; i < px.n; i++) { px.put(i, HORN, 1.8 + (N[i * 3 + 1] > 0.4 ? 1 : 0)); px.rough[i] = 80; }
+  hand(px, { flow: 'sweep' }).form({ light: 1.8, ao: 0.8, ridge: 1.4 });
   px.flush();
 }
 
+// ------------------------------------------------------------------------------------------------ armour plates
+/** thick keeled shield plates, each lying on the surface with its free edge toward the tail and lifted off it, its root
+ *  tucked under the plate before: `at` its root, `n` the surface normal there, `d` the direction along the body toward
+ *  the tail, w/l/t half width, length, thickness. One piece of many grids. */
+function plates(name: string, seats: { at: V3; n: V3; d: V3; w: number; l: number; t: number; lift?: number }[], skin: (p: V3) => Wt, paint: (c: Chart, p: Piece, b: Body) => void): Piece {
+  const m = newCM(), grids: Grid[] = [];
+  const nr = (a: V3): V3 => { const q = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / q, a[1] / q, a[2] / q]; };
+  const cr = (a: V3, c: V3): V3 => [a[1] * c[2] - a[2] * c[1], a[2] * c[0] - a[0] * c[2], a[0] * c[1] - a[1] * c[0]];
+  for (const s of seats) {
+    const N0 = nr(s.n), S = nr(cr(N0, s.d)), D = nr(cr(S, N0)), lift = s.lift ?? 0.28;
+    // the plate's own up: the surface normal tipped back so the free edge stands off the hide
+    const U = nr([N0[0] - D[0] * lift, N0[1] - D[1] * lift, N0[2] - D[2] * lift]), Dd = nr(cr(S, U));
+    const rings: Ring[] = [];
+    const ST: [number, number][] = [[-0.05, 0.55], [0.3, 0.96], [0.65, 0.9], [0.9, 0.5], [1.0, 0.12]];
+    for (const [f, k] of ST) {
+      const c: V3 = [s.at[0] + Dd[0] * s.l * f - N0[0] * s.t * 0.6, s.at[1] + Dd[1] * s.l * f - N0[1] * s.t * 0.6, s.at[2] + Dd[2] * s.l * f - N0[2] * s.t * 0.6];
+      const w = s.w * k, t = s.t * (0.55 + 0.45 * k);
+      // a lens of a section with a keel on top and a flat underside
+      rings.push({ c, x: S, y: U, pts: [[-w, 0], [-w * 0.55, t * 0.66], [0, t * 1.15], [w * 0.55, t * 0.66], [w, 0], [w * 0.45, -t * 0.36], [-w * 0.45, -t * 0.36]] });
+    }
+    const g = tube(m, rings, { tag: 0, capS: true, capE: true });
+    creaseCol(m, g, 2, 0, ST.length - 1, 1.5, true); creaseRow(m, g, ST.length - 2, 1);
+    grids.push(g);
+  }
+  const roots = seats.map((s) => s.at);
+  return { name, m, grids, levels: 1, skin, paint, k: 1.15, ...{ roots } } as Piece;
+}
+
+// ------------------------------------------------------------------------------------------------ the build
 export function* gumberooModelGen(o: { page?: number; den?: number } = {}): Generator<string | void, GumberooModel> {
   const bones = gumberooBones(), bi = (n: string) => bones.findIndex((b) => b.name === n);
   const body = new Body(o.page ?? 1024);
+  // the body: a short thick tail, heavy haunches, the belly sagging between the legs, a hump of muscle over the
+  // shoulders, a thick creased neck running up into the back of the head
   const st: Station[] = [
-    { c: [0, 0.86, -0.82], s: [0.06, 0.06], p: 'round' },
-    { c: [0, 0.84, -0.74], s: [0.3, 0.3], p: 'round' },
-    { c: [0, 0.82, -0.58], s: [0.56, 0.54], p: 'round' },
-    { c: [0, 0.8, -0.3], s: [0.72, 0.68], p: 'barrel' },
-    { c: [0, 0.8, 0.0], s: [0.78, 0.72], p: 'barrel' },
-    { c: [0, 0.81, 0.3], s: [0.72, 0.66], p: 'barrel' },
-    { c: [0, 0.83, 0.52], s: [0.56, 0.52], p: 'round' },
-    { c: [0, 0.84, 0.68], s: [0.4, 0.36], p: 'round' },
-    { c: [0, 0.82, 0.78], s: [0.2, 0.17], p: 'round' },
-    { c: [0, 0.81, 0.81], s: [0.04, 0.04], p: 'round' },
+    { c: [0, 0.5, -1.42], s: [0.04, 0.035], p: 'ridge' },
+    { c: [0, 0.56, -1.22], s: [0.1, 0.085], p: 'ridge' },
+    { c: [0, 0.63, -1.0], s: [0.19, 0.16], p: 'ridge' },
+    { c: [0, 0.69, -0.78], s: [0.32, 0.27], p: 'keel' },
+    { c: [0, 0.71, -0.55], s: [0.47, 0.4], p: 'hips', tw: [[3, 0.04, 0.02]] },
+    { c: [0, 0.67, -0.3], s: [0.53, 0.42], p: 'sack' },
+    { c: [0, 0.67, -0.04], s: [0.58, 0.44], p: 'pear' },
+    { c: [0, 0.72, 0.2], s: [0.62, 0.47], p: 'hump' },
+    { c: [0, 0.77, 0.38], s: [0.53, 0.4], p: 'hump' },
+    { c: [0, 0.82, 0.5], s: [0.41, 0.31], p: 'crest' },
+    { c: [0, 0.87, 0.6], s: [0.33, 0.24], p: 'crest' },
   ];
-  const J: V3[] = [[0, 0.85, -0.9], [0, 0.85, -0.7], [0, 0.82, 0.4], [0, 0.85, 0.6], [0, 0.85, 1.0]];
-  const sk = chainSkin(J, [bi('tail'), bi('root'), bi('root'), bi('head')], 0.5);
-  const skin = (p: V3) => {
+  const J: V3[] = [[0, 0.5, -1.5], [0, 0.69, -0.78], [0, 0.72, -0.5], [0, 0.78, 0.38], [0, 0.88, 0.56], [0, 0.9, 1.2]];
+  const sk = chainSkin(J, [bi('tail'), bi('root'), bi('root'), bi('root'), bi('head')], 0.45);
+  const skin = (p: V3): Wt => {
     const w = sk(p);
-    // below the grin the face rides the jaw (the mouth opens), the belly sags on its own bone
-    const ax = Math.abs(p[0]), grin = p[1] - (0.66 + 0.06 * Math.pow(ax / 0.34, 2));
-    if (p[2] > 0.5 && grin < 0 && grin > -0.2 && ax < 0.4) { const k = cl(-grin / 0.03, 0, 1) * cl((p[2] - 0.5) / 0.12, 0, 1); return [bi('head'), 1 - k, bi('jaw'), k]; }
-    return p[1] < 0.55 && p[2] > -0.6 && p[2] < 0.5 ? [w[0], (w[1] ?? 1) * 0.6, bi('belly'), 0.4] : w;
+    // the belly sags on its own bone
+    return p[1] < 0.5 && p[2] > -0.6 && p[2] < 0.42 ? [w[0], (w[1] ?? 1) * 0.6, bi('belly'), 0.4] : w;
   };
-  const torso = body.add(trunk({ name: 'trunk', stations: st, tween: 1, capS: true, capE: true, levels: 1, k: 1.2, skin, paint: hidePaint }));
+  const torso = body.add(trunk({ name: 'trunk', stations: st, tween: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0], capS: true, capE: false, levels: 1, k: 1.2, skin, paint: hidePaint,
+    rings: [{ at: 9, s: 0.6 }, { at: 3, s: 0.5 }] }));
   body.finalize(torso);
   yield 'trunk';
-  // the armour: rows of thick domed plates shingled down the back (each tipped toward the tail), a crest of keeled
-  // spikes along the spine, two blunt horns
-  const g = torso.grids[0], plates: { p: V3; n: V3; r: number; h: number }[] = [], spikes: { p: V3; n: V3 }[] = [];
-  for (let r = 0; r < 7; r++) {
-    const v = 0.17 + r * 0.068;
-    for (const u of [0.5, 0.42, 0.58, 0.34, 0.66]) {
-      const uu = u + (r % 2 ? 0.03 : -0.03) * (u === 0.5 ? 0 : 1);
-      if (Math.abs(uu - 0.5) > 0.12 && (r < 1 || r > 5)) continue;
-      const q = gridSurf(torso.m, g, uu, v);
-      if (q.n[1] < 0.05) continue;
-      const tilt = norm(add(q.n, [0, 0, -0.55]));
-      const big = 1 - Math.abs(uu - 0.5) * 2.2;
-      if (u === 0.5) { spikes.push({ p: q.p, n: norm(add(q.n, [0, 0, -0.5])) }); continue; }
-      plates.push({ p: add(q.p, [-q.n[0] * 0.02, -q.n[1] * 0.02, -q.n[2] * 0.02]), n: tilt, r: 0.07 + 0.035 * big, h: 0.04 + 0.02 * big });
+
+  // ---- the head: a broad flat skull over a heavy lower jaw
+  const hb = bi('head'), jb = bi('jaw');
+  const HD: { z: number; top: number; w: number }[] = [
+    { z: 0.55, top: 1.02, w: 0.3 }, { z: 0.64, top: 1.06, w: 0.34 }, { z: 0.73, top: 1.075, w: 0.335 }, { z: 0.81, top: 1.08, w: 0.31 },
+    { z: 0.89, top: 1.05, w: 0.28 }, { z: 0.96, top: 1.0, w: 0.25 }, { z: 1.02, top: 0.95, w: 0.21 }, { z: 1.07, top: 0.905, w: 0.165 }, { z: 1.1, top: 0.86, w: 0.1 },
+  ];
+  const eyeSink = (x: number, y: number, z: number) => Math.exp(-(((y - GB.eye[1]) / 0.06) ** 2) - (((z - GB.eye[2]) / 0.07) ** 2)) * (x > 0.1 ? 1 : 0);
+  const headSt: Station[] = HD.map((s) => {
+    const ym = mouthY(s.z), top = s.top, w = s.w, mid = (top + ym) / 2, cy = mid;
+    const pts: [number, number][] = [[0, top], [w * 0.46, top - 0.012], [w * 0.8, top - 0.04], [w * 0.98, mid + (top - mid) * 0.35], [w * 1.03, mid], [w * 1.01, ym + 0.05], [w * 0.97, ym + 0.014], [w * 0.86, ym], [0, ym + 0.012]];
+    for (const q of pts) { const sinkK = eyeSink(q[0], q[1], s.z); q[0] -= sinkK * 0.05; q[1] -= sinkK * 0.02; }
+    return { c: [0, cy, s.z] as V3, s: [1, 1] as [number, number], p: pts.map(([x, y]) => [x, y - cy]) };
+  });
+  body.add(trunk({ name: 'skull', stations: headSt, tween: 1, capS: true, capE: true, levels: 1, k: 1.8, skin: (p) => (p[2] < 0.6 ? [hb, 0.6, bi('root'), 0.4] : [hb, 1]), paint: hidePaint,
+    cols: [{ j: 7, a: 1, b: HD.length - 1, s: 1.5 }, { j: 2, a: 1, b: 5, s: 0.8 }] }));
+  const JD: { z: number; bot: number; w: number }[] = [
+    { z: 0.62, bot: 0.64, w: 0.29 }, { z: 0.72, bot: 0.6, w: 0.315 }, { z: 0.83, bot: 0.6, w: 0.29 }, { z: 0.93, bot: 0.62, w: 0.25 }, { z: 1.01, bot: 0.65, w: 0.2 }, { z: 1.07, bot: 0.69, w: 0.14 }, { z: 1.095, bot: 0.73, w: 0.08 },
+  ];
+  const jawSt: Station[] = JD.map((s) => {
+    const ym = mouthY(s.z) - 0.004, b = s.bot, w = s.w, cy = (ym + b) / 2;
+    const pts: [number, number][] = [[0, ym], [w * 0.8, ym], [w * 0.97, ym - 0.016], [w * 1.0, ym - (ym - b) * 0.35], [w * 0.96, ym - (ym - b) * 0.62], [w * 0.82, ym - (ym - b) * 0.85], [w * 0.55, b + 0.01], [w * 0.2, b], [0, b - 0.004]];
+    return { c: [0, cy, s.z] as V3, s: [1, 1] as [number, number], p: pts.map(([x, y]) => [x, y - cy]) };
+  });
+  body.add(trunk({ name: 'jaw', stations: jawSt, tween: 0, capS: true, capE: true, levels: 1, k: 1.5, skin: () => [jb, 1], paint: hidePaint, cols: [{ j: 2, a: 0, b: JD.length - 1, s: 1.2 }] }));
+  // blunt peg teeth along the grin, two tusks up out of the lower jaw at the front
+  let tk = 0;
+  for (const s of [1, -1]) {
+    for (const [z, up, len, r] of [[0.8, 1, 0.025, 0.014], [0.88, 1, 0.022, 0.013], [0.95, 1, 0.022, 0.012], [0.85, -1, 0.024, 0.014], [0.93, -1, 0.022, 0.012], [1.0, -1, 0.06, 0.02]] as [number, number, number, number][]) {
+      const w = (HD.find((q) => q.z >= z) ?? HD[HD.length - 1]).w * 0.8, y = mouthY(z) + (up > 0 ? 0.004 : -0.006);
+      body.add(stalk({ name: 'tooth' + tk++, path: [[s * w, y + up * 0.014, z], [s * w, y, z], [s * w * 1.0, y - up * len * 0.6, z + (up < 0 ? 0.005 : 0)], [s * w * 0.98, y - up * len, z + (up < 0 ? 0.01 : 0)]], r: (t) => r * (1 - t * t * 0.75), around: 6, capE: true, levels: 0, skin: () => [up > 0 ? hb : jb, 1], paint: toothPaint }));
     }
   }
-  body.add(bulbs({ name: 'plates', seats: plates, skin, paint: platePaint, levels: 1, k: 1.1, around: 7 }));
-  spikes.forEach((sp, k) => body.add(spine({ name: 'spike' + k, at: sp.p, dir: sp.n, len: 0.1 + 0.05 * Math.sin((k / spikes.length) * Math.PI), r: 0.045, skin, paint: platePaint, levels: 1, around: 6 })));
-  for (const s of [1, -1]) body.add(spine({ name: 'horn' + (s > 0 ? 'L' : 'R'), at: [s * 0.16, 1.12, 0.6], dir: [s * 0.35, 1, -0.35], len: 0.16, r: 0.045, skin: () => [bi('head'), 1], paint: platePaint, levels: 1, around: 7 }));
-  yield 'armour';
+  // the cheeks and throat that close the sides and back of the grin as the jaw drops
+  body.add(mouthWebs({ name: 'mouthweb', corner: [0.26, mouthY(0.78), 0.78], back: 0.1, half: 0.012, throat: 0.2, upper: hb, lower: jb, paint: gumPaint }));
+  yield 'head';
+  // eyes on top of the skull under heavy keeled brow plates; lids close down over them
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(GB.eye, s), ax: V3 = [s * GB_EYE_AX[0], GB_EYE_AX[1], GB_EYE_AX[2]];
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: 0.046, bone: bi('eye' + S), iris: AMBER, pupil: 'slit', irisA: 0.7, sclera: RP('bone'), k: 3, levels: 1, around: 10, catchlight: { side: s, at: [0.3, 0.42] } }));
-    body.add(eyelid({ name: 'lid' + S, c, ax, r: 0.046, bone: bi('lid' + S), paint: platePaint, cover: 1.05, root: 2.2 })).levels = 0;
-    // a heavy brow plate over each eye: it lowers into a glower, lifts in surprise
-    body.add(sac({ name: 'brow' + S, at: mir(BROWS, s), n: norm([s * 0.3, 1, 0.55]), r: [0.075, 0.038, 0.024], skin: () => [bi('brow' + S), 1], paint: platePaint, levels: 1, k: 1.6, sink: 0.25 }));
+    body.add(paintedEye({ name: 'eye' + S, c, ax, r: EYER, bone: bi('eye' + S), iris: AMBER, pupil: 'slit', irisA: 0.82, pupilR: 0.13, side: s, glint: [0.3, 0.42], glintR: 0.2, k: 3, around: 10 }));
+    const lp = lids({ name: 'lid' + S, c, ax, r: EYER, bone: bi('lid' + S), lowBone: hb, upper: 0.5, lower: 0.72, corner: 1.25, tilt: 0.12, side: s, thick: 0.28, thickLo: 0.2, k: 1.6,
+      paint: lidPaint(HIDE, 3, { c, ax, r: EYER, lash: SOOT }) });
+    lp[0].name = 'lid' + S; lp[1].name = 'lidLo' + S; lp[1].paint = lidPaint(DARK, 3, { c, ax, r: EYER, lower: true });
+    for (const q of lp) { q.levels = 0; body.add(q); }
+    // the brow plate: a thick keeled shield over the eye on the brow bone
+    const bc = mir(BROWS, s);
+    body.add(plates('brow' + S, [{ at: [bc[0] - s * 0.07, bc[1] + 0.01, bc[2] + 0.05], n: [s * 0.35, 1, 0.25], d: [s * 0.9, -0.2, -0.4], w: 0.06, l: 0.17, t: 0.028, lift: 0.05 }], () => [bi('brow' + S), 1], platePaint));
+    // a blunt ringed horn out of a bony boss behind the eye
+    body.add(stalk({ name: 'horn' + S, path: curve([[s * 0.17, 1.02, 0.66], [s * 0.22, 1.13, 0.62], [s * 0.28, 1.19, 0.53], [s * 0.3, 1.2, 0.46]], 7), r: (t) => 0.055 * Math.pow(1 - t * 0.92, 0.9) + 0.002, around: 7, ringEvery: 2, keel: true, capE: true, levels: 1, k: 1.2,
+      sec: (a2) => (Math.cos(a2) > 0.7 ? 1.12 : 1) * (Math.abs(Math.sin(a2)) > 0.7 ? 0.82 : 1), skin: () => [hb, 1], paint: hornPaint }));
   }
+  yield 'face';
+  // ---- the armour: rows of keeled plates shingled down the back and the tail, biggest along the spine
+  const g = torso.grids[0], seats: { at: V3; n: V3; d: V3; w: number; l: number; t: number; lift?: number }[] = [];
+  // small plates down the top of the tail
+  for (const v of [0.07, 0.11, 0.15]) { const q = gridSurf(torso.m, g, 0.5, v), q2 = gridSurf(torso.m, g, 0.5, v - 0.02); seats.push({ at: q.p, n: q.n, d: [q2.p[0] - q.p[0], q2.p[1] - q.p[1], q2.p[2] - q.p[2]], w: 0.035 + v * 0.2, l: 0.09 + v * 0.4, t: 0.016 + v * 0.06, lift: 0.35 }); }
+  const rowsV = [0.2, 0.25, 0.3, 0.355, 0.41, 0.465, 0.52, 0.575, 0.63, 0.685, 0.74, 0.79, 0.835];
+  rowsV.forEach((v, r) => {
+    const cols = v < 0.3 ? [0.5] : v > 0.78 ? [0.5, 0.435, 0.565] : r % 3 === 1 ? [0.5, 0.435, 0.565, 0.37, 0.63, 0.305, 0.695] : [0.5, 0.435, 0.565, 0.37, 0.63];
+    for (const u0 of cols) {
+      const u = u0 + (u0 === 0.5 ? 0 : (r % 2 ? 0.02 : -0.02));
+      const q = gridSurf(torso.m, g, u, v), q2 = gridSurf(torso.m, g, u, Math.max(0, v - 0.02));
+      if (q.n[1] < 0.15) continue;
+      const dir: V3 = [q2.p[0] - q.p[0], q2.p[1] - q.p[1], q2.p[2] - q.p[2]];
+      const spineK = 1 - Math.abs(u - 0.5) * 2.4, sz = (v < 0.3 ? 0.6 : v > 0.78 ? 0.8 : 1) * (0.62 + 0.38 * spineK);
+      seats.push({ at: q.p, n: q.n, d: dir, w: 0.1 * sz, l: 0.22 * sz, t: 0.03 * sz + (u === 0.5 ? 0.012 : 0), lift: 0.32 });
+    }
+  });
+  body.add(plates('plates', seats, skin, platePaint));
+  yield 'armour';
+  // ---- legs: short, thick, bowed; broad feet of five toes with heavy hooked claws
   for (const [k, leg] of [['f', GB.fl], ['h', GB.hl]] as const) for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const hip = mir(leg.hip, s), knee = mir(leg.knee, s), sole = mir(leg.sole, s);
-    const segL = [Math.hypot(hip[1] - knee[1], hip[2] - knee[2]), Math.hypot(knee[1] - sole[1], knee[2] - sole[2])];
-    let rings: LimbRing[] = legRings('pillar', k === 'f', 0.15, [0, 0.5, 1], segL, 0.04);
-    rings = rings.map((r) => ({ ...r, r: r.r * (r.t < 0 ? 1.1 : 1) }));
-    const out = limb({ name: k + 'leg' + S, side: s, hip, knee, sole, tj: [0, 0.5, 1], rings, around: 12, levels: 1, rise: 0.2,
-      foot: { pad: 0.17, h: 0.03, fwd: 0.1, nail: 'nail', lobe: 0.15, toeAround: 5, toes: [-40, 0, 40].map((a) => ({ a, len: 0.03, r: 0.035, claw: 0.06, curl: 0.3, drop: 0.3 })) },
-      bones: { parent: bi('root'), up: bi(k + 'u' + S), lo: bi(k + 'l' + S), foot: bi(k + 'f' + S) }, paint: hidePaint, clawPaint: (ch, _p, b) => { const px = new Px(ch, b); for (let i = 0; i < px.n; i++) { px.put(i, BLACK, 2 + (h3(i, 1, 1) < 0.2 ? 1 : 0) + (px.gb.N[i * 3 + 1] > 0.4 ? 1 : 0)); px.rough[i] = 90; } px.creaseInk(1, { dark: 1, lit: 1 }); px.flush(); }, k: 1 });
+    const segL = [Math.hypot(hip[0] - knee[0], hip[1] - knee[1], hip[2] - knee[2]), Math.hypot(knee[0] - sole[0], knee[1] - sole[1], knee[2] - sole[2])];
+    let rings: LimbRing[] = legRings('bear', k === 'f', 0.14, [0, 0.5, 1], segL, 0.045);
+    rings = rings.map((r) => ({ ...r, r: r.r * (r.t < 0 ? 1.15 : r.t < 0.5 ? 1.08 : 1.0) }));
+    const out = limb({ name: k + 'leg' + S, side: s, hip, knee, sole, tj: [0, 0.5, 1], rings, around: 10, levels: 1, rise: 0.22,
+      foot: { pad: 0.15, h: 0.045, fwd: 0.22, nail: 'claw', lobe: 0.2, toeAround: 6, toes: [-50, -25, 0, 25, 50].map((a, q) => ({ a, len: 0.065 - Math.abs(q - 2) * 0.01, r: 0.034 - Math.abs(q - 2) * 0.003, claw: 0.1 - Math.abs(q - 2) * 0.012, curl: 0.6, drop: 0.3 })) },
+      bones: { parent: bi('root'), up: bi(k + 'u' + S), lo: bi(k + 'l' + S), foot: bi(k + 'f' + S) }, paint: hidePaint, clawPaint, k: 1 });
     out.toes.levels = 0; out.claws.levels = 0;
     body.add(out.skin); body.add(out.toes); body.add(out.claws);
     yield 'leg';
   }
-  const out = yield* body.buildGen({ den: o.den ?? 200, maxScale: 2, budget: 16000 });
-  const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, v]) => k + ':' + v).join(' ');
+  const out = yield* body.buildGen({ den: o.den ?? 200, maxScale: 2, budget: 22000 });
+  const stats = [...body.stats.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => k + ':' + v).join(' ');
   return { geo: out.geo, tex: out.tex, sd: out.sd, bones, tris: out.tris, den: body.den, stats };
 }
-const add = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
-const norm = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
 export const buildGumberooModel = (o: { page?: number; den?: number } = {}) => runSync(gumberooModelGen(o));
 export const buildGumberooModelAsync = (o: { page?: number; den?: number } = {}) => runAsync(gumberooModelGen(o));
-export { cl };
+export { cl, h3, curve };

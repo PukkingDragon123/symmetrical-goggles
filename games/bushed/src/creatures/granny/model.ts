@@ -22,7 +22,8 @@ import { cardPaint } from '../cards';
 import type { BoneDef } from '../rig';
 import { furZones } from '../fur/paint';
 import { headSurf, HEAD_COLS, HEAD_ROWS, eyeLocal, lipY, EYE } from './face';
-import { almondLid, lidCoords, strokes, formLight, downFlow, alongFlow, type LidSpec } from '../wildlife/organic';
+import { almondLid, lidCoords, strokes, formLight, downFlow, alongFlow, eyePaint, type LidSpec } from '../wildlife/organic';
+import { LOCK_VARIANTS } from '../cards';
 
 export const GRANNY_MODEL_VERSION = 'granny@8';
 export interface GrannyModel { geo: THREE.BufferGeometry; tex: THREE.DataTexture; sd: THREE.DataTexture; fur?: THREE.DataTexture; bones: BoneDef[]; tris: number; den: number; stats: string }
@@ -110,16 +111,16 @@ const hex = (s: string) => parseInt(s.slice(1), 16);
 /** pale, lined old skin: hue-shifted cool mauve in the creases, warm parchment in the light */
 const SKIN = ['#2a2327', '#43383b', '#625453', '#83736d', '#a3928a', '#c1b2a6', '#d9ccbe', '#eae0d3'].map(hex);
 /** where the blood shows: the nose, the apples of the cheeks, the knuckles, the ears: ruddy parchment */
-const SKINW = ['#2b1e1e', '#47302d', '#694740', '#8b6153', '#a97d6b', '#c39a85', '#d8b7a0', '#e8cfb9'].map(hex);
+const SKINW = ['#2e2120', '#4c3530', '#704d44', '#93685a', '#b28675', '#caa48e', '#dec0a9', '#ecd7c2'].map(hex);
 /** where it is thin and cold: the sockets, the temples, under the jaw: grey-violet with a green undertone */
-const SKINC = ['#1f1e25', '#33323d', '#4b4955', '#65626b', '#7f7a82', '#9a949a', '#b6afb0', '#cdc7c3'].map(hex);
+const SKINC = ['#25242b', '#3a3843', '#55525d', '#716d77', '#8e8992', '#aba5aa', '#c6bfbf', '#dcd6d1'].map(hex);
 /** her robe: bark-cloth, near black-brown, a little red in the light */
 const CLOTH = ['#110d0c', '#1b1513', '#271e1a', '#352822', '#45342b', '#584336', '#6c5443'].map(hex);
 /** tamarack bark: red-brown under grey plates */
-const BARK = ['#140f0e', '#221917', '#33251f', '#47332a', '#5d4537', '#755a48', '#8e735f', '#a68f7b'].map(hex);
+const BARK = ['#151211', '#221d1a', '#332b26', '#463b33', '#5b4d42', '#726254', '#8a7a6a', '#a39382'].map(hex);
 const MOSS = RP('moss'), SAGE = RP('sage'), SOIL = RP('soil'), HEART = RP('heart'), STONE = RP('stone'), SNOW = RP('snow');
 const GOLD = RP('gold'), OCHRE = RP('ochre'), STRAW = RP('straw'), HORN = RP('horn'), PLUM = RP('plum'), HIDE = RP('hide'), INK = RP('ink'), FUR = RP('fur');
-const VIOLET = RP('violet'), FLESH = RP('flesh');
+const VIOLET = RP('violet');
 
 /** the robe: bark-cloth falling in long folds, mud and wet at the hem; above the ribs a shawl of moss with lichen */
 function robePaint() {
@@ -219,7 +220,7 @@ function lidPaint(L: LidSpec) {
         else if (Math.abs(off - 0.5) < 0.07) { R = SKINC; st = 2.6; } // the fold
         else st = 4.2 - (off < 0.4 ? 0.5 : 0);
       } else {
-        if (off < 0.05) { R = FLESH; st = 4.2; } // the wet rim
+        if (off < 0.05) { R = SKINW; st = 4.4; } // the wet rim
         else if (off < 0.1) { R = SKINC; st = 2.8; }
         else st = 3.9 + (off > 0.35 ? 0.3 : 0);
       }
@@ -256,9 +257,9 @@ function facePaint() {
       const ex = ax - E.c[0], ey = y - E.c[1], ed = Math.hypot(ex, ey * 1.25);
       let warm = 0.45 + 0.4 * g2(Math.hypot(ax, y + 0.036), 0, 0.016) + 0.3 * g2(Math.hypot(ax - 0.046, y + 0.026), 0, 0.016) + 0.22 * g2(Math.hypot(ax, y + 0.125), 0, 0.016)
         + 0.12 * g2(Math.hypot(ax, y - 0.06), 0, 0.02) - 0.42 * g2(ed, 0, 0.026) - 0.3 * g2(Math.hypot(ax - 0.074, y - 0.04), 0, 0.02)
-        - 0.22 * g2(Math.hypot(ax, y - lipY(ax)), 0, 0.02) * (ax < 0.035 ? 1 : 0) - (ny < -0.45 ? 0.35 : 0) + st.v[i] * 0.35 + m * 0.3;
-      if (st.id[i] >= 0 && st.id[i] < 0.06) warm += 0.4; // dabs of rose
-      let R = warm > 0.66 ? SKINW : warm < 0.3 ? SKINC : SKIN, s = 4.25 + m * 0.4 + st.v[i] * 0.7, rough = 170;
+        - 0.2 * g2(Math.hypot(ax, y - lipY(ax) - 0.01), 0, 0.016) * (ax < 0.035 ? 1 : 0) - 0.45 * ss(-0.3, -0.6, ny) * ss(-0.095, -0.115, y) + st.v[i] * 0.2 + m * 0.15;
+      if (st.id[i] >= 0 && st.id[i] < 0.04 && warm > 0.45) warm += 0.3; // dabs of rose
+      let R = warm > 0.66 ? SKINW : warm < 0.3 ? SKINC : SKIN, s = 4.3 + m * 0.3 + st.v[i] * 0.45, rough = 170;
       // the sockets: shadowed, never black; deepest at the inner corner
       if (ed < 0.03) s -= (0.03 - ed) * 28 * (ex < 0 ? 1.15 : 0.85);
       // bags under the eyes: lit on top, the tear trough dark under them
@@ -279,23 +280,23 @@ function facePaint() {
         if (hair) { R = SNOW; s = 2.6 + h3(Math.floor(ax / mpt), 1, 3) * 1.4; }
       }
       // the forehead lines (sculpted: the creases carry them), crossed by the vertical frown lines
-      if (y > 0.05 && y < 0.095 && ax < 0.05) for (const k of [0.058, 0.071, 0.086]) { const d = y - (k + 0.0025 * Math.cos(ax * 90)); if (Math.abs(d) < mpt * 0.8 && h3(Math.floor(ax / 0.012), Math.floor(k * 100), 5) > 0.2) { s -= 0.8; R = SKINC; } else if (d > mpt * 0.8 && d < mpt * 2.2) s += 0.3; }
-      if (Math.abs(ax - 0.0055) < mpt * 0.7 && y > 0.022 && y < 0.04) { s -= 0.9; R = SKINC; }
+      if (y > 0.05 && y < 0.095 && ax < 0.046) for (const k of [0.058, 0.071, 0.086]) { const d = y - (k + 0.0025 * Math.cos(ax * 90)); if (Math.abs(d) < mpt * 0.7 && ax < 0.046 - (k - 0.058) * 0.5) s -= 0.7; else if (d > mpt * 0.7 && d < mpt * 2.2) s += 0.25; }
+      if (Math.abs(ax - 0.0055) < mpt * 0.6 && y > 0.024 && y < 0.038) s -= 0.7;
       // the nose: the lit ridge, its shadowed sides, the warm bulbous tip with a highlight, dark nostrils
       if (ax < 0.005 && y < 0.02 && y > -0.04 && nz > 0.3) s += 0.4;
       if (Math.hypot(ax, (y + 0.033) * 1.3) < 0.0045 && nz > 0.4) s += 0.7;
-      const nd = Math.hypot((ax - 0.0075) * 1.1, (y + 0.0478) * 1.6);
-      if (nd < 0.0052 && ny < 0.35) { R = SKINC; s = nd < 0.003 ? 0.6 : 1.6; }
+      const nd = Math.hypot((ax - 0.0072) * 1.2, (y + 0.0482) * 1.9);
+      if (nd < 0.0042 && ny < 0.2 && nz > 0.1) { R = SKINC; s = nd < 0.0026 ? 0.8 : 2.2; }
       // the mouth: thin mauve lips, the line between them dark, the corners tucked in; fine lines over the upper lip
       const ly = lipY(ax), dl = y - ly;
-      if (ax < 0.029 && Math.abs(dl) < mpt * 0.9) { R = PLUM; s = 0.8; rough = 120; }
-      else if (ax < 0.024 && dl > 0 && dl < 0.0058) { R = PLUM; s = 2.9 + m * 0.5 + (dl > 0.0045 ? -0.6 : 0); rough = 130; }
-      else if (ax < 0.021 && dl < 0 && dl > -0.0072) { R = PLUM; s = 3.6 + m * 0.5 - (dl < -0.006 ? 0.9 : 0) + (dl > -0.003 && ax < 0.012 ? 0.5 : 0); rough = 110; }
-      else if (ax < 0.024 && dl > 0.0058 && y < -0.059 && Math.abs(((ax / 0.0042) % 1) - 0.5) < 0.16 && h3(Math.floor(ax / 0.0042), 1, 9) > 0.25) { s -= 0.8; R = SKINC; }
-      if (ax > 0.026 && ax < 0.033 && Math.abs(dl) < 0.0035) { s -= 0.6; R = SKINC; }
+      if (ax < 0.029 && Math.abs(dl) < mpt * 0.9) { R = SKINC; s = 0.9; rough = 120; }
+      else if (ax < 0.023 && dl > 0 && dl < 0.0052) { R = SKINW; s = 3.5 + m * 0.4 - (dl > 0.0042 ? 0.5 : 0); rough = 130; }
+      else if (ax < 0.02 && dl < 0 && dl > -0.0068) { R = SKINW; s = 4.0 + m * 0.4 - (dl < -0.0056 ? 0.8 : 0) + (dl > -0.003 && ax < 0.012 ? 0.4 : 0); rough = 110; }
+      else if (ax < 0.022 && dl > 0.0062 && y < -0.062 && Math.abs(((ax / 0.0058) % 1) - 0.5) < 0.12 && h3(Math.floor(ax / 0.0058), 1, 9) > 0.45) s -= 0.5;
+      if (ax > 0.026 && ax < 0.033 && Math.abs(dl) < 0.0035) s -= 0.6;
       // age spots: a few soft brown dabs over the temples, the forehead and the cheekbones
-      const c = cell3(x, y, z, 0.013, 7);
-      if ((c.id % 17) === 0 && c.f1 < 0.0024 + (c.id % 3) * 0.0006 && (y > -0.03 || ax > 0.05)) { R = HIDE; s = 3.2 + (c.f1 < 0.0012 ? -0.4 : 0); }
+      const c = cell3(x, y, z, 0.016, 7);
+      if ((c.id % 11) === 0 && c.f1 < 0.0026 + (c.id % 3) * 0.0008 && (y > -0.03 || ax > 0.05)) { R = HIDE; s = 3.6 + (c.f1 < 0.0013 ? -0.4 : 0); }
       // blue-violet veins at the temples, a little uncanny
       if (ax > 0.06 && y > 0.015 && y < 0.075 && Math.abs(nz3(x * 70, y * 25, z * 70)) < 0.04) { R = VIOLET; s = 3.6; }
       // one mole by the left corner of the mouth
@@ -305,9 +306,10 @@ function facePaint() {
       px.put(i, R, s); px.rough[i] = rough;
     }
     yield;
-    formLight(px, 0.6);
+    // the face's rings are dense up and down and sparser across: soften the curvature terms (they band along rings)
+    formLight(px, 0.6, { cavity: 0.35, ridge: 0.25, crease: 1.0, ao: 1.4 });
     px.pelt({ len: 0.08, width: 0.007, flow: -1, down: 0.9, mask: (i) => hairM[i], tooth: 1.2, clump: 0.4, strands: 0.45 });
-    px.creaseInk(1.4, { dark: 0.8, lit: 0.4, mask: (i) => hairM[i] }); px.creaseInk(0.75, { dark: 1.0, lit: 0.45, mask: (i) => 1 - hairM[i] });
+    px.creaseInk(1.4, { dark: 0.8, lit: 0.4, mask: (i) => hairM[i] }); px.creaseInk(1.6, { dark: 0.8, lit: 0.3, mask: (i) => 1 - hairM[i] });
     yield;
     px.flush();
   };
@@ -326,11 +328,12 @@ function antlerPaint(sites: { c: V3; n: V3; r: number; R: number[]; cup?: number
       const x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2], m = fbm3(x * 30, y * 30, z * 30, 2);
       // the furrows: where the bark cracks between plates (the sculpted valleys), red-brown deep inside
       const furrow = K[i] < -0.35;
-      let R = BARK, s = 4.0 + m * 0.6 + st.v[i] * 1.1;
-      if (furrow) { s = 1.6 + m * 0.4; if (K[i] > -0.8) { R = HEART; s = 2.6; } }
-      else if (st.id[i] >= 0 && st.id[i] < 0.14) { R = STONE; s = 4.6 + m * 0.5; } // weathered grey plate faces
-      // crust lichen on the upper sides
-      if (N[i * 3 + 1] > 0.25 && fbm3(x * 25 + 7, y * 25, z * 25, 2) > 0.38) { R = SAGE; s = 3.2 + m + (st.v[i] > 0 ? 0.6 : 0); px.rough[i] = 240; px.put(i, R, s); continue; }
+      let R = BARK, s = 4.1 + m * 0.5 + st.v[i] * 1.1;
+      if (furrow) { s = 1.4 + m * 0.4; if (K[i] > -0.7) { R = HEART; s = 1.8; } }
+      else if (st.id[i] >= 0 && st.id[i] < 0.12) { R = STONE; s = 4.4 + m * 0.5; } // weathered grey plate faces
+      // crusts of lichen on the upper sides: pale sage patches with a lit edge
+      const lc = fbm3(x * 11 + 7, y * 11, z * 11, 2);
+      if (N[i * 3 + 1] > 0.15 && lc > 0.36) { R = lc > 0.5 ? SNOW : SAGE; s = (lc > 0.5 ? 2.2 : 3.4) + m * 0.6 + (lc < 0.39 ? -1 : 0) + st.v[i] * 0.4; px.rough[i] = 240; px.put(i, R, s); continue; }
       px.put(i, R, s); px.rough[i] = 230;
     }
     px.rosettes(sites, { seed: 5 });
@@ -351,6 +354,29 @@ function staffPaint(ch: Chart, _p: Piece, b: Body) {
   }
   formLight(px, 0.45);
   px.creaseInk(1, { dark: 1.2, lit: 0.6 }); px.flush();
+}
+
+/** her hair as alpha-cut cards: each lock a hank of fine wavy strands with gaps between them, darker at the root,
+ *  silvering toward the tips, the strands spreading a little as they fall */
+function hairCards(tiles: number[][], steps: number[]) {
+  return (ch: Chart, _p: Piece, _b: Body) => {
+    const r = ch.reg!, TW = r.w / LOCK_VARIANTS, TH = r.h / tiles.length;
+    for (let y = 0; y < r.h; y++) for (let x = 0; x < r.w; x++) {
+      const v = Math.min(LOCK_VARIANTS - 1, Math.floor(x / TW)), row = Math.min(tiles.length - 1, Math.floor(y / TH)), R = tiles[row];
+      const e = ((x - v * TW) / TW - 0.5) / 0.44, t = cl(((y - row * TH) / TH - 0.03) / 0.94, 0, 1);
+      const n = 6 + v, pxW = 1.6 / (TW * 0.88);
+      let hit = -1, edge = 0;
+      for (let k = 0; k < n; k++) {
+        const s0 = ((k + 0.5) / n) * 1.7 - 0.85 + (h3(k, v, 81) - 0.5) * 0.18, len = 0.72 + 0.28 * h3(k, v, 82);
+        if (t > len) continue;
+        const xk = s0 * (1 + t * 0.25) + Math.sin(t * (5 + k * 0.7) + k * 1.9 + v) * 0.05 * t, w = Math.max(pxW * 0.6, 0.075 * (1 - (t / len) * 0.55));
+        const d = Math.abs(e - xk); if (d < w) { hit = k; edge = d / w; }
+      }
+      if (hit < 0 || Math.abs(e) > 1 || t < 0.01) { r.set(x, y, R[0], 0); r.setSD(x, y, 0, 200, 0); continue; }
+      const st = (steps[row] ?? 3) + (t < 0.12 ? -1.2 : 0) + (t > 0.6 ? 0.7 : 0) + (hit % 3 === 0 ? -0.7 : hit % 3 === 1 ? 0.5 : 0) - (edge > 0.65 ? 0.6 : 0);
+      r.set(x, y, R[Math.round(cl(st, 0, R.length - 1))], 255); r.setSD(x, y, 0, 200, 0);
+    }
+  };
 }
 
 // ------------------------------------------------------------------------------------------------ the robe's drapery
@@ -479,13 +505,14 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   for (const [S, s] of [['L', 1], ['R', -1]] as const) {
     const c = mir(E.c, s), ax = mir(E.ax, s);
     // kind eyes: a soft moss-green hazel, wide pupils, the wet shine of a living eye; the whites old and yellowed
-    body.add(eyeball({ name: 'eye' + S, c, ax, r: E.r, bone: HEAD, iris: SAGE, pupil: 'round', pupilR: 0.42, irisA: 0.6, sclera: RP('bone'), k: 3.4, levels: 1, around: 10, catchlight: { side: s, at: [0.3, 0.38] } }));
+    const eye = body.add(eyeball({ name: 'eye' + S, c, ax, r: E.r, bone: HEAD, iris: SAGE, pupil: 'round', pupilR: 0.42, irisA: 0.5, sclera: RP('bone'), k: 3.4, levels: 1, around: 10 }));
+    eye.paint = eyePaint({ c, ax, side: s, irisA: 0.5, iris: RP('moss'), pupil: 'round', pupilR: 0.34, sclera: RP('bone'), arcus: RP('snow'), collar: RP('ochre'), glint: [0.36, 0.42], shine: 160 });
     // heavy hooded upper lids (modelled 0.12 rad higher: the creature rests them that much lower), the lower lids
     // with a wet rim; their corners meet in an almond, the outer corners drooping with age
-    const up: LidSpec = { name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), side: s, open: 0.38, wide: 0.98, inner: 0.08, outer: 0.03, ri: 1.03, ro: 1.17, swell: 0.07, root: 1.5, k: 2.2, paint: () => undefined };
+    const up: LidSpec = { name: 'lid' + S, c, ax, r: E.r, bone: bi('lid' + S), side: s, open: 0.3, wide: 0.92, inner: 0.09, outer: 0.04, ri: 1.03, ro: 1.2, swell: 0.09, root: 1.5, k: 2.2, paint: () => undefined };
     up.paint = lidPaint(up);
     body.add(almondLid(up));
-    const lo: LidSpec = { name: 'llid' + S, c, ax, r: E.r, bone: HEAD, side: s, lower: true, open: 0.36, wide: 0.98, inner: -0.04, outer: -0.09, ri: 1.02, ro: 1.1, swell: 0.04, root: 1.35, k: 2.0, paint: () => undefined };
+    const lo: LidSpec = { name: 'llid' + S, c, ax, r: E.r, bone: HEAD, side: s, lower: true, open: 0.27, wide: 0.92, inner: -0.03, outer: -0.08, ri: 1.02, ro: 1.12, swell: 0.05, root: 1.35, k: 2.0, paint: () => undefined };
     lo.paint = lidPaint(lo);
     body.add(almondLid(lo));
   }
@@ -661,7 +688,7 @@ export function* grannyModelGen(o: { page?: number; den?: number } = {}): Genera
   }
   const hairTiles = [STONE, SNOW, STONE];
   const hair = locks({ name: 'hair', seats: hairSeats, tiles: hairTiles, steps: [4, 3, 3], seed: 13 });
-  if (hair) { hair.k = 0.45; body.add(hair); }
+  if (hair) { hair.paint = hairCards(hairTiles, [4, 3.4, 3]); hair.k = 0.5; body.add(hair); }
   const strip: LockSeat[] = [];
   const rg = robe.grids[0];
   const kindAt = (k: number, seed: number) => { const r = h3(k, 9, seed); return r < 0.34 ? 0 : r < 0.6 ? 1 : r < 0.84 ? 2 : 3; };

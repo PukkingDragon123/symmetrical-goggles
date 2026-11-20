@@ -182,3 +182,30 @@ export function earFlap(o: EarSpec): Piece {
 }
 /** is a texel on an earFlap's inner (bowl) face? (for the painter): its normal against the flap's outer normal */
 export const earInner = (n: V3, out: V3) => n[0] * out[0] + n[1] * out[1] + n[2] * out[2] < -0.15;
+
+/** the skin closing the sides and back of a mouth as the jaw drops: a cheek web on each side from the mouth's corner
+ *  back to the hinge, and a throat wall across the back, each sheet's upper edge on the upper bone and its lower edge on
+ *  the jaw bone, so the web stretches open with the jaw (folded flat out of sight inside the lips when it is shut).
+ *  `corner` is the +x mouth corner (creature space), `back` how far behind it the web runs (m), `half` the web's half
+ *  height when shut (m), `inset` how far inside the lips it sits (m), `throat` the half width of the back wall. */
+export function mouthWebs(o: { name: string; corner: V3; back: number; half: number; inset?: number; throat?: number; upper: number; lower: number; paint: (c: Chart, p: Piece, b: Body) => void; k?: number }): Piece {
+  const m = newCM(), grids: Grid[] = [], ins = o.inset ?? 0.004, T = 0.0015;
+  const yTop = o.corner[1] + o.half, yBot = o.corner[1] - o.half;
+  for (const sd of [1, -1]) {
+    const x = (o.corner[0] - ins) * sd, rows: V3[][] = [];
+    for (let k = 0; k <= 4; k++) {
+      const z = o.corner[2] - o.back * (k / 4), y = yTop + (yBot - yTop) * 0.5;
+      // a thin closed sliver: down the outside, back up the inside
+      rows.push([[x, yTop, z], [x + T * sd, y, z], [x, yBot, z], [x - T * sd, y, z]]);
+    }
+    grids.push(sheetGrid(m, rows, { tag: 0, out: (p) => [p[0] - x + sd * 1e-4, 0, 0], wrapCols: true }));
+  }
+  if (o.throat) {
+    const z = o.corner[2] - o.back, rows: V3[][] = [];
+    for (let k = 0; k <= 4; k++) { const x = -o.throat + (2 * o.throat * k) / 4; rows.push([[x, yTop, z], [x, o.corner[1], z - T], [x, yBot, z], [x, o.corner[1], z + T]]); }
+    grids.push(sheetGrid(m, rows, { tag: 0, out: (p) => [0, 0, p[2] - z + 1e-4], wrapCols: true }));
+  }
+  const mid = o.corner[1];
+  return { name: o.name, m, grids, levels: 0, k: o.k ?? 0.6, noOcc: true, paint: o.paint,
+    skin: (p) => { const t = cl((mid - p[1]) / Math.max(1e-6, o.half) * 0.5 + 0.5, 0, 1); return t <= 0.02 ? [o.upper, 1] : t >= 0.98 ? [o.lower, 1] : [o.upper, 1 - t, o.lower, t]; } };
+}

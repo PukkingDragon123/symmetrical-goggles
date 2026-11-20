@@ -8,9 +8,13 @@
 //   FUR: every furry cryptid paints a fur page (body.buildGen({ fur: furZones([...]) }), src/creatures/fur) that the
 //                          shell fur grows from (Cryptid's `fur` option); finishModel keeps it with the model
 //   warts / wet glints / scars: small painters used by several of them
+//   sculpt(piece, dabs)    organic secondary forms on a finalized piece: oriented brush dabs that inflate, dent or grab
+//                          the surface (brows, sockets, jowls, sagging hide), plus a displacement field (folds, wrinkles)
+//   almondLid({...})       a thick upper or lower lid whose margin is an almond arc meeting the other's at the corners
+//   flap({...})            a cupped flap of skin with a rolled rim and thickness (ears, jowls)
 // Creature space: metres, +z forward, +y up, +x the creature's left, ground y = 0.
 import * as THREE from 'three';
-import { Px, RP, h3, cl, runSync, runAsync, newCM, sheetGrid, creaseCol, pathFrames, type V3, type Wt, type Chart, type Piece, type Body } from '../anatomy';
+import { Px, RP, h3, cl, runSync, runAsync, newCM, sheetGrid, creaseCol, pathFrames, cageNormals, type V3, type Wt, type Chart, type Piece, type Body } from '../anatomy';
 import { loader } from '../cache';
 import { registerPreload } from '../preload';
 import type { BoneDef } from '../rig';
@@ -165,20 +169,10 @@ export interface Dab {
 const nrm3 = (a: V3): V3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
 const crs3 = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 const dot3 = (a: V3, b: V3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-/** area-weighted vertex normals of a cage */
-export function cageNormals(V: V3[], F: number[][]): V3[] {
-  const N: V3[] = V.map(() => [0, 0, 0]);
-  for (const f of F) for (let k = 1; k + 1 < f.length; k++) {
-    const a = V[f[0]], b = V[f[k]], c = V[f[k + 1]];
-    const n = crs3([b[0] - a[0], b[1] - a[1], b[2] - a[2]], [c[0] - a[0], c[1] - a[1], c[2] - a[2]]);
-    for (const i of [f[0], f[k], f[k + 1]]) { N[i][0] += n[0]; N[i][1] += n[1]; N[i][2] += n[2]; }
-  }
-  return N.map(nrm3);
-}
 /** sculpt a finalized piece: dabs, then an optional field fn(point, normal) -> push along the normal (m) */
 export function sculpt(p: Piece, dabs: Dab[], fn?: (q: V3, n: V3) => number) {
   if (!p.done) throw new Error('sculpt: finalize ' + p.name + ' first');
-  const V = p.m.V, N = cageNormals(V, p.m.F);
+  const V = p.m.V, N = cageNormals(p.m);
   const all: Dab[] = [];
   for (const d of dabs) {
     all.push(d);
@@ -232,13 +226,15 @@ export interface LidSpec {
   /** the built-in painter: skin ramp and step, the lash line, a wet rim (lower lids) */
   skin?: { R: number[]; step: number; lash?: number[]; wet?: number[] };
   k?: number;
+  /** columns across the lid (default 9) */
+  cols?: number;
 }
 export function almondLid(o: LidSpec): Piece & { lidAt: (p: V3) => number } {
   const m = newCM(), ax = nrm3(o.ax), up0: V3 = [0, 1, 0];
   const up = nrm3([up0[0] - ax[0] * ax[1], up0[1] - ax[1] * ax[1], up0[2] - ax[2] * ax[1]]);
   const outv = nrm3(crs3(up, ax)).map((v) => v * o.side) as V3;
   const W = o.w ?? 0.93, H = o.open, tilt = o.tilt ?? 0, pk = o.peak ?? 0, th = o.thick ?? 0.24, th0 = o.root ?? 2.0, sg = o.lower ? -1 : 1;
-  const NC = 11, Q = 1.22, K = 5;
+  const NC = o.cols ?? 9, Q = 1.22, K = 4;
   /** the margin's projected point (x r) for column q in -Q..Q (inner corner -1, outer +1) */
   const margin = (q: number): [number, number] => {
     const aq = Math.abs(q), base = Math.max(0, 1 - q * q);
@@ -279,8 +275,8 @@ export function almondLid(o: LidSpec): Piece & { lidAt: (p: V3) => number } {
     px.lightK = 0.8;
     for (let i = 0; i < px.n; i++) {
       const d = lidAt([P[i * 3], P[i * 3 + 1], P[i * 3 + 2]]);
-      if (d < -0.5) { px.put(i, sk?.wet ?? RP('gum'), 2.5); px.rough[i] = 40; continue; }
-      if (d < px.mpt * 1.6) { px.put(i, o.lower ? sk?.wet ?? RP('flesh') : sk?.lash ?? RP('ink'), o.lower ? 3.4 : 0.6); px.rough[i] = o.lower ? 30 : 150; continue; }
+      if (d < -0.5) { px.put(i, RP('gum'), 1.4); px.rough[i] = 40; continue; }
+      if (d < px.mpt * 1.2) { const W = sk?.wet ?? RP('flesh'); px.put(i, o.lower ? W : sk?.lash ?? RP('ink'), o.lower ? W.length - 1.6 : 0.6); px.rough[i] = o.lower ? 30 : 150; continue; }
       if (!o.lower && d < px.mpt * 3) { px.put(i, sk?.R ?? RP('hide'), (sk?.step ?? 3) - 1.2); px.rough[i] = 150; continue; }
       px.put(i, sk?.R ?? RP('hide'), (sk?.step ?? 3) + (d < px.mpt * 5 ? 0.6 : 0) + (h3(Math.floor(P[i * 3] / px.mpt / 2), Math.floor(P[i * 3 + 1] / px.mpt / 2), 7) - 0.5) * 0.5);
       px.rough[i] = 160;
@@ -304,7 +300,7 @@ export function flap(o: {
   /** points across the width (odd) */
   across?: number;
   skin: (p: V3) => Wt; paint: PaintFn; levels?: number; k?: number;
-}): Piece & { inner: (p: V3) => boolean } {
+}): Piece & { inner: (p: V3, n: V3) => boolean } {
   const m = newCM(), A = o.across ?? 7, n = o.path.length, fr = pathFrames(o.path, o.face);
   const rows: V3[][] = [];
   const frames: { c: V3; y: V3 }[] = [];
@@ -327,64 +323,7 @@ export function flap(o: {
   void mid;
   // the rim: both edges creased and inked
   creaseCol(m, g, 0, 0, n - 1, 1.2, true); creaseCol(m, g, A - 1, 0, n - 1, 1.2, true); creaseCol(m, g, A, 0, n - 1, 1, false); creaseCol(m, g, 2 * A - 1, 0, n - 1, 1, false);
-  /** is a point on the inner (bowl) face? */
-  const inner = (p: V3) => { let best = 0, bd = Infinity; for (let i = 0; i < n; i++) { const d = Math.hypot(p[0] - o.path[i][0], p[1] - o.path[i][1], p[2] - o.path[i][2]); if (d < bd) { bd = d; best = i; } } const t = best / (n - 1); const v = [p[0] - frames[best].c[0], p[1] - frames[best].c[1], p[2] - frames[best].c[2]]; return dot3(v, frames[best].y) < o.cup(t) * 0.35; };
+  /** is a point (with its normal) on the inner (bowl) face, the one looking toward -face? */
+  const inner = (p: V3, nn: V3) => { let best = 0, bd = Infinity; for (let i = 0; i < n; i++) { const d = Math.hypot(p[0] - o.path[i][0], p[1] - o.path[i][1], p[2] - o.path[i][2]); if (d < bd) { bd = d; best = i; } } return dot3(nn, frames[best].y) < -0.2; };
   return { name: o.name, m, grids: [g], levels: o.levels ?? 1, skin: o.skin, paint: o.paint, k: o.k ?? 1.4, inner };
-}
-
-// ------------------------------------------------------------------------------------------------ brush strokes
-/** brush strokes over a chart, as a field of values (about -1..1, each stroke roughly one value): blocky noise
- *  `wid` metres across smeared along a 3D flow direction for `len` metres (line integral convolution in the chart),
- *  so the tone clusters it breaks up come out as elongated, overlapping strokes that follow the form. `flow` returns
- *  the stroke direction at a texel's point and normal (null: no flow there, a short dab). */
-export function strokeField(px: Px, o: { flow: (P: V3, N: V3) => V3 | null; len: number; wid: number; seed?: number }): Float32Array {
-  const { w, h, n } = px, P = px.gb.P, N = px.gb.N, M = px.gb.M, mpt = px.mpt, seed = o.seed ?? 3, wrap = px.ch.wrap;
-  const blk = Math.max(1, Math.round(o.wid / mpt)), L = Math.max(2, Math.round(o.len / mpt / 2));
-  // noise in blocks (offset every other block row so the blocks do not line up)
-  const nz = new Float32Array(n);
-  for (let y = 0, i = 0; y < h; y++) { const by = Math.floor(y / blk); for (let x = 0; x < w; x++, i++) nz[i] = h3(Math.floor((x + (by & 1) * blk * 0.5) / blk), by, seed) * 2 - 1; }
-  // the flow in chart texels: solve f = a tu + b tv for the two chart tangents
-  const fx = new Float32Array(n), fy = new Float32Array(n);
-  const q: V3 = [0, 0, 0], nn: V3 = [0, 0, 0];
-  for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i++) {
-    if (!M[i]) continue;
-    q[0] = P[i * 3]; q[1] = P[i * 3 + 1]; q[2] = P[i * 3 + 2]; nn[0] = N[i * 3]; nn[1] = N[i * 3 + 1]; nn[2] = N[i * 3 + 2];
-    const f = o.flow(q, nn); if (!f) continue;
-    const xr = wrap ? (x + 1) % w : Math.min(w - 1, x + 1), xl = wrap ? (x - 1 + w) % w : Math.max(0, x - 1), yu = Math.min(h - 1, y + 1), yd = Math.max(0, y - 1);
-    const ir = y * w + xr, il = y * w + xl, iu = yu * w + x, id = yd * w + x;
-    const sx = (xr - xl + w) % w || 1, sy = yu - yd || 1;
-    const tu = [(P[ir * 3] - P[il * 3]) / sx, (P[ir * 3 + 1] - P[il * 3 + 1]) / sx, (P[ir * 3 + 2] - P[il * 3 + 2]) / sx];
-    const tv = [(P[iu * 3] - P[id * 3]) / sy, (P[iu * 3 + 1] - P[id * 3 + 1]) / sy, (P[iu * 3 + 2] - P[id * 3 + 2]) / sy];
-    const a11 = tu[0] * tu[0] + tu[1] * tu[1] + tu[2] * tu[2], a12 = tu[0] * tv[0] + tu[1] * tv[1] + tu[2] * tv[2], a22 = tv[0] * tv[0] + tv[1] * tv[1] + tv[2] * tv[2];
-    const b1 = tu[0] * f[0] + tu[1] * f[1] + tu[2] * f[2], b2 = tv[0] * f[0] + tv[1] * f[1] + tv[2] * f[2], det = a11 * a22 - a12 * a12;
-    if (Math.abs(det) < 1e-14) continue;
-    let a = (b1 * a22 - b2 * a12) / det, b = (a11 * b2 - a12 * b1) / det;
-    const l = Math.hypot(a, b); if (l < 1e-9) continue;
-    a /= l; b /= l; fx[i] = a; fy[i] = b;
-  }
-  const out = new Float32Array(n);
-  let s2 = 0, cnt = 0;
-  for (let y = 0, i = 0; y < h; y++) for (let x = 0; x < w; x++, i++) {
-    if (!M[i]) continue;
-    let acc = nz[i], wsum = 1;
-    for (const dir of [1, -1]) {
-      let cx = x + 0.5, cy = y + 0.5, j = i;
-      for (let s = 0; s < L; s++) {
-        const ax = fx[j] * dir, ay = fy[j] * dir;
-        if (ax === 0 && ay === 0) break;
-        cx += ax; cy += ay;
-        if (cy < 0 || cy >= h) break;
-        let ix = Math.floor(cx); if (wrap) ix = ((ix % w) + w) % w; else if (ix < 0 || ix >= w) break;
-        const k = Math.floor(cy) * w + ix; if (!M[k]) break;
-        // keep the direction consistent (the field is sign-free)
-        if (fx[k] * fx[j] + fy[k] * fy[j] < 0) { /* flip */ }
-        const wt = 1 - s / L;
-        acc += nz[k] * wt; wsum += wt; j = k;
-      }
-    }
-    out[i] = acc / wsum; s2 += out[i] * out[i]; cnt++;
-  }
-  const sd = Math.sqrt(s2 / Math.max(1, cnt)) || 1;
-  for (let i = 0; i < n; i++) out[i] = Math.max(-1.6, Math.min(1.6, out[i] / sd)) / 1.6;
-  return out;
 }
