@@ -262,16 +262,16 @@ plates = bpy.data.objects.new('plates', pm); bpy.context.scene.collection.object
 
 # the throat sac: a wrinkled ellipsoid hung under the jaw hinge (it swells when the hodag bellows)
 jaw_back = POS['jaw']
-sac_c = jaw_back + Vector((0, 0.06, -0.10))
+sac_c = jaw_back + Vector((0, 0.085, -0.085))
 sb = bmesh.new()
 bmesh.ops.create_uvsphere(sb, u_segments=10, v_segments=7, radius=1.0)
 for v in sb.verts:
     n = v.co.copy()
     wob = 1 + 0.06 * math.sin(n.x * 9) * math.sin(n.y * 7 + 1) + 0.05 * math.sin(n.z * 11)
-    v.co = Vector((n.x * 0.075, n.y * 0.09, n.z * 0.055)) * wob + sac_c
+    v.co = Vector((n.x * 0.062, n.y * 0.075, n.z * 0.045)) * wob + sac_c
 sm = bpy.data.meshes.new('sac'); sb.to_mesh(sm); sb.free()
 sac = bpy.data.objects.new('sac', sm); bpy.context.scene.collection.objects.link(sac)
-POS['sac'] = sac_c + Vector((0, 0, 0.045))
+POS['sac'] = sac_c + Vector((0, 0, 0.035))
 # the tongue: a flat tapered slab on the floor of the mouth, from the jaw hinge forward
 tg = bmesh.new()
 tb = POS['jaw'] + Vector((0, -0.02, 0.03))

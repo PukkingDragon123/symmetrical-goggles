@@ -582,7 +582,7 @@ Required attribution (reproduce it wherever the game's credits are shown):
 
 ### Camp-story cryptids from Sketchfab (CC BY 4.0, attribution required)
 
-The sidehill gouger, hoop snake, splinter cat and goofus bird (`public/assets/models/creatures/cryptids/`), rebuilt by `tools/blender/cryptids4/*.py`: rebaked onto a game skeleton, rescaled, decimated or smoothed, textures merged into one atlas and recoloured, small bead eyes added, clips cut and renamed. The gouger is a kitbash (a doe with a goat's horns, its right legs shortened). Changes were made. Details in `ATTRIBUTION.json` there.
+The sidehill gouger, hoop snake, splinter cat and goofus bird (`public/assets/models/creatures/cryptids/`), rebuilt by `tools/blender/cryptids4/*.py`: rebaked onto a game skeleton, rescaled, decimated or smoothed, textures merged into one atlas and recoloured, small bead eyes added, clips cut and renamed. The gouger is a kitbash (a doe with a goat's horns, its right legs shortened). Changes were made. Details in `ATTRIBUTION.json` there. The splinter cat and the hodag are the low-poly pass (`tools/blender/lowpoly/*.py`): decimated to a few thousand faceted triangles with the source detail baked into a new texture; the hodag is a kitbash (a Baurusuchus's body, legs, tail and teeth with a Poly Haven bull's horns, plates, a tail spear and a throat sac made in Blender), re-skinned to the game's procedural hodag rig.
 
 | File | Source | Author | Licence |
 |---|---|---|---|
@@ -590,6 +590,8 @@ The sidehill gouger, hoop snake, splinter cat and goofus bird (`public/assets/mo
 | `gouger.glb` (horns) | [Goat](https://sketchfab.com/3d-models/goat-5d7431517b634f4e9e8c0f3729cd9c59) | [GerardoA400](https://sketchfab.com/GerardoA400) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `hoopsnake.glb` | [Black Mamba - Rigged Snake, 6 Science Anims](https://sketchfab.com/3d-models/black-mamba-rigged-snake-6-science-anims-7427c67d7c954cb3a05c0830a8de8da6) | [Animal Animator](https://sketchfab.com/animalanimator) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `splintercat.glb` | [lynx](https://sketchfab.com/3d-models/lynx-aff6767399cf4daca1a82b43ccaa1252) | [Paleo Modelist](https://sketchfab.com/victory_) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `hodag.glb` | [Animated Baurusuchus](https://sketchfab.com/3d-models/animated-baurusuchus-df9dfe0920d54faf99f94e88b33d7a8d) | [Anees Animates](https://sketchfab.com/AneesAnimates) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `hodag.glb` (horns) | [Bull Head](https://polyhaven.com/a/bull_head) | Poly Haven | CC0 1.0 |
 | `goofus.glb` | [Crow](https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) | [Alexei Ostapenko](https://sketchfab.com/alexanders823) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 
 Required attribution:
@@ -597,6 +599,7 @@ Required attribution:
 * `gouger.glb`: This work is based on "Realistic Animated Doe 3D Model" (https://sketchfab.com/3d-models/realistic-animated-doe-3d-model-b6172618aa304473a4cf7b9246c0a218) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) and "Goat" (https://sketchfab.com/3d-models/goat-5d7431517b634f4e9e8c0f3729cd9c59) by GerardoA400 (https://sketchfab.com/GerardoA400), licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `hoopsnake.glb`: This work is based on "Black Mamba - Rigged Snake, 6 Science Anims" (https://sketchfab.com/3d-models/black-mamba-rigged-snake-6-science-anims-7427c67d7c954cb3a05c0830a8de8da6) by Animal Animator (https://sketchfab.com/animalanimator) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `splintercat.glb`: This work is based on "lynx" (https://sketchfab.com/3d-models/lynx-aff6767399cf4daca1a82b43ccaa1252) by Paleo Modelist (https://sketchfab.com/victory_) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `hodag.glb`: This work is based on "Animated Baurusuchus" (https://sketchfab.com/3d-models/animated-baurusuchus-df9dfe0920d54faf99f94e88b33d7a8d) by Anees Animates (https://sketchfab.com/AneesAnimates) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (kitbashed, reshaped, decimated, re-rigged, texture rebaked and repainted).
 * `goofus.glb`: This work is based on "Crow" (https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) by Alexei Ostapenko (https://sketchfab.com/alexanders823) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 
 ### Real animals from Sketchfab (CC BY 4.0, attribution required)

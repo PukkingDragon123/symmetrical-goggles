@@ -32,7 +32,7 @@ function posed(inst: Posable, clips: string[], steps = 8, dt = 0.07): THREE.Obje
 }
 
 registerPortraitModel('hound', {
-  make: async () => { const { AxehandleHound } = await import('../../creatures'); return posed(new AxehandleHound({ state: 'companion', trust: 1 }) as unknown as Posable, ['alert', 'growl', 'idle', 'stand']); },
+  make: async () => { const { AxehandleHound, houndModelAsync } = await import('../../creatures'); await houndModelAsync(); return posed(new AxehandleHound({ state: 'companion', trust: 1 }) as unknown as Posable, ['alert', 'growl', 'idle', 'stand']); },
   yaw: 0.85, pitch: 0.14, fill: 0.8,
 });
 registerPortraitModel('bigfoot', {
@@ -82,6 +82,7 @@ for (const [id, v] of Object.entries(CRYPTID_VIEW)) {
   registerPortraitModel(id, {
     make: async () => {
       const M = await import('../../creatures/cryptids');
+      if (v.cls === 'Hodag') await M.hodagModelAsync();
       const C = M[v.cls] as unknown as new (o: { pos?: THREE.Vector3 }) => Posable;
       return posed(new C({ pos: new THREE.Vector3() }), v.clips);
     },

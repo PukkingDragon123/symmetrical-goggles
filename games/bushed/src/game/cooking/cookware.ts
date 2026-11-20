@@ -14,7 +14,7 @@ export const PANTRY = { x0: -0.86, x1: -0.38, z0: -0.04, z1: 0.72, y: 0.74 };
 /** the larder: open shelves against the back wall left of the hearth (shelf tops) */
 export const LARDER = { x0: -1.3, x1: -0.88, z0: -0.72, z1: -0.44, ys: [0.36, 0.72, 1.08] };
 /** the spice shelf on the log wall above the counter */
-export const SHELF = { x0: 0.64, x1: 0.78, z0: -0.27, z1: 0.27, y: 1.08 };
+export const SHELF = { x0: 0.64, x1: 0.78, z0: -0.27, z1: 0.27, y: 1.02 };
 
 /** extra materials for cookware (registered once with the places kit) */
 export function ensureCookMats(): void {

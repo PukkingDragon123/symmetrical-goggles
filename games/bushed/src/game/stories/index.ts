@@ -12,7 +12,7 @@ import * as THREE from 'three';
 import type { Game } from '../game';
 import { addNpc, npcTalkHooks, NPCS, type Npc } from '../npcs';
 import { loadProp } from '../../places/props';
-import { has, set, updateTapes, think } from './kit';
+import { has, set, updateTapes, updateLods, think } from './kit';
 import { buildStoryWorld } from './world';
 import { spawnPeople, rayLook, jojoFound } from './people';
 import { installQuests, folks } from './quests';
@@ -89,9 +89,11 @@ export async function installStories(game: Game): Promise<void> {
       t = 1;
       const s = signature();
       if (s !== sig) { sig = s; composeBook(g); }
+      updateLods(g.player.pos.x, g.player.pos.z);
     }
   });
   composeBook(g);
+  updateLods(g.player.pos.x, g.player.pos.z);
   // for tests and the curious: window.__stories
   (window as unknown as { __stories: unknown }).__stories = {
     g, W, arc, radio, fire, mail, NPCS, TALES,

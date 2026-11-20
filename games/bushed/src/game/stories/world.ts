@@ -14,7 +14,7 @@ import { puffs } from '../../gfx/particles';
 import { Noise } from '../../core/noise';
 import { anchorPos } from '../flow';
 import { CAMP, campXZ, SETS, TRAP_HEAD, SHORE, WOODYARD } from './sites';
-import { ground, solidBox, propIn, treesNear, clearTrees, tapeOn } from './kit';
+import { solidBox, propIn, treesNear, clearTrees, tapeOn, lod } from './kit';
 import { CAMP_SIGN } from './text';
 
 export interface StoryWorld {
@@ -52,7 +52,7 @@ function ensureMats(): void {
     defineMat(name, m);
   };
   tint('log_ext', 'log_old', 0xa89e90);
-  tint('planks_grey', 'planks_old', 0xa29a8e);
+  tint('planks_grey', 'planks_old', 0xc4bab0);
   tint('stone', 'stone_moss', 0x9aa88a);
   tint('canvas', 'camo', 0x6a6a44);
 }
@@ -69,14 +69,14 @@ function hitBox(parent: THREE.Object3D, w: number, h: number, d: number, pos: TH
 export function gutHammerModel(): THREE.Group {
   ensureMats();
   const ms = new Mesher();
-  const s = 0.34, k = 0.03;
+  const s = 0.48, k = 0.04;
   // three bars with rounded bends, open at the top-left corner where it hangs from
   const A = V(-s / 2, 0, 0), B = V(s / 2, 0, 0), C = V(0, s * 0.87, 0);
   const pts = [V(C.x - 0.03, C.y - 0.05, 0), C.clone().add(V(0.012, -0.02, 0)), C.clone().lerp(B, 0.5), B.clone().add(V(-k, k * 0.5, 0)), B.clone().add(V(-k * 1.6, 0, 0)), A.clone().lerp(B, 0.5), A.clone().add(V(k * 1.6, 0, 0)), A.clone().add(V(k * 0.6, k, 0)), A.clone().lerp(C, 0.82)];
-  tube(ms, 'iron', pts, 0.008, 6);
+  tube(ms, 'iron', pts, 0.011, 6);
   // the striker on its string
   ms.pushT(0.05, 0.05, 0.02, 0, 0, 0.2);
-  lathe(ms, 'iron', [[0.0001, 0], [0.006, 0.002], [0.006, 0.2], [0.0001, 0.205]], 6);
+  lathe(ms, 'iron', [[0.0001, 0], [0.007, 0.002], [0.007, 0.26], [0.0001, 0.265]], 6);
   ms.pop();
   tube(ms, 'rope', [V(0, s * 0.87, 0), V(0.03, s * 0.6, 0.01), V(0.05, 0.25, 0.02)], 0.003, 4);
   const g = ms.build({ name: 'gut_hammer' });
@@ -101,7 +101,7 @@ function lidOn(g: Game, tree: { x: number; z: number; r: number }, n: number, to
   const rr = tree.r * 0.97 + 0.006;
   lid.position.set(tree.x + Math.sin(a) * rr, heightAt(tree.x, tree.z) + 1.3, tree.z + Math.cos(a) * rr);
   lid.rotation.set(0, a, (n * 0.37) % 0.4 - 0.2, 'YXZ');
-  g.scene.add(lid);
+  g.scene.add(lod(lid, 120, lid.position));
 }
 
 /** a deformed half-boulder with a flat broken face toward -X (two make the split rock) */
@@ -156,12 +156,12 @@ export function buildStoryWorld(g: Game): StoryWorld {
     const h = TRAP_HEAD;
     ms.pushT(h.x - 0.22, heightAt(h.x - 0.22, h.z) - 0.1, h.z, 0.4); ms.pushT(0, 0, 0, Math.PI); halfBoulder(ms, 3, 1.05); ms.pop(); ms.pop();
     ms.pushT(h.x + 0.22, heightAt(h.x + 0.22, h.z) - 0.1, h.z, 0.4); halfBoulder(ms, 7, 0.95); ms.pop();
-    g.scene.add(ms.build({ name: 'split_rock' }));
+    g.scene.add(lod(ms.build({ name: 'split_rock' }), 220, h));
     solidBox(new THREE.Vector3(h.x, h.y + 0.25, h.z), [1.2, 0.5, 0.9], 0.4);
     const can = buildProduct('coffee');
     can.position.set(h.x + Math.cos(0.4) * 0.02, h.y + 0.62, h.z - Math.sin(0.4) * 0.02);
     can.rotation.set(0.3, 0.4, 1.2);
-    g.scene.add(can);
+    g.scene.add(lod(can, 120, h));
     W.pickups.coffeeCan = can;
     registerInteractable(can, { kind: 'container', reach: 2.4, ...act('can2', 'A coffee can, wedged in the crack') });
     // the tape from the woodshed to here, every dozen metres on the nearest trunk
@@ -193,6 +193,7 @@ export function buildStoryWorld(g: Game): StoryWorld {
     base.y = heightAt(base.x, base.z);
     root.position.copy(base); root.rotation.y = a;
     g.scene.add(root);
+    lod(root, 140, base);
     p.copy(base);
     // the cubby: sticks leaned against the trunk in a little lean-to
     const ms = new Mesher(), r = new Rand(100 + i);
@@ -201,12 +202,13 @@ export function buildStoryWorld(g: Game): StoryWorld {
       logAB(ms, V(sx * 1.15, -0.05, 0.3 + r.range(-0.04, 0.04)), V(sx * 0.6, 0.62 + r.range(-0.06, 0.06), -0.3), 0.018 + r.range(0, 0.008), { seg: 5, seed: 300 + i * 10 + k, capA: -1, capB: 1, matFor: () => 'bark_dark' });
     }
     // a rusty trap beside it, jaws wired shut, chain staked
-    ms.pushT(0.42, 0.02, 0.2, r.range(0, 3));
+    ms.pushT(0.46, 0.02, 0.22, r.range(0, 3));
+    ms.push(new THREE.Matrix4().makeScale(1.8, 1.8, 1.8));
     tube(ms, 'rusty_red', [V(-0.07, 0, 0), V(-0.05, 0.035, 0), V(0, 0.05, 0), V(0.05, 0.035, 0), V(0.07, 0, 0)], 0.006, 5);
     tube(ms, 'rusty_red', [V(-0.07, 0, 0.01), V(-0.05, 0.03, 0.012), V(0, 0.045, 0.012), V(0.05, 0.03, 0.012), V(0.07, 0, 0.01)], 0.006, 5);
     tube(ms, 'rusty_red', [V(0.07, 0, 0), V(0.16, 0.005, 0.02), V(0.2, 0.004, -0.03)], 0.005, 4);
     tube(ms, 'galv', [V(0, 0.06, -0.01), V(0.004, 0.05, 0.025), V(0, 0.04, 0.012)], 0.0025, 4);
-    ms.pop();
+    ms.pop(); ms.pop();
     root.add(ms.build({ name: `set${i + 1}` }));
     // the plate
     const plate = buildProduct('enamel_plate');
@@ -229,12 +231,12 @@ export function buildStoryWorld(g: Game): StoryWorld {
     const deckY = WORLD.waterY + 0.55;
     const grp = new THREE.Group();
     grp.position.set(e.x, 0, e.z); grp.rotation.y = dir;
-    g.scene.add(grp);
+    g.scene.add(lod(grp, 260, e));
     const ms = new Mesher(), r = new Rand(55);
     const len = 8, w = 1.3;
     for (const sx of [-w / 2 + 0.1, w / 2 - 0.1]) for (const z of [-1.5, 1.5, 4.2, 7]) {
       const gy = Math.min(heightAt(e.x + s * z + c * sx, e.z + c * z - s * sx), WORLD.waterY) - 0.6;
-      logAB(ms, V(sx, gy, z), V(sx, deckY - 0.02 + (z === 7 ? 0.9 : 0), z), 0.08, { seed: 70 + z * 3, matFor: () => 'log_old', capB: 1 });
+      logAB(ms, V(sx, gy, z), V(sx, deckY - 0.02 + (z === 7 ? 1.5 : 0), z), 0.08, { seed: 70 + z * 3, matFor: () => 'log_old', capB: 1 });
     }
     for (const sx of [-w / 2 + 0.1, w / 2 - 0.1]) logAB(ms, V(sx, deckY - 0.1, -1.8), V(sx, deckY - 0.1, len), 0.07, { seed: 90, matFor: () => 'log_old' });
     for (let z = -1.7; z < len; z += 0.24) {
@@ -242,17 +244,17 @@ export function buildStoryWorld(g: Game): StoryWorld {
       board(ms, 'planks_old', r, 0, deckY, z, w + r.range(-0.05, 0.08), 0.04, 0.2, r.range(-0.03, 0.03), { grain: 'x' });
     }
     // the hook post at the end
-    tube(ms, 'iron', [V(w / 2 - 0.1, deckY + 0.86, 7), V(w / 2 - 0.02, deckY + 0.86, 7), V(w / 2 + 0.03, deckY + 0.82, 7)], 0.006, 4);
+    tube(ms, 'iron', [V(w / 2 - 0.1, deckY + 1.42, 7), V(w / 2 + 0.02, deckY + 1.42, 7), V(w / 2 + 0.07, deckY + 1.37, 7)], 0.007, 4);
     grp.add(ms.build({ name: 'dock' }));
     const mid = new THREE.Vector3(e.x + s * (len / 2 - 1), deckY - 0.02, e.z + c * (len / 2 - 1));
     solidBox(mid, [w / 2, 0.04, len / 2 + 0.8], dir);
     W.dockEnd.set(e.x + s * 6.6, deckY, e.z + c * 6.6);
     const hm = gutHammerModel();
-    hm.position.set(w / 2 + 0.03, deckY + 0.47, 7);
+    hm.position.set(w / 2 + 0.07, deckY + 1.37 - 0.42, 7);
     hm.rotation.y = Math.PI / 2;
     grp.add(hm);
     W.hammerAtDock = hm;
-    const hit = hitBox(grp, 0.5, 0.6, 0.5, V(w / 2, deckY + 0.6, 7));
+    const hit = hitBox(grp, 0.6, 0.7, 0.5, V(w / 2 + 0.05, deckY + 1.15, 7));
     registerInteractable(hit, { kind: 'pickup', reach: 2.6, ...act('dockHammer', 'A steel triangle on a hook') });
   }
   return W;
@@ -265,7 +267,7 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
   clearTrees(g, C.x, C.z, 19);
   const grp = new THREE.Group();
   grp.position.set(C.x, 0, C.z); grp.rotation.y = yaw;
-  g.scene.add(grp);
+  g.scene.add(lod(grp, 240, C));
   grp.updateMatrixWorld(true);
   const hAt = (lx: number, lz: number) => { const [x, z] = campXZ(lx, lz); return heightAt(x, z); };
   const toW = (lx: number, ly: number, lz: number) => { const [x, z] = campXZ(lx, lz); return new THREE.Vector3(x, ly, z); };
@@ -374,7 +376,7 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
   // the stove's fire (lit by the story) and its light
   const fire = flameCards(0.22, 0.26, 23);
   fire.position.copy(toW(stoveL.x + 0.32, ckBase + 0.36, stoveL.z));
-  g.scene.add(fire);
+  g.scene.add(lod(fire, 240, C));
   W.stove.fire = fire;
   W.stove.light.position.copy(toW(stoveL.x + 0.6, ckBase + 0.7, stoveL.z + 0.4));
   g.scene.add(W.stove.light);
@@ -400,7 +402,7 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
     grp.add(ms2.build({ name: 'gut_post' }));
     solidBox(toW(px, b + 1.3, pz), [0.1, 1.3, 0.1], yaw);
     const hm = gutHammerModel();
-    hm.position.set(px - 0.66, b + 1.86, pz); hm.visible = false;
+    hm.position.set(px - 0.62, b + 2.2 - 0.42, pz); hm.visible = false;
     grp.add(hm);
     W.hammerOnPost = hm;
     W.postTop.copy(toW(px - 0.66, b + 2.0, pz));
@@ -467,7 +469,7 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
     const toward = SETS[4];
     const sx = C.x + (toward.x - C.x) * 0.62, sz = C.z + (toward.z - C.z) * 0.62;
     const face = Math.atan2(toward.x - sx, toward.z - sz);
-    const sg = new THREE.Group(); sg.position.set(sx, heightAt(sx, sz), sz); sg.rotation.y = face; g.scene.add(sg);
+    const sg = new THREE.Group(); sg.position.set(sx, heightAt(sx, sz), sz); sg.rotation.y = face; g.scene.add(lod(sg, 200, sg.position));
     const ms4 = new Mesher(), r4 = new Rand(4);
     for (const px of [-0.85, 0.85]) logAB(ms4, V(px, -0.4, 0), V(px, 1.75, 0), 0.07, { seed: 40 + px * 10, matFor: () => 'log_old', capB: 1 });
     board(ms4, 'planks_old', r4, 0, 1.38, 0.08, 2.0, 0.42, 0.05, 0, { grain: 'x' });
@@ -506,7 +508,7 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
     }
     im.frustumCulled = false;
     im.receiveShadow = true;
-    g.scene.add(im);
+    g.scene.add(lod(im, 120, SHORE.edge.clone().lerp(from, 0.5)));
   }
 
   // ---- the ranger's trail camera, strapped to a spruce a little way off the camp
@@ -518,7 +520,7 @@ function buildCamp(g: Game, W: StoryWorld, act: (n: string, l: string | (() => s
       const cg = new THREE.Group();
       cg.position.set(t.x + Math.sin(a) * (t.r + 0.05), heightAt(t.x, t.z) + 1.25, t.z + Math.cos(a) * (t.r + 0.05));
       cg.rotation.y = a;
-      g.scene.add(cg);
+      g.scene.add(lod(cg, 120, cg.position));
       const ms5 = new Mesher();
       boxAt(ms5, 'camo', 0, 0, 0, 0.11, 0.15, 0.07);
       ms5.pushT(0, 0.03, 0.036, 0, Math.PI / 2); lathe(ms5, 'iron', [[0.0001, 0], [0.018, 0], [0.018, 0.01], [0.012, 0.012], [0.0001, 0.013]], 10); ms5.pop();

@@ -80,7 +80,6 @@ def lowpoly(highs, tris_target, name, protect=None, weld=0.0015):
             bpy.ops.object.modifier_move_to_index(modifier='dec', index=0)
             bpy.ops.object.modifier_apply(modifier='dec')
         n = tris(c)
-        print(f'  decimate r={r:.4f} -> {n}')
         if best is None or abs(n - tris_target) < abs(tris(best) - tris_target):
             if best is not None:
                 bpy.data.objects.remove(best, do_unlink=True)

@@ -132,7 +132,16 @@ const tapes: { g: THREE.Group; tails: THREE.Mesh[]; ph: number }[] = [];
 /** a strip of blaze-orange flagging tape tied round a trunk at chest height, two tails fluttering */
 export function tapeOn(g: Game, tree: { x: number; z: number; r: number }, seed = 1): THREE.Group {
   tapeMat ??= new THREE.MeshStandardMaterial({ color: 0xff5a12, emissive: 0x3a1000, roughness: 0.55, side: THREE.DoubleSide });
-  if (!tailGeo) { tailGeo = new THREE.PlaneGeometry(0.035, 0.32, 1, 4); tailGeo.translate(0, -0.16, 0); }
+  if (!tailGeo) {
+    const t1 = new THREE.PlaneGeometry(0.035, 0.32, 1, 4).translate(0, -0.16, 0).toNonIndexed();
+    const t2 = new THREE.PlaneGeometry(0.03, 0.26, 1, 4).translate(0, -0.13, 0).rotateY(0.45).translate(0.012, 0, 0.004).toNonIndexed();
+    tailGeo = new THREE.BufferGeometry();
+    for (const k of ['position', 'normal', 'uv'] as const) {
+      const A = t1.getAttribute(k) as THREE.BufferAttribute, B = t2.getAttribute(k) as THREE.BufferAttribute;
+      const arr = new Float32Array(A.array.length + B.array.length); arr.set(A.array as Float32Array); arr.set(B.array as Float32Array, A.array.length);
+      tailGeo.setAttribute(k, new THREE.BufferAttribute(arr, A.itemSize));
+    }
+  }
   const grp = new THREE.Group();
   const y = heightAt(tree.x, tree.z) + 1.55 + (seed % 3) * 0.06;
   grp.position.set(tree.x, y, tree.z);
@@ -141,15 +150,15 @@ export function tapeOn(g: Game, tree: { x: number; z: number; r: number }, seed 
   const band = new THREE.Mesh(new THREE.CylinderGeometry(r, r * 1.02, 0.04, 14, 1, true), tapeMat);
   band.rotation.z = 0.08; band.rotation.x = 0.05;
   grp.add(band);
-  const tails: THREE.Mesh[] = [];
+  // the two loose ends, one mesh, swaying together from the knot
   const a = seed * 2.1;
-  for (let i = 0; i < 2; i++) {
-    const t = new THREE.Mesh(tailGeo, tapeMat);
-    t.position.set(Math.cos(a) * (r + 0.01), 0, Math.sin(a) * (r + 0.01));
-    t.rotation.y = -a + Math.PI / 2 + i * 0.4;
-    grp.add(t); tails.push(t);
-  }
+  const t = new THREE.Mesh(tailGeo, tapeMat);
+  t.position.set(Math.cos(a) * (r + 0.01), 0, Math.sin(a) * (r + 0.01));
+  t.rotation.y = -a + Math.PI / 2;
+  grp.add(t);
+  const tails = [t];
   g.scene.add(grp);
+  lod(grp, 160);
   tapes.push({ g: grp, tails, ph: seed });
   return grp;
 }
@@ -162,6 +171,21 @@ export function updateTapes(g: Game, t: number): void {
       tp.tails[i].rotation.x = 0.25 + 0.22 * Math.sin(t * 3.1 + tp.ph + i * 1.7) + 0.08 * Math.sin(t * 7.3 + i);
       tp.tails[i].rotation.z = 0.12 * Math.sin(t * 2.3 + tp.ph * 3 + i);
     }
+  }
+}
+
+// ---------------------------------------------------------------------------------------------- distance culling
+/** story objects stop drawing when the player is far away (the forest's fog hides them long before) */
+const LODS: { o: THREE.Object3D; x: number; z: number; r: number }[] = [];
+export function lod<T extends THREE.Object3D>(o: T, r = 200, at?: THREE.Vector3): T {
+  const p = at ?? o.getWorldPosition(new THREE.Vector3());
+  LODS.push({ o, x: p.x, z: p.z, r });
+  return o;
+}
+export function updateLods(px: number, pz: number): void {
+  for (const l of LODS) {
+    const v = Math.hypot(l.x - px, l.z - pz) < l.r;
+    if (l.o.visible !== v && !l.o.userData.storyHidden) l.o.visible = v;
   }
 }
 

@@ -323,8 +323,8 @@ type Drag =
   | { kind: 'bowl'; tgt: Target | null };
 
 const VIEWS = {
-  stove: { pos: V3(0.03, 1.33, 0.62), look: V3(0.0, 0.85, 0.02), fov: 52 },
-  prep: { pos: V3(0.54, 1.3, 0.74), look: V3(0.57, 0.74, 0.1), fov: 50 },
+  stove: { pos: V3(0.03, 1.36, 0.66), look: V3(0.0, 0.88, 0.0), fov: 54 },
+  prep: { pos: V3(0.5, 1.32, 0.8), look: V3(0.6, 0.8, 0.0), fov: 54 },
   pantry: { pos: V3(-0.56, 1.45, 1.12), look: V3(-0.62, 0.74, 0.3), fov: 54 },
   larder: { pos: V3(-0.8, 1.27, 0.42), look: V3(-1.12, 0.78, -0.58), fov: 54 },
   door: { pos: V3(0.08, 0.96, 0.95), look: V3(0.0, 0.6, 0.44), fov: 50 },

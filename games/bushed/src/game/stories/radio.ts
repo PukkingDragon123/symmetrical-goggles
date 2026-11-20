@@ -125,7 +125,8 @@ function storySegment(g: Game): { id: string; lines: Line[] } | null {
   return s ? { id: s.id, lines: s.lines } : null;
 }
 
-interface RadioSet { obj: THREE.Object3D; anchor: THREE.Object3D; on: boolean; name: string; callIn: boolean }
+interface RadioSet { obj: THREE.Object3D; anchor: THREE.Object3D; on: boolean; name: string; callIn: boolean; dial: THREE.Mesh }
+let dialMat: THREE.MeshBasicMaterial | null = null;
 
 export class Radio {
   private sets: RadioSet[] = [];
@@ -146,7 +147,13 @@ export class Radio {
     const anchor = new THREE.Object3D();
     anchor.position.set(0, 0.25, 0);
     obj.add(anchor);
-    const r: RadioSet = { obj, anchor, on: false, name, callIn };
+    // the tuning dial glows amber while it's on (a valve set warming up)
+    dialMat ??= new THREE.MeshBasicMaterial({ color: 0xffb860, fog: true });
+    const dial = new THREE.Mesh(new THREE.PlaneGeometry(0.15, 0.055), dialMat);
+    dial.position.set(0.07, 0.3, 0.212);
+    dial.visible = false;
+    obj.add(dial);
+    const r: RadioSet = { obj, anchor, on: false, name, callIn, dial };
     this.sets.push(r);
     registerInteractable(obj, {
       kind: 'switch', reach: 2.6,
@@ -165,9 +172,9 @@ export class Radio {
   private toggle(r: RadioSet): void {
     const g = this.g;
     g.sound('flashlight_click', undefined, 0.6, 0.7);
-    if (r.on) { r.on = false; if (this.playing === r) this.stop(); return; }
-    for (const s of this.sets) s.on = false;
-    r.on = true;
+    if (r.on) { r.on = false; r.dial.visible = false; if (this.playing === r) this.stop(); return; }
+    for (const s of this.sets) { s.on = false; s.dial.visible = false; }
+    r.on = true; r.dial.visible = true;
     this.playing = r;
     floatText.speakers.set(STATION, r.anchor);
     this.queue = [];

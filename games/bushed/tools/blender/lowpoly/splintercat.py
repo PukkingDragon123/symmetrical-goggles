@@ -140,9 +140,6 @@ def paint(M):
 
 
 col = L.finish(M, paint=paint, ao_k=0.5, cav_k=1.8)
-_dk = M['valid'] & (col.max(-1) < 0.02)
-print('DARK', int(_dk.sum()), np.round(M['pos'][_dk][::max(1, int(_dk.sum()) // 12)], 3).tolist())
-print('DARKBASE', int((M['valid'] & (M['base'].max(-1) < 0.01)).sum()), 'AO<0.05', int((M['valid'] & (M['ao'] < 0.05)).sum()))
 mat = L.save_material('splintercat', col, M['shine'])
 L.apply_material(low, mat)
 C.limit_weights(low, 4)

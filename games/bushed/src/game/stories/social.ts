@@ -75,7 +75,7 @@ export class Mail {
 const TELLERS = ['hollis', 'marcel', 'esko', 'megan', 'doug', 'hunter'];
 export class Campfire {
   private t = 0;
-  telling: { tale: Tale; npc: Npc } | null = null;
+  telling: { tale: Tale; npc: Npc; wait: number; said: boolean } | null = null;
   constructor(private g: Game) {}
 
   private atFire(n: Npc | undefined): boolean {
@@ -101,12 +101,11 @@ export class Campfire {
   }
 
   start(tale: Tale, npc: Npc): void {
-    this.telling = { tale, npc };
+    this.telling = { tale, npc, wait: 2.5, said: false };
     npc.hush();
     const cs = SPOTS.campsite;
     chatter.quietAt = new THREE.Vector3(cs.x, npc.model.root.position.y, cs.z);
     think(`${npc.name} leans in to the fire. "${tale.title}."`, 3.5);
-    setTimeout(() => { if (this.telling?.npc === npc) npc.say(tale.lines, 1.0); }, 2600);
   }
 
   update(dt: number): void {
@@ -119,7 +118,9 @@ export class Campfire {
     if (this.telling) {
       const { tale, npc } = this.telling;
       if (d > 18) { npc.hush(); this.telling = null; chatter.quietAt = null; return; }
-      if (!npc.busy && this.telling.npc.model) {
+      // a beat for the thought, then the tale; it's told when the last line has been said
+      if (!this.telling.said) { this.telling.wait -= 0.5; if (this.telling.wait <= 0) { npc.say(tale.lines, 1.0); this.telling.said = true; } return; }
+      if (!npc.busy) {
         // a beat after the last line
         if (!has(g, `tale:${tale.id}`)) {
           set(g, `tale:${tale.id}`);

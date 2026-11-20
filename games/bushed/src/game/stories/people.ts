@@ -76,7 +76,7 @@ export function spawnPeople(g: Game): Npc[] {
   const cs = SPOTS.campsite, sf = storeFrame(g);
   const st = SPOTS.store;
   // Odile: the post wicket behind the counter by day; the radio corner by night (on air 10 till 1)
-  const odileDay: Stop = sf ? { from: 7, to: 21, at: sf.at(2.75, -0.9), face: sf.yaw(-Math.PI / 2), anim: 'idle' } : { from: 7, to: 21, at: P(st.x + 2, st.z + 2), face: 0, anim: 'idle' };
+  const odileDay: Stop = sf ? { from: 7, to: 21, at: sf.at(2.75, -1.3), face: sf.yaw(-Math.PI / 2), anim: 'idle' } : { from: 7, to: 21, at: P(st.x + 2, st.z + 2), face: 0, anim: 'idle' };
   const odileNight: Stop = sf ? { from: 21, to: 7, at: sf.at(2.85, -1.5), face: sf.yaw(-Math.PI / 2), anim: 'count' } : { ...odileDay, from: 21, to: 7 };
   // Lucien: the porch bench by day, warming his hands at the store stove by night
   const porch = g.store?.anchors?.porch_bench as THREE.Object3D | undefined;
