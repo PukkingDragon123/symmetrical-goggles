@@ -12,7 +12,7 @@ REPO=$(cd "$GAME/../.." && pwd)
 A=$GAME/public/assets/models/creatures/birds
 B=$GAME/public/assets/models/bugs
 mkdir -p "$W/dl" "$W/paint" "$W/coats" "$W/bugs" "$A" "$B"
-fetch() { [ -d "$W/dl/$1" ] || (cd "$REPO" && python -m lowpix sketchfab fetch "$2" -o "$W/dl/$1"); ls "$W"/dl/$1/sketchfab_*/scene.gltf | head -1; }
+fetch() { [ -d "$W/dl/$1" ] || (cd "$REPO" && python -m lowpix sketchfab fetch "$2" -o "$W/dl/$1" >&2); ls "$W"/dl/$1/sketchfab_*/scene.gltf | head -1; }
 ROBIN=$(fetch robin ec1c6e2250824c3987cde64ea29ccd52)        # "Robin_ Bird", Assets_Animated
 CROW=$(fetch crow 0609852ae9084d8a8643517e4eae68e1)          # "Animated Crow", emptypen2477
 WOODP=$(fetch hairywp c2347b204cfe45f8bc46886f006de9cd)      # "Hairy Woodpecker", oneillbeck
