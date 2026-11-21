@@ -184,6 +184,13 @@ export class Npc {
   get name(): string { return this.def.name; }
   get busy(): boolean { return this.queue.length > 0 || this.queueT > 0; }
   get voiceId(): string { return this.def.voice ?? this.def.id; }
+  /** Ray is the story's: no unprompted greetings, waves or gossip (and nothing at all once he's gone / during the finale) */
+  get scripted(): boolean { return this.def.id === 'ray'; }
+  private get finale(): boolean {
+    if (this.g.flags.has('st:ray_gone')) return true;
+    const st = (globalThis as { __stories?: { arc?: { finaleRunning?: boolean } } }).__stories;
+    return !!st?.arc?.finaleRunning;
+  }
 
   /** say a line now, or several in turn (each waits for the one before to be read) */
   say(lines: string | string[], gap = 0.6): void {
@@ -374,7 +381,7 @@ export class Npc {
     lines = lines.filter(Boolean);
     this.engaged = false;
     const cu = talk.closeup;
-    if ((lines.length || this.queue.length) && cu && !this.inCloseup && g.mode === 'walk' && cu.person(this.model)) {
+    if ((lines.length || this.queue.length) && cu && !this.inCloseup && g.mode === 'walk' && !(this.scripted && this.finale) && cu.person(this.model)) {
       this.inCloseup = true; this.closeT = 0;
       cu.onAdvance = () => this.skip();
       cu.onEnd = () => { this.inCloseup = false; talk.subtitles.hide(); };
@@ -488,7 +495,7 @@ export class Npc {
 
   /** an unprompted reaction (a line, a flinch, a wave, a laugh) */
   reactNow(key: ReactKey, o: { flinch?: boolean; wave?: boolean; laugh?: boolean; force?: boolean } = {}): void {
-    if (this.hidden || this.inCloseup || (this.busy && !o.force)) return;
+    if (this.hidden || this.inCloseup || this.scripted || (this.busy && !o.force)) return;
     const t = now();
     if (!o.force && t - seen.lastUnprompted < 5) return;
     seen.lastUnprompted = t;
@@ -509,7 +516,7 @@ export class Npc {
 
   private notice(dist: number): void {
     const g = this.g, t = now();
-    if (this.hidden || this.inCloseup || g.mode !== 'walk' || !this.model.root.visible) return;
+    if (this.hidden || this.inCloseup || this.scripted || g.mode !== 'walk' || !this.model.root.visible) return;
     const near = dist < 7;
     if (!near) { if (this.nearSince > 0) this.farSince = t; this.nearSince = 0; }
     // greeting you when you walk up (first time in a while)
@@ -614,14 +621,14 @@ function installLife(g: Game): void {
     const p = d?.pos ?? g.player.pos;
     seen.shotAt = now(); seen.shotPos.copy(p);
     for (const n of near(p, 120)) memSet(g, n.def.id, 'shot', g.day + 1);
-    near(p, 45).slice(0, 3).forEach((n, i) => {
+    near(p, 45).filter((n) => !n.scripted).slice(0, 3).forEach((n, i) => {
       if ((n.persona.nerves ?? 0.4) > 0.15) n.model.anim.play('flinch', { restart: true });
       if (i < 2) setTimeout(() => n.reactNow('shot', { force: i === 0 }), 250 + i * 900);
     });
   });
   g.events.on('felled', () => {
     seen.felledAt = now(); seen.felledPos.copy(g.player.pos);
-    const ns = near(g.player.pos, 35);
+    const ns = near(g.player.pos, 35).filter((n) => !n.scripted);
     if (ns[0] && Math.random() < 0.7) setTimeout(() => ns[0].reactNow('felled', { flinch: (ns[0].persona.nerves ?? 0) > 0.7 }), 1400);
   });
   // food held out with a click
@@ -643,7 +650,7 @@ function installLife(g: Game): void {
     const charging = !!g.hands?.charging;
     if (seen.wasCharging && !charging && AXES.test(g.hands?.heldItem ?? '')) {
       seen.swingAt = t;
-      const ns = near(g.player.pos, 12);
+      const ns = near(g.player.pos, 12).filter((n) => !n.scripted);
       for (const n of ns) memSet(g, n.def.id, 'chop', g.day + 1);
       const n = ns[0];
       if (n) {
@@ -658,7 +665,7 @@ function installLife(g: Game): void {
     if (gossipT > 0) return;
     gossipT = 1.5;
     if (g.mode !== 'walk' || t - seen.gossipAt < 45 || hud.speaking) return;
-    const ns = near(g.player.pos, 11).filter((n) => !n.busy && !n.inCloseup);
+    const ns = near(g.player.pos, 11).filter((n) => !n.busy && !n.inCloseup && !n.scripted);
     for (let i = 0; i < ns.length; i++) for (let j = i + 1; j < ns.length; j++) {
       const a = ns[i], b = ns[j];
       if (a.model.root.position.distanceTo(b.model.root.position) > 4.8 || Math.random() < 0.5) continue;

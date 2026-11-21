@@ -182,6 +182,14 @@ export function installMusic(g: Game): void {
   music.sr = g.quality?.name === 'low' ? 16000 : 22050;
   voice.setQuality(g.quality?.name ?? 'high');
   void music.prepare('theme');
+  // the opening cinematic's cues (src/game/cinematic: g.events 'music_cue'): the theme over the opening and the title,
+  // eased out on arrival; 'finale' plays the ending; 'stop' fades out. While a cue holds the music, nothing auto-switches
+  g.events.on('music_cue', (d: { cue?: string; fade?: number }) => {
+    const cue = d?.cue, fade = d?.fade ?? 3;
+    if (cue === 'opening' || cue === 'title') music.play('theme', { hold: true, fade });
+    else if (cue === 'finale') music.play('ending', { hold: true, fade });
+    else if (cue === 'arrive' || cue === 'stop') music.release(Math.max(4, fade * 2));
+  });
   setTimeout(() => void music.prepare('campfire'), 6000);
   let fireT = 0;
   g.updaters.push((dt) => {
