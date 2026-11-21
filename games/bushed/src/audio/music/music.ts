@@ -22,7 +22,7 @@ export interface MusicOpts {
   hold?: boolean;
 }
 
-interface Playing { name: SongName; src: AudioBufferSourceNode; gain: GainNode; panner: PannerNode | null; vol: number }
+interface Playing { name: SongName; src: AudioBufferSourceNode; gain: GainNode; panner: PannerNode | null; vol: number; k: number; fade: number }
 
 export class MusicSystem {
   /** overall level of the score under everything else */
@@ -60,6 +60,7 @@ export class MusicSystem {
 
   play(name: SongName, o: MusicOpts = {}): void {
     if (o.hold) this.held = true;
+    this.ensureTick();
     const fade = o.fade ?? 2.5;
     if (this.wantName === name && (this.cur?.name === name || this.starting === name)) {
       if (o.at && this.cur?.panner) this.setPos(o.at);
@@ -91,12 +92,9 @@ export class MusicSystem {
       }
       src.connect(gain); out.connect(bus);
       const vol = o.volume ?? 1;
-      const t = ctx.currentTime;
-      gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(vol * this.volume * this.duckK, t + Math.max(0.05, fade));
-      src.start(t + 0.02, name === 'theme' ? 0 : 0);
+      src.start(ctx.currentTime + 0.02);
       src.onended = () => { try { src.disconnect(); gain.disconnect(); panner?.disconnect(); } catch { /* gone */ } if (this.cur?.src === src) { this.cur = null; if (this.wantName === 'ending') { this.wantName = null; this.held = false; } } };
-      this.cur = { name, src, gain, panner, vol };
+      this.cur = { name, src, gain, panner, vol, k: 0, fade: Math.max(0.05, fade) };
     });
   }
 
@@ -116,7 +114,26 @@ export class MusicSystem {
     const want = voice.speaking ? 0.5 : 1;
     this.duckK += (want - this.duckK) * Math.min(1, dt * (want < this.duckK ? 4 : 0.8));
     const c = this.cur, ctx = audio.ctx;
-    if (c && ctx) c.gain.gain.setTargetAtTime(c.vol * this.volume * this.duckK, ctx.currentTime, 0.12);
+    if (c && ctx) {
+      // fade in on our own clock so the ducking and the fade never fight over the gain's automation
+      if (ctx.state === 'running') c.k = Math.min(1, c.k + dt / c.fade);
+      c.gain.gain.setTargetAtTime(c.vol * this.volume * this.duckK * c.k * c.k, ctx.currentTime, 0.08);
+    }
+  }
+
+  /** before installMusic() runs (the loading screen), the music keeps its own frame clock */
+  installed = false;
+  private raf = 0;
+  private ensureTick(): void {
+    if (this.installed || this.raf || typeof requestAnimationFrame === 'undefined') return;
+    let last = performance.now();
+    const f = (now: number) => {
+      this.raf = 0;
+      if (this.installed) return;
+      this.update(Math.min(0.1, (now - last) / 1000)); last = now;
+      this.raf = requestAnimationFrame(f);
+    };
+    this.raf = requestAnimationFrame(f);
   }
 
   private fadeOut(fade: number): void {
@@ -161,6 +178,7 @@ const _fire = new THREE.Vector3();
  * between; the score ducks under dialogue.
  */
 export function installMusic(g: Game): void {
+  music.installed = true;
   music.sr = g.quality?.name === 'low' ? 16000 : 22050;
   voice.setQuality(g.quality?.name ?? 'high');
   void music.prepare('theme');

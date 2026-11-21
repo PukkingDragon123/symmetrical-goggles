@@ -166,6 +166,27 @@ export class TruckCargo {
     return true;
   }
 
+  /** put a bucked log on the bed (other code, e.g. the roperite hauling logs to the tailgate); false when full */
+  loadLog(p: WoodPiece): boolean {
+    if (!p?.mesh) return false;
+    if (this.rides.some((r) => r.piece === p) || this.queue.some((m) => m.piece === p) || this.move?.piece === p) return true;
+    if (p.burned || this.game?.hands?.held?.piece === p) return false;
+    if (!this.ticking) {
+      // nobody animates the winch (installTruck not running): lay it straight into its slot
+      const s = this.slot(p.r, p.len);
+      if (!s.ok) return false;
+      if (p.body) { physics.unsync(p.body); p.despawn(); }
+      this.t.root.localToWorld(_v.copy(s.pos));
+      p.mesh.position.copy(_v);
+      p.mesh.quaternion.copy(this.t.root.quaternion).multiply(_q.setFromAxisAngle(_w.set(1, 0, 0), Math.PI / 2));
+      p.mesh.updateMatrixWorld();
+      this.load(p);
+      return true;
+    }
+    return this.winch(p);
+  }
+  private ticking = false;
+
   winchAll(): number {
     let n = 0;
     for (const p of this.candidates()) { if (this.winch(p)) n++; else break; }
@@ -281,6 +302,7 @@ export class TruckCargo {
 
   /** per frame: winch and unload animations, the cable, the drum */
   frame(dt: number): void {
+    this.ticking = true;
     if (!this.move && this.queue.length) this.move = this.queue.shift()!;
     const m = this.move;
     this.winching += ((m && m.local ? 1 : 0) - this.winching) * Math.min(1, dt * 6);

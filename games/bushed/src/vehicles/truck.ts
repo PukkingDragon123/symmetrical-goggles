@@ -22,6 +22,7 @@ import { TruckPhysics, type AutopilotSpec } from './truckphysics';
 import { TruckAudio } from './truckaudio';
 import { TruckDamage } from './truckdamage';
 import { TruckCargo } from './truckcargo';
+import type { WoodPiece } from '../chop/wood';
 
 export interface TruckMeta {
   wheelRadius: number; wheelWidth: number; wheelbase: number; track: number; axleFront: number; axleRear: number; lift: number;
@@ -60,7 +61,7 @@ function beamMesh(len: number, rTop: number, rBot: number): THREE.Mesh {
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
     uniforms: { uI: { value: 0 }, uLen: { value: len } },
     vertexShader: 'uniform float uLen; varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ vZ = position.z / uLen; vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
-    fragmentShader: 'uniform float uI; varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ float face = abs(dot(vN, vV)); float soft = smoothstep(0.2, 0.9, face) * smoothstep(0.0, 0.12, vZ) * (1.0 - vZ) * (1.0 - vZ); gl_FragColor = vec4(vec3(1.0,0.93,0.78) * uI * soft * 0.012, 1.0); }',
+    fragmentShader: 'uniform float uI; varying float vZ; varying vec3 vN; varying vec3 vV; void main(){ float face = abs(dot(vN, vV)); float soft = smoothstep(0.2, 0.9, face) * smoothstep(0.0, 0.12, vZ) * (1.0 - vZ) * (1.0 - vZ); gl_FragColor = vec4(vec3(1.0,0.93,0.78) * uI * soft * 0.008, 1.0); }',
   });
   const mesh = new THREE.Mesh(g, m);
   mesh.frustumCulled = false;
@@ -152,6 +153,9 @@ export class Truck {
   get forward(): THREE.Vector3 { return new THREE.Vector3(0, 0, 1).applyQuaternion(this.root.quaternion); }
   get mass(): number { return this.phys.mass; }
   get loaded(): number { return this.phys.cargoKg; }
+
+  /** put a bucked log (a WoodPiece) on the bed: winched aboard if there is room, false when the bed is full */
+  loadLog(piece: WoodPiece): boolean { return this.cargo?.loadLog(piece) ?? false; }
 
   async load(): Promise<void> {
     const meta = (this.tmeta = (await (await fetch('assets/vehicles/truck.json')).json()) as TruckMeta);
@@ -270,6 +274,9 @@ export class Truck {
       alt: (ctx) => this.cargo.alt(ctx), altLabel: (ctx) => this.cargo.altLabel(ctx),
     });
     this.root.traverse((o) => { o.userData.truck = this; });
+    // other code finds the truck as game.truck (game.jeep keeps working: main.ts sets it)
+    const g = (globalThis as unknown as { __game?: { truck?: unknown } }).__game;
+    if (g && !g.truck) g.truck = this;
   }
 
   private makeMounts(): void {
@@ -550,15 +557,15 @@ export class Truck {
     this.headSpot.intensity = this.headLevel * 110;
     for (const b of this.beams) { b.visible = !this.lowQuality && this.headLevel > 0.02; (b.material as THREE.ShaderMaterial).uniforms.uI.value = this.headLevel; }
     const lensI = this.lensI;
-    lensI('light_head_l', this.headLevel * 2.6 * this.damage.lampLevel('l'));
-    lensI('light_head_r', this.headLevel * 2.6 * this.damage.lampLevel('r'));
+    lensI('light_head_l', this.headLevel * 1.3 * this.damage.lampLevel('l'));
+    lensI('light_head_r', this.headLevel * 1.3 * this.damage.lampLevel('r'));
     const braking = P.input.brake > 0.05 && this.running;
     const tail = (this.headlights ? 0.8 : 0) + (braking ? 2.4 : 0);
     lensI('light_tail_l', tail); lensI('light_tail_r', tail);
     lensI('light_reverse', P.gear === 'R' && this.running ? 2 : 0);
     const blink = this.damage.hazards && Math.floor(performance.now() / 380) % 2 === 0 ? 3 : 0;
     for (const k of ['light_ind_fl', 'light_ind_fr', 'light_ind_rl', 'light_ind_rr']) lensI(k, blink);
-    lensI('light_bar', this.lightBar && this.running ? 3.2 : 0);
+    lensI('light_bar', this.lightBar && this.running ? 2.2 : 0);
     lensI('light_work', this.workLights ? 3 : 0);
     if (this.pools) {
       (this.pools.tail.material as THREE.MeshBasicMaterial).opacity = clamp(tail * 0.07, 0, 0.3);

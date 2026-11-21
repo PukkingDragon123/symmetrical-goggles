@@ -25,6 +25,7 @@ export function installTruck(game: any): Truck | null {
   const truck = game.jeep as Truck | null;
   if (!(truck instanceof Truck)) return null;
   truck.cargo.game = game;
+  game.truck = truck;
   truck.lowQuality = game.quality?.name === 'low';
   const feel = { t: 0, lastYaw: null as number | null, yawRate: 0, lag: 0, lean: 0, dip: 0, kick: 0, kickV: 0, flinch: 0, flinchV: 0 };
   let wasIn = false, hinted = false, hornT = 0;

@@ -95,6 +95,10 @@ def lowpoly(highs, tris_target, name, protect=None, weld=0.0015):
         r = (lo_r + hi_r) / 2 if hi_r < 1.0 or lo_r > 0 else r * tris_target / n
     bpy.data.objects.remove(base, do_unlink=True)
     best.name = name + '_low'
+    if grp:  # the decimation helper group must not reach the export: it would take one of the 4 skin weight slots
+        g = best.vertex_groups.get(grp)
+        if g:
+            best.vertex_groups.remove(g)
     outward(best)
     for p in best.data.polygons:
         p.use_smooth = False  # faceted
