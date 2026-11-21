@@ -101,7 +101,7 @@ export const VOICES: Record<string, VoicePreset> = {
   megan: woman({ label: 'Megan (ranger): quick and bright, a whisper rides under it', f0: 212, fs: 1.16, rate: 1.08, tune: 1.2, wrong: W({ double: 0.4, glitch: 0.15 }) }),
   jojo: man({ label: 'Jojo (kid): child voice, sing-song, laughs backwards', f0: 268, fs: 1.28, rate: 1.06, breath: 0.12, oq: 0.62, creak: 0.1, tune: 1.4,
     wrong: W({ reverseTail: 0.55, lilt: 0.6, stutter: 0.3, double: 0.3 }) }),
-  ray: man({ label: 'Ray (your uncle): close, tired, the words arrive a little early', f0: 104, fs: 0.97, rate: 0.9, breath: 0.16, drift: 0.7,
+  ray: man({ label: 'Pépère Ray (your grandfather): close, tired, the words arrive a little early', f0: 104, fs: 0.97, rate: 0.9, breath: 0.16, drift: 0.7,
     wrong: W({ double: 0.55, reverseTail: 0.5, drag: 0.4, pause: 0.35 }) }),
   grandpa: man({ label: 'Grandpa (the cutscenes): old, warm, kind, and wrong', f0: 96, fs: 0.94, rate: 0.76, breath: 0.2, jitter: 0.02, shimmer: 0.13, creak: 0.7,
     tremor: { rate: 5.1, depth: 0.25, amp: 0.1 }, drift: 0.8, driftRate: 0.7, tune: 0.95, warm: 5,

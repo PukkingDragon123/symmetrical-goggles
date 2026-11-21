@@ -17,6 +17,7 @@ import { hud } from '../ui/hud';
 import { SPOTS } from '../world/layout';
 import { forgePlacement } from '../places/forge';
 import type { InteractCtx } from '../game/interact';
+import { propsNear } from '../game/physprops';
 import type { Truck } from './truck';
 
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
@@ -271,14 +272,21 @@ export class TruckDamage {
     return null;
   }
 
+  /** on the belt, or set down within a few steps of the truck (a five-slot belt can't carry the whole garage) */
+  private has(g: any, id: string): boolean {
+    if (g?.owns?.(id)) return true;
+    for (const p of propsNear(this.t.root.position, 7)) if (p.itemId === id || p.obj.userData.itemId === id) return true;
+    return false;
+  }
+
   label(o: THREE.Object3D, ctx: InteractCtx): string {
     if (this.t.occupied || this.job) return this.job ? `${REPAIRS[this.job.part].verb}… ${Math.round(this.job.progress * 100)}%` : '';
     const parts = this.partsFor(o);
     if (!parts.length) return '';
     const part = parts[0], R = REPAIRS[part], g = ctx.game;
     if (Math.abs(this.t.phys.v) > 0.3 || !this.workshop()) return '';
-    if (!g?.owns?.('toolbox')) return `${R.verb}: needs the toolbox (store)`;
-    const miss = R.need.filter((id) => !g.owns(id));
+    if (!this.has(g, 'toolbox')) return `${R.verb}: needs the toolbox (store)`;
+    const miss = R.need.filter((id) => !this.has(g, id));
     if (miss.length) return `${R.verb}: needs ${miss.map((m) => NEED_NAMES[m] ?? m).join(', ')}`;
     return `${R.verb} (hold)`;
   }
@@ -288,7 +296,7 @@ export class TruckDamage {
     const parts = this.partsFor(o);
     if (!parts.length) return false;
     const part = parts[0], R = REPAIRS[part], g = ctx.game;
-    if (!this.workshop() || !g?.owns?.('toolbox') || R.need.some((id) => !g.owns(id)) || Math.abs(this.t.phys.v) > 0.3) {
+    if (!this.workshop() || !this.has(g, 'toolbox') || R.need.some((id) => !this.has(g, id)) || Math.abs(this.t.phys.v) > 0.3) {
       hud.say(`<i>${this.label(o, ctx)}.</i>`, 2.5);
       return true;
     }
@@ -363,7 +371,10 @@ export class TruckDamage {
     g.hud?.setCharge?.(job.progress);
     hud.setCharge(job.progress);
     if (job.progress >= 1) {
-      for (const id of job.need) if (id !== 'panel_hammer') g.take(id);
+      for (const id of job.need) {
+        if (id === 'panel_hammer') continue;
+        if (!g.take(id)) { const p = propsNear(T.root.position, 7).find((q) => q.itemId === id || q.obj.userData.itemId === id); if (p) p.obj.removeFromParent(); }
+      }
       job.done();
       this.job = null;
       hud.setCharge(0);

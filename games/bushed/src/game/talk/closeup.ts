@@ -8,6 +8,7 @@ import type { Game } from '../game';
 import type { HumanModel } from '../../humans';
 import { heightAt } from '../../world/layout';
 import { input } from '../../core/input';
+import { physics } from '../../physics/physics';
 
 const css = `
 #talk-fx { position: fixed; inset: 0; pointer-events: none; z-index: 20; opacity: 0; }
@@ -25,7 +26,7 @@ type Subject =
   | { kind: 'creature'; obj: THREE.Object3D; head: THREE.Object3D; size: number; fx: { shine: { value: number } } | null };
 
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-const _v = new THREE.Vector3(), _f = new THREE.Vector3(), _d = new THREE.Vector3(), _s = new THREE.Vector3(), _q = new THREE.Quaternion(), _m = new THREE.Matrix4();
+const _v = new THREE.Vector3(), _f = new THREE.Vector3(), _d = new THREE.Vector3(), _s = new THREE.Vector3(), _w = new THREE.Vector3(), _q = new THREE.Quaternion(), _m = new THREE.Matrix4();
 const UP = new THREE.Vector3(0, 1, 0);
 
 export class CloseUp {
@@ -52,6 +53,8 @@ export class CloseUp {
   private bars: HTMLDivElement[] = [];
   private lastMask = '';
   private lastE = 0;
+  private losT = 0;
+  private clear = 1;
   private bodyCls = false;
   /** the shallow depth of field (a blurred overlay masked around the face); off on the low preset */
   dofEnabled = true;
@@ -148,6 +151,7 @@ export class CloseUp {
       const want = _v.copy(this.focus).addScaledVector(dir, push).add(_s);
       want.y -= 0.035 * sc;
       want.y = Math.max(want.y, heightAt(want.x, want.z) + 0.4);
+      this.clearSight(want, dt, snap);
       // aim a little under the eyes: the face sits high in the frame, the mouth clear of the subtitles
       const look = _f.copy(this.focus).addScaledVector(_s, -0.25); look.y -= 0.075 * sc;
       fov = THREE.MathUtils.lerp(34, 29, ease(Math.min(1, this.t / 7)));
@@ -164,10 +168,27 @@ export class CloseUp {
       const want = _v.copy(this.focus).addScaledVector(dir, dist);
       want.y += 0.3 * dist + 0.15;
       want.y = Math.max(want.y, heightAt(want.x, want.z) + 1.1);
+      this.clearSight(want, dt, snap);
       fov = THREE.MathUtils.lerp(24, 19, Math.min(1, this.t / Math.max(0.5, this.holdFor)));
       this.track(want, this.focus, dt, snap, 14);
     }
     return fov;
+  }
+
+  /** a counter, a shelf, a wall or a trunk between the face and the lens pulls the camera in (checked 5x a second) */
+  private clearSight(want: THREE.Vector3, dt: number, snap: boolean): void {
+    this.losT -= dt;
+    if (snap || this.losT <= 0) {
+      this.losT = 0.2;
+      _w.copy(want).sub(this.focus);
+      const L = _w.length();
+      if (L < 1e-3) return;
+      _w.multiplyScalar(1 / L);
+      let hit = null;
+      try { hit = physics.ray(this.focus, _w, L); } catch { hit = null; }
+      this.clear = hit ? Math.max(0.3, hit.toi - 0.12) / L : 1;
+    }
+    if (this.clear < 1) want.sub(this.focus).multiplyScalar(this.clear).add(this.focus);
   }
 
   private track(pos: THREE.Vector3, look: THREE.Vector3, dt: number, snap: boolean, rate: number): void {

@@ -97,7 +97,7 @@ export async function playOpening(g: Game, d: Director): Promise<void> {
   g.hands?.equip(null);
   hud.setLabel(''); hud.showDot(false);
   g.timeScale = 1.5;
-  g.hour = 18.8;
+  g.hour = 18.35;
   g.weather = { cloud: 0.25, rain: 0, fog: 0.05, storm: 0 };
   const tw = (g as unknown as { targetWeather?: { cloud: number; rain: number; fog: number; storm: number } }).targetWeather;
   if (tw) Object.assign(tw, { cloud: 0.3, rain: 0, fog: 0.15, storm: 0 });

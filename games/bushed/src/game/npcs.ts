@@ -75,7 +75,7 @@ export function fireSlot(angle: number, r: number, anim: NpcAnim, from = 0, to =
 const MARCEL = [
   "Marcel. Forty years cutting in these woods. I don't go in the cedar hollow. Not because of what's in there. Because of how polite it is.",
   'That rubber thing in the old burn? I shot at it once. Once. The bullet came back and took my hat.',
-  'Your uncle said goodnight to the trees. Out loud. Every night. I used to laugh. I say it now too.',
+  'Your grandfather said goodnight to the trees. Out loud. Every night. I used to laugh. I say it now too.',
   "Notch on the side you want it to go. Don't argue with the lean. The tree's been standing there longer than you've been arguing.",
   'Ray had a trapline north of the lake. Never once saw him carry a pelt home. Never once saw him come home hungry either.',
 ];
@@ -674,7 +674,7 @@ function installLife(g: Game): void {
   });
 }
 
-/** something to say about the nephew (if A remembers something), else town talk */
+/** something to say about the grandkid (if A remembers something), else town talk */
 function gossipAbout(g: Game, a: Npc): [string, string] {
   const id = a.def.id, day = g.day + 1;
   const opts: [string, string][] = [];

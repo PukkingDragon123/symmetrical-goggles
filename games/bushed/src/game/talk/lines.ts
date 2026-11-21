@@ -50,7 +50,7 @@ export const PERSONA: Record<string, Persona> = {
   marcel: {
     likes: ['coffee', 'beer', 'fish', 'jerky'],
     trades: [{ want: ['coffee'], give: ['file', 1], say: 'Coffee. Real coffee. Here, a file. Ten strokes a side. Keep the edge honest.' },
-      { want: ['fish'], give: ['firestarter', 2], say: 'A trout for fatwood. The old trade. Your uncle made it every Sunday.' }],
+      { want: ['fish'], give: ['firestarter', 2], say: 'A trout for fatwood. The old trade. Your grandfather made it every Sunday.' }],
     gifts: [['firestarter', 1]], props: { sit: { item: 'knife', hand: 'R', use: 'browse', every: 9 } }, mood: 'sleepy', laugh: 0.25, nerves: 0.1,
   },
   hunter: {
@@ -90,14 +90,14 @@ export const REACT: Record<ReactKey, string[]> = {
   wet: ["You're soaked. Stand by a fire before you go blue.", 'Wet through. The cold finds wet people first.'],
   cold: ["Your lips are blue. Go get warm.", "You're shaking. That's the cold talking. Listen to it."],
   night: ['Late to be wandering. The bush has other people in it at night.', "Dark out. Keep a light on and your voice down.", 'Night. Nothing good walks around at night. Except us.'],
-  chop: ['Good swing.', 'Mind the lean!', 'Hit it where it wants to split.', 'Your uncle swung like that. Same hitch at the top.'],
+  chop: ['Good swing.', 'Mind the lean!', 'Hit it where it wants to split.', 'Your grandfather swung like that. Same hitch at the top.'],
   felled: ['TIMBER! ...Sorry. Always wanted to say it.', 'Felt that one in my teeth.', 'Down she goes.'],
   shot: ['JESUS! Warn a person!', 'What are you shooting at?!', "Stop that! You'll wake something up."],
   run: ["What's chasing you?", 'Slow down! Running makes everything interested.', 'Whoa! Where\'s the fire?'],
   swing_close: ['Hey! Watch it!', 'Not near my head!'],
   greet: ['Hey.', 'Bonjour.', 'There you are.', "Oh. It's you."],
   greet_back: ['Back again.', "You're still alive. Good.", 'Twice in a day. People will talk.'],
-  greet_friend: ['My friend! Come, come.', "There's my favourite nephew of Ray.", 'Hey you. Good to see you.'],
+  greet_friend: ['My friend! Come, come.', "There's Ray's grandkid. My favourite.", 'Hey you. Good to see you.'],
   remember_shot: ["You're the one who was shooting yesterday.", 'Heard you shooting. Hit anything that hit back?'],
   thanks: ['For me? Merci. Really.', 'Oh, you shouldn\'t have. But you did.', 'Thank you. I won\'t forget it.', 'That\'s kind. Kind is rare up here.'],
   meh: ["I'll... keep it somewhere.", 'Huh. Thanks. I guess.', 'Okay. Sure. Thanks.'],
@@ -111,7 +111,7 @@ export const REACT: Record<ReactKey, string[]> = {
 
 export const REACT_BY: Record<string, Partial<Record<ReactKey, string[]>>> = {
   gerard: {
-    greet: ['Bonjour. Mind the bell.', 'Ah. The nephew.'], rifle: ['Not in the store with that. Lean it on the porch like a civilized person.'],
+    greet: ['Bonjour. Mind the bell.', 'Ah. Pépère\'s grandkid.'], rifle: ['Not in the store with that. Lean it on the porch like a civilized person.'],
     bloody: ['You are bleeding on my linoleum. Again. Well, first time. But it feels like again.'], laugh: ['Ha! Hah. Mon dieu.', 'Heh heh heh.'],
     thanks: ['Merci, mon chou. I will put it by the register where everyone can see I have friends.'],
   },
@@ -141,14 +141,14 @@ export const GOSSIP: [string, string][] = [
   ['Something walked backwards across the burn.', 'Then it was going the other way. Don\'t follow it.'],
   ['The loons stopped at midnight. All at once.', 'They do that when something\'s on the water.'],
   ["Pruneau's put the coffee up again.", 'It was always too cheap for how bad it is.'],
-  ['Ray\'s porch light was on last night.', 'Somebody\'s living there now. The nephew.'],
+  ['Ray\'s porch light was on last night.', 'Somebody\'s living there now. The grandkid.'],
   ['I left a pie on the stump by the hollow.', 'And?'],
   ['My dog won\'t go past the cedars anymore.', 'Smart dog.'],
 ];
 export const GOSSIP_ME: Record<string, [string, string][]> = {
-  gift: [["Ray's nephew gave me {item}.", 'Did he now. He never gave me anything.'], ['The nephew brought me {item}. Just like that.', 'Ray used to do that. Same face, too.']],
-  shot: [['That one shoots at shadows.', 'Shadows shoot back up here.'], ['Was that the nephew shooting?', "Don't. He's right there."]],
-  bloody: [['Saw him come out of the bush bleeding.', 'Bush takes a little from everybody.']],
-  chop: [['He swings like Ray. Same hitch at the top.', 'Same hitch. Hope it ends different.']],
-  wet: [['He walks around soaked, that one.', 'Ray did too. Wet as a muskrat. Never sick a day.']],
+  gift: [["Ray's grandkid gave me {item}.", 'Did they now. Never gave me anything.'], ['The grandkid brought me {item}. Just like that.', 'Ray used to do that. Same face, too.']],
+  shot: [['That one shoots at shadows.', 'Shadows shoot back up here.'], ['Was that the grandkid shooting?', "Don't. The kid's right there."]],
+  bloody: [['Saw the kid come out of the bush bleeding.', 'Bush takes a little from everybody.']],
+  chop: [['Swings like Ray, that kid. Same hitch at the top.', 'Same hitch. Hope it ends different.']],
+  wet: [['Walks around soaked, that one.', 'Ray did too. Wet as a muskrat. Never sick a day.']],
 };
