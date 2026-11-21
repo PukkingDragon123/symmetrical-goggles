@@ -224,6 +224,18 @@ export class Truck {
     this.steerWheel = this.nodes.steering_wheel ?? null;
     for (const n of ['interior', 'steering_wheel', 'needle_speedo', 'needle_tacho', 'needle_fuel', 'needle_temp', 'winch_drum']) if (this.nodes[n]) this.nearOnly.push(this.nodes[n]);
     // the hands' focus ray tests every triangle under it: keep it off the cab interior and the running gear
+    const seen = new Set<THREE.Material>();
+    for (const n of ['interior', 'steering_wheel']) this.nodes[n]?.traverse((o) => {
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      for (const mt of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+        const sm = mt as THREE.MeshStandardMaterial;
+        if (seen.has(sm) || !sm.map || sm.name === 'glass') continue;
+        seen.add(sm);
+        sm.emissiveMap = sm.map; sm.emissive = new THREE.Color(0, 0, 0);
+        this.cabMats.push(sm);
+      }
+    });
     const noRay = () => {};
     for (const n of ['interior', 'chassis', 'winch_drum', 'steering_wheel', 'glass', 'glass_door_l', 'glass_door_r']) this.nodes[n]?.traverse((o) => { if ((o as THREE.Mesh).isMesh) o.raycast = noRay; });
     const sa = meta.pivots.steering_wheel?.axis;
@@ -286,7 +298,7 @@ export class Truck {
       hood: [[0.15, 1.42, 1.75], [eye.x, eye.y - 0.05, eye.z]],
       bumper: [[1.25, 0.48, 2.75], [0.5, 1.0, -2.5]],
       low_front: [[0.0, 0.35, 3.4], [0, 1.1, 0]],
-      wheel_fl: [[1.45, 0.42, 2.15], [0.9, 0.55, -1.5]],
+      wheel_fl: [[2.3, 0.55, 3.3], [0.5, 0.85, -2.2]],
       wheel_rr: [[-1.4, 0.45, -2.6], [-0.8, 0.8, 2.5]],
       side_l: [[1.55, 1.55, 0.9], [eye.x, eye.y, eye.z]],
       side_r: [[-1.6, 1.6, 0.6], [eye.x, eye.y - 0.1, eye.z]],
@@ -635,7 +647,15 @@ export class Truck {
       const near = d < 26 || this.occupied;
       for (const n of this.nearOnly) n.visible = near;
     }
+    // the cab is a dark box: a faint self-light on the dash and seats while you sit in it (eyes adjust; no lamp)
+    const fill = this.occupied ? 0.17 : 0;
+    if (Math.abs(fill - this.cabFill) > 0.002) {
+      this.cabFill += (fill - this.cabFill) * Math.min(1, dt * 3);
+      for (const m of this.cabMats) m.emissive.setScalar(this.cabFill);
+    }
   }
+  private cabMats: THREE.MeshStandardMaterial[] = [];
+  private cabFill = 0;
   private nearOnly: THREE.Object3D[] = [];
 }
 

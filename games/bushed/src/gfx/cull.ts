@@ -3,6 +3,7 @@
 // renderer sets the focal length in pixels each frame), in the sun's shadow map beyond SUN_K x radius (a tin on a
 // shelf stops casting at ~9 m, a chair at ~45 m, a house never), in lamp shadow maps beyond LAMP_K x radius. So the
 // store's 600 shelf items cost nothing from the cabin and the yard junk does not fill the sun's map from afar.
+// Pieces (under FOG_R m) past the distance where the scene's fog is opaque are skipped too (the cabin from the hollow).
 // Never-culled shadow casters (creatures) keep being drawn by the camera but are culled per light (casterCull).
 // Instanced meshes, skinned meshes the camera culls, and meshes with their own intersectsFrustum are left alone.
 import * as THREE from 'three';
@@ -12,6 +13,10 @@ const SUN_K = 90, LAMP_K = 160;
 let MAIN_K = 400;
 /** the main camera's focal length in internal pixels (radius / distance * focal = projected radius in pixels) */
 export function setCullFocal(px: number): void { MAIN_K = Math.max(150, px); }
+let FOG2 = 1e18;
+/** beyond this distance the scene's fog hides everything (< 1 % shows through): pieces smaller than FOG_R go */
+export function setFogCull(d: number): void { FOG2 = d * d; }
+const FOG_R = 24;
 const _s = new THREE.Sphere();
 const base = THREE.Mesh.prototype.intersectsFrustum;
 const tagged = new WeakSet<THREE.Object3D>();
@@ -36,7 +41,9 @@ function sizeCull(this: THREE.Mesh, f: THREE.Frustum): boolean {
   _s.copy(bs).applyMatrix4(this.matrixWorld);
   const k = frustumKind(f);
   const lim = _s.radius * (k === 0 ? MAIN_K * (this.userData.cullGlow ? GLOW_K : 1) : k === 1 ? SUN_K : LAMP_K);
-  if (_s.center.distanceToSquared(G.uCamPos.value) > lim * lim) return false;
+  const d2 = _s.center.distanceToSquared(G.uCamPos.value);
+  if (d2 > lim * lim) return false;
+  if (k === 0 && _s.radius < FOG_R && d2 > FOG2 + _s.radius * _s.radius && this.userData.cullFog) return false;
   return f.intersectsSphere(_s);
 }
 
@@ -93,6 +100,9 @@ export function installCulling(root: THREE.Object3D): void {
     }
     if ((m as THREE.SkinnedMesh).isSkinnedMesh || m.intersectsFrustum !== base) return;
     if (glows(m)) m.userData.cullGlow = true;
+    // only fogged materials vanish into the fog (custom shaders without fog would pop)
+    const mats = Array.isArray(m.material) ? m.material : [m.material];
+    if (mats.every((x) => x && (x as THREE.MeshStandardMaterial).fog !== false)) m.userData.cullFog = true;
     m.intersectsFrustum = sizeCull;
   });
 }

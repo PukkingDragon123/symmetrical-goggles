@@ -11,7 +11,7 @@ const STYLE = `
   transition: opacity .45s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1);
   text-shadow: 0 2px 0 rgba(0,0,0,.85), 0 0 3px rgba(0,0,0,.9), 0 2px 10px rgba(0,0,0,.5); }
 .bobj::before { content: ''; position: absolute; left: -18px; top: -14px; right: -46px; bottom: -16px; z-index: -1;
-  background: radial-gradient(closest-side, rgba(0,0,0,.38), rgba(0,0,0,0)); }
+  background: radial-gradient(closest-side, rgba(0,0,0,.48), rgba(0,0,0,0)); }
 .bobj.is-on { opacity: .93; transform: none; }
 .bobj.is-hidden { opacity: 0 !important; }
 .bobj__mark { flex: none; position: relative; width: 8px; height: 8px; margin-top: calc(1.05em + 7px); border: 1.5px solid #d8a85c; transform: rotate(45deg); transition: background .4s; }

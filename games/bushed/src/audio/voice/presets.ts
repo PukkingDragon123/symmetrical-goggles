@@ -106,7 +106,7 @@ export const VOICES: Record<string, VoicePreset> = {
   grandpa: man({ label: 'Grandpa (the cutscenes): old, warm, kind, and wrong', f0: 96, fs: 0.94, rate: 0.76, breath: 0.2, jitter: 0.02, shimmer: 0.13, creak: 0.7,
     tremor: { rate: 5.1, depth: 0.25, amp: 0.1 }, drift: 0.8, driftRate: 0.7, tune: 0.95, warm: 5,
     wrong: W({ drag: 0.6, reverseTail: 0.6, double: 0.55, glitch: 0.18, pause: 0.45, sag: 0.55, lilt: 0.35 }) }),
-  radio: man({ label: 'The radio (CKTL night show): band-limited, hiss between words', f0: 150, fs: 1.08, rate: 0.95, radio: true, breath: 0.15, wrong: W({ glitch: 0.35 }) }),
+  radio: man({ label: 'The radio (CKLK night show): band-limited, hiss between words', f0: 150, fs: 1.08, rate: 0.95, radio: true, breath: 0.15, wrong: W({ glitch: 0.35 }) }),
   stranger: man({ label: 'Stranger (anyone without a preset): hashed per name', wrong: W() }),
   // ---------------------------------------------------------------- the things in the bush
   cryptid: thing({ label: 'Generic cryptid: layered, sub-octave, wet', cryptid: { layers: 0.6, sub: 0.8, clicks: 0.6, growl: 0.5, whistle: 0, wet: 0.5, backwards: 0.2 } }),
@@ -147,7 +147,7 @@ export const VOICES: Record<string, VoicePreset> = {
 const ALIAS: Record<string, string> = {
   'gérard': 'gerard', gerard: 'gerard', pruneau: 'gerard', shopkeeper: 'gerard', odile: 'odile', doug: 'doug', camper: 'camper',
   marcel: 'marcel', hunter: 'hunter', lucien: 'lucien', hollis: 'hollis', esko: 'esko', megan: 'megan', jojo: 'jojo', ray: 'ray',
-  grandpa: 'grandpa', 'grand-père': 'grandpa', granddad: 'grandpa', 'old man': 'grandpa', cktl: 'radio', radio: 'radio',
+  grandpa: 'grandpa', 'grand-père': 'grandpa', granddad: 'grandpa', 'old man': 'grandpa', cktl: 'radio', cklk: 'radio', 'cklk 98.1': 'radio', radio: 'radio',
   caller: 'radio', 'rémi': 'radio', remi: 'radio',
 };
 

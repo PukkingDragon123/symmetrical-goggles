@@ -91,6 +91,7 @@ export function todoBlocks(g: Game): { title: string; lines: { text: string; don
 
 // ---------------------------------------------------------------------------------------------- the objective line
 let arcW: StoryWorld | null = null;
+let arcNow: { finaleRunning: boolean } | null = null;
 const introDone = (g: Game) => g.flags.has('intro_done') || g.flags.has('free') || g.day >= 1;
 const _tp = new THREE.Vector3();
 /** where a step happens (for the objective's distance, direction and pin) */
@@ -115,6 +116,8 @@ function stepTarget(g: Game, id: string): THREE.Vector3 | THREE.Object3D | null 
 /** the story's line for the objective HUD: this chapter's next step (null during the intro) */
 export function storyObjective(g: Game): Objective | null {
   if (!arcW || !introDone(g)) return null;
+  // while he's here, nothing to do but be here
+  if (arcNow?.finaleRunning && !has(g, 'ray_gone')) return null;
   const n = chapter(g);
   if (n > 5) return { id: 'epilogue', kicker: `Epilogue · ${EPILOGUE.title}`, text: EPILOGUE.lines[0] };
   const c = CHAPTERS[n - 1], st = c.steps.find((x) => !x.done(g));
@@ -155,6 +158,7 @@ export class Arc {
   constructor(private g: Game, private W: StoryWorld) {
     this.wire();
     arcW = W;
+    arcNow = this;
     if (!objectiveSources.includes(storyObjective)) objectiveSources.push(storyObjective);
   }
 
@@ -448,7 +452,7 @@ class Ghost {
     if (this.glitchT <= 0) { this.glitchT = 2.5 + Math.random() * 5; this.glitch = 0.09 + Math.random() * 0.1; }
     this.glitch -= dt;
     const flick = this.glitch > 0 ? 0.25 : 0.86 + 0.1 * Math.sin(t * 7.3) * Math.sin(t * 2.1) + 0.04 * Math.sin(t * 23.0);
-    const op = Math.max(0, Math.min(1, level)) * 0.58 * flick;
+    const op = Math.max(0, Math.min(1, level)) * 0.7 * flick;
     for (const m of this.meshes) {
       if (!this.orig.has(m)) { this.orig.set(m, m.material); this.cast.set(m, m.castShadow); }
       const cur = m.material;

@@ -46,7 +46,7 @@ export function installTruck(game: any): Truck | null {
     if (truck.occupied !== wasIn) {
       wasIn = truck.occupied;
       truck.swingDoor();
-      if (wasIn && !hinted) { hinted = true; hud.say('<i>W / S drive and brake (hold S to back up), Space handbrake, H lights, L light bar, G horn, E get out.</i>', 6); }
+      if (wasIn && !hinted && !truck.autopiloting) { hinted = true; hud.say('<i>Hold S to back up. L light bar, G horn.</i>', 3.5); }
     }
     const driving = game.mode === 'drive' && truck.occupied;
     if (driving) {

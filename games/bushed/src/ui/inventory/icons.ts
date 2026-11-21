@@ -61,7 +61,11 @@ export function objectIcon(key: string, obj: THREE.Object3D): HTMLCanvasElement 
   if (e) return e.canvas;
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = ICON_PX;
-  const m = obj.clone(true);
+  // userData can hold back-references (a wood piece's mesh <-> the piece), which clone() would try to JSON-copy
+  const saved: [THREE.Object3D, Record<string, unknown>][] = [];
+  obj.traverse((c) => { saved.push([c, c.userData]); c.userData = {}; });
+  let m: THREE.Object3D;
+  try { m = obj.clone(true); } finally { for (const [c, u] of saved) c.userData = u; }
   m.position.set(0, 0, 0); m.quaternion.identity(); m.scale.setScalar(1);
   e = { canvas, tex: null, ready: null as unknown as Promise<HTMLCanvasElement>, done: false };
   const ent = e;

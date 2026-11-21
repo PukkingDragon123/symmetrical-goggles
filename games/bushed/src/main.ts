@@ -142,19 +142,23 @@ async function boot() {
       return m;
     });
   }));
-  // the shaders for what exists so far start compiling now (in the GPU process) while the CPU carries on; a
-  // placeholder light stands in for every lamp still to come, so nothing recompiles when they arrive
+  // a placeholder light stands in for every lamp still to come, so nothing recompiles when they arrive. Where the
+  // GPU compiles in the background (KHR_parallel_shader_compile: desktop Chrome/Electron on a real GPU) every
+  // shader of the scene starts compiling now, on the GPU's threads, while the CPU carries on, so nothing stalls
+  // later when you turn around. Without it a compile blocks the next GL call that needs the GPU, so the first
+  // frame compiles only what it draws, as three.js does by itself.
   const lights = new LightBudget(game.scene, game.quality.name, game.quality.lampShadows);
   lights.onNewLight = () => applyRuntime(game.quality, game.R.gl, game.scene, game.sky.sun);
+  const par = parallelCompile(game);
   const compiling: Promise<unknown>[] = [];
-  const kick = () => { lights.balance(); compiling.push(precompile(game, game.scene, game.camera, game.scene)); };
-  kick();
+  const kick = (root: THREE.Object3D, cam: THREE.Camera, target: THREE.Scene) => { lights.balance(); if (par) compiling.push(precompile(game, root, cam, target)); };
+  kick(game.scene, game.camera, game.scene);
   await step('arms', () => loading.step('arms', async () => {
     const a = new FPArms(); game.setArms(a as never);
     // the Gacha Garage port: body under the camera, footstep-synced hands, reach, inspect
     a.bind?.({ player: game.player, scene: game.scene, camera: game.camera, hands: game.hands } as never);
   }));
-  compiling.push(precompile(game, game.view, game.viewCam, game.view));
+  kick(game.view, game.viewCam, game.view);
   await Promise.all([cabinP, jeepP, propsP]);
   // generated products (jerky packs, beer bottles, tins...) become the item models
   await step('products', () => loading.step('products', async () => {
@@ -173,8 +177,8 @@ async function boot() {
   // 3. one update so the streamed parts of the first view exist (forest impostors, ground cover chunks), then the
   //    shaders for everything added since the first kick; wait for all of them
   await step('warm update', () => { game.update(0); });
-  kick();
-  compiling.push(precompile(game, game.view, game.viewCam, game.view));
+  kick(game.scene, game.camera, game.scene);
+  kick(game.view, game.viewCam, game.view);
   // images decode on browser threads while the GPU compiles
   compiling.push(step('images', () => Promise.all([bitmapize(game.R.gl, game.scene), bitmapize(game.R.gl, game.view)])));
   await step('shaders', () => loading.step('shaders', () => Promise.all(compiling)));

@@ -12,7 +12,7 @@ import { input } from '../../core/input';
 const css = `
 #talk-fx { position: fixed; inset: 0; pointer-events: none; z-index: 20; opacity: 0; }
 #talk-fx .vig { position: absolute; inset: 0; background: radial-gradient(ellipse 62% 58% at 50% 46%, rgba(0,0,0,0) 38%, rgba(4,3,2,.55) 70%, rgba(2,1,1,.94) 100%); }
-#talk-fx.creature .vig { background: radial-gradient(ellipse 46% 44% at 50% 48%, rgba(0,0,0,0) 22%, rgba(3,2,2,.75) 62%, rgba(0,0,0,1) 92%); }
+#talk-fx.creature .vig { background: radial-gradient(ellipse 52% 50% at 50% 48%, rgba(0,0,0,0) 34%, rgba(3,2,2,.7) 70%, rgba(0,0,0,.97) 96%); }
 #talk-fx .dof { position: absolute; inset: 0; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
 #talk-fx .bar { position: absolute; left: 0; right: 0; height: 0; background: #000; }
 #talk-fx .bar.t { top: 0; } #talk-fx .bar.b { bottom: 0; }
@@ -131,7 +131,8 @@ export class CloseUp {
   private aim(dt: number, snap = false): number {
     const s = this.subj!, g = this.g;
     let fov: number;
-    const eyeP = _d.copy(this.from.pos);
+    // where the player stands (their eyes), not where the camera happens to be
+    const eyeP = _d.copy(g.player.pos); eyeP.y += 1.6;
     if (s.kind === 'person') {
       const m = s.model, sc = m.height / 1.75;
       // the eyes sit a little above the head joint; the face points the way the body does (the head turns to you)
@@ -147,7 +148,8 @@ export class CloseUp {
       const want = _v.copy(this.focus).addScaledVector(dir, push).add(_s);
       want.y -= 0.035 * sc;
       want.y = Math.max(want.y, heightAt(want.x, want.z) + 0.4);
-      const look = _f.copy(this.focus).addScaledVector(_s, -0.25); look.y -= 0.02 * sc;
+      // aim a little under the eyes: the face sits high in the frame, the mouth clear of the subtitles
+      const look = _f.copy(this.focus).addScaledVector(_s, -0.25); look.y -= 0.075 * sc;
       fov = THREE.MathUtils.lerp(34, 29, ease(Math.min(1, this.t / 7)));
       this.track(want, look, dt, snap, 6);
     } else {
@@ -158,13 +160,13 @@ export class CloseUp {
       _d.copy(eyeP).sub(this.focus); _d.y = 0; _d.normalize();
       const dir = _f.dot(_d) < -0.3 ? _d : _f.multiplyScalar(0.55).addScaledVector(_d, 0.45).normalize();
       const dist = THREE.MathUtils.clamp(s.size * 0.75, 1.1, 3.6) * THREE.MathUtils.lerp(1, 0.86, Math.min(1, this.t / this.holdFor));
+      // from a little above: low heads hide in reeds and ferns
       const want = _v.copy(this.focus).addScaledVector(dir, dist);
-      want.y += 0.06 * dist;
-      want.y = Math.max(want.y, heightAt(want.x, want.z) + 0.25);
+      want.y += 0.3 * dist + 0.15;
+      want.y = Math.max(want.y, heightAt(want.x, want.z) + 1.1);
       fov = THREE.MathUtils.lerp(24, 19, Math.min(1, this.t / Math.max(0.5, this.holdFor)));
       this.track(want, this.focus, dt, snap, 14);
     }
-    void g;
     return fov;
   }
 
@@ -196,8 +198,8 @@ export class CloseUp {
     if (arms?.object && e > 0.02) arms.object.visible = false;
     // a cryptid: darker, eyes catching the light
     if (this.subj.kind === 'creature') {
-      g.R.grade.exposure *= 1 - 0.45 * e;
-      g.R.grade.saturation *= 1 - 0.35 * e;
+      g.R.grade.exposure *= 1 - 0.28 * e;
+      g.R.grade.saturation *= 1 - 0.3 * e;
       if (this.subj.fx) this.subj.fx.shine.value = Math.max(this.subj.fx.shine.value, 1.8 * e);
     }
     this.fx(e);
@@ -226,7 +228,7 @@ export class CloseUp {
   /** the overlay: vignette, depth of field around the face, letterbox, a darker grade */
   private fx(e: number): void {
     const g = this.g;
-    if (e > 0) { if (this.baseVig === null) this.baseVig = g.R.grade.vignette; g.R.grade.vignette = this.baseVig + e * (this.isCreature ? 0.9 : 0.45); }
+    if (e > 0) { if (this.baseVig === null) this.baseVig = g.R.grade.vignette; g.R.grade.vignette = this.baseVig + e * (this.isCreature ? 0.6 : 0.4); }
     else if (this.baseVig !== null) { g.R.grade.vignette = this.baseVig; this.baseVig = null; }
     if (e === 0 && this.lastE === 0) return;
     this.lastE = e;

@@ -20,7 +20,7 @@ import * as THREE from 'three';
 import { G, WATER_GLSL } from './globals';
 import { SKY_GLSL, SKY_UNIFORMS } from './sky';
 import { MatteWatcher } from './matte';
-import { CullWatcher, setCullFocal, setMainView } from './cull';
+import { CullWatcher, setCullFocal, setMainView, setFogCull } from './cull';
 import { motionBlur, currentQuality } from '../game/quality';
 
 /** the viewmodel's share of the depth range (window depth 0..VM_DEPTH); world depths are always above it */
@@ -834,6 +834,9 @@ export class Renderer {
     // ... and screen-size culling (world only: the viewmodel sits at the view camera's origin)
     this.culler.watch(world); this.culler.flush(this.frame);
     setCullFocal(this.cullFocal > 0 ? this.cullFocal : (this.h * 0.5) / Math.tan(THREE.MathUtils.degToRad(camera.fov) * 0.5));
+    // exp2 fog: transmittance exp(-(d * density)^2) < 0.8 % past 2.2 / density
+    const fog = world.fog as THREE.FogExp2 | null;
+    setFogCull(fog && (fog as THREE.FogExp2).isFogExp2 && fog.density > 1e-4 ? 2.2 / fog.density : 1e9);
     camera.updateMatrixWorld();
     G.uCamPos.value.setFromMatrixPosition(camera.matrixWorld);
     // sky probe first: the lake and wet ground read it this frame
