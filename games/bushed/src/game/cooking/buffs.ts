@@ -3,18 +3,21 @@
 //   hearty  big breakfasts, bannock, pies: stamina comes back faster (swinging the axe, hauling)
 //   alert   coffee: stamina back faster and the heavy breathing settles quicker
 //   sweet   syrup and berries: a little of both, and a sugar glow
+//   uncanny the cryptid recipes (cryptid_recipes.ts): no meter of its own; while it lasts the cryptids trust you
+//           faster (src/creatures/cryptids/companions.ts reads has('uncanny'))
 // Strength and length scale with how well it was cooked (the grade). Eating the same kind again refreshes it.
 import type { Game } from '../game';
 import { hud } from '../../ui/hud';
 import type { BuffSpec } from './recipes';
 
-interface Active { kind: 'warm' | 'hearty' | 'alert' | 'sweet'; k: number; left: number; from: string }
+interface Active { kind: 'warm' | 'hearty' | 'alert' | 'sweet' | 'uncanny'; k: number; left: number; from: string }
 
 const WORDS: Record<Active['kind'], [string, string]> = {
   warm: ['Warm to the boots', 'The warmth from the meal wears off.'],
   hearty: ['Full of beans', 'The big meal has worn off.'],
   alert: ['Wide awake', 'The coffee buzz fades.'],
   sweet: ['Sugar glow', 'The sugar glow fades.'],
+  uncanny: ['An uncanny calm', 'The uncanny calm wears off. The woods feel ordinary again.'],
 };
 
 export class Buffs {
@@ -27,7 +30,7 @@ export class Buffs {
   apply(spec: BuffSpec | null, mult: number, from: string): string {
     if (!spec) return '';
     const said: string[] = [];
-    for (const kind of ['warm', 'hearty', 'alert', 'sweet'] as const) {
+    for (const kind of ['warm', 'hearty', 'alert', 'sweet', 'uncanny'] as const) {
       const k = spec[kind];
       if (!k) continue;
       const secs = spec.hours * 3600 * (0.6 + 0.4 * mult);

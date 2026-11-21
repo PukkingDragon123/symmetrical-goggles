@@ -213,7 +213,7 @@ export const TALES: Tale[] = [
       'Délima said, "Who\'s going to feed them?" The foreman said, "Feed who?" And she just looked at the trees.',
       'She cooked all that summer for nobody we could see. Every night, the gut hammer, once. And every morning the plates were licked clean.',
       'They were our stories, see. Thirty years of men at the bunkhouse stove making things up. The bush heard every word. It believed us.',
-      'Then we all went home, and nobody told them. Délima told them. Then her daughter. Then Ray. A Tremblay\'s been cooking for them ever since.',
+      'Then we all went home, and nobody told them. Délima told them. Then her daughter. Then Ray, till April. Now you, I hear. A Tremblay\'s been cooking for them ever since.',
       'It isn\'t a curse, kid. It\'s a kitchen.',
     ],
   },

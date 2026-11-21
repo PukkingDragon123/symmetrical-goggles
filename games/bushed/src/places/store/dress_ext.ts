@@ -1,8 +1,9 @@
 // Pruneau's from the road: the porch (ice merchandiser, bait fridge with its VERS / WORMS card, the bench's
 // coffee-can ashtray, extension cords), a propane exchange cage, a firewood-bundle rack, the community corner (a
-// roofed bulletin board layered with flyers, a pay phone, the rural route mailboxes), neon and light boxes in the
-// display windows, a painted fascia valance, a ghost ad on the side wall, the gas island's signs and bucket, a
-// power drop from the road, and the mud: tyre ruts with puddles, boot prints, drips and grime.
+// roofed bulletin board with a few flyers, a pay phone, the rural route mailboxes), the OPEN neon in the
+// window, a plain painted fascia valance, the gas island's bucket, a power drop from the road, and the mud: tyre
+// ruts with puddles, boot prints, drips and grime. Round 6 cut the printed matter about in half (light boxes, vinyl,
+// window posters, the ghost ad, price and warning cards); the orb webs in the porch corners are thread geometry.
 // Store-local frame (see store.ts): the shop front faces +Z, origin at the footprint centre on the ground.
 import * as THREE from 'three';
 import { Mesher, Rand, Cols, V, box, boxAt, board, logAB, lathe, defineMat, hasMat, placeMat } from '../kit';
@@ -11,6 +12,7 @@ import { writeSplit } from '../products';
 import { PUV, PSUB, card, cardAt, floorDecal, groundDecal } from './print';
 import { colorMat, propInstances, blob, prop, tb, type Xf } from './inst';
 import { neonMats, neonWord, neonRect, neonHalo } from './neon';
+import { orbWeb, webMaterial } from '../../world/fauna/webs';
 import * as LP from './lowprops';
 import { PRINT_RECTS } from './print_rects';
 
@@ -97,7 +99,6 @@ export function dressExterior(c: DressStore): void {
     tb(ms, 'galv', [V(w / 2 - 0.07, 0.7, d / 2), V(w / 2 - 0.07, 0.7, d / 2 + 0.04), V(w / 2 - 0.07, 1.02, d / 2 + 0.04), V(w / 2 - 0.07, 1.02, d / 2)], 0.01, 6, { smooth: false });
     cardAt(ms, 'bait_card', -0.03, 1.02, d / 2 + 0.01, 0, ...sz('bait_card', 230), 0.04);
     for (const sx of [-1, 1]) boxAt(ms, 'wrap', -0.03 + sx * 0.19, 1.15, d / 2 + 0.012, 0.05, 0.02, 0.002, 0, {}, 0, sx * 0.6);
-    cardAt(ms, 'minnow_sign', 0.02, 0.46, d / 2 + 0.01, 0, ...sz('minnow_sign', 260), -0.05);
     // the styrofoam cooler on top, lid askew
     boxAt(ms, styro, -0.05, h + 0.1, 0.02, 0.5, 0.2, 0.34, 0.1);
     boxAt(ms, styro, -0.02, h + 0.215, 0.04, 0.52, 0.04, 0.36, 0.25);
@@ -142,7 +143,6 @@ export function dressExterior(c: DressStore): void {
   {
     const zf = D / 2 + PORCH + 0.37, y = FLOOR + 2.95;
     board(ms, 'boards_green', r, 0, y, zf - 0.012, 7.75, 0.34, 0.025, 0, { grain: 'x' });
-    cardAt(ms, 'fascia', 0, y, zf + 0.002, 0, 7.6, 0.32);
   }
   // ---- neon and light boxes inside the two display windows (read from outside), vinyl letters on the glass
   {
@@ -161,14 +161,9 @@ export function dressExterior(c: DressStore): void {
     neonHalo(nm, red.halo, 2.0, 1.25, D / 2 - T / 2 + 0.035 - zi);
     for (const sx of [-0.4, 0.4]) tb(nm, 'iron', [V(sx, 0.18, -0.02), V(sx, 0.56, -0.02)], 0.002, 3);
     nm.pop();
-    // left window: BIÈRE in amber
-    nm.pushT(-2.45, F + 1.98, zi);
-    neonWord(nm, 'BIÈRE', 0.19, amber.tube, { r: 0.012 });
-    neonHalo(nm, amber.halo, 1.9, 1.1, D / 2 - T / 2 + 0.035 - zi);
-    for (const sx of [-0.4, 0.4]) tb(nm, 'iron', [V(sx, 0.1, -0.02), V(sx, 0.44, -0.02)], 0.002, 3);
-    nm.pop();
+    void amber;
     // the colour the signs throw on the porch boards outside
-    for (const [x, h] of [[2.45, red.halo], [-2.45, amber.halo]] as [number, string][]) {
+    for (const [x, h] of [[2.45, red.halo]] as [number, string][]) {
       nm.pushT(x, FLOOR - 0.015, D / 2 + 0.9, 0, -Math.PI / 2);
       neonHalo(nm, h, 2.2, 1.6, 0);
       nm.pop();
@@ -181,25 +176,8 @@ export function dressExterior(c: DressStore): void {
     fmesh.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh) m.material = fm; });
     group.add(fmesh);
     c.glow.flick.push(fm);
-    // light boxes (sp_glow) on chains, lower in the windows
-    ms.pushT(-2.95, F + 1.25, zi + 0.02, 0.05);
-    boxAt(ms, black, 0, 0, -0.045, 0.52, 0.36, 0.08);
-    card(ms, 'lb_huard', 0.5, 0.33, 'sp_glow');
-    ms.pop();
-    ms.pushT(2.0, F + 1.22, zi + 0.02, -0.06);
-    boxAt(ms, black, 0, 0, -0.045, 0.52, 0.27, 0.08);
-    card(ms, 'lb_muskeg', 0.5, 0.25, 'sp_glow');
-    ms.pop();
-    for (const [x, y0, y1] of [[-3.15, 1.43, 2.3], [-2.75, 1.43, 2.3], [1.8, 1.35, 2.3], [2.2, 1.35, 2.3]] as [number, number, number][]) tb(ms, 'iron', [V(x, F + y0, zi), V(x, F + y1, zi)], 0.002, 3);
-    // vinyl letters on the left glass, a CASH ONLY strip at the right glass's foot, sun-bleached posters inside
-    ms.pushT(-2.45, F + 0.95, D / 2 - T / 2 + 0.01);
-    card(ms, 'vinyl_lic', 1.25, 0.2, 'sp_ds');
-    ms.pop();
-    ms.pushT(2.9, F + 0.9, D / 2 - T / 2 + 0.01);
-    card(ms, 'vinyl_cash', 0.45, 0.14, 'sp_ds');
-    ms.pop();
-    cardAt(ms, 'fl_fishfry', -1.85, F + 1.4, zi + 0.04, 0, ...sz('fl_fishfry', 280), 0.03);
-    cardAt(ms, 'fl_moose', 1.75, F + 1.75, zi + 0.04, 0, ...sz('fl_moose', 280), -0.04);
+    // (round 6: the light boxes, the vinyl lettering and the window posters are gone; the windows show the shop)
+    void black;
     // window sill clutter seen from outside: a dead plant, flies, a sun-faded box
     floorDecal(ms, 'g_dust', -2.45, F + 0.78, zi + 0.02, 1.6, 0.12);
   }
@@ -224,10 +202,6 @@ export function dressExterior(c: DressStore): void {
   }
   // ---- the ghost ad on the right side wall, half weathered off
   {
-    ms.pushT(W / 2 + 0.032, 3.12, -0.8, Math.PI / 2);
-    const [u0, v0, u1, v1] = PUV('ghost_cola');
-    ms.quad('sp_soft', V(-1.05, -0.52, 0), V(1.05, -0.52, 0), V(1.05, 0.52, 0), V(-1.05, 0.52, 0), [u0, v0], [u1, v0], [u1, v1], [u0, v1]);
-    ms.pop();
     // drips down the side wall below the eaves
     for (const z of [-3.6, -1.9, 0.6, 2.9]) {
       ms.pushT(W / 2 + 0.03, 3.25, z, Math.PI / 2);
@@ -260,8 +234,6 @@ export function dressExterior(c: DressStore): void {
     boxAt(ms, 'galv', 0, 0.8, d / 2 + 0.02, 0.025, h - 0.1, 0.02);
     boxAt(ms, brass, 0.06, 0.82, d / 2 + 0.05, 0.05, 0.06, 0.02);
     tb(ms, 'galv', [V(0.06, 0.85, d / 2 + 0.05), V(0.06, 0.88, d / 2 + 0.05), V(0.04, 0.88, d / 2 + 0.05)], 0.004, 4);
-    cardAt(ms, 'propane_sign', -0.32, 1.12, d / 2 + 0.03, 0, 0.4, 0.22, 0.02);
-    cardAt(ms, 'no_smoking', 0.38, 1.12, d / 2 + 0.03, 0, 0.27, 0.2, -0.03);
     ms.pop();
     blob(ms, x, gy, z, w * 1.6, d * 1.9);
     floorDecal(ms, 'g_gravel', x + 0.3, gy + 0.02, z + 0.8, 1.6, 1.0, 0.3);
@@ -282,8 +254,6 @@ export function dressExterior(c: DressStore): void {
     ms.pushT(x, gy, z, 0.1);
     for (const sx of [-1, 1]) for (const sz2 of [-1, 1]) boxAt(ms, 'rusty_red', sx * w / 2, 0.67, sz2 * d / 2, 0.03, 1.34, 0.03);
     for (const y of lv) { boxAt(ms, 'rusty_red', 0, y, d / 2, w, 0.025, 0.03); boxAt(ms, 'rusty_red', 0, y, -d / 2, w, 0.025, 0.03); for (let k = 0; k < 6; k++) boxAt(ms, 'galv', -w / 2 + 0.1 + k * (w - 0.2) / 5, y, 0, 0.012, 0.012, d); }
-    board(ms, 'board_grey', r, 0, 1.42, d / 2 + 0.01, w + 0.06, 0.28, 0.025, 0, { grain: 'x' });
-    cardAt(ms, 'firewood_sign', 0, 1.42, d / 2 + 0.026, 0, 0.42, 0.25, 0.03);
     const nB = q === 0 ? 2 : 3;
     lv.forEach((y, li) => {
       for (let b = 0; b < nB; b++) {
@@ -311,13 +281,23 @@ export function dressExterior(c: DressStore): void {
   }
   // ---- the community corner: a roofed bulletin board, a pay phone, the rural-route mailboxes
   communityCorner(c, r);
+  // ---- orb webs in the porch corners, post to beam (thread geometry: glints, sways, dew in the morning)
+  {
+    const wm = webMaterial({ dew: true });
+    const pz = D / 2 + PORCH - 0.12, beamY = FLOOR + 2.62, x1 = W / 2 + 0.2 - 0.12;
+    const corner = (px: number, s: number, seed: number) => {
+      const pf = px - s * 0.065;
+      group.add(orbWeb({
+        hub: V(pf - s * 0.42, beamY - 0.5, pz), normal: V(0, 0, 1), seed, maxR: 0.36, mats: wm,
+        anchors: [V(pf - s * 0.95, beamY, pz), V(pf - s * 0.3, beamY, pz), V(pf - s * 0.12, beamY - 0.24, pz), V(pf, beamY - 0.55, pz), V(pf, beamY - 1.15, pz)],
+      }).object);
+    };
+    corner(x1, 1, 9311);
+    corner(-1.3, 1, 9337);
+  }
   // ---- gas island extras: price sign, no-smoking card on the pump post, a squeegee bucket, oil cans, a bollard
   {
     const px0 = 3.4, pz = D / 2 + PORCH + 2.6, gy = ground(px0, pz);
-    logAB(ms, V(px0 + 1.0, gy - 0.3, pz - 0.2), V(px0 + 1.0, gy + 1.9, pz - 0.2), 0.05, { seed: 777, seg: 6, capA: -1, capB: 2, matFor: () => 'board_grey' });
-    cardAt(ms, 'gas_price', px0 + 1.0, gy + 1.62, pz - 0.15, 0.25, 0.5, 0.42, 0);
-    boxAt(ms, 'board_grey', px0 + 1.0, gy + 1.62, pz - 0.18, 0.54, 0.46, 0.02, 0.25);
-    cardAt(ms, 'no_smoking', px0 - 0.62, gy + 0.55, pz + 0.41, 0, 0.2, 0.15, 0.04);
     // squeegee bucket on the island
     ms.pushT(px0 - 0.5, gy + 0.16, pz + 0.15);
     lathe(ms, 'enamel_blue', [[0.0001, 0], [0.12, 0], [0.15, 0.3], [0.145, 0.3], [0.115, 0.01], [0.0001, 0.01]], 8);
@@ -402,9 +382,10 @@ function communityCorner(c: DressStore, r: Rand): void {
     box(ms, 'shakes', bw + 0.4, 0.03, 0.5, { grain: 'x' });
     ms.pop();
     // the paper: older layers first (faded, torn), then this season's, business cards, tabs
-    const keys = ['fl_faded', 'fl_faded', 'fl_mower', 'fl_dog', 'fl_moose', 'fl_fishfry', 'fl_sled', 'fl_bingo', 'fl_guide', 'fl_supper', 'fl_puppies', 'fl_hunter', 'fl_ride', 'fl_fireban', 'fl_cat', 'fl_card1', 'fl_card2', 'fl_card1'];
-    const spots: [number, number][] = [[-0.5, 0.25], [0.45, -0.2], [0.52, 0.22], [-0.42, 0.12], [-0.05, 0.2], [0.22, 0.24], [0.4, -0.12], [-0.38, -0.25], [0.02, -0.22], [-0.18, -0.08], [0.18, -0.02], [-0.58, -0.12], [0.58, -0.3], [-0.2, 0.33], [0.05, 0.02], [-0.62, 0.38], [0.6, 0.4], [0.32, 0.36]];
-    const n = q === 0 ? 10 : keys.length;
+    // (round 6: half the paper it had; room between the sheets)
+    const keys = ['fl_faded', 'fl_dog', 'fl_moose', 'fl_bingo', 'fl_guide', 'fl_puppies', 'fl_fireban', 'fl_card1', 'fl_card2'];
+    const spots: [number, number][] = [[-0.46, 0.2], [0.42, -0.16], [-0.02, 0.18], [-0.4, -0.2], [0.05, -0.2], [0.45, 0.24], [0.2, 0.02], [-0.6, 0.38], [0.6, 0.4]];
+    const n = q === 0 ? 6 : keys.length;
     let zz = 0.0;
     for (let i = 0; i < n; i++) {
       const k = keys[i], [w, h] = sz(k, 290);
@@ -436,9 +417,6 @@ function communityCorner(c: DressStore, r: Rand): void {
     boxAt(ms, 'galv', 0, 1.9, 0.12, 0.56, 0.03, 0.36);
     for (const sx of [-1, 1]) boxAt(ms, 'galv', sx * 0.27, 1.55, 0.12, 0.02, 0.72, 0.36);
     boxAt(ms, 'galv', 0, 1.55, -0.04, 0.56, 0.72, 0.02);
-    ms.pushT(0, 1.98, 0.29);
-    card(ms, 'phone_sign', 0.5, 0.15);
-    ms.pop();
     // phone body, plate, handset, coiled cord, the book
     const dark = colorMat('phone', 0x2a2c30, 0.4, 0.3);
     boxAt(ms, dark, 0, 1.5, 0.02, 0.22, 0.42, 0.11);
@@ -471,9 +449,7 @@ function communityCorner(c: DressStore, r: Rand): void {
       boxAt(ms, 'galv', dx, dy, d / 2 + 0.006, 0.23, 0.25, 0.012);
       boxAt(ms, 'iron', dx + 0.08, dy - 0.03, d / 2 + 0.016, 0.02, 0.03, 0.01);
       const k = i + j * 4;
-      ms.pushT(dx - 0.02, dy + 0.08, d / 2 + 0.014);
-      card(ms, 'mail_names', 0.14, 0.05, 'sp', PSUB('mail_names', k / 8, (k + 1) / 8));
-      ms.pop();
+      void k;
     }
     cardAt(ms, 'mail_head', 0, y0 + h + 0.18, 0.05, 0, 0.6, 0.15);
     boxAt(ms, 'galv', 0, y0 + h + 0.18, 0.03, 0.62, 0.17, 0.02);

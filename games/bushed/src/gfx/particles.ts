@@ -175,11 +175,18 @@ class Debris {
       this.glowAttr.setX(n, d.glow * fade);
       n++;
     }
+    // upload only the live range (and nothing at all while there is nothing to draw)
+    const was = this.mesh.count;
     this.mesh.count = n;
-    this.mesh.instanceMatrix.needsUpdate = true;
-    if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
-    this.tileAttr.needsUpdate = true;
-    this.glowAttr.needsUpdate = true;
+    this.mesh.visible = n > 0;
+    if (n > 0 || was > 0) {
+      for (const a of [this.mesh.instanceMatrix, this.mesh.instanceColor, this.tileAttr, this.glowAttr]) {
+        if (!a) continue;
+        a.clearUpdateRanges();
+        a.addUpdateRange(0, Math.max(1, n) * a.itemSize);
+        a.needsUpdate = true;
+      }
+    }
   }
 
   /** chips settled within r of p (to sweep them up / for kindling) */
@@ -267,10 +274,17 @@ class Puffs {
       this.alphaAttr.setX(n, d.alpha * Math.sin(Math.PI * Math.min(1, t * 1.2 + 0.05)) );
       n++;
     }
+    const was = this.mesh.count;
     this.mesh.count = n;
-    this.mesh.instanceMatrix.needsUpdate = true;
-    if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
-    this.alphaAttr.needsUpdate = true;
+    this.mesh.visible = n > 0;
+    if (n > 0 || was > 0) {
+      for (const a of [this.mesh.instanceMatrix, this.mesh.instanceColor, this.alphaAttr]) {
+        if (!a) continue;
+        a.clearUpdateRanges();
+        a.addUpdateRange(0, Math.max(1, n) * a.itemSize);
+        a.needsUpdate = true;
+      }
+    }
   }
 }
 

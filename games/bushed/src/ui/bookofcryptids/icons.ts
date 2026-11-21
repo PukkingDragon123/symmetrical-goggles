@@ -148,6 +148,29 @@ const DRAW: Record<string, (p: Pix) => void> = {
     for (let y = -4; y <= 4; y++) for (let x = 0; x < 5 - Math.abs(y) * 0.5; x++) p.set(19 + x, 12 + y, F[2]);
     p.set(6, 11, hex('#0a0a0a')); for (let x = 7; x < 16; x += 2) p.set(x, 14, hex('#d06a58'));
   },
+  // the working cryptids' favourites (roperite, hugag, billdad, wapaloosie)
+  carrots(p) {
+    const OR = ramp('#5a200a', '#8a3a10', '#c25a18', '#e8822a', '#f8a84a');
+    for (const [x, y, r] of [[9, 13, -0.7], [14, 14, -0.45]] as [number, number, number][]) { blob(p, x, y, 2.6, 8, OR, { rot: r, spec: true }); for (let k = 0; k < 4; k++) p.set(Math.round(x - 1 + k * 0.5), Math.round(y - 3 + k * 2), OR[1]); }
+    const G = ramp('#1e3a12', '#2e5a1a', '#4a8228', '#6aa83a');
+    p.line(6, 5, 4, 1, G[2]); p.line(7, 5, 8, 1, G[3]); p.line(12, 6, 11, 2, G[2]); p.line(13, 6, 15, 2, G[3]);
+  },
+  onion(p) {
+    blob(p, 12, 15, 6, 6, ramp('#4a4a2a', '#7a7a4a', '#b0b07a', '#dcdcb0', '#f4f4dc'), { spec: true });
+    const G = ramp('#1e3a12', '#2e5a1a', '#4a8228', '#6aa83a');
+    p.line(11, 9, 9, 1, G[2]); p.line(12, 9, 13, 1, G[3]); p.line(13, 9, 16, 2, G[2]);
+    for (const x of [10, 12, 14]) p.set(x, 21, hex('#6a5a3a'));
+  },
+  cheese(p) {
+    const Y = ramp('#6a4a10', '#a07818', '#d0a828', '#ecc848', '#fae890');
+    box(p, 4, 9, 16, 10, Y);
+    for (const [x, y] of [[8, 12], [14, 15], [16, 11]]) blob(p, x, y, 1.4, 1.2, ramp('#8a6a14', '#a88420'));
+    box(p, 4, 9, 3, 10, ramp('#4a0a08', '#7a1410', '#a82018', '#c83020'));
+  },
+  nuts(p) {
+    const B = ramp('#3a2212', '#5c3a1c', '#86582a', '#aa7a40', '#c89a5a');
+    for (const [x, y] of [[8, 14], [15, 13], [11, 8]]) { blob(p, x, y, 4, 4, B, { spec: true }); p.line(x - 2, y - 3, x + 2, y - 3, B[0]); }
+  },
   unknown(p) {
     blob(p, 12, 12, 8, 7, ramp('#2a1c16', '#3e2a20', '#54392a'));
     p.text('?', 12, 18, { size: 16, align: 'center', color: hex('#d8c8a0') });

@@ -3,7 +3,8 @@
 //   - carry: light things go into the hands (viewmodel, drawn over the world, no hovering), one or two hands
 //   - drag:  heavy logs stay physical; a spherical joint ties the near end to a kinematic hand anchor
 //   - place (LMB on a surface while carrying), drop (Q), throw (RMB), rotate (R + mouse)
-//   - tools: 1 axe, 2 hatchet, 3 saw/maul, 4 flashlight, 0 empty; LMB hold = wind-up, release = swing
+//   - tools: what the hotbar's selected slot holds (src/ui/inventory/hotbar.ts: 1-5, the wheel; Q drops it);
+//     LMB hold = wind-up, release = swing
 import * as THREE from 'three';
 import { physics, RAPIER, GROUP, groups } from '../physics/physics';
 import { input } from '../core/input';
@@ -11,6 +12,7 @@ import { findInteractable, type InteractCtx } from '../game/interact';
 import { WoodPiece } from '../chop/wood';
 import { marks } from '../world/marks';
 import { ITEMS, type ToolStats } from '../game/items';
+import { isTwoHand } from '../ui/inventory/slots';
 
 export interface ArmsLike {
   object: THREE.Object3D;
@@ -45,10 +47,6 @@ type Held =
   | { kind: 'item'; item: string; obj: THREE.Object3D | null }
   | { kind: 'carry'; obj: THREE.Object3D; piece?: WoodPiece; mass: number; two: boolean; restore: () => void; offset: THREE.Matrix4 }
   | { kind: 'drag'; obj: THREE.Object3D; piece: WoodPiece; anchor: RAPIER.RigidBody; joint: RAPIER.ImpulseJoint };
-
-const TOOL_KEYS: Record<string, string[]> = {
-  Digit1: ['axe_felling', 'axe_old', 'axe_splitting'], Digit2: ['hatchet'], Digit3: ['maul', 'bucksaw', 'axe_splitting'], Digit4: ['flashlight'], Digit5: ['jerky'], Digit6: ['rifle'],
-};
 
 export class Hands {
   held: Held = { kind: 'none' };
@@ -91,7 +89,8 @@ export class Hands {
       this.g.arms?.setHeld(k, obj ?? undefined);
     } else {
       this.held = { kind: 'item', item, obj };
-      this.g.arms?.setHeld(item === 'flashlight' ? 'flashlight' : item === 'beer' ? 'bottle' : item === 'jerky' ? 'jerky' : 'item', obj ?? undefined);
+      // big things (a firewood bundle, a coal sack, the toolbox) ride across both forearms
+      this.g.arms?.setHeld(isTwoHand(item) ? 'two_hand' : item === 'flashlight' ? 'flashlight' : item === 'beer' ? 'bottle' : item === 'jerky' ? 'jerky' : 'item', obj ?? undefined);
     }
     this.g.sound('equip', undefined, 0.5);
   }
@@ -237,12 +236,7 @@ export class Hands {
 
   update(dt: number): void {
     const g = this.g, cam = g.camera;
-    // tool hotkeys
-    for (const [k, list] of Object.entries(TOOL_KEYS)) if (input.pressed(k)) {
-      const it = list.find((i) => g.owns(i));
-      if (it) this.equip(this.heldItem === it ? null : it);
-    }
-    if (input.pressed('Digit0')) this.equip(null);
+    // slot keys and the wheel: the hotbar (game.hotbar.control) equips through equip()
 
     // focus ray
     const origin = cam.position.clone(), dir = new THREE.Vector3(0, 0, -1).applyQuaternion(cam.quaternion);
@@ -324,6 +318,13 @@ export class Hands {
       if (f?.it.alt) { f.it.alt(this.ctx(this.focus.point)); return; }
     }
 
+    // Q: the held thing leaves the hands as a physics object (game.setDown -> the hotbar's drop)
+    if ((h.kind === 'item' || (h.kind === 'tool' && this.swingT < 0 && !this.charging)) && input.pressed('KeyQ')) {
+      const at = surface && surface.distanceTo(origin) < 2.6 ? surface : null;
+      this.g.game.setDown?.(h.item, at);
+      return;
+    }
+
     // tools: charge and swing
     if (h.kind === 'tool') {
       const tool = ITEMS[h.item].tool!;
@@ -355,12 +356,7 @@ export class Hands {
       return;
     }
 
-    // items: LMB uses them (eat, drink, offer, toggle), Q sets one down where you look
-    if (h.kind === 'item' && input.pressed('KeyQ')) {
-      const at = surface && surface.distanceTo(origin) < 2.6 ? surface : this.g.player.pos.clone().add(new THREE.Vector3(0, 0.05, 0)).addScaledVector(new THREE.Vector3(0, 0, -1).applyQuaternion(cam.quaternion).setY(0).normalize(), 0.7);
-      this.g.game.setDown?.(h.item, at);
-      return;
-    }
+    // items: LMB uses them (eat, drink, offer, toggle)
     if (h.kind === 'item') {
       if (input.pressed('Mouse0')) {
         if (this.focus) {

@@ -12,7 +12,10 @@ export interface SaveData {
   stacked: number;
   sharp: [string, number][];
   flags: string[];
-  pack?: import('../ui/inventory/grid').PackSave;
+  /** the hotbar, the stash and the wallet (older saves only have items: they migrate, the overflow to the stash) */
+  slots?: import('../ui/inventory/slots').InvSave;
+  /** round-5 backpack layout (ignored now) */
+  pack?: unknown;
 }
 
 const KEY = 'bushed.save.v1';

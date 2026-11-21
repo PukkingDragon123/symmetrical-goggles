@@ -53,7 +53,7 @@ const NIGHT: Line[][] = [
   [
     ['Odile', 'A note from a listener: "Odile, there are bats in my attic with antlers. I put the flashlight on them and they went crazy."'],
     ['Odile', 'Dark and still, mon chou. Turn the light off and stand there like a lamp. They settle. Then go to bed quietly. Antler bats. Honestly.'],
-    ['Odile', 'And a dedication: to Ray Tremblay, wherever you are, from your sister Lise in Florida: "Answer your mail."'],
+    ['Odile', 'And a dedication, for Ray Tremblay, from his sister Lise in Sudbury: "I know you\'re listening. You always were nosy."'],
   ],
   [
     ['Odile', 'It\'s After Dark. Line two, go ahead.'],
@@ -91,14 +91,13 @@ function storySegment(g: Game): { id: string; lines: Line[] } | null {
   const S: { id: string; ok: boolean; lines: Line[] }[] = [
     {
       id: 'collect', ok: has(g, 'ending') && !has(g, 'radio:collect'), lines: [
-        ['Odile', 'Nine o\'clock was an hour ago, but. Line one is a collect call from Kissimmee, Florida. Do I accept the charges?'],
-        ['Odile', '...I suppose I do. Go ahead, Ray.'],
-        ['Ray', 'Thirty-one degrees and I miss the frost. How\'s the kid?'],
-        ['Odile', 'Feeding them. Hot. Not scraps.'],
+        ['Odile', 'Nine o\'clock was an hour ago, but. Line one is lit. ...Line one, you\'re on After Dark.'],
+        ['Ray', '(a long hiss) ...ow\'s the kid?'],
+        ['Odile', '...Feeding them. Hot. Not scraps.'],
         ['Ray', 'Good. ...Odile?'],
         ['Odile', 'What.'],
         ['Ray', 'Thursdays.'],
-        ['Odile', 'Nine o\'clock. Don\'t be late, you old goat.'],
+        ['Odile', 'That line\'s been dead since April. ...Here\'s the weather.'],
       ],
     },
     {
@@ -116,7 +115,7 @@ function storySegment(g: Game): { id: string; lines: Line[] } | null {
     },
     {
       id: 'thursday', ok: has(g, 'q:odile:caller:done') && !has(g, 'radio:thursday'), lines: [
-        ['Odile', 'Thursdays at nine used to belong to a caller I won\'t name. He knows who he is. He isn\'t calling.'],
+        ['Odile', 'Thursdays at nine used to belong to a caller I won\'t name. He knew who he was. He can\'t call now.'],
         ['Odile', 'The line\'s open anyway. It always will be. Here\'s the weather.'],
       ],
     },

@@ -20,9 +20,11 @@ sketchfab() {  # uid, destination .glb
 }
 sketchfab aff6767399cf4daca1a82b43ccaa1252 "$DL/aff67673/scene.glb"   # lynx (Paleo Modelist, CC-BY): the splinter cat
 sketchfab df9dfe0920d54faf99f94e88b33d7a8d "$DL/bauru/bauru.glb"      # Animated Baurusuchus (Anees Animates, CC-BY): the hodag
+sketchfab 2b4086035df94d9e88fd0f18d34b3872 "$DL/2b408603/scene.glb"   # Realistic Animated Donkey (WildMesh 3D, CC-BY): the roperite
+# (the hugag, billdad and wapaloosie start from the game's own moose, hare and squirrel: nothing to fetch)
 [ -f "$DL/bull_head/bull_head_2k.gltf" ] || (cd "$REPO" && python3 -c "from lowpix.convert import polyhaven_fetch; polyhaven_fetch('bull_head', '$DL/bull_head', res='2k')")
 
-for who in splintercat hodag; do
+for who in splintercat hodag roperite hugag billdad wapaloosie; do
   t0=$(date +%s)
   blender -b --python "$HERE/$who.py" -- "$DL" 2>&1 | grep -E "LOWPOLY|DONE|EXPORTED|Error|Traceback" || true
   echo "$who: $(( $(date +%s) - t0 )) s"

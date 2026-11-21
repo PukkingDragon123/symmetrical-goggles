@@ -227,7 +227,9 @@ export class Sky {
     });
     this.dome = new THREE.Mesh(new THREE.SphereGeometry(900, 48, 24), this.mat);
     this.dome.frustumCulled = false;
-    this.dome.renderOrder = -1000;
+    // drawn after the opaque world: it sits on the far plane (depth 1) and depth-tests, so the clouds / stars shader
+    // only runs on the pixels the world left uncovered
+    this.dome.renderOrder = 1e6;
     scene.add(this.dome);
   }
 

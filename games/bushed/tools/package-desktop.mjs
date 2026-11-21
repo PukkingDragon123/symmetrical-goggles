@@ -14,7 +14,7 @@ const out = path.join(here, 'release');
 execSync('npx vite build --outDir release/dist --emptyOutDir', { cwd: here, stdio: 'inherit' });
 rmSync(stage, { recursive: true, force: true });
 mkdirSync(stage, { recursive: true });
-for (const f of ['main.cjs', 'package.json', 'icon.png']) if (existsSync(path.join(here, 'desktop', f))) cpSync(path.join(here, 'desktop', f), path.join(stage, f));
+for (const f of ['main.cjs', 'package.json', 'icon.png', 'icon.ico']) if (existsSync(path.join(here, 'desktop', f))) cpSync(path.join(here, 'desktop', f), path.join(stage, f));
 cpSync(path.join(here, 'release', 'dist'), path.join(stage, 'game'), { recursive: true });
 cpSync(path.join(here, 'CREDITS.md'), path.join(stage, 'game', 'CREDITS.md'));
 
@@ -22,6 +22,10 @@ const [dir] = await packager({
   dir: stage, out, platform, arch, overwrite: true, asar: true, prune: false,
   electronVersion: '38.8.6', name: 'BUSHED', appCopyright: 'BUSHED',
   ignore: [/\.map$/],
+  // the app icon: packager picks the platform's format from this base name (icon.ico is written into BUSHED.exe
+  // with resedit, no Wine needed; Linux uses the window icon from main.cjs; macOS would need an icon.icns)
+  icon: path.join(here, 'desktop', 'icon'),
+  win32metadata: { CompanyName: 'BUSHED', FileDescription: 'BUSHED', ProductName: 'BUSHED', InternalName: 'BUSHED', OriginalFilename: 'BUSHED.exe' },
   // a pre-downloaded, checksum-verified Electron zip (set ELECTRON_ZIP_DIR) avoids flaky large downloads
   ...(process.env.ELECTRON_ZIP_DIR ? { electronZipDir: process.env.ELECTRON_ZIP_DIR } : {}),
 });

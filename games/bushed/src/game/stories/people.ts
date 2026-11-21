@@ -1,7 +1,7 @@
 // The people the story adds, where they spend their days, and their favours. Odile Pruneau (Gérard's wife: the
 // post wicket by day, the radio show by night), Doug and his kid Jojo at the campground, Esko the Finnish trapper,
 // Lucien the retired camp cook, Hollis the last living cookee of the Kettle camp, and Megan Kowalchuk, the
-// conservation officer doing a wellness check on Ray. Each has a short chain with a real reward: money, a page,
+// conservation officer looking into a light at the old camp since Ray's funeral. Each has a short chain with a real reward: money, a page,
 // or a recipe card (game.events 'recipe').
 import * as THREE from 'three';
 import type { Game } from '../game';
@@ -140,7 +140,7 @@ const HOLLIS = [
   'Never sit with your back to the woods. Not because of what\'s in them. Because it\'s rude.',
   'The lake looks the same. Everything else moved.',
 ];
-const ESKO = ['Esko.', 'Cold tonight.', 'No.', 'Thanks.', 'Ray is a fool. A good one.', 'Trout.'];
+const ESKO = ['Esko.', 'Cold tonight.', 'No.', 'Thanks.', 'Ray was a fool. A good one.', 'Trout.'];
 const MEGAN = [
   'Conservation Officer Kowalchuk. The Ministry sends its regards. The Ministry sends very little else.',
   'I have a degree in wildlife biology. I am currently trying to decide what to call a walking kettle.',
@@ -154,9 +154,9 @@ const JOJO = [
   'Mum says the bush is dangerous. Dad says the bush is "a lot". I think it\'s good.',
 ];
 function odileSmall(g: Game): string {
-  if (has(g, 'ending')) return pick(['Florida. FLORIDA. That man has never once worn shorts.', 'He calls Thursdays. Collect. I accept the charges. Don\'t tell Gérard.', 'You\'re the cook now. Come in for the mail, and eat something.']);
+  if (has(g, 'ending')) return pick(['Thursdays at nine I leave line one open. Sometimes it clicks. Don\'t tell Gérard.', 'He ate? ...Good. He never ate, the old goat. Too busy feeding everybody.', 'You\'re the cook now. Come in for the mail, and eat something.']);
   return pick([
-    'Post wicket\'s open. If it\'s for Ray, I\'ll give it to you. If it\'s from Ray, I\'ll read it first.',
+    'Post wicket\'s open. If it\'s for Ray, it\'s yours now. If it\'s from Ray... he left a few. I read them first.',
     'Thirty-one years on the radio. Ten till one. Gérard thinks I\'m doing the books.',
     'You have his eyebrows. And his way of standing like the floor owes you money.',
     'The bush isn\'t haunted, mon chou. It\'s just occupied. Ray always said that. He stole it from me.',
@@ -170,16 +170,16 @@ CHAINS.push(
       {
         id: 'caller', todo: 'Find something of Ray\'s with the radio in it', requires: (g) => has(g, 'letter'),
         give: [
-          'So. Ray\'s kid. He said you\'d come. He didn\'t say where he was going, the old goat.',
+          'So. Ray\'s grandkid. He said you\'d come. He didn\'t say what he\'d left you. "Everything," he said, the old goat.',
           'Thirty-one years Ray called my show. Thursdays, nine o\'clock. He called himself "the Cookee". As if I wouldn\'t know his voice.',
-          'He stopped in August. If you find anything of his with the radio in it, bring it to me.',
+          'The last time was in March. Since April, Thursdays at nine, line one clicks and nobody\'s there. If you find anything of his with the radio in it, bring it to me.',
         ],
         nag: ['Anything with the radio in it. He wrote everything down. Everything but where he was going.'],
         done: (g) => g.owns('radio_log'),
         thanks: [
           'His log. Every call he made. He wrote down what he told me, the old fool, as if I would forget.',
-          '"Aug 28. Told Odile the kid\'s coming. She said good. She said, and you, Ray? Hung up. Coward."',
-          '...Well. He\'s alive enough to be a coward. Keep it. Here, the stamps he owes me, I\'m giving them to you instead.',
+          '"Mar 27. Told Odile the kid\'s getting the place. She said good. She said, and you, Ray? Hung up. Coward."',
+          '...He knew. In March he knew, and he told me about a dog. Keep it. Here, the stamps he owed me. I\'m giving them to you instead.',
         ],
         reward: (g) => pay(g, 20),
       },
@@ -194,7 +194,7 @@ CHAINS.push(
         done: (g) => has(g, 'called_in'),
         thanks: [
           'I heard you. Everybody heard you. Bev in Smooth Rock has already written in. She wants to know if you\'re single.',
-          'My mother\'s pouding chômeur. Poor man\'s pudding: brown sugar, flour and patience. Ray says it\'s the only thing I make he can\'t improve. He\'s right. Don\'t tell him.',
+          'My mother\'s pouding chômeur. Poor man\'s pudding: brown sugar, flour and patience. Ray said it was the only thing I made he couldn\'t improve. He was right. I never told him.',
         ],
         reward: (g) => giveRecipe(g, 'pouding_chomeur', 'Odile'),
       },
@@ -243,7 +243,7 @@ CHAINS.push(
         nag: ['Two trout.', 'Trout. Two.'],
         done: (g) => (g.inv.items.get('fish') ?? 0) >= 2,
         take: (g) => g.take('fish', 2),
-        thanks: ['Good fish.', 'Ray\'s line starts at the split rock. Here. He thinks I don\'t know he hasn\'t caught anything since \'89. I know.', 'Thirty dollars. Buy jerky.'],
+        thanks: ['Good fish.', 'Ray\'s line starts at the split rock. Here. He thought I didn\'t know he hadn\'t caught anything since \'89. I knew.', 'Thirty dollars. Buy jerky.'],
         reward: (g) => pay(g, 30),
       },
       {
@@ -324,7 +324,7 @@ CHAINS.push(
         done: (g) => has(g, 'camp_stove'),
         thanks: [
           'Smoke over the north shore. I saw it from here. First time since \'51.',
-          'Délima didn\'t leave with the Company. She stayed the summer. Fed them. Then her daughter did. Then Ray.',
+          'Délima didn\'t leave with the Company. She stayed the summer. Fed them. Then her daughter did. Then Ray. Now you.',
           'It isn\'t a curse, kid. It\'s a kitchen. Here, for the matches.',
         ],
         reward: (g) => pay(g, 25),
@@ -334,17 +334,17 @@ CHAINS.push(
   {
     id: 'megan', npc: 'megan', who: 'Megan', steps: [
       {
-        id: 'wellness', todo: 'Tell the ranger anything that says where Ray went',
+        id: 'wellness', todo: 'Tell the ranger anything that says who\'s been walking Ray\'s line',
         give: [
-          'Conservation Officer Kowalchuk, Ministry of Natural Resources. I\'m doing a wellness check on Raymond Tremblay.',
-          'He hasn\'t been seen since August, he hasn\'t renewed a trapping licence since 1990, and the Township says he owes fourteen dollars and sixty cents.',
-          'If you find anything that says where he went, I\'d like to know before the Township does.',
+          'Conservation Officer Kowalchuk, Ministry of Natural Resources. I\'m sorry about your grandfather. I knew him a little. Everybody knew him a little.',
+          'Since the funeral there\'ve been reports of a light at the old Kettle camp, and fresh tape on his trapline. The licence died with him in April.',
+          'If you find anything that says who, I\'d like to know before the Township does.',
         ],
-        nag: ['Anything in writing. He seems like the kind of man who writes things down instead of telling people.'],
+        nag: ['Anything in writing. Whoever it is ties fresh tape the way he did, a granny knot and two long tails.'],
         done: (g) => has(g, 'cache2'),
         thanks: [
-          '"Gone up the line." "The plates are for them." ...Right.',
-          'I\'m going to write "subject is eccentric but appears to be fine". It\'s what I wrote last time too.',
+          '"Follow the orange tape." "The plates are for them." That\'s his writing. From last September. ...Fine. That\'s fine.',
+          'I\'m going to write "reports unfounded". It\'s what I wrote about the camp lights last fall too.',
           'The Ministry pays for information. Badly.',
         ],
         reward: (g) => pay(g, 25),
@@ -357,8 +357,8 @@ CHAINS.push(
         take: (g) => g.take('sd_card'),
         thanks: [
           'Let\'s see. Deer. Deer. Something wet. Deer.', '...Huh.',
-          'That\'s your uncle. Two weeks ago. Carrying a pot. He\'s waving at the camera.',
-          'Wellness check complete. Subject is well. Subject is checked. Subject is a pain in my neck.',
+          'That\'s your grandfather. Two weeks ago, the stamp says. Carrying a pot. He\'s waving at the camera.',
+          'I was at his funeral. I carried one corner. ...The clock on these is never right. That\'s what I\'m going to say. The clock is wrong.',
           'Here. My dad\'s moose chili. If you ever get a moose, this is what it\'s for. The Ministry doesn\'t need to know about the beer in it.',
         ],
         reward: (g) => { giveRecipe(g, 'moose_chili', 'Megan'); foundPage(g, 'trailcam', PAGES.trailcam.title); },

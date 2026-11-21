@@ -1,8 +1,11 @@
 // The forest: deterministic placement over the whole map from layout.biome / clearance (clumps, gaps, road edges,
 // old growth, burn), streamed in 48 m chunks, drawn with instancing per tree variant and LOD bucket:
-//   LOD0 (full)  0 .. lod0 m, casts shadows
-//   LOD1 (reduced) lod0 .. lod1 m (shadow casting up to `shadow` m)
+//   LOD0 (full)  0 .. lod0 m
+//   LOD1 (reduced) lod0 .. lod1 m
 //   LOD2 (baked cross-billboard impostor) lod1 .. far m
+// Shadows come from a separate shadow LOD: every standing tree within `shadow` m (on screen or not) is drawn into the
+// sun's map (and the flashlight's) with the reduced LOD1 mesh, on a layer only those shadow cameras see. The visible
+// buckets never cast, so lamp cube maps never draw the forest and the full-detail crowns are drawn once a frame.
 // Neighbouring buckets overlap by `band` metres and cross-fade with complementary screen-space dithering, so LOD
 // switches are stable and seamless. Culling: chunk AABB vs frustum, then per-tree bounding sphere for the near buckets.
 //
@@ -16,6 +19,7 @@ import { SPECIES, type SpeciesId } from '../trees/species';
 import { createTreeMaterials, type TreeMaterialSet } from '../trees/materials';
 import { ImpostorAtlas, type Impostor } from '../trees/impostor';
 import { barkTexture, foliageTexture } from '../trees/textures';
+import { currentQuality } from '../game/quality';
 
 export interface TreeRef {
   id: number;
@@ -40,10 +44,12 @@ export interface ForestOptions {
   /** only generate within this distance of the camera (default far + chunk) */
   genRadius?: number;
   /**
-   * layer for shadow-only proxies of trees outside the view frustum (their shadows still fall into view).
-   * Enable it on the sun's shadow camera: `sun.shadow.camera.layers.enable(1)`. -1 disables the proxies.
+   * layer of the shadow LOD (the only forest casters; trees outside the view frustum still cast into view).
+   * Enable it on the sun's shadow camera: `sun.shadow.camera.layers.enable(1)`. -1 disables forest shadows.
    */
   shadowLayer?: number;
+  /** 'all' variants, or 'half' the library (default: half on the low preset) */
+  variants?: 'all' | 'half';
 }
 
 interface VariantDef { species: SpeciesId; age: number; form: TreeForm; moss?: number; charred?: number }
@@ -62,6 +68,19 @@ const VARIANT_DEFS: VariantDef[] = [];
   add('cedar', [0.25, 0.42, 0.6, 0.78, 0.95, 1.12, 1.28], [{ form: 'snag', age: 1.0, moss: 0.5 }, { age: 1.3, moss: 0.9 }]);
 }
 
+/** every other age of each species and form, one snag per species; no broken / dying / mossy extras */
+function halfLibrary(): Set<number> {
+  const keep = new Set<number>();
+  const seen = new Map<string, number>();
+  VARIANT_DEFS.forEach((d, i) => {
+    const k = `${d.species}:${d.form}:${d.charred ? 1 : 0}:${d.moss ? 1 : 0}`;
+    const n = seen.get(k) ?? 0;
+    seen.set(k, n + 1);
+    if (d.form === 'normal' && !d.moss) { if (n % 2 === 0) keep.add(i); } else if (d.form === 'snag' && n === 0) keep.add(i);
+  });
+  return keep;
+}
+
 interface Variant {
   index: number;
   def: VariantDef;
@@ -71,7 +90,7 @@ interface Variant {
   imp: Impostor | null;
   /** trunk radius at 1 m, height, bounding radius */
   r1: number; height: number; bound: number;
-  mats: TreeMaterialSet[]; // per bucket (0, 1n, 1f, shadow proxy)
+  mats: TreeMaterialSet[]; // per bucket (0, 1, shadow LOD)
   buckets: Bucket[];
 }
 
@@ -84,7 +103,7 @@ interface Bucket {
 
 const CHUNK = 48;
 // bucket indices
-const PROXY = 3, IMP = 4;
+const PROXY = 2, IMP = 3;
 const ckey = (cx: number, cz: number) => (cx + 4096) * 8192 + (cz + 4096);
 
 interface Chunk {
@@ -98,6 +117,11 @@ const _frustum = new THREE.Frustum();
 const _box = new THREE.Box3();
 const _sph = new THREE.Sphere();
 const _v = new THREE.Vector3();
+const _frustumW = new THREE.Frustum();
+const _wide = new THREE.Matrix4();
+/** impostors are rebuilt after this many metres of travel or this much turning (cos), with a frustum widened by
+ *  FAR_FOV degrees each way */
+const FAR_MOVE = 6, FAR_TURN = Math.cos(THREE.MathUtils.degToRad(14)), FAR_FOV = 18;
 
 export class Forest {
   readonly scene: THREE.Scene;
@@ -123,6 +147,12 @@ export class Forest {
   private lastCam = new THREE.Vector3(1e9, 0, 0);
   private lastDir = new THREE.Vector3();
   private dirty = true;
+  private dirtyFar = true;
+  private farAt = -100;
+  private lastFarCam = new THREE.Vector3(1e9, 0, 0);
+  private lastFarDir = new THREE.Vector3();
+  private scanAt = new THREE.Vector3(1e9, 0, 0);
+  private nearDrawn = 0;
   private frame = 0;
   private refCache = new Map<number, TreeModel>();
   private noise = new Noise(WORLD.seed + 333);
@@ -137,6 +167,7 @@ export class Forest {
     this.renderer = renderer ?? null;
     const o = {
       lod0: 24, lod1: 72, far: 520, shadow: 44, band: 5, density: 1, genRadius: 0, shadowLayer: 1,
+      variants: currentQuality().name === 'low' ? 'half' : 'all',
       ...opts,
     };
     if (!o.genRadius) o.genRadius = o.far + CHUNK;
@@ -168,32 +199,35 @@ export class Forest {
     const o = this.opt;
     const b = o.band;
     const L0 = new THREE.Vector4(-2, -1, o.lod0 - b, o.lod0 + b);
-    const L1n = new THREE.Vector4(o.lod0 - b, o.lod0 + b, 1e8, 1e9);
-    const L1f = new THREE.Vector4(-2, -1, o.lod1 - b, o.lod1 + b);
+    const L1 = new THREE.Vector4(o.lod0 - b, o.lod0 + b, o.lod1 - b, o.lod1 + b);
+    // the low preset builds half the library (every other age, one snag per species): half the draw calls and
+    // half the start-up time; the same seeds, so the trees it keeps look the same
+    const keep = o.variants === 'half' ? halfLibrary() : null;
     VARIANT_DEFS.forEach((def, i) => {
+      if (keep && !keep.has(i)) return;
+      const vi = this.variants.length;
       const model = buildTree(def.species, 100 + i * 17, { age: def.age, form: def.form, moss: def.moss, charred: def.charred });
       const lod0 = model.lod(0), lod1 = model.lod(1);
       const v: Variant = {
-        index: i, def, model, lod0, lod1, imp: null,
+        index: vi, def, model, lod0, lod1, imp: null,
         r1: model.radiusAt(1.0), height: model.height,
         bound: Math.max(model.height * 0.55, model.crownRadius),
-        mats: [createTreeMaterials(def.species, L0), createTreeMaterials(def.species, L1n), createTreeMaterials(def.species, L1f),
-          createTreeMaterials(def.species, new THREE.Vector4(-2, -1, o.shadow + 10, o.shadow + 20))],
+        mats: [createTreeMaterials(def.species, L0), createTreeMaterials(def.species, L1),
+          createTreeMaterials(def.species, new THREE.Vector4(-2, -1, o.shadow - 8, o.shadow))],
         buckets: [],
       };
-      // buckets: 0 = LOD0, 1 = LOD1 near (shadows), 2 = LOD1 far, 3 = impostor
-      v.buckets.push(this.makeBucket(v, 0, 64, true));
-      v.buckets.push(this.makeBucket(v, 1, 256, true));
-      v.buckets.push(this.makeBucket(v, 2, 512, false));
-      v.buckets.push(this.makeBucket(v, 1, 64, true, true));
+      // buckets: 0 = LOD0, 1 = LOD1, 2 = shadow LOD (LOD1 mesh, shadow cameras only), 3 = impostor
+      v.buckets.push(this.makeBucket(v, 0, 64, false));
+      v.buckets.push(this.makeBucket(v, 1, 512, false));
+      v.buckets.push(this.makeBucket(v, 1, 128, true, true));
       this.variants.push(v);
-      this.bySpecies[def.species].push(i);
+      this.bySpecies[def.species].push(vi);
     });
   }
 
-  private makeBucket(v: Variant, level: 0 | 1 | 2, cap: number, shadow: boolean, proxy = false): Bucket {
+  private makeBucket(v: Variant, level: 0 | 1, cap: number, shadow: boolean, proxy = false): Bucket {
     const lod = level === 0 ? v.lod0 : v.lod1;
-    const mats = v.mats[proxy ? 3 : level];
+    const mats = v.mats[proxy ? 2 : level];
     const meshes: THREE.InstancedMesh[] = [];
     const mk = (g: THREE.BufferGeometry, m: THREE.Material, d: THREE.Material) => {
       const im = new THREE.InstancedMesh(g, m, cap);
@@ -210,6 +244,10 @@ export class Forest {
       if (proxy) {
         if (this.opt.shadowLayer < 0) im.castShadow = false;
         else im.layers.set(this.opt.shadowLayer);
+      } else {
+        im.castShadow = false;
+        // near crowns first: they hide most of what is behind them (early depth rejection, less overdraw)
+        im.renderOrder = level === 0 ? -3 : -2;
       }
       this.group.add(im);
       meshes.push(im);
@@ -252,7 +290,7 @@ export class Forest {
       this.group.add(im);
       v.buckets.push({ meshes: [im], count: 0, cap, shadow: false });
     }
-    this.dirty = true;
+    this.dirtyFar = true;
   }
 
   // --------------------------------------------------------------------------------------------- placement
@@ -364,7 +402,10 @@ export class Forest {
     }
     if (!c.ids.length) { c.minY = 0; c.maxY = 0; }
     this.genMs += performance.now() - t0;
-    this.dirty = true;
+    // a new chunk: the impostors always, the near buckets only when it is close
+    this.dirtyFar = true;
+    const cp = this.camera.position;
+    if (Math.hypot(x0 + CHUNK / 2 - cp.x, z0 + CHUNK / 2 - cp.z) < Math.max(this.opt.lod1, this.opt.shadow) + CHUNK) this.dirty = true;
     return c;
   }
 
@@ -374,8 +415,11 @@ export class Forest {
     if (!this.baked) this.bakeImpostors();
     const cam = this.camera;
     const p = cam.position;
-    // stream chunks: nearest first, ~3 ms per frame
-    if (this.frame % 10 === 1 || this.pending.length === 0) {
+    // stream chunks: nearest first, ~3 ms per frame (the wanted list is rescanned every 10 frames while streaming,
+    // and only after the camera has moved a few metres once everything around it exists)
+    const scan = this.pending.length ? this.frame % 10 === 1 : Math.abs(p.x - this.scanAt.x) + Math.abs(p.z - this.scanAt.z) > 8;
+    if (scan) {
+      this.scanAt.copy(p);
       const R = this.opt.genRadius;
       const pc = Math.floor(p.x / CHUNK), pz = Math.floor(p.z / CHUNK);
       const rc = Math.ceil(R / CHUNK);
@@ -392,67 +436,85 @@ export class Forest {
       const [cx, cz] = this.pending.shift()!;
       this.chunk(cx, cz);
     }
-    // rebuild instance buffers when the view changed enough
+    // rebuild instance buffers when the view changed enough: the near buckets (LOD0, LOD1, shadow LOD: a few
+    // hundred trees) on every metre or few degrees, the impostors (thousands) on bigger moves only, culled with a
+    // widened frustum so a turn of the head does not uncover gaps
     const dir = _v.set(0, 0, -1).applyQuaternion(cam.quaternion);
-    const moved = p.distanceTo(this.lastCam) > 1.0 || dir.dot(this.lastDir) < 0.9985;
-    if (moved || this.dirty || this.frame % 45 === 0) {
-      this.lastCam.copy(p);
-      this.lastDir.copy(dir);
-      this.dirty = false;
-      this.rebuild();
+    const near = this.dirty || p.distanceTo(this.lastCam) > 1.0 || dir.dot(this.lastDir) < 0.9985 || this.frame % 45 === 0;
+    // (chunks streaming in at the horizon add their impostors at most every 10 frames)
+    const far = (this.dirtyFar && this.frame - this.farAt >= 10) || p.distanceTo(this.lastFarCam) > FAR_MOVE || dir.dot(this.lastFarDir) < FAR_TURN || this.frame % 240 === 0;
+    if (near || far) {
+      if (near) { this.lastCam.copy(p); this.lastDir.copy(dir); this.dirty = false; }
+      if (far) { this.lastFarCam.copy(p); this.lastFarDir.copy(dir); this.dirtyFar = false; this.farAt = this.frame; }
+      this.rebuild(near, far);
     }
   }
 
-  private rebuild(): void {
+  private rebuild(nearPass: boolean, farPass: boolean): void {
     const cam = this.camera as THREE.PerspectiveCamera;
     cam.updateMatrixWorld();
     _m4.multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse);
     _frustum.setFromProjectionMatrix(_m4);
+    if (farPass) {
+      // the impostor frustum: FAR_FOV degrees wider each way than the camera's
+      const vf = THREE.MathUtils.degToRad(cam.fov || 68), hf = 2 * Math.atan(Math.tan(vf / 2) * (cam.aspect || 1.7));
+      const vw = vf + THREE.MathUtils.degToRad(FAR_FOV * 2), hw = Math.min(3.0, hf + THREE.MathUtils.degToRad(FAR_FOV * 2));
+      const tv = Math.tan(Math.min(3.0, vw) / 2), th = Math.tan(hw / 2);
+      _wide.makePerspective(-th * 0.1, th * 0.1, tv * 0.1, -tv * 0.1, 0.1, 2000);
+      _m4.multiplyMatrices(_wide, cam.matrixWorldInverse);
+      _frustumW.setFromProjectionMatrix(_m4);
+    }
     const o = this.opt, b = o.band;
     const px = cam.position.x, pz = cam.position.z;
-    for (const v of this.variants) for (const bk of v.buckets) bk.count = 0;
+    for (const v of this.variants) v.buckets.forEach((bk, bi) => { if (bi === IMP ? farPass : nearPass) bk.count = 0; });
     const far = o.far;
+    // the near pass only visits chunks that can hold near or shadow-casting trees
+    const nearR = Math.max(o.lod1 + b, o.shadow);
+    const impIn = o.lod1 - b - FAR_MOVE - 2, impOut = far + FAR_MOVE;
     let drawn = 0, total = 0;
     for (const c of this.chunks.values()) {
       if (!c.ids.length) continue;
       const x0 = c.cx * CHUNK, z0 = c.cz * CHUNK;
       const dx = Math.max(x0 - px, 0, px - (x0 + CHUNK)), dz = Math.max(z0 - pz, 0, pz - (z0 + CHUNK));
-      if (dx * dx + dz * dz > far * far) continue;
       const dch = Math.hypot(dx, dz);
+      const doNear = nearPass && dch < nearR;
+      const doFar = farPass && dch < impOut && dch + CHUNK * 1.5 > impIn;
+      if (!doNear && !doFar) continue;
       const pad = 6 + dch * 0.08; // angular margin: no popping at the screen edges between rebuilds
       _box.min.set(x0 - pad, c.minY - 2, z0 - pad);
       _box.max.set(x0 + CHUNK + pad, c.maxY + 2, z0 + CHUNK + pad);
-      const inView = _frustum.intersectsBox(_box);
-      if (!inView && dch > o.shadow) continue;
+      const inView = doNear && _frustum.intersectsBox(_box);
+      const inWide = doFar && _frustumW.intersectsBox(_box);
+      if (!inView && !inWide && dch > o.shadow) continue;
       for (const id of c.ids) {
         total++;
         if (this.tstate[id] !== 0) continue;
         const x = this.tx[id], z = this.tz[id];
         const d = Math.hypot(x - px, z - pz);
-        if (d > far) continue;
         const v = this.variants[this.tvar[id]];
+        if (inWide && d > impIn && d < impOut && v.buckets[IMP]) this.push(v, IMP, id);
+        if (!doNear) continue;
+        // shadows: the shadow LOD for every tree near the camera, seen or not
+        if (d < o.shadow && this.opt.shadowLayer >= 0) this.push(v, PROXY, id);
+        if (!inView || d >= o.lod1 + b) continue;
         const s = this.tscale[id];
-        if (d < o.lod1 + b || !inView) {
-          _sph.center.set(x, this.ty[id] + v.height * s * 0.5, z);
-          _sph.radius = v.bound * s + 1 + d * 0.08;
-          if (!inView || !_frustum.intersectsSphere(_sph)) {
-            // off screen: only its shadow matters
-            if (d < o.shadow && this.opt.shadowLayer >= 0) this.push(v, PROXY, id);
-            continue;
-          }
-        }
+        _sph.center.set(x, this.ty[id] + v.height * s * 0.5, z);
+        _sph.radius = v.bound * s + 1 + d * 0.08;
+        if (!_frustum.intersectsSphere(_sph)) continue;
         drawn++;
         if (d < o.lod0 + b) this.push(v, 0, id);
-        if (d > o.lod0 - b && d < o.lod1 + b) this.push(v, d < o.shadow ? 1 : 2, id);
-        if (d > o.lod1 - b && v.buckets[IMP]) this.push(v, IMP, id);
+        if (d > o.lod0 - b) this.push(v, 1, id);
       }
     }
     let tris = 0;
-    const counts = [0, 0, 0, 0, 0];
+    const counts = [0, 0, 0, 0];
     for (const v of this.variants) {
       v.buckets.forEach((bk, bi) => {
         counts[bi] += bk.count;
+        const redo = bi === IMP ? farPass : nearPass;
         for (const im of bk.meshes) {
+          if (bk.count) tris += (im.geometry.index ? im.geometry.index.count / 3 : 0) * bk.count;
+          if (!redo) continue;
           im.count = bk.count;
           im.visible = bk.count > 0;
           if (bk.count) {
@@ -462,13 +524,13 @@ export class Forest {
             im.instanceColor!.clearUpdateRanges();
             im.instanceColor!.addUpdateRange(0, bk.count * 3);
             im.instanceColor!.needsUpdate = true;
-            tris += (im.geometry.index ? im.geometry.index.count / 3 : 0) * bk.count;
           }
         }
       });
     }
+    if (nearPass) this.nearDrawn = drawn;
     this.statsText = `forest: ${this.n} trees, ${this.chunks.size} chunks, ${this.variants.length} variants (built ${this.buildMs.toFixed(0)} ms, placed ${this.genMs.toFixed(0)} ms)\n` +
-      `  visible ${drawn}/${total}: L0 ${counts[0]} L1 ${counts[1]}+${counts[2]} imp ${counts[IMP]} shadow-only ${counts[PROXY]}  ~${(tris / 1e6).toFixed(2)}M tris`;
+      `  near drawn ${this.nearDrawn} (visited ${total}): L0 ${counts[0]} L1 ${counts[1]} imp ${counts[IMP]} shadow LOD ${counts[PROXY]}  ~${(tris / 1e6).toFixed(2)}M tris`;
   }
 
   private push(v: Variant, bi: number, id: number): void {
@@ -511,6 +573,8 @@ export class Forest {
       im.receiveShadow = old.receiveShadow;
       im.customDepthMaterial = old.customDepthMaterial;
       im.name = old.name;
+      im.layers.mask = old.layers.mask;
+      im.renderOrder = old.renderOrder;
       this.group.remove(old);
       old.dispose();
       this.group.add(im);
@@ -641,7 +705,7 @@ export class Forest {
     if (id < 0 || id >= this.n) return;
     this.tstate[id] = 2;
     this.refCache.delete(id);
-    this.dirty = true;
+    this.dirty = true; this.dirtyFar = true;
   }
 
   /** put a detached tree back into the instanced forest (e.g. the chop was abandoned) */
@@ -684,7 +748,7 @@ export class Forest {
         if (Math.hypot((cx + 0.5) * CHUNK - x, (cz + 0.5) * CHUNK - z) < r + CHUNK) this.chunk(cx, cz);
       }
     }
-    this.dirty = true;
+    this.dirty = true; this.dirtyFar = true;
   }
 
   /** number of placed trees so far (grows as chunks stream in) */

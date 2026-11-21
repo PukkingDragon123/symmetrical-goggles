@@ -30,9 +30,9 @@ import { paintPaper, paperMesh, type Block } from '../ui/paper';
 import { WeatherFx } from '../gfx/weather';
 import { fitTool } from '../player/arms';
 import { QUALITY, type Quality } from './quality';
-import { PackUI } from '../ui/inventory/pack3d';
+import { Hotbar } from '../ui/inventory/hotbar';
+import { SlotInventory } from '../ui/inventory/slots';
 import { makeSlashGatherable } from './cabinplay';
-import { makePhysical } from './physprops';
 import { writeSave, type SaveData } from './save';
 
 export type Mode = 'loading' | 'menu' | 'drive' | 'walk' | 'cutscene' | 'sleep';
@@ -46,7 +46,8 @@ const SFX: Record<string, string> = {
   match: 'match_strike', ignite: 'fire_ignite', door_open: 'door_creak_open', door_close: 'door_creak_close', stove_open: 'stove_door_open', stove_close: 'stove_door_close',
 };
 
-export interface Inventory { items: Map<string, number>; money: number }
+/** the inventory: five slots, the wallet and the cabin stash (src/ui/inventory/slots.ts); items is a Map<id, count> view */
+export type Inventory = SlotInventory;
 
 export class Game {
   readonly R: Renderer;
@@ -63,10 +64,12 @@ export class Game {
   readonly stove = new Stove();
   readonly journal = new BookOfCryptids();
   readonly wfx = new WeatherFx();
-  readonly pack = new PackUI((id) => this.toolModel(id));
-  private packMouse: [number, number] = [0, 0];
+  /** the five-slot hotbar (1-5 / wheel select, Q drop, E pick up) and the stash crate in the cabin */
+  readonly hotbar = new Hotbar();
+  /** the old backpack screen is gone; kept so code that checks `pack.open` (the rifle) still reads false */
+  readonly pack = { open: false };
   contracts: Contract[] = initialContracts();
-  inv: Inventory = { items: new Map([['axe_old', 1], ['matches', 1], ['jerky', 3], ['beer', 2], ['flashlight', 1]]), money: 120 };
+  readonly inv: Inventory = new SlotInventory([['axe_old', 1], ['matches', 1], ['jerky', 3], ['beer', 2], ['flashlight', 1]], 120);
   mode: Mode = 'loading';
   hour = 17.6;
   day = 0;
@@ -119,7 +122,7 @@ export class Game {
     this.view.add(new THREE.HemisphereLight(0xbfc8d8, 0x3a3026, 0.9));
     const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(0.5, 1, 0.6); this.view.add(key);
     this.viewKey = key;
-    this.view.add(this.journal.object, this.pack.object);
+    this.view.add(this.journal.object);
     // flashlight (world)
     this.flashlight = new THREE.SpotLight(0xfff4e0, 0, 45, 0.38, 0.6, 1.5);
     this.flashlight.castShadow = true;
@@ -160,7 +163,7 @@ export class Game {
       owns: (id) => (this.inv.items.get(id) ?? 0) > 0,
       game: this,
     });
-    this.pack.install(this);
+    this.hotbar.install(this);
     this.player.onStep = (surf, str, pos) => {
       const id = { forest: 'foot_forest', grass: 'foot_grass', gravel: 'foot_gravel', mud: 'foot_mud', wood: 'foot_wood', snow: 'foot_snow', water: 'foot_mud' }[surf];
       this.sound(id, pos, 0.35 + str * 0.45);
@@ -220,7 +223,7 @@ export class Game {
     const d: SaveData = {
       v: 1, day: this.day, hour: this.hour, money: this.inv.money, items: [...this.inv.items.entries()],
       contracts: this.contracts.map((c) => ({ id: c.id, state: c.state, progress: c.progress })),
-      journal: this.journal.dump(), pack: this.pack.serialize(), houndTrust: this.critters?.hound ? (this.critters.hound.state === 'companion' ? 99 : this.critters.hound.trust) : 0, stove: { fuel: this.stove.fuel, roomTemp: this.stove.roomTemp },
+      journal: this.journal.dump(), slots: this.hotbar.save(), houndTrust: this.critters?.hound ? (this.critters.hound.state === 'companion' ? 99 : this.critters.hound.trust) : 0, stove: { fuel: this.stove.fuel, roomTemp: this.stove.roomTemp },
       stacked: 0, sharp: Object.values(ITEMS).filter((i) => i.tool).map((i) => [i.id, i.tool!.sharp]), flags: [...this.flags],
     };
     writeSave(d);
@@ -228,8 +231,9 @@ export class Game {
   }
 
   load(d: SaveData): void {
-    this.day = d.day; this.hour = d.hour; this.inv.money = d.money; this.inv.items = new Map(d.items);
-    if (d.pack) this.pack.deserialize(d.pack);
+    this.day = d.day; this.hour = d.hour; this.inv.money = d.money;
+    // old saves (no slots): the best things go on the belt, the rest into the stash crate in the cabin
+    this.hotbar.load(d.slots, d.items);
     for (const c of d.contracts) { const k = this.contracts.find((x) => x.id === c.id); if (k) { k.state = c.state as Contract['state']; k.progress = c.progress; } }
     this.journal.restore(d.journal);
     this.stove.fuel = d.stove.fuel; this.stove.roomTemp = d.stove.roomTemp;
@@ -280,23 +284,15 @@ export class Game {
   }
   private slashSeen = new WeakSet<THREE.Object3D>();
 
-  /** put one of a held item down in the world as a physical object (offerings, bait, leaving the jerky out) */
-  setDown(id: string, at: THREE.Vector3): void {
-    const m = this.toolModel(id);
-    if (!m || !this.take(id)) return;
-    m.position.copy(at).add(new THREE.Vector3(0, 0.06, 0));
-    this.scene.add(m);
-    makePhysical(m, { mass: ITEMS[id]?.mass ?? 0.3, itemId: id, asleep: false });
-    if (!this.owns(id)) this.hands.equip(null);
-    this.sound('place_wood', at, 0.3, 1.6);
-  }
+  /** Q: one of the held item (Shift: the stack) leaves the hands as a physical object (offerings, bait, dropping things) */
+  setDown(id: string, at?: THREE.Vector3 | null): void { this.hotbar.drop(id, at); }
 
-  /** a carried object goes into the backpack (bought goods become owned only at the register) */
+  /** a carried object goes onto the belt (bought goods become owned only at the register) */
   pocket(id: string, obj: THREE.Object3D): void {
     if (obj.userData.unpaid) { this.events.emit('shoplift', { id, obj }); return; }
+    if (this.inv.room(id) <= 0) { hud.say('<i>No room on the belt.</i>', 1.8); return; }
     this.give(id);
     this.sound('foliage_rustle', undefined, 0.4, 1.3);
-    hud.say(`<i>${ITEMS[id]?.name ?? id} in the pack.</i>`, 1.8);
   }
 
   owns(id: string): boolean { return (this.inv.items.get(id) ?? 0) > 0; }
@@ -473,13 +469,10 @@ export class Game {
     return false;
   }
 
-  give(id: string, n = 1): void { this.inv.items.set(id, (this.inv.items.get(id) ?? 0) + n); }
-  take(id: string, n = 1): boolean {
-    const c = this.inv.items.get(id) ?? 0;
-    if (c < n) return false;
-    this.inv.items.set(id, c - n);
-    return true;
-  }
+  /** n units onto the belt (the selected slot first if it is empty or holds the same); overflow: a sack at your feet */
+  give(id: string, n = 1): void { this.inv.give(id, n, this.inv.sel); }
+  /** take n units (all or nothing): the held stack first, the stash first at the cabin, the selected slot last */
+  take(id: string, n = 1): boolean { return this.inv.take(id, n, this.hands?.heldItem === id); }
 
   blackout(): void {
     hud.fadeTo(true, 3);
@@ -506,18 +499,15 @@ export class Game {
     const cam = this.camera;
     // control
     if (this.mode === 'walk') {
-      if (this.pack.open) { this.packMouse = [input.mouseDX, input.mouseDY]; input.mouseDX = 0; input.mouseDY = 0; }
       this.player.noStrafe = this.journal.open;
       this.player.update(dt);
-      if (this.pack.open) { input.mouseDX = this.packMouse[0]; input.mouseDY = this.packMouse[1]; }
-      if (input.pressed('Tab') && !this.pack.open) { this.journal.toggle(); this.sound('page_turn', undefined, 0.6); }
-      if (input.pressed('KeyI') && !this.journal.open && !this.hands.busy) this.pack.toggle(this.inv.items);
-      if (this.pack.open) this.pack.control(dt);
+      if (input.pressed('Tab')) { this.journal.toggle(); this.sound('page_turn', undefined, 0.6); }
+      if (!this.journal.open && !this.reading) this.hotbar.control();
       if (this.journal.open) {
         if (input.pressed('KeyA') || input.pressed('ArrowLeft')) this.journal.turn(-1);
         if (input.pressed('KeyD') || input.pressed('ArrowRight')) this.journal.turn(1);
         if (input.pressed('KeyA') || input.pressed('KeyD') || input.pressed('ArrowLeft') || input.pressed('ArrowRight')) this.sound('page_turn', undefined, 0.4);
-      } else if (!this.reading && !this.pack.open) this.hands.update(dt);
+      } else if (!this.reading) this.hands.update(dt);
       if (input.pressed('KeyF') && (this.inv.items.get('flashlight') ?? 0) > 0) { this.flashOn = !this.flashOn; this.sound('flashlight_click', undefined, 0.6); }
     }
     if (this.mode === 'drive' && this.jeep) {
@@ -610,12 +600,8 @@ export class Game {
       shiver: this.survival.shiver, aimPitch: this.player.pitch, swingCharge: this.hands?.charge ?? 0,
     });
     this.journal.update(dt);
-    this.pack.update(dt);
-    // empty hands rest out of sight unless they're doing something (grabbing, pushing, offering)
-    if (this.arms && this.mode !== 'drive') {
-      const a = this.arms as unknown as { held: string; action: string | null; object: THREE.Object3D };
-      a.object.visible = !this.pack.open;
-    }
+    this.hotbar.update(dt);
+    if (this.arms && this.mode !== 'drive') this.arms.object.visible = true;
     // audio
     audio.setListener(cam);
     // the old 4x4's engine: idle and drive loops crossfaded by RPM, gravel under the tyres by speed
@@ -650,14 +636,13 @@ export class Game {
     audio.ambience('wind', 0.2 + G.uWindStrength.value * 0.6);
     audio.ambience('cabin', this.indoors ? 1 : 0);
     // hud
-    if (this.mode === 'walk' && !this.journal.open && !this.pack.open && !this.reading) {
+    if (this.mode === 'walk' && !this.journal.open && !this.reading) {
       // the label floats beside what you look at (or just ahead when carrying)
       hud.labelAt = this.hands.focus?.point ?? (this.hands.busy ? new THREE.Vector3(0.25, -0.3, -1.2).applyMatrix4(cam.matrixWorld) : null);
       hud.setLabel(this.hands.label);
       hud.setCharge(this.hands.charging ? this.hands.charge : 0);
       hud.showDot(true);
-    } else if (this.pack.open) { hud.showDot(false); hud.setCharge(0); hud.setLabel(''); }
-    else { hud.setLabel(''); hud.showDot(false); hud.setCharge(0); }
+    } else { hud.setLabel(''); hud.showDot(false); hud.setCharge(0); }
     // close-up stations (stove, forge) draw their own cursor and label after the HUD block
     for (const u of this.lateUpdaters) u(dt);
     hud.update(dt);

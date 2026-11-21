@@ -12,9 +12,13 @@
 //   bees          zig-zagging low over the same flowers by day
 //   dragonflies   blue darners patrolling the lake shore: dart, hover, dart
 //   ants, beetles trails over logs and stumps; a fresh stump draws a crowd within the minute
-//   spider webs   orb webs between trunks, beaded with dew in the morning; walk into one and it breaks on your face
+//   spider webs   orb webs (./webs.ts) strung between real trunks, or in the angle of a trunk and a low branch;
+//                 thread-by-thread line geometry that glints in the sun and the flashlight, sways in the wind, beads
+//                 with dew in the morning; often a spider at the hub; walk into one and it collapses on your face
 // Cheap: pooled agents in place, no per-frame allocation, everything culled by distance, hour and season.
 import * as THREE from 'three';
+import { orbWeb, webMaterial, type WebMesh } from './webs';
+import { currentQuality } from '../../game/quality';
 
 const TAU = Math.PI * 2;
 const rnd = (a: number, b: number) => a + Math.random() * (b - a);
@@ -43,6 +47,8 @@ export interface BugWorld {
   rain: number;
   /** the player clicked (swat) this frame */
   swat: boolean;
+  /** standing trees with their models (trunk profile, branches): webs anchor to the real geometry. Optional. */
+  trees?(x: number, z: number, r: number): TreeLike[];
   say(key: string, text: string): void;
   /** the slap landed: n mosquitoes */
   swatted(n: number): void;
@@ -58,7 +64,12 @@ interface Agent {
   surf: { a: THREE.Vector3; b: THREE.Vector3; r: number; stump: boolean } | null;
   u: number; lane: number; alive: boolean; owner: number;
 }
-interface Web { c: THREE.Vector3; n: THREE.Vector3; r: number; alive: boolean; obj: THREE.Object3D; spider: Agent | null; dew: THREE.Points; t: number }
+/** a standing tree as the forest hands it out (src/world/forest.ts TreeRef) */
+export interface TreeLike {
+  x: number; y: number; z: number; rotY: number;
+  model(): { height: number; radiusAt(y: number): number; centerAt(y: number): [number, number]; branches: { base: THREE.Vector3; dir: THREE.Vector3; len: number; r: number }[] };
+}
+interface Web { mesh: WebMesh; c: THREE.Vector3; n: THREE.Vector3; r: number; alive: boolean; spider: Agent | null; t: number; broke: number }
 
 function wingQuad(): THREE.BufferGeometry {
   // body along +z (head at +z), wings +-x; three columns so the halves fold about x = 0
@@ -80,7 +91,6 @@ export class Bugs {
   private agents: Agent[] = [];
   private glowPts: THREE.Points; private glowPos: Float32Array; private glowCol: Float32Array;
   private webs: Web[] = [];
-  private webMat: THREE.LineBasicMaterial; private dewMat: THREE.PointsMaterial;
   private atlas: THREE.Texture;
   /** atlas clones (the points sample single cells) re-uploaded once the image is in */
   private clones: THREE.Texture[] = [];
@@ -97,8 +107,12 @@ export class Bugs {
   private lastPlayer = new THREE.Vector3(1e9, 0, 0);
   private eye = new THREE.Vector3();
 
+  /** the last world it was updated with (test pages: webAt without building their own) */
+  lastWorld: BugWorld | null = null;
+
   constructor() {
     this.object.name = 'Bugs';
+    this.object.userData.bugs = this;
     this.atlas = new THREE.TextureLoader().load('assets/models/bugs/bugs_atlas.png', () => { for (const c of this.clones) c.needsUpdate = true; });
     this.atlas.colorSpace = THREE.SRGBColorSpace;
     this.atlas.magFilter = THREE.NearestFilter; this.atlas.minFilter = THREE.LinearMipmapLinearFilter;
@@ -146,8 +160,6 @@ export class Bugs {
     this.glowPts = new THREE.Points(gg, new THREE.PointsMaterial({ size: 0.11, map: glowTex, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true, fog: false, toneMapped: false }));
     this.glowPts.frustumCulled = false; this.glowPts.renderOrder = 2;
     this.object.add(this.glowPts);
-    this.webMat = new THREE.LineBasicMaterial({ color: 0xdfe6ea, transparent: true, opacity: 0.32, depthWrite: false });
-    this.dewMat = new THREE.PointsMaterial({ size: 0.012, map: this.cellTexture(CELL.dew), transparent: true, depthWrite: false, color: 0xffffff, sizeAttenuation: true, opacity: 0 });
   }
 
   /** a texture that samples one atlas cell (for the points) */
@@ -183,6 +195,7 @@ export class Bugs {
   // ------------------------------------------------------------------ the update
   update(w: BugWorld): void {
     const dt = Math.min(0.1, Math.max(0, w.dt));
+    this.lastWorld = w;
     this.time += dt; this.uTime.value = this.time;
     const P = w.player.pos, h = ((w.hour % 24) + 24) % 24, F = this.forced;
     const night = h > 20.7 || h < 4.6, dusk = (h > 18.6 && h < 22.2) || (h > 4.3 && h < 7.4), day = h > 9 && h < 17.8;
@@ -469,75 +482,137 @@ export class Bugs {
   }
 
   // ------------------------------------------------------------------ spider webs
+  private webSeed = 1;
   private spiders(w: BugWorld): void {
     const P = w.player.pos;
-    for (const web of this.webs) if (web.alive && web.c.distanceTo(P) > 45) { web.alive = false; web.obj.removeFromParent(); if (web.spider) web.spider.alive = false; }
+    for (const web of this.webs) if (web.alive && web.c.distanceTo(P) > 55) this.dropWeb(web);
     this.webs = this.webs.filter((wb) => wb.alive);
-    if (this.webs.length >= 3 || Math.random() > 0.15) return;
-    // two trunks a stride apart, out of the player's face
-    const st = w.stands(P.x + w.player.dir.x * 10, P.z + w.player.dir.z * 10, 14);
-    for (let i = 0; i < 6; i++) {
-      const A = st[(Math.random() * st.length) | 0], B = st[(Math.random() * st.length) | 0];
-      if (!A || !B || A === B) continue;
+    // late September: the orb weavers' month. Fewer in the rain (they take the webs in), none in the cold
+    const most = currentQuality().name === 'low' ? 3 : 6;
+    const want = this.forced?.spider ?? (w.warmth < 0.05 ? 0 : w.rain > 0.5 ? 2 : most);
+    if (this.webs.length >= want || Math.random() > 0.3) return;
+    const d = rnd(7, 22), side = rnd(-7, 7);
+    const cx = P.x + w.player.dir.x * d - w.player.dir.z * side, cz = P.z + w.player.dir.z * d + w.player.dir.x * side;
+    const spec = (Math.random() < 0.4 ? this.branchSite(w, cx, cz) : null) ?? this.trunkSite(w, cx, cz);
+    if (!spec || spec.hub.distanceTo(P) < 4 || this.webs.some((o) => o.c.distanceTo(spec.hub) < 2.5)) return;
+    this.spawnWeb(spec);
+  }
+
+  /** test pages: an orb web near (x, z) now, under a branch or between two trunks; returns it */
+  webAt(w: BugWorld, x: number, z: number, kind: 'branch' | 'trunk' = 'branch', spider = true): { hub: THREE.Vector3; normal: THREE.Vector3; radius: number } | null {
+    for (let i = 0; i < 12; i++) {
+      const spec = kind === 'branch' ? this.branchSite(w, x, z) : this.trunkSite(w, x, z);
+      if (spec && !this.webs.some((o) => o.c.distanceTo(spec.hub) < 1.5)) return this.spawnWeb(spec, spider);
+    }
+    return null;
+  }
+
+  private spawnWeb(spec: { hub: THREE.Vector3; normal: THREE.Vector3; anchors: THREE.Vector3[]; maxR: number }, spider = Math.random() < 0.5): WebMesh {
+    const mesh = orbWeb({ ...spec, seed: this.webSeed++ * 7919 + Math.floor(this.time * 10), mats: webMaterial({ dew: true }) });
+    this.object.add(mesh.object);
+    // a spider at the hub, about half the time (head down, facing out of the web)
+    let sp: Agent | null = null;
+    if (spider) {
+      sp = this.add('spider', mesh.hub.x, mesh.hub.y, mesh.hub.z, -2);
+      if (sp) { sp.flap = [0, 0, 0]; sp.heading = Math.atan2(mesh.normal.x, mesh.normal.z); sp.size *= rnd(0.8, 1.5); }
+    }
+    this.webs.push({ mesh, c: mesh.hub.clone(), n: mesh.normal.clone(), r: mesh.radius, alive: true, spider: sp, t: 0, broke: 0 });
+    return mesh;
+  }
+
+  /** where a trunk's bark is at height h (world), on the side facing (tx, tz) */
+  private bark(t: TreeLike, h: number, tx: number, tz: number, out = new THREE.Vector3()): THREE.Vector3 {
+    const m = t.model(), c = Math.cos(t.rotY), s = Math.sin(t.rotY);
+    const [lx, lz] = m.centerAt(h);
+    const x = t.x + c * lx + s * lz, z = t.z - s * lx + c * lz;
+    const dx = tx - x, dz = tz - z, l = Math.hypot(dx, dz) || 1, r = m.radiusAt(h) * 0.98;
+    return out.set(x + (dx / l) * r, t.y + h, z + (dz / l) * r);
+  }
+  /** a model-space point of a tree to world */
+  private local(t: TreeLike, p: THREE.Vector3, out = new THREE.Vector3()): THREE.Vector3 {
+    const c = Math.cos(t.rotY), s = Math.sin(t.rotY);
+    return out.set(t.x + c * p.x + s * p.z, t.y + p.y, t.z - s * p.x + c * p.z);
+  }
+
+  /** an orb in the angle under a low branch: moored to the bark above and below it, the branch, and the litter */
+  private branchSite(w: BugWorld, cx: number, cz: number): { hub: THREE.Vector3; normal: THREE.Vector3; anchors: THREE.Vector3[]; maxR: number } | null {
+    const trees = w.trees?.(cx, cz, 8) ?? [];
+    for (let k = 0; k < Math.min(6, trees.length); k++) {
+      const t = trees[(Math.random() * trees.length) | 0], m = t.model();
+      const br = m.branches.filter((b) => b.base.y > 1.0 && b.base.y < 2.3 && b.len > 0.55 && Math.abs(b.dir.y) < 0.75);
+      if (!br.length) continue;
+      const b = br[(Math.random() * br.length) | 0];
+      const at = (f: number) => this.local(t, b.base.clone().addScaledVector(b.dir, b.len * f));
+      const tip = at(0.8), mid = at(0.42), base = at(0);
+      const hd = new THREE.Vector3(tip.x - base.x, 0, tip.z - base.z);
+      if (hd.lengthSq() < 0.04) continue;
+      hd.normalize();
+      const normal = new THREE.Vector3(-hd.z, 0, hd.x);
+      const by = b.base.y;
+      const up = this.bark(t, Math.min(m.height * 0.9, by + 0.3), tip.x, tip.z);
+      const lo = this.bark(t, Math.max(0.35, by - 0.75), tip.x, tip.z);
+      const gx = base.x + hd.x * b.len * 0.6, gz = base.z + hd.z * b.len * 0.6;
+      const ground = new THREE.Vector3(gx, w.heightAt(gx, gz) + rnd(0.12, 0.3), gz);
+      const reach = Math.min(0.9, b.len * 0.55);
+      const hub = new THREE.Vector3(base.x + hd.x * (reach * 0.55 + m.radiusAt(by)), t.y + by - rnd(0.3, 0.45), base.z + hd.z * (reach * 0.55 + m.radiusAt(by)));
+      return { hub, normal, anchors: [up, mid, tip, ground, lo], maxR: Math.min(0.42, reach * 0.75) };
+    }
+    return null;
+  }
+
+  /** an orb strung across the gap between two trunks a stride apart, moored high and low on each */
+  private trunkSite(w: BugWorld, cx: number, cz: number): { hub: THREE.Vector3; normal: THREE.Vector3; anchors: THREE.Vector3[]; maxR: number } | null {
+    const trees = w.trees?.(cx, cz, 9);
+    const st = trees?.length ? null : w.stands(cx, cz, 9);
+    const n = trees ? trees.length : st!.length;
+    for (let i = 0; i < 8; i++) {
+      const ia = (Math.random() * n) | 0, ib = (Math.random() * n) | 0;
+      if (ia === ib) continue;
+      const A = trees ? trees[ia] : st![ia], B = trees ? trees[ib] : st![ib];
       const d = Math.hypot(A.x - B.x, A.z - B.z);
-      if (d < 1.2 || d > 3.2) continue;
-      const mx = (A.x + B.x) / 2, mz = (A.z + B.z) / 2;
-      if (Math.hypot(mx - P.x, mz - P.z) < 4) continue;
-      this.makeWeb(w, A, B);
-      return;
+      if (d < 0.9 || d > 2.8) continue;
+      const mx = (A.x + B.x) / 2, mz = (A.z + B.z) / 2, gy = w.heightAt(mx, mz);
+      const hy = gy + rnd(1.1, 1.75);
+      const ax = new THREE.Vector3(B.x - A.x, 0, B.z - A.z).normalize();
+      const normal = new THREE.Vector3(-ax.z, 0, ax.x);
+      const pt = (T: typeof A, h: number, to: typeof A) => {
+        if (trees) return this.bark(T as TreeLike, h - (T as TreeLike).y, to.x, to.z);
+        const s0 = T as { x: number; z: number; r: number }, l = Math.hypot(to.x - s0.x, to.z - s0.z) || 1;
+        return new THREE.Vector3(s0.x + ((to.x - s0.x) / l) * s0.r, h, s0.z + ((to.z - s0.z) / l) * s0.r);
+      };
+      const anchors = [pt(A, hy + rnd(0.35, 0.6), B), pt(A, hy - rnd(0.3, 0.6), B), pt(B, hy + rnd(0.3, 0.55), A), pt(B, hy - rnd(0.35, 0.7), A)];
+      // a bridge line high on one trunk, and a guy line down into the litter: the frame gets its five or six corners
+      anchors.push(pt(Math.random() < 0.5 ? A : B, hy + rnd(0.9, 1.4), Math.random() < 0.5 ? B : A));
+      if (Math.random() < 0.7) { const f = rnd(0.3, 0.7), gx = A.x + (B.x - A.x) * f, gz = A.z + (B.z - A.z) * f; anchors.push(new THREE.Vector3(gx, w.heightAt(gx, gz) + rnd(0.1, 0.3), gz)); }
+      const hub = new THREE.Vector3(mx + ax.x * rnd(-0.15, 0.15), hy, mz + ax.z * rnd(-0.15, 0.15));
+      return { hub, normal, anchors, maxR: Math.min(0.45, d * 0.32) };
     }
+    return null;
   }
-  private makeWeb(w: BugWorld, A: { x: number; z: number; r: number }, B: { x: number; z: number; r: number }): void {
-    const mx = (A.x + B.x) / 2, mz = (A.z + B.z) / 2, gy = w.heightAt(mx, mz);
-    const c = new THREE.Vector3(mx, gy + rnd(0.9, 1.7), mz);
-    const ax = new THREE.Vector3(B.x - A.x, 0, B.z - A.z).normalize();
-    const n = new THREE.Vector3(-ax.z, 0, ax.x);
-    const half = Math.hypot(A.x - B.x, A.z - B.z) / 2;
-    const r = Math.min(0.55, half - 0.2);
-    const pts: number[] = [], dew: number[] = [];
-    const P = (u: number, v: number) => [c.x + ax.x * u, c.y + v, c.z + ax.z * u];
-    // anchor threads to the two trunks and up and down
-    const spokes = 22;
-    const edge = (ang: number) => [Math.cos(ang) * r, Math.sin(ang) * r * 1.1];
-    for (let i = 0; i < spokes; i++) {
-      const ang = (i / spokes) * TAU + rnd(-0.05, 0.05), [u, v] = edge(ang);
-      pts.push(...P(0, 0), ...P(u, v));
-    }
-    pts.push(...P(-r, 0), ...P(-(half - A.r), 0.05), ...P(r, 0.05), ...P(half - B.r, 0.1), ...P(0, r * 1.1), ...P(rnd(-0.2, 0.2), r * 1.1 + 0.6));
-    // the capture spiral
-    let prev: number[] | null = null;
-    for (let k = 0; k < spokes * 11; k++) {
-      const ang = (k / spokes) * TAU, rr = r * (0.12 + 0.86 * (k / (spokes * 11)));
-      const p = P(Math.cos(ang) * rr, Math.sin(ang) * rr * 1.1);
-      if (prev) pts.push(...prev, ...p);
-      prev = p;
-      if (k % 3 === 0) dew.push(...p);
-    }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-    const lines = new THREE.LineSegments(g, this.webMat);
-    const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.Float32BufferAttribute(dew, 3));
-    const dewPts = new THREE.Points(dg, this.dewMat);
-    const obj = new THREE.Group(); obj.add(lines, dewPts); obj.name = 'web';
-    lines.frustumCulled = false; dewPts.frustumCulled = false;
-    this.object.add(obj);
-    const sp = this.add('spider', c.x, c.y, c.z, -2);
-    if (sp) { sp.flap = [0, 0, 0]; sp.heading = Math.atan2(n.x, n.z); }
-    this.webs.push({ c, n, r, alive: true, obj, spider: sp, dew: dewPts, t: 0 });
+
+  private dropWeb(web: Web): void {
+    web.alive = false;
+    web.mesh.dispose();
+    if (web.spider) web.spider.alive = false;
   }
+
   private webUpdate(w: BugWorld, dt: number): void {
-    const h = ((w.hour % 24) + 24) % 24;
-    // dew in the morning, gone by mid-day
-    this.dewMat.opacity = h > 4.5 && h < 10 ? Math.min(1, (10 - h) / 2) * 0.9 : 0;
     const P = w.player.pos, L = this.lastPlayer;
     for (const web of this.webs) {
       if (!web.alive) continue;
       web.t += dt;
+      if (web.broke > 0) {
+        // the middle balls up and falls; the mooring threads stay hanging
+        web.broke = Math.min(1, web.broke + dt * 0.8);
+        web.mesh.mats.u.uBreak.value = web.broke;
+        continue;
+      }
       // walked through it? (the segment last -> now crosses its plane within the web, at face height)
       const a = (L.x - web.c.x) * web.n.x + (L.z - web.c.z) * web.n.z, b = (P.x - web.c.x) * web.n.x + (P.z - web.c.z) * web.n.z;
-      if (L.x < 1e8 && a * b <= 0 && Math.hypot(P.x - web.c.x, P.z - web.c.z) < web.r + 0.35 && web.c.y > P.y + 0.4 && web.c.y < P.y + 2.0) {
-        web.alive = false; web.obj.removeFromParent();
+      if (L.x < 1e8 && a * b <= 0 && Math.hypot(P.x - web.c.x, P.z - web.c.z) < web.r + 0.35 && web.c.y > P.y + 0.3 && web.c.y < P.y + 2.0) {
+        web.broke = 0.01;
         if (web.spider) web.spider.alive = false;
-        w.say('web', 'Pah! Cobweb, right across my face. Something just ran down my collar.');
+        w.say('web', web.spider ? 'Pah! Cobweb, right across my face. Something just ran down my collar.' : 'Pah! Cobweb, right across my face.');
       }
     }
   }

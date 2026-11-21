@@ -1,4 +1,5 @@
-// Words. Uncle Ray's field journal, the critter notes the player fills in, notes and contracts.
+// Words. Pépère Ray's field journal, the critter notes the player fills in, notes and contracts. Ray Tremblay is
+// your grandfather; he died this spring and left you the cabin (his note is still pinned to the door).
 import type { Block } from '../ui/paper';
 
 export interface CritterRule { id: string; text: string }
@@ -58,13 +59,13 @@ export const CRITTERS: Critter[] = [
 
 export const RAY_NOTE: Block[] = [
   { t: 'h', text: 'Kid —' },
-  { t: 'p', text: "If you're reading this the old place is yours. Sorry about the roof." },
+  { t: 'p', text: "If you're reading this the old place is yours. Sorry about the roof. Pinned this up in April, in case." },
   { t: 'p', text: "Nights get cold fast up here. Wood box is empty and the stove's cold, so first thing: wood." },
   { t: 'p', text: "Axe is stuck in the chopping block. There's a little spruce I flagged with orange tape behind the shed. Drop it toward the clearing, buck it short, split it on the block." },
   { t: 'p', text: 'Matches in the table drawer. Kindling first, then splits.' },
   { t: 'p', text: 'And keep jerky in your pocket after dark. Trust me on that one.' },
   { t: 'gap', h: 6 },
-  { t: 'sig', text: '— Uncle Ray' },
+  { t: 'sig', text: '— Pépère' },
 ];
 
 export const NOTES: Block[][] = [

@@ -1,4 +1,4 @@
-// Terrain: 64 m chunks with distance LOD (1/2/4/8 m grids, skirts hide cracks). Each vertex carries material
+// Terrain: 64 m chunks with distance LOD (1/2/4/8 m grids, skirts hide cracks), merged into 256 m blocks far away. Each vertex carries material
 // weights computed from the layout (12 photo-scanned pixel-art layers: forest duff, leaf litter, moss, grass, dirt,
 // mud, gravel, granite, lichen rock, shore pebbles, the rutted gravel road strip and the muddy skid trail), the
 // site (wetness from hollows and water, rock outcrops on knolls and slopes, the old burn) and road coordinates.
@@ -16,9 +16,13 @@ import { WORLD, heightAt, roadInfo, biome, SPOTS } from './layout';
 import { Noise, smoothstep, clamp } from '../core/noise';
 import { G } from '../gfx/globals';
 import { marks } from './marks';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 const CHUNK = 64;
 const LODS = [64, 32, 16, 8];
+/** far terrain is merged into blocks of BLOCK x BLOCK chunks (256 m) beyond BLOCK_NEAR metres */
+const BLOCK = 4;
+const BLOCK_NEAR = 150;
 export const LAYERS = ['needles', 'leaves', 'moss', 'grass', 'dirt', 'mud', 'gravel', 'rock', 'lichen', 'pebbles', 'roadruts', 'mudruts'] as const;
 const NL = LAYERS.length;
 /** real-world metres covered by one tile of each layer (index.json overrides) */
@@ -614,9 +618,14 @@ export class Terrain {
   readonly mistMap: THREE.DataTexture;
   private wear = new Wear();
   private chunks = new Map<string, ChunkEntry>();
-  private queue: { key: string; cx: number; cz: number; lod: number; d: number }[] = [];
+  private blocks = new Map<string, ChunkEntry>();
+  private wantC = new Set<string>();
+  private wantB = new Set<string>();
+  private queue: { key: string; cx: number; cz: number; lod: number; d: number; block: boolean }[] = [];
   private scanT = 0;
   private scans = 0;
+  private lastX = 1e9;
+  private lastZ = 1e9;
 
   constructor() {
     this.albedo = arrayTex(true, false);
@@ -755,49 +764,114 @@ export class Terrain {
     if (sites.size) this.wear.refresh(sites);
   }
 
-  /** stream chunks around the camera; builds at most `budget` chunk geometries per call */
+  /**
+   * stream chunks around the camera; builds at most `budget` chunk geometries per call (a far block counts as the
+   * whole budget). Near the camera the terrain is drawn chunk by chunk (64 m, LOD by distance); blocks of
+   * BLOCK x BLOCK chunks farther than BLOCK_NEAR are merged into one mesh each, so the far land costs a few dozen
+   * draw calls instead of hundreds. A block and its chunks hand over without holes: the old one stays until the
+   * new one is built.
+   */
   update(cam: THREE.Vector3, budget = 2): void {
     // the places build after the terrain: look for their anchors for a while, then every half minute
     if (--this.scanT <= 0) { this.scans++; this.scanT = this.scans < 20 ? 90 : 1800; this.scanSites(); }
-    const n = WORLD.half / CHUNK;
-    const want = new Set<string>();
+    // the LOD rings only change when the camera has moved a few metres (or pieces are still queued)
+    if (this.queue.length === 0 && Math.abs(cam.x - this.lastX) < 6 && Math.abs(cam.z - this.lastZ) < 6) return;
+    this.lastX = cam.x; this.lastZ = cam.z;
+    const n = WORLD.half / CHUNK, nb = n / BLOCK, S = CHUNK * BLOCK;
+    const wantC = this.wantC, wantB = this.wantB;
+    wantC.clear(); wantB.clear();
     this.queue.length = 0;
-    for (let cz = -n; cz < n; cz++) for (let cx = -n; cx < n; cx++) {
-      const mx = (cx + 0.5) * CHUNK, mz = (cz + 0.5) * CHUNK;
-      const d = Math.max(0, Math.hypot(mx - cam.x, mz - cam.z) - CHUNK * 0.7);
-      if (d > 1400) continue;
-      const key = `${cx},${cz}`;
-      want.add(key);
-      const lod = this.lodFor(d);
-      const e = this.chunks.get(key);
-      if (!e) this.queue.push({ key, cx, cz, lod, d });
-      else if (e.lod !== lod) {
-        if (e.geos[lod]) { e.mesh.geometry = e.geos[lod]!; e.lod = lod; }
-        else this.queue.push({ key, cx, cz, lod, d });
+    for (let bz = -nb; bz < nb; bz++) for (let bx = -nb; bx < nb; bx++) {
+      const x0 = bx * S, z0 = bz * S;
+      const db = Math.hypot(Math.max(x0 - cam.x, 0, cam.x - (x0 + S)), Math.max(z0 - cam.z, 0, cam.z - (z0 + S)));
+      if (db > 1400) continue;
+      if (db > BLOCK_NEAR) {
+        const key = `b${bx},${bz}`;
+        wantB.add(key);
+        const lod = Math.max(1, this.lodFor(db));
+        const e = this.blocks.get(key);
+        if (!e || !e.geos[lod]) this.queue.push({ key, cx: bx, cz: bz, lod, d: db, block: true });
+        else if (e.lod !== lod) { e.mesh.geometry = e.geos[lod]!; e.lod = lod; }
+        continue;
+      }
+      for (let cz = bz * BLOCK; cz < (bz + 1) * BLOCK; cz++) for (let cx = bx * BLOCK; cx < (bx + 1) * BLOCK; cx++) {
+        const mx = (cx + 0.5) * CHUNK, mz = (cz + 0.5) * CHUNK;
+        const d = Math.max(0, Math.hypot(mx - cam.x, mz - cam.z) - CHUNK * 0.7);
+        if (d > 1400) continue;
+        const key = `${cx},${cz}`;
+        wantC.add(key);
+        const lod = this.lodFor(d);
+        const e = this.chunks.get(key);
+        if (!e) this.queue.push({ key, cx, cz, lod, d, block: false });
+        else if (e.lod !== lod) {
+          if (e.geos[lod]) { e.mesh.geometry = e.geos[lod]!; e.lod = lod; }
+          else this.queue.push({ key, cx, cz, lod, d, block: false });
+        }
       }
     }
-    for (const [k, e] of this.chunks) if (!want.has(k)) {
-      this.group.remove(e.mesh);
-      e.geos.forEach((g) => g?.dispose());
-      this.chunks.delete(k);
-    }
     this.queue.sort((a, b) => a.d - b.d);
-    for (let q = 0; q < Math.min(budget, this.queue.length); q++) {
+    let left = budget;
+    for (let q = 0; q < this.queue.length && left > 0; q++) {
       const it = this.queue[q];
-      const g = buildChunkGeometry(it.cx, it.cz, it.lod);
-      let e = this.chunks.get(it.key);
-      if (!e) {
-        const mesh = new THREE.Mesh(g, this.material);
-        mesh.receiveShadow = true;
-        mesh.castShadow = false;
-        mesh.matrixAutoUpdate = false;
-        this.group.add(mesh);
-        e = { mesh, lod: it.lod, geos: [null, null, null, null] };
-        this.chunks.set(it.key, e);
-      } else e.mesh.geometry = g;
-      e.geos[it.lod] = g;
-      e.lod = it.lod;
+      if (it.block) {
+        if (left < budget && q > 0) break; // a block takes a whole call's budget
+        left = 0;
+        const parts: THREE.BufferGeometry[] = [];
+        for (let cz = it.cz * BLOCK; cz < (it.cz + 1) * BLOCK; cz++) for (let cx = it.cx * BLOCK; cx < (it.cx + 1) * BLOCK; cx++) parts.push(buildChunkGeometry(cx, cz, it.lod));
+        const g = mergeGeometries(parts, false);
+        for (const p of parts) p.dispose();
+        if (!g) continue;
+        g.computeBoundingBox(); g.computeBoundingSphere();
+        this.place(this.blocks, it.key, g, it.lod);
+      } else {
+        left--;
+        this.place(this.chunks, it.key, buildChunkGeometry(it.cx, it.cz, it.lod), it.lod);
+      }
     }
+    // hand-overs: a chunk goes once its block is drawn (or it is out of range); a block goes once every chunk that
+    // replaces it is built; until then its chunks stay hidden under it
+    for (const [k, e] of this.chunks) if (!wantC.has(k)) {
+      const bk = this.blockOf(k);
+      if (!wantB.has(bk) || this.blocks.has(bk)) this.drop(this.chunks, k, e);
+    }
+    for (const [k, e] of this.blocks) if (!wantB.has(k)) {
+      const [bx, bz] = k.slice(1).split(',').map(Number);
+      let ready = true;
+      for (let cz = bz * BLOCK; cz < (bz + 1) * BLOCK && ready; cz++) for (let cx = bx * BLOCK; cx < (bx + 1) * BLOCK; cx++) {
+        const ck = `${cx},${cz}`;
+        if (wantC.has(ck) && !this.chunks.has(ck)) { ready = false; break; }
+      }
+      if (ready) this.drop(this.blocks, k, e);
+    }
+    for (const [k, e] of this.chunks) e.mesh.visible = !this.blocks.has(this.blockOf(k));
+  }
+
+  private blockOf(chunkKey: string): string {
+    const i = chunkKey.indexOf(',');
+    return `b${Math.floor(Number(chunkKey.slice(0, i)) / BLOCK)},${Math.floor(Number(chunkKey.slice(i + 1)) / BLOCK)}`;
+  }
+
+  private place(map: Map<string, ChunkEntry>, key: string, g: THREE.BufferGeometry, lod: number): void {
+    let e = map.get(key);
+    if (!e) {
+      const mesh = new THREE.Mesh(g, this.material);
+      mesh.receiveShadow = true;
+      mesh.castShadow = false;
+      mesh.matrixAutoUpdate = false;
+      mesh.renderOrder = -1; // after the near trees, before everything else (early depth rejection)
+      this.group.add(mesh);
+      e = { mesh, lod, geos: [null, null, null, null] };
+      map.set(key, e);
+    } else e.mesh.geometry = g;
+    e.geos[lod]?.dispose();
+    e.geos[lod] = g;
+    e.lod = lod;
+  }
+
+  private drop(map: Map<string, ChunkEntry>, key: string, e: ChunkEntry): void {
+    this.group.remove(e.mesh);
+    e.geos.forEach((g) => g?.dispose());
+    map.delete(key);
   }
 
   /** build everything near a point synchronously (loading screens) */

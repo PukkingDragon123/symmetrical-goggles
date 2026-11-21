@@ -1,0 +1,269 @@
+{
+ "name": "Logging truck",
+ "file": "assets/vehicles/truck.glb",
+ "generator": "tools/blender/truck/build_truck.py",
+ "frontAxis": "+z",
+ "leftAxis": "+x",
+ "up": "+y",
+ "driverSide": "+x (left-hand drive)",
+ "wheelRadius": 0.37,
+ "wheelWidth": 0.255,
+ "wheelbase": 3.1100000000000003,
+ "track": 1.48,
+ "axleFront": 1.31,
+ "axleRear": -1.8,
+ "lift": 0.3,
+ "size": [
+  1.96,
+  1.88,
+  5.5
+ ],
+ "bed": {
+  "x": 0.98,
+  "z0": -3.1,
+  "z1": -0.7,
+  "deckY": 0.95,
+  "bunkY": 1.05,
+  "bunks": [
+   -1.0,
+   -1.95,
+   -2.9
+  ],
+  "stakeX": 0.925,
+  "stakeTop": 1.86
+ },
+ "anchors": {
+  "driverEye": [
+   0.372,
+   1.515,
+   -0.3
+  ],
+  "steeringWheel": [
+   0.372,
+   1.142,
+   0.262
+  ],
+  "headlightL": [
+   0.5358,
+   0.936,
+   2.0198
+  ],
+  "taillightL": [
+   0.76,
+   0.78,
+   -3.174
+  ],
+  "headlightR": [
+   -0.5367,
+   0.936,
+   2.0196
+  ],
+  "taillightR": [
+   -0.76,
+   0.78,
+   -3.174
+  ],
+  "hood": [
+   0.0,
+   1.1057,
+   1.6
+  ],
+  "exhaust": [
+   -0.83,
+   0.42,
+   -1.34
+  ],
+  "winch": [
+   0.0,
+   0.635,
+   2.385
+  ],
+  "lightBar": [
+   0.0,
+   1.7544,
+   0.249
+  ],
+  "workLights": [
+   0.0,
+   1.8854,
+   -0.7832
+  ],
+  "plate": [
+   0.36,
+   0.665,
+   -3.177
+  ]
+ },
+ "pivots": {
+  "wheel_fl": {
+   "pos": [
+    0.7599,
+    0.37,
+    1.31
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "wheel_fr": {
+   "pos": [
+    -0.7599,
+    0.37,
+    1.31
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "wheel_rl": {
+   "pos": [
+    0.7599,
+    0.37,
+    -1.8
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "wheel_rr": {
+   "pos": [
+    -0.7599,
+    0.37,
+    -1.8
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "steering_wheel": {
+   "pos": [
+    0.372,
+    1.142,
+    0.262
+   ],
+   "axis": [
+    -0.0,
+    0.3159,
+    -0.9488
+   ]
+  },
+  "door_l": {
+   "pos": [
+    0.8,
+    0.9,
+    0.805
+   ],
+   "axis": [
+    0.0,
+    1.0,
+    0.0
+   ]
+  },
+  "door_r": {
+   "pos": [
+    -0.8,
+    0.9,
+    0.805
+   ],
+   "axis": [
+    0.0,
+    -1.0,
+    0.0
+   ]
+  },
+  "hood": {
+   "pos": [
+    0.0,
+    1.1439,
+    1.034
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "winch_drum": {
+   "pos": [
+    0.0,
+    0.78,
+    2.245
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "bumper_front": {
+   "pos": [
+    0.0,
+    0.62,
+    2.1
+   ],
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "needle_speedo": {
+   "pos": [
+    0.448,
+    1.1482,
+    0.6149
+   ],
+   "axis": [
+    0.0022,
+    -0.3361,
+    0.9418
+   ]
+  },
+  "needle_tacho": {
+   "pos": [
+    0.294,
+    1.1482,
+    0.6149
+   ],
+   "axis": [
+    0.0022,
+    -0.3361,
+    0.9418
+   ]
+  },
+  "needle_fuel": {
+   "pos": [
+    0.544,
+    1.1698,
+    0.6226
+   ],
+   "axis": [
+    0.0022,
+    -0.3361,
+    0.9418
+   ]
+  },
+  "needle_temp": {
+   "pos": [
+    0.544,
+    1.1208,
+    0.6051
+   ],
+   "axis": [
+    0.0022,
+    -0.3361,
+    0.9418
+   ]
+  }
+ },
+ "notes": "Pivot axes are line directions in three.js space; the steering wheel turns about pivots.steering_wheel.axis (sign checked in game). Wheels spin about local +X (+ = rolling forward). Lights: light_head_l/r, light_ind_fl/fr/rl/rr, light_tail_l/r (tail + brake), light_reverse, light_bar (roof), light_work (rack).",
+ "tris": 116482
+}

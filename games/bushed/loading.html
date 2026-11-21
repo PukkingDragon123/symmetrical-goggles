@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>BUSHED: loading screen</title>
+  <style>
+    html, body { margin: 0; background: #07081a; color: #c8b890; font: 12px monospace; }
+    canvas { image-rendering: pixelated; display: block; }
+    #bar { position: fixed; left: 8px; bottom: 8px; }
+  </style>
+</head>
+<body>
+  <!-- Dev page: the loading screen from index.html on its own, with a fake boot.
+       ?p=0.4 holds the progress there; ?speed=2 runs the fake boot faster; ?w=342&h=192 tries another canvas size.
+       window.__scene exposes the scene: step(dt), render(), set(p, next), done(), forceRun(kind, x, stop). -->
+  <canvas id="c"></canvas>
+  <div id="bar">1-9: progress  d: done (fall)  r: runner</div>
+  <script>
+    (async () => {
+      const q = new URLSearchParams(location.search);
+      const html = await (await fetch('./index.html')).text();
+      const src = new DOMParser().parseFromString(html, 'text/html').getElementById('bushed-loading-scene').textContent;
+      const cv = document.getElementById('c');
+      cv.width = Number(q.get('w') ?? 320); cv.height = Number(q.get('h') ?? 180);
+      const S = Number(q.get('scale') ?? Math.max(1, Math.floor(Math.min(innerWidth / cv.width, innerHeight / cv.height))));
+      cv.style.width = cv.width * S + 'px'; cv.style.height = cv.height * S + 'px';
+      const fontUrl = new URL('assets/fonts/Alagard.ttf', location.href).href;
+      let fontReady;
+      const scene = new Function(src + '\nreturn bushedScene;')()(cv, {
+        makeCanvas: (w, h) => new OffscreenCanvas(w, h),
+        loadFont: () => (fontReady = new FontFace('Alagard', `url(${fontUrl})`).load().then((f) => { document.fonts.add(f); })),
+        onPercent: () => {},
+      });
+      await fontReady;
+      window.__scene = scene;
+      if (q.has('manual')) { window.__ready = true; return; }
+      const hold = q.get('p'), speed = Number(q.get('speed') ?? 1);
+      let p = 0, last = performance.now(), fallen = false;
+      addEventListener('keydown', (e) => {
+        if (e.key >= '1' && e.key <= '9') { p = Number(e.key) / 10; scene.set(p, p + 0.05); }
+        if (e.key === 'd') scene.done();
+        if (e.key === 'r') scene.forceRun(Math.random() < 0.5 ? 'big' : 'hound');
+      });
+      const loop = (now) => {
+        const dt = Math.min(0.05, (now - last) / 1000); last = now;
+        if (hold === null && !fallen) { p = Math.min(1, p + dt * 0.04 * speed); scene.set(p, Math.min(1, p + 0.08)); if (p >= 1) { fallen = true; scene.done(); } }
+        else if (hold !== null) scene.set(Number(hold), Number(hold) + 0.05);
+        scene.step(dt); scene.render(); requestAnimationFrame(loop);
+      };
+      requestAnimationFrame(loop);
+      window.__ready = true;
+    })();
+  </script>
+</body>
+</html>

@@ -47,6 +47,7 @@ export interface Entry extends FieldEntry {
 const ICON_OF_ITEM: Record<string, string> = {
   jerky: 'jerky', beer: 'beer', coffee: 'coffee', beans: 'beans', bread: 'bread', eggs: 'eggs', bacon: 'bacon', syrup: 'syrup',
   cookies: 'cookies', berries: 'berries', chanterelle: 'mushroom', fish: 'fish',
+  carrots: 'carrots', wild_onion: 'onion', cheese: 'cheese', nuts: 'nuts',
 };
 
 export const FIELD: FieldEntry[] = [
@@ -245,6 +246,68 @@ export const FIELD: FieldEntry[] = [
     food: { icon: 'bread', name: 'Bannock', note: 'camp robber' },
     taste: 'Crow, woodsmoke and yesterday. It tastes of where it has been.', danger: 0, scene: 'dusk',
   },
+  // ---- four that work for you once tame (src/creatures/cryptids: roperite, hugag, billdad, wapaloosie; helper.ts,
+  // companions.ts). Rule texts match the creatures' own `rules`; critters.ts CRYPTID_RULES teaches them.
+  {
+    id: 'roperite', alias: ['rope_rite', 'ropeite'], name: 'Roperite', latin: 'Equulus laqueator',
+    ray: ['Shaggy little pony in the beaver meadow north-west of the lake. Its nose is a ROPE. A long braided snout, coiled up like a lariat.', 'Gallops rings round you and lassoes you. Then laughs. Hollis says stand still and it gets bored.', 'The old teamsters fed them carrots and had them haul logs to the landing. Backwards, Hollis says. They walk backwards.'],
+    rules: [
+      { id: 'r0', text: 'A roperite has a rope for a snout. It lassoes whatever runs through its meadow: rabbits, deer, lumberjacks.' },
+      { id: 'r1', text: 'Walk into its meadow and it gallops rings round you, then throws. Crouch and stand dead still and it gets bored.' },
+      { id: 'r2', text: 'Roped, you get dragged a few steps and laughed at. It does not hurt. Much.' },
+      { id: 'r3', text: 'Hold out carrots and it walks right up for them. Twice, and it is yours.' },
+      { id: 'r4', text: 'A tame one ropes logs for you: whistle (G) and point at a log, and it drags it backwards to your truck.' },
+      { id: 'r5', text: 'At night it sleeps lying down in the long grass of its meadow.' },
+    ],
+    habitat: 'The open beaver meadow north-west of the lake. Rope burns on the grass in rings.', active: 'Days. Sleeps in the long grass', size: 'A pony with a lariat for a face.',
+    food: { icon: 'carrots', name: 'Carrots', note: 'and smoked-bark brittle: then it wants ALL the logs' },
+    taste: 'Hemp, horse and a long day\'s hauling. A sweet carrot finish. It laughed at me while I wrote this.', danger: 1, scene: 'day',
+  },
+  {
+    id: 'hugag', alias: ['hu_gag', 'hugag_beast'], name: 'Hugag', latin: 'Alces inflexibilis',
+    ray: ['Moose-sized, but wrong. No knees. Walks like a table. A lip on it like a canoe paddle.', 'Can\'t lie down, so it sleeps leaning on a tree. The old hunters sawed the tree half through and waited.', 'Don\'t do that. Esko says if you help one up it never forgets you. He says it pushes trees over for you, after.'],
+    rules: [
+      { id: 'r0', text: 'A hugag has no joints in its legs. It cannot lie down, so it sleeps standing, leaning its whole weight on a tree.' },
+      { id: 'r1', text: 'Startle it and it stampedes in a dead straight line. It cannot turn: step aside.' },
+      { id: 'r2', text: 'Fell the tree it is leaning on and it goes over and cannot get up. Help it up and it remembers you.' },
+      { id: 'r3', text: 'Its upper lip is so long it cannot graze. It browses twigs and loves wild onions.' },
+      { id: 'r4', text: 'A tame one leans on any tree you point at (whistle, G) until it goes over, falling away from you.' },
+      { id: 'r5', text: 'Its hide is all folds and wrinkles. Bark rubs into them from all the leaning.' },
+    ],
+    habitat: 'The old cedar east of the hollow. Trees leaning every which way, bark rubbed shiny at moose height.', active: 'Days. Sleeps leaning on a tree', size: 'A moose made of fence posts.',
+    food: { icon: 'onion', name: 'Wild onions', note: 'and Hodag-heart pie: then it takes the big trees too' },
+    taste: 'Cedar bark, wet leather and old knees that never bent. A strong, patient flavour. Like waiting.', danger: 3, scene: 'fog',
+  },
+  {
+    id: 'billdad', alias: ['bill_dad', 'billdad_beast'], name: 'Billdad', latin: 'Castor saltator',
+    ray: ['On a log at the north-west shore. Beaver body, kangaroo legs, a hooked bill. Webbed back feet.', 'Watched it jump from the shore to a rising trout. Twenty metres if it was a foot. Slapped the fish with its tail.', 'Marcel swears a camp cook fed one cheese and it fished for him all summer.'],
+    rules: [
+      { id: 'r0', text: 'A billdad sits on a log at the edge of the lake, watching the water. It has a beaver\'s tail, a hawk\'s bill and a kangaroo\'s legs.' },
+      { id: 'r1', text: 'When a trout rises it leaps clear out over the water, slaps the fish senseless with its tail, and comes back with it.' },
+      { id: 'r2', text: 'Walk up on it and it leaps away along the shore. Crouch and creep.' },
+      { id: 'r3', text: 'It cannot resist old cheddar. Hold some out and it hops right to you. Twice, and it is yours.' },
+      { id: 'r4', text: 'A tame billdad fishes for you: whistle (G) and point at the water and it brings you back a trout. Three a day.' },
+      { id: 'r5', text: 'At night it sleeps on its log, tail tucked under it.' },
+    ],
+    habitat: 'A log at the water\'s edge on the north-west shore of the lake. Fish scales on the log.', active: 'Days. Sleeps on its log', size: 'A beaver that could clear a house.',
+    food: { icon: 'cheese', name: 'Old cheddar', note: 'and bannock of the damned: then it fishes double' },
+    taste: 'Lake water, trout and sharp cheddar. The tail tastes of slapped fish.', danger: 1, scene: 'dusk',
+  },
+  {
+    id: 'wapaloosie', alias: ['wapaloosy', 'wap'], name: 'Wapaloosie', latin: 'Mustela arborivermis',
+    ray: ['Long as a dachshund, short legs, lives up the spruces west of the cabin. Goes up a trunk like an inchworm.', 'Hides round the back of the tree when you look. Peeks. Chatters.', 'Ray left hazelnuts for one. He wrote: "From the top of a spruce it sees the whole bush. It TELLS you."'],
+    rules: [
+      { id: 'r0', text: 'A wapaloosie is the size and shape of a dachshund, but it lives in the trees. It wriggles up a trunk like an inchworm.' },
+      { id: 'r1', text: 'Come close and it slips round to the far side of the trunk. Stand still and it peeks.' },
+      { id: 'r2', text: 'Hazelnuts at the foot of its tree, or held out while you crouch, bring it down.' },
+      { id: 'r3', text: 'Feed it twice from your hand and it follows you, chattering.' },
+      { id: 'r4', text: 'A tame one scouts: whistle (G) at a tree and it climbs to the top and marks every cache and cryptid it can see.' },
+      { id: 'r5', text: 'It eats lichen and moss off the bark. Its fur goes green with it.' },
+    ],
+    habitat: 'The tall spruce west of the cabin, high up. Lichen nibbled off the bark in spirals.', active: 'Days. Up its trees', size: 'A dachshund that went up a tree and stayed.',
+    food: { icon: 'nuts', name: 'Hazelnuts', note: 'and firefly-glow broth: then it sees the whole bush' },
+    taste: 'Lichen, spruce gum and a long, long body. It goes on tasting for a while.', danger: 0, scene: 'day',
+  },
 ];
 
 /** default field data for a story.ts critter with no FieldEntry */
@@ -332,12 +395,16 @@ export const ROMAN = (n: number): string => {
 
 // ---- plate portraits of the four real-model cryptids (src/creatures/cryptids/real.ts): the posed model, rendered
 interface RealPosable { object: THREE.Object3D; ready: boolean; play(c: string | null): void; update(c: unknown): void; pos: THREE.Vector3; heading: number }
-const REAL_VIEW: Record<string, { cls: 'SidehillGouger' | 'HoopSnake' | 'SplinterCat' | 'GoofusBird'; model: string; clip: string; t: number; yaw: number; pitch: number; fill: number; set?: Record<string, unknown> }> = {
+const REAL_VIEW: Record<string, { cls: 'SidehillGouger' | 'HoopSnake' | 'SplinterCat' | 'GoofusBird' | 'Roperite' | 'Hugag' | 'Billdad' | 'Wapaloosie'; model: string; clip: string; t: number; yaw: number; pitch: number; fill: number; set?: Record<string, unknown> }> = {
   gouger: { cls: 'SidehillGouger', model: 'gouger', clip: 'idle', t: 0.6, yaw: 0.8, pitch: 0.12, fill: 0.86 },
   // the hoop snake as everyone tells it: a wheel, tail in its mouth
   hoopsnake: { cls: 'HoopSnake', model: 'hoopsnake', clip: 'idle', t: 0.5, yaw: 1.1, pitch: 0.12, fill: 0.84, set: { hoop: 1 } },
   splintercat: { cls: 'SplinterCat', model: 'splintercat', clip: 'idle2', t: 0.3, yaw: 0.75, pitch: 0.14, fill: 0.84 },
   goofus: { cls: 'GoofusBird', model: 'goofus', clip: 'idle', t: 0.4, yaw: 0.7, pitch: 0.12, fill: 0.8 },
+  roperite: { cls: 'Roperite', model: 'roperite', clip: 'idle', t: 0.5, yaw: 0.75, pitch: 0.1, fill: 0.86 },
+  hugag: { cls: 'Hugag', model: 'hugag', clip: 'look', t: 0.6, yaw: 0.8, pitch: 0.1, fill: 0.88 },
+  billdad: { cls: 'Billdad', model: 'billdad', clip: 'alert', t: 0.4, yaw: 0.85, pitch: 0.16, fill: 0.82 },
+  wapaloosie: { cls: 'Wapaloosie', model: 'wapaloosie', clip: 'idle', t: 0.4, yaw: 0.8, pitch: 0.16, fill: 0.84 },
 };
 for (const [id, v] of Object.entries(REAL_VIEW)) {
   registerPortraitModel(id, {

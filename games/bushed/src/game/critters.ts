@@ -42,6 +42,11 @@ const CRYPTID_RULES: Record<string, Record<string, string>> = {
   hoopsnake: { hiss: 'r0', coil: 'r0', roll: 'r1', miss: 'r1', sting: 'r1', through: 'r2', wither: 'r3', tree: 'r3', flop: 'r4', eat: 'r5', befriended: 'r5' },
   splintercat: { growl: 'r0', yowl: 'r1', smash: 'r1', dazed: 'r1', ram: 'r2', launch: 'r2', smashlure: 'r3', eat: 'r4', befriended: 'r4', sleep: 'r5' },
   goofus: { caw: 'r0', trail: 'r1', fetch: 'r2', drop: 'r2', bonk: 'r3', eat: 'r4', befriended: 'r4', guide: 'r5' },
+  // the four you can put to work (src/creatures/cryptids/helper.ts, companions.ts)
+  roperite: { notice: 'r0', circle: 'r1', bored: 'r1', rope: 'r2', laugh: 'r2', eat: 'r3', befriended: 'r3', haul: 'r4', delivered: 'r4', sleep: 'r5' },
+  hugag: { lean: 'r0', creak: 'r0', startle: 'r1', stampede: 'r1', trample: 'r1', fall: 'r2', down: 'r2', helped: 'r2', eat: 'r3', befriended: 'r3', push: 'r4' },
+  billdad: { rise: 'r0', leap: 'r1', slap: 'r1', spook: 'r2', eat: 'r3', befriended: 'r3', fetch: 'r4' },
+  wapaloosie: { climb: 'r0', chatter: 'r0', hide: 'r1', peek: 'r1', come_down: 'r2', eat: 'r2', befriended: 'r3', scout: 'r4' },
 };
 
 /** what the lumberjack thinks the first time (and now and then after) */
@@ -56,6 +61,10 @@ const CRYPTID_LINES: Record<string, Record<string, string>> = {
   hoopsnake: { hiss: 'Something hissed up on the bank.', roll: 'IT BIT ITS OWN TAIL AND IT\'S ROLLING AT ME.', miss: 'Missed! It can\'t steer.', through: 'Straight through the hoop. Ha!', sting: 'The tail. The TAIL has a stinger.', tree: 'The tree it stung just died. And it\'s coming down.', flop: 'It fell over on the flat. Just a snake again.', befriended: 'It ate the eggs. Now it watches me chop.' },
   splintercat: { growl: 'Big cat. Ears flat. Back away slowly.', yowl: 'Something screamed in the dark timber.', smash: 'It went THROUGH the tree. Through it.', smashlure: 'It smashed it for the syrup. Firewood, delivered.', ram: 'Like being hit by a woodstove.', dazed: 'It\'s sitting there seeing stars.', befriended: 'It licked the syrup and rumbled. A purr, I think.' },
   goofus: { caw: 'A crow flying... backwards?', trail: 'That bird is following my footprints. Tail first.', drop: 'It dropped something at my feet.', bonk: 'It flew straight into a tree. Of course it did.', befriended: 'It ate the bannock. It wants to help.', guide: 'It\'s flying back the way I came. Follow the bird.' },
+  roperite: { notice: 'A shaggy little pony in the meadow, staring at me. Its nose is... a rope?', circle: 'It\'s galloping rings round me. Swinging that nose.', rope: 'IT LASSOED ME. With its FACE.', laugh: 'It\'s laughing. It\'s definitely laughing.', bored: 'I stood still and it got bored. Good.', befriended: 'It nuzzled the carrots out of my hand and coiled its rope up nice.', haul: 'It roped the log and it\'s backing up, dragging it.', delivered: 'Log delivered. It wants a carrot for that.' },
+  hugag: { lean: 'It\'s leaning on that tree. The whole tree is creaking.', startle: 'Easy, easy...', stampede: 'It can\'t turn! GET OUT OF THE WAY.', trample: 'Flattened by something with no knees.', fall: 'The tree went and it went with it. It can\'t get up.', down: 'Legs in the air, kicking. Poor stiff thing.', helped: 'Up you get. Heave.', befriended: 'It wrapped that lip round my hand. Gently.', push: 'It leaned and leaned... TIMBER.' },
+  billdad: { rise: 'A trout just jumped out there.', leap: 'That beaver-thing just jumped TWENTY METRES.', slap: 'It slapped the fish with its tail. Out cold.', spook: 'It\'s off along the shore in two hops.', befriended: 'It ate the cheddar and thumped its tail. It\'s mine now, I think.', fetch: 'A lake trout at my feet, still wriggling.' },
+  wapaloosie: { chatter: 'Something long is chattering at me from that spruce.', hide: 'It slipped round the back of the trunk.', peek: 'It\'s peeking at me round the bark.', come_down: 'It\'s coming down the trunk like a caterpillar. For the nuts.', befriended: 'It ate the hazelnuts and wound itself round my boots.', scout: 'It\'s up the top, chattering at things only it can see.' },
 };
 
 export class Critters {
@@ -148,7 +157,34 @@ export class Critters {
       const it = (c as { interact?: { label(): string; use(): void; enabled(): boolean } }).interact;
       if (it) import('./interact').then(({ registerInteractable }) => registerInteractable(c.object, { kind: 'creature', reach: 2.8, label: () => it.label(), use: () => it.use(), enabled: () => it.enabled() }));
     }
+    // the working cryptids (G whistles them), Ray's caches, the loved recipes, where the recipe cards turn up
+    await this.installHelpers();
   }
+
+  /** companions.ts (G + pointing, the radial, hauls, scout marks), caches.ts, treats.ts, unlocks.ts */
+  companions: import('../creatures/cryptids/companions').Companions | null = null;
+  /** extra listeners on every cryptid event (after the Book and the lines) */
+  readonly cryptidListeners: ((ev: string, who: string, pos: THREE.Vector3, data: Record<string, unknown>) => void)[] = [];
+  private async installHelpers(): Promise<void> {
+    try {
+      const [{ installCompanions, scoutReport }, { installUnlocks }] = await Promise.all([import('../creatures/cryptids/companions'), import('../creatures/cryptids/unlocks')]);
+      const hooks = { event: (ev: string, who: string, pos: THREE.Vector3, data: Record<string, unknown> = {}) => this.onEvent(ev, { ...data, who, pos: pos.clone() }), think: (t: string) => this.think('helper:' + t, t, 0) };
+      const cs = this.extra as unknown as import('../creatures/cryptids').NewCryptid[];
+      this.companions = installCompanions(this.game, cs, hooks);
+      const unlocks = installUnlocks(this.game);
+      this.cryptidListeners.push((ev, who, pos, data) => {
+        unlocks.onEvent(ev, who, pos);
+        if ((ev === 'reply' || ev === 'treat') && typeof data.line === 'string' && this.game.player.pos.distanceTo(pos) < 120) this.think(`${who}:${ev}:${data.line}`, data.line, 0);
+        if (ev === 'scout' && this.companions) {
+          const n = scoutReport(this.game, (data.at as THREE.Vector3 | undefined) ?? pos, (data.r as number) ?? 160, !!data.long, this.companions.caches, cs as never);
+          this.think('wapaloosie:scouted', n ? `It chattered out ${n} thing${n > 1 ? 's' : ''}. I can see where.` : 'It looked all round and saw nothing worth chattering about.', 0);
+        }
+      });
+    } catch (e) { console.warn('[critters] helpers', e); }
+  }
+
+  /** an event as if a creature had emitted it (the loved-recipe hooks use it) */
+  cryptidEvent(ev: string, who: string, pos: THREE.Vector3, data: Record<string, unknown> = {}): void { this.onEvent(ev, { ...data, who, pos }); }
 
   dropItem(kind: string, pos: THREE.Vector3, obj?: THREE.Object3D): string {
     const id = `item${this.nextId++}`;
@@ -233,6 +269,7 @@ export class Critters {
     if (ev === 'nip') { g.player.addShake(0.25); g.survival.spend(0.03); }
     const line = CRYPTID_LINES[who]?.[ev];
     if (line && near) this.think(`${who}:${ev}`, line, ev === 'gore' || ev === 'attack' || ev === 'hit' ? 12 : 90);
+    for (const f of this.cryptidListeners) f(ev, who, pos, data);
   }
 
   /** what a cryptid does to the world: data.fell (a hoop snake's sting: the tree falls toward dx, dz), data.smash (a
@@ -240,7 +277,7 @@ export class Critters {
    *  as pickups: the gouger's fatwood, the goofus bird's finds) */
   private cryptidWorld(pos: THREE.Vector3, data: Record<string, unknown>): void {
     const fell = data.fell as { x: number; z: number; dx: number; dz: number } | undefined;
-    if (fell) this.fellTreeAt(fell.x, fell.z, new THREE.Vector3(fell.dx, 0, fell.dz), 1.8);
+    if (fell) this.fellTreeAt(fell.x, fell.z, new THREE.Vector3(fell.dx, 0, fell.dz), 1.8, data.big ? 0.9 : 0.55);
     const sm = data.smash as { x: number; z: number; dx: number; dz: number } | undefined;
     if (sm) this.smashWood(sm.x, sm.z, new THREE.Vector3(sm.dx, 0, sm.dz));
     const give = data.give as { item: string; n?: number; at?: THREE.Vector3 } | undefined;
@@ -248,10 +285,10 @@ export class Critters {
   }
 
   /** an axe no one swings: the standing tree nearest (x, z) is notched from the side it should fall to until it goes */
-  private fellTreeAt(x: number, z: number, dir: THREE.Vector3, r: number): boolean {
+  private fellTreeAt(x: number, z: number, dir: THREE.Vector3, r: number, maxR = 0.55): boolean {
     const g = this.game, f = g.forest;
     if (!f?.trunkColliders) return false;
-    const t = f.trunkColliders(x, z, r).filter((c) => c.r < 0.55 && c.r > 0.1).sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
+    const t = f.trunkColliders(x, z, r).filter((c) => c.r < maxR && c.r > 0.1).sort((a, b) => Math.hypot(a.x - x, a.z - z) - Math.hypot(b.x - x, b.z - z))[0];
     if (!t) return false;
     const d0 = dir.clone().setY(0); if (d0.lengthSq() < 1e-4) d0.set(1, 0, 0); d0.normalize();
     const y = heightAt(t.x, t.z) + 0.75, d = new THREE.Vector3();

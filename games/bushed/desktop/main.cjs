@@ -19,8 +19,10 @@ const root = path.join(__dirname, 'game');
 function createWindow() {
   const win = new BrowserWindow({
     width: 1600, height: 900, minWidth: 960, minHeight: 540,
-    backgroundColor: '#000000', title: 'BUSHED', autoHideMenuBar: true, show: false,
-    icon: path.join(__dirname, 'icon.png'),
+    // the loading screen's night sky, so the very first frame already matches it
+    backgroundColor: '#07081a', title: 'BUSHED', autoHideMenuBar: true, show: false,
+    // the cryptid face; on Windows the .ico (every size hand-pixelled) also sits in BUSHED.exe itself
+    icon: path.join(__dirname, process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
     webPreferences: { backgroundThrottling: false, spellcheck: false },
   });
   Menu.setApplicationMenu(null);

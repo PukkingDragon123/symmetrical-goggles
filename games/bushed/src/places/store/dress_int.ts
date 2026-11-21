@@ -16,6 +16,7 @@ import { printBox, type DressStore } from './dress_ext';
 import { PRINT_RECTS } from './print_rects';
 import { sleepingCat } from './cat';
 import { coolerHum } from './hum';
+import { cornerWeb, webMaterial } from '../../world/fauna/webs';
 import * as LP from './lowprops';
 
 const sz = (k: string, ppm = 300): [number, number] => [PRINT_RECTS[k][2] / ppm, PRINT_RECTS[k][3] / ppm];
@@ -72,7 +73,6 @@ export function dressInterior(c: DressStore): void {
     // header panel with the sign facing the customers (-X)
     boxAt(ms, 'boards_green', x, top + 0.22, zm, 0.04, 0.26, z1 - z0 + 0.06);
     cardAt(ms, 'post_sign', x - 0.022, top + 0.22, zm, -Math.PI / 2, 0.72, 0.2);
-    cardAt(ms, 'post_hours', x - 0.04, ch + 0.48, z0 + 0.02, -Math.PI / 2 + 0.15, ...sz('post_hours', 330), 0.03);
     // stamps under the bars, a stamp pad, a stamp on its rack, a letter scale
     floorDecal(ms, 'stamps', x - 0.12, ch + 0.002, zm + 0.12, 0.16, 0.12, 0.3, 'sp');
     boxAt(ms, black, x + 0.15, ch + 0.012, zm - 0.25, 0.1, 0.02, 0.07);
@@ -116,9 +116,7 @@ export function dressInterior(c: DressStore): void {
         }
         if (rr.next() < 0.35) {
           const nk = rr.int(0, 7);
-          ms.pushT(xf - 0.002, ya + j * rh + 0.012, zc, -Math.PI / 2);
-          card(ms, 'mail_names', Math.min(cw - 0.02, 0.08), 0.018, 'sp', PSUB('mail_names', nk / 8, (nk + 1) / 8));
-          ms.pop();
+          void nk;
         }
       }
     };
@@ -311,7 +309,6 @@ export function dressInterior(c: DressStore): void {
     boxAt(ms, styro, 0.02, 0.335, 0.01, 0.44, 0.04, 0.32, 0.12);
     ms.pop();
     blob(ms, T.x + 0.02, F, T.z1 + 0.32, 0.7, 0.55);
-    cardAt(ms, 'minnow_sign', T.x + T.d / 2 + 0.012, T.y0 - 0.2, zc, Math.PI / 2, ...sz('minnow_sign', 260), 0.04);
     floorDecal(ms, 'g_puddle', T.x + 0.35, F + 0.004, zc - 0.2, 0.7, 0.5, 0.4, 'puddle');
     floorDecal(ms, 'g_stain', T.x + 0.4, F + 0.004, zc + 0.3, 0.6, 0.6, 1.4);
     blob(ms, T.x, F, zc, T.d + 0.4, L + 0.3);
@@ -413,12 +410,11 @@ export function dressInterior(c: DressStore): void {
       card(ms, 'g_frost', b - a - 0.06, 0.25, 'grime');
       ms.pop();
     }
-    // the lit header and a beer price card taped crooked to the glass
+    // a plain white header (round 6: no lit lettering, no price card on the glass)
     ms.pushT(xc, F + h + 0.12, zf - 0.02);
     boxAt(ms, white, 0, 0, -0.04, w, 0.26, 0.1);
-    card(ms, 'lb_cooler', w - 0.08, 0.24, 'sp_glow');
     ms.pop();
-    cardAt(ms, 'cat_sign', x0 + 0.3, F + 1.2, zf + 0.025, 0, 0.18, 0.09, 0.08);
+    void x0;
     cols.box(xc, F + h / 2, zb + d / 2, w / 2, h / 2, d / 2);
     floorDecal(ms, 'g_pool', xc, F + 0.005, zf + 0.6, 1.6, 1.3, 0, 'glowcool');
     floorDecal(ms, 'g_puddle', xc - 0.2, F + 0.004, zf + 0.12, 0.5, 0.25, 0.2, 'puddle');
@@ -474,7 +470,6 @@ export function dressInterior(c: DressStore): void {
       ms.pop();
     }
     boxAt(ms, 'galv', x - 0.05, F + h + 0.37, z0 + 0.6, 0.06, 0.04, 0.12, 0.6);
-    cardAt(ms, 'candy_card', x - 0.02, F + h + 0.47, z1 - 0.12, -Math.PI / 2 + 0.25, ...sz('candy_card', 300), 0.05);
     // the candy bar rack hung on the wall above: three stepped rows of wrappers
     for (let k = 0; k < 3; k++) {
       const yy = F + 1.45 + k * 0.1, xx = IX - 0.06 - k * 0.0;
@@ -487,7 +482,6 @@ export function dressInterior(c: DressStore): void {
       }
     }
     cardAt(ms, 'wmu_map', IX - 0.006, F + 2.12, zc, -Math.PI / 2, ...sz('wmu_map', 190), 0.01);
-    cardAt(ms, 'licences', IX - 0.006, F + 2.1, z0 - 0.3, -Math.PI / 2, ...sz('licences', 260), -0.03);
     floorDecal(ms, 'g_wear', x - dep / 2 - 0.35, F + 0.003, zc, 0.6, L + 0.4, 0);
     blob(ms, x, F, zc, dep + 0.3, L + 0.3);
     cols.box(x, F + 0.55, zc, dep / 2, 0.55, L / 2);
@@ -510,12 +504,6 @@ export function dressInterior(c: DressStore): void {
       card(ms, 'scratch', 0.075, 0.11, 'sp_ds', PSUB('scratch', (k * 22) / 66, (k * 22 + 20) / 66));
       ms.pop();
     }
-    ms.pop();
-    // the lotto light box hung over the counter on chains
-    ms.pushT(1.92, 2.72, 0.5, -Math.PI / 2);
-    boxAt(ms, black, 0, 0, -0.04, 0.6, 0.24, 0.07);
-    card(ms, 'lotto', 0.56, 0.2, 'sp_glow');
-    for (const s of [-0.25, 0.25]) tb(ms, 'iron', [V(s, 0.12, -0.04), V(s, CEIL - 2.72, -0.04)], 0.002, 3);
     ms.pop();
     // a spike of receipts, a jar of pens, a donation jar for the fire hall, a call bell
     ms.pushT(1.9, ch, -0.62);
@@ -541,8 +529,6 @@ export function dressInterior(c: DressStore): void {
     cardAt(ms, 'jerky_box', 0, 0.15, -0.065, 0, 0.2, 0.125, 0);
     for (let k = 0; k < 6; k++) boxAt(ms, colorMat('jerky_s', 0x5a2a18, 0.8), -0.06 + k * 0.025, 0.09, 0, 0.012, 0.1, 0.02, 0, {}, 0.15, r.range(-0.2, 0.2));
     ms.pop();
-    cardAt(ms, 'notice_in', 1.735, ch - 0.25, 1.4, -Math.PI / 2, ...sz('notice_in', 280), 0.02);
-    cardAt(ms, 'fl_cat', 1.735, ch - 0.35, -1.75, -Math.PI / 2, ...sz('fl_cat', 300), -0.04);
   }
   // ---- the cat, asleep at the counter's front end
   {
@@ -598,7 +584,6 @@ export function dressInterior(c: DressStore): void {
     }
     ms.pop();
     floorDecal(ms, 'g_stain', x + 0.05, ty + 0.017, z + 0.02, 0.5, 0.35, 0.4);
-    cardAt(ms, 'coffee_card', x - 0.25, F + 1.32, -IZ + 0.006, 0, ...sz('coffee_card', 280), 0.04);
     blob(ms, x, F, z, 1.0, 0.6);
     cols.box(x, (F + ty) / 2, z, 0.42, (ty - F) / 2, 0.22);
     c.anchors.coffee = anchor(group, 'coffee', x, ty, z + 0.6, Math.PI);
@@ -685,13 +670,20 @@ export function dressInterior(c: DressStore): void {
     for (const [x, z, w, d] of [[-3.42, -2.6, 0.25, 2.2], [-3.42, 0.1, 0.25, 2.2], [-0.7, 0.6, 1.0, 2.8], [1.68, -0.25, 0.22, 4.4]] as [number, number, number, number][]) floorDecal(ms, 'g_blob', x, F + 0.0025, z, w * 1.6, d * 1.05, 0);
     // dust on shelf tops and up high
     for (const [x, y, z, w, d] of [[-3.64, F + 2.12 + 0.37, -2.6, 0.5, 2.0], [-3.64, F + 2.12 + 0.37, 0.1, 0.5, 2.0], [-0.7, F + 1.2 + 0.32 + 0.11, 0.6, 0.9, 2.5]] as [number, number, number, number, number][]) floorDecal(ms, 'g_dust', x, y, z, w, d, 0);
-    // cobwebs in the corners under the joists
-    const web = (x: number, y: number, z: number, ry: number, s: number) => { ms.pushT(x, y, z, ry, 0, Math.PI); card(ms, 'g_web', s, s, 'grime'); ms.pop(); };
-    web(-IX + 0.3, CEIL - 0.3, -IZ + 0.01, 0, 0.6);
-    web(IX - 0.01, CEIL - 0.25, -IZ + 0.3, -Math.PI / 2, 0.5);
-    web(-IX + 0.01, CEIL - 0.3, IZ - 0.35, Math.PI / 2, 0.55);
-    web(IX - 0.3, CEIL - 0.3, IZ - 0.01, Math.PI, 0.45);
-    web(-0.83, CEIL - 0.2, -3.6, 0.6, 0.35);
+    // cobwebs in the corners under the ceiling and against a joist: dusty sheet webs strung thread by thread
+    // (line geometry, src/world/fauna/webs.ts), catching the pendants' light
+    {
+      const wm = webMaterial({ dust: 0.75, lamp: V(-0.8, CEIL - 0.6, 0.2) });
+      const Y = CEIL - 0.01;
+      const corners: [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, number][] = [
+        [V(-IX + 0.01, Y, -IZ + 0.01), V(1, 0, 0), V(0, 0, 1), V(0, -1, 0), 0.55],
+        [V(IX - 0.01, Y, -IZ + 0.01), V(-1, 0, 0), V(0, 0, 1), V(0, -1, 0), 0.5],
+        [V(-IX + 0.01, Y, IZ - 0.01), V(1, 0, 0), V(0, 0, -1), V(0, -1, 0), 0.5],
+        [V(IX - 0.01, Y, IZ - 0.01), V(-1, 0, 0), V(0, 0, -1), V(0, -1, 0), 0.42],
+        [V(-1.14 + 0.06, Y, -3.6), V(1, 0, 0), V(0, -1, 0), V(0, 0, 1), 0.36],
+      ];
+      corners.forEach(([apex, e1, e2, e3, size], i) => group.add(cornerWeb({ apex, e1, e2, e3, size, seed: 5200 + i * 41, mats: wm }).object));
+    }
     // warm light pools under the pendants (additive), and on the counter
     for (const [x, z, s] of [[2.05 - 0.4, -0.2, 2.2], [-0.8, 0.5, 2.6], [-0.8, -2.6, 2.4], [-1.4, 3.6, 2.4]] as [number, number, number][]) floorDecal(ms, 'g_pool', x, F + 0.006, z, s, s, 0, 'glowadd');
     floorDecal(ms, 'g_pool', 2.05, ch + 0.004, -0.2, 0.62, 1.6, 0, 'glowadd');

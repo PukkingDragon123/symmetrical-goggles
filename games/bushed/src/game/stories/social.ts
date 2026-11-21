@@ -1,4 +1,5 @@
-// Talk and paper: the mail at Pruneau's post wicket (Odile hands it over, or you check Ray's cubbyhole), the
+// Talk and paper: the mail at Pruneau's post wicket (Odile hands over Pépère's last letter, and later the letters
+// he left in his cubbyhole for after; or you check the cubbyhole yourself), the
 // campfire tales at the campground after dark (one a night; each teaches the Book a rule), and the story's pages
 // in Ray's book (the chapter's to-do, the folks who've asked you for something, every page you've found, and
 // the tales you've heard).
@@ -9,7 +10,7 @@ import { SPOTS } from '../../world/layout';
 import { NPCS, chatter, type Npc } from '../npcs';
 import { registerInteractable } from '../interact';
 import { has, set, num, setNum, think, noted, setBookPages, storyDirty, cleanStory } from './kit';
-import { LETTERS, PAGES } from './text';
+import { LETTERS, PAGES, WILL } from './text';
 import { TALES, type Tale } from './tales';
 import { folks, isDone } from './quests';
 import { todoBlocks } from './arc';
@@ -36,8 +37,8 @@ export function deliver(g: Game, id: string): void {
   const L = LETTERS[id];
   if (!L || !set(g, `mail:${id}`)) return;
   g.readPaper(L.blocks, L.seed);
-  if (id === 'ray') { set(g, 'letter'); noted(g, 'Ray\'s letter. Into the book.'); }
-  else if (id.startsWith('post')) noted(g, 'A postcard from Kissimmee. Into the book.');
+  if (id === 'ray') { set(g, 'letter'); noted(g, 'Pépère\'s last letter. Into the book, with the will.'); }
+  else if (id.startsWith('post')) noted(g, 'Another of his letters from the cubbyhole. Into the book.');
 }
 
 export class Mail {
@@ -59,7 +60,9 @@ export class Mail {
     if (!w.length) return null;
     const id = w[0];
     setTimeout(() => deliver(this.g, id), 1800);
-    return [id === 'ray' ? 'Ah. You\'re the kid. This came for you. Well. It says "the kid, at Ray\'s". That\'s you.' : id.startsWith('post') ? 'A postcard. From Florida. I read it. Of course I read it.' : 'Mail. For you, or for Ray, which up here is the same thing now.'];
+    return [id === 'ray'
+      ? 'Ah. You\'re the kid. He left this with me in April, with a copy of the will. "For the kid, after," it says. Read it with the will, he said. ...I didn\'t read it. I read it.'
+      : id.startsWith('post') ? 'Another of his. He gave me a bundle in March, each one marked "not before". I wasn\'t to look. I looked.' : 'Mail. For you, or for Ray, which up here is the same thing now.'];
   }
   update(dt: number): void {
     this.t -= dt;
@@ -67,7 +70,7 @@ export class Mail {
     this.t = 1;
     const g = this.g, st = SPOTS.store;
     if (g.mode !== 'walk' || Math.hypot(g.player.pos.x - st.x, g.player.pos.z - st.z) > 26) return;
-    for (const id of waitingMail(g)) if (set(g, `mailseen:${id}`)) { think(id === 'ray' ? 'Ray said Pruneau\'s does the mail. Something in his cubbyhole?' : 'There\'s mail in Ray\'s cubbyhole.', 3); break; }
+    for (const id of waitingMail(g)) if (set(g, `mailseen:${id}`)) { think(id === 'ray' ? 'Odile has something of his. The post wicket.' : 'There\'s mail in Ray\'s cubbyhole.', 3); break; }
   }
 }
 
@@ -147,7 +150,7 @@ export function composeBook(g: Game): void {
   const pages: Block[][] = [];
   const td = todoBlocks(g);
   storyPage = [
-    { t: 'h', text: 'Ray\'s trail' },
+    { t: 'h', text: 'Pépère\'s trail' },
     { t: 'small', text: td.title },
     { t: 'gap', h: 4 },
     ...td.lines.map((l): Block => ({ t: 'p', text: `${l.done ? '' : '— '}${l.text}`, struck: l.done, hand: 'patrick' })),
@@ -157,7 +160,7 @@ export function composeBook(g: Game): void {
   if (f.length) for (const x of f) storyPage.push({ t: 'p', text: x.text, struck: x.done, hand: 'patrick' });
   else storyPage.push({ t: 'p', text: 'Nobody has asked me for anything yet. Give it a day.', hand: 'patrick' });
   pages.push(storyPage);
-  if (has(g, 'mail:ray')) pages.push(LETTERS.ray.blocks);
+  if (has(g, 'mail:ray')) pages.push(LETTERS.ray.blocks, WILL);
   for (const id of ORDER) if (has(g, `page:${id}`)) pages.push(PAGES[id].blocks);
   for (const id of ['post1', 'post2', 'post3', 'post4']) if (has(g, `mail:${id}`)) pages.push(LETTERS[id].blocks);
   const told = TALES.filter((t) => has(g, `tale:${t.id}`));

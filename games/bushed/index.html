@@ -4,15 +4,945 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BUSHED</title>
+  <link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16.png" />
+  <link rel="apple-touch-icon" href="./icon-180.png" />
+  <link rel="preload" href="./assets/fonts/Alagard.ttf" as="font" type="font/ttf" crossorigin />
   <style>
-    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+    html, body { margin: 0; height: 100%; background: #07081a; overflow: hidden; }
     #game { width: 100vw; height: 100vh; display: block; image-rendering: pixelated; cursor: none; }
     #ui { position: fixed; inset: 0; pointer-events: none; }
+    #bushed-loading { position: fixed; left: 0; top: 0; z-index: 100; image-rendering: pixelated; image-rendering: crisp-edges; pointer-events: none; transition: opacity 0.8s ease-in; }
   </style>
 </head>
 <body>
   <canvas id="game"></canvas>
   <div id="ui"></div>
+  <canvas id="bushed-loading" width="320" height="180" role="progressbar" aria-label="loading" aria-valuemin="0" aria-valuemax="100"></canvas>
+  <!-- The loading screen: a hand-made pixel-art night at the cabin. This block is not run here: the script below
+       hands it, with the canvas, to a worker (OffscreenCanvas), so it stays smooth while the game loads on the main
+       thread. Everything is drawn from code at a crisp 320x180-ish grid and scaled up by whole pixels. -->
+  <script id="bushed-loading-scene" type="text/x-bushed-scene">
+function bushedScene(canvas, env) {
+  'use strict';
+  var BW = 320, BH = 180;                       // the composition; the canvas may be a little wider or taller
+  var W = canvas.width, H = canvas.height, ox = 0, oy = 0;
+  var g = canvas.getContext('2d', { alpha: false, willReadFrequently: true });
+  var mk = env.makeCanvas;
+  // ------------------------------------------------------------------------------------------- palette
+  function hex(s) { var n = parseInt(s.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function u32(s) { var c = hex(s); return (255 << 24 | c[2] << 16 | c[1] << 8 | c[0]) >>> 0; }
+  var SKY = ['#06071a', '#090b22', '#0d102c', '#121638', '#181d44', '#1f2550', '#272e5c', '#303868', '#3a4272'];
+  var P = {
+    moon0: '#fff4d6', moon1: '#ece0b8', moon2: '#cbbf98', moon3: '#a89c7c',
+    star0: '#ffffff', star1: '#b8c4f0', star2: '#7884bc', star3: '#4c5690',
+    ridge: '#121733', far: '#0f132b', farTip: '#1c2348',
+    mist0: '#2b3460', mist1: '#38427a', mist2: '#4a5690',
+    near0: '#070912', near1: '#0b0f1c', near2: '#121a2a', nearRim: '#1d2a40',
+    gr0: '#0a0f14', gr1: '#0f1720', gr2: '#16222a', gr3: '#1f3036', gr4: '#2c4448',
+    dirt0: '#1c1b24', dirt1: '#272530', dirt2: '#3a3642',
+    log0: '#160f0c', log1: '#2a1c14', log2: '#3e2a1c', log3: '#553a24', log4: '#6e4c2e',
+    end0: '#3a281a', end1: '#7a5634', end2: '#a07848', end3: '#c49a62',
+    tin0: '#14171f', tin1: '#232836', tin2: '#363d4e', tin3: '#4f586c', tin4: '#6e7a92',
+    win0: '#fff2b8', win1: '#ffd06a', win2: '#f0943a', win3: '#a8521e', glow0: '#3c2716', glow1: '#66401c',
+    smoke0: '#1e2338', smoke1: '#2b3150', smoke2: '#3d4466', smoke3: '#545c80',
+    ember0: '#fff0a0', ember1: '#ffb040', ember2: '#e0602a', ember3: '#7a2a1c',
+    fly0: '#f4ffb0', fly1: '#c8f060', fly2: '#5a7a2a',
+    bark0: '#100b0c', bark1: '#1e1617', bark2: '#2e2222', bark3: '#45342c', bark4: '#5c4636',
+    cut0: '#3a2616', cut1: '#9a7444', cut2: '#d0aa70', cut3: '#ecd09a',
+    sp0: '#04080a', sp1: '#081210', sp2: '#0e1e1a', sp3: '#173028', sp4: '#244436', sp5: '#3a6250',
+    chip0: '#f0d4a0', chip1: '#d0a464', chip2: '#9a6c3a', dust: '#e8d6b0', barkBit: '#3a2a22',
+    spark0: '#fffbe0', spark1: '#ffd46a', spark2: '#ff8a30',
+    runner: '#010206', eye0: '#ffe0a0', eye1: '#ff4030', eye2: '#901810',
+    text: '#f4ead0', text2: '#c8b890', textSh: '#05060f'
+  };
+  // the lumberjack
+  var LJ = {
+    K: '#140c0e', P: '#ded4b6', H: '#b83a30', h: '#74201e', S: '#e0a47c', s: '#a86a4c', E: '#1a0c0a',
+    B: '#6a4028', b: '#3e2416', R: '#c03a30', r: '#7a1e1c', X: '#26161a', Q: '#e86a50',
+    L: '#2a1a12', l: '#8a6a30', J: '#3e4c6c', j: '#283250', O: '#523420', o: '#2c1a10',
+    G: '#9a6c3e', g: '#5e3e22', W: '#c48c4c', w: '#7a4e28', A: '#c4ced8', a: '#64707e', Z: '#f6faff'
+  };
+  // ------------------------------------------------------------------------------------------- helpers
+  var seed0 = 20251121;
+  function rng(seed) { return function () { seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  var R = rng(seed0);
+  var BAY = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  function bay(x, y) { return (BAY[(y & 3) * 4 + (x & 3)] + 0.5) / 16; }
+  function hash(x, y) { var h = Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263) | 0; h = Math.imul(h ^ h >>> 13, 1274126177); return ((h ^ h >>> 16) >>> 0) / 4294967296; }
+  function vnoise(x, y) { var xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi; var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    var a = hash(xi, yi), b = hash(xi + 1, yi), c = hash(xi, yi + 1), d = hash(xi + 1, yi + 1); return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v; }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  // a pixel surface: write colours into a Uint32 buffer, then put() once
+  function Surf(w, h) {
+    var c = mk(w, h), x = c.getContext('2d', { willReadFrequently: true }), d = x.createImageData(w, h), b = new Uint32Array(d.data.buffer);
+    var s = { c: c, x: x, w: w, h: h, b: b,
+      set: function (px, py, col) { px |= 0; py |= 0; if (px < 0 || py < 0 || px >= w || py >= h) return; b[py * w + px] = typeof col === 'number' ? col : u32(col); },
+      get: function (px, py) { return px < 0 || py < 0 || px >= w || py >= h ? 0 : b[py * w + px]; },
+      rect: function (px, py, rw, rh, col) { var cc = typeof col === 'number' ? col : u32(col); for (var j = 0; j < rh; j++) for (var i = 0; i < rw; i++) s.set(px + i, py + j, cc); },
+      put: function () { x.putImageData(d, 0, 0); return s; } };
+    return s;
+  }
+  // filled polygon (scanline, crisp): pts [[x,y],...], fn(x,y) -> colour or null
+  function poly(s, pts, fn) {
+    var y0 = 1e9, y1 = -1e9, i;
+    for (i = 0; i < pts.length; i++) { y0 = Math.min(y0, pts[i][1]); y1 = Math.max(y1, pts[i][1]); }
+    for (var y = Math.floor(y0); y <= Math.ceil(y1); y++) {
+      var xs = [], yc = y + 0.5;
+      for (i = 0; i < pts.length; i++) {
+        var a = pts[i], b = pts[(i + 1) % pts.length];
+        if ((a[1] <= yc && b[1] > yc) || (b[1] <= yc && a[1] > yc)) xs.push(a[0] + (yc - a[1]) / (b[1] - a[1]) * (b[0] - a[0]));
+      }
+      xs.sort(function (p, q) { return p - q; });
+      for (var k = 0; k + 1 < xs.length; k += 2) for (var x = Math.round(xs[k]); x < Math.round(xs[k + 1]); x++) { var col = fn(x, y); if (col) s.set(x, y, col); }
+    }
+  }
+  function line(s, x0, y0, x1, y1, col) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    var dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, e = dx + dy;
+    for (;;) { s.set(x0, y0, col); if (x0 === x1 && y0 === y1) break; var e2 = 2 * e; if (e2 >= dy) { e += dy; x0 += sx; } if (e2 <= dx) { e += dx; y0 += sy; } }
+  }
+  function disc(s, cx, cy, r, fn) { for (var y = Math.floor(cy - r); y <= Math.ceil(cy + r); y++) for (var x = Math.floor(cx - r); x <= Math.ceil(cx + r); x++) { var dd = Math.hypot(x + 0.5 - cx, y + 0.5 - cy); if (dd <= r) { var c = fn(x, y, dd); if (c) s.set(x, y, c); } } }
+  // a sprite from rows of characters and a key
+  function sprite(rows, key) {
+    var h = rows.length, w = 0, i, j; for (i = 0; i < h; i++) w = Math.max(w, rows[i].length);
+    var s = Surf(w, h); for (j = 0; j < h; j++) for (i = 0; i < rows[j].length; i++) { var ch = rows[j][i]; if (key[ch]) s.set(i, j, key[ch]); }
+    return s.put();
+  }
+  function mirror(sp) { var c = mk(sp.w, sp.h), x = c.getContext('2d'); x.translate(sp.w, 0); x.scale(-1, 1); x.drawImage(sp.c, 0, 0); return { c: c, w: sp.w, h: sp.h }; }
+
+  // ------------------------------------------------------------------------------------------- layout
+  var GROUND = 152;          // the yard's ground line (composition y)
+  var HORIZON = 127;         // where the far forest meets the field
+  var MOON = { x: 266, y: 33, r: 11 };
+  var CAB = { x: 20, base: 150 };
+  var TREE = { x: 214, base: 153, cut: 13, w: 12, top: 30 };   // trunk centre, ground, cut height, trunk width
+  var LUMBER = { x: 186, y: 153 };
+  var layers = {};
+
+  function buildSky() {
+    var s = Surf(W, H), horizon = oy + HORIZON + 4, mx = ox + MOON.x, my = oy + MOON.y, mr = MOON.r;
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      var t = clamp(y / horizon, 0, 1), f = Math.pow(t, 1.35) * (SKY.length - 1);
+      // the moon's halo lifts the sky a few steps, dithered
+      var dm = Math.hypot(x + 0.5 - mx, y + 0.5 - my);
+      if (dm > mr) f += 2.6 * Math.pow(clamp(1 - (dm - mr) / 34, 0, 1), 2.2) + 0.9 * Math.pow(clamp(1 - (dm - mr) / 9, 0, 1), 1.5);
+      f += (vnoise(x * 0.05, y * 0.11) - 0.5) * 0.5;
+      f = clamp(f, 0, SKY.length - 1);
+      var i0 = Math.floor(f), fr = f - i0;
+      s.set(x, y, SKY[Math.min(SKY.length - 1, i0 + (fr > bay(x, y) ? 1 : 0))]);
+    }
+    // stars (the twinkling ones are drawn live)
+    var rs = rng(77), n = Math.round(W * H / 520);
+    twinkles = [];
+    for (var k = 0; k < n; k++) {
+      var sx = Math.floor(rs() * W), sy = Math.floor(Math.pow(rs(), 1.7) * (horizon - 26));
+      if (Math.hypot(sx - mx, sy - my) < mr + 16) continue;
+      var r2 = rs();
+      if (r2 < 0.06) { twinkles.push({ x: sx, y: sy, ph: rs() * 7, sp: 0.6 + rs() * 1.8 }); continue; }
+      s.set(sx, sy, r2 < 0.3 ? P.star1 : r2 < 0.65 ? P.star2 : P.star3);
+    }
+    // the moon: limb darkening, maria and three crisp craters
+    disc(s, mx, my, mr, function (x, y, dd) {
+      var u = (x + 0.5 - mx) / mr, v = (y + 0.5 - my) / mr;
+      var mare = vnoise(u * 2.2 + 3, v * 2.2 + 1) * 0.7 + vnoise(u * 5 + 7, v * 5) * 0.3;
+      var lit = 1 - dd / mr * 0.35 + (u * 0.25 - v * 0.15);
+      var lv = lit - (mare > 0.55 ? 0.42 : mare > 0.47 ? 0.18 : 0);
+      return lv > 0.88 + bay(x, y) * 0.08 ? P.moon0 : lv > 0.66 + bay(x, y) * 0.1 ? P.moon1 : lv > 0.45 ? P.moon2 : P.moon3;
+    });
+    [[-5, 2, 1.7], [2, -6, 1.1], [5, 3, 1.3], [-2, 7, 0.9]].forEach(function (c) {
+      var cx = mx + c[0], cy = my + c[1];
+      disc(s, cx, cy, c[2] + 0.3, function (x, y) { return y + 0.5 < cy ? P.moon3 : P.moon0; });
+    });
+    // far ridge and its spruce
+    var rr = rng(5);
+    var ridgeY = function (x) { return oy + HORIZON - 12 + 3 * Math.sin((x - ox) * 0.017 + 1.3) + 2.2 * Math.sin((x - ox) * 0.043 + 0.4) + 1.5 * vnoise(x * 0.08, 3); };
+    for (var x3 = 0; x3 < W; x3++) { var ry = Math.round(ridgeY(x3)); for (var y3 = ry; y3 < H; y3++) s.set(x3, y3, P.ridge); }
+    for (var x4 = -6; x4 < W + 6;) {
+      var th = 6 + Math.floor(rr() * 14), base = ridgeY(x4) + 3;
+      spruceSil(s, x4, base, th, P.far, P.farTip);
+      x4 += 2 + Math.floor(rr() * 4);
+    }
+    layers.sky = s.put();
+  }
+  var twinkles = [];
+  // a small spruce silhouette: tiers of drooping boughs
+  function spruceSil(s, cx, base, h, col, tip) {
+    for (var j = 0; j <= h; j++) {
+      var y = Math.round(base - j), t = j / h, hw = (1 - t) * h * 0.28 + 0.4;
+      var tier = (j % 3) / 3; hw *= 0.75 + tier * 0.45;
+      for (var i = Math.round(-hw); i <= Math.round(hw); i++) s.set(cx + i, y, j >= h - 1 ? tip : col);
+    }
+    s.set(cx, Math.round(base - h - 1), tip);
+  }
+
+  function buildMist() {
+    var w = W + 96, h = 26, s = Surf(w, h), per = w;
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var a = 2 * Math.PI * x / per;
+      var n = 0.5 + 0.22 * Math.sin(a * 3 + 1) + 0.16 * Math.sin(a * 7 + 2.1) + 0.12 * Math.sin(a * 13 + 0.3);
+      var prof = Math.exp(-Math.pow((y - 12) / 6.5, 2));
+      var dns = prof * (0.35 + 0.75 * n) + 0.12 * Math.sin(a * 23 + y * 0.7) * prof;
+      var b = bay(x, y);
+      if (dns > 0.95 + b * 0.25) s.set(x, y, P.mist2); else if (dns > 0.6 + b * 0.3) s.set(x, y, P.mist1); else if (dns > 0.3 + b * 0.35) s.set(x, y, P.mist0);
+    }
+    layers.mist = s.put(); layers.mistW = w;
+  }
+
+  // the near treeline, the field, the cabin and its yard: everything that never moves
+  function buildYard() {
+    var s = Surf(W, H), r = rng(11);
+    // near spruce framing the left and right edges, in front of the mist
+    var nearTree = function (cx, base, h, hwMax) {
+      for (var j = 0; j <= h; j++) {
+        var y = Math.round(base - j), t = j / h, tier = ((j + (cx & 3)) % 5) / 5;
+        var hw = Math.max(0.5, (1 - t) * hwMax * (0.62 + 0.5 * tier));
+        for (var i = Math.round(-hw - 0.4); i <= Math.round(hw); i++) {
+          var edge = i >= Math.round(hw) - 1 && t > 0.06;
+          s.set(cx + i, y, edge && hash(cx + i, y) < 0.55 ? P.nearRim : (hash(cx + i, y) < 0.3 ? P.near1 : P.near0));
+        }
+      }
+    };
+    var lefts = [[ox + 2, 70, 16], [ox - 10, 92, 20], [ox + 26, 54, 12], [ox + 44, 44, 10], [ox + 60, 36, 9]];
+    var rights = [[ox + 300, 60, 14], [ox + 316, 84, 18], [ox + 286, 40, 10], [ox + 330, 70, 16]];
+    lefts.concat(rights).forEach(function (t) { nearTree(t[0], oy + HORIZON + 4, t[1], t[2]); });
+    if (W > BW + 20) for (var e = 0; e < (W - BW) / 2; e += 14) { nearTree(e, oy + HORIZON + 4, 50 + (e % 30), 13); nearTree(W - e, oy + HORIZON + 4, 56 + (e % 26), 14); }
+    // the field
+    var fy = oy + HORIZON;
+    for (var y = fy; y < H; y++) for (var x = 0; x < W; x++) {
+      var t = (y - fy) / (H - fy), n = vnoise(x * 0.12, y * 0.35) + (vnoise(x * 0.5, y * 0.9) - 0.5) * 0.5;
+      var lv = 1.2 - t * 0.9 + (n - 0.5) * 1.1;
+      // the yard in front of the cabin is trodden and lighter
+      var c = lv > 1.05 + bay(x, y) * 0.3 ? P.gr3 : lv > 0.62 + bay(x, y) * 0.3 ? P.gr2 : lv > 0.25 + bay(x, y) * 0.25 ? P.gr1 : P.gr0;
+      s.set(x, y, c);
+    }
+    // grass tufts catching the moon
+    for (var k = 0; k < W * 1.6; k++) {
+      var gx = Math.floor(r() * W), gy = fy + 2 + Math.floor(Math.pow(r(), 0.8) * (H - fy - 2)), hgt = 1 + Math.floor(r() * (1 + (gy - fy) / 16));
+      for (var q = 0; q < hgt; q++) s.set(gx + (q === hgt - 1 && r() < 0.5 ? 1 : 0), gy - q, q === hgt - 1 ? P.gr4 : P.gr3);
+    }
+    // the path from the door, worn into the field
+    for (var py = oy + CAB.base; py < H; py++) {
+      var tt = (py - oy - CAB.base) / (H - oy - CAB.base), pcx = ox + CAB.x + 44 - tt * 30 + Math.sin(tt * 3) * 6, pw = 3 + tt * 9;
+      for (var px = Math.floor(pcx - pw); px <= pcx + pw; px++) {
+        var ed = Math.abs(px - pcx) / pw;
+        if (ed < 0.75 + (hash(px, py) - 0.5) * 0.4) s.set(px, py, ed < 0.4 + bay(px, py) * 0.3 ? P.dirt1 : P.dirt0);
+        if (hash(px * 3, py) < 0.04) s.set(px, py, P.dirt2);
+      }
+    }
+    drawCabin(s, ox + CAB.x, oy + CAB.base);
+    drawWoodpile(s, ox + CAB.x - 16, oy + CAB.base + 1);
+    // the stump the tree will leave behind is part of the tree; a sawbuck and a few rounds in the yard
+    drawRounds(s, ox + 140, oy + GROUND + 3);
+    layers.yard = s.put();
+    // the foreground: tall dark grass along the bottom edge
+    var f = Surf(W, H);
+    for (var x5 = 0; x5 < W; x5++) {
+      var hh = 2 + Math.floor(vnoise(x5 * 0.2, 1) * 6 + (hash(x5, 9) < 0.18 ? 4 : 0));
+      for (var y5 = 0; y5 < hh; y5++) f.set(x5 + (y5 > hh - 3 && hash(x5, y5) < 0.4 ? 1 : 0), H - 1 - y5, y5 === hh - 1 ? P.near2 : P.near0);
+    }
+    for (var rk = 0; rk < 3; rk++) { var rx = ox + 108 + rk * 86 + Math.floor(r() * 20); disc(f, rx, H - 1, 5 + r() * 3, function (x, y, dd) { return y < H - 5 + (hash(x, y) < 0.5 ? 0 : 1) && dd > 3 ? P.near2 : P.near0; }); }
+    layers.fore = f.put();
+  }
+
+  // the log cabin, gable end to us, the left side wall receding; (bx, by) = front-left corner on the ground
+  function drawCabin(s, bx, by) {
+    var fl = bx + 26, fr = bx + 82, eave = by - 26, apex = by - 47, mid = (fl + fr) / 2;   // front face
+    var back = bx + 2, backTop = eave + 3, backBot = by - 3;                                // far end of the side wall
+    // side wall (receding to the left): log courses that slope gently
+    poly(s, [[back, backTop], [fl, eave], [fl, by], [back, backBot]], function (x, y) {
+      var t = (x - back) / (fl - back), top = lerp(backTop, eave, t), bot = lerp(backBot, by, t), v = (y - top) / (bot - top);
+      var course = v * 7, k = course - Math.floor(course);
+      if (k < 0.16) return P.log0;
+      if (k < 0.32) return P.log3;
+      return hash(x, y) < 0.08 ? P.log1 : (k > 0.86 ? P.log1 : P.log2);
+    });
+    // log ends sticking out at the back corner
+    for (var c = 0; c < 7; c++) { var yy = Math.round(lerp(backTop, backBot, (c + 0.55) / 7)); logEnd(s, back - 1, yy, 2); }
+    // front face: horizontal logs up the gable
+    poly(s, [[fl, by], [fl, eave], [mid, apex], [fr, eave], [fr, by]], function (x, y) {
+      var v = (by - y) / 4, k = v - Math.floor(v);
+      if (k > 0.82) return P.log0;
+      if (k > 0.62) return P.log3;
+      var chink = hash(Math.floor(x / 9), Math.floor(v)) < 0.25 && (x % 9) === 0;
+      return chink ? P.log1 : (k < 0.18 ? P.log1 : (hash(x, y) < 0.07 ? P.log1 : P.log2));
+    });
+    // log ends at the front corners, one per course
+    for (var c2 = 0; c2 < 7; c2++) { var yc = by - 2 - c2 * 4; logEnd(s, fl - 1, yc, 2); logEnd(s, fr + 1, yc, 2); }
+    // the roof: the side plane over the side wall, then the front edge of the tin
+    var rL = [fl - 8, eave + 3], rA = [mid, apex - 4], rR = [fr + 8, eave + 3];
+    poly(s, [[back - 8, backTop + 1], rL, rA, [rA[0] - (fl - back) - 2, apex - 2]], function (x, y) {
+      var rib = ((x + Math.round(y * 0.75)) % 3) === 0;
+      var lit = (y - (apex - 4)) / (eave - apex + 6);
+      return rib ? P.tin1 : (lit < 0.25 && hash(x, y) < 0.6 ? P.tin3 : P.tin2);
+    });
+    // fascia: the thick tin edge along both front slopes, moon-lit on the right
+    for (var t = 0; t <= 1; t += 1 / 160) {
+      var xL = lerp(rL[0], rA[0], t), yL = lerp(rL[1], rA[1], t), xR = lerp(rR[0], rA[0], t), yR = lerp(rR[1], rA[1], t);
+      s.set(xL, yL, P.tin3); s.set(xL, yL + 1, P.tin1); s.set(xL, yL + 2, P.log0);
+      s.set(xR, yR, P.tin4); s.set(xR, yR + 1, P.tin2); s.set(xR, yR + 2, P.log0);
+    }
+    // a skiff of moonlight along the ridge
+    line(s, rA[0] - (fl - back) - 1, apex - 3, rA[0] - 1, apex - 5, P.tin4);
+    // the stovepipe through the side roof, with its rain cap
+    var sx = back + 12, sTop = apex - 2;
+    for (var y = sTop; y < sTop + 14; y++) { s.set(sx, y, P.tin1); s.set(sx + 1, y, P.tin2); s.set(sx + 2, y, P.tin3); s.set(sx + 3, y, P.tin1); }
+    for (var y6 = sTop + 3; y6 < sTop + 14; y6 += 4) for (var i6 = 0; i6 < 4; i6++) s.set(sx + i6, y6, P.tin0);
+    for (var i7 = -1; i7 < 5; i7++) { s.set(sx + i7, sTop - 2, i7 > 2 ? P.tin4 : P.tin3); s.set(sx + i7, sTop - 1, P.tin0); }
+    stack = { x: sx + 1.5, y: sTop - 3 };
+    // the door (left of centre), planks, a warm crack of light down its edge
+    var dx = fl + 9, dTop = by - 17;
+    for (var y8 = dTop; y8 < by; y8++) for (var x8 = dx; x8 < dx + 10; x8++) {
+      var edge = x8 === dx || x8 === dx + 9 || y8 === dTop;
+      s.set(x8, y8, edge ? P.log0 : ((x8 - dx) % 3 === 0 ? P.log1 : (hash(x8, y8) < 0.1 ? P.log1 : P.log2)));
+    }
+    for (var y9 = dTop + 1; y9 < by - 1; y9++) s.set(dx + 9, y9, y9 % 3 ? P.win2 : P.win3);
+    s.set(dx + 7, dTop + 9, P.tin4);   // latch
+    // a lantern on a hook beside the door
+    lantern = { x: dx - 4, y: dTop + 2 };
+    s.set(lantern.x, lantern.y - 2, P.tin2); s.set(lantern.x, lantern.y - 1, P.tin1);
+    // the step
+    for (var x10 = dx - 2; x10 < dx + 12; x10++) { s.set(x10, by, P.log3); s.set(x10, by + 1, P.log1); }
+    // the window: four warm panes in a dark frame, light spilling on the logs around it
+    var wx = fr - 22, wy = by - 20;
+    for (var y11 = wy - 4; y11 < wy + 15; y11++) for (var x11 = wx - 4; x11 < wx + 17; x11++) {
+      var dd = Math.hypot((x11 - wx - 6) / 1.3, y11 - wy - 5);
+      if (dd < 10 && bay(x11, y11) < (1 - dd / 10) * 0.55) { var cur = s.get(x11, y11); if (cur === u32(P.log2) || cur === u32(P.log3)) s.set(x11, y11, cur === u32(P.log3) ? P.end1 : P.glow1); }
+    }
+    for (var y12 = wy; y12 < wy + 11; y12++) for (var x12 = wx; x12 < wx + 13; x12++) {
+      var fr2 = x12 === wx || x12 === wx + 12 || y12 === wy || y12 === wy + 10 || x12 === wx + 6 || y12 === wy + 5;
+      s.set(x12, y12, fr2 ? P.log0 : P.win1);
+    }
+    win = { x: wx, y: wy, w: 13, h: 11 };
+    for (var x13 = wx - 1; x13 < wx + 14; x13++) { s.set(x13, wy + 11, P.log4); s.set(x13, wy + 12, P.log0); }   // sill
+  }
+  var stack = { x: 0, y: 0 }, win = { x: 0, y: 0, w: 1, h: 1 }, lantern = { x: 0, y: 0 };
+  function logEnd(s, x, y, r) {
+    disc(s, x + 0.5, y + 0.5, r + 0.3, function (px, py, dd) { return dd > r - 0.4 ? P.end0 : (px + py) % 2 && dd < r - 0.9 ? P.end2 : P.end1; });
+  }
+  function drawWoodpile(s, x, y) {
+    var rows = [6, 6, 5, 4];
+    for (var j = 0; j < rows.length; j++) for (var i = 0; i < rows[j]; i++) {
+      var cx = x + i * 5 + j * 2.5 + 2, cy = y - 3 - j * 4;
+      disc(s, cx, cy, 2.4, function (px, py, dd) { return dd > 1.7 ? P.end0 : dd < 0.8 ? P.end2 : (hash(px, py) < 0.5 ? P.end1 : P.end3); });
+    }
+    for (var k = 0; k < 34; k++) s.set(x + k - 2, y - 1, P.log0);
+  }
+  function drawRounds(s, x, y) {
+    [[0, 0, 3.4], [9, 1, 3], [5, -4, 2.8]].forEach(function (r) {
+      for (var j = 0; j < 5; j++) for (var i = -Math.round(r[2]); i <= Math.round(r[2]); i++) s.set(x + r[0] + i, y + r[1] - j, j === 4 ? P.cut1 : (i === -Math.round(r[2]) ? P.bark1 : P.bark2));
+      for (var i2 = -Math.round(r[2]); i2 <= Math.round(r[2]); i2++) s.set(x + r[0] + i2, y + r[1] - 5, (i2 & 1) ? P.cut2 : P.cut3);
+    });
+  }
+
+  // ------------------------------------------------------------------------------------------- the tree
+  // drawn upright into its own canvas; the part above the cut rotates when it falls. Origin: trunk centre at
+  // x = 40, ground at y = 139.
+  var TW = 84, TH = 140, TCX = 40, TGY = 139, CUTY = TGY - TREE.cut;
+  var treeUp = null, treeStump = null, treeBase = null, notch = 0, notchShown = -1;
+  function trunkHalf(y) { var t = (TGY - y) / (TGY - TREE.top); return TREE.w / 2 * (1 - t * 0.78) + (y > TGY - 3 ? (y - (TGY - 3)) * 0.6 : 0); }
+  function buildTree() {
+    var s = Surf(TW, TH), r = rng(3);
+    // trunk
+    for (var y = TREE.top; y <= TGY; y++) {
+      var hw = trunkHalf(y);
+      for (var x = Math.round(TCX - hw); x < Math.round(TCX + hw); x++) {
+        var u = (x + 0.5 - TCX) / hw, ridge = hash(x * 7, Math.floor(y / 3)) < 0.35;
+        var c = u > 0.55 ? P.bark4 : u > 0.2 ? P.bark3 : u > -0.4 ? P.bark2 : P.bark1;
+        if (ridge && u > -0.5) c = u > 0.55 ? P.bark3 : P.bark1;
+        if (u < -0.8) c = P.bark0;
+        s.set(x, y, c);
+      }
+    }
+    // dead branch stubs on the bare lower trunk
+    [[TGY - 44, -1], [TGY - 52, 1], [TGY - 38, 1]].forEach(function (b) { var y = b[0], x = TCX + b[1] * Math.round(trunkHalf(y)); for (var k = 0; k < 4; k++) s.set(x + b[1] * k, y - (k >> 1), k > 2 ? P.bark3 : P.bark1); });
+    // the crown: tiers of drooping boughs, needles dithered, moon on the right edges
+    var crownBot = TGY - 46, crownTop = TREE.top - 4, tiers = 11;
+    for (var k2 = tiers - 1; k2 >= 0; k2--) {
+      var tb = lerp(crownTop + 10, crownBot, k2 / (tiers - 1)), tt = tb - 12 - k2 * 0.6;
+      var half = 4 + (tb - crownTop) * 0.27;
+      for (var y2 = Math.floor(tt); y2 <= tb + 3; y2++) {
+        var v = (y2 - tt) / (tb - tt);
+        for (var x2 = Math.round(TCX - half - 2); x2 <= Math.round(TCX + half + 2); x2++) {
+          var dxn = (x2 + 0.5 - TCX) / half, ad = Math.abs(dxn);
+          // bough outline: a triangle whose lower edge droops toward the tips, ragged
+          var lower = 1 - 0.32 * ad * ad + (hash(x2, k2) - 0.5) * 0.22, upper = ad * 0.95 - 0.12;
+          if (v < upper || v > lower || ad > 1.05) continue;
+          if (ad > 0.82 && hash(x2 * 3, y2) < 0.45) continue;
+          var shade = 0.5 + dxn * 0.42 - (v - upper) * 0.55 + (vnoise(x2 * 0.6, y2 * 0.6) - 0.5) * 0.5;
+          var rim = v - upper < 0.18 && dxn > 0.05;
+          var c2 = rim ? (shade > 0.75 ? P.sp5 : P.sp4) : shade > 0.62 + bay(x2, y2) * 0.2 ? P.sp3 : shade > 0.3 + bay(x2, y2) * 0.2 ? P.sp2 : shade > 0.05 ? P.sp1 : P.sp0;
+          s.set(x2, y2, c2);
+        }
+      }
+    }
+    // the leader at the very top
+    for (var y3 = crownTop - 6; y3 < crownTop + 2; y3++) { s.set(TCX, y3, P.sp2); if (y3 > crownTop - 3) s.set(TCX + 1, y3, P.sp4); }
+    s.put();
+    treeBase = s;
+    treeUp = Surf(TW, CUTY + 1); treeStump = Surf(TW, TH - CUTY);
+    notchShown = -1; setNotch(0);
+  }
+  /** back-cut depth d in px (0 .. TREE.w - 4): copy the tree, cut the wedges, line them with pale wood */
+  function setNotch(d) {
+    d = Math.round(d); if (d === notchShown) return; notchShown = d;
+    var hw = TREE.w / 2, xl = Math.round(TCX - hw), xr = Math.round(TCX + hw) - 1;
+    treeUp.b.set(treeBase.b.subarray(0, TW * (CUTY + 1)));
+    treeStump.b.set(treeBase.b.subarray(TW * CUTY));
+    var face = 3;   // the face notch, already chopped on the falling side (right)
+    for (var y = CUTY - face; y <= CUTY; y++) { var dep = Math.round((y - (CUTY - face)) / face * face); for (var x = xr - dep + 1; x <= xr; x++) treeUp.b[y * TW + x] = 0; if (dep > 0) treeUp.set(xr - dep, y, P.cut2); }
+    for (var x2 = xr - face + 1; x2 <= xr; x2++) treeStump.set(x2, 0, P.cut3);
+    if (d > 0) {
+      var hgt = 1 + Math.round(d * 0.45);
+      for (var y2 = CUTY - hgt; y2 <= CUTY; y2++) {
+        var dep2 = Math.round(d * (y2 - (CUTY - hgt)) / hgt);
+        for (var x3 = xl; x3 < xl + dep2; x3++) treeUp.b[y2 * TW + x3] = 0;
+        if (dep2 > 0) { treeUp.set(xl + dep2, y2, P.cut3); treeUp.set(xl + dep2 + 1, y2, P.cut1); }
+      }
+      for (var x4 = xl; x4 < xl + d; x4++) { treeStump.set(x4, 0, (x4 & 1) ? P.cut2 : P.cut3); treeStump.set(x4, 1, P.cut1); }
+      treeUp.set(xl, CUTY - hgt - 1, P.cut1);
+    }
+    treeUp.put(); treeStump.put();
+  }
+
+  // ------------------------------------------------------------------------------------------- the lumberjack
+  var HEAD = sprite([
+    '...PP...',
+    '..hHHH..',
+    '.hHHHHH.',
+    '.hHHHHHQ',
+    '.hhhhhhh',
+    '.BBSSESS',
+    '.BBSSSSSs',
+    '..BbSsSb.',
+    '..bBBBBB.',
+    '...bBBB..'
+  ], LJ);
+  var LEGS = sprite([
+    '..jJJJJJ...',
+    '..jJJJJJJ..',
+    '.jJJJ.jJJ..',
+    '.jJJ...jJJ.',
+    '.jJ....jJJ.',
+    'jJJ.....jJJ',
+    'jJ......jJJ',
+    'oOO.....oOOO',
+    'oOOO....oOOOO'
+  ], LJ);
+  var LEGS_BENT = sprite([
+    '..jJJJJJ....',
+    '.jJJJJJJJ...',
+    '.jJJJ..jJJ..',
+    'jJJ.....jJJ.',
+    'jJ......jJJ.',
+    'jJ.......jJ.',
+    'jJ.......jJ.',
+    'oOO......oOOO',
+    'oOOO.....oOOOO'
+  ], LJ);
+  // torso: buffalo check, lean shifts the upper rows forward (+) or back (-)
+  function torso(lean) {
+    var s = Surf(14, 11), rows = [[2, 7], [1, 8], [1, 8], [1, 8], [1, 8], [1, 8], [2, 8], [2, 8], [2, 8], [2, 8], [2, 8]];
+    for (var j = 0; j < rows.length; j++) {
+      var sh = Math.round(lean * (rows.length - 1 - j) / (rows.length - 1)) + 2;
+      for (var i = rows[j][0]; i < rows[j][1]; i++) {
+        var c;
+        if (j === 8) c = i === 4 ? 'l' : 'L';
+        else if (j > 8) c = 'J';
+        else { var a = (i >> 1) & 1, b = ((j + 1) >> 1) & 1; c = a && b ? 'X' : a || b ? 'r' : 'R'; if (i === rows[j][1] - 1 && j < 8) c = a && b ? 'r' : 'Q'; if (i === rows[j][0] && j < 8) c = 'r'; }
+        s.set(i + sh, j, LJ[c]);
+      }
+    }
+    return s.put();
+  }
+  var TORSO = { '-2': torso(-2), '-1': torso(-1), '0': torso(0), '1': torso(1), '2': torso(2), '3': torso(3) };
+  // pose keys: hands (lower grip) relative to the feet, the axe's angle (0 = pointing right, 90 = down), lean
+  var POSES = {
+    rest:   { hx: 7, hy: -11, a: 64, lean: 0, crouch: 0 },
+    up:     { hx: -2, hy: -25, a: 228, lean: -2, crouch: 0 },
+    top:    { hx: -3, hy: -26, a: 222, lean: -2, crouch: 0 },
+    hit:    { hx: 11, hy: -14, a: 356, lean: 3, crouch: 1 },
+    cheer:  { hx: 2, hy: -27, a: 272, lean: -1, crouch: 0 }
+  };
+  function mixPose(a, b, t) { return { hx: lerp(a.hx, b.hx, t), hy: lerp(a.hy, b.hy, t), a: lerp(a.a, b.a, t), lean: lerp(a.lean, b.lean, t), crouch: t < 0.5 ? a.crouch : b.crouch }; }
+  // a rotated sprite drawn by inverse mapping (no holes): fn(a, b) -> colour along (u, n)
+  function stamp(x0, y0, ux, uy, rad, fn) {
+    var nx = -uy, ny = ux;
+    for (var y = Math.floor(y0 - rad); y <= Math.ceil(y0 + rad); y++) for (var x = Math.floor(x0 - rad); x <= Math.ceil(x0 + rad); x++) {
+      var px = x + 0.5 - x0, py = y + 0.5 - y0, a = px * ux + py * uy, b = px * nx + py * ny, c = fn(a, b);
+      if (c) { g.fillStyle = c; g.fillRect(x, y, 1, 1); }
+    }
+  }
+  function drawLumberjack(pose, fx, fy, smear) {
+    var lean = Math.round(pose.lean), cr = pose.crouch, legs = cr ? LEGS_BENT : LEGS;
+    var tor = TORSO[String(clamp(lean, -2, 3))];
+    var legY = fy - legs.h, torY = legY - tor.h + 2 + cr, headX = fx - 5 + lean + (lean > 0 ? 1 : 0), headY = torY - HEAD.h + 1;
+    var hx = Math.round(fx + pose.hx), hy = Math.round(fy + pose.hy), ang = pose.a * Math.PI / 180, ux = Math.cos(ang), uy = Math.sin(ang);
+    var sx = fx - 1 + lean, sy = torY + 2;                       // the near shoulder
+    var behind = uy < -0.35 && ux < 0.2;                         // axe raised behind the head
+    if (behind) drawAxe(hx, hy, ux, uy, smear);
+    // far arm (behind the body): shoulder to the upper grip
+    var gx2 = hx + ux * 3, gy2 = hy + uy * 3;
+    arm(sx + 2, sy, gx2, gy2, LJ.r, LJ.X);
+    g.drawImage(legs.c, fx - 6, legY);
+    g.drawImage(tor.c, fx - 9, torY);
+    g.drawImage(HEAD.c, headX, headY);
+    if (!behind) drawAxe(hx, hy, ux, uy, smear);
+    // near arm over the body, to the lower grip; gloves
+    arm(sx, sy + 1, hx, hy, LJ.R, LJ.r);
+    g.fillStyle = LJ.G; g.fillRect(hx - 1, hy - 1, 2, 2); g.fillStyle = LJ.g; g.fillRect(Math.round(gx2) - 1, Math.round(gy2) - 1, 2, 2);
+  }
+  // two segments, the elbow bending down and out (a simple two-bone solve)
+  function arm(x0, y0, x1, y1, c, c2) {
+    var L1 = 6, L2 = 6, dx = x1 - x0, dy = y1 - y0, d = Math.min(Math.hypot(dx, dy), L1 + L2 - 0.01) || 0.01;
+    var a = Math.atan2(dy, dx), cosA = (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d), bend = Math.acos(clamp(cosA, -1, 1));
+    var s = dx >= 0 ? 1 : -1, ex = x0 + Math.cos(a + bend * s) * L1, ey = y0 + Math.sin(a + bend * s) * L1;
+    limb(x0, y0, ex, ey, c, c2); limb(ex, ey, x1, y1, c, c2);
+  }
+  function limb(x0, y0, x1, y1, c, c2) {
+    var dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+    stamp((x0 + x1) / 2, (y0 + y1) / 2, ux, uy, L / 2 + 2, function (a, b) { return Math.abs(a) <= L / 2 + 0.3 && b > -1.1 && b < 1.0 ? (b > 0.1 ? c2 : c) : null; });
+  }
+  function drawAxe(hx, hy, ux, uy, smear) {
+    var L = 16;
+    // handle: from 2 px behind the lower hand to the head
+    stamp(hx + ux * (L - 2) / 2, hy + uy * (L - 2) / 2, ux, uy, L / 2 + 2, function (a, b) { return Math.abs(a) <= (L + 2) / 2 && b > -0.62 && b <= 0.62 ? (b > 0 ? LJ.w : LJ.W) : null; });
+    // head: poll behind, blade ahead of the swing (n = u turned clockwise), bright edge
+    var px = hx + ux * L, py = hy + uy * L;
+    stamp(px, py, ux, uy, 6, function (a, b) {
+      if (b < -2.6 || b > 4.4) return null;
+      var wdt = b < -1 ? 1.1 : b < 1.5 ? 1.6 : b < 3 ? 1.6 + (b - 1.5) * 0.7 : 2.7;
+      if (Math.abs(a + (b > 1.5 ? (b - 1.5) * 0.25 : 0)) > wdt) return null;
+      return b > 3.3 ? LJ.Z : b < -1 ? LJ.a : (a > 0.6 ? LJ.a : LJ.A);
+    });
+    if (smear > 0) { lastHead.push([px, py]); if (lastHead.length > 4) lastHead.shift(); } else lastHead.length = 0;
+  }
+  var lastHead = [];
+
+  // ------------------------------------------------------------------------------------------- the runner in the treeline
+  // a hunched, long-armed thing (the shape people swear was not a bear), facing right
+  var RUN_BIG = [
+    ['........###.....', '.......#####....', '.......####e#...', '......#######...', '....#########...', '...###########..', '..####.#######..', '.###..########..', '.##...#######.#.', '##....#######..#', '#......######...', '.......######...', '......###..##...', '.....###...###..', '....###.....##..', '...###.......##.', '..##..........##', '.##.............'],
+    ['........###.....', '.......#####....', '.......####e#...', '......#######...', '....#########...', '...##########...', '...##.#######...', '..##..#######...', '..##..#######...', '..#...######.#..', '..#...######..#.', '......######....', '......##.###....', '.....##...##....', '.....##...##....', '....##.....##...', '....#......##...', '...##.......#...'],
+    ['........###.....', '.......#####....', '.......####e#...', '......#######...', '....#########...', '...###########..', '...###.#######..', '...##..#######..', '...#...#######..', '...#...######.#.', '..##...######.#.', '.......######...', '.......######...', '.......###.###..', '......###...##..', '.....###.....##.', '....##........##', '...##...........'],
+    ['........###.....', '.......#####....', '.......####e#...', '......#######...', '....#########...', '...##########...', '..###.#######...', '..##..#######...', '.##...#######...', '.#....######.#..', '......######.#..', '......######....', '......###.##....', '.....###..##....', '.....##....#....', '....##.....##...', '....#.......#...', '...##.......##..']
+  ];
+  var RUN_HOUND = [
+    ['..........##..', '.........####.', '##......###e#.', '.##########...', '..#########...', '..##......##..', '.##........#..', '##.........##.'],
+    ['..........##..', '.........####.', '#.......###e#.', '.##########...', '..#########...', '...##...##....', '...#....##....', '..##.....#....'],
+    ['..........##..', '.........####.', '##......###e#.', '.##########...', '..#########...', '...#.....##...', '..##.....#....', '..#.....##....'],
+    ['..........##..', '.........####.', '#.......###e#.', '.##########...', '..#########...', '..##....#.#...', '..#.....#.##..', '.##.....#..#..']
+  ];
+  var runners = {};
+  function buildRunners() {
+    var key = { '#': P.runner, e: P.runner };
+    ['big', 'hound'].forEach(function (k) {
+      var fr = (k === 'big' ? RUN_BIG : RUN_HOUND).map(function (rows) { return sprite(rows, key); });
+      var eyes = (k === 'big' ? RUN_BIG : RUN_HOUND)[0].map(function (row, y) { var x = row.indexOf('e'); return x >= 0 ? [x, y] : null; }).filter(Boolean)[0];
+      runners[k] = { right: fr, left: fr.map(mirror), w: fr[0].w, h: fr[0].h, eye: eyes };
+    });
+  }
+  var run = null, nextRun = 2.5 + R() * 3;
+  var meteor = null, nextMeteor = 7 + R() * 8;
+  function updateMeteor(dt) {
+    if (!meteor) { nextMeteor -= dt; if (nextMeteor <= 0) { meteor = { x: ox + 30 + R() * 200, y: 8 + R() * 30, vx: 150 + R() * 90, vy: 45 + R() * 30, t: 0 }; nextMeteor = 12 + R() * 14; } return; }
+    meteor.t += dt; meteor.x += meteor.vx * dt; meteor.y += meteor.vy * dt;
+    if (meteor.t > 0.55) meteor = null;
+  }
+  function drawMeteor() {
+    if (!meteor) return;
+    var m = meteor, a = 1 - m.t / 0.55;
+    for (var k = 0; k < 12; k++) { var f = k / 12; if (f > a + 0.2) break; g.fillStyle = k < 2 ? P.star0 : k < 5 ? P.star1 : P.star2; g.fillRect(Math.round(m.x - m.vx * 0.006 * k), Math.round(m.y - m.vy * 0.006 * k), 1, 1); }
+  }
+  function startRun() {
+    var k = R() < 0.62 ? 'big' : 'hound', dir = R() < 0.5 ? 1 : -1, sp = runners[k];
+    run = { k: k, dir: dir, x: dir > 0 ? -sp.w - 4 : W + 4, y: oy + HORIZON + 1 - sp.h + (k === 'big' ? 0 : 1), sp: (k === 'big' ? 120 : 165) * (0.85 + R() * 0.3), t: 0,
+      stopAt: R() < 0.45 ? ox + 120 + R() * 150 : null, stopT: 0, stopped: false, glint: 0 };
+  }
+  function updateRun(dt) {
+    if (!run) { nextRun -= dt; if (nextRun <= 0) startRun(); return; }
+    run.t += dt;
+    if (run.stopAt !== null && !run.stopped && (run.dir > 0 ? run.x >= run.stopAt : run.x <= run.stopAt)) { run.stopped = true; run.stopT = 0.7 + R() * 0.6; run.glint = 0; }
+    if (run.stopped && run.stopT > 0) { run.stopT -= dt; run.glint += dt; if (run.stopT <= 0) { run.stopAt = null; run.sp *= 1.25; } }
+    else run.x += run.dir * run.sp * dt;
+    if (run.x < -40 || run.x > W + 40) { run = null; nextRun = 6 + R() * 7; }
+  }
+  function drawRun() {
+    if (!run) return;
+    var sp = runners[run.k], still = run.stopped && run.stopT > 0;
+    var f = still ? 0 : Math.floor(run.t * (run.k === 'big' ? 11 : 14)) % 4;
+    var fr = (run.dir > 0 ? sp.right : sp.left)[f], x = Math.round(run.x), bob = still ? 0 : (f % 2);
+    g.drawImage(fr.c, x, run.y - bob);
+    // eye glints: a steady ember, flaring when it stops to look at you
+    var ex = run.dir > 0 ? x + sp.eye[0] : x + sp.w - 1 - sp.eye[0], ey = run.y - bob + sp.eye[1];
+    var flare = still ? clamp(run.glint * 3, 0, 1) : 0.35 + 0.25 * Math.sin(run.t * 40);
+    g.fillStyle = flare > 0.6 ? P.eye0 : P.eye1; g.fillRect(ex, ey, 1, 1);
+    if (still) { var ex2 = ex - run.dir * 2; g.fillStyle = flare > 0.6 ? P.eye0 : P.eye1; g.fillRect(ex2, ey, 1, 1); if (flare > 0.8) { g.fillStyle = P.eye2; g.fillRect(ex - 1, ey, 1, 1); g.fillRect(ex2 + 1, ey, 1, 1); } }
+  }
+
+  // ------------------------------------------------------------------------------------------- particles
+  var MAXP = 900, pn = 0;
+  var px_ = new Float32Array(MAXP), py_ = new Float32Array(MAXP), pvx = new Float32Array(MAXP), pvy = new Float32Array(MAXP), plife = new Float32Array(MAXP), pmax = new Float32Array(MAXP), pkind = new Uint8Array(MAXP), pgrav = new Float32Array(MAXP), pdrag = new Float32Array(MAXP), pc = new Array(MAXP), psz = new Uint8Array(MAXP), pbounce = new Uint8Array(MAXP);
+  // kinds: 0 chip, 1 bark, 2 sawdust, 3 spark, 4 needle, 5 ember, 6 dust, 7 firefly, 8 smoke
+  function emit(kind, x, y, vx, vy, life, col, grav, drag, sz) {
+    if (pn >= MAXP) return -1;
+    var i = pn++; px_[i] = x; py_[i] = y; pvx[i] = vx; pvy[i] = vy; plife[i] = life; pmax[i] = life; pkind[i] = kind; pc[i] = col; pgrav[i] = grav; pdrag[i] = drag; psz[i] = sz || 1; pbounce[i] = 0;
+    return i;
+  }
+  function kill(i) { var j = --pn; if (i === j) return; px_[i] = px_[j]; py_[i] = py_[j]; pvx[i] = pvx[j]; pvy[i] = pvy[j]; plife[i] = plife[j]; pmax[i] = pmax[j]; pkind[i] = pkind[j]; pc[i] = pc[j]; pgrav[i] = pgrav[j]; pdrag[i] = pdrag[j]; psz[i] = psz[j]; pbounce[i] = pbounce[j]; }
+  function chopBurst(x, y, power) {
+    var i, a, sp;
+    for (i = 0; i < 26 * power; i++) { a = Math.PI + (R() - 0.62) * 1.9; sp = 50 + R() * 110; emit(0, x, y + R() * 3 - 1, Math.cos(a) * sp, Math.sin(a) * sp - 30, 1.4 + R() * 1.6, R() < 0.5 ? P.chip0 : R() < 0.6 ? P.chip1 : P.chip2, 300, 0.6, R() < 0.35 ? 2 : 1); }
+    for (i = 0; i < 9 * power; i++) { a = Math.PI + (R() - 0.5) * 1.6; sp = 30 + R() * 70; emit(1, x, y - 2 + R() * 4, Math.cos(a) * sp, Math.sin(a) * sp - 20, 1.8 + R() * 1.2, P.barkBit, 260, 0.8, 2); }
+    for (i = 0; i < 34 * power; i++) { a = Math.PI + (R() - 0.5) * 2.6; sp = 10 + R() * 45; emit(2, x, y + R() * 2, Math.cos(a) * sp, Math.sin(a) * sp - 12, 1.6 + R() * 2.4, R() < 0.7 ? P.dust : P.chip0, 26, 2.2, 1); }
+    for (i = 0; i < 6 * power; i++) { a = Math.PI + (R() - 0.5) * 2.2; sp = 90 + R() * 120; emit(3, x + 1, y, Math.cos(a) * sp, Math.sin(a) * sp - 40, 0.18 + R() * 0.3, P.spark0, 200, 1.5, 1); }
+  }
+  function needleFall(n, spread) {
+    for (var i = 0; i < n; i++) {
+      var yy = TREE.top + 6 + R() * (TGY - 46 - TREE.top), half = 4 + (yy - TREE.top) * 0.27;
+      emit(4, ox + TREE.x + (R() - 0.5) * 2 * half * spread, oy + TREE.base - TGY + yy, (R() - 0.3) * 16, 10 + R() * 18, 2.5 + R() * 2.5, R() < 0.5 ? P.sp4 : R() < 0.5 ? P.sp3 : P.chip2, 18, 1.2, 1);
+    }
+  }
+  function updateParticles(dt) {
+    var ground = oy + GROUND + 1;
+    for (var i = pn - 1; i >= 0; i--) {
+      plife[i] -= dt; if (plife[i] <= 0) { kill(i); continue; }
+      var k = pkind[i];
+      if (k === 7) { // firefly: wander
+        var t = time * 0.9 + i * 1.7; pvx[i] += (Math.sin(t * 1.3 + i) * 9 - pvx[i]) * dt; pvy[i] += (Math.cos(t * 0.9 + i * 2.1) * 5 - pvy[i]) * dt;
+        px_[i] += pvx[i] * dt; py_[i] += pvy[i] * dt; if (py_[i] > ground + 14) pvy[i] -= 20 * dt; if (py_[i] < oy + HORIZON - 14) pvy[i] += 20 * dt; continue;
+      }
+      if (k === 4 || k === 2 || k === 6) pvx[i] += (wind * (k === 6 ? 6 : 14) - pvx[i]) * dt * 0.6 + Math.sin(time * 5 + i) * (k === 4 ? 18 : 6) * dt;
+      var dr = Math.max(0, 1 - pdrag[i] * dt);
+      pvx[i] *= dr; pvy[i] = pvy[i] * dr + pgrav[i] * dt;
+      px_[i] += pvx[i] * dt; py_[i] += pvy[i] * dt;
+      if ((k <= 2 || k === 4) && py_[i] > ground + (i % 5)) {
+        py_[i] = ground + (i % 5);
+        if (pvy[i] > 25 && pbounce[i] < 2 && k <= 1) { pvy[i] = -pvy[i] * 0.32; pvx[i] *= 0.5; pbounce[i]++; }
+        else { pvy[i] = 0; pvx[i] *= 0.6; var rest = k === 2 ? 0.35 : k === 4 ? 0.6 : 0.9 + (i % 7) * 0.1; if (plife[i] > rest) plife[i] = rest; if (k === 0 && pc[i] === P.chip0) pc[i] = P.chip1; }
+      }
+    }
+  }
+  function drawParticles(front) {
+    for (var i = 0; i < pn; i++) {
+      var k = pkind[i];
+      var x = Math.round(px_[i]), y = Math.round(py_[i]), f = plife[i] / pmax[i];
+      if (k === 7) {   // firefly: blinks with a soft glow
+        var on = Math.sin(time * (1.3 + (i % 5) * 0.31) + i * 2.3);
+        if (on < 0.15) continue;
+        if (on > 0.6) { g.fillStyle = P.fly2; g.fillRect(x - 1, y, 3, 1); g.fillRect(x, y - 1, 1, 3); }
+        g.fillStyle = on > 0.6 ? P.fly0 : P.fly1; g.fillRect(x, y, 1, 1); continue;
+      }
+      if (k === 3) { g.fillStyle = f > 0.5 ? P.spark0 : f > 0.25 ? P.spark1 : P.spark2; g.fillRect(x, y, 1, 1); g.fillStyle = P.spark2; g.fillRect(Math.round(x - pvx[i] * 0.012), Math.round(y - pvy[i] * 0.012), 1, 1); continue; }
+      if (k === 5) { g.fillStyle = f > 0.7 ? P.ember0 : f > 0.4 ? P.ember1 : f > 0.18 ? P.ember2 : P.ember3; g.fillRect(x, y, 1, 1); continue; }
+      if (k === 6) { if (bay(x, y) > f * 0.9) continue; g.fillStyle = pc[i]; g.fillRect(x, y, psz[i], psz[i]); continue; }
+      if (k === 2 && f < 0.3 && bay(x, y) > f * 3) continue;
+      g.fillStyle = pc[i];
+      if (psz[i] === 2) { var spin = Math.floor(time * 12 + i) & 1; g.fillRect(x, y, spin ? 2 : 1, spin ? 1 : 2); } else g.fillRect(x, y, 1, 1);
+    }
+  }
+  // smoke from the stovepipe: dithered puffs that grow and drift with the wind
+  var puffs = [], PUFFS = 40, puffT = 0, emberT = 0;
+  var puffSprites = [];
+  function buildPuffs() {
+    puffSprites = [];
+    for (var r = 1; r <= 9; r++) {
+      var lv = [];
+      for (var l = 0; l < 4; l++) {
+        var n = r * 2 + 3, s = Surf(n, n), c = n / 2;
+        for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+          var d = Math.hypot(x + 0.5 - c, y + 0.5 - c) / r;
+          if (d > 1) continue;
+          var a = (1 - d * d) * (0.35 + 0.65 * (l + 1) / 4) + (vnoise(x * 0.7 + r, y * 0.7) - 0.5) * 0.35;
+          if (a > bay(x, y)) s.set(x, y, d < 0.45 && l > 1 ? P.smoke3 : d < 0.75 ? P.smoke2 : P.smoke1);
+        }
+        lv.push(s.put());
+      }
+      puffSprites.push(lv);
+    }
+  }
+  function updateSmoke(dt) {
+    puffT -= dt; emberT -= dt;
+    if (puffT <= 0) { puffT = 0.22 + R() * 0.12; if (puffs.length < PUFFS) puffs.push({ x: ox + stack.x + R() - 0.5, y: oy + stack.y, vx: 2 + R() * 3, vy: -9 - R() * 4, age: 0, life: 4.5 + R() * 2.5, seed: R() * 6 }); }
+    if (emberT <= 0) { emberT = 0.25 + R() * 0.9; emit(5, ox + stack.x + R() * 2 - 1, oy + stack.y, 4 + R() * 8, -22 - R() * 20, 1.4 + R() * 1.6, null, -6, 0.5, 1); }
+    for (var i = puffs.length - 1; i >= 0; i--) {
+      var p = puffs[i]; p.age += dt; if (p.age > p.life) { puffs.splice(i, 1); continue; }
+      p.vx += (wind * 9 - p.vx) * dt * 0.4; p.vy *= (1 - dt * 0.25);
+      p.x += (p.vx + Math.sin(time * 0.8 + p.seed) * 1.5) * dt; p.y += p.vy * dt;
+    }
+  }
+  function drawSmoke() {
+    for (var i = 0; i < puffs.length; i++) {
+      var p = puffs[i], t = p.age / p.life, r = Math.min(9, 1 + Math.floor(t * 9.5)), lvl = Math.max(0, Math.min(3, Math.floor((1 - t) * 4.2) - (t < 0.06 ? 1 : 0)));
+      var sp = puffSprites[r - 1][lvl]; g.drawImage(sp.c, Math.round(p.x - sp.w / 2), Math.round(p.y - sp.h / 2));
+    }
+  }
+  function spawnFireflies() {
+    for (var i = 0; i < 16; i++) { var x = ox + (R() < 0.5 ? 100 + R() * 70 : 236 + R() * 84), y = oy + HORIZON + 2 + R() * 30; emit(7, x, y, 0, 0, 1e9, null, 0, 0, 1); }
+  }
+
+  // ------------------------------------------------------------------------------------------- state and loop
+  var time = 0, wind = 0.6, progress = 0, target = 0, nextP = 0, shown = 0;
+  var chopT = 0, CHOP = 1.18, hits = 0, sway = 0, swayV = 0, shake = 0;
+  var phase = 'chop', fallA = 0, fallV = 0, fallT = 0, landed = false, doneCb = null, doneAt = 0, cheerT = 0;
+  var pctCanvas = null, pctShown = -1, fontReady = false;
+  function notchTarget() { return clamp(shown, 0, 1) * (TREE.w - 4); }
+  function setSize(w, h) {
+    W = canvas.width = Math.max(BW, w | 0); H = canvas.height = Math.max(BH, h | 0);
+    ox = Math.floor((W - BW) / 2); oy = H - BH;
+    g = canvas.getContext('2d', { alpha: false, willReadFrequently: true }); g.imageSmoothingEnabled = false;
+    buildSky(); buildMist(); buildYard();
+  }
+  function init() {
+    buildTree(); buildRunners(); buildPuffs();
+    setSize(W, H); spawnFireflies();
+    for (var i = 0; i < 18; i++) { updateSmoke(0.25); }
+    if (env.loadFont) env.loadFont().then(function () { fontReady = true; pctShown = -1; }, function () { fontReady = true; pctShown = -1; });
+    else fontReady = true;
+  }
+
+  function update(dt) {
+    time += dt;
+    wind = 0.55 + 0.3 * Math.sin(time * 0.21) + 0.15 * Math.sin(time * 0.73);
+    // progress: ease toward the target, creep toward the step's end so it never sits still
+    if (target > shown) shown = Math.min(target, shown + Math.max(0.02, (target - shown) * 2.6) * dt);
+    else if (nextP > shown && phase === 'chop') shown = Math.min(nextP - 0.004, shown + (nextP - shown) * 0.06 * dt);
+    if (phase === 'chop' || phase === 'final') {
+      var prev = chopT;
+      chopT += dt * (phase === 'final' ? 1.6 : 1);
+      var hitAt = 0.62;
+      if (prev < hitAt && chopT >= hitAt) {
+        hits++;
+        var d = phase === 'final' ? TREE.w - 4 : Math.min(notchTarget(), (TREE.w - 5) * (1 - Math.exp(-hits * 0.25)) + 0.6);
+        notch = Math.max(notch, Math.min(d, TREE.w - 4));
+        setNotch(notch);
+        var hx = ox + TREE.x - TREE.w / 2 + notch * 0.7, hy = oy + TREE.base - TREE.cut - 1;
+        chopBurst(hx, hy, phase === 'final' ? 1.6 : 1);
+        needleFall(phase === 'final' ? 14 : 5 + (hits % 3), 1);
+        swayV += phase === 'final' ? 0.02 : 0.009; shake = 0.12;
+        if (phase === 'final') { phase = 'crack'; fallT = 0; }
+      }
+      if (chopT >= CHOP) chopT -= CHOP;
+    }
+    if (phase === 'crack') {
+      fallT += dt; chopT = Math.min(chopT + dt, 1.0);
+      if (fallT > 0.35) { phase = 'fall'; fallV = 0.25; }
+    }
+    if (phase === 'fall') {
+      fallV += (4.6 * Math.sin(fallA + 0.05)) * dt; fallA += fallV * dt;
+      if (fallA >= 1.47) {
+        fallA = 1.47; phase = 'landed'; fallT = 0; shake = 0.5; landed = true;
+        landBurst();
+      }
+    }
+    if (phase === 'landed') {
+      fallT += dt; cheerT += dt;
+      if (fallT < 0.25) fallA = 1.47 - Math.sin(fallT / 0.25 * Math.PI) * 0.05;
+      else fallA = 1.47;
+      if (fallT > 0.6 && doneCb) { var cb = doneCb; doneCb = null; cb(); }
+    }
+    // tree sway (a damped spring)
+    swayV += -sway * 60 * dt; swayV *= Math.max(0, 1 - 5 * dt); sway += swayV * dt * 10;
+    shake = Math.max(0, shake - dt);
+    updateRun(dt); updateMeteor(dt); updateSmoke(dt); updateParticles(dt);
+  }
+  function landBurst() {
+    var len = TGY - TREE.top, px = ox + TREE.x + 2, py = oy + TREE.base - TREE.cut;
+    for (var i = 0; i < 260; i++) {
+      var t = 0.2 + R() * 0.85, x = px + Math.sin(1.47) * len * t + (R() - 0.5) * 6, y = oy + GROUND - 3 + R() * 5;
+      emit(6, x, y, (R() - 0.35) * 70, -15 - R() * 70 * (1.2 - t * 0.5), 1.0 + R() * 1.8, R() < 0.45 ? P.smoke3 : R() < 0.6 ? P.smoke2 : P.dirt2, 40, 1.6, R() < 0.4 ? 2 : 1);
+    }
+    for (var j = 0; j < 60; j++) { var tt = 0.4 + R() * 0.6; emit(4, px + Math.sin(1.47) * len * tt, oy + GROUND - 6 - R() * 10, (R() - 0.4) * 60, -30 - R() * 60, 2 + R() * 2, R() < 0.5 ? P.sp4 : P.sp3, 120, 1, 1); }
+    chopBurst(px - 2, py, 1.2);
+  }
+
+  function lumberPose() {
+    if (phase === 'landed' || (phase === 'crack' && fallT > 0.2) || phase === 'fall') {
+      var tc = phase === 'landed' ? clamp(cheerT * 3, 0, 1) : 0;
+      return phase === 'landed' ? mixPose(POSES.rest, POSES.cheer, tc) : POSES.rest;
+    }
+    var t = chopT, k;
+    if (t < 0.36) { k = t / 0.36; k = 1 - (1 - k) * (1 - k); return mixPose(POSES.rest, POSES.up, k); }
+    if (t < 0.5) return mixPose(POSES.up, POSES.top, (t - 0.36) / 0.14);
+    if (t < 0.62) { k = (t - 0.5) / 0.12; k = k * k; return mixPose(POSES.top, POSES.hit, k); }
+    if (t < 0.82) { var h = POSES.hit; return { hx: h.hx + notch * 0.7, hy: h.hy, a: h.a + Math.sin((t - 0.62) * 40) * 2 * (0.82 - t) * 5, lean: h.lean, crouch: 1 }; }
+    k = (t - 0.82) / (CHOP - 0.82); k = k * k * (3 - 2 * k);
+    var hp = POSES.hit; return mixPose({ hx: hp.hx + notch * 0.7, hy: hp.hy, a: hp.a, lean: hp.lean, crouch: 1 }, POSES.rest, k);
+  }
+
+  function drawPercent() {
+    var pct = phase === 'chop' ? Math.min(99, Math.floor(shown * 100)) : 100;
+    if (pct !== pctShown) {
+      pctShown = pct; env.onPercent && env.onPercent(pct);
+      var txt = pct + '%', s = 16, c = mk(64, 24), x = c.getContext('2d', { willReadFrequently: true });
+      x.font = s + 'px Alagard, serif'; x.textBaseline = 'alphabetic'; x.fillStyle = '#fff';
+      var tw = Math.ceil(x.measureText(txt).width);
+      x.fillText(txt, 2, 18);
+      var d = x.getImageData(0, 0, 64, 24), out = Surf(64, 24), col = u32(P.text), col2 = u32(P.text2), sh = u32(P.textSh);
+      // crisp: threshold the glyphs, a dark outline around them, a darker lower half for a little weight
+      var on = function (i, j) { return i >= 0 && j >= 0 && i < 64 && j < 24 && d.data[(j * 64 + i) * 4 + 3] > 110; };
+      for (var j = 0; j < 24; j++) for (var i = 0; i < 64; i++) {
+        if (on(i, j)) out.b[j * 64 + i] = j > 13 ? col2 : col;
+        else if (on(i - 1, j) || on(i + 1, j) || on(i, j - 1) || on(i, j + 1) || on(i - 1, j - 1)) out.b[j * 64 + i] = sh;
+      }
+      out.put(); pctCanvas = { c: out.c, w: tw + 4 };
+    }
+    if (pctCanvas) g.drawImage(pctCanvas.c, ox + BW - 10 - pctCanvas.w, oy + BH - 25);
+  }
+
+  function render() {
+    var sx = shake > 0 ? Math.round((R() - 0.5) * 4 * shake / 0.5) : 0, sy = shake > 0 ? Math.round((R() - 0.5) * 3 * shake / 0.5) : 0;
+    g.setTransform(1, 0, 0, 1, sx, sy);
+    g.drawImage(layers.sky.c, 0, 0);
+    // twinkling stars
+    for (var i = 0; i < twinkles.length; i++) {
+      var tw = twinkles[i], v = Math.sin(time * tw.sp + tw.ph);
+      g.fillStyle = v > 0.3 ? P.star0 : v > -0.4 ? P.star1 : P.star2; g.fillRect(tw.x, tw.y, 1, 1);
+      if (v > 0.75) { g.fillStyle = P.star3; g.fillRect(tw.x - 1, tw.y, 1, 1); g.fillRect(tw.x + 1, tw.y, 1, 1); g.fillRect(tw.x, tw.y - 1, 1, 1); g.fillRect(tw.x, tw.y + 1, 1, 1); }
+    }
+    drawMeteor();
+    // the mist drifts along the forest edge; the runner crosses in front of it
+    var mw = layers.mistW, mo = Math.floor((time * 3) % mw), my = oy + HORIZON - 15;
+    g.drawImage(layers.mist.c, -mo, my); g.drawImage(layers.mist.c, mw - mo, my);
+    drawRun();
+    g.drawImage(layers.yard.c, 0, 0);
+    // the window flickers with the stove; its light lies on the grass
+    var fl = 0.5 + 0.25 * Math.sin(time * 7.3) + 0.15 * Math.sin(time * 13.7 + 1) + 0.1 * Math.sin(time * 2.1);
+    var wx = win.x, wy = win.y;
+    g.fillStyle = fl > 0.62 ? P.win0 : P.win1; g.fillRect(wx + 2, wy + 2, 3, 2); g.fillRect(wx + 8, wy + 2, 3, 2);
+    g.fillStyle = P.win2; g.fillRect(wx + 1, wy + 9, 5, 1); g.fillRect(wx + 7, wy + 9, 5, 1);
+    for (var gy = 0; gy < 16; gy++) {
+      var yy = oy + CAB.base + 2 + gy, spread = 6 + gy * 1.1, cx = wx + 6 + gy * 0.9;
+      for (var gx = Math.floor(cx - spread); gx <= cx + spread; gx++) {
+        var a = (1 - gy / 16) * (1 - Math.abs(gx - cx) / spread) * (0.55 + fl * 0.45);
+        if (a > bay(gx, yy) + 0.05) { g.fillStyle = a > 0.42 ? P.glow1 : P.glow0; g.fillRect(gx, yy, 1, 1); }
+      }
+    }
+    // the lantern by the door
+    g.fillStyle = P.tin1; g.fillRect(lantern.x - 1, lantern.y, 3, 4);
+    g.fillStyle = fl > 0.55 ? P.win0 : P.win1; g.fillRect(lantern.x, lantern.y + 1, 1, 2);
+    drawSmoke();
+    // the tree: the stump stays, the rest sways, then falls about its hinge
+    var tx = ox + TREE.x - TCX, ty = oy + TREE.base - TGY;
+    g.drawImage(treeStump.c, tx, ty + CUTY);
+    var hingeX = tx + TCX + TREE.w / 2 - 3, hingeY = ty + CUTY + 1, ang = fallA + sway * 0.012;
+    if (Math.abs(ang) < 0.002) g.drawImage(treeUp.c, tx, ty);
+    else { g.save(); g.translate(hingeX, hingeY); g.rotate(ang); g.drawImage(treeUp.c, -(hingeX - tx), -(hingeY - ty)); g.restore(); g.setTransform(1, 0, 0, 1, sx, sy); }
+    // the lumberjack
+    var pose = lumberPose(), smear = phase === 'chop' && chopT > 0.5 && chopT < 0.66 ? 1 : 0;
+    var lx = ox + LUMBER.x - (phase === 'landed' ? Math.min(4, cheerT * 10) : 0) + Math.round(pose.crouch ? 1 : 0);
+    if (smear && lastHead.length > 1) { g.fillStyle = '#9aa8c4'; for (var s2 = 0; s2 < lastHead.length - 1; s2++) { var p0 = lastHead[s2], p1 = lastHead[s2 + 1]; for (var q = 0; q <= 4; q++) g.fillRect(Math.round(lerp(p0[0], p1[0], q / 4)), Math.round(lerp(p0[1], p1[1], q / 4)), 1, 1); } }
+    drawLumberjack(pose, Math.round(lx), oy + LUMBER.y, smear);
+    drawParticles(false);
+    g.drawImage(layers.fore.c, 0, 0);
+    if (fontReady) drawPercent();
+    g.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  init();
+  return {
+    set: function (p, next) { target = Math.max(target, clamp(+p || 0, 0, 1)); nextP = Math.max(nextP, clamp(+next || target, target, 1)); },
+    done: function () {
+      return new Promise(function (res) {
+        target = 1; shown = Math.max(shown, 0.9);
+        if (phase !== 'chop') { res(); return; }
+        doneCb = res; phase = 'final';
+        // the next swing is the last: hurry it along
+        if (chopT > 0.62) chopT = 0.3;
+      });
+    },
+    resize: function (w, h) { setSize(w, h); },
+    step: function (dt) { update(dt); },
+    render: render,
+    state: function () { return { time: time, shown: shown, phase: phase, notch: notch, run: !!run, particles: pn, hits: hits, chop: chopT }; },
+    forceRun: function (kind, x, stop) { startRun(); run.k = kind || run.k; var sp = runners[run.k]; run.y = oy + HORIZON + 1 - sp.h + (run.k === 'big' ? 0 : 1); if (x !== undefined) { run.x = ox + x; } run.stopAt = stop ? run.x : null; }
+  };
+}
+  </script>
+  <script>
+  // Start the loading screen at once (before the game's modules have even downloaded). It runs in a worker on an
+  // OffscreenCanvas where available, so long boot steps on the main thread never stall it.
+  (function () {
+    var cv = document.getElementById('bushed-loading'), src = document.getElementById('bushed-loading-scene').textContent;
+    var fontUrl = new URL('assets/fonts/Alagard.ttf', location.href).href;
+    function fit() {
+      var dpr = window.devicePixelRatio || 1, vw = window.innerWidth * dpr, vh = window.innerHeight * dpr;
+      var s = Math.max(1, Math.floor(Math.min(vw / 320, vh / 180)));
+      var w = Math.ceil(vw / s), h = Math.ceil(vh / s);
+      cv.style.width = (w * s / dpr) + 'px'; cv.style.height = (h * s / dpr) + 'px';
+      cv.style.left = Math.floor((window.innerWidth - w * s / dpr) / 2) + 'px'; cv.style.top = Math.floor((window.innerHeight - h * s / dpr) / 2) + 'px';
+      return [w, h];
+    }
+    var size = fit(), worker = null, scene = null, fell = null, gone = false, pct = 0;
+    var workerSrc = src + '\n;(' + function () {
+      var scene = null;
+      self.onmessage = function (e) {
+        var m = e.data;
+        if (m.type === 'init') {
+          m.canvas.width = m.w; m.canvas.height = m.h;
+          scene = bushedScene(m.canvas, {
+            makeCanvas: function (w, h) { return new OffscreenCanvas(w, h); },
+            loadFont: function () { var f = new FontFace('Alagard', 'url(' + m.font + ')'); return f.load().then(function (ff) { self.fonts.add(ff); }); },
+            onPercent: function (p) { self.postMessage({ type: 'pct', p: p }); }
+          });
+          var raf = self.requestAnimationFrame ? self.requestAnimationFrame.bind(self) : function (f) { return setTimeout(function () { f(performance.now()); }, 16); };
+          var last = performance.now();
+          var loop = function (now) { var dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; scene.step(dt); scene.render(); raf(loop); };
+          raf(loop);
+        } else if (m.type === 'set') scene && scene.set(m.p, m.next);
+        else if (m.type === 'resize') scene && scene.resize(m.w, m.h);
+        else if (m.type === 'done') scene && scene.done().then(function () { self.postMessage({ type: 'fell' }); });
+      };
+    } + ')();';
+    try {
+      if (cv.transferControlToOffscreen && window.Worker && window.OffscreenCanvas && window.OffscreenCanvasRenderingContext2D) {
+        var off = cv.transferControlToOffscreen();
+        worker = new Worker(URL.createObjectURL(new Blob([workerSrc], { type: 'text/javascript' })));
+        worker.onmessage = function (e) { if (e.data.type === 'fell' && fell) fell(); else if (e.data.type === 'pct') { pct = e.data.p; cv.setAttribute('aria-valuenow', pct); } };
+        worker.onerror = function (e) { console.warn('[loading] worker failed', e && e.message); };
+        worker.postMessage({ type: 'init', canvas: off, w: size[0], h: size[1], font: fontUrl }, [off]);
+      }
+    } catch (e) { worker = null; }
+    if (!worker) {
+      // the same scene on the main thread
+      cv.width = size[0]; cv.height = size[1];
+      scene = (new Function(src + '\nreturn bushedScene;'))()(cv, {
+        makeCanvas: function (w, h) { if (window.OffscreenCanvas) return new OffscreenCanvas(w, h); var c = document.createElement('canvas'); c.width = w; c.height = h; return c; },
+        loadFont: function () { var f = new FontFace('Alagard', 'url(' + fontUrl + ')'); return f.load().then(function (ff) { document.fonts.add(ff); }); },
+        onPercent: function (p) { cv.setAttribute('aria-valuenow', p); }
+      });
+      var last = performance.now();
+      (function loop(now) { if (gone) return; var dt = Math.min(0.05, Math.max(0, ((now || last) - last) / 1000)); last = now || last; scene.step(dt); scene.render(); requestAnimationFrame(loop); })();
+    }
+    window.addEventListener('resize', function () { var s2 = fit(); if (worker) worker.postMessage({ type: 'resize', w: s2[0], h: s2[1] }); else if (scene) scene.resize(s2[0], s2[1]); });
+    function hide() {
+      if (gone) return; gone = true;
+      cv.style.opacity = '0';
+      setTimeout(function () { cv.remove(); if (worker) worker.terminate(); }, 900);
+    }
+    window.__bushedLoading = {
+      set: function (p, next) { if (worker) worker.postMessage({ type: 'set', p: p, next: next }); else if (scene) scene.set(p, next); },
+      /** 100 %: the tree falls; resolves once the screen has faded */
+      done: function () {
+        return new Promise(function (res) {
+          var finished = false;
+          var finish = function () { if (finished) return; finished = true; removeEventListener('keydown', finish, true); removeEventListener('pointerdown', finish, true); hide(); setTimeout(res, 850); };
+          var cap = setTimeout(finish, 6000);
+          fell = function () { clearTimeout(cap); finish(); };
+          // impatient? any key or click skips the fall
+          addEventListener('keydown', finish, true); addEventListener('pointerdown', finish, true);
+          if (worker) worker.postMessage({ type: 'done' }); else if (scene) scene.done().then(function () { fell(); });
+        });
+      },
+      hide: hide,
+      /** the scene itself (main-thread fallback only; the test page uses it) */
+      scene: function () { return scene; }
+    };
+    window.__bushedLoading.set(0.01, 0.06);
+  })();
+  </script>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

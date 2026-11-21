@@ -10,6 +10,7 @@ import { ltube as tube } from './bake';
 import { CABIN, CABIN_GEOM } from '../cabinplan';
 import type { DressCtx } from '../dressing';
 import { tire, bakeProduct, bakeProp, cellBox, cellLathe, cellTube, atlasQuad, groundDecal, tuft, noRay, farCull } from './bake';
+import { orbWeb, webMaterial } from '../../world/fauna/webs';
 
 const { W, D, R, FLOOR: F, PORCH, OH } = CABIN;
 const { EAVE } = CABIN_GEOM;
@@ -175,6 +176,23 @@ export async function cabinExterior(c: DressCtx): Promise<void> {
         tuft(ms, r, r.next() < 0.15 ? 'fireweed' : 'weeds', x, hA(x, z), z, r.range(0.3, 0.6), r.range(0.22, 0.5));
       }
     }
+  }
+
+  // ---- orb webs in the porch corners: post to beam, and under the side plate against the wall logs (thread by
+  // thread, src/world/fauna/webs.ts: they glint in the low sun and the flashlight, bead with dew in the morning)
+  {
+    const mats = webMaterial({ dew: true });
+    const pz = z1 - 0.08, px = W / 2 + 0.02 - 0.095, under = EAVE - 0.07 - 0.125;
+    for (const s of [1, -1]) {
+      const anchors = [V(s * (px - 0.75), under, pz), V(s * (px - 0.18), under, pz), V(s * px, under - 0.2, pz), V(s * px, under - 0.95, pz), s > 0 ? V(px - 0.55, F + 0.97, pz) : V(-px, F + 1.15, pz)];
+      c.group.add(orbWeb({ hub: V(s * (px - 0.36), under - 0.42, pz), normal: V(0, 0, 1), anchors, seed: s > 0 ? 7711 : 7733, maxR: 0.34, mats }).object);
+    }
+    // the left end, in the angle of the side plate and the front wall
+    const sx = -(W / 2 + 0.02), wz = D / 2 + R + 0.01;
+    c.group.add(orbWeb({
+      hub: V(sx, under - 0.38, wz + 0.4), normal: V(1, 0, 0), seed: 7757, maxR: 0.3, mats,
+      anchors: [V(sx, under + 0.01, wz + 0.12), V(sx, under + 0.01, wz + 0.75), V(sx, under - 0.25, wz), V(sx, under - 0.85, wz), V(sx, under - 0.95, wz + 0.6)],
+    }).object);
   }
 
   await Promise.all(pending);

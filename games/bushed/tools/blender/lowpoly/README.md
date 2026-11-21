@@ -12,6 +12,19 @@ Two pilots are done:
 | splinter cat | mixer (`cryptids/real.ts`): the glb carries the clips | lynx (Paleo Modelist, CC-BY) | 2.36k (body 2.2k + beads) | 1024 | 16 s |
 | hodag | procedural (`cryptids/base.ts`): the glb carries only a skin; `hodag.ts`'s clips animate it | Baurusuchus (Anees Animates, CC-BY) + Poly Haven bull's horns (CC0) + parts made in Blender | 3.64k (body 3k) | 1024 | 57 s |
 
+Four more, the cryptids you can put to work (round 6), share `newfour.py` (load a source, find eyes, made parts on a
+tube, the low-poly half in one call, `fix_groups`):
+
+| creature | source | made parts | tris | atlas |
+|---|---|---|---|---|
+| roperite | WildMesh donkey (CC-BY, fetched) | tail with a tuft and an upright mane, rigged to the donkey's own bones; the rope is live in TS (`rope.ts`) | 3.2k | 1024 |
+| hugag | the game's moose cow (`creatures/moose/cow.glb`) | none: lip pulled long, ears enlarged, legs thickened in numpy | 3.4k | 1024 |
+| billdad | the game's hare (`creatures/hare/hare.glb`) | hooked bill (head), flat scaly paddle tail (rigid on `tail0`) | 2.1k | 1024 |
+| wapaloosie | the game's squirrel (`creatures/squirrel/squirrel.glb`) | none: the front half moved forward on the rig, legs thickened | 2.3k | 1024 |
+
+Their test stage is `stage/index.html?who=<id>` (window.__stage: shot, sim with scripted jobs, follow, render) and the
+recipe cards are on `stage/cards.html`.
+
 `build.sh [downloads dir] [dev-server port]` fetches the sources, rebuilds both and, given a port, shoots the
 contact sheets. Each `<id>.py` writes its glb straight into `public/assets/models/creatures/cryptids/`, and its
 textures and stats into `_build/` (gitignored).
@@ -93,6 +106,10 @@ the mesh, the way `hodag.py` does:
 * **Keep the beads separate.** Build them small (8x6 segments) and smooth, and join them after decimating.
 * **Budgets:** about 3 to 4k triangles for a big creature, about 2.2k for a lynx, about 1k for a small one. Use a
   1024 atlas, with the head boosted 2 to 2.5x.
+* **A source whose vertex groups already carry the new bone names** (the game's own animals): the copied mesh keeps
+  them and `C.rebake` adds its own as `X.001`. Run `newfour.fix_groups` after the rebake, and again on the low after
+  `L.lowpoly`: its `protect` group is not a bone, and left on it takes one of the four weight slots (paws come loose).
+  (`hodag.py` and `splintercat.py` still export with that group on.)
 * **Credit every source** in `CREDITS.md` (the cryptid table and the attribution lines) and in
   `public/assets/models/creatures/cryptids/ATTRIBUTION.json`.
 

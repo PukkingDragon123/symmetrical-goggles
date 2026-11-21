@@ -13,6 +13,7 @@
 // Splashes and wet ground are driven from the game (G.uWet), not here.
 import * as THREE from 'three';
 import { G } from './globals';
+import { currentQuality } from '../game/quality';
 
 type Kind = 'rain' | 'snow' | 'mote' | 'leaf' | 'needle' | 'pollen' | 'fluff' | 'firefly';
 const BOX = new THREE.Vector3(36, 22, 36);
@@ -25,9 +26,14 @@ function field(n: number, kind: Kind): THREE.Mesh {
   g.setAttribute('position', base.getAttribute('position'));
   g.setAttribute('uv', base.getAttribute('uv'));
   const seed = new Float32Array(n * 4);
-  for (let i = 0; i < n; i++) { seed[i * 4] = Math.random(); seed[i * 4 + 1] = Math.random(); seed[i * 4 + 2] = Math.random(); seed[i * 4 + 3] = Math.random(); }
+  // sorted by w (the amount threshold): the first amount x n instances are exactly the live ones, so the draw
+  // stops there (see WeatherFx.update) instead of running the vertex shader on thousands of hidden drops
+  const ws = Array.from({ length: n }, () => Math.random()).sort((a, b) => a - b);
+  for (let i = 0; i < n; i++) { seed[i * 4] = Math.random(); seed[i * 4 + 1] = Math.random(); seed[i * 4 + 2] = Math.random(); seed[i * 4 + 3] = ws[i]; }
   g.setAttribute('aSeed', new THREE.InstancedBufferAttribute(seed, 4));
   g.instanceCount = n;
+  g.userData.n = n;
+  g.userData.ws = ws;
   const near = kind === 'firefly' || kind === 'mote' || kind === 'pollen';
   const uniforms = {
     uTime: G.uTime, uWindDir: G.uWindDir, uWind: G.uWindStrength, uCam: { value: new THREE.Vector3() }, uBox: { value: near ? BOX_NEAR : BOX },
@@ -160,10 +166,16 @@ export class WeatherFx {
     const outdoors = leaves > 0.01 ? 1 : 0;
     const day = 1 - G.uDarkness.value;
     const calm = Math.max(0, 1 - G.uWindStrength.value * 1.4);
+    const qs = currentQuality().name === 'low' ? 0.5 : 1;
     const set = (m: THREE.Mesh, a: number) => {
       const u = (m.material as THREE.ShaderMaterial).uniforms;
       u.uCam.value.copy(cam); u.uAmount.value = a; u.uLight.value.copy(light); u.uWindOff.value.copy(this.windOff);
       m.visible = a > 0.001;
+      // draw only the live instances (seeds are sorted by their threshold); the low preset draws half of them
+      const g = m.geometry as THREE.InstancedBufferGeometry, ws = g.userData.ws as number[], n = g.userData.n as number;
+      let k = 0, hi = n;
+      while (k < hi) { const mid = (k + hi) >> 1; if (ws[mid] <= a) k = mid + 1; else hi = mid; }
+      g.instanceCount = Math.max(1, Math.ceil(k * qs));
     };
     set(this.rain, rain); set(this.snow, snow);
     set(this.motes, motes * (0.5 + 0.5 * day));

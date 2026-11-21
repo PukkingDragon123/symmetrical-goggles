@@ -11,6 +11,12 @@
 //   Hoop Snake       the top of the steep bank south of the lake           eggs
 //   Splinter Cat     the old timber west of the hollow                     maple syrup (left by a tree or a log)
 //   Goofus Bird      a big pine by the cabin road (it nests upside down)   bannock ('bread')
+// and four you can put to work once they trust you (helper.ts; companions.ts sends them with G; low-poly models from
+// tools/blender/lowpoly):
+//   Roperite     the open beaver meadow north-west of the lake             carrots      ropes logs to your truck
+//   Hugag        the old cedar east of the hollow                          wild onions  leans trees over for you
+//   Billdad      a log on the north-west shore of the lake                 cheddar      fetches trout from the lake
+//   Wapaloosie   the tall spruce west of the cabin                         hazelnuts    climbs and scouts (marks)
 //
 //   await preloadCreatures();                       // builds or loads every model (registered by each module)
 //   const cryptids = spawnNewCryptids(scene);       // NewCryptid[]: placed at their homes, added to the scene
@@ -31,6 +37,10 @@ import { SidehillGouger } from './gouger';
 import { HoopSnake } from './hoopsnake';
 import { SplinterCat } from './splintercat';
 import { GoofusBird } from './goofus';
+import { Roperite } from './roperite';
+import { Hugag } from './hugag';
+import { Billdad } from './billdad';
+import { Wapaloosie } from './wapaloosie';
 
 export { Cryptid, CH, daylight, type NewCryptid } from './base';
 export { Hodag, hodagModel, hodagModelAsync, HODAG_SOUND, type HodagState } from './hodag';
@@ -44,8 +54,14 @@ export { SidehillGouger, GOUGER_SOUND, type GougerState } from './gouger';
 export { HoopSnake, HOOPSNAKE_SOUND, type HoopState } from './hoopsnake';
 export { SplinterCat, SPLINTERCAT_SOUND, type SplinterState } from './splintercat';
 export { GoofusBird, GOOFUS_SOUND, type GoofusState } from './goofus';
+export { HelperCryptid, type TargetKind, type Job } from './helper';
+export { Roperite, ROPERITE_SOUND, type RoperiteState, type HaulRef } from './roperite';
+export { Hugag, HUGAG_SOUND, type HugagState } from './hugag';
+export { Billdad, BILLDAD_SOUND, type BilldadState } from './billdad';
+export { Wapaloosie, WAPALOOSIE_SOUND, type WapaloosieState } from './wapaloosie';
 
-export type CryptidId = 'hodag' | 'squonk' | 'hidebehind' | 'agropelter' | 'teakettler' | 'wasset' | 'gouger' | 'hoopsnake' | 'splintercat' | 'goofus';
+export type CryptidId = 'hodag' | 'squonk' | 'hidebehind' | 'agropelter' | 'teakettler' | 'wasset' | 'gouger' | 'hoopsnake' | 'splintercat' | 'goofus'
+  | 'roperite' | 'hugag' | 'billdad' | 'wapaloosie';
 
 /** the best point in a disc by a score over the layout (deterministic grid search; never water, roads or clearings) */
 export function findSpot(cx: number, cz: number, r: number, score: (x: number, z: number) => number, step = 6): THREE.Vector3 {
@@ -96,6 +112,14 @@ export function cryptidSpots(): Record<CryptidId, THREE.Vector3> {
     splintercat: findSpot(-150, 250, 80, (x, z) => { const b = biome(x, z); return b.density * 1.5 + b.old + Math.min(1, roadInfo(x, z).d / 40) + far(x, z, SPOTS.cabin, 200); }, 6),
     // a big pine a little way off the cabin road, where you walk past it
     goofus: findSpot(-100, -100, 30, (x, z) => -Math.abs(roadInfo(x, z).d - 14) * 0.3 + biome(x, z).density + biome(x, z).pine * 0.5, 3),
+    // an open beaver meadow north-west of the lake: thin cover, flat, dry, off the roads (it gallops rings)
+    roperite: findSpot(110, -150, 70, (x, z) => { const b = biome(x, z), [, ny] = normalAt(x, z, 6); return (1 - b.density) * 3 + ny * 2 - b.wet + Math.min(1, roadInfo(x, z).d / 30) - (lakeEdge(x, z) < 1.25 ? 3 : 0); }, 5),
+    // the old cedar east of the hollow, wet and dark, far from the paths (it stampedes)
+    hugag: findSpot(250, 330, 80, (x, z) => { const b = biome(x, z); return b.old * 1.2 + b.cedar * 0.4 + b.density + Math.min(1, roadInfo(x, z).d / 40) + far(x, z, SPOTS.cabin, 300); }, 6),
+    // a log at the water's edge on the north-west shore (dry ground a step from the water)
+    billdad: findSpot(130, -105, 40, (x, z) => -Math.abs(lakeEdge(x, z) - 1.06) * 6 + (heightAt(x, z) < WORLD.waterY + 1.2 ? 0.5 : 0) - Math.hypot(x - 132, z - 12) * 0.002, 3),
+    // tall dense spruce west of the cabin, off the road
+    wapaloosie: findSpot(-150, 60, 60, (x, z) => { const b = biome(x, z); return b.density * 1.5 + b.spruce * 0.5 + b.fir * 0.3 - b.birch * 0.4 + Math.min(1, roadInfo(x, z).d / 25) + far(x, z, SPOTS.cabin, 120) * 0.5; }, 4),
   };
   return spots;
 }
@@ -104,6 +128,7 @@ type Ctor = new (o: { pos?: THREE.Vector3; heading?: number }) => NewCryptid;
 const CTORS: Partial<Record<CryptidId, Ctor>> = {
   hodag: Hodag, squonk: Squonk, hidebehind: Hidebehind, agropelter: Agropelter, teakettler: Teakettler, wasset: SnowWasset,
   gouger: SidehillGouger, hoopsnake: HoopSnake, splintercat: SplinterCat, goofus: GoofusBird,
+  roperite: Roperite, hugag: Hugag, billdad: Billdad, wapaloosie: Wapaloosie,
 };
 /** register a cryptid class (each module does this for itself) */
 export function registerCryptid(id: CryptidId, c: Ctor) { CTORS[id] = c; }
@@ -120,7 +145,8 @@ export function spawnNewCryptids(scene: THREE.Object3D, o: { only?: CryptidId[] 
   for (const id of Object.keys(S) as CryptidId[]) {
     if (o.only && !o.only.includes(id)) continue;
     const C = CTORS[id]; if (!C) continue;
-    const c = new C({ pos: S[id].clone(), heading: id === 'agropelter' ? towardRoad(S[id]) : (id.length * 1.7) % (Math.PI * 2) });
+    const heading = id === 'agropelter' ? towardRoad(S[id]) : id === 'billdad' ? Math.atan2(SPOTS.lake.x - S[id].x, SPOTS.lake.z - S[id].z) : (id.length * 1.7) % (Math.PI * 2);
+    const c = new C({ pos: S[id].clone(), heading });
     scene.add(c.object); out.push(c);
   }
   return out;

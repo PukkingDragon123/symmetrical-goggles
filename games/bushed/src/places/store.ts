@@ -347,18 +347,7 @@ export async function buildStore(): Promise<Place> {
     board(dms, 'boards_green', r, w / 2, h - 0.07, 0, w - 0.24, 0.14, t, 0, { grain: 'x' });
     board(dms, 'boards_green', r, w / 2, 0.6, 0, w - 0.24, 0.6, t * 0.6, 0, { grain: 'y' });
     dms.quad(glass, V(0.12, 1.05, 0), V(w - 0.12, 1.05, 0), V(w - 0.12, h - 0.14, 0), V(0.12, h - 0.14, 0), [0, 0], [w, 0], [w, 1], [0, 1]);
-    // OPEN / OUVERT sign hanging inside the glass
-    dms.pushT(w / 2, 1.5, -0.03);
-    {
-      const [u0, v0, u1, v1] = SIGNS.uv('open_sign');
-      for (const s of [1, -1]) {
-        dms.pushT(0, 0, s * 0.003, s > 0 ? 0 : Math.PI);
-        dms.quad('signs', V(-0.17, -0.07, 0), V(0.17, -0.07, 0), V(0.17, 0.07, 0), V(-0.17, 0.07, 0), [u0, v0], [u1, v0], [u1, v1], [u0, v1]);
-        dms.pop();
-      }
-      tube(dms, 'rope', [V(-0.12, 0.07, 0), V(0, 0.2, 0), V(0.12, 0.07, 0)], 0.002, 3);
-    }
-    dms.pop();
+    // (round 6: no OPEN / OUVERT card in the door glass: the neon in the window says it)
     // push plate and pull handle
     boxAt(dms, 'galv', w - 0.08, 1.0, t / 2 + 0.003, 0.06, 0.25, 0.004);
     tube(dms, 'galv', [V(w - 0.09, 0.9, -t / 2), V(w - 0.09, 0.9, -t / 2 - 0.05), V(w - 0.09, 1.12, -t / 2 - 0.05), V(w - 0.09, 1.12, -t / 2)], 0.01, 6);
@@ -734,15 +723,10 @@ export async function buildStore(): Promise<Place> {
     };
     // wall-frame "along" is mirrored for interior viewing (the frame looks from outside)
     // 'along' is the wall frame's x: front = local x, back = -local x, right = -local z, left = +local z
+    // round 6: three left of nine (no price board, credit card, hours, beer sign, dog poster or fire card)
     sign('coffee_poster', 0.45, 0.6, 'back', 0.55, F + 1.85, 0.02);
     sign('chainsaw_poster', 0.45, 0.6, 'back', -0.05, F + 1.8, -0.02);
-    sign('beer_sign', 0.5, 0.35, 'right', 4.3, F + 1.6, 0.02);
-    sign('price_board', 0.8, 0.6, 'right', -0.6, F + 1.7, 0);
-    sign('sign_credit', 0.4, 0.15, 'right', -0.6, F + 2.25, -0.02);
-    sign('sign_hours', 0.2, 0.28, 'front', 0.75, F + 1.5, 0.03);
     sign('sign_bait', 0.4, 0.2, 'back', -2.2, F + 2.32, 0.01);
-    sign('dog_poster', 0.22, 0.3, 'front', -0.78, F + 1.55, -0.04);
-    sign('fire_danger', 0.42, 0.28, 'left', -1.25, F + 2.78, 0.0);
     pending.push(prop(group, 'wall_clock', IX - 0.03, F + 2.45, 0.05, -Math.PI / 2));
   }
   // ---- the noticeboard (left wall near the front): cork-ish board with contract pins
@@ -866,24 +850,7 @@ export async function buildStore(): Promise<Place> {
     LP.crate(ms, 3.1, FLOOR - 0.02, pz, 0.2, 13);
     for (let i = 0; i < 6; i++) stock('beer', 3.1 - 0.15 + (i % 3) * 0.1, FLOOR + 0.02, pz - 0.05 + Math.floor(i / 3) * 0.1, i);
     LP.trashCan(ms, 3.8, FLOOR - 0.02, pz + 0.9, 0.4);
-    // bait sign on the right post, fire danger sign by the road
-    {
-      const [u0, v0, u1, v1] = SIGNS.uv('sign_bait');
-      ms.pushT(1.3, FLOOR + 1.6, D / 2 + PORCH - 0.12 + 0.07);
-      ms.quad('signs', V(-0.2, -0.1, 0), V(0.2, -0.1, 0), V(0.2, 0.1, 0), V(-0.2, 0.1, 0), [u0, v0], [u1, v0], [u1, v1], [u0, v1]);
-      ms.pop();
-    }
-    {
-      const fx = -8.2, fz = D / 2 + 10.5;
-      const g = heightAt(...toWorld(sp, fx, fz)) - gy;
-      for (const x of [fx - 0.55, fx + 0.55]) logAB(ms, V(x, g - 0.2, fz), V(x, g + 2.4, fz), 0.06, { seed: 900 + x, seg: 7, capA: -1, capB: 3 });
-      const [u0, v0, u1, v1] = SIGNS.uv('fire_danger');
-      ms.pushT(fx, g + 1.75, fz + 0.07, 0.25);
-      boxAt(ms, 'board_grey', 0, 0, -0.03, 1.28, 0.88, 0.04);
-      ms.quad('signs', V(-0.6, -0.4, 0), V(0.6, -0.4, 0), V(0.6, 0.4, 0), V(-0.6, 0.4, 0), [u0, v0], [u1, v0], [u1, v1], [u0, v1]);
-      ms.pop();
-      cols.box(fx, g + 1.2, fz, 0.7, 1.2, 0.08);
-    }
+    // (round 6: no bait card on the post, no fire-danger board by the road: fewer signs, a calmer front)
     // the old gas pump on a concrete island in front of the porch, right side
     {
       const px = 3.4, pzz = D / 2 + PORCH + 2.6;

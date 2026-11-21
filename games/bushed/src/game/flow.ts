@@ -1,16 +1,22 @@
 // The opening of the game, written as scripted beats on the Director:
 //   menu   - a night on the porch with a beer by the fire; the options are things on the stump beside you
-//   intro  - three weeks earlier: the drive in at dusk, Ray's note, the axe in the block, the flagged spruce,
-//            the first fire, and the thing at the woodpile that wants your axe handle
+//   intro  - three weeks earlier: the drive in as a film (cinematic/opening.ts: the will on the seat, Pépère's
+//            letter read over it), Pruneau's store and Grandpa's friends, then up the logging road to his cabin:
+//            his note, the axe in the block, the flagged spruce, the first fire, and the thing at the woodpile
+//            that wants your axe handle. Each beat puts its objective up top-left (src/ui/objectives.ts).
 import * as THREE from 'three';
 import type { Game } from './game';
 import type { Director } from './director';
 import { hud } from '../ui/hud';
 import { input } from '../core/input';
-import { SPOTS, heightAt, roadPointAt } from '../world/layout';
+import { SPOTS, heightAt } from '../world/layout';
 import { registerInteractable, unregisterInteractable } from './interact';
 import { paintPaper, paperMesh } from '../ui/paper';
 import { RAY_NOTE } from './story';
+import { NPCS } from './npcs';
+import { playOpening } from './cinematic/opening';
+import { kettleSign } from './cinematic/props';
+import { installObjectives, setObjective, completeObjective, tickObjective } from '../ui/objectives';
 import { hasSave } from './save';
 import { debris, puffs } from '../gfx/particles';
 import { flameCards } from '../places/fixtures';
@@ -75,6 +81,9 @@ export function campfire(game: Game, pos: THREE.Vector3, own = false): { level: 
 // ---------------------------------------------------------------------------------------------------- menu
 export async function runMenu(game: Game, d: Director): Promise<'new' | 'continue'> {
   game.mode = 'menu';
+  // the objective line (hidden on the porch) and the township sign on the highway, for new and saved games alike
+  installObjectives(game);
+  try { kettleSign(game); } catch (e) { console.warn('[flow] sign', e); }
   game.hour = 23.3;
   game.weather = { cloud: 0.45, rain: 0, fog: 0.7, storm: 0 };
   const chair = anchorPos(game, 'porch_chair', new THREE.Vector3(SPOTS.cabin.x + 2, heightAt(SPOTS.cabin.x + 2, SPOTS.cabin.z + 5), SPOTS.cabin.z + 5));
@@ -157,41 +166,65 @@ export async function runMenu(game: Game, d: Director): Promise<'new' | 'continu
 }
 
 // ---------------------------------------------------------------------------------------------------- intro
+/** the intro's objective targets: a store or cabin anchor, else a fallback point */
+const anchorObj = (game: Game, place: 'cabin' | 'store', name: string): THREE.Object3D | null => (game[place]?.anchors?.[name] as THREE.Object3D | undefined) ?? null;
+/** a person's head, for the objective pin */
+const headOf = (id: string, out: THREE.Vector3): THREE.Vector3 | null => {
+  const n = NPCS.get(id);
+  if (!n || n.hidden) return null;
+  out.copy(n.model.root.position); out.y += 1.75;
+  return out;
+};
+
 export async function runIntro(game: Game, d: Director): Promise<void> {
+  installObjectives(game);
   game.day = 0;
-  game.hour = 18.1;
-  game.weather = { cloud: 0.3, rain: 0, fog: 0.25, storm: 0 };
-  hud.title('Three weeks earlier', '', 3);
-  await d.sleep(3.2);
-  // the drive in
-  const jeep = game.jeep;
-  if (jeep) {
-    const start = roadPointAt('highway', 540);
-    jeep.spawn(start.x, start.z, start.dir);
-    jeep.running = true; jeep.headlights = true;
-    game.enterVehicle();
-  } else {
-    game.player.teleport(SPOTS.cabin.x - 20, null, SPOTS.cabin.z - 10, 0.9);
-    game.mode = 'walk';
-  }
-  hud.fadeTo(false, 2.5);
-  hud.title('BUSHED', 'Kettle Lake, Northern Ontario — late September', 6);
-  await d.sleep(4);
-  think("Ray's letter said: left at Pruneau's store, then follow the logging road till it gives up.", 5);
-  if (jeep) {
-    const near = (x: number, z: number, r: number) => Math.hypot(game.player.pos.x - x, game.player.pos.z - z) < r;
-    await d.until(() => near(SPOTS.store.x, SPOTS.store.z, 45) || near(SPOTS.cabin.x, SPOTS.cabin.z, 30));
-    if (!near(SPOTS.cabin.x, SPOTS.cabin.z, 30)) {
-      think('Pruneau\'s. Lights on. Somebody\'s still awake out here.', 4);
-      await d.until(() => near(SPOTS.cabin.x, SPOTS.cabin.z, 30));
-    }
-    think('That must be it.', 3);
-    await d.until(() => game.mode === 'walk');
-  }
-  game.timeScale = 30;
-  think('Cold. Colder than the letter made it sound.', 3.5);
+  // the drive in, as a film (cinematic/opening.ts): it ends with you on your feet outside Pruneau's
+  await playOpening(game, d);
+  game.flags.add('opening_seen');
   game.journal.sawCritter('hound');
-  // Ray's note on the door
+
+  // ---- Pruneau's: Gérard behind the counter, Odile at the post wicket with what Pépère left her for you
+  const metGerard = () => game.flags.has('met_gerard');
+  const gotLetter = () => game.flags.has('st:letter') || game.flags.has('st:mail:ray');
+  const shopSteps = [
+    { id: 'gerard', text: 'Gérard, behind the counter', done: metGerard() },
+    { id: 'odile', text: 'Odile, at the post wicket', done: gotLetter() },
+  ];
+  const storeDoor = anchorObj(game, 'store', 'door');
+  const pin = new THREE.Vector3();
+  setObjective({
+    id: 'intro:shop', kicker: 'Kettle Lake', text: 'Go to the shop to meet Grandpa\'s friends', steps: shopSteps, reach: 1.5,
+    target: () => {
+      const inside = game.indoors && Math.hypot(game.player.pos.x - SPOTS.store.x, game.player.pos.z - SPOTS.store.z) < 30;
+      if (inside) return (!metGerard() ? headOf('gerard', pin) : headOf('odile', pin)) ?? null;
+      return storeDoor ? storeDoor.getWorldPosition(pin) : pin.set(SPOTS.store.x, heightAt(SPOTS.store.x, SPOTS.store.z) + 1, SPOTS.store.z);
+    },
+  });
+  await d.sleep(1.5);
+  think('Pruneau\'s. The lights are on. He said they\'d be expecting me.', 4);
+  await d.until(() => {
+    if (metGerard() && !shopSteps[0].done) { shopSteps[0].done = true; tickObjective('gerard'); }
+    if (gotLetter() && !shopSteps[1].done) { shopSteps[1].done = true; tickObjective('odile'); }
+    return shopSteps[0].done && shopSteps[1].done;
+  });
+  await d.until(() => !(game as unknown as { reading?: unknown }).reading);
+  completeObjective();
+  await d.sleep(2);
+
+  // ---- up the logging road to the cabin
+  const cabinDoor = anchorObj(game, 'cabin', 'door');
+  setObjective({ id: 'intro:cabin', kicker: 'Lot 14, Rang 4', text: 'Drive up the logging road to Grandpa\'s cabin', target: cabinDoor ?? new THREE.Vector3(SPOTS.cabin.x, heightAt(SPOTS.cabin.x, SPOTS.cabin.z) + 1, SPOTS.cabin.z), reach: 24 });
+  think('Left at the junction, Gérard said, then the logging road till it gives up.', 4.5);
+  const near = (x: number, z: number, r: number) => Math.hypot(game.player.pos.x - x, game.player.pos.z - z) < r;
+  await d.until(() => near(SPOTS.cabin.x, SPOTS.cabin.z, 30));
+  completeObjective();
+  think('That must be it. His smoke used to come out of that chimney.', 3.5);
+  game.timeScale = 20;
+  await d.until(() => game.mode === 'walk');
+  think('Cold. Colder than the letter made it sound.', 3.5);
+
+  // ---- Pépère's note on the door
   const door = anchorPos(game, 'door', new THREE.Vector3(SPOTS.cabin.x, heightAt(SPOTS.cabin.x, SPOTS.cabin.z) + 1.5, SPOTS.cabin.z + 3));
   const note = paperMesh(paintPaper(RAY_NOTE, { style: 'notebook', seed: 42 }), 0.18);
   note.position.copy(door).add(new THREE.Vector3(0, 0.1, 0));
@@ -199,9 +232,11 @@ export async function runIntro(game: Game, d: Director): Promise<void> {
   if (doorObj) { doorObj.add(note); note.position.set(0, 0.15, 0.06); note.rotation.set(0, 0, 0.04); } else game.scene.add(note);
   let read = false;
   registerInteractable(note, { kind: 'paper', label: () => 'Read the note', use: () => { game.readPaper(RAY_NOTE, 42); read = true; } });
+  setObjective({ id: 'intro:note', kicker: 'Lot 14, Rang 4', text: 'Read the note on the door', target: note, reach: 1.2 });
   await d.either(() => read, 60);
-  if (!read) think("There's a note on the door.", 3);
+  if (!read) think("There's a note on the door. His hand.", 3);
   await d.until(() => read);
+  completeObjective();
   unregisterInteractable(note);
   note.removeFromParent();
   game.flags.add('ray_note');
@@ -215,28 +250,60 @@ export async function runIntro(game: Game, d: Director): Promise<void> {
     else { box.position.copy(anchorPos(game, 'table', door)); game.scene.add(box); }
     registerInteractable(box, { kind: 'pickup', label: () => 'Take the matches', use: () => { game.give('matches'); box.removeFromParent(); game.sound('pickup', undefined, 0.5); } });
   } else game.give('matches');
-  // the axe in the block (Ray's axe is held until pulled)
+  // the axe in the block (Pépère's axe is held until pulled)
   game.take('axe_old');
   const block = anchorPos(game, 'chopping_block', new THREE.Vector3(SPOTS.woodyard.x, heightAt(SPOTS.woodyard.x, SPOTS.woodyard.z) + 0.55, SPOTS.woodyard.z));
   const axeInBlock = game.axeInBlock(block);
-  await d.until(() => game.owns('axe_old'));
+  const kitSteps = [
+    { id: 'matches', text: 'Matches, in the table drawer', done: game.owns('matches') },
+    { id: 'axe', text: 'His axe, stuck in the chopping block', done: game.owns('axe_old') },
+  ];
+  const tablePin = anchorObj(game, 'cabin', 'table');
+  setObjective({
+    id: 'intro:kit', kicker: 'First thing: wood', text: 'Find the matches and Pépère\'s axe', steps: kitSteps, reach: 1.6,
+    target: () => (!kitSteps[0].done ? (box?.parent ? box.getWorldPosition(pin) : tablePin?.getWorldPosition(pin) ?? null) : pin.copy(block)),
+  });
+  await d.until(() => {
+    if (game.owns('matches') && !kitSteps[0].done) { kitSteps[0].done = true; tickObjective('matches'); }
+    if (game.owns('axe_old') && !kitSteps[1].done) { kitSteps[1].done = true; tickObjective('axe'); }
+    return game.owns('axe_old') && (game.owns('matches') || !box);
+  });
   axeInBlock?.removeFromParent();
+  completeObjective();
   think('Right. A little spruce with orange tape behind the shed.', 4);
   game.flagIntroTree();
+  const tree = game.introTree as { x: number; z: number } | null;
+  const treePin = tree ? new THREE.Vector3(tree.x, heightAt(tree.x, tree.z) + 1.4, tree.z) : null;
+  setObjective({ id: 'intro:fell', kicker: 'First thing: wood', text: 'Fell the little spruce with the orange tape', target: treePin, reach: 2.5 });
   // fell, buck, split, burn
   await d.until(() => game.felledCount > 0);
+  completeObjective();
   think('Timber. Now take the branches off and cut it into rounds.', 4);
+  const stoveObj = anchorObj(game, 'cabin', 'stove');
+  setObjective({ id: 'intro:split', kicker: 'First thing: wood', text: 'Limb it, buck it, split it, and fill the stove', target: stoveObj, reach: 2 });
   await d.until(() => game.stove.fuel > 2 || game.stove.lit);
+  completeObjective();
+  setObjective({ id: 'intro:light', kicker: 'First thing: wood', text: 'Light the stove: kindling first, then splits', target: stoveObj, reach: 1.6 });
   await d.until(() => game.stove.lit);
+  completeObjective();
   think('There. The stove ticks as it warms. That sound is the best sound in the world.', 5);
   game.flags.add('first_fire');
   // night falls properly now, and something comes to the woodpile
   game.timeScale = 40;
+  setObjective({ id: 'intro:night', kicker: 'The first night', text: 'Keep warm. Night\'s coming on.' });
   await d.until(() => game.hour > 20.4 && !game.indoors);
   game.events.emit('intro_hound');
+  setObjective({ id: 'intro:hound', kicker: 'The first night', text: 'Something at the woodpile. Jerky, he said.', target: block.clone().setY(block.y + 0.4), reach: 2 });
   await d.until(() => game.flags.has('hound_fed'));
+  completeObjective();
   await d.sleep(2);
   think('...Good dog?', 3);
   await d.sleep(4);
-  think('The bunk. Sleep. Tomorrow: Pruneau\'s store, and whatever pays.', 4.5);
+  think('The bunk. Sleep. Tomorrow: Pruneau\'s again, and whatever pays.', 4.5);
+  const bed = anchorObj(game, 'cabin', 'bed');
+  setObjective({ id: 'intro:sleep', kicker: 'The first night', text: 'Sleep in Pépère\'s bunk', target: bed, reach: 1.6 });
+  await d.until(() => game.day >= 1);
+  completeObjective();
+  game.flags.add('intro_done');
+  setObjective(null);
 }

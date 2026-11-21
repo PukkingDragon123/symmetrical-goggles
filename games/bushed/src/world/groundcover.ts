@@ -45,6 +45,7 @@ import type { SpeciesId } from '../trees/species';
 import { vegMaterial, vegDepthMaterial, TRAIL, TRAIL_N, type VegMatOpts } from './veg/material';
 import { trample } from './veg/trample';
 import * as P from './veg/protos';
+import { currentQuality } from '../game/quality';
 
 export interface Solid {
   id: number;
@@ -60,10 +61,18 @@ export interface Solid {
   x2?: number; y2?: number; z2?: number;
 }
 
-export interface GroundCoverOptions { forest?: Forest | null; density?: number }
+export interface GroundCoverOptions {
+  forest?: Forest | null; density?: number;
+  /** sun-shadow distance for the casting prototypes (default: the quality preset's groundShadow) */
+  shadowDist?: number;
+}
 
 interface Part { geo: THREE.BufferGeometry; mat: THREE.Material; depth?: THREE.Material }
-interface Proto { name: string; parts: Part[]; meshes: THREE.InstancedMesh[]; cap: number; count: number; shadow: boolean; lod: number }
+interface Proto {
+  name: string; parts: Part[]; meshes: THREE.InstancedMesh[]; cap: number; count: number; shadow: boolean; lod: number;
+  /** shadow casters: instances within the shadow distance are packed first, the sun's map draws only those */
+  near: number; far: number;
+}
 interface Group { name: string; protos: number[]; tier: 0 | 1; radius: number }
 interface GChunk { tier: 0 | 1; cx: number; cz: number; items: Map<number, number[]>; solids: Solid[]; minY: number; maxY: number }
 interface Canopy { cover: number; conifer: number; birch: number }
@@ -85,8 +94,19 @@ const UP = new THREE.Vector3(0, 1, 0);
 function notLampFrustum(this: THREE.Object3D, f: THREE.Frustum): boolean {
   const p = f.planes;
   const lr = p[0].normal.dot(p[1].normal), tb = p[2].normal.dot(p[3].normal);
-  if (lr < -0.999) return true; // orthographic: the sun
+  if (lr < -0.999) return (this.userData.shadowN ?? 1) > 0; // orthographic: the sun (only when something is near)
   return Math.abs(lr - tb) > 0.02;
+}
+
+/** the sun's map draws only the instances packed first (within the shadow distance) */
+function shadowCountOn(this: THREE.Object3D): void {
+  const im = this as THREE.InstancedMesh;
+  im.userData.fullN = im.count;
+  im.count = Math.min(im.count, im.userData.shadowN ?? im.count);
+}
+function shadowCountOff(this: THREE.Object3D): void {
+  const im = this as THREE.InstancedMesh;
+  im.count = im.userData.fullN ?? im.count;
 }
 
 export class GroundCover {
@@ -98,6 +118,8 @@ export class GroundCover {
   private fm: number;
   /** grass clumps switch to their far LOD beyond this distance (m) */
   private lodDist: number;
+  /** ferns, shrubs, rocks, logs and stumps cast sun shadows within this distance (m); 0 = never */
+  private shadowDist: number;
   private protos: Proto[] = [];
   private groups: Group[] = [];
   private gIndex = new Map<string, number>();
@@ -125,6 +147,7 @@ export class GroundCover {
     this.density = opts.density ?? 1;
     this.fm = clamp(0.72 + 0.3 * this.density, 0.85, 1.12);
     this.lodDist = 6 + 5 * this.density;
+    this.shadowDist = opts.shadowDist ?? currentQuality().groundShadow;
     this.group.name = 'groundcover';
     scene.add(this.group);
     this.atlas = loadTex('veg/veg_atlas.png', {});
@@ -186,7 +209,9 @@ export class GroundCover {
       im.count = 0;
       im.frustumCulled = true;
       im.intersectsFrustum = notLampFrustum;
-      im.castShadow = shadow;
+      im.castShadow = shadow && this.shadowDist > 0;
+      im.onBeforeShadow = shadowCountOn;
+      im.onAfterShadow = shadowCountOff;
       im.receiveShadow = true;
       if (pt.depth) im.customDepthMaterial = pt.depth;
       im.visible = false;
@@ -194,7 +219,7 @@ export class GroundCover {
       this.group.add(im);
       return im;
     });
-    this.protos.push({ name, parts, meshes, cap, count: 0, shadow, lod: -1 });
+    this.protos.push({ name, parts, meshes, cap, count: 0, shadow, lod: -1, near: 0, far: 0 });
     this.dirty = true;
     return pi;
   }
@@ -1073,7 +1098,9 @@ export class GroundCover {
     _frustum.setFromProjectionMatrix(_pm);
     const px = cam.position.x, pz = cam.position.z;
     const L2 = this.lodDist * this.lodDist;
-    for (const pr of this.protos) pr.count = 0;
+    // small plants cast within shadowDist, rocks / logs / stumps (the big tier) within twice that
+    const S2small = this.shadowDist * this.shadowDist, S2big = 4 * S2small;
+    for (const pr of this.protos) { pr.count = 0; pr.near = 0; pr.far = 0; }
     let n = 0;
     for (const c of this.chunks.values()) {
       if (!c.items.size) continue;
@@ -1089,6 +1116,7 @@ export class GroundCover {
         const g = this.groups[gi];
         if (!g.protos.length || dc > g.radius) continue;
         const R2 = g.radius * g.radius;
+        const S2 = g.tier === 1 ? S2big : S2small;
         for (let i = 0; i < arr.length; i += REC) {
           const ex = arr[i + 13] - px, ez = arr[i + 15] - pz;
           const d2 = ex * ex + ez * ez;
@@ -1097,7 +1125,9 @@ export class GroundCover {
           if (d2 > L2 && this.protos[pi].lod >= 0) pi = this.protos[pi].lod;
           const pr = this.protos[pi];
           if (pr.count >= pr.cap) this.grow(pr);
-          const k = pr.count++;
+          pr.count++;
+          // casters: near instances from the front, the rest from the back (joined up after the loop)
+          const k = !pr.shadow || d2 < S2 ? pr.near++ : pr.cap - 1 - pr.far++;
           for (const im of pr.meshes) {
             const a = im.instanceMatrix.array as Float32Array;
             for (let e = 0; e < 16; e++) a[k * 16 + e] = arr[i + 1 + e];
@@ -1109,7 +1139,12 @@ export class GroundCover {
     let tris = 0;
     for (const pr of this.protos) {
       for (const im of pr.meshes) {
+        if (pr.far) {
+          const a = im.instanceMatrix.array as Float32Array;
+          a.copyWithin(pr.near * 16, (pr.cap - pr.far) * 16, pr.cap * 16);
+        }
         im.count = pr.count;
+        im.userData.shadowN = pr.near;
         im.visible = pr.count > 0;
         if (pr.count) {
           im.instanceMatrix.clearUpdateRanges();
@@ -1135,9 +1170,14 @@ export class GroundCover {
     pr.meshes = pr.meshes.map((old) => {
       const im = new THREE.InstancedMesh(old.geometry, old.material, cap);
       im.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-      (im.instanceMatrix.array as Float32Array).set(old.instanceMatrix.array as Float32Array);
+      const a = im.instanceMatrix.array as Float32Array;
+      a.set(old.instanceMatrix.array as Float32Array);
+      // the back-packed (far) block moves to the new end
+      if (pr.far) a.copyWithin((cap - pr.far) * 16, (pr.cap - pr.far) * 16, pr.cap * 16);
       im.frustumCulled = true;
       im.intersectsFrustum = notLampFrustum;
+      im.onBeforeShadow = shadowCountOn;
+      im.onAfterShadow = shadowCountOff;
       im.castShadow = old.castShadow;
       im.receiveShadow = true;
       im.customDepthMaterial = old.customDepthMaterial;

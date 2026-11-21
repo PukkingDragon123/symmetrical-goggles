@@ -1,15 +1,18 @@
 // The main story, in chapters, played out with things you find and do:
-//   1 Gone up the line  Ray's letter at the post wicket, his ammo can under the woodshed, the orange tape to the
-//                       split rock where his trapline starts
+//   1 Gone up the line  Pépère's last letter at the post wicket (read with the will), his ammo can under the
+//                       woodshed, the orange tape to the split rock where his trapline starts
 //   2 The plates        five sets, jaws wired shut: put food on the tin plates, and in the morning something has
 //                       eaten it and left a thank-you
 //   3 Camp Kettle       the abandoned logging camp on the north shore: the cook's ledger, the 1951 notice, a
 //                       bedroll somebody has been sleeping in, Délima's barrel stove
 //   4 The lake          fresh boot prints from the cookhouse door to a dock; the gut hammer hanging at the end
 //   5 Supper's on       hang it back on its post, put a hot supper on the table, ring it at sundown: the others
-//                       come to the edge of the firelight, and Ray walks up from the dock with a lantern
-// What happened to Ray: his knee gave out, and the camp needed a cook. Why the camp: his grandmother cooked there
-// and never left. What the critters want: supper, and somebody to tell it to.
+//                       come to the edge of the firelight, and Pépère walks up from the dock with a lantern
+// What happened to Ray: Pépère Ray, your grandfather, died this spring. He left you the cabin, Camp Kettle and
+// Délima's tradition in his will, and hid his pages so you'd find the rest yourself. Somebody has been sleeping in
+// the cookhouse since; the boot prints are fresh; the ranger's camera caught him in October. The night you ring
+// for supper his spirit walks up from the dock to eat with the crew one last time, then he's gone. Why the camp:
+// his grandmother cooked there and never left. What the critters want: supper, and somebody to tell it to.
 import * as THREE from 'three';
 import type { Game } from '../game';
 import { ITEMS, addItems } from '../items';
@@ -22,9 +25,12 @@ import { SOUNDS } from '../../audio/bank';
 import { loadProp } from '../../places/props';
 import { has, set, count, num, setNum, think, noted, dirty, foundPage, giveRecipe, mealsHeld, clang, paperOn, RECIPE_NAMES } from './kit';
 import { PAGES, RADIO_LOG } from './text';
-import { CAMP, SETS } from './sites';
+import { CAMP, SETS, SHORE, TRAP_HEAD, WOODYARD } from './sites';
 import { showOnPlate, tickStove, gutHammerModel, type StoryWorld } from './world';
 import { buildProduct } from '../../places/products';
+import { puffs } from '../../gfx/particles';
+import { objectiveSources, type Objective } from '../../ui/objectives';
+import { chapterCard, cineUI } from '../cinematic/overlay';
 
 // ---------------------------------------------------------------------------------------------- chapters
 interface Step { id: string; todo: (g: Game) => string; done: (g: Game) => boolean }
@@ -33,8 +39,8 @@ const S = (id: string, todo: string | ((g: Game) => string), done?: (g: Game) =>
 
 export const CHAPTERS: Chapter[] = [
   {
-    n: 1, title: 'Gone up the line', hint: 'Ray never said where he went. Pruneau\'s does the mail.', steps: [
-      S('letter', 'Ask at Pruneau\'s post wicket for mail'),
+    n: 1, title: 'Gone up the line', hint: 'Pépère left more than the will. Odile at Pruneau\'s has his last letter.', steps: [
+      S('letter', 'Ask Odile at the post wicket for Pépère\'s letter'),
       S('cache1', 'Look under the woodshed stack, by the block'),
       S('cache2', 'Follow Ray\'s orange tape into the bush'),
     ],
@@ -47,14 +53,14 @@ export const CHAPTERS: Chapter[] = [
     ],
   },
   {
-    n: 3, title: 'Camp Kettle', hint: 'Set five said the camp is just past it, on the shore.', steps: [
+    n: 3, title: 'Camp Kettle', hint: 'Set five said the camp is just past it, on the shore. His camp now. Yours.', steps: [
       S('camp', 'Find the old camp past set five'),
       S('ledger', 'Look round the cookhouse'),
       S('camp_stove', 'Light the cookhouse stove'),
     ],
   },
   {
-    n: 4, title: 'The lake', hint: 'Fresh boot prints in the mud outside the cookhouse door.', steps: [
+    n: 4, title: 'The lake', hint: 'Boot prints in the mud outside the cookhouse door. Fresh ones. His size.', steps: [
       S('dock', 'Follow the boot prints from the cookhouse door'),
       S('hammer', 'See what\'s hanging at the end of the dock'),
     ],
@@ -68,6 +74,7 @@ export const CHAPTERS: Chapter[] = [
   },
 ];
 const EPILOGUE = { title: 'The cook', lines: ['Keep the plates full. Hot, not scraps.', 'Tell them stories at the fire.', 'After Dark, Thursdays at nine.'] };
+const WORDS = ['One', 'Two', 'Three', 'Four', 'Five'];
 
 /** the chapter you're in (6 after the ending) */
 export function chapter(g: Game): number {
@@ -80,6 +87,39 @@ export function todoBlocks(g: Game): { title: string; lines: { text: string; don
   if (n > 5) return { title: `Epilogue — ${EPILOGUE.title}`, lines: EPILOGUE.lines.map((t) => ({ text: t, done: false })) };
   const c = CHAPTERS[n - 1];
   return { title: `Chapter ${['One', 'Two', 'Three', 'Four', 'Five'][n - 1]} — ${c.title}`, lines: c.steps.map((s) => ({ text: s.todo(g), done: s.done(g) })) };
+}
+
+// ---------------------------------------------------------------------------------------------- the objective line
+let arcW: StoryWorld | null = null;
+const introDone = (g: Game) => g.flags.has('intro_done') || g.flags.has('free') || g.day >= 1;
+const _tp = new THREE.Vector3();
+/** where a step happens (for the objective's distance, direction and pin) */
+function stepTarget(g: Game, id: string): THREE.Vector3 | THREE.Object3D | null {
+  const W = arcW;
+  if (!W) return null;
+  switch (id) {
+    case 'letter': return (g.store?.anchors?.post_wicket as THREE.Object3D | undefined) ?? NPCS.get('odile')?.model.root ?? null;
+    case 'cache1': return W.ammoCan ?? (g.cabin?.anchors?.woodshed_stack as THREE.Object3D | undefined) ?? WOODYARD;
+    case 'cache2': return TRAP_HEAD;
+    case 'sets': return SETS.find((_, i) => !has(g, `set:${i}`)) ?? null;
+    case 'fed': return W.plates.find((_, i) => !has(g, `plate:fed:${i}`))?.pos ?? null;
+    case 'gift': return W.plates.find((_, i) => num(g, `plate${i}`) !== null)?.pos ?? null;
+    case 'camp': return _tp.copy(CAMP.pos).setY(CAMP.pos.y + 1);
+    case 'ledger': case 'supper': return W.table;
+    case 'camp_stove': return W.stove.light.position;
+    case 'dock': case 'hammer': return W.dockEnd;
+    case 'hung': case 'ending': return W.postTop;
+    default: return null;
+  }
+}
+/** the story's line for the objective HUD: this chapter's next step (null during the intro) */
+export function storyObjective(g: Game): Objective | null {
+  if (!arcW || !introDone(g)) return null;
+  const n = chapter(g);
+  if (n > 5) return { id: 'epilogue', kicker: `Epilogue · ${EPILOGUE.title}`, text: EPILOGUE.lines[0] };
+  const c = CHAPTERS[n - 1], st = c.steps.find((x) => !x.done(g));
+  if (!st) return null;
+  return { id: `ch${n}:${st.id}`, kicker: `Chapter ${WORDS[n - 1]} · ${c.title}`, text: st.todo(g), target: stepTarget(g, st.id), reach: 3 };
 }
 
 // ---------------------------------------------------------------------------------------------- items
@@ -109,9 +149,13 @@ const GIFTS: { item: string; n: number; text: string }[] = [
 
 export class Arc {
   private t = 0;
+  /** seconds on your feet since the last cutscene or sleep (chapter cards wait for the morning's own card) */
+  private walkT = 0;
   finale: Finale | null = null;
   constructor(private g: Game, private W: StoryWorld) {
     this.wire();
+    arcW = W;
+    if (!objectiveSources.includes(storyObjective)) objectiveSources.push(storyObjective);
   }
 
   private wire(): void {
@@ -149,7 +193,7 @@ export class Arc {
     W.label.bedroll = () => has(g, 'bedroll') ? 'Somebody\'s bedroll (still warm-ish)' : 'Look at the bedroll';
     W.on.bedroll = () => {
       g.readPaper(PAGES.ray5.blocks, 55);
-      if (set(g, 'bedroll')) { foundPage(g, 'ray5', PAGES.ray5.title); think('Somebody\'s been sleeping here. Recently. The page is in Ray\'s hand.', 4); }
+      if (set(g, 'bedroll')) { foundPage(g, 'ray5', PAGES.ray5.title); think('Somebody\'s been sleeping here. Recently. The page is in his hand, fresh pencil. ...He died in April.', 5); }
     };
     W.label.stove = () => has(g, 'camp_stove') ? 'Délima\'s stove (drawing well)' : g.owns('matches') ? 'Light Délima\'s stove' : 'A barrel stove. Matches?';
     W.on.stove = () => {
@@ -295,6 +339,7 @@ export class Arc {
     W.stove.level += ((has(g, 'camp_stove') ? 1 : 0) - W.stove.level) * Math.min(1, dt * 0.8);
     W.lamp.level += (((has(g, 'supper') || has(g, 'ending')) && (g.hour > 17 || g.hour < 7) ? 1 : 0) - W.lamp.level) * Math.min(1, dt * 1.5);
     this.finale?.update(dt);
+    this.walkT = g.mode === 'walk' ? this.walkT + dt : 0;
     this.t -= dt;
     if (this.t > 0) return;
     this.t = 0.5;
@@ -309,7 +354,7 @@ export class Arc {
     });
     if (!has(g, 'camp') && p.distanceTo(CAMP.pos) < 22) {
       set(g, 'camp');
-      hud.title('Camp Kettle', 'Rang 4 Timber Co., 1923–1951', 4.5);
+      void chapterCard({ kicker: 'Rang 4 Timber Co., 1923–1951', title: 'Camp Kettle', sub: 'His camp. Délima\'s camp. Yours, the will says.', secs: 5 });
     }
     if (!has(g, 'dock') && has(g, 'camp') && p.distanceTo(W.dockEnd) < 5) { set(g, 'dock'); think('A dock. New boards nailed over old ones. Something hanging at the end.', 3.5); }
     this.syncPlates();
@@ -319,18 +364,16 @@ export class Arc {
     if (has(g, 'supper') && !W.supper && !this.finale) { const f = [...g.flags].find((x) => x.startsWith('st:supper_id:')); this.showSupper(f ? f.slice(13) : 'beans'); }
     // chapter title cards
     const ch = chapter(g);
-    if (g.mode === 'walk' && (g.flags.has('free') || g.day >= 1) && !has(g, `ch:${ch}`)) {
+    if (g.mode === 'walk' && this.walkT > 4.5 && (g.flags.has('free') || g.day >= 1) && !has(g, `ch:${ch}`)) {
       set(g, `ch:${ch}`);
-      if (ch <= 5) { const c = CHAPTERS[ch - 1]; hud.title(`Chapter ${['One', 'Two', 'Three', 'Four', 'Five'][ch - 1]}`, c.title, 4); setTimeout(() => think(c.hint, 4), 4200); dirty(); }
+      if (ch <= 5) { const c = CHAPTERS[ch - 1]; void chapterCard({ kicker: `Chapter ${WORDS[ch - 1]}`, title: c.title, sub: c.hint, secs: 6 }); dirty(); }
     }
-    // after the ending Ray stays the night at the camp, and is gone by morning
+    // Pépère is only ever there on the night somebody rings for supper (and in a save from before, he's gone too)
     const ray = NPCS.get('ray');
-    if (ray && has(g, 'ending') && !this.finale?.running) {
-      const ed = num(g, 'ending_day') ?? g.day;
-      const gone = g.day > ed && g.hour > 7;
-      if (gone && !has(g, 'ray_gone')) { set(g, 'ray_gone'); }
-      ray.hidden = has(g, 'ray_gone');
-      if (!ray.hidden && !ray.override) ray.override = { at: W.rayChair, face: W.rayFace, anim: 'sit' };
+    if (ray && !this.finale?.running) {
+      ray.hidden = true;
+      ray.override = null;
+      if (has(g, 'ending') && !has(g, 'ray_gone')) set(g, 'ray_gone');
     }
   }
 
@@ -366,6 +409,64 @@ const VOICES: [critter: string, rule: string, sound: string][] = [
   ['dingbat', 'dark', 'dingbat_flutter'], ['goofus', 'r4', 'bird_raven'], ['hodag', 'r4', 'moose_grunt'], ['squonk', 'r5', 'bird_loon'],
 ];
 
+/**
+ * Pépère as he is now: see-through and cold, lit warm only by the lantern he carries. Clones the model's materials
+ * once (the people share theirs), and gives them back when he goes.
+ */
+class Ghost {
+  private meshes: THREE.Mesh[] = [];
+  private orig = new Map<THREE.Mesh, THREE.Material | THREE.Material[]>();
+  private clones = new Map<THREE.Material, THREE.MeshStandardMaterial>();
+  private ghosts = new Set<THREE.Material>();
+  private cast = new Map<THREE.Mesh, boolean>();
+  private glitch = 0;
+  private glitchT = 3;
+  constructor(private root: THREE.Object3D) {
+    root.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh) this.meshes.push(m); });
+  }
+  private ghostOf(src: THREE.Material): THREE.Material {
+    if (this.ghosts.has(src)) return src;
+    let gm = this.clones.get(src);
+    if (!gm) {
+      const base = src as THREE.MeshStandardMaterial;
+      gm = (base.isMeshStandardMaterial ? base.clone() : new THREE.MeshStandardMaterial({ color: 0xb8c4d6 })) as THREE.MeshStandardMaterial;
+      gm.transparent = true;
+      gm.depthWrite = true;
+      gm.color = (base.color?.clone() ?? new THREE.Color(1, 1, 1)).lerp(new THREE.Color(0.72, 0.8, 0.92), 0.55);
+      gm.emissive = new THREE.Color(0.2, 0.26, 0.36);
+      gm.emissiveMap = base.map ?? null;
+      gm.opacity = 0;
+      this.clones.set(src, gm);
+      this.ghosts.add(gm);
+    }
+    return gm;
+  }
+  /** level 0..1 (how much of him is here), t for the flicker */
+  set(level: number, t: number, dt: number): void {
+    // now and then he isn't quite there for a moment
+    this.glitchT -= dt;
+    if (this.glitchT <= 0) { this.glitchT = 2.5 + Math.random() * 5; this.glitch = 0.09 + Math.random() * 0.1; }
+    this.glitch -= dt;
+    const flick = this.glitch > 0 ? 0.25 : 0.86 + 0.1 * Math.sin(t * 7.3) * Math.sin(t * 2.1) + 0.04 * Math.sin(t * 23.0);
+    const op = Math.max(0, Math.min(1, level)) * 0.58 * flick;
+    for (const m of this.meshes) {
+      if (!this.orig.has(m)) { this.orig.set(m, m.material); this.cast.set(m, m.castShadow); }
+      const cur = m.material;
+      if (Array.isArray(cur)) { if (!cur.every((x) => this.ghosts.has(x))) m.material = cur.map((x) => this.ghostOf(x)); }
+      else if (!this.ghosts.has(cur)) m.material = this.ghostOf(cur);
+      m.castShadow = false;
+    }
+    for (const gm of this.clones.values()) { gm.opacity = op; gm.emissiveIntensity = 0.5 + 0.5 * level; }
+  }
+  /** solid again (for the next time anyone looks: nobody will) */
+  restore(): void {
+    for (const [m, mat] of this.orig) { m.material = mat; m.castShadow = this.cast.get(m) ?? true; }
+    this.orig.clear();
+    for (const gm of this.clones.values()) gm.dispose();
+    this.clones.clear(); this.ghosts.clear();
+  }
+}
+
 class Finale {
   running = true;
   private t = 0;
@@ -373,6 +474,11 @@ class Finale {
   private ray: Npc | null;
   private stage = 0;
   private lantern: THREE.Object3D | null = null;
+  private ghost: Ghost | null = null;
+  private level = 0;
+  private want = 0;
+  private goneT = 0;
+  private readonly _p = new THREE.Vector3();
   constructor(private g: Game, private W: StoryWorld) {
     this.ray = NPCS.get('ray') ?? null;
     clang(W.postTop, 1, 0.9); clang(W.postTop, 1, 1.8);
@@ -424,19 +530,35 @@ class Finale {
     b.object.visible = true;
   }
 
+  /** from the water's edge where his boot prints end, the lantern swinging, not quite all there */
   private rayWalksUp(): void {
-    const g = this.g, W = this.W, ray = this.ray;
+    const W = this.W, ray = this.ray;
     if (!ray) return;
     ray.hidden = false;
-    const from = W.dockEnd.clone().sub(W.doorOut).setY(0).normalize().multiplyScalar(16).add(W.doorOut);
-    from.y = heightAt(from.x, from.z);
-    ray.model.root.position.copy(from);
-    ray.override = { at: W.doorOut.clone(), face: CAMP.yaw + Math.PI, anim: 'idle', speed: 0.9 };
+    const edge = SHORE.edge.distanceTo(W.doorOut) < 45 ? SHORE.edge.clone() : W.dockEnd.clone().sub(W.doorOut).setY(0).normalize().multiplyScalar(16).add(W.doorOut);
+    edge.y = heightAt(edge.x, edge.z);
+    ray.model.root.position.copy(edge);
+    ray.override = { at: W.doorOut.clone(), face: CAMP.yaw + Math.PI, anim: 'idle', speed: 0.8 };
+    this.ghost = new Ghost(ray.model.root);
+    this.ghost.set(0, this.t, 0);
+    this.want = 1;
     // he carries the table's lantern up from the dock (its light goes with it: no new lights)
     const lamp = W.lamp.obj;
     try { this.lantern = lamp; ray.model.socket('L').add(lamp); lamp.position.set(0, -0.3, 0); lamp.rotation.set(0, 0, 0); lamp.scale.setScalar(0.85); } catch { /* no socket: it stays on the table */ }
-    think('Somebody\'s coming up from the dock. A lantern.', 3.5);
-    void g;
+    audio.play('amb_drone', { pos: edge, vol: 0.35 });
+    puffs.emit(edge.clone().add(new THREE.Vector3(0, 0.4, 0)), new THREE.Vector3(0, 0.2, 0), { size: 0.8, grow: 2.5, life: 5, color: new THREE.Color(0.7, 0.76, 0.86), alpha: 0.18, n: 5, spread: 0.6 });
+    think('Somebody\'s coming up from the water. A lantern. ...I know that walk.', 4);
+  }
+
+  /** he goes the way he came: thinner and thinner, and the cold goes with him */
+  private fade(dt: number): void {
+    const ray = this.ray;
+    this.want = 0;
+    this.goneT += dt;
+    if (ray && Math.random() < dt * 6) {
+      ray.model.root.getWorldPosition(this._p);
+      puffs.emit(this._p.add(new THREE.Vector3((Math.random() - 0.5) * 0.4, 0.5 + Math.random() * 1.1, (Math.random() - 0.5) * 0.4)), new THREE.Vector3(0, 0.35, 0), { size: 0.3, grow: 3, life: 3.5, color: new THREE.Color(0.75, 0.8, 0.9), alpha: 0.16, rise: 0.3 });
+    }
   }
 
   update(dt: number): void {
@@ -449,11 +571,14 @@ class Finale {
       if (e.blink < 0) e.blink = 2 + Math.random() * 5;
       e.m.visible = on && e.blink > 0.14;
     }
+    // how much of him is here: in over a few seconds, out slower
+    this.level += (this.want - this.level) * Math.min(1, dt * (this.want > this.level ? 0.5 : 0.35));
+    if (this.ghost) this.ghost.set(this.level, this.t, dt);
     if (this.stage === 0 && this.t > 3) { this.stage = 1; this.spawnEyes(); this.voices(); }
     if (this.stage === 1 && this.t > 8) { this.stage = 2; this.bigfootAtTreeline(); think('They\'ve come to the edge of the firelight. All of them. Waiting.', 4); }
     if (this.stage === 2 && this.t > 13) { this.stage = 3; this.rayWalksUp(); }
     const ray = this.ray;
-    if (this.stage === 3 && (!ray || ray.model.root.position.distanceTo(W.doorOut) < 0.6 || this.t > 90)) {
+    if (this.stage === 3 && (!ray || ray.model.root.position.distanceTo(W.doorOut) < 0.6 || this.t > 100)) {
       this.stage = 4;
       ray?.model.root.position.copy(W.doorOut);
       ray?.say([
@@ -467,29 +592,40 @@ class Finale {
       this.stage = 5;
       // the lantern back on the table
       if (this.lantern) { W.lamp.light.position.copy(W.lamp.home); this.lantern.removeFromParent(); this.lantern.position.copy(W.lamp.home).add(new THREE.Vector3(0, -0.42, 0)); this.lantern.scale.setScalar(1); this.g.scene.add(this.lantern); this.lantern = null; }
-      ray.override = { at: W.rayChair, face: W.rayFace, anim: 'sit', speed: 0.9 };
+      ray.override = { at: W.rayChair, face: W.rayFace, anim: 'sit', speed: 0.8 };
       ray.say([
         'My grandmother cooked here. When the Company left, she stayed. Somebody had to feed them.',
         'They\'re our stories, kid. Thirty winters of men at the bunkhouse stove making things up, and the bush believed every word.',
         'They don\'t want to scare anybody. They want what the men wanted. Supper, and somebody to tell it to.',
-        'I\'m seventy-nine. My knee sounds like a bag of gravel. Your Aunt Lise has a condo in Kissimmee with a pool shaped like a kidney.',
-        'I am going to sit in it until I die. Or April.',
+        'Don\'t make that face. I know what I am. I was there for it. April, in my own bunk, with the stove going. There are worse ways.',
+        'I couldn\'t go till somebody rang it. Délima\'s rules. Whoever cooks here keeps the book.',
         'The cabin\'s yours. The plates, the book, the crew. Feed them hot. Tell them stories. Learn their rules: the book\'ll help, if it likes you.',
         'And here. Délima\'s recipe box. It\'s mostly grease stains, but they\'re good grease stains.',
-        'You\'re the cook now.',
+        'You\'re the cook now. ...Tell Odile. Thursdays, nine o\'clock. She\'ll know.',
       ]);
     }
     if (this.stage === 5 && (!ray || !ray.busy)) {
       this.stage = 6;
       set(g, 'ending'); setNum(g, 'ending_day', g.day);
-      hud.title('BUSHED', 'Supper\'s on.', 7);
-      floatText.clearTitles();
       // the recipe box: every card you haven't been given yet
       let delay = 0;
-      for (const id of Object.keys(RECIPE_NAMES)) if (!has(g, `recipe:${id}`)) { setTimeout(() => giveRecipe(g, id, 'Délima'), (2 + delay) * 1000); delay += 1.6; }
-      noted(g, 'Ray took the Tuesday bus to Kissimmee.');
+      for (const id of Object.keys(RECIPE_NAMES)) if (!has(g, `recipe:${id}`)) { setTimeout(() => giveRecipe(g, id, 'Délima'), (5 + delay) * 1000); delay += 1.6; }
+      audio.play('bird_loon', { pos: SHORE.edge, vol: 0.6, delay: 1.2 });
     }
-    if (this.stage === 6 && this.t > 0) {
+    if (this.stage === 6) {
+      this.fade(dt);
+      if (this.level < 0.03 || this.goneT > 12) {
+        this.stage = 7;
+        if (ray) { ray.hidden = true; ray.override = null; }
+        this.ghost?.restore(); this.ghost = null;
+        set(g, 'ray_gone');
+        think('The bench is empty. The lantern\'s on the table where it always was. His bowl is clean.', 5.5);
+        floatText.clearTitles();
+        setTimeout(() => cineUI.title('BUSHED', 'Supper\'s on.', 7.5), 4200);
+        noted(g, 'Pépère ate with his crew one last time.');
+      }
+    }
+    if (this.stage === 7) {
       // the guests stay till you leave; then the night takes them back
       if (g.player.pos.distanceTo(W.doorOut) > 60 || (g.hour > 5 && g.hour < 12)) {
         this.stage = 9;
@@ -501,4 +637,3 @@ class Finale {
     if (!ray && this.stage === 3) this.stage = 5;
   }
 }
-

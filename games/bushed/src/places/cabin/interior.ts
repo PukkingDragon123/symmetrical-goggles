@@ -12,6 +12,7 @@ import { CABIN, CABIN_GEOM } from '../cabinplan';
 import type { DressCtx } from '../dressing';
 import { CLOTH } from './tex';
 import { bakeProduct, bakeProp, cellBox, cellLathe, cellTube, cellUV, atlasQuad, noRay, farCull } from './bake';
+import { cornerWeb, webMaterial } from '../../world/fauna/webs';
 
 const { W, D, R, FLOOR: F } = CABIN;
 const { EAVE } = CABIN_GEOM;
@@ -270,20 +271,19 @@ export async function cabinInterior(c: DressCtx): Promise<void> {
     ms.pop();
   }
 
-  // ---- cobwebs in the upper corners and between the beams and the logs
-  if (hi) {
-    const yTop = EAVE - 0.15;
-    const web = (x: number, y: number, z: number, ry: number, s: number) => {
-      ms.pushT(x, y, z, ry, 0, Math.PI);
-      ms.pushT(s / 2, s / 2, 0);
-      atlasQuad(ms, 'cab_card', 'decal', 'cobweb', s, s);
-      ms.pop(); ms.pop();
-    };
-    web(-wallX + 0.01, yTop, -wallZ + 0.25, Math.PI / 4, 0.38);
-    web(wallX - 0.01, yTop, wallZ - 0.2, Math.PI / 4 + Math.PI, 0.35);
-    web(-wallX + 0.25, yTop, wallZ - 0.01, -Math.PI / 4 + Math.PI, 0.3);
-    web(0.4, EAVE - 0.33, -1.0, 0, 0.3);
-    web(-1.6, F + 0.42, -wallZ + 0.02, 0, 0.18);
+  // ---- cobwebs: old dusty sheet webs strung thread by thread into the upper corners, under a tie beam and in the
+  // gap behind the bunk leg (line geometry, src/world/fauna/webs.ts), lit by the room's lamps and the flashlight
+  {
+    const yTop = EAVE - 0.05, beamUnder = EAVE - 0.2 - 0.11;
+    const mats = webMaterial({ dust: 0.8, lamp: V(-0.4, 2.3, 0.2) });
+    const webs: [THREE.Vector3, THREE.Vector3, THREE.Vector3, THREE.Vector3, number][] = [
+      [V(-wallX + 0.02, yTop, -wallZ + 0.02), V(1, 0, 0), V(0, 0, 1), V(0, -1, 0), 0.46],
+      [V(wallX - 0.02, yTop, wallZ - 0.02), V(-1, 0, 0), V(0, 0, -1), V(0, -1, 0), 0.4],
+      [V(-wallX + 0.02, yTop, wallZ - 0.02), V(1, 0, 0), V(0, 0, -1), V(0, -1, 0), 0.36],
+      [V(wallX - 0.03, beamUnder, -1.05 + 0.1), V(-1, 0, 0), V(0, 0, 1), V(0, -1, 0), 0.32],
+      [V(-1.32, F + 0.015, -wallZ + 0.03), V(1, 0, 0), V(0, 0, 1), V(0, 1, 0), 0.2],
+    ];
+    webs.forEach(([apex, e1, e2, e3, size], i) => c.group.add(cornerWeb({ apex, e1, e2, e3, size, seed: 4100 + i * 37, mats }).object));
   }
 
   await Promise.all(pending);

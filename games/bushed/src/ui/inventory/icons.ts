@@ -46,9 +46,34 @@ export function itemIconTex(id: string): THREE.Texture {
 }
 
 export function iconReady(id: string): Promise<HTMLCanvasElement> { return entry(id).ready; }
+/** an icon (item or objectIcon key) has been drawn */
+export function iconDone(key: string): boolean { return icons.get(key)?.done ?? false; }
 
 /** every icon in ITEMS (for warming up or a contact sheet) */
 export function allIconsReady(ids = Object.keys(ITEMS)): Promise<HTMLCanvasElement[]> { return Promise.all(ids.map(iconReady)); }
+
+/**
+ * An icon of any object (a carried log or round, a prop with no item id), cached by key: the first object rendered
+ * under a key stands for every later one (keys like 'piece:birch:round').
+ */
+export function objectIcon(key: string, obj: THREE.Object3D): HTMLCanvasElement {
+  let e = icons.get(key);
+  if (e) return e.canvas;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = ICON_PX;
+  const m = obj.clone(true);
+  m.position.set(0, 0, 0); m.quaternion.identity(); m.scale.setScalar(1);
+  e = { canvas, tex: null, ready: null as unknown as Promise<HTMLCanvasElement>, done: false };
+  const ent = e;
+  ent.ready = enqueue(async () => {
+    await texturesReady(m);
+    canvas.getContext('2d')!.putImageData(pixelArt(renderModel(m, key), key), 0, 0);
+    ent.done = true;
+    return canvas;
+  });
+  icons.set(key, ent);
+  return canvas;
+}
 
 function entry(id: string): Entry {
   let e = icons.get(id);

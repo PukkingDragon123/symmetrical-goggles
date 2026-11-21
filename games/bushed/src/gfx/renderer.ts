@@ -8,12 +8,23 @@
 //   4. composite at internal res: lake reflections (screen-space ray march, sky probe fallback, Fresnel, wind
 //      roughness), atmosphere, sun-tinted aerial perspective (Mie glow), shafts, bloom, filmic tone map, grade
 //      (exposure, contrast, lift/gamma/gain, split toning, saturation), vignette, ordered dither + quantise, grain
-//   5. nearest-neighbour upscale to the screen.
+//   5. motion blur (inside the composite, before the lake / atmosphere / tone map): camera blur from the depth buffer
+//      reprojected with last frame's view-projection, per-object blur for tracked movers (the Jeep, the trailer,
+//      anything passed to trackMotion) from a small velocity pass; the viewmodel and the DOM HUD never smear
+//   6. nearest-neighbour upscale to the screen.
 // Every pass snaps to the internal pixel grid so the picture reads as crisp, high-resolution pixel art.
+// The viewmodel (arms, tools, journal) is drawn into the same target with its depth squashed into [0, VM_DEPTH]
+// of the depth range, so it always wins against the world without clearing the world's depth (the post chain reads
+// it: atmosphere, shafts, haze, the lake, motion blur).
 import * as THREE from 'three';
 import { G, WATER_GLSL } from './globals';
 import { SKY_GLSL, SKY_UNIFORMS } from './sky';
 import { MatteWatcher } from './matte';
+import { CullWatcher, setCullFocal, setMainView } from './cull';
+import { motionBlur, currentQuality } from '../game/quality';
+
+/** the viewmodel's share of the depth range (window depth 0..VM_DEPTH); world depths are always above it */
+const VM_DEPTH = 0.04;
 
 const VERT = /* glsl */`
 varying vec2 vUv;
@@ -104,9 +115,41 @@ export class Renderer {
   private v3b = new THREE.Vector3();
   private sunUv = new THREE.Vector2();
   private lights: THREE.PointLight[] = [];
+  /** every point / spot light in the world (rescanned every 45 frames) */
+  private lamps: (THREE.PointLight | THREE.SpotLight)[] = [];
   private lightScanAt = -1;
-  private lightPick: { l: THREE.PointLight; s: number }[] = [];
+  private lightPickL: THREE.PointLight[] = [];
+  private lightPickS: number[] = [];
+  private lightOrder: number[] = [];
+  // lamp shadow scheduling (cube maps refreshed round robin, nearest first)
+  private lampBudget = 0;
+  private lampAge = new WeakMap<THREE.Light, number>();
+  private lampCand: THREE.PointLight[] = [];
+  private lampPos = new WeakMap<THREE.Light, [THREE.Vector3, THREE.Vector3]>();
+  // motion blur
+  /** debug / capture: a fixed frame time for the blur (seconds); 0 = measured */
+  fixedDt = 0;
+  /** debug: the size culling's focal length in pixels (0 = from the internal resolution and the camera) */
+  cullFocal = 0;
+  private lastT = 0;
+  private prevVP = new THREE.Matrix4();
+  private curVP = new THREE.Matrix4();
+  private prevCamPos = new THREE.Vector3();
+  private prevCamDir = new THREE.Vector3();
+  private hasPrev = false;
+  private velRT!: THREE.WebGLRenderTarget;
+  private mVel: THREE.ShaderMaterial;
+  private velCam = new THREE.PerspectiveCamera();
+  private velScene = new THREE.Scene();
+  private prevModel = new WeakMap<THREE.Object3D, THREE.Matrix4>();
+  private velSeen: THREE.Object3D[] = [];
+  private tracked = new Set<THREE.Object3D>();
+  private autoTracked = new WeakSet<THREE.Object3D>();
+  private vmProj = new THREE.Matrix4();
+  private vmSquash = new THREE.Matrix4().set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, VM_DEPTH, VM_DEPTH - 1, 0, 0, 0, 1);
+  private taps = 0;
   private matte = new MatteWatcher();
+  private culler = new CullWatcher();
   /** indoor volumes where the ground mist must not reach (the game's interior boxes); null = look for them on the
    *  game object (window.__game.interiors) */
   mistHoles: THREE.Box3[] | null = null;
@@ -311,6 +354,7 @@ export class Renderer {
         uniform float uExposure; uniform vec3 uLift; uniform vec3 uGamma; uniform vec3 uGain; uniform float uSat; uniform float uWarm; uniform float uCon;
         uniform float uVig; uniform float uGrain; uniform float uShafts; uniform float uBloom; uniform float uMie; uniform float uQuant;
         uniform float uFlash; uniform float uDamage; uniform float uCold; uniform float uFade;
+        uniform mat4 uPrevVP; uniform float uMB; uniform float uMBMax; uniform sampler2D tVel; uniform float uVelOn;
         varying vec2 vUv;
         ${COMMON}
         ${WATER_GLSL}
@@ -363,6 +407,41 @@ export class Renderer {
           float sky = step(0.99999, d);
           if (sky > 0.5) dist = uFar;
           float dl = -vp.z;
+
+          // ---- motion blur: camera velocity from the depth reprojected with last frame's view-projection, tracked
+          // movers from the velocity pass where it matches this depth; the viewmodel (squashed depth) stays sharp
+          // and is never gathered into the world
+          if (uMB > 0.0 && d > ${VM_DEPTH.toFixed(3)}) {
+            vec4 pc = uPrevVP * vec4((uCamWorld * vec4(vp.xyz, 1.0)).xyz, 1.0);
+            vec2 vel = pc.w > 1e-4 ? uv - (pc.xy / pc.w * 0.5 + 0.5) : vec2(0.0);
+            float onObj = 0.0;
+            if (uVelOn > 0.5) {
+              vec4 ov = texture2D(tVel, uv);
+              if (ov.a > 0.5 && abs(ov.b - dl) < 0.08 + 0.03 * dl) { vel = ov.rg; onObj = 1.0; }
+            }
+            vec2 vpx = vel * uRes * uMB;
+            float L = length(vpx);
+            if (L > uMBMax) { vpx *= uMBMax / L; L = uMBMax; }
+            if (L > 0.75) {
+              vec2 dv = vpx / uRes;
+              float jit = bayer4(px) - 0.5;
+              vec3 acc = col; float tw = 1.0;
+              // about one tap per 1.5 px of streak, up to the preset's MB_TAPS
+              int nt = int(clamp(ceil(L / 1.5), 3.0, float(MB_TAPS)));
+              float fn = float(nt);
+              for (int i = 0; i < MB_TAPS; i++) {
+                if (i >= nt) break;
+                float t = (float(i) + 0.5 + jit) / fn - 0.5;
+                vec2 q = uv + dv * t;
+                float w = step(${VM_DEPTH.toFixed(3)}, texture2D(tDepth, q).r);
+                // the world does not gather a tracked mover's pixels (the cab's pillars and dash stay crisp-edged
+                // while the road streaks past them); movers gather everything (they smear over what is behind)
+                if (uVelOn > 0.5 && onObj < 0.5) w *= 1.0 - 0.85 * texture2D(tVel, q).a;
+                acc += texture2D(tColor, q).rgb * w; tw += w;
+              }
+              col = acc / tw;
+            }
+          }
 
           // ---- lake: the water material marks its pixels with alpha < 1 (alpha = its opacity)
           vec3 wp = uCamPos + rd * dist;
@@ -457,9 +536,56 @@ export class Renderer {
         uVig: { value: 0.3 }, uGrain: { value: 0.04 },
         uShafts: { value: 0.6 }, uBloom: { value: 0.5 }, uMie: { value: 0.6 }, uQuant: { value: 48 },
         uFlash: { value: 0 }, uDamage: { value: 0 }, uCold: { value: 0 }, uFade: { value: 0 },
+        uPrevVP: { value: new THREE.Matrix4() }, uMB: { value: 0 }, uMBMax: { value: 40 }, tVel: { value: null }, uVelOn: { value: 0 },
       },
+      defines: { MB_TAPS: 10 },
       depthTest: false, depthWrite: false,
     });
+    // per-object velocity for tracked movers: clip-space motion (uv units), view depth, coverage
+    this.mVel = new THREE.ShaderMaterial({
+      vertexShader: /* glsl */`
+        #include <common>
+        #include <skinning_pars_vertex>
+        uniform mat4 uPrevModel; uniform mat4 uPrevVP;
+        varying vec4 vCur; varying vec4 vPrev; varying float vDepth;
+        void main() {
+          vec3 transformed = position;
+          #include <skinbase_vertex>
+          #include <skinning_vertex>
+          vec4 lp = vec4(transformed, 1.0);
+          #ifdef USE_INSTANCING
+            lp = instanceMatrix * lp;
+          #endif
+          vec4 mv = modelViewMatrix * lp;
+          vCur = projectionMatrix * mv;
+          vPrev = uPrevVP * (uPrevModel * lp);
+          vDepth = -mv.z;
+          gl_Position = vCur;
+        }`,
+      fragmentShader: /* glsl */`
+        uniform float uSkip;
+        varying vec4 vCur; varying vec4 vPrev; varying float vDepth;
+        void main() {
+          if (uSkip > 0.5) discard;
+          vec2 a = vCur.xy / vCur.w, b = vPrev.xy / max(vPrev.w, 1e-4);
+          gl_FragColor = vec4((a - b) * 0.5, vDepth, 1.0);
+        }`,
+      uniforms: { uPrevModel: { value: new THREE.Matrix4() }, uPrevVP: { value: new THREE.Matrix4() }, uSkip: { value: 0 } },
+      fog: false, lights: false, side: THREE.DoubleSide,
+    });
+    this.velScene.overrideMaterial = this.mVel;
+    this.velScene.matrixWorldAutoUpdate = false;
+    this.velCam.matrixAutoUpdate = false; this.velCam.matrixWorldAutoUpdate = false;
+    this.mVel.onBeforeRender = (_r, _s, _c, _g, object) => {
+      const u = this.mVel.uniforms;
+      const prev = this.prevModel.get(object);
+      u.uPrevModel.value.copy(prev ?? object.matrixWorld);
+      const m = (object as THREE.Mesh).material as THREE.Material | THREE.Material[];
+      const mm = Array.isArray(m) ? m[0] : m;
+      u.uSkip.value = mm && (mm.transparent || mm.visible === false) ? 1 : 0;
+      this.mVel.uniformsNeedUpdate = true;
+      this.velSeen.push(object);
+    };
     this.mBlit = new THREE.ShaderMaterial({
       vertexShader: VERT,
       fragmentShader: 'uniform sampler2D tSrc; varying vec2 vUv; void main() { gl_FragColor = texture2D(tSrc, vUv); }',
@@ -495,7 +621,16 @@ export class Renderer {
     this.eA = mk(this.w >> 3, this.h >> 3); this.eB = mk(this.w >> 3, this.h >> 3);
     this.sA = mk(this.w >> 4, this.h >> 4); this.sB = mk(this.w >> 4, this.h >> 4);
     this.shaftRT = mk(this.w >> 2, this.h >> 2);
+    this.velRT?.dispose();
+    this.velRT = new THREE.WebGLRenderTarget(this.w, this.h, {
+      type: THREE.HalfFloatType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, depthBuffer: true, samples: 0,
+    });
+    this.hasPrev = false;
   }
+
+  /** objects whose own motion blurs (drawn into the velocity pass); the vehicles and the first-person body are
+   *  found automatically */
+  trackMotion(obj: THREE.Object3D): void { this.tracked.add(obj); }
 
   get internalSize(): [number, number] { return [this.w, this.h]; }
 
@@ -532,30 +667,39 @@ export class Renderer {
     }
   }
 
+  /** every point / spot light under the world (cheap: every 45 frames) */
+  private scanLights(world: THREE.Scene): void {
+    if (this.frame < this.lightScanAt) return;
+    this.lightScanAt = this.frame + 45;
+    this.lights.length = 0; this.lamps.length = 0;
+    world.traverse((o) => {
+      if ((o as THREE.PointLight).isPointLight) { this.lights.push(o as THREE.PointLight); this.lamps.push(o as THREE.PointLight); }
+      else if ((o as THREE.SpotLight).isSpotLight) this.lamps.push(o as THREE.SpotLight);
+    });
+  }
+
+  private static shown(o: THREE.Object3D): boolean {
+    for (let p: THREE.Object3D | null = o; p; p = p.parent) if (!p.visible) return false;
+    return true;
+  }
+
   /** the brightest point lights near the camera (lanterns, windows, fires) for the air halos */
-  private pickLights(world: THREE.Scene, camera: THREE.PerspectiveCamera): number {
-    if (this.frame >= this.lightScanAt) {
-      this.lightScanAt = this.frame + 45;
-      this.lights.length = 0;
-      world.traverse((o) => { if ((o as THREE.PointLight).isPointLight) this.lights.push(o as THREE.PointLight); });
-    }
+  private pickLights(camera: THREE.PerspectiveCamera): number {
     const cp = camera.position;
-    this.lightPick.length = 0;
+    const L = this.lightPickL, S = this.lightPickS, O = this.lightOrder;
+    L.length = 0; S.length = 0; O.length = 0;
     for (const l of this.lights) {
-      if (l.intensity < 0.05 || !l.visible || !l.parent) continue;
-      let vis = true;
-      for (let p: THREE.Object3D | null = l.parent; p; p = p.parent) if (!p.visible) { vis = false; break; }
-      if (!vis) continue;
+      if (l.intensity < 0.05 || !l.parent || !Renderer.shown(l)) continue;
       l.getWorldPosition(this.v3);
       const d = this.v3.distanceTo(cp);
       if (d > 90) continue;
-      this.lightPick.push({ l, s: l.intensity / (1 + d * d * 0.02) });
+      O.push(L.length); L.push(l); S.push(l.intensity / (1 + d * d * 0.02));
     }
-    this.lightPick.sort((a, b) => b.s - a.s);
-    const n = Math.min(MAX_LIGHTS, this.lightPick.length);
+    O.sort((a, b) => S[b] - S[a]);
+    const n = Math.min(MAX_LIGHTS, O.length);
     const u = this.mVol.uniforms;
     for (let i = 0; i < n; i++) {
-      const l = this.lightPick[i].l;
+      const l = L[O[i]];
       l.getWorldPosition(this.v3);
       const range = l.distance > 0 ? Math.min(l.distance, 14) : 10;
       (u.uL.value[i] as THREE.Vector4).set(this.v3.x, this.v3.y, this.v3.z, range);
@@ -570,25 +714,160 @@ export class Renderer {
     return n;
   }
 
+  /**
+   * Lamp shadows on a budget. Moving spot lights (flashlight, headlights) refresh every shadow frame while lit, fixed
+   * ones every 6th; point-light cubes (six passes each) refresh round robin, stalest first, at `lampCubesPerFrame` cubes
+   * per frame within `lampShadowDist` (every ~10 s beyond it): a lantern's shadows rarely move. Dark lamps keep their
+   * last map. castShadow itself never changes here (no shader recompiles).
+   */
+  private scheduleLamps(camera: THREE.PerspectiveCamera): void {
+    const q = currentQuality();
+    const cp = camera.position;
+    const cand = this.lampCand; cand.length = 0;
+    // only frames that render shadow maps at all (the game refreshes them every q.shadowEvery frames) hand out work
+    const sm = this.gl.shadowMap;
+    const shadowFrame = sm.enabled && (sm.autoUpdate || sm.needsUpdate);
+    this.lampBudget = Math.min(this.lampBudget + q.lampCubesPerFrame, 2);
+    for (const l of this.lamps) {
+      if (!l.castShadow || !l.parent) continue;
+      const sh = l.shadow;
+      sh.autoUpdate = false;
+      if (!shadowFrame) { sh.needsUpdate = false; continue; }
+      const lit = l.intensity > 0.02 && Renderer.shown(l);
+      if (!lit) { sh.needsUpdate = false; continue; }
+      l.getWorldPosition(this.v3);
+      const d = this.v3.distanceTo(cp);
+      if ((l as THREE.SpotLight).isSpotLight) {
+        // the forest's shadow proxies (layer 1) also fall in the flashlight / headlights, like the sun's
+        if (sh.camera.layers.isEnabled(0)) sh.camera.layers.enable(1);
+        if (d > Math.max(45, q.lampShadowDist * 2) && this.lampAge.has(l)) { sh.needsUpdate = false; continue; }
+        // moving spots (the flashlight, headlights) every shadow frame, fixed ones (the cabin's spill) every 6th
+        const sp = l as THREE.SpotLight;
+        sp.target.getWorldPosition(this.v3b);
+        let mem = this.lampPos.get(l);
+        if (!mem) { mem = [new THREE.Vector3(1e9, 0, 0), new THREE.Vector3()]; this.lampPos.set(l, mem); }
+        const moved = mem[0].distanceToSquared(this.v3) > 1e-4 || mem[1].distanceToSquared(this.v3b) > 1e-4;
+        mem[0].copy(this.v3); mem[1].copy(this.v3b);
+        const age = this.frame - (this.lampAge.get(l) ?? -1e6);
+        sh.needsUpdate = moved || age >= 6;
+        if (sh.needsUpdate) this.lampAge.set(l, this.frame);
+        continue;
+      }
+      sh.needsUpdate = false;
+      // a lamp whose cube was never drawn would light nothing (an empty shadow map reads as fully shadowed): every
+      // lit lamp within sight gets its first cube; past lampShadowDist it is only refreshed now and then
+      if (d > 90) continue;
+      const age = this.frame - (this.lampAge.get(l) ?? -1e6);
+      if (d > q.lampShadowDist && age < 600) continue;
+      cand.push(l as THREE.PointLight);
+    }
+    if (!shadowFrame) return;
+    if (!cand.length) { this.lampBudget = 0; return; }
+    while (this.lampBudget >= 1 && cand.length) {
+      // stalest first (never rendered = most stale), nearer wins ties
+      let bi = 0, bs = -1e9;
+      for (let i = 0; i < cand.length; i++) {
+        const age = this.frame - (this.lampAge.get(cand[i]) ?? -1e6);
+        cand[i].getWorldPosition(this.v3);
+        const sc = age - this.v3.distanceTo(cp) * 0.5;
+        if (sc > bs) { bs = sc; bi = i; }
+      }
+      const l = cand[bi];
+      l.shadow.needsUpdate = true;
+      this.lampAge.set(l, this.frame);
+      cand.splice(bi, 1);
+      this.lampBudget -= 1;
+    }
+  }
+
+  /** the vehicles (game.jeep / truck / trailer / vehicle .root) and the first-person body (it turns with the camera,
+   *  so it must not smear like the world) join the velocity pass on their own */
+  private autoTrack(world: THREE.Scene): void {
+    const g = (globalThis as unknown as { __game?: Record<string, { root?: THREE.Object3D } | null | undefined> }).__game;
+    const add = (o: THREE.Object3D | undefined | null) => { if (o && o.isObject3D && !this.autoTracked.has(o)) { this.autoTracked.add(o); this.trackMotion(o); } };
+    if (g) for (const k of ['jeep', 'truck', 'trailer', 'vehicle']) add(g[k]?.root);
+    for (const c of world.children) if (c.name === 'fp-body') add(c);
+  }
+
+  /** per-object velocity of the tracked movers near the camera (rigid motion; skinned meshes use their pose). Drawn
+   *  as a stand-in scene that lists the tracked roots (their parents are untouched; matrices are already current from
+   *  the main render), so the pass costs only their draws */
+  private velocityPass(world: THREE.Scene, camera: THREE.PerspectiveCamera): boolean {
+    if (this.frame % 60 === 1) this.autoTrack(world);
+    const roots = this.velScene.children;
+    roots.length = 0;
+    for (const o of this.tracked) {
+      if (!o.parent || !Renderer.shown(o)) continue;
+      o.getWorldPosition(this.v3);
+      if (this.v3.distanceToSquared(camera.position) < 120 * 120) roots.push(o);
+    }
+    if (!roots.length) return false;
+    const vc = this.velCam;
+    vc.projectionMatrix.copy(camera.projectionMatrix); vc.projectionMatrixInverse.copy(camera.projectionMatrixInverse);
+    vc.matrixWorld.copy(camera.matrixWorld); vc.matrixWorldInverse.copy(camera.matrixWorldInverse);
+    this.mVel.uniforms.uPrevVP.value.copy(this.hasPrev ? this.prevVP : this.curVP);
+    const gl = this.gl;
+    const sm = gl.shadowMap.needsUpdate, smAuto = gl.shadowMap.autoUpdate;
+    gl.shadowMap.autoUpdate = false; gl.shadowMap.needsUpdate = false;
+    this.velSeen.length = 0;
+    gl.setRenderTarget(this.velRT);
+    gl.setClearColor(0x000000, 0);
+    gl.clear(true, true, false);
+    gl.render(this.velScene, vc);
+    gl.shadowMap.autoUpdate = smAuto; gl.shadowMap.needsUpdate = sm;
+    roots.length = 0;
+    // remember this frame's transforms for the next
+    for (const o of this.velSeen) {
+      let m = this.prevModel.get(o);
+      if (!m) { m = new THREE.Matrix4(); this.prevModel.set(o, m); }
+      m.copy(o.matrixWorld);
+    }
+    return true;
+  }
+
   render(world: THREE.Scene, camera: THREE.PerspectiveCamera, view?: THREE.Scene, viewCam?: THREE.Camera): void {
     const gl = this.gl;
     this.frame++;
     // newly added objects (places, props, creatures streaming in) get the matte shading model
     this.matte.watch(world); if (view) this.matte.watch(view);
     this.matte.flush(this.frame, Math.min(8, this.gl.capabilities.getMaxAnisotropy()));
+    // ... and screen-size culling (world only: the viewmodel sits at the view camera's origin)
+    this.culler.watch(world); this.culler.flush(this.frame);
+    setCullFocal(this.cullFocal > 0 ? this.cullFocal : (this.h * 0.5) / Math.tan(THREE.MathUtils.degToRad(camera.fov) * 0.5));
+    camera.updateMatrixWorld();
+    G.uCamPos.value.setFromMatrixPosition(camera.matrixWorld);
     // sky probe first: the lake and wet ground read it this frame
     this.pass(this.mProbe, this.probe);
     G.uSkyProbe.value = this.probe.texture;
 
+    const q = currentQuality();
+    this.scanLights(world);
+    this.scheduleLamps(camera);
+
+    this.curVP.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+    setMainView(this.curVP);
     gl.setRenderTarget(this.rt);
     gl.setClearColor(this.fogColor, 1);
     gl.clear(true, true, false);
     gl.render(world, camera);
     if (view && viewCam) {
-      gl.clearDepth();
+      // the viewmodel's depth squashed in front of the world's (the world's depth survives for the post chain)
+      const vc = viewCam as THREE.PerspectiveCamera;
+      this.vmProj.copy(vc.projectionMatrix);
+      vc.projectionMatrix.premultiply(this.vmSquash);
       gl.render(view, viewCam);
+      vc.projectionMatrix.copy(this.vmProj);
     }
     const g = this.grade;
+
+    // motion blur: this frame's view-projection (above), the frame time, cuts (teleports, cutscene jumps) reset it
+    const now = performance.now();
+    const dt = this.fixedDt > 0 ? this.fixedDt : THREE.MathUtils.clamp((now - (this.lastT || now - 16.7)) / 1000, 1 / 240, 1 / 12);
+    this.lastT = now;
+    camera.getWorldDirection(this.v3b);
+    if (this.hasPrev && (camera.position.distanceTo(this.prevCamPos) > 4 || this.v3b.dot(this.prevCamDir) < 0.6)) this.hasPrev = false;
+    const mbOn = motionBlur.on && motionBlur.strength > 0.01;
+    const velOn = mbOn && this.velocityPass(world, camera);
 
     // sun on screen
     const sp = this.v3.copy(this.sunDir).multiplyScalar(1000).add(camera.position).project(camera);
@@ -610,10 +889,10 @@ export class Renderer {
       (u.uAmb.value as THREE.Color).copy(G.uFogCol.value).lerp(G.uSkyHor.value, 0.4).multiplyScalar(0.9);
       u.uAir.value = g.air;
       u.uRes.value.set(this.volRT.width, this.volRT.height);
-      u.uNL.value = this.pickLights(world, camera);
+      u.uNL.value = this.pickLights(camera);
       if (this.frame % 60 === 1) this.updateHoles();
-      // the low preset (3 px pixels) marches fewer steps
-      u.uSteps.value = this.pixel >= 3 ? 10 : 22;
+      // march steps scale with the preset (the jittered start hides the banding)
+      u.uSteps.value = Math.max(4, Math.min(32, q.atmoSteps | 0));
       this.pass(this.mVol, this.volRT);
     }
 
@@ -663,7 +942,16 @@ export class Renderer {
     u.uVig.value = g.vignette; u.uGrain.value = g.grain; u.uShafts.value = g.shafts * vis;
     u.uBloom.value = g.bloom; u.uMie.value = g.mie * THREE.MathUtils.smoothstep(this.sunDir.y, -0.1, 0.05) * (volOn ? 0.35 : 1); u.uQuant.value = g.quant;
     u.uFlash.value = this.fx.flash; u.uDamage.value = this.fx.damage; u.uCold.value = this.fx.cold; u.uFade.value = this.fx.fade;
+    // motion blur: a 1/40 s shutter at strength 1, whatever the frame rate; the streak is capped at 7 % of the width
+    if (q.blurTaps !== this.taps) { this.taps = q.blurTaps; this.mComp.defines.MB_TAPS = Math.max(4, this.taps | 0); this.mComp.needsUpdate = true; }
+    u.uPrevVP.value.copy(this.hasPrev ? this.prevVP : this.curVP);
+    u.uMB.value = mbOn && this.hasPrev ? motionBlur.strength * (1 / 40) / dt : 0;
+    u.uMBMax.value = this.w * 0.07;
+    u.tVel.value = this.velRT.texture; u.uVelOn.value = velOn ? 1 : 0;
     this.pass(this.mComp, this.ldr);
+    this.prevVP.copy(this.curVP);
+    this.prevCamPos.copy(camera.position); camera.getWorldDirection(this.prevCamDir);
+    this.hasPrev = true;
     this.mBlit.uniforms.tSrc.value = this.ldr.texture;
     this.pass(this.mBlit, null);
   }

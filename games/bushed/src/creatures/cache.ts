@@ -49,6 +49,8 @@ function db(): Promise<IDBDatabase | null> {
   });
   return dbp;
 }
+// open the database as soon as this module loads: the first lookup (after the first frame) then finds it ready
+void db();
 export async function cacheGet(key: string): Promise<Packed | null> {
   const d = await db(); if (!d) return null;
   return new Promise((res) => {

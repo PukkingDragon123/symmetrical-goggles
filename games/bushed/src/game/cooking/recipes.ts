@@ -5,6 +5,7 @@
 // on the 'recipe' event (the story hands them out) or when you cook one right without the card.
 import { addItems, ITEMS, type ItemDef } from '../items';
 import { registerGroceries, KEY_NAME } from './ingredients';
+import { CRYPTID_RECIPES, CRYPTID_COOK_ITEMS } from './cryptid_recipes';
 
 const meal = (id: string, name: string, desc: string, kcal: number, warmth: number, extra: Partial<ItemDef> = {}): ItemDef => ({
   id, name, desc, price: 0, mass: 0.5, model: 'gen:enamel_plate', pocket: true, food: { kcal, warmth }, tags: ['meal'], ...extra,
@@ -52,6 +53,8 @@ export const COOK_ITEMS: Record<string, ItemDef> = {
   meal_soup: bowlMeal('meal_soup', 'Pot of soup', 'Hot, wet and better than nothing.', 500, 0.55),
   meal_porridge: bowlMeal('meal_porridge', 'Porridge', 'Oats (or rice) cooked soft. Stick-to-your-ribs.', 600, 0.4),
   meal_tea: drink('meal_tea', 'Black tea', 'Orange pekoe, strong.', 5, 0.35),
+  // the cryptid kitchen (cryptid_recipes.ts)
+  ...CRYPTID_COOK_ITEMS,
 };
 
 export function registerCookItems(): void {
@@ -105,7 +108,7 @@ const anyOf = (d: Dish, ks: string[], n = 0.01) => ks.some((k) => has(d, k, n));
 const MEAT = ['venison', 'moose', 'liver', 'meat'];
 const golden = (d: Dish, k: string) => (d.least[k] ?? 0) >= 0.66 && (d.worst[k] ?? 0) <= 1.15;
 
-export interface BuffSpec { warm?: number; hearty?: number; alert?: number; sweet?: number; hours: number }
+export interface BuffSpec { warm?: number; hearty?: number; alert?: number; sweet?: number; /** cryptid recipes: they trust you faster */ uncanny?: number; hours: number }
 
 export interface Recipe {
   id: string; name: string; item: string;
@@ -130,6 +133,10 @@ export interface Recipe {
   start?: boolean;
   /** extra names the story might use for the card */
   alias?: string[];
+  /** the back of a locked card: where to look for it (the cryptid cards) */
+  hint?: string;
+  /** cryptids that love the dish (shown on the card) */
+  loved?: string;
 }
 
 export const RECIPES: Recipe[] = [
@@ -350,6 +357,8 @@ export const RECIPES: Recipe[] = [
     salt: [2, 8], buff: { hearty: 1.3, hours: 6 }, kcal: 1900,
     lines: ['Crisp potatoes, sausage, runny eggs. Ready for a day in the bush.', 'A proper hunter\'s breakfast.', 'Greasy and a bit raw. You\'ll live.'],
   },
+  // the cryptid kitchen (cryptid_recipes.ts): cards found in the world
+  ...CRYPTID_RECIPES,
 ];
 
 export const RECIPE_BY_ID = new Map(RECIPES.map((r) => [r.id, r]));

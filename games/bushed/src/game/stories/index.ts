@@ -3,8 +3,9 @@
 //   import { installStories } from './game/stories';
 //   await step('stories', () => installStories(game));
 //
-// Adds: the main arc in five chapters (arc.ts) played through things in the world (world.ts: Ray's caches, his
-// orange tape, the trapline and its plates, the abandoned Kettle camp, the dock, the finale), seven people with
+// Adds: the main arc in five chapters (arc.ts) played through things in the world (world.ts: Pépère Ray's caches,
+// his orange tape, the trapline and its plates, the abandoned Kettle camp, the dock, the finale where his spirit
+// comes up from the water for supper), seven people with
 // their own favours (people.ts, quests.ts), campfire tales that teach the Book rules, the mail at Pruneau's post
 // wicket, CKLK's night call-in show on Ray's radio (radio.ts), and every page you find pasted back into Ray's book.
 // All state is in game.flags (st:*), so it saves and loads with the rest of the game.
@@ -24,15 +25,15 @@ import { TALES } from './tales';
 
 /** what people say about the story once it has moved on (flag -> line), checked newest first */
 const NEWS: Record<string, [string, string][]> = {
-  gerard: [['ending', 'Florida. Sixty years I\'ve known that man and never once seen his knees.'], ['letter', '"Gone up the line," he says. Ray\'s been up the line since 1974. The line has never once come down to pay for coffee.']],
-  marcel: [['ending', 'So Ray\'s gone south. Who\'ll say goodnight to the trees now? ...Oh. You.'], ['camp', 'You found the old Kettle camp? I cut there one winter as a boy. The cook fed us like kings. She fed something else like kings too.']],
+  gerard: [['ending', 'Odile says the line clicked on Thursday. At nine. I said it\'s the wiring. ...I\'m not so sure it\'s the wiring.'], ['letter', '"Gone up the line." That\'s what the old jacks said when a man died. Ray said it every time he went out to his plates. ...Pay for the coffee.']],
+  marcel: [['ending', 'So it\'s you says goodnight to the trees now. ...Say it to him too. Doesn\'t hurt.'], ['camp', 'You found the old Kettle camp? I cut there one winter as a boy. The cook fed us like kings. She fed something else like kings too.']],
   hunter: [['ending', 'Heard the triangle on the north shore last night. Every hair on my arms stood up. In a good way, I think.'], ['camp_stove', 'That your smoke on the north shore? Something big sat on the hill all evening watching it. Happy, I\'d say. If big things get happy.']],
-  doug: [['ending', 'Ray in Florida. I can\'t picture it. I\'m picturing it. Oh no. Shorts.']],
+  doug: [['ending', 'Jojo says she saw an old man with a lantern on the lake road last night. I told her it was a reflection. It\'s always a reflection.']],
   esko: [['ending', 'Fool. Good fool.']],
-  megan: [['ending', 'I\'ve closed the wellness check. Subject is in Florida. That is not a Ministry matter. That is barely a matter.']],
+  megan: [['ending', 'I\'ve closed the file on the camp lights. Under "cause" I wrote "family". Nobody\'s asked.']],
   lucien: [['supper', 'They tell me you cooked for the camp. Hot? Good. Not scraps? Good.']],
   hollis: [['ending', 'Délima would be pleased. She\'d never say so. She\'d just give you more potatoes to peel.']],
-  ray: [['ending', 'Go on. I\'m fine here. I\'m watching my crew eat.']],
+  ray: [['supper', 'Go on, eat. I\'m fine here. I\'m watching my crew eat.']],
 };
 const RAY_IDLE = ['Pass the salt. ...None? Délima would\'ve had salt.', 'Knock three times on your way out. Manners.', 'Don\'t look at the big fella. He\'s eating.'];
 
@@ -54,8 +55,8 @@ export async function installStories(game: Game): Promise<void> {
   });
   spawnPeople(g);
   await yieldFrame();
-  // Ray: nowhere, until supper
-  addNpc(g, { id: 'ray', name: 'Ray', look: rayLook(), hidden: true, stops: [{ from: 0, to: 24, at: W.rayChair, face: W.rayFace, anim: 'sit' }], talk: () => RAY_IDLE[0] });
+  // Pépère: nowhere, until somebody rings for supper (then his spirit walks up from the dock; arc.ts, Finale)
+  addNpc(g, { id: 'ray', name: 'Pépère', look: rayLook(), hidden: true, stops: [{ from: 0, to: 24, at: W.rayChair, face: W.rayFace, anim: 'sit' }], talk: () => RAY_IDLE[0] });
   await yieldFrame();
   // the radios: Ray's valve set on the cabin desk (it can call in), and the one behind the store counter
   const radio = new Radio(g);

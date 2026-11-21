@@ -373,7 +373,25 @@ All downloaded from the Google Fonts repository (github.com/google/fonts).
   physics props, hands, survival, Jeep driving and game flow were written for BUSHED.
 * Humans and first-person hands: ported from the user's **Gacha Garage** (see "Humans").
   Creature anatomy: ported from the user's **ODDWORLD** (see "Creatures"). Props converted with the user's **lowpix**.
-
+* The opening's cinematic camera, letterbox, fades and title/chapter cards (`src/game/cinematic/`), and the objective
+  line with its world pin (`src/ui/objective.ts`, `src/ui/objectives.ts`): ported from the author's own game
+  หลอนยันปลายทาง (effective-octo-train/src/game/Cinematic.js, src/game/opening/common.js, src/core/CameraRig.js,
+  src/ui/Chapter.js, src/ui/Subtitles.js, src/ui/Objective.js, src/game/systems/Objectives.js).
+* Voices (`src/audio/voice/`: the Klatt formant synthesiser, the syllable/segment rules, the ghost layers, levels and
+  the synth worker): ported from the author's own game หลอนยันปลายทาง (effective-octo-train/src/audio/Voice.js,
+  src/audio/VoiceFX.js, src/audio/Synth/vox.js, speech.js, gibberish.js, dsp.js, worker.js); the English front end,
+  the per-character "wrongness" and the cryptid layers are new. No recorded voices are used.
+* Music (`src/audio/music/`): "Kettle Lake Waltz", an original composition synthesised in code (fiddle, guitar,
+  harmonium/accordion, reed drone, frame drum, loon); the plan-then-render approach is ported from หลอนยันปลายทาง
+  (effective-octo-train/src/audio/Synth/songs.js, instruments.js). No samples.
+* The logging truck (`src/vehicles/`): driving model, smoothed pedals and steering, autopilot, lights, crash damage
+  (dents, cracked windshield, failing headlamps, hanging bumper, steam) and the realtime engine sound (piston pulse
+  model, exhaust resonances, intake, gear whine) ported from the author's own game หลอนยันปลายทาง
+  (effective-octo-train/src/vehicle/CarPhysics.js, Taxi.js, TaxiControls.js, Lights.js, Damage.js,
+  src/game/systems/CameraFeel.js, src/audio/EngineSound.js, src/audio/Synth/engineModel.js, src/audio/Synth/dsp.js);
+  the truck tuning, cargo, loading, winch, repairs and the BUSHED terrain/physics adaptation are new.
+* Dialogue close-up and subtitles (`src/game/talk/`): presentation after หลอนยันปลายทาง
+  (effective-octo-train/src/game/Dialogue.js, src/game/Cinematic.js converse()).
 
 ## Places
 
@@ -580,6 +598,38 @@ Required attribution (reproduce it wherever the game's credits are shown):
 * `npc_pickup.glb`: This work is based on "1962 Willys Jeep Pick-Up" (https://sketchfab.com/3d-models/1962-willys-jeep-pick-up-43394652043a4387be183ef75d7af5a1) by LxNazarov (https://sketchfab.com/LxNazarov) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts).
 * `trailer.glb`: This work is based on "Trailer" (https://sketchfab.com/3d-models/trailer-5a53a60a27144183ab825f559ed73a80) by svartfilin (https://sketchfab.com/svartfilin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (converted to pixel art, re-meshed, split into parts).
 
+### The logging truck (`public/assets/vehicles/truck.glb`)
+
+Modelled in headless Blender by `tools/blender/truck/` from the author's own taxi pipeline for หลอนยันปลายทาง
+(effective-octo-train/tools/blender: vlib.py, taxi_body.py, taxi_exterior.py, taxi_parts.py, taxi_interior.py,
+weather.py, render_glb.py): the taxi's front half became the cab; the flatbed, bunks, stakes, headache rack, winch
+bumper, light bar, flaps and tyres are new (`truck_parts.py`, `build_truck.py`). The painter's CC0 photo detail
+(`tools/blender/truck/photos/`, copied from the taxi pipeline) and BUSHED's own `places/board_grey` and `places/iron`
+textures (credited above):
+
+| File | Source | Author | Licence |
+|---|---|---|---|
+| `photos/vehicle/taxi_paint_*` (streaks, scratches, water spots, sill rust) | ambientCG Scratches001, Scratches004, SurfaceImperfections006, Leaking004, Rust004 | Lennart Demes | CC0 1.0 |
+| `photos/vehicle/dash_plastic` | ambientCG Plastic012A, Scratches001 | Lennart Demes | CC0 1.0 |
+| `photos/vehicle/fabric_seat` | ambientCG Fabric012 | Lennart Demes | CC0 1.0 |
+| `photos/vehicle/leather_seat` | [brown_leather](https://polyhaven.com/a/brown_leather) | Rob Tuytel | CC0 1.0 |
+| `photos/vehicle/headliner` | ambientCG Fabric062 | Lennart Demes | CC0 1.0 |
+| `photos/vehicle/carpet` | [dirty_carpet](https://polyhaven.com/a/dirty_carpet) | Rohit Seervi | CC0 1.0 |
+| `photos/built/rust` | [rust_coarse_01](https://polyhaven.com/a/rust_coarse_01), ambientCG Rust004 | Dimitrios Savva, Rico Cilliers; Lennart Demes | CC0 1.0 |
+| `photos/ground/soil` | [red_laterite_soil_stones](https://polyhaven.com/a/red_laterite_soil_stones), [forest_ground_04](https://polyhaven.com/a/forest_ground_04) | Amal Kumar; Rob Tuytel, Rico Cilliers | CC0 1.0 |
+
+Truck sounds (`public/assets/sfx/truck/`, reused from หลอนยันปลายทาง with its credits; the engine itself is
+synthesised in code, the idle / gravel / start / horn loops are BUSHED's own `vehicle/` recordings):
+
+| File | Source | Author | Licence |
+|---|---|---|---|
+| `bush_scrape_1.mp3` | ["Rustling Bushes.wav"](https://freesound.org/people/KALeigh0218/sounds/655928/) | KALeigh0218 | CC0 1.0 |
+| `bush_scrape_2.mp3` | ["Rustling Bushes"](https://freesound.org/people/nicholasolsen/sounds/178870/) | nicholasolsen | CC0 1.0 |
+| `bush_scrape_3.mp3` | ["Rustling Foliage in Forest"](https://freesound.org/people/sillygrizzlies/sounds/635053/) | sillygrizzlies | CC0 1.0 |
+| `metal_knock_1..4.mp3` | ["Knock on door metal"](https://freesound.org/people/MarcelWagner/sounds/639658/) | MarcelWagner | CC0 1.0 |
+| `gear_shift_1..3.mp3` | [freesound 630543](https://freesound.org/people/mincedbeats/sounds/630543/) | mincedbeats | CC0 1.0 |
+| `splash_1..2.mp3` | [freesound 524524](https://freesound.org/people/vero.marengere/sounds/524524/) | vero.marengere | CC0 1.0 |
+
 ### Camp-story cryptids from Sketchfab (CC BY 4.0, attribution required)
 
 The sidehill gouger, hoop snake, splinter cat and goofus bird (`public/assets/models/creatures/cryptids/`), rebuilt by `tools/blender/cryptids4/*.py`: rebaked onto a game skeleton, rescaled, decimated or smoothed, textures merged into one atlas and recoloured, small bead eyes added, clips cut and renamed. The gouger is a kitbash (a doe with a goat's horns, its right legs shortened). Changes were made. Details in `ATTRIBUTION.json` there. The splinter cat and the hodag are the low-poly pass (`tools/blender/lowpoly/*.py`): decimated to a few thousand faceted triangles with the source detail baked into a new texture; the hodag is a kitbash (a Baurusuchus's body, legs, tail and teeth with a Poly Haven bull's horns, plates, a tail spear and a throat sac made in Blender), re-skinned to the game's procedural hodag rig.
@@ -592,6 +642,10 @@ The sidehill gouger, hoop snake, splinter cat and goofus bird (`public/assets/mo
 | `splintercat.glb` | [lynx](https://sketchfab.com/3d-models/lynx-aff6767399cf4daca1a82b43ccaa1252) | [Paleo Modelist](https://sketchfab.com/victory_) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `hodag.glb` | [Animated Baurusuchus](https://sketchfab.com/3d-models/animated-baurusuchus-df9dfe0920d54faf99f94e88b33d7a8d) | [Anees Animates](https://sketchfab.com/AneesAnimates) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `hodag.glb` (horns) | [Bull Head](https://polyhaven.com/a/bull_head) | Poly Haven | CC0 1.0 |
+| `roperite.glb` | [Realistic Animated Donkey 3D Model](https://sketchfab.com/3d-models/realistic-animated-donkey-3d-model-2b4086035df94d9e88fd0f18d34b3872) | [WildMesh 3D](https://sketchfab.com/WildMesh_3D) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `hugag.glb` | [Moose Animated Cel Shading 3D Model](https://sketchfab.com/3d-models/moose-animated-cel-shading-3d-model-33ce37106a24493ba4a6a6e2a9433bb6) (via the game's `moose/cow.glb`) | [WildMesh 3D](https://sketchfab.com/WildMesh_3D) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `billdad.glb` | [Rabbit Rigged](https://sketchfab.com/3d-models/rabbit-rigged-e7213589744d436b9d96e2dbb31198a5) (via the game's `hare/hare.glb`) | [FourthGreen](https://sketchfab.com/FourthGreen) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
+| `wapaloosie.glb` | [Realistic_squirrel_3d_model](https://sketchfab.com/3d-models/realistic-squirrel-3d-model-b492079385ff407ab68aa7f72c88f828) (via the game's `squirrel/squirrel.glb`) | [mgddeldeen9020](https://sketchfab.com/mgddeldeen9020) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 | `goofus.glb` | [Crow](https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) | [Alexei Ostapenko](https://sketchfab.com/alexanders823) | [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/) |
 
 Required attribution:
@@ -601,6 +655,10 @@ Required attribution:
 * `splintercat.glb`: This work is based on "lynx" (https://sketchfab.com/3d-models/lynx-aff6767399cf4daca1a82b43ccaa1252) by Paleo Modelist (https://sketchfab.com/victory_) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
 * `hodag.glb`: This work is based on "Animated Baurusuchus" (https://sketchfab.com/3d-models/animated-baurusuchus-df9dfe0920d54faf99f94e88b33d7a8d) by Anees Animates (https://sketchfab.com/AneesAnimates) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (kitbashed, reshaped, decimated, re-rigged, texture rebaked and repainted).
 * `goofus.glb`: This work is based on "Crow" (https://sketchfab.com/3d-models/crow-d5a9b0df4da3493688b63ce42c8a83e2) by Alexei Ostapenko (https://sketchfab.com/alexanders823) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED.
+* `roperite.glb`: This work is based on "Realistic Animated Donkey 3D Model" (https://sketchfab.com/3d-models/realistic-animated-donkey-3d-model-2b4086035df94d9e88fd0f18d34b3872) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (saddle and hair cards removed, a made tail and mane added, bead eyes, rebaked onto a game skeleton, decimated, texture rebaked and repainted; the rope snout is the game's own).
+* `hugag.glb`: This work is based on "Moose Animated Cel Shading 3D Model" (https://sketchfab.com/3d-models/moose-animated-cel-shading-3d-model-33ce37106a24493ba4a6a6e2a9433bb6) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (scaled up, the upper lip pulled long, ears enlarged, legs thickened, bead eyes, decimated, texture rebaked and repainted).
+* `billdad.glb`: This work is based on "Rabbit Rigged" (https://sketchfab.com/3d-models/rabbit-rigged-e7213589744d436b9d96e2dbb31198a5) by FourthGreen (https://sketchfab.com/FourthGreen) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (scaled up, ears shrunk, whiskers removed, hind feet spread, a made bill and paddle tail added, bead eyes, decimated, texture rebaked and repainted).
+* `wapaloosie.glb`: This work is based on "Realistic_squirrel_3d_model" (https://sketchfab.com/3d-models/realistic-squirrel-3d-model-b492079385ff407ab68aa7f72c88f828) by mgddeldeen9020 (https://sketchfab.com/mgddeldeen9020) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/). Modified for BUSHED (scaled up, the body stretched long, legs thickened, bead eyes, decimated, texture rebaked and repainted).
 
 ### Real animals from Sketchfab (CC BY 4.0, attribution required)
 

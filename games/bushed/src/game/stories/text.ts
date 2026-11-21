@@ -1,6 +1,7 @@
-// The story's paper: pages Ray tore out of his book and hid (found ones are pasted back into the Book of
-// Cryptids), the cook's ledger, notices, the mail that comes to Pruneau's post wicket, and Ray's postcards.
-// Ray writes in Caveat; Délima, his grandmother, in the old copperplate (IM Fell); kids and Finns as they can.
+// The story's paper: pages Pépère Ray tore out of his book and hid before he died (found ones are pasted back into
+// the Book of Cryptids), his will and his last letter, the cook's ledger, notices, the mail that comes to Pruneau's
+// post wicket, and the letters he left in his cubbyhole for after. Ray writes in Caveat; Délima, his grandmother,
+// in the old copperplate (IM Fell); notaries and companies in type; kids and Finns as they can.
 import type { Block } from '../../ui/paper';
 
 type Sketch = (g: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) => void;
@@ -44,7 +45,7 @@ const camPhoto: Sketch = (g, x, y, w, h) => {
   g.lineWidth = 3; g.beginPath(); g.moveTo(mx, my + 7); g.lineTo(mx, my + 34); g.lineTo(mx - 7, my + 56); g.moveTo(mx, my + 34); g.lineTo(mx + 7, my + 56);
   g.moveTo(mx, my + 14); g.lineTo(mx - 14, my + 26); g.moveTo(mx, my + 14); g.lineTo(mx + 12, my - 2); g.lineTo(mx + 16, my - 10); g.stroke();
   g.beginPath(); g.ellipse(mx - 17, my + 30, 7, 5, 0, 0, 7); g.fill();
-  g.font = '12px SpecialElite, monospace'; g.fillText('CAM3  10/02  06:14  3°C', x + 14, y + h - 10);
+  g.font = '12px SpecialElite, monospace'; g.fillText('CAM3  09/14  06:14  3°C', x + 14, y + h - 10);
 };
 
 /** Jojo's drawing of the Kettle (the teakettler), in pencil crayon */
@@ -69,14 +70,14 @@ const jojoDraw: Sketch = (g, x, y, w, h) => {
 /** pages that go into the Book once found (id -> blocks) */
 export const PAGES: Record<string, { title: string; blocks: Block[] }> = {
   ray1: {
-    title: 'Ray, Sept 1', blocks: [
+    title: 'Pépère, last September', blocks: [
       { t: 'h', text: 'Sept 1', hand: 'caveat' },
       R('Knee\'s done. Doc in Hearst says "no more bush." Doc in Hearst has never been in the bush.'),
-      R('Still. I can\'t walk the line any more and somebody has to.'),
-      R('You\'re the only Tremblay left who answers the phone.'),
+      R('Still. I can\'t walk the line much longer and somebody has to.'),
+      R('You\'re the only Tremblay left who answers the phone. So it goes to you, in the will. All of it.'),
       R('I tore some pages out of the book and hid them. Not to be cute. You won\'t believe a word of it unless you find it yourself. I didn\'t.'),
       R('Follow the orange tape from the woodshed. It goes where my legs used to.'),
-      RS('— R.'),
+      RS('— Pépère'),
     ],
   },
   ray2: {
@@ -127,11 +128,11 @@ export const PAGES: Record<string, { title: string; blocks: Block[] }> = {
     ],
   },
   ray5: {
-    title: 'Ray, lately', blocks: [
+    title: 'A page in fresh pencil', blocks: [
       { t: 'h', text: 'Thursday', hand: 'caveat' },
       R('Kid got the cabin stove lit. Saw the smoke from the point.'),
       R('Fed the hound three nights running, by the look of it. Soft. Good.'),
-      R('Odile will skin me. Lise will skin what\'s left.'),
+      R('Cold out here. Colder than it ought to be. I don\'t feel it much now.'),
       R('Supper soon.'),
     ],
   },
@@ -142,7 +143,7 @@ export const PAGES: Record<string, { title: string; blocks: Block[] }> = {
       R('Cook something. I don\'t care what. Hot. Enough for everybody.'),
       R('Ring it at sundown. Once, for the others.'),
       R('I\'ll be along.'),
-      RS('— R.'),
+      RS('— Pépère'),
     ],
   },
   esko: {
@@ -170,7 +171,7 @@ export const PAGES: Record<string, { title: string; blocks: Block[] }> = {
     title: 'Trail camera, CAM3', blocks: [
       { t: 'h', text: 'CAM3 — north shore', hand: 'type' },
       sk(170, camPhoto),
-      { t: 'p', text: 'Subject is well. Subject is checked. Subject is a pain in my neck. — M.K.', hand: 'patrick' },
+      { t: 'p', text: 'I was at his funeral in April. The clock on this camera is wrong. — M.K.', hand: 'patrick' },
     ],
   },
   jojo: {
@@ -182,14 +183,27 @@ export const PAGES: Record<string, { title: string; blocks: Block[] }> = {
   },
 };
 
-/** Ray's radio log (the item from set five; Odile wants it) */
+/** Ray's radio log (the item from set five; Odile wants it): the last of thirty-one years of Thursdays */
 export const RADIO_LOG: Block[] = [
   { t: 'h', text: 'CKLK — Thursdays', hand: 'caveat' },
   { t: 'small', text: 'Kettle Lake After Dark. What I told her.', hand: 'caveat' },
-  R('Aug 7. Hound at the woodpile. Fed him. Told Odile it was "a neighbour\'s dog". She laughed.'),
-  R('Aug 14. Big fella knocked twice. TWICE. He\'s getting lazy.'),
-  R('Aug 21. Knee. Didn\'t call.'),
-  R('Aug 28. Told Odile the kid\'s coming. She said good. She said, "And you, Ray?" Hung up. Coward.'),
+  R('Feb 6. Hound at the woodpile. Fed him. Told Odile it was "a neighbour\'s dog". She laughed.'),
+  R('Feb 13. Big fella knocked twice. TWICE. He\'s getting lazy.'),
+  R('Mar 6. Knee. Didn\'t call.'),
+  R('Mar 27. Told Odile the kid\'s getting the place. She said good. She said, "And you, Ray?" Hung up. Coward.'),
+  R('Apr 3. Couldn\'t get to the set. Odile, if you\'re reading this: Thursdays.'),
+];
+
+/** the will, the notary's copy (on the passenger seat in the opening; in the book once his letter is) */
+export const WILL: Block[] = [
+  { t: 'h', text: 'Last Will', hand: 'type' },
+  { t: 'small', text: 'and Testament of Raymond Joseph Tremblay, of Lot 14, Rang 4, Township of Kettle Lake', hand: 'type' },
+  { t: 'line' },
+  { t: 'p', text: 'I give my cabin, its stove and its contents, and my right to the old Camp Kettle on the north shore, to my grandchild.', hand: 'type' },
+  { t: 'p', text: 'With the camp go its rules, as my grandmother Délima kept them. My grandchild will know what this means in time.', hand: 'type' },
+  { t: 'p', text: 'My radio to Odile Pruneau. My debts to Gérard Pruneau, who will pretend there are none.', hand: 'type' },
+  { t: 'sig', text: 'R. J. Tremblay', hand: 'caveat' },
+  { t: 'small', text: 'Witness: L. Gagné, notary, Hearst. April 9.', hand: 'type' },
 ];
 
 /** the camp sign, painted on a board */
@@ -200,32 +214,32 @@ export interface Letter { id: string; from: string; blocks: Block[]; seed: numbe
 const L = (id: string, from: string, seed: number, blocks: Block[]): Letter => ({ id, from, seed, blocks });
 
 export const LETTERS: Record<string, Letter> = {
-  ray: L('ray', 'Ray', 31, [
+  ray: L('ray', 'Pépère (his last letter)', 31, [
     { t: 'h', text: 'Kid —', hand: 'caveat' },
-    R('If Odile handed you this, you found the store, you found the cabin, and the dog didn\'t eat you. Good.'),
-    R('I\'ve gone up the line for a while. Don\'t call the OPP. They\'ll come with a dog and the dog will be embarrassed.'),
-    R('I\'m not lost. I know exactly where I am, which is more than most people can say.'),
+    R('If Odile handed you this, you found the store and you\'ve got the will, and I\'m behind the church in Hearst. Don\'t stand there long. It\'s cold and I\'m not in it.'),
+    R('The will says what\'s yours. This says what it means. The cabin\'s the easy part. The camp comes with a job, and I couldn\'t put the job in the will without the notary calling somebody.'),
+    R('I\'ve gone up the line, as the old jacks used to say. I know exactly where I am, which is more than most people can say.'),
     R('I left you a trail. Start where you\'d start: the woodpile. Under the bottom row, by the block.'),
-    RS('— R.'),
+    RS('— Pépère'),
     { t: 'small', text: 'P.S. Pay Gérard for the coffee. He says it\'s free. It isn\'t.', hand: 'caveat' },
   ]),
   township: L('township', 'the Township', 32, [
     { t: 'h', text: 'TOWNSHIP OF KETTLE LAKE', hand: 'type' },
-    { t: 'small', text: 'Notice of arrears — Lot 14, Rang 4 (R. Tremblay)', hand: 'type' },
-    { t: 'p', text: 'Amount owing: $14.60. Outstanding since: 1987. This is our fourteenth notice.', hand: 'type' },
+    { t: 'small', text: 'Notice of arrears — Lot 14, Rang 4 (estate of R. Tremblay)', hand: 'type' },
+    { t: 'p', text: 'Amount owing: $14.60. Outstanding since: 1987. This is our fourteenth notice. Our condolences.', hand: 'type' },
     { t: 'p', text: 'Please remit at Pruneau\'s General Store. Please.', hand: 'type' },
     { t: 'sig', text: '— the Clerk (Tuesdays and every other Thursday)', hand: 'type' },
   ]),
-  lise: L('lise', 'Aunt Lise', 33, [
-    { t: 'h', text: 'Cher Ray,', hand: 'apple' },
-    { t: 'p', text: 'Still no answer about the condo. The spare room has a fan and a window over the pool. The pool is shaped like a kidney. You will hate it for a week and then you will love it.', hand: 'apple' },
-    { t: 'p', text: 'Bring nothing. You love the cold so much, bring it in a cooler.', hand: 'apple' },
-    { t: 'sig', text: '— Lise, Kissimmee, Florida', hand: 'apple' },
-    { t: 'small', text: 'P.S. If this is the kid reading it: hello sweetheart, eat something.', hand: 'apple' },
+  lise: L('lise', 'Tante Lise', 33, [
+    { t: 'h', text: 'Mon petit,', hand: 'apple' },
+    { t: 'p', text: 'I couldn\'t come up for it. My hip and the bus from Sudbury don\'t agree. Odile says it was a good funeral and that he would have hated it.', hand: 'apple' },
+    { t: 'p', text: 'The notary says he left you the camp. He left me his good thermos and a note that says "Don\'t." I don\'t know what it means either. He talked about you every Sunday.', hand: 'apple' },
+    { t: 'sig', text: '— Lise (his sister), Sudbury', hand: 'apple' },
+    { t: 'small', text: 'P.S. Eat something.', hand: 'apple' },
   ]),
   ministry: L('ministry', 'the Ministry', 34, [
     { t: 'h', text: 'Ministry of Natural Resources', hand: 'type' },
-    { t: 'small', text: 'Kettle Lake District — Re: wellness check, R. Tremblay', hand: 'type' },
+    { t: 'small', text: 'Kettle Lake District — Re: Lot 14, Rang 4 (estate of R. Tremblay): reports of a light at the old Kettle camp', hand: 'type' },
     { t: 'p', text: 'Please contact the undersigned at your convenience. She is usually by the lake. Please do not bring any animals, however friendly.', hand: 'type' },
     { t: 'sig', text: '— C.O. M. Kowalchuk', hand: 'type' },
   ]),
@@ -236,9 +250,9 @@ export const LETTERS: Record<string, Letter> = {
     { t: 'small', text: 'Forwarded 1952, 1961, 1979, 2003, and now. RETURN TO SENDER: ADDRESSEE IN BUSH.', hand: 'type' },
   ]),
   listener: L('listener', 'Bev, Smooth Rock Falls', 36, [
-    { t: 'h', text: 'To the Cookee, c/o CKLK', hand: 'apple' },
-    { t: 'p', text: 'We miss your Thursdays. We listen in the truck at the mill gate. When you said the big fella "knocked twice, he\'s getting lazy", Raymond laughed so hard he drove into the ditch.', hand: 'apple' },
-    { t: 'p', text: 'Please call again. Odile sounds tired.', hand: 'apple' },
+    { t: 'h', text: 'For the Cookee\'s grandkid, c/o CKLK', hand: 'apple' },
+    { t: 'p', text: 'We heard about him. We\'re sorry. Thirty years we listened in the truck at the mill gate. When he said the big fella "knocked twice, he\'s getting lazy", Raymond laughed so hard he drove into the ditch.', hand: 'apple' },
+    { t: 'p', text: 'Call in again. Odile sounds tired.', hand: 'apple' },
     { t: 'sig', text: '— Bev and Raymond (a different Raymond)', hand: 'apple' },
   ]),
   lachance: L('lachance', 'Mme Lachance', 37, [
@@ -251,25 +265,28 @@ export const LETTERS: Record<string, Letter> = {
     { t: 'p', text: 'THANK YOU FOR NOT TELLING DAD ABOUT THE COFFEE. I TOLD HIM. HE SAID ITS FINE IF YOUR THERE. ARE YOU THERE', hand: 'patrick' },
     { t: 'sig', text: '— JOJO', hand: 'patrick' },
   ]),
-  post1: L('post1', 'Ray (postcard)', 41, [
-    { t: 'h', text: 'Kissimmee. 31°.', hand: 'caveat' },
-    R('The pool is shaped like a kidney. I don\'t trust it. Lise says hello and that you\'re too thin.'),
+  // the letters he wrote at the kitchen table in March and left in his cubbyhole, each marked "not before"
+  post1: L('post1', 'Pépère (a letter from the cubbyhole)', 41, [
+    { t: 'h', text: 'Not before the supper.', hand: 'caveat' },
+    R('If you\'re reading this one, you rang it, and they came, and I suppose I did too. I hoped I would.'),
     R('Feed the crew. Hot. Not scraps.'),
-    RS('— R.'),
+    RS('— Pépère'),
   ]),
-  post2: L('post2', 'Ray (postcard)', 42, [
-    { t: 'h', text: 'Saw an alligator.', hand: 'caveat' },
-    R('Very shy. Kept the light off it. There\'s a bird here that walks exactly like Gérard.'),
-    RS('— R.'),
+  post2: L('post2', 'Pépère (a letter from the cubbyhole)', 42, [
+    { t: 'h', text: 'On the big fella.', hand: 'caveat' },
+    R('He\'s shy, not slow. Keep the light off him. Thirty Easters he left a trout on the stump and I never once saw him do it.'),
+    R('Give him my best: three knocks.'),
+    RS('— Pépère'),
   ]),
-  post3: L('post3', 'Ray (postcard)', 43, [
-    { t: 'h', text: 'Aquafit.', hand: 'caveat' },
-    R('Lise signed me up. I\'m the only man. They call me Le Bûcheron. Give the big fella my best: three knocks.'),
-    RS('— R.'),
+  post3: L('post3', 'Pépère (a letter from the cubbyhole)', 43, [
+    { t: 'h', text: 'On Odile.', hand: 'caveat' },
+    R('Thursdays, nine o\'clock. Call in. She\'ll pretend she doesn\'t know your voice. She knew mine for thirty-one years and never once let on.'),
+    RS('— Pépère'),
   ]),
-  post4: L('post4', 'Ray (postcard)', 44, [
-    { t: 'h', text: 'Is Odile still mad?', hand: 'caveat' },
-    R('Don\'t answer that. Tell her Thursdays, nine o\'clock. I\'ll call collect.'),
-    RS('— R.'),
+  post4: L('post4', 'Pépère (a letter from the cubbyhole)', 44, [
+    { t: 'h', text: 'Last one.', hand: 'caveat' },
+    R('That\'s all of them. I wrote them at the kitchen table in March with the stove going and the hound under it.'),
+    R('Don\'t keep the place like a museum. Burn the wood, eat the food, wear out the floor. That\'s what it\'s for.'),
+    RS('— Pépère'),
   ]),
 };

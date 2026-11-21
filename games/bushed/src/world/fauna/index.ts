@@ -8,7 +8,8 @@
 // mosquito whine and the slap are synthesised here (the bank has neither).
 import * as THREE from 'three';
 import { Birds, BIRD_FOODS, type BirdWorld, type GroundFood } from '../../creatures/birds';
-import { Bugs, type BugWorld } from './bugs';
+import { Bugs, type BugWorld, type TreeLike } from './bugs';
+import { webLight } from './webs';
 import { WORLD, SPOTS, biome, clearance, heightAt } from '../layout';
 import { outdoorTemp } from '../../game/survival';
 import { propsNear, removeProp } from '../../game/physprops';
@@ -59,6 +60,7 @@ export function installFauna(game: GameLike): Fauna {
   // ---- the world as the birds and bugs see it (built once, refreshed in place)
   const forest = () => game.forest as { stands?(x: number, z: number, r: number): { x: number; y: number; z: number; r: number; h: number; crown: number; conifer: boolean; dead: boolean }[] } | null;
   const stands = (x: number, z: number, r: number) => forest()?.stands?.(x, z, r) ?? [];
+  const trees = (x: number, z: number, r: number) => ((game.forest as { near?(x: number, z: number, r: number): TreeLike[] } | null)?.near?.(x, z, r) ?? []);
   const solids = (x: number, z: number, r: number) => (game.ground?.solids?.(x, z, r) ?? []) as { kind: string; shape: string; x: number; y: number; z: number; r: number; h: number; x2?: number; y2?: number; z2?: number }[];
   const habitat = (x: number, z: number) => {
     const b = biome(x, z), tot = b.spruce + b.fir + b.pine + b.birch + b.cedar + 1e-6;
@@ -99,7 +101,7 @@ export function installFauna(game: GameLike): Fauna {
   const lights: THREE.Vector3[] = [];
   const bgw: BugWorld = {
     dt: 0, time: 0, hour: 12, player: { pos: player.pos, eye, dir: fwd, speed: 0 }, heightAt, waterY: WORLD.waterY, lake: SPOTS.lake,
-    lights, flash: null, stands, solids, open, warmth: 1, rain: 0, swat: false,
+    lights, flash: null, stands, solids, open, warmth: 1, rain: 0, swat: false, trees,
     say: (key, text) => say(key, text, 60),
     swatted: (n) => {
       slap();
@@ -176,6 +178,8 @@ export function installFauna(game: GameLike): Fauna {
     lights.length = 0;
     for (const f of game.fires ?? []) if (f.level() > 0.15) lights.push(f.pos);
     if (game.flashOn) { flashPos.copy(eye); flashDir.copy(fwd); bgw.flash = { pos: flashPos, dir: flashDir }; } else bgw.flash = null;
+    // every web (the woods', the porches', the cabin corners') reads the flashlight, the hour and the wet
+    webLight(!!game.flashOn, eye, fwd, h, game.weather?.rain ?? 0, (game as { R?: { internalSize?: [number, number] } }).R?.internalSize?.[1] ?? 360);
     bgw.dt = dt; bgw.time += dt; bgw.hour = h; bgw.warmth = bw.warmth; bgw.rain = game.weather?.rain ?? 0;
     bgw.player.speed = speed;
     bgw.swat = input.pressed('Mouse0');

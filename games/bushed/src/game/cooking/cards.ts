@@ -48,8 +48,14 @@ export function paintCard(r: Recipe, st: CardState, c?: HTMLCanvasElement): HTML
     g.fillText('A blank card in the box...', CW / 2, 175);
     g.font = '17px PatrickHand, Caveat, cursive';
     g.fillStyle = '#4a3a2a';
-    g.fillText(st.from ? `${st.from} knows this one.` : 'Somebody around here knows this one.', CW / 2, 205);
-    g.fillText('Or work it out yourself at the stove.', CW / 2, 230);
+    if (r.hint) {
+      // a cryptid card: where to look for it
+      const ls = wrap(g, r.hint, CW - 80);
+      ls.forEach((ln, i) => g.fillText(ln, CW / 2, 205 + i * 22));
+    } else {
+      g.fillText(st.from ? `${st.from} knows this one.` : 'Somebody around here knows this one.', CW / 2, 205);
+      g.fillText('Or work it out yourself at the stove.', CW / 2, 230);
+    }
     g.textAlign = 'left';
     quant(g);
     return cv;
@@ -89,8 +95,14 @@ export function paintCard(r: Recipe, st: CardState, c?: HTMLCanvasElement): HTML
   // what it does for you
   g.font = '14px PatrickHand, Caveat, cursive'; g.fillStyle = '#6a3a28';
   const b = r.buff;
-  const bits = [b.warm ? 'keeps the cold out' : '', b.hearty ? 'puts back your strength' : '', b.alert ? 'wakes you up' : '', b.sweet ? 'a sugar glow' : ''].filter(Boolean);
+  const bits = [b.warm ? 'keeps the cold out' : '', b.hearty ? 'puts back your strength' : '', b.alert ? 'wakes you up' : '', b.sweet ? 'a sugar glow' : '', b.uncanny ? 'an uncanny calm' : ''].filter(Boolean);
   g.fillText(`${bits.join(', ')} (${b.hours} h)`, 14, CH - 12);
+  if (r.loved) {
+    // the cryptid cards: who goes mad for it, in red pencil up the margin
+    g.save(); g.font = '15px PatrickHand, Caveat, cursive'; g.fillStyle = red;
+    g.fillText(`Loved by: ${r.loved}`, 14, CH - 33);
+    g.restore();
+  }
   quant(g);
   return cv;
 }
