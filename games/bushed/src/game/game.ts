@@ -99,7 +99,6 @@ export class Game {
   private breathT = 0;
   private stepVoices = 0;
   private bodyT = 3;
-  private engine: { idle: ReturnType<typeof audio.play>; drive: ReturnType<typeof audio.play>; gravel: ReturnType<typeof audio.play> } | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.R = new Renderer(canvas);
@@ -604,18 +603,7 @@ export class Game {
     if (this.arms && this.mode !== 'drive') this.arms.object.visible = true;
     // audio
     audio.setListener(cam);
-    // the old 4x4's engine: idle and drive loops crossfaded by RPM, gravel under the tyres by speed
-    const j = this.jeep;
-    if (j?.body && j.running) {
-      const at = j.root.position;
-      if (!this.engine) this.engine = { idle: audio.play('veh_idle', { pos: at, loop: true, vol: 0 }), drive: audio.play('veh_drive', { pos: at, loop: true, vol: 0 }), gravel: audio.play('veh_gravel', { pos: at, loop: true, vol: 0 }) };
-      const r = (j.rpm - 750) / 3800;
-      this.engine.idle?.setPos(at); this.engine.drive?.setPos(at); this.engine.gravel?.setPos(at);
-      this.engine.idle?.setVol(0.8 * (1 - Math.min(1, r * 2.5))); this.engine.idle?.setRate(0.9 + r * 0.6);
-      this.engine.drive?.setVol(Math.min(1, 0.15 + r * 1.6)); this.engine.drive?.setRate(0.7 + r * 0.9);
-      this.engine.gravel?.setVol(Math.min(0.9, Math.abs(j.speed) / 12)); this.engine.gravel?.setRate(0.8 + Math.min(0.5, Math.abs(j.speed) / 30));
-      if (j.bump() > 0.9 && Math.random() < 0.2) audio.play('veh_suspension', { pos: at, vol: 0.5 });
-    } else if (this.engine) { this.engine.idle?.stop(0.4); this.engine.drive?.stop(0.4); this.engine.gravel?.stop(0.3); this.engine = null; }
+    // (the truck's engine sound lives in vehicles/install.ts)
     audio.setHour(this.hour);
     audio.setWeather({ rain: this.weather.rain, wind: G.uWindStrength.value, storm: this.weather.storm });
     audio.setDread(Math.max(0, this.sky.darkness - 0.4) * (this.indoors ? 0.2 : 1));

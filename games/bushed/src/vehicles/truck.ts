@@ -262,8 +262,8 @@ export class Truck {
     // the cab always drives (E); dents are hammered out with the alt action (right click) at a workshop
     registerInteractable(body, {
       kind: 'vehicle', reach: 3.2,
-      label: () => (this.occupied ? '' : 'Drive'),
-      use: () => this.onEnter(),
+      label: (ctx) => (this.damage.working ? this.damage.label(body, ctx) : this.occupied ? '' : 'Drive'),
+      use: () => { if (!this.damage.working) this.onEnter(); },
       altLabel: (ctx) => this.damage.label(body, ctx),
       alt: (ctx) => { this.damage.use(body, ctx); },
     });

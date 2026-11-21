@@ -221,7 +221,7 @@ export class CloseUp {
     if (this.subj.kind === 'creature') {
       g.R.grade.exposure *= 1 - 0.15 * e;
       g.R.grade.saturation *= 1 - 0.3 * e;
-      if (this.subj.fx) this.subj.fx.shine.value = Math.max(this.subj.fx.shine.value, 1.8 * e);
+      if (this.subj.fx) this.subj.fx.shine.value = Math.max(this.subj.fx.shine.value, 2.6 * e);
     }
     this.fx(e);
     // input: E / click for the next line, step away (WASD, Esc, losing the mouse) to leave

@@ -91,7 +91,7 @@ export function todoBlocks(g: Game): { title: string; lines: { text: string; don
 
 // ---------------------------------------------------------------------------------------------- the objective line
 let arcW: StoryWorld | null = null;
-let arcNow: { finaleRunning: boolean } | null = null;
+let arcNow: { finaleQuiet: boolean } | null = null;
 const introDone = (g: Game) => g.flags.has('intro_done') || g.flags.has('free') || g.day >= 1;
 const _tp = new THREE.Vector3();
 /** where a step happens (for the objective's distance, direction and pin) */
@@ -117,7 +117,7 @@ function stepTarget(g: Game, id: string): THREE.Vector3 | THREE.Object3D | null 
 export function storyObjective(g: Game): Objective | null {
   if (!arcW || !introDone(g)) return null;
   // while he's here, nothing to do but be here
-  if (arcNow?.finaleRunning && !has(g, 'ray_gone')) return null;
+  if (arcNow?.finaleQuiet) return null;
   const n = chapter(g);
   if (n > 5) return { id: 'epilogue', kicker: `Epilogue · ${EPILOGUE.title}`, text: EPILOGUE.lines[0] };
   const c = CHAPTERS[n - 1], st = c.steps.find((x) => !x.done(g));
@@ -406,6 +406,8 @@ export class Arc {
   }
 
   get finaleRunning(): boolean { return !!this.finale?.running; }
+  /** the finale has the screen to itself (no objective line) until its title has faded */
+  get finaleQuiet(): boolean { return !!this.finale?.quiet; }
 }
 
 // ---------------------------------------------------------------------------------------------- the finale
@@ -474,8 +476,45 @@ class Ghost {
   }
 }
 
+/**
+ * One voice at a time while the finale and its title play: Pépère's lines and the finale's own thoughts go
+ * through; every other hud.say (thoughts, toasts, the radio, people's chatter) waits, and the last few are let
+ * through a little apart once the title has faded.
+ */
+class SayGate {
+  private orig: ((text: string, dur?: number) => void) | null = null;
+  private held: [string, number][] = [];
+  hold(allow: (text: string) => boolean): void {
+    if (this.orig) return;
+    const orig = hud.say.bind(hud);
+    this.orig = orig;
+    (hud as unknown as { say: (text: string, dur?: number) => void }).say = (text: string, dur = 3.5) => {
+      if (allow(text)) { orig(text, dur); return; }
+      if (!this.held.some(([t]) => t === text)) this.held.push([text, dur]);
+      if (this.held.length > 3) this.held.shift();
+    };
+  }
+  /** straight through, even while held */
+  say(text: string, dur = 3.5): void { (this.orig ?? hud.say.bind(hud))(text, dur); }
+  release(): void {
+    if (!this.orig) return;
+    this.orig = null;
+    delete (hud as unknown as { say?: unknown }).say;   // back to the class's own method
+    const held = this.held;
+    this.held = [];
+    held.forEach(([t, d], i) => setTimeout(() => hud.say(t, d), 1200 + i * 3800));
+  }
+}
+
 class Finale {
   running = true;
+  /** the finale owns the screen: no objective line, no other words (until the title has faded) */
+  get quiet(): boolean { return this.running && this.stage < 9; }
+  private gate = new SayGate();
+  private endT = 0;
+  private recipes: string[] = [];
+  private recipeT = 0;
+  private own(text: string, secs = 3.5): void { this.gate.say(`<i>${text}</i>`, secs); }
   private t = 0;
   private eyes: { m: THREE.Group; on: number; blink: number }[] = [];
   private ray: Npc | null;
@@ -489,7 +528,8 @@ class Finale {
   constructor(private g: Game, private W: StoryWorld) {
     this.ray = NPCS.get('ray') ?? null;
     clang(W.postTop, 1, 0.9); clang(W.postTop, 1, 1.8);
-    think('It goes out over the lake and doesn\'t come back.', 3.5);
+    this.gate.hold((text) => text.includes('<b>Pépère:</b>'));
+    this.own('It goes out over the lake and doesn\'t come back.', 3.5);
     g.timeScale = Math.min(g.timeScale, 30);
   }
 
@@ -554,7 +594,7 @@ class Finale {
     try { this.lantern = lamp; ray.model.socket('L').add(lamp); lamp.position.set(0, -0.3, 0); lamp.rotation.set(0, 0, 0); lamp.scale.setScalar(0.85); } catch { /* no socket: it stays on the table */ }
     audio.play('amb_drone', { pos: edge, vol: 0.35 });
     puffs.emit(edge.clone().add(new THREE.Vector3(0, 0.4, 0)), new THREE.Vector3(0, 0.2, 0), { size: 0.8, grow: 2.5, life: 5, color: new THREE.Color(0.7, 0.76, 0.86), alpha: 0.18, n: 5, spread: 0.6 });
-    think('Somebody\'s coming up from the water. A lantern. ...I know that walk.', 4);
+    this.own('Somebody\'s coming up from the water. A lantern. ...I know that walk.', 4);
   }
 
   /** he goes the way he came: thinner and thinner, and the cold goes with him */
@@ -573,7 +613,7 @@ class Finale {
     const g = this.g, W = this.W;
     this.t += dt;
     for (const e of this.eyes) {
-      const on = this.t > e.on && (this.stage < 9 || this.t < e.on + 400);
+      const on = this.t > e.on && (this.stage < 10 || this.t < e.on + 400);
       e.blink -= dt;
       if (e.blink < 0) e.blink = 2 + Math.random() * 5;
       e.m.visible = on && e.blink > 0.14;
@@ -582,7 +622,7 @@ class Finale {
     this.level += (this.want - this.level) * Math.min(1, dt * (this.want > this.level ? 0.5 : 0.35));
     if (this.ghost) this.ghost.set(this.level, this.t, dt);
     if (this.stage === 0 && this.t > 3) { this.stage = 1; this.spawnEyes(); this.voices(); }
-    if (this.stage === 1 && this.t > 8) { this.stage = 2; this.bigfootAtTreeline(); think('They\'ve come to the edge of the firelight. All of them. Waiting.', 4); }
+    if (this.stage === 1 && this.t > 8) { this.stage = 2; this.bigfootAtTreeline(); this.own('They\'ve come to the edge of the firelight. All of them. Waiting.', 4); }
     if (this.stage === 2 && this.t > 13) { this.stage = 3; this.rayWalksUp(); }
     const ray = this.ray;
     if (this.stage === 3 && (!ray || ray.model.root.position.distanceTo(W.doorOut) < 0.6 || this.t > 100)) {
@@ -614,9 +654,8 @@ class Finale {
     if (this.stage === 5 && (!ray || !ray.busy)) {
       this.stage = 6;
       set(g, 'ending'); setNum(g, 'ending_day', g.day);
-      // the recipe box: every card you haven't been given yet (after he's gone and the title has had its moment)
-      let delay = 0;
-      for (const id of Object.keys(RECIPE_NAMES)) if (!has(g, `recipe:${id}`)) { setTimeout(() => giveRecipe(g, id, 'Délima'), (26 + delay) * 1000); delay += 1.8; }
+      // the recipe box: every card you haven't been given yet (handed over once the title has had its moment)
+      this.recipes = Object.keys(RECIPE_NAMES).filter((id) => !has(g, `recipe:${id}`));
       audio.play('bird_loon', { pos: SHORE.edge, vol: 0.6, delay: 1.2 });
     }
     if (this.stage === 6) {
@@ -626,16 +665,31 @@ class Finale {
         if (ray) { ray.hidden = true; ray.override = null; }
         this.ghost?.restore(); this.ghost = null;
         set(g, 'ray_gone');
-        think('The bench is empty. The lantern\'s on the table where it always was. His bowl is clean.', 5.5);
-        floatText.clearTitles();
-        setTimeout(() => cineUI.title('BUSHED', 'Supper\'s on.', 7.5), 4200);
-        noted(g, 'Pépère ate with his crew one last time.');
+        this.own('The bench is empty. The lantern\'s on the table where it always was. His bowl is clean.', 5.5);
+        this.endT = this.t;
       }
     }
-    if (this.stage === 7) {
+    // one thing at a time: the empty bench, then the title alone, then the book and the recipe box
+    if (this.stage === 7 && this.t > this.endT + 6.5) {
+      this.stage = 8;
+      floatText.clearTitles();
+      cineUI.title('BUSHED', 'Supper\'s on.', 7.5);
+    }
+    if (this.stage === 8 && this.t > this.endT + 6.5 + 7.5 + 1.8) {
+      this.stage = 9;
+      this.gate.release();
+      noted(g, 'Pépère ate with his crew one last time.');
+      this.recipeT = 3;
+    }
+    if (this.stage >= 9 && this.recipes.length) {
+      this.recipeT -= dt;
+      if (this.recipeT <= 0) { this.recipeT = 2.4; giveRecipe(g, this.recipes.shift()!, 'Délima'); }
+    }
+    if (this.stage === 9 && !this.recipes.length) {
       // the guests stay till you leave; then the night takes them back
       if (g.player.pos.distanceTo(W.doorOut) > 60 || (g.hour > 5 && g.hour < 12)) {
-        this.stage = 9;
+        this.stage = 10;
+        this.gate.release();
         for (const e of this.eyes) e.m.removeFromParent();
         this.eyes = [];
         this.running = false;

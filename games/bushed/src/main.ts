@@ -12,8 +12,8 @@ import { WoodPiece } from './chop/wood';
 import { buildCabin } from './places/cabin';
 import { buildStore } from './places/store';
 import { StorePlay } from './game/storeplay';
-import { Jeep } from './vehicles/jeep';
-import { Trailer } from './vehicles/trailer';
+import { Jeep, installTruck } from './vehicles/jeep';
+import { stockTruckParts } from './vehicles/truckstock';
 import { readSave } from './game/save';
 import { FPArms } from './player/arms';
 import { buildProduct } from './places/products';
@@ -109,16 +109,15 @@ async function boot() {
   // 2. the first view. Downloads go first so they are in flight while the CPU builds the terrain and forest.
   const cabinP = step('cabin', () => loading.step('cabin', async () => { const c = await buildCabin(); game.cabin = c; game.addPlace(c); }));
   const jeepP = step('jeep', () => loading.step('jeep', async () => {
-    const j = new Jeep(); const t = new Trailer();
-    await Promise.all([j.load(), t.load()]);
+    // the logging truck (its flatbed replaced the old 4x4's trailer); it waits at the cabin, the intro respawns it
+    // on the highway. installTruck: camera feel, engine audio, cab keys, winch, repairs
+    const j = new Jeep();
+    await j.load();
     game.jeep = j; game.scene.add(j.root);
     j.onEnter = () => game.enterVehicle();
-    // the Jeep waits at the cabin with the trailer beside it (the intro respawns it on the highway)
     const park = SPOTS.cabin;
     j.spawn(park.x - 11.5, park.z - 6.5, 2.4);
-    game.scene.add(t.root);
-    t.spawn(park.x - 15, park.z - 3.5, 2.4);
-    game.trailer = t;
+    installTruck(game);
   }));
   const propsP = step('props', () => loading.step('props', () => game.preloadItemModels()));
   await step('terrain', () => loading.step('terrain', async () => { game.terrain.prime(new THREE.Vector3(SPOTS.cabin.x, 0, SPOTS.cabin.z)); }));
@@ -223,7 +222,7 @@ async function boot() {
     setTimeout(() => { lights.balance(); balancing = false; }, 15000);
   };
   // (the original relative order of the installs is kept: each may wrap game hooks the next relies on)
-  later.add('store', async () => { const st = await buildStore(); game.store = st; game.addPlace(st); st.group.traverse((o) => { o.userData.game = game; }); });
+  later.add('store', async () => { const st = await buildStore(); game.store = st; game.addPlace(st); st.group.traverse((o) => { o.userData.game = game; }); stockTruckParts(game); });
   later.add('kitchen', () => { installCooking(game); });
   later.add('forge', () => installForge(game));
   later.add('store play', () => new StorePlay(game, (n, c) => cabinPlay.act(n, c)).attach());

@@ -341,7 +341,7 @@ export class TruckDamage {
     }
     this.job = job;
     this.game = g;
-    hud.say(`<i>${R.verb}. Hold to work.</i>`, 2);
+    hud.say(`<i>Hold to work.</i>`, 1.5);
   }
   private game: any = null;
 

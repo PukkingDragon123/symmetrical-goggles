@@ -31,16 +31,31 @@ type Line = { stop?(fade?: number): void };
 type VoiceMod = { voice?: { say?(who: string, text: string, o?: { close?: boolean }): Line } };
 let voiceMod: Promise<VoiceMod | null> | null = null;
 let lastLine: Line | null = null;
+/** bumped by every hush: a line whose voice arrives after it (the module or the render was slow) is stopped */
+let narrGen = 0;
+let narrOpen = false;
 /** Pépère reads a line: through cineHooks.voice when it's wired, else straight to the voice system's 'grandpa' */
 export function narrate(text: string, mood = 'letter'): void {
+  if (!narrOpen) return;
   lastLine?.stop?.(0.3); lastLine = null;
+  const gen = narrGen;
   try {
     if (cineHooks.voice) { void cineHooks.voice({ who: 'ray', text, mood }); return; }
     voiceMod ??= import('../../audio/voice').then((m) => m as unknown as VoiceMod).catch(() => null);
-    void voiceMod.then((m) => { lastLine = m?.voice?.say?.('grandpa', text, { close: true }) ?? null; });
+    void voiceMod.then((m) => {
+      if (gen !== narrGen || !narrOpen) return;   // hushed meanwhile: don't start it at all
+      lastLine = m?.voice?.say?.('grandpa', text, { close: true }) ?? null;
+    });
   } catch (e) { console.warn('[cine] voice', e); }
 }
-export function hushNarration(): void { lastLine?.stop?.(0.4); lastLine = null; }
+/** stop the narration now and refuse more until the next opening (the voice system has no queue to flush: the
+ *  current line is stopped and nothing new is fed to it) */
+export function hushNarration(fade = 0.4): void {
+  narrGen++;
+  narrOpen = false;
+  lastLine?.stop?.(fade); lastLine = null;
+  try { cineHooks.voice?.({ who: 'ray', text: '', mood: 'hush' }); } catch { /* a hook that can't hush */ }
+}
 
 /** whichever vehicle the game has (the logging truck keeps the Jeep's API) */
 export function vehicleOf(g: Game): VehicleLike | null {
@@ -97,12 +112,14 @@ export async function playOpening(g: Game, d: Director): Promise<void> {
   g.hands?.equip(null);
   hud.setLabel(''); hud.showDot(false);
   g.timeScale = 1.5;
-  g.hour = 18.35;
+  g.hour = 17.7;   // the long gold of a late-September evening, the sun still well up over the bush
   g.weather = { cloud: 0.25, rain: 0, fog: 0.05, storm: 0 };
   const tw = (g as unknown as { targetWeather?: { cloud: number; rain: number; fog: number; storm: number } }).targetWeather;
   if (tw) Object.assign(tw, { cloud: 0.3, rain: 0, fog: 0.15, storm: 0 });
   cineUI.fade(true, 0);
   hud.fadeTo(false, 0.3);
+  cineUI.open();
+  narrOpen = true; narrGen++;
   cineUI.letterbox(true, 0.01);
 
   // ---- skip: hold Space or Esc
@@ -125,8 +142,8 @@ export async function playOpening(g: Game, d: Director): Promise<void> {
     // runs after the sky has set this frame's fog: the cinematic thins it for the long views
     // and grades it a touch warmer and richer, golden hour as remembered (the sky rewrites these every frame)
     const gr = g.R.grade;
-    gr.warm += 0.18; gr.saturation *= 1.08;
-    if (air < 1) { g.sky.fog.density *= air; G.uMist.value *= air; gr.air *= air; gr.mie *= air; }
+    gr.warm += 0.22; gr.saturation *= 1.1; gr.exposure *= 1.1;
+    if (air < 1) { g.sky.fog.density *= air; G.uMist.value *= air; gr.air *= air; gr.mie *= air; gr.exposure *= 1.1; }
     if (fill > 0) { g.flashlight.intensity = fill; g.flashlight.color.setRGB(1, 0.8, 0.55); }
   };
   g.updaters.push(onFrame);
@@ -300,9 +317,9 @@ export async function playOpening(g: Game, d: Director): Promise<void> {
   fill = 0;
   g.flashlight.color.copy(flashCol);
   const wasSkipped = skipped;
-  if (wasSkipped) hushNarration();
-  cineUI.clearSub();
-  cineUI.clearTitle();
+  // the hand-back (natural or skipped): no subtitle, title or voice of the opening outlives it
+  hushNarration(wasSkipped ? 0.2 : 0.6);
+  cineUI.close();
   cineUI.skip(null);
   if (wasSkipped) { cineUI.fade(true, 0.35); await new Promise((r) => setTimeout(r, 400)); }
   air = 1;

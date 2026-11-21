@@ -83,6 +83,8 @@ class CineUI {
   private subT = 0;
   private titleT = 0;
   private skipShown = -1;
+  /** closed: the cinematic is over, late subtitles (a timer, a voice callback) are dropped */
+  private closed = false;
 
   private ensure(): boolean {
     if (this.root) return true;
@@ -121,7 +123,7 @@ class CineUI {
 
   /** a subtitle line (words ink in one after another); dur in seconds, 0 = until the next one */
   subtitle(text: string, who = '', dur = 0): void {
-    if (!this.ensure()) return;
+    if (this.closed || !this.ensure()) return;
     clearTimeout(this.subT);
     const show = () => {
       this.subEl.innerHTML = (who ? `<span class="cine__who">${esc(who)}</span>` : '') + spans(text, 'w');
@@ -132,7 +134,17 @@ class CineUI {
     if (this.subEl.classList.contains('is-on')) { this.subEl.classList.remove('is-on'); this.subT = window.setTimeout(show, 380); }
     else show();
   }
-  clearSub(): void { if (!this.root) return; clearTimeout(this.subT); this.subEl.classList.remove('is-on'); }
+  /** the subtitle fades; hard: gone this frame, text and all (the hand-back) */
+  clearSub(hard = false): void {
+    if (!this.root) return;
+    clearTimeout(this.subT);
+    this.subEl.classList.remove('is-on');
+    if (hard) { this.subEl.style.transition = 'none'; this.subEl.innerHTML = ''; void this.subEl.offsetWidth; this.subEl.style.transition = ''; }
+  }
+  /** a cinematic starts: subtitles allowed */
+  open(): void { this.closed = false; }
+  /** the cinematic is over: every subtitle goes now and none can come back until the next open() */
+  close(): void { this.closed = true; this.clearSub(true); this.clearTitle(); this.skip(null); }
 
   /** the title card: the name letter by letter, tracking in slowly, a hairline, the place and time under it */
   title(text: string, sub = '', secs = 6): void {
