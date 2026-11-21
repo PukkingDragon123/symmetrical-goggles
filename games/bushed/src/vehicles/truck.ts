@@ -352,7 +352,7 @@ export class Truck {
       this.chassisG.add(mm);
       return mm;
     };
-    this.pools = { tail: pool(0xff2010, 2.8, 2.2, -3.9), head: pool(0xffd8a0, 3.6, 6, 5.2) };
+    this.pools = { tail: pool(0xff2010, 2.2, 1.6, -3.6), head: pool(0xffd8a0, 3.6, 6, 5.2) };
   }
 
   spawn(x: number, z: number, heading: number): void {
@@ -568,7 +568,7 @@ export class Truck {
     lensI('light_bar', this.lightBar && this.running ? 2.2 : 0);
     lensI('light_work', this.workLights ? 3 : 0);
     if (this.pools) {
-      (this.pools.tail.material as THREE.MeshBasicMaterial).opacity = clamp(tail * 0.07, 0, 0.3);
+      (this.pools.tail.material as THREE.MeshBasicMaterial).opacity = clamp(tail * 0.03, 0, 0.12);
       (this.pools.head.material as THREE.MeshBasicMaterial).opacity = this.headLevel * 0.045;
     }
     const aux = this.auxSpot;

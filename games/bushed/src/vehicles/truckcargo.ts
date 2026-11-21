@@ -110,6 +110,12 @@ export class TruckCargo {
       const b0 = Math.floor((_v.x - r.piece.r + 1) * 10), b1 = Math.ceil((_v.x + r.piece.r + 1) * 10);
       for (let b = Math.max(0, b0); b < Math.min(20, b1); b++) this.bins[b] = Math.max(this.bins[b], top);
     }
+    // logs still on the winch cable keep their reserved slots
+    for (const m of this.move ? [this.move, ...this.queue] : this.queue) if (m.local) {
+      const r = m.piece.r, top = m.to.y + r - this.B.bunkY;
+      const b0 = Math.floor((m.to.x - r + 1) * 10), b1 = Math.ceil((m.to.x + r + 1) * 10);
+      for (let b = Math.max(0, b0); b < Math.min(20, b1); b++) this.bins[b] = Math.max(this.bins[b], top);
+    }
     this.kg = kg;
     this.t.phys.cargoKg = kg;
     if (kg > 0) this.t.phys.cargoAt.copy(c.multiplyScalar(1 / kg));
