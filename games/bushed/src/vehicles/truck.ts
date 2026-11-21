@@ -230,9 +230,10 @@ export class Truck {
     {
       const near = new Set<THREE.Object3D>();
       for (const n of this.nearOnly) n.traverse((o) => near.add(o));
-      m.updateMatrixWorld(true);
+      // the body and the wheels have been moved under the sprung / chassis groups by now: walk the whole truck
+      this.root.updateMatrixWorld(true);
       const sc = new THREE.Vector3();
-      m.traverse((o) => {
+      this.root.traverse((o) => {
         const mesh = o as THREE.Mesh;
         if (!mesh.isMesh || near.has(o) || /^light_/.test(o.name) || o.children.some((c) => (c as THREE.Mesh).isMesh)) return;
         const g = mesh.geometry;

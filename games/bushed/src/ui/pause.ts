@@ -3,6 +3,7 @@
 import { paintPaper } from './paper';
 import { input } from '../core/input';
 import { audio } from '../audio/audio';
+import { motionBlur, setMotionBlur } from '../game/quality';
 
 export interface Settings { sensitivity: number; volume: number; pixel: number; shadows: boolean; quality?: string }
 
@@ -44,6 +45,8 @@ export class Pause {
       <label>Quality <select id="p-q"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="ultra">Ultra</option></select></label>
       <label>Pixel size <input id="p-px" type="range" min="1" max="4" step="1"></label>
       <label>Shadows <input id="p-sh" type="checkbox"></label>
+      <label>Motion blur <input id="p-mb" type="checkbox"></label>
+      <label>Blur strength <input id="p-mbs" type="range" min="0" max="2" step="0.1"></label>
       <div style="margin-top:14px"><button id="p-back">Back to the bush</button></div>
       <div class="keys">WASD walk · Shift run · E use · LMB swing/place · Q drop · R rotate · B pocket<br>1 axe · 2 hatchet · 3 maul/saw · 4 light · 5 jerky · F flashlight · Tab journal · I pack</div>
     </div>`;
@@ -51,6 +54,9 @@ export class Pause {
     root.style.pointerEvents = 'none';
     const q = (id: string) => this.el.querySelector(`#${id}`) as HTMLInputElement;
     q('p-sens').value = String(this.s.sensitivity); q('p-vol').value = String(this.s.volume); q('p-px').value = String(this.s.pixel); q('p-sh').checked = this.s.shadows;
+    q('p-mb').checked = motionBlur.on; q('p-mbs').value = String(motionBlur.strength);
+    q('p-mb').addEventListener('input', () => setMotionBlur({ on: q('p-mb').checked }));
+    q('p-mbs').addEventListener('input', () => setMotionBlur({ strength: Number(q('p-mbs').value) }));
     const qs = this.el.querySelector('#p-q') as HTMLSelectElement;
     try { qs.value = localStorage.getItem('bushed.quality') ?? 'high'; } catch { qs.value = 'high'; }
     qs.addEventListener('change', () => { this.s.quality = qs.value; this.onChange(this.s); q('p-px').value = String(this.s.pixel); saveSettings(this.s); });
