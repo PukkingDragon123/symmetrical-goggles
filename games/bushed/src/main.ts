@@ -3,6 +3,8 @@ import { Game } from './game/game';
 import { Director } from './game/director';
 import { runMenu, runIntro } from './game/flow';
 import { Critters } from './game/critters';
+import { installMusic, music } from './audio/music';
+import { installTalk } from './game/talk';
 import { input } from './core/input';
 import { hud } from './ui/hud';
 import { loadFonts } from './ui/paper';
@@ -72,6 +74,8 @@ const fontsReady = step('fonts', () => loading.step('fonts', () => loadFonts()))
 
 async function boot() {
   mark('module eval', 0);
+  // the theme renders in a worker while we load; it starts on the first click (autoplay rules)
+  music.play('theme');
   // modules' items go in the catalogue before the store stocks its shelves
   registerCookItems(); registerForgeItems();
   await fontsReady;
@@ -228,13 +232,15 @@ async function boot() {
   later.add('store play', () => new StorePlay(game, (n, c) => cabinPlay.act(n, c)).attach());
   later.add('hunting', () => installHunting(game, { hotkey: null } as never));
   later.add('npcs', () => { const npcs = spawnNpcs(game); game.updaters.push((dt) => npcs.forEach((n) => n.update(dt))); });
+  later.add('talk', () => installTalk(game));
   later.add('stories', () => installStories(game));
   later.add('fauna', () => { installFauna(game as never); });
   later.add('creatures', () => critters.spawn());
   later.add('book', () => { installBook(game); });
   later.start();
+  installMusic(game);
   /** what the story needs before the menu hands over to the intro or a saved game */
-  const storyReady = () => Promise.all(['store', 'store play', 'kitchen', 'forge', 'hunting', 'npcs', 'stories'].map((k) => later.task(k)));
+  const storyReady = () => Promise.all(['store', 'store play', 'kitchen', 'forge', 'hunting', 'npcs', 'talk', 'stories'].map((k) => later.task(k)));
 
   // dev shortcuts: ?play skips menu and intro, ?test adds pieces to play with
   if (params.has('play') || params.has('test')) {

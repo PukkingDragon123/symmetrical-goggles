@@ -45,6 +45,8 @@ export type MountName = 'driver' | 'hood' | 'bumper' | 'wheel_fl' | 'wheel_rr' |
 
 const WHEELS = ['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'] as const;
 const SPR = new THREE.Vector3(0, 0.95, -0.3); // the sprung body pitches and rolls about here (near its centre of mass)
+/** far LOD distances (m): small parts hide, mid-size parts stop casting shadows */
+const FAR_HIDE = 40, FAR_SHADOW = 30;
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 const damp = (a: number, b: number, k: number, dt: number) => a + (b - a) * (1 - Math.exp(-k * dt));
 
@@ -223,6 +225,24 @@ export class Truck {
     }
     this.steerWheel = this.nodes.steering_wheel ?? null;
     for (const n of ['interior', 'steering_wheel', 'needle_speedo', 'needle_tacho', 'needle_fuel', 'needle_temp', 'winch_drum']) if (this.nodes[n]) this.nearOnly.push(this.nodes[n]);
+    // far LOD (perf pass): small exterior parts (under 0.3 m) hide past FAR_HIDE m, parts under 0.7 m stop casting
+    // shadows past FAR_SHADOW m; the lamp lenses, glass and the near-only cab are left alone
+    {
+      const near = new Set<THREE.Object3D>();
+      for (const n of this.nearOnly) n.traverse((o) => near.add(o));
+      m.updateMatrixWorld(true);
+      const sc = new THREE.Vector3();
+      m.traverse((o) => {
+        const mesh = o as THREE.Mesh;
+        if (!mesh.isMesh || near.has(o) || /^light_/.test(o.name) || o.children.some((c) => (c as THREE.Mesh).isMesh)) return;
+        const g = mesh.geometry;
+        if (!g.boundingSphere) g.computeBoundingSphere();
+        mesh.matrixWorld.decompose(_v, _q, sc);
+        const r = g.boundingSphere!.radius * Math.max(sc.x, sc.y, sc.z);
+        if (r < 0.3) this.farHide.push(mesh);
+        if (r < 0.7 && mesh.castShadow) this.farNoShadow.push(mesh);
+      });
+    }
     // the hands' focus ray tests every triangle under it: keep it off the cab interior and the running gear
     const seen = new Set<THREE.Material>();
     for (const n of ['interior', 'steering_wheel']) this.nodes[n]?.traverse((o) => {
@@ -646,6 +666,9 @@ export class Truck {
       const d = cam.position.distanceTo(this.root.position);
       const near = d < 26 || this.occupied;
       for (const n of this.nearOnly) n.visible = near;
+      const far = d > FAR_HIDE && !this.occupied, noShadow = d > FAR_SHADOW && !this.occupied;
+      if (far !== this.farLod) { this.farLod = far; for (const n of this.farHide) n.visible = !far; }
+      if (noShadow !== this.farShadow) { this.farShadow = noShadow; for (const n of this.farNoShadow) n.castShadow = !noShadow; }
     }
     // the cab is a dark box: a faint self-light on the dash and seats while you sit in it (eyes adjust; no lamp)
     const fill = this.occupied ? 0.17 : 0;
@@ -657,6 +680,10 @@ export class Truck {
   private cabMats: THREE.MeshStandardMaterial[] = [];
   private cabFill = 0;
   private nearOnly: THREE.Object3D[] = [];
+  private farHide: THREE.Object3D[] = [];
+  private farNoShadow: THREE.Object3D[] = [];
+  private farLod = false;
+  private farShadow = false;
 }
 
 // a tiny bridge so this file stays free of the game object

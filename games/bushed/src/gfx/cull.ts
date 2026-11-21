@@ -1,15 +1,16 @@
 // Screen-size culling for plain meshes, installed on everything that joins the world (the Renderer's watcher):
 // a mesh whose bounding sphere would be smaller than one internal pixel (radius) is skipped in the main pass (the
 // renderer sets the focal length in pixels each frame), in the sun's shadow map beyond SUN_K x radius (a tin on a
-// shelf stops casting at ~9 m, a chair at ~45 m, a house never), in lamp shadow maps beyond LAMP_K x radius. So the
-// store's 600 shelf items cost nothing from the cabin and the yard junk does not fill the sun's map from afar.
+// shelf stops casting at ~9 m, a chair at ~45 m, a house never), in lamp shadow maps beyond LAMP_K x radius (a
+// 0.5 m crate stops casting lamp shadows 40 m from the camera). So the store's 600 shelf items cost nothing from the
+// cabin and the yard junk does not fill the sun's map from afar.
 // Pieces (under FOG_R m) past the distance where the scene's fog is opaque are skipped too (the cabin from the hollow).
 // Never-culled shadow casters (creatures) keep being drawn by the camera but are culled per light (casterCull).
 // Instanced meshes, skinned meshes the camera culls, and meshes with their own intersectsFrustum are left alone.
 import * as THREE from 'three';
 import { G } from './globals';
 
-const SUN_K = 90, LAMP_K = 160;
+const SUN_K = 90, LAMP_K = 80;
 let MAIN_K = 400;
 /** the main camera's focal length in internal pixels (radius / distance * focal = projected radius in pixels) */
 export function setCullFocal(px: number): void { MAIN_K = Math.max(150, px); }

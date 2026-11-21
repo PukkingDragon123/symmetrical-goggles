@@ -5,11 +5,11 @@
 import type { VoiceLine } from '../../audio/voice';
 
 const css = `
-#talk-sub { position: fixed; left: 50%; bottom: 11vh; transform: translateX(-50%); width: min(78vw, 980px); text-align: center; z-index: 26;
+#talk-sub { position: fixed; left: 50%; bottom: 10vh; transform: translateX(-50%); width: min(86vw, 1080px); text-align: center; z-index: 26;
   pointer-events: none; font-family: Alagard, monospace; -webkit-font-smoothing: none; opacity: 0; transition: opacity .25s; }
 #talk-sub .who { display: block; font-size: 22px; letter-spacing: 3px; color: #e2a35a; margin-bottom: 6px; text-transform: uppercase;
   text-shadow: 2px 0 0 #120d0a, -2px 0 0 #120d0a, 0 2px 0 #120d0a, 0 -2px 0 #120d0a; }
-#talk-sub .line { font-size: 30px; line-height: 1.15; color: #f1e6c8; white-space: pre-wrap;
+#talk-sub .line { font-size: 26px; line-height: 1.12; color: #f1e6c8; white-space: pre-wrap;
   text-shadow: 2px 0 0 #120d0a, -2px 0 0 #120d0a, 0 2px 0 #120d0a, 0 -2px 0 #120d0a, 2px 2px 0 #120d0a, -2px 2px 0 #120d0a, 2px -2px 0 #120d0a, -2px -2px 0 #120d0a, 0 4px 0 rgba(0,0,0,.45); }
 #talk-sub .line .rest { color: transparent; text-shadow: none; }
 #talk-sub.thought .line { color: #cfc6b0; font-style: italic; }

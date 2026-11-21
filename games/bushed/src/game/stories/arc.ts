@@ -478,31 +478,32 @@ class Ghost {
 
 /**
  * One voice at a time while the finale and its title play: Pépère's lines and the finale's own thoughts go
- * through; every other hud.say (thoughts, toasts, the radio, people's chatter) waits, and the last few are let
- * through a little apart once the title has faded.
+ * through; every other word on screen (thoughts, toasts, the Book's grumbles, the radio, people's chatter, all of
+ * which end up in floatText.say) waits, and the last few are let through a little apart once the title has faded.
  */
+type FloatSay = (text: string, o?: Parameters<typeof floatText.say>[1]) => void;
 class SayGate {
-  private orig: ((text: string, dur?: number) => void) | null = null;
-  private held: [string, number][] = [];
-  hold(allow: (text: string) => boolean): void {
+  private orig: FloatSay | null = null;
+  private held: [string, Parameters<typeof floatText.say>[1]][] = [];
+  hold(allow: (text: string, who?: string) => boolean): void {
     if (this.orig) return;
-    const orig = hud.say.bind(hud);
+    const orig: FloatSay = floatText.say.bind(floatText);
     this.orig = orig;
-    (hud as unknown as { say: (text: string, dur?: number) => void }).say = (text: string, dur = 3.5) => {
-      if (allow(text)) { orig(text, dur); return; }
-      if (!this.held.some(([t]) => t === text)) this.held.push([text, dur]);
+    (floatText as unknown as { say: FloatSay }).say = (text, o) => {
+      if (allow(text, o?.who)) { orig(text, o); return; }
+      if (!this.held.some(([t]) => t === text)) this.held.push([text, o]);
       if (this.held.length > 3) this.held.shift();
     };
   }
-  /** straight through, even while held */
-  say(text: string, dur = 3.5): void { (this.orig ?? hud.say.bind(hud))(text, dur); }
+  /** straight through, even while held (a thought) */
+  say(text: string, dur = 3.5): void { (this.orig ?? floatText.say.bind(floatText))(text, { dur }); }
   release(): void {
     if (!this.orig) return;
     this.orig = null;
-    delete (hud as unknown as { say?: unknown }).say;   // back to the class's own method
+    delete (floatText as unknown as { say?: unknown }).say;   // back to the class's own method
     const held = this.held;
     this.held = [];
-    held.forEach(([t, d], i) => setTimeout(() => hud.say(t, d), 1200 + i * 3800));
+    held.forEach(([t, o], i) => setTimeout(() => floatText.say(t, o), 1200 + i * 3800));
   }
 }
 
@@ -512,6 +513,7 @@ class Finale {
   get quiet(): boolean { return this.running && this.stage < 9; }
   private gate = new SayGate();
   private endT = 0;
+  private titleT = 0;
   private recipes: string[] = [];
   private recipeT = 0;
   private own(text: string, secs = 3.5): void { this.gate.say(`<i>${text}</i>`, secs); }
@@ -528,7 +530,7 @@ class Finale {
   constructor(private g: Game, private W: StoryWorld) {
     this.ray = NPCS.get('ray') ?? null;
     clang(W.postTop, 1, 0.9); clang(W.postTop, 1, 1.8);
-    this.gate.hold((text) => text.includes('<b>Pépère:</b>'));
+    this.gate.hold((text, who) => who === 'Pépère' || text.startsWith('<b>Pépère:</b>'));
     this.own('It goes out over the lake and doesn\'t come back.', 3.5);
     g.timeScale = Math.min(g.timeScale, 30);
   }
@@ -670,12 +672,14 @@ class Finale {
       }
     }
     // one thing at a time: the empty bench, then the title alone, then the book and the recipe box
-    if (this.stage === 7 && this.t > this.endT + 6.5) {
+    // the title waits for the words on screen to finish (his last line, the bench), so it stands alone
+    if (this.stage === 7 && this.t > this.endT + 6.5 && (!floatText.speaking || this.t > this.endT + 14)) {
       this.stage = 8;
+      this.titleT = this.t;
       floatText.clearTitles();
       cineUI.title('BUSHED', 'Supper\'s on.', 7.5);
     }
-    if (this.stage === 8 && this.t > this.endT + 6.5 + 7.5 + 1.8) {
+    if (this.stage === 8 && this.t > this.titleT + 7.5 + 1.8) {
       this.stage = 9;
       this.gate.release();
       noted(g, 'Pépère ate with his crew one last time.');
