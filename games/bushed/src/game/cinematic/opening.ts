@@ -181,14 +181,15 @@ export async function playOpening(g: Game, d: Director): Promise<void> {
     await beat(d.sleep(2.4));
   } else cineUI.fade(false, 0.5);
 
-  // 2. AERIAL: high over Kettle Lake at golden hour, the low sun at our backs, gliding north-east across the water
-  //    with the bush going gold on the far shore
+  // 2. AERIAL: over Kettle Lake at golden hour, the low sun at our backs, gliding north-east over the water and
+  //    tilting up to the bush on the far shore
   if (at(2)) {
     place(40);
     air = 0.28;
     const L = SPOTS.lake;
-    const pts = [V3(L.x - 170, 118, L.z + 120), V3(L.x - 95, 108, L.z + 50), V3(L.x - 15, 100, L.z - 20), V3(L.x + 60, 94, L.z - 80)];
-    const looks = [V3(L.x + 40, 0, L.z - 60), V3(L.x + 150, 0, L.z - 160), V3(L.x + 260, 0, L.z - 250)];
+    // looking down on the water first (the sky in it), then tilting up to find the bush on the far shore
+    const pts = [V3(L.x - 90, 62, L.z + 75), V3(L.x - 30, 58, L.z + 20), V3(L.x + 30, 56, L.z - 35), V3(L.x + 90, 60, L.z - 90)];
+    const looks = [V3(L.x + 10, 2, L.z - 20), V3(L.x + 90, 2, L.z - 100), V3(L.x + 190, 8, L.z - 190)];
     cineUI.fade(false, 3.2);
     await beat(cam.play(flight(pts, looks), 13, { lens: { mm: 28, focus: 200, fstop: 11 }, handheld: 0.25 }));
   }

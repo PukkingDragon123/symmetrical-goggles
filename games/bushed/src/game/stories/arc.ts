@@ -29,7 +29,7 @@ import { CAMP, SETS, SHORE, TRAP_HEAD, WOODYARD } from './sites';
 import { showOnPlate, tickStove, gutHammerModel, type StoryWorld } from './world';
 import { buildProduct } from '../../places/products';
 import { puffs } from '../../gfx/particles';
-import { objectiveSources, type Objective } from '../../ui/objectives';
+import { objectiveSources, installObjectives, type Objective } from '../../ui/objectives';
 import { chapterCard, cineUI } from '../cinematic/overlay';
 
 // ---------------------------------------------------------------------------------------------- chapters
@@ -160,6 +160,8 @@ export class Arc {
     arcW = W;
     arcNow = this;
     if (!objectiveSources.includes(storyObjective)) objectiveSources.push(storyObjective);
+    // the objective line comes up with the story (idempotent; the intro and the porch menu install it too)
+    installObjectives(g);
   }
 
   private wire(): void {
@@ -436,9 +438,10 @@ class Ghost {
       gm = (base.isMeshStandardMaterial ? base.clone() : new THREE.MeshStandardMaterial({ color: 0xb8c4d6 })) as THREE.MeshStandardMaterial;
       gm.transparent = true;
       gm.depthWrite = true;
-      gm.color = (base.color?.clone() ?? new THREE.Color(1, 1, 1)).lerp(new THREE.Color(0.72, 0.8, 0.92), 0.55);
-      gm.emissive = new THREE.Color(0.2, 0.26, 0.36);
-      gm.emissiveMap = base.map ?? null;
+      gm.color = (base.color?.clone() ?? new THREE.Color(1, 1, 1)).lerp(new THREE.Color(0.75, 0.83, 0.95), 0.6);
+      // a cold glow of his own, even in the dark, so he reads against the night (not from the lantern)
+      gm.emissive = new THREE.Color(0.34, 0.42, 0.56);
+      gm.emissiveMap = null;
       gm.opacity = 0;
       this.clones.set(src, gm);
       this.ghosts.add(gm);
@@ -452,7 +455,7 @@ class Ghost {
     if (this.glitchT <= 0) { this.glitchT = 2.5 + Math.random() * 5; this.glitch = 0.09 + Math.random() * 0.1; }
     this.glitch -= dt;
     const flick = this.glitch > 0 ? 0.25 : 0.86 + 0.1 * Math.sin(t * 7.3) * Math.sin(t * 2.1) + 0.04 * Math.sin(t * 23.0);
-    const op = Math.max(0, Math.min(1, level)) * 0.7 * flick;
+    const op = Math.max(0, Math.min(1, level)) * 0.74 * flick;
     for (const m of this.meshes) {
       if (!this.orig.has(m)) { this.orig.set(m, m.material); this.cast.set(m, m.castShadow); }
       const cur = m.material;
@@ -460,7 +463,7 @@ class Ghost {
       else if (!this.ghosts.has(cur)) m.material = this.ghostOf(cur);
       m.castShadow = false;
     }
-    for (const gm of this.clones.values()) { gm.opacity = op; gm.emissiveIntensity = 0.5 + 0.5 * level; }
+    for (const gm of this.clones.values()) { gm.opacity = op; gm.emissiveIntensity = (0.5 + 0.5 * level) * (0.8 + 0.2 * flick); }
   }
   /** solid again (for the next time anyone looks: nobody will) */
   restore(): void {
@@ -611,9 +614,9 @@ class Finale {
     if (this.stage === 5 && (!ray || !ray.busy)) {
       this.stage = 6;
       set(g, 'ending'); setNum(g, 'ending_day', g.day);
-      // the recipe box: every card you haven't been given yet
+      // the recipe box: every card you haven't been given yet (after he's gone and the title has had its moment)
       let delay = 0;
-      for (const id of Object.keys(RECIPE_NAMES)) if (!has(g, `recipe:${id}`)) { setTimeout(() => giveRecipe(g, id, 'Délima'), (5 + delay) * 1000); delay += 1.6; }
+      for (const id of Object.keys(RECIPE_NAMES)) if (!has(g, `recipe:${id}`)) { setTimeout(() => giveRecipe(g, id, 'Délima'), (26 + delay) * 1000); delay += 1.8; }
       audio.play('bird_loon', { pos: SHORE.edge, vol: 0.6, delay: 1.2 });
     }
     if (this.stage === 6) {

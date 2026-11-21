@@ -198,7 +198,7 @@ export class CloseUp {
     if (arms?.object && e > 0.02) arms.object.visible = false;
     // a cryptid: darker, eyes catching the light
     if (this.subj.kind === 'creature') {
-      g.R.grade.exposure *= 1 - 0.28 * e;
+      g.R.grade.exposure *= 1 - 0.15 * e;
       g.R.grade.saturation *= 1 - 0.3 * e;
       if (this.subj.fx) this.subj.fx.shine.value = Math.max(this.subj.fx.shine.value, 1.8 * e);
     }
@@ -233,7 +233,12 @@ export class CloseUp {
     if (e === 0 && this.lastE === 0) return;
     this.lastE = e;
     const cls = e > 0.05;
-    if (cls !== this.bodyCls && typeof document !== 'undefined') { this.bodyCls = cls; document.body.classList.toggle('talk-closeup', cls); }
+    if (cls !== this.bodyCls && typeof document !== 'undefined') {
+      this.bodyCls = cls;
+      // the HUD steps out of the shot (the hotbar, the dot, the label, the objective)
+      document.body.classList.toggle('talk-closeup', cls);
+      for (const el of document.querySelectorAll<HTMLElement>('#hotbar, #hud-dot, #hud-label, .bobj, .bobjm')) el.style.visibility = cls ? 'hidden' : '';
+    }
     if (!this.root) return;
     this.root.style.opacity = e.toFixed(3);
     this.root.className = this.isCreature ? 'creature' : '';

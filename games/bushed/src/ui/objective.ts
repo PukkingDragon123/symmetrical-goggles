@@ -109,7 +109,7 @@ class ObjectiveUI {
       this.tEl.textContent = o.text;
       this.list.innerHTML = (o.steps ?? []).map((s) => `<li class="bobj__s${s.done ? ' is-done' : ''}" data-id="${esc(s.id)}"><span class="bobj__box"></span><span class="bobj__st">${esc(s.text)}</span></li>`).join('');
       this.next();
-      this.hintKey = ''; this.hint(null);
+      this.hintKey = '-'; this.hint(null);
       void el.offsetWidth;
       el.classList.add('is-on', 'is-new');
       clearTimeout(this.newT);

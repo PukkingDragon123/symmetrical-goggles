@@ -326,7 +326,7 @@ export class Npc {
     }
     // the close-up holds while there's something left to say, then lets go
     if (this.inCloseup) {
-      if (!this.busy && !this.later && !this.handing) { this.closeT += dt; if (this.closeT > 0.9) talk.closeup?.release(); }
+      if (!this.busy && !this.later && !this.handing) { this.closeT += dt; if (this.closeT > 1.6) talk.closeup?.release(); }
       else this.closeT = 0;
     }
     // overheard lines
