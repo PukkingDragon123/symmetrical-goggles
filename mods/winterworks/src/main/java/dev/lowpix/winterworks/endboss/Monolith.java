@@ -191,6 +191,7 @@ public class Monolith extends Monster {
         this.xpReward = XP;
         setPersistenceRequired();
         setNoGravity(true);
+        refreshDimensions();   // its eye height (getDefaultDimensions)
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -922,7 +923,10 @@ public class Monolith extends Monster {
         }
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, ground), c.x, c.y + 0.1, c.z, 70, SLAM_RADIUS * 0.6, 0.1,
                 SLAM_RADIUS * 0.6, 0.25);
-        sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y + 0.5, c.z, 2, 1, 0.2, 1, 0);
+        for (int i = 0; i < 16; i++) {   // a ring of dust at its reach
+            double a = Math.PI * 2 * i / 16;
+            sl.sendParticles(ParticleTypes.POOF, c.x + Math.cos(a) * SLAM_RADIUS, c.y + 0.1, c.z + Math.sin(a) * SLAM_RADIUS, 1, 0, 0.02, 0, 0.02);
+        }
         sl.sendParticles(EndParticles.ECLIPSE_MOTE, c.x, c.y + 0.5, c.z, 12, 1.5, 0.3, 1.5, 0.08);
         sl.playSound(null, c.x, c.y, c.z, EndSounds.MONOLITH_SLAM, SoundSource.HOSTILE, 4f, 0.9f + random.nextFloat() * 0.2f);
         shake(sl, c, 24, 1.6f, 14);
@@ -976,7 +980,7 @@ public class Monolith extends Monster {
         level().broadcastEntityEvent(this, EVENT_RING);
         Vec3 c = ringCentre;
         sl.playSound(null, c.x, c.y, c.z, EndSounds.MONOLITH_CLAP, SoundSource.HOSTILE, 5f, 1f);
-        sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y + 0.6, c.z, 3, 0.6, 0.2, 0.6, 0);
+        sl.sendParticles(ParticleTypes.FLASH, c.x, c.y + 0.8, c.z, 1, 0, 0, 0, 0);
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OBSIDIAN.defaultBlockState()), c.x, c.y + 1, c.z, 40, 0.6,
                 0.4, 0.6, 0.3);
         shake(sl, c, 32, 2.2f, 18);

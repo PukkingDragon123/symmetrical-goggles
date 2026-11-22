@@ -113,7 +113,6 @@ final class EndBossShots {
             look(srv, view, 75f, -10f);
         }));
         at(t += 50, () -> shot("dragon_enraged"));
-        at(t += 2, () -> server(srv -> look(srv, dragonAt.add(forward(75f).scale(-9)).add(0, 10, 0), dragonAt)));
         at(t += 20, () -> shot("dragon_wings"));
         at(t += 2, () -> server(srv -> look(srv, view, 75f, -6f)));
         at(t += 2, () -> server(srv -> {
@@ -129,11 +128,14 @@ final class EndBossShots {
         at(t += 20, () -> shot("dragon_beam"));
         at(t += 6, () -> shot("dragon_beam_late"));
         // the Monolith on an obsidian arena out over the void, a villager before it, the camera off to the side
-        at(t += 10, () -> server(srv -> {
-            ServerLevel end = end(srv);
-            for (EnderDragon d : end.getDragons()) {
+        at(t += 10, () -> server(srv -> {   // go there first, so its chunks stay loaded with what is put in them
+            for (EnderDragon d : end(srv).getDragons()) {
                 d.discard();
             }
+            look(srv, side(), focus());
+        }));
+        at(t += 30, () -> server(srv -> {
+            ServerLevel end = end(srv);
             BlockPos c = ARENA;
             for (int x = -13; x <= 13; x++) {
                 for (int z = -13; z <= 13; z++) {
@@ -143,7 +145,7 @@ final class EndBossShots {
                     }
                 }
             }
-            for (int[] pl : new int[][]{{8, 6}, {-8, 6}, {7, -9}, {-9, -6}}) {
+            for (int[] pl : new int[][]{{8, 5}, {-8, 5}, {-9, -5}, {10, -2}}) {
                 for (int y = 0; y < 4; y++) {
                     end.setBlockAndUpdate(c.offset(pl[0], y, pl[1]), Blocks.OBSIDIAN.defaultBlockState());
                 }
@@ -153,7 +155,6 @@ final class EndBossShots {
             m.setPersistenceRequired();
             end.addFreshEntity(m);
             victim = villager(end, c.getX() + 0.5, c.getZ() - 8.5);
-            look(srv, side(), focus());
         }));
         at(t += 60, () -> server(srv -> {
             Monolith m = monolith(end(srv));
@@ -172,6 +173,7 @@ final class EndBossShots {
         at(t += 30, () -> server(srv -> {
             Monolith m = monolith(end(srv));
             if (m != null && victim != null) {
+                m.startStare(victim);
                 m.startSlam(true, victim, victim.position().add(3.4, 0, 1.5));
                 m.startSlam(false, victim, victim.position().add(-3.4, 0, 0.5));
             }
@@ -227,11 +229,11 @@ final class EndBossShots {
 
     /** The Monolith shots' camera: off its left shoulder, looking past it towards its victim. */
     private static Vec3 side() {
-        return new Vec3(ARENA.getX() + 7.5, ARENA.getY() + 3.0, ARENA.getZ() - 10.5);
+        return new Vec3(ARENA.getX() + 7.0, ARENA.getY() + 3.0, ARENA.getZ() - 11.0);
     }
 
     private static Vec3 focus() {
-        return new Vec3(ARENA.getX() + 0.5, ARENA.getY() + 3.8, ARENA.getZ() - 2.5);
+        return new Vec3(ARENA.getX() + 0.5, ARENA.getY() + 4.8, ARENA.getZ() - 3.5);
     }
 
     private static Villager villager(ServerLevel end, double x, double z) {
@@ -314,7 +316,8 @@ final class EndBossShots {
             String name = PENDING.remove(0);
             PENDING_FRAME.remove(0);
             Screenshot.grab(mc.gameDirectory, "winterworks_endboss_" + name + ".png", mc.getMainRenderTarget(), msg -> {});
-            Winterworks.LOG.info("endbossshots: {}", name);
+            Monolith m = mc.level == null ? null : mc.level.getEntitiesOfClass(Monolith.class, mc.player.getBoundingBox().inflate(40)).stream().findFirst().orElse(null);
+            Winterworks.LOG.info("endbossshots: {}{}", name, m == null ? "" : " (stare " + m.stareTarget() + " at " + m.stareProgress() + ", hands " + m.handState(true) + "/" + m.handState(false) + ")");
         }
     }
 
