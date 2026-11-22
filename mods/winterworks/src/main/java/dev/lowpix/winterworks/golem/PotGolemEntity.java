@@ -394,6 +394,19 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         if (contents(pot).is(Items.ECHO_SHARD)) {
             return HeadForm.ECHO;
         }
+        HeadForm f = abilityPotForm(pot);
+        return f != HeadForm.NONE ? f : HeadForm.PLAIN;
+    }
+
+    /**
+     * An "ability pot": a decorated pot whose four faces carry the same ability sherd (Howl, Danger, Heart, Burn, Flow,
+     * Shelter, Plenty, Brewer) gives that head (whatever is inside) and glows in that ability's colour, on a golem and as
+     * an item (client.golem.PotGlow). Anything else, mixed pots included, is NONE.
+     */
+    public static HeadForm abilityPotForm(ItemStack pot) {
+        if (!pot.is(Items.DECORATED_POT)) {
+            return HeadForm.NONE;
+        }
         List<Item> sides = decorations(pot).ordered();
         if (sides.size() == 4 && sides.stream().allMatch(sides.get(0)::equals)) {
             HeadForm f = HeadForm.bySherd(sides.get(0));
@@ -401,7 +414,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
                 return f;
             }
         }
-        return HeadForm.PLAIN;
+        return HeadForm.NONE;
     }
 
     public HeadForm headForm() {

@@ -66,6 +66,12 @@ public final class AmberShots {
         at(t += 10, () -> Minecraft.getInstance().stop());
     }
 
+    /** The pot_decorations list of a pot with this sherd on all four faces. */
+    private static String sherds(String sherd) {
+        String s = "\"minecraft:" + sherd + "_pottery_sherd\"";
+        return "[" + s + "," + s + "," + s + "," + s + "]";
+    }
+
     private static String pot(String sherd) {
         String s = "\"minecraft:" + sherd + "_pottery_sherd\"";
         return "{id:\"minecraft:decorated_pot\",count:1,components:{\"minecraft:pot_decorations\":[" + s + "," + s + "," + s + "," + s + "]}}";
@@ -340,6 +346,22 @@ public final class AmberShots {
         at(t += 40, () -> shot("glowing_golems_night", true));
         at(t += 4, () -> cmd("tp @s 118.5 -57.4 11.0 180 4"));
         at(t += 30, () -> shot("glowing_golem_close", true));
+        at(t += 4, () -> cmd("time set 6000"));
+        // ability pots glow as items too: a hotbar of them (one mixed pot at the end, vanilla) and one in hand
+        at(t += 4, () -> {
+            String[] all = new String[9];
+            for (int i = 0; i < HEADS.length; i++) {
+                all[i] = "minecraft:decorated_pot[minecraft:pot_decorations=" + sherds(HEADS[i]) + "]";
+            }
+            all[8] = "minecraft:decorated_pot[minecraft:pot_decorations=[\"minecraft:heart_pottery_sherd\",\"minecraft:burn_pottery_sherd\","
+                    + "\"minecraft:flow_pottery_sherd\",\"minecraft:shelter_pottery_sherd\"]]";
+            hotbar(all);
+            Minecraft.getInstance().player.getInventory().selected = 0;
+            cmd("tp @s 125.0 -59.0 19.5 180 6");
+        });
+        at(t += 30, () -> shot("ability_pots_hotbar", false));
+        at(t += 4, () -> cmd("time set 18000"));
+        at(t += 30, () -> shot("ability_pots_hotbar_night", false));
         at(t += 4, () -> cmd("time set 6000"));
         // a headshot: an arrow into a plain golem's pot
         at(t += 5, () -> {

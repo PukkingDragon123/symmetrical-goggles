@@ -53,6 +53,7 @@
   "client": [
     "client.GameRendererMixin",
     "client.CurseMouseHandlerMixin",
+    "client.PotItemGlowMixin",
     "endgear.client.EndGearMouseHandlerMixin",
     "endgear.client.EndGearKeyboardInputMixin",
     "endgear.client.EndGearMinecraftMixin",

@@ -530,7 +530,21 @@ public class GolemTests implements FabricGameTest {
         for (int i = 0; i < sherds.length; i++) {
             h.assertTrue(PotGolemEntity.formOf(four(sherds[i])) == forms[i], "four " + sherds[i] + " make " + forms[i]);
             h.assertTrue(forms[i].glow != 0, forms[i] + " has a glow colour");
+            // as an item it is an "ability pot": its icon glows in that colour (client.golem.PotGlow), whatever is inside
+            h.assertTrue(PotGolemEntity.abilityPotForm(four(sherds[i])) == forms[i], "four " + sherds[i] + " make an ability pot");
+            h.assertTrue(PotGolemEntity.abilityPotForm(withInside(four(sherds[i]), new ItemStack(Items.ECHO_SHARD))) == forms[i],
+                    "an ability pot holding an echo shard still glows as one");
         }
+        // which item stacks glow: only decorated pots with one ability sherd on every face
+        h.assertTrue(PotGolemEntity.abilityPotForm(pot(heart, heart, heart, Items.BRICK)) == HeadForm.NONE, "a mixed pot looks vanilla");
+        h.assertTrue(PotGolemEntity.abilityPotForm(pot(heart, Items.BURN_POTTERY_SHERD, heart, heart)) == HeadForm.NONE,
+                "two kinds of sherd: vanilla");
+        h.assertTrue(PotGolemEntity.abilityPotForm(four(Items.BRICK)) == HeadForm.NONE, "a plain pot: vanilla");
+        h.assertTrue(PotGolemEntity.abilityPotForm(four(Items.ARMS_UP_POTTERY_SHERD)) == HeadForm.NONE, "no ability sherd: vanilla");
+        h.assertTrue(PotGolemEntity.abilityPotForm(withInside(pot(heart, Items.BRICK, Items.BRICK, Items.BRICK),
+                new ItemStack(Items.ECHO_SHARD))) == HeadForm.NONE, "an echo shard inside doesn't make an item glow");
+        h.assertTrue(PotGolemEntity.abilityPotForm(new ItemStack(Items.HEART_POTTERY_SHERD)) == HeadForm.NONE, "a sherd isn't a pot");
+        h.assertTrue(PotGolemEntity.abilityPotForm(ItemStack.EMPTY) == HeadForm.NONE, "nothing isn't a pot");
         h.succeed();
     }
 

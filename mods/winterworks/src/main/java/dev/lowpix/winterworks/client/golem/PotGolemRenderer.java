@@ -273,7 +273,12 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
                             ? VertexMultiConsumer.create(new SheetedDecalTextureGenerator(buffers.getBuffer(crack), decal, 1.0f), vc) : vc;
                 };
             }
-            items.renderStatic(e, pot, ItemDisplayContext.NONE, false, pose, out, e.level(), light, overlay, e.getId());
+            PotGlow.drawingGolemHead = true;   // the item glow is for loose pots: the golem's own glow follows its ability
+            try {
+                items.renderStatic(e, pot, ItemDisplayContext.NONE, false, pose, out, e.level(), light, overlay, e.getId());
+            } finally {
+                PotGlow.drawingGolemHead = false;
+            }
             float strength = e.glowStrength(partial);
             if (strength > 0f) {
                 pose.pushPose();

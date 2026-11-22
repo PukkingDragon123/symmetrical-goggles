@@ -25,7 +25,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.FastColor;
+import dev.lowpix.winterworks.golem.PotGolemEntity;
+import net.minecraft.Util;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.block.entity.PotDecorations;
@@ -33,14 +37,16 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * The glowing sherd pattern on a Pot Golem's head (docs/FIXES_0_4.md): a full-bright mask of each side's pattern,
- * drawn over the pot in the head ability's colour while the ability is active.
+ * drawn over the pot in the head ability's colour while the ability is active. Ability pots as items (the same
+ * ability sherd on all four faces, golem.PotGolemEntity#abilityPotForm) glow the same way in the inventory, in the hand
+ * and on the ground: mixin.client.PotItemGlowMixin calls {@link #renderItem} after vanilla's decorated pot item renderer.
  *
  * <p>No pattern art ships with the mod: the masks are made at runtime from the game's own textures. A pattern pixel is
  * part of the motif where the pattern texture is darker than the plain pot side ({@code decorated_pot_side}) at the same
  * spot; motif pixels glow fully and their neighbours softly (a little halo). Masks are cached per pattern and dropped
  * when resources reload (so a resource pack's patterns glow too).
  */
-final class PotGlow {
+public final class PotGlow {
     private static final ResourceLocation SIDE = ResourceLocation.withDefaultNamespace("textures/entity/decorated_pot/decorated_pot_side.png");
     /** How much darker than the plain side a pixel must be to count as the motif (sum of RGB). */
     private static final int DARKER = 24;
@@ -50,15 +56,26 @@ final class PotGlow {
     private static final Map<ResourceLocation, ResourceLocation> MASKS = new HashMap<>();
     private static final Map<ResourceLocation, DynamicTexture> TEXTURES = new HashMap<>();
     private static boolean listening;
+    /** Set while a Pot Golem draws its head pot: the golem draws that glow itself (only while its ability is active). */
+    static boolean drawingGolemHead;
+    @Nullable
+    private static PotGlow items;
 
     private final ModelPart front, back, left, right;
 
     PotGlow(EntityRendererProvider.Context ctx) {
-        ModelPart sides = ctx.bakeLayer(ModelLayers.DECORATED_POT_SIDES);
+        this(ctx.bakeLayer(ModelLayers.DECORATED_POT_SIDES));
+    }
+
+    private PotGlow(ModelPart sides) {
         front = sides.getChild("front");
         back = sides.getChild("back");
         left = sides.getChild("left");
         right = sides.getChild("right");
+    }
+
+    /** Client init: masks are remade after a resource reload. */
+    static void init() {
         if (!listening) {
             listening = true;
             ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
@@ -73,6 +90,26 @@ final class PotGlow {
                 }
             });
         }
+    }
+
+    /**
+     * An ability pot item: its motifs glow in its ability's colour, breathing slowly. `pose` is where vanilla's
+     * BlockEntityWithoutLevelRenderer has just drawn the pot (its block corner). Mixed pots, and the pot a golem wears, are
+     * left alone.
+     */
+    public static void renderItem(ItemStack stack, PoseStack pose, MultiBufferSource buffers) {
+        if (drawingGolemHead) {
+            return;
+        }
+        PotGolemEntity.HeadForm form = PotGolemEntity.abilityPotForm(stack);
+        if (form.glow == 0) {
+            return;
+        }
+        if (items == null) {
+            items = new PotGlow(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.DECORATED_POT_SIDES));
+        }
+        float breath = 0.8f + 0.15f * Mth.sin((Util.getMillis() % 100000L) / 650f);
+        items.render(pose, buffers, PotGolemEntity.decorations(stack), form.glow, breath);
     }
 
     /**
