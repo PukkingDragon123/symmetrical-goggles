@@ -33,6 +33,8 @@ public final class GearModel {
     public final boolean standIn;
     public final ResourceLocation texture;
     @Nullable public final ResourceLocation glow;
+    /** Drawn with entityTranslucent (see-through membranes) instead of cutout. */
+    public boolean translucent;
     /** Bounds {min, max} of the whole model, lowpix space. */
     public final Vector3f min = new Vector3f(), max = new Vector3f();
     private final List<Vector3f[]> partBounds = new ArrayList<>();
@@ -43,7 +45,9 @@ public final class GearModel {
         this.model = new Model(Minecraft.getInstance().getEntityModels().bakeLayer(layer), name);
         this.standIn = !GearLayers.exported(name);
         this.texture = standIn ? standInTexture : model.texture;
-        this.glow = !standIn && model.hasGlow ? model.glowTexture : null;
+        // the glow pass comes from the _glow texture (some exports flag no glow parts and glow through the texture alone)
+        this.glow = !standIn && Minecraft.getInstance().getResourceManager().getResource(model.glowTexture).isPresent()
+                ? model.glowTexture : null;
         measure();
     }
 
@@ -135,7 +139,7 @@ public final class GearModel {
 
     /** Draws the model with the pose already in Minecraft model space (blocks; parts are in pixels, Y down, front -Z). */
     public void drawModelSpace(PoseStack pose, MultiBufferSource buffers, int light, int overlay, boolean foil, int tint) {
-        RenderType base = RenderType.entityCutoutNoCull(texture);
+        RenderType base = translucent ? RenderType.entityTranslucent(texture) : RenderType.entityCutoutNoCull(texture);
         VertexConsumer vc = foil ? ItemRenderer.getFoilBufferDirect(buffers, base, false, true) : buffers.getBuffer(base);
         model.renderToBuffer(pose, vc, light, overlay, tint);
         if (glow != null) {

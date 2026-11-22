@@ -36,12 +36,14 @@ import org.joml.Vector3f;
  */
 public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
     /** Wingspan in blocks: overhead in flight, carried in a hand, in first person. */
-    private static final float SPAN_OVERHEAD = 2.2f, SPAN_CARRIED = 1.3f, SPAN_FIRST_PERSON = 1.15f;
+    private static final float SPAN_OVERHEAD = 2.6f, SPAN_CARRIED = 1.3f, SPAN_FIRST_PERSON = 1.15f;
     @Nullable private static GearModel model;
 
     static GearModel model() {
         if (model == null) {
             model = new GearModel(GearLayers.END_GLIDER, "end_glider", GearModel.vanilla("textures/block/purpur_block.png"));
+            model.translucent = true;   // the luminous membranes are see-through
+            dev.lowpix.winterworks.Winterworks.LOG.info("end glider model: {}", model);
         }
         return model;
     }
@@ -53,13 +55,13 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
 
     /** The handle (what the hands hold), lowpix space. */
     private static Vector3f grip(GearModel m) {
-        Vector3f h = m.centerOf(n -> n.startsWith("handle"));
+        Vector3f h = m.centerOf(n -> n.startsWith("handle") || n.equals("bar") || n.startsWith("grip_"));
         return h != null ? h : new Vector3f(m.center().x, m.min.y, m.center().z);
     }
 
     private static float span(GearModel m) {
         Vector3f s = m.size();
-        return Math.max(1e-3f, Math.max(s.x, s.z * 0.8f));
+        return Math.max(1e-3f, s.x);   // wingtip to wingtip
     }
 
     /** Flap (or boost) for a glider in use; still otherwise. */
@@ -109,7 +111,7 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
                 if (flying) {   // overhead, seen from below and behind: wings out, front away from the camera
                     float s = SPAN_FIRST_PERSON / span(m);
                     float bob = Mth.sin(t * 0.25f) * 0.015f;
-                    pose.translate(0f, 0.4f + bob, -1.15f);
+                    pose.translate(0f, 0.28f + bob, -1.35f);
                     pose.mulPose(Axis.YP.rotationDegrees(180f));
                     pose.mulPose(Axis.XP.rotationDegrees(-12f));
                     pose.scale(s, s, s);
@@ -131,8 +133,10 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
                 pose.mulPose(Axis.YP.rotationDegrees(-180f));
                 pose.mulPose(Axis.XP.rotationDegrees(90f));
                 pose.translate(left ? 1f / 16f : -1f / 16f, 10f / 16f, -1f / 16f);
-                // lowpix up -> up the arm (-Y), front -> forward (-Z)
+                // lowpix up -> up the arm (-Y); turned edge-on to the body, so the wings sweep fore and aft beside it
+                // instead of through it
                 float s = SPAN_CARRIED / span(m);
+                pose.mulPose(Axis.YP.rotationDegrees(left ? -90f : 90f));
                 pose.mulPose(Axis.XP.rotationDegrees(180f));
                 pose.scale(s, s, s);
                 pose.translate(-grip.x, -grip.y, -grip.z);
