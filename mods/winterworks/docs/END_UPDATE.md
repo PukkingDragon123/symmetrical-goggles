@@ -225,3 +225,14 @@ Structures: `obsidian_ruins`, `end_shrine`, `monolith_tower`. Particles: `end_sp
   `client/lowpix/<Name>Model.java` and `entity/<name>.png` + `_glow` / `_tint`): `enderfly`, `endling`, `gucker`,
   `obolisk`, `dragonling_baby`, `dragonling_teen` (+ `dragonling_teen_armor_iron|gold|diamond` texture variants),
   `monolith`, `end_glider`, `obsidian_shield`, `monolith_wand`, `chorus_cocoon`.
+
+## 16. Additions after review
+* **The Monolith Wand, cooler and more meteorite**: a remade 3D model: the round Monolith eye held in a crown of jagged,
+  glowing meteorite shards with molten seams and orbiting meteorite embers, a meteorite-banded void-rod shaft and a
+  meteorite-core pommel; a stronger beam with meteor sparks and a hot impact flash.
+* **Falling meteorites**: now and then a meteor streaks down through the End sky (a flaming rock with a long glowing
+  trail and smoke, a rising whistle) and crashes into the outer islands, about 30-90 blocks from a player: a bright
+  impact flash, a shockwave that knocks back and burns what is near (no damage to the main island or structures), and
+  a fresh smoking crater of `meteorite` blocks round a glowing core (a `meteorite_core` one time in three). About one
+  every 10-15 minutes per player in the outer End, three times as often in the Dead End and during an eclipse.
+  `/winterworks meteor` drops one ahead of you. Entity `falling_meteorite`.
