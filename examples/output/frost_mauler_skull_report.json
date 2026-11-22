@@ -1,0 +1,144 @@
+{
+  "name": "Frost Mauler Skull",
+  "parts": 47,
+  "instances": 47,
+  "faces": 247,
+  "triangles": 494,
+  "vertices_flat": 988,
+  "vertices_unique": 348,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.876,
+  "texel_density": 2.0,
+  "colors_used": 33,
+  "palette": {
+    "bone": [
+      "#271e15",
+      "#392c1f",
+      "#4d3d2b",
+      "#635039",
+      "#7a6449",
+      "#927a5a",
+      "#aa916d",
+      "#c0a882",
+      "#d3bf98",
+      "#e3d4b2",
+      "#efe5cc",
+      "#f8f2e4"
+    ],
+    "ice": [
+      "#0b2440",
+      "#113154",
+      "#173f69",
+      "#1f507f",
+      "#2a6495",
+      "#377aaa",
+      "#4891bf",
+      "#5ea9d0",
+      "#7cc1de",
+      "#a0d7ea",
+      "#c8ecf5",
+      "#effbfd"
+    ],
+    "cavity": [
+      "#04040b",
+      "#090914",
+      "#0f0e1f",
+      "#16142a",
+      "#1f1b37"
+    ],
+    "glow": [
+      "#0d3a66",
+      "#17609b",
+      "#2490d0",
+      "#47c0f2",
+      "#8ce4ff",
+      "#d4f7ff",
+      "#ffffff"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -11.407,
+      0.0,
+      -16.554
+    ],
+    "max": [
+      14.39,
+      19.338,
+      13.347
+    ],
+    "size": [
+      25.797,
+      19.338,
+      29.901
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.0
+  },
+  "joints": [
+    "skull",
+    "crown",
+    "crest",
+    "crest_back",
+    "occiput",
+    "brow_l",
+    "brow_r",
+    "socket_l",
+    "ice_eye",
+    "socket_r",
+    "eye",
+    "zygo_l",
+    "temple_l",
+    "zygo_r",
+    "temple_r",
+    "snout",
+    "nasal_bridge",
+    "palate",
+    "teeth_up_l",
+    "teeth_up_r",
+    "ice_snout",
+    "crystal6",
+    "crystal7",
+    "snout_tip",
+    "nasal",
+    "teeth_up_f",
+    "jaw",
+    "jaw_ramus",
+    "tongue",
+    "teeth_lo_l",
+    "teeth_lo_r",
+    "teeth_lo_f",
+    "fang_l",
+    "fang_l_mid",
+    "fang_l_tip",
+    "fang_r",
+    "fang_r_mid",
+    "fang_r_tip",
+    "ice_cap",
+    "crystal0",
+    "crystal1",
+    "crystal2",
+    "crystal3",
+    "ice_cheek",
+    "crystal4",
+    "crystal5",
+    "frost_edge"
+  ],
+  "files": {
+    "frost_mauler_skull.glb": "examples/output/frost_mauler_skull.glb",
+    "frost_mauler_skull.obj": "examples/output/frost_mauler_skull.obj",
+    "frost_mauler_skull.mtl": "examples/output/frost_mauler_skull.mtl",
+    "frost_mauler_skull.bbmodel": "examples/output/frost_mauler_skull.bbmodel",
+    "frost_mauler_skull_texture.png": "examples/output/frost_mauler_skull_texture.png",
+    "frost_mauler_skull_texture_x4.png": "examples/output/frost_mauler_skull_texture_x4.png",
+    "frost_mauler_skull_hero.png": "examples/output/frost_mauler_skull_hero.png",
+    "frost_mauler_skull_sheet.png": "examples/output/frost_mauler_skull_sheet.png",
+    "frost_mauler_skull_turntable.gif": "examples/output/frost_mauler_skull_turntable.gif",
+    "frost_mauler_skull_idle.gif": "examples/output/frost_mauler_skull_idle.gif"
+  }
+}

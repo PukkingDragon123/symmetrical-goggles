@@ -24,6 +24,14 @@ loom {
             programArgs '--width', '1280', '--height', '720'
             runDir 'run/showcase'
         }
+        // Natural Ice Caves and frozen tombs in a real generated world: ./gradlew runShowcaseCold (under xvfb-run)
+        showcaseCold {
+            client()
+            name 'Showcase Cold'
+            vmArg '-Dwinterworks.showcase=cold'
+            programArgs '--width', '1280', '--height', '720'
+            runDir 'run/showcase'
+        }
         // GameTests on a headless server: ./gradlew runGametest (exits with the results; no EULA prompt)
         gametest {
             server()

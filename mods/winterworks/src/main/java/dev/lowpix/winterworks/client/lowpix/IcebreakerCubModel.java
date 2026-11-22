@@ -49,7 +49,10 @@ public final class IcebreakerCubModel {
     public static final String CHEEK_MIRROR = "cheek_mirror";
     public static final String MUZZLE = "muzzle";
     public static final String WHISKER_PAD = "whisker_pad";
+    public static final String WHISKER = "whisker";
+    public static final String WHISKER_MIRROR = "whisker_mirror";
     public static final String WHISKER_PAD_MIRROR = "whisker_pad_mirror";
+    public static final String WHISKER_MIRROR_ = "whisker_mirror_";
     public static final String NOSE = "nose";
     public static final String NOSTRIL = "nostril";
     public static final String NOSTRIL_MIRROR = "nostril_mirror";
@@ -100,20 +103,23 @@ public final class IcebreakerCubModel {
         PartDefinition p_cheek_mirror = p_head.addOrReplaceChild("cheek_mirror", CubeListBuilder.create().texOffs(24, 92).addBox(-1F, -5F, -5F, 2F, 10F, 10F, CubeDeformation.NONE), PartPose.offsetAndRotation(-10.5F, 1F, -7F, 0F, -0F, 0.0873F));
         PartDefinition p_muzzle = p_head.addOrReplaceChild("muzzle", CubeListBuilder.create().texOffs(72, 179).addBox(-5F, -3F, -4F, 10F, 6F, 4F, CubeDeformation.NONE), PartPose.offset(0F, 4F, -14F));
         PartDefinition p_whisker_pad = p_muzzle.addOrReplaceChild("whisker_pad", CubeListBuilder.create().texOffs(0, 189).addBox(-3F, -2.5F, -2F, 6F, 5F, 4F, CubeDeformation.NONE), PartPose.offset(2.8F, 0.4F, -2.6F));
+        PartDefinition p_whisker = p_whisker_pad.addOrReplaceChild("whisker", CubeListBuilder.create().texOffs(34, 198).addBox(0F, -2.5F, 0F, 8F, 5F, 0F, CubeDeformation.NONE), PartPose.offsetAndRotation(3F, 0.6F, -1.6F, 0F, 0.4189F, 0.1396F));
+        PartDefinition p_whisker_mirror = p_whisker_pad.addOrReplaceChild("whisker_mirror", CubeListBuilder.create().texOffs(50, 198).addBox(-8F, -2.5F, 0F, 8F, 5F, 0F, CubeDeformation.NONE), PartPose.offsetAndRotation(-3F, 0.6F, -1.6F, 0F, -0.4189F, -0.1396F));
         PartDefinition p_whisker_pad_mirror = p_muzzle.addOrReplaceChild("whisker_pad_mirror", CubeListBuilder.create().texOffs(20, 189).addBox(-3F, -2.5F, -2F, 6F, 5F, 4F, CubeDeformation.NONE), PartPose.offset(-2.8F, 0.4F, -2.6F));
-        PartDefinition p_nose = p_muzzle.addOrReplaceChild("nose", CubeListBuilder.create().texOffs(82, 198).addBox(-2F, -1F, -1F, 4F, 2F, 2F, CubeDeformation.NONE), PartPose.offset(0F, -2.8F, -3.4F));
-        PartDefinition p_nostril = p_nose.addOrReplaceChild("nostril", CubeListBuilder.create().texOffs(4, 204).addBox(-0.5F, -0.5F, -0.5F, 1F, 1F, 1F, CubeDeformation.NONE), PartPose.offset(1F, -0.4F, -1.1F));
-        PartDefinition p_nostril_mirror = p_nose.addOrReplaceChild("nostril_mirror", CubeListBuilder.create().texOffs(8, 204).addBox(-0.5F, -0.5F, -0.5F, 1F, 1F, 1F, CubeDeformation.NONE), PartPose.offset(-1F, -0.4F, -1.1F));
-        PartDefinition p_tusk = p_muzzle.addOrReplaceChild("tusk", CubeListBuilder.create().texOffs(122, 198).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, CubeDeformation.NONE), PartPose.offsetAndRotation(3.4F, 3.2F, -3.2F, -0.1745F, -0F, -0.1047F));
-        PartDefinition p_tusk_mirror = p_muzzle.addOrReplaceChild("tusk_mirror", CubeListBuilder.create().texOffs(0, 204).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, CubeDeformation.NONE), PartPose.offsetAndRotation(-3.4F, 3.2F, -3.2F, -0.1745F, -0F, 0.1047F));
+        PartDefinition p_whisker_mirror_ = p_whisker_pad_mirror.addOrReplaceChild("whisker_mirror_", CubeListBuilder.create().texOffs(66, 198).addBox(-8F, -2.5F, 0F, 8F, 5F, 0F, CubeDeformation.NONE), PartPose.offsetAndRotation(-3F, 0.6F, -1.6F, 0F, -0.4189F, -0.1396F));
+        PartDefinition p_nose = p_muzzle.addOrReplaceChild("nose", CubeListBuilder.create().texOffs(14, 204).addBox(-2F, -1F, -1F, 4F, 2F, 2F, CubeDeformation.NONE), PartPose.offset(0F, -2.8F, -3.4F));
+        PartDefinition p_nostril = p_nose.addOrReplaceChild("nostril", CubeListBuilder.create().texOffs(62, 204).addBox(-0.5F, -0.5F, -0.5F, 1F, 1F, 1F, CubeDeformation.NONE), PartPose.offset(1F, -0.4F, -1.1F));
+        PartDefinition p_nostril_mirror = p_nose.addOrReplaceChild("nostril_mirror", CubeListBuilder.create().texOffs(66, 204).addBox(-0.5F, -0.5F, -0.5F, 1F, 1F, 1F, CubeDeformation.NONE), PartPose.offset(-1F, -0.4F, -1.1F));
+        PartDefinition p_tusk = p_muzzle.addOrReplaceChild("tusk", CubeListBuilder.create().texOffs(54, 204).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, CubeDeformation.NONE), PartPose.offsetAndRotation(3.4F, 3.2F, -3.2F, -0.1745F, -0F, -0.1047F));
+        PartDefinition p_tusk_mirror = p_muzzle.addOrReplaceChild("tusk_mirror", CubeListBuilder.create().texOffs(58, 204).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, CubeDeformation.NONE), PartPose.offsetAndRotation(-3.4F, 3.2F, -3.2F, -0.1745F, -0F, 0.1047F));
         PartDefinition p_jaw = p_head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 168).addBox(-4.5F, -0.5F, -8F, 9F, 3F, 8F, CubeDeformation.NONE), PartPose.offsetAndRotation(0F, 7F, -8F, 0.0698F, -0F, 0F));
         PartDefinition p_tongue = p_jaw.addOrReplaceChild("tongue", CubeListBuilder.create().texOffs(0, 198).addBox(-3F, -0.5F, -2.5F, 6F, 1F, 5F, CubeDeformation.NONE), PartPose.offset(0F, -0.6F, -4.5F));
-        PartDefinition p_eye = p_head.addOrReplaceChild("eye", CubeListBuilder.create().texOffs(34, 198).addBox(-2F, -2F, -0.5F, 4F, 4F, 1F, CubeDeformation.NONE), PartPose.offset(5.5F, -3.2F, -14.1F));
-        PartDefinition p_eye_mirror = p_head.addOrReplaceChild("eye_mirror", CubeListBuilder.create().texOffs(44, 198).addBox(-2F, -2F, -0.5F, 4F, 4F, 1F, CubeDeformation.NONE), PartPose.offset(-5.5F, -3.2F, -14.1F));
-        PartDefinition p_lid = p_head.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(54, 198).addBox(-2.5F, -1F, -1F, 5F, 2F, 2F, CubeDeformation.NONE), PartPose.offset(5.5F, -5.8F, -14.2F));
-        PartDefinition p_lid_mirror = p_head.addOrReplaceChild("lid_mirror", CubeListBuilder.create().texOffs(68, 198).addBox(-2.5F, -1F, -1F, 5F, 2F, 2F, CubeDeformation.NONE), PartPose.offset(-5.5F, -5.8F, -14.2F));
-        PartDefinition p_brow = p_head.addOrReplaceChild("brow", CubeListBuilder.create().texOffs(94, 198).addBox(-2.5F, -0.5F, -1F, 5F, 1F, 2F, CubeDeformation.NONE), PartPose.offsetAndRotation(5.5F, -7F, -14F, 0F, -0F, -0.1047F));
-        PartDefinition p_brow_mirror = p_head.addOrReplaceChild("brow_mirror", CubeListBuilder.create().texOffs(108, 198).addBox(-2.5F, -0.5F, -1F, 5F, 1F, 2F, CubeDeformation.NONE), PartPose.offsetAndRotation(-5.5F, -7F, -14F, 0F, -0F, 0.1047F));
+        PartDefinition p_eye = p_head.addOrReplaceChild("eye", CubeListBuilder.create().texOffs(82, 198).addBox(-2F, -2F, -0.5F, 4F, 4F, 1F, CubeDeformation.NONE), PartPose.offset(5.5F, -3.2F, -14.1F));
+        PartDefinition p_eye_mirror = p_head.addOrReplaceChild("eye_mirror", CubeListBuilder.create().texOffs(92, 198).addBox(-2F, -2F, -0.5F, 4F, 4F, 1F, CubeDeformation.NONE), PartPose.offset(-5.5F, -3.2F, -14.1F));
+        PartDefinition p_lid = p_head.addOrReplaceChild("lid", CubeListBuilder.create().texOffs(102, 198).addBox(-2.5F, -1F, -1F, 5F, 2F, 2F, CubeDeformation.NONE), PartPose.offset(5.5F, -5.8F, -14.2F));
+        PartDefinition p_lid_mirror = p_head.addOrReplaceChild("lid_mirror", CubeListBuilder.create().texOffs(0, 204).addBox(-2.5F, -1F, -1F, 5F, 2F, 2F, CubeDeformation.NONE), PartPose.offset(-5.5F, -5.8F, -14.2F));
+        PartDefinition p_brow = p_head.addOrReplaceChild("brow", CubeListBuilder.create().texOffs(26, 204).addBox(-2.5F, -0.5F, -1F, 5F, 1F, 2F, CubeDeformation.NONE), PartPose.offsetAndRotation(5.5F, -7F, -14F, 0F, -0F, -0.1047F));
+        PartDefinition p_brow_mirror = p_head.addOrReplaceChild("brow_mirror", CubeListBuilder.create().texOffs(40, 204).addBox(-2.5F, -0.5F, -1F, 5F, 1F, 2F, CubeDeformation.NONE), PartPose.offsetAndRotation(-5.5F, -7F, -14F, 0F, -0F, 0.1047F));
         return LayerDefinition.create(mesh, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 }

@@ -91,6 +91,33 @@ class TestMcExport(unittest.TestCase):
 
 
 
+class TestCards(unittest.TestCase):
+    """Cards (fur tufts, whiskers, spikes) export as zero-thickness cubes with their alpha-cut art on one face."""
+
+    def test_card_exports_as_a_flat_cube(self):
+        spec = {"name": "cards", "density": 1, "minecraft": {"fps": 12},
+                "palette": {"ramps": {"fur": ["#3b3f4a", "#5e6472", "#8e95a3", "#c9cfd8", "#eef2f6"]}},
+                "styles": {"fur": {"ramp": "fur", "tone": 3}},
+                "parts": [{"id": "body", "shape": "box", "size": [8, 6, 12], "pivot": [0, 6, 0], "style": "fur"},
+                          {"id": "tuft", "parent": "body", "shape": "card", "plane": "yz", "pivot": [0, 3, 0],
+                           "offset": [0, 2, 0], "art": ["..t.t...", ".tt.tt.t", "tttttttt", "tttttttt"],
+                           "paint": {"ramp": "fur", "art_key": {"t": "fur:3"}}}]}
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "cards.json")
+            with open(path, "w") as fh:
+                json.dump(spec, fh)
+            m = mc.from_model(build_model(path))
+        tuft = next(p for p in m.parts if p.name == "tuft")
+        lo, hi = tuft.cube
+        self.assertAlmostEqual(float(hi[0] - lo[0]), 0.0)          # flat in x (a yz card)
+        self.assertEqual([float(v) for v in hi[1:] - lo[1:]], [4.0, 8.0])
+        tex = np.asarray(m.texture)
+        u, v = tuft.uv
+        east = tex[v + 8:v + 12, u + 8:u + 16]                     # box-UV east face of a (0, 4, 8) cube
+        self.assertEqual(int((east[..., 3] > 0).sum()), 23)         # exactly the art's opaque texels
+        self.assertEqual(int(east[0, 0, 3]), 0)                     # alpha cut-out kept
+
+
 class TestTrackAxis(unittest.TestCase):
     def test_track_level_axis_applies_to_osc_and_wave(self):
         s = spec()

@@ -72,8 +72,25 @@ def biome(ctx, extra_features):
     tag([ctx.M, "tags", "worldgen", "biome", "has_frozen_tomb"], [f"{ctx.M}:ice_caves"])
 
 
+def worldgen(ctx):
+    """The Ice Caves decoration feature and the frozen tomb structure."""
+    W = os.path.join(ctx.D, ctx.M, "worldgen")
+    ctx.write(os.path.join(W, "configured_feature", "ice_cave_surface.json"), {"type": f"{ctx.M}:ice_cave_surface", "config": {}})
+    # no placement modifiers: runs once per chunk and checks the biome itself, block by block
+    ctx.write(os.path.join(W, "placed_feature", "ice_cave_surface.json"), {"feature": f"{ctx.M}:ice_cave_surface", "placement": []})
+    ctx.write(os.path.join(W, "structure", "frozen_tomb.json"), {
+        "type": f"{ctx.M}:frozen_tomb", "biomes": f"#{ctx.M}:has_frozen_tomb", "step": "underground_structures",
+        "spawn_overrides": {}, "terrain_adaptation": "none"})
+    ctx.write(os.path.join(W, "structure_set", "frozen_tomb.json"), {
+        "structures": [{"structure": f"{ctx.M}:frozen_tomb", "weight": 1}],
+        "placement": {"type": "minecraft:random_spread", "spacing": 28, "separation": 10, "salt": 20261115}})
+    return {10: [f"{ctx.M}:ice_cave_surface"]}   # after freeze_top_layer, the last step
+
+
 def run(ctx, extra_features=None):
-    biome(ctx, extra_features or {})
+    feats = worldgen(ctx)
+    feats.update(extra_features or {})
+    biome(ctx, feats)
     # damage types
     ctx.write(os.path.join(ctx.D, ctx.M, "damage_type", "overheat.json"),
               {"message_id": f"{ctx.M}.overheat", "scaling": "never", "exhaustion": 0.0, "effects": "burning"})

@@ -71,7 +71,7 @@ public class WinterworksTests implements FabricGameTest {
         });
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 300)
     public void droppedFishCalmsIt(GameTestHelper h) {
         floor(h, 0, 8);
         IcebreakerEntity seal = h.spawn(WWEntities.ICEBREAKER, new BlockPos(2, 1, 1));

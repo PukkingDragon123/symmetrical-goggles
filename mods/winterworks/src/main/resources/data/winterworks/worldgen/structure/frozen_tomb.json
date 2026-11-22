@@ -1,0 +1,7 @@
+{
+  "type": "winterworks:frozen_tomb",
+  "biomes": "#winterworks:has_frozen_tomb",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

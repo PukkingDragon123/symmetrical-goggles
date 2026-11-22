@@ -318,11 +318,11 @@
      ],
      "at": "center",
      "art": [
-      "d.d.",
-      ".d.d"
+      "..d...",
+      "d...d."
      ],
      "key": {
-      "d": "skin:2"
+      "d": "skin:4"
      }
     }
    ]
@@ -843,6 +843,43 @@
    "style": "whiskers",
    "parent": "muzzle",
    "mirror": true
+  },
+  {
+   "id": "whisker",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "....wwww",
+    "wwww....",
+    "wwwwwwww",
+    "wwww....",
+    "....wwww"
+   ],
+   "pivot": [
+    3,
+    -0.6,
+    1.6
+   ],
+   "paint": {
+    "ramp": "fluff",
+    "light": 0.5,
+    "art_key": {
+     "w": "fluff:7"
+    }
+   },
+   "parent": "whisker_pad",
+   "offset": [
+    4,
+    0,
+    0
+   ],
+   "rotation": [
+    0,
+    -24,
+    -8
+   ],
+   "mirror": true,
+   "flip_on_mirror": true
   },
   {
    "id": "nose",

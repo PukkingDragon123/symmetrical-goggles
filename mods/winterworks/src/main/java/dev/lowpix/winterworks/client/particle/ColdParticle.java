@@ -133,10 +133,19 @@ public class ColdParticle extends TextureSheetParticle {
         this.animated = anim;
         this.quadSize = baseSize;
         this.alpha = kind == Kind.COLD_MIST ? 0f : baseAlpha;
-        if (anim) {
-            setSpriteFromAge(sprites);
-        } else {
-            pickSprite(sprites);
+        sprite(true);
+    }
+
+    /** Missing textures (an incomplete resource pack) must not crash the game: such a particle just vanishes. */
+    private void sprite(boolean first) {
+        try {
+            if (animated) {
+                setSpriteFromAge(sprites);
+            } else if (first) {
+                pickSprite(sprites);
+            }
+        } catch (RuntimeException e) {
+            remove();
         }
     }
 
@@ -148,9 +157,7 @@ public class ColdParticle extends TextureSheetParticle {
         }
         float t = (float) age / lifetime;
         quadSize = Mth.lerp(t, baseSize, endSize);
-        if (animated) {
-            setSpriteFromAge(sprites);
-        }
+        sprite(false);
         oRoll = roll;
         roll += spin;
         switch (kind) {
@@ -179,6 +186,13 @@ public class ColdParticle extends TextureSheetParticle {
             case FROST_BURST, ROAR_WAVE, FROST_SLASH, ICE_CRIT -> 0xF000F0;
             default -> super.getLightColor(partial);
         };
+    }
+
+    @Override
+    public void render(com.mojang.blaze3d.vertex.VertexConsumer buffer, net.minecraft.client.Camera camera, float partial) {
+        if (sprite != null) {
+            super.render(buffer, camera, partial);
+        }
     }
 
     @Override

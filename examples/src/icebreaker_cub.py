@@ -42,6 +42,35 @@ for k, (x, y, z, rx, ry, rz, w, h) in enumerate([(-8, 7, 3, -22, 10, 26, 7, 7), 
 box("shag_chest", "chest", [10, 2, 8], [5, 8.4, -1], "fluff_tuft", rot=[-9, -7, -8], mirror=True)
 box("shag_belly", "belly", [11, 2, 9], [5.5, 8.4, -6], "fluff_tuft", rot=[-9, -6, -8], mirror=True)
 box("tail_fur", "tail", [7, 2, 5], [0, 3.4, -1.5], "fluff_tuft", rot=[-14, 0, 0])
+
+def card(id, parent, art, pivot, key, plane="xy", offset=None, rot=None, **kw):
+    """A flat alpha-cut card (whiskers): exports to Minecraft as a zero-thickness cube."""
+    ramp = next(iter(key.values())).split(":")[0]
+    d = {"id": id, "shape": "card", "plane": plane, "art": art, "pivot": pivot,
+         "paint": {"ramp": ramp, "light": 0.5, "art_key": key}}
+    if parent:
+        d["parent"] = parent
+    if offset:
+        d["offset"] = offset
+    if rot:
+        d["rotation"] = rot
+    d.update(kw)
+    P.append(d)
+    return d
+
+
+def strands(w, h, lines, ch="w"):
+    """Rasterise whisker strands: lines [(x0, y0, x1, y1)] in pixels -> an art grid."""
+    g = [["."] * w for _ in range(h)]
+    for x0, y0, x1, y1 in lines:
+        n = max(abs(x1 - x0), abs(y1 - y0)) * 2 + 1
+        for i in range(int(n) + 1):
+            t = i / n
+            x, y = round(x0 + (x1 - x0) * t), round(y0 + (y1 - y0) * t)
+            if 0 <= x < w and 0 <= y < h:
+                g[y][x] = ch
+    return ["".join(r) for r in g]
+
 # the head: big for a pup, round cheeks, a short muzzle with puffy whisker pads
 box("neck", "chest", [18, 13, 6], [0, 4.5, 7], "fluff", offset=[0, 1, 2.5], rot=[-14, 0, 0])
 box("head", "neck", [20, 17, 14], [0, 2.5, 5], "head", offset=[0, 2, 7], rot=[14, 0, 0])
@@ -50,6 +79,8 @@ box("crest", "crown", [7, 3, 6], [0, 2, -1.5], "fluff_tuft", rot=[-30, 0, 0])
 box("cheek", "head", [2, 10, 10], [10.5, -1, 7], "fluff", rot=[0, 0, 5], mirror=True)
 box("muzzle", "head", [10, 6, 4], [0, -4, 14], "muzzle", offset=[0, 0, 2])
 box("whisker_pad", "muzzle", [6, 5, 4], [2.8, -0.4, 2.6], "whiskers", mirror=True)
+card("whisker", "whisker_pad", strands(8, 5, [(0, 1, 7, 0), (0, 2, 7, 2), (0, 3, 7, 4)]), [3, -0.6, 1.6],
+     {"w": "fluff:7"}, offset=[4, 0, 0], rot=[0, -24, -8], mirror=True, flip_on_mirror=True)
 box("nose", "muzzle", [4, 2, 2], [0, 2.8, 3.4], "nose")
 box("nostril", "nose", [1, 1, 1], [1, 0.4, 1.1], "nostril", mirror=True)
 box("jaw", "head", [9, 3, 8], [0, -7, 8], "muzzle", offset=[0, -1, 4], rot=[4, 0, 0])
@@ -102,7 +133,7 @@ styles = {
     "lid": {"ramp": "fluff", "tone": 5.6},
     "brow": {"ramp": "fluff", "tone": 4.6},
     "whiskers": {"ramp": "fluff", "tone": 7.2, "stamps": [
-        {"faces": ["front"], "at": "center", "art": ["d.d.", ".d.d"], "key": {"d": "skin:2"}}]},
+        {"faces": ["front"], "at": "center", "art": ["..d...", "d...d."], "key": {"d": "skin:4"}}]},
     "nostril": {"ramp": "nose", "tone": 0.2, "light": 0, "brush": {"off": True}},
     "mouth": {"ramp": "mouth", "tone": 3.2},
 }
