@@ -1,0 +1,155 @@
+{
+  "name": "Chorus Cocoon",
+  "parts": 59,
+  "instances": 59,
+  "faces": 285,
+  "triangles": 570,
+  "vertices_flat": 1140,
+  "vertices_unique": 404,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.755,
+  "texel_density": 2.0,
+  "colors_used": 26,
+  "palette": {
+    "crying": [
+      "#3a0b6e",
+      "#5a12a0",
+      "#7a1fd0",
+      "#9a3cf0",
+      "#b866ff",
+      "#d397ff",
+      "#ecc9ff",
+      "#fbf0ff"
+    ],
+    "chorus": [
+      "#1f0f24",
+      "#331a3b",
+      "#4a2754",
+      "#633670",
+      "#7c4a8a",
+      "#9763a3",
+      "#b383bc",
+      "#cda7d3",
+      "#e7cfe9"
+    ],
+    "stem": [
+      "#1d0f1c",
+      "#2f1a2e",
+      "#462843",
+      "#5e385a",
+      "#784b72",
+      "#94628c"
+    ],
+    "petal": [
+      "#6b4f78",
+      "#977aa3",
+      "#bfa6c8",
+      "#e0d0e6",
+      "#f6eefa"
+    ],
+    "membrane": [
+      "#160e26",
+      "#1f1534",
+      "#2a1d44",
+      "#372756",
+      "#46336a"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -29.0,
+      0.75,
+      -7.578
+    ],
+    "max": [
+      34.578,
+      16.0,
+      5.6
+    ],
+    "size": [
+      63.578,
+      15.25,
+      13.178
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 1.0
+  },
+  "joints": [
+    "age0",
+    "knot0",
+    "stem0",
+    "pod0_0",
+    "pod0_0x",
+    "pod0_1",
+    "pod0_1x",
+    "pod0_2",
+    "pod0_2x",
+    "lump0_0",
+    "tip0",
+    "petal0_0",
+    "petal0_1",
+    "age1",
+    "knot1",
+    "stem1",
+    "pod1_0",
+    "pod1_0x",
+    "pod1_1",
+    "pod1_1x",
+    "pod1_2",
+    "pod1_2x",
+    "lump1_0",
+    "lump1_1",
+    "tip1",
+    "petal1_0",
+    "petal1_1",
+    "age2",
+    "knot2",
+    "stem2",
+    "pod2_0",
+    "pod2_0x",
+    "pod2_1",
+    "pod2_1x",
+    "pod2_2",
+    "pod2_2x",
+    "lump2_0",
+    "lump2_1",
+    "lump2_2",
+    "tip2",
+    "petal2_0",
+    "petal2_1",
+    "age3",
+    "knot3",
+    "stem3",
+    "pod3_0",
+    "pod3_0x",
+    "pod3_1",
+    "pod3_1x",
+    "pod3_2",
+    "pod3_2x",
+    "lump3_0",
+    "lump3_1",
+    "lump3_2",
+    "lump3_3",
+    "tip3",
+    "petal3_0",
+    "petal3_1",
+    "wing3"
+  ],
+  "files": {
+    "chorus_cocoon.glb": "examples/output/chorus_cocoon.glb",
+    "chorus_cocoon.obj": "examples/output/chorus_cocoon.obj",
+    "chorus_cocoon.mtl": "examples/output/chorus_cocoon.mtl",
+    "chorus_cocoon.bbmodel": "examples/output/chorus_cocoon.bbmodel",
+    "chorus_cocoon_texture.png": "examples/output/chorus_cocoon_texture.png",
+    "chorus_cocoon_texture_x4.png": "examples/output/chorus_cocoon_texture_x4.png",
+    "chorus_cocoon_hero.png": "examples/output/chorus_cocoon_hero.png",
+    "chorus_cocoon_sheet.png": "examples/output/chorus_cocoon_sheet.png",
+    "chorus_cocoon_turntable.gif": "examples/output/chorus_cocoon_turntable.gif",
+    "chorus_cocoon_idle.gif": "examples/output/chorus_cocoon_idle.gif"
+  }
+}
