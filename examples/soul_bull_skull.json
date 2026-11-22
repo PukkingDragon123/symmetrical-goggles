@@ -1,6 +1,6 @@
 {
  "name": "Soul Bull Skull",
- "description": "The Soul Bull's skull, a Winterworks block: a heavy charred-black bull skull with big forward-sweeping horns, lying on its jaw; its eye sockets burn with soul fire when it is lit (eye_fire, glow). Minecraft pixel units, density 2.",
+ "description": "The Soul Bull's skull, a Winterworks block: a heavy wither-grey bull skull with big forward-sweeping horns and full round eye sockets, lying on its jaw; the sockets burn with soul fire when it is lit (eye_fire, glow). Minecraft pixel units, density 2.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 2,

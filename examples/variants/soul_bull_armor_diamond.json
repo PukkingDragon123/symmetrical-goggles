@@ -1,6 +1,6 @@
 {
  "name": "Soul Bull Armor Diamond",
- "description": "The Winterworks Soul Bull: a bull that is a completely black skeleton kept alive by blue soul fire. Charred black bones with soot-grey highlights, a heavy skull with big forward-sweeping horns, soul flames in the eye sockets, soul fire burning inside the ribcage, a saddle the renderer can hide, a rider seat locator and transparent horse-armour shells that the armour textures paint. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks Soul Bull: a bull that is a bare skeleton kept alive by blue soul fire. Wither-grey bones with lighter worn edges, a heavy skull with big forward-sweeping horns, full round eye sockets with soul fire inside, soul fire burning inside the ribcage, a saddle the renderer can hide, a rider seat locator, and transparent horse-armour and blackstone-plate shells that the armour textures paint. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 2,

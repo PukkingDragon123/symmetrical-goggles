@@ -1,14 +1,14 @@
-"""Builds examples/soul_bull.json, the horse-armour texture variants examples/variants/soul_bull_armor_{iron,gold,
-diamond}.json and the skull block examples/soul_bull_skull.json (Winterworks 0.4, mods/winterworks/docs/FIXES_0_4.md
-"The Soul Bull").
+"""Builds examples/soul_bull.json, its texture variants examples/variants/soul_bull_armor_{iron,gold,diamond}.json
+(horse armour) and examples/variants/soul_bull_armored.json (the wild bull's own armour), and the skull block
+examples/soul_bull_skull.json (Winterworks 0.4, mods/winterworks/docs/FIXES_0_4.md "The Soul Bull").
 
     python examples/src/soul_bull.py
 
-The Soul Bull is a bull that is a completely black skeleton, kept alive by blue soul fire: charred black bones with
-soot-grey highlights and a few hairline cracks of soul light, a heavy bull skull with big horns sweeping out and then
-forward, blue flames licking out of its eye sockets, and a barrel ribcage with soul fire roaring inside it, licking up
-between the ribs. Head low, horns forward, legs planted wide: it is always about to charge. About 1.4 blocks wide
-(horns) and 1.6 tall (horn tips), 2.6 long.
+The Soul Bull is a bull that is a bare skeleton, kept alive by blue soul fire: bones in a Wither Skeleton's dark
+charcoal greys with lighter grey edges and worn highlights, a heavy bull skull with big horns sweeping out and then
+forward, full round eye sockets (an octagonal bone rim round a deep hollow) with soul fire burning inside them, and a
+barrel ribcage with soul fire roaring inside it, licking up between the ribs. Head low, horns forward, legs planted
+wide: it is always about to charge. About 1.3 blocks wide (horns), 1.6 tall, 3.1 long from horn tips to tail tuft.
 
 * `saddle` (a bone): a dark leather saddle on a crimson blanket with gold trim, flaps hugging the ribs, a girth strap
   down to the breastbone, stirrups. The renderer shows or hides it.
@@ -16,9 +16,13 @@ between the ribs. Head low, horns forward, legs planted wide: it is always about
 * Horse armour shells (`armor_head`, `armor_neck`, `armor_chest`, `armor_flank_l/r`, `armor_rump`) are transparent in
   the plain texture; each armour variant paints them (iron: riveted plate; gold: engraved plate with a soul gem;
   diamond: cut crystal facets in a harlequin lattice with sparkles), so the renderer only swaps the texture.
+* The wild bull's own armour (`plate_*` shells: skull, snout, neck, chest, flanks, hips, rump, with gold-capped spikes
+  and chains slung along the flanks) is transparent in every texture but `soul_bull_armored`: blackened, gilded
+  blackstone bolted onto the bones. That texture is the plain one plus the plates.
 
-The skull block (`soul_bull_skull`) is the same skull, a little bigger, lying on the ground: bones `skull` (root),
-`jaw`, `horn_l`, `horn_r` and `eye_fire` (the soul flames in its sockets; glow; hide it while the skull is unlit).
+The skull block (`soul_bull_skull`) is the same skull, a little bigger, lying on its jaw: bones `skull` (root), `jaw`,
+`horn_l`, `horn_r` and `eye_fire` (the soul flames in its sockets; glow; hide it while the skull is unlit, the sockets
+stay as dark hollows).
 
 Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so both models export 1:1
 to vanilla entity models (python -m lowpix mc export). Faces +Z, ground at y = 0, "left" is +X.
@@ -26,7 +30,7 @@ to vanilla entity models (python -m lowpix mc export). Faces +Z, ground at y = 0
 Contract bones: body, ribs, soul_fire (glow), neck, head, jaw, horn_l, horn_r, tail, leg_fl, leg_fr, leg_bl, leg_br,
 saddle, rider. Extra joints: neck_1, horn_*_1..3, tail_1, tail_2, shin_*, cannon_b* (hind cannon bones), foot_* (hooves),
 eye_fire (both eye flames). Clips: idle, walk, run, ram (1.0 s), pin (1.5 s), drain (loop: souls flow in), revive
-(2.0 s). Glow: every soul-fire texel (ramp `soul`: the ribcage fire, the eyes, the tail tuft, the hairline cracks).
+(2.0 s). Glow: every soul-fire texel (ramp `soul`: the ribcage fire, the eyes, the tail tuft).
 """
 import copy
 import math
@@ -78,9 +82,6 @@ SOOT = {"id": "soot", "op": "patches", "scale": 1.1, "threshold": 0.55, "shift":
 PITS = {"id": "pits", "op": "spots", "count": 3, "radius": [0.3, 0.5], "shift": -1.6}
 SHEEN = {"id": "sheen", "op": "gloss", "post": True, "dash": True, "length": 2, "inset": 1, "density": 0.4,
          "shift": 2.0}
-# a few hairline cracks on the skull and spine glowing soul-blue from the fire inside
-CRACKS = {"id": "soulcracks", "op": "cracks", "scale": 0.9, "width": 0.025, "threshold": 0.6, "ramp": "soul",
-          "tone": 2.4, "faces": ["top", "front"]}
 UNDER = {"id": "under", "op": "gradient", "axis": "y", "amount": 0.8}
 INVISIBLE = [{"faces": ["all"], "at": "top-left", "art": ["_" * 64] * 64}]
 
@@ -497,11 +498,12 @@ def build():
     styles["dewclaw"] = {"ramp": "horn", "tone": 4, "light": 0, "brush": {"off": True}, "art_key": {"h": "horn:4"}}
     spec = {
         "name": "Soul Bull",
-        "description": "The Winterworks Soul Bull: a bull that is a completely black skeleton kept alive by blue soul "
-                       "fire. Charred black bones with soot-grey highlights, a heavy skull with big forward-sweeping "
-                       "horns, soul flames in the eye sockets, soul fire burning inside the ribcage, a saddle the "
-                       "renderer can hide, a rider seat locator and transparent horse-armour shells that the armour "
-                       "textures paint. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+        "description": "The Winterworks Soul Bull: a bull that is a bare skeleton kept alive by blue soul fire. "
+                       "Wither-grey bones with lighter worn edges, a heavy skull with big forward-sweeping horns, full "
+                       "round eye sockets with soul fire inside, soul fire burning inside the ribcage, a saddle the "
+                       "renderer can hide, a rider seat locator, and transparent horse-armour and blackstone-plate "
+                       "shells that the armour textures paint. Minecraft pixel units, density 2: exports 1:1 to a "
+                       "vanilla entity model.",
         "author": "lowpix example", "license": "CC0-1.0",
         "density": DENSITY,
         "budget": {"tris": 2200, "colors": 128},
@@ -791,9 +793,9 @@ def build_block():
     R.part("frag_rib", "skull", [1, 1, 5], "rib", at=(-6.0, 0.5, 2.0), wrot=(0, -40, 0))
     spec = {
         "name": "Soul Bull Skull",
-        "description": "The Soul Bull's skull, a Winterworks block: a heavy charred-black bull skull with big "
-                       "forward-sweeping horns, lying on its jaw; its eye sockets burn with soul fire when it is lit "
-                       "(eye_fire, glow). Minecraft pixel units, density 2.",
+        "description": "The Soul Bull's skull, a Winterworks block: a heavy wither-grey bull skull with big "
+                       "forward-sweeping horns and full round eye sockets, lying on its jaw; the sockets burn with "
+                       "soul fire when it is lit (eye_fire, glow). Minecraft pixel units, density 2.",
         "author": "lowpix example", "license": "CC0-1.0",
         "density": DENSITY,
         "budget": {"tris": 600, "colors": 64},
