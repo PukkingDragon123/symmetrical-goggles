@@ -33,7 +33,7 @@ public final class AmberClient {
         BlockEntityRenderers.register(AmberFeature.AMBER_INCLUSION_BE, AmberInclusionRenderer::new);
         BlockRenderLayerMap.INSTANCE.putBlock(WWBlocks.AMBER_BLOCK, RenderType.translucent());   // see-through amber
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), WWBlocks.AMBERWOOD_BLOOM, WWBlocks.BLOOD_STAIN,
-                WWBlocks.AMBERWOOD_DOOR, WWBlocks.AMBERWOOD_TRAPDOOR);
+                WWBlocks.AMBERWOOD_DOOR, WWBlocks.AMBERWOOD_TRAPDOOR, WWBlocks.POTTED_AMBERWOOD_BLOOM);
         // ---- 0.4 fixes: amber
         EntityRendererRegistry.register(WWEntities.AMBERWOOD_BOAT, ctx -> new AmberwoodBoatRenderer(ctx, false));
         EntityRendererRegistry.register(WWEntities.AMBERWOOD_CHEST_BOAT, ctx -> new AmberwoodBoatRenderer(ctx, true));

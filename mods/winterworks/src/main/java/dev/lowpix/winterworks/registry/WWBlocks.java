@@ -122,6 +122,9 @@ public final class WWBlocks {
     public static final Block AMBERWOOD_HANGING_SIGN = reg("amberwood_hanging_sign", new net.minecraft.world.level.block.CeilingHangingSignBlock(
             dev.lowpix.winterworks.amber.Amberwood.WOOD_TYPE,
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_HANGING_SIGN).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    /** A bloom in a flower pot, as vanilla's potted saplings (FlowerPotBlock's constructor makes the flower pot take blooms). */
+    public static final Block POTTED_AMBERWOOD_BLOOM = reg("potted_amberwood_bloom", new net.minecraft.world.level.block.FlowerPotBlock(
+            AMBERWOOD_BLOOM, BlockBehaviour.Properties.ofFullCopy(Blocks.POTTED_OAK_SAPLING).lightLevel(s -> 7)));
     public static final Block AMBERWOOD_WALL_HANGING_SIGN = reg("amberwood_wall_hanging_sign",
             new net.minecraft.world.level.block.WallHangingSignBlock(dev.lowpix.winterworks.amber.Amberwood.WOOD_TYPE,
                     BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_HANGING_SIGN).mapColor(AMBERWOOD_PLANKS.defaultMapColor())

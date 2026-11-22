@@ -592,6 +592,10 @@ public class AmberTests implements FabricGameTest {
         h.assertFalse(((AmberwoodBloomBlock) WWBlocks.AMBERWOOD_BLOOM).isValidBonemealTarget(level, h.absolutePos(crown),
                 h.getBlockState(crown)), "a crown bloom is not a sapling");
         h.assertTrue(WWBlocks.AMBERWOOD_BLOOM.defaultBlockState().is(net.minecraft.tags.BlockTags.SAPLINGS), "the bloom is a sapling");
+        // and like a sapling it goes in a flower pot
+        h.setBlock(new BlockPos(1, 1, 6), Blocks.FLOWER_POT);
+        use(p, new ItemStack(WWItems.AMBERWOOD_BLOOM), h.absolutePos(new BlockPos(1, 1, 6)), Direction.UP);
+        h.assertBlockPresent(WWBlocks.POTTED_AMBERWOOD_BLOOM, new BlockPos(1, 1, 6));
         h.succeed();
     }
 }

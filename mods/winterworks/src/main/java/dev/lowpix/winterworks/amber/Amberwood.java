@@ -20,7 +20,8 @@ import net.minecraft.world.level.block.state.properties.WoodType;
  * The Amberwood wood set (docs/FIXES_0_4.md, Amber): WoodType and BlockSetType {@code winterworks:amberwood} (so signs,
  * hanging signs and their edit screen find {@code entity/signs/amberwood}, {@code entity/signs/hanging/amberwood} and
  * {@code gui/hanging_signs/amberwood}), and the vanilla behaviour the blocks registered in WWBlocks need: axe
- * stripping, burning, the sign block entities, boats from dispensers and the vanilla creative tabs. Fuel comes from the
+ * stripping, burning, the sign block entities, boats from dispensers and the vanilla creative tabs. (The potted bloom
+ * needs nothing here: vanilla's FlowerPotBlock maps a plant to its pot when the potted block is made.) Fuel comes from the
  * vanilla item tags (tools/data_amber.py).
  */
 public final class Amberwood {

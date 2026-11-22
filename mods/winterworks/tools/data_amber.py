@@ -126,6 +126,9 @@ def run(ctx):
                      {"from": [1, 12, 1], "to": [15, 12, 15], "shade": False, "faces": {
                          "up": {"uv": [0, 0, 16, 16], "texture": "#top"}, "down": {"uv": [0, 16, 16, 0], "texture": "#top"}}}]})
     blockstate("amberwood_bloom", {"variants": {f"stage={s}": ref("amberwood_bloom") for s in (0, 1)}})
+    block_model("potted_amberwood_bloom", {"parent": "minecraft:block/flower_pot_cross",
+                                           "textures": {"plant": f"{M}:block/amberwood_bloom"}})
+    blockstate("potted_amberwood_bloom", {"variants": {"": ref("potted_amberwood_bloom")}})
 
     # blood stain: a single face just above the floor, turned at random
     block_model("blood_stain", {
@@ -235,6 +238,8 @@ def run(ctx):
         {"function": "minecraft:set_count", "add": False, "count": 2, "conditions": [{
             "condition": "minecraft:block_state_property", "block": f"{M}:amberwood_slab", "properties": {"type": "double"}}]},
         {"function": "minecraft:explosion_decay"}]}]}])
+    # a potted bloom drops the pot and the bloom, as vanilla's potted saplings
+    block_loot("potted_amberwood_bloom", drops("minecraft:flower_pot") + drops(f"{M}:amberwood_bloom"))
     for b in ("amber_fossil", "amber_sand", "amber_gravel", "blood_stain"):
         block_loot(b, [])   # like suspicious sand and gravel: only brushing gets anything out
     w(os.path.join(D, M, "loot_table", "entities", "mosquito.json"), {"type": "minecraft:entity", "pools": []})
@@ -280,6 +285,7 @@ def run(ctx):
     tag(["minecraft", "tags", "item", "signs"], [f"{M}:amberwood_sign"])
     tag(["minecraft", "tags", "item", "hanging_signs"], [f"{M}:amberwood_hanging_sign"])
     tag(["minecraft", "tags", "item", "boats"], [f"{M}:amberwood_boat"])
+    tag(["minecraft", "tags", "block", "flower_pots"], [f"{M}:potted_amberwood_bloom"])
     tag(["minecraft", "tags", "item", "chest_boats"], [f"{M}:amberwood_chest_boat"])
     tag(["minecraft", "tags", "block", "mineable", "axe"], [f"{M}:amberwood_log", f"{M}:amberwood_planks"])
     tag(["minecraft", "tags", "block", "mineable", "hoe"], [f"{M}:amberwood_bloom"])
@@ -307,6 +313,7 @@ def run(ctx):
         "block.winterworks.amber_gravel": "Amber Gravel",
         "block.winterworks.petrified_log": "Petrified Log",
         "block.winterworks.amberwood_bloom": "Amberwood Bloom",
+        "block.winterworks.potted_amberwood_bloom": "Potted Amberwood Bloom",
         "block.winterworks.blood_stain": "Blood Stain",
         "item.winterworks.amber_shard": "Amber Shard",
         "item.winterworks.amberwood_boat": "Amberwood Boat",

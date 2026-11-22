@@ -109,7 +109,7 @@ public final class AmberShots {
             for (int i = 0; i < order.length(); i++) {
                 char c = order.charAt(i);
                 if (i == order.length() - 1 && b.name().equals("x_arm_last")) {
-                    at(t += 8, () -> shot("golem_build_before_last_block", false));
+                    at(t += 30, () -> shot("golem_build_before_last_block", false));   // software GL re-meshes slowly
                 }
                 at(t += 8, () -> placePart(b, c));
                 if (i == order.length() - 1 && b.name().equals("x_arm_last")) {
@@ -227,6 +227,7 @@ public final class AmberShots {
             cmd("setblock 66 -60 10 winterworks:stripped_amberwood_wood[axis=x]");
             // a bloom planted in the sand, and a grown Amberwood behind the house
             cmd("setblock 57 -60 7 winterworks:amberwood_bloom");
+            cmd("setblock 64 -59 8 winterworks:potted_amberwood_bloom");
             cmd("setblock 67 -60 5 winterworks:amberwood_bloom");
             cmd("summon winterworks:amberwood_boat 72 -60.4 4 {Rotation:[30f,0f]}");
             cmd("summon winterworks:amberwood_chest_boat 73.5 -60.4 6.2 {Rotation:[100f,0f]}");
