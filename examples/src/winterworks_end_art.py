@@ -1073,13 +1073,13 @@ def end_moss():
     bp = jitter_points(w, h, 11, 11, rng_for(name, "bumps"), 1.0)
     b1, b2, bi, bx, by = voronoi(w, h, bp)
     H = H + np.sqrt(np.clip(1 - (b1 / 1.9) ** 2, 0, 1)) * 0.55
-    T = 3.7 + lit(H, 1.5) * 6.0 + (H - 1.2) * 0.5
-    T = np.where(gap, T - 1.6, T)
+    T = 3.9 + lit(H, 1.5) * 5.0 + (H - 1.2) * 0.4
+    T = np.where(gap, T - 1.1, T)
     I = despeckle(quant(T, 8, 1, 7))
     A = paint(I, MOSS)
     r = rng_for(name, "spor")
     taken = np.zeros((h, w), bool)
-    for _ in range(6):
+    for _ in range(4):
         cx, cy = r.uniform(0, w), r.uniform(0, h)
         for _ in range(int(r.integers(3, 6))):
             x = int(cx + r.normal(0, 1.6)) % w
@@ -1097,15 +1097,15 @@ def end_moss():
     block(name, A)
 
 
-def sand_height(name, w=32, h=32, craters=3):
+def sand_height(name, w=32, h=32, craters=2):
     r = rng_for(name, "sand")
     yy, xx = np.mgrid[0:h, 0:w] + 0.5
     H = (fbm(w, h, 8, seed(name, "g"), 2) - 0.5) * 0.9
     H += np.sin((xx + yy * 0.5) / 32 * 2 * math.pi * 2 + r.uniform(0, 6)) * 0.12   # faint drift ripples
     for _ in range(craters):
-        cx, cy, rad = r.uniform(0, w), r.uniform(0, h), r.uniform(2.0, 3.4)
+        cx, cy, rad = r.uniform(0, w), r.uniform(0, h), r.uniform(1.8, 2.6)
         d = np.hypot((xx - cx + w / 2) % w - w / 2, (yy - cy + h / 2) % h - h / 2) / rad
-        H += np.where(d < 1, -(1 - d ** 2) * 1.5, 0) + np.exp(-((d - 1.15) / 0.3) ** 2) * 0.7
+        H += np.where(d < 1, -(1 - d ** 2) * 1.0, 0) + np.exp(-((d - 1.15) / 0.3) ** 2) * 0.45
     return H
 
 
@@ -1127,14 +1127,14 @@ def end_sand_I(name, extra=None):
     H = sand_height(name)
     if extra is not None:
         H = H + extra
-    T = 5.6 + lit(H, 1.3) * 4.5 + (pnoise(32, 32, 3, 3, seed(name, "v")) - 0.5) * 0.7
-    return despeckle(quant(T, 9, 2, 8))
+    T = 5.6 + lit(H, 1.3) * 4.0 + (pnoise(32, 32, 4, 4, seed(name, "v")) - 0.5) * 0.35
+    return despeckle(quant(T, 9, 3, 8))
 
 
 def end_sand():
     I = end_sand_I("end_sand")
     A = paint(I, SAND)
-    pebbles(A, "end_sand", 5)
+    pebbles(A, "end_sand", 3)
     block("end_sand", A)
     suspicious_sand()
 
@@ -2364,6 +2364,226 @@ gucker_breath()
 enderfly_scale()
 obsidian_crack()
 meteor_spark()
+
+
+# ====================================================================== the eclipse sky (256 x 256)
+# The moon and the corona share one frame: draw both on the same quad, centred, same size. The moon's disc has a
+# radius of MOON_R px (of 256); the corona's light starts at that rim and fades out before the texture's edge.
+# eclipse_moon: straight alpha, draw with ordinary alpha blending (the disc is opaque and hides the stars).
+# eclipse_corona: straight alpha (rgb = colour, alpha = intensity), draw with SRC_ALPHA, ONE (additive, like
+# vanilla's sun) after the moon. It is a strip of CORONA_FRAMES frames (256 x 256 each, top to bottom); environment
+# textures are not on an atlas, so vanilla will not animate it: the renderer picks the frame itself,
+# frame = (gameTime / 4) % 8, v0 = frame / 8, v1 = (frame + 1) / 8. The .mcmeta records the timing.
+MOON_R = 72
+CORONA_FRAMES = 8
+MOON = ramp("#060409", "#0a0711", "#0f0a18", "#140e20", "#1a1229", "#211733", "#2a1d3f", "#35254d")
+RIM_GOLD = ramp("#7a4a2a", "#c98a3c", "#ffc35a", "#ffe49a", "#fff8e0")
+RIM_VIOLET = ramp("#3a1670", "#6a2fc0", "#9a5cf2", "#c79aff", "#efe0ff")
+CORONA = ["#2a0f5c", "#43188c", "#6224b8", "#8336dc", "#a24cf0", "#c070f2", "#dc96e6", "#f2b98a", "#ffd47a",
+          "#ffe9a8", "#fff6dc"]
+
+
+def eclipse_moon():
+    n = 256
+    yy, xx = np.mgrid[0:n, 0:n] + 0.5
+    cx = cy = n / 2
+    r = np.hypot(xx - cx, yy - cy)
+    disc = r < MOON_R
+    # faint earthshine on the dark face: soft maria and a few ringed craters, lit from the top-left
+    H = (fbm(n, n, 4, seed("moon", "maria"), 3) - 0.5) * 3.0
+    rr = rng_for("moon", "craters")
+    for _ in range(9):
+        a, d = rr.uniform(0, 2 * math.pi), MOON_R * math.sqrt(rr.uniform(0, 0.75))
+        px, py, rad = cx + math.cos(a) * d, cy + math.sin(a) * d, rr.uniform(4, 12)
+        q = np.hypot(xx - px, yy - py) / rad
+        H += np.where(q < 1, -(1 - q ** 2) * 1.0, 0) + np.exp(-((q - 1.1) / 0.2) ** 2) * 0.5
+    T = 3.2 + lit(H, 0.9, wrap=False) * 4.0 - np.clip((r - MOON_R * 0.75) / (MOON_R * 0.25), 0, 1) * 1.6
+    I = despeckle(quant(T, len(MOON), 0, 6), wrap=False)
+    A = paint(np.where(disc, I, -1), MOON)
+    # the lit rim: gold on the upper-left arc, violet round the rest, thickest and brightest where it is gold
+    ang = np.arctan2(yy - cy, xx - cx)
+    gold = np.clip(np.cos(ang - (-3 * math.pi / 4)), 0, 1) ** 1.5          # 1 toward the top-left
+    depth = MOON_R - r                                                     # px in from the edge
+    thick = 1.2 + 2.2 * gold + 0.6 * np.sin(ang * 7) ** 2
+    ring = disc & (depth < thick)
+    lvl = np.clip(np.floor((1 - depth / thick) * 4 + gold * 1.2), 0, 4).astype(int)
+    for k in range(5):
+        sel = ring & (lvl == k)
+        A[sel] = np.where((gold[sel] > 0.35)[:, None], RIM_GOLD[k], RIM_VIOLET[k])
+    halo = ~disc & (r < MOON_R + 1.5)                                     # a soft outer edge
+    A[halo] = [ca(RIM_GOLD[3] if g > 0.35 else RIM_VIOLET[2], 0.55) for g in gold[halo]]
+    put("textures/environment/eclipse_moon.png", to_img(A))
+
+
+def eclipse_corona():
+    n = 256
+    yy, xx = np.mgrid[0:n, 0:n] + 0.5
+    cx = cy = n / 2
+    r = np.hypot(xx - cx, yy - cy)
+    ang = np.arctan2(yy - cy, xx - cx)
+    rr = rng_for("corona")
+    rays = [(rr.uniform(-math.pi, math.pi), rr.uniform(0.03, 0.10), rr.uniform(16, 50), rr.uniform(0.35, 0.85),
+             rr.uniform(-0.25, 0.25), rr.uniform(0, 2 * math.pi)) for _ in range(26)]
+    out = r - MOON_R
+    fade = np.clip((124 - r) / 14, 0, 1)                                   # gone before the quad's edge
+    cols = np.array([rgba(c) for c in CORONA], np.uint8)
+    frames = []
+    for f in range(CORONA_FRAMES):
+        ph = 2 * math.pi * f / CORONA_FRAMES
+        I = np.exp(-((out - 1.5) / 3.5) ** 2) * 0.75                       # the gold ring hugging the rim
+        I += np.exp(-np.clip(out, 0, None) / 12.0) * 0.5                   # the soft glow
+        for th, wd, ln, b, curl, p in rays:
+            th2 = th + curl * np.clip(out, 0, None) / 50                   # streamers bend a little outward
+            dth = np.angle(np.exp(1j * (ang - th2)))
+            shimmer = 0.72 + 0.28 * math.sin(ph + p)
+            L = ln * (1 + 0.12 * math.sin(ph * 2 + p))
+            I += np.exp(-(dth / wd) ** 2) * np.exp(-np.clip(out, 0, None) / L) * b * shimmer
+        # fine flickering filaments
+        I *= 0.9 + 0.1 * np.sin(ang * 37 + ph * 3) * np.clip(out / 20, 0, 1)
+        I = np.where(out > 0, I, 0) * fade
+        lvl = np.clip(np.floor(I * 7.2), 0, len(CORONA) - 1).astype(int)
+        A = np.zeros((n, n, 4), np.uint8)
+        on = (I > 0.07) & (out > 0)
+        A[on] = cols[lvl[on]]
+        A[on, 3] = np.clip(np.round(np.minimum(I[on], 1.0) * 255 / 17) * 17, 0, 255).astype(np.uint8)
+        frames.append(A)
+    animated("textures/environment/eclipse_corona.png", frames, frametime=4)
+
+
+# ====================================================================== effects: the beam, the shell, icons
+def dragon_light_beam():
+    """A vertical strip of white-violet light (32 x 128, tiles vertically): a white core, lilac and violet
+    falloff to the edges, bright streaks running along it and a few sparkles. Straight alpha; scroll v."""
+    w, h = 32, 128
+    yy, xx = np.mgrid[0:h, 0:w] + 0.5
+    dx = np.abs(xx - w / 2)
+    streak = pnoise(w, h, 8, 4, seed("beam", "streak"))                  # periodic along the beam
+    I = np.exp(-(dx / 7.5) ** 2) * 1.1 + (streak - 0.5) * 0.5 * np.exp(-(dx / 11) ** 2)
+    I = np.clip(I, 0, None)
+    lvls = [("#3c148c", 0.22), ("#5a22c0", 0.38), ("#8040e8", 0.55), ("#a868ff", 0.72), ("#cba0ff", 0.86),
+            ("#e8d6ff", 0.95), ("#ffffff", 1.0)]
+    k = np.clip(np.floor(I * 6.2), -1, 6).astype(int)
+    A = np.zeros((h, w, 4), np.uint8)
+    for i, (c, a) in enumerate(lvls):
+        A[k == i] = ca(c, a)
+    A[dx < 1.5] = rgba("#ffffff")
+    r = rng_for("beam", "sparkle")
+    for _ in range(10):
+        x, y = int(r.uniform(9, 23)), int(r.integers(h))
+        stamp(A, x - 1, y - 1, """
+            .a.
+            aba
+            .a.
+        """, {"a": "#e8d6ff", "b": "#ffffff"}, wrap=True)
+    put("textures/entity/dragon_light_beam.png", to_img(A))
+
+
+def obsidian_shell():
+    """32 x 32 tileable obsidian crust for petrified mobs: rough glassy flakes split by glowing crying cracks."""
+    name = "obsidian_shell"
+    w = h = 32
+    r = rng_for(name)
+    pts = jitter_points(w, h, 4, 4, r, 0.9)
+    F1, F2, idx, dx, dy = voronoi(w, h, pts)
+    Hf = np.sqrt(np.clip(1 - (F1 / 7.0) ** 2, 0, 1)) * 2.0 + (fbm(w, h, 4, seed(name, "g"), 2) - 0.5) * 0.8
+    T = 2.8 + lit(Hf, 1.3) * 6.0
+    tone = np.array([r.uniform(-0.5, 0.5) for _ in pts])[idx]
+    I = despeckle(quant(T + tone, 10, 1, 6))
+    I[(F2 - F1) < 1.0] = 1
+    # glass glints on the flakes facing the light
+    for k in range(len(pts)):
+        ys, xs = np.nonzero((idx == k) & (lit(Hf, 1.3) > 0.25))
+        if len(xs) and r.random() < 0.7:
+            j = int(r.integers(len(xs)))
+            I[ys[j], xs[j]] = 8
+            I[ys[j], (xs[j] + 1) % w] = 7
+    A = paint(I, OBS, OBS_SHEEN, sheen_mask(name, w, h, 0.6))
+    core, thick = fissures(name, w, h, [(2, 5, 0.95, 24, 2), (30, 10, 2.3, 11, 1)])
+    d = chamfer(~(core | thick), True, cap=6)
+    A[(d > 0) & (d <= 1)] = OBS_SHEEN[np.clip(I + 2, 0, 9)][(d > 0) & (d <= 1)]
+    A[thick] = CRY[2]
+    A[core] = CRY[4]
+    A[core & dilate(thick, True)] = CRY[5]
+    put("textures/entity/obsidian_shell.png", to_img(A))
+    TILES.add("textures/entity/obsidian_shell.png")
+
+
+def effect_icon(name, A):
+    put(f"textures/mob_effect/{name}.png", to_img(outline(A, "#0b0714", "#1d1430")))
+
+
+def mob_effects():
+    n = 18
+    yy, xx = np.mgrid[0:n, 0:n] + 0.5
+    # end_glow: a glowing bulb in a dashed ring of light, four glints round it
+    A = np.zeros((n, n, 4), np.uint8)
+    d = np.hypot(xx - 9, yy - 9)
+    ang = np.arctan2(yy - 9, xx - 9)
+    A[(np.abs(d - 7.0) < 0.6) & (np.cos(ang * 8) > 0.2)] = BULB[1]
+    bulb = d < 4.7
+    A[bulb] = BULB[2]
+    A[bulb & (xx + yy < 18.5)] = BULB[3]
+    A[d < 3.1] = BULB[4]
+    A[d < 1.7] = BULB[6]
+    put_px(A, 7, 7, "#ffffff")
+    put_px(A, 6, 8, BULB[5])
+    for x, y in ((3, 3), (14, 3), (3, 14), (14, 14)):
+        stamp(A, x - 1, y - 1, """
+            .a.
+            aba
+            .a.
+        """, {"a": BULB[2], "b": BULB[5]})
+    effect_icon("end_glow", A)
+    # petrified: a figure frozen mid-flinch, arms up, cased in faceted obsidian and split by a glowing crack
+    L = Layers(n, n)
+    for sdf in (lambda X, Y: sd_segment(X, Y, 7.0, 11.5, 6.0, 16.0, 1.4),          # legs
+                lambda X, Y: sd_segment(X, Y, 11.0, 11.5, 12.0, 16.0, 1.4),
+                lambda X, Y: sd_segment(X, Y, 9.0, 7.5, 9.0, 11.5, 2.8),            # body
+                lambda X, Y: sd_segment(X, Y, 6.5, 7.5, 2.8, 3.0, 1.2),             # arms raised
+                lambda X, Y: sd_segment(X, Y, 11.5, 7.5, 15.2, 3.0, 1.2),
+                lambda X, Y: sd_circle(X, Y, 9.0, 4.0, 2.6)):                       # head
+        L.add(sdf, OBS, 4.8, gain=8, bevel=1.4, edge=-2)
+    A = L.A
+    for x, y in line_px(10, 2, 8, 6) + line_px(8, 6, 10, 9) + line_px(10, 9, 9, 13):
+        if A[y, x, 3]:
+            A[y, x] = CRY[4]
+    put_px(A, 8, 6, CRY[6])
+    put_px(A, 10, 9, CRY[5])
+    put_px(A, 8, 3, OBS[9])
+    effect_icon("petrified", A)
+    # recall: a returning arrow sweeping clockwise round the spawn point (a white-teal spark)
+    A = np.zeros((n, n, 4), np.uint8)
+    c = (9.0, 9.5)
+    d = np.hypot(xx - c[0], yy - c[1])
+    ang = np.arctan2(yy - c[1], xx - c[0])
+    a0, a1 = -0.45, -1.35                                             # the gap between 12:30 and 2 o'clock
+    t = ((ang - a0) % (2 * math.pi)) / ((a1 - a0) % (2 * math.pi))   # 0 at the tail, 1 at the head
+    arc = (d > 4.5) & (d < 6.9) & (t <= 1.0)
+    rc = [TEAL[3], TEAL[4], TEAL[5], PETAL[6], PETAL[7]]
+    lvl = np.clip(np.floor(t * 5), 0, 4).astype(int)
+    for k in range(5):
+        A[arc & (lvl == k)] = rgba(rc[k])
+    A[arc & (d > 6.0) & (yy > c[1] + 1)] = rgba(TEAL[2])               # shade on the lower outer edge
+    tip = (c[0] + 5.7 * math.cos(-0.8), c[1] + 5.7 * math.sin(-0.8))
+    b1 = (c[0] + 2.9 * math.cos(a1), c[1] + 2.9 * math.sin(a1))
+    b2 = (c[0] + 8.6 * math.cos(a1), c[1] + 8.6 * math.sin(a1))
+    X, Y = ss_coords(n, n, 4)
+    head = down((sd_poly(X, Y, [tip, b1, b2]) < 0).astype(float), 4) >= 0.5
+    A[head] = rgba(PETAL[8])
+    A[head & (xx + yy > tip[0] + tip[1] - 3)] = rgba(PETAL[6])
+    stamp(A, 8, 8, """
+        .a.
+        aba
+        .a.
+    """, {"a": TEAL[5], "b": "#ffffff"})
+    effect_icon("recall", A)
+
+
+eclipse_moon()
+eclipse_corona()
+dragon_light_beam()
+obsidian_shell()
+mob_effects()
 
 
 # ====================================================================== preview sheets
