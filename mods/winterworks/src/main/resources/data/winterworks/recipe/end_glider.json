@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "WSW",
+    "GMG",
+    "PSP"
+  ],
+  "key": {
+    "W": {
+      "item": "winterworks:enderfly_wing"
+    },
+    "S": {
+      "item": "minecraft:shulker_shell"
+    },
+    "G": {
+      "item": "winterworks:gucker_gland"
+    },
+    "M": {
+      "item": "winterworks:meteorite"
+    },
+    "P": {
+      "item": "minecraft:phantom_membrane"
+    }
+  },
+  "result": {
+    "id": "winterworks:end_glider",
+    "count": 1
+  }
+}

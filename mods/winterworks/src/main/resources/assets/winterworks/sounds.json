@@ -1793,5 +1793,266 @@
       }
     ],
     "subtitle": "subtitles.winterworks.curse.sin"
+  },
+  "item.end_glider.flap": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/phantom/flap1",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:mob/phantom/flap2",
+        "pitch": 1.0
+      },
+      {
+        "name": "minecraft:mob/phantom/flap3",
+        "pitch": 0.95
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.end_glider.flap"
+  },
+  "item.end_glider.jet": {
+    "sounds": [
+      {
+        "name": "minecraft:fire/fire",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:fire/ignite",
+        "pitch": 1.8
+      },
+      {
+        "name": "minecraft:mob/blaze/breathe1",
+        "pitch": 1.4
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.end_glider.jet"
+  },
+  "item.end_glider.boost": {
+    "sounds": [
+      {
+        "name": "minecraft:fireworks/launch1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:mob/breeze/shoot",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.end_glider.boost"
+  },
+  "item.obsidian_shield.reflect": {
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:random/glass1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.obsidian_shield.reflect"
+  },
+  "item.obsidian_shield.shockwave": {
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/warden/sonic_boom1",
+        "pitch": 1.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.obsidian_shield.shockwave"
+  },
+  "item.monolith_wand.petrify": {
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/power1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/cast1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.monolith_wand.petrify"
+  },
+  "effect.petrified.encase": {
+    "sounds": [
+      {
+        "name": "minecraft:dig/stone1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:dig/stone2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:block/respawn_anchor/charge1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.effect.petrified.encase"
+  },
+  "effect.petrified.shatter": {
+    "sounds": [
+      {
+        "name": "minecraft:random/glass1",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:random/glass2",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:random/glass3",
+        "pitch": 0.5
+      }
+    ],
+    "subtitle": "subtitles.winterworks.effect.petrified.shatter"
+  },
+  "entity.dragonling.ambient": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/growl1",
+        "pitch": 2.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl2",
+        "pitch": 2.0
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl3",
+        "pitch": 1.9
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.ambient"
+  },
+  "entity.dragonling.hurt": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/hit1",
+        "pitch": 1.8
+      },
+      {
+        "name": "minecraft:mob/enderdragon/hit2",
+        "pitch": 1.8
+      },
+      {
+        "name": "minecraft:mob/enderdragon/hit3",
+        "pitch": 1.9
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.hurt"
+  },
+  "entity.dragonling.death": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/end",
+        "pitch": 2.0
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.death"
+  },
+  "entity.dragonling.eat": {
+    "sounds": [
+      {
+        "name": "minecraft:random/eat1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:random/eat2",
+        "pitch": 1.3
+      },
+      {
+        "name": "minecraft:random/eat3",
+        "pitch": 1.2
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.eat"
+  },
+  "entity.dragonling.roar": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/growl3",
+        "pitch": 1.4
+      },
+      {
+        "name": "minecraft:mob/enderdragon/growl4",
+        "pitch": 1.3
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.roar"
+  },
+  "entity.dragonling.flap": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/wings1",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings2",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:mob/enderdragon/wings3",
+        "pitch": 1.5
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.flap"
+  },
+  "entity.dragonling.breath": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/enderdragon/growl1",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/ghast/fireball4",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:fire/ignite",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.breath"
+  },
+  "entity.dragonling.hatch": {
+    "sounds": [
+      {
+        "name": "minecraft:random/glass2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/turtle/baby/egg_hatched1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/turtle/baby/egg_hatched2",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.hatch"
+  },
+  "item.dragon_egg.crack": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/turtle/egg/egg_crack1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/turtle/egg/egg_crack2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/turtle/egg/egg_crack3",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.dragon_egg.crack"
   }
 }

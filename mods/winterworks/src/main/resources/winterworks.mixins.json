@@ -30,11 +30,23 @@
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "FoodDataMixin",
-    "HexedPlayerMixin"
+    "HexedPlayerMixin",
+    "endgear.EndGearMobAccessor",
+    "endgear.EndGearLivingEntityAccessor",
+    "endgear.EndGearLivingEntityMixin",
+    "endgear.EndGearPlayerMixin",
+    "endgear.EndGearEntityMixin",
+    "endgear.EndGearItemEntityMixin"
   ],
   "client": [
     "client.GameRendererMixin",
-    "client.CurseMouseHandlerMixin"
+    "client.CurseMouseHandlerMixin",
+    "endgear.client.EndGearMouseHandlerMixin",
+    "endgear.client.EndGearKeyboardInputMixin",
+    "endgear.client.EndGearMinecraftMixin",
+    "endgear.client.EndGearLivingEntityRendererMixin",
+    "endgear.client.EndGearHumanoidModelMixin",
+    "endgear.client.EndGearItemInHandLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
