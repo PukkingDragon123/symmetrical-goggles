@@ -119,7 +119,9 @@ public final class WitchCrew {
             ((HoglinAccessor) h).winterworks$setCannotBeHunted(true);
         }
         if (mob instanceof AbstractPiglin p) {
-            p.setImmuneToZombification(p.isImmuneToZombification() || mob instanceof GoldenPiglin);
+            if (mob instanceof GoldenPiglin) {
+                p.setImmuneToZombification(true);
+            }
         }
         MEMBERS.add(mob);
     }

@@ -6,5 +6,10 @@
   "effect.winterworks.golden": "Golden",
   "message.winterworks.piglin_witch.refuse": "The Piglin Witch shakes her head and burps. She's thirsty for something golden...",
   "message.winterworks.piglin_witch.busy": "The Piglin Witch waves you off: she's busy.",
-  "message.winterworks.hexfortress.built": "Built a Hex Fortress at %s, %s, %s (%s x %s blocks)"
+  "message.winterworks.hexfortress.built": "Built a Hex Fortress at %s, %s, %s (%s x %s blocks)",
+  "entity.winterworks.withered_commander": "Withered Commander",
+  "entity.winterworks.hex_bolt": "Hex Bolt",
+  "item.winterworks.netherite_spear": "Netherite Spear",
+  "item.winterworks.netherite_spear.tip": "Long reach. Hold use to draw it back, let go to thrust",
+  "item.winterworks.withered_commander_spawn_egg": "Withered Commander Spawn Egg"
 }

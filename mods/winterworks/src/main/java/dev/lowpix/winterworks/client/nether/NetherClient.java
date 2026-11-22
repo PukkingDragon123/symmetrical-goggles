@@ -28,6 +28,9 @@ import net.minecraft.world.entity.monster.piglin.AbstractPiglin;
 public final class NetherClient {
     public static final ModelLayerLocation PIGLIN_WITCH = layer("piglin_witch");
     public static final ModelLayerLocation GOLDEN_PIGLIN = layer("golden_piglin");
+    // ---- 0.4 fixes: Nether (docs/FIXES_0_4.md "Piglins, hoglins and the Withered Commander")
+    public static final ModelLayerLocation WITHERED_COMMANDER = layer("withered_commander");
+    public static final ModelLayerLocation NETHERITE_SPEAR = layer("netherite_spear");
 
     private NetherClient() {}
 
@@ -43,6 +46,14 @@ public final class NetherClient {
             }
         });
         ClientTickEvents.END_CLIENT_TICK.register(NetherClient::glints);
+        // ---- 0.4 fixes: Nether: the Withered Commander, its spear, the witch's hex bolts; the dev screenshots
+        reg(WITHERED_COMMANDER, "withered_commander");
+        reg(NETHERITE_SPEAR, "netherite_spear");
+        EntityRendererRegistry.register(WWEntities.WITHERED_COMMANDER, WitheredCommanderRenderer::new);
+        EntityRendererRegistry.register(WWEntities.HEX_BOLT, net.minecraft.client.renderer.entity.NoopRenderer::new);
+        net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry.INSTANCE.register(
+                dev.lowpix.winterworks.registry.WWItems.NETHERITE_SPEAR, new NetheriteSpearRenderer());
+        NetherShots.init();
     }
 
     private static ModelLayerLocation layer(String name) {

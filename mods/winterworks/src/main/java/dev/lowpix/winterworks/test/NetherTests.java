@@ -277,10 +277,24 @@ public class NetherTests implements FabricGameTest {
         return h.absolutePos(BlockPos.ZERO).offset(-1400, 40, -1400 + dz);
     }
 
+    /** Force-loads (or frees) the chunks round a fortress at `origin`: only mobs in entity-ticking chunks can be looked up. */
+    private static void force(ServerLevel level, BlockPos origin, boolean on) {
+        for (int cx = (origin.getX() - 32) >> 4; cx <= (origin.getX() + 32) >> 4; cx++) {
+            for (int cz = (origin.getZ() - 32) >> 4; cz <= (origin.getZ() + 32) >> 4; cz++) {
+                level.setChunkForced(cx, cz, on);
+            }
+        }
+    }
+
     @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
     public void hexFortressBuilderPlacesEverything(GameTestHelper h) {
         ServerLevel level = h.getLevel();
         BlockPos origin = farAway(h, 0);
+        force(level, origin, true);
+        h.runAfterDelay(4, () -> checkBuilder(h, level, origin));
+    }
+
+    private void checkBuilder(GameTestHelper h, ServerLevel level, BlockPos origin) {
         BoundingBox box = HexFortress.build(level, origin, Rotation.CLOCKWISE_90, 20261122L);
         int portal = 0, stands = 0, wart = 0, chests = 0, jars = 0, soulFire = 0, cauldrons = 0;
         boolean looted = false;
@@ -308,7 +322,7 @@ public class NetherTests implements FabricGameTest {
                 }
             }
         }
-        h.assertTrue(portal == 6, "a lit 2x3 Nether Portal, found " + portal + " portal blocks");
+        h.assertTrue(portal == 9, "a lit 3x3 Nether Portal, found " + portal + " portal blocks");
         h.assertTrue(stands >= 5, "brewing stands in the brewing rooms and her study, found " + stands);
         h.assertTrue(cauldrons >= 4, "cauldrons in the brewing rooms, found " + cauldrons);
         h.assertTrue(jars >= 5, "Elixir Jars over soul fire, found " + jars);
@@ -328,6 +342,7 @@ public class NetherTests implements FabricGameTest {
         for (Entity e : level.getEntities((Entity) null, all, e -> !(e instanceof ServerPlayer))) {
             e.discard();
         }
+        force(level, origin, false);
         h.succeed();
     }
 
@@ -392,9 +407,10 @@ public class NetherTests implements FabricGameTest {
         StructureStart start = structure.generate(reg, gen, gen.getBiomeSource(), nether.getChunkSource().randomState(),
                 nether.getStructureManager(), nether.getSeed(), new ChunkPos(40, -25), 0, nether, b -> true);
         h.assertTrue(start.isValid(), "a fortress should generate in the Nether");
-        h.assertTrue(start.getPieces().size() == 12, "twelve pieces, got " + start.getPieces().size());
+        h.assertTrue(start.getPieces().size() == 8, "eight pieces, got " + start.getPieces().size());
         BoundingBox box = start.getBoundingBox();
-        h.assertTrue(box.getXSpan() > 48 && box.getZSpan() > 48, "several chunks across, " + box.getXSpan() + " x " + box.getZSpan());
+        h.assertTrue(box.getXSpan() >= 36 && box.getXSpan() <= 48 && box.getZSpan() >= 36 && box.getZSpan() <= 48,
+                "about 40 x 40, " + box.getXSpan() + " x " + box.getZSpan());
         int floor = start.getPieces().get(0).getBoundingBox().minY() + 2 + 40;
         h.assertTrue(floor > gen.getSeaLevel() && floor <= 100, "on the ground or over the lava, under the roof: y=" + floor);
         h.succeed();

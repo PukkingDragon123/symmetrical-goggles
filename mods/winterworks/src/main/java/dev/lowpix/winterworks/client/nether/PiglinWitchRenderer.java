@@ -29,6 +29,8 @@ public class PiglinWitchRenderer extends MobRenderer<PiglinWitch, PiglinWitchRen
         super(ctx, new Model(ctx.bakeLayer(NetherClient.PIGLIN_WITCH)), 0.7f);
         addLayer(new GlowLayer(this));
         addLayer(new HeldItemLayer(this, ctx.getItemInHandRenderer()));
+        addLayer(new SpellbookLayer(this, new net.minecraft.client.model.BookModel(ctx.bakeLayer(
+                net.minecraft.client.model.geom.ModelLayers.BOOK))));
     }
 
     @Override
@@ -76,6 +78,58 @@ public class PiglinWitchRenderer extends MobRenderer<PiglinWitch, PiglinWitchRen
                 p.xRot += pitch * 0.6f;
                 p.zRot -= sway * 0.6f;   // she keeps her head (more or less) level while the body sways
             });
+            // casting: her right paw goes up over the book, her left hand spread over its pages
+            if (e.castSpell() != PiglinWitch.Spell.NONE) {
+                float c = Mth.clamp((age - e.castStartTick) / 5f, 0f, 1f);
+                float shake = Mth.sin(age * 1.7f) * 0.06f * c;
+                get("arm_r").ifPresent(p -> {
+                    p.xRot += -2.3f * c + shake;
+                    p.zRot += 0.25f * c;
+                });
+                get("arm_l").ifPresent(p -> {
+                    p.xRot += -1.1f * c;
+                    p.zRot -= 0.35f * c;
+                });
+            } else if (e.isFighting()) {
+                get("arm_l").ifPresent(p -> p.xRot += -0.7f);   // a hand over the floating book
+            }
+        }
+    }
+
+    /**
+     * Her spellbook while she fights: vanilla's book model, wide open, floating before her chest and turned up to her,
+     * bobbing, its pages riffling (faster while a spell gathers), in a hexed soul-blue, full bright.
+     */
+    static class SpellbookLayer extends RenderLayer<PiglinWitch, Model> {
+        private final net.minecraft.client.model.BookModel book;
+
+        SpellbookLayer(RenderLayerParent<PiglinWitch, Model> parent, net.minecraft.client.model.BookModel book) {
+            super(parent);
+            this.book = book;
+        }
+
+        @Override
+        public void render(PoseStack pose, MultiBufferSource buffers, int light, PiglinWitch e, float limbSwing, float limbAmount,
+                           float partial, float age, float headYaw, float headPitch) {
+            if (!e.isFighting() || e.isInvisible()) {
+                return;
+            }
+            boolean casting = e.castSpell() != PiglinWitch.Spell.NONE;
+            pose.pushPose();
+            // layer space is the model's (y down, 1.5 blocks above her feet, facing -z): out in front of her chest
+            pose.translate(0f, 1.501f - 1.45f - Mth.sin(age * 0.12f) * 0.05f, -0.9f);
+            pose.scale(-1f, -1f, 1f);   // back to y up
+            pose.mulPose(Axis.YP.rotationDegrees(-90f + Mth.sin(age * 0.05f) * 6f));   // the pages toward her
+            pose.mulPose(Axis.ZP.rotationDegrees(casting ? 62f : 52f));   // tilted up, as on a lectern
+            pose.scale(0.85f, 0.85f, 0.85f);
+            float flip = age * (casting ? 0.09f : 0.025f);
+            float r = Mth.clamp(Mth.frac(flip + 0.25f) * 1.6f - 0.3f, 0f, 1f);
+            float l = Mth.clamp(Mth.frac(flip + 0.75f) * 1.6f - 0.3f, 0f, 1f);
+            book.setupAnim(age, r, l, 1f);
+            int tint = casting ? 0xFF9FF0FF : 0xFF7FD8F0;
+            book.renderToBuffer(pose, net.minecraft.client.renderer.blockentity.EnchantTableRenderer.BOOK_LOCATION.buffer(buffers,
+                    RenderType::entityCutoutNoCull), 0xF000F0, OverlayTexture.NO_OVERLAY, tint);
+            pose.popPose();
         }
     }
 
