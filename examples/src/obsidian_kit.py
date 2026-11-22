@@ -27,6 +27,11 @@ RAMPS = {
     "void": ["#040209", "#0a0616", "#110b24", "#1a1234", "#251a46", "#33245a"],
     "star": ["#6f5fc8", "#a99bf5", "#e4ddff", "#ffffff"],
     "ember": ["#3b0d0a", "#6e1d0c", "#a8380f", "#d8611a", "#f28f2c", "#ffc35a", "#fff0b0"],
+    # meteorite (as the blocks, winterworks_end_art.py): a scorched fusion crust, warm black-brown with cool
+    # iron-nickel lights, and its molten glow from the edge to the heart: violet, magenta, rose, orange, amber, gold, white
+    "meteor": ["#0b0708", "#130e0f", "#1c1617", "#262021", "#312a2a", "#3e3535", "#4d4343", "#625857", "#867e7c",
+               "#bab4b0"],
+    "molten": ["#3a0c5c", "#6c1585", "#a8237f", "#e04a5a", "#ff7d2a", "#ffad35", "#ffd76a", "#fff4c2", "#fffdf2"],
 }
 
 # ======================================================================= rune glyphs (original, 5 x 7)
