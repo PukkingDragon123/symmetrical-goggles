@@ -43,11 +43,14 @@ public class ChorusCocoonBlock extends Block {
     public static final MapCodec<ChorusCocoonBlock> CODEC = simpleCodec(ChorusCocoonBlock::new);
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     public static final int MATURE = 3;
+    /** A mature cocoon's cracks shine a little (block models can't glow). */
+    public static final int MATURE_LIGHT = 4;
+    // round the 3D art's models (models/block/chorus_cocoon_age0..3.json)
     private static final VoxelShape[] SHAPES = {
-            box(5.5, 9, 5.5, 10.5, 16, 10.5),
-            box(4.5, 6, 4.5, 11.5, 16, 11.5),
-            box(4, 3, 4, 12, 16, 12),
-            box(3, 1, 3, 13, 16, 13)};
+            box(6, 6, 6, 10.5, 16, 10),
+            box(4.5, 4, 5, 12, 16, 11),
+            box(3, 2, 3, 13, 16, 12),
+            box(1.5, 1, 1.5, 14.5, 16, 13.5)};
 
     /** Who is breaking which cocoon right now (playerWillDestroy runs just before the drops): the Endermite's target. */
     @Nullable
@@ -56,7 +59,7 @@ public class ChorusCocoonBlock extends Block {
     private record Breaker(Level level, BlockPos pos, Player player, long time) {}
 
     public ChorusCocoonBlock(Properties p) {
-        super(p);
+        super(p.lightLevel(s -> s.getValue(AGE) >= MATURE ? MATURE_LIGHT : 0));
         registerDefaultState(stateDefinition.any().setValue(AGE, 0));
     }
 

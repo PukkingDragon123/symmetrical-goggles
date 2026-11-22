@@ -118,7 +118,7 @@ def bloom(ctx):
 
 
 def cocoon(ctx):
-    """The 3D cocoon models come from the art (models/block/chorus_cocoon_age0..3.json); until then, placeholders."""
+    """The 3D cocoon models come from the art (models/block/chorus_cocoon_age0..3.json); placeholders only for ages it lacks."""
     M = ctx.M
     blk = os.path.join(ctx.A, "models", "block")
     sizes = [(2.5, 6, 0), (3.5, 9, 1), (4, 12, 2), (5, 14, 2)]   # half width, height, stalk length
@@ -126,6 +126,9 @@ def cocoon(ctx):
     for age, (hw, h, stalk) in enumerate(sizes):
         art = os.path.exists(os.path.join(blk, f"chorus_cocoon_age{age}.json"))
         name = f"chorus_cocoon_age{age}" if art else f"chorus_cocoon_placeholder_age{age}"
+        stale = os.path.join(blk, f"chorus_cocoon_placeholder_age{age}.json")
+        if art and os.path.exists(stale):
+            os.remove(stale)   # the art is in: the placeholder goes
         if not art:
             top = 16 - stalk
             els = [{"from": [8 - hw, top - h, 8 - hw], "to": [8 + hw, top, 8 + hw], "faces": {

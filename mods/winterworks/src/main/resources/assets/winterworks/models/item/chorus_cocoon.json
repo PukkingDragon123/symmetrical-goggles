@@ -1,5 +1,5 @@
 {
-  "parent": "winterworks:block/chorus_cocoon_placeholder_age2",
+  "parent": "winterworks:block/chorus_cocoon_age2",
   "display": {
     "gui": {
       "rotation": [
