@@ -50,7 +50,9 @@ final class EndBossShots {
     private static final List<String> PENDING = new ArrayList<>();
     private static final List<Integer> PENDING_FRAME = new ArrayList<>();
     private static boolean created, stopWhenDone;
-    private static int ticks, step, frames;
+    private static int ticks, step;
+    /** Frames drawn (render thread), and the frame a camera move must be drawn by before the plan goes on. */
+    private static volatile int frames, settleUntil;
     /** The island vantage point (set on the server thread once the chunks are there). */
     private static volatile Vec3 view = new Vec3(88.5, 90, 25.5), dragonAt = Vec3.ZERO;
     @Nullable
@@ -263,6 +265,7 @@ final class EndBossShots {
     }
 
     private static void look(MinecraftServer srv, Vec3 from, float yaw, float pitch) {
+        settleUntil = frames + 3;   // the plan waits until the new view has been drawn
         player(srv).teleportTo(end(srv), from.x, from.y, from.z, yaw, pitch);
     }
 
@@ -308,7 +311,7 @@ final class EndBossShots {
     /** Taken two frames on (so a camera move just made is drawn), at the next client tick after them. */
     private static void shot(String name) {
         PENDING.add(name);
-        PENDING_FRAME.add(frames + 3);
+        PENDING_FRAME.add(frames + 1);
     }
 
     private static void takeShots(Minecraft mc) {
@@ -351,6 +354,9 @@ final class EndBossShots {
     private static void serverTick(MinecraftServer srv) {
         if (srv.getPlayerList().getPlayers().isEmpty() || step >= PLAN.size()) {
             return;
+        }
+        if (frames < settleUntil) {
+            return;   // a camera move not drawn yet
         }
         ticks++;
         while (step < PLAN.size() && ticks >= AT.get(step)) {
