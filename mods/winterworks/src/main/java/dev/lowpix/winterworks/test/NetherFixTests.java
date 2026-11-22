@@ -479,7 +479,6 @@ public class NetherFixTests implements FabricGameTest {
         PiglinGreed.makeGolden(brute);
         h.assertTrue(piglin.hasAttached(NetherFeature.GILDING) && PiglinGreed.gilding(piglin) < 0.1f, "drinking starts the gilding at once");
         h.assertTrue(PiglinGreed.isGolden(piglin) && !piglin.isConverting(), "golden, and immune to zombification meanwhile");
-        Vec3 pAt = piglin.position(), bAt = brute.position();
         h.startSequence()
                 .thenWaitUntil(() -> h.assertTrue(PiglinGreed.gilding(piglin) >= 0.05f, "the gold spreads"))
                 .thenExecute(() -> {
@@ -490,8 +489,11 @@ public class NetherFixTests implements FabricGameTest {
                     h.assertTrue(piglin.isRemoved() && brute.isRemoved(), "fully gilded, they turn into Golden Piglins");
                     List<GoldenPiglin> golden = h.getLevel().getEntitiesOfClass(GoldenPiglin.class, h.getBounds().inflate(8));
                     h.assertTrue(golden.size() == 2, "two Golden Piglins, " + golden.size());
-                    GoldenPiglin fromBrute = golden.stream().min((x, y) -> Double.compare(x.distanceToSqr(bAt), y.distanceToSqr(bAt))).orElseThrow();
-                    GoldenPiglin fromPiglin = golden.stream().min((x, y) -> Double.compare(x.distanceToSqr(pAt), y.distanceToSqr(pAt))).orElseThrow();
+                    // they wander while gilding, so tell them apart by kind, not by where they started
+                    List<GoldenPiglin> brutes = golden.stream().filter(GoldenPiglin::isBrute).toList();
+                    h.assertTrue(brutes.size() == 1, "one golden brute, " + brutes.size());
+                    GoldenPiglin fromBrute = brutes.get(0);
+                    GoldenPiglin fromPiglin = golden.stream().filter(g -> g != fromBrute).findFirst().orElseThrow();
                     h.assertTrue(fromBrute.isBrute() && fromBrute.getScale() > 1.1f && fromBrute.getMainHandItem().is(Items.GOLDEN_AXE),
                             "a brute becomes a bigger golden brute with a gilded axe");
                     h.assertFalse(fromPiglin.isBrute(), "a piglin a plain Golden Piglin");

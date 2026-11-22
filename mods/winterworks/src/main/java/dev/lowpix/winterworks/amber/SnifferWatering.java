@@ -33,6 +33,8 @@ import org.jetbrains.annotations.Nullable;
 public final class SnifferWatering {
     public static final int INTERVAL = 1200, INTERVAL_SPREAD = 400, WATER_RADIUS = 12, FARM_RANGE = 12, SPRAY_RADIUS = 3;
     public static final int DRINK_TICKS = 50, SNEEZE_TICKS = 40, ACHOO_AT = 21, WALK_LIMIT = 500;
+    /** After an errand that couldn't reach its water, it tries again this soon (not a whole interval later). */
+    public static final int RETRY = 200;
     /** Entity event: the sneeze starts (the client plays the animation; the spray comes {@link #ACHOO_AT} ticks later). */
     public static final byte EVENT_SNEEZE = 93;
 
@@ -127,6 +129,7 @@ public final class SnifferWatering {
                     s.transitionTo(Sniffer.State.SNIFFING);   // nose down to the water
                 } else if (j.ticks > WALK_LIMIT || j.repaths > 10) {
                     stop(s, t, j);
+                    j.cooldown = Math.min(j.cooldown, RETRY);   // blocked on the way: try again soon
                 } else if (s.getNavigation().isDone()) {
                     j.repaths++;
                     walk(s, j.water);
