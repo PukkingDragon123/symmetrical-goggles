@@ -47,6 +47,12 @@
         "weight": 10,
         "minCount": 1,
         "maxCount": 4
+      },
+      {
+        "type": "minecraft:phantom",
+        "weight": 6,
+        "minCount": 2,
+        "maxCount": 4
       }
     ],
     "ambient": [],

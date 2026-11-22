@@ -34,11 +34,13 @@
     "end.SuspiciousEndSandMixin",
     "end.ChorusSoilMixin",
     "end.ChorusFlowerSoilMixin",
-    "end.LongBurnFurnaceMixin"
+    "end.LongBurnFurnaceMixin",
+    "endmob.EffectParticlesAccessor"
   ],
   "client": [
     "client.GameRendererMixin",
-    "client.CurseMouseHandlerMixin"
+    "client.CurseMouseHandlerMixin",
+    "endmob.EndGlowLightMixin"
   ],
   "injectors": {
     "defaultRequire": 1

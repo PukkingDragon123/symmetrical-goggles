@@ -71,9 +71,6 @@ final class EndShots {
             return;
         }
         ClientTickEvents.END_CLIENT_TICK.register(EndShots::tick);
-        // the mobs area's plants, cut out in these shots even before their own client code lands
-        net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap.INSTANCE.putBlocks(net.minecraft.client.renderer.RenderType.cutout(),
-                dev.lowpix.winterworks.registry.EndBlocks.END_BLOOM, dev.lowpix.winterworks.registry.EndBlocks.CHORUS_COCOON);
         // ... and stand-in (invisible) renderers for the End's mobs: the mobs' and bosses' own client code, registered
         // after this, replaces them
         for (var type : java.util.List.of(dev.lowpix.winterworks.registry.EndEntities.MONOLITH, dev.lowpix.winterworks.registry.EndEntities.OBOLISK,

@@ -287,6 +287,23 @@ public class EndWorldTests implements FabricGameTest {
         h.succeed();
     }
 
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH)
+    public void phantomsAreLocalsInTheOuterEnd(GameTestHelper h) {
+        var reg = h.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+        for (ResourceKey<Biome> b : List.of(EndWorldgen.CHORUS_MEADOWS, EndWorldgen.DEAD_END, net.minecraft.world.level.biome.Biomes.END_HIGHLANDS,
+                net.minecraft.world.level.biome.Biomes.END_MIDLANDS)) {
+            var spawns = reg.getOrThrow(b).getMobSettings().getMobs(net.minecraft.world.entity.MobCategory.MONSTER).unwrap();
+            var phantom = spawns.stream().filter(e -> e.type == net.minecraft.world.entity.EntityType.PHANTOM).findFirst();
+            h.assertTrue(phantom.isPresent(), b.location() + " should spawn phantoms");
+            h.assertTrue(phantom.get().minCount == 2 && phantom.get().maxCount == 4, "... in flocks of 2-4 in " + b.location());
+        }
+        var mainIsland = reg.getOrThrow(net.minecraft.world.level.biome.Biomes.THE_END).getMobSettings()
+                .getMobs(net.minecraft.world.entity.MobCategory.MONSTER).unwrap();
+        h.assertFalse(mainIsland.stream().anyMatch(e -> e.type == net.minecraft.world.entity.EntityType.PHANTOM),
+                "not round the main island");
+        h.succeed();
+    }
+
     private static BlockPos farAway(GameTestHelper h, int dx) {
         return h.absolutePos(BlockPos.ZERO).offset(-2200 + dx, 0, 1800);
     }

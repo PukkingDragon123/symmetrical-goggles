@@ -8,6 +8,7 @@ sets, chest and archaeology loot); and the lang. (The particle definitions come 
 import os
 
 M = "winterworks"
+PHANTOM_WEIGHT = 6   # end.EndWorldFeature.PHANTOM_WEIGHT
 
 # ---------------------------------------------------------------------------------------------- the blocks
 # the obsidian set, like deepslate: base block -> (texture, stairs, slab, wall) where it has them
@@ -401,11 +402,14 @@ def run(ctx):
                          "underground_water_creature": [], "water_ambient": [], "water_creature": []},
             "spawn_costs": {}, "carvers": {}, "features": features()})
 
+    # phantoms are locals in the outer End: small flocks, insomnia or not (docs/FIXES_0_4.md; the vanilla highlands and
+    # midlands get them through end.EndWorldFeature's biome modification, with the same PHANTOM_* numbers)
+    phantoms = spawn("minecraft:phantom", PHANTOM_WEIGHT, 2, 4)
     biome("chorus_meadows", "end_spore", 0.004, [spawn(f"{M}:endling", 10, 2, 4)],
-          [spawn(f"{M}:enderfly", 8, 1, 3), spawn(f"{M}:gucker", 4, 1, 1), spawn("minecraft:enderman", 10, 1, 4)])
+          [spawn(f"{M}:enderfly", 8, 1, 3), spawn(f"{M}:gucker", 4, 1, 1), spawn("minecraft:enderman", 10, 1, 4), phantoms])
     biome("dead_end", "end_dust", 0.007, [],
           [spawn(f"{M}:gucker", 6, 1, 2), spawn(f"{M}:obolisk", 2, 1, 1), spawn(f"{M}:enderfly", 2, 1, 2),
-           spawn("minecraft:enderman", 10, 1, 4)])
+           spawn("minecraft:enderman", 10, 1, 4), phantoms])
     both = [f"{M}:chorus_meadows", f"{M}:dead_end"]
     tag(["minecraft", "tags", "worldgen", "biome", "is_end"], both)
     tag(["minecraft", "tags", "worldgen", "biome", "has_structure", "end_city"], both)   # End Cities still rise in them

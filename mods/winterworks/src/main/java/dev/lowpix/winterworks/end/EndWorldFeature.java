@@ -3,6 +3,8 @@ package dev.lowpix.winterworks.end;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.lowpix.winterworks.registry.EndBlocks;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -12,6 +14,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -19,11 +24,17 @@ import net.minecraft.world.phys.Vec3;
 /**
  * The world of the Living End (docs/END_UPDATE.md sections 1-3): Chorus Meadows and the Dead End as End highlands
  * (each its own midlands and barrens), their terrain features (EndFeatures), the Obsidian Ruins, End Shrines and the
- * Monolith Tower (EndStructure) with their guards (EndGuards), meteorite as fuel, End City loot (EndLoot), and
+ * Monolith Tower (EndStructure) with their guards (EndGuards), phantoms in the outer End, meteorite as fuel, End City
+ * loot (EndLoot), and
  * {@code /winterworks endstructure <obsidian_ruins|end_shrine|monolith_tower>}. Data: tools/data_end_world.py.
  */
 public final class EndWorldFeature {
     public static final int CHORUS_MEADOWS_WEIGHT = 8, DEAD_END_WEIGHT = 6;
+    /**
+     * Phantoms are locals in the outer End (docs/FIXES_0_4.md): monster spawns, weight 6, flocks of 2-4, in our biomes
+     * (their JSON) and the vanilla End highlands and midlands (added here); natural spawning, so insomnia doesn't matter.
+     */
+    public static final int PHANTOM_WEIGHT = 6, PHANTOM_MIN = 2, PHANTOM_MAX = 4;
     /** Meteorite burns for 48000 ticks: 240 items. */
     public static final int METEORITE_BURN = 48000;
 
@@ -38,6 +49,8 @@ public final class EndWorldFeature {
         TheEndBiomes.addHighlandsBiome(EndWorldgen.DEAD_END, DEAD_END_WEIGHT);
         TheEndBiomes.addMidlandsBiome(EndWorldgen.DEAD_END, EndWorldgen.DEAD_END, 1.0);
         TheEndBiomes.addBarrensBiome(EndWorldgen.DEAD_END, EndWorldgen.DEAD_END, 1.0);
+        BiomeModifications.addSpawn(BiomeSelectors.includeByKey(Biomes.END_HIGHLANDS, Biomes.END_MIDLANDS), MobCategory.MONSTER,
+                EntityType.PHANTOM, PHANTOM_WEIGHT, PHANTOM_MIN, PHANTOM_MAX);
         FuelRegistry.INSTANCE.add(EndBlocks.METEORITE, METEORITE_BURN);
         EndLoot.init();
         EndGuards.init();
