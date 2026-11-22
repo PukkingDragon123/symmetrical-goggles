@@ -1,0 +1,655 @@
+{
+ "name": "Amber Seed",
+ "description": "A fossil Amberwood seed (about 4 x 6 x 4 px): a ribbed, petrified umber husk with gold-brown rib crests and amber flecks, a stalk cap and a little pale-gold fiddlehead sprout with one leaf. Drawn in 3D inside amber blocks. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 400,
+  "colors": 40
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.7,
+  "gradient": 0.5,
+  "ao": 0.0
+ },
+ "brush": {
+  "flow": "y",
+  "length": 1.2,
+  "width": 0.5,
+  "rough": 0.45,
+  "textures": {
+   "husk": "stone",
+   "sprout": "organic"
+  }
+ },
+ "minecraft": {
+  "fps": 12
+ },
+ "render": {
+  "background": "#2a1d16",
+  "hero": [
+   -34,
+   20
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "husk": [
+    "#150b0a",
+    "#24130e",
+    "#351d13",
+    "#4a2a19",
+    "#603920",
+    "#784a29",
+    "#915e34",
+    "#aa7642",
+    "#c39054",
+    "#d9ad6c"
+   ],
+   "amber": [
+    "#86300e",
+    "#c76516",
+    "#eea32f",
+    "#ffe28f"
+   ],
+   "sprout": [
+    "#2f2a10",
+    "#4b4416",
+    "#6c631d",
+    "#8f8526",
+    "#b3a734",
+    "#d2c652",
+    "#ece27f",
+    "#fff8c0"
+   ]
+  }
+ },
+ "styles": {
+  "husk": {
+   "ramp": "husk",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 0.9
+    },
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.5,
+     "width": 0.25,
+     "shift": -0.8
+    },
+    {
+     "id": "flecks",
+     "op": "spots",
+     "count": 2,
+     "radius": [
+      0.25,
+      0.4
+     ],
+     "ramp": "amber",
+     "tone": 2.4
+    }
+   ]
+  },
+  "husk_dark": {
+   "ramp": "husk",
+   "tone": 2.4,
+   "rim": {
+    "light_shift": 1.2,
+    "dark_shift": -1.0
+   }
+  },
+  "rib": {
+   "ramp": "husk",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.6
+   },
+   "layers": [
+    {
+     "id": "taper",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.7,
+     "shift": -1.6
+    },
+    {
+     "id": "taper_t",
+     "op": "band",
+     "axis": "y",
+     "from": 0.75,
+     "to": 1.01,
+     "shift": -1.0
+    },
+    {
+     "id": "pits",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.25,
+     "shift": -1.2
+    },
+    {
+     "id": "flecks",
+     "op": "spots",
+     "count": 1,
+     "radius": [
+      0.25,
+      0.4
+     ],
+     "ramp": "amber",
+     "tone": 2.4
+    }
+   ]
+  },
+  "rib_c": {
+   "ramp": "husk",
+   "tone": 4.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.4
+   },
+   "layers": [
+    {
+     "id": "pits",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.25,
+     "shift": -1.0
+    }
+   ]
+  },
+  "cap": {
+   "ramp": "husk",
+   "tone": 6.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "stamps": [
+    {
+     "face": "top",
+     "at": "top-left",
+     "art": [
+      "ddd",
+      "dKd",
+      "ddd"
+     ],
+     "key": {
+      "d": "husk:2",
+      "K": "husk:0"
+     }
+    }
+   ]
+  },
+  "sprout": {
+   "ramp": "sprout",
+   "tone": 4.4,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.4
+   }
+  },
+  "sprout_tip": {
+   "ramp": "sprout",
+   "tone": 5.6,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.2
+   }
+  },
+  "leaf": {
+   "ramp": "sprout",
+   "tone": 5,
+   "light": 0.3,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "l": "sprout:4",
+    "L": "sprout:6",
+    "s": "sprout:2"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "seed",
+   "shape": "box",
+   "size": [
+    3,
+    3,
+    3
+   ],
+   "pivot": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "style": "husk"
+  },
+  {
+   "id": "rib0",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    1,
+    3.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -0.05,
+    1.6
+   ],
+   "style": "rib"
+  },
+  {
+   "id": "rib1",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    1,
+    3.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -0.05,
+    -1.6
+   ],
+   "style": "rib"
+  },
+  {
+   "id": "rib2",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    3.5,
+    1
+   ],
+   "pivot": [
+    1.6,
+    -0.05,
+    0.0
+   ],
+   "style": "rib"
+  },
+  {
+   "id": "rib3",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    3.5,
+    1
+   ],
+   "pivot": [
+    -1.6,
+    -0.05,
+    0.0
+   ],
+   "style": "rib"
+  },
+  {
+   "id": "rib_c0",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    3,
+    1
+   ],
+   "pivot": [
+    1.15,
+    -0.1,
+    1.15
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "rib_c"
+  },
+  {
+   "id": "rib_c1",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    3,
+    1
+   ],
+   "pivot": [
+    1.15,
+    -0.1,
+    -1.15
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "rib_c"
+  },
+  {
+   "id": "rib_c2",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    3,
+    1
+   ],
+   "pivot": [
+    -1.15,
+    -0.1,
+    1.15
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "rib_c"
+  },
+  {
+   "id": "rib_c3",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    3,
+    1
+   ],
+   "pivot": [
+    -1.15,
+    -0.1,
+    -1.15
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "rib_c"
+  },
+  {
+   "id": "shoulder",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    2.5,
+    1,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "style": "husk"
+  },
+  {
+   "id": "cap",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    1.5,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "style": "cap"
+  },
+  {
+   "id": "belly",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    2.5,
+    1,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "husk"
+  },
+  {
+   "id": "tip",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    1.5,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -2.75,
+    0.0
+   ],
+   "style": "husk_dark"
+  },
+  {
+   "id": "point",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -3.25,
+    0.0
+   ],
+   "style": "husk_dark"
+  },
+  {
+   "id": "sprout",
+   "shape": "box",
+   "parent": "seed",
+   "size": [
+    0.5,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    0.25,
+    3.0,
+    0.25
+   ],
+   "offset": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    6.0
+   ],
+   "style": "sprout"
+  },
+  {
+   "id": "curl0",
+   "shape": "box",
+   "parent": "sprout",
+   "size": [
+    0.5,
+    1,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    38.0,
+    0.0,
+    0.0
+   ],
+   "style": "sprout"
+  },
+  {
+   "id": "curl1",
+   "shape": "box",
+   "parent": "curl0",
+   "size": [
+    0.5,
+    1,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    52.0,
+    0.0,
+    0.0
+   ],
+   "style": "sprout"
+  },
+  {
+   "id": "curl2",
+   "shape": "box",
+   "parent": "curl1",
+   "size": [
+    0.5,
+    1,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "style": "sprout_tip"
+  },
+  {
+   "id": "curl3",
+   "shape": "box",
+   "parent": "curl2",
+   "size": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.25,
+    0.0
+   ],
+   "rotation": [
+    64.0,
+    0.0,
+    0.0
+   ],
+   "style": "sprout_tip"
+  },
+  {
+   "id": "leaf",
+   "shape": "card",
+   "parent": "sprout",
+   "pivot": [
+    0.0,
+    0.7,
+    0.0
+   ],
+   "offset": [
+    0.75,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -30.0
+   ],
+   "style": "leaf",
+   "plane": "xy",
+   "art": [
+    "..ll",
+    ".lLl",
+    "lLl.",
+    "s..."
+   ]
+  }
+ ]
+}
