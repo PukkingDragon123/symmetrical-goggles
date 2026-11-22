@@ -127,7 +127,7 @@ final class OceanGearShots {
             targetId = d.getId();
         }));
         at(t += 3, () -> tp(x0 - 9.5, Y + 4, z0 + 2.5));
-        at(t += 2, () -> cam(x0 - 7.5, Y + 6.2, z0 - 10.5, x0 + 0.5, Y + 3.2, z0 - 2.5));
+        at(t += 2, () -> cam(x0 - 3.5, Y + 5.6, z0 - 10.0, x0 + 0.5, Y + 3.4, z0 - 3.5));
         at(t += 50, () -> shot("boss"));
         at(t += 2, () -> cam(x0 + 2.5, Y + 4.4, z0 + 2.5, x0 + 0.5, Y + 3.9, z0 - 3.5));
         at(t += 6, () -> shot("boss_face"));
@@ -162,8 +162,8 @@ final class OceanGearShots {
             attack(ElderBoss.BUBBLE);
         });
         at(t += 17, () -> shot("boss_bubbles"));
-        at(t += 15, () -> shot("boss_bubble_trap"));
-        at(t += 40, () -> {});
+        at(t += 24, () -> shot("boss_bubble_trap"));
+        at(t += 50, () -> {});
         // the tail whip: the drowned brought close
         at(t += 2, () -> server(level -> {
             if (level.getEntity(targetId) instanceof LivingEntity d) {
@@ -171,10 +171,10 @@ final class OceanGearShots {
             }
         }));
         at(t += 4, () -> {
-            cam(x0 + 6.5, Y + 5.5, z0 + 3.5, x0 + 0.5, Y + 3.2, z0 - 2.0);
+            cam(x0 + 6.0, Y + 5.0, z0 - 1.0, x0 + 0.2, Y + 3.0, z0 - 2.0);
             attack(ElderBoss.TAIL_WHIP);
         });
-        at(t += 11, () -> shot("boss_tail_whip"));
+        at(t += 13, () -> shot("boss_tail_whip"));
         at(t += 30, () -> server(level -> {
             if (level.getEntity(targetId) instanceof LivingEntity d) {
                 d.teleportTo(x0 + 0.5, Y + 1, z0 + 7.5);
@@ -182,6 +182,7 @@ final class OceanGearShots {
         }));
         // the roar and the summons, with the boss bar
         at(t += 4, () -> {
+            cmd("gamemode spectator");   // the boss bar, without a hand in view
             Minecraft.getInstance().options.hideGui = false;
             cam(x0 - 6.5, Y + 6.5, z0 + 6.5, x0 + 0.5, Y + 3.0, z0 - 3.0);
             server(level -> {
@@ -191,8 +192,26 @@ final class OceanGearShots {
             });
         });
         at(t += 20, () -> shot("boss_roar"));
-        at(t += 2, () -> Minecraft.getInstance().options.hideGui = true);
-        at(t += 30, () -> {});
+        at(t += 2, () -> {
+            Minecraft.getInstance().options.hideGui = true;
+            cmd("gamemode creative");
+        });
+        // its death: the death clip, the eye dropped
+        at(t += 30, () -> {
+            cam(x0 + 3.5, Y + 4.5, z0 + 1.5, x0 + 0.5, Y + 2.5, z0 - 3.5);
+            server(level -> {
+                for (var g : level.getEntitiesOfClass(net.minecraft.world.entity.monster.Guardian.class,
+                        new net.minecraft.world.phys.AABB(x0 - 12, Y - 2, z0 - 12, x0 + 12, Y + 12, z0 + 12), g -> !(g instanceof ElderGuardian))) {
+                    g.discard();
+                }
+                if (level.getEntity(bossId) instanceof ElderGuardian eg) {
+                    eg.hurt(level.damageSources().genericKill(), 1000f);
+                }
+            });
+        });
+        at(t += 24, () -> shot("boss_death"));
+        at(t += 2, () -> cam(x0 + 2.0, Y + 2.2, z0 - 0.5, x0 + 0.5, Y + 0.3, z0 - 3.5));
+        at(t += 50, () -> shot("boss_eye_drop"));
         return t + 5;
     }
 
@@ -247,11 +266,11 @@ final class OceanGearShots {
         });
         at(t += 5, () -> {
             tp(x0, Y, z0 - 9);
-            mannequin(x0 - 1.6, Y, z0 + 0.5, 200f, false);   // wearing it, facing the camera
-            mannequin(x0 + 0.2, Y, z0 + 1.4, 40f, false);   // its back: the carapace
-            mannequin(x0 + 2.0, Y, z0 + 0.3, 150f, true);   // retreated into the shell
+            mannequin(x0 - 1.3, Y, z0 + 0.6, 200f, false);   // wearing it, facing the camera
+            mannequin(x0 + 0.3, Y, z0 + 1.3, 35f, false);   // its back: the carapace
+            mannequin(x0 + 1.8, Y, z0 + 0.2, 150f, true);   // retreated into the shell
         });
-        at(t += 4, () -> cam(x0 + 0.4, Y + 1.9, z0 - 4.2, x0 + 0.2, Y + 0.9, z0 + 0.8));
+        at(t += 4, () -> cam(x0 + 0.3, Y + 1.7, z0 - 3.3, x0 + 0.2, Y + 0.85, z0 + 0.8));
         at(t += 20, () -> shot("armor_worn"));
         at(t += 2, () -> cam(x0 + 1.4, Y + 1.25, z0 - 1.2, x0 + 2.0, Y + 0.3, z0 + 0.3));
         at(t += 6, () -> shot("armor_retreat"));
@@ -296,53 +315,62 @@ final class OceanGearShots {
 
     // --------------------------------------------------------------------------------------- lionfish darts
 
-    /** A flooded reef channel: darts fired along it fly straight; an arrow beside them sinks short. */
+    /** A flooded reef: three darts loosed along it fly straight at a guardian; an arrow loosed with them stalls and sinks. */
     private static int darts(int t) {
         int x0 = 0, z0 = -40;
         at(t, () -> server(level -> {
             clear(level, x0 - 12, z0 - 18, x0 + 12, z0 + 18);
-            for (int x = x0 - 4; x <= x0 + 4; x++) {
+            for (int x = x0 - 7; x <= x0 + 7; x++) {
                 for (int z = z0 - 16; z <= z0 + 16; z++) {
-                    boolean wall = Math.abs(x - x0) == 4 || Math.abs(z - z0) == 16;
-                    set(level, x, Y - 1, z, (x + z) % 5 == 0 ? Blocks.SEA_LANTERN.defaultBlockState() : Blocks.SAND.defaultBlockState());
-                    for (int y = Y; y <= Y + 6; y++) {
-                        BlockState s = wall ? (x == x0 - 4 ? Blocks.GLASS.defaultBlockState() : Blocks.PRISMARINE_BRICKS.defaultBlockState())
-                                : Blocks.WATER.defaultBlockState();
-                        set(level, x, y, z, s);
+                    boolean wall = Math.abs(x - x0) == 7 || Math.abs(z - z0) == 16;
+                    set(level, x, Y - 1, z, Math.floorMod(x * 3 + z * 7, 13) == 0 ? Blocks.SEA_LANTERN.defaultBlockState()
+                            : Blocks.SAND.defaultBlockState());
+                    for (int y = Y; y <= Y + 7; y++) {
+                        set(level, x, y, z, wall ? Blocks.PRISMARINE_BRICKS.defaultBlockState() : Blocks.WATER.defaultBlockState());
+                    }
+                    int h = Math.floorMod(x * 31 + z * 17, 23);
+                    if (!wall && Math.abs(x - x0 - 1) > 2) {   // a reef either side of the lane
+                        BlockState deco = h < 3 ? Blocks.BRAIN_CORAL_BLOCK.defaultBlockState() : h < 5 ? Blocks.TUBE_CORAL.defaultBlockState()
+                                : h < 7 ? Blocks.FIRE_CORAL.defaultBlockState() : h < 12 ? Blocks.SEAGRASS.defaultBlockState()
+                                : h < 13 ? Blocks.SEA_PICKLE.defaultBlockState() : null;
+                        if (deco != null) {
+                            set(level, x, Y, z, deco);
+                        }
                     }
                 }
-                if (x % 2 == 0) {   // seagrass and coral along the floor
-                    set(level, x, Y, z0 - 6 + Math.floorMod(x * 7, 11), Blocks.SEAGRASS.defaultBlockState());
-                    set(level, x, Y, z0 + 4 + Math.floorMod(x * 5, 9), Blocks.BRAIN_CORAL.defaultBlockState());
-                }
             }
-            Drowned d = EntityType.DROWNED.create(level);
-            d.moveTo(x0 + 1.5, Y, z0 + 12.5, 180f, 0f);
-            d.setNoAi(true);
-            level.addFreshEntity(d);
-            targetId = d.getId();
+            var g = EntityType.GUARDIAN.create(level);
+            g.moveTo(x0 + 1.5, Y + 1.4, z0 + 11.5, 180f, 0f);
+            g.setNoAi(true);
+            g.setNoGravity(true);
+            level.addFreshEntity(g);
+            targetId = g.getId();
         }));
-        at(t += 3, () -> tp(x0 - 7.5, Y + 3, z0));
-        at(t += 2, () -> cam(x0 - 3.3, Y + 3.2, z0 - 3.5, x0 + 1.0, Y + 2.2, z0 + 4.0));
-        for (int i = 0; i < 4; i++) {
-            at(t += 4, () -> server(level -> {
-                Vec3 from = new Vec3(x0 + 1.5, Y + 2.0, z0 - 14.5);
+        at(t += 3, () -> tp(x0 - 6.0, Y + 1, z0 - 13));
+        at(t += 2, () -> cam(x0 - 5.8, Y + 3.6, z0 - 2.5, x0 + 1.5, Y + 2.2, z0 - 2.5));
+        at(t += 20, () -> {});
+        for (int i = 0; i < 3; i++) {
+            final int n = i;
+            at(t += 2, () -> server(level -> {
+                Vec3 from = new Vec3(x0 + 1.5, Y + 2.2, z0 - 14.5);
                 Entity target = level.getEntity(targetId);
-                Vec3 to = target != null ? target.position().add(0, 1.2, 0) : from.add(0, 0, 20);
+                Vec3 to = target != null ? target.position().add(0, 0.45, 0) : from.add(0, 0, 20);
                 LionfishDart d = new LionfishDart(level, from.x, from.y, from.z, new ItemStack(OceanItems.LIONFISH_DART), new ItemStack(Items.BOW));
                 d.shoot(to.x - from.x, to.y - from.y, to.z - from.z, 3.0f, 0f);
                 d.pickup = AbstractArrow.Pickup.DISALLOWED;
                 level.addFreshEntity(d);
-                Arrow a = new Arrow(level, x0 - 1.5, Y + 2.0, z0 - 14.5, new ItemStack(Items.ARROW), new ItemStack(Items.BOW));
-                a.shoot(0, 0, 1, 3.0f, 0f);
-                a.pickup = AbstractArrow.Pickup.DISALLOWED;
-                level.addFreshEntity(a);
+                if (n == 0) {
+                    Arrow a = new Arrow(level, x0 - 0.5, Y + 3.6, z0 - 14.5, new ItemStack(Items.ARROW), new ItemStack(Items.BOW));
+                    a.shoot(0, 0, 1, 3.0f, 0f);
+                    a.pickup = AbstractArrow.Pickup.DISALLOWED;
+                    level.addFreshEntity(a);
+                }
             }));
         }
         at(t += 2, () -> shot("darts_underwater"));
-        at(t += 8, () -> shot("darts_hit"));
-        at(t += 2, () -> cam(x0 - 3.0, Y + 2.6, z0 + 7.5, x0 + 1.5, Y + 1.0, z0 + 12.5));
-        at(t += 6, () -> shot("darts_poisoned"));
+        at(t += 5, () -> shot("darts_hit"));
+        at(t += 2, () -> cam(x0 - 1.5, Y + 2.6, z0 + 8.0, x0 + 1.5, Y + 1.8, z0 + 11.5));
+        at(t += 12, () -> shot("darts_poisoned"));
         return t + 5;
     }
 
@@ -351,37 +379,49 @@ final class OceanGearShots {
     private static int eye(int t) {
         int x0 = -60, z0 = 0;
         at(t, () -> server(level -> {
-            clear(level, x0 - 12, z0 - 12, x0 + 12, z0 + 12);
-            // underwater: a prismarine pool, the eye in the middle of it
-            for (int x = x0 - 3; x <= x0 + 3; x++) {
-                for (int z = z0 - 3; z <= z0 + 3; z++) {
-                    boolean wall = Math.abs(x - x0) == 3 || Math.abs(z - z0) == 3;
-                    set(level, x, Y - 1, z, Blocks.PRISMARINE_BRICKS.defaultBlockState());
-                    for (int y = Y; y <= Y + 3; y++) {
-                        set(level, x, y, z, wall ? (z == z0 - 3 && y > Y ? Blocks.GLASS.defaultBlockState() : Blocks.DARK_PRISMARINE.defaultBlockState())
+            clear(level, x0 - 14, z0 - 14, x0 + 14, z0 + 14);
+            // underwater: a prismarine pool round the eye on a pedestal, sea pickles and seagrass about
+            int r = 5;
+            for (int x = x0 - r; x <= x0 + r; x++) {
+                for (int z = z0 - r; z <= z0 + r; z++) {
+                    boolean wall = Math.abs(x - x0) == r || Math.abs(z - z0) == r;
+                    set(level, x, Y - 1, z, ((x + z) & 1) == 0 ? Blocks.PRISMARINE_BRICKS.defaultBlockState() : Blocks.DARK_PRISMARINE.defaultBlockState());
+                    for (int y = Y; y <= Y + 5; y++) {
+                        set(level, x, y, z, wall ? (y % 3 == 1 ? Blocks.SEA_LANTERN.defaultBlockState() : Blocks.DARK_PRISMARINE.defaultBlockState())
                                 : Blocks.WATER.defaultBlockState());
+                    }
+                    int h = Math.floorMod(x * 13 + z * 7, 9);
+                    if (!wall && (Math.abs(x - x0) > 1 || Math.abs(z - z0) > 1)) {
+                        if (h == 0) {
+                            set(level, x, Y, z, Blocks.SEA_PICKLE.defaultBlockState().setValue(net.minecraft.world.level.block.SeaPickleBlock.PICKLES, 3));
+                        } else if (h < 3) {
+                            set(level, x, Y, z, Blocks.SEAGRASS.defaultBlockState());
+                        }
                     }
                 }
             }
+            set(level, x0, Y, z0, Blocks.PRISMARINE_BRICKS.defaultBlockState());
             set(level, x0, Y + 1, z0, OceanBlocks.EYE_OF_THE_OCEAN.defaultBlockState().setValue(EyeOfTheOceanBlock.WATERLOGGED, true));
-            set(level, x0 - 2, Y, z0 + 2, Blocks.SEA_LANTERN.defaultBlockState());
-            set(level, x0 + 2, Y, z0 + 2, Blocks.SEA_LANTERN.defaultBlockState());
-            // on land: on a prismarine pedestal in the grass
-            int lx = x0 + 9;
-            set(level, lx, Y, z0, Blocks.PRISMARINE_BRICK_SLAB.defaultBlockState());
+            // on land: on a prismarine pedestal in the grass, by the shore
+            int lx = x0 + 11;
+            set(level, lx, Y, z0, Blocks.PRISMARINE_BRICKS.defaultBlockState());
             set(level, lx, Y + 1, z0, OceanBlocks.EYE_OF_THE_OCEAN.defaultBlockState().setValue(EyeOfTheOceanBlock.WATERLOGGED, false));
-            for (int[] o : new int[][]{{-1, -1}, {1, -1}, {-1, 1}, {1, 1}}) {
-                set(level, lx + o[0], Y, z0 + o[1], Blocks.DARK_PRISMARINE_SLAB.defaultBlockState());
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx != 0 || dz != 0) {
+                        set(level, lx + dx, Y, z0 + dz, Blocks.DARK_PRISMARINE_SLAB.defaultBlockState());
+                    }
+                }
             }
         }));
         at(t += 4, () -> {
-            tp(x0 + 0.5, Y + 1.6, z0 - 3.6);   // the eyes look at the nearest player: stand by the camera
-            cam(x0 + 0.5, Y + 2.3, z0 - 3.4, x0 + 0.5, Y + 1.5, z0 + 0.5);
+            tp(x0 + 1.6, Y + 2.9 - 1.62, z0 - 2.6);   // the eyes look at the nearest player: stand where the camera is
+            cam(x0 + 1.6, Y + 2.9, z0 - 2.6, x0 + 0.5, Y + 1.5, z0 + 0.5);
         });
         at(t += 40, () -> shot("eye_underwater"));
         at(t += 2, () -> {
-            tp(x0 + 9.5 - 1.6, Y + 0.6, z0 - 2.6);
-            cam(x0 + 9.5 - 1.8, Y + 2.3, z0 - 2.8, x0 + 9.5, Y + 1.5, z0 + 0.5);
+            tp(x0 + 11.5 - 1.6, Y + 2.6 - 1.62, z0 - 2.6);
+            cam(x0 + 11.5 - 1.6, Y + 2.6, z0 - 2.6, x0 + 11.5, Y + 1.4, z0 + 0.5);
         });
         at(t += 40, () -> shot("eye_land"));
         return t + 5;

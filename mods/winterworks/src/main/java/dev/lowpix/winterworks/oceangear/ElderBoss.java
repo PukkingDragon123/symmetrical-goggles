@@ -161,6 +161,40 @@ public final class ElderBoss {
         return hit.getType() == HitResult.Type.MISS ? far : hit.getLocation();
     }
 
+    /** A beam: where it ends and what it burns (the first creature in its way, if any; blocks stop it first). */
+    public record Beam(Vec3 end, @Nullable LivingEntity hit, boolean blocked) {}
+
+    /** The stare's beam from `from` along `dir` (both sides: the server hurts `hit`, the client draws to `end`). */
+    public static Beam beam(Entity boss, Vec3 from, Vec3 dir) {
+        Vec3 end = beamEnd(boss, from, dir);
+        boolean blocked = end.distanceToSqr(from) < STARE_RANGE * STARE_RANGE - 0.01;
+        LivingEntity hit = null;
+        double best = Double.MAX_VALUE;
+        for (LivingEntity e : boss.level().getEntitiesOfClass(LivingEntity.class, new AABB(from, end).inflate(1.0), ElderBoss::burnable)) {
+            if (e == boss) {
+                continue;
+            }
+            var at = e.getBoundingBox().inflate(BEAM_RADIUS).clip(from, end);
+            if (at.isPresent() && from.distanceToSqr(at.get()) < best) {
+                best = from.distanceToSqr(at.get());
+                hit = e;
+            }
+        }
+        if (hit != null) {
+            Vec3 c = hit.getBoundingBox().getCenter();   // it stops in them
+            Vec3 d = end.subtract(from).normalize();
+            end = from.add(d.scale(Math.min(from.distanceTo(end), Math.max(0.5, c.subtract(from).dot(d)))));
+            blocked = false;
+        }
+        return new Beam(end, hit, blocked);
+    }
+
+    /** What the stare can burn: the living, but not guardians, armour stands or players in creative / spectator. */
+    public static boolean burnable(LivingEntity e) {
+        return e.isAlive() && !(e instanceof Guardian) && !(e instanceof net.minecraft.world.entity.decoration.ArmorStand)
+                && !(e instanceof Player p && (p.isCreative() || p.isSpectator()));
+    }
+
     // ------------------------------------------------------------------------------------------- the tick
 
     /** Server, end of each aiStep. */
@@ -376,18 +410,13 @@ public final class ElderBoss {
             level.playSound(null, eg.getX(), eg.getY(), eg.getZ(), OceanSounds.ELDER_LASER, SoundSource.HOSTILE, 3f, 1f);
         }
         if (k > STARE_TELEGRAPH && (k - STARE_TELEGRAPH - 1) % STARE_PULSE == 0) {
-            Vec3 end = beamEnd(eg, origin, s.aim.subtract(origin));
+            Beam b = beam(eg, origin, s.aim.subtract(origin));
             DamageSource src = new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
                     .getHolderOrThrow(STARE_DAMAGE_TYPE), eg);
-            for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(origin, end).inflate(1.5))) {
-                if (e == eg || e instanceof Guardian || (e instanceof Player p && (p.isCreative() || p.isSpectator()))) {
-                    continue;
-                }
-                if (e.getBoundingBox().inflate(BEAM_RADIUS).clip(origin, end).isPresent() && e.hurt(src, STARE_DAMAGE)) {
-                    s.beamHits++;
-                }
+            if (b.hit() != null && b.hit().hurt(src, STARE_DAMAGE)) {
+                s.beamHits++;
             }
-            level.sendParticles(ParticleTypes.BUBBLE_POP, end.x, end.y, end.z, 6, 0.2, 0.2, 0.2, 0.02);
+            level.sendParticles(ParticleTypes.BUBBLE_POP, b.end().x, b.end().y, b.end().z, 6, 0.2, 0.2, 0.2, 0.02);
         }
         if (k >= STARE_TICKS) {
             finish(eg, h, s);
@@ -401,9 +430,12 @@ public final class ElderBoss {
 
     private static void whip(ElderGuardian eg, State s, ServerLevel level, int k) {
         Vec3 c = eg.position().add(0, eg.getBbHeight() * 0.5, 0);
-        if (k % 2 == 0) {
-            float a = (k - WHIP_FROM) / (float) (WHIP_TO - WHIP_FROM) * Mth.TWO_PI;
-            level.sendParticles(ParticleTypes.BUBBLE, c.x + Mth.cos(a) * 3, c.y, c.z + Mth.sin(a) * 3, 8, 0.6, 0.4, 0.6, 0.1);
+        float a0 = (k - WHIP_FROM) / (float) (WHIP_TO - WHIP_FROM) * Mth.TWO_PI * 1.2f;
+        for (int i = 0; i < 6; i++) {   // the sweep: a swirl of bubbles following the tail round
+            float a = a0 - i * 0.18f;
+            double r = 1.6 + i * 0.45;
+            level.sendParticles(i % 2 == 0 ? dev.lowpix.winterworks.registry.WWParticles.ELDER_BUBBLE : ParticleTypes.BUBBLE,
+                    c.x + Mth.cos(a) * r, c.y - 0.2 + i * 0.05, c.z + Mth.sin(a) * r, 3, 0.25, 0.25, 0.25, 0.04);
         }
         for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, eg.getBoundingBox().inflate(WHIP_RADIUS, 2.5, WHIP_RADIUS))) {
             if (e == eg || e instanceof Guardian || s.whipped.contains(e.getId()) || (e instanceof Player p && (p.isCreative() || p.isSpectator()))) {

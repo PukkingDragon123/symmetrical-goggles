@@ -17,8 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.monster.ElderGuardian;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -111,19 +109,19 @@ public class ElderGuardianBossRenderer extends MobRenderer<ElderGuardian, ElderG
             if (dir.lengthSqr() < 1.0E-4) {
                 return;
             }
-            Vec3 far = originW.add(dir.normalize().scale(ElderBoss.STARE_RANGE));
-            HitResult hit = e.level().clip(new ClipContext(originW, far, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e));
-            Vec3 endW = hit.getType() == HitResult.Type.MISS ? far : hit.getLocation();
-            boolean blocked = hit.getType() != HitResult.Type.MISS;
+            ElderBoss.Beam beam = ElderBoss.beam(e, originW, dir);
+            Vec3 endW = beam.end();
+            boolean blocked = beam.blocked(), burning = beam.hit() != null;
             Vector3f a = o, b = endW.subtract(cam).toVector3f(), c = new Vector3f();
             VertexConsumer vc = buffers.getBuffer(RenderType.dragonRays());
-            if (t < ElderBoss.STARE_TELEGRAPH) {   // the lock-on: thin, flickering, growing hotter
+            if (t < ElderBoss.STARE_TELEGRAPH) {   // the lock-on: thin, flickering, growing hotter, a ring closing on its mark
                 float k = t / ElderBoss.STARE_TELEGRAPH;
-                float flick = 0.6f + 0.4f * Mth.sin(age * (1.5f + 3f * k));
-                BeamFx.ribbon(vc, IDENTITY, a, b, c, 0.025f + 0.05f * k, 255, 150 + (int) (90 * k), 230, (int) (230 * flick * (0.35f + 0.65f * k)));
-                BeamFx.ribbon(vc, IDENTITY, a, b, c, 0.18f * k, 200, 90, 220, (int) (70 * k * flick));
-                BeamFx.flare(vc, IDENTITY, a, c, 0.25f + 0.55f * k, 255, 220, 255, (int) (220 * k));
-                BeamFx.ring(vc, IDENTITY, b, c, 0.9f - 0.6f * k, 0.08f, 255, 170, 240, (int) (200 * k * flick));
+                float flick = 0.65f + 0.35f * Mth.sin(age * (1.5f + 3f * k));
+                BeamFx.ribbon(vc, IDENTITY, a, b, c, 0.035f + 0.06f * k, 255, 140 + (int) (100 * k), 235, (int) (255 * flick * (0.5f + 0.5f * k)));
+                BeamFx.ribbon(vc, IDENTITY, a, b, c, 0.1f + 0.2f * k, 220, 90, 230, (int) (90 * (0.3f + 0.7f * k) * flick));
+                BeamFx.flare(vc, IDENTITY, a, c, 0.3f + 0.6f * k, 255, 220, 255, (int) (230 * k));
+                BeamFx.ring(vc, IDENTITY, b, c, 1.1f - 0.75f * k, 0.1f, 255, 170, 240, (int) (230 * flick));
+                BeamFx.ring(vc, IDENTITY, b, c, 0.25f, 0.06f, 255, 230, 255, (int) (200 * k));
                 return;
             }
             float u = t - ElderBoss.STARE_TELEGRAPH;
@@ -134,9 +132,9 @@ public class ElderGuardianBossRenderer extends MobRenderer<ElderGuardian, ElderG
             BeamFx.ribbon(vc, IDENTITY, a, b, c, 0.28f + 0.03f * Mth.sin(age * 1.9f), 110, 255, 225, (int) (210 * k));
             BeamFx.ribbon(vc, IDENTITY, a, b, c, 0.75f, 190, 90, 210, (int) (80 * k));
             BeamFx.flare(vc, IDENTITY, a, c, 0.7f, 220, 255, 245, (int) (230 * k));
-            BeamFx.flare(vc, IDENTITY, b, c, blocked ? 0.9f : 0.6f, 210, 255, 240, (int) (240 * k));
+            BeamFx.flare(vc, IDENTITY, b, c, blocked ? 0.9f : burning ? 1.1f : 0.6f, 210, 255, 240, (int) (240 * k));
             BeamFx.ring(vc, IDENTITY, b, c, 0.6f + 0.2f * Mth.sin(age * 1.4f), 0.12f, 150, 255, 230, (int) (170 * k));
-            if (blocked && e.getRandom().nextInt(3) == 0) {
+            if ((blocked || burning) && e.getRandom().nextInt(3) == 0) {
                 e.level().addParticle(net.minecraft.core.particles.ParticleTypes.BUBBLE_POP, endW.x, endW.y, endW.z,
                         (e.getRandom().nextFloat() - 0.5f) * 0.1, 0.05, (e.getRandom().nextFloat() - 0.5f) * 0.1);
             }

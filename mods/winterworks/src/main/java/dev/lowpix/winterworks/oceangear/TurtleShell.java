@@ -102,6 +102,8 @@ public final class TurtleShell {
             chest.hurtAndBreak(1 + Mth.floor(blocked), e, EquipmentSlot.CHEST);
             level.playSound(null, e.getX(), e.getY(), e.getZ(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 0.8f,
                     0.6f + level.getRandom().nextFloat() * 0.2f);
+            level.sendParticles(new net.minecraft.core.particles.ItemParticleOption(net.minecraft.core.particles.ParticleTypes.ITEM,
+                    new ItemStack(Items.TURTLE_SCUTE)), e.getX(), e.getY() + 0.4, e.getZ(), 6, 0.3, 0.15, 0.3, 0.08);
         }
         return left;
     }

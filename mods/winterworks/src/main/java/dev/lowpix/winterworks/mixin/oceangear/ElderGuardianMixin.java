@@ -54,6 +54,7 @@ public abstract class ElderGuardianMixin extends Guardian implements ElderBoss.H
     private void ww$bossGoals(EntityType<? extends ElderGuardian> type, Level level, CallbackInfo ci) {
         goalSelector.removeAllGoals(g -> true);
         targetSelector.removeAllGoals(g -> true);
+        xpReward = 60;
         ElderGuardian self = (ElderGuardian) (Object) this;
         goalSelector.addGoal(1, new ElderBoss.HoverGoal(self));
         goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 1.0));

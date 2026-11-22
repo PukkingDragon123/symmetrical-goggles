@@ -38,11 +38,12 @@ public class EyeOfTheOceanRenderer implements BlockEntityRenderer<EyeOfTheOceanB
     }
 
     static final class EyeModel extends LowpixEntityModel<Entity> {
-        final ModelPart eye;
+        final ModelPart eye, cage;
 
         EyeModel(ModelPart root) {
             super(root, Winterworks.MOD_ID, "eye_of_the_ocean");
             eye = part("eye");
+            cage = part("cage");
         }
 
         @Override
@@ -51,6 +52,10 @@ public class EyeOfTheOceanRenderer implements BlockEntityRenderer<EyeOfTheOceanB
         void draw(PoseStack pose, MultiBufferSource buffers, int light, int overlay, float seconds, float yaw, float pitch) {
             resetPose();
             poseAt("idle", seconds % 4f);
+            // the cage turns a steady 45 degrees a second (the clip's own keys flip their Euler angles half way round)
+            cage.xRot = 0f;
+            cage.zRot = 0f;
+            cage.yRot = -(seconds % 8f) / 8f * Mth.TWO_PI;
             eye.yRot += yaw;
             eye.xRot += pitch;
             pose.pushPose();
