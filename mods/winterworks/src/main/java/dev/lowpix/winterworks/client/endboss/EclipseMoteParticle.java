@@ -31,9 +31,9 @@ public class EclipseMoteParticle extends TextureSheetParticle {
         spin = (random.nextFloat() - 0.5f) * 0.12f;
         phase = random.nextFloat() * Mth.TWO_PI;
         boolean gold = random.nextInt(3) == 0;
-        rCol = gold ? 1.0f : 0.92f;
-        gCol = gold ? 0.86f : 0.74f;
-        bCol = gold ? 0.62f : 1.0f;
+        rCol = 1.0f;   // the frames are coloured: only a light warm or cool cast
+        gCol = gold ? 0.96f : 0.9f;
+        bCol = gold ? 0.84f : 1.0f;
         setSpriteFromAge(sprites);
     }
 

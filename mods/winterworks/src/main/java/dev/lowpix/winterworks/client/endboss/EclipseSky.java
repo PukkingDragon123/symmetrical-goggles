@@ -37,7 +37,10 @@ public final class EclipseSky {
     public static final ResourceLocation MOON = Winterworks.id("textures/environment/eclipse_moon.png");
     public static final ResourceLocation CORONA = Winterworks.id("textures/environment/eclipse_corona.png");
     /** The moon's direction: low in the west, a little to the south. Elevation rises from {@link #RISE_FROM} as it fades in. */
-    private static final float AZIMUTH = 255f, ELEVATION = 17f, RISE_FROM = -14f, MOON_RADIUS = 24f, CORONA_SCALE = 2.5f, DIST = 100f;
+    private static final float AZIMUTH = 255f, ELEVATION = 17f, RISE_FROM = -14f, MOON_RADIUS = 24f, DIST = 100f;
+    /** The moon's disc is 72 px of the 128 px half-width the moon and corona textures share. */
+    private static final float MOON_DISC = 72f / 128f;
+    private static final int CORONA_FRAMES = 8, CORONA_FRAME_TICKS = 4;
     private static final int GRID = 10;
     private static int artChecked = -1;
     private static boolean hasMoon, hasCorona;
@@ -61,9 +64,10 @@ public final class EclipseSky {
         skyBox(pose, ease, moon);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         halo(pose, ease, moon, t);
-        corona(pose, ease, moon, t);
         RenderSystem.defaultBlendFunc();
         moonDisc(pose, ease, moon, t);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        corona(pose, ease, moon, mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false));
         RenderSystem.depthMask(true);
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
@@ -184,6 +188,22 @@ public final class EclipseSky {
         corner(bb, m, centre, rr, tt, -1, 1, 0, 0, r, g, b, a);
     }
 
+    /** Like {@link #quad} (unturned), showing one frame of a vertical strip of {@link #CORONA_FRAMES}. */
+    private static void framedQuad(BufferBuilder bb, Matrix4f m, Vector3f dir, float size, int frame, int r, int g, int b, int a) {
+        if (a <= 0) {
+            return;
+        }
+        Vector3f up = Math.abs(dir.y) > 0.95f ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
+        Vector3f right = new Vector3f(dir).cross(up).normalize().mul(size);
+        Vector3f top = new Vector3f(right).cross(dir).normalize().mul(size);
+        Vector3f centre = new Vector3f(dir).mul(DIST);
+        float v0 = frame / (float) CORONA_FRAMES, v1 = (frame + 1) / (float) CORONA_FRAMES;
+        corner(bb, m, centre, right, top, -1, -1, 0, v1, r, g, b, a);
+        corner(bb, m, centre, right, top, 1, -1, 1, v1, r, g, b, a);
+        corner(bb, m, centre, right, top, 1, 1, 1, v0, r, g, b, a);
+        corner(bb, m, centre, right, top, -1, 1, 0, v0, r, g, b, a);
+    }
+
     private static void corner(BufferBuilder bb, Matrix4f m, Vector3f c, Vector3f rr, Vector3f tt, float a, float b, float u, float v,
                                int cr, int cg, int cb, int ca) {
         bb.addVertex(m, c.x + rr.x * a + tt.x * b, c.y + rr.y * a + tt.y * b, c.z + rr.z * a + tt.z * b).setUv(u, v).setColor(cr, cg, cb, ca);
@@ -230,17 +250,28 @@ public final class EclipseSky {
         return new Vector3f(c).add(new Vector3f(right).mul(Mth.cos(a) * rad)).add(new Vector3f(top).mul(Mth.sin(a) * rad));
     }
 
-    private static void corona(PoseStack pose, float f, Vector3f moon, float t) {
+    /**
+     * The corona (additive over the moon, which shares its quad): an 8-frame strip, 4 ticks a frame, each frame
+     * cross-faded into the next so it shimmers rather than steps.
+     */
+    private static void corona(PoseStack pose, float f, Vector3f moon, float gameTime) {
         Matrix4f m = pose.last().pose();
         Tesselator tess = Tesselator.getInstance();
-        float breathe = 0.8f + 0.2f * Mth.sin(t * 0.045f);
+        float t = gameTime;
+        float breathe = 0.85f + 0.15f * Mth.sin(t * 0.045f);
         if (hasCorona) {
             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             RenderSystem.setShaderTexture(0, CORONA);
             BufferBuilder bb = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            float size = MOON_RADIUS * CORONA_SCALE;
-            quad(bb, m, moon, size * (1f + 0.02f * Mth.sin(t * 0.05f)), t * 0.0012f, 255, 255, 255, (int) (255 * f * breathe));
-            quad(bb, m, moon, size * 1.12f, -t * 0.0019f + 1.1f, 255, 220, 255, (int) (150 * f * (1.6f - breathe)));
+            float frames = t / CORONA_FRAME_TICKS;
+            int frame = Mth.floor(frames);
+            float blend = frames - frame;
+            float size = MOON_RADIUS / MOON_DISC;
+            int a0 = (int) (255 * f * breathe * (1 - blend)), a1 = (int) (255 * f * breathe * blend);
+            framedQuad(bb, m, moon, size, Math.floorMod(frame, CORONA_FRAMES), 255, 255, 255, a0);
+            framedQuad(bb, m, moon, size, Math.floorMod(frame + 1, CORONA_FRAMES), 255, 255, 255, a1);
+            // a faint, larger echo turning slowly: the outer streamers drift
+            framedQuad(bb, m, moon, size * 1.18f, Math.floorMod(frame + 4, CORONA_FRAMES), 255, 200, 255, (int) (70 * f * breathe));
             BufferUploader.drawWithShader(bb.buildOrThrow());
         } else {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -261,7 +292,7 @@ public final class EclipseSky {
             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             RenderSystem.setShaderTexture(0, MOON);
             BufferBuilder bb = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            quad(bb, m, moon, MOON_RADIUS * 1.04f, 0f, 255, 255, 255, (int) (255 * Math.min(1f, f * 1.4f)));
+            quad(bb, m, moon, MOON_RADIUS / MOON_DISC, 0f, 255, 255, 255, (int) (255 * Math.min(1f, f * 1.4f)));
             BufferUploader.drawWithShader(bb.buildOrThrow());
         } else {
             RenderSystem.setShader(GameRenderer::getPositionColorShader);

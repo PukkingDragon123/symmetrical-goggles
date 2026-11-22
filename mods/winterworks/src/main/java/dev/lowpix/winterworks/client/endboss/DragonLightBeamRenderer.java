@@ -68,11 +68,11 @@ public class DragonLightBeamRenderer extends EntityRenderer<DragonLightBeam> {
         float pulse = 0.85f + 0.15f * Mth.sin(age * 2.3f);
         float k = env * pulse;
         // the core: the beam texture, scrolling down the beam
-        VertexConsumer core = buffers.getBuffer(RenderType.eyes(beamTexture()));
-        float v0 = -age * 0.35f, v1 = v0 + len / 4f;
+        VertexConsumer core = buffers.getBuffer(GlowRenderTypes.additiveAlpha(beamTexture()));
+        float v0 = -age * 0.35f, v1 = v0 + len / 4.4f;
         int ci = (int) (255 * k);
-        texturedRibbon(core, pose, a, b, c, 0.55f + 0.1f * Mth.sin(age * 1.7f), v0, v1, ci, ci, ci);
-        texturedRibbon(core, pose, a, b, c, 0.95f, v0 * 0.7f, v0 * 0.7f + len / 6f, (int) (ci * 0.55f), (int) (ci * 0.35f), ci);
+        texturedRibbon(core, pose, a, b, c, 0.6f + 0.1f * Mth.sin(age * 1.7f), v0, v1, 255, 255, 255, ci, false);
+        texturedRibbon(core, pose, a, b, c, 1.15f, v0 * 0.6f, v0 * 0.6f + len / 7f, 255, 200, 255, (int) (ci * 0.5f), false);
         // a hot white thread through it, and the violet haze round it
         VertexConsumer glow = buffers.getBuffer(RenderType.dragonRays());
         ribbon(glow, m, a, b, c, 0.18f, 255, 250, 235, (int) (255 * k));
@@ -84,7 +84,7 @@ public class DragonLightBeamRenderer extends EntityRenderer<DragonLightBeam> {
         flare(glow, m, b, c, 3.2f * (0.8f + 0.2f * pulse), 255, 240, 220, (int) (230 * k));
         flare(glow, m, a, c, 2.2f, 255, 220, 255, (int) (200 * k));
         VertexConsumer white = buffers.getBuffer(RenderType.eyes(WHITE));
-        texturedRibbon(white, pose, a, b, c, 0.07f, 0f, 1f, (int) (255 * k), (int) (255 * k), (int) (255 * k));
+        texturedRibbon(white, pose, a, b, c, 0.07f, 0f, 1f, (int) (255 * k), (int) (255 * k), (int) (255 * k), 255, true);
     }
 
     /** The side vector for a camera-facing ribbon at `p` along `dir`. */
@@ -151,17 +151,17 @@ public class DragonLightBeamRenderer extends EntityRenderer<DragonLightBeam> {
         }
     }
 
-    /** A textured camera-facing ribbon (both windings), for additive render types (colour carries the strength). */
+    /** A textured camera-facing ribbon (both windings when the render type culls). */
     private static void texturedRibbon(VertexConsumer vc, PoseStack pose, Vector3f a, Vector3f b, Vector3f cam, float w, float v0, float v1,
-                                       int r, int g, int bl) {
+                                       int r, int g, int bl, int al, boolean bothSides) {
         Vector3f dir = new Vector3f(b).sub(a).normalize();
         Vector3f sa = side(a, dir, cam).mul(w), sb = side(b, dir, cam).mul(w);
         PoseStack.Pose p = pose.last();
         float[][] q = {{a.x - sa.x, a.y - sa.y, a.z - sa.z, 0, v0}, {a.x + sa.x, a.y + sa.y, a.z + sa.z, 1, v0},
                 {b.x + sb.x, b.y + sb.y, b.z + sb.z, 1, v1}, {b.x - sb.x, b.y - sb.y, b.z - sb.z, 0, v1}};
-        for (int[] order : new int[][]{{0, 1, 2, 3}, {3, 2, 1, 0}}) {
+        for (int[] order : bothSides ? new int[][]{{0, 1, 2, 3}, {3, 2, 1, 0}} : new int[][]{{0, 1, 2, 3}}) {
             for (int i : order) {
-                vc.addVertex(p, q[i][0], q[i][1], q[i][2]).setColor(r, g, bl, 255).setUv(q[i][3], q[i][4])
+                vc.addVertex(p, q[i][0], q[i][1], q[i][2]).setColor(r, g, bl, al).setUv(q[i][3], q[i][4])
                         .setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(p, 0, 1, 0);
             }
         }

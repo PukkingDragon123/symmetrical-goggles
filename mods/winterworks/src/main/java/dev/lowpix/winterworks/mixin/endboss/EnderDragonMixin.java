@@ -49,24 +49,24 @@ public abstract class EnderDragonMixin extends Mob implements DragonRage {
         entityData.set(WW_PHASE_TWO, on);
     }
 
-    @Inject(method = "defineSynchedData", at = @At("TAIL"))
+    @Inject(method = "defineSynchedData", at = @At("RETURN"))
     private void ww$define(SynchedEntityData.Builder builder, CallbackInfo ci) {
         builder.define(WW_PHASE_TWO, false);
     }
 
-    @Inject(method = "aiStep", at = @At("TAIL"))
+    @Inject(method = "aiStep", at = @At("RETURN"))
     private void ww$tick(CallbackInfo ci) {
         if (!level().isClientSide) {
             DragonRework.tick((EnderDragon) (Object) this);
         }
     }
 
-    @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
+    @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
     private void ww$save(CompoundTag tag, CallbackInfo ci) {
         DragonRework.save(ww$state, tag);
     }
 
-    @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     private void ww$load(CompoundTag tag, CallbackInfo ci) {
         DragonRework.load(ww$state, tag);
         if (ww$state.phaseTwo) {
