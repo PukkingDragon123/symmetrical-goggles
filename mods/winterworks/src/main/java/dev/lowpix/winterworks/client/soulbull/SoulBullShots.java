@@ -190,7 +190,7 @@ final class SoulBullShots {
                 ridden = bull(level, 10.5, -15.5, 0f);
             }
             ServerPlayer sp = player(level);
-            ridden.setNoAi(false);
+            ridden.setNoAi(true);   // no strolling off the lane before the rider gets on (the rider steers it all the same)
             ridden.tame(sp);
             ridden.equipSaddle(new ItemStack(Items.SADDLE), null);
             ridden.setBodyArmorItem(new ItemStack(Items.DIAMOND_HORSE_ARMOR));

@@ -297,9 +297,15 @@ public class SoulBull extends AbstractHorse {
         return Vec3.directionFromRotation(0f, getYRot());
     }
 
+    /** How big this bull is next to the original 1.4-block-wide one: its reach, horns and chest scale with it. */
+    public float bodyScale() {
+        return getBbWidth() / 1.4f;
+    }
+
     /** Where a pinned victim's feet are held: on the horns, out in front of its lowered head. */
     public Vec3 hornHold() {
-        return position().add(forward().scale(getBbWidth() * 0.5 + 1.05)).add(0, 0.45, 0);
+        float k = bodyScale();
+        return position().add(forward().scale(getBbWidth() * 0.5 + 1.05 * k)).add(0, 0.45 * k, 0);
     }
 
     // ------------------------------------------------------------------------------------------------ spawning
@@ -675,10 +681,12 @@ public class SoulBull extends AbstractHorse {
         if (from.distanceToSqr(position()) > 100) {
             from = position();   // teleported, not charged
         }
-        Vec3 f = forward().scale(getBbWidth() * 0.5 + 0.8);
+        float k = bodyScale();
+        double r = 0.85 * k;
+        Vec3 f = forward().scale(getBbWidth() * 0.5 + 0.8 * k);
         Vec3 c = from.add(f), d = position().add(f);
-        AABB box = new AABB(Math.min(c.x, d.x) - 0.85, getY() + 0.1, Math.min(c.z, d.z) - 0.85, Math.max(c.x, d.x) + 0.85, getY() + 1.7,
-                Math.max(c.z, d.z) + 0.85);
+        AABB box = new AABB(Math.min(c.x, d.x) - r, getY() + 0.1, Math.min(c.z, d.z) - r, Math.max(c.x, d.x) + r, getY() + 1.7 * k,
+                Math.max(c.z, d.z) + r);
         List<LivingEntity> hits = level().getEntitiesOfClass(LivingEntity.class, box, e -> e != this && e.isAlive() && e.attackable()
                 && !(e instanceof ArmorStand) && !(e instanceof SoulBull) && !hasPassenger(e) && e.getVehicle() != this
                 && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(e) && !isFriend(e));
@@ -711,7 +719,7 @@ public class SoulBull extends AbstractHorse {
         if (level() instanceof ServerLevel sl) {
             Vec3 h = hornHold();
             sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, h.x, h.y + 0.6, h.z, 18, 0.35, 0.4, 0.35, 0.06);
-            sl.sendParticles(ParticleTypes.CRIT, h.x, h.y + 0.6, h.z, 10, 0.3, 0.3, 0.3, 0.2);
+            sl.sendParticles(ParticleTypes.SOUL, h.x, h.y + 0.6, h.z, 8, 0.3, 0.3, 0.3, 0.05);
         }
     }
 
@@ -863,7 +871,7 @@ public class SoulBull extends AbstractHorse {
         if (src == null) {
             return;
         }
-        Vec3 chest = position().add(forward().scale(0.35)).add(0, 1.05, 0);
+        Vec3 chest = position().add(forward().scale(0.35 * bodyScale())).add(0, 1.05 * bodyScale(), 0);
         for (int i = 0; i < 2; i++) {
             Vec3 from = Vec3.atCenterOf(src).add((random.nextDouble() - 0.5) * 0.5, (random.nextDouble() - 0.3) * 0.5,
                     (random.nextDouble() - 0.5) * 0.5);

@@ -351,14 +351,14 @@ public class SoulBullTests implements FabricGameTest {
         SoulBull b = bull(h, 4.5, 0.5, true, p);
         b.equipSaddle(new ItemStack(Items.SADDLE), null);
         p.startRiding(b, true);
-        Pig pig = h.spawn(EntityType.PIG, new Vec3(4.5, 1, 4.0));
+        Pig pig = h.spawn(EntityType.PIG, new Vec3(4.5, 1, 5.5));
         pig.setNoAi(true);
         b.handleStartJump(100);
         h.startSequence()
                 .thenIdle(6)
                 .thenExecute(() -> {   // a laggy rider's moves arrive all at once: the bull lands past the pig in one tick
                     h.assertFalse(b.isPinning(), "nothing in reach yet");
-                    b.setPos(b.getX(), b.getY(), b.getZ() + 6.0);
+                    b.setPos(b.getX(), b.getY(), b.getZ() + 8.0);
                 })
                 .thenWaitUntil(() -> h.assertTrue(b.isPinning() && b.pinned() == pig, "the horns swept through the pig: it should be caught"))
                 .thenExecute(() -> cleanup(h, p))

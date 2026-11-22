@@ -52,9 +52,9 @@ public final class SoulBar {
             int from = Math.max(0, Mth.floor(W * (energy - cost)));
             float pulse = 0.5f + 0.5f * Mth.sin((ticks + mc.getTimer().getGameTimeDeltaPartialTick(false)) * 0.9f);
             int to = Math.max(from + 1, w);
-            // the soul it will burn goes dark (red when it can't afford it), with a bright edge where the bar will end
-            g.fill(x + from, y + 1, x + to, y + 4, ((int) (150 + 70 * pulse) << 24) | (afford ? 0x0A1830 : 0x5A0A0A));
-            g.fill(x + from, y, x + from + 1, y + 5, ((int) (180 + 75 * pulse) << 24) | (afford ? 0xF0FCFF : 0xFF5040));
+            // the soul it will burn goes dark (red when it can't afford it), with a soul-fire cyan edge where the bar will end
+            g.fill(x + from, y + 1, x + to, y + 4, ((int) (150 + 70 * pulse) << 24) | (afford ? 0x06282C : 0x5A0A0A));
+            g.fill(x + from, y, x + from + 1, y + 5, ((int) (180 + 75 * pulse) << 24) | (afford ? 0x7DF9FF : 0xFF5040));
         }
         g.blit(ICON, x - 10, y - 2, 0, 9 * frame, 9, 9, 9, 36);
         RenderSystem.disableBlend();

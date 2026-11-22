@@ -107,7 +107,7 @@ public class SoulBullSkullBlockEntity extends BlockEntity {
         level.playSound(null, pos, WWSounds.SOUL_BULL_SKULL_IGNITE, SoundSource.BLOCKS, 1.5f, 0.6f);
         level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, c.x, c.y + 0.8, c.z, 60, 0.9, 0.6, 0.9, 0.08);
         level.sendParticles(ParticleTypes.SOUL, c.x, c.y + 1.0, c.z, 24, 0.8, 0.6, 0.8, 0.05);
-        level.sendParticles(ParticleTypes.SCULK_SOUL, c.x, c.y + 1.2, c.z, 12, 0.6, 0.5, 0.6, 0.04);
+        level.sendParticles(ParticleTypes.SOUL, c.x, c.y + 1.2, c.z, 12, 0.6, 0.5, 0.6, 0.04);
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, SoulBullSkullBlockEntity be) {

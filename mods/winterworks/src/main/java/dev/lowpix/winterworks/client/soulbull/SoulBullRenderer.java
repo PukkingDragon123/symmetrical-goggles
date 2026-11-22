@@ -76,6 +76,7 @@ public class SoulBullRenderer extends MobRenderer<SoulBull, SoulBullRenderer.Mod
     @Override
     public void render(SoulBull e, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light) {
         model.partial = partial;
+        shadowRadius = e.getBbWidth() * 0.8f;
         super.render(e, yaw, partial, pose, buffers, light);
     }
 
