@@ -457,7 +457,8 @@ def areas():
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import importlib
     for name in ("data_cold", "data_boss", "data_bear", "data_dagger", "data_archaeology", "data_amber", "data_golem", "data_hex", "data_curses", "data_nether",
-                 "data_end_world", "data_end_mobs", "data_end_gear", "data_end_boss"):
+                 "data_end_world", "data_end_mobs", "data_end_gear", "data_end_boss",
+                 "data_ocean_world", "data_ocean_mobs", "data_ocean_gear", "data_whale"):
         importlib.import_module(name).run(Ctx)
 
 

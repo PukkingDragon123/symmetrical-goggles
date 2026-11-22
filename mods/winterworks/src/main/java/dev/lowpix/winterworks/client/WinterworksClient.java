@@ -65,6 +65,10 @@ public final class WinterworksClient implements ClientModInitializer {
         dev.lowpix.winterworks.client.endmob.EndMobClient.init();
         dev.lowpix.winterworks.client.endgear.EndGearClient.init();
         dev.lowpix.winterworks.client.endboss.EndBossClient.init();
+        dev.lowpix.winterworks.client.ocean.OceanWorldClient.init();
+        dev.lowpix.winterworks.client.oceanmob.OceanMobClient.init();
+        dev.lowpix.winterworks.client.oceangear.OceanGearClient.init();
+        dev.lowpix.winterworks.client.whale.WhaleClient.init();
         // ---- 0.4 fixes: rails (docs/FIXES_0_4.md)
         dev.lowpix.winterworks.client.express.ExpressClient.init();
         ShowcaseDirector.init();
