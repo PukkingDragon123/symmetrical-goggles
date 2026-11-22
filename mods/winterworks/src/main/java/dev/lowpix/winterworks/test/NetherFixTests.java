@@ -514,11 +514,52 @@ public class NetherFixTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------ hoglin jockeys
 
-    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH + "_jockey", timeoutTicks = 300)
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH + "_jockey", timeoutTicks = 600)
     public void hoglinJockeysSpawnAndRideIntoFights(GameTestHelper h) {
         floor(h, 8);
         ServerLevel level = h.getLevel();
-        BlockPos a = h.absolutePos(new BlockPos(-8, 0, -8)), b = h.absolutePos(new BlockPos(16, 6, 16));
+        // biome lookups are fuzzy (they may read the 4-block cell next door, the one below included): fill well round the ground
+        BlockPos a = h.absolutePos(new BlockPos(-8, 0, -8)), b = h.absolutePos(new BlockPos(16, 12, 16));
+        BlockPos lo = a.atY(Math.max(level.getMinBuildHeight(), a.getY() - 8));
+        BoundingBox area = BoundingBox.fromCorners(lo, b);
+        force(level, area, true);   // fillbiome does nothing while any chunk in its box is still loading
+        Hoglin[] hog = new Hoglin[1];
+        IronGolem[] foe = new IronGolem[1];
+        double[] start = new double[1];
+        float[] hp = new float[1];
+        h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(entityTicking(level, area), "the test ground loads"))
+                .thenExecute(() -> naturalJockeys(h, level, lo, b))
+                // a jockey of our own, and a foe for its rider
+                .thenExecute(() -> {
+                    hog[0] = h.spawn(EntityType.HOGLIN, new BlockPos(1, 1, 1));
+                    hog[0].setImmuneToZombification(true);   // the test world is the Overworld
+                    Piglin rider = HoglinJockeys.mount(level, hog[0]);
+                    level.addFreshEntity(rider);
+                    rider.setImmuneToZombification(true);
+                    rider.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
+                    h.assertTrue(hog[0].getControllingPassenger() == rider, "the rider steers");
+                    foe[0] = dummy(h, 7, 7);
+                    start[0] = hog[0].distanceTo(foe[0]);
+                    hp[0] = foe[0].getHealth();
+                    WitchCrew.anger(rider, foe[0]);
+                })
+                .thenWaitUntil(() -> {
+                    h.assertTrue(hog[0].distanceTo(foe[0]) < start[0] - 2, "the rider rides its hoglin into the fight");
+                    Piglin rider = HoglinJockeys.rider(hog[0]);
+                    h.assertTrue(foe[0].getHealth() < hp[0], "... and they hit: distance " + String.format("%.1f", hog[0].distanceTo(foe[0]))
+                            + ", rider " + (rider == null ? "none" : rider.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).map(t -> t == foe[0])
+                            + " " + rider.getBrain().getActiveNonCoreActivity() + " " + rider.getMainHandItem()));
+                })
+                .thenExecute(() -> {
+                    cleanup(h, 30);
+                    force(level, area, false);
+                })
+                .thenSucceed();
+    }
+
+    /** Hoglins spawned naturally on crimson-forest ground: piglins climb on some of them. */
+    private static void naturalJockeys(GameTestHelper h, ServerLevel level, BlockPos a, BlockPos b) {
         level.getServer().getCommands().performPrefixedCommand(level.getServer().createCommandSourceStack().withSuppressedOutput()
                 .withLevel(level), String.format("fillbiome %d %d %d %d %d %d minecraft:crimson_forest", a.getX(), a.getY(), a.getZ(),
                 b.getX(), b.getY(), b.getZ()));
@@ -545,22 +586,6 @@ public class NetherFixTests implements FabricGameTest {
         }
         h.assertTrue(jockeys >= 1, "piglins ride some of the hoglins spawned in a crimson forest: " + jockeys + " of " + adults + " adults");
         cleanup(h, 30);
-        // a jockey of our own, and a foe for its rider
-        Hoglin hog = h.spawn(EntityType.HOGLIN, new BlockPos(1, 1, 1));
-        Piglin rider = HoglinJockeys.mount(level, hog);
-        level.addFreshEntity(rider);
-        rider.setImmuneToZombification(true);
-        rider.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
-        h.assertTrue(hog.getControllingPassenger() == rider, "the rider steers");
-        IronGolem foe = dummy(h, 7, 7);
-        double start = hog.distanceTo(foe);
-        float hp = foe.getHealth();
-        WitchCrew.anger(rider, foe);
-        h.succeedWhen(() -> {
-            h.assertTrue(hog.distanceTo(foe) < start - 2, "the rider rides its hoglin into the fight");
-            h.assertTrue(foe.getHealth() < hp, "... and they hit");
-            cleanup(h, 30);
-        });
     }
 
     // ------------------------------------------------------------------------------------------ the Withered Commander
