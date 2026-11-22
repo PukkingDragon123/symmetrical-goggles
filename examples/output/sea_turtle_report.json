@@ -1,0 +1,182 @@
+{
+  "name": "Sea Turtle",
+  "parts": 35,
+  "instances": 35,
+  "faces": 183,
+  "triangles": 366,
+  "vertices_flat": 732,
+  "vertices_unique": 252,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.527,
+  "texel_density": 2.0,
+  "colors_used": 42,
+  "palette": {
+    "olive": [
+      "#0e110b",
+      "#191d13",
+      "#252b1b",
+      "#333b25",
+      "#424b2f",
+      "#535d3a",
+      "#657047",
+      "#798456",
+      "#8e9868",
+      "#a5ad7e",
+      "#bcc297"
+    ],
+    "tortoise": [
+      "#110a04",
+      "#1f1308",
+      "#311e0c",
+      "#452a10",
+      "#5b3815",
+      "#72481b",
+      "#8a5a22",
+      "#a26d2c",
+      "#b98239",
+      "#cd984b",
+      "#dfb064",
+      "#edc985"
+    ],
+    "straw": [
+      "#3d3520",
+      "#5a4f2e",
+      "#7a6d3f",
+      "#9a8d53",
+      "#b8ac6b",
+      "#d1c687",
+      "#e5dca7",
+      "#f3edc9"
+    ],
+    "horn": [
+      "#0f0d08",
+      "#1d1910",
+      "#2d2718",
+      "#403722",
+      "#55492e",
+      "#6c5d3c",
+      "#85744c",
+      "#9f8c5f"
+    ],
+    "amber": [
+      "#1d1004",
+      "#352008",
+      "#52330c",
+      "#714a12",
+      "#92651b",
+      "#b38328",
+      "#cfa13d",
+      "#e6c15e",
+      "#f6df8e"
+    ],
+    "pupil": [
+      "#040406",
+      "#0a0a0e",
+      "#131318"
+    ],
+    "cream": [
+      "#4a3e33",
+      "#6b5d4e",
+      "#8d7e6c",
+      "#ae9f8b",
+      "#cbbea9",
+      "#e2d8c5",
+      "#f2ecdd",
+      "#fcf9f0"
+    ],
+    "slate": [
+      "#0f0d0c",
+      "#1a1715",
+      "#26221f",
+      "#332e2a",
+      "#413a35",
+      "#504842",
+      "#615851",
+      "#746a62",
+      "#8a7f76",
+      "#a3988e",
+      "#beb4aa"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -20.803,
+      0.0,
+      -15.252
+    ],
+    "max": [
+      20.803,
+      9.5,
+      23.5
+    ],
+    "size": [
+      41.605,
+      9.5,
+      38.752
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0,
+    "walk": 1.6,
+    "swim": 2.0,
+    "bask": 5.0,
+    "dig": 2.0
+  },
+  "joints": [
+    "body",
+    "skin_band",
+    "shell",
+    "shell_0",
+    "shell_1",
+    "shell_2",
+    "shell_3",
+    "shell_4",
+    "shell_serration",
+    "neck",
+    "head",
+    "head_y",
+    "head_z",
+    "head_m",
+    "beak",
+    "beak_hook",
+    "jaw",
+    "jaw_plate",
+    "eye_l",
+    "lid_l",
+    "eye_r",
+    "lid_r",
+    "flipper_fl",
+    "flipper_fl_tip",
+    "flipper_fl_end",
+    "claw_fl",
+    "flipper_bl",
+    "flipper_bl_end",
+    "flipper_fr",
+    "flipper_fr_tip",
+    "flipper_fr_end",
+    "claw_fr",
+    "flipper_br",
+    "flipper_br_end",
+    "tail"
+  ],
+  "files": {
+    "sea_turtle.glb": "examples/output/sea_turtle.glb",
+    "sea_turtle.obj": "examples/output/sea_turtle.obj",
+    "sea_turtle.mtl": "examples/output/sea_turtle.mtl",
+    "sea_turtle.bbmodel": "examples/output/sea_turtle.bbmodel",
+    "sea_turtle_texture.png": "examples/output/sea_turtle_texture.png",
+    "sea_turtle_texture_x4.png": "examples/output/sea_turtle_texture_x4.png",
+    "sea_turtle_hero.png": "examples/output/sea_turtle_hero.png",
+    "sea_turtle_sheet.png": "examples/output/sea_turtle_sheet.png",
+    "sea_turtle_turntable.gif": "examples/output/sea_turtle_turntable.gif",
+    "sea_turtle_idle.gif": "examples/output/sea_turtle_idle.gif",
+    "sea_turtle_walk.gif": "examples/output/sea_turtle_walk.gif",
+    "sea_turtle_swim.gif": "examples/output/sea_turtle_swim.gif",
+    "sea_turtle_bask.gif": "examples/output/sea_turtle_bask.gif",
+    "sea_turtle_dig.gif": "examples/output/sea_turtle_dig.gif"
+  }
+}
