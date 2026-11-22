@@ -10,9 +10,9 @@
  },
  "light": {
   "dir": [-0.4, 1.0, 0.55],
-  "strength": 0.75,
-  "gradient": 0.8,
-  "ao": 1.4,
+  "strength": 0.45,
+  "gradient": 0.55,
+  "ao": 0.9,
   "ao_height": 10.0
  },
  "brush": {
@@ -42,29 +42,29 @@
  "palette": {
   "ramps": {
    "fur": [
-    "#121513",
-    "#191d1a",
-    "#212622",
-    "#2a302b",
-    "#343b35",
-    "#3f4740",
-    "#4b534b",
-    "#585f57",
-    "#656c63",
-    "#727870",
-    "#7f847c",
-    "#8b9088",
-    "#969a91",
-    "#a0a39a",
-    "#a9aca2"
+    "#0a140e",
+    "#102016",
+    "#172c1e",
+    "#1f3827",
+    "#284530",
+    "#32533a",
+    "#3d6044",
+    "#486d4e",
+    "#547a58",
+    "#618763",
+    "#6f936e",
+    "#7e9f7a",
+    "#8eab88",
+    "#9eb797",
+    "#afc3a7"
    ],
    "skin": [
-    "#0b0c10",
-    "#13151b",
-    "#1c1f27",
-    "#272b34",
-    "#353a44",
-    "#474c57"
+    "#050a07",
+    "#0a120d",
+    "#101b14",
+    "#17241b",
+    "#1f2e23",
+    "#2a3a2d"
    ],
    "claw": [
     "#0e0c0b",
@@ -75,48 +75,37 @@
     "#504940"
    ],
    "eye": [
-    "#050506",
-    "#0c0d10",
-    "#16181c",
-    "#252930",
-    "#4a515b"
+    "#030705",
+    "#070e0a",
+    "#0d1810",
+    "#16241a",
+    "#26362a"
    ],
    "mouth": [
-    "#150b11",
-    "#22121b",
-    "#331a28",
-    "#462436",
-    "#5b3146",
-    "#724157"
+    "#070c09",
+    "#0d150f",
+    "#142017",
+    "#1d2b20",
+    "#283a2b",
+    "#344a36"
    ],
    "bone": [
-    "#3a3428",
-    "#544c3b",
-    "#706650",
-    "#8d8367",
-    "#aaa080",
-    "#c4bb9a",
-    "#dbd4b6",
-    "#ece8d2",
-    "#f8f6e8"
+    "#2a3427",
+    "#46553f",
+    "#64765a",
+    "#859878",
+    "#a5b697",
+    "#c2d0b2",
+    "#d9e3cb",
+    "#e9f0df"
    ],
    "rot": [
-    "#0c0809",
-    "#170e0f",
-    "#231416",
-    "#311b1c",
-    "#3f2322",
-    "#4d2d29",
-    "#5a3830"
-   ],
-   "flesh": [
-    "#1b1719",
-    "#272123",
-    "#342c2d",
-    "#423838",
-    "#514544",
-    "#605350",
-    "#6f625d"
+    "#0d1c13",
+    "#13261a",
+    "#1a3121",
+    "#223d29",
+    "#2b4a32",
+    "#35573b"
    ],
    "glow": [
     "#06343d",
@@ -131,308 +120,192 @@
  "styles": {
   "fur": {
    "ramp": "fur",
-   "tone": 8.4,
+   "tone": 8.8,
+   "rim": {
+    "light_shift": 0.6,
+    "dark_shift": -0.7
+   },
+   "brush": {
+    "flow": "z",
+    "length": 2.6,
+    "rough": 0.35,
+    "overshoot": 0.15
+   },
    "layers": [
     {
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 2.6
+     "amount": 1.8
     },
     {
-     "id": "clumps",
+     "id": "mottle",
      "op": "patches",
-     "scale": 1.5,
-     "threshold": 0.64,
-     "shift": -0.9
-    },
-    {
-     "id": "lights",
-     "op": "patches",
-     "scale": 1.3,
-     "threshold": 0.68,
-     "shift": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "tips",
-     "op": "drip",
-     "ramp": "fur",
-     "tone": 13.4,
-     "depth": 0.5,
-     "length": 2.2,
-     "width": 0.55,
-     "scale": 1.6,
-     "faces": [
-      "sides",
-      "front",
-      "back"
-     ]
-    },
-    {
-     "id": "hair",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
-     "wobble": 0.5,
-     "faces": [
-      "left",
-      "right"
-     ]
-    },
-    {
-     "id": "hair_x",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
-     "wobble": 0.5,
-     "faces": [
-      "front",
-      "back",
-      "top"
-     ]
-    },
-    {
-     "id": "shine",
-     "op": "stripes",
-     "axis": "z",
-     "period": 2.3,
-     "width": 0.2,
-     "phase": 0.45,
-     "shift": 1.2,
-     "wobble": 0.6,
-     "faces": [
-      "left",
-      "right"
-     ]
-    },
-    {
-     "id": "shine_x",
-     "op": "stripes",
-     "axis": "x",
-     "period": 2.3,
-     "width": 0.2,
-     "phase": 0.45,
-     "shift": 1.2,
-     "wobble": 0.6,
-     "faces": [
-      "front",
-      "back",
-      "top"
-     ]
-    },
-    {
-     "id": "noise",
-     "op": "speckle",
-     "density": 0.05,
-     "shift": -1.2
-    },
-    {
-     "id": "mange",
-     "op": "patches",
-     "ramp": "flesh",
-     "tone": 4.4,
-     "scale": 1.9,
-     "threshold": 0.68,
-     "faces": [
-      "sides",
-      "top"
-     ]
+     "scale": 1.4,
+     "threshold": 0.65,
+     "shift": 1.0
     },
     {
      "id": "rot",
      "op": "patches",
      "ramp": "rot",
-     "tone": 3.2,
-     "scale": 1.3,
-     "threshold": 0.77,
+     "tone": 4.6,
+     "scale": 1.9,
+     "threshold": 0.62,
+     "seed": 11
+    },
+    {
+     "id": "rot_core",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.6,
+     "scale": 1.9,
+     "threshold": 0.73,
+     "seed": 11
+    },
+    {
+     "id": "strands",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
      "faces": [
-      "sides",
-      "back",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "strands_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
+     "faces": [
       "front",
+      "back",
       "top"
      ]
     },
     {
-     "id": "wounds",
+     "id": "mange",
      "op": "spots",
-     "count": 3,
-     "radius": [0.6, 1.2],
-     "ramp": "rot",
-     "tone": 1.4,
+     "count": 2,
+     "radius": [0.6, 1.1],
+     "ramp": "bone",
+     "tone": 3.6,
      "faces": [
       "sides",
       "top"
      ],
      "bevel": {
-      "highlight": 1,
-      "shadow": 0,
-      "highlight_shift": 2.0
+      "highlight": 0,
+      "shadow": 1,
+      "shadow_ramp": "rot",
+      "shadow_shift": -2.0
      }
     }
    ]
   },
   "fur_body": {
    "ramp": "fur",
-   "tone": 8.4,
+   "tone": 8.8,
+   "rim": {
+    "light_shift": 0.6,
+    "dark_shift": -0.7
+   },
+   "brush": {
+    "flow": "z",
+    "length": 2.6,
+    "rough": 0.35,
+    "overshoot": 0.15
+   },
    "layers": [
     {
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 2.6
+     "amount": 1.8
     },
     {
-     "id": "clumps",
+     "id": "mottle",
      "op": "patches",
-     "scale": 1.5,
-     "threshold": 0.64,
-     "shift": -0.9
-    },
-    {
-     "id": "lights",
-     "op": "patches",
-     "scale": 1.3,
-     "threshold": 0.68,
-     "shift": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "tips",
-     "op": "drip",
-     "ramp": "fur",
-     "tone": 13.4,
-     "depth": 0.5,
-     "length": 2.2,
-     "width": 0.55,
-     "scale": 1.6,
-     "faces": [
-      "sides",
-      "front",
-      "back"
-     ]
-    },
-    {
-     "id": "hair",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
-     "wobble": 0.5,
-     "faces": [
-      "left",
-      "right"
-     ]
-    },
-    {
-     "id": "hair_x",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
-     "wobble": 0.5,
-     "faces": [
-      "front",
-      "back",
-      "top"
-     ]
-    },
-    {
-     "id": "shine",
-     "op": "stripes",
-     "axis": "z",
-     "period": 2.3,
-     "width": 0.2,
-     "phase": 0.45,
-     "shift": 1.2,
-     "wobble": 0.6,
-     "faces": [
-      "left",
-      "right"
-     ]
-    },
-    {
-     "id": "shine_x",
-     "op": "stripes",
-     "axis": "x",
-     "period": 2.3,
-     "width": 0.2,
-     "phase": 0.45,
-     "shift": 1.2,
-     "wobble": 0.6,
-     "faces": [
-      "front",
-      "back",
-      "top"
-     ]
-    },
-    {
-     "id": "noise",
-     "op": "speckle",
-     "density": 0.05,
-     "shift": -1.2
-    },
-    {
-     "id": "mange",
-     "op": "patches",
-     "ramp": "flesh",
-     "tone": 4.4,
-     "scale": 1.9,
-     "threshold": 0.68,
-     "faces": [
-      "sides",
-      "top"
-     ]
+     "scale": 1.4,
+     "threshold": 0.65,
+     "shift": 1.0
     },
     {
      "id": "rot",
      "op": "patches",
      "ramp": "rot",
-     "tone": 3.2,
-     "scale": 1.3,
-     "threshold": 0.77,
+     "tone": 4.6,
+     "scale": 1.9,
+     "threshold": 0.62,
+     "seed": 11
+    },
+    {
+     "id": "rot_core",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.6,
+     "scale": 1.9,
+     "threshold": 0.73,
+     "seed": 11
+    },
+    {
+     "id": "strands",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
      "faces": [
-      "sides",
-      "back",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "strands_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
+     "faces": [
       "front",
+      "back",
       "top"
      ]
     },
     {
-     "id": "wounds",
+     "id": "mange",
      "op": "spots",
-     "count": 3,
-     "radius": [0.6, 1.2],
-     "ramp": "rot",
-     "tone": 1.4,
+     "count": 2,
+     "radius": [0.6, 1.1],
+     "ramp": "bone",
+     "tone": 3.6,
      "faces": [
       "sides",
       "top"
      ],
      "bevel": {
-      "highlight": 1,
-      "shadow": 0,
-      "highlight_shift": 2.0
+      "highlight": 0,
+      "shadow": 1,
+      "shadow_ramp": "rot",
+      "shadow_shift": -2.0
      }
     },
     {
      "id": "cavity",
      "op": "spots",
-     "ramp": "rot",
-     "tone": 0.6,
-     "centers": [[8.5, 0.8, 7.2, 4.4], [8.5, -1.2, 9.6, 3.0], [8.5, 2.8, 5.0, 3.0]],
+     "ramp": "eye",
+     "tone": 1.6,
+     "centers": [[8.5, 0.8, 4.2, 4.4], [8.5, -1.2, 6.6, 3.0], [8.5, 2.8, 2.0, 3.0]],
      "faces": [
       "left",
       "right"
@@ -440,14 +313,25 @@
      "bevel": {
       "highlight": 1,
       "shadow": 0,
-      "highlight_shift": 2.0
+      "highlight_ramp": "rot",
+      "highlight_shift": 3
      }
     }
    ]
   },
   "fur_top": {
    "ramp": "fur",
-   "tone": 9.200000000000001,
+   "tone": 9.5,
+   "rim": {
+    "light_shift": 0.6,
+    "dark_shift": -0.7
+   },
+   "brush": {
+    "flow": "z",
+    "length": 2.6,
+    "rough": 0.35,
+    "overshoot": 0.15
+   },
    "layers": [
     {
      "id": "under",
@@ -456,151 +340,89 @@
      "amount": 1.8
     },
     {
-     "id": "clumps",
+     "id": "mottle",
      "op": "patches",
-     "scale": 1.5,
-     "threshold": 0.64,
-     "shift": -0.9
-    },
-    {
-     "id": "lights",
-     "op": "patches",
-     "scale": 1.3,
-     "threshold": 0.68,
-     "shift": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "tips",
-     "op": "drip",
-     "ramp": "fur",
-     "tone": 13.4,
-     "depth": 0.5,
-     "length": 2.2,
-     "width": 0.55,
-     "scale": 1.6,
-     "faces": [
-      "sides",
-      "front",
-      "back"
-     ]
-    },
-    {
-     "id": "hair",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
-     "wobble": 0.5,
-     "faces": [
-      "left",
-      "right"
-     ]
-    },
-    {
-     "id": "hair_x",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
-     "wobble": 0.5,
-     "faces": [
-      "front",
-      "back",
-      "top"
-     ]
-    },
-    {
-     "id": "shine",
-     "op": "stripes",
-     "axis": "z",
-     "period": 2.3,
-     "width": 0.2,
-     "phase": 0.45,
-     "shift": 1.2,
-     "wobble": 0.6,
-     "faces": [
-      "left",
-      "right"
-     ]
-    },
-    {
-     "id": "shine_x",
-     "op": "stripes",
-     "axis": "x",
-     "period": 2.3,
-     "width": 0.2,
-     "phase": 0.45,
-     "shift": 1.2,
-     "wobble": 0.6,
-     "faces": [
-      "front",
-      "back",
-      "top"
-     ]
-    },
-    {
-     "id": "noise",
-     "op": "speckle",
-     "density": 0.05,
-     "shift": -1.2
-    },
-    {
-     "id": "mange",
-     "op": "patches",
-     "ramp": "flesh",
-     "tone": 4.4,
-     "scale": 1.9,
-     "threshold": 0.68,
-     "faces": [
-      "sides",
-      "top"
-     ]
+     "scale": 1.4,
+     "threshold": 0.65,
+     "shift": 1.0
     },
     {
      "id": "rot",
      "op": "patches",
      "ramp": "rot",
-     "tone": 3.2,
-     "scale": 1.3,
-     "threshold": 0.77,
+     "tone": 4.6,
+     "scale": 1.9,
+     "threshold": 0.62,
+     "seed": 11
+    },
+    {
+     "id": "rot_core",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.6,
+     "scale": 1.9,
+     "threshold": 0.73,
+     "seed": 11
+    },
+    {
+     "id": "strands",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
      "faces": [
-      "sides",
-      "back",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "strands_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
+     "faces": [
       "front",
+      "back",
       "top"
      ]
     },
     {
-     "id": "wounds",
+     "id": "mange",
      "op": "spots",
-     "count": 3,
-     "radius": [0.6, 1.2],
-     "ramp": "rot",
-     "tone": 1.4,
+     "count": 2,
+     "radius": [0.6, 1.1],
+     "ramp": "bone",
+     "tone": 3.6,
      "faces": [
       "sides",
       "top"
      ],
      "bevel": {
-      "highlight": 1,
-      "shadow": 0,
-      "highlight_shift": 2.0
+      "highlight": 0,
+      "shadow": 1,
+      "shadow_ramp": "rot",
+      "shadow_shift": -2.0
      }
     }
    ]
   },
   "leg": {
    "ramp": "fur",
-   "tone": 7.999999999999999,
+   "tone": 8.2,
+   "rim": {
+    "light_shift": 0.6,
+    "dark_shift": -0.7
+   },
    "brush": {
     "flow": "y",
-    "length": 2.4
+    "length": 2.6,
+    "rough": 0.35,
+    "overshoot": 0.15
    },
    "layers": [
     {
@@ -610,30 +432,37 @@
      "amount": 1.8
     },
     {
-     "id": "clumps",
+     "id": "mottle",
      "op": "patches",
-     "scale": 1.5,
-     "threshold": 0.64,
-     "shift": -0.9
+     "scale": 1.4,
+     "threshold": 0.65,
+     "shift": 1.0
     },
     {
-     "id": "lights",
+     "id": "rot",
      "op": "patches",
-     "scale": 1.3,
-     "threshold": 0.68,
-     "shift": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
+     "ramp": "rot",
+     "tone": 4.6,
+     "scale": 1.9,
+     "threshold": 0.62,
+     "seed": 11
     },
     {
-     "id": "hair",
+     "id": "rot_core",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.6,
+     "scale": 1.9,
+     "threshold": 0.73,
+     "seed": 11
+    },
+    {
+     "id": "strands",
      "op": "stripes",
      "axis": "z",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
      "wobble": 0.5,
      "faces": [
       "left",
@@ -641,102 +470,128 @@
      ]
     },
     {
-     "id": "hair_x",
+     "id": "strands_x",
      "op": "stripes",
      "axis": "x",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
      "wobble": 0.5,
      "faces": [
       "front",
-      "back"
+      "back",
+      "top"
      ]
-    },
-    {
-     "id": "noise",
-     "op": "speckle",
-     "density": 0.05,
-     "shift": -1.2
     },
     {
      "id": "mange",
-     "op": "patches",
-     "ramp": "flesh",
-     "tone": 4.4,
-     "scale": 1.9,
-     "threshold": 0.68,
-     "faces": [
-      "sides",
-      "top"
-     ]
-    },
-    {
-     "id": "rot",
-     "op": "patches",
-     "ramp": "rot",
-     "tone": 3.2,
-     "scale": 1.3,
-     "threshold": 0.77,
-     "faces": [
-      "sides",
-      "back",
-      "front",
-      "top"
-     ]
-    },
-    {
-     "id": "wounds",
      "op": "spots",
-     "count": 3,
-     "radius": [0.6, 1.2],
-     "ramp": "rot",
-     "tone": 1.4,
+     "count": 2,
+     "radius": [0.6, 1.1],
+     "ramp": "bone",
+     "tone": 3.6,
      "faces": [
       "sides",
       "top"
      ],
      "bevel": {
-      "highlight": 1,
-      "shadow": 0,
-      "highlight_shift": 2.0
+      "highlight": 0,
+      "shadow": 1,
+      "shadow_ramp": "rot",
+      "shadow_shift": -2.0
      }
     }
    ]
   },
   "paw": {
    "ramp": "fur",
-   "tone": 8.8,
+   "tone": 7.4,
+   "rim": {
+    "light_shift": 0.6,
+    "dark_shift": -0.7
+   },
    "brush": {
     "flow": "z",
-    "length": 2.0
+    "length": 2.6,
+    "rough": 0.35,
+    "overshoot": 0.15
    },
    "layers": [
     {
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.6
+     "amount": 1.8
     },
     {
-     "id": "toes",
+     "id": "mottle",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.65,
+     "shift": 1.0
+    },
+    {
+     "id": "rot",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 4.6,
+     "scale": 1.9,
+     "threshold": 0.62,
+     "seed": 11
+    },
+    {
+     "id": "rot_core",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.6,
+     "scale": 1.9,
+     "threshold": 0.73,
+     "seed": 11
+    },
+    {
+     "id": "strands",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "strands_x",
      "op": "stripes",
      "axis": "x",
-     "period": 1.6,
-     "width": 0.22,
-     "shift": -2.2,
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
+     "wobble": 0.5,
      "faces": [
       "front",
+      "back",
       "top"
      ]
     },
     {
-     "id": "sole",
-     "op": "fill",
-     "shift": -3.0,
+     "id": "mange",
+     "op": "spots",
+     "count": 2,
+     "radius": [0.6, 1.1],
+     "ramp": "bone",
+     "tone": 3.6,
      "faces": [
-      "bottom"
-     ]
+      "sides",
+      "top"
+     ],
+     "bevel": {
+      "highlight": 0,
+      "shadow": 1,
+      "shadow_ramp": "rot",
+      "shadow_shift": -2.0
+     }
     }
    ],
    "stamps": [
@@ -759,55 +614,64 @@
    ]
   },
   "claw": {
-   "ramp": "claw",
-   "tone": 2.6,
+   "ramp": "eye",
+   "tone": 1.2,
    "brush": {
     "off": true
-   },
-   "layers": [
-    {
-     "id": "tip",
-     "op": "gradient",
-     "axis": "z",
-     "amount": -1.6
-    }
-   ]
+   }
   },
   "head": {
    "ramp": "fur",
-   "tone": 9.0,
+   "tone": 9.3,
+   "rim": {
+    "light_shift": 0.6,
+    "dark_shift": -0.7
+   },
+   "brush": {
+    "flow": "z",
+    "length": 2.6,
+    "rough": 0.35,
+    "overshoot": 0.15
+   },
    "layers": [
     {
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 2.0
+     "amount": 1.8
     },
     {
-     "id": "clumps",
+     "id": "mottle",
      "op": "patches",
-     "scale": 1.2,
-     "threshold": 0.64,
-     "shift": -0.9
+     "scale": 1.4,
+     "threshold": 0.65,
+     "shift": 1.0
     },
     {
-     "id": "lights",
+     "id": "rot",
      "op": "patches",
-     "scale": 1.1,
-     "threshold": 0.68,
-     "shift": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
+     "ramp": "rot",
+     "tone": 4.6,
+     "scale": 1.9,
+     "threshold": 0.62,
+     "seed": 11
     },
     {
-     "id": "hair",
+     "id": "rot_core",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.6,
+     "scale": 1.9,
+     "threshold": 0.73,
+     "seed": 11
+    },
+    {
+     "id": "strands",
      "op": "stripes",
      "axis": "z",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
      "wobble": 0.5,
      "faces": [
       "left",
@@ -815,12 +679,12 @@
      ]
     },
     {
-     "id": "hair_x",
+     "id": "strands_x",
      "op": "stripes",
      "axis": "x",
-     "period": 1.7,
-     "width": 0.26,
-     "shift": -1.5,
+     "period": 2.2,
+     "width": 0.2,
+     "shift": -0.8,
      "wobble": 0.5,
      "faces": [
       "front",
@@ -829,127 +693,85 @@
      ]
     },
     {
-     "id": "noise",
-     "op": "speckle",
-     "density": 0.05,
-     "shift": -1.2
-    },
-    {
      "id": "mange",
-     "op": "patches",
-     "ramp": "flesh",
-     "tone": 4.4,
-     "scale": 1.9,
-     "threshold": 0.68,
-     "faces": [
-      "sides",
-      "top"
-     ]
-    },
-    {
-     "id": "rot",
-     "op": "patches",
-     "ramp": "rot",
-     "tone": 3.2,
-     "scale": 1.3,
-     "threshold": 0.77,
-     "faces": [
-      "sides",
-      "back",
-      "front",
-      "top"
-     ]
-    },
-    {
-     "id": "wounds",
      "op": "spots",
-     "count": 3,
-     "radius": [0.6, 1.2],
-     "ramp": "rot",
-     "tone": 1.4,
+     "count": 2,
+     "radius": [0.6, 1.1],
+     "ramp": "bone",
+     "tone": 3.6,
      "faces": [
       "sides",
       "top"
      ],
      "bevel": {
-      "highlight": 1,
-      "shadow": 0,
-      "highlight_shift": 2.0
+      "highlight": 0,
+      "shadow": 1,
+      "shadow_ramp": "rot",
+      "shadow_shift": -2.0
      }
     },
     {
      "id": "sockets",
      "op": "spots",
      "ramp": "eye",
-     "tone": 1.2,
+     "tone": 0.4,
      "faces": [
       "front",
       "sides"
      ],
-     "centers": [[4.2, 2.919, 8.642, 1.3], [-4.2, 2.919, 8.642, 1.3]]
+     "centers": [[4.2, 2.919, 8.642, 1.7], [-4.2, 2.919, 8.642, 1.7]]
     }
    ]
   },
   "brow": {
    "ramp": "fur",
-   "tone": 10.2,
+   "tone": 8.4,
    "rim": {
-    "light_shift": 1.4,
-    "dark_shift": -2.0
+    "light_shift": 0.6,
+    "dark_shift": -0.8
+   },
+   "brush": {
+    "rough": 0.3
    },
    "layers": [
     {
-     "id": "shade",
-     "op": "gradient",
-     "axis": "y",
-     "amount": 2.2
-    },
-    {
      "id": "under",
      "op": "fill",
-     "shift": -3.0,
+     "ramp": "eye",
+     "tone": 1.0,
      "faces": [
       "bottom"
      ]
     },
     {
-     "id": "brow_dark",
-     "op": "fill",
-     "ramp": "fur",
-     "tone": 3.0,
-     "faces": [
-      "bottom",
-      "front"
-     ]
+     "id": "shade",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 2.0
     }
    ]
   },
   "muzzle": {
    "ramp": "fur",
-   "tone": 10.2,
+   "tone": 8.6,
    "brush": {
-    "length": 2.0
+    "length": 1.8,
+    "rough": 0.3
    },
    "layers": [
     {
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 2.0
+     "amount": 1.8
     },
     {
-     "id": "hair_x",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.6,
-     "width": 0.26,
-     "shift": -1.5,
-     "wobble": 0.5,
-     "faces": [
-      "front",
-      "back",
-      "top"
-     ]
+     "id": "rot",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.8,
+     "scale": 1.4,
+     "threshold": 0.66
     },
     {
      "id": "lip",
@@ -957,25 +779,41 @@
      "axis": "y",
      "from": -1.0,
      "to": -0.7,
-     "ramp": "skin",
-     "tone": 1.4,
+     "ramp": "eye",
+     "tone": 1.2,
      "faces": [
       "sides",
       "front"
      ]
+    },
+    {
+     "id": "bare",
+     "op": "spots",
+     "ramp": "bone",
+     "tone": 4.6,
+     "centers": [[-3.5, -1.0, 3.6, 1.8]],
+     "faces": [
+      "right"
+     ],
+     "bevel": {
+      "highlight": 0,
+      "shadow": 1,
+      "shadow_ramp": "eye",
+      "shadow_shift": -3
+     }
     }
    ]
   },
   "muzzle_top": {
    "ramp": "fur",
-   "tone": 11.4,
+   "tone": 9.4,
    "brush": {
-    "length": 2.0
+    "rough": 0.3
    }
   },
   "nose": {
-   "ramp": "skin",
-   "tone": 1.6,
+   "ramp": "eye",
+   "tone": 1.4,
    "brush": {
     "off": true
    },
@@ -987,50 +825,18 @@
       "n..n"
      ],
      "key": {
-      "n": "skin:0"
-     }
-    },
-    {
-     "face": "front",
-     "at": "top-left",
-     "art": [
-      ".hh."
-     ],
-     "key": {
-      "h": "skin:5"
-     }
-    },
-    {
-     "face": "top",
-     "at": "bottom-left",
-     "art": [
-      ".h.."
-     ],
-     "key": {
-      "h": "skin:5"
+      "n": "eye:0"
      }
     }
    ]
   },
   "jaw": {
    "ramp": "fur",
-   "tone": 9.6,
+   "tone": 7.8,
    "brush": {
-    "length": 2.0
+    "rough": 0.3
    },
    "layers": [
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": 0.2,
-     "to": 1.0,
-     "ramp": "skin",
-     "tone": 2.0,
-     "faces": [
-      "front"
-     ]
-    },
     {
      "id": "chin",
      "op": "gradient",
@@ -1038,12 +844,15 @@
      "amount": 1.4
     },
     {
-     "id": "tongue",
-     "op": "fill",
-     "ramp": "mouth",
-     "tone": 3.0,
+     "id": "lip",
+     "op": "band",
+     "axis": "y",
+     "from": 0.2,
+     "to": 1.0,
+     "ramp": "eye",
+     "tone": 1.0,
      "faces": [
-      "top"
+      "front"
      ]
     },
     {
@@ -1053,17 +862,26 @@
      "from": -1.0,
      "to": -0.4,
      "ramp": "rot",
-     "tone": 1.4,
+     "tone": 1.2,
      "faces": [
       "sides",
       "front"
+     ]
+    },
+    {
+     "id": "tongue",
+     "op": "fill",
+     "ramp": "mouth",
+     "tone": 1.0,
+     "faces": [
+      "top"
      ]
     }
    ]
   },
   "teeth": {
    "ramp": "bone",
-   "tone": 6.6,
+   "tone": 4.6,
    "brush": {
     "off": true
    }
@@ -1090,7 +908,7 @@
   },
   "ear_l": {
    "ramp": "fur",
-   "tone": 9.6,
+   "tone": 8.4,
    "brush": {
     "off": true
    },
@@ -1099,7 +917,7 @@
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.4
+     "amount": 1.2
     }
    ],
    "stamps": [
@@ -1112,7 +930,7 @@
       "..."
      ],
      "key": {
-      "d": "fur:8"
+      "d": "rot:2"
      }
     },
     {
@@ -1126,65 +944,53 @@
   },
   "fur_card": {
    "ramp": "fur",
-   "tone": 9.4,
-   "light": 0.6,
+   "tone": 8.6,
+   "light": 0.5,
    "rim": {
     "light": 0,
     "dark": 0
    },
    "art_key": {
     "h": "fur:10",
-    "d": "fur:2"
+    "d": "rot:1"
    },
    "brush": {
     "flow": "y",
-    "length": 2.6,
-    "rough": 0.9
+    "length": 2.4,
+    "rough": 0.4
    },
    "layers": [
     {
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.2
+     "amount": 1.4
+    },
+    {
+     "id": "rot",
+     "op": "patches",
+     "ramp": "rot",
+     "tone": 2.6,
+     "scale": 1.6,
+     "threshold": 0.64
     },
     {
      "id": "strand",
      "op": "stripes",
      "axis": "z",
-     "period": 1.3,
-     "width": 0.34,
-     "shift": -1.8,
+     "period": 1.6,
+     "width": 0.3,
+     "shift": -1.0,
      "wobble": 0.3
     },
     {
      "id": "strand_x",
      "op": "stripes",
      "axis": "x",
-     "period": 1.3,
-     "width": 0.34,
-     "shift": -1.8,
+     "period": 1.6,
+     "width": 0.3,
+     "shift": -1.0,
      "wobble": 0.3
-    },
-    {
-     "id": "noise",
-     "op": "speckle",
-     "density": 0.05,
-     "shift": -1.2
-    },
-    {
-     "id": "rot",
-     "op": "patches",
-     "ramp": "rot",
-     "tone": 3.2,
-     "scale": 1.3,
-     "threshold": 0.66,
-     "faces": [
-      "sides",
-      "back",
-      "front",
-      "top"
-     ]
     }
    ]
   },
@@ -1194,7 +1000,7 @@
   },
   "zombie_bone": {
    "ramp": "bone",
-   "tone": 6.4,
+   "tone": 5.4,
    "rim": {
     "light": 0,
     "dark": 0
@@ -1203,34 +1009,34 @@
     "off": true
    },
    "art_key": {
-    "b": "bone:6"
+    "b": "bone:5"
    },
    "layers": [
     {
      "id": "shade",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.2
+     "amount": 1.4
     },
     {
      "id": "grime",
      "op": "patches",
      "scale": 1.2,
-     "threshold": 0.6,
-     "shift": -2.0
+     "threshold": 0.66,
+     "shift": -1.6
     }
    ]
   },
   "zombie_flesh": {
-   "ramp": "flesh",
-   "tone": 4.0,
+   "ramp": "rot",
+   "tone": 3.0,
    "art_key": {
-    "f": "flesh:4"
+    "f": "rot:3"
    }
   },
   "ear_r": {
    "ramp": "fur",
-   "tone": 9.6,
+   "tone": 8.4,
    "brush": {
     "off": true
    },
@@ -1239,7 +1045,7 @@
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.4
+     "amount": 1.2
     }
    ],
    "stamps": [
@@ -1252,7 +1058,7 @@
       "..."
      ],
      "key": {
-      "d": "rot:2"
+      "d": "rot:1"
      }
     },
     {

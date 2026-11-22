@@ -28,6 +28,17 @@ public final class WWEffects {
     public static final Holder<MobEffect> FROSTBITE = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
             Winterworks.id("frostbite"), new dev.lowpix.winterworks.cold.FrostbiteEffect());
 
+    /** While active, no other effect can be gained (amber.ImmunityEffect; enforced in LivingEntityMixin). */
+    public static final Holder<MobEffect> IMMUNITY = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
+            Winterworks.id("immunity"), new WWEffect(MobEffectCategory.BENEFICIAL, 0xE8B84A));
+    /** Potion of Blood: from mosquitoes; no effect of its own. */
+    public static final Holder<Potion> BLOOD_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("blood"), new Potion("blood"));
+    public static final Holder<Potion> IMMUNITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("immunity"), new Potion("immunity", new net.minecraft.world.effect.MobEffectInstance(IMMUNITY, 600)));
+    public static final Holder<Potion> LONG_IMMUNITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("long_immunity"), new Potion("immunity", new net.minecraft.world.effect.MobEffectInstance(IMMUNITY, 1200)));
+
     public static final Holder<Potion> RAMMING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
             Winterworks.id("ramming"), new Potion("ramming", new net.minecraft.world.effect.MobEffectInstance(RAMMING, 3600)));
     public static final Holder<Potion> LONG_RAMMING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,

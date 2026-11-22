@@ -63,6 +63,20 @@ public final class WWItems {
             new SpawnEggItem(WWEntities.FROST_MAULER, 0xDCE6EC, 0x3A6F9C, new Item.Properties()));
     public static final Item FROST_ZOMBIE_SPAWN_EGG = reg("frost_zombie_spawn_egg",
             new SpawnEggItem(WWEntities.FROST_ZOMBIE, 0x8FB3C4, 0x2E4F5E, new Item.Properties()));
+    // ---- Amber Age update (docs/AMBER_UPDATE.md)
+    public static final Item AMBER_CHUNK = reg("amber_chunk", new Item(new Item.Properties()));
+    public static final Item AMBER_BLOCK = reg("amber_block", new BlockItem(WWBlocks.AMBER_BLOCK, new Item.Properties()));
+    public static final Item AMBER_FOSSIL = reg("amber_fossil", new BlockItem(WWBlocks.AMBER_FOSSIL, new Item.Properties()));
+    public static final Item PETRIFIED_LOG = reg("petrified_log", new BlockItem(WWBlocks.PETRIFIED_LOG, new Item.Properties()));
+    public static final Item AMBERWOOD_LOG = reg("amberwood_log", new BlockItem(WWBlocks.AMBERWOOD_LOG, new Item.Properties()));
+    public static final Item AMBERWOOD_LEAVES = reg("amberwood_leaves", new BlockItem(WWBlocks.AMBERWOOD_LEAVES, new Item.Properties()));
+    public static final Item AMBERWOOD_PLANKS = reg("amberwood_planks", new BlockItem(WWBlocks.AMBERWOOD_PLANKS, new Item.Properties()));
+    public static final Item AMBERWOOD_SEED = reg("amberwood_seed", new net.minecraft.world.item.ItemNameBlockItem(
+            WWBlocks.AMBERWOOD_SAPLING, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final Item MOSQUITO_SPAWN_EGG = reg("mosquito_spawn_egg",
+            new SpawnEggItem(WWEntities.MOSQUITO, 0xC8902E, 0x3A1F1A, new Item.Properties()));
+    public static final Item POT_GOLEM_SPAWN_EGG = reg("pot_golem_spawn_egg",
+            new SpawnEggItem(WWEntities.POT_GOLEM, 0xE39A2D, 0x8E5A3A, new Item.Properties()));
     public static final Item ZOMBIE_POLAR_BEAR_SPAWN_EGG = reg("zombie_polar_bear_spawn_egg",
             new SpawnEggItem(WWEntities.ZOMBIE_POLAR_BEAR, 0xBFC7AE, 0x4E5B3D, new Item.Properties()));
 
@@ -103,6 +117,20 @@ public final class WWItems {
                         out.accept(FROST_MAULER_SPAWN_EGG);
                         out.accept(FROST_ZOMBIE_SPAWN_EGG);
                         out.accept(ZOMBIE_POLAR_BEAR_SPAWN_EGG);
+                        out.accept(AMBER_CHUNK);
+                        out.accept(AMBER_BLOCK);
+                        out.accept(AMBER_FOSSIL);
+                        out.accept(PETRIFIED_LOG);
+                        out.accept(AMBERWOOD_SEED);
+                        out.accept(AMBERWOOD_LOG);
+                        out.accept(AMBERWOOD_LEAVES);
+                        out.accept(AMBERWOOD_PLANKS);
+                        out.accept(PotionContents.createItemStack(Items.POTION, WWEffects.BLOOD_POTION));
+                        out.accept(PotionContents.createItemStack(Items.SPLASH_POTION, WWEffects.BLOOD_POTION));
+                        out.accept(PotionContents.createItemStack(Items.POTION, WWEffects.IMMUNITY_POTION));
+                        out.accept(PotionContents.createItemStack(Items.POTION, WWEffects.LONG_IMMUNITY_POTION));
+                        out.accept(MOSQUITO_SPAWN_EGG);
+                        out.accept(POT_GOLEM_SPAWN_EGG);
                     }).build());
 
     private WWItems() {}

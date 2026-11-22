@@ -66,8 +66,6 @@ def biome(ctx, extra_features):
         "features": feats,
     })
     tag = lambda path, values: ctx.write(os.path.join(ctx.D, *path) + ".json", {"replace": False, "values": values})  # noqa
-    tag(["minecraft", "tags", "worldgen", "biome", "is_overworld"], [f"{ctx.M}:ice_caves"])
-    tag(["minecraft", "tags", "worldgen", "biome", "has_structure", "mineshaft"], [f"{ctx.M}:ice_caves"])
     tag(["minecraft", "tags", "worldgen", "biome", "spawns_cold_variant_frogs"], [f"{ctx.M}:ice_caves"])
     tag([ctx.M, "tags", "worldgen", "biome", "has_frozen_tomb"], [f"{ctx.M}:ice_caves"])
 

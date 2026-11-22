@@ -78,70 +78,72 @@ def card(id, parent, art, style, plane="yz", **kw):
     return part(id, parent, None, style, shape="card", plane=plane, art=art, **kw)
 
 
-# ======================================================================= the skull, gaping, tilted up on its fangs
-# Skull frame: the jaw hinge is the origin; the cranium spans x -8..8, y -1..9, z -8..4; the muzzle runs to z 16.
-# The lower jaw lies flat on the ground; the skull gapes 30 degrees above it, the fangs reaching down past the jaw.
-part("skull", None, [16, 10, 12], "bone_skull", at=(0, 5.5, -1), offset=(0, 4, -2), rot=(-30, 0, 0))
-part("crown", "skull", [12, 2, 9], "bone", rel=(0, 9.5, -3))
-part("crest", "skull", [2.5, 3.5, 11], "bone", rel=(0, 11, -3.5), rot=(-6, 0, 0))
-part("crest_back", "crest", [2, 2.5, 3], "bone", rel=(0, 0.5, -6), rot=(-20, 0, 0))
-part("occiput", "skull", [12, 7, 2], "bone_dark", rel=(0, 4.5, -8.5))
-part("brow_l", "skull", [7, 2.5, 3], "bone", rel=(4.5, 8.0, 3.5), rot=(0, 0, 12))
-part("brow_r", "skull", [7, 2.5, 3], "bone", rel=(-4.5, 8.0, 3.5), rot=(0, 0, -12))
-part("socket_l", "skull", [4, 3.5, 0.5], "socket", rel=(4.5, 5.5, 4.1))
-part("socket_r", "skull", [4, 3.5, 0.5], "socket", rel=(-4.5, 5.5, 4.1))
-part("eye", "skull", [2, 2, 0.5], "eye", rel=(-4.5, 5.5, 4.25))
+# ======================================================================= the skull: a sabre-toothed cat's, gaping on its fangs
+# Skull frame: the jaw hinge is the origin; the cranium spans x -7.5..7.5, y -1..10, z -7..4, the short muzzle runs on
+# to z 11.5. A cat's skull: short and high, a tall sagittal crest, big round orbits, wide flaring cheekbones, a short
+# muzzle. The lower jaw lies flat on the ground; the skull gapes 46 degrees above it on its enormous flattened sabres.
+part("skull", None, [15, 11, 11], "bone_skull", at=(0, 11.5, -1), offset=(0, 4.5, -1.5), rot=(-46, 0, 0))
+part("crown", "skull", [11, 2, 8], "bone", rel=(0, 10.5, -2))
+part("crest", "skull", [2, 4, 11], "bone", rel=(0, 12, -3), rot=(-8, 0, 0))
+part("crest_back", "crest", [2, 3, 3], "bone", rel=(0, 0.5, -6), rot=(-24, 0, 0))
+part("occiput", "skull", [11, 6, 1.5], "bone_dark", rel=(0, 4, -7.6))
+part("brow_l", "skull", [6, 2, 3], "bone", rel=(4.4, 8.6, 3.6), rot=(0, 0, 12))
+part("brow_r", "skull", [6, 2, 3], "bone", rel=(-4.4, 8.6, 3.6), rot=(0, 0, -12))
+part("socket_l", "skull", [4.5, 4, 0.5], "socket", rel=(4.4, 5.6, 4.1))
+part("socket_r", "skull", [4.5, 4, 0.5], "socket", rel=(-4.4, 5.6, 4.1))
+part("eye", "skull", [2, 2, 0.5], "eye", rel=(-4.4, 5.6, 4.25))
 for s in (1, -1):
     n = "l" if s > 0 else "r"
-    part(f"zygo_{n}", "skull", [2, 3, 10], "bone", rel=(s * 9.2, 2.4, -0.5), rot=(0, -s * 12, -s * 8))
-    part(f"temple_{n}", "skull", [0.5, 4, 5], "socket", rel=(s * 8.05, 5.5, -3))
-# the muzzle: maxilla and nasal bones, tapering, with the dark nasal opening
-part("snout", "skull", [9, 5, 8], "bone", rel=(0, 1.5, 8))
-part("snout_tip", "skull", [6.5, 4, 4], "bone", rel=(0, 1.5, 14), rot=(4, 0, 0))
-part("nasal", "snout_tip", [3.5, 2, 0.5], "socket", rel=(0, 0.5, 2.1))
-part("nasal_bridge", "snout", [4, 1.5, 9], "bone", rel=(0, 2.9, 1.5), rot=(-3, 0, 0))
-part("palate", "snout", [7, 0.5, 9], "mouth", rel=(0, -2.35, 0.5))
-# upper teeth: individual pointed teeth down both sides and across the front
-TEETH = ["yyyyyyyyyyyyyyyy", "y.yy.yyy.yy.yy.y", "..y...y....y..y.", "..y...y........."]
-card("teeth_up_l", "snout", TEETH, "teeth", rel=(4.0, -2.5, 1), offset=(0, -1, 0))
-card("teeth_up_r", "snout", TEETH, "teeth", rel=(-4.0, -2.5, 1), offset=(0, -1, 0))
+    part(f"zygo_{n}", "skull", [2, 3, 9], "bone", rel=(s * 8.6, 2.4, 0), rot=(0, -s * 14, -s * 8))
+    part(f"temple_{n}", "skull", [0.5, 4, 5], "socket", rel=(s * 7.55, 5.5, -2))
+# the muzzle: short and broad, a dark nasal opening
+part("snout", "skull", [10, 5, 5], "bone", rel=(0, 1.5, 6.5))
+part("snout_tip", "skull", [8, 4, 3], "bone", rel=(0, 1.4, 10), rot=(4, 0, 0))
+part("nasal", "snout_tip", [4, 2.5, 0.5], "socket", rel=(0, 0.4, 1.6))
+part("nasal_bridge", "snout", [4, 1.5, 6], "bone", rel=(0, 2.9, 1), rot=(-3, 0, 0))
+part("palate", "snout", [8, 0.5, 6], "mouth", rel=(0, -2.35, 0.5))
+TEETH = ["yyyyyyyyyy", "y.yy.yyy.y", "..y...y..."]
+card("teeth_up_l", "snout", TEETH, "teeth", rel=(4.5, -2.5, -0.5), offset=(0, -0.75, 0))
+card("teeth_up_r", "snout", TEETH, "teeth", rel=(-4.5, -2.5, -0.5), offset=(0, -0.75, 0))
 card("teeth_up_f", "snout_tip", ["yyyyyyyyyyyy", "y.yy.yy.yy.y", "y.yy..y..yy."], "teeth", rel=(0, -2.0, 1.6),
      offset=(0, -0.75, 0), plane="xy")
 
-# the lower jaw lies flat on the ground; its ramus rises at the back to the hinge
-part("jaw", "skull", [7, 2.5, 13], "jaw", rel=(0, 0, 0), centre=(0, 1.25, 6.5), wrot=(0, 0, 0))
-part("jaw_ramus", "jaw", [8.5, 4, 3], "bone_dark", centre=(0, 3.5, -0.5))
-part("tongue", "jaw", [4.5, 0.5, 10], "mouth", centre=(0, 2.6, 7))
-card("teeth_lo_l", "jaw", [".y...y...y...y..", "yy.yyy.yyy.yyy.y", "yyyyyyyyyyyyyyyy"], "teeth", at=(3.1, 2.5, 6.5),
+# the lower jaw lies flat on the ground; its ramus rises at the back to the hinge, a bony flange stands at the chin
+part("jaw", "skull", [7, 2.5, 10], "jaw", rel=(0, 0, 0), centre=(0, 1.25, 5), wrot=(0, 0, 0))
+part("jaw_ramus", "jaw", [8.5, 4.5, 3], "bone_dark", centre=(0, 3.75, 0.5))
+part("tongue", "jaw", [4.5, 0.5, 8], "mouth", centre=(0, 2.6, 5))
+for s in (1, -1):
+    part(f"jaw_flange_{'l' if s > 0 else 'r'}", "jaw", [1, 3.5, 2.5], "bone", centre=(s * 3.0, 1.75, 9))
+card("teeth_lo_l", "jaw", [".y...y...y...", "yy.yyy.yyy.yy", "yyyyyyyyyyyyy"], "teeth", at=(3.1, 2.5, 5),
      offset=(0, 0.75, 0))
-card("teeth_lo_r", "jaw", [".y...y...y...y..", "yy.yyy.yyy.yyy.y", "yyyyyyyyyyyyyyyy"], "teeth", at=(-3.1, 2.5, 6.5),
+card("teeth_lo_r", "jaw", [".y...y...y...", "yy.yyy.yyy.yy", "yyyyyyyyyyyyy"], "teeth", at=(-3.1, 2.5, 5),
      offset=(0, 0.75, 0))
-card("teeth_lo_f", "jaw", [".y..y..y..", "yyyyyyyyyy"], "teeth", at=(0, 2.5, 12.6), offset=(0, 0.5, 0), plane="xy")
+card("teeth_lo_f", "jaw", [".y..y..y..", "yyyyyyyyyy"], "teeth", at=(0, 2.5, 10.1), offset=(0, 0.5, 0), plane="xy")
 
-# the sabre fangs: from the muzzle down past the jaw to the ground, curving back
+# the sabres: enormous flattened blades (thin side to side, broad front to back) curving back down to the ground
 for s in (1, -1):
     n = "l" if s > 0 else "r"
-    part(f"fang_{n}", "skull", [3, 5.5, 3], "fang", rel=(s * 4.9, -1.5, 12.5), offset=(0, -2.75, 0),
-         rot=(20, 0, s * 4))
-    part(f"fang_{n}_mid", f"fang_{n}", [2.5, 3, 2.5], "fang", rel=(0, -5.5, 0), offset=(0, -1.5, 0), rot=(12, 0, 0))
-    part(f"fang_{n}_tip", f"fang_{n}_mid", [1.5, 2, 1.5], "fang_tip", rel=(0, -3, 0), offset=(0, -1, 0),
+    part(f"fang_{n}", "skull", [1.5, 7, 3], "fang", rel=(s * 4.3, -1.5, 7.5), offset=(0, -3.5, 0),
+         rot=(36, 0, s * 4))
+    part(f"fang_{n}_mid", f"fang_{n}", [1.5, 5, 2.5], "fang", rel=(0, -7, -0.1), offset=(0, -2.5, 0), rot=(12, 0, 0))
+    part(f"fang_{n}_tip", f"fang_{n}_mid", [1, 4, 1.5], "fang_tip", rel=(0, -5, -0.1), offset=(0, -2, 0),
          rot=(16, 0, 0))
 
 # ======================================================================= the left half: crusted in ancient ice
-part("ice_cap", "skull", [8.5, 2.5, 11], "ice_plate", rel=(4.3, 9.4, -2.5), rot=(0, 0, -6))
-part("ice_cheek", "skull", [2.5, 6, 9], "ice_plate", rel=(8.8, 4, -1), rot=(0, -4, -4))
-part("ice_snout", "snout", [4.5, 2, 8], "ice_plate", rel=(2.6, 3.0, 0), rot=(0, 0, -5))
-part("ice_eye", "socket_l", [3.5, 3, 1.5], "crystal_b", rel=(0, 0, 0.4), rot=(0, 0, 8))
+part("ice_cap", "skull", [7.5, 2.5, 10], "ice_plate", rel=(3.8, 10.4, -2), rot=(0, 0, -6))
+part("ice_cheek", "skull", [2.5, 6, 8], "ice_plate", rel=(8.1, 4, -1), rot=(0, -4, -4))
+part("ice_snout", "snout", [4.5, 2, 5], "ice_plate", rel=(2.6, 3.0, 0), rot=(0, 0, -5))
+part("ice_eye", "socket_l", [4, 3.5, 1.5], "crystal_b", rel=(0, 0, 0.4), rot=(0, 0, 8))
 CRYSTALS = [  # (parent, rel, size w, h, rot): a cluster bursting out of the frozen side
-    ("ice_cap", (1.5, 1, -2.5), 2.5, 7, (30, 20, -30)), ("ice_cap", (-0.5, 1, 0.5), 2, 5.5, (40, -10, -12)),
-    ("ice_cap", (2.5, 1, 2.5), 1.5, 4, (52, 30, -44)), ("ice_cap", (0.5, 1, -5), 2, 4.5, (14, 0, -24)),
-    ("ice_cheek", (1, 1.5, -2), 2, 5, (20, 0, -44)), ("ice_cheek", (1, -1, 2), 1.5, 4, (34, 0, -58)),
-    ("ice_snout", (1, 1, 1.5), 1.5, 4, (34, 10, -40)), ("ice_snout", (-0.5, 1, -2.5), 1.5, 3, (10, 0, -22)),
+    ("ice_cap", (1.5, 1, -2.5), 2.5, 8, (34, 20, -30)), ("ice_cap", (-0.5, 1, 0.5), 2, 6, (44, -10, -12)),
+    ("ice_cap", (2.5, 1, 2.5), 1.5, 4.5, (56, 30, -44)), ("ice_cap", (0.5, 1, -4.5), 2, 5, (18, 0, -24)),
+    ("ice_cheek", (1, 1.5, -2), 2, 5.5, (24, 0, -44)), ("ice_cheek", (1, -1, 2), 1.5, 4, (38, 0, -58)),
+    ("ice_snout", (1, 1, 1), 1.5, 4, (38, 10, -40)), ("ice_snout", (-0.5, 1, -1.5), 1.5, 3, (14, 0, -22)),
 ]
 for k, (par, rel, w, h, rot) in enumerate(CRYSTALS):
     part(f"crystal{k}", par, [w, h, w], "crystal" if k % 2 == 0 else "crystal_b", rel=rel, offset=(0, h / 2, 0), rot=rot)
 card("frost_edge", "skull", ["i.ii.iii.ii.i..ii", "iiiiiiiiiiiiiiiii", ".iii.i..iii.ii.i."], "frost_card",
-     rel=(0.2, 9.6, -2.5), plane="yz", rot=(0, 0, 70))
+     rel=(0.2, 10.6, -2), plane="yz", rot=(0, 0, 70))
 
 # ======================================================================= palette and paint
 ramps = {
@@ -163,7 +165,8 @@ styles = {
     "bone_skull": {"ramp": "bone", "tone": 7.4, "rim": BONE_RIM, "layers": BONE + [
         # the left half is frozen over: a crust of ice with a ragged edge down the middle
         {"id": "ice", "op": "band", "axis": "x", "from": 0.12, "to": 1.01, "wobble": 0.25, "wobble_scale": 0.3,
-         "ramp": "ice", "tone": 7.0, "bevel": {"shadow_ramp": "cavity", "shadow_shift": 0, "highlight": 1}},
+         "ramp": "ice", "tone": 7.0, "bevel": {"shadow_ramp": "cavity", "shadow_shift": 0, "highlight": 1},
+         "faces": ["top", "right", "front", "back"]},
         {"id": "ice_cracks", "op": "cracks", "scale": 2.0, "width": 0.05, "shift": 2.0, "faces": ["right", "top"]}]},
     "bone": {"ramp": "bone", "tone": 7.6, "rim": BONE_RIM, "layers": BONE},
     "bone_dark": {"ramp": "bone", "tone": 5.8, "rim": BONE_RIM, "layers": BONE},

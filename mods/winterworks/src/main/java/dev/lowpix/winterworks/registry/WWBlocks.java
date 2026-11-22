@@ -51,6 +51,32 @@ public final class WWBlocks {
                     .sound(SoundType.BONE_BLOCK).noOcclusion()
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
 
+    // ---- Amber Age update (docs/AMBER_UPDATE.md)
+    public static final Block AMBER_BLOCK = reg("amber_block", new dev.lowpix.winterworks.amber.AmberBlock(
+            BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_ORANGE).strength(1.5f, 3f)
+                    .sound(SoundType.GLASS).noOcclusion().lightLevel(s -> 3).isRedstoneConductor((s, l, p) -> false)
+                    .isSuffocating((s, l, p) -> false).isViewBlocking((s, l, p) -> false)));
+    /** Brushable like suspicious gravel; uses vanilla's BrushableBlockEntity (mixin.BlockEntityTypeMixin). */
+    public static final Block AMBER_FOSSIL = reg("amber_fossil", new net.minecraft.world.level.block.BrushableBlock(Blocks.GRAVEL,
+            net.minecraft.sounds.SoundEvents.BRUSH_GRAVEL, net.minecraft.sounds.SoundEvents.BRUSH_GRAVEL_COMPLETED,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SUSPICIOUS_GRAVEL)));
+    public static final Block PETRIFIED_LOG = reg("petrified_log", new net.minecraft.world.level.block.RotatedPillarBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).mapColor(net.minecraft.world.level.material.MapColor.TERRACOTTA_BROWN)
+                    .strength(2f, 6f)));
+    public static final Block AMBERWOOD_LOG = reg("amberwood_log", new dev.lowpix.winterworks.amber.AmberwoodLogBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).randomTicks()));
+    public static final Block AMBERWOOD_LEAVES = reg("amberwood_leaves", new net.minecraft.world.level.block.LeavesBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES).lightLevel(s -> 4)
+                    .mapColor(net.minecraft.world.level.material.MapColor.GOLD)));
+    public static final Block AMBERWOOD_SAPLING = reg("amberwood_sapling", new net.minecraft.world.level.block.SaplingBlock(
+            dev.lowpix.winterworks.amber.AmberwoodGrower.GROWER, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING)));
+    public static final Block AMBERWOOD_PLANKS = reg("amberwood_planks", new Block(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor(net.minecraft.world.level.material.MapColor.COLOR_ORANGE)));
+    public static final Block BLOOD_STAIN = reg("blood_stain", new dev.lowpix.winterworks.amber.BloodStainBlock(
+            BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_RED).noCollission().instabreak()
+                    .noOcclusion().randomTicks().sound(SoundType.SLIME_BLOCK).replaceable()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+
     public static final BlockEntityType<SnowGlobeBlockEntity> SNOW_GLOBE_BE = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id("snow_globe"),
             FabricBlockEntityTypeBuilder.create(SnowGlobeBlockEntity::new, SNOW_GLOBE).build());

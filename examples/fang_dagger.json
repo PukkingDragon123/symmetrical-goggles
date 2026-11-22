@@ -46,79 +46,78 @@
  "palette": {
   "ramps": {
    "bone": [
-    "#271e15",
-    "#392c1f",
-    "#4d3d2b",
-    "#635039",
-    "#7a6449",
-    "#927a5a",
-    "#aa916d",
-    "#c0a882",
-    "#d3bf98",
-    "#e3d4b2",
-    "#efe5cc",
-    "#f8f2e4"
+    "#3a2618",
+    "#6a4a2c",
+    "#9c7a45",
+    "#c6a65e",
+    "#e4cd8a",
+    "#fbf0c6"
    ],
    "ice": [
-    "#0b2440",
-    "#113154",
-    "#173f69",
-    "#1f507f",
-    "#2a6495",
-    "#377aaa",
-    "#4891bf",
-    "#5ea9d0",
-    "#7cc1de",
-    "#a0d7ea",
-    "#c8ecf5",
-    "#effbfd"
+    "#151446",
+    "#1f2a78",
+    "#2443a3",
+    "#2a66c6",
+    "#3392dc",
+    "#4bbde9",
+    "#8de3f6",
+    "#d0f7fd",
+    "#ffffff"
    ],
    "white": [
-    "#4a4c55",
-    "#62646d",
-    "#7c7e86",
-    "#96989f",
-    "#afb1b7",
-    "#c6c8cd",
-    "#dadce0",
-    "#eaebee",
-    "#f6f7f8"
+    "#3b3446",
+    "#625a6c",
+    "#8f8686",
+    "#bdb096",
+    "#ddd0ae",
+    "#f1e7cc",
+    "#fffbee"
    ],
    "horn": [
-    "#120b08",
     "#1d130d",
     "#2a1c13",
-    "#38261a",
+    "#3b3446",
     "#473222",
-    "#593f2b",
-    "#6c4e36"
+    "#593f2b"
    ]
   }
  },
  "styles": {
   "fur": {
    "ramp": "white",
-   "tone": 6.0
+   "tone": 4.0
   },
   "fang": {
    "ramp": "bone",
-   "tone": 9.0,
+   "tone": 3.9,
    "rim": {
-    "light_shift": 1.4,
-    "dark_shift": -1.6
+    "light_shift": 1.2,
+    "dark_shift": -1.2,
+    "outline": "dark"
    },
    "brush": {
-    "flow": "z"
+    "off": true
    },
    "layers": [
+    {
+     "id": "spine",
+     "op": "band",
+     "axis": "y",
+     "from": 0.45,
+     "to": 1.01,
+     "shift": 1.0,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
     {
      "id": "grain",
      "op": "stripes",
      "axis": "y",
-     "period": 0.8,
+     "period": 1.0,
      "width": 0.25,
-     "shift": -1.0,
-     "wobble": 0.3,
+     "shift": -0.8,
      "faces": [
       "left",
       "right",
@@ -129,36 +128,31 @@
      "id": "root",
      "op": "gradient",
      "axis": "z",
-     "amount": 0.8
+     "amount": 0.6
     },
     {
      "id": "edge",
      "op": "band",
      "axis": "y",
      "from": -1.01,
-     "to": -0.45,
+     "to": -0.5,
      "ramp": "ice",
-     "tone": 8.6,
+     "tone": 5.4,
      "faces": [
       "left",
       "right",
       "bottom",
       "front"
-     ],
-     "bevel": {
-      "shadow_ramp": "ice",
-      "shadow_shift": -1.2,
-      "highlight": 1
-     }
+     ]
     },
     {
      "id": "edge_glint",
      "op": "band",
      "axis": "y",
-     "from": -1.01,
-     "to": -0.8,
+     "from": -0.62,
+     "to": -0.42,
      "ramp": "ice",
-     "tone": 11,
+     "tone": 7,
      "faces": [
       "left",
       "right"
@@ -169,69 +163,63 @@
   },
   "fang_tip": {
    "ramp": "ice",
-   "tone": 9.6,
+   "tone": 6.4,
    "brush": {
     "off": true
    },
    "rim": {
-    "light_shift": 1.4,
+    "light_shift": 1.2,
     "dark_shift": -1.0
    }
   },
   "bone": {
    "ramp": "bone",
-   "tone": 8.0,
+   "tone": 3.6,
    "rim": {
-    "light_shift": 1.6,
-    "dark_shift": -2.0,
+    "light_shift": 1.2,
+    "dark_shift": -1.4,
     "outline": "dark"
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
      "id": "grain",
      "op": "noise",
-     "scale": 0.5,
-     "amount": 0.9
-    },
-    {
-     "id": "cracks",
-     "op": "cracks",
-     "scale": 1.2,
-     "width": 0.05,
-     "shift": -2.6
+     "scale": 0.6,
+     "amount": 0.5
     }
    ]
   },
   "bone_dark": {
    "ramp": "bone",
-   "tone": 6.6,
+   "tone": 2.8,
    "rim": {
-    "light_shift": 1.4,
-    "dark_shift": -1.8,
+    "light_shift": 1.0,
+    "dark_shift": -1.2,
     "outline": "dark"
    },
-   "layers": [
-    {
-     "id": "grain",
-     "op": "noise",
-     "scale": 0.5,
-     "amount": 0.9
-    }
-   ]
+   "brush": {
+    "off": true
+   }
   },
   "bone_card": {
    "ramp": "bone",
-   "tone": 8.6,
+   "tone": 4.2,
    "brush": {
     "off": true
    }
   },
   "horn": {
    "ramp": "horn",
-   "tone": 3.4,
+   "tone": 2.0,
    "rim": {
-    "light_shift": 1.2,
+    "light_shift": 1.0,
     "dark_shift": -1.0
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
@@ -246,14 +234,14 @@
   },
   "fur_white": {
    "ramp": "white",
-   "tone": 6.4,
+   "tone": 5.0,
    "rim": {
-    "light_shift": 1.2,
-    "dark_shift": -1.6
+    "light_shift": 1.0,
+    "dark_shift": -1.6,
+    "outline": "dark"
    },
    "brush": {
-    "flow": "x",
-    "rough": 0.8
+    "off": true
    },
    "layers": [
     {
@@ -262,8 +250,7 @@
      "axis": "z",
      "period": 0.5,
      "width": 0.35,
-     "shift": -1.6,
-     "wobble": 0.6,
+     "shift": -1.2,
      "faces": [
       "left",
       "right",
@@ -275,31 +262,31 @@
      "id": "under",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.2
+     "amount": 0.8
     }
    ]
   },
   "fur_white_card": {
    "ramp": "white",
-   "tone": 6.4,
+   "tone": 4.8,
    "brush": {
     "off": true
    },
    "art_key": {
-    "t": "white:8"
+    "t": "white:6"
    },
    "layers": [
     {
      "id": "root",
      "op": "gradient",
      "axis": "y",
-     "amount": -1.6
+     "amount": -1.2
     }
    ]
   },
   "ice_plate": {
    "ramp": "ice",
-   "tone": 6.4,
+   "tone": 4.6,
    "light": 0.8,
    "brush": {
     "off": true
@@ -307,7 +294,7 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.6,
+    "light_shift": 2.0,
     "dark_shift": -1.0
    },
    "layers": [
@@ -316,13 +303,13 @@
      "op": "cracks",
      "scale": 1.0,
      "width": 0.06,
-     "shift": 2.0
+     "shift": 1.6
     }
    ]
   },
   "crystal": {
    "ramp": "ice",
-   "tone": 7.0,
+   "tone": 5.4,
    "light": 0.6,
    "brush": {
     "off": true
@@ -330,8 +317,8 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 3.0,
-    "dark_shift": 1.0
+    "light_shift": 2.4,
+    "dark_shift": 0.6
    },
    "layers": [
     {
@@ -340,7 +327,7 @@
      "axis": "x",
      "from": -0.4,
      "to": 0.4,
-     "shift": -2.6,
+     "shift": -2.0,
      "faces": [
       "front",
       "back"
@@ -352,7 +339,7 @@
      "axis": "z",
      "from": -0.4,
      "to": 0.4,
-     "shift": -2.6,
+     "shift": -2.0,
      "faces": [
       "left",
       "right"
@@ -362,13 +349,13 @@
      "id": "base",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.6
+     "amount": 1.2
     }
    ]
   },
   "crystal_b": {
    "ramp": "ice",
-   "tone": 8.4,
+   "tone": 6.4,
    "light": 0.6,
    "brush": {
     "off": true
@@ -376,8 +363,8 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.6,
-    "dark_shift": 1.0
+    "light_shift": 2.0,
+    "dark_shift": 0.6
    },
    "layers": [
     {
@@ -386,7 +373,7 @@
      "axis": "x",
      "from": -0.35,
      "to": 0.35,
-     "shift": -2.2,
+     "shift": -1.8,
      "faces": [
       "front",
       "back"
@@ -396,7 +383,7 @@
      "id": "base",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.2
+     "amount": 1.0
     }
    ]
   }

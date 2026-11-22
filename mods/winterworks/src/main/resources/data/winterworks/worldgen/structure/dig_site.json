@@ -1,0 +1,7 @@
+{
+  "type": "winterworks:dig_site",
+  "biomes": "#winterworks:has_dig_site",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

@@ -13,7 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin {
     @Inject(method = "canBeAffected", at = @At("HEAD"), cancellable = true)
     private void ww$furImmunity(MobEffectInstance effect, CallbackInfoReturnable<Boolean> cir) {
-        if (ColdSystem.resists((LivingEntity) (Object) this, effect.getEffect())) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        if (!effect.is(dev.lowpix.winterworks.registry.WWEffects.IMMUNITY)
+                && self.hasEffect(dev.lowpix.winterworks.registry.WWEffects.IMMUNITY)) {
+            cir.setReturnValue(false);   // Potion of Immunity: no new effects
+            return;
+        }
+        if (ColdSystem.resists(self, effect.getEffect())) {
             cir.setReturnValue(false);
         }
     }

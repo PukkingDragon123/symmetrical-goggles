@@ -60,6 +60,13 @@ public final class WWEntities {
     public static final EntityType<dev.lowpix.winterworks.boss.FallingIcicleEntity> FALLING_ICICLE = reg("falling_icicle",
             EntityType.Builder.<dev.lowpix.winterworks.boss.FallingIcicleEntity>of(dev.lowpix.winterworks.boss.FallingIcicleEntity::new,
                     MobCategory.MISC).sized(0.5f, 0.9f).clientTrackingRange(8).updateInterval(2));
+    // ---- Amber Age update (docs/AMBER_UPDATE.md)
+    public static final EntityType<dev.lowpix.winterworks.amber.MosquitoEntity> MOSQUITO = reg("mosquito",
+            EntityType.Builder.of(dev.lowpix.winterworks.amber.MosquitoEntity::new, MobCategory.MONSTER).sized(0.5f, 0.4f)
+                    .clientTrackingRange(8));
+    public static final EntityType<dev.lowpix.winterworks.golem.PotGolemEntity> POT_GOLEM = reg("pot_golem",
+            EntityType.Builder.of(dev.lowpix.winterworks.golem.PotGolemEntity::new, MobCategory.MISC).sized(1.4f, 2.7f)
+                    .clientTrackingRange(10));
 
     private WWEntities() {}
 
@@ -71,6 +78,8 @@ public final class WWEntities {
         FabricDefaultAttributeRegistry.register(ICEBREAKER, IcebreakerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(FROST_MAULER, dev.lowpix.winterworks.boss.FrostMaulerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(FROST_ZOMBIE, dev.lowpix.winterworks.bear.FrostZombie.createAttributes());
+        FabricDefaultAttributeRegistry.register(MOSQUITO, dev.lowpix.winterworks.amber.MosquitoEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(POT_GOLEM, dev.lowpix.winterworks.golem.PotGolemEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_POLAR_BEAR, dev.lowpix.winterworks.bear.ZombiePolarBear.createAttributes());
         SpawnPlacements.register(ICEBREAKER, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 IcebreakerEntity::checkIcebreakerSpawnRules);

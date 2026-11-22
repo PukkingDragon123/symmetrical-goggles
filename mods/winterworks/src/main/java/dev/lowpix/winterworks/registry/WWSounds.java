@@ -87,6 +87,29 @@ public final class WWSounds {
     public static final SoundEvent SKULL_IGNITE = reg("block.frost_mauler_skull.ignite");
     public static final SoundEvent SKULL_REVIVE = reg("block.frost_mauler_skull.revive");
 
+    // ---- Amber Age update (docs/AMBER_UPDATE.md)
+    public static final SoundEvent MOSQUITO_BUZZ = reg("entity.mosquito.buzz");
+    public static final SoundEvent MOSQUITO_STAB = reg("entity.mosquito.stab");
+    public static final SoundEvent MOSQUITO_DRINK = reg("entity.mosquito.drink");
+    public static final SoundEvent MOSQUITO_SPIT = reg("entity.mosquito.spit");
+    public static final SoundEvent MOSQUITO_HURT = reg("entity.mosquito.hurt");
+    public static final SoundEvent MOSQUITO_DEATH = reg("entity.mosquito.death");
+    public static final SoundEvent POT_GOLEM_STEP = reg("entity.pot_golem.step");
+    public static final SoundEvent POT_GOLEM_HURT = reg("entity.pot_golem.hurt");
+    public static final SoundEvent POT_GOLEM_DEATH = reg("entity.pot_golem.death");
+    public static final SoundEvent POT_GOLEM_GIGGLE = reg("entity.pot_golem.giggle");
+    public static final SoundEvent POT_GOLEM_SNEEZE = reg("entity.pot_golem.sneeze");
+    public static final SoundEvent POT_GOLEM_HOWL = reg("entity.pot_golem.howl");
+    public static final SoundEvent POT_GOLEM_BEAM = reg("entity.pot_golem.beam");
+    public static final SoundEvent POT_GOLEM_FUSE = reg("entity.pot_golem.fuse");
+    public static final SoundEvent POT_GOLEM_CRACK = reg("entity.pot_golem.crack");
+    public static final SoundEvent POT_GOLEM_SHATTER = reg("entity.pot_golem.shatter");
+    public static final SoundEvent POT_GOLEM_REPAIR = reg("entity.pot_golem.repair");
+    public static final SoundEvent POT_GOLEM_BUILD = reg("entity.pot_golem.build");
+    public static final SoundEvent AMBER_RELEASE = reg("block.amber.release");
+    public static final SoundEvent BLOOD_SPLASH = reg("item.blood.splash");
+    public static final SoundEvent SNIFFER_TAME = reg("entity.sniffer.tame");
+
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
             1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);

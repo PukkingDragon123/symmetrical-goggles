@@ -1,18 +1,18 @@
 {
   "name": "Frost Mauler Skull",
-  "parts": 47,
-  "instances": 47,
-  "faces": 247,
-  "triangles": 494,
-  "vertices_flat": 988,
-  "vertices_unique": 348,
+  "parts": 49,
+  "instances": 49,
+  "faces": 259,
+  "triangles": 518,
+  "vertices_flat": 1036,
+  "vertices_unique": 364,
   "atlas": [
     128,
     256
   ],
-  "atlas_fill": 0.876,
+  "atlas_fill": 0.826,
   "texel_density": 2.0,
-  "colors_used": 33,
+  "colors_used": 32,
   "palette": {
     "bone": [
       "#271e15",
@@ -61,19 +61,19 @@
   },
   "bounds": {
     "min": [
-      -11.407,
-      0.0,
-      -16.554
+      -10.848,
+      -0.0,
+      -17.426
     ],
     "max": [
-      14.39,
-      19.338,
-      13.347
+      13.941,
+      24.588,
+      10.25
     ],
     "size": [
-      25.797,
-      19.338,
-      29.901
+      24.789,
+      24.588,
+      27.676
     ]
   },
   "warnings": [],
@@ -110,6 +110,8 @@
     "jaw",
     "jaw_ramus",
     "tongue",
+    "jaw_flange_l",
+    "jaw_flange_r",
     "teeth_lo_l",
     "teeth_lo_r",
     "teeth_lo_f",

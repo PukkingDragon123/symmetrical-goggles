@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "FWF",
+    "F F"
+  ],
+  "key": {
+    "F": {
+      "item": "winterworks:polar_bear_fur"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "result": {
+    "id": "winterworks:fur_hood",
+    "count": 1
+  }
+}
