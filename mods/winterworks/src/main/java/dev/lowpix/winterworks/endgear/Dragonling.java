@@ -518,25 +518,29 @@ public class Dragonling extends TamableAnimal implements FlyingAnimal {
             e.hurt(src, BREATH_DAMAGE);
             e.igniteForSeconds(5);
         }
-        for (int i = 1; i <= 16; i++) {
-            double d = i * BREATH_RANGE / 16.0;
-            Vec3 p = mouth.add(dir.scale(d));
-            double spread = 0.08 + d * 0.16;
-            level.sendParticles(ParticleTypes.DRAGON_BREATH, p.x, p.y, p.z, 3 + i / 3, spread, spread, spread, 0.01);
-            if (i % 3 == 0) {
-                level.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 2, spread * 0.6, spread * 0.6, spread * 0.6, 0.02);
-            }
-        }
         level.playSound(null, mouth.x, mouth.y, mouth.z, EndSounds.DRAGONLING_BREATH, getSoundSource(), 1.5f, 0.9f + random.nextFloat() * 0.2f);
-        level.broadcastEntityEvent(this, EV_BREATH);
+        level.broadcastEntityEvent(this, EV_BREATH);   // the clip and the fire, drawn by every client (breathParticles)
         rider.displayClientMessage(Component.translatable("message.winterworks.dragonling.breath", getBreath(), MAX_BREATH), true);
         return true;
     }
 
-    /** Where the fire comes from: in front of the head. */
+    /** Where the fire comes from: in front of the head (the teen's long neck carries it well forward). */
     public Vec3 mouth() {
         float yaw = getYRot() * Mth.DEG_TO_RAD;
-        return position().add(-Mth.sin(yaw) * getBbWidth() * 0.62, getBbHeight() * 0.72, Mth.cos(yaw) * getBbWidth() * 0.62);
+        double ahead = isTeen() ? 1.7 : 0.55, up = isTeen() ? 1.5 : 0.45;
+        return position().add(-Mth.sin(yaw) * ahead, up, Mth.cos(yaw) * ahead);
+    }
+
+    /** Client: a gout of dragon fire from the mouth along the rider's look, carried along with the Dragonling. */
+    private void breathParticles() {
+        Vec3 dir = (getFirstPassenger() instanceof Player rider ? rider : this).getViewVector(1f);
+        Vec3 from = mouth();
+        Vec3 carry = new Vec3(getX() - xo, getY() - yo, getZ() - zo);
+        for (int i = 0; i < 60; i++) {
+            Vec3 d = dir.add((random.nextDouble() - 0.5) * 0.35, (random.nextDouble() - 0.5) * 0.35, (random.nextDouble() - 0.5) * 0.35)
+                    .normalize().scale(0.3 + random.nextDouble() * 0.5).add(carry);
+            level().addParticle(i % 6 == 0 ? ParticleTypes.FLAME : ParticleTypes.DRAGON_BREATH, from.x, from.y, from.z, d.x, d.y, d.z);
+        }
     }
 
     /** Within 8 blocks of the mouth and inside the cone, and in sight. */
@@ -590,6 +594,7 @@ public class Dragonling extends TamableAnimal implements FlyingAnimal {
             eatState.start(tickCount);
         } else if (id == EV_BREATH) {
             breathState.start(tickCount);
+            breathParticles();
         } else {
             super.handleEntityEvent(id);
         }
