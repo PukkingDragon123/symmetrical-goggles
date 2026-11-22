@@ -102,6 +102,12 @@ public final class WWEntities {
                     .sized(0.4f, 0.4f).fireImmune().clientTrackingRange(6).updateInterval(2));
     // ---- end 0.4 fixes: Nether
 
+    // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester"; attributes in harvester.HarvesterFeature; no natural spawns)
+    public static final EntityType<dev.lowpix.winterworks.harvester.HarvesterEntity> HARVESTER = reg("harvester",
+            EntityType.Builder.of(dev.lowpix.winterworks.harvester.HarvesterEntity::new, MobCategory.CREATURE).sized(2.0f, 1.9f)
+                    .eyeHeight(1.7f).passengerAttachments(new net.minecraft.world.phys.Vec3(0.0, 2.19, 0.22)).clientTrackingRange(10));
+    // ---- end 0.4 fixes: Harvester
+
     private WWEntities() {}
 
     private static <T extends net.minecraft.world.entity.Entity> EntityType<T> reg(String name, EntityType.Builder<T> b) {

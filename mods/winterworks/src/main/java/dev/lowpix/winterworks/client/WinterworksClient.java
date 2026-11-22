@@ -74,6 +74,9 @@ public final class WinterworksClient implements ClientModInitializer {
         dev.lowpix.winterworks.client.express.ExpressClient.init();
         // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
         dev.lowpix.winterworks.client.soulbull.SoulBullClient.init();
+        // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester", the Amber Age plants and sniffers)
+        dev.lowpix.winterworks.client.harvester.HarvesterClient.init();
+        // ---- end 0.4 fixes: Harvester
         ShowcaseDirector.init();
     }
 }

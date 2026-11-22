@@ -1,0 +1,116 @@
+{
+  "name": "Turtle Shell Armor",
+  "parts": 11,
+  "instances": 11,
+  "faces": 54,
+  "triangles": 108,
+  "vertices_flat": 216,
+  "vertices_unique": 72,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.437,
+  "texel_density": 2.0,
+  "colors_used": 18,
+  "palette": {
+    "carapace": [
+      "#141c0e",
+      "#1f2b14",
+      "#2c3b1b",
+      "#3a4c22",
+      "#4a5f2a",
+      "#5c7333",
+      "#71883d",
+      "#88a04a"
+    ],
+    "seam": [
+      "#5f5428",
+      "#8a7c3e",
+      "#b3a252",
+      "#d4c578",
+      "#ece0a4"
+    ],
+    "plastron": [
+      "#5e5236",
+      "#857552",
+      "#ab9a6e",
+      "#cbbb8c",
+      "#e2d6aa",
+      "#f2eacc"
+    ],
+    "skin": [
+      "#121a0e",
+      "#1b2715",
+      "#26361c",
+      "#334824",
+      "#425c2c",
+      "#527135"
+    ],
+    "sclera": [
+      "#3c3440",
+      "#5a5260",
+      "#7a7280",
+      "#9e96a0",
+      "#c1bbbf",
+      "#dcd7d6",
+      "#efebe8",
+      "#fbf9f6"
+    ],
+    "iris": [
+      "#2a0c04",
+      "#5a2108",
+      "#a0420e",
+      "#d8701c",
+      "#f5ae3e",
+      "#ffd88a",
+      "#ffffff"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -5.75,
+      10.705,
+      -7.75
+    ],
+    "max": [
+      5.75,
+      24.0,
+      3.25
+    ],
+    "size": [
+      11.5,
+      13.295,
+      11.0
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 1.0
+  },
+  "joints": [
+    "carapace",
+    "marginal",
+    "costal",
+    "vertebral",
+    "flank_l",
+    "flank_r",
+    "rear_flare",
+    "plastron",
+    "plastron_plate",
+    "gular",
+    "anal"
+  ],
+  "files": {
+    "turtle_shell_armor.glb": "examples/output/turtle_shell_armor.glb",
+    "turtle_shell_armor.obj": "examples/output/turtle_shell_armor.obj",
+    "turtle_shell_armor.mtl": "examples/output/turtle_shell_armor.mtl",
+    "turtle_shell_armor.bbmodel": "examples/output/turtle_shell_armor.bbmodel",
+    "turtle_shell_armor_texture.png": "examples/output/turtle_shell_armor_texture.png",
+    "turtle_shell_armor_texture_x8.png": "examples/output/turtle_shell_armor_texture_x8.png",
+    "turtle_shell_armor_hero.png": "examples/output/turtle_shell_armor_hero.png",
+    "turtle_shell_armor_sheet.png": "examples/output/turtle_shell_armor_sheet.png",
+    "turtle_shell_armor_turntable.gif": "examples/output/turtle_shell_armor_turntable.gif",
+    "turtle_shell_armor_idle.gif": "examples/output/turtle_shell_armor_idle.gif"
+  }
+}

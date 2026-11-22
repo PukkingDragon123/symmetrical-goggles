@@ -57,7 +57,10 @@
     "HoglinMixin",
     "PiglinBruteAiMixin",
     "StructurePieceAccessor",
-    "FortressCommanderMixin"
+    "FortressCommanderMixin",
+    "harvester.BlockStateLightAccessor",
+    "harvester.PlantAnimateTickMixin",
+    "harvester.SnifferWaterMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -93,7 +96,9 @@
     "client.DaggerPlayerRendererMixin",
     "client.RamPoseMixin",
     "client.RamHandMixin",
-    "client.SoulBarGuiMixin"
+    "client.SoulBarGuiMixin",
+    "harvester.client.SnifferSneezeModelMixin",
+    "harvester.client.SpriteSourcesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

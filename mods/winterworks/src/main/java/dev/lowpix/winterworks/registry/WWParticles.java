@@ -50,6 +50,11 @@ public final class WWParticles {
     public static final SimpleParticleType GOLD_GLINT = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
             Winterworks.id("gold_glint"), FabricParticleTypes.simple());
 
+    // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md: the pitcher plants' sweet scent)
+    public static final SimpleParticleType SWEET_SCENT = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("sweet_scent"), FabricParticleTypes.simple());
+    // ---- end 0.4 fixes: Harvester
+
     private WWParticles() {}
 
     public static void init() {}

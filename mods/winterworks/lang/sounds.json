@@ -246,5 +246,11 @@
   "subtitles.winterworks.entity.soul_bull.pin": "Soul Bull gores",
   "subtitles.winterworks.entity.soul_bull.drain": "Soul Bull drinks souls",
   "subtitles.winterworks.entity.soul_bull.revive": "Soul Bull rises",
-  "subtitles.winterworks.block.soul_bull_skull.ignite": "Skull's eyes kindle"
+  "subtitles.winterworks.block.soul_bull_skull.ignite": "Skull's eyes kindle",
+  "subtitles.winterworks.entity.harvester.ambient": "Harvester rumbles",
+  "subtitles.winterworks.entity.harvester.hurt": "Harvester hurts",
+  "subtitles.winterworks.entity.harvester.death": "Harvester dies",
+  "subtitles.winterworks.entity.harvester.chomp": "Harvester crops",
+  "subtitles.winterworks.entity.harvester.shove": "Harvester shoves",
+  "subtitles.winterworks.entity.sniffer.sneeze": "Sniffer sneezes"
 }

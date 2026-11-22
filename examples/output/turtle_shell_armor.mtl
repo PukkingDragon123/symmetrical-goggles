@@ -1,0 +1,8 @@
+newmtl pixel
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 0
+d 1
+map_Kd turtle_shell_armor_texture.png
+map_d -imfchan m turtle_shell_armor_texture.png

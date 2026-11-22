@@ -1,0 +1,766 @@
+{
+ "name": "Netherite Spear",
+ "description": "The Winterworks Netherite Spear (the Withered Commander's): a long blackened-netherite shaft with gold bands and a crimson-leather grip, a gold butt spike, a gold collar and lugs, a leaf blade with a honed edge and a gold midline, a crimson pennant. Minecraft pixel units, density 4; the grip at the root joint, held like a trident.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 4,
+ "grounded": false,
+ "budget": {
+  "tris": 500,
+  "colors": 48
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.9,
+  "gradient": 0.3,
+  "ao": 0.0
+ },
+ "brush": {
+  "flow": "long",
+  "length": 1.0,
+  "width": 0.25,
+  "rough": 0.4,
+  "overshoot": 0.3,
+  "textures": {
+   "netherite": "metal",
+   "gold": "metal",
+   "crimson": "cloth",
+   "leather": "leather"
+  }
+ },
+ "minecraft": {
+  "fps": 20
+ },
+ "render": {
+  "background": "#3a2a2e",
+  "hero": [
+   -34,
+   16
+  ],
+  "shadow": 0.3
+ },
+ "palette": {
+  "ramps": {
+   "netherite": [
+    "#09070a",
+    "#100d10",
+    "#171316",
+    "#1f191d",
+    "#282025",
+    "#31292e",
+    "#3c3238",
+    "#493e45",
+    "#574b53",
+    "#675b63",
+    "#7a6e76",
+    "#8f848b"
+   ],
+   "gold": [
+    "#2c1503",
+    "#4a2405",
+    "#6e3706",
+    "#94500a",
+    "#b86b0e",
+    "#d68b12",
+    "#eaa91c",
+    "#f6c934",
+    "#fde35c",
+    "#fff399"
+   ],
+   "crimson": [
+    "#16040a",
+    "#25060f",
+    "#370a16",
+    "#4c0e1d",
+    "#631426",
+    "#7c1b2f",
+    "#962539",
+    "#b03243",
+    "#c9444f"
+   ],
+   "leather": [
+    "#120a08",
+    "#1d110c",
+    "#2a1912",
+    "#382218",
+    "#472c1f",
+    "#583827",
+    "#6a4530"
+   ]
+  }
+ },
+ "styles": {
+  "spear_shaft": {
+   "ramp": "netherite",
+   "tone": 4.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.8,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.25,
+     "width": 0.25,
+     "shift": -0.8
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.6,
+     "shift": 2.4,
+     "ramps": [
+      "netherite"
+     ]
+    }
+   ]
+  },
+  "spear_socket": {
+   "ramp": "netherite",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.8,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "dither": 0.0,
+   "layers": [
+    {
+     "id": "hammer",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.55
+    },
+    {
+     "id": "collar_trim",
+     "op": "band",
+     "axis": "y",
+     "from": 0.6,
+     "to": 1.01,
+     "ramp": "gold",
+     "tone": 5.4,
+     "faces": [
+      "sides"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1,
+      "shadow_shift": -1.6,
+      "highlight_shift": 1.6
+     }
+    },
+    {
+     "id": "scuff",
+     "op": "wear",
+     "width": 1,
+     "density": 0.12,
+     "shift": 1.8
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.6,
+     "shift": 2.4,
+     "ramps": [
+      "netherite"
+     ]
+    }
+   ]
+  },
+  "spear_rib": {
+   "ramp": "netherite",
+   "tone": 7.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.8,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "tipward",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.6,
+     "shift": 2.4,
+     "ramps": [
+      "netherite"
+     ]
+    }
+   ]
+  },
+  "spear_blade": {
+   "ramp": "netherite",
+   "tone": 5.0,
+   "light": 0.6,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "e": "netherite:11",
+    "b": "netherite:8",
+    "d": "netherite:5",
+    "g": "gold:5",
+    "G": "gold:7"
+   }
+  },
+  "pennant": {
+   "ramp": "crimson",
+   "tone": 4.6,
+   "light": 0.5,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "c": "crimson:5",
+    "C": "crimson:7",
+    "k": "crimson:3",
+    "g": "gold:6",
+    "G": "gold:7"
+   }
+  },
+  "gold": {
+   "ramp": "gold",
+   "tone": 5.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.2,
+    "dark_shift": -1.8,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "ggloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.7,
+     "shift": 2.0,
+     "ramps": [
+      "gold"
+     ]
+    }
+   ]
+  },
+  "gold_tip": {
+   "ramp": "gold",
+   "tone": 6.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "grip": {
+   "ramp": "leather",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.6,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "wrap",
+     "op": "stripes",
+     "axis": [
+      0,
+      1,
+      0.6
+     ],
+     "period": 0.75,
+     "width": 0.4,
+     "shift": -1.4
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "spear",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    24.0,
+    0.0
+   ],
+   "style": "spear_shaft"
+  },
+  {
+   "id": "shaft",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.0,
+    30.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "style": "spear_shaft"
+  },
+  {
+   "id": "grip",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.5,
+    5.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "grip"
+  },
+  {
+   "id": "grip_ring_0",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.75,
+    0.5,
+    1.75
+   ],
+   "pivot": [
+    0.0,
+    -2.75,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "grip_ring_1",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.75,
+    0.5,
+    1.75
+   ],
+   "pivot": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "band_0",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.5,
+    0.75,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -9.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "band_1",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.5,
+    0.75,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    8.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "band_2",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.5,
+    0.75,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    12.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "ferrule",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.5,
+    1.25,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -15.125,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "butt",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    0.75,
+    1.5,
+    0.75
+   ],
+   "pivot": [
+    0.0,
+    -16.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "gold_tip"
+  },
+  {
+   "id": "butt_tip",
+   "shape": "box",
+   "parent": "butt",
+   "size": [
+    0.5,
+    0.75,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "gold_tip"
+  },
+  {
+   "id": "collar",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    2.0,
+    0.75,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    15.875,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "socket",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    1.5,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    17.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "spear_socket"
+  },
+  {
+   "id": "lug_l",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    0.75,
+    1.25,
+    0.5
+   ],
+   "pivot": [
+    0.7,
+    16.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -58.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "lug_l_tip",
+   "shape": "box",
+   "parent": "lug_l",
+   "size": [
+    0.5,
+    0.75,
+    0.5
+   ],
+   "pivot": [
+    -0.0,
+    1.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    18.0
+   ],
+   "style": "gold_tip"
+  },
+  {
+   "id": "lug_r",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    0.75,
+    1.25,
+    0.5
+   ],
+   "pivot": [
+    -0.7,
+    16.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    58.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "lug_r_tip",
+   "shape": "box",
+   "parent": "lug_r",
+   "size": [
+    0.5,
+    0.75,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    1.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -18.0
+   ],
+   "style": "gold_tip"
+  },
+  {
+   "id": "midrib",
+   "shape": "box",
+   "parent": "spear",
+   "size": [
+    0.5,
+    6.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    21.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "spear_rib"
+  },
+  {
+   "id": "blade",
+   "shape": "card",
+   "parent": "spear",
+   "pivot": [
+    0.0,
+    21.5,
+    0.0
+   ],
+   "style": "spear_blade",
+   "plane": "xy",
+   "art": [
+    "............",
+    ".....ee.....",
+    ".....ee.....",
+    ".....ee.....",
+    "....ebde....",
+    "....ebde....",
+    "....ebde....",
+    "...ebbdde...",
+    "...ebbdde...",
+    "...ebbdde...",
+    "..ebbbddde..",
+    "..ebbbddde..",
+    "..eGbbddge..",
+    "..bGbbddgd..",
+    ".ebGbbddgde.",
+    ".ebGbbddgde.",
+    ".ebGbbddgde.",
+    "ebbGbbddgdde",
+    "ebbGbbddgdde",
+    "ebbGbbddgdde",
+    "ebbGbbddgdde",
+    "ebbGbbddgdde",
+    ".ebGbbddgde.",
+    ".ebGbbddgde.",
+    "..bGbbddgd..",
+    "..eGbbddge..",
+    "...bbbddd...",
+    "...ebbdde..."
+   ]
+  },
+  {
+   "id": "pennant",
+   "shape": "card",
+   "parent": "spear",
+   "pivot": [
+    -0.6,
+    15.0,
+    0.0
+   ],
+   "offset": [
+    -1.125,
+    -1.875,
+    0.0
+   ],
+   "style": "pennant",
+   "plane": "xy",
+   "art": [
+    "ggggggggg",
+    "CCCCccckk",
+    "CCCCGcckk",
+    "CCCGGGckk",
+    "CCCGGGckk",
+    "CCCCGcckk",
+    "CCCCccckk",
+    "CCCCccckk",
+    "CCCCccckk",
+    "CCCCccckk",
+    "CCCCccckk",
+    "CCCC.cckk",
+    "CCC...ckk",
+    "CC.....kk",
+    "C.......k"
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "pennant",
+     "osc": {
+      "amp": 18,
+      "cycles": 2,
+      "phase": 0.0
+     },
+     "axis": "y"
+    },
+    {
+     "part": "pennant",
+     "osc": {
+      "amp": 5,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "z"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "winterworks:block/hydrothermal_vent",
+        "y": 0
+      },
+      {
+        "model": "winterworks:block/hydrothermal_vent",
+        "y": 90
+      },
+      {
+        "model": "winterworks:block/hydrothermal_vent",
+        "y": 180
+      },
+      {
+        "model": "winterworks:block/hydrothermal_vent",
+        "y": 270
+      }
+    ]
+  }
+}

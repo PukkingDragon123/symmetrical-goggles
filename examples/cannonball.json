@@ -1,0 +1,228 @@
+{
+ "name": "Cannonball",
+ "description": "The Winterworks Cannonball: a round shot of black cast iron with a dull sheen. Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "grounded": false,
+ "budget": {
+  "tris": 60,
+  "colors": 16
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.9,
+  "gradient": 0.3,
+  "ao": 0.0
+ },
+ "minecraft": {
+  "fps": 20
+ },
+ "render": {
+  "background": "#22303a",
+  "hero": [
+   -30,
+   20
+  ],
+  "shadow": 0.0
+ },
+ "palette": {
+  "ramps": {
+   "iron": [
+    "#121216",
+    "#1b1b21",
+    "#26262d",
+    "#33333b",
+    "#43434b",
+    "#57575f",
+    "#6e6e75",
+    "#8a8a90"
+   ],
+   "rust": [
+    "#2a140c",
+    "#4a2412",
+    "#6a3618"
+   ]
+  }
+ },
+ "styles": {
+  "iron": {
+   "ramp": "iron",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.2,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "seam",
+     "op": "band",
+     "axis": "y",
+     "from": -0.06,
+     "to": 0.06,
+     "shift": -0.8,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "rust",
+     "op": "patches",
+     "scale": 1.0,
+     "threshold": 0.6,
+     "ramp": "rust",
+     "tone": 1.2,
+     "space": "world",
+     "max_light": -0.2
+    },
+    {
+     "id": "sheen",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.5,
+     "shift": 1.8
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "ball",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    24.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "core",
+   "shape": "box",
+   "parent": "ball",
+   "size": [
+    5.0,
+    5.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "slab_x",
+   "shape": "box",
+   "parent": "ball",
+   "size": [
+    6.0,
+    4.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "slab_y",
+   "shape": "box",
+   "parent": "ball",
+   "size": [
+    4.0,
+    6.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "slab_z",
+   "shape": "box",
+   "parent": "ball",
+   "size": [
+    4.0,
+    4.0,
+    6.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "iron"
+  }
+ ],
+ "animations": {
+  "spin": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "ball",
+     "axis": "x",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.125,
+       45.0
+      ],
+      [
+       0.25,
+       90.0
+      ],
+      [
+       0.375,
+       135.0
+      ],
+      [
+       0.5,
+       180.0
+      ],
+      [
+       0.625,
+       225.0
+      ],
+      [
+       0.75,
+       270.0
+      ],
+      [
+       0.875,
+       315.0
+      ],
+      [
+       1.0,
+       360.0
+      ]
+     ],
+     "ease": "linear"
+    }
+   ]
+  }
+ }
+}

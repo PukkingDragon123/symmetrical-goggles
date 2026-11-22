@@ -1,0 +1,8 @@
+newmtl pixel
+Ka 0 0 0
+Kd 1 1 1
+Ks 0 0 0
+illum 0
+d 1
+map_Kd withered_commander_texture.png
+map_d -imfchan m withered_commander_texture.png

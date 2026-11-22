@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "extended=true": [
+      {
+        "model": "winterworks:block/tube_worms",
+        "y": 0
+      },
+      {
+        "model": "winterworks:block/tube_worms",
+        "y": 90
+      },
+      {
+        "model": "winterworks:block/tube_worms",
+        "y": 180
+      },
+      {
+        "model": "winterworks:block/tube_worms",
+        "y": 270
+      }
+    ],
+    "extended=false": [
+      {
+        "model": "winterworks:block/tube_worms_retracted",
+        "y": 0
+      },
+      {
+        "model": "winterworks:block/tube_worms_retracted",
+        "y": 90
+      },
+      {
+        "model": "winterworks:block/tube_worms_retracted",
+        "y": 180
+      },
+      {
+        "model": "winterworks:block/tube_worms_retracted",
+        "y": 270
+      }
+    ]
+  }
+}

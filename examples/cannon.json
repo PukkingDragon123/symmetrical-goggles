@@ -1,0 +1,1173 @@
+{
+ "name": "Cannon",
+ "description": "The Winterworks Cannon: an iron-banded bronze barrel on a swivelling oak yoke over an iron turntable and an oak deck. Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 500,
+  "colors": 40
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.85,
+  "gradient": 0.4,
+  "ao": 0.5,
+  "ao_height": 4.0
+ },
+ "brush": {
+  "flow": "horizontal",
+  "length": 1.5,
+  "width": 0.5,
+  "rough": 0.45,
+  "overshoot": 0.3,
+  "textures": {
+   "oak": "wood",
+   "bronze": "metal",
+   "iron": "metal"
+  }
+ },
+ "minecraft": {
+  "fps": 24
+ },
+ "render": {
+  "background": "#1a2633",
+  "hero": [
+   -38,
+   22
+  ],
+  "shadow": 0.45
+ },
+ "palette": {
+  "ramps": {
+   "bronze": [
+    "#1f1a10",
+    "#33281a",
+    "#4c3a20",
+    "#6a5128",
+    "#8a6a32",
+    "#a8843e",
+    "#c6a052",
+    "#dfc07a",
+    "#f2e0aa"
+   ],
+   "patina": [
+    "#16231e",
+    "#22382f",
+    "#335244",
+    "#4a6e5c"
+   ],
+   "iron": [
+    "#121216",
+    "#1b1b21",
+    "#26262d",
+    "#33333b",
+    "#43434b",
+    "#57575f",
+    "#6e6e75",
+    "#8a8a90"
+   ],
+   "oak": [
+    "#1c120b",
+    "#2a1b10",
+    "#3a2716",
+    "#4d351e",
+    "#614427",
+    "#775532",
+    "#8e683e"
+   ]
+  }
+ },
+ "styles": {
+  "oak": {
+   "ramp": "oak",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "long"
+   }
+  },
+  "deck": {
+   "ramp": "oak",
+   "tone": 3.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "x"
+   },
+   "layers": [
+    {
+     "id": "planks",
+     "op": "stripes",
+     "axis": "z",
+     "period": 3.5,
+     "width": 0.12,
+     "shift": -1.4,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "plank_ends",
+     "op": "stripes",
+     "axis": "z",
+     "period": 3.5,
+     "width": 0.12,
+     "shift": -1.4,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "bolts",
+     "op": "rivets",
+     "inset": 1,
+     "spacing": 7,
+     "highlight": 2.0,
+     "shadow": -1.2,
+     "faces": [
+      "front",
+      "back",
+      "left",
+      "right"
+     ]
+    }
+   ]
+  },
+  "cheek": {
+   "ramp": "oak",
+   "tone": 3.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -0.8,
+     "faces": [
+      "left",
+      "right"
+     ]
+    }
+   ]
+  },
+  "iron": {
+   "ramp": "iron",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "bolt",
+     "op": "rivets",
+     "inset": 1,
+     "spacing": 6,
+     "highlight": 2.0,
+     "shadow": -1.0,
+     "min_size": 4
+    }
+   ]
+  },
+  "iron_plate": {
+   "ramp": "iron",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "ring",
+     "op": "panel",
+     "inset": 1,
+     "shift": -0.8,
+     "highlight": 1.2,
+     "shadow": -1.0,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "bronze": {
+   "ramp": "bronze",
+   "tone": 4.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.8,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "patina",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.56,
+     "ramp": "patina",
+     "tone": 2.6,
+     "space": "world",
+     "max_light": 0.1,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 3,
+     "inset": 0,
+     "density": 0.6,
+     "shift": 1.6
+    }
+   ]
+  },
+  "band": {
+   "ramp": "iron",
+   "tone": 2.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.4,
+     "shift": 1.6
+    }
+   ]
+  },
+  "muzzle": {
+   "ramp": "bronze",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": "center",
+     "art": [
+      ".kkkk.",
+      "kKKKKk",
+      "kKKKKk",
+      "kKKKKk",
+      "kKKKKk",
+      ".kkkk."
+     ],
+     "key": {
+      "k": "iron:1",
+      "K": "iron:0"
+     }
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "base",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "oak"
+  },
+  {
+   "id": "deck",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    14.0,
+    2.5,
+    14.0
+   ],
+   "pivot": [
+    0.0,
+    1.25,
+    0.0
+   ],
+   "style": "deck"
+  },
+  {
+   "id": "corner0",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2.5,
+    3.0,
+    2.5
+   ],
+   "pivot": [
+    -6.0,
+    1.5,
+    -6.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "corner1",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2.5,
+    3.0,
+    2.5
+   ],
+   "pivot": [
+    6.0,
+    1.5,
+    -6.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "corner2",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2.5,
+    3.0,
+    2.5
+   ],
+   "pivot": [
+    -6.0,
+    1.5,
+    6.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "corner3",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    2.5,
+    3.0,
+    2.5
+   ],
+   "pivot": [
+    6.0,
+    1.5,
+    6.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "turntable",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    10.0,
+    1.0,
+    10.0
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "iron_plate"
+  },
+  {
+   "id": "turntable_t",
+   "shape": "box",
+   "parent": "base",
+   "size": [
+    9.0,
+    0.5,
+    9.0
+   ],
+   "pivot": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "iron_plate"
+  },
+  {
+   "id": "yoke",
+   "shape": "bone",
+   "parent": "base",
+   "pivot": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "style": "oak"
+  },
+  {
+   "id": "swivel",
+   "shape": "box",
+   "parent": "yoke",
+   "size": [
+    6.0,
+    1.5,
+    6.0
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "cheek_l",
+   "shape": "box",
+   "parent": "yoke",
+   "size": [
+    1.5,
+    6.5,
+    7.0
+   ],
+   "pivot": [
+    3.75,
+    4.5,
+    0.0
+   ],
+   "style": "cheek"
+  },
+  {
+   "id": "cap_l",
+   "shape": "box",
+   "parent": "yoke",
+   "size": [
+    2.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    3.75,
+    8.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "strap_l",
+   "shape": "box",
+   "parent": "yoke",
+   "size": [
+    2.0,
+    6.5,
+    1.0
+   ],
+   "pivot": [
+    3.75,
+    4.5,
+    -2.5
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "cheek_r",
+   "shape": "box",
+   "parent": "yoke",
+   "size": [
+    1.5,
+    6.5,
+    7.0
+   ],
+   "pivot": [
+    -3.75,
+    4.5,
+    0.0
+   ],
+   "style": "cheek"
+  },
+  {
+   "id": "cap_r",
+   "shape": "box",
+   "parent": "yoke",
+   "size": [
+    2.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    -3.75,
+    8.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "strap_r",
+   "shape": "box",
+   "parent": "yoke",
+   "size": [
+    2.0,
+    6.5,
+    1.0
+   ],
+   "pivot": [
+    -3.75,
+    4.5,
+    -2.5
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "barrel",
+   "shape": "bone",
+   "parent": "yoke",
+   "pivot": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "oak"
+  },
+  {
+   "id": "trunnion",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    9.0,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "breech",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    5.0,
+    5.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -3.0
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "breech_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.5,
+    4.5,
+    3.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -3.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "reinforce",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.5,
+    4.5,
+    7.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    2.5
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "reinforce_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.0,
+    4.0,
+    6.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    2.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "chase",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.0,
+    4.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    8.5
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "chase_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    3.5,
+    3.5,
+    4.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    8.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "muzzle",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    5.0,
+    5.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    11.75
+   ],
+   "style": "muzzle"
+  },
+  {
+   "id": "muzzle_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.5,
+    4.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    11.75
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "cascabel",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    1.0,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -5.75
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "knob",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    2.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -7.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "bronze"
+  },
+  {
+   "id": "band0",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    5.5,
+    5.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -4.0
+   ],
+   "style": "band"
+  },
+  {
+   "id": "band0_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    5.0,
+    5.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -4.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "band"
+  },
+  {
+   "id": "band1",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    5.0,
+    5.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -0.5
+   ],
+   "style": "band"
+  },
+  {
+   "id": "band1_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.5,
+    4.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -0.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "band"
+  },
+  {
+   "id": "band2",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.5,
+    4.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    6.0
+   ],
+   "style": "band"
+  },
+  {
+   "id": "band2_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.0,
+    4.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    6.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "band"
+  },
+  {
+   "id": "band3",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.5,
+    4.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    10.75
+   ],
+   "style": "band"
+  },
+  {
+   "id": "band3_r",
+   "shape": "box",
+   "parent": "barrel",
+   "size": [
+    4.0,
+    4.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    10.75
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "band"
+  }
+ ],
+ "animations": {
+  "fire": {
+   "length": 0.6,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "barrel",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.05,
+       [
+        -7.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.3,
+       [
+        -2.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "barrel",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.05,
+       [
+        0.0,
+        0.0,
+        -2.2
+       ],
+       "out"
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        -0.6
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "yoke",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.05,
+       [
+        0.0,
+        0.0,
+        -0.3
+       ],
+       "out"
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "yoke",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.05,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.0917,
+       [
+        0,
+        1.718,
+        0
+       ]
+      ],
+      [
+       0.1333,
+       [
+        0,
+        -1.181,
+        0
+       ]
+      ],
+      [
+       0.175,
+       [
+        0,
+        0.812,
+        0
+       ]
+      ],
+      [
+       0.2167,
+       [
+        0,
+        -0.558,
+        0
+       ]
+      ],
+      [
+       0.2583,
+       [
+        0,
+        0.383,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        -0.263,
+        0
+       ]
+      ],
+      [
+       0.3417,
+       [
+        0,
+        0.181,
+        0
+       ]
+      ],
+      [
+       0.3833,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    }
+   ]
+  },
+  "idle": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": []
+  }
+ }
+}

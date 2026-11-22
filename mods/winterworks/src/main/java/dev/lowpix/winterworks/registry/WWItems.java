@@ -143,6 +143,13 @@ public final class WWItems {
             new SpawnEggItem(WWEntities.WITHERED_COMMANDER, 0x1F1C21, 0x6B5A70, new Item.Properties()));
     // ---- end 0.4 fixes: Nether
 
+    // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester"; creative tab entries: harvester.HarvesterFeature)
+    public static final Item HARVESTER_EGG = reg("harvester_egg", new BlockItem(WWBlocks.HARVESTER_EGG,
+            new Item.Properties().rarity(Rarity.RARE)));
+    public static final Item HARVESTER_SPAWN_EGG = reg("harvester_spawn_egg",
+            new SpawnEggItem(WWEntities.HARVESTER, 0x6F8A4E, 0xD8B25A, new Item.Properties()));
+    // ---- end 0.4 fixes: Harvester
+
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks"))
                     .icon(() -> new ItemStack(ICEBREAKER_HORN))
