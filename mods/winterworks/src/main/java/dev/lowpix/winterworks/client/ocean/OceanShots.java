@@ -345,7 +345,7 @@ final class OceanShots {
         for (int i = 1; i <= n; i++) {
             wet += water(level, eye.add(look.subtract(eye).scale(i / (n + 1.0)))) ? 1 : 0;
         }
-        return wet >= n - 1;
+        return wet >= n - 3;
     }
 
     /** Whether `eye` is in open water and most of the way to `look` is water too. */
@@ -617,9 +617,11 @@ final class OceanShots {
                 int design = ((dev.lowpix.winterworks.mixin.ocean.WingRoomAccessor) p).ww$mainDesign();
                 double[] chest = design == 0 ? new double[]{10.5, 1.5, 14.5} : new double[]{11.5, 0.5, 16.5};
                 Vec3 target = MonumentRework.worldVec(p, chest[0], chest[1], chest[2]);
-                for (double[] o : new double[][]{{0, 3, -7}, {-4, 3, -6}, {4, 3, -6}, {0, 2, -5}, {-6, 2.5, -2}, {6, 2.5, -2}, {0, 4, -9}}) {
+                for (double[] o : new double[][]{{0, 3, -7}, {-4, 3, -6}, {4, 3, -6}, {0, 2, -5}, {-6, 2.5, -2}, {6, 2.5, -2}, {0, 4, -9},
+                        {0, 2.5, -3}, {-3, 2.5, -3}, {3, 2.5, -3}, {0, 5, -4}, {-2, 1.5, -4}, {2, 1.5, -4}}) {
                     Vec3 eye = MonumentRework.worldVec(p, chest[0] + o[0], chest[1] + o[1], chest[2] + o[2]);
                     if (!VIEWS.containsKey("monument_wing") && water(level, eye) && roofed(level, eye) && clearLine(level, eye, target)) {
+                        Winterworks.LOG.info("oceanshots: wing view from offset {}", java.util.Arrays.toString(o));
                         VIEWS.put("monument_wing", new Vec3[]{eye, target});
                     }
                 }
