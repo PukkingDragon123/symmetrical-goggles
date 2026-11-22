@@ -64,6 +64,7 @@ public final class Winterworks implements ModInitializer {
         dev.lowpix.winterworks.endmob.EndMobFeature.init();
         dev.lowpix.winterworks.endgear.EndGearFeature.init();
         dev.lowpix.winterworks.endboss.EndBossFeature.init();
+        dev.lowpix.winterworks.end.MeteorShower.init();   // ---- section 16: falling meteorites
         // ---- Tides & Treasures (docs/OCEAN_UPDATE.md)
         dev.lowpix.winterworks.registry.OceanSounds.init();
         dev.lowpix.winterworks.registry.OceanBlocks.init();

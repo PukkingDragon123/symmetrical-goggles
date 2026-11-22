@@ -34,6 +34,10 @@ public final class EndEntities {
     public static final EntityType<dev.lowpix.winterworks.endgear.Dragonling> DRAGONLING = reg("dragonling",
             EntityType.Builder.of(dev.lowpix.winterworks.endgear.Dragonling::new, MobCategory.CREATURE).sized(0.8f, 0.7f)
                     .fireImmune().clientTrackingRange(10));
+    // ---- section 16: falling meteorites (end.FallingMeteorite, end.MeteorShower)
+    public static final EntityType<dev.lowpix.winterworks.end.FallingMeteorite> FALLING_METEORITE = reg("falling_meteorite",
+            EntityType.Builder.<dev.lowpix.winterworks.end.FallingMeteorite>of(dev.lowpix.winterworks.end.FallingMeteorite::new,
+                    MobCategory.MISC).sized(1.0f, 1.0f).fireImmune().clientTrackingRange(16).updateInterval(2));
 
     private EndEntities() {}
 

@@ -65,6 +65,7 @@ public final class WinterworksClient implements ClientModInitializer {
         dev.lowpix.winterworks.client.endmob.EndMobClient.init();
         dev.lowpix.winterworks.client.endgear.EndGearClient.init();
         dev.lowpix.winterworks.client.endboss.EndBossClient.init();
+        dev.lowpix.winterworks.client.end.MeteorClient.init();   // ---- section 16: falling meteorites
         dev.lowpix.winterworks.client.ocean.OceanWorldClient.init();
         dev.lowpix.winterworks.client.oceanmob.OceanMobClient.init();
         dev.lowpix.winterworks.client.oceangear.OceanGearClient.init();

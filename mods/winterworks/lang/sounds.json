@@ -188,5 +188,7 @@
   "subtitles.winterworks.entity.pot_golem.wind_burst": "Pot Golem gusts",
   "subtitles.winterworks.entity.pot_golem.shield": "Pot Golem blocks",
   "subtitles.winterworks.entity.pot_golem.stash": "Pot Golem stashes an item",
-  "subtitles.winterworks.entity.pot_golem.throw": "Pot Golem throws a potion"
+  "subtitles.winterworks.entity.pot_golem.throw": "Pot Golem throws a potion",
+  "subtitles.winterworks.entity.falling_meteorite.whistle": "Meteor whistles",
+  "subtitles.winterworks.entity.falling_meteorite.impact": "Meteor crashes"
 }
