@@ -634,7 +634,8 @@ public class SoulBull extends AbstractHorse {
                 }
             }
         }
-        double moved = ramLastPos == null ? 0 : position().subtract(ramLastPos).horizontalDistance();
+        Vec3 from = ramLastPos == null ? position() : ramLastPos;
+        double moved = position().subtract(from).horizontalDistance();
         ramLastPos = position();
         boolean open, over;
         if (riderDriven) {   // open for as long as the rider's dash is still charging along
@@ -646,7 +647,7 @@ public class SoulBull extends AbstractHorse {
             over = modeTicks >= RAM_TICKS;
         }
         if (open) {
-            LivingEntity victim = findVictim();
+            LivingEntity victim = findVictim(from);
             if (victim != null) {
                 startPin(victim);
                 return;
@@ -665,11 +666,19 @@ public class SoulBull extends AbstractHorse {
         setXRot(0f);
     }
 
-    /** The nearest living thing caught in front of its horns (never its rider, its kin or, when tame, its owner). */
+    /**
+     * The first living thing its horns swept through since `from` (its position last tick: a ridden bull's moves arrive
+     * from its rider's client and can jump a few blocks at once), never its rider, its kin or, when tame, its owner.
+     */
     @Nullable
-    private LivingEntity findVictim() {
-        Vec3 c = position().add(forward().scale(getBbWidth() * 0.5 + 0.8));
-        AABB box = new AABB(c.x - 0.85, getY() + 0.1, c.z - 0.85, c.x + 0.85, getY() + 1.7, c.z + 0.85);
+    private LivingEntity findVictim(Vec3 from) {
+        if (from.distanceToSqr(position()) > 100) {
+            from = position();   // teleported, not charged
+        }
+        Vec3 f = forward().scale(getBbWidth() * 0.5 + 0.8);
+        Vec3 c = from.add(f), d = position().add(f);
+        AABB box = new AABB(Math.min(c.x, d.x) - 0.85, getY() + 0.1, Math.min(c.z, d.z) - 0.85, Math.max(c.x, d.x) + 0.85, getY() + 1.7,
+                Math.max(c.z, d.z) + 0.85);
         List<LivingEntity> hits = level().getEntitiesOfClass(LivingEntity.class, box, e -> e != this && e.isAlive() && e.attackable()
                 && !(e instanceof ArmorStand) && !(e instanceof SoulBull) && !hasPassenger(e) && e.getVehicle() != this
                 && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(e) && !isFriend(e));
