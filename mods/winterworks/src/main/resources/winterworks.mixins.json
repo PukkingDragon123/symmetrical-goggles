@@ -55,7 +55,12 @@
     "DaggerSwingMixin",
     "harvester.BlockStateLightAccessor",
     "harvester.PlantAnimateTickMixin",
-    "harvester.SnifferWaterMixin"
+    "harvester.SnifferWaterMixin",
+    "ocean.OceanBiomeBuilderMixin",
+    "ocean.MonumentBuildingMixin",
+    "ocean.MonumentPieceMixin",
+    "ocean.WingRoomAccessor",
+    "ocean.DeepOceanStructureMixin"
   ],
   "client": [
     "client.GameRendererMixin",

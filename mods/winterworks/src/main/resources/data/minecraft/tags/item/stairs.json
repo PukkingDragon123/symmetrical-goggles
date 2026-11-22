@@ -4,6 +4,9 @@
     "winterworks:polished_obsidian_stairs",
     "winterworks:obsidian_brick_stairs",
     "winterworks:obsidian_tile_stairs",
-    "winterworks:meteorite_brick_stairs"
+    "winterworks:meteorite_brick_stairs",
+    "winterworks:ashstone_stairs",
+    "winterworks:polished_ashstone_stairs",
+    "winterworks:ashstone_brick_stairs"
   ]
 }

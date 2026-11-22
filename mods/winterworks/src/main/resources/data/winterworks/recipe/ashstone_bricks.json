@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "winterworks:polished_ashstone"
+    }
+  },
+  "result": {
+    "id": "winterworks:ashstone_bricks",
+    "count": 4
+  }
+}

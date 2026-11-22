@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "winterworks:block/barnacles"
+      },
+      {
+        "model": "winterworks:block/barnacles",
+        "y": 90
+      },
+      {
+        "model": "winterworks:block/barnacles",
+        "y": 180
+      },
+      {
+        "model": "winterworks:block/barnacles",
+        "y": 270
+      }
+    ]
+  }
+}

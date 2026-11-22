@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "winterworks:ashstone"
+  },
+  "result": {
+    "id": "winterworks:polished_ashstone_stairs",
+    "count": 1
+  }
+}

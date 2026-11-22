@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:ashstone_brick_slab"
+    }
+  },
+  "result": {
+    "id": "winterworks:chiseled_ashstone",
+    "count": 1
+  }
+}

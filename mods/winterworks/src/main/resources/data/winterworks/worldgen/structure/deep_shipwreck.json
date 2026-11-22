@@ -1,0 +1,7 @@
+{
+  "type": "winterworks:deep_shipwreck",
+  "biomes": "#winterworks:has_deep_shipwreck",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

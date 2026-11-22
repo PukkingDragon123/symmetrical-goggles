@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "winterworks:sunken_treasure",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 14,
+    "separation": 5,
+    "salt": 20261212,
+    "exclusion_zone": {
+      "other_set": "minecraft:ocean_monuments",
+      "chunk_count": 4
+    }
+  }
+}

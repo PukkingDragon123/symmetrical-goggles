@@ -1,0 +1,7 @@
+{
+  "type": "winterworks:sunken_treasure",
+  "biomes": "#winterworks:has_sunken_treasure",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

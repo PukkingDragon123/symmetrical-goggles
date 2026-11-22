@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "winterworks:whale_skeleton",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 20,
+    "separation": 7,
+    "salt": 20261213,
+    "exclusion_zone": {
+      "other_set": "minecraft:ocean_monuments",
+      "chunk_count": 4
+    }
+  }
+}

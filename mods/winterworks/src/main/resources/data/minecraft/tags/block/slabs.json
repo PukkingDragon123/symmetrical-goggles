@@ -4,6 +4,9 @@
     "winterworks:polished_obsidian_slab",
     "winterworks:obsidian_brick_slab",
     "winterworks:obsidian_tile_slab",
-    "winterworks:meteorite_brick_slab"
+    "winterworks:meteorite_brick_slab",
+    "winterworks:ashstone_slab",
+    "winterworks:polished_ashstone_slab",
+    "winterworks:ashstone_brick_slab"
   ]
 }
