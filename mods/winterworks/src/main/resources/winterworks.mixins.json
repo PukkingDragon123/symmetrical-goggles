@@ -30,11 +30,13 @@
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "FoodDataMixin",
-    "HexedPlayerMixin"
+    "HexedPlayerMixin",
+    "endmob.EffectParticlesAccessor"
   ],
   "client": [
     "client.GameRendererMixin",
-    "client.CurseMouseHandlerMixin"
+    "client.CurseMouseHandlerMixin",
+    "endmob.EndGlowLightMixin"
   ],
   "injectors": {
     "defaultRequire": 1
