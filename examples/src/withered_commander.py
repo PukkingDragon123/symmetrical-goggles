@@ -18,7 +18,7 @@ The rest pose holds the spear upright in front of the right hip: the grip (bone 
 the blade's tip at (-7.54, 54.4, 7.82) = Minecraft model (-7.54, -30.4, -7.82), 31.5 px up the spear's local +Y from
 the grip (Minecraft: local -Y). The lunge's thrust reaches about 60 px (3.7 blocks) ahead. In the `ride` pose the hips
 (the bottom of the pelvis and belt) sit at y = 17.55 (the hip joint at 19.24): put that on the Soul Bull's `rider`
-locator (the top of its saddle, y = 23 in the bull's model), i.e. the commander's feet origin 17.55 px (1.1 blocks)
+locator (the top of its saddle, y = 35.25 in the bull's model), i.e. the commander's feet origin 17.55 px (1.1 blocks)
 below the seat.
 
 Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
@@ -786,11 +786,11 @@ def animate(spec):
                          ] + cloth(L, 1.8, 1, 0.0, bias=6) + embers(L),
                          lift=[[0, 0], [L * 0.25, 0.4], [L * 0.5, 0], [L * 0.75, 0.4], [L, 0]])
 
-    # ride: sitting a Soul Bull, the hips on the saddle: thighs forward and out round its ribs, the shins down its
+    # ride: sitting a Soul Bull, the hips on the saddle: thighs spread wide over its barrel, the shins down its
     # flanks, the left fist low on the reins, the spear upright, the cape spread over the bull's back
     L = 2.0
-    SEAT = add(leg(1, -56, 60, -12, 32, 8), leg(-1, -56, 60, -12, 32, 8), side("shin", 1, 0, 0, -20),
-               side("shin", -1, 0, 0, -20), r("body", -4), r("chest", 3),
+    SEAT = add(leg(1, -30, 30, -10, 68, 6), leg(-1, -30, 30, -10, 68, 6), side("shin", 1, 0, 0, -44),
+               side("shin", -1, 0, 0, -44), r("body", -4), r("chest", 3),
                arm(1, -34, 8, 0, -38, 0), arm(-1, -6, 0, 0, -4, 0),
                r("cape", 60), r("cape_1", -36), r("tasset_l", -14, 0, 10), r("tasset_r", -14, 0, -10),
                paul(1, 3), paul(-1, 3))
