@@ -58,7 +58,7 @@ RAMPS = {
     "iron": ["#121216", "#1b1b21", "#26262d", "#33333b", "#43434b", "#57575f", "#6e6e75", "#8a8a90"],
     "oak": ["#1c120b", "#2a1b10", "#3a2716", "#4d351e", "#614427", "#775532", "#8e683e"],
     # the turtle shell: green-olive scutes, pale seams, a cream plastron, dark skin in the openings
-    "carapace": ["#141f0e", "#1f3015", "#2b421c", "#385624", "#476b2d", "#588237", "#6d9a42", "#86b351"],
+    "carapace": ["#141c0e", "#1f2b14", "#2c3b1b", "#3a4c22", "#4a5f2a", "#5c7333", "#71883d", "#88a04a"],
     "seam": ["#5f5428", "#8a7c3e", "#b3a252", "#d4c578", "#ece0a4"],
     "plastron": ["#5e5236", "#857552", "#ab9a6e", "#cbbb8c", "#e2d6aa", "#f2eacc"],
     "skin": ["#121a0e", "#1b2715", "#26361c", "#334824", "#425c2c", "#527135"],
@@ -258,3 +258,30 @@ def mod_args(argv, default_spec):
 
 def res_dir(mod):
     return os.path.join(mod, "src", "main", "resources", "assets", "winterworks")
+
+
+def builtin_item(particle, gui_scale=0.625, gui_rot=(30, 225, 0), gui_y=0.0):
+    """An item drawn by a BuiltinItemRenderer in the item's 0..1 cube (the block-entity transform), with vanilla
+    block-like display transforms."""
+    s = lambda k: [k, k, k]  # noqa: E731
+    return {"parent": "minecraft:builtin/entity", "gui_light": "side", "textures": {"particle": particle},
+            "display": {
+                "gui": {"rotation": list(gui_rot), "translation": [0, gui_y, 0], "scale": s(gui_scale)},
+                "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": s(0.25)},
+                "fixed": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": s(0.5)},
+                "head": {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": s(1.0)},
+                "thirdperson_righthand": {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": s(0.375)},
+                "thirdperson_lefthand": {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": s(0.375)},
+                "firstperson_righthand": {"rotation": [0, 45, 0], "translation": [0, 0, 0], "scale": s(0.4)},
+                "firstperson_lefthand": {"rotation": [0, 225, 0], "translation": [0, 0, 0], "scale": s(0.4)},
+            }}
+
+
+def write_be_block(mod, name, particle, **item_kw):
+    """A block drawn by its block-entity renderer: a particle-only block model, a one-variant blockstate (give the
+    block a facing and turn it in the renderer) and a builtin item model with display transforms."""
+    res = res_dir(mod)
+    write_json(os.path.join(res, "models", "block", name + ".json"), {"textures": {"particle": particle}})
+    write_json(os.path.join(res, "blockstates", name + ".json"),
+               {"variants": {"": {"model": f"winterworks:block/{name}"}}})
+    write_json(os.path.join(res, "models", "item", name + ".json"), builtin_item(particle, **item_kw))
