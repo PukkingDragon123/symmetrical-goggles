@@ -189,26 +189,34 @@ Structures: `deep_shipwreck`, `sunken_treasure`, `whale_skeleton`. Dimension: `w
 
 ## 12. Art notes for the Java side (creatures)
 Lowpix coordinates (Y up, front +Z, feet at y=0); MC model space is (x, 24-y, -z). Draw every creature with
-`entityCutoutNoCull` (cards); glow layers with `RenderType.eyes(<name>_glow.png)` full-bright.
+`entityCutoutNoCull` (cards); glow layers with `RenderType.eyes(<name>_glow.png)` full-bright. The creatures are in
+the vanilla mob style at **density 1** (one texel per Minecraft pixel): chunky boxes, flat painted dot eyes (the
+`eye_l`/`eye_r` of the anglerfish, lionfish, turtles and whale are empty bones at the painted eyes; the nautilus's are
+small eye bulbs). Every part name of the earlier models still exists (names no longer drawn are empty bones).
 * **Render scales**: anglerfish is built at the **female's** size: female 1.0, male 1/7. Baby turtle built at 2x: draw
-  at 0.5 (if vanilla's 0.3 baby scale stays, use 0.5/0.3). Lionfish ~0.6. Elder Guardian 1.0 (not vanilla's 2.35).
-* **Anglerfish**: locators `mouth` (0,10.6,8) for the grabbed player, `lure` (0,28.4,17) for the moving light; halo
-  cards drawn only by the eyes pass (pulse/flare by scaling the eyes-pass RGB). Clips swim 1.6, idle 4.0 (loops),
-  lunge 0.6, bite 0.5, hold 1.0 (loop), lure_flash 0.8.
-* **Lionfish**: `fins` (fin_l/r), `spines` (spine_0..5). Clips swim 2.0 (loop), hunt 0.5, flare 0.8.
-* **Nautilus**: toggle `saddle`; `rider` locator (0,25.5,-3) ~1.6 blocks up; `tentacle_0..7` (+`_tip`). Clips idle 3.0,
-  swim 1.2 (loops), dash 0.5.
-* **Sea turtles** (`sea_turtle`, `sea_turtle_baby`): `neck`->`head`, `jaw`, flipper joints, eyelids `lid_l/r`. Clips
-  idle 4.0, walk 1.6, swim 2.0 (baby 1.2), bask 5.0 (loops), dig 2.0.
-* **Elder Guardian**: `eye`, `pupil` (card; scale <1 = contracted), `spikes` (spike_0..11 with `_mid`,`_tip`; extend by
-  adding outward*px, directions in MC space: 0 (-.41,-.91,-.09), 1 (-.2,-.98,0), 2 (0,-1,-.05), 3 (.2,-.98,0),
-  4 (.41,-.91,-.09), 5 (.93,-.33,.19), 6 (.92,.28,.28), 7/8 as 5/6 with x negated, 9 (-.36,.89,.27), 10 (.36,.89,.27),
-  11 (0,-.57,.82)), `tail_0..3`, `fin_l/r`, `brow` (slides down 7 px to shut), `lids`, `jaw`; locators `mouth`
-  (0,11.2,15) bubbles, `laser` (0,21.2,14.2) beam. Clips idle 4.0, swim 1.6 (loops), bubble 1.0 (shots at .45/.60/.75),
-  stare 2.5 (telegraph 0-2.0, beam at 2.0, hold last frame), tail_whip 1.0 (wind-up 0-.4, spin .4-.75), death 2.0
-  (hold last frame).
-* **Whale** (density 1; texture 1024x2048): 11.45 x 6.4 x 26.9 blocks with fins and fluke (body 7 x 6). Locators
-  `spout` (0,97,139), `mouth` (0,46,176), `deck` (0,96,20) = MC (0,-72,-20): the centre of the 9 x 21 deck; the back is
-  flat at y=96 (6 blocks up) over x -42..42, z -36..152. Attach the deck mesh to `deck`'s transform. Extras `throat`,
-  `fluke_l/r`, `dorsal`. Clips swim 4.0, idle 6.0, sing 8.0 (loops), breathe 2.0 (spout 0.55-1.0), mouth_open 1.0
-  (hold), mouth_close 0.5, lunge 1.5 (gape .3-.85, shut ~1.05), shake 2.0 (rolls +-22 deg).
+  at 0.5 (if vanilla's 0.3 baby scale stays, use 0.5/0.3). Lionfish 0.6. Nautilus, turtle, whale 1.0. Elder Guardian
+  1.0 (not vanilla's 2.35).
+* **Anglerfish** (26 x 39 x 52 px, texture 128x256): locators `mouth` (0,10,12) for the grabbed player, `lure`
+  (0,32.8,19.5) for the moving light; halo cards drawn only by the eyes pass (pulse/flare by scaling the eyes-pass
+  RGB). Clips swim 1.6, idle 4.0 (loops), lunge 0.6, bite 0.5, hold 1.0 (loop), lure_flash 0.8.
+* **Lionfish** (23 x 24 x 25 px, texture 64x64): `fins` (fin_l/r), `spines` (spine_0..5). Clips swim 2.0 (loop),
+  hunt 0.5, flare 0.8.
+* **Nautilus** (18 x 29 x 34 px, texture 128x128): toggle `saddle`; `rider` locator (0,26,-3) ~1.6 blocks up;
+  `tentacle_0..7` (+`_tip`). Clips idle 3.0, swim 1.2 (loops), dash 0.5.
+* **Sea turtles** (`sea_turtle` 49 x 11 x 38 px, texture 128x128; `sea_turtle_baby` 31 x 9 x 25 px, 64x128):
+  `neck`->`head`, `jaw`, flipper joints, eyelids `lid_l/r` (1-px lid ridges; scale y up to shut). Clips idle 4.0,
+  walk 1.6, swim 2.0 (baby 1.2), bask 5.0 (loops), dig 2.0.
+* **Elder Guardian** (51 x 42 x 70 px, texture 128x256): `eye` (a flat glowing eye), `pupil` (card; scale <1 =
+  contracted), `spikes` (spike_0..11 with `_mid`,`_tip`; extend by adding outward*px, directions in MC space:
+  0 (-.41,-.91,-.09), 1 (-.2,-.98,0), 2 (0,-1,-.05), 3 (.2,-.98,0), 4 (.41,-.91,-.09), 5 (.93,-.33,.19),
+  6 (.92,.28,.28), 7/8 as 5/6 with x negated, 9 (-.36,.89,.27), 10 (.36,.89,.27), 11 (0,-.57,.82)), `tail_0..3`,
+  `fin_l/r`, `brow` (slides down 7 px to shut), `lids`, `jaw`; locators `mouth` (0,10.4,15) bubbles, `laser`
+  (0,16.4,14.2) beam. Clips idle 4.0, swim 1.6 (loops), bubble 1.0 (shots at .45/.60/.75), stare 2.5 (telegraph
+  0-2.0, beam at 2.0, hold last frame), tail_whip 1.0 (wind-up 0-.4, spin .4-.75), death 2.0 (hold last frame).
+* **Whale** (a block-scale sperm whale, density 1; texture 2048x512): 13 x 6 x 28 blocks with fins and fluke (body
+  9 x 6), every main box whole blocks on the deck's grid. Locators `spout` (16,81,196) (the blowhole, on the snout's
+  top at the front left), `mouth` (0,28,168), `deck` (0,96,20) = MC (0,-72,-20): the centre of the 9 x 21 deck; the
+  back is flat at y=96 (6 blocks up) over x -72..72, z -148..188, exactly the deck, and its cells line up 1:1 with
+  the whale's blocks. Attach the deck mesh to `deck`'s transform. Extras `throat`, `fluke_l/r`, `dorsal`. Clips swim
+  4.0, idle 6.0, sing 8.0 (loops), breathe 2.0 (spout 0.55-1.0), mouth_open 1.0 (hold), mouth_close 0.5, lunge 1.5
+  (gape .3-.85, shut ~1.05), shake 2.0 (rolls +-22 deg).
