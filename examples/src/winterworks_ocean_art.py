@@ -1185,9 +1185,6 @@ def armor_layers():
             Q = quant(P, len(SCUTE), 1, 6)
             C[0:ph] = paint(Q, SCUTE)
             C[ph] = paint(np.full(fw, 1), SEAM)
-            if face == "front":
-                C[2:4, 1:3] = paint(np.full((2, 2), 6), SCUTE)       # a lit ring on the plate's boss
-                C[3, 2] = rgba(SCUTE[4])
         A2[fy:fy + fh, fx:fx + fw] = C
     # the waist: the plastron's lower edge as a belt round the hips (body box, lower 4 rows)
     for face, (fx, fy, fw, fh) in box_faces(16, 16, 8, 12, 4).items():
