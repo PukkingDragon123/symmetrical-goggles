@@ -32,7 +32,8 @@
       "dev.lowpix.winterworks.test.EndWorldTests",
       "dev.lowpix.winterworks.test.EndMobTests",
       "dev.lowpix.winterworks.test.EndGearTests",
-      "dev.lowpix.winterworks.test.EndBossTests"
+      "dev.lowpix.winterworks.test.EndBossTests",
+      "dev.lowpix.winterworks.test.SoulBullTests"
     ]
   },
   "mixins": [

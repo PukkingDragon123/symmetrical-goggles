@@ -105,6 +105,16 @@ public final class WWBlocks {
     public static final BlockEntityType<dev.lowpix.winterworks.hex.HexingTableBlockEntity> HEXING_TABLE_BE = be("hexing_table",
             FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.hex.HexingTableBlockEntity::new, HEXING_TABLE).build());
 
+    // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
+    public static final Block SOUL_BULL_SKULL = reg("soul_bull_skull", new dev.lowpix.winterworks.soulbull.SoulBullSkullBlock(
+            BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_BLACK).strength(1.5f, 6f)
+                    .sound(SoundType.BONE_BLOCK).noOcclusion()
+                    .lightLevel(s -> s.getValue(dev.lowpix.winterworks.soulbull.SoulBullSkullBlock.LIT) ? 10 : 0)
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+    public static final BlockEntityType<dev.lowpix.winterworks.soulbull.SoulBullSkullBlockEntity> SOUL_BULL_SKULL_BE = be(
+            "soul_bull_skull", FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.soulbull.SoulBullSkullBlockEntity::new,
+                    SOUL_BULL_SKULL).build());
+
     private static <T extends net.minecraft.world.level.block.entity.BlockEntity> BlockEntityType<T> be(String n, BlockEntityType<T> t) {
         return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id(n), t);
     }

@@ -64,6 +64,8 @@ public final class Winterworks implements ModInitializer {
         dev.lowpix.winterworks.endmob.EndMobFeature.init();
         dev.lowpix.winterworks.endgear.EndGearFeature.init();
         dev.lowpix.winterworks.endboss.EndBossFeature.init();
+        // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
+        dev.lowpix.winterworks.soulbull.SoulBullFeature.init();
         PayloadTypeRegistry.playS2C().register(CouplingPayload.TYPE, CouplingPayload.CODEC);
         FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> {
             b.addMix(Potions.AWKWARD, WWItems.ICEBREAKER_HORN, WWEffects.RAMMING_POTION);

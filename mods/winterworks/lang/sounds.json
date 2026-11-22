@@ -172,5 +172,14 @@
   "subtitles.winterworks.block.chorus_cocoon.crack": "Chorus Cocoon cracks",
   "subtitles.winterworks.block.chorus_cocoon.hatch": "Chorus Cocoon hatches",
   "subtitles.winterworks.block.meteorite.hum": "Meteorite hums",
-  "subtitles.winterworks.effect.recall.teleport": "Teleported home"
+  "subtitles.winterworks.effect.recall.teleport": "Teleported home",
+  "subtitles.winterworks.entity.soul_bull.ambient": "Soul Bull rattles",
+  "subtitles.winterworks.entity.soul_bull.hurt": "Soul Bull hurts",
+  "subtitles.winterworks.entity.soul_bull.death": "Soul Bull crumbles",
+  "subtitles.winterworks.entity.soul_bull.snort": "Soul Bull snorts",
+  "subtitles.winterworks.entity.soul_bull.ram": "Soul Bull charges",
+  "subtitles.winterworks.entity.soul_bull.pin": "Soul Bull gores",
+  "subtitles.winterworks.entity.soul_bull.drain": "Soul Bull drinks souls",
+  "subtitles.winterworks.entity.soul_bull.revive": "Soul Bull rises",
+  "subtitles.winterworks.block.soul_bull_skull.ignite": "Skull's eyes kindle"
 }

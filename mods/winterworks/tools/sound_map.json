@@ -2774,5 +2774,201 @@
       }
     ],
     "subtitle": "Teleported home"
+  },
+  "entity.soul_bull.ambient": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/skeleton/idle1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/idle2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/idle3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle7",
+        "pitch": 0.65
+      }
+    ],
+    "subtitle": "Soul Bull rattles"
+  },
+  "entity.soul_bull.hurt": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/skeleton/hit1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/hit2",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/hit3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt2",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "Soul Bull hurts"
+  },
+  "entity.soul_bull.death": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/skeleton/death",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ravager/death2",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "Soul Bull crumbles"
+  },
+  "entity.soul_bull.snort": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/hoglin/angry1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry3",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry5",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/ravager/idle4",
+        "pitch": 0.9
+      }
+    ],
+    "subtitle": "Soul Bull snorts"
+  },
+  "entity.soul_bull.ram": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar1",
+        "pitch": 1.05
+      },
+      {
+        "name": "minecraft:mob/ravager/roar3",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/hoglin/attack1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "Soul Bull charges"
+  },
+  "entity.soul_bull.pin": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/bite1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/ravager/bite2",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/hoglin/attack2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/zoglin/attack1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "Soul Bull gores"
+  },
+  "entity.soul_bull.step": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/step1",
+        "pitch": 1.3,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/ravager/step3",
+        "pitch": 1.25,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/bone_block/step2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/bone_block/step4",
+        "pitch": 0.75
+      }
+    ]
+  },
+  "entity.soul_bull.drain": {
+    "sounds": [
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper4",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed8",
+        "pitch": 0.75
+      }
+    ],
+    "subtitle": "Soul Bull drinks souls"
+  },
+  "entity.soul_bull.revive": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/idle2",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/wither/spawn",
+        "pitch": 1.6,
+        "volume": 0.5
+      }
+    ],
+    "subtitle": "Soul Bull rises"
+  },
+  "block.soul_bull_skull.ignite": {
+    "sounds": [
+      {
+        "name": "minecraft:fire/ignite",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed11",
+        "pitch": 0.65
+      }
+    ],
+    "subtitle": "Skull's eyes kindle"
   }
 }

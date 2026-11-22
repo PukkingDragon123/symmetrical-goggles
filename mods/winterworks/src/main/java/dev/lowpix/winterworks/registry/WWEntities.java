@@ -75,6 +75,13 @@ public final class WWEntities {
             EntityType.Builder.<dev.lowpix.winterworks.nether.GoldenPiglin>of(dev.lowpix.winterworks.nether.GoldenPiglin::new,
                     MobCategory.MONSTER).sized(0.6f, 1.95f).fireImmune().clientTrackingRange(8));
 
+    // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
+    /** Rider seat: the model's `rider` locator, (0, 1, 1.5) px in model space: 1.44 blocks up, a little behind the middle. */
+    public static final EntityType<dev.lowpix.winterworks.soulbull.SoulBull> SOUL_BULL = reg("soul_bull",
+            EntityType.Builder.of(dev.lowpix.winterworks.soulbull.SoulBull::new, MobCategory.MONSTER).sized(1.4f, 1.6f)
+                    .eyeHeight(1.35f).passengerAttachments(new net.minecraft.world.phys.Vec3(0, 1.4375, -0.094)).fireImmune()
+                    .clientTrackingRange(10));
+
     private WWEntities() {}
 
     private static <T extends net.minecraft.world.entity.Entity> EntityType<T> reg(String name, EntityType.Builder<T> b) {
