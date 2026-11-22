@@ -3,12 +3,14 @@ Treasures).
 
     python examples/src/sea_turtle.py
 
-* **Adult** (about 20 x 13 x 33 px, flippers spread about 40 px): a domed carapace of stepped layers with real scutes:
+* **Adult** (a 20 x 24 px shell, about 39 px from beak to tail, 9.5 px tall, flippers spread 42 px): a domed
+  carapace of stepped layers with real scutes:
   five vertebrals down the ridge, four costals a side and a ring of marginals, every scute with concentric growth
   rings and dark radiating tortoiseshell streaks on amber, the seams inked and lit; a pale straw plastron; a leathery
   olive head of big pale-edged scales with a hooked horn beak and round dark eyes under a heavy lid; long front
   flippers (two joints, a claw on the leading edge) and short rounded hind flippers.
-* **Baby** (`sea_turtle_baby`, about 12 x 8 x 18 px, made at twice its in-game size): a cute hatchling: a big round
+* **Baby** (`sea_turtle_baby`, an 11 x 13 px shell, about 22 px long, flippers spread 24 px, made at twice its
+  in-game size): a cute hatchling: a big round
   head with huge round eyes, a small soft shell with bumpy keels, oversized flippers with pale edges, dark slate
   colours.
 
@@ -83,9 +85,9 @@ def scute_fn(pts, face, ring_every=1.0, streaks=True, keel=False):
         if streaks:
             ang = math.atan2(z - c1[1], x - c1[0])
             v = math.sin(ang * 5 + i1 * 1.7) + 0.6 * math.sin(ang * 11 + i1 * 0.9)
-            if v > 1.2 and d[i1] > 1.0:
+            if v > 0.95 and d[i1] > 0.9:
                 return "k"
-            if v < -1.3 and d[i1] > 1.2:
+            if v < -1.2 and d[i1] > 1.1:
                 return "a"
         return "."
     return fn
@@ -111,10 +113,13 @@ def build(baby):
     part("skin_band", "body", [q(W * 0.8), q(1.5 * S + 0.5), q(D * 0.86)], "skin", centre=(0, 3.5, -0.5))
     # ---------------------------------------------------------------- the shell: a stepped dome of layers
     bone("shell", "body", at=(0, 4.0, -0.5))
-    layers = ([(W, 1.5, D * 0.8, 4.75), (W * 0.82, 1.0, D, 4.5), (W * 0.86, 2.0, D * 0.86, 6.5),
-               (W * 0.66, 2.0, D * 0.7, 8.5), (W * 0.4, 1.0, D * 0.48, 10.0)] if not baby else
-              [(W, 1.0, D * 0.82, 4.5), (W * 0.84, 0.5, D, 4.25), (W * 0.84, 1.5, D * 0.84, 5.75),
-               (W * 0.6, 1.5, D * 0.66, 7.25), (W * 0.3, 0.5, D * 0.4, 8.25)])
+    # two rim layers (the marginals), then a dome of thin contour layers
+    if not baby:
+        layers = [(W, 1.5, D * 0.8, 4.75), (W * 0.82, 1.0, D, 4.5), (W * 0.9, 2.5, D * 0.88, 6.75),
+                  (W * 0.64, 1.5, D * 0.68, 8.75), (W * 0.2, 0.5, D * 0.5, 9.75)]
+    else:
+        layers = [(W, 1.0, D * 0.82, 4.5), (W * 0.84, 0.5, D, 4.25), (W * 0.88, 1.5, D * 0.86, 5.75),
+                  (W * 0.56, 1.0, D * 0.62, 7.0), (W * 0.2, 0.5, D * 0.5, 7.75)]
     if not baby:
         layers = [(w, h, d, y) for w, h, d, y in layers]
     shell_parts = []
@@ -200,8 +205,8 @@ def build(baby):
         "plastron": {"ramp": "straw" if not baby else "slate", "tone": 4.6 if not baby else 6.4, "rim": RIM,
                      "layers": [{"id": "plates", "op": "scales", "shape": "square", "along": "x", "size": [3.0, 3.0],
                                  "gap": 0.5, "highlight": 0.8, "shadow": -1.2, "jitter": 0.4}]},
-        "carapace": {"ramp": shell_ramp, "tone": 6.0 if not baby else 4.6,
-                     "rim": {"light": 1, "dark": 1, "light_shift": 1.0, "dark_shift": -0.8},
+        "carapace": {"ramp": shell_ramp, "tone": 6.0 if not baby else 4.6, "brush": {"off": True},
+                     "rim": {"light": 0, "dark": 1, "dark_shift": -1.0},
                      "layers": [{"id": "mottle", "op": "patches", "scale": 2.0, "threshold": 0.55,
                                  "shift": -1.2 if not baby else -0.6},
                                 {"id": "flame", "op": "noise", "scale": 1.4, "amount": 0.8 if not baby else 0.4},
@@ -239,7 +244,8 @@ def build(baby):
     for name, sz, c in shell_parts:
         p = next(p for p in R.P if p["id"] == name)
         p["paint"] = {"stamps": []}
-        for f in (("top", "right", "left", "front", "back") if name in ("shell_0", "shell_1") else ("top",)):
+        for f in (("top", "right", "left", "front", "back") if name in ("shell_0", "shell_1", "shell_2")
+                  else ("top",)):
             p["paint"]["stamps"] += pattern_stamps(sz, DENSITY, scute_fn(pts, f, ring_every=0.75 if not baby else 9,
                                                                           streaks=not baby, keel=baby),
                                                    c, faces=(f,), key=SCUTE_KEY_BABY if baby else SCUTE_KEY_ADULT)

@@ -14,11 +14,13 @@ texture would be 4x the size at density 2; 1 texel per pixel also matches the bl
 a whole number of pixels, so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). Faces +Z,
 the lowest point (the throat) at y = 0, "left" is +X; the root (body) pivots in the middle of the torso.
 
-**The deck.** The back is flat from the blowhole to the tail stock: y = 96 (6 blocks) over x -42..42 (the plateau is
-84 px wide; the shoulders step down to 88 at x +-50 and 78 at x +-56) and z -106..150 on the body and head (the tail
-stock's top falls away behind z -106). The locator `deck` (a bone on the body) sits on that surface at (0, 96, 22): the
-centre of a 9 x 21 block deck spanning z -146..190 and x -72..72 (it overhangs the flanks, the head and the tail stock).
-Keep the deck on the `deck` bone's transform; swim and idle move the body only a little.
+**The deck.** The back is flat: y = 96 (exactly 6 blocks above the model's lowest point) over x -42..42 and
+z -36..96 on the body, continuing at the same height over the head (x -44..44, z 96..152) up to the splash guard and
+blowhole (z 133..154, raised 1-3 px). The tail stock's top is 1 px lower (y 95, x -32..32) from z -42 back to -122,
+then the tail falls away. The flanks step down to y 88 at x +-50 and y 78 at x +-56. The locator `deck` (a bone on the
+body) sits on that surface at (0, 96, 20): the centre of a 9 x 21 block deck spanning x -72..72 and z -148..188 (it
+overhangs the flanks, the sloping snout and the tail stock; the little dorsal fin stands just behind it, z -150..-172). Keep the deck on the `deck` bone's transform; swim and
+idle move the body only a little (about 1 degree and 1 px).
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 8): bones body, head, jaw, blowhole, fin_l, fin_r, fluke,
 tail_0, tail_1, eye_l, eye_r. Extra joints: throat (the pleated throat pouch), fin_l_tip / fin_r_tip, fluke_l /
@@ -59,7 +61,7 @@ bone("body", None, at=(0, 52, 30))
 part("torso", "body", [112, 56, 140], "hide_side", centre=(0, 50, 30))
 part("torso_b", "torso", [100, 76, 136], "hide_side", centre=(0, 50, 30))
 part("torso_c", "torso", [84, 90, 132], "hide_back", centre=(0, 51, 30))
-bone("deck", "body", at=(0, TOP, 22))
+bone("deck", "body", at=(0, TOP, 20))
 # the throat pouch: pleats from the chin back under the belly to the navel
 part("throat", "body", [92, 10, 104], "throat", at=(0, 10, 50), centre=(0, 5, 48))
 
@@ -98,9 +100,9 @@ for k, (x, y) in enumerate(((24, 22), (-18, 26), (34, 30))):
 for s in (1, -1):
     n = LR(s)
     part(f"fin_{n}", "body", [30, 8, 24], "fin", at=M((54, 30, 72), s), offset=(s * 14, 0, -3),
-         rot=(0, s * -40, s * -18))
+         rot=(0, s * -50, s * -18))
     tip = R.wpos(f"fin_{n}", (s * 28, 0, -3))
-    part(f"fin_{n}_tip", f"fin_{n}", [24, 6, 16], "fin", at=tip, offset=(s * 11, 0, -2), rot=(0, s * -14, s * 4))
+    part(f"fin_{n}_tip", f"fin_{n}", [24, 6, 16], "fin", at=tip, offset=(s * 11, 0, -2), rot=(0, s * -18, s * 4))
     for k in range(4):
         part(f"fin_{n}_knob{k}", f"fin_{n}" if k < 2 else f"fin_{n}_tip", [5, 5, 3], "barnacle" if k == 1 else "fin",
              rel=(s * (6 + 14 * (k % 2)), 0, 11.5 if k < 2 else 7.5))
@@ -110,8 +112,8 @@ bone("tail_0", "body", at=(0, 54, -36))
 part("stock", "tail_0", [96, 64, 88], "hide_side", centre=(0, 52, -80))
 part("stock_b", "stock", [80, 78, 84], "hide_side", centre=(0, 54, -80))
 part("stock_c", "stock", [64, 86, 80], "hide_back", centre=(0, 52, -82))
-part("dorsal", "tail_0", [6, 14, 26], "fin", at=(0, 94, -108), centre=(0, 98, -112), rot=(18, 0, 0))
 bone("tail_1", "tail_0", at=(0, 54, -122))
+part("dorsal", "tail_1", [6, 12, 22], "fin", at=(0, 88, -150), centre=(0, 93, -161), rot=(20, 0, 0))
 part("peduncle", "tail_1", [40, 50, 48], "hide_side", centre=(0, 54, -144))
 part("peduncle_b", "peduncle", [28, 62, 44], "hide_back", centre=(0, 54, -144))
 part("keel_up", "peduncle", [8, 8, 38], "hide_back", centre=(0, 88, -146))

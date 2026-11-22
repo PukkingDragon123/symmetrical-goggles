@@ -198,13 +198,17 @@
     {
      "id": "seams",
      "op": "cracks",
-     "scale": 9.0,
-     "width": 0.015,
-     "threshold": 0.7,
+     "scale": 12.0,
+     "width": 0.012,
+     "threshold": 0.78,
      "ramp": "prism",
-     "tone": 2.0,
+     "tone": 1.6,
      "seed": 5,
-     "post": true
+     "post": true,
+     "faces": [
+      "front",
+      "sides"
+     ]
     },
     {
      "id": "specks",
@@ -832,8 +836,8 @@
    "shape": "box",
    "size": [
     26.0,
-    13.5,
-    22.0
+    12.0,
+    20.5
    ],
    "pivot": [
     0.0,
@@ -852,9 +856,9 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    20.5,
+    19.0,
     24.0,
-    15.5
+    14.0
    ],
    "pivot": [
     0.0,
@@ -868,8 +872,8 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    14.5,
-    18.5,
+    13.0,
+    18.0,
     28.0
    ],
    "pivot": [
@@ -884,9 +888,9 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    23.5,
-    22.0,
-    25.5
+    23.0,
+    21.5,
+    25.0
    ],
    "pivot": [
     0.0,

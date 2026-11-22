@@ -9,8 +9,9 @@ fans (banded rays reaching past a spotted membrane), little pelvic fins, spotted
 spotted tail fan.
 
 Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
-to a vanilla entity model (python -m lowpix mc export). About 12 px long; faces +Z, the lowest point at y = 0, "left"
-is +X; the root (body) pivots in the middle of the trunk.
+to a vanilla entity model (python -m lowpix mc export). About 18 px long with the tail fan, 21 px tall with the
+spines up and 23 px across the spread pectoral fans; faces +Z, the lowest point at y = 0, "left" is +X; the root (body)
+pivots in the middle of the trunk.
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 4): bones body, fins (the pectoral pair: fin_l, fin_r), spines
 (the dorsal crest: spine_0..5), tail. Extra joints: jaw, tail_fin, fin_pelvic_l/r, fin_soft, fin_anal. Clips: swim

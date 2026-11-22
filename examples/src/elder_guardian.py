@@ -11,8 +11,9 @@ Armoured pectoral fins with torn membranes, a mouth plate under the eye (bubbles
 armoured segments ending in a ragged fan.
 
 Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
-to a vanilla entity model (python -m lowpix mc export). About 2 blocks across the body, 4 long with the tail; drawn at
-in-game size (the vanilla 2.35 elder scale is not needed). Faces +Z, the lowest point at y = 0, "left" is +X; the root
+to a vanilla entity model (python -m lowpix mc export). The body is about 26 x 24 x 28 px (1.6 blocks); with the
+spikes, fins and tail it spans about 4 x 3 x 4.6 blocks. Drawn at in-game size: the vanilla 2.35 elder scale is not
+needed. Faces +Z, the lowest point at y = 0, "left" is +X; the root
 (body) pivots in the middle of the body.
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 6): bones body, eye, pupil, spikes (spike_0..11), tail_0..3,
@@ -39,7 +40,7 @@ part, bone, card = R.part, R.bone, R.card
 
 # ======================================================================= body: a heavy rounded armoured mass
 C = np.array((0.0, 16.0, 0.0))
-rounded(R, "body", None, [26, 24, 28], "armor", centre=C + (0, 0, -1.0), at=C, cut=(0.56, 0.78), steps=4)
+rounded(R, "body", None, [26, 24, 28], "armor", centre=C + (0, 0, -1.0), at=C, cut=(0.5, 0.74), steps=4)
 rounded(R, "hind", "body", [19, 17, 8], "armor", centre=(0, 15.5, -15.0), skip=("m",), cut=(0.7, 0.8))
 # overlapping plates: a dorsal shield with a keel, flank shields, a chin plate
 rounded(R, "plate_top", "body", [22, 3, 22], "plate", centre=(0, 28.5, -1.0), skip=("y", "m"), cut=(0.8, 0.82))
@@ -127,8 +128,8 @@ brush = {"flow": "horizontal", "length": 2.0, "width": 0.8, "rough": 0.55, "over
 RIM = {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.6}
 CRACKS = {"id": "cracks", "op": "cracks", "scale": 5.0, "width": 0.03, "threshold": 0.55, "shift": -2.0,
           "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.0}}
-SEAMS = {"id": "seams", "op": "cracks", "scale": 9.0, "width": 0.015, "threshold": 0.7, "ramp": "prism", "tone": 2.0,
-         "seed": 5, "post": True}
+SEAMS = {"id": "seams", "op": "cracks", "scale": 12.0, "width": 0.012, "threshold": 0.78, "ramp": "prism",
+         "tone": 1.6, "seed": 5, "post": True, "faces": ["front", "sides"]}
 PLATES = {"id": "plates", "op": "scales", "shape": "square", "along": "z", "size": [4.0, 3.0], "gap": 0.5,
           "highlight": 1.2, "gradient": 1.2, "shadow": -1.6, "jitter": 0.6, "faces": ["top", "sides"]}
 GROWTH = {"id": "growth", "op": "patches", "scale": 2.2, "threshold": 0.66, "ramp": "algae", "tone": 3.6,

@@ -60,13 +60,13 @@ public final class SeaTurtleModel {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         PartDefinition p_body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 25).addBox(-7F, -0.5F, -8.75F, 14F, 3F, 18.5F, CubeDeformation.NONE), PartPose.offset(0F, 21.5F, 0F));
-        PartDefinition p_skin_band = p_body.addOrReplaceChild("skin_band", CubeListBuilder.create().texOffs(156, 0).addBox(-8F, -1F, -10.25F, 16F, 2F, 20.5F, CubeDeformation.NONE), PartPose.offset(0F, -0.5F, 0.5F));
+        PartDefinition p_skin_band = p_body.addOrReplaceChild("skin_band", CubeListBuilder.create().texOffs(159, 0).addBox(-8F, -1F, -10.25F, 16F, 2F, 20.5F, CubeDeformation.NONE), PartPose.offset(0F, -0.5F, 0.5F));
         PartDefinition p_shell = p_body.addOrReplaceChild("shell", CubeListBuilder.create(), PartPose.offset(0F, -1F, 0.5F));
         PartDefinition p_shell_0 = p_shell.addOrReplaceChild("shell_0", CubeListBuilder.create().texOffs(65, 25).addBox(-10F, -0.75F, -9.5F, 20F, 1.5F, 19F, CubeDeformation.NONE), PartPose.offset(0F, -0.75F, 0F));
         PartDefinition p_shell_1 = p_shell.addOrReplaceChild("shell_1", CubeListBuilder.create().texOffs(0, 0).addBox(-8.25F, -0.5F, -12F, 16.5F, 1F, 24F, CubeDeformation.NONE), PartPose.offset(0F, -0.5F, 0F));
-        PartDefinition p_shell_2 = p_shell.addOrReplaceChild("shell_2", CubeListBuilder.create().texOffs(81, 0).addBox(-8.5F, -1F, -10.25F, 17F, 2F, 20.5F, CubeDeformation.NONE), PartPose.offset(0F, -2.5F, 0F));
-        PartDefinition p_shell_3 = p_shell.addOrReplaceChild("shell_3", CubeListBuilder.create().texOffs(143, 25).addBox(-6.5F, -1F, -8.5F, 13F, 2F, 17F, CubeDeformation.NONE), PartPose.offset(0F, -4.5F, 0F));
-        PartDefinition p_shell_4 = p_shell.addOrReplaceChild("shell_4", CubeListBuilder.create().texOffs(203, 25).addBox(-4F, -0.5F, -5.75F, 8F, 1F, 11.5F, CubeDeformation.NONE), PartPose.offset(0F, -6F, 0F));
+        PartDefinition p_shell_2 = p_shell.addOrReplaceChild("shell_2", CubeListBuilder.create().texOffs(81, 0).addBox(-9F, -1.25F, -10.5F, 18F, 2.5F, 21F, CubeDeformation.NONE), PartPose.offset(0F, -2.75F, 0F));
+        PartDefinition p_shell_3 = p_shell.addOrReplaceChild("shell_3", CubeListBuilder.create().texOffs(143, 25).addBox(-6.5F, -0.75F, -8.25F, 13F, 1.5F, 16.5F, CubeDeformation.NONE), PartPose.offset(0F, -4.75F, 0F));
+        PartDefinition p_shell_4 = p_shell.addOrReplaceChild("shell_4", CubeListBuilder.create().texOffs(202, 25).addBox(-2F, -0.25F, -6F, 4F, 0.5F, 12F, CubeDeformation.NONE), PartPose.offset(0F, -5.75F, 0F));
         PartDefinition p_shell_serration = p_shell.addOrReplaceChild("shell_serration", CubeListBuilder.create().texOffs(127, 59).addBox(-5F, -0.25F, 0F, 10F, 1.5F, 0F, CubeDeformation.NONE), PartPose.offset(0F, 0F, 12F));
         PartDefinition p_neck = p_body.addOrReplaceChild("neck", CubeListBuilder.create().texOffs(47, 47).addBox(-2.75F, -2.25F, -4.5F, 5.5F, 4.5F, 5F, CubeDeformation.NONE), PartPose.offset(0F, -1F, -10.5F));
         PartDefinition p_head = p_neck.addOrReplaceChild("head", CubeListBuilder.create().texOffs(87, 47).addBox(-3.25F, -2.25F, -6.25F, 6.5F, 3.5F, 5.5F, CubeDeformation.NONE), PartPose.offset(0F, -0.5F, -3.5F));

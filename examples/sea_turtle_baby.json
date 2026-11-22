@@ -208,11 +208,13 @@
   "carapace": {
    "ramp": "slate",
    "tone": 4.6,
+   "brush": {
+    "off": true
+   },
    "rim": {
-    "light": 1,
+    "light": 0,
     "dark": 1,
-    "light_shift": 1.0,
-    "dark_shift": -0.8
+    "dark_shift": -1.0
    },
    "layers": [
     {
@@ -785,7 +787,7 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    9.0,
+    9.5,
     1.5,
     11.0
    ],
@@ -801,28 +803,96 @@
       "face": "top",
       "at": "top-left",
       "art": [
-       "....SLLSSSSL.S....",
-       "..LLSSS.KK.SSSLL..",
-       "LSSS..L.KK..L.SSSL",
-       "S.KK..L.KK..L.KK.S",
-       ".SKK..S.KK.SL.KKSL",
-       ".SLK.LSSSSSSL.KKS.",
-       "..LLLS..KK..SLLKL.",
-       "LSKKSS..KK..SSKKSL",
-       "S.KK.SL.KK..S.KK.S",
-       "S.KK..S.KK.SL.KK.S",
-       "SLKK..SLLLLS..KK.S",
-       "SLKK..S.KK.SL.KK.S",
-       "SLKK.SL.KK..S.KK.S",
-       "SSSSSS..KK..SSSSSS",
-       ".SLK.S..KK..S.KKS.",
-       ".SKK..L.KK..L.KKS.",
-       ".SKK..SSSSSS..KKSL",
-       ".LKK..S.KK.SL.KK.L",
-       "SSLL..L.KK..L.LLSS",
-       "...SSS..KK..SSS...",
-       ".....SSLKKLSS.....",
-       "....SL.SSSS..S...."
+       ".....S.LSKSL.SL....",
+       "...LLSSS.K.SSSLL...",
+       "SSSS..S..K..S..SSSS",
+       ".S.K..S..K..S..K.SL",
+       ".SLK..SL.K..S..K.S.",
+       "..SK..SSSSSSS..KSL.",
+       "..SLLLS..K..SLLKS..",
+       ".LSSSSL..K...SSSSL.",
+       "SS.K..S..K..SL.K.SS",
+       ".L.K..SL.K..S..K..L",
+       ".S.K...LLLLLL..K.SL",
+       ".S.K..S..K..S..K.SL",
+       ".S.K..S..K..SL.K.SL",
+       "SSSSSSL..K...SSSSSS",
+       "..SK.SL..K...S.KSL.",
+       "..LK..SL.K..SL.K.L.",
+       ".SLK...SSSSSL..K.S.",
+       ".S.K..SL.K..S..K.S.",
+       ".SLLL.S..K..S.LLLSL",
+       "S..SSSS..K..SSSS..S",
+       ".....SSSLKLSSS.....",
+       ".....S..SLS..SL...."
+      ],
+      "key": {
+       "S": "slate:3",
+       "L": "slate:6",
+       "g": "slate:4",
+       "k": "slate:3",
+       "a": "slate:7",
+       "K": "slate:9"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "..S.....S....SL....SL.",
+       "..S.....S....SL....SL.",
+       "..S.....S....SL....SL."
+      ],
+      "key": {
+       "S": "slate:3",
+       "L": "slate:6",
+       "g": "slate:4",
+       "k": "slate:3",
+       "a": "slate:7",
+       "K": "slate:9"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".LS....LS....S.....S..",
+       ".LS....LS....S.....S..",
+       ".LS....LS....S.....S.."
+      ],
+      "key": {
+       "S": "slate:3",
+       "L": "slate:6",
+       "g": "slate:4",
+       "k": "slate:3",
+       "a": "slate:7",
+       "K": "slate:9"
+      }
+     },
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       ".....S...S...SL....",
+       ".....S...S...SL....",
+       ".....S...S...SL...."
+      ],
+      "key": {
+       "S": "slate:3",
+       "L": "slate:6",
+       "g": "slate:4",
+       "k": "slate:3",
+       "a": "slate:7",
+       "K": "slate:9"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "....LS..LSL..S.....",
+       "....LS..LSL..S.....",
+       "....LS..LSL..S....."
       ],
       "key": {
        "S": "slate:3",
@@ -841,13 +911,13 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    6.5,
-    1.5,
-    8.5
+    6.0,
+    1.0,
+    8.0
    ],
    "pivot": [
     0.0,
-    2.75,
+    2.5,
     0.0
    ],
    "style": "carapace",
@@ -857,23 +927,22 @@
       "face": "top",
       "at": "top-left",
       "art": [
-       "K..S..K..S..K",
-       "K..SL.K..S..K",
-       "K..SLLLLLS..K",
-       "K.LS..K..SL.K",
-       "SSS...K...SSS",
-       "K..L..K...L.K",
-       "K..S..K..SL.K",
-       "K..SL.K..S..K",
-       "K...SSSSSL..K",
-       "K..SL.K..S..K",
-       "LL.S..K..SLLL",
-       "SSSL..K...SSS",
-       "K..S..K..SL.K",
-       "K..SLLLLLS..K",
-       "K.....K..L..K",
-       "K..SL.K..S..K",
-       "SSLS..K..SLSS"
+       "K..L.KK..L.K",
+       "K..S.KK.SL.K",
+       "K.LSSSSSSL.K",
+       "LLS..KK..SLL",
+       "K.S..KK..S.K",
+       "K.SL.KK..S.K",
+       "K..S.KK.SL.K",
+       "K..SLLLLS..K",
+       "K..S.KK.SL.K",
+       "K.SL.KK..S.K",
+       "SSS..KK..SSS",
+       "K.S..KK..S.K",
+       "K..L.KK..L.K",
+       "K..SSSSSS..K",
+       "K..S.KK.SL.K",
+       "L..L.KK..L.L"
       ],
       "key": {
        "S": "slate:3",
@@ -892,13 +961,13 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    3.5,
+    2.0,
     0.5,
-    5.0
+    6.5
    ],
    "pivot": [
     0.0,
-    3.75,
+    3.25,
     0.0
    ],
    "style": "carapace",
@@ -908,16 +977,19 @@
       "face": "top",
       "at": "top-left",
       "art": [
-       "S..K..S",
-       "L..K...",
-       "S..K..S",
-       "SL.K..S",
-       ".LLLLLL",
-       "S..K..S",
-       "S..K..S",
-       "L..K...",
-       "L..K...",
-       "SL.K..S"
+       "LLLL",
+       ".KK.",
+       ".KK.",
+       ".KK.",
+       ".KK.",
+       ".KK.",
+       "SSSS",
+       ".KK.",
+       ".KK.",
+       ".KK.",
+       ".KK.",
+       "LLLL",
+       ".KK."
       ],
       "key": {
        "S": "slate:3",

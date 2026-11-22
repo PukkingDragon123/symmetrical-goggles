@@ -10,7 +10,7 @@ with tufts of fine cirri between them; a `siphon` funnel underneath; and a `sadd
 seat on a sea-teal blanket, brass fittings, straps round the shell) that the renderer shows or hides.
 
 Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
-to a vanilla entity model (python -m lowpix mc export). About 16 x 27 x 32 px; faces +Z, the lowest point at y = 0,
+to a vanilla entity model (python -m lowpix mc export). About 17 x 28 x 35 px; faces +Z, the lowest point at y = 0,
 "left" is +X; the root (body) pivots at the head in the shell's opening.
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 4): bones shell, body, eye_l, eye_r, tentacles
