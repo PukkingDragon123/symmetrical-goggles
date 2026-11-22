@@ -1110,5 +1110,298 @@
       }
     ],
     "subtitle": "subtitles.winterworks.block.frost_mauler_skull.revive"
+  },
+  "entity.mosquito.buzz": {
+    "sounds": [
+      {
+        "name": "winterworks:mosquito/buzz1",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:mosquito/buzz2",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:mosquito/buzz3",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:mosquito/buzz4",
+        "attenuation_distance": 12
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.mosquito.buzz"
+  },
+  "entity.mosquito.stab": {
+    "sounds": [
+      {
+        "name": "winterworks:mosquito/stab1"
+      },
+      {
+        "name": "winterworks:mosquito/stab2"
+      },
+      {
+        "name": "winterworks:mosquito/stab3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.mosquito.stab"
+  },
+  "entity.mosquito.drink": {
+    "sounds": [
+      {
+        "name": "winterworks:mosquito/drink1"
+      },
+      {
+        "name": "winterworks:mosquito/drink2"
+      },
+      {
+        "name": "winterworks:mosquito/drink3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.mosquito.drink"
+  },
+  "entity.mosquito.spit": {
+    "sounds": [
+      {
+        "name": "winterworks:mosquito/spit1"
+      },
+      {
+        "name": "winterworks:mosquito/spit2"
+      },
+      {
+        "name": "winterworks:mosquito/spit3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.mosquito.spit"
+  },
+  "entity.mosquito.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:mosquito/hurt1"
+      },
+      {
+        "name": "winterworks:mosquito/hurt2"
+      },
+      {
+        "name": "winterworks:mosquito/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.mosquito.hurt"
+  },
+  "entity.mosquito.death": {
+    "sounds": [
+      {
+        "name": "winterworks:mosquito/death1"
+      },
+      {
+        "name": "winterworks:mosquito/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.mosquito.death"
+  },
+  "entity.pot_golem.step": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/step1"
+      },
+      {
+        "name": "winterworks:pot_golem/step2"
+      },
+      {
+        "name": "winterworks:pot_golem/step3"
+      },
+      {
+        "name": "winterworks:pot_golem/step4"
+      }
+    ]
+  },
+  "entity.pot_golem.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/hurt1"
+      },
+      {
+        "name": "winterworks:pot_golem/hurt2"
+      },
+      {
+        "name": "winterworks:pot_golem/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.hurt"
+  },
+  "entity.pot_golem.death": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/death1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:pot_golem/death2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.death"
+  },
+  "entity.pot_golem.giggle": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/giggle1"
+      },
+      {
+        "name": "winterworks:pot_golem/giggle2"
+      },
+      {
+        "name": "winterworks:pot_golem/giggle3"
+      },
+      {
+        "name": "winterworks:pot_golem/giggle4"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.giggle"
+  },
+  "entity.pot_golem.sneeze": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/sneeze1",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:pot_golem/sneeze2",
+        "attenuation_distance": 20
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.sneeze"
+  },
+  "entity.pot_golem.howl": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/howl1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:pot_golem/howl2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.howl"
+  },
+  "entity.pot_golem.beam": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/beam1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:pot_golem/beam2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.beam"
+  },
+  "entity.pot_golem.fuse": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/fuse1"
+      },
+      {
+        "name": "winterworks:pot_golem/fuse2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.fuse"
+  },
+  "entity.pot_golem.crack": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/crack1"
+      },
+      {
+        "name": "winterworks:pot_golem/crack2"
+      },
+      {
+        "name": "winterworks:pot_golem/crack3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.crack"
+  },
+  "entity.pot_golem.shatter": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/shatter1"
+      },
+      {
+        "name": "winterworks:pot_golem/shatter2"
+      },
+      {
+        "name": "winterworks:pot_golem/shatter3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.shatter"
+  },
+  "entity.pot_golem.repair": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/repair1"
+      },
+      {
+        "name": "winterworks:pot_golem/repair2"
+      },
+      {
+        "name": "winterworks:pot_golem/repair3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.repair"
+  },
+  "entity.pot_golem.build": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/build1"
+      },
+      {
+        "name": "winterworks:pot_golem/build2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.pot_golem.build"
+  },
+  "block.amber.release": {
+    "sounds": [
+      {
+        "name": "winterworks:amber/release1"
+      },
+      {
+        "name": "winterworks:amber/release2"
+      },
+      {
+        "name": "winterworks:amber/release3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.amber.release"
+  },
+  "item.blood.splash": {
+    "sounds": [
+      {
+        "name": "winterworks:blood/splash1"
+      },
+      {
+        "name": "winterworks:blood/splash2"
+      },
+      {
+        "name": "winterworks:blood/splash3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.blood.splash"
+  },
+  "entity.sniffer.tame": {
+    "sounds": [
+      {
+        "name": "winterworks:sniffer/tame1"
+      },
+      {
+        "name": "winterworks:sniffer/tame2"
+      },
+      {
+        "name": "winterworks:sniffer/tame3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.sniffer.tame"
   }
 }

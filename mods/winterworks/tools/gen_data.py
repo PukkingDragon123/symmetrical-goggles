@@ -141,9 +141,13 @@ def sounds():
             d["subtitle"] = f"subtitles.{M}.{name}"
         out[name] = d
         S[name] = (files, subtitle)
-    for name, e in real.items():
+    for name, e in real.items():   # events that only the sound map knows (registered in Java's WWSounds)
         if name not in out:
-            print("sound_map.json has an event with no sound event in Java:", name, file=sys.stderr)
+            d = {"sounds": e["sounds"]}
+            if e.get("subtitle"):
+                d["subtitle"] = f"subtitles.{M}.{name}"
+                S[name] = ([], e["subtitle"])
+            out[name] = d
     write(os.path.join(A, "sounds.json"), out)
     return {f"subtitles.{M}.{n}": sub for n, (_, sub) in S.items() if sub}
 
