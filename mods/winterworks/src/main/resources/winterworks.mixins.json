@@ -14,10 +14,19 @@
     "StrayJockeyMixin",
     "BrushableBlockEntityMixin",
     "PotionContentsMixin",
-    "ThrownPotionMixin"
+    "ThrownPotionMixin",
+    "CurseLivingEntityMixin",
+    "CursePlayerMixin",
+    "CurseServerPlayerMixin",
+    "CurseEnchantmentHelperMixin",
+    "CursePiglinAiMixin",
+    "CurseAbstractVillagerMixin",
+    "CurseNaturalSpawnerMixin",
+    "CurseMobCategoryMixin"
   ],
   "client": [
-    "client.GameRendererMixin"
+    "client.GameRendererMixin",
+    "client.CurseMouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
