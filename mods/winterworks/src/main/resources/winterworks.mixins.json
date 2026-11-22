@@ -30,11 +30,16 @@
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "FoodDataMixin",
-    "HexedPlayerMixin"
+    "HexedPlayerMixin",
+    "endboss.EnderDragonMixin"
   ],
   "client": [
     "client.GameRendererMixin",
-    "client.CurseMouseHandlerMixin"
+    "client.CurseMouseHandlerMixin",
+    "client.endboss.DragonModelMixin",
+    "client.endboss.EndSkyMixin",
+    "client.endboss.EndFogMixin",
+    "client.endboss.EclipseLightMixin"
   ],
   "injectors": {
     "defaultRequire": 1
