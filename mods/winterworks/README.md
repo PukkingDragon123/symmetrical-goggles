@@ -89,30 +89,39 @@ through everything in your way.
 
 Design contract: [docs/AMBER_UPDATE.md](docs/AMBER_UPDATE.md).
 
-**Archaeology everywhere.** Every overworld cave has suspicious sand and gravel holding amber or bones. **Dead Caves**,
+**Archaeology everywhere.** Every overworld cave has plenty of suspicious sand and gravel holding amber or bones, and
+**amber sand** and **amber gravel** (brush them for amber shards, now and then a whole block of amber). Sherds are rare
+finds. **Dead Caves**,
 a new underground biome found only under the badlands, are a fossil desert that was a prehistoric forest:
 banded sandstone walls with amber seams, petrified trunks and stumps, boulders, dead bushes and lots of suspicious
 blocks. **Dig Sites** (Dead Caves and wherever mineshafts can be) are abandoned excavations: a shored-up cavern, a pit
 with a half-dug fossil skeleton, scaffolding, a ruined shack, a tent, and chests and barrels of loot.
 
 **Amber.** Amber is see-through, honey-coloured and cloudy, and what is trapped inside (a mosquito, a seed) is a full 3D
-model. Break one to release an Amberwood seed (or torchflower seeds or a
-pitcher pod) or a live mosquito. Brush **amber fossils** for Amberwood seeds and grow **Amberwood**: a tall, ribbed,
-cactus-like trunk with a few arms, crowned only with pale flowers (Amberwood Bloom); its trunk oozes resin.
+model. Mine it with **Silk Touch** to keep it whole, inclusion and all; otherwise it shatters into 2-4 **amber shards**
+and whatever was inside gets out: a live mosquito, or an Amberwood Bloom. 9 shards make a block of amber again.
+Brush **amber fossils** for **Amberwood Blooms**, the tree's sapling: plant one on sand, red sand, terracotta, dirt or
+grass and it grows (bone meal helps) into an **Amberwood**: a tall, ribbed, cactus-like trunk with a few arms, crowned
+with blooms; its trunk oozes resin. Amberwood is a full wood set: wood, stripped logs and wood, planks, stairs, slabs,
+fences and gates, doors, trapdoors, buttons, pressure plates, signs, hanging signs and boats.
 
 **Mosquitoes.** Four-winged, with a giant needle. They hunt anything with blood (not the undead, golems, slimes and
-the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber chunk
+the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber shard
 when you give them blood (a potion, a blood stain, a splash): an amber farm. Pitcher pods attract them, and they
 pollinate pitcher crops. **Potion of Blood** + torchflower = **Potion of Immunity**: no other effect can touch you.
 
 **Sniffers.** Tame one with pitcher pods: it follows you, sniffs out suspicious sand, gravel and amber fossils and digs
-them up for you; sniffer digging also turns up amber, Amberwood seeds, bones and sherds.
+them up for you; sniffer digging also turns up amber, Amberwood Blooms, bones and (rarely) sherds.
 
-**The Pot Golem.** Four amber blocks in a T and a decorated pot on top: a muscular, jelly-like amber golem that
-follows you and fights. Its pot is its head: an Echo Shard inside gives a Warden-like sonic beam, the Howl sherd
-rallies wolves, the Danger sherd makes it blow itself up when almost dead. Give it a Blade, Miner or Archer sherd for
-a blade arm, a pickaxe that mines ores for you, or a bow. The pot is its weak spot: hits crack it (repair it with a
-sherd or a brick). Brush it and it giggles and sneezes the pot off, showing its dumb little face.
+**The Pot Golem.** Four amber blocks in a T and a decorated pot on top (any way round, in any order, like an iron
+golem): a muscular, jelly-like amber golem that follows you and fights. Its pot is its head, and a pot with the same
+sherd on all four faces gives it a power, its pattern glowing while it works: Howl rallies wolves, Danger blows itself
+up when almost dead, Heart heals you and your pets, Burn has fiery fists and keeps you fireproof, Flow blasts foes away
+with a gust, Shelter shields you and swats arrows aimed at you, Plenty vacuums up loot into a 27-slot pot (empty hand
+to open), Brewer throws Healing at you and Weakness or Slowness at foes. An Echo Shard inside gives a Warden-like
+sonic beam. Give it a Blade, Miner or Archer sherd for a blade arm, a pickaxe that mines ores for you, or a bow. The
+pot is its weak spot: hits crack it, and a headshot does double damage and always cracks it (repair it with a sherd or
+a brick). Brush it and it giggles and sneezes the pot off, showing its dumb little face.
 
 ## Hexes & Havoc
 
