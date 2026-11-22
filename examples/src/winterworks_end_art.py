@@ -1338,8 +1338,1036 @@ chorus_roots()
 chorus_fruit_block()
 
 
+# ====================================================================== plants (cross models, cutout: alpha is 0 or 255)
+# End Bloom stem and leaves: a deep teal-indigo, so the violet petals and the glowing bulb stand out.
+STEM = ramp("#0c1222", "#141f37", "#1d2f4c", "#284062", "#35557a", "#476f92", "#6690a8", "#91b5c2")
+PETAL = ramp("#1c0a2d", "#2d1047", "#431965", "#5b2484", "#7832a2", "#9545bc", "#b061d1", "#cb86e4",
+             "#e5b3f3", "#f8e0fc")
+# the bulb's light, violet edge -> white core (also the End Bulb item and the end_glow motes)
+BULB = ramp("#4a1f96", "#6d36c8", "#9259ea", "#b383f8", "#d3b2ff", "#ecdcff", "#fdf8ff")
+
+
+def put_px(A, x, y, c):
+    h, w = A.shape[:2]
+    x, y = int(x), int(y)
+    if 0 <= x < w and 0 <= y < h:
+        A[y, x] = rgba(c) if not isinstance(c, np.ndarray) else c
+
+
+def blade(A, rmp, base, tip, bend=0.0, width=2.0, tone=4, hook=0.0, lit_side=True):
+    """A grass blade along a curve from base to tip: `width` px at the base, tapering to one; the left column
+    lit, the right in shade, the tip lighter and the foot darker. `hook` curls the tip over sideways."""
+    (bx, by), (tx, ty) = base, tip
+    L = math.hypot(tx - bx, ty - by)
+    px_, py_ = -(ty - by) / L, (tx - bx) / L
+    if hook:
+        ctrl = [(bx, by), (bx + px_ * bend * 0.6, by + (ty - by) * 0.45),
+                (tx + px_ * bend - hook * 0.4, ty - 1.5), (tx + hook, ty + abs(hook) * 0.8)]
+    else:
+        mx, my = (bx + tx) / 2 + px_ * bend, (by + ty) / 2 + py_ * bend
+        ctrl = [(bx, by), (mx, my), (tx, ty)]
+    pts = bezier(ctrl, n=int(L * 4) + 8)
+    n = len(pts)
+    seen = {}
+    for i, (x, y) in enumerate(pts):
+        t = i / (n - 1)
+        wd = max(1.0, width * (1 - t) ** 0.7)
+        cols = range(int(math.floor(x - (wd - 1) / 2 + 0.5)), int(math.floor(x + (wd - 1) / 2 + 0.5)) + 1)
+        cols = list(cols)
+        yy = int(math.floor(y))
+        for k, cx in enumerate(cols):
+            v = tone
+            if len(cols) >= 2 and lit_side:
+                v += 1 if k == 0 else (-1 if k == len(cols) - 1 else 0)
+            v += 2 if t > 0.82 else (1 if t > 0.62 else 0)
+            v -= 1 if t < 0.15 else 0
+            seen[(cx, yy)] = v
+    for (cx, yy), v in seen.items():
+        put_px(A, cx, yy, rmp[int(np.clip(v, 0, len(rmp) - 1))])
+
+
+def end_grass_plants():
+    # short tuft: back blades dark, front blades light, leaning outward
+    A = np.zeros((32, 32, 4), np.uint8)
+    r = rng_for("end_grass")
+    spec = [  # (base x, tip x, tip y, bend, width, tone)
+        (12, 5, 11, -2.0, 3.0, 2), (20, 27, 9, 2.0, 3.0, 2), (16, 15, 5, 1.0, 3.0, 2), (10, 2, 18, -1.5, 3.0, 3),
+        (22, 30, 17, 1.5, 3.0, 3), (14, 9, 8, -1.0, 3.5, 3), (18, 22, 7, 1.5, 3.5, 4), (13, 7, 16, -1.0, 3.5, 4),
+        (19, 25, 14, 1.0, 3.5, 4), (16, 17, 10, -1.0, 4.0, 5), (11, 13, 19, 0.5, 3.0, 5), (21, 19, 18, -0.5, 3.0, 5),
+        (15, 12, 22, -0.5, 3.0, 6),
+    ]
+    for bx, tx, ty, bend, wd, tone in spec:
+        blade(A, GRASS, (bx + r.uniform(-0.4, 0.4), 31.9), (tx, ty), bend, wd, tone)
+    block("end_grass", A, tiles=False)
+    # tall grass: one 32 x 64 drawing split into the two halves, so blades run on through the seam;
+    # the tallest fronds curl over at the top (alien), a few carry pale seed tips
+    T = np.zeros((64, 32, 4), np.uint8)
+    r = rng_for("tall_end_grass")
+    spec = [  # (base x, tip x, tip y, bend, width, tone, hook)
+        (9, 3, 28, -3.0, 3.5, 2, 0), (23, 29, 24, 3.0, 3.5, 2, 0), (15, 9, 5, -2.0, 3.5, 2, -4),
+        (18, 23, 3, 2.5, 3.5, 3, 4), (12, 4, 14, -3.0, 3.5, 3, -3), (21, 28, 12, 3.0, 3.5, 3, 3),
+        (16, 17, 8, 1.0, 4.0, 4, 0), (13, 8, 22, -1.5, 3.5, 4, 0), (19, 25, 19, 1.5, 3.5, 4, 0),
+        (14, 12, 15, -0.5, 3.0, 5, -2), (18, 20, 13, 0.5, 3.0, 5, 2),
+        (11, 13, 34, 1.0, 3.0, 5, 0), (20, 18, 31, -1.0, 3.0, 6, 0), (16, 14, 38, 0.5, 3.0, 6, 0),
+    ]
+    tips = []
+    for bx, tx, ty, bend, wd, tone, hook in spec:
+        blade(T, GRASS, (bx + r.uniform(-0.4, 0.4), 63.9), (tx, ty), bend, wd, tone, hook=hook)
+        if not hook and ty < 26:
+            tips.append((tx, ty))
+    for (x, y) in tips:                                               # pale seed tips on the straight fronds
+        stamp(T, x - 1, y - 1, """
+            .9.
+            987
+            .6.
+        """, {"9": GRASS[9], "8": GRASS[8], "7": GRASS[7], "6": GRASS[5]})
+    block("tall_end_grass_top", T[:32], tiles=False)
+    block("tall_end_grass_bottom", T[32:], tiles=False)
+
+
+def sd_stroke(X, Y, pts, radii):
+    d = np.full(X.shape, np.inf)
+    for i in range(len(pts) - 1):
+        d = np.minimum(d, sd_segment(X, Y, *pts[i], *pts[i + 1], radii[i], radii[i + 1]))
+    return d
+
+
+def lens(ctrl, wmax, n=14, taper=(0.9, 0.7), base_w=None):
+    """Sample points and radii of a leaf/petal along a Bezier: widest in the middle, pointed at the tip."""
+    pts = bezier(ctrl, n)
+    t = np.linspace(0, 1, n)
+    rad = wmax * np.sin(np.pi * np.clip(t, 0.02, 1) ** taper[0]) ** taper[1]
+    if base_w is not None:
+        rad = np.maximum(rad, base_w * (1 - t) ** 2)
+    rad[-1] = 0.15
+    return [tuple(p) for p in pts], list(rad)
+
+
+class Layers:
+    """Back-to-front shaded shapes at 4x supersampling, each quantised onto its own ramp."""
+
+    def __init__(self, w=32, h=32, ss=4):
+        self.w, self.h, self.ss = w, h, ss
+        self.X, self.Y = ss_coords(w, h, ss)
+        self.A = np.zeros((h, w, 4), np.uint8)
+        self.top = np.full((h, w), -1)          # which layer owns each pixel
+        self.n = 0
+
+    def add(self, sdf, rmp, base, gain=6.0, bevel=2.0, lo=0, hi=None, edge=-2, extra=None, mask_only=False):
+        D = sdf(self.X, self.Y) if callable(sdf) else sdf
+        t = np.clip(-D / bevel, 0, 1)
+        Hh = np.sqrt(1 - (1 - t) ** 2) * bevel
+        if extra is not None:
+            Hh = Hh + extra
+        gy, gx = np.gradient(Hh, 1.0 / self.ss)
+        nrm = np.dstack([-gx, -gy, np.ones_like(Hh)])
+        nrm /= np.linalg.norm(nrm, axis=2, keepdims=True)
+        Lt = (nrm @ LIGHT) - LIGHT[2]
+        inside = D < 0
+        cov = down(inside.astype(float), self.ss)
+        Lm = down(np.where(inside, Lt, 0.0), self.ss) / np.maximum(cov, 1e-9)
+        m = cov >= 0.5
+        hi = len(rmp) - 1 if hi is None else hi
+        I = quant(base + Lm * gain, len(rmp), lo, hi)
+        # separate this shape from what lies behind it: its lower/right silhouette is darker
+        rim = m & (~shift(m, 0, 1) | ~shift(m, 1, 0)) & (self.top >= 0)
+        I = np.where(rim, np.clip(I + edge, lo, hi), I)
+        if not mask_only:
+            self.A[m] = rmp[I[m]]
+            self.top[m] = self.n
+        self.n += 1
+        return m, I
+
+
+def bloom_body(L, state):
+    """Stem and leaves (and the sepals), shared by every End Bloom state."""
+    stem_pts = bezier([(16.2, 32.5), (14.8, 26), (17.2, 20), (16.0, 15.5)], 12)
+    L.add(lambda X, Y: sd_stroke(X, Y, [tuple(p) for p in stem_pts], list(np.linspace(1.25, 0.95, 12))),
+          STEM, 3.6, gain=5, bevel=1.2)
+    for ctrl, wm in (([(15.5, 28.5), (11, 25), (6, 23.5), (3.5, 19.5)], 2.3),
+                     ([(16.5, 26.5), (21, 23.5), (25, 22.5), (28.5, 17.5)], 2.1)):
+        pts, rad = lens(ctrl, wm)
+        m, I = L.add(lambda X, Y, p=pts, r=rad: sd_stroke(X, Y, p, r), STEM, 4.0, gain=6, bevel=1.6)
+        mid = bezier(ctrl, 30)[3:-3]                                    # the leaf's midrib
+        for x, y in mid:
+            if m[int(y), int(x)]:
+                put_px(L.A, x, y, STEM[2])
+
+
+def bloom_petals(L, open_):
+    if not open_:
+        # the closed bud: a tight teardrop of wrapped petals twisting up to a point, cupped by two sepals
+        bud = lambda X, Y: sd_stroke(X, Y, *lens([(16, 16.5), (15.5, 11), (16.5, 6), (16.5, 2.5)], 4.4, 16,
+                                                  taper=(0.6, 0.6)))  # noqa: E731
+        m, I = L.add(bud, PETAL, 4.8, gain=7, bevel=3.2)
+        for k, (a, b) in enumerate((((12.0, 13.0), (19.5, 7.0)), ((14.0, 16.0), (20.0, 11.0)))):
+            seam = bezier([a, ((a[0] + b[0]) / 2 + 1.5, (a[1] + b[1]) / 2 + 1.0), b], 30)
+            for x, y in seam:
+                xi, yi = int(x), int(y)
+                if 0 <= xi < 32 and 0 <= yi < 32 and m[yi, xi]:
+                    L.A[yi, xi] = PETAL[max(1, I[yi, xi] - 2)]
+                    if 0 <= yi + 1 < 32 and m[yi + 1, xi] and k < 2:
+                        L.A[yi + 1, xi] = PETAL[min(9, I[yi + 1, xi] + 1)]
+        for x, y in ((16, 3), (16, 4)):                               # a magenta tip
+            put_px(L.A, x, y, PETAL[7])
+        for ctrl in (([(16, 17), (13, 16), (11.5, 13.5)]), ([(16, 17), (19, 16), (20.5, 13.0)])):
+            pts, rad = lens(ctrl, 1.5, 8)
+            L.add(lambda X, Y, p=pts, r=rad: sd_stroke(X, Y, p, r), STEM, 4.4, gain=5, bevel=1.0)
+        return None
+    # open: five petals unfurled round the receptacle; the inner faces are lighter, the tips curl
+    specs = [  # (control points, width, base tone)
+        ([(16, 15), (16.5, 9), (15.5, 4.5), (16.5, 1.5)], 2.6, 3.0),          # back petal, in shade
+        ([(15, 15), (12, 9), (8.5, 5.5), (6.5, 2.5)], 2.8, 4.2),               # upper left
+        ([(17, 15), (20, 9), (23.5, 5.5), (25.5, 2.5)], 2.8, 3.8),             # upper right
+        ([(15, 16), (9, 14.5), (4.5, 12), (2.5, 15.5)], 3.0, 5.2),             # left, curling down
+        ([(17, 16), (23, 14.5), (27.5, 12), (29.5, 15.5)], 3.0, 4.6),          # right, curling down
+    ]
+    masks = []
+    for ctrl, wm, base in specs:
+        pts, rad = lens(ctrl, wm, 16, taper=(0.8, 0.8))
+        m, I = L.add(lambda X, Y, p=pts, r=rad: sd_stroke(X, Y, p, r), PETAL, base, gain=6, bevel=2.2)
+        # the inner face: a lighter magenta vein down the petal's middle
+        for x, y in bezier(ctrl, 40)[6:-4]:
+            xi, yi = int(x), int(y)
+            if 0 <= xi < 32 and 0 <= yi < 32 and m[yi, xi] and L.top[yi, xi] == L.n - 1:
+                L.A[yi, xi] = PETAL[min(9, I[yi, xi] + 2)]
+        for tip in bezier(ctrl, 40)[-7:-3:2]:                         # a glowing tip, on the petal
+            xi, yi = int(tip[0]), int(tip[1])
+            if 0 <= xi < 32 and 0 <= yi < 32 and m[yi, xi]:
+                L.A[yi, xi] = PETAL[8]
+        masks.append(m)
+    # the receptacle cup
+    L.add(lambda X, Y: sd_ellipse(X, Y, 16, 15.6, 3.6, 1.8), PETAL, 2.6, gain=4, bevel=1.0)
+    return masks
+
+
+def bulb_layer(L, cx=16.0, cy=11.8, r=3.7):
+    """The luminous bulb: violet rim, lilac body, white core and a catch-light; returns its mask."""
+    m, I = L.add(lambda X, Y: sd_circle(X, Y, cx, cy, r), BULB, 3.6, gain=4.0, bevel=2.4, edge=-1)
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    d = np.hypot(xx - cx, yy - cy)
+    core = m & (d < r * 0.45)
+    L.A[core] = BULB[5]
+    put_px(L.A, cx - 1.6, cy - 1.6, BULB[6])
+    put_px(L.A, cx - 0.6, cy - 1.6, BULB[6])
+    return m
+
+
+def end_bloom():
+    # closed
+    L = Layers()
+    bloom_body(L, "closed")
+    bloom_petals(L, False)
+    block("end_bloom_closed", L.A, tiles=False)
+    # open, bare (the bulb sheared off: an empty cup with a stub)
+    L = Layers()
+    bloom_body(L, "open")
+    bloom_petals(L, True)
+    bare = L.A.copy()
+    stamp(bare, 14, 12, """
+        .ab.
+        abba
+        .cc.
+    """, {"a": PETAL[3], "b": PETAL[1], "c": PETAL[5]})
+    block("end_bloom_open_bare", bare, tiles=False)
+    # open with the bulb
+    m = bulb_layer(L)
+    openA = L.A.copy()
+    block("end_bloom_open", openA, tiles=False)
+    # the glow overlay: the bulb and the petal veins' brightest pixels, pulsing; at the peak the light spills
+    # a pixel onto the petals round the bulb
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    d = np.hypot(xx - 16.0, yy - 11.8)
+    vein = (openA[..., 3] > 0) & ~m & np.all(openA[..., :3] == PETAL[8][:3], axis=-1)
+    frames = []
+    for g in range(4):
+        F = np.zeros((32, 32, 4), np.uint8)
+        F[m] = openA[m]
+        lift = np.clip(np.round((1 - d / 3.7) * (1 + g)), 0, 3).astype(int)
+        for k in range(1, 4):
+            sel = m & (lift >= k)
+            idx = np.array([np.argmin(np.abs(BULB[:, :3].astype(int) - c[:3].astype(int)).sum(1)) for c in F[sel]],
+                           int) if sel.any() else np.array([], int)
+            F[sel] = BULB[np.clip(idx + 1, 0, 6)]
+        if g >= 2:
+            halo = dilate(m) & ~m & (openA[..., 3] > 0)
+            F[halo] = BULB[1 if g == 2 else 2]
+        F[vein] = PETAL[8] if g < 2 else PETAL[9]
+        frames.append(F)
+    animated("textures/block/end_bloom_glow.png", frames, frametime=4, order=[0, 1, 2, 3, 3, 2, 1, 0],
+             interpolate=True)
+    return openA
+
+
+def dry_end_bush():
+    """A brittle grey dead shrub: a short trunk forking into a fan of kinked twigs, a few snapped stubs."""
+    A = np.zeros((32, 32, 4), np.uint8)
+    r = rng_for("dry_end_bush")
+    segs = []
+
+    def grow(x, y, ang, length, depth):
+        pts = [(x, y)]
+        for _ in range(3):                                          # kinked, never smooth
+            ang += r.normal(0, 0.2)
+            ang = min(-0.15, max(-math.pi + 0.15, ang))             # twigs keep reaching up
+            x, y = x + math.cos(ang) * length / 3, y + math.sin(ang) * length / 3
+            pts.append((x, y))
+        segs.append((pts, depth))
+        if depth >= 3:
+            return
+        n = 2 if r.random() < 0.6 else 3
+        for k in range(n):
+            if depth >= 2 and r.random() < 0.2:                     # snapped off
+                continue
+            spread = (k - (n - 1) / 2) * r.uniform(0.5, 0.8) + r.normal(0, 0.12)
+            grow(x, y, ang + spread, length * r.uniform(0.6, 0.75), depth + 1)
+
+    trunk = [(16.0, 31.5), (15.6, 28.5), (16.3, 25.5)]
+    segs.append((trunk, -1))
+    for a, L0 in ((-math.pi / 2 - 0.95, 8.5), (-math.pi / 2 - 0.25, 10.0), (-math.pi / 2 + 0.35, 9.5),
+                  (-math.pi / 2 + 1.0, 8.0)):
+        grow(16.2, 25.5, a + r.normal(0, 0.08), L0, 1)
+    for pts, depth in sorted(segs, key=lambda s: -s[1]):
+        px = poly_px(pts)
+        tone = {-1: 2, 1: 2, 2: 3, 3: 4}[depth]
+        for i, (x, y) in enumerate(px):
+            put_px(A, x, y, TWIG[tone])
+            if depth <= 1 and i < len(px) * (1.0 if depth < 0 else 0.5):   # thick near the base: lit left edge
+                put_px(A, x - 1, y, TWIG[tone + 2])
+        ex, ey = px[-1]
+        put_px(A, ex, ey, TWIG[6] if depth >= 3 else TWIG[5])        # pale broken ends
+    block("dry_end_bush", A, tiles=False)
+
+
+end_grass_plants()
+END_BLOOM_OPEN = end_bloom()
+dry_end_bush()
+
+
+# ====================================================================== items (32 x 32, outlined)
+WING = ramp("#170f21", "#261934", "#38264b", "#4c3562", "#614679", "#795b8f", "#9273a5", "#ad90b9", "#c9b1cf",
+            "#e6d9e8")                                               # dusty lilac moth scales
+MEAT = ramp("#26102c", "#401a47", "#5c2763", "#7a397f", "#975299", "#b170b1", "#c993c9", "#e0b9df", "#f3dff1")
+HIDE = ramp("#17131d", "#262030", "#382f44", "#4d4259", "#655870", "#7f7189")   # gucker skin, slate violet
+SEAR = ramp("#1f0d16", "#391820", "#562826", "#773c2e", "#975437", "#b46f45", "#cb8d58", "#e0b077", "#f0d3a0")
+GLAND = ramp("#2a0f2b", "#4a1a45", "#6c2862", "#8f3a7e", "#ae5498", "#c977b1", "#df9fcb", "#f0c9e2")
+VOID = ramp("#040309", "#0a0817", "#110e26", "#1b1638", "#28204e", "#372c69", "#4b3d88", "#6a5aa8")
+STEEL = ramp("#1c1a24", "#302e3b", "#474552", "#62606b", "#83808a", "#a8a4aa", "#d6d1cf")
+VSTEEL = ramp("#1a1424", "#2c2240", "#40325a", "#584775", "#735f91", "#9580b0", "#c3b2d8")   # violet steel
+EGG = ramp("#050308", "#0b0710", "#130b1b", "#1c1027", "#271535", "#341c46", "#45265a", "#5d3576")
+STAR = {"W": "#ffffff", "b": "#bcdcff", "v": "#e2c4ff", "t": "#8ff0e0"}
+
+
+def outlined(A, dark, lit=None):
+    return outline(A, dark, lit)
+
+
+def end_bulb_item():
+    L = Layers()
+    pear = lambda X, Y: smin(sd_circle(X, Y, 16, 20, 8.6), sd_circle(X, Y, 16, 13.5, 5.0), 3.0)  # noqa: E731
+    m, I = L.add(pear, BULB, 3.0, gain=5.0, bevel=4.0)
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    for k in (-2, -1, 1, 2):                                          # faint lantern ribs
+        for y in range(9, 29):
+            half = 8.0 * math.sqrt(max(0.0, 1 - ((y - 20) / 9.5) ** 2))
+            x = 16 + k * half * 0.42
+            if m[y, int(x)] and abs(k) == 1 or (m[y, int(x)] and y % 2 == 0):
+                L.A[y, int(x)] = BULB[max(0, I[y, int(x)] - 1)]
+    d = np.hypot(xx - 15.5, (yy - 20.5) * 1.1)
+    L.A[m & (d < 4.4)] = BULB[5]                                      # the light inside
+    L.A[m & (d < 2.4)] = BULB[6]
+    for x, y in ((11, 15), (11, 16), (12, 14)):
+        put_px(L.A, x, y, BULB[6])
+    # calyx, stalk and a little leaf (teal, like the End Bloom's stem)
+    for ctrl in ([(16, 10), (13, 11), (10.5, 13.5)], [(16, 10), (16, 12), (16.2, 14.5)], [(16, 10), (19, 11), (21.5, 13.5)]):
+        pts, rad = lens(ctrl, 1.6, 8)
+        L.add(lambda X, Y, p=pts, r=rad: sd_stroke(X, Y, p, r), STEM, 4.6, gain=5, bevel=1.0)
+    stalk = [tuple(p) for p in bezier([(16, 10), (16.5, 6), (19, 4), (21.5, 4.5)], 10)]
+    L.add(lambda X, Y: sd_stroke(X, Y, stalk, [1.1] * 10), STEM, 4.2, gain=4, bevel=0.8)
+    pts, rad = lens([(17, 6), (13.5, 3.5), (10, 4)], 1.9, 10)
+    L.add(lambda X, Y: sd_stroke(X, Y, pts, rad), STEM, 5.0, gain=5, bevel=1.0)
+    item("end_bulb", outlined(L.A, "#160a2a", "#2c1655"))
+
+
+def enderfly_wing_item():
+    """A moth forewing: hooked apex, dark base, wavy cross-lines, a pale outer field with a scalloped fringe,
+    veins from the root and a big eye-spot (dark ring, glowing teal iris, violet core, catch-light)."""
+    L = Layers()
+    wing = [(2.5, 17.0), (3.0, 14.0), (9.5, 8.0), (17.5, 4.5), (24.5, 3.0), (29.5, 3.0), (30.0, 5.0),
+            (29.0, 7.0), (29.8, 11.0), (28.5, 17.5), (25.5, 23.0), (21.5, 27.0), (16.0, 25.5), (10.0, 23.0),
+            (4.5, 20.0)]
+    m, I = L.add(lambda X, Y: sd_poly(X, Y, wing) + 0.3, WING, 5.0, gain=1.6, bevel=1.5)
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    u = np.hypot(xx - 3, yy - 17)                                      # distance out from the wing root
+    A = L.A
+    wav = np.sin(np.arctan2(yy - 17, xx - 3) * 9) * 0.9
+    A[m & (u < 9 + wav)] = WING[3]                                     # the dark basal field
+    A[m & (np.abs(u - 9 - wav) < 0.7)] = WING[1]                       # antemedial line
+    A[m & (np.abs(u - 10.3 - wav) < 0.5)] = WING[7]
+    A[m & (np.abs(u - 19 - wav) < 0.7)] = WING[1]                      # postmedial line, pale-edged outside
+    A[m & (np.abs(u - 20.2 - wav) < 0.5)] = WING[8]
+    A[m & (u > 21 + wav)] = WING[6]                                    # the pale outer field
+    for tx, ty in ((24, 4), (29, 9), (28, 17), (24, 24), (16, 25)):    # veins from the root
+        for x, y in line_px(4, 17, tx, ty)[4:-2]:
+            if m[y, x] and u[y, x] > 10.5:
+                A[y, x] = WING[3] if u[y, x] < 19 else WING[4]
+    edge = m & ~erode(m)
+    outer = edge & (u > 21)
+    A[outer & ((xx.astype(int) + yy.astype(int)) % 3 == 0)] = WING[2]  # the scalloped fringe
+    A[outer & ((xx.astype(int) + yy.astype(int)) % 3 != 0)] = WING[8]
+    cx, cy = 20.5, 13.5
+    d = np.hypot(xx - cx, yy - cy)
+    A[m & (d < 4.4)] = rgba("#120818")
+    A[m & (d < 3.5)] = TEAL[4]
+    A[m & (d < 3.5) & (xx + yy < cx + cy - 1.0)] = TEAL[5]
+    A[m & (d < 2.0)] = PETAL[6]
+    A[m & (d < 1.0)] = rgba("#16061f")
+    put_px(A, cx - 1.5, cy - 1.5, "#ffffff")
+    put_px(A, cx - 0.5, cy - 2.5, TEAL[6])
+    stamp(A, 1, 15, """
+        .ab
+        abc
+        .bc
+    """, {"a": WING[6], "b": WING[4], "c": WING[2]})
+    item("enderfly_wing", outlined(A, "#0d0915", "#221a30"))
+
+
+def meat_shape(X, Y, shrink=0.0):
+    base = sd_ellipse(X, Y, 16, 16.5, 12.6, 8.6, -0.5)
+    lobe = sd_circle(X, Y, 9.5, 22.0, 5.0)
+    d = smin(base, lobe, 3.0) + np.sin(X * 0.9) * np.cos(Y * 0.7) * 0.6 + shrink
+    return d
+
+
+def gucker_meat_items():
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    # the rind: the slab's upper-right edge keeps a strip of slate skin
+    rind_dir = (xx - 16) * 0.5 - (yy - 16.5) * 0.86
+    for cooked in (False, True):
+        L = Layers()
+        rmp = SEAR if cooked else MEAT
+        m, I = L.add(lambda X, Y: meat_shape(X, Y, 0.5 if cooked else 0.0), rmp, 4.6 if cooked else 5.0,
+                     gain=4.5, bevel=3.0)
+        A = L.A
+        d_in = chamfer(m)
+        rind = m & (d_in <= 2.5) & (rind_dir > 4)
+        if cooked:
+            A[rind] = SEAR[np.clip(I[rind] - 3, 0, 8)]
+            A[rind & ((xx.astype(int) * 3 + yy.astype(int)) % 5 == 0)] = SEAR[4]
+        else:
+            Ih = np.clip(I - 3, 0, 5)
+            A[rind] = HIDE[Ih[rind]]
+            A[rind & ((xx.astype(int) * 3 + yy.astype(int) * 2) % 7 == 0)] = HIDE[5]   # pale skin spots
+        # marbling: wavy streaks of fat along the slab
+        for k, off in enumerate((-3.5, 0.5, 4.0)):
+            pts = [(x, 16.5 + off + (x - 16) * 0.52 + 1.2 * math.sin(x * 0.5 + k)) for x in np.linspace(5, 27, 60)]
+            for x, y in pts:
+                xi, yi = int(x), int(y)
+                if 0 <= yi < 32 and m[yi, xi] and not rind[yi, xi] and d_in[yi, xi] > 1.5:
+                    A[yi, xi] = (SEAR[7] if cooked else MEAT[7]) if (xi + k) % 5 else (SEAR[6] if cooked else MEAT[6])
+        if cooked:                                                    # grill marks: dark bars with a lit lip
+            for c in (-7, 0, 7):
+                for x in range(32):
+                    y = int(round(-(x - 16) * 0.95 + 16.5 + c))
+                    for yy_ in (y, y + 1):
+                        if 0 <= yy_ < 32 and m[yy_, x] and d_in[yy_, x] > 1:
+                            A[yy_, x] = SEAR[1]
+                    if 0 <= y + 2 < 32 and m[y + 2, x] and d_in[y + 2, x] > 1:
+                        A[y + 2, x] = SEAR[6]
+        for x, y in ((9, 12), (10, 11), (11, 11)):                    # a wet / glossy highlight
+            if m[y, x]:
+                A[y, x] = (SEAR[8] if cooked else MEAT[8])
+        item("cooked_gucker_meat" if cooked else "gucker_meat",
+             outlined(A, "#1c0b0c" if cooked else "#2a0f24", "#3b1a1a" if cooked else "#4a1a3c"))
+
+
+def gucker_gland_item():
+    """A pulsing sac: a lumpy, glossy membrane veined in plum, lit from inside by teal nodules, with a ringed duct."""
+    L = Layers()
+    sac = lambda X, Y: smin(smin(sd_circle(X, Y, 14.0, 20.0, 8.2), sd_circle(X, Y, 20.5, 15.0, 6.4), 3.0),  # noqa
+                            sd_circle(X, Y, 9.5, 14.5, 4.6), 2.5)
+    m, I = L.add(sac, GLAND, 4.2, gain=6.0, bevel=4.5)
+    duct = [tuple(p) for p in bezier([(21.5, 10), (22.5, 6.5), (24.5, 4.5), (26.5, 3.5)], 8)]
+    L.add(lambda X, Y: sd_stroke(X, Y, duct, list(np.linspace(2.6, 1.8, 8))), GLAND, 3.6, gain=5, bevel=1.2)
+    A = L.A
+    for x, y in ((22, 7), (23, 7), (23, 6), (24, 6)):                 # a ring round the duct
+        put_px(A, x, y, GLAND[1])
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    wob = (pnoise(32, 32, 5, 5, seed("gland_glow")) - 0.5) * 2.4      # the light inside, soft and lumpy
+    glow = np.clip(1 - (np.hypot((xx - 14.5) / 1.15, yy - 19.5) + wob) / 7.0, 0, 1)
+    A[m & (glow > 0.12)] = GLAND[5]
+    A[m & (glow > 0.42)] = GLAND[6]
+    A[m & (glow > 0.7)] = GLAND[7]
+    r = rng_for("gucker_gland")
+    for start, ang in (((21, 11), 2.0), ((18, 10), 2.7), ((23, 13), 1.7), ((9, 11), 1.8)):   # veins
+        pts = jag_path(r, start[0], start[1], ang, 11, 0.5, (2, 3))
+        for x, y in poly_px(pts):
+            if 0 <= x < 32 and 0 <= y < 32 and m[y, x] and glow[y, x] < 0.42:
+                A[y, x] = GLAND[1] if glow[y, x] < 0.12 else GLAND[3]
+    for x, y in ((8, 12), (9, 11), (15, 13), (16, 12), (17, 12)):     # wet gloss
+        if m[y, x]:
+            A[y, x] = GLAND[7]
+    item("gucker_gland", outlined(A, "#22081e", "#3e1238"))
+
+
+def obsidian_shard_item():
+    """A glassy flake of obsidian: three facets (lit, mid, shadow) meeting at bright ridges, ripple marks."""
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    shard = [(7.0, 30.0), (3.0, 23.5), (6.5, 16.5), (12.5, 12.0), (18.0, 5.5), (28.0, 1.5), (26.5, 9.0),
+             (26.0, 16.0), (20.5, 21.5), (14.5, 27.5)]
+    X, Y = ss_coords(32, 32, 4)
+    m = down((sd_poly(X, Y, shard) < 0).astype(float), 4) >= 0.5
+
+    def side(a, b):                                                  # which side of the line a-b
+        return (xx - a[0]) * (b[1] - a[1]) - (yy - a[1]) * (b[0] - a[0])
+
+    r1 = side((7.0, 27.0), (27.5, 2.0))                               # the main ridge, butt to point
+    r2 = side((12.0, 21.0), (6.5, 16.5))                              # a chip off the butt
+    I = np.where(r1 > 0, 5, 2)                                        # lit facet (upper left) / shadow facet
+    I = np.where((r1 <= 0) & (side((15, 24), (26.5, 9.0)) < 0), 3, I)  # a narrow mid facet on the right
+    I = np.where((r2 < 0) & (r1 > 0), 4, I)
+    t = np.hypot(xx - 30, yy - 0)
+    I = np.where((r1 <= 0) & (I == 2) & (np.cos(t * 1.1) > 0.8), 3, I)   # conchoidal ripples in the shadow
+    I = np.where((r1 > 0) & (I == 5) & (np.cos(t * 0.9) > 0.9), 6, I)
+    for a, b, v in (((7, 27), (27, 2), 8), ((15, 24), (26, 9), 6), ((12, 21), (7, 17), 7)):   # bright ridges
+        for x, y in line_px(*a, *b):
+            if m[y, x]:
+                I[y, x] = v
+    for x, y, v in ((24, 5, 9), (25, 4, 8), (23, 6, 8)):
+        I[y, x] = v
+    sheen = (r1 <= 0) & (np.hypot(xx - 18, yy - 19) < 4.5)
+    A = paint(np.where(m, I, -1), OBS, OBS_SHEEN, sheen)
+    item("obsidian_shard", outlined(A, "#030205", "#1a1226"))
+
+
+def eye_in_setting(A, m_setting, cx, cy, ew, eh, iris_r, glow=True):
+    """An almond eye (glowing violet iris, slit pupil, catch-light) cut into an obsidian setting."""
+    yy, xx = np.mgrid[0:A.shape[0], 0:A.shape[1]] + 0.5
+    # almond: the intersection of two circles
+    R = (ew ** 2 / 4 + eh ** 2) / (2 * eh) * 1.0
+    up = np.hypot(xx - cx, yy - (cy - eh / 2 + R)) < R
+    dn = np.hypot(xx - cx, yy - (cy + eh / 2 - R)) < R
+    eye = up & dn & m_setting
+    rim = dilate(eye) & ~eye & m_setting
+    A[rim] = OBS[0]
+    A[eye] = PETAL[3]
+    A[eye & (yy < cy - eh / 4)] = PETAL[2]                          # the lid's shadow on the eyeball
+    d = np.hypot(xx - cx, yy - cy)
+    iris = eye & (d < iris_r)
+    A[iris] = BULB[2]
+    A[iris & (d < iris_r * 0.66)] = BULB[3]
+    A[iris & (d < iris_r * 0.66) & (xx + yy > cx + cy)] = BULB[4]
+    A[eye & (np.abs(xx - cx) < 0.7) & (np.abs(yy - cy) < iris_r * 0.85)] = rgba("#0d0418")
+    put_px(A, cx - iris_r * 0.5, cy - iris_r * 0.5, "#ffffff")
+    put_px(A, cx - iris_r * 0.5 + 1, cy - iris_r * 0.5, BULB[5])
+    if glow:
+        spill = dilate(rim) & ~rim & ~eye & m_setting & (yy > cy)
+        A[spill] = OBS_SHEEN[6]
+    return eye
+
+
+def monolith_eye_item():
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    setting = [(16, 2.5), (24.5, 5.5), (29.5, 13), (28.5, 21), (23, 28), (14, 29.5), (6.5, 26), (2.5, 17),
+               (5.5, 8)]
+    X, Y = ss_coords(32, 32, 4)
+    m = down((sd_poly(X, Y, setting) < 0).astype(float), 4) >= 0.5
+    # facets fanning from the middle, lit by their direction (top-left bright)
+    ang = np.arctan2(yy - 16, xx - 16)
+    facet = np.floor((ang + math.pi) / (2 * math.pi) * 9).astype(int)
+    fa = (facet + 0.5) / 9 * 2 * math.pi - math.pi
+    lightness = -(np.cos(fa) + np.sin(fa)) / 1.41                     # 1 toward the top-left
+    I = np.clip(np.round(3.3 + lightness * 2.2), 1, 6).astype(int)
+    edges = m & (facet != shift(facet, 1, 0, fill=-1)) & (np.hypot(xx - 16, yy - 16) > 9)
+    I = np.where(edges, np.clip(I + 2, 0, 8), I)
+    A = paint(np.where(m, I, -1), OBS, OBS_SHEEN, np.hypot(xx - 21, yy - 22) < 5)
+    for x, y in ((8, 9), (9, 8), (10, 7), (15, 4)):
+        put_px(A, x, y, OBS[8])
+    put_px(A, 9, 8, OBS[9])
+    eye_in_setting(A, m, 16.0, 16.5, 19.0, 10.0, 4.4)
+    item("monolith_eye", outlined(A, "#030205", "#1a1226"))
+
+
+def void_rod_item(A=None, a=(6.5, 26.5), b=(25.5, 7.5), name="void_rod", seed_name="void_rod", draw=True):
+    """A dark starry rod: a window into the void between two violet-steel caps."""
+    if A is None:
+        A = np.zeros((32, 32, 4), np.uint8)
+    L = Layers()
+    L.A = A
+    rod = lambda X, Y: sd_segment(X, Y, *a, *b, 2.3)  # noqa: E731
+    m, I = L.add(rod, VOID, 2.6, gain=5.0, bevel=2.0)
+    r = rng_for(seed_name)
+    ys, xs = np.nonzero(m & erode(m))
+    for k in r.choice(len(xs), size=min(9, len(xs)), replace=False):
+        x, y = int(xs[k]), int(ys[k])
+        A[y, x] = rgba(STAR[str(r.choice(list("Wbvt")))])
+    x, y = int((a[0] * 0.6 + b[0] * 0.4)), int((a[1] * 0.6 + b[1] * 0.4))
+    stamp(A, x - 1, y - 1, """
+        .b.
+        bWb
+        .b.
+    """, {"b": STAR["b"], "W": STAR["W"]})
+    ux, uy = (b[0] - a[0]), (b[1] - a[1])
+    n = math.hypot(ux, uy)
+    ux, uy = ux / n, uy / n
+    for (px, py), s in ((a, 1), (b, -1)):                            # violet-steel caps
+        cx, cy = px + ux * 2.0 * s, py + uy * 2.0 * s
+        cap = lambda X, Y, cx=cx, cy=cy: sd_segment(X, Y, cx - ux * 2.2, cy - uy * 2.2, cx + ux * 1.6,  # noqa
+                                                     cy + uy * 1.6, 2.9)
+        L.add(cap, VSTEEL, 3.4, gain=6, bevel=1.6)
+    put_px(A, b[0] + 0.5, b[1] - 0.5, BULB[5])                     # a violet glint at the tip
+    if draw:
+        item(name, outlined(A, "#06040e", "#1a1530"))
+    return A
+
+
+def egg_mask():
+    """Vanilla's dragon egg outline, front on: its stacked slabs (8 ... 28 px wide), each step a ledge."""
+    m = np.zeros((32, 32), bool)
+    y = 1
+    for wd, ht in ((8, 2), (12, 2), (16, 2), (20, 4), (24, 6), (28, 8), (24, 4), (18, 2)):
+        m[y:y + ht, 16 - wd // 2:16 + wd // 2] = True
+        y += ht
+    return m
+
+
+def dragon_egg_items():
+    m = egg_mask()
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    nx, ny = (xx - 16) / 14.5, (yy - 19) / 17
+    nz = np.sqrt(np.clip(1 - nx ** 2 - ny ** 2, 0.05, 1))
+    lam = (-nx - ny + nz * 1.25) / math.sqrt(1 + 1 + 1.25 ** 2)
+    I = np.clip(np.round(1.0 + lam * 5.2), 1, 6).astype(int)
+    stepedge = m & ~shift(m, 0, 1)                                  # the lit top of each step
+    I = np.where(stepedge & (xx < 20), np.clip(I + 1, 0, 7), I)
+    r = rng_for("dragon_egg")
+    A = paint(np.where(m, I, -1), EGG)
+    ys, xs = np.nonzero(erode(m))
+    for k in r.choice(len(xs), 22, replace=False):                   # violet specks, in little pairs
+        x, y = int(xs[k]), int(ys[k])
+        A[y, x] = rgba("#4c1662")
+        if r.random() < 0.6 and m[y, x + 1]:
+            A[y, x + 1] = rgba("#36104a")
+    rc = rng_for("dragon_egg", "cracks")
+    main = jag_path(rc, 16.0, 1.5, 1.95, 17, 0.55, (2, 4))
+    cracks = [main, jag_path(rc, *main[3], 2.6, 6, 0.5, (2, 3)),
+              jag_path(rc, 28.5, 18.0, 2.75, 13, 0.6, (2, 4)), jag_path(rc, 21.0, 22.0, 0.9, 5, 0.5, (2, 3)),
+              jag_path(rc, *main[-1], 2.2, 5, 0.5, (2, 3))]
+    for stage, n in ((1, 2), (2, 5)):
+        B = A.copy()
+        core = np.zeros((32, 32), bool)
+        for pts in cracks[:n]:
+            for x, y in poly_px(pts):
+                if 0 <= x < 32 and 0 <= y < 32 and m[y, x]:
+                    core[y, x] = True
+        lip = dilate(core) & ~core & m
+        spill = dilate(lip, diag=True) & ~lip & ~core & m
+        B[spill] = EGG[7] if stage == 2 else EGG[6]
+        B[lip] = CRY[1] if stage == 1 else CRY[2]
+        B[core] = CRY[4] if stage == 1 else CRY[5]
+        if stage == 2:                                               # hottest where the cracks meet
+            for x, y in ((14, 12), (22, 22), (15, 13)):
+                if core[y, x]:
+                    B[y, x] = CRY[6]
+        for x, y in ((10, 7), (11, 6), (9, 9)):                       # gloss
+            if m[y, x] and not core[y, x] and not lip[y, x]:
+                B[y, x] = EGG[7]
+        item(f"dragon_egg_cracked_{stage}", outlined(B, "#020103", "#140a1e"))
+
+
+def end_bloom_item():
+    """The open bloom with its bulb, outlined for the inventory."""
+    A = outlined(END_BLOOM_OPEN, "#0b0716", "#1c1030")
+    item("end_bloom", A)
+
+
+def obsidian_shield_icon():
+    yy, xx = np.mgrid[0:32, 0:32] + 0.5
+    shape = [(5, 3.5), (27, 3.5), (28.5, 5.5), (28.5, 15), (25, 23), (16, 30), (7, 23), (3.5, 15), (3.5, 5.5)]
+    X, Y = ss_coords(32, 32, 4)
+    m = down((sd_poly(X, Y, shape) < 0).astype(float), 4) >= 0.5
+    rimw = m & (chamfer(m) <= 2.0)
+    face = m & ~rimw
+    # the face: a mosaic of obsidian shards, each with its own tone and a lit edge
+    r = rng_for("obsidian_shield")
+    pts = [(r.uniform(5, 27), r.uniform(5, 27)) for _ in range(9)]
+    F1, F2, idx, dx, dy = voronoi(32, 32, pts, wrap=False)
+    tone = np.array([r.integers(2, 5) for _ in pts])[idx]
+    I = np.where((F2 - F1) < 1.0, 1, tone)
+    I = np.where(((F2 - F1) >= 1.0) & ((F2 - F1) < 2.0) & (dx + dy > 0), np.clip(tone + 2, 0, 7), I)
+    A = paint(np.where(face, I, -1), OBS, OBS_SHEEN, sheen_mask("obsidian_shield", 32, 32, 0.55))
+    # the iron rim, bevelled: lit top-left, dark bottom-right
+    Lr = np.clip(np.round(3.5 - ((xx - 16) + (yy - 16)) / 16 * 2.2), 1, 6).astype(int)
+    inner = rimw & ~dilate(~m) | (rimw & (chamfer(m) > 1.0))
+    A[rimw] = STEEL[Lr[rimw]]
+    A[rimw & (chamfer(m) > 1.0)] = STEEL[np.clip(Lr - 1, 0, 6)[rimw & (chamfer(m) > 1.0)]]
+    for (x, y) in ((6, 5), (26, 5), (6, 14), (26, 14), (16, 27)):     # rivets
+        put_px(A, x, y, STEEL[6])
+    # the eye boss in the middle
+    boss = np.hypot(xx - 16, yy - 14.5) < 5.4
+    A[boss & face] = OBS[2]
+    eye_in_setting(A, boss & face, 16.0, 14.5, 9.0, 5.0, 2.4)
+    item("obsidian_shield_icon", outlined(A, "#06040b", "#1d1a26"))
+
+
+def end_glider_icon():
+    L = Layers()
+    # wings: two moth wings spread up from the frame ends
+    for sgn in (-1, 1):
+        wing = [(16 + sgn * 3, 17), (16 + sgn * 6, 9), (16 + sgn * 11, 3.5), (16 + sgn * 15, 3), (16 + sgn * 15.5, 8),
+                (16 + sgn * 14, 14), (16 + sgn * 9, 18.5)]
+        m, I = L.add(lambda X, Y, w=wing: sd_poly(X, Y, w) + 0.2, WING, 4.6, gain=3, bevel=1.6)
+        cx, cy = 16 + sgn * 11.5, 8.5
+        yy, xx = np.mgrid[0:32, 0:32] + 0.5
+        d = np.hypot(xx - cx, yy - cy)
+        L.A[m & (d < 2.6)] = rgba("#120818")
+        L.A[m & (d < 1.8)] = TEAL[4]
+        L.A[m & (d < 0.8)] = PETAL[6]
+        for tx, ty in ((16 + sgn * 15, 4), (16 + sgn * 14, 12)):
+            for x, y in line_px(16 + sgn * 4, 16, tx, ty)[2:-1]:
+                if m[y, x] and d[y, x] > 2.6:
+                    L.A[y, x] = WING[2]
+    # the frame bar and its grip
+    L.add(lambda X, Y: sd_segment(X, Y, 4.5, 19.5, 27.5, 19.5, 1.5), STEEL, 3.6, gain=6, bevel=1.2)
+    L.add(lambda X, Y: sd_segment(X, Y, 16, 18, 16, 27.5, 1.6), SEAR, 3.4, gain=5, bevel=1.2)
+    for y in (21, 23, 25):
+        put_px(L.A, 15, y, SEAR[1])
+        put_px(L.A, 16, y, SEAR[2])
+    # jets: gland-sac pods under the bar ends, flames streaming down
+    for jx in (7.0, 25.0):
+        L.add(lambda X, Y, jx=jx: sd_ellipse(X, Y, jx, 22.5, 2.6, 3.4), GLAND, 4.2, gain=5, bevel=1.6)
+        L.add(lambda X, Y, jx=jx: sd_segment(X, Y, jx, 25, jx, 26.2, 1.6), STEEL, 3.0, gain=4, bevel=1.0)
+        flame = [(jx, 27.5, 7), (jx - 1, 27.5, 5), (jx + 1, 27.5, 5), (jx, 28.5, 6), (jx, 29.5, 4),
+                 (jx - 1, 28.5, 4), (jx + 1, 28.5, 3), (jx, 30.5, 3)]
+        for x, y, t in flame:
+            put_px(L.A, x, y, HOT[t])
+    item("end_glider_icon", outlined(L.A, "#0d0915", "#221a30"))
+
+
+def monolith_wand_icon():
+    A = np.zeros((32, 32, 4), np.uint8)
+    void_rod_item(A, a=(4.5, 28.5), b=(18.5, 14.5), seed_name="monolith_wand", draw=False)
+    L = Layers()
+    L.A = A
+    # the head: an obsidian claw of three prongs round a glowing eye-orb, a meteorite-core collar
+    L.add(lambda X, Y: sd_circle(X, Y, 19.5, 13.5, 3.0), MET, 4.0, gain=5, bevel=1.5)
+    for x, y in ((19, 13), (20, 13), (19, 14), (18, 14)):
+        put_px(A, x, y, HOT[5])
+    put_px(A, 19, 13, HOT[7])
+    for ctrl in ([(18.5, 13.5), (17.5, 8.0), (20.0, 3.5)], [(20.5, 15.0), (26.0, 15.5), (29.0, 11.0)],
+                 [(20.0, 13.0), (24.5, 7.5), (27.0, 3.0)]):
+        pts, rad = lens(ctrl, 1.7, 10, taper=(0.5, 0.5), base_w=1.6)
+        L.add(lambda X, Y, p=pts, r=rad: sd_stroke(X, Y, p, r), OBS, 3.6, gain=7, bevel=1.4)
+    m, I = L.add(lambda X, Y: sd_circle(X, Y, 23.5, 9.0, 4.0), PETAL, 3.0, gain=3, bevel=2.0)
+    eye_in_setting(A, m, 23.5, 9.0, 7.6, 4.6, 2.2, glow=False)
+    item("monolith_wand_icon", outlined(A, "#06040e", "#1a1530"))
+
+
+end_bulb_item()
+enderfly_wing_item()
+gucker_meat_items()
+gucker_gland_item()
+obsidian_shard_item()
+monolith_eye_item()
+void_rod_item()
+dragon_egg_items()
+end_bloom_item()
+obsidian_shield_icon()
+end_glider_icon()
+monolith_wand_icon()
+
+
+# ====================================================================== particles (16 x 16, frame 0 = birth)
+# Dust and puffs carry alpha (render them on the translucent particle sheet); sparks, motes, spores and shards are
+# solid pixels with at most a faint halo.
+def ca(c, a):
+    """A colour with alpha a (0..1)."""
+    r_, g_, b_, a0 = rgba(c)
+    return (r_, g_, b_, int(round(a0 * a)))
+
+
+def blank(n=16):
+    return np.zeros((n, n, 4), np.uint8)
+
+
+def puff_frame(circles, ramp_cols, alpha, n=16, ss=4, gain=5.0, base=2.6, ragged=0.0, sd_=0):
+    """A puff of dust: a union of soft circles lit from the top-left, quantised onto a light ramp."""
+    X, Y = ss_coords(n, n, ss)
+    D = np.full(X.shape, np.inf)
+    for cx, cy, r in circles:
+        D = smin(D, sd_circle(X, Y, cx, cy, r), 1.2) if np.isfinite(D).any() else sd_circle(X, Y, cx, cy, r)
+    if ragged:                                                        # thinning: the edge breaks into wisps
+        D = D + pnoise(n * ss, n * ss, 6, 6, sd_) ** 2 * ragged
+    t = np.clip(-D / 3.0, 0, 1)
+    H = np.sqrt(1 - (1 - t) ** 2) * 3.0
+    gy, gx = np.gradient(H, 1.0 / ss)
+    nrm = np.dstack([-gx, -gy, np.ones_like(H)])
+    nrm /= np.linalg.norm(nrm, axis=2, keepdims=True)
+    Lt = (nrm @ LIGHT) - LIGHT[2]
+    inside = D < 0
+    cov = down(inside.astype(float), ss)
+    Lm = down(np.where(inside, Lt, 0.0), ss) / np.maximum(cov, 1e-9)
+    m = cov >= 0.5
+    I = quant(base + Lm * gain, len(ramp_cols), 0, len(ramp_cols) - 1)
+    A = blank(n)
+    for k in range(len(ramp_cols)):
+        sel = m & (I == k)
+        A[sel] = ca(ramp_cols[k], alpha)
+    edge = m & ~erode(m)
+    A[edge, 3] = (A[edge, 3] * 0.6).astype(np.uint8)                # soft rim
+    return A
+
+
+def end_spore():
+    """Drifting violet spores: a glowing seed with four fine filaments that twirl as it floats."""
+    frames = []
+    for k in range(4):
+        A = blank()
+        a = k * math.pi / 8
+        for j in range(4):
+            ang = a + j * math.pi / 2
+            for rr, col in ((3.0, PETAL[6]), (4.2, PETAL[7]), (5.3, PETAL[8])):
+                put_px(A, 7.5 + math.cos(ang) * rr, 7.5 + math.sin(ang) * rr, col)
+        stamp(A, 6, 6, """
+            .ab.
+            acdb
+            bdeb
+            .bb.
+        """, {"a": BULB[3], "b": BULB[1], "c": BULB[6], "d": BULB[4], "e": BULB[5]})
+        for x, y in ((5, 7), (10, 8), (7, 5), (8, 10)):
+            if not A[y, x, 3]:
+                A[y, x] = ca(BULB[2], 0.45)
+        frames.append(A)
+    particle("end_spore", frames)
+
+
+def end_dust():
+    """Fine grey dust: a few soft clumps of moon dust drifting apart and thinning out."""
+    clumps_ = [(7.0, 7.0, "ab|bc"), (10.5, 9.0, "ab|b."), (5.0, 10.0, "a.|bc"), (9.0, 4.5, "ab")]
+    frames = []
+    for k in range(4):
+        A = blank()
+        spread = 1 + k * 0.4
+        alpha = (0.95, 0.85, 0.65, 0.42)[k]
+        for i, (x, y, art) in enumerate(clumps_[: 4 - (k // 2)]):
+            x = 7.5 + (x - 7.5) * spread
+            y = 7.5 + (y - 7.5) * spread - k * 0.5
+            for j, row in enumerate(art.split("|")):
+                for i2, ch in enumerate(row):
+                    if ch != ".":
+                        put_px(A, x + i2, y + j, ca(SAND[{"a": 7, "b": 5, "c": 3}[ch]], alpha))
+        frames.append(A)
+    particle("end_dust", frames)
+
+
+def eclipse_mote():
+    """A violet-gold mote: a four-pointed star that blooms, flares and fades (gold core, violet tips)."""
+    arts = [
+        """
+        ..a..
+        .aca.
+        ..a..
+        """,
+        """
+        ...a...
+        ...b...
+        .abdba.
+        ...b...
+        ...a...
+        """,
+        """
+        ....a....
+        ....b....
+        ...bcb...
+        .abcedba.
+        ...bcb...
+        ....b....
+        ....a....
+        """,
+        """
+        .....a.....
+        .....a.....
+        .....b.....
+        ....bcb....
+        ..abcdcba..
+        aabcdedcbaa
+        ..abcdcba..
+        ....bcb....
+        .....b.....
+        .....a.....
+        .....a.....
+        """,
+        """
+        ....a....
+        ....a....
+        ...aba...
+        .aabcbaa.
+        ...aba...
+        ....a....
+        ....a....
+        """,
+        """
+        ..a..
+        .aba.
+        ..a..
+        """,
+    ]
+    key = {"a": BULB[1], "b": BULB[3], "c": HOT[5], "d": HOT[6], "e": HOT[8]}
+    frames = []
+    for art in arts:
+        A = blank()
+        rows = [r_.strip() for r_ in art.strip("\n").splitlines()]
+        h = len(rows)
+        stamp(A, 8 - (len(rows[0]) + 1) // 2, 8 - (h + 1) // 2, art, key)
+        frames.append(A)
+    particle("eclipse_mote", frames)
+
+
+BLIND = ["#6c6679", "#8e899b", "#aeaab8", "#ccc9d2", "#e6e4e8", "#fbfaf8"]
+BREATH = ["#3b3446", "#554d60", "#71697a", "#8d8696", "#aaa3b0"]
+
+
+def blinding_dust():
+    """Gucker spit: a dense pale puff that billows out and thins (6 frames)."""
+    r = rng_for("blinding_dust")
+    frames = []
+    for k in range(6):
+        s = 0.55 + 0.13 * k
+        circles = [(8 + dx * s, 8 + dy * s, rr * s) for dx, dy, rr in
+                   ((0, 0.5, 4.0), (-3.0, 1.5, 3.2), (3.0, 1.2, 3.4), (-1.5, -2.2, 3.0), (2.0, -2.5, 2.8),
+                    (0.5, 3.5, 2.8))]
+        alpha = (0.95, 0.95, 0.9, 0.8, 0.62, 0.42)[k]
+        frames.append(puff_frame(circles, BLIND, alpha, base=3.2, gain=5.0, ragged=(0, 0, 0, 3, 6, 9)[k],
+                                 sd_=seed("blinding_dust", k)))
+    particle("blinding_dust", frames)
+
+
+def gucker_breath():
+    """Breath from a gucker's vents: a small dusty puff with a faint teal glow at birth, rising and fading."""
+    frames = []
+    for k in range(5):
+        s = 0.5 + 0.14 * k
+        circles = [(8 + dx * s, 9 - k * 0.6 + dy * s, rr * s) for dx, dy, rr in
+                   ((0, 0, 3.8), (-2.6, 1.0, 2.8), (2.4, 0.8, 3.0), (0.6, -2.6, 2.8))]
+        alpha = (0.9, 0.85, 0.75, 0.55, 0.35)[k]
+        A = puff_frame(circles, BREATH, alpha, base=2.3, gain=4.5)
+        if k <= 1:                                                    # the vent's glow, still in the puff
+            cy = int(9 - k * 0.6 + 1)
+            for x, y, c in ((7, cy, TEAL[5]), (8, cy, TEAL[4]), (7, cy + 1, TEAL[3]), (8, cy - 1, TEAL[3])):
+                if A[y, x, 3]:
+                    A[y, x] = ca(c, alpha if k == 0 else alpha * 0.7)
+        frames.append(A)
+    particle("gucker_breath", frames)
+
+
+def enderfly_scale():
+    """A shimmering wing scale tumbling: broad lilac, edge-on glint, broad teal, edge-on (4 frames)."""
+    flat = """
+         ..ab..
+         .abbc.
+         abbbcc
+         bbbccd
+         .bccd.
+         ..cd..
+         """
+    edge = """
+         ....a
+         ...ab
+         ..ab.
+         .bc..
+         bc...
+         c....
+         """
+    arts = [(flat, {"a": WING[9], "b": WING[7], "c": WING[5], "d": WING[3]}),
+            (edge, {"a": "#ffffff", "b": WING[8], "c": WING[5]}),
+            (flat, {"a": TEAL[6], "b": TEAL[5], "c": TEAL[4], "d": TEAL[2]}),
+            (edge.replace("a", "x").replace("c", "a").replace("x", "c"), {"a": PETAL[6], "b": TEAL[5], "c": "#ffffff"})]
+    frames = []
+    for art, key in arts:
+        A = blank()
+        stamp(A, 5, 5, art, key)
+        frames.append(A)
+    particle("enderfly_scale", frames)
+
+
+def obsidian_crack():
+    """Shards of a shattered obsidian shell: four angular chips (pick one, or let them tumble)."""
+    shapes = [
+        [(3, 11), (6, 4), (12, 3), (13, 8), (8, 13)],
+        [(4, 6), (11, 3), (13, 11), (6, 12)],
+        [(5, 12), (4, 7), (9, 3), (12, 6), (10, 11)],
+        [(3, 9), (7, 4), (13, 6), (11, 9), (6, 12)],
+    ]
+    frames = []
+    for k, poly in enumerate(shapes):
+        X, Y = ss_coords(16, 16, 4)
+        m = down((sd_poly(X, Y, poly) < 0).astype(float), 4) >= 0.5
+        yy, xx = np.mgrid[0:16, 0:16] + 0.5
+        cx, cy = np.mean([p[0] for p in poly]), np.mean([p[1] for p in poly])
+        I = np.where((xx - cx) * 0.7 + (yy - cy) * -0.7 > 0, 2, 4)      # two facets
+        I = np.where(m & ~erode(m) & ((xx < cx) | (yy < cy)), 6, I)    # lit edges toward the light
+        A = paint(np.where(m, I, -1), OBS, OBS_SHEEN, (xx + yy) > cx + cy + 2)
+        hx, hy = min(poly, key=lambda p: p[0] + p[1])
+        put_px(A, hx + 1, hy + 1, OBS[9])
+        frames.append(outline(A, "#030205"))
+    particle("obsidian_crack", frames)
+
+
+def meteor_spark():
+    """A hot spark: a white-gold star with orange arms that shrinks and cools through orange to violet."""
+    arts = [
+        ("""
+         ....a....
+         ....b....
+         ...bcb...
+         .abcdcba.
+         ...bcb...
+         ....b....
+         ....a....
+         """, {"a": HOT[3], "b": HOT[5], "c": HOT[7], "d": HOT[8]}),
+        ("""
+         ...a...
+         ...b...
+         .abcba.
+         ...b...
+         ...a...
+         """, {"a": HOT[3], "b": HOT[5], "c": HOT[7]}),
+        ("""
+         ..a..
+         .abа.
+         ..a..
+         """.replace("а", "a"), {"a": HOT[2], "b": HOT[5]}),
+        ("""
+         .a.
+         aba
+         .a.
+         """, {"a": HOT[1], "b": HOT[4]}),
+        ("""
+         ab
+         bc
+         """, {"a": HOT[2], "b": HOT[1], "c": HOT[0]}),
+    ]
+    frames = []
+    for art, key in arts:
+        A = blank()
+        rows = [r_.strip() for r_ in art.strip("\n").splitlines()]
+        stamp(A, 8 - (len(rows[0]) + 1) // 2, 8 - (len(rows) + 1) // 2, art, key)
+        frames.append(A)
+    particle("meteor_spark", frames)
+
+
+end_spore()
+end_dust()
+eclipse_mote()
+blinding_dust()
+gucker_breath()
+enderfly_scale()
+obsidian_crack()
+meteor_spark()
+
+
 # ====================================================================== preview sheets
-CHK =((156, 156, 160, 255), (118, 118, 124, 255))
+CHK = ((156, 156, 160, 255), (118, 118, 124, 255))
 
 
 def _on(bg, im):
