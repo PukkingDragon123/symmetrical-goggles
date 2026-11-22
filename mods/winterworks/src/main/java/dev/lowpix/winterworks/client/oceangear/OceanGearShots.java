@@ -60,6 +60,8 @@ final class OceanGearShots {
     private static final String MODE = System.getProperty("winterworks.oceangearshots", "");
     private static final Set<String> SCENES = Set.copyOf(Arrays.asList(MODE.split(",")));
     private static final List<Runnable> PLAN = new ArrayList<>();
+    private static final List<java.util.function.BooleanSupplier> UNTIL = new ArrayList<>();
+    private static int waited;
     private static final List<Integer> AT = new ArrayList<>();
     private static final int Y = -60;   // standing height in the flat world
     private static boolean created;
@@ -347,9 +349,9 @@ final class OceanGearShots {
             targetId = g.getId();
         }));
         at(t += 3, () -> tp(x0 - 6.0, Y + 1, z0 - 13));
-        at(t += 2, () -> cam(x0 - 5.8, Y + 3.6, z0 - 2.5, x0 + 1.5, Y + 2.2, z0 - 2.5));
+        at(t += 2, () -> cam(x0 - 1.2, Y + 2.9, z0 - 9.0, x0 + 1.6, Y + 2.0, z0 + 4.0));
         at(t += 20, () -> {});
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             final int n = i;
             at(t += 2, () -> server(level -> {
                 Vec3 from = new Vec3(x0 + 1.5, Y + 2.2, z0 - 14.5);
@@ -360,18 +362,29 @@ final class OceanGearShots {
                 d.pickup = AbstractArrow.Pickup.DISALLOWED;
                 level.addFreshEntity(d);
                 if (n == 0) {
-                    Arrow a = new Arrow(level, x0 - 0.5, Y + 3.6, z0 - 14.5, new ItemStack(Items.ARROW), new ItemStack(Items.BOW));
+                    Arrow a = new Arrow(level, x0 - 0.2, Y + 3.6, z0 - 14.5, new ItemStack(Items.ARROW), new ItemStack(Items.BOW));
                     a.shoot(0, 0, 1, 3.0f, 0f);
                     a.pickup = AbstractArrow.Pickup.DISALLOWED;
                     level.addFreshEntity(a);
                 }
             }));
         }
-        at(t += 2, () -> shot("darts_underwater"));
-        at(t += 5, () -> shot("darts_hit"));
+        when(t += 1, () -> dartsInView(z0 - 8, z0 + 9) >= 2, () -> shot("darts_underwater"));
+        at(t += 3, () -> shot("darts_hit"));
         at(t += 2, () -> cam(x0 - 1.5, Y + 2.6, z0 + 8.0, x0 + 1.5, Y + 1.8, z0 + 11.5));
         at(t += 12, () -> shot("darts_poisoned"));
         return t + 5;
+    }
+
+    /** Darts the client is showing in flight between z1 and z2. */
+    private static int dartsInView(double z1, double z2) {
+        int n = 0;
+        for (Entity e : Minecraft.getInstance().level.entitiesForRendering()) {
+            if (e instanceof LionfishDart && e.getZ() > z1 && e.getZ() < z2 && e.getDeltaMovement().lengthSqr() > 1) {
+                n++;
+            }
+        }
+        return n;
     }
 
     // --------------------------------------------------------------------------------------- the Eye of the Ocean
@@ -449,6 +462,14 @@ final class OceanGearShots {
     private static void at(int tick, Runnable r) {
         AT.add(tick);
         PLAN.add(r);
+        UNTIL.add(null);
+    }
+
+    /** From `tick`, wait (up to 30 ticks, pushing later steps back) for `until`, then run `r`. */
+    private static void when(int tick, java.util.function.BooleanSupplier until, Runnable r) {
+        AT.add(tick);
+        PLAN.add(r);
+        UNTIL.add(until);
     }
 
     private static void cmd(String c) {
@@ -509,6 +530,15 @@ final class OceanGearShots {
         mc.gui.getChat().clearMessages(false);
         mc.getToasts().clear();
         while (step < PLAN.size() && ticks >= AT.get(step)) {
+            var until = UNTIL.get(step);
+            if (until != null && !until.getAsBoolean() && waited < 30) {
+                waited++;
+                for (int i = step; i < AT.size(); i++) {
+                    AT.set(i, AT.get(i) + 1);
+                }
+                return;
+            }
+            waited = 0;
             PLAN.get(step++).run();
         }
     }
