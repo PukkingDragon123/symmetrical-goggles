@@ -86,8 +86,13 @@ contract for the Java side.
 
 ## The Harvester (a new dinosaur, Amber Age)
 * `harvester`: a big, gentle prehistoric herbivore with a huge, wide **hammerhead-shark-like head** lined with rows of
-  teeth for cropping plants. Spawns rarely in savannas and badlands (herds of 1-2).
-* **Tame** it with pitcher plants (1 in 3 per plant). Tamed: follows, sits, can be **ridden with a saddle** (walks,
+  teeth for cropping plants, and a broad nose. It is extinct: it does **not** spawn naturally.
+* **Reviving it**: find a **Harvester Egg** (`harvester_egg`, a block like the sniffer egg). They are super rare:
+  brushed out of suspicious sand and gravel (about 1 in 150 brushes) and sealed inside the amber blocks of Dig Sites
+  (about 1 in 40 of those, as a new `egg` inclusion that drops the egg when the amber breaks). A placed egg only
+  develops while **submerged in water** (water above it, or waterlogged); it cracks in three stages over about 20
+  minutes (faster on moss, like sniffer eggs) and hatches a baby Harvester that grows up like other animals.
+* A Harvester hatched near a player starts tame to that player; others are tamed with pitcher plants (1 in 3 per plant). Tamed: follows, sits, can be **ridden with a saddle** (walks,
   jumps 1.5 blocks) and wears a **chest** like a donkey (15 slots).
 * **Harvests crops**: a tamed Harvester left near farmland (not sitting, not ridden) crops mature wheat, carrots,
   potatoes, beetroots, nether wart, melons, pumpkins, sweet berries, torchflowers and pitcher plants within 16 blocks of
