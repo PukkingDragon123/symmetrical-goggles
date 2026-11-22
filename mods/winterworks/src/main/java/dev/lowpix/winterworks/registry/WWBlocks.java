@@ -105,6 +105,16 @@ public final class WWBlocks {
     public static final BlockEntityType<dev.lowpix.winterworks.hex.HexingTableBlockEntity> HEXING_TABLE_BE = be("hexing_table",
             FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.hex.HexingTableBlockEntity::new, HEXING_TABLE).build());
 
+    // ---- 0.4 fixes: rails (docs/FIXES_0_4.md "Rails")
+    public static final Block COASTER_LOOP = reg("coaster_loop", new dev.lowpix.winterworks.express.CoasterLoopBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL).sound(SoundType.METAL).noOcclusion()));
+    public static final Block SWITCH_RAIL = reg("switch_rail", new dev.lowpix.winterworks.express.SwitchRailBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.RAIL).sound(SoundType.METAL)));
+    public static final BlockEntityType<dev.lowpix.winterworks.express.CoasterLoopBlock.CoasterLoopBlockEntity> COASTER_LOOP_BE =
+            be("coaster_loop", FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.express.CoasterLoopBlock.CoasterLoopBlockEntity::new,
+                    COASTER_LOOP).build());
+    // ---- end 0.4 fixes: rails
+
     private static <T extends net.minecraft.world.level.block.entity.BlockEntity> BlockEntityType<T> be(String n, BlockEntityType<T> t) {
         return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id(n), t);
     }

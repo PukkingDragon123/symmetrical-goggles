@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.lowpix.winterworks.client.WWLayers;
 import dev.lowpix.winterworks.express.CartKind;
+import dev.lowpix.winterworks.express.CoasterLoop;
+import dev.lowpix.winterworks.express.LoopMotion;
 import dev.lowpix.winterworks.express.LocomotiveCart;
 import dev.lowpix.winterworks.express.WWCart;
 import java.util.EnumMap;
@@ -44,8 +46,14 @@ public class WWCartRenderer extends EntityRenderer<WWCart> {
         double z = Mth.lerp(partial, cart.zOld, cart.getZ());
         float pitch = Mth.lerp(partial, cart.xRotO, cart.getXRot());
         Vec3 track = null;
-        Vec3 p = cart.getPos(x, y, z);
-        if (p != null) {
+        LoopMotion loop = CoasterLoop.motion(cart);
+        Vec3 p = loop == null ? cart.getPos(x, y, z) : null;
+        if (loop != null) {   // on a Coaster Loop: tipped round it, level along the loop's axis otherwise
+            pose.mulPose(loop.rotation(loop.interpolatedTheta(partial)));
+            track = loop.axis();
+            yaw = (float) (Math.atan2(track.z, track.x) * Mth.RAD_TO_DEG);
+            pitch = 0f;
+        } else if (p != null) {
             Vec3 a = cart.getPosOffs(x, y, z, 0.3f);
             Vec3 b = cart.getPosOffs(x, y, z, -0.3f);
             if (a == null) {
@@ -76,7 +84,7 @@ public class WWCartRenderer extends EntityRenderer<WWCart> {
                 want = v.normalize();
             }
         }
-        if (want != null && Math.abs(want.dot(track)) > 0.2) {
+        if (want != null && loop == null && Math.abs(want.dot(track)) > 0.2) {
             cart.renderFacing = want.dot(track) >= 0 ? 1f : -1f;
         }
         pose.mulPose(Axis.YP.rotationDegrees(180.0f - yaw));
@@ -104,13 +112,12 @@ public class WWCartRenderer extends EntityRenderer<WWCart> {
         pose.popPose();
     }
 
-    private static int defaultTrim(CartKind k) {
+    public static int defaultTrim(CartKind k) {
         return switch (k) {
             case LOCOMOTIVE -> 0xB0302A;
             case DRAGON_LOCOMOTIVE -> 0xC89A30;
             case FOX_CART -> 0xE8E0D0;
             case ZOMBIE_CART -> 0x6A8A4A;
-            case TRAILER_CART -> 0x3A6AA8;
         };
     }
 }

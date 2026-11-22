@@ -248,25 +248,6 @@ item("zombie_cart", pal(ZOMBIE, d="#33323d", s="#4a4954", m="#66656c", l="#87858
 ...oo...oo......
 """)
 
-item("trailer_cart", pal(IRON, WOOD, L="#ffe9a0", c="#f6b94a", f="#d8862a", y="#a5843f"), """
-................
-........oooooo..
-........olmmmo..
-........omoosoo.
-........omodlhdo
-........omodLcdo
-........osodcfdo
-........osoosdo.
-oXXQXXXXQXXXXQXo
-oqqqmqqqqqmqqqqo
-onwwnwwwwnwwwwno
-..ooo.....ooo...
-.oXwQo...oXwQo..
-.owywo...owywo..
-.oQwqo...oQwqo..
-..ooo.....ooo...
-""")
-
 DRAGON = {"o": "#111a15", "1": "#1b2a22", "2": "#25392e", "3": "#33503d", "4": "#486a50", "5": "#64866a",
           "6": "#88a184", "N": "#0a100c", "R": "#3a0c08", "e": "#c84a12", "E": "#ff7a1c", "F": "#ffc670", "T": "#cfc6ae"}
 item("dragon_locomotive", pal(DRAGON, B=BRASS["B"], b=BRASS["b"], y=BRASS["y"], Y=BRASS["Y"], G=BRASS["G"]), """
@@ -352,7 +333,13 @@ WTmhdbT.....mhdd
 
 CHEVRON_OFF = {"A": "#62382b", "B": "#3c2019", "C": "#7a4631"}
 CHEVRON_ON = {"A": "#ff8a3a", "B": "#d4311b", "C": "#ffe3a3"}
-rail({"booster_rail": {**GILT, **CHEVRON_OFF}, "booster_rail_on": {**GILT, **CHEVRON_ON}}, """
+# the redstone-block power plate set between the rails (it only runs on a redstone block): a dark iron socket round a
+# redstone inlay, dull when unpowered, blazing when powered
+PLATE = {"F": "#2a1a14", "E": "#4a2a1e"}
+PLATE_OFF = {"K": "#3e0d0b", "L": "#5c1712", "M": "#74201a", "N": "#8a2a1f"}
+PLATE_ON = {"K": "#a3140c", "L": "#e0301c", "M": "#ff6a3a", "N": "#ffc9a0"}
+rail({"booster_rail": {**GILT, **CHEVRON_OFF, **PLATE, **PLATE_OFF},
+      "booster_rail_on": {**GILT, **CHEVRON_ON, **PLATE, **PLATE_ON}}, """
 ..mhd......mhd..
 WTmhdbTTUTbmhdTW
 WVmhdpVCCVpmhdVW
@@ -361,12 +348,12 @@ WVmhdpVCCVpmhdVW
 WTmhdbTUTTbmhdUW
 WVmhdpVVVVpmhdVW
 ..mhd......mgd..
-..mhd......mhd..
-WUmhdbTTTUbmhdTW
-WVmhdpVCCVpmhdVW
-..mgd.ABBA.mhd..
-..mhdAB..BAmhd..
-WTmhdbUTTTbmhdTW
+..mhdEFFFFEmhd..
+WUmhdFNMLKFmhdTW
+WVmhdFMKLMFmhdVW
+..mgdFLMKLFmhd..
+..mhdFKLMNFmhd..
+WTmhdEFFFFEmhdTW
 WVmhdpVVVVpmhdVW
 ..mhd......mgd..
 """, ties="booster_rail_ties")

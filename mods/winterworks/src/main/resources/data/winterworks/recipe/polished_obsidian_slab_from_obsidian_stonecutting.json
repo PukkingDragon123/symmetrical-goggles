@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:obsidian"
+  },
+  "result": {
+    "id": "winterworks:polished_obsidian_slab",
+    "count": 2
+  }
+}

@@ -19,6 +19,7 @@
     ],
     "fabric-gametest": [
       "dev.lowpix.winterworks.test.WinterworksTests",
+      "dev.lowpix.winterworks.test.ExpressTests",
       "dev.lowpix.winterworks.test.ColdTests",
       "dev.lowpix.winterworks.test.BossTests",
       "dev.lowpix.winterworks.test.BearTests",

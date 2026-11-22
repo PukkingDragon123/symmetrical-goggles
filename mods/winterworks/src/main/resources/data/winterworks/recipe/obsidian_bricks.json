@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "winterworks:polished_obsidian"
+    }
+  },
+  "result": {
+    "id": "winterworks:obsidian_bricks",
+    "count": 4
+  }
+}

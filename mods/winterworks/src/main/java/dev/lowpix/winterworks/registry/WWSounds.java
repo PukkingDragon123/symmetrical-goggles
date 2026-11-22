@@ -140,6 +140,10 @@ public final class WWSounds {
     public static final SoundEvent ORPHEUS = reg("curse.orpheus");
     public static final SoundEvent SIN = reg("curse.sin");
 
+    // ---- 0.4 fixes: rails (docs/FIXES_0_4.md)
+    public static final SoundEvent SWITCH_RAIL_SWITCH = reg("block.switch_rail.switch");
+    // ---- end 0.4 fixes: rails
+
     // ---- 0.4 fixes: Cold Zone (docs/FIXES_0_4.md)
     public static final SoundEvent SKULL_ROAR = reg("block.frost_mauler_skull.roar");
     public static final SoundEvent DAGGER_SLASH_LEFT = reg("item.fang_dagger.slash_left");

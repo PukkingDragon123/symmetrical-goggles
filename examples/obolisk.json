@@ -1,6 +1,6 @@
 {
  "name": "Obolisk",
- "description": "The Winterworks Obolisk: a giant one-eyed obsidian monolith on four stubby legs: glassy faceted obsidian plates, a jagged crown, crystal shards, glowing crying-obsidian veins and tears, one big violet eye under a sliding obsidian eyelid; in disguise it folds into an obsidian rock formation. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks Obolisk: a giant one-eyed obsidian monolith on four stubby legs: glassy faceted obsidian plates, a jagged crown, crystal shards, glowing crying-obsidian veins and tears, one big round eye with a glowing violet iris under a heavy sliding obsidian lid; in disguise it folds into an obsidian rock formation. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 2,
@@ -64,6 +64,17 @@
     "#b47dff",
     "#dab8ff",
     "#f6ecff"
+   ],
+   "sclera": [
+    "#2b2136",
+    "#3f3350",
+    "#58496b",
+    "#736587",
+    "#9183a3",
+    "#afa3bf",
+    "#cbc2d8",
+    "#e4def0",
+    "#f6f3fb"
    ],
    "obsidian": [
     "#04030a",
@@ -424,96 +435,107 @@
    ]
   },
   "eye": {
-   "ramp": "eyeglow",
-   "tone": 3.0,
-   "light": 0.3,
+   "ramp": "sclera",
+   "tone": 1.0,
+   "light": 0.2,
    "brush": {
     "off": true
    },
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.4,
-    "dark_shift": -1.6
-   },
-   "stamps": [
-    {
-     "face": "front",
-     "at": "top-left",
-     "art": [
-      "000000011111111110000000",
-      "000001122223322221100000",
-      "00011322w334433222311000",
-      "001133WW3334433334331100",
-      "01122Ww33445544334422110",
-      "01223w454445544454332210",
-      "112333455445544554333211",
-      "122334444555555444433221",
-      "133444445555555544444331",
-      "134445555555555555544431",
-      "123334445555555544433321",
-      "122335555555555544433221",
-      "133445444555555555433221",
-      "113433444545554445443211",
-      "012233345544454443443310",
-      "011223344444455333333110",
-      "001122344333344333221100",
-      "000112333333344222211000",
-      "000001132222233321100000",
-      "000000011111111110000000"
-     ],
-     "key": {
-      "0": "eyeglow:0",
-      "1": "eyeglow:1",
-      "2": "eyeglow:2",
-      "3": "eyeglow:3",
-      "4": "eyeglow:4",
-      "5": "eyeglow:5",
-      "W": "eyeglow:6",
-      "w": "eyeglow:5"
-     }
-    }
-   ]
-  },
-  "pupil": {
-   "ramp": "obsidian",
-   "tone": 0.5,
-   "light": 0,
    "rim": {
     "light": 0,
     "dark": 0
    },
-   "brush": {
-    "off": true
-   },
    "stamps": [
     {
      "face": "front",
      "at": "top-left",
      "art": [
-      "_k_",
-      "_k_",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "kpk",
-      "_k_",
-      "_k_"
+      "kkkkkkLLLLLLLLLLLLkkkkkk",
+      "kkkkLLLLuuuuuuuuLLLLkkkk",
+      "kkkLLLuudddddddduuLLLkkk",
+      "kkLLuudddddddddddduuLLkk",
+      "kLLudddddddddddddddduLLk",
+      "LLudddddddddddddddddduLL",
+      "LLddddddddddddddddddddLL",
+      "LudddddddddddddddddddduL",
+      "LdddddddssssssssdddddddL",
+      "LdddddSSSSSSSSSSSSdddddL",
+      "LdddssSSSSSSSSSSSSssdddL",
+      "LddsssSSSSSSSSSSSSsssddL",
+      "LddssssSSSSSSSSSSssssddL",
+      "LlddssssSSSSSSSSssssddlL",
+      "LLddsssssSSSSSSsssssddLL",
+      "kLlddssssssssssssssddlLk",
+      "kkLldddssssssssssdddlLkk",
+      "kkkLllddddssssddddllLkkk",
+      "kkkkLLllddddddddllLLkkkk",
+      "kkkkkkLLllllllllLLkkkkkk"
      ],
      "key": {
-      "k": "obsidian:2",
-      "p": "obsidian:0"
+      "L": "sclera:0",
+      "k": "sclera:0",
+      "l": "sclera:0",
+      "u": "sclera:0",
+      "d": "sclera:2",
+      "s": "sclera:4",
+      "S": "sclera:5"
      }
     }
    ]
+  },
+  "iris": {
+   "ramp": "eyeglow",
+   "tone": 3.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "o": "eyeglow:0",
+    "i": "eyeglow:1",
+    "I": "eyeglow:2",
+    "J": "eyeglow:3",
+    "c": "eyeglow:4",
+    "p": "obsidian:0",
+    "W": "eyeglow:6",
+    "w": "eyeglow:4"
+   }
+  },
+  "lids": {
+   "ramp": "obsidian",
+   "tone": 4.6,
+   "light": 0.3,
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "conch",
+     "op": "noise",
+     "scale": 1.6,
+     "amount": 0.7
+    },
+    {
+     "id": "facets",
+     "op": "patches",
+     "scale": 3.0,
+     "threshold": 0.58,
+     "shift": 1.4,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1,
+      "shadow_shift": -1.0,
+      "highlight_shift": 1.6
+     },
+     "seed": 41
+    }
+   ],
+   "art_key": {
+    "k": "obsidian:0",
+    "l": "obsidian:8",
+    "F": "obsidian:2",
+    "M": "obsidian:7"
+   }
   },
   "lid": {
    "ramp": "obsidian",
@@ -896,19 +918,69 @@
   },
   {
    "id": "pupil",
-   "shape": "box",
+   "shape": "card",
    "parent": "eye",
-   "size": [
-    1.5,
-    8.0,
-    0.5
-   ],
    "pivot": [
     0.0,
-    0.0,
-    2.25
+    -0.5,
+    2.2
    ],
-   "style": "pupil"
+   "style": "iris",
+   "plane": "xy",
+   "art": [
+    "....oooooo....",
+    "...oiiiiiio...",
+    "..oiiIiIiiIo..",
+    ".oiWWwiIiiIIo.",
+    "oIwWWwpppIIIIo",
+    "oiIwppppppIIIo",
+    "oIIIppppppJJJo",
+    "oIIcppppppcIIo",
+    "oIIcppppppcJIo",
+    "oIIIcppppwJJJo",
+    ".oJJJccccJJJo.",
+    "..oJJJJJJJJo..",
+    "...oJJJJJJo...",
+    "....oooooo...."
+   ]
+  },
+  {
+   "id": "lids",
+   "shape": "card",
+   "parent": "core",
+   "pivot": [
+    0.0,
+    4.0,
+    9.85
+   ],
+   "style": "lids",
+   "plane": "xy",
+   "art": [
+    "LLLLLLLLMMMMMMMMMMMMLLLLLLLL",
+    "LLLLLLMMMFFFFFFFFFFMMMLLLLLL",
+    "LLLLLMMFFFFFFFFFFFFFFMMLLLLL",
+    "LLLMMFFFFFkkkkkkkkFFFFFMMLLL",
+    "LLMMFFFFkk........kkFFFFMMLL",
+    "LLMFFFkk............kkFFFMLL",
+    "LMFFFk................kFFFML",
+    "LMFFk..................kFFML",
+    "MFFk....................kFFM",
+    "LLLk....................kLLL",
+    "LLk......................kLL",
+    "LLk......................kLL",
+    "LLk......................kLL",
+    "LLk......................kLL",
+    "LLk......................kLL",
+    "LLk......................kLL",
+    "LLLk....................kLLL",
+    "LLLl....................lLLL",
+    "LLLLl..................lLLLL",
+    "LLLLLl................lLLLLL",
+    "LLLLLLll............llLLLLLL",
+    "LLLLLLLLll........llLLLLLLLL",
+    "LLLLLLLLLLllllllllLLLLLLLLLL",
+    "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+   ]
   },
   {
    "id": "eyelid",
@@ -921,7 +993,7 @@
    ],
    "pivot": [
     0.0,
-    10.0,
+    7.0,
     10.2
    ],
    "offset": [
@@ -1598,7 +1670,7 @@
        0.0,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ]
       ],
@@ -1606,7 +1678,7 @@
        4.0,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ]
       ]
@@ -1707,16 +1779,16 @@
       [
        0.0,
        [
-        0.0,
-        -0.6,
+        -0.3,
+        -0.3,
         0.0
        ]
       ],
       [
        4.0,
        [
-        0.0,
-        -0.6,
+        -0.3,
+        -0.3,
         0.0
        ]
       ]
@@ -2169,7 +2241,7 @@
        0.0,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ]
       ],
@@ -2177,7 +2249,7 @@
        0.45,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "ease"
@@ -2186,7 +2258,7 @@
        1.0,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "ease"
@@ -2195,7 +2267,7 @@
        1.35,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "out"
@@ -2204,7 +2276,7 @@
        1.5,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "ease"
@@ -2508,16 +2580,16 @@
       [
        0.0,
        [
-        0.0,
-        -0.6,
+        -0.3,
+        -0.3,
         0.0
        ]
       ],
       [
        0.45,
        [
-        0.0,
-        -0.6,
+        -0.3,
+        -0.3,
         0.0
        ],
        "ease"
@@ -3686,23 +3758,23 @@
       [
        0.7,
        [
-        3.0,
-        0.4,
+        2.5,
+        0.5,
         0
        ]
       ],
       [
        1.3,
        [
-        3.0,
-        0.4,
+        2.5,
+        0.5,
         0
        ]
       ],
       [
        1.5,
        [
-        -2.8,
+        -2.5,
         -0.5,
         0
        ]
@@ -3710,7 +3782,7 @@
       [
        2.1,
        [
-        -2.8,
+        -2.5,
         -0.5,
         0
        ]
@@ -3785,7 +3857,7 @@
        2.5700000000000003,
        [
         0,
-        -10.0,
+        -8.0,
         0.3
        ]
       ],
@@ -3793,7 +3865,7 @@
        2.615,
        [
         0,
-        -10.0,
+        -8.0,
         0.3
        ]
       ],
@@ -4498,6 +4570,74 @@
      ]
     },
     {
+     "part": "eyelid",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.18,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.48,
+       [
+        0.0,
+        1.5,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.56,
+       [
+        0.0,
+        1.5,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.68,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.86,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.2,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
      "part": "leg_bl",
      "channel": "rotation",
      "keys": [
@@ -4793,8 +4933,8 @@
       [
        0.48,
        [
-        -0.3,
-        0.0,
+        -0.22,
+        -0.22,
         0.0
        ],
        "out"
@@ -4802,8 +4942,8 @@
       [
        0.56,
        [
-        -0.3,
-        0.0,
+        -0.22,
+        -0.22,
         0.0
        ],
        "ease"
@@ -5812,7 +5952,7 @@
        0.3,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "ease"
@@ -5821,7 +5961,7 @@
        0.9,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "ease"
@@ -5830,7 +5970,7 @@
        1.3,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "out"
@@ -5839,7 +5979,7 @@
        1.5,
        [
         0.0,
-        -10.0,
+        -8.0,
         0.3
        ],
        "ease"
@@ -6079,8 +6219,8 @@
       [
        1.3,
        [
-        0.0,
-        -0.6,
+        -0.3,
+        -0.3,
         0.0
        ],
        "out"
@@ -6088,8 +6228,8 @@
       [
        1.5,
        [
-        0.0,
-        -0.6,
+        -0.3,
+        -0.3,
         0.0
        ],
        "ease"

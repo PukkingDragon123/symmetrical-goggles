@@ -1,7 +1,10 @@
 {
   "replace": false,
   "values": [
+    "minecraft:ender_dragon",
+    "minecraft:wither",
+    "minecraft:warden",
     "winterworks:monolith",
-    "minecraft:ender_dragon"
+    "winterworks:frost_mauler"
   ]
 }

@@ -1,0 +1,7 @@
+{
+  "type": "winterworks:monolith_tower",
+  "biomes": "#winterworks:has_monolith_tower",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

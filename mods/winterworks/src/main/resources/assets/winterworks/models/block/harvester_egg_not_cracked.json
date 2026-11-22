@@ -1,0 +1,11 @@
+{
+  "parent": "winterworks:block/harvester_egg",
+  "textures": {
+    "north": "winterworks:block/harvester_egg_not_cracked_north",
+    "south": "winterworks:block/harvester_egg_not_cracked_south",
+    "east": "winterworks:block/harvester_egg_not_cracked_east",
+    "west": "winterworks:block/harvester_egg_not_cracked_west",
+    "top": "winterworks:block/harvester_egg_not_cracked_top",
+    "bottom": "winterworks:block/harvester_egg_not_cracked_bottom"
+  }
+}

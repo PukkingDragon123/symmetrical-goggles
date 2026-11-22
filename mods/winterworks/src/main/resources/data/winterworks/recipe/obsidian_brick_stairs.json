@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:obsidian_bricks"
+    }
+  },
+  "result": {
+    "id": "winterworks:obsidian_brick_stairs",
+    "count": 4
+  }
+}

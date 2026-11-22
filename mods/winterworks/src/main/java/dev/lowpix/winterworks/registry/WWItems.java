@@ -36,7 +36,6 @@ public final class WWItems {
             new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final Item FOX_CART = reg("fox_cart", new WWCartItem(() -> WWEntities.FOX_CART, new Item.Properties().stacksTo(1)));
     public static final Item ZOMBIE_CART = reg("zombie_cart", new WWCartItem(() -> WWEntities.ZOMBIE_CART, new Item.Properties().stacksTo(1)));
-    public static final Item TRAILER_CART = reg("trailer_cart", new WWCartItem(() -> WWEntities.TRAILER_CART, new Item.Properties().stacksTo(1)));
 
     public static final Item COASTER_RAIL = reg("coaster_rail", new BlockItem(WWBlocks.COASTER_RAIL, new Item.Properties()));
     public static final Item BOOSTER_RAIL = reg("booster_rail", new BlockItem(WWBlocks.BOOSTER_RAIL, new Item.Properties()));
@@ -100,6 +99,15 @@ public final class WWItems {
     public static final Item ZOMBIE_POLAR_BEAR_SPAWN_EGG = reg("zombie_polar_bear_spawn_egg",
             new SpawnEggItem(WWEntities.ZOMBIE_POLAR_BEAR, 0xBFC7AE, 0x4E5B3D, new Item.Properties()));
 
+    // ---- 0.4 fixes: rails (docs/FIXES_0_4.md "Rails"; creative tab entries: express.ExpressFixes)
+    public static final Item COASTER_LOOP = reg("coaster_loop", new BlockItem(WWBlocks.COASTER_LOOP, new Item.Properties().stacksTo(16)));
+    public static final Item SWITCH_RAIL = reg("switch_rail", new BlockItem(WWBlocks.SWITCH_RAIL, new Item.Properties()));
+    // ---- end 0.4 fixes: rails
+
+    // ---- 0.4 fixes: shared items (docs/FIXES_0_4.md)
+    /** From Soul Bulls and Wither Skeletons; brews the Potion of Decay. */
+    public static final Item WITHER_BONE = reg("wither_bone", new Item(new Item.Properties()));
+
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks"))
                     .icon(() -> new ItemStack(ICEBREAKER_HORN))
@@ -117,7 +125,6 @@ public final class WWItems {
                         out.accept(DRAGON_LOCOMOTIVE);
                         out.accept(FOX_CART);
                         out.accept(ZOMBIE_CART);
-                        out.accept(TRAILER_CART);
                         out.accept(COASTER_RAIL);
                         out.accept(BOOSTER_RAIL);
                         out.accept(LIFT_RAIL);

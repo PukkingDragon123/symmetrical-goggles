@@ -1,0 +1,213 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "winterworks:block/switch_rail_on",
+    "rail": "winterworks:block/switch_rail_on",
+    "ties": "winterworks:block/switch_rail_ties",
+    "lever": "winterworks:block/switch_rail_lever"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        1,
+        0
+      ],
+      "to": [
+        16,
+        1,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#ties",
+          "tintindex": 0
+        },
+        "down": {
+          "uv": [
+            16,
+            16,
+            0,
+            0
+          ],
+          "texture": "#ties",
+          "tintindex": 0
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        1.01,
+        0
+      ],
+      "to": [
+        16,
+        1.01,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#rail"
+        },
+        "down": {
+          "uv": [
+            16,
+            16,
+            0,
+            0
+          ],
+          "texture": "#rail"
+        }
+      }
+    },
+    {
+      "from": [
+        14.25,
+        1,
+        11.5
+      ],
+      "to": [
+        15.75,
+        2.5,
+        14.5
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            1.5,
+            3
+          ],
+          "texture": "#lever"
+        },
+        "north": {
+          "uv": [
+            0,
+            4,
+            1.5,
+            5.5
+          ],
+          "texture": "#lever"
+        },
+        "south": {
+          "uv": [
+            0,
+            4,
+            1.5,
+            5.5
+          ],
+          "texture": "#lever"
+        },
+        "east": {
+          "uv": [
+            0,
+            4,
+            3,
+            5.5
+          ],
+          "texture": "#lever"
+        },
+        "west": {
+          "uv": [
+            0,
+            4,
+            3,
+            5.5
+          ],
+          "texture": "#lever"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1.5,
+            3
+          ],
+          "texture": "#lever"
+        }
+      }
+    },
+    {
+      "from": [
+        14.75,
+        2.5,
+        12.75
+      ],
+      "to": [
+        15.25,
+        7.5,
+        13.25
+      ],
+      "rotation": {
+        "origin": [
+          15.0,
+          2.5,
+          13
+        ],
+        "axis": "z",
+        "angle": 22.5
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            0,
+            6,
+            7
+          ],
+          "texture": "#lever"
+        },
+        "south": {
+          "uv": [
+            5,
+            0,
+            6,
+            7
+          ],
+          "texture": "#lever"
+        },
+        "east": {
+          "uv": [
+            5,
+            0,
+            6,
+            7
+          ],
+          "texture": "#lever"
+        },
+        "west": {
+          "uv": [
+            5,
+            0,
+            6,
+            7
+          ],
+          "texture": "#lever"
+        },
+        "up": {
+          "uv": [
+            5,
+            0,
+            6,
+            1
+          ],
+          "texture": "#lever"
+        }
+      }
+    }
+  ]
+}

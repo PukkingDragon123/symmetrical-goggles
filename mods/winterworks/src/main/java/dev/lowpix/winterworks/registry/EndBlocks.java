@@ -40,10 +40,11 @@ public final class EndBlocks {
     public static final Block END_BLOOM = reg("end_bloom", new dev.lowpix.winterworks.endmob.EndBloomBlock(
             Properties.ofFullCopy(Blocks.POPPY).mapColor(MapColor.COLOR_MAGENTA).randomTicks()
                     .lightLevel(s -> s.getValue(dev.lowpix.winterworks.endmob.EndBloomBlock.OPEN) ? 10 : 2)));
-    public static final Block CHORUS_STEM = reg("chorus_stem", new RotatedPillarBlock(
-            Properties.ofFullCopy(Blocks.CHORUS_PLANT).mapColor(MapColor.COLOR_PURPLE).strength(2f).sound(SoundType.WOOD)));
-    public static final Block CHORUS_ROOTS = reg("chorus_roots", new RotatedPillarBlock(
-            Properties.ofFullCopy(Blocks.CHORUS_PLANT).mapColor(MapColor.TERRACOTTA_PURPLE).strength(1.5f).sound(SoundType.ROOTS)));
+    public static final Block CHORUS_STEM = reg("chorus_stem", new RotatedPillarBlock(Properties.of().mapColor(MapColor.COLOR_PURPLE)
+            .instrument(net.minecraft.world.level.block.state.properties.NoteBlockInstrument.BASS).strength(2f).sound(SoundType.WOOD)));
+    public static final Block CHORUS_ROOTS = reg("chorus_roots", new RotatedPillarBlock(Properties.of()
+            .mapColor(MapColor.TERRACOTTA_PURPLE).instrument(net.minecraft.world.level.block.state.properties.NoteBlockInstrument.BASS)
+            .strength(1.5f).sound(SoundType.ROOTS)));
     public static final Block CHORUS_COCOON = reg("chorus_cocoon", new dev.lowpix.winterworks.endmob.ChorusCocoonBlock(
             Properties.ofFullCopy(Blocks.CHORUS_FLOWER).mapColor(MapColor.COLOR_PURPLE).strength(0.6f).noOcclusion()
                     .randomTicks().pushReaction(PushReaction.DESTROY)));

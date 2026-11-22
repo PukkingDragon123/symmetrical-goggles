@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "winterworks:polished_obsidian_wall",
+    "winterworks:obsidian_brick_wall",
+    "winterworks:obsidian_tile_wall",
+    "winterworks:meteorite_brick_wall"
+  ]
+}

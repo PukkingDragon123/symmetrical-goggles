@@ -1,11 +1,11 @@
 {
  "name": "Dragonling Baby",
- "description": "The Winterworks baby Dragonling: a chubby baby ender-dragon with a big head, huge glowing purple eyes, stubby horns, small purple wings and a short curled tail. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks baby Dragonling: a chubby young Ender Dragon with a big square head, huge glowing violet eyes under heavy brows, a flat box snout with nostril bumps and milk fangs, stubby grey horn plates, light grey spines from crown to tail tip, small membranous wings on bony finger spars and a long curling tail. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 2,
  "budget": {
-  "tris": 900,
+  "tris": 1500,
   "colors": 128
  },
  "light": {
@@ -14,9 +14,9 @@
    1.0,
    0.6
   ],
-  "strength": 0.7,
+  "strength": 0.8,
   "gradient": 0.5,
-  "ao": 0.6,
+  "ao": 0.5,
   "ao_height": 6.0
  },
  "brush": {
@@ -28,7 +28,8 @@
   "textures": {
    "scale": "scales",
    "belly": "leather",
-   "horn": "wood",
+   "bone": "wood",
+   "membrane": "organic",
    "leather": "leather",
    "iron": "metal",
    "gold": "metal",
@@ -44,7 +45,7 @@
  },
  "anim_ground_tolerance": 0.3,
  "render": {
-  "background": "#d8d3a2",
+  "background": "#8f9a86",
   "hero": [
    36,
    20
@@ -63,49 +64,61 @@
     "#fdf4ff"
    ],
    "scale": [
-    "#07050c",
-    "#0e0a17",
-    "#161022",
-    "#1f162e",
-    "#291d3b",
-    "#342549",
-    "#402e58",
-    "#4e3868",
-    "#5e4479",
-    "#70538b"
+    "#030205",
+    "#08070b",
+    "#0f0e13",
+    "#17161c",
+    "#201e26",
+    "#2a2832",
+    "#35323e",
+    "#413e4b",
+    "#4e4a59",
+    "#5c5868",
+    "#6b6778"
    ],
    "belly": [
-    "#1c1526",
-    "#2b2139",
-    "#3c2e4d",
-    "#4f3d62",
-    "#634e77",
-    "#78618c",
-    "#8e76a1",
-    "#a68ebb",
-    "#bfa9d2"
+    "#0b0a0e",
+    "#131217",
+    "#1c1b21",
+    "#26252c",
+    "#313038",
+    "#3d3b45",
+    "#4a4853",
+    "#585662",
+    "#676572"
+   ],
+   "bone": [
+    "#1c1b21",
+    "#2b2a31",
+    "#3e3c45",
+    "#54525b",
+    "#6c6a73",
+    "#86848c",
+    "#a09ea5",
+    "#bbb9bd",
+    "#d5d3d4",
+    "#ecebe8"
    ],
    "membrane": [
-    "#1d0b2e",
-    "#2e1247",
-    "#421a61",
-    "#58247c",
-    "#702f97",
-    "#8a3eb2",
-    "#a656c9",
-    "#c27ade",
-    "#dba3ee"
+    "#09070c",
+    "#110d16",
+    "#1a1421",
+    "#241c2d",
+    "#2f243a",
+    "#3a2d47",
+    "#463656",
+    "#534066",
+    "#614b77",
+    "#715889"
    ],
-   "horn": [
-    "#221d29",
-    "#38313f",
-    "#514858",
-    "#6c6273",
-    "#897e8f",
-    "#a79cab",
-    "#c4bac7",
-    "#e0d8e2",
-    "#f6f1f7"
+   "maw": [
+    "#11050e",
+    "#1d0918",
+    "#2b0e24",
+    "#3b1432",
+    "#4d1b42",
+    "#612453",
+    "#782f66"
    ],
    "leather": [
     "#1d110b",
@@ -179,12 +192,15 @@
  "styles": {
   "scale": {
    "ramp": "scale",
-   "tone": 4.4,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
@@ -193,13 +209,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -218,7 +234,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -238,18 +254,21 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
   "scale_body": {
    "ramp": "scale",
-   "tone": 4.6,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
@@ -258,13 +277,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      2.5,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -283,7 +302,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -296,7 +315,7 @@
      "from": -1.01,
      "to": -0.55,
      "ramp": "belly",
-     "tone": 5.0,
+     "tone": 3.4,
      "wobble": 0.15,
      "faces": [
       "sides",
@@ -307,7 +326,7 @@
      "bevel": {
       "shadow": 0,
       "highlight": 1,
-      "highlight_shift": 1.2
+      "highlight_shift": 1.4
      }
     },
     {
@@ -318,58 +337,67 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
   "belly": {
    "ramp": "belly",
-   "tone": 5.0,
+   "tone": 3.2,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "x"
+    "off": true
    },
    "layers": [
     {
      "id": "plates",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.5,
-     "width": 0.25,
-     "shift": -1.4,
-     "bevel": {
-      "shadow": 0,
-      "highlight": 1,
-      "highlight_shift": 1.0
-     }
+     "op": "scales",
+     "shape": "square",
+     "along": "x",
+     "size": [
+      3.5,
+      1.5
+     ],
+     "gap": 0.5,
+     "highlight": 1.6,
+     "gradient": 1.5,
+     "shadow": -1.6,
+     "jitter": 0.5
     }
    ]
   },
   "chest": {
    "ramp": "belly",
-   "tone": 5.2,
+   "tone": 3.4,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "x"
+    "off": true
    },
    "layers": [
     {
      "id": "plates",
-     "op": "stripes",
-     "axis": "y",
-     "period": 1.5,
-     "width": 0.25,
-     "shift": -1.4,
+     "op": "scales",
+     "shape": "square",
+     "along": "x",
+     "size": [
+      3.5,
+      1.5
+     ],
+     "gap": 0.5,
+     "highlight": 1.6,
+     "gradient": 1.5,
+     "shadow": -1.6,
+     "jitter": 0.5,
      "faces": [
       "front",
       "bottom"
@@ -379,7 +407,7 @@
      "id": "scaled_sides",
      "op": "fill",
      "ramp": "scale",
-     "tone": 4.4,
+     "tone": 3.0,
      "faces": [
       "top",
       "flanks"
@@ -391,13 +419,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "flanks"
@@ -407,12 +435,15 @@
   },
   "head": {
    "ramp": "scale",
-   "tone": 4.8,
+   "tone": 3.2,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.0,
+    "light_shift": 2.4,
     "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
@@ -421,16 +452,34 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.0,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
-      "sides"
+      "sides",
+      "back"
+     ]
+    },
+    {
+     "id": "face_scales",
+     "op": "scales",
+     "shape": "round",
+     "along": "z",
+     "size": [
+      1.5,
+      1.5
+     ],
+     "gradient": 3.5,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
+     "faces": [
+      "front"
      ]
     },
     {
@@ -446,7 +495,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -460,34 +509,21 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
-    },
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.6,
-     "ramp": "belly",
-     "tone": 4.6,
-     "faces": [
-      "sides",
-      "front"
-     ]
+     "shift": 1.6
     }
    ]
   },
   "snout": {
    "ramp": "scale",
-   "tone": 4.6,
+   "tone": 3.2,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.0,
+    "light_shift": 2.4,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "z"
+    "off": true
    },
    "layers": [
     {
@@ -496,13 +532,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.0,
+      1.5,
       1.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 3.5,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -516,211 +552,51 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     },
     {
      "id": "lip",
      "op": "band",
      "axis": "y",
      "from": -1.01,
-     "to": -0.45,
+     "to": -0.55,
      "ramp": "belly",
-     "tone": 4.6,
+     "tone": 3.0,
      "faces": [
       "sides",
       "front"
      ]
-    }
-   ],
-   "stamps": [
+    },
     {
-     "face": "front",
-     "at": "top",
-     "offset": [
-      0,
-      1
+     "id": "ridge",
+     "op": "band",
+     "axis": "x",
+     "from": -0.2,
+     "to": 0.2,
+     "shift": 1.2,
+     "faces": [
+      "top",
+      "front"
      ],
-     "art": [
-      "n..n",
-      "N..N"
-     ],
-     "key": {
-      "n": "scale:1",
-      "N": "scale:0"
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_shift": -1.2
      }
     }
    ]
   },
-  "jaw": {
-   "ramp": "belly",
-   "tone": 4.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "z"
-   },
-   "layers": [
-    {
-     "id": "mouth",
-     "op": "fill",
-     "ramp": "membrane",
-     "tone": 1.6,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "tongue",
-     "op": "band",
-     "axis": "x",
-     "from": -0.35,
-     "to": 0.35,
-     "ramp": "membrane",
-     "tone": 3.6,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "scaled",
-     "op": "band",
-     "axis": "y",
-     "from": 0.0,
-     "to": 1.01,
-     "ramp": "scale",
-     "tone": 4.2,
-     "faces": [
-      "sides"
-     ]
-    }
-   ]
-  },
-  "eye": {
-   "ramp": "eyeglow",
-   "tone": 3.2,
-   "light": 0.3,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 1,
-    "dark": 0,
-    "light_shift": 1.0
-   },
-   "layers": [
-    {
-     "id": "lower",
-     "op": "gradient",
-     "axis": "y",
-     "amount": -1.2
-    }
-   ]
-  },
-  "horn": {
-   "ramp": "horn",
-   "tone": 5.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.6
-   },
-   "brush": {
-    "flow": "long"
-   },
-   "layers": [
-    {
-     "id": "rings",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.0,
-     "width": 0.3,
-     "shift": -1.0
-    },
-    {
-     "id": "root",
-     "op": "gradient",
-     "axis": "z",
-     "amount": 1.6
-    }
-   ]
-  },
-  "spine": {
-   "ramp": "horn",
-   "tone": 4,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "t": "horn:7",
-    "m": "horn:5",
-    "f": "scale:5"
-   }
-  },
-  "frill": {
-   "ramp": "membrane",
-   "tone": 4,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "t": "membrane:6",
-    "m": "membrane:4",
-    "f": "membrane:2"
-   }
-  },
-  "claw": {
-   "ramp": "horn",
-   "tone": 5,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "c": "horn:5",
-    "t": "horn:7"
-   }
-  },
-  "arm": {
+  "cheek": {
    "ramp": "scale",
-   "tone": 4.0,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "long"
-   },
-   "layers": [
-    {
-     "id": "knuckles",
-     "op": "stripes",
-     "axis": "x",
-     "period": 3.0,
-     "width": 0.15,
-     "shift": 1.4
-    }
-   ]
-  },
-  "leg": {
-   "ramp": "scale",
-   "tone": 4.2,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "y"
+    "off": true
    },
    "layers": [
     {
@@ -729,13 +605,13 @@
      "shape": "round",
      "along": "y",
      "size": [
-      1.0,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -754,7 +630,323 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
+     "faces": [
+      "top"
+     ],
+     "roughness": 0.5
+    },
+    {
+     "id": "jowl",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.35,
+     "ramp": "belly",
+     "tone": 3.0,
+     "faces": [
+      "sides",
+      "front",
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "jaw": {
+   "ramp": "belly",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "mouth",
+     "op": "fill",
+     "ramp": "maw",
+     "tone": 2.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "tongue",
+     "op": "band",
+     "axis": "x",
+     "from": -0.35,
+     "to": 0.35,
+     "ramp": "maw",
+     "tone": 4.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "scaled",
+     "op": "band",
+     "axis": "y",
+     "from": 0.0,
+     "to": 1.01,
+     "ramp": "scale",
+     "tone": 3.0,
+     "faces": [
+      "sides",
+      "front"
+     ]
+    },
+    {
+     "id": "chin",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.5,
+     "width": 0.25,
+     "shift": -1.3,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "brow": {
+   "ramp": "scale",
+   "tone": 4.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.6,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "nostril": {
+   "ramp": "scale",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "hole",
+     "op": "fill",
+     "tone": 0.5,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "eye": {
+   "ramp": "scale",
+   "tone": 1.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "W": "eyeglow:6",
+    "e": "eyeglow:4",
+    "E": "eyeglow:3",
+    "p": "scale:0"
+   }
+  },
+  "horn": {
+   "ramp": "bone",
+   "tone": 6.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -0.8
+    },
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 2.4
+    }
+   ]
+  },
+  "spine": {
+   "ramp": "bone",
+   "tone": 6.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.8
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 3.0
+    },
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -0.6
+    }
+   ]
+  },
+  "spike": {
+   "ramp": "bone",
+   "tone": 5,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "bone:8",
+    "m": "bone:6",
+    "f": "bone:4"
+   }
+  },
+  "tooth": {
+   "ramp": "bone",
+   "tone": 7,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "bone:9",
+    "m": "bone:7",
+    "f": "bone:6",
+    "c": "bone:7"
+   }
+  },
+  "claw": {
+   "ramp": "bone",
+   "tone": 5,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "c": "bone:6",
+    "t": "bone:8"
+   }
+  },
+  "wingbone": {
+   "ramp": "bone",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "knuckles",
+     "op": "stripes",
+     "axis": "x",
+     "period": 3.0,
+     "width": 0.15,
+     "shift": 1.4
+    }
+   ]
+  },
+  "spar": {
+   "ramp": "bone",
+   "tone": 3.8,
+   "rim": {
+    "light": 1,
+    "dark": 0,
+    "light_shift": 1.6
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "x",
+     "amount": 0.8
+    }
+   ]
+  },
+  "leg": {
+   "ramp": "scale",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "scales",
+     "op": "scales",
+     "shape": "round",
+     "along": "y",
+     "size": [
+      1.5,
+      1.5
+     ],
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "sheen",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.6,
+      1.0
+     ],
+     "stretch": [
+      1,
+      0.5,
+      2
+     ],
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -770,11 +962,11 @@
   },
   "foot": {
    "ramp": "scale",
-   "tone": 3.6,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -785,7 +977,7 @@
      "id": "sole",
      "op": "fill",
      "ramp": "belly",
-     "tone": 3.0,
+     "tone": 2.0,
      "faces": [
       "bottom"
      ]
@@ -796,7 +988,7 @@
      "axis": "x",
      "period": 1.0,
      "width": 0.3,
-     "shift": -1.2,
+     "shift": -1.4,
      "faces": [
       "top",
       "front"
@@ -806,15 +998,15 @@
   },
   "tail": {
    "ramp": "scale",
-   "tone": 4.4,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "z"
+    "off": true
    },
    "layers": [
     {
@@ -823,13 +1015,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -848,7 +1040,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -861,7 +1053,7 @@
      "from": -1.01,
      "to": -0.55,
      "ramp": "belly",
-     "tone": 5.0,
+     "tone": 3.4,
      "wobble": 0.15,
      "faces": [
       "sides",
@@ -872,7 +1064,7 @@
      "bevel": {
       "shadow": 0,
       "highlight": 1,
-      "highlight_shift": 1.2
+      "highlight_shift": 1.4
      }
     },
     {
@@ -883,7 +1075,7 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
@@ -893,7 +1085,7 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -924,7 +1116,7 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
@@ -947,7 +1139,7 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -1009,7 +1201,7 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -1113,7 +1305,7 @@
   },
   "wing_l": {
    "ramp": "membrane",
-   "tone": 4.4,
+   "tone": 4.8,
    "light": 0.25,
    "brush": {
     "flow": "x",
@@ -1131,7 +1323,7 @@
      "id": "trail_light",
      "op": "gradient",
      "axis": "z",
-     "amount": 1.2
+     "amount": 1.6
     },
     {
      "id": "mottle",
@@ -1141,16 +1333,17 @@
     }
    ],
    "art_key": {
-    "b": "scale:3",
-    "B": "scale:6",
-    "r": "membrane:6",
-    "v": "membrane:3",
-    "c": "horn:6"
+    "b": "membrane:1",
+    "r": "membrane:8",
+    "R": "membrane:6",
+    "v": "membrane:6",
+    "c": "bone:7",
+    "C": "bone:5"
    }
   },
   "wing_r": {
    "ramp": "membrane",
-   "tone": 4.4,
+   "tone": 4.8,
    "light": 0.25,
    "brush": {
     "flow": "x",
@@ -1168,7 +1361,7 @@
      "id": "trail_light",
      "op": "gradient",
      "axis": "z",
-     "amount": 1.2
+     "amount": 1.6
     },
     {
      "id": "mottle",
@@ -1178,11 +1371,12 @@
     }
    ],
    "art_key": {
-    "b": "scale:3",
-    "B": "scale:6",
-    "r": "membrane:6",
-    "v": "membrane:3",
-    "c": "horn:6"
+    "b": "membrane:1",
+    "r": "membrane:8",
+    "R": "membrane:6",
+    "v": "membrane:6",
+    "c": "bone:7",
+    "C": "bone:5"
    }
   }
  },
@@ -1192,20 +1386,36 @@
    "shape": "box",
    "size": [
     7.0,
-    5.5,
+    6.0,
     8.0
    ],
    "pivot": [
     0.0,
-    5.579,
+    5.5,
     0.0
    ],
    "offset": [
     0.0,
-    0.0,
+    0.5,
     -0.5
    ],
    "style": "scale_body"
+  },
+  {
+   "id": "chest",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    6.0,
+    5.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    4.0
+   ],
+   "style": "chest"
   },
   {
    "id": "belly",
@@ -1214,87 +1424,169 @@
    "size": [
     6.0,
     1.5,
-    7.0
+    7.5
    ],
    "pivot": [
     0.0,
-    -2.5,
-    -0.3
+    -2.75,
+    -0.25
    ],
    "style": "belly"
-  },
-  {
-   "id": "chest",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    6.0,
-    5.0,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    0.1,
-    3.6
-   ],
-   "style": "chest"
   },
   {
    "id": "haunches",
    "shape": "box",
    "parent": "body",
    "size": [
-    7.5,
-    4.0,
+    8.0,
+    5.0,
     4.0
    ],
    "pivot": [
     0.0,
-    -0.5,
-    -2.6
+    -0.25,
+    -3.25
    ],
    "style": "scale_body"
   },
   {
-   "id": "back_spines",
-   "shape": "card",
+   "id": "shoulders",
+   "shape": "box",
    "parent": "body",
+   "size": [
+    7.5,
+    2.0,
+    3.5
+   ],
    "pivot": [
     0.0,
     2.75,
-    -0.5
+    1.75
+   ],
+   "style": "scale"
+  },
+  {
+   "id": "back_spine_0",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.0,
+    1.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    3.75,
+    2.25
    ],
    "offset": [
     0.0,
-    0.75,
+    0.4,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "..t........t..",
-    "..f..t.tff.f..",
-    "ffffffffffffff"
-   ]
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "back_spine_1",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    3.5,
+    0.25
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "back_spine_2",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.0,
+    2.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    3.5,
+    -1.75
+   ],
+   "offset": [
+    0.0,
+    0.9,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "back_spine_3",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    3.5,
+    -3.75
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "neck",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    3.5,
-    3.0
+    4.0,
+    4.0,
+    3.5
    ],
    "pivot": [
     0.0,
-    1.5,
-    3.2
+    2.0,
+    3.5
    ],
    "offset": [
     0.0,
     0.0,
-    1.0
+    1.25
    ],
    "rotation": [
     -38.0,
@@ -1304,141 +1596,237 @@
    "style": "scale"
   },
   {
-   "id": "neck_spines",
-   "shape": "card",
+   "id": "throat",
+   "shape": "box",
    "parent": "neck",
+   "size": [
+    3.0,
+    1.0,
+    3.0
+   ],
    "pivot": [
     0.0,
-    1.75,
+    -2.0,
+    1.25
+   ],
+   "style": "belly"
+  },
+  {
+   "id": "neck_spine",
+   "shape": "box",
+   "parent": "neck",
+   "size": [
+    1.0,
+    1.5,
     1.0
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    1.4
    ],
    "offset": [
     0.0,
-    0.75,
+    0.4,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "....t.",
-    ".t..f.",
-    "ffffff"
-   ]
+   "rotation": [
+    -20.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "head",
    "shape": "box",
    "parent": "neck",
    "size": [
-    6.5,
-    5.5,
-    5.5
+    7.0,
+    6.0,
+    6.0
    ],
    "pivot": [
     0.0,
     0.2,
-    2.6
+    2.7
    ],
    "offset": [
     0.0,
-    1.6,
-    1.6
+    1.8,
+    1.4
    ],
    "rotation": [
-    32.0,
+    34.0,
     0.0,
     0.0
    ],
-   "style": "head"
-  },
-  {
-   "id": "cheeks",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    7.0,
-    3.0,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    0.5,
-    1.0
-   ],
-   "style": "head"
+   "style": "head",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": [
+       10,
+       3
+      ],
+      "art": [
+       "..",
+       "kk"
+      ],
+      "key": {
+       "k": "scale:0"
+      }
+     },
+     {
+      "face": "front",
+      "at": [
+       2,
+       3
+      ],
+      "art": [
+       "..",
+       "kk"
+      ],
+      "key": {
+       "k": "scale:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "snout",
    "shape": "box",
    "parent": "head",
    "size": [
-    4.0,
-    2.5,
-    3.0
+    4.5,
+    2.0,
+    4.0
    ],
    "pivot": [
     0.0,
-    0.4,
+    0.05,
     5.65
    ],
    "style": "snout"
+  },
+  {
+   "id": "nostril_l",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    1.0,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    1.4,
+    1.2,
+    0.9
+   ],
+   "style": "nostril"
+  },
+  {
+   "id": "nostril_r",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    1.0,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    -1.4,
+    1.2,
+    0.9
+   ],
+   "style": "nostril"
+  },
+  {
+   "id": "fangs",
+   "shape": "card",
+   "parent": "snout",
+   "pivot": [
+    0.0,
+    -1.5,
+    2.05
+   ],
+   "style": "tooth",
+   "plane": "xy",
+   "art": [
+    "..m....m..",
+    "..t....t.."
+   ]
   },
   {
    "id": "jaw",
    "shape": "box",
    "parent": "head",
    "size": [
-    3.5,
+    4.0,
     1.0,
     3.5
    ],
    "pivot": [
     0.0,
-    -0.8,
-    3.35
+    -0.95,
+    4.15
    ],
    "offset": [
     0.0,
-    -0.3,
-    1.9
+    -0.5,
+    1.5
+   ],
+   "style": "jaw"
+  },
+  {
+   "id": "chin",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    3.0,
+    0.5,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    -0.75,
+    1.75
    ],
    "style": "jaw"
   },
   {
    "id": "eye_l",
-   "shape": "box",
+   "shape": "card",
    "parent": "head",
-   "size": [
-    2.0,
-    2.5,
-    0.5
-   ],
    "pivot": [
     2.0,
-    2.0,
-    4.55
+    2.8,
+    4.46
    ],
    "style": "eye",
-   "paint": {
-    "stamps": [
-     {
-      "face": "front",
-      "at": "top-left",
-      "art": [
-       ".WW.",
-       "Ww..",
-       ".pp.",
-       ".pp.",
-       ".pp."
-      ],
-      "key": {
-       "p": "scale:0",
-       "W": "eyeglow:6",
-       "w": "eyeglow:5"
-      }
-     }
-    ]
-   }
+   "plane": "xy",
+   "art": [
+    "We",
+    "eE"
+   ]
+  },
+  {
+   "id": "eye_r",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    -2.0,
+    2.8,
+    4.46
+   ],
+   "style": "eye",
+   "plane": "xy",
+   "art": [
+    "We",
+    "eE"
+   ]
   },
   {
    "id": "horn_l0",
@@ -1446,21 +1834,21 @@
    "parent": "head",
    "size": [
     1.0,
-    2.0,
-    1.0
+    2.5,
+    3.0
    ],
    "pivot": [
-    1.6,
-    4.15,
-    0.6
+    2.0,
+    4.5,
+    0.8
    ],
    "offset": [
     0.0,
-    0.7,
-    0.0
+    1.0,
+    -0.4
    ],
    "rotation": [
-    -40.0,
+    -24.0,
     0.0,
     -10.0
    ],
@@ -1473,33 +1861,12 @@
    "size": [
     0.5,
     1.5,
-    0.5
+    2.0
    ],
    "pivot": [
-    2.9,
-    3.55,
-    0.2
-   ],
-   "offset": [
-    0.0,
-    0.45,
-    0.0
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    -36.0
-   ],
-   "style": "horn"
-  },
-  {
-   "id": "frill_l",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    3.3,
-    1.0,
-    0.05
+    3.0,
+    4.2,
+    -0.4
    ],
    "offset": [
     0.0,
@@ -1509,51 +1876,9 @@
    "rotation": [
     -30.0,
     0.0,
-    18.0
+    -30.0
    ],
-   "style": "frill",
-   "plane": "yz",
-   "art": [
-    "......",
-    ".t...t",
-    "ffffff"
-   ]
-  },
-  {
-   "id": "eye_r",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    2.0,
-    2.5,
-    0.5
-   ],
-   "pivot": [
-    -2.0,
-    2.0,
-    4.55
-   ],
-   "style": "eye",
-   "paint": {
-    "stamps": [
-     {
-      "face": "front",
-      "at": "top-left",
-      "art": [
-       ".WW.",
-       "Ww..",
-       ".pp.",
-       ".pp.",
-       ".pp."
-      ],
-      "key": {
-       "p": "scale:0",
-       "W": "eyeglow:6",
-       "w": "eyeglow:5"
-      }
-     }
-    ]
-   }
+   "style": "horn"
   },
   {
    "id": "horn_r0",
@@ -1561,21 +1886,21 @@
    "parent": "head",
    "size": [
     1.0,
-    2.0,
-    1.0
+    2.5,
+    3.0
    ],
    "pivot": [
-    -1.6,
-    4.15,
-    0.6
+    -2.0,
+    4.5,
+    0.8
    ],
    "offset": [
     0.0,
-    0.7,
-    0.0
+    1.0,
+    -0.4
    ],
    "rotation": [
-    -40.0,
+    -24.0,
     0.0,
     10.0
    ],
@@ -1588,33 +1913,12 @@
    "size": [
     0.5,
     1.5,
-    0.5
+    2.0
    ],
    "pivot": [
-    -2.9,
-    3.55,
-    0.2
-   ],
-   "offset": [
-    0.0,
-    0.45,
-    0.0
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    36.0
-   ],
-   "style": "horn"
-  },
-  {
-   "id": "frill_r",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    -3.3,
-    1.0,
-    0.05
+    -3.0,
+    4.2,
+    -0.4
    ],
    "offset": [
     0.0,
@@ -1624,15 +1928,61 @@
    "rotation": [
     -30.0,
     0.0,
-    -18.0
+    30.0
    ],
-   "style": "frill",
-   "plane": "yz",
-   "art": [
-    ".t....",
-    ".f....",
-    "fffttf"
-   ]
+   "style": "horn"
+  },
+  {
+   "id": "head_spine_0",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1.0,
+    1.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    4.55,
+    1.1
+   ],
+   "offset": [
+    0.0,
+    0.4,
+    0.0
+   ],
+   "rotation": [
+    -28.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "head_spine_1",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1.0,
+    1.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    4.3,
+    -0.6
+   ],
+   "offset": [
+    0.0,
+    0.4,
+    0.0
+   ],
+   "rotation": [
+    -40.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "wing_l",
@@ -1640,13 +1990,13 @@
    "parent": "body",
    "pivot": [
     3.2,
-    2.3,
-    1.2
+    2.7,
+    1.0
    ],
    "rotation": [
-    -20.0,
-    40.0,
-    40.0
+    -55.0,
+    30.0,
+    35.0
    ],
    "style": "scale"
   },
@@ -1669,7 +2019,7 @@
     0.0,
     0.0
    ],
-   "style": "arm"
+   "style": "wingbone"
   },
   {
    "id": "wing_l_m",
@@ -1678,21 +2028,20 @@
    "pivot": [
     2.25,
     -0.1,
-    -2.75
+    -2.0
    ],
    "style": "wing_l",
    "plane": "xz",
    "art": [
-    "rr......r",
-    "rmr...rrr",
-    "rmvrrrmmr",
-    "rmvmmvmmr",
-    "rmvmvvmmr",
-    "rmvmvmmmr",
-    "rmvmvmmmr",
-    "rmmmmmmmr",
-    "rmmmmmmmr",
-    "mmmmmmmmm"
+    ".........",
+    "m........",
+    "mr.......",
+    "mmr......",
+    "vmmr...Rm",
+    "vmmmrRrvm",
+    "vvmmmvmvm",
+    "mvmmmmvvm",
+    "mvmmmmvmv"
    ]
   },
   {
@@ -1701,22 +2050,62 @@
    "parent": "wing_l",
    "pivot": [
     4.5,
-    -0.0,
+    0.0,
     -0.0
    ],
    "rotation": [
     0.0,
-    -20.0,
-    -30.0
+    -15.0,
+    -35.0
    ],
    "style": "scale"
   },
   {
-   "id": "wing_l_hand",
+   "id": "wing_l_knuckle",
    "shape": "box",
    "parent": "wing_l_tip",
    "size": [
-    4.0,
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "wingbone"
+  },
+  {
+   "id": "wing_l_tip_m",
+   "shape": "card",
+   "parent": "wing_l_tip",
+   "pivot": [
+    3.5,
+    -0.12,
+    -2.25
+   ],
+   "style": "wing_l",
+   "plane": "xz",
+   "art": [
+    "..............",
+    "....R.........",
+    "....rR........",
+    "...Rmr.rrR....",
+    "..rmmvrvvr....",
+    "mrmmmvmvmr....",
+    "mmmmvvmmmR....",
+    "mmmmmmmmmmRrr.",
+    "mmmmmmmmmmrR..",
+    "mmmmmmmmmm...."
+   ]
+  },
+  {
+   "id": "wing_l_finger_0",
+   "shape": "box",
+   "parent": "wing_l_tip",
+   "size": [
+    6.5,
     0.5,
     0.5
    ],
@@ -1726,35 +2115,88 @@
     0.0
    ],
    "offset": [
-    2.0,
+    3.25,
     0.0,
     0.0
    ],
-   "style": "arm"
+   "rotation": [
+    0.0,
+    8.0,
+    0.0
+   ],
+   "style": "spar"
   },
   {
-   "id": "wing_l_tip_m",
-   "shape": "card",
+   "id": "wing_l_finger_1",
+   "shape": "box",
    "parent": "wing_l_tip",
-   "pivot": [
-    3.0,
-    -0.12,
-    -2.5
+   "size": [
+    6.0,
+    0.5,
+    0.5
    ],
-   "style": "wing_l",
-   "plane": "xz",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    3.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    34.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_l_finger_2",
+   "shape": "box",
+   "parent": "wing_l_tip",
+   "size": [
+    5.0,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    2.5,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    62.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_l_claw",
+   "shape": "card",
+   "parent": "wing_l_finger_0",
+   "pivot": [
+    6.3,
+    0.2,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    0.6,
+    0.0
+   ],
+   "style": "claw",
+   "plane": "yz",
    "art": [
-    "r...........",
-    "r...........",
-    "rr..rb......",
-    "rmrrbBr.....",
-    "rvmbbmmr....",
-    "rvmbBmmr....",
-    "rmbBmmmvr...",
-    "rmbmmmmvmbcb",
-    "rbBmmbbbbbBc",
-    "bbbbbbBBBBmr",
-    "bbbBBBmmmmm."
+    "c",
+    "t"
    ]
   },
   {
@@ -1784,13 +2226,13 @@
    "parent": "body",
    "pivot": [
     -3.2,
-    2.3,
-    1.2
+    2.7,
+    1.0
    ],
    "rotation": [
-    -20.0,
-    -40.0,
-    -40.0
+    -55.0,
+    -30.0,
+    -35.0
    ],
    "style": "scale"
   },
@@ -1813,7 +2255,7 @@
     0.0,
     0.0
    ],
-   "style": "arm"
+   "style": "wingbone"
   },
   {
    "id": "wing_r_m",
@@ -1822,21 +2264,20 @@
    "pivot": [
     -2.25,
     -0.1,
-    -2.75
+    -2.0
    ],
    "style": "wing_r",
    "plane": "xz",
    "art": [
-    "r......rr",
-    "rrr...rmr",
-    "rmmrrrvmr",
-    "rmmvmmvmr",
-    "rmmvvmvmr",
-    "rmmmvmvmr",
-    "rmmmvmvmr",
-    "rmmmmmmmr",
-    "rmmmmmmmr",
-    "mmmmmmmmm"
+    ".........",
+    "........m",
+    ".......rm",
+    "......rmm",
+    "mR...rmmv",
+    "mvrRrmmmv",
+    "mvmvmmmvv",
+    "mvvmmmmvm",
+    "vmvmmmmvm"
    ]
   },
   {
@@ -1845,22 +2286,62 @@
    "parent": "wing_r",
    "pivot": [
     -4.5,
-    -0.0,
+    0.0,
     -0.0
    ],
    "rotation": [
     0.0,
-    20.0,
-    30.0
+    15.0,
+    35.0
    ],
    "style": "scale"
   },
   {
-   "id": "wing_r_hand",
+   "id": "wing_r_knuckle",
    "shape": "box",
    "parent": "wing_r_tip",
    "size": [
-    4.0,
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "wingbone"
+  },
+  {
+   "id": "wing_r_tip_m",
+   "shape": "card",
+   "parent": "wing_r_tip",
+   "pivot": [
+    -3.5,
+    -0.12,
+    -2.25
+   ],
+   "style": "wing_r",
+   "plane": "xz",
+   "art": [
+    "..............",
+    ".........R....",
+    "........Rr....",
+    "....Rrr.rmR...",
+    "....rvvrvmmr..",
+    "....rmvmvmmmrm",
+    "....Rmmmvvmmmm",
+    ".rrRmmmmmmmmmm",
+    "..Rrmmmmmmmmmm",
+    "....mmmmmmmmmm"
+   ]
+  },
+  {
+   "id": "wing_r_finger_0",
+   "shape": "box",
+   "parent": "wing_r_tip",
+   "size": [
+    6.5,
     0.5,
     0.5
    ],
@@ -1870,35 +2351,88 @@
     0.0
    ],
    "offset": [
-    -2.0,
+    -3.25,
     0.0,
     0.0
    ],
-   "style": "arm"
+   "rotation": [
+    0.0,
+    -8.0,
+    0.0
+   ],
+   "style": "spar"
   },
   {
-   "id": "wing_r_tip_m",
-   "shape": "card",
+   "id": "wing_r_finger_1",
+   "shape": "box",
    "parent": "wing_r_tip",
-   "pivot": [
-    -3.0,
-    -0.12,
-    -2.5
+   "size": [
+    6.0,
+    0.5,
+    0.5
    ],
-   "style": "wing_r",
-   "plane": "xz",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -3.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -34.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_r_finger_2",
+   "shape": "box",
+   "parent": "wing_r_tip",
+   "size": [
+    5.0,
+    0.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -2.5,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -62.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_r_claw",
+   "shape": "card",
+   "parent": "wing_r_finger_0",
+   "pivot": [
+    -6.3,
+    0.2,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    0.6,
+    0.0
+   ],
+   "style": "claw",
+   "plane": "yz",
    "art": [
-    "...........r",
-    "...........r",
-    "......br..rr",
-    ".....rBbrrmr",
-    "....rmmbbmvr",
-    "....rmmBbmvr",
-    "...rvmmmBbmr",
-    "bcbmvmmmmbmr",
-    "cBbbbbbmmBbr",
-    "rmBBBBbbbbbb",
-    ".mmmmmBBBbbb"
+    "c",
+    "t"
    ]
   },
   {
@@ -1929,54 +2463,214 @@
    "size": [
     4.0,
     3.5,
-    4.0
+    4.5
    ],
    "pivot": [
     0.0,
-    -0.5,
-    -4.3
+    0.0,
+    -4.5
    ],
    "offset": [
     0.0,
     0.0,
-    -1.5
+    -1.75
    ],
    "rotation": [
-    -14.0,
-    10.0,
+    -10.0,
+    6.0,
     0.0
    ],
    "style": "tail"
   },
   {
-   "id": "tail_0_spines",
-   "shape": "card",
+   "id": "tail_0_spine",
+   "shape": "box",
    "parent": "tail_0",
+   "size": [
+    1.0,
+    1.5,
+    1.5
+   ],
    "pivot": [
-    0.0,
-    1.75,
-    -1.5
+    -0.0,
+    1.65,
+    -1.75
    ],
    "offset": [
     0.0,
-    0.75,
+    0.4,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "........",
-    ".t.t.t..",
-    "ffffffff"
-   ]
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "tail_1",
    "shape": "box",
    "parent": "tail_0",
    "size": [
+    3.5,
     3.0,
+    4.5
+   ],
+   "pivot": [
+    -0.0,
+    -0.2,
+    -3.5
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -1.75
+   ],
+   "rotation": [
+    0.0,
+    8.0,
+    0.0
+   ],
+   "style": "tail"
+  },
+  {
+   "id": "tail_1_spine",
+   "shape": "box",
+   "parent": "tail_1",
+   "size": [
+    1.0,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -0.0,
+    1.4,
+    -1.75
+   ],
+   "offset": [
+    0.0,
+    0.4,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_2",
+   "shape": "box",
+   "parent": "tail_1",
+   "size": [
     3.0,
+    2.5,
+    4.5
+   ],
+   "pivot": [
+    -0.0,
+    -0.2,
+    -3.5
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -1.75
+   ],
+   "rotation": [
+    6.0,
+    10.0,
+    0.0
+   ],
+   "style": "tail"
+  },
+  {
+   "id": "tail_2_spine",
+   "shape": "box",
+   "parent": "tail_2",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    1.15,
+    -1.75
+   ],
+   "offset": [
+    0.0,
+    0.15,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_3",
+   "shape": "box",
+   "parent": "tail_2",
+   "size": [
+    2.5,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    -0.0,
+    -0.2,
+    -3.5
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -1.5
+   ],
+   "rotation": [
+    8.0,
+    10.0,
+    0.0
+   ],
+   "style": "tail"
+  },
+  {
+   "id": "tail_3_spine",
+   "shape": "box",
+   "parent": "tail_3",
+   "size": [
+    0.5,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -0.0,
+    0.9,
+    -1.5
+   ],
+   "offset": [
+    0.0,
+    0.15,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_4",
+   "shape": "box",
+   "parent": "tail_3",
+   "size": [
+    2.0,
+    1.5,
     4.0
    ],
    "pivot": [
@@ -1990,45 +2684,49 @@
     -1.5
    ],
    "rotation": [
-    -6.0,
-    18.0,
+    6.0,
+    10.0,
     0.0
    ],
    "style": "tail"
   },
   {
-   "id": "tail_1_spines",
-   "shape": "card",
-   "parent": "tail_1",
+   "id": "tail_4_spine",
+   "shape": "box",
+   "parent": "tail_4",
+   "size": [
+    0.5,
+    1.0,
+    1.0
+   ],
    "pivot": [
-    -0.0,
-    1.5,
+    0.0,
+    0.65,
     -1.5
    ],
    "offset": [
     0.0,
-    0.75,
+    0.15,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    ".....t..",
-    "...t.f.t",
-    "ffffffff"
-   ]
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
-   "id": "tail_2",
+   "id": "tail_5",
    "shape": "box",
-   "parent": "tail_1",
+   "parent": "tail_4",
    "size": [
-    2.5,
-    2.0,
+    1.5,
+    1.0,
     3.5
    ],
    "pivot": [
-    0.0,
+    -0.0,
     -0.2,
     -3.0
    ],
@@ -2038,56 +2736,8 @@
     -1.25
    ],
    "rotation": [
-    8.0,
-    22.0,
-    0.0
-   ],
-   "style": "tail"
-  },
-  {
-   "id": "tail_2_spines",
-   "shape": "card",
-   "parent": "tail_2",
-   "pivot": [
-    -0.0,
-    1.0,
-    -1.25
-   ],
-   "offset": [
-    0.0,
-    0.75,
-    0.0
-   ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "......t",
-    "..ff..f",
-    "fffffff"
-   ]
-  },
-  {
-   "id": "tail_3",
-   "shape": "box",
-   "parent": "tail_2",
-   "size": [
-    1.5,
-    1.5,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    -0.2,
-    -2.5
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    -1.25
-   ],
-   "rotation": [
-    12.0,
-    24.0,
+    4.0,
+    10.0,
     0.0
    ],
    "style": "tail"
@@ -2095,25 +2745,58 @@
   {
    "id": "tail_blade",
    "shape": "card",
-   "parent": "tail_3",
+   "parent": "tail_5",
    "pivot": [
-    -0.0,
-    -0.0,
-    -2.9
+    0.0,
+    0.0,
+    -2.7
    ],
    "offset": [
     0.0,
     0.0,
-    -1.0
+    -1.5
    ],
-   "style": "frill",
+   "style": "spike",
    "plane": "xz",
    "art": [
-    "..t..",
-    ".tmt.",
-    "tmfmt",
-    ".tmt.",
-    "..t.."
+    "..tt..",
+    "..tt..",
+    ".tfmt.",
+    "tffmft",
+    "tmmmmt",
+    "......",
+    "..mm.."
+   ]
+  },
+  {
+   "id": "tail_blade_v",
+   "shape": "card",
+   "parent": "tail_5",
+   "pivot": [
+    0.0,
+    0.0,
+    -2.7
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -90.0,
+    0.0,
+    0.0
+   ],
+   "style": "spike",
+   "plane": "yz",
+   "art": [
+    "..tt..",
+    "..tt..",
+    ".tfmt.",
+    "tffmft",
+    "tmmmmt",
+    "......",
+    "..mm.."
    ]
   },
   {
@@ -2121,24 +2804,24 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    2.0,
+    2.5,
     4.0,
-    2.0
+    2.5
    ],
    "pivot": [
     2.6,
-    -0.7,
-    2.4
+    -0.3,
+    2.6
    ],
    "offset": [
     0.0,
-    -1.5,
+    -1.375,
     0.0
    ],
    "rotation": [
-    -4.512,
+    -5.434,
     -0.0,
-    1.507
+    2.726
    ],
    "style": "leg"
   },
@@ -2157,14 +2840,30 @@
     0.0
    ],
    "offset": [
-    -0.0,
-    -0.3138,
+    0.0,
+    -0.7225,
     0.5
    ],
    "rotation": [
-    4.51,
-    0.119,
-    -1.502
+    5.428,
+    0.258,
+    -2.714
+   ],
+   "style": "foot"
+  },
+  {
+   "id": "toes_fl",
+   "shape": "box",
+   "parent": "foot_fl",
+   "size": [
+    2.0,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -0.25,
+    1.75
    ],
    "style": "foot"
   },
@@ -2173,9 +2872,9 @@
    "shape": "card",
    "parent": "foot_fl",
    "pivot": [
-    -0.0,
+    0.0,
     -0.25,
-    2.25
+    2.5
    ],
    "offset": [
     0.0,
@@ -2199,24 +2898,24 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    2.0,
+    2.5,
     4.0,
-    2.0
+    2.5
    ],
    "pivot": [
     -2.6,
-    -0.7,
-    2.4
+    -0.3,
+    2.6
    ],
    "offset": [
     0.0,
-    -1.5,
+    -1.375,
     0.0
    ],
    "rotation": [
-    -4.512,
+    -5.434,
     -0.0,
-    -1.507
+    -2.726
    ],
    "style": "leg"
   },
@@ -2235,14 +2934,30 @@
     0.0
    ],
    "offset": [
-    0.0,
-    -0.3138,
+    -0.0,
+    -0.7225,
     0.5
    ],
    "rotation": [
-    4.51,
-    -0.119,
-    1.502
+    5.428,
+    -0.258,
+    2.714
+   ],
+   "style": "foot"
+  },
+  {
+   "id": "toes_fr",
+   "shape": "box",
+   "parent": "foot_fr",
+   "size": [
+    2.0,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    -0.0,
+    -0.25,
+    1.75
    ],
    "style": "foot"
   },
@@ -2251,9 +2966,9 @@
    "shape": "card",
    "parent": "foot_fr",
    "pivot": [
-    0.0,
+    -0.0,
     -0.25,
-    2.25
+    2.5
    ],
    "offset": [
     0.0,
@@ -2282,9 +2997,9 @@
     3.5
    ],
    "pivot": [
-    3.0,
-    -0.5,
-    -2.4
+    3.2,
+    -0.3,
+    -2.8
    ],
    "offset": [
     0.0,
@@ -2292,9 +3007,9 @@
     0.0
    ],
    "rotation": [
-    -5.711,
+    -8.121,
     -0.0,
-    0.0
+    2.726
    ],
    "style": "leg"
   },
@@ -2303,24 +3018,40 @@
    "shape": "box",
    "parent": "leg_bl",
    "size": [
-    2.5,
+    3.0,
     1.0,
     3.5
    ],
    "pivot": [
     0.0,
     -4.0,
-    -0.0
+    0.0
    ],
    "offset": [
     0.0,
-    -0.5199,
+    -0.7446,
     0.75
    ],
    "rotation": [
-    5.711,
-    -0.0,
-    0.0
+    8.112,
+    0.385,
+    -2.699
+   ],
+   "style": "foot"
+  },
+  {
+   "id": "toes_bl",
+   "shape": "box",
+   "parent": "foot_bl",
+   "size": [
+    2.5,
+    0.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -0.25,
+    2.0
    ],
    "style": "foot"
   },
@@ -2360,9 +3091,9 @@
     3.5
    ],
    "pivot": [
-    -3.0,
-    -0.5,
-    -2.4
+    -3.2,
+    -0.3,
+    -2.8
    ],
    "offset": [
     0.0,
@@ -2370,9 +3101,9 @@
     0.0
    ],
    "rotation": [
-    -5.711,
+    -8.121,
     -0.0,
-    0.0
+    -2.726
    ],
    "style": "leg"
   },
@@ -2381,24 +3112,40 @@
    "shape": "box",
    "parent": "leg_br",
    "size": [
-    2.5,
+    3.0,
     1.0,
     3.5
    ],
    "pivot": [
-    0.0,
+    -0.0,
     -4.0,
-    -0.0
+    0.0
    ],
    "offset": [
-    0.0,
-    -0.5199,
+    -0.0,
+    -0.7446,
     0.75
    ],
    "rotation": [
-    5.711,
+    8.112,
+    -0.385,
+    2.699
+   ],
+   "style": "foot"
+  },
+  {
+   "id": "toes_br",
+   "shape": "box",
+   "parent": "foot_br",
+   "size": [
+    2.5,
+    0.5,
+    1.5
+   ],
+   "pivot": [
     -0.0,
-    0.0
+    -0.25,
+    2.0
    ],
    "style": "foot"
   },
@@ -2407,7 +3154,7 @@
    "shape": "card",
    "parent": "foot_br",
    "pivot": [
-    0.0,
+    -0.0,
     -0.25,
     2.75
    ],
@@ -2515,14 +3262,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 6.4,
+      "amp": 5.6000000000000005,
       "cycles": 1,
-      "lag": 0.12,
-      "growth": 1.25,
+      "lag": 0.1,
+      "growth": 1.2,
       "phase": 0.0
      }
     },
@@ -2531,7 +3280,9 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "x",
@@ -2774,7 +3525,7 @@
        0.0,
        [
         0.0,
-        -0.0,
+        0.0,
         0.0
        ]
       ],
@@ -2782,7 +3533,7 @@
        2.9833,
        [
         0.0,
-        -0.016,
+        -0.015,
         0.0
        ]
       ]
@@ -2917,14 +3668,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 8.0,
+      "amp": 6.4,
       "cycles": 1,
-      "lag": 0.14,
-      "growth": 1.2,
+      "lag": 0.12,
+      "growth": 1.15,
       "phase": 0.1
      }
     },
@@ -2954,119 +3707,103 @@
        0.0,
        [
         0.0,
-        0.623,
+        0.437,
         0.0
        ]
       ],
       [
-       0.0667,
+       0.0833,
        [
         0.0,
-        0.336,
+        0.172,
         0.0
        ]
       ],
       [
-       0.1,
+       0.2167,
        [
         0.0,
-        0.137,
+        0.925,
         0.0
        ]
       ],
       [
-       0.2333,
+       0.2833,
        [
         0.0,
-        0.92,
+        1.123,
         0.0
        ]
       ],
       [
-       0.3,
+       0.3333,
        [
         0.0,
-        1.127,
+        1.143,
         0.0
        ]
       ],
       [
-       0.35,
+       0.4,
        [
         0.0,
-        1.136,
+        0.989,
         0.0
        ]
       ],
       [
-       0.4167,
+       0.4833,
        [
         0.0,
-        0.952,
+        0.55,
         0.0
        ]
       ],
       [
-       0.4667,
+       0.5,
        [
         0.0,
-        0.721,
+        0.437,
         0.0
        ]
       ],
       [
-       0.55,
+       0.5833,
        [
         0.0,
-        0.427,
+        0.172,
         0.0
        ]
       ],
       [
-       0.6,
+       0.7167,
        [
         0.0,
-        0.137,
+        0.925,
         0.0
        ]
       ],
       [
-       0.7333,
+       0.7833,
        [
         0.0,
-        0.92,
+        1.123,
         0.0
        ]
       ],
       [
-       0.8,
+       0.8333,
        [
         0.0,
-        1.127,
+        1.143,
         0.0
        ]
       ],
       [
-       0.85,
+       0.9,
        [
         0.0,
-        1.136,
-        0.0
-       ]
-      ],
-      [
-       0.9167,
-       [
-        0.0,
-        0.952,
-        0.0
-       ]
-      ],
-      [
-       0.9667,
-       [
-        0.0,
-        0.721,
+        0.989,
         0.0
        ]
       ],
@@ -3074,7 +3811,7 @@
        0.9833,
        [
         0.0,
-        0.677,
+        0.55,
         0.0
        ]
       ]
@@ -3358,161 +4095,161 @@
       [
        0.0,
        [
-        38.798,
-        -13.155,
-        -41.19
+        61.053,
+        10.624,
+        -31.978
        ]
       ],
       [
        0.0421,
        [
-        23.11,
-        -33.779,
-        -12.142
+        56.154,
+        -19.785,
+        -17.761
        ]
       ],
       [
        0.0842,
        [
-        23.145,
-        -41.992,
-        -12.252
+        58.122,
+        -26.55,
+        -22.833
        ]
       ],
       [
        0.1263,
        [
-        40.797,
-        -29.592,
-        -46.633
+        60.329,
+        -2.945,
+        -42.585
        ]
       ],
       [
        0.1684,
        [
-        44.039,
-        -3.24,
-        -72.271
+        51.826,
+        28.339,
+        -60.789
        ]
       ],
       [
        0.2105,
        [
-        43.68,
-        8.549,
-        -73.907
+        51.53,
+        40.241,
+        -60.812
        ]
       ],
       [
        0.2526,
        [
-        42.189,
-        -5.106,
-        -51.377
+        60.894,
+        21.68,
+        -38.861
        ]
       ],
       [
        0.2947,
        [
-        28.253,
-        -28.177,
-        -20.498
+        57.881,
+        -11.281,
+        -21.091
        ]
       ],
       [
        0.3368,
        [
-        19.779,
-        -40.798,
-        -6.998
+        56.227,
+        -27.882,
+        -18.452
        ]
       ],
       [
        0.3789,
        [
-        35.728,
-        -36.601,
-        -34.431
+        60.98,
+        -13.304,
+        -35.732
        ]
       ],
       [
        0.4211,
        [
-        44.349,
-        -11.606,
-        -65.942
+        55.093,
+        19.072,
+        -55.493
        ]
       ],
       [
        0.4632,
        [
-        43.329,
-        7.394,
-        -76.528
+        49.278,
+        39.406,
+        -64.348
        ]
       ],
       [
        0.5053,
        [
-        43.858,
-        1.839,
-        -60.632
+        58.895,
+        31.013,
+        -46.494
        ]
       ],
       [
        0.5474,
        [
-        33.898,
-        -21.153,
-        -30.618
+        59.803,
+        -0.791,
+        -25.991
        ]
       ],
       [
        0.5895,
        [
-        19.9,
-        -37.96,
-        -7.169
+        55.454,
+        -25.508,
+        -16.705
        ]
       ],
       [
        0.6316,
        [
-        29.153,
-        -40.8,
-        -22.145
+        60.07,
+        -21.513,
+        -28.939
        ]
       ],
       [
        0.6737,
        [
-        43.551,
-        -20.808,
-        -57.308
+        58.202,
+        8.278,
+        -49.247
        ]
       ],
       [
        0.7158,
        [
-        43.494,
-        3.32,
-        -75.933
+        49.513,
+        35.292,
+        -64.14
        ]
       ],
       [
        0.7579,
        [
-        44.117,
-        6.622,
-        -68.383
+        55.333,
+        37.431,
+        -54.287
        ]
       ],
       [
        0.8,
        [
-        38.798,
-        -13.155,
-        -41.19
+        61.053,
+        10.624,
+        -31.978
        ]
       ]
      ],
@@ -3525,161 +4262,161 @@
       [
        0.0,
        [
-        2.934,
-        19.792,
-        8.606
+        3.474,
+        14.601,
+        13.54
        ]
       ],
       [
        0.0421,
        [
-        12.049,
-        -3.16,
-        35.166
+        10.18,
+        -8.034,
+        40.122
        ]
       ],
       [
        0.0842,
        [
-        17.819,
-        -14.182,
-        54.097
+        14.312,
+        -18.166,
+        59.848
        ]
       ],
       [
        0.1263,
        [
-        16.39,
-        3.36,
-        54.751
+        13.012,
+        -0.617,
+        59.444
        ]
       ],
       [
        0.1684,
        [
-        9.595,
-        17.632,
-        29.165
+        8.231,
+        12.584,
+        33.583
        ]
       ],
       [
        0.2105,
        [
-        0.731,
-        19.987,
-        2.138
+        1.873,
+        14.885,
+        7.254
        ]
       ],
       [
        0.2526,
        [
-        0.621,
-        19.991,
-        1.817
+        1.792,
+        14.895,
+        6.941
        ]
       ],
       [
        0.2947,
        [
-        8.984,
-        5.263,
-        26.455
+        7.892,
+        0.161,
+        31.177
        ]
       ],
       [
        0.3368,
        [
-        16.763,
-        -13.579,
-        49.321
+        13.626,
+        -17.834,
+        54.944
        ]
       ],
       [
        0.3789,
        [
-        17.371,
-        -5.283,
-        57.162
+        13.784,
+        -9.098,
+        62.385
        ]
       ],
       [
        0.4211,
        [
-        12.675,
-        15.6,
-        39.906
+        10.387,
+        10.882,
+        44.155
        ]
       ],
       [
        0.4632,
        [
-        3.102,
-        19.768,
-        9.102
+        3.595,
+        14.572,
+        14.021
        ]
       ],
       [
        0.5053,
        [
-        -0.587,
-        19.992,
-        -1.718
+        0.907,
+        14.973,
+        3.505
        ]
       ],
       [
        0.5474,
        [
-        5.881,
-        14.561,
-        17.375
+        5.604,
+        9.351,
+        22.091
        ]
       ],
       [
        0.5895,
        [
-        14.759,
-        -9.721,
-        42.909
+        12.189,
+        -14.293,
+        48.218
        ]
       ],
       [
        0.6316,
        [
-        17.939,
-        -11.343,
-        56.853
+        14.29,
+        -15.165,
+        62.463
        ]
       ],
       [
        0.6737,
        [
-        15.082,
-        13.29,
-        49.534
+        12.043,
+        9.01,
+        53.72
        ]
       ],
       [
        0.7158,
        [
-        6.224,
-        19.045,
-        18.482
+        5.839,
+        13.841,
+        23.146
        ]
       ],
       [
        0.7579,
        [
-        -0.549,
-        19.993,
-        -1.607
+        0.935,
+        14.972,
+        3.613
        ]
       ],
       [
        0.8,
        [
-        2.934,
-        19.792,
-        8.606
+        3.474,
+        14.601,
+        13.54
        ]
       ]
      ],
@@ -3692,161 +4429,161 @@
       [
        0.0,
        [
-        38.798,
-        13.155,
-        41.19
+        61.053,
+        -10.624,
+        31.978
        ]
       ],
       [
        0.0421,
        [
-        23.11,
-        33.779,
-        12.142
+        56.154,
+        19.785,
+        17.761
        ]
       ],
       [
        0.0842,
        [
-        23.145,
-        41.992,
-        12.252
+        58.122,
+        26.55,
+        22.833
        ]
       ],
       [
        0.1263,
        [
-        40.797,
-        29.592,
-        46.633
+        60.329,
+        2.945,
+        42.585
        ]
       ],
       [
        0.1684,
        [
-        44.039,
-        3.24,
-        72.271
+        51.826,
+        -28.339,
+        60.789
        ]
       ],
       [
        0.2105,
        [
-        43.68,
-        -8.549,
-        73.907
+        51.53,
+        -40.241,
+        60.812
        ]
       ],
       [
        0.2526,
        [
-        42.189,
-        5.106,
-        51.377
+        60.894,
+        -21.68,
+        38.861
        ]
       ],
       [
        0.2947,
        [
-        28.253,
-        28.177,
-        20.498
+        57.881,
+        11.281,
+        21.091
        ]
       ],
       [
        0.3368,
        [
-        19.779,
-        40.798,
-        6.998
+        56.227,
+        27.882,
+        18.452
        ]
       ],
       [
        0.3789,
        [
-        35.728,
-        36.601,
-        34.431
+        60.98,
+        13.304,
+        35.732
        ]
       ],
       [
        0.4211,
        [
-        44.349,
-        11.606,
-        65.942
+        55.093,
+        -19.072,
+        55.493
        ]
       ],
       [
        0.4632,
        [
-        43.329,
-        -7.394,
-        76.528
+        49.278,
+        -39.406,
+        64.348
        ]
       ],
       [
        0.5053,
        [
-        43.858,
-        -1.839,
-        60.632
+        58.895,
+        -31.013,
+        46.494
        ]
       ],
       [
        0.5474,
        [
-        33.898,
-        21.153,
-        30.618
+        59.803,
+        0.791,
+        25.991
        ]
       ],
       [
        0.5895,
        [
-        19.9,
-        37.96,
-        7.169
+        55.454,
+        25.508,
+        16.705
        ]
       ],
       [
        0.6316,
        [
-        29.153,
-        40.8,
-        22.145
+        60.07,
+        21.513,
+        28.939
        ]
       ],
       [
        0.6737,
        [
-        43.551,
-        20.808,
-        57.308
+        58.202,
+        -8.278,
+        49.247
        ]
       ],
       [
        0.7158,
        [
-        43.494,
-        -3.32,
-        75.933
+        49.513,
+        -35.292,
+        64.14
        ]
       ],
       [
        0.7579,
        [
-        44.117,
-        -6.622,
-        68.383
+        55.333,
+        -37.431,
+        54.287
        ]
       ],
       [
        0.8,
        [
-        38.798,
-        13.155,
-        41.19
+        61.053,
+        -10.624,
+        31.978
        ]
       ]
      ],
@@ -3859,161 +4596,161 @@
       [
        0.0,
        [
-        2.934,
-        -19.792,
-        -8.606
+        3.474,
+        -14.601,
+        -13.54
        ]
       ],
       [
        0.0421,
        [
-        12.049,
-        3.16,
-        -35.166
+        10.18,
+        8.034,
+        -40.122
        ]
       ],
       [
        0.0842,
        [
-        17.819,
-        14.182,
-        -54.097
+        14.312,
+        18.166,
+        -59.848
        ]
       ],
       [
        0.1263,
        [
-        16.39,
-        -3.36,
-        -54.751
+        13.012,
+        0.617,
+        -59.444
        ]
       ],
       [
        0.1684,
        [
-        9.595,
-        -17.632,
-        -29.165
+        8.231,
+        -12.584,
+        -33.583
        ]
       ],
       [
        0.2105,
        [
-        0.731,
-        -19.987,
-        -2.138
+        1.873,
+        -14.885,
+        -7.254
        ]
       ],
       [
        0.2526,
        [
-        0.621,
-        -19.991,
-        -1.817
+        1.792,
+        -14.895,
+        -6.941
        ]
       ],
       [
        0.2947,
        [
-        8.984,
-        -5.263,
-        -26.455
+        7.892,
+        -0.161,
+        -31.177
        ]
       ],
       [
        0.3368,
        [
-        16.763,
-        13.579,
-        -49.321
+        13.626,
+        17.834,
+        -54.944
        ]
       ],
       [
        0.3789,
        [
-        17.371,
-        5.283,
-        -57.162
+        13.784,
+        9.098,
+        -62.385
        ]
       ],
       [
        0.4211,
        [
-        12.675,
-        -15.6,
-        -39.906
+        10.387,
+        -10.882,
+        -44.155
        ]
       ],
       [
        0.4632,
        [
-        3.102,
-        -19.768,
-        -9.102
+        3.595,
+        -14.572,
+        -14.021
        ]
       ],
       [
        0.5053,
        [
-        -0.587,
-        -19.992,
-        1.718
+        0.907,
+        -14.973,
+        -3.505
        ]
       ],
       [
        0.5474,
        [
-        5.881,
-        -14.561,
-        -17.375
+        5.604,
+        -9.351,
+        -22.091
        ]
       ],
       [
        0.5895,
        [
-        14.759,
-        9.721,
-        -42.909
+        12.189,
+        14.293,
+        -48.218
        ]
       ],
       [
        0.6316,
        [
-        17.939,
-        11.343,
-        -56.853
+        14.29,
+        15.165,
+        -62.463
        ]
       ],
       [
        0.6737,
        [
-        15.082,
-        -13.29,
-        -49.534
+        12.043,
+        -9.01,
+        -53.72
        ]
       ],
       [
        0.7158,
        [
-        6.224,
-        -19.045,
-        -18.482
+        5.839,
+        -13.841,
+        -23.146
        ]
       ],
       [
        0.7579,
        [
-        -0.549,
-        -19.993,
-        1.607
+        0.935,
+        -14.972,
+        -3.613
        ]
       ],
       [
        0.8,
        [
-        2.934,
-        -19.792,
-        -8.606
+        3.474,
+        -14.601,
+        -13.54
        ]
       ]
      ],
@@ -4060,14 +4797,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 6,
+      "amp": 5,
       "cycles": 1,
-      "lag": 0.14,
-      "growth": 1.2,
+      "lag": 0.12,
+      "growth": 1.15,
       "phase": 0.0
      }
     },
@@ -4076,13 +4815,15 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "x",
-      "amp": 4,
+      "amp": 3.5,
       "cycles": 2,
-      "lag": 0.12,
+      "lag": 0.1,
       "growth": 1.2,
       "phase": 0.0
      }
@@ -4365,393 +5106,393 @@
       [
        0.0,
        [
-        40.206,
-        -15.748,
-        -46.061
+        60.278,
+        9.91,
+        -37.399
        ]
       ],
       [
        0.0417,
        [
-        40.07,
-        -16.104,
-        -45.663
+        60.291,
+        9.444,
+        -37.159
        ]
       ],
       [
        0.0833,
        [
-        39.944,
-        -16.492,
-        -45.306
+        60.295,
+        8.961,
+        -36.969
        ]
       ],
       [
        0.125,
        [
-        39.829,
-        -16.906,
-        -44.994
+        60.291,
+        8.469,
+        -36.832
        ]
       ],
       [
        0.1667,
        [
-        39.731,
-        -17.339,
-        -44.733
+        60.281,
+        7.976,
+        -36.75
        ]
       ],
       [
        0.2083,
        [
-        39.65,
-        -17.784,
-        -44.528
+        60.266,
+        7.49,
+        -36.723
        ]
       ],
       [
        0.25,
        [
-        39.59,
-        -18.234,
-        -44.383
+        60.247,
+        7.021,
+        -36.753
        ]
       ],
       [
        0.2917,
        [
-        39.552,
-        -18.681,
-        -44.301
+        60.225,
+        6.575,
+        -36.839
        ]
       ],
       [
        0.3333,
        [
-        39.538,
-        -19.118,
-        -44.284
+        60.201,
+        6.161,
+        -36.978
        ]
       ],
       [
        0.375,
        [
-        39.548,
-        -19.537,
-        -44.332
+        60.176,
+        5.785,
+        -37.17
        ]
       ],
       [
        0.4167,
        [
-        39.584,
-        -19.93,
-        -44.446
+        60.149,
+        5.454,
+        -37.41
        ]
       ],
       [
        0.4583,
        [
-        39.644,
-        -20.292,
-        -44.624
+        60.122,
+        5.174,
+        -37.694
        ]
       ],
       [
        0.5,
        [
-        39.727,
-        -20.615,
-        -44.863
+        60.093,
+        4.949,
+        -38.017
        ]
       ],
       [
        0.5417,
        [
-        39.832,
-        -20.894,
-        -45.159
+        60.063,
+        4.783,
+        -38.375
        ]
       ],
       [
        0.5833,
        [
-        39.956,
-        -21.124,
-        -45.507
+        60.03,
+        4.68,
+        -38.761
        ]
       ],
       [
        0.625,
        [
-        40.096,
-        -21.3,
-        -45.901
+        59.994,
+        4.64,
+        -39.168
        ]
       ],
       [
        0.6667,
        [
-        40.249,
-        -21.42,
-        -46.335
+        59.954,
+        4.664,
+        -39.59
        ]
       ],
       [
        0.7083,
        [
-        40.41,
-        -21.481,
-        -46.8
+        59.911,
+        4.752,
+        -40.02
        ]
       ],
       [
        0.75,
        [
-        40.577,
-        -21.481,
-        -47.288
+        59.863,
+        4.902,
+        -40.449
        ]
       ],
       [
        0.7917,
        [
-        40.745,
-        -21.421,
-        -47.789
+        59.81,
+        5.112,
+        -40.872
        ]
       ],
       [
        0.8333,
        [
-        40.91,
-        -21.302,
-        -48.295
+        59.754,
+        5.378,
+        -41.281
        ]
       ],
       [
        0.875,
        [
-        41.07,
-        -21.126,
-        -48.797
+        59.695,
+        5.695,
+        -41.669
        ]
       ],
       [
        0.9167,
        [
-        41.22,
-        -20.895,
-        -49.285
+        59.633,
+        6.058,
+        -42.03
        ]
       ],
       [
        0.9583,
        [
-        41.359,
-        -20.614,
-        -49.751
+        59.571,
+        6.462,
+        -42.357
        ]
       ],
       [
        1.0,
        [
-        41.484,
-        -20.289,
-        -50.186
+        59.51,
+        6.898,
+        -42.645
        ]
       ],
       [
        1.0417,
        [
-        41.593,
-        -19.924,
-        -50.584
+        59.453,
+        7.36,
+        -42.89
        ]
       ],
       [
        1.0833,
        [
-        41.686,
-        -19.526,
-        -50.937
+        59.401,
+        7.841,
+        -43.086
        ]
       ],
       [
        1.125,
        [
-        41.762,
-        -19.103,
-        -51.239
+        59.356,
+        8.331,
+        -43.231
        ]
       ],
       [
        1.1667,
        [
-        41.82,
-        -18.661,
-        -51.486
+        59.32,
+        8.822,
+        -43.322
        ]
       ],
       [
        1.2083,
        [
-        41.86,
-        -18.208,
-        -51.674
+        59.296,
+        9.307,
+        -43.357
        ]
       ],
       [
        1.25,
        [
-        41.884,
-        -17.753,
-        -51.8
+        59.284,
+        9.777,
+        -43.335
        ]
       ],
       [
        1.2917,
        [
-        41.891,
-        -17.304,
-        -51.863
+        59.286,
+        10.225,
+        -43.256
        ]
       ],
       [
        1.3333,
        [
-        41.882,
-        -16.867,
-        -51.861
+        59.302,
+        10.641,
+        -43.122
        ]
       ],
       [
        1.375,
        [
-        41.858,
-        -16.45,
-        -51.796
+        59.332,
+        11.02,
+        -42.934
        ]
       ],
       [
        1.4167,
        [
-        41.819,
-        -16.061,
-        -51.668
+        59.375,
+        11.354,
+        -42.695
        ]
       ],
       [
        1.4583,
        [
-        41.767,
-        -15.706,
-        -51.481
+        59.431,
+        11.637,
+        -42.41
        ]
       ],
       [
        1.5,
        [
-        41.701,
-        -15.391,
-        -51.237
+        59.497,
+        11.866,
+        -42.083
        ]
       ],
       [
        1.5417,
        [
-        41.623,
-        -15.121,
-        -50.94
+        59.572,
+        12.035,
+        -41.721
        ]
       ],
       [
        1.5833,
        [
-        41.533,
-        -14.901,
-        -50.597
+        59.653,
+        12.142,
+        -41.328
        ]
       ],
       [
        1.625,
        [
-        41.432,
-        -14.734,
-        -50.212
+        59.738,
+        12.184,
+        -40.913
        ]
       ],
       [
        1.6667,
        [
-        41.32,
-        -14.623,
-        -49.792
+        59.823,
+        12.161,
+        -40.483
        ]
       ],
       [
        1.7083,
        [
-        41.199,
-        -14.569,
-        -49.344
+        59.907,
+        12.074,
+        -40.045
        ]
       ],
       [
        1.75,
        [
-        41.069,
-        -14.574,
-        -48.875
+        59.986,
+        11.923,
+        -39.608
        ]
       ],
       [
        1.7917,
        [
-        40.932,
-        -14.637,
-        -48.393
+        60.059,
+        11.712,
+        -39.178
        ]
       ],
       [
        1.8333,
        [
-        40.789,
-        -14.756,
-        -47.906
+        60.123,
+        11.444,
+        -38.764
        ]
       ],
       [
        1.875,
        [
-        40.643,
-        -14.93,
-        -47.421
+        60.177,
+        11.124,
+        -38.373
        ]
       ],
       [
        1.9167,
        [
-        40.496,
-        -15.156,
-        -46.947
+        60.222,
+        10.757,
+        -38.011
        ]
       ],
       [
        1.9583,
        [
-        40.349,
-        -15.43,
-        -46.491
+        60.255,
+        10.35,
+        -37.684
        ]
       ],
       [
        2.0,
        [
-        40.206,
-        -15.748,
-        -46.061
+        60.278,
+        9.91,
+        -37.399
        ]
       ]
      ],
@@ -4764,393 +5505,393 @@
       [
        0.0,
        [
-        7.729,
-        18.503,
-        23.153
+        6.91,
+        13.346,
+        27.702
        ]
       ],
       [
        0.0417,
        [
-        7.929,
-        18.42,
-        23.786
+        7.053,
+        13.272,
+        28.32
        ]
       ],
       [
        0.0833,
        [
-        8.148,
-        18.327,
-        24.481
+        7.208,
+        13.19,
+        28.999
        ]
       ],
       [
        0.125,
        [
-        8.382,
-        18.225,
-        25.226
+        7.374,
+        13.099,
+        29.727
        ]
       ],
       [
        0.1667,
        [
-        8.625,
-        18.114,
-        26.007
+        7.546,
+        13.001,
+        30.491
        ]
       ],
       [
        0.2083,
        [
-        8.875,
-        17.996,
-        26.812
+        7.723,
+        12.899,
+        31.278
        ]
       ],
       [
        0.25,
        [
-        9.125,
-        17.873,
-        27.626
+        7.9,
+        12.792,
+        32.075
        ]
       ],
       [
        0.2917,
        [
-        9.373,
-        17.748,
-        28.436
+        8.075,
+        12.683,
+        32.868
        ]
       ],
       [
        0.3333,
        [
-        9.614,
-        17.621,
-        29.228
+        8.244,
+        12.575,
+        33.644
        ]
       ],
       [
        0.375,
        [
-        9.843,
-        17.497,
-        29.987
+        8.406,
+        12.468,
+        34.389
        ]
       ],
       [
        0.4167,
        [
-        10.057,
-        17.378,
-        30.703
+        8.557,
+        12.366,
+        35.09
        ]
       ],
       [
        0.4583,
        [
-        10.253,
-        17.265,
-        31.361
+        8.695,
+        12.271,
+        35.737
        ]
       ],
       [
        0.5,
        [
-        10.428,
-        17.162,
-        31.952
+        8.817,
+        12.183,
+        36.317
        ]
       ],
       [
        0.5417,
        [
-        10.579,
-        17.071,
-        32.465
+        8.923,
+        12.106,
+        36.821
        ]
       ],
       [
        0.5833,
        [
-        10.704,
-        16.994,
-        32.892
+        9.011,
+        12.042,
+        37.24
        ]
       ],
       [
        0.625,
        [
-        10.801,
-        16.934,
-        33.225
+        9.079,
+        11.991,
+        37.568
        ]
       ],
       [
        0.6667,
        [
-        10.87,
-        16.891,
-        33.46
+        9.127,
+        11.954,
+        37.799
        ]
       ],
       [
        0.7083,
        [
-        10.908,
-        16.867,
-        33.592
+        9.154,
+        11.934,
+        37.929
        ]
       ],
       [
        0.75,
        [
-        10.916,
-        16.861,
-        33.62
+        9.16,
+        11.93,
+        37.956
        ]
       ],
       [
        0.7917,
        [
-        10.893,
-        16.876,
-        33.542
+        9.144,
+        11.942,
+        37.88
        ]
       ],
       [
        0.8333,
        [
-        10.841,
-        16.909,
-        33.36
+        9.107,
+        11.97,
+        37.701
        ]
       ],
       [
        0.875,
        [
-        10.758,
-        16.961,
-        33.077
+        9.049,
+        12.013,
+        37.423
        ]
       ],
       [
        0.9167,
        [
-        10.647,
-        17.029,
-        32.698
+        8.971,
+        12.071,
+        37.05
        ]
       ],
       [
        0.9583,
        [
-        10.51,
-        17.113,
-        32.229
+        8.875,
+        12.142,
+        36.589
        ]
       ],
       [
        1.0,
        [
-        10.347,
-        17.21,
-        31.677
+        8.76,
+        12.224,
+        36.047
        ]
       ],
       [
        1.0417,
        [
-        10.161,
-        17.318,
-        31.053
+        8.63,
+        12.316,
+        35.434
        ]
       ],
       [
        1.0833,
        [
-        9.956,
-        17.434,
-        30.366
+        8.486,
+        12.415,
+        34.76
        ]
       ],
       [
        1.125,
        [
-        9.734,
-        17.557,
-        29.628
+        8.329,
+        12.519,
+        34.036
        ]
       ],
       [
        1.1667,
        [
-        9.499,
-        17.682,
-        28.851
+        8.164,
+        12.627,
+        33.275
        ]
       ],
       [
        1.2083,
        [
-        9.255,
-        17.808,
-        28.049
+        7.991,
+        12.736,
+        32.489
        ]
       ],
       [
        1.25,
        [
-        9.005,
-        17.933,
-        27.235
+        7.815,
+        12.843,
+        31.692
        ]
       ],
       [
        1.2917,
        [
-        8.755,
-        18.053,
-        26.424
+        7.638,
+        12.949,
+        30.898
        ]
       ],
       [
        1.3333,
        [
-        8.507,
-        18.168,
-        25.628
+        7.463,
+        13.049,
+        30.12
        ]
       ],
       [
        1.375,
        [
-        8.268,
-        18.275,
-        24.863
+        7.293,
+        13.143,
+        29.372
        ]
       ],
       [
        1.4167,
        [
-        8.041,
-        18.373,
-        24.141
+        7.132,
+        13.23,
+        28.666
        ]
       ],
       [
        1.4583,
        [
-        7.83,
-        18.461,
-        23.474
+        6.983,
+        13.309,
+        28.015
        ]
       ],
       [
        1.5,
        [
-        7.64,
-        18.539,
-        22.875
+        6.848,
+        13.378,
+        27.43
        ]
       ],
       [
        1.5417,
        [
-        7.474,
-        18.604,
-        22.353
+        6.73,
+        13.437,
+        26.921
        ]
       ],
       [
        1.5833,
        [
-        7.335,
-        18.658,
-        21.919
+        6.631,
+        13.485,
+        26.497
        ]
       ],
       [
        1.625,
        [
-        7.226,
-        18.699,
-        21.579
+        6.553,
+        13.522,
+        26.165
        ]
       ],
       [
        1.6667,
        [
-        7.149,
-        18.728,
-        21.339
+        6.499,
+        13.548,
+        25.931
        ]
       ],
       [
        1.7083,
        [
-        7.106,
-        18.744,
-        21.204
+        6.468,
+        13.563,
+        25.8
        ]
       ],
       [
        1.75,
        [
-        7.097,
-        18.747,
-        21.176
+        6.461,
+        13.566,
+        25.772
        ]
       ],
       [
        1.7917,
        [
-        7.123,
-        18.737,
-        21.255
+        6.48,
+        13.557,
+        25.85
        ]
       ],
       [
        1.8333,
        [
-        7.182,
-        18.715,
-        21.441
+        6.522,
+        13.537,
+        26.031
        ]
       ],
       [
        1.875,
        [
-        7.275,
-        18.681,
-        21.73
+        6.588,
+        13.506,
+        26.312
        ]
       ],
       [
        1.9167,
        [
-        7.398,
-        18.634,
-        22.116
+        6.676,
+        13.463,
+        26.689
        ]
       ],
       [
        1.9583,
        [
-        7.551,
-        18.574,
-        22.593
+        6.784,
+        13.41,
+        27.155
        ]
       ],
       [
        2.0,
        [
-        7.729,
-        18.503,
-        23.153
+        6.91,
+        13.346,
+        27.702
        ]
       ]
      ],
@@ -5163,393 +5904,393 @@
       [
        0.0,
        [
-        40.206,
-        15.748,
-        46.061
+        60.278,
+        -9.91,
+        37.399
        ]
       ],
       [
        0.0417,
        [
-        40.07,
-        16.104,
-        45.663
+        60.291,
+        -9.444,
+        37.159
        ]
       ],
       [
        0.0833,
        [
-        39.944,
-        16.492,
-        45.306
+        60.295,
+        -8.961,
+        36.969
        ]
       ],
       [
        0.125,
        [
-        39.829,
-        16.906,
-        44.994
+        60.291,
+        -8.469,
+        36.832
        ]
       ],
       [
        0.1667,
        [
-        39.731,
-        17.339,
-        44.733
+        60.281,
+        -7.976,
+        36.75
        ]
       ],
       [
        0.2083,
        [
-        39.65,
-        17.784,
-        44.528
+        60.266,
+        -7.49,
+        36.723
        ]
       ],
       [
        0.25,
        [
-        39.59,
-        18.234,
-        44.383
+        60.247,
+        -7.021,
+        36.753
        ]
       ],
       [
        0.2917,
        [
-        39.552,
-        18.681,
-        44.301
+        60.225,
+        -6.575,
+        36.839
        ]
       ],
       [
        0.3333,
        [
-        39.538,
-        19.118,
-        44.284
+        60.201,
+        -6.161,
+        36.978
        ]
       ],
       [
        0.375,
        [
-        39.548,
-        19.537,
-        44.332
+        60.176,
+        -5.785,
+        37.17
        ]
       ],
       [
        0.4167,
        [
-        39.584,
-        19.93,
-        44.446
+        60.149,
+        -5.454,
+        37.41
        ]
       ],
       [
        0.4583,
        [
-        39.644,
-        20.292,
-        44.624
+        60.122,
+        -5.174,
+        37.694
        ]
       ],
       [
        0.5,
        [
-        39.727,
-        20.615,
-        44.863
+        60.093,
+        -4.949,
+        38.017
        ]
       ],
       [
        0.5417,
        [
-        39.832,
-        20.894,
-        45.159
+        60.063,
+        -4.783,
+        38.375
        ]
       ],
       [
        0.5833,
        [
-        39.956,
-        21.124,
-        45.507
+        60.03,
+        -4.68,
+        38.761
        ]
       ],
       [
        0.625,
        [
-        40.096,
-        21.3,
-        45.901
+        59.994,
+        -4.64,
+        39.168
        ]
       ],
       [
        0.6667,
        [
-        40.249,
-        21.42,
-        46.335
+        59.954,
+        -4.664,
+        39.59
        ]
       ],
       [
        0.7083,
        [
-        40.41,
-        21.481,
-        46.8
+        59.911,
+        -4.752,
+        40.02
        ]
       ],
       [
        0.75,
        [
-        40.577,
-        21.481,
-        47.288
+        59.863,
+        -4.902,
+        40.449
        ]
       ],
       [
        0.7917,
        [
-        40.745,
-        21.421,
-        47.789
+        59.81,
+        -5.112,
+        40.872
        ]
       ],
       [
        0.8333,
        [
-        40.91,
-        21.302,
-        48.295
+        59.754,
+        -5.378,
+        41.281
        ]
       ],
       [
        0.875,
        [
-        41.07,
-        21.126,
-        48.797
+        59.695,
+        -5.695,
+        41.669
        ]
       ],
       [
        0.9167,
        [
-        41.22,
-        20.895,
-        49.285
+        59.633,
+        -6.058,
+        42.03
        ]
       ],
       [
        0.9583,
        [
-        41.359,
-        20.614,
-        49.751
+        59.571,
+        -6.462,
+        42.357
        ]
       ],
       [
        1.0,
        [
-        41.484,
-        20.289,
-        50.186
+        59.51,
+        -6.898,
+        42.645
        ]
       ],
       [
        1.0417,
        [
-        41.593,
-        19.924,
-        50.584
+        59.453,
+        -7.36,
+        42.89
        ]
       ],
       [
        1.0833,
        [
-        41.686,
-        19.526,
-        50.937
+        59.401,
+        -7.841,
+        43.086
        ]
       ],
       [
        1.125,
        [
-        41.762,
-        19.103,
-        51.239
+        59.356,
+        -8.331,
+        43.231
        ]
       ],
       [
        1.1667,
        [
-        41.82,
-        18.661,
-        51.486
+        59.32,
+        -8.822,
+        43.322
        ]
       ],
       [
        1.2083,
        [
-        41.86,
-        18.208,
-        51.674
+        59.296,
+        -9.307,
+        43.357
        ]
       ],
       [
        1.25,
        [
-        41.884,
-        17.753,
-        51.8
+        59.284,
+        -9.777,
+        43.335
        ]
       ],
       [
        1.2917,
        [
-        41.891,
-        17.304,
-        51.863
+        59.286,
+        -10.225,
+        43.256
        ]
       ],
       [
        1.3333,
        [
-        41.882,
-        16.867,
-        51.861
+        59.302,
+        -10.641,
+        43.122
        ]
       ],
       [
        1.375,
        [
-        41.858,
-        16.45,
-        51.796
+        59.332,
+        -11.02,
+        42.934
        ]
       ],
       [
        1.4167,
        [
-        41.819,
-        16.061,
-        51.668
+        59.375,
+        -11.354,
+        42.695
        ]
       ],
       [
        1.4583,
        [
-        41.767,
-        15.706,
-        51.481
+        59.431,
+        -11.637,
+        42.41
        ]
       ],
       [
        1.5,
        [
-        41.701,
-        15.391,
-        51.237
+        59.497,
+        -11.866,
+        42.083
        ]
       ],
       [
        1.5417,
        [
-        41.623,
-        15.121,
-        50.94
+        59.572,
+        -12.035,
+        41.721
        ]
       ],
       [
        1.5833,
        [
-        41.533,
-        14.901,
-        50.597
+        59.653,
+        -12.142,
+        41.328
        ]
       ],
       [
        1.625,
        [
-        41.432,
-        14.734,
-        50.212
+        59.738,
+        -12.184,
+        40.913
        ]
       ],
       [
        1.6667,
        [
-        41.32,
-        14.623,
-        49.792
+        59.823,
+        -12.161,
+        40.483
        ]
       ],
       [
        1.7083,
        [
-        41.199,
-        14.569,
-        49.344
+        59.907,
+        -12.074,
+        40.045
        ]
       ],
       [
        1.75,
        [
-        41.069,
-        14.574,
-        48.875
+        59.986,
+        -11.923,
+        39.608
        ]
       ],
       [
        1.7917,
        [
-        40.932,
-        14.637,
-        48.393
+        60.059,
+        -11.712,
+        39.178
        ]
       ],
       [
        1.8333,
        [
-        40.789,
-        14.756,
-        47.906
+        60.123,
+        -11.444,
+        38.764
        ]
       ],
       [
        1.875,
        [
-        40.643,
-        14.93,
-        47.421
+        60.177,
+        -11.124,
+        38.373
        ]
       ],
       [
        1.9167,
        [
-        40.496,
-        15.156,
-        46.947
+        60.222,
+        -10.757,
+        38.011
        ]
       ],
       [
        1.9583,
        [
-        40.349,
-        15.43,
-        46.491
+        60.255,
+        -10.35,
+        37.684
        ]
       ],
       [
        2.0,
        [
-        40.206,
-        15.748,
-        46.061
+        60.278,
+        -9.91,
+        37.399
        ]
       ]
      ],
@@ -5562,393 +6303,393 @@
       [
        0.0,
        [
-        7.729,
-        -18.503,
-        -23.153
+        6.91,
+        -13.346,
+        -27.702
        ]
       ],
       [
        0.0417,
        [
-        7.929,
-        -18.42,
-        -23.786
+        7.053,
+        -13.272,
+        -28.32
        ]
       ],
       [
        0.0833,
        [
-        8.148,
-        -18.327,
-        -24.481
+        7.208,
+        -13.19,
+        -28.999
        ]
       ],
       [
        0.125,
        [
-        8.382,
-        -18.225,
-        -25.226
+        7.374,
+        -13.099,
+        -29.727
        ]
       ],
       [
        0.1667,
        [
-        8.625,
-        -18.114,
-        -26.007
+        7.546,
+        -13.001,
+        -30.491
        ]
       ],
       [
        0.2083,
        [
-        8.875,
-        -17.996,
-        -26.812
+        7.723,
+        -12.899,
+        -31.278
        ]
       ],
       [
        0.25,
        [
-        9.125,
-        -17.873,
-        -27.626
+        7.9,
+        -12.792,
+        -32.075
        ]
       ],
       [
        0.2917,
        [
-        9.373,
-        -17.748,
-        -28.436
+        8.075,
+        -12.683,
+        -32.868
        ]
       ],
       [
        0.3333,
        [
-        9.614,
-        -17.621,
-        -29.228
+        8.244,
+        -12.575,
+        -33.644
        ]
       ],
       [
        0.375,
        [
-        9.843,
-        -17.497,
-        -29.987
+        8.406,
+        -12.468,
+        -34.389
        ]
       ],
       [
        0.4167,
        [
-        10.057,
-        -17.378,
-        -30.703
+        8.557,
+        -12.366,
+        -35.09
        ]
       ],
       [
        0.4583,
        [
-        10.253,
-        -17.265,
-        -31.361
+        8.695,
+        -12.271,
+        -35.737
        ]
       ],
       [
        0.5,
        [
-        10.428,
-        -17.162,
-        -31.952
+        8.817,
+        -12.183,
+        -36.317
        ]
       ],
       [
        0.5417,
        [
-        10.579,
-        -17.071,
-        -32.465
+        8.923,
+        -12.106,
+        -36.821
        ]
       ],
       [
        0.5833,
        [
-        10.704,
-        -16.994,
-        -32.892
+        9.011,
+        -12.042,
+        -37.24
        ]
       ],
       [
        0.625,
        [
-        10.801,
-        -16.934,
-        -33.225
+        9.079,
+        -11.991,
+        -37.568
        ]
       ],
       [
        0.6667,
        [
-        10.87,
-        -16.891,
-        -33.46
+        9.127,
+        -11.954,
+        -37.799
        ]
       ],
       [
        0.7083,
        [
-        10.908,
-        -16.867,
-        -33.592
+        9.154,
+        -11.934,
+        -37.929
        ]
       ],
       [
        0.75,
        [
-        10.916,
-        -16.861,
-        -33.62
+        9.16,
+        -11.93,
+        -37.956
        ]
       ],
       [
        0.7917,
        [
-        10.893,
-        -16.876,
-        -33.542
+        9.144,
+        -11.942,
+        -37.88
        ]
       ],
       [
        0.8333,
        [
-        10.841,
-        -16.909,
-        -33.36
+        9.107,
+        -11.97,
+        -37.701
        ]
       ],
       [
        0.875,
        [
-        10.758,
-        -16.961,
-        -33.077
+        9.049,
+        -12.013,
+        -37.423
        ]
       ],
       [
        0.9167,
        [
-        10.647,
-        -17.029,
-        -32.698
+        8.971,
+        -12.071,
+        -37.05
        ]
       ],
       [
        0.9583,
        [
-        10.51,
-        -17.113,
-        -32.229
+        8.875,
+        -12.142,
+        -36.589
        ]
       ],
       [
        1.0,
        [
-        10.347,
-        -17.21,
-        -31.677
+        8.76,
+        -12.224,
+        -36.047
        ]
       ],
       [
        1.0417,
        [
-        10.161,
-        -17.318,
-        -31.053
+        8.63,
+        -12.316,
+        -35.434
        ]
       ],
       [
        1.0833,
        [
-        9.956,
-        -17.434,
-        -30.366
+        8.486,
+        -12.415,
+        -34.76
        ]
       ],
       [
        1.125,
        [
-        9.734,
-        -17.557,
-        -29.628
+        8.329,
+        -12.519,
+        -34.036
        ]
       ],
       [
        1.1667,
        [
-        9.499,
-        -17.682,
-        -28.851
+        8.164,
+        -12.627,
+        -33.275
        ]
       ],
       [
        1.2083,
        [
-        9.255,
-        -17.808,
-        -28.049
+        7.991,
+        -12.736,
+        -32.489
        ]
       ],
       [
        1.25,
        [
-        9.005,
-        -17.933,
-        -27.235
+        7.815,
+        -12.843,
+        -31.692
        ]
       ],
       [
        1.2917,
        [
-        8.755,
-        -18.053,
-        -26.424
+        7.638,
+        -12.949,
+        -30.898
        ]
       ],
       [
        1.3333,
        [
-        8.507,
-        -18.168,
-        -25.628
+        7.463,
+        -13.049,
+        -30.12
        ]
       ],
       [
        1.375,
        [
-        8.268,
-        -18.275,
-        -24.863
+        7.293,
+        -13.143,
+        -29.372
        ]
       ],
       [
        1.4167,
        [
-        8.041,
-        -18.373,
-        -24.141
+        7.132,
+        -13.23,
+        -28.666
        ]
       ],
       [
        1.4583,
        [
-        7.83,
-        -18.461,
-        -23.474
+        6.983,
+        -13.309,
+        -28.015
        ]
       ],
       [
        1.5,
        [
-        7.64,
-        -18.539,
-        -22.875
+        6.848,
+        -13.378,
+        -27.43
        ]
       ],
       [
        1.5417,
        [
-        7.474,
-        -18.604,
-        -22.353
+        6.73,
+        -13.437,
+        -26.921
        ]
       ],
       [
        1.5833,
        [
-        7.335,
-        -18.658,
-        -21.919
+        6.631,
+        -13.485,
+        -26.497
        ]
       ],
       [
        1.625,
        [
-        7.226,
-        -18.699,
-        -21.579
+        6.553,
+        -13.522,
+        -26.165
        ]
       ],
       [
        1.6667,
        [
-        7.149,
-        -18.728,
-        -21.339
+        6.499,
+        -13.548,
+        -25.931
        ]
       ],
       [
        1.7083,
        [
-        7.106,
-        -18.744,
-        -21.204
+        6.468,
+        -13.563,
+        -25.8
        ]
       ],
       [
        1.75,
        [
-        7.097,
-        -18.747,
-        -21.176
+        6.461,
+        -13.566,
+        -25.772
        ]
       ],
       [
        1.7917,
        [
-        7.123,
-        -18.737,
-        -21.255
+        6.48,
+        -13.557,
+        -25.85
        ]
       ],
       [
        1.8333,
        [
-        7.182,
-        -18.715,
-        -21.441
+        6.522,
+        -13.537,
+        -26.031
        ]
       ],
       [
        1.875,
        [
-        7.275,
-        -18.681,
-        -21.73
+        6.588,
+        -13.506,
+        -26.312
        ]
       ],
       [
        1.9167,
        [
-        7.398,
-        -18.634,
-        -22.116
+        6.676,
+        -13.463,
+        -26.689
        ]
       ],
       [
        1.9583,
        [
-        7.551,
-        -18.574,
-        -22.593
+        6.784,
+        -13.41,
+        -27.155
        ]
       ],
       [
        2.0,
        [
-        7.729,
-        -18.503,
-        -23.153
+        6.91,
+        -13.346,
+        -27.702
        ]
       ]
      ],
@@ -5990,14 +6731,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": -8,
+      "amp": -7,
       "cycles": 1,
-      "lag": 0.15,
-      "growth": 1.2,
+      "lag": 0.12,
+      "growth": 1.15,
       "phase": 0.0
      }
     }
@@ -6456,7 +7199,7 @@
        0.0,
        [
         0.0,
-        -0.0,
+        0.0,
         0.0
        ]
       ],
@@ -6464,23 +7207,15 @@
        0.0833,
        [
         0.0,
-        0.421,
+        0.364,
         0.0
        ]
       ],
       [
-       0.1333,
+       0.15,
        [
         0.0,
-        0.55,
-        0.0
-       ]
-      ],
-      [
-       0.3667,
-       [
-        0.0,
-        0.568,
+        0.488,
         0.0
        ]
       ],
@@ -6488,7 +7223,7 @@
        0.3833,
        [
         0.0,
-        0.545,
+        0.47,
         0.0
        ]
       ],
@@ -6496,7 +7231,7 @@
        0.45,
        [
         0.0,
-        0.123,
+        0.106,
         0.0
        ]
       ],
@@ -6504,7 +7239,7 @@
        0.4833,
        [
         0.0,
-        0.014,
+        0.012,
         0.0
        ]
       ],
@@ -6512,7 +7247,7 @@
        0.8,
        [
         0.0,
-        -0.0,
+        0.0,
         0.0
        ]
       ]
@@ -6790,7 +7525,7 @@
       [
        0.28,
        [
-        0.0,
+        6.0,
         0.0,
         0.0
        ],
@@ -6799,7 +7534,7 @@
       [
        0.38,
        [
-        -10.0,
+        3.0,
         0.0,
         0.0
        ],
@@ -6808,7 +7543,7 @@
       [
        0.8,
        [
-        -10.0,
+        3.0,
         0.0,
         0.0
        ],
@@ -7163,7 +7898,7 @@
        0.48,
        [
         0,
-        9.384,
+        6.703,
         0
        ]
       ],
@@ -7171,7 +7906,7 @@
        0.58,
        [
         0,
-        -6.291,
+        -4.493,
         0
        ]
       ],
@@ -7179,7 +7914,7 @@
        0.68,
        [
         0,
-        4.217,
+        3.012,
         0
        ]
       ],
@@ -7187,7 +7922,7 @@
        0.78,
        [
         0,
-        -2.827,
+        -2.019,
         0
        ]
       ],
@@ -7195,12 +7930,83 @@
        0.88,
        [
         0,
-        1.895,
+        1.353,
         0
        ]
       ],
       [
        0.98,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "tail_5",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.42,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.52,
+       [
+        0,
+        9.384,
+        0
+       ]
+      ],
+      [
+       0.62,
+       [
+        0,
+        -6.291,
+        0
+       ]
+      ],
+      [
+       0.72,
+       [
+        0,
+        4.217,
+        0
+       ]
+      ],
+      [
+       0.82,
+       [
+        0,
+        -2.827,
+        0
+       ]
+      ],
+      [
+       0.92,
+       [
+        0,
+        1.895,
+        0
+       ]
+      ],
+      [
+       1.0,
        [
         0,
         0,
@@ -7218,15 +8024,7 @@
        0.0,
        [
         0.0,
-        -0.0,
-        0.0
-       ]
-      ],
-      [
-       0.0167,
-       [
         0.0,
-        0.011,
         0.0
        ]
       ],
@@ -7234,7 +8032,7 @@
        0.15,
        [
         0.0,
-        0.62,
+        0.724,
         0.0
        ]
       ],
@@ -7242,7 +8040,7 @@
        0.25,
        [
         0.0,
-        0.834,
+        0.946,
         0.0
        ]
       ],
@@ -7250,7 +8048,7 @@
        0.2667,
        [
         0.0,
-        0.844,
+        0.957,
         0.0
        ]
       ],
@@ -7258,7 +8056,7 @@
        0.2833,
        [
         0.0,
-        0.656,
+        0.761,
         0.0
        ]
       ],
@@ -7266,7 +8064,7 @@
        0.3,
        [
         0.0,
-        0.054,
+        0.048,
         0.0
        ]
       ],
@@ -7274,15 +8072,7 @@
        0.3167,
        [
         0.0,
-        0.162,
-        0.0
-       ]
-      ],
-      [
-       0.35,
-       [
-        0.0,
-        0.188,
+        0.114,
         0.0
        ]
       ],
@@ -7290,7 +8080,7 @@
        1.0,
        [
         0.0,
-        -0.0,
+        0.0,
         0.0
        ]
       ]
@@ -7553,7 +8343,7 @@
        0.0,
        [
         34.0,
-        12.0,
+        10.0,
         0.0
        ]
       ],
@@ -7561,7 +8351,7 @@
        3.0,
        [
         34.0,
-        12.0,
+        10.0,
         0.0
        ]
       ]
@@ -7575,7 +8365,7 @@
        0.0,
        [
         -4.0,
-        26.0,
+        18.0,
         0.0
        ]
       ],
@@ -7583,7 +8373,7 @@
        3.0,
        [
         -4.0,
-        26.0,
+        18.0,
         0.0
        ]
       ]
@@ -7597,7 +8387,7 @@
        0.0,
        [
         0.0,
-        30.0,
+        22.0,
         0.0
        ]
       ],
@@ -7605,7 +8395,7 @@
        3.0,
        [
         0.0,
-        30.0,
+        22.0,
         0.0
        ]
       ]
@@ -7619,7 +8409,7 @@
        0.0,
        [
         0.0,
-        30.0,
+        22.0,
         0.0
        ]
       ],
@@ -7627,7 +8417,51 @@
        3.0,
        [
         0.0,
-        30.0,
+        22.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "tail_4",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        20.0,
+        0.0
+       ]
+      ],
+      [
+       3.0,
+       [
+        0.0,
+        20.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "tail_5",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        16.0,
+        0.0
+       ]
+      ],
+      [
+       3.0,
+       [
+        0.0,
+        16.0,
         0.0
        ]
       ]
@@ -7675,15 +8509,16 @@
     },
     {
      "parts": [
-      "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 8,
+      "amp": 7,
       "cycles": 1,
-      "lag": 0.15,
-      "growth": 1.3,
+      "lag": 0.12,
+      "growth": 1.25,
       "phase": 0.0
      }
     },
@@ -7789,7 +8624,7 @@
        0.0,
        [
         0.0,
-        -0.724,
+        -0.426,
         0.0
        ]
       ],
@@ -7797,7 +8632,7 @@
        2.9833,
        [
         0.0,
-        -0.739,
+        -0.44,
         0.0
        ]
       ]
@@ -8702,7 +9537,7 @@
        0.0,
        [
         30.0,
-        40.0,
+        34.0,
         0.0
        ]
       ],
@@ -8710,7 +9545,7 @@
        0.3,
        [
         30.0,
-        40.0,
+        34.0,
         0.0
        ],
        "ease"
@@ -8719,7 +9554,7 @@
        0.42,
        [
         30.0,
-        40.0,
+        34.0,
         0.0
        ],
        "in"
@@ -8770,7 +9605,7 @@
        0.0,
        [
         0.0,
-        50.0,
+        36.0,
         0.0
        ]
       ],
@@ -8778,7 +9613,7 @@
        0.3,
        [
         0.0,
-        50.0,
+        36.0,
         0.0
        ],
        "ease"
@@ -8787,7 +9622,7 @@
        0.42,
        [
         0.0,
-        50.0,
+        36.0,
         0.0
        ],
        "in"
@@ -8838,7 +9673,7 @@
        0.0,
        [
         0.0,
-        50.0,
+        36.0,
         0.0
        ]
       ],
@@ -8846,7 +9681,7 @@
        0.3,
        [
         0.0,
-        50.0,
+        36.0,
         0.0
        ],
        "ease"
@@ -8855,7 +9690,7 @@
        0.42,
        [
         0.0,
-        50.0,
+        36.0,
         0.0
        ],
        "in"
@@ -8906,7 +9741,7 @@
        0.0,
        [
         0.0,
-        50.0,
+        34.0,
         0.0
        ]
       ],
@@ -8914,7 +9749,7 @@
        0.3,
        [
         0.0,
-        50.0,
+        34.0,
         0.0
        ],
        "ease"
@@ -8923,7 +9758,143 @@
        0.42,
        [
         0.0,
-        50.0,
+        34.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.62,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "out_back"
+      ],
+      [
+       0.9,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.15,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "tail_4",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        30.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        30.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.42,
+       [
+        0.0,
+        30.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.62,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "out_back"
+      ],
+      [
+       0.9,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.15,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "tail_5",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        26.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        26.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.42,
+       [
+        0.0,
+        26.0,
         0.0
        ],
        "in"
@@ -8973,44 +9944,44 @@
       [
        0.0,
        [
-        69.933,
-        43.392,
-        8.586
+        109.989,
+        33.68,
+        43.986
        ]
       ],
       [
        0.3,
        [
-        69.933,
-        43.392,
-        8.586
+        109.989,
+        33.68,
+        43.986
        ],
        "ease"
       ],
       [
        0.42,
        [
-        69.933,
-        43.392,
-        8.586
+        109.989,
+        33.68,
+        43.986
        ],
        "in"
       ],
       [
        0.62,
        [
-        21.286,
-        -50.291,
-        -8.825
+        60.585,
+        -34.601,
+        -26.447
        ],
        "out_back"
       ],
       [
        0.9,
        [
-        21.286,
-        -50.291,
-        -8.825
+        60.585,
+        -34.601,
+        -26.447
        ],
        "ease"
       ],
@@ -9041,44 +10012,44 @@
       [
        0.0,
        [
-        141.284,
-        -74.133,
-        -113.884
+        153.623,
+        -70.48,
+        -120.876
        ]
       ],
       [
        0.3,
        [
-        141.284,
-        -74.133,
-        -113.884
+        153.623,
+        -70.48,
+        -120.876
        ],
        "ease"
       ],
       [
        0.42,
        [
-        141.284,
-        -74.133,
-        -113.884
+        153.623,
+        -70.48,
+        -120.876
        ],
        "in"
       ],
       [
        0.62,
        [
-        19.76,
-        28.822,
-        68.258
+        15.085,
+        25.668,
+        70.89
        ],
        "out_back"
       ],
       [
        0.9,
        [
-        19.76,
-        28.822,
-        68.258
+        15.085,
+        25.668,
+        70.89
        ],
        "ease"
       ],
@@ -9109,44 +10080,44 @@
       [
        0.0,
        [
-        69.933,
-        -43.392,
-        -8.586
+        109.989,
+        -33.68,
+        -43.986
        ]
       ],
       [
        0.3,
        [
-        69.933,
-        -43.392,
-        -8.586
+        109.989,
+        -33.68,
+        -43.986
        ],
        "ease"
       ],
       [
        0.42,
        [
-        69.933,
-        -43.392,
-        -8.586
+        109.989,
+        -33.68,
+        -43.986
        ],
        "in"
       ],
       [
        0.62,
        [
-        21.286,
-        50.291,
-        8.825
+        60.585,
+        34.601,
+        26.447
        ],
        "out_back"
       ],
       [
        0.9,
        [
-        21.286,
-        50.291,
-        8.825
+        60.585,
+        34.601,
+        26.447
        ],
        "ease"
       ],
@@ -9177,44 +10148,44 @@
       [
        0.0,
        [
-        141.284,
-        74.133,
-        113.884
+        153.623,
+        70.48,
+        120.876
        ]
       ],
       [
        0.3,
        [
-        141.284,
-        74.133,
-        113.884
+        153.623,
+        70.48,
+        120.876
        ],
        "ease"
       ],
       [
        0.42,
        [
-        141.284,
-        74.133,
-        113.884
+        153.623,
+        70.48,
+        120.876
        ],
        "in"
       ],
       [
        0.62,
        [
-        19.76,
-        -28.822,
-        -68.258
+        15.085,
+        -25.668,
+        -70.89
        ],
        "out_back"
       ],
       [
        0.9,
        [
-        19.76,
-        -28.822,
-        -68.258
+        15.085,
+        -25.668,
+        -70.89
        ],
        "ease"
       ],
@@ -9538,7 +10509,7 @@
        0.0,
        [
         0.0,
-        1.937,
+        2.003,
         0.0
        ]
       ],
@@ -9546,7 +10517,15 @@
        0.0833,
        [
         0.0,
-        1.981,
+        2.05,
+        0.0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0.0,
+        2.107,
         0.0
        ]
       ],
@@ -9554,7 +10533,7 @@
        0.1167,
        [
         0.0,
-        2.203,
+        2.237,
         0.0
        ]
       ],
@@ -9562,7 +10541,7 @@
        0.1333,
        [
         0.0,
-        2.219,
+        2.253,
         0.0
        ]
       ],
@@ -9570,7 +10549,7 @@
        0.15,
        [
         0.0,
-        2.062,
+        2.127,
         0.0
        ]
       ],
@@ -9578,7 +10557,7 @@
        0.1667,
        [
         0.0,
-        2.271,
+        2.304,
         0.0
        ]
       ],
@@ -9586,7 +10565,7 @@
        0.1833,
        [
         0.0,
-        2.359,
+        2.392,
         0.0
        ]
       ],
@@ -9594,15 +10573,7 @@
        0.2,
        [
         0.0,
-        2.155,
-        0.0
-       ]
-      ],
-      [
-       0.2167,
-       [
-        0.0,
-        2.321,
+        2.206,
         0.0
        ]
       ],
@@ -9610,7 +10581,7 @@
        0.2333,
        [
         0.0,
-        2.434,
+        2.465,
         0.0
        ]
       ],
@@ -9618,7 +10589,7 @@
        0.25,
        [
         0.0,
-        2.235,
+        2.261,
         0.0
        ]
       ],
@@ -9626,7 +10597,7 @@
        0.2833,
        [
         0.0,
-        2.443,
+        2.471,
         0.0
        ]
       ],
@@ -9634,7 +10605,7 @@
        0.3,
        [
         0.0,
-        2.28,
+        2.306,
         0.0
        ]
       ],
@@ -9642,7 +10613,7 @@
        0.3167,
        [
         0.0,
-        2.256,
+        2.282,
         0.0
        ]
       ],
@@ -9650,15 +10621,7 @@
        0.3333,
        [
         0.0,
-        2.389,
-        0.0
-       ]
-      ],
-      [
-       0.35,
-       [
-        0.0,
-        2.341,
+        2.418,
         0.0
        ]
       ],
@@ -9666,7 +10629,7 @@
        0.3667,
        [
         0.0,
-        2.223,
+        2.283,
         0.0
        ]
       ],
@@ -9674,7 +10637,7 @@
        0.4167,
        [
         0.0,
-        2.212,
+        2.282,
         0.0
        ]
       ],
@@ -9682,7 +10645,7 @@
        0.4333,
        [
         0.0,
-        4.736,
+        4.753,
         0.0
        ]
       ],
@@ -9690,7 +10653,7 @@
        0.45,
        [
         0.0,
-        5.012,
+        4.855,
         0.0
        ]
       ],
@@ -9698,7 +10661,7 @@
        0.4667,
        [
         0.0,
-        3.689,
+        3.788,
         0.0
        ]
       ],
@@ -9706,7 +10669,15 @@
        0.4833,
        [
         0.0,
-        3.7,
+        3.849,
+        0.0
+       ]
+      ],
+      [
+       0.5333,
+       [
+        0.0,
+        3.572,
         0.0
        ]
       ],
@@ -9714,7 +10685,7 @@
        0.55,
        [
         0.0,
-        3.237,
+        3.438,
         0.0
        ]
       ],
@@ -9722,7 +10693,7 @@
        0.5667,
        [
         0.0,
-        2.997,
+        3.191,
         0.0
        ]
       ],
@@ -9730,7 +10701,7 @@
        0.5833,
        [
         0.0,
-        2.596,
+        2.78,
         0.0
        ]
       ],
@@ -9738,7 +10709,7 @@
        0.6167,
        [
         0.0,
-        1.94,
+        2.111,
         0.0
        ]
       ],
@@ -9746,7 +10717,7 @@
        0.65,
        [
         0.0,
-        1.449,
+        1.621,
         0.0
        ]
       ],
@@ -9754,7 +10725,7 @@
        0.6667,
        [
         0.0,
-        1.263,
+        1.435,
         0.0
        ]
       ],
@@ -9762,7 +10733,7 @@
        0.6833,
        [
         0.0,
-        1.124,
+        1.295,
         0.0
        ]
       ],
@@ -9770,7 +10741,7 @@
        0.7,
        [
         0.0,
-        1.034,
+        1.205,
         0.0
        ]
       ],
@@ -9778,23 +10749,31 @@
        0.9167,
        [
         0.0,
-        0.985,
+        1.156,
         0.0
        ]
       ],
       [
-       0.9667,
+       0.95,
        [
         0.0,
-        0.836,
+        1.067,
         0.0
        ]
       ],
       [
-       1.1,
+       1.0167,
        [
         0.0,
-        0.033,
+        0.674,
+        0.0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0.0,
+        0.207,
         0.0
        ]
       ],
@@ -9802,7 +10781,7 @@
        1.1167,
        [
         0.0,
-        -0.028,
+        0.055,
         0.0
        ]
       ],
@@ -9810,7 +10789,7 @@
        1.5,
        [
         0.0,
-        -0.0,
+        0.0,
         0.0
        ]
       ]

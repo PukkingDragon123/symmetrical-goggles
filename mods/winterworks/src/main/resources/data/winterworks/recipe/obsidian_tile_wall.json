@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:obsidian_tiles"
+    }
+  },
+  "result": {
+    "id": "winterworks:obsidian_tile_wall",
+    "count": 6
+  }
+}

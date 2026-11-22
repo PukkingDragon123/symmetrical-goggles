@@ -5,8 +5,10 @@
 A giant one-eyed obsidian monolith on four stubby legs. The body is a tall slab of glassy, faceted obsidian built up
 from leaning plates: a front plate framing the eye socket, side plates tapering it toward the top, a jagged crown of
 tilted blocks, crystal shards jutting from the shoulders and back, a broad plinth over the legs. Crying-obsidian veins
-glow violet through every face and run like tears down from the eye. The single eye is a big glowing violet iris with
-a dark slit pupil, deep in a socket; above it hangs a heavy obsidian eyelid that slides down to shut it. In the
+glow violet through every face and run like tears down from the eye. The single eye is round: a pale, shaded eyeball
+deep in a socket, framed by obsidian lids with a round opening, and a big round glowing violet iris with a round
+pupil and a soft catch-light that roves about; the heavy obsidian hood of the upper lid hangs low over it, cutting
+across the top of the iris, and slides down to shut it. In the
 `disguised` clip the legs fold out flat like boulders round the base, the body sinks and leans, the shards splay and
 the eyelid closes: an obsidian rock formation.
 
@@ -14,18 +16,19 @@ Units are Minecraft pixels (16 per block), density 2: every box is a whole numbe
 to a vanilla entity model (python -m lowpix mc export). About 28 x 58 x 20 px; faces +Z, ground at y = 0, "left" is
 +X; the root (body) pivots between the four hips.
 
-Contract (mods/winterworks/docs/END_UPDATE.md section 9): bones body, eye, eyelid, leg_fl, leg_fr, leg_bl, leg_br.
-Extra joints: pupil (slides inside the eye), foot_* (feet), shard_* (the splaying crystal shards), crown. Clips:
-disguised (loop), rise (2.0 s), idle, walk, slam (1.2 s), settle (1.5 s). Glow: the eye and the crying-obsidian veins
+Contract (mods/winterworks/docs/END_UPDATE.md section 9): bones body, eye (the eyeball), eyelid, leg_fl, leg_fr,
+leg_bl, leg_br. Extra joints: pupil (a card with the round iris, pupil and catch-light; it roves over the eyeball and
+the lids clip it), lids (the card with the round opening), foot_* (feet), shard_* (the splaying crystal shards),
+crown. Clips:
+disguised (loop), rise (2.0 s), idle, walk, slam (1.2 s), settle (1.5 s). Glow: the iris and the crying-obsidian veins
 (ramps eyeglow and crying).
 """
-import math
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from end_kit import (DENSITY, LR, M, MR, ROOT, Rig, add, finish, jitter, keys, osc, pos, r, ramps,  # noqa: E402
-                     ring, sc, shake, timeline)
+from end_kit import (DENSITY, LR, M, MR, ROOT, Rig, add, eyeball, finish, iris_card, jitter, keys,  # noqa: E402
+                     lid_frame, osc, pos, r, ramps, ring, sc, shake, timeline)
 
 R = Rig(density=DENSITY, bone_style="obsidian")
 part, bone, card, wpos = R.part, R.bone, R.card, R.wpos
@@ -42,10 +45,12 @@ part("face_l", "core", [2, 12, 2], "face", centre=(8.0, EY, 8.9))
 part("face_r", "core", [2, 12, 2], "face", centre=(-8.0, EY, 8.9))
 part("face_top", "core", [18, 6, 2], "face", centre=(0, EY + 9.0, 8.9), rot=(3, 0, 0))
 part("socket", "core", [14, 12, 1], "socket", centre=(0, EY, 8.4))
-part("eye", "core", [12, 10, 2], "eye", at=(0, EY, 7.5), centre=(0, EY, 8.6))
-part("pupil", "eye", [1.5, 8, 0.5], "pupil", centre=(0, EY, 9.75))
-# the eyelid: a heavy obsidian hood over the eye, rising into the crown; it slides down 10 px to shut
-part("eyelid", "core", [15, 10, 1.5], "lid", at=(0, EY + 6.0, 10.2), centre=(0, EY + 10.5, 10.4), rot=(-4, 0, 0))
+part("eye", "core", [12, 10, 2], "eye", at=(0, EY, 7.5), centre=(0, EY, 8.6))             # front at z 9.6
+# the iris card roves over the eyeball; the lids card in front of it rounds the opening and clips it
+card("pupil", "eye", iris_card(14, 6), "iris", at=(0, EY - 0.5, 9.7))
+card("lids", "core", lid_frame(28, 24, 22, 18, dy=1), "lids", at=(0, EY, 9.85))
+# the eyelid: a heavy obsidian hood hanging low over the eye, rising into the crown; it slides down 10 px to shut
+part("eyelid", "core", [15, 10, 1.5], "lid", at=(0, EY + 3.0, 10.2), centre=(0, EY + 7.5, 10.4), rot=(-4, 0, 0))
 for s in (1, -1):
     n = LR(s)
     part(f"side_{n}", "core", [3, 30, 13], "obsidian", centre=M((11.3, HIP + 19.0, -0.5), s), rot=(0, 0, s * 3))
@@ -81,33 +86,9 @@ for k, z in (("f", 5.0), ("b", -5.0)):
         part(f"toe_{k}{n}", f"foot_{k}{n}", [7, 1.5, 2], "foot", centre=M((7.6, 0.75, z + 6.0), s), rot=(-10, 0, 0))
         FEET += [lid, f"foot_{k}{n}", f"toe_{k}{n}"]
 
-# ======================================================================= the iris and the slit pupil (hand-placed rings)
-def iris_art(w, h):
-    """Concentric glowing rings (hot round the pupil, darker toward the limbus), radial streaks, a catchlight."""
-    rows = []
-    cx, cy = (w - 1) / 2, (h - 1) / 2
-    for y in range(h):
-        row = ""
-        for x in range(w):
-            dx, dy = (x - cx) / (w / 2), (y - cy) / (h / 2)
-            d = math.hypot(dx, dy)
-            streak = int((math.atan2(dy, dx) + math.pi) / (2 * math.pi) * 26) % 3 == 0
-            t = 0 if d > 1.05 else 1 if d > 0.93 else 2 if d > 0.8 else 3 if d > 0.6 else 4 if d > 0.36 else 5
-            if streak and 1 < t < 5:
-                t += 1
-            row += str(t)
-        rows.append(row)
-    for x, y, ch in ((6, 3, "W"), (7, 3, "W"), (5, 4, "W"), (6, 4, "w"), (5, 5, "w"), (8, 2, "w")):
-        rows[y] = rows[y][:x] + ch + rows[y][x + 1:]
-    return rows
-
-
-IRIS_KEY = dict({str(k): f"eyeglow:{k}" for k in range(6)}, W="eyeglow:6", w="eyeglow:5")
-PUPIL = ["_k_", "_k_", "kpk", "kpk", "kpk", "kpk", "kpk", "kpk", "kpk", "kpk", "kpk", "kpk", "kpk", "kpk", "_k_", "_k_"]
-
 # ======================================================================= palette and paint
 RAMPS = ramps(
-    "eyeglow", "crying",
+    "eyeglow", "crying", "sclera",
     # glassy obsidian: blue-black body, violet facets, cold lavender glints
     obsidian=["#04030a", "#090614", "#0f0b1e", "#161029", "#1e1635", "#271d43", "#312552", "#3d2f63", "#4b3a76",
               "#5e4c8c", "#7b6aa8", "#a497c9"],
@@ -147,13 +128,19 @@ styles = {
     "socket": {"ramp": "obsidian", "tone": 0.6, "light": 0.3, "rim": {"light": 0, "dark": 0}, "brush": {"off": True},
                "layers": [{"id": "rim_glow", "op": "band", "axis": "y", "from": -1.01, "to": -0.75, "ramp": "crying",
                            "tone": 1.0, "faces": ["front"]}]},
-    # the eye: a big glowing violet iris, rings toward a hot rim, a catchlight
-    "eye": {"ramp": "eyeglow", "tone": 3.0, "light": 0.3, "brush": {"off": True},
-            "rim": {"light": 1, "dark": 1, "light_shift": 1.4, "dark_shift": -1.6},
-            "stamps": [{"face": "front", "at": "top-left", "art": iris_art(24, 20), "key": IRIS_KEY}]},
-    "pupil": {"ramp": "obsidian", "tone": 0.5, "light": 0, "rim": {"light": 0, "dark": 0}, "brush": {"off": True},
-              "stamps": [{"face": "front", "at": "top-left", "art": PUPIL,
-                          "key": {"k": "obsidian:2", "p": "obsidian:0"}}]},
+    # the eyeball: pale and glassy, shaded at the rim and deep under the hood
+    "eye": {"ramp": "sclera", "tone": 1.0, "light": 0.2, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+            "stamps": [{"face": "front", "at": "top-left", "art": eyeball(24, 20, 22, 18, lid_shade=7),
+                        "key": {"L": "sclera:0", "k": "sclera:0", "l": "sclera:0", "u": "sclera:0", "d": "sclera:2",
+                                "s": "sclera:4", "S": "sclera:5"}}]},
+    # the iris card: a big round glowing violet iris, fine fibres, a round pupil, a soft catch-light
+    "iris": {"ramp": "eyeglow", "tone": 3.0, "light": 0, "brush": {"off": True},
+             "art_key": {"o": "eyeglow:0", "i": "eyeglow:1", "I": "eyeglow:2", "J": "eyeglow:3", "c": "eyeglow:4",
+                         "p": "obsidian:0", "W": "eyeglow:6", "w": "eyeglow:4"}},
+    # the lids round the opening: a dark crease, the lower lid's lit margin, the upper lid's fold and lit ridge
+    "lids": {"ramp": "obsidian", "tone": 4.6, "light": 0.3, "brush": {"off": True},
+             "layers": [CONCH, dict(FACETS, seed=41)],
+             "art_key": {"k": "obsidian:0", "l": "obsidian:8", "F": "obsidian:2", "M": "obsidian:7"}},
     "lid": {"ramp": "obsidian", "tone": 4.6, "rim": {"light": 1, "dark": 1, "light_shift": 2.8, "dark_shift": -1.8},
             "layers": [CONCH, dict(FACETS, seed=21), dict(VEINS, seed=22, scale=5.0),
                        {"id": "lash", "op": "band", "axis": "y", "from": -1.01, "to": -0.7, "ramp": "obsidian",
@@ -174,7 +161,8 @@ styles = {
 # ======================================================================= animation
 REST = {}
 LEGS = [f"leg_{k}{n}" for k in "fb" for n in "lr"]
-SHUT = pos("eyelid", 0, -10.0, 0.3)
+SHUT_DY = -8.0              # the hood slides this far down to cover the opening
+SHUT = pos("eyelid", 0, SHUT_DY, 0.3)
 
 
 def legs(fl=(0, 0, 0), fr=(0, 0, 0), bl=(0, 0, 0), br=(0, 0, 0)):
@@ -184,14 +172,14 @@ def legs(fl=(0, 0, 0), fr=(0, 0, 0), bl=(0, 0, 0), br=(0, 0, 0)):
 # disguised: legs folded out flat like boulders round the base, the body sunk and leaning, the eye shut, the shards
 # splayed out: an obsidian outcrop
 DISG = add(legs((-14, 20, -88), (-14, -20, 88), (14, -20, -88), (14, 20, 88)),
-           r("body", 3, 10, -8), SHUT, sc("pupil", 0, -0.6, 0),
+           r("body", 3, 10, -8), SHUT, sc("pupil", -0.3, -0.3, 0),
            r("shard_l", 0, 0, -36), r("shard_r", 0, 0, 30), r("shard_b0", -26, 0, 0), r("shard_b1", -22, 0, 0),
            r("shard_l2", 0, 0, -28), r("crown", 6, 0, -10), r("crown_1", 0, 0, 14))
 
 
 def blink(t, dur=0.3):
-    return keys("eyelid", None, [[0, [0, 0, 0]], [t, [0, 0, 0]], [t + dur * 0.4, [0, -10.0, 0.3]],
-                                 [t + dur * 0.55, [0, -10.0, 0.3]], [t + dur, [0, 0, 0]]], ch="position")
+    return keys("eyelid", None, [[0, [0, 0, 0]], [t, [0, 0, 0]], [t + dur * 0.4, [0, SHUT_DY, 0.3]],
+                                 [t + dur * 0.55, [0, SHUT_DY, 0.3]], [t + dur, [0, 0, 0]]], ch="position")
 
 
 ANIM = {}
@@ -216,8 +204,8 @@ ANIM["rise"] = timeline(2.0, [(0.0, DISG, None), (0.45, add(DISG, r("body", 0, 0
 L = 3.0
 ANIM["idle"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True, extra=[
     osc("body", "z", 1.2, 1, 0.0), osc("body", "x", -0.8, 1, 0.25),
-    keys("pupil", None, [[0, [0, 0, 0]], [0.5, [0, 0, 0]], [0.7, [3.0, 0.4, 0]], [1.3, [3.0, 0.4, 0]],
-                         [1.5, [-2.8, -0.5, 0]], [2.1, [-2.8, -0.5, 0]], [2.3, [0, 0, 0]]], ch="position"),
+    keys("pupil", None, [[0, [0, 0, 0]], [0.5, [0, 0, 0]], [0.7, [2.5, 0.5, 0]], [1.3, [2.5, 0.5, 0]],
+                         [1.5, [-2.5, -0.5, 0]], [2.1, [-2.5, -0.5, 0]], [2.3, [0, 0, 0]]], ch="position"),
     keys("eye", "y", [[0, 0], [0.5, 0], [0.7, 6], [1.3, 6], [1.5, -6], [2.1, -6], [2.3, 0]]),
     blink(2.45),
     osc("shard_l", "z", 1.5, 2, 0.1), osc("shard_r", "z", -1.5, 2, 0.4), osc("crown", "z", 1, 1, 0.2),
@@ -238,7 +226,8 @@ ANIM["walk"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True, extr
 # slam: rears back on its hind legs, the eye blazing wide, then topples forward and slams its whole front down;
 # shudders, and heaves itself upright again
 REAR = add(r("body", -18), legs((-48, 0, -6), (-48, 0, 6), (16, 0, 0), (16, 0, 0)), sc("eye", 0.15, 0.2, 0),
-           sc("pupil", -0.3, 0, 0), r("crown", -5), r("shard_l", 0, 0, 10), r("shard_r", 0, 0, -10))
+           sc("pupil", -0.22, -0.22, 0), pos("eyelid", 0, 1.5, 0), r("crown", -5), r("shard_l", 0, 0, 10),
+           r("shard_r", 0, 0, -10))
 SLAM = add(r("body", 30), pos("body", 0, 0, 6.0), legs((-30, 0, -10), (-30, 0, 10), (-24, 0, 0), (-24, 0, 0)),
            sc("eye", -0.05, -0.3, 0), r("crown", 8), r("shard_l", 0, 0, -12), r("shard_r", 0, 0, 12))
 ANIM["slam"] = timeline(1.2, [(0.0, REST, None), (0.18, add(REST, r("body", 4)), "ease"), (0.48, REAR, "out"),
@@ -258,7 +247,8 @@ spec = {
     "name": "Obolisk",
     "description": "The Winterworks Obolisk: a giant one-eyed obsidian monolith on four stubby legs: glassy faceted "
                    "obsidian plates, a jagged crown, crystal shards, glowing crying-obsidian veins and tears, one big "
-                   "violet eye under a sliding obsidian eyelid; in disguise it folds into an obsidian rock formation. "
+                   "round eye with a glowing violet iris under a heavy sliding obsidian lid; in disguise it folds "
+                   "into an obsidian rock formation. "
                    "Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": DENSITY,

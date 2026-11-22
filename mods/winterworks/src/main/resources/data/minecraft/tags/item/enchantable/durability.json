@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "winterworks:fang_dagger"
+    "winterworks:fang_dagger",
+    "winterworks:obsidian_shield",
+    "winterworks:monolith_wand",
+    "winterworks:end_glider"
   ]
 }
