@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "winterworks:block/switch_rail_ties",
+    "layer1": "winterworks:block/switch_rail"
+  }
+}
