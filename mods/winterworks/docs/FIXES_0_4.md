@@ -269,18 +269,27 @@ contract for the Java side.
 * **Booster Rail**: art shows a redstone-block plate (dull unpowered, bright powered); same file names.
 
 ## The Hex Fortress, reworked (Hexes & Havoc)
-* **Story in the stones**: the Hex Fortress was a piglin **bastion** before blazes and wither skeletons overran it.
-  Build it as a real Nether fortress growing over and through a ruined bastion: long nether-brick bridges on tall piers,
-  covered corridors with fence windows, stair towers and crossings (vanilla fortress style), wrapped round and over the
-  bastion's blackstone, gilded blackstone, basalt and polished-blackstone ruins (broken ramparts, a cracked gold vault,
-  collapsed halls, lava falls). Keep its brewing rooms, wart farms, storerooms, the witch's quarters and the Nether
-  Portal.
-* **Inhabitants**: **no ordinary piglins**. Blazes (with spawners in the fortress parts) and wither skeletons hold it;
-  the Piglin Witch still lives in her quarters. A few **Golden Piglins** (caged and loose).
-* **Soul Bull farms**: soul-sand pens lit with soul fire where **Soul Bulls** are kept (2-4 per pen, wild and hostile,
-  some armoured, wither skeleton riders on some), in the courtyard and the old bastion stables. You must **defeat
-  them** to get through.
-* **The witch's weird experiments** all round: cells with half-transformed creatures (zombified and golden piglins in
-  cages), bubbling cauldrons and elixir jars over soul fire, soul tanks wired to cages, a dissection table with bones
-  and a Soul Bull skull, potion-stained floors, strange glowing mixtures. Chests get the experiments' loot.
-* Structure id stays `hex_fortress`; `/winterworks hexfortress` builds one. Bigger than before (about 96 x 96).
+* **Smaller, simpler and more common** (about 40 x 40, spacing about 20 chunks): a compact stronghold that looks like a
+  real Nether fortress (nether-brick walls, a bridge or two on piers, corridors with fence windows, a stair tower) built
+  onto a piece of bastion (blackstone, gilded blackstone, basalt). It keeps a brewing room, a wart farm, a storeroom,
+  the witch's quarters and the Nether Portal.
+* **The witch's crew**: **piglins and piglin brutes** walk about and **work for the witch**: brutes guard the gate and
+  her quarters, piglins tend the wart, haul and brew. They are on her side: they defend her and each other and attack
+  whoever attacks her. (Bartering and the gold rules still work for the piglins.)
+* **Soul Bull pens**: soul-sand pens lit with soul fire holding 2-3 hostile **Soul Bulls** (sometimes armoured); you
+  must defeat them to get past.
+* **Golden Piglins** (her failed experiments, caged or wandering) and **weird experiments** about: caged half-turned
+  creatures, bubbling cauldrons and Elixir Jars over soul fire, soul tanks wired to cages, a table with bones and a Soul
+  Bull skull, potion stains. Chests hold the experiments' loot.
+* **The Piglin Witch, super strong**: still neutral and still trades after an Elixir of Greed, but attack her (or her
+  crew) and she fights with her **spellbook** (an open hexed book floats before her, glyphs circling): a boss bar,
+  250 health, and spells:
+  * **Hex bolts**: volleys of homing soul-fire bolts.
+  * **Soul ring**: a ring of soul fire bursting outward along the ground (jump it).
+  * **Hex**: curses you with Hexed (no natural regeneration) for 30 s, and Slowness.
+  * **Potion barrage**: throws Harming, Weakness and Slowness potions.
+  * **Summon**: calls her brutes, and raises a Soul Bull from a pile of bones.
+  * **Blink**: when hit hard, she vanishes in smoke and reappears nearby.
+  She drinks healing when low (once per fight). Killed, she drops her spellbook (a Hexed Book with a strong random
+  hex) and her stash.
+* Structure id stays `hex_fortress`; `/winterworks hexfortress` builds one.
