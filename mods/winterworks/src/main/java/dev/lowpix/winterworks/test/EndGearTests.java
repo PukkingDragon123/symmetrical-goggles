@@ -166,6 +166,7 @@ public class EndGearTests implements FabricGameTest {
         Zombie z = zombie(h, new BlockPos(6, 1, 3));
         z.setNoAi(true);
         ServerPlayer p = player(h, new Vec3(1.5, 1, 3.5));
+        p.setGameMode(GameType.SURVIVAL);
         ItemStack wand = new ItemStack(EndItems.MONOLITH_WAND);
         p.setItemInHand(InteractionHand.MAIN_HAND, wand);
         h.assertTrue(MonolithWandItem.target(p) == z, "the wand should aim at the zombie, got " + MonolithWandItem.target(p));
@@ -193,7 +194,7 @@ public class EndGearTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------------ the shield
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
     public void shieldReflectsHalfTheBlockedHit(GameTestHelper h) {
         floor(h);
         IronGolem z = h.spawn(EntityType.IRON_GOLEM, new BlockPos(3, 1, 3));   // no armour
@@ -206,19 +207,22 @@ public class EndGearTests implements FabricGameTest {
             p.doTick();
         }
         h.assertTrue(p.isBlocking(), "the player should be blocking with the offhand shield");
-        float hp = p.getHealth(), zhp = z.getHealth();
-        float hit = 8f, dealt = scaled(h, hit);
-        p.hurt(h.getLevel().damageSources().mobAttack(z), hit);
-        h.assertTrue(p.getHealth() == hp, "a blocked hit does no damage, health " + p.getHealth());
-        if (dealt > 0) {
-            float lost = zhp - z.getHealth();
-            h.assertTrue(Math.abs(lost - dealt * ObsidianShieldItem.REFLECT) < 0.01f,
-                    "half of the blocked " + dealt + " goes back at the attacker, it lost " + lost);
-            h.assertTrue(p.getOffhandItem().getDamageValue() == 1 + (int) dealt, "the shield wears like a vanilla one: "
-                    + p.getOffhandItem().getDamageValue());
-        }
-        leave(h, p);
-        h.succeed();
+        h.runAfterDelay(62, () -> {   // past a new player's spawn invulnerability (the server ticks it down)
+            h.assertTrue(p.isBlocking(), "still blocking");
+            float hp = p.getHealth(), zhp = z.getHealth();
+            float hit = 8f, dealt = scaled(h, hit);
+            p.hurt(h.getLevel().damageSources().mobAttack(z), hit);
+            h.assertTrue(p.getHealth() == hp, "a blocked hit does no damage, health " + p.getHealth());
+            if (dealt > 0) {
+                float lost = zhp - z.getHealth();
+                h.assertTrue(Math.abs(lost - dealt * ObsidianShieldItem.REFLECT) < 0.01f,
+                        "half of the blocked " + dealt + " goes back at the attacker, it lost " + lost);
+                h.assertTrue(p.getOffhandItem().getDamageValue() == 1 + (int) dealt, "the shield wears like a vanilla one: "
+                        + p.getOffhandItem().getDamageValue());
+            }
+            leave(h, p);
+            h.succeed();
+        });
     }
 
     @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40)
