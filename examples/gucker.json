@@ -1,12 +1,12 @@
 {
  "name": "Gucker",
- "description": "The Winterworks Gucker: a big salamander-like End predator: long, low and heavy on splayed clawed legs, a wide flat head with glowing eyes on top, a toothed jaw, an inflatable throat sac, a ridge of glowing breathing holes along the back, a thick finned tail; pale grey-violet speckled hide that blends with end stone. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks Gucker: a big salamander-like End predator in vanilla style: long, low and heavy on splayed legs with broad flat feet, a wide flat head with a toothy underbite and flat glowing yellow eyes on two domes, an inflatable throat sac, a ridge of glowing breathing holes along the back, a thick finned tail; pale grey-violet hide with saddle blotches that blends with end stone. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "budget": {
-  "tris": 1600,
-  "colors": 96
+  "tris": 600,
+  "colors": 72
  },
  "light": {
   "dir": [
@@ -14,22 +14,10 @@
    1.0,
    0.6
   ],
-  "strength": 0.7,
-  "gradient": 0.5,
+  "strength": 0.9,
+  "gradient": 0.55,
   "ao": 0.7,
   "ao_height": 6.0
- },
- "brush": {
-  "flow": "horizontal",
-  "length": 2.0,
-  "width": 0.8,
-  "rough": 0.6,
-  "overshoot": 0.25,
-  "textures": {
-   "hide": "organic",
-   "endstone": "stone",
-   "sac": "organic"
-  }
  },
  "minecraft": {
   "fps": 20,
@@ -49,30 +37,17 @@
  },
  "palette": {
   "ramps": {
-   "endstone": [
-    "#26241d",
-    "#3d3b2e",
-    "#57543f",
-    "#727050",
-    "#8e8b61",
-    "#aaa673",
-    "#c3be86",
-    "#d8d49b",
-    "#e9e7b6",
-    "#f6f5d6"
-   ],
    "chorus": [
-    "#160a20",
-    "#241133",
-    "#341a48",
-    "#46245d",
-    "#5a3074",
-    "#703f8b",
-    "#8852a2",
-    "#a06bb8",
-    "#ba8acd",
-    "#d4addf",
-    "#ead1ef"
+    "#24132d",
+    "#371d44",
+    "#4c295c",
+    "#623674",
+    "#79468b",
+    "#9059a1",
+    "#a774b6",
+    "#bf93ca",
+    "#d6b5dd",
+    "#ead6ee"
    ],
    "pale": [
     "#2a2722",
@@ -110,18 +85,12 @@
     "#e4bdd1",
     "#f3dde8"
    ],
-   "claw": [
-    "#0d0a12",
-    "#1d1824",
-    "#2f2838",
-    "#433a4e"
-   ],
    "gleye": [
-    "#3a3606",
-    "#6b640f",
-    "#a29a1d",
-    "#d2c93a",
-    "#f0e97a",
+    "#5a4a08",
+    "#8f7a10",
+    "#c4ab1c",
+    "#e8d23a",
+    "#fbef7a",
     "#fffbd0"
    ],
    "ventglow": [
@@ -135,77 +104,67 @@
  "styles": {
   "hide_body": {
    "ramp": "hide",
-   "tone": 6.6,
+   "tone": 7.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "dark_back",
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.7,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.42,
+     "octaves": 1
+    },
+    {
+     "id": "dark_low",
      "op": "gradient",
      "axis": "y",
-     "amount": -0.6
+     "amount": 0.6
     },
     {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.5,
-     "highlight": 0.9,
-     "shadow": -1.0,
-     "jitter": 0.6,
+     "id": "saddle",
+     "op": "patches",
+     "scale": 2.2,
+     "threshold": 0.56,
+     "shift": -1.8,
+     "octaves": 2,
      "faces": [
       "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.4,
-     "threshold": 0.64,
-     "ramp": "pale",
-     "tone": 7.0,
+      "sides",
+      "front",
+      "back"
+     ],
      "bevel": {
       "shadow": 1,
       "highlight": 0,
-      "shadow_ramp": "hide",
-      "shadow_shift": -1.0
+      "shadow_shift": -0.8
      }
-    },
-    {
-     "id": "grooves",
-     "op": "stripes",
-     "axis": "z",
-     "period": 2.5,
-     "width": 0.2,
-     "shift": -1.4,
-     "wobble": 0.3,
-     "faces": [
-      "left",
-      "right"
-     ],
-     "range": [
-      -0.8,
-      0.4
-     ]
     },
     {
      "id": "belly",
      "op": "band",
      "axis": "y",
      "from": -1.01,
-     "to": -0.35,
+     "to": -0.5,
      "ramp": "pale",
-     "tone": 7.6,
+     "tone": 7.0,
      "wobble": 0.25,
      "faces": [
       "sides",
@@ -215,184 +174,96 @@
      ]
     },
     {
-     "id": "speckle",
-     "op": "spots",
-     "count": 14,
-     "radius": [
-      0.25,
-      0.45
-     ],
-     "ramp": "chorus",
-     "tone": 3.6,
-     "post": true,
-     "min_gap": 0.8
+     "id": "bumps",
+     "op": "speckle",
+     "density": 0.02,
+     "shift": 1.4
     },
     {
-     "id": "speckle_lt",
+     "id": "freckle",
      "op": "spots",
-     "count": 8,
+     "count": 6,
      "radius": [
-      0.25,
-      0.35
+      0.3,
+      0.5
      ],
-     "ramp": "pale",
-     "tone": 9.0,
+     "ramp": "chorus",
+     "tone": 4.6,
      "post": true,
-     "min_gap": 0.8,
+     "min_gap": 2.5,
      "faces": [
       "top",
       "sides"
      ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.4,
-     "shift": 1.6
     }
    ]
   },
-  "hide_belly": {
-   "ramp": "pale",
-   "tone": 7.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "z"
-   },
-   "layers": [
-    {
-     "id": "plates",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.5,
-     "width": 0.25,
-     "shift": -1.0,
-     "faces": [
-      "bottom",
-      "sides"
-     ]
-    },
-    {
-     "id": "speckle",
-     "op": "spots",
-     "count": 8,
-     "radius": [
-      0.25,
-      0.45
-     ],
-     "ramp": "chorus",
-     "tone": 3.6,
-     "post": true,
-     "min_gap": 0.8
-    }
-   ]
-  },
-  "hide_back": {
+  "hide_ridge": {
    "ramp": "hide",
    "tone": 6.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.5,
-     "highlight": 0.9,
-     "shadow": -1.0,
-     "jitter": 0.6,
-     "faces": [
-      "top",
-      "sides"
-     ]
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.7,
+     "octaves": 2
     },
     {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.4,
-     "threshold": 0.66,
-     "ramp": "pale",
-     "tone": 7.0,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_ramp": "hide",
-      "shadow_shift": -1.0
-     }
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.42,
+     "octaves": 1
     },
     {
-     "id": "speckle",
-     "op": "spots",
-     "count": 10,
-     "radius": [
-      0.25,
-      0.45
-     ],
-     "ramp": "chorus",
-     "tone": 3.6,
-     "post": true,
-     "min_gap": 0.8
+     "id": "dark_low",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.6
     },
     {
-     "id": "speckle_lt",
-     "op": "spots",
-     "count": 8,
-     "radius": [
-      0.25,
-      0.35
-     ],
-     "ramp": "pale",
-     "tone": 9.0,
-     "post": true,
-     "min_gap": 0.8,
-     "faces": [
-      "top",
-      "sides"
-     ]
+     "id": "bumps",
+     "op": "speckle",
+     "density": 0.02,
+     "shift": 1.4
     }
    ]
   },
   "vent": {
    "ramp": "hide",
    "tone": 7.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
     "light_shift": 1.8,
-    "dark_shift": -1.6
-   },
-   "brush": {
-    "off": true
+    "dark_shift": -1.4,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "pucker",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.0,
-     "width": 0.3,
-     "shift": -1.2,
-     "faces": [
-      "sides"
-     ]
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.6,
+     "octaves": 2
     }
    ],
    "stamps": [
@@ -400,10 +271,8 @@
      "face": "top",
      "at": "top-left",
      "art": [
-      ".kkk.",
-      "kgGgk",
-      "kGgGk",
-      ".kkk."
+      "kGk",
+      "kgk"
      ],
      "key": {
       "k": "hide:1",
@@ -413,213 +282,194 @@
     }
    ]
   },
-  "wart": {
+  "eye_dome": {
    "ramp": "hide",
-   "tone": 7.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.0,
-    "dark_shift": -1.6
-   },
+   "tone": 7.0,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.2,
+    "threshold": 0.2
+   },
    "layers": [
     {
-     "id": "tip",
-     "op": "spots",
-     "count": 1,
-     "radius": [
-      0.5,
-      0.6
-     ],
-     "ramp": "pale",
-     "tone": 8.4,
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.6,
+     "octaves": 2
+    }
+   ],
+   "stamps": [
+    {
      "faces": [
-      "top"
-     ]
+      "front",
+      "left",
+      "right"
+     ],
+     "at": "top-left",
+     "art": [
+      "kkk",
+      ".YW"
+     ],
+     "key": {
+      "k": "hide:3",
+      "Y": "gleye:3",
+      "W": "gleye:5"
+     }
     }
    ]
   },
   "hide_head": {
    "ramp": "hide",
-   "tone": 6.8,
+   "tone": 7.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "dark_back",
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.7,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.42,
+     "octaves": 1
+    },
+    {
+     "id": "dark_low",
      "op": "gradient",
      "axis": "y",
-     "amount": -0.6
+     "amount": 0.6
     },
     {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.5,
-     "highlight": 0.9,
-     "shadow": -1.0,
-     "jitter": 0.6,
+     "id": "saddle",
+     "op": "patches",
+     "scale": 2.2,
+     "threshold": 0.56,
+     "shift": -1.8,
+     "octaves": 2,
      "faces": [
       "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.4,
-     "threshold": 0.64,
-     "ramp": "pale",
-     "tone": 7.0,
+      "sides",
+      "front",
+      "back"
+     ],
      "bevel": {
       "shadow": 1,
       "highlight": 0,
-      "shadow_ramp": "hide",
-      "shadow_shift": -1.0
+      "shadow_shift": -0.8
      },
      "seed": 4
     },
     {
-     "id": "speckle",
-     "op": "spots",
-     "count": 10,
-     "radius": [
-      0.25,
-      0.45
-     ],
-     "ramp": "chorus",
-     "tone": 3.6,
-     "post": true,
-     "min_gap": 0.8
+     "id": "bumps",
+     "op": "speckle",
+     "density": 0.02,
+     "shift": 1.4
     },
     {
-     "id": "speckle_lt",
+     "id": "freckle",
      "op": "spots",
-     "count": 8,
+     "count": 4,
      "radius": [
-      0.25,
-      0.35
+      0.3,
+      0.5
      ],
-     "ramp": "pale",
-     "tone": 9.0,
+     "ramp": "chorus",
+     "tone": 4.6,
      "post": true,
-     "min_gap": 0.8,
+     "min_gap": 2.5,
      "faces": [
       "top",
       "sides"
      ]
     },
     {
-     "id": "belly",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.35,
-     "ramp": "pale",
-     "tone": 7.6,
-     "wobble": 0.25,
-     "faces": [
-      "sides",
-      "front",
-      "back",
-      "bottom"
-     ]
-    },
-    {
      "id": "lip",
      "op": "band",
      "axis": "y",
      "from": -1.01,
-     "to": -0.7,
+     "to": -0.55,
      "ramp": "hide",
-     "tone": 3.0,
+     "tone": 4.0,
      "faces": [
-      "sides",
-      "front"
-     ]
-    }
-   ]
-  },
-  "hide_snout": {
-   "ramp": "hide",
-   "tone": 7.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.5,
-     "ramp": "hide",
-     "tone": 3.0,
-     "faces": [
-      "sides",
-      "front"
+      "sides"
      ]
     }
    ],
    "stamps": [
     {
-     "face": "top",
+     "face": "front",
      "at": "top-left",
      "art": [
-      "....................",
-      "....n..........n....",
-      "...nN..........Nn..."
+      "..............",
+      "...n......n...",
+      "..............",
+      ".yy........yy."
      ],
      "key": {
       "n": "hide:2",
-      "N": "hide:0"
+      "y": "pale:9"
      }
     }
    ]
   },
   "hide_jaw": {
-   "ramp": "pale",
-   "tone": 7.0,
+   "ramp": "hide",
+   "tone": 5.8,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "z"
+    "light_shift": 1.2,
+    "dark_shift": -1.0,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "lip",
-     "op": "band",
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.7,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.42,
+     "octaves": 1
+    },
+    {
+     "id": "dark_low",
+     "op": "gradient",
      "axis": "y",
-     "from": 0.4,
-     "to": 1.01,
-     "ramp": "hide",
-     "tone": 4.6,
-     "faces": [
-      "sides",
-      "front"
-     ]
+     "amount": 0.6
     },
     {
      "id": "mouth",
@@ -640,214 +490,136 @@
      "tone": 3.4,
      "faces": [
       "top"
-     ],
-     "wobble": 0.2
-    },
-    {
-     "id": "folds",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.5,
-     "width": 0.25,
-     "shift": -1.0,
-     "faces": [
-      "bottom"
      ]
     },
     {
-     "id": "speckle",
-     "op": "spots",
-     "count": 6,
-     "radius": [
-      0.25,
-      0.45
-     ],
-     "ramp": "chorus",
-     "tone": 3.6,
-     "post": true,
-     "min_gap": 0.8
-    }
-   ]
-  },
-  "eye": {
-   "ramp": "gleye",
-   "tone": 3.0,
-   "light": 0.4,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.0,
-    "dark_shift": -1.0
-   },
-   "stamps": [
-    {
-     "face": "top",
-     "at": "top-left",
-     "art": [
-      ".....",
-      "..p..",
-      "..p..",
-      "w.p..",
-      ".....",
-      "....."
-     ],
-     "key": {
-      "p": "claw:0",
-      "w": "gleye:5"
-     }
-    },
-    {
+     "id": "chin",
+     "op": "fill",
+     "ramp": "pale",
+     "tone": 6.4,
      "faces": [
-      "left",
-      "right"
-     ],
-     "at": "top-left",
-     "art": [
-      "......",
-      "..pp..",
-      "......"
-     ],
-     "key": {
-      "p": "claw:0"
-     }
-    },
+      "bottom"
+     ]
+    }
+   ],
+   "stamps": [
     {
      "face": "front",
      "at": "top-left",
      "art": [
-      "w..p.",
-      "..p.."
+      "y.y.yy.yy.y.y",
+      "............."
      ],
      "key": {
-      "p": "claw:0",
-      "w": "gleye:5"
+      "y": "pale:9"
      }
     }
    ]
   },
-  "teeth": {
-   "ramp": "endstone",
-   "tone": 9,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "y": "endstone:8"
-   }
-  },
   "sac": {
    "ramp": "sac",
    "tone": 5.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
     "light_shift": 1.4,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "x",
-    "rough": 0.4
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "veins",
-     "op": "cracks",
-     "scale": 1.2,
-     "width": 0.05,
-     "ramp": "sac",
-     "tone": 2.2
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.8,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.48,
+     "octaves": 1
+    },
+    {
+     "id": "dark_low",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.6
     },
     {
      "id": "folds",
      "op": "stripes",
      "axis": "x",
-     "period": 1.5,
-     "width": 0.25,
-     "shift": -0.9,
+     "period": 3.0,
+     "width": 0.2,
+     "shift": -1.0,
      "faces": [
       "bottom",
       "front",
       "back"
      ]
-    },
-    {
-     "id": "speckle",
-     "op": "spots",
-     "count": 5,
-     "radius": [
-      0.25,
-      0.45
-     ],
-     "ramp": "hide",
-     "tone": 4.0,
-     "post": true,
-     "min_gap": 0.8
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.6,
-     "shift": 1.4
     }
    ]
   },
   "hide_tail": {
    "ramp": "hide",
-   "tone": 6.4,
+   "tone": 7.2,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "z"
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "dark_back",
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.7,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.42,
+     "octaves": 1
+    },
+    {
+     "id": "dark_low",
      "op": "gradient",
      "axis": "y",
-     "amount": -0.6
+     "amount": 0.6
     },
     {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.5,
-     "highlight": 0.9,
-     "shadow": -1.0,
-     "jitter": 0.6,
+     "id": "saddle",
+     "op": "patches",
+     "scale": 2.2,
+     "threshold": 0.56,
+     "shift": -1.8,
+     "octaves": 2,
      "faces": [
       "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.4,
-     "threshold": 0.64,
-     "ramp": "pale",
-     "tone": 7.0,
+      "sides",
+      "front",
+      "back"
+     ],
      "bevel": {
       "shadow": 1,
       "highlight": 0,
-      "shadow_ramp": "hide",
-      "shadow_shift": -1.0
+      "shadow_shift": -0.8
      },
      "seed": 7
     },
@@ -856,9 +628,9 @@
      "op": "band",
      "axis": "y",
      "from": -1.01,
-     "to": -0.35,
+     "to": -0.5,
      "ramp": "pale",
-     "tone": 7.6,
+     "tone": 7.0,
      "wobble": 0.25,
      "faces": [
       "sides",
@@ -868,117 +640,112 @@
      ]
     },
     {
-     "id": "rings",
-     "op": "stripes",
-     "axis": "z",
-     "period": 3.0,
-     "width": 0.18,
-     "shift": -1.2,
-     "wobble": 0.4,
-     "faces": [
-      "sides",
-      "top"
-     ]
+     "id": "bumps",
+     "op": "speckle",
+     "density": 0.02,
+     "shift": 1.4
     },
     {
-     "id": "speckle",
+     "id": "freckle",
      "op": "spots",
-     "count": 14,
+     "count": 3,
      "radius": [
-      0.25,
-      0.45
+      0.3,
+      0.5
      ],
      "ramp": "chorus",
-     "tone": 3.6,
+     "tone": 4.6,
      "post": true,
-     "min_gap": 0.8
-    },
-    {
-     "id": "speckle_lt",
-     "op": "spots",
-     "count": 8,
-     "radius": [
-      0.25,
-      0.35
-     ],
-     "ramp": "pale",
-     "tone": 9.0,
-     "post": true,
-     "min_gap": 0.8,
+     "min_gap": 2.5,
      "faces": [
       "top",
       "sides"
+     ]
+    },
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "z",
+     "period": 4.5,
+     "width": 0.2,
+     "shift": -1.2,
+     "faces": [
+      "sides",
+      "top"
      ]
     }
    ]
   },
   "hide_leg": {
    "ramp": "hide",
-   "tone": 6.2,
+   "tone": 7.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "y"
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.5,
-     "highlight": 0.9,
-     "shadow": -1.0,
-     "jitter": 0.6,
-     "faces": [
-      "top",
-      "sides"
-     ]
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.7,
+     "octaves": 2
     },
     {
-     "id": "blotch",
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.42,
+     "octaves": 1
+    },
+    {
+     "id": "dark_low",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.6
+    },
+    {
+     "id": "saddle",
      "op": "patches",
-     "scale": 2.4,
-     "threshold": 0.64,
-     "ramp": "pale",
-     "tone": 7.0,
+     "scale": 2.2,
+     "threshold": 0.56,
+     "shift": -1.8,
+     "octaves": 2,
+     "faces": [
+      "top",
+      "sides",
+      "front",
+      "back"
+     ],
      "bevel": {
       "shadow": 1,
       "highlight": 0,
-      "shadow_ramp": "hide",
-      "shadow_shift": -1.0
+      "shadow_shift": -0.8
      },
      "seed": 9
     },
     {
-     "id": "speckle",
-     "op": "spots",
-     "count": 6,
-     "radius": [
-      0.25,
-      0.45
-     ],
-     "ramp": "chorus",
-     "tone": 3.6,
-     "post": true,
-     "min_gap": 0.8
+     "id": "bumps",
+     "op": "speckle",
+     "density": 0.02,
+     "shift": 1.4
     },
     {
      "id": "under",
      "op": "band",
-     "axis": "x",
+     "axis": "y",
      "from": -1.01,
      "to": -0.4,
      "ramp": "pale",
-     "tone": 7.0,
+     "tone": 6.6,
      "faces": [
       "sides"
      ]
@@ -987,17 +754,34 @@
   },
   "hide_foot": {
    "ramp": "hide",
-   "tone": 5.8,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
+   "tone": 6.6,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.0,
+    "threshold": 0.2
+   },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.8,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.48,
+     "octaves": 1
+    },
     {
      "id": "sole",
      "op": "fill",
@@ -1006,69 +790,55 @@
      "faces": [
       "bottom"
      ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "top",
+     "at": "bottom-left",
+     "art": [
+      "c.c.c"
+     ],
+     "key": {
+      "c": "hide:1"
+     }
     },
     {
-     "id": "speckle",
-     "op": "spots",
-     "count": 4,
-     "radius": [
-      0.25,
-      0.45
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "c.c.c"
      ],
-     "ramp": "chorus",
-     "tone": 3.6,
-     "post": true,
-     "min_gap": 0.8
+     "key": {
+      "c": "hide:1"
+     }
     }
    ]
-  },
-  "toe": {
-   "ramp": "hide",
-   "tone": 6.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "pad",
-     "op": "band",
-     "axis": "z",
-     "from": 0.4,
-     "to": 1.01,
-     "ramp": "pale",
-     "tone": 8.0
-    }
-   ]
-  },
-  "claw": {
-   "ramp": "claw",
-   "tone": 2,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "c": "claw:3",
-    "C": "claw:1"
-   }
   },
   "fin": {
    "ramp": "hide",
-   "tone": 7,
-   "light": 0.2,
+   "tone": 6,
+   "light": 0.3,
    "brush": {
     "off": true
    },
+   "dither": 0.5,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.6,
+     "octaves": 2
+    }
+   ],
    "art_key": {
-    "t": "hide:9",
-    "m": "hide:7",
-    "f": "hide:5"
+    "f": "hide:9",
+    "m": "hide:6"
    }
   },
   "hide": {
@@ -1081,62 +851,14 @@
    "id": "body",
    "shape": "box",
    "size": [
-    13.0,
-    6.0,
-    16.0
+    14,
+    7,
+    18
    ],
    "pivot": [
     0.0,
-    7.6378,
+    7.0001,
     0.0
-   ],
-   "style": "hide_body"
-  },
-  {
-   "id": "belly",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    14.0,
-    2.5,
-    14.0
-   ],
-   "pivot": [
-    0.0,
-    -2.0,
-    0.0
-   ],
-   "style": "hide_belly"
-  },
-  {
-   "id": "back",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    10.0,
-    1.5,
-    14.0
-   ],
-   "pivot": [
-    0.0,
-    3.5,
-    -0.5
-   ],
-   "style": "hide_back"
-  },
-  {
-   "id": "shoulders",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    12.0,
-    5.0,
-    4.0
-   ],
-   "pivot": [
-    0.0,
-    0.2,
-    7.6
    ],
    "style": "hide_body"
   },
@@ -1145,30 +867,35 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    3.0,
-    0.5,
-    13.0
+    4,
+    1,
+    14
    ],
    "pivot": [
     0.0,
-    4.5,
+    3.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
     -0.5
    ],
-   "style": "hide_back"
+   "style": "hide_ridge"
   },
   {
    "id": "vent_0",
    "shape": "box",
    "parent": "vents",
    "size": [
-    2.5,
-    1.0,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    0.4,
-    5.0
+    1.5,
+    4.5
    ],
    "style": "vent"
   },
@@ -1177,14 +904,14 @@
    "shape": "box",
    "parent": "vents",
    "size": [
-    2.5,
-    1.0,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    0.4,
-    2.5
+    1.5,
+    2.0
    ],
    "style": "vent"
   },
@@ -1193,14 +920,14 @@
    "shape": "box",
    "parent": "vents",
    "size": [
-    2.5,
-    1.0,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    0.4,
-    0.0
+    1.5,
+    -0.5
    ],
    "style": "vent"
   },
@@ -1209,14 +936,14 @@
    "shape": "box",
    "parent": "vents",
    "size": [
-    2.5,
-    1.0,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    0.4,
-    -2.5
+    1.5,
+    -3.0
    ],
    "style": "vent"
   },
@@ -1225,526 +952,118 @@
    "shape": "box",
    "parent": "vents",
    "size": [
-    2.5,
-    1.0,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    0.4,
-    -5.0
+    1.5,
+    -5.5
    ],
    "style": "vent"
-  },
-  {
-   "id": "wart_l0",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    5.9,
-    2.4,
-    5.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -20.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_l1",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    5.9,
-    2.6,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -20.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_l2",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    5.9,
-    2.5,
-    -3.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -20.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_l3",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    5.9,
-    2.2,
-    -6.5
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -20.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r0",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    -5.9,
-    2.4,
-    5.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    20.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r1",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    -5.9,
-    2.6,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    20.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r2",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    -5.9,
-    2.5,
-    -3.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    20.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r3",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.0,
-    1.0,
-    1.5
-   ],
-   "pivot": [
-    -5.9,
-    2.2,
-    -6.5
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    20.0
-   ],
-   "style": "wart"
   },
   {
    "id": "head",
    "shape": "box",
    "parent": "body",
    "size": [
-    12.0,
-    3.5,
-    11.0
+    14,
+    4,
+    10
    ],
    "pivot": [
     0.0,
     0.5,
-    7.5
+    9.0
    ],
    "offset": [
     0.0,
-    0.5,
-    5.5
-   ],
-   "style": "hide_head"
-  },
-  {
-   "id": "jowls",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    13.0,
-    3.0,
+    1.0,
     5.0
-   ],
-   "pivot": [
-    0.0,
-    0.1,
-    3.0
-   ],
-   "style": "hide_head"
-  },
-  {
-   "id": "snout",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    10.0,
-    2.5,
-    1.5
-   ],
-   "pivot": [
-    0.0,
-    0.2,
-    11.7
-   ],
-   "style": "hide_snout"
-  },
-  {
-   "id": "eye_dome_l",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    3.0,
-    2.0,
-    3.5
-   ],
-   "pivot": [
-    4.0,
-    2.6,
-    4.1
    ],
    "style": "hide_head"
   },
   {
    "id": "eye_l",
    "shape": "box",
-   "parent": "eye_dome_l",
-   "size": [
-    2.5,
-    1.5,
-    3.0
-   ],
-   "pivot": [
-    0.1,
-    0.65,
-    0.2
-   ],
-   "style": "eye"
-  },
-  {
-   "id": "brow_l",
-   "shape": "box",
-   "parent": "eye_dome_l",
-   "size": [
-    2.0,
-    1.0,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.9,
-    2.0
-   ],
-   "rotation": [
-    -20.0,
-    0.0,
-    0.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "eye_dome_r",
-   "shape": "box",
    "parent": "head",
    "size": [
-    3.0,
-    2.0,
-    3.5
+    3,
+    2,
+    3
    ],
    "pivot": [
-    -4.0,
-    2.6,
-    4.1
+    4.5,
+    3.0,
+    4.5
    ],
-   "style": "hide_head"
+   "offset": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "eye_dome"
   },
   {
    "id": "eye_r",
    "shape": "box",
-   "parent": "eye_dome_r",
+   "parent": "head",
    "size": [
-    2.5,
-    1.5,
-    3.0
+    3,
+    2,
+    3
    ],
    "pivot": [
-    -0.1,
-    0.65,
-    0.2
+    -4.5,
+    3.0,
+    4.5
    ],
-   "style": "eye"
-  },
-  {
-   "id": "brow_r",
-   "shape": "box",
-   "parent": "eye_dome_r",
-   "size": [
-    2.0,
+   "offset": [
+    0.0,
     1.0,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.9,
-    2.0
-   ],
-   "rotation": [
-    -20.0,
-    0.0,
     0.0
    ],
-   "style": "wart"
+   "style": "eye_dome"
   },
   {
    "id": "jaw",
    "shape": "box",
    "parent": "head",
    "size": [
-    11.5,
-    2.0,
-    11.0
+    13,
+    2,
+    10
    ],
    "pivot": [
     0.0,
     -1.0,
-    0.5
+    1.0
    ],
    "offset": [
     0.0,
     -1.0,
-    5.5
-   ],
-   "style": "hide_jaw"
-  },
-  {
-   "id": "chin",
-   "shape": "box",
-   "parent": "jaw",
-   "size": [
-    9.5,
-    1.5,
-    1.5
-   ],
-   "pivot": [
-    0.0,
-    -1.05,
-    11.25
-   ],
-   "style": "hide_jaw"
-  },
-  {
-   "id": "teeth_up_f",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    0.0,
-    -1.25,
-    10.8
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "xy",
-   "art": [
-    "yyyyyyyyyyyyyyyyyy",
-    "y.y.y.y.y.y.y.y.y.",
-    "y.....y.y.y.y...y."
-   ]
-  },
-  {
-   "id": "teeth_lo_f",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    0.0,
-    0.0,
-    10.0
-   ],
-   "offset": [
-    0.0,
-    0.75,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "xy",
-   "art": [
-    ".y.y.....y.y....",
-    ".y.y.y.y.y.y.y.y",
-    "yyyyyyyyyyyyyyyy"
-   ]
-  },
-  {
-   "id": "teeth_up_l",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    5.6,
-    -1.25,
-    6.0
-   ],
-   "offset": [
-    0.0,
-    -0.5,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "yz",
-   "art": [
-    "yyyyyyyyyyyyyyyy",
-    "y.y.y.y.y.y....."
-   ]
-  },
-  {
-   "id": "teeth_lo_l",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    5.3,
-    0.0,
     5.0
    ],
-   "offset": [
-    0.0,
-    0.5,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "yz",
-   "art": [
-    "....y.y.y.y.y...",
-    "yyyyyyyyyyyyyyyy"
-   ]
-  },
-  {
-   "id": "teeth_up_r",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    -5.6,
-    -1.25,
-    6.0
-   ],
-   "offset": [
-    0.0,
-    -0.5,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "yz",
-   "art": [
-    "yyyyyyyyyyyyyyyy",
-    "....y.y.....y.y."
-   ]
-  },
-  {
-   "id": "teeth_lo_r",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    -5.3,
-    0.0,
-    5.0
-   ],
-   "offset": [
-    0.0,
-    0.5,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "yz",
-   "art": [
-    "y.y.y.y.y.y.....",
-    "yyyyyyyyyyyyyyyy"
-   ]
+   "style": "hide_jaw"
   },
   {
    "id": "throat",
    "shape": "box",
    "parent": "jaw",
    "size": [
-    8.0,
-    2.0,
-    7.0
+    8,
+    2,
+    7
    ],
    "pivot": [
     0.0,
-    -1.9,
+    -2.0,
     4.5
    ],
    "offset": [
     0.0,
-    -0.75,
+    -1.0,
     0.0
    ],
    "style": "sac"
@@ -1754,18 +1073,18 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    9.0,
-    5.0,
-    8.0
+    10,
+    6,
+    8
    ],
    "pivot": [
     0.0,
     0.5,
-    -7.5
+    -9.0
    ],
    "offset": [
     0.0,
-    0.0,
+    -0.5,
     -4.0
    ],
    "rotation": [
@@ -1780,14 +1099,14 @@
    "shape": "box",
    "parent": "tail_0",
    "size": [
-    7.0,
-    4.0,
-    8.0
+    7,
+    4,
+    8
    ],
    "pivot": [
-    -0.0,
-    -0.3,
-    -7.5
+    0.0,
+    -0.5,
+    -8.0
    ],
    "offset": [
     0.0,
@@ -1806,19 +1125,19 @@
    "shape": "box",
    "parent": "tail_1",
    "size": [
-    5.0,
-    3.0,
-    8.5
+    5,
+    3,
+    8
    ],
    "pivot": [
     0.0,
     -0.3,
-    -7.5
+    -8.0
    ],
    "offset": [
     0.0,
     0.0,
-    -4.25
+    -4.0
    ],
    "rotation": [
     -4.0,
@@ -1826,28 +1145,6 @@
     0.0
    ],
    "style": "hide_tail"
-  },
-  {
-   "id": "tail_0_fin",
-   "shape": "card",
-   "parent": "tail_0",
-   "pivot": [
-    0.0,
-    2.5,
-    -4.0
-   ],
-   "offset": [
-    0.0,
-    0.75,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "t....t..t.....",
-    "fttttfttft...t",
-    "ffffffffff...f"
-   ]
   },
   {
    "id": "tail_1_fin",
@@ -1860,16 +1157,15 @@
    ],
    "offset": [
     0.0,
-    1.0,
+    1.5,
     0.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "...t..........",
-    "..tmttt.....tt",
-    "..fffff.ttttff",
-    "..ffffftffffff"
+    "..ffff.ff.",
+    ".fmmmmfmmf",
+    "fmmmmmmmmf"
    ]
   },
   {
@@ -1879,88 +1175,19 @@
    "pivot": [
     -0.0,
     1.5,
-    -4.25
+    -4.0
    ],
    "offset": [
     0.0,
-    1.0,
+    1.5,
     0.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    ".t.........t....",
-    "tmt.......tmt.t.",
-    "fff......tffftft",
-    "fff......fffffff"
-   ]
-  },
-  {
-   "id": "tail_2_keel",
-   "shape": "card",
-   "parent": "tail_2",
-   "pivot": [
-    0.0,
-    -1.5,
-    -5.0
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "ffffffffffff",
-    "tfttfftttttt",
-    ".t..tt......"
-   ]
-  },
-  {
-   "id": "tail_tip",
-   "shape": "card",
-   "parent": "tail_2",
-   "pivot": [
-    -0.0,
-    0.0,
-    -8.5
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    -1.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "..t.",
-    ".tf.",
-    "tff.",
-    ".tf.",
-    "..t."
-   ]
-  },
-  {
-   "id": "crest",
-   "shape": "card",
-   "parent": "body",
-   "pivot": [
-    0.0,
-    4.25,
-    -7.0
-   ],
-   "offset": [
-    0.0,
-    0.75,
-    -0.5
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    ".........t.......t.....t..",
-    ".t.t..t..f.t..tfffff...f..",
-    "ffffffffffffffffffffffffft"
+    "..fff.ff.",
+    ".fmmmfmmf",
+    "fmmmmmmmf"
    ]
   },
   {
@@ -1968,18 +1195,18 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    4.5,
-    3.5
+    4,
+    5,
+    4
    ],
    "pivot": [
-    5.5,
+    6.5,
     0.0,
-    5.5
+    6.0
    ],
    "offset": [
     0.0,
-    -1.375,
+    -1.5,
     0.0
    ],
    "rotation": [
@@ -1994,18 +1221,18 @@
    "shape": "box",
    "parent": "leg_fl",
    "size": [
-    2.5,
-    5.5,
-    2.5
+    3,
+    5,
+    3
    ],
    "pivot": [
     0.0,
-    -4.5,
+    -5.0,
     -0.0
    ],
    "offset": [
     0.0,
-    -2.125,
+    -1.75,
     0.0
    ],
    "rotation": [
@@ -2020,19 +1247,19 @@
    "shape": "box",
    "parent": "fore_fl",
    "size": [
-    4.0,
-    1.0,
-    4.5
+    5,
+    1,
+    6
    ],
    "pivot": [
     -0.0,
-    -5.5,
+    -5.0,
     -0.0
    ],
    "offset": [
-    0.3709,
-    -0.3198,
-    0.1498
+    0.089,
+    -0.7061,
+    1.1145
    ],
    "rotation": [
     11.965,
@@ -2042,230 +1269,22 @@
    "style": "hide_foot"
   },
   {
-   "id": "toe_fl0",
-   "shape": "box",
-   "parent": "foot_fl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fl0",
-   "shape": "card",
-   "parent": "toe_fl0",
-   "pivot": [
-    -0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_fl1",
-   "shape": "box",
-   "parent": "foot_fl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fl1",
-   "shape": "card",
-   "parent": "toe_fl1",
-   "pivot": [
-    0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_fl2",
-   "shape": "box",
-   "parent": "foot_fl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fl2",
-   "shape": "card",
-   "parent": "toe_fl2",
-   "pivot": [
-    -0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_fl3",
-   "shape": "box",
-   "parent": "foot_fl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fl3",
-   "shape": "card",
-   "parent": "toe_fl3",
-   "pivot": [
-    -0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
    "id": "leg_fr",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    4.5,
-    3.5
+    4,
+    5,
+    4
    ],
    "pivot": [
-    -5.5,
+    -6.5,
     0.0,
-    5.5
+    6.0
    ],
    "offset": [
     0.0,
-    -1.375,
+    -1.5,
     0.0
    ],
    "rotation": [
@@ -2280,18 +1299,18 @@
    "shape": "box",
    "parent": "leg_fr",
    "size": [
-    2.5,
-    5.5,
-    2.5
+    3,
+    5,
+    3
    ],
    "pivot": [
     -0.0,
-    -4.5,
+    -5.0,
     -0.0
    ],
    "offset": [
     0.0,
-    -2.125,
+    -1.75,
     0.0
    ],
    "rotation": [
@@ -2306,19 +1325,19 @@
    "shape": "box",
    "parent": "fore_fr",
    "size": [
-    4.0,
-    1.0,
-    4.5
+    5,
+    1,
+    6
    ],
    "pivot": [
     0.0,
-    -5.5,
+    -5.0,
     -0.0
    ],
    "offset": [
-    -0.3709,
-    -0.3198,
-    0.1498
+    -0.089,
+    -0.7061,
+    1.1145
    ],
    "rotation": [
     11.965,
@@ -2328,230 +1347,22 @@
    "style": "hide_foot"
   },
   {
-   "id": "toe_fr0",
-   "shape": "box",
-   "parent": "foot_fr",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fr0",
-   "shape": "card",
-   "parent": "toe_fr0",
-   "pivot": [
-    0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_fr1",
-   "shape": "box",
-   "parent": "foot_fr",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fr1",
-   "shape": "card",
-   "parent": "toe_fr1",
-   "pivot": [
-    0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_fr2",
-   "shape": "box",
-   "parent": "foot_fr",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fr2",
-   "shape": "card",
-   "parent": "toe_fr2",
-   "pivot": [
-    -0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_fr3",
-   "shape": "box",
-   "parent": "foot_fr",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_fr3",
-   "shape": "card",
-   "parent": "toe_fr3",
-   "pivot": [
-    0.0,
-    0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
    "id": "leg_bl",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    4.5,
-    3.5
+    4,
+    5,
+    4
    ],
    "pivot": [
-    5.5,
+    6.5,
     0.0,
-    -5.5
+    -6.0
    ],
    "offset": [
     0.0,
-    -1.375,
+    -1.5,
     0.0
    ],
    "rotation": [
@@ -2566,18 +1377,18 @@
    "shape": "box",
    "parent": "leg_bl",
    "size": [
-    2.5,
-    5.5,
-    2.5
+    3,
+    5,
+    3
    ],
    "pivot": [
     0.0,
-    -4.5,
+    -5.0,
     0.0
    ],
    "offset": [
     0.0,
-    -2.125,
+    -1.75,
     0.0
    ],
    "rotation": [
@@ -2592,252 +1403,44 @@
    "shape": "box",
    "parent": "fore_bl",
    "size": [
-    4.0,
-    1.0,
-    4.5
+    5,
+    1,
+    6
    ],
    "pivot": [
     0.0,
-    -5.5,
+    -5.0,
     -0.0
    ],
    "offset": [
-    0.1878,
-    -0.2617,
-    0.3532
+    -0.5831,
+    -0.6545,
+    0.9539
    ],
    "rotation": [
-    -13.399,
-    60.123,
-    -21.943
+    -11.982,
+    56.22,
+    -20.277
    ],
    "style": "hide_foot"
-  },
-  {
-   "id": "toe_bl0",
-   "shape": "box",
-   "parent": "foot_bl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_bl0",
-   "shape": "card",
-   "parent": "toe_bl0",
-   "pivot": [
-    -0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_bl1",
-   "shape": "box",
-   "parent": "foot_bl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_bl1",
-   "shape": "card",
-   "parent": "toe_bl1",
-   "pivot": [
-    -0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_bl2",
-   "shape": "box",
-   "parent": "foot_bl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_bl2",
-   "shape": "card",
-   "parent": "toe_bl2",
-   "pivot": [
-    -0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_bl3",
-   "shape": "box",
-   "parent": "foot_bl",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_bl3",
-   "shape": "card",
-   "parent": "toe_bl3",
-   "pivot": [
-    -0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
   },
   {
    "id": "leg_br",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    4.5,
-    3.5
+    4,
+    5,
+    4
    ],
    "pivot": [
-    -5.5,
+    -6.5,
     0.0,
-    -5.5
+    -6.0
    ],
    "offset": [
     0.0,
-    -1.375,
+    -1.5,
     0.0
    ],
    "rotation": [
@@ -2852,18 +1455,18 @@
    "shape": "box",
    "parent": "leg_br",
    "size": [
-    2.5,
-    5.5,
-    2.5
+    3,
+    5,
+    3
    ],
    "pivot": [
     -0.0,
-    -4.5,
+    -5.0,
     0.0
    ],
    "offset": [
     0.0,
-    -2.125,
+    -1.75,
     0.0
    ],
    "rotation": [
@@ -2878,234 +1481,26 @@
    "shape": "box",
    "parent": "fore_br",
    "size": [
-    4.0,
-    1.0,
-    4.5
+    5,
+    1,
+    6
    ],
    "pivot": [
     -0.0,
-    -5.5,
+    -5.0,
     -0.0
    ],
    "offset": [
-    -0.1878,
-    -0.2617,
-    0.3532
+    0.5831,
+    -0.6545,
+    0.9539
    ],
    "rotation": [
-    -13.399,
-    -60.123,
-    21.943
+    -11.982,
+    -56.22,
+    20.277
    ],
    "style": "hide_foot"
-  },
-  {
-   "id": "toe_br0",
-   "shape": "box",
-   "parent": "foot_br",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_br0",
-   "shape": "card",
-   "parent": "toe_br0",
-   "pivot": [
-    0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_br1",
-   "shape": "box",
-   "parent": "foot_br",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    -0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_br1",
-   "shape": "card",
-   "parent": "toe_br1",
-   "pivot": [
-    0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_br2",
-   "shape": "box",
-   "parent": "foot_br",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    0.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    8.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_br2",
-   "shape": "card",
-   "parent": "toe_br2",
-   "pivot": [
-    0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
-  },
-  {
-   "id": "toe_br3",
-   "shape": "box",
-   "parent": "foot_br",
-   "size": [
-    1.0,
-    0.5,
-    2.5
-   ],
-   "pivot": [
-    1.5,
-    -0.75,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    26.0,
-    0.0
-   ],
-   "style": "toe"
-  },
-  {
-   "id": "claw_br3",
-   "shape": "card",
-   "parent": "toe_br3",
-   "pivot": [
-    0.0,
-    -0.0,
-    2.5
-   ],
-   "offset": [
-    0.0,
-    -0.25,
-    0.25
-   ],
-   "rotation": [
-    -30.0,
-    0.0,
-    0.0
-   ],
-   "style": "claw",
-   "plane": "yz",
-   "art": [
-    "c",
-    "C"
-   ]
   }
  ],
  "animations": {
@@ -3271,7 +1666,7 @@
        0.0,
        [
         0.0,
-        0.0,
+        -0.0,
         0.0
        ]
       ],
@@ -3279,7 +1674,7 @@
        2.9833,
        [
         0.0,
-        -0.016,
+        -0.015,
         0.0
        ]
       ]
@@ -3675,41 +2070,41 @@
       [
        0.08,
        [
-        33.84,
-        22.764,
-        36.016
+        35.392,
+        22.739,
+        34.52
        ]
       ],
       [
        0.352,
        [
-        20.099,
-        31.136,
-        -17.429
+        17.824,
+        31.144,
+        -19.719
        ]
       ],
       [
        0.576,
        [
-        14.744,
-        0.688,
-        -32.402
+        12.565,
+        0.159,
+        -33.363
        ]
       ],
       [
        0.8,
        [
-        2.066,
-        -15.29,
-        -5.756
+        1.685,
+        -15.308,
+        -5.782
        ]
       ],
       [
        1.28,
        [
-        1.357,
-        4.202,
-        3.033
+        1.559,
+        4.198,
+        2.946
        ]
       ]
      ],
@@ -3816,41 +2211,41 @@
       [
        0.0,
        [
-        2.066,
-        15.29,
-        5.756
+        1.685,
+        15.308,
+        5.782
        ]
       ],
       [
        0.48,
        [
-        1.357,
-        -4.202,
-        -3.033
+        1.559,
+        -4.198,
+        -2.946
        ]
       ],
       [
        0.88,
        [
-        33.84,
-        -22.764,
-        -36.016
+        35.392,
+        -22.739,
+        -34.52
        ]
       ],
       [
        1.152,
        [
-        20.099,
-        -31.136,
-        17.429
+        17.824,
+        -31.144,
+        19.719
        ]
       ],
       [
        1.376,
        [
-        14.744,
-        -0.688,
-        32.402
+        12.565,
+        -0.159,
+        33.363
        ]
       ]
      ],
@@ -3976,7 +2371,7 @@
        0.0,
        [
         0.0,
-        0.982,
+        1.679,
         0.0
        ]
       ],
@@ -3984,7 +2379,7 @@
        0.05,
        [
         0.0,
-        0.925,
+        1.607,
         0.0
        ]
       ],
@@ -3992,7 +2387,7 @@
        0.0833,
        [
         0.0,
-        0.808,
+        1.479,
         0.0
        ]
       ],
@@ -4000,71 +2395,71 @@
        0.1,
        [
         0.0,
-        0.698,
+        1.34,
         0.0
        ]
       ],
       [
-       0.35,
+       0.1167,
        [
         0.0,
-        0.452,
+        1.156,
         0.0
        ]
       ],
       [
-       0.3833,
+       0.15,
        [
         0.0,
-        0.384,
+        0.717,
         0.0
        ]
       ],
       [
-       0.5,
+       0.4,
        [
         0.0,
-        0.687,
+        0.482,
         0.0
        ]
       ],
       [
-       0.5833,
+       0.5167,
        [
         0.0,
-        0.694,
+        0.838,
         0.0
        ]
       ],
       [
-       0.6167,
+       0.6833,
        [
         0.0,
-        0.651,
+        1.578,
         0.0
        ]
       ],
       [
-       0.7,
+       0.75,
        [
         0.0,
-        0.928,
+        1.702,
         0.0
        ]
       ],
       [
-       0.7833,
+       0.8167,
        [
         0.0,
-        0.999,
+        1.651,
         0.0
        ]
       ],
       [
-       0.85,
+       0.8667,
        [
         0.0,
-        0.867,
+        1.478,
         0.0
        ]
       ],
@@ -4072,15 +2467,23 @@
        0.8833,
        [
         0.0,
-        0.754,
+        1.384,
         0.0
        ]
       ],
       [
-       1.0333,
+       0.9,
        [
         0.0,
-        0.582,
+        1.229,
+        0.0
+       ]
+      ],
+      [
+       0.9333,
+       [
+        0.0,
+        0.795,
         0.0
        ]
       ],
@@ -4088,31 +2491,23 @@
        1.1833,
        [
         0.0,
-        0.127,
+        0.248,
         0.0
        ]
       ],
       [
-       1.3333,
+       1.2,
        [
         0.0,
-        0.464,
+        0.236,
         0.0
        ]
       ],
       [
-       1.4167,
+       1.55,
        [
         0.0,
-        0.429,
-        0.0
-       ]
-      ],
-      [
-       1.45,
-       [
-        0.0,
-        0.395,
+        1.379,
         0.0
        ]
       ],
@@ -4120,7 +2515,7 @@
        1.5833,
        [
         0.0,
-        0.741,
+        1.436,
         0.0
        ]
       ]
@@ -4538,41 +2933,41 @@
       [
        0.04,
        [
-        43.992,
-        29.593,
-        46.821
+        46.01,
+        29.561,
+        44.876
        ]
       ],
       [
        0.176,
        [
-        26.129,
-        40.477,
-        -22.658
+        23.171,
+        40.487,
+        -25.635
        ]
       ],
       [
        0.288,
        [
-        19.167,
-        0.894,
-        -42.123
+        16.334,
+        0.207,
+        -43.372
        ]
       ],
       [
        0.4,
        [
-        2.686,
-        -19.877,
-        -7.483
+        2.191,
+        -19.9,
+        -7.517
        ]
       ],
       [
        0.64,
        [
-        1.764,
-        5.463,
-        3.943
+        2.027,
+        5.457,
+        3.83
        ]
       ]
      ],
@@ -4679,41 +3074,41 @@
       [
        0.0,
        [
-        2.686,
-        19.877,
-        7.483
+        2.191,
+        19.9,
+        7.517
        ]
       ],
       [
        0.24,
        [
-        1.764,
-        -5.463,
-        -3.943
+        2.027,
+        -5.457,
+        -3.83
        ]
       ],
       [
        0.44,
        [
-        43.992,
-        -29.593,
-        -46.821
+        46.01,
+        -29.561,
+        -44.876
        ]
       ],
       [
        0.576,
        [
-        26.129,
-        -40.477,
-        22.658
+        23.171,
+        -40.487,
+        25.635
        ]
       ],
       [
        0.688,
        [
-        19.167,
-        -0.894,
-        42.123
+        16.334,
+        -0.207,
+        43.372
        ]
       ]
      ],
@@ -4800,7 +3195,7 @@
        0.0,
        [
         0.0,
-        1.279,
+        2.022,
         0.0
        ]
       ],
@@ -4808,7 +3203,7 @@
        0.0167,
        [
         0.0,
-        1.191,
+        1.927,
         0.0
        ]
       ],
@@ -4816,7 +3211,7 @@
        0.0333,
        [
         0.0,
-        1.049,
+        1.773,
         0.0
        ]
       ],
@@ -4824,7 +3219,7 @@
        0.05,
        [
         0.0,
-        0.782,
+        1.487,
         0.0
        ]
       ],
@@ -4832,7 +3227,23 @@
        0.0667,
        [
         0.0,
-        0.358,
+        0.981,
+        0.0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0.0,
+        0.394,
+        0.0
+       ]
+      ],
+      [
+       0.1333,
+       [
+        0.0,
+        0.483,
         0.0
        ]
       ],
@@ -4840,7 +3251,15 @@
        0.1667,
        [
         0.0,
-        0.507,
+        0.646,
+        0.0
+       ]
+      ],
+      [
+       0.1833,
+       [
+        0.0,
+        0.697,
         0.0
        ]
       ],
@@ -4848,7 +3267,15 @@
        0.2,
        [
         0.0,
-        0.463,
+        0.707,
+        0.0
+       ]
+      ],
+      [
+       0.2167,
+       [
+        0.0,
+        0.668,
         0.0
        ]
       ],
@@ -4856,7 +3283,7 @@
        0.2333,
        [
         0.0,
-        0.305,
+        0.577,
         0.0
        ]
       ],
@@ -4864,15 +3291,7 @@
        0.25,
        [
         0.0,
-        0.261,
-        0.0
-       ]
-      ],
-      [
-       0.2833,
-       [
-        0.0,
-        0.398,
+        0.62,
         0.0
        ]
       ],
@@ -4880,7 +3299,7 @@
        0.3167,
        [
         0.0,
-        0.864,
+        1.588,
         0.0
        ]
       ],
@@ -4888,7 +3307,7 @@
        0.3333,
        [
         0.0,
-        1.055,
+        1.789,
         0.0
        ]
       ],
@@ -4896,7 +3315,7 @@
        0.35,
        [
         0.0,
-        1.197,
+        1.939,
         0.0
        ]
       ],
@@ -4904,7 +3323,7 @@
        0.3667,
        [
         0.0,
-        1.283,
+        2.029,
         0.0
        ]
       ],
@@ -4912,7 +3331,7 @@
        0.3833,
        [
         0.0,
-        1.309,
+        2.056,
         0.0
        ]
       ],
@@ -4920,7 +3339,7 @@
        0.4,
        [
         0.0,
-        1.277,
+        2.021,
         0.0
        ]
       ],
@@ -4928,7 +3347,7 @@
        0.4167,
        [
         0.0,
-        1.19,
+        1.926,
         0.0
        ]
       ],
@@ -4936,7 +3355,7 @@
        0.4333,
        [
         0.0,
-        1.049,
+        1.773,
         0.0
        ]
       ],
@@ -4944,7 +3363,7 @@
        0.45,
        [
         0.0,
-        0.782,
+        1.487,
         0.0
        ]
       ],
@@ -4952,15 +3371,31 @@
        0.4667,
        [
         0.0,
-        0.684,
+        0.981,
         0.0
        ]
       ],
       [
-       0.5667,
+       0.4833,
        [
         0.0,
-        0.605,
+        0.694,
+        0.0
+       ]
+      ],
+      [
+       0.55,
+       [
+        0.0,
+        0.666,
+        0.0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0.0,
+        0.753,
         0.0
        ]
       ],
@@ -4968,7 +3403,15 @@
        0.6,
        [
         0.0,
-        0.496,
+        0.738,
+        0.0
+       ]
+      ],
+      [
+       0.6167,
+       [
+        0.0,
+        0.68,
         0.0
        ]
       ],
@@ -4976,7 +3419,7 @@
        0.6333,
        [
         0.0,
-        0.306,
+        0.578,
         0.0
        ]
       ],
@@ -4984,39 +3427,23 @@
        0.65,
        [
         0.0,
-        0.26,
+        0.614,
         0.0
        ]
       ],
       [
-       0.6833,
+       0.7167,
        [
         0.0,
-        0.373,
+        1.374,
         0.0
        ]
       ],
       [
-       0.7,
+       0.75,
        [
         0.0,
-        0.49,
-        0.0
-       ]
-      ],
-      [
-       0.7333,
-       [
-        0.0,
-        0.798,
-        0.0
-       ]
-      ],
-      [
-       0.7667,
-       [
-        0.0,
-        0.985,
+        1.641,
         0.0
        ]
       ],
@@ -5024,7 +3451,7 @@
        0.7833,
        [
         0.0,
-        1.026,
+        1.763,
         0.0
        ]
       ]
@@ -5066,17 +3493,17 @@
       [
        0.0,
        [
-        71.904,
-        13.83,
-        58.814
+        74.4,
+        14.835,
+        55.72
        ]
       ],
       [
        2.0,
        [
-        71.904,
-        13.83,
-        58.814
+        74.4,
+        14.835,
+        55.72
        ]
       ]
      ]
@@ -5088,17 +3515,17 @@
       [
        0.0,
        [
-        71.904,
-        -13.83,
-        -58.814
+        74.4,
+        -14.835,
+        -55.72
        ]
       ],
       [
        2.0,
        [
-        71.904,
-        -13.83,
-        -58.814
+        74.4,
+        -14.835,
+        -55.72
        ]
       ]
      ]
@@ -5600,35 +4027,35 @@
       [
        0.0,
        [
-        71.904,
-        13.83,
-        58.814
+        74.4,
+        14.835,
+        55.72
        ]
       ],
       [
        0.15,
        [
-        71.904,
-        13.83,
-        58.814
+        74.4,
+        14.835,
+        55.72
        ],
        "ease"
       ],
       [
        0.34,
        [
-        8.346,
-        -10.331,
-        -16.776
+        7.26,
+        -10.468,
+        -17.114
        ],
        "out"
       ],
       [
        0.5,
        [
-        8.346,
-        -10.331,
-        -16.776
+        7.26,
+        -10.468,
+        -17.114
        ],
        "ease"
       ],
@@ -5650,35 +4077,35 @@
       [
        0.0,
        [
-        71.904,
-        -13.83,
-        -58.814
+        74.4,
+        -14.835,
+        -55.72
        ]
       ],
       [
        0.15,
        [
-        71.904,
-        -13.83,
-        -58.814
+        74.4,
+        -14.835,
+        -55.72
        ],
        "ease"
       ],
       [
        0.34,
        [
-        8.346,
-        10.331,
-        16.776
+        7.26,
+        10.468,
+        17.114
        ],
        "out"
       ],
       [
        0.5,
        [
-        8.346,
-        10.331,
-        16.776
+        7.26,
+        10.468,
+        17.114
        ],
        "ease"
       ],
@@ -6997,7 +5424,7 @@
       [
        0.22,
        [
-        8.0,
+        4.0,
         0.0,
         0.0
        ],
@@ -7006,7 +5433,7 @@
       [
        0.36,
        [
-        4.0,
+        0.0,
         0.0,
         0.0
        ],
@@ -7391,23 +5818,31 @@
        0.0,
        [
         0.0,
-        0.0,
+        -0.0,
         0.0
        ]
       ],
       [
-       0.05,
+       0.0333,
        [
         0.0,
-        0.527,
-        -0.798
+        0.519,
+        -0.548
+       ]
+      ],
+      [
+       0.0667,
+       [
+        0.0,
+        0.95,
+        -1.02
        ]
       ],
       [
        0.0833,
        [
         0.0,
-        0.779,
+        1.116,
         -1.207
        ]
       ],
@@ -7415,7 +5850,7 @@
        0.1,
        [
         0.0,
-        0.865,
+        1.243,
         -1.351
        ]
       ],
@@ -7423,7 +5858,7 @@
        0.1167,
        [
         0.0,
-        0.923,
+        1.328,
         -1.449
        ]
       ],
@@ -7431,7 +5866,7 @@
        0.1333,
        [
         0.0,
-        0.95,
+        1.369,
         -1.496
        ]
       ],
@@ -7439,7 +5874,7 @@
        0.15,
        [
         0.0,
-        0.92,
+        1.326,
         -1.404
        ]
       ],
@@ -7447,7 +5882,7 @@
        0.1667,
        [
         0.0,
-        0.719,
+        1.045,
         -0.83
        ]
       ],
@@ -7455,7 +5890,7 @@
        0.1833,
        [
         0.0,
-        0.334,
+        0.513,
         0.203
        ]
       ],
@@ -7463,7 +5898,7 @@
        0.2,
        [
         0.0,
-        -0.171,
+        -0.164,
         1.587
        ]
       ],
@@ -7471,7 +5906,7 @@
        0.2167,
        [
         0.0,
-        0.256,
+        0.356,
         3.173
        ]
       ],
@@ -7479,7 +5914,7 @@
        0.2333,
        [
         0.0,
-        0.43,
+        0.536,
         3.5
        ]
       ],
@@ -7487,7 +5922,7 @@
        0.3667,
        [
         0.0,
-        0.428,
+        0.533,
         3.48
        ]
       ],
@@ -7495,7 +5930,7 @@
        0.3833,
        [
         0.0,
-        0.402,
+        0.502,
         3.266
        ]
       ],
@@ -7503,7 +5938,7 @@
        0.4,
        [
         0.0,
-        0.353,
+        0.442,
         2.841
        ]
       ],
@@ -7511,7 +5946,7 @@
        0.4167,
        [
         0.0,
-        0.285,
+        0.362,
         2.266
        ]
       ],
@@ -7519,7 +5954,7 @@
        0.45,
        [
         0.0,
-        0.117,
+        0.176,
         0.991
        ]
       ],
@@ -7527,7 +5962,7 @@
        0.4667,
        [
         0.0,
-        0.031,
+        0.088,
         0.467
        ]
       ],
@@ -7535,7 +5970,7 @@
        0.4833,
        [
         0.0,
-        -0.017,
+        0.024,
         0.121
        ]
       ],
@@ -7543,7 +5978,7 @@
        0.5,
        [
         0.0,
-        0.0,
+        -0.0,
         0.0
        ]
       ]
@@ -8443,15 +6878,15 @@
        0.0,
        [
         0.0,
-        0.0,
+        -0.0,
         0.0
        ]
       ],
       [
-       0.2167,
+       0.1833,
        [
         0.0,
-        0.368,
+        0.487,
         0.0
        ]
       ],
@@ -8459,15 +6894,23 @@
        0.7833,
        [
         0.0,
-        0.51,
+        0.724,
         0.0
        ]
       ],
       [
-       0.8833,
+       0.8333,
        [
         0.0,
-        0.732,
+        0.943,
+        0.0
+       ]
+      ],
+      [
+       0.9333,
+       [
+        0.0,
+        1.077,
         0.0
        ]
       ],
@@ -8475,7 +6918,7 @@
        1.2,
        [
         0.0,
-        0.729,
+        1.043,
         0.0
        ]
       ]
@@ -9201,7 +7644,7 @@
        0.0,
        [
         0.0,
-        0.729,
+        1.043,
         0.0
        ]
       ],
@@ -9209,7 +7652,7 @@
        0.0333,
        [
         0.0,
-        0.729,
+        1.043,
         -0.5
        ]
       ],
@@ -9217,7 +7660,7 @@
        0.05,
        [
         0.0,
-        0.729,
+        1.043,
         -0.707
        ]
       ],
@@ -9225,7 +7668,7 @@
        0.0667,
        [
         0.0,
-        0.729,
+        1.043,
         -0.866
        ]
       ],
@@ -9233,7 +7676,7 @@
        0.0833,
        [
         0.0,
-        0.729,
+        1.043,
         -0.966
        ]
       ],
@@ -9241,7 +7684,7 @@
        0.1,
        [
         0.0,
-        0.729,
+        1.043,
         -1.0
        ]
       ],
@@ -9249,7 +7692,7 @@
        0.1167,
        [
         0.0,
-        0.681,
+        0.972,
         -0.841
        ]
       ],
@@ -9257,7 +7700,7 @@
        0.1333,
        [
         0.0,
-        0.537,
+        0.764,
         -0.38
        ]
       ],
@@ -9265,7 +7708,7 @@
        0.15,
        [
         0.0,
-        0.308,
+        0.435,
         0.333
        ]
       ],
@@ -9273,7 +7716,7 @@
        0.1667,
        [
         0.0,
-        0.217,
+        0.297,
         1.224
        ]
       ],
@@ -9281,7 +7724,7 @@
        0.1833,
        [
         0.0,
-        0.378,
+        0.434,
         2.0
        ]
       ],
@@ -9289,7 +7732,7 @@
        0.3,
        [
         0.0,
-        0.378,
+        0.434,
         2.0
        ]
       ],
@@ -9297,7 +7740,7 @@
        0.3167,
        [
         0.0,
-        0.371,
+        0.426,
         1.966
        ]
       ],
@@ -9305,7 +7748,7 @@
        0.3333,
        [
         0.0,
-        0.349,
+        0.405,
         1.866
        ]
       ],
@@ -9313,7 +7756,7 @@
        0.35,
        [
         0.0,
-        0.315,
+        0.371,
         1.707
        ]
       ],
@@ -9321,7 +7764,7 @@
        0.3833,
        [
         0.0,
-        0.217,
+        0.274,
         1.259
        ]
       ],
@@ -9329,7 +7772,7 @@
        0.4333,
        [
         0.0,
-        0.052,
+        0.109,
         0.5
        ]
       ],
@@ -9337,7 +7780,7 @@
        0.45,
        [
         0.0,
-        0.006,
+        0.064,
         0.293
        ]
       ],
@@ -9345,7 +7788,7 @@
        0.4667,
        [
         0.0,
-        -0.006,
+        0.029,
         0.134
        ]
       ],
@@ -9353,7 +7796,7 @@
        0.4833,
        [
         0.0,
-        -0.001,
+        0.007,
         0.034
        ]
       ],
@@ -9361,7 +7804,7 @@
        0.5,
        [
         0.0,
-        0.0,
+        -0.0,
         0.0
        ]
       ]
