@@ -89,14 +89,15 @@ through everything in your way.
 Design contract: [docs/AMBER_UPDATE.md](docs/AMBER_UPDATE.md).
 
 **Archaeology everywhere.** Every overworld cave has suspicious sand and gravel holding amber or bones. **Dead Caves**,
-a new underground biome under deserts, badlands and savannas, are a fossil desert that was a prehistoric forest:
+a new underground biome found only under the badlands, are a fossil desert that was a prehistoric forest:
 banded sandstone walls with amber seams, petrified trunks and stumps, boulders, dead bushes and lots of suspicious
 blocks. **Dig Sites** (Dead Caves and wherever mineshafts can be) are abandoned excavations: a shored-up cavern, a pit
 with a half-dug fossil skeleton, scaffolding, a ruined shack, a tent, and chests and barrels of loot.
 
-**Amber.** Amber blocks show what is trapped inside: break one to release an Amberwood seed (or torchflower seeds or a
-pitcher pod) or a live mosquito. Brush **amber fossils** for Amberwood seeds and plant a short **Amberwood** tree with
-glowing gold leaves; its logs ooze resin.
+**Amber.** Amber is see-through, honey-coloured and cloudy, and what is trapped inside (a mosquito, a seed) is a full 3D
+model. Break one to release an Amberwood seed (or torchflower seeds or a
+pitcher pod) or a live mosquito. Brush **amber fossils** for Amberwood seeds and grow **Amberwood**: a tall, ribbed,
+cactus-like trunk with a few arms, crowned only with pale flowers (Amberwood Bloom); its trunk oozes resin.
 
 **Mosquitoes.** Four-winged, with a giant needle. They hunt anything with blood (not the undead, golems, slimes and
 the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber chunk
