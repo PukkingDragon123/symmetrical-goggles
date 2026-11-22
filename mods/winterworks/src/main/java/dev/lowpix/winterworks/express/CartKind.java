@@ -9,8 +9,7 @@ public enum CartKind {
     LOCOMOTIVE("locomotive", () -> WWItems.LOCOMOTIVE, 3.0, 1, true),
     DRAGON_LOCOMOTIVE("dragon_locomotive", () -> WWItems.DRAGON_LOCOMOTIVE, 3.5, 1, true),
     FOX_CART("fox_cart", () -> WWItems.FOX_CART, 1.0, 1, false),
-    ZOMBIE_CART("zombie_cart", () -> WWItems.ZOMBIE_CART, 1.0, 1, false),
-    TRAILER_CART("trailer_cart", () -> WWItems.TRAILER_CART, 1.4, 2, false);
+    ZOMBIE_CART("zombie_cart", () -> WWItems.ZOMBIE_CART, 1.0, 1, false);
 
     public final String id;
     public final Supplier<Item> item;

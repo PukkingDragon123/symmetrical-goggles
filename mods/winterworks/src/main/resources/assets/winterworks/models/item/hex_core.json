@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:builtin/entity",
-  "gui_light": "front",
+  "gui_light": "side",
   "textures": {
     "particle": "winterworks:item/hex_core"
   },
   "display": {
     "gui": {
       "rotation": [
-        0,
-        0,
+        15,
+        -30,
         0
       ],
       "translation": [
@@ -17,9 +17,9 @@
         0
       ],
       "scale": [
-        1,
-        1,
-        1
+        0.85,
+        0.85,
+        0.85
       ]
     },
     "ground": {

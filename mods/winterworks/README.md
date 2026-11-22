@@ -36,8 +36,16 @@ to charge, then ram: mobs in front take damage and huge knockback, and blocks TN
 break in a straight line at feet and head height. Limits: 2 blocks a tick, 24 a ram, no block entities, nothing
 unbreakable, respects spawn protection, adventure mode and land-claim mods (block-break events).
 
-**Winter Express.** Coaster rails (keep momentum, faster, dive down slopes), booster rails (powered: fling carts to 3x
-the vanilla speed limit; unpowered: brake) and chain lift rails (haul carts uphill, faster when powered). Rails are
+**Winter Express.** Coaster rails are 3D roller-coaster track (keep momentum, faster, dive down slopes) that hang in
+mid-air with nothing under them, straight, sloped or curved. Booster rails run only on a **redstone block** (beside the
+rail or under it; levers, torches and dust do nothing): then they push 3x as hard as a powered rail, up to 3x the vanilla
+speed limit; unpowered, they brake. Chain lift rails haul carts uphill, faster when powered. The **Coaster Loop**
+(8 coaster rails round an iron block) is a full vertical loop of track, radius 3, rising from where you place it in line
+with coaster rails: a cart that comes in at about 0.8 blocks a tick (off boosters) rides all the way round, upside down
+at the top with its rider (the view turns with you), and leaves at the speed it came in; a slower one rolls back out.
+Whole trains loop car after car. The **Switch Rail** (6 iron + a rail + a redstone torch -> 2) is a Y-junction: place it
+facing the fork (its branch goes toward a rail already beside it, else to the half of the block you click); unpowered,
+carts run straight on, powered they take the branch, and a train's cars all follow its first car's route. Rails are
 cheaper: the vanilla rail recipe gives 32, powered rails 12. Paint rail sleepers with any dye (a sponge washes it off).
 **Trap Rail** (redstone): while powered, its jaws clamp any cart and hold it still; cut the power and it lets go with a
 launch. Use it for coaster stations, brakes and launches. **Drop Rail** (redstone): it hangs in mid-air without
@@ -45,9 +53,11 @@ support; power it and it springs open like a trapdoor, so the cart falls to the 
 It closes again a moment after the power goes.
 Couple any minecarts into trains with a chain (click the front cart, then the one behind; sneak + click with an empty
 hand to uncouple). The Iron Locomotive and the Dragon-Head Locomotive burn coal, from your hand or from a chest
-minecart coupled behind them; sneak + right-click cycles stop / forward / reverse; longer trains are heavier and
-slower. Fox, zombie and trailer carts (the trailer seats two). Right-click carts with dye to paint the trim and with
-wool to change the seat.
+minecart coupled behind them, or run on a **furnace minecart** coupled into the train while it burns (stoke it with coal
+or charcoal as usual; a stopped train sets off); sneak + right-click cycles stop / forward / reverse; longer trains are
+heavier and slower. A burning furnace minecart also pulls a train of minecarts on its own. Fox and zombie carts; any
+vanilla minecart (plain, chest, hopper, furnace, TNT) couples into a train too. Right-click carts with dye to paint the
+trim and with wool to change the seat.
 
 **Snow Globe.** Glass + snowballs. Right-click to shake it: it wobbles and tiny flakes swirl around the little snowy
 cabin, then slowly settle.
@@ -130,8 +140,9 @@ and 16 Soul Elixir), elixir bottles, soul sand, wart, ghast tears and crying obs
 
 **Elixirs.** Craft an **Elixir Bottle** from 4 gold ingots and a bottle. The lantern-sized **Elixir Jar** brews only
 over heat (fire, soul fire, a campfire, lava or magma): soul sand makes **Soul Elixir** (the Hexing Table's fuel), a
-gold block makes **Elixir of Greed** (drop it near Piglins and they fight to the death for it), and soul sand in a
-jar of Greed makes **Cursed Elixir** (a Piglin that drinks it turns golden and never zombifies).
+Potion of Blood poured in and then a gold block make **Elixir of Greed** (drop it near Piglins and they fight to the
+death for it), and soul sand in a jar of Greed makes **Cursed Elixir** (a Piglin that drinks it turns golden and never
+zombifies).
 
 **The Soul Tank and the Hexing Table.** A Soul Tank holds 1000 souls: mobs that die within 8 blocks drift in (10
 each), and Soul Elixir adds 50. The **Hexing Table** (netherite, an enchanting table, the Hex Core, crying obsidian)
@@ -143,15 +154,21 @@ Put an enchanted book and Soul Elixir in it and press the HEX rune:
 * Any hex has a 15% chance of a **hidden curse** that shows as scrambled text until it strikes.
 
 Hexing leaves you **Hexed** for 5, 10 or 20 minutes: no natural regeneration, so you heal only with potions. You keep
-all your hearts.
+all your hearts. **Blood instead of yourself**: a lesser hex takes a Potion of Blood from the table's blood slot instead
+of hexing you; a sin hex always needs one, and takes three instead of hexing you.
+
+Potions of Blood are a base potion too: with a fermented spider eye they brew Harming, with a ghast tear Regeneration.
+Awkward potions brew **Burning** with a torchflower (you burn for the whole time, and water won't put you out) and
+**Decay** with a Wither Bone (Wither); every mod potion comes as drink, splash, lingering and tipped arrows.
 
 **Curses.** Narcissus (stare at water and waste away), Icarus (fly too high in the sun and burn), Midas (your food
 turns to gold), Orpheus (look back and your pet is dragged under), Sisyphus (mined blocks come back), Tantalus
 (food rolls out of your hand), the Moth (drawn to light at night, even lava). Hidden: Cain (you wound your own pets),
 Judas (trades turn iron golems on you), Lot's Wife (look back while fleeing and turn to stone), the Leech (one hit in
-five heals).
+five heals). Curses never say what they do: each one plays its own few seconds of screen effect when it strikes. Cursed
+books look cursed, and anything carrying a curse glints with drifting souls instead of the purple shimmer.
 
-**The Seven Deadly Sins.** Each is a big power with a brutal curse. Wrath: soul fire, and strength while you keep
+**The Seven Deadly Sins.** Each is a big power with a brutal curse. Wrath: blue soul fire, and strength while you keep
 hitting, weakness when you stop. Greed: huge ore and gold drops, but every Piglin hunts you and dropped items vanish.
 Lust: far more loot, but twice the hostile spawns, all coming for you, and neutral mobs turn on you. Gluttony: food
 repairs your gear, but hunger drains three times as fast. Sloth: instant mining, but you are always slow and nod
@@ -173,7 +190,7 @@ python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipe
 ```
 
 Model sources live in `examples/src/` at the repo root (icebreaker, icebreaker_cub, snowball_launcher, snow_globe,
-locomotive, dragon_locomotive, fox_cart, zombie_cart, trailer_cart, frost_mauler, frost_mauler_skull, fang_dagger, polar_bear,
+locomotive, dragon_locomotive, fox_cart, zombie_cart, frost_mauler, frost_mauler_skull, fang_dagger, polar_bear,
 polar_bear_cub, fur_armor, mosquito, pot_golem, piglin_witch, golden_piglin, elixir_jar, soul_tank, hexing_table, hex_core); 2D art in `examples/src/winterworks_art.py`, `winterworks_cold_art.py` and
 `winterworks_amber_art.py` and `winterworks_hex_art.py`. Sounds (97 events) are made from CC0 / public-domain recordings by
 `tools/sounds/build_sounds.py`; every source is credited in [tools/sounds/CREDITS.md](tools/sounds/CREDITS.md).

@@ -89,7 +89,7 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
             return false;
         }
         int p = menu.problem(KINDS[i]);
-        return p == Hexing.OK || p == Hexing.NO_TANK || p == Hexing.NO_ELIXIR || p == Hexing.NO_SOULS;
+        return p == Hexing.OK || p == Hexing.NO_TANK || p == Hexing.NO_ELIXIR || p == Hexing.NO_SOULS || p == Hexing.NO_BLOOD;
     }
 
     private boolean ready(int i) {
@@ -278,7 +278,7 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
         HexGui.well(g, x + tank.x() - 1, y + tank.y() - 1, tank.w() + 2, tank.h() + 2, 0xFF0A1230);
         g.fill(x + tank.x() - 3, y + tank.y() - 4, x + tank.x() + tank.w() + 3, y + tank.y() - 2, 0xFFC97E1B);
         g.fill(x + tank.x() - 3, y + HexGui.TANK_BOTTOM + 1, x + tank.x() + tank.w() + 3, y + HexGui.TANK_BOTTOM + 3, 0xFFC97E1B);
-        for (HexGui.Rect r : new HexGui.Rect[]{HexGui.BOOK_SLOT, HexGui.ELIXIR_SLOT}) {
+        for (HexGui.Rect r : new HexGui.Rect[]{HexGui.BOOK_SLOT, HexGui.ELIXIR_SLOT, HexGui.BLOOD_SLOT}) {
             HexGui.border(g, x + r.x() - 1, y + r.y() - 1, r.w() + 2, r.h() + 2, 0xFFC97E1B);
             HexGui.well(g, x + r.x(), y + r.y(), r.w(), r.h(), HexGui.WELL);
         }
@@ -359,6 +359,15 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
                 g.fill(ex + 4, ey + 5, ex + 12, ey + 14, HexGui.argb(a * 0.5f, HexGui.SOUL_DEEP));
             }
         }
+        if (menu.bloodStack().isEmpty()) {
+            int bx = x + HexingTableMenu.BLOOD_X, by = y + HexingTableMenu.BLOOD_Y;
+            if (sheet) {
+                HexGui.blitAlpha(g, bx, by, HexGui.GHOST_BLOOD, a);
+            } else {
+                g.fill(bx + 7, by + 2, bx + 9, by + 6, HexGui.argb(a * 0.5f, 0x5A1A1E));
+                g.fill(bx + 4, by + 6, bx + 12, by + 14, HexGui.argb(a * 0.5f, 0x5A1A1E));
+            }
+        }
     }
 
     private void drawRow(GuiGraphics g, int x, int y, int i, float t, float partial, boolean sheet) {
@@ -376,8 +385,8 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
             HexGui.border(g, rx, ry, r.w(), r.h(), lit && ready ? 0xFF1CB4C4 : 0xFF3A2F37);
             g.fill(rx + 1, ry + 1, rx + 18, ry + r.h() - 1, 0xFF0D0A10);
             if (locked) {   // a chain across a locked row
-                for (int k = 0; k < 9; k++) {
-                    g.fill(rx + 22 + k * 7, ry + 9, rx + 27 + k * 7, ry + 11, 0xFF5F5153);
+                for (int k = 0; k < 9; k++) {   // 9 links in the 73 px row
+                    g.fill(rx + 21 + k * 5, ry + 9, rx + 25 + k * 5, ry + 11, 0xFF5F5153);
                 }
                 g.fill(rx + 6, ry + 7, rx + 12, ry + 14, 0xFFC97E1B);
             }
@@ -569,7 +578,14 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
         tip.add(CommonComponents.EMPTY);
         tip.add(costLine(k));
         int minutes = k == Hexing.Kind.SIN ? Hexing.SIN_MINUTES : Hexing.lesserMinutes(stored);
-        tip.add(Component.translatable("container.winterworks.hexing_table.hexed", minutes).withColor(0x4FA3B5));
+        String tier = k == Hexing.Kind.LESSER ? "lesser" : "sin";
+        if (menu.spares(k)) {
+            tip.add(Component.translatable("container.winterworks.hexing_table.spared." + tier).withColor(HexGui.BLOOD));
+        } else {
+            tip.add(Component.translatable("container.winterworks.hexing_table.hexed", minutes).withColor(0x4FA3B5));
+            tip.add(Component.translatable("container.winterworks.hexing_table.spare_with." + tier)
+                    .withStyle(ChatFormatting.ITALIC).withColor(0x9A4A50));
+        }
         if (p != Hexing.OK) {
             tip.add(problemText(k, p).copy().withColor(HexGui.BAD));
         } else if (selected != i) {
@@ -586,6 +602,11 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
                 .withColor(elixirOk ? 0xA0A0A0 : HexGui.BAD);
         c.append(Component.literal(", ").withColor(0x808080));
         c.append(Component.translatable("container.winterworks.hexing_table.cost.souls", k.souls()).withColor(soulsOk ? 0xA0A0A0 : HexGui.BAD));
+        if (k.blood() > 0) {
+            boolean bloodOk = free || menu.blood() >= k.blood();
+            c.append(Component.literal(", ").withColor(0x808080));
+            c.append(Component.translatable("container.winterworks.hexing_table.cost.blood", k.blood()).withColor(bloodOk ? 0xA0A0A0 : HexGui.BAD));
+        }
         return c;
     }
 
@@ -600,6 +621,7 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
             case Hexing.NO_TANK -> Component.translatable(base + "problem.5");
             case Hexing.NO_ELIXIR -> Component.translatable(base + "problem.6", k.elixir());
             case Hexing.NO_SOULS -> Component.translatable(base + "problem.7", k.souls());
+            case Hexing.NO_BLOOD -> Component.translatable(base + "problem.8", k.blood());
             default -> Component.empty();
         };
     }

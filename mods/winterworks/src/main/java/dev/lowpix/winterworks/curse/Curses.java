@@ -12,13 +12,11 @@ import java.util.WeakHashMap;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -42,14 +40,14 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * The shared machinery of the curses: which curses a player bears right now (their equipped items, each in its
- * enchantment's slots, like vanilla), per-player state, the trigger feel (runes, sounds, the first-time actionbar line,
- * hidden-curse discovery), freezing in place, soul fire and test hooks. Curses only work on survival and adventure
+ * enchantment's slots, like vanilla), per-player state, the trigger feel (runes, sounds, each curse's screen effect,
+ * hidden-curse discovery; never any text), freezing in place, soul fire and test hooks. Curses only work on survival and adventure
  * players; the sins' powers are enchantment effects and work for anyone.
  */
 public final class Curses {
     private Curses() {}
 
-    /** The curses a player has already triggered once (their actionbar line is shown only that first time). */
+    /** The curses a player has already triggered once (a hidden curse is discovered that first time). */
     static final AttachmentType<List<String>> SEEN = AttachmentRegistry.create(Winterworks.id("curses_seen"),
             b -> b.persistent(Codec.STRING.listOf()).copyOnDeath());
 
@@ -99,6 +97,10 @@ public final class Curses {
         boolean proud = true;
         // Lust: when it last swept nearby mobs
         long lustSweep;
+        // screen effects: when each curse may show its effect again; the last one shown (tests)
+        final long[] fxReady = new long[Curse.ALL.length];
+        Curse lastEffect;
+        int effects;
     }
 
     private static final Map<ServerPlayer, State> STATES = new WeakHashMap<>();
@@ -187,11 +189,26 @@ public final class Curses {
 
     // ------------------------------------------------------------------------------------------------ trigger feel
 
+    /** How long a curse's screen effect lasts when it triggers (ticks), by kind. */
+    public static final int LESSER_FX_TICKS = 70, SIN_FX_TICKS = 90, HIDDEN_FX_TICKS = 80;
+    /** A curse that keeps firing (Wrath's fury, the Moth's call) shows its screen effect at most this often. */
+    private static final int FX_REST_TICKS = 100;
+
+    public static int effectTicks(Curse c) {
+        return switch (c.kind) {
+            case SIN -> SIN_FX_TICKS;
+            case HIDDEN -> HIDDEN_FX_TICKS;
+            default -> LESSER_FX_TICKS;
+        };
+    }
+
     /**
-     * A curse just did its thing: runes and its sound, and the first time ever for this player, its actionbar line
-     * (and, for a hidden curse, its discovery). Returns true the first time.
+     * A curse just did its thing: runes and its sound in the world, and for the bearer its own screen effect (colour,
+     * vignette, distortion and sound, a few seconds long: client.curse.CurseScreenFx). No text: curses never say what
+     * they do. The first time ever for this player it is remembered (and a hidden curse is discovered). Returns true
+     * that first time.
      */
-    static boolean trigger(ServerPlayer p, Curse c, SoundEvent sound, Object... args) {
+    static boolean trigger(ServerPlayer p, Curse c, SoundEvent sound) {
         ServerLevel level = p.serverLevel();
         runes(level, p.position().add(0, 1.0, 0), 10, 0.5);
         if (c.sin()) {
@@ -199,6 +216,7 @@ public final class Curses {
         }
         level.playSound(null, p.getX(), p.getY(), p.getZ(), sound, SoundSource.PLAYERS, 0.8f,
                 0.9f + p.getRandom().nextFloat() * 0.2f);
+        effect(p, c);
         List<String> seen = p.getAttachedOrElse(SEEN, List.of());
         if (seen.contains(c.id())) {
             return false;
@@ -206,7 +224,6 @@ public final class Curses {
         List<String> now = new ArrayList<>(seen);
         now.add(c.id());
         p.setAttached(SEEN, now);
-        tell(p, "curse.winterworks." + c.id() + ".trigger", args);
         if (c.hidden()) {
             try {
                 dev.lowpix.winterworks.hex.HexDiscovery.discover(p, c.key);
@@ -217,14 +234,34 @@ public final class Curses {
         return true;
     }
 
+    /** The curse's screen effect for its bearer (rested: a curse that keeps firing doesn't keep flashing). */
+    static void effect(ServerPlayer p, Curse c) {
+        State s = state(p);
+        long now = p.level().getGameTime();
+        if (now < s.fxReady[c.ordinal()]) {
+            return;
+        }
+        int ticks = effectTicks(c);
+        s.fxReady[c.ordinal()] = now + ticks + FX_REST_TICKS;
+        s.lastEffect = c;
+        s.effects++;
+        send(p, CurseFxPayload.EFFECT, ticks, c.ordinal(), 0, 0);
+    }
+
     /** Has this player ever triggered the curse? */
     public static boolean seen(ServerPlayer p, Curse c) {
         return p.getAttachedOrElse(SEEN, List.of()).contains(c.id());
     }
 
-    /** An actionbar line in the curse colour. */
-    static void tell(ServerPlayer p, String key, Object... args) {
-        p.displayClientMessage(Component.translatable(key, args).withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC), true);
+    /** Tests: the curse whose screen effect was last played for this player (null if none yet). */
+    @Nullable
+    public static Curse lastEffect(ServerPlayer p) {
+        return state(p).lastEffect;
+    }
+
+    /** Tests: how many curse screen effects this player has been shown. */
+    public static int effects(ServerPlayer p) {
+        return state(p).effects;
     }
 
     static void runes(ServerLevel level, Vec3 at, int count, double spread) {
@@ -297,19 +334,52 @@ public final class Curses {
 
     // ------------------------------------------------------------------------------------------------ soul fire
 
-    /** Set alight with soul fire: it burns twice as hard as normal fire and shows soul flames. */
+    /**
+     * Set alight with soul fire for `ticks` (the API for anything that burns with soul fire: Wrath, Envy, the Soul
+     * Bull's horns). It burns twice as hard as normal fire, lasts its full time (only water, rain and the like put it
+     * out early) and every client draws it as blue soul flames: on the body, and for the burning player on the
+     * first-person fire overlay (client.curse.SoulFireClient). A longer ignition extends a shorter one. Server side
+     * only; does nothing to fire-immune entities or in water and rain.
+     */
     public static void soulIgnite(LivingEntity e, int ticks) {
-        if (e.fireImmune() || e.isInWaterRainOrBubble()) {
+        if (ticks <= 0 || e.level().isClientSide || e.fireImmune() || e.isInWaterRainOrBubble()) {
             return;
         }
+        long until = e.level().getGameTime() + ticks;
+        Long before = SOUL_FIRE.get(e);
         e.setRemainingFireTicks(Math.max(e.getRemainingFireTicks(), ticks));
-        SOUL_FIRE.put(e, e.level().getGameTime() + ticks);
+        if (before == null || until > before) {
+            SOUL_FIRE.put(e, until);
+            SoulFirePayload.sync(e, ticks);
+        }
         particles(e, ParticleTypes.SOUL_FIRE_FLAME, 10, 0.03);
     }
 
+    /** Is this entity burning with soul fire right now (server)? */
     public static boolean soulBurning(LivingEntity e) {
         Long until = SOUL_FIRE.get(e);
         return until != null && e.getRemainingFireTicks() > 0;
+    }
+
+    /** Ticks of soul fire left (0 if it isn't soul-burning). */
+    public static int soulFireTicks(LivingEntity e) {
+        Long until = SOUL_FIRE.get(e);
+        return until == null || e.getRemainingFireTicks() <= 0 ? 0 : (int) Math.max(0, until - e.level().getGameTime());
+    }
+
+    /** Puts soul fire out (it stays out: the fire too). */
+    public static void soulExtinguish(LivingEntity e) {
+        if (SOUL_FIRE.remove(e) != null) {
+            e.clearFire();
+            SoulFirePayload.sync(e, 0);
+        }
+    }
+
+    /** A player starts seeing an entity: tell it if that entity is soul-burning. */
+    static void soulFireTracked(Entity e, ServerPlayer viewer) {
+        if (e instanceof LivingEntity le && soulBurning(le)) {
+            SoulFirePayload.send(viewer, le, soulFireTicks(le));
+        }
     }
 
     static void tickSoulFire(ServerLevel level) {
@@ -320,14 +390,30 @@ public final class Curses {
         for (Iterator<Map.Entry<LivingEntity, Long>> it = SOUL_FIRE.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<LivingEntity, Long> en = it.next();
             LivingEntity e = en.getKey();
-            if (e == null || e.isRemoved() || !e.isAlive() || e.getRemainingFireTicks() <= 0) {
+            if (e == null || e.isRemoved()) {
                 it.remove();
                 continue;
             }
-            if (e.level() == level && (now + e.getId()) % 3 == 0) {
+            if (e.level() != level) {
+                continue;
+            }
+            long left = en.getValue() - now;
+            if (!e.isAlive() || left <= 0 || e.getRemainingFireTicks() <= 0) {
+                it.remove();   // burnt out, or put out (water, rain, powder snow)
+                SoulFirePayload.sync(e, 0);
+                continue;
+            }
+            if (e.getRemainingFireTicks() < left) {
+                e.setRemainingFireTicks((int) left);   // soul fire burns its full time
+            }
+            if ((now + e.getId()) % 3 == 0) {
                 level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, e.getX(), e.getY() + e.getBbHeight() * 0.4, e.getZ(), 2,
                         e.getBbWidth() * 0.35, e.getBbHeight() * 0.3, e.getBbWidth() * 0.35, 0.01);
             }
         }
+    }
+
+    static void clearSoulFire() {
+        SOUL_FIRE.clear();
     }
 }

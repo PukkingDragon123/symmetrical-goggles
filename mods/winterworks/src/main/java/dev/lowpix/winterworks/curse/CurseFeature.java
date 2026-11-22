@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,12 +30,15 @@ public final class CurseFeature {
         AboveHalfHealth.init();
         Curses.SEEN.identifier();   // registers the attachment now, before any player loads
         PayloadTypeRegistry.playS2C().register(CurseFxPayload.TYPE, CurseFxPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(SoulFirePayload.TYPE, SoulFirePayload.CODEC);
+        EntityTrackingEvents.START_TRACKING.register(Curses::soulFireTracked);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> LUST.clear());
         ServerTickEvents.END_WORLD_TICK.register(CurseFeature::tickLevel);
         ServerTickEvents.END_SERVER_TICK.register(server -> LustSpawns.refresh(LUST));
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
             LesserCurses.clear();
+            Curses.clearSoulFire();
             LUST.clear();
             LustSpawns.refresh(LUST);
         });

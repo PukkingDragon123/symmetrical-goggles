@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "shape=north_south": {
+      "model": "winterworks:block/coaster_loop"
+    },
+    "shape=east_west": {
+      "model": "winterworks:block/coaster_loop",
+      "y": 90
+    }
+  }
+}

@@ -93,7 +93,7 @@ public final class Couplings {
         return l == null ? Link.NONE : l;
     }
 
-    static boolean hasAnyLink(Entity e) {
+    public static boolean hasAnyLink(Entity e) {
         Link l = link(e);
         return l.front().isPresent() || l.back().isPresent();
     }
@@ -218,7 +218,7 @@ public final class Couplings {
     }
 
     static double mass(AbstractMinecart c) {
-        double m = c instanceof WWCart w ? w.kind.mass : 1.0;
+        double m = c instanceof WWCart w ? w.kind.mass : c instanceof net.minecraft.world.entity.vehicle.MinecartFurnace ? 1.4 : 1.0;
         if (c instanceof net.minecraft.world.Container box && !box.isEmpty()) {
             m += 0.5;
         }
@@ -245,6 +245,9 @@ public final class Couplings {
                 }
                 set(front, new Link(link(front).front(), Optional.empty()));
                 continue;
+            }
+            if (CoasterLoop.looping(front) || CoasterLoop.looping(back)) {
+                continue;   // a loop ride takes each car round on its own; the chain goes slack meanwhile
             }
             Vec3 d = front.position().subtract(back.position());
             double dist = d.length();

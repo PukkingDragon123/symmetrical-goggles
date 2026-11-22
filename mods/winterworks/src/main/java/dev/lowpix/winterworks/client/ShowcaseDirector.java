@@ -109,7 +109,7 @@ public final class ShowcaseDirector {
             cmd("summon minecraft:chest_minecart 50.9 -60 0.5");
             cmd("summon winterworks:fox_cart 49.3 -60 0.5");
             cmd("summon winterworks:zombie_cart 47.7 -60 0.5");
-            cmd("summon winterworks:trailer_cart 46.1 -60 0.5");
+            cmd("summon minecraft:minecart 46.1 -60 0.5");
             cmd("summon winterworks:dragon_locomotive 44.5 -60 3.5");
             cmd("tp @s 47 -57.8 -5.5 -15 18");
         });

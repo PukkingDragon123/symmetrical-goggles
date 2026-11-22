@@ -1,5 +1,6 @@
 package dev.lowpix.winterworks.hex;
 
+import dev.lowpix.winterworks.amber.AmberFeature;
 import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWEffects;
 import dev.lowpix.winterworks.registry.WWItems;
@@ -36,17 +37,22 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 
 /**
- * The Hexing Table's menu (docs/HEXES_UPDATE.md section 2): an enchanted book slot, a Soul Elixir slot and the player
- * inventory. Two options: button 0 is the lesser hex, button 1 the sin hex. The server works out everything (which
- * curse a lesser hex will attach, what blocks a hex) and syncs it to the screen in data slots; the hidden curse is
- * rolled only when the hex happens and never shown in advance.
+ * The Hexing Table's menu (docs/HEXES_UPDATE.md section 2): an enchanted book slot, a Soul Elixir slot, a slot for
+ * Potions of Blood (up to 3; docs/FIXES_0_4.md "Blood in hexing") and the player inventory. Two options: button 0 is
+ * the lesser hex, button 1 the sin hex. Blood instead of yourself: a lesser hex takes 1 Potion of Blood instead of
+ * hexing you; a sin hex always needs 1, and takes 2 more instead of hexing you; with no blood offered you are Hexed as
+ * before. The server works out everything (which curse a lesser hex will attach, what blocks a hex) and syncs it to the
+ * screen in data slots; the hidden curse is rolled only when the hex happens and never shown in advance.
  */
 public class HexingTableMenu extends AbstractContainerMenu {
-    public static final int BOOK_SLOT = 0, ELIXIR_SLOT = 1, INV_START = 2, INV_END = 38;
+    public static final int BOOK_SLOT = 0, ELIXIR_SLOT = 1, BLOOD_SLOT = 2, INV_START = 3, INV_END = 39;
+    /** The blood slot holds this many Potions of Blood (they don't stack anywhere else). */
+    public static final int BLOOD_MAX = 3;
     /** A Soul Tank must be within this many blocks of the table (a cube). */
     public static final int TANK_RADIUS = 3;
     /** Slot item positions in the GUI (client.hex.HexGui draws the frames round them). */
-    public static final int BOOK_X = 34, BOOK_Y = 47, ELIXIR_X = 56, ELIXIR_Y = 47, INV_X = 8, INV_Y = 84, HOTBAR_Y = 142;
+    public static final int BOOK_X = 34, BOOK_Y = 47, ELIXIR_X = 56, ELIXIR_Y = 47, BLOOD_X = 74, BLOOD_Y = 20, INV_X = 8, INV_Y = 84,
+            HOTBAR_Y = 142;
 
     // synced data: indices
     public static final int D_SOULS = 0, D_CAPACITY = 1, D_TANKS = 2, D_LESSER_CURSE = 3, D_SIN = 4, D_SIN_SOURCE = 5,
@@ -56,11 +62,16 @@ public class HexingTableMenu extends AbstractContainerMenu {
     private final Player player;
     private final RandomSource random = RandomSource.create();
     private final ContainerData data = new SimpleContainerData(D_COUNT);
-    private final Container hexSlots = new SimpleContainer(2) {
+    private final Container hexSlots = new SimpleContainer(3) {
         @Override
         public void setChanged() {
             super.setChanged();
             HexingTableMenu.this.slotsChanged(this);
+        }
+
+        @Override
+        public int getMaxStackSize(ItemStack stack) {
+            return isBlood(stack) ? BLOOD_MAX : super.getMaxStackSize(stack);
         }
     };
     /** Server: the lesser curse this book will get (fixed per book and seed, so the preview tells the truth). */
@@ -90,6 +101,17 @@ public class HexingTableMenu extends AbstractContainerMenu {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(WWItems.SOUL_ELIXIR);
+            }
+        });
+        addSlot(new Slot(hexSlots, BLOOD_SLOT, BLOOD_X, BLOOD_Y) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return isBlood(stack);
+            }
+
+            @Override
+            public int getMaxStackSize(ItemStack stack) {
+                return BLOOD_MAX;
             }
         });
         for (int row = 0; row < 3; row++) {
@@ -181,6 +203,9 @@ public class HexingTableMenu extends AbstractContainerMenu {
         if (hexSlots.getItem(ELIXIR_SLOT).getCount() < kind.elixir()) {
             return Hexing.NO_ELIXIR;
         }
+        if (blood() < kind.blood()) {
+            return Hexing.NO_BLOOD;
+        }
         return souls < kind.souls() ? Hexing.NO_SOULS : Hexing.OK;
     }
 
@@ -223,8 +248,13 @@ public class HexingTableMenu extends AbstractContainerMenu {
                 ? Hexing.pickHiddenCurse(registry, result, random) : Optional.empty();
         ItemStack hexed = Hexing.hexedBook(book, result, kind, hidden);
 
+        boolean spared = blood() >= kind.spareBlood();   // blood instead of yourself
+        int bloodUsed = spared ? kind.spareBlood() : kind.blood();
         if (!player.getAbilities().instabuild) {
             hexSlots.getItem(ELIXIR_SLOT).shrink(kind.elixir());
+            if (bloodUsed > 0) {
+                hexSlots.getItem(BLOOD_SLOT).shrink(bloodUsed);
+            }
             int owed = kind.souls();
             List<SoulTankBlockEntity> tanks = new ArrayList<>(findTanks(level, pos));
             tanks.sort(Comparator.comparingInt(SoulTankBlockEntity::souls).reversed());
@@ -235,7 +265,9 @@ public class HexingTableMenu extends AbstractContainerMenu {
                 }
             }
         }
-        player.addEffect(new MobEffectInstance(WWEffects.HEXED, minutes * 60 * 20, 0, false, true, true));
+        if (!spared) {
+            player.addEffect(new MobEffectInstance(WWEffects.HEXED, minutes * 60 * 20, 0, false, true, true));
+        }
         player.awardStat(Stats.ENCHANT_ITEM);
         data.set(D_SEED, random.nextInt(Short.MAX_VALUE));
         data.set(D_HEXES, (data.get(D_HEXES) + 1) & 0x7FFF);
@@ -251,6 +283,10 @@ public class HexingTableMenu extends AbstractContainerMenu {
             server.sendParticles(WWParticles.HEX_RUNE, x, y + 0.4, z, 16, 0.4, 0.3, 0.4, 0.04);
             if (kind == Hexing.Kind.SIN) {
                 server.sendParticles(ParticleTypes.CRIMSON_SPORE, x, y + 0.2, z, 30, 0.5, 0.3, 0.5, 0.0);
+            }
+            if (bloodUsed > 0) {   // the blood boils away into the hex
+                server.sendParticles(WWParticles.BLOOD_DRIP, x, y + 0.5, z, 6 + 4 * bloodUsed, 0.3, 0.2, 0.3, 0.02);
+                server.sendParticles(ParticleTypes.DAMAGE_INDICATOR, x, y + 0.3, z, 2 * bloodUsed, 0.3, 0.2, 0.3, 0.05);
             }
         }
         broadcastChanges();
@@ -309,6 +345,27 @@ public class HexingTableMenu extends AbstractContainerMenu {
         return hexSlots.getItem(ELIXIR_SLOT);
     }
 
+    /** The Potions of Blood offered. */
+    public ItemStack bloodStack() {
+        return hexSlots.getItem(BLOOD_SLOT);
+    }
+
+    /** How many Potions of Blood are offered (0-3). */
+    public int blood() {
+        ItemStack b = hexSlots.getItem(BLOOD_SLOT);
+        return isBlood(b) ? b.getCount() : 0;
+    }
+
+    /** Will this hex take blood instead of hexing you, with what is offered now? */
+    public boolean spares(Hexing.Kind kind) {
+        return blood() >= kind.spareBlood();
+    }
+
+    /** A (drinkable) Potion of Blood. */
+    public static boolean isBlood(ItemStack stack) {
+        return stack.is(Items.POTION) && AmberFeature.isBloodPotion(stack);
+    }
+
     // ------------------------------------------------------------------------------------------------ inventory
 
     @Override
@@ -319,8 +376,12 @@ public class HexingTableMenu extends AbstractContainerMenu {
         }
         ItemStack stack = slot.getItem();
         ItemStack moved = stack.copy();
-        if (index == BOOK_SLOT || index == ELIXIR_SLOT) {
+        if (index == BOOK_SLOT || index == ELIXIR_SLOT || index == BLOOD_SLOT) {
             if (!moveItemStackTo(stack, INV_START, INV_END, true)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (isBlood(stack)) {
+            if (!moveItemStackTo(stack, BLOOD_SLOT, BLOOD_SLOT + 1, false)) {
                 return ItemStack.EMPTY;
             }
         } else if (stack.is(WWItems.SOUL_ELIXIR)) {

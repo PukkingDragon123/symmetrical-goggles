@@ -140,6 +140,23 @@ public final class WWSounds {
     public static final SoundEvent ORPHEUS = reg("curse.orpheus");
     public static final SoundEvent SIN = reg("curse.sin");
 
+    // ---- 0.4 fixes: hexes (docs/FIXES_0_4.md "Curses"): each kind of curse's screen-effect sound (client.curse.CurseScreenFx)
+    public static final SoundEvent CURSE_EFFECT_LESSER = reg("curse.effect.lesser");
+    public static final SoundEvent CURSE_EFFECT_SIN = reg("curse.effect.sin");
+    public static final SoundEvent CURSE_EFFECT_HIDDEN = reg("curse.effect.hidden");
+    // ---- end 0.4 fixes: hexes
+
+    // ---- 0.4 fixes: rails (docs/FIXES_0_4.md)
+    public static final SoundEvent SWITCH_RAIL_SWITCH = reg("block.switch_rail.switch");
+    // ---- end 0.4 fixes: rails
+
+    // ---- 0.4 fixes: Cold Zone (docs/FIXES_0_4.md)
+    public static final SoundEvent SKULL_ROAR = reg("block.frost_mauler_skull.roar");
+    public static final SoundEvent DAGGER_SLASH_LEFT = reg("item.fang_dagger.slash_left");
+    public static final SoundEvent DAGGER_SLASH_RIGHT = reg("item.fang_dagger.slash_right");
+    public static final SoundEvent RAMMING_CRY = reg("entity.player.ramming_cry");
+    public static final SoundEvent RAMMING_WIND = reg("entity.player.ramming_wind");
+
     // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
     public static final SoundEvent SOUL_BULL_AMBIENT = reg("entity.soul_bull.ambient");
     public static final SoundEvent SOUL_BULL_HURT = reg("entity.soul_bull.hurt");
