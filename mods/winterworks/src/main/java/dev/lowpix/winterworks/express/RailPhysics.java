@@ -17,6 +17,8 @@ import org.joml.Vector3f;
 /** What the Winter Express rails do to any minecart that rolls over them (called after the cart's own tick). */
 public final class RailPhysics {
     public static final double BOOST_FACTOR = 3.0;     // vanilla max 0.4 b/t -> 1.2 b/t (24 m/s)
+    /** Speed gained per tick on a powered Booster Rail: 3x a vanilla powered rail's 0.06. */
+    public static final double BOOST_PUSH = 0.18;
     public static final double COASTER_FACTOR = 1.8;
 
     private RailPhysics() {}
@@ -66,7 +68,7 @@ public final class RailPhysics {
                 target = BOOST_FACTOR;
                 factor = BOOST_FACTOR;
                 Vec3 dir = speed > 0.01 ? hv.normalize() : railDir(state);
-                cart.setDeltaMovement(v.add(dir.scale(0.16)));
+                cart.setDeltaMovement(v.add(dir.scale(BOOST_PUSH)));
                 if (cart.tickCount % 4 == 0) {
                     level.sendParticles(new DustParticleOptions(new Vector3f(1f, 0.35f, 0.1f), 1.0f),
                             cart.getX(), cart.getY() + 0.1, cart.getZ(), 4, 0.25, 0.05, 0.25, 0.0);
@@ -114,6 +116,7 @@ public final class RailPhysics {
             factor = Math.max(target, factor - 0.04);
         }
         sp.ww$setSpeedFactor(factor);
+        CoasterLoop.checkEntry(cart, level);
     }
 
     /** Horizontal direction going up an ascending rail, or null for flat rails. */

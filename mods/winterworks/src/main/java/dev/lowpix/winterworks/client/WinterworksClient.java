@@ -33,7 +33,6 @@ public final class WinterworksClient implements ClientModInitializer {
         EntityRendererRegistry.register(WWEntities.DRAGON_LOCOMOTIVE, WWCartRenderer::new);
         EntityRendererRegistry.register(WWEntities.FOX_CART, WWCartRenderer::new);
         EntityRendererRegistry.register(WWEntities.ZOMBIE_CART, WWCartRenderer::new);
-        EntityRendererRegistry.register(WWEntities.TRAILER_CART, WWCartRenderer::new);
         BlockEntityRenderers.register(WWBlocks.SNOW_GLOBE_BE, SnowGlobeRenderer::new);
 
         LauncherItemRenderer launcher = new LauncherItemRenderer();
@@ -66,6 +65,8 @@ public final class WinterworksClient implements ClientModInitializer {
         dev.lowpix.winterworks.client.endmob.EndMobClient.init();
         dev.lowpix.winterworks.client.endgear.EndGearClient.init();
         dev.lowpix.winterworks.client.endboss.EndBossClient.init();
+        // ---- 0.4 fixes: rails (docs/FIXES_0_4.md)
+        dev.lowpix.winterworks.client.express.ExpressClient.init();
         ShowcaseDirector.init();
     }
 }

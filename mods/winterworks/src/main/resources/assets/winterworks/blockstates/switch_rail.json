@@ -1,0 +1,176 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "branch": "left",
+        "shape": "north_south"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "branch": "left",
+        "shape": "south_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left_on"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "branch": "right",
+        "shape": "north_south"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "branch": "right",
+        "shape": "south_east"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right_on"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "branch": "left",
+        "shape": "east_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "branch": "left",
+        "shape": "north_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left_on",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "branch": "right",
+        "shape": "east_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "branch": "right",
+        "shape": "south_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right_on",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "branch": "left",
+        "shape": "north_south"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "branch": "left",
+        "shape": "north_east"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left_on",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "branch": "right",
+        "shape": "north_south"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "branch": "right",
+        "shape": "north_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right_on",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "branch": "left",
+        "shape": "east_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "branch": "left",
+        "shape": "south_east"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_left_on",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "branch": "right",
+        "shape": "east_west"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "branch": "right",
+        "shape": "north_east"
+      },
+      "apply": {
+        "model": "winterworks:block/switch_rail_right_on",
+        "y": 270
+      }
+    }
+  ]
+}

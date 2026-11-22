@@ -2775,6 +2775,20 @@
     ],
     "subtitle": "Teleported home"
   },
+  "block.switch_rail.switch": {
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "pitch": 0.8,
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "Switch rail clicks"
+  },
   "entity.pot_golem.headshot": {
     "sounds": [
       {

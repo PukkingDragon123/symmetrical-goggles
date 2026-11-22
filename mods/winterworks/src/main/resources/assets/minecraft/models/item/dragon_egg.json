@@ -1,0 +1,17 @@
+{
+  "parent": "minecraft:block/dragon_egg",
+  "overrides": [
+    {
+      "predicate": {
+        "winterworks:egg_cracks": 0.5
+      },
+      "model": "winterworks:item/dragon_egg_cracked_1"
+    },
+    {
+      "predicate": {
+        "winterworks:egg_cracks": 1.0
+      },
+      "model": "winterworks:item/dragon_egg_cracked_2"
+    }
+  ]
+}

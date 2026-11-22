@@ -41,9 +41,6 @@ public final class WWEntities {
     public static final EntityType<WWCart> ZOMBIE_CART = reg("zombie_cart",
             EntityType.Builder.<WWCart>of((t, l) -> new WWCart(t, l, CartKind.ZOMBIE_CART), MobCategory.MISC)
                     .sized(0.98f, 0.7f).clientTrackingRange(8));
-    public static final EntityType<WWCart> TRAILER_CART = reg("trailer_cart",
-            EntityType.Builder.<WWCart>of((t, l) -> new WWCart(t, l, CartKind.TRAILER_CART), MobCategory.MISC)
-                    .sized(0.98f, 0.7f).clientTrackingRange(8));
 
 
     // ---- Cold Zone update (docs/COLD_UPDATE.md)

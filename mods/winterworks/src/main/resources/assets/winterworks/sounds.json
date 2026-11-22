@@ -2755,6 +2755,20 @@
     ],
     "subtitle": "subtitles.winterworks.effect.recall.teleport"
   },
+  "block.switch_rail.switch": {
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "pitch": 0.8,
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.switch_rail.switch"
+  },
   "entity.pot_golem.headshot": {
     "sounds": [
       {

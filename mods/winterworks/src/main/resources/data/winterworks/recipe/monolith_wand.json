@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " E ",
+    "OCO",
+    " R "
+  ],
+  "key": {
+    "E": {
+      "item": "winterworks:monolith_eye"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "C": {
+      "item": "winterworks:meteorite_core"
+    },
+    "R": {
+      "item": "winterworks:void_rod"
+    }
+  },
+  "result": {
+    "id": "winterworks:monolith_wand",
+    "count": 1
+  }
+}
