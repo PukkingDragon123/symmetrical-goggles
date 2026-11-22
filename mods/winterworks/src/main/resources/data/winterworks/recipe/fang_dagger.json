@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "M",
+    "F",
+    "S"
+  ],
+  "key": {
+    "M": {
+      "item": "winterworks:mauler_fang"
+    },
+    "F": {
+      "item": "winterworks:polar_bear_fur"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "winterworks:fang_dagger",
+    "count": 1
+  }
+}
