@@ -501,6 +501,12 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         if (howlCooldown > 0) {
             howlCooldown--;
         }
+        if (flowCooldown > 0) {
+            flowCooldown--;
+        }
+        if (brewerCooldown > 0) {
+            brewerCooldown--;
+        }
         if (dazedTicks > 0 && --dazedTicks == 0) {
             setFlag(FLAG_DAZED, false);
         }
@@ -534,12 +540,6 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         } else if (form == HeadForm.HOWL && howlCooldown == 0 && target != null && target.isAlive()) {
             startAction(Action.HOWL);
             level().broadcastEntityEvent(this, EVENT_HOWL);
-        }
-        if (flowCooldown > 0) {
-            flowCooldown--;
-        }
-        if (brewerCooldown > 0) {
-            brewerCooldown--;
         }
         switch (form) {
             case HEART -> {
