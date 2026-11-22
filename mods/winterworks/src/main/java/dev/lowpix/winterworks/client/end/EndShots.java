@@ -122,7 +122,7 @@ final class EndShots {
             int y = ground(level, at.getX(), at.getZ());
             crater = Meteorite.crater(EndWriter.unclipped(level), at.getX(), y, at.getZ(), 77L);
         });
-        view(() -> crater == null ? null : over(crater, 9, 13, 8, 0, 0, 0));
+        view(() -> crater == null ? null : over(crater, 5, 5, 6, 0, 0.5, 0));
         shot("meteorite");
         // ---- the structures, built in front of the camera with the dev command
         build(EndStructure.Kind.OBSIDIAN_RUINS, () -> ruinsSpot, p -> ruins = p);
@@ -133,12 +133,35 @@ final class EndShots {
         shot("end_shrine");
         view(() -> shrine == null ? null : over(shrine, 3, 4, 4, 0, 2, 0));
         shot("end_shrine_inside");
+        // the Monolith Tower: built if there's a clear site, else the nearest natural one
         build(EndStructure.Kind.MONOLITH_TOWER, () -> towerSpot, p -> tower = p);
-        view(() -> tower == null ? null : over(tower, 50, 38, 56, 0, 34, 0));
+        server(level -> {
+            if (tower != null || deadEnd == null) {
+                return;
+            }
+            var reg = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+            var holder = reg.getHolderOrThrow(EndWorldgen.MONOLITH_TOWER);
+            var found = level.getChunkSource().getGenerator().findNearestMapStructure(level, HolderSet.direct(holder), deadEnd, 100, false);
+            if (found != null) {
+                var start = level.getChunk(found.getFirst()).getStartForStructure(holder.value());
+                if (start != null && !start.getPieces().isEmpty() && start.getPieces().get(0) instanceof dev.lowpix.winterworks.end.EndStructurePiece piece) {
+                    tower = piece.origin();
+                }
+            }
+            Winterworks.LOG.info("endshots: natural monolith tower at {}", tower);
+        });
+        add(mc -> {
+            if (tower != null && towerSpot == null) {
+                cmd(String.format(Locale.ROOT, "tp @s %d %d %d", tower.getX() + 40, tower.getY() + 40, tower.getZ() + 40));
+            }
+            return true;
+        });
+        wait(240);
+        view(() -> tower == null ? null : over(tower, 38, 26, 44, 0, 34, 0));
         shot("monolith_tower");
         view(() -> tower == null ? null : over(tower, 12, 75, 15, 0, 65, 0));
         shot("monolith_arena");
-        view(() -> tower == null ? null : over(tower, -4, 10, -2, 3, 20, 1));
+        view(() -> tower == null ? null : over(tower, 0, 2, 5, -1, 9, -2));
         shot("monolith_stairs");
         // ---- a natural Obsidian Ruin
         server(level -> {
@@ -279,7 +302,7 @@ final class EndShots {
         // flat building sites near them, clear of each other
         shrineSpot = flatSpot(level, meadows == null ? null : meadows.offset(70, 0, 40), EndWorldgen.CHORUS_MEADOWS, null, true);
         ruinsSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(-50, 0, 40), EndWorldgen.DEAD_END, null, true);
-        towerSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(60, 0, 80), EndWorldgen.DEAD_END, ruinsSpot, true);
+        towerSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(40, 0, -60), EndWorldgen.DEAD_END, ruinsSpot, true);
         craterSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(20, 0, -20), EndWorldgen.DEAD_END, null, false);
         Winterworks.LOG.info("endshots: island {} r{}, pillar {}, formation {}, sites: shrine {} ruins {} tower {} crater {}", island,
                 islandRadius, pillar, formation, shrineSpot, ruinsSpot, towerSpot, craterSpot);
@@ -290,15 +313,17 @@ final class EndShots {
         if (near == null) {
             return null;
         }
-        for (int r = 0; r <= 240; r += 8) {
+        for (int r = 0; r <= 480; r += 8) {
             for (int dx = -r; dx <= r; dx += 8) {
                 for (int dz = -r; dz <= r; dz += 8) {
                     if (Math.max(Math.abs(dx), Math.abs(dz)) != r) {
                         continue;
                     }
                     int x = near.getX() + dx, z = near.getZ() + dz;
-                    if (avoid != null && Math.hypot(x - avoid.getX(), z - avoid.getZ()) < 70 || EndGen.nearMainIsland(x, z)) {
-                        continue;
+                    if (avoid != null && Math.hypot(x - avoid.getX(), z - avoid.getZ()) < 50 || EndGen.nearMainIsland(x, z)
+                            || !level.getBiome(new BlockPos(x, 64, z)).is(biome) || clearSky && !clearOfIslands(level, x, z)
+                            || ground(level, x, z) <= 45) {
+                        continue;   // the cheap checks first: the ground is from the terrain noise, slow
                     }
                     int lo = Integer.MAX_VALUE, hi = Integer.MIN_VALUE;
                     boolean ok = true;
@@ -311,7 +336,7 @@ final class EndShots {
                             hi = Math.max(hi, h);
                         }
                     }
-                    if (ok && hi - lo <= 6 && (!clearSky || clearSky(level, x, z))) {
+                    if (ok && hi - lo <= 7 && (!clearSky || clearOfStructures(level, x, z))) {
                         return new BlockPos(x, ground(level, x, z), z);
                     }
                 }
@@ -320,8 +345,8 @@ final class EndShots {
         return null;
     }
 
-    /** No floating island over (x, z) and no structure (an End City) in the chunks round it. */
-    private static boolean clearSky(ServerLevel level, int x, int z) {
+    /** No floating island over (x, z). */
+    private static boolean clearOfIslands(ServerLevel level, int x, int z) {
         long seed = level.getSeed();
         for (int cx = (x >> 4) - 3; cx <= (x >> 4) + 3; cx++) {
             for (int cz = (z >> 4) - 3; cz <= (z >> 4) + 3; cz++) {
@@ -329,8 +354,17 @@ final class EndShots {
                 if (p != null && Math.hypot(p.x() - x, p.z() - z) < p.radius() + 14) {
                     return false;
                 }
-                if (Math.abs(cx - (x >> 4)) <= 2 && Math.abs(cz - (z >> 4)) <= 2 && level.getChunk(cx, cz,
-                        net.minecraft.world.level.chunk.status.ChunkStatus.STRUCTURE_REFERENCES, true).hasAnyStructureReferences()) {
+            }
+        }
+        return true;
+    }
+
+    /** No structure (an End City) in the chunks round (x, z). */
+    private static boolean clearOfStructures(ServerLevel level, int x, int z) {
+        for (int cx = (x >> 4) - 2; cx <= (x >> 4) + 2; cx++) {
+            for (int cz = (z >> 4) - 2; cz <= (z >> 4) + 2; cz++) {
+                if (level.getChunk(cx, cz, net.minecraft.world.level.chunk.status.ChunkStatus.STRUCTURE_REFERENCES, true)
+                        .hasAnyStructureReferences()) {
                     return false;
                 }
             }

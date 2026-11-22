@@ -170,7 +170,7 @@ public final class EndFeatures {
         double a = EndFormations.u(id, 12) * Math.PI * 2;
         switch ((int) Long.remainderUnsigned(id >>> 28, 3)) {
             case 0 -> {
-                int span = 9 + (int) (EndFormations.u(id, 36) * 9);
+                int span = 9 + (int) (EndFormations.u(id, 36) * 7);   // 9-15: both feet inside the writable region
                 int ex = x + (int) Math.round(Math.cos(a) * span), ez = z + (int) Math.round(Math.sin(a) * span);
                 int y2 = groundAt(w, gen, rs, ex, ez);
                 if (y2 == Integer.MIN_VALUE || Math.abs(y2 - y) > 4 || EndGen.style(w.level, new BlockPos(ex, 64, ez)) == null) {
