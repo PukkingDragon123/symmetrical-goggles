@@ -12,8 +12,10 @@ are saturated. Palette colours may carry alpha (#rrggbbaa): the amber block is t
 cave dust faint.
 
 Variants that must line up (the amber block with a seed or a mosquito inside, the four dusted stages of the amber
-fossil, the resin log) are composed from one hand-drawn base grid and hand-drawn overlay grids (`over`), so they
-always match pixel for pixel. Particles are frame sequences `<name>_<i>.png` (frame 0 = birth) plus
+fossil, the resin log, the chest boat icon) are composed from one hand-drawn base grid and hand-drawn overlay grids
+(`over`), so they always match pixel for pixel. The Amberwood wood set is drawn in vanilla's conventions; its sign,
+hanging-sign and boat entity textures are cut from the hand-drawn plank, bark and stripped-wood tiles into vanilla's
+UV layouts (`paint_box`). Particles are frame sequences `<name>_<i>.png` (frame 0 = birth) plus
 `particles/<name>.json`.
 """
 from __future__ import annotations
@@ -65,9 +67,6 @@ def frames(name, palette, grids, size=8):
 # amber: deep red-brown shadows, orange body, honey and cream lights
 AMBER = {"0": "#3d0f0b", "1": "#601d0c", "2": "#86300e", "3": "#a84812", "4": "#c76516", "5": "#dd8420",
          "6": "#eea32f", "7": "#f8c454", "8": "#ffe28f", "9": "#fff6d6"}
-# gravel and stone: violet-grey shadows, warm grey lights
-GRAVEL = {"o": "#2a2530", "1": "#3e3843", "2": "#555057", "3": "#6f686c", "4": "#8a8180", "5": "#a69c95",
-          "6": "#c3b8ad", "7": "#dcd2c4"}
 BLOOD = {"k": "#2d0710", "r": "#58101c", "R": "#82182a", "e": "#ad2433", "E": "#d84444", "F": "#ff8a78"}
 
 
@@ -76,178 +75,321 @@ def translucent(ramp, alphas):
     return {k: v + a for (k, v), a in zip(ramp.items(), alphas)}
 
 
-# ====================================================================== amber block: thick, golden honey
-# The game draws a real 3D mosquito or seed inside the block (a block-entity renderer). The amber reads like thick
-# honey, about as see-through as vanilla's honey block: a golden body at 60-72% opacity, a soft glow in the middle
-# where light comes through (lighter but no more opaque, so a trapped thing still shows dark there), deepening to
-# dark honey at the bottom right; a solid lit rim (top/left) and shaded rim (bottom/right), a soft sheen, slow round
-# bubbles. The seed and mosquito variants are the same plain amber.
+# ====================================================================== amber block: thick honey amber with depth
+# The game draws a real 3D mosquito or seed inside the block (a block-entity renderer), so every face is translucent.
+# It reads as a deep lump of honey amber: warm lit edges (a bright top/left rim and a glowing inner ring), the body
+# deepening to a dark red-amber core in the middle (more saturated, a little more opaque, still see-through so a
+# trapped thing shows dark there), flow streaks running diagonally through it, and small trapped bubbles (a cream
+# glint over a dark underside). The seed and mosquito variants are the same plain amber.
 HONEY_BLOCK = {
-    "c": "#dfa246b8", "b": "#cc8a34b0", "a": "#b47228a8", "d": "#985c20a0", "e": "#7e4a1a9a",      # the honey body
-    "g": "#ebb95aa0", "G": "#f4cd769a",                                                             # inner glow
-    "9": "#fff2cdf0", "8": "#f9dd98e8", "7": "#f1c770e0", "6": "#e2ad52d8",                          # lit rim
-    "3": "#a2652ad8", "2": "#83501ee0", "1": "#653d18e8",                                           # shaded rim
-    "S": "#fff0c8dc", "s": "#f9dea2cc",                                                             # sheen
-    "O": "#fff6dcec", "o": "#f6d690d0", "h": "#efc472c4", "q": "#94581ec8",                          # bubbles
+    "W": "#fff1c4f0", "Y": "#fbd27ae8", "y": "#f3b84fe4",                      # lit rim (top/left)
+    "r": "#d2741ee4", "R": "#ad5114e8",                                         # shaded rim (bottom/right)
+    "g": "#f5b640b8", "G": "#fac85fb8",                                         # the glowing inner ring
+    "h": "#f09a24b4", "o": "#e47e18b4", "c": "#d06212b8", "C": "#b44a0ec0",       # body deepening to the core
+    "s": "#f9c552b4", "d": "#b85414bc",                                         # flow streaks (light / dark)
+    "B": "#fff6dcf4", "b": "#f9d27ed8", "q": "#86380ed0",                         # bubbles: glint, body, underside
 }
 AMBER_BLOCK = """
-9888 8888 8888 8876
-877c cccc cccb bbb3
-8cSS sccc ccbb bbb2
-8sSc cccc cbbb bba2
-8scc cOcc bbbb baa2
-8ccc ccqg ggbb aaa2
-8ccc ccgg ggga aaa2
-8ccc cbgG GGga aaa2
-8ccc bbgG GGga aad2
-8ccb bbgg ggga add2
-8cbb bbbg ggaO odd2
-8bOo bbaa aaao qdd2
-8boh oaaa aadd dde2
-7bbo qaaa addd dee2
-7bba aaaa dddd eee2
-6322 2222 2222 2221
+WWWY YYYY YYYY yyyr
+WGGg gggg gGgg gghr
+WGsg ggGg gggg ghhr
+Ygsg gssh hhhh Bbhr
+Yggs shho oooh bqhR
+Yggs hhoo oooo ohhR
+YgBh hooc cccc oohR
+Ygqh oocc CCcc cohR
+Yghh occC CCCc cohR
+Yghh occC CCCC cdhR
+Yghh occC CCCc dohR
+Yghh oocc cccd oohR
+yghh hooc cdBb ohhR
+yggh hhoo oobq hhgR
+yggg ghhh hhhh hggR
+rrrr RRRR RRRR RRRR
 """
 for _name in ("amber_block", "amber_block_seed", "amber_block_mosquito"):
     block(_name, pal(HONEY_BLOCK), AMBER_BLOCK)
 
-# ====================================================================== amber fossil: petrified fossils in gravel
-# The gravel base, then four dusted stages: the brushed hollow grows and uncovers a petrified seed and the imprint of
-# a ginkgo leaf. Fossil colours: d/D dust in the hollow, l/L/v the leaf imprint, p/P/q the stone seed, a amber gleam.
-FOSSIL = {"d": "#6f625e", "D": "#9c8d80", "l": "#4a3a33", "L": "#6e5648", "v": "#2e2420", "p": "#3e2a1e",
-          "P": "#6e4a30", "q": "#a47650", "a": "#e8a040"}
+# ====================================================================== amber fossil: amber in gravel (suspicious-gravel style)
+# Vanilla-style gravel (fine pebbles in warm greys, a pinkish cast) with lumps of amber in it. Brushing digs a darker
+# hollow into the gravel (the gravel below, in shadow) that grows over the four stages and uncovers more amber: two
+# chips peek out at stage 0, the big lump (a petrified seed sealed in it) is half out at 2 and whole at 3.
+GRAVEL = {"0": "#544a4d", "1": "#665c5d", "2": "#766d6c", "3": "#847c7b", "4": "#928987", "5": "#a29894",
+          "6": "#b6aca6"}
+DIG = {"0": "x", "1": "x", "2": "x", "3": "X", "4": "X", "5": "Z", "6": "Z"}     # gravel tone -> hollow tone
+FOSSIL = {"x": "#3f3639", "X": "#4d4446", "Z": "#5d5355",                          # the shadowed hollow
+          "k": "#4a1f0e", "a": "#8a3f13", "A": "#b9631c", "b": "#dc932f", "B": "#f3c15a", "W": "#fff0bc",
+          "p": "#3b2416", "P": "#5c3a22"}                                           # amber, the seed inside
 GRAVEL_BASE = """
-6541 o566 5o35 541o
-5432 o454 3o24 431o
-o32o 1o3o o1o1 o2oo
-3o56 65o4 6541 o56o
-2o45 543o 5432 o454
-1o34 32o1 o321 o343
-oo1o o1oo 1oo1 oo2o
-566o 4541 o567 6o45
-4554 o343 o455 4o34
-3433 o232 o344 3o23
-o22o 1oo1 1o23 oo12
-1o45 65o3 56oo 465o
-1o34 54o2 454o 354o
-o233 43o1 3432 o43o
-oo11 oo2o o121 1o1o
-6o45 o3o4 6o4o 56o5
+3334 1543 3433 2303
+3261 3334 0434 3124
+5355 2334 4354 1225
+3565 5544 3346 3331
+3351 3143 3341 4133
+2233 3313 6344 3343
+2133 3305 1443 3232
+3013 5464 4333 3131
+4335 4314 3363 5336
+3236 5133 3343 3334
+2264 3431 3333 3512
+2143 3363 3253 2343
+3353 2333 2332 1432
+3334 0333 6333 4322
+3543 1323 4631 1321
+4345 1253 4433 3433
 """
-# the fossils as they lie under the gravel (only shown where a stage has brushed the gravel away): the dark imprint of
-# a ginkgo leaf with its veins and stem, and a petrified seed with an amber gleam
-FOSSILS = """
+# the amber as it lies in the gravel: a rough lump (lit top-left, a cream glint, a small dark seed sealed in it)
+# and two chips; no outline, the shadowed hollow round it does that
+AMBER_IN = """
 .... .... .... ....
 .... .... .... ....
-.lLL l.LL l... ....
-lLvL LvLL vl.. ....
-.lLv LvLv Ll.. ....
-..lL vvvL l... ....
-...l LvvL .... ....
-.... lvl. .... ....
-.... .v.. ..pp ....
-.... ..v. .pqP p...
-.... ...v pqPP p...
-.... .... pPPa p...
-.... .... .pPP p...
-.... .... ..pp ....
 .... .... .... ....
+.... .... .... Bb..
+.... .... .... ba..
+.... .... .... ....
+.... .WBb .... ....
+.... Bbbb bA.. ....
+...B bbpP bAa. ....
+...b bpPA Aaa. ....
+.... AAAa aa.. ....
+.... .aaa .... ....
+.... .... .... ....
+..B. .... .... ....
+..ba .... .... ....
 .... .... .... ....
 """
-# brushed-away areas per stage: '#' = gravel removed (dust or fossil shows), stage 0 only a scratch
+# per stage: '#' = gravel brushed away (amber shows where there is some, else the shadowed hollow)
 REVEAL = ["""
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
-.... .#.. .... ....
-.... ##.. .... ....
+.... .... .... ##..
+.... .... .... ##..
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... ...# .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
-.... .... ..#. ....
-.... .... .##. ....
+..#. .... .... ....
+..#. .... .... ....
+.... .... .... ....
+""", """
+.... .... .... ....
+.... .... .... ....
+.... .... .... ##..
+.... .... ...# ###.
+.... .... .... ##..
+.... .... .... ....
+.... .... #... ....
+.... ..## #... ....
+.... .### ##.. ....
+.... ..## #... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
-.... .... .... ....
+.#.# .... .... ....
+.### .... .... ....
 .... .... .... ....
 """, """
 .... .... .... ....
 .... .... .... ....
-.... ##.. .... ....
-...# ###. .... ....
-..## ###. .... ....
-...# ##.. .... ....
+.... .... .... ###.
+.... .... ...# ####
+.... .... ..## ###.
+.... .### #... ##..
+.... #### ##.. ....
+...# #### ##.. ....
+...# #### ###. ....
+.... #### ##.. ....
+.... .### #... ....
 .... .... .... ....
-.... .... .... ....
-.... .... ..## ....
-.... .... .### ....
-.... .... ###. ....
-.... .... .##. ....
-.... .... .... ....
-.... .... .... ....
-.... .... .... ....
-.... .... .... ....
+..#. .... .... ....
+.### .... .... ....
+.### .... .... ....
+..#. .... .... ....
 """, """
 .... .... .... ....
-.... ###. .... ....
-..## #### .... ....
-.### #### #... ....
-.### #### ##.. ....
-.### #### ##.. ....
-..## #### #... ....
-...# ###. .... ....
-.... ###. .### ....
-.... .#.. #### #...
-.... .... #### #...
-.... .... .### #...
-.... .... ..## ....
-.... .... .... ....
-.... .... .... ....
-.... .... .... ....
-""", """
-.... .... .... ....
-.### #### .... ....
-#### #### ##.. ....
-#### #### ###. ....
-#### #### ###. ....
-#### #### ###. ....
-.### #### ##.. ....
-..## #### #### #...
+.... .... ...# ##..
+.... ..#. ..## ###.
+.... .### .### ####
+.... #### #### ###.
 ...# #### #### ##..
-...# #### #### ##..
-.... #### #### ##..
-.... .### #### ##..
-.... .... #### ##..
-.... .... .### #...
-.... .... .... ....
-.... .... .... ....
+..## #### ###. ....
+..## #### ###. ....
+..## #### ###. ....
+..## #### ###. ....
+...# #### ##.. ....
+.... ###. #... ....
+.##. .#.. .... ....
+#### .... .... ....
+.### .... .... ....
+..## .... .... ....
 """]
 
 
 def dusted(stage):
-    """Compose one stage: gravel where not revealed; in the hollow the fossil, else dust (darker at the rim)."""
-    g, f, m = parse(GRAVEL_BASE), parse(FOSSILS), parse(REVEAL[stage])
+    """Compose one stage: gravel where not brushed; in the hollow the amber, else the gravel below in shadow."""
+    g, a, m = parse(GRAVEL_BASE), parse(AMBER_IN), parse(REVEAL[stage])
     rows = []
     for y in range(16):
         row = ""
         for x in range(16):
             if m[y][x] != "#":
                 row += g[y][x]
-                continue
-            if f[y][x] != ".":
-                row += f[y][x]
-                continue
-            rim = any(not (0 <= y + dy < 16 and 0 <= x + dx < 16) or m[y + dy][x + dx] != "#"
-                      for dy, dx in ((-1, 0), (0, -1)))
-            row += "d" if rim else "D"
+            elif a[y][x] != ".":
+                row += a[y][x]
+            else:
+                row += DIG[g[y][x]]
         rows.append(row)
     return "\n".join(rows)
 
 
 for k in range(4):
     block(f"amber_fossil_{k}", pal(GRAVEL, FOSSIL), dusted(k))
+
+# ====================================================================== amber sand and amber gravel (brushable)
+# Sand and gravel with loose amber in them, brushed like suspicious sand/gravel: honey-amber chunks (a cream glint,
+# lit top-left, a deep red-amber underside) and single glinting grains scattered through. Brushing digs shadowed
+# hollows that grow over the four stages: glints and a small chunk at stage 0, everything at stage 3. Unlike the
+# Amber Fossil (one big lump with a seed sealed in it) these are loose scattered chunks. The gravel is the fossil's
+# gravel turned round, with the amber laid out mirrored.
+SAND = {"0": "#c4ab7c", "1": "#ccb685", "2": "#d3c091", "3": "#d8c99c", "4": "#dfd3a7", "5": "#e6ddb3",
+        "6": "#eee8c6"}
+SAND_DIG = {"0": "x", "1": "x", "2": "x", "3": "X", "4": "X", "5": "Z", "6": "Z"}
+LOOSE = {"x": "#a99168", "X": "#b8a076", "Z": "#c6b083",                          # the shadowed hollow in sand
+         "a": "#8a3a10", "A": "#c3601a", "b": "#e6922a", "B": "#f6c055", "W": "#fff2c4"}
+GRAVEL_LOOSE = dict(LOOSE, x=FOSSIL["x"], X=FOSSIL["X"], Z=FOSSIL["Z"])
+SAND_BASE = """
+1344 3335 3443 4446
+3154 3445 3344 5543
+5624 5435 4343 2444
+4556 6533 4443 3544
+3454 6345 4543 3633
+4454 4534 4423 3446
+5356 4143 3235 2433
+5334 4454 4444 4335
+4544 3534 3434 4435
+4524 5335 4454 3344
+4523 4445 3324 3402
+4535 4453 4543 3434
+4544 5344 4345 3425
+4365 2346 3232 4443
+1544 4455 4433 5245
+3445 4524 4454 5454
+"""
+# the loose amber: five chunks and four glinting grains
+AMBER_LOOSE = """
+.... .... .... ....
+.... ...W .... ....
+.... .... ...B b...
+...W B... ...A a...
+...B bA.. .... ....
+.... Aa.. .... ....
+.... .... .... ....
+.... .... .... ..W.
+.B.. .... .... ....
+.... .... .WB. ....
+.... .... BbbA ....
+.... .... .AAa ....
+..bA .... .... ....
+..Aa .... .... BbA.
+.... ..W. .... .Aa.
+.... .... .... ....
+"""
+REVEAL_LOOSE = ["""
+.... .... .... ....
+.... ...# .... ....
+.... .... ...# #...
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ..#.
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+""", """
+.... .... .... ....
+.... ..## .... ....
+...# #... ..## ##..
+..## ##.. ..## ##..
+.... .... ...# #...
+.... .... .... ....
+.... .... .... ....
+.... .... .... .##.
+.#.. .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... ..#. .... ....
+.... .... .... ....
+""", """
+.... .... .... ....
+.... ..## .... ....
+..## ##.. ..## ##..
+.### ###. .### ##..
+.### ###. ..## #...
+..## ##.. .... ....
+.... #... .... ....
+.... .... .... .###
+##.. .... #... ..#.
+.#.. ...# ###. ....
+.... ...# ###. ....
+.... .... .... ....
+..#. .... .... ....
+.... .... .... ....
+.... .##. .... ....
+.... .... .... ....
+""", """
+.... ..#. .... ....
+.... .### ..#. ....
+..## ##.# .### ##..
+.### ###. .### ###.
+.### #### ..## #...
+..## ###. .... ....
+...# ###. .... ..#.
+.... ##.. .... .###
+##.. .##. #... ..#.
+###. ..## ###. ....
+.#.. ..## #### ....
+.#.. ...# #### ....
+.### .... ##.. #...
+.### .... ...# ###.
+..#. .##. ...# ###.
+.... .... .... .#..
+"""]
+
+
+def mirrored_grid(grid):
+    return "\n".join(r[::-1] for r in parse(grid))
+
+
+def turned_grid(grid):
+    """The grid turned half round (rows and columns reversed)."""
+    return "\n".join(r[::-1] for r in parse(grid)[::-1])
+
+
+def brushed(base, amber, reveal, dig):
+    """One brushing stage: the base where not brushed; in the hollow the amber, else the base below in shadow."""
+    g, a, m = parse(base), parse(amber), parse(reveal)
+    return "\n".join("".join(g[y][x] if m[y][x] != "#" else (a[y][x] if a[y][x] != "." else dig[g[y][x]])
+                             for x in range(16)) for y in range(16))
+
+
+for k in range(4):
+    block(f"amber_sand_{k}", pal(SAND, LOOSE), brushed(SAND_BASE, AMBER_LOOSE, REVEAL_LOOSE[k], SAND_DIG))
+    block(f"amber_gravel_{k}", pal(GRAVEL, GRAVEL_LOOSE),
+          brushed(turned_grid(GRAVEL_BASE), mirrored_grid(AMBER_LOOSE), mirrored_grid(REVEAL_LOOSE[k]), DIG))
 
 # ====================================================================== petrified log: stone-hard fossil wood
 # Side: deep vertical bark furrows turned to stone, a clean horizontal fracture (petrified trunks break into
@@ -292,131 +434,475 @@ o122 2121 2112 21oo
 oo12 1121 2112 21oo
 """)
 
-# ====================================================================== Amberwood: a columnar, cactus-like tree
-# A saguaro-like trunk in muted desert colours: dusty sage crests, olive flanks, grey-brown grooves (hue-shifted:
-# warm brown shadows, cool sage lights). Four soft ribs per face (they line up round the corners), a calm stippled
-# skin, small felted areoles with a pale spine on every other crest. Amber only in the resin and the heart.
+# ====================================================================== Amberwood: a vanilla-style wood set
+# Drawn the vanilla way (16 x 16, a handful of colours per texture, light from the top-left, low contrast): honey-gold
+# wood (planks between golden acacia and oak) and a muted sandy grey-green bark, a desert tree, with thin amber resin
+# streaks in its crevices. Planks: four boards (three rows of grain and a dark seam row), one butt joint each,
+# staggered. Log side: vertical bark plates between wandering crevices. Log top: square growth rings inside a bark
+# rim. Stripped: the same wood, smooth, with a fine vertical grain. Doors, trapdoor, signs and boats reuse the ramps.
+# wood (dark -> light); the log tops use the same colours on letter keys so they can sit beside the bark digits
+WOOD_RAMP = ["#6a3f17", "#82511f", "#966025", "#a66d2a", "#b57a30", "#c38736", "#cf943f"]
+WOOD = {str(i): c for i, c in enumerate(WOOD_RAMP)}
+WOODL = dict(zip("defghij", WOOD_RAMP))
+# bark: deep crevices, olive-sand plates, pale sandy lights; resin: thin amber streaks and beads
+BARK = {"0": "#3d3c2e", "1": "#504f3e", "2": "#636350", "3": "#76775f", "4": "#898b70", "5": "#9d9e82",
+        "6": "#b1b093"}
+BARKL = dict(zip("zyxwvut", BARK.values()))
+RESIN = {"a": "#9c5a1a", "A": "#cf8a2c", "Y": "#f2c35c", "D": "#6e3a12"}
+IRON = {"i": "#3f3f48", "I": "#6d6d78", "L": "#a3a3ad"}                     # hinges, handles, the boat-chest lock
+CHAIN = {"c": "#2b2d3a", "C": "#4b4f63", "K": "#717892"}                     # hanging-sign chains
+
+PLANKS = """
+5665 6656 5626 6556
+4554 4543 5414 5543
+3443 3432 4323 4432
+1012 1101 0110 1201
+6562 6556 6665 6565
+5441 5433 4554 4554
+4332 4432 3443 3443
+0112 1010 1201 0110
+5656 6565 6656 6265
+4545 5434 5545 4154
+3434 4323 4434 3243
+1010 1201 0110 1012
+6655 6626 5665 6656
+5544 5414 4554 5445
+4433 4323 3443 4334
+0110 1001 2101 1010
+"""
+block("amberwood_planks", pal(WOOD), PLANKS)
+
+LOG_SIDE = """
+3045 4314 5304 4312
+3065 4314 4305 4312
+2044 4304 4315 4302
+2144 3305 4314 4203
+3152 3205 4314 3203
+3054 3215 3204 3313
+3044 3314 3205 4312
+2043 3404 4205 4312
+2043 4420 4314 4202
+2164 4320 4314 3203
+3154 3321 5304 3203
+3044 3220 5305 4313
+3044 4204 4205 6312
+2045 4304 4214 4312
+2145 4314 5314 3302
+3145 4314 5304 4302
+"""
+# two thin resin streaks run in the crevices of every log
+LOG_STREAKS = """
+.... .... .... ....
+.... ..A. .... ....
+.... ..a. .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... ..A. ....
+.... .... ..a. ....
+.... .... ..a. ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+"""
+block("amberwood_log", pal(BARK, RESIN), over(LOG_SIDE, LOG_STREAKS))
+# resin=true: amber oozing from the crevices, glossy beads that run down in thin drips (over the same bark)
+block("amberwood_log_resin", pal(BARK, RESIN), over(over(LOG_SIDE, LOG_STREAKS), """
+.... .... .... ....
+.... ..A. .... ....
+.... .YA. .... ....
+.... ..a. .... ....
+.... ..a. .... ....
+.... ..D. .YA. ....
+.... .... ..A. ....
+.... .... ..a. ....
+.... .... ..a. ....
+.... .... ..D. .YA.
+.Y.. .... .... ..a.
+.A.. .... .... ..a.
+.a.. .... .... ..D.
+.D.. .... .... ....
+.... .... .... ....
+.... .... .... ....
+"""))
+# the cut end: a bark rim round square growth rings, light and dark, a darker heart
+LOG_RINGS = """
+1112 0021 1122 2111
+2jjj ijjj jjij jjj0
+0jff ffef ffff fej1
+0jfh hhhh hghh hfj1
+0ifh iiii iiii hfj1
+2jfh iijh hhii hfi2
+2jfg iihg ghii hfj2
+2jfh iigf fhii gfj1
+1jfh iihf fhji hfj0
+0ifh iihg hhii hfj1
+2jfh iiii iiii hfj1
+1jfg iiii iiij hfi2
+1jfh hhgh hhhh hfj2
+2jfe ffff ffef ffj1
+2jjj jijj jjjj ijj1
+1011 1011 1002 2010
+"""
+block("amberwood_log_top", pal(BARK, WOODL), LOG_RINGS)
+# stripped: the smooth honey wood with a fine vertical grain; the top keeps the rings inside a wooden rim
+STRIPPED_SIDE = """
+5456 5545 4565 5455
+5456 5545 4565 5445
+5446 5535 4465 5455
+4456 5535 4565 6455
+5456 4535 4565 6454
+5455 4545 4556 5454
+5455 4545 5556 5444
+5465 4546 5455 5454
+4465 4546 5455 4454
+4565 5546 5355 4554
+4565 5545 5355 4564
+4566 5545 4355 4564
+5456 5545 4365 4564
+5456 5445 4465 5554
+5456 5445 4565 5454
+5456 5545 4565 5455
+"""
+block("stripped_amberwood_log", pal(WOOD), STRIPPED_SIDE)
+block("stripped_amberwood_log_top", pal(WOODL), """
+eeef eedf efee fede
+fjjj ijjj jjij jjjd
+efff ffef ffff fejd
+efgh hhhh hghh hfje
+dife iiii iiii hfje
+ejfh iijh hhii hfie
+ejfg iihg ghii hfje
+ejfh iigf fhii gfjd
+fjfh iihf fhji hfje
+eifh iihg hhii hfjd
+ejfh iiii iiii hfje
+fjfg iiii iiij hfie
+ejfh hhgh hhhh hfjd
+ejfe ffff ffef ffje
+ejjj jijj jjjj ijjd
+deed dedd edde dded
+""")
+
+# doors and trapdoor: a lit left edge and top, a shaded right edge, recessed panels (shadow on the top and left
+# inner edges, light on the bottom and right) and window holes; iron hinges on the left, a handle on the right
+DOORS = pal(WOOD, IRON)
+block("amberwood_door_top", DOORS, """
+5665 6656 6665 6652
+5433 3433 3343 3321
+I410 0000 0000 0231
+i410 ..05 20.. 0531
+541. ...5 2... .531
+541. ...5 2... .531
+541. ...5 2... .531
+541. ...5 2... .531
+541. ...5 2... .531
+5415 5555 5555 5531
+5433 3433 3343 3321
+5410 0000 0000 0231
+5414 5445 4544 5531
+5413 4334 3433 4531
+5414 4544 5445 4531
+5413 3433 4334 3531
+""")
+block("amberwood_door_bottom", DOORS, """
+5414 5445 4544 5531
+5413 4334 3433 L531
+5414 4544 5445 i531
+5413 3433 4334 3531
+5414 5445 4544 5531
+5415 5555 5555 5531
+5433 3433 3343 3321
+5410 0000 0000 0231
+5414 5445 4544 5531
+5413 4334 3433 4531
+5414 4544 5445 4531
+I413 3433 4334 3531
+i414 5445 4544 5531
+5415 5555 5555 5531
+5433 4333 3433 3321
+2111 1111 1111 1110
+""")
+block("amberwood_trapdoor", DOORS, """
+5666 6566 6656 6652
+5433 3433 3343 3321
+5410 0000 0000 0231
+541. ...5 2... .531
+541. ...5 2... .531
+5415 5555 5555 5531
+5433 3433 3343 3321
+5444 5445 4544 5421
+5433 4334 3433 4321
+5433 3433 3343 3321
+5410 0000 0000 0231
+541. ...5 2... .531
+541. ...5 2... .531
+5415 5555 5555 5531
+5433 4333 3433 3321
+2111 1111 1111 1110
+""")
+
+# item icons: the door, signs and boats as vanilla draws them (no outline on the door, a dark rim on the signs and
+# boats, carved text marks on the boards, the sign post in bark)
+ITEMW = pal(WOOD, BARKL, IRON, CHAIN, k="#4a2a10", o="#3b2410")
+item("amberwood_door", ITEMW, """
+...5 6666 6656 2...
+...5 4000 0002 1...
+...I 4..5 2..5 1...
+...i 4..5 2..5 1...
+...5 4..5 2..5 1...
+...5 4555 5555 1...
+...5 4333 3332 1...
+...5 4000 0005 1...
+...5 4144 545L 1...
+...5 4133 434i 1...
+...5 4144 5455 1...
+...5 4555 5555 1...
+...5 4333 3332 1...
+...I 4144 5455 1...
+...i 4555 5555 1...
+...2 1111 1111 0...
+""")
+item("amberwood_sign", ITEMW, """
+.... .... .... ....
+.... .... .... ....
+.566 6566 6656 652.
+.544 4344 4434 441.
+.5kk k4kk 4kk4 k31.
+.433 3433 3343 331.
+.5kk kk3k k4kk 431.
+.433 3323 3332 331.
+.4k4 kk4k k4kk 331.
+.322 2212 2221 220.
+.111 111v x111 110.
+.... ...v x... ....
+.... ...v x... ....
+.... ...u x... ....
+.... ...v y... ....
+.... ...y z... ....
+""")
+item("amberwood_hanging_sign", ITEMW, """
+.... .... .... ....
+.566 6566 5665 652.
+.222 2122 2212 221.
+..cK .... .... Kc..
+..Cc .... .... cC..
+..cK .... .... Kc..
+..Cc .... .... cC..
+..56 6566 5665 62..
+..4k k4kk 4kk4 k1..
+..43 3433 3343 31..
+..5k kk4k k4kk 41..
+..43 3323 3332 31..
+..4k 4kk4 k4kk 31..
+..43 3433 3343 31..
+..21 1111 1111 10..
+.... .... .... ....
+""")
+BOAT_ICON = """
+.... .... .... ....
+.... .... .... ....
+.... .... ...o o...
+.... .... ..o6 5o..
+.... .... .o65 4o..
+.... .... o542 o...
+.o.. .... 42oo ..o.
+o5o. ...o 3o.. .o5o
+o64o oooo 2ooo o46o
+.o65 6656 5665 65o.
+.okk kkkk 2kkk kko.
+.o45 5455 3554 54o.
+..o4 4344 4434 4o..
+...o 3323 3332 o...
+.... oooo oooo ....
+.... .... .... ....
+"""
+item("amberwood_boat", ITEMW, BOAT_ICON)
+item("amberwood_chest_boat", ITEMW, over(BOAT_ICON, """
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .ooo ooo. ....
+.... .o65 65o. ....
+.... .o44 44o. ....
+.... .ooL Loo. ....
+.... .o43 i3o. ....
+.... .o32 32o. ....
+.... .ooo ooo. ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+"""))
+
+
+# ====================================================================== Amberwood signs and boats (vanilla UV layouts)
+# Entity textures cut from the hand-drawn tiles above the way vanilla's are: each box face (ModelPart box unwrap:
+# top (u+d, v), bottom (u+d+w, v), right (u, v+d), front (u+d, v+d), left (u+d+w, v+d), back (u+2d+w, v+d)) is
+# filled from a tile at an offset, so seams and grain line up across neighbouring faces.
+def tiled(grid, w, h, ox=0, oy=0, sideways=False):
+    """A w x h window into a 16 x 16 tile grid (wrapping), optionally turned sideways (grain along x)."""
+    rows = parse(grid) if isinstance(grid, str) else grid
+    if sideways:
+        rows = ["".join(r[x] for r in rows[::-1]) for x in range(len(rows[0]))]
+    return ["".join(rows[(y + oy) % len(rows)][(x + ox) % len(rows[0])] for x in range(w)) for y in range(h)]
+
+
+def unwrap(u, v, w, h, d):
+    return {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, h),
+            "front": (u + d, v + d, w, h), "left": (u + d + w, v + d, d, h), "back": (u + 2 * d + w, v + d, w, h)}
+
+
+def paint_box(im, palette, u, v, w, h, d, **faces):
+    """faces: name -> rows (list of strings) or a callable (fw, fh) -> rows."""
+    for face, (x, y, fw, fh) in unwrap(u, v, w, h, d).items():
+        src = faces.get(face, faces.get("all"))
+        if src is None or fw == 0 or fh == 0:
+            continue
+        rows = src(fw, fh) if callable(src) else src
+        im.alpha_composite(draw(rows, palette, (fw, fh), f"box {u},{v} {face}"), (x, y))
+
+
+def framed(rows, edge="0"):
+    """The same rows with a 1 px dark frame (chest faces)."""
+    h, w = len(rows), len(rows[0])
+    return ["".join(edge if x in (0, w - 1) or y in (0, h - 1) else rows[y][x] for x in range(w)) for y in range(h)]
+
+
+SIGNP = pal(WOOD, BARKL, CHAIN, IRON, k="#3a2410")
+# standing sign: the board in planks (three boards on the face), the post in bark
+sign = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+paint_box(sign, SIGNP, 0, 0, 24, 12, 2,
+          front=tiled(PLANKS, 24, 12, 0, 0), back=tiled(PLANKS, 24, 12, 5, 4),
+          top=lambda w, h: tiled(PLANKS, w, h, 3, 0), bottom=lambda w, h: tiled(PLANKS, w, h, 7, 13),
+          right=lambda w, h: tiled(PLANKS, w, h, 9, 0), left=lambda w, h: tiled(PLANKS, w, h, 2, 4))
+BARK_TILE = LOG_SIDE.translate(str.maketrans("0123456", "zyxwvut"))
+RINGS_TILE = LOG_RINGS.translate(str.maketrans("0123456defghij", "zyxwvut0123456"))
+paint_box(sign, SIGNP, 0, 14, 2, 14, 2, all=lambda w, h: tiled(BARK_TILE, w, h, 5, 1),
+          top=tiled(RINGS_TILE, 2, 2, 7, 7), bottom=tiled(RINGS_TILE, 2, 2, 7, 7))
+put("textures/entity/signs/amberwood.png", sign)
+
+# hanging sign: a stripped-log beam, iron chains (straight pairs and a V), a board of stripped wood
+STRIP_TILE = STRIPPED_SIDE
+hang = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+paint_box(hang, SIGNP, 0, 0, 16, 2, 4, all=lambda w, h: tiled(STRIP_TILE, w, h, 2, 5, sideways=True),
+          right=tiled(parse(STRIPPED_SIDE.replace("6", "3")), 4, 2, 0, 0),
+          left=tiled(parse(STRIPPED_SIDE.replace("6", "3")), 4, 2, 4, 0))
+CHAIN_LINKS = [".K.", ".C.", "CKc", "C.c", "Ccc", ".c."]
+for u in (0, 6):
+    paint_box(hang, SIGNP, u, 6, 3, 6, 0, front=CHAIN_LINKS, back=CHAIN_LINKS)
+V_CHAIN = ["K..........K", ".c........c.", "..K......K..", "...c....c...", "....K..K....", ".....cc....."]
+paint_box(hang, SIGNP, 14, 6, 12, 6, 0, front=V_CHAIN, back=V_CHAIN)
+paint_box(hang, SIGNP, 0, 12, 14, 10, 2, front=tiled(STRIP_TILE, 14, 10, 1, 2), back=tiled(STRIP_TILE, 14, 10, 6, 4),
+          top=lambda w, h: tiled(STRIP_TILE, w, h, 0, 0, sideways=True),
+          bottom=lambda w, h: tiled(STRIP_TILE, w, h, 3, 6, sideways=True),
+          right=lambda w, h: tiled(STRIP_TILE, w, h, 4, 3), left=lambda w, h: tiled(STRIP_TILE, w, h, 9, 3))
+put("textures/entity/signs/hanging/amberwood.png", hang)
+# the hanging sign edit screen: the beam, two chains, the board (stripped wood, a darker rim)
+put("textures/gui/hanging_signs/amberwood.png", draw(parse("""
+5656 6566 5665 6565
+2212 2122 1221 2122
+..cK .... .... Kc..
+..Cc .... .... cC..
+..cK .... .... Kc..
+..Cc .... .... cC..
+2333 3233 3323 3332
+3545 6545 5456 5453
+3454 5455 4565 4543
+3545 6545 5456 5453
+3545 5545 5455 6453
+3456 5456 4546 5543
+3455 5455 4545 5443
+3545 6545 5456 5453
+3454 5455 4565 4543
+2222 2122 2212 2221
+"""), SIGNP, (16, 16), "gui/hanging_signs/amberwood"))
+
+
+# boats: the hull boxes in planks (the floor's long face too), the paddles in stripped wood
+def boat_texture(size):
+    im = Image.new("RGBA", size, (0, 0, 0, 0))
+    plank = lambda ox, oy: (lambda w, h: tiled(PLANKS, w, h, ox, oy))  # noqa: E731
+    strip = lambda ox, oy, s=False: (lambda w, h: tiled(STRIP_TILE, w, h, ox, oy, sideways=s))  # noqa: E731
+    paint_box(im, SIGNP, 0, 0, 28, 16, 3, all=plank(0, 0), back=plank(6, 2), right=plank(3, 1), left=plank(11, 5))
+    paint_box(im, SIGNP, 0, 19, 18, 6, 2, all=plank(4, 0), back=plank(9, 4))
+    paint_box(im, SIGNP, 0, 27, 16, 6, 2, all=plank(2, 8), back=plank(7, 12))
+    paint_box(im, SIGNP, 0, 35, 28, 6, 2, all=plank(1, 4), back=plank(8, 8))
+    paint_box(im, SIGNP, 0, 43, 28, 6, 2, all=plank(5, 12), back=plank(12, 0))
+    for v in (0, 20):
+        paint_box(im, SIGNP, 62, v, 2, 2, 18, all=strip(0, 3, True))
+        paint_box(im, SIGNP, 62, v, 1, 6, 7, all=strip(5, 2), top=strip(1, 1), bottom=strip(1, 1))
+    return im
+
+
+put("textures/entity/boat/amberwood.png", boat_texture((128, 64)))
+chest_boat = boat_texture((128, 128))
+CHEST_EDGE = "o"
+CHESTP = pal(SIGNP, o="#2e1d0d", d="#1e140a")
+paint_box(chest_boat, CHESTP, 0, 76, 12, 8, 12, all=lambda w, h: framed(tiled(PLANKS, w, h, 2, 8), CHEST_EDGE),
+          top=lambda w, h: ["d" * w] * h)
+paint_box(chest_boat, CHESTP, 0, 59, 12, 4, 12, all=lambda w, h: framed(tiled(PLANKS, w, h, 4, 0), CHEST_EDGE),
+          bottom=lambda w, h: ["d" * w] * h)
+paint_box(chest_boat, CHESTP, 0, 59, 2, 4, 1, top=["LI"], bottom=["Ii"], right=["L", "I", "I", "i"],
+          left=["I", "I", "i", "i"], front=["LI", "Ii", "Ii", "ii"], back=["LI", "Ii", "Ii", "ii"])
+put("textures/entity/chest_boat/amberwood.png", chest_boat)
+
+# amberwood_bloom: the Amberwood's flower, planted as its sapling (it grows into the tree) and worn as the crown of
+# flowers on every trunk and arm top. Drawn like a vanilla sapling (no outline, a few tones, lit from the top-left):
+# a fleshy sage stem that forks into three waxy cup flowers, pale cream petals blushing dusty apricot in the shade, a
+# yellow heart of stamens, a few pale spines and a little leaf on the stem.
+BLOOM = {"p": "#b0846e", "P": "#cc9f84", "q": "#e4c2a2", "Q": "#f3dec4", "h": "#fff6e6",      # petals
+         "c": "#f3d36c", "C": "#c6913a", "k": "#8a5a3c",                                    # heart, throat
+         "t": "#3f4c33", "T": "#596a45", "u": "#788c5c", "U": "#9db07c", "x": "#ece6cf"}      # stem, spines
+BLOOM_PLANT = """
+.... .... .... ....
+.... ..hQ Qh.. ....
+.... .hQq qQh. ....
+.... qQcc ccQq ....
+.... pqcC Ckqp ....
+.hQ. .pqk kqp. ....
+hQqQ h.pP Pp.. hQh.
+qcCq Q..u T..h QqQq
+pkCq p.uU Tt.q cCcq
+.pqp ..uU Tt.p kCqp
+..ux ..uU Tt.. pqp.
+..UT u.uU Ttu. Tu..
+...U Tu.U TuT. x...
+.... UTuU TtT. ....
+.... .UuU Tt.. ....
+.... .tuT Tt.. ....
+"""
+block("amberwood_bloom", pal(BLOOM), BLOOM_PLANT)
+item("amberwood_bloom", pal(BLOOM), BLOOM_PLANT)
+# seen from above (the flat crown in the bloom's block model, 12 px up): the three open cups of the plant with
+# buds and sage bracts between them, kept to the middle so it suits a planted bloom and a tree crown alike
+block("amberwood_bloom_top", pal(BLOOM), """
+.... .... .... ....
+.... .... .... ....
+.... .... ...q Qq..
+.... .... ..qh Qcq.
+.... .... ..qc Ckq.
+.... ...q Qq.q kq..
+.... ..qh Qcq. p...
+.... ..qc Ckq. ....
+.... uT.q kq.. ....
+...q Qq.. p.Tu ....
+..qh Qcq. .... ....
+..qc Ckq. .... ....
+...q kq.. .... ....
+.... p... .... ....
+.... .... .... ....
+.... .... .... ....
+""")
+# the old ribbed sapling (amberwood_sapling, kept for its block id) in the earlier cactus-rib colours
 RIB = {"1": "#332c26", "2": "#4a4238", "3": "#5f5c4b", "4": "#76785f", "5": "#8c9375", "6": "#a3ab8c",
        "7": "#bfc4a6", "w": "#b3aa92", "W": "#d3cbb6", "x": "#ddd6c4"}
-RESIN = {"Y": "#fbe7b0", "b": "#e2b35e", "A": "#c88c3a", "a": "#9a6428", "D": "#6e451e"}
-LOG_SIDE = """
-2453 2453 2453 2453
-2453 2463 2453 2453
-24W3 2453 24W3 2453
-2w53 2453 2w53 2453
-2453 2453 2453 2463
-2453 24W3 2453 24W3
-2453 2w53 2453 2w53
-2463 2453 2453 2453
-2453 2453 2463 2453
-2453 2453 2453 2453
-24W3 2453 24W3 2453
-2w53 2453 2w53 2453
-2453 2463 2453 2453
-2453 24W3 2453 24W3
-2453 2w53 2453 2w53
-2453 2453 2453 2463
-"""
-block("amberwood_log", pal(RIB), LOG_SIDE)
-# resin oozing from the grooves between the ribs: honey-gold beads that run down in thin drips and hang as drops
-block("amberwood_log_resin", pal(RIB, RESIN), over(LOG_SIDE, """
-D... .... .... ....
-b... ...a Yb.. ....
-a... ...a AA.. ....
-.... .... a... ....
-.... .... D... ....
-...a Yb.. D... ....
-...a AA.. b... ....
-.... a... a... ....
-.... D... .... ....
-.... D... ...a Yb..
-.... b... ...a AA..
-.... a... .... a...
-Yb.. .... .... D...
-AA.. .... .... b...
-a... .... .... a...
-D... .... .... ....
-"""))
-# the cut trunk: the soft rib scallops, a grey-brown rind, pale sage-beige flesh with the ring of woody rods (the
-# saguaro's skeleton) and a warm heart of resin
-block("amberwood_log_top", pal(RIB, RESIN, f="#b9b596", F="#cdc9ab"), """
-2453 2453 2453 2452
-4222 2222 2222 2224
-5233 3333 3333 3325
-3233 fFFF FFFf 3323
-2233 F33F F33F 3322
-4233 FFFf fFFF 3324
-5233 FfaA Aaf3 3325
-323f 3FAY YAF3 f323
-223f 3FAY bAF3 f322
-4233 FfaA Aaf3 3324
-5233 FFFf fFFF 3325
-3233 F33F F33F 3323
-2233 fFFF FFFf 3322
-4233 3333 3333 3324
-5222 2222 2222 2225
-2453 2453 2453 2453
-""")
-# amberwood_bloom: the crown of flowers on every trunk and arm top. Waxy cup flowers on scaly sage tubes, soft
-# apricot-cream petals (dusty rose in the shade), a pale yellow heart of stamens, a muted throat; a closed bud.
-BLOOM = {"k": "#7a4e40", "p": "#b5806a", "P": "#cf9d7e", "q": "#e3ba96", "Q": "#efd2b0", "h": "#f8e8d0",
-         "c": "#f1dea0", "C": "#fffaec", "s": "#2f2c25", "t": "#4b4a3d", "T": "#66684f", "u": "#848a6a"}
-block("amberwood_bloom", pal(BLOOM), """
-.... .... .... ....
-.... hQ.c .Qh. ....
-...Q qQcc cQqQ .qQ.
-...p PqQc QqPp .Pq.
-.... pPqk qPp. .pP.
-.... .pPP Pp.. .uT.
-.hQc Qh.u T... .uT.
-Qqcc cqQu T... uT..
-pPqc qPpu T..u T...
-.pPk Pp.u T.uT ....
-..pP p..u TuT. ....
-...u T..u TT.. ....
-.... uT.u T... ....
-.... .uTu Ts.. ....
-.... suTu Tts. ....
-...s uTtu Ttts ....
-""")
-# seen from above: a crown of open flowers packed between scaly bracts, buds in the gaps
-block("amberwood_bloom_top", pal(BLOOM), """
-.qQq ...q Q... qQq.
-qhcQ p..P p..q hcQp
-QcCk P... ...Q cCkP
-qQkq p..t T..q Qkqp
-.pPp tT.u T..t pPp.
-.... uT.q Qq.u T...
-.... ..hQ hqP. ....
-qQ.t TqQh ccQp ..qQ
-Pp.u TQhc CckP tTPp
-.... .qQc kcqp uT..
-.... ..Pq kpP. ....
-.qQq tT.p Pp.t qQq.
-qhcQ pT.. tT.q hcQp
-QcCk P... uT.Q cCkP
-qQkq p..q Q..q Qkqp
-.pPp ...P p... pPp.
-""")
-# the item: one big bloom on its scaly tube, a bud beside it, a dark warm-grey outline
-item("amberwood_bloom", pal(BLOOM, o="#4a3a30"), """
-.... .... .... ....
-...o oo.o oo.. ....
-..oh QQoc oQho ....
-.oQh QqQc cQqQ o...
-.oqQ hQcC cQqP o...
-.opP qQcc kqPp o...
-..op PqQk qPpo ....
-...o pPPP Ppo. oo..
-.... ooPp oo.o qQo.
-.... .oTu o..o Ppo.
-.... .oTu o.ou To..
-.... .ouT ooTu o...
-.... .ouT uTto ....
-.... .otu Tto. ....
-.... ..os tso. ....
-.... ...o oo.. ....
-""")
 # the sapling: a little ribbed sprout, a barrel of four soft ribs, a pale spine or two and a first bud on top
 block("amberwood_sapling", pal(RIB, BLOOM, o="#3a332b"), """
 .... .... .... ....
@@ -458,28 +944,6 @@ block("amberwood_leaves", pal(LEAVES), """
 .754 5643 2.56 43.6
 6543 .32. ..43 2..5
 """)
-# planks: four boards of weathered grey-tan cactus wood, joints staggered, dark seams, a resin dot in one board
-PLANK = {"o": "#3e352c", "1": "#5a4e40", "2": "#73654f", "3": "#8a7b60", "4": "#a19272", "5": "#b8a986",
-         "6": "#ccbe9c", "a": "#c88c3a", "Y": "#fbe7b0"}
-block("amberwood_planks", pal(PLANK), """
-5665 6556 o566 5656
-4454 5443 o445 4545
-3343 3432 o334 3434
-oooo oooo oooo oooo
-6556 o665 5656 6556
-4545 o544 5445 4454
-3434 o433 4334 3343
-oooo oooo oooo oooo
-5656 6556 5665 o565
-4445 4545 4454 o4Ya
-3334 3434 3343 o3a3
-oooo oooo oooo oooo
-656o 5665 6556 5665
-454o 4544 5445 4454
-343o 3433 4334 3343
-oooo oooo oooo oooo
-""")
-
 # ====================================================================== blood stain: a thin, half-dried red layer
 BLOOD_T = {"k": "#3a0712b0", "r": "#5c0e1cc0", "R": "#85162ac8", "e": "#a8202fd0", "E": "#d0404ad8",
            "s": "#4a0a1670"}
@@ -526,6 +990,33 @@ item("amber_chunk", pal(CHUNK), """
 .... .... oo.. ....
 .... .... .... ....
 """)
+# An amber shard (amber blocks break into these): a long jagged splinter of honey amber, broken square at the base
+# and snapped to a sharp point, a ridge down its length between a lit facet and a deep red-amber one, a cream
+# highlight along the ridge, a chipped notch, a dark red-brown outline. Solid, so it reads at 1x.
+SHARD = {"o": "#4a1a0c", "1": "#76300f", "2": "#9c4512", "3": "#c06118", "4": "#d98020", "5": "#eb9e2e",
+         "6": "#f6bd4c", "7": "#fddc86", "8": "#fff6d6"}
+item("amber_shard", pal(SHARD), """
+.... .... .... ....
+.... .... .... .o..
+.... .... .... o8o.
+.... .... ...o 783o
+.... .... ..o6 783o
+.... .... .o66 783o
+.... .... o667 832o
+.... ...o 6678 32o.
+.... ..o6 6783 21o.
+.... .o66 7832 1o..
+...o 5667 8322 o...
+..o4 5678 3221 o...
+.o44 5783 221o ....
+.o34 4583 1o.. ....
+..o3 321o .... ....
+...o ooo. .... ....
+""")
+
+
+
+
 # An Amberwood seed (as the 3D amber_seed model): a ribbed, pointed ovoid husk, lit from the left, a little
 # pale-gold sprout curling out of the top like a fiddlehead
 SEED = {"o": "#2a120c", "1": "#4a2414", "2": "#6b381e", "3": "#8a4f29", "4": "#a86836", "5": "#c4864a",

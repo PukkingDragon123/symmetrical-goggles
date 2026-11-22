@@ -5,8 +5,8 @@
  "license": "CC0-1.0",
  "density": 1,
  "budget": {
-  "tris": 900,
-  "colors": 48
+  "tris": 1200,
+  "colors": 52
  },
  "light": {
   "dir": [
@@ -120,6 +120,48 @@
      "scale": 1.6,
      "threshold": 0.6,
      "shift": 0.8
+    },
+    {
+     "id": "hair",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.6,
+     "width": 0.26,
+     "shift": -1.0,
+     "wobble": 0.6,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "hair_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.6,
+     "width": 0.26,
+     "shift": -1.0,
+     "wobble": 0.6,
+     "faces": [
+      "front",
+      "back",
+      "top"
+     ]
+    },
+    {
+     "id": "tips",
+     "op": "drip",
+     "ramp": "fluff",
+     "tone": 9.0,
+     "depth": 0.4,
+     "length": 1.4,
+     "width": 0.5,
+     "scale": 1.4,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
     }
    ]
   },
@@ -270,6 +312,41 @@
     }
    ]
   },
+  "fluff_card": {
+   "ramp": "fluff",
+   "tone": 7.4,
+   "light": 0.6,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "h": "fluff:9",
+    "d": "fluff:3"
+   },
+   "brush": {
+    "flow": "y",
+    "length": 2.0,
+    "rough": 0.9
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.2
+    },
+    {
+     "id": "strand_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.4,
+     "width": 0.3,
+     "shift": -1.0,
+     "wobble": 0.3
+    }
+   ]
+  },
   "fluff_tuft": {
    "ramp": "fluff",
    "tone": 7.0,
@@ -345,14 +422,14 @@
    "id": "chest",
    "shape": "box",
    "size": [
-    20,
-    16,
-    15
+    15,
+    12,
+    11
    ],
    "pivot": [
-    0,
-    11.6,
-    4
+    0.0,
+    8.7,
+    3.0
    ],
    "style": "fluff",
    "rotation": [
@@ -365,14 +442,14 @@
    "id": "chest_under",
    "shape": "box",
    "size": [
-    18,
-    3,
-    12
+    14,
+    2,
+    9
    ],
    "pivot": [
-    0,
-    -7.6,
-    0.5
+    0.0,
+    -5.7,
+    0.375
    ],
    "style": "fluff_under",
    "parent": "chest"
@@ -381,21 +458,21 @@
    "id": "belly",
    "shape": "box",
    "size": [
-    22,
-    16,
-    14
+    17,
+    12,
+    11
    ],
    "pivot": [
-    0,
-    -0.5,
-    -6
+    0.0,
+    -0.375,
+    -4.5
    ],
    "style": "fluff",
    "parent": "chest",
    "offset": [
-    0,
-    -0.5,
-    -6
+    0.0,
+    -0.375,
+    -4.5
    ],
    "rotation": [
     6,
@@ -407,14 +484,14 @@
    "id": "belly_under",
    "shape": "box",
    "size": [
-    20,
-    4,
-    12
+    15,
+    3,
+    9
    ],
    "pivot": [
-    0,
-    -7.8,
-    -6
+    0.0,
+    -5.85,
+    -4.5
    ],
    "style": "fluff_under",
    "parent": "belly"
@@ -423,21 +500,21 @@
    "id": "hips",
    "shape": "box",
    "size": [
-    15,
     11,
-    10
+    8,
+    8
    ],
    "pivot": [
-    0,
-    -1,
-    -12
+    0.0,
+    -0.75,
+    -9.0
    ],
    "style": "fluff",
    "parent": "belly",
    "offset": [
-    0,
-    -1.5,
-    -4.5
+    0.0,
+    -1.125,
+    -3.375
    ],
    "rotation": [
     6,
@@ -449,21 +526,21 @@
    "id": "tail",
    "shape": "box",
    "size": [
-    9,
-    6,
-    8
+    7,
+    5,
+    6
    ],
    "pivot": [
-    0,
-    -2,
-    -8.5
+    0.0,
+    -1.5,
+    -6.375
    ],
    "style": "fluff",
    "parent": "hips",
    "offset": [
-    0,
-    -0.5,
-    -3.5
+    0.0,
+    -0.375,
+    -2.625
    ],
    "rotation": [
     8,
@@ -475,21 +552,21 @@
    "id": "fluke",
    "shape": "box",
    "size": [
-    7,
+    5,
     2,
-    11
+    8
    ],
    "pivot": [
-    2.2,
-    -1.6,
-    -6
+    1.65,
+    -1.2,
+    -4.5
    ],
    "style": "flipper",
    "parent": "tail",
    "offset": [
-    1,
-    0,
-    -5.5
+    0.75,
+    0.0,
+    -4.125
    ],
    "rotation": [
     -8,
@@ -502,14 +579,14 @@
    "id": "fluke_fan",
    "shape": "box",
    "size": [
-    9,
+    7,
     2,
-    4
+    3
    ],
    "pivot": [
-    1.6,
-    0,
-    -10.5
+    1.2,
+    0.0,
+    -7.875
    ],
    "style": "flipper",
    "parent": "fluke",
@@ -523,21 +600,21 @@
    "id": "flipper",
    "shape": "box",
    "size": [
-    5,
-    8,
-    8
+    4,
+    6,
+    6
    ],
    "pivot": [
-    11,
-    -3.6,
-    4
+    8.25,
+    -2.7,
+    3.0
    ],
    "style": "flipper",
    "parent": "chest",
    "offset": [
-    1,
-    -3.5,
-    0.5
+    0.75,
+    -2.625,
+    0.375
    ],
    "rotation": [
     -6,
@@ -550,14 +627,14 @@
    "id": "palm",
    "shape": "box",
    "size": [
-    6,
+    5,
     2,
-    9
+    7
    ],
    "pivot": [
-    0.6,
-    -7.6,
-    2
+    0.45,
+    -5.7,
+    1.5
    ],
    "style": "flipper",
    "parent": "flipper",
@@ -571,14 +648,14 @@
    "id": "tuft0",
    "shape": "box",
    "size": [
-    7,
-    7,
-    5
+    5,
+    5,
+    4
    ],
    "pivot": [
-    -8,
-    7,
-    3
+    -6.0,
+    5.25,
+    2.25
    ],
    "style": "fluff_tuft",
    "parent": "chest",
@@ -592,14 +669,14 @@
    "id": "tuft1",
    "shape": "box",
    "size": [
-    7,
-    7,
-    5
+    5,
+    5,
+    4
    ],
    "pivot": [
-    8,
-    7,
-    3
+    6.0,
+    5.25,
+    2.25
    ],
    "style": "fluff_tuft",
    "parent": "chest",
@@ -613,14 +690,14 @@
    "id": "tuft2",
    "shape": "box",
    "size": [
-    9,
-    6,
-    5
+    7,
+    5,
+    4
    ],
    "pivot": [
-    0,
-    9,
-    1
+    0.0,
+    6.75,
+    0.75
    ],
    "style": "fluff_tuft",
    "parent": "chest",
@@ -634,14 +711,14 @@
    "id": "shag_chest",
    "shape": "box",
    "size": [
-    10,
+    8,
     2,
-    8
+    6
    ],
    "pivot": [
-    5,
-    8.4,
-    -1
+    3.75,
+    6.3,
+    -0.75
    ],
    "style": "fluff_tuft",
    "parent": "chest",
@@ -656,14 +733,14 @@
    "id": "shag_belly",
    "shape": "box",
    "size": [
-    11,
+    8,
     2,
-    9
+    7
    ],
    "pivot": [
-    5.5,
-    8.4,
-    -6
+    4.125,
+    6.3,
+    -4.5
    ],
    "style": "fluff_tuft",
    "parent": "belly",
@@ -678,14 +755,14 @@
    "id": "tail_fur",
    "shape": "box",
    "size": [
-    7,
+    5,
     2,
-    5
+    4
    ],
    "pivot": [
-    0,
-    3.4,
-    -1.5
+    0.0,
+    2.55,
+    -1.125
    ],
    "style": "fluff_tuft",
    "parent": "tail",
@@ -699,21 +776,21 @@
    "id": "neck",
    "shape": "box",
    "size": [
-    18,
-    13,
-    6
+    14,
+    10,
+    5
    ],
    "pivot": [
-    0,
-    4.5,
-    7
+    0.0,
+    3.375,
+    5.25
    ],
    "style": "fluff",
    "parent": "chest",
    "offset": [
-    0,
-    1,
-    2.5
+    0.0,
+    0.75,
+    1.875
    ],
    "rotation": [
     -14,
@@ -725,21 +802,21 @@
    "id": "head",
    "shape": "box",
    "size": [
-    20,
-    17,
-    14
+    15,
+    13,
+    11
    ],
    "pivot": [
-    0,
-    2.5,
-    5
+    0.0,
+    1.875,
+    3.75
    ],
    "style": "head",
    "parent": "neck",
    "offset": [
-    0,
-    2,
-    7
+    0.0,
+    1.5,
+    5.25
    ],
    "rotation": [
     14,
@@ -751,14 +828,14 @@
    "id": "crown",
    "shape": "box",
    "size": [
-    16,
+    12,
     2,
-    11
+    8
    ],
    "pivot": [
-    0,
-    11.5,
-    7
+    0.0,
+    8.625,
+    5.25
    ],
    "style": "fluff",
    "parent": "head"
@@ -767,14 +844,14 @@
    "id": "crest",
    "shape": "box",
    "size": [
-    7,
-    3,
-    6
+    5,
+    2,
+    5
    ],
    "pivot": [
-    0,
-    2,
-    -1.5
+    0.0,
+    1.5,
+    -1.125
    ],
    "style": "fluff_tuft",
    "parent": "crown",
@@ -789,13 +866,13 @@
    "shape": "box",
    "size": [
     2,
-    10,
-    10
+    8,
+    8
    ],
    "pivot": [
-    10.5,
-    -1,
-    7
+    7.875,
+    -0.75,
+    5.25
    ],
    "style": "fluff",
    "parent": "head",
@@ -810,35 +887,35 @@
    "id": "muzzle",
    "shape": "box",
    "size": [
-    10,
-    6,
-    4
+    8,
+    5,
+    3
    ],
    "pivot": [
-    0,
-    -4,
-    14
+    0.0,
+    -3.0,
+    10.5
    ],
    "style": "muzzle",
    "parent": "head",
    "offset": [
-    0,
-    0,
-    2
+    0.0,
+    0.0,
+    1.5
    ]
   },
   {
    "id": "whisker_pad",
    "shape": "box",
    "size": [
-    6,
     5,
-    4
+    4,
+    3
    ],
    "pivot": [
-    2.8,
-    -0.4,
-    2.6
+    2.1,
+    -0.3,
+    1.95
    ],
    "style": "whiskers",
    "parent": "muzzle",
@@ -849,16 +926,15 @@
    "shape": "card",
    "plane": "xy",
    "art": [
-    "....wwww",
-    "wwww....",
-    "wwwwwwww",
-    "wwww....",
-    "....wwww"
+    "...www",
+    "www...",
+    "wwwwww",
+    "...www"
    ],
    "pivot": [
-    3,
-    -0.6,
-    1.6
+    2.25,
+    -0.45,
+    1.2
    ],
    "paint": {
     "ramp": "fluff",
@@ -869,9 +945,9 @@
    },
    "parent": "whisker_pad",
    "offset": [
-    4,
-    0,
-    0
+    3.0,
+    0.0,
+    0.0
    ],
    "rotation": [
     0,
@@ -885,14 +961,14 @@
    "id": "nose",
    "shape": "box",
    "size": [
-    4,
+    3,
     2,
     2
    ],
    "pivot": [
-    0,
-    2.8,
-    3.4
+    0.0,
+    2.1,
+    2.55
    ],
    "style": "nose",
    "parent": "muzzle"
@@ -906,9 +982,9 @@
     1
    ],
    "pivot": [
-    1,
-    0.4,
-    1.1
+    0.75,
+    0.3,
+    0.825
    ],
    "style": "nostril",
    "parent": "nose",
@@ -918,21 +994,21 @@
    "id": "jaw",
    "shape": "box",
    "size": [
-    9,
-    3,
-    8
+    7,
+    2,
+    6
    ],
    "pivot": [
-    0,
-    -7,
-    8
+    0.0,
+    -5.25,
+    6.0
    ],
    "style": "muzzle",
    "parent": "head",
    "offset": [
-    0,
-    -1,
-    4
+    0.0,
+    -0.75,
+    3.0
    ],
    "rotation": [
     4,
@@ -944,14 +1020,14 @@
    "id": "tongue",
    "shape": "box",
    "size": [
-    6,
+    5,
     1,
-    5
+    4
    ],
    "pivot": [
-    0,
-    0.6,
-    4.5
+    0.0,
+    0.45,
+    3.375
    ],
    "style": "mouth",
    "parent": "jaw"
@@ -960,14 +1036,14 @@
    "id": "eye",
    "shape": "box",
    "size": [
-    4,
-    4,
+    3,
+    3,
     1
    ],
    "pivot": [
-    5.5,
-    3.2,
-    14.1
+    4.125,
+    2.4,
+    10.575
    ],
    "style": "eye",
    "parent": "head",
@@ -977,14 +1053,14 @@
    "id": "lid",
    "shape": "box",
    "size": [
-    5,
+    4,
     2,
     2
    ],
    "pivot": [
-    5.5,
-    5.8,
-    14.2
+    4.125,
+    4.35,
+    10.65
    ],
    "style": "lid",
    "parent": "head",
@@ -994,14 +1070,14 @@
    "id": "brow",
    "shape": "box",
    "size": [
-    5,
+    4,
     1,
     2
    ],
    "pivot": [
-    5.5,
-    7.0,
-    14.0
+    4.125,
+    5.25,
+    10.5
    ],
    "style": "brow",
    "parent": "head",
@@ -1016,21 +1092,21 @@
    "id": "horn",
    "shape": "box",
    "size": [
-    3,
-    3,
-    3
+    2,
+    2,
+    2
    ],
    "pivot": [
-    0,
-    1,
-    3
+    0.0,
+    0.75,
+    2.25
    ],
    "style": "horn",
    "parent": "crown",
    "offset": [
-    0,
-    1.5,
-    0
+    0.0,
+    1.125,
+    0.0
    ],
    "rotation": [
     18,
@@ -1047,16 +1123,16 @@
     1
    ],
    "pivot": [
-    3.4,
-    -3.2,
-    3.2
+    2.55,
+    -2.4,
+    2.4
    ],
    "style": "horn",
    "parent": "muzzle",
    "offset": [
-    0,
-    -1,
-    0
+    0.0,
+    -0.75,
+    0.0
    ],
    "rotation": [
     -10,
@@ -1064,6 +1140,264 @@
     6
    ],
    "mirror": true
+  },
+  {
+   "id": "fur_ruff",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "tttttttttttttt",
+    "hhhttttttttttt",
+    "...hthttththth",
+    "....h.hth.h.h.",
+    ".......h......"
+   ],
+   "pivot": [
+    0.0,
+    -3.375,
+    6.15
+   ],
+   "style": "fluff_card",
+   "parent": "chest",
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    -12,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_ruff_side",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttttt",
+    "hhdtttttt",
+    "...ttthth",
+    "...hth.h.",
+    "....h...."
+   ],
+   "pivot": [
+    7.725,
+    -1.125,
+    2.25
+   ],
+   "style": "fluff_card",
+   "parent": "chest",
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    16
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_cheek",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttt",
+    "tttdttt",
+    "thh.ttt",
+    "h...hth",
+    ".....h."
+   ],
+   "pivot": [
+    7.8,
+    -2.625,
+    5.25
+   ],
+   "style": "fluff_card",
+   "parent": "head",
+   "offset": [
+    0.0,
+    -1.875,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    18
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_crown",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "..h.h....",
+    "h.thth...",
+    "tdtttthhh",
+    "ttttttttt"
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    -2.625
+   ],
+   "style": "fluff_card",
+   "parent": "crown",
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -24,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_crest",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "...h.",
+    "..hth",
+    "hhttt",
+    "ttttt"
+   ],
+   "pivot": [
+    0.0,
+    1.05,
+    0.0
+   ],
+   "style": "fluff_card",
+   "parent": "crest",
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -10,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_flank",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttttttt",
+    "hthtttttthh",
+    ".h.hthhth..",
+    "....h..h..."
+   ],
+   "pivot": [
+    8.475,
+    -3.375,
+    -4.5
+   ],
+   "style": "fluff_card",
+   "parent": "belly",
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_back",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "....h....",
+    "...hth.h.",
+    "hhhttthth",
+    "ttttttttt"
+   ],
+   "pivot": [
+    0.0,
+    6.3,
+    -4.5
+   ],
+   "style": "fluff_card",
+   "parent": "belly",
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -8,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_hips",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttt",
+    "hthttttt",
+    ".h.hthth",
+    "....h.h."
+   ],
+   "pivot": [
+    5.85,
+    -2.25,
+    -3.375
+   ],
+   "style": "fluff_card",
+   "parent": "hips",
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_tail",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    ".h.h.",
+    "hthth",
+    "ttttt"
+   ],
+   "pivot": [
+    0.0,
+    0.6,
+    0.0
+   ],
+   "style": "fluff_card",
+   "parent": "tail_fur",
+   "offset": [
+    0.0,
+    1.125,
+    0.0
+   ],
+   "rotation": [
+    -14,
+    0,
+    0
+   ]
   }
  ],
  "animations": {
@@ -1177,81 +1511,81 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.9,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.96,
        [
-        0,
-        -3.2,
-        0
+        0.0,
+        -2.4,
+        0.0
        ]
       ],
       [
        1.04,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        2.4,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        2.46,
        [
-        0,
-        -3.2,
-        0
+        0.0,
+        -2.4,
+        0.0
        ]
       ],
       [
        2.54,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        2.62,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        2.68,
        [
-        0,
-        -3.2,
-        0
+        0.0,
+        -2.4,
+        0.0
        ]
       ],
       [
        2.7600000000000002,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -1340,17 +1674,17 @@
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       1.6,
-       0
+       0.0,
+       1.2,
+       0.0
       ],
       "cycles": 1,
       "phase": 0.25,
       "shape": "bounce",
       "bias": [
-       0,
-       0.5,
-       0
+       0.0,
+       0.375,
+       0.0
       ]
      }
     },
@@ -1434,15 +1768,15 @@
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       0.6,
-       0
+       0.0,
+       0.45,
+       0.0
       ],
       "cycles": 1,
       "bias": [
-       0,
-       6,
-       0
+       0.0,
+       4.5,
+       0.0
       ]
      }
     },
@@ -1580,33 +1914,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.15,
        [
-        0,
-        -1.8,
-        0
+        0.0,
+        -1.35,
+        0.0
        ]
       ],
       [
        1.2,
        [
-        0,
-        -1.8,
-        0
+        0.0,
+        -1.35,
+        0.0
        ]
       ],
       [
        1.4,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -1618,53 +1952,53 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.3,
        [
-        0,
-        2.4,
-        0
+        0.0,
+        1.8,
+        0.0
        ],
        "out"
       ],
       [
        0.5,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ],
        "in"
       ],
       [
        0.7,
        [
-        0,
-        1.6,
-        0
+        0.0,
+        1.2,
+        0.0
        ],
        "out"
       ],
       [
        0.9,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ],
        "in"
       ],
       [
        1.4,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -1748,6 +2082,240 @@
     }
    ]
   },
+  "eat": {
+   "length": 1.2,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "neck",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.28,
+       22,
+       "out"
+      ],
+      [
+       0.72,
+       20
+      ],
+      [
+       0.92,
+       -14,
+       "out_back"
+      ],
+      [
+       1.05,
+       -12
+      ],
+      [
+       1.2,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.28,
+       14,
+       "out"
+      ],
+      [
+       0.72,
+       12
+      ],
+      [
+       0.92,
+       -10,
+       "out_back"
+      ],
+      [
+       1.05,
+       -8
+      ],
+      [
+       1.2,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "jaw",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.22,
+       20,
+       "out"
+      ],
+      [
+       0.34,
+       1,
+       "in"
+      ],
+      [
+       0.44,
+       18,
+       "out"
+      ],
+      [
+       0.54,
+       1,
+       "in"
+      ],
+      [
+       0.62,
+       16,
+       "out"
+      ],
+      [
+       0.72,
+       0,
+       "in"
+      ],
+      [
+       1.2,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "neck",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.98,
+       [
+        0.08,
+        0.06,
+        0.04
+       ]
+      ],
+      [
+       1.08,
+       [
+        0.03,
+        0.02,
+        0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lid",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.98,
+       [
+        0.0,
+        -1.35,
+        0.0
+       ]
+      ],
+      [
+       1.15,
+       [
+        0.0,
+        -1.35,
+        0.0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.95,
+       0
+      ],
+      [
+       1.03,
+       20
+      ],
+      [
+       1.11,
+       -20
+      ],
+      [
+       1.2,
+       0
+      ]
+     ]
+    }
+   ]
+  },
   "bark": {
    "length": 0.7,
    "loop": false,
@@ -1811,33 +2379,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.1,
        [
-        0,
-        0.6,
-        0
+        0.0,
+        0.45,
+        0.0
        ]
       ],
       [
        0.5,
        [
-        0,
-        0.6,
-        0
+        0.0,
+        0.45,
+        0.0
        ]
       ],
       [
        0.7,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]

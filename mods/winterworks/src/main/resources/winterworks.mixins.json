@@ -35,11 +35,16 @@
     "end.ChorusSoilMixin",
     "end.ChorusFlowerSoilMixin",
     "end.LongBurnFurnaceMixin",
+    "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor"
   ],
   "client": [
     "client.GameRendererMixin",
     "client.CurseMouseHandlerMixin",
+    "client.endboss.DragonModelMixin",
+    "client.endboss.EndSkyMixin",
+    "client.endboss.EndFogMixin",
+    "client.endboss.EclipseLightMixin",
     "endmob.EndGlowLightMixin"
   ],
   "injectors": {
