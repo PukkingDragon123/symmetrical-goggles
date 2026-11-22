@@ -32,7 +32,8 @@
     "FoodDataMixin",
     "HexedPlayerMixin",
     "endboss.EnderDragonMixin",
-    "endmob.EffectParticlesAccessor"
+    "endmob.EffectParticlesAccessor",
+    "TrailerCartRemovalMixin"
   ],
   "client": [
     "client.GameRendererMixin",

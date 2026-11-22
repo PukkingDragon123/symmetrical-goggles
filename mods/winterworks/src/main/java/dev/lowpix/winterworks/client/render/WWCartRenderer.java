@@ -110,7 +110,6 @@ public class WWCartRenderer extends EntityRenderer<WWCart> {
             case DRAGON_LOCOMOTIVE -> 0xC89A30;
             case FOX_CART -> 0xE8E0D0;
             case ZOMBIE_CART -> 0x6A8A4A;
-            case TRAILER_CART -> 0x3A6AA8;
         };
     }
 }

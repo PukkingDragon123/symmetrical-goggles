@@ -1,4 +1,4 @@
-"""Shared pieces for the Winterworks minecart skins (fox_cart, zombie_cart, trailer_cart).
+"""Shared pieces for the Winterworks minecart skins (fox_cart, zombie_cart).
 
 Units are Minecraft pixels (16 per block), density 1, every box a whole number of pixels, so the specs export 1:1
 to vanilla entity models (python -m lowpix mc export). lowpix axes: Y up, the cart faces +Z, rail top at y=0.

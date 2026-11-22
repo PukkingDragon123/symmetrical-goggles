@@ -36,7 +36,6 @@ public final class WWItems {
             new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final Item FOX_CART = reg("fox_cart", new WWCartItem(() -> WWEntities.FOX_CART, new Item.Properties().stacksTo(1)));
     public static final Item ZOMBIE_CART = reg("zombie_cart", new WWCartItem(() -> WWEntities.ZOMBIE_CART, new Item.Properties().stacksTo(1)));
-    public static final Item TRAILER_CART = reg("trailer_cart", new WWCartItem(() -> WWEntities.TRAILER_CART, new Item.Properties().stacksTo(1)));
 
     public static final Item COASTER_RAIL = reg("coaster_rail", new BlockItem(WWBlocks.COASTER_RAIL, new Item.Properties()));
     public static final Item BOOSTER_RAIL = reg("booster_rail", new BlockItem(WWBlocks.BOOSTER_RAIL, new Item.Properties()));
@@ -117,7 +116,6 @@ public final class WWItems {
                         out.accept(DRAGON_LOCOMOTIVE);
                         out.accept(FOX_CART);
                         out.accept(ZOMBIE_CART);
-                        out.accept(TRAILER_CART);
                         out.accept(COASTER_RAIL);
                         out.accept(BOOSTER_RAIL);
                         out.accept(LIFT_RAIL);

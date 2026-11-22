@@ -163,7 +163,7 @@ def sounds():
 
 # ------------------------------------------------------------------------------------------------ models
 def item_models():
-    gen = ["cobble_ball", "icebreaker_horn", "locomotive", "dragon_locomotive", "fox_cart", "zombie_cart", "trailer_cart"]
+    gen = ["cobble_ball", "icebreaker_horn", "locomotive", "dragon_locomotive", "fox_cart", "zombie_cart"]
     for n in gen:
         write(os.path.join(A, "models", "item", n + ".json"),
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{n}"}})
@@ -312,8 +312,6 @@ def recipes():
               f"{M}:fox_cart")
     shapeless("zombie_cart", ["minecraft:minecart", "minecraft:rotten_flesh", "minecraft:rotten_flesh", "minecraft:rotten_flesh"],
               f"{M}:zombie_cart")
-    shapeless("trailer_cart", ["minecraft:minecart", "#minecraft:planks", "#minecraft:planks", "minecraft:lantern"],
-              f"{M}:trailer_cart")
     shaped("snow_globe", ["GGG", "GSG", "SSS"], {"G": "minecraft:glass", "S": "minecraft:snowball"}, f"{M}:snow_globe")
 
 
@@ -374,12 +372,10 @@ def lang(subtitles):
         "item.winterworks.dragon_locomotive": "Dragon-Head Locomotive",
         "item.winterworks.fox_cart": "Fox Cart",
         "item.winterworks.zombie_cart": "Zombie Cart",
-        "item.winterworks.trailer_cart": "Trailer Cart",
         "entity.winterworks.locomotive": "Iron Locomotive",
         "entity.winterworks.dragon_locomotive": "Dragon-Head Locomotive",
         "entity.winterworks.fox_cart": "Fox Cart",
         "entity.winterworks.zombie_cart": "Zombie Cart",
-        "entity.winterworks.trailer_cart": "Trailer Cart",
         "entity.winterworks.locomotive.throttle.0": "Reverse",
         "entity.winterworks.locomotive.throttle.1": "Stopped",
         "entity.winterworks.locomotive.throttle.2": "Full steam ahead!",

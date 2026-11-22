@@ -46,8 +46,8 @@ It closes again a moment after the power goes.
 Couple any minecarts into trains with a chain (click the front cart, then the one behind; sneak + click with an empty
 hand to uncouple). The Iron Locomotive and the Dragon-Head Locomotive burn coal, from your hand or from a chest
 minecart coupled behind them; sneak + right-click cycles stop / forward / reverse; longer trains are heavier and
-slower. Fox, zombie and trailer carts (the trailer seats two). Right-click carts with dye to paint the trim and with
-wool to change the seat.
+slower. Fox and zombie carts; any vanilla minecart (plain, chest, hopper, furnace, TNT) couples into a train too.
+Right-click carts with dye to paint the trim and with wool to change the seat.
 
 **Snow Globe.** Glass + snowballs. Right-click to shake it: it wobbles and tiny flakes swirl around the little snowy
 cabin, then slowly settle.
@@ -173,7 +173,7 @@ python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipe
 ```
 
 Model sources live in `examples/src/` at the repo root (icebreaker, icebreaker_cub, snowball_launcher, snow_globe,
-locomotive, dragon_locomotive, fox_cart, zombie_cart, trailer_cart, frost_mauler, frost_mauler_skull, fang_dagger, polar_bear,
+locomotive, dragon_locomotive, fox_cart, zombie_cart, frost_mauler, frost_mauler_skull, fang_dagger, polar_bear,
 polar_bear_cub, fur_armor, mosquito, pot_golem, piglin_witch, golden_piglin, elixir_jar, soul_tank, hexing_table, hex_core); 2D art in `examples/src/winterworks_art.py`, `winterworks_cold_art.py` and
 `winterworks_amber_art.py` and `winterworks_hex_art.py`. Sounds (97 events) are made from CC0 / public-domain recordings by
 `tools/sounds/build_sounds.py`; every source is credited in [tools/sounds/CREDITS.md](tools/sounds/CREDITS.md).

@@ -33,7 +33,6 @@ public final class WinterworksClient implements ClientModInitializer {
         EntityRendererRegistry.register(WWEntities.DRAGON_LOCOMOTIVE, WWCartRenderer::new);
         EntityRendererRegistry.register(WWEntities.FOX_CART, WWCartRenderer::new);
         EntityRendererRegistry.register(WWEntities.ZOMBIE_CART, WWCartRenderer::new);
-        EntityRendererRegistry.register(WWEntities.TRAILER_CART, WWCartRenderer::new);
         BlockEntityRenderers.register(WWBlocks.SNOW_GLOBE_BE, SnowGlobeRenderer::new);
 
         LauncherItemRenderer launcher = new LauncherItemRenderer();
