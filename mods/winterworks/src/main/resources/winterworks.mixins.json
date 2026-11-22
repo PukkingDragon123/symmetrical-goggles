@@ -10,7 +10,10 @@
     "PolarBearMixin",
     "SnifferMixin",
     "DecoratedPotBlockMixin",
-    "BlockEntityTypeMixin"
+    "BlockEntityTypeMixin",
+    "BrushableBlockEntityMixin",
+    "PotionContentsMixin",
+    "ThrownPotionMixin"
   ],
   "client": [
     "client.GameRendererMixin"

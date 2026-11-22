@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "winterworks:block/petrified_log_top",
+    "side": "winterworks:block/petrified_log"
+  }
+}

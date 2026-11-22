@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:amber_chunk"
+    }
+  },
+  "result": {
+    "id": "winterworks:amber_block",
+    "count": 1
+  }
+}

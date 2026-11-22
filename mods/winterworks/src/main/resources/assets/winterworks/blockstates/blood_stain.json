@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "winterworks:block/blood_stain"
+      },
+      {
+        "model": "winterworks:block/blood_stain",
+        "y": 90
+      },
+      {
+        "model": "winterworks:block/blood_stain",
+        "y": 180
+      },
+      {
+        "model": "winterworks:block/blood_stain",
+        "y": 270
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:iron_golem",
+    "minecraft:snow_golem",
+    "minecraft:slime",
+    "minecraft:magma_cube",
+    "minecraft:blaze",
+    "minecraft:breeze",
+    "minecraft:enderman",
+    "minecraft:endermite",
+    "minecraft:shulker",
+    "minecraft:vex",
+    "minecraft:allay",
+    "minecraft:armor_stand",
+    "winterworks:pot_golem",
+    "winterworks:frost_mauler"
+  ]
+}
