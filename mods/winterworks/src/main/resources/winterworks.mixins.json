@@ -14,7 +14,10 @@
     "StrayJockeyMixin",
     "BrushableBlockEntityMixin",
     "PotionContentsMixin",
-    "ThrownPotionMixin"
+    "ThrownPotionMixin",
+    "PiglinAiMixin",
+    "PiglinMixin",
+    "AbstractPiglinAccessor"
   ],
   "client": [
     "client.GameRendererMixin"
