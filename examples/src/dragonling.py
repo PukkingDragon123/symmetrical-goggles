@@ -3,32 +3,34 @@ examples/variants/dragonling_teen_armor_{iron,gold,diamond}.json (Winterworks, T
 
     python examples/src/dragonling.py
 
-Dragonlings are young Ender Dragons: black and very dark grey scales, light grey spines running in one row from the
-crown of the head to the tip of the tail, glowing violet eyes, a long, flat, box-like snout with nostril bumps over a
-separate jaw, a pair of grey horn plates standing on the head like ears, membranous wings stretched over bony finger
+Dragonlings are young Ender Dragons, drawn like the vanilla dragon but boxier and simpler: black scales with
+very dark grey scale rows and lighter grey lips on the lit edges, light grey spines running in one row from the crown
+of the head to the tip of the tail, flat glowing violet pixel eyes, a long, flat, box-like snout with nostril bumps
+over a separate jaw, grey horn plates standing on the head like ears, flat membrane wings stretched over bony finger
 spars, and a long tail. An original design in the Ender Dragon's spirit, not a copy of the vanilla model.
 
-* **Baby** (about 13 x 15 x 30 px, wings half open): cute proportions: a big square head with huge round glowing eyes
-  under heavy brows, round cheeks, a short flat snout with two nostril bumps and two milk fangs, stubby horn plates; a
-  chunky barrel body with a charcoal belly, small wings (two finger spars each), short chunky legs and a long tail
-  that curls to one side, a spine on every segment.
-* **Teen** (about 30 x 30 x 80 px, wings folded): lean and rideable: a long two-part neck, a long Ender-Dragon head
-  (a flat box snout with nostril bumps and teeth, a separate jaw, two pairs of swept-back horn plates, almond eyes
-  under brow ridges, jaw spikes), big wings (arm and hand, three finger spars, a `_tip` joint at the wrist) folded
-  along the flanks at rest, long legs with shins, a long six-part tail ending in a pointed spade, spines from crown to
-  tail tip (with a gap for the saddle), and a `saddle` (a seat with pommel and cantle, a fringed blanket, side flaps
-  with stirrups and a girth) that the renderer shows or hides. Armour shells (a helm, a snout plate, neck plates, a
-  chest plate, flank plates: `armor_*`) are transparent in the plain texture; each armour variant paints them as
-  iron, gold or diamond plate over the same UVs, so the renderer only swaps the texture.
+* **Baby** (about 14 x 16 x 30 px, wings half open): cute proportions: a big square head with 2 x 2 glowing eyes
+  under a dark lid line, a short flat snout with two nostril bumps and two milk fangs, stubby horn plates; a chunky
+  body with a charcoal belly, small wings (three finger spars each), short chunky legs and a long tail that curls to
+  one side, a spine on most segments.
+* **Teen** (about 30 x 32 x 82 px, wings folded): lean and rideable: a long two-part neck, a long Ender-Dragon head
+  (a flat box snout with nostril bumps and a row of teeth, a separate jaw, two pairs of swept-back horn plates, 3 x 2
+  almond eyes under brow ridges), big wings (arm and hand, four finger spars, a `_tip` joint at the wrist) folded
+  along the flanks at rest, long legs with shins, a long six-part tail, spines from crown to tail tip (with a gap for
+  the saddle), and a `saddle` (a seat with pommel and cantle, a blanket, side flaps with stirrups and a girth) that
+  the renderer shows or hides. Armour shells (a helm, a snout plate, neck plates, a chest plate, flank plates:
+  `armor_*`) are transparent in the plain texture; each armour variant paints them as iron, gold or diamond plate
+  over the same UVs, so the renderer only swaps the texture.
 
-Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the models export 1:1
-to vanilla entity models (python -m lowpix mc export). Faces +Z, ground at y = 0, "left" is +X; the root (body)
-pivots in the middle of the torso.
+Units are Minecraft pixels (16 per block), density 1 (one texel per pixel, like vanilla): every box is whole pixels,
+so the models export 1:1 to vanilla entity models (python -m lowpix mc export). Faces +Z, ground at y = 0, "left" is
++X; the root (body) pivots in the middle of the torso.
 
 Contract (mods/winterworks/docs/END_UPDATE.md section 13): bones body, neck, head, jaw, wing_l, wing_r, wing_l_tip,
 wing_r_tip, tail_0..tail_3, leg_fl, leg_fr, leg_bl, leg_br, and on the teen saddle. Extra joints: neck_1 (teen),
-shin_* (teen) and foot_* (legs), eye_l/r, tail_4 and tail_5 (the tail's tip, swinging with the rest). Clips: idle,
-walk, fly, glide, eat (0.8 s), breath (1.0 s), sit; the baby also hatch (1.5 s). Glow: the eyes (ramp eyeglow).
+shin_* (teen) and foot_* (legs), eye_l/r (flat eye cards; blinks squash them), tail_4 and tail_5 (the tail's tip,
+swinging with the rest). Clips: idle, walk, fly, glide, eat (0.8 s), breath (1.0 s), sit; the baby also hatch
+(1.5 s). Glow: the eyes (ramp eyeglow).
 
 Exported into the mod with a fixed hash seed (PYTHONHASHSEED=0):
 
@@ -47,13 +49,14 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from end_kit import (DENSITY, LR, M, MR, ROOT, Canvas, Rig, abs_track, add, claws, dump, euler,  # noqa: E402
-                     ground_lock, keys, limb, locks, mirror_art, osc, r, ramps, rest_on_ground, ring, rot_matrix, sc,
-                     shake, spikes, timeline, toward, wave)
+from end_kit import abs_track, toward  # noqa: E402
+from end_vanilla_kit import (DENSITY, EPS, LIGHT, LR, M, MR, ROOT, Canvas, Rig, add, card_style, dump,  # noqa: E402
+                             euler, ground_lock, keys, limb, mirror_art, osc, r, ramps, rest_on_ground, ring,
+                             rot_matrix, sc, shake, skin, timeline, wave)
 
 # ======================================================================= palette and paint (shared)
 RAMPS = ramps(
-    "eyeglow",
+    "eyeglow", "iron", "gold", "leather",
     # black scales with cool, very dark grey lights
     scale=["#030205", "#08070b", "#0f0e13", "#17161c", "#201e26", "#2a2832", "#35323e", "#413e4b", "#4e4a59",
            "#5c5868", "#6b6778"],
@@ -67,129 +70,73 @@ RAMPS = ramps(
               "#715889"],
     # the inside of the mouth
     maw=["#11050e", "#1d0918", "#2b0e24", "#3b1432", "#4d1b42", "#612453", "#782f66"],
-    # saddle leather, brass, a purpur blanket
-    leather=["#1d110b", "#311c12", "#472918", "#5e3720", "#77472a", "#915a36", "#a96d42", "#c08453"],
-    brass=["#2c1d08", "#4d3410", "#74501a", "#9a6e26", "#bf8e37", "#dcae52", "#f2cf7a", "#fff0b8"],
+    # the saddle's purpur blanket
     cloth=["#1f0d24", "#33163c", "#4a2156", "#622d70", "#7c3c8b", "#9750a4", "#b06abb", "#c98bd2", "#e0b2e6"],
-    # armour
-    iron=["#17191d", "#262a30", "#383d45", "#4d535d", "#656c77", "#7f8792", "#9aa2ac", "#b7bec6", "#d3d8dd",
-          "#edf0f2"],
-    gold=["#2c1503", "#4a2405", "#6e3706", "#94500a", "#b86b0e", "#d68b12", "#eaa91c", "#f6c934", "#fde35c",
-          "#fff399"],
     diamond=["#071f26", "#0b3039", "#11454f", "#195e68", "#237a84", "#3199a1", "#46b8bd", "#6bd2d2", "#9fe7e3",
              "#d4f8f4"],
 )
-LIGHT = {"dir": [-0.45, 1.0, 0.6], "strength": 0.8, "gradient": 0.5, "ao": 0.5, "ao_height": 6.0}
-BRUSH = {"flow": "long", "length": 1.6, "width": 0.6, "rough": 0.55, "overshoot": 0.25,
-         "textures": {"scale": "scales", "belly": "leather", "bone": "wood", "membrane": "organic",
-                      "leather": "leather", "iron": "metal", "gold": "metal", "diamond": "crystal", "cloth": "cloth"}}
-
-RIM = {"light": 1, "dark": 1, "light_shift": 2.2, "dark_shift": -1.2}
-NOBRUSH = {"off": True}      # scale patterns stay crisp: no stroke smearing on the scaled hide
-# overlapping round scales: each lit at its top and ringed dark, shadowed under the next row, a random tone apiece
-SCALES = {"id": "scales", "op": "scales", "shape": "round", "along": "z", "size": [2.5, 2.0], "gradient": 5.6,
-          "rim": -1.2, "shadow": -2.2, "jitter": 0.9, "faces": ["top", "sides"]}
-SMALL_SCALES = dict(SCALES, size=[2.0, 2.0])
-SHEEN = {"id": "sheen", "op": "spots", "count": 3, "radius": [0.6, 1.0], "stretch": [1, 0.5, 2], "shift": 1.0,
-         "faces": ["top"], "roughness": 0.5}
-BELLY_BAND = {"id": "belly", "op": "band", "axis": "y", "from": -1.01, "to": -0.55, "ramp": "belly", "tone": 3.4,
-              "wobble": 0.15, "faces": ["sides", "front", "back", "bottom"],
-              "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.4}}
-# charcoal belly plates: square plates in rows across the belly
-PLATES = {"id": "plates", "op": "scales", "shape": "square", "along": "x", "size": [3.5, 1.5], "gap": 0.5,
-          "highlight": 1.6, "gradient": 1.5, "shadow": -1.6, "jitter": 0.5}
-GLOSS = {"id": "gloss", "op": "gloss", "post": True, "dash": True, "length": 2, "inset": 1, "density": 0.5,
-         "shift": 1.6}
+LIGHT_D = dict(LIGHT, ao_height=6.0)
 INVISIBLE = [{"faces": ["all"], "at": "top-left", "art": ["_" * 64] * 64}]
 
+# rows of dark grey scales on the black hide (each lit at its top, shadowed under the next row), like the dragon's
+SCALES = {"id": "scales", "op": "scales", "shape": "square", "along": "z", "size": [3, 2], "gap": 0.0,
+          "highlight": 1.3, "shadow": -0.9, "gradient": 0.6, "jitter": 0.8, "faces": ["top", "sides"]}
+BELLY_BAND = {"id": "belly", "op": "band", "axis": "y", "from": -1.01, "to": -0.55, "ramp": "belly", "tone": 3.6,
+              "faces": ["sides", "front", "back", "bottom"]}
+PLATES = {"id": "plates", "op": "stripes", "axis": "z", "period": 2.0, "width": 0.34, "shift": -1.2}
+HIDE = dict(grain=0.7, grain_scale=0.8, lip=2.0, shade=-0.8)
+
 STYLES = {
-    "scale": {"ramp": "scale", "tone": 3.0, "rim": RIM, "brush": NOBRUSH,
-              "layers": [SMALL_SCALES, SHEEN, {"id": "dark_low", "op": "gradient", "axis": "y", "amount": 0.6},
-                         GLOSS]},
-    "scale_body": {"ramp": "scale", "tone": 3.0, "rim": RIM, "brush": NOBRUSH,
-                   "layers": [SCALES, SHEEN, BELLY_BAND, GLOSS]},
-    "belly": {"ramp": "belly", "tone": 3.2, "rim": RIM, "brush": NOBRUSH, "layers": [PLATES]},
-    "chest": {"ramp": "belly", "tone": 3.4, "rim": RIM, "brush": NOBRUSH,
-              "layers": [dict(PLATES, faces=["front", "bottom"]),
-                         {"id": "scaled_sides", "op": "fill", "ramp": "scale", "tone": 3.0, "faces": ["top", "flanks"]},
-                         dict(SMALL_SCALES, faces=["top", "flanks"])]},
-    "head": {"ramp": "scale", "tone": 3.2, "rim": dict(RIM, light_shift=2.4), "brush": NOBRUSH,
-             "layers": [dict(SMALL_SCALES, faces=["top", "sides", "back"]),
-                        dict(SMALL_SCALES, id="face_scales", size=[1.5, 1.5], gradient=3.5, faces=["front"]),
-                        SHEEN, GLOSS]},
-    # the flat box snout: fine scales, a paler lip line, a lit nose ridge
-    "snout": {"ramp": "scale", "tone": 3.2, "rim": dict(RIM, light_shift=2.4), "brush": NOBRUSH,
-              "layers": [dict(SCALES, size=[1.5, 1.0], gradient=3.5, faces=["top", "sides"]), GLOSS,
-                         {"id": "lip", "op": "band", "axis": "y", "from": -1.01, "to": -0.55, "ramp": "belly",
-                          "tone": 3.0, "faces": ["sides", "front"]},
-                         {"id": "ridge", "op": "band", "axis": "x", "from": -0.2, "to": 0.2, "shift": 1.2,
-                          "faces": ["top", "front"], "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.2}}]},
-    "cheek": {"ramp": "scale", "tone": 3.0, "rim": RIM, "brush": NOBRUSH,
-              "layers": [dict(SMALL_SCALES, along="y"), SHEEN,
-                         {"id": "jowl", "op": "band", "axis": "y", "from": -1.01, "to": -0.35, "ramp": "belly",
-                          "tone": 3.0, "faces": ["sides", "front", "bottom"]}]},
-    "jaw": {"ramp": "belly", "tone": 3.0, "rim": RIM, "brush": NOBRUSH,
-            "layers": [{"id": "mouth", "op": "fill", "ramp": "maw", "tone": 2.0, "faces": ["top"]},
-                       {"id": "tongue", "op": "band", "axis": "x", "from": -0.35, "to": 0.35, "ramp": "maw",
-                        "tone": 4.0, "faces": ["top"]},
-                       {"id": "scaled", "op": "band", "axis": "y", "from": 0.0, "to": 1.01, "ramp": "scale",
-                        "tone": 3.0, "faces": ["sides", "front"]},
-                       {"id": "chin", "op": "stripes", "axis": "z", "period": 1.5, "width": 0.25, "shift": -1.3,
-                        "faces": ["bottom"]}]},
-    "brow": {"ramp": "scale", "tone": 4.4, "rim": {"light": 1, "dark": 1, "light_shift": 2.6, "dark_shift": -1.6},
-             "brush": NOBRUSH},
-    "nostril": {"ramp": "scale", "tone": 4.6, "rim": {"light": 1, "dark": 1, "light_shift": 2.4, "dark_shift": -1.4},
-                "brush": NOBRUSH, "layers": [{"id": "hole", "op": "fill", "tone": 0.5, "faces": ["front"]}]},
+    "scale": skin("scale", 3.4, layers=[SCALES], **HIDE),
+    "scale_body": skin("scale", 3.4, layers=[SCALES, BELLY_BAND], **HIDE),
+    "chest": skin("belly", 3.8, layers=[dict(PLATES, axis="y", faces=["front"]),
+                                        {"id": "scaled", "op": "fill", "ramp": "scale", "tone": 3.4,
+                                         "faces": ["top", "flanks"]}], **HIDE),
+    "head": skin("scale", 3.6, layers=[dict(SCALES, size=[2, 2])], **HIDE),
+    # the flat box snout: fine scale rows, a charcoal lip line, a lit nose ridge
+    "snout": skin("scale", 3.6, layers=[dict(SCALES, size=[2, 1]),
+                                        {"id": "lip", "op": "band", "axis": "y", "from": -1.01, "to": -0.4,
+                                         "ramp": "belly", "tone": 3.2, "faces": ["sides", "front"]}], **HIDE),
+    "jaw": skin("belly", 3.4, layers=[{"id": "mouth", "op": "fill", "ramp": "maw", "tone": 2.0, "faces": ["top"]},
+                                      {"id": "tongue", "op": "band", "axis": "x", "from": -0.35, "to": 0.35,
+                                       "ramp": "maw", "tone": 4.0, "faces": ["top"]},
+                                      {"id": "scaled", "op": "band", "axis": "y", "from": 0.0, "to": 1.01,
+                                       "ramp": "scale", "tone": 3.4, "faces": ["sides", "front"]},
+                                      dict(PLATES, faces=["bottom"])], **HIDE),
+    "brow": skin("scale", 4.8, grain=0.5, lip=2.4, shade=-1.2, clusters=False, dark_low=0),
+    "nostril": skin("scale", 5.0, grain=0.4, lip=2.0, shade=-1.2, clusters=False, dark_low=0,
+                    layers=[{"id": "hole", "op": "fill", "tone": 0.5, "faces": ["front"]}]),
     # flat painted eyes (cards): every texel comes from EYE_KEY
-    "eye": {"ramp": "scale", "tone": 1.0, "light": 0, "brush": NOBRUSH, "art_key": {}},
-    # light grey horn plates and spines: darker at the root, a lit edge, fine growth lines
-    "horn": {"ramp": "bone", "tone": 6.4, "rim": {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.6},
-             "brush": NOBRUSH,
-             "layers": [{"id": "rings", "op": "stripes", "axis": "z", "period": 1.0, "width": 0.3, "shift": -0.8},
-                        {"id": "root", "op": "gradient", "axis": "y", "amount": 2.4}]},
-    "spine": {"ramp": "bone", "tone": 6.2, "rim": {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.8},
-              "brush": {"flow": "y"},
-              "layers": [{"id": "root", "op": "gradient", "axis": "y", "amount": 3.0},
-                         {"id": "grain", "op": "stripes", "axis": "y", "period": 1.0, "width": 0.3, "shift": -0.6}]},
-    "spike": {"ramp": "bone", "tone": 5, "light": 0.2, "brush": NOBRUSH,
-              "art_key": {"t": "bone:8", "m": "bone:6", "f": "bone:4"}},
-    "tooth": {"ramp": "bone", "tone": 7, "light": 0, "brush": NOBRUSH,
-              "art_key": {"t": "bone:9", "m": "bone:7", "f": "bone:6", "c": "bone:7"}},
-    "claw": {"ramp": "bone", "tone": 5, "light": 0, "brush": NOBRUSH,
-             "art_key": {"c": "bone:6", "t": "bone:8"}},
-    # wing bones: dark grey bone, lighter than the membrane, knuckle rings
-    "wingbone": {"ramp": "bone", "tone": 3.4, "rim": {"light": 1, "dark": 1, "light_shift": 1.8, "dark_shift": -1.2},
-                 "brush": NOBRUSH,
-                 "layers": [{"id": "knuckles", "op": "stripes", "axis": "x", "period": 3.0, "width": 0.15,
-                             "shift": 1.4}]},
-    "spar": {"ramp": "bone", "tone": 3.8, "rim": {"light": 1, "dark": 0, "light_shift": 1.6}, "brush": NOBRUSH,
-             "layers": [{"id": "root", "op": "gradient", "axis": "x", "amount": 0.8}]},
-    "leg": {"ramp": "scale", "tone": 3.0, "rim": RIM, "brush": NOBRUSH,
-            "layers": [dict(SMALL_SCALES, along="y", size=[1.5, 1.5]), SHEEN,
-                       {"id": "dark_low", "op": "gradient", "axis": "y", "amount": 0.8}]},
-    "foot": {"ramp": "scale", "tone": 3.0, "rim": RIM, "brush": NOBRUSH,
-             "layers": [{"id": "sole", "op": "fill", "ramp": "belly", "tone": 2.0, "faces": ["bottom"]},
-                        {"id": "toes", "op": "stripes", "axis": "x", "period": 1.0, "width": 0.3, "shift": -1.4,
-                         "faces": ["top", "front"]}]},
-    "tail": {"ramp": "scale", "tone": 3.0, "rim": RIM, "brush": NOBRUSH,
-             "layers": [SMALL_SCALES, SHEEN, BELLY_BAND, GLOSS]},
-    "saddle": {"ramp": "leather", "tone": 4.6, "rim": RIM, "brush": {"flow": "z"},
-               "layers": [{"id": "stitch", "op": "panel", "inset": 1, "shift": -1.4, "highlight": 1.0, "shadow": -1.0,
-                           "min_size": 4},
-                          {"id": "wear", "op": "wear", "width": 1, "density": 0.2, "shift": 1.4}, GLOSS]},
-    "brass": {"ramp": "brass", "tone": 5.0, "rim": {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.6},
-              "brush": {"off": True}},
-    "blanket": {"ramp": "cloth", "tone": 4.6, "rim": RIM, "brush": {"flow": "x"},
-                "layers": [{"id": "trim", "op": "band", "axis": "x", "from": 0.78, "to": 1.01, "ramp": "brass",
-                            "tone": 4.6, "faces": ["top", "sides"]},
-                           {"id": "trim_r", "op": "band", "axis": "x", "from": -1.01, "to": -0.78, "ramp": "brass",
-                            "tone": 4.6, "faces": ["top", "sides"]},
-                           {"id": "weave", "op": "stripes", "axis": "z", "period": 1.0, "width": 0.3, "shift": -0.8}]},
-    "fringe": {"ramp": "cloth", "tone": 4, "light": 0.2, "brush": {"off": True},
-               "art_key": {"t": "brass:5", "m": "cloth:5", "f": "cloth:3"}},
-    "strap": {"ramp": "leather", "tone": 3.6, "rim": RIM, "brush": {"off": True}},
-    "stirrup": {"ramp": "brass", "tone": 4, "light": 0, "brush": {"off": True},
-                "art_key": {"s": "leather:3", "b": "brass:4", "B": "brass:6"}},
+    "eye": {"ramp": "scale", "tone": 1.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+            "art_key": {}},
+    # light grey horn plates and spines: darker at the root, a lit edge, growth lines
+    "horn": skin("bone", 5.4, grain=0.6, lip=1.4, shade=-1.4, clusters=False, dark_low=0,
+                 layers=[{"id": "rings", "op": "stripes", "axis": "y", "period": 2.0, "width": 0.3, "shift": -0.8},
+                         {"id": "root", "op": "gradient", "axis": "y", "amount": 1.6}]),
+    "spine": skin("bone", 5.2, grain=0.6, lip=1.4, shade=-1.6, clusters=False, dark_low=0,
+                  layers=[{"id": "root", "op": "gradient", "axis": "y", "amount": 2.4}]),
+    # wing bones: dark grey bone, lighter than the membrane
+    "wingbone": skin("bone", 3.4, grain=0.5, lip=1.6, shade=-1.0, clusters=False, dark_low=0),
+    "spar": skin("bone", 3.8, grain=0.4, lip=1.4, shade=-0.8, clusters=False, dark_low=0),
+    "leg": skin("scale", 3.4, layers=[dict(SCALES, along="y", size=[2, 2])], **HIDE),
+    # feet: black scales, a charcoal sole, three pale claws on the front edge
+    "foot": skin("scale", 3.2, grain=0.6, lip=1.8, shade=-0.8, dark_low=0,
+                 layers=[{"id": "sole", "op": "fill", "ramp": "belly", "tone": 2.0, "faces": ["bottom"]}]),
+    "tail": skin("scale", 3.4, layers=[SCALES, BELLY_BAND], **HIDE),
+    "saddle": skin("leather", 4.0, grain=0.7, lip=1.4, shade=-1.0, dark_low=0, layers=[
+        {"id": "stitch", "op": "panel", "inset": 1, "shift": -1.2, "highlight": 0.8, "shadow": -0.8,
+         "min_size": 4}]),
+    "brass": skin("gold", 4.4, grain=0.4, lip=1.8, shade=-1.6, clusters=False, dark_low=0),
+    "blanket": skin("cloth", 4.4, grain=0.6, lip=1.2, shade=-1.0, dark_low=0, layers=[
+        {"id": "trim", "op": "band", "axis": "x", "from": 0.75, "to": 1.01, "ramp": "gold", "tone": 4.4,
+         "faces": ["top", "sides"]},
+        {"id": "trim_r", "op": "band", "axis": "x", "from": -1.01, "to": -0.75, "ramp": "gold", "tone": 4.4,
+         "faces": ["top", "sides"]},
+        {"id": "fringe", "op": "stripes", "axis": "z", "period": 2.0, "width": 0.5, "ramp": "gold", "tone": 3.6,
+         "faces": ["left", "right"], "range": [-1.01, 1.01]}]),
+    "strap": skin("leather", 3.0, grain=0.5, lip=1.0, shade=-0.8, clusters=False, dark_low=0),
+    "stirrup": skin("leather", 3.0, grain=0.4, lip=1.0, shade=-0.8, clusters=False, dark_low=0, layers=[
+        {"id": "iron", "op": "band", "axis": "y", "from": -1.01, "to": -0.3, "ramp": "gold", "tone": 4.6}]),
     "armor": {"ramp": "iron", "tone": 4, "light": 0, "brush": {"off": True}, "stamps": INVISIBLE},
 }
 
@@ -197,20 +144,18 @@ STYLES = {
 def wing_style(s):
     """Dark membrane, deepest by the body and lighter toward the trailing edge; veins and a pale rim."""
     g = 1.0 if s > 0 else -1.0
-    return {"ramp": "membrane", "tone": 4.8, "light": 0.25, "brush": {"flow": "x", "length": 1.6, "rough": 0.4},
-            "layers": [{"id": "out_light", "op": "gradient", "axis": "x", "amount": -0.8 * g},
-                       {"id": "trail_light", "op": "gradient", "axis": "z", "amount": 1.6},
-                       {"id": "mottle", "op": "noise", "scale": 1.5, "amount": 0.5}],
-            "art_key": {"b": "membrane:1", "r": "membrane:8", "R": "membrane:6", "v": "membrane:6",
-                        "c": "bone:7", "C": "bone:5"}}
+    return card_style("membrane", 4.6, {"r": "membrane:8", "R": "membrane:6", "v": "membrane:7"}, light=0.3,
+                      grain=0.6, dither=0.3,
+                      layers=[{"id": "out_light", "op": "gradient", "axis": "x", "amount": -0.8 * g},
+                              {"id": "trail_light", "op": "gradient", "axis": "z", "amount": 1.4}])
 
 
 STYLES["wing_l"] = wing_style(1)
 STYLES["wing_r"] = wing_style(-1)
 
-# Eyes are flat painted pixels, like vanilla mob eyes: a card lying on the head's surface (the eye_l / eye_r joints,
-# so the blink clips squash them), lined up with the head's own texels. W a white catchlight, e bright violet,
-# E deeper violet, p the pupil. Under each card the head paints a dark lid line that shows while the eye blinks.
+# Eyes are flat painted pixels, like vanilla mob eyes: a card a hair in front of the head's surface (the eye_l / eye_r
+# joints, so the blink clips squash them), lined up with the head's own texels. W a white catchlight, e bright violet,
+# E deeper violet, p the pupil. Above each card the head paints a dark lid line.
 EYE_KEY = {"W": "eyeglow:6", "e": "eyeglow:4", "E": "eyeglow:3", "p": "scale:0"}
 EYE_BABY = ["We",          # 2 x 2 texels: a catchlight and a bright violet eye
             "eE"]
@@ -220,22 +165,22 @@ STYLES["eye"]["art_key"] = dict(EYE_KEY)
 
 
 # ======================================================================= card art
-def wing_hand(fingers, d=DENSITY, root_depth=None, scallop=0.16, seed=0):
+def wing_hand(fingers, root_depth=None, scallop=0.16, seed=0):
     """The outer wing membrane of a left wing, lying flat (card plane xz) in the wrist frame: column 0 at the wrist,
     columns outward (+X); the bottom row is the leading edge at the wrist, rows above reach back (-Z).
 
-    fingers: [(angle back from +X in degrees, length in units)], leading finger first. The membrane is stretched from
+    fingers: [(angle back from +X in degrees, length in px)], leading finger first. The membrane is stretched from
     the wrist between the finger tips with a scalloped edge between each pair, and from the last finger back to the
-    wrist edge (`root_depth` units behind the wrist, where the inner membrane meets it). Returns (art, tips, (W, H))
-    with the finger tips in units in the wrist frame (x out, z), so finger-spar boxes can be laid exactly on the art.
+    wrist edge (`root_depth` px behind the wrist, where the inner membrane meets it). Returns (art, tips, (W, H)) with
+    the finger tips in px in the wrist frame (x out, z), so finger-spar boxes can be laid exactly on the art.
 
-    Characters: '.' clear, 'm' membrane, 'r'/'R' the trailing-edge rim, 'v' veins. The spars are boxes laid over it."""
+    Characters: '.' clear, 'm' membrane, 'r'/'R' the trailing-edge rim, 'v' a vein. The spars are boxes laid over it."""
     tips = [(L * math.cos(math.radians(a)), L * math.sin(math.radians(a))) for a, L in fingers]
     root_depth = root_depth if root_depth is not None else tips[-1][1] * 0.45
-    W = int(math.ceil((max(t[0] for t in tips) + 0.5) * d))
-    H = int(math.ceil((max(max(t[1] for t in tips), root_depth) + 0.5) * d))
+    W = int(math.ceil(max(t[0] for t in tips) + 0.5))
+    H = int(math.ceil(max(max(t[1] for t in tips), root_depth) + 0.5))
     c = Canvas(W, H)
-    tx = lambda x, zb: (x * d, H - zb * d)  # noqa: E731   units (out, back) -> texel coords
+    tx = lambda x, zb: (x, H - zb)  # noqa: E731   px (out, back) -> texel coords
     pts = [tx(0.0, -0.2), tx(tips[0][0] * 0.5, -0.25)]
     prev = None
     for k, (x, zb) in enumerate(tips):
@@ -244,74 +189,42 @@ def wing_hand(fingers, d=DENSITY, root_depth=None, scallop=0.16, seed=0):
             pts.append(tx(mx * (1 - scallop), mz * (1 - scallop)))
         pts.append(tx(x + 0.15, zb + 0.1))
         prev = (x, zb)
-    # the last scallop runs back to the wrist edge
     lx, lz = tips[-1]
     pts.append(tx(lx * 0.45, (lz + root_depth) / 2 * (1 - scallop)))
     pts.append(tx(0.0, root_depth))
-    c.shape(pts, "m", jitter=0.15, seed=seed)
+    c.shape(pts, "m", jitter=0.1, seed=seed)
     for x, y in c.edge("m", "r"):
         if y >= H - 1 or x == 0:
             c.g[y][x] = "m"
         elif (x + 2 * y) % 3 == 0:
             c.g[y][x] = "R"
-    rng = random.Random(seed)
-    # fine veins branching off the spars toward the trailing edge
-    for k in range(int(W * H / 50) + 2):
-        x0, y0 = rng.uniform(0.15, 0.9) * W, rng.uniform(0.2, 0.8) * H
-        if c.get(int(x0), int(y0)) != "m":
-            continue
-        c.line((x0, y0), (x0 + rng.uniform(-1.0, 2.0), y0 - rng.uniform(1.5, 3.0)), "v", where="m")
+    # one clean vein between each pair of fingers, from the wrist toward the scallop
+    for (ax, az), (bx, bz) in zip(tips, tips[1:]):
+        mx, mz = (ax + bx) / 2 * 0.7, (az + bz) / 2 * 0.7
+        c.line(tx(0.5, 0.5), tx(mx, mz), "v", where="m")
     return c.rows(), tips, (W, H)
 
 
-def wing_inner(length, root_depth, wrist_depth, d=DENSITY, scallop=0.3, seed=0):
+def wing_inner(length, root_depth, wrist_depth, scallop=0.3, seed=0):
     """The inner wing membrane of a left wing (card plane xz) under the arm: column 0 at the shoulder, the last column
-    at the wrist; the bottom row hangs from the arm, the top rows are the trailing edge, `root_depth` units deep at the
+    at the wrist; the bottom row hangs from the arm, the top rows are the trailing edge, `root_depth` px deep at the
     body and `wrist_depth` at the wrist, with one scallop between."""
-    W = int(round(length * d))
-    H = int(math.ceil((max(root_depth, wrist_depth) + 0.5) * d))
+    W = int(round(length))
+    H = int(math.ceil(max(root_depth, wrist_depth) + 0.5))
     c = Canvas(W, H)
-    tx = lambda x, zb: (x * d, H - zb * d)  # noqa: E731
+    tx = lambda x, zb: (x, H - zb)  # noqa: E731
     mid = (root_depth + wrist_depth) / 2 * (1 - scallop)
     pts = [tx(-0.3, -0.2), tx(length + 0.3, -0.2), tx(length + 0.2, wrist_depth), tx(length * 0.55, mid),
            tx(length * 0.15, root_depth * 0.9), tx(-0.3, root_depth)]
-    c.shape(pts, "m", jitter=0.15, seed=seed)
+    c.shape(pts, "m", jitter=0.1, seed=seed)
     for x, y in c.edge("m", "r"):
         if y >= H - 1 or x == 0 or x == W - 1:
             c.g[y][x] = "m"
         elif (x + 2 * y) % 3 == 0:
             c.g[y][x] = "R"
-    rng = random.Random(seed + 3)
-    # radiating veins from the arm toward the trailing edge, and one strut from the elbow
-    for k in range(int(W / 4) + 1):
-        x0 = rng.uniform(0.1, 0.95) * W
-        c.line((x0, H - 1), (x0 - rng.uniform(0.5, 2.5), H * rng.uniform(0.25, 0.55)), "v", where="m")
+    # one strut from the elbow toward the trailing edge
+    c.line((W * 0.5, H - 1), (W * 0.42, H * 0.45), "v", where="m")
     return c.rows(), (W, H)
-
-
-def tail_spade(w, h, ch_t="t", ch_m="m", ch_f="f"):
-    """A pointed spade for the tail's tip (image top = the point), w x h texels, curved flanks."""
-    c = Canvas(w, h)
-    W, H = float(w), float(h)
-    c.shape([(W / 2, -0.4), (W * 0.82, H * 0.35), (W + 0.3, H * 0.78), (W * 0.62, H * 0.66), (W * 0.58, H + 0.3),
-             (W * 0.42, H + 0.3), (W * 0.38, H * 0.66), (-0.3, H * 0.78), (W * 0.18, H * 0.35)], ch_f)
-    for x, y in c.edge(ch_f, ch_m):
-        pass
-    for y in range(h):
-        for x in range(w):
-            if c.g[y][x] == ch_m and (y < H * 0.4 or abs(x - (W - 1) / 2) > W * 0.3):
-                c.g[y][x] = ch_t
-    c.line(((W - 1) / 2 + 0.5, 1), ((W - 1) / 2 + 0.5, H - 1), ch_m, where=ch_f)
-    return c.rows()
-
-
-def fangs(w, xs, h=2, ch="t", mid="m"):
-    """A row of fangs hanging from the top row at columns xs (others clear)."""
-    rows = [["."] * w for _ in range(h)]
-    for x in xs:
-        for y in range(h):
-            rows[y][x] = ch if y == h - 1 else mid
-    return ["".join(r) for r in rows]
 
 
 # ======================================================================= builder
@@ -321,154 +234,139 @@ def build(kind):
     R = Rig(density=DENSITY, bone_style="scale")
     part, bone, card = R.part, R.bone, R.card
     styles = copy.deepcopy(STYLES)
-    if teen:   # the teen's bigger body wears bigger scales
-        styles["scale_body"]["layers"][0] = dict(SCALES, size=[3.0, 2.5], gradient=5.5)
-        styles["tail"]["layers"][0] = dict(SCALES, size=[2.5, 2.0])
 
-    def spine(id, parent, h, w=1.0, d=1.5, tilt=-30.0, **kw):
+    def spine(id, parent, h, w=1, d=1, tilt=-30.0, **kw):
         """A light grey back spine standing on its parent (joint at its root), swept back by `tilt`."""
-        return part(id, parent, [w, h, d], "spine", offset=(0, h / 2 - 0.35, 0), rot=(tilt, 0, 0), **kw)
+        return part(id, parent, [w, h, d], "spine", offset=(0, h / 2 - 0.5, 0), rot=(tilt, 0, 0), **kw)
 
     # ---------------------------------------------------------------- torso
     if not teen:
         part("body", None, [7, 6, 8], "scale_body", at=(0, 5.5, 0), centre=(0, 6.0, -0.5))
-        part("chest", "body", [6, 5.5, 2.5], "chest", centre=(0, 6.0, 4.0))
-        part("belly", "body", [6, 1.5, 7.5], "belly", centre=(0, 2.75, -0.25))
-        part("haunches", "body", [8, 5, 4], "scale_body", centre=(0, 5.25, -3.25))
-        part("shoulders", "body", [7.5, 2, 3.5], "scale", centre=(0, 8.25, 1.75))
-        for j, (z, h) in enumerate(((2.25, 1.5), (0.25, 2.0), (-1.75, 2.5), (-3.75, 2.0))):
-            spine(f"back_spine_{j}", "body", h, at=(0, 9.0 if j else 9.25, z), d=1.5 if j else 1.0)
-        neck_at, neck_size, neck_rot = (0, 7.5, 3.5), [4, 4, 3.5], -38
+        part("chest", "body", [6, 5, 2], "chest", centre=(0, 5.5, 4.0))
+        part("haunches", "body", [8, 5, 4], "scale_body", centre=(0, 5.5, -3.5))
+        for j, (z, h) in enumerate(((2.0, 1), (0.0, 2), (-2.0, 2), (-4.0, 2))):
+            spine(f"back_spine_{j}", "body", h, at=(0, 9.0, z))
+        neck_at, neck_size, neck_rot = (0, 7.5, 3.5), [4, 4, 4], -38
     else:
         part("body", None, [10, 9, 12], "scale_body", at=(0, 15.0, 0), centre=(0, 15.5, 4.0))
-        part("hips", "body", [9, 8, 12], "scale_body", centre=(0, 15.25, -7.0))
-        part("belly", "body", [8.5, 2, 20], "belly", centre=(0, 11.25, -1.5))
-        part("chest", "body", [9, 7, 2], "chest", centre=(0, 14.5, 10.75))
-        part("withers", "body", [7, 2, 6], "scale", centre=(0, 20.75, 7.25))
-        part("croup", "body", [8, 1.5, 6], "scale", centre=(0, 19.5, -9.5))
+        part("hips", "body", [9, 8, 12], "scale_body", centre=(0, 15.0, -7.0))
+        part("belly", "body", [8, 2, 20], "chest", centre=(0, 11.0, -1.5))
+        part("chest", "body", [9, 7, 2], "chest", centre=(0, 14.5, 11.0))
+        part("withers", "body", [7, 2, 6], "scale", centre=(0, 21.0, 7.0))
+        part("croup", "body", [8, 1, 6], "scale", centre=(0, 19.5, -9.5))
         for s in (1, -1):
             n = LR(s)
-            part(f"shoulder_{n}", "body", [1.5, 5, 6], "scale", centre=M((5.25, 16.75, 6.5), s), rot=MR((0, 0, 6), s))
-            part(f"thigh_{n}", "body", [1.5, 6, 7], "scale", centre=M((4.75, 15.25, -7.5), s), rot=MR((0, 0, 4), s))
+            part(f"shoulder_{n}", "body", [2, 5, 6], "scale", centre=M((5.0, 16.5, 6.5), s), rot=MR((0, 0, 6), s))
+            part(f"thigh_{n}", "body", [2, 6, 7], "scale", centre=M((4.5, 15.0, -7.5), s), rot=MR((0, 0, 4), s))
         # spines on the withers and the croup, clear of the saddle between them
-        for j, (z, h, y) in enumerate(((9.25, 3.0, 21.5), (6.75, 3.5, 21.5), (-8.5, 3.0, 20.0),
-                                       (-11.0, 3.5, 20.0))):
-            spine(f"back_spine_{j}", "body", h, at=(0, y, z), w=1.5, d=2.0)
+        for j, (z, h, y) in enumerate(((9.0, 3, 21.5), (6.5, 4, 21.5), (-8.5, 3, 20.0), (-11.0, 4, 20.0))):
+            spine(f"back_spine_{j}", "body", h, at=(0, y, z), w=2, d=2)
         neck_at, neck_size, neck_rot = (0, 17.5, 9.5), [5, 5, 8], -50
 
     # ---------------------------------------------------------------- neck
     part("neck", "body", neck_size, "scale", at=neck_at, offset=(0, 0, neck_size[2] / 2 - 0.5), wrot=(neck_rot, 0, 0))
-    part("throat", "neck", [neck_size[0] - 1, 1, neck_size[2] - 0.5], "belly",
-         rel=(0, -neck_size[1] / 2, neck_size[2] / 2 - 0.5))
     if not teen:
-        spine("neck_spine", "neck", 1.5, rel=(0, 2.0, 1.4), d=1.0, tilt=-20)
-        head_parent, head_rel, head_rot = "neck", (0, 0.2, 2.7), (34, 0, 0)
+        spine("neck_spine", "neck", 2, rel=(0, 2.0, 1.5), tilt=-20)
+        head_parent, head_rel, head_rot = "neck", (0, 0.2, 3.0), (34, 0, 0)
     else:
-        spine("neck_spine_0", "neck", 2.5, rel=(0, 2.5, 1.5), w=1.0, d=1.5, tilt=-10)
-        spine("neck_spine_1", "neck", 2.5, rel=(0, 2.5, 5.0), w=1.0, d=1.5, tilt=-10)
-        part("neck_1", "neck", [4.5, 4.5, 7], "scale", rel=(0, 0, 7.0), offset=(0, 0, 3.0), rot=(22, 0, 0))
-        part("throat_1", "neck_1", [3.5, 1, 6.5], "belly", rel=(0, -2.25, 3.0))
-        spine("neck_spine_2", "neck_1", 2.0, rel=(0, 2.25, 1.5), w=1.0, d=1.5, tilt=-14)
-        spine("neck_spine_3", "neck_1", 2.0, rel=(0, 2.25, 4.5), w=1.0, d=1.5, tilt=-14)
+        spine("neck_spine_0", "neck", 3, rel=(0, 2.5, 1.5), tilt=-10)
+        spine("neck_spine_1", "neck", 3, rel=(0, 2.5, 5.0), tilt=-10)
+        part("neck_1", "neck", [4, 4, 7], "scale", rel=(0, 0, 7.0), offset=(0, 0, 3.0), rot=(22, 0, 0))
+        spine("neck_spine_2", "neck_1", 2, rel=(0, 2.0, 1.5), tilt=-14)
+        spine("neck_spine_3", "neck_1", 2, rel=(0, 2.0, 4.5), tilt=-14)
         head_parent, head_rel, head_rot = "neck_1", (0, 0, 6.5), (30, 0, 0)
 
     # ---------------------------------------------------------------- head
     if not teen:
-        hw, hh, hd = 7, 6, 6
-        ho = np.array((0, 1.8, 1.4))               # cranium centre in the head frame
+        hw, hh, hd = 8, 6, 6
+        ho = np.array((0, 2.0, 1.5))               # cranium centre in the head frame
     else:
-        hw, hh, hd = 6.5, 5.5, 6
-        ho = np.array((0, 1.4, 1.6))
+        hw, hh, hd = 7, 6, 6
+        ho = np.array((0, 1.5, 1.5))
     head = part("head", head_parent, [hw, hh, hd], "head", rel=head_rel, offset=tuple(ho), rot=head_rot)
     front, top, back = ho[2] + hd / 2, ho[1] + hh / 2, ho[2] - hd / 2
-    D = DENSITY
     if not teen:
-        # a short, flat box snout low on the face, two nostril bumps, milk fangs, a jaw under it
-        sw, sh, sl = 4.5, 2, 4
-        sy = ho[1] - 1.75
-        part("snout", "head", [sw, sh, sl], "snout", rel=(0, sy, front + sl / 2 - 0.75))
-        s_top, s_bot, s_front = sy + sh / 2, sy - sh / 2, front + sl - 0.75
+        # a short, flat box snout low on the face, two nostril bumps, milk fangs painted on its lip, a jaw under it
+        sw, sh, sl = 4, 2, 4
+        sy = ho[1] - 2.0
+        part("snout", "head", [sw, sh, sl], "snout", rel=(0, sy, front + sl / 2 - 1.0),
+             paint={"stamps": [{"face": "front", "at": "bottom-left", "art": ["t..t"],
+                                "key": {"t": "bone:8"}}]})
+        s_bot = sy - sh / 2
         for s in (1, -1):
-            part(f"nostril_{LR(s)}", "snout", [1, 0.5, 1.5], "nostril", rel=M((1.4, sh / 2 + 0.2, sl / 2 - 1.1), s))
-        card("fangs", "snout", fangs(10, (2, 7), 2), "tooth", plane="xy", rel=(0, -sh / 2 - 0.5, sl / 2 + 0.05))
-        part("jaw", "head", [4, 1, 3.5], "jaw", rel=(0, s_bot, front - 0.25), offset=(0, -0.5, 1.5))
-        part("chin", "jaw", [3, 0.5, 2], "jaw", rel=(0, -0.75, 1.75))
-        # two small flat eyes on the face above the snout, each 2 x 2 texels on the face's own texel grid
-        eye_top, stamps = top - 1.5, []
+            part(f"nostril_{LR(s)}", "snout", [1, 1, 1], "nostril", rel=M((1.0, sh / 2 + 0.5, sl / 2 - 1.0), s))
+        part("jaw", "head", [4, 1, 4], "jaw", rel=(0, s_bot, front - 1.0), offset=(0, -0.5, 1.5))
+        # two flat 2 x 2 eyes on the face above the snout, on the face's own texel grid, a dark lid line over each
+        eye_top, stamps = top - 1.0, []
         for s in (1, -1):
             n = LR(s)
             ex = 2.0 * s
-            card(f"eye_{n}", "head", EYE_BABY, "eye", plane="xy", rel=(ex, eye_top - 0.5, front + 0.06))
-            stamps.append({"face": "front", "at": [int(round((ex - 0.5 + hw / 2) * D)), int(round((top - eye_top) * D))],
-                           "art": ["..", "kk"], "key": {"k": "scale:0"}})
+            card(f"eye_{n}", "head", EYE_BABY, "eye", plane="xy", rel=(ex, eye_top - 1.0, front + EPS))
+            stamps.append({"face": "front", "at": [int(round(ex - 1.0 + hw / 2)), 0], "art": ["kk"],
+                           "key": {"k": "scale:0"}})
         head["paint"] = {"stamps": stamps}
         for s in (1, -1):
             n = LR(s)
             # stubby horn plates standing on the head like ears, a smaller pair behind
-            part(f"horn_{n}0", "head", [1, 2.5, 3], "horn", rel=M((2.0, top - 0.3, ho[2] - 0.6), s),
-                 offset=(0, 1.0, -0.4), rot=MR((-24, 0, -10), s))
-            part(f"horn_{n}1", "head", [0.5, 1.5, 2], "horn", rel=M((3.0, top - 0.6, ho[2] - 1.8), s),
-                 offset=(0, 0.6, -0.4), rot=MR((-30, 0, -30), s))
-        spine("head_spine_0", "head", 1.5, rel=(0, top - 0.25, ho[2] - 0.3), d=1.0, tilt=-28)
-        spine("head_spine_1", "head", 1.5, rel=(0, top - 0.5, ho[2] - 2.0), d=1.0, tilt=-40)
+            part(f"horn_{n}0", "head", [1, 3, 3], "horn", rel=M((2.5, top - 0.5, ho[2] - 0.5), s),
+                 offset=(0, 1.0, -0.5), rot=MR((-24, 0, -10), s))
+            part(f"horn_{n}1", "head", [1, 2, 2], "horn", rel=M((3.5, top - 0.5, ho[2] - 2.0), s),
+                 offset=(0, 0.5, -0.5), rot=MR((-30, 0, -30), s))
+        spine("head_spine_0", "head", 2, rel=(0, top - 0.5, ho[2] - 0.5), tilt=-28)
+        spine("head_spine_1", "head", 2, rel=(0, top - 0.5, ho[2] - 2.0), tilt=-40)
     else:
-        # the Ender Dragon's long, flat box snout with nostril bumps, a row of teeth, and a separate jaw
-        sw, sh, sl = 5, 3, 8.5
+        # the Ender Dragon's long, flat box snout with nostril bumps and teeth, and a separate jaw
+        sw, sh, sl = 5, 3, 9
         sy = ho[1] - 1.0
-        part("snout", "head", [sw, sh, sl], "snout", rel=(0, sy, front + sl / 2 - 0.75), rot=(2, 0, 0))
+        teeth = [{"faces": ["left", "right"], "at": "bottom-left", "art": ["t..t..t.t"], "key": {"t": "bone:6"}},
+                 {"face": "front", "at": "bottom-left", "art": ["t...t"], "key": {"t": "bone:6"}}]
+        part("snout", "head", [sw, sh, sl], "snout", rel=(0, sy, front + sl / 2 - 1.0), rot=(2, 0, 0),
+             paint={"stamps": teeth})
         s_bot = sy - sh / 2
         for s in (1, -1):
             n = LR(s)
-            part(f"nostril_{n}", "snout", [1, 1, 2], "nostril", rel=M((1.5, sh / 2 + 0.4, sl / 2 - 1.5), s))
-            card(f"teeth_{n}", "snout", fangs(15, range(0, 15, 2), 2), "tooth", plane="yz",
-                 rel=M((sw / 2 - 0.3, -sh / 2 - 0.5, 0.25), s))
-        card("teeth", "snout", fangs(10, (0, 2, 7, 9), 2), "tooth", plane="xy",
-             rel=(0, -sh / 2 - 0.5, sl / 2 - 0.3))
-        part("jaw", "head", [4.5, 1.5, 9.5], "jaw", rel=(0, s_bot - 0.1, ho[2] - 1.0), offset=(0, -0.75, 4.75),
-             rot=(3, 0, 0))
-        part("chin", "jaw", [3.5, 1, 3], "jaw", rel=(0, -0.75, 8.0))
+            part(f"nostril_{n}", "snout", [1, 1, 2], "nostril", rel=M((1.5, sh / 2 + 0.5, sl / 2 - 1.5), s))
+        part("jaw", "head", [5, 2, 9], "jaw", rel=(0, s_bot - 0.5, ho[2] - 1.0), offset=(0, -0.5, 4.5), rot=(3, 0, 0),
+             paint={"stamps": [{"faces": ["left", "right"], "at": "top-left", "art": [".t..t..t."],
+                                "key": {"t": "bone:6"}}]})
         for s in (1, -1):
             n = LR(s)
-            card(f"jaw_teeth_{n}", "jaw", fangs(14, range(1, 14, 2), 2), "tooth", plane="yz",
-                 rel=M((1.9, 1.25, 5.5), s), offset=(0, 0, 0), rot=(180, 0, 0))
-            part(f"cheek_{n}", "head", [1, 2.5, 4], "cheek", rel=M((hw / 2 + 0.25, ho[1] - 1.35, ho[2] - 0.5), s))
-            card(f"cheek_spikes_{n}", "head", spikes(8, 4, 30 + s), "spike", plane="yz",
-                 rel=M((hw / 2 + 0.8, ho[1] - 1.5, ho[2] - 1.5), s), offset=(0, 0, -1.0), rot=MR((-20, 0, 0), s))
+            part(f"cheek_{n}", "head", [1, 3, 4], "head", rel=M((hw / 2 + 0.5, ho[1] - 1.5, ho[2] - 0.5), s))
         # flat almond eyes on the sides of the head, 3 x 2 texels on the face's texel grid, a dark lid line above
         # them that runs past the front corner (image-left is the front on the left face, the back on the right)
-        ez0, ez1, eye_top, stamps = front - 2.5, front - 1.0, top - 1.5, []
-        lid = ["kkkk", "k...", ".kkk"]
+        ez0, ez1, eye_top, stamps = front - 4.0, front - 1.0, top - 1.0, []
+        lid = ["kkkk", "k..."]
         for s in (1, -1):
             n = LR(s)
             card(f"eye_{n}", "head", EYE_TEEN, "eye", plane="yz",
-                 rel=(s * (hw / 2 + 0.06), eye_top - 0.5, (ez0 + ez1) / 2))
-            col = int(round((front - ez1) * D)) - 1 if s > 0 else int(round((ez0 - back) * D))
-            stamps.append({"face": "left" if s > 0 else "right", "at": [col, int(round((top - eye_top) * D)) - 1],
+                 rel=(s * (hw / 2 + EPS), eye_top - 1.0, (ez0 + ez1) / 2))
+            col = int(round(front - ez1)) - 1 if s > 0 else int(round(ez0 - back))
+            stamps.append({"face": "left" if s > 0 else "right", "at": [max(0, col), int(round(top - eye_top)) - 1],
                            "art": lid if s > 0 else mirror_art(lid), "key": {"k": "scale:0"}})
         head["paint"] = {"stamps": stamps}
         for s in (1, -1):
             n = LR(s)
-            part(f"brow_{n}", "head", [1.5, 1, 4], "brow", rel=M((hw / 2 - 0.25, top - 0.3, front - 1.9), s),
+            part(f"brow_{n}", "head", [2, 1, 4], "brow", rel=M((hw / 2 - 0.5, top - 0.5, front - 2.0), s),
                  rot=MR((-8, 0, -14), s))
             # two pairs of swept-back horn plates (the Ender Dragon's head scales), the front pair with a tip
-            part(f"horn_{n}0", "head", [1, 3.5, 5], "horn", rel=M((1.6, top - 0.4, ho[2] - 0.6), s),
-                 offset=(0, 1.4, -1.5), rot=MR((-26, 0, -6), s))
-            part(f"horn_{n}0_tip", f"horn_{n}0", [1, 2, 2.5], "horn", rel=(0, 2.2, -3.8), offset=(0, 0, -0.6),
+            part(f"horn_{n}0", "head", [1, 4, 5], "horn", rel=M((1.5, top - 0.5, ho[2] - 0.5), s),
+                 offset=(0, 1.5, -1.5), rot=MR((-26, 0, -6), s))
+            part(f"horn_{n}0_tip", f"horn_{n}0", [1, 2, 3], "horn", rel=(0, 2.5, -4.0), offset=(0, 0, -0.5),
                  rot=(-14, 0, 0))
-            part(f"horn_{n}1", "head", [1, 2, 3.5], "horn", rel=M((2.9, top - 1.4, ho[2] - 1.6), s),
-                 offset=(0, 0.8, -1.2), rot=MR((-30, 0, -34), s))
-        spine("head_spine_0", "head", 2.0, rel=(0, top - 0.25, ho[2] - 0.2), w=1.0, d=1.5, tilt=-30)
-        spine("head_spine_1", "head", 2.0, rel=(0, top - 0.5, ho[2] - 2.4), w=1.0, d=1.5, tilt=-40)
+            part(f"horn_{n}1", "head", [1, 2, 4], "horn", rel=M((3.0, top - 1.5, ho[2] - 1.5), s),
+                 offset=(0, 1.0, -1.0), rot=MR((-30, 0, -34), s))
+        spine("head_spine_0", "head", 2, rel=(0, top - 0.5, ho[2]), tilt=-30)
+        spine("head_spine_1", "head", 2, rel=(0, top - 0.5, ho[2] - 2.5), tilt=-40)
 
     # ---------------------------------------------------------------- wings
     if not teen:
-        sh_at, arm_len, arm_t, tip_t = (3.2, 8.2, 1.0), 4.5, 1.0, 0.5
-        fingers = [(8, 6.5), (34, 6.0), (62, 5.0)]
+        sh_at, arm_len, arm_t, tip_t = (3.5, 8.5, 1.0), 5, 1, 1
+        fingers = [(8, 7.0), (36, 6.0), (64, 5.0)]
         # half open and held up, the membrane hanging down and back so it shows from the side
         inner_root, rest_arm, rest_tip = 4.0, (-55, 30, 35), (0, -15, -35)
     else:
-        sh_at, arm_len, arm_t, tip_t = (4.5, 19.5, 6.0), 13.0, 1.5, 1.0
-        fingers = [(6, 14.5), (24, 14.0), (44, 12.5), (66, 10.5)]
+        sh_at, arm_len, arm_t, tip_t = (4.5, 19.5, 6.0), 13, 2, 1
+        fingers = [(6, 15.0), (24, 14.0), (44, 13.0), (66, 11.0)]
         # folded along the flank: the arm swept back with its rear end lifted, the hand folded forward over it
         rest_arm = tuple(euler(rot_matrix((10, 0, 0)) @ rot_matrix((-90, 75, 15))))
         inner_root, rest_tip = 9.5, (0, 6, 172)
@@ -481,29 +379,26 @@ def build(kind):
         bone(wid, "body", at=M(sh_at, s), rot=MR(rest_arm, s))
         part(f"{wid}_arm", wid, [arm_len, arm_t, arm_t], "wingbone", rel=(0, 0, 0), offset=(s * arm_len / 2, 0, 0))
         card(f"{wid}_m", wid, inner_art if s > 0 else mirror_art(inner_art), f"wing_{n}", plane="xz",
-             rel=(s * IW / 4, -0.1, -IH / 4 + 0.25))
+             rel=(s * IW / 2, -0.1, -IH / 2 + 0.5))
         bone(f"{wid}_tip", wid, rel=(s * arm_len, 0, 0), rot=MR(rest_tip, s))
-        part(f"{wid}_knuckle", f"{wid}_tip", [arm_t + 0.5, arm_t + 0.5, arm_t + 0.5], "wingbone")
+        if teen:
+            part(f"{wid}_knuckle", f"{wid}_tip", [arm_t + 1, arm_t + 1, arm_t + 1], "wingbone")
         card(f"{wid}_tip_m", f"{wid}_tip", hand_art if s > 0 else mirror_art(hand_art), f"wing_{n}", plane="xz",
-             rel=(s * HW / 4, -0.12, -HH / 4 + 0.25))
+             rel=(s * HW / 2, -0.12, -HH / 2 + 0.5))
         for k, ((a, L), (fx, fz)) in enumerate(zip(fingers, tips)):
-            ln = max(1.0, round(math.hypot(fx, fz) * DENSITY) / DENSITY)
-            th = tip_t if k else max(tip_t, arm_t - 0.5)
-            part(f"{wid}_finger_{k}", f"{wid}_tip", [ln, th, th], "spar", rel=(0, 0, 0), offset=(s * ln / 2, 0, 0),
-                 rot=MR((0, a, 0), s))
-        card(f"{wid}_claw", f"{wid}_finger_0", claws(1, 3 if teen else 2), "claw", plane="yz",
-             rel=(s * (math.hypot(*tips[0]) - 0.2), 0.2, 0), offset=(0, 0.6, 0), rot=(0, 0, 0))
-        card(f"{wid}_thumb", f"{wid}_tip", claws(1, 2), "claw", rel=(0, 0.2, 0.6), offset=(0, 0.5, 0), plane="yz")
+            ln = max(1, round(math.hypot(fx, fz)))
+            part(f"{wid}_finger_{k}", f"{wid}_tip", [ln, tip_t, tip_t], "spar", rel=(0, 0, 0),
+                 offset=(s * ln / 2, 0, 0), rot=MR((0, a, 0), s))
 
     # ---------------------------------------------------------------- tail
     if not teen:
-        tails = [((0, 5.5, -4.5), [4, 3.5, 4.5], (-10, 6, 0)), ([3.5, 3, 4.5], (0, 8, 0)), ([3, 2.5, 4.5], (6, 10, 0)),
-                 ([2.5, 2, 4], (8, 10, 0)), ([2, 1.5, 4], (6, 10, 0)), ([1.5, 1, 3.5], (4, 10, 0))]
-        tspines = [(1.5, 1.0, 1.5), (1.5, 1.0, 1.5), (1.0, 1.0, 1.0), (1.0, 0.5, 1.0), (1.0, 0.5, 1.0)]
+        tails = [((0, 5.5, -5.0), [4, 3, 5], (-10, 6, 0)), ([3, 3, 4], (0, 8, 0)), ([3, 2, 4], (6, 10, 0)),
+                 ([2, 2, 4], (8, 10, 0)), ([2, 2, 3], (6, 10, 0)), ([1, 1, 3], (4, 10, 0))]
+        tspines = [(2, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1)]
     else:
-        tails = [((0, 15.5, -12.5), [6, 5, 8.5], (-16, 5, 0)), ([5, 4.5, 8.5], (-6, 7, 0)), ([4.5, 3.5, 8], (5, 8, 0)),
-                 ([3.5, 3, 8], (7, 8, 0)), ([3, 2.5, 7], (6, 8, 0)), ([2, 2, 6.5], (6, 6, 0))]
-        tspines = [(3.0, 1.5, 2.0), (2.5, 1.0, 2.0), (2.5, 1.0, 1.5), (2.0, 1.0, 1.5), (1.5, 1.0, 1.5), (1.0, 1.0, 1.0)]
+        tails = [((0, 15.5, -12.5), [6, 5, 8], (-16, 5, 0)), ([5, 4, 8], (-6, 7, 0)), ([4, 3, 8], (5, 8, 0)),
+                 ([3, 3, 8], (7, 8, 0)), ([3, 2, 7], (6, 8, 0)), ([2, 2, 6], (6, 6, 0))]
+        tspines = [(3, 2, 2), (3, 1, 2), (2, 1, 2), (2, 1, 1), (2, 1, 1), (1, 1, 1)]
     prev = "body"
     for j, t in enumerate(tails):
         tid = f"tail_{j}"
@@ -516,25 +411,20 @@ def build(kind):
                  rot=rot)
         if j < len(tspines):
             h, w, d = tspines[j]
-            spine(f"{tid}_spine", tid, h, w=w, d=d, rel=(0, size[1] / 2 - 0.1, -size[2] / 2 + 0.5), tilt=-34)
+            spine(f"{tid}_spine", tid, h, w=w, d=d, rel=(0, size[1] / 2, -size[2] / 2 + 0.5), tilt=-34)
             if teen and j < 3:
-                spine(f"{tid}_spine_b", tid, h - 0.5, w=w, d=d, rel=(0, size[1] / 2 - 0.1, -size[2] + 2.0), tilt=-34)
+                spine(f"{tid}_spine_b", tid, h - 1, w=w, d=d, rel=(0, size[1] / 2, -size[2] + 2.0), tilt=-34)
         prev = tid
-    last = tails[-1][-2]
-    blade = tail_spade(10, 12) if teen else tail_spade(6, 7)
-    card("tail_blade", prev, blade, "spike", plane="xz", rel=(0, 0, -last[2] + 0.8),
-         offset=(0, 0, -len(blade) / 4 + 0.25))
-    card("tail_blade_v", prev, blade, "spike", plane="yz", rel=(0, 0, -last[2] + 0.8),
-         offset=(0, len(blade) / 4 - 0.25, 0), rot=(-90, 0, 0))
 
     # ---------------------------------------------------------------- legs
     feet = []
+    claws = {"front": ["c.c.c"], "top": ["c.c.c"]}
     if not teen:
-        LEGS = {"f": ((2.6, 5.2, 2.6), (2.8, 1.0, 3.0), None, 2.5, 2.5, [2.5, 1, 3]),
-                "b": ((3.2, 5.2, -2.8), (3.4, 1.0, -2.2), None, 3.0, 3.5, [3, 1, 3.5])}
+        LEGS = {"f": ((2.5, 5.0, 2.5), (2.5, 1.0, 3.0), None, 2, 2, [3, 1, 3]),
+                "b": ((3.0, 5.0, -3.0), (3.5, 1.0, -2.0), None, 3, 3, [3, 1, 4])}
     else:
-        LEGS = {"f": ((4.2, 13.5, 6.5), (4.6, 7.5, 7.5), (4.6, 1.2, 6.6), 3.0, 3.5, [3.5, 1, 5]),
-                "b": ((4.4, 13.5, -7.5), (4.8, 7.5, -4.6), (4.8, 1.2, -8.6), 4.0, 5.0, [3.5, 1, 5.5])}
+        LEGS = {"f": ((4.0, 13.5, 6.5), (4.5, 7.5, 7.5), (4.5, 1.0, 6.5), 3, 4, [4, 1, 5]),
+                "b": ((4.5, 13.5, -7.5), (5.0, 7.5, -4.5), (5.0, 1.0, -8.5), 4, 5, [4, 1, 6])}
     for kk, (hip, knee, ankle, th, dp, fsize) in LEGS.items():
         for s in (1, -1):
             n = LR(s)
@@ -542,68 +432,59 @@ def build(kind):
             e = limb(R, lid, "body", M(hip, s), M(knee, s), th, "leg", depth=dp)
             parent = lid
             if ankle is not None:
-                e = limb(R, f"shin_{kk}{n}", lid, e, M(ankle, s), th - 0.5, "leg", depth=th - 0.5)
+                e = limb(R, f"shin_{kk}{n}", lid, e, M(ankle, s), th - 1, "leg", depth=th - 1)
                 parent = f"shin_{kk}{n}"
-                card(f"spur_{kk}{n}", parent, spikes(4, 4, 50 + s), "spike", plane="yz",
-                     rel=(0, -0.3, -(th - 0.5) / 2 if kk == "f" else (th - 0.5) / 2), offset=(0, 0, 0),
-                     rot=(150 if kk == "f" else 30, 0, 0))
             fid = f"foot_{kk}{n}"
-            part(fid, parent, fsize, "foot", at=e, centre=(e[0], fsize[1] / 2, e[2] + fsize[2] / 2 - 1.0), wrot=(0, 0, 0))
-            part(f"toes_{kk}{n}", fid, [fsize[0] - 0.5, 0.5 if not teen else 1.0, 1.5], "foot",
-                 rel=(0, -fsize[1] / 2 + (0.25 if not teen else 0.5), fsize[2] / 2 + 0.25))
-            card(f"claws_{kk}{n}", fid, claws(3, 2 if not teen else 3), "claw",
-                 rel=(0, -fsize[1] / 2 + 0.25, fsize[2] / 2 + 1.0),
-                 offset=(0, -0.5 if not teen else -0.75, 0), plane="xy", rot=(-50, 0, 0))
-            feet += [fid, f"toes_{kk}{n}", f"claws_{kk}{n}"]
+            cw = "c.c.c"[:fsize[0] + (1 if fsize[0] % 2 == 0 else 0)][:fsize[0]]
+            part(fid, parent, fsize, "foot", at=e, centre=(e[0], fsize[1] / 2, e[2] + fsize[2] / 2 - 1.0),
+                 wrot=(0, 0, 0), paint={"stamps": [{"face": "front", "at": "top-left", "art": [cw],
+                                                    "key": {"c": "bone:5"}}]})
+            feet.append(fid)
 
     # ---------------------------------------------------------------- teen: saddle and armour shells
     if teen:
         bone("saddle", "body", at=(0, 20.0, -1.5))
-        part("saddle_blanket", "saddle", [10.5, 0.5, 11], "blanket", rel=(0, 0.25, 0))
-        for s in (1, -1):
-            card(f"saddle_fringe_{LR(s)}", "saddle_blanket", locks(22, 3, 40 + s, min_len=0.6), "fringe",
-                 rel=(s * 5.3, -0.25, 0), offset=(0, -0.75, 0), plane="yz", rot=(0, 0, s * 4))
-        part("saddle_seat", "saddle", [8, 1.5, 9], "saddle", rel=(0, 1.25, 0))
-        part("saddle_cantle", "saddle_seat", [7, 3, 1.5], "saddle", rel=(0, 1.5, -4.2), rot=(14, 0, 0))
-        part("saddle_pommel", "saddle_seat", [3, 2.5, 1.5], "saddle", rel=(0, 1.2, 4.0), rot=(-12, 0, 0))
-        part("saddle_horn", "saddle_pommel", [1.5, 1.5, 1.5], "brass", rel=(0, 1.6, 0.2))
+        part("saddle_blanket", "saddle", [11, 1, 11], "blanket", rel=(0, 0.5, 0))
+        part("saddle_seat", "saddle", [8, 2, 9], "saddle", rel=(0, 2.0, 0))
+        part("saddle_cantle", "saddle_seat", [7, 3, 2], "saddle", rel=(0, 1.5, -4.0), rot=(14, 0, 0))
+        part("saddle_pommel", "saddle_seat", [3, 3, 2], "saddle", rel=(0, 1.5, 4.0), rot=(-12, 0, 0))
+        part("saddle_horn", "saddle_pommel", [1, 2, 1], "brass", rel=(0, 2.0, 0.0))
         for s in (1, -1):
             n = LR(s)
-            part(f"saddle_flap_{n}", "saddle", [0.5, 5, 7], "saddle", rel=M((5.6, -2.4, 0), s), rot=(0, 0, s * -4))
-            part(f"saddle_buckle_{n}", f"saddle_flap_{n}", [0.5, 1, 1], "brass", rel=M((0.3, -1.5, 2.0), s))
-            card(f"stirrup_{n}", f"saddle_flap_{n}", ["s..", "s..", "s..", "s..", "BBB", "b.b", "bBb"], "stirrup",
-                 rel=M((0.4, -2.5, -1.0), s), offset=(0, -1.75, 0), plane="yz")
-        part("saddle_girth", "saddle", [11, 10, 1.5], "strap", rel=(0, -4.6, 1.5), hide=["top", "bottom"])
+            part(f"saddle_flap_{n}", "saddle", [1, 5, 7], "saddle", rel=M((6.0, -2.5, 0), s), rot=(0, 0, s * -4))
+            part(f"saddle_buckle_{n}", f"saddle_flap_{n}", [1, 1, 1], "brass", rel=M((0.5, -1.5, 2.0), s))
+            part(f"stirrup_{n}", f"saddle_flap_{n}", [1, 4, 2], "stirrup", rel=M((0.5, -2.5, -1.0), s),
+                 offset=(0, -2.0, 0))
+        part("saddle_girth", "saddle", [11, 10, 1], "strap", rel=(0, -4.5, 1.5), hide=["top", "bottom"])
 
-        hx = tuple(ho + (0, hh / 2 - 0.75, 0.0))
+        hx = tuple(ho + (0, hh / 2 - 0.5, 0.0))
         for nm, par, size, rel in (
-                ("armor_head", "head", [7, 2.5, 6.5], hx),
-                ("armor_snout", "snout", [5.5, 1.5, 6.5], (0, 1.25, -0.75)),
-                ("armor_neck", "neck", [6, 2.5, 8.5], (0, 1.75, 3.5)),
-                ("armor_neck_1", "neck_1", [5.5, 2.5, 7.5], (0, 1.5, 3.0)),
-                ("armor_chest", "body", [10.5, 8, 2], (0, 0.0, 11.5)),
-                ("armor_flank_l", "body", [1, 7.5, 11], (5.75, 1.0, 4.0)),
-                ("armor_flank_r", "body", [1, 7.5, 11], (-5.75, 1.0, 4.0))):
+                ("armor_head", "head", [8, 2, 7], hx),
+                ("armor_snout", "snout", [6, 1, 7], (0, 1.5, -1.0)),
+                ("armor_neck", "neck", [6, 2, 9], (0, 2.0, 3.5)),
+                ("armor_neck_1", "neck_1", [5, 2, 8], (0, 1.5, 3.0)),
+                ("armor_chest", "body", [11, 8, 2], (0, 0.0, 11.5)),
+                ("armor_flank_l", "body", [1, 8, 11], (5.5, 1.0, 4.0)),
+                ("armor_flank_r", "body", [1, 8, 11], (-5.5, 1.0, 4.0))):
             part(nm, par, size, "armor", rel=rel)
 
     spec = {
         "name": "Dragonling Baby" if not teen else "Dragonling Teen",
-        "description": ("The Winterworks baby Dragonling: a chubby young Ender Dragon with a big square head, huge "
-                        "glowing violet eyes under heavy brows, a flat box snout with nostril bumps and milk fangs, "
-                        "stubby grey horn plates, light grey spines from crown to tail tip, small membranous wings on "
-                        "bony finger spars and a long curling tail."
+        "description": ("The Winterworks baby Dragonling: a chubby young Ender Dragon in vanilla style: a big square "
+                        "head with flat 2 x 2 glowing violet eyes under a lid line, a flat box snout with nostril bumps "
+                        "and milk fangs, stubby grey horn plates, light grey spines from crown to tail tip, small flat "
+                        "membrane wings on bony finger spars and a long curling tail."
                         if not teen else
-                        "The Winterworks teen Dragonling: a lean, rideable young Ender Dragon: black scales, a long "
-                        "flat box snout with nostril bumps and teeth over a separate jaw, swept-back horn plates, "
-                        "glowing violet eyes, light grey spines from crown to tail tip, big membranous wings on bony "
-                        "finger spars folded at rest, a long spined tail, a saddle the renderer can hide, and "
-                        "transparent armour shells that the armour textures paint.")
-        + " Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+                        "The Winterworks teen Dragonling: a lean, rideable young Ender Dragon in vanilla style: black "
+                        "scales, a long flat box snout with nostril bumps and teeth over a separate jaw, swept-back "
+                        "horn plates, flat 3 x 2 glowing violet eyes, light grey spines from crown to tail tip, big "
+                        "flat membrane wings on bony finger spars folded at rest, a long spined tail, a saddle the "
+                        "renderer can hide, and transparent armour shells that the armour textures paint.")
+        + " Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
         "author": "lowpix example", "license": "CC0-1.0",
         "density": DENSITY,
-        "budget": {"tris": 2400 if teen else 1500, "colors": 128},
-        "light": LIGHT,
-        "brush": BRUSH,
+        "budget": {"tris": 1400 if teen else 800, "colors": 96},
+        "light": LIGHT_D,
         "minecraft": {"fps": 24, "glow_ramps": ["eyeglow"]},
         "anim_ground_tolerance": 0.3,
         "render": {"background": "#8f9a86", "hero": [36, 20], "shadow": 0.5},
@@ -613,6 +494,7 @@ def build(kind):
         "animations": {},
     }
     return spec, R, feet
+
 
 
 # ======================================================================= animation
@@ -794,10 +676,10 @@ def animate(spec, R, teen):
 def armor_style(metal):
     """Plate armour over the shells: polished plates, lighter on top, a recessed groove inset from the edges, rivets
     at the corners, a dark outline, wet highlight dashes; diamond is cut into bevelled facets instead of riveted."""
-    tone = {"iron": 5.6, "gold": 6.2, "diamond": 5.8}[metal]
+    tone = {"iron": 5.0, "gold": 4.8, "diamond": 5.2}[metal]
     layers = [{"id": "sky", "op": "gradient", "axis": "y", "amount": -1.0},
               {"id": "temper", "op": "noise", "scale": 2.0, "amount": 0.35},
-              {"id": "groove", "op": "panel", "inset": 2, "shift": -1.8, "highlight": 1.8, "shadow": -1.8,
+              {"id": "groove", "op": "panel", "inset": 1, "shift": -1.4, "highlight": 1.4, "shadow": -1.4,
                "min_size": 6},
               {"id": "gloss", "op": "gloss", "post": True, "dash": True, "length": 3, "inset": 1, "density": 0.8,
                "shift": 2.6}]
@@ -805,11 +687,11 @@ def armor_style(metal):
         layers.insert(2, {"id": "facets", "op": "patches", "scale": 1.4, "threshold": 0.5, "shift": 1.6,
                           "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.6, "highlight_shift": 1.8}})
     else:
-        layers.append({"id": "rivets", "op": "rivets", "inset": 1, "spacing": 5, "highlight": 2.6, "shadow": -2.6,
+        layers.append({"id": "rivets", "op": "rivets", "inset": 1, "spacing": 4, "highlight": 2.6, "shadow": -2.6,
                        "min_size": 5})
         layers.append({"id": "chips", "op": "wear", "width": 1, "density": 0.12, "shift": -2.4})
     return {"ramp": metal, "tone": tone, "light": 0.9, "dither": 0.0,
-            "rim": {"light": 1, "dark": 1, "light_shift": 2.6, "dark_shift": -2.0, "outline": "dark"},
+            "rim": {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.6, "outline": "dark"},
             "brush": {"off": True}, "layers": layers}
 
 
