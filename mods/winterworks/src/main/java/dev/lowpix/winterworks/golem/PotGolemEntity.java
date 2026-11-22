@@ -1063,7 +1063,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
      */
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        boolean head = !level().isClientSide && hasPot() && isHeadshot(source);
+        boolean head = !level().isClientSide && amount > 0f && hasPot() && isHeadshot(source);
         boolean hit = super.hurt(source, head ? amount * 2f : amount);
         if (hit && !level().isClientSide && isAlive() && hasPot()) {
             if (head) {
@@ -1091,14 +1091,14 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
     /**
      * Did this hit land on the pot? Projectiles by where they strike (their path this tick against the hitbox, as
      * vanilla finds the hit: the box grown by 0.3); melee by where the attacker is looking (its view ray, within reach
-     * plus a block, meets the head box before the body). Blasts and other damage never do.
+     * plus a block, meets the head box before the body). Blasts, splashes, thorns and other damage never do.
      */
     public boolean isHeadshot(DamageSource source) {
         if (source.is(DamageTypeTags.IS_EXPLOSION) || !hasPot()) {
             return false;
         }
         Entity direct = source.getDirectEntity();
-        if (direct instanceof Projectile p) {
+        if (direct instanceof Projectile p && source.is(DamageTypeTags.IS_PROJECTILE)) {
             Vec3 at = p.getBoundingBox().getCenter(), v = p.getDeltaMovement();
             AABB hitBox = getBoundingBox().inflate(0.3);
             Vec3 point = hitBox.clip(at.subtract(v), at.add(v.scale(2))).orElse(null);
@@ -1108,7 +1108,9 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
             }
             return point.y >= getY() + HEAD_FROM;
         }
-        if (direct instanceof LivingEntity attacker && direct == source.getEntity()) {
+        if (direct instanceof LivingEntity attacker && direct == source.getEntity() && (source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK)
+                || source.is(net.minecraft.world.damagesource.DamageTypes.MOB_ATTACK)
+                || source.is(net.minecraft.world.damagesource.DamageTypes.MOB_ATTACK_NO_AGGRO))) {
             Vec3 eye = attacker.getEyePosition(), look = attacker.getViewVector(1.0f);
             double reach = (attacker instanceof Player pl ? pl.entityInteractionRange() : 3.0) + 1.0;
             Vec3 end = eye.add(look.scale(reach));

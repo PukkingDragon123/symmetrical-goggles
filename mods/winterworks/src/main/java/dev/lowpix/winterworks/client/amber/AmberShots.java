@@ -249,9 +249,41 @@ public final class AmberShots {
         at(t += 4, () -> shot("amberwood_house_hotbar", false));
         at(t += 4, () -> cmd("tp @s 70.5 -58.5 13.5 160 22"));
         at(t += 40, () -> shot("amberwood_boats_and_signs", true));
-        at(t += 4, () -> cmd("tp @s 73.0 -58.2 10.5 180 32"));
+        // a boat put on the pond from the hotbar (BoatItem#use: the player looks at the water)
+        at(t += 4, () -> cmd("tp @s 72.5 -60 9.5 180 50"));
+        at(t += 10, () -> {
+            Minecraft mc = Minecraft.getInstance();
+            mc.player.getInventory().selected = 7;
+            mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND);
+        });
+        at(t += 4, () -> cmd("tp @s 73.0 -58.2 11.5 180 32"));
         at(t += 40, () -> shot("amberwood_boats", true));
+        // signs open their editors when placed, like vanilla's (the hanging one with the art's gui/hanging_signs texture)
+        at(t += 4, () -> cmd("tp @s 60.5 -60 10.5 180 -20"));
+        at(t += 10, () -> use(5, new BlockPos(60, -61, 9), Direction.UP));
+        at(t += 10, () -> type("Amberwood"));
+        at(t += 10, () -> shot("amberwood_sign_editor", false));
+        at(t += 4, () -> Minecraft.getInstance().setScreen(null));
+        at(t += 10, () -> use(6, new BlockPos(61, -56, 8), Direction.DOWN));
+        at(t += 10, () -> type("Hanging"));
+        at(t += 10, () -> shot("amberwood_hanging_sign_editor", false));
+        at(t += 4, () -> Minecraft.getInstance().setScreen(null));
+        at(t += 10, () -> cmd("tp @s 61.0 -59.4 13.5 180 -8"));
+        at(t += 30, () -> shot("amberwood_signs_written", true));
         return t;
+    }
+
+    /** Types into the open sign editor, a key at a time. */
+    private static void type(String text) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen == null) {
+            Winterworks.LOG.warn("ambershots: no sign editor open");
+            return;
+        }
+        Winterworks.LOG.info("ambershots: editor {}", mc.screen.getClass().getSimpleName());
+        for (char c : text.toCharArray()) {
+            mc.screen.charTyped(c, 0);
+        }
     }
 
     private static void hotbar(String... items) {
@@ -267,19 +299,19 @@ public final class AmberShots {
             cmd("fill 86 -61 -2 104 -61 10 minecraft:smooth_sandstone");
             String[] inc = {"none", "seed", "mosquito"};
             for (int i = 0; i < 3; i++) {
-                cmd(String.format(Locale.ROOT, "setblock %d -60 2 winterworks:amber_block[inclusion=%s]", 91 + i * 2, inc[i]));
+                cmd(String.format(Locale.ROOT, "setblock %d -60 9 winterworks:amber_block[inclusion=%s]", 91 + i * 2, inc[i]));
             }
             for (int d = 0; d < 4; d++) {
-                cmd(String.format(Locale.ROOT, "setblock %d -60 5 winterworks:amber_sand[dusted=%d]", 90 + d * 2, d));
-                cmd(String.format(Locale.ROOT, "setblock %d -60 7 winterworks:amber_gravel[dusted=%d]", 90 + d * 2, d));
-                cmd(String.format(Locale.ROOT, "setblock %d -60 9 winterworks:amber_fossil[dusted=%d]", 90 + d * 2, d));
+                cmd(String.format(Locale.ROOT, "setblock %d -60 7 winterworks:amber_sand[dusted=%d]", 90 + d * 2, d));
+                cmd(String.format(Locale.ROOT, "setblock %d -60 5 winterworks:amber_gravel[dusted=%d]", 90 + d * 2, d));
+                cmd(String.format(Locale.ROOT, "setblock %d -60 2 winterworks:amber_fossil[dusted=%d]", 90 + d * 2, d));
             }
-            cmd("setblock 98 -60 5 minecraft:suspicious_sand");
-            cmd("setblock 98 -60 7 minecraft:suspicious_gravel");
-            cmd("summon minecraft:item 97 -59.5 2.5 {Item:{id:\"winterworks:amber_shard\",count:3},PickupDelay:32767,Age:-32768}");
+            cmd("setblock 98 -60 7 minecraft:suspicious_sand");
+            cmd("setblock 98 -60 5 minecraft:suspicious_gravel");
+            cmd("summon minecraft:item 97 -59.5 9.5 {Item:{id:\"winterworks:amber_shard\",count:3},PickupDelay:32767,Age:-32768}");
             hotbar("winterworks:amber_shard", "winterworks:amber_block", "winterworks:amber_sand", "winterworks:amber_gravel",
                     "winterworks:amber_fossil", "minecraft:brush");
-            cmd("tp @s 94.5 -57.0 11.5 180 34");
+            cmd("tp @s 94.5 -57.3 13.5 180 28");
         });
         at(t += 80, () -> shot("amber_blocks_sand_gravel", true));
         at(t += 4, () -> shot("amber_items_hotbar", false));
