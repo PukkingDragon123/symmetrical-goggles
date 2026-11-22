@@ -8,7 +8,8 @@ import os
 FUR = ["fur_hood", "fur_coat", "fur_leggings", "fur_boots"]
 
 # Vanilla item/handheld (+ item/generated) display transforms: FangDaggerRenderer lays the 3D dagger along the sprite
-# diagonal, so it is held like a sword in either hand. GUI stays identity: it draws the 2D icon there.
+# diagonal, so it is held like a sword in either hand, first person included (0.4 fixes). GUI stays identity: the
+# renderer poses its own 3D icon there.
 HANDHELD = {
     "gui": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
     "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
@@ -16,9 +17,8 @@ HANDHELD = {
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
     "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]},
     "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]},
-    # first person draws the icon model (parent item/handheld), which brings its own vanilla handheld pose
-    "firstperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
-    "firstperson_lefthand": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
+    "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
+    "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
 }
 
 
@@ -63,8 +63,8 @@ def tags(ctx):
 
 def lang(ctx):
     ctx.write(os.path.join(ctx.L, "dagger.json"), {
-        "item.winterworks.fang_dagger": "Fang Dagger",
-        "item.winterworks.fang_dagger.tip": "One in each hand: a frenzy of quick alternating hits, until you tire",
+        "item.winterworks.fang_dagger": "Fang Daggers",
+        "item.winterworks.fang_dagger.tip": "A dagger in each hand (keep your off hand free): left click strikes left, right click strikes right",
         "item.winterworks.fang_dagger.tip2": "Sneak + jump to pounce. Tired? A falling hit is a Fang Crit (2x, Frostbite)",
         "item.winterworks.polar_bear_fur": "Polar Bear Fur",
         "item.winterworks.fur_hood": "Fur Hood",

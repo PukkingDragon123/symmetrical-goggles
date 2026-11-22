@@ -32,7 +32,8 @@
     "FoodDataMixin",
     "HexedPlayerMixin",
     "endboss.EnderDragonMixin",
-    "endmob.EffectParticlesAccessor"
+    "endmob.EffectParticlesAccessor",
+    "DaggerSwingMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -41,7 +42,11 @@
     "client.endboss.EndSkyMixin",
     "client.endboss.EndFogMixin",
     "client.endboss.EclipseLightMixin",
-    "endmob.EndGlowLightMixin"
+    "endmob.EndGlowLightMixin",
+    "client.DaggerMinecraftMixin",
+    "client.DaggerHandRendererMixin",
+    "client.DaggerItemInHandLayerMixin",
+    "client.DaggerPlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

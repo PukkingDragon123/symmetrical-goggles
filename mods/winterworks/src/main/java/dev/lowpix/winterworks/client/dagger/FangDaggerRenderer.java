@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.lowpix.winterworks.Winterworks;
 import dev.lowpix.winterworks.client.render.WWModel;
+import dev.lowpix.winterworks.dagger.FangDaggerItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -29,16 +30,17 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 /**
- * The Fang Dagger: the lowpix model {@code fang_dagger} (bone {@code dagger}) in hand, on the ground and in item
- * frames; the 2D icon {@code item/fang_dagger} in the GUI.
+ * The Fang Dagger: the lowpix model {@code fang_dagger} (bone {@code dagger}) everywhere: in first and third person
+ * (the pair draws one in each hand: mixin.client.DaggerHandRendererMixin), on the ground, in item frames and as the
+ * inventory icon.
  *
  * <p>The model is fitted to the vanilla handheld layout, so the item model's display transforms (vanilla
  * {@code item/handheld}'s) hold it like a sword in either hand: its long axis is laid along the sprite diagonal with
  * the blade up and to the right, the grip centred where a sword's handle is, and it is scaled to 17 px long. The grip
  * is found from parts named grip/handle/hilt (else pommel, else the lower end of the model); the blade's curve stays
- * in the sprite plane. In first person each frenzy strike flicks the striking dagger, and while the frenzy is ready
- * a faint frost shimmer plays over both daggers (brighter for a moment when they recharge). If the model is missing,
- * the flat icon is held instead.
+ * in the sprite plane. In first person each strike snaps that hand's dagger through a cut, and while the frenzy is
+ * ready a faint frost shimmer plays over both daggers (brighter for a moment when they recharge). If the model is
+ * missing, the flat icon is held instead.
  */
 public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
     public static final ResourceLocation ICON_MODEL = Winterworks.id("item/fang_dagger_icon");
@@ -67,24 +69,24 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
         Minecraft mc = Minecraft.getInstance();
         boolean gui = mode == ItemDisplayContext.GUI;
         WWModel<Entity> m = model();
-        if (mode.firstPerson()) {   // in first person, the crisp pixel-art dagger held like a vanilla blade
-            icon(mc, stack, mode, pose, buffers, light, overlay);
-            return;
-        }
         if (fit == null) {   // no 3D model: hold the flat icon like a sword
-            icon(mc, stack, ItemDisplayContext.NONE, pose, buffers, light, overlay);
+            icon(mc, stack, mode.firstPerson() ? mode : ItemDisplayContext.NONE, pose, buffers, light, overlay);
             return;
         }
         float partial = mc.getTimer().getGameTimeDeltaPartialTick(false);
         float now = (mc.level == null ? 0 : mc.level.getGameTime()) + partial;
         LocalPlayer player = mc.player;
         boolean firstPerson = mode.firstPerson() && player != null;
-        InteractionHand hand = hand(mode, player);
-        float kick = 0f;
-        if (firstPerson) {   // a quick flick of the dagger that just struck
-            float since = DaggerClient.sinceStrike(hand, now);
-            if (since >= 0f && since < 4f) {
-                kick = (1f - since / 4f) * (1f - since / 4f);
+        HumanoidArm arm = arm(mode);
+        InteractionHand hand = player == null ? InteractionHand.MAIN_HAND : FangDaggerItem.handFor(player, arm);
+        float kick = 0f, cut = 0f;
+        if (firstPerson) {   // the dagger that just struck snaps through its cut: a fast slash out, then it eases back
+            float since = DaggerClient.sinceStrike(arm, now);
+            if (since >= 0f && since < 6f) {
+                float t = since / 6f;
+                cut = t < 0.3f ? t / 0.3f : 1f - (t - 0.3f) / 0.7f;
+                cut = cut * cut * (3f - 2f * cut);   // smoothstep: snappy in, soft out
+                kick = (1f - t) * (1f - t);
             }
         }
 
@@ -97,7 +99,11 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
             pose.translate(-0.5f, -0.5f, -0.5f);
         }
         pose.translate(GRIP_AT.x, GRIP_AT.y, GRIP_AT.z);
-        pose.mulPose(Axis.ZP.rotationDegrees(-45f - kick * 28f));
+        if (cut > 0f) {   // in item space: the blade sweeps across (sprite plane) and its edge rolls into the cut
+            pose.mulPose(Axis.XP.rotationDegrees(-cut * 25f));
+            pose.mulPose(Axis.YP.rotationDegrees(cut * 30f));
+        }
+        pose.mulPose(Axis.ZP.rotationDegrees(-45f - kick * 20f - cut * 40f));
         pose.scale(fit.scale, fit.scale, fit.scale);
         pose.mulPose(fit.orient);
         pose.translate(-fit.grip.x, -fit.grip.y, -fit.grip.z);
@@ -131,11 +137,10 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
         pose.popPose();
     }
 
-    /** Which hand a display context is for (the off hand is the left one for right-handed players). */
-    private static InteractionHand hand(ItemDisplayContext mode, @Nullable LocalPlayer player) {
+    /** Which side a display context is for. */
+    private static HumanoidArm arm(ItemDisplayContext mode) {
         boolean left = mode == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || mode == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
-        HumanoidArm arm = left ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
-        return player == null || arm == player.getMainArm() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        return left ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
     }
 
     // ------------------------------------------------------------------------------------------------ fitting
