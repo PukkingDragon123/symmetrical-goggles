@@ -59,6 +59,9 @@ public final class WinterworksClient implements ClientModInitializer {
         dev.lowpix.winterworks.client.dagger.DaggerClient.init();
         dev.lowpix.winterworks.client.amber.AmberClient.init();
         dev.lowpix.winterworks.client.golem.GolemClient.init();
+        dev.lowpix.winterworks.client.hex.HexClient.init();
+        dev.lowpix.winterworks.client.curse.CurseClient.init();
+        dev.lowpix.winterworks.client.nether.NetherClient.init();
         ShowcaseDirector.init();
     }
 }

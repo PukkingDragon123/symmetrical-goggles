@@ -77,6 +77,18 @@ public final class WWBlocks {
                     .noOcclusion().randomTicks().sound(SoundType.SLIME_BLOCK).replaceable()
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
 
+    public static final Block AMBERWOOD_BLOOM = reg("amberwood_bloom", new dev.lowpix.winterworks.amber.AmberwoodBloomBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWERING_AZALEA_LEAVES).noCollission().noOcclusion().lightLevel(s -> 7)
+                    .mapColor(net.minecraft.world.level.material.MapColor.GOLD)));
+
+    // ---- Hexes & Havoc (docs/HEXES_UPDATE.md)
+    public static final Block ELIXIR_JAR = reg("elixir_jar", new dev.lowpix.winterworks.hex.ElixirJarBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).lightLevel(s -> 5).noOcclusion()));
+    public static final Block SOUL_TANK = reg("soul_tank", new dev.lowpix.winterworks.hex.SoulTankBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK).noOcclusion().lightLevel(s -> 8)));
+    public static final Block HEXING_TABLE = reg("hexing_table", new dev.lowpix.winterworks.hex.HexingTableBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.ENCHANTING_TABLE).lightLevel(s -> 9)));
+
     public static final BlockEntityType<SnowGlobeBlockEntity> SNOW_GLOBE_BE = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id("snow_globe"),
             FabricBlockEntityTypeBuilder.create(SnowGlobeBlockEntity::new, SNOW_GLOBE).build());
@@ -85,6 +97,17 @@ public final class WWBlocks {
             Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id("frost_mauler_skull"),
                     FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.boss.FrostMaulerSkullBlockEntity::new,
                             FROST_MAULER_SKULL).build());
+
+    public static final BlockEntityType<dev.lowpix.winterworks.hex.ElixirJarBlockEntity> ELIXIR_JAR_BE = be("elixir_jar",
+            FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.hex.ElixirJarBlockEntity::new, ELIXIR_JAR).build());
+    public static final BlockEntityType<dev.lowpix.winterworks.hex.SoulTankBlockEntity> SOUL_TANK_BE = be("soul_tank",
+            FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.hex.SoulTankBlockEntity::new, SOUL_TANK).build());
+    public static final BlockEntityType<dev.lowpix.winterworks.hex.HexingTableBlockEntity> HEXING_TABLE_BE = be("hexing_table",
+            FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.hex.HexingTableBlockEntity::new, HEXING_TABLE).build());
+
+    private static <T extends net.minecraft.world.level.block.entity.BlockEntity> BlockEntityType<T> be(String n, BlockEntityType<T> t) {
+        return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id(n), t);
+    }
 
     private WWBlocks() {}
 

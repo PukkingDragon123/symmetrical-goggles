@@ -65,10 +65,7 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
     @Override
     public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
         Minecraft mc = Minecraft.getInstance();
-        if (mode == ItemDisplayContext.GUI) {
-            icon(mc, stack, mode, pose, buffers, light, overlay);
-            return;
-        }
+        boolean gui = mode == ItemDisplayContext.GUI;
         WWModel<Entity> m = model();
         if (mode.firstPerson()) {   // in first person, the crisp pixel-art dagger held like a vanilla blade
             icon(mc, stack, mode, pose, buffers, light, overlay);
@@ -92,6 +89,13 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
         }
 
         pose.pushPose();
+        if (gui) {   // the inventory icon is the 3D dagger itself, along the sword diagonal, turned a little for depth
+            pose.translate(0.5f, 0.5f, 0.5f);
+            pose.mulPose(Axis.YP.rotationDegrees(-28f));
+            pose.mulPose(Axis.XP.rotationDegrees(12f));
+            pose.scale(0.92f, 0.92f, 0.92f);
+            pose.translate(-0.5f, -0.5f, -0.5f);
+        }
         pose.translate(GRIP_AT.x, GRIP_AT.y, GRIP_AT.z);
         pose.mulPose(Axis.ZP.rotationDegrees(-45f - kick * 28f));
         pose.scale(fit.scale, fit.scale, fit.scale);

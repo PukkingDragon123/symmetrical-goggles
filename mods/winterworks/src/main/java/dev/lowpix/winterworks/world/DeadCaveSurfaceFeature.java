@@ -60,6 +60,9 @@ public class DeadCaveSurfaceFeature extends Feature<NoneFeatureConfiguration> {
             for (int dz = 0; dz < 16; dz++) {
                 int x = x0 + dx, z = z0 + dz;
                 int top = level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, x, z) - 8;
+                if (!level.getBiome(p.set(x, top + 8, z)).is(net.minecraft.tags.BiomeTags.IS_BADLANDS)) {
+                    continue;   // the Dead Caves only lie under the badlands
+                }
                 boolean biome = false;
                 for (int y = top; y >= minY; y--) {
                     if ((y & 3) == 3 || y == top) {

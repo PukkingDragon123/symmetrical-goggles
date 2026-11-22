@@ -49,6 +49,10 @@ public final class Winterworks implements ModInitializer {
         dev.lowpix.winterworks.world.Archaeology.init();
         dev.lowpix.winterworks.amber.AmberFeature.init();
         dev.lowpix.winterworks.golem.GolemFeature.init();
+        dev.lowpix.winterworks.registry.WWMenus.init();
+        dev.lowpix.winterworks.hex.HexFeature.init();
+        dev.lowpix.winterworks.curse.CurseFeature.init();
+        dev.lowpix.winterworks.nether.NetherFeature.init();
         PayloadTypeRegistry.playS2C().register(CouplingPayload.TYPE, CouplingPayload.CODEC);
         FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> {
             b.addMix(Potions.AWKWARD, WWItems.ICEBREAKER_HORN, WWEffects.RAMMING_POTION);

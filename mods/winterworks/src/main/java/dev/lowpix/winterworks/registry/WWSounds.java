@@ -110,6 +110,36 @@ public final class WWSounds {
     public static final SoundEvent BLOOD_SPLASH = reg("item.blood.splash");
     public static final SoundEvent SNIFFER_TAME = reg("entity.sniffer.tame");
 
+    // ---- Hexes & Havoc (docs/HEXES_UPDATE.md)
+    public static final SoundEvent ELIXIR_JAR_BUBBLE = reg("block.elixir_jar.bubble");
+    public static final SoundEvent ELIXIR_JAR_FILL = reg("block.elixir_jar.fill");
+    public static final SoundEvent ELIXIR_JAR_BREWED = reg("block.elixir_jar.brewed");
+    public static final SoundEvent SOUL_TANK_ABSORB = reg("block.soul_tank.absorb");
+    public static final SoundEvent SOUL_TANK_HUM = reg("block.soul_tank.hum");
+    public static final SoundEvent HEXING_TABLE_HEX = reg("block.hexing_table.hex");
+    public static final SoundEvent HEXING_TABLE_WHISPER = reg("block.hexing_table.whisper");
+    public static final SoundEvent HEXED_BOOK_WHISPER = reg("item.hexed_book.whisper");
+    public static final SoundEvent ELIXIR_DRINK = reg("item.elixir.drink");
+    public static final SoundEvent ELIXIR_OF_GREED_SHATTER = reg("item.elixir_of_greed.shatter");
+    public static final SoundEvent PIGLIN_WITCH_AMBIENT = reg("entity.piglin_witch.ambient");
+    public static final SoundEvent PIGLIN_WITCH_HICCUP = reg("entity.piglin_witch.hiccup");
+    public static final SoundEvent PIGLIN_WITCH_DRINK = reg("entity.piglin_witch.drink");
+    public static final SoundEvent PIGLIN_WITCH_BURP = reg("entity.piglin_witch.burp");
+    public static final SoundEvent PIGLIN_WITCH_RUMMAGE = reg("entity.piglin_witch.rummage");
+    public static final SoundEvent PIGLIN_WITCH_REFUSE = reg("entity.piglin_witch.refuse");
+    public static final SoundEvent PIGLIN_WITCH_CACKLE = reg("entity.piglin_witch.cackle");
+    public static final SoundEvent PIGLIN_WITCH_HURT = reg("entity.piglin_witch.hurt");
+    public static final SoundEvent PIGLIN_WITCH_DEATH = reg("entity.piglin_witch.death");
+    public static final SoundEvent PIGLIN_WITCH_TRADE = reg("entity.piglin_witch.trade");
+    public static final SoundEvent GOLDEN_PIGLIN_GROAN = reg("entity.golden_piglin.groan");
+    public static final SoundEvent GOLDEN_PIGLIN_CREAK = reg("entity.golden_piglin.creak");
+    public static final SoundEvent GOLDEN_PIGLIN_HURT = reg("entity.golden_piglin.hurt");
+    public static final SoundEvent GOLDEN_PIGLIN_DEATH = reg("entity.golden_piglin.death");
+    public static final SoundEvent TRIGGER = reg("curse.trigger");
+    public static final SoundEvent NARCISSUS = reg("curse.narcissus");
+    public static final SoundEvent ORPHEUS = reg("curse.orpheus");
+    public static final SoundEvent SIN = reg("curse.sin");
+
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
             1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);

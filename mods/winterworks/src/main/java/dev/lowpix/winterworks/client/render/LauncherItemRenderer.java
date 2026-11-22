@@ -49,14 +49,7 @@ public class LauncherItemRenderer implements BuiltinItemRendererRegistry.Dynamic
     @Override
     public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
         Minecraft mc = Minecraft.getInstance();
-        if (mode == ItemDisplayContext.GUI) {
-            BakedModel icon = mc.getModelManager().getModel(ICON_MODEL);
-            pose.pushPose();
-            pose.translate(0.5f, 0.5f, 0.5f);
-            mc.getItemRenderer().render(stack, mode, false, pose, buffers, light, overlay, icon);
-            pose.popPose();
-            return;
-        }
+
         WWModel<Entity> m = model();
         LocalPlayer player = mc.player;
         float partial = mc.getTimer().getGameTimeDeltaPartialTick(false);
@@ -152,6 +145,13 @@ public class LauncherItemRenderer implements BuiltinItemRendererRegistry.Dynamic
         }
         if (over) {
             pose.translate(Mth.sin(t * 3.7f) * 0.006f, Mth.cos(t * 4.3f) * 0.006f, 0);
+        }
+        if (mode == ItemDisplayContext.GUI) {   // the inventory icon is the 3D launcher, three-quarter view
+            pose.translate(0.5f, 0.5f, 0.5f);
+            pose.mulPose(Axis.XP.rotationDegrees(25f));
+            pose.mulPose(Axis.YP.rotationDegrees(-135f));
+            pose.scale(0.55f, 0.55f, 0.55f);
+            pose.translate(-0.5f, -0.5f, -0.5f);
         }
         pose.translate(0.5f, 1.5f, 0.5f);
         pose.scale(-1f, -1f, 1f);

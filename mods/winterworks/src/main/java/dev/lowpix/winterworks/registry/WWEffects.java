@@ -39,6 +39,13 @@ public final class WWEffects {
     public static final Holder<Potion> LONG_IMMUNITY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
             Winterworks.id("long_immunity"), new Potion("immunity", new net.minecraft.world.effect.MobEffectInstance(IMMUNITY, 1200)));
 
+    /** Hexing Table aftermath: no natural regeneration, heal with potions only (hex.HexedEffect). */
+    public static final Holder<MobEffect> HEXED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
+            Winterworks.id("hexed"), new dev.lowpix.winterworks.hex.HexedEffect());
+    /** Cursed Elixir on a Piglin: immune to zombification, a golden shimmer. */
+    public static final Holder<MobEffect> GOLDEN = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
+            Winterworks.id("golden"), new WWEffect(MobEffectCategory.BENEFICIAL, 0xF5C431));
+
     public static final Holder<Potion> RAMMING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
             Winterworks.id("ramming"), new Potion("ramming", new net.minecraft.world.effect.MobEffectInstance(RAMMING, 3600)));
     public static final Holder<Potion> LONG_RAMMING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,

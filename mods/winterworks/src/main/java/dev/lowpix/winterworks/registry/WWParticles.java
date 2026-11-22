@@ -44,6 +44,12 @@ public final class WWParticles {
     public static final SimpleParticleType CAVE_DUST = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
             Winterworks.id("cave_dust"), FabricParticleTypes.simple());
 
+    // ---- Hexes & Havoc
+    public static final SimpleParticleType HEX_RUNE = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("hex_rune"), FabricParticleTypes.simple());
+    public static final SimpleParticleType GOLD_GLINT = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("gold_glint"), FabricParticleTypes.simple());
+
     private WWParticles() {}
 
     public static void init() {}

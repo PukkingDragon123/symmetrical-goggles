@@ -67,6 +67,13 @@ public final class WWEntities {
     public static final EntityType<dev.lowpix.winterworks.golem.PotGolemEntity> POT_GOLEM = reg("pot_golem",
             EntityType.Builder.of(dev.lowpix.winterworks.golem.PotGolemEntity::new, MobCategory.MISC).sized(1.4f, 2.7f)
                     .clientTrackingRange(10));
+    // ---- Hexes & Havoc (docs/HEXES_UPDATE.md)
+    public static final EntityType<dev.lowpix.winterworks.nether.PiglinWitch> PIGLIN_WITCH = reg("piglin_witch",
+            EntityType.Builder.of(dev.lowpix.winterworks.nether.PiglinWitch::new, MobCategory.MISC).sized(0.9f, 2.0f).fireImmune()
+                    .clientTrackingRange(10));
+    public static final EntityType<dev.lowpix.winterworks.nether.GoldenPiglin> GOLDEN_PIGLIN = reg("golden_piglin",
+            EntityType.Builder.<dev.lowpix.winterworks.nether.GoldenPiglin>of(dev.lowpix.winterworks.nether.GoldenPiglin::new,
+                    MobCategory.MONSTER).sized(0.6f, 1.95f).fireImmune().clientTrackingRange(8));
 
     private WWEntities() {}
 
@@ -78,6 +85,8 @@ public final class WWEntities {
         FabricDefaultAttributeRegistry.register(ICEBREAKER, IcebreakerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(FROST_MAULER, dev.lowpix.winterworks.boss.FrostMaulerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(FROST_ZOMBIE, dev.lowpix.winterworks.bear.FrostZombie.createAttributes());
+        FabricDefaultAttributeRegistry.register(PIGLIN_WITCH, dev.lowpix.winterworks.nether.PiglinWitch.createAttributes());
+        FabricDefaultAttributeRegistry.register(GOLDEN_PIGLIN, dev.lowpix.winterworks.nether.GoldenPiglin.createAttributes());
         FabricDefaultAttributeRegistry.register(MOSQUITO, dev.lowpix.winterworks.amber.MosquitoEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(POT_GOLEM, dev.lowpix.winterworks.golem.PotGolemEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ZOMBIE_POLAR_BEAR, dev.lowpix.winterworks.bear.ZombiePolarBear.createAttributes());

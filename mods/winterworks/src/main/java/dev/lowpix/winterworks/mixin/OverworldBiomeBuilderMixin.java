@@ -29,12 +29,13 @@ public abstract class OverworldBiomeBuilderMixin {
                 Climate.Parameter.span(0.2f, 0.9f),      // depth: underground (like the other cave biomes)
                 Climate.Parameter.span(-1.0f, 1.0f),     // weirdness
                 0.0f), WWWorldgen.ICE_CAVES));
-        // the Dead Caves: under hot, dry land (deserts, badlands, savannas), a fossil desert that was a forest
+        // the Dead Caves: only under the badlands, a fossil desert that was a forest. Badlands are the hot band's
+        // eroded uplands (vanilla picks them for the hottest temperature at low erosion, inland), deserts its flats.
         consumer.accept(Pair.of(Climate.parameters(
-                Climate.Parameter.span(0.2f, 1.0f),      // temperature: warm and hot
-                Climate.Parameter.span(-1.0f, -0.1f),    // humidity: dry
-                Climate.Parameter.span(-1.0f, 0.8f),
+                Climate.Parameter.span(0.55f, 1.0f),     // temperature: the hottest band
                 Climate.Parameter.span(-1.0f, 1.0f),
+                Climate.Parameter.span(-0.11f, 0.8f),    // continentalness: inland
+                Climate.Parameter.span(-1.0f, -0.375f),  // erosion: uplands and plateaus, where badlands are
                 Climate.Parameter.span(0.2f, 0.9f),
                 Climate.Parameter.span(-1.0f, 1.0f),
                 0.0f), WWWorldgen.DEAD_CAVES));

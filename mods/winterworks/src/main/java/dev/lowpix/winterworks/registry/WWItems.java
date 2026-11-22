@@ -77,6 +77,26 @@ public final class WWItems {
             new SpawnEggItem(WWEntities.MOSQUITO, 0xC8902E, 0x3A1F1A, new Item.Properties()));
     public static final Item POT_GOLEM_SPAWN_EGG = reg("pot_golem_spawn_egg",
             new SpawnEggItem(WWEntities.POT_GOLEM, 0xE39A2D, 0x8E5A3A, new Item.Properties()));
+    public static final Item AMBERWOOD_BLOOM = reg("amberwood_bloom", new BlockItem(WWBlocks.AMBERWOOD_BLOOM, new Item.Properties()));
+    // ---- Hexes & Havoc (docs/HEXES_UPDATE.md)
+    public static final Item ELIXIR_BOTTLE = reg("elixir_bottle", new Item(new Item.Properties().stacksTo(16)));
+    public static final Item SOUL_ELIXIR = reg("soul_elixir", new dev.lowpix.winterworks.hex.ElixirItem(new Item.Properties().stacksTo(16)));
+    public static final Item ELIXIR_OF_GREED = reg("elixir_of_greed", new dev.lowpix.winterworks.hex.ElixirItem(
+            new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
+    public static final Item CURSED_ELIXIR = reg("cursed_elixir", new dev.lowpix.winterworks.hex.ElixirItem(
+            new Item.Properties().stacksTo(16).rarity(Rarity.RARE)));
+    public static final Item HEX_CORE = reg("hex_core", new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant()));
+    public static final Item HEXED_BOOK = reg("hexed_book", new dev.lowpix.winterworks.hex.HexedBookItem(new Item.Properties()
+            .stacksTo(1).rarity(Rarity.EPIC).component(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS,
+                    net.minecraft.world.item.enchantment.ItemEnchantments.EMPTY)));
+    public static final Item ELIXIR_JAR = reg("elixir_jar", new BlockItem(WWBlocks.ELIXIR_JAR, new Item.Properties()));
+    public static final Item SOUL_TANK = reg("soul_tank", new BlockItem(WWBlocks.SOUL_TANK, new Item.Properties().fireResistant()));
+    public static final Item HEXING_TABLE = reg("hexing_table", new BlockItem(WWBlocks.HEXING_TABLE,
+            new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
+    public static final Item PIGLIN_WITCH_SPAWN_EGG = reg("piglin_witch_spawn_egg",
+            new SpawnEggItem(WWEntities.PIGLIN_WITCH, 0x8E5A44, 0x3C6E5A, new Item.Properties()));
+    public static final Item GOLDEN_PIGLIN_SPAWN_EGG = reg("golden_piglin_spawn_egg",
+            new SpawnEggItem(WWEntities.GOLDEN_PIGLIN, 0xF5C431, 0xA8741A, new Item.Properties()));
     public static final Item ZOMBIE_POLAR_BEAR_SPAWN_EGG = reg("zombie_polar_bear_spawn_egg",
             new SpawnEggItem(WWEntities.ZOMBIE_POLAR_BEAR, 0xBFC7AE, 0x4E5B3D, new Item.Properties()));
 
@@ -131,6 +151,11 @@ public final class WWItems {
                         out.accept(PotionContents.createItemStack(Items.POTION, WWEffects.LONG_IMMUNITY_POTION));
                         out.accept(MOSQUITO_SPAWN_EGG);
                         out.accept(POT_GOLEM_SPAWN_EGG);
+                        out.accept(AMBERWOOD_BLOOM);
+                        for (Item i : new Item[]{ELIXIR_BOTTLE, SOUL_ELIXIR, ELIXIR_OF_GREED, CURSED_ELIXIR, ELIXIR_JAR, SOUL_TANK,
+                                HEX_CORE, HEXING_TABLE, HEXED_BOOK, PIGLIN_WITCH_SPAWN_EGG, GOLDEN_PIGLIN_SPAWN_EGG}) {
+                            out.accept(i);
+                        }
                     }).build());
 
     private WWItems() {}
