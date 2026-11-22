@@ -92,6 +92,12 @@ final class EndGearShots {
         at(t += 10, () -> shot("shield_first_person"));
         at(t += 2, () -> select(2));
         at(t += 10, () -> shot("glider_first_person_carried"));
+        at(t += 2, () -> {
+            camera(CameraType.THIRD_PERSON_FRONT);
+            look(-150f, 10f);
+        });
+        at(t += 10, () -> shot("glider_carried_third_person"));
+        at(t += 2, () -> camera(CameraType.FIRST_PERSON));
 
         // ---- the shield blocking, seen from the front
         // ... next to a vanilla shield, for the pose

@@ -36,7 +36,7 @@ import org.joml.Vector3f;
  */
 public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
     /** Wingspan in blocks: overhead in flight, carried in a hand, in first person. */
-    private static final float SPAN_OVERHEAD = 2.2f, SPAN_CARRIED = 1.05f, SPAN_FIRST_PERSON = 1.15f;
+    private static final float SPAN_OVERHEAD = 2.2f, SPAN_CARRIED = 1.3f, SPAN_FIRST_PERSON = 1.15f;
     @Nullable private static GearModel model;
 
     static GearModel model() {
