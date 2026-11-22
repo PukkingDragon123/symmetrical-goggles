@@ -16,7 +16,10 @@ Shapes (vanilla RailShape values; the blockstate rotates these three models):
                                                                   ascending_south (y 180), ascending_west (y 270)
   coaster_rail_corner     joins the south and east edges         south_east (y 0), south_west (y 90),
                                                                   north_west (y 180), north_east (y 270)
-The ties carry tintindex 0 (the rail's paint colour, oak brown when unpainted: express/RailPaint#tint).
+  coaster_rail_loop_segment  for the Coaster Loop: 19.6 px of track centred on (8, 8, 8), running along z, the ride
+                              surface (rail tops) in the plane y = 8 facing +y; turn +y toward the loop's centre
+The ties carry tintindex 0 (the rail's paint colour, oak brown when unpainted: express/RailPaint#tint). Every box is
+closed (end caps, undersides), so the pieces read from any side, upside down at the top of a loop included.
 
 Textures are hand-placed ASCII grids like winterworks_art.py ('.' never occurs: they are opaque).
 """
@@ -172,25 +175,30 @@ def element(lo, hi, tex, rot=None, tint=False, faces="all", band=(0, 16)):
     return e
 
 
-def straight_elements(yoff=0.0, zlen=16.0, zscale=1.0, rot=None):
-    """The straight piece along z, optionally lifted by yoff, stretched to zlen and rotated (the ascending piece)."""
+def straight_elements(yoff=0.0, zlen=16.0, zscale=1.0, rot=None, spine_len=None, ties=None):
+    """The straight piece along z, optionally lifted by yoff, stretched to zlen and rotated (the ascending piece).
+    Every box is closed (end caps included), so the piece reads from any side: upside down at the top of a loop, from
+    inside it, from below. spine_len: a longer girder (the outside of a loop needs it); ties: tie centres along z."""
     zc = 8.0
     z0, z1 = zc - zlen / 2, zc + zlen / 2
+    sl = spine_len or zlen
+    s0, s1 = zc - sl / 2, zc + sl / 2
+    tie_zs = ties if ties is not None else [zc + (z - zc) * zscale for z in TIE_Z]
+    ends = ["north", "south", "east", "west", "up", "down"]
     els = []
     for x in RAIL_X:
         els.append(element((x - RAIL_W / 2, RAIL_Y[0] + yoff, z0), (x + RAIL_W / 2, RAIL_Y[1] + yoff, z1),
-                           "rail", rot, band=(1, 8), faces=["east", "west", "up", "down"]))
-    for z in TIE_Z:
-        zz = zc + (z - zc) * zscale
+                           "rail", rot, band=(1, 8), faces=ends))
+    for zz in tie_zs:
         els.append(element((8 - TIE_HALF, TIE_Y[0] + yoff, zz - TIE_W / 2), (8 + TIE_HALF, TIE_Y[1] + yoff, zz + TIE_W / 2),
                            "ties", rot, tint=True))
         els.append(element((8 - BRACKET_HALF, BRACKET_Y[0] + yoff, zz - BRACKET_W / 2),
                            (8 + BRACKET_HALF, BRACKET_Y[1] + yoff, zz + BRACKET_W / 2), "bracket", rot,
                            faces=["north", "south", "east", "west", "down"]))
-    els.append(element((8 - SPINE_HALF, SPINE_Y[0] + yoff, z0), (8 + SPINE_HALF, SPINE_Y[1] + yoff, z1), "spine",
-                       rot, faces=["east", "west", "up", "down"]))
-    els.append(element((8 - FLANGE_HALF, FLANGE_Y[0] + yoff, z0), (8 + FLANGE_HALF, FLANGE_Y[1] + yoff, z1), "rail",
-                       rot, band=(8, 16), faces=["east", "west", "up", "down"]))
+    els.append(element((8 - SPINE_HALF, SPINE_Y[0] + yoff, s0), (8 + SPINE_HALF, SPINE_Y[1] + yoff, s1), "spine",
+                       rot, faces=ends))
+    els.append(element((8 - FLANGE_HALF, FLANGE_Y[0] + yoff, s0), (8 + FLANGE_HALF, FLANGE_Y[1] + yoff, s1), "rail",
+                       rot, band=(8, 16), faces=ends))
     return els
 
 
@@ -203,6 +211,13 @@ def model(elements):
 
 
 MODELS["coaster_rail_straight"] = model(straight_elements())
+# a loop segment for the Coaster Loop (a vertical loop drawn from ~16 of these round a circle): 19.6 px of rail
+# (1.225 blocks), centred on the model's centre (8, 8, 8), running along z; the rail tops (the ride surface) lie in
+# the plane y = 8 and face +y (turn +y toward the loop's centre: the rails are on the inside face), the girder below.
+# The girder is longer (22.4 px) than the rails so the outside of a loop closes up without wedge gaps.
+LOOP_RAIL = 19.6
+MODELS["coaster_rail_loop_segment"] = model(straight_elements(
+    yoff=8.0 - RAIL_Y[1], zlen=LOOP_RAIL, spine_len=22.4, ties=[8 + d for d in (-8, -4, 0, 4, 8)]))
 # ascending: the straight piece lifted 8 px and stretched to the slope length (16 * sqrt 2), then turned 45 degrees
 # about x round its middle (8, 10, 8), so the rail tops run from 2 px at the south edge to 18 px at the north
 SLOPE = 16 * math.sqrt(2)
@@ -332,27 +347,34 @@ def preview(dst, scenes):
     tex = {k: np.array(v.convert("RGBA"), dtype=float) for k, v in OUT.items()}
     W, H, S = 520, 420, 9.0
     sheets = []
-    for title, items in scenes:
+    for scene in scenes:
+        title, items = scene[:2]
+        view = scene[2] if len(scene) > 2 else {}
         img = np.zeros((H, W, 3)) + np.array([150, 185, 215])
         zbuf = np.full((H, W), -1e9)
         ax = math.radians(30)
+        sc, cy, cz = view.get("scale", S), view.get("cy", 0.45), view.get("lift", 0.0)
 
         def proj(p):
             x, y, z = p
             sx = (x - z) * math.cos(ax)
-            sy = -(y) + (x + z) * math.sin(ax)
+            sy = -(y - cz) + (x + z) * math.sin(ax)
             depth = x + z + y * 0.01
-            return W / 2 + sx * S, H * 0.45 + sy * S, depth
+            return W / 2 + sx * sc, H * cy + sy * sc, depth
 
-        for name, yrot, (bx, by, bz), tint in items:
+        for item in items:
+            name, yrot, (bx, by, bz), tint = item[:4]
+            # optional: (x rotation about the model centre, then a pixel offset), e.g. a loop segment
+            xrot, (dx, dy, dz) = item[4] if len(item) > 4 else (0, (0, 0, 0))
+            spin = {"origin": [8, 8, 8], "axis": "x", "angle": xrot} if xrot else None
             for e in MODELS[name]["elements"]:
                 lo, hi = e["from"], e["to"]
                 corners = {}
                 for i, x in enumerate((lo[0], hi[0])):
                     for j, y in enumerate((lo[1], hi[1])):
                         for k, z in enumerate((lo[2], hi[2])):
-                            p = _turn_y(_rot((x, y, z), e.get("rotation")), yrot)
-                            corners[(i, j, k)] = (p[0] + bx * 16, p[1] + by * 16, p[2] + bz * 16)
+                            p = _turn_y(_rot(_rot((x, y, z), e.get("rotation")), spin), yrot)
+                            corners[(i, j, k)] = (p[0] + bx * 16 + dx, p[1] + by * 16 + dy, p[2] + bz * 16 + dz)
                 quads = {"up": [(0, 1, 0), (1, 1, 0), (1, 1, 1), (0, 1, 1)], "down": [(0, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 1)],
                          "north": [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)], "south": [(0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)],
                          "west": [(0, 0, 0), (0, 0, 1), (0, 1, 1), (0, 1, 0)], "east": [(1, 0, 0), (1, 0, 1), (1, 1, 1), (1, 1, 0)]}
@@ -437,6 +459,11 @@ def main():
             ("straight, corner, ascending, straight (floating)", track),
             ("painted red", [(n, r, o, red) for n, r, o, _ in track]),
             ("one straight piece", [("coaster_rail_straight", 0, (0, 0, 0), oak)]),
+            # a vertical loop of radius 3 blocks to the ride surface: 16 loop segments, +y turned to the centre
+            ("loop: 16 loop segments, radius 3", [
+                ("coaster_rail_loop_segment", 0, (0, -2, 0), red, (-22.5 * k, (0, 48 * (1 - math.cos(math.radians(
+                    22.5 * k))), 48 * math.sin(math.radians(22.5 * k))))) for k in range(16)],
+             {"scale": 2.6, "cy": 0.6, "lift": 0}),
         ]))
 
 
