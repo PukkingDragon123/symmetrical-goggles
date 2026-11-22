@@ -1,7 +1,8 @@
 """Data for the Soul Bull (docs/FIXES_0_4.md "The Soul Bull"): the Soul Bull Skull (blockstate, block and 3D item
-models, loot), the Soul Bull (spawn egg model, loot: its skull and 1-3 Wither Bones), the Wither Bone's item model,
-tags (undead, pickaxe-mineable skull) and lang/soulbull.json. The biome spawn and the Wither Skeleton's Wither Bone are
-added in code (soulbull.SoulBullFeature); the sounds are mapped in tools/sound_map.json.
+models, loot), the Soul Bull (spawn egg model, loot: its skull and 1-3 Wither Bones), tags (undead, pickaxe-mineable
+skull) and lang/soulbull.json. The biome spawn and the Wither Skeleton's Wither Bone are added in code
+(soulbull.SoulBullFeature); the sounds are mapped in tools/sound_map.json. The Wither Bone's own item model and name
+come from data_hex.py.
 Called by gen_data.py with ctx = gen_data.Ctx."""
 import os
 
@@ -38,7 +39,6 @@ def run(ctx):
 
     # ---- the bull
     ctx.write(itm("soul_bull_spawn_egg"), {"parent": "minecraft:item/template_spawn_egg"})
-    ctx.write(itm("wither_bone"), {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/wither_bone"}})
     loot(ctx, "entities/soul_bull", "minecraft:entity", [
         {"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"{M}:soul_bull_skull"}]},
         {"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"{M}:wither_bone", "functions": [
@@ -57,7 +57,6 @@ def run(ctx):
         "item.winterworks.soul_bull_spawn_egg": "Soul Bull Spawn Egg",
         "block.winterworks.soul_bull_skull": "Soul Bull Skull",
         "block.winterworks.soul_bull_skull.tip": "Set it on soul sand in a ring of soul fire, then give it Wither Bones",
-        "item.winterworks.wither_bone": "Wither Bone",
         "message.winterworks.soul_bull_skull.cold": "The skull is cold. Set it on soul sand with soul fire burning on all four sides.",
         "message.winterworks.soul_bull_skull.bones": "The bones gather round the skull: %s of %s",
         "message.winterworks.soul_bull.milk_refused": "Its soul fire burns too low to spare a drop",

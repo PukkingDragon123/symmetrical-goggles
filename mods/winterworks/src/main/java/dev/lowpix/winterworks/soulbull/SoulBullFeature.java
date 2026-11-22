@@ -25,8 +25,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 /**
  * The Soul Bull (docs/FIXES_0_4.md "The Soul Bull"): attributes, spawning in Soul Sand Valleys (herds of 1-3), the
- * Wither Skeleton's Wither Bone (25%), and the creative tab entries. Registered in WWEntities/WWBlocks/WWItems/WWSounds
- * under "0.4 fixes: Soul Bull".
+ * Wither Skeleton's Wither Bone (25%), and the creative tab entries (the bone itself is listed in WWItems' tab).
+ * Registered in WWEntities/WWBlocks/WWItems/WWSounds under "0.4 fixes: Soul Bull".
  */
 public final class SoulBullFeature {
     /** Weight among the Soul Sand Valley's monsters (skeletons 20, ghasts 50, endermen 1). */
@@ -50,8 +50,8 @@ public final class SoulBullFeature {
         });
         ResourceKey<CreativeModeTab> tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Winterworks.id("main"));
         ItemGroupEvents.modifyEntriesEvent(tab).register(entries -> {
-            for (Item i : new Item[]{WWItems.WITHER_BONE, WWItems.SOUL_BULL_SKULL, WWItems.SOUL_BULL_SPAWN_EGG}) {
-                if (entries.getDisplayStacks().stream().noneMatch(s -> s.is(i))) {   // another feature may list the bone too
+            for (Item i : new Item[]{WWItems.SOUL_BULL_SKULL, WWItems.SOUL_BULL_SPAWN_EGG}) {
+                if (entries.getDisplayStacks().stream().noneMatch(s -> s.is(i))) {
                     entries.accept(i);
                 }
             }
