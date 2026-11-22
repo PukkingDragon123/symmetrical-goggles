@@ -1,0 +1,15 @@
+{
+  "block.winterworks.ancient_ice": "Ancient Ice",
+  "block.winterworks.ancient_ice.tip": "Bitterly cold: touch it and you get Frostbite, break it and it bursts. Only Silk Touch keeps it whole.",
+  "block.winterworks.icicle": "Icicle",
+  "block.winterworks.frost_mauler_skull": "Frost Mauler Skull",
+  "block.winterworks.frost_mauler_skull.tip": "Encase it in ancient ice on all six sides, then offer it a Nether Star...",
+  "entity.winterworks.frost_mauler": "Frost Mauler",
+  "entity.winterworks.falling_icicle": "Falling Icicle",
+  "item.winterworks.frost_mauler_spawn_egg": "Frost Mauler Spawn Egg",
+  "message.winterworks.skull.encase": "The skull must be encased in ancient ice on all six sides",
+  "message.winterworks.skull.ignite": "The skull's eye flares with a cold blue light...",
+  "message.winterworks.tomb.awakening": "The ancient ice groans. Something inside it is waking up!",
+  "message.winterworks.tomb.built": "Built a frozen tomb at %s, %s, %s",
+  "message.winterworks.mauler.sealed": "It is sealed in ancient ice. Break the ice around it to wake it..."
+}

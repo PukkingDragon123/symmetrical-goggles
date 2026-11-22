@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "tip=true": {
+      "model": "winterworks:block/icicle_tip"
+    },
+    "tip=false": {
+      "model": "winterworks:block/icicle_base"
+    }
+  }
+}
