@@ -127,7 +127,11 @@ def limb(id, parent, start, end, thick, style, **kw):
     d = end - start
     L = max(1.0 / DENSITY, round(float(np.linalg.norm(d)) * DENSITY) / DENSITY)
     part(id, parent, [thick, L, thick], style, at=start, wrot=aim(d), offset=(0, -L / 2 + thick / 4, 0), **kw)
+    LEG_LEN[id] = L
     return start + d / np.linalg.norm(d) * L
+
+
+LEG_LEN, LEG_TIPS = {}, {}
 
 
 def M(v, s):
@@ -239,8 +243,8 @@ for k, (root, art, yaw, dih, off) in WINGS.items():
 
 # ======================================================================= legs: femur (leg_*), tibia (shin_*), tarsus (foot_*)
 LEGS = {  # name: (hip, knee, ankle, foot): left side, world, rest pose
-    "1": ((0.8, 3.4, 1.3), (2.4, 5.6, 3.0), (3.7, 1.7, 4.6), (4.6, 0.0, 6.4)),      # front: reaching forward
-    "2": ((1.1, 3.3, 0.3), (3.3, 5.7, 0.6), (5.0, 1.6, 0.9), (6.2, 0.0, 0.6)),      # middle: sprawled out
+    "1": ((0.8, 3.4, 1.3), (2.4, 5.6, 3.0), (3.7, 1.7, 4.6), (4.6, 0.0, 7.6)),      # front: reaching forward
+    "2": ((1.1, 3.3, 0.3), (3.3, 5.7, 0.6), (5.0, 1.6, 0.9), (6.9, 0.0, 0.3)),      # middle: sprawled out
     "3": ((0.9, 3.4, -0.8), (2.5, 5.7, -1.9), (3.4, 4.4, -5.0), (3.7, 6.6, -7.2)),  # hind: raised over the back
 }
 for k, (hip, knee, ankle, foot) in LEGS.items():
@@ -267,6 +271,8 @@ ramps = {
     "blood": ["#130309", "#260511", "#3f0819", "#5c0c1f", "#7c1226", "#9f1b2b", "#c22d30", "#e0503c", "#ff8660"],
     "amber": ["#2a0f04", "#481c06", "#6c2d08", "#91430b", "#b65d0f", "#d47c17", "#ea9c24", "#f7bf3e", "#ffe079",
               "#fff5c2"],
+    "bloodcore": ["#2e0410", "#4a0718", "#680c22", "#86132b", "#a31c31"],
+    "ambercore": ["#4a1c05", "#6e2c07", "#93420a", "#b05a0e", "#c9701a"],
 }
 light = {"dir": [-0.45, 1.0, 0.6], "strength": 0.6, "gradient": 0.5, "ao": 0.6, "ao_height": 3.0}
 brush = {"flow": "long", "length": 1.4, "width": 0.5, "rough": 0.5, "overshoot": 0.25,
@@ -279,27 +285,30 @@ SCALE_KEY = {"w": "scale:5", "W": "scale:6", "s": "chitin:3", "d": "chitin:1", "
 
 
 def swell_style(kind):
-    """A swollen belly: stretched glossy membrane, the dark back plates pushed apart into bands."""
+    """A swollen belly: stretched glossy membrane with a dark liquid core and bright edges (reads as translucent),
+    the dark back plates pushed apart into narrow bands. The core has its own ramp (`<kind>core`): in the blood
+    texture exactly those texels go to the glow layer, a faint dark-red glow from inside."""
     if kind == "empty":
         return {"ramp": "chitin", "tone": 3, "light": 0, "brush": {"off": True}, "stamps": INVISIBLE}
-    r = kind
-    top = 7.0 if kind == "amber" else 6.2
-    return {"ramp": r, "tone": top - 1.4, "light": 0.8, "brush": {"flow": "z", "length": 1.0, "rough": 0.4},
-            "rim": {"light": 1, "dark": 1, "light_shift": 2.2, "dark_shift": -1.6},
+    r, core = kind, kind + "core"
+    return {"ramp": r, "tone": 5.4 if kind == "amber" else 5.0, "light": 0.8,
+            "brush": {"flow": "z", "length": 1.0, "rough": 0.4},
+            "rim": {"light": 1, "dark": 1, "light_shift": 2.4, "dark_shift": -1.4},
             "layers": [
-                # dark core, bright edges: reads as a translucent, liquid-filled sack
-                {"id": "core", "op": "band", "axis": "x", "from": -0.5, "to": 0.5, "shift": -1.6,
-                 "faces": ["front", "back", "top", "bottom"]},
-                {"id": "core_s", "op": "band", "axis": "z", "from": -0.45, "to": 0.45, "shift": -1.2,
+                {"id": "belly", "op": "gradient", "axis": "y", "amount": -0.6},
+                {"id": "core", "op": "band", "axis": "x", "from": -0.42, "to": 0.42, "ramp": core, "tone": 2.6,
+                 "wobble": 0.12, "faces": ["front", "back", "bottom"]},
+                {"id": "core_s", "op": "band", "axis": "z", "from": -0.4, "to": 0.4, "ramp": core, "tone": 2.4,
+                 "wobble": 0.12, "faces": ["left", "right"], "where": {"y": [-0.7, 0.5]}},
+                {"id": "core_s2", "op": "band", "axis": "y", "from": -0.75, "to": 0.45, "shift": 0.0,
                  "faces": ["left", "right"]},
-                {"id": "belly", "op": "gradient", "axis": "y", "amount": -0.8},
-                # the back plates (tergites), pushed apart into dark bands with a lit lip
-                {"id": "plates", "op": "stripes", "axis": "z", "period": 1.5, "width": 0.42, "ramp": "chitin",
-                 "tone": 3.2, "range": [-0.05, 1.0], "space": "local", "faces": ["top", "left", "right"],
+                # the back plates (tergites), pushed apart into narrow dark bands with a lit lip
+                {"id": "plates", "op": "stripes", "axis": "z", "period": 1.5, "width": 0.34, "ramp": "chitin",
+                 "tone": 3.4, "faces": ["top"],
                  "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.2, "highlight_shift": 1.6}},
-                {"id": "plates_top", "op": "band", "axis": "y", "from": 0.55, "to": 1.01, "ramp": "chitin",
-                 "tone": 2.6, "faces": ["left", "right"], "wobble": 0.15},
-                {"id": "veins", "op": "cracks", "scale": 1.6, "width": 0.06, "shift": -1.4,
+                {"id": "plates_side", "op": "band", "axis": "y", "from": 0.72, "to": 1.01, "ramp": "chitin",
+                 "tone": 2.8, "faces": ["left", "right", "front", "back"], "wobble": 0.12},
+                {"id": "veins", "op": "cracks", "scale": 1.4, "width": 0.05, "shift": -1.2,
                  "faces": ["left", "right", "bottom"]},
                 dict(GLOSS, length=3, density=0.9, shift=2.6),
             ]}
@@ -355,14 +364,15 @@ def styles_for(kind):
                               {"id": "band", "op": "band", "axis": "z", "from": 0.25, "to": 0.7, "ramp": "scale",
                                "tone": 4.6}]},
         # the stylet: glossy dark red-black blade with a pale glint running to the point
-        "stylet": {"ramp": "eye", "tone": 1.6, "rim": {"light": 1, "dark": 1, "light_shift": 2.4, "dark_shift": -1.0},
+        # the stylet: a black blade with a silver glint along its top, blood-red at the point
+        "stylet": {"ramp": "chitin", "tone": 2.2, "rim": {"light": 1, "dark": 1, "light_shift": 2.4, "dark_shift": -1.0},
                    "brush": {"off": True},
-                   "layers": [{"id": "sheen", "op": "band", "axis": "z", "from": -0.2, "to": 0.75, "ramp": "eye",
-                               "tone": 3.2, "faces": ["top"]},
-                              {"id": "edge", "op": "band", "axis": "z", "from": 0.75, "to": 1.01, "ramp": "scale",
-                               "tone": 4.6, "faces": ["top", "left", "right"]}]},
-        "stylet_tip": {"ramp": "scale", "tone": 5, "light": 0, "brush": {"off": True},
-                       "art_key": {"g": "scale:4", "G": "scale:6"}},
+                   "layers": [{"id": "glint", "op": "band", "axis": "z", "from": -0.6, "to": 0.55, "ramp": "scale",
+                               "tone": 3.6, "faces": ["top"]},
+                              {"id": "point", "op": "band", "axis": "z", "from": 0.55, "to": 1.01, "ramp": "eye",
+                               "tone": 4.4, "faces": ["top", "left", "right", "bottom"]}]},
+        "stylet_tip": {"ramp": "eye", "tone": 5, "light": 0, "brush": {"off": True},
+                       "art_key": {"g": "eye:5", "G": "eye:7"}},
         # abdomen: bronze-black segments, each with a silver band at its base and pale side spots
         "abd": {"ramp": "chitin", "tone": 3.4, "rim": {"light_shift": 1.6, "dark_shift": -1.0}, "brush": {"flow": "z"},
                 "layers": [{"id": "grain", "op": "noise", "scale": 0.6, "amount": 0.6},
@@ -387,7 +397,7 @@ def styles_for(kind):
         "knee": {"ramp": "chitin", "tone": 2.0, "brush": {"off": True}, "rim": {"light_shift": 1.8, "dark_shift": -1}},
         "tibia": {"ramp": "chitin", "tone": 3.4, "brush": {"off": True},
                   "layers": [{"id": "bands", "op": "stripes", "axis": "y", "period": 1.5, "width": 0.34,
-                              "ramp": "scale", "tone": 5.0}]},
+                              "ramp": "scale", "tone": 3.6}]},
         "tarsus": {"ramp": "chitin", "tone": 3.0, "brush": {"off": True},
                    "layers": [{"id": "bands", "op": "stripes", "axis": "y", "period": 1.0, "width": 0.5,
                                "ramp": "scale", "tone": 5.4}]},
@@ -496,35 +506,37 @@ def jitter(part_, t0, t1, amp, step=0.025, axis=0, ch="rotation"):
     return {"part": part_, "channel": ch, "keys": ks, "ease": "ease"}
 
 
-def leg_pose(k, knee, ankle, foot):
-    """Pose leg pair k by points: where the knee, ankle and foot tip should be (left side, in the body's rest frame);
-    the femur, tibia and tarsus are aimed at them (their lengths stay), the right side mirrored."""
+def leg_pose(k, femur, tibia, tarsus):
+    """Pose leg pair k by aiming its femur, tibia and tarsus along world directions (left side, body rest frame;
+    lengths stay), the right side mirrored. Returns the pose; LEG_TIPS[k] gets the left foot tip (body frame)."""
     out = {}
     for s, n in ((1, "l"), (-1, "r")):
         ids = [f"leg_{n}{k}", f"shin_{n}{k}", f"foot_{n}{k}"]
-        pts = [FRAMES[ids[0]][1]] + [np.array(M(q, s), float) for q in (knee, ankle, foot)]
         Wp, R0p = np.eye(3), np.eye(3)
-        for j, pid in enumerate(ids):
+        tip = FRAMES[ids[0]][1] - FRAMES["body"][1]
+        for pid, d in zip(ids, (femur, tibia, tarsus)):
             R0 = FRAMES[pid][0]
-            Rd = aim_mat(pts[j + 1] - pts[j])
+            Rd = aim_mat(M(d, s))
             out[pid] = {"r": _euler((R0p.T @ R0).T @ Wp.T @ Rd)}
             Wp, R0p = Rd, R0
+            tip = tip + Rd @ np.array([0, -LEG_LEN[pid], 0])
+        if s > 0:
+            LEG_TIPS[k] = tip
     return out
 
 
-# hovering: knees out, the long lower legs hanging down and back, the hind pair trailing; lifted off the ground
-DANGLE = add(leg_pose(1, (2.3, 3.0, 2.6), (3.0, 0.4, 1.0), (3.2, -1.0, -0.8)),
-             leg_pose(2, (3.1, 3.0, 0.2), (3.8, 0.4, -1.6), (3.9, -0.9, -3.5)),
-             leg_pose(3, (2.3, 3.3, -2.4), (2.9, 1.4, -5.4), (3.0, 1.0, -7.9)),
+# hovering: knees out, the long lower legs hanging down and trailing back, the hind pair streaming behind
+DANGLE = add(leg_pose(1, (0.7, -0.1, 0.6), (0.15, -0.65, -0.75), (0.0, -0.3, -0.95)),
+             leg_pose(2, (0.9, -0.15, 0.0), (0.2, -0.6, -0.75), (0.05, -0.3, -0.95)),
+             leg_pose(3, (0.6, 0.1, -0.75), (0.15, -0.35, -0.95), (0.0, -0.1, -1.0)),
              both("antenna_*", -6), r("needle", -4))
-HOVER = add(DANGLE, pos("body", 0, 3.2, 0))
+HOVER = add(DANGLE, pos("body", 0, 3.0, 0))
 # fast flight: pitched nose down, legs folded back under the abdomen, antennae and needle streamlined
-FLY = add(leg_pose(1, (2.1, 2.7, 1.2), (2.5, 1.0, -2.3), (2.4, 0.2, -4.9)),
-          leg_pose(2, (2.8, 2.7, -0.2), (3.0, 1.3, -3.9), (2.8, 0.8, -6.5)),
-          leg_pose(3, (2.1, 3.0, -2.7), (2.2, 2.4, -6.6), (2.0, 2.9, -9.0)),
-          r("body", 12), pos("body", 0, 2.6, 0), r("head", -10), r("needle", -14), r("abdomen", 6), r("abdomen_1", 4),
+FLY = add(leg_pose(1, (0.6, -0.15, 0.2), (0.12, -0.35, -0.95), (0.0, -0.15, -1.0)),
+          leg_pose(2, (0.8, -0.2, -0.3), (0.08, -0.3, -0.95), (0.0, -0.1, -1.0)),
+          leg_pose(3, (0.55, 0.05, -0.8), (0.05, -0.15, -1.0), (-0.05, 0.1, -1.0)),
+          r("body", 12), pos("body", 0, 2.4, 0), r("head", -10), r("needle", -14), r("abdomen", 6), r("abdomen_1", 4),
           both("antenna_*", 14))
-
 ANIM = {}
 L = 2.0
 ANIM["idle"] = timeline(L, [(0.0, HOVER, None), (L, HOVER, None)], loop=True, extra=buzz(L) + [
@@ -563,14 +575,14 @@ ANIM["fly"] = timeline(L, [(0.0, FLY, None), (L, FLY, None)], loop=True, extra=b
 # hold, pull free. The front legs reach out to grab, the hind legs kick up.
 REAR = add(HOVER, r("body", -22), pos("body", 0, 0.8, -1.6), r("head", -6), r("needle", -10),
            r("abdomen", 24), r("abdomen_1", 16), r("abdomen_2", 14),
-           leg_pose(1, (2.6, 4.6, 2.6), (3.6, 2.6, 4.8), (4.0, 1.8, 6.6)),
-           leg_pose(2, (3.4, 4.0, 0.4), (4.6, 1.4, -0.4), (5.0, 0.2, -1.8)),
+           leg_pose(1, (0.5, 0.4, 0.6), (0.3, -0.6, 0.75), (0.15, -0.35, 0.9)),
+           leg_pose(2, (0.9, 0.25, 0.1), (0.35, -0.7, -0.35), (0.15, -0.5, -0.8)),
            both("antenna_*", -24), sc("abdomen", 0.05, 0.05, -0.03))
 LUNGE = add(HOVER, r("body", 12), pos("body", 0, 0.2, 3.0), r("head", -14), r("needle", -12),
             pos("stylet", 0, 0, 1.5), r("abdomen", -18), r("abdomen_1", -10), r("abdomen_2", -8),
-            leg_pose(1, (2.4, 4.2, 3.8), (3.0, 2.6, 7.4), (2.6, 2.2, 9.6)),
-            leg_pose(2, (3.4, 3.8, 1.2), (4.6, 2.0, 3.6), (4.8, 1.0, 5.4)),
-            leg_pose(3, (2.2, 4.0, -2.2), (2.8, 4.6, -5.6), (2.8, 6.6, -7.6)),
+            leg_pose(1, (0.35, 0.3, 0.9), (0.1, -0.2, 1.0), (-0.1, -0.15, 1.0)),
+            leg_pose(2, (0.85, 0.2, 0.45), (0.3, -0.4, 0.85), (0.1, -0.4, 0.9)),
+            leg_pose(3, (0.5, 0.4, -0.75), (0.15, 0.3, -0.95), (0.0, 0.7, -0.7)),
             both("antenna_*", 26), sc("body", -0.06, 0.08, 0.1))
 STUCK = add(LUNGE, r("body", -3), pos("body", 0, 0, -0.4), pos("stylet", 0, 0, -0.3), sc("body", 0.12, -0.16, -0.2),
             sc("abdomen", 0.08, 0.08, 0.04))
@@ -585,9 +597,9 @@ ANIM["stab"] = timeline(0.6, [(0.0, HOVER, None), (0.16, REAR, "out"), (0.22, ad
 # front legs braced on the victim, hind legs raised and swaying, wings held up in a V with a shimmer
 SIP = add(HOVER, r("body", 10), pos("body", 0, 0, 1.6), r("head", 2), r("needle", 2), pos("stylet", 0, 0, 1.0),
           r("abdomen", -12), r("abdomen_1", -6), r("abdomen_2", -4),
-          leg_pose(1, (2.4, 4.0, 3.4), (3.0, 1.4, 5.8), (2.8, 0.4, 7.4)),
-          leg_pose(2, (3.4, 3.6, 0.8), (4.4, 1.0, 2.0), (4.6, -0.2, 3.4)),
-          leg_pose(3, (2.2, 4.2, -2.0), (2.6, 5.4, -5.2), (2.4, 7.4, -6.8)),
+          leg_pose(1, (0.4, 0.3, 0.85), (0.15, -0.6, 0.8), (-0.05, -0.55, 0.8)),
+          leg_pose(2, (0.9, 0.2, 0.35), (0.35, -0.75, 0.5), (0.1, -0.6, 0.75)),
+          leg_pose(3, (0.45, 0.5, -0.7), (0.1, 0.4, -0.9), (-0.05, 0.8, -0.55)),
           both("antenna_*", 10))
 L = 1.2
 ANIM["drink"] = timeline(L, [(0.0, SIP, None), (L, SIP, None)], loop=True, extra=buzz(L, amp=8, sweep=3, bias=20) + [
@@ -605,11 +617,11 @@ ANIM["drink"] = timeline(L, [(0.0, SIP, None), (L, SIP, None)], loop=True, extra
 # spit: squeeze the abdomen (gather), rear up, a heave that snaps the head and needle down and out, recoil
 GATHER = add(HOVER, r("body", -16), pos("body", 0, 0.6, -0.8), r("head", -14), r("needle", -12), r("abdomen", 18),
              r("abdomen_1", 12), r("abdomen_2", 10), sc("abdomen", 0.16, 0.16, -0.04), sc("abdomen_1", 0.14, 0.16, 0),
-             leg_pose(1, (2.6, 4.4, 2.4), (3.4, 2.4, 4.4), (3.8, 1.4, 6.0)), both("antenna_*", -16))
+             leg_pose(1, (0.5, 0.45, 0.5), (0.3, -0.65, 0.65), (0.15, -0.45, 0.85)), both("antenna_*", -16))
 HEAVE = add(HOVER, r("body", 10), pos("body", 0, 0.2, 1.6), r("head", 0), r("needle", -8), pos("stylet", 0, 0, 0.8),
             r("abdomen", -20), r("abdomen_1", -12), r("abdomen_2", -10), sc("abdomen", -0.16, -0.14, 0.08),
             sc("abdomen_1", -0.14, -0.12, 0.06), sc("head", 0.14, 0.14, 0.1),
-            leg_pose(1, (2.6, 3.0, 2.6), (3.6, 0.4, 2.0), (3.8, -0.6, 0.6)), both("antenna_*", 24))
+            leg_pose(1, (0.7, -0.05, 0.6), (0.25, -0.75, -0.3), (0.05, -0.5, -0.85)), both("antenna_*", 24))
 ANIM["spit"] = timeline(0.6, [(0.0, HOVER, None), (0.2, GATHER, "out"), (0.25, add(GATHER, sc("abdomen", 0.04, 0.04)),
                                                                                  "ease"),
                               (0.31, HEAVE, "in"), (0.4, add(HEAVE, r("body", -6), sc("head", -0.12, -0.12, -0.08)),
@@ -632,7 +644,7 @@ spec = {
     "brush": brush,
     "minecraft": {"fps": FPS, "alpha_parts": {f"wing_{n}{k}_m": 0.8 for n in "lr" for k in "12"}},
     "anim_ground_tolerance": 0.3,
-    "render": {"background": "#241f2b", "hero": [-62, 20], "shadow": 0.5},
+    "render": {"background": "#241f2b", "hero": [118, 22], "shadow": 0.5},
     "palette": {"ramps": ramps},
     "styles": styles_for("empty"),
     "parts": P,
@@ -647,7 +659,7 @@ def variant_spec(kind):
     out["name"] = {"blood": "Mosquito Blood", "amber": "Mosquito Amber"}[kind]
     out["styles"] = styles_for(kind)
     if kind == "blood":
-        out["minecraft"] = dict(out["minecraft"], glow_ramps=["blood"])
+        out["minecraft"] = dict(out["minecraft"], glow_ramps=["bloodcore"])
     return out
 
 
