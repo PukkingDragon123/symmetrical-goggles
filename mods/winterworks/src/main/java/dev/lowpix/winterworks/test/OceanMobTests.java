@@ -134,6 +134,7 @@ public class OceanMobTests implements FabricGameTest {
         p.setGameMode(GameType.CREATIVE);   // just someone near: the light is only out while a player is
         Anglerfish f = angler(h, 2.5, 2.0, 1.5, true, false);
         BlockPos[] first = new BlockPos[1];
+        ServerPlayer[] mine = new ServerPlayer[1];
         h.startSequence()
                 .thenWaitUntil(() -> {
                     h.assertTrue(f.lightPos() != null, "the female's lure should light the water");
@@ -157,13 +158,16 @@ public class OceanMobTests implements FabricGameTest {
                 .thenIdle(4)
                 .thenExecute(() -> h.assertTrue(first[0].equals(f.lightPos()), "under a block of movement the light doesn't move"))
                 .thenExecute(() -> {
-                    p.setGameMode(GameType.SPECTATOR);
                     h.getLevel().getServer().getPlayerList().remove(p);
+                    // mock players earlier batches left behind count as near too (and a mock player is never a spectator): gone
+                    for (ServerPlayer other : level.getEntitiesOfClass(ServerPlayer.class, h.getBounds().inflate(Anglerfish.LIGHT_PLAYER_RANGE + 8))) {
+                        h.getLevel().getServer().getPlayerList().remove(other);
+                    }
                 })
                 .thenWaitUntil(() -> h.assertTrue(lightBlocks(h) == 0 && f.lightPos() == null, "no player near: the light goes out"))
                 .thenExecute(() -> {
-                    ServerPlayer q = survivor(h, 7.5, 9, 7.5, ItemStack.EMPTY);
-                    q.setGameMode(GameType.CREATIVE);
+                    mine[0] = survivor(h, 7.5, 9, 7.5, ItemStack.EMPTY);
+                    mine[0].setGameMode(GameType.CREATIVE);
                 })
                 .thenWaitUntil(() -> h.assertTrue(lightBlocks(h) == 1, "back on with a player near"))
                 .thenExecute(() -> f.kill())
@@ -180,7 +184,7 @@ public class OceanMobTests implements FabricGameTest {
                 })
                 .thenExecute(() -> {
                     h.assertTrue(lightBlocks(h) == 0, "discarded: no light left behind");
-                    cleanup(h, level.getEntitiesOfClass(ServerPlayer.class, h.getBounds().inflate(12)).toArray(new ServerPlayer[0]));
+                    cleanup(h, mine[0]);
                 })
                 .thenSucceed();
     }

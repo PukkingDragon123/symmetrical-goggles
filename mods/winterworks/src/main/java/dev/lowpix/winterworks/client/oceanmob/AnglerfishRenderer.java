@@ -51,7 +51,7 @@ public class AnglerfishRenderer extends MobRenderer<Anglerfish, AnglerfishRender
         super.setupRotations(e, pose, bob, yaw, partial, scale);
         float s = e.modelScale();
         if (!e.isInWater() && e.deathTime <= 0) {   // flopping on its side
-            pose.translate(0f, 1.15f * s, 0f);
+            pose.translate(0f, 0.8f * s, 0f);
             pose.mulPose(Axis.ZP.rotationDegrees(90f));
             return;
         }
@@ -91,9 +91,12 @@ public class AnglerfishRenderer extends MobRenderer<Anglerfish, AnglerfishRender
     public static class Model extends OceanModel<Anglerfish> {
         /** Set in setupAnim, read by the glow pass. */
         float brightness = 1f;
+        /** The lure's glow layer is there (no part is flagged glow in the export: the whole model draws it, black elsewhere). */
+        private final boolean lureGlow;
 
         Model(ModelPart root) {
             super(root, "anglerfish");
+            lureGlow = net.minecraft.client.Minecraft.getInstance().getResourceManager().getResource(glowTexture).isPresent();
         }
 
         @Override
@@ -113,7 +116,7 @@ public class AnglerfishRenderer extends MobRenderer<Anglerfish, AnglerfishRender
             boolean flashing = oneShot(e.flashState, "lure_flash", age);
             float flash = flashing ? Mth.sin(progress(e.flashState, "lure_flash") * Mth.PI) : 0f;
             brightness = lureBrightness(e, age, flash);
-            float halo = 0.75f + 0.35f * Math.min(brightness, 1.6f);
+            float halo = 1.2f + 0.5f * Math.min(brightness, 1.6f);   // the cards are small: bloom them out
             for (String h : HALOS) {
                 scalePart(h, halo, halo, halo);
             }
@@ -128,7 +131,7 @@ public class AnglerfishRenderer extends MobRenderer<Anglerfish, AnglerfishRender
         }
 
         void renderGlow(PoseStack pose, MultiBufferSource buffers) {
-            if (!hasGlow) {
+            if (!lureGlow) {
                 return;
             }
             VertexConsumer buf = buffers.getBuffer(RenderType.eyes(glowTexture));

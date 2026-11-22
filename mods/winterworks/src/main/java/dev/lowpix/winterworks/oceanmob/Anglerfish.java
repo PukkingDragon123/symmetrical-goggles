@@ -79,15 +79,15 @@ public class Anglerfish extends WaterAnimal implements Bucketable {
     public static final EntityDimensions FEMALE_SIZE = EntityDimensions.scalable(3.0f, 2.0f).withEyeHeight(1.1f);
     public static final EntityDimensions MALE_SIZE = EntityDimensions.scalable(0.4f, 0.35f).withEyeHeight(0.2f);
     /** Locators in model pixels at the female's size (lowpix: y up, +z forward, feet at y 0). */
-    public static final Vec3 MOUTH = new Vec3(0, 10.6, 8), LURE = new Vec3(0, 28.4, 17);
+    public static final Vec3 MOUTH = new Vec3(0, 10, 12), LURE = new Vec3(0, 32.8, 19.5);
     /**
      * Where a held player's eyes are: the mouth locator's height, brought forward between the fangs (a player is far taller
      * than her gape, so the head is held in the jaws and the body hangs out under the chin; from inside, the player looks
      * out between her teeth at the lure).
      */
-    public static final Vec3 HOLD = new Vec3(0, 10.6, 15);
+    public static final Vec3 HOLD = new Vec3(0, 10, 19);
     /** The body pitches about this height (model pixels). */
-    public static final double PIVOT_Y = 12.0;
+    public static final double PIVOT_Y = 16.0;
     /** Females live below this, males below {@link #MALE_DEPTH}. */
     public static final int FEMALE_DEPTH = -10, MALE_DEPTH = 20;
     public static final int HOLD_TICKS = 60;

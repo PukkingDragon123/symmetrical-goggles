@@ -62,7 +62,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Nautilus extends WaterAnimal implements OwnableEntity, Saddleable, PlayerRideableJumping {
     /** The rider locator in model pixels (lowpix: y up, +z forward). */
-    public static final Vec3 RIDER = new Vec3(0, 25.5, -3);
+    public static final Vec3 RIDER = new Vec3(0, 26, -3);
     public static final double PIVOT_Y = 12.0;
     /** Ridden: acceleration per tick at full input, the drag, the dash impulse and its cooldown (ticks). */
     public static final double RIDDEN_ACCEL = 0.05, RIDDEN_DRAG = 0.9, DASH_IMPULSE = 1.1;

@@ -35,7 +35,7 @@ public class LionfishRenderer extends MobRenderer<Lionfish, LionfishRenderer.Mod
     protected void setupRotations(Lionfish e, PoseStack pose, float bob, float yaw, float partial, float scale) {
         super.setupRotations(e, pose, bob, yaw, partial, scale);
         if (!e.isInWater() && e.deathTime <= 0) {
-            pose.translate(0f, 0.35f, 0f);
+            pose.translate(0f, 0.43f, 0f);
             pose.mulPose(Axis.ZP.rotationDegrees(90f));
             return;
         }
