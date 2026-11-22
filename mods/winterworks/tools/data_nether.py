@@ -115,6 +115,8 @@ def run(ctx):
         item("minecraft:splash_potion", 6, functions=[fire_res]), item("minecraft:book", 8, functions=[soul_speed]),
         item(f"{M}:soul_elixir", 12, (1, 3)), item(f"{M}:elixir_bottle", 8), item(f"{M}:elixir_of_greed", 3)]}])
     # ---- piglins want Cursed Elixir like gold
+    for egg in ("piglin_witch_spawn_egg", "golden_piglin_spawn_egg"):
+        ctx.write(os.path.join(ctx.A, "models", "item", egg + ".json"), {"parent": "minecraft:item/template_spawn_egg"})
     ctx.write(os.path.join(ctx.D, "minecraft", "tags", "item", "piglin_loved.json"), {"replace": False, "values": [f"{M}:cursed_elixir"]})
     # ---- assets nobody else provides yet
     subs = sounds(ctx)

@@ -29,7 +29,8 @@
     "AbstractPiglinAccessor",
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
-    "FoodDataMixin"
+    "FoodDataMixin",
+    "HexedPlayerMixin"
   ],
   "client": [
     "client.GameRendererMixin",

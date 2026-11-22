@@ -113,11 +113,58 @@ rallies wolves, the Danger sherd makes it blow itself up when almost dead. Give 
 a blade arm, a pickaxe that mines ores for you, or a bow. The pot is its weak spot: hits crack it (repair it with a
 sherd or a brick). Brush it and it giggles and sneezes the pot off, showing its dumb little face.
 
+## Hexes & Havoc
+
+Design contract: [docs/HEXES_UPDATE.md](docs/HEXES_UPDATE.md).
+
+**The Hex Fortress.** A living Nether fortress round a courtyard: nether-brick halls, towers and bridges, Nether Wart
+farms on soul sand, brewing rooms with brewing stands and Elixir Jars over soul fire, storerooms with chests, soul-fire
+braziers, a working Nether Portal, a few Piglins, a Golden Piglin in its vault, and the quarters of the one and only
+**Piglin Witch**.
+
+**The Piglin Witch.** An old, fat, half-zombified Piglin crone under a towering patched backpack. She stumbles about
+drunk, hiccups, swigs from her flask and rummages in her pack. She shakes her head and burps at you until you give
+her an **Elixir of Greed**; she drinks it, cackles, and trades for good. She sells the **Hex Core** (3 gold blocks
+and 16 Soul Elixir), elixir bottles, soul sand, wart, ghast tears and crying obsidian, and pays gold for souls.
+
+**Elixirs.** Craft an **Elixir Bottle** from 4 gold ingots and a bottle. The lantern-sized **Elixir Jar** brews only
+over heat (fire, soul fire, a campfire, lava or magma): soul sand makes **Soul Elixir** (the Hexing Table's fuel), a
+gold block makes **Elixir of Greed** (drop it near Piglins and they fight to the death for it), and soul sand in a
+jar of Greed makes **Cursed Elixir** (a Piglin that drinks it turns golden and never zombifies).
+
+**The Soul Tank and the Hexing Table.** A Soul Tank holds 1000 souls: mobs that die within 8 blocks drift in (10
+each), and Soul Elixir adds 50. The **Hexing Table** (netherite, an enchanting table, the Hex Core, crying obsidian)
+needs a tank within 3 blocks. Its soul-blue screen is written in cursed glyphs that resolve into words when you hover.
+Put an enchanted book and Soul Elixir in it and press the HEX rune:
+* **Lesser hex**: every enchantment +1 level (up to VI; anvils keep it) and one lesser curse. 1 elixir, 100 souls.
+* **Sin hex**: Fire Aspect, Fortune, Looting, Mending, Efficiency, Thorns or Protection becomes its Deadly Sin.
+  3 elixir, 300 souls.
+* Any hex has a 15% chance of a **hidden curse** that shows as scrambled text until it strikes.
+
+Hexing leaves you **Hexed** for 5, 10 or 20 minutes: no natural regeneration, so you heal only with potions. You keep
+all your hearts.
+
+**Curses.** Narcissus (stare at water and waste away), Icarus (fly too high in the sun and burn), Midas (your food
+turns to gold), Orpheus (look back and your pet is dragged under), Sisyphus (mined blocks come back), Tantalus
+(food rolls out of your hand), the Moth (drawn to light at night, even lava). Hidden: Cain (you wound your own pets),
+Judas (trades turn iron golems on you), Lot's Wife (look back while fleeing and turn to stone), the Leech (one hit in
+five heals).
+
+**The Seven Deadly Sins.** Each is a big power with a brutal curse. Wrath: soul fire, and strength while you keep
+hitting, weakness when you stop. Greed: huge ore and gold drops, but every Piglin hunts you and dropped items vanish.
+Lust: far more loot, but twice the hostile spawns, all coming for you, and neutral mobs turn on you. Gluttony: food
+repairs your gear, but hunger drains three times as fast. Sloth: instant mining, but you are always slow and nod
+off. Envy: attackers burn and you steal their buffs, but stronger foes hit you 50% harder. Pride: huge protection
+above half health, none below it, and triple fall damage.
+
+**The Golden Piglin.** A Piglin turned to solid gold: painfully slow, stiff, groaning. Other Piglins kill it for its
+gold (2-4 gold blocks); it barters much better loot.
+
 ## Building and testing
 
 ```bash
 ./gradlew build                 # the mod jar in build/libs
-./gradlew runGametest           # headless GameTests (88)
+./gradlew runGametest           # headless GameTests (126)
 xvfb-run -a ./gradlew runShowcase       # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
 xvfb-run -a ./gradlew runShowcaseCold   # a real generated world: finds and photographs Ice Caves, a frozen tomb, Dead Caves, a Dig Site
 python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipes, loot, tags, lang fragments
@@ -125,8 +172,8 @@ python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipe
 
 Model sources live in `examples/src/` at the repo root (icebreaker, icebreaker_cub, snowball_launcher, snow_globe,
 locomotive, dragon_locomotive, fox_cart, zombie_cart, trailer_cart, frost_mauler, frost_mauler_skull, fang_dagger, polar_bear,
-polar_bear_cub, fur_armor, mosquito, pot_golem); 2D art in `examples/src/winterworks_art.py`, `winterworks_cold_art.py` and
-`winterworks_amber_art.py`. Sounds (97 events) are made from CC0 / public-domain recordings by
+polar_bear_cub, fur_armor, mosquito, pot_golem, piglin_witch, golden_piglin, elixir_jar, soul_tank, hexing_table, hex_core); 2D art in `examples/src/winterworks_art.py`, `winterworks_cold_art.py` and
+`winterworks_amber_art.py` and `winterworks_hex_art.py`. Sounds (97 events) are made from CC0 / public-domain recordings by
 `tools/sounds/build_sounds.py`; every source is credited in [tools/sounds/CREDITS.md](tools/sounds/CREDITS.md).
 
 ## In game
