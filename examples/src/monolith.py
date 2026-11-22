@@ -598,6 +598,7 @@ def floor(clip, s, t, times, y=0.0):
 
 floor("slam_l", 1, 0.9, (0.9, 0.98))
 floor("slam_r", -1, 0.9, (0.9, 0.98))
+floor("grab", -1, 0.5, (0.4, 0.5, 0.6), 0.5)       # the snatch skims the floor without biting into it
 for s in HANDS:
     floor("summon", s, 1.4, (1.4, 1.52))
     floor("death", s, 1.45, (1.45, 1.7, 2.3, 2.42, 2.56, 3.0))
