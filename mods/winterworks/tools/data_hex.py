@@ -56,15 +56,22 @@ def run(ctx):
                                        for f, y in facing.items()}})
     blockstate("hexing_table", {"variants": {"": {"model": f"{M}:block/hexing_table"}}})
 
-    # Block items: the 2D icon (item/<name>_icon) in slots, the 3D lowpix model elsewhere (client.hex renderers; the
-    # icon again while the model is missing). The GUI transform stays identity so the icon sits right.
+    # Block items: the 3D lowpix model everywhere, slots included (client.hex renderers; docs/FIXES_0_4.md "3D icons"),
+    # turned like a vanilla block in the GUI and lit from the side; the 2D icon (item/<name>_icon) only while the model
+    # is missing.
+    GUI_3D = {
+        "elixir_jar": {"rotation": [25, 225, 0], "translation": [0, 0.5, 0], "scale": [0.95] * 3},
+        "soul_tank": {"rotation": [25, 225, 0], "translation": [0, -0.25, 0], "scale": [0.66] * 3},
+        "hexing_table": {"rotation": [30, 225, 0], "translation": [0, -0.75, 0], "scale": [0.6] * 3},
+    }
+
     def builtin(name):
         item_model(name + "_icon", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{name}"}})
         item_model(name, {
-            "parent": "minecraft:builtin/entity", "gui_light": "front",
+            "parent": "minecraft:builtin/entity", "gui_light": "side",
             "textures": {"particle": f"{M}:block/{name}_particle"},
             "display": {
-                "gui": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
+                "gui": GUI_3D[name],
                 "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.25] * 3},
                 "fixed": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [0.5] * 3},
                 "head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
@@ -80,13 +87,14 @@ def run(ctx):
     # ---------------------------------------------------------------------------------------- items
     for name in ("elixir_bottle", "soul_elixir", "elixir_of_greed", "cursed_elixir"):
         item_model(name, {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{name}"}})
-    # the hex core: a 3D hexagon in hand (client.hex.HexCoreRenderer), its 2D icon while the model is missing
+    # the hex core: a 3D hexagon everywhere, slots included (client.hex.HexCoreRenderer), its 2D icon while the model
+    # is missing
     item_model("hex_core_icon", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/hex_core"}})
     item_model("hex_core", {
-        "parent": "minecraft:builtin/entity", "gui_light": "front",
+        "parent": "minecraft:builtin/entity", "gui_light": "side",
         "textures": {"particle": f"{M}:item/hex_core"},
         "display": {
-            "gui": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
+            "gui": {"rotation": [15, -30, 0], "translation": [0, 0, 0], "scale": [0.85] * 3},
             "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.5] * 3},
             "fixed": {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
             "thirdperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 3, 1], "scale": [0.55] * 3},
@@ -101,6 +109,12 @@ def run(ctx):
     item_model("hexed_book", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/hexed_book_lesser"},
                               "overrides": [{"predicate": {f"{M}:hex_tier": 0.5}, "model": f"{M}:item/hexed_book_sin"},
                                             {"predicate": {f"{M}:hex_tier": 1.0}, "model": f"{M}:item/hexed_book_hidden"}]})
+    # ---- 0.4 fixes: hexes. Cursed books: vanilla's enchanted book model gets overrides to these at load time
+    # (client.hex.CursedBooks, property winterworks:cursed: 0.5 a curse, 1 a sin)
+    for name in ("cursed_book", "cursed_book_sin"):
+        item_model(name, {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{name}"}})
+    # the Wither Bone (registered with the shared 0.4 pieces; it brews the Potion of Decay): its plain item model
+    item_model("wither_bone", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/wither_bone"}})
 
     # ---------------------------------------------------------------------------------------- recipes
     ctx.shaped("elixir_bottle", [" G ", "GBG", " G "], {"G": "minecraft:gold_ingot", "B": "minecraft:glass_bottle"},
@@ -148,11 +162,14 @@ def run(ctx):
         "block.winterworks.elixir_jar.soul": "Soul Elixir",
         "block.winterworks.elixir_jar.greed": "Elixir of Greed",
         "block.winterworks.elixir_jar.cursed": "Cursed Elixir",
+        "block.winterworks.elixir_jar.blood": "Blood, waiting for its gold. Set the jar over heat and drop in a block of gold",
+        "block.winterworks.elixir_jar.blood_hot": "Blood, simmering. Drop in a block of gold",
+        "block.winterworks.elixir_jar.needs_blood": "The gold needs blood to dissolve in: pour in a Potion of Blood first",
         "block.winterworks.elixir_jar.cold": "The jar needs heat beneath it: fire, a campfire, lava or magma",
         "block.winterworks.elixir_jar.full": "That won't mix with what's in the jar",
         "block.winterworks.elixir_jar.brewing": "Let it bubble...",
-        "block.winterworks.elixir_jar.empty": "An empty jar. Set it over heat and drop in soul sand or a block of gold",
-        "block.winterworks.elixir_jar.empty_hot": "The jar is hot. Drop in soul sand or a block of gold",
+        "block.winterworks.elixir_jar.empty": "An empty jar. Set it over heat and drop in soul sand, or pour in blood",
+        "block.winterworks.elixir_jar.empty_hot": "The jar is hot. Drop in soul sand, or pour in a Potion of Blood",
         "block.winterworks.elixir_jar.bubbling": "%s bubbling: %s%%",
         "block.winterworks.elixir_jar.holds": "%s: %s of %s doses. Fill an Elixir Bottle",
         # the Soul Tank
@@ -171,7 +188,12 @@ def run(ctx):
         "container.winterworks.hexing_table.power": "Power +%s",
         "container.winterworks.hexing_table.cost.elixir": "%s Soul Elixir",
         "container.winterworks.hexing_table.cost.souls": "%s souls",
+        "container.winterworks.hexing_table.cost.blood": "%s Potion of Blood",
         "container.winterworks.hexing_table.hexed": "Hexed for %s minutes",
+        "container.winterworks.hexing_table.spared.lesser": "The Potion of Blood is taken instead of you",
+        "container.winterworks.hexing_table.spared.sin": "Three Potions of Blood are taken instead of you",
+        "container.winterworks.hexing_table.spare_with.lesser": "...or offer a Potion of Blood in your place",
+        "container.winterworks.hexing_table.spare_with.sin": "...or offer three Potions of Blood in your place",
         "container.winterworks.hexing_table.hidden_chance": "...and something may hide in the pages",
         "container.winterworks.hexing_table.hidden": "Hidden Curse",
         "container.winterworks.hexing_table.hidden.desc": "Any hex may bind one more curse (15%%)",
@@ -190,12 +212,20 @@ def run(ctx):
         "container.winterworks.hexing_table.problem.5": "No Soul Tank within 3 blocks",
         "container.winterworks.hexing_table.problem.6": "Needs %s Soul Elixir",
         "container.winterworks.hexing_table.problem.7": "Needs %s souls",
+        "container.winterworks.hexing_table.problem.8": "A sin hex needs %s Potion of Blood",
         "container.winterworks.hexing_table.already": "This book is already hexed",
         # Hexed Books
         "item.winterworks.hexed_book.lesser": "Lesser Hex",
         "item.winterworks.hexed_book.sin": "Sin Hex",
-        "item.winterworks.hexed_book.whispers": "Something whispers in the pages...",
     }
+    # ---- 0.4 fixes: hexes. The Potions of Burning and Decay (potion.PotionFeature)
+    for potion, name in (("burning", "Burning"), ("decay", "Decay")):
+        lang[f"item.minecraft.potion.effect.{potion}"] = f"Potion of {name}"
+        lang[f"item.minecraft.splash_potion.effect.{potion}"] = f"Splash Potion of {name}"
+        lang[f"item.minecraft.lingering_potion.effect.{potion}"] = f"Lingering Potion of {name}"
+        lang[f"item.minecraft.tipped_arrow.effect.{potion}"] = f"Arrow of {name}"
+    lang["effect.winterworks.burning"] = "Burning"
+    lang["item.winterworks.wither_bone"] = "Wither Bone"
     lang.update(subtitles)
     w(os.path.join(ctx.L, "hex.json"), lang)
 

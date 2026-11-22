@@ -15,6 +15,8 @@ public final class Archaeology {
     public static final ResourceKey<LootTable> DEAD_CAVE = loot("archaeology/dead_cave");
     public static final ResourceKey<LootTable> DIG_SITE = loot("archaeology/dig_site");
     public static final ResourceKey<LootTable> DIG_SITE_CHEST = loot("chests/dig_site");
+    /** Amber sand and amber gravel (docs/FIXES_0_4.md): amber shards mostly, sometimes a whole amber block. */
+    public static final ResourceKey<LootTable> AMBER_DEPOSIT = loot("archaeology/amber_deposit");
 
     private Archaeology() {}
 

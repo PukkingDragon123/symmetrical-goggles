@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "winterworks:amberwood_planks"
+    }
+  ],
+  "result": {
+    "id": "winterworks:amberwood_button",
+    "count": 1
+  },
+  "group": "wooden_button"
+}

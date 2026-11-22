@@ -12,5 +12,7 @@ public final class HexFeature {
         HexDiscovery.init();
         PayloadTypeRegistry.playS2C().register(SoulDriftPayload.TYPE, SoulDriftPayload.CODEC);
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> SoulTankBlockEntity.onDeath(entity));
+        // ---- 0.4 fixes: hexes (docs/FIXES_0_4.md): Burning, Decay, blood as a base potion, every potion form in the tabs
+        dev.lowpix.winterworks.potion.PotionFeature.init();
     }
 }

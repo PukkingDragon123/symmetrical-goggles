@@ -115,11 +115,11 @@ public class HexingTableRenderer implements BlockEntityRenderer<HexingTableBlock
         return false;
     }
 
-    /** The table as an item: its icon in slots, elsewhere the 3D table with the book half open. */
+    /** The table as an item, in slots too (docs/FIXES_0_4.md "3D icons"): the 3D table with the book half open. */
     public static class Item implements BuiltinItemRendererRegistry.DynamicItemRenderer {
         @Override
         public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-            if (mode == ItemDisplayContext.GUI || model().missing()) {
+            if (model().missing()) {
                 HexRender.icon(HexRender.TABLE_ICON, stack, mode, pose, buffers, light, overlay);
                 return;
             }

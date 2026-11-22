@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
  * element            sheet (u, v, w, h)          at / notes
  * panel              0, 0, 176, 166              0, 0; title 8,6 (0xE6C77A), "Inventory" 8,72 (0xB8A58A)
  * book slot          (panel)                     item 34,47     Soul Elixir slot (panel): item 56,47
+ * blood slot         (panel)                     item 74,20 (frame 73,19): Potions of Blood (up to 3)
  * player inventory   (panel)                     8 + 18c, 84 + 18r; hotbar y 142
  * tank fill strip    176, 0, 16, 80              h = 48 * souls / capacity: (176, scroll + 48 - h, 16, h) at
  *                                                9, 65 - h; scroll = (ticks / 2) % 32
@@ -23,12 +24,14 @@ import net.minecraft.resources.ResourceLocation;
  * tank glass         176, 84, 16, 48             9, 17, over the fill
  * swirling souls     192 + 16(i%4), 16(i/4), 16  frame (ticks / 3) % 8 at 9, 65 - h + (h - 16) / 2 while h >= 16,
  *                                                clipped to the fill
- * option rows        88 x 19                     80, 14 + 19i: 0 lesser hex, 1 sin hex, 2 the hidden curse (locked)
+ * option rows        73 x 19                     95, 14 + 19i: 0 lesser hex, 1 sin hex, 2 the hidden curse (locked)
+ *                                                (until 0.4 the rows were 88 wide at 80)
  *   normal 0,166  hovered 0,185  disabled 0,204  locked 0,223 (no cost icon or text on a locked row)
  * cost icons         192 + 16(n-1), 32 (v 48     row + (1, 1); n Soul Elixir
  *                    when unaffordable), 16x16
  * glyph text         glyph i: 6i, 243, 6, 8      row + (20, 6), 16 glyphs, 6 px advance, tinted
  * ghost icons        240,32 book; 240,48 elixir  in the empty slots
+ *                    240,64 blood potion
  * HEX button         32 x 28                     37, 14: normal 96,166  hover 128,166  pressed 160,166
  *                                                disabled 192,166; halo 224,166 (behind, while hovered or hexing)
  * ignition 0..7      96 + 32(i%5), 194 + 28(i/5) about 3 ticks a frame; 7 is the lit end state
@@ -60,11 +63,12 @@ final class HexGui {
     static final int TITLE_COLOR = 0xE6C77A, LABEL_COLOR = 0xB8A58A;
     static final Rect TANK = new Rect(9, 17, 16, 48);
     static final int TANK_BOTTOM = 65;
-    static final int ROW_X = 80, ROW_Y = 14, ROW_W = 88, ROW_H = 19, ROWS = 3;
+    static final int ROW_X = 95, ROW_Y = 14, ROW_W = 73, ROW_H = 19, ROWS = 3;
     static final int COST_DX = 1, COST_DY = 1, TEXT_DX = 20, TEXT_DY = 6;
     static final Rect HEX_BUTTON = new Rect(37, 14, 32, 28);
     static final Rect BOOK_SLOT = new Rect(HexingTableMenu.BOOK_X - 1, HexingTableMenu.BOOK_Y - 1, 18, 18);
     static final Rect ELIXIR_SLOT = new Rect(HexingTableMenu.ELIXIR_X - 1, HexingTableMenu.ELIXIR_Y - 1, 18, 18);
+    static final Rect BLOOD_SLOT = new Rect(HexingTableMenu.BLOOD_X - 1, HexingTableMenu.BLOOD_Y - 1, 18, 18);
 
     static Rect row(int i) {
         return new Rect(ROW_X, ROW_Y + ROW_H * i, ROW_W, ROW_H);
@@ -85,6 +89,7 @@ final class HexGui {
     static final int GLYPH_U = 0, GLYPH_V = 243, GLYPH_W = 6, GLYPH_H = 8, GLYPHS = 16;
     static final Sprite GHOST_BOOK = new Sprite(240, 32, 16, 16);
     static final Sprite GHOST_ELIXIR = new Sprite(240, 48, 16, 16);
+    static final Sprite GHOST_BLOOD = new Sprite(240, 64, 16, 16);
     static final Sprite BUTTON = new Sprite(96, 166, 32, 28);
     static final Sprite BUTTON_HOVER = new Sprite(128, 166, 32, 28);
     static final Sprite BUTTON_PRESSED = new Sprite(160, 166, 32, 28);
@@ -112,6 +117,7 @@ final class HexGui {
     /** Tints for the sin row: the sheet's glyphs are pale cyan (200, 255, 248), so these keep red up and pull the rest down. */
     static final int SIN_GLYPH_IDLE = 0xFF5751, SIN_GLYPH_LIT = 0xFFA88A;
     static final int CRIMSON = 0xE0574F, CRIMSON_LIT = 0xFF9A7A, GOLD = 0xFAD55A, HIDDEN = 0xA77BFF, BAD = 0xFF6B6B;
+    static final int BLOOD = 0xC8323A;
     static final int TEXT = 0xC9EEF5, TEXT_DIM = 0x8AA6AE;
 
     private static Boolean hasTexture;

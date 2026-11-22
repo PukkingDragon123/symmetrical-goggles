@@ -63,7 +63,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The mosquito (docs/AMBER_UPDATE.md section 6): a small hostile flyer. Empty mosquitoes hunt anything with blood,
  * stab it and drink (then they are calm and slow for 2 minutes); they also drink resin from Amberwood logs. A glass
- * bottle takes a blood mosquito's blood (a Potion of Blood); an amber mosquito fed blood spits out an amber chunk.
+ * bottle takes a blood mosquito's blood (a Potion of Blood); an amber mosquito fed blood spits out an amber shard.
  * Pitcher plants and pitcher pods charm them: they hang around the plants and pollinate pitcher crops.
  */
 public class MosquitoEntity extends Monster implements FlyingAnimal {
@@ -261,18 +261,18 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
         }
     }
 
-    /** Spits the resin out as an amber chunk: the amber farm. */
+    /** Spits the resin out as an amber shard: the amber farm. */
     public void spitAmber() {
         setState(State.EMPTY);
         calmDown(200);
         level().broadcastEntityEvent(this, EVENT_SPIT);
         playSound(WWSounds.MOSQUITO_SPIT, 1.0f, 0.9f + random.nextFloat() * 0.2f);
         Vec3 look = Vec3.directionFromRotation(0, getYRot());
-        ItemEntity chunk = new ItemEntity(level(), getX() + look.x * 0.3, getY() + 0.15, getZ() + look.z * 0.3,
-                new ItemStack(WWItems.AMBER_CHUNK));
-        chunk.setDeltaMovement(look.x * 0.15, 0.12, look.z * 0.15);
-        chunk.setDefaultPickUpDelay();
-        level().addFreshEntity(chunk);
+        ItemEntity shard = new ItemEntity(level(), getX() + look.x * 0.3, getY() + 0.15, getZ() + look.z * 0.3,
+                new ItemStack(WWItems.AMBER_SHARD));
+        shard.setDeltaMovement(look.x * 0.15, 0.12, look.z * 0.15);
+        shard.setDefaultPickUpDelay();
+        level().addFreshEntity(shard);
         if (level() instanceof ServerLevel sl) {
             sl.sendParticles(WWParticles.AMBER_GLINT, getX() + look.x * 0.3, getY() + 0.15, getZ() + look.z * 0.3, 8, 0.12, 0.08, 0.12, 0.02);
         }
@@ -368,7 +368,7 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
         super.dropCustomDeathLoot(level, source, recentlyHit);
         if (isAmber()) {
-            spawnAtLocation(WWItems.AMBER_CHUNK);
+            spawnAtLocation(WWItems.AMBER_SHARD);
         }
     }
 

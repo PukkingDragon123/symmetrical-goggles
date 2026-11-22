@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:amberwood_planks"
+    }
+  },
+  "result": {
+    "id": "winterworks:amberwood_stairs",
+    "count": 4
+  },
+  "group": "wooden_stairs"
+}

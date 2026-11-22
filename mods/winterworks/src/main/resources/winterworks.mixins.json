@@ -31,6 +31,7 @@
     "EnchantmentHelperMixin",
     "FoodDataMixin",
     "HexedPlayerMixin",
+    "BurningClearFireMixin",
     "endgear.EndGearMobAccessor",
     "endgear.EndGearLivingEntityAccessor",
     "endgear.EndGearLivingEntityMixin",
@@ -48,11 +49,23 @@
     "LoopRiderMixin",
     "LoopPlayerMixin",
     "RailStateMixin",
-    "RailStateAccessor"
+    "RailStateAccessor",
+    "DaggerSwingMixin"
   ],
   "client": [
     "client.GameRendererMixin",
     "client.CurseMouseHandlerMixin",
+    "client.PotItemGlowMixin",
+    "client.hex.SoulFlameMixin",
+    "client.hex.SoulFireOverlayMixin",
+    "client.hex.CurseFxRenderMixin",
+    "client.hex.SoulGlintTypeMixin",
+    "client.hex.SoulGlintItemMixin",
+    "client.hex.SoulGlintArmorMixin",
+    "client.hex.SoulGlintElytraMixin",
+    "client.hex.SoulGlintBuffersMixin",
+    "client.hex.SoulGlintBatchMixin",
+    "client.hex.BlockModelAccessor",
     "endgear.client.EndGearMouseHandlerMixin",
     "endgear.client.EndGearKeyboardInputMixin",
     "endgear.client.EndGearMinecraftMixin",
@@ -66,7 +79,13 @@
     "endmob.EndGlowLightMixin",
     "client.LoopMinecartRendererMixin",
     "client.LoopLivingRendererMixin",
-    "client.LoopCameraMixin"
+    "client.LoopCameraMixin",
+    "client.DaggerMinecraftMixin",
+    "client.DaggerHandRendererMixin",
+    "client.DaggerItemInHandLayerMixin",
+    "client.DaggerPlayerRendererMixin",
+    "client.RamPoseMixin",
+    "client.RamHandMixin"
   ],
   "injectors": {
     "defaultRequire": 1

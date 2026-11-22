@@ -21,6 +21,8 @@ public record CurseFxPayload(int kind, int ticks, float x, float y, float z) imp
     public static final int NOD = 3;
     /** Moth: a push towards the light (added to your motion). */
     public static final int PULL = 4;
+    /** A curse triggered: its own screen effect for `ticks` (client.curse.CurseScreenFx); x is the Curse's ordinal. */
+    public static final int EFFECT = 5;
 
     public static final Type<CurseFxPayload> TYPE = new Type<>(Winterworks.id("curse_fx"));
     public static final StreamCodec<RegistryFriendlyByteBuf, CurseFxPayload> CODEC = StreamCodec.composite(

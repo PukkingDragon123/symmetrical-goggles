@@ -65,7 +65,9 @@ public final class DigSite {
                 if (roll < 22) {
                     CaveDepositsFeature.place(level, floor, (r.nextBoolean() ? Blocks.SUSPICIOUS_SAND : Blocks.SUSPICIOUS_GRAVEL)
                             .defaultBlockState(), Archaeology.DIG_SITE, r);
-                } else if (roll < 27) {
+                } else if (roll < 30) {   // amber sand and gravel (docs/FIXES_0_4.md)
+                    CaveDepositsFeature.placeAmber(level, floor, r.nextBoolean(), r);
+                } else if (roll < 35) {
                     CaveDepositsFeature.place(level, floor, WWBlocks.AMBER_FOSSIL.defaultBlockState(), Archaeology.DIG_SITE, r);
                 } else {
                     set(level, floor, (r.nextBoolean() ? Blocks.SAND : Blocks.GRAVEL).defaultBlockState());
@@ -132,8 +134,12 @@ public final class DigSite {
             double rad = r.nextDouble() * Math.PI * 2, d = 5 + r.nextDouble() * (R - 6);
             BlockPos f = c.offset((int) Math.round(Math.cos(rad) * d), -1, (int) Math.round(Math.sin(rad) * d));
             if (level.getBlockState(f.above()).isAir()) {
-                CaveDepositsFeature.place(level, f, (r.nextBoolean() ? Blocks.SUSPICIOUS_GRAVEL : Blocks.SUSPICIOUS_SAND)
-                        .defaultBlockState(), Archaeology.DIG_SITE, r);
+                if (r.nextInt(3) == 0) {
+                    CaveDepositsFeature.placeAmber(level, f, r.nextBoolean(), r);
+                } else {
+                    CaveDepositsFeature.place(level, f, (r.nextBoolean() ? Blocks.SUSPICIOUS_GRAVEL : Blocks.SUSPICIOUS_SAND)
+                            .defaultBlockState(), Archaeology.DIG_SITE, r);
+                }
             }
         }
         // 9. crates of loot by the bridge

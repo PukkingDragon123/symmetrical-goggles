@@ -139,6 +139,7 @@
     "happy": 1.6,
     "bark": 0.9,
     "belly_slap": 1.2,
+    "sleep": 4.0,
     "tail_slap": 1.0
   },
   "joints": [
@@ -334,6 +335,7 @@
     "icebreaker_happy.gif": "examples/output/icebreaker_happy.gif",
     "icebreaker_bark.gif": "examples/output/icebreaker_bark.gif",
     "icebreaker_belly_slap.gif": "examples/output/icebreaker_belly_slap.gif",
+    "icebreaker_sleep.gif": "examples/output/icebreaker_sleep.gif",
     "icebreaker_tail_slap.gif": "examples/output/icebreaker_tail_slap.gif"
   }
 }

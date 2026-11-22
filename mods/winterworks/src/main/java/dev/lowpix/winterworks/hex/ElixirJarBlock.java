@@ -1,6 +1,7 @@
 package dev.lowpix.winterworks.hex;
 
 import com.mojang.serialization.MapCodec;
+import dev.lowpix.winterworks.amber.AmberFeature;
 import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWItems;
 import dev.lowpix.winterworks.registry.WWSounds;
@@ -41,8 +42,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * The Elixir Jar: brews elixirs over heat (docs/HEXES_UPDATE.md section 1).
- * Soul sand makes Soul Elixir, a gold block Elixir of Greed, soul sand in a full jar of Greed Cursed Elixir (3 doses
- * each, 10 s of heat); an elixir bottle takes one dose out. Drawn by client.hex.ElixirJarRenderer.
+ * Soul sand makes Soul Elixir; a Potion of Blood poured in and then a gold block make Elixir of Greed (docs/FIXES_0_4.md
+ * "Blood in hexing"); soul sand in a full jar of Greed makes Cursed Elixir (3 doses each, 10 s of heat); an elixir bottle
+ * takes one dose out. Drawn by client.hex.ElixirJarRenderer.
  */
 public class ElixirJarBlock extends BaseEntityBlock {
     public static final MapCodec<ElixirJarBlock> CODEC = simpleCodec(ElixirJarBlock::new);
@@ -104,13 +106,23 @@ public class ElixirJarBlock extends BaseEntityBlock {
                                               InteractionHand hand, BlockHitResult hit) {
         boolean ingredient = stack.is(Items.SOUL_SAND) || stack.is(Items.GOLD_BLOCK);
         boolean bottle = stack.is(WWItems.ELIXIR_BOTTLE);
-        if (!ingredient && !bottle) {
+        boolean blood = stack.is(Items.POTION) && AmberFeature.isBloodPotion(stack);
+        if (!ingredient && !bottle && !blood) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (!(level.getBlockEntity(pos) instanceof ElixirJarBlockEntity jar)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (level.isClientSide) {
+            return ItemInteractionResult.SUCCESS;
+        }
+        if (blood) {   // the blood goes in first: the gold block dissolves in it into the Elixir of Greed
+            if (!jar.pourBlood()) {
+                return refuse(player, jar.isBrewing() ? "brewing" : "full");
+            }
+            player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(Items.GLASS_BOTTLE)));
+            level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1f, 0.8f);
+            level.playSound(null, pos, WWSounds.BLOOD_SPLASH, SoundSource.BLOCKS, 0.5f, 1.2f);
             return ItemInteractionResult.SUCCESS;
         }
         if (bottle) {
@@ -125,7 +137,7 @@ public class ElixirJarBlock extends BaseEntityBlock {
         }
         ElixirType brew = jar.brewFor(stack);
         if (brew == ElixirType.NONE) {
-            return refuse(player, jar.isBrewing() ? "brewing" : "full");
+            return refuse(player, jar.isBrewing() ? "brewing" : stack.is(Items.GOLD_BLOCK) && jar.doses() == 0 ? "needs_blood" : "full");
         }
         if (!hasHeat(level, pos)) {
             level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4f, 1.6f);
@@ -154,6 +166,8 @@ public class ElixirJarBlock extends BaseEntityBlock {
             if (jar.isBrewing()) {
                 msg = Component.translatable("block.winterworks.elixir_jar.bubbling",
                         Component.translatable(jar.brewing().translationKey()), (int) (jar.brewFraction() * 100));
+            } else if (jar.hasBlood()) {
+                msg = Component.translatable(hasHeat(level, pos) ? "block.winterworks.elixir_jar.blood_hot" : "block.winterworks.elixir_jar.blood");
             } else if (jar.doses() > 0) {
                 msg = Component.translatable("block.winterworks.elixir_jar.holds",
                         Component.translatable(jar.liquid().translationKey()), jar.doses(), ElixirJarBlockEntity.DOSES);

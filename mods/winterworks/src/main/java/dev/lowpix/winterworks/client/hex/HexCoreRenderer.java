@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * The Hex Core in 3D from the lowpix model {@code hex_core}: the {@code cage}, the {@code souls} and the {@code core}
  * (three roots on one pivot) turn and swirl in its {@code idle} clip; the souls glow (its glow texture). About a block
- * tall, standing on the item's floor. In slots (and while the model is missing) it shows the 2D icon.
+ * tall, standing on the item's floor; in slots too (docs/FIXES_0_4.md "3D icons"). While the model is missing: the 2D icon.
  */
 public class HexCoreRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
     public static final ResourceLocation ICON_MODEL = Winterworks.id("item/hex_core_icon");
@@ -28,7 +28,7 @@ public class HexCoreRenderer implements BuiltinItemRendererRegistry.DynamicItemR
     @Override
     public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
         HexModel m = model();
-        if (m.missing() || mode == ItemDisplayContext.GUI) {
+        if (m.missing()) {
             HexRender.icon(ICON_MODEL, stack, mode, pose, buffers, light, overlay);
             return;
         }

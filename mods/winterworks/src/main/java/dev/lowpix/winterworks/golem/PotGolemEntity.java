@@ -51,6 +51,18 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileDeflection;
+import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.core.Holder;
+import net.minecraft.world.phys.AABB;
+import java.util.Optional;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -76,6 +88,10 @@ import org.jetbrains.annotations.Nullable;
  *
  * <p>Long actions (beam, howl, brush, fuse) and the daze freeze its AI ({@link #isImmobile()}) and tick in
  * {@link #aiStep()}. One-shot clips are started on the client by entity events ({@link #handleEntityEvent}).
+ *
+ * <p>0.4 (docs/FIXES_0_4.md): a head ability needs all four faces of the pot to carry the same sherd (an Echo Shard
+ * inside still makes an Echo Head); six more heads (Heart, Burn, Flow, Shelter, Plenty, Brewer); and the pot is its weak
+ * spot: a hit that lands on it is a headshot ({@link #isHeadshot}): double damage, a crack every time, a burst of chips.
  */
 public class PotGolemEntity extends AbstractGolem implements OwnableEntity, RangedAttackMob {
     private static final EntityDataAccessor<ItemStack> HEAD = SynchedEntityData.defineId(PotGolemEntity.class, EntityDataSerializers.ITEM_STACK);
@@ -94,13 +110,48 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
     public static final int BRUSH_TICKS = 40, SNEEZE_AT = 20, POP_AT = 28;
     public static final int DAZED_TICKS = 120;
     public static final float BLADE_DAMAGE = 12f, SWEEP_DAMAGE = 6f;
+    // ---- 0.4: the six new heads and headshots
+    /** Heart, Burn and Shelter refresh their effects on their friends this often (ticks). */
+    public static final int AURA_TICKS = 40;
+    public static final double HEART_RANGE = 8.0, BURN_RANGE = 8.0, SHELTER_RANGE = 6.0, FLOW_RANGE = 5.0, PLENTY_RANGE = 8.0,
+            BREWER_RANGE = 10.0;
+    public static final int FLOW_COOLDOWN = 120, BREWER_COOLDOWN = 80, PLENTY_SLOTS = 27, BURN_SECONDS = 5;
+    /** The pot (the head) spans this high above its feet (blocks), about a block across. */
+    public static final float HEAD_FROM = 2.35f, HEAD_TO = 3.5f, HEAD_HALF_WIDTH = 0.6f;
 
     // entity events (vanilla uses up to 65)
     public static final byte EVENT_ATTACK = 70, EVENT_SLASH = 71, EVENT_MINE = 72, EVENT_SHOOT = 73, EVENT_HOWL = 74, EVENT_BEAM = 75,
-            EVENT_GIGGLE = 76, EVENT_SNEEZE = 77, EVENT_FUSE = 78, EVENT_CRACK = 79, EVENT_SHATTER = 80, EVENT_REPAIR = 81, EVENT_BUILD = 82;
+            EVENT_GIGGLE = 76, EVENT_SNEEZE = 77, EVENT_FUSE = 78, EVENT_CRACK = 79, EVENT_SHATTER = 80, EVENT_REPAIR = 81, EVENT_BUILD = 82,
+            EVENT_HEADSHOT = 83, EVENT_ABILITY = 84;
 
-    /** What the pot head can do. */
-    public enum HeadForm { NONE, PLAIN, ECHO, HOWL, DANGER }
+    /**
+     * What the pot head can do: an Echo Shard inside makes an Echo Head; the others need the same sherd on all four faces.
+     * {@code glow} is the colour its pattern glows in while the ability is active (0: no glow).
+     */
+    public enum HeadForm {
+        NONE(null, 0), PLAIN(null, 0), ECHO(null, 0x3FD9E8), HOWL(Items.HOWL_POTTERY_SHERD, 0xAFCBFF),
+        DANGER(Items.DANGER_POTTERY_SHERD, 0xFF5A36), HEART(Items.HEART_POTTERY_SHERD, 0xFF79A8), BURN(Items.BURN_POTTERY_SHERD, 0xFFA23A),
+        FLOW(Items.FLOW_POTTERY_SHERD, 0x96F2FF), SHELTER(Items.SHELTER_POTTERY_SHERD, 0xFFD966), PLENTY(Items.PLENTY_POTTERY_SHERD, 0xA6F070),
+        BREWER(Items.BREWER_POTTERY_SHERD, 0xD19BFF);
+
+        @Nullable public final Item sherd;
+        public final int glow;
+
+        HeadForm(@Nullable Item sherd, int glow) {
+            this.sherd = sherd;
+            this.glow = glow;
+        }
+
+        @Nullable
+        static HeadForm bySherd(Item sherd) {
+            for (HeadForm f : values()) {
+                if (f.sherd == sherd) {
+                    return f;
+                }
+            }
+            return null;
+        }
+    }
 
     /** The body shard: an arm made from a pottery sherd. */
     public enum Shard {
@@ -171,6 +222,11 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
     private Action action = Action.NONE;
     private int actionTicks;
     private int beamCooldown, howlCooldown, dazedTicks;
+    private int flowCooldown, brewerCooldown;
+    /** Plenty: the pot's 27-slot stash (only while it wears a Plenty pot; spilled when that pot comes off). */
+    private final Stash stash = new Stash();
+    /** Client: when the head ability last fired (its pattern flares). */
+    private int abilityFlareTick = -100;
 
     public PotGolemEntity(EntityType<? extends AbstractGolem> type, Level level) {
         super(type, level);
@@ -327,7 +383,10 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         return pot.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyOne();
     }
 
-    /** Echo Shard inside -> Echo; Howl sherd -> Howl; Danger sherd -> Danger; any other pot -> plain. */
+    /**
+     * Echo Shard inside -> Echo; the same sherd on all four faces -> that sherd's head (Howl, Danger, Heart, Burn, Flow,
+     * Shelter, Plenty, Brewer); any other pot (mixed faces, other sherds, plain bricks) -> plain.
+     */
     public static HeadForm formOf(ItemStack pot) {
         if (pot.isEmpty()) {
             return HeadForm.NONE;
@@ -335,14 +394,27 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         if (contents(pot).is(Items.ECHO_SHARD)) {
             return HeadForm.ECHO;
         }
+        HeadForm f = abilityPotForm(pot);
+        return f != HeadForm.NONE ? f : HeadForm.PLAIN;
+    }
+
+    /**
+     * An "ability pot": a decorated pot whose four faces carry the same ability sherd (Howl, Danger, Heart, Burn, Flow,
+     * Shelter, Plenty, Brewer) gives that head (whatever is inside) and glows in that ability's colour, on a golem and as
+     * an item (client.golem.PotGlow). Anything else, mixed pots included, is NONE.
+     */
+    public static HeadForm abilityPotForm(ItemStack pot) {
+        if (!pot.is(Items.DECORATED_POT)) {
+            return HeadForm.NONE;
+        }
         List<Item> sides = decorations(pot).ordered();
-        if (sides.contains(Items.HOWL_POTTERY_SHERD)) {
-            return HeadForm.HOWL;
+        if (sides.size() == 4 && sides.stream().allMatch(sides.get(0)::equals)) {
+            HeadForm f = HeadForm.bySherd(sides.get(0));
+            if (f != null) {
+                return f;
+            }
         }
-        if (sides.contains(Items.DANGER_POTTERY_SHERD)) {
-            return HeadForm.DANGER;
-        }
-        return HeadForm.PLAIN;
+        return HeadForm.NONE;
     }
 
     public HeadForm headForm() {
@@ -442,6 +514,12 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         if (howlCooldown > 0) {
             howlCooldown--;
         }
+        if (flowCooldown > 0) {
+            flowCooldown--;
+        }
+        if (brewerCooldown > 0) {
+            brewerCooldown--;
+        }
         if (dazedTicks > 0 && --dazedTicks == 0) {
             setFlag(FLAG_DAZED, false);
         }
@@ -475,6 +553,301 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         } else if (form == HeadForm.HOWL && howlCooldown == 0 && target != null && target.isAlive()) {
             startAction(Action.HOWL);
             level().broadcastEntityEvent(this, EVENT_HOWL);
+        }
+        switch (form) {
+            case HEART -> {
+                if (tickCount % AURA_TICKS == 0) {
+                    heartPulse(sl);
+                }
+            }
+            case BURN -> {
+                if (tickCount % AURA_TICKS == 0) {
+                    burnAura(sl);
+                }
+            }
+            case FLOW -> {
+                if (flowCooldown == 0 && tickCount % 5 == 0) {
+                    windBurst(sl);
+                }
+            }
+            case SHELTER -> {
+                if (tickCount % AURA_TICKS == 0) {
+                    shelterAura(sl);
+                }
+                guardOwner(sl);
+            }
+            case PLENTY -> {
+                if (tickCount % 4 == 0) {
+                    vacuum(sl);
+                }
+            }
+            case BREWER -> {
+                if (brewerCooldown == 0 && tickCount % 10 == 0) {
+                    brew(sl);
+                }
+            }
+            default -> {}
+        }
+    }
+
+    // ---- the 0.4 heads (docs/FIXES_0_4.md)
+
+    /** Its friends within `range`: itself, its owner, the owner's pets (other Pot Golems too). */
+    public List<LivingEntity> friendsNear(double range) {
+        return level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(range),
+                e -> e.isAlive() && isFriendly(e) && e.distanceToSqr(this) <= range * range);
+    }
+
+    /** The owner, if within `range`. */
+    @Nullable
+    private Player ownerNear(double range) {
+        Player o = ownerPlayer();
+        return o != null && o.isAlive() && !o.isSpectator() && o.distanceToSqr(this) <= range * range ? o : null;
+    }
+
+    /** Hostile things near it: monsters, and whatever it or its owner is fighting. Never a friend. */
+    private boolean isFoe(LivingEntity e) {
+        if (!e.isAlive() || isFriendly(e) || e instanceof Player p && (p.isCreative() || p.isSpectator())) {
+            return false;
+        }
+        Player o = ownerPlayer();
+        return e instanceof Enemy || e == getTarget() || (e instanceof net.minecraft.world.entity.Mob m && (m.getTarget() == this
+                || (o != null && m.getTarget() == o)));
+    }
+
+    private void ability() {
+        level().broadcastEntityEvent(this, EVENT_ABILITY);
+    }
+
+    /** Refreshes an effect unless a stronger or longer one is already running. */
+    private static void refresh(LivingEntity e, Holder<net.minecraft.world.effect.MobEffect> effect, int ticks, int amp, Entity source) {
+        MobEffectInstance cur = e.getEffect(effect);
+        if (cur == null || cur.getAmplifier() < amp || (cur.getAmplifier() == amp && cur.getDuration() < ticks / 2)) {
+            e.addEffect(new MobEffectInstance(effect, ticks, amp, true, true), source);
+        }
+    }
+
+    /** Heart: Regeneration I for its owner and their pets (and itself) within 8 blocks. */
+    public int heartPulse(ServerLevel sl) {
+        List<LivingEntity> friends = friendsNear(HEART_RANGE);
+        for (LivingEntity e : friends) {
+            refresh(e, MobEffects.REGENERATION, AURA_TICKS * 2 + 10, 0, this);
+            if (e.getHealth() < e.getMaxHealth()) {
+                sl.sendParticles(ParticleTypes.HEART, e.getX(), e.getY() + e.getBbHeight() + 0.2, e.getZ(), 1, 0.2, 0.1, 0.2, 0);
+            }
+        }
+        if (friends.size() > 1) {
+            playSound(WWSounds.POT_GOLEM_SOOTHE, 0.6f, 1.0f + random.nextFloat() * 0.1f);
+            ability();
+        }
+        return friends.size();
+    }
+
+    /** Burn: Fire Resistance for its owner within 8 blocks (its fists set things alight: {@link #doHurtTarget}). */
+    public boolean burnAura(ServerLevel sl) {
+        Player o = ownerNear(BURN_RANGE);
+        if (o == null) {
+            return false;
+        }
+        refresh(o, MobEffects.FIRE_RESISTANCE, AURA_TICKS * 3, 0, this);
+        return true;
+    }
+
+    /** Burning fists: what a Burn Head hits catches fire. */
+    private void burnFist(Entity target) {
+        if (headForm() == HeadForm.BURN && !isDazed() && level() instanceof ServerLevel sl) {
+            target.igniteForSeconds(BURN_SECONDS);
+            sl.sendParticles(ParticleTypes.FLAME, target.getX(), target.getY() + target.getBbHeight() * 0.6, target.getZ(), 14, 0.25, 0.3,
+                    0.25, 0.03);
+            playSound(WWSounds.POT_GOLEM_IGNITE, 1.0f, 0.9f + random.nextFloat() * 0.2f);
+            ability();
+        }
+    }
+
+    /** Flow: every 6 s a gust from the pot hurls every foe within 5 blocks away (no block damage). Returns how many. */
+    public int windBurst(ServerLevel sl) {
+        List<LivingEntity> foes = sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(FLOW_RANGE),
+                e -> e != this && isFoe(e) && e.distanceToSqr(this) <= FLOW_RANGE * FLOW_RANGE);
+        if (foes.isEmpty()) {
+            return 0;
+        }
+        Vec3 c = position().add(0, 1.2, 0);
+        for (LivingEntity e : foes) {
+            Vec3 away = new Vec3(e.getX() - getX(), 0, e.getZ() - getZ());
+            away = away.lengthSqr() < 1.0e-4 ? Vec3.directionFromRotation(0, getYRot()) : away.normalize();
+            double kr = 1.0 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) * 0.5;
+            e.setDeltaMovement(e.getDeltaMovement().add(away.x * 1.9 * kr, 0.65 * kr, away.z * 1.9 * kr));
+            e.hurtMarked = true;
+            e.hasImpulse = true;
+        }
+        sl.sendParticles(ParticleTypes.GUST_EMITTER_LARGE, c.x, c.y, c.z, 1, 0, 0, 0, 0);
+        sl.sendParticles(ParticleTypes.GUST, c.x, c.y + 0.5, c.z, 8, 1.5, 0.5, 1.5, 0);
+        playSound(WWSounds.POT_GOLEM_WIND_BURST, 1.5f, 0.9f + random.nextFloat() * 0.2f);
+        level().broadcastEntityEvent(this, EVENT_ATTACK);
+        ability();
+        flowCooldown = FLOW_COOLDOWN;
+        return foes.size();
+    }
+
+    /** Shelter: Resistance I for its owner within 6 blocks. */
+    public boolean shelterAura(ServerLevel sl) {
+        Player o = ownerNear(SHELTER_RANGE);
+        if (o == null) {
+            return false;
+        }
+        refresh(o, MobEffects.DAMAGE_RESISTANCE, AURA_TICKS + 30, 0, this);
+        return true;
+    }
+
+    /**
+     * Shelter: it steps in front of arrows (and other projectiles) flying at its owner: anything hostile on course to
+     * hit them within the next few ticks is knocked back off the golem's arm. Returns how many it stopped.
+     */
+    public int guardOwner(ServerLevel sl) {
+        Player o = ownerNear(SHELTER_RANGE);
+        if (o == null) {
+            return 0;
+        }
+        Vec3 aim = o.getBoundingBox().getCenter();
+        int blocked = 0;
+        for (Projectile p : sl.getEntitiesOfClass(Projectile.class, o.getBoundingBox().inflate(7.0),
+                p -> p.isAlive() && p.getDeltaMovement().lengthSqr() > 0.04 && (p.getOwner() == null || !isFriendly(p.getOwner())))) {
+            Vec3 at = p.getBoundingBox().getCenter(), v = p.getDeltaMovement();
+            double t = aim.subtract(at).dot(v) / v.lengthSqr();   // ticks to the closest approach
+            if (t < 0 || t > 6 || at.add(v.scale(t)).distanceTo(aim) > 1.3) {
+                continue;
+            }
+            // step in: lunge across the line of fire and swat it away
+            Vec3 block = at.add(v.scale(Math.max(0, t - 1.5)));
+            Vec3 lunge = new Vec3(block.x - getX(), 0, block.z - getZ());
+            if (lunge.lengthSqr() > 1.0e-4) {
+                setDeltaMovement(getDeltaMovement().add(lunge.normalize().scale(Math.min(0.9, lunge.length() * 0.3))));
+                hasImpulse = true;
+                faceTowards(block);
+            }
+            p.deflect(ProjectileDeflection.REVERSE, this, this, false);
+            p.setDeltaMovement(p.getDeltaMovement().scale(0.4));
+            sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, dev.lowpix.winterworks.registry.WWBlocks.AMBER_BLOCK.defaultBlockState()),
+                    at.x, at.y, at.z, 10, 0.15, 0.15, 0.15, 0.1);
+            sl.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, 8, 0.1, 0.1, 0.1, 0.3);
+            playSound(WWSounds.POT_GOLEM_SHIELD, 1.2f, 0.9f + random.nextFloat() * 0.2f);
+            level().broadcastEntityEvent(this, EVENT_ATTACK);
+            ability();
+            blocked++;
+        }
+        return blocked;
+    }
+
+    private void faceTowards(Vec3 p) {
+        float yaw = (float) (Mth.atan2(p.z - getZ(), p.x - getX()) * Mth.RAD_TO_DEG) - 90f;
+        setYRot(yaw);
+        setYHeadRot(yaw);
+        yBodyRot = yaw;
+    }
+
+    /** Plenty: the stash in its pot. */
+    public SimpleContainer stash() {
+        return stash;
+    }
+
+    /** Plenty: pulls loose items within 8 blocks towards it and swallows those that reach it. Returns items taken. */
+    public int vacuum(ServerLevel sl) {
+        Vec3 belly = position().add(0, 1.2, 0);
+        int taken = 0;
+        for (ItemEntity ie : sl.getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(PLENTY_RANGE),
+                ie -> ie.isAlive() && !ie.hasPickUpDelay() && !ie.getItem().isEmpty() && ie.distanceToSqr(this) <= PLENTY_RANGE * PLENTY_RANGE)) {
+            if (!stash.canAddItem(ie.getItem())) {
+                continue;
+            }
+            if (ie.position().distanceTo(belly) < 1.9) {
+                ItemStack st = ie.getItem();
+                int before = st.getCount();
+                ItemStack left = stash.addItem(st.copy());
+                taken += before - left.getCount();
+                if (left.isEmpty()) {
+                    ie.discard();
+                } else {
+                    ie.setItem(left);
+                }
+                sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, ie.getX(), ie.getY() + 0.2, ie.getZ(), 2, 0.1, 0.1, 0.1, 0);
+            } else {
+                Vec3 pull = belly.subtract(ie.position()).normalize().scale(0.32);
+                ie.setDeltaMovement(pull.x, Math.max(pull.y, 0.12), pull.z);
+                ie.hasImpulse = true;
+                ie.hurtMarked = true;
+            }
+        }
+        if (taken > 0) {
+            playSound(WWSounds.POT_GOLEM_STASH, 0.8f, 0.9f + random.nextFloat() * 0.3f);
+            ability();
+        }
+        return taken;
+    }
+
+    /** Spills the Plenty stash (its pot came off, broke or was swapped, or it died). */
+    private void dropStash() {
+        if (level().isClientSide) {
+            return;
+        }
+        for (int i = 0; i < stash.getContainerSize(); i++) {
+            ItemStack st = stash.removeItemNoUpdate(i);
+            if (!st.isEmpty()) {
+                spawnAtLocation(st, 1.2f);
+            }
+        }
+    }
+
+    /**
+     * Brewer: throws a splash Potion of Healing at its owner when they're hurt, else Weakness (or, once they're weak,
+     * Slowness) at the foe it is fighting, never one standing close to its owner. Returns the potion thrown, if any.
+     */
+    @Nullable
+    public Holder<Potion> brew(ServerLevel sl) {
+        Player o = ownerNear(BREWER_RANGE);
+        if (o != null && o.getHealth() <= o.getMaxHealth() - 4f && hasLineOfSight(o)) {
+            Holder<Potion> heal = o.getHealth() < o.getMaxHealth() * 0.4f ? Potions.STRONG_HEALING : Potions.HEALING;
+            throwPotion(sl, o, heal);
+            return heal;
+        }
+        LivingEntity t = getTarget();
+        if (t == null || !t.isAlive() || !isFoe(t) || t.distanceToSqr(this) > BREWER_RANGE * BREWER_RANGE || !hasLineOfSight(t)
+                || (o != null && o.distanceToSqr(t) < 9.0)) {
+            return null;
+        }
+        Holder<Potion> curse = !t.hasEffect(MobEffects.WEAKNESS) ? Potions.WEAKNESS : !t.hasEffect(MobEffects.MOVEMENT_SLOWDOWN) ? Potions.SLOWNESS
+                : null;
+        if (curse != null) {
+            throwPotion(sl, t, curse);
+        }
+        return curse;
+    }
+
+    private void throwPotion(ServerLevel sl, LivingEntity at, Holder<Potion> potion) {
+        ThrownPotion tp = new ThrownPotion(sl, this);
+        tp.setItem(PotionContents.createItemStack(Items.SPLASH_POTION, potion));
+        tp.setPos(getX(), getY() + 2.3, getZ());
+        Vec3 lead = at.getDeltaMovement();
+        double dx = at.getX() + lead.x - getX(), dy = at.getEyeY() - 1.1 - (getY() + 2.3), dz = at.getZ() + lead.z - getZ();
+        double h = Math.sqrt(dx * dx + dz * dz);
+        tp.setXRot(tp.getXRot() + 20f);
+        tp.shoot(dx, dy + h * 0.2, dz, 0.75f, 2f);
+        sl.addFreshEntity(tp);
+        faceTowards(at.position());
+        playSound(WWSounds.POT_GOLEM_THROW, 1.0f, 0.8f + random.nextFloat() * 0.4f);
+        level().broadcastEntityEvent(this, EVENT_SHOOT);
+        ability();
+        brewerCooldown = BREWER_COOLDOWN;
+    }
+
+    /** Plenty's stash: a chest's worth of slots that stay usable only while it wears the Plenty pot and you're near. */
+    private final class Stash extends SimpleContainer {
+        Stash() {
+            super(PLENTY_SLOTS);
+        }
+
+        @Override
+        public boolean stillValid(Player p) {
+            return isAlive() && headForm() == HeadForm.PLENTY && p.distanceToSqr(PotGolemEntity.this) <= 64.0;
         }
     }
 
@@ -637,6 +1010,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         sl.addFreshEntity(ie);
         sl.sendParticles(ParticleTypes.SNEEZE, h.x + look.x * 0.6, h.y, h.z + look.z * 0.6, 12, 0.2, 0.1, 0.2, 0.05);
         sl.sendParticles(ParticleTypes.POOF, h.x, h.y, h.z, 6, 0.3, 0.2, 0.3, 0.02);
+        dropStash();
         setHead(ItemStack.EMPTY);
     }
 
@@ -670,6 +1044,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         if (!inside.isEmpty()) {
             spawnAtLocation(inside.copy(), y);
         }
+        dropStash();
         setHead(ItemStack.EMPTY);
         Vec3 h = headPos();
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DECORATED_POT.defaultBlockState()), h.x, h.y, h.z, 40,
@@ -695,14 +1070,88 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         }
     }
 
-    /** Hits (by something, a projectile or a blast) crack the pot 1 time in 3. */
+    /**
+     * Hits (by something, a projectile or a blast) crack the pot 1 time in 3. A headshot ({@link #isHeadshot}) does double
+     * damage and always cracks it, with a burst of pottery chips and a clink.
+     */
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        boolean hit = super.hurt(source, amount);
-        if (hit && !level().isClientSide && isAlive() && hasPot() && isCrackingHit(source) && random.nextInt(3) == 0) {
-            crack();
+        boolean head = !level().isClientSide && amount > 0f && hasPot() && isHeadshot(source);
+        boolean hit = super.hurt(source, head ? amount * 2f : amount);
+        if (hit && !level().isClientSide && isAlive() && hasPot()) {
+            if (head) {
+                headshot();
+                crack();
+            } else if (isCrackingHit(source) && random.nextInt(3) == 0) {
+                crack();
+            }
         }
         return hit;
+    }
+
+    /** The pot: about a block across, from HEAD_FROM to HEAD_TO above its feet. */
+    public AABB headBox() {
+        return new AABB(getX() - HEAD_HALF_WIDTH, getY() + HEAD_FROM, getZ() - HEAD_HALF_WIDTH, getX() + HEAD_HALF_WIDTH, getY() + HEAD_TO,
+                getZ() + HEAD_HALF_WIDTH);
+    }
+
+    /** Everything under the pot. */
+    public AABB bodyBox() {
+        AABB b = getBoundingBox();
+        return new AABB(b.minX, b.minY, b.minZ, b.maxX, getY() + HEAD_FROM, b.maxZ);
+    }
+
+    /**
+     * Did this hit land on the pot? Projectiles by where they strike (their path this tick against the hitbox, as
+     * vanilla finds the hit: the box grown by 0.3); melee by where the attacker is looking (its view ray, within reach
+     * plus a block, meets the head box before the body). Blasts, splashes, thorns and other damage never do.
+     */
+    public boolean isHeadshot(DamageSource source) {
+        if (source.is(DamageTypeTags.IS_EXPLOSION) || !hasPot()) {
+            return false;
+        }
+        Entity direct = source.getDirectEntity();
+        if (direct instanceof Projectile p && source.is(DamageTypeTags.IS_PROJECTILE)) {
+            Vec3 at = p.getBoundingBox().getCenter(), v = p.getDeltaMovement();
+            AABB hitBox = getBoundingBox().inflate(0.3);
+            Vec3 point = hitBox.clip(at.subtract(v), at.add(v.scale(2))).orElse(null);
+            if (point == null) {   // already inside (or a still projectile): where it is
+                point = new Vec3(Mth.clamp(at.x, hitBox.minX, hitBox.maxX), Mth.clamp(at.y, hitBox.minY, hitBox.maxY),
+                        Mth.clamp(at.z, hitBox.minZ, hitBox.maxZ));
+            }
+            return point.y >= getY() + HEAD_FROM;
+        }
+        if (direct instanceof LivingEntity attacker && direct == source.getEntity() && (source.is(net.minecraft.world.damagesource.DamageTypes.PLAYER_ATTACK)
+                || source.is(net.minecraft.world.damagesource.DamageTypes.MOB_ATTACK)
+                || source.is(net.minecraft.world.damagesource.DamageTypes.MOB_ATTACK_NO_AGGRO))) {
+            Vec3 eye = attacker.getEyePosition(), look = attacker.getViewVector(1.0f);
+            double reach = (attacker instanceof Player pl ? pl.entityInteractionRange() : 3.0) + 1.0;
+            Vec3 end = eye.add(look.scale(reach));
+            Optional<Vec3> head = headBox().clip(eye, end);
+            if (headBox().contains(eye)) {
+                return true;
+            }
+            if (head.isEmpty()) {
+                return false;
+            }
+            Optional<Vec3> body = bodyBox().clip(eye, end);
+            return body.isEmpty() || head.get().distanceToSqr(eye) <= body.get().distanceToSqr(eye);
+        }
+        return false;
+    }
+
+    /** A crit burst of pottery chips and a sharp clink. */
+    private void headshot() {
+        if (!(level() instanceof ServerLevel sl)) {
+            return;
+        }
+        Vec3 h = position().add(0, (HEAD_FROM + HEAD_TO) * 0.5, 0);
+        sl.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BRICK)), h.x, h.y, h.z, 22, 0.3, 0.3, 0.3, 0.22);
+        sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DECORATED_POT.defaultBlockState()), h.x, h.y, h.z, 16, 0.3,
+                0.3, 0.3, 0.15);
+        sl.sendParticles(ParticleTypes.CRIT, h.x, h.y, h.z, 24, 0.35, 0.35, 0.35, 0.45);
+        playSound(WWSounds.POT_GOLEM_HEADSHOT, 1.4f, 0.95f + random.nextFloat() * 0.15f);
+        level().broadcastEntityEvent(this, EVENT_HEADSHOT);
     }
 
     private static boolean isCrackingHit(DamageSource s) {
@@ -722,6 +1171,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         boolean hit = target.hurt(src, dmg);
         if (hit) {
             toss(target, 0.4);
+            burnFist(target);
             if (level() instanceof ServerLevel sl) {
                 net.minecraft.world.item.enchantment.EnchantmentHelper.doPostAttackEffects(sl, target, src);
             }
@@ -738,6 +1188,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         boolean hit = target.hurt(src, BLADE_DAMAGE);
         if (hit) {
             toss(target, 0.25);
+            burnFist(target);
             setLastHurtMob(target);
         }
         for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(1.5, 0.25, 1.5),
@@ -812,6 +1263,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
                 if (hasPot() && level() instanceof ServerLevel sl) {
                     popPot(sl);
                 }
+                dropStash();
                 setHead(stack);
                 stack.consume(1, player);
                 playSound(SoundEvents.DECORATED_POT_PLACE, 1.0f, 1.0f);
@@ -842,6 +1294,15 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
             }
             return InteractionResult.sidedSuccess(client);
         }
+        // Plenty: an empty hand opens the pot's stash (its owner's, or anyone's if it has none)
+        if (stack.isEmpty() && hand == InteractionHand.MAIN_HAND && headForm() == HeadForm.PLENTY && (owner == null
+                || owner.equals(player.getUUID()))) {
+            if (!client) {
+                player.openMenu(new SimpleMenuProvider((id, inv, p) -> ChestMenu.threeRows(id, inv, stash), getDisplayName()));
+                playSound(SoundEvents.DECORATED_POT_INSERT, 0.8f, 0.8f);
+            }
+            return InteractionResult.sidedSuccess(client);
+        }
         return super.mobInteract(player, hand);
     }
 
@@ -864,7 +1325,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         return out;
     }
 
-    /** Its pot's sherds and contents and its body shard (the 2-4 amber chunks come from its loot table). */
+    /** Its pot's sherds and contents, the Plenty stash and its body shard (the 2-4 amber shards come from its loot table). */
     @Override
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean byPlayer) {
         super.dropCustomDeathLoot(level, source, byPlayer);
@@ -879,6 +1340,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
             }
             entityData.set(HEAD, ItemStack.EMPTY);
         }
+        dropStash();
         Shard s = shard();
         if (s.sherd != null) {
             spawnAtLocation(new ItemStack(s.sherd));
@@ -902,6 +1364,9 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         tag.putInt("HowlCooldown", howlCooldown);
         tag.putString("Action", action.name().toLowerCase(java.util.Locale.ROOT));
         tag.putInt("ActionTicks", actionTicks);
+        tag.putInt("FlowCooldown", flowCooldown);
+        tag.putInt("BrewerCooldown", brewerCooldown);
+        tag.put("Stash", stash.createTag(registryAccess()));
     }
 
     @Override
@@ -924,6 +1389,9 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         }
         actionTicks = tag.getInt("ActionTicks");
         setFlag(FLAG_FUSING, action == Action.FUSE);
+        flowCooldown = tag.getInt("FlowCooldown");
+        brewerCooldown = tag.getInt("BrewerCooldown");
+        stash.fromTag(tag.getList("Stash", net.minecraft.nbt.Tag.TAG_COMPOUND), registryAccess());
     }
 
     // --------------------------------------------------------------------------------------- client
@@ -951,6 +1419,12 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
             level().addParticle(dev.lowpix.winterworks.registry.WWParticles.STUN_STAR, h.x + Math.cos(a) * 0.6, h.y + 0.2,
                     h.z + Math.sin(a) * 0.6, 0, 0.01, 0);
         }
+        if (headForm() == HeadForm.BURN && abilityActive() && random.nextInt(4) == 0) {   // the fists smoulder
+            Vec3 side = Vec3.directionFromRotation(0, yBodyRot + (random.nextBoolean() ? 90f : -90f)).scale(0.9);
+            Vec3 fwd = Vec3.directionFromRotation(0, yBodyRot).scale(0.35);
+            level().addParticle(random.nextInt(3) == 0 ? ParticleTypes.SMALL_FLAME : ParticleTypes.FLAME, getX() + side.x + fwd.x,
+                    getY() + 0.95 + random.nextDouble() * 0.2, getZ() + side.z + fwd.z, 0, 0.02, 0);
+        }
         if (cracks() >= 2 && random.nextInt(30) == 0) {
             Vec3 h = headPos();
             level().addParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BRICK)), h.x + random.nextGaussian() * 0.3,
@@ -964,6 +1438,22 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
 
     public float jelly(float partial) {
         return Mth.lerp(partial, jellyO, jelly);
+    }
+
+    /** Client: is the head ability on (a head with an ability, not dazed)? Its pattern glows while it is. */
+    public boolean abilityActive() {
+        return hasPot() && headForm().glow != 0 && !isDazed();
+    }
+
+    /** Client: 0..1 how bright the pattern glows: a slow breath, flaring when the ability fires. */
+    public float glowStrength(float partial) {
+        if (!abilityActive()) {
+            return 0f;
+        }
+        float t = tickCount + partial;
+        float breath = 0.72f + 0.18f * Mth.sin(t * 0.09f + getId());
+        float flare = Mth.clamp(1f - (t - abilityFlareTick) / 14f, 0f, 1f);
+        return Mth.clamp(breath + flare * 0.5f, 0f, 1f);
     }
 
     /** 0..1 how far the Danger fuse has burnt (client). */
@@ -1023,6 +1513,8 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
                 }
             }
             case EVENT_SHATTER, EVENT_BUILD -> kick(0.4f);
+            case EVENT_HEADSHOT -> kick(0.45f);
+            case EVENT_ABILITY -> abilityFlareTick = tickCount;
             case EVENT_REPAIR -> {
                 kick(0.1f);
                 Vec3 h = headPos();

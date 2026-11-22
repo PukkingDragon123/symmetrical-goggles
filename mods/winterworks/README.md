@@ -99,30 +99,39 @@ through everything in your way.
 
 Design contract: [docs/AMBER_UPDATE.md](docs/AMBER_UPDATE.md).
 
-**Archaeology everywhere.** Every overworld cave has suspicious sand and gravel holding amber or bones. **Dead Caves**,
+**Archaeology everywhere.** Every overworld cave has plenty of suspicious sand and gravel holding amber or bones, and
+**amber sand** and **amber gravel** (brush them for amber shards, now and then a whole block of amber). Sherds are rare
+finds. **Dead Caves**,
 a new underground biome found only under the badlands, are a fossil desert that was a prehistoric forest:
 banded sandstone walls with amber seams, petrified trunks and stumps, boulders, dead bushes and lots of suspicious
 blocks. **Dig Sites** (Dead Caves and wherever mineshafts can be) are abandoned excavations: a shored-up cavern, a pit
 with a half-dug fossil skeleton, scaffolding, a ruined shack, a tent, and chests and barrels of loot.
 
 **Amber.** Amber is see-through, honey-coloured and cloudy, and what is trapped inside (a mosquito, a seed) is a full 3D
-model. Break one to release an Amberwood seed (or torchflower seeds or a
-pitcher pod) or a live mosquito. Brush **amber fossils** for Amberwood seeds and grow **Amberwood**: a tall, ribbed,
-cactus-like trunk with a few arms, crowned only with pale flowers (Amberwood Bloom); its trunk oozes resin.
+model. Mine it with **Silk Touch** to keep it whole, inclusion and all; otherwise it shatters into 2-4 **amber shards**
+and whatever was inside gets out: a live mosquito, or an Amberwood Bloom. 9 shards make a block of amber again.
+Brush **amber fossils** for **Amberwood Blooms**, the tree's sapling: plant one on sand, red sand, terracotta, dirt or
+grass and it grows (bone meal helps) into an **Amberwood**: a tall, ribbed, cactus-like trunk with a few arms, crowned
+with blooms; its trunk oozes resin. Amberwood is a full wood set: wood, stripped logs and wood, planks, stairs, slabs,
+fences and gates, doors, trapdoors, buttons, pressure plates, signs, hanging signs and boats.
 
 **Mosquitoes.** Four-winged, with a giant needle. They hunt anything with blood (not the undead, golems, slimes and
-the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber chunk
+the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber shard
 when you give them blood (a potion, a blood stain, a splash): an amber farm. Pitcher pods attract them, and they
 pollinate pitcher crops. **Potion of Blood** + torchflower = **Potion of Immunity**: no other effect can touch you.
 
 **Sniffers.** Tame one with pitcher pods: it follows you, sniffs out suspicious sand, gravel and amber fossils and digs
-them up for you; sniffer digging also turns up amber, Amberwood seeds, bones and sherds.
+them up for you; sniffer digging also turns up amber, Amberwood Blooms, bones and (rarely) sherds.
 
-**The Pot Golem.** Four amber blocks in a T and a decorated pot on top: a muscular, jelly-like amber golem that
-follows you and fights. Its pot is its head: an Echo Shard inside gives a Warden-like sonic beam, the Howl sherd
-rallies wolves, the Danger sherd makes it blow itself up when almost dead. Give it a Blade, Miner or Archer sherd for
-a blade arm, a pickaxe that mines ores for you, or a bow. The pot is its weak spot: hits crack it (repair it with a
-sherd or a brick). Brush it and it giggles and sneezes the pot off, showing its dumb little face.
+**The Pot Golem.** Four amber blocks in a T and a decorated pot on top (any way round, in any order, like an iron
+golem): a muscular, jelly-like amber golem that follows you and fights. Its pot is its head, and a pot with the same
+sherd on all four faces gives it a power, its pattern glowing while it works: Howl rallies wolves, Danger blows itself
+up when almost dead, Heart heals you and your pets, Burn has fiery fists and keeps you fireproof, Flow blasts foes away
+with a gust, Shelter shields you and swats arrows aimed at you, Plenty vacuums up loot into a 27-slot pot (empty hand
+to open), Brewer throws Healing at you and Weakness or Slowness at foes. An Echo Shard inside gives a Warden-like
+sonic beam. Give it a Blade, Miner or Archer sherd for a blade arm, a pickaxe that mines ores for you, or a bow. The
+pot is its weak spot: hits crack it, and a headshot does double damage and always cracks it (repair it with a sherd or
+a brick). Brush it and it giggles and sneezes the pot off, showing its dumb little face.
 
 ## Hexes & Havoc
 
@@ -140,8 +149,9 @@ and 16 Soul Elixir), elixir bottles, soul sand, wart, ghast tears and crying obs
 
 **Elixirs.** Craft an **Elixir Bottle** from 4 gold ingots and a bottle. The lantern-sized **Elixir Jar** brews only
 over heat (fire, soul fire, a campfire, lava or magma): soul sand makes **Soul Elixir** (the Hexing Table's fuel), a
-gold block makes **Elixir of Greed** (drop it near Piglins and they fight to the death for it), and soul sand in a
-jar of Greed makes **Cursed Elixir** (a Piglin that drinks it turns golden and never zombifies).
+Potion of Blood poured in and then a gold block make **Elixir of Greed** (drop it near Piglins and they fight to the
+death for it), and soul sand in a jar of Greed makes **Cursed Elixir** (a Piglin that drinks it turns golden and never
+zombifies).
 
 **The Soul Tank and the Hexing Table.** A Soul Tank holds 1000 souls: mobs that die within 8 blocks drift in (10
 each), and Soul Elixir adds 50. The **Hexing Table** (netherite, an enchanting table, the Hex Core, crying obsidian)
@@ -153,15 +163,21 @@ Put an enchanted book and Soul Elixir in it and press the HEX rune:
 * Any hex has a 15% chance of a **hidden curse** that shows as scrambled text until it strikes.
 
 Hexing leaves you **Hexed** for 5, 10 or 20 minutes: no natural regeneration, so you heal only with potions. You keep
-all your hearts.
+all your hearts. **Blood instead of yourself**: a lesser hex takes a Potion of Blood from the table's blood slot instead
+of hexing you; a sin hex always needs one, and takes three instead of hexing you.
+
+Potions of Blood are a base potion too: with a fermented spider eye they brew Harming, with a ghast tear Regeneration.
+Awkward potions brew **Burning** with a torchflower (you burn for the whole time, and water won't put you out) and
+**Decay** with a Wither Bone (Wither); every mod potion comes as drink, splash, lingering and tipped arrows.
 
 **Curses.** Narcissus (stare at water and waste away), Icarus (fly too high in the sun and burn), Midas (your food
 turns to gold), Orpheus (look back and your pet is dragged under), Sisyphus (mined blocks come back), Tantalus
 (food rolls out of your hand), the Moth (drawn to light at night, even lava). Hidden: Cain (you wound your own pets),
 Judas (trades turn iron golems on you), Lot's Wife (look back while fleeing and turn to stone), the Leech (one hit in
-five heals).
+five heals). Curses never say what they do: each one plays its own few seconds of screen effect when it strikes. Cursed
+books look cursed, and anything carrying a curse glints with drifting souls instead of the purple shimmer.
 
-**The Seven Deadly Sins.** Each is a big power with a brutal curse. Wrath: soul fire, and strength while you keep
+**The Seven Deadly Sins.** Each is a big power with a brutal curse. Wrath: blue soul fire, and strength while you keep
 hitting, weakness when you stop. Greed: huge ore and gold drops, but every Piglin hunts you and dropped items vanish.
 Lust: far more loot, but twice the hostile spawns, all coming for you, and neutral mobs turn on you. Gluttony: food
 repairs your gear, but hunger drains three times as fast. Sloth: instant mining, but you are always slow and nod

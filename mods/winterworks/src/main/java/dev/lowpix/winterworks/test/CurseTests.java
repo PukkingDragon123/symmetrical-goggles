@@ -1,13 +1,28 @@
 package dev.lowpix.winterworks.test;
 
+import com.mojang.authlib.GameProfile;
 import dev.lowpix.winterworks.curse.Curse;
 import dev.lowpix.winterworks.curse.Curses;
 import dev.lowpix.winterworks.curse.LesserCurses;
 import dev.lowpix.winterworks.curse.LustSpawns;
 import dev.lowpix.winterworks.curse.Sins;
+import dev.lowpix.winterworks.curse.SoulFirePayload;
+import dev.lowpix.winterworks.hex.CurseTooltips;
+import dev.lowpix.winterworks.hex.CursedItems;
 import dev.lowpix.winterworks.registry.WWEnchantments;
+import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import net.minecraft.locale.Language;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.game.ClientboundSystemChatPacket;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -373,6 +388,193 @@ public class CurseTests implements FabricGameTest {
             h.assertBlockPresent(Blocks.AIR, rock);
             h.assertFalse(LesserCurses.hollow(h.getLevel(), h.absolutePos(rock)), "a hollow stone crumbles to nothing");
             done(h, p);
+        });
+    }
+
+    // ------------------------------------------------------------------------------------------------ 0.4 fixes: hexes
+
+    /** A survival mock player whose connection we can read: outbound packets pile up in the channel. */
+    private static ServerPlayer listening(GameTestHelper h, int x, int z, EmbeddedChannel[] channel) {
+        CommonListenerCookie cookie = CommonListenerCookie.createInitial(new GameProfile(UUID.randomUUID(), "test-mock-listener"), false);
+        ServerPlayer p = new ServerPlayer(h.getLevel().getServer(), h.getLevel(), cookie.gameProfile(), cookie.clientInformation()) {
+            @Override
+            public boolean isSpectator() {
+                return false;
+            }
+        };
+        Connection connection = new Connection(PacketFlow.SERVERBOUND);
+        channel[0] = new EmbeddedChannel(connection);
+        h.getLevel().getServer().getPlayerList().placeNewPlayer(connection, p, cookie);
+        p.setGameMode(GameType.SURVIVAL);
+        BlockPos at = h.absolutePos(new BlockPos(x, 1, z));
+        p.teleportTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+        return p;
+    }
+
+    private static List<Object> sent(EmbeddedChannel channel) {
+        channel.flushOutbound();
+        List<Object> out = new ArrayList<>();
+        for (Object o; (o = channel.readOutbound()) != null; ) {
+            out.add(o);
+        }
+        return out;
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200)
+    public void cursesShowNoTextOnlyTheirScreenEffect(GameTestHelper h) {
+        floor(h);
+        EmbeddedChannel[] ch = new EmbeddedChannel[1];
+        ServerPlayer p = listening(h, 3, 3, ch);
+        p.setItemSlot(EquipmentSlot.MAINHAND, enchanted(h, Items.DIAMOND_PICKAXE, WWEnchantments.GREED, 1));
+        p.setItemSlot(EquipmentSlot.HEAD, enchanted(h, Items.GOLDEN_HELMET, WWEnchantments.MIDAS, 1));
+        p.setItemSlot(EquipmentSlot.FEET, enchanted(h, Items.IRON_BOOTS, WWEnchantments.LOTS_WIFE, 1));
+        List<Object> packets = new ArrayList<>();
+        h.runAfterDelay(70, () -> {
+            sent(ch[0]);   // forget the join packets
+            int before = Curses.effects(p);
+            Curses.force(p, true);
+            p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.BREAD, 3));
+            p.startUsingItem(InteractionHand.OFF_HAND);
+            p.drop(new ItemStack(Items.DIAMOND), false, true);   // Greed: it vanishes
+            h.assertTrue(Curses.lastEffect(p) == Curse.GREED, "Greed should play its screen effect, got " + Curses.lastEffect(p));
+            p.hurt(h.getLevel().damageSources().generic(), 1f);  // fleeing...
+            p.setYRot(p.getYRot() + 180f);                         // ...and looking back: Lot's Wife
+            h.assertTrue(Curses.effects(p) == before + 1, "one curse, one effect, " + (Curses.effects(p) - before) + " so far");
+            packets.addAll(sent(ch[0]));
+        });
+        h.runAfterDelay(73, () -> {
+            Sins.nodOff(p);   // Sloth
+            h.assertTrue(Curses.lastEffect(p) == Curse.SLOTH, "Sloth should play its screen effect, got " + Curses.lastEffect(p));
+        });
+        h.runAfterDelay(76, () -> {
+            h.assertTrue(p.getOffhandItem().is(Items.GOLD_NUGGET), "Midas should have struck, hand " + p.getOffhandItem());
+            h.assertTrue(Curses.seen(p, Curse.MIDAS), "Midas should have triggered");
+            h.assertTrue(Curses.seen(p, Curse.GREED), "Greed should have triggered");
+            h.assertTrue(Curses.seen(p, Curse.LOTS_WIFE), "Lot's Wife should have triggered");
+            h.assertTrue(Curses.effects(p) >= 4, "four curses, four screen effects, got " + Curses.effects(p));
+            packets.addAll(sent(ch[0]));
+            h.assertTrue(packets.stream().anyMatch(o -> o instanceof net.minecraft.network.protocol.game.ClientboundSoundPacket),
+                    "the curses were heard (so we are reading what the player was sent), packets " + packets.size());
+            for (Object packet : packets) {   // (the test framework's own chat lines about other tests may pass by)
+                if (packet instanceof ClientboundSystemChatPacket chat) {
+                    h.assertFalse(chat.overlay() || chat.content().getContents() instanceof net.minecraft.network.chat.contents.TranslatableContents t
+                                    && t.getKey().startsWith("curse."), "a curse must not say anything, but sent: " + chat.content().getString());
+                }
+            }
+            for (Curse c : Curse.ALL) {
+                for (String suffix : new String[]{".trigger", ".warn", ".vanish"}) {
+                    h.assertFalse(Language.getInstance().has("curse.winterworks." + c.id() + suffix),
+                            "no curse text should remain: curse.winterworks." + c.id() + suffix);
+                }
+                h.assertTrue(Curses.effectTicks(c) >= 60 && Curses.effectTicks(c) <= 120,
+                        c.id() + "'s screen effect should last a few seconds, " + Curses.effectTicks(c) + " ticks");
+            }
+            done(h, p);
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void curseTooltipsAreJustTheName(GameTestHelper h) {
+        Registry<Enchantment> reg = h.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        h.assertTrue(Language.getInstance().has("enchantment.winterworks.narcissus"), "the curse names are in the server's language");
+        List<ResourceKey<Enchantment>> keys = new ArrayList<>();
+        for (Curse c : Curse.ALL) {
+            keys.add(c.key);
+        }
+        keys.add(Enchantments.BINDING_CURSE);
+        keys.add(Enchantments.VANISHING_CURSE);
+        for (ResourceKey<Enchantment> k : keys) {
+            Holder<Enchantment> curse = reg.getHolderOrThrow(k);
+            String name = Enchantment.getFullname(curse, 1).getString();
+            ItemStack sword = new ItemStack(Items.DIAMOND_SWORD);
+            sword.enchant(curse, 1);
+            ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
+            ItemEnchantments.Mutable m = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+            m.set(curse, 1);
+            book.set(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS, m.toImmutable());
+            for (ItemStack stack : new ItemStack[]{sword, book}) {
+                List<Component> lines = new ArrayList<>(stack.getTooltipLines(Item.TooltipContext.of(h.getLevel()), null, TooltipFlag.NORMAL));
+                // a description mod's line, the way they write it: it must come out again
+                lines.add(Component.translatable("enchantment." + k.location().getNamespace() + "." + k.location().getPath() + ".desc"));
+                int removed = CurseTooltips.nameOnly(lines);
+                h.assertTrue(removed == 1, k.location() + ": the description line should come out, removed " + removed);
+                long named = lines.stream().filter(l -> l.getString().equals(name)).count();
+                h.assertTrue(named == 1, k.location() + " should show just its name once on " + stack + ", lines "
+                        + lines.stream().map(Component::getString).toList());
+                for (String desc : CurseTooltips.descriptionKeys()) {
+                    h.assertFalse(Language.getInstance().has(desc), "no description string should exist: " + desc);
+                }
+                h.assertTrue(lines.stream().noneMatch(CurseTooltips::isDescription), k.location() + ": no description lines left");
+            }
+        }
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void cursedBooksAndGearAreKnown(GameTestHelper h) {
+        ItemStack binding = new ItemStack(Items.ENCHANTED_BOOK);
+        ItemEnchantments.Mutable m = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        m.set(ench(h, Enchantments.BINDING_CURSE), 1);
+        m.set(ench(h, Enchantments.SHARPNESS), 2);
+        binding.set(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS, m.toImmutable());
+        ItemStack sin = new ItemStack(Items.ENCHANTED_BOOK);
+        ItemEnchantments.Mutable s = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        s.set(ench(h, WWEnchantments.WRATH), 1);
+        sin.set(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS, s.toImmutable());
+        ItemStack plain = new ItemStack(Items.ENCHANTED_BOOK);
+        ItemEnchantments.Mutable p = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        p.set(ench(h, Enchantments.SHARPNESS), 2);
+        plain.set(net.minecraft.core.component.DataComponents.STORED_ENCHANTMENTS, p.toImmutable());
+        h.assertTrue(CursedItems.tier(binding) == CursedItems.CURSE, "a book of Binding is a cursed book");
+        h.assertTrue(CursedItems.tier(sin) == CursedItems.SIN, "a book of Wrath is a sin book");
+        h.assertTrue(CursedItems.tier(plain) == CursedItems.NONE, "a book of Sharpness is just an enchanted book");
+        h.assertTrue(CursedItems.cursed(enchanted(h, Items.IRON_HELMET, WWEnchantments.NARCISSUS, 1)), "cursed gear glints with souls");
+        h.assertTrue(CursedItems.cursed(enchanted(h, Items.IRON_SWORD, WWEnchantments.LEECH, 1)), "hidden curses too");
+        h.assertFalse(CursedItems.cursed(enchanted(h, Items.IRON_SWORD, Enchantments.SHARPNESS, 1)), "plain gear keeps its purple glint");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 260)
+    public void soulFireSyncsAndBurnsItsFullTime(GameTestHelper h) {
+        floor(h);
+        EmbeddedChannel[] ch = new EmbeddedChannel[1];
+        ServerPlayer viewer = listening(h, 1, 1, ch);
+        Pig pig = h.spawn(EntityType.PIG, new BlockPos(4, 1, 4));
+        pig.setNoAi(true);
+        pig.addEffect(new net.minecraft.world.effect.MobEffectInstance(MobEffects.FIRE_RESISTANCE, 1200));
+        int[] sentBefore = new int[1];
+        h.runAfterDelay(5, () -> {   // by now the viewer tracks the pig
+            sent(ch[0]);
+            sentBefore[0] = SoulFirePayload.sentCount();
+            Curses.soulIgnite(pig, 160);
+            h.assertTrue(Curses.soulBurning(pig), "the pig should burn with soul fire");
+            h.assertTrue(SoulFirePayload.sentCount() == sentBefore[0] + 1, "soul fire is synced to clients");
+            SoulFirePayload last = SoulFirePayload.lastSent();
+            h.assertTrue(last.entity() == pig.getId() && last.ticks() == 160, "the update names the pig and its 8 s, got " + last);
+            // a burning player is told too (it draws its own first-person soul flames from this)
+            viewer.addEffect(new net.minecraft.world.effect.MobEffectInstance(MobEffects.FIRE_RESISTANCE, 1200));
+            Curses.soulIgnite(viewer, 40);
+            boolean told = sent(ch[0]).stream().anyMatch(o -> o instanceof ClientboundCustomPayloadPacket pk
+                    && pk.payload() instanceof SoulFirePayload sf && sf.entity() == viewer.getId() && sf.ticks() == 40);
+            h.assertTrue(told, "a player set alight with soul fire is sent the soul fire update");
+            var codec = SoulFirePayload.CODEC;
+            var buf = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), h.getLevel().registryAccess());
+            codec.encode(buf, last);
+            h.assertTrue(codec.decode(buf).equals(last), "the soul fire payload survives the wire");
+        });
+        h.runAfterDelay(30, () -> pig.setRemainingFireTicks(3));   // something cuts the fire short...
+        h.runAfterDelay(40, () -> {
+            h.assertTrue(Curses.soulBurning(pig) && pig.getRemainingFireTicks() > 100, "...but soul fire burns its full time, "
+                    + pig.getRemainingFireTicks() + " ticks left");
+        });
+        h.runAfterDelay(5 + 150, () -> h.assertTrue(Curses.soulBurning(pig), "still burning after 7.5 s"));
+        h.runAfterDelay(5 + 170, () -> {
+            h.assertFalse(Curses.soulBurning(pig), "8 s of soul fire, then out");
+            SoulFirePayload last = SoulFirePayload.lastSent();
+            h.assertTrue(last.entity() == pig.getId() && last.ticks() == 0, "and the clients are told it's out, got " + last);
+            h.assertFalse(Curses.soulBurning(viewer), "the player's 2 s of soul fire are long out");
+            pig.discard();
+            done(h, viewer);
         });
     }
 

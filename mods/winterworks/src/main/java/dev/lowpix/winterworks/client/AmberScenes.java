@@ -23,6 +23,11 @@ final class AmberScenes {
                 + "\"]}}";
     }
 
+    /** A pot with the same sherd on all four faces: what a head ability needs (docs/FIXES_0_4.md). */
+    private static String pot4(String sherd) {
+        return pot(sherd, sherd, sherd, sherd);
+    }
+
     static int plan(int t) {
         // amber, an Amberwood tree oozing resin, mosquitoes empty / full of blood / full of amber
         at(t += 5, () -> {
@@ -57,9 +62,9 @@ final class AmberScenes {
         at(t += 5, () -> {
             cmd("fill 375 -61 -8 405 -61 20 minecraft:sandstone");
             cmd("summon winterworks:pot_golem 383.5 -60 8 {NoAI:1b,Rotation:[160f,0f],PersistenceRequired:1b,Shard:\"archer\",Head:"
-                    + pot("minecraft:brick", "minecraft:howl_pottery_sherd", "minecraft:brick", "minecraft:howl_pottery_sherd") + "}");
+                    + pot4("minecraft:howl_pottery_sherd") + "}");
             cmd("summon winterworks:pot_golem 388.5 -60 9 {NoAI:1b,Rotation:[180f,0f],PersistenceRequired:1b,Shard:\"blade\",Head:"
-                    + pot("minecraft:danger_pottery_sherd", "minecraft:brick", "minecraft:brick", "minecraft:danger_pottery_sherd") + "}");
+                    + pot4("minecraft:danger_pottery_sherd") + "}");
             cmd("summon winterworks:pot_golem 393.5 -60 8 {NoAI:1b,Rotation:[200f,0f],PersistenceRequired:1b,Shard:\"miner\",Head:"
                     + pot("minecraft:miner_pottery_sherd", "minecraft:archer_pottery_sherd", "minecraft:prize_pottery_sherd",
                     "minecraft:skull_pottery_sherd") + "}");

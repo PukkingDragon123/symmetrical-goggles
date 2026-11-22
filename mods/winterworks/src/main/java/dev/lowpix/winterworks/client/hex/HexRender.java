@@ -36,7 +36,7 @@ final class HexRender {
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, pose, buffers, light, overlay);
     }
 
-    /** A block item's 2D icon: in slots, and anywhere while its 3D model is missing. */
+    /** A hex item's 2D icon, while its 3D model is missing. */
     static void icon(ResourceLocation iconModel, ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers,
                      int light, int overlay) {
         Minecraft mc = Minecraft.getInstance();
