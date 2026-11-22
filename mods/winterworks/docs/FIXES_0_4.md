@@ -182,8 +182,9 @@ contract for the Java side.
 * Tamed: it takes **horse armour** and a **saddle** and can be ridden. While riding, a **soul bar** replaces the
   experience bar and shows its soul energy (= its health). Its **ram** (the jump key, charged like a horse jump) charges
   forward, pinning and soul-burning what it hits, and costs a lot of soul energy.
-* **Armoured variant**: about one wild Soul Bull in five is armoured: blackened, gilded blackstone plates bolted to
-  its bones (more armour, +50% health); Wither Skeletons ride these. The bones of every Soul Bull are the colour of
+* **Armoured variant**: blackened, gilded blackstone plates bolted to its bones (more armour, +50% health). Armoured
+  bulls are seen with **piglins**: round bastion remnants and in Hex Fortress pens (sometimes a piglin or brute rides
+  one). The **unarmoured** wild bulls of the Soul Sand Valleys are the ones **Wither Skeletons** ride. The bones of every Soul Bull are the colour of
   a Wither Skeleton's (dark charcoal greys), not pure black.
 * **Milking**: use an Elixir Bottle on a tamed Soul Bull to draw a **Soul Elixir** from its soul fire; it costs a
   quarter of its soul energy (it refuses below a quarter).
