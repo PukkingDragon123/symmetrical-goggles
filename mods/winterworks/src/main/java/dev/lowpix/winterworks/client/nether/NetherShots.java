@@ -96,11 +96,12 @@ final class NetherShots {
         at(t, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.hideGui = true;
-            mc.options.renderDistance().set(6);
-            mc.options.simulationDistance().set(6);
+            mc.options.renderDistance().set(7);   // the Nether's fog ends at half the render distance
+            mc.options.simulationDistance().set(5);
             mc.options.gamma().set(1.0);
             for (String c : new String[]{"gamerule doDaylightCycle false", "gamerule doMobSpawning false", "gamerule doFireTick false",
-                    "gamerule sendCommandFeedback false", "difficulty normal", "gamemode spectator",
+                    "gamerule sendCommandFeedback false", "gamerule commandModificationBlockLimit 2000000", "difficulty normal",
+                    "gamemode spectator", "effect give @s minecraft:night_vision infinite 0 true",
                     "execute in minecraft:the_nether run tp @s 0.5 100 30.5"}) {
                 cmd(c);
             }
@@ -110,14 +111,15 @@ final class NetherShots {
             return mc.level != null && mc.level.dimension() == Level.NETHER && mc.screen == null && mc.levelRenderer.hasRenderedAllSections();
         });
         at(t += 40, () -> nether(NetherShots::clearGround));
+        at(t += 5, () -> cmd("execute in minecraft:the_nether run fillbiome -40 64 -40 40 127 60 minecraft:nether_wastes"));   // red fog, not grey
         at(t += 20, () -> nether(level -> HexFortress.build(level, ORIGIN, Rotation.NONE, 20261122L)));
         at(t += 10, () -> nether(NetherShots::commanderStage));
         // 1. the fortress, and its crew at work
-        at(t += 40, () -> tpFacing(new Vec3(26, 108, 40), new Vec3(0, 83, -2)));
+        at(t += 40, () -> tpFacing(new Vec3(-17, 103, 30), new Vec3(1, 82, -2)));
         at(t += 60, () -> shot("fortress_overview"));
-        at(t += 2, () -> tpFacing(new Vec3(-2, 90, 40), new Vec3(0, 84, 6)));
+        at(t += 2, () -> tpFacing(new Vec3(-3, 88, 36), new Vec3(0, 83, 4)));
         at(t += 20, () -> shot("fortress_gate"));
-        at(t += 2, () -> tpFacing(new Vec3(-27, 102, -28), new Vec3(-2, 82, -8)));
+        at(t += 2, () -> tpFacing(new Vec3(-22, 98, -27), new Vec3(-1, 82, -8)));
         at(t += 20, () -> shot("fortress_back"));
         at(t += 150, () -> tpFacing(new Vec3(0.5, 93, 9), new Vec3(0.5, 80, -4)));   // the crew has had time to get to work
         at(t += 20, () -> shot("crew_at_work"));
@@ -137,8 +139,7 @@ final class NetherShots {
             Hoglin jockey = level.getEntitiesOfClass(Hoglin.class, new AABB(ORIGIN).inflate(40), h -> HoglinJockeys.rider(h) != null)
                     .stream().findFirst().orElse(null);
             if (jockey != null) {
-                Vec3 at = jockey.position();
-                tpFacing(at.add(-4.6, 2.6, 2.2), at.add(0, 1.1, 0));
+                frontOf(jockey, 4.5, 2.5, 2.4, 1.3);
             }
         }));
         at(t += 20, () -> shot("hoglin_jockey"));
@@ -158,7 +159,13 @@ final class NetherShots {
                 witch.provoke(z);
             }
         }));
-        at(t += 40, () -> tpFacing(new Vec3(-0.6, 82.3, -1.0), new Vec3(0.5, 81.3, -5.5)));
+        at(t += 40, () -> nether(level -> {
+            Vec3 eye = new Vec3(-1.6, 82.4, -1.2);
+            float yaw = (float) (Math.atan2(eye.z - witch.getZ(), eye.x - witch.getX()) * 180 / Math.PI) - 90f;
+            face(witch, yaw);
+            witch.setNoAi(true);
+            tpFacing(eye, witch.position().add(0, 1.5, 0));
+        }));
         at(t += 20, () -> shot("witch_spellbook"));
         at(t += 2, () -> nether(level -> witch.castNow(PiglinWitch.Spell.BOLTS)));
         at(t += 12, () -> shot("witch_casting_bolts"));
@@ -167,11 +174,11 @@ final class NetherShots {
         at(t += 16, () -> shot("witch_ring_telegraph"));
         at(t += 16, () -> shot("witch_soul_ring"));
         at(t += 2, () -> tpFacing(new Vec3(0.5, 84.0, 3.5), new Vec3(-0.5, 80.8, -4.5)));
-        at(t += 40, () -> nether(level -> witch.castNow(PiglinWitch.Spell.SUMMON)));
+        at(t += 30, () -> nether(level -> witch.castNow(PiglinWitch.Spell.HEX)));
+        at(t += 14, () -> shot("witch_hex"));
+        at(t += 30, () -> nether(level -> witch.castNow(PiglinWitch.Spell.SUMMON)));
         at(t += 20, () -> shot("witch_summon_bones"));
         at(t += 20, () -> shot("witch_summon_rises"));
-        at(t += 2, () -> nether(level -> witch.castNow(PiglinWitch.Spell.HEX)));
-        at(t += 14, () -> shot("witch_hex"));
         // 4. the Withered Commander on its bull: at rest, a lunge, a sweep; then on foot
         at(t += 30, () -> nether(level -> {
             for (Mob m : level.getEntitiesOfClass(Mob.class, new AABB(ORIGIN).inflate(30), m -> !(m instanceof SoulBull) || m != bull)) {
@@ -180,37 +187,37 @@ final class NetherShots {
                 }
             }
         }));
-        at(t += 2, () -> tpFacing(new Vec3(4.0, 83.4, 32.0), new Vec3(0.5, 82.2, 38.5)));
+        at(t += 2, () -> nether(level -> frontOf(bull, 6.0, 3.5, 3.6, 2.6)));
         at(t += 30, () -> shot("commander_mounted"));
-        at(t += 2, () -> tpFacing(new Vec3(-6.5, 82.6, 37.0), new Vec3(0.5, 82.2, 38.5)));
+        at(t += 2, () -> nether(level -> frontOf(bull, 3.5, -5.5, 2.6, 2.4)));
         at(t += 20, () -> shot("commander_mounted_front"));
         at(t += 2, () -> nether(level -> commander.startLunge(dummyNear(level, new Vec3(0.5, 80, 34.5)))));
         at(t += 7, () -> shot("commander_lunge"));
         at(t += 30, () -> nether(level -> commander.startSpin()));
         at(t += 13, () -> shot("commander_spin"));
         at(t += 30, () -> nether(level -> bull.kill()));
-        at(t += 40, () -> tpFacing(new Vec3(3.5, 82.4, 33.0), new Vec3(1.0, 81.8, 38.5)));
+        at(t += 40, () -> nether(level -> frontOf(commander, 4.5, 1.5, 2.4, 1.9)));
         at(t += 10, () -> shot("commander_on_foot_war_cry"));
         at(t += 40, () -> shot("commander_on_foot"));
         at(t += 1, NetherShots::logCommander);
         // 5. gilding: a piglin and a brute part way to gold, and a golden brute
         at(t += 2, () -> nether(level -> {
             Piglin p = EntityType.PIGLIN.create(level);
-            p.moveTo(-2.5, 80, 30.5, 20f, 0f);
-            face(p, 20f);
+            p.moveTo(-2.5, 80, 30.5, 200f, 0f);
+            face(p, 200f);
             p.setNoAi(true);
             level.addFreshEntity(p);
             PiglinGreed.setGilding(p, PiglinGreed.GILD_TICKS / 3, true);
             PiglinBrute b = EntityType.PIGLIN_BRUTE.create(level);
-            b.moveTo(0.5, 80, 30.5, 0f, 0f);
-            face(b, 0f);
+            b.moveTo(0.5, 80, 30.5, 180f, 0f);
+            face(b, 180f);
             b.setNoAi(true);
             b.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_AXE));
             level.addFreshEntity(b);
             PiglinGreed.setGilding(b, PiglinGreed.GILD_TICKS * 3 / 4, true);
             GoldenPiglin g = WWEntities.GOLDEN_PIGLIN.create(level);
-            g.moveTo(3.5, 80, 30.5, 340f, 0f);
-            face(g, 340f);
+            g.moveTo(3.5, 80, 30.5, 160f, 0f);
+            face(g, 160f);
             g.setNoAi(true);
             level.addFreshEntity(g);
             g.setBrute(true);
@@ -278,9 +285,11 @@ final class NetherShots {
     private static void commanderStage(ServerLevel level) {
         bull = SoulBull.createPenBull(level, 0.5, 80, 38.5, 180f, false);
         bull.setNoAi(true);
+        face(bull, 180f);
         level.addFreshEntity(bull);
         commander = WWEntities.WITHERED_COMMANDER.create(level);
         commander.moveTo(0.5, 80, 38.5, 180f, 0f);
+        face(commander, 180f);
         commander.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(WWItems.NETHERITE_SPEAR));
         commander.setPersistenceRequired();
         level.addFreshEntity(commander);
@@ -293,6 +302,14 @@ final class NetherShots {
             w.setNoAi(true);
             level.addFreshEntity(w);
         }
+    }
+
+    /** Puts the camera in front of `m` (by its body's facing): `dist` out, `side` to its right, `up` above its feet. */
+    private static void frontOf(net.minecraft.world.entity.Entity m, double dist, double side, double up, double lookUp) {
+        float yaw = m.getYRot() * net.minecraft.util.Mth.DEG_TO_RAD;
+        Vec3 fwd = new Vec3(-Math.sin(yaw), 0, Math.cos(yaw)), right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
+        Vec3 at = m.position();
+        tpFacing(at.add(fwd.scale(dist)).add(right.scale(side)).add(0, up, 0), at.add(0, lookUp, 0));
     }
 
     private static void face(Mob m, float yaw) {

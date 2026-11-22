@@ -97,7 +97,7 @@ public class PiglinWitchRenderer extends MobRenderer<PiglinWitch, PiglinWitchRen
     }
 
     /**
-     * Her spellbook while she fights: vanilla's book model, wide open, floating before her chest and turned up to her,
+     * Her spellbook while she fights: vanilla's book model, wide open, floating before her, its pages turned out to her foe,
      * bobbing, its pages riffling (faster while a spell gathers), in a hexed soul-blue, full bright.
      */
     static class SpellbookLayer extends RenderLayer<PiglinWitch, Model> {
@@ -116,19 +116,22 @@ public class PiglinWitchRenderer extends MobRenderer<PiglinWitch, PiglinWitchRen
             }
             boolean casting = e.castSpell() != PiglinWitch.Spell.NONE;
             pose.pushPose();
-            // layer space is the model's (y down, 1.5 blocks above her feet, facing -z): out in front of her chest
-            pose.translate(0f, 1.501f - 1.45f - Mth.sin(age * 0.12f) * 0.05f, -0.9f);
+            // layer space is the model's (y down, 1.5 blocks above her feet, facing -z): out in front of her, clear of her belly
+            pose.translate(0f, 1.501f - PiglinWitch.BOOK_HEIGHT - Mth.sin(age * 0.12f) * 0.05f, -PiglinWitch.BOOK_FORWARD);
             pose.scale(-1f, -1f, 1f);   // back to y up
-            pose.mulPose(Axis.YP.rotationDegrees(-90f + Mth.sin(age * 0.05f) * 6f));   // the pages toward her
+            pose.mulPose(Axis.YP.rotationDegrees(90f + Mth.sin(age * 0.05f) * 6f));   // the open pages outward, toward her foe
             pose.mulPose(Axis.ZP.rotationDegrees(casting ? 62f : 52f));   // tilted up, as on a lectern
-            pose.scale(0.85f, 0.85f, 0.85f);
+            pose.scale(1.2f, 1.2f, 1.2f);
             float flip = age * (casting ? 0.09f : 0.025f);
             float r = Mth.clamp(Mth.frac(flip + 0.25f) * 1.6f - 0.3f, 0f, 1f);
             float l = Mth.clamp(Mth.frac(flip + 0.75f) * 1.6f - 0.3f, 0f, 1f);
             book.setupAnim(age, r, l, 1f);
-            int tint = casting ? 0xFF9FF0FF : 0xFF7FD8F0;
-            book.renderToBuffer(pose, net.minecraft.client.renderer.blockentity.EnchantTableRenderer.BOOK_LOCATION.buffer(buffers,
-                    RenderType::entityCutoutNoCull), 0xF000F0, OverlayTexture.NO_OVERLAY, tint);
+            var location = net.minecraft.client.renderer.blockentity.EnchantTableRenderer.BOOK_LOCATION;
+            book.renderToBuffer(pose, location.buffer(buffers, RenderType::entityCutoutNoCull), 0xF000F0, OverlayTexture.NO_OVERLAY,
+                    0xFFD8F4FF);
+            // a hexed sheen over it: soul blue, brighter while a spell gathers
+            int glow = casting ? 0xFF4FC8E8 : 0xFF2A7088;
+            book.renderToBuffer(pose, location.buffer(buffers, RenderType::eyes), 0xF000F0, OverlayTexture.NO_OVERLAY, glow);
             pose.popPose();
         }
     }

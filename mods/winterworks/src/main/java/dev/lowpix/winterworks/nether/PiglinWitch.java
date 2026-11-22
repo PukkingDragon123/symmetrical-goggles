@@ -314,11 +314,13 @@ public class PiglinWitch extends PathfinderMob implements Merchant, RangedAttack
         return false;
     }
 
-    /** Where her spellbook floats: before her chest, a little to her right. */
+    /** Where her spellbook floats: before her, clear of her belly, at chest height. */
+    public static final float BOOK_FORWARD = 1.2f, BOOK_HEIGHT = 1.6f;
+
     public Vec3 bookPos(float partial) {
         float yaw = Mth.lerp(partial, yBodyRotO, yBodyRot) * Mth.DEG_TO_RAD;
         Vec3 fwd = new Vec3(-Mth.sin(yaw), 0, Mth.cos(yaw));
-        return getPosition(partial).add(fwd.scale(0.85)).add(0, 1.45, 0);
+        return getPosition(partial).add(fwd.scale(BOOK_FORWARD)).add(0, BOOK_HEIGHT, 0);
     }
 
     // --------------------------------------------------------------------------------------- the fight
