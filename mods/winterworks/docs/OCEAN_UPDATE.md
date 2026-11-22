@@ -114,7 +114,7 @@ Natural **sponges** (dry and wet) generate in coral reefs, and reefs get denser 
 
 ## 8. The Whale (`whale`)
 A massive, neutral mob that behaves like a moving block structure.
-* **Body**: about 7 wide, 6 tall, 26 long; 600 health; damage from outside is cut 90% (it's mostly blubber). Swims deep
+* **Body**: a block-built sperm whale, 9 wide, 6 tall, 28 long (13 across the fluke; whale.py), hitbox 9 x 6; 600 health; damage from outside is cut 90% (it's mostly blubber). Swims deep
   oceans, surfaces to breathe (a blowhole spout), dives, eats fish schools and food items in the water.
 * **The deck**: a block grid over its back (9 wide, 6 high, 21 long), axis-aligned. Players can walk on its back, place
   blocks on it and on those blocks, and build houses, storage (chests, barrels) and cannons; everything moves with the

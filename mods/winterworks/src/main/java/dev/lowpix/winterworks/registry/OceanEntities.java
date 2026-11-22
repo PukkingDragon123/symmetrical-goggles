@@ -20,7 +20,7 @@ public final class OceanEntities {
             EntityType.Builder.of(dev.lowpix.winterworks.oceanmob.Nautilus::new, MobCategory.WATER_CREATURE).sized(1.4f, 1.2f)
                     .clientTrackingRange(10));
     public static final EntityType<dev.lowpix.winterworks.whale.Whale> WHALE = reg("whale",
-            EntityType.Builder.of(dev.lowpix.winterworks.whale.Whale::new, MobCategory.WATER_CREATURE).sized(7f, 6f)
+            EntityType.Builder.of(dev.lowpix.winterworks.whale.Whale::new, MobCategory.WATER_CREATURE).sized(9f, 6f)
                     .clientTrackingRange(16).updateInterval(1));
     public static final EntityType<dev.lowpix.winterworks.oceangear.LionfishDart> LIONFISH_DART = reg("lionfish_dart",
             EntityType.Builder.<dev.lowpix.winterworks.oceangear.LionfishDart>of(dev.lowpix.winterworks.oceangear.LionfishDart::new,
