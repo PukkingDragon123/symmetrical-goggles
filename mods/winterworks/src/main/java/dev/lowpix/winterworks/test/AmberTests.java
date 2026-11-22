@@ -2,6 +2,8 @@ package dev.lowpix.winterworks.test;
 
 import dev.lowpix.winterworks.amber.AmberBlock;
 import dev.lowpix.winterworks.amber.AmberFeature;
+import dev.lowpix.winterworks.amber.AmberInclusionBlockEntity;
+import dev.lowpix.winterworks.amber.AmberwoodFeature;
 import dev.lowpix.winterworks.amber.AmberwoodLogBlock;
 import dev.lowpix.winterworks.amber.MosquitoEntity;
 import dev.lowpix.winterworks.amber.SnifferTaming;
@@ -35,7 +37,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BrushableBlockEntity;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -237,7 +241,7 @@ public class AmberTests implements FabricGameTest {
     }
 
     @GameTest(template = EMPTY_STRUCTURE)
-    public void amberwoodSaplingGrows(GameTestHelper h) {
+    public void amberwoodSaplingGrowsACactusWithBlooms(GameTestHelper h) {
         BlockPos at = new BlockPos(3, 1, 3);
         for (int x = 0; x < 8; x++) {
             for (int z = 0; z < 8; z++) {
@@ -251,13 +255,42 @@ public class AmberTests implements FabricGameTest {
         for (int i = 0; i < 20 && level.getBlockState(abs).is(sapling); i++) {
             sapling.advanceTree(level, abs, level.getBlockState(abs), level.random);
         }
-        h.assertBlockPresent(WWBlocks.AMBERWOOD_LOG, at);
-        h.assertBlockPresent(WWBlocks.AMBERWOOD_LOG, at.above(2));
-        boolean leaves = false;
-        for (BlockPos p : BlockPos.betweenClosed(at.offset(-2, 2, -2), at.offset(2, 7, 2))) {
-            leaves |= h.getBlockState(p).is(WWBlocks.AMBERWOOD_LEAVES);
+        int height = 0;
+        while (h.getBlockState(at.above(height)).is(WWBlocks.AMBERWOOD_LOG)) {
+            height++;
         }
-        h.assertTrue(leaves, "the tree should have amberwood leaves");
+        h.assertTrue(height >= AmberwoodFeature.MIN_HEIGHT && height <= AmberwoodFeature.MAX_HEIGHT, "trunk of 4-7 logs, got " + height);
+        h.assertBlockPresent(WWBlocks.AMBERWOOD_BLOOM, at.above(height));
+        // every column ends in a bloom, every bloom sits on a log, and nothing grows leaves
+        int blooms = 0;
+        for (BlockPos p : BlockPos.betweenClosed(at.offset(-1, 0, -1), at.offset(1, AmberwoodFeature.MAX_HEIGHT, 1))) {
+            BlockState s = h.getBlockState(p);
+            if (s.is(WWBlocks.AMBERWOOD_LOG) && s.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y) {
+                BlockState up = h.getBlockState(p.above());
+                h.assertTrue(up.is(WWBlocks.AMBERWOOD_LOG) || up.is(WWBlocks.AMBERWOOD_BLOOM), "an upright column should end in a bloom at " + p);
+            }
+            if (s.is(WWBlocks.AMBERWOOD_BLOOM)) {
+                blooms++;
+                h.assertTrue(h.getBlockState(p.below()).is(WWBlocks.AMBERWOOD_LOG), "a bloom should sit on a log at " + p);
+            }
+            h.assertFalse(s.is(WWBlocks.AMBERWOOD_LEAVES), "an Amberwood has no leaves");
+        }
+        h.assertTrue(blooms >= 1 && blooms <= 1 + AmberwoodFeature.MAX_ARMS, "1-3 blooms, got " + blooms);
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void onlyAmberWithAnInclusionHasABlockEntity(GameTestHelper h) {
+        BlockPos fly = new BlockPos(2, 1, 2), seed = new BlockPos(4, 1, 2), plain = new BlockPos(6, 1, 2);
+        h.setBlock(fly, WWBlocks.AMBER_BLOCK.defaultBlockState().setValue(AmberBlock.INCLUSION, AmberBlock.Inclusion.MOSQUITO));
+        h.setBlock(seed, WWBlocks.AMBER_BLOCK.defaultBlockState().setValue(AmberBlock.INCLUSION, AmberBlock.Inclusion.SEED));
+        h.setBlock(plain, WWBlocks.AMBER_BLOCK);
+        ServerLevel level = h.getLevel();
+        h.assertTrue(level.getBlockEntity(h.absolutePos(fly)) instanceof AmberInclusionBlockEntity, "mosquito amber needs a block entity");
+        h.assertTrue(level.getBlockEntity(h.absolutePos(seed)) instanceof AmberInclusionBlockEntity, "seed amber needs a block entity");
+        h.assertTrue(level.getBlockEntity(h.absolutePos(plain)) == null, "plain amber has no block entity");
+        h.setBlock(fly, WWBlocks.AMBER_BLOCK);   // turned plain in place: the block entity goes
+        h.assertTrue(level.getBlockEntity(h.absolutePos(fly)) == null, "amber turned plain should lose its block entity");
         h.succeed();
     }
 

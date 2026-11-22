@@ -14,7 +14,8 @@
     "StrayJockeyMixin",
     "BrushableBlockEntityMixin",
     "PotionContentsMixin",
-    "ThrownPotionMixin"
+    "ThrownPotionMixin",
+    "BlockStateBaseMixin"
   ],
   "client": [
     "client.GameRendererMixin"
