@@ -51,6 +51,8 @@ final class AmberScenes {
         at(t += 120, () -> shot("amber_and_mosquitoes"));
         at(t += 5, () -> cmd("tp @s 349.6 -58.6 3.6 10 22"));
         at(t += 40, () -> shot("mosquitoes_close"));
+        at(t += 5, () -> cmd("tp @s 352.5 -55 2.5 0 -2"));
+        at(t += 40, () -> shot("amberwood"));
         // Pot Golems: a Howl head with a bow, a Danger head with a blade, a plain pot with a pickaxe, and one potless
         at(t += 5, () -> {
             cmd("fill 375 -61 -8 405 -61 20 minecraft:sandstone");

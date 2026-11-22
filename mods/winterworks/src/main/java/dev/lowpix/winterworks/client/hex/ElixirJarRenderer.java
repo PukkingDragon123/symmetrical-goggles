@@ -94,14 +94,16 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
             m.mask(n -> isLiquid(m, n));
             var tex = m.hasTint ? m.tintTexture : m.texture;
             m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityTranslucent(tex)), light, overlay, HexRender.argb(235, color));
-            if (kind == ElixirType.SOUL || kind == ElixirType.CURSED || bubbling) {   // elixirs glow faintly
+            if (kind != ElixirType.NONE) {   // elixirs glow faintly (molten gold too)
                 float pulse = 0.3f + 0.12f * Mth.sin(time * 0.12f) + (bubbling ? 0.15f : 0f);
                 m.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(tex)), 0xF000F0, OverlayTexture.NO_OVERLAY,
                         HexRender.argb(255, HexRender.scale(color, pulse)));
             }
         }
         m.mask(HexRender::isGlass);
-        m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityTranslucent(m.texture)), light, overlay, 0xFFFFFFFF);
+        // thinner glass over a liquid, so the elixir's colour reads through it
+        m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityTranslucent(m.texture)), light, overlay,
+                liquid != null && full ? 0xA0FFFFFF : 0xFFFFFFFF);
         m.unmask();
         HexRender.glow(m, pose, buffers);
         pose.popPose();

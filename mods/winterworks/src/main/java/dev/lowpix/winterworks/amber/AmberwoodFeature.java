@@ -17,13 +17,13 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 /**
- * The Amberwood (docs/HEXES_UPDATE.md section 10): a saguaro-like column. A 4-7 block trunk of amberwood logs with 0-2
+ * The Amberwood (docs/HEXES_UPDATE.md section 10): a saguaro-like column. A 5-8 block trunk of amberwood logs with 1-3
  * arms (each goes out one block as a sideways log, then up 1-3 blocks, never above the trunk), and an amberwood bloom
  * on top of the trunk and of every arm. Some logs already ooze resin. Configured feature winterworks:amberwood (data),
  * grown by the sapling through amber.AmberwoodGrower.
  */
 public class AmberwoodFeature extends Feature<NoneFeatureConfiguration> {
-    public static final int MIN_HEIGHT = 4, MAX_HEIGHT = 7, MAX_ARMS = 2, MAX_ARM_RISE = 3;
+    public static final int MIN_HEIGHT = 5, MAX_HEIGHT = 8, MIN_ARMS = 1, MAX_ARMS = 3, MAX_ARM_RISE = 3;
     /** 1 in N logs grows already oozing. */
     private static final int RESIN_CHANCE = 6;
 
@@ -48,7 +48,7 @@ public class AmberwoodFeature extends Feature<NoneFeatureConfiguration> {
         }
         plan.put(origin.above(h), bloom);
         List<Direction> sides = Direction.Plane.HORIZONTAL.shuffledCopy(r);
-        int arms = r.nextInt(MAX_ARMS + 1);
+        int arms = MIN_ARMS + r.nextInt(MAX_ARMS - MIN_ARMS + 1);
         for (int a = 0; a < arms; a++) {
             Direction d = sides.get(a);
             int y = 2 + r.nextInt(Math.max(1, h - 3));                // from the 3rd trunk block up to the one below the top

@@ -259,7 +259,7 @@ public class AmberTests implements FabricGameTest {
         while (h.getBlockState(at.above(height)).is(WWBlocks.AMBERWOOD_LOG)) {
             height++;
         }
-        h.assertTrue(height >= AmberwoodFeature.MIN_HEIGHT && height <= AmberwoodFeature.MAX_HEIGHT, "trunk of 4-7 logs, got " + height);
+        h.assertTrue(height >= AmberwoodFeature.MIN_HEIGHT && height <= AmberwoodFeature.MAX_HEIGHT, "trunk of 5-8 logs, got " + height);
         h.assertBlockPresent(WWBlocks.AMBERWOOD_BLOOM, at.above(height));
         // every column ends in a bloom, every bloom sits on a log, and nothing grows leaves
         int blooms = 0;
@@ -275,7 +275,7 @@ public class AmberTests implements FabricGameTest {
             }
             h.assertFalse(s.is(WWBlocks.AMBERWOOD_LEAVES), "an Amberwood has no leaves");
         }
-        h.assertTrue(blooms >= 1 && blooms <= 1 + AmberwoodFeature.MAX_ARMS, "1-3 blooms, got " + blooms);
+        h.assertTrue(blooms >= 1 + AmberwoodFeature.MIN_ARMS && blooms <= 1 + AmberwoodFeature.MAX_ARMS, "2-4 blooms, got " + blooms);
         h.succeed();
     }
 

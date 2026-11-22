@@ -32,7 +32,8 @@ import net.minecraft.world.phys.Vec3;
 /** The Hexes & Havoc scenes of the flat-world showcase (./gradlew runShowcase). */
 final class HexScenes {
     private static final BlockPos TABLE = new BlockPos(610, -60, 10), TANK = new BlockPos(612, -60, 10),
-            JAR_GREED = new BlockPos(606, -59, 11), JAR_SOUL = new BlockPos(607, -59, 9), FORT = new BlockPos(720, -55, 70);
+            JAR_SOUL = new BlockPos(605, -59, 10), JAR_GREED = new BlockPos(606, -59, 10),
+            JAR_CURSED = new BlockPos(607, -59, 10), FORT = new BlockPos(720, -55, 70);
     private static Vec3 eye, look;
 
     private HexScenes() {}
@@ -62,27 +63,28 @@ final class HexScenes {
             cmd("setblock 615 -60 13 minecraft:nether_wart[age=2]");
             cmd("setblock 610 -60 10 winterworks:hexing_table");
             cmd("setblock 612 -60 10 winterworks:soul_tank");
-            cmd("setblock 606 -60 11 minecraft:soul_campfire");
-            cmd("setblock 607 -60 9 minecraft:magma_block");
-            cmd("setblock 606 -59 11 winterworks:elixir_jar");
-            cmd("setblock 607 -59 9 winterworks:elixir_jar");
+            cmd("fill 605 -60 10 607 -60 10 minecraft:magma_block");
+            cmd("fill 605 -59 10 607 -59 10 winterworks:elixir_jar");
             cmd("setblock 603 -60 12 minecraft:brewing_stand");
         });
         at(t += 5, () -> server(level -> {
             if (level.getBlockEntity(TANK) instanceof SoulTankBlockEntity tank) {
                 tank.setSouls(820);
             }
-            if (level.getBlockEntity(JAR_GREED) instanceof ElixirJarBlockEntity jar) {
-                jar.setContents(ElixirType.GREED, 3);
-            }
             if (level.getBlockEntity(JAR_SOUL) instanceof ElixirJarBlockEntity jar) {
-                jar.setContents(ElixirType.SOUL, 2);
-                jar.startBrew(ElixirType.CURSED);
+                jar.setContents(ElixirType.SOUL, 3);
+            }
+            if (level.getBlockEntity(JAR_GREED) instanceof ElixirJarBlockEntity jar) {
+                jar.setContents(ElixirType.GREED, 2);
+            }
+            if (level.getBlockEntity(JAR_CURSED) instanceof ElixirJarBlockEntity jar) {
+                jar.setContents(ElixirType.GREED, 3);
+                jar.startBrew(ElixirType.CURSED);   // soul sand in a jar of Greed: bubbling toward Cursed Elixir
             }
         }));
         at(t += 5, () -> cmd("tp @s 609.0 -57.7 4.2 -8 26"));
         at(t += 100, () -> shot("hexing_table"));
-        at(t += 5, () -> cmd("tp @s 606.9 -58.2 7.0 -12 28"));
+        at(t += 5, () -> cmd("tp @s 606.5 -58.1 8.0 facing 606.5 -58.6 10.5"));
         at(t += 40, () -> shot("elixir_jars"));
         // 2. the Hexing screen: an enchanted book and three Soul Elixirs in the slots
         at(t += 5, () -> {
@@ -137,6 +139,8 @@ final class HexScenes {
         at(t += 40, () -> shot("piglin_witch_close"));
         // 4. the Hex Fortress, built whole in the flat world
         at(t += 5, () -> {
+            Minecraft.getInstance().options.hideGui = true;
+            cmd("gamemode spectator");
             cmd("fill 676 -61 26 764 -61 114 minecraft:netherrack");
             cmd("tp @s 720 -40 140");
         });
@@ -153,16 +157,31 @@ final class HexScenes {
             }
         });
         at(t += 160, () -> shot("hex_fortress"));
-        // inside: the witch's quarters
+        // inside: the witch's quarters, from the first clear spot a few blocks from her with a line of sight
         at(t += 5, () -> server(level -> {
             eye = look = null;
             var witches = level.getEntitiesOfClass(PiglinWitch.class, new AABB(FORT).inflate(48));
-            if (!witches.isEmpty()) {
-                PiglinWitch w = witches.get(0);
-                look = w.position().add(0, 1.0, 0);
-                Vec3 toCentre = Vec3.atCenterOf(FORT).subtract(w.position()).multiply(1, 0, 1).normalize();
-                eye = look.add(toCentre.scale(3.2)).add(0, 0.6, 0);
+            if (witches.isEmpty()) {
+                return;
             }
+            PiglinWitch w = witches.get(0);
+            look = w.position().add(0, 1.1, 0);
+            for (double r = 4.5; r >= 2.0 && eye == null; r -= 0.5) {
+                for (int a = 0; a < 360 && eye == null; a += 30) {
+                    Vec3 p = look.add(Math.sin(Math.toRadians(a)) * r, 0.5, Math.cos(Math.toRadians(a)) * r);
+                    BlockPos b = BlockPos.containing(p);
+                    if (!level.getBlockState(b).isAir() || !level.getBlockState(b.above()).isAir()) {
+                        continue;
+                    }
+                    var hit = level.clip(new net.minecraft.world.level.ClipContext(p, look,
+                            net.minecraft.world.level.ClipContext.Block.VISUAL, net.minecraft.world.level.ClipContext.Fluid.NONE,
+                            net.minecraft.world.phys.shapes.CollisionContext.empty()));
+                    if (hit.getType() == net.minecraft.world.phys.HitResult.Type.MISS) {
+                        eye = p;
+                    }
+                }
+            }
+            Winterworks.LOG.info("showcase: witch quarters view {} -> {}", eye, look);
         }));
         at(t += 5, () -> {
             if (eye != null) {
@@ -183,6 +202,7 @@ final class HexScenes {
             cmd("give @s winterworks:hex_core");
             cmd("give @s winterworks:fang_dagger");
             cmd("give @s winterworks:frost_mauler_skull");
+            cmd("gamemode creative");
             cmd("tp @s 610.5 -60 2.5 0 10");
         });
         at(t += 30, () -> Minecraft.getInstance().player.getInventory().selected = 6);

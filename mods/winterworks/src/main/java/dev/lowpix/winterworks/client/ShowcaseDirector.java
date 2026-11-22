@@ -33,7 +33,10 @@ import net.minecraft.world.phys.AABB;
  * Does nothing in normal play.
  */
 public final class ShowcaseDirector {
-    /** "true": the flat-world scenes; "cold": a real generated world, to photograph natural Ice Caves and tombs. */
+    /**
+     * "true": the flat-world scenes; "hex": only the Amber Age and Hexes & Havoc ones; "cold": a real generated world,
+     * to photograph natural Ice Caves and tombs.
+     */
     private static final String MODE = System.getProperty("winterworks.showcase", "");
     private static final boolean ENABLED = !MODE.isEmpty() && !MODE.equals("false");
 
@@ -66,6 +69,16 @@ public final class ShowcaseDirector {
             cmd("time set 2000");
             cmd("weather clear");
         });
+        if (MODE.equals("hex")) {   // only the Amber Age and Hexes & Havoc scenes
+            at(t += 5, () -> {
+                cmd("difficulty normal");
+                cmd("gamemode creative");
+            });
+            t = AmberScenes.plan(t);
+            t = HexScenes.plan(t);
+            at(t += 5, () -> Minecraft.getInstance().stop());
+            return;
+        }
         // scene 1: an Icebreaker family by a frozen pond
         at(t += 5, () -> {
             cmd("fill -24 -61 -10 26 -61 40 minecraft:snow_block");

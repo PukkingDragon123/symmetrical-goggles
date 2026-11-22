@@ -40,7 +40,7 @@ def models(ctx):
         "parent": "minecraft:builtin/entity", "gui_light": "side",
         "textures": {"particle": "minecraft:block/bone_block_side"},
         "display": {
-            "gui": {"rotation": [30, 45, 0], "translation": [0, -0.6, 0], "scale": [0.5, 0.5, 0.5]},
+            "gui": {"rotation": [30, 45, 0], "translation": [0, -1.2, 0], "scale": [0.85, 0.85, 0.85]},
             "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.35, 0.35, 0.35]},
             "fixed": {"rotation": [0, 180, 0], "translation": [0, 1, 0], "scale": [0.65, 0.65, 0.65]},
             "head": {"rotation": [0, 180, 0], "translation": [0, 4, 0], "scale": [0.9, 0.9, 0.9]},

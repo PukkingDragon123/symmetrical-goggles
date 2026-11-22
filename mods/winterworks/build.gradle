@@ -16,11 +16,12 @@ loom {
     runs {
         server { runDir 'run/server' }
         client { runDir 'run/client' }
-        // In-game screenshots of the mod's content (dev only): ./gradlew runShowcase, under xvfb-run on a headless box
+        // In-game screenshots of the mod's content (dev only): ./gradlew runShowcase, under xvfb-run on a headless box.
+        // -PshowcaseMode=hex runs only the Amber Age and Hexes & Havoc scenes.
         showcase {
             client()
             name 'Showcase'
-            vmArg '-Dwinterworks.showcase=true'
+            vmArg "-Dwinterworks.showcase=${project.findProperty('showcaseMode') ?: 'true'}"
             programArgs '--width', '1280', '--height', '720'
             runDir 'run/showcase'
         }

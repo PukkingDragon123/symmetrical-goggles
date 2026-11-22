@@ -1,6 +1,7 @@
 # Winterworks
 
-A winter contraptions mod for Minecraft Java 1.21.1 (Fabric). Every model, texture and animation is made with
+A winter contraptions mod for Minecraft Java 1.21.1 (Fabric). **Download and play:** the ready-made jar and
+CurseForge install steps are in [dist/](dist/README.md). Every model, texture and animation is made with
 [lowpix](../../README.md) and exported with `python -m lowpix mc export` (docs/MINECRAFT.md).
 
 ## Content
@@ -166,6 +167,7 @@ gold (2-4 gold blocks); it barters much better loot.
 ./gradlew build                 # the mod jar in build/libs
 ./gradlew runGametest           # headless GameTests (126)
 xvfb-run -a ./gradlew runShowcase       # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
+xvfb-run -a ./gradlew runShowcase -PshowcaseMode=hex   # only the Amber Age and Hexes & Havoc scenes
 xvfb-run -a ./gradlew runShowcaseCold   # a real generated world: finds and photographs Ice Caves, a frozen tomb, Dead Caves, a Dig Site
 python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipes, loot, tags, lang fragments
 ```
@@ -192,3 +194,8 @@ Screenshots taken by `runShowcase` (the real client, software-rendered):
 | ![Dig Site in the Dead Caves](docs/screenshots/dig_site_natural.png) | ![Dead Caves](docs/screenshots/dead_caves.png) |
 | ![Amber and mosquitoes](docs/screenshots/amber_and_mosquitoes.png) | ![Mosquitoes](docs/screenshots/mosquitoes_close.png) |
 | ![Pot Golems](docs/screenshots/pot_golems.png) | ![Potless Pot Golem](docs/screenshots/pot_golem_potless.png) |
+| ![Amberwood](docs/screenshots/amberwood.png) | ![Hex Fortress](docs/screenshots/hex_fortress.png) |
+| ![Piglin Witch and Golden Piglin](docs/screenshots/piglin_witch_and_golden_piglin.png) | ![Piglin Witch](docs/screenshots/piglin_witch_close.png) |
+| ![The witch's quarters](docs/screenshots/hex_fortress_witch.png) | ![Hexing Table, Soul Tank, Elixir Jars](docs/screenshots/hexing_table.png) |
+| ![Elixir Jars: Cursed brewing, Greed, Soul](docs/screenshots/elixir_jars.png) | ![The Hexing screen](docs/screenshots/hexing_screen.png) |
+| ![Hexed Books, elixirs, the Hex Core, 3D icons](docs/screenshots/hex_hotbar.png) | |
