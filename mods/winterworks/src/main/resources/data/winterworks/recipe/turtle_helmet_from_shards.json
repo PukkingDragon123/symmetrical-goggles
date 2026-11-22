@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SSS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "winterworks:turtle_shell_shard"
+    }
+  },
+  "result": {
+    "id": "minecraft:turtle_helmet",
+    "count": 1
+  }
+}

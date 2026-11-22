@@ -60,7 +60,12 @@
     "FortressCommanderMixin",
     "harvester.BlockStateLightAccessor",
     "harvester.PlantAnimateTickMixin",
-    "harvester.SnifferWaterMixin"
+    "harvester.SnifferWaterMixin",
+    "oceanmob.TurtleMixin",
+    "oceanmob.TurtleLayEggGoalMixin",
+    "oceanmob.NightVisionBrewingMixin",
+    "oceangear.ElderGuardianMixin",
+    "oceangear.ShellLivingEntityMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -98,7 +103,9 @@
     "client.RamHandMixin",
     "client.SoulBarGuiMixin",
     "harvester.client.SnifferSneezeModelMixin",
-    "harvester.client.SpriteSourcesAccessor"
+    "harvester.client.SpriteSourcesAccessor",
+    "oceanmob.client.GrabbedRiderPoseMixin",
+    "oceangear.client.ShellPlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
