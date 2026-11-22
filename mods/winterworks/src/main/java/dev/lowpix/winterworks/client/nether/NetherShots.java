@@ -70,6 +70,14 @@ final class NetherShots {
     @Nullable
     private static String pending;
     private static boolean pendingFrozen;
+    /** Server jobs still to run: a shot waits for them (the server is slow while it builds). */
+    private static final java.util.concurrent.atomic.AtomicInteger BUSY = new java.util.concurrent.atomic.AtomicInteger();
+    /** Where the last tp put the camera: a shot waits until the client is there. */
+    @Nullable
+    private static Vec3 expectEye;
+    /** While set and false, the plan waits. */
+    @Nullable
+    private static java.util.function.BooleanSupplier gate;
     private static int pendingFrame, pendingWait;
     private static PiglinWitch witch;
     private static Mob dummy;
@@ -97,15 +105,19 @@ final class NetherShots {
                 cmd(c);
             }
         });
-        at(t += 80, () -> nether(NetherShots::clearGround));
+        at(t += 5, () -> gate = () -> {   // wait for the client to arrive in the Nether
+            Minecraft mc = Minecraft.getInstance();
+            return mc.level != null && mc.level.dimension() == Level.NETHER && mc.screen == null && mc.levelRenderer.hasRenderedAllSections();
+        });
+        at(t += 40, () -> nether(NetherShots::clearGround));
         at(t += 20, () -> nether(level -> HexFortress.build(level, ORIGIN, Rotation.NONE, 20261122L)));
         at(t += 10, () -> nether(NetherShots::commanderStage));
         // 1. the fortress, and its crew at work
-        at(t += 40, () -> tpFacing(new Vec3(31, 112, 44), new Vec3(0, 84, -1)));
+        at(t += 40, () -> tpFacing(new Vec3(26, 108, 40), new Vec3(0, 83, -2)));
         at(t += 60, () -> shot("fortress_overview"));
         at(t += 2, () -> tpFacing(new Vec3(-2, 90, 40), new Vec3(0, 84, 6)));
         at(t += 20, () -> shot("fortress_gate"));
-        at(t += 2, () -> tpFacing(new Vec3(-30, 104, -34), new Vec3(-4, 84, -8)));
+        at(t += 2, () -> tpFacing(new Vec3(-27, 102, -28), new Vec3(-2, 82, -8)));
         at(t += 20, () -> shot("fortress_back"));
         at(t += 150, () -> tpFacing(new Vec3(0.5, 93, 9), new Vec3(0.5, 80, -4)));   // the crew has had time to get to work
         at(t += 20, () -> shot("crew_at_work"));
@@ -126,8 +138,7 @@ final class NetherShots {
                     .stream().findFirst().orElse(null);
             if (jockey != null) {
                 Vec3 at = jockey.position();
-                Vec3 eye = at.add(3.2, 1.6, 2.6);
-                cmd(String.format(Locale.ROOT, "tp @s %.2f %.2f %.2f facing %.2f %.2f %.2f", eye.x, eye.y, eye.z, at.x, at.y + 1.3, at.z));
+                tpFacing(at.add(-4.6, 2.6, 2.2), at.add(0, 1.1, 0));
             }
         }));
         at(t += 20, () -> shot("hoglin_jockey"));
@@ -147,7 +158,7 @@ final class NetherShots {
                 witch.provoke(z);
             }
         }));
-        at(t += 40, () -> tpFacing(new Vec3(3.6, 82.2, -1.2), new Vec3(0.5, 81.4, -5.5)));
+        at(t += 40, () -> tpFacing(new Vec3(-0.6, 82.3, -1.0), new Vec3(0.5, 81.3, -5.5)));
         at(t += 20, () -> shot("witch_spellbook"));
         at(t += 2, () -> nether(level -> witch.castNow(PiglinWitch.Spell.BOLTS)));
         at(t += 12, () -> shot("witch_casting_bolts"));
@@ -155,7 +166,7 @@ final class NetherShots {
         at(t += 40, () -> nether(level -> witch.castNow(PiglinWitch.Spell.RING)));
         at(t += 16, () -> shot("witch_ring_telegraph"));
         at(t += 16, () -> shot("witch_soul_ring"));
-        at(t += 2, () -> tpFacing(new Vec3(5.5, 83.5, 1.5), new Vec3(-1, 80.5, -3)));
+        at(t += 2, () -> tpFacing(new Vec3(0.5, 84.0, 3.5), new Vec3(-0.5, 80.8, -4.5)));
         at(t += 40, () -> nether(level -> witch.castNow(PiglinWitch.Spell.SUMMON)));
         at(t += 20, () -> shot("witch_summon_bones"));
         at(t += 20, () -> shot("witch_summon_rises"));
@@ -169,34 +180,37 @@ final class NetherShots {
                 }
             }
         }));
-        at(t += 2, () -> tpFacing(new Vec3(5.5, 83.0, 44.5), new Vec3(0.5, 82.0, 38.5)));
+        at(t += 2, () -> tpFacing(new Vec3(4.0, 83.4, 32.0), new Vec3(0.5, 82.2, 38.5)));
         at(t += 30, () -> shot("commander_mounted"));
-        at(t += 2, () -> tpFacing(new Vec3(-4.5, 82.0, 33.0), new Vec3(0.5, 82.4, 38.5)));
+        at(t += 2, () -> tpFacing(new Vec3(-6.5, 82.6, 37.0), new Vec3(0.5, 82.2, 38.5)));
         at(t += 20, () -> shot("commander_mounted_front"));
         at(t += 2, () -> nether(level -> commander.startLunge(dummyNear(level, new Vec3(0.5, 80, 34.5)))));
         at(t += 7, () -> shot("commander_lunge"));
         at(t += 30, () -> nether(level -> commander.startSpin()));
         at(t += 13, () -> shot("commander_spin"));
         at(t += 30, () -> nether(level -> bull.kill()));
-        at(t += 40, () -> tpFacing(new Vec3(4.5, 82.0, 42.0), new Vec3(0.5, 81.5, 38.5)));
+        at(t += 40, () -> tpFacing(new Vec3(3.5, 82.4, 33.0), new Vec3(1.0, 81.8, 38.5)));
         at(t += 10, () -> shot("commander_on_foot_war_cry"));
         at(t += 40, () -> shot("commander_on_foot"));
         at(t += 1, NetherShots::logCommander);
         // 5. gilding: a piglin and a brute part way to gold, and a golden brute
         at(t += 2, () -> nether(level -> {
             Piglin p = EntityType.PIGLIN.create(level);
-            p.moveTo(-2.5, 80, 30.5, 160f, 0f);
+            p.moveTo(-2.5, 80, 30.5, 20f, 0f);
+            face(p, 20f);
             p.setNoAi(true);
             level.addFreshEntity(p);
             PiglinGreed.setGilding(p, PiglinGreed.GILD_TICKS / 3, true);
             PiglinBrute b = EntityType.PIGLIN_BRUTE.create(level);
-            b.moveTo(0.5, 80, 30.5, 180f, 0f);
+            b.moveTo(0.5, 80, 30.5, 0f, 0f);
+            face(b, 0f);
             b.setNoAi(true);
             b.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_AXE));
             level.addFreshEntity(b);
             PiglinGreed.setGilding(b, PiglinGreed.GILD_TICKS * 3 / 4, true);
             GoldenPiglin g = WWEntities.GOLDEN_PIGLIN.create(level);
-            g.moveTo(3.5, 80, 30.5, 200f, 0f);
+            g.moveTo(3.5, 80, 30.5, 340f, 0f);
+            face(g, 340f);
             g.setNoAi(true);
             level.addFreshEntity(g);
             g.setBrute(true);
@@ -206,7 +220,7 @@ final class NetherShots {
         // 6. the Netherite Spear in hand
         at(t += 2, () -> {
             cmd("gamemode creative");
-            cmd("tp @s 0.5 80 26.5 180 10");
+            cmd("tp @s 0.5 80 34.5 180 10");
             cmd("clear @s");
             cmd("give @s winterworks:netherite_spear");
             cmd("give @s winterworks:withered_commander_spawn_egg");
@@ -254,10 +268,8 @@ final class NetherShots {
             for (int z = 30; z <= 46; z++) {
                 boolean deck = Math.abs(x) <= 2 || z >= 36 && z <= 40;
                 if (deck) {
-                    level.setBlock(p.set(x, FLOOR, z), Blocks.NETHER_BRICKS.defaultBlockState(), 2 | 16);
-                    if (Math.abs(x) == 2 && (z < 36 || z > 40) || Math.abs(x) == 6) {
-                        level.setBlock(p.set(x, FLOOR + 1, z), Blocks.NETHER_BRICK_FENCE.defaultBlockState(), 2 | 16);
-                    }
+                    level.setBlock(p.set(x, FLOOR, z), (Math.floorMod(x + z, 5) == 0 ? Blocks.CRACKED_NETHER_BRICKS : Blocks.NETHER_BRICKS)
+                            .defaultBlockState(), 2 | 16);
                 }
             }
         }
@@ -281,6 +293,12 @@ final class NetherShots {
             w.setNoAi(true);
             level.addFreshEntity(w);
         }
+    }
+
+    private static void face(Mob m, float yaw) {
+        m.setYRot(yaw);
+        m.setYHeadRot(yaw);
+        m.setYBodyRot(yaw);
     }
 
     private static Mob dummyNear(ServerLevel level, Vec3 at) {
@@ -307,8 +325,10 @@ final class NetherShots {
                 commander.isOnFoot(), commander.isPassenger(), commander.getHealth()));
     }
 
-    private static void tpFacing(Vec3 from, Vec3 to) {
-        cmd(String.format(Locale.ROOT, "tp @s %.2f %.2f %.2f facing %.2f %.2f %.2f", from.x, from.y, from.z, to.x, to.y, to.z));
+    /** Puts the camera (the eye: the feet are 1.62 lower) at `eye`, looking at `to`. */
+    private static void tpFacing(Vec3 eye, Vec3 to) {
+        expectEye = eye;
+        cmd(String.format(Locale.ROOT, "tp @s %.2f %.2f %.2f facing %.2f %.2f %.2f", eye.x, eye.y - 1.62, eye.z, to.x, to.y, to.z));
     }
 
     private static void at(int tick, Runnable r) {
@@ -323,11 +343,14 @@ final class NetherShots {
     private static void nether(Consumer<ServerLevel> job) {
         var srv = Minecraft.getInstance().getSingleplayerServer();
         if (srv != null) {
+            BUSY.incrementAndGet();
             srv.execute(() -> {
                 try {
                     job.accept(srv.getLevel(Level.NETHER));
                 } catch (RuntimeException e) {
                     Winterworks.LOG.error("nethershots: a step failed", e);
+                } finally {
+                    BUSY.decrementAndGet();
                 }
             });
         }
@@ -351,6 +374,10 @@ final class NetherShots {
     private static void takePending(Minecraft mc) {
         pendingWait++;
         boolean chunks = mc.levelRenderer.hasRenderedAllSections();
+        boolean there = expectEye == null || mc.player.getEyePosition().distanceTo(expectEye) < 0.6;
+        if (BUSY.get() > 0 || !there) {
+            pendingFrame = frames;   // not yet: count the frames from when the server has caught up
+        }
         boolean ready = pendingFrozen ? chunks && frames - pendingFrame >= 4 && pendingWait >= 3 : frames - pendingFrame >= 1;
         if (!ready && pendingWait < 600) {
             return;
@@ -389,6 +416,12 @@ final class NetherShots {
         if (pending != null) {
             takePending(mc);
             return;
+        }
+        if (gate != null) {
+            if (!gate.getAsBoolean()) {
+                return;
+            }
+            gate = null;
         }
         ticks++;
         while (pending == null && step < PLAN.size() && ticks >= AT.get(step)) {

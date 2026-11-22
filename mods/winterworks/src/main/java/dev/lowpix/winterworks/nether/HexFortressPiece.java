@@ -35,7 +35,6 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.ChainBlock;
 import net.minecraft.world.level.block.ChestBlock;
@@ -660,12 +659,12 @@ public class HexFortressPiece extends StructurePiece {
             b.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_AXE));
             PiglinGreed.setGilding(b, PiglinGreed.GILD_TICKS * 3 / 4, true);
         });
-        // bubbling cauldrons on soul campfires, and Elixir Jars over soul fire
-        BlockState campfire = Blocks.SOUL_CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true);
-        w.set(9, -1, -12, campfire);
-        w.set(9, 0, -12, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 3));
-        w.set(13, -1, -12, campfire);
-        w.set(13, 0, -12, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, 2));
+        // cauldrons over soul fire sunk in the floor (no campfires: their smoke would fill the room), and Elixir Jars
+        for (int x : new int[]{9, 13}) {
+            w.set(x, -2, -12, SOUL_SOIL);
+            w.set(x, -1, -12, Blocks.SOUL_FIRE.defaultBlockState());
+            w.set(x, 0, -12, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, x == 9 ? 3 : 2));
+        }
         w.set(18, 0, -19, Blocks.LAVA_CAULDRON.defaultBlockState());
         w.jarOverSoulFire(11, -12, 8, ElixirType.CURSED, 3);
         w.jarOverSoulFire(15, -14, 8, ElixirType.CURSED, 1);

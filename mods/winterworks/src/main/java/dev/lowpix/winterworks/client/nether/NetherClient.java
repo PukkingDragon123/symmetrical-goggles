@@ -53,6 +53,12 @@ public final class NetherClient {
         EntityRendererRegistry.register(WWEntities.HEX_BOLT, net.minecraft.client.renderer.entity.NoopRenderer::new);
         net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry.INSTANCE.register(
                 dev.lowpix.winterworks.registry.WWItems.NETHERITE_SPEAR, new NetheriteSpearRenderer());
+        net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
+            if (stack.is(dev.lowpix.winterworks.registry.WWItems.NETHERITE_SPEAR)) {
+                lines.add(net.minecraft.network.chat.Component.translatable("item.winterworks.netherite_spear.tip")
+                        .withStyle(net.minecraft.ChatFormatting.GRAY));
+            }
+        });
         NetherShots.init();
     }
 
