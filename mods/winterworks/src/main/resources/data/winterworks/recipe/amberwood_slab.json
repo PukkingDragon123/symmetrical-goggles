@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:amberwood_planks"
+    }
+  },
+  "result": {
+    "id": "winterworks:amberwood_slab",
+    "count": 6
+  },
+  "group": "wooden_slab"
+}

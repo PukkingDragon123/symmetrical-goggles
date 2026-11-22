@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "winterworks:block/amberwood_pressure_plate"
+    },
+    "powered=true": {
+      "model": "winterworks:block/amberwood_pressure_plate_down"
+    }
+  }
+}

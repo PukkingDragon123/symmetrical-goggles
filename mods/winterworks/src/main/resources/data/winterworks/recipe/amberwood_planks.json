@@ -1,13 +1,14 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
+  "category": "building",
   "ingredients": [
     {
-      "item": "winterworks:amberwood_log"
+      "tag": "winterworks:amberwood_logs"
     }
   ],
   "result": {
     "id": "winterworks:amberwood_planks",
     "count": 4
-  }
+  },
+  "group": "planks"
 }

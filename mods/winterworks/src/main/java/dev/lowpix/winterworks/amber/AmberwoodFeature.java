@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
  * The Amberwood (docs/HEXES_UPDATE.md section 10): a saguaro-like column. A 5-8 block trunk of amberwood logs with 1-3
  * arms (each goes out one block as a sideways log, then up 1-3 blocks, never above the trunk), and an amberwood bloom
  * on top of the trunk and of every arm. Some logs already ooze resin. Configured feature winterworks:amberwood (data),
- * grown by the sapling through amber.AmberwoodGrower.
+ * grown from a planted Amberwood Bloom (the sapling) through amber.AmberwoodGrower.
  */
 public class AmberwoodFeature extends Feature<NoneFeatureConfiguration> {
     public static final int MIN_HEIGHT = 5, MAX_HEIGHT = 8, MIN_ARMS = 1, MAX_ARMS = 3, MAX_ARM_RISE = 3;
@@ -61,7 +61,7 @@ public class AmberwoodFeature extends Feature<NoneFeatureConfiguration> {
             plan.put(elbow.above(rise + 1), bloom);
         }
         for (BlockPos p : plan.keySet()) {
-            if (!level.isStateAtPosition(p, s -> s.isAir() || s.is(BlockTags.REPLACEABLE_BY_TREES) || s.is(WWBlocks.AMBERWOOD_SAPLING))) {
+            if (!level.isStateAtPosition(p, s -> s.isAir() || s.is(BlockTags.REPLACEABLE_BY_TREES) || s.is(WWBlocks.AMBERWOOD_BLOOM))) {
                 return false;
             }
         }

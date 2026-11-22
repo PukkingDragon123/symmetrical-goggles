@@ -8,27 +8,42 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:bone",
-          "weight": 8
+          "weight": 30
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:bone_block",
-          "weight": 2
+          "weight": 10
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:skeleton_skull",
-          "weight": 1
+          "weight": 4
         },
         {
           "type": "minecraft:item",
-          "name": "winterworks:amber_chunk",
+          "name": "winterworks:amber_shard",
+          "weight": 25,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "winterworks:amber_block",
           "weight": 2
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:arrow",
-          "weight": 2
+          "weight": 6
         },
         {
           "type": "minecraft:item",

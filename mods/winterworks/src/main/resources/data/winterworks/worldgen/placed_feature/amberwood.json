@@ -6,7 +6,7 @@
       "predicate": {
         "type": "minecraft:would_survive",
         "state": {
-          "Name": "winterworks:amberwood_sapling",
+          "Name": "winterworks:amberwood_bloom",
           "Properties": {
             "stage": "0"
           }

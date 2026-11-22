@@ -140,6 +140,15 @@ public final class WWSounds {
     public static final SoundEvent ORPHEUS = reg("curse.orpheus");
     public static final SoundEvent SIN = reg("curse.sin");
 
+    // ---- 0.4 fixes: amber (docs/FIXES_0_4.md): Pot Golem headshots and the six new head abilities
+    public static final SoundEvent POT_GOLEM_HEADSHOT = reg("entity.pot_golem.headshot");
+    public static final SoundEvent POT_GOLEM_SOOTHE = reg("entity.pot_golem.soothe");
+    public static final SoundEvent POT_GOLEM_IGNITE = reg("entity.pot_golem.ignite");
+    public static final SoundEvent POT_GOLEM_WIND_BURST = reg("entity.pot_golem.wind_burst");
+    public static final SoundEvent POT_GOLEM_SHIELD = reg("entity.pot_golem.shield");
+    public static final SoundEvent POT_GOLEM_STASH = reg("entity.pot_golem.stash");
+    public static final SoundEvent POT_GOLEM_THROW = reg("entity.pot_golem.throw");
+
     // ---- 0.4 fixes: hexes (docs/FIXES_0_4.md "Curses"): each kind of curse's screen-effect sound (client.curse.CurseScreenFx)
     public static final SoundEvent CURSE_EFFECT_LESSER = reg("curse.effect.lesser");
     public static final SoundEvent CURSE_EFFECT_SIN = reg("curse.effect.sin");

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "winterworks:block/amberwood_slab"
+    },
+    "type=double": {
+      "model": "winterworks:block/amberwood_planks"
+    },
+    "type=top": {
+      "model": "winterworks:block/amberwood_slab_top"
+    }
+  }
+}

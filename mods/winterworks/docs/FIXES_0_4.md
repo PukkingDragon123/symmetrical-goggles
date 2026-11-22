@@ -202,7 +202,8 @@ contract for the Java side.
 * **Four matching faces**: a head ability only works when **all four faces of the pot carry the same sherd**. A mixed
   pot still makes a golem, just without a head ability (the Echo Shard inside still gives the Echo Head).
 * **The pattern glows** while its ability is active: the sherd pattern on the head is drawn full-bright in a soft
-  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied).
+  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied). The same
+  glow shows on a **decorated pot item** whose four faces carry the same ability sherd (its inventory icon and in hand).
 * **Six new head abilities** (on top of Howl and Danger), each from 4 matching sherds:
   * **Heart**: a healing aura: its owner and their pets within 8 blocks get Regeneration I.
   * **Burn**: burning fists (sets what it hits on fire) and Fire Resistance for its owner nearby.

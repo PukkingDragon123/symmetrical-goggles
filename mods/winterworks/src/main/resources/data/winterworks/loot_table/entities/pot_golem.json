@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "winterworks:amber_chunk",
+          "name": "winterworks:amber_shard",
           "functions": [
             {
               "function": "minecraft:set_count",
