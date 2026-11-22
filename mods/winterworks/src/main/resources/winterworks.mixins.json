@@ -14,7 +14,10 @@
     "StrayJockeyMixin",
     "BrushableBlockEntityMixin",
     "PotionContentsMixin",
-    "ThrownPotionMixin"
+    "ThrownPotionMixin",
+    "AnvilMenuMixin",
+    "EnchantmentHelperMixin",
+    "FoodDataMixin"
   ],
   "client": [
     "client.GameRendererMixin"

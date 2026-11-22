@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NHN",
+    "BEB",
+    "NCN"
+  ],
+  "key": {
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "H": {
+      "item": "winterworks:hex_core"
+    },
+    "B": {
+      "item": "minecraft:netherite_block"
+    },
+    "E": {
+      "item": "minecraft:enchanting_table"
+    },
+    "C": {
+      "item": "minecraft:crying_obsidian"
+    }
+  },
+  "result": {
+    "id": "winterworks:hexing_table",
+    "count": 1
+  }
+}

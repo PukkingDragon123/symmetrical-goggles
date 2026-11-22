@@ -8,6 +8,9 @@
     "winterworks:drop_rail",
     "winterworks:drop_rail_open",
     "winterworks:amber_block",
-    "winterworks:petrified_log"
+    "winterworks:petrified_log",
+    "winterworks:elixir_jar",
+    "winterworks:soul_tank",
+    "winterworks:hexing_table"
   ]
 }
