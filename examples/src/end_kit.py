@@ -19,12 +19,17 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from hex_kit import (ROOT, Rig, add, clamp, cycle, dump, euler, ground_lock, jitter, keys, mirror_pose,  # noqa: E402,F401
+from hex_kit import (ROOT, Rig, add, clamp, cycle, dump, euler, ground_lock, jitter, mirror_pose,  # noqa: E402,F401
                      osc, pos, r, rest_on_ground, ring, rot_matrix, sc, scale_pose, shake, spikes, spin, tatters,
                      timeline, wave)
+from hex_kit import keys as _keys  # noqa: E402
 
 DENSITY = 2
 
+
+def keys(part_, axis, ks, ease="ease", ch=None):
+    """A keyed track. Eased by default (not Catmull-Rom), so holds and blinks never overshoot past their keys."""
+    return _keys(part_, axis, ks, ease=ease, ch=ch)
 
 # ======================================================================= rig helpers
 def M(v, s):

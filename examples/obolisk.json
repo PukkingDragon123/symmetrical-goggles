@@ -1857,7 +1857,7 @@
        0
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "axis": "z"
     },
     {
@@ -3724,7 +3724,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "position"
     },
     {
@@ -3759,7 +3759,7 @@
        0
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "axis": "y"
     },
     {
@@ -3806,7 +3806,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "position"
     },
     {

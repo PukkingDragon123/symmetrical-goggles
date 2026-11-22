@@ -475,7 +475,9 @@ def animate(spec, R, teen):
                          + [osc("body", "z", 3, 1, 0.0), osc("body", "x", 1.5, 2, 0.1),
                             osc("neck", "x", 4, 2, 0.2), osc("head", "x", -4, 2, 0.3), osc("head", "y", -4, 1, 0.1),
                             wave(TAIL, "y", 10 * ws, 1, lag=0.14, growth=1.2, phase=0.1),
-                            osc("wing_l", "z", 4, 2, 0.2), osc("wing_r", "z", -4, 2, 0.2)],
+                            osc("wing_l", "z", 4, 2, 0.2), osc("wing_r", "z", -4, 2, 0.2)]
+                         + ([osc("saddle", None, [0, 0.15, 0], 2, 0.3, ch="position"), osc("saddle", "z", 1.5, 1, 0.1)]
+                            if teen else []),
                          lift=[[0, 0], [L * 0.25, 0.4], [L * 0.5, 0], [L * 0.75, 0.4], [L, 0]])
 
     # fly: wings spread and beating, legs tucked, the neck stretched forward, the tail streaming
@@ -487,7 +489,8 @@ def animate(spec, R, teen):
                         + [osc("body", None, [0, 0.8, 0], 2 if teen else 3, 0.75, ch="position"),
                            osc("body", "x", 3, 2 if teen else 3, 0.0),
                            wave(neck, "x", 3, 2 if teen else 3, lag=0.1),
-                           wave(TAIL, "y", 6, 1, lag=0.14, growth=1.2), wave(TAIL, "x", 4, 2, lag=0.12)])
+                           wave(TAIL, "y", 6, 1, lag=0.14, growth=1.2), wave(TAIL, "x", 4, 2, lag=0.12)]
+                        + ([osc("saddle", "x", 1.0, 2, 0.4)] if teen else []))
     A["fly"]["grounded"] = False
 
     # glide: wings held out wide, banking gently, the hands flexing, the tail rudder swinging
@@ -524,7 +527,10 @@ def animate(spec, R, teen):
               r("neck", -6), r("head", 16), r("tail_0", 18, 10), r("tail_1", 0, 26), r("tail_2", 0, 30),
               r("tail_3", 0, 30))
     if not teen:
-        SIT = add(SIT, r("leg_bl", 20), r("leg_br", 20))
+        # the baby plops down on its round bottom: hind legs stuck out in front, chest up, a happy head tilt
+        SIT = add(r("body", -24), legs_x((24, 0, 6), (24, 0, 6), (-84, 0, 78), (-84, 0, 78), False),
+                  r("neck", -8), r("head", 20, 0, 8), r("tail_0", 34, 12), r("tail_1", -4, 26), r("tail_2", 0, 30),
+                  r("tail_3", 0, 30))
     L = 3.0
     A["sit"] = timeline(L, [(0.0, SIT, None), (L, SIT, None)], loop=True, extra=[
         osc("body", None, [0.03, 0.04, 0.02], 2, 0.0, ch="scale"),

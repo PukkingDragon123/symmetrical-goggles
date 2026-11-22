@@ -1078,6 +1078,45 @@
    ]
   },
   {
+   "id": "antenna_l_plume_x",
+   "shape": "card",
+   "parent": "antenna_l",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    3.7,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -22.0,
+    0.0
+   ],
+   "style": "antenna",
+   "plane": "yz",
+   "art": [
+    "..t..",
+    ".ttt.",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    ".BsB.",
+    ".tst.",
+    ".BsB.",
+    "..s..",
+    "..s.."
+   ]
+  },
+  {
    "id": "antenna_r",
    "shape": "bone",
    "parent": "head",
@@ -1131,6 +1170,45 @@
     "..tst..",
     "...s...",
     "...s..."
+   ]
+  },
+  {
+   "id": "antenna_r_plume_x",
+   "shape": "card",
+   "parent": "antenna_r",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    3.7,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    22.0,
+    0.0
+   ],
+   "style": "antenna",
+   "plane": "yz",
+   "art": [
+    "..t..",
+    ".ttt.",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    ".BsB.",
+    ".tst.",
+    ".BsB.",
+    "..s..",
+    "..s.."
    ]
   },
   {
@@ -2258,6 +2336,46 @@
      "axis": "x"
     },
     {
+     "part": "thorax",
+     "osc": {
+      "amp": [
+       0.04,
+       0.05,
+       0.03
+      ],
+      "cycles": 6,
+      "phase": 0.2
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "thorax",
+     "osc": {
+      "amp": 2,
+      "cycles": 1,
+      "phase": 0.4
+     },
+     "axis": "x"
+    },
+    {
+     "part": "legs",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.15
+     },
+     "axis": "x"
+    },
+    {
+     "part": "legs",
+     "osc": {
+      "amp": 3,
+      "cycles": 1,
+      "phase": 0.4
+     },
+     "axis": "z"
+    },
+    {
      "parts": [
       "abdomen",
       "abdomen_1",
@@ -2839,6 +2957,28 @@
      ]
     },
     {
+     "part": "legs",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        18.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       1.0,
+       [
+        18.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
      "part": "shin_l1",
      "channel": "rotation",
      "keys": [
@@ -3090,6 +3230,28 @@
       "phase": 0.1
      },
      "axis": "z"
+    },
+    {
+     "part": "thorax",
+     "osc": {
+      "amp": [
+       0.05,
+       0.06,
+       0.03
+      ],
+      "cycles": 6,
+      "phase": 0.2
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "legs",
+     "osc": {
+      "amp": 4,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
     },
     {
      "parts": [
@@ -4854,6 +5016,83 @@
      ]
     },
     {
+     "part": "legs",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.14,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.27,
+       [
+        -16.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.33,
+       [
+        -16.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.38,
+       [
+        -16.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.48,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
      "part": "shin_l1",
      "channel": "rotation",
      "keys": [
@@ -5292,6 +5531,83 @@
         15.209,
         -0.054,
         0.406
+       ],
+       "ease"
+      ],
+      [
+       0.48,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "thorax",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.14,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.27,
+       [
+        -0.06,
+        0.04,
+        0.08
+       ],
+       "in"
+      ],
+      [
+       0.33,
+       [
+        -0.06,
+        0.04,
+        0.08
+       ],
+       "out"
+      ],
+      [
+       0.38,
+       [
+        -0.06,
+        0.04,
+        0.08
        ],
        "ease"
       ],

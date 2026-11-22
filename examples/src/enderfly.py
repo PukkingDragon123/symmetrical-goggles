@@ -65,6 +65,9 @@ for s in (1, -1):
     bone(f"antenna_{n}", "head", rel=(s * 0.7, 1.15, 1.0), rot=MR((28, 0, -26), s))
     card(f"antenna_{n}_plume", f"antenna_{n}", plume(7, 16), "antenna", rel=(0, 0, 0), offset=(0, 3.9, 0),
          plane="xy", rot=MR((0, -22, 0), s))
+    # a second plume crossing the first, so the feather reads from every side
+    card(f"antenna_{n}_plume_x", f"antenna_{n}", plume(5, 15), "antenna", rel=(0, 0, 0), offset=(0, 3.7, 0),
+         plane="yz", rot=MR((0, -22, 0), s))
 
 # ======================================================================= abdomen: three banded Endermite segments
 part("abdomen", "thorax", [3.5, 3, 3], "abd", at=(0, 5.6, -1.8), offset=(0, 0, -1.4), wrot=(-12, 0, 0))
@@ -240,7 +243,7 @@ HOVER = {}
 TUCK = legs_pose({"1": ((0.5, -0.2, 0.3), (0.15, -0.3, -0.95), (0.05, -0.1, -1.0)),
                   "2": ((0.7, -0.25, -0.4), (0.1, -0.25, -1.0), (0.0, -0.1, -1.0)),
                   "3": ((0.5, -0.1, -0.85), (0.08, -0.1, -1.0), (0.0, 0.05, -1.0))})
-FLY = add(TUCK, r("body", 14), r("head", -8), both("antenna", -30, 0, 8), r("abdomen", 8), r("abdomen_1", 4),
+FLY = add(TUCK, r("legs", 18), r("body", 14), r("head", -8), both("antenna", -30, 0, 8), r("abdomen", 8), r("abdomen_1", 4),
           r("abdomen_2", 2))
 ANIM = {}
 
@@ -251,6 +254,8 @@ ANIM["hover"] = timeline(L, [(0.0, HOVER, None), (L, HOVER, None)], loop=True, l
     osc("body", None, [0, 0.4, 0], 1, 0.0, ch="position"),
     osc("body", "x", 3.0, 1, 0.1), osc("body", "z", 3.0, 1, 0.35), osc("body", "y", 5.0, 1, 0.6),
     osc("head", "y", 8.0, 1, 0.3), osc("head", "x", -3, 2, 0.2),
+    osc("thorax", None, [0.04, 0.05, 0.03], 6, 0.2, ch="scale"), osc("thorax", "x", 2, 1, 0.4),
+    osc("legs", "x", 6, 1, 0.15), osc("legs", "z", 3, 1, 0.4),
     wave(["abdomen", "abdomen_1", "abdomen_2"], "x", 5, 2, lag=0.12, growth=1.2),
     wave(["abdomen", "abdomen_1", "abdomen_2"], "y", 4, 1, lag=0.1, phase=0.2),
     osc("antenna_l", "x", 10, 2, 0.1), osc("antenna_r", "x", 10, 2, 0.35),
@@ -265,6 +270,8 @@ ANIM["fly"] = timeline(L, [(0.0, FLY, None), (L, FLY, None)], loop=True, lock=Fa
     osc("body", None, [0, 0.45, 0], 6, 0.75, ch="position", bias=[0, 0.5, 0]),
     osc("body", "x", 2.5, 6, 0.0), osc("body", "z", 6.0, 1, 0.0),
     osc("head", "z", -4, 1, 0.1),
+    osc("thorax", None, [0.05, 0.06, 0.03], 6, 0.2, ch="scale"),
+    osc("legs", "x", 4, 2, 0.3),
     wave(["abdomen", "abdomen_1", "abdomen_2"], "x", 6, 2, lag=0.14, growth=1.25),
     wave(["abdomen", "abdomen_1", "abdomen_2"], "y", -5, 1, lag=0.12),
     osc("antenna_l", "x", 6, 3, 0.3), osc("antenna_r", "x", 6, 3, 0.3),
@@ -282,7 +289,7 @@ REACH = legs_pose({"1": ((0.4, -0.1, 0.9), (0.15, -0.3, 1.0), (0.05, -0.5, 0.9))
                    "3": ((0.6, -0.1, -0.7), (0.15, -0.6, -0.8), (0.0, -0.9, -0.4))})
 RAISE = add(WINGS_UP, r("body", -16), pos("body", 0, 1.2, -1.0), r("head", 6), both("antenna", 20, 0, -8),
             r("abdomen", 14), r("abdomen_1", 8), sc("body", -0.04, 0.08, -0.04))
-STOOP = add(WINGS_BACK, REACH, r("body", 42), pos("body", 0, -1.0, 4.0), r("head", -14), both("antenna", -40, 0, 10),
+STOOP = add(WINGS_BACK, REACH, r("legs", -16), sc("thorax", -0.06, 0.04, 0.08), r("body", 42), pos("body", 0, -1.0, 4.0), r("head", -14), both("antenna", -40, 0, 10),
             r("abdomen", -10), r("abdomen_1", -6), r("abdomen_2", -4), sc("body", -0.06, -0.04, 0.12))
 HIT = add(STOOP, r("body", -10), pos("body", 0, -0.5, 4.6), sc("body", 0.14, -0.1, -0.14), r("head", 8))
 RECOVER = add(WINGS_OPEN, r("body", -12), pos("body", 0, 1.6, 1.0), both("antenna", 16), r("abdomen", 16),

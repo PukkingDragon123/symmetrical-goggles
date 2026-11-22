@@ -267,6 +267,7 @@ def gait(L, stride=STRIDE, scale=1.0):
 def breathe(L, cycles=1, amp=1.0, phase=0.0):
     """Breathing: the torso swells, the throat pulses, the vents puff one after another down the back."""
     return [osc("body", None, [0.02 * amp, 0.03 * amp, 0.01 * amp], cycles, phase, ch="scale"),
+            osc("vents", None, [0.04 * amp, 0.5 * amp, 0.02 * amp], cycles, phase + 0.05, ch="scale"),
             osc("throat", None, [0.08 * amp, 0.14 * amp, 0.06 * amp], cycles, phase + 0.1, ch="scale"),
             {"parts": VENTS, "channel": "scale",
              "wave": {"amp": [0.18 * amp, 0.45 * amp, 0.18 * amp], "cycles": cycles, "lag": 0.08, "growth": 1.0,
@@ -312,6 +313,7 @@ L = 2.0
 ANIM["burrowed"] = timeline(L, [(0.0, BURROWED, None), (L, BURROWED, None)], loop=True, lock=False, extra=[
     {"parts": VENTS, "channel": "scale",
      "wave": {"amp": [0.3, 0.9, 0.3], "cycles": 2, "lag": 0.1, "growth": 1.0, "shape": "bounce"}},
+    osc("vents", None, [0.05, 0.8, 0.03], 2, 0.0, ch="scale", shape="bounce"),
     osc("eye_l", "y", 14, 1, 0.0), osc("eye_r", "y", 14, 1, 0.0),
     osc("head", "y", 4, 1, 0.25),
     osc("body", None, [0.02, 0.03, 0.01], 2, 0.0, ch="scale"),
@@ -344,9 +346,9 @@ ANIM["bite"] = timeline(0.5, [(0.0, REST, None), (0.14, COCK, "out"), (0.22, LUN
 # (ends inflated: the game holds the last frame until it spits)
 PUFFED = add(r("head", -22), r("body", -6), sc("throat", 0.75, 1.55, 0.5),
              *[leg_dirs("f", s, (1.0, -0.45, 0.3), (0.1, -1.0, 0.15)) for s in (1, -1)],
-             *[sc(v, 0, -0.4, 0) for v in VENTS], r("tail_1", 0, 6), r("tail_2", 0, 10))
+             sc("vents", 0, -0.5, 0), r("tail_1", 0, 6), r("tail_2", 0, 10))
 GULP1 = add(r("head", -10), r("body", -3), sc("throat", 0.25, 0.5, 0.15))
-GULP2 = add(r("head", -16), r("body", -4), sc("throat", 0.45, 0.95, 0.3), *[sc(v, 0, -0.2, 0) for v in VENTS])
+GULP2 = add(r("head", -16), r("body", -4), sc("throat", 0.45, 0.95, 0.3), sc("vents", 0, -0.25, 0))
 ANIM["inflate"] = timeline(1.2, [(0.0, REST, None), (0.25, GULP1, "out"), (0.4, add(GULP1, sc("throat", -0.1, -0.2)),
                                                                                   "ease"),
                                  (0.65, GULP2, "out"), (0.78, add(GULP2, sc("throat", -0.08, -0.15)), "ease"),
@@ -356,7 +358,7 @@ ANIM["inflate"] = timeline(1.2, [(0.0, REST, None), (0.25, GULP1, "out"), (0.4, 
 # spit: from the inflated pose, a recoil, then the head thrusts forward and down with the jaw wide, the sac collapsing
 # as the dust ball is blasted out; it shakes its head and settles
 THRUST = add(r("head", -12), r("body", 2), pos("body", 0, 0, 2.0), r("jaw", 32), sc("throat", -0.35, -0.5, -0.2),
-             *[sc(v, 0.2, 0.6, 0.2) for v in VENTS])
+             sc("vents", 0.1, 0.9, 0.05))
 ANIM["spit"] = timeline(0.5, [(0.0, PUFFED, None), (0.1, add(PUFFED, r("head", -8), pos("body", 0, 0, -1.0)), "out"),
                               (0.18, THRUST, "in"), (0.3, add(THRUST, r("jaw", -12)), "ease"), (0.5, REST, "ease")],
                         extra=[shake("head", 0.3, 0.48, 5, freq=10, axis=1)])

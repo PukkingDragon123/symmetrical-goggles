@@ -3218,7 +3218,7 @@
        0
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "axis": "x"
     },
     {
@@ -3333,7 +3333,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -3380,7 +3380,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -3427,7 +3427,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -3474,7 +3474,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -3810,6 +3810,28 @@
       "amp": -4,
       "cycles": 2,
       "phase": 0.2
+     },
+     "axis": "z"
+    },
+    {
+     "part": "saddle",
+     "osc": {
+      "amp": [
+       0,
+       0.15,
+       0
+      ],
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "channel": "position"
+    },
+    {
+     "part": "saddle",
+     "osc": {
+      "amp": 1.5,
+      "cycles": 1,
+      "phase": 0.1
      },
      "axis": "z"
     },
@@ -5258,6 +5280,15 @@
       "growth": 1.2,
       "phase": 0.0
      }
+    },
+    {
+     "part": "saddle",
+     "osc": {
+      "amp": 1.0,
+      "cycles": 2,
+      "phase": 0.4
+     },
+     "axis": "x"
     }
    ],
    "grounded": false
@@ -9135,7 +9166,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -9182,7 +9213,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {

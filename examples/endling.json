@@ -827,7 +827,7 @@
        0
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "axis": "z"
     },
     {
@@ -912,7 +912,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -959,7 +959,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -1006,7 +1006,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -1053,7 +1053,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -3342,7 +3342,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
@@ -3389,7 +3389,7 @@
        ]
       ]
      ],
-     "ease": "smooth",
+     "ease": "ease",
      "channel": "scale"
     },
     {
