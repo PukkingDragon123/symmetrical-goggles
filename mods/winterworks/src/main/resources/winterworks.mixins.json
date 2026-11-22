@@ -36,7 +36,8 @@
     "endgear.EndGearLivingEntityMixin",
     "endgear.EndGearPlayerMixin",
     "endgear.EndGearEntityMixin",
-    "endgear.EndGearItemEntityMixin"
+    "endgear.EndGearItemEntityMixin",
+    "endmob.EffectParticlesAccessor"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -46,7 +47,8 @@
     "endgear.client.EndGearMinecraftMixin",
     "endgear.client.EndGearLivingEntityRendererMixin",
     "endgear.client.EndGearHumanoidModelMixin",
-    "endgear.client.EndGearItemInHandLayerMixin"
+    "endgear.client.EndGearItemInHandLayerMixin",
+    "endmob.EndGlowLightMixin"
   ],
   "injectors": {
     "defaultRequire": 1

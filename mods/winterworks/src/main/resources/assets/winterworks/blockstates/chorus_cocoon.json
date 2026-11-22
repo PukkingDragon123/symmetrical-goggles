@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "winterworks:block/chorus_cocoon_age0"
+    },
+    "age=1": {
+      "model": "winterworks:block/chorus_cocoon_age1"
+    },
+    "age=2": {
+      "model": "winterworks:block/chorus_cocoon_age2"
+    },
+    "age=3": {
+      "model": "winterworks:block/chorus_cocoon_age3"
+    }
+  }
+}
