@@ -1,25 +1,26 @@
 {
   "variants": {
     "shape=north_south": {
-      "model": "winterworks:block/coaster_rail"
+      "model": "winterworks:block/coaster_rail_straight"
     },
     "shape=east_west": {
-      "model": "winterworks:block/coaster_rail",
-      "y": 90
-    },
-    "shape=ascending_east": {
-      "model": "winterworks:block/coaster_rail_raised_ne",
-      "y": 90
-    },
-    "shape=ascending_west": {
-      "model": "winterworks:block/coaster_rail_raised_sw",
+      "model": "winterworks:block/coaster_rail_straight",
       "y": 90
     },
     "shape=ascending_north": {
-      "model": "winterworks:block/coaster_rail_raised_ne"
+      "model": "winterworks:block/coaster_rail_ascending"
+    },
+    "shape=ascending_east": {
+      "model": "winterworks:block/coaster_rail_ascending",
+      "y": 90
     },
     "shape=ascending_south": {
-      "model": "winterworks:block/coaster_rail_raised_sw"
+      "model": "winterworks:block/coaster_rail_ascending",
+      "y": 180
+    },
+    "shape=ascending_west": {
+      "model": "winterworks:block/coaster_rail_ascending",
+      "y": 270
     },
     "shape=south_east": {
       "model": "winterworks:block/coaster_rail_corner"

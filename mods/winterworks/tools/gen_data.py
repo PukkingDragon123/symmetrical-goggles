@@ -227,16 +227,14 @@ def rail_models():
         write(os.path.join(A, "models", "block", name + ".json"),
               {"parent": f"{M}:block/{template}", "textures": {"rail": f"{M}:block/{rail}", "ties": f"{M}:block/{ties}"}})
 
-    # coaster: flat, corner, raised
-    model("coaster_rail", "coaster_rail", "coaster_rail_ties", "template_rail_flat")
-    model("coaster_rail_corner", "coaster_rail_corner", "coaster_rail_corner_ties", "template_rail_flat")
-    model("coaster_rail_raised_ne", "coaster_rail", "coaster_rail_ties", "template_rail_raised_ne")
-    model("coaster_rail_raised_sw", "coaster_rail", "coaster_rail_ties", "template_rail_raised_sw")
+    # coaster: a 3D roller-coaster track (rails, ties, a girder spine); its three models and textures are written by
+    # examples/src/winterworks_coaster_track.py, which also owns this shape -> (model, y rotation) mapping
     m = lambda n, y=0: ({"model": f"{M}:block/{n}", "y": y} if y else {"model": f"{M}:block/{n}"})  # noqa: E731
     write(os.path.join(A, "blockstates", "coaster_rail.json"), {"variants": {
-        "shape=north_south": m("coaster_rail"), "shape=east_west": m("coaster_rail", 90),
-        "shape=ascending_east": m("coaster_rail_raised_ne", 90), "shape=ascending_west": m("coaster_rail_raised_sw", 90),
-        "shape=ascending_north": m("coaster_rail_raised_ne"), "shape=ascending_south": m("coaster_rail_raised_sw"),
+        "shape=north_south": m("coaster_rail_straight"), "shape=east_west": m("coaster_rail_straight", 90),
+        "shape=ascending_north": m("coaster_rail_ascending"), "shape=ascending_east": m("coaster_rail_ascending", 90),
+        "shape=ascending_south": m("coaster_rail_ascending", 180),
+        "shape=ascending_west": m("coaster_rail_ascending", 270),
         "shape=south_east": m("coaster_rail_corner"), "shape=south_west": m("coaster_rail_corner", 90),
         "shape=north_west": m("coaster_rail_corner", 180), "shape=north_east": m("coaster_rail_corner", 270)}})
     for rail in ("booster_rail", "lift_rail", "trap_rail", "drop_rail"):

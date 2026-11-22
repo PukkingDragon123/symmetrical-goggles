@@ -1,12 +1,12 @@
 {
  "name": "Icebreaker Brown",
- "description": "A huge fat grey seal with an enormous head, short flippers and a massive old ice horn (Winterworks mod mob), painted naturalistically: muted greys, dark blotches, fur strokes, small dark eyes. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
+ "description": "A big fat shaggy grey seal with an enormous head, short flippers and a massive old ice horn (Winterworks mod mob): muted greys, dark blotches, layered fur and fur cards, small dark eyes. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 1,
  "budget": {
-  "tris": 2000,
-  "colors": 72
+  "tris": 2600,
+  "colors": 80
  },
  "light": {
   "dir": [
@@ -158,6 +158,95 @@
      "amount": -1.3
     },
     {
+     "id": "clumps",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.64,
+     "shift": -0.9
+    },
+    {
+     "id": "lights",
+     "op": "patches",
+     "scale": 1.2,
+     "threshold": 0.68,
+     "shift": 0.9,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "hair",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.5,
+     "width": 0.28,
+     "shift": -2.0,
+     "wobble": 0.5,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "hair_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.5,
+     "width": 0.28,
+     "shift": -2.0,
+     "wobble": 0.5,
+     "faces": [
+      "front",
+      "back",
+      "top"
+     ]
+    },
+    {
+     "id": "shine",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.1,
+     "width": 0.22,
+     "phase": 0.45,
+     "shift": 1.6,
+     "wobble": 0.6,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "shine_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.1,
+     "width": 0.22,
+     "phase": 0.45,
+     "shift": 1.4,
+     "wobble": 0.6,
+     "faces": [
+      "front",
+      "back",
+      "top"
+     ]
+    },
+    {
+     "id": "tips",
+     "op": "drip",
+     "ramp": "seal",
+     "tone": 9.4,
+     "depth": 0.45,
+     "length": 1.8,
+     "width": 0.5,
+     "scale": 1.5,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
      "id": "blotches",
      "op": "spots",
      "count": 10,
@@ -189,20 +278,99 @@
    "tone": 6.0,
    "layers": [
     {
-     "id": "scars",
-     "op": "cracks",
-     "scale": 5.0,
-     "width": 0.02,
-     "shift": 1.6,
-     "faces": [
-      "sides"
-     ]
-    },
-    {
      "id": "back_dark",
      "op": "gradient",
      "axis": "y",
      "amount": -1.4
+    },
+    {
+     "id": "clumps",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.64,
+     "shift": -0.9
+    },
+    {
+     "id": "lights",
+     "op": "patches",
+     "scale": 1.2,
+     "threshold": 0.68,
+     "shift": 0.9,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "hair",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.5,
+     "width": 0.28,
+     "shift": -2.0,
+     "wobble": 0.5,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "hair_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.5,
+     "width": 0.28,
+     "shift": -2.0,
+     "wobble": 0.5,
+     "faces": [
+      "front",
+      "back",
+      "top"
+     ]
+    },
+    {
+     "id": "shine",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.1,
+     "width": 0.22,
+     "phase": 0.45,
+     "shift": 1.6,
+     "wobble": 0.6,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "shine_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.1,
+     "width": 0.22,
+     "phase": 0.45,
+     "shift": 1.4,
+     "wobble": 0.6,
+     "faces": [
+      "front",
+      "back",
+      "top"
+     ]
+    },
+    {
+     "id": "tips",
+     "op": "drip",
+     "ramp": "seal",
+     "tone": 9.4,
+     "depth": 0.45,
+     "length": 1.8,
+     "width": 0.5,
+     "scale": 1.5,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
     },
     {
      "id": "blotches",
@@ -219,6 +387,16 @@
       "sides",
       "back"
      ]
+    },
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 5.0,
+     "width": 0.02,
+     "shift": 1.6,
+     "faces": [
+      "sides"
+     ]
     }
    ]
   },
@@ -227,21 +405,55 @@
    "tone": 6.4,
    "layers": [
     {
-     "id": "scars",
-     "op": "cracks",
-     "scale": 4.0,
-     "width": 0.025,
-     "shift": 1.8,
-     "faces": [
-      "sides",
-      "top"
-     ]
-    },
-    {
      "id": "back_dark",
      "op": "gradient",
      "axis": "y",
      "amount": -1.1
+    },
+    {
+     "id": "clumps",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.64,
+     "shift": -0.9
+    },
+    {
+     "id": "lights",
+     "op": "patches",
+     "scale": 1.2,
+     "threshold": 0.68,
+     "shift": 0.9,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "hair",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.5,
+     "width": 0.28,
+     "shift": -2.0,
+     "wobble": 0.5,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "hair_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.5,
+     "width": 0.28,
+     "shift": -2.0,
+     "wobble": 0.5,
+     "faces": [
+      "front",
+      "back",
+      "top"
+     ]
     },
     {
      "id": "blotches",
@@ -266,6 +478,96 @@
      "faces": [
       "front"
      ]
+    },
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 4.0,
+     "width": 0.025,
+     "shift": 1.8,
+     "faces": [
+      "sides",
+      "top"
+     ]
+    }
+   ]
+  },
+  "fur_card": {
+   "ramp": "seal",
+   "tone": 5.6,
+   "light": 0.6,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "h": "seal:10",
+    "d": "seal:2"
+   },
+   "brush": {
+    "flow": "y",
+    "length": 2.4,
+    "rough": 0.9
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.4
+    },
+    {
+     "id": "strand",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.3,
+     "width": 0.34,
+     "shift": -1.6,
+     "wobble": 0.3
+    },
+    {
+     "id": "strand_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.3,
+     "width": 0.34,
+     "shift": -1.6,
+     "wobble": 0.3
+    }
+   ]
+  },
+  "fur_card_pale": {
+   "ramp": "belly",
+   "tone": 6.4,
+   "light": 0.6,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "h": "belly:9",
+    "d": "belly:3"
+   },
+   "brush": {
+    "flow": "y",
+    "length": 2.4,
+    "rough": 0.9
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.2
+    },
+    {
+     "id": "strand_x",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.3,
+     "width": 0.34,
+     "shift": -1.4,
+     "wobble": 0.3
     }
    ]
   },
@@ -680,14 +982,14 @@
    "id": "chest",
    "shape": "box",
    "size": [
-    28,
-    22,
-    20
+    21,
+    17,
+    15
    ],
    "pivot": [
-    0,
-    15.4,
-    6
+    0.0,
+    11.55,
+    4.5
    ],
    "style": "seal_back",
    "rotation": [
@@ -700,14 +1002,14 @@
    "id": "chest_under",
    "shape": "box",
    "size": [
-    26,
-    4,
-    17
+    20,
+    3,
+    13
    ],
    "pivot": [
-    0,
-    -10.6,
-    0.5
+    0.0,
+    -7.95,
+    0.375
    ],
    "style": "belly",
    "parent": "chest"
@@ -716,21 +1018,21 @@
    "id": "belly",
    "shape": "box",
    "size": [
-    32,
-    23,
-    20
+    24,
+    17,
+    15
    ],
    "pivot": [
-    0,
-    -0.6,
-    -8
+    0.0,
+    -0.45,
+    -6.0
    ],
    "style": "seal_back",
    "parent": "chest",
    "offset": [
-    0,
-    -0.5,
-    -9
+    0.0,
+    -0.375,
+    -6.75
    ],
    "rotation": [
     5,
@@ -742,14 +1044,14 @@
    "id": "belly_under",
    "shape": "box",
    "size": [
-    30,
-    5,
-    18
+    23,
+    4,
+    14
    ],
    "pivot": [
-    0,
-    -10.9,
-    -9
+    0.0,
+    -8.175,
+    -6.75
    ],
    "style": "belly",
    "parent": "belly"
@@ -758,14 +1060,14 @@
    "id": "flank",
    "shape": "box",
    "size": [
-    3,
-    16,
-    18
+    2,
+    12,
+    14
    ],
    "pivot": [
-    16.5,
-    -1,
-    -9
+    12.375,
+    -0.75,
+    -6.75
    ],
    "style": "seal",
    "parent": "belly",
@@ -775,21 +1077,21 @@
    "id": "waist",
    "shape": "box",
    "size": [
-    26,
-    19,
-    16
+    20,
+    14,
+    12
    ],
    "pivot": [
-    0,
-    -1,
-    -17
+    0.0,
+    -0.75,
+    -12.75
    ],
    "style": "seal",
    "parent": "belly",
    "offset": [
-    0,
-    -1.5,
-    -7
+    0.0,
+    -1.125,
+    -5.25
    ],
    "rotation": [
     3,
@@ -801,14 +1103,14 @@
    "id": "waist_under",
    "shape": "box",
    "size": [
-    22,
-    3,
-    14
+    17,
+    2,
+    11
    ],
    "pivot": [
-    0,
-    -11,
-    -7
+    0.0,
+    -8.25,
+    -5.25
    ],
    "style": "belly",
    "parent": "waist"
@@ -817,21 +1119,21 @@
    "id": "hips",
    "shape": "box",
    "size": [
-    19,
     14,
-    13
+    11,
+    10
    ],
    "pivot": [
-    0,
-    -1.5,
-    -13
+    0.0,
+    -1.125,
+    -9.75
    ],
    "style": "seal",
    "parent": "waist",
    "offset": [
-    0,
-    -1.5,
-    -6
+    0.0,
+    -1.125,
+    -4.5
    ],
    "rotation": [
     5,
@@ -843,21 +1145,21 @@
    "id": "tail",
    "shape": "box",
    "size": [
-    12,
-    8,
-    10
+    9,
+    6,
+    8
    ],
    "pivot": [
-    0,
-    -2.5,
-    -11
+    0.0,
+    -1.875,
+    -8.25
    ],
    "style": "seal",
    "parent": "hips",
    "offset": [
-    0,
-    -0.5,
-    -4.5
+    0.0,
+    -0.375,
+    -3.375
    ],
    "rotation": [
     6,
@@ -869,21 +1171,21 @@
    "id": "fluke",
    "shape": "box",
    "size": [
-    9,
+    7,
     2,
-    18
+    14
    ],
    "pivot": [
-    3,
-    -2,
-    -8
+    2.25,
+    -1.5,
+    -6.0
    ],
    "style": "flipper",
    "parent": "tail",
    "offset": [
-    1.5,
-    0,
-    -9
+    1.125,
+    0.0,
+    -6.75
    ],
    "rotation": [
     -8,
@@ -896,14 +1198,14 @@
    "id": "fluke_fan",
    "shape": "box",
    "size": [
-    13,
+    10,
     2,
-    6
+    5
    ],
    "pivot": [
-    2.5,
-    0,
-    -17
+    1.875,
+    0.0,
+    -12.75
    ],
    "style": "flipper",
    "parent": "fluke",
@@ -917,21 +1219,21 @@
    "id": "flipper",
    "shape": "box",
    "size": [
-    6,
-    12,
-    11
+    5,
+    9,
+    8
    ],
    "pivot": [
-    16,
-    -2.8,
-    6
+    12.0,
+    -2.1,
+    4.5
    ],
    "style": "flipper",
    "parent": "chest",
    "offset": [
-    1.5,
-    -5.5,
-    1
+    1.125,
+    -4.125,
+    0.75
    ],
    "rotation": [
     -8,
@@ -944,14 +1246,14 @@
    "id": "palm",
    "shape": "box",
    "size": [
-    8,
+    6,
     2,
-    15
+    11
    ],
    "pivot": [
-    1.0,
-    -11.4,
-    3
+    0.75,
+    -8.55,
+    2.25
    ],
    "style": "flipper",
    "parent": "flipper",
@@ -967,12 +1269,12 @@
    "size": [
     1,
     1,
-    3
+    2
    ],
    "pivot": [
-    -2.8,
-    0.2,
-    8.0
+    -2.1,
+    0.15,
+    6.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -984,12 +1286,12 @@
    "size": [
     1,
     1,
-    3
+    2
    ],
    "pivot": [
-    -1.4,
-    0.2,
-    8.0
+    -1.05,
+    0.15,
+    6.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -1001,12 +1303,12 @@
    "size": [
     1,
     1,
-    3
+    2
    ],
    "pivot": [
-    0,
-    0.2,
-    8.0
+    0.0,
+    0.15,
+    6.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -1018,12 +1320,12 @@
    "size": [
     1,
     1,
-    3
+    2
    ],
    "pivot": [
-    1.4,
-    0.2,
-    8.0
+    1.05,
+    0.15,
+    6.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -1035,12 +1337,12 @@
    "size": [
     1,
     1,
-    3
+    2
    ],
    "pivot": [
-    2.8,
-    0.2,
-    8.0
+    2.1,
+    0.15,
+    6.0
    ],
    "style": "claw",
    "parent": "palm",
@@ -1050,21 +1352,21 @@
    "id": "neck",
    "shape": "box",
    "size": [
-    24,
     18,
-    10
+    14,
+    8
    ],
    "pivot": [
-    0,
-    6,
-    9
+    0.0,
+    4.5,
+    6.75
    ],
    "style": "seal",
    "parent": "chest",
    "offset": [
-    0,
-    1,
-    4
+    0.0,
+    0.75,
+    3.0
    ],
    "rotation": [
     -14,
@@ -1076,21 +1378,21 @@
    "id": "head",
    "shape": "box",
    "size": [
-    22,
-    19,
-    17
+    17,
+    14,
+    13
    ],
    "pivot": [
-    0,
-    3,
-    8
+    0.0,
+    2.25,
+    6.0
    ],
    "style": "head",
    "parent": "neck",
    "offset": [
-    0,
-    2,
-    8
+    0.0,
+    1.5,
+    6.0
    ],
    "rotation": [
     16,
@@ -1102,14 +1404,14 @@
    "id": "crown",
    "shape": "box",
    "size": [
-    18,
-    3,
-    13
+    14,
+    2,
+    10
    ],
    "pivot": [
-    0,
-    12.5,
-    7.5
+    0.0,
+    9.375,
+    5.625
    ],
    "style": "head",
    "parent": "head"
@@ -1119,13 +1421,13 @@
    "shape": "box",
    "size": [
     2,
-    12,
-    12
+    9,
+    9
    ],
    "pivot": [
-    11.5,
-    0,
-    8
+    8.625,
+    0.0,
+    6.0
    ],
    "style": "head",
    "parent": "head",
@@ -1135,35 +1437,35 @@
    "id": "muzzle",
    "shape": "box",
    "size": [
-    14,
-    8,
-    6
+    11,
+    6,
+    5
    ],
    "pivot": [
-    0,
-    -3.5,
-    16.5
+    0.0,
+    -2.625,
+    12.375
    ],
    "style": "muzzle",
    "parent": "head",
    "offset": [
-    0,
-    0,
-    3
+    0.0,
+    0.0,
+    2.25
    ]
   },
   {
    "id": "whisker_pad",
    "shape": "box",
    "size": [
-    8,
-    7,
-    6
+    6,
+    5,
+    5
    ],
    "pivot": [
-    4,
-    -0.5,
-    4
+    3.0,
+    -0.375,
+    3.0
    ],
    "style": "whiskers",
    "parent": "muzzle",
@@ -1174,18 +1476,16 @@
    "shape": "card",
    "plane": "xy",
    "art": [
-    ".......www",
-    "..wwwwww..",
-    "www.......",
-    "wwwwwwwwww",
-    "www.......",
-    "..wwwwww..",
-    ".......www"
+    "......ww",
+    "..wwww..",
+    "www.....",
+    "www.....",
+    "..wwww.."
    ],
    "pivot": [
-    4,
-    -1,
-    2.6
+    3.0,
+    -0.75,
+    1.95
    ],
    "paint": {
     "ramp": "belly",
@@ -1196,9 +1496,9 @@
    },
    "parent": "whisker_pad",
    "offset": [
-    5,
-    0,
-    0
+    3.75,
+    0.0,
+    0.0
    ],
    "rotation": [
     0,
@@ -1212,14 +1512,14 @@
    "id": "nose",
    "shape": "box",
    "size": [
-    6,
-    3,
-    3
+    5,
+    2,
+    2
    ],
    "pivot": [
-    0,
-    4,
-    4.5
+    0.0,
+    3.0,
+    3.375
    ],
    "style": "nose",
    "parent": "muzzle"
@@ -1233,9 +1533,9 @@
     1
    ],
    "pivot": [
-    1.5,
-    0.6,
-    1.6
+    1.125,
+    0.45,
+    1.2
    ],
    "style": "nostril",
    "parent": "nose",
@@ -1245,21 +1545,21 @@
    "id": "jaw",
    "shape": "box",
    "size": [
-    12,
-    4,
-    12
+    9,
+    3,
+    9
    ],
    "pivot": [
-    0,
-    -7,
-    9
+    0.0,
+    -5.25,
+    6.75
    ],
    "style": "jaw",
    "parent": "head",
    "offset": [
-    0,
-    -1.5,
-    6
+    0.0,
+    -1.125,
+    4.5
    ],
    "rotation": [
     4,
@@ -1271,14 +1571,14 @@
    "id": "tongue",
    "shape": "box",
    "size": [
-    8,
+    6,
     1,
-    8
+    6
    ],
    "pivot": [
-    0,
-    0.6,
-    7
+    0.0,
+    0.45,
+    5.25
    ],
    "style": "mouth",
    "parent": "jaw"
@@ -1287,14 +1587,14 @@
    "id": "eye",
    "shape": "box",
    "size": [
-    4,
     3,
+    2,
     1
    ],
    "pivot": [
-    6.5,
-    4.5,
-    16.6
+    4.875,
+    3.375,
+    12.45
    ],
    "style": "eye",
    "parent": "head",
@@ -1304,14 +1604,14 @@
    "id": "lid",
    "shape": "box",
    "size": [
-    5,
+    4,
     2,
     2
    ],
    "pivot": [
-    6.5,
-    6.6,
-    16.8
+    4.875,
+    4.95,
+    12.6
    ],
    "style": "lid",
    "parent": "head",
@@ -1321,14 +1621,14 @@
    "id": "brow",
    "shape": "box",
    "size": [
-    7,
+    5,
     2,
     2
    ],
    "pivot": [
-    6.5,
-    8.2,
-    16.6
+    4.875,
+    6.15,
+    12.45
    ],
    "style": "brow",
    "parent": "head",
@@ -1343,14 +1643,14 @@
    "id": "mane",
    "shape": "box",
    "size": [
-    32,
-    10,
-    13
+    24,
+    8,
+    10
    ],
    "pivot": [
-    0,
-    8,
-    7
+    0.0,
+    6.0,
+    5.25
    ],
    "style": "fur",
    "parent": "chest",
@@ -1364,14 +1664,14 @@
    "id": "shoulder_fur",
    "shape": "box",
    "size": [
+    5,
     6,
-    8,
-    13
+    10
    ],
    "pivot": [
-    14,
-    6.5,
-    6
+    10.5,
+    4.875,
+    4.5
    ],
    "style": "fur_dark",
    "parent": "chest",
@@ -1386,14 +1686,14 @@
    "id": "ruff",
    "shape": "box",
    "size": [
-    22,
-    8,
-    4
+    17,
+    6,
+    3
    ],
    "pivot": [
-    0,
-    -3,
-    10.5
+    0.0,
+    -2.25,
+    7.875
    ],
    "style": "fur_pale",
    "parent": "chest",
@@ -1407,14 +1707,14 @@
    "id": "tuft0",
    "shape": "box",
    "size": [
-    8,
-    9,
-    6
+    6,
+    7,
+    5
    ],
    "pivot": [
-    -13,
-    9,
-    4
+    -9.75,
+    6.75,
+    3.0
    ],
    "style": "fur_dark",
    "parent": "chest",
@@ -1428,14 +1728,14 @@
    "id": "tuft1",
    "shape": "box",
    "size": [
-    8,
-    9,
-    6
+    6,
+    7,
+    5
    ],
    "pivot": [
-    13,
-    9,
-    4
+    9.75,
+    6.75,
+    3.0
    ],
    "style": "fur_dark",
    "parent": "chest",
@@ -1449,14 +1749,14 @@
    "id": "tuft2",
    "shape": "box",
    "size": [
-    9,
-    8,
-    6
+    7,
+    6,
+    5
    ],
    "pivot": [
-    -7,
-    13,
-    2
+    -5.25,
+    9.75,
+    1.5
    ],
    "style": "fur_dark",
    "parent": "chest",
@@ -1470,14 +1770,14 @@
    "id": "tuft3",
    "shape": "box",
    "size": [
-    9,
-    8,
-    6
+    7,
+    6,
+    5
    ],
    "pivot": [
-    7,
-    13,
-    2
+    5.25,
+    9.75,
+    1.5
    ],
    "style": "fur_dark",
    "parent": "chest",
@@ -1491,14 +1791,14 @@
    "id": "tuft4",
    "shape": "box",
    "size": [
-    10,
     8,
-    6
+    6,
+    5
    ],
    "pivot": [
-    0,
-    14,
-    0
+    0.0,
+    10.5,
+    0.0
    ],
    "style": "fur_dark",
    "parent": "chest",
@@ -1512,21 +1812,21 @@
    "id": "sideburn",
    "shape": "box",
    "size": [
-    3,
-    9,
-    7
+    2,
+    7,
+    5
    ],
    "pivot": [
-    11.8,
-    -2,
-    9
+    8.85,
+    -1.5,
+    6.75
    ],
    "style": "fur_dark",
    "parent": "head",
    "offset": [
-    0,
-    -3,
-    0
+    0.0,
+    -2.25,
+    0.0
    ],
    "rotation": [
     -10,
@@ -1539,14 +1839,14 @@
    "id": "alpha_mane0",
    "shape": "box",
    "size": [
-    9,
-    14,
-    8
+    7,
+    11,
+    6
    ],
    "pivot": [
-    -15,
-    6,
-    5
+    -11.25,
+    4.5,
+    3.75
    ],
    "style": "mane",
    "parent": "chest",
@@ -1560,14 +1860,14 @@
    "id": "alpha_mane1",
    "shape": "box",
    "size": [
-    9,
-    14,
-    8
+    7,
+    11,
+    6
    ],
    "pivot": [
-    15,
-    6,
-    5
+    11.25,
+    4.5,
+    3.75
    ],
    "style": "mane",
    "parent": "chest",
@@ -1581,14 +1881,14 @@
    "id": "alpha_mane2",
    "shape": "box",
    "size": [
-    11,
-    12,
-    8
+    8,
+    9,
+    6
    ],
    "pivot": [
-    -9,
-    13,
-    3
+    -6.75,
+    9.75,
+    2.25
    ],
    "style": "mane",
    "parent": "chest",
@@ -1602,14 +1902,14 @@
    "id": "alpha_mane3",
    "shape": "box",
    "size": [
-    11,
-    12,
-    8
+    8,
+    9,
+    6
    ],
    "pivot": [
-    9,
-    13,
-    3
+    6.75,
+    9.75,
+    2.25
    ],
    "style": "mane",
    "parent": "chest",
@@ -1623,14 +1923,14 @@
    "id": "alpha_mane4",
    "shape": "box",
    "size": [
-    13,
-    11,
-    8
+    10,
+    8,
+    6
    ],
    "pivot": [
-    0,
-    15,
-    1
+    0.0,
+    11.25,
+    0.75
    ],
    "style": "mane",
    "parent": "chest",
@@ -1644,14 +1944,14 @@
    "id": "alpha_mane5",
    "shape": "box",
    "size": [
-    9,
-    10,
-    7
+    7,
+    8,
+    5
    ],
    "pivot": [
-    -12,
-    13,
-    -4
+    -9.0,
+    9.75,
+    -3.0
    ],
    "style": "mane",
    "parent": "chest",
@@ -1665,14 +1965,14 @@
    "id": "alpha_mane6",
    "shape": "box",
    "size": [
-    9,
-    10,
-    7
+    7,
+    8,
+    5
    ],
    "pivot": [
-    12,
-    13,
-    -4
+    9.0,
+    9.75,
+    -3.0
    ],
    "style": "mane",
    "parent": "chest",
@@ -1686,21 +1986,21 @@
    "id": "alpha_beard",
    "shape": "box",
    "size": [
-    12,
-    8,
-    7
+    9,
+    6,
+    5
    ],
    "pivot": [
-    0,
-    -2,
-    6
+    0.0,
+    -1.5,
+    4.5
    ],
    "style": "mane",
    "parent": "jaw",
    "offset": [
-    0,
-    -4,
-    0
+    0.0,
+    -3.0,
+    0.0
    ],
    "rotation": [
     12,
@@ -1712,14 +2012,14 @@
    "id": "alpha_ruff",
    "shape": "box",
    "size": [
-    26,
-    10,
-    6
+    20,
+    8,
+    5
    ],
    "pivot": [
-    0,
-    -1,
-    10.5
+    0.0,
+    -0.75,
+    7.875
    ],
    "style": "mane",
    "parent": "chest",
@@ -1734,19 +2034,17 @@
    "shape": "card",
    "plane": "yz",
    "art": [
-    "mmmmmmmmm",
-    "mmmmmmmmm",
-    "mmmm.mmmm",
-    "mmm..mm.m",
-    ".mm..mm..",
-    ".m...m...",
-    "..m..m...",
-    "..m......"
+    "mmmmmmm",
+    "mmmmmmm",
+    "mmm.mmm",
+    ".mm.mm.",
+    ".m..m..",
+    "..m.m.."
    ],
    "pivot": [
-    -4.5,
-    -7,
-    0
+    -3.375,
+    -5.25,
+    0.0
    ],
    "paint": {
     "ramp": "mane",
@@ -1757,9 +2055,9 @@
    },
    "parent": "alpha_mane0",
    "offset": [
-    0,
-    -4,
-    0
+    0.0,
+    -3.0,
+    0.0
    ],
    "rotation": [
     0,
@@ -1774,20 +2072,18 @@
    "shape": "card",
    "plane": "xy",
    "art": [
-    "mmmmmmmmm",
-    "mmmmmmmmm",
-    "mmmmmmmmm",
-    "mmmm.mmmm",
-    "mmm..mm.m",
-    ".mm..mm..",
-    ".m...m...",
-    "..m..m...",
-    "..m......"
+    "mmmmmmm",
+    "mmmmmmm",
+    "mmmmmmm",
+    "mmm.mmm",
+    ".mm.mm.",
+    ".m..m..",
+    "..m...."
    ],
    "pivot": [
-    0,
-    -4,
-    3.6
+    0.0,
+    -3.0,
+    2.7
    ],
    "paint": {
     "ramp": "mane",
@@ -1798,9 +2094,9 @@
    },
    "parent": "alpha_beard",
    "offset": [
-    0,
-    -4.5,
-    0
+    0.0,
+    -3.375,
+    0.0
    ],
    "rotation": [
     8,
@@ -1813,19 +2109,17 @@
    "shape": "card",
    "plane": "xy",
    "art": [
-    "mmmmmmmmmmmmmmmmmmmmmm",
-    "mmmmmmmmmmmmmmmmmmmmmm",
-    "mmmm.mmmmmmmmmmmm.mmmm",
-    "mmm..mm.mmmmmmmm..mm.m",
-    ".mm..mm..mmmm.mm..mm..",
-    ".m...m...mmmm.m...m...",
-    "..m..m...mmmm..m..m...",
-    "..m......mmmm..m......"
+    "mmmmmmmmmmmmmmmmm",
+    "mmmmmmmmmmmmmmmmm",
+    "mmm.mmmmmmmmm.mmm",
+    ".mm.mm.mmm.m..m..",
+    ".m..m..mmm.m..m..",
+    "..m.m..mmm....m.."
    ],
    "pivot": [
-    0,
-    -5,
-    3.2
+    0.0,
+    -3.75,
+    2.4
    ],
    "paint": {
     "ramp": "mane",
@@ -1836,9 +2130,9 @@
    },
    "parent": "alpha_ruff",
    "offset": [
-    0,
-    -4,
-    0
+    0.0,
+    -3.0,
+    0.0
    ],
    "rotation": [
     10,
@@ -1850,14 +2144,14 @@
    "id": "elbow_tuft",
    "shape": "box",
    "size": [
+    3,
     4,
-    5,
-    5
+    4
    ],
    "pivot": [
-    3.6,
-    -2,
-    -3.5
+    2.7,
+    -1.5,
+    -2.625
    ],
    "style": "fur_dark",
    "parent": "flipper",
@@ -1871,14 +2165,14 @@
    "id": "shag_chest",
    "shape": "box",
    "size": [
-    14,
-    3,
-    10
+    11,
+    2,
+    8
    ],
    "pivot": [
-    6.5,
-    11.4,
-    1
+    4.875,
+    8.55,
+    0.75
    ],
    "style": "fur",
    "parent": "chest",
@@ -1893,14 +2187,14 @@
    "id": "fur_back",
    "shape": "box",
    "size": [
-    16,
-    3,
-    10
+    12,
+    2,
+    8
    ],
    "pivot": [
-    7.5,
-    11.6,
-    -4
+    5.625,
+    8.7,
+    -3.0
    ],
    "style": "fur",
    "parent": "belly",
@@ -1915,14 +2209,14 @@
    "id": "shag_belly",
    "shape": "box",
    "size": [
-    15,
-    3,
-    10
+    11,
+    2,
+    8
    ],
    "pivot": [
-    7,
-    11.4,
-    -13
+    5.25,
+    8.55,
+    -9.75
    ],
    "style": "fur",
    "parent": "belly",
@@ -1937,14 +2231,14 @@
    "id": "fur_waist",
    "shape": "box",
    "size": [
-    12,
-    3,
-    9
+    9,
+    2,
+    7
    ],
    "pivot": [
-    5.5,
-    9.2,
-    -4
+    4.125,
+    6.9,
+    -3.0
    ],
    "style": "fur",
    "parent": "waist",
@@ -1959,14 +2253,14 @@
    "id": "shag_hips",
    "shape": "box",
    "size": [
-    9,
-    3,
-    8
+    7,
+    2,
+    6
    ],
    "pivot": [
-    4,
-    7.0,
-    -3
+    3.0,
+    5.25,
+    -2.25
    ],
    "style": "fur",
    "parent": "hips",
@@ -1981,14 +2275,14 @@
    "id": "tail_fur",
    "shape": "box",
    "size": [
-    10,
-    3,
-    6
+    8,
+    2,
+    5
    ],
    "pivot": [
-    0,
-    4.6,
-    -2
+    0.0,
+    3.45,
+    -1.5
    ],
    "style": "fur_dark",
    "parent": "tail",
@@ -2003,13 +2297,13 @@
    "shape": "box",
    "size": [
     2,
-    7,
-    18
+    5,
+    14
    ],
    "pivot": [
-    16.6,
-    -6,
-    -9
+    12.45,
+    -4.5,
+    -6.75
    ],
    "style": "fur_dark",
    "parent": "belly",
@@ -2025,13 +2319,13 @@
    "shape": "box",
    "size": [
     2,
-    6,
-    10
+    5,
+    8
    ],
    "pivot": [
-    14.6,
-    -7,
-    -3
+    10.95,
+    -5.25,
+    -2.25
    ],
    "style": "fur_dark",
    "parent": "chest",
@@ -2047,13 +2341,13 @@
    "shape": "box",
    "size": [
     2,
-    6,
-    13
+    5,
+    10
    ],
    "pivot": [
-    13.6,
-    -6,
-    -7
+    10.2,
+    -4.5,
+    -5.25
    ],
    "style": "fur_dark",
    "parent": "waist",
@@ -2068,21 +2362,21 @@
    "id": "shard0",
    "shape": "box",
    "size": [
-    4,
-    10,
-    4
+    3,
+    8,
+    3
    ],
    "pivot": [
-    -4,
-    2,
-    3
+    -3.0,
+    1.5,
+    2.25
    ],
    "style": "ice_shard",
    "parent": "fur_back",
    "offset": [
-    0,
-    5,
-    0
+    0.0,
+    3.75,
+    0.0
    ],
    "rotation": [
     -22,
@@ -2094,21 +2388,21 @@
    "id": "shard1",
    "shape": "box",
    "size": [
-    3,
-    8,
-    3
+    2,
+    6,
+    2
    ],
    "pivot": [
-    5,
-    2,
-    -1
+    3.75,
+    1.5,
+    -0.75
    ],
    "style": "ice_shard",
    "parent": "fur_back",
    "offset": [
-    0,
-    4,
-    0
+    0.0,
+    3.0,
+    0.0
    ],
    "rotation": [
     -28,
@@ -2120,21 +2414,21 @@
    "id": "shard2",
    "shape": "box",
    "size": [
-    3,
-    7,
-    3
+    2,
+    5,
+    2
    ],
    "pivot": [
-    -2,
-    1.5,
-    -1
+    -1.5,
+    1.125,
+    -0.75
    ],
    "style": "ice_shard",
    "parent": "fur_waist",
    "offset": [
-    0,
-    3.5,
-    0
+    0.0,
+    2.625,
+    0.0
    ],
    "rotation": [
     -34,
@@ -2146,21 +2440,21 @@
    "id": "shard3",
    "shape": "box",
    "size": [
-    3,
-    7,
-    3
+    2,
+    5,
+    2
    ],
    "pivot": [
-    8,
-    4,
-    -1
+    6.0,
+    3.0,
+    -0.75
    ],
    "style": "ice_shard",
    "parent": "mane",
    "offset": [
-    0,
-    3.5,
-    0
+    0.0,
+    2.625,
+    0.0
    ],
    "rotation": [
     -30,
@@ -2173,20 +2467,20 @@
    "shape": "box",
    "size": [
     2,
-    5,
+    4,
     2
    ],
    "pivot": [
-    2.5,
-    1,
-    -3
+    1.875,
+    0.75,
+    -2.25
    ],
    "style": "ice_shard",
    "parent": "flipper",
    "offset": [
-    0,
-    2.5,
-    0
+    0.0,
+    1.875,
+    0.0
    ],
    "rotation": [
     -40,
@@ -2198,21 +2492,21 @@
    "id": "tusk",
    "shape": "box",
    "size": [
-    3,
-    11,
-    3
+    2,
+    8,
+    2
    ],
    "pivot": [
-    4.8,
-    -3.5,
-    4.5
+    3.6,
+    -2.625,
+    3.375
    ],
    "style": "tusk",
    "parent": "muzzle",
    "offset": [
-    0,
-    -5.5,
-    0
+    0.0,
+    -4.125,
+    0.0
    ],
    "rotation": [
     -16,
@@ -2226,20 +2520,20 @@
    "shape": "box",
    "size": [
     2,
-    5,
+    4,
     2
    ],
    "pivot": [
-    0,
-    -10.5,
-    0
+    0.0,
+    -7.875,
+    0.0
    ],
    "style": "tusk",
    "parent": "tusk",
    "offset": [
-    0,
-    -2.5,
-    0
+    0.0,
+    -1.875,
+    0.0
    ],
    "rotation": [
     -22,
@@ -2251,14 +2545,14 @@
    "id": "brow_ridge",
    "shape": "box",
    "size": [
-    20,
-    3,
-    4
+    15,
+    2,
+    3
    ],
    "pivot": [
-    0,
-    8.8,
-    15.5
+    0.0,
+    6.6,
+    11.625
    ],
    "style": "brow",
    "parent": "head"
@@ -2267,14 +2561,14 @@
    "id": "crest",
    "shape": "box",
    "size": [
-    10,
-    4,
-    9
+    8,
+    3,
+    7
    ],
    "pivot": [
-    0,
-    2.5,
-    -2
+    0.0,
+    1.875,
+    -1.5
    ],
    "style": "fur_dark",
    "parent": "crown",
@@ -2288,14 +2582,14 @@
    "id": "crest_b",
    "shape": "box",
    "size": [
-    7,
-    3,
-    7
+    5,
+    2,
+    5
    ],
    "pivot": [
-    0,
-    1,
-    -6
+    0.0,
+    0.75,
+    -4.5
    ],
    "style": "fur_dark",
    "parent": "crest",
@@ -2306,24 +2600,827 @@
    ]
   },
   {
+   "id": "fur_mane_side",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttttttt",
+    "ttttttttttt",
+    "tttttttttdt",
+    "ttttttttt.h",
+    "ttttttttt..",
+    "hthttttth..",
+    ".h.htthh...",
+    "....hh....."
+   ],
+   "pivot": [
+    12.15,
+    -1.125,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "mane",
+   "offset": [
+    0.0,
+    -3.75,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    16
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_mane_front",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "ttttttttttttttttttttttt",
+    "ttttttttttttttttttttttt",
+    "ttttttttttttttttttttttt",
+    "ttttttttttttdttttttttth",
+    "dttththhthtt.ttttttdth.",
+    ".tth.h..h.hh.hththt.h..",
+    ".hh...........h.h.h...."
+   ],
+   "pivot": [
+    0.0,
+    -1.875,
+    5.025
+   ],
+   "style": "fur_card",
+   "parent": "mane",
+   "offset": [
+    0.0,
+    -3.375,
+    0.0
+   ],
+   "rotation": [
+    -12,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_mane_crest",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "....................",
+    ".....hh............h",
+    "h....tth.h.........t",
+    "ttttdtttttttttttttdt",
+    "tttttttttttttttttttt"
+   ],
+   "pivot": [
+    0.0,
+    3.45,
+    -0.75
+   ],
+   "style": "fur_card",
+   "parent": "mane",
+   "offset": [
+    0.0,
+    2.625,
+    0.0
+   ],
+   "rotation": [
+    -12,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_shoulder",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttttt",
+    "ttdttttttt",
+    "ht.h.hth.h",
+    ".h....h...",
+    "..........",
+    ".........."
+   ],
+   "pivot": [
+    2.4,
+    -1.875,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "shoulder_fur",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    14
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_ruff",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "ttttttttttttttttt",
+    "ttttttttdtttttdtt",
+    "ttdthhtt.dttth.tt",
+    "tt.h..hh..tth..tt",
+    "th........hh...ht",
+    "h...............h"
+   ],
+   "pivot": [
+    0.0,
+    -2.25,
+    1.575
+   ],
+   "style": "fur_card_pale",
+   "parent": "ruff",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    -8,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_throat",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "ttttttttttttttttt",
+    "ttttttttttttttttt",
+    ".h..hh...........",
+    ".................",
+    "................."
+   ],
+   "pivot": [
+    0.0,
+    -6.0,
+    6.9
+   ],
+   "style": "fur_card_pale",
+   "parent": "neck",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    -14,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_neck_side",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttt",
+    "tttttttt",
+    "dttttttt",
+    ".tthtttt",
+    ".hh.htht",
+    ".....h.h"
+   ],
+   "pivot": [
+    9.15,
+    -2.25,
+    3.0
+   ],
+   "style": "fur_card",
+   "parent": "neck",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    14
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_cheek",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttt",
+    "tttttttt",
+    "thttthth",
+    "h.hth.h.",
+    "...h....",
+    "........"
+   ],
+   "pivot": [
+    8.475,
+    -2.625,
+    6.0
+   ],
+   "style": "fur_card",
+   "parent": "head",
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    18
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_crest",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "........",
+    ".h.....h",
+    "ht.h...t",
+    "ttdtttdt",
+    "tttttttt"
+   ],
+   "pivot": [
+    0.0,
+    1.35,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "crest",
+   "offset": [
+    0.0,
+    2.625,
+    0.0
+   ],
+   "rotation": [
+    -10,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_chest_skirt",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttttttt",
+    "ttttttttttdt",
+    ".....h.htt..",
+    "........hh..",
+    "............"
+   ],
+   "pivot": [
+    10.8,
+    -5.625,
+    -0.75
+   ],
+   "style": "fur_card",
+   "parent": "chest",
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_flank",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttttttttttt",
+    "ttttttttttttttt",
+    "hthtttthtttdhth",
+    ".h.hthh.htt..h.",
+    "....h....hh...."
+   ],
+   "pivot": [
+    12.45,
+    -4.125,
+    -6.75
+   ],
+   "style": "fur_card",
+   "parent": "belly",
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_waist_skirt",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttttttt",
+    "ttttttdtttt",
+    "tttdtt....h",
+    "hth.th.....",
+    ".h..h......"
+   ],
+   "pivot": [
+    10.05,
+    -4.125,
+    -5.25
+   ],
+   "style": "fur_card",
+   "parent": "waist",
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_back_crest",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    ".....h.......h",
+    "....hth.....ht",
+    ".hh.ttt.h...tt",
+    "tttdtttdtttdtt",
+    "tttttttttttttt"
+   ],
+   "pivot": [
+    0.0,
+    8.25,
+    -7.5
+   ],
+   "style": "fur_card",
+   "parent": "belly",
+   "offset": [
+    0.0,
+    2.25,
+    0.0
+   ],
+   "rotation": [
+    -8,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_waist_crest",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "..h........",
+    ".hth.h.hh..",
+    "ttttttttttt",
+    "ttttttttttt"
+   ],
+   "pivot": [
+    0.0,
+    6.45,
+    -6.0
+   ],
+   "style": "fur_card",
+   "parent": "waist",
+   "offset": [
+    0.0,
+    1.875,
+    0.0
+   ],
+   "rotation": [
+    -10,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_hips_crest",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    ".h......",
+    "hthh....",
+    "tttttttt",
+    "tttttttt"
+   ],
+   "pivot": [
+    0.0,
+    4.5,
+    -4.5
+   ],
+   "style": "fur_card",
+   "parent": "hips",
+   "offset": [
+    0.0,
+    1.875,
+    0.0
+   ],
+   "rotation": [
+    -12,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_rump",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "ttttttttttttt",
+    "ttttttdtdtttt",
+    "...dtt.h.tdtt",
+    "....th...h.th",
+    "....h......h."
+   ],
+   "pivot": [
+    0.0,
+    -1.5,
+    -9.45
+   ],
+   "style": "fur_card",
+   "parent": "hips",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    14,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_tail",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    ".......",
+    ".......",
+    "ttttttt",
+    "ttttttt"
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    -3.375
+   ],
+   "style": "fur_card",
+   "parent": "tail",
+   "offset": [
+    0.0,
+    1.875,
+    0.0
+   ],
+   "rotation": [
+    -16,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_elbow",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttt",
+    "ttdtdttt",
+    "tt.h.ttt",
+    "ht...hth",
+    ".h....h."
+   ],
+   "pivot": [
+    3.525,
+    -3.0,
+    0.75
+   ],
+   "style": "fur_card",
+   "parent": "flipper",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_sideburn",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttt",
+    "ttttt",
+    "..dtt",
+    "...tt",
+    "...hh"
+   ],
+   "pivot": [
+    1.275,
+    -4.125,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "sideburn",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    10
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_shag_chest_fringe",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttt",
+    "tttttttt",
+    "........",
+    "........",
+    "........"
+   ],
+   "pivot": [
+    5.4,
+    -0.75,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "shag_chest",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    22
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_fur_back_fringe",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttt",
+    "ttdttttt",
+    ".h.ttttt",
+    "...hthth",
+    "....h.h."
+   ],
+   "pivot": [
+    6.15,
+    -0.75,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "fur_back",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    22
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_shag_belly_fringe",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttttt",
+    "ttdttttt",
+    "tt.h..hh",
+    "th......",
+    "h......."
+   ],
+   "pivot": [
+    5.775,
+    -0.75,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "shag_belly",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    22
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_fur_waist_fringe",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttt",
+    "tttdttt",
+    "htt....",
+    ".hh....",
+    "......."
+   ],
+   "pivot": [
+    4.65,
+    -0.75,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "fur_waist",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    22
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_shag_hips_fringe",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "tttttt",
+    "tttttt",
+    "ttdth.",
+    "ht.h..",
+    ".h...."
+   ],
+   "pivot": [
+    3.525,
+    -0.75,
+    0.0
+   ],
+   "style": "fur_card",
+   "parent": "shag_hips",
+   "offset": [
+    0.0,
+    -2.625,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    22
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_crown",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    ".....h..h...",
+    ".....thht.h.",
+    ".h.h.ttttdth",
+    "ttttdttttttt",
+    "tttttttttttt"
+   ],
+   "pivot": [
+    0.0,
+    1.2,
+    -3.75
+   ],
+   "style": "fur_card",
+   "parent": "crown",
+   "offset": [
+    0.0,
+    2.25,
+    0.0
+   ],
+   "rotation": [
+    -22,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "fur_hips_side",
+   "shape": "card",
+   "plane": "yz",
+   "art": [
+    "ttttttttt",
+    "ttdtttttt",
+    "tt...htht",
+    "th....h.h",
+    "h........"
+   ],
+   "pivot": [
+    7.275,
+    -2.625,
+    -4.5
+   ],
+   "style": "fur_card",
+   "parent": "hips",
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    0,
+    0,
+    12
+   ],
+   "mirror": true
+  },
+  {
+   "id": "fur_tail_fringe",
+   "shape": "card",
+   "plane": "xy",
+   "art": [
+    "ttttttt",
+    "ttttttt",
+    ".h.....",
+    "......."
+   ],
+   "pivot": [
+    0.0,
+    -0.75,
+    -2.4
+   ],
+   "style": "fur_card",
+   "parent": "tail_fur",
+   "offset": [
+    0.0,
+    -1.875,
+    0.0
+   ],
+   "rotation": [
+    20,
+    0,
+    0
+   ]
+  },
+  {
    "id": "horn",
    "shape": "box",
    "size": [
-    7,
-    7,
-    7
+    5,
+    5,
+    5
    ],
    "pivot": [
-    0,
-    1,
-    3
+    0.0,
+    0.75,
+    2.25
    ],
    "style": "horn",
    "parent": "crown",
    "offset": [
-    0,
-    3,
-    0
+    0.0,
+    2.25,
+    0.0
    ],
    "rotation": [
     22,
@@ -2335,21 +3432,21 @@
    "id": "horn_1",
    "shape": "box",
    "size": [
+    4,
     5,
-    6,
-    5
+    4
    ],
    "pivot": [
-    0,
-    6,
-    0
+    0.0,
+    4.5,
+    0.0
    ],
    "style": "horn",
    "parent": "horn",
    "offset": [
-    0,
-    3,
-    0
+    0.0,
+    2.25,
+    0.0
    ],
    "rotation": [
     12,
@@ -2361,21 +3458,21 @@
    "id": "horn_2",
    "shape": "box",
    "size": [
-    3,
-    6,
-    3
+    2,
+    5,
+    2
    ],
    "pivot": [
-    0,
-    6,
-    0
+    0.0,
+    4.5,
+    0.0
    ],
    "style": "horn",
    "parent": "horn_1",
    "offset": [
-    0,
-    3,
-    0
+    0.0,
+    2.25,
+    0.0
    ],
    "rotation": [
     14,
@@ -2388,20 +3485,20 @@
    "shape": "box",
    "size": [
     2,
-    4,
+    3,
     2
    ],
    "pivot": [
-    0,
-    6,
-    0
+    0.0,
+    4.5,
+    0.0
    ],
    "style": "horn",
    "parent": "horn_2",
    "offset": [
-    0,
-    2,
-    0
+    0.0,
+    1.5,
+    0.0
    ],
    "rotation": [
     16,
@@ -2414,20 +3511,20 @@
    "shape": "box",
    "size": [
     1,
-    3,
+    2,
     1
    ],
    "pivot": [
-    0,
-    4,
-    0
+    0.0,
+    3.0,
+    0.0
    ],
    "style": "horn_tip",
    "parent": "horn_3",
    "offset": [
-    0,
-    1.5,
-    0
+    0.0,
+    1.125,
+    0.0
    ],
    "rotation": [
     8,
@@ -2440,20 +3537,20 @@
    "shape": "box",
    "size": [
     2,
-    4,
+    3,
     2
    ],
    "pivot": [
-    2.5,
-    2,
-    0
+    1.875,
+    1.5,
+    0.0
    ],
    "style": "horn",
    "parent": "horn_1",
    "offset": [
-    0,
-    2,
-    0
+    0.0,
+    1.5,
+    0.0
    ],
    "rotation": [
     0,
@@ -2596,81 +3693,81 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        1.0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        1.06,
        [
-        0,
-        -2.6,
-        0
+        0.0,
+        -1.95,
+        0.0
        ]
       ],
       [
        1.1400000000000001,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        2.9,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        2.96,
        [
-        0,
-        -2.6,
-        0
+        0.0,
+        -1.95,
+        0.0
        ]
       ],
       [
        3.04,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        3.15,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        3.21,
        [
-        0,
-        -2.6,
-        0
+        0.0,
+        -1.95,
+        0.0
        ]
       ],
       [
        3.29,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -2782,17 +3879,17 @@
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       2.0,
-       0
+       0.0,
+       1.5,
+       0.0
       ],
       "cycles": 1,
       "phase": 0.25,
       "shape": "bounce",
       "bias": [
-       0,
-       0.8,
-       0
+       0.0,
+       0.6,
+       0.0
       ]
      }
     },
@@ -2903,18 +4000,18 @@
      "part": "chest",
      "axis": "x",
      "osc": {
-      "amp": 7,
+      "amp": 3,
       "cycles": 1,
-      "bias": -3
+      "bias": 6
      }
     },
     {
      "part": "belly",
      "axis": "x",
      "osc": {
-      "amp": -7,
+      "amp": -3,
       "cycles": 1,
-      "bias": 3
+      "bias": -4
      }
     },
     {
@@ -2922,17 +4019,17 @@
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       2.6,
-       0
+       0.0,
+       1.35,
+       0.0
       ],
       "cycles": 1,
       "phase": 0.25,
       "shape": "bounce",
       "bias": [
-       0,
-       1.0,
-       0
+       0.0,
+       0.9,
+       0.75
       ]
      }
     },
@@ -2947,7 +4044,7 @@
       "amp": 4,
       "cycles": 1,
       "lag": 0.12,
-      "bias": 2
+      "bias": 1
      }
     },
     {
@@ -2972,28 +4069,37 @@
      "part": "neck",
      "axis": "x",
      "osc": {
-      "amp": 2,
+      "amp": 1.5,
       "cycles": 1,
-      "bias": 6
+      "bias": 14
      }
     },
     {
      "part": "head",
      "axis": "x",
      "osc": {
-      "amp": 2,
+      "amp": 1.5,
       "cycles": 1,
       "phase": 0.15,
-      "bias": 4
+      "bias": 20
+     }
+    },
+    {
+     "part": "tusk",
+     "axis": "x",
+     "osc": {
+      "amp": 0,
+      "cycles": 1,
+      "bias": -92
      }
     },
     {
      "part": "flipper",
      "axis": "x",
      "osc": {
-      "amp": 20,
+      "amp": 15,
       "cycles": 1,
-      "bias": 4
+      "bias": 2
      }
     },
     {
@@ -3005,19 +4111,28 @@
      }
     },
     {
+     "part": "fluke",
+     "axis": "x",
+     "osc": {
+      "amp": 4,
+      "cycles": 1,
+      "bias": 10
+     }
+    },
+    {
      "part": "lid",
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       0,
-       0
+       0.0,
+       0.0,
+       0.0
       ],
       "cycles": 1,
       "bias": [
-       0,
-       -1.0,
-       0
+       0.0,
+       -0.75,
+       0.0
       ]
      }
     },
@@ -3035,15 +4150,15 @@
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       0,
-       0
+       0.0,
+       0.0,
+       0.0
       ],
       "cycles": 1,
       "bias": [
-       0,
-       -0.8,
-       0
+       0.0,
+       -0.6,
+       0.0
       ]
      }
     },
@@ -3068,9 +4183,9 @@
      "part": "jaw",
      "axis": "x",
      "osc": {
-      "amp": 3,
+      "amp": 2,
       "cycles": 2,
-      "bias": 8
+      "bias": 5
      }
     },
     {
@@ -3202,15 +4317,15 @@
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       0,
-       0
+       0.0,
+       0.0,
+       0.0
       ],
       "cycles": 1,
       "bias": [
-       0,
-       -0.8,
-       0
+       0.0,
+       -0.6,
+       0.0
       ]
      }
     }
@@ -3225,15 +4340,15 @@
      "channel": "position",
      "osc": {
       "amp": [
-       0,
-       0.8,
-       0
+       0.0,
+       0.6,
+       0.0
       ],
       "cycles": 1,
       "bias": [
-       0,
-       12,
-       0
+       0.0,
+       9.0,
+       0.0
       ]
      }
     },
@@ -3369,6 +4484,54 @@
    "loop": false,
    "tracks": [
     {
+     "part": "chest",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.12,
+       6,
+       "out"
+      ],
+      [
+       0.62,
+       6
+      ],
+      [
+       0.8,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "belly",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.12,
+       -4,
+       "out"
+      ],
+      [
+       0.62,
+       -4
+      ],
+      [
+       0.8,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
      "part": "neck",
      "axis": "x",
      "keys": [
@@ -3377,23 +4540,27 @@
        0
       ],
       [
-       0.18,
-       -18,
+       0.12,
+       14,
        "out"
       ],
       [
-       0.3,
-       6,
-       "in"
+       0.22,
+       17,
+       "out"
       ],
       [
-       0.45,
-       3
+       0.32,
+       13
+      ],
+      [
+       0.62,
+       14
       ],
       [
        0.8,
        0,
-       "elastic"
+       "smooth"
       ]
      ]
     },
@@ -3406,23 +4573,51 @@
        0
       ],
       [
-       0.18,
-       -10,
+       0.12,
+       20,
        "out"
       ],
       [
-       0.3,
-       4,
-       "in"
+       0.22,
+       21,
+       "out"
       ],
       [
-       0.45,
-       2
+       0.32,
+       19
+      ],
+      [
+       0.62,
+       20
       ],
       [
        0.8,
        0,
-       "elastic"
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "tusk",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.12,
+       -92,
+       "out"
+      ],
+      [
+       0.62,
+       -92
+      ],
+      [
+       0.8,
+       0,
+       "smooth"
       ]
      ]
     },
@@ -3433,37 +4628,82 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
-       0.18,
+       0.12,
        [
-        0,
-        0.6,
-        -2
+        0.0,
+        0.3,
+        -0.75
        ],
        "out"
       ],
       [
-       0.3,
+       0.22,
        [
-        0,
-        1.2,
-        4
+        0.0,
+        1.05,
+        3.0
        ],
-       "in"
+       "out"
+      ],
+      [
+       0.36,
+       [
+        0.0,
+        0.45,
+        1.5
+       ]
+      ],
+      [
+       0.62,
+       [
+        0.0,
+        0.3,
+        1.125
+       ]
       ],
       [
        0.8,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ],
-       "elastic"
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "flipper",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.12,
+       -18,
+       "out"
+      ],
+      [
+       0.24,
+       14,
+       "out"
+      ],
+      [
+       0.5,
+       6
+      ],
+      [
+       0.8,
+       0,
+       "smooth"
       ]
      ]
     },
@@ -3480,7 +4720,7 @@
        ]
       ],
       [
-       0.3,
+       0.22,
        [
         0,
         0,
@@ -3488,7 +4728,7 @@
        ]
       ],
       [
-       0.38,
+       0.28,
        [
         0.14,
         -0.22,
@@ -3512,11 +4752,19 @@
      "keys": [
       [
        0,
+       0
+      ],
+      [
+       0.1,
+       -20
+      ],
+      [
+       0.65,
        -20
       ],
       [
        0.8,
-       -20
+       0
       ]
      ]
     },
@@ -3527,8 +4775,62 @@
       [
        0,
        [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0.0,
+        -0.75,
+        0.0
+       ]
+      ],
+      [
+       0.65,
+       [
+        0.0,
+        -0.75,
+        0.0
+       ]
+      ],
+      [
+       0.8,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "nostril",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
         0,
-        -1,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2,
+       [
+        0.8,
+        0.8,
+        0
+       ]
+      ],
+      [
+       0.65,
+       [
+        0.5,
+        0.5,
         0
        ]
       ],
@@ -3536,7 +4838,7 @@
        0.8,
        [
         0,
-        -1,
+        0,
         0
        ]
       ]
@@ -3551,12 +4853,439 @@
        0
       ],
       [
-       0.3,
+       0.22,
+       14,
+       "out"
+      ],
+      [
+       0.5,
+       6
+      ],
+      [
+       0.8,
+       0
+      ]
+     ]
+    }
+   ]
+  },
+  "eat": {
+   "length": 1.2,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "neck",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.28,
        16,
        "out"
       ],
       [
+       0.72,
+       15
+      ],
+      [
+       0.92,
+       -12,
+       "out_back"
+      ],
+      [
+       1.05,
+       -10
+      ],
+      [
+       1.2,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.28,
+       12,
+       "out"
+      ],
+      [
+       0.72,
+       11
+      ],
+      [
+       0.92,
+       -14,
+       "out_back"
+      ],
+      [
+       1.05,
+       -12
+      ],
+      [
+       1.2,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "axis": "z",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.35,
+       6
+      ],
+      [
+       0.5,
+       -5
+      ],
+      [
+       0.65,
+       6
+      ],
+      [
        0.8,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "tusk",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.24,
+       -75,
+       "out"
+      ],
+      [
+       0.76,
+       -75
+      ],
+      [
+       0.95,
+       0,
+       "smooth"
+      ]
+     ]
+    },
+    {
+     "part": "jaw",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.22,
+       18,
+       "out"
+      ],
+      [
+       0.34,
+       1,
+       "in"
+      ],
+      [
+       0.44,
+       16,
+       "out"
+      ],
+      [
+       0.54,
+       1,
+       "in"
+      ],
+      [
+       0.62,
+       14,
+       "out"
+      ],
+      [
+       0.72,
+       0,
+       "in"
+      ],
+      [
+       1.2,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "neck",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.98,
+       [
+        0.08,
+        0.06,
+        0.04
+       ]
+      ],
+      [
+       1.08,
+       [
+        0.03,
+        0.02,
+        0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "chest_under",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.02,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.12,
+       [
+        0.06,
+        0.08,
+        0.04
+       ],
+       "out"
+      ],
+      [
+       1.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lid",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.98,
+       [
+        0.0,
+        -1.05,
+        0.0
+       ]
+      ],
+      [
+       1.15,
+       [
+        0.0,
+        -1.05,
+        0.0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "nostril",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2,
+       [
+        0.6,
+        0.6,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0.5,
+        0.5,
+        0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "chest",
+     "channel": "position",
+     "keys": [
+      [
+       0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.28,
+       [
+        0.0,
+        -0.45,
+        0.45
+       ]
+      ],
+      [
+       0.72,
+       [
+        0.0,
+        -0.45,
+        0.45
+       ]
+      ],
+      [
+       0.95,
+       [
+        0.0,
+        0.375,
+        0.0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "axis": "y",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.95,
+       0
+      ],
+      [
+       1.03,
+       16
+      ],
+      [
+       1.11,
+       -16
+      ],
+      [
+       1.2,
        0
       ]
      ]
@@ -3655,33 +5384,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.15,
        [
-        0,
-        -1.6,
-        0
+        0.0,
+        -1.2,
+        0.0
        ]
       ],
       [
        1.4,
        [
-        0,
-        -1.6,
-        0
+        0.0,
+        -1.2,
+        0.0
        ]
       ],
       [
        1.6,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -3693,33 +5422,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.15,
        [
-        0,
-        0.8,
-        0
+        0.0,
+        0.6,
+        0.0
        ]
       ],
       [
        1.4,
        [
-        0,
-        0.8,
-        0
+        0.0,
+        0.6,
+        0.0
        ]
       ],
       [
        1.6,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -3795,61 +5524,61 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.4,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.55,
        [
-        0,
-        2.5,
-        0
+        0.0,
+        1.875,
+        0.0
        ],
        "out"
       ],
       [
        0.75,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ],
        "in"
       ],
       [
        0.95,
        [
-        0,
-        1.6,
-        0
+        0.0,
+        1.2,
+        0.0
        ],
        "out"
       ],
       [
        1.15,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ],
        "in"
       ],
       [
        1.6,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -4061,33 +5790,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.12,
        [
-        0,
-        0.6,
-        0
+        0.0,
+        0.45,
+        0.0
        ]
       ],
       [
        0.6,
        [
-        0,
-        0.6,
-        0
+        0.0,
+        0.45,
+        0.0
        ]
       ],
       [
        0.9,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -4099,33 +5828,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.12,
        [
-        0,
-        0.8,
-        0
+        0.0,
+        0.6,
+        0.0
        ]
       ],
       [
        0.6,
        [
-        0,
-        0.8,
-        0
+        0.0,
+        0.6,
+        0.0
        ]
       ],
       [
        0.9,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -4246,34 +5975,34 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.2,
        [
-        0,
-        1.5,
-        -1
+        0.0,
+        1.125,
+        -0.75
        ],
        "out"
       ],
       [
        0.95,
        [
-        0,
-        1.2,
-        -1
+        0.0,
+        0.9,
+        -0.75
        ]
       ],
       [
        1.2,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ],
        "smooth"
       ]
@@ -4418,33 +6147,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.2,
        [
-        0,
-        -0.9,
-        0
+        0.0,
+        -0.675,
+        0.0
        ]
       ],
       [
        1.0,
        [
-        0,
-        -0.9,
-        0
+        0.0,
+        -0.675,
+        0.0
        ]
       ],
       [
        1.2,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
@@ -4714,33 +6443,33 @@
       [
        0,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.45,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ],
       [
        0.5,
        [
-        0,
-        -2.2,
-        0
+        0.0,
+        -1.65,
+        0.0
        ]
       ],
       [
        0.62,
        [
-        0,
-        0,
-        0
+        0.0,
+        0.0,
+        0.0
        ]
       ]
      ]
