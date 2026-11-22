@@ -34,7 +34,7 @@ public class OceanWorldParticle extends TextureSheetParticle {
         this.phase = random.nextFloat() * Mth.TWO_PI;
         if (kind == Kind.SMOKE) {
             lifetime = 40 + random.nextInt(21);
-            baseSize = 0.16f + random.nextFloat() * 0.08f;
+            baseSize = 0.22f + random.nextFloat() * 0.1f;
             xd = dx;
             yd = dy;
             zd = dz;
@@ -74,8 +74,8 @@ public class OceanWorldParticle extends TextureSheetParticle {
                 return;
             }
             setSpriteFromAge(sprites);
-            quadSize = baseSize * (1 + t * 2.4f);
-            alpha = Mth.clamp(Math.min(t * 8, (1 - t) * 2.2f), 0, 1) * 0.9f;
+            quadSize = baseSize * (1 + t * 3.2f);
+            alpha = Mth.clamp(Math.min(t * 8, (1 - t) * 2.2f), 0, 1) * 0.95f;
             xd += Mth.sin(age * 0.11f + phase) * 0.0012;
             zd += Mth.cos(age * 0.09f + phase) * 0.0012;
         } else {

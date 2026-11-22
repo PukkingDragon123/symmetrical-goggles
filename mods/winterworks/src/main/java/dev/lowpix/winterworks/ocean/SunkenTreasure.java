@@ -8,9 +8,10 @@ import net.minecraft.world.level.block.SeaPickleBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Sunken treasure (docs/OCEAN_UPDATE.md section 7): a lone chest half buried in the deep sea floor
- * (chests/sunken_treasure, where the Heart of the Sea may be), silt heaped round it, the rusted chain and anchor it
- * went down with trailing off across the floor, and a few sea pickles glowing beside it.
+ * Sunken treasure (docs/OCEAN_UPDATE.md section 7): a lone chest half buried in the deep sea floor, its lid level with
+ * the silt (chests/sunken_treasure, where the Heart of the Sea may be), a little gold spilled round it, silt drifted
+ * against it, the rusted chain and anchor it went down with trailing off across the floor, and a few sea pickles glowing
+ * beside it.
  */
 final class SunkenTreasure {
     private SunkenTreasure() {}
@@ -25,20 +26,23 @@ final class SunkenTreasure {
                 w.chest(0, f, 0, Direction.from2DDataValue((int) (w.rnd(0, 0, 0, 2) * 4)), OceanLoot.SUNKEN_TREASURE);
             }
         }
-        // silt heaped round it
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
-                if (x == 0 && z == 0 || !w.column(x, z)) {
-                    continue;
-                }
-                int f = w.floor(x, z, 3, 8);
-                if (f == Integer.MIN_VALUE) {
-                    continue;
-                }
-                double d = Math.hypot(x, z);
-                if (d < 1.6 && w.rnd(x, 0, z, 3) < 0.8f || d < 2.4 && w.rnd(x, 0, z, 4) < 0.35f) {
-                    w.set(x, f + 1, z, silt);
-                }
+        // gold spilled round it, sunk flush with the floor, and silt drifted against its corners
+        int[][] ring = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+        for (int i = 0; i < ring.length; i++) {
+            int x = ring[i][0], z = ring[i][1];
+            if (!w.column(x, z)) {
+                continue;
+            }
+            int f = w.floor(x, z, 3, 8);
+            if (f == Integer.MIN_VALUE) {
+                continue;
+            }
+            float r = w.rnd(x, 0, z, 3);
+            boolean corner = x != 0 && z != 0;
+            if (!corner && r < 0.35f) {
+                w.set(x, f, z, (r < 0.15f ? Blocks.GOLD_BLOCK : Blocks.RAW_GOLD_BLOCK).defaultBlockState());
+            } else if (corner && r < 0.6f) {
+                w.set(x, f + 1, z, silt);
             }
         }
         // the anchor chain and the anchor, lying on the floor

@@ -92,13 +92,23 @@ public class OceanWorldTests implements FabricGameTest {
         // the deep-ocean slots: far out the new biomes, all the way down (no cave biome ties with them); near the shelf vanilla's
         record Case(float t, float h, float c, float depth, ResourceKey<Biome> want) {}
         for (Case c : List.of(new Case(0f, 0f, -0.8f, 0f, OceanWorldgen.ABYSSAL_TRENCH), new Case(-0.3f, 0.3f, -0.9f, 0f, OceanWorldgen.ABYSSAL_TRENCH),
-                new Case(0f, 0.85f, -0.8f, 0.55f, OceanWorldgen.ABYSSAL_TRENCH), new Case(0f, 0f, -0.8f, 0.75f, OceanWorldgen.ABYSSAL_TRENCH),
-                new Case(0.4f, 0f, -0.8f, 0f, OceanWorldgen.VOLCANIC_DEPTHS), new Case(0.75f, 0.9f, -0.7f, 0.5f, OceanWorldgen.VOLCANIC_DEPTHS),
+                new Case(0.1f, 0.3f, -0.8f, 1.0f, OceanWorldgen.ABYSSAL_TRENCH), new Case(0f, 0f, -0.8f, 0.75f, OceanWorldgen.ABYSSAL_TRENCH),
+                new Case(0.4f, 0f, -0.8f, 0f, OceanWorldgen.VOLCANIC_DEPTHS), new Case(0.75f, 0.2f, -0.7f, 0f, OceanWorldgen.VOLCANIC_DEPTHS),
                 new Case(0f, 0f, -0.5f, 0f, Biomes.DEEP_OCEAN), new Case(0.4f, 0f, -0.5f, 0f, Biomes.DEEP_LUKEWARM_OCEAN),
                 new Case(0.7f, 0f, -0.5f, 0f, Biomes.WARM_OCEAN), new Case(-0.7f, 0f, -0.8f, 0f, Biomes.DEEP_FROZEN_OCEAN),
                 new Case(0f, 0f, -0.3f, 0f, Biomes.OCEAN), new Case(0f, 0.85f, -0.5f, 0.55f, Biomes.LUSH_CAVES))) {
             Holder<Biome> got = params.findValue(Climate.target(c.t(), c.h(), c.c(), 0f, c.depth(), 0f));
             h.assertTrue(got.is(c.want()), "climate " + c + " should be " + c.want().location() + ", got " + got.unwrapKey().orElse(null));
+        }
+        // like every surface biome they never reach under the shelf or the land
+        for (float c : new float[]{-0.1f, -0.2f, -0.3f, -0.45f}) {
+            for (float d : new float[]{0.3f, 0.5f, 0.7f}) {
+                for (float t : new float[]{-0.3f, 0f, 0.4f, 0.7f}) {
+                    Holder<Biome> got = params.findValue(Climate.target(t, 0f, c, 0f, d, 0f));
+                    h.assertFalse(got.is(OceanWorldgen.ABYSSAL_TRENCH) || got.is(OceanWorldgen.VOLCANIC_DEPTHS),
+                            "the deep biomes stay out from under the shelf and the land: " + got.unwrapKey().orElse(null) + " at c " + c + " depth " + d);
+                }
+            }
         }
         // spawns from the depth table; the abyss's bioluminescence
         var abyss = registries.registryOrThrow(Registries.BIOME).getOrThrow(OceanWorldgen.ABYSSAL_TRENCH);
@@ -182,7 +192,27 @@ public class OceanWorldTests implements FabricGameTest {
         BlockPos lava = new BlockPos(x0 + 11, (int) Math.floor(area.col(x0 + 11, z0 + 9).floor), z0 + 9);
         level.setBlock(air, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
         level.setBlock(lava, Blocks.LAVA.defaultBlockState(), Block.UPDATE_CLIENTS);
+        // the biome source puts cave biomes down there: deep ocean over lush caves
+        var biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        net.minecraft.server.commands.FillBiomeCommand.fill(level, new BlockPos(x0, -60, z0), new BlockPos(x0 + 15, 28, z0 + 15),
+                biomes.getHolderOrThrow(Biomes.LUSH_CAVES));
+        net.minecraft.server.commands.FillBiomeCommand.fill(level, new BlockPos(x0, 32, z0), new BlockPos(x0 + 15, 76, z0 + 15),
+                biomes.getHolderOrThrow(Biomes.DEEP_OCEAN));
         int changed = DepthCarver.carve(area, x0, z0, x0 + 15, z0 + 15, DepthCarver.level(level));
+        h.assertTrue(DepthCarver.rebiome(level.getChunk(x0 >> 4, z0 >> 4), area) > 0, "the carved water takes the sea's biome");
+        int wrong = 0;
+        for (int x = x0 + 2; x <= x0 + 14; x += 4) {
+            for (int z = z0 + 2; z <= z0 + 14; z += 4) {
+                for (int y = (Math.floorDiv((int) Math.ceil(area.col(x, z).floor) + 4, 4) << 2) + 2; y <= 26; y += 4) {
+                    if (area.carved(x, y, z) && !level.getBiome(new BlockPos(x, y, z)).is(Biomes.DEEP_OCEAN)) {
+                        wrong++;
+                    }
+                }
+            }
+        }
+        h.assertTrue(wrong == 0, "no cave biome left in the open water, " + wrong + " quarts");
+        h.assertTrue(level.getBiome(new BlockPos(x0 + 8, (int) area.col(x0 + 8, z0 + 8).floor - 8, z0 + 8)).is(Biomes.LUSH_CAVES),
+                "the rock under the floor keeps its own");
         h.assertTrue(changed > 16 * 16 * 30, "most of the chunk is carved out, " + changed + " blocks");
         int lowest = Integer.MAX_VALUE, airCells = 0, flowing = 0, notWater = 0;
         for (int x = x0; x <= x0 + 15; x++) {
@@ -255,6 +285,75 @@ public class OceanWorldTests implements FabricGameTest {
             h.assertFalse(far.hasEffect(MobEffects.POISON), "but not one 7 blocks away");
             h.assertBlockPresent(Blocks.WATER, new BlockPos(7, 3, 5));
         });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH, timeoutTicks = 200)
+    public void ventFieldBuilds(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        BlockPos origin = seabed(level, farAway(h, 800), 16, 12);
+        BoundingBox all = new BoundingBox(origin.getX() - 16, origin.getY() - 8, origin.getZ() - 16, origin.getX() + 16, origin.getY() + 14,
+                origin.getZ() + 16);
+        int vents = dev.lowpix.winterworks.ocean.VolcanicVents.field(level, all, origin.below(), RandomSource.create(9L));
+        h.assertTrue(vents >= 2 && count(level, all, OceanBlocks.HYDROTHERMAL_VENT) == vents, "a field of vents, " + vents);
+        int worms = count(level, all, OceanBlocks.TUBE_WORMS), ore = count(level, all, Blocks.RAW_GOLD_BLOCK) + count(level, all, Blocks.RAW_IRON_BLOCK);
+        h.assertTrue(worms >= 8, "tube worms round the vents, " + worms);
+        h.assertTrue(ore >= 20, "big seams of raw gold and raw iron blocks round them, " + ore);
+        h.assertTrue(count(level, all, OceanBlocks.ASH_SAND) >= 5 && count(level, all, Blocks.BASALT) >= 5, "basalt mounds in drifts of ash sand");
+        for (BlockPos p : BlockPos.betweenClosed(all.minX(), all.minY(), all.minZ(), all.maxX(), all.maxY(), all.maxZ())) {
+            BlockState s = level.getBlockState(p);
+            if (s.is(OceanBlocks.HYDROTHERMAL_VENT)) {
+                h.assertTrue(s.getValue(HydrothermalVentBlock.WATERLOGGED) && level.getBlockEntity(p) != null, "vents are waterlogged, with their block entity");
+            } else if (s.is(OceanBlocks.TUBE_WORMS)) {
+                h.assertTrue(s.getFluidState().isSource() && s.canSurvive(level, p), "tube worms stand waterlogged on the floor at " + p);
+            }
+        }
+        h.succeed();
+    }
+
+    private static boolean hasFeature(Biome b, net.minecraft.world.level.levelgen.GenerationStep.Decoration step, String id) {
+        var steps = b.getGenerationSettings().features();
+        return steps.size() > step.ordinal() && steps.get(step.ordinal()).stream().anyMatch(f -> f.is(Winterworks.id(id)));
+    }
+
+    /** Reefs: sponge clusters (wet on the floor, dry buried under it), and the denser plants in the warm biomes. */
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH, timeoutTicks = 200)
+    public void reefSpongesGrow(GameTestHelper h) {
+        ServerLevel level = h.getLevel();
+        BlockPos c = farAway(h, 1000).atY(44);
+        for (int x = -7; x <= 7; x++) {
+            for (int z = -7; z <= 7; z++) {
+                for (int y = 38; y <= 62; y++) {
+                    BlockState s = y <= 44 ? Blocks.SAND.defaultBlockState()
+                            : y == 45 && Math.floorMod(x + z, 3) == 0 ? Blocks.SEAGRASS.defaultBlockState() : Blocks.WATER.defaultBlockState();
+                    level.setBlock(c.offset(x, y - 44, z), s, Block.UPDATE_CLIENTS);
+                }
+            }
+        }
+        BoundingBox box = new BoundingBox(c.getX() - 7, 38, c.getZ() - 7, c.getX() + 7, 62, c.getZ() + 7);
+        int laid = dev.lowpix.winterworks.ocean.ReefSponges.cluster(level, c.above(), RandomSource.create(3L));
+        h.assertTrue(laid >= 3 && count(level, box, Blocks.WET_SPONGE) == laid, "a cluster of wet sponges on the reef, " + laid);
+        for (BlockPos p : BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ())) {
+            if (level.getBlockState(p).is(Blocks.SPONGE)) {
+                for (Direction d : Direction.values()) {
+                    h.assertTrue(level.getFluidState(p.relative(d)).isEmpty(), "dry sponges lie buried, out of the water");
+                }
+            }
+        }
+        var biomes = level.registryAccess().registryOrThrow(Registries.BIOME);
+        var veg = net.minecraft.world.level.levelgen.GenerationStep.Decoration.VEGETAL_DECORATION;
+        for (ResourceKey<Biome> b : List.of(Biomes.WARM_OCEAN, Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN)) {
+            for (String f : List.of("reef_sponges", "reef_seagrass", "reef_kelp", "reef_sea_pickle")) {
+                h.assertTrue(hasFeature(biomes.getOrThrow(b), veg, f), b.location() + " has " + f);
+            }
+        }
+        h.assertFalse(hasFeature(biomes.getOrThrow(Biomes.COLD_OCEAN), veg, "reef_sponges"), "cold oceans have no reefs");
+        var raw = net.minecraft.world.level.levelgen.GenerationStep.Decoration.RAW_GENERATION;
+        for (ResourceKey<Biome> b : List.of(Biomes.DEEP_OCEAN, Biomes.OCEAN, Biomes.DEEP_FROZEN_OCEAN, OceanWorldgen.ABYSSAL_TRENCH, OceanWorldgen.VOLCANIC_DEPTHS)) {
+            h.assertTrue(hasFeature(biomes.getOrThrow(b), raw, "ocean_depths"), b.location() + " is carved by ocean_depths");
+        }
+        h.assertTrue(hasFeature(biomes.getOrThrow(OceanWorldgen.VOLCANIC_DEPTHS), net.minecraft.world.level.levelgen.GenerationStep.Decoration.LOCAL_MODIFICATIONS,
+                "volcanic_vents"), "vent fields in the volcanic depths");
+        h.succeed();
     }
 
     @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 400)

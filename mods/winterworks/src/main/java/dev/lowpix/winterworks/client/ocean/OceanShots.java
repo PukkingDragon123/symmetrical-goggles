@@ -77,6 +77,11 @@ final class OceanShots {
             return;
         }
         ClientTickEvents.END_CLIENT_TICK.register(OceanShots::tick);
+        // stand-in (invisible) renderers for the sea's new mobs: their own client code, registered after this, replaces them
+        for (var type : List.of(dev.lowpix.winterworks.registry.OceanEntities.ANGLERFISH, dev.lowpix.winterworks.registry.OceanEntities.LIONFISH,
+                dev.lowpix.winterworks.registry.OceanEntities.NAUTILUS, dev.lowpix.winterworks.registry.OceanEntities.WHALE)) {
+            net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry.register(type, net.minecraft.client.renderer.entity.NoopRenderer::new);
+        }
         wait(40);
         add(mc -> {
             for (String c : new String[]{"gamerule doDaylightCycle false", "gamerule doWeatherCycle false", "gamerule doMobSpawning false",
@@ -85,63 +90,86 @@ final class OceanShots {
                 cmd(c);
             }
             mc.options.hideGui = true;
-            mc.options.renderDistance().set(8);
+            mc.options.renderDistance().set(6);
+            mc.getWindow().setWindowed(1280, 720);
             return true;
         });
         server(OceanShots::findPlaces);
         // ---- the deep: shelf cliffs, a trench, rock formations
-        visit("cliff", 260);
-        shot("cliffs");
-        visit("trench", 260);
-        shot("trench");
-        visit("trench_down", 60);
-        shot("trench_down");
-        visit("formation", 260);
-        shot("formation");
+        if (wanted("cliffs")) {
+            go(() -> PLACES.get("cliff"), 200);
+            visit("cliff", 160);
+            shot("cliffs");
+        }
+        if (wanted("trench")) {
+            go(() -> PLACES.get("trench"), 200);
+            server(OceanShots::trenchView);
+            visit("trench", 160);
+            shot("trench");
+            visit("trench_down", 60);
+            shot("trench_down");
+        }
+        if (wanted("formation")) {
+            visit("formation", 260);
+            shot("formation");
+        }
         // ---- a volcanic vent field with tube worms
-        go(() -> PLACES.get("volcanic"), 300);
-        server(level -> pickNear(level, "vents", PLACES.get("volcanic"), 96, -50, 15, s -> s.is(OceanBlocks.HYDROTHERMAL_VENT),
-                s -> s.is(OceanBlocks.TUBE_WORMS) ? 2 : s.is(OceanBlocks.HYDROTHERMAL_VENT) ? 3 : s.is(Blocks.RAW_GOLD_BLOCK) || s.is(Blocks.RAW_IRON_BLOCK) ? 1 : 0,
-                new Vec3(6.5, 3.5, 5.5), new Vec3(0, 1.5, 0)));
-        visit("vents", 160);
-        shot("vent_field");
-        server(level -> closer("vents", "vents_close", 0.55));
-        visit("vents_close", 80);
-        shot("vent_close");
+        if (wanted("vent")) {
+            go(() -> PLACES.get("volcanic"), 300);
+            server(level -> pickNear(level, "vents", PLACES.get("volcanic"), 64, -50, 15, s -> s.is(OceanBlocks.HYDROTHERMAL_VENT),
+                    s -> s.is(OceanBlocks.TUBE_WORMS) ? 2 : s.is(OceanBlocks.HYDROTHERMAL_VENT) ? 3 : s.is(Blocks.RAW_GOLD_BLOCK) || s.is(Blocks.RAW_IRON_BLOCK) ? 1 : 0,
+                    new Vec3(6.5, 3.5, 5.5), new Vec3(0, 1.5, 0)));
+            visit("vents", 160);
+            shot("vent_field");
+            server(level -> closer("vents", "vents_close", 0.55));
+            visit("vents_close", 80);
+            shot("vent_close");
+        }
         // ---- a warm reef with sponges
-        go(() -> PLACES.get("reef"), 300);
-        server(level -> pickNear(level, "reef", PLACES.get("reef"), 96, 30, 62, s -> s.is(Blocks.WET_SPONGE),
-                s -> s.is(Blocks.WET_SPONGE) ? 3 : s.is(net.minecraft.tags.BlockTags.CORAL_BLOCKS) || s.is(Blocks.SEA_PICKLE) ? 1 : 0,
-                new Vec3(4.5, 2.5, 3.5), new Vec3(0, 0.5, 0)));
-        visit("reef", 160);
-        shot("reef_sponges");
+        if (wanted("reef")) {
+            server(OceanShots::reef);
+            go(() -> PLACES.get("reef"), 300);
+            server(level -> pickNear(level, "reef", PLACES.get("reef"), 64, 30, 62, s -> s.is(Blocks.WET_SPONGE),
+                    s -> s.is(Blocks.WET_SPONGE) ? 3 : s.is(net.minecraft.tags.BlockTags.CORAL_BLOCKS) || s.is(Blocks.SEA_PICKLE) ? 1 : 0,
+                    new Vec3(4.5, 2.5, 3.5), new Vec3(0, 0.5, 0)));
+            visit("reef", 160);
+            shot("reef_sponges");
+        }
         // ---- the structures, built on the deep floor with the dev command
         for (OceanStructure.Kind kind : OceanStructure.Kind.values()) {
-            build(kind);
-            visit(kind.id, 200);
-            shot(kind.id);
+            if (wanted(kind.id)) {
+                build(kind);
+                visit(kind.id, 200);
+                shot(kind.id);
+                if (kind == OceanStructure.Kind.DEEP_SHIPWRECK) {
+                    visit("deep_shipwreck_deck", 60);
+                    shot("deep_shipwreck_deck");
+                }
+            }
         }
-        visit("deep_shipwreck_deck", 60);
-        shot("deep_shipwreck_deck");
         // ---- natural ones
         for (OceanStructure.Kind kind : OceanStructure.Kind.values()) {
-            server(level -> natural(level, kind));
-            go(() -> PLACES.get("natural_" + kind.id), 300);
-            server(level -> viewNatural(level, kind));
-            visit("natural_" + kind.id, 160);
-            shot("natural_" + kind.id);
+            if (wanted("natural_" + kind.id)) {
+                server(level -> natural(level, kind));
+                go(() -> PLACES.get("natural_" + kind.id), 300);
+                server(level -> viewNatural(level, kind));
+                visit("natural_" + kind.id, 160);
+                shot("natural_" + kind.id);
+            }
         }
         // ---- an ocean monument: outside on its legs, the boss arena, a wing and a treasure room
-        go(() -> PLACES.get("monument"), 400);
-        server(OceanShots::monumentViews);
-        visit("monument", 200);
-        shot("monument");
-        visit("monument_core", 120);
-        shot("monument_core");
-        visit("monument_wing", 120);
-        shot("monument_wing");
-        visit("monument_treasure", 120);
-        shot("monument_treasure");
+        if (wanted("monument")) {
+            go(() -> PLACES.get("monument"), 400);
+            server(OceanShots::monumentViews);
+            visit("monument", 200);
+            shot("monument");
+            visit("monument_core", 120);
+            shot("monument_core");
+            visit("monument_wing", 120);
+            shot("monument_wing");
+            visit("monument_treasure", 120);
+            shot("monument_treasure");
+        }
         add(mc -> {
             mc.stop();
             return true;
@@ -193,6 +221,36 @@ final class OceanShots {
         Winterworks.LOG.info("oceanshots: places {}", PLACES);
     }
 
+    /** A shallow warm reef: warm ocean at the surface where the shelf keeps its vanilla floor. */
+    private static void reef(ServerLevel level) {
+        BlockPos c = PLACES.get("reef");
+        if (c == null) {
+            return;
+        }
+        var source = level.getChunkSource().getGenerator().getBiomeSource();
+        var sampler = level.getChunkSource().randomState().sampler();
+        OceanDepths.ClimateField cf = climate(level);
+        for (int r = 0; r <= 800; r += 16) {
+            for (int dx = -r; dx <= r; dx += 16) {
+                for (int dz = -r; dz <= r; dz += 16) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != r) {
+                        continue;
+                    }
+                    int x = c.getX() + dx, z = c.getZ() + dz;
+                    double cont = cf.continentalness(x, z);
+                    if (cont < -0.4 || cont > -0.22) {
+                        continue;   // not the middle of the shelf
+                    }
+                    if (source.getNoiseBiome(x >> 2, 15, z >> 2, sampler).is(Biomes.WARM_OCEAN)) {
+                        PLACES.put("reef", new BlockPos(x, 52, z));
+                        Winterworks.LOG.info("oceanshots: shallow reef at {}, {} (continentalness {})", x, z, cont);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     /** The deepest trench point near `c`, and views along and down it. */
     private static void trench(ServerLevel level, long seed, BlockPos c) {
         BlockPos best = null;
@@ -233,10 +291,59 @@ final class OceanShots {
             }
         }
         double ax = Math.cos(along), az = Math.sin(along);
+        trenchAlong = along;
         Vec3 t = Vec3.atBottomCenterOf(best);
         VIEWS.put("trench", new Vec3[]{t.add(-ax * 18, 24, -az * 18), t.add(ax * 26, 2, az * 26)});
         VIEWS.put("trench_down", new Vec3[]{t.add(-az * 4, 40, ax * 4), t.add(ax * 3, 0, az * 3)});
         PLACES.put("trench", best);
+    }
+
+    private static double trenchAlong;
+
+    /** A view along the trench from inside it, checked against the generated world: in open water, seeing down it. */
+    private static void trenchView(ServerLevel level) {
+        BlockPos t0 = PLACES.get("trench");
+        if (t0 == null) {
+            return;
+        }
+        double ax = Math.cos(trenchAlong), az = Math.sin(trenchAlong);
+        Vec3 t = Vec3.atBottomCenterOf(t0);
+        for (int back : new int[]{16, 22, 12, 28, 8}) {
+            for (int up : new int[]{20, 26, 16, 30, 12}) {
+                for (int side : new int[]{0, -3, 3, -6, 6}) {
+                    Vec3 eye = t.add(-ax * back - az * side, up, -az * back + ax * side);
+                    Vec3 look = t.add(ax * 26, 4, az * 26);
+                    if (clearView(level, eye, look)) {
+                        VIEWS.put("trench", new Vec3[]{eye, look});
+                        Winterworks.LOG.info("oceanshots: trench view back {} up {} side {}", back, up, side);
+                        return;
+                    }
+                }
+            }
+        }
+        Winterworks.LOG.warn("oceanshots: no clear trench view");
+    }
+
+    private static boolean water(ServerLevel level, Vec3 p) {
+        return level.getBlockState(BlockPos.containing(p)).is(Blocks.WATER);
+    }
+
+    /** Whether `eye` is in open water and most of the way to `look` is water too. */
+    private static boolean clearView(ServerLevel level, Vec3 eye, Vec3 look) {
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (!water(level, eye.add(dx, dy, dz))) {
+                        return false;
+                    }
+                }
+            }
+        }
+        int n = 30, wet = 0;
+        for (int i = 1; i <= n; i++) {
+            wet += water(level, eye.add(look.subtract(eye).scale(i / (n + 1.0)))) ? 1 : 0;
+        }
+        return wet >= n * 0.85;
     }
 
     /** A rock formation (an arch if there is one) near `c`. */
@@ -311,7 +418,7 @@ final class OceanShots {
                         hi = Math.max(hi, g);
                     }
                     boolean apart = found.stream().allMatch(p -> Math.hypot(p.getX() - x, p.getZ() - z) > 90);
-                    if (hi - lo < 4 && apart && OceanDepths.formations(seed, cf, x - 30, z - 30, x + 30, z + 30).isEmpty()) {
+                    if (hi - lo < 7 && apart && OceanDepths.formations(seed, cf, x - 30, z - 30, x + 30, z + 30).isEmpty()) {
                         found.add(new BlockPos(x, (int) Math.floor(f) + 1, z));
                     }
                 }
@@ -330,12 +437,14 @@ final class OceanShots {
         }
         BlockPos best = null;
         int bestScore = -1;
+        for (int cx = (c.getX() - r - 6) >> 4; cx <= (c.getX() + r + 6) >> 4; cx++) {
+            for (int cz = (c.getZ() - r - 6) >> 4; cz <= (c.getZ() + r + 6) >> 4; cz++) {
+                level.getChunk(cx, cz);   // generate it all first
+            }
+        }
         BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos(), q = new BlockPos.MutableBlockPos();
         for (int x = c.getX() - r; x <= c.getX() + r; x++) {
             for (int z = c.getZ() - r; z <= c.getZ() + r; z++) {
-                if (level.getChunkSource().getChunkNow(x >> 4, z >> 4) == null) {
-                    continue;
-                }
                 for (int y = lo; y <= hi; y++) {
                     if (!target.test(level.getBlockState(m.set(x, y, z)))) {
                         continue;
@@ -541,7 +650,7 @@ final class OceanShots {
     /** Flies the camera to view `name` (skipped if there's none) and waits for the world round it to draw. */
     private static void visit(String name, int minTicks) {
         add(mc -> {
-            Vec3[] v = wanted(name) ? VIEWS.get(name) : null;
+            Vec3[] v = VIEWS.get(name);
             eye = v == null ? null : v[0];
             look = v == null ? null : v[1];
             if (eye != null) {
@@ -554,9 +663,23 @@ final class OceanShots {
                 return true;
             }
             waited++;
-            stable = mc.levelRenderer.hasRenderedAllSections() ? stable + 1 : 0;
-            return waited > minTicks && stable > 40 || waited > 1600;
+            boolean loaded = loaded(mc, eye) && loaded(mc, look);
+            stable = loaded && mc.levelRenderer.hasRenderedAllSections() ? stable + 1 : 0;
+            return waited > minTicks && stable > 40 || waited > 2400;
         });
+    }
+
+    /** Whether the client has the chunks round `at` (radius 2). */
+    private static boolean loaded(Minecraft mc, Vec3 at) {
+        int cx = (int) Math.floor(at.x) >> 4, cz = (int) Math.floor(at.z) >> 4;
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                if (!mc.level.getChunkSource().hasChunk(cx + dx, cz + dz)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static void shot(String name) {

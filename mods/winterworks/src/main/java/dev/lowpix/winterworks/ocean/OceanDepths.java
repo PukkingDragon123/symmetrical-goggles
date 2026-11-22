@@ -160,14 +160,14 @@ public final class OceanDepths {
         if (ab > 0) {
             double wx = x + 70 * n.at(8, x, z, 1 / 190.0), wz = z + 70 * n.at(9, x, z, 1 / 190.0);
             double tw = Math.abs(n.at(7, wx, wz, 1 / 340.0));
-            double tr = smooth(0.10, 0.045, tw) * ab;
+            double tr = smooth(0.13, 0.06, tw) * ab;
             if (tr > 0) {
                 double before = f;
                 f = lerp(f, -55 + 2 * n.at(4, x - 913, z + 377, 1 / 17.0), tr);
-                out.ut = ab * smooth(0.135, 0.105, tw) * (1 - smooth(0.07, 0.05, tw));
+                out.ut = ab * smooth(0.165, 0.13, tw) * (1 - smooth(0.09, 0.065, tw));
                 out.utlo = -51;
                 out.uthi = before - 2;
-                out.wall = Math.max(out.wall, smooth(0.11, 0.07, tw) * (1 - smooth(0.05, 0.035, tw)) * ab);
+                out.wall = Math.max(out.wall, smooth(0.145, 0.095, tw) * (1 - smooth(0.065, 0.045, tw)) * ab);
             }
         }
         if (vz > 0) {

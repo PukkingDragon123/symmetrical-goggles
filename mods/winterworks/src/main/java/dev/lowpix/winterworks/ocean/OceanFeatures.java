@@ -76,7 +76,9 @@ public final class OceanFeatures {
         }
         OceanDepths.Area area = OceanDepths.area(level.getSeed(), climate, x0 - 1, z0 - 1, 18, 18, protectedBoxes(level, cp));
         ChunkAccess chunk = level.getChunk(cp.x, cp.z);
-        return DepthCarver.carve(area, x0, z0, x0 + 15, z0 + 15, DepthCarver.chunk(chunk)) > 0;
+        boolean carved = DepthCarver.carve(area, x0, z0, x0 + 15, z0 + 15, DepthCarver.chunk(chunk)) > 0;
+        DepthCarver.rebiome(chunk, area);
+        return carved;
     }
 
     /**

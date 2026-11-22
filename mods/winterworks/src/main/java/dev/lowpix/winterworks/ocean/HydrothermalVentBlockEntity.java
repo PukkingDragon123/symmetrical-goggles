@@ -115,12 +115,12 @@ public class HydrothermalVentBlockEntity extends BlockEntity {
         if (!level.getBlockState(pos.above()).isAir() && !wet) {
             return;   // capped
         }
-        if (r.nextInt(3) != 0) {
+        for (int i = r.nextInt(3) == 0 ? -1 : 0; i < 1; i++) {   // a thick, steady plume
             double x = pos.getX() + 0.5 + (r.nextDouble() - 0.5) * 0.25, z = pos.getZ() + 0.5 + (r.nextDouble() - 0.5) * 0.25;
-            level.addParticle(OceanParticles.VENT_SMOKE, x, pos.getY() + 0.98, z, (r.nextDouble() - 0.5) * 0.01,
-                    0.045 + r.nextDouble() * 0.035, (r.nextDouble() - 0.5) * 0.01);
+            level.addParticle(OceanParticles.VENT_SMOKE, x, pos.getY() + 0.95, z, (r.nextDouble() - 0.5) * 0.012,
+                    0.05 + r.nextDouble() * 0.04, (r.nextDouble() - 0.5) * 0.012);
         }
-        if (wet && r.nextInt(5) == 0) {
+        if (wet && r.nextInt(14) == 0) {
             level.addParticle(net.minecraft.core.particles.ParticleTypes.BUBBLE, pos.getX() + 0.5 + (r.nextDouble() - 0.5) * 0.4,
                     pos.getY() + 1.0, pos.getZ() + 0.5 + (r.nextDouble() - 0.5) * 0.4, 0, 0.06, 0);
         }

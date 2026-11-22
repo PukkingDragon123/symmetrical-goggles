@@ -7,6 +7,7 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -140,6 +141,16 @@ public class OceanStructure extends Structure {
                         chunk.getMaxBlockX(), level.getMaxBuildHeight() - 1, chunk.getMaxBlockZ());
                 piece.postProcess(level, level.structureManager(), level.getChunkSource().getGenerator(), level.getRandom(), chunkBox,
                         chunk, origin);
+            }
+        }
+        // in a loaded world nothing post-processes: join up the fences and bars now
+        for (BlockPos p : BlockPos.betweenClosed(all.minX(), all.minY(), all.minZ(), all.maxX(), all.maxY(), all.maxZ())) {
+            BlockState s = level.getBlockState(p);
+            if (OceanStructurePiece.connects(s)) {
+                BlockState joined = net.minecraft.world.level.block.Block.updateFromNeighbourShapes(s, level, p);
+                if (joined != s) {
+                    level.setBlock(p, joined, OceanGen.FLAGS);
+                }
             }
         }
         return all;

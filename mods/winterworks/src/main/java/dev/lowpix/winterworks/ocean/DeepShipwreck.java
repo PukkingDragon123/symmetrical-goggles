@@ -72,9 +72,10 @@ final class DeepShipwreck {
     static void build(OceanStructurePiece.W w) {
         int half = 17 + (int) (w.rnd(0, 0, 0, 1) * 4);
         int hw = w.rnd(0, 0, 0, 2) < 0.5f ? 4 : 5;
-        Hull h = new Hull(half, hw, 7, (int) ((w.rnd(0, 0, 0, 3) - 0.5) * half), w.rnd(0, 0, 0, 4) < 0.5f ? -1 : 1,
+        Hull h = new Hull(half, hw, 8, (int) ((w.rnd(0, 0, 0, 3) - 0.5) * half), w.rnd(0, 0, 0, 4) < 0.5f ? -1 : 1,
                 2.6 + w.rnd(0, 0, 0, 5) * 1.2);
         int y0 = -2;   // the keel's local y: two blocks into the floor
+        w.roll = (w.rnd(0, 0, 0, 6) < 0.5f ? -1 : 1) * (0.14 + w.rnd(0, 0, 0, 7) * 0.08);   // heeled over as she settled
         for (int z = -half - 1; z <= half + 1; z++) {
             for (int x = -hw - 2; x <= hw + 2; x++) {
                 if (!w.column(x, z)) {
@@ -99,8 +100,10 @@ final class DeepShipwreck {
             return;
         }
         int sx = x == 0 ? 1 : Integer.signum(x);
-        boolean edge = !h.inside(x + sx, yk, z) || !h.inside(x, yk - 1, z) || !h.inside(x, yk, z + 1) || !h.inside(x, yk, z - 1)
-                || x == 0 && !h.inside(x - 1, yk, z);
+        // the sides are tested level in the world, so the heeled hull's steps stay closed
+        int sh = shift(w, x);
+        boolean edge = !h.inside(x + sx, yk + sh - shift(w, x + sx), z) || !h.inside(x, yk - 1, z) || !h.inside(x, yk, z + 1)
+                || !h.inside(x, yk, z - 1) || x == 0 && !h.inside(x - 1, yk + sh - shift(w, x - 1), z);
         int top = h.top(z);
         if (yk == top && !edge) {   // the open space over the deck
             w.water(x, y, z);
@@ -138,6 +141,11 @@ final class DeepShipwreck {
             return;
         }
         w.set(x, y, z, PLANKS);
+    }
+
+    /** How far column x is raised by the heel. */
+    private static int shift(OceanStructurePiece.W w, int x) {
+        return (int) Math.floor(x * w.roll + 0.5);
     }
 
     private static boolean hatch(int x, int z, int z0, int z1) {
@@ -203,7 +211,7 @@ final class DeepShipwreck {
     private static void masts(OceanStructurePiece.W w, Hull h, int y0) {
         int half = h.half();
         int[] zs = {(int) Math.round(half * 0.55), -1, (int) Math.round(-half * 0.48)};
-        int[] heights = {13, 17, 11};
+        int[] heights = {15, 19, 12};
         int broken = (int) (w.rnd(0, 1, 0, 30) * 3);
         int deckY = y0 + h.deck();
         for (int i = 0; i < 3; i++) {
@@ -226,8 +234,8 @@ final class DeepShipwreck {
                 if (x != 0) {
                     w.set(x, yard, z, Blocks.SPRUCE_LOG.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
                 }
-                for (int y = yard - 1; y >= yard - 5; y--) {
-                    if (x != 0 && Math.abs(x) < span && w.rnd(x, y, z, 32) < 0.42f - (yard - y) * 0.05f) {
+                for (int y = yard - 1; y >= yard - 6; y--) {
+                    if (x != 0 && Math.abs(x) < span && w.rnd(x, y, z, 32) < 0.78f - (yard - y) * 0.08f) {
                         w.set(x, y, z + 1, (w.rnd(x, y, z, 33) < 0.6f ? Blocks.WHITE_WOOL : Blocks.LIGHT_GRAY_WOOL).defaultBlockState());
                     }
                 }

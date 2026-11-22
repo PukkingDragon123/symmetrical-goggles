@@ -6,6 +6,10 @@ import dev.lowpix.winterworks.registry.OceanBlocks;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.block.Blocks;
@@ -264,6 +268,53 @@ public final class DepthCarver {
                 yield new BlockState[]{gravel, r < 0.4 ? gravel : stone};
             }
         };
+    }
+
+    /**
+     * Gives the carved-out water of `chunk` the biome of the sea over it (its quart column's biome at y 48): below the
+     * old floor the biome source has cave biomes (lush caves, Ice Caves...), which must not show in open water (its
+     * colour, its spawns). Decided from the shape, not the blocks, so it's the same whenever it runs. Returns how many
+     * sections changed.
+     */
+    @SuppressWarnings("unchecked")
+    public static int rebiome(ChunkAccess chunk, OceanDepths.Area a) {
+        if (!a.any()) {
+            return 0;
+        }
+        int x0 = chunk.getPos().getMinBlockX(), z0 = chunk.getPos().getMinBlockZ();
+        int qx0 = QuartPos.fromBlock(x0), qz0 = QuartPos.fromBlock(z0);
+        Holder<Biome>[] sea = new Holder[16];
+        for (int i = 0; i < 4; i++) {
+            for (int k = 0; k < 4; k++) {
+                sea[i * 4 + k] = chunk.getNoiseBiome(qx0 + i, QuartPos.fromBlock(48), qz0 + k);
+            }
+        }
+        int changed = 0;
+        for (int si = chunk.getSectionIndex(OceanDepths.BOTTOM); si <= chunk.getSectionIndex(OceanDepths.TOP); si++) {
+            LevelChunkSection section = chunk.getSection(si);
+            int by = SectionPos.sectionToBlockCoord(chunk.getSectionYFromSectionIndex(si));
+            Holder<Biome>[] next = new Holder[64];
+            boolean any = false;
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    for (int k = 0; k < 4; k++) {
+                        Holder<Biome> cur = section.getNoiseBiome(i, j, k), want = cur;
+                        if (a.carved(x0 + i * 4 + 2, by + j * 4 + 2, z0 + k * 4 + 2) && !cur.equals(sea[i * 4 + k])) {
+                            want = sea[i * 4 + k];
+                            any = true;
+                        }
+                        next[(i * 4 + j) * 4 + k] = want;
+                    }
+                }
+            }
+            if (any) {
+                int qy0 = QuartPos.fromBlock(by);
+                section.fillBiomesFromNoise((qx, qy, qz, sampler) -> next[((qx - qx0) * 4 + qy - qy0) * 4 + qz - qz0], null, qx0,
+                        qy0, qz0);
+                changed++;
+            }
+        }
+        return changed;
     }
 
     // ============================================================================================ sinks

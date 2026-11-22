@@ -24,7 +24,7 @@ public final class ReefSponges {
 
     /** A sponge cluster on the floor at `origin` (the first water block over it). Returns how many sponges it laid. */
     public static int cluster(WorldGenLevel level, BlockPos origin, RandomSource r) {
-        if (origin.getY() < 30 || !level.getBlockState(origin).is(Blocks.WATER) || !level.getBlockState(origin.below()).blocksMotion()) {
+        if (origin.getY() < 30 || !sea(level.getBlockState(origin)) || !level.getBlockState(origin.below()).blocksMotion()) {
             return 0;
         }
         int placed = 0, n = 4 + r.nextInt(7);
@@ -34,10 +34,10 @@ public final class ReefSponges {
             m.set(origin.getX() + dx, origin.getY() + 4, origin.getZ() + dz);
             // drop down to the floor (or onto a sponge already laid)
             int k = 0;
-            while (k++ < 8 && level.getBlockState(m.below()).is(Blocks.WATER)) {
+            while (k++ < 8 && sea(level.getBlockState(m.below()))) {
                 m.move(Direction.DOWN);
             }
-            if (!level.getBlockState(m).is(Blocks.WATER) || !level.getBlockState(m.below()).blocksMotion() || m.getY() > origin.getY() + 1) {
+            if (!sea(level.getBlockState(m)) || !level.getBlockState(m.below()).blocksMotion() || m.getY() > origin.getY() + 1) {
                 continue;
             }
             if (!level.ensureCanWrite(m)) {
@@ -61,13 +61,18 @@ public final class ReefSponges {
         // sea pickles glowing round it
         for (int i = 0; i < 3; i++) {
             q.set(origin.getX() + r.nextInt(7) - 3, origin.getY(), origin.getZ() + r.nextInt(7) - 3);
-            if (level.ensureCanWrite(q) && level.getBlockState(q).is(Blocks.WATER) && level.getBlockState(q.below()).isFaceSturdy(level, q.below(), Direction.UP)) {
+            if (level.ensureCanWrite(q) && sea(level.getBlockState(q)) && level.getBlockState(q.below()).isFaceSturdy(level, q.below(), Direction.UP)) {
                 BlockState pickle = Blocks.SEA_PICKLE.defaultBlockState().setValue(SeaPickleBlock.PICKLES, 1 + r.nextInt(4))
                         .setValue(SeaPickleBlock.WATERLOGGED, true);
                 level.setBlock(q, pickle, OceanGen.FLAGS);
             }
         }
         return placed;
+    }
+
+    /** Open sea: water, or the seagrass and such growing in it (the reef's own plants are laid before the sponges). */
+    private static boolean sea(BlockState s) {
+        return s.is(Blocks.WATER) || s.canBeReplaced() && s.getFluidState().is(net.minecraft.tags.FluidTags.WATER) && !s.hasBlockEntity();
     }
 
     /** Whether `p` is solid sea floor with no water next to it. */

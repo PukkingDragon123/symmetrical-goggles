@@ -61,11 +61,10 @@ VEG = ["minecraft:glow_lichen", "minecraft:trees_water", "minecraft:flower_defau
        "minecraft:brown_mushroom_normal", "minecraft:red_mushroom_normal", "minecraft:patch_sugar_cane", "minecraft:patch_pumpkin"]
 
 
-def ocean_features(seagrass, kelp, local=()):
+def ocean_features(plants, local=()):
     return [[], ["minecraft:lake_lava_underground", "minecraft:lake_lava_surface"], ["minecraft:amethyst_geode"] + list(local),
             ["minecraft:monster_room", "minecraft:monster_room_deep"], [], [], list(ORES), [],
-            ["minecraft:spring_water", "minecraft:spring_lava"], VEG + [seagrass, "minecraft:seagrass_simple", kelp],
-            ["minecraft:freeze_top_layer"]]
+            ["minecraft:spring_water", "minecraft:spring_lava"], VEG + list(plants), ["minecraft:freeze_top_layer"]]
 
 
 def spawn(t, w, lo, hi):
@@ -341,15 +340,16 @@ def run(ctx):
 
     # what lives where (section 1): anglerfish in the deep and the abyss (their spawn rules sort males from
     # females by depth), nautiluses in deep oceans; whales come in through the whale's own spawn settings
-    biome("volcanic_depths", 0.8, 0x3E5A5C, 0x1A1714,
+    # down in the dark and the heat hardly anything grows: no kelp, only a little seagrass where the floor was cut
+    biome("volcanic_depths", 0.8, 0x3A5550, 0x14211E,
           [spawn("minecraft:squid", 6, 1, 4), spawn("minecraft:dolphin", 1, 1, 2), spawn(f"{M}:nautilus", 2, 1, 1),
            spawn(f"{M}:anglerfish", 5, 1, 2)],
           [spawn("minecraft:tropical_fish", 20, 8, 8), spawn("minecraft:pufferfish", 5, 1, 3), spawn("minecraft:cod", 8, 3, 6)],
-          ocean_features("minecraft:seagrass_deep_warm", "minecraft:kelp_warm", [f"{M}:volcanic_vents"]))
+          ocean_features(["minecraft:seagrass_simple"], [f"{M}:volcanic_vents"]))
     biome("abyssal_trench", 0.5, 0x1F3A66, 0x02060F,
           [spawn("minecraft:squid", 4, 1, 4), spawn(f"{M}:anglerfish", 6, 1, 2), spawn(f"{M}:nautilus", 2, 1, 1)],
           [spawn("minecraft:cod", 10, 3, 6), spawn("minecraft:salmon", 5, 1, 5)],
-          ocean_features("minecraft:seagrass_deep", "minecraft:kelp_cold"),
+          ocean_features(["minecraft:seagrass_simple"]),
           {"options": {"type": f"{M}:bioluminescence"}, "probability": 0.004})
     both = [f"{M}:volcanic_depths", f"{M}:abyssal_trench"]
     tag(["minecraft", "tags", "worldgen", "biome", "is_ocean"], both)

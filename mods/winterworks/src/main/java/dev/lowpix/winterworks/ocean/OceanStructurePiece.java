@@ -71,6 +71,12 @@ public class OceanStructurePiece extends StructurePiece {
         return origin;
     }
 
+    /** Blocks whose shape depends on their neighbours (fences, walls, bars and panes). */
+    static boolean connects(BlockState s) {
+        return s.is(net.minecraft.tags.BlockTags.FENCES) || s.is(net.minecraft.tags.BlockTags.WALLS)
+                || s.getBlock() instanceof net.minecraft.world.level.block.IronBarsBlock;
+    }
+
     static BlockPos transform(BlockPos origin, Rotation rot, int x, int y, int z) {
         return origin.offset(new BlockPos(x, y, z).rotate(rot));
     }
@@ -96,6 +102,8 @@ public class OceanStructurePiece extends StructurePiece {
     public final class W {
         final WorldGenLevel level;
         final BoundingBox clip;
+        /** A list to one side: y moves by round(x * roll) (a wreck heeled over). */
+        double roll;
 
         W(WorldGenLevel level, BoundingBox clip) {
             this.level = level;
@@ -103,7 +111,7 @@ public class OceanStructurePiece extends StructurePiece {
         }
 
         BlockPos at(int x, int y, int z) {
-            return transform(origin, rot, x, y, z);
+            return transform(origin, rot, x, y + (int) Math.floor(x * roll + 0.5), z);
         }
 
         boolean in(BlockPos p) {
@@ -125,6 +133,9 @@ public class OceanStructurePiece extends StructurePiece {
             BlockPos p = at(x, y, z);
             if (in(p)) {
                 level.setBlock(p, s.rotate(rot), OceanGen.FLAGS | Block.UPDATE_KNOWN_SHAPE);
+                if (connects(s)) {   // fences and bars join up when the chunk is finished (vanilla's way)
+                    level.getChunk(p).markPosForPostprocessing(p);
+                }
             }
         }
 
