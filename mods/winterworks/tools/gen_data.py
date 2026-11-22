@@ -16,7 +16,16 @@ D = os.path.join(RES, "data")
 M = "winterworks"
 
 
+_TAGS = {}   # tag files written in this run: several area modules may add to the same tag
+
+
 def write(path, obj):
+    if os.sep + "tags" + os.sep in path and isinstance(obj, dict) and "values" in obj:
+        merged = _TAGS.setdefault(path, [])
+        for v in obj["values"]:
+            if v not in merged:
+                merged.append(v)
+        obj = dict(obj, values=list(merged))
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(obj, fh, indent=2)

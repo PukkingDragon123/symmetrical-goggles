@@ -11,7 +11,10 @@
     "SnifferMixin",
     "DecoratedPotBlockMixin",
     "BlockEntityTypeMixin",
-    "StrayJockeyMixin"
+    "StrayJockeyMixin",
+    "BrushableBlockEntityMixin",
+    "PotionContentsMixin",
+    "ThrownPotionMixin"
   ],
   "client": [
     "client.GameRendererMixin"

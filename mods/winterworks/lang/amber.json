@@ -1,0 +1,23 @@
+{
+  "block.winterworks.amber_block": "Block of Amber",
+  "block.winterworks.amber_fossil": "Amber Fossil",
+  "block.winterworks.petrified_log": "Petrified Log",
+  "block.winterworks.amberwood_log": "Amberwood Log",
+  "block.winterworks.amberwood_leaves": "Amberwood Leaves",
+  "block.winterworks.amberwood_sapling": "Amberwood Sapling",
+  "block.winterworks.amberwood_planks": "Amberwood Planks",
+  "block.winterworks.blood_stain": "Blood Stain",
+  "item.winterworks.amber_chunk": "Amber Chunk",
+  "item.winterworks.amberwood_seed": "Amberwood Seed",
+  "item.winterworks.mosquito_spawn_egg": "Mosquito Spawn Egg",
+  "entity.winterworks.mosquito": "Mosquito",
+  "effect.winterworks.immunity": "Immunity",
+  "item.minecraft.potion.effect.blood": "Potion of Blood",
+  "item.minecraft.splash_potion.effect.blood": "Splash Potion of Blood",
+  "item.minecraft.lingering_potion.effect.blood": "Lingering Potion of Blood",
+  "item.minecraft.tipped_arrow.effect.blood": "Arrow of Blood",
+  "item.minecraft.potion.effect.immunity": "Potion of Immunity",
+  "item.minecraft.splash_potion.effect.immunity": "Splash Potion of Immunity",
+  "item.minecraft.lingering_potion.effect.immunity": "Lingering Potion of Immunity",
+  "item.minecraft.tipped_arrow.effect.immunity": "Arrow of Immunity"
+}

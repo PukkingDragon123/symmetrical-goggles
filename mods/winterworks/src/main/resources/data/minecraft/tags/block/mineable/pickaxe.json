@@ -6,6 +6,8 @@
     "winterworks:lift_rail",
     "winterworks:trap_rail",
     "winterworks:drop_rail",
-    "winterworks:drop_rail_open"
+    "winterworks:drop_rail_open",
+    "winterworks:amber_block",
+    "winterworks:petrified_log"
   ]
 }

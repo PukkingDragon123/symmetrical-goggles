@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "axis=x,resin=false": {
+      "model": "winterworks:block/amberwood_log_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,resin=false": {
+      "model": "winterworks:block/amberwood_log"
+    },
+    "axis=z,resin=false": {
+      "model": "winterworks:block/amberwood_log_horizontal",
+      "x": 90
+    },
+    "axis=x,resin=true": {
+      "model": "winterworks:block/amberwood_log_resin_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,resin=true": {
+      "model": "winterworks:block/amberwood_log_resin"
+    },
+    "axis=z,resin=true": {
+      "model": "winterworks:block/amberwood_log_resin_horizontal",
+      "x": 90
+    }
+  }
+}

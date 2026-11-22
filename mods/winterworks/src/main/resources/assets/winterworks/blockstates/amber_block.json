@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "inclusion=none": {
+      "model": "winterworks:block/amber_block"
+    },
+    "inclusion=seed": {
+      "model": "winterworks:block/amber_block_seed"
+    },
+    "inclusion=mosquito": {
+      "model": "winterworks:block/amber_block_mosquito"
+    }
+  }
+}
