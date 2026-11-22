@@ -15,18 +15,19 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
 /**
- * The Hex Fortress (docs/HEXES_UPDATE.md section 8): a complete, living Nether Fortress in any Nether biome (spacing
- * 32, separation 12; data from tools/data_nether.py). Four halls (brewing rooms, storerooms with the Golden Piglin's
- * vault, the gatehouse with a lit Nether Portal, the Piglin Witch's quarters) and four towers round a courtyard of
- * Nether Wart farms and soul-fire braziers, with bridges out over the lava. Twelve pieces (HexFortressPiece), each a
- * chunk or so across, every one clipped to the chunk being decorated. It stands on the first solid floor with room
- * above it, or on pillars over the lava sea. Find one with /locate structure winterworks:hex_fortress, or build one
- * with /winterworks hexfortress.
+ * The Hex Fortress (docs/HEXES_UPDATE.md section 8, reworked by docs/FIXES_0_4.md "The Hex Fortress, reworked"): a
+ * compact Nether-brick stronghold, about 40 x 40, built onto a block of bastion masonry, in any Nether biome (spacing
+ * 20, separation 8; data from tools/data_nether.py). The bastion block holds the Piglin Witch's quarters, a lit Nether
+ * Portal and her experiments; in front of it the brewing room, the wart-farm courtyard and the storeroom; then the
+ * hoglin pen, the Soul Bull yard between the inner and outer gates, and the stair tower; and the gate bridge on its
+ * piers. Eight pieces (HexFortressPiece), every one clipped to the chunk being decorated; the witch's crew lives there
+ * (WitchCrew). It stands on the first solid floor with room above it, or on its piers over the lava sea. Find one with
+ * /locate structure winterworks:hex_fortress, or build one with /winterworks hexfortress.
  */
 public class HexFortress extends Structure {
     public static final MapCodec<HexFortress> CODEC = simpleCodec(HexFortress::new);
     /** How far the fortress reaches from its centre (the bridgeheads). */
-    public static final int REACH = 36;
+    public static final int REACH = 21;
 
     public HexFortress(StructureSettings settings) {
         super(settings);

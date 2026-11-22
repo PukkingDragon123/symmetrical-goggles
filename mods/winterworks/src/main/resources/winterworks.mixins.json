@@ -52,7 +52,12 @@
     "LoopPlayerMixin",
     "RailStateMixin",
     "RailStateAccessor",
-    "DaggerSwingMixin"
+    "DaggerSwingMixin",
+    "HoglinAccessor",
+    "HoglinMixin",
+    "PiglinBruteAiMixin",
+    "StructurePieceAccessor",
+    "FortressCommanderMixin"
   ],
   "client": [
     "client.GameRendererMixin",

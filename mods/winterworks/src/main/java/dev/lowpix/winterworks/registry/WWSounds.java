@@ -178,6 +178,18 @@ public final class WWSounds {
     public static final SoundEvent SOUL_BULL_REVIVE = reg("entity.soul_bull.revive");
     public static final SoundEvent SOUL_BULL_SKULL_IGNITE = reg("block.soul_bull_skull.ignite");
 
+    // ---- 0.4 fixes: Nether (docs/FIXES_0_4.md "The Hex Fortress, reworked", "Piglins, hoglins and the Withered Commander")
+    public static final SoundEvent WITHERED_COMMANDER_AMBIENT = reg("entity.withered_commander.ambient");
+    public static final SoundEvent WITHERED_COMMANDER_HURT = reg("entity.withered_commander.hurt");
+    public static final SoundEvent WITHERED_COMMANDER_DEATH = reg("entity.withered_commander.death");
+    public static final SoundEvent WITHERED_COMMANDER_LUNGE = reg("entity.withered_commander.lunge");
+    public static final SoundEvent WITHERED_COMMANDER_SPIN = reg("entity.withered_commander.spin");
+    public static final SoundEvent WITHERED_COMMANDER_WAR_CRY = reg("entity.withered_commander.war_cry");
+    public static final SoundEvent PIGLIN_WITCH_CAST = reg("entity.piglin_witch.cast");
+    public static final SoundEvent PIGLIN_WITCH_BLINK = reg("entity.piglin_witch.blink");
+    public static final SoundEvent PIGLIN_WITCH_SUMMON = reg("entity.piglin_witch.summon");
+    // ---- end 0.4 fixes: Nether
+
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
             1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);

@@ -135,6 +135,14 @@ public final class WWItems {
     public static final Item SOUL_BULL_SPAWN_EGG = reg("soul_bull_spawn_egg",
             new SpawnEggItem(WWEntities.SOUL_BULL, 0x2F2E33, 0x46D2F2, new Item.Properties()));
 
+    // ---- 0.4 fixes: Nether (docs/FIXES_0_4.md "Piglins, hoglins and the Withered Commander"; creative tab entries: nether.NetherFeature)
+    public static final Item NETHERITE_SPEAR = reg("netherite_spear", new dev.lowpix.winterworks.nether.NetheriteSpearItem(
+            new Item.Properties().stacksTo(1).durability(2031).rarity(Rarity.EPIC).fireResistant()
+                    .attributes(dev.lowpix.winterworks.nether.NetheriteSpearItem.createAttributes())));
+    public static final Item WITHERED_COMMANDER_SPAWN_EGG = reg("withered_commander_spawn_egg",
+            new SpawnEggItem(WWEntities.WITHERED_COMMANDER, 0x1F1C21, 0x6B5A70, new Item.Properties()));
+    // ---- end 0.4 fixes: Nether
+
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks"))
                     .icon(() -> new ItemStack(ICEBREAKER_HORN))
