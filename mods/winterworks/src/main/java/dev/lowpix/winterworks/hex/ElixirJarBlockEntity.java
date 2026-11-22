@@ -21,7 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * The Elixir Jar's contents: a liquid and how many doses of it (0-3), and the brew bubbling in it.
- * A brew takes {@link #BREW_TICKS} ticks of heat; it pauses while the jar is off the heat.
+ * A brew takes {@link #BREW_TICKS} ticks of heat; it pauses while the jar is off the heat. A Potion of Blood poured
+ * into an empty jar is one dose of blood: only then does a gold block brew the Elixir of Greed (docs/FIXES_0_4.md).
  */
 public class ElixirJarBlockEntity extends BlockEntity {
     public static final int BREW_TICKS = 200;
@@ -79,10 +80,26 @@ public class ElixirJarBlockEntity extends BlockEntity {
             }
             return ElixirType.NONE;
         }
-        if (ingredient.is(Items.GOLD_BLOCK)) {
-            return doses == 0 ? ElixirType.GREED : ElixirType.NONE;
+        if (ingredient.is(Items.GOLD_BLOCK)) {   // Greed is gold dissolved in blood: the blood goes in first
+            return hasBlood() ? ElixirType.GREED : ElixirType.NONE;
         }
         return ElixirType.NONE;
+    }
+
+    /** Is there a Potion of Blood poured in, waiting for its gold? */
+    public boolean hasBlood() {
+        return liquid == ElixirType.BLOOD && doses > 0 && !isBrewing();
+    }
+
+    /** Pours a Potion of Blood into an empty jar; false if the jar isn't empty. */
+    public boolean pourBlood() {
+        if (isBrewing() || doses > 0) {
+            return false;
+        }
+        liquid = ElixirType.BLOOD;
+        doses = 1;
+        sync();
+        return true;
     }
 
     public void startBrew(ElixirType type) {
@@ -93,7 +110,7 @@ public class ElixirJarBlockEntity extends BlockEntity {
 
     /** Fills one bottle: the elixir taken out, or EMPTY if there is nothing to take. */
     public ItemStack takeDose() {
-        if (isBrewing() || doses <= 0 || liquid == ElixirType.NONE) {
+        if (isBrewing() || doses <= 0 || !liquid.bottled()) {
             return ItemStack.EMPTY;
         }
         ItemStack out = liquid.dose();
@@ -149,7 +166,8 @@ public class ElixirJarBlockEntity extends BlockEntity {
         }
         var r = level.random;
         double x = pos.getX() + 0.5, z = pos.getZ() + 0.5;
-        float fill = jar.isBrewing() && jar.liquid == ElixirType.NONE ? jar.brewFraction() : jar.doses / (float) DOSES;
+        float fill = jar.isBrewing() && jar.liquid == ElixirType.NONE ? jar.brewFraction()
+                : jar.isBrewing() && jar.liquid == ElixirType.BLOOD ? Mth.lerp(jar.brewFraction(), 1f / DOSES, 1f) : jar.doses / (float) DOSES;
         double top = pos.getY() + 0.12 + 0.5 * Math.max(fill, 0.15f);
         if (jar.isBrewing() && jar.heated) {
             if (r.nextInt(3) == 0) {
@@ -162,7 +180,7 @@ public class ElixirJarBlockEntity extends BlockEntity {
             if (r.nextInt(12) == 0) {
                 level.addParticle(ParticleTypes.WHITE_SMOKE, x, pos.getY() + 0.9, z, 0, 0.03, 0);
             }
-        } else if (jar.doses > 0 && r.nextInt(40) == 0) {
+        } else if (jar.doses > 0 && jar.liquid.bottled() && r.nextInt(40) == 0) {
             level.addParticle(jar.liquid == ElixirType.SOUL ? ParticleTypes.SOUL : ParticleTypes.WAX_ON,
                     x + (r.nextDouble() - 0.5) * 0.25, top, z + (r.nextDouble() - 0.5) * 0.25, 0, 0.01, 0);
         }
