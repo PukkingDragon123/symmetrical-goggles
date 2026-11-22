@@ -107,6 +107,10 @@ contract for the Java side.
 ## Blood in hexing (Hexes & Havoc)
 * The **Elixir of Greed** needs blood: the Elixir Jar brews it from a gold block only after a Potion of Blood has been
   poured in (the jar takes the blood first, then the gold).
+* **Blood is a base potion**: besides the Elixir of Greed, the Potion of Blood is the base for Instant Damage and
+  Regeneration in the brewing stand: Potion of Blood + fermented spider eye -> Potion of Harming; Potion of Blood +
+  ghast tear -> Potion of Regeneration (the vanilla potions, which then extend/strengthen as usual). The vanilla
+  recipes stay too.
 * **Blood instead of yourself**: the Hexing Table gets a third slot for Potions of Blood. A lesser hex can take 1
   Potion of Blood instead of hexing you; a sin hex always needs 1 Potion of Blood, and takes 2 more instead of hexing
   you. With no blood offered, you are Hexed as before.
