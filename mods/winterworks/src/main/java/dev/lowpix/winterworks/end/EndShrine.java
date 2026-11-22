@@ -48,7 +48,7 @@ final class EndShrine {
                 } else {
                     f = SB.END_BRICKS;
                 }
-                boolean moss = r > 3 && n.patch(x, z, 0.16) > 0.28 - r * 0.02;
+                boolean moss = r > 3 && n.patch(x, z, 0.16) > 0.42 - r * 0.018;
                 w.set(x, -1, z, moss ? SB.MOSS : f);
                 if (moss) {
                     float m = w.rnd(x, 0, z, 2);
@@ -121,7 +121,7 @@ final class EndShrine {
                         }
                         continue;
                     }
-                    w.set(x, y, z, w.rnd(x, y, z, 9) < 0.16 ? SB.MOSS : SB.PURPUR);
+                    w.set(x, y, z, w.rnd(x, y, z, 9) < 0.09 ? SB.MOSS : SB.PURPUR);
                 }
             }
         }

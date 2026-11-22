@@ -275,16 +275,16 @@ final class EndShots {
         pillar = rolled(level, deadEnd, 1, 0.12f, EndWorldgen.DEAD_END);
         formation = rolled(level, meadows, 4, 0.085f, EndWorldgen.CHORUS_MEADOWS);
         // flat building sites near them, clear of each other
-        shrineSpot = flatSpot(level, meadows == null ? null : meadows.offset(70, 0, 40), EndWorldgen.CHORUS_MEADOWS, null);
-        ruinsSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(-50, 0, 40), EndWorldgen.DEAD_END, null);
-        towerSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(60, 0, 80), EndWorldgen.DEAD_END, ruinsSpot);
-        craterSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(20, 0, -20), EndWorldgen.DEAD_END, null);
+        shrineSpot = flatSpot(level, meadows == null ? null : meadows.offset(70, 0, 40), EndWorldgen.CHORUS_MEADOWS, null, true);
+        ruinsSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(-50, 0, 40), EndWorldgen.DEAD_END, null, true);
+        towerSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(60, 0, 80), EndWorldgen.DEAD_END, ruinsSpot, true);
+        craterSpot = flatSpot(level, deadEnd == null ? null : deadEnd.offset(20, 0, -20), EndWorldgen.DEAD_END, null, false);
         Winterworks.LOG.info("endshots: island {} r{}, pillar {}, formation {}, sites: shrine {} ruins {} tower {} crater {}", island,
                 islandRadius, pillar, formation, shrineSpot, ruinsSpot, towerSpot, craterSpot);
     }
 
     /** The nearest spot to `near` in the biome where the ground 14 blocks round is solid and nearly level. */
-    private static BlockPos flatSpot(ServerLevel level, BlockPos near, ResourceKey<Biome> biome, BlockPos avoid) {
+    private static BlockPos flatSpot(ServerLevel level, BlockPos near, ResourceKey<Biome> biome, BlockPos avoid, boolean clearSky) {
         if (near == null) {
             return null;
         }
@@ -309,13 +309,31 @@ final class EndShots {
                             hi = Math.max(hi, h);
                         }
                     }
-                    if (ok && hi - lo <= 6) {
+                    if (ok && hi - lo <= 6 && (!clearSky || clearSky(level, x, z))) {
                         return new BlockPos(x, ground(level, x, z), z);
                     }
                 }
             }
         }
         return null;
+    }
+
+    /** No floating island over (x, z) and no structure (an End City) in the chunks round it. */
+    private static boolean clearSky(ServerLevel level, int x, int z) {
+        long seed = level.getSeed();
+        for (int cx = (x >> 4) - 3; cx <= (x >> 4) + 3; cx++) {
+            for (int cz = (z >> 4) - 3; cz <= (z >> 4) + 3; cz++) {
+                FloatingIsland.Plan p = FloatingIsland.plan(seed, cx, cz);
+                if (p != null && Math.hypot(p.x() - x, p.z() - z) < p.radius() + 20) {
+                    return false;
+                }
+                if (Math.abs(cx - (x >> 4)) <= 2 && Math.abs(cz - (z >> 4)) <= 2 && level.getChunk(cx, cz,
+                        net.minecraft.world.level.chunk.status.ChunkStatus.STRUCTURE_REFERENCES, true).hasAnyStructureReferences()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /** The nearest chunk whose rock feature `i` rolls under `p` (see EndFeatures#rocks), at its spot. */

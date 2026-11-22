@@ -67,7 +67,7 @@ public final class Meteorite {
             }
         }
         // the meteorite: a lumpy, half-buried ball round its core
-        double rm = 2.0 + EndFormations.u(id, 32) * 0.6;
+        double rm = 2.3 + EndFormations.u(id, 32) * 0.7;
         BlockState met = EndBlocks.METEORITE.defaultBlockState();
         int cy = floorC;
         for (int dx = -3; dx <= 3; dx++) {

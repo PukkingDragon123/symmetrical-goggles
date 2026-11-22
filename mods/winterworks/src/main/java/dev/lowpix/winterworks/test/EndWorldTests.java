@@ -304,6 +304,41 @@ public class EndWorldTests implements FabricGameTest {
         h.succeed();
     }
 
+    /** Each structure starts naturally in its biome in the End, on solid ground, with its sets and biome tags loaded. */
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 400)
+    public void structuresGenerateInTheirBiomes(GameTestHelper h) {
+        var server = h.getLevel().getServer();
+        var reg = server.registryAccess();
+        ServerLevel end = server.getLevel(Level.END);
+        var gen = end.getChunkSource().getGenerator();
+        record Case(ResourceKey<net.minecraft.world.level.levelgen.structure.Structure> key, ResourceKey<Biome> biome) {}
+        for (Case c : List.of(new Case(EndWorldgen.OBSIDIAN_RUINS, EndWorldgen.DEAD_END), new Case(EndWorldgen.END_SHRINE, EndWorldgen.CHORUS_MEADOWS),
+                new Case(EndWorldgen.MONOLITH_TOWER, EndWorldgen.DEAD_END))) {
+            var structure = reg.registryOrThrow(Registries.STRUCTURE).get(c.key());
+            h.assertTrue(structure != null, c.key().location() + " should load");
+            h.assertTrue(reg.registryOrThrow(Registries.STRUCTURE_SET).containsKey(c.key().location()), "... and its structure set");
+            var found = end.findClosestBiome3d(x -> x.is(c.biome()), new BlockPos(1500, 64, 300), 6400, 32, 64);
+            h.assertTrue(found != null, c.biome().location() + " in the End");
+            net.minecraft.world.level.levelgen.structure.StructureStart start = null;
+            int c0x = found.getFirst().getX() >> 4, c0z = found.getFirst().getZ() >> 4;
+            for (int r = 0; r < 40 && (start == null || !start.isValid()); r++) {
+                for (int cx = c0x - r; cx <= c0x + r && (start == null || !start.isValid()); cx++) {
+                    for (int cz = c0z - r; cz <= c0z + r && (start == null || !start.isValid()); cz++) {
+                        if (Math.max(Math.abs(cx - c0x), Math.abs(cz - c0z)) == r) {
+                            start = structure.generate(reg, gen, gen.getBiomeSource(), end.getChunkSource().randomState(), end.getStructureManager(),
+                                    end.getSeed(), new net.minecraft.world.level.ChunkPos(cx, cz), 0, end, b -> b.is(c.biome()));
+                        }
+                    }
+                }
+            }
+            h.assertTrue(start != null && start.isValid(), c.key().location() + " should start somewhere in " + c.biome().location());
+            BoundingBox box = start.getBoundingBox();
+            h.assertTrue(start.getPieces().size() == 1 && box.getXSpan() >= 27, "one piece, " + box.getXSpan() + " across");
+            h.assertTrue(!EndGen.nearMainIsland(box.getCenter().getX(), box.getCenter().getZ()), "never near the main island");
+        }
+        h.succeed();
+    }
+
     private static BlockPos farAway(GameTestHelper h, int dx) {
         return h.absolutePos(BlockPos.ZERO).offset(-2200 + dx, 0, 1800);
     }
@@ -345,9 +380,12 @@ public class EndWorldTests implements FabricGameTest {
         h.assertTrue(plants > 10, "... and plants on it, " + plants);
         h.assertTrue(roots > 15 && minY < -10, "big chorus roots hanging under it, " + roots + " down to " + minY);
         h.assertTrue(maxR <= 15, "radius 4-14 (with its ragged edge), reached " + maxR);
-        h.assertTrue(level.getBlockState(c.above(2)).is(EndBlocks.END_GRASS_BLOCK) || level.getBlockState(c.above(3)).is(EndBlocks.END_GRASS_BLOCK)
-                || level.getBlockState(c.above(1)).is(EndBlocks.END_GRASS_BLOCK) || !level.getBlockState(c.above(4)).isAir(),
-                "End Grass on the top at the centre");
+        boolean topped = false;
+        for (int dy = 0; dy <= 5; dy++) {
+            BlockState s = level.getBlockState(c.above(dy));
+            topped |= s.is(EndBlocks.END_GRASS_BLOCK) || s.is(EndBlocks.END_MOSS_BLOCK);
+        }
+        h.assertTrue(topped, "End Grass (or Moss) on the top at the centre");
         // the plans: radius 4-14, y 70-150
         for (int cx = 0; cx < 200; cx++) {
             FloatingIsland.Plan plan = FloatingIsland.plan(1234L, cx, cx * 7 - 300);

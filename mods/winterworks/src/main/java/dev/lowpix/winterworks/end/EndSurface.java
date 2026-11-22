@@ -71,7 +71,7 @@ public final class EndSurface {
         return n.patch(x - 900, z + 4400, 0.06) > 0.58;
     }
 
-    /** The Dead End's sand on a column whose open top is end stone at y: 2-4 deep, 0-2 more in dunes. */
+    /** The Dead End's sand on a column whose open top is end stone at y: 2-4 deep, one more on the dunes. */
     static void desertColumn(EndWriter w, EndGen.Noises n, int x, int y, int z, boolean topmost) {
         if (outcrop(n, x, z)) {
             return;
@@ -87,7 +87,7 @@ public final class EndSurface {
         if (!w.get(x, y, z).is(EndBlocks.END_SAND)) {
             return;
         }
-        int extra = topmost ? (int) Math.floor(Math.max(0, dune - 0.15) * 3.2) : 0;
+        int extra = topmost && dune > 0.42 ? 1 : 0;   // a low dune here and there
         for (int k = 1; k <= Math.min(2, extra); k++) {
             w.put(x, y + k, z, EndGen.SAND);
         }
