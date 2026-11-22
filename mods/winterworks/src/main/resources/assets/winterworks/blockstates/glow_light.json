@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "waterlogged=false": {
+      "model": "winterworks:block/glow_light"
+    },
+    "waterlogged=true": {
+      "model": "winterworks:block/glow_light"
+    }
+  }
+}

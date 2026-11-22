@@ -4,7 +4,7 @@ drops (item models, cooking), the Recall potion, the endling_head_plants and obo
 where the sound map doesn't provide them yet, and lang/end_mobs.json. Called by gen_data.py with
 ctx = gen_data.Ctx.
 
-Art comes later from lowpix (entity models, block models of the cocoon, 32 x 32 textures): until a texture exists the
+Art comes later (lowpix entity models; the cocoon's block models and 16 x 16 textures): until a texture exists the
 models here point at a vanilla stand-in, so re-run gen_data.py when the art lands."""
 import json
 import os
@@ -77,7 +77,7 @@ def sounds(ctx):
 
 
 # ------------------------------------------------------------------------------------------------ models
-ITEMS = {   # item -> vanilla stand-in texture until the 32 x 32 icon lands
+ITEMS = {   # item -> vanilla stand-in texture until the 16 x 16 icon lands
     "end_bulb": "minecraft:item/chorus_fruit",
     "enderfly_wing": "minecraft:item/phantom_membrane",
     "gucker_meat": "minecraft:item/mutton",
@@ -243,6 +243,7 @@ def lang(ctx, subs):
         "item.winterworks.gucker_gland": "Gucker Gland",
         "item.winterworks.obsidian_shard": "Obsidian Shard",
         "effect.winterworks.end_glow": "End Glow",
+        "block.winterworks.glow_light": "End Glow Light",
         "effect.winterworks.recall": "Recall",
         "item.minecraft.potion.effect.recall": "Potion of Recall",
         "item.minecraft.splash_potion.effect.recall": "Splash Potion of Recall",
@@ -253,8 +254,16 @@ def lang(ctx, subs):
     ctx.write(os.path.join(ctx.L, "end_mobs.json"), L)
 
 
+def glow_light(ctx):
+    """End Glow's invisible light block: no model geometry, only a particle texture (never broken in survival)."""
+    ctx.write(os.path.join(ctx.A, "blockstates", "glow_light.json"), {"variants": {
+        "waterlogged=false": {"model": f"{ctx.M}:block/glow_light"}, "waterlogged=true": {"model": f"{ctx.M}:block/glow_light"}}})
+    ctx.write(os.path.join(ctx.A, "models", "block", "glow_light.json"), {"textures": {"particle": "minecraft:item/light_14"}})
+
+
 def run(ctx):
     subs = sounds(ctx)
+    glow_light(ctx)
     item_models(ctx)
     bloom(ctx)
     cocoon(ctx)

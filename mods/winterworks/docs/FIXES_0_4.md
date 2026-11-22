@@ -158,8 +158,9 @@ contract for the Java side.
 
 ## Cursed books and cursed gear (Hexes & Havoc)
 * Enchanted books carrying a curse (any of ours, Binding or Vanishing) get their own **cursed book** textures instead of
-  vanilla's enchanted book, and every cursed item gets a new **soul glint**: drifting blue souls and a slow, dizzying
-  swirl instead of the purple shimmer. The new art has no black outlines.
+  vanilla's enchanted book, in the same book form (violet with a soul flame for a curse, crimson with a horned gold eye
+  for a sin), and every cursed item gets a new **soul glint**: three souls in soul-fire teal rising through soft
+  swirls instead of the purple shimmer. The new art has no black outlines.
 * The **elixir** items (bottle, Soul Elixir, Elixir of Greed, Cursed Elixir) get vanilla-style potion-bottle icons.
 
 ## The End
@@ -240,8 +241,9 @@ contract for the Java side.
   `charge` (loop) holds the head low with the horn levelled; `ram` (0.8 s) thrusts and returns to rest. Don't play
   `ram` on top of `charge` (skip it while charging).
 * **Frost Mauler / skull**: new eye glow parts already in the export; no Java changes needed.
-* **Harvester**: `HarvesterModel` (texture 256x512, draw `entityCutoutNoCull`; cards for fringes and teeth). Hitbox
-  2.0 x 1.9 fits; the head is ~3 blocks wide, nose to tail ~4.9. Toggle `saddle`, `chest_l`, `chest_r`. Rider seat
+* **Harvester**: `HarvesterModel` (remade in the vanilla mob style at density 1: texture 256x256, draw
+  `entityCutoutNoCull`; cards for the short fringes and the teeth; the eyes are flat 2 x 2 cards that the clips squash
+  to blink). Hitbox 2.0 x 1.9 fits; the head is ~3 blocks wide, nose to tail ~4.6. Toggle `saddle`, `chest_l`, `chest_r`. Rider seat
   top at y 35 px (~2.2 blocks). Clips: `idle` 4.0 loop, `walk` 1.6 loop, `run` 0.8 loop, `graze` 1.5, `chomp` 0.8,
   `shove` 0.8 (sweeps toward its left), `sit` 3.0 loop.
 * **Harvester Egg**: block models `harvester_egg_{not_cracked,slightly_cracked,very_cracked}` (sniffer-egg box) and
@@ -262,7 +264,9 @@ contract for the Java side.
   hide `eye_fire` when unlit; idle 2 s loop); a renderer like FrostMaulerSkullRenderer.
 * **Soul bar**: `gui/soul_bar.png` 182x25: background at v=0, full-bar frames at v=5,10,15,20 (182x5 each; frame
   (ticks/3)%4, width cropped to 182*soul/max); `gui/soul_bar_icon.png` 9x36 (4 frames at v=9i) drawn at (barX-10, barY-2).
-* **Soul glint**: `misc/soul_glint_item.png`, `misc/soul_glint_entity.png` (128x128 RGB, additive like vanilla's glint).
+* **Soul glint**: `misc/soul_glint_item.png`, `misc/soul_glint_entity.png` (128x128 RGB, additive like vanilla's glint,
+  three souls per tile). `SoulGlint` scales the item one so a whole tile covers a 16 px item (atlas uv x 64 on the
+  1024-wide atlas) and the entity one by 2 (a tile = 32 x 16 armour px); the glint only translates (souls rise, sway).
 * **Cursed books**: `item/cursed_book`, `item/cursed_book_sin` (item/generated); enchanted books carrying a curse use them
   via a model override. `item/wither_bone`.
 * **Switch Rail**: models `block/switch_rail_{right,left}{,_on}` drawn toe-south (straight runs north; `_right`

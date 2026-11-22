@@ -1,13 +1,13 @@
 {
  "name": "Anglerfish",
- "description": "The Winterworks anglerfish: a dark, velvety, lumpy deep-sea fish with a huge underbite jaw of long glassy needle fangs, small milky round eyes, ragged torn fins, and a stalk arching over its head to a cyan-white bioluminescent lure with trailing filaments and a soft halo. Drawn at the female's size (males at 1/7). Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks anglerfish in the vanilla mob style: a big boxy dusky head, a wide underbite of simple white fangs, small flat dot eyes and a chunky stalk arching over the face to a glowing bulb. Drawn at the female's size (males at 1/7). Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "grounded": false,
  "budget": {
-  "tris": 1400,
-  "colors": 80
+  "tris": 500,
+  "colors": 40
  },
  "light": {
   "dir": [
@@ -15,20 +15,10 @@
    1.0,
    0.6
   ],
-  "strength": 0.8,
-  "gradient": 0.5,
-  "ao": 0.5,
+  "strength": 0.9,
+  "gradient": 0.6,
+  "ao": 0.4,
   "ao_height": 6.0
- },
- "brush": {
-  "flow": "horizontal",
-  "length": 2.0,
-  "width": 0.8,
-  "rough": 0.5,
-  "overshoot": 0.25,
-  "textures": {
-   "abyss": "organic"
-  }
  },
  "minecraft": {
   "fps": 20,
@@ -51,65 +41,46 @@
  },
  "palette": {
   "ramps": {
+   "abyss": [
+    "#171217",
+    "#1e171d",
+    "#261d24",
+    "#2f242c",
+    "#392b34",
+    "#44333d",
+    "#503c47",
+    "#5d4652",
+    "#6b525e"
+   ],
    "maw": [
-    "#110408",
-    "#1d080e",
-    "#2c0c16",
-    "#3e121f",
-    "#521929",
-    "#682234",
-    "#802d40",
-    "#9a3b4e"
+    "#3a0f19",
+    "#4d1622",
+    "#621d2b",
+    "#792735",
+    "#913342"
    ],
    "tooth": [
-    "#2f353c",
-    "#4f5960",
-    "#7b878d",
-    "#a9b5b8",
-    "#d2dcdb",
-    "#eef4f1",
-    "#fbfdfb"
+    "#8d918a",
+    "#b3b6ac",
+    "#d6d7cc",
+    "#eeeee4"
    ],
-   "milk": [
-    "#141b24",
-    "#28333f",
-    "#44525e",
-    "#66767f",
-    "#8c9ba2",
-    "#b4c2c6",
-    "#d9e4e5",
-    "#f2f8f8"
+   "ink": [
+    "#0e0c10",
+    "#1a171d",
+    "#2a262e"
+   ],
+   "glint": [
+    "#9a9aa4",
+    "#d9d9df"
    ],
    "lureglow": [
-    "#04262d",
-    "#073c47",
-    "#0a5966",
-    "#0f7c88",
-    "#19a3ac",
-    "#36c8cc",
-    "#76e5e2",
-    "#b9f7f1",
-    "#ecfffc"
-   ],
-   "pupil": [
-    "#040406",
-    "#0a0a0e",
-    "#131318"
-   ],
-   "abyss": [
-    "#060407",
-    "#0c070c",
-    "#140b12",
-    "#1c1018",
-    "#25151d",
-    "#2f1b23",
-    "#3a2229",
-    "#462a30",
-    "#533338",
-    "#623d41",
-    "#72484b",
-    "#845557",
-    "#986465"
+    "#0e4f55",
+    "#16767a",
+    "#22a3a0",
+    "#4fcfc0",
+    "#9cf0de",
+    "#e4fff6"
    ]
   }
  },
@@ -117,468 +88,138 @@
   "skin": {
    "ramp": "abyss",
    "tone": 4.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
-   }
-  },
-  "skin_body": {
-   "ramp": "abyss",
-   "tone": 4.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
-   },
-   "layers": [
-    {
-     "id": "velvet",
-     "op": "noise",
-     "scale": 2.4,
-     "amount": 0.55
-    },
-    {
-     "id": "dark_belly",
-     "op": "gradient",
-     "axis": "y",
-     "amount": 1.0
-    },
-    {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 1.0,
-     "shadow": -1.1,
-     "jitter": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.6,
-     "threshold": 0.58,
-     "shift": 1.6,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "shadow_shift": -1.2,
-      "highlight_shift": 0.8
-     }
-    },
-    {
-     "id": "sheen",
-     "op": "spots",
-     "count": 2,
-     "radius": [
-      0.8,
-      1.2
-     ],
-     "stretch": [
-      1,
-      0.5,
-      2
-     ],
-     "shift": 1.4,
-     "faces": [
-      "top"
-     ],
-     "roughness": 0.5
-    },
-    {
-     "id": "pores",
-     "op": "spots",
-     "count": 9,
-     "radius": [
-      0.3,
-      0.45
-     ],
-     "ramp": "abyss",
-     "tone": 10.4,
-     "post": true,
-     "min_gap": 1.2,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
-    }
-   ]
-  },
-  "skin_back": {
-   "ramp": "abyss",
-   "tone": 4.8,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
-   },
-   "layers": [
-    {
-     "id": "velvet",
-     "op": "noise",
-     "scale": 2.4,
-     "amount": 0.55
-    },
-    {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 1.0,
-     "shadow": -1.1,
-     "jitter": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.6,
-     "threshold": 0.58,
-     "shift": 1.6,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "shadow_shift": -1.2,
-      "highlight_shift": 0.8
-     },
-     "seed": 3
-    },
-    {
-     "id": "pores",
-     "op": "spots",
-     "count": 9,
-     "radius": [
-      0.3,
-      0.45
-     ],
-     "ramp": "abyss",
-     "tone": 10.4,
-     "post": true,
-     "min_gap": 1.2,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
-    }
-   ]
-  },
-  "skin_belly": {
-   "ramp": "abyss",
-   "tone": 3.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
-   },
-   "layers": [
-    {
-     "id": "velvet",
-     "op": "noise",
-     "scale": 2.4,
-     "amount": 0.55
-    },
-    {
-     "id": "folds",
-     "op": "stripes",
-     "axis": "x",
-     "period": 2.0,
-     "width": 0.25,
-     "shift": -1.0,
-     "wobble": 0.3,
-     "faces": [
-      "bottom",
-      "sides"
-     ]
-    }
-   ]
-  },
-  "skin_head": {
-   "ramp": "abyss",
-   "tone": 4.2,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
-   },
-   "layers": [
-    {
-     "id": "velvet",
-     "op": "noise",
-     "scale": 2.4,
-     "amount": 0.55
-    },
-    {
-     "id": "dark_belly",
-     "op": "gradient",
-     "axis": "y",
-     "amount": 1.0
-    },
-    {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 1.0,
-     "shadow": -1.1,
-     "jitter": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.6,
-     "threshold": 0.58,
-     "shift": 1.6,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "shadow_shift": -1.2,
-      "highlight_shift": 0.8
-     },
-     "seed": 5
-    },
-    {
-     "id": "sheen",
-     "op": "spots",
-     "count": 2,
-     "radius": [
-      0.8,
-      1.2
-     ],
-     "stretch": [
-      1,
-      0.5,
-      2
-     ],
-     "shift": 1.4,
-     "faces": [
-      "top"
-     ],
-     "roughness": 0.5
-    },
-    {
-     "id": "pores",
-     "op": "spots",
-     "count": 11,
-     "radius": [
-      0.3,
-      0.45
-     ],
-     "ramp": "abyss",
-     "tone": 10.4,
-     "post": true,
-     "min_gap": 1.2,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
-    }
-   ]
-  },
-  "skin_snout": {
-   "ramp": "abyss",
-   "tone": 4.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
-   },
-   "layers": [
-    {
-     "id": "velvet",
-     "op": "noise",
-     "scale": 2.4,
-     "amount": 0.55
-    },
-    {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 1.0,
-     "shadow": -1.1,
-     "jitter": 0.9,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "nostrils",
-     "op": "spots",
-     "centers": [
-      [
-       3.5,
-       1.2,
-       1.5,
-       0.45
-      ],
-      [
-       -3.5,
-       1.2,
-       1.5,
-       0.45
-      ]
-     ],
-     "ramp": "abyss",
-     "tone": 0.4,
-     "faces": [
-      "front"
-     ]
-    }
-   ]
-  },
-  "lip": {
-   "ramp": "abyss",
-   "tone": 2.6,
-   "rim": {
-    "light": 1,
-    "dark": 0,
-    "light_shift": 1.4
-   },
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
    "layers": [
     {
-     "id": "gum",
-     "op": "fill",
-     "ramp": "maw",
-     "tone": 3.0,
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "belly",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.45,
+     "shift": 1.3,
+     "faces": [
+      "sides",
       "bottom"
      ]
     }
    ]
   },
-  "skin_jaw": {
+  "skin_low": {
    "ramp": "abyss",
-   "tone": 4.2,
+   "tone": 5.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "velvet",
+     "id": "grain",
      "op": "noise",
-     "scale": 2.4,
-     "amount": 0.55
+     "scale": 0.9,
+     "amount": 1.2
     },
     {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 1.0,
-     "shadow": -1.1,
-     "jitter": 0.9,
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
-      "top",
       "sides"
      ]
+    }
+   ]
+  },
+  "skin_dark": {
+   "ramp": "abyss",
+   "tone": 3.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.6
     },
     {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.6,
-     "threshold": 0.58,
-     "shift": 1.6,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "shadow_shift": -1.2,
-      "highlight_shift": 0.8
-     },
-     "seed": 7
-    },
-    {
-     "id": "pores",
-     "op": "spots",
-     "count": 7,
-     "radius": [
-      0.3,
-      0.45
-     ],
-     "ramp": "abyss",
-     "tone": 10.4,
-     "post": true,
-     "min_gap": 1.2,
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
-      "top",
+      "sides"
+     ]
+    }
+   ]
+  },
+  "jaw": {
+   "ramp": "abyss",
+   "tone": 4.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
       "sides"
      ]
     },
@@ -586,364 +227,149 @@
      "id": "inner",
      "op": "fill",
      "ramp": "maw",
-     "tone": 3.6,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "throat",
-     "op": "stripes",
-     "axis": "x",
-     "period": 2.0,
-     "width": 0.22,
-     "shift": -1.2,
-     "faces": [
-      "bottom"
-     ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
-    }
-   ]
-  },
-  "maw": {
-   "ramp": "maw",
-   "tone": 3.4,
-   "light": 0.5,
-   "rim": {
-    "light": 0,
-    "dark": 1,
-    "dark_shift": -1.4
-   },
-   "brush": {
-    "flow": "z",
-    "rough": 0.5
-   },
-   "layers": [
-    {
-     "id": "tongue",
-     "op": "band",
-     "axis": "x",
-     "from": -0.35,
-     "to": 0.35,
-     "ramp": "maw",
-     "tone": 5.2,
-     "faces": [
-      "top"
-     ],
-     "wobble": 0.2
-    },
-    {
-     "id": "ridges",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.5,
-     "width": 0.3,
-     "shift": -1.0,
+     "tone": 2.2,
      "faces": [
       "top"
      ]
     }
    ]
   },
-  "skin_tail": {
+  "chin": {
    "ramp": "abyss",
-   "tone": 4.2,
+   "tone": 4.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4
-   },
-   "brush": {
-    "flow": "z"
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "velvet",
+     "id": "grain",
      "op": "noise",
-     "scale": 2.4,
-     "amount": 0.55
+     "scale": 0.9,
+     "amount": 1.2
     },
     {
-     "id": "dark_belly",
+     "id": "falloff",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.0
-    },
-    {
-     "id": "warts",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 1.0,
-     "shadow": -1.1,
-     "jitter": 0.9,
+     "amount": 1.0,
      "faces": [
-      "top",
       "sides"
      ]
     },
     {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.6,
-     "threshold": 0.58,
-     "shift": 1.6,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "shadow_shift": -1.2,
-      "highlight_shift": 0.8
-     },
-     "seed": 9
-    },
-    {
-     "id": "pores",
-     "op": "spots",
-     "count": 5,
-     "radius": [
-      0.3,
-      0.45
-     ],
-     "ramp": "abyss",
-     "tone": 10.4,
-     "post": true,
-     "min_gap": 1.2,
+     "id": "inner",
+     "op": "fill",
+     "ramp": "maw",
+     "tone": 1.6,
      "faces": [
-      "top",
-      "sides"
+      "back"
      ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
     }
    ]
   },
-  "wart": {
-   "ramp": "abyss",
-   "tone": 6.0,
+  "tongue": {
+   "ramp": "maw",
+   "tone": 3.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.4,
-    "dark_shift": -1.8
-   },
-   "brush": {
-    "off": true
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "tip",
-     "op": "spots",
-     "count": 1,
-     "radius": [
-      0.45,
-      0.55
-     ],
-     "ramp": "abyss",
-     "tone": 9.6,
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.8
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
-      "top",
       "sides"
      ]
     }
    ]
-  },
-  "teeth": {
-   "ramp": "tooth",
-   "tone": 4,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "y": "tooth:4",
-    "z": "tooth:2",
-    "Y": "tooth:6"
-   }
-  },
-  "fin": {
-   "ramp": "abyss",
-   "tone": 4.0,
-   "light": 0.3,
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "veil",
-     "op": "noise",
-     "scale": 1.2,
-     "amount": 0.8
-    }
-   ],
-   "art_key": {
-    "r": "abyss:8",
-    "t": "abyss:11",
-    "e": "abyss:6",
-    "f": "abyss:6"
-   }
   },
   "stalk": {
    "ramp": "abyss",
-   "tone": 5.2,
+   "tone": 5.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.6
-   },
-   "brush": {
-    "off": true
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "rings",
-     "op": "stripes",
-     "axis": "y",
-     "period": 2.0,
-     "width": 0.25,
-     "shift": 1.6
-    }
-   ]
-  },
-  "stalk_tip": {
-   "ramp": "abyss",
-   "tone": 6.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.6
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.8
+    },
     {
-     "id": "rings",
-     "op": "stripes",
+     "id": "falloff",
+     "op": "gradient",
      "axis": "y",
-     "period": 1.5,
-     "width": 0.3,
-     "ramp": "abyss",
-     "tone": 9.8
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
     }
    ]
-  },
-  "lure_cap": {
-   "ramp": "abyss",
-   "tone": 6.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.6
-   },
-   "brush": {
-    "off": true
-   }
   },
   "bulb": {
    "ramp": "lureglow",
-   "tone": 5.6,
-   "light": 0.3,
+   "tone": 3.0,
+   "light": 0.2,
    "brush": {
     "off": true
    },
+   "dither": 0,
    "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.4,
-    "dark_shift": -1.4
+    "light": 0,
+    "dark": 0
    },
-   "layers": [
+   "stamps": [
     {
-     "id": "cup",
-     "op": "band",
-     "axis": "y",
-     "from": 0.6,
-     "to": 1.01,
-     "ramp": "lureglow",
-     "tone": 3.0,
      "faces": [
-      "sides"
-     ]
-    },
-    {
-     "id": "veins",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.0,
-     "width": 0.25,
-     "ramp": "lureglow",
-     "tone": 4.0,
-     "faces": [
-      "sides"
+      "all"
      ],
-     "range": [
-      -0.6,
-      0.6
-     ]
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.8,
-     "shift": 2.0
+     "at": "top-left",
+     "art": [
+      "2112",
+      "1001",
+      "1001",
+      "2112"
+     ],
+     "key": {
+      "0": "lureglow:5",
+      "1": "lureglow:4",
+      "2": "lureglow:2"
+     }
     }
    ]
-  },
-  "bulb_core": {
-   "ramp": "lureglow",
-   "tone": 8.0,
-   "light": 0.1,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 1,
-    "dark": 0,
-    "light_shift": 1.0
-   }
-  },
-  "strand": {
-   "ramp": "lureglow",
-   "tone": 4,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "f": "lureglow:3",
-    "F": "lureglow:5",
-    "t": "lureglow:7"
-   }
   },
   "halo": {
    "ramp": "lureglow",
@@ -952,63 +378,52 @@
    "brush": {
     "off": true
    },
-   "art_key": {
-    "1": "lureglow:1",
-    "2": "lureglow:1",
-    "3": "lureglow:2",
-    "4": "lureglow:3",
-    "5": "lureglow:4",
-    "6": "lureglow:5"
-   }
-  },
-  "eye": {
-   "ramp": "abyss",
-   "tone": 3.0,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
+   "dither": 0,
    "rim": {
     "light": 0,
     "dark": 0
    },
-   "stamps": [
-    {
-     "faces": [
-      "left",
-      "right"
-     ],
-     "at": "top-left",
-     "art": [
-      "kkLLLLkk",
-      "kLuuuuLk",
-      "LusiisuL",
-      "LsiWpIsL",
-      "LsIppIsL",
-      "LdsJJsdL",
-      "kldssdlk",
-      "kkllllkk"
-     ],
-     "key": {
-      "L": "abyss:4",
-      "k": "abyss:1",
-      "u": "abyss:0",
-      "l": "abyss:7",
-      "d": "milk:3",
-      "s": "milk:5",
-      "S": "milk:6",
-      "o": "milk:1",
-      "i": "milk:2",
-      "I": "milk:3",
-      "J": "milk:4",
-      "c": "milk:5",
-      "p": "pupil:0",
-      "q": "milk:1",
-      "W": "milk:7",
-      "w": "milk:6"
-     }
-    }
-   ]
+   "art_key": {
+    "1": "lureglow:0",
+    "2": "lureglow:1",
+    "3": "lureglow:2",
+    "4": "lureglow:3"
+   }
+  },
+  "teeth": {
+   "ramp": "tooth",
+   "tone": 2,
+   "light": 0.1,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "y": "tooth:3",
+    "Y": "tooth:2"
+   }
+  },
+  "fin": {
+   "ramp": "abyss",
+   "tone": 6,
+   "light": 0.25,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "m": "abyss:6",
+    "r": "abyss:4",
+    "e": "abyss:8"
+   }
   }
  },
  "parts": [
@@ -1016,1028 +431,723 @@
    "id": "body",
    "shape": "box",
    "size": [
-    19.0,
-    11.0,
-    9.5
+    18,
+    16,
+    12
    ],
    "pivot": [
     0.0,
-    12.0647,
-    -3.0
+    16.0,
+    -2.0
    ],
    "offset": [
     0.0,
-    0.5,
-    -2.5
+    0.0,
+    -4.0
    ],
-   "style": "skin_body",
+   "style": "skin",
    "paint": {
     "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "d.......ddddddddd.",
+       "......ddddddddddd.",
+       ".....ddddddddddddd",
+       ".......ddddddddddd",
+       "...........ddddddd",
+       "..............dddd",
+       "...............ddd",
+       "...............ddd",
+       "...............ddd",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       ".................."
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
      {
       "face": "left",
       "at": "top-left",
       "art": [
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       ".P..P..P..P..P..P..",
-       ".P..P..P..P..P..P..",
-       ".Q..Q..Q..Q..Q..Q..",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "..................."
+       "..........dd",
+       ".........dd.",
+       ".........dd.",
+       "........ddd.",
+       ".......dddd.",
+       "......ddddd.",
+       ".....dddddd.",
+       "p..pddpddpd.",
+       "q..qddqddq..",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............"
       ],
       "key": {
-       "P": "abyss:11",
-       "Q": "abyss:1"
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
       }
      },
      {
       "face": "right",
       "at": "top-left",
       "art": [
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "..P..P..P..P..P..P.",
-       "..P..P..P..P..P..P.",
-       "..Q..Q..Q..Q..Q..Q.",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "...................",
-       "..................."
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "d...........",
+       "dd..........",
+       "ddp..p..p..p",
+       "ddqd.q..q..q",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............"
       ],
       "key": {
-       "P": "abyss:11",
-       "Q": "abyss:1"
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "d.................",
+       "d.........ddddd..."
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
       }
      }
     ]
    }
-  },
-  {
-   "id": "body_y",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    15.0,
-    18.0,
-    7.5
-   ],
-   "pivot": [
-    0.0,
-    0.5,
-    -2.5
-   ],
-   "style": "skin_body"
-  },
-  {
-   "id": "body_z",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    12.0,
-    14.5,
-    12.0
-   ],
-   "pivot": [
-    0.0,
-    0.5,
-    -2.5
-   ],
-   "style": "skin_body"
-  },
-  {
-   "id": "body_m",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    17.5,
-    16.5,
-    11.0
-   ],
-   "pivot": [
-    0.0,
-    0.5,
-    -2.5
-   ],
-   "style": "skin_body"
   },
   {
    "id": "belly",
    "shape": "box",
    "parent": "body",
    "size": [
-    14.0,
-    2.0,
-    9.0
+    14,
+    2,
+    10
    ],
    "pivot": [
     0.0,
-    -8.5,
-    -2.0
+    -9.0,
+    -4.0
    ],
-   "style": "skin_belly"
+   "style": "skin_low"
   },
   {
    "id": "rump",
    "shape": "box",
    "parent": "body",
    "size": [
-    12.0,
-    8.0,
-    4.0
+    12,
+    12,
+    4
    ],
    "pivot": [
     0.0,
     0.0,
-    -10.0
+    -12.0
    ],
-   "style": "skin_body"
-  },
-  {
-   "id": "rump_z",
-   "shape": "box",
-   "parent": "rump",
-   "size": [
-    8.0,
-    9.5,
-    5.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_body"
-  },
-  {
-   "id": "wart_l0",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    2.5,
-    2.5
-   ],
-   "pivot": [
-    9.75,
-    5.0,
-    -0.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_l1",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    2.0,
-    2.0
-   ],
-   "pivot": [
-    9.75,
-    -3.5,
-    -4.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_l2",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    2.0,
-    2.0
-   ],
-   "pivot": [
-    7.75,
-    7.5,
-    -6.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_l3",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    1.5,
-    1.5
-   ],
-   "pivot": [
-    9.75,
-    1.0,
-    -6.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r0",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    2.5,
-    2.5
-   ],
-   "pivot": [
-    -9.75,
-    5.0,
-    -0.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r1",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    2.0,
-    2.0
-   ],
-   "pivot": [
-    -9.75,
-    -3.5,
-    -4.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r2",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    2.0,
-    2.0
-   ],
-   "pivot": [
-    -7.75,
-    7.5,
-    -6.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_r3",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1.5,
-    1.5,
-    1.5
-   ],
-   "pivot": [
-    -9.75,
-    1.0,
-    -6.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_top0",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    2.0,
-    1.0,
-    2.0
-   ],
-   "pivot": [
-    3.0,
-    10.0,
-    1.0
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_top1",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    2.0,
-    1.0,
-    2.0
-   ],
-   "pivot": [
-    -4.0,
-    10.0,
-    -3.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "wart_top2",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    2.0,
-    1.0,
-    2.0
-   ],
-   "pivot": [
-    1.5,
-    10.0,
-    -6.5
-   ],
-   "style": "wart"
-  },
-  {
-   "id": "head",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    22.0,
-    11.0,
-    9.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    2.5,
-    4.5
-   ],
-   "style": "skin_head",
+   "style": "skin",
    "paint": {
     "stamps": [
      {
       "face": "left",
       "at": "top-left",
       "art": [
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "...PP....PP....PP.",
-       "...PP....PP....PP.",
-       "...QQ....QQ....QQ.",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       ".................."
+       "....",
+       "....",
+       "....",
+       "....",
+       "....",
+       ".p..",
+       ".q..",
+       "....",
+       "....",
+       "....",
+       "....",
+       "...."
       ],
       "key": {
-       "P": "abyss:11",
-       "Q": "abyss:1"
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
       }
      },
      {
       "face": "right",
       "at": "top-left",
       "art": [
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       ".PP....PP....PP...",
-       ".PP....PP....PP...",
-       ".QQ....QQ....QQ...",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       ".................."
+       "....",
+       "....",
+       "....",
+       "....",
+       "....",
+       "..p.",
+       "..q.",
+       "....",
+       "....",
+       "....",
+       "....",
+       "...."
       ],
       "key": {
-       "P": "abyss:11",
-       "Q": "abyss:1"
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
       }
      }
     ]
    }
   },
   {
-   "id": "head_y",
+   "id": "tail",
    "shape": "box",
-   "parent": "head",
+   "parent": "body",
    "size": [
-    17.5,
-    18.0,
-    6.5
+    8,
+    8,
+    4
    ],
    "pivot": [
     0.0,
-    2.5,
-    4.5
+    0.0,
+    -13.0
    ],
-   "style": "skin_head"
+   "offset": [
+    0.0,
+    0.0,
+    -3.0
+   ],
+   "style": "skin"
   },
   {
-   "id": "head_z",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    13.0,
-    14.5,
-    11.0
-   ],
+   "id": "tail_fin",
+   "shape": "card",
+   "parent": "tail",
    "pivot": [
     0.0,
-    2.5,
-    4.5
+    0.0,
+    -5.0
    ],
-   "style": "skin_head"
+   "offset": [
+    0.0,
+    0.0,
+    -4.0
+   ],
+   "style": "fin",
+   "plane": "yz",
+   "art": [
+    "....eee.",
+    "...emmme",
+    "..emrmme",
+    ".emrmmme",
+    "emrmmrme",
+    "mrmmrmme",
+    "mrmmrmme",
+    "emrmmrme",
+    ".emrmmme",
+    "..emrmme",
+    "...emmme",
+    "....eee."
+   ]
   },
   {
-   "id": "head_m",
+   "id": "head",
    "shape": "box",
-   "parent": "head",
+   "parent": "body",
    "size": [
-    20.0,
-    16.5,
-    10.0
+    24,
+    20,
+    18
    ],
    "pivot": [
     0.0,
-    2.5,
-    4.5
+    0.0,
+    2.0
    ],
-   "style": "skin_head"
+   "offset": [
+    0.0,
+    2.0,
+    9.0
+   ],
+   "style": "skin",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "....dddd................",
+       "....dddd................",
+       "....ddd.................",
+       "........n......n......dd",
+       ".....................ddd",
+       "......................d.",
+       "........................",
+       "......ddddddd...........",
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "nnnnnnnnnnnnnnnnnnnnnnnn"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "....................dddd",
+       "...................ddddd",
+       "...................ddddd",
+       "......dddd.........ddddd",
+       "....ddddddddd.......dddd",
+       "....ddddddddddd.........",
+       "...ddddddddddddd........",
+       "...ddddddddddd..........",
+       "...ddddddd..............",
+       "..ddddd.................",
+       "dddddd..................",
+       "dddddd..................",
+       "..dddd..................",
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "........................",
+       "........................"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "ddddddddddd.......",
+       "ddddd.............",
+       "ddd.........bb....",
+       "dd............bb..",
+       ".............rrrr.",
+       ".............rkhr.",
+       ".............rkkr.",
+       ".............rrrr.",
+       "..................",
+       "....ddd...........",
+       "...ddd............",
+       "p.dpd.p..p..p..p..",
+       "q..q..q..q..q..q..",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "nnnnnnnnnnnnnnnnnn"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       ".........dd.......",
+       ".........ddd......",
+       "....bb....ddd.....",
+       "..bb........d.....",
+       ".rrrr.............",
+       ".rhkr.............",
+       ".rkkr.............",
+       ".rrrr.............",
+       "d.................",
+       "dddddd...........d",
+       "..ddddd..........d",
+       "..p.dpd.p..p..p..p",
+       "..q..qd.q..q..q..q",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "..................",
+       "nnnnnnnnnnnnnnnnnn"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "dddd....................",
+       "ddddd...................",
+       "dddddd..................",
+       "dddddd..................",
+       "dddddd..................",
+       "dddddd...........dd.....",
+       "ddddd...........dddddd..",
+       "ddddd...........ddddddd.",
+       "ddddd............ddddddd",
+       "dddddd...........dddddd.",
+       "dddddd...........dddddd.",
+       "dddddd...........dddddd.",
+       "..ddd............dddddd.",
+       "................dddddddd",
+       ".................ddddddd",
+       ".................ddddddd",
+       "..................dddddd",
+       "...................ddddd"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "crown",
    "shape": "box",
    "parent": "head",
    "size": [
-    15.0,
-    1.5,
-    6.5
+    18,
+    2,
+    12
    ],
    "pivot": [
     0.0,
-    12.0,
-    3.5
-   ],
-   "style": "skin_back"
-  },
-  {
-   "id": "crown_z",
-   "shape": "box",
-   "parent": "crown",
-   "size": [
-    11.0,
-    1.5,
+    13.0,
     8.0
    ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_back"
-  },
-  {
-   "id": "face",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    19.0,
-    5.5,
-    6.0
-   ],
-   "pivot": [
-    0.0,
-    5.5,
-    9.0
-   ],
-   "rotation": [
-    32.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_head"
-  },
-  {
-   "id": "face_y",
-   "shape": "box",
-   "parent": "face",
-   "size": [
-    16.0,
-    8.0,
-    5.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_head"
-  },
-  {
-   "id": "face_z",
-   "shape": "box",
-   "parent": "face",
-   "size": [
-    13.5,
-    7.0,
-    7.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_head"
-  },
-  {
-   "id": "snout",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    18.0,
-    3.5,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    -1.0,
-    11.5
-   ],
-   "style": "skin_snout"
-  },
-  {
-   "id": "snout_z",
-   "shape": "box",
-   "parent": "snout",
-   "size": [
-    13.0,
-    4.0,
-    4.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_snout"
-  },
-  {
-   "id": "lip_up",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    19.0,
-    1.5,
-    7.0
-   ],
-   "pivot": [
-    0.0,
-    -4.0,
-    9.5
-   ],
-   "style": "lip"
-  },
-  {
-   "id": "brow_l",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    3.0,
-    2.0,
-    4.0
-   ],
-   "pivot": [
-    8.0,
-    10.0,
-    7.0
-   ],
-   "style": "wart"
+   "style": "skin",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "ddddd.........dddd",
+       "..............dddd"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "..................",
+       "................dd"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "dddddddddddd",
+       "dddddddddddd"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "d...........",
+       "dddddd......"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "..................",
+       "..................",
+       "dd................",
+       "dd................",
+       "dd................",
+       "ddd...............",
+       "ddd...............",
+       "dddd..............",
+       "ddddd.............",
+       "ddddd.............",
+       "dddddd............",
+       "dddddd............"
+      ],
+      "key": {
+       "k": "ink:0",
+       "h": "glint:1",
+       "r": "abyss:7",
+       "l": "abyss:2",
+       "b": "abyss:0",
+       "d": "abyss:3",
+       "p": "abyss:8",
+       "q": "abyss:1",
+       "n": "abyss:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "eye_l",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    1.0,
-    4.0,
-    4.0
-   ],
-   "pivot": [
-    10.5,
-    6.0,
-    6.5
-   ],
-   "offset": [
-    0.75,
-    0.0,
-    0.0
-   ],
-   "style": "eye"
-  },
-  {
-   "id": "tassel_l",
-   "shape": "card",
+   "shape": "bone",
    "parent": "head",
    "pivot": [
-    11.0,
-    -1.5,
-    5.0
+    12.0,
+    7.0,
+    14.0
    ],
-   "offset": [
-    0.0,
-    -1.25,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "f.f",
-    "fff",
-    ".f.",
-    ".ft",
-    "..t"
-   ]
-  },
-  {
-   "id": "tassel_b_l",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    11.0,
-    2.5,
-    1.5
-   ],
-   "offset": [
-    0.0,
-    -1.0,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "ff",
-    ".f",
-    "ft",
-    "t."
-   ]
-  },
-  {
-   "id": "brow_r",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    3.0,
-    2.0,
-    4.0
-   ],
-   "pivot": [
-    -8.0,
-    10.0,
-    7.0
-   ],
-   "style": "wart"
+   "style": "skin"
   },
   {
    "id": "eye_r",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    1.0,
-    4.0,
-    4.0
-   ],
-   "pivot": [
-    -10.5,
-    6.0,
-    6.5
-   ],
-   "offset": [
-    -0.75,
-    0.0,
-    0.0
-   ],
-   "style": "eye"
-  },
-  {
-   "id": "tassel_r",
-   "shape": "card",
+   "shape": "bone",
    "parent": "head",
    "pivot": [
-    -11.0,
-    -1.5,
-    5.0
+    -12.0,
+    7.0,
+    14.0
    ],
-   "offset": [
-    0.0,
-    -1.25,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "f.f",
-    "fff",
-    ".f.",
-    ".ft",
-    "..t"
-   ]
-  },
-  {
-   "id": "tassel_b_r",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    -11.0,
-    2.5,
-    1.5
-   ],
-   "offset": [
-    0.0,
-    -1.0,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "ff",
-    ".f",
-    "ft",
-    "t."
-   ]
+   "style": "skin"
   },
   {
    "id": "jaw",
    "shape": "box",
    "parent": "head",
    "size": [
-    25.0,
-    4.0,
-    16.0
+    26,
+    6,
+    22
    ],
    "pivot": [
     0.0,
-    -4.5,
-    -0.5
+    -8.0,
+    1.0
    ],
    "offset": [
     0.0,
-    -4.3693,
-    8.0876
+    -3.0,
+    10.0
    ],
-   "rotation": [
-    -6.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_jaw"
+   "style": "jaw"
   },
   {
    "id": "jaw_keel",
    "shape": "box",
    "parent": "jaw",
    "size": [
-    21.0,
-    1.5,
-    13.0
+    20,
+    2,
+    18
    ],
    "pivot": [
     0.0,
-    -6.5547,
-    7.3551
+    -7.0,
+    10.0
    ],
-   "style": "skin_jaw"
+   "style": "skin_low"
   },
   {
    "id": "chin",
    "shape": "box",
    "parent": "jaw",
    "size": [
-    24.0,
-    6.0,
-    2.5
+    26,
+    6,
+    3
    ],
    "pivot": [
     0.0,
-    -2.7715,
-    16.8023
+    3.0,
+    19.5
    ],
-   "style": "skin_jaw"
-  },
-  {
-   "id": "chin_z",
-   "shape": "box",
-   "parent": "chin",
-   "size": [
-    17.5,
-    6.5,
-    3.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_jaw"
-  },
-  {
-   "id": "chin_tip",
-   "shape": "box",
-   "parent": "jaw",
-   "size": [
-    14.0,
-    8.5,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    -2.0779,
-    17.378
-   ],
-   "style": "skin_jaw"
-  },
-  {
-   "id": "chin_tip_z",
-   "shape": "box",
-   "parent": "chin_tip",
-   "size": [
-    11.0,
-    8.5,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "skin_jaw"
+   "style": "chin"
   },
   {
    "id": "jaw_floor",
    "shape": "box",
    "parent": "jaw",
    "size": [
-    21.0,
-    1.0,
-    13.0
+    14,
+    1,
+    12
    ],
    "pivot": [
     0.0,
-    -1.9353,
-    8.8462
+    0.5,
+    8.0
    ],
-   "style": "maw",
-   "hide": [
-    "bottom"
-   ]
-  },
-  {
-   "id": "jaw_side_l",
-   "shape": "box",
-   "parent": "jaw",
-   "size": [
-    1.5,
-    3.5,
-    13.0
-   ],
-   "pivot": [
-    11.75,
-    -1.1894,
-    8.9246
-   ],
-   "style": "skin_jaw"
-  },
-  {
-   "id": "tassel_jaw_l",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    12.0,
-    -6.0702,
-    9.9198
-   ],
-   "offset": [
-    0.0,
-    -1.25,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "f..",
-    "ff.",
-    ".f.",
-    ".ft",
-    "..t"
-   ]
-  },
-  {
-   "id": "jaw_side_r",
-   "shape": "box",
-   "parent": "jaw",
-   "size": [
-    1.5,
-    3.5,
-    13.0
-   ],
-   "pivot": [
-    -11.75,
-    -1.1894,
-    8.9246
-   ],
-   "style": "skin_jaw"
-  },
-  {
-   "id": "tassel_jaw_r",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    -12.0,
-    -6.0702,
-    9.9198
-   ],
-   "offset": [
-    0.0,
-    -1.25,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "f..",
-    "ff.",
-    ".f.",
-    ".ft",
-    "..t"
-   ]
-  },
-  {
-   "id": "tassel_chin",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    0.0,
-    -6.9377,
-    18.1744
-   ],
-   "offset": [
-    0.0,
-    -1.25,
-    0.0
-   ],
-   "style": "fin",
-   "plane": "xy",
-   "art": [
-    "f.f.f",
-    "fffff",
-    ".f.f.",
-    ".t.f.",
-    "...t."
-   ]
+   "style": "tongue"
   },
   {
    "id": "mouth",
@@ -2045,8 +1155,8 @@
    "parent": "jaw",
    "pivot": [
     0.0,
-    1.9905,
-    9.7615
+    2.0,
+    11.0
    ],
    "style": "skin"
   },
@@ -2056,8 +1166,8 @@
    "parent": "jaw",
    "pivot": [
     0.0,
-    2.2534,
-    16.8277
+    6.0,
+    19.5
    ],
    "style": "skin"
   },
@@ -2067,36 +1177,21 @@
    "parent": "teeth",
    "pivot": [
     0.0,
-    -1.0572,
-    0.4922
+    0.0,
+    0.1
    ],
    "offset": [
     0.0,
-    3.5,
-    0.0
-   ],
-   "rotation": [
-    -16.0,
-    0.0,
+    2.0,
     0.0
    ],
    "style": "teeth",
    "plane": "xy",
    "art": [
-    ".....................Y..Y.................",
-    "......Y.....Y..Y.....y..y.............Y...",
-    "......y..Y..y..y......y..y........Y...y...",
-    "......y..y..y..y......y..y.....Y..y...y...",
-    ".....y..y..y..y...Y...y..y.....y..y....y..",
-    ".....y..y..y..y...y...y..y.Y....y..y...y..",
-    "..Y..y..y..y..y..y....y..y..y...y..y...y..",
-    "..y..y..y..y.y...y.....y..y.y...y..y...y..",
-    ".y..y..y..y..y...y.....y..y.y....y..y...y.",
-    ".y..yz.y..yz.yz.y......yz.yzy....y..y...yz",
-    "y...yz.yz.yz.yz.yz.....yz.yz.y...yz.yz..yz",
-    "yz..yz.yz.yz.yz.yz.....yz.yz.yz..yz.yz..yz",
-    "yz..yz.yz.yz.yz.yz.....yz.yz.yz..yz.yz..yz",
-    "yz..yz.yz.yz.yz.yz.....yz.yz.yz..yz.yz..yz"
+    "..y.y.......y.y.y...y...",
+    "..y.y...y...y.y.y...y...",
+    "y.y.y.y.y.y.y.y.y.y.y.y.",
+    "Y.Y.Y.Y.Y.Y.Y.Y.Y.Y.Y.Y."
    ]
   },
   {
@@ -2104,33 +1199,21 @@
    "shape": "card",
    "parent": "teeth",
    "pivot": [
-    11.1,
-    -1.7023,
-    -7.7202
+    12.6,
+    -6.0,
+    -10.5
    ],
    "offset": [
     0.0,
-    2.5,
+    1.5,
     0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    16.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "..........................",
-    "..........Y...............",
-    "..........y....Y..Y.......",
-    "...Y......y....y..y.......",
-    "...y..Y...y....y..y...Y...",
-    "...y..y..y....Y.y..y..y...",
-    "..y..y...y....y.y..y...y..",
-    "..yz.y...yz..y..yz.yz..y..",
-    "..yz.yz..yz..yz.yz.yz..yz.",
-    "..yz.yz..yz..yz.yz.yz..yz."
+    "..y.....y..y....",
+    "..y..y..y..y..y.",
+    "..Y..Y..Y..Y..Y."
    ]
   },
   {
@@ -2138,33 +1221,21 @@
    "shape": "card",
    "parent": "teeth",
    "pivot": [
-    -11.1,
-    -1.7023,
-    -7.7202
+    -12.6,
+    -6.0,
+    -10.5
    ],
    "offset": [
     0.0,
-    2.5,
+    1.5,
     0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -16.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "..........................",
-    "..........................",
-    ".Y............Y...........",
-    ".y............y......Y....",
-    ".y.....Y...Y..y...Y..y....",
-    "y...Y..y...y.y....y..y....",
-    "y...y..y...y.y....y...y...",
-    "yz.y..y...y..yz....y..yz..",
-    "yz.yz.yz..yz.yz....yz.yz..",
-    "yz.yz.yz..yz.yz....yz.yz.."
+    "y.....y..y.....y",
+    "y..y..y..y..y..y",
+    "Y..Y..Y..Y..Y..Y"
    ]
   },
   {
@@ -2173,25 +1244,20 @@
    "parent": "head",
    "pivot": [
     0.0,
-    -3.5,
-    13.7
+    -8.0,
+    17.4
    ],
    "offset": [
     0.0,
-    -2.0,
+    -1.5,
     0.0
    ],
    "style": "teeth",
    "plane": "xy",
    "art": [
-    "yz.yz.yz....yz.yz.yz.yz.yz..yz.yz.",
-    "yz.yz.yz....yz.yz.yz.yz.yz..yz.yz.",
-    "y..y..y.....yz.y..yz.y..y...y..y..",
-    "y..y..y.....y..y..y.y..Y...y..Y...",
-    ".y.y...y....y...Y.y.Y......Y......",
-    ".Y..Y..Y....y....y................",
-    ".............Y...Y................",
-    ".................................."
+    "Y..Y..Y..Y..Y..Y..Y.",
+    "y..y..y..y..y..y..y.",
+    "y..............y...."
    ]
   },
   {
@@ -2199,34 +1265,34 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    3.0,
-    1.5,
-    3.0
+    4,
+    1,
+    4
    ],
    "pivot": [
     0.0,
-    12.75,
-    5.5
+    14.5,
+    13.0
    ],
-   "style": "wart"
+   "style": "skin_dark"
   },
   {
    "id": "stalk",
    "shape": "box",
    "parent": "head",
    "size": [
-    1.5,
-    5.0,
-    1.5
+    2,
+    7,
+    2
    ],
    "pivot": [
     0.0,
-    12.5,
-    5.5
+    15.0,
+    13.0
    ],
    "offset": [
     0.0,
-    -2.125,
+    -2.5,
     0.0
    ],
    "rotation": [
@@ -2241,9 +1307,9 @@
    "shape": "box",
    "parent": "stalk",
    "size": [
-    1.5,
-    4.5,
-    1.5
+    2,
+    4,
+    2
    ],
    "pivot": [
     0.0,
@@ -2252,11 +1318,11 @@
    ],
    "offset": [
     0.0,
-    -1.875,
+    -1.0,
     0.0
    ],
    "rotation": [
-    35.538,
+    45.0,
     -0.0,
     0.0
    ],
@@ -2267,23 +1333,23 @@
    "shape": "box",
    "parent": "stalk_1",
    "size": [
-    1.5,
-    4.0,
-    1.5
+    2,
+    5,
+    2
    ],
    "pivot": [
     0.0,
-    -4.5,
-    0.0
+    -2.0,
+    -0.0
    ],
    "offset": [
     0.0,
-    -1.625,
+    -1.5,
     0.0
    ],
    "rotation": [
     90.0,
-    49.574,
+    45.0,
     90.0
    ],
    "style": "stalk"
@@ -2293,52 +1359,52 @@
    "shape": "box",
    "parent": "stalk_2",
    "size": [
-    1.0,
-    4.5,
-    1.0
+    1,
+    4,
+    1
    ],
    "pivot": [
     -0.0,
-    -4.0,
+    -3.0,
     -0.0
    ],
    "offset": [
     0.0,
-    -2.0,
+    -1.5,
     0.0
    ],
    "rotation": [
-    0.0,
-    -0.0,
-    34.592
+    67.5,
+    -90.0,
+    -22.5
    ],
-   "style": "stalk_tip"
+   "style": "stalk"
   },
   {
    "id": "stalk_tip_1",
    "shape": "box",
    "parent": "stalk_tip",
    "size": [
-    1.0,
-    4.0,
-    1.0
+    1,
+    3,
+    1
    ],
    "pivot": [
     0.0,
-    -4.5,
+    -3.0,
     -0.0
    ],
    "offset": [
     0.0,
-    -1.75,
+    -1.0,
     0.0
    ],
    "rotation": [
-    101.05,
-    -90.0,
-    -54.805
+    45.0,
+    -0.0,
+    0.0
    ],
-   "style": "stalk_tip"
+   "style": "stalk"
   },
   {
    "id": "lure",
@@ -2346,8 +1412,8 @@
    "parent": "stalk_tip_1",
    "pivot": [
     0.0,
-    -4.5384,
-    -0.0132
+    -2.4929,
+    -0.0355
    ],
    "style": "skin"
   },
@@ -2356,142 +1422,32 @@
    "shape": "box",
    "parent": "lure",
    "size": [
-    2.0,
-    1.0,
-    2.0
+    2,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    0.0,
+    -0.5,
     0.0
    ],
-   "style": "lure_cap"
+   "style": "skin_dark"
   },
   {
    "id": "lure_bulb",
    "shape": "box",
    "parent": "lure",
    "size": [
-    4.0,
-    2.5,
-    3.0
+    4,
+    4,
+    4
    ],
    "pivot": [
     0.0,
-    -2.2979,
-    -0.9848
-   ],
-   "style": "bulb"
-  },
-  {
-   "id": "lure_bulb_y",
-   "shape": "box",
-   "parent": "lure_bulb",
-   "size": [
-    3.0,
-    4.0,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
+    -3.0,
     0.0
    ],
    "style": "bulb"
-  },
-  {
-   "id": "lure_bulb_z",
-   "shape": "box",
-   "parent": "lure_bulb",
-   "size": [
-    2.5,
-    3.0,
-    4.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "bulb"
-  },
-  {
-   "id": "lure_core",
-   "shape": "box",
-   "parent": "lure_bulb",
-   "size": [
-    2.0,
-    2.5,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    -0.5252,
-    0.9717
-   ],
-   "style": "bulb_core"
-  },
-  {
-   "id": "lure_strand_0",
-   "shape": "card",
-   "parent": "lure_bulb",
-   "pivot": [
-    0.0,
-    -1.8383,
-    -0.7879
-   ],
-   "offset": [
-    0.0,
-    -1.75,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    25.0,
-    0.0
-   ],
-   "style": "strand",
-   "plane": "xy",
-   "art": [
-    "f...f.",
-    ".f..f.",
-    ".F.f..",
-    "..F.f.",
-    "..f..F",
-    ".t...t",
-    "t....."
-   ]
-  },
-  {
-   "id": "lure_strand_1",
-   "shape": "card",
-   "parent": "lure_bulb",
-   "pivot": [
-    0.0,
-    -1.8383,
-    -0.7879
-   ],
-   "offset": [
-    0.0,
-    -1.75,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    25.0,
-    0.0
-   ],
-   "style": "strand",
-   "plane": "yz",
-   "art": [
-    "f...f.",
-    ".f..f.",
-    ".F.f..",
-    "..F.f.",
-    "..f..F",
-    ".t...t",
-    "t....."
-   ]
   },
   {
    "id": "lure_halo_xy",
@@ -2505,34 +1461,14 @@
    "style": "halo",
    "plane": "xy",
    "art": [
-    "............................",
-    "............................",
-    "..........2.2.2.2.1.........",
-    "...........2...2............",
-    "....1.1.2.2.333.3.2.2.......",
-    ".........3.333.3.3.2.2......",
-    "......2.3333344333332.2.....",
-    ".......3.34444444433.2......",
-    "....2.33344444444443332.2...",
-    ".....3.344445555444433.2....",
-    "..2.2.34445555555544433.2...",
-    "...2.33444555665554443.3....",
-    "..2.3334455566665554433.2...",
-    "...2.34445566666655444.3....",
-    "..2.334445566666655444332.1.",
-    "...2.33445556666555443.3....",
-    "..2.3334445556655544433.2...",
-    ".....3.444555555554443.2....",
-    "..1.2.33444455554444333.2...",
-    ".....2.3344444444443.3.2....",
-    "....2.23334444444433322.1...",
-    ".....2.2.3.3344333.3.2......",
-    "......2.2.3333333.3.2.2.....",
-    "...........3.3.3.2.2........",
-    "........2.2.2.2.2.2.1.......",
-    "............................",
-    "..............1.............",
-    "............................"
+    "..1111..",
+    ".122221.",
+    "12233221",
+    "12344321",
+    "12344321",
+    "12233221",
+    ".122221.",
+    "..1111.."
    ]
   },
   {
@@ -2547,34 +1483,14 @@
    "style": "halo",
    "plane": "yz",
    "art": [
-    "............................",
-    "............................",
-    "..........2.2.2.2.1.........",
-    "...........2...2............",
-    "....1.1.2.2.333.3.2.2.......",
-    ".........3.333.3.3.2.2......",
-    "......2.3333344333332.2.....",
-    ".......3.34444444433.2......",
-    "....2.33344444444443332.2...",
-    ".....3.344445555444433.2....",
-    "..2.2.34445555555544433.2...",
-    "...2.33444555665554443.3....",
-    "..2.3334455566665554433.2...",
-    "...2.34445566666655444.3....",
-    "..2.334445566666655444332.1.",
-    "...2.33445556666555443.3....",
-    "..2.3334445556655544433.2...",
-    ".....3.444555555554443.2....",
-    "..1.2.33444455554444333.2...",
-    ".....2.3344444444443.3.2....",
-    "....2.23334444444433322.1...",
-    ".....2.2.3.3344333.3.2......",
-    "......2.2.3333333.3.2.2.....",
-    "...........3.3.3.2.2........",
-    "........2.2.2.2.2.2.1.......",
-    "............................",
-    "..............1.............",
-    "............................"
+    "..1111..",
+    ".122221.",
+    "12233221",
+    "12344321",
+    "12344321",
+    "12233221",
+    ".122221.",
+    "..1111.."
    ]
   },
   {
@@ -2589,34 +1505,14 @@
    "style": "halo",
    "plane": "xz",
    "art": [
-    "............................",
-    "............................",
-    "..........2.2.2.2.1.........",
-    "...........2...2............",
-    "....1.1.2.2.333.3.2.2.......",
-    ".........3.333.3.3.2.2......",
-    "......2.3333344333332.2.....",
-    ".......3.34444444433.2......",
-    "....2.33344444444443332.2...",
-    ".....3.344445555444433.2....",
-    "..2.2.34445555555544433.2...",
-    "...2.33444555665554443.3....",
-    "..2.3334455566665554433.2...",
-    "...2.34445566666655444.3....",
-    "..2.334445566666655444332.1.",
-    "...2.33445556666555443.3....",
-    "..2.3334445556655544433.2...",
-    ".....3.444555555554443.2....",
-    "..1.2.33444455554444333.2...",
-    ".....2.3344444444443.3.2....",
-    "....2.23334444444433322.1...",
-    ".....2.2.3.3344333.3.2......",
-    "......2.2.3333333.3.2.2.....",
-    "...........3.3.3.2.2........",
-    "........2.2.2.2.2.2.1.......",
-    "............................",
-    "..............1.............",
-    "............................"
+    "..1111..",
+    ".122221.",
+    "12233221",
+    "12344321",
+    "12344321",
+    "12233221",
+    ".122221.",
+    "..1111.."
    ]
   },
   {
@@ -2624,41 +1520,30 @@
    "shape": "card",
    "parent": "body",
    "pivot": [
-    9.5,
+    9.0,
     -4.0,
-    -1.0
+    0.0
    ],
    "offset": [
     0.0,
     0.0,
-    -5.5
+    -3.0
    ],
    "rotation": [
     0.0,
-    -48.0,
-    -12.0
+    -35.0,
+    -10.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    ".................r......",
-    "..............rrrt......",
-    "............rrre........",
-    ".........rrree......rt..",
-    ".......rrrmmmmeeeerrr...",
-    ".....rrrmmmmmeerrr......",
-    "....rrmmmmmmerrr........",
-    "..rrrmmmmrrrreeeeeeeerrt",
-    ".rrrrrrrrmmmmmmmrrrrrr..",
-    ".rrrrrrrrrrrrrrrre......",
-    "..errrrrmmmmmmmmrrrrr...",
-    "...eerrrrrrrmmmmmeeeerrt",
-    ".....eemrrmrrrrme.......",
-    ".......eeerreerrrr......",
-    "..........err....rrrr...",
-    ".............rr.....t...",
-    "..............rr........",
-    "................t......."
+    "mme...",
+    "mmrme.",
+    "mmmrre",
+    "rrrrre",
+    "mmmrre",
+    "mmrme.",
+    "mme..."
    ]
   },
   {
@@ -2666,41 +1551,30 @@
    "shape": "card",
    "parent": "body",
    "pivot": [
-    -9.5,
+    -9.0,
     -4.0,
-    -1.0
+    0.0
    ],
    "offset": [
     0.0,
     0.0,
-    -5.5
+    -3.0
    ],
    "rotation": [
     0.0,
-    48.0,
-    12.0
+    35.0,
+    10.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "........................",
-    "................rt......",
-    ".............rrr........",
-    "..........eerre...rrrt..",
-    "........eerrrrrrrre.....",
-    "......eerrrrrmmee.......",
-    "....errrrmmmmmme........",
-    "..errrmmmmmmmmmmeeeerrrt",
-    ".rrrmmmmmmmrrrrrrrrrr...",
-    ".rrrrrrrrrrrmmmme.......",
-    "..rrrrrrrmmmmmmmmeee....",
-    "...errrrrrrrrrrrrrrrrrrt",
-    ".....errrrmmmme.........",
-    ".......errrrrrreee......",
-    ".........erre.rrrrrrr...",
-    "...........rrr......t...",
-    "..............rr........",
-    "................t......."
+    "mme...",
+    "mmrme.",
+    "mmmrre",
+    "rrrrre",
+    "mmmrre",
+    "mmrme.",
+    "mme..."
    ]
   },
   {
@@ -2709,145 +1583,23 @@
    "parent": "body",
    "pivot": [
     0.0,
-    9.0,
-    -5.5
+    8.0,
+    -2.0
    ],
    "offset": [
     0.0,
-    2.75,
-    -4.5
-   ],
-   "rotation": [
-    -6.0,
-    0.0,
-    0.0
+    3.0,
+    -5.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    ".......t.t............",
-    "......rr.r............",
-    ".....tr.er.rt.........",
-    "....rrr.rrrr..........",
-    "....rrrerrr...t.......",
-    "....rr.rrr.err..rt....",
-    "....rrermmerr.rrr.....",
-    "....rrrrmmrrrre.......",
-    "....rrrmrrrrmmmrrrrrt.",
-    "....rrrrrrrrrrrrrrrrrr",
-    "....rrrrrrrreeeeee...t"
-   ]
-  },
-  {
-   "id": "tail",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    9.0,
-    7.0,
-    4.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -11.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    -2.5
-   ],
-   "style": "skin_tail"
-  },
-  {
-   "id": "tail_y",
-   "shape": "box",
-   "parent": "tail",
-   "size": [
-    7.5,
-    10.0,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -2.5
-   ],
-   "style": "skin_tail"
-  },
-  {
-   "id": "tail_z",
-   "shape": "box",
-   "parent": "tail",
-   "size": [
-    6.5,
-    8.5,
-    5.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -2.5
-   ],
-   "style": "skin_tail"
-  },
-  {
-   "id": "tail_stalk",
-   "shape": "box",
-   "parent": "tail",
-   "size": [
-    6.0,
-    7.0,
-    3.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -6.0
-   ],
-   "style": "skin_tail"
-  },
-  {
-   "id": "tail_fin",
-   "shape": "card",
-   "parent": "tail",
-   "pivot": [
-    0.0,
-    0.0,
-    -7.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    -5.5
-   ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "..........t...........",
-    ".........r............",
-    "........re....rrt.....",
-    ".......rme..rrre......",
-    "......rme.rrrme.......",
-    "....erre.rrmme........",
-    "...errmrrmmme.......r.",
-    "...rrmrrmmme.eeeeerrt.",
-    "..errrmmmmmmemmrrr....",
-    ".errrmmmmmmerrrr......",
-    ".rrrmmmrrrrr..........",
-    "rrrrrrrrmmmeeeeeeeee..",
-    "rrrrrrrrrrmmeerrrrrrrt",
-    ".rrrmmmrrrrrrrr.......",
-    ".errrmmmmmmmerrr......",
-    "..rrrrmmmmmmmmmmrrr...",
-    "...rmmrrmmmmmmeeeerrr.",
-    "....rmmrrmmmme......t.",
-    "....rrmmmrrmmme.......",
-    ".....rrmmeerrme.......",
-    "......rre..errre......",
-    "........r.....rrr.....",
-    ".........r......t.....",
-    "..........t..........."
+    ".e........",
+    ".mme......",
+    "emrmme....",
+    "mrmmrmme..",
+    "rmmrmmrmee",
+    "mmmmmmmmmm"
    ]
   },
   {
@@ -2856,30 +1608,538 @@
    "parent": "tail",
    "pivot": [
     0.0,
-    -4.5,
-    -0.5
+    -6.0,
+    3.0
    ],
    "offset": [
     0.0,
-    -1.75,
+    -1.5,
     -3.0
-   ],
-   "rotation": [
-    12.0,
-    0.0,
-    0.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "...rrrree.....",
-    "..errrrrrrrrrt",
-    "..errrrmrrr...",
-    "...rrmrrmmerr.",
-    "...trr.rre..rt",
-    ".....t.rtrr...",
-    "..........t..."
+    "mmmmmm",
+    ".mrmme",
+    "..eee."
    ]
+  },
+  {
+   "id": "body_y",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "body_z",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "body_m",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "rump_z",
+   "shape": "bone",
+   "parent": "rump",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_l0",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_l1",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_l2",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_l3",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_r0",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_r1",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_r2",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_r3",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_top0",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_top1",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "wart_top2",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "head_y",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "head_z",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "head_m",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "crown_z",
+   "shape": "bone",
+   "parent": "crown",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "face",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "face_y",
+   "shape": "bone",
+   "parent": "face",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "face_z",
+   "shape": "bone",
+   "parent": "face",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "snout",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "snout_z",
+   "shape": "bone",
+   "parent": "snout",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "lip_up",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "brow_l",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "brow_r",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tassel_l",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tassel_b_l",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tassel_r",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tassel_b_r",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "chin_z",
+   "shape": "bone",
+   "parent": "chin",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "chin_tip",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "chin_tip_z",
+   "shape": "bone",
+   "parent": "chin_tip",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "jaw_side_l",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tassel_jaw_l",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "jaw_side_r",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tassel_jaw_r",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tassel_chin",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "lure_bulb_y",
+   "shape": "bone",
+   "parent": "lure_bulb",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "lure_bulb_z",
+   "shape": "bone",
+   "parent": "lure_bulb",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "lure_core",
+   "shape": "bone",
+   "parent": "lure_bulb",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "lure_strand_0",
+   "shape": "bone",
+   "parent": "lure_bulb",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "lure_strand_1",
+   "shape": "bone",
+   "parent": "lure_bulb",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tail_y",
+   "shape": "bone",
+   "parent": "tail",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tail_z",
+   "shape": "bone",
+   "parent": "tail",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "tail_stalk",
+   "shape": "bone",
+   "parent": "tail",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
   }
  ],
  "animations": {
@@ -3016,37 +2276,15 @@
      "axis": "z"
     },
     {
-     "part": "lure",
-     "osc": {
-      "amp": 28.0,
-      "cycles": 1,
-      "phase": 0.30000000000000004
-     },
-     "axis": "y"
-    },
-    {
      "part": "lure_bulb",
      "osc": {
       "amp": [
-       0.06,
-       0.06,
-       0.06
+       0.08,
+       0.08,
+       0.08
       ],
       "cycles": 2,
       "phase": 0.0
-     },
-     "channel": "scale"
-    },
-    {
-     "part": "lure_core",
-     "osc": {
-      "amp": [
-       0.12,
-       0.12,
-       0.12
-      ],
-      "cycles": 2,
-      "phase": 0.05
      },
      "channel": "scale"
     },
@@ -3278,37 +2516,15 @@
      "axis": "z"
     },
     {
-     "part": "lure",
-     "osc": {
-      "amp": 20.0,
-      "cycles": 1,
-      "phase": 0.2
-     },
-     "axis": "y"
-    },
-    {
      "part": "lure_bulb",
      "osc": {
       "amp": [
-       0.06,
-       0.06,
-       0.06
+       0.08,
+       0.08,
+       0.08
       ],
       "cycles": 2,
       "phase": 0.1
-     },
-     "channel": "scale"
-    },
-    {
-     "part": "lure_core",
-     "osc": {
-      "amp": [
-       0.12,
-       0.12,
-       0.12
-      ],
-      "cycles": 2,
-      "phase": 0.15000000000000002
      },
      "channel": "scale"
     },
@@ -3426,24 +2642,6 @@
       "phase": 0.0
      },
      "channel": "position"
-    },
-    {
-     "part": "eye_l",
-     "osc": {
-      "amp": 10,
-      "cycles": 1,
-      "phase": 0.3
-     },
-     "axis": "y"
-    },
-    {
-     "part": "eye_r",
-     "osc": {
-      "amp": 10,
-      "cycles": 1,
-      "phase": 0.3
-     },
-     "axis": "y"
     }
    ],
    "_lock": {
@@ -4109,25 +3307,12 @@
      "part": "lure_bulb",
      "osc": {
       "amp": [
-       0.096,
-       0.096,
-       0.096
+       0.128,
+       0.128,
+       0.128
       ],
       "cycles": 1,
       "phase": 0.2
-     },
-     "channel": "scale"
-    },
-    {
-     "part": "lure_core",
-     "osc": {
-      "amp": [
-       0.192,
-       0.192,
-       0.192
-      ],
-      "cycles": 1,
-      "phase": 0.25
      },
      "channel": "scale"
     },
@@ -4986,56 +4171,6 @@
         0.3,
         0.3,
         0.3
-       ],
-       "ease"
-      ],
-      [
-       0.8,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ]
-     ]
-    },
-    {
-     "part": "lure_core",
-     "channel": "scale",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.12,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.28,
-       [
-        0.4,
-        0.4,
-        0.4
-       ],
-       "out_back"
-      ],
-      [
-       0.5,
-       [
-        0.4,
-        0.4,
-        0.4
        ],
        "ease"
       ],

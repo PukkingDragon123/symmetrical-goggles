@@ -8,13 +8,13 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 /**
- * The Obolisk (lowpix model `obolisk`): `disguised` (a rock: legs folded, eye shut), `rise`, `idle`, `walk`, `slam` and
- * `settle`, driven by its phase. Its eye and crying-obsidian veins glow; disguised, the veins only smoulder and the shut
- * eye stays dark.
+ * The Obolisk (lowpix model `obolisk`: a living 2 x 4 block, density 1, texture 128 x 128): `disguised` (a leaning
+ * pillar, brow shut over the eyes), `rise`, `idle`, `walk`, `slam` and `settle`, driven by its phase. Its eyes, crying
+ * obsidian and the light in its mouth glow; disguised, they only smoulder and the shut eyes stay hidden behind the brow.
  */
 public class OboliskRenderer extends EndMobRenderer<Obolisk> {
     public OboliskRenderer(EntityRendererProvider.Context ctx) {
-        super(ctx, new Model(ctx.bakeLayer(EndMobClient.OBOLISK)), 1.1f);
+        super(ctx, new Model(ctx.bakeLayer(EndMobClient.OBOLISK)), 1.2f);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class OboliskRenderer extends EndMobRenderer<Obolisk> {
                     walk("walk", limbSwing, limbAmount, 1.5f, 2.5f);
                     play(e.idleState, "idle", age, 1f);
                     float yaw = Mth.clamp(headYaw, -20f, 20f) * Mth.DEG_TO_RAD;
-                    get("eye").ifPresent(p -> p.x += yaw * 2f);   // the eye follows you a little
+                    get("eye").ifPresent(p -> p.x += yaw * 2f);   // the eyes follow you a little (< 1 px)
                 }
             }
         }

@@ -1,13 +1,13 @@
 {
  "name": "Nautilus",
- "description": "The Winterworks nautilus mount: a big coiled shell in cream with rust tiger stripes radiating from a dark navel, a mottled leathery hood, big round gold-rimmed eyes, eight ribbed tentacles with tufts of cirri, a siphon funnel and a sea-teal saddle the renderer can hide. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks nautilus mount in the vanilla mob style: a chunky stepped coil of a shell in cream with rust stripes radiating from a dark navel button, a blotched brown hood, small flat dot eyes on stubby bulbs, eight short ringed tentacles, a siphon funnel and a sea-teal saddle the renderer can hide. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "grounded": false,
  "budget": {
-  "tris": 1000,
-  "colors": 80
+  "tris": 600,
+  "colors": 64
  },
  "light": {
   "dir": [
@@ -15,25 +15,10 @@
    1.0,
    0.6
   ],
-  "strength": 0.8,
-  "gradient": 0.5,
-  "ao": 0.5,
+  "strength": 0.9,
+  "gradient": 0.6,
+  "ao": 0.4,
   "ao_height": 6.0
- },
- "brush": {
-  "flow": "horizontal",
-  "length": 2.0,
-  "width": 0.8,
-  "rough": 0.5,
-  "overshoot": 0.25,
-  "textures": {
-   "cream": "organic",
-   "hood": "leather",
-   "flesh": "organic",
-   "leather": "leather",
-   "brass": "metal",
-   "cloth": "cloth"
-  }
  },
  "minecraft": {
   "fps": 20
@@ -49,364 +34,383 @@
  "palette": {
   "ramps": {
    "cream": [
-    "#4a3e33",
-    "#6b5d4e",
-    "#8d7e6c",
-    "#ae9f8b",
-    "#cbbea9",
-    "#e2d8c5",
-    "#f2ecdd",
-    "#fcf9f0"
+    "#a3907a",
+    "#bcab94",
+    "#d2c3ab",
+    "#e4d8c3",
+    "#f1e9d8",
+    "#faf5ea"
    ],
    "rust": [
-    "#250b06",
-    "#3e130a",
-    "#5c1f0f",
-    "#7d2e15",
-    "#9c401b",
-    "#b75522",
-    "#cc6e30",
-    "#dd8a45"
+    "#5a2614",
+    "#71311a",
+    "#883e20",
+    "#9e4c27",
+    "#b25b2f"
    ],
    "flesh": [
-    "#2e1c14",
-    "#4a2e1f",
-    "#6a442c",
-    "#8b5c3b",
-    "#aa774d",
-    "#c49364",
-    "#d9b083",
-    "#eacda6",
-    "#f7e7cc"
+    "#7a5440",
+    "#8d634c",
+    "#a07459",
+    "#b38667",
+    "#c49877",
+    "#d3aa8a"
    ],
    "hood": [
-    "#170e0a",
-    "#271811",
-    "#3a2519",
-    "#4f3423",
-    "#66452f",
-    "#7f593d",
-    "#98704f",
-    "#b18a66"
-   ],
-   "amber": [
-    "#1d1004",
-    "#352008",
-    "#52330c",
-    "#714a12",
-    "#92651b",
-    "#b38328",
-    "#cfa13d",
-    "#e6c15e",
-    "#f6df8e"
-   ],
-   "pupil": [
-    "#040406",
-    "#0a0a0e",
-    "#131318"
+    "#3b261b",
+    "#472f22",
+    "#54392a",
+    "#614332",
+    "#6e4e3b",
+    "#7c5a45"
    ],
    "leather": [
-    "#1d110b",
-    "#311c12",
-    "#472918",
-    "#5e3720",
-    "#77472a",
-    "#915a36",
-    "#a96d42",
-    "#c08453"
+    "#4a2c1c",
+    "#583522",
+    "#673f29",
+    "#764a31",
+    "#865639"
    ],
    "brass": [
-    "#2c1d08",
-    "#4d3410",
-    "#74501a",
-    "#9a6e26",
-    "#bf8e37",
-    "#dcae52",
-    "#f2cf7a",
-    "#fff0b8"
+    "#7a5a1e",
+    "#987327",
+    "#b78f35",
+    "#d1ab4a"
    ],
    "cloth": [
-    "#081a24",
-    "#0d2b3b",
-    "#133e53",
-    "#1b536c",
-    "#246a85",
-    "#30839d",
-    "#409db4",
-    "#5bb6c8",
-    "#80cdd9"
+    "#1d4f5e",
+    "#245e6f",
+    "#2c6e80",
+    "#357f91"
+   ],
+   "ink": [
+    "#0e0c10",
+    "#1a171d",
+    "#2a262e"
+   ],
+   "glint": [
+    "#9a9aa4",
+    "#d9d9df"
    ]
   }
  },
  "styles": {
-  "shell": {
-   "ramp": "cream",
-   "tone": 4.4,
+  "flesh": {
+   "ramp": "flesh",
+   "tone": 3.2,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "growth",
+     "id": "grain",
      "op": "noise",
-     "scale": 1.2,
-     "amount": 0.5
+     "scale": 0.9,
+     "amount": 1.2
     },
     {
-     "id": "pale_low",
+     "id": "falloff",
      "op": "gradient",
      "axis": "y",
-     "amount": 0.4
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "face": {
+   "ramp": "flesh",
+   "tone": 3.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
     },
     {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "beak",
+     "op": "rect",
+     "rect": [
+      0.35,
+      0.55,
+      0.65,
+      0.85
+     ],
+     "ramp": "hood",
+     "tone": 1.0,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "shell": {
+   "ramp": "cream",
+   "tone": 2.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.0
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
     }
    ]
   },
   "navel": {
    "ramp": "hood",
-   "tone": 1.0,
-   "light": 0.3,
+   "tone": 1.4,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.2,
-    "dark_shift": -1.0
-   }
-  },
-  "hood": {
-   "ramp": "hood",
-   "tone": 4.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
      "id": "grain",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.5,
-     "highlight": 0.8,
-     "shadow": -0.8,
-     "jitter": 0.7,
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.5
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
-      "top",
       "sides"
      ]
-    },
-    {
-     "id": "blotch",
-     "op": "patches",
-     "scale": 2.0,
-     "threshold": 0.56,
-     "ramp": "cream",
-     "tone": 4.6,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_ramp": "hood",
-      "shadow_shift": -1.0
-     }
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
     }
    ]
   },
-  "flesh": {
-   "ramp": "flesh",
-   "tone": 4.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   }
-  },
-  "flesh_body": {
-   "ramp": "flesh",
-   "tone": 4.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "layers": [
-    {
-     "id": "mottle",
-     "op": "patches",
-     "scale": 1.6,
-     "threshold": 0.6,
-     "shift": -1.0
-    },
-    {
-     "id": "spots",
-     "op": "spots",
-     "count": 6,
-     "radius": [
-      0.3,
-      0.5
-     ],
-     "ramp": "hood",
-     "tone": 4.0,
-     "min_gap": 1.0
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
-    }
-   ]
-  },
-  "eye": {
+  "hood": {
    "ramp": "hood",
-   "tone": 2.0,
-   "light": 0.2,
+   "tone": 3.0,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0,
    "rim": {
-    "light": 0,
-    "dark": 0
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
-   "stamps": [
+   "layers": [
     {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
-      "left",
-      "right"
-     ],
-     "at": "top-left",
-     "art": [
-      "..kkkk..",
-      ".kiiiik.",
-      "kiiWpiik",
-      "kIppppIk",
-      "kIppppIk",
-      "kJJppJJk",
-      ".kJJJJk.",
-      "..kkkk.."
-     ],
-     "key": {
-      "k": "hood:1",
-      "i": "amber:4",
-      "I": "amber:5",
-      "J": "amber:7",
-      "p": "pupil:0",
-      "W": "cream:7"
-     }
+      "sides"
+     ]
+    }
+   ]
+  },
+  "eyebulb": {
+   "ramp": "flesh",
+   "tone": 3.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
     }
    ]
   },
   "tentacle": {
    "ramp": "flesh",
-   "tone": 5.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.4,
-    "dark_shift": -1.4
-   },
+   "tone": 3.6,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.6
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
     {
      "id": "rings",
      "op": "stripes",
      "axis": "y",
-     "period": 1.0,
+     "period": 2.0,
      "width": 0.5,
-     "shift": -0.9
+     "shift": -1.0
     }
    ]
   },
   "tentacle_tip": {
    "ramp": "flesh",
-   "tone": 5.8,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.4,
-    "dark_shift": -1.4
-   },
+   "tone": 4.2,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.6
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
     {
      "id": "rings",
      "op": "stripes",
      "axis": "y",
-     "period": 1.0,
+     "period": 2.0,
      "width": 0.5,
-     "shift": -0.9
+     "shift": -1.0
     }
    ]
   },
-  "cirri": {
+  "siphon": {
    "ramp": "flesh",
-   "tone": 5,
-   "light": 0,
+   "tone": 2.8,
+   "light": 1.0,
    "brush": {
     "off": true
    },
-   "art_key": {
-    "f": "flesh:5",
-    "s": "flesh:3",
-    "t": "flesh:7"
-   }
-  },
-  "siphon": {
-   "ramp": "flesh",
-   "tone": 4.0,
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "folds",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.0,
-     "width": 0.4,
-     "shift": -0.8
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
     },
     {
      "id": "mouth",
@@ -421,25 +425,42 @@
   },
   "blanket": {
    "ramp": "cloth",
-   "tone": 4.6,
+   "tone": 2.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "x"
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
     {
      "id": "hem",
      "op": "band",
      "axis": "x",
-     "from": -1.01,
-     "to": -0.8,
+     "from": 0.75,
+     "to": 1.01,
      "ramp": "brass",
-     "tone": 4.6,
+     "tone": 2.0,
      "faces": [
       "top",
       "sides"
@@ -449,113 +470,137 @@
      "id": "hem_r",
      "op": "band",
      "axis": "x",
-     "from": 0.8,
-     "to": 1.01,
+     "from": -1.01,
+     "to": -0.75,
      "ramp": "brass",
-     "tone": 4.6,
+     "tone": 2.0,
      "faces": [
       "top",
       "sides"
      ]
-    },
-    {
-     "id": "waves",
-     "op": "stripes",
-     "axis": "z",
-     "period": 2.0,
-     "width": 0.2,
-     "ramp": "cloth",
-     "tone": 7.0,
-     "wobble": 0.5,
-     "faces": [
-      "top"
-     ]
     }
    ]
   },
-  "fringe": {
-   "ramp": "cloth",
-   "tone": 4,
-   "light": 0,
+  "saddle": {
+   "ramp": "leather",
+   "tone": 2.6,
+   "light": 1.0,
    "brush": {
     "off": true
    },
-   "art_key": {
-    "t": "brass:6",
-    "m": "cloth:6",
-    "f": "cloth:4"
-   }
-  },
-  "saddle": {
-   "ramp": "leather",
-   "tone": 4.6,
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "z"
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
     {
      "id": "stitch",
      "op": "panel",
      "inset": 1,
-     "shift": -1.2,
+     "shift": -1.0,
      "highlight": 0.8,
-     "min_size": 4
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
+     "min_size": 3
     }
    ]
   },
   "strap": {
    "ramp": "leather",
-   "tone": 3.6,
+   "tone": 1.8,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.2
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
-   "brush": {
-    "off": true
-   }
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.5
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
   },
   "brass": {
    "ramp": "brass",
-   "tone": 5.0,
+   "tone": 2.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.0,
-    "dark_shift": -1.6
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
-   "brush": {
-    "off": true
-   }
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.4
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
   },
   "stirrup": {
    "ramp": "brass",
-   "tone": 4,
-   "light": 0,
+   "tone": 2,
+   "light": 0.25,
    "brush": {
     "off": true
    },
+   "dither": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
    "art_key": {
-    "s": "leather:3",
-    "B": "brass:6",
-    "b": "brass:3"
+    "s": "leather:2",
+    "B": "brass:3",
+    "b": "brass:1"
    }
   }
  },
@@ -564,16 +609,189 @@
    "id": "body",
    "shape": "box",
    "size": [
-    10.0,
-    8.0,
-    7.0
+    10,
+    8,
+    7
    ],
    "pivot": [
     0.0,
-    9.9883,
+    6.0,
     6.0
    ],
-   "style": "flesh_body"
+   "offset": [
+    0.0,
+    0.0,
+    -0.5
+   ],
+   "style": "flesh",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "..d.......",
+       "....dd....",
+       "....dd....",
+       "........dd",
+       "..........",
+       "dd.....dd.",
+       "dd......d.",
+       "d........."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "..dddd....",
+       ".dd.......",
+       "..........",
+       ".dd......d",
+       ".......dd.",
+       "..........",
+       "..........",
+       "....ddd..."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".......",
+       ".......",
+       "....dd.",
+       "d...d..",
+       ".......",
+       "......d",
+       ".......",
+       "......."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       ".......",
+       "...d...",
+       ".......",
+       "...d...",
+       ".......",
+       ".......",
+       ".d.....",
+       ".d....d"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "....dd....",
+       ".d........",
+       "..........",
+       "....ddd...",
+       ".......dd.",
+       "..........",
+       ".....d...."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "..........",
+       "......d...",
+       ".....ddd..",
+       "....dd....",
+       "..........",
+       "......dd..",
+       "....dd...."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "head",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    8,
+    6,
+    2
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    4.0
+   ],
+   "style": "face"
   },
   {
    "id": "shell",
@@ -581,7 +799,7 @@
    "parent": "body",
    "pivot": [
     0.0,
-    3.5,
+    5.0,
     -9.0
    ],
    "style": "flesh"
@@ -591,214 +809,214 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    9.0,
-    13.0,
-    2.5
+    14,
+    16,
+    16
    ],
    "pivot": [
     0.0,
     0.0,
-    -8.75
+    0.0
    ],
    "style": "shell",
    "paint": {
     "stamps": [
      {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       "bbbc.",
-       "bbbb.",
-       ".bbbc",
-       "..bbc",
-       "..bbc",
-       "...bb",
-       "...bb",
-       "....b",
-       "c...b",
-       "c....",
-       "bc...",
-       "bbc..",
-       "bbbc.",
-       ".bbbc",
-       "...bb",
-       ".....",
-       ".....",
-       "cc...",
-       "bbcc.",
-       "bbbbc",
-       "...bb",
-       ".....",
-       ".....",
-       ".....",
-       "bbbbb",
-       "bbbbb"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       ".cbbb",
-       ".bbbb",
-       "cbbb.",
-       "cbb..",
-       "cbb..",
-       "bb...",
-       "bb...",
-       "b....",
-       "b...c",
-       "....c",
-       "...cb",
-       "..cbb",
-       ".cbbb",
-       "cbbb.",
-       "bb...",
-       ".....",
-       ".....",
-       "...cc",
-       ".ccbb",
-       "cbbbb",
-       "bb...",
-       ".....",
-       ".....",
-       ".....",
-       "bbbbb",
-       "bbbbb"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "cccccccccccccccccc",
-       "cccccccccccccccccc",
-       "cccccccccccccccccc",
-       "cccccccccccccccccc",
-       ".................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "bottom",
-      "at": "top-left",
-      "art": [
-       "aaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaa"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
       "face": "front",
       "at": "top-left",
       "art": [
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "cccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "cccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbb",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "cccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbb",
-       "..................",
-       "..................",
-       "..................",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb"
+       "..............",
+       "..............",
+       "..............",
+       "gggggggggggggg",
+       "gggggggggggggg",
+       "..............",
+       "..............",
+       "..............",
+       "..............",
+       "..............",
+       "..............",
+       "gggggggggggggg",
+       "gggggggggggggg",
+       "..............",
+       "..............",
+       ".............."
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      },
      {
       "face": "back",
       "at": "top-left",
       "art": [
-       "bbbbbbbbbbbbbbbbbb",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "bbbbbbbbbbbbbbbbbb",
-       "aaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaa",
-       "..................",
-       "..................",
-       "..................",
-       "..................",
-       "bbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbb"
+       "..............",
+       "..............",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "ssssssssssssss",
+       "..............",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "ssssssssssssss",
+       "..............",
+       ".............."
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".s..ss..s...sss.",
+       ".s...s..s..ss...",
+       ".ss..s.s..s.....",
+       "..s..s.s.s......",
+       "...s.s.nns.s....",
+       "s...snnnnnn.....",
+       "ss...nnnnnn.....",
+       "..ssnnnnnnnn....",
+       "....nnnnnnnn....",
+       "sssssnnnnnn.....",
+       ".....nnnnnn.....",
+       "...ss..nn.......",
+       "sss...s.s.s.....",
+       ".....s..s.s.....",
+       "....ss..s..s....",
+       "..sss..s..ss...."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       ".sss...s..ss..s.",
+       "...ss..s..s...s.",
+       ".....s..s.s..ss.",
+       "......s.s.s..s..",
+       "....s.snn.s.s...",
+       ".....nnnnnns...s",
+       ".....nnnnnn...ss",
+       "....nnnnnnnnss..",
+       "....nnnnnnnn....",
+       ".....nnnnnnsssss",
+       ".....nnnnnn.....",
+       ".......nn..ss...",
+       ".....s.s.s...sss",
+       ".....s.s..s.....",
+       "....s..s..ss....",
+       "....ss..s..sss.."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "..............",
+       "ssssssssssssss",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "ssssssssssssss",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "..............",
+       "..............",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "ssssssssssssss",
+       "ssssssssssssss"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "..............",
+       "..............",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "ssssssssssssss",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "..............",
+       "..............",
+       "..............",
+       "ssssssssssssss",
+       "ssssssssssssss",
+       "ssssssssssssss",
+       ".............."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      }
     ]
@@ -809,250 +1027,226 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    10.0,
-    17.5,
-    2.5
+    10,
+    22,
+    10
    ],
    "pivot": [
     0.0,
     0.0,
-    -6.25
+    0.0
    ],
    "style": "shell",
    "paint": {
     "stamps": [
      {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       "..bbb",
-       "...bc",
-       "...bc",
-       "...bc",
-       "..bbc",
-       "..bbc",
-       "..bbc",
-       "...bb",
-       "...bb",
-       "....b",
-       "c....",
-       "c....",
-       "bc...",
-       "bbbc.",
-       ".bbbb",
-       ".....",
-       ".....",
-       ".....",
-       "ccccc",
-       "bbbbb",
-       ".....",
-       ".....",
-       ".....",
-       "....c",
-       "bbbbb",
-       "bbbb.",
-       ".....",
-       ".....",
-       ".....",
-       "bbbbb",
-       "bbbbb",
-       "a....",
-       ".....",
-       ".....",
-       "....b"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "bbb..",
-       "cb...",
-       "cb...",
-       "cb...",
-       "cbb..",
-       "cbb..",
-       "cbb..",
-       "bb...",
-       "bb...",
-       "b....",
-       "....c",
-       "....c",
-       "...cb",
-       ".cbbb",
-       "bbbb.",
-       ".....",
-       ".....",
-       ".....",
-       "ccccc",
-       "bbbbb",
-       ".....",
-       ".....",
-       ".....",
-       "c....",
-       "bbbbb",
-       ".bbbb",
-       ".....",
-       ".....",
-       ".....",
-       "bbbbb",
-       "bbbbb",
-       "....a",
-       ".....",
-       ".....",
-       "b...."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "....................",
-       "....................",
-       "cccccccccccccccccccc",
-       "cccccccccccccccccccc",
-       "cccccccccccccccccccc"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "bottom",
-      "at": "top-left",
-      "art": [
-       "aaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaa",
-       "....................",
-       "....................",
-       "...................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
       "face": "front",
       "at": "top-left",
       "art": [
-       "cccccccccccccccccccc",
-       "cccccccccccccccccccc",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "cccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "....................",
-       "....................",
-       "....................",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "....................",
-       "....................",
-       "....................",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "....................",
-       "....................",
-       "....................",
-       "bbbbbbbbbbbbbbbbbbbb"
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "..........",
+       "gggggggggg",
+       "gggggggggg",
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "gggggggggg",
+       "gggggggggg",
+       "..........",
+       "..........",
+       "..........",
+       "gggggggggg",
+       "..........",
+       "..........",
+       ".........."
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      },
      {
       "face": "back",
       "at": "top-left",
       "art": [
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "cccccccccccccccccccc",
-       "cccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "....................",
-       "....................",
-       "....................",
-       "....................",
-       "aaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaa",
-       "....................",
-       "....................",
-       "....................",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "aaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaa",
-       "....................",
-       "....................",
-       "....................",
-       "bbbbbbbbbbbbbbbbbbbb",
-       "aaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaa",
-       "....................",
-       "....................",
-       "...................."
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       "..........",
+       ".........."
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "..s...sss.",
+       "..s...ss..",
+       "..s..ss...",
+       ".ss..s...s",
+       "..s..s..ss",
+       "..s.s..s..",
+       "..s.s.s...",
+       "s.s.nns.s.",
+       ".snnnnnn..",
+       "..nnnnnn..",
+       "snnnnnnnn.",
+       ".nnnnnnnn.",
+       "ssnnnnnn..",
+       "..nnnnnn..",
+       "ss..nn....",
+       "...s.s.s..",
+       "..s..s.s..",
+       ".ss..s..s.",
+       "ss..s..ss.",
+       "....s..ss.",
+       "...ss..ss.",
+       "..ss...ss."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       ".sss...s..",
+       "..ss...s..",
+       "...ss..s..",
+       "s...s..ss.",
+       "ss..s..s..",
+       "..s..s.s..",
+       "...s.s.s..",
+       ".s.snn.s.s",
+       "..nnnnnns.",
+       "..nnnnnn..",
+       ".nnnnnnnns",
+       ".nnnnnnnn.",
+       "..nnnnnnss",
+       "..nnnnnn..",
+       "....nn..ss",
+       "..s.s.s...",
+       "..s.s..s..",
+       ".s..s..ss.",
+       ".ss..s..ss",
+       ".ss..s....",
+       ".ss..ss...",
+       ".ss...ss.."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "..........",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       ".........."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "..........",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       "ssssssssss",
+       ".........."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      }
     ]
@@ -1063,266 +1257,202 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    10.5,
-    19.5,
-    2.5
+    10,
+    10,
+    22
    ],
    "pivot": [
     0.0,
     0.0,
-    -3.75
+    0.0
    ],
    "style": "shell",
    "paint": {
     "stamps": [
      {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       "c...b",
-       "c...b",
-       "....b",
-       "....b",
-       "...bb",
-       "...bb",
-       "...bc",
-       "...bb",
-       "...bb",
-       "....b",
-       "c....",
-       "bc...",
-       "bbc..",
-       "...b.",
-       "....b",
-       ".....",
-       "bbc..",
-       "...bb",
-       ".....",
-       ".....",
-       "bb...",
-       ".....",
-       "...cb",
-       "..b..",
-       "cb...",
-       "bb...",
-       "....b",
-       "....b",
-       "...bb",
-       "..bb.",
-       ".bbb.",
-       "bbb..",
-       "b....",
-       ".....",
-       ".....",
-       "...ba",
-       "bbaaa",
-       "aaaa.",
-       "aaa.."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "b...c",
-       "b...c",
-       "b....",
-       "b....",
-       "bb...",
-       "bb...",
-       "cb...",
-       "bb...",
-       "bb...",
-       "b....",
-       "....c",
-       "...cb",
-       "..cbb",
-       ".b...",
-       "b....",
-       ".....",
-       "..cbb",
-       "bb...",
-       ".....",
-       ".....",
-       "...bb",
-       ".....",
-       "bc...",
-       "..b..",
-       "...bc",
-       "...bb",
-       "b....",
-       "b....",
-       "bb...",
-       ".bb..",
-       ".bbb.",
-       "..bbb",
-       "....b",
-       ".....",
-       ".....",
-       "ab...",
-       "aaabb",
-       ".aaaa",
-       "..aaa"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "ccccccccccccccccccccc",
-       ".....................",
-       ".....................",
-       ".....................",
-       "....................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "bottom",
-      "at": "top-left",
-      "art": [
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       "aaaaaaaaaaaaaaaaaaaaa"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
       "face": "front",
       "at": "top-left",
       "art": [
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "ccccccccccccccccccccc",
-       "ccccccccccccccccccccc",
-       "ccccccccccccccccccccc",
-       "ccccccccccccccccccccc",
-       "ccccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       ".....................",
-       ".....................",
-       ".....................",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       ".....................",
-       ".....................",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       "ccccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "aaaaaaaaaaaaaaaaaaaaa",
-       ".....................",
-       ".....................",
-       "....................."
+       "gggggggggg",
+       "gggggggggg",
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "gggggggggg",
+       "gggggggggg"
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      },
      {
       "face": "back",
       "at": "top-left",
       "art": [
-       "ccccccccccccccccccccc",
-       "ccccccccccccccccccccc",
-       "ccccccccccccccccccccc",
-       "ccccccccccccccccccccc",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       "ccccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       ".....................",
-       ".....................",
-       ".....................",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       ".....................",
-       ".....................",
-       ".....................",
-       "aaaaaaaaaaaaaaaaaaaaa",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       "aaaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaaa",
-       ".....................",
-       ".....................",
-       ".....................",
-       ".....................",
-       "aaaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaaa",
-       ".....................",
-       ".....................",
-       ".....................",
-       "bbbbbbbbbbbbbbbbbbbbb",
-       "aaaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaaa"
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss"
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "ss...s..s.s.s.........",
+       ".ss...s.s.nns.s.......",
+       "..ss...snnnnnn........",
+       "...ss...nnnnnn........",
+       "s....ssnnnnnnnn.......",
+       "sss....nnnnnnnn.......",
+       ".sssssssnnnnnn........",
+       "........nnnnnn........",
+       "......ss..nn..........",
+       "ssssss...s.s.s........"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       ".........s.s.s..s...ss",
+       ".......s.snn.s.s...ss.",
+       "........nnnnnns...ss..",
+       "........nnnnnn...ss...",
+       ".......nnnnnnnnss....s",
+       ".......nnnnnnnn....sss",
+       "........nnnnnnsssssss.",
+       "........nnnnnn........",
+       "..........nn..ss......",
+       "........s.s.s...ssssss"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "ssssssssss",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "..........",
+       "..........",
+       "gggggggggg",
+       "..........",
+       "..........",
+       "gggggggggg"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "gggggggggg",
+       "..........",
+       "..........",
+       "gggggggggg",
+       "..........",
+       "..........",
+       "..........",
+       "gggggggggg",
+       "ssssssssss",
+       "..........",
+       "ssssssssss",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       "..........",
+       "..........",
+       "..........",
+       "ssssssssss",
+       "ssssssssss",
+       "ssssssssss",
+       "ssssssssss",
+       "ssssssssss"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      }
     ]
@@ -1333,1166 +1463,226 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    11.0,
-    20.0,
-    2.5
+    12,
+    20,
+    14
    ],
    "pivot": [
     0.0,
     0.0,
-    -1.25
+    0.0
    ],
    "style": "shell",
    "paint": {
     "stamps": [
      {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       "bbc..",
-       "bb...",
-       "bc...",
-       "c....",
-       "c...b",
-       "....b",
-       "....b",
-       "...bb",
-       "....b",
-       "c...b",
-       "b...b",
-       "bc...",
-       ".b...",
-       "..b..",
-       "..b..",
-       "b....",
-       ".bNNN",
-       ".NNNn",
-       ".NNnn",
-       ".Nnnn",
-       "bNnnn",
-       ".NNnn",
-       "bNNNn",
-       "..NNN",
-       ".b...",
-       "b..b.",
-       "...b.",
-       ".....",
-       ".....",
-       "..b..",
-       "..b..",
-       "..b..",
-       "..b..",
-       ".ba..",
-       "ba...",
-       "aa...",
-       ".....",
-       ".....",
-       "....a",
-       "...a."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "..cbb",
-       "...bb",
-       "...cb",
-       "....c",
-       "b...c",
-       "b....",
-       "b....",
-       "bb...",
-       "b....",
-       "b...c",
-       "b...b",
-       "...cb",
-       "...b.",
-       "..b..",
-       "..b..",
-       "....b",
-       "NNNb.",
-       "nNNN.",
-       "nnNN.",
-       "nnnN.",
-       "nnnNb",
-       "nnNN.",
-       "nNNNb",
-       "NNN..",
-       "...b.",
-       ".b..b",
-       ".b...",
-       ".....",
-       ".....",
-       "..b..",
-       "..b..",
-       "..b..",
-       "..b..",
-       "..ab.",
-       "...ab",
-       "...aa",
-       ".....",
-       ".....",
-       "a....",
-       ".a..."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "......................"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "bottom",
-      "at": "top-left",
-      "art": [
-       "......................",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "......................",
-       "......................"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
       "face": "front",
       "at": "top-left",
       "art": [
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "......................"
+       "............",
+       "ssssssssssss",
+       "............",
+       "............",
+       "gggggggggggg",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "............",
+       "gggggggggggg",
+       "............",
+       "............",
+       "............",
+       "gggggggggggg"
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      },
      {
       "face": "back",
       "at": "top-left",
       "art": [
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "......................",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "......................",
-       "......................",
-       "......................",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "......................",
-       "......................",
-       "......................"
+       "ssssssssssss",
+       "ssssssssssss",
+       "ssssssssssss",
+       "ssssssssssss",
+       "............",
+       "............",
+       "............",
+       "ssssssssssss",
+       "ssssssssssss",
+       "............",
+       "............",
+       "ssssssssssss",
+       "............",
+       "............",
+       "ssssssssssss",
+       "............",
+       "............",
+       "............",
+       "ssssssssssss",
+       "ssssssssssss"
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
-     }
-    ]
-   }
-  },
-  {
-   "id": "shell_4",
-   "shape": "box",
-   "parent": "shell",
-   "size": [
-    11.0,
-    20.0,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    1.25
-   ],
-   "style": "shell",
-   "paint": {
-    "stamps": [
+     },
      {
       "face": "left",
       "at": "top-left",
       "art": [
-       "...bb",
-       "..bbb",
-       "bbbc.",
-       "bbc..",
-       "bc...",
-       "c....",
-       "c....",
-       "....b",
-       "....b",
-       "....b",
-       "c..bc",
-       "c..b.",
-       "c..b.",
-       "c..c.",
-       "c.b..",
-       "..c..",
-       "NNN.c",
-       "nNNN.",
-       "nnNN.",
-       "nnnN.",
-       "nnnN.",
-       "nnNN.",
-       "nNNN.",
-       "NNN..",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".b...",
-       ".....",
-       "a....",
-       ".....",
-       "....."
+       "s...s...ss....",
+       "s...s..ss...ss",
+       "s..ss..s...sss",
+       "s...s..s..ss..",
+       "ss..s.s..s....",
+       ".s..s.s.s.....",
+       "..s.s.nns.s...",
+       "...snnnnnn....",
+       "s...nnnnnn....",
+       ".ssnnnnnnnn...",
+       "...nnnnnnnn...",
+       "ssssnnnnnn....",
+       "....nnnnnn....",
+       "..ss..nn......",
+       "ss...s.s.s....",
+       "....s..s.s....",
+       "...ss..s..s...",
+       ".sss..s..ss...",
+       "ss....s..ss...",
+       ".....ss..ss..."
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      },
      {
       "face": "right",
       "at": "top-left",
       "art": [
-       "bb...",
-       "bbb..",
-       ".cbbb",
-       "..cbb",
-       "...cb",
-       "....c",
-       "....c",
-       "b....",
-       "b....",
-       "b....",
-       "cb..c",
-       ".b..c",
-       ".b..c",
-       ".c..c",
-       "..b.c",
-       "..c..",
-       "c.NNN",
-       ".NNNn",
-       ".NNnn",
-       ".Nnnn",
-       ".Nnnn",
-       ".NNnn",
-       ".NNNn",
-       "..NNN",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       "...b.",
-       ".....",
-       "....a",
-       ".....",
-       "....."
+       "....ss...s...s",
+       "ss...ss..s...s",
+       "sss...s..ss..s",
+       "..ss..s..s...s",
+       "....s..s.s..ss",
+       ".....s.s.s..s.",
+       "...s.snn.s.s..",
+       "....nnnnnns...",
+       "....nnnnnn...s",
+       "...nnnnnnnnss.",
+       "...nnnnnnnn...",
+       "....nnnnnnssss",
+       "....nnnnnn....",
+       "......nn..ss..",
+       "....s.s.s...ss",
+       "....s.s..s....",
+       "...s..s..ss...",
+       "...ss..s..sss.",
+       "...ss..s....ss",
+       "...ss..ss....."
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      },
      {
       "face": "top",
       "at": "top-left",
       "art": [
-       "......................",
-       "......................",
-       "......................",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc"
+       "ssssssssssss",
+       "............",
+       "............",
+       "............",
+       "ssssssssssss",
+       "............",
+       "............",
+       "............",
+       "ssssssssssss",
+       "ssssssssssss",
+       "............",
+       "............",
+       "............",
+       "............"
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      },
      {
       "face": "bottom",
       "at": "top-left",
       "art": [
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................"
+       "gggggggggggg",
+       "............",
+       "............",
+       "ssssssssssss",
+       "ssssssssssss",
+       "............",
+       "............",
+       "............",
+       "ssssssssssss",
+       "ssssssssssss",
+       "............",
+       "............",
+       "............",
+       "............"
       ],
       "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "front",
-      "at": "top-left",
-      "art": [
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "cccccccccccccccccccccc",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "cccccccccccccccccccccc",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "back",
-      "at": "top-left",
-      "art": [
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "cccccccccccccccccccccc",
-       "cccccccccccccccccccccc",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "aaaaaaaaaaaaaaaaaaaaaa",
-       "......................"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     }
-    ]
-   }
-  },
-  {
-   "id": "shell_5",
-   "shape": "box",
-   "parent": "shell",
-   "size": [
-    11.5,
-    19.5,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    3.75
-   ],
-   "style": "shell",
-   "paint": {
-    "stamps": [
-     {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       "cc...",
-       ".....",
-       ".....",
-       "...bb",
-       "..bbb",
-       "bbbcc",
-       "bc...",
-       "c....",
-       ".....",
-       "....b",
-       "...bb",
-       "..bbc",
-       "..b..",
-       ".b...",
-       "bc...",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       "....."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "...cc",
-       ".....",
-       ".....",
-       "bb...",
-       "bbb..",
-       "ccbbb",
-       "...cb",
-       "....c",
-       ".....",
-       "b....",
-       "bb...",
-       "cbb..",
-       "..b..",
-       "...b.",
-       "...cb",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       "....."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "ccccccccccccccccccccccc",
-       "ccccccccccccccccccccccc",
-       "ccccccccccccccccccccccc",
-       ".......................",
-       "......................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "bottom",
-      "at": "top-left",
-      "art": [
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "......................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "front",
-      "at": "top-left",
-      "art": [
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "back",
-      "at": "top-left",
-      "art": [
-       "bbbbbbbbbbbbbbbbbbbbbbb",
-       "ccccccccccccccccccccccc",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "bbbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbbb",
-       "ccccccccccccccccccccccc",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "bbbbbbbbbbbbbbbbbbbbbbb",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "......................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     }
-    ]
-   }
-  },
-  {
-   "id": "shell_6",
-   "shape": "box",
-   "parent": "shell",
-   "size": [
-    11.5,
-    10.0,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    3.5,
-    6.25
-   ],
-   "style": "shell",
-   "paint": {
-    "stamps": [
-     {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       ".bbbb",
-       "bbbbb",
-       "ccccc",
-       ".....",
-       ".....",
-       ".....",
-       "bbbbb",
-       "bbcbb",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       "....."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "bbbb.",
-       "bbbbb",
-       "ccccc",
-       ".....",
-       ".....",
-       ".....",
-       "bbbbb",
-       "bbcbb",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       "....."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       ".......................",
-       ".......................",
-       "ccccccccccccccccccccccc",
-       "ccccccccccccccccccccccc",
-       "ccccccccccccccccccccccc"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "bottom",
-      "at": "top-left",
-      "art": [
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "......................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "front",
-      "at": "top-left",
-      "art": [
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd",
-       "ddddddddddddddddddddddd"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "back",
-      "at": "top-left",
-      "art": [
-       ".......................",
-       "bbbbbbbbbbbbbbbbbbbbbbb",
-       "ccccccccccccccccccccccc",
-       ".......................",
-       ".......................",
-       ".......................",
-       "bbbbbbbbbbbbbbbbbbbbbbb",
-       "bbbbbbbbbbbbbbbbbbbbbbb",
-       "ccccccccccccccccccccccc",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       ".......................",
-       "......................."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     }
-    ]
-   }
-  },
-  {
-   "id": "shell_7",
-   "shape": "box",
-   "parent": "shell",
-   "size": [
-    11.0,
-    5.5,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    3.75,
-    8.75
-   ],
-   "style": "shell",
-   "paint": {
-    "stamps": [
-     {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       ".....",
-       ".....",
-       ".....",
-       "bbb..",
-       ".cbb.",
-       "....b",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       "....."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       ".....",
-       ".....",
-       ".....",
-       "..bbb",
-       ".bbc.",
-       "b....",
-       ".....",
-       ".....",
-       ".....",
-       ".....",
-       "....."
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "bottom",
-      "at": "top-left",
-      "art": [
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "front",
-      "at": "top-left",
-      "art": [
-       "......................",
-       "......................",
-       "......................",
-       "dddddddddddddddddddddd",
-       "dddddddddddddddddddddd",
-       "dddddddddddddddddddddd",
-       "dddddddddddddddddddddd",
-       "dddddddddddddddddddddd",
-       "dddddddddddddddddddddd",
-       "dddddddddddddddddddddd",
-       "dddddddddddddddddddddd"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
-      }
-     },
-     {
-      "face": "back",
-      "at": "top-left",
-      "art": [
-       "......................",
-       "......................",
-       "......................",
-       "bbbbbbbbbbbbbbbbbbbbbb",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................",
-       "......................"
-      ],
-      "key": {
-       "a": "rust:2",
-       "b": "rust:4",
-       "c": "rust:6",
-       "n": "hood:0",
-       "N": "rust:1",
-       "d": "hood:1"
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
       }
      }
     ]
@@ -2503,32 +1693,121 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    7.5,
-    1.5,
-    7.5
+    6,
+    1,
+    8
    ],
    "pivot": [
     0.0,
-    9.5179,
-    1.2531
-   ],
-   "rotation": [
-    7.5,
-    0.0,
+    11.5,
     0.0
    ],
    "style": "shell",
    "paint": {
-    "layers": [
+    "stamps": [
      {
-      "id": "bands",
-      "op": "stripes",
-      "axis": "z",
-      "period": 2.0,
-      "width": 0.4,
-      "ramp": "rust",
-      "tone": 4.6,
-      "wobble": 0.2
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "ssssss"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".ss...ss"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "ss...ss."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "......",
+       "ssssss",
+       "ssssss",
+       "......",
+       "......",
+       "......",
+       "......",
+       "ssssss"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ssssss",
+       "ssssss",
+       "......",
+       "......",
+       "......",
+       "ssssss",
+       "ssssss",
+       "......"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
      }
     ]
    }
@@ -2538,102 +1817,135 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    7.5,
-    1.5,
-    7.5
+    6,
+    8,
+    1
    ],
    "pivot": [
     0.0,
-    7.6162,
-    -5.8441
-   ],
-   "rotation": [
-    -37.5,
     0.0,
-    0.0
+    -11.5
    ],
    "style": "shell",
    "paint": {
-    "layers": [
+    "stamps": [
      {
-      "id": "bands",
-      "op": "stripes",
-      "axis": "z",
-      "period": 2.0,
-      "width": 0.4,
-      "ramp": "rust",
-      "tone": 4.6,
-      "wobble": 0.2
-     }
-    ]
-   }
-  },
-  {
-   "id": "keel_2",
-   "shape": "box",
-   "parent": "shell",
-   "size": [
-    7.5,
-    1.5,
-    7.5
-   ],
-   "pivot": [
-    0.0,
-    1.2531,
-    -9.5179
-   ],
-   "rotation": [
-    -82.5,
-    0.0,
-    0.0
-   ],
-   "style": "shell",
-   "paint": {
-    "layers": [
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "......",
+       "......",
+       "......",
+       "ssssss",
+       "ssssss",
+       "......",
+       "......",
+       "......"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
      {
-      "id": "bands",
-      "op": "stripes",
-      "axis": "z",
-      "period": 2.0,
-      "width": 0.4,
-      "ramp": "rust",
-      "tone": 4.6,
-      "wobble": 0.2
-     }
-    ]
-   }
-  },
-  {
-   "id": "keel_3",
-   "shape": "box",
-   "parent": "shell",
-   "size": [
-    7.5,
-    1.5,
-    7.5
-   ],
-   "pivot": [
-    0.0,
-    -5.8441,
-    -7.6162
-   ],
-   "rotation": [
-    -127.5,
-    0.0,
-    0.0
-   ],
-   "style": "shell",
-   "paint": {
-    "layers": [
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "......",
+       "......",
+       "ssssss",
+       "ssssss",
+       "......",
+       "......",
+       "......",
+       "......"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
      {
-      "id": "bands",
-      "op": "stripes",
-      "axis": "z",
-      "period": 2.0,
-      "width": 0.4,
-      "ramp": "rust",
-      "tone": 4.6,
-      "wobble": 0.2
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".",
+       ".",
+       ".",
+       "s",
+       "s",
+       ".",
+       ".",
+       "."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       ".",
+       ".",
+       ".",
+       "s",
+       "s",
+       ".",
+       ".",
+       "."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ssssss"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
      }
     ]
    }
@@ -2643,12 +1955,12 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    0.5,
-    3.0,
-    3.0
+    1,
+    4,
+    4
    ],
    "pivot": [
-    5.85,
+    7.5,
     0.0,
     0.0
    ],
@@ -2659,12 +1971,12 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    0.5,
-    3.0,
-    3.0
+    1,
+    4,
+    4
    ],
    "pivot": [
-    -5.85,
+    -7.5,
     0.0,
     0.0
    ],
@@ -2675,137 +1987,401 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    11.0,
-    4.0,
-    8.0
+    12,
+    3,
+    7
    ],
    "pivot": [
     0.0,
-    3.0,
-    -3.0
+    4.0,
+    -2.0
    ],
    "offset": [
     0.0,
-    2.0421,
-    3.7523
+    1.5,
+    3.5
    ],
-   "rotation": [
-    8.0,
-    0.0,
-    0.0
-   ],
-   "style": "hood"
+   "style": "hood",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "..ccc.......",
+       ".ccc........",
+       "............"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "............",
+       "cc..........",
+       "ccc........."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".ccc...",
+       ".c.....",
+       "......."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "......c",
+       "......c",
+       "c.....c"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".cc.........",
+       "cc..........",
+       "c...........",
+       "c.......ccc.",
+       ".......cccc.",
+       "............",
+       "....cc......"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "...........c",
+       "............",
+       "....ccccc...",
+       "...ccccc....",
+       "............",
+       "............",
+       "............"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hood_lip",
    "shape": "box",
    "parent": "hood",
    "size": [
-    10.0,
-    1.5,
-    2.0
+    10,
+    1,
+    1
    ],
    "pivot": [
     0.0,
-    1.361,
-    7.8874
+    0.5,
+    7.5
    ],
-   "rotation": [
-    8.0,
-    0.0,
-    0.0
-   ],
-   "style": "hood"
-  },
-  {
-   "id": "head",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    9.0,
-    5.0,
-    5.0
-   ],
-   "pivot": [
-    0.0,
-    -0.5,
-    3.0
-   ],
-   "style": "flesh_body"
+   "style": "hood",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "cc........"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "c"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "cc........"
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "c........."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "eye_stalk_l",
-   "shape": "box",
+   "shape": "bone",
    "parent": "body",
-   "size": [
-    1.5,
-    5.0,
-    5.0
-   ],
    "pivot": [
-    5.25,
-    0.5,
-    0.5
+    5.0,
+    1.0,
+    1.0
    ],
-   "style": "flesh_body"
+   "style": "flesh"
   },
   {
    "id": "eye_l",
    "shape": "box",
    "parent": "eye_stalk_l",
    "size": [
-    1.0,
-    4.0,
-    4.0
+    2,
+    4,
+    4
    ],
    "pivot": [
-    0.75,
+    0.0,
     0.0,
     0.0
    ],
    "offset": [
-    0.5,
+    1.0,
     0.0,
     0.0
    ],
-   "style": "eye"
+   "style": "eyebulb",
+   "paint": {
+    "stamps": [
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "..kh",
+       "..kk",
+       "....",
+       "...."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "hk..",
+       "kk..",
+       "....",
+       "...."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "eye_stalk_r",
-   "shape": "box",
+   "shape": "bone",
    "parent": "body",
-   "size": [
-    1.5,
-    5.0,
-    5.0
-   ],
    "pivot": [
-    -5.25,
-    0.5,
-    0.5
+    -5.0,
+    1.0,
+    1.0
    ],
-   "style": "flesh_body"
+   "style": "flesh"
   },
   {
    "id": "eye_r",
    "shape": "box",
    "parent": "eye_stalk_r",
    "size": [
-    1.0,
-    4.0,
-    4.0
+    2,
+    4,
+    4
    ],
    "pivot": [
-    -0.75,
+    0.0,
     0.0,
     0.0
    ],
    "offset": [
-    -0.5,
+    -1.0,
     0.0,
     0.0
    ],
-   "style": "eye"
+   "style": "eyebulb",
+   "paint": {
+    "stamps": [
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "..kh",
+       "..kk",
+       "....",
+       "...."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "hk..",
+       "kk..",
+       "....",
+       "...."
+      ],
+      "key": {
+       "s": "rust:2",
+       "n": "rust:0",
+       "g": "cream:1",
+       "c": "cream:3",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "flesh:0",
+       "l": "flesh:1",
+       "d": "flesh:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tentacles",
@@ -2813,8 +2389,8 @@
    "parent": "body",
    "pivot": [
     0.0,
-    -2.0,
-    4.5
+    -1.0,
+    4.0
    ],
    "style": "flesh"
   },
@@ -2823,24 +2399,24 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    -3.0,
-    1.0,
-    0.5
+    -4.5,
+    2.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -117.239,
-    -0.0,
-    60.945
+    -68.418,
+    -8.531,
+    -90.0
    ],
    "style": "tentacle"
   },
@@ -2849,24 +2425,24 @@
    "shape": "box",
    "parent": "tentacle_0",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
-    -0.0,
-    -5.5,
+    0.0,
+    -4.5,
     -0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    178.645,
-    42.202,
-    152.172
+    12.553,
+    -27.842,
+    21.067
    ],
    "style": "tentacle_tip"
   },
@@ -2875,23 +2451,23 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    -1.0,
-    1.0,
-    0.5
+    -1.5,
+    2.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -81.72,
-    -14.036,
+    -82.488,
+    -8.531,
     -90.0
    ],
    "style": "tentacle"
@@ -2901,24 +2477,24 @@
    "shape": "box",
    "parent": "tentacle_1",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
-    -0.0,
-    -5.5,
+    0.0,
+    -4.5,
     0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    5.135,
-    3.668,
-    26.136
+    4.428,
+    3.836,
+    30.564
    ],
    "style": "tentacle_tip"
   },
@@ -2927,23 +2503,23 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    1.0,
-    1.0,
-    0.5
+    1.5,
+    2.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -98.28,
-    -14.036,
+    -97.512,
+    -8.531,
     -90.0
    ],
    "style": "tentacle"
@@ -2953,24 +2529,24 @@
    "shape": "box",
    "parent": "tentacle_2",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
-    -0.0,
-    -5.5,
+    0.0,
+    -4.5,
     -0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -5.135,
-    -3.668,
-    26.136
+    -4.428,
+    -3.836,
+    30.564
    ],
    "style": "tentacle_tip"
   },
@@ -2979,24 +2555,24 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    3.0,
-    1.0,
-    0.5
+    4.5,
+    2.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -117.239,
-    -0.0,
-    -60.945
+    -111.582,
+    -8.531,
+    -90.0
    ],
    "style": "tentacle"
   },
@@ -3005,24 +2581,24 @@
    "shape": "box",
    "parent": "tentacle_3",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
     0.0,
-    -5.5,
-    -0.0
+    -4.5,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    178.645,
-    -42.202,
-    -152.172
+    -167.447,
+    -27.842,
+    -158.933
    ],
    "style": "tentacle_tip"
   },
@@ -3031,24 +2607,24 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    -3.0,
-    -1.5,
-    0.5
+    -4.5,
+    -1.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -54.601,
+    -63.435,
     -0.0,
-    -39.289
+    -53.13
    ],
    "style": "tentacle"
   },
@@ -3057,24 +2633,24 @@
    "shape": "box",
    "parent": "tentacle_4",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
     -0.0,
-    -5.5,
-    0.0
+    -4.5,
+    -0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    17.304,
-    -4.816,
-    3.433
+    13.843,
+    -5.427,
+    2.723
    ],
    "style": "tentacle_tip"
   },
@@ -3083,24 +2659,24 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    -1.0,
     -1.5,
-    0.5
+    -1.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -60.313,
-    -0.0,
-    -15.255
+    -82.722,
+    16.699,
+    -90.0
    ],
    "style": "tentacle"
   },
@@ -3109,24 +2685,24 @@
    "shape": "box",
    "parent": "tentacle_5",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
-    -0.0,
-    -5.5,
+    0.0,
+    -4.5,
     0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    17.85,
-    -2.412,
-    1.376
+    9.688,
+    -71.093,
+    4.083
    ],
    "style": "tentacle_tip"
   },
@@ -3135,24 +2711,24 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    1.0,
-    -1.5,
-    0.5
+    1.5,
+    -1.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -60.313,
-    -0.0,
-    15.255
+    -97.278,
+    16.699,
+    -90.0
    ],
    "style": "tentacle"
   },
@@ -3161,24 +2737,24 @@
    "shape": "box",
    "parent": "tentacle_6",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
     0.0,
-    -5.5,
-    0.0
+    -4.5,
+    -0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    17.85,
-    2.412,
-    -1.376
+    -170.312,
+    -71.093,
+    -175.917
    ],
    "style": "tentacle_tip"
   },
@@ -3187,24 +2763,24 @@
    "shape": "box",
    "parent": "tentacles",
    "size": [
-    1.0,
-    5.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
-    3.0,
-    -1.5,
-    0.5
+    4.5,
+    -1.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
-    -54.601,
+    -63.435,
     -0.0,
-    39.289
+    53.13
    ],
    "style": "tentacle"
   },
@@ -3213,134 +2789,26 @@
    "shape": "box",
    "parent": "tentacle_7",
    "size": [
-    1.0,
-    5.0,
-    1.0
+    1,
+    5,
+    1
    ],
    "pivot": [
     0.0,
-    -5.5,
-    0.0
+    -4.5,
+    -0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
-    17.304,
-    4.816,
-    -3.433
+    13.843,
+    5.427,
+    -2.723
    ],
    "style": "tentacle_tip"
-  },
-  {
-   "id": "cirri_0",
-   "shape": "card",
-   "parent": "tentacles",
-   "pivot": [
-    -2.0,
-    0.5,
-    0.5
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    3.0
-   ],
-   "rotation": [
-    -10.0,
-    -18.0,
-    0.0
-   ],
-   "style": "cirri",
-   "plane": "xz",
-   "art": [
-    ".....fff......",
-    "...ssfsffff...",
-    "..ssfsfff.fff.",
-    ".ssffsfffs..ff",
-    "ssffs.ff.fs..f",
-    ".fffs.ff..ff..",
-    ".f.fs.fff.sff.",
-    "f.ffs.f.f.ss.t",
-    ".tf.s.f.f..t..",
-    "..f.s.f..f....",
-    "..t.stff.t....",
-    ".......t......"
-   ]
-  },
-  {
-   "id": "cirri_1",
-   "shape": "card",
-   "parent": "tentacles",
-   "pivot": [
-    2.0,
-    0.5,
-    0.5
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    3.0
-   ],
-   "rotation": [
-    -10.0,
-    18.0,
-    0.0
-   ],
-   "style": "cirri",
-   "plane": "xz",
-   "art": [
-    ".....sff......",
-    "...ssffffff...",
-    "..ss.ffffsff..",
-    ".ss.ffff.ff.f.",
-    ".s.ff.ff.sf.ff",
-    ".tff..ff.ssf.f",
-    ".fff..f.f.s.f.",
-    "ffff.sf.f.s.ff",
-    "f.f..sf.ff.t..",
-    "t.f.stf..t....",
-    "..t...ft......",
-    ".............."
-   ]
-  },
-  {
-   "id": "cirri_2",
-   "shape": "card",
-   "parent": "tentacles",
-   "pivot": [
-    0.0,
-    -2.0,
-    0.5
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    3.0
-   ],
-   "rotation": [
-    25.0,
-    0.0,
-    0.0
-   ],
-   "style": "cirri",
-   "plane": "xz",
-   "art": [
-    "......ffs.....",
-    "....ssfff.....",
-    "...ssfsffff...",
-    "..ssffsfff.ff.",
-    ".s.ff.sf.ff.ff",
-    "s.fffssf..ff.f",
-    "tfff.s.f..sff.",
-    "ff.f.s.ff.ssff",
-    "t.f..s.ff..s.f",
-    "...tst.f.f.st.",
-    ".......t.t....",
-    ".............."
-   ]
   },
   {
    "id": "siphon",
@@ -3358,17 +2826,17 @@
    "shape": "box",
    "parent": "siphon",
    "size": [
-    3.0,
-    2.5,
-    5.0
+    4,
+    3,
+    4
    ],
    "pivot": [
     0.0,
-    -0.75,
+    0.0,
     2.5
    ],
    "rotation": [
-    18.0,
+    15.0,
     0.0,
     0.0
    ],
@@ -3379,17 +2847,17 @@
    "shape": "box",
    "parent": "siphon",
    "size": [
-    2.5,
-    2.0,
-    1.0
+    3,
+    2,
+    1
    ],
    "pivot": [
     0.0,
-    -1.5,
-    5.25
+    -0.5,
+    5.0
    ],
    "rotation": [
-    18.0,
+    15.0,
     0.0,
     0.0
    ],
@@ -3401,8 +2869,8 @@
    "parent": "shell",
    "pivot": [
     0.0,
-    10.0,
-    0.5
+    11.0,
+    0.0
    ],
    "style": "flesh"
   },
@@ -3411,73 +2879,29 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    12.0,
-    0.5,
-    12.0
+    12,
+    1,
+    12
    ],
    "pivot": [
     0.0,
-    0.25,
+    0.5,
     0.0
    ],
    "style": "blanket"
-  },
-  {
-   "id": "saddle_fringe_l",
-   "shape": "card",
-   "parent": "saddle_blanket",
-   "pivot": [
-    6.0,
-    -0.25,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "style": "fringe",
-   "plane": "yz",
-   "art": [
-    "fffffffffffffff...ffffft",
-    "tfftttfttftttft...tftft.",
-    ".tt...t..t...t.....t.t.."
-   ]
-  },
-  {
-   "id": "saddle_fringe_r",
-   "shape": "card",
-   "parent": "saddle_blanket",
-   "pivot": [
-    -6.0,
-    -0.25,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "style": "fringe",
-   "plane": "yz",
-   "art": [
-    "fffftfftffffffffffffffff",
-    "ttft.tt.tfttfttttfttttft",
-    "..t......t..t....t....t."
-   ]
   },
   {
    "id": "saddle_seat",
    "shape": "box",
    "parent": "saddle",
    "size": [
-    8.0,
-    1.5,
-    9.0
+    8,
+    2,
+    8
    ],
    "pivot": [
     0.0,
-    1.25,
+    2.0,
     0.0
    ],
    "style": "saddle"
@@ -3487,19 +2911,14 @@
    "shape": "box",
    "parent": "saddle_seat",
    "size": [
-    7.0,
-    3.0,
-    1.5
+    8,
+    3,
+    1
    ],
    "pivot": [
     0.0,
-    1.5,
-    -4.0
-   ],
-   "rotation": [
-    14.0,
-    0.0,
-    0.0
+    2.5,
+    -3.5
    ],
    "style": "saddle"
   },
@@ -3508,19 +2927,14 @@
    "shape": "box",
    "parent": "saddle_seat",
    "size": [
-    3.0,
-    2.5,
-    1.5
+    2,
+    3,
+    1
    ],
    "pivot": [
     0.0,
-    1.2,
-    3.8
-   ],
-   "rotation": [
-    -12.0,
-    0.0,
-    0.0
+    2.5,
+    3.5
    ],
    "style": "saddle"
   },
@@ -3529,14 +2943,14 @@
    "shape": "box",
    "parent": "saddle_pommel",
    "size": [
-    1.5,
-    1.5,
-    1.5
+    2,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    1.6,
-    0.2
+    2.0,
+    0.5
    ],
    "style": "brass"
   },
@@ -3545,14 +2959,14 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    0.5,
-    12.0,
-    2.0
+    1,
+    16,
+    2
    ],
    "pivot": [
-    6.9,
-    -6.5,
-    0.0
+    7.5,
+    -8.0,
+    -6.0
    ],
    "style": "strap"
   },
@@ -3561,12 +2975,12 @@
    "shape": "box",
    "parent": "saddle_strap_l",
    "size": [
-    0.5,
-    1.0,
-    1.5
+    1,
+    3,
+    4
    ],
    "pivot": [
-    0.05,
+    0.5,
     -3.0,
     0.0
    ],
@@ -3577,13 +2991,13 @@
    "shape": "card",
    "parent": "saddle_strap_l",
    "pivot": [
-    0.3,
-    -6.0,
+    0.6,
+    -8.0,
     0.0
    ],
    "offset": [
     0.0,
-    -1.5,
+    -2.5,
     0.0
    ],
    "style": "stirrup",
@@ -3591,10 +3005,9 @@
    "art": [
     "s..",
     "s..",
-    "s..",
     "BBB",
     "b.b",
-    "bBb"
+    "BBB"
    ]
   },
   {
@@ -3602,14 +3015,14 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    0.5,
-    12.0,
-    2.0
+    1,
+    16,
+    2
    ],
    "pivot": [
-    -6.9,
-    -6.5,
-    0.0
+    -7.5,
+    -8.0,
+    -6.0
    ],
    "style": "strap"
   },
@@ -3618,12 +3031,12 @@
    "shape": "box",
    "parent": "saddle_strap_r",
    "size": [
-    0.5,
-    1.0,
-    1.5
+    1,
+    3,
+    4
    ],
    "pivot": [
-    -0.05,
+    -0.5,
     -3.0,
     0.0
    ],
@@ -3634,13 +3047,13 @@
    "shape": "card",
    "parent": "saddle_strap_r",
    "pivot": [
-    -0.3,
-    -6.0,
+    -0.6,
+    -8.0,
     0.0
    ],
    "offset": [
     0.0,
-    -1.5,
+    -2.5,
     0.0
    ],
    "style": "stirrup",
@@ -3648,10 +3061,9 @@
    "art": [
     "s..",
     "s..",
-    "s..",
     "BBB",
     "b.b",
-    "bBb"
+    "BBB"
    ]
   },
   {
@@ -3660,8 +3072,129 @@
    "parent": "saddle",
    "pivot": [
     0.0,
-    2.0,
-    -0.5
+    4.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "shell_4",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "shell_5",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "shell_6",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "shell_7",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "keel_2",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "keel_3",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "cirri_0",
+   "shape": "bone",
+   "parent": "tentacles",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "cirri_1",
+   "shape": "bone",
+   "parent": "tentacles",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "cirri_2",
+   "shape": "bone",
+   "parent": "tentacles",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "saddle_fringe_l",
+   "shape": "bone",
+   "parent": "saddle_blanket",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "saddle_fringe_r",
+   "shape": "bone",
+   "parent": "saddle_blanket",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
    ],
    "style": "flesh"
   }

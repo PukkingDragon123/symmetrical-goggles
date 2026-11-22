@@ -2,26 +2,32 @@
 
     python examples/src/elder_guardian.py examples/elder_guardian.json
 
-An ancient armoured guardian: a heavy rounded body sheathed in overlapping plates of pale, weathered prismarine stone
-(cracked, chipped and crusted with barnacles and sea growth, faded mauve on the plate rims) with one huge round eye in
-front: a pale eyeball deep under a heavy brow, a big round glowing sea-green iris with a round pupil and a catch-light
-that roves (`pupil`), lids rounding the opening. A crown of twelve spikes (`spike_0..11`, each a tapering horn of
-three boxes) stands round it: five over the brow, two each side, three underneath; each can slide out of its socket.
-Armoured pectoral fins with torn membranes, a mouth plate under the eye (bubbles come out of it), and a tail of four
-armoured segments ending in a ragged fan.
+An ancient guardian in the vanilla mob style, our own take on the guardian silhouette: a big, boxy, stepped body of
+pale, aged prismarine stone in plates (dark seams, lit lips), crusted with moss that drips over the upper sides, a
+few cracks and barnacles; one simple flat eye in front (a glowing sea-green iris with a dark square pupil that
+roves, `pupil`) in a dark socket rim (`lids`) under a heavy stone `brow` that slides down to shut it; a crown of
+twelve tapering spike boxes (`spike_0..11`, three boxes each: a dark mauve root, a pale shaft, an ivory point) that
+slide out of the body; flat armoured fins; a mouth plate under the eye (bubbles come out of it); and a tail of four
+stepped segments ending in a fan.
 
-Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
-to a vanilla entity model (python -m lowpix mc export). The body is about 26 x 24 x 28 px (1.6 blocks); with the
-spikes, fins and tail it spans about 4 x 3 x 4.6 blocks. Drawn at in-game size: the vanilla 2.35 elder scale is not
-needed. Faces +Z, the lowest point at y = 0, "left" is +X; the root
-(body) pivots in the middle of the body.
+Units are Minecraft pixels (16 per block) at **density 1** (vanilla texel size): every box is whole pixels, so the
+model exports 1:1 to a vanilla entity model:
+
+    PYTHONHASHSEED=0 python -m lowpix mc export examples/elder_guardian.json --mod mods/winterworks \\
+        --modid winterworks --package dev.lowpix.winterworks.client.lowpix -o out/elder_guardian
+
+The body is 26 x 24 x 26 px, 30 x 30 x 32 with its plates (about 1.9 blocks); with the spikes, fins and tail it spans
+about 3.2 x 2.6 x 4.4 blocks. Drawn at in-game size (scale 1.0): the vanilla 2.35 elder scale is not needed. Faces +Z,
+the lowest point (a spike tip) at y = 0, "left" is +X; the root (body) pivots in the middle of the body.
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 6): bones body, eye, pupil, spikes (spike_0..11), tail_0..3,
-fin_l, fin_r. Extra joints: brow (the heavy upper lid: it slides down to shut the eye), lids (the lid frame card),
-jaw (the mouth plate), spike_k_mid / spike_k_tip, tail_fin, and the locators `mouth` (bubbles spawn here) and
-`laser` (the stare's beam starts here, on the pupil). Clips: idle, swim (loops), bubble (1.0 s: shots at 0.45, 0.6,
-0.75 s), stare (2.5 s: the telegraph runs 0-2.0 s, the beam fires at 2.0 s), tail_whip (1.0 s: wind-up to 0.4 s, the
-spin 0.4-0.75 s), death (2.0 s). Glow: ramp `prism` (the iris and a few glowing seams).
+fin_l, fin_r. Extra joints: brow (the heavy upper lid: it slides down 7 px to shut the eye), lids (the socket rim
+card), jaw (the mouth plate), spike_k_mid / spike_k_tip, tail_fin, and the locators `mouth` (bubbles spawn here) and
+`laser` (the stare's beam starts here, on the pupil): mouth (0, 10.4, 15), laser (0, 16.4, 14.2). The spikes keep
+their directions (OCEAN_UPDATE.md section 12).
+Clips: idle 4.0, swim 1.6 (loops), bubble 1.0 (shots at 0.45, 0.6, 0.75 s), stare 2.5 (the telegraph runs 0-2.0 s,
+the beam fires at 2.0 s), tail_whip 1.0 (wind-up to 0.4 s, the spin 0.4-0.75 s), death 2.0. Glow: ramp `prism` (the
+iris). Part names from the earlier design that are no longer drawn stay as empty bones (name compatibility).
 """
 import math
 import os
@@ -30,52 +36,50 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from sea_life_kit import (LIGHT, LR, M, ROOT, Rig, add, aim, barnacle_cluster, dump, eyeball, fan_fin, iris_card,  # noqa
-                       keys, lid_frame, limb, osc, pos, r, ragged_fin, ramps, rest_on_ground, ring, rounded, sc,
-                       shake, spikes, timeline, wave)
+from sea_life_kit import (LIGHT, LR, M, ROOT, Rig, add, card_style, combine, dump, flat, keep_names, keys,  # noqa
+                       limb1, marks, mottle, osc, pos, r, ramps, rest_on_ground, ring, sc, shake, swirls, timeline,
+                       wave)
 
-DENSITY = 2
+DENSITY = 1
 R = Rig(density=DENSITY, bone_style="armor")
 part, bone, card = R.part, R.bone, R.card
 
-# ======================================================================= body: a heavy rounded armoured mass
+# ======================================================================= body: a big stepped block of stone plates
 C = np.array((0.0, 16.0, 0.0))
-rounded(R, "body", None, [26, 24, 28], "armor", centre=C + (0, 0, -1.0), at=C, cut=(0.5, 0.74), steps=4)
-rounded(R, "hind", "body", [19, 17, 8], "armor", centre=(0, 15.5, -15.0), skip=("m",), cut=(0.7, 0.8))
-# overlapping plates: a dorsal shield with a keel, flank shields, a chin plate
-rounded(R, "plate_top", "body", [22, 3, 22], "plate", centre=(0, 28.5, -1.0), skip=("y", "m"), cut=(0.8, 0.82))
-part("keel", "plate_top", [3, 2, 16], "plate", centre=(0, 30.5, -2.0))
+part("body", None, [26, 24, 26], "armor", at=C, centre=C)
+part("plate_top", "body", [20, 2, 20], "plate", centre=(0, 29, -1))
+part("keel", "plate_top", [4, 2, 12], "plate", centre=(0, 31, -2))
+part("plate_low", "body", [20, 2, 20], "plate", centre=(0, 3, -1))
 for s in (1, -1):
-    n = LR(s)
-    rounded(R, f"plate_{n}", "body", [3, 18, 20], "plate", centre=M((13.5, 17.0, -1.0), s), skip=("y", "m"),
-            cut=(0.82, 0.84))
-    part(f"cheek_{n}", "body", [3, 12, 6], "plate", centre=M((10.0, 13.0, 11.5), s), rot=(0, s * -20, 0))
-part("plate_low", "body", [20, 3, 20], "plate", centre=(0, 3.5, -1.0))
+    part(f"plate_{LR(s)}", "body", [2, 18, 20], "plate", centre=M((14, 16, -1), s))
+part("hind", "body", [20, 18, 6], "armor", centre=(0, 16, -16))
 
-# ======================================================================= the eye: eyeball, roving iris, lids, brow
-EY, EZ = 17.0, 13.0
-part("eye", "body", [15, 15, 1], "eye", at=(0, EY, EZ), centre=(0, EY, EZ + 0.5))
-card("pupil", "eye", iris_card(20, 8), "iris", at=(0, EY, EZ + 1.1))
+# ======================================================================= the eye: a flat glowing eye, a heavy brow
+EY, EZ = 15.0, 13.0
+part("eye", "body", [8, 6, 1], "eye", at=(0, EY, EZ), centre=(0, EY, EZ + 0.5))
+card("pupil", "eye", ["pp", "pp"], "pupil", at=(0, EY, EZ + 1.1))
 bone("laser", "pupil", at=(0, EY, EZ + 1.2))
-card("lids", "body", lid_frame(36, 36, 28, 28, dy=1), "lids", at=(0, EY, EZ + 1.3))
-# the brow: a heavy plate over the eye, it slides down to shut it
-part("brow", "body", [20, 4, 4], "brow", at=(0, EY + 8.0, EZ), centre=(0, EY + 7.5, EZ + 1.25), rot=(-14, 0, 0))
-part("brow_ridge", "brow", [16, 2, 3], "brow", centre=(0, EY + 9.75, EZ + 0.5))
+card("lids", "body", ["oooooooooooo", "okkkkkkkkkko", "ok........ko", "ok........ko", "ok........ko",
+                      "ok........ko", "ok........ko", "ok........ko", "okkkkkkkkkko", "oooooooooooo"],
+     "lids", at=(0, EY, EZ + 1.3))
+# the brow: a heavy stone plate over the eye; it slides 7 px down to shut it
+part("brow", "body", [14, 7, 3], "brow", at=(0, EY + 6.5, EZ), centre=(0, EY + 6.5, EZ + 1.5))
+part("brow_ridge", "brow", [10, 2, 2], "brow", centre=(0, EY + 9, EZ + 1))
 # the mouth plate under the eye
-bone("jaw", "body", at=(0, 7.5, 10.0))
-part("jaw_plate", "jaw", [14, 3, 4], "plate", centre=(0, 6.5, 12.5))
-part("mouth_slit", "body", [12, 1.5, 1], "mouth", centre=(0, 8.25, 13.3))
-bone("mouth", "body", at=(0, 7.0, 15.0))
+bone("jaw", "body", at=(0, 9, 12))
+part("jaw_plate", "jaw", [10, 3, 3], "plate", centre=(0, 8.5, 13.5))
+part("mouth_slit", "body", [8, 1, 1], "mouth", centre=(0, 10.5, 13.5))
+bone("mouth", "body", at=(0, 9, 15))
 
 # ======================================================================= the crown of spikes
 SPIKES = [  # base (world), direction, length
-    ((-9.0, 29.0, 6.0), (-0.45, 1.0, 0.1), 10.0), ((-4.5, 30.0, 7.0), (-0.2, 1.0, 0.0), 11.0),
-    ((0.0, 31.5, 7.0), (0.0, 1.0, 0.05), 12.0), ((4.5, 30.0, 7.0), (0.2, 1.0, 0.0), 11.0),
-    ((9.0, 29.0, 6.0), (0.45, 1.0, 0.1), 10.0),
-    ((15.0, 23.0, 0.0), (1.0, 0.35, -0.2), 10.0), ((15.0, 10.0, -2.0), (1.0, -0.3, -0.3), 9.0),
-    ((-15.0, 23.0, 0.0), (-1.0, 0.35, -0.2), 10.0), ((-15.0, 10.0, -2.0), (-1.0, -0.3, -0.3), 9.0),
-    ((-7.0, 3.0, -3.0), (-0.4, -1.0, -0.3), 8.0), ((7.0, 3.0, -3.0), (0.4, -1.0, -0.3), 8.0),
-    ((0.0, 26.0, -12.0), (0.0, 0.7, -1.0), 10.0),
+    ((-9.0, 30.0, 6.0), (-0.45, 1.0, 0.1), 10.0), ((-4.5, 31.0, 6.0), (-0.2, 1.0, 0.0), 11.0),
+    ((0.0, 32.0, 4.0), (0.0, 1.0, 0.05), 12.0), ((4.5, 31.0, 6.0), (0.2, 1.0, 0.0), 11.0),
+    ((9.0, 30.0, 6.0), (0.45, 1.0, 0.1), 10.0),
+    ((15.0, 23.0, 2.0), (1.0, 0.35, -0.2), 10.0), ((15.0, 9.0, -2.0), (1.0, -0.3, -0.3), 9.0),
+    ((-15.0, 23.0, 2.0), (-1.0, 0.35, -0.2), 10.0), ((-15.0, 9.0, -2.0), (-1.0, -0.3, -0.3), 9.0),
+    ((-7.0, 2.0, -3.0), (-0.4, -1.0, -0.3), 8.0), ((7.0, 2.0, -3.0), (0.4, -1.0, -0.3), 8.0),
+    ((0.0, 26.0, -13.0), (0.0, 0.7, -1.0), 10.0),
 ]
 bone("spikes", "body", at=C)
 SPIKE_DIRS = []
@@ -83,114 +87,117 @@ for k, (base, d, L) in enumerate(SPIKES):
     base, d = np.array(base, float), np.array(d, float)
     d /= np.linalg.norm(d)
     SPIKE_DIRS.append(d)
-    a = limb(R, f"spike_{k}", "spikes", base - d * 1.5, base + d * (L * 0.38), 2.5, "spike_base")
-    b = limb(R, f"spike_{k}_mid", f"spike_{k}", a, a + d * (L * 0.34), 1.5, "spike_mid")
-    limb(R, f"spike_{k}_tip", f"spike_{k}_mid", b, b + d * (L * 0.34), 1.0, "spike_tip")
-    part(f"socket_{k}", "body", [4, 1, 4], "socket", at=base - d * 0.4, wrot=aim(-d), centre=base - d * 0.4)
+    a = limb1(R, f"spike_{k}", "spikes", base - d * 2.0, base + d * (L * 0.4), 3, "spike_base")
+    b = limb1(R, f"spike_{k}_mid", f"spike_{k}", a, a + d * (L * 0.38), 2, "spike_mid")
+    limb1(R, f"spike_{k}_tip", f"spike_{k}_mid", b, b + d * (L * 0.34), 1, "spike_tip")
 
 # ======================================================================= fins and barnacles
 for s in (1, -1):
     n = LR(s)
-    root = M((14.5, 8.0, 4.0), s)
-    part(f"fin_{n}", "body", [8, 2, 5], "plate", at=root, offset=(s * 4.0, 0, -1.0), rot=(0, s * -35, s * -20))
-    web = fan_fin(22, 20, (0.5, 3.0), [(8, 0.5), (14, 1.5), (19, 4.5), (21.5, 9.0), (20, 14.0), (14, 18.5),
-                                       (8, 19.5)], seed=31 + s, torn=0.6, scallop=0.3)
-    card(f"fin_{n}_web", f"fin_{n}", web if s > 0 else [row[::-1] for row in web], "fin", rel=(s * 6.0, 0, -1.0),
-         offset=(s * 5.5, 0, -3.5), plane="xz")
-# barnacles: little chalky cones in clusters on the old plates
-BARN = [(6.0, 30.0, -6.0), (7.5, 30.0, -4.5), (5.0, 30.0, -3.5), (-7.0, 30.0, 2.0), (-8.0, 30.0, 0.5),
-        (-2.0, 30.0, -9.0), (-0.5, 30.0, -10.0)]
-for k, (x, y, z) in enumerate(BARN):
-    sz = 1.5 if k % 3 else 2.0
-    part(f"barnacle_{k}", "plate_top", [sz, 1.0 if k % 2 else 1.5, sz], "barnacle", centre=(x, y + 0.5, z))
-for s in (1, -1):
-    for k, (y, z) in enumerate(((21.0, -9.0), (19.5, -10.5), (12.0, 5.0))):
-        part(f"barnacle_{LR(s)}{k}", f"plate_{LR(s)}", [1.0, 1.5, 1.5], "barnacle", centre=M((15.25, y, z), s))
+    part(f"fin_{n}", "body", [10, 1, 7], "fin", at=M((15, 8, 4), s), offset=(s * 5, 0, -1.5),
+         rot=(0, s * -35, s * -20))
+for k, (x, z, sz) in enumerate(((6.0, -6.0, 3), (-7.0, 3.0, 2), (-2.0, -8.0, 2), (8.0, 4.0, 2))):
+    part(f"barnacle_{k}", "plate_top", [sz, 1 if sz < 3 else 2, sz], "barnacle",
+         centre=(x, 30.5 if sz < 3 else 31, z))
 
-# ======================================================================= the tail: four armoured segments and a fan
-TAIL = [("tail_0", [13, 12, 8]), ("tail_1", [10, 9, 8]), ("tail_2", [7, 6.5, 8]), ("tail_3", [5, 4.5, 7.5])]
-parent, at = "body", np.array((0, 15.5, -17.5))
+# ======================================================================= the tail: four stepped segments and a fan
+TAIL = [("tail_0", [12, 12, 8]), ("tail_1", [9, 9, 8]), ("tail_2", [6, 6, 8]), ("tail_3", [4, 4, 7])]
+parent, at = "body", np.array((0, 16, -18.0))
 for k, (tid, size) in enumerate(TAIL):
-    part(tid, parent, size, "tail", at=at, offset=(0, 0, -size[2] / 2 + 0.5), rot=(-4 if k == 0 else 3, 0, 0))
-    part(f"{tid}_band", tid, [size[0] + 1, size[1] + 1, 1.5], "band", rel=(0, 0, -0.75))
-    card(f"{tid}_fin", tid, spikes(int(size[2] * 2), 6, seed=60 + k), "fin", rel=(0, size[1] / 2, -size[2] / 2 + 0.5),
-         offset=(0, 1.5, 0), plane="yz")
-    parent, at = tid, None
+    part(tid, parent, size, "tail", at=at, offset=(0, 0, -size[2] / 2 + 1), rot=(-4 if k == 0 else 3, 0, 0))
+    parent = tid
     at = R.wpos(tid, (0, 0, -size[2] + 1.0))
-card("tail_fin", "tail_3", fan_fin(22, 30, (0.5, 15.0), [(9, 1.0), (16, 2.5), (20.5, 8.0), (21.5, 15.0), (20.5, 22.0),
-                                                         (16, 27.5), (9, 29.0)], seed=71, torn=0.7, scallop=0.3),
-     "fin", rel=(0, 0, -7.0), offset=(0, 0, -5.5), plane="yz")
+card("tail_fin", "tail_3", ["..ff.....", ".fmmf....", "fmmmmf...", "fmrmmmf..", "fmmrmmmff", "rrrrrrrrr",
+                            "fmmrmmmff", "fmrmmmf..", "fmmmmf...", ".fmmf....", "..ff....."],
+     "fin_card", rel=(0, 0, -6), offset=(0, 0, -4.5), plane="yz")
+
+# names of the earlier design that are not drawn any more (kept as empty bones for the mod's code)
+keep_names(R, {"body_y": "body", "body_z": "body", "body_m": "body", "hind_y": "hind", "hind_z": "hind",
+               "plate_top_z": "plate_top", "plate_l_z": "plate_l", "cheek_l": "body", "plate_r_z": "plate_r",
+               "cheek_r": "body", **{f"socket_{k}": "body" for k in range(12)},
+               "fin_l_web": "fin_l", "fin_r_web": "fin_r", "barnacle_4": "plate_top", "barnacle_5": "plate_top",
+               "barnacle_6": "plate_top", "barnacle_l0": "plate_l", "barnacle_l1": "plate_l",
+               "barnacle_l2": "plate_l", "barnacle_r0": "plate_r", "barnacle_r1": "plate_r",
+               "barnacle_r2": "plate_r", **{f"tail_{k}_band": f"tail_{k}" for k in range(4)},
+               **{f"tail_{k}_fin": f"tail_{k}" for k in range(4)}})
 
 # ======================================================================= palette and paint
-RAMPS = ramps("elder", "mauve", "algae", "barnacle", "sclera", "pupil", "prism")
-brush = {"flow": "horizontal", "length": 2.0, "width": 0.8, "rough": 0.55, "overshoot": 0.25,
-         "textures": {"elder": "stone", "mauve": "stone", "barnacle": "stone", "algae": "moss"}}
-RIM = {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.6}
-CRACKS = {"id": "cracks", "op": "cracks", "scale": 5.0, "width": 0.03, "threshold": 0.55, "shift": -2.0,
-          "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.0}}
-SEAMS = {"id": "seams", "op": "cracks", "scale": 12.0, "width": 0.012, "threshold": 0.78, "ramp": "prism",
-         "tone": 1.6, "seed": 5, "post": True, "faces": ["front", "sides"]}
-PLATES = {"id": "plates", "op": "scales", "shape": "square", "along": "z", "size": [4.0, 3.0], "gap": 0.5,
-          "highlight": 1.2, "gradient": 1.2, "shadow": -1.6, "jitter": 0.6, "faces": ["top", "sides"]}
-GROWTH = {"id": "growth", "op": "patches", "scale": 2.2, "threshold": 0.66, "ramp": "algae", "tone": 3.6,
-          "faces": ["top"], "bevel": {"shadow": 1, "highlight": 0, "shadow_ramp": "elder", "shadow_shift": -2.0}}
-CHIPS = {"id": "chips", "op": "wear", "width": 1, "density": 0.18, "shift": -2.2}
-MAUVE = {"id": "mauve", "op": "patches", "scale": 3.5, "threshold": 0.7, "ramp": "mauve", "tone": 4.2,
-         "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.0, "highlight_shift": 0.8}}
-RIMWEAR = {"id": "rimwear", "op": "wear", "width": 1, "density": 0.35, "ramp": "mauve", "tone": 5.0}
-SPECKS = {"id": "specks", "op": "spots", "count": 6, "radius": [0.3, 0.6], "ramp": "barnacle", "tone": 6.5,
-          "min_gap": 1.5, "faces": ["top", "sides"],
-          "bevel": {"shadow": 1, "highlight": 0, "shadow_ramp": "elder", "shadow_shift": -2.0}}
+RAMPS = ramps("elder", "moss", "mauve", "tooth", "ink", "prism")
 styles = {
-    "armor": {"ramp": "elder", "tone": 7.0, "rim": RIM,
-              "layers": [{"id": "dark_low", "op": "gradient", "axis": "y", "amount": 0.8}, PLATES, MAUVE, RIMWEAR,
-                         CRACKS, SEAMS, SPECKS, CHIPS, dict(GROWTH, threshold=0.72)]},
-    "plate": {"ramp": "elder", "tone": 8.0, "rim": dict(RIM, light_shift=2.4),
-              "layers": [{"id": "groove", "op": "panel", "inset": 1, "shift": -1.6, "highlight": 1.0, "min_size": 5},
-                         dict(MAUVE, seed=3), RIMWEAR, dict(CRACKS, seed=4), SPECKS, CHIPS, GROWTH]},
-    "brow": {"ramp": "elder", "tone": 6.4, "rim": dict(RIM, light_shift=2.6),
-             "layers": [dict(PLATES, size=[3.0, 2.0]), RIMWEAR, dict(CRACKS, seed=14),
-                        {"id": "shade", "op": "fill", "ramp": "elder", "tone": 2.4, "faces": ["bottom"]}]},
-    "socket": {"ramp": "elder", "tone": 4.0, "rim": {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.0},
-               "brush": {"off": True}},
-    # spikes: old horn, dark and ringed at the root, paling to an ivory point
-    "spike_base": {"ramp": "mauve", "tone": 2.6, "rim": RIM, "brush": {"flow": "y"},
-                   "layers": [{"id": "rings", "op": "stripes", "axis": "y", "period": 1.0, "width": 0.3,
-                               "shift": -1.0}]},
-    "spike_mid": {"ramp": "elder", "tone": 7.0, "rim": RIM, "brush": {"off": True},
-                  "layers": [{"id": "rings", "op": "stripes", "axis": "y", "period": 1.0, "width": 0.3,
-                              "shift": -1.4}]},
-    "spike_tip": {"ramp": "barnacle", "tone": 7.4, "rim": RIM, "brush": {"off": True}},
-    "mouth": {"ramp": "elder", "tone": 0.6, "light": 0.2, "brush": {"off": True},
-              "layers": [{"id": "glow", "op": "band", "axis": "y", "from": -0.2, "to": 0.2, "ramp": "prism",
-                          "tone": 1.6, "faces": ["front"]}]},
-    "tail": {"ramp": "elder", "tone": 7.0, "rim": RIM, "brush": {"flow": "z"},
-             "layers": [dict(PLATES, size=[3.0, 2.0]), MAUVE, RIMWEAR, dict(CRACKS, seed=8), SPECKS, CHIPS]},
-    "band": {"ramp": "mauve", "tone": 4.4, "rim": RIM, "brush": {"off": True},
-             "layers": [{"id": "studs", "op": "rivets", "inset": 1, "spacing": 3, "highlight": 1.4, "shadow": -1.4,
-                         "min_size": 3}]},
-    "fin": {"ramp": "mauve", "tone": 4.2, "light": 0.3, "brush": {"off": True},
-            "layers": [{"id": "veil", "op": "noise", "scale": 1.5, "amount": 0.6}],
-            "art_key": {"r": "elder:9", "t": "barnacle:7", "e": "mauve:6", "m": "mauve:5", "f": "mauve:3"}},
-    "barnacle": {"ramp": "barnacle", "tone": 5.0, "rim": {"light": 1, "dark": 1, "light_shift": 1.8,
-                                                           "dark_shift": -1.6}, "brush": {"off": True},
-                 "layers": [{"id": "hole", "op": "spots", "count": 1, "radius": [0.35, 0.45], "ramp": "barnacle",
-                             "tone": 0.6, "faces": ["top"]},
-                            {"id": "ridges", "op": "stripes", "axis": "x", "period": 1.0, "width": 0.5, "shift": -1.0,
-                             "faces": ["sides"]}]},
-    # the eyeball: pale and glassy, veined, shaded deep under the brow
-    "eye": {"ramp": "sclera", "tone": 5.0, "light": 0.2, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-            "stamps": [{"face": "front", "at": "top-left", "art": eyeball(30, 30, 28, 28, lid_shade=6),
-                        "key": {"L": "elder:2", "k": "elder:1", "l": "elder:5", "u": "elder:0", "d": "sclera:3",
-                                "s": "sclera:6", "S": "sclera:7"}}]},
-    # the iris: a big round glowing sea-green iris, fibres, a round pupil, a soft catch-light
-    "iris": {"ramp": "prism", "tone": 3.0, "light": 0, "brush": {"off": True},
-             "art_key": {"o": "prism:0", "i": "prism:2", "I": "prism:3", "J": "prism:5", "c": "prism:6",
-                         "p": "pupil:0", "q": "pupil:2", "W": "prism:8", "w": "prism:6"}},
-    "lids": {"ramp": "elder", "tone": 7.0, "light": 0.3, "brush": {"off": True},
-             "layers": [dict(PLATES, faces=["all"]), dict(CRACKS, seed=12)],
-             "art_key": {"k": "elder:0", "l": "elder:9", "F": "elder:3", "M": "elder:10"}},
+    "armor": flat("elder", 3.6),
+    "plate": flat("elder", 4.4),
+    "brow": flat("elder", 3.2),
+    "tail": flat("elder", 3.8),
+    "fin": flat("elder", 4.0, {"id": "web", "op": "stripes", "axis": "x", "period": 2.0, "width": 0.5,
+                               "shift": -1.0, "faces": ["top", "bottom"]}),
+    "mouth": flat("ink", 1.0, grain=0.3),
+    "barnacle": flat("tooth", 1.4, {"id": "hole", "op": "fill", "ramp": "elder", "tone": 0.4, "faces": ["top"]},
+                     grain=0.5),
+    # spikes: a dark mauve root, a pale stone shaft, an ivory point
+    "spike_base": flat("mauve", 1.6, grain=0.6),
+    "spike_mid": flat("elder", 4.6, grain=0.6),
+    "spike_tip": flat("tooth", 2.4, grain=0.3),
+    # the eye: a flat glowing iris, a darker ring at its edge
+    "eye": {"ramp": "prism", "tone": 2.4, "light": 0, "brush": {"off": True}, "dither": 0,
+            "rim": {"light": 0, "dark": 0},
+            "stamps": [{"face": "front", "at": "top-left", "art": ["12222221", "23333332", "23444332", "23433332",
+                                                                    "23333332", "12222221"],
+                        "key": {"1": "prism:0", "2": "prism:1", "3": "prism:2", "4": "prism:4"}}]},
+    "pupil": card_style("ink", 0, {"p": "ink:0"}, light=0),
+    "lids": card_style("elder", 1, {"o": "elder:2", "k": "elder:0"}, light=0),
+    "fin_card": card_style("elder", 4, {"f": "elder:6", "m": "elder:4", "r": "elder:2"}),
 }
+
+
+def plates(x, y, z, f):
+    """Big stone plates: dark seams in a brick lattice, each plate's upper seam edge lit."""
+    if f in ("top", "bottom"):
+        u, v = x, z
+    elif f in ("front", "back"):
+        u, v = x, y
+    else:
+        u, v = z, y
+    row = math.floor((v + 0.5) / 6.0)
+    uu = u + (4.0 if row % 2 else 0.0)
+    if (v + 0.5) % 6.0 < 1.0 or (uu + 0.5) % 8.0 < 1.0:
+        return "s"
+    if (v + 0.5) % 6.0 > 5.0:
+        return "L"
+    return "."
+
+
+_moss = mottle(5, 7, 0.1, "g")
+_moss_dk = mottle(9, 4, 0.55, "G")
+_cracks = swirls(13, 16, levels=(0.4,), width=0.06, ch="c")
+
+
+def moss(x, y, z, f):
+    """Moss over the top, dripping down the upper sides in uneven runs."""
+    if f == "bottom":
+        return "."
+    drip = 25 + 3 * math.sin(x * 1.7 + z * 0.9) + 2 * math.sin(z * 2.3)
+    if f == "top" or y > drip:
+        c = _moss_dk(x, y, z, f)
+        if c != ".":
+            return c
+        return _moss(x, y, z, f)
+    return "."
+
+
+def eye_socket(x, y, z, f):
+    """A dark socket ring round the eye on the body front."""
+    if f == "front" and abs(x) < 6 and abs(y - EY) < 5:
+        return "k"
+    return "."
+
+
+KEY = {"s": "elder:1", "L": "elder:6", "g": "moss:2", "G": "moss:1", "c": "elder:0", "k": "elder:0"}
+for pid in ("body", "plate_top", "plate_low", "plate_l", "plate_r", "hind", "keel"):
+    marks(R, pid, combine(moss, _cracks, plates) if pid != "body" else combine(eye_socket, moss, _cracks, plates),
+          KEY)
+for tid, _ in TAIL:
+    marks(R, tid, combine(moss, plates), KEY)
+marks(R, "brow", combine(moss, lambda x, y, z, f: "s" if f == "front" and (y + 0.5) % 3.0 < 1.0 else "."), KEY)
 
 # ======================================================================= animation
 REST = {}
@@ -293,17 +300,15 @@ for clip in ANIM.values():
 
 spec = {
     "name": "Elder Guardian",
-    "description": "The Winterworks Elder Guardian boss: an ancient armoured guardian of pale weathered prismarine "
-                   "plates, cracked, barnacled and faded mauve, one huge round eye with a glowing sea-green iris and a "
-                   "round pupil under a heavy brow, a crown of twelve extendable spikes, armoured fins and a tail of "
-                   "four segments ending in a torn fan. Minecraft pixel units, density 2: exports 1:1 to a vanilla "
-                   "entity model.",
+    "description": "The Winterworks Elder Guardian boss in the vanilla mob style: a big boxy body of pale, aged "
+                   "prismarine plates crusted with moss, one simple flat glowing eye under a heavy stone brow, a crown "
+                   "of twelve tapering spikes that slide out, flat armoured fins and a stepped tail ending in a fan. "
+                   "Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": DENSITY,
     "grounded": False,
-    "budget": {"tris": 1600, "colors": 96},
+    "budget": {"tris": 800, "colors": 48},
     "light": LIGHT,
-    "brush": brush,
     "minecraft": {"fps": 20, "glow_ramps": ["prism"]},
     "render": {"background": "#173a40", "hero": [34, 16], "shadow": 0.4},
     "palette": {"ramps": RAMPS},

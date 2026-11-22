@@ -1,18 +1,18 @@
 {
   "name": "Obolisk",
-  "parts": 39,
-  "instances": 39,
-  "faces": 218,
-  "triangles": 436,
-  "vertices_flat": 872,
-  "vertices_unique": 284,
+  "parts": 22,
+  "instances": 22,
+  "faces": 26,
+  "triangles": 52,
+  "vertices_flat": 104,
+  "vertices_unique": 40,
   "atlas": [
-    256,
-    512
+    128,
+    128
   ],
-  "atlas_fill": 0.626,
-  "texel_density": 2.0,
-  "colors_used": 30,
+  "atlas_fill": 0.695,
+  "texel_density": 1.0,
+  "colors_used": 16,
   "palette": {
     "eyeglow": [
       "#3d0f63",
@@ -32,47 +32,32 @@
       "#dab8ff",
       "#f6ecff"
     ],
-    "sclera": [
-      "#2b2136",
-      "#3f3350",
-      "#58496b",
-      "#736587",
-      "#9183a3",
-      "#afa3bf",
-      "#cbc2d8",
-      "#e4def0",
-      "#f6f3fb"
-    ],
     "obsidian": [
-      "#04030a",
-      "#090614",
-      "#0f0b1e",
-      "#161029",
-      "#1e1635",
-      "#271d43",
-      "#312552",
-      "#3d2f63",
-      "#4b3a76",
-      "#5e4c8c",
-      "#7b6aa8",
-      "#a497c9"
+      "#050309",
+      "#0c0815",
+      "#150e24",
+      "#211636",
+      "#33244f",
+      "#4c3a70",
+      "#6f5c97",
+      "#a597c8"
     ]
   },
   "bounds": {
     "min": [
-      -17.442,
+      -16.0,
       0.0,
-      -15.229
+      -14.0
     ],
     "max": [
-      18.71,
-      61.275,
-      12.115
+      16.0,
+      64.0,
+      17.0
     ],
     "size": [
-      36.152,
-      61.275,
-      27.344
+      32.0,
+      64.0,
+      31.0
     ]
   },
   "warnings": [],
@@ -86,44 +71,27 @@
   },
   "joints": [
     "body",
-    "core",
-    "cap",
-    "face_low",
-    "face_l",
-    "face_r",
-    "face_top",
-    "socket",
+    "lids",
     "eye",
     "pupil",
-    "lids",
     "eyelid",
-    "side_l",
-    "cheek_l",
-    "side_r",
-    "cheek_r",
-    "back_plate",
-    "crown",
-    "crown_0",
-    "crown_1",
-    "crown_2",
-    "crown_3",
+    "brow_l",
+    "brow_r",
+    "leg_fl",
+    "foot_fl",
+    "leg_fr",
+    "foot_fr",
+    "leg_bl",
+    "foot_bl",
+    "leg_br",
+    "foot_br",
     "shard_l",
     "shard_r",
     "shard_b0",
     "shard_b1",
     "shard_l2",
-    "leg_fl",
-    "foot_fl",
-    "toe_fl",
-    "leg_fr",
-    "foot_fr",
-    "toe_fr",
-    "leg_bl",
-    "foot_bl",
-    "toe_bl",
-    "leg_br",
-    "foot_br",
-    "toe_br"
+    "crown",
+    "crown_1"
   ],
   "files": {
     "obolisk.glb": "examples/output/obolisk.glb",
@@ -131,7 +99,7 @@
     "obolisk.mtl": "examples/output/obolisk.mtl",
     "obolisk.bbmodel": "examples/output/obolisk.bbmodel",
     "obolisk_texture.png": "examples/output/obolisk_texture.png",
-    "obolisk_texture_x2.png": "examples/output/obolisk_texture_x2.png",
+    "obolisk_texture_x8.png": "examples/output/obolisk_texture_x8.png",
     "obolisk_hero.png": "examples/output/obolisk_hero.png",
     "obolisk_sheet.png": "examples/output/obolisk_sheet.png",
     "obolisk_turntable.gif": "examples/output/obolisk_turntable.gif",
