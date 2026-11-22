@@ -1,0 +1,138 @@
+{
+  "name": "Monolith Wand",
+  "parts": 31,
+  "instances": 31,
+  "faces": 162,
+  "triangles": 324,
+  "vertices_flat": 648,
+  "vertices_unique": 216,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.687,
+  "texel_density": 4.0,
+  "colors_used": 39,
+  "palette": {
+    "obsidian": [
+      "#07040d",
+      "#0e0819",
+      "#160e26",
+      "#1f1534",
+      "#2a1d44",
+      "#372756",
+      "#46336a",
+      "#58427f",
+      "#6d5594"
+    ],
+    "eye": [
+      "#46075a",
+      "#6e0e86",
+      "#9a1fb4",
+      "#c13ddb",
+      "#de6cf2",
+      "#f0a6fb",
+      "#fcdcff",
+      "#ffffff"
+    ],
+    "gold": [
+      "#2b1233",
+      "#4b1f3e",
+      "#73343f",
+      "#9c5441",
+      "#c27f4a",
+      "#dfac5e",
+      "#f2d27f",
+      "#fdf0b8"
+    ],
+    "void": [
+      "#040209",
+      "#0a0616",
+      "#110b24",
+      "#1a1234",
+      "#251a46",
+      "#33245a"
+    ],
+    "star": [
+      "#6f5fc8",
+      "#a99bf5",
+      "#e4ddff",
+      "#ffffff"
+    ],
+    "ember": [
+      "#3b0d0a",
+      "#6e1d0c",
+      "#a8380f",
+      "#d8611a",
+      "#f28f2c",
+      "#ffc35a",
+      "#fff0b0"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -2.378,
+      14.375,
+      -2.609
+    ],
+    "max": [
+      2.802,
+      41.375,
+      2.598
+    ],
+    "size": [
+      5.18,
+      27.0,
+      5.206
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 3.0
+  },
+  "joints": [
+    "rod",
+    "shaft",
+    "band_0",
+    "band_1",
+    "pommel",
+    "pommel_tip",
+    "head",
+    "collar",
+    "collar_ring",
+    "prong_0",
+    "prong_0_top",
+    "prong_0_barb",
+    "prong_1",
+    "prong_1_top",
+    "prong_1_barb",
+    "prong_2",
+    "prong_2_top",
+    "prong_2_barb",
+    "prong_3",
+    "prong_3_top",
+    "prong_3_barb",
+    "cap",
+    "cap_spike",
+    "eye",
+    "eye_ball",
+    "embers",
+    "ember_0",
+    "ember_1",
+    "ember_2",
+    "ember_3",
+    "ember_4"
+  ],
+  "files": {
+    "monolith_wand.glb": "examples/output/monolith_wand.glb",
+    "monolith_wand.obj": "examples/output/monolith_wand.obj",
+    "monolith_wand.mtl": "examples/output/monolith_wand.mtl",
+    "monolith_wand.bbmodel": "examples/output/monolith_wand.bbmodel",
+    "monolith_wand_texture.png": "examples/output/monolith_wand_texture.png",
+    "monolith_wand_texture_x8.png": "examples/output/monolith_wand_texture_x8.png",
+    "monolith_wand_hero.png": "examples/output/monolith_wand_hero.png",
+    "monolith_wand_sheet.png": "examples/output/monolith_wand_sheet.png",
+    "monolith_wand_turntable.gif": "examples/output/monolith_wand_turntable.gif",
+    "monolith_wand_idle.gif": "examples/output/monolith_wand_idle.gif"
+  }
+}
