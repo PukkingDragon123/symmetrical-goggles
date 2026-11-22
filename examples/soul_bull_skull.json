@@ -1,11 +1,11 @@
 {
  "name": "Soul Bull Skull",
- "description": "The Soul Bull's skull, a Winterworks block: a heavy wither-grey bull skull with big forward-sweeping horns and full round eye sockets, lying on its jaw; the sockets burn with soul fire when it is lit (eye_fire, glow). Minecraft pixel units, density 2.",
+ "description": "The Soul Bull's skull, a Winterworks block: a heavy wither-grey bull skull with huge chipped horns sweeping forward, a scowling brow over full round eye sockets, fangs and a cracked jaw, lying on its jaw; the sockets burn with soul fire when it is lit (eye_fire, glow). Minecraft pixel units, density 2.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 2,
  "budget": {
-  "tris": 600,
+  "tris": 1000,
   "colors": 64
  },
  "light": {
@@ -17,7 +17,7 @@
   "strength": 0.75,
   "gradient": 0.45,
   "ao": 0.5,
-  "ao_height": 6.0
+  "ao_height": 9.0
  },
  "brush": {
   "flow": "long",
@@ -90,22 +90,22 @@
     "#0e0a12"
    ],
    "soul": [
-    "#071433",
-    "#0c2a63",
-    "#11479a",
-    "#1769c4",
-    "#1f92e0",
-    "#38bdf2",
-    "#7ce0fb",
-    "#c4f6ff",
-    "#ffffff"
+    "#018085",
+    "#018e93",
+    "#019fa4",
+    "#01b0b6",
+    "#01c0c6",
+    "#12d5db",
+    "#32e8ee",
+    "#7bfafe",
+    "#d4feff"
    ]
   }
  },
  "styles": {
   "bone": {
    "ramp": "bone",
-   "tone": 4.6,
+   "tone": 5.0,
    "rim": {
     "light": 1,
     "dark": 1,
@@ -211,6 +211,19 @@
      "amount": -0.6
     },
     {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.05,
+     "threshold": 0.5,
+     "shift": -3.4,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.6
+     }
+    },
+    {
      "id": "sheen",
      "op": "gloss",
      "post": true,
@@ -263,6 +276,77 @@
      "shift": -2.0
     },
     {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.6,
+     "width": 0.05,
+     "threshold": 0.5,
+     "shift": -3.4,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.6
+     }
+    },
+    {
+     "id": "sheen",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.0
+    }
+   ]
+  },
+  "jaw": {
+   "ramp": "bone",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.8,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.7
+    },
+    {
+     "id": "soot",
+     "op": "patches",
+     "scale": 1.1,
+     "threshold": 0.55,
+     "shift": -1.2
+    },
+    {
+     "id": "pits",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.5
+     ],
+     "shift": -1.6
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 1.8,
+     "width": 0.06,
+     "threshold": 0.38,
+     "shift": -3.4,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.6
+     }
+    },
+    {
      "id": "sheen",
      "op": "gloss",
      "post": true,
@@ -301,6 +385,18 @@
      "shift": -1.2
     },
     {
+     "id": "furrows",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.5,
+     "width": 0.25,
+     "shift": -1.4,
+     "faces": [
+      "top",
+      "front"
+     ]
+    },
+    {
      "id": "sheen",
      "op": "gloss",
      "post": true,
@@ -331,7 +427,7 @@
      "from": -1.01,
      "to": -0.4,
      "ramp": "soul",
-     "tone": 1.0,
+     "tone": 0.0,
      "faces": [
       "sides",
       "front",
@@ -360,14 +456,38 @@
     "off": true
    },
    "art_key": {
-    "t": "bone:9",
+    "t": "bone:10",
     "T": "bone:11",
-    "r": "bone:5"
+    "r": "bone:4",
+    "m": "bone:8",
+    "f": "bone:6"
    }
+  },
+  "fang": {
+   "ramp": "bone",
+   "tone": 9.6,
+   "light": 0.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -3.0
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "tip",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.4
+    }
+   ]
   },
   "horn": {
    "ramp": "horn",
-   "tone": 3.2,
+   "tone": 3.4,
    "rim": {
     "light": 1,
     "dark": 1,
@@ -383,9 +503,25 @@
      "id": "rings",
      "op": "stripes",
      "axis": "y",
-     "period": 1.0,
+     "period": 1.5,
      "width": 0.3,
-     "shift": -1.2
+     "shift": -1.4
+    },
+    {
+     "id": "chips",
+     "op": "wear",
+     "width": 1,
+     "density": 0.45,
+     "ramp": "horn",
+     "tone": 7.4
+    },
+    {
+     "id": "splits",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.05,
+     "threshold": 0.5,
+     "shift": -2.4
     },
     {
      "id": "gloss",
@@ -416,7 +552,15 @@
      "id": "tip",
      "op": "gradient",
      "axis": "y",
-     "amount": -1.4
+     "amount": -1.6
+    },
+    {
+     "id": "chips",
+     "op": "wear",
+     "width": 1,
+     "density": 0.4,
+     "ramp": "horn",
+     "tone": 8.0
     }
    ]
   },
@@ -436,9 +580,9 @@
     "w": "soul:7",
     "c": "soul:6",
     "E": "soul:5",
-    "e": "soul:4",
-    "b": "soul:3",
-    "k": "soul:2"
+    "e": "soul:3",
+    "b": "soul:2",
+    "k": "soul:0"
    }
   }
  },
@@ -448,7 +592,7 @@
    "shape": "bone",
    "pivot": [
     0.0,
-    14.6341,
+    16.1316,
     -6.0
    ],
    "rotation": [
@@ -596,10 +740,10 @@
       "face": "front",
       "at": "center",
       "art": [
-       ".vv..vv.",
-       "vVVvvVVv",
-       "vVVvvVVv",
-       ".vv..vv."
+       ".vv...vv.",
+       "vVVv.vVVv",
+       "vVVv.vVVv",
+       ".vv...vv."
       ],
       "key": {
        "v": "void:2",
@@ -624,6 +768,27 @@
     12.5
    ],
    "style": "void"
+  },
+  {
+   "id": "skull_crest",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2.5,
+    1.0,
+    6.0
+   ],
+   "pivot": [
+    0.0,
+    4.875,
+    4.25
+   ],
+   "rotation": [
+    -6.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
   },
   {
    "id": "skull_orbit_l",
@@ -806,11 +971,32 @@
    "style": "socket"
   },
   {
+   "id": "skull_brow_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    6.0,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    5.0,
+    6.125,
+    5.625
+   ],
+   "rotation": [
+    -12.0,
+    -20.0,
+    16.0
+   ],
+   "style": "brow"
+  },
+  {
    "id": "skull_cheek_l",
    "shape": "box",
    "parent": "skull",
    "size": [
-    1.0,
+    2.0,
     3.0,
     7.5
    ],
@@ -837,16 +1023,121 @@
    ],
    "offset": [
     0.0,
-    -0.9375,
+    -1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "tTtTtTtTtTtT",
-    "tttttttttttt",
-    "r.rr.rr.rr.r"
+    "rrrrrrrrrrrr",
+    "mmmmmmT.m.mm",
+    "........T...",
+    "............"
    ]
+  },
+  {
+   "id": "skull_fang_l0",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2.0,
+    4.5,
+    2.0
+   ],
+   "pivot": [
+    3.1875,
+    -1.5,
+    15.75
+   ],
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    -8.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "skull_fang_l0_tip",
+   "shape": "box",
+   "parent": "skull_fang_l0",
+   "size": [
+    0.5,
+    2.0,
+    0.5
+   ],
+   "pivot": [
+    -0.0,
+    -4.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "skull_fang_l1",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    1.0,
+    3.5,
+    1.0
+   ],
+   "pivot": [
+    3.1875,
+    -1.5,
+    11.75
+   ],
+   "offset": [
+    0.0,
+    -1.75,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    -8.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "skull_fang_l1_tip",
+   "shape": "box",
+   "parent": "skull_fang_l1",
+   "size": [
+    0.5,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -3.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -0.75,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
   },
   {
    "id": "skull_orbit_r",
@@ -1029,11 +1320,32 @@
    "style": "socket"
   },
   {
+   "id": "skull_brow_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    6.0,
+    2.0,
+    4.0
+   ],
+   "pivot": [
+    -5.0,
+    6.125,
+    5.625
+   ],
+   "rotation": [
+    -12.0,
+    20.0,
+    -16.0
+   ],
+   "style": "brow"
+  },
+  {
    "id": "skull_cheek_r",
    "shape": "box",
    "parent": "skull",
    "size": [
-    1.0,
+    2.0,
     3.0,
     7.5
    ],
@@ -1060,16 +1372,121 @@
    ],
    "offset": [
     0.0,
-    -0.9375,
+    -1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "tTtTtTtTtTtT",
-    "tttttttttttt",
-    "r.rr.rr.rr.r"
+    "rrrrrrrrrrrr",
+    ".T.mm.mmmT.m",
+    "......T.....",
+    "............"
    ]
+  },
+  {
+   "id": "skull_fang_r0",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    2.0,
+    4.5,
+    2.0
+   ],
+   "pivot": [
+    -3.1875,
+    -1.5,
+    15.75
+   ],
+   "offset": [
+    0.0,
+    -2.25,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    8.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "skull_fang_r0_tip",
+   "shape": "box",
+   "parent": "skull_fang_r0",
+   "size": [
+    0.5,
+    2.0,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -4.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "skull_fang_r1",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    1.0,
+    3.5,
+    1.0
+   ],
+   "pivot": [
+    -3.1875,
+    -1.5,
+    11.75
+   ],
+   "offset": [
+    0.0,
+    -1.75,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    8.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "skull_fang_r1_tip",
+   "shape": "box",
+   "parent": "skull_fang_r1",
+   "size": [
+    0.5,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    -0.0,
+    -3.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -0.75,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
   },
   {
    "id": "jaw",
@@ -1078,7 +1495,7 @@
    "size": [
     5.5,
     2.5,
-    16.0
+    11.0
    ],
    "pivot": [
     0.0,
@@ -1088,14 +1505,14 @@
    "offset": [
     0.0,
     -0.75,
-    8.125
+    5.625
    ],
    "rotation": [
     2.0,
     0.0,
     0.0
    ],
-   "style": "skull"
+   "style": "jaw"
   },
   {
    "id": "jaw_ramus",
@@ -1130,25 +1547,65 @@
    "style": "void"
   },
   {
-   "id": "jaw_incisors",
-   "shape": "card",
+   "id": "jaw_tip",
+   "shape": "box",
    "parent": "jaw",
+   "size": [
+    5.5,
+    2.5,
+    5.5
+   ],
    "pivot": [
     0.0,
-    0.5,
-    16.25
+    -0.875,
+    11.625
    ],
    "offset": [
     0.0,
-    0.9375,
+    0.125,
+    2.9375
+   ],
+   "rotation": [
+    10.0,
+    7.0,
+    -6.0
+   ],
+   "style": "jaw",
+   "paint": {
+    "layers": [
+     {
+      "id": "break",
+      "op": "fill",
+      "ramp": "bone",
+      "tone": 8.0,
+      "faces": [
+       "back"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "jaw_incisors",
+   "shape": "card",
+   "parent": "jaw_tip",
+   "pivot": [
+    -0.0,
+    1.375,
+    5.375
+   ],
+   "offset": [
+    0.0,
+    1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "xy",
    "art": [
-    "tTtTtTtT",
-    "tttttttt",
-    ".r.rr.r."
+    "...T..T.",
+    ".T.t..t.",
+    ".mmmmmmm",
+    "rrrrrrrr"
    ]
   },
   {
@@ -1158,20 +1615,73 @@
    "pivot": [
     2.5,
     0.5,
-    9.375
+    8.125
    ],
    "offset": [
     0.0,
-    0.9375,
+    1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    ".r.rr.rr.r..",
-    "tttttttttttt",
-    "tTtTtTtTtTtT"
+    ".....T.T....",
+    ".T...t.t....",
+    ".mmmmmmmmmmm",
+    "rrrrrrrrrrrr"
    ]
+  },
+  {
+   "id": "jaw_tusk_l",
+   "shape": "box",
+   "parent": "jaw_tip",
+   "size": [
+    2.0,
+    4.0,
+    2.0
+   ],
+   "pivot": [
+    2.75,
+    0.625,
+    3.25
+   ],
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    -16.0,
+    0.0,
+    -14.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "jaw_tusk_l_tip",
+   "shape": "box",
+   "parent": "jaw_tusk_l",
+   "size": [
+    0.5,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    -0.0,
+    4.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
   },
   {
    "id": "jaw_teeth_r",
@@ -1180,29 +1690,82 @@
    "pivot": [
     -2.5,
     0.5,
-    9.375
+    8.125
    ],
    "offset": [
     0.0,
-    0.9375,
+    1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    ".r.rr.rr.r..",
-    "tttttttttttt",
-    "tTtTtTtTtTtT"
+    "............",
+    "..T.......T.",
+    "mmm.Tmmmm.m.",
+    "rrrrrrrrrrrr"
    ]
+  },
+  {
+   "id": "jaw_tusk_r",
+   "shape": "box",
+   "parent": "jaw_tip",
+   "size": [
+    2.0,
+    4.0,
+    2.0
+   ],
+   "pivot": [
+    -2.75,
+    0.625,
+    3.25
+   ],
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    -16.0,
+    0.0,
+    14.0
+   ],
+   "style": "fang"
+  },
+  {
+   "id": "jaw_tusk_r_tip",
+   "shape": "box",
+   "parent": "jaw_tusk_r",
+   "size": [
+    0.5,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    4.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "fang"
   },
   {
    "id": "horn_l",
    "shape": "box",
    "parent": "skull",
    "size": [
-    4.5,
-    4.5,
-    4.5
+    5.0,
+    4.0,
+    5.0
    ],
    "pivot": [
     6.25,
@@ -1211,13 +1774,13 @@
    ],
    "offset": [
     0.0,
-    -1.125,
+    -0.75,
     0.0
    ],
    "rotation": [
-    176.81,
-    -33.476,
-    -78.633
+    172.914,
+    -33.341,
+    -77.256
    ],
    "style": "horn"
   },
@@ -1226,24 +1789,24 @@
    "shape": "box",
    "parent": "horn_l",
    "size": [
-    4.0,
-    5.0,
-    4.0
+    4.5,
+    4.5,
+    4.5
    ],
    "pivot": [
     -0.0,
-    -4.5,
-    0.0001
+    -4.0,
+    -0.0
    ],
    "offset": [
     0.0,
-    -1.5,
+    -1.125,
     0.0
    ],
    "rotation": [
-    39.435,
-    -0.618,
-    -11.336
+    44.167,
+    -0.0,
+    -13.515
    ],
    "style": "horn"
   },
@@ -1252,24 +1815,24 @@
    "shape": "box",
    "parent": "horn_l_1",
    "size": [
-    2.5,
-    4.5,
-    2.5
+    4.0,
+    4.0,
+    4.0
    ],
    "pivot": [
-    -0.0,
-    -5.0,
-    0.0001
+    0.0,
+    -4.5,
+    -0.0
    ],
    "offset": [
     0.0,
-    -1.625,
+    -1.0,
     0.0
    ],
    "rotation": [
-    36.96,
-    27.39,
-    2.312
+    31.834,
+    29.693,
+    3.97
    ],
    "style": "horn"
   },
@@ -1278,24 +1841,76 @@
    "shape": "box",
    "parent": "horn_l_2",
    "size": [
+    3.0,
+    3.5,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    -4.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "rotation": [
+    24.372,
+    -0.232,
+    1.182
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_l_4",
+   "shape": "box",
+   "parent": "horn_l_3",
+   "size": [
     2.0,
-    4.5,
+    3.0,
     2.0
    ],
    "pivot": [
     0.0,
-    -4.5,
+    -3.5,
     0.0
    ],
    "offset": [
     0.0,
-    -1.75,
+    -1.0,
     0.0
    ],
    "rotation": [
-    143.847,
-    -38.433,
-    -155.656
+    158.001,
+    -27.304,
+    -169.162
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_l_5",
+   "shape": "box",
+   "parent": "horn_l_4",
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    -0.0,
+    -3.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -0.75,
+    0.0
+   ],
+   "rotation": [
+    6.358,
+    -8.31,
+    -6.156
    ],
    "style": "horn_tip"
   },
@@ -1304,12 +1919,64 @@
    "shape": "box",
    "parent": "horn_l",
    "size": [
-    5.0,
-    5.0,
-    5.0
+    5.5,
+    5.5,
+    5.5
    ],
    "pivot": [
     0.0,
+    0.0,
+    0.0
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_l_1_chip",
+   "shape": "box",
+   "parent": "horn_l_1",
+   "size": [
+    2.0,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -2.475,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    2.5
+   ],
+   "rotation": [
+    18.0,
+    0.0,
+    0.0
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_l_2_chip",
+   "shape": "box",
+   "parent": "horn_l_2",
+   "size": [
+    2.0,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    -2.2,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    2.25
+   ],
+   "rotation": [
+    18.0,
     0.0,
     0.0
    ],
@@ -1320,9 +1987,9 @@
    "shape": "box",
    "parent": "skull",
    "size": [
-    4.5,
-    4.5,
-    4.5
+    5.0,
+    4.0,
+    5.0
    ],
    "pivot": [
     -6.25,
@@ -1331,13 +1998,13 @@
    ],
    "offset": [
     0.0,
-    -1.125,
+    -0.75,
     0.0
    ],
    "rotation": [
-    176.81,
-    33.476,
-    78.633
+    172.914,
+    33.341,
+    77.256
    ],
    "style": "horn"
   },
@@ -1346,24 +2013,24 @@
    "shape": "box",
    "parent": "horn_r",
    "size": [
-    4.0,
-    5.0,
-    4.0
+    4.5,
+    4.5,
+    4.5
    ],
    "pivot": [
     0.0,
-    -4.5,
-    0.0001
+    -4.0,
+    -0.0
    ],
    "offset": [
     0.0,
-    -1.5,
+    -1.125,
     0.0
    ],
    "rotation": [
-    39.435,
-    0.618,
-    11.336
+    44.167,
+    0.0,
+    13.515
    ],
    "style": "horn"
   },
@@ -1372,24 +2039,24 @@
    "shape": "box",
    "parent": "horn_r_1",
    "size": [
-    2.5,
-    4.5,
-    2.5
+    4.0,
+    4.0,
+    4.0
    ],
    "pivot": [
-    0.0,
-    -5.0,
-    0.0001
+    -0.0,
+    -4.5,
+    -0.0
    ],
    "offset": [
     0.0,
-    -1.625,
+    -1.0,
     0.0
    ],
    "rotation": [
-    143.04,
-    27.39,
-    177.688
+    148.166,
+    29.693,
+    176.03
    ],
    "style": "horn"
   },
@@ -1398,24 +2065,76 @@
    "shape": "box",
    "parent": "horn_r_2",
    "size": [
+    3.0,
+    3.5,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    -4.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "rotation": [
+    -24.372,
+    0.232,
+    1.182
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r_4",
+   "shape": "box",
+   "parent": "horn_r_3",
+   "size": [
     2.0,
-    4.5,
+    3.0,
     2.0
    ],
    "pivot": [
     0.0,
-    -4.5,
+    -3.5,
     -0.0
    ],
    "offset": [
     0.0,
-    -1.75,
+    -1.0,
     0.0
    ],
    "rotation": [
-    -36.153,
-    -38.433,
-    24.344
+    -21.999,
+    -27.304,
+    10.838
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r_5",
+   "shape": "box",
+   "parent": "horn_r_4",
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -0.75,
+    0.0
+   ],
+   "rotation": [
+    6.358,
+    8.31,
+    6.156
    ],
    "style": "horn_tip"
   },
@@ -1424,12 +2143,64 @@
    "shape": "box",
    "parent": "horn_r",
    "size": [
-    5.0,
-    5.0,
-    5.0
+    5.5,
+    5.5,
+    5.5
    ],
    "pivot": [
     0.0,
+    0.0,
+    0.0
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r_1_chip",
+   "shape": "box",
+   "parent": "horn_r_1",
+   "size": [
+    2.0,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    -0.0,
+    -2.475,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    2.5
+   ],
+   "rotation": [
+    18.0,
+    0.0,
+    0.0
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r_2_chip",
+   "shape": "box",
+   "parent": "horn_r_2",
+   "size": [
+    2.0,
+    1.5,
+    0.5
+   ],
+   "pivot": [
+    -0.0,
+    -2.2,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    2.25
+   ],
+   "rotation": [
+    18.0,
     0.0,
     0.0
    ],
@@ -1535,7 +2306,7 @@
    "style": "flame",
    "plane": "yz",
    "art": [
-    ".......E.",
+    ".........",
     ".....k...",
     ".....ek..",
     ".....ee..",
