@@ -164,8 +164,8 @@ SCAR_KEY = {"s": "mane:9", "d": "fur:1"}
 # lower haunches. The root joint sits between the hip joints, so rearing up pivots about the hind legs.
 part("body", None, [20, 16, 26], "fur_torn", at=(0, 21, -21), centre=(1.5, 22, -6))
 # the right flank is torn open: a fur roof along the spine and a strip of belly fur frame a dark cavity
-part("roof_r", "body", [6, 5, 26], "fur_dark", centre=(-9.5, 28.5, -6), rot=(0, 0, 8))
-part("belly_r", "body", [5, 4, 24], "fur_dark", centre=(-8.5, 15.5, -6), rot=(0, 0, -6))
+part("roof_r", "body", [6, 5, 26], "fur_bitten", centre=(-9.5, 28.5, -6), rot=(0, 0, 8))
+part("belly_r", "body", [5, 4, 24], "fur_bitten", centre=(-8.5, 15.5, -6), rot=(0, 0, -6))
 part("frost_core", "body", [3, 6, 7], "core", centre=(-8.5, 22, -7), rot=(0, 0, 4))
 for k, z in enumerate((-16.5, -12.6, -8.7, -4.8, -0.9, 3.0)):
     h = 13 if 0 < k < 5 else 11
@@ -268,7 +268,7 @@ def front_leg(s):
     part(f"front_fore_{n}", up["id"], [10, 12, 10], "fur_leg", at=elbow, offset=(0, -5, 0.5), wrot=MR((-12, 0, 2), s))
     wrist = wpos(f"front_fore_{n}", (0, -10, 0.5))
     FRONT_BOTTOM.append(float(wrist[1]) - 4.0)
-    part(f"front_paw_{n}", f"front_fore_{n}", [12, 5, 12], "paw", at=wrist,
+    part(f"front_paw_{n}", f"front_fore_{n}", [12, 5, 12], "paw_front", at=wrist,
          centre=(wrist[0], wrist[1] - 1.5, wrist[2] + 2.5), wrot=(0, 0, 0))
     # big round toes, each with a hooked horn claw unsheathed from it
     for k, (dx, yaw) in enumerate(((-4.2, 16), (-1.4, 5), (1.4, -5), (4.2, -16))):
@@ -299,7 +299,7 @@ def back_leg(s):
     hock = wpos(f"back_shin_{n}", (0, -ls, 0))
     part(f"back_paw_{n}", f"back_shin_{n}", [6, 10, 6], "fur_leg", at=hock, offset=(0, -4.5, 0), wrot=(-12, 0, 0))
     end = wpos(f"back_paw_{n}", (0, -9, 0))
-    part(f"back_toes_{n}", f"back_paw_{n}", [10, 4, 10], "paw", centre=(end[0], end[1] - 0.5, end[2] + 2.5),
+    part(f"back_toes_{n}", f"back_paw_{n}", [10, 4, 10], "paw_back", centre=(end[0], end[1] - 0.5, end[2] + 2.5),
          wrot=(0, 0, 0))
     for k, (dx, yaw) in enumerate(((-3.3, 14), (-1.1, 5), (1.1, -5), (3.3, -14))):
         tid = f"back_toe_{n}{k}"
@@ -327,8 +327,9 @@ part("ice_shin_l", "front_fore_l", [7, 7, 2], "ice_plate", rel=(0.5, -4.5, 5.6),
 part("ice_wrist_l", "front_fore_l", [2, 6, 2], "crystal_b", rel=(5.4, -7, 3), offset=(0, 3, 0), rot=(30, 0, -40))
 
 # ======================================================================= neck and head
-part("neck", "chest", [16, 14, 16], "fur_body", at=(0, 29, 20), centre=(0, 29, 27), wrot=(0, 0, 0))
+part("neck", "chest", [16, 14, 16], "fur_neck", at=(0, 29, 20), centre=(0, 29, 27), wrot=(0, 0, 0))
 part("throat", "neck", [12, 7, 9], "mane", rel=(0, -7, 2), rot=(-8, 0, 0))
+part("neck_flesh", "neck", [17, 13, 3], "flesh", rel=(0, 0.5, 15.5))
 for s in (1, -1):
     card(f"neck_fringe_{'l' if s > 0 else 'r'}", "neck", locks(12, 7, 150 + s), "mane_fringe", rel=(s * 8.15, -1, 0),
          offset=(0, -3, 0), rot=(0, 0, s * 12))
@@ -341,58 +342,55 @@ card("mane_neck_fringe_r", "mane_neck", locks(12, 6, 93), "mane_fringe", rel=(-9
      rot=(0, 0, -10))
 card("mane_neck_crest", "mane_neck", spikes(16, 6, 94), "mane_spikes", rel=(0, 3.1, 0), offset=(0, 3, 0), rot=(-10, 0, 0))
 
-# the head: a broad cat skull, round crown, flat cheeks, a short wide muzzle; the left half furred and striped,
-# the right half bare bone. Head frame: the cranium spans x -9..9, y -3.5..9.5, z -0.5..11.5.
-part("head", "neck", [18, 13, 12], "head", at=(0, 29.5, 34), offset=(0, 3, 5.5), wrot=(4, 0, 0))
-part("crown", "head", [12, 3, 9], "fur_dark", rel=(2, 10.4, 4), rot=(-10, 0, 0))
-card("crown_fringe", "crown", spikes(11, 5, 102), "fur_spikes", rel=(0, 1.6, -2), offset=(0, 2.5, 0), rot=(-35, 0, 0))
-part("brow_l", "head", [7, 3, 3], "fur_dark", rel=(4.6, 7.8, 11.4), rot=(0, 0, 16))
-part("brow_r", "head", [7, 3, 3], "bone", rel=(-4.6, 7.8, 11.6), rot=(0, 0, -14))
-part("socket_r", "head", [4, 4, 1], "socket", rel=(-4.8, 5.0, 11.6))
-part("eye_l", "head", [2, 2, 1], "eye", rel=(4.8, 5.2, 11.75))
-part("eye_r", "head", [2, 2, 1], "eye", rel=(-4.8, 5.0, 11.85))
-# the eyes burn with ice-blue fire: a flame licking up over each brow, a wisp streaming back along each temple
-FLAME = ["...e..", "..eE..", "..EE.e", ".eEwEe", "eEwWEe", ".EwWwE", "eEWWwe", ".wWWw.", "..WW.."]
-WISP = ["............e.", "........e.eE..", "....eeeEEEEe..", "..eEEwwwEEe...", "eEwwWWwwEe....", ".eEWwEEe......"]
+# the head: the whole head is a bare sabre-toothed cat's SKULL, bone white and ivory, cracked, a tall sagittal crest,
+# heavy brow ridges over deep sockets where soul-fire burns, wide cheekbones, the dark nasal aperture, ice crystals
+# growing out of the bone. Fur only from the neck back. Head frame: the cranium spans x -9..9, y -3.5..9.5, z -0.5..11.5.
+part("head", "neck", [18, 13, 12], "skull", at=(0, 29.5, 34), offset=(0, 3, 5.5), wrot=(4, 0, 0))
+part("crest", "head", [3, 4, 11], "skull", rel=(0, 10.5, 4), rot=(-10, 0, 0))
+part("crest_back", "crest", [3, 3, 4], "skull", rel=(0, 0.6, -6.5), rot=(-24, 0, 0))
+part("occiput", "head", [14, 9, 2], "skull_dark", rel=(0, 3.5, -1.2))
+# soul eyes: a ghostly face-in-the-flame soul rising out of each socket, another streaming back along each temple
+SOUL = ["...e...", "..eE...", "..EEe..", ".eEwEe.", "eEwWwEe", "EwfWfwE", "EwWWWwE", "eEwfwEe", ".eEwEe.", "..eWe..",
+        "...W..."]
+WISP = ["...eEe........", "..eEwEEe......", ".eEwfwwEEee.e.", "eEwWWWwwEEEe..", ".eEwfwEEee....", "..eEwEe.......",
+        "...ee........."]
 for s in (1, -1):
     n = "l" if s > 0 else "r"
-    card(f"eye_{n}_flame", f"eye_{n}", FLAME, "flame", rel=(s * 0.4, 0.6, 0.65), offset=(0, 4.5, 0), plane="xy",
-         rot=(0, 0, -s * 12))
+    part(f"brow_{n}", "head", [7, 3, 4], "skull", rel=(s * 4.6, 7.9, 11.4), rot=(0, 0, s * 14))
+    part(f"socket_{n}", "head", [5, 5, 1], "socket", rel=(s * 4.8, 5.0, 11.6))
+    part(f"eye_{n}", "head", [2, 2, 1], "eye", rel=(s * 4.8, 5.0, 11.7))
+    card(f"eye_{n}_flame", f"eye_{n}", SOUL, "flame", rel=(s * 0.3, 0.2, 2.0), offset=(0, 5.0, 0), plane="xy",
+         rot=(0, 0, -s * 10))
     card(f"eye_{n}_wisp", f"eye_{n}", WISP, "flame", rel=(s * 4.7, 2.0, -1.0), offset=(0, 1.5, -6.0),
          rot=(0, s * 14, -s * 8))
-part("zygo_r", "head", [2, 4, 11], "bone", rel=(-9.5, 1.5, 6), rot=(0, 5, 4))
-part("temple_r", "head", [1, 4, 6], "socket", rel=(-9.1, 6.0, 4.5))
-part("cheek_l", "head", [3, 8, 7], "fur_dark", rel=(9.2, 1.0, 4), offset=(0, -2.5, 0), rot=(-10, 0, 18))
-card("cheek_fringe_l", "cheek_l", locks(8, 7, 101, min_len=0.5), "fringe", rel=(1.65, -5.5, 0), offset=(0, -3, 0),
-     rot=(0, 0, 6))
-part("ear_l", "head", [5, 5, 2], "fur_dark", rel=(6.2, 9.0, 2), offset=(0, 2.5, 0), rot=(-20, 0, -24))
-part("ear_l_tip", "ear_l", [3, 2, 1], "fur_dark", rel=(0, 5, 0), offset=(0, 1, 0))
-card("ear_l_tuft", "ear_l_tip", ["t.", "tt", "mt", ".m", ".f"], "fringe", rel=(0, 1.5, 0), offset=(0, 2.5, 0),
-     plane="xy", rot=(0, 0, -10))
-part("ear_r", "head", [4, 3, 2], "torn", rel=(-6.2, 9.0, 2), offset=(0, 1.5, 0), rot=(-20, 0, 24))
-# the muzzle: short and wide, whisker pads, a broad nose; bare maxilla and tooth roots on the right
-part("snout", "head", [12, 7, 6], "snout", rel=(0, -1, 10.5), offset=(0, -0.5, 3), rot=(6, 0, 0))
-part("muzzle_top", "snout", [7, 2, 7], "fur_dark", rel=(0, 3.0, 2.5), rot=(-8, 0, 0))
-part("snout_tip", "snout", [10, 5, 3], "snout_tip", rel=(0, -1.2, 5.5), offset=(0, -0.3, 1.5), rot=(4, 0, 0))
-part("nose", "snout_tip", [5, 2, 2], "nose", rel=(0, 1.9, 2.6))
-part("maxilla_r", "snout", [1, 6, 6], "bone", rel=(-6.1, -1.0, 3))
-card("whiskers_l", "snout_tip", ["w......w..", ".w....w...", "..ww.w.www", "wwwwww....", "......wwww"], "whisker",
-     rel=(5.2, -0.6, 1.5), offset=(0, 0, -4.5), plane="xz", rot=(0, -28, -12))
-card("teeth_up_l", "snout", ["yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(5.5, -4.5, 3), offset=(0, -1.5, 0))
+    part(f"zygo_{n}", "head", [2, 4, 11], "skull", rel=(s * 9.5, 1.5, 6), rot=(0, -s * 5, -s * 4))
+    part(f"temple_{n}", "head", [1, 4, 6], "socket", rel=(s * 9.1, 6.0, 4.5))
+# the muzzle: short and broad bone, the nasal aperture, the tooth rows bare to the roots
+part("snout", "head", [12, 7, 6], "skull", rel=(0, -1, 10.5), offset=(0, -0.5, 3), rot=(6, 0, 0))
+part("nasal_bridge", "snout", [7, 2, 7], "skull", rel=(0, 3.0, 2.5), rot=(-8, 0, 0))
+part("snout_tip", "snout", [10, 5, 3], "skull", rel=(0, -1.2, 5.5), offset=(0, -0.3, 1.5), rot=(4, 0, 0))
+part("nasal", "snout_tip", [5, 3, 2], "socket", rel=(0, 1.4, 2.6))
+for s in (1, -1):
+    part(f"maxilla_{'l' if s > 0 else 'r'}", "snout", [1, 6, 6], "skull_dark", rel=(s * 6.1, -1.0, 3))
+card("teeth_up_l", "snout", ["yyyyyy", "yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(5.5, -4.0, 3), offset=(0, -2, 0))
 card("teeth_up_r", "snout", ["yyyyyy", "yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(-5.5, -4.0, 3), offset=(0, -2, 0))
 card("teeth_up_f", "snout_tip", ["yyyyyyyy", "y.yy.yy.", "y.y..y.."], "teeth", rel=(0, -2.8, 2.8), offset=(0, -1.5, 0),
      plane="xy")
 # the lower jaw: hinged far back so it can gape very wide, a bony flange at the chin sheathing the sabres
-part("jaw", "head", [7, 3, 15], "jaw", rel=(0, -3.5, 3.5), offset=(0, -1.5, 7.5), rot=(6, 0, 0))
+part("jaw", "head", [7, 3, 15], "skull", rel=(0, -3.5, 3.5), offset=(0, -1.5, 7.5), rot=(6, 0, 0))
 for s in (1, -1):
-    part(f"jaw_flange_{'l' if s > 0 else 'r'}", "jaw", [1, 4, 3], "jaw" if s > 0 else "bone", rel=(s * 3.0, -3.5, 13.5))
-card("teeth_lo_l", "jaw", [".y...y...y....", "yy.yyy.yyy.yyy", "yyyyyyyyyyyyyy"], "teeth", rel=(3.2, 1.4, 7.5))
+    part(f"jaw_flange_{'l' if s > 0 else 'r'}", "jaw", [1, 4, 3], "skull", rel=(s * 3.0, -3.5, 13.5))
+card("teeth_lo_l", "jaw", [".y...y...y....", "yy.yyy.yyy.yyy", "yyyyyyyyyyyyyy", "yyyyyyyyyyyyyy"], "teeth",
+     rel=(3.4, 0.9, 7.5))
 card("teeth_lo_r", "jaw", [".y...y...y....", "yy.yyy.yyy.yyy", "yyyyyyyyyyyyyy", "yyyyyyyyyyyyyy"], "teeth",
      rel=(-3.4, 0.9, 7.5))
 card("teeth_lo_f", "jaw", [".y..y.", "yyyyyy"], "teeth", rel=(0, 0.9, 15.1), plane="xy")
-part("tongue", "jaw", [5, 1, 13], "mouth", rel=(0, 0.2, 7.5))
-part("jaw_bone_r", "jaw", [1, 3, 13], "bone", rel=(-3.9, -1.5, 7.5))
-card("beard", "jaw", locks(6, 5, 111), "fringe", rel=(1.0, -3.1, 4), offset=(0, -2, 0), plane="xy", rot=(-25, 0, 0))
+# ice growing out of the bone: crystals bursting from the crown, a cheekbone and the brow
+cluster("skull_ice0", "head", wpos("head", (5.5, 9.0, 2.5)), [(0, 0, 3, 9, -26, -30), (1.5, 2, 2, 6, -8, -50),
+                                                               (-1, -1.5, 2, 5, -50, -14)])
+cluster("skull_ice1", "head", wpos("head", (-9.6, 3.5, 7.5)), [(0, 0, 2, 7, 10, 62), (0, 2, 2, 5, 34, 74),
+                                                                (0, -2.5, 1, 4, -20, 56)])
+cluster("skull_ice2", "head", wpos("head", (-3.0, 9.4, 9.5)), [(0, 0, 2, 5, 18, 22), (1.2, -1, 1, 4, -10, -10)])
 
 # the sabres: two enormous flattened blades curving back, reaching almost to the knees
 for s in (1, -1):
@@ -402,7 +400,7 @@ for s in (1, -1):
     part(f"fang_{n}_tip", f"fang_{n}_mid", [1, 5, 2], "fang_tip", rel=(0, -6, -0.2), offset=(0, -2.5, 0), rot=(16, 0, 0))
 
 # ======================================================================= tail: a short thick bobtail, bare vertebrae, an ice club
-part("tail", "hips", [7, 7, 7], "fur", at=(0, 26, -33.5), offset=(0, 0, -3), wrot=(-30, 8, 0))
+part("tail", "hips", [7, 7, 7], "fur_tail", at=(0, 26, -33.5), offset=(0, 0, -3), wrot=(-30, 8, 0))
 card("tail_fringe_l", "tail", locks(8, 5, 123), "fringe", rel=(3.65, -1.5, -3), offset=(0, -2, 0), rot=(0, 0, 14))
 card("tail_fringe_r", "tail", locks(8, 5, 124), "fringe", rel=(-3.65, -1.5, -3), offset=(0, -2, 0), rot=(0, 0, -14))
 card("tail_crest", "tail", spikes(7, 4, 122), "fur_spikes", rel=(0, 3.6, -3), offset=(0, 2, 0))
@@ -422,13 +420,16 @@ ramps = {
              "#dde4eb", "#edf2f6", "#f8fbfc"],
     "ice": ["#0b2440", "#113154", "#173f69", "#1f507f", "#2a6495", "#377aaa", "#4891bf", "#5ea9d0", "#7cc1de",
             "#a0d7ea", "#c8ecf5", "#effbfd"],
+    # frostbitten flesh: blackened, bruised purple
+    "bitten": ["#08060a", "#130e15", "#1f1622", "#2e2030", "#402c3f", "#553a50"],
     "bone": ["#271e15", "#392c1f", "#4d3d2b", "#635039", "#7a6449", "#927a5a", "#aa916d", "#c0a882", "#d3bf98",
              "#e3d4b2", "#efe5cc", "#f8f2e4"],
     "horn": ["#120b08", "#1d130d", "#2a1c13", "#38261a", "#473222", "#593f2b", "#6c4e36"],
     "cavity": ["#04040b", "#090914", "#0f0e1f", "#16142a", "#1f1b37"],
     "glow": ["#0d3a66", "#17609b", "#2490d0", "#47c0f2", "#8ce4ff", "#d4f7ff", "#ffffff"],
+    # soul fire: deep teal to cyan to white
+    "soul": ["#032826", "#06433f", "#0a6560", "#0f8c84", "#1ab8ad", "#43e0d2", "#8ff5ea", "#d4fffa", "#ffffff"],
     "nose": ["#06060c", "#0d0d18", "#161627", "#212238"],
-    "mouth": ["#190915", "#2a1023", "#3e1834", "#552346", "#6e3059"],
 }
 light = {"dir": [-0.4, 1.0, 0.55], "strength": 0.55, "gradient": 0.7, "ao": 1.0, "ao_height": 10.0}
 brush = {"flow": "z", "length": 3.4, "width": 1.0, "rough": 0.55, "overshoot": 0.3,
@@ -446,6 +447,15 @@ STRIPES = {"id": "stripes", "op": "stripes", "axis": "z", "period": 5.2, "width"
            "wobble_scale": 2.5, "ramp": "fur", "tone": 0.4, "post": True, "faces": ["left", "right", "top"]}
 LEG_STRIPES = {"id": "stripes", "op": "stripes", "axis": "y", "period": 4.2, "width": 0.34, "wobble": 1.0,
                "ramp": "fur", "tone": 0.4, "post": True, "faces": ["left", "right", "front", "back"]}
+def frostbite(centers, rough=0.55):
+    """Frostbite: ragged patches of blackened dead flesh, each crusted round with white rime and ice.
+    centers: [(x, y, z, r)] in the part's own coordinates (the flesh and its rime share them)."""
+    return [{"id": "frostbite", "op": "spots", "centers": [[x, y, z, r * 0.8] for x, y, z, r in centers],
+             "roughness": rough, "ramp": "bitten", "tone": 2.6, "post": True},
+            {"id": "frostbite_bruise", "op": "spots", "centers": [[x, y, z, r * 0.45] for x, y, z, r in centers],
+             "roughness": rough, "ramp": "bitten", "tone": 1.0, "post": True},
+            {"id": "rime_crust", "op": "spots", "centers": [list(c) for c in centers], "roughness": rough, "ring": 0.7,
+             "gaps": 0.0, "ramp": "mane", "tone": 11, "post": True}]
 FRINGE_KEY = {"t": "fur:11", "m": "fur:9"}
 MANE_KEY = {"t": "mane:11", "m": "mane:9"}
 
@@ -468,11 +478,22 @@ styles = {
         {"id": "cavity", "op": "fill", "ramp": "cavity", "tone": 2.0, "faces": ["left"]},
         {"id": "cavity_frost", "op": "spots", "count": 9, "radius": [0.3, 0.8], "ramp": "ice", "tone": 3.0,
          "faces": ["left"]}]},
+    # the neck, where the fur meets the bare skull: frostbitten flesh and rime crowding toward the bone
+    "fur_neck": {"ramp": "fur", "tone": 6.2, "layers": [
+        {"id": "saddle", "op": "gradient", "axis": "y", "amount": -1.0}, NOISE, STRANDS, STRANDS_Z,
+        dict(STRIPES, period=4.0), FROST] + frostbite(
+        [(5, 4, 15, 3.0), (-4.5, 6, 14.5, 2.6), (6.5, -3, 13, 2.8), (-6, -3, 14.5, 3.0), (0, 7, 12, 2.4),
+         (1.5, -6.5, 14, 2.4), (8, 3, 9, 2.4), (-8, 2, 10, 2.2)])},
+    "fur_bitten": {"ramp": "fur", "tone": 4.4, "layers": [NOISE, dict(STRANDS, shift=-1.4), dict(STRANDS_Z, shift=-1.4),
+                                                         dict(FROST, tone=10.4)] + frostbite(
+        [(-3, 0.5, -9, 3.0), (-3, -1, 2, 2.8), (-2.5, 1, 9, 2.6), (-3, -1.5, -3, 2.2)])},
+    "fur_tail": {"ramp": "fur", "tone": 5.6, "layers": [
+        {"id": "dark_root", "op": "gradient", "axis": "y", "amount": 1.0}, NOISE, STRANDS, STRANDS_Z,
+        dict(STRIPES, period=3.0), FROST] + frostbite([(2, 3.5, -3, 3.0), (-3.5, -1, -4.5, 2.8), (1, -3.5, -1, 2.4),
+                                                       (3.5, 0, -1.5, 2.2)])},
     "fur": {"ramp": "fur", "tone": 5.6, "layers": [
         {"id": "dark_root", "op": "gradient", "axis": "y", "amount": 1.0}, NOISE, STRANDS, STRANDS_Z,
         dict(STRIPES, period=4.0), FROST]},
-    "fur_dark": {"ramp": "fur", "tone": 4.4, "layers": [NOISE, dict(STRANDS, shift=-1.4), dict(STRANDS_Z, shift=-1.4),
-                                                       dict(FROST, tone=10.4)]},
     "fur_leg": {"ramp": "fur", "tone": 5.4, "brush": {"flow": "y"}, "layers": [
         {"id": "dark_low", "op": "gradient", "axis": "y", "amount": 1.4}, NOISE,
         STRANDS, STRANDS_Z, LEG_STRIPES, dict(FROST, tone=10.6)]},
@@ -482,14 +503,38 @@ styles = {
                                                   {"id": "pads", "op": "spots", "count": 6, "radius": [0.7, 1.3],
                                                    "ramp": "nose", "tone": 1.6, "faces": ["bottom"],
                                                    "bevel": {"highlight": 1, "shadow": 0}}]},
+
     "horn_spike": {"ramp": "horn", "tone": 3.6, "rim": {"light_shift": 1.8, "dark_shift": -1.2}, "brush": {"off": True},
                    "layers": [{"id": "tip", "op": "band", "axis": "y", "from": 0.45, "to": 1.01, "ramp": "bone",
                                "tone": 8.6},
                               {"id": "rings", "op": "stripes", "axis": "y", "period": 1.0, "width": 0.3,
                                "shift": -1.0}]},
-    # ice-blue fire round the eyes (fully emissive in game)
-    "flame": {"ramp": "glow", "tone": 3.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-              "art_key": {"W": "glow:6", "w": "glow:5", "E": "glow:4", "e": "glow:2"}},
+    # soul fire round the eyes (fully emissive in game): rising souls, a faint face in each flame
+    "flame": {"ramp": "soul", "tone": 4.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+              "art_key": {"W": "soul:8", "w": "soul:6", "E": "soul:5", "e": "soul:3", "f": "soul:2"}},
+    # the skull: bone white and ivory, sutures and deep cracks, old stains, rime on the upper edges, dark outlines
+    "skull": {"ramp": "bone", "tone": 8.6, "rim": {"light_shift": 1.4, "dark_shift": -1.8, "outline": "dark"},
+              "brush": {"off": True},
+              "layers": [{"id": "grain", "op": "noise", "scale": 0.6, "amount": 0.8},
+                         {"id": "stain", "op": "patches", "scale": 1.6, "threshold": 0.6, "shift": -1.6},
+                         {"id": "sutures", "op": "cracks", "scale": 2.4, "width": 0.05, "shift": -3.6},
+                         {"id": "cracks", "op": "cracks", "scale": 3.4, "width": 0.09, "shift": -6.0, "seed": 5,
+                          "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.0}},
+                         {"id": "under", "op": "gradient", "axis": "y", "amount": 1.2},
+                         {"id": "rime", "op": "drip", "ramp": "ice", "tone": 10.4, "depth": 0.22, "length": 0.8,
+                          "width": 0.4, "scale": 1.2, "faces": ["sides", "front", "back"]}]},
+    # frostbitten dead flesh: blackened and bruised, crusted with white rime and ice at its edges
+    "flesh": {"ramp": "bitten", "tone": 2.6, "rim": {"light_shift": 1.0, "dark_shift": -1.0}, "brush": {"flow": "y"},
+              "layers": [{"id": "bruise", "op": "noise", "scale": 0.6, "amount": 1.2},
+                         {"id": "sinew", "op": "stripes", "axis": "x", "period": 1.4, "width": 0.3, "shift": -1.2,
+                          "wobble": 0.8},
+                         {"id": "rime", "op": "drip", "ramp": "mane", "tone": 10.8, "depth": 0.35, "length": 1.6,
+                          "width": 0.5, "scale": 1.1, "faces": ["sides", "front", "back"]},
+                         {"id": "ice", "op": "spots", "count": 6, "radius": [0.5, 0.9], "ramp": "ice", "tone": 9,
+                          "faces": ["sides", "front", "back"]}]},
+    "skull_dark": {"ramp": "bone", "tone": 6.6, "rim": {"light_shift": 1.2, "dark_shift": -1.6, "outline": "dark"},
+                   "layers": [{"id": "grain", "op": "noise", "scale": 0.6, "amount": 0.8},
+                              {"id": "cracks", "op": "cracks", "scale": 3.0, "width": 0.05, "shift": -3.0}]},
     "claw": {"ramp": "horn", "tone": 3.0, "rim": {"light_shift": 1.6, "dark_shift": -1.0}, "brush": {"off": True},
              "layers": [{"id": "tip", "op": "band", "axis": "z", "from": 0.4, "to": 1.01, "ramp": "bone",
                          "tone": 9.0}]},
@@ -552,44 +597,6 @@ styles = {
     "socket": {"ramp": "cavity", "tone": 1.0, "light": 0.2, "brush": {"off": True},
                "stamps": [{"face": "front", "at": "top-left", "art": ["bd.b", "d...", "....", "b..b"],
                            "key": {"b": "bone:6", "d": "cavity:3"}}]},
-    "torn": {"ramp": "bone", "tone": 6.4, "layers": [{"id": "rot", "op": "patches", "scale": 1.2, "threshold": 0.5,
-                                                      "ramp": "fur", "tone": 3.0}]},
-    # the head: the left half fur, the right half bare skull with a ragged edge where the fur rotted away
-    "head": {"ramp": "fur", "tone": 6.0, "layers": [
-        {"id": "dark_top", "op": "gradient", "axis": "y", "amount": -0.8}, NOISE,
-        dict(STRANDS, period=1.2, faces=["top"]), dict(STRANDS_Z, faces=["right"]),
-        dict(FROST, tone=10.4, faces=["sides", "back"]),
-        {"id": "stripes", "op": "stripes", "axis": "x", "period": 3.2, "width": 0.4, "wobble": 0.8, "ramp": "fur",
-         "tone": 0.4, "post": True, "range": [0.05, 1.0], "faces": ["top", "front"]},
-        {"id": "cheek_stripes", "op": "stripes", "axis": [0, 1, 0.5], "period": 3.4, "width": 0.36, "wobble": 0.8,
-         "ramp": "fur", "tone": 0.4, "post": True, "faces": ["right"]},
-        {"id": "skull", "op": "band", "axis": "x", "from": -1.01, "to": -0.08, "wobble": 0.22, "wobble_scale": 0.35,
-         "ramp": "bone", "tone": 8.4, "bevel": {"shadow_ramp": "cavity", "shadow_shift": 0, "highlight": 0}},
-        {"id": "bone_cracks", "op": "cracks", "scale": 3.0, "width": 0.035, "shift": -2.4, "faces": ["left", "top"]}]},
-    "snout": {"ramp": "fur", "tone": 5.4, "layers": [
-        {"id": "dark_tip", "op": "gradient", "axis": "z", "amount": -1.0}, NOISE,
-        dict(STRANDS, period=1.1, faces=["top"]),
-        {"id": "skull", "op": "band", "axis": "x", "from": -1.01, "to": -0.12, "wobble": 0.25, "wobble_scale": 0.3,
-         "ramp": "bone", "tone": 8.0, "bevel": {"shadow_ramp": "cavity", "shadow_shift": 0, "highlight": 0}},
-        {"id": "lip", "op": "band", "axis": "y", "from": -1.01, "to": -0.72, "ramp": "nose", "tone": 1.0,
-         "faces": ["right"]}]},
-    "snout_tip": {"ramp": "fur", "tone": 4.6, "layers": [
-        NOISE,
-        {"id": "skull", "op": "band", "axis": "x", "from": -1.01, "to": -0.15, "wobble": 0.25, "wobble_scale": 0.3,
-         "ramp": "bone", "tone": 7.6, "bevel": {"shadow_ramp": "cavity", "shadow_shift": 0, "highlight": 0}},
-        {"id": "lip", "op": "band", "axis": "y", "from": -1.01, "to": -0.6, "ramp": "nose", "tone": 1.0,
-         "faces": ["right", "front"]},
-        {"id": "nasal", "op": "rect", "rect": [0.0, 0.35, 0.35, 0.75], "ramp": "cavity", "tone": 0.5,
-         "faces": ["front"], "post": True}]},
-    "jaw": {"ramp": "fur", "tone": 4.4, "layers": [
-        NOISE,
-        {"id": "skull", "op": "band", "axis": "x", "from": -1.01, "to": -0.1, "wobble": 0.2, "ramp": "bone",
-         "tone": 7.2},
-        {"id": "gum", "op": "fill", "ramp": "mouth", "tone": 3.0, "faces": ["top"]}]},
-    "nose": {"ramp": "nose", "tone": 1.4, "rim": {"light_shift": 1.0, "dark_shift": -0.6},
-             "stamps": [{"face": "front", "at": "top-left", "art": ["h....h", ".n..n."], "key": {"h": "nose:3",
-                                                                                                 "n": "cavity:0"}}]},
-    "mouth": {"ramp": "mouth", "tone": 2.6},
     "teeth": {"ramp": "bone", "tone": 9.4, "art_key": {}, "brush": {"off": True},
               "layers": [{"id": "root", "op": "gradient", "axis": "y", "amount": 1.6}]},
     "fang": {"ramp": "bone", "tone": 9.4, "rim": {"light_shift": 1.4, "dark_shift": -1.6}, "brush": {"flow": "y"},
@@ -597,11 +604,16 @@ styles = {
                          "faces": ["sides", "front", "back"]},
                         {"id": "root", "op": "gradient", "axis": "y", "amount": 1.0}]},
     "fang_tip": {"ramp": "bone", "tone": 10.4, "brush": {"off": True}},
-    "eye": {"ramp": "glow", "tone": 5.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+    "eye": {"ramp": "soul", "tone": 6.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
             "stamps": [{"face": "front", "at": "top-left", "art": ["wb", "bd"],
-                        "key": {"w": "glow:6", "b": "glow:4", "d": "glow:3"}}]},
-    "whisker": {"ramp": "mane", "tone": 10.0, "art_key": {"w": "mane:10"}, "brush": {"off": True}, "light": 0},
+                        "key": {"w": "soul:8", "b": "soul:6", "d": "soul:4"}}]},
 }
+
+# the paws: frostbite on the tops of the front paws and the hind feet (the toes stay plain)
+styles["paw_front"] = dict(styles["paw"], layers=styles["paw"]["layers"] + frostbite(
+    [(3, 1.0, 3.5, 3.2), (-3, 1.0, -0.5, 2.8), (-6, -1, 5, 2.4), (6, -1, 1, 2.2)]))
+styles["paw_back"] = dict(styles["paw"], layers=styles["paw"]["layers"] + frostbite(
+    [(2, 2.0, 0.5, 3.0), (-3, 1.5, -3, 2.4), (-5, -0.5, 3, 2.0)]))
 
 # ======================================================================= animation: pose timelines + ground lock
 LEGS_F = ("front_leg", "front_fore", "front_paw")
@@ -716,8 +728,7 @@ REST = {}
 # lying down pushes the hanging fur aside
 FLAT_FUR = add(r("brisket_fringe", -80), r("throat_fringe", -70), r("brisket", -20), r("throat", -25),
                r("belly_fringe_l", 0, 0, 75), r("belly_fringe_r", 0, 0, -75), r("chest_fringe_l", 0, 0, 75),
-               r("chest_fringe_r", 0, 0, -75), r("hip_fringe_l", 0, 0, 70), r("hip_fringe_r", 0, 0, -70),
-               r("cheek_fringe_l", 0, 0, -80), r("beard", -60))
+               r("chest_fringe_r", 0, 0, -75), r("hip_fringe_l", 0, 0, 70), r("hip_fringe_r", 0, 0, -70))
 
 # ---------------------------------------------------------------- poses
 FLAMES = ("eye_l_flame", "eye_r_flame", "eye_l_wisp", "eye_r_wisp")
@@ -750,27 +761,27 @@ def flicker(length, rate=7.0, amp=1.0):
 REAR = add(r("body", -32), r("chest", -6), r("neck", -26), r("head", -18), r("jaw", 72),
            leg("f", 1, -66, 44, -24, 24), leg("f", -1, -56, 50, -30, 18),
            leg("b", 1, 30, -6, 8, 3), leg("b", -1, 30, -6, 8, 3),
-           r("tail", 40), r("tail_mid", 14), r("tail_tip", 8), both("brow", z=6), r("ear_l", -36),
+           r("tail", 40), r("tail_mid", 14), r("tail_tip", 8), both("brow", z=6),
            sc("mane", 0.12, 0.2, 0.1), sc("mane_neck", 0.1, 0.18, 0.08), sc("throat", 0.08, 0.15, 0.05),
            pos("body", 0, 0, -2), flames(0.3, 0.6, 0.5))
 CROUCH = add(r("body", 4), r("chest", 6), r("neck", 10), r("head", 8), r("jaw", 10),
              leg("f", 1, -12, 30, -18), leg("f", -1, -12, 30, -18),
              leg("b", 1, -20, 32, -12), leg("b", -1, -20, 32, -12),
-             r("tail", 16), r("ear_l", -30, 0, 14), sc("mane", -0.04, -0.06, -0.02))
+             r("tail", 16), sc("mane", -0.04, -0.06, -0.02))
 SLAM = add(r("body", 5), r("chest", 4), r("neck", 16), r("head", 10), r("jaw", 50),
            leg("f", 1, -22, 4, 18, 8), leg("f", -1, -22, 4, 18, 8),
            leg("b", 1, -8, 12, -4), leg("b", -1, -8, 12, -4), r("tail", 8), r("tail_mid", 6),
-           sc("mane", 0.1, -0.06, 0.08), sc("mane_neck", 0.08, -0.05, 0.06), r("ear_l", -30), flames(0.2, 0.4, 0.3))
+           sc("mane", 0.1, -0.06, 0.08), sc("mane_neck", 0.08, -0.05, 0.06), flames(0.2, 0.4, 0.3))
 # collapsed on the belly: forelegs folded forward like a sphinx, hind legs folded under, head down on its cheek
 DOWN = add(r("body", 2), r("chest", 2), r("neck", 8, -8, -10), r("head", 0, -14, -64), r("jaw", 20),
            leg("f", 1, 62, -132, 70, 10), leg("f", -1, 56, -128, 72, 14),
            leg("b", 1, -70, 118, -40, 8), leg("b", -1, -70, 118, -40, 8),
-           r("tail", 14), r("tail_mid", 6, 14), r("tail_tip", 4, 10), r("ear_l", 20, 0, -20),
+           r("tail", 14), r("tail_mid", 6, 14), r("tail_tip", 4, 10),
            sc("mane", 0.04, -0.08, 0.04), FLAT_FUR)
 STUN_BASE = add(r("neck", 20), r("head", 12), r("jaw", 22), r("body", 3),
                 leg("f", 1, -8, 14, -6, 9), leg("f", -1, -8, 14, -6, 9),
                 leg("b", 1, -6, 10, -4, 6), leg("b", -1, -6, 10, -4, 6),
-                r("tail", -18), r("tail_mid", -10), r("ear_l", 30, 0, -26), both("eye", ch="s", y=-0.45),
+                r("tail", -18), r("tail_mid", -10), both("eye", ch="s", y=-0.45),
                 flames(-0.4, -0.5, -0.4))
 
 # ---------------------------------------------------------------- clips
@@ -791,8 +802,6 @@ ANIM["idle"] = {"length": 3.0, "loop": True, "tracks": [
     {"part": "head", "axis": "x", "osc": {"amp": -1.5, "cycles": 2, "phase": 0.4}},
     {"part": "jaw", "axis": "x", "keys": [[0, 0], [1.5, 0], [1.62, 16, "out"], [1.85, 12], [2.1, 0, "back"], [3.0, 0]]},
     {"part": "jaw", "axis": "x", "osc": {"amp": 2, "cycles": 2, "phase": 0.5, "bias": 3}},
-    {"part": "ear_l", "axis": "z", "keys": [[0, 0], [1.05, 0], [1.1, 14, "out"], [1.3, 0], [2.3, 0], [2.35, 12, "out"],
-                                            [2.5, 0]]},
     {"part": "eye_l", "channel": "scale", "keys": [[0, [0, 0, 0]], [2.45, [0, 0, 0]], [2.5, [0, -0.85, 0]],
                                                     [2.6, [0, 0, 0]]]},
     {"part": "eye_r", "channel": "scale", "keys": [[0, [0, 0, 0]], [2.45, [0, 0, 0]], [2.5, [0, -0.85, 0]],
@@ -854,7 +863,6 @@ ANIM["run"] = {"length": L, "loop": True, "tracks": (
         {"part": "mane_neck", "channel": "scale", "osc": {"amp": [0.03, 0.08, 0.03], "cycles": 1, "phase": 0.65}},
         {"part": "throat_fringe", "axis": "x", "osc": {"amp": -14, "cycles": 1, "phase": 0.6, "bias": -10}},
         {"part": "brisket_fringe", "axis": "x", "osc": {"amp": -14, "cycles": 1, "phase": 0.6, "bias": -10}},
-        {"part": "ear_l", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -34}},
     ] + flicker(L, amp=1.3) + [{"part": f, "axis": "y" if "wisp" in f else "x",
                                 "osc": {"amp": 0, "cycles": 1, "bias": -20 if "wisp" not in f else 0}} for f in FLAMES]),
     "_lock": {"lift": [[0, 0], [0.2, 0], [0.25, 1.6, "out"], [0.29, 0, "in"], [0.5, 0], [0.59, 4.2, "out"],
@@ -875,8 +883,7 @@ ANIM["frozen"] = timeline(1.0, [(0.0, add(REAR, flames(-0.7, -0.9, -0.8)), None)
 # claw_l: weight onto the right, the left paw cocks high and wide with the claws out, a whip-fast rake down and across,
 # follow-through, a bouncy settle
 CLAW_L_WIND = add(r("body", 2, 0, 6), pos("body", 0, 0, -1), r("chest", 2, 18, 3), r("neck", -6, -12), r("head", 0, -6, 6),
-                  r("jaw", 24), leg("f", 1, -118, 58, -34, 42), leg("f", -1, 8, 8, -14, 4), r("tail", 14, -12),
-                  r("ear_l", -32), flames(0.1, 0.2, 0.2))
+                  r("jaw", 24), leg("f", 1, -118, 58, -34, 42), leg("f", -1, 8, 8, -14, 4), r("tail", 14, -12), flames(0.1, 0.2, 0.2))
 CLAW_L_HIT = add(r("body", 3, 0, -3), pos("body", 0, 0, 3), r("chest", 5, -20, -2), r("neck", 6, 10), r("head", 6, 8, -4),
                  r("jaw", 40), leg("f", 1, -40, -12, -18, -34), leg("f", -1, -6, 10, -4, 6), r("tail", 4, 14),
                  flames(0.2, 0.4, 0.3))
@@ -891,16 +898,15 @@ ANIM["claw_r"] = timeline(0.8, [(t, mirror_pose(p), e) for t, p, e in CLAW_L], e
 # the sabres stab down as the jaw snaps shut, land in a squash
 FURY_GATHER = add(r("body", 5), r("chest", 6), r("neck", 6), r("head", 4), r("jaw", 12), pos("body", 0, 0, -1.5),
                   leg("f", 1, 6, 30, -36), leg("f", -1, 6, 30, -36), leg("b", 1, -26, 40, -14), leg("b", -1, -26, 40, -14),
-                  sc("mane", -0.03, -0.06, -0.02), r("ear_l", -34), r("tail", 20))
+                  sc("mane", -0.03, -0.06, -0.02), r("tail", 20))
 FURY_LUNGE = add(r("body", -10), pos("body", 0, 0, 6), r("neck", -10), r("head", -16), r("jaw", 80),
                  leg("f", 1, -72, -10, -22), leg("f", -1, -66, -12, -26), leg("b", 1, 42, -14, 34), leg("b", -1, 42, -14, 34),
-                 sc("mane", 0.06, 0.1, 0.04), r("ear_l", -40), r("tail", 12), flames(0.3, 0.6, 0.5))
+                 sc("mane", 0.06, 0.1, 0.04), r("tail", 12), flames(0.3, 0.6, 0.5))
 FURY_BITE = add(r("body", 4), pos("body", 0, 0, 6.5), r("neck", 14), r("head", 22), r("jaw", -2),
-                leg("f", 1, -38, 0, 30), leg("f", -1, -34, 0, 28), leg("b", 1, 14, 8, 4), leg("b", -1, 14, 8, 4),
-                r("ear_l", -40), r("tail", 4), flames(0.2, 0.4, 0.3))
+                leg("f", 1, -38, 0, 30), leg("f", -1, -34, 0, 28), leg("b", 1, 14, 8, 4), leg("b", -1, 14, 8, 4), r("tail", 4), flames(0.2, 0.4, 0.3))
 FURY_LAND = add(r("body", 7), pos("body", 0, 0, 2), r("chest", 5), r("neck", 10), r("head", 6), r("jaw", 18),
                 leg("f", 1, -10, 30, -18), leg("f", -1, -10, 30, -18), leg("b", 1, -16, 30, -10), leg("b", -1, -16, 30, -10),
-                sc("mane", 0.08, -0.08, 0.06), r("ear_l", -34), r("tail", 14))
+                sc("mane", 0.08, -0.08, 0.06), r("tail", 14))
 ANIM["fury"] = timeline(0.5, [(0.0, FURY_GATHER, None), (0.13, FURY_LUNGE, "out"), (0.21, FURY_BITE, "in"),
                               (0.32, FURY_LAND, "out"), (0.5, FURY_GATHER, "ease")], loop=True,
                         extra=[{"parts": ["tail", "tail_mid", "tail_tip"],
@@ -921,7 +927,6 @@ ANIM["stunned"] = timeline(1.5, [(0.0, STUN_BASE, None), (1.5, STUN_BASE, None)]
     {"part": "back_leg_l", "axis": "z", "osc": {"amp": -2.5, "cycles": 1}},
     {"part": "back_leg_r", "axis": "z", "osc": {"amp": -2.5, "cycles": 1}},
     {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "y", "amp": 4, "cycles": 1, "lag": 0.18}},
-    {"part": "ear_l", "axis": "z", "osc": {"amp": 6, "cycles": 2, "phase": 0.4}},
 ] + flicker(1.5, rate=4.0, amp=0.8))
 
 # wake: frozen mid-roar, the ice cracks, it crashes down onto its belly, lies stunned, the eye-fire flares up, it pushes
@@ -932,8 +937,7 @@ SIT = add(r("body", -18), r("chest", 4), r("neck", 8), r("head", 6), r("jaw", 14
 SHAKE = []
 for k, (t, a) in enumerate([(2.24, 9), (2.33, -11), (2.42, 10), (2.51, -9), (2.6, 7), (2.69, -5), (2.78, 3)]):
     SHAKE.append((t, add(r("chest", 0, 0, a), r("hips", 0, 0, -a * 0.7), r("neck", -4, -a * 1.4, a * 0.8),
-                         r("head", 0, -a * 1.2, a * 1.4), r("tail", 0, a * 2.2), r("tail_mid", 0, a * 1.6),
-                         r("ear_l", 0, 0, a * 2), sc("mane", 0.1, 0.12, 0.08), sc("mane_neck", 0.08, 0.12, 0.06),
+                         r("head", 0, -a * 1.2, a * 1.4), r("tail", 0, a * 2.2), r("tail_mid", 0, a * 1.6), sc("mane", 0.1, 0.12, 0.08), sc("mane_neck", 0.08, 0.12, 0.06),
                          r("jaw", 12)), "ease"))
 DIM = flames(-0.7, -0.9, -0.8)
 ANIM["wake"] = timeline(3.0, [
@@ -958,7 +962,7 @@ ANIM["wake"] = timeline(3.0, [
 # death: hit, a last gaping howl, staggers, the forelegs give, crashes down, rolls onto its left flank (the bare ribs
 # and the skull face up), a last breath; the eye-fire gutters out
 DEATH_HOWL = add(r("body", -6), r("chest", -4), r("neck", -24), r("head", -14), r("jaw", 62),
-                 leg("f", 1, -22, 18, 10), leg("f", -1, -12, 10, 6), r("tail", 12), r("ear_l", -30), flames(0.3, 0.6, 0.5))
+                 leg("f", 1, -22, 18, 10), leg("f", -1, -12, 10, 6), r("tail", 12), flames(0.3, 0.6, 0.5))
 DEATH_STAGGER = add(r("body", 0, 8, -7), r("neck", 6, -8), r("head", 10, 0, 10), r("jaw", 30),
                     leg("f", -1, -8, 10, -2, 6), leg("f", 1, -16, 46, -20, 4), leg("b", -1, -4, 10, -4),
                     leg("b", 1, -10, 22, -8), r("tail", -4))
@@ -968,7 +972,7 @@ DEATH_CRASH = add(r("body", 8, 6, -6), r("chest", 4), r("neck", 12, -6, 0), r("h
 DEATH_ROLL = add(r("body", 4, 6, -40), r("neck", -12, 14, -14), r("head", -6, 12, -40), r("jaw", 28),
                  leg("f", 1, 24, -30, 10, -46), leg("f", -1, 10, -14, 8, 28),
                  leg("b", 1, -24, 40, -16, -44), leg("b", -1, -14, 22, -8, 26),
-                 r("tail", 6, -14), r("tail_mid", 2, -16), r("tail_tip", 2, -10), r("ear_l", 20, 0, -20), FLAT_FUR,
+                 r("tail", 6, -14), r("tail_mid", 2, -16), r("tail_tip", 2, -10), FLAT_FUR,
                  flames(-0.6, -0.7, -0.6))
 DEATH_END = add(DEATH_ROLL, r("body", 0, 0, 3), r("jaw", 8), sc("chest", -0.03, 0, -0.02), sc("mane", -0.04, -0.08, -0.03),
                 both("eye", ch="s", y=-0.85), flames(-0.35, -0.28, -0.38))

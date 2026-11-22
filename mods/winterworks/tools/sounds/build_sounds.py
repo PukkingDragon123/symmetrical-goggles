@@ -24,7 +24,7 @@ A layer is {"src": "<source id>[/<file in archive>]", "t": start s, "d": duratio
 "pitch": varispeed factor, "stretch": time factor (pitch kept), "gain": dB, "hp"/"lp": Hz, "bp": [lo, hi],
 "eq": [[Hz, dB, Q], ...], "lsh"/"hsh": [Hz, dB], "dist": drive, "env": [[s, dB], ...], "fi"/"fo": fade s,
 "rev": true, "ch": "L"/"R", "pan": -1..1} or a synth layer {"synth": "noise"|"tone"|"chime"|"thump"|
-"crackle"|"whoosh"|"wind"|"rumble"|"clicks", ...}. Bus fx: reverb, eq, hp, lp, comp, sat, delay.
+"crackle"|"whoosh"|"wind"|"rumble"|"pluck"|"clicks", ...}. Bus fx: reverb, eq, hp, lp, comp, sat, delay.
 """
 import argparse
 import hashlib
@@ -455,6 +455,24 @@ def synth(L, rng, channels):
                 band += f * high
                 y[i] = band
         y = y / (np.std(y) + 1e-9) * 0.3 * amp
+    elif kind == "pluck":
+        # Karplus-Strong plucked string (lyre, harp): one string per note, strummed `spread` s apart
+        notes = L.get("notes", [L.get("f", 220.0)])
+        y = np.zeros(n)
+        for k, f in enumerate(notes):
+            period = max(2, int(round(SR / f)))
+            buf = rng.uniform(-1, 1, period)
+            buf = lp(buf[None, :], L.get("bright", 4000.0), 1)[0]
+            blocks = []
+            decay = L.get("damp", 0.996)
+            for _ in range(n // period + 1):
+                blocks.append(buf)
+                buf = decay * 0.5 * (buf + np.roll(buf, -1))
+            s = np.concatenate(blocks)
+            off = int(k * L.get("spread", 0.03) * SR)
+            if off < n:
+                y[off:] += s[: n - off] * (0.9 ** k)
+        y *= 0.3
     elif kind == "rumble":
         y = colored_noise(n, "brown", rng)
         y = lp(y, L.get("cut", 120.0), 4)

@@ -284,9 +284,9 @@ GLOSS = {"id": "gloss", "op": "gloss", "post": True, "dash": True, "length": 3, 
          "shift": 2.4}
 # translucent-looking amber, painted opaque: a dark core, bright edges (the rims) and a glow along the lower edges
 # where the light comes out again; swirls of darker resin inside
-CORE = [{"id": "core", "op": "band", "axis": "x", "from": -0.6, "to": 0.6, "shift": -1.9, "wobble": 0.3,
+CORE = [{"id": "core", "op": "band", "axis": "x", "from": -0.6, "to": 0.6, "shift": -2.3, "wobble": 0.3,
          "wobble_scale": 0.5, "faces": ["front", "back", "top", "bottom"]},
-        {"id": "core_s", "op": "band", "axis": "z", "from": -0.55, "to": 0.55, "shift": -1.7, "wobble": 0.3,
+        {"id": "core_s", "op": "band", "axis": "z", "from": -0.55, "to": 0.55, "shift": -2.1, "wobble": 0.3,
          "wobble_scale": 0.5, "faces": ["left", "right"]},
         {"id": "exit_glow", "op": "band", "axis": "y", "from": -1.01, "to": -0.7, "shift": 1.8, "wobble": 0.15,
          "faces": ["sides"]}]
@@ -770,6 +770,27 @@ def foot_lock(spec, step=1 / 60):
         clip["tracks"] = others + [{"part": "body", "channel": "position", "keys": keys, "ease": "linear"}]
 
 
+# translucent jelly amber in the game (the renderer draws the golem with a translucent render type): every amber part
+# gets an opacity, the darker core and bright rims painted under it; the arm tools (blade, pickaxe, bow and their
+# bindings) and the terracotta sherds stay opaque
+ALPHA = {"amber": 0.82, "amber_dark": 0.84, "amber_pec": 0.82, "amber_abs": 0.82, "amber_fist": 0.84, "knuckle": 0.84,
+         "jelly": 0.72, "drip": 0.7, "crystal": 0.7, "crystal_b": 0.7, "face": 0.85}
+
+
+def alpha_parts():
+    parent = {p["id"]: p.get("parent") for p in P}
+
+    def tool(pid):
+        while pid:
+            if pid in ("blade", "pickaxe", "bow"):
+                return True
+            pid = parent.get(pid)
+        return False
+
+    return {p["id"]: ALPHA[p["style"]] for p in P
+            if p["shape"] != "bone" and p.get("style") in ALPHA and not tool(p["id"])}
+
+
 spec = {
     "name": "Pot Golem",
     "description": "The Winterworks Pot Golem: a giant, muscular, slightly jelly-like amber humanoid (translucent-looking, "
@@ -783,7 +804,7 @@ spec = {
     "budget": {"tris": 2400, "colors": 96},
     "light": light,
     "brush": brush,
-    "minecraft": {"fps": 20},
+    "minecraft": {"fps": 20, "alpha_parts": alpha_parts()},
     "anim_ground_tolerance": 0.5,
     "render": {"background": "#1f2a2c", "hero": [-38, 16], "shadow": 0.5},
     "palette": {"ramps": ramps},

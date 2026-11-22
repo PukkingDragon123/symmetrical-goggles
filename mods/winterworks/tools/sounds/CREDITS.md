@@ -22,26 +22,31 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [A Mirror Explodes](https://bigsoundbank.com/mirror-explodes-s0387.html) (`bsb_0387`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.burst`, `block.frost_mauler_skull.revive`, `entity.frost_mauler.explode`, `entity.frost_mauler.wake` |
 | [Air](https://bigsoundbank.com/air-s0138.html) (`bsb_0138`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.fire` |
 | [An arrow on a target](https://bigsoundbank.com/an-arrow-on-a-target-s0548.html) (`bsb_0548`) | Joseph Sardin | CC0 1.0 | `entity.mosquito.stab` |
-| [Anvil #1](https://bigsoundbank.com/anvil-1-s3589.html) (`bsb_3589`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.overheat` |
+| [Anvil #1](https://bigsoundbank.com/anvil-1-s3589.html) (`bsb_3589`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.hurt`, `item.snowball_launcher.overheat` |
+| [Big Branching Fire #1](https://bigsoundbank.com/big-branching-fire-1-s0987.html) (`bsb_0987`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex` |
+| [Big broth in a pot](https://bigsoundbank.com/big-broth-in-a-pot-s0491.html) (`bsb_0491`) | Joseph Sardin | CC0 1.0 | `block.elixir_jar.bubble` |
 | [Blow hard #1](https://bigsoundbank.com/blow-hard-1-s1602.html) (`bsb_1602`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.breath` |
 | [Blow Hard #2](https://bigsoundbank.com/blow-hard-2-s1603.html) (`bsb_1603`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.breath` |
-| [Body Fall #1](https://bigsoundbank.com/body-fall-1-s2452.html) (`bsb_2452`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.step`, `entity.icebreaker.ram`, `entity.polar_bear.slam`, `entity.pot_golem.step` |
-| [Body Fall #2](https://bigsoundbank.com/body-fall-2-s2453.html) (`bsb_2453`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.step`, `entity.icebreaker.ram`, `entity.polar_bear.slam`, `entity.pot_golem.step` |
+| [Body Fall #1](https://bigsoundbank.com/body-fall-1-s2452.html) (`bsb_2452`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.step`, `entity.icebreaker.ram`, `entity.piglin_witch.death`, `entity.polar_bear.slam`, `entity.pot_golem.step` |
+| [Body Fall #2](https://bigsoundbank.com/body-fall-2-s2453.html) (`bsb_2453`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.step`, `entity.icebreaker.ram`, `entity.piglin_witch.death`, `entity.polar_bear.slam`, `entity.pot_golem.step` |
 | [Body fall #3](https://bigsoundbank.com/body-fall-3-s2454.html) (`bsb_2454`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.step`, `entity.icebreaker.ram`, `entity.polar_bear.slam`, `entity.pot_golem.step` |
 | [Body fall #4](https://bigsoundbank.com/body-fall-4-s2455.html) (`bsb_2455`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.step`, `entity.pot_golem.step` |
-| [Bones cracking #1](https://bigsoundbank.com/bones-cracking-s0596.html) (`bsb_0596`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.icebreaker.shear` |
-| [Bones cracking #2](https://bigsoundbank.com/bones-cracking-2-s1408.html) (`bsb_1408`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.icebreaker.shear`, `entity.zombie_polar_bear.death` |
-| [Bones cracking #3](https://bigsoundbank.com/bones-cracking-3-s1409.html) (`bsb_1409`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.icebreaker.shear`, `entity.zombie_polar_bear.death` |
+| [Boiling water](https://bigsoundbank.com/boiling-water-s0149.html) (`bsb_0149`) | Joseph Sardin | CC0 1.0 | `block.elixir_jar.bubble` |
+| [Bones cracking #1](https://bigsoundbank.com/bones-cracking-s0596.html) (`bsb_0596`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.icebreaker.shear`, `entity.piglin_witch.rummage` |
+| [Bones cracking #2](https://bigsoundbank.com/bones-cracking-2-s1408.html) (`bsb_1408`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.icebreaker.shear`, `entity.piglin_witch.rummage`, `entity.zombie_polar_bear.death` |
+| [Bones cracking #3](https://bigsoundbank.com/bones-cracking-3-s1409.html) (`bsb_1409`) | Joseph Sardin | CC0 1.0 | `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.icebreaker.shear`, `entity.piglin_witch.rummage`, `entity.zombie_polar_bear.death` |
+| [Bottle clink](https://bigsoundbank.com/bottle-clink-s0487.html) (`bsb_0487`) | Joseph Sardin | CC0 1.0 [5] | `block.elixir_jar.fill`, `entity.piglin_witch.death`, `entity.piglin_witch.rummage` |
 | [Boy 2-3 years old, tickling #2](https://bigsoundbank.com/boy-2-3-years-old-tickling-2-s1419.html) (`bsb_1419`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.giggle` |
 | [Breath horse #3](https://bigsoundbank.com/breath-horse-3-s0287.html) (`bsb_0287`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.breath`, `entity.frost_mauler.stunned`, `entity.polar_bear.calm` |
 | [Breath Horse #4](https://bigsoundbank.com/breath-horse-4-s1543.html) (`bsb_1543`) | Joseph Sardin | CC0 1.0 | `effect.ramming.charged`, `entity.frost_mauler.ambient`, `entity.frost_mauler.stunned`, `entity.polar_bear.calm`, `entity.sniffer.tame` |
-| [Breath of a horse #1](https://bigsoundbank.com/breath-of-a-horse-1-s0285.html) (`bsb_0285`) | Joseph Sardin | CC0 1.0 | `effect.ramming.charged`, `entity.frost_mauler.ambient`, `entity.frost_mauler.breath`, `entity.polar_bear.calm`, `entity.sniffer.tame` |
+| [Breath of a horse #1](https://bigsoundbank.com/breath-of-a-horse-1-s0285.html) (`bsb_0285`) | Joseph Sardin | CC0 1.0 | `effect.ramming.charged`, `entity.frost_mauler.ambient`, `entity.frost_mauler.breath`, `entity.piglin_witch.refuse`, `entity.polar_bear.calm`, `entity.sniffer.tame` |
 | [Breath of a horse #2](https://bigsoundbank.com/breath-of-a-horse-2-s0286.html) (`bsb_0286`) | Joseph Sardin | CC0 1.0 | `effect.ramming.charged`, `entity.frost_mauler.breath`, `entity.frost_mauler.stunned`, `entity.sniffer.tame` |
 | [Breathless Man](https://bigsoundbank.com/breathless-man-s1103.html) (`bsb_1103`) | Joseph Sardin | CC0 1.0 | `entity.player.shiver` |
+| [Brita jug flow](https://bigsoundbank.com/brita-jug-flow-s0592.html) (`bsb_0592`) | Joseph Sardin | CC0 1.0 | `block.elixir_jar.fill` |
 | [Broken Christmas Ball #1](https://bigsoundbank.com/broken-christmas-ball-1-s1121.html) (`bsb_1121`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.burst`, `block.icicle.shatter` |
 | [Broken glass](https://bigsoundbank.com/broken-glass-s0771.html) (`bsb_0771`) | Joseph Sardin | CC0 1.0 | `block.icicle.shatter` |
 | [Broken Plate #1](https://bigsoundbank.com/broken-plate-1-s1643.html) (`bsb_1643`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.break`, `entity.pot_golem.death`, `entity.pot_golem.shatter` |
-| [Broken plate #3](https://bigsoundbank.com/broken-plate-3-s1645.html) (`bsb_1645`) | Joseph Sardin | CC0 1.0 [5] | `entity.pot_golem.death`, `entity.pot_golem.shatter` |
+| [Broken plate #3](https://bigsoundbank.com/broken-plate-3-s1645.html) (`bsb_1645`) | Joseph Sardin | CC0 1.0 [6] | `entity.pot_golem.death`, `entity.pot_golem.shatter` |
 | [Broken plate #4](https://bigsoundbank.com/broken-plate-4-s1646.html) (`bsb_1646`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.crack` |
 | [Broken plate #5](https://bigsoundbank.com/broken-plate-5-s1647.html) (`bsb_1647`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.shatter` |
 | [Broken plate #6](https://bigsoundbank.com/broken-plate-6-s1648.html) (`bsb_1648`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.crack` |
@@ -49,10 +54,12 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Bubble wrap: Breakouts](https://bigsoundbank.com/bubble-wrap-breakouts-s0462.html) (`bsb_0462`) | Joseph Sardin | CC0 1.0 | `block.amber.release` |
 | [Bubbles Burst](https://bigsoundbank.com/bubbles-burst-s1074.html) (`bsb_1074`) | Joseph Sardin | CC0 1.0 | `block.amber.release` |
 | [Bulb bursting #1](https://bigsoundbank.com/bulb-bursting-1-s2039.html) (`bsb_2039`) | Joseph Sardin | CC0 1.0 | `item.fang_dagger.crit` |
-| [Bulb bursting #3](https://bigsoundbank.com/bulb-bursting-3-s2041.html) (`bsb_2041`) | Joseph Sardin | CC0 1.0 | `block.icicle.shatter`, `item.fang_dagger.crit` |
+| [Bulb bursting #3](https://bigsoundbank.com/bulb-bursting-3-s2041.html) (`bsb_2041`) | Joseph Sardin | CC0 1.0 | `block.icicle.shatter`, `item.elixir_of_greed.shatter`, `item.fang_dagger.crit` |
 | [Bulb bursting #4](https://bigsoundbank.com/bulb-bursting-4-s2042.html) (`bsb_2042`) | Joseph Sardin | CC0 1.0 | `item.fang_dagger.crit` |
 | [Bumblebee #2](https://bigsoundbank.com/bumblebee-2-s1001.html) (`bsb_1001`) | Joseph Sardin | CC0 1.0 | `entity.mosquito.buzz`, `entity.mosquito.death` |
-| [Canvas bag on floor](https://bigsoundbank.com/canvas-bag-on-floor-s0576.html) (`bsb_0576`) | Joseph Sardin | CC0 1.0 | `item.armor.equip_fur` |
+| [Burp #3](https://bigsoundbank.com/burp-3-s1709.html) (`bsb_1709`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.burp` |
+| [Burps](https://bigsoundbank.com/burps-s0242.html) (`bsb_0242`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.burp` |
+| [Canvas bag on floor](https://bigsoundbank.com/canvas-bag-on-floor-s0576.html) (`bsb_0576`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.rummage`, `item.armor.equip_fur` |
 | [Champagne Cork #1](https://bigsoundbank.com/champagne-cork-s0211.html) (`bsb_0211`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.build` |
 | [Champagne cork #2](https://bigsoundbank.com/champagne-cork-2-s0648.html) (`bsb_0648`) | Joseph Sardin | CC0 1.0 | `block.amber.release`, `entity.pot_golem.build` |
 | [Chattering teeth #2](https://bigsoundbank.com/chattering-teeth-2-s2190.html) (`bsb_2190`) | Joseph Sardin | CC0 1.0 | `entity.player.shiver` |
@@ -61,6 +68,8 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Chimes "butterfly" #2](https://bigsoundbank.com/chimes-butterfly-2-s2088.html) (`bsb_2088`) | Joseph Sardin | CC0 1.0 | `block.snow_globe.shake` |
 | [Chimes "Dream" #1](https://bigsoundbank.com/chimes-dream-1-s2079.html) (`bsb_2079`) | Joseph Sardin | CC0 1.0 | `block.snow_globe.shake`, `entity.icebreaker.horn_regrow` |
 | [Clink of glass, Toast #1](https://bigsoundbank.com/clink-of-glass-toast-1-s2886.html) (`bsb_2886`) | Joseph Sardin | CC0 1.0 | `item.fang_dagger.ready` |
+| [Coin in cup #1](https://bigsoundbank.com/coin-in-cup-1-s0339.html) (`bsb_0339`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.trade` |
+| [Coins #1](https://bigsoundbank.com/coins-1-s0193.html) (`bsb_0193`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.death` |
 | [Cow Moos #1](https://bigsoundbank.com/cow-moos-s0546.html) (`bsb_0546`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.roar` |
 | [Cow moos #3](https://bigsoundbank.com/cow-moos-3-s2383.html) (`bsb_2383`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.roar` |
 | [Cow moos #4](https://bigsoundbank.com/cow-moos-4-s2384.html) (`bsb_2384`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.roar` |
@@ -68,30 +77,55 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Cracking ice #2](https://bigsoundbank.com/cracking-ice-2-s2206.html) (`bsb_2206`) | Joseph Sardin | CC0 1.0 | `block.amber.release`, `block.ancient_ice.break`, `block.ice.crack`, `entity.pot_golem.death` |
 | [Cracking ice #3](https://bigsoundbank.com/cracking-ice-3-s2207.html) (`bsb_2207`) | Joseph Sardin | CC0 1.0 | `block.amber.release`, `block.ancient_ice.break`, `block.ancient_ice.hit`, `block.ice.crack`, `entity.pot_golem.crack` |
 | [Cracking ice #4](https://bigsoundbank.com/cracking-ice-4-s2208.html) (`bsb_2208`) | Joseph Sardin | CC0 1.0 | `ambient.ice_caves.additions`, `block.ancient_ice.hit`, `block.ice.crack` |
-| [Creaking metallic door](https://bigsoundbank.com/creaking-metallic-door-s0616.html) (`bsb_0616`) | Joseph Sardin | CC0 1.0 | `entity.dragon_locomotive.roar` |
+| [Creaking metallic door](https://bigsoundbank.com/creaking-metallic-door-s0616.html) (`bsb_0616`) | Joseph Sardin | CC0 1.0 | `entity.dragon_locomotive.roar`, `entity.golden_piglin.creak`, `entity.golden_piglin.groan` |
 | [Defrost #2](https://bigsoundbank.com/defrost-2-s2220.html) (`bsb_2220`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.crack` |
 | [Defrost #3](https://bigsoundbank.com/defrost-3-s2221.html) (`bsb_2221`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.crack` |
+| [Delirious Laughter #3](https://bigsoundbank.com/delirious-laughter-3-s2093.html) (`bsb_2093`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.cackle` |
 | [Dog singing #1](https://bigsoundbank.com/dog-singing-1-s2450.html) (`bsb_2450`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.howl` |
 | [Dog singing #2](https://bigsoundbank.com/dog-singing-2-s2451.html) (`bsb_2451`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.howl` |
-| [Drops of water #1](https://bigsoundbank.com/drops-of-water-1-s1384.html) (`bsb_1384`) | Joseph Sardin | CC0 1.0 | `ambient.ice_caves.additions` |
+| [Door squeaks and rubs #1](https://bigsoundbank.com/door-squeaks-and-rubs-1-s1159.html) (`bsb_1159`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.creak`, `entity.golden_piglin.groan` |
+| [Drink from the gourd #1](https://bigsoundbank.com/drink-from-the-gourd-1-s3247.html) (`bsb_3247`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.drink`, `item.elixir.drink` |
+| [Drink from the gourd #3](https://bigsoundbank.com/drink-from-the-gourd-3-s3249.html) (`bsb_3249`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.drink`, `item.elixir.drink` |
+| [Drops of water #1](https://bigsoundbank.com/drops-of-water-1-s1384.html) (`bsb_1384`) | Joseph Sardin | CC0 1.0 | `ambient.ice_caves.additions`, `curse.narcissus` |
 | [Drops of water #2](https://bigsoundbank.com/drops-of-water-2-s1385.html) (`bsb_1385`) | Joseph Sardin | CC0 1.0 | `ambient.ice_caves.additions` |
 | [Electric shock](https://bigsoundbank.com/electric-shock-s0134.html) (`bsb_0134`) | Joseph Sardin | CC0 1.0 | `block.booster_rail.boost` |
+| [Eructation](https://bigsoundbank.com/eructation-s1338.html) (`bsb_1338`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.burp` |
+| [Fermentation airlock #2](https://bigsoundbank.com/fermentation-airlock-2-s3561.html) (`bsb_3561`) | Joseph Sardin | CC0 1.0 | `block.elixir_jar.bubble` |
+| [Fermentation airlock #3](https://bigsoundbank.com/fermentation-airlock-3-s3562.html) (`bsb_3562`) | Joseph Sardin | CC0 1.0 | `block.elixir_jar.bubble` |
 | [Flag #1](https://bigsoundbank.com/flag-1-s1787.html) (`bsb_1787`) | Joseph Sardin | CC0 1.0 | `item.fang_dagger.pounce` |
 | [Flag #2](https://bigsoundbank.com/flag-2-s1788.html) (`bsb_1788`) | Joseph Sardin | CC0 1.0 | `item.armor.equip_fur`, `item.fang_dagger.pounce` |
 | [Flag #3](https://bigsoundbank.com/flag-3-s1789.html) (`bsb_1789`) | Joseph Sardin | CC0 1.0 | `item.armor.equip_fur` |
 | [Fly and Glass](https://bigsoundbank.com/fly-and-glass-s0759.html) (`bsb_0759`) | Joseph Sardin | CC0 1.0 | `entity.mosquito.buzz` |
 | [Footstep in the Snow #1](https://bigsoundbank.com/on-snow-s0208.html) (`bsb_0208`) | Joseph Sardin | CC0 1.0 | `entity.polar_bear.slam` |
+| [Gasoline fire #1](https://bigsoundbank.com/gasoline-fire-1-s1340.html) (`bsb_1340`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex` |
+| [Ghost #1](https://bigsoundbank.com/ghost-1-s2046.html) (`bsb_2046`) | Joseph Sardin | CC0 1.0 | `block.soul_tank.absorb` |
+| [Ghost #2](https://bigsoundbank.com/ghost-2-s2047.html) (`bsb_2047`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `curse.orpheus` |
+| [Ghost #3](https://bigsoundbank.com/ghost-3-s2048.html) (`bsb_2048`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `curse.trigger` |
+| [Ghost #4](https://bigsoundbank.com/ghost-4-s2049.html) (`bsb_2049`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `block.soul_tank.absorb` |
+| [Ghost #5](https://bigsoundbank.com/ghost-5-s2050.html) (`bsb_2050`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `curse.trigger` |
+| [Ghost #6](https://bigsoundbank.com/ghost-6-s2051.html) (`bsb_2051`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `curse.orpheus` |
+| [Ghost #7](https://bigsoundbank.com/ghost-7-s2052.html) (`bsb_2052`) | Joseph Sardin | CC0 1.0 | `block.soul_tank.absorb` |
+| [Ghost #8](https://bigsoundbank.com/ghost-8-s2053.html) (`bsb_2053`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `curse.trigger` |
+| [Ghost on the Flute #1](https://bigsoundbank.com/ghost-on-the-flute-1-s2054.html) (`bsb_2054`) | Joseph Sardin | CC0 1.0 | `block.soul_tank.hum` |
+| [Ghost on the flute #2](https://bigsoundbank.com/ghost-on-the-flute-2-s2055.html) (`bsb_2055`) | Joseph Sardin | CC0 1.0 | `block.soul_tank.hum` |
 | [Glass ball, bounce #1](https://bigsoundbank.com/glass-ball-bounce-1-s2240.html) (`bsb_2240`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.horn_regrow`, `entity.pot_golem.build` |
-| [Glass Burst](https://bigsoundbank.com/glass-burst-s0148.html) (`bsb_0148`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.burst`, `block.frost_mauler_skull.revive`, `entity.frost_mauler.explode`, `entity.frost_mauler.wake` |
+| [Glass Burst](https://bigsoundbank.com/glass-burst-s0148.html) (`bsb_0148`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.burst`, `block.frost_mauler_skull.revive`, `entity.frost_mauler.explode`, `entity.frost_mauler.wake`, `item.elixir_of_greed.shatter` |
+| [Gong, strong #1](https://bigsoundbank.com/gong-strong-1-s1483.html) (`bsb_1483`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `curse.sin`, `curse.trigger` |
+| [Gong, strong #2](https://bigsoundbank.com/gong-strong-2-s1484.html) (`bsb_1484`) | Joseph Sardin | CC0 1.0 | `curse.trigger` |
+| [Gong, sweet](https://bigsoundbank.com/gong-sweet-s1482.html) (`bsb_1482`) | Joseph Sardin | CC0 1.0 | `curse.trigger` |
+| [Gong, very strong](https://bigsoundbank.com/gong-very-strong-s1485.html) (`bsb_1485`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.hex`, `curse.sin` |
 | [Gore (pepper) #1](https://bigsoundbank.com/gore-pepper-1-s2593.html) (`bsb_2593`) | Joseph Sardin | CC0 1.0 | `item.blood.splash` |
-| [Grumpy pig, with the mouth #1](https://bigsoundbank.com/grumpy-pig-1-s1658.html) (`bsb_1658`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.ambient` |
-| [Grumpy Pig, with the Mouth #2](https://bigsoundbank.com/grumpy-pig-2-s1659.html) (`bsb_1659`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.ambient` |
+| [Grumpy pig, with the mouth #1](https://bigsoundbank.com/grumpy-pig-1-s1658.html) (`bsb_1658`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.death`, `entity.golden_piglin.groan`, `entity.golden_piglin.hurt`, `entity.icebreaker.ambient`, `entity.piglin_witch.ambient`, `entity.piglin_witch.burp`, `entity.piglin_witch.cackle`, `entity.piglin_witch.death`, `entity.piglin_witch.drink`, `entity.piglin_witch.hiccup`, `entity.piglin_witch.hurt`, `entity.piglin_witch.refuse`, `entity.piglin_witch.trade` |
+| [Grumpy Pig, with the Mouth #2](https://bigsoundbank.com/grumpy-pig-2-s1659.html) (`bsb_1659`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.hurt`, `entity.icebreaker.ambient`, `entity.piglin_witch.ambient`, `entity.piglin_witch.burp`, `entity.piglin_witch.cackle`, `entity.piglin_witch.death`, `entity.piglin_witch.drink`, `entity.piglin_witch.hiccup`, `entity.piglin_witch.hurt`, `entity.piglin_witch.refuse`, `entity.piglin_witch.trade` |
+| [Grunts](https://bigsoundbank.com/grunts-s0486.html) (`bsb_0486`) | Joseph Sardin | CC0 1.0 [7] | `entity.golden_piglin.death`, `entity.golden_piglin.groan`, `entity.piglin_witch.ambient` |
 | [Gun, loading #1](https://bigsoundbank.com/gun-loading-1-s1988.html) (`bsb_1988`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.mode` |
 | [Gun, loading #2](https://bigsoundbank.com/gun-loading-2-s1989.html) (`bsb_1989`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.mode` |
+| [Heart Beat](https://bigsoundbank.com/heart-beat-s0218.html) (`bsb_0218`) | Joseph Sardin | CC0 1.0 | `curse.narcissus` |
 | [Heavy chain](https://bigsoundbank.com/heavy-chain-s0359.html) (`bsb_0359`) | Joseph Sardin | CC0 1.0 | `block.lift_rail.clank` |
 | [Hiss of steam train #1](https://bigsoundbank.com/hiss-of-steam-train-1-s0227.html) (`bsb_0227`) | Joseph Sardin | CC0 1.0 | `entity.dragon_locomotive.roar`, `item.snowball_launcher.overheat` |
 | [Hiss of Steam Train #2](https://bigsoundbank.com/hiss-of-steam-train-2-s0228.html) (`bsb_0228`) | Joseph Sardin | CC0 1.0 | `entity.dragon_locomotive.roar` |
 | [Horse chewing hay](https://bigsoundbank.com/horse-chewing-hay-s0497.html) (`bsb_0497`) | Joseph Sardin | CC0 1.0 | `entity.polar_bear.munch` |
+| [Hush, long man](https://bigsoundbank.com/hush-long-man-s1076.html) (`bsb_1076`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.whisper` |
 | [Ice cubes in a glass #1](https://bigsoundbank.com/ice-cubes-in-a-glass-1-s2123.html) (`bsb_2123`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.step`, `block.snow_globe.shake`, `entity.icebreaker.shear` |
 | [Ice cubes in a glass #2](https://bigsoundbank.com/ice-cubes-in-a-glass-2-s2124.html) (`bsb_2124`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.break`, `block.ancient_ice.place`, `block.snow_globe.shake`, `entity.icebreaker.shear`, `entity.mosquito.spit` |
 | [Ice cubes in a glass #3](https://bigsoundbank.com/ice-cubes-in-a-glass-3-s2125.html) (`bsb_2125`) | Joseph Sardin | CC0 1.0 | `block.ancient_ice.place`, `block.snow_globe.shake`, `entity.icebreaker.shear` |
@@ -101,12 +135,14 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Large ratchet](https://bigsoundbank.com/large-ratchet-s0795.html) (`bsb_0795`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.charge` |
 | [Laughing Boy of 16 Months](https://bigsoundbank.com/laughing-boy-of-16-months-s0980.html) (`bsb_0980`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.giggle` |
 | [Man Breathing](https://bigsoundbank.com/man-breathing-s2195.html) (`bsb_2195`) | Joseph Sardin | CC0 1.0 | `entity.player.shiver` |
+| [Man sniffing](https://bigsoundbank.com/man-sniffing-s1095.html) (`bsb_1095`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.refuse` |
 | [Manual winch #1](https://bigsoundbank.com/manual-winch-1-s0901.html) (`bsb_0901`) | Joseph Sardin | CC0 1.0 | `entity.dragon_locomotive.roar` |
 | [Match #1](https://bigsoundbank.com/match-s0004.html) (`bsb_0004`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.fuse` |
 | [Medium chain](https://bigsoundbank.com/medium-chain-s0619.html) (`bsb_0619`) | Joseph Sardin | CC0 1.0 | `block.lift_rail.clank` |
 | [Medium Chain #1](https://bigsoundbank.com/medium-chain-1-s0360.html) (`bsb_0360`) | Joseph Sardin | CC0 1.0 | `entity.minecart.couple` |
 | [Medium chain #2](https://bigsoundbank.com/medium-chain-2-s0361.html) (`bsb_0361`) | Joseph Sardin | CC0 1.0 | `entity.minecart.couple` |
 | [Metal ball, bounce #2](https://bigsoundbank.com/metal-ball-bounce-2-s2243.html) (`bsb_2243`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.overheat` |
+| [Metal grinding](https://bigsoundbank.com/metal-grinding-s0779.html) (`bsb_0779`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.groan` |
 | [Mouth Noises #1](https://bigsoundbank.com/mouth-noises-1-s0352.html) (`bsb_0352`) | Joseph Sardin | CC0 1.0 | `entity.polar_bear.munch` |
 | [Music box, C #1](https://bigsoundbank.com/music-box-c-1-s1867.html) (`bsb_1867`) | Joseph Sardin | CC0 1.0 | `block.snow_globe.shake` |
 | [Music box, F #1](https://bigsoundbank.com/music-box-f-1-s1870.html) (`bsb_1870`) | Joseph Sardin | CC0 1.0 | `block.snow_globe.shake` |
@@ -122,9 +158,9 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Punch #4](https://bigsoundbank.com/punch-4-s2459.html) (`bsb_2459`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.claw`, `entity.icebreaker.ram`, `item.fang_dagger.crit` |
 | [Punch #5](https://bigsoundbank.com/punch-5-s2460.html) (`bsb_2460`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.claw`, `entity.icebreaker.ram`, `item.fang_dagger.crit` |
 | [Punch #6](https://bigsoundbank.com/punch-6-s2461.html) (`bsb_2461`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.claw`, `item.fang_dagger.crit` |
-| [Quenching, cooling #1](https://bigsoundbank.com/quenching-cooling-1-s1694.html) (`bsb_1694`) | Joseph Sardin | CC0 1.0 | `entity.player.overheat` |
-| [Quenching, cooling #2](https://bigsoundbank.com/quenching-cooling-2-s1695.html) (`bsb_1695`) | Joseph Sardin | CC0 1.0 | `entity.player.overheat` |
-| [Quenching, cooling #3](https://bigsoundbank.com/quenching-cooling-3-s1696.html) (`bsb_1696`) | Joseph Sardin | CC0 1.0 | `entity.player.overheat` |
+| [Quenching, cooling #1](https://bigsoundbank.com/quenching-cooling-1-s1694.html) (`bsb_1694`) | Joseph Sardin | CC0 1.0 | `entity.player.overheat`, `item.elixir_of_greed.shatter` |
+| [Quenching, cooling #2](https://bigsoundbank.com/quenching-cooling-2-s1695.html) (`bsb_1695`) | Joseph Sardin | CC0 1.0 | `entity.player.overheat`, `item.elixir_of_greed.shatter` |
+| [Quenching, cooling #3](https://bigsoundbank.com/quenching-cooling-3-s1696.html) (`bsb_1696`) | Joseph Sardin | CC0 1.0 | `entity.player.overheat`, `item.elixir_of_greed.shatter` |
 | [Ratchet tensioner](https://bigsoundbank.com/ratchet-tensioner-s1824.html) (`bsb_1824`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.charge` |
 | [Scissors](https://bigsoundbank.com/scissors-s0008.html) (`bsb_0008`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.shear`, `entity.polar_bear.shear` |
 | [Short welds](https://bigsoundbank.com/short-welds-s0952.html) (`bsb_0952`) | Joseph Sardin | CC0 1.0 | `block.booster_rail.boost` |
@@ -136,27 +172,35 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Slow wick #2](https://bigsoundbank.com/slow-wick-2-s1307.html) (`bsb_1307`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.fuse` |
 | [Slow wick 1](https://bigsoundbank.com/slow-wick-1--s1306.html) (`bsb_1306`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.fuse` |
 | [Small chain #1](https://bigsoundbank.com/small-chain-1-s0355.html) (`bsb_0355`) | Joseph Sardin | CC0 1.0 | `entity.minecart.couple` |
+| [Small metal grinding #1](https://bigsoundbank.com/petit-grincement-metal-1-s0322.html) (`bsb_0322`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.creak` |
+| [Small metal grinding #2](https://bigsoundbank.com/petit-grincement-metal-2-s0323.html) (`bsb_0323`) | Joseph Sardin | CC0 1.0 | `entity.golden_piglin.creak` |
 | [Small ratchet](https://bigsoundbank.com/small-ratchet-s0794.html) (`bsb_0794`) | Joseph Sardin | CC0 1.0 | `item.snowball_launcher.charge` |
+| [Sniff](https://bigsoundbank.com/sniff-s0784.html) (`bsb_0784`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.ambient`, `entity.piglin_witch.cackle`, `entity.piglin_witch.hiccup`, `entity.piglin_witch.refuse` |
 | [Splash, Big #1](https://bigsoundbank.com/splash-big-1-s1519.html) (`bsb_1519`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.splash` |
 | [Splash, big #2](https://bigsoundbank.com/splash-big-2-s1520.html) (`bsb_1520`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.splash` |
 | [Splash, Big #3](https://bigsoundbank.com/splash-big-3-s1521.html) (`bsb_1521`) | Joseph Sardin | CC0 1.0 | `entity.icebreaker.splash` |
-| [Splash, Small #1](https://bigsoundbank.com/splash-small-1-s1529.html) (`bsb_1529`) | Joseph Sardin | CC0 1.0 [6] | `item.blood.splash` |
+| [Splash, Small #1](https://bigsoundbank.com/splash-small-1-s1529.html) (`bsb_1529`) | Joseph Sardin | CC0 1.0 [8] | `item.blood.splash` |
 | [Splash, small #3](https://bigsoundbank.com/splash-small-3-s1531.html) (`bsb_1531`) | Joseph Sardin | CC0 1.0 | `item.blood.splash` |
-| [Splash, small #4](https://bigsoundbank.com/splash-small-4-s1532.html) (`bsb_1532`) | Joseph Sardin | CC0 1.0 | `item.blood.splash` |
+| [Splash, small #4](https://bigsoundbank.com/splash-small-4-s1532.html) (`bsb_1532`) | Joseph Sardin | CC0 1.0 | `item.blood.splash`, `item.elixir_of_greed.shatter` |
 | [Steam engine, foley #1](https://bigsoundbank.com/steam-engine-foley-1-s3310.html) (`bsb_3310`) | Joseph Sardin | CC0 1.0 | `entity.locomotive.chuff` |
 | [Steam engine, foley #2](https://bigsoundbank.com/steam-engine-foley-2-s3311.html) (`bsb_3311`) | Joseph Sardin | CC0 1.0 | `entity.locomotive.chuff` |
 | [Stir concrete with a trowel](https://bigsoundbank.com/stir-concrete-with-a-trowel-s0623.html) (`bsb_0623`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.repair` |
 | [Straw, end of glass](https://bigsoundbank.com/straw-end-of-glass-s0508.html) (`bsb_0508`) | Joseph Sardin | CC0 1.0 | `entity.mosquito.drink` |
 | [Straw, suction #1](https://bigsoundbank.com/straw-suction-1-s1244.html) (`bsb_1244`) | Joseph Sardin | CC0 1.0 | `entity.mosquito.drink` |
 | [Straw, suction #3](https://bigsoundbank.com/straw-suction-3-s1246.html) (`bsb_1246`) | Joseph Sardin | CC0 1.0 | `entity.mosquito.drink` |
+| [Strident Laughter](https://bigsoundbank.com/strident-laughter-s0489.html) (`bsb_0489`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.cackle`, `entity.piglin_witch.hiccup` |
 | [Sword That Cuts](https://bigsoundbank.com/sword-that-cuts-s0127.html) (`bsb_0127`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.claw` |
 | [Sword Through the Air](https://bigsoundbank.com/sword-through-the-air-s0128.html) (`bsb_0128`) | Joseph Sardin | CC0 1.0 | `item.fang_dagger.slash` |
-| [Synthetic Coat Rubbed](https://bigsoundbank.com/synthetic-coat-rubbed-s1104.html) (`bsb_1104`) | Joseph Sardin | CC0 1.0 | `entity.polar_bear.shear`, `item.armor.equip_fur` |
+| [Synthetic Coat Rubbed](https://bigsoundbank.com/synthetic-coat-rubbed-s1104.html) (`bsb_1104`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.rummage`, `entity.polar_bear.shear`, `item.armor.equip_fur` |
 | [Thunder #2](https://bigsoundbank.com/thunder-2-s3113.html) (`bsb_3113`) | Joseph Sardin | CC0 1.0 | `entity.pot_golem.beam`, `event.frozen_tomb.rumble`, `item.snowball_launcher.heavy` |
 | [Thunder #3](https://bigsoundbank.com/thunder-3-s3114.html) (`bsb_3114`) | Joseph Sardin | CC0 1.0 | `event.frozen_tomb.rumble` |
 | [Train whistle, foley #2](https://bigsoundbank.com/train-whistle-foley-2-s3316.html) (`bsb_3316`) | Joseph Sardin | CC0 1.0 | `entity.locomotive.whistle` |
 | [Train whistle, foley #5](https://bigsoundbank.com/train-whistle-foley-5-s3319.html) (`bsb_3319`) | Joseph Sardin | CC0 1.0 | `entity.locomotive.whistle` |
 | [Tripes](https://bigsoundbank.com/tripes-s0334.html) (`bsb_0334`) | Joseph Sardin | CC0 1.0 | `item.blood.splash` |
+| [Water Bubble #2](https://bigsoundbank.com/water-bubble-2-s0183.html) (`bsb_0183`) | Joseph Sardin | CC0 1.0 | `block.elixir_jar.brewed` |
+| [Water bubbles](https://bigsoundbank.com/water-bubbles-s0150.html) (`bsb_0150`) | Joseph Sardin | CC0 1.0 | `block.elixir_jar.brewed` |
+| [Whisper #1](https://bigsoundbank.com/whisper-1-s3255.html) (`bsb_3255`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.whisper`, `item.hexed_book.whisper` |
+| [Whisper #2](https://bigsoundbank.com/whisper-2-s3256.html) (`bsb_3256`) | Joseph Sardin | CC0 1.0 | `block.hexing_table.whisper`, `item.hexed_book.whisper` |
 | [Whistling of the Wind #2](https://bigsoundbank.com/whistling-of-the-wind-2-s0155.html) (`bsb_0155`) | Joseph Sardin | CC0 1.0 | `ambient.ice_caves.loop` |
 | [Whistling train #2](https://bigsoundbank.com/whistling-train-2-s0226.html) (`bsb_0226`) | Joseph Sardin | CC0 1.0 | `entity.locomotive.whistle` |
 | [Whoosh #4](https://bigsoundbank.com/whoosh-4-s1796.html) (`bsb_1796`) | Joseph Sardin | CC0 1.0 | `entity.frost_mauler.claw`, `entity.polar_bear.leap`, `item.fang_dagger.pounce` |
@@ -171,35 +215,37 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Zombie #3](https://bigsoundbank.com/zombie-3-s2108.html) (`bsb_2108`) | Joseph Sardin | CC0 1.0 | `entity.frost_zombie.ambient`, `entity.zombie_polar_bear.ambient` |
 | [Zombie #4](https://bigsoundbank.com/zombie-4-s2109.html) (`bsb_2109`) | Joseph Sardin | CC0 1.0 | `entity.frost_zombie.death` |
 | [Zombie #5](https://bigsoundbank.com/zombie-5-s2110.html) (`bsb_2110`) | Joseph Sardin | CC0 1.0 | `entity.zombie_polar_bear.hurt` |
-| [Zombie #6](https://bigsoundbank.com/zombie-6-s2111.html) (`bsb_2111`) | Joseph Sardin | CC0 1.0 | `entity.zombie_polar_bear.hurt` |
-| [Zombie #7](https://bigsoundbank.com/zombie-7-s2112.html) (`bsb_2112`) | Joseph Sardin | CC0 1.0 | `entity.frost_zombie.ambient` |
+| [Zombie #6](https://bigsoundbank.com/zombie-6-s2111.html) (`bsb_2111`) | Joseph Sardin | CC0 1.0 | `entity.piglin_witch.death`, `entity.zombie_polar_bear.hurt` |
+| [Zombie #7](https://bigsoundbank.com/zombie-7-s2112.html) (`bsb_2112`) | Joseph Sardin | CC0 1.0 | `entity.frost_zombie.ambient`, `entity.piglin_witch.death` |
 
 ## commons.wikimedia.org
 
 | Source | Author | Licence | Used by |
 |---|---|---|---|
-| [Lion_raring-sound1TamilNadu178.ogg](https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg) (`cw_lion`) | த*உழவன் | Public domain [7] | `block.frost_mauler_skull.revive`, `entity.dragon_locomotive.roar`, `entity.frost_mauler.ambient`, `entity.frost_mauler.death`, `entity.frost_mauler.hurt`, `entity.frost_mauler.roar`, `entity.polar_bear.roar` |
+| [Lion_raring-sound1TamilNadu178.ogg](https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg) (`cw_lion`) | த*உழவன் | Public domain [9] | `block.frost_mauler_skull.revive`, `entity.dragon_locomotive.roar`, `entity.frost_mauler.ambient`, `entity.frost_mauler.death`, `entity.frost_mauler.hurt`, `entity.frost_mauler.roar`, `entity.polar_bear.roar` |
 
 ## opengameart.org
 
 | Source | Author | Licence | Used by |
 |---|---|---|---|
+| [100 CC0 metal and wood SFX](https://opengameart.org/content/100-cc0-metal-and-wood-sfx) (`oga_rd_metalwood`) | rubberduck | CC0 1.0 | `entity.golden_piglin.death`, `entity.golden_piglin.hurt`, `entity.piglin_witch.rummage` |
 | [100 CC0 SFX](https://opengameart.org/content/100-cc0-sfx) (`oga_rd_100`) | rubberduck | CC0 1.0 | `entity.pot_golem.crack`, `entity.pot_golem.death`, `entity.pot_golem.hurt`, `entity.pot_golem.repair`, `entity.pot_golem.shatter` |
-| [12 wet towel hitting/falling/punching floor sounds](https://opengameart.org/content/12-wet-towel-hittingfallingpunching-floor-sounds) (`oga_towel`) | qubodup | CC0 1.0 [8] | `entity.icebreaker.death`, `entity.icebreaker.slap`, `entity.icebreaker.step` |
+| [12 wet towel hitting/falling/punching floor sounds](https://opengameart.org/content/12-wet-towel-hittingfallingpunching-floor-sounds) (`oga_towel`) | qubodup | CC0 1.0 [10] | `entity.icebreaker.death`, `entity.icebreaker.slap`, `entity.icebreaker.step` |
 | [25 CC0 bang / firework SFX](https://opengameart.org/content/25-cc0-bang-firework-sfx) (`oga_rd_bang`) | rubberduck | CC0 1.0 | `block.frost_mauler_skull.revive`, `entity.frost_mauler.explode`, `entity.pot_golem.beam`, `item.snowball_launcher.heavy` |
 | [4 dry snow steps](https://opengameart.org/content/4-dry-snow-steps) (`oga_dry_snow`) | qubodup | CC0 1.0 | `entity.frost_zombie.step`, `entity.icebreaker.slap`, `entity.polar_bear.slam`, `item.snowball_launcher.load` |
-| [40 CC0 water / splash / slime SFX](https://opengameart.org/content/40-cc0-water-splash-slime-sfx) (`oga_rd_water`) | rubberduck | CC0 1.0 | `entity.icebreaker.splash`, `entity.polar_bear.munch`, `entity.pot_golem.death`, `entity.pot_golem.hurt`, `entity.pot_golem.step`, `item.blood.splash` |
-| [42 Snow and Gravel Footsteps (recorded by Corsica_S, cut by qubodup)](https://opengameart.org/content/42-snow-and-gravel-footsteps) (`oga_snow42`) | qubodup / Corsica_S | CC0 1.0 [9] | `block.ancient_ice.fall`, `block.ancient_ice.step`, `entity.frost_mauler.step`, `entity.frost_zombie.step` |
+| [40 CC0 water / splash / slime SFX](https://opengameart.org/content/40-cc0-water-splash-slime-sfx) (`oga_rd_water`) | rubberduck | CC0 1.0 | `entity.icebreaker.splash`, `entity.piglin_witch.drink`, `entity.polar_bear.munch`, `entity.pot_golem.death`, `entity.pot_golem.hurt`, `entity.pot_golem.step`, `item.blood.splash`, `item.elixir.drink` |
+| [42 Snow and Gravel Footsteps (recorded by Corsica_S, cut by qubodup)](https://opengameart.org/content/42-snow-and-gravel-footsteps) (`oga_snow42`) | qubodup / Corsica_S | CC0 1.0 [11] | `block.ancient_ice.fall`, `block.ancient_ice.step`, `entity.frost_mauler.step`, `entity.frost_zombie.step` |
 | [51 UI sound effects (buttons, switches and clicks)](https://opengameart.org/content/51-ui-sound-effects-buttons-switches-and-clicks) (`oga_kenney_ui`) | Kenney | CC0 1.0 | `entity.mosquito.stab`, `entity.pot_golem.repair`, `item.snowball_launcher.empty`, `item.snowball_launcher.load`, `item.snowball_launcher.mode` |
-| [75 CC0 breaking / falling / hit sfx](https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx) (`oga_rd_break`) | rubberduck | CC0 1.0 | `block.ancient_ice.break`, `block.ancient_ice.burst`, `block.ancient_ice.fall`, `block.ancient_ice.hit`, `block.ancient_ice.place`, `block.icicle.shatter`, `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.frost_zombie.death`, `entity.icebreaker.ram`, `entity.minecart.couple`, `entity.mosquito.spit`, `entity.mosquito.stab`, `entity.pot_golem.crack`, `entity.pot_golem.death`, `entity.pot_golem.hurt`, `entity.pot_golem.shatter`, `item.fang_dagger.tired`, `item.snowball_launcher.load`, `item.snowball_launcher.overheat` |
-| [80 CC0 creature SFX](https://opengameart.org/content/80-cc0-creature-sfx) (`oga_rd_creature`) | rubberduck | CC0 1.0 | `entity.frost_mauler.hurt`, `entity.frost_mauler.stunned`, `entity.icebreaker.happy`, `entity.icebreaker.hurt`, `entity.mosquito.death`, `entity.mosquito.hurt`, `entity.mosquito.spit`, `entity.polar_bear.leap`, `entity.polar_bear.munch`, `entity.pot_golem.howl`, `entity.sniffer.tame`, `entity.zombie_polar_bear.hurt` |
+| [75 CC0 breaking / falling / hit sfx](https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx) (`oga_rd_break`) | rubberduck | CC0 1.0 | `block.ancient_ice.break`, `block.ancient_ice.burst`, `block.ancient_ice.fall`, `block.ancient_ice.hit`, `block.ancient_ice.place`, `block.icicle.shatter`, `effect.ramming.impact`, `entity.frost_mauler.bite`, `entity.frost_zombie.death`, `entity.golden_piglin.death`, `entity.icebreaker.ram`, `entity.minecart.couple`, `entity.mosquito.spit`, `entity.mosquito.stab`, `entity.pot_golem.crack`, `entity.pot_golem.death`, `entity.pot_golem.hurt`, `entity.pot_golem.shatter`, `item.elixir_of_greed.shatter`, `item.fang_dagger.tired`, `item.snowball_launcher.load`, `item.snowball_launcher.overheat` |
+| [80 CC0 creature SFX](https://opengameart.org/content/80-cc0-creature-sfx) (`oga_rd_creature`) | rubberduck | CC0 1.0 | `entity.frost_mauler.hurt`, `entity.frost_mauler.stunned`, `entity.icebreaker.happy`, `entity.icebreaker.hurt`, `entity.mosquito.death`, `entity.mosquito.hurt`, `entity.mosquito.spit`, `entity.piglin_witch.burp`, `entity.piglin_witch.hurt`, `entity.polar_bear.leap`, `entity.polar_bear.munch`, `entity.pot_golem.howl`, `entity.sniffer.tame`, `entity.zombie_polar_bear.hurt` |
 | [80 CC0 creture SFX #2](https://opengameart.org/content/80-cc0-creture-sfx-2) (`oga_rd_creature2`) | rubberduck | CC0 1.0 | `entity.frost_mauler.hurt`, `entity.mosquito.death`, `entity.mosquito.hurt`, `entity.polar_bear.leap`, `entity.pot_golem.hurt`, `entity.pot_golem.step` |
+| [80 CC0 RPG SFX](https://opengameart.org/content/80-cc0-rpg-sfx) (`oga_rd_rpg`) | rubberduck | CC0 1.0 | `entity.piglin_witch.death`, `entity.piglin_witch.trade`, `item.elixir_of_greed.shatter` |
 | [9 wet snow steps](https://opengameart.org/content/9-wet-snow-steps) (`oga_wet_snow`) | qubodup | CC0 1.0 | `entity.icebreaker.step`, `item.snowball_launcher.load` |
-| [Bear Growls (U.S. Fish & Wildlife Service recordings)](https://opengameart.org/content/bear-growls) (`oga_bear`) | AntumDeluge | CC0 1.0 [10] | `entity.frost_mauler.ambient`, `entity.polar_bear.roar`, `entity.zombie_polar_bear.ambient`, `entity.zombie_polar_bear.death`, `entity.zombie_polar_bear.hurt` |
+| [Bear Growls (U.S. Fish & Wildlife Service recordings)](https://opengameart.org/content/bear-growls) (`oga_bear`) | AntumDeluge | CC0 1.0 [12] | `entity.frost_mauler.ambient`, `entity.polar_bear.roar`, `entity.zombie_polar_bear.ambient`, `entity.zombie_polar_bear.death`, `entity.zombie_polar_bear.hurt` |
 | [Big scary troll sounds (troll-idle-noises)](https://opengameart.org/content/big-scary-troll-sounds) (`oga_troll_idle`) | Darsycho | CC0 1.0 | `entity.frost_mauler.ambient`, `entity.frost_mauler.wake`, `entity.zombie_polar_bear.ambient` |
 | [Big scary troll sounds (troll-roars)](https://opengameart.org/content/big-scary-troll-sounds) (`oga_troll_roars`) | Darsycho | CC0 1.0 | `block.frost_mauler_skull.revive`, `entity.dragon_locomotive.roar`, `entity.frost_mauler.death`, `entity.frost_mauler.hurt`, `entity.frost_mauler.roar`, `entity.icebreaker.roar`, `entity.polar_bear.roar` |
 | [Cannon fire](https://opengameart.org/content/cannon-fire) (`oga_cannon`) | Thimras | CC0 1.0 | `entity.frost_mauler.explode`, `item.snowball_launcher.heavy` |
-| [CC0 Deep Monster Roar](https://opengameart.org/content/cc0-deep-monster-roar) (`oga_deep_roar`) | trazzz123 | CC0 1.0 | `entity.frost_mauler.death`, `entity.frost_mauler.roar`, `entity.frost_mauler.wake` |
+| [CC0 Deep Monster Roar](https://opengameart.org/content/cc0-deep-monster-roar) (`oga_deep_roar`) | trazzz123 | CC0 1.0 | `curse.sin`, `entity.frost_mauler.death`, `entity.frost_mauler.roar`, `entity.frost_mauler.wake` |
 | [Fly Swatter Squish sound](https://opengameart.org/content/fly-swatter-squish-sound) (`oga_flyswatter`) | qubodup | CC0 1.0 | `entity.mosquito.death`, `entity.mosquito.stab`, `item.blood.splash` |
 | [Genuine Sneeze Sound](https://opengameart.org/content/genuine-sneeze-sound) (`oga_sneeze_qubodup`) | qubodup | CC0 1.0 | `entity.pot_golem.sneeze` |
 | [Group giggling](https://opengameart.org/content/group-giggling) (`oga_giggling`) | Nocturnal_Vanguard (AuraVoice) | CC0 1.0 | `entity.pot_golem.giggle` |
@@ -215,12 +261,12 @@ Rebuild: `python3 mods/winterworks/tools/sounds/build_sounds.py fetch` then `...
 | [Monster snarls (monster-snarls-2)](https://opengameart.org/content/monster-snarls) (`oga_snarls2`) | Darsycho | CC0 1.0 | `entity.frost_mauler.bite` |
 | [Monster snarls (monsters-snarls-3)](https://opengameart.org/content/monster-snarls) (`oga_snarls3`) | Darsycho | CC0 1.0 | `entity.frost_mauler.fury` |
 | [Sneeze](https://opengameart.org/content/sneeze) (`oga_sneeze_zarokima`) | zarokima | CC0 1.0 | `entity.pot_golem.sneeze` |
-| [Steam release sounds](https://opengameart.org/content/steam-release-sounds) (`oga_steam_hiss`) | bart | CC0 1.0 [11] | `entity.dragon_locomotive.roar`, `entity.locomotive.chuff`, `entity.player.overheat`, `item.snowball_launcher.overheat` |
-| [Steam whistle (steamwhistle)](https://opengameart.org/content/steam-whistle) (`oga_steam_whistle1`) | bart | CC0 1.0 [12] | `entity.locomotive.whistle` |
+| [Steam release sounds](https://opengameart.org/content/steam-release-sounds) (`oga_steam_hiss`) | bart | CC0 1.0 [13] | `entity.dragon_locomotive.roar`, `entity.locomotive.chuff`, `entity.player.overheat`, `item.snowball_launcher.overheat` |
+| [Steam whistle (steamwhistle)](https://opengameart.org/content/steam-whistle) (`oga_steam_whistle1`) | bart | CC0 1.0 [14] | `entity.locomotive.whistle` |
 | [Swishes Sound Pack](https://opengameart.org/content/swishes-sound-pack) (`oga_swishes`) | artisticdude | CC0 1.0 | `item.fang_dagger.slash`, `item.snowball_launcher.fire` |
 | [various scissors (garden_shears_01)](https://opengameart.org/content/various-scissors) (`oga_shears1`) | sinny | CC0 1.0 | `entity.icebreaker.shear`, `entity.polar_bear.shear` |
 | [various scissors (garden_shears_02)](https://opengameart.org/content/various-scissors) (`oga_shears2`) | sinny | CC0 1.0 | `entity.icebreaker.shear` |
-| [wind1 (synthesised wind)](https://opengameart.org/content/wind1) (`oga_wind1`) | Luke.RUSTLTD | CC0 1.0 [13] | `ambient.ice_caves.loop` |
+| [wind1 (synthesised wind)](https://opengameart.org/content/wind1) (`oga_wind1`) | Luke.RUSTLTD | CC0 1.0 [15] | `ambient.ice_caves.loop` |
 | [Zombie moans](https://opengameart.org/content/zombie-moans) (`oga_zombie_moans`) | Darsycho | CC0 1.0 | `entity.zombie_polar_bear.ambient`, `entity.zombie_polar_bear.death` |
 | [Zombies Sound Pack](https://opengameart.org/content/zombies-sound-pack) (`oga_zombies`) | artisticdude | CC0 1.0 | `entity.frost_zombie.ambient`, `entity.frost_zombie.death`, `entity.frost_zombie.hurt`, `entity.zombie_polar_bear.hurt` |
 
@@ -230,15 +276,17 @@ Notes:
 * [2] Fobney Island Nature Reserve Reading UK - Cracking Lake Ice: Radio Aporee recording released by the recordist under the Public Domain Mark 1.0 (archive.org item licence).
 * [3] Klondike Park Lake Ice Booms, Augusta, Missouri: Radio Aporee recording released by the recordist under the Public Domain Mark 1.0 (archive.org item licence).
 * [4] Utena, Lietuva - Lake ice Andromeda: Radio Aporee recording released by the recordist under the Public Domain Mark 1.0 (archive.org item licence).
-* [5] Broken plate #3: page marks it 'License CC0 (public domain): Free and royalty-free'
-* [6] Splash, Small #1: page marks it 'License CC0 (public domain): Free and royalty-free'
-* [7] Lion_raring-sound1TamilNadu178.ogg: Own work of the uploader, who released it into the public domain ("I, the copyright holder of this work, release this work into the public domain").
-* [8] 12 wet towel hitting/falling/punching floor sounds: The page states the pack is CC0 as of 2024-08-24 (the older text file inside the archive is superseded).
-* [9] 42 Snow and Gravel Footsteps (recorded by Corsica_S, cut by qubodup): Recorded by Corsica_S (freesound); cut and released as CC0 by qubodup with the recordist's permission (stated on the page).
-* [10] Bear Growls (U.S. Fish & Wildlife Service recordings): U.S. Fish & Wildlife Service recordings, packaged and released as CC0.
-* [11] Steam release sounds: CC0; the author appreciates (does not require) attribution.
-* [12] Steam whistle (steamwhistle): CC0; the author appreciates (does not require) attribution.
-* [13] wind1 (synthesised wind): Synthesised wind (PureData).
+* [5] Bottle clink: page marks it 'License CC0 (public domain): Free and royalty-free'
+* [6] Broken plate #3: page marks it 'License CC0 (public domain): Free and royalty-free'
+* [7] Grunts: page marks it 'License CC0 (public domain): Free and royalty-free'
+* [8] Splash, Small #1: page marks it 'License CC0 (public domain): Free and royalty-free'
+* [9] Lion_raring-sound1TamilNadu178.ogg: Own work of the uploader, who released it into the public domain ("I, the copyright holder of this work, release this work into the public domain").
+* [10] 12 wet towel hitting/falling/punching floor sounds: The page states the pack is CC0 as of 2024-08-24 (the older text file inside the archive is superseded).
+* [11] 42 Snow and Gravel Footsteps (recorded by Corsica_S, cut by qubodup): Recorded by Corsica_S (freesound); cut and released as CC0 by qubodup with the recordist's permission (stated on the page).
+* [12] Bear Growls (U.S. Fish & Wildlife Service recordings): U.S. Fish & Wildlife Service recordings, packaged and released as CC0.
+* [13] Steam release sounds: CC0; the author appreciates (does not require) attribution.
+* [14] Steam whistle (steamwhistle): CC0; the author appreciates (does not require) attribution.
+* [15] wind1 (synthesised wind): Synthesised wind (PureData).
 
 ## Events and their ingredients
 
@@ -341,6 +389,34 @@ Notes:
 | `block.amber.release` | 3 | bsb_0462, bsb_0648, bsb_1074, bsb_2205, bsb_2206, bsb_2207 | chime |
 | `item.blood.splash` | 3 | bsb_0334, bsb_1529, bsb_1531, bsb_1532, bsb_2593, oga_flyswatter, oga_rd_water | - |
 | `entity.sniffer.tame` | 3 | bsb_0285, bsb_0286, bsb_1543, oga_rd_creature | tone |
+| `block.elixir_jar.bubble` | 3 | bsb_0149, bsb_0491, bsb_3561, bsb_3562 | - |
+| `block.elixir_jar.fill` | 3 | bsb_0487, bsb_0592 | - |
+| `block.elixir_jar.brewed` | 3 | bsb_0150, bsb_0183 | chime |
+| `block.soul_tank.absorb` | 3 | bsb_2046, bsb_2049, bsb_2052 | whoosh |
+| `block.soul_tank.hum` | 2 | bsb_2054, bsb_2055 | noise, tone |
+| `block.hexing_table.hex` | 2 | bsb_0987, bsb_1340, bsb_1483, bsb_1485, bsb_2047, bsb_2048, bsb_2049, bsb_2050, bsb_2051, bsb_2053 | thump, whoosh |
+| `block.hexing_table.whisper` | 4 | bsb_1076, bsb_3255, bsb_3256 | - |
+| `item.hexed_book.whisper` | 3 | bsb_3255, bsb_3256 | - |
+| `item.elixir.drink` | 3 | bsb_3247, bsb_3249, oga_rd_water | - |
+| `item.elixir_of_greed.shatter` | 3 | bsb_0148, bsb_1532, bsb_1694, bsb_1695, bsb_1696, bsb_2041, oga_rd_break, oga_rd_rpg | - |
+| `entity.piglin_witch.ambient` | 4 | bsb_0486, bsb_0784, bsb_1658, bsb_1659 | - |
+| `entity.piglin_witch.hiccup` | 3 | bsb_0489, bsb_0784, bsb_1658, bsb_1659 | - |
+| `entity.piglin_witch.drink` | 2 | bsb_1658, bsb_1659, bsb_3247, bsb_3249, oga_rd_water | - |
+| `entity.piglin_witch.burp` | 3 | bsb_0242, bsb_1338, bsb_1658, bsb_1659, bsb_1709, oga_rd_creature | - |
+| `entity.piglin_witch.rummage` | 3 | bsb_0487, bsb_0576, bsb_0596, bsb_1104, bsb_1408, bsb_1409, oga_rd_metalwood | - |
+| `entity.piglin_witch.refuse` | 3 | bsb_0285, bsb_0784, bsb_1095, bsb_1658, bsb_1659 | - |
+| `entity.piglin_witch.cackle` | 3 | bsb_0489, bsb_0784, bsb_1658, bsb_1659, bsb_2093 | - |
+| `entity.piglin_witch.hurt` | 3 | bsb_1658, bsb_1659, oga_rd_creature | - |
+| `entity.piglin_witch.death` | 2 | bsb_0487, bsb_1658, bsb_1659, bsb_2111, bsb_2112, bsb_2452, bsb_2453, oga_rd_rpg | - |
+| `entity.piglin_witch.trade` | 3 | bsb_0339, bsb_1658, bsb_1659, oga_rd_rpg | - |
+| `entity.golden_piglin.groan` | 3 | bsb_0486, bsb_0616, bsb_0779, bsb_1159, bsb_1658 | - |
+| `entity.golden_piglin.creak` | 3 | bsb_0322, bsb_0323, bsb_0616, bsb_1159 | - |
+| `entity.golden_piglin.hurt` | 3 | bsb_1658, bsb_1659, bsb_3589, oga_rd_metalwood | - |
+| `entity.golden_piglin.death` | 2 | bsb_0193, bsb_0486, bsb_1658, oga_rd_break, oga_rd_metalwood | thump |
+| `curse.trigger` | 3 | bsb_1482, bsb_1483, bsb_1484, bsb_2048, bsb_2050, bsb_2053 | thump, tone |
+| `curse.narcissus` | 2 | bsb_0218, bsb_1384 | chime, noise |
+| `curse.orpheus` | 2 | bsb_2047, bsb_2051 | pluck, whoosh |
+| `curse.sin` | 2 | bsb_1483, bsb_1485, oga_deep_roar | thump, tone |
 
 ## Licences
 
