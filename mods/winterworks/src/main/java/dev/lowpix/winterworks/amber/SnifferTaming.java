@@ -342,7 +342,7 @@ public final class SnifferTaming {
             }
         }
         if (st.is(WWBlocks.AMBER_FOSSIL)) {
-            out = new ItemStack(WWItems.AMBERWOOD_SEED);   // a fossil holds a petrified Amberwood seed
+            out = new ItemStack(WWItems.AMBERWOOD_BLOOM);   // a fossil holds a petrified Amberwood bloom
         }
         return out;
     }

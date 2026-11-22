@@ -37,7 +37,13 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * The Pot Golem (docs/AMBER_UPDATE.md section 9): building it (an iron-golem T of amber blocks with a decorated pot on
- * top; hooked from {@code mixin.DecoratedPotBlockMixin}) and the Miner shard's rules for what it may dig.
+ * top) and the Miner shard's rules for what it may dig.
+ *
+ * <p>Building (docs/FIXES_0_4.md): the T is checked whenever any of its blocks is placed by a player, so the pot need not
+ * come last: placing the pot ({@code mixin.DecoratedPotBlockMixin}) or an amber block ({@link #onAmberPlaced}). The
+ * pattern is matched in every orientation (any way the T and the pot face, standing or lying down), and the empty
+ * corners beside the head and the foot may hold grass, flowers or snow, not only air (0.3 only looked when the pot
+ * went on last and wanted bare air there, so a T finished with an arm, or built in snow or grass, never came alive).
  */
 public final class GolemFeature {
     private static BlockPattern pattern;
@@ -53,10 +59,35 @@ public final class GolemFeature {
                     .aisle("~^~", "###", "~#~")
                     .where('^', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.DECORATED_POT)))
                     .where('#', BlockInWorld.hasState(BlockStatePredicate.forBlock(WWBlocks.AMBER_BLOCK)))
-                    .where('~', b -> b.getState().isAir())
+                    .where('~', b -> isEmptyCorner(b.getState()))
                     .build();
         }
         return pattern;
+    }
+
+    /** The T's empty corners: air or anything a block placed there would replace (grass, flowers, a snow layer). */
+    static boolean isEmptyCorner(BlockState s) {
+        return s.isAir() || (s.canBeReplaced() && !s.is(Blocks.WATER) && !s.is(Blocks.LAVA));
+    }
+
+    /**
+     * An amber block was placed: if it finished a T under a decorated pot (the pot is never more than 2 blocks from any
+     * block of the T), the T becomes a golem wearing that pot.
+     */
+    @Nullable
+    public static PotGolemEntity onAmberPlaced(Level level, BlockPos pos, @Nullable LivingEntity placer) {
+        if (!(level instanceof ServerLevel)) {
+            return null;
+        }
+        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-2, -2, -2), pos.offset(2, 2, 2))) {
+            if (level.getBlockState(p).is(Blocks.DECORATED_POT)) {
+                PotGolemEntity g = trySpawnGolem(level, p.immutable(), placer);
+                if (g != null) {
+                    return g;
+                }
+            }
+        }
+        return null;
     }
 
     /**

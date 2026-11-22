@@ -1,13 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
+  "category": "building",
   "pattern": [
-    "##",
-    "##"
+    "###",
+    "###",
+    "###"
   ],
   "key": {
     "#": {
-      "item": "winterworks:amber_chunk"
+      "item": "winterworks:amber_shard"
     }
   },
   "result": {

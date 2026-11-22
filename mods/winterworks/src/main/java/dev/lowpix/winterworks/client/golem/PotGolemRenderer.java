@@ -39,7 +39,8 @@ import net.minecraft.world.item.ItemStack;
  * its {@code head} bone (the vanilla pot, sherds and all, through the item renderer), cracks drawn over the pot with the
  * block-breaking textures, the {@code face} bone only when it has no pot, the shard arms ({@code blade}, {@code pickaxe},
  * {@code bow}) only for the equipped shard, and {@code jelly_*} bones wobbling on a spring. Missing art draws nothing
- * (but the pot) and missing clips are no-ops.
+ * (but the pot) and missing clips are no-ops. While its head ability is active the pot's sherd patterns glow in the
+ * ability's colour (client.golem.PotGlow, masks made at runtime from the game's pattern textures).
  */
 public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRenderer.Model> {
     /** The pot is drawn at its real block size. */
@@ -50,7 +51,7 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
     public PotGolemRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new Model(ctx.bakeLayer(GolemClient.POT_GOLEM)), 0.9f);
         addLayer(new OpaqueLayer(this));
-        addLayer(new PotHeadLayer(this, ctx.getItemRenderer()));
+        addLayer(new PotHeadLayer(this, ctx.getItemRenderer(), new PotGlow(ctx)));
         if (model.hasGlow) {
             addLayer(new GlowLayer(this));
         }
@@ -224,15 +225,20 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
         }
     }
 
-    /** The real decorated pot, with its sherds, on the head bone; cracks drawn over it with the breaking textures. */
+    /**
+     * The real decorated pot, with its sherds, on the head bone; cracks drawn over it with the breaking textures; its
+     * patterns glowing while the head ability is active.
+     */
     static class PotHeadLayer extends RenderLayer<PotGolemEntity, Model> {
         private final PotGolemRenderer renderer;
         private final ItemRenderer items;
+        private final PotGlow glow;
 
-        PotHeadLayer(PotGolemRenderer renderer, ItemRenderer items) {
+        PotHeadLayer(PotGolemRenderer renderer, ItemRenderer items, PotGlow glow) {
             super(renderer);
             this.renderer = renderer;
             this.items = items;
+            this.glow = glow;
         }
 
         @Override
@@ -267,7 +273,19 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
                             ? VertexMultiConsumer.create(new SheetedDecalTextureGenerator(buffers.getBuffer(crack), decal, 1.0f), vc) : vc;
                 };
             }
-            items.renderStatic(e, pot, ItemDisplayContext.NONE, false, pose, out, e.level(), light, overlay, e.getId());
+            PotGlow.drawingGolemHead = true;   // the item glow is for loose pots: the golem's own glow follows its ability
+            try {
+                items.renderStatic(e, pot, ItemDisplayContext.NONE, false, pose, out, e.level(), light, overlay, e.getId());
+            } finally {
+                PotGlow.drawingGolemHead = false;
+            }
+            float strength = e.glowStrength(partial);
+            if (strength > 0f) {
+                pose.pushPose();
+                pose.translate(-0.5f, -0.5f, -0.5f);   // the pot block's corner, where the item renderer drew it
+                glow.render(pose, buffers, PotGolemEntity.decorations(pot), e.headForm().glow, strength);
+                pose.popPose();
+            }
             pose.popPose();
         }
     }

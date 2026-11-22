@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -33,6 +32,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -47,15 +47,19 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Fang Daggers (docs/COLD_UPDATE.md section 9), server-authoritative.
+ * Fang Daggers (docs/COLD_UPDATE.md section 9, docs/FIXES_0_4.md), server-authoritative.
  *
  * <ul>
- * <li><b>Frenzy</b>: with a dagger in each hand every attack is a quick hit (3 damage + enchantments) that alternates
- * hands and ignores invulnerability frames. Each hit adds 0.12 fatigue; the minimum gap between hits grows from 2
- * to 10 ticks as fatigue goes 0 to 1. A click that comes a little early is buffered and struck as soon as the gap
- * allows (one at a time), so spam clicking and bunched-up packets can't beat the rate, and nothing feels dropped.
- * <li><b>Exhausted</b> (fatigue 1, until fully recharged): the daggers swing like one dagger (the vanilla attack);
- * a falling hit is a <b>Fang Crit</b>: 2x damage, Frostbite 3 s, an ice crit burst.
+ * <li><b>Two daggers, two buttons</b>: with the pair out ({@link FangDaggerItem#dualWielding}) <b>left click strikes
+ * with the left dagger and right click with the right dagger</b> ({@link #strike}); each its own slash sound, slash
+ * arc and crit sparks. The client swings that hand.
+ * <li><b>Frenzy</b>: every strike is a quick hit (3 damage + enchantments) that ignores invulnerability frames. Each
+ * hit adds 0.12 fatigue; the minimum gap between hits (either dagger) grows from 2 to 10 ticks as fatigue goes 0 to
+ * 1, so alternating left and right is the natural rhythm. A click that comes a little early is buffered and struck
+ * as soon as the gap allows (one at a time), so spam clicking and bunched-up packets can't beat the rate, and nothing
+ * feels dropped.
+ * <li><b>Exhausted</b> (fatigue 1, until fully recharged): the daggers swing like one dagger (the vanilla attack, on
+ * either button); a falling hit is a <b>Fang Crit</b>: 2x damage, Frostbite 3 s, an ice crit burst.
  * <li><b>Recharge</b>: fatigue drains 0.01/tick once you haven't frenzied or pounced for 20 ticks.
  * <li><b>Pounce</b>: sneak + jump on the ground. The client leaps (1.3 forward, 0.42 up) and tells the server
  * ({@link PouncePayload}); the server validates it, charges 0.35 fatigue and a 40-tick cooldown (the vanilla item
@@ -79,9 +83,13 @@ public final class DaggerFeature {
         boolean exhausted;
         long lastHit = Long.MIN_VALUE / 4, lastExertion = Long.MIN_VALUE / 4, lastOnGround = Long.MIN_VALUE / 4;
         int strikes, combo;
-        /** Entity id of a click that came early, struck as soon as the gap allows (-1: none). */
+        /** Entity id of a click that came early, struck as soon as the gap allows (-1: none), and its dagger. */
         int pending = -1;
-        boolean offSwing;
+        HumanoidArm pendingArm = HumanoidArm.LEFT;
+        /** The dagger of the last strike that landed or missed (null: none yet). */
+        @Nullable HumanoidArm lastArm;
+        /** Inside the vanilla attack of an exhausted right click (so the attack callback lets it through). */
+        boolean vanillaRight;
         @Nullable Pounce pounce;
         float sentFatigue = -1f;
         boolean sentExhausted;
@@ -138,6 +146,13 @@ public final class DaggerFeature {
         return s != null && s.pounce != null;
     }
 
+    /** Which dagger struck last (null: none yet). */
+    @Nullable
+    public static HumanoidArm lastArm(Player p) {
+        State s = STATES.get(p);
+        return s == null ? null : s.lastArm;
+    }
+
     /** The minimum gap (ticks) between frenzy hits at this fatigue: 2 fresh, 10 exhausted. */
     public static int gap(float fatigue) {
         return MIN_GAP + (int) Math.floor((MAX_GAP - MIN_GAP) * Mth.clamp(fatigue, 0f, 1f) + 1e-4f);
@@ -162,56 +177,78 @@ public final class DaggerFeature {
 
     // ------------------------------------------------------------------------------------------------ attacks
 
+    /** Left click (the vanilla attack packet): the left dagger. */
     private static InteractionResult onAttack(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult hit) {
-        if (level.isClientSide || !(player instanceof ServerPlayer p) || p.isSpectator() || !FangDaggerItem.dualWielding(p)) {
+        if (level.isClientSide || !(player instanceof ServerPlayer p) || !(entity instanceof LivingEntity target)) {
             return InteractionResult.PASS;
         }
-        if (!(entity instanceof LivingEntity target) || !target.isAttackable() || target.skipAttackInteraction(p)) {
+        State s = STATES.get(p);
+        if (s != null && s.vanillaRight) {
+            return InteractionResult.PASS;   // the right dagger's own (exhausted) vanilla attack
+        }
+        return strike(p, target, HumanoidArm.LEFT);
+    }
+
+    /**
+     * A strike with the dagger on `arm`'s side: left click is the left dagger ({@link #onAttack}), right click the right
+     * one ({@link FangDaggerItem#interactLivingEntity}). Fresh: a frenzy hit (or buffered for when the gap is over).
+     * Exhausted: a falling strike is a Fang Crit, else the vanilla attack (a left click is let through to it: PASS).
+     */
+    public static InteractionResult strike(ServerPlayer p, LivingEntity target, HumanoidArm arm) {
+        if (p.isSpectator() || !FangDaggerItem.dualWielding(p) || !target.isAttackable() || target.skipAttackInteraction(p)) {
             return InteractionResult.PASS;
         }
         State s = state(p);
         if (!s.exhausted) {
-            frenzyClick(p, target, s);
+            frenzyClick(p, target, s, arm);
             return InteractionResult.SUCCESS;   // instead of the vanilla attack
         }
+        s.lastArm = arm;
         if (fangCritReady(p)) {
-            fangCrit(p, target);
+            fangCrit(p, target, arm);
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;   // exhausted: one slow dagger
+        if (arm == HumanoidArm.RIGHT) {   // exhausted: one slow dagger, on either button
+            s.vanillaRight = true;
+            try {
+                p.attack(target);
+            } finally {
+                s.vanillaRight = false;
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.PASS;
     }
 
-    private static void frenzyClick(ServerPlayer p, LivingEntity target, State s) {
+    private static void frenzyClick(ServerPlayer p, LivingEntity target, State s, HumanoidArm arm) {
         long now = p.level().getGameTime();
         long wait = s.lastHit + gap(s.fatigue) - now;
         if (wait <= 0) {
             s.pending = -1;
-            frenzyHit(p, target, s, now);
+            frenzyHit(p, target, s, now, arm);
         } else if (wait <= BUFFER_TICKS) {
             s.pending = target.getId();   // a little early: strike the moment the gap is over
+            s.pendingArm = arm;
         }
     }
 
-    private static void frenzyHit(ServerPlayer p, LivingEntity target, State s, long now) {
-        InteractionHand hand = s.strikes++ % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+    private static void frenzyHit(ServerPlayer p, LivingEntity target, State s, long now, HumanoidArm arm) {
+        s.strikes++;
         if (now - s.lastHit > DRAIN_DELAY) {
             s.combo = 0;
         }
         s.combo++;
         s.lastHit = now;
         s.lastExertion = now;
-        boolean landed = quickHit(p, target, hand, FRENZY_DAMAGE);
-        slashFx(p, target, hand, s.combo, landed);
-        if (hand == InteractionHand.OFF_HAND) {
-            s.offSwing = true;
-        }
+        s.lastArm = arm;
+        boolean landed = quickHit(p, target, FangDaggerItem.daggerOn(p, arm), FRENZY_DAMAGE);
+        slashFx(p, target, arm, s.combo, landed);
         addFatigue(p, s, FATIGUE_PER_HIT);
     }
 
-    /** A quick dagger hit with the dagger in `hand`: `base` damage + its enchantments, no invulnerability frames. */
-    static boolean quickHit(ServerPlayer p, LivingEntity target, InteractionHand hand, float base) {
+    /** A quick hit with `weapon`: `base` damage + its enchantments, no invulnerability frames. */
+    static boolean quickHit(ServerPlayer p, LivingEntity target, ItemStack weapon, float base) {
         ServerLevel level = p.serverLevel();
-        ItemStack weapon = p.getItemInHand(hand);
         DamageSource src = p.damageSources().playerAttack(p);
         float damage = EnchantmentHelper.modifyDamage(level, weapon, target, src, base);
         float before = target.getHealth();
@@ -268,9 +305,9 @@ public final class DaggerFeature {
     }
 
     /** The vanilla attack with a 2x crit instead of 1.5x, plus Frostbite and the ice burst. */
-    private static void fangCrit(ServerPlayer p, LivingEntity target) {
+    private static void fangCrit(ServerPlayer p, LivingEntity target, HumanoidArm arm) {
         ServerLevel level = p.serverLevel();
-        ItemStack weapon = p.getMainHandItem();
+        ItemStack weapon = FangDaggerItem.daggerOn(p, arm);
         DamageSource src = p.damageSources().playerAttack(p);
         float f = (float) p.getAttributeValue(Attributes.ATTACK_DAMAGE);
         float g = EnchantmentHelper.modifyDamage(level, weapon, target, src, f) - f;
@@ -307,22 +344,34 @@ public final class DaggerFeature {
         level.sendParticles(WWParticles.ICE_CRIT, c.x, c.y, c.z, 18, 0.25, 0.35, 0.25, 0.35);
         level.sendParticles(WWParticles.FROST_BURST, c.x, c.y, c.z, 0, Math.max(1.6, target.getBbWidth() * 2.2), 0, 0, 1.0);
         level.sendParticles(WWParticles.ICE_SHARD, c.x, c.y, c.z, 6, 0.2, 0.2, 0.2, 0.15);
+        level.sendParticles(ParticleTypes.CRIT, c.x, c.y, c.z, 14, 0.3, 0.3, 0.3, 0.5);
         level.playSound(null, c.x, c.y, c.z, WWSounds.DAGGER_CRIT, SoundSource.PLAYERS, 1.0f, 0.9f + level.random.nextFloat() * 0.2f);
     }
 
-    private static void slashFx(ServerPlayer p, LivingEntity target, InteractionHand hand, int combo, boolean landed) {
+    /**
+     * Each dagger's own slash: its arc leans the way that blade cuts (the right dagger from the upper right, the left
+     * one from the upper left, so a left-right flurry crosses), its own sound, and crit sparks off the bite. The
+     * pitch climbs with the combo.
+     */
+    private static void slashFx(ServerPlayer p, LivingEntity target, HumanoidArm arm, int combo, boolean landed) {
         ServerLevel level = p.serverLevel();
         RandomSource r = level.random;
         Vec3 c = target.position().add(0, target.getBbHeight() * 0.55, 0);
         Vec3 toward = p.getEyePosition().subtract(c);
         double reach = Math.min(target.getBbWidth() * 0.5 + 0.15, toward.length());
         Vec3 at = toward.lengthSqr() < 1e-6 ? c : c.add(toward.normalize().scale(reach));
-        boolean main = hand == InteractionHand.MAIN_HAND;
-        float roll = (main ? 0.6f : Mth.PI - 0.6f) + (r.nextFloat() - 0.5f) * 0.5f;   // the slashes cross, hand to hand
+        boolean right = arm == HumanoidArm.RIGHT;
+        float roll = (right ? 0.6f : Mth.PI - 0.6f) + (r.nextFloat() - 0.5f) * 0.5f;
         level.sendParticles(WWParticles.FROST_SLASH, at.x, at.y, at.z, 0, roll, 0, 0, 1.0);
         level.sendParticles(ParticleTypes.SNOWFLAKE, at.x, at.y, at.z, 3, 0.15, 0.15, 0.15, 0.03);
-        float pitch = 0.95f + Math.min(combo, 9) * 0.045f + r.nextFloat() * 0.15f + (main ? 0f : 0.06f);   // rises with the combo
-        level.playSound(null, at.x, at.y, at.z, WWSounds.DAGGER_SLASH, SoundSource.PLAYERS, landed ? 0.8f : 0.5f, pitch);
+        if (landed) {   // crit sparks: vanilla crit stars and icy glints, more as the combo builds
+            int n = 3 + Math.min(combo, 8) / 2;
+            level.sendParticles(ParticleTypes.CRIT, at.x, at.y, at.z, n, 0.12, 0.12, 0.12, 0.35);
+            level.sendParticles(WWParticles.ICE_CRIT, at.x, at.y, at.z, 1 + n / 3, 0.1, 0.1, 0.1, 0.12);
+        }
+        float pitch = 0.95f + Math.min(combo, 9) * 0.045f + r.nextFloat() * 0.12f;   // rises with the combo
+        level.playSound(null, at.x, at.y, at.z, right ? WWSounds.DAGGER_SLASH_RIGHT : WWSounds.DAGGER_SLASH_LEFT, SoundSource.PLAYERS,
+                landed ? 0.85f : 0.5f, pitch);
     }
 
     private static void breath(ServerPlayer p, int puffs) {
@@ -384,13 +433,11 @@ public final class DaggerFeature {
             if (last != null && now - last < 2) {
                 continue;
             }
-            InteractionHand hand = s.strikes++ % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            boolean landed = quickHit(p, e, hand, POUNCE_DAMAGE);
+            HumanoidArm arm = s.strikes++ % 2 == 0 ? HumanoidArm.RIGHT : HumanoidArm.LEFT;   // both daggers, turn about
+            boolean landed = quickHit(p, e, FangDaggerItem.daggerOn(p, arm), POUNCE_DAMAGE);
             pc.hits++;
-            slashFx(p, e, hand, pc.hits + 3, landed);
-            if (hand == InteractionHand.OFF_HAND) {
-                s.offSwing = true;
-            }
+            slashFx(p, e, arm, pc.hits + 3, landed);
+            p.swing(FangDaggerItem.handFor(p, arm), true);
             pc.struck.put(e.getId(), now);
             if (!pc.damped) {   // landing on the prey: the leap stops there (the client does the same on its side)
                 pc.damped = true;
@@ -436,7 +483,7 @@ public final class DaggerFeature {
                 s.pending = -1;
                 if (dual && !s.exhausted && !p.isSpectator() && e instanceof LivingEntity t && t.isAlive() && t.isAttackable()
                         && p.canInteractWithEntity(t.getBoundingBox(), 1.0)) {
-                    frenzyHit(p, t, s, now);
+                    frenzyHit(p, t, s, now, s.pendingArm);
                 }
             }
             if (s.pounce != null) {
@@ -455,11 +502,6 @@ public final class DaggerFeature {
             }
             if (s.exhausted && p.tickCount % 12 == 0) {   // panting frost
                 breath(p, 1);
-            }
-            if (s.offSwing) {   // after the client's own (main-hand) swing packet, so the off hand wins for everyone else
-                s.offSwing = false;
-                p.swingingArm = InteractionHand.OFF_HAND;
-                p.serverLevel().getChunkSource().broadcast(p, new ClientboundAnimatePacket(p, 3));
             }
             sync(p, s, false);
         }

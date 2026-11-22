@@ -2835,5 +2835,205 @@
       }
     ],
     "subtitle": "Switch rail clicks"
+  },
+  "block.frost_mauler_skull.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/roar1",
+        "pitch": 1.15,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:frost_mauler/roar2",
+        "pitch": 1.15,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:frost_mauler/roar3",
+        "pitch": 1.1,
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Skull roars"
+  },
+  "item.fang_dagger.slash_left": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/slash1",
+        "pitch": 0.96
+      },
+      {
+        "name": "winterworks:fang_dagger/slash2",
+        "pitch": 0.96
+      },
+      {
+        "name": "winterworks:fang_dagger/slash3",
+        "pitch": 0.98
+      }
+    ],
+    "subtitle": "Left dagger slashes"
+  },
+  "item.fang_dagger.slash_right": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/slash3",
+        "pitch": 1.08
+      },
+      {
+        "name": "winterworks:fang_dagger/slash4",
+        "pitch": 1.06
+      },
+      {
+        "name": "winterworks:fang_dagger/slash5",
+        "pitch": 1.06
+      }
+    ],
+    "subtitle": "Right dagger slashes"
+  },
+  "entity.player.ramming_cry": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/roar1",
+        "pitch": 1.45
+      },
+      {
+        "name": "winterworks:icebreaker/roar2",
+        "pitch": 1.5
+      },
+      {
+        "name": "winterworks:icebreaker/roar3",
+        "pitch": 1.45
+      }
+    ],
+    "subtitle": "Battle cry"
+  },
+  "entity.player.ramming_wind": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/throw1",
+        "pitch": 1.2
+      },
+      {
+        "name": "winterworks:ender_dragon/throw2",
+        "pitch": 1.25
+      }
+    ],
+    "subtitle": "Wind rushes"
+  },
+  "entity.pot_golem.headshot": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/crack1",
+        "pitch": 1.5
+      },
+      {
+        "name": "winterworks:pot_golem/crack3",
+        "pitch": 1.6
+      },
+      {
+        "name": "minecraft:block/amethyst/break2",
+        "pitch": 1.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/amethyst/break4",
+        "pitch": 1.8,
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "Pot Golem's pot clinks"
+  },
+  "entity.pot_golem.soothe": {
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/shimmer",
+        "pitch": 1.2,
+        "volume": 0.6
+      },
+      {
+        "name": "winterworks:pot_golem/repair2",
+        "pitch": 1.3,
+        "volume": 0.5
+      }
+    ],
+    "subtitle": "Pot Golem hums softly"
+  },
+  "entity.pot_golem.ignite": {
+    "sounds": [
+      {
+        "name": "minecraft:fire/ignite",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:block/campfire/crackle3",
+        "pitch": 1.1
+      }
+    ],
+    "subtitle": "Pot Golem's fists blaze"
+  },
+  "entity.pot_golem.wind_burst": {
+    "sounds": [
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst1",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst2",
+        "pitch": 0.9
+      },
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst3",
+        "pitch": 0.9
+      }
+    ],
+    "subtitle": "Pot Golem gusts"
+  },
+  "entity.pot_golem.shield": {
+    "sounds": [
+      {
+        "name": "minecraft:item/shield/block1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:item/shield/block2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:item/shield/block3",
+        "pitch": 0.85
+      }
+    ],
+    "subtitle": "Pot Golem blocks"
+  },
+  "entity.pot_golem.stash": {
+    "sounds": [
+      {
+        "name": "minecraft:item/bundle/insert1"
+      },
+      {
+        "name": "minecraft:item/bundle/insert2"
+      },
+      {
+        "name": "minecraft:item/bundle/insert3"
+      }
+    ],
+    "subtitle": "Pot Golem stashes an item"
+  },
+  "entity.pot_golem.throw": {
+    "sounds": [
+      {
+        "name": "minecraft:entity/witch/throw1",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/witch/throw2",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:entity/witch/throw3",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "Pot Golem throws a potion"
   }
 }

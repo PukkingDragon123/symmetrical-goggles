@@ -303,6 +303,28 @@ anim = {
         {"part": "belly_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.38, [0, 0, 0]], [0.42, [0.12, -0.16, 0.06]],
                                                               [0.8, [0, 0, 0], "elastic"]]},
     ]},
+    # asleep flat on its belly (looped), curled a little: the pup sinks onto the ice, fore-flippers tucked back flat,
+    # chin down on the ground and head tipped to one side, eyes shut, quick little breaths, a twitch of the tail
+    "sleep": {"length": 3.0, "loop": True, "tracks": [
+        {"part": "chest", "channel": "position", "osc": {"amp": [0, 0.3, 0], "cycles": 1, "bias": [0, -1.0, 0]}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 0.8, "cycles": 1, "bias": 3}},
+        {"part": "chest", "channel": "scale", "osc": {"amp": [0.02, 0.035, 0.01], "cycles": 1}},
+        {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.03, 0.06, 0.02], "cycles": 1, "phase": 0.06,
+                                                             "bias": [0.06, -0.15, 0.04]}},
+        {"parts": ["hips", "tail"], "wave": {"axis": "y", "amp": 0.5, "cycles": 1, "lag": 0.1, "bias": 9}},
+        {"part": "neck", "axis": "x", "osc": {"amp": 1.0, "cycles": 1, "phase": 0.08, "bias": 8}},
+        {"part": "head", "axis": "x", "osc": {"amp": 0.6, "cycles": 1, "phase": 0.12, "bias": 5}},
+        {"part": "head", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 12}},
+        {"part": "flipper", "axis": "x", "osc": {"amp": 1.5, "cycles": 1, "bias": 58}},
+        {"part": "flipper", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 26}},
+        {"part": "palm", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -60}},
+        {"part": "fluke", "axis": "y", "keys": [[0, 0], [1.9, 0], [2.0, 16, "out"], [2.1, -10], [2.2, 6], [2.45, 0, "smooth"],
+                                                [3.0, 0]]},
+        {"part": "lid", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -2.0, 0]}},
+        {"part": "lid", "channel": "scale", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, 1.0, 0]}},
+        {"part": "brow", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 8}},
+        {"part": "nostril", "channel": "scale", "osc": {"amp": [0.35, 0.35, 0], "cycles": 1}},
+    ]},
 }
 
 for _clip in anim.values():     # animated positions are in layout pixels too

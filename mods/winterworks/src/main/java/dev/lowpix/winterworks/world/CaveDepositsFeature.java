@@ -1,6 +1,7 @@
 package dev.lowpix.winterworks.world;
 
 import com.mojang.serialization.Codec;
+import dev.lowpix.winterworks.registry.WWBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -16,11 +17,14 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.storage.loot.LootTable;
 
 /**
- * Suspicious sand and gravel on cave floors, in every overworld biome (~18 tries a chunk, below y=50): sandy floors
- * become suspicious sand, the rest suspicious gravel, holding amber or bones.
+ * Suspicious sand and gravel on cave floors, in every overworld biome (~54 tries a chunk, below y=50; three times the
+ * 0.3 rate, docs/FIXES_0_4.md): sandy floors become suspicious sand, the rest suspicious gravel, holding amber or bones;
+ * one deposit in four is amber sand or amber gravel instead.
  */
 public class CaveDepositsFeature extends Feature<NoneFeatureConfiguration> {
-    public static final int TRIES = 18;
+    public static final int TRIES = 54;
+    /** 1 in N deposits is amber sand / amber gravel. */
+    public static final int AMBER_ONE_IN = 4;
 
     public CaveDepositsFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
@@ -66,10 +70,19 @@ public class CaveDepositsFeature extends Feature<NoneFeatureConfiguration> {
         if (!sandy && !(s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.GRAVEL) || s.is(BlockTags.DIRT))) {
             return false;
         }
+        if (r.nextInt(AMBER_ONE_IN) == 0) {
+            placeAmber(level, floor, sandy, r);
+            return true;
+        }
         boolean amber = r.nextInt(5) < 3;
         place(level, floor, sandy ? Blocks.SUSPICIOUS_SAND.defaultBlockState() : Blocks.SUSPICIOUS_GRAVEL.defaultBlockState(),
                 amber ? Archaeology.CAVE_AMBER : Archaeology.CAVE_BONES, r);
         return true;
+    }
+
+    /** Amber sand or amber gravel holding winterworks:archaeology/amber_deposit. */
+    public static void placeAmber(WorldGenLevel level, BlockPos pos, boolean sandy, RandomSource r) {
+        place(level, pos, (sandy ? WWBlocks.AMBER_SAND : WWBlocks.AMBER_GRAVEL).defaultBlockState(), Archaeology.AMBER_DEPOSIT, r);
     }
 
     /** Place a brushable block and give it a loot table. */

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:amberwood_planks"
+    }
+  },
+  "result": {
+    "id": "winterworks:amberwood_door",
+    "count": 3
+  },
+  "group": "wooden_door"
+}

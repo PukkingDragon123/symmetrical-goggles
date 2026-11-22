@@ -3,6 +3,7 @@ package dev.lowpix.winterworks.mixin;
 import dev.lowpix.winterworks.amber.BrushableLoot;
 import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWItems;
+import dev.lowpix.winterworks.world.Archaeology;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,8 +17,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Amber fossils hold a petrified Amberwood seed: brushing one gives an amberwood_seed (docs/AMBER_UPDATE.md section 4).
- * Also lets tamed sniffers read a suspicious block's loot (amber.BrushableLoot).
+ * Amber fossils hold a petrified Amberwood Bloom: brushing one gives an amberwood_bloom (docs/AMBER_UPDATE.md section 4,
+ * docs/FIXES_0_4.md). Amber sand and gravel always hold amber: one placed without a loot table (by a player) brushes out
+ * winterworks:archaeology/amber_deposit. Also lets tamed sniffers read a suspicious block's loot (amber.BrushableLoot).
  */
 @Mixin(BrushableBlockEntity.class)
 public abstract class BrushableBlockEntityMixin implements BrushableLoot {
@@ -45,12 +47,22 @@ public abstract class BrushableBlockEntityMixin implements BrushableLoot {
         return item;
     }
 
+    @Inject(method = "unpackLootTable", at = @At("HEAD"))
+    private void ww$amberDeposit(Player player, CallbackInfo ci) {
+        BrushableBlockEntity self = (BrushableBlockEntity) (Object) this;
+        if (lootTable == null && item.isEmpty() && self.getLevel() != null && !self.getLevel().isClientSide()
+                && (self.getBlockState().is(WWBlocks.AMBER_SAND) || self.getBlockState().is(WWBlocks.AMBER_GRAVEL))) {
+            lootTable = Archaeology.AMBER_DEPOSIT;
+            lootTableSeed = self.getLevel().getRandom().nextLong();
+        }
+    }
+
     @Inject(method = "unpackLootTable", at = @At("TAIL"))
-    private void ww$fossilSeed(Player player, CallbackInfo ci) {
+    private void ww$fossilBloom(Player player, CallbackInfo ci) {
         BrushableBlockEntity self = (BrushableBlockEntity) (Object) this;
         if (lootTable == null && self.getLevel() != null && !self.getLevel().isClientSide()
-                && self.getBlockState().is(WWBlocks.AMBER_FOSSIL) && !item.is(WWItems.AMBERWOOD_SEED)) {
-            item = new ItemStack(WWItems.AMBERWOOD_SEED);
+                && self.getBlockState().is(WWBlocks.AMBER_FOSSIL) && !item.is(WWItems.AMBERWOOD_BLOOM)) {
+            item = new ItemStack(WWItems.AMBERWOOD_BLOOM);
             self.setChanged();
         }
     }

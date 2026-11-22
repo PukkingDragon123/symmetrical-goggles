@@ -20,7 +20,8 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Draws the Frost Mauler skull (lowpix model `frost_mauler_skull`: bones skull, jaw, fang_l, fang_r, eye). The eye is
  * only drawn while the skull is lit (the revival), emissive and pulsing brighter as the ritual builds; the jaw
- * trembles open, and soul flames lick out of the eye socket. The item is the same 3D skull everywhere.
+ * trembles open, and soul flames lick out of the eye socket. A redstone roar drops the jaw wide and flashes the eye.
+ * The item is the same 3D skull everywhere.
  */
 public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMaulerSkullBlockEntity> {
     /** Block size: the model is bigger than a block. */
@@ -44,11 +45,11 @@ public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMauler
         var state = be.getBlockState();
         float yRot = state.hasProperty(FrostMaulerSkullBlock.FACING) ? -state.getValue(FrostMaulerSkullBlock.FACING).toYRot() : 0f;
         float time = (be.getLevel() == null ? 0 : be.getLevel().getGameTime()) + partial;
-        draw(pose, buffers, light, overlay, yRot, be.isLit() ? be.ritualProgress(partial) : -1f, time);
+        draw(pose, buffers, light, overlay, yRot, be.isLit() ? be.ritualProgress(partial) : -1f, time, be.roarOpen(partial));
     }
 
-    /** `ritual` is -1 when unlit, else 0..1 through the revival. */
-    static void draw(PoseStack pose, MultiBufferSource buffers, int light, int overlay, float yRot, float ritual, float time) {
+    /** `ritual` is -1 when unlit, else 0..1 through the revival; `roar` 0..1 how wide the jaw is open in a redstone roar. */
+    static void draw(PoseStack pose, MultiBufferSource buffers, int light, int overlay, float yRot, float ritual, float time, float roar) {
         WWModel<Entity> m = model();
         m.reset();
         m.clip("idle", (time / 20f) % 2.0f);
@@ -58,6 +59,13 @@ public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMauler
             m.get("jaw").ifPresent(p -> p.xRot += (0.12f + Mth.sin(time * 1.3f) * 0.05f) * k);
             m.get("skull").ifPresent(p -> p.zRot += Mth.sin(time * 2.1f) * 0.02f * k);
         }
+        if (roar > 0f) {   // the roar: the jaw drops wide, the skull rears back and shudders
+            m.get("jaw").ifPresent(p -> p.xRot += 0.55f * roar + Mth.sin(time * 3.1f) * 0.04f * roar);
+            m.get("skull").ifPresent(p -> {
+                p.xRot -= 0.12f * roar;
+                p.zRot += Mth.sin(time * 4.3f) * 0.025f * roar;
+            });
+        }
         pose.pushPose();
         pose.translate(0.5, 0, 0.5);
         pose.mulPose(Axis.YP.rotationDegrees(yRot + 180f));
@@ -66,10 +74,11 @@ public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMauler
         pose.scale(-1f, -1f, 1f);
         m.show("eye", false);
         m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(m.texture)), light, overlay, 0xFFFFFFFF);
-        if (lit) {
+        if (lit || roar > 0f) {   // lit for the revival; a flash of soul fire in the socket while it roars
             m.show("eye", true);
             m.mask("eye"::equals);
-            float pulse = 0.55f + 0.25f * ritual + 0.2f * Mth.sin(time * (0.25f + ritual * 0.5f));
+            float pulse = lit ? 0.55f + 0.25f * ritual + 0.2f * Mth.sin(time * (0.25f + ritual * 0.5f))
+                    : roar * (0.8f + 0.2f * Mth.sin(time * 1.7f));
             int c = (int) (Mth.clamp(pulse, 0f, 1f) * 255);
             m.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(m.hasGlow ? m.glowTexture : m.texture)), 0xF000F0,
                     OverlayTexture.NO_OVERLAY, 0xFF000000 | (c << 16) | (c << 8) | c);
@@ -90,7 +99,7 @@ public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMauler
         public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
             Minecraft mc = Minecraft.getInstance();
             float time = mc.level == null ? 0 : mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false);
-            draw(pose, buffers, light, overlay, 0f, -1f, time);
+            draw(pose, buffers, light, overlay, 0f, -1f, time, 0f);
         }
     }
 }

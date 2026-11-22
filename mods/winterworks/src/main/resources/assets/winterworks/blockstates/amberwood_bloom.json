@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "stage=0": {
+      "model": "winterworks:block/amberwood_bloom"
+    },
+    "stage=1": {
       "model": "winterworks:block/amberwood_bloom"
     }
   }

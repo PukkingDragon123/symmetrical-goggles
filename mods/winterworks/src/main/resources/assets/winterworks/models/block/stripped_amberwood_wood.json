@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "winterworks:block/stripped_amberwood_log",
+    "side": "winterworks:block/stripped_amberwood_log"
+  }
+}

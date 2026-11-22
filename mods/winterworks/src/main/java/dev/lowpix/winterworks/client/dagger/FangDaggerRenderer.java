@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.lowpix.winterworks.Winterworks;
 import dev.lowpix.winterworks.client.render.WWModel;
+import dev.lowpix.winterworks.dagger.FangDaggerItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -29,22 +30,25 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 /**
- * The Fang Dagger: the lowpix model {@code fang_dagger} (bone {@code dagger}) in hand, on the ground and in item
- * frames; the 2D icon {@code item/fang_dagger} in the GUI.
+ * The Fang Dagger: the lowpix model {@code fang_dagger} (bone {@code dagger}) everywhere: in first and third person
+ * (the pair draws one in each hand: mixin.client.DaggerHandRendererMixin), on the ground, in item frames and as the
+ * inventory icon.
  *
  * <p>The model is fitted to the vanilla handheld layout, so the item model's display transforms (vanilla
  * {@code item/handheld}'s) hold it like a sword in either hand: its long axis is laid along the sprite diagonal with
  * the blade up and to the right, the grip centred where a sword's handle is, and it is scaled to 17 px long. The grip
  * is found from parts named grip/handle/hilt (else pommel, else the lower end of the model); the blade's curve stays
- * in the sprite plane. In first person each frenzy strike flicks the striking dagger, and while the frenzy is ready
- * a faint frost shimmer plays over both daggers (brighter for a moment when they recharge). If the model is missing,
- * the flat icon is held instead.
+ * in the sprite plane. In first person each strike snaps that hand's dagger through a cut, and while the frenzy is
+ * ready a faint frost shimmer plays over both daggers (brighter for a moment when they recharge). If the model is
+ * missing, the flat icon is held instead.
  */
 public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
     public static final ResourceLocation ICON_MODEL = Winterworks.id("item/fang_dagger_icon");
     /** Where the grip sits in item space (a vanilla sword's handle). */
     private static final Vector3f GRIP_AT = new Vector3f(3f / 16f, 3f / 16f, 8f / 16f);
     private static final float LENGTH = 17f / 16f;
+    /** Which side of the diagonal a curved blade bows to (+1: toward the sprite's lower right, -1: its upper left). */
+    private static final float BOW = -1f;
     private static final Pattern GRIP = Pattern.compile(".*(grip|handle|hilt|wrap).*");
     private static final Pattern POMMEL = Pattern.compile(".*pommel.*");
 
@@ -67,24 +71,24 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
         Minecraft mc = Minecraft.getInstance();
         boolean gui = mode == ItemDisplayContext.GUI;
         WWModel<Entity> m = model();
-        if (mode.firstPerson()) {   // in first person, the crisp pixel-art dagger held like a vanilla blade
-            icon(mc, stack, mode, pose, buffers, light, overlay);
-            return;
-        }
         if (fit == null) {   // no 3D model: hold the flat icon like a sword
-            icon(mc, stack, ItemDisplayContext.NONE, pose, buffers, light, overlay);
+            icon(mc, stack, mode.firstPerson() ? mode : ItemDisplayContext.NONE, pose, buffers, light, overlay);
             return;
         }
         float partial = mc.getTimer().getGameTimeDeltaPartialTick(false);
         float now = (mc.level == null ? 0 : mc.level.getGameTime()) + partial;
         LocalPlayer player = mc.player;
         boolean firstPerson = mode.firstPerson() && player != null;
-        InteractionHand hand = hand(mode, player);
-        float kick = 0f;
-        if (firstPerson) {   // a quick flick of the dagger that just struck
-            float since = DaggerClient.sinceStrike(hand, now);
-            if (since >= 0f && since < 4f) {
-                kick = (1f - since / 4f) * (1f - since / 4f);
+        HumanoidArm arm = arm(mode);
+        InteractionHand hand = player == null ? InteractionHand.MAIN_HAND : FangDaggerItem.handFor(player, arm);
+        float kick = 0f, cut = 0f;
+        if (firstPerson) {   // the dagger that just struck snaps through its cut: a fast slash out, then it eases back
+            float since = DaggerClient.sinceStrike(arm, now);
+            if (since >= 0f && since < 6f) {
+                float t = since / 6f;
+                cut = t < 0.3f ? t / 0.3f : 1f - (t - 0.3f) / 0.7f;
+                cut = cut * cut * (3f - 2f * cut);   // smoothstep: snappy in, soft out
+                kick = (1f - t) * (1f - t);
             }
         }
 
@@ -97,7 +101,11 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
             pose.translate(-0.5f, -0.5f, -0.5f);
         }
         pose.translate(GRIP_AT.x, GRIP_AT.y, GRIP_AT.z);
-        pose.mulPose(Axis.ZP.rotationDegrees(-45f - kick * 28f));
+        if (cut > 0f) {   // in item space: the blade sweeps across (sprite plane) and its edge rolls into the cut
+            pose.mulPose(Axis.XP.rotationDegrees(-cut * 25f));
+            pose.mulPose(Axis.YP.rotationDegrees(cut * 30f));
+        }
+        pose.mulPose(Axis.ZP.rotationDegrees(-45f - kick * 20f - cut * 40f));
         pose.scale(fit.scale, fit.scale, fit.scale);
         pose.mulPose(fit.orient);
         pose.translate(-fit.grip.x, -fit.grip.y, -fit.grip.z);
@@ -131,11 +139,10 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
         pose.popPose();
     }
 
-    /** Which hand a display context is for (the off hand is the left one for right-handed players). */
-    private static InteractionHand hand(ItemDisplayContext mode, @Nullable LocalPlayer player) {
+    /** Which side a display context is for. */
+    private static HumanoidArm arm(ItemDisplayContext mode) {
         boolean left = mode == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || mode == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
-        HumanoidArm arm = left ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
-        return player == null || arm == player.getMainArm() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        return left ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
     }
 
     // ------------------------------------------------------------------------------------------------ fitting
@@ -201,9 +208,41 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
             }
             g[along] = end + dir * 0.18f * len;
         }
-        Vector3f eY = axis(along).mul(dir), eX = axis(across), eZ = new Vector3f(eX).cross(eY);
+        // a curved fang: lay the chord from the grip to the tip along the diagonal (not the grip's own axis, or the
+        // curve swings the tip off sideways), with the blade bowing to one side of it in the sprite plane
+        float far = dir > 0 ? max[along] : min[along];
+        Vector3f tip = new Vector3f();
+        int n = 0;
+        for (float[] q : pts) {
+            if ((far - q[along]) * dir < 0.04f * len) {
+                tip.add(q[0], q[1], q[2]);
+                n++;
+            }
+        }
+        tip.div(Math.max(1, n));
+        Vector3f gv = new Vector3f(g[0], g[1], g[2]);
+        Vector3f eY = new Vector3f(tip).sub(gv);
+        if (eY.lengthSquared() < 1e-6f) {
+            eY = axis(along).mul(dir);
+        }
+        eY.normalize();
+        Vector3f a = axis(across);
+        Vector3f eX = new Vector3f(a).sub(new Vector3f(eY).mul(a.dot(eY))).normalize();
+        float[][] bc = bounds(blade.isEmpty() ? pts : blade, null, null);
+        Vector3f bow = new Vector3f((bc[0][0] + bc[1][0]) * 0.5f, (bc[0][1] + bc[1][1]) * 0.5f, (bc[0][2] + bc[1][2]) * 0.5f).sub(gv);
+        bow.sub(new Vector3f(eY).mul(bow.dot(eY)));
+        if (bow.dot(eX) * BOW < 0f) {
+            eX.negate();
+        }
+        Vector3f eZ = new Vector3f(eX).cross(eY);
+        float lo = Float.MAX_VALUE, hi = -Float.MAX_VALUE;   // the dagger's length along the chord
+        for (float[] q : pts) {
+            float t = (q[0] - g[0]) * eY.x + (q[1] - g[1]) * eY.y + (q[2] - g[2]) * eY.z;
+            lo = Math.min(lo, t);
+            hi = Math.max(hi, t);
+        }
         Matrix3f rot = new Matrix3f().setRow(0, eX).setRow(1, eY).setRow(2, eZ);
-        return new Fit(new Quaternionf().setFromNormalized(rot), new Vector3f(g[0], g[1], g[2]), LENGTH / len);
+        return new Fit(new Quaternionf().setFromNormalized(rot), gv, LENGTH / Math.max(hi - lo, 1e-3f));
     }
 
     private static Vector3f axis(int i) {
