@@ -398,7 +398,7 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
         String name = h == null ? "??????" : shortName(h.value().description().getString());
         boolean sin = i == 1;
         float pulse = selected == i ? 0.75f + 0.25f * Mth.sin(t * 0.2f) : 1f;
-        int glyph = !ready ? HexGui.GLYPH_DIM : HexGui.mix(lit ? pulse : 0f, sin ? 0xB0463F : HexGui.GLYPH_IDLE, sin ? HexGui.CRIMSON_LIT : HexGui.GLYPH_LIT);
+        int glyph = !ready ? HexGui.GLYPH_DIM : HexGui.mix(lit ? pulse : 0f, sin ? HexGui.SIN_GLYPH_IDLE : HexGui.GLYPH_IDLE, sin ? HexGui.SIN_GLYPH_LIT : HexGui.GLYPH_LIT);
         int letters = sin ? HexGui.CRIMSON_LIT : HexGui.GLYPH_LIT;
         CursedGlyphs.draw(g, font, name, rx + HexGui.TEXT_DX, ry + HexGui.TEXT_DY, r.w() - HexGui.TEXT_DX - 3, glyph, letters,
                 Mth.lerp(partial, oReveal[i], reveal[i]), t, seed(i), ready ? 1f : 0.7f, sheet);

@@ -109,6 +109,8 @@ final class HexGui {
     // ---- colours (soul fire, gold, crimson)
     static final int SOUL = 0x4FE3E0, SOUL_PALE = 0xB4FFF5, SOUL_DEEP = 0x11507A, SOUL_INK = 0x0A1230;
     static final int GLYPH_IDLE = 0x6FC4CC, GLYPH_LIT = 0xC8FFF8, GLYPH_DIM = 0x35565C;
+    /** Tints for the sin row: the sheet's glyphs are pale cyan (200, 255, 248), so these keep red up and pull the rest down. */
+    static final int SIN_GLYPH_IDLE = 0xFF5751, SIN_GLYPH_LIT = 0xFFA88A;
     static final int CRIMSON = 0xE0574F, CRIMSON_LIT = 0xFF9A7A, GOLD = 0xFAD55A, HIDDEN = 0xA77BFF, BAD = 0xFF6B6B;
     static final int TEXT = 0xC9EEF5, TEXT_DIM = 0x8AA6AE;
 
