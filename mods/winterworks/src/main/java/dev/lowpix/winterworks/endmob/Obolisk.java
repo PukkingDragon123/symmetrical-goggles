@@ -41,11 +41,12 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The Obolisk (docs/END_UPDATE.md section 9): a giant one-eyed obsidian monolith on four legs. It lies disguised as an
- * obsidian rock (legs folded, eye shut, not moving) and rises (2 s) when a survival player comes within 6 blocks or it is
- * hit; with no target for 30 s it settles back down (1.5 s). It slams (range 3.5): 14 damage, heavy knockback, and the
- * blocks round the impact break (radius 2: hardness under 50, not `#winterworks:obolisk_unbreakable`, if mobGriefing).
- * Only a melee pickaxe hit does full damage; everything else does 15%.
+ * The Obolisk (docs/END_UPDATE.md section 9): a living 2 x 4 block of obsidian with a grumpy carved face. It lies
+ * disguised as an obsidian pillar (leaning, brow shut, not moving) and rises (2 s) when a survival player comes within
+ * 6 blocks or it is hit; with no target for 30 s it settles back down (1.5 s). It slams (range 3.5): 14 damage, heavy
+ * knockback, and the blocks round the impact break (radius 2: hardness under 50, not
+ * `#winterworks:obolisk_unbreakable`, if mobGriefing). Only a melee pickaxe hit does full damage; everything else does
+ * 15%.
  */
 public class Obolisk extends Monster {
     public enum Phase { DISGUISED, RISING, AWAKE, SLAMMING, SETTLING }

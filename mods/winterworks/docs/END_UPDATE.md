@@ -3,8 +3,9 @@
 The End becomes a living alien ecosystem. Same rules as COLD_UPDATE.md / HEXES_UPDATE.md: ids, bone and clip names
 here are exact, every registration already exists in `registry/End*.java`, and no feature beyond this file.
 
-**Eyes.** Every eye motif (the Monolith, the Obolisk, the shield, the wand, the Monolith Eye, chiseled obsidian, wing
-eye-spots) is **round**: round irises and pupils, soft highlights, no slit pupils or sharp diamond shapes.
+**Eyes.** Every eye motif (the Monolith, the shield, the wand, the Monolith Eye, chiseled obsidian, wing eye-spots) is
+**round**: round irises and pupils, soft highlights, no slit pupils or sharp diamond shapes. (The Obolisk was later
+remade in the vanilla mob style: see section 9.)
 
 **Resolution.** Everything new is higher resolution than the older content: entity and item models are lowpix specs at
 `density: 2` (2 texels per Minecraft pixel; held items may use 4), with more parts, cards and painted detail; block
@@ -113,16 +114,20 @@ Tiny, cute Enderman-like creatures, 0.5 x 0.9, 8 health: two long legs, no arms,
   `walk`, `run`, `hop` (0.5 s, happy), `sit` (loop), `teleport` (0.4 s), `sacrifice` (1.2 s). Glow: eyes.
 
 ## 9. Obolisks (`obolisk`) and the Obsidian Shield
-Giant obsidian monolith creatures, 1.8 x 3.6, 100 health, armour 15, one eye, four legs.
-* They **disguise** themselves as obsidian rock (legs folded, eye shut, motionless) and **rise** (2 s) when a survival
+Living blocks of obsidian: each is one tall 2 x 4 block pillar (hitbox 2.0 x 4.0, eye height 2.8), 100 health,
+armour 15. Remade in the vanilla Minecraft mob style (density 1, block-resolution obsidian and crying-obsidian
+texture) with a grumpy carved face: a heavy slanted brow over two small flat glowing slit eyes, crying-obsidian tears
+and a frowning crack of a mouth. No visible legs: it walks by rocking from edge to edge and slams by toppling forward.
+* They **disguise** themselves as obsidian rock (leaning, brow shut over the eyes, motionless) and **rise** (2 s) when a survival
   player comes within 6 blocks or they are hit. After 30 s without a target they settle back down.
 * **Slam**: rears up and slams (range 3.5): 14 damage, heavy knockback, and breaks blocks in radius 2 round the impact
   (hardness < 50, not in `winterworks:obolisk_unbreakable`; obeys mobGriefing).
 * Only pickaxes hurt them properly: a melee hit with a pickaxe does full damage, everything else 15%.
 * Drop `obsidian_shard` 2-4 (+Looting).
 * API: `Obolisk.spawnDisguised(ServerLevel, BlockPos)`, `Obolisk.spawnAwake(ServerLevel, BlockPos, LivingEntity target)`.
-* Bones: `body`, `eye`, `eyelid`, `leg_fl`, `leg_fr`, `leg_bl`, `leg_br`. Clips: `disguised` (loop), `rise` (2.0 s),
-  `idle`, `walk`, `slam` (1.2 s), `settle` (1.5 s). Glow: eye, crying-obsidian veins.
+* Bones: `body`, `eye` (both slits, one card), `eyelid` (the brow), `leg_fl`, `leg_fr`, `leg_bl`, `leg_br` (empty
+  pivots). Clips: `disguised` (loop), `rise` (2.0 s), `idle`, `walk`, `slam` (1.2 s), `settle` (1.5 s). Glow: eyes,
+  crying obsidian, the light in the mouth.
 * **Obsidian Shield** (`obsidian_shield`; 6 shards + 1 iron ingot, shield shape; 1008 durability): a shield that
   reflects 50% of blocked damage back at the attacker, and when you start blocking while sneaking, releases a knockback
   shockwave (radius 4.5, 4 damage, no block damage; 5 s cooldown). 3D model everywhere, the GUI included. Bones:
