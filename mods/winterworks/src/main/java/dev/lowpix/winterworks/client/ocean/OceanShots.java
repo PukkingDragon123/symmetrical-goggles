@@ -324,6 +324,17 @@ final class OceanShots {
         Winterworks.LOG.warn("oceanshots: no clear trench view");
     }
 
+    /** Whether there's monument (prismarine) over `p` within 8 blocks: inside, not out in the open. */
+    private static boolean roofed(ServerLevel level, Vec3 p) {
+        for (int dy = 1; dy <= 8; dy++) {
+            BlockState s = level.getBlockState(BlockPos.containing(p).above(dy));
+            if (s.is(Blocks.PRISMARINE) || s.is(Blocks.PRISMARINE_BRICKS) || s.is(Blocks.DARK_PRISMARINE) || s.is(Blocks.SEA_LANTERN)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static boolean water(ServerLevel level, Vec3 p) {
         return level.getBlockState(BlockPos.containing(p)).is(Blocks.WATER);
     }
@@ -567,21 +578,45 @@ final class OceanShots {
         }
         StructurePiece main = start.getPieces().get(0);
         var box = main.getBoundingBox();
+        for (int dx = -5; dx <= 5; dx++) {
+            for (int dz = -5; dz <= 5; dz++) {
+                level.getChunk((box.getCenter().getX() >> 4) + dx, (box.getCenter().getZ() >> 4) + dz);
+            }
+        }
         Vec3 c = Vec3.atCenterOf(box.getCenter());
-        VIEWS.put("monument", new Vec3[]{c.add(-50, -8, -42), c.add(0, -6, 0)});
+        // outside: a clear view of a wall and its legs from the open water
+        boolean found = false;
+        for (int dist : new int[]{44, 52, 36, 60}) {
+            for (int k = 0; k < 16 && !found; k++) {
+                double a = Math.PI / 4 + k * Math.PI / 8;
+                for (int up : new int[]{-4, 0, 4, -8}) {
+                    Vec3 eye = c.add(Math.cos(a) * dist, up, Math.sin(a) * dist);
+                    Vec3 look = c.add(Math.cos(a) * 18, -4, Math.sin(a) * 18);
+                    if (!found && clearView(level, eye, look)) {
+                        VIEWS.put("monument", new Vec3[]{eye, c.add(0, -5, 0)});
+                        found = true;
+                    }
+                }
+            }
+        }
         List<StructurePiece> treasure = MonumentRework.treasureRooms(main, building.ww$rooms());
         for (StructurePiece p : building.ww$rooms()) {
             if (p instanceof OceanMonumentPieces.OceanMonumentCoreRoom) {
-                VIEWS.put("monument_core", new Vec3[]{MonumentRework.worldVec(p, 1.6, 5.2, 1.6), MonumentRework.worldVec(p, 8, 2.5, 9)});
+                VIEWS.put("monument_core", new Vec3[]{MonumentRework.worldVec(p, 4.5, 6.2, 1.3), MonumentRework.worldVec(p, 11.5, 1.5, 11.5)});
             } else if (p instanceof OceanMonumentPieces.OceanMonumentWingRoom && !VIEWS.containsKey("monument_wing")) {
-                VIEWS.put("monument_wing", new Vec3[]{MonumentRework.worldVec(p, 11.5, 4, 2.5), MonumentRework.worldVec(p, 11.5, 1, 15)});
+                for (double[] e : new double[][]{{11.5, 3.5, 9.5}, {11.5, 4.5, 6.5}, {8.5, 3.5, 10.5}, {11.5, 2.5, 12.5}}) {
+                    Vec3 eye = MonumentRework.worldVec(p, e[0], e[1], e[2]);
+                    if (water(level, eye) && roofed(level, eye) && !VIEWS.containsKey("monument_wing")) {
+                        VIEWS.put("monument_wing", new Vec3[]{eye, MonumentRework.worldVec(p, 11.5, 1, 15)});
+                    }
+                }
             }
         }
         if (!treasure.isEmpty()) {
             StructurePiece t = treasure.get(0);
             VIEWS.put("monument_treasure", new Vec3[]{MonumentRework.worldVec(t, 5.6, 2.6, 2.4), MonumentRework.worldVec(t, 1.5, 1.2, 5.5)});
         }
-        Winterworks.LOG.info("oceanshots: monument at {}, core view {}", box, VIEWS.get("monument_core") == null ? null : VIEWS.get("monument_core")[0]);
+        Winterworks.LOG.info("oceanshots: monument at {}, views {}", box, VIEWS.keySet());
     }
 
     // ------------------------------------------------------------------------------------------ steps
@@ -689,6 +724,8 @@ final class OceanShots {
                 return true;
             }
             Screenshot.grab(mc.gameDirectory, "winterworks_ocean_" + name + ".png", mc.getMainRenderTarget(), msg -> {});
+            Winterworks.LOG.info("oceanshots: camera in {} (client sees {})", mc.level.getBlockState(BlockPos.containing(eye)),
+                    mc.gameRenderer.getMainCamera().getFluidInCamera());
             Winterworks.LOG.info("oceanshots: {} at {} looking at {}", name, eye, look);
             return true;
         });
