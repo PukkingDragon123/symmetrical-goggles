@@ -30,6 +30,7 @@
       "dev.lowpix.winterworks.test.HexTests",
       "dev.lowpix.winterworks.test.CurseTests",
       "dev.lowpix.winterworks.test.NetherTests",
+      "dev.lowpix.winterworks.test.NetherFixTests",
       "dev.lowpix.winterworks.test.EndWorldTests",
       "dev.lowpix.winterworks.test.EndMobTests",
       "dev.lowpix.winterworks.test.EndGearTests",

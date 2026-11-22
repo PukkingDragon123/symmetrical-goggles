@@ -34,11 +34,21 @@ import org.jetbrains.annotations.Nullable;
  * slow (speed 0.06), stiff and janky, always in pain (it groans and creaks). It keeps the piglin brain, so it barters
  * (with `winterworks:gameplay/golden_piglin_bartering`, mixin.PiglinAiMixin), but it never hunts: it only hits back.
  * Other Piglins attack it for its gold (PiglinGreed.attackTarget); killed, it drops 2-4 gold blocks (its loot table).
- * Spawns 1 in 40 among Piglins (mixin.PiglinMixin) and in every Hex Fortress. Never a baby, never zombifies.
+ * Spawns 1 in 15 among Piglins (mixin.PiglinMixin) and in every Hex Fortress. Never a baby, never zombifies.
+ * <p>
+ * A brute that drank Cursed Elixir becomes a golden brute (docs/FIXES_0_4.md "Turning to gold sooner"): a Golden Piglin
+ * flagged {@link #isBrute()}, a fifth bigger (the SCALE attribute), tougher, and gripping its gilded axe.
  */
 public class GoldenPiglin extends Piglin {
     /** 1 in this many piglins spawned in the world turns out to be golden. */
-    public static final int RARITY = 40;
+    public static final int RARITY = 15;
+    /** A golden brute: bigger, tougher, with its gilded axe. */
+    public static final float BRUTE_SCALE = 0.2f;
+    private static final net.minecraft.network.syncher.EntityDataAccessor<Boolean> BRUTE = net.minecraft.network.syncher.SynchedEntityData
+            .defineId(GoldenPiglin.class, net.minecraft.network.syncher.EntityDataSerializers.BOOLEAN);
+    private static final net.minecraft.resources.ResourceLocation BRUTE_SCALE_ID = dev.lowpix.winterworks.Winterworks.id("golden_brute_scale");
+    private static final net.minecraft.resources.ResourceLocation BRUTE_HEALTH_ID = dev.lowpix.winterworks.Winterworks.id("golden_brute_health");
+    private static final net.minecraft.resources.ResourceLocation BRUTE_DAMAGE_ID = dev.lowpix.winterworks.Winterworks.id("golden_brute_damage");
 
     // client: idle (strained trembling), barter (while admiring gold), hurt_groan (on a hit)
     public final AnimationState idleState = new AnimationState();
@@ -58,13 +68,13 @@ public class GoldenPiglin extends Piglin {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8).add(Attributes.ARMOR, 8);
     }
 
-    /** Does a piglin spawned this way turn out golden (1 in 40 natural, chunk-generation and structure spawns)? */
+    /** Does a piglin spawned this way turn out golden (1 in 15 natural, chunk-generation and structure spawns)? */
     public static boolean rollsGolden(MobSpawnType type, RandomSource random) {
         return (type == MobSpawnType.NATURAL || type == MobSpawnType.CHUNK_GENERATION || type == MobSpawnType.STRUCTURE)
                 && random.nextInt(RARITY) == 0;
     }
 
-    /** Replaces a freshly spawned piglin with a Golden Piglin (same place, name and persistence; no gear). */
+    /** Replaces a piglin with a Golden Piglin (same place, name and persistence; no gear). */
     @Nullable
     public static GoldenPiglin fromPiglin(Piglin piglin) {
         GoldenPiglin golden = piglin.convertTo(WWEntities.GOLDEN_PIGLIN, false);
@@ -73,6 +83,75 @@ public class GoldenPiglin extends Piglin {
             golden.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
         }
         return golden;
+    }
+
+    /** Replaces a brute with a golden brute: a bigger Golden Piglin that keeps a (gilded) axe. */
+    @Nullable
+    public static GoldenPiglin fromBrute(net.minecraft.world.entity.monster.piglin.PiglinBrute brute) {
+        GoldenPiglin golden = brute.convertTo(WWEntities.GOLDEN_PIGLIN, false);
+        if (golden != null) {
+            golden.setBrute(true);
+            golden.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+        }
+        return golden;
+    }
+
+    @Override
+    protected void defineSynchedData(net.minecraft.network.syncher.SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(BRUTE, false);
+    }
+
+    /** A golden brute (a brute that drank Cursed Elixir). */
+    public boolean isBrute() {
+        return entityData.get(BRUTE);
+    }
+
+    public void setBrute(boolean brute) {
+        entityData.set(BRUTE, brute);
+        applyBruteStats(brute);
+        if (brute) {
+            setHealth(getMaxHealth());
+            ItemStack axe = new ItemStack(net.minecraft.world.item.Items.GOLDEN_AXE);
+            setItemSlot(EquipmentSlot.MAINHAND, axe);
+            setDropChance(EquipmentSlot.MAINHAND, 0.1f);
+        }
+    }
+
+    private void applyBruteStats(boolean brute) {
+        modifier(Attributes.SCALE, BRUTE_SCALE_ID, BRUTE_SCALE, brute);
+        modifier(Attributes.MAX_HEALTH, BRUTE_HEALTH_ID, 20, brute);
+        modifier(Attributes.ATTACK_DAMAGE, BRUTE_DAMAGE_ID, 3, brute);
+        if (getHealth() > getMaxHealth()) {
+            setHealth(getMaxHealth());
+        }
+    }
+
+    private void modifier(net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute,
+                          net.minecraft.resources.ResourceLocation id, double amount, boolean on) {
+        var inst = getAttribute(attribute);
+        if (inst == null) {
+            return;
+        }
+        if (on && !inst.hasModifier(id)) {
+            inst.addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(id, amount,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
+        } else if (!on) {
+            inst.removeModifier(id);
+        }
+    }
+
+    @Override
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putBoolean("Brute", isBrute());
+    }
+
+    @Override
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        entityData.set(BRUTE, tag.getBoolean("Brute"));
+        applyBruteStats(isBrute());
     }
 
     /** Its barter loot: much better than a Piglin's. */

@@ -252,5 +252,14 @@
   "subtitles.winterworks.entity.harvester.death": "Harvester dies",
   "subtitles.winterworks.entity.harvester.chomp": "Harvester crops",
   "subtitles.winterworks.entity.harvester.shove": "Harvester shoves",
-  "subtitles.winterworks.entity.sniffer.sneeze": "Sniffer sneezes"
+  "subtitles.winterworks.entity.sniffer.sneeze": "Sniffer sneezes",
+  "subtitles.winterworks.entity.withered_commander.ambient": "Withered Commander rasps",
+  "subtitles.winterworks.entity.withered_commander.hurt": "Withered Commander hurts",
+  "subtitles.winterworks.entity.withered_commander.death": "Withered Commander falls",
+  "subtitles.winterworks.entity.withered_commander.lunge": "Withered Commander lunges",
+  "subtitles.winterworks.entity.withered_commander.spin": "Withered Commander sweeps its spear",
+  "subtitles.winterworks.entity.withered_commander.war_cry": "Withered Commander roars",
+  "subtitles.winterworks.entity.piglin_witch.cast": "Piglin Witch casts a spell",
+  "subtitles.winterworks.entity.piglin_witch.blink": "Piglin Witch vanishes",
+  "subtitles.winterworks.entity.piglin_witch.summon": "Piglin Witch summons"
 }

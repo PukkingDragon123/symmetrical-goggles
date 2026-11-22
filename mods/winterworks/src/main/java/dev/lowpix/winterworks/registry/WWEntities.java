@@ -90,6 +90,18 @@ public final class WWEntities {
                     .eyeHeight(1.5f).passengerAttachments(new net.minecraft.world.phys.Vec3(0, 2.203, -0.219)).fireImmune()
                     .clientTrackingRange(10));
 
+    // ---- 0.4 fixes: Nether (docs/FIXES_0_4.md "Piglins, hoglins and the Withered Commander", "The Hex Fortress, reworked")
+    /** A towering wither skeleton officer (about 1.3 x a wither skeleton); it rides an unarmoured Soul Bull. */
+    public static final EntityType<dev.lowpix.winterworks.nether.WitheredCommander> WITHERED_COMMANDER = reg("withered_commander",
+            EntityType.Builder.of(dev.lowpix.winterworks.nether.WitheredCommander::new, MobCategory.MONSTER).sized(0.9f, 3.1f)
+                    .eyeHeight(2.75f).ridingOffset(-1.15f).fireImmune().immuneTo(net.minecraft.world.level.block.Blocks.WITHER_ROSE)
+                    .clientTrackingRange(10));
+    /** The Piglin Witch's homing soul-fire bolt. */
+    public static final EntityType<dev.lowpix.winterworks.nether.HexBolt> HEX_BOLT = reg("hex_bolt",
+            EntityType.Builder.<dev.lowpix.winterworks.nether.HexBolt>of(dev.lowpix.winterworks.nether.HexBolt::new, MobCategory.MISC)
+                    .sized(0.4f, 0.4f).fireImmune().clientTrackingRange(6).updateInterval(2));
+    // ---- end 0.4 fixes: Nether
+
     // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester"; attributes in harvester.HarvesterFeature; no natural spawns)
     public static final EntityType<dev.lowpix.winterworks.harvester.HarvesterEntity> HARVESTER = reg("harvester",
             EntityType.Builder.of(dev.lowpix.winterworks.harvester.HarvesterEntity::new, MobCategory.CREATURE).sized(2.0f, 1.9f)

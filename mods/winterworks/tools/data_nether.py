@@ -1,7 +1,9 @@
-"""Data for the nether area of Hexes & Havoc (docs/HEXES_UPDATE.md sections 1, 6, 7 and 8): the Hex Fortress
-(structure, structure set, biome tag, chest loot), the Piglin Witch and Golden Piglin (entity loot, golden piglin
-bartering), Cursed Elixir in #minecraft:piglin_loved, placeholder sounds and the gold glint particle when no art or
-sound map provides them, and lang/nether.json. Called by gen_data.py with ctx = gen_data.Ctx."""
+"""Data for the nether area of Hexes & Havoc (docs/HEXES_UPDATE.md sections 1, 6, 7 and 8) and its 0.4 fixes
+(docs/FIXES_0_4.md "The Hex Fortress, reworked", "Piglins, hoglins and the Withered Commander"): the Hex Fortress
+(structure, structure set, biome tag, chest and experiments loot), the Piglin Witch (her stash), the Golden Piglin
+(entity loot, golden piglin bartering), the Withered Commander (its loot, spawn egg) and the Netherite Spear (its 3D
+item model, enchantable tags), Cursed Elixir in #minecraft:piglin_loved, placeholder sounds and the gold glint
+particle when no art or sound map provides them, and lang/nether.json. Called by gen_data.py with ctx = gen_data.Ctx."""
 import json
 import os
 
@@ -77,7 +79,7 @@ def particles(ctx):
 def run(ctx):
     M = ctx.M
     W = os.path.join(ctx.D, M, "worldgen")
-    # ---- the Hex Fortress: any Nether biome, spacing 32, separation 12, clear of fortresses and bastions
+    # ---- the Hex Fortress (reworked, about 40 x 40): any Nether biome, spacing 20, separation 8, clear of fortresses and bastions
     ctx.write(os.path.join(ctx.D, M, "tags", "worldgen", "biome", "has_hex_fortress.json"),
               {"replace": False, "values": ["#minecraft:is_nether"]})
     ctx.write(os.path.join(W, "structure", "hex_fortress.json"), {
@@ -85,7 +87,7 @@ def run(ctx):
         "spawn_overrides": {}, "terrain_adaptation": "none"})
     ctx.write(os.path.join(W, "structure_set", "hex_fortress.json"), {
         "structures": [{"structure": f"{M}:hex_fortress", "weight": 1}],
-        "placement": {"type": "minecraft:random_spread", "spacing": 32, "separation": 12, "salt": 1170936,
+        "placement": {"type": "minecraft:random_spread", "spacing": 20, "separation": 8, "salt": 1170936,
                       "exclusion_zone": {"other_set": "minecraft:nether_complexes", "chunk_count": 4}}})
     # ---- loot
     loot(ctx, "chests/hex_fortress", "minecraft:chest", [
@@ -95,15 +97,47 @@ def run(ctx):
             item(f"{M}:soul_elixir", 6, (1, 3)), item("minecraft:ghast_tear", 4, (1, 2)), item("minecraft:crying_obsidian", 5, (1, 3)),
             item("minecraft:gold_block", 2), item("minecraft:glass_bottle", 5, (1, 3)), item("minecraft:blaze_powder", 4, (1, 4))]},
         {"rolls": 1, "entries": [EMPTY(17), item(f"{M}:elixir_of_greed", 3)]}])
+    # the experiments' chests in the witch's laboratory
+    loot(ctx, "chests/hex_fortress_experiments", "minecraft:chest", [
+        {"rolls": {"type": "minecraft:uniform", "min": 3, "max": 5}, "entries": [
+            item(f"{M}:soul_elixir", 10, (1, 3)), item(f"{M}:cursed_elixir", 5, (1, 2)), item(f"{M}:elixir_of_greed", 4),
+            item(f"{M}:elixir_bottle", 8, (1, 3)), item(f"{M}:wither_bone", 10, (1, 4)), item("minecraft:bone", 10, (2, 6)),
+            item("minecraft:gold_ingot", 10, (2, 5)), item("minecraft:gold_nugget", 8, (4, 10)), item("minecraft:ghast_tear", 4, (1, 2)),
+            item("minecraft:fermented_spider_eye", 6, (1, 3)), item("minecraft:magma_cream", 6, (1, 3)),
+            item("minecraft:glowstone_dust", 5, (2, 5)), item("minecraft:crying_obsidian", 4, (1, 2)),
+            item(f"{M}:soul_bull_skull", 1)]},
+        {"rolls": 1, "entries": [EMPTY(4), item("minecraft:splash_potion", 2, functions=[{"function": "minecraft:set_potion",
+                                                                                            "id": "minecraft:strong_harming"}]),
+                                 item("minecraft:potion", 2, functions=[{"function": "minecraft:set_potion", "id": "minecraft:fire_resistance"}])]}])
     loot(ctx, "entities/golden_piglin", "minecraft:entity", [
         {"rolls": 1, "entries": [item("minecraft:gold_block", 1, (2, 4))]}])
     looting = lambda lo, hi: {"function": "minecraft:enchanted_count_increase", "enchantment": "minecraft:looting",  # noqa: E731
                               "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}
+    # the Piglin Witch: her stash (her spellbook, a hexed book, is dropped by the Java side)
     loot(ctx, "entities/piglin_witch", "minecraft:entity", [
         {"rolls": 1, "entries": [item("minecraft:gold_nugget", 1, (2, 6), [looting(0, 2)])]},
         {"rolls": 1, "entries": [item("minecraft:glass_bottle", 1, (0, 2))]},
         {"rolls": 1, "entries": [item("minecraft:nether_wart", 1, (0, 3), [looting(0, 1)])]},
-        {"rolls": 1, "entries": [EMPTY(3), item(f"{M}:soul_elixir", 1)]}])
+        {"rolls": 1, "entries": [EMPTY(3), item(f"{M}:soul_elixir", 1)]},
+        {"rolls": 1, "entries": [item("minecraft:gold_ingot", 1, (4, 10), [looting(0, 3)])]},
+        {"rolls": 1, "entries": [EMPTY(1), item("minecraft:gold_block", 1, (1, 2))]},
+        {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 3}, "entries": [
+            item(f"{M}:soul_elixir", 6, (1, 3)), item(f"{M}:elixir_of_greed", 3), item(f"{M}:cursed_elixir", 2),
+            item(f"{M}:elixir_bottle", 4, (1, 2)), item("minecraft:ghast_tear", 3, (1, 2)), item("minecraft:crying_obsidian", 3, (1, 3)),
+            item("minecraft:golden_carrot", 3, (2, 5)), item("minecraft:blaze_powder", 3, (2, 4))]}])
+    # the Withered Commander: 1-3 Ancient Debris, wither bones, its spear sometimes (XP from the Java side)
+    spear_chance = {"condition": "minecraft:random_chance_with_enchanted_bonus", "enchantment": "minecraft:looting",
+                    "unenchanted_chance": 0.25, "enchanted_chance": {"type": "minecraft:linear", "base": 0.33, "per_level_above_first": 0.08}}
+    loot(ctx, "entities/withered_commander", "minecraft:entity", [
+        {"rolls": 1, "entries": [item("minecraft:ancient_debris", 1, (1, 3))]},
+        {"rolls": 1, "entries": [item(f"{M}:wither_bone", 1, (2, 4), [looting(0, 1)])]},
+        {"rolls": 1, "entries": [item("minecraft:bone", 1, (1, 4), [looting(0, 1)])]},
+        {"rolls": 1, "conditions": [{"condition": "minecraft:killed_by_player"}, spear_chance],
+         "entries": [item(f"{M}:netherite_spear", 1, functions=[{"function": "minecraft:set_damage",
+                                                                   "damage": {"type": "minecraft:uniform", "min": 0.3, "max": 0.8}}])]},
+        {"rolls": 1, "conditions": [{"condition": "minecraft:killed_by_player"},
+                                    {"condition": "minecraft:random_chance", "chance": 0.1}],
+         "entries": [item("minecraft:wither_skeleton_skull", 1)]}])
     fire_res = {"function": "minecraft:set_potion", "id": "minecraft:fire_resistance"}
     soul_speed = {"function": "minecraft:enchant_randomly", "options": "minecraft:soul_speed"}
     loot(ctx, "gameplay/golden_piglin_bartering", "minecraft:barter", [{"rolls": 1, "entries": [
@@ -115,9 +149,24 @@ def run(ctx):
         item("minecraft:splash_potion", 6, functions=[fire_res]), item("minecraft:book", 8, functions=[soul_speed]),
         item(f"{M}:soul_elixir", 12, (1, 3)), item(f"{M}:elixir_bottle", 8), item(f"{M}:elixir_of_greed", 3)]}])
     # ---- piglins want Cursed Elixir like gold
-    for egg in ("piglin_witch_spawn_egg", "golden_piglin_spawn_egg"):
+    for egg in ("piglin_witch_spawn_egg", "golden_piglin_spawn_egg", "withered_commander_spawn_egg"):
         ctx.write(os.path.join(ctx.A, "models", "item", egg + ".json"), {"parent": "minecraft:item/template_spawn_egg"})
     ctx.write(os.path.join(ctx.D, "minecraft", "tags", "item", "piglin_loved.json"), {"replace": False, "values": [f"{M}:cursed_elixir"]})
+    # ---- the Netherite Spear: drawn in 3D from its lowpix model everywhere (client.nether.NetheriteSpearRenderer), held
+    # like a trident; the display transforms are the art pass's (examples/src/netherite_spear.py)
+    def disp(rot, tr, sc):
+        return {"rotation": rot, "translation": tr, "scale": [sc, sc, sc]}
+    ctx.write(os.path.join(ctx.A, "models", "item", "netherite_spear.json"), {
+        "parent": "minecraft:builtin/entity", "gui_light": "front",
+        "textures": {"particle": f"{M}:item/netherite_spear_icon"},
+        "display": {
+            "thirdperson_righthand": disp([0, 60, 0], [0, 0, 1], 1), "thirdperson_lefthand": disp([0, 60, 0], [0, 0, 1], 1),
+            "firstperson_righthand": disp([0, -90, 35], [5, -1, 0], 1), "firstperson_lefthand": disp([0, 90, -35], [5, -1, 0], 1),
+            "gui": disp([20, 0, -45], [-1.5, -1.4, 0], 0.5), "ground": disp([90, 0, 0], [0, 2, -1.5], 0.4),
+            "fixed": disp([-20, 180, -45], [1.5, -1.4, 0], 0.5), "head": disp([0, 180, 0], [0, 13, 7], 1)}})
+    for t in ("sword", "sharp_weapon", "weapon", "durability", "fire_aspect"):
+        ctx.write(os.path.join(ctx.D, "minecraft", "tags", "item", "enchantable", t + ".json"),
+                  {"replace": False, "values": [f"{M}:netherite_spear"]})
     # ---- assets nobody else provides yet
     subs = sounds(ctx)
     particles(ctx)
@@ -131,6 +180,12 @@ def run(ctx):
         "message.winterworks.piglin_witch.refuse": "The Piglin Witch shakes her head and burps. She's thirsty for something golden...",
         "message.winterworks.piglin_witch.busy": "The Piglin Witch waves you off: she's busy.",
         "message.winterworks.hexfortress.built": "Built a Hex Fortress at %s, %s, %s (%s x %s blocks)",
+        # ---- 0.4 fixes: Nether
+        "entity.winterworks.withered_commander": "Withered Commander",
+        "entity.winterworks.hex_bolt": "Hex Bolt",
+        "item.winterworks.netherite_spear": "Netherite Spear",
+        "item.winterworks.netherite_spear.tip": "Long reach. Hold use to draw it back, let go to thrust",
+        "item.winterworks.withered_commander_spawn_egg": "Withered Commander Spawn Egg",
     }
     lang.update(subs)
     ctx.write(os.path.join(ctx.L, "nether.json"), lang)

@@ -44,6 +44,9 @@ public final class NetherFeature {
             Winterworks.id("chests/hex_fortress"));
     public static final ResourceKey<LootTable> GOLDEN_BARTER = ResourceKey.create(Registries.LOOT_TABLE,
             Winterworks.id("gameplay/golden_piglin_bartering"));
+    /** The chests in the witch's laboratory (docs/FIXES_0_4.md "The Hex Fortress, reworked"). */
+    public static final ResourceKey<LootTable> EXPERIMENTS_CHEST = ResourceKey.create(Registries.LOOT_TABLE,
+            Winterworks.id("chests/hex_fortress_experiments"));
 
     /**
      * A piglin that drank Cursed Elixir (it also has the `golden` effect, which only the server knows about: mob
@@ -51,12 +54,33 @@ public final class NetherFeature {
      */
     public static final AttachmentType<Boolean> GOLDEN = AttachmentRegistry.<Boolean>builder().persistent(Codec.BOOL)
             .syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.all()).buildAndRegister(Winterworks.id("golden"));
+    /**
+     * How far a piglin's (or brute's) gilding has got, in ticks of PiglinGreed.GILD_TICKS: present from the moment it
+     * drinks Cursed Elixir until it becomes a Golden Piglin. Saved, and synced for the spreading shimmer.
+     */
+    public static final AttachmentType<Integer> GILDING = AttachmentRegistry.<Integer>builder().persistent(Codec.INT)
+            .syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all()).buildAndRegister(Winterworks.id("gilding"));
 
     private NetherFeature() {}
 
     public static void init() {
         PiglinGreed.init();
         CommandRegistrationCallback.EVENT.register((dispatcher, registries, env) -> registerCommands(dispatcher));
+        // ---- 0.4 fixes: Nether (docs/FIXES_0_4.md): the witch's crew, hoglin jockeys, the Withered Commander
+        WitchCrew.init();
+        HoglinJockeys.init();
+        WitheredCommander.init();
+        net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(
+                dev.lowpix.winterworks.registry.WWEntities.WITHERED_COMMANDER, WitheredCommander.createAttributes());
+        net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.modifyEntriesEvent(ResourceKey.create(Registries.CREATIVE_MODE_TAB,
+                Winterworks.id("main"))).register(entries -> {
+                    for (net.minecraft.world.item.Item i : new net.minecraft.world.item.Item[]{dev.lowpix.winterworks.registry.WWItems.NETHERITE_SPEAR,
+                            dev.lowpix.winterworks.registry.WWItems.WITHERED_COMMANDER_SPAWN_EGG}) {
+                        if (entries.getDisplayStacks().stream().noneMatch(st -> st.is(i))) {
+                            entries.accept(i);
+                        }
+                    }
+                });
     }
 
     /** `/winterworks hexfortress`: builds a Hex Fortress (witch, piglins, golden piglin and all) in front of you. */

@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * 1 in 40 Piglins spawned in the world (naturally, with the chunk, or in a structure such as a bastion) is a Golden
+ * 1 in 15 Piglins spawned in the world (naturally, with the chunk, or in a structure such as a bastion) is a Golden
  * Piglin (docs/HEXES_UPDATE.md section 7). The roll is made at spawn and kept (saved) until the piglin's first AI
  * tick, when it is replaced: a world-generation spawn can't be replaced on the spot. Piglins never pick up an Elixir
  * of Greed: they fight over it instead (nether.PiglinGreed).

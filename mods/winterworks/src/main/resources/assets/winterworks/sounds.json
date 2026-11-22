@@ -4070,5 +4070,166 @@
       }
     ],
     "subtitle": "subtitles.winterworks.entity.sniffer.sneeze"
+  },
+  "entity.withered_commander.ambient": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/wither_skeleton/idle1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/wither_skeleton/idle2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/wither_skeleton/idle3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ravager/idle3",
+        "pitch": 0.9
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.withered_commander.ambient"
+  },
+  "entity.withered_commander.hurt": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/wither_skeleton/hurt1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/wither_skeleton/hurt2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/wither_skeleton/hurt3",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/wither_skeleton/hurt4",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.withered_commander.hurt"
+  },
+  "entity.withered_commander.death": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/wither_skeleton/death1",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/wither_skeleton/death2",
+        "pitch": 0.5
+      },
+      {
+        "name": "minecraft:mob/ravager/death2",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.withered_commander.death"
+  },
+  "entity.withered_commander.lunge": {
+    "sounds": [
+      {
+        "name": "minecraft:item/trident/throw1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:item/trident/throw2",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/ravager/bite1",
+        "pitch": 0.85
+      },
+      {
+        "name": "minecraft:mob/ravager/bite2",
+        "pitch": 0.75
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.withered_commander.lunge"
+  },
+  "entity.withered_commander.spin": {
+    "sounds": [
+      {
+        "name": "minecraft:item/trident/riptide1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:item/trident/riptide2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:item/trident/riptide3",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.withered_commander.spin"
+  },
+  "entity.withered_commander.war_cry": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ravager/roar3",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/wither/idle2",
+        "pitch": 0.9
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.withered_commander.war_cry"
+  },
+  "entity.piglin_witch.cast": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/evocation_illager/cast1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/cast2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_attack1",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.cast"
+  },
+  "entity.piglin_witch.blink": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/illusion_illager/mirror_move1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/illusion_illager/mirror_move2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_wololo",
+        "pitch": 1.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.blink"
+  },
+  "entity.piglin_witch.summon": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_summon",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/evocation_illager/prepare_summon",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.summon"
   }
 }
