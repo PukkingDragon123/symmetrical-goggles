@@ -35,7 +35,8 @@ public final class HexClient {
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.SOUL_TANK, new SoulTankRenderer.Item());
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.HEXING_TABLE, new HexingTableRenderer.Item());
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.HEX_CORE, new HexCoreRenderer());
-        ModelLoadingPlugin.register(ctx -> ctx.addModels(HexCoreRenderer.ICON_MODEL));
+        ModelLoadingPlugin.register(ctx -> ctx.addModels(HexCoreRenderer.ICON_MODEL, HexRender.JAR_ICON, HexRender.TANK_ICON,
+                HexRender.TABLE_ICON));
 
         MenuScreens.register(WWMenus.HEXING_TABLE, HexingTableScreen::new);
         // item/hexed_book overrides: 0 lesser, 0.5 sin, 1 hidden
@@ -43,6 +44,7 @@ public final class HexClient {
                 (stack, level, entity, seed) -> HexedBookItem.info(stack).look() / 2f);
         ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> HexTooltips.append(stack, lines));
         ClientPlayNetworking.registerGlobalReceiver(SoulDriftPayload.TYPE, (payload, context) -> SoulDrifts.add(payload));
+        HexShots.init();
         ClientTickEvents.END_CLIENT_TICK.register(mc -> {
             SoulDrifts.tick(mc);
             heldHexCore(mc);

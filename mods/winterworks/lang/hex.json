@@ -32,11 +32,13 @@
   "container.winterworks.hexing_table.attaches": "Binds: %s",
   "container.winterworks.hexing_table.becomes": "Becomes: %s",
   "container.winterworks.hexing_table.power": "Power +%s",
-  "container.winterworks.hexing_table.cost": "%s Soul Elixir, %s souls",
   "container.winterworks.hexing_table.cost.elixir": "%s Soul Elixir",
   "container.winterworks.hexing_table.cost.souls": "%s souls",
   "container.winterworks.hexing_table.hexed": "Hexed for %s minutes",
   "container.winterworks.hexing_table.hidden_chance": "...and something may hide in the pages",
+  "container.winterworks.hexing_table.hidden": "Hidden Curse",
+  "container.winterworks.hexing_table.hidden.desc": "Any hex may bind one more curse (15%%)",
+  "container.winterworks.hexing_table.hidden.nameless": "It has no name until it strikes",
   "container.winterworks.hexing_table.souls": "Souls: %s / %s",
   "container.winterworks.hexing_table.tanks": "%s Soul Tanks within reach",
   "container.winterworks.hexing_table.button": "HEX",
@@ -52,9 +54,7 @@
   "container.winterworks.hexing_table.problem.6": "Needs %s Soul Elixir",
   "container.winterworks.hexing_table.problem.7": "Needs %s souls",
   "container.winterworks.hexing_table.already": "This book is already hexed",
-  "container.winterworks.hexing_table.done": "The hex takes hold",
   "item.winterworks.hexed_book.lesser": "Lesser Hex",
   "item.winterworks.hexed_book.sin": "Sin Hex",
-  "item.winterworks.hexed_book.whispers": "Something whispers in the pages...",
-  "hex.winterworks.discovered": "A hidden curse reveals itself: %s"
+  "item.winterworks.hexed_book.whispers": "Something whispers in the pages..."
 }

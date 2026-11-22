@@ -13,20 +13,20 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.EnchantTableRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 /**
- * The Hexing Table from the lowpix model {@code hexing_table}. Its {@code book} bone bobs, turns to face the nearest
- * player (the book's front, the open pages, faces model -Z like a vanilla mob's face) and opens for them: the clip
- * {@code open} is posed at the open amount (0 shut, its end wide open); without that clip the bones {@code cover_l} /
- * {@code cover_r} swing open about Y instead. Clip {@code idle} loops always, {@code flip} loops while the book is open.
- * Parts flagged glow (soul flames, runes) are full-bright.
+ * The Hexing Table from the lowpix model {@code hexing_table} (examples/src/hexing_table.py). Like vanilla's book, its
+ * {@code book} bone (pivot at the spine) turns about Y to face the nearest player (the open pages face model -Z, a
+ * mob's front), lifts a little and opens for them: the clip {@code open} (closed at its start, open at its end) is posed
+ * at the open amount; without it {@code cover_l} / {@code cover_r} (open at rest) swing shut. The {@code hex} clip plays
+ * when a book is hexed here; {@code idle} loops. Glow parts (the braziers' flames, the runes) are full-bright.
  */
 public class HexingTableRenderer implements BlockEntityRenderer<HexingTableBlockEntity> {
+    private static final float HEX_TICKS = 30f;
     private static HexModel model;
     private static BookModel book;
 
@@ -56,10 +56,12 @@ public class HexingTableRenderer implements BlockEntityRenderer<HexingTableBlock
         float rot = be.oRot + d * partial;
         float open = Mth.lerp(partial, be.oOpen, be.open);
         float flip = Mth.lerp(partial, be.oFlip, be.flip);
-        draw(pose, buffers, light, overlay, time, rot, open, flip);
+        float sinceHex = time - be.hexTime;
+        draw(pose, buffers, light, overlay, time, rot, open, flip, sinceHex < HEX_TICKS ? sinceHex / HEX_TICKS : -1f);
     }
 
-    static void draw(PoseStack pose, MultiBufferSource buffers, int light, int overlay, float time, float rot, float open, float flip) {
+    static void draw(PoseStack pose, MultiBufferSource buffers, int light, int overlay, float time, float rot, float open, float flip,
+                     float hex) {
         HexModel m = model();
         if (m.missing()) {
             standIn(pose, buffers, light, overlay, time, rot, open, flip);
@@ -70,17 +72,17 @@ public class HexingTableRenderer implements BlockEntityRenderer<HexingTableBlock
         ModelPart b = m.get("book").orElse(null);
         if (b != null) {
             b.yRot += rot;
-            b.y -= 0.6f + Mth.sin(time * 0.1f) * 0.6f;
+            b.y -= open * 1.0f;
         }
         if (m.length("open") > 0) {
             m.at("open", open);
         } else {
-            float a = (Mth.sin(time * 0.02f) * 0.1f + 1.25f) * open;
-            m.get("cover_l").ifPresent(p -> p.yRot += a);
-            m.get("cover_r").ifPresent(p -> p.yRot -= a);
+            float shut = (1f - open) * 1.35f;
+            m.get("cover_l").ifPresent(p -> p.yRot -= shut);
+            m.get("cover_r").ifPresent(p -> p.yRot += shut);
         }
-        if (open > 0.6f) {
-            m.at("flip", Mth.frac(flip * 0.25f));
+        if (hex >= 0f) {
+            m.at("hex", hex);
         }
         pose.pushPose();
         HexRender.enterModel(pose, 0f);
@@ -113,13 +115,15 @@ public class HexingTableRenderer implements BlockEntityRenderer<HexingTableBlock
         return false;
     }
 
-    /** The table as an item: the book half open, slowly turning. */
+    /** The table as an item: its icon in slots, elsewhere the 3D table with the book half open. */
     public static class Item implements BuiltinItemRendererRegistry.DynamicItemRenderer {
         @Override
         public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-            Minecraft mc = Minecraft.getInstance();
-            float time = mc.level == null ? 0 : mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false);
-            draw(pose, buffers, light, overlay, time, 0f, 0.55f, 0f);
+            if (mode == ItemDisplayContext.GUI || model().missing()) {
+                HexRender.icon(HexRender.TABLE_ICON, stack, mode, pose, buffers, light, overlay);
+                return;
+            }
+            draw(pose, buffers, light, overlay, HexRender.clientTime(), 0f, 0.55f, 0f, -1f);
         }
     }
 }

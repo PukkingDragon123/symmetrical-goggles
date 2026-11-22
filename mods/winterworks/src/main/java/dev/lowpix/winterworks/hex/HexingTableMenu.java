@@ -46,7 +46,7 @@ public class HexingTableMenu extends AbstractContainerMenu {
     /** A Soul Tank must be within this many blocks of the table (a cube). */
     public static final int TANK_RADIUS = 3;
     /** Slot item positions in the GUI (client.hex.HexGui draws the frames round them). */
-    public static final int BOOK_X = 26, BOOK_Y = 63, ELIXIR_X = 46, ELIXIR_Y = 63, INV_X = 8, INV_Y = 104, HOTBAR_Y = 162;
+    public static final int BOOK_X = 34, BOOK_Y = 47, ELIXIR_X = 56, ELIXIR_Y = 47, INV_X = 8, INV_Y = 84, HOTBAR_Y = 142;
 
     // synced data: indices
     public static final int D_SOULS = 0, D_CAPACITY = 1, D_TANKS = 2, D_LESSER_CURSE = 3, D_SIN = 4, D_SIN_SOURCE = 5,
@@ -243,6 +243,7 @@ public class HexingTableMenu extends AbstractContainerMenu {
         hexSlots.setItem(BOOK_SLOT, hexed);   // -> slotsChanged -> refresh with the new seed
 
         level.playSound(null, pos, WWSounds.HEXING_TABLE_HEX, SoundSource.BLOCKS, 1f, kind == Hexing.Kind.SIN ? 0.75f : 1f);
+        level.blockEvent(pos, level.getBlockState(pos).getBlock(), HexingTableBlockEntity.EVENT_HEX, 0);   // the book surges
         if (level instanceof ServerLevel server) {
             double x = pos.getX() + 0.5, y = pos.getY() + 1.0, z = pos.getZ() + 0.5;
             server.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, x, y, z, 24, 0.3, 0.25, 0.3, 0.06);

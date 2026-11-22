@@ -81,6 +81,12 @@ public class HexingTableBlock extends BaseEntityBlock {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
+    @Override
+    protected boolean triggerEvent(BlockState state, Level level, BlockPos pos, int id, int param) {
+        BlockEntity be = level.getBlockEntity(pos);
+        return be != null && be.triggerEvent(id, param);
+    }
+
     @Nullable
     @Override
     protected MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {

@@ -1,5 +1,5 @@
 {
   "textures": {
-    "particle": "minecraft:block/crying_obsidian"
+    "particle": "winterworks:block/hexing_table_particle"
   }
 }

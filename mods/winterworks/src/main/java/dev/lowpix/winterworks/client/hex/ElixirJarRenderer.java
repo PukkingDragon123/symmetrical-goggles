@@ -5,7 +5,6 @@ import dev.lowpix.winterworks.hex.ElixirJarBlock;
 import dev.lowpix.winterworks.hex.ElixirJarBlockEntity;
 import dev.lowpix.winterworks.hex.ElixirType;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -18,10 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 /**
- * The Elixir Jar from the lowpix model {@code elixir_jar}: brass and the opaque parts, then the {@code liquid} bone
- * (and its children) tinted with the elixir's colour and scaled up its height by how full the jar is (its pivot sits at
- * the bottom of the liquid), then the {@code glass*} parts, translucent. Clips: {@code idle} loops always,
- * {@code bubble} loops while it brews over heat; parts named {@code bubbles*} only show then.
+ * The Elixir Jar from the lowpix model {@code elixir_jar} (examples/src/elixir_jar.py): the brass {@code jar} and
+ * {@code lid}, then the tint parts {@code liquid} and {@code bubble_0..3} (from the model's tint texture) in the
+ * elixir's colour, {@code liquid} scaled up its height by how full the jar is (its pivot is the liquid's floor), then
+ * the translucent {@code glass}. Clips: {@code idle} always, {@code bubble} while it brews over heat.
  */
 public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEntity> {
     private static HexModel model;
@@ -35,6 +34,10 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
             model = new HexModel(HexLayers.ELIXIR_JAR, "elixir_jar");
         }
         return model;
+    }
+
+    private static boolean isLiquid(HexModel m, String part) {
+        return m.isTint(part) || part.startsWith("liquid") || part.startsWith("bubble");
     }
 
     @Override
@@ -78,23 +81,22 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
             m.loop("bubble", time / 20f);
         }
         ModelPart liquid = m.get("liquid").orElse(null);
+        boolean full = fill > 0.001f;
         if (liquid != null) {
             liquid.yScale *= Math.max(0.001f, fill);
-            if (bubbling) {   // a molten wobble on the surface
-                liquid.xScale *= 1f + 0.03f * Mth.sin(time * 0.9f);
-                liquid.zScale *= 1f + 0.03f * Mth.cos(time * 0.8f);
-            }
+            liquid.visible = full;
         }
         pose.pushPose();
         HexRender.enterModel(pose, yRot);
-        m.mask(n -> !HexRender.isGlass(n) && !n.startsWith("liquid") && (bubbling || !n.startsWith("bubbles")));
+        m.mask(n -> !HexRender.isGlass(n) && !isLiquid(m, n));
         m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(m.texture)), light, overlay, 0xFFFFFFFF);
-        if (liquid != null && fill > 0.001f) {
-            m.mask(n -> n.startsWith("liquid"));
-            m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityTranslucent(m.texture)), light, overlay, HexRender.argb(235, color));
+        if (liquid != null && full) {
+            m.mask(n -> isLiquid(m, n));
+            var tex = m.hasTint ? m.tintTexture : m.texture;
+            m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityTranslucent(tex)), light, overlay, HexRender.argb(235, color));
             if (kind == ElixirType.SOUL || kind == ElixirType.CURSED || bubbling) {   // elixirs glow faintly
-                float pulse = 0.35f + 0.15f * Mth.sin(time * 0.12f) + (bubbling ? 0.2f : 0f);
-                m.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(m.texture)), 0xF000F0, OverlayTexture.NO_OVERLAY,
+                float pulse = 0.3f + 0.12f * Mth.sin(time * 0.12f) + (bubbling ? 0.15f : 0f);
+                m.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(tex)), 0xF000F0, OverlayTexture.NO_OVERLAY,
                         HexRender.argb(255, HexRender.scale(color, pulse)));
             }
         }
@@ -103,6 +105,9 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
         m.unmask();
         HexRender.glow(m, pose, buffers);
         pose.popPose();
+        if (liquid != null) {
+            liquid.visible = true;
+        }
     }
 
     @Override
@@ -110,13 +115,15 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
         return false;
     }
 
-    /** The jar as an item: half a jar of Soul Elixir. */
+    /** The jar as an item: its icon in slots, elsewhere the 3D jar half full of Soul Elixir. */
     public static class Item implements BuiltinItemRendererRegistry.DynamicItemRenderer {
         @Override
         public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-            Minecraft mc = Minecraft.getInstance();
-            float time = mc.level == null ? 0 : mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false);
-            draw(pose, buffers, light, overlay, time, 0f, 0.6f, ElixirType.SOUL.color, ElixirType.SOUL, false);
+            if (mode == ItemDisplayContext.GUI || model().missing()) {
+                HexRender.icon(HexRender.JAR_ICON, stack, mode, pose, buffers, light, overlay);
+                return;
+            }
+            draw(pose, buffers, light, overlay, HexRender.clientTime(), 0f, 0.6f, ElixirType.SOUL.color, ElixirType.SOUL, false);
         }
     }
 }

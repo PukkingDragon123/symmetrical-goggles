@@ -47,29 +47,24 @@ def run(ctx):
     def item_model(name, obj):
         w(os.path.join(A, "models", "item", name + ".json"), obj)
 
-    def has_texture(path):
-        return os.path.exists(os.path.join(A, "textures", path + ".png"))
-
     # ---------------------------------------------------------------------------------------- blocks: drawn by their renderers
-    particles = {"elixir_jar": "minecraft:block/glass", "soul_tank": "minecraft:block/netherite_block",
-                 "hexing_table": "minecraft:block/crying_obsidian"}
-    for name, tex in particles.items():
-        if has_texture("block/" + name):
-            tex = f"{M}:block/{name}"
-        block_model(name, {"textures": {"particle": tex}})
+    for name in ("elixir_jar", "soul_tank", "hexing_table"):
+        block_model(name, {"textures": {"particle": f"{M}:block/{name}_particle"}})
     facing = {"north": 0, "east": 90, "south": 180, "west": 270}
     for name in ("elixir_jar", "soul_tank"):
         blockstate(name, {"variants": {f"facing={f}": ({"model": f"{M}:block/{name}", "y": y} if y else {"model": f"{M}:block/{name}"})
                                        for f, y in facing.items()}})
     blockstate("hexing_table", {"variants": {"": {"model": f"{M}:block/hexing_table"}}})
 
-    # 3D block items (client.hex renderers draw the lowpix models, or a vanilla stand-in while they are missing)
-    def builtin(name, particle, gui_scale=0.625, gui_y=0.0):
+    # Block items: the 2D icon (item/<name>_icon) in slots, the 3D lowpix model elsewhere (client.hex renderers; the
+    # icon again while the model is missing). The GUI transform stays identity so the icon sits right.
+    def builtin(name):
+        item_model(name + "_icon", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{name}"}})
         item_model(name, {
-            "parent": "minecraft:builtin/entity", "gui_light": "side",
-            "textures": {"particle": particle},
+            "parent": "minecraft:builtin/entity", "gui_light": "front",
+            "textures": {"particle": f"{M}:block/{name}_particle"},
             "display": {
-                "gui": {"rotation": [30, 225, 0], "translation": [0, gui_y, 0], "scale": [gui_scale] * 3},
+                "gui": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
                 "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.25] * 3},
                 "fixed": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [0.5] * 3},
                 "head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
@@ -79,9 +74,8 @@ def run(ctx):
                 "firstperson_lefthand": {"rotation": [0, 225, 0], "translation": [0, 0, 0], "scale": [0.4] * 3},
             }})
 
-    builtin("elixir_jar", particles["elixir_jar"], 0.85, 1.0)
-    builtin("soul_tank", particles["soul_tank"])
-    builtin("hexing_table", particles["hexing_table"])
+    for name in ("elixir_jar", "soul_tank", "hexing_table"):
+        builtin(name)
 
     # ---------------------------------------------------------------------------------------- items
     for name in ("elixir_bottle", "soul_elixir", "elixir_of_greed", "cursed_elixir"):
@@ -175,11 +169,13 @@ def run(ctx):
         "container.winterworks.hexing_table.attaches": "Binds: %s",
         "container.winterworks.hexing_table.becomes": "Becomes: %s",
         "container.winterworks.hexing_table.power": "Power +%s",
-        "container.winterworks.hexing_table.cost": "%s Soul Elixir, %s souls",
         "container.winterworks.hexing_table.cost.elixir": "%s Soul Elixir",
         "container.winterworks.hexing_table.cost.souls": "%s souls",
         "container.winterworks.hexing_table.hexed": "Hexed for %s minutes",
         "container.winterworks.hexing_table.hidden_chance": "...and something may hide in the pages",
+        "container.winterworks.hexing_table.hidden": "Hidden Curse",
+        "container.winterworks.hexing_table.hidden.desc": "Any hex may bind one more curse (15%%)",
+        "container.winterworks.hexing_table.hidden.nameless": "It has no name until it strikes",
         "container.winterworks.hexing_table.souls": "Souls: %s / %s",
         "container.winterworks.hexing_table.tanks": "%s Soul Tanks within reach",
         "container.winterworks.hexing_table.button": "HEX",
@@ -195,12 +191,10 @@ def run(ctx):
         "container.winterworks.hexing_table.problem.6": "Needs %s Soul Elixir",
         "container.winterworks.hexing_table.problem.7": "Needs %s souls",
         "container.winterworks.hexing_table.already": "This book is already hexed",
-        "container.winterworks.hexing_table.done": "The hex takes hold",
         # Hexed Books
         "item.winterworks.hexed_book.lesser": "Lesser Hex",
         "item.winterworks.hexed_book.sin": "Sin Hex",
         "item.winterworks.hexed_book.whispers": "Something whispers in the pages...",
-        "hex.winterworks.discovered": "A hidden curse reveals itself: %s",
     }
     lang.update(subtitles)
     w(os.path.join(ctx.L, "hex.json"), lang)

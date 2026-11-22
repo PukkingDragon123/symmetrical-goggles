@@ -20,9 +20,21 @@ public class HexingTableBlockEntity extends BlockEntity {
     public float open, oOpen;
     public float rot, oRot, tRot;
     public float flip, oFlip, flipT, flipA;
+    /** Client: {@link #time} when the last hex happened here (the renderer plays the `hex` clip). */
+    public int hexTime = -1000;
+    public static final int EVENT_HEX = 1;
 
     public HexingTableBlockEntity(BlockPos pos, BlockState state) {
         super(WWBlocks.HEXING_TABLE_BE, pos, state);
+    }
+
+    @Override
+    public boolean triggerEvent(int id, int param) {
+        if (id == EVENT_HEX) {
+            hexTime = time;
+            return true;
+        }
+        return super.triggerEvent(id, param);
     }
 
     public static void bookAnimationTick(Level level, BlockPos pos, BlockState state, HexingTableBlockEntity be) {
