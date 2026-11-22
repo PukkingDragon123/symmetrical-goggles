@@ -34,7 +34,7 @@ import org.joml.Vector3f;
  */
 public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
     /** Wingspan in blocks: overhead in flight, carried in a hand, in first person. */
-    private static final float SPAN_OVERHEAD = 1.9f, SPAN_CARRIED = 1.05f, SPAN_FIRST_PERSON = 1.35f;
+    private static final float SPAN_OVERHEAD = 2.2f, SPAN_CARRIED = 1.05f, SPAN_FIRST_PERSON = 1.15f;
     @Nullable private static GearModel model;
 
     static GearModel model() {
@@ -82,9 +82,9 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
         pose.translate(0.5f, 0.5f, 0.5f);   // undo the item renderer's corner offset: the origin is the item's centre
         switch (mode) {
             case GUI -> {   // three-quarter view, filling the slot
-                float s = 0.98f / Math.max(size.x, Math.max(size.y, size.z) * 1.15f);
-                pose.mulPose(Axis.XP.rotationDegrees(48f));
-                pose.mulPose(Axis.YP.rotationDegrees(-28f));
+                float s = 1.04f / Math.max(size.x, Math.max(size.y, size.z) * 1.15f);   // the wingtips may touch the slot's edge
+                pose.mulPose(Axis.XP.rotationDegrees(38f));
+                pose.mulPose(Axis.YP.rotationDegrees(22f));
                 pose.scale(s, s, s);
                 pose.translate(-c.x, -c.y, -c.z);
                 animate(m, false, false, t);
@@ -107,7 +107,7 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
                 if (flying) {   // overhead, seen from below and behind: wings out, front away from the camera
                     float s = SPAN_FIRST_PERSON / span(m);
                     float bob = Mth.sin(t * 0.25f) * 0.015f;
-                    pose.translate(0f, 0.32f + bob, -1.15f);
+                    pose.translate(0f, 0.4f + bob, -1.15f);
                     pose.mulPose(Axis.YP.rotationDegrees(180f));
                     pose.mulPose(Axis.XP.rotationDegrees(-12f));
                     pose.scale(s, s, s);

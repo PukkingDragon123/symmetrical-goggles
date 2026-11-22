@@ -13,9 +13,9 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
 /**
- * The gear's model layers, from the lowpix exports ({@code assets/winterworks/lowpix/<name>.geo.json}). While an export
- * is missing its layer is a box stand-in with the contract's bone names (drawn with a vanilla texture), so everything
- * runs before the art lands.
+ * The gear's model layers, from the lowpix exports ({@code assets/winterworks/lowpix/<name>.geo.json}). While a
+ * Dragonling export is missing its layer is a box stand-in with the contract's bone names (drawn with a vanilla
+ * texture), so everything runs before the art lands.
  */
 public final class GearLayers {
     public static final ModelLayerLocation OBSIDIAN_SHIELD = layer("obsidian_shield");
@@ -35,9 +35,9 @@ public final class GearLayers {
     }
 
     static void init() {
-        reg(OBSIDIAN_SHIELD, "obsidian_shield", GearLayers::shieldStandIn);
-        reg(END_GLIDER, "end_glider", GearLayers::gliderStandIn);
-        reg(MONOLITH_WAND, "monolith_wand", GearLayers::wandStandIn);
+        reg(OBSIDIAN_SHIELD, "obsidian_shield", GearLayers::empty);
+        reg(END_GLIDER, "end_glider", GearLayers::empty);
+        reg(MONOLITH_WAND, "monolith_wand", GearLayers::empty);
         reg(DRAGONLING_BABY, "dragonling_baby", () -> dragonlingStandIn(1f, false));
         reg(DRAGONLING_TEEN, "dragonling_teen", () -> dragonlingStandIn(2.4f, true));
     }
@@ -56,43 +56,16 @@ public final class GearLayers {
     }
 
     // ------------------------------------------------------------------------------------------------ stand-ins
+
+    /** A missing item model draws nothing (it is in the mod; this only guards against a broken export). */
+    private static LayerDefinition empty() {
+        return LayerDefinition.create(new MeshDefinition(), 16, 16);
+    }
     // Minecraft model space: pixels, Y down, ground at 24, front -Z. Textures are vanilla 16x16 block textures.
 
     private static PartDefinition box(PartDefinition parent, String name, float x, float y, float z, float w, float h, float d,
                                       PartPose pose) {
         return parent.addOrReplaceChild(name, CubeListBuilder.create().texOffs(0, 0).addBox(x, y, z, w, h, d, CubeDeformation.NONE), pose);
-    }
-
-    /** A plate with a boss, a handle behind it and an eye, roughly a vanilla shield's size (12 x 22). */
-    private static LayerDefinition shieldStandIn() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition shield = box(mesh.getRoot(), "shield", -6f, -11f, -1f, 12f, 22f, 1.5f, PartPose.offset(0, 12, 0));
-        box(shield, "handle", -1f, -3f, 0.5f, 2f, 6f, 4f, PartPose.ZERO);
-        box(shield, "eye", -2f, -2f, -2f, 4f, 4f, 1f, PartPose.ZERO);
-        return LayerDefinition.create(mesh, 16, 16);
-    }
-
-    /** A bar frame with a handle under it, two wings and two jets. */
-    private static LayerDefinition gliderStandIn() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition frame = box(mesh.getRoot(), "frame", -9f, -1f, -1f, 18f, 2f, 2f, PartPose.offset(0, 12, 0));
-        box(frame, "handle", -4f, 1f, -0.5f, 8f, 1f, 1f, PartPose.ZERO);
-        box(frame, "wing_l", 0f, -0.25f, -4f, 14f, 0.5f, 9f, PartPose.offsetAndRotation(8f, -1f, 0f, 0f, 0f, -0.15f));
-        box(frame, "wing_r", -14f, -0.25f, -4f, 14f, 0.5f, 9f, PartPose.offsetAndRotation(-8f, -1f, 0f, 0f, 0f, 0.15f));
-        PartDefinition jl = box(frame, "jet_l", -1.5f, -1.5f, 0f, 3f, 3f, 5f, PartPose.offset(5f, -2f, 1f));
-        PartDefinition jr = box(frame, "jet_r", -1.5f, -1.5f, 0f, 3f, 3f, 5f, PartPose.offset(-5f, -2f, 1f));
-        box(jl, "jet_flame_l", -1f, -1f, 5f, 2f, 2f, 2f, PartPose.ZERO);
-        box(jr, "jet_flame_r", -1f, -1f, 5f, 2f, 2f, 2f, PartPose.ZERO);
-        return LayerDefinition.create(mesh, 16, 16);
-    }
-
-    /** A rod with a head and an eye on top. */
-    private static LayerDefinition wandStandIn() {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition rod = box(mesh.getRoot(), "rod", -0.75f, -14f, -0.75f, 1.5f, 14f, 1.5f, PartPose.offset(0, 24, 0));
-        PartDefinition head = box(rod, "head", -2f, -18f, -2f, 4f, 4f, 4f, PartPose.ZERO);
-        box(head, "eye", -1f, -17f, -2.5f, 2f, 2f, 1f, PartPose.ZERO);
-        return LayerDefinition.create(mesh, 16, 16);
     }
 
     /** A small four-legged dragon (body, neck, head, jaw, wings, tail, legs; the teen also a saddle). */

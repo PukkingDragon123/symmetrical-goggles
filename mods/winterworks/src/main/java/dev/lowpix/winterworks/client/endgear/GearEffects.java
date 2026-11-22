@@ -131,19 +131,25 @@ public final class GearEffects {
             Vec3 right = look.cross(new Vec3(0, 1, 0));
             right = right.lengthSqr() < 1e-6 ? new Vec3(1, 0, 0) : right.normalize();
             Vec3 up = right.cross(look).normalize();
-            // the glider is out in front of the head (overhead in flight), its jets just behind its wings
-            Vec3 at = p.position().add(0, p.getBbHeight() * 0.5, 0).add(look.scale(self ? 1.1 : 1.0)).add(up.scale(0.45));
+            // the glider is held out past the head (the flying body lies along the look, feet at the position); its jets
+            // sit above the bar, a little apart
+            Vec3 at = self && mc.options.getCameraType().isFirstPerson()
+                    ? p.getEyePosition().add(look.scale(1.15)).add(up.scale(0.55))   // where the first-person view draws it
+                    : p.position().add(look.scale(2.0)).add(up.scale(0.6));
             Vec3 vel = p.getDeltaMovement();
             for (int side = -1; side <= 1; side += 2) {
                 Vec3 jet = at.add(right.scale(side * 0.42)).subtract(look.scale(0.25));
-                // the exhaust keeps most of the glider's speed, so it streams just behind the jets instead of whipping past
+                // the exhaust keeps the glider's speed, so it streams just behind the jets instead of whipping past
                 if (boost || (t(p) & 1) == 0) {
-                    Vec3 v = vel.scale(0.92).subtract(look.scale(boost ? 0.14 : 0.06))
+                    Vec3 v = vel.subtract(look.scale(boost ? 0.12 : 0.05))
                             .add((r.nextDouble() - 0.5) * 0.02, (r.nextDouble() - 0.5) * 0.02, (r.nextDouble() - 0.5) * 0.02);
-                    level.addParticle(boost ? ParticleTypes.FLAME : ParticleTypes.SMALL_FLAME, jet.x, jet.y, jet.z, v.x, v.y, v.z);
+                    level.addParticle(ParticleTypes.SMALL_FLAME, jet.x, jet.y, jet.z, v.x, v.y, v.z);
+                    if (boost && r.nextInt(3) == 0) {
+                        level.addParticle(ParticleTypes.FLAME, jet.x, jet.y, jet.z, v.x, v.y, v.z);
+                    }
                 }
                 if (r.nextInt(boost ? 2 : 6) == 0) {
-                    Vec3 v = vel.scale(0.85);
+                    Vec3 v = vel.scale(0.95);
                     level.addParticle(ParticleTypes.REVERSE_PORTAL, jet.x, jet.y, jet.z, v.x, v.y, v.z);
                 }
             }

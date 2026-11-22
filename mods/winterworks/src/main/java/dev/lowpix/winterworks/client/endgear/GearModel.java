@@ -81,6 +81,11 @@ public final class GearModel {
         return new Vector3f(min).add(max).mul(0.5f);
     }
 
+    /** The same point in Minecraft model space (blocks, Y down, front -Z), where the exports are authored. */
+    public static Vector3f toModelSpace(Vector3f lowpix) {
+        return new Vector3f(lowpix.x, 1.5f - lowpix.y, -lowpix.z);
+    }
+
     /** Centre of the parts whose name matches (cubes directly on those parts), or null if none. */
     @Nullable
     public Vector3f centerOf(Predicate<String> parts) {
@@ -124,13 +129,18 @@ public final class GearModel {
         pose.pushPose();
         pose.translate(0f, 1.5f, 0f);   // lowpix space -> Minecraft model space (Y down, ground at 24 px)
         pose.scale(1f, -1f, -1f);
+        drawModelSpace(pose, buffers, light, overlay, foil, tint);
+        pose.popPose();
+    }
+
+    /** Draws the model with the pose already in Minecraft model space (blocks; parts are in pixels, Y down, front -Z). */
+    public void drawModelSpace(PoseStack pose, MultiBufferSource buffers, int light, int overlay, boolean foil, int tint) {
         RenderType base = RenderType.entityCutoutNoCull(texture);
         VertexConsumer vc = foil ? ItemRenderer.getFoilBufferDirect(buffers, base, false, true) : buffers.getBuffer(base);
         model.renderToBuffer(pose, vc, light, overlay, tint);
         if (glow != null) {
             model.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(glow)), 0xF000F0, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         }
-        pose.popPose();
     }
 
     /** For logs and the screenshot harness. */
