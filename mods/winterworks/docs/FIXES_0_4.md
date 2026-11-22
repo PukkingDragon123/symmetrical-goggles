@@ -60,6 +60,11 @@ contract for the Java side.
 * **No trigger text** any more. Every curse instead plays a longer, stronger screen effect when it triggers, like
   Sloth's nod-off: its own colour, vignette, distortion and sound, a few seconds long.
 * Tooltips show just the curse name: no description lines.
+* **Soul fire looks like soul fire** (a fix): Wrath already sets victims alight with soul fire (double burn damage,
+  soul sparks), but they're drawn with vanilla's orange flames. Anything burning with soul fire (Wrath, Envy, the Soul
+  Bull's horns) must show **blue soul flames** on its body and, for the local player, on the first-person screen
+  overlay. The soul-burning state is synced to clients (e.g. entity data or a payload), and soul fire also lasts its
+  full time (8 s for Wrath).
 
 ## Torchflowers, pitcher plants, mosquitoes and sniffers (Amber Age)
 * **Torchflowers burn mosquitoes**: a mosquito that touches or flies within 1 block of a torchflower (planted, potted
