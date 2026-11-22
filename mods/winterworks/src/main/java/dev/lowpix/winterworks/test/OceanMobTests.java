@@ -200,8 +200,7 @@ public class OceanMobTests implements FabricGameTest {
                     f.grab(p);
                     h.assertTrue(p.getVehicle() == f && f.isHolding(), "the player should be held in her jaws");
                     h.assertTrue(p.getHealth() <= hp[0] - Anglerfish.HOLD_DAMAGE + 0.01f, "the grab bites (4)");
-                    Vec3 mouth = f.mouthPos();
-                    h.assertTrue(p.position().add(0, 0.6, 0).distanceTo(mouth) < 0.3, "held at the mouth locator");
+                    h.assertTrue(p.getEyePosition().distanceTo(f.holdPos()) < 0.3, "held in the jaws");
                 })
                 .thenExecuteAfter(21, () -> h.assertTrue(p.getHealth() <= hp[0] - 2 * Anglerfish.HOLD_DAMAGE + 0.01f,
                         "4 damage a second while held, health " + p.getHealth()))

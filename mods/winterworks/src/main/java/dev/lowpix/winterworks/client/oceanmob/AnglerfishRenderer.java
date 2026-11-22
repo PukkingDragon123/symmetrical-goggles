@@ -134,11 +134,14 @@ public class AnglerfishRenderer extends MobRenderer<Anglerfish, AnglerfishRender
             VertexConsumer buf = buffers.getBuffer(RenderType.eyes(glowTexture));
             float b = Math.min(brightness, 1f);
             root.render(pose, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, gray(b));
+            // the halo cards once more: a bloom that reads from far off in dark water
+            mask(HALOS::contains);
+            root.render(pose, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, gray(Math.min(1f, brightness * 0.9f)));
             if (brightness > 1f) {   // flaring: the bulb and halo again, additively
                 mask(n -> HALOS.contains(n) || n.startsWith("lure_bulb") || n.equals("lure_core"));
                 root.render(pose, buf, 0xF000F0, OverlayTexture.NO_OVERLAY, gray(Math.min(1f, brightness - 1f)));
-                unmask();
             }
+            unmask();
         }
 
         private static int gray(float v) {

@@ -96,7 +96,8 @@
     "client.RamHandMixin",
     "client.SoulBarGuiMixin",
     "harvester.client.SnifferSneezeModelMixin",
-    "harvester.client.SpriteSourcesAccessor"
+    "harvester.client.SpriteSourcesAccessor",
+    "oceanmob.client.GrabbedRiderPoseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

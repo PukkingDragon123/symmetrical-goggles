@@ -15,13 +15,13 @@ import net.minecraft.world.entity.animal.Turtle;
 
 /**
  * Every vanilla turtle, drawn with the lowpix `sea_turtle` (adults, 1.0) and `sea_turtle_baby` models (built at twice
- * hatchling size: drawn at 0.5, i.e. 0.5 / 0.3 over vanilla's 0.3 baby scale). In the water it glides: stroke rate follows
+ * hatchling size: drawn at 0.5; vanilla's 0.3 baby scale is only the hitbox's in this version). In the water it glides: stroke rate follows
  * its speed (strokes, then a glide with the flippers out), the body pitches with climbs and dives and banks into turns,
  * and it lifts its head at the surface for air. On land it walks, idles, basks on the sand (`bask`), and digs while it
  * lays its eggs (`dig`). The motion is smoothed per turtle on the client.
  */
 public class SeaTurtleRenderer extends MobRenderer<Turtle, SeaTurtleRenderer.Model> {
-    public static final float BABY_SCALE = 0.5f / 0.3f;
+    public static final float BABY_SCALE = 0.5f;
     private final Model adult, baby;
     private final Map<Turtle, Swim> swims = new WeakHashMap<>();
 

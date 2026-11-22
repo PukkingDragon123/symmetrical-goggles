@@ -65,7 +65,8 @@ import org.jetbrains.annotations.Nullable;
  * <ul>
  * <li><b>Males</b> (common, below y 20): tiny (0.4 blocks, the model drawn at 1/7), harmless, flee players, bucketable.</li>
  * <li><b>Females</b> (rare, below y -10): 3 x 2 blocks, 80 health. They hang in the dark with the lure flaring, lunge at a
- * swimming player and grab them in the jaws (the player rides the {@link #MOUTH} locator for {@link #HOLD_TICKS}, taking
+ * swimming player and grab them in the jaws (the player rides her, head held in the jaws at {@link #HOLD}, the mouth
+ * locator brought forward to the fangs, for {@link #HOLD_TICKS}, taking
  * {@link #HOLD_DAMAGE} a second; hitting her frees you), and swallow small mobs whole.</li>
  * </ul>
  * The lure really lights the water: a waterlogged vanilla light block kept in the water at the {@link #LURE} locator while a
@@ -79,6 +80,12 @@ public class Anglerfish extends WaterAnimal implements Bucketable {
     public static final EntityDimensions MALE_SIZE = EntityDimensions.scalable(0.4f, 0.35f).withEyeHeight(0.2f);
     /** Locators in model pixels at the female's size (lowpix: y up, +z forward, feet at y 0). */
     public static final Vec3 MOUTH = new Vec3(0, 10.6, 8), LURE = new Vec3(0, 28.4, 17);
+    /**
+     * Where a held player's eyes are: the mouth locator's height, brought forward between the fangs (a player is far taller
+     * than her gape, so the head is held in the jaws and the body hangs out under the chin; from inside, the player looks
+     * out between her teeth at the lure).
+     */
+    public static final Vec3 HOLD = new Vec3(0, 10.6, 15);
     /** The body pitches about this height (model pixels). */
     public static final double PIVOT_Y = 12.0;
     /** Females live below this, males below {@link #MALE_DEPTH}. */
@@ -361,10 +368,15 @@ public class Anglerfish extends WaterAnimal implements Bucketable {
         return modelPoint(MOUTH, 1f);
     }
 
-    /** Where a held player's riding point is (the mouth locator), relative to this fish's position. */
+    /** Where a held player's eyes are, in the world. */
+    public Vec3 holdPos() {
+        return modelPoint(HOLD, 1f);
+    }
+
+    /** A held player rides with their eyes at {@link #HOLD}. */
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dims, float scale) {
-        return mouthPos().subtract(position());
+        return holdPos().subtract(position()).subtract(0, passenger.getEyeHeight(), 0).add(passenger.getVehicleAttachmentPoint(this));
     }
 
     @Override
@@ -487,6 +499,13 @@ public class Anglerfish extends WaterAnimal implements Bucketable {
         level().broadcastEntityEvent(this, EV_BITE);
         playSound(OceanSounds.ANGLERFISH_BITE, 1.6f, 0.9f + random.nextFloat() * 0.15f);
         p.hurt(damageSources().mobAttack(this), HOLD_DAMAGE);
+    }
+
+    /** Keeps the held player for `ticks` more (screenshots, tests). */
+    public void holdFor(int ticks) {
+        if (isHolding()) {
+            heldTicks = ticks;
+        }
     }
 
     /** Lets go of the held player and spits them out forward; `struggled`: they fought free (a shorter wait to hunt again). */

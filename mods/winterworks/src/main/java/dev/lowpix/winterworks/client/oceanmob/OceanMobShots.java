@@ -9,6 +9,7 @@ import dev.lowpix.winterworks.registry.OceanEntities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -17,17 +18,20 @@ import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.TropicalFish;
 import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
@@ -42,16 +46,20 @@ import net.minecraft.world.level.block.TurtleEggBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Dev-only screenshots of the Tides & Treasures creatures: with -Dwinterworks.oceanmobshots=all (e.g. in JAVA_TOOL_OPTIONS
  * for ./gradlew runClient under xvfb-run) the client makes a flat world, builds the scenes and saves
  * screenshots/winterworks_oceanmob_*.png, then quits: a female anglerfish's lure lighting a dark, roofed tank (no night
- * vision), a male beside it, the female grabbing the player, lionfish on a coral reef (one sheared), riding a nautilus
- * (swimming and dashing), and the new turtles swimming, basking on a beach and hatching. A comma list instead of all
- * (angler,grab,lionfish,nautilus,turtles) runs only those scenes. Views come from a client-side armour stand set as the
- * camera, or the player's own third-person camera where the player must be in the picture.
+ * vision), a male, the female grabbing the player, lionfish on a coral reef (one flaring, one sheared), riding a nautilus
+ * (gliding, from the front, dashing), and the new turtles basking on a beach, a nest hatching, and turtles swimming. A
+ * comma list instead of all (angler,grab,lionfish,nautilus,turtles) runs only those scenes.
+ * <p>
+ * The camera is the player itself, flying in creative (so the underwater fog is a player's, with a short look of fresh
+ * eyes: the player leaves the water between shots), or the player's own third-person camera where the player is in the
+ * picture (held in the jaws, riding). Software rendering is slow, so every shot waits well over a frame.
  */
 final class OceanMobShots {
     private static final String MODE = System.getProperty("winterworks.oceanmobshots", "");
@@ -61,7 +69,7 @@ final class OceanMobShots {
     private static boolean created;
     private static int ticks, step, waitStart = -1;
     private static volatile int femaleId = -1, maleId = -1, mountId = -1;
-    private static ArmorStand camera;
+    private static final int[] FISH = new int[4], TURTLES = new int[8];
 
     private record Step(int tick, Runnable job, BooleanSupplier until, int timeout) {}
 
@@ -83,6 +91,7 @@ final class OceanMobShots {
                 cmd(c);
             }
             Minecraft mc = Minecraft.getInstance();
+            mc.getWindow().setWindowed(1280, 720);
             mc.options.renderDistance().set(8);
             mc.options.hideGui = true;
             mc.options.pauseOnLostFocus = false;
@@ -108,80 +117,83 @@ final class OceanMobShots {
 
     // --------------------------------------------------------------------------------------- scenes
 
-    private static final int TANK_X = 0, TANK_Z = 80;
+    private static final int TANK_X = 0, TANK_Z = 80, TANK_R = 22;
 
-    /** A roofed deepslate tank full of dark water: the female's lure lights it (the player waits on the roof, no night vision). */
+    /** A roofed deepslate tank full of dark water: the female's lure lights it (no night vision). */
     private static int angler(int t) {
         int x0 = TANK_X, z0 = TANK_Z;
         at(t, () -> tp(x0 + 0.5, Y + 20, z0 + 0.5));
         at(t += 40, () -> {
             cmd("time set 18000");
             server(level -> {
-                tank(level, x0, z0, 13, 15);
-                Anglerfish f = angler(level, x0 + 0.5, Y + 5.2, z0 + 3.5, 160f, true);
+                tank(level, x0, z0, TANK_R, 14);
+                Anglerfish f = angler(level, x0 + 0.5, Y + 2.4, z0 + 2.5, 150f, true);
                 f.setNoAi(true);
                 femaleId = f.getId();
-                Anglerfish m = angler(level, x0 - 4.5, Y + 9.0, z0 - 1.5, 220f, false);
+                Anglerfish m = angler(level, x0 - 8.5, Y + 5.0, z0 - 5.5, 230f, false);
                 m.setNoAi(true);
                 maleId = m.getId();
-                player(level).teleportTo(x0 + 0.5, Y + 17, z0 + 0.5);
             });
         });
-        at(t += 60, () -> cam(x0 - 2.0, Y + 6.8, z0 - 7.5, x0 + 0.5, Y + 6.2, z0 + 2.5));
-        at(t += 40, () -> shot("angler_lure"));
-        at(t += 2, () -> cam(x0 + 8.5, Y + 5.0, z0 + 1.0, x0 + 0.5, Y + 4.5, z0 + 3.0));
-        at(t += 30, () -> shot("angler_lure_side"));
-        at(t += 2, () -> {
-            Entity m = Minecraft.getInstance().level.getEntity(maleId);
-            if (m != null) {
-                cam(m.getX() - 1.1, m.getY() + 0.35, m.getZ() - 0.9, m.getX(), m.getY() + 0.15, m.getZ());
+        // three quarters from the front, low: her lure and its pool of light on the seafloor, darkness beyond
+        t = underwaterShot(t + 40, "angler_lure", () -> look(x0 - 4.2, Y + 3.3, z0 - 2.0, x0 + 0.3, Y + 2.4, z0 + 2.3));
+        t = underwaterShot(t, "angler_lure_side", () -> look(x0 + 5.5, Y + 3.0, z0 - 0.5, x0 + 0.2, Y + 2.7, z0 + 2.5));
+        t = underwaterShot(t, "angler_lure_far", () -> look(x0 - 5.0, Y + 5.5, z0 + 9.5, x0 - 0.2, Y + 2.0, z0 + 2.4));
+        // the tiny male in front, the giant female's lure glowing behind him
+        t = underwaterShot(t, "angler_male", () -> {
+            var lvl = Minecraft.getInstance().level;
+            if (lvl.getEntity(maleId) instanceof Anglerfish m && lvl.getEntity(femaleId) instanceof Anglerfish f) {
+                Vec3 c = m.position().add(0, 0.18, 0), away = c.subtract(f.lurePos()).normalize();
+                Vec3 side = new Vec3(-away.z, 0, away.x).normalize();
+                Vec3 eye = c.add(away.scale(1.1)).add(side.scale(0.35)).add(0, 0.12, 0);
+                look(eye.x, eye.y, eye.z, c.x, c.y, c.z);
             }
         });
-        at(t += 30, () -> shot("angler_male"));
-        // with the female hunting (lure flaring), from the front
-        at(t += 2, () -> server(level -> {
-            if (level.getEntity(femaleId) instanceof Anglerfish f) {
-                f.setNoAi(false);
-            }
-        }));
-        return t + 5;
+        return t;
     }
 
-    /** The female lures, lunges and grabs the player (in survival, swimming in front of her), seen in third person. */
+    /** The female lures, lunges and grabs the player (survival, swimming in front of her), seen in third person and from inside her jaws. */
     private static int grab(int t) {
         int x0 = TANK_X, z0 = TANK_Z;
         if (!on("angler")) {
             at(t, () -> tp(x0 + 0.5, Y + 20, z0 + 0.5));
             at(t += 40, () -> {
                 cmd("time set 18000");
-                server(level -> {
-                    tank(level, x0, z0, 13, 15);
-                    Anglerfish f = angler(level, x0 + 0.5, Y + 5.2, z0 + 3.5, 160f, true);
-                    femaleId = f.getId();
-                });
+                server(level -> tank(level, x0, z0, TANK_R, 14));
             });
             t += 40;
         }
         at(t, () -> server(level -> {
             Anglerfish.eager = true;
-            if (level.getEntity(maleId) instanceof Anglerfish m) {
-                m.discard();
+            for (Anglerfish a : level.getEntitiesOfClass(Anglerfish.class, new AABB(x0 - 30, Y - 5, z0 - 30, x0 + 30, Y + 20, z0 + 30))) {
+                a.discard();
             }
-            if (level.getEntity(femaleId) instanceof Anglerfish f) {
-                f.setNoAi(false);
-                f.moveTo(x0 + 0.5, Y + 5.2, z0 + 3.5, 180f, 0f);
-            }
+            Anglerfish f = angler(level, x0 + 0.5, Y + 3.0, z0 + 3.5, 180f, true);
+            femaleId = f.getId();
             ServerPlayer p = player(level);
             p.setGameMode(GameType.SURVIVAL);
             p.setHealth(p.getMaxHealth());
-            p.teleportTo(x0 + 0.5, Y + 5.5, z0 - 3.0);
+            p.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 2400, 4, false, false));
+            p.connection.teleport(x0 + 0.5, Y + 3.5, z0 - 3.0, 0f, 0f);
         }));
         t += 2;
-        when(t, () -> holding(femaleId), 400, () -> {});
-        at(t += 8, () -> grabView(femaleId, 95f, 8f));
-        at(t += 4, () -> shot("angler_grab"));
-        at(t += 3, () -> grabView(femaleId, 140f, 18f));
-        at(t += 4, () -> shot("angler_grab_front"));
+        when(t, () -> holding(femaleId), 400, () -> server(level -> {
+            if (level.getEntity(femaleId) instanceof Anglerfish f) {
+                f.holdFor(600);   // long enough for slow software frames
+            }
+        }));
+        at(t += 10, () -> grabView(femaleId, new Vec3(4.0, 0.5, 0.8)));
+        at(t += 40, () -> shot("angler_grab"));
+        at(t += 2, () -> grabView(femaleId, new Vec3(-2.2, 0.9, 3.2)));
+        at(t += 40, () -> shot("angler_grab_front"));
+        at(t += 2, () -> {   // the held player's own view: up between her upper fangs at the lure
+            Minecraft mc = Minecraft.getInstance();
+            mc.options.setCameraType(CameraType.FIRST_PERSON);
+            if (mc.level.getEntity(femaleId) instanceof Anglerfish f) {
+                setLook(f.yBodyRot + 12f, -24f);
+            }
+        });
+        at(t += 40, () -> shot("angler_grab_inside"));
         at(t += 2, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.setCameraType(CameraType.FIRST_PERSON);
@@ -193,87 +205,119 @@ final class OceanMobShots {
                     f.release(true);
                     f.discard();
                 }
+                p.removeAllEffects();
                 p.setGameMode(GameType.CREATIVE);
                 p.setHealth(p.getMaxHealth());
-                p.teleportTo(x0 + 0.5, Y + 20, z0 + 0.5);
+                p.connection.teleport(x0 + 0.5, Y + 20, z0 + 0.5, 0f, 0f);
             });
         });
         return t + 10;
     }
 
-    /** A coral reef in warm water (fill biome warm ocean), lionfish hunting over it, one of them sheared. */
+    /** A coral reef in warm water (fill biome warm ocean), lionfish hovering over it (one flaring, one sheared), tropical fish. */
     private static int reef(int t) {
-        int x0 = 120, z0 = 80;
-        at(t, () -> {
-            cmd("time set 6000");
-            tp(x0 + 0.5, Y + 16, z0 + 0.5);
-        });
-        at(t += 40, () -> {
-            cmd(String.format("fillbiome %d %d %d %d %d %d minecraft:warm_ocean", x0 - 16, Y - 4, z0 - 16, x0 + 16, Y + 16, z0 + 16));
-            server(level -> {
-                pool(level, x0, z0, 15, 11, Blocks.SAND.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState());
-                corals(level, x0, z0, 13, level.random);
-                Lionfish a = lionfish(level, x0 + 0.5, Y + 3.2, z0 + 2.0, 200f);
-                Lionfish b = lionfish(level, x0 - 2.2, Y + 4.4, z0 + 4.0, 140f);
-                Lionfish c = lionfish(level, x0 + 3.0, Y + 2.6, z0 + 5.5, 240f);
-                c.setRegrowTicks(Lionfish.REGROW_TICKS);   // freshly sheared: stubby spines
-                for (int i = 0; i < 6; i++) {
-                    TropicalFish f = EntityType.TROPICAL_FISH.create(level);
-                    f.moveTo(x0 - 4 + level.random.nextInt(9), Y + 3 + level.random.nextInt(4), z0 + 3 + level.random.nextInt(6), 0, 0);
-                    level.addFreshEntity(f);
-                }
-                player(level).teleportTo(x0 + 0.5, Y + 13, z0 - 14.5);
-            });
-        });
-        at(t += 60, () -> cam(x0 - 1.0, Y + 4.4, z0 - 3.2, x0 + 0.5, Y + 3.5, z0 + 3.0));
-        at(t += 30, () -> shot("lionfish_reef"));
-        at(t += 2, () -> cam(x0 + 3.5, Y + 3.4, z0 + 2.6, x0 + 3.0, Y + 2.8, z0 + 5.5));
-        at(t += 20, () -> shot("lionfish_sheared"));
-        return t + 5;
-    }
-
-    /** A deep pool: the player rides a tamed, saddled nautilus, swimming where they look, then dashes. */
-    private static int nautilus(int t) {
-        int x0 = 240, z0 = 80;
+        int x0 = 140, z0 = 80;
         at(t, () -> {
             cmd("time set 6000");
             tp(x0 + 0.5, Y + 20, z0 + 0.5);
         });
         at(t += 40, () -> {
-            cmd(String.format("fillbiome %d %d %d %d %d %d minecraft:deep_ocean", x0 - 26, Y - 4, z0 - 26, x0 + 26, Y + 20, z0 + 26));
+            cmd(String.format(Locale.ROOT, "fillbiome %d %d %d %d %d %d minecraft:warm_ocean", x0 - 30, Y - 4, z0 - 30, x0 + 30, Y + 16, z0 + 30));
             server(level -> {
-                pool(level, x0, z0, 24, 15, Blocks.GRAVEL.defaultBlockState(), Blocks.PRISMARINE.defaultBlockState());
+                pool(level, x0, z0, 28, 11, Blocks.SAND.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState());
+                corals(level, x0, z0, 26, level.random);
+                float[][] at = {{0.5f, 3.4f, 2.0f, 200f}, {-2.5f, 4.6f, 4.5f, 150f}, {3.2f, 2.7f, 5.0f, 240f}, {-0.8f, 2.2f, 6.5f, 175f}};
+                for (int i = 0; i < at.length; i++) {
+                    Lionfish l = lionfish(level, x0 + at[i][0], Y + at[i][1], z0 + at[i][2], at[i][3]);
+                    l.setNoAi(true);
+                    FISH[i] = l.getId();
+                }
+                if (level.getEntity(FISH[2]) instanceof Lionfish sheared) {
+                    sheared.setRegrowTicks(Lionfish.REGROW_TICKS);   // freshly sheared: stubby spines
+                }
+                for (int i = 0; i < 8; i++) {
+                    TropicalFish f = EntityType.TROPICAL_FISH.create(level);
+                    f.moveTo(x0 - 5 + level.random.nextInt(11), Y + 3 + level.random.nextInt(4), z0 + 3 + level.random.nextInt(7), 0, 0);
+                    level.addFreshEntity(f);
+                }
+            });
+        });
+        t = underwaterShot(t + 30, "lionfish_reef", () -> look(x0 - 1.6, Y + 4.4, z0 - 2.3, x0 + 0.2, Y + 3.4, z0 + 3.6));
+        t = underwaterShot(t, "lionfish_flare", () -> trackLook(FISH[0], 1.6, 0.9, 0.35), () -> server(level -> {
+            if (level.getEntity(FISH[0]) instanceof Lionfish l) {
+                l.flare();   // spines out
+            }
+        }));
+        t = underwaterShot(t, "lionfish_sheared", () -> trackLook(FISH[2], 1.3, -1.0, 0.25));
+        return t;
+    }
+
+    /** A deep pool with a kelp forest: the player rides a tamed, saddled nautilus, swims, glides and dashes. */
+    private static int nautilus(int t) {
+        int x0 = 260, z0 = 80;
+        at(t, () -> {
+            cmd("time set 6000");
+            tp(x0 + 0.5, Y + 24, z0 + 0.5);
+        });
+        at(t += 40, () -> {
+            cmd(String.format(Locale.ROOT, "fillbiome %d %d %d %d %d %d minecraft:deep_ocean", x0 - 38, Y - 4, z0 - 38, x0 + 38, Y + 20, z0 + 38));
+            server(level -> {
+                pool(level, x0, z0, 36, 16, Blocks.GRAVEL.defaultBlockState(), Blocks.DARK_PRISMARINE.defaultBlockState());
                 RandomSource r = level.random;
-                for (int i = 0; i < 70; i++) {   // kelp forest
-                    int x = x0 - 22 + r.nextInt(45), z = z0 - 22 + r.nextInt(45);
-                    int h = 3 + r.nextInt(9);
-                    for (int y = 0; y < h; y++) {
-                        level.setBlock(new BlockPos(x, Y + y, z), y == h - 1 ? Blocks.KELP.defaultBlockState() : Blocks.KELP_PLANT.defaultBlockState(),
+                for (int i = 0; i < 160; i++) {   // kelp forest
+                    int x = x0 - 34 + r.nextInt(69), z = z0 - 34 + r.nextInt(69);
+                    if (Math.abs(x - x0) < 3) {
+                        continue;   // a clear lane down the middle
+                    }
+                    int h = 3 + r.nextInt(11);
+                    for (int y = 1; y <= h; y++) {
+                        level.setBlock(new BlockPos(x, Y + y, z), y == h ? Blocks.KELP.defaultBlockState() : Blocks.KELP_PLANT.defaultBlockState(),
                                 Block.UPDATE_CLIENTS);
                     }
                 }
+                for (int i = 0; i < 120; i++) {
+                    BlockPos p = new BlockPos(x0 - 34 + r.nextInt(69), Y + 1, z0 - 34 + r.nextInt(69));
+                    if (level.getBlockState(p).is(Blocks.WATER)) {
+                        level.setBlock(p, Blocks.SEAGRASS.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    }
+                }
                 Nautilus n = OceanEntities.NAUTILUS.create(level);
-                n.moveTo(x0 + 0.5, Y + 6, z0 - 14.5, 0f, 0f);
+                n.moveTo(x0 + 0.5, Y + 10, z0 - 28.5, 0f, 0f);
                 n.tame(player(level));
                 n.equipSaddle(new ItemStack(Items.SADDLE), null);
                 level.addFreshEntity(n);
                 mountId = n.getId();
                 ServerPlayer p = player(level);
                 p.setGameMode(GameType.SURVIVAL);
-                p.teleportTo(x0 + 0.5, Y + 8, z0 - 14.5);
+                p.connection.teleport(x0 + 0.5, Y + 12, z0 - 28.5, 0f, 0f);
                 p.startRiding(n, true);
             });
         });
-        at(t += 30, () -> riderView(0f, 8f, CameraType.THIRD_PERSON_BACK));
+        at(t += 30, () -> riderView(0f, 10f, CameraType.THIRD_PERSON_BACK));
         at(t += 2, () -> Minecraft.getInstance().options.keyUp.setDown(true));
+        // swim on, then let it glide and look round at it (it holds its heading without input)
+        at(t += 30, () -> {
+            Minecraft.getInstance().options.keyUp.setDown(false);
+            setLook(-125f, 18f);
+        });
         at(t += 30, () -> shot("nautilus_ride"));
-        at(t += 2, () -> riderView(0f, -6f, CameraType.THIRD_PERSON_FRONT));
-        at(t += 12, () -> shot("nautilus_ride_front"));
-        at(t += 2, () -> Minecraft.getInstance().options.keyJump.setDown(true));
-        at(t += 2, () -> Minecraft.getInstance().options.keyJump.setDown(false));
-        at(t += 5, () -> shot("nautilus_dash"));
-        at(t += 2, () -> riderView(-90f, 10f, CameraType.THIRD_PERSON_BACK));
-        at(t += 25, () -> shot("nautilus_turn"));
+        at(t += 2, () -> setLook(150f, 22f));
+        at(t += 30, () -> shot("nautilus_ride_back"));
+        at(t += 2, () -> riderView(10f, -18f, CameraType.THIRD_PERSON_FRONT));
+        at(t += 30, () -> shot("nautilus_ride_front"));
+        // swim on, glide, look to the side, then dash (the jet goes the way the shell faces)
+        at(t += 2, () -> {
+            riderView(0f, 0f, CameraType.THIRD_PERSON_BACK);
+            Minecraft.getInstance().options.keyUp.setDown(true);
+        });
+        at(t += 25, () -> {
+            Minecraft.getInstance().options.keyUp.setDown(false);
+            setLook(-75f, 14f);
+        });
+        at(t += 30, () -> Minecraft.getInstance().options.keyJump.setDown(true));
+        at(t += 3, () -> Minecraft.getInstance().options.keyJump.setDown(false));
+        at(t += 3, () -> shot("nautilus_dash"));
+        at(t += 30, () -> shot("nautilus_dash_after"));
         at(t += 2, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.keyUp.setDown(false);
@@ -284,53 +328,57 @@ final class OceanMobShots {
                 p.stopRiding();
                 p.setGameMode(GameType.CREATIVE);
                 p.removeAllEffects();
-                p.teleportTo(x0 + 0.5, Y + 20, z0 + 0.5);
+                p.connection.teleport(x0 + 0.5, Y + 24, z0 + 0.5, 0f, 0f);
             });
         });
         return t + 10;
     }
 
-    /** A beach into warm water: turtles swimming, basking on the sand, and a nest hatching. */
+    /** A beach into warm water: turtles basking on the sand, a nest hatching, and turtles swimming. */
     private static int turtles(int t) {
-        int x0 = 360, z0 = 80;
+        int x0 = 640, z0 = 80;
         at(t, () -> {
             cmd("time set 6000");
             tp(x0 + 0.5, Y + 16, z0 + 0.5);
         });
         at(t += 40, () -> {
-            cmd(String.format("fillbiome %d %d %d %d %d %d minecraft:beach", x0 - 20, Y - 4, z0 - 20, x0 - 1, Y + 16, z0 + 20));
-            cmd(String.format("fillbiome %d %d %d %d %d %d minecraft:warm_ocean", x0, Y - 4, z0 - 20, x0 + 30, Y + 16, z0 + 20));
+            cmd(String.format(Locale.ROOT, "fillbiome %d %d %d %d %d %d minecraft:beach", x0 - 30, Y - 8, z0 - 30, x0 - 1, Y + 16, z0 + 30));
+            cmd(String.format(Locale.ROOT, "fillbiome %d %d %d %d %d %d minecraft:warm_ocean", x0, Y - 8, z0 - 30, x0 + 40, Y + 16, z0 + 30));
             server(level -> {
                 beach(level, x0, z0);
                 TurtleGoals.eagerBask = true;
                 for (int i = 0; i < 3; i++) {
-                    Turtle tt = turtle(level, x0 - 8.5 - i * 3.2, Y + 0.0, z0 - 2.5 + i * 2.6, 60f + i * 40f, false);
+                    Turtle tt = turtle(level, x0 - 7.5 - i * 3.0, Y, z0 - 2.5 + i * 2.4, 70f + i * 35f, false);
                     tt.setHomePos(tt.blockPosition());
+                    TURTLES[i] = tt.getId();
                 }
                 for (int i = 0; i < 4; i++) {
-                    turtle(level, x0 + 9.5 + i * 3.0, Y - 4.0 + (i % 2), z0 - 3.5 + i * 2.2, 250f + i * 25f, false);
+                    Turtle tt = turtle(level, x0 + 10.5 + i * 3.0, Y - 4.0 + (i % 2), z0 - 3.5 + i * 2.2, 250f + i * 25f, false);
+                    TURTLES[3 + i] = tt.getId();
                 }
                 // a nest hatching: cracked eggs, and hatchlings scrambling for the sea
                 for (int i = 0; i < 3; i++) {
-                    level.setBlock(new BlockPos(x0 - 14 + i, Y, z0 + 8), Blocks.TURTLE_EGG.defaultBlockState()
+                    level.setBlock(new BlockPos(x0 - 13 + i, Y, z0 + 8), Blocks.TURTLE_EGG.defaultBlockState()
                             .setValue(TurtleEggBlock.EGGS, 4 - i).setValue(TurtleEggBlock.HATCH, 2), Block.UPDATE_CLIENTS);
                 }
                 for (int i = 0; i < 5; i++) {
-                    Turtle b = turtle(level, x0 - 12.0 + i * 0.9, Y, z0 + 6.6 - (i % 2) * 0.8, 260f + i * 9f, true);
+                    Turtle b = turtle(level, x0 - 12.4 + i * 0.7, Y, z0 + 6.9 - (i % 2) * 0.6, 265f + i * 8f, true);
                     b.setNoAi(i % 2 == 0);
                 }
-                player(level).teleportTo(x0 - 4.5, Y + 12, z0 - 16.5);
             });
         });
-        at(t += 80, () -> cam(x0 - 3.5, Y + 2.2, z0 - 9.0, x0 - 11.5, Y + 0.2, z0 + 0.5));
-        at(t += 30, () -> shot("turtles_basking"));
-        at(t += 2, () -> cam(x0 - 9.5, Y + 1.3, z0 + 4.5, x0 - 12.5, Y + 0.1, z0 + 7.6));
-        at(t += 20, () -> shot("turtles_hatching"));
-        at(t += 2, () -> cam(x0 + 6.5, Y - 3.0, z0 - 7.0, x0 + 13.5, Y - 3.5, z0 + 0.5));
-        at(t += 40, () -> shot("turtles_swimming"));
-        at(t += 60, () -> cam(x0 + 6.0, Y - 2.0, z0 + 8.0, x0 + 13.5, Y - 3.5, z0 + 0.5));
-        at(t += 2, () -> shot("turtles_swimming_2"));
-        at(t += 2, () -> server(level -> TurtleGoals.eagerBask = false));
+        at(t += 70, () -> {
+            Entity b = Minecraft.getInstance().level.getEntity(TURTLES[0]);
+            if (b != null) {
+                look(b.getX() + 2.4, b.getY() + 2.6, b.getZ() - 2.4, b.getX() - 1.2, b.getY() - 0.4, b.getZ() + 1.0);
+            }
+        });
+        at(t += 40, () -> shot("turtles_basking"));
+        at(t += 2, () -> look(x0 - 10.2, Y + 1.9, z0 + 4.4, x0 - 11.9, Y - 0.2, z0 + 7.4));
+        at(t += 40, () -> shot("turtles_hatching"));
+        t = underwaterShot(t + 2, "turtles_swimming", () -> trackLook(TURTLES[3], 2.4, 2.4, 0.5));
+        t = underwaterShot(t + 20, "turtles_swimming_2", () -> trackLook(TURTLES[5], 1.4, -3.0, 0.2));
+        at(t, () -> server(level -> TurtleGoals.eagerBask = false));
         return t + 5;
     }
 
@@ -355,8 +403,11 @@ final class OceanMobShots {
             }
             level.setBlock(p, s, Block.UPDATE_CLIENTS);
         }
-        for (int i = 0; i < 9; i++) {   // rocks
+        for (int i = 0; i < 26; i++) {   // rocks
             int x = x0 - r + 2 + rnd.nextInt(2 * r - 3), z = z0 - r + 2 + rnd.nextInt(2 * r - 3);
+            if (Math.abs(x - x0) < 5 && Math.abs(z - z0) < 6) {
+                continue;
+            }
             int hh = 1 + rnd.nextInt(3);
             for (int y = 1; y <= hh; y++) {
                 level.setBlock(new BlockPos(x, Y + y, z), (y == hh ? Blocks.TUFF : Blocks.DEEPSLATE).defaultBlockState(), Block.UPDATE_CLIENTS);
@@ -393,25 +444,28 @@ final class OceanMobShots {
                 Blocks.BRAIN_CORAL_FAN, Blocks.TUBE_CORAL_FAN, Blocks.FIRE_CORAL_FAN, Blocks.HORN_CORAL_FAN, Blocks.BUBBLE_CORAL_FAN};
         Block[] wallFans = {Blocks.BRAIN_CORAL_WALL_FAN, Blocks.TUBE_CORAL_WALL_FAN, Blocks.FIRE_CORAL_WALL_FAN, Blocks.HORN_CORAL_WALL_FAN,
                 Blocks.BUBBLE_CORAL_WALL_FAN};
-        for (int i = 0; i < 42; i++) {   // coral heads
+        for (int i = 0; i < 150; i++) {   // coral heads, clustered
             int x = x0 - r + rnd.nextInt(2 * r + 1), z = z0 - r + rnd.nextInt(2 * r + 1);
+            if (Math.abs(x - x0) < 2 && z > z0 - 4 && z < z0 + 2) {
+                continue;   // room for the camera
+            }
             Block b = blocks[rnd.nextInt(blocks.length)];
-            int h = 1 + rnd.nextInt(3);
+            int h = 1 + rnd.nextInt(4);
             for (int y = 1; y <= h; y++) {
                 level.setBlock(new BlockPos(x, Y + y, z), b.defaultBlockState(), Block.UPDATE_CLIENTS);
                 if (y == h && rnd.nextInt(3) > 0) {
                     level.setBlock(new BlockPos(x, Y + y + 1, z), plants[rnd.nextInt(plants.length)].defaultBlockState(), Block.UPDATE_CLIENTS);
                 }
-                for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+                for (Direction d : Direction.Plane.HORIZONTAL) {
                     BlockPos side = new BlockPos(x, Y + y, z).relative(d);
-                    if (rnd.nextInt(5) == 0 && level.getBlockState(side).is(Blocks.WATER)) {
+                    if (rnd.nextInt(4) == 0 && level.getBlockState(side).is(Blocks.WATER)) {
                         level.setBlock(side, wallFans[rnd.nextInt(wallFans.length)].defaultBlockState().setValue(BaseCoralWallFanBlock.FACING, d),
                                 Block.UPDATE_CLIENTS);
                     }
                 }
             }
         }
-        for (int i = 0; i < 90; i++) {   // seagrass, corals and sea pickles on the sand
+        for (int i = 0; i < 500; i++) {   // seagrass, corals and sea pickles on the sand
             int x = x0 - r + rnd.nextInt(2 * r + 1), z = z0 - r + rnd.nextInt(2 * r + 1);
             BlockPos p = new BlockPos(x, Y + 1, z);
             if (!level.getBlockState(p).is(Blocks.WATER)) {
@@ -424,13 +478,13 @@ final class OceanMobShots {
         }
     }
 
-    /** Sand from x0-20 to x0, sloping down under warm water out to x0+30 (walled), the seafloor scattered with seagrass. */
+    /** Sand from x0-30 to x0, sloping down under warm water out to x0+40 (walled), the seafloor scattered with seagrass. */
     private static void beach(ServerLevel level, int x0, int z0) {
         RandomSource rnd = level.random;
-        for (BlockPos p : BlockPos.betweenClosed(x0 - 20, Y - 8, z0 - 20, x0 + 31, Y + 6, z0 + 20)) {
+        for (BlockPos p : BlockPos.betweenClosed(x0 - 30, Y - 10, z0 - 30, x0 + 41, Y + 6, z0 + 30)) {
             int dx = p.getX() - x0;
-            int ground = dx < 0 ? Y - 1 : Y - 1 - Math.min(7, 1 + dx / 2);   // the seabed slopes away
-            boolean wall = p.getX() == x0 + 31 || p.getZ() == z0 - 20 || p.getZ() == z0 + 20;
+            int ground = dx < 0 ? Y - 1 : Y - 1 - Math.min(8, 1 + dx / 2);   // the seabed slopes away
+            boolean wall = p.getX() == x0 + 41 || p.getZ() == z0 - 30 || p.getZ() == z0 + 30;
             BlockState s;
             if (p.getY() <= ground) {
                 s = p.getY() < ground - 2 ? Blocks.SANDSTONE.defaultBlockState() : Blocks.SAND.defaultBlockState();
@@ -441,18 +495,14 @@ final class OceanMobShots {
             }
             level.setBlock(p, s, Block.UPDATE_CLIENTS);
         }
-        for (int i = 0; i < 60; i++) {
-            int x = x0 + 2 + rnd.nextInt(28), z = z0 - 18 + rnd.nextInt(37);
-            int ground = Y - 1 - Math.min(7, 1 + (x - x0) / 2);
+        for (int i = 0; i < 220; i++) {
+            int x = x0 + 2 + rnd.nextInt(38), z = z0 - 28 + rnd.nextInt(57);
+            int ground = Y - 1 - Math.min(8, 1 + (x - x0) / 2);
             BlockPos p = new BlockPos(x, ground + 1, z);
             if (level.getBlockState(p).is(Blocks.WATER) && level.getBlockState(p.above()).is(Blocks.WATER)) {
-                level.setBlock(p, (rnd.nextInt(4) == 0 ? Blocks.TUBE_CORAL : Blocks.SEAGRASS).defaultBlockState(), Block.UPDATE_CLIENTS);
-            }
-        }
-        for (int i = 0; i < 8; i++) {   // a little dune grass
-            BlockPos p = new BlockPos(x0 - 19 + rnd.nextInt(12), Y, z0 - 18 + rnd.nextInt(36));
-            if (level.getBlockState(p).isAir()) {
-                level.setBlock(p, Blocks.DEAD_BUSH.defaultBlockState(), Block.UPDATE_CLIENTS);
+                int k = rnd.nextInt(8);
+                level.setBlock(p, (k == 0 ? Blocks.TUBE_CORAL : k == 1 ? Blocks.BRAIN_CORAL_BLOCK : Blocks.SEAGRASS).defaultBlockState(),
+                        Block.UPDATE_CLIENTS);
             }
         }
     }
@@ -493,30 +543,76 @@ final class OceanMobShots {
         return tt;
     }
 
-    // --------------------------------------------------------------------------------------- cameras, plumbing
+    // --------------------------------------------------------------------------------------- cameras
 
-    /** Puts the camera (a client-side armour stand) at the given point, looking at the target. */
-    private static void cam(double x, double y, double z, double tx, double ty, double tz) {
-        Minecraft mc = Minecraft.getInstance();
-        if (camera == null || camera.level() != mc.level) {
-            camera = new ArmorStand(EntityType.ARMOR_STAND, mc.level);
-            camera.setInvisible(true);
+    /**
+     * An underwater shot with fresh eyes: the player leaves the water (so its underwater vision resets), then from `t+60`
+     * waits in place at the view `place` sets for 50 ticks (a newly submerged player's murky look) and shoots.
+     */
+    private static int underwaterShot(int t, String name, Runnable place) {
+        return underwaterShot(t, name, place, null);
+    }
+
+    /** As above, with a `cue` (a clip to catch) 8 ticks before the shot. */
+    private static int underwaterShot(int t, String name, Runnable place, Runnable cue) {
+        at(t, () -> server(level -> {
+            ServerPlayer p = player(level);
+            p.connection.teleport(p.getX(), Y + 40, p.getZ(), p.getYRot(), p.getXRot());
+        }));
+        at(t += 60, place);
+        at(t += 15, place);   // re-aimed: the subject may swim
+        at(t += 15, place);
+        if (cue != null) {
+            at(t += 12, cue);
+            at(t += 8, () -> shot(name));
+        } else {
+            at(t += 20, () -> shot(name));
         }
+        return t + 2;
+    }
+
+    /** The player (creative, flying, first person) at the given eye point, looking at the target. */
+    private static void look(double x, double y, double z, double tx, double ty, double tz) {
         double dx = tx - x, dy = ty - y, dz = tz - z;
         float yaw = (float) (Mth.atan2(dz, dx) * Mth.RAD_TO_DEG) - 90f;
         float pitch = (float) -(Mth.atan2(dy, Math.sqrt(dx * dx + dz * dz)) * Mth.RAD_TO_DEG);
-        camera.moveTo(x, y - camera.getEyeHeight(), z, yaw, pitch);
-        camera.setYHeadRot(yaw);
-        camera.yHeadRotO = yaw;
-        camera.yBodyRot = yaw;
+        Minecraft mc = Minecraft.getInstance();
+        mc.setCameraEntity(mc.player);
         mc.options.setCameraType(CameraType.FIRST_PERSON);
-        mc.setCameraEntity(camera);
+        server(level -> {
+            ServerPlayer p = player(level);
+            p.getAbilities().flying = true;
+            p.onUpdateAbilities();
+            p.connection.teleport(x, y - p.getEyeHeight(), z, yaw, pitch);
+        });
     }
 
-    /** The player's own third-person camera, looking along `yaw` (relative to the grabbing fish) and `pitch`. */
-    private static void grabView(int fishId, float relYaw, float pitch) {
+    /** The player looking at a (client-side) entity from `dist` out, `side` to its left (negative: right), `up` above it. */
+    private static void trackLook(int id, double dist, double side, double up) {
+        Entity e = Minecraft.getInstance().level.getEntity(id);
+        if (!(e instanceof LivingEntity le)) {
+            return;
+        }
+        Vec3 f = Vec3.directionFromRotation(0f, le.yBodyRot), left = new Vec3(f.z, 0, -f.x);
+        Vec3 c = e.position().add(0, e.getBbHeight() * 0.5, 0);
+        Vec3 eye = c.add(f.scale(dist)).add(left.scale(side)).add(0, up, 0);
+        look(eye.x, eye.y, eye.z, c.x, c.y, c.z);
+    }
+
+    /**
+     * The player's own third-person camera (the local player is only drawn when it is the camera entity), placed about 4
+     * blocks out at `offset` from the held player's eyes, given in the fish's frame (x to her left, y up, z ahead).
+     */
+    private static void grabView(int fishId, Vec3 offset) {
         Minecraft mc = Minecraft.getInstance();
-        float yaw = mc.level.getEntity(fishId) instanceof Anglerfish f ? f.yBodyRot + relYaw : relYaw;
+        if (!(mc.level.getEntity(fishId) instanceof Anglerfish f)) {
+            return;
+        }
+        Vec3 fwd = Vec3.directionFromRotation(0f, f.yBodyRot), left = new Vec3(fwd.z, 0, -fwd.x);
+        Vec3 out = left.scale(offset.x).add(0, offset.y, 0).add(fwd.scale(offset.z));
+        Vec3 look = out.scale(-1).normalize();   // the camera sits behind the look direction
+        float yaw = (float) (Mth.atan2(look.z, look.x) * Mth.RAD_TO_DEG) - 90f;
+        float pitch = (float) -(Mth.atan2(look.y, Math.sqrt(look.x * look.x + look.z * look.z)) * Mth.RAD_TO_DEG);
         riderView(yaw, pitch, CameraType.THIRD_PERSON_BACK);
     }
 
@@ -525,6 +621,11 @@ final class OceanMobShots {
         mc.setCameraEntity(mc.player);
         mc.options.setCameraType(type);
         mc.options.fov().set(80);
+        setLook(yaw, pitch);
+    }
+
+    private static void setLook(float yaw, float pitch) {
+        Minecraft mc = Minecraft.getInstance();
         mc.player.setYRot(yaw);
         mc.player.yRotO = yaw;
         mc.player.setXRot(pitch);
@@ -535,6 +636,8 @@ final class OceanMobShots {
         Minecraft mc = Minecraft.getInstance();
         return mc.level != null && mc.level.getEntity(id) instanceof Anglerfish f && f.isHolding() && mc.player.getVehicle() == f;
     }
+
+    // --------------------------------------------------------------------------------------- plumbing
 
     private static ServerPlayer player(ServerLevel level) {
         return level.getServer().getPlayerList().getPlayers().get(0);
@@ -553,7 +656,7 @@ final class OceanMobShots {
     }
 
     private static void tp(double x, double y, double z) {
-        cmd(String.format(java.util.Locale.ROOT, "tp @s %.2f %.2f %.2f", x, y, z));
+        cmd(String.format(Locale.ROOT, "tp @s %.2f %.2f %.2f", x, y, z));
     }
 
     private static void server(Consumer<ServerLevel> job) {

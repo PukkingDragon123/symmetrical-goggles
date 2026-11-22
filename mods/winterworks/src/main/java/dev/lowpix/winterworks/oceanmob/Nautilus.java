@@ -274,11 +274,14 @@ public class Nautilus extends WaterAnimal implements OwnableEntity, Saddleable, 
     @Override
     protected void tickRidden(Player rider, Vec3 input) {
         super.tickRidden(rider, input);
-        // turn smoothly toward where the rider looks
-        float yaw = Mth.approachDegrees(getYRot(), rider.getYRot(), 9f + Math.abs(Mth.wrapDegrees(rider.getYRot() - getYRot())) * 0.25f);
-        float pitch = isInWater() ? Mth.approach(getXRot(), Mth.clamp(rider.getXRot(), -70f, 70f), 6f) : Mth.approach(getXRot(), 0f, 4f);
+        // while the rider swims it on, it turns smoothly toward where they look; left alone it glides on and levels out,
+        // so the rider can look about without spinning it round
+        boolean steering = input.lengthSqr() > 1.0E-4;
+        float yaw = steering ? Mth.approachDegrees(getYRot(), rider.getYRot(), 9f + Math.abs(Mth.wrapDegrees(rider.getYRot() - getYRot())) * 0.25f)
+                : getYRot();
+        float pitch = steering && isInWater() ? Mth.approach(getXRot(), Mth.clamp(rider.getXRot(), -70f, 70f), 6f) : Mth.approach(getXRot(), 0f, 2f);
         setRot(yaw, pitch);
-        yRotO = yBodyRot = yHeadRot = yaw;
+        yBodyRot = yHeadRot = yaw;
         if (dashCooldown > 0) {
             dashCooldown--;
         }
@@ -328,9 +331,9 @@ public class Nautilus extends WaterAnimal implements OwnableEntity, Saddleable, 
         Vec3 look = Vec3.directionFromRotation(rider.getXRot(), rider.getYRot());
         Vec3 side = Vec3.directionFromRotation(0, rider.getYRot() - 90f);
         Vec3 push = look.scale(input.z * RIDDEN_ACCEL).add(side.scale(input.x * RIDDEN_ACCEL));
-        if (dashPending) {
+        if (dashPending) {   // the jet: out of the siphon, the way the shell faces
             dashPending = false;
-            push = push.add(look.scale(DASH_IMPULSE));
+            push = push.add(Vec3.directionFromRotation(getXRot(), getYRot()).scale(DASH_IMPULSE));
             dashTicks = DASH_TICKS;
         }
         setDeltaMovement(getDeltaMovement().add(push));
