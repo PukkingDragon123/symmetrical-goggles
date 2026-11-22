@@ -83,8 +83,8 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
         switch (mode) {
             case GUI -> {   // three-quarter view, filling the slot
                 float s = 0.98f / Math.max(size.x, Math.max(size.y, size.z) * 1.15f);
-                pose.mulPose(Axis.XP.rotationDegrees(28f));
-                pose.mulPose(Axis.YP.rotationDegrees(-32f));
+                pose.mulPose(Axis.XP.rotationDegrees(48f));
+                pose.mulPose(Axis.YP.rotationDegrees(-28f));
                 pose.scale(s, s, s);
                 pose.translate(-c.x, -c.y, -c.z);
                 animate(m, false, false, t);
@@ -107,7 +107,7 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
                 if (flying) {   // overhead, seen from below and behind: wings out, front away from the camera
                     float s = SPAN_FIRST_PERSON / span(m);
                     float bob = Mth.sin(t * 0.25f) * 0.015f;
-                    pose.translate(0f, 0.42f + bob, -0.95f);
+                    pose.translate(0f, 0.32f + bob, -1.15f);
                     pose.mulPose(Axis.YP.rotationDegrees(180f));
                     pose.mulPose(Axis.XP.rotationDegrees(-12f));
                     pose.scale(s, s, s);

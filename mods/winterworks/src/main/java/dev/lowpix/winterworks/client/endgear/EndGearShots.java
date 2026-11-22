@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
@@ -46,8 +48,8 @@ final class EndGearShots {
     private static final boolean ENABLED = Boolean.getBoolean("winterworks.endgearshots");
     private static final List<Runnable> PLAN = new ArrayList<>();
     private static final List<Integer> AT = new ArrayList<>();
-    private static boolean created, logFlight;
-    private static int ticks, step;
+    private static boolean created, logFlight, wantFlight;
+    private static int ticks, step, frames, framesAtStep, ticksAtStep, lastAt;
     private static Vec3 lastClient, lastServer;
 
     private EndGearShots() {}
@@ -57,6 +59,7 @@ final class EndGearShots {
             return;
         }
         ClientTickEvents.END_CLIENT_TICK.register(EndGearShots::tick);
+        WorldRenderEvents.LAST.register(ctx -> frames++);
         int t = 40;
         at(t, () -> {
             for (String c : new String[]{"gamerule doDaylightCycle false", "gamerule doMobSpawning false", "gamerule doWeatherCycle false",
@@ -79,8 +82,9 @@ final class EndGearShots {
             p.getInventory().setItem(4, e1);
             p.getInventory().setItem(5, e2);
             p.getInventory().setItem(6, new ItemStack(EndItems.DRAGONLING_SPAWN_EGG));
-            p.getInventory().selected = 1;
+            p.getInventory().setItem(8, new ItemStack(Items.SHIELD));
         }));
+        at(t += 2, () -> select(1));
         at(t += 20, () -> shot("hotbar"));
         at(t += 2, () -> select(0));
         at(t += 10, () -> shot("shield_first_person"));
@@ -88,11 +92,21 @@ final class EndGearShots {
         at(t += 10, () -> shot("glider_first_person_carried"));
 
         // ---- the shield blocking, seen from the front
-        at(t += 5, () -> server((level, p) -> {
-            p.getInventory().setItem(0, new ItemStack(EndItems.MONOLITH_WAND));
-            p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(EndItems.OBSIDIAN_SHIELD));
-            p.getInventory().selected = 0;
-        }));
+        // ... next to a vanilla shield, for the pose
+        at(t += 5, () -> server((level, p) -> p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(EndItems.OBSIDIAN_SHIELD))));
+        at(t += 2, () -> select(8));
+        at(t += 5, () -> {
+            camera(CameraType.THIRD_PERSON_FRONT);
+            look(180f, 10f);
+        });
+        at(t += 10, () -> shot("shield_vs_vanilla_front"));
+        at(t += 2, () -> camera(CameraType.THIRD_PERSON_BACK));
+        at(t += 10, () -> shot("shield_vs_vanilla_back"));
+        at(t += 2, () -> Minecraft.getInstance().options.keyUse.setDown(true));
+        at(t += 12, () -> shot("shield_vs_vanilla_blocking_back"));
+        at(t += 2, () -> Minecraft.getInstance().options.keyUse.setDown(false));
+        at(t += 5, () -> server((level, p) -> p.getInventory().setItem(0, new ItemStack(EndItems.MONOLITH_WAND))));
+        at(t += 2, () -> select(0));
         at(t += 5, () -> {
             camera(CameraType.THIRD_PERSON_FRONT);
             look(-150f, 10f);
@@ -107,7 +121,7 @@ final class EndGearShots {
         // ---- the wand: a beam and a petrified zombie
         at(t += 5, () -> server((level, p) -> {
             p.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
-            Zombie z = EntityType.ZOMBIE.create(level);
+            Zombie z = EntityType.HUSK.create(level);   // a zombie that doesn't burn at noon
             z.moveTo(0.5, -60, 7.5, 180f, 0f);
             z.setNoAi(true);
             z.setYHeadRot(180f);
@@ -123,7 +137,7 @@ final class EndGearShots {
         }));
         at(t += 3, () -> shot("wand_beam"));
         at(t += 30, () -> shot("wand_petrified_zombie"));
-        at(t += 2, () -> cmd("tp @s 3.5 -60 4.5 135 15"));
+        at(t += 2, () -> cmd("tp @s 2.5 -60 5.5 35 20"));
         at(t += 10, () -> shot("petrified_zombie_close"));
         // a petrified player: the shell from outside, the crust from inside
         at(t += 5, () -> server((level, p) -> Petrify.freeze(p, 120, false)));
@@ -141,15 +155,10 @@ final class EndGearShots {
         at(t += 10, () -> server((level, p) -> {
             p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
             p.getInventory().setItem(0, new ItemStack(EndItems.END_GLIDER));
-            p.getInventory().selected = 0;
             p.teleportTo(level, 0.5, 60, -40.5, 0f, 0f);
         }));
         at(t += 20, () -> {
-            LocalPlayer lp = Minecraft.getInstance().player;
-            lp.setDeltaMovement(0, -0.2, 0.3);
-            if (lp.tryToStartFallFlying()) {
-                lp.connection.send(new ServerboundPlayerCommandPacket(lp, ServerboundPlayerCommandPacket.Action.START_FALL_FLYING));
-            }
+            wantFlight = true;
             look(0f, 0f);
             logFlight = true;
         });
@@ -214,8 +223,10 @@ final class EndGearShots {
         at(t += 5, () -> Minecraft.getInstance().stop());
     }
 
+    /** Schedules a step at tick `tick` of the plan; steps keep their spacing even when frames lag behind the ticks. */
     private static void at(int tick, Runnable r) {
-        AT.add(tick);
+        AT.add(tick - lastAt);
+        lastAt = tick;
         PLAN.add(r);
     }
 
@@ -237,7 +248,9 @@ final class EndGearShots {
     }
 
     private static void select(int slot) {
-        Minecraft.getInstance().player.getInventory().selected = slot;
+        LocalPlayer p = Minecraft.getInstance().player;
+        p.getInventory().selected = slot;
+        p.connection.send(new ServerboundSetCarriedItemPacket(slot));
     }
 
     private static void server(BiConsumer<ServerLevel, ServerPlayer> job) {
@@ -278,8 +291,16 @@ final class EndGearShots {
         if (logFlight) {
             logFlight(mc);
         }
-        while (step < PLAN.size() && ticks >= AT.get(step)) {
+        if (wantFlight && mc.player.isFallFlying()) {
+            wantFlight = false;
+        } else if (wantFlight && !mc.player.onGround() && mc.player.tryToStartFallFlying()) {
+            mc.player.connection.send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_FALL_FLYING));
+        }
+        // software rendering can be slower than the ticks: every step waits its ticks and a few rendered frames
+        if (step < PLAN.size() && ticks - ticksAtStep >= AT.get(step) && frames - framesAtStep >= 3) {
             PLAN.get(step++).run();
+            framesAtStep = frames;
+            ticksAtStep = ticks;
         }
     }
 

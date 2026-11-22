@@ -62,7 +62,7 @@ public class MonolithWandItem extends Item {
         if (!resisted) {
             Petrify.freeze(target, PETRIFY_TICKS, true);
         }
-        Vec3 from = player.getEyePosition().add(player.getViewVector(1f).scale(0.6)).add(0, -0.25, 0);
+        Vec3 from = player.getEyePosition().add(player.getViewVector(1f).scale(1.1)).add(0, -0.3, 0);   // the wand's tip
         Vec3 to = target.getBoundingBox().getCenter();
         EndGearPayloads.WandBeam beam = new EndGearPayloads.WandBeam(from, to, resisted);
         for (ServerPlayer p : PlayerLookup.tracking(player)) {

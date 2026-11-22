@@ -20,13 +20,15 @@ import net.minecraft.world.entity.LivingEntity;
 /**
  * The obsidian shell round a petrified entity (end.Petrify): a box just outside its bounding box, tiled with
  * {@code entity/obsidian_shell} (one tile per block; crying obsidian until the art lands), see-through enough to make
- * out who's inside. It flickers in its last second before it shatters. A petrified player sees the crust over the
- * edges of their screen.
+ * out who's inside, whose body is drawn obsidian-dark (the tint). It flickers in its last second before it shatters. A
+ * petrified player sees the crust over the edges of their screen.
  */
 public final class PetrifyShell {
     public static final ResourceLocation SHELL = Winterworks.id("textures/entity/obsidian_shell.png");
     private static final ResourceLocation STAND_IN = ResourceLocation.withDefaultNamespace("textures/block/crying_obsidian.png");
     private static Boolean hasArt;
+    /** The petrified entity being drawn right now (its body is tinted to obsidian), or null. */
+    @org.jetbrains.annotations.Nullable private static LivingEntity drawing;
 
     private PetrifyShell() {}
 
@@ -41,6 +43,24 @@ public final class PetrifyShell {
         hasArt = null;
     }
 
+    /** LivingEntityRenderer.render begins: remember a petrified entity, so its body is drawn as obsidian. */
+    public static void begin(LivingEntity e) {
+        drawing = Petrify.isFrozen(e) ? e : null;
+    }
+
+    public static void end() {
+        drawing = null;
+    }
+
+    /** The body colour: obsidian-dark with a violet cast while petrified. */
+    public static int tint(int color) {
+        if (drawing == null) {
+            return color;
+        }
+        int a = color >>> 24, r = (color >> 16) & 255, g = (color >> 8) & 255, b = color & 255;
+        return (a << 24) | ((r * 0x58 / 255) << 16) | ((g * 0x48 / 255) << 8) | (b * 0x70 / 255);
+    }
+
     /** Called after every living entity is drawn, with the pose at its feet. */
     public static void render(LivingEntity e, float partial, PoseStack pose, MultiBufferSource buffers, int light) {
         if (!Petrify.isFrozen(e)) {
@@ -52,7 +72,7 @@ public final class PetrifyShell {
         if (left < 20f) {   // about to shatter: it flickers
             alpha *= 0.75f + 0.25f * Mth.abs(Mth.sin(left * 0.9f));
         }
-        float w = e.getBbWidth() * 0.5f + 0.07f, h = e.getBbHeight() + 0.09f;
+        float w = e.getBbWidth() * 0.5f + 0.09f, h = e.getBbHeight() + 0.13f;
         VertexConsumer vc = buffers.getBuffer(RenderType.entityTranslucent(texture()));
         int a = (int) (alpha * 255f);
         box(pose.last(), vc, -w, -0.02f, -w, w, h, w, light, a);
@@ -109,8 +129,6 @@ public final class PetrifyShell {
         g.blit(tex, 0, h - edge, 0, 0, w, edge, tile, tile);
         g.blit(tex, 0, edge, 0, 0, edge, h - 2 * edge, tile, tile);
         g.blit(tex, w - edge, edge, 0, 0, edge, h - 2 * edge, tile, tile);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 0.22f);
-        g.blit(tex, edge, edge, 0, 0, w - 2 * edge, h - 2 * edge, tile * 3, tile * 3);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
     }

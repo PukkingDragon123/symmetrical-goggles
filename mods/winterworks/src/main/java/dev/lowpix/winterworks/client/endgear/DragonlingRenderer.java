@@ -160,13 +160,8 @@ public class DragonlingRenderer extends MobRenderer<Dragonling, DragonlingRender
                     case "diamond" -> 0xFF5FE3E0;
                     default -> 0xFFC8C8D0;
                 };
-                g.model.maybePart("body").ifPresent(body -> {
-                    pose.pushPose();
-                    pose.scale(1.04f, 1.04f, 1.04f);
-                    body.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(GearModel.vanilla("textures/block/iron_block.png"))),
-                            light, overlay, tint);
-                    pose.popPose();
-                });
+                g.model.maybePart("body").ifPresent(body -> body.render(pose,
+                        buffers.getBuffer(RenderType.entityCutoutNoCull(GearModel.vanilla("textures/block/iron_block.png"))), light, overlay, tint));
             }
         }
     }

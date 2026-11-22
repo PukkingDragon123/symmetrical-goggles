@@ -51,7 +51,7 @@ public final class GearEffects {
         Vec3 d = b.to().subtract(b.from());
         double len = d.length();
         RandomSource r = level.random;
-        for (double s = 0; s < len; s += 0.3) {
+        for (double s = 0.4; s < len; s += 0.3) {
             Vec3 p = b.from().add(d.scale(s / len));
             level.addParticle(b.resisted() ? GREY : VIOLET, p.x, p.y, p.z, 0, 0, 0);
             if (r.nextInt(4) == 0) {
@@ -110,6 +110,10 @@ public final class GearEffects {
 
     // ------------------------------------------------------------------------------------------------ glider
 
+    private static int t(AbstractClientPlayer p) {
+        return p.tickCount;
+    }
+
     /** Every client tick: jets and wingbeats for everyone gliding with an End Glider. */
     static void tickGliders(Minecraft mc) {
         ClientLevel level = mc.level;
@@ -132,14 +136,15 @@ public final class GearEffects {
             Vec3 vel = p.getDeltaMovement();
             for (int side = -1; side <= 1; side += 2) {
                 Vec3 jet = at.add(right.scale(side * 0.42)).subtract(look.scale(0.25));
-                int n = boost ? 3 : 1;
-                for (int i = 0; i < n; i++) {
-                    Vec3 v = vel.scale(0.6).subtract(look.scale(boost ? 0.35 : 0.12))
-                            .add((r.nextDouble() - 0.5) * 0.04, (r.nextDouble() - 0.5) * 0.04, (r.nextDouble() - 0.5) * 0.04);
-                    level.addParticle(boost ? ParticleTypes.FLAME : ParticleTypes.SOUL_FIRE_FLAME, jet.x, jet.y, jet.z, v.x, v.y, v.z);
+                // the exhaust keeps most of the glider's speed, so it streams just behind the jets instead of whipping past
+                if (boost || (t(p) & 1) == 0) {
+                    Vec3 v = vel.scale(0.92).subtract(look.scale(boost ? 0.14 : 0.06))
+                            .add((r.nextDouble() - 0.5) * 0.02, (r.nextDouble() - 0.5) * 0.02, (r.nextDouble() - 0.5) * 0.02);
+                    level.addParticle(boost ? ParticleTypes.FLAME : ParticleTypes.SMALL_FLAME, jet.x, jet.y, jet.z, v.x, v.y, v.z);
                 }
-                if (r.nextInt(boost ? 2 : 5) == 0) {
-                    level.addParticle(ParticleTypes.REVERSE_PORTAL, jet.x, jet.y, jet.z, -look.x * 0.05, -look.y * 0.05, -look.z * 0.05);
+                if (r.nextInt(boost ? 2 : 6) == 0) {
+                    Vec3 v = vel.scale(0.85);
+                    level.addParticle(ParticleTypes.REVERSE_PORTAL, jet.x, jet.y, jet.z, v.x, v.y, v.z);
                 }
             }
             float vol = self ? 0.55f : 0.8f;
