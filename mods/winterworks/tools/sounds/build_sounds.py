@@ -9,8 +9,9 @@ Every source (URL, licence, author) and every event recipe lives in recipes.json
     python3 mods/winterworks/tools/sounds/build_sounds.py sheets  [--sheets DIR]  # contact sheets of the OGGs
     python3 mods/winterworks/tools/sounds/build_sounds.py credits                 # rewrite CREDITS.md
 
-`build` writes src/main/resources/assets/winterworks/sounds/<group>/<name><n>.ogg, tools/sound_map.json
-(merged into sounds.json + the lang file by tools/gen_data.py) and checks every file (peak, loudness,
+`build` writes src/main/resources/assets/winterworks/sounds/<group>/<name><n>.ogg, merges its events into
+tools/sound_map.json (merged into sounds.json + the lang file by tools/gen_data.py; map entries it does not
+generate, such as events mapped by hand to existing files, are kept) and checks every file (peak, loudness,
 length, loop seam). Downloads are cached (default: mods/winterworks/build/sfx_cache, gitignored) and are
 treated as data only: archives are unpacked with path checks, media is decoded by ffmpeg.
 
@@ -28,7 +29,8 @@ A layer is {"src": "<source id>[/<file in archive>]", "t": start s, "d": duratio
 More layer processing (any layer): "gran": {"out": s, "grain": s, "dens": grains/s, "scan": [from, to] (0..1 of
 the clip), "spread": 0..1, "jit": semitones, "pitch": factor, "seed"} granular resynthesis of the clip;
 "warble": [Hz, depth] pitch wobble; "trem": [Hz, depth 0..1] amplitude wobble; "ring": [Hz, mix] ring modulation;
-"comb": [Hz, feedback, mix] resonator (glassy / metallic ring).
+"comb": [Hz, feedback, mix] resonator (glassy / metallic ring). A "tone" synth takes "fenv": [[s, Hz], ...], a pitch
+contour interpolated in log frequency (glides, scoops, whale song), in place of its "f"/"f1" sweep.
 """
 import argparse
 import hashlib
@@ -362,6 +364,8 @@ def synth(L, rng, channels):
             freq = f0 * (f1 / f0) ** (t / d)
         else:
             freq = f0 + (f1 - f0) * t / d
+        if "fenv" in L:  # pitch contour [[s, Hz], ...], interpolated in log frequency (glides, scoops, whale song)
+            freq = np.exp(np.interp(t, [p[0] for p in L["fenv"]], [math.log(p[1]) for p in L["fenv"]]))
         if "vib" in L:
             vr, vd = L["vib"]
             freq = freq * (1 + vd * np.sin(2 * math.pi * vr * t))
@@ -841,7 +845,9 @@ def build(cache, only=None, sheets_dir=None):
     sound_map = {}
     report = []
     used = {}
-    if os.path.exists(MAP_OUT) and only:
+    # merge into the existing map: entries this build does not generate (events mapped by hand to existing files)
+    # are kept, in their place
+    if os.path.exists(MAP_OUT):
         with open(MAP_OUT, encoding="utf-8") as fh:
             sound_map = json.load(fh)
     for name, ev in rec["events"].items():
@@ -1074,6 +1080,17 @@ def inspect(cache, refs, out):
 
 
 # ------------------------------------------------------------------------------------------- credits
+def used_sources(rec):
+    """source id -> sorted events using it, read from the recipes (what a full build records)."""
+    used = {}
+    for name, ev in rec["events"].items():
+        for v in expand_variants(ev):
+            for L in v["layers"]:
+                if "src" in L:
+                    used.setdefault(L["src"].split("/")[0], set()).add(name)
+    return {k: sorted(v) for k, v in used.items()}
+
+
 def write_credits(rec, used):
     src = rec["sources"]
     lines = ["# Winterworks sound credits", "",
@@ -1111,6 +1128,11 @@ def write_credits(rec, used):
               "* BigSoundBank: every sound used is marked \"License CC0 (public domain): Free and royalty-free\" on its "
               "page; site terms at https://bigsoundbank.com/licenses.html (CC0 1.0 Universal).",
               "* OpenGameArt: every page used lists CC0 as its licence.", ""]
+    if any("federal" in src[k].get("license_note", "") for k in used):
+        lines.insert(len(lines) - 1, "* US federal government works (NOAA, National Park Service): recordings made by federal staff "
+                     "are not subject to copyright in the US (17 U.S.C. 105) and are in the public domain; nps.gov states that "
+                     "audiovisual material the National Park Service creates is generally in the public domain "
+                     "(https://www.nps.gov/aboutus/disclaimer.htm).")
     with open(CREDITS, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
 
@@ -1139,9 +1161,7 @@ def main():
     elif a.cmd == "sheets":
         render_sheets(a.sheets or os.path.join(cache, "sheets"))
     elif a.cmd == "credits":
-        rep = os.path.join(cache, "build_report.json")
-        with open(rep) as fh:
-            write_credits(load_recipes(), json.load(fh)["used"])
+        write_credits(load_recipes(), used_sources(load_recipes()))
 
 
 if __name__ == "__main__":
