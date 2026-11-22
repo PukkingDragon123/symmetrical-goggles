@@ -9,6 +9,13 @@ contract for the Java side.
   inclusion drops an Amberwood Bloom). The **Amber Chunk** item is replaced by Amber Shards everywhere (recipes,
   loot, the mosquito amber farm, tags); 4 shards craft an amber block.
 * The **Amber Fossil** stays; new texture (gravel with amber inside, vanilla suspicious-gravel style).
+* **Amber Sand** and **Amber Gravel** (`amber_sand`, `amber_gravel`, new): sand and gravel with amber showing through,
+  brushable like suspicious sand/gravel (4 dusting stages, turning into plain sand/gravel). Brushing gives amber: amber
+  shards mostly, sometimes a whole amber block (with an inclusion now and then). They generate in cave deposits, the
+  Dead Caves and Dig Sites, alongside suspicious sand and gravel.
+* **Archaeology is richer**: suspicious sand and gravel (and the new amber blocks) generate in caves about three times
+  as often, and amber turns up in them far more. **Sherds and decorated pots become much rarer** in all of this mod's
+  loot (cave deposits, Dig Sites, sniffer digging): about a fifth of their old weight, so pots are a real find.
 * **Amberwood**: a full vanilla-style wood set: log, wood, stripped log, stripped wood, planks, stairs, slab, fence,
   fence gate, door, trapdoor, button, pressure plate, sign and hanging sign (and boat and chest boat if the boat types
   can be registered cleanly). Vanilla behaviour throughout (stripping with an axe, sign editing, tags, recipes, fuel,
@@ -154,7 +161,8 @@ contract for the Java side.
 
 ## The Pot Golem (Amber Age)
 * **Fix**: building one must actually work in survival: four amber blocks in a T with a decorated pot placed on top
-  (any facing, placed last or not) becomes a Pot Golem, like an iron golem. Today it doesn't happen in game.
+  becomes a Pot Golem, like an iron golem. It doesn't matter which way the pot (or the T) faces, or which block is
+  placed last. Today it doesn't happen in game.
 * **Four matching faces**: a head ability only works when **all four faces of the pot carry the same sherd**. A mixed
   pot still makes a golem, just without a head ability (the Echo Shard inside still gives the Echo Head).
 * **The pattern glows** while its ability is active: the sherd pattern on the head is drawn full-bright in a soft
