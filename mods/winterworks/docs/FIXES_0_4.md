@@ -240,8 +240,9 @@ contract for the Java side.
   `charge` (loop) holds the head low with the horn levelled; `ram` (0.8 s) thrusts and returns to rest. Don't play
   `ram` on top of `charge` (skip it while charging).
 * **Frost Mauler / skull**: new eye glow parts already in the export; no Java changes needed.
-* **Harvester**: `HarvesterModel` (texture 256x512, draw `entityCutoutNoCull`; cards for fringes and teeth). Hitbox
-  2.0 x 1.9 fits; the head is ~3 blocks wide, nose to tail ~4.9. Toggle `saddle`, `chest_l`, `chest_r`. Rider seat
+* **Harvester**: `HarvesterModel` (remade in the vanilla mob style at density 1: texture 256x256, draw
+  `entityCutoutNoCull`; cards for the short fringes and the teeth; the eyes are flat 2 x 2 cards that the clips squash
+  to blink). Hitbox 2.0 x 1.9 fits; the head is ~3 blocks wide, nose to tail ~4.6. Toggle `saddle`, `chest_l`, `chest_r`. Rider seat
   top at y 35 px (~2.2 blocks). Clips: `idle` 4.0 loop, `walk` 1.6 loop, `run` 0.8 loop, `graze` 1.5, `chomp` 0.8,
   `shove` 0.8 (sweeps toward its left), `sit` 3.0 loop.
 * **Harvester Egg**: block models `harvester_egg_{not_cracked,slightly_cracked,very_cracked}` (sniffer-egg box) and

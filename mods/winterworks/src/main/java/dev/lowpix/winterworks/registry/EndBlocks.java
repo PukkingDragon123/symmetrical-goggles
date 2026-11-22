@@ -101,6 +101,12 @@ public final class EndBlocks {
                 .lightLevel(s -> 12).sound(SoundType.ANCIENT_DEBRIS);
     }
 
+    /** End Glow's light (endmob.GlowLightBlock): invisible and replaceable like vanilla's light block; no item. */
+    public static final Block GLOW_LIGHT = Registry.register(BuiltInRegistries.BLOCK, Winterworks.id("glow_light"),
+            new dev.lowpix.winterworks.endmob.GlowLightBlock(Properties.of().replaceable().noCollission().noLootTable()
+                    .noOcclusion().strength(-1.0f, 3600000.8f).pushReaction(PushReaction.DESTROY)
+                    .lightLevel(s -> dev.lowpix.winterworks.endmob.GlowLightBlock.LIGHT)));
+
     private static Block reg(String name, Block b) {
         Registry.register(BuiltInRegistries.BLOCK, Winterworks.id(name), b);
         ALL.add(b);
