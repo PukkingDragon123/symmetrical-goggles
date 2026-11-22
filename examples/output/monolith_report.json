@@ -1,18 +1,18 @@
 {
   "name": "Monolith",
-  "parts": 138,
-  "instances": 138,
-  "faces": 792,
-  "triangles": 1584,
-  "vertices_flat": 3168,
-  "vertices_unique": 1056,
+  "parts": 141,
+  "instances": 141,
+  "faces": 795,
+  "triangles": 1590,
+  "vertices_flat": 3180,
+  "vertices_unique": 1068,
   "atlas": [
     512,
     512
   ],
-  "atlas_fill": 0.721,
+  "atlas_fill": 0.727,
   "texel_density": 2.0,
-  "colors_used": 51,
+  "colors_used": 58,
   "palette": {
     "obsidian": [
       "#07040d",
@@ -44,6 +44,17 @@
       "#f0a6fb",
       "#fcdcff",
       "#ffffff"
+    ],
+    "sclera": [
+      "#2b2136",
+      "#3f3350",
+      "#58496b",
+      "#736587",
+      "#9183a3",
+      "#afa3bf",
+      "#cbc2d8",
+      "#e4def0",
+      "#f6f3fb"
     ],
     "stone": [
       "#18141f",
@@ -169,12 +180,15 @@
     "eye_0",
     "eye_0_ball",
     "eye_0_pupil",
+    "eye_0_lid",
     "eye_1",
     "eye_1_ball",
     "eye_1_pupil",
+    "eye_1_lid",
     "eye_2",
     "eye_2_ball",
     "eye_2_pupil",
+    "eye_2_lid",
     "brow_1",
     "brow_2",
     "brow_0",

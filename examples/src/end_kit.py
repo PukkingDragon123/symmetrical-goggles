@@ -23,6 +23,9 @@ from hex_kit import (ROOT, Rig, add, clamp, cycle, dump, euler, ground_lock, jit
                      osc, pos, r, rest_on_ground, ring, rot_matrix, sc, scale_pose, shake, spikes, spin, tatters,
                      timeline, wave)
 from hex_kit import keys as _keys  # noqa: E402
+# every eye in the Living End comes from the one set of round-eye generators
+from obsidian_kit import (RAMPS as _OBS_RAMPS, eyeball, in_disc, iris_card, lid_frame, paint_iris,  # noqa: E402,F401
+                          pupil_for)
 
 DENSITY = 2
 
@@ -154,6 +157,8 @@ END_RAMPS = {
     "chorus": ["#160a20", "#241133", "#341a48", "#46245d", "#5a3074", "#703f8b", "#8852a2", "#a06bb8", "#ba8acd",
                "#d4addf", "#ead1ef"],
     "void": ["#040207", "#09060f", "#0f0a18", "#161022", "#1e162d", "#271e39", "#322746"],
+    # the whites of the eyes (shared with obsidian_kit): pale lilac shading violet
+    "sclera": _OBS_RAMPS["sclera"],
 }
 GLOW_RAMPS = {
     # ender eyes: violet to white-hot lilac
@@ -346,8 +351,9 @@ def moth_wing(w, h, seed, hind=False, spot=None, spot_r=None):
     (`spot`) are (u, v): u 0 root .. 1 tip, v 0 trailing .. 1 leading edge.
 
     Characters: '.' clear, 'm' membrane (painted by the style), 'C' costa (the dark leading-edge vein), 'v' veins,
-    'z' the zigzag submarginal line, 'f'/'F' the chequered fringe, 'k' the eye-spot's dark ring, 'E'/'e' its glowing
-    iris (outer/inner), 'p' its pupil, 'w' the glowing catchlight, 'd' a dark discal mark, 'h' a pale scale dash."""
+    'z' the zigzag submarginal line, 'f'/'F' the chequered fringe, the round eye-spot ('H' its pale halo, 'k' its dark
+    ring, 'E'/'e' its glowing iris (upper/lit lower), 'p' its round pupil, 'w' the catch-light), 'd' a dark discal mark,
+    'h' a pale scale dash."""
     c = Canvas(w, h)
     W, H = float(w), float(h)
     if not hind:
@@ -401,16 +407,59 @@ def moth_wing(w, h, seed, hind=False, spot=None, spot_r=None):
                 c.g[y][x] = "h"
     # a dark discal mark at the end of the cell
     c.ellipse(cx + 0.5, cy, 1.2, 0.8, "d", where="mvhz")
-    # the eye-spot: dark ring, glowing iris, pupil, catchlight
+    # the eye-spot: a round eye (see eye_spot)
     if spot:
         sx, sy = xy(*spot)
-        rad = spot_r or min(W, H) * 0.2
-        c.disc(sx, sy, rad + 0.9, "k", where="mvhzdC")
-        c.disc(sx, sy, rad, "E", where="k")
-        c.disc(sx, sy, rad * 0.62, "e", where="E")
-        c.disc(sx, sy, max(0.7, rad * 0.32), "p", where="e")
-        c.put(sx - rad * 0.4, sy - rad * 0.4, "w", where="eEp")
+        eye_spot(c, sx, sy, int(round(2 * (spot_r or min(W, H) * 0.2))), where="mvhzdCfF")
     return c.rows()
+
+
+def eye_spot(c, sx, sy, d, where, halo="H", ring="k", iris="E", lit="e", hole="p", glint="w", mid=None, collar=None,
+             soft=None):
+    """A round eye-spot on a wing canvas, d texels of iris across, drawn as clean pixel circles (the centre snapped to
+    a texel centre for odd d, a texel corner for even d): a pale halo (`halo`, from d = 10) and a dark ring (`ring`)
+    round a glowing iris (`iris`) that is lit low where the light pools (`lit`), a round dark pupil (`hole`) and a
+    soft catch-light up and to the left (`glint`). From d = 10 the iris is painted like every other Living End eye
+    (obsidian_kit.paint_iris: fibres, `mid` tones, a `collar` under the pupil, a 2 x 2 catch-light with a `soft`
+    glow). Only cells in `where` are painted."""
+    cx = math.floor(sx) + 0.5 if d % 2 else float(round(sx))
+    cy = math.floor(sy) + 0.5 if d % 2 else float(round(sy))
+    p = pupil_for(d)
+    if d >= 10:
+        mine = set()
+        for y in range(c.h):
+            for x in range(c.w):
+                if c.g[y][x] not in where:
+                    continue
+                if in_disc(x, y, cx, cy, d):
+                    mine.add((x, y))
+                elif in_disc(x, y, cx, cy, d + 2):
+                    c.g[y][x] = ring
+                elif in_disc(x, y, cx, cy, d + 4):
+                    c.g[y][x] = halo
+        paint_iris(c.g, cx, cy, d, p, lambda x, y: (x, y) in mine, ring=iris, outer=iris, body=mid or iris, lit=lit,
+                   collar=collar or lit, hole=hole, hole_edge=ring, glint=glint, soft=soft or lit)
+        return
+    for y in range(c.h):
+        for x in range(c.w):
+            if c.g[y][x] not in where:
+                continue
+            dx, dy = x + 0.5 - cx, y + 0.5 - cy
+            if in_disc(x, y, cx, cy, p):
+                c.g[y][x] = hole
+            elif p == 3 and abs(dx) < 1.6 and abs(dy) < 1.6:
+                c.g[y][x] = ring                # a 3-texel pupil's corners, softened so it reads round, not a plus
+            elif in_disc(x, y, cx, cy, d):
+                c.g[y][x] = lit if dy > 0 or (dx > 0 and dy > -d * 0.2) else iris
+            elif in_disc(x, y, cx, cy, d + 2):
+                c.g[y][x] = ring
+            elif d >= 10 and in_disc(x, y, cx, cy, d + 4):
+                c.g[y][x] = halo
+    # the catch-light sits on the pupil's upper-left edge
+    gx = int(math.floor(cx - max(p, 2) / 2.0 * 0.75 - 0.5))
+    gy = int(math.floor(cy - max(p, 2) / 2.0 * 0.75 - 0.5))
+    if 0 <= gx < c.w and 0 <= gy < c.h and c.g[gy][gx] in (iris, lit, hole):
+        c.g[gy][gx] = glint
 
 
 def membrane(w, h, seed, hand=False, fingers=3, scallop=0.16):

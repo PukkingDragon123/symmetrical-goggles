@@ -4,8 +4,10 @@ section 11).
     python examples/src/monolith.py examples/monolith.json
 
 A towering slab of cracked obsidian, 3 blocks wide and 7 tall, hovering over its own jagged point: stepped, bevelled
-flanks, a heavy brow band under a crown of jagged obsidian spikes trimmed in violet-gold, and three glowing violet
-eyes in a triangle (a big one high in the middle, two under heavy angry brows). Columns of engraved runes smoulder
+flanks, a heavy brow band under a crown of jagged obsidian spikes trimmed in violet-gold, and three round eyes in a
+triangle (a big one high in the middle, two under heavy angry brows): pale shaded eyeballs bulging from glowing
+sockets, round glowing violet irises with round pupils and catch-lights, and heavy obsidian upper lids that cut across
+the irises (slanted with the brows) and drop to blink. Columns of engraved runes smoulder
 crying-obsidian violet down its face and flanks, cracks leak the same light. A ring of floating debris (obsidian
 chunks with glowing veins, End stone and purpur rubble) circles its lower half. Beside it float two giant hands of
 weathered grey-violet stone armoured in obsidian: obsidian knuckle plates and claws, a glowing rune on the back of
@@ -16,12 +18,15 @@ the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). Fa
 x = z = 0 and its point hovers 2 px above y = 0 (the entity's feet). "Left" is +X.
 
 Contract (END_UPDATE.md section 11). Bones: body (root: the slab, crown and point), eye_0 (top), eye_1 (lower left),
-eye_2 (lower right), hand_l, hand_r (separate roots; each with thumb_l / thumb_r and finger_l_0..3 / finger_r_0..3,
-index finger 0 to little finger 3, every digit with a `_tip` joint), shards (a separate root: the debris ring).
-Clips (all additive on top of idle, like the Frost Mauler's): idle (6 s loop), stare (2 s loop), slam_l, slam_r
-(1.2 s; impact at 0.9 s), grab (1.0 s, the right hand; ends holding), clap (1.2 s; contact at 0.62 s), summon (2.0 s;
-the hands drive down at 1.4 s), death (3.0 s; play it alone). Glow: the eyes and every crying-obsidian texel (runes,
-cracks, the wrist stumps).
+eye_2 (lower right; each eye_k holds eye_k_ball, the eyeball, eye_k_pupil, a card with the round iris, pupil and
+catch-light that wanders and tightens, and eye_k_lid, the upper lid that scales down to blink), hand_l, hand_r
+(separate roots; each with thumb_l / thumb_r and finger_l_0..3 / finger_r_0..3, index finger 0 to little finger 3,
+every digit with a `_tip` joint), shards (a separate root: the debris ring). Clips (all additive on top of idle,
+like the Frost Mauler's): idle (6 s loop), stare (2 s loop), slam_l, slam_r (1.2 s; impact at 0.9 s), grab (1.0 s,
+the right hand; ends holding), clap (1.2 s; contact at 0.62 s), summon (2.0 s; the hands drive down at 1.4 s),
+death (3.0 s; play it alone). Glow: the irises and every crying-obsidian texel (runes, cracks, the wrist stumps, the
+sockets' rims). The eyes look out through see-through holes in the slab's face and the irises are cards: draw the
+model with a cutout render type (entityCutoutNoCull), never entitySolid.
 """
 import math
 import os
@@ -30,7 +35,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from hex_kit import ROOT, Rig, add, dump, jitter, keys, osc, ring, shake, spin, timeline  # noqa: E402
-from obsidian_kit import RAMPS, almond, crack_line, rune_column, rune_row  # noqa: E402
+from obsidian_kit import RAMPS, crack_line, eye_hole, eyeball, iris_card, rune_column, rune_row  # noqa: E402
 
 R = Rig(density=2, bone_style="obsidian")
 part, bone, card = R.part, R.bone, R.card
@@ -84,12 +89,20 @@ for k, x in enumerate((-12.5, -4.5, 4.5, 12.5)):
              rot=(10 if z > 0 else -10, 45, -x * 1.2))
 
 # ======================================================================= the three eyes (a triangle on the face)
+# Each eye looks out through a round hole cut in the slab's face (a transparent stamp ringed by the lid crease and a
+# glowing rim). Behind the hole, back to front: the eyeball box (1 px bigger than the hole all round), the iris card
+# (it wanders and tightens) and the obsidian upper lid, whose straight lower edge cuts across the top of the iris
+# (slanted with the brows on the lower pair). The face clips iris and lid to the round opening. The lid's pivot is
+# its top edge, so scaling it in y drops it over the whole opening: a blink.
 FACE_Z = 8.0
-EYES = [(0, 77, 9, 5), (8, 65.5, 8, 4.5), (-8, 65.5, 8, 4.5)]      # eye_0 top, eye_1 lower left, eye_2 lower right
-for k, (x, y, w, h) in enumerate(EYES):
+# (x, y, ball w, ball h, iris texels, lid height, lid slant): eye_0 top, eye_1 lower left, eye_2 lower right
+EYES = [(0, 77, 9, 7, 10, 2.5, 0), (8, 65.5, 8, 6, 8, 2.5, 11), (-8, 65.5, 8, 6, 8, 2.5, -11)]
+for k, (x, y, w, h, iris, lid_h, slant) in enumerate(EYES):
     bone(f"eye_{k}", "body", at=(x, y, FACE_Z))
-    part(f"eye_{k}_ball", f"eye_{k}", [w, h, 1.5], f"eye_ball_{k}", rel=(0, 0, 0.25))
-    part(f"eye_{k}_pupil", f"eye_{k}", [1.5, h - 1, 0.5], "pupil", rel=(0, 0, 1.25))
+    part(f"eye_{k}_ball", f"eye_{k}", [w, h, 1.5], f"eye_ball_{k}", rel=(0, 0, -1.35))       # front at z 7.4
+    card(f"eye_{k}_pupil", f"eye_{k}", iris_card(iris), "iris", rel=(0, -0.5, -0.5))            # z 7.5
+    part(f"eye_{k}_lid", f"eye_{k}", [w + 1, lid_h, 0.5], f"lid_{k}", rel=(0, h / 2 + 0.5, -0.35),  # front at z 7.9
+         offset=(0, -lid_h / 2, 0), rot=(0, 0, slant))
 for k, s in ((1, 1), (2, -1)):     # heavy brows slanting down to the middle: an angry V
     part(f"brow_{k}", "body", [11, 2.5, 3], "brow", centre=(s * 8.5, 69.5, 8.5), rot=(0, 0, s * 13))
 part("brow_0", "body", [13, 2, 2.5], "brow", centre=(0, 81.5, 8.25))
@@ -165,7 +178,7 @@ hand(1)
 hand(-1)
 
 # ======================================================================= palette and paint
-ramps = {k: RAMPS[k] for k in ("obsidian", "crying", "eye", "stone", "gold", "purpur", "endstone")}
+ramps = {k: RAMPS[k] for k in ("obsidian", "crying", "eye", "sclera", "stone", "gold", "purpur", "endstone")}
 RIM = {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.1}
 OBS_RIM = {"light": 1, "dark": 1, "light_shift": 2.6, "dark_shift": -1.0, "outline": "dark"}
 GOLD_RIM = {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.6}
@@ -182,21 +195,7 @@ GLINT = {"id": "glint", "op": "gloss", "post": True, "dash": True, "length": 3, 
          "shift": 2.4, "ramps": ["obsidian"]}
 OBSIDIAN = [FACETS, FACETS2, FRACTURES, SEAMS, GLINT]
 RUNE_KEY = {"r": "crying:3", "R": "crying:5", "g": "obsidian:0", "w": "obsidian:1"}
-SOCKET_GLOW = {"s": "crying:1", "S": "crying:2", "k": "obsidian:0"}
-
-
-def socket(w, h, pad=2):
-    """A dark socket a little larger than the eye, its rim bleeding violet light."""
-    W, Hh = w + 2 * pad, h + 2 * pad
-    rows = almond(W, Hh, ring="S", body="k", hot="k", core="k", corner=".")
-    out = []
-    for y, r in enumerate(rows):
-        r = list(r)
-        for x, c in enumerate(r):
-            if c == "S" and (x + y) % 3 == 0:
-                r[x] = "s"
-        out.append("".join(r))
-    return out
+SOCKET_GLOW = {"s": "crying:2", "S": "crying:1", "k": "obsidian:0", "l": "obsidian:6"}
 
 
 # face stamps for the slab's front: an eye socket under each eye, a rune column down the middle, two flanking columns
@@ -206,8 +205,8 @@ def face_xy(x, y):
 
 
 FACE_STAMPS = []
-for k, (x, y, w, h) in enumerate(EYES):
-    art = socket(int(w * 2), int(h * 2), pad=2)
+for k, (x, y, w, h, *_) in enumerate(EYES):
+    art = eye_hole(int(w * 2) - 2, int(h * 2) - 2, pad=2)     # the round opening, its lid crease and glowing rim
     cx, cy = face_xy(x, y)
     FACE_STAMPS.append({"face": "front", "at": [cx - len(art[0]) // 2, cy - len(art) // 2], "art": art,
                         "key": SOCKET_GLOW})
@@ -261,8 +260,10 @@ styles = {
     "brow": {"ramp": "obsidian", "tone": 3.0, "rim": OBS_RIM, "brush": {"off": True},
              "layers": [FACETS, GLINT, {"id": "under", "op": "band", "axis": "y", "from": -1.01, "to": -0.4,
                                         "ramp": "crying", "tone": 1.6, "faces": ["bottom"]}]},
-    "pupil": {"ramp": "obsidian", "tone": 0.6, "light": 0.2, "brush": {"off": True},
-              "rim": {"light": 1, "dark": 0, "light_shift": 1.0}},
+    # the iris card: a round glowing violet iris, a round pupil, a soft catch-light
+    "iris": {"ramp": "eye", "tone": 3.0, "light": 0, "brush": {"off": True},
+             "art_key": {"o": "eye:0", "i": "eye:2", "I": "eye:3", "J": "eye:4", "c": "eye:5", "p": "obsidian:0",
+                         "W": "eye:7", "w": "eye:6"}},
     "shard": {"ramp": "obsidian", "tone": 3.0, "rim": OBS_RIM, "layers": [FACETS, FRACTURES, GLINT]},
     "shard_vein": {"ramp": "obsidian", "tone": 2.6, "rim": OBS_RIM,
                    "layers": [FACETS, {"id": "vein", "op": "cracks", "scale": 2.0, "width": 0.05, "threshold": 0.35,
@@ -303,11 +304,21 @@ styles = {
                          {"id": "ring", "op": "band", "axis": "x", "from": 0.7, "to": 1.01, "ramp": "crying",
                           "tone": 2.4}]},
 }
-for k, (x, y, w, h) in enumerate(EYES):
+EYE_KEY = {"L": "sclera:1", "k": "sclera:1", "l": "sclera:1", "u": "sclera:1", "d": "sclera:2", "s": "sclera:4",
+           "S": "sclera:5"}
+for k, (x, y, w, h, iris, lid_h, slant) in enumerate(EYES):
+    # the upper lid: rounded obsidian, its lit margin catching the light over a crisp dark lash line
+    lw = int((w + 1) * 2)
+    styles[f"lid_{k}"] = {
+        "ramp": "obsidian", "tone": 4.0, "light": 0.4, "rim": {"light": 0, "dark": 0}, "brush": {"off": True},
+        "layers": [{"id": "round", "op": "gradient", "axis": "y", "amount": -1.2}, GLINT],
+        "stamps": [{"face": "front", "at": "bottom-left", "art": ["m" * lw, "M" * lw, "u" * lw],
+                    "key": {"m": "obsidian:6", "M": "obsidian:7", "u": "obsidian:0"}}]}
+    # the eyeball behind the hole: the whites shaded round the opening's rim and under the upper lid
     styles[f"eye_ball_{k}"] = {
-        "ramp": "eye", "tone": 4.0, "light": 0.15, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-        "stamps": [{"face": "front", "at": "center", "art": almond(int(w * 2), int(h * 2)),
-                    "key": {"o": "eye:3", "e": "eye:4", "E": "eye:5", "W": "eye:7", "k": "obsidian:0"}}]}
+        "ramp": "sclera", "tone": 1.0, "light": 0.2, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+        "stamps": [{"face": "front", "at": "center", "art": eyeball(int(w * 2), int(h * 2), lid_shade=6),
+                    "key": EYE_KEY}]}
 
 # ======================================================================= clips
 # Poses are dicts of offsets from the rest pose ({part: {"r"|"p"|"s": [x, y, z]}}) keyed on timelines (hex_kit).
@@ -365,17 +376,26 @@ def eyes(sx, sy=None, which=EYE_IDS):
 
 
 def pupils(sx):
-    return {f"{e}_pupil": {"s": [sx, 0, 0]} for e in EYE_IDS}
+    """The irises tighten (sx < 0) or widen, staying round."""
+    return {f"{e}_pupil": {"s": [sx, sx, 0]} for e in EYE_IDS}
 
 
 def both(fn, *a, **kw):
     return add(*[fn(s, *a, **kw) for s in HANDS])
 
 
-def blink(part_, t, dur=0.18, length=6.0):
-    return {"part": part_, "channel": "scale", "ease": "ease",
-            "keys": [[0, [0, 0, 0]], [round(t, 3), [0, 0, 0]], [round(t + dur * 0.4, 3), [0.1, -0.92, 0]],
-                     [round(t + dur * 0.6, 3), [0.1, -0.92, 0]], [round(t + dur, 3), [0, 0, 0]], [length, [0, 0, 0]]]}
+def lid_shut(k):
+    """The y-scale offset that drops eye_k's upper lid over the whole opening (a little more for a slanted lid)."""
+    x, y, w, h, iris, lid_h, slant = EYES[k]
+    return round((h + 0.5 + (1.0 if slant else 0.0)) / lid_h - 1.0, 3)
+
+
+def blink(k, t, dur=0.18, length=6.0):
+    """eye_k's upper lid drops shut and lifts again."""
+    shut = lid_shut(k)
+    return {"part": f"eye_{k}_lid", "channel": "scale", "ease": "ease",
+            "keys": [[0, [0, 0, 0]], [round(t, 3), [0, 0, 0]], [round(t + dur * 0.4, 3), [0, shut, 0]],
+                     [round(t + dur * 0.6, 3), [0, shut, 0]], [round(t + dur, 3), [0, 0, 0]], [length, [0, 0, 0]]]}
 
 
 def const(part_, v, length, ch="rotation"):
@@ -390,7 +410,7 @@ ANIM = {}
 L = 6.0
 tr = [spin("shards", L, 1.0),
       osc("body", None, [0, 1.5, 0], 2, ch="position"), osc("body", "x", 1.0, 1, 0.1), osc("body", "z", 1.2, 1, 0.35),
-      blink("eye_0", 2.1, length=L), blink("eye_1", 4.6, length=L), blink("eye_2", 4.62, length=L)]
+      blink(0, 2.1, length=L), blink(1, 4.6, length=L), blink(2, 4.62, length=L)]
 for k in range(3):
     tr.append(osc(f"eye_{k}_pupil", None, [0.6, 0.2, 0], 1, 0.15 * k, ch="position"))
 for s, ph in ((1, 0.0), (-1, 0.42)):
@@ -406,15 +426,16 @@ for sid, a, rad, y in SHARDS:
            osc(sid, "x", 14, 1, (h % 7) / 7.0), osc(sid, "z", 11, 1, (h % 5) / 5.0)]
 ANIM["idle"] = {"length": L, "loop": True, "tracks": tr}
 
-# ---- stare (2 s loop, an overlay on idle): it leans in over its prey, the eyes bulge and throb, the pupils pinch to
-# slits, the hands lift a little and curl into claws, the debris trembles.
+# ---- stare (2 s loop, an overlay on idle): it leans in over its prey, the eyes bulge and throb, the lids lift off
+# the irises and the irises tighten into a glare, the hands lift a little and curl into claws, the debris trembles.
 L = 2.0
 tr = [const("body", [5, 0, 0], L), osc("body", "x", 0.8, 2),
       const("body", [0, -1.0, 2.0], L, ch="position")]
 for k in range(3):
     tr += [const(f"eye_{k}", [0.16, 0.24, 0], L, ch="scale"), osc(f"eye_{k}", None, [0.05, 0.07, 0], 2, 0.1 * k, ch="scale"),
-           const(f"eye_{k}", [0, 0, 0.5], L, ch="position"),
-           const(f"eye_{k}_pupil", [-0.55, 0.05, 0], L, ch="scale")]
+           const(f"eye_{k}", [0, 0, 0.2], L, ch="position"),
+           const(f"eye_{k}_pupil", [-0.2, -0.2, 0], L, ch="scale"),
+           const(f"eye_{k}_lid", [0, -0.4, 0], L, ch="scale")]
 for s in HANDS:
     n = hn(s)
     tr += [const(f"hand_{n}", [s * -2.0, 3.0, 4.0], L, ch="position"), const(f"hand_{n}", [-6, 0, 0], L)]
@@ -463,9 +484,9 @@ ANIM["grab"] = timeline(1.0, [
     (0.4, add(hpos(s, -29, -34, 24), hrot(s, 36, 15, 10), open_hand(s, 1.0), body(5, 0, 2), eyes(0.2)), "out"),
     (0.5, add(CAUGHT, fist(s), body(5, 0, 2), eyes(0.2)), "in"),
     (0.6, add(CAUGHT, hpos(s, 0, 2, 0), fist(s, 8), hscale(s, 0.06, -0.06, 0.06), body(4, 0, 2), eyes(0.2)), "ease"),
-    (0.88, add(HELD, fist(s, 6), body(-3, 0, 0), eyes(0.24), pupils(-0.5)), "out"),
+    (0.88, add(HELD, fist(s, 6), body(-3, 0, 0), eyes(0.24), pupils(-0.22)), "out"),
     (1.0, add(HELD, hpos(s, 0, -1, 0), fist(s, 10), hscale(s, 0.06, -0.06, 0.06), body(-3, 0, 0), eyes(0.26),
-              pupils(-0.55)), "ease"),
+              pupils(-0.26)), "ease"),
 ], lock=False, extra=[jitter("hand_r", 0.88, 1.0, 2.5, step=0.03, axis=2, seed=9)])
 
 # ---- clap (1.2 s): both hands swing up and out, turning their palms in, then rush together low in front and clap at
@@ -518,7 +539,6 @@ ANIM["summon"] = timeline(2.0, [
 # claw, then drop like stones and bounce; the debris rains down; the slab sinks onto its point and keels over with
 # a crash that snaps two spikes off its crown. Ends collapsed.
 HAND_DROP = lambda s, b=0: add(hpos(s, 5, -40 + b, 4), hrot(s, 12, 18, 38), digits(s, 8, 12, spread=12, thumb=-6, thumb_in=-10))  # noqa: E731
-OUT = [-0.35, -0.95, 0]
 death_keys = [
     (0.0, {}, None),
     (0.3, add(body(-3, 0, 2, py=2), both(hpos, 3, 5, 0), both(hrot, -10, 0, 12), both(open_hand, 1.3)), "out"),
@@ -533,10 +553,14 @@ death_keys = [
     (3.0, add(body(16, 0, -7, py=-11), *[HAND_DROP(s) for s in HANDS]), "ease"),
 ]
 extra = [shake("body", 0.0, 0.95, [1.5, 0, 2.5], freq=11)]
-for k, t_out in ((1, 0.7), (2, 1.0), (0, 1.35)):     # flicker, then out
+for k, t_out in ((1, 0.7), (2, 1.0), (0, 1.35)):     # the eyes start wide, flutter, then the lids fall shut
+    shut = lid_shut(k)
     extra.append({"part": f"eye_{k}", "channel": "scale", "ease": "ease", "keys": [
-        [0, [0, 0, 0]], [0.1, [0.2, 0.2, 0]], [0.18, [0, -0.6, 0]], [0.26, [0.15, 0.1, 0]],
-        [t_out - 0.2, [0, 0, 0]], [t_out - 0.12, [0, -0.7, 0]], [t_out - 0.06, [0, -0.1, 0]], [t_out, OUT], [3.0, OUT]]})
+        [0, [0, 0, 0]], [0.1, [0.2, 0.2, 0]], [0.26, [0.12, 0.1, 0]], [t_out - 0.2, [0, 0, 0]], [3.0, [0, 0, 0]]]})
+    extra.append({"part": f"eye_{k}_lid", "channel": "scale", "ease": "ease", "keys": [
+        [0, [0, 0, 0]], [0.1, [0, -0.4, 0]], [0.18, [0, shut * 0.6, 0]], [0.26, [0, -0.2, 0]],
+        [t_out - 0.2, [0, 0, 0]], [t_out - 0.12, [0, shut * 0.8, 0]], [t_out - 0.06, [0, shut * 0.25, 0]],
+        [t_out, [0, shut, 0]], [3.0, [0, shut, 0]]]})
 rng_d = random.Random(4)
 for j, (sid, a, rad, y) in enumerate(SHARDS):
     t0 = 0.95 + 0.08 * j + rng_d.uniform(0, 0.1)
@@ -608,16 +632,17 @@ for s in HANDS:
     _nudge("clap", f"hand_{hn(s)}", (0.62, 0.7, 0.86), 0, -gap + s * 0.25)
     floor("clap", s, 0.62, (0.62, 0.7, 0.86), 1.0)
 
-GLOW = [f"eye_{k}_ball" for k in range(3)]
+GLOW = [f"eye_{k}_pupil" for k in range(3)]
 spec = {
     "name": "Monolith",
     "description": "The Winterworks Monolith: a towering, cracked obsidian slab boss with a crown of jagged spikes, "
-                   "three glowing violet eyes, smouldering rune columns, a ring of floating debris and two giant "
+                   "three round eyes with glowing violet irises under heavy lids, smouldering rune columns, a ring "
+                   "of floating debris and two giant "
                    "floating stone-and-obsidian hands. Minecraft pixel units, density 2.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": 2,
     "grounded": False,
-    "budget": {"tris": 2400, "colors": 64},
+    "budget": {"tris": 2400, "colors": 72},
     "light": {"dir": [-0.45, 1.0, 0.6], "strength": 0.9, "gradient": 0.25, "ao": 0.0},
     "brush": {"flow": "horizontal", "length": 2.0, "width": 0.5, "rough": 0.45, "overshoot": 0.3,
               "textures": {"obsidian": "crystal", "stone": "stone", "gold": "metal"}},

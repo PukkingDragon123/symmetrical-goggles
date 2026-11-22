@@ -1,13 +1,13 @@
 {
  "name": "Monolith",
- "description": "The Winterworks Monolith: a towering, cracked obsidian slab boss with a crown of jagged spikes, three glowing violet eyes, smouldering rune columns, a ring of floating debris and two giant floating stone-and-obsidian hands. Minecraft pixel units, density 2.",
+ "description": "The Winterworks Monolith: a towering, cracked obsidian slab boss with a crown of jagged spikes, three round eyes with glowing violet irises under heavy lids, smouldering rune columns, a ring of floating debris and two giant floating stone-and-obsidian hands. Minecraft pixel units, density 2.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 2,
  "grounded": false,
  "budget": {
   "tris": 2400,
-  "colors": 64
+  "colors": 72
  },
  "light": {
   "dir": [
@@ -34,9 +34,9 @@
  "minecraft": {
   "fps": 20,
   "glow_parts": [
-   "eye_0_ball",
-   "eye_1_ball",
-   "eye_2_ball"
+   "eye_0_pupil",
+   "eye_1_pupil",
+   "eye_2_pupil"
   ],
   "glow_ramps": [
    "crying",
@@ -83,6 +83,17 @@
     "#f0a6fb",
     "#fcdcff",
     "#ffffff"
+   ],
+   "sclera": [
+    "#2b2136",
+    "#3f3350",
+    "#58496b",
+    "#736587",
+    "#9183a3",
+    "#afa3bf",
+    "#cbc2d8",
+    "#e4def0",
+    "#f6f3fb"
    ],
    "stone": [
     "#18141f",
@@ -293,83 +304,90 @@
     {
      "face": "front",
      "at": [
-      19,
-      15
+      20,
+      14
      ],
      "art": [
-      ".........sSSs.........",
-      "......SSskkkkSsS......",
-      "....sSkkkkkkkkkksS....",
-      "...sSkkkkkkkkkkkkSs...",
-      ".SskkkkkkkkkkkkkkkkSs.",
-      ".skkkkkkkkkkkkkkkkkkS.",
-      "sSkkkkkkkkkkkkkkkkkkSs",
-      "SSkkkkkkkkkkkkkkkkkksS",
-      ".skkkkkkkkkkkkkkkkkkS.",
-      ".SSkkkkkkkkkkkkkkkkSS.",
-      "...SSkkkkkkkkkkkksS...",
-      "....sSkkkkkkkkkksS....",
-      "......sSSkkkkSSs......",
-      ".........SSsS........."
+      "....................",
+      ".......kkkkkk.......",
+      "....kkk______kkk....",
+      "...kk__________kk...",
+      "..kk____________kk..",
+      ".sk______________kS.",
+      "sk________________kS",
+      "Sk________________kS",
+      "Sk________________ks",
+      "sk________________kS",
+      ".Sl______________lS.",
+      ".sll____________llS.",
+      "..Sll__________llS..",
+      "...Slll______lllS...",
+      "....sSSllllllsSS....",
+      ".......SSsSSs......."
      ],
      "key": {
-      "s": "crying:1",
-      "S": "crying:2",
-      "k": "obsidian:0"
+      "s": "crying:2",
+      "S": "crying:1",
+      "k": "obsidian:0",
+      "l": "obsidian:6"
      }
     },
     {
      "face": "front",
      "at": [
-      36,
-      39
+      37,
+      38
      ],
      "art": [
-      "........SsSS........",
-      ".....sSSkkkkSSs.....",
-      "...SskkkkkkkkkkSs...",
-      "..SskkkkkkkkkkkkSS..",
-      ".SskkkkkkkkkkkkkksS.",
-      "SskkkkkkkkkkkkkkkkSs",
-      "sSkkkkkkkkkkkkkkkksS",
-      "SSkkkkkkkkkkkkkkkkSS",
-      ".sSkkkkkkkkkkkkkkSS.",
-      "..SskkkkkkkkkkkkSS..",
-      "...SSkkkkkkkkkkSS...",
-      ".....SSskkkkSsS.....",
-      "........SsSS........"
+      "..................",
+      "......kkkkkk......",
+      "....kk______kk....",
+      "...k__________k...",
+      "..k____________k..",
+      "Sk______________kS",
+      "sk______________kS",
+      "Sk______________ks",
+      "Sk______________kS",
+      ".Sl____________lS.",
+      ".Ssl__________lSS.",
+      "..SSll______llSS..",
+      "...sSSllllllsSS...",
+      "......SSsSSs......"
      ],
      "key": {
-      "s": "crying:1",
-      "S": "crying:2",
-      "k": "obsidian:0"
+      "s": "crying:2",
+      "S": "crying:1",
+      "k": "obsidian:0",
+      "l": "obsidian:6"
      }
     },
     {
      "face": "front",
      "at": [
-      4,
-      39
+      5,
+      38
      ],
      "art": [
-      "........SsSS........",
-      ".....sSSkkkkSSs.....",
-      "...SskkkkkkkkkkSs...",
-      "..SskkkkkkkkkkkkSS..",
-      ".SskkkkkkkkkkkkkksS.",
-      "SskkkkkkkkkkkkkkkkSs",
-      "sSkkkkkkkkkkkkkkkksS",
-      "SSkkkkkkkkkkkkkkkkSS",
-      ".sSkkkkkkkkkkkkkkSS.",
-      "..SskkkkkkkkkkkkSS..",
-      "...SSkkkkkkkkkkSS...",
-      ".....SSskkkkSsS.....",
-      "........SsSS........"
+      "..................",
+      "......kkkkkk......",
+      "....kk______kk....",
+      "...k__________k...",
+      "..k____________k..",
+      "Sk______________kS",
+      "sk______________kS",
+      "Sk______________ks",
+      "Sk______________kS",
+      ".Sl____________lS.",
+      ".Ssl__________lSS.",
+      "..SSll______llSS..",
+      "...sSSllllllsSS...",
+      "......SSsSSs......"
      ],
      "key": {
-      "s": "crying:1",
-      "S": "crying:2",
-      "k": "obsidian:0"
+      "s": "crying:2",
+      "S": "crying:1",
+      "k": "obsidian:0",
+      "l": "obsidian:6"
      }
     },
     {
@@ -1512,17 +1530,22 @@
     }
    ]
   },
-  "pupil": {
-   "ramp": "obsidian",
-   "tone": 0.6,
-   "light": 0.2,
+  "iris": {
+   "ramp": "eye",
+   "tone": 3.0,
+   "light": 0,
    "brush": {
     "off": true
    },
-   "rim": {
-    "light": 1,
-    "dark": 0,
-    "light_shift": 1.0
+   "art_key": {
+    "o": "eye:0",
+    "i": "eye:2",
+    "I": "eye:3",
+    "J": "eye:4",
+    "c": "eye:5",
+    "p": "obsidian:0",
+    "W": "eye:7",
+    "w": "eye:6"
    }
   },
   "shard": {
@@ -2108,10 +2131,59 @@
     }
    ]
   },
-  "eye_ball_0": {
-   "ramp": "eye",
+  "lid_0": {
+   "ramp": "obsidian",
    "tone": 4.0,
-   "light": 0.15,
+   "light": 0.4,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "round",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.2
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 3,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.4,
+     "ramps": [
+      "obsidian"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "bottom-left",
+     "art": [
+      "mmmmmmmmmmmmmmmmmmmm",
+      "MMMMMMMMMMMMMMMMMMMM",
+      "uuuuuuuuuuuuuuuuuuuu"
+     ],
+     "key": {
+      "m": "obsidian:6",
+      "M": "obsidian:7",
+      "u": "obsidian:0"
+     }
+    }
+   ]
+  },
+  "eye_ball_0": {
+   "ramp": "sclera",
+   "tone": 1.0,
+   "light": 0.2,
    "brush": {
     "off": true
    },
@@ -2124,31 +2196,86 @@
      "face": "front",
      "at": "center",
      "art": [
-      "kkkkkkkooookkkkkkk",
-      "kkkkooeeeeeeookkkk",
-      "kkooeeeEEEEeeeookk",
-      "koeeeEEEWWEEEeeeok",
-      "ooeeEEEWWWWEEEeeoo",
-      "ooeeEEEWWWWEEEeeoo",
-      "koeeeEEEWWEEEeeeok",
-      "kkooeeeEEEEeeeookk",
-      "kkkkooeeeeeeookkkk",
-      "kkkkkkkooookkkkkkk"
+      "kkkkLLLLLLLLLLkkkk",
+      "kkLLLLuuuuuuLLLLkk",
+      "kLLLuudddddduuLLLk",
+      "LLLudddddddddduLLL",
+      "LLudddddddddddduLL",
+      "LudddddddddddddduL",
+      "LddddddddddddddddL",
+      "LdddddSSSSSSdddddL",
+      "LdddsSSSSSSSSsdddL",
+      "LldsssSSSSSSsssdlL",
+      "LLldssssssssssdlLL",
+      "kLLlddssssssddlLLk",
+      "kkLLllddddddllLLkk",
+      "kkkkLLllllllLLkkkk"
      ],
      "key": {
-      "o": "eye:3",
-      "e": "eye:4",
-      "E": "eye:5",
-      "W": "eye:7",
-      "k": "obsidian:0"
+      "L": "sclera:1",
+      "k": "sclera:1",
+      "l": "sclera:1",
+      "u": "sclera:1",
+      "d": "sclera:2",
+      "s": "sclera:4",
+      "S": "sclera:5"
+     }
+    }
+   ]
+  },
+  "lid_1": {
+   "ramp": "obsidian",
+   "tone": 4.0,
+   "light": 0.4,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "round",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.2
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 3,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.4,
+     "ramps": [
+      "obsidian"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "bottom-left",
+     "art": [
+      "mmmmmmmmmmmmmmmmmm",
+      "MMMMMMMMMMMMMMMMMM",
+      "uuuuuuuuuuuuuuuuuu"
+     ],
+     "key": {
+      "m": "obsidian:6",
+      "M": "obsidian:7",
+      "u": "obsidian:0"
      }
     }
    ]
   },
   "eye_ball_1": {
-   "ramp": "eye",
-   "tone": 4.0,
-   "light": 0.15,
+   "ramp": "sclera",
+   "tone": 1.0,
+   "light": 0.2,
    "brush": {
     "off": true
    },
@@ -2161,30 +2288,84 @@
      "face": "front",
      "at": "center",
      "art": [
-      "kkkkkkooookkkkkk",
-      "kkkooeeeeeeookkk",
-      "kkoeeeEEEEeeeokk",
-      "ooeeEEEWWEEEeeoo",
-      "oeeeEEWWWWEEeeeo",
-      "ooeeEEEWWEEEeeoo",
-      "kkoeeeEEEEeeeokk",
-      "kkkooeeeeeeookkk",
-      "kkkkkkooookkkkkk"
+      "kkkkLLLLLLLLkkkk",
+      "kkLLLuuuuuuLLLkk",
+      "kLLuudddddduuLLk",
+      "LLudddddddddduLL",
+      "LudddddddddddduL",
+      "LddddddddddddddL",
+      "LddddddddddddddL",
+      "LddddSSSSSSddddL",
+      "LldsssSSSSsssdlL",
+      "kLlddssssssddlLk",
+      "kkLllddddddllLkk",
+      "kkkkLllllllLkkkk"
      ],
      "key": {
-      "o": "eye:3",
-      "e": "eye:4",
-      "E": "eye:5",
-      "W": "eye:7",
-      "k": "obsidian:0"
+      "L": "sclera:1",
+      "k": "sclera:1",
+      "l": "sclera:1",
+      "u": "sclera:1",
+      "d": "sclera:2",
+      "s": "sclera:4",
+      "S": "sclera:5"
+     }
+    }
+   ]
+  },
+  "lid_2": {
+   "ramp": "obsidian",
+   "tone": 4.0,
+   "light": 0.4,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "round",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.2
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 3,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.4,
+     "ramps": [
+      "obsidian"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "bottom-left",
+     "art": [
+      "mmmmmmmmmmmmmmmmmm",
+      "MMMMMMMMMMMMMMMMMM",
+      "uuuuuuuuuuuuuuuuuu"
+     ],
+     "key": {
+      "m": "obsidian:6",
+      "M": "obsidian:7",
+      "u": "obsidian:0"
      }
     }
    ]
   },
   "eye_ball_2": {
-   "ramp": "eye",
-   "tone": 4.0,
-   "light": 0.15,
+   "ramp": "sclera",
+   "tone": 1.0,
+   "light": 0.2,
    "brush": {
     "off": true
    },
@@ -2197,22 +2378,27 @@
      "face": "front",
      "at": "center",
      "art": [
-      "kkkkkkooookkkkkk",
-      "kkkooeeeeeeookkk",
-      "kkoeeeEEEEeeeokk",
-      "ooeeEEEWWEEEeeoo",
-      "oeeeEEWWWWEEeeeo",
-      "ooeeEEEWWEEEeeoo",
-      "kkoeeeEEEEeeeokk",
-      "kkkooeeeeeeookkk",
-      "kkkkkkooookkkkkk"
+      "kkkkLLLLLLLLkkkk",
+      "kkLLLuuuuuuLLLkk",
+      "kLLuudddddduuLLk",
+      "LLudddddddddduLL",
+      "LudddddddddddduL",
+      "LddddddddddddddL",
+      "LddddddddddddddL",
+      "LddddSSSSSSddddL",
+      "LldsssSSSSsssdlL",
+      "kLlddssssssddlLk",
+      "kkLllddddddllLkk",
+      "kkkkLllllllLkkkk"
      ],
      "key": {
-      "o": "eye:3",
-      "e": "eye:4",
-      "E": "eye:5",
-      "W": "eye:7",
-      "k": "obsidian:0"
+      "L": "sclera:1",
+      "k": "sclera:1",
+      "l": "sclera:1",
+      "u": "sclera:1",
+      "d": "sclera:2",
+      "s": "sclera:4",
+      "S": "sclera:5"
      }
     }
    ]
@@ -3457,31 +3643,60 @@
    "parent": "eye_0",
    "size": [
     9.0,
-    5.0,
+    7.0,
     1.5
    ],
    "pivot": [
     0.0,
     0.0,
-    0.25
+    -1.35
    ],
    "style": "eye_ball_0"
   },
   {
    "id": "eye_0_pupil",
+   "shape": "card",
+   "parent": "eye_0",
+   "pivot": [
+    0.0,
+    -0.5,
+    -0.5
+   ],
+   "style": "iris",
+   "plane": "xy",
+   "art": [
+    "...oooo...",
+    ".ooiiIioo.",
+    ".oWWwIiIo.",
+    "owWWwpIIIo",
+    "oIwppppIIo",
+    "oIcppppcJo",
+    "oJIcppcJJo",
+    ".oIJccJwo.",
+    ".ooJJJJoo.",
+    "...oooo..."
+   ]
+  },
+  {
+   "id": "eye_0_lid",
    "shape": "box",
    "parent": "eye_0",
    "size": [
-    1.5,
-    4.0,
+    10.0,
+    2.5,
     0.5
    ],
    "pivot": [
     0.0,
-    0.0,
-    1.25
+    4.0,
+    -0.35
    ],
-   "style": "pupil"
+   "offset": [
+    0.0,
+    -1.25,
+    0.0
+   ],
+   "style": "lid_0"
   },
   {
    "id": "eye_1",
@@ -3500,31 +3715,63 @@
    "parent": "eye_1",
    "size": [
     8.0,
-    4.5,
+    6.0,
     1.5
    ],
    "pivot": [
     0.0,
     0.0,
-    0.25
+    -1.35
    ],
    "style": "eye_ball_1"
   },
   {
    "id": "eye_1_pupil",
+   "shape": "card",
+   "parent": "eye_1",
+   "pivot": [
+    0.0,
+    -0.5,
+    -0.5
+   ],
+   "style": "iris",
+   "plane": "xy",
+   "art": [
+    "..oooo..",
+    ".oiiiio.",
+    "oiWIwIIo",
+    "owIppIIo",
+    "oIcppcIo",
+    "oIIccwJo",
+    ".oJJJJo.",
+    "..oooo.."
+   ]
+  },
+  {
+   "id": "eye_1_lid",
    "shape": "box",
    "parent": "eye_1",
    "size": [
-    1.5,
-    3.5,
+    9.0,
+    2.5,
     0.5
    ],
    "pivot": [
     0.0,
-    0.0,
-    1.25
+    3.5,
+    -0.35
    ],
-   "style": "pupil"
+   "offset": [
+    0.0,
+    -1.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    11.0
+   ],
+   "style": "lid_1"
   },
   {
    "id": "eye_2",
@@ -3543,31 +3790,63 @@
    "parent": "eye_2",
    "size": [
     8.0,
-    4.5,
+    6.0,
     1.5
    ],
    "pivot": [
     0.0,
     0.0,
-    0.25
+    -1.35
    ],
    "style": "eye_ball_2"
   },
   {
    "id": "eye_2_pupil",
+   "shape": "card",
+   "parent": "eye_2",
+   "pivot": [
+    0.0,
+    -0.5,
+    -0.5
+   ],
+   "style": "iris",
+   "plane": "xy",
+   "art": [
+    "..oooo..",
+    ".oiiiio.",
+    "oiWIwIIo",
+    "owIppIIo",
+    "oIcppcIo",
+    "oIIccwJo",
+    ".oJJJJo.",
+    "..oooo.."
+   ]
+  },
+  {
+   "id": "eye_2_lid",
    "shape": "box",
    "parent": "eye_2",
    "size": [
-    1.5,
-    3.5,
+    9.0,
+    2.5,
     0.5
    ],
    "pivot": [
     0.0,
-    0.0,
-    1.25
+    3.5,
+    -0.35
    ],
-   "style": "pupil"
+   "offset": [
+    0.0,
+    -1.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -11.0
+   ],
+   "style": "lid_2"
   },
   {
    "id": "brow_1",
@@ -5329,7 +5608,7 @@
      "axis": "z"
     },
     {
-     "part": "eye_0",
+     "part": "eye_0_lid",
      "channel": "scale",
      "ease": "ease",
      "keys": [
@@ -5352,16 +5631,16 @@
       [
        2.172,
        [
-        0.1,
-        -0.92,
+        0,
+        2.0,
         0
        ]
       ],
       [
        2.208,
        [
-        0.1,
-        -0.92,
+        0,
+        2.0,
         0
        ]
       ],
@@ -5384,7 +5663,7 @@
      ]
     },
     {
-     "part": "eye_1",
+     "part": "eye_1_lid",
      "channel": "scale",
      "ease": "ease",
      "keys": [
@@ -5407,16 +5686,16 @@
       [
        4.672,
        [
-        0.1,
-        -0.92,
+        0,
+        2.0,
         0
        ]
       ],
       [
        4.708,
        [
-        0.1,
-        -0.92,
+        0,
+        2.0,
         0
        ]
       ],
@@ -5439,7 +5718,7 @@
      ]
     },
     {
-     "part": "eye_2",
+     "part": "eye_2_lid",
      "channel": "scale",
      "ease": "ease",
      "keys": [
@@ -5462,16 +5741,16 @@
       [
        4.692,
        [
-        0.1,
-        -0.92,
+        0,
+        2.0,
         0
        ]
       ],
       [
        4.728,
        [
-        0.1,
-        -0.92,
+        0,
+        2.0,
         0
        ]
       ],
@@ -6203,7 +6482,7 @@
        [
         0,
         0,
-        0.5
+        0.2
        ]
       ],
       [
@@ -6211,7 +6490,7 @@
        [
         0,
         0,
-        0.5
+        0.2
        ]
       ]
      ],
@@ -6224,16 +6503,39 @@
       [
        0,
        [
-        -0.55,
-        0.05,
+        -0.2,
+        -0.2,
         0
        ]
       ],
       [
        2.0,
        [
-        -0.55,
-        0.05,
+        -0.2,
+        -0.2,
+        0
+       ]
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "eye_0_lid",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.4,
         0
        ]
       ]
@@ -6285,7 +6587,7 @@
        [
         0,
         0,
-        0.5
+        0.2
        ]
       ],
       [
@@ -6293,7 +6595,7 @@
        [
         0,
         0,
-        0.5
+        0.2
        ]
       ]
      ],
@@ -6306,16 +6608,39 @@
       [
        0,
        [
-        -0.55,
-        0.05,
+        -0.2,
+        -0.2,
         0
        ]
       ],
       [
        2.0,
        [
-        -0.55,
-        0.05,
+        -0.2,
+        -0.2,
+        0
+       ]
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "eye_1_lid",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.4,
         0
        ]
       ]
@@ -6367,7 +6692,7 @@
        [
         0,
         0,
-        0.5
+        0.2
        ]
       ],
       [
@@ -6375,7 +6700,7 @@
        [
         0,
         0,
-        0.5
+        0.2
        ]
       ]
      ],
@@ -6388,16 +6713,39 @@
       [
        0,
        [
-        -0.55,
-        0.05,
+        -0.2,
+        -0.2,
         0
        ]
       ],
       [
        2.0,
        [
-        -0.55,
-        0.05,
+        -0.2,
+        -0.2,
+        0
+       ]
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "eye_2_lid",
+     "channel": "scale",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0,
+        -0.4,
         0
        ]
       ]
@@ -10174,8 +10522,8 @@
       [
        0.88,
        [
-        -0.5,
-        0.0,
+        -0.22,
+        -0.22,
         0.0
        ],
        "out"
@@ -10183,8 +10531,8 @@
       [
        1.0,
        [
-        -0.55,
-        0.0,
+        -0.26,
+        -0.26,
         0.0
        ],
        "ease"
@@ -10310,8 +10658,8 @@
       [
        0.88,
        [
-        -0.5,
-        0.0,
+        -0.22,
+        -0.22,
         0.0
        ],
        "out"
@@ -10319,8 +10667,8 @@
       [
        1.0,
        [
-        -0.55,
-        0.0,
+        -0.26,
+        -0.26,
         0.0
        ],
        "ease"
@@ -10446,8 +10794,8 @@
       [
        0.88,
        [
-        -0.5,
-        0.0,
+        -0.22,
+        -0.22,
         0.0
        ],
        "out"
@@ -10455,8 +10803,8 @@
       [
        1.0,
        [
-        -0.55,
-        0.0,
+        -0.26,
+        -0.26,
         0.0
        ],
        "ease"
@@ -19966,18 +20314,65 @@
        ]
       ],
       [
+       0.26,
+       [
+        0.12,
+        0.1,
+        0
+       ]
+      ],
+      [
+       0.49999999999999994,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       3.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye_1_lid",
+     "channel": "scale",
+     "ease": "ease",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
        0.18,
        [
         0,
-        -0.6,
+        1.2,
         0
        ]
       ],
       [
        0.26,
        [
-        0.15,
-        0.1,
+        0,
+        -0.2,
         0
        ]
       ],
@@ -19993,7 +20388,7 @@
        0.58,
        [
         0,
-        -0.7,
+        1.6,
         0
        ]
       ],
@@ -20001,23 +20396,23 @@
        0.6399999999999999,
        [
         0,
-        -0.1,
+        0.5,
         0
        ]
       ],
       [
        0.7,
        [
-        -0.35,
-        -0.95,
+        0,
+        2.0,
         0
        ]
       ],
       [
        3.0,
        [
-        -0.35,
-        -0.95,
+        0,
+        2.0,
         0
        ]
       ]
@@ -20045,18 +20440,65 @@
        ]
       ],
       [
+       0.26,
+       [
+        0.12,
+        0.1,
+        0
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       3.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye_2_lid",
+     "channel": "scale",
+     "ease": "ease",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
        0.18,
        [
         0,
-        -0.6,
+        1.2,
         0
        ]
       ],
       [
        0.26,
        [
-        0.15,
-        0.1,
+        0,
+        -0.2,
         0
        ]
       ],
@@ -20072,7 +20514,7 @@
        0.88,
        [
         0,
-        -0.7,
+        1.6,
         0
        ]
       ],
@@ -20080,23 +20522,23 @@
        0.94,
        [
         0,
-        -0.1,
+        0.5,
         0
        ]
       ],
       [
        1.0,
        [
-        -0.35,
-        -0.95,
+        0,
+        2.0,
         0
        ]
       ],
       [
        3.0,
        [
-        -0.35,
-        -0.95,
+        0,
+        2.0,
         0
        ]
       ]
@@ -20124,18 +20566,65 @@
        ]
       ],
       [
+       0.26,
+       [
+        0.12,
+        0.1,
+        0
+       ]
+      ],
+      [
+       1.1500000000000001,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       3.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "eye_0_lid",
+     "channel": "scale",
+     "ease": "ease",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0,
+        -0.4,
+        0
+       ]
+      ],
+      [
        0.18,
        [
         0,
-        -0.6,
+        1.2,
         0
        ]
       ],
       [
        0.26,
        [
-        0.15,
-        0.1,
+        0,
+        -0.2,
         0
        ]
       ],
@@ -20151,7 +20640,7 @@
        1.23,
        [
         0,
-        -0.7,
+        1.6,
         0
        ]
       ],
@@ -20159,23 +20648,23 @@
        1.29,
        [
         0,
-        -0.1,
+        0.5,
         0
        ]
       ],
       [
        1.35,
        [
-        -0.35,
-        -0.95,
+        0,
+        2.0,
         0
        ]
       ],
       [
        3.0,
        [
-        -0.35,
-        -0.95,
+        0,
+        2.0,
         0
        ]
       ]

@@ -1,13 +1,13 @@
 {
  "name": "End Glider",
- "description": "The Winterworks End Glider: a handheld flying machine of End mob parts: a gucker-gland bellows between shulker-shell plates, two flapping enderfly-membrane wings on purpur spars and two jet pods blowing pulsing violet air-jets. Minecraft pixel units, density 4.",
+ "description": "The Winterworks End Glider: a glowing magic wing glider: a slender moonsilver control bar with silk grips and an A-frame of struts under two pairs of great translucent violet enderfly wings with glowing veins and soft round eye-spots, a turning rune sigil at each wing root whose flare blazes when boosting. Minecraft pixel units, density 4.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 4,
  "grounded": false,
  "budget": {
   "tris": 600,
-  "colors": 72
+  "colors": 80
  },
  "light": {
   "dir": [
@@ -26,26 +26,24 @@
   "rough": 0.4,
   "overshoot": 0.3,
   "textures": {
-   "purpur": "stone",
-   "gland": "organic",
-   "meteorite": "stone"
+   "membrane": "organic",
+   "gold": "metal",
+   "silver": "metal"
   }
  },
  "minecraft": {
   "fps": 24,
-  "glow_parts": [
-   "flame_l_core",
-   "flame_l",
-   "flame_l_v",
-   "flame_l_h",
-   "flame_r_core",
-   "flame_r",
-   "flame_r_v",
-   "flame_r_h"
-  ],
   "glow_ramps": [
+   "vein",
+   "spot",
    "crying"
-  ]
+  ],
+  "alpha_parts": {
+   "fore_l": 0.62,
+   "fore_r": 0.62,
+   "hind_l_m": 0.62,
+   "hind_r_m": 0.62
+  }
  },
  "render": {
   "background": "#2a2735",
@@ -57,15 +55,6 @@
  },
  "palette": {
   "ramps": {
-   "purpur": [
-    "#3a2140",
-    "#55335c",
-    "#74497c",
-    "#93649b",
-    "#ae82b5",
-    "#c7a1cc",
-    "#ddc1e0"
-   ],
    "crying": [
     "#3a0b6e",
     "#5a12a0",
@@ -76,134 +65,144 @@
     "#ecc9ff",
     "#fbf0ff"
    ],
-   "iron": [
-    "#1e1d24",
-    "#33323b",
-    "#4b4a54",
-    "#65646e",
-    "#82818a",
-    "#a2a1a8",
-    "#c4c3c8",
-    "#e6e5e8"
-   ],
-   "obsidian": [
-    "#07040d",
-    "#0e0819",
-    "#160e26",
-    "#1f1534",
-    "#2a1d44",
-    "#372756",
-    "#46336a",
-    "#58427f",
-    "#6d5594"
-   ],
-   "gland": [
-    "#2c1020",
-    "#4a1a33",
-    "#6c2a4a",
-    "#8f3f62",
-    "#b0587a",
-    "#cc7894",
-    "#e39db0",
-    "#f4c6d0"
+   "gold": [
+    "#2b1233",
+    "#4b1f3e",
+    "#73343f",
+    "#9c5441",
+    "#c27f4a",
+    "#dfac5e",
+    "#f2d27f",
+    "#fdf0b8"
    ],
    "membrane": [
-    "#150c22",
-    "#21143a",
-    "#2f1d52",
-    "#3f2a68",
-    "#52397f",
-    "#6a4d96",
-    "#8a6bb0",
-    "#b49ad0",
-    "#e2d4f0"
+    "#1c0f33",
+    "#28154a",
+    "#371d62",
+    "#46277a",
+    "#583291",
+    "#6b40a6",
+    "#8156ba",
+    "#9a71cc",
+    "#b590dc",
+    "#d2b5ec"
    ],
-   "meteorite": [
-    "#141114",
-    "#211b1e",
-    "#302727",
-    "#433533",
-    "#584640",
-    "#6f5a4f"
+   "vein": [
+    "#5d2bbf",
+    "#7d45e0",
+    "#a06df5",
+    "#c39bff",
+    "#e3cdff",
+    "#faf3ff"
    ],
-   "ember": [
-    "#3b0d0a",
-    "#6e1d0c",
-    "#a8380f",
-    "#d8611a",
-    "#f28f2c",
-    "#ffc35a",
-    "#fff0b0"
+   "spot": [
+    "#640f52",
+    "#9c1f7c",
+    "#d33da0",
+    "#f26bc0",
+    "#ff9fd8",
+    "#ffd2ee",
+    "#fff4fb"
    ],
-   "leather": [
-    "#1c1016",
-    "#2c1a20",
-    "#3f262b",
-    "#553536",
-    "#6d4743",
-    "#875c52"
+   "silver": [
+    "#25202e",
+    "#3a3346",
+    "#534a62",
+    "#6f667f",
+    "#8e859e",
+    "#aea6bd",
+    "#cfc9da",
+    "#ece9f2"
+   ],
+   "pearl": [
+    "#3a3050",
+    "#5a4e74",
+    "#7f739a",
+    "#a69bbe",
+    "#cbc2dd",
+    "#ebe6f4",
+    "#fdfbff"
+   ],
+   "silk": [
+    "#1b0f2a",
+    "#2b1840",
+    "#3e2458",
+    "#533271",
+    "#6a428b",
+    "#8558a6"
    ]
   }
  },
  "styles": {
-  "shell": {
-   "ramp": "purpur",
-   "tone": 2.3,
+  "silver": {
+   "ramp": "silver",
+   "tone": 5.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4,
-    "outline": "dark"
-   },
-   "layers": [
-    {
-     "id": "plates",
-     "op": "scales",
-     "shape": "square",
-     "along": "x",
-     "size": [
-      2.5,
-      1.25
-     ],
-     "gap": 0.25,
-     "highlight": 0.8,
-     "shadow": -1.2,
-     "jitter": 0.3,
-     "faces": [
-      "top",
-      "sides"
-     ]
-    },
-    {
-     "id": "under",
-     "op": "gradient",
-     "axis": "y",
-     "amount": 0.6
-    }
-   ]
-  },
-  "shell_dark": {
-   "ramp": "purpur",
-   "tone": 2.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
+    "light_shift": 1.8,
     "dark_shift": -1.4,
     "outline": "dark"
    },
    "brush": {
     "off": true
-   }
+   },
+   "dither": 0,
+   "layers": [
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.6,
+     "shift": 2.0
+    }
+   ]
   },
-  "gland": {
-   "ramp": "gland",
-   "tone": 4.0,
+  "keel": {
+   "ramp": "silver",
+   "tone": 2.8,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.4,
+    "light_shift": 1.8,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "layers": [
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.6,
+     "shift": 2.0
+    },
+    {
+     "id": "joints",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.75,
+     "width": 0.15,
+     "shift": -1.4
+    }
+   ]
+  },
+  "gold": {
+   "ramp": "gold",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
     "dark_shift": -1.6
    },
    "brush": {
@@ -211,118 +210,46 @@
    },
    "layers": [
     {
-     "id": "pores",
-     "op": "spots",
-     "count": 6,
-     "radius": [
-      0.25,
-      0.4
-     ],
-     "ramp": "gland",
-     "tone": 1.0,
-     "faces": [
-      "sides"
-     ]
-    },
-    {
-     "id": "veins",
-     "op": "cracks",
-     "scale": 1.2,
-     "width": 0.05,
-     "shift": -1.2
-    },
-    {
-     "id": "sheen",
+     "id": "gloss",
      "op": "gloss",
      "post": true,
      "dash": true,
      "length": 2,
      "inset": 0,
-     "density": 0.5,
-     "shift": 1.8
+     "density": 0.6,
+     "shift": 2.0
     }
    ]
   },
-  "gland_fold": {
-   "ramp": "gland",
-   "tone": 2.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.2,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "crease",
-     "op": "band",
-     "axis": "y",
-     "from": -0.3,
-     "to": 0.3,
-     "shift": -1.0,
-     "faces": [
-      "sides"
-     ]
-    }
-   ]
-  },
-  "meteorite": {
-   "ramp": "meteorite",
-   "tone": 2.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4,
-    "outline": "dark"
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "pits",
-     "op": "spots",
-     "count": 4,
-     "radius": [
-      0.2,
-      0.4
-     ],
-     "shift": -1.4
-    },
-    {
-     "id": "embers",
-     "op": "cracks",
-     "scale": 1.0,
-     "width": 0.05,
-     "threshold": 0.45,
-     "ramp": "ember",
-     "tone": 4.6,
-     "seed": 3
-    }
-   ]
-  },
-  "iron_bar": {
-   "ramp": "iron",
+  "pearl": {
+   "ramp": "pearl",
    "tone": 3.2,
+   "light": 0.8,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4,
-    "outline": "dark"
+    "light_shift": 1.6,
+    "dark_shift": -1.6
    },
    "brush": {
     "off": true
    },
-   "dither": 0
+   "layers": [
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.6,
+     "shift": 2.0
+    }
+   ]
   },
   "grip": {
-   "ramp": "leather",
-   "tone": 3.0,
+   "ramp": "silk",
+   "tone": 3.4,
    "rim": {
     "light": 1,
     "dark": 1,
@@ -338,201 +265,125 @@
      "op": "stripes",
      "axis": [
       1,
-      0.4,
+      0.5,
       0
      ],
      "period": 0.75,
      "width": 0.3,
-     "shift": -1.2
-    }
-   ]
-  },
-  "spar": {
-   "ramp": "purpur",
-   "tone": 4.2,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4,
-    "outline": "dark"
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
+     "shift": -1.4
+    },
     {
-     "id": "joints",
+     "id": "sheen",
      "op": "stripes",
-     "axis": "x",
-     "period": 3.5,
+     "axis": [
+      1,
+      0.5,
+      0
+     ],
+     "period": 0.75,
      "width": 0.15,
-     "shift": -1.6
-    }
-   ]
-  },
-  "spar_tip": {
-   "ramp": "purpur",
-   "tone": 5.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4,
-    "outline": "dark"
-   },
-   "brush": {
-    "off": true
-   }
-  },
-  "membrane": {
-   "ramp": "membrane",
-   "tone": 4.0,
-   "light": 0.3,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "m": "membrane:3",
-    "M": "membrane:4",
-    "v": "membrane:1",
-    "o": "membrane:0",
-    "f": "membrane:7",
-    "k": "membrane:0",
-    "E": "crying:4",
-    "W": "crying:7"
-   }
-  },
-  "intake": {
-   "ramp": "obsidian",
-   "tone": 1.4,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "fan",
-     "op": "grille",
-     "rect": [
-      0.1,
-      0.1,
-      0.9,
-      0.9
-     ],
-     "period": 2,
-     "dir": "v",
-     "slit_tone": 0.2,
-     "lip": 2.0,
-     "faces": [
-      "front"
-     ]
-    }
-   ]
-  },
-  "nozzle": {
-   "ramp": "meteorite",
-   "tone": 1.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.4,
-    "outline": "dark"
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "glow",
-     "op": "rect",
-     "rect": [
-      0.2,
-      0.2,
-      0.8,
-      0.8
-     ],
-     "ramp": "crying",
-     "tone": 5.0,
-     "faces": [
-      "back"
-     ]
-    }
-   ]
-  },
-  "flame_hot": {
-   "ramp": "crying",
-   "tone": 7.0,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 0,
-    "dark": 0
-   }
-  },
-  "flame": {
-   "ramp": "crying",
-   "tone": 4.6,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.0,
-    "dark_shift": -1.0
-   },
-   "layers": [
-    {
-     "id": "fade",
-     "op": "gradient",
-     "axis": "z",
-     "amount": 1.6
-    },
-    {
-     "id": "streaks",
-     "op": "stripes",
-     "axis": "x",
-     "period": 0.75,
-     "width": 0.3,
-     "shift": 0.8,
-     "faces": [
-      "top",
-      "bottom"
-     ]
-    },
-    {
-     "id": "streaks_s",
-     "op": "stripes",
-     "axis": "y",
-     "period": 0.75,
-     "width": 0.3,
-     "shift": 0.8,
-     "faces": [
-      "left",
-      "right"
-     ]
+     "phase": 0.4,
+     "shift": 1.4
     }
    ]
   },
   "antenna": {
    "ramp": "membrane",
-   "tone": 5.0,
+   "tone": 6.0,
    "light": 0.3,
    "brush": {
     "off": true
    },
    "art_key": {
-    "a": "membrane:2",
-    "A": "membrane:5",
-    "b": "membrane:7"
+    "s": "membrane:3",
+    "b": "membrane:7",
+    "B": "membrane:5",
+    "t": "vein:3"
    }
   },
-  "flame_card": {
+  "membrane_l": {
+   "ramp": "membrane",
+   "tone": 4.6,
+   "light": 0.2,
+   "brush": {
+    "flow": "x",
+    "length": 1.2,
+    "rough": 0.3
+   },
+   "layers": [
+    {
+     "id": "root_deep",
+     "op": "gradient",
+     "axis": "x",
+     "amount": 2.6
+    },
+    {
+     "id": "sheen",
+     "op": "noise",
+     "scale": 1.6,
+     "amount": 0.35
+    }
+   ],
+   "art_key": {
+    "M": "membrane:6",
+    "r": "membrane:8",
+    "R": "vein:4",
+    "v": "vein:2",
+    "V": "vein:4",
+    "x": "vein:1",
+    "H": "spot:1",
+    "k": "membrane:0",
+    "E": "spot:2",
+    "f": "spot:3",
+    "e": "spot:4",
+    "c": "spot:5",
+    "p": "membrane:0",
+    "w": "spot:6",
+    "s": "spot:5"
+   }
+  },
+  "membrane_r": {
+   "ramp": "membrane",
+   "tone": 4.6,
+   "light": 0.2,
+   "brush": {
+    "flow": "x",
+    "length": 1.2,
+    "rough": 0.3
+   },
+   "layers": [
+    {
+     "id": "root_deep",
+     "op": "gradient",
+     "axis": "x",
+     "amount": -2.6
+    },
+    {
+     "id": "sheen",
+     "op": "noise",
+     "scale": 1.6,
+     "amount": 0.35
+    }
+   ],
+   "art_key": {
+    "M": "membrane:6",
+    "r": "membrane:8",
+    "R": "vein:4",
+    "v": "vein:2",
+    "V": "vein:4",
+    "x": "vein:1",
+    "H": "spot:1",
+    "k": "membrane:0",
+    "E": "spot:2",
+    "f": "spot:3",
+    "e": "spot:4",
+    "c": "spot:5",
+    "p": "membrane:0",
+    "w": "spot:6",
+    "s": "spot:5"
+   }
+  },
+  "sigil": {
    "ramp": "crying",
    "tone": 4.0,
    "light": 0,
@@ -540,30 +391,27 @@
     "off": true
    },
    "art_key": {
-    "W": "crying:7",
-    "w": "crying:6",
-    "E": "crying:4"
+    "a": "crying:5",
+    "b": "crying:4",
+    "c": "crying:6",
+    "d": "crying:7",
+    "e": "crying:2",
+    "f": "crying:0"
    }
   },
-  "flame_tail": {
+  "flare": {
    "ramp": "crying",
-   "tone": 2.6,
+   "tone": 4.0,
    "light": 0,
    "brush": {
     "off": true
    },
-   "rim": {
-    "light": 0,
-    "dark": 0
-   },
-   "layers": [
-    {
-     "id": "fade",
-     "op": "gradient",
-     "axis": "z",
-     "amount": 1.4
-    }
-   ]
+   "art_key": {
+    "a": "crying:2",
+    "b": "crying:3",
+    "c": "crying:5",
+    "d": "crying:7"
+   }
   }
  },
  "parts": [
@@ -575,7 +423,7 @@
     24.0,
     0.0
    ],
-   "style": "shell"
+   "style": "silver"
   },
   {
    "id": "handle",
@@ -586,32 +434,32 @@
     0.0,
     0.0
    ],
-   "style": "shell"
+   "style": "silver"
   },
   {
    "id": "bar",
    "shape": "box",
    "parent": "handle",
    "size": [
-    13.0,
-    1.0,
-    1.0
+    11.0,
+    0.75,
+    0.75
    ],
    "pivot": [
     0.0,
     0.0,
     0.0
    ],
-   "style": "iron_bar"
+   "style": "silver"
   },
   {
    "id": "grip_l",
    "shape": "box",
    "parent": "handle",
    "size": [
-    3.0,
-    1.5,
-    1.5
+    2.5,
+    1.0,
+    1.0
    ],
    "pivot": [
     4.25,
@@ -621,55 +469,102 @@
    "style": "grip"
   },
   {
-   "id": "bar_cap_l",
+   "id": "cuff_l",
    "shape": "box",
-   "parent": "handle",
+   "parent": "bar",
    "size": [
+    0.5,
     1.0,
-    1.75,
-    1.75
+    1.0
    ],
    "pivot": [
-    6.75,
+    2.75,
     0.0,
     0.0
    ],
-   "style": "meteorite"
+   "style": "gold"
+  },
+  {
+   "id": "bar_tip_l",
+   "shape": "box",
+   "parent": "bar",
+   "size": [
+    1.75,
+    0.75,
+    0.75
+   ],
+   "pivot": [
+    5.5,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.875,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    32.0
+   ],
+   "style": "silver"
+  },
+  {
+   "id": "finial_l",
+   "shape": "box",
+   "parent": "bar_tip_l",
+   "size": [
+    0.75,
+    0.75,
+    0.75
+   ],
+   "pivot": [
+    1.85,
+    -0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -32.0
+   ],
+   "style": "pearl"
   },
   {
    "id": "strut_l",
    "shape": "box",
    "parent": "handle",
    "size": [
-    0.75,
-    6.5,
-    0.75
+    0.5,
+    9.5,
+    0.5
    ],
    "pivot": [
-    2.0,
+    2.75,
     0.25,
     0.0
    ],
    "offset": [
     0.0,
-    3.25,
+    4.75,
     0.0
    ],
    "rotation": [
     0.0,
     0.0,
-    12.0
+    13.671
    ],
-   "style": "iron_bar"
+   "style": "silver"
   },
   {
    "id": "grip_r",
    "shape": "box",
    "parent": "handle",
    "size": [
-    3.0,
-    1.5,
-    1.5
+    2.5,
+    1.0,
+    1.0
    ],
    "pivot": [
     -4.25,
@@ -679,812 +574,818 @@
    "style": "grip"
   },
   {
-   "id": "bar_cap_r",
+   "id": "cuff_r",
    "shape": "box",
-   "parent": "handle",
+   "parent": "bar",
    "size": [
+    0.5,
     1.0,
-    1.75,
-    1.75
+    1.0
    ],
    "pivot": [
-    -6.75,
+    -2.75,
     0.0,
     0.0
    ],
-   "style": "meteorite"
+   "style": "gold"
+  },
+  {
+   "id": "bar_tip_r",
+   "shape": "box",
+   "parent": "bar",
+   "size": [
+    1.75,
+    0.75,
+    0.75
+   ],
+   "pivot": [
+    -5.5,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -0.875,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -32.0
+   ],
+   "style": "silver"
+  },
+  {
+   "id": "finial_r",
+   "shape": "box",
+   "parent": "bar_tip_r",
+   "size": [
+    0.75,
+    0.75,
+    0.75
+   ],
+   "pivot": [
+    -1.85,
+    -0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    32.0
+   ],
+   "style": "pearl"
   },
   {
    "id": "strut_r",
    "shape": "box",
    "parent": "handle",
    "size": [
-    0.75,
-    6.5,
-    0.75
+    0.5,
+    9.5,
+    0.5
    ],
    "pivot": [
-    -2.0,
+    -2.75,
     0.25,
     0.0
    ],
    "offset": [
     0.0,
-    3.25,
+    4.75,
     0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -13.671
+   ],
+   "style": "silver"
+  },
+  {
+   "id": "keel",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    1.0,
+    7.0
+   ],
+   "pivot": [
+    0.0,
+    10.0,
+    -0.5
+   ],
+   "style": "keel"
+  },
+  {
+   "id": "hub",
+   "shape": "box",
+   "parent": "keel",
+   "size": [
+    1.5,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -0.25,
+    1.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "keel_band",
+   "shape": "box",
+   "parent": "keel",
+   "size": [
+    1.25,
+    1.25,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -2.5
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "keel_tail",
+   "shape": "box",
+   "parent": "keel",
+   "size": [
+    0.5,
+    0.5,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -4.5
+   ],
+   "style": "silver"
+  },
+  {
+   "id": "heart",
+   "shape": "box",
+   "parent": "keel",
+   "size": [
+    1.25,
+    1.25,
+    1.25
+   ],
+   "pivot": [
+    0.0,
+    0.1,
+    3.8
+   ],
+   "style": "pearl"
+  },
+  {
+   "id": "antenna_l",
+   "shape": "card",
+   "parent": "keel",
+   "pivot": [
+    0.35,
+    0.6,
+    4.1
+   ],
+   "offset": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "rotation": [
+    40.0,
+    0.0,
+    -18.0
+   ],
+   "style": "antenna",
+   "plane": "yz",
+   "art": [
+    "..t..",
+    ".ttt.",
+    ".BtB.",
+    ".tst.",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    ".BsB.",
+    ".tst.",
+    ".BsB.",
+    ".tst.",
+    ".BsB.",
+    "..s..",
+    "..s..",
+    "..s.."
+   ]
+  },
+  {
+   "id": "antenna_r",
+   "shape": "card",
+   "parent": "keel",
+   "pivot": [
+    -0.35,
+    0.6,
+    4.1
+   ],
+   "offset": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "rotation": [
+    40.0,
+    0.0,
+    18.0
+   ],
+   "style": "antenna",
+   "plane": "yz",
+   "art": [
+    "..t..",
+    ".ttt.",
+    ".BtB.",
+    ".tst.",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    "tBsBt",
+    "BbsbB",
+    ".BsB.",
+    ".tst.",
+    ".BsB.",
+    ".tst.",
+    ".BsB.",
+    "..s..",
+    "..s..",
+    "..s.."
+   ]
+  },
+  {
+   "id": "wing_l",
+   "shape": "bone",
+   "parent": "keel",
+   "pivot": [
+    0.5,
+    0.25,
+    1.75
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    12.0
+   ],
+   "style": "silver"
+  },
+  {
+   "id": "fore_l",
+   "shape": "card",
+   "parent": "wing_l",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    9.0,
+    0.0,
+    -2.6
+   ],
+   "style": "membrane_l",
+   "plane": "xz",
+   "art": [
+    "........................................................................",
+    "........................................................................",
+    "..........................rRrrrrrrRrrrrr................................",
+    "......................rRrrmvvmmmmmmmmmmmrrrr............................",
+    "....................rrmmmmmvmmmmmmmmmmmmmmvmrr..........................",
+    "..................rrmmmmmmvmmmmmmmmmmmmmvvmmmmrr........................",
+    "................rrmmmmmmmvmmmmmmmmmmmmmvvmmmmmmmrr......................",
+    "...............rmmmmmmmmvmmmmmmmmmmmmvvmmmmmmmmmmmrr....................",
+    ".............rrmmmmmmmxvvmmmmmmmmmmmvvmmmmmmmmmmmmmmRr..................",
+    "............rvmmmmmxxxvvxxxxxxxxxxmvvmmmmmmmmmmmmmmmmmrR................",
+    "...........rvvmmxxxxmvvmmmmmmmmmmmvxxmmmmmmmmmmmmmmmmmmvr...............",
+    "..........rmvmxxxmmmvvmmmmmmmmmmvvmmxxxmmmmmmmmmmmmmvvvmmr..............",
+    ".........rmvvxmmmmmmvmmmmmmmmmmvvmmmmmxxmmmmmmmmmmvvvmmmmmrr............",
+    "........rmmvmmmmmmmvmmmmmmmmmmvmmmmmmmmmxxmmmmmmvvmmmmmmmmmmR...........",
+    ".......rmmVVmmmmmmvmmmmmmmmmvvmmmmmmmmmmmmxxmvvvmmmmmmmmmmmmmr..........",
+    "......rmmVVVVVVmmvvmmmmmmmmvvmmmmmmmmmmmmmmvvvmmmmmmmmmmmmmmmmr.........",
+    ".....rmVV......VVmmmmmmmmvvmmmmmmmmmmmmmmvvmmHHHHHHmmmmmmmmMMMMr........",
+    "....rVV..........VVmmmmmvvmmmmmmmmmmmmmvvvmHHkkkkkkHHmmmmmMMMMMMr.......",
+    "....VV............VVmmvvmmmmmmmmmmmmvvvmmmHHkkEEEEkkHHmmmmMMMMMMMr......",
+    "...rV..............VmvvmmmmmmmmmmmvvvmmmmHHkEEEEEEEEkHHmmMMMMvvvvvr.....",
+    "..rV................VxmmmmmmmmmvvvmmmmmmmHkEEEffEffEEkHmvvvvvMMMMmmR....",
+    ".rmV................VxxxmmmmmvvvmmmmmmmmHkkEfwwEEffEEkkHvmMMMMMMMmmmr...",
+    ".rV..................VmxxmvvvvmmmmmmmmmmHkEEswwspffffEkHMmmMMMMMmmmmmr..",
+    "rmV..................VmmvvvmmmmmmmmmmmmmHkEffsppppfffEkHMMmmmMmmmmmmmR..",
+    "rmV..................VvvmmxmmmmmmmmmmmvvHkEffcppppcffEkHMMmmmmmmmmmmmmr.",
+    "rmV..................VmmmmmxxmmmmvvvvvvmHkEfefcppcfeeEkHMMmmmmmmmmmmmmr.",
+    "rmV..................VmmmmmvvvvvvmmmmmmmHkkEefecceseEkkHMmmmmmmmmmmmmmmR",
+    "rmV..................VvvvvvvxmmmmmmmmmmmmHkEfeeeeeeeEkHxvvvvvvvvvvvvvvvr",
+    "rVVV................VmmmmmmmmxmmmmmmmmvvvHHkEEeeeeEEkHHvvmmmmmmmmmmmmmmr",
+    "rVVV................VvvvvvvvvvvvvvvvvvvMMMHHkkEEEEkkHHxmmmmmmmmmmmmmmmmr",
+    "rVVVV..............VmmmmmmmmmxmmmmmmmmMMMMMHHkkkkkkHHmxmmmmmmmmmmmmmmmmr",
+    "rmmmVV............VVvvvvvvvvvvvvmmmmmMMMMMMmmHHHHHHmmmxmmmmmmmmmmmmmmmmr",
+    "rmmmmVV..........VVmmmmmmmmmmxmvvvvvvvvvvvvvvvvvmmmmmmxmmmmmmmmmmmmmmmr.",
+    "rmmmmmmVV......VVmmmmmmmmmmmmmmmmmmmmmMMMMmmMMMMvvvvvvvvvvvvvvvvmmmmmmr.",
+    "rmmmmmmmmVVVVVVmmmmmmmmmmmmmmmmmmmmmmmmmmmmMMMMMMmmmmmmmmmmmmmmvvvvvrr..",
+    "rrmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmMMMMMMmmmmmmmmmmmmmmmmmmr....",
+    "..rrrmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmMMMMMMmmmmmmmmmmmmmmmrrR.....",
+    ".....rrrrrrrrmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmMMMMMMmmmmmmmmmmmrrRr........",
+    ".............rrrrrrrrmmmmmmmmmmmmmmmmmmmmmmMMMMMMmmRrrrrrrRr............",
+    ".....................rrrrrRrrrrrrRrrrrrrRrrrrrrRrrr....................."
+   ]
+  },
+  {
+   "id": "hind_l",
+   "shape": "bone",
+   "parent": "wing_l",
+   "pivot": [
+    0.0,
+    -0.25,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    10.0,
+    -5.0
+   ],
+   "style": "silver"
+  },
+  {
+   "id": "hind_l_m",
+   "shape": "card",
+   "parent": "hind_l",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    7.0,
+    0.0,
+    -4.68
+   ],
+   "style": "membrane_l",
+   "plane": "xz",
+   "art": [
+    "........................................................",
+    "....................................................Rrr.",
+    ".................................................rrrvmr.",
+    "..............................................rrrmvvrr..",
+    ".............................................rmmmmvr....",
+    "...........................................RrmmmvvR.....",
+    "..........................................rmMMmvvr......",
+    ".........................................rmMMMMvr.......",
+    ".......................................rrmMMMMvr........",
+    "......................................rmmmMMvvMr........",
+    ".....................................RmmmmMvvMr.........",
+    "....................................rmmmxxvvMr..........",
+    "..................................rrmmxxxvvmr...........",
+    ".................................rmmmxxmvvmmr...........",
+    "................................rmmxxmmvvmmmr...........",
+    "..............................rRmmxxmmxvmmmr............",
+    ".............................rmmxxmmmmvmmmmr............",
+    "...........................rrmmxxmHHHHHHmmmr............",
+    "..........................RmmxxmmHHkkkkHHmmr............",
+    "........................rrvxxxmmHkkEEEEkkHmR............",
+    "......................rrvvxxmmmHkEEEEfEEEkH.............",
+    "....................rRmmvxmmmmHHkEwwsfEfEkH.............",
+    "..................rrmmmvxmmmmmHkEEwwspfffEk.............",
+    "................rrmmmxvvmmmmmmHkEfsppppffEk.............",
+    ".............rrrmmmxxvvmmmmmmvHkEfcppppceEkH............",
+    "...........rrvmmmxxxmvmmmmmmvvHkEefcppceeEkH............",
+    ".........rrmvmmxxxmmvxxmmmmvvmHHkEfeccesEkHH............",
+    "........rmmvvxxmmmmvxxxmmvvmmmmHkEEeeeeEEkHr............",
+    "......rrmmmvxmmmmmvvmxmmvvmmmmmvHkkEEEEkkHmmr...........",
+    ".....rmmmmvvmmmmmvvmxmmvvmmmmvvmmHHkkkkHHmmmr...........",
+    "....rmmmmmvmmmmxvxmmxmvvmmmmvvmmmmHHHHHHmmmmr...........",
+    "...rmmmmmvmmmmxvvmmxmvmmmmvvmmmmmmxmmmmmmmmmmr..........",
+    "..rmmmmmmVmmxxvvmmmvvmmmvvmmmmmmmmxmmmmmmmmmmr..........",
+    ".rmmmmmmVmmxxmvmmvvmmmvvvmmmmmmmmmxmmmmmmmmvvr..........",
+    ".rmmmmmVVxxmmvmmvvxmmvvmmmmmmmmmmmmxmmmmvvvmmr..........",
+    "rmmmmmxVxmmVVmvvvxmvvvmmmmmmmmmmmmmxvvvvmmmmmr..........",
+    "rmmmmxVVmmVVmvvmmvvvmmmmmmmmmmmmmvvvvmmmmmmmr...........",
+    "rmmmmmVmmVVVVmmvvvxmmmmmmmmmmmvvvvxmmmmmmmmmr...........",
+    "rmmmmVmmVVVVmVvvmmxmmmmmmmvvvvmmmMxMMmmmmmmmR...........",
+    "rmmmVVVVVVmVVVmmmmxxmmmvvvvmmmmmMxxMMMmmmmmmr...........",
+    "rmmVVVVVmVVmmmmmmmxvvvvmmmmmmmmmMxMMMMmmmmmR............",
+    "rmVVVVVVVmmmmmVvvvvmmmmmmmmmmmmmmxMMMmmmmmr.............",
+    "rVVVVVVmmVVVVVVmmxxmmmmmmmmmmmmmxxMMMmmmmmR.............",
+    "rVVVVVVVVVmmmmmmmxmmmmmmmmmmvvvvvvvvvvvvvr..............",
+    "rVVVVVVVVVVVVVVVvvvvvvvvvvvvvmxxmMMMMMmmr...............",
+    "rmmVVVVVVVVVmmxxmmmmmmmmmmmmxxmmmMMMMMrr................",
+    "rmmmmmmmmmmVVVVVmmmmmmmmmmxxmmmmmMMMMr..................",
+    "rmmmmmmmmmmxmmmvvvvvmmmmxxmmmmmmmmMrR...................",
+    "rmmmmmmmmmmmmmmmmmmvvvvxmmmmmmmmRrr.....................",
+    "rmmmmmmmmmmmmmmmmmmmmxmvvvvmRrrr........................",
+    "rmmmmmmmmmmmmmmmmmmmmrrrRrrr............................",
+    ".rrrrrrrrrrrrrrrrrrrR..................................."
+   ]
+  },
+  {
+   "id": "wing_r",
+   "shape": "bone",
+   "parent": "keel",
+   "pivot": [
+    -0.5,
+    0.25,
+    1.75
    ],
    "rotation": [
     0.0,
     0.0,
     -12.0
    ],
-   "style": "iron_bar"
+   "style": "silver"
   },
   {
-   "id": "shell_bot",
-   "shape": "box",
-   "parent": "frame",
-   "size": [
-    8.5,
-    1.5,
-    10.0
-   ],
-   "pivot": [
-    0.0,
-    7.0,
-    0.0
-   ],
-   "style": "shell"
-  },
-  {
-   "id": "shell_bot_rim",
-   "shape": "box",
-   "parent": "shell_bot",
-   "size": [
-    9.0,
-    0.75,
-    10.5
-   ],
-   "pivot": [
-    0.0,
-    -0.875,
-    0.0
-   ],
-   "style": "shell_dark"
-  },
-  {
-   "id": "bellows",
-   "shape": "bone",
-   "parent": "frame",
-   "pivot": [
-    0.0,
-    7.75,
-    0.0
-   ],
-   "style": "shell"
-  },
-  {
-   "id": "fold_0",
-   "shape": "box",
-   "parent": "bellows",
-   "size": [
-    7.0,
-    1.25,
-    8.0
-   ],
-   "pivot": [
-    0.0,
-    0.625,
-    0.0
-   ],
-   "style": "gland_fold"
-  },
-  {
-   "id": "fold_1",
-   "shape": "box",
-   "parent": "bellows",
-   "size": [
-    7.75,
-    1.25,
-    8.75
-   ],
-   "pivot": [
-    0.0,
-    1.875,
-    0.0
-   ],
-   "style": "gland"
-  },
-  {
-   "id": "fold_2",
-   "shape": "box",
-   "parent": "bellows",
-   "size": [
-    7.25,
-    1.25,
-    8.25
-   ],
-   "pivot": [
-    0.0,
-    3.125,
-    0.0
-   ],
-   "style": "gland_fold"
-  },
-  {
-   "id": "fold_3",
-   "shape": "box",
-   "parent": "bellows",
-   "size": [
-    7.75,
-    1.25,
-    8.75
-   ],
-   "pivot": [
-    0.0,
-    4.375,
-    0.0
-   ],
-   "style": "gland"
-  },
-  {
-   "id": "shell_top",
-   "shape": "box",
-   "parent": "frame",
-   "size": [
-    9.0,
-    1.5,
-    10.5
-   ],
-   "pivot": [
-    0.0,
-    13.5,
-    0.0
-   ],
-   "style": "shell"
-  },
-  {
-   "id": "shell_ridge",
-   "shape": "box",
-   "parent": "shell_top",
-   "size": [
-    3.0,
-    1.0,
-    8.0
-   ],
-   "pivot": [
-    0.0,
-    1.25,
-    -0.5
-   ],
-   "style": "shell_dark"
-  },
-  {
-   "id": "nose",
-   "shape": "box",
-   "parent": "frame",
-   "size": [
-    3.5,
-    3.5,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    10.25,
-    5.25
-   ],
-   "rotation": [
-    20.0,
-    45.0,
-    10.0
-   ],
-   "style": "meteorite"
-  },
-  {
-   "id": "nose_tip",
-   "shape": "box",
-   "parent": "nose",
-   "size": [
-    2.0,
-    2.0,
-    2.0
-   ],
-   "pivot": [
-    -1.0326,
-    0.6838,
-    1.2859
-   ],
-   "rotation": [
-    35.0,
-    20.0,
-    40.0
-   ],
-   "style": "meteorite"
-  },
-  {
-   "id": "tail",
-   "shape": "box",
-   "parent": "frame",
-   "size": [
-    1.0,
-    2.5,
-    3.0
-   ],
-   "pivot": [
-    0.0,
-    10.25,
-    -5.75
-   ],
-   "style": "shell_dark"
-  },
-  {
-   "id": "antenna_l",
+   "id": "fore_r",
    "shape": "card",
-   "parent": "frame",
+   "parent": "wing_r",
    "pivot": [
-    1.75,
-    13.75,
-    3.5
-   ],
-   "offset": [
     0.0,
-    2.0,
-    2.5
-   ],
-   "rotation": [
     0.0,
-    24.0,
-    -10.0
-   ],
-   "style": "antenna",
-   "plane": "yz",
-   "art": [
-    "Ab..................",
-    ".Aa.b...............",
-    "..bAa.b.............",
-    "..b.bAa.b...........",
-    "....b.bAa.b.........",
-    "......b.bAab........",
-    "........b.Aa.b......",
-    ".........b.bAab.....",
-    "............bAab....",
-    "............b.Aab...",
-    "...............Aab..",
-    "................Aab.",
-    ".................Aa.",
-    "..................Aa",
-    "...................A",
-    "...................A"
-   ]
-  },
-  {
-   "id": "antenna_r",
-   "shape": "card",
-   "parent": "frame",
-   "pivot": [
-    -1.75,
-    13.75,
-    3.5
-   ],
-   "offset": [
-    0.0,
-    2.0,
-    2.5
-   ],
-   "rotation": [
-    0.0,
-    -24.0,
-    10.0
-   ],
-   "style": "antenna",
-   "plane": "yz",
-   "art": [
-    "Ab..................",
-    ".Aa.b...............",
-    "..bAa.b.............",
-    "..b.bAa.b...........",
-    "....b.bAa.b.........",
-    "......b.bAab........",
-    "........b.Aa.b......",
-    ".........b.bAab.....",
-    "............bAab....",
-    "............b.Aab...",
-    "...............Aab..",
-    "................Aab.",
-    ".................Aa.",
-    "..................Aa",
-    "...................A",
-    "...................A"
-   ]
-  },
-  {
-   "id": "wing_l",
-   "shape": "bone",
-   "parent": "frame",
-   "pivot": [
-    4.25,
-    13.0,
-    1.0
-   ],
-   "rotation": [
-    0.0,
-    -8.0,
-    8.0
-   ],
-   "style": "shell"
-  },
-  {
-   "id": "spar_l",
-   "shape": "box",
-   "parent": "wing_l",
-   "size": [
-    14.0,
-    0.75,
-    0.75
-   ],
-   "pivot": [
-    -0.0,
-    0.25,
     0.0
    ],
    "offset": [
-    7.0,
+    -9.0,
     0.0,
-    0.0
+    -2.6
    ],
-   "rotation": [
-    0.0,
-    4.0,
-    0.0
-   ],
-   "style": "spar"
-  },
-  {
-   "id": "spar_l_back",
-   "shape": "box",
-   "parent": "wing_l",
-   "size": [
-    10.0,
-    0.5,
-    0.5
-   ],
-   "pivot": [
-    -0.0,
-    0.25,
-    -0.5
-   ],
-   "offset": [
-    5.0,
-    0.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    42.0,
-    0.0
-   ],
-   "style": "spar"
-  },
-  {
-   "id": "spar_l_tip",
-   "shape": "box",
-   "parent": "spar_l",
-   "size": [
-    2.0,
-    1.0,
-    1.0
-   ],
-   "pivot": [
-    14.25,
-    0.0,
-    -0.0
-   ],
-   "style": "spar_tip"
-  },
-  {
-   "id": "membrane_l",
-   "shape": "card",
-   "parent": "wing_l",
-   "pivot": [
-    0.0,
-    -0.05,
-    -0.0
-   ],
-   "offset": [
-    8.0,
-    0.0,
-    -4.4
-   ],
-   "style": "membrane",
+   "style": "membrane_r",
    "plane": "xz",
    "art": [
-    "...............ofooo............................................",
-    ".............oommmmmoo..........................................",
-    "...........oommmmmmmmmf.........................................",
-    ".........fommmmmmmmmmmmoof......................................",
-    ".....ooofmmmmmmmmmmmmmmmmmoofo..................................",
-    "...fommmmmmmmmmmmmmmmmmmMmMmmMof................................",
-    "..fmmmmmmmmmmmmmmmmmmmmmmMmMmMMmo...............................",
-    ".mmmmmmmmmmmmmmmmmmmmmmMmmMmmmMmmf..............................",
-    ".mmmmmmmmmmmmmmmmmmmmmmmMMMMMMmMmo..............................",
-    ".mmmmmmmmmmmmmmmmmmmmmmMmmMmmMmMmo..............................",
-    ".mmmmmmmmmmmmmmmmmmmmmmMmMmMMMmMmo..............................",
-    ".mmmmmmmmmmmmmmmkkkmmmmmMMmmMmmmMf..............................",
-    "mmmmmmmmmmmmmmkkEEEkmmmMMmmMmmMMMo..............................",
-    "mmmmmmmmmmmmmmkEEWEEkmmMmmMMmmMMmmo.............................",
-    "mmmmmmmmmmmmmmkEWWWEkmmMMmMmmMmmmmf.............................",
-    "mmmmmmmmmmmmmmkEEWEEkmmMMmMMmmmMMmMo............................",
-    "mmmmmmmmmmmmmmmkEEEkmmmMMMmmmmMMMmmo............................",
-    "mmmmmmmmmmmmmmmmkkmmmmmmmmmmMmMMmmMf............................",
-    "mmmmmmmmmmmmmmmmmmmmmmmmmMmMmMmmmMmmo...........................",
-    "mmmmmmmmmmmmmmmmmmmmmmmMmmmmmmmMmmMo............................",
-    "mmmmmmmmmmmmmmmmmmmmmmmmmMmmmMmmmmMo............................",
-    "mmmmmmmmmmmmmmmmmmmmmmmMmMmmMMMMMvo.............................",
-    ".mmmmmmmmmmmmmmmmmmmmmmMMMMmmMmvvo..............................",
-    "..oommmmmmmmmmmmmmmmmmmMMmMMvvvMmmooof..........................",
-    "....fmmmmmmmmmmmmmmmmmmMMvvvmmMmMMmmMmoofo......................",
-    ".mofmmmmmmmmmmmmmmmmmmmvvMmmmMmmMMmMMMMmMMo.....................",
-    "..fmmmmmmmmmmmmmmmmmmvvmMmMmmMMMmMmMmmmMmMMoo...................",
-    "..ommmmmmmmmmmmmmmvvvmmmmMmmMMMmmmMmMmmmMmMMmfoo................",
-    "..ommmmmmmmmmmmvvvmmmmmMmmMMmmMMmMMMmmMvvvvvvmmmfooof...........",
-    "..ommmmmmmmmvvvmmmmmmmmmMMmMmMMmvvvvvvvmMMMmMmMMmMmMmoof........",
-    "..fmmmmmmvvvmmmmmmmmmmmmMvvvvvvvmmMmMMmMmMMmMmMMmmMMmmmo........",
-    ".mmmmmmmvmmmmmmmmmvvvvvvvMMmMMMmmmMmMmmmMMMMMmMmMMmmMMMMo.......",
-    ".mmmmvvvmmmvvvvvvvmmmmmMMmMMMMMMMMmMmmmMmkkkkkMMMMMMmMMMf.......",
-    ".mvvvvvvvvvmmmmmmmmmmmmmmMMmmmMmMMmMMmmMkEEEEEkMMMMMMMMMmo......",
-    ".vvvvmmmmmmmmmmmmmmmmmmmMmMMMmmmmMMmMmMkEEWWWEEkMmmMMMMMMMf.....",
-    ".vvvvvvvvvvvvvvvmmmmmmmMmMMMMMMMmmmmmmMkEEWWWEEkMMMmMMmMMMo.....",
-    ".vvmmvvmmmmmmmmmvvvvvvvvvvvMMMMMmmmMmMmkEEWWWEEkmmMmmMmMMmMof...",
-    ".vmvvmmvvmmmmmmmmmmmmmmmMMMvvvvvvvvvvvMMkEEEEEkMmMmmmmMMMMMMMoo.",
-    ".mvmmvmmmvvvmmmmmmmmmmmMmmMmmmmmmmMmmMvvvkkEkkvvvMmmmmmmmMMMmMmo",
-    ".mvmmvvmmmmmvvvmmmmmmmmMMMMmmmmMMmmmMmMMMmmkmmMMMvvvvvvvvvvvMMMo",
-    "mmmvmmmvmmmmmmmvvmmmmmmmMMmmmmMMmmMmmmMmmMMMMMMmMmmmmmmmmmMMvvvo",
-    "mmmvvmmmvmmmmmmmmvvvmmmmmMMmMMmMmMmmMmmMMMMmmMMMmmMMMmMMMMmMMMMo",
-    "mmmmvmmmmvmmmmmmmmmmvvvmMmMMmMmMMMMMMMMmMMMMmmMMMmMmmmmMMmMmmmMo",
-    "mmmmmvmmmmvmmmmmmmmmmmmvvMmMmmMMMMMmMMMMMmmMMmmmMMmmMMMMmMmMMmmo",
-    "mmmmmvmmmmmvmmmmmmmmmmmMmvvvmmMmMmmMMmMmMMmmMMMMMMMMmmMoooooooo.",
-    "mmmmmmvmmmmmvmmmmmmmmmmMMmmMvvmmMMMmMMMMMMmMMmmMmmMoooo.........",
-    "mmmmmmvmmmmmmvvmmmmmmmmMmMMMmmvvvMmMmMmmmMmMMmMoooo.............",
-    "mmooooooooooooooooooooooooooooooooooooooooooooo................."
+    "........................................................................",
+    "........................................................................",
+    "................................rrrrrRrrrrrrRr..........................",
+    "............................rrrrmmmmmmmmmmmvvmrrRr......................",
+    "..........................rrmvmmmmmmmmmmmmmmvmmmmmrr....................",
+    "........................rrmmmmvvmmmmmmmmmmmmmvmmmmmmrr..................",
+    "......................rrmmmmmmmvvmmmmmmmmmmmmmvmmmmmmmrr................",
+    "....................rrmmmmmmmmmmmvvmmmmmmmmmmmmvmmmmmmmmr...............",
+    "..................rRmmmmmmmmmmmmmmvvmmmmmmmmmmmvvxmmmmmmmrr.............",
+    "................Rrmmmmmmmmmmmmmmmmmvvmxxxxxxxxxxvvxxxmmmmmvr............",
+    "...............rvmmmmmmmmmmmmmmmmmmxxvmmmmmmmmmmmvvmxxxxmmvvr...........",
+    "..............rmmvvvmmmmmmmmmmmmmxxxmmvvmmmmmmmmmmvvmmmxxxmvmr..........",
+    "............rrmmmmmvvvmmmmmmmmmmxxmmmmmvvmmmmmmmmmmvmmmmmmxvvmr.........",
+    "...........Rmmmmmmmmmmvvmmmmmmxxmmmmmmmmmvmmmmmmmmmmvmmmmmmmvmmr........",
+    "..........rmmmmmmmmmmmmmvvvmxxmmmmmmmmmmmmvvmmmmmmmmmvmmmmmmVVmmr.......",
+    ".........rmmmmmmmmmmmmmmmmvvvmmmmmmmmmmmmmmvvmmmmmmmmvvmmVVVVVVmmr......",
+    "........rMMMMmmmmmmmmHHHHHHmmvvmmmmmmmmmmmmmmvvmmmmmmmmVV......VVmr.....",
+    ".......rMMMMMMmmmmmHHkkkkkkHHmvvvmmmmmmmmmmmmmvvmmmmmVV..........VVr....",
+    "......rMMMMMMMmmmmHHkkEEEEkkHHmmmvvvmmmmmmmmmmmmvvmmVV............VV....",
+    ".....rvvvvvMMMMmmHHkEEEEEEEEkHHmmmmvvvmmmmmmmmmmmvvmV..............Vr...",
+    "....RmmMMMMvvvvvmHkEEffEffEEEkHmmmmmmmvvvmmmmmmmmmxV................Vr..",
+    "...rmmmMMMMMMMmvHkkEEffEEwwfEkkHmmmmmmmmvvvmmmmmxxxV................Vmr.",
+    "..rmmmmmMMMMMmmMHkEffffpswwsEEkHmmmmmmmmmmvvvvmxxmV..................Vr.",
+    "..RmmmmmmmMmmmMMHkEfffppppsffEkHmmmmmmmmmmmmmvvvmmV..................Vmr",
+    ".rmmmmmmmmmmmmMMHkEffcppppcffEkHvvmmmmmmmmmmmxmmvvV..................Vmr",
+    ".rmmmmmmmmmmmmMMHkEeefcppcfefEkHmvvvvvvmmmmxxmmmmmV..................Vmr",
+    "RmmmmmmmmmmmmmmMHkkEeseccefeEkkHmmmmmmmvvvvvvmmmmmV..................Vmr",
+    "rvvvvvvvvvvvvvvvxHkEeeeeeeefEkHmmmmmmmmmmmmxvvvvvvV..................Vmr",
+    "rmmmmmmmmmmmmmmvvHHkEEeeeeEEkHHvvvmmmmmmmmxmmmmmmmmV................VVVr",
+    "rmmmmmmmmmmmmmmmmxHHkkEEEEkkHHMMMvvvvvvvvvvvvvvvvvvV................VVVr",
+    "rmmmmmmmmmmmmmmmmxmHHkkkkkkHHMMMMMmmmmmmmmxmmmmmmmmmV..............VVVVr",
+    "rmmmmmmmmmmmmmmmmxmmmHHHHHHmmMMMMMMmmmmmvvvvvvvvvvvvVV............VVmmmr",
+    ".rmmmmmmmmmmmmmmmxmmmmmmvvvvvvvvvvvvvvvvvmxmmmmmmmmmmVV..........VVmmmmr",
+    ".rmmmmmmvvvvvvvvvvvvvvvvMMMMmmMMMMmmmmmmmmmmmmmmmmmmmmmVV......VVmmmmmmr",
+    "..rrvvvvvmmmmmmmmmmmmmmMMMMMMmmmmmmmmmmmmmmmmmmmmmmmmmmmmVVVVVVmmmmmmmmr",
+    "....rmmmmmmmmmmmmmmmmmmMMMMMMmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmrr",
+    ".....RrrmmmmmmmmmmmmmmmMMMMMMmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmrrr..",
+    "........rRrrmmmmmmmmmmmMMMMMMmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmrrrrrrrr.....",
+    "............rRrrrrrrRmmMMMMMMmmmmmmmmmmmmmmmmmmmmmmrrrrrrrr.............",
+    ".....................rrrRrrrrrrRrrrrrrRrrrrrrRrrrrr....................."
    ]
   },
   {
-   "id": "wing_r",
+   "id": "hind_r",
    "shape": "bone",
-   "parent": "frame",
+   "parent": "wing_r",
    "pivot": [
-    -4.25,
-    13.0,
-    1.0
+    -0.0,
+    -0.25,
+    -2.5
    ],
    "rotation": [
     0.0,
-    8.0,
-    -8.0
+    -10.0,
+    5.0
    ],
-   "style": "shell"
+   "style": "silver"
   },
   {
-   "id": "spar_r",
-   "shape": "box",
-   "parent": "wing_r",
-   "size": [
-    14.0,
-    0.75,
-    0.75
-   ],
+   "id": "hind_r_m",
+   "shape": "card",
+   "parent": "hind_r",
    "pivot": [
     0.0,
-    0.25,
+    0.0,
     0.0
    ],
    "offset": [
     -7.0,
     0.0,
-    0.0
+    -4.68
    ],
-   "rotation": [
-    0.0,
-    -4.0,
-    0.0
-   ],
-   "style": "spar"
-  },
-  {
-   "id": "spar_r_back",
-   "shape": "box",
-   "parent": "wing_r",
-   "size": [
-    10.0,
-    0.5,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    0.25,
-    -0.5
-   ],
-   "offset": [
-    -5.0,
-    0.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    -42.0,
-    0.0
-   ],
-   "style": "spar"
-  },
-  {
-   "id": "spar_r_tip",
-   "shape": "box",
-   "parent": "spar_r",
-   "size": [
-    2.0,
-    1.0,
-    1.0
-   ],
-   "pivot": [
-    -14.25,
-    0.0,
-    -0.0
-   ],
-   "style": "spar_tip"
-  },
-  {
-   "id": "membrane_r",
-   "shape": "card",
-   "parent": "wing_r",
-   "pivot": [
-    -0.0,
-    -0.05,
-    -0.0
-   ],
-   "offset": [
-    -8.0,
-    0.0,
-    -4.4
-   ],
-   "style": "membrane",
+   "style": "membrane_r",
    "plane": "xz",
    "art": [
-    "............................................ooofo...............",
-    "..........................................oommmmmoo.............",
-    ".........................................fmmmmmmmmmoo...........",
-    "......................................foommmmmmmmmmmmof.........",
-    "..................................ofoommmmmmmmmmmmmmmmmfooo.....",
-    "................................foMmmMmMmmmmmmmmmmmmmmmmmmmof...",
-    "...............................omMMmMmMmmmmmmmmmmmmmmmmmmmmmmf..",
-    "..............................fmmMmmmMmmMmmmmmmmmmmmmmmmmmmmmmm.",
-    "..............................omMmMMMMMMmmmmmmmmmmmmmmmmmmmmmmm.",
-    "..............................omMmMmmMmmMmmmmmmmmmmmmmmmmmmmmmm.",
-    "..............................omMmMMMmMmMmmmmmmmmmmmmmmmmmmmmmm.",
-    "..............................fMmmmMmmMMmmmmmkkkmmmmmmmmmmmmmmm.",
-    "..............................oMMMmmMmmMMmmmkEEEkkmmmmmmmmmmmmmm",
-    ".............................ommMMmmMMmmMmmkEEWEEkmmmmmmmmmmmmmm",
-    ".............................fmmmmMmmMmMMmmkEWWWEkmmmmmmmmmmmmmm",
-    "............................oMmMMmmmMMmMMmmkEEWEEkmmmmmmmmmmmmmm",
-    "............................ommMMMmmmmMMMmmmkEEEkmmmmmmmmmmmmmmm",
-    "............................fMmmMMmMmmmmmmmmmmkkmmmmmmmmmmmmmmmm",
-    "...........................ommMmmmMmMmMmmmmmmmmmmmmmmmmmmmmmmmmm",
-    "............................oMmmMmmmmmmmMmmmmmmmmmmmmmmmmmmmmmmm",
-    "............................oMmmmmMmmmMmmmmmmmmmmmmmmmmmmmmmmmmm",
-    ".............................ovMMMMMmmMmMmmmmmmmmmmmmmmmmmmmmmmm",
-    "..............................ovvmMmmMMMMmmmmmmmmmmmmmmmmmmmmmm.",
-    "..........................fooommMvvvMMmMMmmmmmmmmmmmmmmmmmmmoo..",
-    "......................ofoomMmmMMmMmmvvvMMmmmmmmmmmmmmmmmmmmf....",
-    ".....................oMMmMMMMmMMmmMmmmMvvmmmmmmmmmmmmmmmmmmmfom.",
-    "...................ooMMmMmmmMmMmMMMmmMmMmvvmmmmmmmmmmmmmmmmmmf..",
-    "................oofmMMmMmmmMmMmmmMMMmmMmmmmvvvmmmmmmmmmmmmmmmo..",
-    "...........fooofmmmvvvvvvMmmMMMmMMmmMMmmMmmmmmvvvmmmmmmmmmmmmo..",
-    "........foomMmMmMMmMmMMMmvvvvvvvmMMmMmMMmmmmmmmmmvvvmmmmmmmmmo..",
-    "........ommmMMmmMMmMmMMmMmMMmMmmvvvvvvvMmmmmmmmmmmmmvvvmmmmmmf..",
-    ".......oMMMMmmMMmMmMMMMMmmmMmMmmmMMMmMMvvvvvvvmmmmmmmmmvmmmmmmm.",
-    ".......fMMMmMMMMMMkkkkkmMmmmMmMMMMMMMMmMMmmmmmvvvvvvvmmmvvvmmmm.",
-    "......omMMMMMMMMMkEEEEEkMmmMMmMMmMmmmMMmmmmmmmmmmmmmmvvvvvvvvvm.",
-    ".....fMMMMMMMmmMkEEWWWEEkMmMmMMmmmmMMMmMmmmmmmmmmmmmmmmmmmmvvvv.",
-    ".....oMMMmMMmMMMkEEWWWEEkMmmmmmmMMMMMMMmMmmmmmmmvvvvvvvvvvvvvvv.",
-    "...foMmMMmMmmMmmkEEWWWEEkmMmMmmmMMMMMvvvvvvvvvvvmmmmmmmmmvvmmvv.",
-    ".ooMMMMMMMmmmmMmMkEEEEEkMMvvvvvvvvvvvMMMmmmmmmmmmmmmmmmvvmmvvmv.",
-    "omMmMMMmmmmmmmMvvvkkEkkvvvMmmMmmmmmmmMmmMmmmmmmmmmmmvvvmmmvmmvm.",
-    "oMMMvvvvvvvvvvvMMMmmkmmMMMmMmmmMMmmmmMMMMmmmmmmmmvvvmmmmmvvmmvm.",
-    "ovvvMMmmmmmmmmmMmMMMMMMmmMmmmMmmMMmmmmMMmmmmmmmvvmmmmmmmvmmmvmmm",
-    "oMMMMmMMMMmMMMmmMMMmmMMMMmmMmmMmMmMMmMMmmmmmvvvmmmmmmmmvmmmvvmmm",
-    "oMmmmMmMMmmmmMmMMMmmMMMMmMMMMMMMMmMmMMmMmvvvmmmmmmmmmmvmmmmvmmmm",
-    "ommMMmMmMMMMmmMMmmmMMmmMMMMMmMMMMMmmMmMvvmmmmmmmmmmmmvmmmmvmmmmm",
-    ".ooooooooMmmMMMMMMMMmmMMmMmMMmmMmMmmvvvmMmmmmmmmmmmmvmmmmmvmmmmm",
-    ".........ooooMmmMmmMMmMMMMMMmMMMmmvvMmmMMmmmmmmmmmmvmmmmmvmmmmmm",
-    ".............ooooMmMMmMmmmMmMmMvvvmmMMMmMmmmmmmmmvvmmmmmmvmmmmmm",
-    ".................ooooooooooooooooooooooooooooooooooooooooooooomm"
+    "........................................................",
+    ".rrR....................................................",
+    ".rmvrrr.................................................",
+    "..rrvvmrrr..............................................",
+    "....rvmmmmr.............................................",
+    ".....RvvmmmrR...........................................",
+    "......rvvmMMmr..........................................",
+    ".......rvMMMMmr.........................................",
+    "........rvMMMMmrr.......................................",
+    "........rMvvMMmmmr......................................",
+    ".........rMvvMmmmmR.....................................",
+    "..........rMvvxxmmmr....................................",
+    "...........rmvvxxxmmrr..................................",
+    "...........rmmvvmxxmmmr.................................",
+    "...........rmmmvvmmxxmmr................................",
+    "............rmmmvxmmxxmmRr..............................",
+    "............rmmmmvmmmmxxmmr.............................",
+    "............rmmmHHHHHHmxxmmrr...........................",
+    "............rmmHHkkkkHHmmxxmmR..........................",
+    "............RmHkkEEEEkkHmmxxxvrr........................",
+    ".............HkEEEfEEEEkHmmmxxvvrr......................",
+    ".............HkEfEfswwEkHHmmmmxvmmRr....................",
+    ".............kEfffpswwEEkHmmmmmxvmmmrr..................",
+    ".............kEffppppsfEkHmmmmmmvvxmmmrr................",
+    "............HkEecppppcfEkHvmmmmmmvvxxmmmrrr.............",
+    "............HkEeecppcfeEkHvvmmmmmmvmxxxmmmvrr...........",
+    "............HHkEseccefEkHHmvvmmmmxxvmmxxxmmvmrr.........",
+    "............rHkEEeeeeEEkHmmmmvvmmxxxvmmmmxxvvmmr........",
+    "...........rmmHkkEEEEkkHvmmmmmvvmmxmvvmmmmmxvmmmrr......",
+    "...........rmmmHHkkkkHHmmvvmmmmvvmmxmvvmmmmmvvmmmmr.....",
+    "...........rmmmmHHHHHHmmmmvvmmmmvvmxmmxvxmmmmvmmmmmr....",
+    "..........rmmmmmmmmmmxmmmmmmvvmmmmvmxmmvvxmmmmvmmmmmr...",
+    "..........rmmmmmmmmmmxmmmmmmmmvvmmmvvmmmvvxxmmVmmmmmmr..",
+    "..........rvvmmmmmmmmxmmmmmmmmmvvvmmmvvmmvmxxmmVmmmmmmr.",
+    "..........rmmvvvmmmmxmmmmmmmmmmmmvvmmxvvmmvmmxxVVmmmmmr.",
+    "..........rmmmmmvvvvxmmmmmmmmmmmmmvvvmxvvvmVVmmxVxmmmmmr",
+    "...........rmmmmmmmvvvvmmmmmmmmmmmmmvvvmmvvmVVmmVVxmmmmr",
+    "...........rmmmmmmmmmxvvvvmmmmmmmmmmmxvvvmmVVVVmmVmmmmmr",
+    "...........RmmmmmmmMMxMmmmvvvvmmmmmmmxmmvvVmVVVVmmVmmmmr",
+    "...........rmmmmmmMMMxxMmmmmmvvvvmmmxxmmmmVVVmVVVVVVmmmr",
+    "............RmmmmmMMMMxMmmmmmmmmmvvvvxmmmmmmmVVmVVVVVmmr",
+    ".............rmmmmmMMMxmmmmmmmmmmmmmmvvvvVmmmmmVVVVVVVmr",
+    ".............RmmmmmMMMxxmmmmmmmmmmmmmxxmmVVVVVVmmVVVVVVr",
+    "..............rvvvvvvvvvvvvvmmmmmmmmmmxmmmmmmmVVVVVVVVVr",
+    "...............rmmMMMMMmxxmvvvvvvvvvvvvvVVVVVVVVVVVVVVVr",
+    "................rrMMMMMmmmxxmmmmmmmmmmmmxxmmVVVVVVVVVmmr",
+    "..................rMMMMmmmmmxxmmmmmmmmmmVVVVVmmmmmmmmmmr",
+    "...................RrMmmmmmmmmxxmmmmvvvvvmmmxmmmmmmmmmmr",
+    ".....................rrRmmmmmmmmxvvvvmmmmmmmmmmmmmmmmmmr",
+    "........................rrrRmvvvvmxmmmmmmmmmmmmmmmmmmmmr",
+    "............................rrrRrrrmmmmmmmmmmmmmmmmmmmmr",
+    "...................................Rrrrrrrrrrrrrrrrrrrr."
    ]
   },
   {
    "id": "jet_l",
    "shape": "bone",
-   "parent": "frame",
+   "parent": "wing_l",
    "pivot": [
-    6.5,
-    9.5,
-    -0.5
+    3.0,
+    0.0,
+    -1.35
    ],
-   "style": "shell"
+   "style": "silver"
   },
   {
-   "id": "pod_l",
-   "shape": "box",
+   "id": "sigil_l",
+   "shape": "card",
    "parent": "jet_l",
-   "size": [
-    3.0,
-    3.0,
-    6.5
-   ],
    "pivot": [
     0.0,
     0.0,
     0.0
    ],
-   "style": "shell"
-  },
-  {
-   "id": "pod_l_band",
-   "shape": "box",
-   "parent": "jet_l",
-   "size": [
-    3.5,
-    3.5,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    2.25
-   ],
-   "style": "meteorite"
-  },
-  {
-   "id": "pod_l_band2",
-   "shape": "box",
-   "parent": "jet_l",
-   "size": [
-    3.5,
-    3.5,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.75
-   ],
-   "style": "meteorite"
-  },
-  {
-   "id": "intake_l",
-   "shape": "box",
-   "parent": "jet_l",
-   "size": [
-    2.0,
-    2.0,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    3.5
-   ],
-   "style": "intake"
-  },
-  {
-   "id": "nozzle_l",
-   "shape": "box",
-   "parent": "jet_l",
-   "size": [
-    2.5,
-    2.5,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -3.75
-   ],
-   "style": "nozzle"
-  },
-  {
-   "id": "pylon_l",
-   "shape": "box",
-   "parent": "jet_l",
-   "size": [
-    1.0,
-    2.5,
-    3.0
-   ],
-   "pivot": [
-    -1.75,
-    1.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    30.0
-   ],
-   "style": "shell_dark"
+   "style": "sigil",
+   "plane": "xz",
+   "art": [
+    ".....aaaaaa.....",
+    "...aafccccfaa...",
+    "..aafffccfffaa..",
+    ".aaeffffffffeaa.",
+    ".affffbbbbffffa.",
+    "affffbffffbffffa",
+    "acffbffddffbffca",
+    "accfbfddddfbfcca",
+    "accfbfddddfbfcca",
+    "acffbffddffbffca",
+    "affffbffffbffffa",
+    ".affffbbbbffffa.",
+    ".aaeffffffffeaa.",
+    "..aafffccfffaa..",
+    "...aafccccfaa...",
+    ".....aaaaaa....."
+   ]
   },
   {
    "id": "jet_flame_l",
    "shape": "bone",
-   "parent": "jet_l",
+   "parent": "wing_l",
    "pivot": [
+    3.0,
     0.0,
-    0.0,
-    -4.25
+    -1.35
    ],
-   "style": "shell"
+   "style": "silver"
   },
   {
-   "id": "flame_l_core",
-   "shape": "box",
-   "parent": "jet_flame_l",
-   "size": [
-    1.25,
-    1.25,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.0
-   ],
-   "style": "flame_hot"
-  },
-  {
-   "id": "flame_l",
-   "shape": "box",
-   "parent": "jet_flame_l",
-   "size": [
-    2.0,
-    2.0,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.25
-   ],
-   "style": "flame"
-  },
-  {
-   "id": "flame_l_v",
+   "id": "flare_l",
    "shape": "card",
    "parent": "jet_flame_l",
    "pivot": [
     0.0,
-    0.0,
+    0.15,
     0.0
    ],
-   "offset": [
-    0.0,
-    0.0,
-    -2.5
-   ],
-   "style": "flame_card",
-   "plane": "yz",
+   "style": "flare",
+   "plane": "xz",
    "art": [
-    "EE..................",
-    "EEE.................",
-    "wwEEEEEEEEEE........",
-    "WWwwwwwwwwwwEEE.....",
-    "WWWWWWWWWwwwwwwwwE..",
-    "WWWWWWWWWwwwwwwwwE..",
-    "WWwwwwwwwwwwEEE.....",
-    "wwEEEEEEEEEE........",
-    "EEE.................",
-    "EE.................."
+    "............................",
+    "............................",
+    "............................",
+    ".............bb.............",
+    "....a......bb....bb....a....",
+    ".....a..bb........bb..a.....",
+    "......bb.............b......",
+    ".......b............bb......",
+    ".....b................b.....",
+    "....bb................b.....",
+    "....b.......................",
+    ".......................b....",
+    ".......................b....",
+    "...b....................b...",
+    "...b....................b...",
+    "....b.......................",
+    "....b.......................",
+    ".......................b....",
+    ".....b................bb....",
+    ".....b................b.....",
+    "......bb............b.......",
+    "......b.............bb......",
+    ".....a..bb........bb..a.....",
+    "....a....bb....bb......a....",
+    ".............bb.............",
+    "............................",
+    "............................",
+    "............................"
    ]
   },
   {
-   "id": "flame_l_h",
+   "id": "flare_l_trail",
+   "shape": "card",
+   "parent": "jet_flame_l",
+   "pivot": [
+    0.0,
+    0.195,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -4.75
+   ],
+   "style": "flare",
+   "plane": "xz",
+   "art": [
+    "......",
+    "......",
+    "......",
+    "......",
+    "......",
+    "..a...",
+    "......",
+    "...b..",
+    "...b..",
+    "...bb.",
+    ".b..b.",
+    "..c.b.",
+    ".b.cb.",
+    "...c..",
+    ".bccb.",
+    ".bccb.",
+    ".bccb.",
+    "bbccbb",
+    "bbddbb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb"
+   ]
+  },
+  {
+   "id": "flare_l_under",
+   "shape": "card",
+   "parent": "jet_flame_l",
+   "pivot": [
+    -0.0,
+    -0.15,
+    0.0
+   ],
+   "style": "flare",
+   "plane": "xz",
+   "art": [
+    "............................",
+    "............................",
+    "............................",
+    ".............bb.............",
+    "....a......bb....bb....a....",
+    ".....a..bb........bb..a.....",
+    "......bb.............b......",
+    ".......b............bb......",
+    ".....b................b.....",
+    "....bb................b.....",
+    "....b.......................",
+    ".......................b....",
+    ".......................b....",
+    "...b....................b...",
+    "...b....................b...",
+    "....b.......................",
+    "....b.......................",
+    ".......................b....",
+    ".....b................bb....",
+    ".....b................b.....",
+    "......bb............b.......",
+    "......b.............bb......",
+    ".....a..bb........bb..a.....",
+    "....a....bb....bb......a....",
+    ".............bb.............",
+    "............................",
+    "............................",
+    "............................"
+   ]
+  },
+  {
+   "id": "flare_l_trail_under",
+   "shape": "card",
+   "parent": "jet_flame_l",
+   "pivot": [
+    -0.0,
+    -0.195,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -4.75
+   ],
+   "style": "flare",
+   "plane": "xz",
+   "art": [
+    "......",
+    "......",
+    "......",
+    "......",
+    "......",
+    "..a...",
+    "......",
+    "...b..",
+    "...b..",
+    "...bb.",
+    ".b..b.",
+    "..c.b.",
+    ".b.cb.",
+    "...c..",
+    ".bccb.",
+    ".bccb.",
+    ".bccb.",
+    "bbccbb",
+    "bbddbb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb"
+   ]
+  },
+  {
+   "id": "flare_l_trail_v",
    "shape": "card",
    "parent": "jet_flame_l",
    "pivot": [
@@ -1495,219 +1396,243 @@
    "offset": [
     0.0,
     0.0,
-    -2.5
+    -4.75
    ],
-   "style": "flame_card",
-   "plane": "xz",
+   "style": "flare",
+   "plane": "yz",
    "art": [
-    ".EEwWWwEE.",
-    ".EEwWWwEE.",
-    ".EwwWWwwE.",
-    "EEwWWWWwEE",
-    "EEwWWWWwEE",
-    "EEwWWWWwEE",
-    ".EEwWWwEE.",
-    ".EEwWWwEE.",
-    "..EwWWwE..",
-    "..EwwwwE..",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "....ww....",
-    "....EE....",
-    "..........",
-    ".........."
+    "bbbbbbb.................",
+    "cccccbbbbb.b.b..........",
+    "ddddddcccc..c.....a.....",
+    "ddddddcccccc..bbb.......",
+    "cccccbbbbb.bbbb.........",
+    "bbbbbbb................."
    ]
   },
   {
    "id": "jet_r",
    "shape": "bone",
-   "parent": "frame",
+   "parent": "wing_r",
    "pivot": [
-    -6.5,
-    9.5,
-    -0.5
+    -3.0,
+    0.0,
+    -1.35
    ],
-   "style": "shell"
+   "style": "silver"
   },
   {
-   "id": "pod_r",
-   "shape": "box",
+   "id": "sigil_r",
+   "shape": "card",
    "parent": "jet_r",
-   "size": [
-    3.0,
-    3.0,
-    6.5
-   ],
    "pivot": [
     0.0,
     0.0,
     0.0
    ],
-   "style": "shell"
-  },
-  {
-   "id": "pod_r_band",
-   "shape": "box",
-   "parent": "jet_r",
-   "size": [
-    3.5,
-    3.5,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    2.25
-   ],
-   "style": "meteorite"
-  },
-  {
-   "id": "pod_r_band2",
-   "shape": "box",
-   "parent": "jet_r",
-   "size": [
-    3.5,
-    3.5,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.75
-   ],
-   "style": "meteorite"
-  },
-  {
-   "id": "intake_r",
-   "shape": "box",
-   "parent": "jet_r",
-   "size": [
-    2.0,
-    2.0,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    3.5
-   ],
-   "style": "intake"
-  },
-  {
-   "id": "nozzle_r",
-   "shape": "box",
-   "parent": "jet_r",
-   "size": [
-    2.5,
-    2.5,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -3.75
-   ],
-   "style": "nozzle"
-  },
-  {
-   "id": "pylon_r",
-   "shape": "box",
-   "parent": "jet_r",
-   "size": [
-    1.0,
-    2.5,
-    3.0
-   ],
-   "pivot": [
-    1.75,
-    1.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -30.0
-   ],
-   "style": "shell_dark"
+   "style": "sigil",
+   "plane": "xz",
+   "art": [
+    ".....aaaaaa.....",
+    "...aafccccfaa...",
+    "..aafffccfffaa..",
+    ".aaeffffffffeaa.",
+    ".affffbbbbffffa.",
+    "affffbffffbffffa",
+    "acffbffddffbffca",
+    "accfbfddddfbfcca",
+    "accfbfddddfbfcca",
+    "acffbffddffbffca",
+    "affffbffffbffffa",
+    ".affffbbbbffffa.",
+    ".aaeffffffffeaa.",
+    "..aafffccfffaa..",
+    "...aafccccfaa...",
+    ".....aaaaaa....."
+   ]
   },
   {
    "id": "jet_flame_r",
    "shape": "bone",
-   "parent": "jet_r",
+   "parent": "wing_r",
    "pivot": [
+    -3.0,
     0.0,
-    0.0,
-    -4.25
+    -1.35
    ],
-   "style": "shell"
+   "style": "silver"
   },
   {
-   "id": "flame_r_core",
-   "shape": "box",
-   "parent": "jet_flame_r",
-   "size": [
-    1.25,
-    1.25,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.0
-   ],
-   "style": "flame_hot"
-  },
-  {
-   "id": "flame_r",
-   "shape": "box",
-   "parent": "jet_flame_r",
-   "size": [
-    2.0,
-    2.0,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.25
-   ],
-   "style": "flame"
-  },
-  {
-   "id": "flame_r_v",
+   "id": "flare_r",
    "shape": "card",
    "parent": "jet_flame_r",
    "pivot": [
-    0.0,
-    0.0,
+    -0.0,
+    0.15,
     0.0
    ],
-   "offset": [
-    0.0,
-    0.0,
-    -2.5
-   ],
-   "style": "flame_card",
-   "plane": "yz",
+   "style": "flare",
+   "plane": "xz",
    "art": [
-    "EE..................",
-    "EEE.................",
-    "wwEEEEEEEEEE........",
-    "WWwwwwwwwwwwEEE.....",
-    "WWWWWWWWWwwwwwwwwE..",
-    "WWWWWWWWWwwwwwwwwE..",
-    "WWwwwwwwwwwwEEE.....",
-    "wwEEEEEEEEEE........",
-    "EEE.................",
-    "EE.................."
+    "............................",
+    "............................",
+    "............................",
+    ".............bb.............",
+    "....a......bb....bb....a....",
+    ".....a..bb........bb..a.....",
+    "......bb.............b......",
+    ".......b............bb......",
+    ".....b................b.....",
+    "....bb................b.....",
+    "....b.......................",
+    ".......................b....",
+    ".......................b....",
+    "...b....................b...",
+    "...b....................b...",
+    "....b.......................",
+    "....b.......................",
+    ".......................b....",
+    ".....b................bb....",
+    ".....b................b.....",
+    "......bb............b.......",
+    "......b.............bb......",
+    ".....a..bb........bb..a.....",
+    "....a....bb....bb......a....",
+    ".............bb.............",
+    "............................",
+    "............................",
+    "............................"
    ]
   },
   {
-   "id": "flame_r_h",
+   "id": "flare_r_trail",
+   "shape": "card",
+   "parent": "jet_flame_r",
+   "pivot": [
+    -0.0,
+    0.195,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -4.75
+   ],
+   "style": "flare",
+   "plane": "xz",
+   "art": [
+    "......",
+    "......",
+    "......",
+    "......",
+    "......",
+    "..a...",
+    "......",
+    "...b..",
+    "...b..",
+    "...bb.",
+    ".b..b.",
+    "..c.b.",
+    ".b.cb.",
+    "...c..",
+    ".bccb.",
+    ".bccb.",
+    ".bccb.",
+    "bbccbb",
+    "bbddbb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb"
+   ]
+  },
+  {
+   "id": "flare_r_under",
+   "shape": "card",
+   "parent": "jet_flame_r",
+   "pivot": [
+    0.0,
+    -0.15,
+    0.0
+   ],
+   "style": "flare",
+   "plane": "xz",
+   "art": [
+    "............................",
+    "............................",
+    "............................",
+    ".............bb.............",
+    "....a......bb....bb....a....",
+    ".....a..bb........bb..a.....",
+    "......bb.............b......",
+    ".......b............bb......",
+    ".....b................b.....",
+    "....bb................b.....",
+    "....b.......................",
+    ".......................b....",
+    ".......................b....",
+    "...b....................b...",
+    "...b....................b...",
+    "....b.......................",
+    "....b.......................",
+    ".......................b....",
+    ".....b................bb....",
+    ".....b................b.....",
+    "......bb............b.......",
+    "......b.............bb......",
+    ".....a..bb........bb..a.....",
+    "....a....bb....bb......a....",
+    ".............bb.............",
+    "............................",
+    "............................",
+    "............................"
+   ]
+  },
+  {
+   "id": "flare_r_trail_under",
+   "shape": "card",
+   "parent": "jet_flame_r",
+   "pivot": [
+    0.0,
+    -0.195,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -4.75
+   ],
+   "style": "flare",
+   "plane": "xz",
+   "art": [
+    "......",
+    "......",
+    "......",
+    "......",
+    "......",
+    "..a...",
+    "......",
+    "...b..",
+    "...b..",
+    "...bb.",
+    ".b..b.",
+    "..c.b.",
+    ".b.cb.",
+    "...c..",
+    ".bccb.",
+    ".bccb.",
+    ".bccb.",
+    "bbccbb",
+    "bbddbb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb",
+    "bcddcb"
+   ]
+  },
+  {
+   "id": "flare_r_trail_v",
    "shape": "card",
    "parent": "jet_flame_r",
    "pivot": [
@@ -1718,31 +1643,17 @@
    "offset": [
     0.0,
     0.0,
-    -2.5
+    -4.75
    ],
-   "style": "flame_card",
-   "plane": "xz",
+   "style": "flare",
+   "plane": "yz",
    "art": [
-    ".EEwWWwEE.",
-    ".EEwWWwEE.",
-    ".EwwWWwwE.",
-    "EEwWWWWwEE",
-    "EEwWWWWwEE",
-    "EEwWWWWwEE",
-    ".EEwWWwEE.",
-    ".EEwWWwEE.",
-    "..EwWWwE..",
-    "..EwwwwE..",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "...EwwE...",
-    "....ww....",
-    "....EE....",
-    "..........",
-    ".........."
+    "bbbbbbb.................",
+    "cccccbbbbb.b.b..........",
+    "ddddddcccc..c.....a.....",
+    "ddddddcccccc..bbb.......",
+    "cccccbbbbb.bbbb.........",
+    "bbbbbbb................."
    ]
   }
  ],
@@ -1753,221 +1664,381 @@
    "tracks": [
     {
      "part": "wing_l",
-     "axis": "z",
+     "channel": "rotation",
+     "ease": "smooth",
      "keys": [
       [
        0,
-       28.8
+       [
+        0,
+        0,
+        14
+       ]
       ],
       [
-       0.096,
-       32
-      ],
-      [
-       0.4,
-       -24.0
-      ],
-      [
-       0.496,
-       -25.6
+       0.32,
+       [
+        0,
+        0,
+        -12
+       ]
       ],
       [
        0.8,
-       28.8
+       [
+        0,
+        0,
+        14
+       ]
       ]
-     ],
-     "ease": "smooth"
+     ]
     },
     {
      "part": "wing_l",
      "osc": {
       "amp": 4,
       "cycles": 1,
-      "phase": 0.25
-     },
-     "axis": "x"
-    },
-    {
-     "part": "wing_l",
-     "axis": "y",
-     "keys": [
-      [
-       0,
-       0
-      ],
-      [
-       0.8,
-       0
-      ]
-     ],
-     "ease": "linear"
-    },
-    {
-     "part": "wing_r",
-     "axis": "z",
-     "keys": [
-      [
-       0,
-       -28.8
-      ],
-      [
-       0.096,
-       -32
-      ],
-      [
-       0.4,
-       24.0
-      ],
-      [
-       0.496,
-       25.6
-      ],
-      [
-       0.8,
-       -28.8
-      ]
-     ],
-     "ease": "smooth"
-    },
-    {
-     "part": "wing_r",
-     "osc": {
-      "amp": 4,
-      "cycles": 1,
-      "phase": 0.25
-     },
-     "axis": "x"
-    },
-    {
-     "part": "wing_r",
-     "axis": "y",
-     "keys": [
-      [
-       0,
-       0
-      ],
-      [
-       0.8,
-       0
-      ]
-     ],
-     "ease": "linear"
-    },
-    {
-     "part": "bellows",
-     "osc": {
-      "amp": [
-       0.072,
-       -0.12,
-       0.072
-      ],
-      "cycles": 2,
       "phase": 0.1
      },
+     "axis": "x"
+    },
+    {
+     "part": "hind_l",
+     "osc": {
+      "amp": 5,
+      "cycles": 1,
+      "phase": 0.12
+     },
+     "axis": "z"
+    },
+    {
+     "part": "hind_l",
+     "osc": {
+      "amp": 2.4,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "wing_r",
+     "channel": "rotation",
+     "ease": "smooth",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        -14
+       ]
+      ],
+      [
+       0.32,
+       [
+        0,
+        0,
+        12
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        -14
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "wing_r",
+     "osc": {
+      "amp": 4,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "hind_r",
+     "osc": {
+      "amp": -5,
+      "cycles": 1,
+      "phase": 0.12
+     },
+     "axis": "z"
+    },
+    {
+     "part": "hind_r",
+     "osc": {
+      "amp": 2.4,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "jet_flame_l",
+     "channel": "scale",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       [
+        -0.35,
+        0,
+        -0.6
+       ]
+      ],
+      [
+       0.8,
+       [
+        -0.35,
+        0,
+        -0.6
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "jet_flame_l",
+     "osc": {
+      "amp": [
+       0.08,
+       0,
+       0.16
+      ],
+      "cycles": 2,
+      "phase": 0.0
+     },
      "channel": "scale"
+    },
+    {
+     "part": "flare_l",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ]
+     ],
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "flare_l_under",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ]
+     ],
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "jet_flame_r",
+     "channel": "scale",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       [
+        -0.35,
+        0,
+        -0.6
+       ]
+      ],
+      [
+       0.8,
+       [
+        -0.35,
+        0,
+        -0.6
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "jet_flame_r",
+     "osc": {
+      "amp": [
+       0.08,
+       0,
+       0.16
+      ],
+      "cycles": 2,
+      "phase": 0.25
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flare_r",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ]
+     ],
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "flare_r_under",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0.625
+       ]
+      ]
+     ],
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "jet_l",
+     "axis": "y",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.2,
+       22.5
+      ],
+      [
+       0.4,
+       45.0
+      ],
+      [
+       0.6,
+       67.5
+      ],
+      [
+       0.8,
+       90.0
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "jet_r",
+     "axis": "y",
+     "keys": [
+      [
+       0.0,
+       -0.0
+      ],
+      [
+       0.2,
+       -22.5
+      ],
+      [
+       0.4,
+       -45.0
+      ],
+      [
+       0.6,
+       -67.5
+      ],
+      [
+       0.8,
+       -90.0
+      ]
+     ],
+     "ease": "linear"
     },
     {
      "part": "frame",
      "osc": {
       "amp": [
        0,
-       0.35,
+       0.3,
        0
       ],
       "cycles": 1,
-      "phase": 0.6
+      "phase": 0.55
      },
      "channel": "position"
     },
     {
-     "part": "jet_flame_l",
-     "channel": "scale",
-     "keys": [
-      [
-       0,
-       [
-        0,
-        0,
-        0.0
-       ]
-      ],
-      [
-       0.8,
-       [
-        0,
-        0,
-        0.0
-       ]
-      ]
-     ],
-     "ease": "linear"
-    },
-    {
-     "part": "jet_flame_l",
+     "part": "heart",
      "osc": {
       "amp": [
-       0.09,
-       0.09,
-       0.18
+       0.06,
+       0.06,
+       0.06
       ],
-      "cycles": 4,
+      "cycles": 2,
       "phase": 0.0
      },
      "channel": "scale"
     },
     {
-     "part": "jet_flame_l",
+     "part": "antenna_l",
      "osc": {
-      "amp": 6,
-      "cycles": 2,
+      "amp": 5,
+      "cycles": 1,
       "phase": 0.2
      },
-     "axis": "z"
+     "axis": "x"
     },
     {
-     "part": "jet_flame_r",
-     "channel": "scale",
-     "keys": [
-      [
-       0,
-       [
-        0,
-        0,
-        0.0
-       ]
-      ],
-      [
-       0.8,
-       [
-        0,
-        0,
-        0.0
-       ]
-      ]
-     ],
-     "ease": "linear"
-    },
-    {
-     "part": "jet_flame_r",
+     "part": "antenna_r",
      "osc": {
-      "amp": [
-       0.09,
-       0.09,
-       0.18
-      ],
-      "cycles": 4,
-      "phase": 0.37
+      "amp": 5,
+      "cycles": 1,
+      "phase": 0.25
      },
-     "channel": "scale"
-    },
-    {
-     "part": "jet_flame_r",
-     "osc": {
-      "amp": 6,
-      "cycles": 2,
-      "phase": 0.5
-     },
-     "axis": "z"
+     "axis": "x"
     }
    ]
   },
@@ -1977,187 +2048,180 @@
    "tracks": [
     {
      "part": "wing_l",
-     "axis": "z",
+     "channel": "rotation",
+     "ease": "smooth",
      "keys": [
       [
        0,
-       18.0
+       [
+        0,
+        22,
+        12
+       ]
       ],
       [
-       0.048,
-       20
-      ],
-      [
-       0.2,
-       -15.0
-      ],
-      [
-       0.248,
-       -16.0
+       0.16,
+       [
+        0,
+        22,
+        -4
+       ]
       ],
       [
        0.4,
-       18.0
+       [
+        0,
+        22,
+        12
+       ]
       ]
-     ],
-     "ease": "smooth"
+     ]
     },
     {
      "part": "wing_l",
      "osc": {
-      "amp": 4,
+      "amp": 3,
       "cycles": 1,
-      "phase": 0.25
-     },
-     "axis": "x"
-    },
-    {
-     "part": "wing_l",
-     "axis": "y",
-     "keys": [
-      [
-       0,
-       -22
-      ],
-      [
-       0.4,
-       -22
-      ]
-     ],
-     "ease": "linear"
-    },
-    {
-     "part": "wing_r",
-     "axis": "z",
-     "keys": [
-      [
-       0,
-       -18.0
-      ],
-      [
-       0.048,
-       -20
-      ],
-      [
-       0.2,
-       15.0
-      ],
-      [
-       0.248,
-       16.0
-      ],
-      [
-       0.4,
-       -18.0
-      ]
-     ],
-     "ease": "smooth"
-    },
-    {
-     "part": "wing_r",
-     "osc": {
-      "amp": 4,
-      "cycles": 1,
-      "phase": 0.25
-     },
-     "axis": "x"
-    },
-    {
-     "part": "wing_r",
-     "axis": "y",
-     "keys": [
-      [
-       0,
-       22
-      ],
-      [
-       0.4,
-       22
-      ]
-     ],
-     "ease": "linear"
-    },
-    {
-     "part": "bellows",
-     "osc": {
-      "amp": [
-       0.12,
-       -0.2,
-       0.12
-      ],
-      "cycles": 2,
       "phase": 0.1
      },
-     "channel": "scale"
+     "axis": "x"
     },
     {
-     "part": "frame",
+     "part": "hind_l",
      "osc": {
-      "amp": [
-       0,
-       0.35,
-       0
-      ],
+      "amp": 4,
       "cycles": 1,
-      "phase": 0.6
+      "phase": 0.12
      },
-     "channel": "position"
+     "axis": "z"
+    },
+    {
+     "part": "hind_l",
+     "osc": {
+      "amp": 1.7999999999999998,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "wing_r",
+     "channel": "rotation",
+     "ease": "smooth",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        -22,
+        -12
+       ]
+      ],
+      [
+       0.16,
+       [
+        0,
+        -22,
+        4
+       ]
+      ],
+      [
+       0.4,
+       [
+        0,
+        -22,
+        -12
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "wing_r",
+     "osc": {
+      "amp": 3,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "hind_r",
+     "osc": {
+      "amp": -4,
+      "cycles": 1,
+      "phase": 0.12
+     },
+     "axis": "z"
+    },
+    {
+     "part": "hind_r",
+     "osc": {
+      "amp": 1.7999999999999998,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
     },
     {
      "part": "jet_flame_l",
      "channel": "scale",
+     "ease": "linear",
      "keys": [
       [
        0,
        [
+        0.2,
         0,
-        0,
-        1.0
+        1.7
        ]
       ],
       [
        0.4,
        [
+        0.2,
         0,
-        0,
-        1.0
+        1.7
        ]
       ]
-     ],
-     "ease": "linear"
+     ]
     },
     {
      "part": "jet_flame_l",
      "osc": {
       "amp": [
-       0.15,
-       0.15,
-       0.3
+       0.12,
+       0,
+       0.24
       ],
-      "cycles": 4,
+      "cycles": 2,
       "phase": 0.0
      },
      "channel": "scale"
     },
     {
      "part": "jet_flame_l",
-     "osc": {
-      "amp": 6,
-      "cycles": 2,
-      "phase": 0.2
-     },
-     "axis": "z"
+     "keys": [
+      [
+       0,
+       -22
+      ],
+      [
+       0.4,
+       -22
+      ]
+     ],
+     "ease": "linear",
+     "axis": "y"
     },
     {
-     "part": "jet_flame_r",
-     "channel": "scale",
+     "part": "flare_l",
      "keys": [
       [
        0,
        [
         0,
         0,
-        1.0
+        -0.5556
        ]
       ],
       [
@@ -2165,33 +2229,229 @@
        [
         0,
         0,
-        1.0
+        -0.5556
        ]
       ]
      ],
-     "ease": "linear"
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "flare_l_under",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        -0.5556
+       ]
+      ],
+      [
+       0.4,
+       [
+        0,
+        0,
+        -0.5556
+       ]
+      ]
+     ],
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "jet_flame_r",
+     "channel": "scale",
+     "ease": "linear",
+     "keys": [
+      [
+       0,
+       [
+        0.2,
+        0,
+        1.7
+       ]
+      ],
+      [
+       0.4,
+       [
+        0.2,
+        0,
+        1.7
+       ]
+      ]
+     ]
     },
     {
      "part": "jet_flame_r",
      "osc": {
       "amp": [
-       0.15,
-       0.15,
-       0.3
+       0.12,
+       0,
+       0.24
       ],
-      "cycles": 4,
-      "phase": 0.37
+      "cycles": 2,
+      "phase": 0.25
      },
      "channel": "scale"
     },
     {
      "part": "jet_flame_r",
+     "keys": [
+      [
+       0,
+       22
+      ],
+      [
+       0.4,
+       22
+      ]
+     ],
+     "ease": "linear",
+     "axis": "y"
+    },
+    {
+     "part": "flare_r",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        -0.5556
+       ]
+      ],
+      [
+       0.4,
+       [
+        0,
+        0,
+        -0.5556
+       ]
+      ]
+     ],
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "flare_r_under",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        -0.5556
+       ]
+      ],
+      [
+       0.4,
+       [
+        0,
+        0,
+        -0.5556
+       ]
+      ]
+     ],
+     "ease": "linear",
+     "channel": "scale"
+    },
+    {
+     "part": "jet_l",
+     "axis": "y",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.1,
+       22.5
+      ],
+      [
+       0.2,
+       45.0
+      ],
+      [
+       0.3,
+       67.5
+      ],
+      [
+       0.4,
+       90.0
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "jet_r",
+     "axis": "y",
+     "keys": [
+      [
+       0.0,
+       -0.0
+      ],
+      [
+       0.1,
+       -22.5
+      ],
+      [
+       0.2,
+       -45.0
+      ],
+      [
+       0.3,
+       -67.5
+      ],
+      [
+       0.4,
+       -90.0
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "frame",
      "osc": {
-      "amp": 6,
-      "cycles": 2,
-      "phase": 0.5
+      "amp": [
+       0,
+       0.15,
+       0
+      ],
+      "cycles": 1,
+      "phase": 0.55
      },
-     "axis": "z"
+     "channel": "position"
+    },
+    {
+     "part": "antenna_l",
+     "keys": [
+      [
+       0,
+       -24
+      ],
+      [
+       0.4,
+       -24
+      ]
+     ],
+     "ease": "linear",
+     "axis": "x"
+    },
+    {
+     "part": "antenna_r",
+     "keys": [
+      [
+       0,
+       -24
+      ],
+      [
+       0.4,
+       -24
+      ]
+     ],
+     "ease": "linear",
+     "axis": "x"
     }
    ]
   }

@@ -5,14 +5,16 @@
     python examples/src/winterworks_end_gear_icons.py --preview DIR      # also a contact sheet (8x) in DIR
 
     textures/item/obsidian_shield_icon.png   the shield face-on: iron rim and riveted caps, obsidian plates with
-                                             glowing seams, the Obolisk eye in its violet-gold diamond
-    textures/item/end_glider_icon.png        the glider from above: moth wings with glowing eye-spots, the
-                                             shulker-shell core, meteorite nose, antennae, violet jets trailing
+                                             glowing seams, a round Obolisk eye in a round violet-gold ringed boss
+    textures/item/end_glider_icon.png        the glider from above: two pairs of translucent violet moth wings
+                                             with glowing veins, round eye-spots and the rune sigils at their
+                                             roots, the slim keel, the A-frame struts and the silk-gripped bar
     textures/item/monolith_wand_icon.png     the wand on the diagonal like a vanilla tool: starry void-rod shaft,
-                                             gold bands, obsidian pommel with an ember, the caged violet eye
+                                             gold bands, obsidian pommel with an ember, the caged round eye
 
 Drawn in code, pixel by pixel, with the same ramps as the 3D models (obsidian_kit.RAMPS), light from the top-left,
-hue-shifted dark outlines (never black) and only the glows saturated.
+hue-shifted dark outlines (never black) and only the glows saturated. Every eye is round (END_UPDATE.md, "Eyes") and
+comes from obsidian_kit.eyeball, the generator the 3D eyes use.
 """
 import argparse
 import math
@@ -22,16 +24,24 @@ import sys
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from obsidian_kit import RAMPS  # noqa: E402
+from obsidian_kit import RAMPS, eyeball  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 ITEM_DIR = os.path.join(ROOT, "mods", "winterworks", "src", "main", "resources", "assets", "winterworks", "textures",
                         "item")
-EXTRA = {
-    "membrane": ["#150c22", "#21143a", "#2f1d52", "#3f2a68", "#52397f", "#6a4d96", "#8a6bb0", "#b49ad0", "#e2d4f0"],
-    "meteorite": ["#141114", "#211b1e", "#302727", "#433533", "#584640", "#6f5a4f"],
-    "gland": ["#2c1020", "#4a1a33", "#6c2a4a", "#8f3f62", "#b0587a", "#cc7894", "#e39db0", "#f4c6d0"],
+EXTRA = {   # the End Glider's own ramps (examples/src/end_glider.py)
+    "membrane": ["#1c0f33", "#28154a", "#371d62", "#46277a", "#583291", "#6b40a6", "#8156ba", "#9a71cc", "#b590dc",
+                 "#d2b5ec"],
+    "vein": ["#5d2bbf", "#7d45e0", "#a06df5", "#c39bff", "#e3cdff", "#faf3ff"],
+    "spot": ["#640f52", "#9c1f7c", "#d33da0", "#f26bc0", "#ff9fd8", "#ffd2ee", "#fff4fb"],
+    "silver": ["#25202e", "#3a3346", "#534a62", "#6f667f", "#8e859e", "#aea6bd", "#cfc9da", "#ece9f2"],
+    "pearl": ["#3a3050", "#5a4e74", "#7f739a", "#a69bbe", "#cbc2dd", "#ebe6f4", "#fdfbff"],
+    "silk": ["#1b0f2a", "#2b1840", "#3e2458", "#533271", "#6a428b", "#8558a6"],
 }
+# a round eye's characters (obsidian_kit.eyeball) -> colours; lid characters are left out (the setting shows)
+EYE_KEY = {"u": "obsidian:0", "l": "obsidian:6", "d": "sclera:3", "s": "sclera:5", "S": "sclera:6", "o": "eye:1",
+           "i": "eye:3", "I": "eye:4", "J": "eye:5", "c": "eye:5", "p": "obsidian:0", "q": "eye:1", "W": "#ffffff",
+           "w": "eye:6"}
 OUTLINE = "#0b0614"
 
 
@@ -52,6 +62,13 @@ class Canvas:
 
     def get(self, x, y):
         return self.px[y][x] if 0 <= x < self.n and 0 <= y < self.n else None
+
+    def stamp(self, x0, y0, rows, key):
+        """Pixel art rows at (x0, y0); characters missing from `key` are left as they are."""
+        for ry, row in enumerate(rows):
+            for rx, ch in enumerate(row):
+                if ch in key:
+                    self.set(x0 + rx, y0 + ry, key[ch])
 
     def rect(self, x0, y0, x1, y1, c):
         for y in range(y0, y1 + 1):
@@ -147,32 +164,25 @@ def shield():
     c.rect(14, Y0 - 1, 17, Y0 - 1, "iron:5")
     c.rect(15, Y0 - 2, 16, Y0 - 2, "iron:6")
     c.rect(14, Y1 + 1, 17, Y1 + 1, "iron:3")
-    # the Obolisk eye: a violet-gold diamond, an obsidian boss, a dark socket, the glowing slit eye
-    cx, cy = 15.5, 15.5
+    # the Obolisk eye: a round boss ringed in violet-gold, a dark socket, a round eye (lit lower lid, shaded
+    # eyeball, round glowing iris, round pupil, catch-light)
+    cx, cy = 16.0, 15.5
     for y in range(32):
         for x in range(32):
-            d = abs(x + 0.5 - cx) + abs(y + 0.5 - cy)
+            dx, dy = x + 0.5 - cx, y + 0.5 - cy
+            d = math.hypot(dx, dy)
+            lit = dx + dy < 0
             if d <= 6.6:
-                lit = (x + 0.5 - cx) + (y + 0.5 - cy) < 0
-                if d > 5.6:
-                    c.set(x, y, "gold:6" if lit else "gold:3")
-                elif d > 4.7:
+                if d > 5.7:
+                    c.set(x, y, "gold:6" if lit else ("gold:4" if dx + dy < 3 else "gold:3"))
+                elif d > 4.9:
                     c.set(x, y, "obsidian:5" if lit else "obsidian:2")
                 else:
                     c.set(x, y, "obsidian:3")
-    for y in range(13, 19):
-        for x in range(11, 21):
-            u, v = abs(x + 0.5 - cx) / 5.0, abs(y + 0.5 - cy) / 2.6
-            dd = u ** 1.4 + v ** 1.8
-            if dd <= 1.0:
-                c.set(x, y, "obsidian:0")
-            if dd <= 0.62:
-                c.set(x, y, "eye:4" if dd > 0.3 else "eye:5")
-    for y in (14, 15, 16, 17):
-        c.set(16, y, "obsidian:0")
-    c.set(15, 15, "eye:6")
-    c.set(14, 15, "eye:7")
-    c.set(17, 16, "eye:3")
+    c.set(12, 11, "gold:7")
+    c.set(13, 10, "gold:7")
+    c.stamp(11, 11, eyeball(10, 9, 8, 7, iris=5, lid_shade=1), EYE_KEY)
+    c.set(12, 17, "obsidian:6")
     c.outline()
     return c
 
@@ -180,84 +190,99 @@ def shield():
 # ======================================================================= the End Glider, from above (front up)
 def glider():
     c = Canvas()
+
+    def disc(cx, cy, d, col, where=None):
+        for y in range(32):
+            for x in range(32):
+                if math.hypot(x + 0.5 - cx, y + 0.5 - cy) <= d / 2.0 + 1e-6 and (where is None or where(x, y)):
+                    c.set(x, y, col)
+
+    wing_px = set()
     for s in (1, -1):
         def X(u):
-            return 15.5 + s * u
-        # forewing: a long blade out to a tip near the front; hindwing: a rounded lobe behind it
-        fore = [(X(2), 9), (X(9), 6), (X(14), 6.5), (X(15.6), 8.5), (X(14.5), 11), (X(9), 13.5), (X(2), 14)]
-        c.poly(fore, "membrane:3")
-        for y in range(12, 25):
+            return 16.0 + s * u
+        # the hindwing: a rounded fan, its tail trailing back and out; then the broad forewing over it
+        hind = [(X(0.6), 11), (X(5), 11.5), (X(9.5), 13), (X(11.5), 15.5), (X(11.5), 18.5), (X(13), 21.5),
+                (X(14.5), 24.5), (X(13), 24.5), (X(10.5), 21.5), (X(7.5), 19.5), (X(4), 17.5), (X(0.6), 15)]
+        fore = [(X(0.6), 5.5), (X(4), 3.2), (X(9), 2.2), (X(13), 2.8), (X(15.4), 5), (X(15.6), 8.5), (X(13.5), 11.5),
+                (X(9), 13.2), (X(4), 13), (X(0.6), 11)]
+        for shape, base in ((hind, 3), (fore, 4)):
+            pts = [(x, y) for x, y in shape]
+            c.poly(pts if s > 0 else pts[::-1], f"membrane:{base}")
+        for y in range(32):
             for x in range(32):
-                u = (x + 0.5 - X(7)) / 6.0
-                v = (y + 0.5 - 18.0) / 5.8
-                if u * u + v * v < 1.0 + 0.15 * math.sin(math.atan2(v, u) * 6):
-                    c.set(x, y, "membrane:3")
-        # lighter scales on the outer forewing, a pale band
-        for y in range(6, 14):
-            for x in range(32):
-                if c.get(x, y) == C("membrane:3") and abs(x + 0.5 - 15.5) > 8 and (x + y) % 3:
-                    c.set(x, y, "membrane:5" if y < 9 else "membrane:4")
-        # veins from the root
-        for tx, ty in ((14, 7), (11, 12), (8, 21), (12, 23)):
-            c.line(round(X(2)), 13, round(X(tx)), ty, "membrane:1")
-        # eye-spots
-        for ex, ey, r in ((11, 9.5, 1.6), (7, 19, 1.6)):
-            for y in range(32):
-                for x in range(32):
-                    d = math.hypot(x + 0.5 - X(ex), y + 0.5 - ey)
-                    if d < r + 0.8:
-                        c.set(x, y, "membrane:0")
-                    if d < r:
-                        c.set(x, y, "crying:4")
-                    if d < r * 0.5:
-                        c.set(x, y, "crying:7")
-        # spar along the forewing's front edge
-        c.line(round(X(2)), 9, round(X(14)), 7, "purpur:5")
-        # the jet pod's back end and its violet air-jet, tapering behind it
-        jx = round(X(4.5)) - (1 if s < 0 else 0)
-        c.rect(jx - 1, 15, jx + 1, 18, "purpur:3")
-        c.set(jx - 1, 15, "purpur:5")
-        c.rect(jx - 1, 18, jx + 1, 18, "meteorite:3")
-        for y, half, col in ((19, 1, "crying:5"), (20, 1, "crying:5"), (21, 1, "crying:4"), (22, 0, "crying:5"),
-                             (23, 0, "crying:4"), (24, 0, "crying:3"), (25, 0, "crying:2")):
-            for dx in range(-half, half + 1):
-                c.set(jx + dx, y, col)
-        for y in (19, 20, 21):
-            c.set(jx, y, "crying:7")
-        c.set(jx + s, 23, "crying:3")
-    # the core: shell plate with a ridge, bellows peeking out at the sides, meteorite nose, antennae
-    c.rect(12, 9, 19, 20, "purpur:3")
-    c.rect(12, 9, 19, 9, "purpur:5")
-    c.rect(12, 9, 12, 20, "purpur:4")
-    c.rect(19, 10, 19, 20, "purpur:2")
-    c.rect(12, 20, 19, 20, "purpur:1")
-    c.rect(15, 10, 16, 19, "purpur:2")
-    c.rect(15, 10, 15, 19, "purpur:4")
-    for y in (12, 15, 18):
-        c.set(11, y, "gland:4")
-        c.set(20, y, "gland:3")
-    c.rect(14, 6, 17, 8, "meteorite:3")
-    c.rect(14, 6, 17, 6, "meteorite:4")
-    c.set(16, 7, "ember:5")
-    c.set(15, 8, "ember:4")
-    c.line(14, 5, 11, 1, "membrane:6")
-    c.line(17, 5, 20, 1, "membrane:6")
-    c.set(10, 1, "membrane:7")
-    c.set(21, 1, "membrane:7")
-    c.rect(14, 21, 17, 22, "purpur:2")                       # tail fin
-    # the handle bar slung under it: struts down to an iron bar with leather grips and meteorite caps
-    c.line(13, 21, 12, 26, "iron:4")
-    c.line(18, 21, 19, 26, "iron:3")
-    c.rect(7, 27, 24, 27, "iron:5")
-    c.rect(7, 28, 24, 28, "iron:3")
-    for gx in (8, 20):
-        c.rect(gx, 26, gx + 3, 29, "#553536")
-        c.rect(gx, 26, gx + 3, 26, "#6d4743")
-        c.set(gx + 1, 28, "#3f262b")
-        c.set(gx + 3, 27, "#3f262b")
-    c.rect(6, 26, 6, 29, "meteorite:4")
-    c.rect(25, 26, 25, 29, "meteorite:2")
-    c.set(6, 27, "ember:5")
+                u = abs(x + 0.5 - 16.0)
+                if c.get(x, y) in (C("membrane:3"), C("membrane:4")) and (x - 16 + 0.5) * s > 0:
+                    wing_px.add((x, y))
+                    # deep violet at the root, paling to lilac toward the edges
+                    tone = 1 if u < 3 else (2 if u < 6 else (3 if u < 10 else 4))
+                    if y > 13 and u > 3:
+                        tone = max(1, tone - 1)
+                    c.set(x, y, f"membrane:{tone}")
+        # glowing veins fanning from the root
+        for tx, ty in ((13.5, 3.2), (15.2, 6.5), (13.5, 11), (9, 12.8), (11, 16), (13.5, 23.5)):
+            c.line(round(X(1.5)), 9, round(X(tx)), round(ty), "vein:2")
+    # the rims, lighter, then the eye-spots and sigils
+    for x, y in list(wing_px):
+        if any(c.get(x + dx, y + dy) is None for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+            c.set(x, y, "membrane:6" if (x + y) % 4 else "vein:3")
+    for s in (1, -1):
+        def X(u):
+            return 16.0 + s * u
+        # forewing eye-spot: a dark ring, a rose iris lit low, a round pupil, a catch-light
+        ex, ey = X(10.5) - 0.5 * (s < 0), 7.5
+        ex = math.floor(ex) + 0.5
+        disc(ex, ey, 7, "membrane:0")
+        disc(ex, ey, 5, "spot:3")
+        for x, y in ((0, 1), (1, 1), (-1, 1), (1, 0), (0, 2)):
+            c.set(int(ex + x), int(ey + y), "spot:4")
+        c.set(int(ex), int(ey), "membrane:0")
+        c.set(int(ex) - 1, int(ey) - 1, "#ffffff")
+        # hindwing eye-spot, smaller
+        hx = math.floor(X(9.0)) + 0.5
+        disc(hx, 17.5, 5, "membrane:0")
+        disc(hx, 17.5, 3, "spot:3")
+        c.set(int(hx), 18, "spot:4")
+        c.set(int(hx), 17, "membrane:0")
+        c.set(int(hx) - 1, 16, "spot:6")
+        # the rune sigil at the wing root
+        sx = math.floor(X(4.0)) + 0.5
+        disc(sx, 8.5, 5, "crying:4")
+        disc(sx, 8.5, 3, "crying:1")
+        c.set(int(sx), 8, "crying:7")
+        c.set(int(sx), 9, "crying:5")
+    # the keel, its pearl heart and two feathery antennae
+    c.rect(15, 3, 16, 13, "silver:3")
+    c.rect(15, 3, 15, 13, "silver:5")
+    c.rect(15, 9, 16, 9, "gold:5")
+    c.rect(15, 2, 16, 2, "pearl:4")
+    c.set(15, 2, "pearl:6")
+    c.line(15, 1, 12, 0, "membrane:7")
+    c.line(16, 1, 19, 0, "membrane:7")
+    # the A-frame struts down to the bar, silk grips, gold collars, pearl finials on upturned tips
+    for (x0, y0, x1, y1, col) in ((15, 14, 11, 26, "silver:6"), (16, 14, 20, 26, "silver:4")):
+        n = max(abs(x1 - x0), abs(y1 - y0))
+        for k in range(n + 1):     # the struts show only below the wings (seen from above, the wings hide them)
+            x, y = round(x0 + (x1 - x0) * k / n), round(y0 + (y1 - y0) * k / n)
+            if (x, y) not in wing_px:
+                c.set(x, y, col)
+    c.rect(6, 27, 25, 27, "silver:6")
+    c.rect(6, 28, 25, 28, "silver:3")
+    for gx in (7, 21):
+        c.rect(gx, 27, gx + 3, 28, "silk:3")
+        for k in range(0, 4, 2):
+            c.set(gx + k, 27, "silk:5")
+            c.set(gx + k + 1, 28, "silk:1")
+    c.set(11, 27, "gold:6")
+    c.set(11, 28, "gold:4")
+    c.set(20, 27, "gold:6")
+    c.set(20, 28, "gold:4")
+    c.set(5, 27, "silver:5")
+    c.set(4, 26, "silver:6")
+    c.set(26, 27, "silver:4")
+    c.set(27, 26, "silver:5")
+    c.set(3, 25, "pearl:5")
+    c.set(28, 25, "pearl:4")
     c.outline()
     return c
 
@@ -305,14 +330,22 @@ def wand():
                 c.set(x, y, "obsidian:6" if tb < 0 else "obsidian:3")
                 if tb < 0 and abs(tb) > half - 0.8:
                     c.set(x, y, "obsidian:7")
+    # the eye in the cage: a round eyeball, shaded, its round glowing iris, round pupil and catch-light
     for y in range(0, 17):
         for x in range(15, 32):
-            d = math.hypot(x + 0.5 - hx, y + 0.5 - hy)
-            if d < 3.1:
-                c.set(x, y, "eye:3" if d > 2.3 else ("eye:5" if d > 1.2 else "eye:6"))
-    for y in (7, 8, 9):
-        c.set(24, y, "obsidian:0")
-    c.set(23, 7, "eye:7")
+            dx, dy = x + 0.5 - hx, y + 0.5 - hy
+            if math.hypot(dx, dy) <= 3.0:
+                c.set(x, y, "sclera:6" if dx + dy < -1.5 else ("sclera:4" if dx + dy < 1.5 else "sclera:3"))
+    for y in range(0, 17):
+        for x in range(15, 32):
+            dx, dy = x + 0.5 - hx, y + 0.5 - hy
+            if math.hypot(dx, dy) <= 2.0:
+                c.set(x, y, "eye:3" if dy < 0 else "eye:5")
+    c.set(23, 8, "obsidian:0")
+    c.set(24, 8, "obsidian:0")
+    c.set(23, 7, "obsidian:0")
+    c.set(24, 7, "obsidian:0")
+    c.set(23, 6, "#ffffff")
     # collar (gold-ringed) where the shaft enters, a cap and spike at the tip
     c.set(19, 12, "gold:6")
     c.set(20, 13, "gold:4")
