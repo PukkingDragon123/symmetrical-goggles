@@ -36,6 +36,14 @@ public final class WWParticles {
     public static final SimpleParticleType COLD_MIST = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
             Winterworks.id("cold_mist"), FabricParticleTypes.simple());
 
+    // ---- Amber Age update
+    public static final SimpleParticleType BLOOD_DRIP = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("blood_drip"), FabricParticleTypes.simple());
+    public static final SimpleParticleType AMBER_GLINT = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("amber_glint"), FabricParticleTypes.simple());
+    public static final SimpleParticleType CAVE_DUST = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("cave_dust"), FabricParticleTypes.simple());
+
     private WWParticles() {}
 
     public static void init() {}

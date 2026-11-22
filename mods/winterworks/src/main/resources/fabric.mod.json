@@ -22,7 +22,10 @@
       "dev.lowpix.winterworks.test.ColdTests",
       "dev.lowpix.winterworks.test.BossTests",
       "dev.lowpix.winterworks.test.BearTests",
-      "dev.lowpix.winterworks.test.DaggerTests"
+      "dev.lowpix.winterworks.test.DaggerTests",
+      "dev.lowpix.winterworks.test.AmberTests",
+      "dev.lowpix.winterworks.test.GolemTests",
+      "dev.lowpix.winterworks.test.ArchaeologyTests"
     ]
   },
   "mixins": [

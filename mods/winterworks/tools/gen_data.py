@@ -400,7 +400,7 @@ def areas():
     """The Cold Zone areas each keep their data in their own module (docs/COLD_UPDATE.md)."""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import importlib
-    for name in ("data_cold", "data_boss", "data_bear", "data_dagger"):
+    for name in ("data_cold", "data_boss", "data_bear", "data_dagger", "data_archaeology", "data_amber", "data_golem"):
         importlib.import_module(name).run(Ctx)
 
 

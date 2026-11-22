@@ -31,6 +31,9 @@ public final class ColdClient {
         particle(WWParticles.BLIZZARD_FLAKE, Kind.BLIZZARD_FLAKE);
         particle(WWParticles.SNOW_PUFF, Kind.SNOW_PUFF);
         particle(WWParticles.COLD_MIST, Kind.COLD_MIST);
+        particle(WWParticles.BLOOD_DRIP, Kind.BLOOD_DRIP);
+        particle(WWParticles.AMBER_GLINT, Kind.AMBER_GLINT);
+        particle(WWParticles.CAVE_DUST, Kind.CAVE_DUST);
         ClientTickEvents.END_CLIENT_TICK.register(ColdClient::tick);
     }
 

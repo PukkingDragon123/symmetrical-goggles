@@ -7,7 +7,10 @@
     "AbstractMinecartMixin",
     "LivingEntityMixin",
     "OverworldBiomeBuilderMixin",
-    "PolarBearMixin"
+    "PolarBearMixin",
+    "SnifferMixin",
+    "DecoratedPotBlockMixin",
+    "BlockEntityTypeMixin"
   ],
   "client": [
     "client.GameRendererMixin"

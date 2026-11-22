@@ -35,7 +35,13 @@ public class ColdParticle extends TextureSheetParticle {
         /** Landing/slam puff: spreads out, rises and fades. Animated. */
         SNOW_PUFF,
         /** Low mist: big, slow, very faint. A random still frame. */
-        COLD_MIST
+        COLD_MIST,
+        /** A drop of blood: falls and fades. A random still frame. */
+        BLOOD_DRIP,
+        /** A glint of amber light: twinkles in place. Animated, full bright. */
+        AMBER_GLINT,
+        /** Drifting cave dust (Dead Caves): tiny, slow, faint. A random still frame. */
+        CAVE_DUST
     }
 
     private final Kind kind;
@@ -122,6 +128,29 @@ public class ColdParticle extends TextureSheetParticle {
                 gravity = -0.02f;
                 friction = 0.82f;
             }
+            case BLOOD_DRIP -> {
+                lifetime = 18 + random.nextInt(10);
+                baseSize = endSize = 0.05f + random.nextFloat() * 0.03f;
+                gravity = 0.6f;
+                hasPhysics = true;
+                anim = false;
+            }
+            case AMBER_GLINT -> {
+                lifetime = 10 + random.nextInt(8);
+                baseSize = 0.08f;
+                endSize = 0.02f;
+                friction = 0.8f;
+            }
+            case CAVE_DUST -> {
+                lifetime = 80 + random.nextInt(60);
+                baseSize = endSize = 0.03f + random.nextFloat() * 0.03f;
+                baseAlpha = 0.6f;
+                gravity = 0.002f;
+                friction = 0.99f;
+                xd = (random.nextFloat() - 0.5f) * 0.01f;
+                zd = (random.nextFloat() - 0.5f) * 0.01f;
+                anim = false;
+            }
             case COLD_MIST -> {
                 lifetime = 70 + random.nextInt(50);
                 baseSize = endSize = 0.9f + random.nextFloat() * 0.8f;
@@ -162,7 +191,7 @@ public class ColdParticle extends TextureSheetParticle {
         roll += spin;
         switch (kind) {
             case FROST_BREATH, SNOW_PUFF, ROAR_WAVE -> alpha = baseAlpha * (1f - t * t);
-            case COLD_MIST -> alpha = baseAlpha * Mth.sin(t * Mth.PI);
+            case COLD_MIST, CAVE_DUST -> alpha = baseAlpha * Mth.sin(t * Mth.PI);
             case FUR_TUFT -> xd += Mth.sin((age + (float) x * 7f) * 0.25f) * 0.004f;
             case ICE_SHARD -> {
                 if (onGround && !bounced) {
@@ -183,7 +212,7 @@ public class ColdParticle extends TextureSheetParticle {
     @Override
     protected int getLightColor(float partial) {
         return switch (kind) {
-            case FROST_BURST, ROAR_WAVE, FROST_SLASH, ICE_CRIT -> 0xF000F0;
+            case FROST_BURST, ROAR_WAVE, FROST_SLASH, ICE_CRIT, AMBER_GLINT -> 0xF000F0;
             default -> super.getLightColor(partial);
         };
     }

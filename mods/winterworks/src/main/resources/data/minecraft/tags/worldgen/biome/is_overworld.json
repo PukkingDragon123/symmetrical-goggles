@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "winterworks:ice_caves"
+    "winterworks:ice_caves",
+    "winterworks:dead_caves"
   ]
 }
