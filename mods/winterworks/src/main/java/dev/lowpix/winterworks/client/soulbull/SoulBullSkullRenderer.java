@@ -146,7 +146,7 @@ public class SoulBullSkullRenderer implements BlockEntityRenderer<SoulBullSkullB
         if (burning) {   // the flames catch: a flare, then a steady flicker
             float catchUp = Mth.clamp(lit / 8f, 0f, 1f);
             float flare = lit < 20f ? 1f + 0.35f * Mth.sin(Mth.clamp(lit / 20f, 0f, 1f) * Mth.PI) : 1f;
-            float s = catchUp * flare * (1f + 0.06f * Mth.sin(time * 0.7f));
+            float s = 1.3f * catchUp * flare * (1f + 0.06f * Mth.sin(time * 0.7f));   // a touch larger than the socket: it reads at block scale
             m.get("eye_fire").ifPresent(p -> {
                 p.xScale *= s;
                 p.yScale *= s;

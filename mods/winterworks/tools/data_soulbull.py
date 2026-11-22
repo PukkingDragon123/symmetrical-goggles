@@ -23,7 +23,7 @@ def run(ctx):
         "parent": "minecraft:builtin/entity", "gui_light": "side",
         "textures": {"particle": "minecraft:block/blackstone"},
         "display": {
-            "gui": {"rotation": [25, 135, 0], "translation": [0, 1.0, 0], "scale": [1.05, 1.05, 1.05]},
+            "gui": {"rotation": [22, 35, 0], "translation": [0, 1.5, 0], "scale": [1.05, 1.05, 1.05]},
             "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.45, 0.45, 0.45]},
             "fixed": {"rotation": [0, 180, 0], "translation": [0, 1, 0], "scale": [0.9, 0.9, 0.9]},
             "head": {"rotation": [0, 180, 0], "translation": [0, 4, 0], "scale": [1.1, 1.1, 1.1]},

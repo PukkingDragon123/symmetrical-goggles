@@ -223,6 +223,9 @@ public class SoulBullRenderer extends MobRenderer<SoulBull, SoulBullRenderer.Mod
         public void setupAnim(SoulBull e, float limbSwing, float limbAmount, float age, float headYaw, float headPitch) {
             reset();
             byte mode = e.mode();
+            if (mode == SoulBull.MODE_RAM && e.ramState.getAccumulatedTime() > 1000) {
+                mode = SoulBull.MODE_NONE;   // a long ridden charge: the ram clip is done, gallop on
+            }
             switch (mode) {
                 case SoulBull.MODE_REVIVE -> play(e.reviveState, "revive", age, 1f);
                 case SoulBull.MODE_RAM -> play(e.ramState, "ram", age, 1f);

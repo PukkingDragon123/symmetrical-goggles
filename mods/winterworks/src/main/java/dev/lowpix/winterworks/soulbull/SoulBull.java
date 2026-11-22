@@ -81,6 +81,8 @@ public class SoulBull extends AbstractHorse {
     public static final byte MODE_NONE = 0, MODE_RAM = 1, MODE_PIN = 2, MODE_DRAIN = 3, MODE_REVIVE = 4;
     /** The ram clip is 1.0 s: it rears for {@link #RAM_WINDUP} ticks, then lunges. */
     public static final int RAM_TICKS = 20, RAM_WINDUP = 5;
+    /** A ridden ram stays open this long at most: the rider's client drives the dash and may run a few ticks behind. */
+    public static final int RIDDEN_RAM_MAX = 40;
     /** The pin clip is 1.5 s; the head tosses the victim off at 1.3 s. */
     public static final int PIN_TICKS = 30, PIN_TOSS = 26;
     public static final int DRAIN_TICKS = 40, REVIVE_TICKS = 40;
@@ -108,6 +110,11 @@ public class SoulBull extends AbstractHorse {
     private int modeTicks;
     private float ramPower = 1f;
     private Vec3 ramDir = Vec3.ZERO;
+    /** The way it faces through a ram and its pin (set at the ram's start). */
+    private float ramYaw;
+    @Nullable
+    private Vec3 ramLastPos;
+    private int ramSlowTicks;
     private boolean ramStopped;
     @Nullable
     private LivingEntity pinned;
@@ -118,6 +125,8 @@ public class SoulBull extends AbstractHorse {
     private float pendingRam;
     private float dashPower;
     private int dashTicks = -1;
+    /** Client: the way a ridden bull faces while it holds a victim (the rider can't swing it round). */
+    private float pinYaw;
     /** Client: the last tick soul flames were drawn (the renderer draws them once a tick). */
     public int lastFxTick;
 
@@ -592,7 +601,10 @@ public class SoulBull extends AbstractHorse {
         ramPower = Mth.clamp(power, 0.2f, 1f);
         Vec3 flat = new Vec3(dir.x, 0, dir.z);
         ramDir = flat.lengthSqr() < 1.0e-6 ? forward() : flat.normalize();
+        ramYaw = (float) (Mth.atan2(ramDir.z, ramDir.x) * Mth.RAD_TO_DEG) - 90f;
         ramStopped = false;
+        ramLastPos = null;
+        ramSlowTicks = 0;
         setMode(MODE_RAM);
         playSound(WWSounds.SOUL_BULL_SNORT, 1.2f, 0.9f);
         playSound(WWSounds.SOUL_BULL_RAM, 1.4f, 0.95f + random.nextFloat() * 0.1f);
@@ -606,10 +618,10 @@ public class SoulBull extends AbstractHorse {
     private void tickRam() {
         boolean riderDriven = getControllingPassenger() instanceof Player;   // the rider's client moves it
         int end = dashEnd(ramPower);
+        if (!riderDriven) {
+            faceRam();
+        }
         if (!riderDriven && !ramStopped) {
-            float yaw = (float) (Mth.atan2(ramDir.z, ramDir.x) * Mth.RAD_TO_DEG) - 90f;
-            setYRot(yaw);
-            yBodyRot = yHeadRot = yaw;
             Vec3 v = getDeltaMovement();
             if (modeTicks < RAM_WINDUP) {
                 setDeltaMovement(v.x * 0.4, v.y, v.z * 0.4);   // rears back
@@ -622,17 +634,35 @@ public class SoulBull extends AbstractHorse {
                 }
             }
         }
-        if (modeTicks >= RAM_WINDUP - 1 && modeTicks <= end + 2) {
+        double moved = ramLastPos == null ? 0 : position().subtract(ramLastPos).horizontalDistance();
+        ramLastPos = position();
+        boolean open, over;
+        if (riderDriven) {   // open for as long as the rider's dash is still charging along
+            ramSlowTicks = moved < 0.12 ? ramSlowTicks + 1 : 0;
+            open = modeTicks >= RAM_WINDUP - 1;
+            over = modeTicks >= RIDDEN_RAM_MAX || (modeTicks > end && ramSlowTicks >= 4);
+        } else {
+            open = modeTicks >= RAM_WINDUP - 1 && modeTicks <= end + 2;
+            over = modeTicks >= RAM_TICKS;
+        }
+        if (open) {
             LivingEntity victim = findVictim();
             if (victim != null) {
                 startPin(victim);
                 return;
             }
         }
-        if (modeTicks >= RAM_TICKS) {
+        if (over) {
             setMode(MODE_NONE);
             setRamCooldown(isTamed() ? 10 : 30);
         }
+    }
+
+    private void faceRam() {
+        setYRot(ramYaw);
+        yRotO = ramYaw;
+        yBodyRot = yHeadRot = ramYaw;
+        setXRot(0f);
     }
 
     /** The nearest living thing caught in front of its horns (never its rider, its kin or, when tame, its owner). */
@@ -684,6 +714,7 @@ public class SoulBull extends AbstractHorse {
             return;
         }
         if (!(getControllingPassenger() instanceof Player)) {
+            faceRam();   // it doesn't look away from what it holds
             Vec3 m = getDeltaMovement();
             setDeltaMovement(m.x * 0.2, m.y, m.z * 0.2);   // braced, shoving
         }
@@ -849,6 +880,7 @@ public class SoulBull extends AbstractHorse {
             }
             if (mode() == MODE_PIN) {
                 dashTicks = -1;   // caught something: the dash ends on the horns
+                pinYaw = getYRot();
             }
         }
     }
@@ -907,6 +939,11 @@ public class SoulBull extends AbstractHorse {
                 }
             }
         }
+    }
+
+    @Override
+    protected net.minecraft.world.phys.Vec2 getRiddenRotation(LivingEntity rider) {
+        return isPinning() ? new net.minecraft.world.phys.Vec2(getXRot(), pinYaw) : super.getRiddenRotation(rider);
     }
 
     @Override

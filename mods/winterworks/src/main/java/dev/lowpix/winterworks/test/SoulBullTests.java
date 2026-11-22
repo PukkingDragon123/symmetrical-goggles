@@ -344,6 +344,26 @@ public class SoulBullTests implements FabricGameTest {
                 .thenSucceed();
     }
 
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH, timeoutTicks = 120)
+    public void wildChargeCrossesTheGapAndHoldsItsVictimInFront(GameTestHelper h) {
+        floor(h, Blocks.STONE);
+        SoulBull b = bull(h, 4.5, 0.5, false, null);
+        b.setNoAi(false);
+        Pig pig = h.spawn(EntityType.PIG, new Vec3(4.5, 1, 6.0));
+        pig.setNoAi(true);
+        h.assertTrue(b.startRam(1f, new Vec3(0, 0, 1)), "a wild bull rams");
+        h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(b.isPinning() && b.pinned() == pig, "the charge should reach the pig 5 blocks off"))
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    Vec3 rel = pig.position().subtract(b.position());
+                    h.assertTrue(rel.z > 1.2 && Math.abs(rel.x) < 0.3, "the victim is held out in front of the horns (" + rel + ")");
+                    h.assertTrue(Math.abs(b.getYRot()) < 1f, "the bull keeps facing its victim (" + b.getYRot() + ")");
+                    cleanup(h);
+                })
+                .thenSucceed();
+    }
+
     // ------------------------------------------------------------------------------------------ drops
 
     @GameTest(template = EMPTY_STRUCTURE, batch = BATCH, timeoutTicks = 40)

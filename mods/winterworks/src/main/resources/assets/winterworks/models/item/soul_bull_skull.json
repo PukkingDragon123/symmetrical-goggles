@@ -7,13 +7,13 @@
   "display": {
     "gui": {
       "rotation": [
-        25,
-        135,
+        22,
+        35,
         0
       ],
       "translation": [
         0,
-        1.0,
+        1.5,
         0
       ],
       "scale": [

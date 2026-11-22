@@ -80,6 +80,7 @@ final class SoulBullShots {
             mc.options.hideGui = true;
             mc.options.renderDistance().set(6);
             mc.options.simulationDistance().set(6);
+            mc.options.gamma().set(1.0);
             for (String c : new String[]{"gamerule doDaylightCycle false", "gamerule doMobSpawning false", "gamerule doFireTick false",
                     "gamerule commandModificationBlockLimit 500000", "gamerule sendCommandFeedback false", "difficulty normal",
                     "gamemode spectator", "execute in minecraft:the_nether run tp @s 0.5 95 0.5"}) {
@@ -102,9 +103,9 @@ final class SoulBullShots {
             level.addFreshEntity(ws);
             ws.startRiding(jockey, true);
         }));
-        at(t += 10, () -> tpFacing(new Vec3(-0.5, 92.8, -3.5), new Vec3(1.0, 90.8, 7.5)));
+        at(t += 10, () -> tpFacing(new Vec3(1.2, 92.5, 0.2), new Vec3(1.2, 90.8, 7.5)));
         at(t += 40, () -> shot("valley_herd"));
-        at(t += 2, () -> tpFacing(new Vec3(2.0, 92.2, 1.2), new Vec3(5.0, 91.3, 5.5)));
+        at(t += 2, () -> tpFacing(new Vec3(8.4, 92.0, 8.2), new Vec3(5.0, 91.2, 5.5)));
         at(t += 10, () -> shot("armored_jockey"));
         at(t += 2, () -> nether(level -> {
             level.setBlockAndUpdate(new BlockPos(-6, 90, 10), Blocks.SOUL_LANTERN.defaultBlockState());
@@ -123,12 +124,13 @@ final class SoulBullShots {
             level.addFreshEntity(z);
             victim = z;
         }));
-        at(t += 2, () -> tpFacing(new Vec3(7.2, 92.4, -12.0), new Vec3(12.5, 90.9, -10.0)));
+        at(t += 2, () -> tpFacing(new Vec3(8.0, 92.0, -11.0), new Vec3(12.5, 90.9, -9.6)));
         at(t += 20, () -> shot("ram_ready"));
         at(t += 2, () -> nether(level -> rammer.startRam(1f, new Vec3(0, 0, 1))));
         at(t += 8, () -> shot("ram_lunge"));
         at(t += 10, () -> shot("ram_pin"));
         at(t += 12, () -> shot("ram_pin_held"));
+        at(t += 1, SoulBullShots::log);
         at(t += 40, () -> nether(level -> {
             rammer.discard();
             if (victim != null) {
@@ -140,7 +142,8 @@ final class SoulBullShots {
             level.setBlockAndUpdate(SKULL.below(), Blocks.SOUL_SAND.defaultBlockState());
             level.setBlockAndUpdate(SKULL, WWBlocks.SOUL_BULL_SKULL.defaultBlockState().setValue(SoulBullSkullBlock.FACING, Direction.SOUTH));
         }));
-        at(t += 2, () -> tpFacing(new Vec3(-12.3, 92.9, -5.7), new Vec3(-10.0, 90.2, -8.8)));
+        at(t += 1, () -> particles(net.minecraft.client.ParticleStatus.MINIMAL));
+        at(t += 2, () -> tpFacing(new Vec3(-10.3, 91.3, -7.3), new Vec3(-10.0, 90.15, -9.0)));
         at(t += 20, () -> shot("skull_cold"));
         at(t += 2, () -> nether(level -> {
             for (Direction d : Direction.Plane.HORIZONTAL) {
@@ -148,6 +151,7 @@ final class SoulBullShots {
                 level.setBlockAndUpdate(SKULL.relative(d), Blocks.SOUL_FIRE.defaultBlockState());
             }
         }));
+        at(t += 2, () -> tpFacing(new Vec3(-10.4, 92.2, -6.9), new Vec3(-10.0, 90.1, -9.0)));
         at(t += 30, () -> shot("ritual_lit"));
         at(t += 2, () -> nether(level -> {
             if (level.getBlockEntity(SKULL) instanceof SoulBullSkullBlockEntity be) {
@@ -158,7 +162,7 @@ final class SoulBullShots {
                 }
             }
         }));
-        at(t += 2, () -> tpFacing(new Vec3(-12.8, 93.4, -5.0), new Vec3(-10.0, 90.0, -9.0)));
+        at(t += 2, () -> tpFacing(new Vec3(-11.6, 93.0, -6.6), new Vec3(-10.0, 90.0, -9.2)));
         at(t += 20, () -> shot("ritual_heap"));
         at(t += 2, () -> nether(level -> {
             ServerPlayer sp = player(level);
@@ -173,11 +177,13 @@ final class SoulBullShots {
                 ridden = level.getEntitiesOfClass(SoulBull.class, new AABB(SKULL).inflate(2)).stream().findFirst().orElse(null);
             }
         }));
-        at(t += 6, () -> shot("revive_1"));
+        at(t += 1, () -> tpFacing(new Vec3(-12.6, 92.7, -5.0), new Vec3(-10.0, 90.4, -9.4)));
+        at(t += 5, () -> shot("revive_1"));
         at(t += 10, () -> shot("revive_2"));
         at(t += 8, () -> shot("revive_3"));
         at(t += 10, () -> shot("revive_4"));
         at(t += 30, () -> shot("revived"));
+        at(t += 1, () -> particles(net.minecraft.client.ParticleStatus.ALL));
         // 4. riding with the soul bar; a charged ram from the saddle
         at(t += 4, () -> nether(level -> {
             if (ridden == null) {
@@ -214,12 +220,18 @@ final class SoulBullShots {
         at(t += 20, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.hideGui = false;
-            mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+            mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
             mc.player.setYRot(0f);
-            mc.player.setXRot(18f);
+            mc.player.setXRot(38f);
             mc.player.getInventory().selected = 0;
         });
         at(t += 80, () -> shot("riding"));   // after "Press shift to dismount" has faded
+        at(t += 2, () -> {
+            Minecraft mc = Minecraft.getInstance();
+            mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+            mc.player.setXRot(20f);
+        });
+        at(t += 10, () -> shot("riding_front"));
         at(t += 2, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
@@ -230,7 +242,14 @@ final class SoulBullShots {
         at(t += 8, () -> shot("riding_charge", false));
         at(t += 1, () -> Minecraft.getInstance().options.keyJump.setDown(false));
         at(t += 7, () -> shot("riding_ram", false));
-        at(t += 10, () -> shot("riding_pin", false));
+        at(t += 6, () -> {
+            Minecraft mc = Minecraft.getInstance();
+            mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT);
+            mc.player.setXRot(15f);
+            log();
+        });
+        at(t += 4, () -> shot("riding_pin", false));
+        at(t += 1, SoulBullShots::log);
         at(t += 40, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.setCameraType(CameraType.FIRST_PERSON);
@@ -244,6 +263,21 @@ final class SoulBullShots {
         }));
         at(t += 20, () -> shot("inventory"));
         at(t += 5, () -> Minecraft.getInstance().stop());
+    }
+
+    private static void particles(net.minecraft.client.ParticleStatus status) {
+        Minecraft mc = Minecraft.getInstance();
+        mc.options.particles().set(status);
+        mc.particleEngine.setLevel(mc.level);   // clears them
+    }
+
+    private static void log() {
+        nether(level -> {
+            for (SoulBull b : level.getEntitiesOfClass(SoulBull.class, new AABB(-R, FLOOR, -R, R, TOP, R))) {
+                Winterworks.LOG.info("soulbullshots: bull {} at {} yaw {} body {} mode {} pinned {} hp {}", b.getId(), b.position(),
+                        b.getYRot(), b.yBodyRot, b.mode(), b.pinned() == null ? "-" : b.pinned().position(), b.getHealth());
+            }
+        });
     }
 
     private static SoulBull bull(ServerLevel level, double x, double z, float yaw) {
