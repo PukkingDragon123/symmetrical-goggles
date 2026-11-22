@@ -51,7 +51,7 @@ import net.minecraft.world.phys.Vec3;
  * -Dwinterworks.oceangearshots=all (with -Dwinterworks.ocean=true, in JAVA_TOOL_OPTIONS for ./gradlew runClient under
  * xvfb-run) the client makes a flat world and saves screenshots/winterworks_oceangear_*.png: the Elder Guardian boss in
  * a flooded prismarine arena (idle, the stare's lock-on and beam, the beam stopped by a pillar, the bubble barrage and a
- * drowned caught in a bubble, the tail whip, the roar and summons, the boss bar), Turtle Shell armour worn (front and
+ * drowned caught in a bubble, the tail whip, the roar and summons with the boss bar, its death), Turtle Shell armour worn (front and
  * back) and retreated (and struck), lionfish darts fired underwater beside an arrow, and the Eye of the Ocean underwater
  * and on land. Then it quits. Fixed views come from a client-side armour stand set as the camera; people in the armour
  * shots are client-side players. A comma list instead of all (boss,armor,darts,eye) runs only those scenes.
@@ -212,8 +212,6 @@ final class OceanGearShots {
             });
         });
         at(t += 24, () -> shot("boss_death"));
-        at(t += 2, () -> cam(x0 + 2.6, Y + 3.4, z0 - 1.2, x0 + 0.5, Y + 3.9, z0 - 3.5));   // its eye drifts up where it died
-        at(t += 20, () -> shot("boss_eye_drop"));
         return t + 5;
     }
 
