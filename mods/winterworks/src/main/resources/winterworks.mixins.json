@@ -46,7 +46,9 @@
     "client.DaggerMinecraftMixin",
     "client.DaggerHandRendererMixin",
     "client.DaggerItemInHandLayerMixin",
-    "client.DaggerPlayerRendererMixin"
+    "client.DaggerPlayerRendererMixin",
+    "client.RamPoseMixin",
+    "client.RamHandMixin"
   ],
   "injectors": {
     "defaultRequire": 1

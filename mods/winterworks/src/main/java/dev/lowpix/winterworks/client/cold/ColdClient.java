@@ -37,6 +37,7 @@ public final class ColdClient {
         particle(WWParticles.HEX_RUNE, Kind.HEX_RUNE);
         particle(WWParticles.GOLD_GLINT, Kind.GOLD_GLINT);
         ClientTickEvents.END_CLIENT_TICK.register(ColdClient::tick);
+        RamClient.init();   // 0.4 fixes: the Potion of Ramming at top speed
     }
 
     private static void particle(SimpleParticleType type, Kind kind) {
