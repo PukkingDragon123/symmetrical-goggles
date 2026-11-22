@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "winterworks:block/end_grass_block_top",
+    "side": "winterworks:block/end_grass_block_side",
+    "bottom": "minecraft:block/end_stone",
+    "particle": "winterworks:block/end_grass_block_side"
+  }
+}

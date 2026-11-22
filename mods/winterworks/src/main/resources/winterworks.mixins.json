@@ -37,6 +37,10 @@
     "endgear.EndGearPlayerMixin",
     "endgear.EndGearEntityMixin",
     "endgear.EndGearItemEntityMixin",
+    "end.SuspiciousEndSandMixin",
+    "end.ChorusSoilMixin",
+    "end.ChorusFlowerSoilMixin",
+    "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor"
   ],

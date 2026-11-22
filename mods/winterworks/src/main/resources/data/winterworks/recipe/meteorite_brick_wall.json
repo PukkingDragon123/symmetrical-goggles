@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:meteorite_bricks"
+    }
+  },
+  "result": {
+    "id": "winterworks:meteorite_brick_wall",
+    "count": 6
+  }
+}

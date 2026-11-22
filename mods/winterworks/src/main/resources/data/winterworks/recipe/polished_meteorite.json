@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "winterworks:meteorite"
+    }
+  },
+  "result": {
+    "id": "winterworks:polished_meteorite",
+    "count": 4
+  }
+}

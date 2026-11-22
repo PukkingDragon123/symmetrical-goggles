@@ -21,6 +21,8 @@ Region map: "sheet" = (u, v, w, h) on the sheet; "at" = where the screen draws i
                                                      colours (title 0xE6C77A, label 0xB8A58A; the panel is dark)
     book slot            (in the panel)              item at 34,47 (gold-ringed 18x18 frame at 33,46)
     Soul Elixir slot     (in the panel)              item at 56,47 (frame at 55,46); accepts 1-3
+    blood slot           (in the panel)              item at 74,20 (gold-ringed frame at 73,19, blood-red corner
+                                                     studs, a gold link down to the elixir slot): Potions of Blood
     player inventory     (in the panel)              items at 8+18*col, 84+18*row; hotbar 8+18*col, 142
     soul tank glass      (in the panel, empty)       inside 9,17 16x48 (gold caps 6,13 and 6,65)
     tank fill strip      176, 0, 16, 80              loops every 32 px. Fill h = 48*souls/1000: draw
@@ -30,14 +32,15 @@ Region map: "sheet" = (u, v, w, h) on the sheet; "at" = where the screen draws i
     tank glass overlay   176, 84, 16, 48             at 9, 17, over the fill (streaks, glint, gauge marks)
     swirling souls       192 + 16*(i%4), 16*(i//4),  i = 0..7, 16x16; frame (ticks / 3) % 8 at 9, 65 - h +
                          16, 16                      (h - 16) / 2 while h >= 16, clipped to the fill
-    hex option rows      88x19 each                  at 80, 14 + 19*i (i = 0..2), inside the panel's well
+    hex option rows      73x19 each                  at 95, 14 + 19*i (i = 0..2), inside the panel's well
+                                                     (94,13 75x59; until 0.4 the rows were 88 wide at 80)
       normal             0, 166                      cost icon at row + (1, 1); glyph text at row + (20, 6)
       hovered            0, 185                      (soul-blue edge)
       disabled           0, 204
       locked             0, 223                      chains and a padlock: draw no cost icon or text on it
     cost icons           192 + 16*(n-1), 32, 16, 16  n = 1..3 Soul Elixir (lit); unaffordable: same u, v = 48
-    ghost icons          240, 32 (book); 240, 48      16x16, in the empty book / elixir slot
-                         (Soul Elixir)
+    ghost icons          240, 32 (book); 240, 48      16x16, in the empty book / elixir / blood slot
+                         (Soul Elixir); 240, 64 (blood potion)
     cursed glyphs        6*i, 243, 6, 8              i = 0..15: a 5x7 glyph + its 1px shadow, light soul
                                                      colour (tint it); advance 6 px. Text resolving into
                                                      words swaps glyphs for font letters as you hover
@@ -1280,8 +1283,10 @@ def swirl(f):
     return im
 
 
-# --- hex option rows (88x19): netherite slabs in the enchanting-table style, a recessed cost box on the left
-ROW_W, ROW_H = 88, 19
+# --- hex option rows (73x19): netherite slabs in the enchanting-table style, a recessed cost box on the left. They
+# were 88 wide at x 80; 0.4 narrowed them to make room for the blood slot (the longest curse name still fits: the row
+# text gets ROW_W - 23 = 50 px)
+ROW_X, ROW_W, ROW_H = 95, 73, 19
 CHAIN = pal(i="#1f1b25", j="#5a5560", J="#8f8a95", K="#c9c4cc")
 CHAIN_UNIT = """
 .KJj ....
@@ -1323,11 +1328,11 @@ def option_row(state):
     # gold studs at the right end
     stud = {"hover": ("g", "e"), "normal": ("f", "d")}.get(state, ("4", "3"))
     for sy in (4, 13):
-        fill(im, 84, sy, 1, 1, stud[0])
-        fill(im, 85, sy, 1, 1, stud[1])
-        fill(im, 84, sy + 1, 2, 1, stud[1] if state in ("hover", "normal") else "3")
+        fill(im, ROW_W - 4, sy, 1, 1, stud[0])
+        fill(im, ROW_W - 3, sy, 1, 1, stud[1])
+        fill(im, ROW_W - 4, sy + 1, 2, 1, stud[1] if state in ("hover", "normal") else "3")
     if state == "locked":
-        for n in range(8):
+        for n in range((ROW_W - 19 - 6) // 8):
             stamp(im, 19 + 8 * n, 7, CHAIN_UNIT, CHAIN)
         stamp(im, 4, 4, PADLOCK, pal(G, CHAIN))
     return im
@@ -1385,10 +1390,33 @@ def ghost(grid):
     return img(g, pal(a="#5f515370", b="#7a6a668c"), (16, 16), "ghost")
 
 
+# a potion bottle with a drop of blood in it, for the empty blood slot (b outline, a body, d the drop)
+BLOOD_POTION = """
+................
+......bbbb......
+......baab......
+.......bb.......
+......baab......
+......baab......
+.....baaaab.....
+....baaaaaab....
+...baaaddaaab...
+...baaddddaab...
+...baaddddaab...
+...baadddddab...
+....baddddab....
+.....baaaab.....
+......bbbb......
+................
+"""
+
+
 ICONS["ghost_book"] = ghost(BOOK)
 ICONS["ghost_elixir"] = ghost(FLASK)
+ICONS["ghost_blood"] = img(BLOOD_POTION, pal(a="#5f515370", b="#7a6a668c", d="#9a2a3a96"), (16, 16), "ghost_blood")
 REG["ghost_book"] = (240, 32, 16, 16)
 REG["ghost_elixir"] = (240, 48, 16, 16)
+REG["ghost_blood"] = (240, 64, 16, 16)
 for i in range(8):
     REG[f"swirl_{i}"] = (192 + 16 * (i % 4), 16 * (i // 4), 16, 16)
 REG["tank_fill"] = (176, 0, 16, 80)
@@ -1412,6 +1440,7 @@ OcbbbbbbbaaaaaaaaaaaaO
 .OOOOOOOOO OOOOOOOOOOO.
 """
 INSCRIPTION = [9, 2, 14, 0, 12, 6, 10, 4, 15, 1]
+BLOOD_SLOT = (74, 20)                 # where the blood potion item is drawn (its 18x18 frame is one pixel further out)
 ALTAR_L, ALTAR_R = [5, 11, 3], [8, 0, 12]
 CARVE_INK, CARVE_LIP = "#183542", "5"
 
@@ -1458,14 +1487,21 @@ def panel():
     for n, g in enumerate(ALTAR_L):
         glyph_text(im, 29, 16 + 9 * n, [g], CARVE_INK, CARVE_LIP)
     for n, g in enumerate(ALTAR_R):
-        glyph_text(im, 72, 16 + 9 * n, [g], CARVE_INK, CARVE_LIP)
+        glyph_text(im, 80, 41 + 9 * n, [g], CARVE_INK, CARVE_LIP)
     # the two input slots, ringed in gold, joined by a carved line
     slot(im, 33, 46, gold=True)
     slot(im, 55, 46, gold=True)
     fill(im, 52, 54, 2, 1, "e")
     fill(im, 52, 55, 2, 1, "c")
+    # the blood slot right of the HEX button, ringed in gold with blood-red corner studs, linked down to the elixir
+    bx, by = BLOOD_SLOT
+    slot(im, bx - 1, by - 1, gold=True)
+    for cx, cy in ((bx - 2, by - 2), (bx + 17, by - 2), (bx - 2, by + 17), (bx + 17, by + 17)):
+        fill(im, cx, cy, 1, 1, "#9a1c2a")
+    fill(im, bx - 2, by + 18, 1, 45 - (by + 18), "e")
+    fill(im, bx - 1, by + 18, 1, 45 - (by + 18), "c")
     # the well the three hex option rows sit in
-    bevel(im, 79, 13, 90, 59, "1", "5", inner="2", corner="3")
+    bevel(im, ROW_X - 1, 13, ROW_W + 2, 59, "1", "5", inner="2", corner="3")
     # a carved rule from the "Inventory" label to the right edge, gold diamonds at its ends
     fill(im, 63, 76, 102, 1, "1")
     fill(im, 64, 77, 101, 1, "5")
@@ -1715,12 +1751,17 @@ def screen(state):
                (16, 16))
     im.alpha_composite(book, (L + 34, T + 47))
     item_at(im, L + 56, T + 47, "textures/item/soul_elixir.png", 3)
+    if state == "hover":                           # no blood offered: the ghost bottle shows
+        blit(im, L + BLOOD_SLOT[0], T + BLOOD_SLOT[1], "ghost_blood")
+    else:                                          # a Potion of Blood in the slot (a stand-in for vanilla's potion)
+        im.alpha_composite(img(BLOOD_POTION, pal(b="#2b1820", a="#cfe0ec70", d="#c42232"), (16, 16)),
+                           (L + BLOOD_SLOT[0], T + BLOOD_SLOT[1]))
     # the three hex options
     rows = [("hover" if state == "hover" else "normal", 1, [2, 9, 14, 6, 1, 11, 4]),
             ("normal" if state == "hover" else "hover", 3, [12, 5, 0, 7, 15, 3]),
             ("locked", None, None)]
     for i, (st, cost, glyphs) in enumerate(rows):
-        x, y = L + 80, T + 14 + 19 * i
+        x, y = L + ROW_X, T + 14 + 19 * i
         blit(im, x, y, f"row_{st}")
         if cost:
             blit(im, x + 1, y + 1, f"cost_{cost}")

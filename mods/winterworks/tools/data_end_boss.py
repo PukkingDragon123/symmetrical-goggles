@@ -97,6 +97,7 @@ def run(ctx):
     particles(ctx)
     # ---- lang
     lang = {
+        "item.winterworks.monolith_eye": "Monolith Eye",
         "entity.winterworks.monolith": "The Monolith",
         "entity.winterworks.dragon_light_beam": "Light Beam",
         "item.winterworks.monolith_spawn_egg": "Monolith Spawn Egg",

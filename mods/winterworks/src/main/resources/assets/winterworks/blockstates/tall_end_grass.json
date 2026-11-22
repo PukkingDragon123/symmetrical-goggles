@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "half=lower": {
+      "model": "winterworks:block/tall_end_grass_bottom"
+    },
+    "half=upper": {
+      "model": "winterworks:block/tall_end_grass_top"
+    }
+  }
+}

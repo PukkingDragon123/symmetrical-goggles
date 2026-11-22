@@ -74,9 +74,10 @@ contract for the Java side.
   Immunity recipe (blood + torchflower) stays.
 * **Mosquitoes really harvest Amberwood**: empty mosquitoes find oozing Amberwood logs, sip the resin and become
   amber-full (fix: it doesn't happen today in game).
-* **Torchflowers and pitcher plants glow**: new textures (vanilla style, 16 x 16) for the torchflower, its crop
-  stages, the pitcher crop and plant, each crop stage glowing a little more (torchflower light 15 when grown, pitcher
-  plant 12). Harvesting: use a grown torchflower or pitcher plant with an empty hand to pick it: torchflower seeds or
+* **Torchflowers and pitcher plants glow**: they keep vanilla's own textures (the user asked for the old look) and
+  glow: each crop stage gives a little more light (torchflower light 15 when grown, pitcher plant 12) and their
+  luminous parts render full-bright at runtime from the game's own textures (an emissive pass, like the End Bloom's
+  BloomGlowModel). No vanilla texture files are copied into the mod. Harvesting: use a grown torchflower or pitcher plant with an empty hand to pick it: torchflower seeds or
   pitcher pods (1-3) drop and it goes back to a young crop (like sweet berries). Breaking still works as in vanilla.
 * **Pitcher plants attract bees** (they count as flowers for bees and pollination) and mosquitoes, and give off sweet
   golden-pink scent particles (`sweet_scent`).
@@ -221,3 +222,15 @@ contract for the Java side.
   `charge` (loop) holds the head low with the horn levelled; `ram` (0.8 s) thrusts and returns to rest. Don't play
   `ram` on top of `charge` (skip it while charging).
 * **Frost Mauler / skull**: new eye glow parts already in the export; no Java changes needed.
+* **Harvester**: `HarvesterModel` (texture 256x512, draw `entityCutoutNoCull`; cards for fringes and teeth). Hitbox
+  2.0 x 1.9 fits; the head is ~3 blocks wide, nose to tail ~4.9. Toggle `saddle`, `chest_l`, `chest_r`. Rider seat
+  top at y 35 px (~2.2 blocks). Clips: `idle` 4.0 loop, `walk` 1.6 loop, `run` 0.8 loop, `graze` 1.5, `chomp` 0.8,
+  `shove` 0.8 (sweeps toward its left), `sit` 3.0 loop.
+* **Harvester Egg**: block models `harvester_egg_{not_cracked,slightly_cracked,very_cracked}` (sniffer-egg box) and
+  `item/harvester_egg`; the blockstate (hatch 0-2) and item model are still to write. Amber egg inclusion:
+  `AmberEggModel` + `entity/amber_egg.png` (register an `AMBER_EGG` layer in AmberClient and an `EGG` case in
+  AmberInclusionRenderer like `seed`, fit ~0.6).
+* **Hexing Table GUI** (already in `gui/hexing_table.png`): blood slot item at (74, 20) (frame at 73, 19), ghost
+  blood potion at sheet (240, 64, 16, 16); the rows moved: `HexGui.ROW_X` 80 -> 95 and `ROW_W` 88 -> 73 (must change
+  with the art, or the rows draw misaligned). The no-sheet fallback's 9-link chain must fit 73 px.
+* `sweet_scent` particle: 5 frames, soft alpha (translucent sheet, setSpriteFromAge). `mob_effect/burning.png`.

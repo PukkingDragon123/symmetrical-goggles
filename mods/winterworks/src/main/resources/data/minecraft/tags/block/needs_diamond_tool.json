@@ -1,6 +1,23 @@
 {
   "replace": false,
   "values": [
-    "winterworks:soul_tank"
+    "winterworks:soul_tank",
+    "winterworks:meteorite",
+    "winterworks:meteorite_core",
+    "winterworks:polished_obsidian",
+    "winterworks:polished_obsidian_stairs",
+    "winterworks:polished_obsidian_slab",
+    "winterworks:polished_obsidian_wall",
+    "winterworks:obsidian_bricks",
+    "winterworks:obsidian_brick_stairs",
+    "winterworks:obsidian_brick_slab",
+    "winterworks:obsidian_brick_wall",
+    "winterworks:cracked_obsidian_bricks",
+    "winterworks:obsidian_tiles",
+    "winterworks:obsidian_tile_stairs",
+    "winterworks:obsidian_tile_slab",
+    "winterworks:obsidian_tile_wall",
+    "winterworks:cracked_obsidian_tiles",
+    "winterworks:chiseled_obsidian"
   ]
 }

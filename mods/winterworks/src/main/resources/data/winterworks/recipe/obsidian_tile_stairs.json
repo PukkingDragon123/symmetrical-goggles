@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:obsidian_tiles"
+    }
+  },
+  "result": {
+    "id": "winterworks:obsidian_tile_stairs",
+    "count": 4
+  }
+}

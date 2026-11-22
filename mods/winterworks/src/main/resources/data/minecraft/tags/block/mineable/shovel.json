@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "winterworks:amber_fossil"
+    "winterworks:amber_fossil",
+    "winterworks:end_sand",
+    "winterworks:suspicious_end_sand"
   ]
 }
