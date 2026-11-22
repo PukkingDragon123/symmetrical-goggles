@@ -9,8 +9,8 @@ vanilla book form.)
 Same rules as winterworks_art.py (whose grid helpers this imports): every sprite is a hand-placed ASCII grid plus a
 palette, '.' is transparent. Item art follows vanilla's look: light from the top-left, hue-shifted ramps, and no black
 outline (the outermost pixels are the darkest tone of their own material, never near-black). The soul glint is drawn
-procedurally (it is a tiling texture, not a sprite) and is greyscale-to-blue for additive blending, like vanilla's
-enchanted_glint_item.png.
+procedurally (it is a tiling texture, not a sprite): black to soul-fire teal to pale cyan, for additive blending like
+vanilla's enchanted_glint_item.png.
 
 Files and layouts:
 
@@ -21,16 +21,17 @@ Files and layouts:
                                                   the soul fraction: width = 182 * soul / max)
     textures/gui/soul_bar_icon.png        9 x 36  a soul flame to sit left of the bar (at x - 10, y - 2): 4 frames of 9 x 9
                                                   stacked vertically (frame i at v = 9 * i), same flicker timing
-    textures/misc/soul_glint_item.png   128 x 128 the cursed items' glint (replaces enchanted_glint_item.png): drifting
-                                                  soul wisps over a slow spiral swirl; RGB, black = no glint
-    textures/misc/soul_glint_entity.png 128 x 128 the same for worn armour (replaces enchanted_glint_entity.png): fewer,
-                                                  larger wisps, a broader swirl
+    textures/misc/soul_glint_item.png   128 x 128 the cursed items' glint (replaces enchanted_glint_item.png): three
+                                                  souls drifting through soft teal swirls; one tile covers a whole item
+                                                  (SoulGlint item scale 64), RGB, black = no glint
+    textures/misc/soul_glint_entity.png 128 x 128 the same for worn armour (replaces enchanted_glint_entity.png): three
+                                                  souls drawn 1:2 so they look round on a 64 x 32 armour texture at
+                                                  SoulGlint entity scale 2 (a tile = 32 x 16 armour px)
 """
 from __future__ import annotations
 
 import argparse
 import math
-import random
 import sys
 from pathlib import Path
 
@@ -192,84 +193,167 @@ put("textures/gui/soul_bar_icon.png", icon)
 
 
 # ====================================================================== the soul glint (128 x 128, tiling)
-G = 128
+# Three souls (a round head with two dark dot eyes, a flowing tail curling behind it) drifting through soft teal
+# swirls: smoke curls, rising wisps and a faint wash, each soul ringed by a dark moat and a soft halo so it reads.
+# Everything is drawn in "design units" on a periodic tile (every distance wraps, the blurs are periodic FFT blurs),
+# so the texture tiles seamlessly. client.hex.SoulGlint shows one whole tile per 16 px item (item scale 64 on the
+# 1024-wide item atlas), so every cursed item carries all three souls; worn armour (entity scale 2 on its 64 x 32
+# texture) sees a tile as 32 x 16 armour pixels, so the entity glint is drawn in armour pixels (a texel is 1/4 px
+# wide and 1/8 px tall) and its souls look round on the armour. The colour is vanilla soul fire's teal (sampled
+# from soul_fire / soul torch for colour only), additive: the glint pass adds (0.75 * texel)^2, black adds nothing.
+G = 128           # texture size
+SS = 4            # supersampling of the soul and swirl shapes
 
 
-def wrap(d):
-    """Shortest periodic offset on the tile (so every shape tiles seamlessly)."""
-    return (d + G / 2) % G - G / 2
+def smooth(e0, e1, x):
+    t = np.clip((x - e0) / (e1 - e0), 0, 1)
+    return t * t * (3 - 2 * t)
 
 
-def swirl_field(arms=3, twist=3.2, reach=56.0, centres=((64, 64),)):
-    """Logarithmic spiral arms round each centre, faded out by `reach` and summed over the neighbouring tiles."""
-    yy, xx = np.mgrid[0:G, 0:G] + 0.5
-    out = np.zeros((G, G))
-    for cx, cy in centres:
-        for ox in (-G, 0, G):
-            for oy in (-G, 0, G):
-                dx, dy = xx - cx - ox, yy - cy - oy
-                r = np.hypot(dx, dy)
-                th = np.arctan2(dy, dx)
-                arm = 0.5 + 0.5 * np.cos(arms * th - twist * np.log1p(r / 4.0))
-                out += arm ** 3 * np.exp(-(r / reach) ** 2) * (1 - np.exp(-(r / 6.0) ** 2))
+def wrap(d, period):
+    """Shortest periodic offset (so every shape tiles seamlessly)."""
+    return (d + period / 2) % period - period / 2
+
+
+def texel_grid(pw, ph, ss=1):
+    """Design-space coordinates of every (sub)texel centre of a tile pw x ph design units big."""
+    n = G * ss
+    j, i = np.mgrid[0:n, 0:n]
+    return (i + 0.5) * pw / n, (j + 0.5) * ph / n
+
+
+def shrink(a, ss):
+    n = a.shape[0] // ss
+    return a.reshape(n, ss, n, ss).mean(axis=(1, 3))
+
+
+def blur(a, sx, sy):
+    """Gaussian blur (sigma in texels per axis) done with the FFT: periodic, so it tiles too."""
+    fy = np.fft.fftfreq(a.shape[0])[:, None]
+    fx = np.fft.fftfreq(a.shape[1])[None, :]
+    return np.real(np.fft.ifft2(np.fft.fft2(a) * np.exp(-2 * math.pi ** 2 * ((fx * sx) ** 2 + (fy * sy) ** 2))))
+
+
+def soul(X, Y, pw, ph, cx, cy, r, lean, curl, tail, aa):
+    """One soul: head centre (cx, cy), head radius r, leaning `lean` rad off upright, the tail swinging to `curl`
+    (+1 right, -1 left) over `tail` units. Returns (brightness, coverage)."""
+    dx, dy = wrap(X - cx, pw), wrap(Y - cy, ph)
+    hx, hy = math.sin(lean), -math.cos(lean)            # heading (up)
+    px, py = -hy, hx                                    # its right-hand side
+    along = dx * hx + dy * hy
+    side = dx * px + dy * py
+    head = smooth(r + aa, r - aa, np.hypot(side, along))
+    core = np.clip(1 - np.hypot(side + 0.25 * r, along - 0.25 * r) / (1.1 * r), 0, 1)     # lit from the top-left
+    body = head * (0.80 + 0.20 * core ** 0.7)
+    tail_pts = []
+    for k in range(56):                                 # the tail: tapering discs along an S-curve, fading
+        t = k / 55
+        a_c = -(0.3 * r + tail * t)
+        s_c = curl * r * 0.95 * math.sin(math.pi * 1.55 * t) * (0.3 + 0.7 * t)
+        tail_pts.append((cx + s_c * px + a_c * hx, cy + s_c * py + a_c * hy, r * 0.93 * (1 - t) ** 1.1 + 0.05 * r,
+                         0.80 - 0.5 * t ** 0.8))
+    tl = stroke(X, Y, pw, ph, tail_pts, aa)
+    body = np.maximum(body, tl)
+    for sgn in (-1, 1):                                 # two dark dot eyes, side by side
+        de = np.hypot(side - sgn * 0.42 * r, along - 0.06 * r)
+        body = body * (1 - 0.96 * smooth(0.27 * r + 0.8 * aa, 0.27 * r - 0.8 * aa, de) * head)
+    return body, np.maximum(head, smooth(0.0, 0.25, tl))
+
+
+def stroke(X, Y, pw, ph, pts, aa):
+    """A soft brush stroke: discs (x, y, width, level) stamped along a path, each only over the texels it can touch
+    (wrapping round the tile)."""
+    out = np.zeros_like(X)
+    n = X.shape[0]
+    for x, y, w, lv in pts:
+        reach = w + aa
+        cols = np.arange(math.floor((x - reach) / pw * n) - 1, math.ceil((x + reach) / pw * n) + 2) % n
+        rows = np.arange(math.floor((y - reach) / ph * n) - 1, math.ceil((y + reach) / ph * n) + 2) % n
+        win = np.ix_(rows, cols)
+        d = np.hypot(wrap(X[win] - x, pw), wrap(Y[win] - y, ph))
+        out[win] = np.maximum(out[win], smooth(w + aa, w - aa, d) * lv)
     return out
 
 
-def wisp_field(n, size, seed):
-    """Drifting souls: a soft round head with two dark eyes, a tapering tail that curls behind it, a faint halo.
-    Positions and headings are random; every distance wraps, so the field tiles."""
-    rng = random.Random(seed)
-    yy, xx = np.mgrid[0:G, 0:G] + 0.5
-    out = np.zeros((G, G))
-    for _ in range(n):
-        x0, y0 = rng.uniform(0, G), rng.uniform(0, G)
-        a = rng.uniform(0, 2 * math.pi)
-        s = size * rng.uniform(0.75, 1.2)
-        ux, uy = math.cos(a), math.sin(a)
-        px_, py_ = -uy, ux
-        curl = rng.choice((-1, 1)) * rng.uniform(0.6, 1.0)
-        dx, dy = wrap(xx - x0), wrap(yy - y0)
-        # head
-        hr = s * 0.4
-        d = np.hypot(dx, dy)
-        head = np.clip(1.2 - d / hr, 0, 1) ** 0.8
-        halo = np.exp(-(d / (s * 0.9)) ** 2) * 0.35
-        # tail: sample a curling centre line behind the head
-        tail = np.zeros((G, G))
-        for k in range(1, 25):
-            t = k / 24
-            off = curl * s * 0.3 * math.sin(math.pi * t * 1.3)
-            cx = -ux * s * 1.25 * t + px_ * off
-            cy = -uy * s * 1.25 * t + py_ * off
-            w = hr * (1.0 - 0.75 * t) * (1 + 0.15 * math.sin(t * 9 + curl))      # a flickering, flame-like tail
-            dd = np.hypot(dx - cx, dy - cy)
-            tail = np.maximum(tail, np.clip(1.0 - dd / w, 0, 1) * (1.0 - 0.6 * t))
-        body = np.maximum(head, tail * 0.85)
-        # a soul's face: two eye holes side by side across the heading, a little forward, and a gaping mouth below
-        for ex, ey, rr in ((ux * hr * 0.3 + px_ * hr * 0.36, uy * hr * 0.3 + py_ * hr * 0.36, 0.17),
-                           (ux * hr * 0.3 - px_ * hr * 0.36, uy * hr * 0.3 - py_ * hr * 0.36, 0.17),
-                           (-ux * hr * 0.25, -uy * hr * 0.25, 0.14)):
-            body *= 1 - 0.85 * np.exp(-((dx - ex) ** 2 + (dy - ey) ** 2) / (hr * rr) ** 2)
-        out = np.maximum(out, body + halo)
-    return out
+def curl_path(cx, cy, rad, turns, sgn, phase, tail_len, tail_bend, n=160):
+    """A smoke curl: a spiral winding out of its eye, then a tail flowing off along its tangent and thinning."""
+    pts = []
+    for k in range(n):
+        t = k / (n - 1)
+        th = phase + sgn * turns * 2 * math.pi * t
+        rho = rad * (0.12 + 0.88 * t)
+        pts.append((cx + rho * math.cos(th), cy + rho * math.sin(th), 0.12 + 0.30 * t, 0.35 + 0.65 * t))
+    th = phase + sgn * turns * 2 * math.pi
+    x, y = pts[-1][:2]
+    ang = math.atan2(math.cos(th) * sgn, -math.sin(th) * sgn)
+    for k in range(1, n):
+        t = k / (n - 1)
+        a = ang + tail_bend * t
+        x, y = x + math.cos(a) * tail_len / (n - 1), y + math.sin(a) * tail_len / (n - 1)
+        pts.append((x, y, 0.42 * (1 - t) ** 0.8 + 0.04, 1.0 - 0.85 * t))
+    return pts
+
+
+def wisp_path(x0, y0, length, sway, waves, phase, n=200, w=0.26):
+    """A rising wisp of soul smoke: a wavy upward stroke that swells in the middle and fades at both ends."""
+    pts = []
+    for k in range(n):
+        t = k / (n - 1)
+        env = math.sin(math.pi * t) ** 0.8
+        pts.append((x0 + sway * math.sin(2 * math.pi * waves * t + phase), y0 - length * t, w * (0.35 + 0.65 * env),
+                    env))
+    return pts
+
+
+# intensity -> colour: black, deep teal, soul-fire teal, cyan, pale cyan (red stays low, so souls stay soul-coloured
+# even over white items)
+SOUL_RAMP = [(0.00, "#000000"), (0.12, "#001618"), (0.30, "#01454a"), (0.55, "#029a9e"), (0.78, "#38e6ea"),
+             (0.92, "#7ef9fb"), (1.00, "#b4ffff")]
 
 
 def soul_colour(v):
-    """Intensity 0..1 -> additive colour: black, ink blue, soul blue, cyan, white-blue."""
     v = np.clip(v, 0, 1)
-    r = 210 * v ** 2.4
-    g = 235 * v ** 1.45
-    b = 255 * v ** 0.75
-    return np.stack([r, g, b], -1).round().astype(np.uint8)
+    xs = [p for p, _ in SOUL_RAMP]
+    chans = [[int(c[1 + 2 * i:3 + 2 * i], 16) for _, c in SOUL_RAMP] for i in range(3)]
+    return np.stack([np.interp(v, xs, ch) for ch in chans], -1).round().astype(np.uint8)
 
 
-def glint(base, swirl, souls, n, size, seed, centres):
-    v = base + swirl * swirl_field(centres=centres) + souls * wisp_field(n, size, seed)
-    return Image.fromarray(soul_colour(v), "RGB")
+def glint(pw, ph, souls, curls, wisps, swirl, wash, halo, aa):
+    X, Y = texel_grid(pw, ph, SS)
+    body, cover, smoke = np.zeros_like(X), np.zeros_like(X), np.zeros_like(X)
+    for s in souls:
+        b, c = soul(X, Y, pw, ph, *s, aa)
+        body, cover = np.maximum(body, b), np.maximum(cover, c)
+    for c in curls:
+        smoke = np.maximum(smoke, stroke(X, Y, pw, ph, curl_path(*c), 2 * aa))
+    for w in wisps:
+        smoke = np.maximum(smoke, stroke(X, Y, pw, ph, wisp_path(*w), 2 * aa))
+    body, cover, smoke = shrink(body, SS), shrink(cover, SS), shrink(smoke, SS)
+    sx, sy = G / pw, G / ph                             # texels per design unit
+    smoke = blur(smoke, 0.12 * sx, 0.12 * sy)
+    moat = np.clip(blur(cover, 0.45 * sx, 0.45 * sy) * 2.0, 0, 1)
+    glow = blur(cover, 0.6 * sx, 0.6 * sy)
+    mist = blur(smoke, 1.6 * sx, 1.6 * sy) + 0.6 * blur(cover, 2.2 * sx, 2.2 * sy)
+    v = wash * mist / mist.max() + swirl * smoke * (1 - 0.95 * moat) + halo * glow * (1 - cover)
+    return Image.fromarray(soul_colour(np.maximum(v, body)), "RGB")
 
 
-put("textures/misc/soul_glint_item.png", glint(0.14, 0.5, 0.75, 8, 15.0, 7, ((64, 64), (0, 0))))
-put("textures/misc/soul_glint_entity.png", glint(0.03, 0.4, 0.6, 6, 19.0, 5, ((64, 64), (0, 0))))
+# the item glint, in item pixels (one 16 x 16 tile per item)
+put("textures/misc/soul_glint_item.png", glint(
+    16, 16,
+    souls=[(3.5, 3.3, 1.65, -0.14, 1, 4.1), (11.6, 6.1, 1.65, 0.14, -1, 4.2), (7.3, 11.9, 1.65, 0.04, 1, 4.0)],
+    curls=[(8.7, 3.0, 1.45, 1.25, 1, 0.0, 3.2, 1.2), (14.4, 12.9, 1.3, 1.2, -1, 2.0, 3.0, -1.0),
+           (1.9, 10.2, 1.2, 1.2, 1, 3.5, 2.8, 1.0)],
+    wisps=[(5.6, 9.6, 6.0, 0.7, 1.0, 0.0), (15.2, 6.0, 7.0, 0.8, 1.2, 2.0), (10.6, 16.6, 5.0, 0.6, 1.0, 1.0)],
+    swirl=0.52, wash=0.36, halo=0.30, aa=0.09))
+# the armour glint, in armour pixels (one tile = 32 x 16 armour px)
+put("textures/misc/soul_glint_entity.png", glint(
+    32, 16,
+    souls=[(5.5, 3.6, 1.75, -0.10, 1, 4.4), (16.5, 11.4, 1.75, 0.10, -1, 4.4), (26.8, 5.2, 1.75, 0.02, 1, 4.4)],
+    curls=[(11.0, 4.2, 1.5, 1.2, 1, 0.5, 3.0, 1.1), (22.0, 13.0, 1.4, 1.2, -1, 2.2, 3.0, -1.0),
+           (0.8, 12.6, 1.3, 1.2, 1, 3.4, 2.6, 1.0)],
+    wisps=[(9.0, 15.0, 7.0, 0.8, 1.0, 0.0), (21.5, 8.5, 7.0, 0.8, 1.2, 2.0), (30.5, 15.5, 6.0, 0.7, 1.0, 1.0)],
+    swirl=0.48, wash=0.30, halo=0.30, aa=0.10))
 
 
 # ====================================================================== output
