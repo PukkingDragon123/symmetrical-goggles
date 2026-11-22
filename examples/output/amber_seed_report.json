@@ -1,0 +1,98 @@
+{
+  "name": "Amber Seed",
+  "parts": 20,
+  "instances": 20,
+  "faces": 115,
+  "triangles": 230,
+  "vertices_flat": 460,
+  "vertices_unique": 156,
+  "atlas": [
+    64,
+    64
+  ],
+  "atlas_fill": 0.632,
+  "texel_density": 2.0,
+  "colors_used": 19,
+  "palette": {
+    "husk": [
+      "#150b0a",
+      "#24130e",
+      "#351d13",
+      "#4a2a19",
+      "#603920",
+      "#784a29",
+      "#915e34",
+      "#aa7642",
+      "#c39054",
+      "#d9ad6c"
+    ],
+    "amber": [
+      "#86300e",
+      "#c76516",
+      "#eea32f",
+      "#ffe28f"
+    ],
+    "sprout": [
+      "#2f2a10",
+      "#4b4416",
+      "#6c631d",
+      "#8f8526",
+      "#b3a734",
+      "#d2c652",
+      "#ece27f",
+      "#fff8c0"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -1.85,
+      0.0,
+      -1.85
+    ],
+    "max": [
+      2.387,
+      9.249,
+      2.372
+    ],
+    "size": [
+      4.237,
+      9.249,
+      4.222
+    ]
+  },
+  "warnings": [],
+  "animations": {},
+  "joints": [
+    "seed",
+    "rib0",
+    "rib1",
+    "rib2",
+    "rib3",
+    "rib_c0",
+    "rib_c1",
+    "rib_c2",
+    "rib_c3",
+    "shoulder",
+    "cap",
+    "belly",
+    "tip",
+    "point",
+    "sprout",
+    "curl0",
+    "curl1",
+    "curl2",
+    "curl3",
+    "leaf"
+  ],
+  "files": {
+    "amber_seed.glb": "examples/output/amber_seed.glb",
+    "amber_seed.obj": "examples/output/amber_seed.obj",
+    "amber_seed.mtl": "examples/output/amber_seed.mtl",
+    "amber_seed.bbmodel": "examples/output/amber_seed.bbmodel",
+    "amber_seed_texture.png": "examples/output/amber_seed_texture.png",
+    "amber_seed_texture_x16.png": "examples/output/amber_seed_texture_x16.png",
+    "amber_seed_hero.png": "examples/output/amber_seed_hero.png",
+    "amber_seed_sheet.png": "examples/output/amber_seed_sheet.png",
+    "amber_seed_turntable.gif": "examples/output/amber_seed_turntable.gif"
+  }
+}

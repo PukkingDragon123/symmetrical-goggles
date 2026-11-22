@@ -1407,37 +1407,29 @@
   "block.elixir_jar.bubble": {
     "sounds": [
       {
-        "name": "minecraft:block/bubble_column/bubble1",
-        "pitch": 0.7
+        "name": "winterworks:elixir_jar/bubble1",
+        "attenuation_distance": 10
       },
       {
-        "name": "minecraft:block/bubble_column/bubble2",
-        "pitch": 0.75
+        "name": "winterworks:elixir_jar/bubble2",
+        "attenuation_distance": 10
       },
       {
-        "name": "minecraft:block/bubble_column/bubble3",
-        "pitch": 0.65
-      },
-      {
-        "name": "minecraft:liquid/lavapop",
-        "pitch": 1.3
+        "name": "winterworks:elixir_jar/bubble3",
+        "attenuation_distance": 10
       }
-    ],
-    "subtitle": "subtitles.winterworks.block.elixir_jar.bubble"
+    ]
   },
   "block.elixir_jar.fill": {
     "sounds": [
       {
-        "name": "minecraft:item/bottle/fill1",
-        "pitch": 0.8
+        "name": "winterworks:elixir_jar/fill1"
       },
       {
-        "name": "minecraft:item/bottle/fill2",
-        "pitch": 0.85
+        "name": "winterworks:elixir_jar/fill2"
       },
       {
-        "name": "minecraft:item/bottle/fill3",
-        "pitch": 0.75
+        "name": "winterworks:elixir_jar/fill3"
       }
     ],
     "subtitle": "subtitles.winterworks.block.elixir_jar.fill"
@@ -1445,16 +1437,13 @@
   "block.elixir_jar.brewed": {
     "sounds": [
       {
-        "name": "minecraft:block/brewing_stand/brew1",
-        "pitch": 0.8
+        "name": "winterworks:elixir_jar/brewed1"
       },
       {
-        "name": "minecraft:block/brewing_stand/brew2",
-        "pitch": 0.75
+        "name": "winterworks:elixir_jar/brewed2"
       },
       {
-        "name": "minecraft:block/amethyst/resonate1",
-        "pitch": 0.7
+        "name": "winterworks:elixir_jar/brewed3"
       }
     ],
     "subtitle": "subtitles.winterworks.block.elixir_jar.brewed"
@@ -1462,16 +1451,13 @@
   "block.soul_tank.absorb": {
     "sounds": [
       {
-        "name": "minecraft:block/soul_sand/break1",
-        "pitch": 0.5
+        "name": "winterworks:soul_tank/absorb1"
       },
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/sand1",
-        "pitch": 1.4
+        "name": "winterworks:soul_tank/absorb2"
       },
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/whisper1",
-        "pitch": 1.3
+        "name": "winterworks:soul_tank/absorb3"
       }
     ],
     "subtitle": "subtitles.winterworks.block.soul_tank.absorb"
@@ -1479,29 +1465,24 @@
   "block.soul_tank.hum": {
     "sounds": [
       {
-        "name": "minecraft:block/beacon/ambient",
-        "pitch": 0.5
+        "name": "winterworks:soul_tank/hum1",
+        "attenuation_distance": 8
       },
       {
-        "name": "minecraft:block/respawn_anchor/ambient1",
-        "pitch": 0.6
+        "name": "winterworks:soul_tank/hum2",
+        "attenuation_distance": 8
       }
-    ],
-    "subtitle": "subtitles.winterworks.block.soul_tank.hum"
+    ]
   },
   "block.hexing_table.hex": {
     "sounds": [
       {
-        "name": "minecraft:block/respawn_anchor/charge1",
-        "pitch": 0.7
+        "name": "winterworks:hexing_table/hex1",
+        "attenuation_distance": 24
       },
       {
-        "name": "minecraft:block/respawn_anchor/charge2",
-        "pitch": 0.65
-      },
-      {
-        "name": "minecraft:mob/wither/spawn",
-        "pitch": 1.6
+        "name": "winterworks:hexing_table/hex2",
+        "attenuation_distance": 24
       }
     ],
     "subtitle": "subtitles.winterworks.block.hexing_table.hex"
@@ -1509,16 +1490,16 @@
   "block.hexing_table.whisper": {
     "sounds": [
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/whisper2",
-        "pitch": 0.9
+        "name": "winterworks:hexing_table/whisper1"
       },
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/whisper3",
-        "pitch": 0.85
+        "name": "winterworks:hexing_table/whisper2"
       },
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/voices1",
-        "pitch": 1.2
+        "name": "winterworks:hexing_table/whisper3"
+      },
+      {
+        "name": "winterworks:hexing_table/whisper4"
       }
     ],
     "subtitle": "subtitles.winterworks.block.hexing_table.whisper"
@@ -1526,20 +1507,13 @@
   "item.hexed_book.whisper": {
     "sounds": [
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/whisper4",
-        "pitch": 1.1
+        "name": "winterworks:hexed_book/whisper1"
       },
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/whisper5",
-        "pitch": 1.2
+        "name": "winterworks:hexed_book/whisper2"
       },
       {
-        "name": "minecraft:ambient/nether/soulsand_valley/whisper6",
-        "pitch": 1.0
-      },
-      {
-        "name": "minecraft:ambient/nether/soulsand_valley/whisper7",
-        "pitch": 1.15
+        "name": "winterworks:hexed_book/whisper3"
       }
     ],
     "subtitle": "subtitles.winterworks.item.hexed_book.whisper"
@@ -1547,8 +1521,13 @@
   "item.elixir.drink": {
     "sounds": [
       {
-        "name": "minecraft:random/drink",
-        "pitch": 0.8
+        "name": "winterworks:elixir/drink1"
+      },
+      {
+        "name": "winterworks:elixir/drink2"
+      },
+      {
+        "name": "winterworks:elixir/drink3"
       }
     ],
     "subtitle": "subtitles.winterworks.item.elixir.drink"
@@ -1556,18 +1535,263 @@
   "item.elixir_of_greed.shatter": {
     "sounds": [
       {
-        "name": "minecraft:random/glass1",
-        "pitch": 0.8
+        "name": "winterworks:elixir/greed_shatter1"
       },
       {
-        "name": "minecraft:random/glass2",
-        "pitch": 0.75
+        "name": "winterworks:elixir/greed_shatter2"
       },
       {
-        "name": "minecraft:random/glass3",
-        "pitch": 0.85
+        "name": "winterworks:elixir/greed_shatter3"
       }
     ],
     "subtitle": "subtitles.winterworks.item.elixir_of_greed.shatter"
+  },
+  "entity.piglin_witch.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/ambient1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:piglin_witch/ambient2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:piglin_witch/ambient3",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:piglin_witch/ambient4",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.ambient"
+  },
+  "entity.piglin_witch.hiccup": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/hiccup1"
+      },
+      {
+        "name": "winterworks:piglin_witch/hiccup2"
+      },
+      {
+        "name": "winterworks:piglin_witch/hiccup3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.hiccup"
+  },
+  "entity.piglin_witch.drink": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/drink1"
+      },
+      {
+        "name": "winterworks:piglin_witch/drink2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.drink"
+  },
+  "entity.piglin_witch.burp": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/burp1"
+      },
+      {
+        "name": "winterworks:piglin_witch/burp2"
+      },
+      {
+        "name": "winterworks:piglin_witch/burp3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.burp"
+  },
+  "entity.piglin_witch.rummage": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/rummage1"
+      },
+      {
+        "name": "winterworks:piglin_witch/rummage2"
+      },
+      {
+        "name": "winterworks:piglin_witch/rummage3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.rummage"
+  },
+  "entity.piglin_witch.refuse": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/refuse1"
+      },
+      {
+        "name": "winterworks:piglin_witch/refuse2"
+      },
+      {
+        "name": "winterworks:piglin_witch/refuse3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.refuse"
+  },
+  "entity.piglin_witch.cackle": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/cackle1",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:piglin_witch/cackle2",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:piglin_witch/cackle3",
+        "attenuation_distance": 20
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.cackle"
+  },
+  "entity.piglin_witch.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/hurt1"
+      },
+      {
+        "name": "winterworks:piglin_witch/hurt2"
+      },
+      {
+        "name": "winterworks:piglin_witch/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.hurt"
+  },
+  "entity.piglin_witch.death": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/death1"
+      },
+      {
+        "name": "winterworks:piglin_witch/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.death"
+  },
+  "entity.piglin_witch.trade": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/trade1"
+      },
+      {
+        "name": "winterworks:piglin_witch/trade2"
+      },
+      {
+        "name": "winterworks:piglin_witch/trade3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.piglin_witch.trade"
+  },
+  "entity.golden_piglin.groan": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/groan1"
+      },
+      {
+        "name": "winterworks:golden_piglin/groan2"
+      },
+      {
+        "name": "winterworks:golden_piglin/groan3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.golden_piglin.groan"
+  },
+  "entity.golden_piglin.creak": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/creak1"
+      },
+      {
+        "name": "winterworks:golden_piglin/creak2"
+      },
+      {
+        "name": "winterworks:golden_piglin/creak3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.golden_piglin.creak"
+  },
+  "entity.golden_piglin.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/hurt1"
+      },
+      {
+        "name": "winterworks:golden_piglin/hurt2"
+      },
+      {
+        "name": "winterworks:golden_piglin/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.golden_piglin.hurt"
+  },
+  "entity.golden_piglin.death": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/death1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:golden_piglin/death2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.golden_piglin.death"
+  },
+  "curse.trigger": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/trigger1"
+      },
+      {
+        "name": "winterworks:curse/trigger2"
+      },
+      {
+        "name": "winterworks:curse/trigger3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.curse.trigger"
+  },
+  "curse.narcissus": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/narcissus1"
+      },
+      {
+        "name": "winterworks:curse/narcissus2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.curse.narcissus"
+  },
+  "curse.orpheus": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/orpheus1"
+      },
+      {
+        "name": "winterworks:curse/orpheus2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.curse.orpheus"
+  },
+  "curse.sin": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/sin1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:curse/sin2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.curse.sin"
   }
 }

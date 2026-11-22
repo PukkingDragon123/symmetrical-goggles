@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.winterworks.envy",
+    "color": "#C43A3A"
+  },
+  "exclusive_set": "#winterworks:exclusive_set/envy",
+  "max_cost": {
+    "base": 60,
+    "per_level_above_first": 20
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 20
+  },
+  "slots": [
+    "any"
+  ],
+  "supported_items": "#minecraft:enchantable/armor",
+  "weight": 1,
+  "primary_items": "#minecraft:enchantable/chest_armor",
+  "effects": {
+    "minecraft:post_attack": [
+      {
+        "affected": "attacker",
+        "enchanted": "victim",
+        "effect": {
+          "type": "minecraft:ignite",
+          "duration": 3.0
+        }
+      }
+    ]
+  }
+}

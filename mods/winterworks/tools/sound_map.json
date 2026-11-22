@@ -1418,5 +1418,397 @@
       }
     ],
     "subtitle": "Sniffer trills happily"
+  },
+  "block.elixir_jar.bubble": {
+    "sounds": [
+      {
+        "name": "winterworks:elixir_jar/bubble1",
+        "attenuation_distance": 10
+      },
+      {
+        "name": "winterworks:elixir_jar/bubble2",
+        "attenuation_distance": 10
+      },
+      {
+        "name": "winterworks:elixir_jar/bubble3",
+        "attenuation_distance": 10
+      }
+    ],
+    "subtitle": null
+  },
+  "block.elixir_jar.fill": {
+    "sounds": [
+      {
+        "name": "winterworks:elixir_jar/fill1"
+      },
+      {
+        "name": "winterworks:elixir_jar/fill2"
+      },
+      {
+        "name": "winterworks:elixir_jar/fill3"
+      }
+    ],
+    "subtitle": "Elixir bottle filled"
+  },
+  "block.elixir_jar.brewed": {
+    "sounds": [
+      {
+        "name": "winterworks:elixir_jar/brewed1"
+      },
+      {
+        "name": "winterworks:elixir_jar/brewed2"
+      },
+      {
+        "name": "winterworks:elixir_jar/brewed3"
+      }
+    ],
+    "subtitle": "Elixir brewed"
+  },
+  "block.soul_tank.absorb": {
+    "sounds": [
+      {
+        "name": "winterworks:soul_tank/absorb1"
+      },
+      {
+        "name": "winterworks:soul_tank/absorb2"
+      },
+      {
+        "name": "winterworks:soul_tank/absorb3"
+      }
+    ],
+    "subtitle": "Soul absorbed"
+  },
+  "block.soul_tank.hum": {
+    "sounds": [
+      {
+        "name": "winterworks:soul_tank/hum1",
+        "attenuation_distance": 8
+      },
+      {
+        "name": "winterworks:soul_tank/hum2",
+        "attenuation_distance": 8
+      }
+    ],
+    "subtitle": null
+  },
+  "block.hexing_table.hex": {
+    "sounds": [
+      {
+        "name": "winterworks:hexing_table/hex1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:hexing_table/hex2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "Book hexed"
+  },
+  "block.hexing_table.whisper": {
+    "sounds": [
+      {
+        "name": "winterworks:hexing_table/whisper1"
+      },
+      {
+        "name": "winterworks:hexing_table/whisper2"
+      },
+      {
+        "name": "winterworks:hexing_table/whisper3"
+      },
+      {
+        "name": "winterworks:hexing_table/whisper4"
+      }
+    ],
+    "subtitle": "Cursed whispers"
+  },
+  "item.hexed_book.whisper": {
+    "sounds": [
+      {
+        "name": "winterworks:hexed_book/whisper1"
+      },
+      {
+        "name": "winterworks:hexed_book/whisper2"
+      },
+      {
+        "name": "winterworks:hexed_book/whisper3"
+      }
+    ],
+    "subtitle": "Hexed book whispers"
+  },
+  "item.elixir.drink": {
+    "sounds": [
+      {
+        "name": "winterworks:elixir/drink1"
+      },
+      {
+        "name": "winterworks:elixir/drink2"
+      },
+      {
+        "name": "winterworks:elixir/drink3"
+      }
+    ],
+    "subtitle": "Gulping"
+  },
+  "item.elixir_of_greed.shatter": {
+    "sounds": [
+      {
+        "name": "winterworks:elixir/greed_shatter1"
+      },
+      {
+        "name": "winterworks:elixir/greed_shatter2"
+      },
+      {
+        "name": "winterworks:elixir/greed_shatter3"
+      }
+    ],
+    "subtitle": "Elixir of Greed shatters"
+  },
+  "entity.piglin_witch.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/ambient1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:piglin_witch/ambient2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:piglin_witch/ambient3",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:piglin_witch/ambient4",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "Piglin Witch mumbles"
+  },
+  "entity.piglin_witch.hiccup": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/hiccup1"
+      },
+      {
+        "name": "winterworks:piglin_witch/hiccup2"
+      },
+      {
+        "name": "winterworks:piglin_witch/hiccup3"
+      }
+    ],
+    "subtitle": "Piglin Witch hiccups"
+  },
+  "entity.piglin_witch.drink": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/drink1"
+      },
+      {
+        "name": "winterworks:piglin_witch/drink2"
+      }
+    ],
+    "subtitle": "Piglin Witch gulps"
+  },
+  "entity.piglin_witch.burp": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/burp1"
+      },
+      {
+        "name": "winterworks:piglin_witch/burp2"
+      },
+      {
+        "name": "winterworks:piglin_witch/burp3"
+      }
+    ],
+    "subtitle": "Piglin Witch burps"
+  },
+  "entity.piglin_witch.rummage": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/rummage1"
+      },
+      {
+        "name": "winterworks:piglin_witch/rummage2"
+      },
+      {
+        "name": "winterworks:piglin_witch/rummage3"
+      }
+    ],
+    "subtitle": "Piglin Witch rummages"
+  },
+  "entity.piglin_witch.refuse": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/refuse1"
+      },
+      {
+        "name": "winterworks:piglin_witch/refuse2"
+      },
+      {
+        "name": "winterworks:piglin_witch/refuse3"
+      }
+    ],
+    "subtitle": "Piglin Witch refuses"
+  },
+  "entity.piglin_witch.cackle": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/cackle1",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:piglin_witch/cackle2",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:piglin_witch/cackle3",
+        "attenuation_distance": 20
+      }
+    ],
+    "subtitle": "Piglin Witch cackles"
+  },
+  "entity.piglin_witch.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/hurt1"
+      },
+      {
+        "name": "winterworks:piglin_witch/hurt2"
+      },
+      {
+        "name": "winterworks:piglin_witch/hurt3"
+      }
+    ],
+    "subtitle": "Piglin Witch hurts"
+  },
+  "entity.piglin_witch.death": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/death1"
+      },
+      {
+        "name": "winterworks:piglin_witch/death2"
+      }
+    ],
+    "subtitle": "Piglin Witch dies"
+  },
+  "entity.piglin_witch.trade": {
+    "sounds": [
+      {
+        "name": "winterworks:piglin_witch/trade1"
+      },
+      {
+        "name": "winterworks:piglin_witch/trade2"
+      },
+      {
+        "name": "winterworks:piglin_witch/trade3"
+      }
+    ],
+    "subtitle": "Piglin Witch trades"
+  },
+  "entity.golden_piglin.groan": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/groan1"
+      },
+      {
+        "name": "winterworks:golden_piglin/groan2"
+      },
+      {
+        "name": "winterworks:golden_piglin/groan3"
+      }
+    ],
+    "subtitle": "Golden Piglin groans"
+  },
+  "entity.golden_piglin.creak": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/creak1"
+      },
+      {
+        "name": "winterworks:golden_piglin/creak2"
+      },
+      {
+        "name": "winterworks:golden_piglin/creak3"
+      }
+    ],
+    "subtitle": "Golden Piglin creaks"
+  },
+  "entity.golden_piglin.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/hurt1"
+      },
+      {
+        "name": "winterworks:golden_piglin/hurt2"
+      },
+      {
+        "name": "winterworks:golden_piglin/hurt3"
+      }
+    ],
+    "subtitle": "Golden Piglin hurts"
+  },
+  "entity.golden_piglin.death": {
+    "sounds": [
+      {
+        "name": "winterworks:golden_piglin/death1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:golden_piglin/death2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "Golden Piglin collapses"
+  },
+  "curse.trigger": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/trigger1"
+      },
+      {
+        "name": "winterworks:curse/trigger2"
+      },
+      {
+        "name": "winterworks:curse/trigger3"
+      }
+    ],
+    "subtitle": "Curse triggers"
+  },
+  "curse.narcissus": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/narcissus1"
+      },
+      {
+        "name": "winterworks:curse/narcissus2"
+      }
+    ],
+    "subtitle": "Transfixed by a reflection"
+  },
+  "curse.orpheus": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/orpheus1"
+      },
+      {
+        "name": "winterworks:curse/orpheus2"
+      }
+    ],
+    "subtitle": "Pet dragged below"
+  },
+  "curse.sin": {
+    "sounds": [
+      {
+        "name": "winterworks:curse/sin1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:curse/sin2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "Sin stirs"
   }
 }

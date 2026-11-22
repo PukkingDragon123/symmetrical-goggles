@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "winterworks:overheat"
+    "winterworks:overheat",
+    "winterworks:narcissus"
   ]
 }

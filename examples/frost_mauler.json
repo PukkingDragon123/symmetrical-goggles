@@ -103,6 +103,14 @@
     "#c8ecf5",
     "#effbfd"
    ],
+   "bitten": [
+    "#08060a",
+    "#130e15",
+    "#1f1622",
+    "#2e2030",
+    "#402c3f",
+    "#553a50"
+   ],
    "bone": [
     "#271e15",
     "#392c1f",
@@ -142,18 +150,22 @@
     "#d4f7ff",
     "#ffffff"
    ],
+   "soul": [
+    "#032826",
+    "#06433f",
+    "#0a6560",
+    "#0f8c84",
+    "#1ab8ad",
+    "#43e0d2",
+    "#8ff5ea",
+    "#d4fffa",
+    "#ffffff"
+   ],
    "nose": [
     "#06060c",
     "#0d0d18",
     "#161627",
     "#212238"
-   ],
-   "mouth": [
-    "#190915",
-    "#2a1023",
-    "#3e1834",
-    "#552346",
-    "#6e3059"
    ]
   }
  },
@@ -382,15 +394,15 @@
     }
    ]
   },
-  "fur": {
+  "fur_neck": {
    "ramp": "fur",
-   "tone": 5.6,
+   "tone": 6.2,
    "layers": [
     {
-     "id": "dark_root",
+     "id": "saddle",
      "op": "gradient",
      "axis": "y",
-     "amount": 1.0
+     "amount": -1.0
     },
     {
      "id": "clumps",
@@ -457,10 +469,186 @@
       "back",
       "front"
      ]
+    },
+    {
+     "id": "frostbite",
+     "op": "spots",
+     "centers": [
+      [
+       5,
+       4,
+       15,
+       2.4000000000000004
+      ],
+      [
+       -4.5,
+       6,
+       14.5,
+       2.08
+      ],
+      [
+       6.5,
+       -3,
+       13,
+       2.2399999999999998
+      ],
+      [
+       -6,
+       -3,
+       14.5,
+       2.4000000000000004
+      ],
+      [
+       0,
+       7,
+       12,
+       1.92
+      ],
+      [
+       1.5,
+       -6.5,
+       14,
+       1.92
+      ],
+      [
+       8,
+       3,
+       9,
+       1.92
+      ],
+      [
+       -8,
+       2,
+       10,
+       1.7600000000000002
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 2.6,
+     "post": true
+    },
+    {
+     "id": "frostbite_bruise",
+     "op": "spots",
+     "centers": [
+      [
+       5,
+       4,
+       15,
+       1.35
+      ],
+      [
+       -4.5,
+       6,
+       14.5,
+       1.1700000000000002
+      ],
+      [
+       6.5,
+       -3,
+       13,
+       1.26
+      ],
+      [
+       -6,
+       -3,
+       14.5,
+       1.35
+      ],
+      [
+       0,
+       7,
+       12,
+       1.08
+      ],
+      [
+       1.5,
+       -6.5,
+       14,
+       1.08
+      ],
+      [
+       8,
+       3,
+       9,
+       1.08
+      ],
+      [
+       -8,
+       2,
+       10,
+       0.9900000000000001
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 1.0,
+     "post": true
+    },
+    {
+     "id": "rime_crust",
+     "op": "spots",
+     "centers": [
+      [
+       5,
+       4,
+       15,
+       3.0
+      ],
+      [
+       -4.5,
+       6,
+       14.5,
+       2.6
+      ],
+      [
+       6.5,
+       -3,
+       13,
+       2.8
+      ],
+      [
+       -6,
+       -3,
+       14.5,
+       3.0
+      ],
+      [
+       0,
+       7,
+       12,
+       2.4
+      ],
+      [
+       1.5,
+       -6.5,
+       14,
+       2.4
+      ],
+      [
+       8,
+       3,
+       9,
+       2.4
+      ],
+      [
+       -8,
+       2,
+       10,
+       2.2
+      ]
+     ],
+     "roughness": 0.55,
+     "ring": 0.7,
+     "gaps": 0.0,
+     "ramp": "mane",
+     "tone": 11,
+     "post": true
     }
    ]
   },
-  "fur_dark": {
+  "fur_bitten": {
    "ramp": "fur",
    "tone": 4.4,
    "layers": [
@@ -503,6 +691,370 @@
      "op": "drip",
      "ramp": "fur",
      "tone": 10.4,
+     "depth": 0.35,
+     "length": 1.2,
+     "width": 0.4,
+     "scale": 1.3,
+     "faces": [
+      "sides",
+      "back",
+      "front"
+     ]
+    },
+    {
+     "id": "frostbite",
+     "op": "spots",
+     "centers": [
+      [
+       -3,
+       0.5,
+       -9,
+       2.4000000000000004
+      ],
+      [
+       -3,
+       -1,
+       2,
+       2.2399999999999998
+      ],
+      [
+       -2.5,
+       1,
+       9,
+       2.08
+      ],
+      [
+       -3,
+       -1.5,
+       -3,
+       1.7600000000000002
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 2.6,
+     "post": true
+    },
+    {
+     "id": "frostbite_bruise",
+     "op": "spots",
+     "centers": [
+      [
+       -3,
+       0.5,
+       -9,
+       1.35
+      ],
+      [
+       -3,
+       -1,
+       2,
+       1.26
+      ],
+      [
+       -2.5,
+       1,
+       9,
+       1.1700000000000002
+      ],
+      [
+       -3,
+       -1.5,
+       -3,
+       0.9900000000000001
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 1.0,
+     "post": true
+    },
+    {
+     "id": "rime_crust",
+     "op": "spots",
+     "centers": [
+      [
+       -3,
+       0.5,
+       -9,
+       3.0
+      ],
+      [
+       -3,
+       -1,
+       2,
+       2.8
+      ],
+      [
+       -2.5,
+       1,
+       9,
+       2.6
+      ],
+      [
+       -3,
+       -1.5,
+       -3,
+       2.2
+      ]
+     ],
+     "roughness": 0.55,
+     "ring": 0.7,
+     "gaps": 0.0,
+     "ramp": "mane",
+     "tone": 11,
+     "post": true
+    }
+   ]
+  },
+  "fur_tail": {
+   "ramp": "fur",
+   "tone": 5.6,
+   "layers": [
+    {
+     "id": "dark_root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0
+    },
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.45
+    },
+    {
+     "id": "strands",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.3,
+     "width": 0.3,
+     "shift": -1.6,
+     "wobble": 0.7,
+     "faces": [
+      "front",
+      "back",
+      "top",
+      "bottom"
+     ]
+    },
+    {
+     "id": "strands_z",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.4,
+     "width": 0.3,
+     "shift": -1.5,
+     "wobble": 0.8,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "stripes",
+     "op": "stripes",
+     "axis": "z",
+     "period": 3.0,
+     "width": 0.36,
+     "wobble": 1.5,
+     "wobble_scale": 2.5,
+     "ramp": "fur",
+     "tone": 0.4,
+     "post": true,
+     "faces": [
+      "left",
+      "right",
+      "top"
+     ]
+    },
+    {
+     "id": "frost_tips",
+     "op": "drip",
+     "ramp": "fur",
+     "tone": 11.4,
+     "depth": 0.35,
+     "length": 1.2,
+     "width": 0.4,
+     "scale": 1.3,
+     "faces": [
+      "sides",
+      "back",
+      "front"
+     ]
+    },
+    {
+     "id": "frostbite",
+     "op": "spots",
+     "centers": [
+      [
+       2,
+       3.5,
+       -3,
+       2.4000000000000004
+      ],
+      [
+       -3.5,
+       -1,
+       -4.5,
+       2.2399999999999998
+      ],
+      [
+       1,
+       -3.5,
+       -1,
+       1.92
+      ],
+      [
+       3.5,
+       0,
+       -1.5,
+       1.7600000000000002
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 2.6,
+     "post": true
+    },
+    {
+     "id": "frostbite_bruise",
+     "op": "spots",
+     "centers": [
+      [
+       2,
+       3.5,
+       -3,
+       1.35
+      ],
+      [
+       -3.5,
+       -1,
+       -4.5,
+       1.26
+      ],
+      [
+       1,
+       -3.5,
+       -1,
+       1.08
+      ],
+      [
+       3.5,
+       0,
+       -1.5,
+       0.9900000000000001
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 1.0,
+     "post": true
+    },
+    {
+     "id": "rime_crust",
+     "op": "spots",
+     "centers": [
+      [
+       2,
+       3.5,
+       -3,
+       3.0
+      ],
+      [
+       -3.5,
+       -1,
+       -4.5,
+       2.8
+      ],
+      [
+       1,
+       -3.5,
+       -1,
+       2.4
+      ],
+      [
+       3.5,
+       0,
+       -1.5,
+       2.2
+      ]
+     ],
+     "roughness": 0.55,
+     "ring": 0.7,
+     "gaps": 0.0,
+     "ramp": "mane",
+     "tone": 11,
+     "post": true
+    }
+   ]
+  },
+  "fur": {
+   "ramp": "fur",
+   "tone": 5.6,
+   "layers": [
+    {
+     "id": "dark_root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0
+    },
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.45
+    },
+    {
+     "id": "strands",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.3,
+     "width": 0.3,
+     "shift": -1.6,
+     "wobble": 0.7,
+     "faces": [
+      "front",
+      "back",
+      "top",
+      "bottom"
+     ]
+    },
+    {
+     "id": "strands_z",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.4,
+     "width": 0.3,
+     "shift": -1.5,
+     "wobble": 0.8,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "stripes",
+     "op": "stripes",
+     "axis": "z",
+     "period": 4.0,
+     "width": 0.36,
+     "wobble": 1.5,
+     "wobble_scale": 2.5,
+     "ramp": "fur",
+     "tone": 0.4,
+     "post": true,
+     "faces": [
+      "left",
+      "right",
+      "top"
+     ]
+    },
+    {
+     "id": "frost_tips",
+     "op": "drip",
+     "ramp": "fur",
+     "tone": 11.4,
      "depth": 0.35,
      "length": 1.2,
      "width": 0.4,
@@ -681,8 +1233,8 @@
    ]
   },
   "flame": {
-   "ramp": "glow",
-   "tone": 3.0,
+   "ramp": "soul",
+   "tone": 4.0,
    "light": 0,
    "brush": {
     "off": true
@@ -692,11 +1244,163 @@
     "dark": 0
    },
    "art_key": {
-    "W": "glow:6",
-    "w": "glow:5",
-    "E": "glow:4",
-    "e": "glow:2"
+    "W": "soul:8",
+    "w": "soul:6",
+    "E": "soul:5",
+    "e": "soul:3",
+    "f": "soul:2"
    }
+  },
+  "skull": {
+   "ramp": "bone",
+   "tone": 8.6,
+   "rim": {
+    "light_shift": 1.4,
+    "dark_shift": -1.8,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.8
+    },
+    {
+     "id": "stain",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.6,
+     "shift": -1.6
+    },
+    {
+     "id": "sutures",
+     "op": "cracks",
+     "scale": 2.4,
+     "width": 0.05,
+     "shift": -3.6
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 3.4,
+     "width": 0.09,
+     "shift": -6.0,
+     "seed": 5,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 1.0
+     }
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    },
+    {
+     "id": "rime",
+     "op": "drip",
+     "ramp": "ice",
+     "tone": 10.4,
+     "depth": 0.22,
+     "length": 0.8,
+     "width": 0.4,
+     "scale": 1.2,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "flesh": {
+   "ramp": "bitten",
+   "tone": 2.6,
+   "rim": {
+    "light_shift": 1.0,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "bruise",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 1.2
+    },
+    {
+     "id": "sinew",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.4,
+     "width": 0.3,
+     "shift": -1.2,
+     "wobble": 0.8
+    },
+    {
+     "id": "rime",
+     "op": "drip",
+     "ramp": "mane",
+     "tone": 10.8,
+     "depth": 0.35,
+     "length": 1.6,
+     "width": 0.5,
+     "scale": 1.1,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "ice",
+     "op": "spots",
+     "count": 6,
+     "radius": [
+      0.5,
+      0.9
+     ],
+     "ramp": "ice",
+     "tone": 9,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "skull_dark": {
+   "ramp": "bone",
+   "tone": 6.6,
+   "rim": {
+    "light_shift": 1.2,
+    "dark_shift": -1.6,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.8
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 3.0,
+     "width": 0.05,
+     "shift": -3.0
+    }
+   ]
   },
   "claw": {
    "ramp": "horn",
@@ -1197,312 +1901,6 @@
     }
    ]
   },
-  "torn": {
-   "ramp": "bone",
-   "tone": 6.4,
-   "layers": [
-    {
-     "id": "rot",
-     "op": "patches",
-     "scale": 1.2,
-     "threshold": 0.5,
-     "ramp": "fur",
-     "tone": 3.0
-    }
-   ]
-  },
-  "head": {
-   "ramp": "fur",
-   "tone": 6.0,
-   "layers": [
-    {
-     "id": "dark_top",
-     "op": "gradient",
-     "axis": "y",
-     "amount": -0.8
-    },
-    {
-     "id": "clumps",
-     "op": "noise",
-     "scale": 0.9,
-     "amount": 0.45
-    },
-    {
-     "id": "strands",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.2,
-     "width": 0.3,
-     "shift": -1.6,
-     "wobble": 0.7,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "strands_z",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.4,
-     "width": 0.3,
-     "shift": -1.5,
-     "wobble": 0.8,
-     "faces": [
-      "right"
-     ]
-    },
-    {
-     "id": "frost_tips",
-     "op": "drip",
-     "ramp": "fur",
-     "tone": 10.4,
-     "depth": 0.35,
-     "length": 1.2,
-     "width": 0.4,
-     "scale": 1.3,
-     "faces": [
-      "sides",
-      "back"
-     ]
-    },
-    {
-     "id": "stripes",
-     "op": "stripes",
-     "axis": "x",
-     "period": 3.2,
-     "width": 0.4,
-     "wobble": 0.8,
-     "ramp": "fur",
-     "tone": 0.4,
-     "post": true,
-     "range": [
-      0.05,
-      1.0
-     ],
-     "faces": [
-      "top",
-      "front"
-     ]
-    },
-    {
-     "id": "cheek_stripes",
-     "op": "stripes",
-     "axis": [
-      0,
-      1,
-      0.5
-     ],
-     "period": 3.4,
-     "width": 0.36,
-     "wobble": 0.8,
-     "ramp": "fur",
-     "tone": 0.4,
-     "post": true,
-     "faces": [
-      "right"
-     ]
-    },
-    {
-     "id": "skull",
-     "op": "band",
-     "axis": "x",
-     "from": -1.01,
-     "to": -0.08,
-     "wobble": 0.22,
-     "wobble_scale": 0.35,
-     "ramp": "bone",
-     "tone": 8.4,
-     "bevel": {
-      "shadow_ramp": "cavity",
-      "shadow_shift": 0,
-      "highlight": 0
-     }
-    },
-    {
-     "id": "bone_cracks",
-     "op": "cracks",
-     "scale": 3.0,
-     "width": 0.035,
-     "shift": -2.4,
-     "faces": [
-      "left",
-      "top"
-     ]
-    }
-   ]
-  },
-  "snout": {
-   "ramp": "fur",
-   "tone": 5.4,
-   "layers": [
-    {
-     "id": "dark_tip",
-     "op": "gradient",
-     "axis": "z",
-     "amount": -1.0
-    },
-    {
-     "id": "clumps",
-     "op": "noise",
-     "scale": 0.9,
-     "amount": 0.45
-    },
-    {
-     "id": "strands",
-     "op": "stripes",
-     "axis": "x",
-     "period": 1.1,
-     "width": 0.3,
-     "shift": -1.6,
-     "wobble": 0.7,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "skull",
-     "op": "band",
-     "axis": "x",
-     "from": -1.01,
-     "to": -0.12,
-     "wobble": 0.25,
-     "wobble_scale": 0.3,
-     "ramp": "bone",
-     "tone": 8.0,
-     "bevel": {
-      "shadow_ramp": "cavity",
-      "shadow_shift": 0,
-      "highlight": 0
-     }
-    },
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.72,
-     "ramp": "nose",
-     "tone": 1.0,
-     "faces": [
-      "right"
-     ]
-    }
-   ]
-  },
-  "snout_tip": {
-   "ramp": "fur",
-   "tone": 4.6,
-   "layers": [
-    {
-     "id": "clumps",
-     "op": "noise",
-     "scale": 0.9,
-     "amount": 0.45
-    },
-    {
-     "id": "skull",
-     "op": "band",
-     "axis": "x",
-     "from": -1.01,
-     "to": -0.15,
-     "wobble": 0.25,
-     "wobble_scale": 0.3,
-     "ramp": "bone",
-     "tone": 7.6,
-     "bevel": {
-      "shadow_ramp": "cavity",
-      "shadow_shift": 0,
-      "highlight": 0
-     }
-    },
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.6,
-     "ramp": "nose",
-     "tone": 1.0,
-     "faces": [
-      "right",
-      "front"
-     ]
-    },
-    {
-     "id": "nasal",
-     "op": "rect",
-     "rect": [
-      0.0,
-      0.35,
-      0.35,
-      0.75
-     ],
-     "ramp": "cavity",
-     "tone": 0.5,
-     "faces": [
-      "front"
-     ],
-     "post": true
-    }
-   ]
-  },
-  "jaw": {
-   "ramp": "fur",
-   "tone": 4.4,
-   "layers": [
-    {
-     "id": "clumps",
-     "op": "noise",
-     "scale": 0.9,
-     "amount": 0.45
-    },
-    {
-     "id": "skull",
-     "op": "band",
-     "axis": "x",
-     "from": -1.01,
-     "to": -0.1,
-     "wobble": 0.2,
-     "ramp": "bone",
-     "tone": 7.2
-    },
-    {
-     "id": "gum",
-     "op": "fill",
-     "ramp": "mouth",
-     "tone": 3.0,
-     "faces": [
-      "top"
-     ]
-    }
-   ]
-  },
-  "nose": {
-   "ramp": "nose",
-   "tone": 1.4,
-   "rim": {
-    "light_shift": 1.0,
-    "dark_shift": -0.6
-   },
-   "stamps": [
-    {
-     "face": "front",
-     "at": "top-left",
-     "art": [
-      "h....h",
-      ".n..n."
-     ],
-     "key": {
-      "h": "nose:3",
-      "n": "cavity:0"
-     }
-    }
-   ]
-  },
-  "mouth": {
-   "ramp": "mouth",
-   "tone": 2.6
-  },
   "teeth": {
    "ramp": "bone",
    "tone": 9.4,
@@ -1559,8 +1957,8 @@
    }
   },
   "eye": {
-   "ramp": "glow",
-   "tone": 5.0,
+   "ramp": "soul",
+   "tone": 6.0,
    "light": 0,
    "brush": {
     "off": true
@@ -1578,23 +1976,310 @@
       "bd"
      ],
      "key": {
-      "w": "glow:6",
-      "b": "glow:4",
-      "d": "glow:3"
+      "w": "soul:8",
+      "b": "soul:6",
+      "d": "soul:4"
      }
     }
    ]
   },
-  "whisker": {
-   "ramp": "mane",
-   "tone": 10.0,
-   "art_key": {
-    "w": "mane:10"
-   },
-   "brush": {
-    "off": true
-   },
-   "light": 0
+  "paw_front": {
+   "ramp": "fur",
+   "tone": 3.6,
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.45
+    },
+    {
+     "id": "stripes",
+     "op": "stripes",
+     "axis": "y",
+     "period": 3.4,
+     "width": 0.34,
+     "wobble": 1.0,
+     "ramp": "fur",
+     "tone": 0.4,
+     "post": true,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "sole",
+     "op": "fill",
+     "ramp": "fur",
+     "tone": 2.6,
+     "faces": [
+      "bottom"
+     ]
+    },
+    {
+     "id": "pads",
+     "op": "spots",
+     "count": 6,
+     "radius": [
+      0.7,
+      1.3
+     ],
+     "ramp": "nose",
+     "tone": 1.6,
+     "faces": [
+      "bottom"
+     ],
+     "bevel": {
+      "highlight": 1,
+      "shadow": 0
+     }
+    },
+    {
+     "id": "frostbite",
+     "op": "spots",
+     "centers": [
+      [
+       3,
+       1.0,
+       3.5,
+       2.5600000000000005
+      ],
+      [
+       -3,
+       1.0,
+       -0.5,
+       2.2399999999999998
+      ],
+      [
+       -6,
+       -1,
+       5,
+       1.92
+      ],
+      [
+       6,
+       -1,
+       1,
+       1.7600000000000002
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 2.6,
+     "post": true
+    },
+    {
+     "id": "frostbite_bruise",
+     "op": "spots",
+     "centers": [
+      [
+       3,
+       1.0,
+       3.5,
+       1.4400000000000002
+      ],
+      [
+       -3,
+       1.0,
+       -0.5,
+       1.26
+      ],
+      [
+       -6,
+       -1,
+       5,
+       1.08
+      ],
+      [
+       6,
+       -1,
+       1,
+       0.9900000000000001
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 1.0,
+     "post": true
+    },
+    {
+     "id": "rime_crust",
+     "op": "spots",
+     "centers": [
+      [
+       3,
+       1.0,
+       3.5,
+       3.2
+      ],
+      [
+       -3,
+       1.0,
+       -0.5,
+       2.8
+      ],
+      [
+       -6,
+       -1,
+       5,
+       2.4
+      ],
+      [
+       6,
+       -1,
+       1,
+       2.2
+      ]
+     ],
+     "roughness": 0.55,
+     "ring": 0.7,
+     "gaps": 0.0,
+     "ramp": "mane",
+     "tone": 11,
+     "post": true
+    }
+   ]
+  },
+  "paw_back": {
+   "ramp": "fur",
+   "tone": 3.6,
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.45
+    },
+    {
+     "id": "stripes",
+     "op": "stripes",
+     "axis": "y",
+     "period": 3.4,
+     "width": 0.34,
+     "wobble": 1.0,
+     "ramp": "fur",
+     "tone": 0.4,
+     "post": true,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "sole",
+     "op": "fill",
+     "ramp": "fur",
+     "tone": 2.6,
+     "faces": [
+      "bottom"
+     ]
+    },
+    {
+     "id": "pads",
+     "op": "spots",
+     "count": 6,
+     "radius": [
+      0.7,
+      1.3
+     ],
+     "ramp": "nose",
+     "tone": 1.6,
+     "faces": [
+      "bottom"
+     ],
+     "bevel": {
+      "highlight": 1,
+      "shadow": 0
+     }
+    },
+    {
+     "id": "frostbite",
+     "op": "spots",
+     "centers": [
+      [
+       2,
+       2.0,
+       0.5,
+       2.4000000000000004
+      ],
+      [
+       -3,
+       1.5,
+       -3,
+       1.92
+      ],
+      [
+       -5,
+       -0.5,
+       3,
+       1.6
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 2.6,
+     "post": true
+    },
+    {
+     "id": "frostbite_bruise",
+     "op": "spots",
+     "centers": [
+      [
+       2,
+       2.0,
+       0.5,
+       1.35
+      ],
+      [
+       -3,
+       1.5,
+       -3,
+       1.08
+      ],
+      [
+       -5,
+       -0.5,
+       3,
+       0.9
+      ]
+     ],
+     "roughness": 0.55,
+     "ramp": "bitten",
+     "tone": 1.0,
+     "post": true
+    },
+    {
+     "id": "rime_crust",
+     "op": "spots",
+     "centers": [
+      [
+       2,
+       2.0,
+       0.5,
+       3.0
+      ],
+      [
+       -3,
+       1.5,
+       -3,
+       2.4
+      ],
+      [
+       -5,
+       -0.5,
+       3,
+       2.0
+      ]
+     ],
+     "roughness": 0.55,
+     "ring": 0.7,
+     "gaps": 0.0,
+     "ramp": "mane",
+     "tone": 11,
+     "post": true
+    }
+   ]
   }
  },
  "parts": [
@@ -1637,7 +2322,7 @@
     0.0,
     8.0
    ],
-   "style": "fur_dark"
+   "style": "fur_bitten"
   },
   {
    "id": "belly_r",
@@ -1658,7 +2343,7 @@
     0.0,
     -6.0
    ],
-   "style": "fur_dark"
+   "style": "fur_bitten"
   },
   {
    "id": "frost_core",
@@ -4064,7 +4749,7 @@
     0.416,
     -1.957
    ],
-   "style": "paw"
+   "style": "paw_front"
   },
   {
    "id": "front_toe_l0",
@@ -4494,7 +5179,7 @@
     -0.416,
     1.957
    ],
-   "style": "paw"
+   "style": "paw_front"
   },
   {
    "id": "front_toe_r0",
@@ -4961,7 +5646,7 @@
     -0.0,
     -0.0
    ],
-   "style": "paw"
+   "style": "paw_back"
   },
   {
    "id": "back_toe_l0",
@@ -5342,7 +6027,7 @@
     0.0,
     0.0
    ],
-   "style": "paw"
+   "style": "paw_back"
   },
   {
    "id": "back_toe_r0",
@@ -5837,7 +6522,7 @@
     -3.14,
     1.18
    ],
-   "style": "fur_body"
+   "style": "fur_neck"
   },
   {
    "id": "throat",
@@ -5859,6 +6544,22 @@
     0.0
    ],
    "style": "mane"
+  },
+  {
+   "id": "neck_flesh",
+   "shape": "box",
+   "parent": "neck",
+   "size": [
+    17,
+    13,
+    3
+   ],
+   "pivot": [
+    -0.0,
+    0.5,
+    15.5
+   ],
+   "style": "flesh"
   },
   {
    "id": "neck_fringe_l",
@@ -6091,20 +6792,20 @@
     0.0,
     0.0
    ],
-   "style": "head"
+   "style": "skull"
   },
   {
-   "id": "crown",
+   "id": "crest",
    "shape": "box",
    "parent": "head",
    "size": [
-    12,
     3,
-    9
+    4,
+    11
    ],
    "pivot": [
-    2.0,
-    10.4,
+    0.0,
+    10.5,
     4.0
    ],
    "rotation": [
@@ -6112,36 +6813,44 @@
     0.0,
     0.0
    ],
-   "style": "fur_dark"
+   "style": "skull"
   },
   {
-   "id": "crown_fringe",
-   "shape": "card",
-   "parent": "crown",
+   "id": "crest_back",
+   "shape": "box",
+   "parent": "crest",
+   "size": [
+    3,
+    3,
+    4
+   ],
    "pivot": [
     0.0,
-    1.6,
-    -2.0
-   ],
-   "offset": [
-    0.0,
-    2.5,
-    0.0
+    0.6,
+    -6.5
    ],
    "rotation": [
-    -35.0,
+    -24.0,
     0.0,
     0.0
    ],
-   "style": "fur_spikes",
-   "plane": "yz",
-   "art": [
-    "...........",
-    ".......t.t.",
-    "....t..m.m.",
-    "fffff.fffff",
-    "fffffffffff"
-   ]
+   "style": "skull"
+  },
+  {
+   "id": "occiput",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    14,
+    9,
+    2
+   ],
+   "pivot": [
+    0.0,
+    3.5,
+    -1.2
+   ],
+   "style": "skull_dark"
   },
   {
    "id": "brow_l",
@@ -6150,52 +6859,31 @@
    "size": [
     7,
     3,
-    3
+    4
    ],
    "pivot": [
     4.6,
-    7.8,
+    7.9,
     11.4
    ],
    "rotation": [
     0.0,
     0.0,
-    16.0
+    14.0
    ],
-   "style": "fur_dark"
+   "style": "skull"
   },
   {
-   "id": "brow_r",
+   "id": "socket_l",
    "shape": "box",
    "parent": "head",
    "size": [
-    7,
-    3,
-    3
-   ],
-   "pivot": [
-    -4.6,
-    7.8,
-    11.6
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -14.0
-   ],
-   "style": "bone"
-  },
-  {
-   "id": "socket_r",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    4,
-    4,
+    5,
+    5,
     1
    ],
    "pivot": [
-    -4.8,
+    4.8,
     5.0,
     11.6
    ],
@@ -6212,24 +6900,8 @@
    ],
    "pivot": [
     4.8,
-    5.2,
-    11.75
-   ],
-   "style": "eye"
-  },
-  {
-   "id": "eye_r",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    2,
-    2,
-    1
-   ],
-   "pivot": [
-    -4.8,
     5.0,
-    11.85
+    11.7
    ],
    "style": "eye"
   },
@@ -6238,32 +6910,34 @@
    "shape": "card",
    "parent": "eye_l",
    "pivot": [
-    0.4,
-    0.6,
-    0.65
+    0.3,
+    0.2,
+    2.0
    ],
    "offset": [
     0.0,
-    4.5,
+    5.0,
     0.0
    ],
    "rotation": [
     0.0,
     0.0,
-    -12.0
+    -10.0
    ],
    "style": "flame",
    "plane": "xy",
    "art": [
-    "...e..",
-    "..eE..",
-    "..EE.e",
-    ".eEwEe",
-    "eEwWEe",
-    ".EwWwE",
-    "eEWWwe",
-    ".wWWw.",
-    "..WW.."
+    "...e...",
+    "..eE...",
+    "..EEe..",
+    ".eEwEe.",
+    "eEwWwEe",
+    "EwfWfwE",
+    "EwWWWwE",
+    "eEwfwEe",
+    ".eEwEe.",
+    "..eWe..",
+    "...W..."
    ]
   },
   {
@@ -6288,45 +6962,138 @@
    "style": "flame",
    "plane": "yz",
    "art": [
-    "............e.",
-    "........e.eE..",
-    "....eeeEEEEe..",
-    "..eEEwwwEEe...",
-    "eEwwWWwwEe....",
-    ".eEWwEEe......"
+    "...eEe........",
+    "..eEwEEe......",
+    ".eEwfwwEEee.e.",
+    "eEwWWWwwEEEe..",
+    ".eEwfwEEee....",
+    "..eEwEe.......",
+    "...ee........."
    ]
+  },
+  {
+   "id": "zygo_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    4,
+    11
+   ],
+   "pivot": [
+    9.5,
+    1.5,
+    6.0
+   ],
+   "rotation": [
+    0.0,
+    -5.0,
+    -4.0
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "temple_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1,
+    4,
+    6
+   ],
+   "pivot": [
+    9.1,
+    6.0,
+    4.5
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "brow_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    7,
+    3,
+    4
+   ],
+   "pivot": [
+    -4.6,
+    7.9,
+    11.4
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -14.0
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "socket_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    5,
+    5,
+    1
+   ],
+   "pivot": [
+    -4.8,
+    5.0,
+    11.6
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "eye_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    2,
+    1
+   ],
+   "pivot": [
+    -4.8,
+    5.0,
+    11.7
+   ],
+   "style": "eye"
   },
   {
    "id": "eye_r_flame",
    "shape": "card",
    "parent": "eye_r",
    "pivot": [
-    -0.4,
-    0.6,
-    0.65
+    -0.3,
+    0.2,
+    2.0
    ],
    "offset": [
     0.0,
-    4.5,
+    5.0,
     0.0
    ],
    "rotation": [
     0.0,
     0.0,
-    12.0
+    10.0
    ],
    "style": "flame",
    "plane": "xy",
    "art": [
-    "...e..",
-    "..eE..",
-    "..EE.e",
-    ".eEwEe",
-    "eEwWEe",
-    ".EwWwE",
-    "eEWWwe",
-    ".wWWw.",
-    "..WW.."
+    "...e...",
+    "..eE...",
+    "..EEe..",
+    ".eEwEe.",
+    "eEwWwEe",
+    "EwfWfwE",
+    "EwWWWwE",
+    "eEwfwEe",
+    ".eEwEe.",
+    "..eWe..",
+    "...W..."
    ]
   },
   {
@@ -6351,12 +7118,13 @@
    "style": "flame",
    "plane": "yz",
    "art": [
-    "............e.",
-    "........e.eE..",
-    "....eeeEEEEe..",
-    "..eEEwwwEEe...",
-    "eEwwWWwwEe....",
-    ".eEWwEEe......"
+    "...eEe........",
+    "..eEwEEe......",
+    ".eEwfwwEEee.e.",
+    "eEwWWWwwEEEe..",
+    ".eEwfwEEee....",
+    "..eEwEe.......",
+    "...ee........."
    ]
   },
   {
@@ -6378,7 +7146,7 @@
     5.0,
     4.0
    ],
-   "style": "bone"
+   "style": "skull"
   },
   {
    "id": "temple_r",
@@ -6395,165 +7163,6 @@
     4.5
    ],
    "style": "socket"
-  },
-  {
-   "id": "cheek_l",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    3,
-    8,
-    7
-   ],
-   "pivot": [
-    9.2,
-    1.0,
-    4.0
-   ],
-   "offset": [
-    0.0,
-    -2.5,
-    0.0
-   ],
-   "rotation": [
-    -10.0,
-    0.0,
-    18.0
-   ],
-   "style": "fur_dark"
-  },
-  {
-   "id": "cheek_fringe_l",
-   "shape": "card",
-   "parent": "cheek_l",
-   "pivot": [
-    1.65,
-    -5.5,
-    -0.0
-   ],
-   "offset": [
-    0.0,
-    -3.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    6.0
-   ],
-   "style": "fringe",
-   "plane": "yz",
-   "art": [
-    "...fff..",
-    "...fff..",
-    "...ffm..",
-    "...mft..",
-    "...tm...",
-    "....t...",
-    "........"
-   ]
-  },
-  {
-   "id": "ear_l",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    5,
-    5,
-    2
-   ],
-   "pivot": [
-    6.2,
-    9.0,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    2.5,
-    0.0
-   ],
-   "rotation": [
-    -20.0,
-    0.0,
-    -24.0
-   ],
-   "style": "fur_dark"
-  },
-  {
-   "id": "ear_l_tip",
-   "shape": "box",
-   "parent": "ear_l",
-   "size": [
-    3,
-    2,
-    1
-   ],
-   "pivot": [
-    -0.0,
-    5.0,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    1.0,
-    0.0
-   ],
-   "style": "fur_dark"
-  },
-  {
-   "id": "ear_l_tuft",
-   "shape": "card",
-   "parent": "ear_l_tip",
-   "pivot": [
-    -0.0,
-    1.5,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    2.5,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -10.0
-   ],
-   "style": "fringe",
-   "plane": "xy",
-   "art": [
-    "t.",
-    "tt",
-    "mt",
-    ".m",
-    ".f"
-   ]
-  },
-  {
-   "id": "ear_r",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    4,
-    3,
-    2
-   ],
-   "pivot": [
-    -6.2,
-    9.0,
-    2.0
-   ],
-   "offset": [
-    0.0,
-    1.5,
-    0.0
-   ],
-   "rotation": [
-    -20.0,
-    0.0,
-    24.0
-   ],
-   "style": "torn"
   },
   {
    "id": "snout",
@@ -6579,10 +7188,10 @@
     0.0,
     0.0
    ],
-   "style": "snout"
+   "style": "skull"
   },
   {
-   "id": "muzzle_top",
+   "id": "nasal_bridge",
    "shape": "box",
    "parent": "snout",
    "size": [
@@ -6600,7 +7209,7 @@
     0.0,
     0.0
    ],
-   "style": "fur_dark"
+   "style": "skull"
   },
   {
    "id": "snout_tip",
@@ -6626,23 +7235,39 @@
     0.0,
     0.0
    ],
-   "style": "snout_tip"
+   "style": "skull"
   },
   {
-   "id": "nose",
+   "id": "nasal",
    "shape": "box",
    "parent": "snout_tip",
    "size": [
     5,
-    2,
+    3,
     2
    ],
    "pivot": [
     0.0,
-    1.9,
+    1.4,
     2.6
    ],
-   "style": "nose"
+   "style": "socket"
+  },
+  {
+   "id": "maxilla_l",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    1,
+    6,
+    6
+   ],
+   "pivot": [
+    6.1,
+    -1.0,
+    3.0
+   ],
+   "style": "skull_dark"
   },
   {
    "id": "maxilla_r",
@@ -6658,36 +7283,7 @@
     -1.0,
     3.0
    ],
-   "style": "bone"
-  },
-  {
-   "id": "whiskers_l",
-   "shape": "card",
-   "parent": "snout_tip",
-   "pivot": [
-    5.2,
-    -0.6,
-    1.5
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    -4.5
-   ],
-   "rotation": [
-    0.0,
-    -28.0,
-    -12.0
-   ],
-   "style": "whisker",
-   "plane": "xz",
-   "art": [
-    "w......w..",
-    ".w....w...",
-    "..ww.w.www",
-    "wwwwww....",
-    "......wwww"
-   ]
+   "style": "skull_dark"
   },
   {
    "id": "teeth_up_l",
@@ -6695,17 +7291,18 @@
    "parent": "snout",
    "pivot": [
     5.5,
-    -4.5,
+    -4.0,
     3.0
    ],
    "offset": [
     0.0,
-    -1.5,
+    -2.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
+    "yyyyyy",
     "yyyyyy",
     "y.yy.y",
     "..y..."
@@ -6780,7 +7377,7 @@
     0.0,
     0.0
    ],
-   "style": "jaw"
+   "style": "skull"
   },
   {
    "id": "jaw_flange_l",
@@ -6796,7 +7393,7 @@
     -3.5,
     13.5
    ],
-   "style": "jaw"
+   "style": "skull"
   },
   {
    "id": "jaw_flange_r",
@@ -6812,15 +7409,15 @@
     -3.5,
     13.5
    ],
-   "style": "bone"
+   "style": "skull"
   },
   {
    "id": "teeth_lo_l",
    "shape": "card",
    "parent": "jaw",
    "pivot": [
-    3.2,
-    1.4,
+    3.4,
+    0.9,
     7.5
    ],
    "style": "teeth",
@@ -6828,6 +7425,7 @@
    "art": [
     ".y...y...y....",
     "yy.yyy.yyy.yyy",
+    "yyyyyyyyyyyyyy",
     "yyyyyyyyyyyyyy"
    ]
   },
@@ -6866,65 +7464,286 @@
    ]
   },
   {
-   "id": "tongue",
+   "id": "skull_ice0",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    5.5,
+    9.0,
+    2.5
+   ],
+   "rotation": [
+    -4.0,
+    0.0,
+    0.0
+   ],
+   "style": "fur"
+  },
+  {
+   "id": "skull_ice0_0",
    "shape": "box",
-   "parent": "jaw",
+   "parent": "skull_ice0",
    "size": [
-    5,
-    1,
-    13
+    3,
+    9,
+    3
    ],
    "pivot": [
     -0.0,
-    0.2,
-    7.5
-   ],
-   "style": "mouth"
-  },
-  {
-   "id": "jaw_bone_r",
-   "shape": "box",
-   "parent": "jaw",
-   "size": [
-    1,
-    3,
-    13
-   ],
-   "pivot": [
-    -3.9,
     -1.5,
-    7.5
-   ],
-   "style": "bone"
-  },
-  {
-   "id": "beard",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    1.0,
-    -3.1,
-    4.0
+    -0.0
    ],
    "offset": [
     0.0,
-    -2.0,
+    4.5,
     0.0
    ],
    "rotation": [
+    -26.0,
     -25.0,
+    -30.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "skull_ice0_0_tip",
+   "shape": "box",
+   "parent": "skull_ice0_0",
+   "size": [
+    1,
+    4,
+    1
+   ],
+   "pivot": [
+    1.0,
+    4.95,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -24.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "skull_ice0_1",
+   "shape": "box",
+   "parent": "skull_ice0",
+   "size": [
+    2,
+    6,
+    2
+   ],
+   "pivot": [
+    1.5,
+    -1.5,
+    2.0
+   ],
+   "offset": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    12.0,
+    -50.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "skull_ice0_2",
+   "shape": "box",
+   "parent": "skull_ice0",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    -1.0,
+    -1.5,
+    -1.5
+   ],
+   "offset": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "rotation": [
+    -50.0,
+    -1.0,
+    -14.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "skull_ice1",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    -9.6,
+    3.5,
+    7.5
+   ],
+   "rotation": [
+    -4.0,
     0.0,
     0.0
    ],
-   "style": "fringe",
-   "plane": "xy",
-   "art": [
-    "...fff",
-    "...tft",
-    "....t.",
-    "......",
-    "......"
-   ]
+   "style": "fur"
+  },
+  {
+   "id": "skull_ice1_0",
+   "shape": "box",
+   "parent": "skull_ice1",
+   "size": [
+    2,
+    7,
+    2
+   ],
+   "pivot": [
+    -0.0,
+    -1.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "rotation": [
+    10.0,
+    -25.0,
+    62.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "skull_ice1_1",
+   "shape": "box",
+   "parent": "skull_ice1",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    -0.0,
+    -1.5,
+    2.0
+   ],
+   "offset": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "rotation": [
+    34.0,
+    12.0,
+    74.0
+   ],
+   "style": "crystal_b"
+  },
+  {
+   "id": "skull_ice1_2",
+   "shape": "box",
+   "parent": "skull_ice1",
+   "size": [
+    1,
+    4,
+    1
+   ],
+   "pivot": [
+    0.0,
+    -1.5,
+    -2.5
+   ],
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    -20.0,
+    -1.0,
+    56.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "skull_ice2",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    -3.0,
+    9.4,
+    9.5
+   ],
+   "rotation": [
+    -4.0,
+    0.0,
+    0.0
+   ],
+   "style": "fur"
+  },
+  {
+   "id": "skull_ice2_0",
+   "shape": "box",
+   "parent": "skull_ice2",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    0.0,
+    -1.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "rotation": [
+    18.0,
+    -25.0,
+    22.0
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "skull_ice2_1",
+   "shape": "box",
+   "parent": "skull_ice2",
+   "size": [
+    1,
+    4,
+    1
+   ],
+   "pivot": [
+    1.2,
+    -1.5,
+    -1.0
+   ],
+   "offset": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    12.0,
+    -10.0
+   ],
+   "style": "crystal_b"
   },
   {
    "id": "fang_l",
@@ -7106,7 +7925,7 @@
     12.086,
     0.405
    ],
-   "style": "fur"
+   "style": "fur_tail"
   },
   {
    "id": "tail_fringe_l",
@@ -7609,42 +8428,6 @@
       "phase": 0.5,
       "bias": 3
      }
-    },
-    {
-     "part": "ear_l",
-     "axis": "z",
-     "keys": [
-      [
-       0,
-       0
-      ],
-      [
-       1.05,
-       0
-      ],
-      [
-       1.1,
-       14,
-       "out"
-      ],
-      [
-       1.3,
-       0
-      ],
-      [
-       2.3,
-       0
-      ],
-      [
-       2.35,
-       12,
-       "out"
-      ],
-      [
-       2.5,
-       0
-      ]
-     ]
     },
     {
      "part": "eye_l",
@@ -11638,15 +12421,6 @@
      }
     },
     {
-     "part": "ear_l",
-     "axis": "x",
-     "osc": {
-      "amp": 0,
-      "cycles": 1,
-      "bias": -34
-     }
-    },
-    {
      "part": "eye_l_flame",
      "channel": "scale",
      "osc": {
@@ -12774,74 +13548,6 @@
        1.38,
        [
         4.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       1.55,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       2.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ]
-     ]
-    },
-    {
-     "part": "ear_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.3,
-       [
-        -30.0,
-        0.0,
-        14.0
-       ],
-       "ease"
-      ],
-      [
-       0.6,
-       [
-        -36.0,
-        0.0,
-        0.0
-       ],
-       "out_back"
-      ],
-      [
-       1.15,
-       [
-        -36.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       1.38,
-       [
-        -30.0,
         0.0,
         0.0
        ],
@@ -15782,28 +16488,6 @@
      ]
     },
     {
-     "part": "ear_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        -36.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       1.0,
-       [
-        -36.0,
-        0.0,
-        0.0
-       ]
-      ]
-     ]
-    },
-    {
      "part": "eye_l_flame",
      "channel": "scale",
      "keys": [
@@ -16818,65 +17502,6 @@
         6.0,
         -26.0,
         -3.0
-       ],
-       "out"
-      ],
-      [
-       0.8,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "back"
-      ]
-     ]
-    },
-    {
-     "part": "ear_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.2,
-       [
-        -32.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.28,
-       [
-        -32.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       0.36,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.48,
-       [
-        0.0,
-        0.0,
-        0.0
        ],
        "out"
       ],
@@ -18314,65 +18939,6 @@
         6.0,
         26.0,
         3.0
-       ],
-       "out"
-      ],
-      [
-       0.8,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "back"
-      ]
-     ]
-    },
-    {
-     "part": "ear_r",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.2,
-       [
-        -32.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.28,
-       [
-        -32.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       0.36,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.48,
-       [
-        0.0,
-        0.0,
-        0.0
        ],
        "out"
       ],
@@ -20107,56 +20673,6 @@
      ]
     },
     {
-     "part": "ear_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        -34.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.13,
-       [
-        -40.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.21,
-       [
-        -40.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.32,
-       [
-        -34.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.5,
-       [
-        -34.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ]
-     ]
-    },
-    {
      "part": "eye_l_flame",
      "channel": "scale",
      "keys": [
@@ -21416,28 +21932,6 @@
      ]
     },
     {
-     "part": "ear_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        30.0,
-        0.0,
-        -26.0
-       ]
-      ],
-      [
-       1.5,
-       [
-        30.0,
-        0.0,
-        -26.0
-       ]
-      ]
-     ]
-    },
-    {
      "part": "eye_l",
      "channel": "scale",
      "keys": [
@@ -21907,15 +22401,6 @@
       "amp": 4,
       "cycles": 1,
       "lag": 0.18
-     }
-    },
-    {
-     "part": "ear_l",
-     "axis": "z",
-     "osc": {
-      "amp": 6,
-      "cycles": 2,
-      "phase": 0.4
      }
     },
     {
@@ -23790,181 +24275,6 @@
      ]
     },
     {
-     "part": "beard",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.3,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.58,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.78,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.9,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       1.3,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       1.45,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "out_back"
-      ],
-      [
-       1.55,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       1.7,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       1.95,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       2.15,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.24,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.33,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.42,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.51,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.6,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.69,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.78,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       3.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "back"
-      ]
-     ]
-    },
-    {
      "part": "belly_fringe_l",
      "channel": "rotation",
      "keys": [
@@ -25190,181 +25500,6 @@
      ]
     },
     {
-     "part": "cheek_fringe_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.3,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.58,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.78,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "out"
-      ],
-      [
-       0.9,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "ease"
-      ],
-      [
-       1.3,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "ease"
-      ],
-      [
-       1.45,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "out_back"
-      ],
-      [
-       1.55,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "ease"
-      ],
-      [
-       1.7,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "ease"
-      ],
-      [
-       1.95,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       2.15,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.24,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.33,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.42,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.51,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.6,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.69,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.78,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       3.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "back"
-      ]
-     ]
-    },
-    {
      "part": "chest",
      "channel": "rotation",
      "keys": [
@@ -25875,181 +26010,6 @@
         0.0,
         0.0,
         0.0
-       ],
-       "ease"
-      ],
-      [
-       3.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "back"
-      ]
-     ]
-    },
-    {
-     "part": "ear_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        -36.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.3,
-       [
-        -36.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.58,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.78,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "out"
-      ],
-      [
-       0.9,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "ease"
-      ],
-      [
-       1.3,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "ease"
-      ],
-      [
-       1.45,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "out_back"
-      ],
-      [
-       1.55,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "ease"
-      ],
-      [
-       1.7,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "ease"
-      ],
-      [
-       1.95,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       2.15,
-       [
-        -30.0,
-        0.0,
-        14.0
-       ],
-       "ease"
-      ],
-      [
-       2.24,
-       [
-        0.0,
-        0.0,
-        18.0
-       ],
-       "ease"
-      ],
-      [
-       2.33,
-       [
-        0.0,
-        0.0,
-        -22.0
-       ],
-       "ease"
-      ],
-      [
-       2.42,
-       [
-        0.0,
-        0.0,
-        20.0
-       ],
-       "ease"
-      ],
-      [
-       2.51,
-       [
-        0.0,
-        0.0,
-        -18.0
-       ],
-       "ease"
-      ],
-      [
-       2.6,
-       [
-        0.0,
-        0.0,
-        14.0
-       ],
-       "ease"
-      ],
-      [
-       2.69,
-       [
-        0.0,
-        0.0,
-        -10.0
-       ],
-       "ease"
-      ],
-      [
-       2.78,
-       [
-        0.0,
-        0.0,
-        6.0
        ],
        "ease"
       ],
@@ -32629,91 +32589,6 @@
      ]
     },
     {
-     "part": "beard",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.12,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.42,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       0.72,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.86,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       1.18,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       1.32,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       1.7,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       2.0,
-       [
-        -60.0,
-        0.0,
-        0.0
-       ]
-      ]
-     ]
-    },
-    {
      "part": "belly_fringe_l",
      "channel": "rotation",
      "keys": [
@@ -33139,91 +33014,6 @@
      ]
     },
     {
-     "part": "cheek_fringe_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.12,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.42,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       0.72,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.86,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       1.18,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "in"
-      ],
-      [
-       1.32,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "out"
-      ],
-      [
-       1.7,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ],
-       "ease"
-      ],
-      [
-       2.0,
-       [
-        0.0,
-        0.0,
-        -80.0
-       ]
-      ]
-     ]
-    },
-    {
      "part": "chest",
      "channel": "rotation",
      "keys": [
@@ -33559,91 +33349,6 @@
         0.0,
         0.0,
         -75.0
-       ]
-      ]
-     ]
-    },
-    {
-     "part": "ear_l",
-     "channel": "rotation",
-     "keys": [
-      [
-       0.0,
-       [
-        0.0,
-        0.0,
-        0.0
-       ]
-      ],
-      [
-       0.12,
-       [
-        -30.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       0.42,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "ease"
-      ],
-      [
-       0.72,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "in"
-      ],
-      [
-       0.86,
-       [
-        0.0,
-        0.0,
-        0.0
-       ],
-       "out"
-      ],
-      [
-       1.18,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "in"
-      ],
-      [
-       1.32,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "out"
-      ],
-      [
-       1.7,
-       [
-        20.0,
-        0.0,
-        -20.0
-       ],
-       "ease"
-      ],
-      [
-       2.0,
-       [
-        20.0,
-        0.0,
-        -20.0
        ]
       ]
      ]

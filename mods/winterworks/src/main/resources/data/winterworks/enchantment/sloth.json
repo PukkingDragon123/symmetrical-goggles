@@ -1,0 +1,42 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.winterworks.sloth",
+    "color": "#C43A3A"
+  },
+  "exclusive_set": "#winterworks:exclusive_set/sloth",
+  "max_cost": {
+    "base": 51,
+    "per_level_above_first": 10
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 10
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:enchantable/mining",
+  "weight": 1,
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 60.0,
+          "per_level_above_first": 20.0
+        },
+        "attribute": "minecraft:player.mining_efficiency",
+        "id": "winterworks:enchantment.sloth",
+        "operation": "add_value"
+      },
+      {
+        "amount": -0.3,
+        "attribute": "minecraft:generic.movement_speed",
+        "id": "winterworks:enchantment.sloth_slow",
+        "operation": "add_multiplied_total"
+      }
+    ]
+  }
+}

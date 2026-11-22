@@ -7,6 +7,9 @@ import dev.lowpix.winterworks.registry.WWEntities;
 import dev.lowpix.winterworks.registry.WWParticles;
 import dev.lowpix.winterworks.registry.WWSounds;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -20,7 +23,10 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -34,6 +40,13 @@ public final class AmberFeature {
     public static final ResourceKey<LootTable> SNIFFER_FINDS = ResourceKey.create(Registries.LOOT_TABLE, Winterworks.id("gameplay/sniffer_finds"));
     /** Potion of Blood colour (it has no effect to take a colour from; see mixin.PotionContentsMixin). */
     public static final int BLOOD_COLOR = 0xFF6E0B14;
+    /** The saguaro-like Amberwood (configured feature winterworks:amberwood, grown by the sapling). */
+    public static final Feature<NoneFeatureConfiguration> AMBERWOOD = Registry.register(BuiltInRegistries.FEATURE,
+            Winterworks.id("amberwood"), new AmberwoodFeature(NoneFeatureConfiguration.CODEC));
+    /** Natural amber with an inclusion (seed or mosquito): drawn in 3D inside the block. */
+    public static final BlockEntityType<AmberInclusionBlockEntity> AMBER_INCLUSION_BE = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id("amber_inclusion"),
+            FabricBlockEntityTypeBuilder.create(AmberInclusionBlockEntity::new, WWBlocks.AMBER_BLOCK).build());
 
     private AmberFeature() {}
 

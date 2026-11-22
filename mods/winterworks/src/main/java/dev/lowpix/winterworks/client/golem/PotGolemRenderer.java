@@ -14,8 +14,10 @@ import dev.lowpix.winterworks.client.render.WWModel;
 import dev.lowpix.winterworks.golem.PotGolemEntity;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -47,6 +49,7 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
 
     public PotGolemRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new Model(ctx.bakeLayer(GolemClient.POT_GOLEM)), 0.9f);
+        addLayer(new OpaqueLayer(this));
         addLayer(new PotHeadLayer(this, ctx.getItemRenderer()));
         if (model.hasGlow) {
             addLayer(new GlowLayer(this));
@@ -56,6 +59,13 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
     @Override
     public ResourceLocation getTextureLocation(PotGolemEntity e) {
         return model.texture;
+    }
+
+    /** The amber body is see-through jelly (the texture's alpha); arm tools and sherds come after, opaque (OpaqueLayer). */
+    @Override
+    protected RenderType getRenderType(PotGolemEntity e, boolean bodyVisible, boolean translucent, boolean glowing) {
+        return bodyVisible && !translucent ? RenderType.entityTranslucent(getTextureLocation(e))
+                : super.getRenderType(e, bodyVisible, translucent, glowing);
     }
 
     @Override
@@ -79,10 +89,13 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
 
     public static class Model extends WWModel<PotGolemEntity> {
         private static final String[] CLIPS = {"attack", "slash", "mine", "shoot", "howl", "beam", "giggle", "sneeze", "fuse"};
+        private static final Set<String> OPAQUE_ROOTS = Set.of("blade", "pickaxe", "bow");
         float partial;
         /** root ... head: the bones to pose through to reach the pot seat. */
         private final List<ModelPart> headChain = new ArrayList<>();
         private final List<ModelPart> jelly = new ArrayList<>();
+        /** Drawn opaque, not as amber jelly: the shard arms (blade, pickaxe, bow) and the sherds, with everything under them. */
+        final Set<String> opaque = new HashSet<>();
         /** Where the pot sits in head-bone space (pixels): the top centre of the head bone's box. */
         private float seatX, seatY, seatZ;
 
@@ -106,6 +119,14 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
                 }
             } catch (RuntimeException e) {   // no export yet: WWModel has logged it
                 parents.clear();
+            }
+            for (String n : parents.keySet()) {
+                for (String a = n; a != null; a = parents.get(a)) {
+                    if (OPAQUE_ROOTS.contains(a) || a.startsWith("sherd")) {
+                        opaque.add(n);
+                        break;
+                    }
+                }
             }
             List<ModelPart> chain = new ArrayList<>();
             for (String n = parents.containsKey("head") ? "head" : null; n != null; n = parents.get(n)) {
@@ -163,6 +184,7 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
                 p.xScale *= 1f + j * 0.05f;
             });
             get("body").ifPresent(p -> p.zRot += j * 0.04f);
+            mask(n -> !opaque.contains(n));   // the translucent main pass: amber only
         }
 
         /** Moves `pose` from model space to the top of the pot seat; false (left at the model origin) without the bone. */
@@ -179,6 +201,28 @@ public class PotGolemRenderer extends MobRenderer<PotGolemEntity, PotGolemRender
     }
 
     // ------------------------------------------------------------------------------------------------ layers
+
+    /** The shard arms and the sherds, opaque over the jelly body; then the whole model is unmasked for the other layers. */
+    static class OpaqueLayer extends RenderLayer<PotGolemEntity, Model> {
+        private final PotGolemRenderer renderer;
+
+        OpaqueLayer(PotGolemRenderer renderer) {
+            super(renderer);
+            this.renderer = renderer;
+        }
+
+        @Override
+        public void render(PoseStack pose, MultiBufferSource buffers, int light, PotGolemEntity e, float limbSwing, float limbAmount,
+                           float partial, float age, float headYaw, float headPitch) {
+            Model m = getParentModel();
+            if (!e.isInvisible() && !m.opaque.isEmpty()) {
+                m.mask(m.opaque::contains);
+                int overlay = LivingEntityRenderer.getOverlayCoords(e, renderer.whiteness(e, partial));
+                m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(m.texture)), light, overlay, 0xFFFFFFFF);
+            }
+            m.unmask();
+        }
+    }
 
     /** The real decorated pot, with its sherds, on the head bone; cracks drawn over it with the breaking textures. */
     static class PotHeadLayer extends RenderLayer<PotGolemEntity, Model> {

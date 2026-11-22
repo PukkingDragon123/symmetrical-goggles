@@ -152,7 +152,7 @@ ramps = {
     "ice": ["#0b2440", "#113154", "#173f69", "#1f507f", "#2a6495", "#377aaa", "#4891bf", "#5ea9d0", "#7cc1de",
             "#a0d7ea", "#c8ecf5", "#effbfd"],
     "cavity": ["#04040b", "#090914", "#0f0e1f", "#16142a", "#1f1b37"],
-    "glow": ["#0d3a66", "#17609b", "#2490d0", "#47c0f2", "#8ce4ff", "#d4f7ff", "#ffffff"],
+    "glow": ["#06433f", "#0a6560", "#0f8c84", "#1ab8ad", "#43e0d2", "#8ff5ea", "#d4fffa"],   # soul fire, as the Mauler's eyes
 }
 BONE = [{"id": "grain", "op": "noise", "scale": 0.5, "amount": 1.0},
         {"id": "sutures", "op": "cracks", "scale": 1.6, "width": 0.05, "shift": -3.2},

@@ -56,15 +56,5 @@
   "item.winterworks.hexed_book.lesser": "Lesser Hex",
   "item.winterworks.hexed_book.sin": "Sin Hex",
   "item.winterworks.hexed_book.whispers": "Something whispers in the pages...",
-  "hex.winterworks.discovered": "A hidden curse reveals itself: %s",
-  "subtitles.winterworks.block.elixir_jar.bubble": "Elixir bubbles",
-  "subtitles.winterworks.block.elixir_jar.fill": "Bottle fills with elixir",
-  "subtitles.winterworks.block.elixir_jar.brewed": "Elixir is ready",
-  "subtitles.winterworks.block.soul_tank.absorb": "Soul Tank absorbs a soul",
-  "subtitles.winterworks.block.soul_tank.hum": "Soul Tank hums",
-  "subtitles.winterworks.block.hexing_table.hex": "Book is hexed",
-  "subtitles.winterworks.block.hexing_table.whisper": "Hexing Table whispers",
-  "subtitles.winterworks.item.hexed_book.whisper": "Hexed Book whispers",
-  "subtitles.winterworks.item.elixir.drink": "Elixir is drunk",
-  "subtitles.winterworks.item.elixir_of_greed.shatter": "Elixir of Greed shatters"
+  "hex.winterworks.discovered": "A hidden curse reveals itself: %s"
 }

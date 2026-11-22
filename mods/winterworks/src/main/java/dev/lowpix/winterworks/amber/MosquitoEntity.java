@@ -451,8 +451,9 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
 
     // --------------------------------------------------------------------------------------- goals
 
+    /** Pitcher plants and crops, and Amberwood blooms (nectar). */
     private static boolean isPitcher(BlockState s) {
-        return s.is(Blocks.PITCHER_PLANT) || s.is(Blocks.PITCHER_CROP);
+        return s.is(Blocks.PITCHER_PLANT) || s.is(Blocks.PITCHER_CROP) || s.is(WWBlocks.AMBERWOOD_BLOOM);
     }
 
     @Nullable
@@ -704,7 +705,8 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
         }
     }
 
-    /** Hang around pitcher plants and pitcher crops; pollinating a crop grows it a stage (like bees). */
+    /** Hang around pitcher plants, pitcher crops and Amberwood blooms; pollinating a crop grows it a stage (like bees),
+     *  a bloom's nectar heals a little. */
     class PitcherGoal extends Goal {
         @Nullable
         private BlockPos flower;
@@ -745,7 +747,7 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
 
         private Vec3 top() {
             BlockState s = level().getBlockState(flower);
-            boolean tall = s.is(Blocks.PITCHER_PLANT) || s.getValue(PitcherCropBlock.AGE) >= 3;
+            boolean tall = s.is(Blocks.PITCHER_PLANT) || (s.is(Blocks.PITCHER_CROP) && s.getValue(PitcherCropBlock.AGE) >= 3);
             BlockPos base = s.hasProperty(PitcherCropBlock.HALF)
                     && s.getValue(PitcherCropBlock.HALF) == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER
                     ? flower.below() : flower;
@@ -770,6 +772,11 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
 
         private void pollinate() {
             BlockState s = level().getBlockState(flower);
+            if (s.is(WWBlocks.AMBERWOOD_BLOOM) && level() instanceof ServerLevel sl) {   // a sip of nectar
+                heal(1.0f);
+                sl.sendParticles(WWParticles.AMBER_GLINT, flower.getX() + 0.5, flower.getY() + 0.7, flower.getZ() + 0.5, 3, 0.15, 0.1, 0.15, 0.0);
+                return;
+            }
             if (pollinateCooldown > 0 || !(level() instanceof ServerLevel sl) || !(s.getBlock() instanceof PitcherCropBlock crop)) {
                 return;
             }

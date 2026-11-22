@@ -1,7 +1,7 @@
-"""Data for the amber area of the Amber Age update (docs/AMBER_UPDATE.md sections 4-8): amber, fossils, Amberwood,
-blood, mosquitoes and sniffers. Called by gen_data.py with ctx = gen_data.Ctx.
+"""Data for the amber area of the Amber Age update (docs/AMBER_UPDATE.md sections 4-8, docs/HEXES_UPDATE.md section 10):
+amber, fossils, Amberwood (and its blooms), blood, mosquitoes and sniffers. Called by gen_data.py with ctx = gen_data.Ctx.
 
-Blockstates and models, item models, recipes, loot tables, tags, the Amberwood tree features, placeholder sounds for
+Blockstates and models, item models, recipes, loot tables, tags, the Amberwood features, placeholder sounds for
 the amber sound events that sounds.json doesn't map yet, and lang/amber.json.
 """
 import json
@@ -87,6 +87,19 @@ def run(ctx):
     blockstate("amberwood_leaves", {"variants": {"": ref("amberwood_leaves")}})
     block_model("amberwood_sapling", {"parent": "minecraft:block/cross", "textures": {"cross": f"{M}:block/amberwood_sapling"}})
     blockstate("amberwood_sapling", {"variants": {"": ref("amberwood_sapling")}})
+    # the glowing flowers on top of every Amberwood column
+    # (vanilla's cross, plus a flat crown seen from above: block/amberwood_bloom_top)
+    cross = lambda frm, to, faces: {"from": frm, "to": to, "shade": False,  # noqa: E731
+                                    "rotation": {"origin": [8, 8, 8], "axis": "y", "angle": 45, "rescale": True},
+                                    "faces": {f: {"uv": [0, 0, 16, 16], "texture": "#cross"} for f in faces}}
+    block_model("amberwood_bloom", {
+        "ambientocclusion": False,
+        "textures": {"particle": f"{M}:block/amberwood_bloom", "cross": f"{M}:block/amberwood_bloom",
+                     "top": f"{M}:block/amberwood_bloom_top"},
+        "elements": [cross([0.8, 0, 8], [15.2, 16, 8], ("north", "south")), cross([8, 0, 0.8], [8, 16, 15.2], ("west", "east")),
+                     {"from": [1, 12, 1], "to": [15, 12, 15], "shade": False, "faces": {
+                         "up": {"uv": [0, 0, 16, 16], "texture": "#top"}, "down": {"uv": [0, 16, 16, 0], "texture": "#top"}}}]})
+    blockstate("amberwood_bloom", {"variants": {"": ref("amberwood_bloom")}})
     cube("amberwood_planks")
     blockstate("amberwood_planks", {"variants": {"": ref("amberwood_planks")}})
 
@@ -103,6 +116,7 @@ def run(ctx):
     # ---------------------------------------------------------------------------------------- item models
     for name in ("amber_chunk", "amberwood_seed"):
         item_model(name, {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{name}"}})
+    item_model("amberwood_bloom", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/amberwood_bloom"}})
     item_model("mosquito_spawn_egg", {"parent": "minecraft:item/template_spawn_egg"})
     for item, model in (("amber_block", "amber_block"), ("amber_fossil", "amber_fossil_0"), ("petrified_log", "petrified_log"),
                         ("amberwood_log", "amberwood_log"), ("amberwood_leaves", "amberwood_leaves"),
@@ -124,6 +138,7 @@ def run(ctx):
     for b in ("amber_block", "petrified_log", "amberwood_log", "amberwood_planks"):
         block_loot(b, drops(f"{M}:{b}"))   # amber drops as plain amber; logs lose their resin
     block_loot("amberwood_sapling", drops(f"{M}:amberwood_seed"))
+    block_loot("amberwood_bloom", drops(f"{M}:amberwood_bloom"))
     block_loot("amber_fossil", [])   # like suspicious gravel: only brushing gets anything out
     block_loot("blood_stain", [])
     shears_or_silk = {"condition": "minecraft:any_of", "terms": [
@@ -175,28 +190,15 @@ def run(ctx):
     tag(["minecraft", "tags", "block", "saplings"], [f"{M}:amberwood_sapling"])
     tag(["minecraft", "tags", "item", "saplings"], [f"{M}:amberwood_seed"])
     tag(["minecraft", "tags", "block", "mineable", "axe"], [f"{M}:amberwood_log", f"{M}:amberwood_planks"])
-    tag(["minecraft", "tags", "block", "mineable", "hoe"], [f"{M}:amberwood_leaves"])
+    tag(["minecraft", "tags", "block", "mineable", "hoe"], [f"{M}:amberwood_leaves", f"{M}:amberwood_bloom"])
     tag(["minecraft", "tags", "block", "mineable", "shovel"], [f"{M}:amber_fossil"])
     merge_tag(["minecraft", "tags", "block", "mineable", "pickaxe"], [f"{M}:amber_block", f"{M}:petrified_log"])
     tag([M, "tags", "entity_type", "bloodless"], BLOODLESS)
 
-    # ---------------------------------------------------------------------------------------- the Amberwood tree
+    # ---------------------------------------------------------------------------------------- the Amberwood
+    # a saguaro-like column with arms and blooms on top: the Java feature winterworks:amberwood (amber.AmberwoodFeature)
     W = os.path.join(D, M, "worldgen")
-    log = lambda resin: {"Name": f"{M}:amberwood_log", "Properties": {"axis": "y", "resin": resin}}  # noqa: E731
-    w(os.path.join(W, "configured_feature", "amberwood.json"), {"type": "minecraft:tree", "config": {
-        "ignore_vines": True,
-        "force_dirt": False,
-        "minimum_size": {"type": "minecraft:two_layers_feature_size", "limit": 1, "lower_size": 0, "upper_size": 1},
-        "dirt_provider": {"type": "minecraft:simple_state_provider", "state": {"Name": "minecraft:dirt"}},
-        # a short trunk, some of it already oozing resin
-        "trunk_provider": {"type": "minecraft:weighted_state_provider", "entries": [
-            {"data": log("false"), "weight": 5}, {"data": log("true"), "weight": 1}]},
-        "trunk_placer": {"type": "minecraft:straight_trunk_placer", "base_height": 3, "height_rand_a": 2, "height_rand_b": 0},
-        # a squat crown: wide at the bottom, two narrow layers on top
-        "foliage_provider": {"type": "minecraft:simple_state_provider", "state": {
-            "Name": f"{M}:amberwood_leaves", "Properties": {"distance": "7", "persistent": "false", "waterlogged": "false"}}},
-        "foliage_placer": {"type": "minecraft:blob_foliage_placer", "radius": 3, "offset": 0, "height": 2},
-        "decorators": []}})
+    w(os.path.join(W, "configured_feature", "amberwood.json"), {"type": f"{M}:amberwood", "config": {}})
     w(os.path.join(W, "placed_feature", "amberwood.json"), {"feature": f"{M}:amberwood", "placement": [
         {"type": "minecraft:block_predicate_filter", "predicate": {
             "type": "minecraft:would_survive", "state": {"Name": f"{M}:amberwood_sapling", "Properties": {"stage": "0"}}}}]})
@@ -211,6 +213,7 @@ def run(ctx):
         "block.winterworks.amberwood_leaves": "Amberwood Leaves",
         "block.winterworks.amberwood_sapling": "Amberwood Sapling",
         "block.winterworks.amberwood_planks": "Amberwood Planks",
+        "block.winterworks.amberwood_bloom": "Amberwood Bloom",
         "block.winterworks.blood_stain": "Blood Stain",
         "item.winterworks.amber_chunk": "Amber Chunk",
         "item.winterworks.amberwood_seed": "Amberwood Seed",

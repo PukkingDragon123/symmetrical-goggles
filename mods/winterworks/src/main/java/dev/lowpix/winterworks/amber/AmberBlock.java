@@ -17,17 +17,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HalfTransparentBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Amber (docs/AMBER_UPDATE.md section 4): you can see what's trapped inside. Breaking a natural block with an inclusion
  * releases it: a seed (Amberwood seed, torchflower seeds or a pitcher pod) or a live mosquito. The block itself drops
  * as plain amber (inclusion none).
  */
-public class AmberBlock extends HalfTransparentBlock {
+public class AmberBlock extends HalfTransparentBlock implements EntityBlock {
     public enum Inclusion implements StringRepresentable {
         NONE, SEED, MOSQUITO;
 
@@ -53,6 +56,26 @@ public class AmberBlock extends HalfTransparentBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> b) {
         b.add(INCLUSION);
+    }
+
+    public static boolean hasInclusion(BlockState state) {
+        return state.getValue(INCLUSION) != Inclusion.NONE;
+    }
+
+    /** Only natural amber with something inside gets a block entity (it draws the inclusion in 3D). */
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return hasInclusion(state) ? new AmberInclusionBlockEntity(pos, state) : null;
+    }
+
+    /** Turned into plain amber in place: drop the inclusion's block entity (vanilla only does that for a new block). */
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moved) {
+        if (newState.is(this) && hasInclusion(state) && !hasInclusion(newState)) {
+            level.removeBlockEntity(pos);
+        }
+        super.onRemove(state, level, pos, newState, moved);
     }
 
     /** Broken in survival, by an explosion or by a falling block: the inclusion escapes. */
