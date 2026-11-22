@@ -154,70 +154,78 @@ def spikes(w, h, seed, tip="t", mid="m"):
     return ["".join(r) for r in rows]
 
 
-# ======================================================================= torso: body (root), chest, hips
-# The root joint sits between the hip joints, so rearing up pivots about the hind legs.
-part("body", None, [21, 19, 21], "fur_torn", at=(0, 22, -17), centre=(1.5, 23, -4.5))
-# the right flank is torn open: a fur roof along the spine and a strip of belly fur frame a dark cavity
-part("roof_r", "body", [6, 6, 21], "fur_dark", centre=(-10, 30.5, -4.5), rot=(0, 0, 8))
-part("belly_r", "body", [5, 5, 19], "fur_dark", centre=(-9.5, 16, -4.5), rot=(0, 0, -6))
-part("frost_core", "body", [3, 6, 6], "core", centre=(-9.5, 23, -5), rot=(0, 0, 4))
-for k, z in enumerate((-12.5, -8.8, -5.1, -1.4, 2.3)):
-    h = 14 if 0 < k < 4 else 12
-    art = ["bb...", ".bb..", ".bbb.", "..bb.", "..bbb", "...bb", "...bb", "...bb", "..bbb", "..bb.", ".bbb.", ".bb..",
-           "bb...", "b...."][:h]
-    card(f"rib{k}", "body", art, "rib", at=(-12.6, 29.2, z), offset=(0, -h / 2 + 0.5, 0),
-         rot=(0, 180 + (6 if k % 2 else -6), -7))
-# fur fringes hanging off the belly edges and the torn edge of the roof
-card("belly_fringe_l", "body", locks(21, 6, 11), "fringe", at=(12.1, 14.5, -4.5), offset=(0, -2.5, 0), rot=(0, 0, 8))
-card("belly_fringe_r", "body", locks(19, 5, 12), "fringe", at=(-12.1, 14.5, -4.5), offset=(0, -2, 0), rot=(0, 0, -8))
-card("roof_fringe_r", "roof_r", locks(21, 4, 13, min_len=0.5), "fringe", rel=(-3.1, -2.6, 0), offset=(0, -1.5, 0),
-     rot=(0, 0, -12))
-part("shag_body", "body", [14, 3, 11], "fur", at=(5, 32.4, -1), rot=(-8, -6, -8))
-part("shag_body_b", "body", [13, 3, 10], "fur", at=(4, 32.0, -11), rot=(-10, 5, -6))
+# old claw scars: three pale parallel rakes with a dark lip
+SCAR = ["s.s.s....", "ds.s.s...", ".ds.s.s..", "..ds.s.s.", "...ds.s.s", "....d.d.d"]
+SCAR_KEY = {"s": "mane:9", "d": "fur:1"}
 
-# chest: the bear's shoulder hump
-part("chest", "body", [26, 23, 19], "fur_body", at=(0, 25, 3), centre=(0, 26.5, 11.5), rot=(-5, 3, -1.5))
-part("brisket", "chest", [16, 6, 9], "mane_dark", centre=(0, 16.5, 16), rot=(22, 0, 0))
+
+# ======================================================================= torso: body (root), chest, hips
+# A sabre-toothed cat's build: a long muscular trunk, a deep chest, high powerful shoulders, a tucked waist and
+# lower haunches. The root joint sits between the hip joints, so rearing up pivots about the hind legs.
+part("body", None, [20, 16, 26], "fur_torn", at=(0, 21, -21), centre=(1.5, 22, -6))
+# the right flank is torn open: a fur roof along the spine and a strip of belly fur frame a dark cavity
+part("roof_r", "body", [6, 5, 26], "fur_dark", centre=(-9.5, 28.5, -6), rot=(0, 0, 8))
+part("belly_r", "body", [5, 4, 24], "fur_dark", centre=(-8.5, 15.5, -6), rot=(0, 0, -6))
+part("frost_core", "body", [3, 6, 7], "core", centre=(-8.5, 22, -7), rot=(0, 0, 4))
+for k, z in enumerate((-16.5, -12.6, -8.7, -4.8, -0.9, 3.0)):
+    h = 13 if 0 < k < 5 else 11
+    art = ["bb...", ".bb..", ".bbb.", "..bb.", "..bbb", "...bb", "...bb", "..bbb", "..bb.", ".bbb.", ".bb..",
+           "bb...", "b...."][:h]
+    card(f"rib{k}", "body", art, "rib", at=(-11.7, 27.6, z), offset=(0, -h / 2 + 0.5, 0),
+         rot=(0, 180 + (6 if k % 2 else -6), -7))
+card("belly_fringe_l", "body", locks(25, 6, 11), "fringe", at=(11.6, 14.5, -6), offset=(0, -2.5, 0), rot=(0, 0, 8))
+card("belly_fringe_r", "body", locks(23, 5, 12), "fringe", at=(-11.1, 14.0, -6), offset=(0, -2, 0), rot=(0, 0, -8))
+card("roof_fringe_r", "roof_r", locks(25, 4, 13, min_len=0.5), "fringe", rel=(-3.1, -2.1, 0), offset=(0, -1.5, 0),
+     rot=(0, 0, -12))
+part("shag_body", "body", [13, 3, 11], "fur", at=(5, 30.4, -2), rot=(-8, -6, -8))
+part("shag_body_b", "body", [12, 3, 10], "fur", at=(4, 30.0, -13), rot=(-10, 5, -6))
+
+# chest: deep and barrel-shaped, the shoulders standing high over the heavy forelegs
+part("chest", "body", [24, 24, 20], "fur_body", at=(0, 23, 5), centre=(0, 23, 14), rot=(-6, 3, -1.5),
+     paint={"stamps": [{"face": "right", "at": [5, 5], "art": SCAR, "key": SCAR_KEY}]})
+part("brisket", "chest", [16, 6, 9], "mane_dark", centre=(0, 12.5, 19), rot=(22, 0, 0))
 card("brisket_fringe", "brisket", locks(17, 8, 21), "fringe", rel=(0, -2.6, 4.65), offset=(0, -3.5, 0),
      plane="xy", rot=(-16, 0, 0))
-card("chest_fringe_l", "chest", locks(16, 6, 22), "fringe", at=(13.1, 16, 11), offset=(0, -2.5, 0), rot=(0, 0, 10))
-card("chest_fringe_r", "chest", locks(16, 6, 23), "fringe", at=(-13.1, 16, 11), offset=(0, -2.5, 0), rot=(0, 0, -10))
+card("chest_fringe_l", "chest", locks(16, 6, 22), "fringe", at=(12.1, 12.5, 14), offset=(0, -2.5, 0), rot=(0, 0, 10))
+card("chest_fringe_r", "chest", locks(16, 6, 23), "fringe", at=(-12.1, 12.5, 14), offset=(0, -2.5, 0), rot=(0, 0, -10))
 
-# hips: the haunches, sloping down to the tail
-part("hips", "body", [22, 18, 15], "fur_body", at=(0, 24, -13), centre=(0, 23, -20), rot=(-7, -4, 1.5))
-part("shag_hips", "hips", [14, 3, 10], "fur", at=(0, 31.5, -20), rot=(-12, 0, 0))
-card("rump_fringe", "hips", locks(18, 6, 31), "fringe", at=(0, 21, -27.8), offset=(0, -2.5, 0), plane="xy",
+# hips: lower haunches, sloping down to a short bobbed tail
+part("hips", "body", [20, 17, 16], "fur_body", at=(0, 23, -18), centre=(0, 21.5, -26), rot=(-9, -4, 1.5),
+     paint={"stamps": [{"face": "left", "at": [3, 4], "art": SCAR, "key": SCAR_KEY}]})
+part("shag_hips", "hips", [13, 3, 10], "fur", at=(0, 29.5, -26), rot=(-14, 0, 0))
+card("rump_fringe", "hips", locks(16, 6, 31), "fringe", at=(0, 19, -34.2), offset=(0, -2.5, 0), plane="xy",
      rot=(-12, 0, 0))
-card("hip_fringe_l", "hips", locks(14, 5, 32), "fringe", at=(11.1, 15.5, -20), offset=(0, -2, 0), rot=(0, 0, 8))
-card("hip_fringe_r", "hips", locks(14, 5, 33), "fringe", at=(-11.1, 15.5, -20), offset=(0, -2, 0), rot=(0, 0, -8))
-# the bare spine over the right haunch: three vertebrae where the fur has rotted away
-for k, z in enumerate((-15.5, -19.5, -23.5)):
-    part(f"vert_hip{k}", "hips", [3, 2, 3], "bone", centre=(-3.5, 32.0 - k * 0.6, z), rot=(-7, 0, 0))
+card("hip_fringe_l", "hips", locks(14, 5, 32), "fringe", at=(10.1, 14.5, -26), offset=(0, -2, 0), rot=(0, 0, 8))
+card("hip_fringe_r", "hips", locks(14, 5, 33), "fringe", at=(-10.1, 14.5, -26), offset=(0, -2, 0), rot=(0, 0, -8))
+for k, z in enumerate((-20.5, -24.5, -28.5)):     # the bare spine over the right haunch
+    part(f"vert_hip{k}", "hips", [3, 2, 3], "bone", centre=(-3.5, 30.4 - k * 0.7, z), rot=(-9, 0, 0))
     card(f"vert_hip{k}_spine", f"vert_hip{k}", ["b.", "bb", "bb"], "bone", rel=(0, 2.4, 0), plane="yz", rot=(-25, 0, 0))
 
-# ======================================================================= the mane: heavy pale fur over neck and shoulders
-part("mane", "chest", [26, 7, 15], "mane_dark", centre=(0, 37.5, 10), rot=(-14, 0, 0))
+# ======================================================================= the ruff: pale shaggy fur over neck and shoulders
+part("mane", "chest", [22, 6, 13], "mane_dark", centre=(0, 34.5, 12), rot=(-14, 0, 0))
 MANE_TUFTS = [  # (x, y, z, rx, ry, rz, w, h, d): shaggy locks fanning round the shoulders, each tilted its own way
-    (-13.5, 33, 11, -14, 14, 32, 6, 11, 8), (13.5, 33, 11, -14, -14, -32, 6, 11, 8),
-    (-8, 38.5, 7, -30, 8, 18, 9, 8, 8), (8, 38.5, 7, -30, -8, -18, 9, 8, 8),
-    (0, 40, 4, -40, 0, 0, 10, 7, 8), (-11, 37, 0, -22, 22, 26, 7, 8, 7), (11, 37, 0, -22, -22, -26, 7, 8, 7),
-    (0, 38, 15, -10, 0, 0, 14, 7, 7),
+    (-12, 30, 13, -14, 14, 32, 5, 10, 7), (12, 30, 13, -14, -14, -32, 5, 10, 7),
+    (-7, 35.5, 9, -30, 8, 18, 8, 7, 7), (7, 35.5, 9, -30, -8, -18, 8, 7, 7),
+    (0, 37, 6, -40, 0, 0, 9, 6, 7), (-10, 34, 3, -22, 22, 26, 6, 7, 6), (10, 34, 3, -22, -22, -26, 6, 7, 6),
+    (0, 35, 17, -10, 0, 0, 12, 6, 6),
 ]
 for k, (x, y, z, rx, ry, rz, w, h, d) in enumerate(MANE_TUFTS):
     part(f"mane{k}", "chest", [w, h, d], "mane" if k % 2 else "mane_dark", centre=(x, y, z), rot=(rx, ry, rz))
-# straggly fringes round the mane's edge: long pale locks hanging from every tuft, tips frosted white
 for k, (x, y, z, rx, ry, rz, w, h, d) in enumerate(MANE_TUFTS):
     if k in (4, 7):
-        card(f"mane{k}_fringe", f"mane{k}", locks(w + 2, 8, 40 + k), "mane_fringe", rel=(0, -h / 2 + 1, d / 2 + 0.15),
-             offset=(0, -3.5, 0), plane="xy", rot=(12, 0, 0))
+        card(f"mane{k}_fringe", f"mane{k}", locks(w + 2, 7, 40 + k), "mane_fringe", rel=(0, -h / 2 + 1, d / 2 + 0.15),
+             offset=(0, -3, 0), plane="xy", rot=(12, 0, 0))
     else:
         s = 1 if x >= 0 else -1
-        card(f"mane{k}_fringe", f"mane{k}", locks(d + 3, 9, 40 + k), "mane_fringe",
-             rel=(s * (w / 2 + 0.15), -h / 2 + 1.5, 0), offset=(0, -4, 0), rot=(0, 0, s * 8))
-card("mane_crest", "mane", spikes(20, 7, 51), "mane_spikes", rel=(0, 3.4, -3), offset=(0, 3.5, 0), rot=(-20, 0, 0))
-card("mane_crest_b", "mane", spikes(16, 6, 52), "mane_spikes", rel=(0, 3.0, 3), offset=(0, 3, 0), rot=(-8, 0, 0))
+        card(f"mane{k}_fringe", f"mane{k}", locks(d + 3, 8, 40 + k), "mane_fringe",
+             rel=(s * (w / 2 + 0.15), -h / 2 + 1.5, 0), offset=(0, -3.5, 0), rot=(0, 0, s * 8))
+    if k in (0, 1, 5, 6):
+        card(f"mane{k}_spikes", f"mane{k}", spikes(7, 5, 140 + k), "mane_spikes", rel=(0, h / 2, 0), offset=(0, 2.5, 0),
+             rot=(-15, 0, 0))
+card("mane_crest", "mane", spikes(18, 7, 51), "mane_spikes", rel=(0, 2.9, -3), offset=(0, 3.5, 0), rot=(-20, 0, 0))
 
-# ======================================================================= ice: crystal clusters erupting from the back
+
+# ======================================================================= ice: big crystal clusters erupting from the back
 def cluster(name, parent, at, crystals, wrot_base=(0, 0, 0)):
     """crystals: [(dx, dz, w, h, rx, rz)] tall prisms fanning out of one root."""
     bone(name, parent, at=at, wrot=wrot_base)
@@ -230,64 +238,76 @@ def cluster(name, parent, at, crystals, wrot_base=(0, 0, 0)):
                  rel=(w / 2 - 0.5, h * 0.55, 0), offset=(0, h / 4, 0), rot=(0, 0, -24))
 
 
-cluster("ice_back0", "chest", (2, 40.5, 0), [(0, 0, 4, 17, -24, 4), (-3, 1, 3, 12, -18, 22), (3, -1, 3, 11, -34, -18),
-                                             (0, -3, 2, 7, -52, 8)])
-cluster("ice_back1", "body", (-1, 32.5, -6), [(0, 0, 4, 14, -26, -6), (2.5, 1.5, 3, 9, -14, -26), (-2.5, -1, 2, 7, -40, 20)])
-cluster("ice_back2", "hips", (1, 30.5, -17), [(0, 0, 3, 10, -32, 6), (-2, 0.5, 2, 6, -20, 24), (2, -1, 2, 5, -48, -20)])
-# a crest of short dark fur spines between the clusters
-card("spine_fur0", "body", spikes(14, 5, 61), "fur_spikes", at=(0, 32.8, 1), offset=(0, 2.5, 0), rot=(-6, 0, 0))
-card("spine_fur1", "hips", spikes(12, 4, 62), "fur_spikes", at=(0, 31.6, -24), offset=(0, 2, 0), rot=(-10, 0, 0))
+cluster("ice_back0", "chest", (2, 36.5, 2), [(0, 0, 5, 21, -22, 4), (-3.5, 1, 4, 15, -16, 24), (3.5, -1, 3, 13, -32, -20),
+                                             (0, -3.5, 3, 9, -50, 8), (-2, 3, 2, 7, 8, 30)])
+cluster("ice_back1", "body", (-1, 30.5, -7), [(0, 0, 5, 17, -26, -6), (3, 1.5, 3, 11, -12, -28), (-3, -1, 3, 9, -40, 20)])
+cluster("ice_back2", "hips", (1, 28.5, -23), [(0, 0, 4, 12, -34, 6), (-2.5, 0.5, 3, 8, -20, 26), (2.5, -1, 2, 6, -48, -22)])
+# a crest of dark horn spikes and short fur spines along the spine between the clusters
+for k, (par, at, h, rx) in enumerate((("chest", (0, 35.0, -1), 6, -34), ("body", (0, 30.6, 1.5), 5, -30),
+                                      ("body", (0, 30.4, -14.5), 6, -36), ("hips", (0, 29.6, -19), 5, -40),
+                                      ("hips", (0, 28.4, -30), 4, -46))):
+    part(f"spine_spike{k}", par, [2, h, 3], "horn_spike", at=at, offset=(0, h / 2, 0), rot=(rx, 0, (k % 2 * 2 - 1) * 6))
+card("spine_fur0", "body", spikes(16, 5, 61), "fur_spikes", at=(0, 30.8, -2), offset=(0, 2.5, 0), rot=(-6, 0, 0))
+card("spine_fur1", "hips", spikes(12, 4, 62), "fur_spikes", at=(0, 29.6, -27), offset=(0, 2, 0), rot=(-10, 0, 0))
+card("spine_fur2", "chest", spikes(12, 6, 138), "fur_spikes", at=(-1, 35.5, 3.5), offset=(0, 3, 0), rot=(-16, 0, 6))
 
 # the left shoulder is sheathed in ice: a plate with crystals bursting out of it
-part("ice_shoulder", "chest", [3, 13, 15], "ice_plate", centre=(14.4, 28, 11), rot=(-6, 0, 14))
-cluster("ice_shoulder_c", "ice_shoulder", (15.5, 32, 10), [(0, 0, 3, 11, -18, -34), (0, 3, 2, 8, 8, -48),
-                                                           (0, -3, 2, 7, -40, -20)])
+part("ice_shoulder", "chest", [3, 13, 15], "ice_plate", centre=(13.4, 26, 13), rot=(-6, 0, 14))
+cluster("ice_shoulder_c", "ice_shoulder", (14.5, 30, 12), [(0, 0, 4, 14, -18, -34), (0, 3.5, 3, 10, 8, -48),
+                                                           (0, -3.5, 3, 8, -40, -20)])
 
-# ======================================================================= legs
-WRIST_Y = []    # the front wrists' height: the hind legs are sized to put their hocks at the same height
+# ======================================================================= legs: massive forelimbs, digitigrade hind legs
+FRONT_BOTTOM = []     # the front paws' soles: the hind legs are sized to stand on the same ground
 
 
 def front_leg(s):
     n = "l" if s > 0 else "r"
-    up = part(f"front_leg_{n}", "chest", [9, 17, 11], "fur_leg", at=M((12, 25, 11), s), offset=(0, -6.5, 0),
-              rot=MR((6, 0, 3), s))
-    elbow = wpos(up["id"], (0, -14, 0))
-    part(f"front_fore_{n}", up["id"], [8, 12, 8], "fur_leg", at=elbow, offset=(0, -5, 0.5), wrot=MR((-8, 0, 2), s))
-    wrist = wpos(f"front_fore_{n}", (0, -11, 0.5))
-    WRIST_Y.append(float(wrist[1]))
-    part(f"front_paw_{n}", f"front_fore_{n}", [10, 4, 10], "paw", at=wrist,
-         centre=(wrist[0], wrist[1] - 1.2, wrist[2] + 1.5), wrot=(0, 0, 0))
-    # long splayed toes with dark horn claws
-    for k, (dx, yaw) in enumerate(((-3.6, 22), (-1.2, 7), (1.2, -7), (3.6, -22))):
+    up = part(f"front_leg_{n}", "chest", [11, 16, 13], "fur_leg", at=M((12.5, 23, 14), s), offset=(0, -5.5, 0),
+              rot=MR((14, 0, 3), s))
+    elbow = wpos(up["id"], (0, -12, 0))
+    part(f"front_fore_{n}", up["id"], [10, 12, 10], "fur_leg", at=elbow, offset=(0, -5, 0.5), wrot=MR((-12, 0, 2), s))
+    wrist = wpos(f"front_fore_{n}", (0, -10, 0.5))
+    FRONT_BOTTOM.append(float(wrist[1]) - 4.0)
+    part(f"front_paw_{n}", f"front_fore_{n}", [12, 5, 12], "paw", at=wrist,
+         centre=(wrist[0], wrist[1] - 1.5, wrist[2] + 2.5), wrot=(0, 0, 0))
+    # big round toes, each with a hooked horn claw unsheathed from it
+    for k, (dx, yaw) in enumerate(((-4.2, 16), (-1.4, 5), (1.4, -5), (4.2, -16))):
         tid = f"front_toe_{n}{k}"
-        part(tid, f"front_paw_{n}", [2, 2, 4], "paw", rel=(dx * s, -0.9, 5.5), offset=(0, 0, 1.5),
-             rot=(0, -yaw * s, 0))
-        part(f"front_claw_{n}{k}", tid, [1, 2, 4], "claw", rel=(0, 0.2, 3.2), offset=(0, 0, 1.6), rot=(26, 0, 0))
-    # elbow fringe trailing back, fur skirt round the wrist
-    card(f"elbow_fringe_{n}", up["id"], locks(7, 6, 70 + s, min_len=0.5), "fringe", rel=(0, -10, -5.7),
+        part(tid, f"front_paw_{n}", [3, 3, 4], "paw", rel=(dx * s, -1.0, 6.0), offset=(0, 0, 1.0), rot=(0, -yaw * s, 0))
+        part(f"front_claw_{n}{k}", tid, [1, 3, 3], "claw", rel=(0, 0.6, 2.6), offset=(0, -0.6, 1.2), rot=(42, 0, 0))
+    part(f"elbow_spur_{n}", up["id"], [2, 6, 2], "horn_spike", rel=(s * 1.5, -10.5, -6), offset=(0, 3, 0), rot=(-120, 0, -s * 14))
+    card(f"elbow_fringe_{n}", up["id"], locks(8, 6, 70 + s, min_len=0.5), "fringe", rel=(0, -8.5, -6.7),
          offset=(0, -2, 0), plane="xy", rot=(-25, 0, 0))
-    card(f"wrist_fringe_{n}", f"front_fore_{n}", locks(8, 4, 72 + s), "fringe", rel=(s * 4.15, -6.5, 0),
+    card(f"wrist_fringe_{n}", f"front_fore_{n}", locks(10, 4, 72 + s), "fringe", rel=(s * 5.15, -6, 0),
          offset=(0, -1.5, 0), rot=(0, 0, s * 10))
+    card(f"shoulder_fringe_{n}", up["id"], locks(12, 7, 130 + s, min_len=0.5), "fringe", rel=(s * 5.65, 0.5, 0),
+         offset=(0, -3, 0), rot=(0, 0, s * 18))
+    card(f"shoulder_spikes_{n}", up["id"], spikes(9, 5, 132 + s), "fur_spikes", rel=(s * 3, 2.2, 0),
+         offset=(0, 2.5, 0), rot=(-10, 0, -s * 30))
 
 
 def back_leg(s):
     n = "l" if s > 0 else "r"
-    th = part(f"back_leg_{n}", "hips", [9, 16, 12], "fur_leg", at=M((10, 22, -19), s), offset=(0, -5.5, 1),
-              wrot=MR((-22, 0, 2), s))
-    part(f"haunch_{n}", th["id"], [10, 9, 13], "fur_body", rel=(s * 0.5, 0, 0.5), rot=(0, 0, 0))
-    knee = wpos(th["id"], (0, -12.5, 0))
-    part(f"back_shin_{n}", th["id"], [6, 13, 7], "fur_leg", at=knee, offset=(0, -5.5, 0), wrot=MR((30, 0, 0), s))
-    shin = (knee[1] - WRIST_Y[0]) / math.cos(math.radians(30))
-    hock = wpos(f"back_shin_{n}", (0, -shin, 0))
-    part(f"back_paw_{n}", f"back_shin_{n}", [9, 4, 11], "paw", at=hock, centre=(hock[0], hock[1] - 1.2, hock[2] + 4),
+    th = part(f"back_leg_{n}", "hips", [9, 16, 13], "fur_leg", at=M((9.5, 22, -24), s), offset=(0, -5.5, 1.5),
+              wrot=MR((-28, 0, 2), s))
+    part(f"haunch_{n}", th["id"], [10, 10, 14], "fur_body", rel=(s * 0.5, -1, 1), rot=(0, 0, 0))
+    knee = wpos(th["id"], (0, -12, 0))
+    # tibia, then the long raised metatarsus (back_paw) standing on its toes
+    ls = (knee[1] - 11.3 - FRONT_BOTTOM[0]) / math.cos(math.radians(52))
+    part(f"back_shin_{n}", th["id"], [6, round(ls) + 2, 7], "fur_leg", at=knee, offset=(0, -ls / 2, 0),
+         wrot=MR((52, 0, 0), s))
+    hock = wpos(f"back_shin_{n}", (0, -ls, 0))
+    part(f"back_paw_{n}", f"back_shin_{n}", [6, 10, 6], "fur_leg", at=hock, offset=(0, -4.5, 0), wrot=(-12, 0, 0))
+    end = wpos(f"back_paw_{n}", (0, -9, 0))
+    part(f"back_toes_{n}", f"back_paw_{n}", [10, 4, 10], "paw", centre=(end[0], end[1] - 0.5, end[2] + 2.5),
          wrot=(0, 0, 0))
-    for k, (dx, yaw) in enumerate(((-3.0, 18), (-1.0, 6), (1.0, -6), (3.0, -18))):
+    for k, (dx, yaw) in enumerate(((-3.3, 14), (-1.1, 5), (1.1, -5), (3.3, -14))):
         tid = f"back_toe_{n}{k}"
-        part(tid, f"back_paw_{n}", [2, 2, 3], "paw", rel=(dx * s, -0.9, 5.0), offset=(0, 0, 1.0), rot=(0, -yaw * s, 0))
-        part(f"back_claw_{n}{k}", tid, [1, 2, 3], "claw", rel=(0, 0.2, 2.2), offset=(0, 0, 1.2), rot=(28, 0, 0))
-    card(f"hock_fringe_{n}", f"back_shin_{n}", locks(6, 5, 80 + s, min_len=0.5), "fringe", rel=(0, -3, -3.65),
+        part(tid, f"back_toes_{n}", [2, 3, 3], "paw", rel=(dx * s, -0.5, 5.0), offset=(0, 0, 1.0), rot=(0, -yaw * s, 0))
+        part(f"back_claw_{n}{k}", tid, [1, 2, 3], "claw", rel=(0, 0.4, 2.2), offset=(0, -0.4, 1.2), rot=(40, 0, 0))
+    card(f"hock_fringe_{n}", f"back_shin_{n}", locks(6, 5, 80 + s, min_len=0.5), "fringe", rel=(0, -ls + 1, -3.65),
          offset=(0, -1.5, 0), plane="xy", rot=(-15, 0, 0))
-    card(f"thigh_fringe_{n}", th["id"], locks(13, 5, 82 + s), "fringe", rel=(s * 5.2, -7, 1), offset=(0, -2, 0),
+    card(f"thigh_fringe_{n}", th["id"], locks(13, 5, 82 + s), "fringe", rel=(s * 5.2, -7.5, 1), offset=(0, -2, 0),
          rot=(0, 0, s * 8))
 
 
@@ -295,115 +315,104 @@ front_leg(1)
 front_leg(-1)
 back_leg(1)
 back_leg(-1)
-# shaggy fur breaking the silhouette: locks standing off the shoulders, hanging from the back's edges and the shag
-for s in (1, -1):
-    n = "l" if s > 0 else "r"
-    card(f"shoulder_fringe_{n}", f"front_leg_{n}", locks(11, 7, 130 + s, min_len=0.5), "fringe", rel=(s * 4.65, 0.5, 0),
-         offset=(0, -3, 0), rot=(0, 0, s * 18))
-    card(f"shoulder_spikes_{n}", f"front_leg_{n}", spikes(9, 5, 132 + s), "fur_spikes", rel=(s * 2.5, 2.2, 0),
-         offset=(0, 2.5, 0), rot=(-10, 0, -s * 30))
-card("back_fringe_l", "body", locks(20, 6, 135), "fringe", at=(12.15, 32.0, -4.5), offset=(0, -2.5, 0), rot=(0, 0, 22))
-card("shag_body_fringe", "shag_body", locks(11, 5, 136), "fringe", rel=(7.1, -1, 0), offset=(0, -2, 0), rot=(0, 0, 15))
-card("shag_body_b_fringe", "shag_body_b", locks(10, 5, 137), "fringe", rel=(6.6, -1, 0), offset=(0, -2, 0),
+card("back_fringe_l", "body", locks(24, 6, 135), "fringe", at=(11.65, 30.0, -6), offset=(0, -2.5, 0), rot=(0, 0, 22))
+card("shag_body_fringe", "shag_body", locks(11, 5, 136), "fringe", rel=(6.6, -1, 0), offset=(0, -2, 0), rot=(0, 0, 15))
+card("shag_body_b_fringe", "shag_body_b", locks(10, 5, 137), "fringe", rel=(6.1, -1, 0), offset=(0, -2, 0),
      rot=(0, 0, 15))
-card("spine_fur2", "chest", spikes(12, 6, 138), "fur_spikes", at=(-1, 38.5, 2.5), offset=(0, 3, 0), rot=(-16, 0, 6))
-for k in range(len(MANE_TUFTS)):
-    if k in (0, 1, 5, 6):
-        card(f"mane{k}_spikes", f"mane{k}", spikes(7, 5, 140 + k), "mane_spikes", rel=(0, 3.5, 0), offset=(0, 2.5, 0),
-             rot=(-15, 0, 0))
-
-# the left foreleg is sheathed in ice: plates on the outside and front, a crystal spur at the elbow
-part("ice_arm_l", "front_leg_l", [2, 11, 9], "ice_plate", rel=(4.9, -4.5, 0), rot=(0, 0, 4))
-part("ice_spur_l", "front_leg_l", [2, 7, 2], "crystal", rel=(4.2, -10, -3), offset=(0, 3.5, 0), rot=(-62, 0, -28))
-part("ice_fore_l", "front_fore_l", [2, 8, 7], "ice_plate", rel=(4.3, -4.5, 0.5), rot=(0, 0, -3))
-part("ice_shin_l", "front_fore_l", [6, 7, 2], "ice_plate", rel=(0.5, -4.5, 4.6), rot=(-4, 0, 0))
-part("ice_wrist_l", "front_fore_l", [2, 5, 2], "crystal_b", rel=(4.4, -7.5, 3), offset=(0, 2.5, 0), rot=(30, 0, -40))
+# the left foreleg is sheathed in ice: plates on the outside and front, crystal spurs at the elbow and wrist
+part("ice_arm_l", "front_leg_l", [2, 11, 10], "ice_plate", rel=(5.9, -4.5, 0), rot=(0, 0, 4))
+part("ice_spur_l", "front_leg_l", [3, 9, 3], "crystal", rel=(5.2, -8.5, -3.5), offset=(0, 4.5, 0), rot=(-62, 0, -28))
+part("ice_fore_l", "front_fore_l", [2, 8, 8], "ice_plate", rel=(5.3, -4.5, 0.5), rot=(0, 0, -3))
+part("ice_shin_l", "front_fore_l", [7, 7, 2], "ice_plate", rel=(0.5, -4.5, 5.6), rot=(-4, 0, 0))
+part("ice_wrist_l", "front_fore_l", [2, 6, 2], "crystal_b", rel=(5.4, -7, 3), offset=(0, 3, 0), rot=(30, 0, -40))
 
 # ======================================================================= neck and head
-part("neck", "chest", [16, 15, 12], "fur_body", at=(0, 32, 15), centre=(0, 30, 20), wrot=(14, 0, 0))
-part("throat", "neck", [12, 8, 10], "mane", rel=(0, -7.5, 2), rot=(-8, 0, 0))
+part("neck", "chest", [16, 14, 16], "fur_body", at=(0, 29, 20), centre=(0, 29, 27), wrot=(0, 0, 0))
+part("throat", "neck", [12, 7, 9], "mane", rel=(0, -7, 2), rot=(-8, 0, 0))
 for s in (1, -1):
-    card(f"neck_fringe_{'l' if s > 0 else 'r'}", "neck", locks(11, 7, 150 + s), "mane_fringe", rel=(s * 8.15, -1, 0),
+    card(f"neck_fringe_{'l' if s > 0 else 'r'}", "neck", locks(12, 7, 150 + s), "mane_fringe", rel=(s * 8.15, -1, 0),
          offset=(0, -3, 0), rot=(0, 0, s * 12))
-card("throat_fringe", "throat", locks(12, 8, 91), "mane_fringe", rel=(0, -3.5, 5.15), offset=(0, -3.5, 0), plane="xy",
+card("throat_fringe", "throat", locks(12, 8, 91), "mane_fringe", rel=(0, -3, 4.65), offset=(0, -3.5, 0), plane="xy",
      rot=(-5, 0, 0))
-part("mane_neck", "neck", [20, 8, 14], "mane", rel=(0, 6.5, -1), rot=(-8, 0, 0))
-card("mane_neck_fringe_l", "mane_neck", locks(15, 9, 92), "mane_fringe", rel=(10.15, -3, 0), offset=(0, -4, 0),
+part("mane_neck", "neck", [19, 6, 13], "mane", rel=(0, 6.5, -1), rot=(-8, 0, 0))
+card("mane_neck_fringe_l", "mane_neck", locks(14, 8, 92), "mane_fringe", rel=(9.65, -2.5, 0), offset=(0, -3.5, 0),
      rot=(0, 0, 10))
-card("mane_neck_fringe_r", "mane_neck", locks(13, 7, 93), "mane_fringe", rel=(-10.15, -3, -1), offset=(0, -3, 0),
+card("mane_neck_fringe_r", "mane_neck", locks(12, 6, 93), "mane_fringe", rel=(-9.65, -2.5, -1), offset=(0, -2.5, 0),
      rot=(0, 0, -10))
-card("mane_neck_crest", "mane_neck", spikes(16, 6, 94), "mane_spikes", rel=(0, 4.1, 0), offset=(0, 3, 0), rot=(-10, 0, 0))
+card("mane_neck_crest", "mane_neck", spikes(16, 6, 94), "mane_spikes", rel=(0, 3.1, 0), offset=(0, 3, 0), rot=(-10, 0, 0))
 
-# the head: a big, broad wolf-bear skull; the left half furred, the right half bare bone.
-# Head frame: the cranium spans x -9..9, y -3..10, z 0..13; the muzzle runs on to z 26.
-part("head", "neck", [18, 13, 13], "head", at=(0, 29.5, 24.5), offset=(0, 3.5, 6.5), wrot=(4, 0, 0))
-part("brow_l", "head", [8, 3, 4], "fur_dark", rel=(5, 8.3, 12.2), rot=(0, 0, 14))
-part("brow_r", "head", [8, 3, 4], "bone", rel=(-5, 8.3, 12.4), rot=(0, 0, -12))
-part("socket_r", "head", [4, 4, 1], "socket", rel=(-5, 5.2, 13.1))
-part("eye_l", "head", [2, 2, 1], "eye", rel=(5, 5.4, 13.25))
-part("eye_r", "head", [2, 2, 1], "eye", rel=(-5, 5.2, 13.3))
-part("zygo_r", "head", [2, 3, 12], "bone", rel=(-9.4, 2.0, 8.5), rot=(0, 5, 4))
-part("temple_r", "head", [1, 4, 6], "socket", rel=(-9.1, 6.5, 6))
-part("cheek_l", "head", [3, 11, 10], "fur_dark", rel=(9, 1.5, 7), offset=(0, -3, 0), rot=(-12, 0, 22))
-card("cheek_fringe_l", "cheek_l", locks(10, 7, 101, min_len=0.5), "fringe", rel=(1.65, -8, 0), offset=(0, -3, 0),
-     rot=(0, 0, 6))
-part("crown", "head", [13, 3, 10], "fur_dark", rel=(2, 10.6, 5), rot=(-10, 0, 0))
+# the head: a broad cat skull, round crown, flat cheeks, a short wide muzzle; the left half furred and striped,
+# the right half bare bone. Head frame: the cranium spans x -9..9, y -3.5..9.5, z -0.5..11.5.
+part("head", "neck", [18, 13, 12], "head", at=(0, 29.5, 34), offset=(0, 3, 5.5), wrot=(4, 0, 0))
+part("crown", "head", [12, 3, 9], "fur_dark", rel=(2, 10.4, 4), rot=(-10, 0, 0))
 card("crown_fringe", "crown", spikes(11, 5, 102), "fur_spikes", rel=(0, 1.6, -2), offset=(0, 2.5, 0), rot=(-35, 0, 0))
-part("ear_l", "head", [5, 6, 2], "fur_dark", rel=(6, 9.5, 2.5), offset=(0, 3, 0), rot=(-30, 0, -16))
-part("ear_l_tip", "ear_l", [3, 3, 1], "fur_dark", rel=(0, 6, 0), offset=(0, 1.5, 0))
-card("ear_l_tuft", "ear_l_tip", ["t.", "tt", "mt", ".m", ".f"], "fringe", rel=(0, 2.5, 0), offset=(0, 2.5, 0),
-     plane="xy", rot=(0, 0, -10))
-part("ear_r", "head", [4, 3, 2], "torn", rel=(-6, 9.5, 2.5), offset=(0, 1.5, 0), rot=(-26, 0, 20))
-
-# the muzzle: a broad base and a narrower tip with the nose, black lips on the furred side, bare maxilla on the right
-part("snout", "head", [12, 8, 8], "snout", rel=(0, -0.5, 12), offset=(0, -0.5, 4), rot=(5, 0, 0))
-part("snout_tip", "snout", [9, 7, 6], "snout_tip", rel=(0, -0.5, 7.5), offset=(0, -0.4, 3), rot=(6, 0, 0))
-part("nose", "snout_tip", [6, 3, 2], "nose", rel=(0, 2.4, 6.0))
-part("maxilla_r", "snout", [1, 6, 8], "bone", rel=(-6.1, -1.0, 4))
-card("whiskers_l", "snout_tip", ["w....w..", ".w..w...", "..ww.www", "wwwww..."], "whisker", rel=(4.7, -0.6, 3),
-     offset=(0, 0, -3.5), plane="xz", rot=(0, -24, -14))
-# teeth: a row of individual pointed bone-yellow teeth along both sides and the front
-card("teeth_up_l", "snout", ["yyyyyyyy", "y.yy.yy.", "..y...y."], "teeth", rel=(5.1, -4.7, 4), offset=(0, -1.5, 0))
-card("teeth_up_r", "snout", ["yyyyyyyy", "yyyyyyyy", "y.yy.yy.", "..y...y."], "teeth", rel=(-5.1, -4.2, 4),
-     offset=(0, -2, 0))
-card("teeth_up_tl", "snout_tip", ["yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(3.6, -3.9, 3), offset=(0, -1.5, 0))
-card("teeth_up_tr", "snout_tip", ["yyyyyy", "yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(-3.6, -3.4, 3),
-     offset=(0, -2, 0))
-card("teeth_up_f", "snout_tip", ["yyyyyyy", "y.yy.yy", "y.yy.y."], "teeth", rel=(0, -3.9, 5.8), offset=(0, -1.5, 0),
-     plane="xy")
-
-part("jaw", "head", [8, 3, 16], "jaw", rel=(0, -3.8, 8), offset=(0, -1.5, 8), rot=(7, 0, 0))
-card("teeth_lo_l", "jaw", [".y...y...y...", "yy.yyy.yyy.yy", "yyyyyyyyyyyyy"], "teeth", rel=(3.7, 1.4, 9))
-card("teeth_lo_r", "jaw", [".y...y...y...", "yy.yyy.yyy.yy", "yyyyyyyyyyyyy", "yyyyyyyyyyyyy"], "teeth",
-     rel=(-3.9, 0.9, 9))
-card("teeth_lo_f", "jaw", [".y..y..", "yyyyyyy"], "teeth", rel=(0, 0.9, 15.6), plane="xy")
-part("tongue", "jaw", [6, 1, 13], "mouth", rel=(0, 0.2, 8.5))
-part("jaw_bone_r", "jaw", [1, 3, 14], "bone", rel=(-4.4, -1.5, 8.5))
-card("beard", "jaw", locks(7, 6, 111), "fringe", rel=(1.5, -3.1, 6), offset=(0, -2.5, 0), plane="xy", rot=(-25, 0, 0))
-
-# the sabre fangs: three segments curving back like a smilodon's, far longer than the lower jaw
+part("brow_l", "head", [7, 3, 3], "fur_dark", rel=(4.6, 7.8, 11.4), rot=(0, 0, 16))
+part("brow_r", "head", [7, 3, 3], "bone", rel=(-4.6, 7.8, 11.6), rot=(0, 0, -14))
+part("socket_r", "head", [4, 4, 1], "socket", rel=(-4.8, 5.0, 11.6))
+part("eye_l", "head", [2, 2, 1], "eye", rel=(4.8, 5.2, 11.75))
+part("eye_r", "head", [2, 2, 1], "eye", rel=(-4.8, 5.0, 11.85))
+# the eyes burn with ice-blue fire: a flame licking up over each brow, a wisp streaming back along each temple
+FLAME = ["...e..", "..eE..", "..EE.e", ".eEwEe", "eEwWEe", ".EwWwE", "eEWWwe", ".wWWw.", "..WW.."]
+WISP = ["............e.", "........e.eE..", "....eeeEEEEe..", "..eEEwwwEEe...", "eEwwWWwwEe....", ".eEWwEEe......"]
 for s in (1, -1):
     n = "l" if s > 0 else "r"
-    part(f"fang_{n}", "head", [3, 7, 3], "fang", rel=(s * 5.5, -4.2, 22), offset=(0, -3.5, 0), rot=MR((-6, 0, 3), s))
-    part(f"fang_{n}_mid", f"fang_{n}", [2, 5, 2], "fang", rel=(0, -7, 0), offset=(0, -2.5, 0), rot=(16, 0, 0))
-    part(f"fang_{n}_tip", f"fang_{n}_mid", [1, 3, 1], "fang_tip", rel=(0, -5, 0), offset=(0, -1.5, 0), rot=(18, 0, 0))
+    card(f"eye_{n}_flame", f"eye_{n}", FLAME, "flame", rel=(s * 0.4, 0.6, 0.65), offset=(0, 4.5, 0), plane="xy",
+         rot=(0, 0, -s * 12))
+    card(f"eye_{n}_wisp", f"eye_{n}", WISP, "flame", rel=(s * 4.7, 2.0, -1.0), offset=(0, 1.5, -6.0),
+         rot=(0, s * 14, -s * 8))
+part("zygo_r", "head", [2, 4, 11], "bone", rel=(-9.5, 1.5, 6), rot=(0, 5, 4))
+part("temple_r", "head", [1, 4, 6], "socket", rel=(-9.1, 6.0, 4.5))
+part("cheek_l", "head", [3, 8, 7], "fur_dark", rel=(9.2, 1.0, 4), offset=(0, -2.5, 0), rot=(-10, 0, 18))
+card("cheek_fringe_l", "cheek_l", locks(8, 7, 101, min_len=0.5), "fringe", rel=(1.65, -5.5, 0), offset=(0, -3, 0),
+     rot=(0, 0, 6))
+part("ear_l", "head", [5, 5, 2], "fur_dark", rel=(6.2, 9.0, 2), offset=(0, 2.5, 0), rot=(-20, 0, -24))
+part("ear_l_tip", "ear_l", [3, 2, 1], "fur_dark", rel=(0, 5, 0), offset=(0, 1, 0))
+card("ear_l_tuft", "ear_l_tip", ["t.", "tt", "mt", ".m", ".f"], "fringe", rel=(0, 1.5, 0), offset=(0, 2.5, 0),
+     plane="xy", rot=(0, 0, -10))
+part("ear_r", "head", [4, 3, 2], "torn", rel=(-6.2, 9.0, 2), offset=(0, 1.5, 0), rot=(-20, 0, 24))
+# the muzzle: short and wide, whisker pads, a broad nose; bare maxilla and tooth roots on the right
+part("snout", "head", [12, 7, 6], "snout", rel=(0, -1, 10.5), offset=(0, -0.5, 3), rot=(6, 0, 0))
+part("muzzle_top", "snout", [7, 2, 7], "fur_dark", rel=(0, 3.0, 2.5), rot=(-8, 0, 0))
+part("snout_tip", "snout", [10, 5, 3], "snout_tip", rel=(0, -1.2, 5.5), offset=(0, -0.3, 1.5), rot=(4, 0, 0))
+part("nose", "snout_tip", [5, 2, 2], "nose", rel=(0, 1.9, 2.6))
+part("maxilla_r", "snout", [1, 6, 6], "bone", rel=(-6.1, -1.0, 3))
+card("whiskers_l", "snout_tip", ["w......w..", ".w....w...", "..ww.w.www", "wwwwww....", "......wwww"], "whisker",
+     rel=(5.2, -0.6, 1.5), offset=(0, 0, -4.5), plane="xz", rot=(0, -28, -12))
+card("teeth_up_l", "snout", ["yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(5.5, -4.5, 3), offset=(0, -1.5, 0))
+card("teeth_up_r", "snout", ["yyyyyy", "yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(-5.5, -4.0, 3), offset=(0, -2, 0))
+card("teeth_up_f", "snout_tip", ["yyyyyyyy", "y.yy.yy.", "y.y..y.."], "teeth", rel=(0, -2.8, 2.8), offset=(0, -1.5, 0),
+     plane="xy")
+# the lower jaw: hinged far back so it can gape very wide, a bony flange at the chin sheathing the sabres
+part("jaw", "head", [7, 3, 15], "jaw", rel=(0, -3.5, 3.5), offset=(0, -1.5, 7.5), rot=(6, 0, 0))
+for s in (1, -1):
+    part(f"jaw_flange_{'l' if s > 0 else 'r'}", "jaw", [1, 4, 3], "jaw" if s > 0 else "bone", rel=(s * 3.0, -3.5, 13.5))
+card("teeth_lo_l", "jaw", [".y...y...y....", "yy.yyy.yyy.yyy", "yyyyyyyyyyyyyy"], "teeth", rel=(3.2, 1.4, 7.5))
+card("teeth_lo_r", "jaw", [".y...y...y....", "yy.yyy.yyy.yyy", "yyyyyyyyyyyyyy", "yyyyyyyyyyyyyy"], "teeth",
+     rel=(-3.4, 0.9, 7.5))
+card("teeth_lo_f", "jaw", [".y..y.", "yyyyyy"], "teeth", rel=(0, 0.9, 15.1), plane="xy")
+part("tongue", "jaw", [5, 1, 13], "mouth", rel=(0, 0.2, 7.5))
+part("jaw_bone_r", "jaw", [1, 3, 13], "bone", rel=(-3.9, -1.5, 7.5))
+card("beard", "jaw", locks(6, 5, 111), "fringe", rel=(1.0, -3.1, 4), offset=(0, -2, 0), plane="xy", rot=(-25, 0, 0))
 
-# ======================================================================= tail: fur, then bare vertebrae, then an ice club
-part("tail", "hips", [7, 7, 11], "fur", at=(0, 27, -26.5), offset=(0, 0, -5), wrot=(-16, 10, 0))
-card("tail_fringe", "tail", locks(11, 5, 121), "fringe", rel=(0, -3.6, -5), offset=(0, -2, 0), rot=(0, 0, 0))
-card("tail_fringe_l", "tail", locks(12, 5, 123), "fringe", rel=(3.65, -1.5, -5), offset=(0, -2, 0), rot=(0, 0, 14))
-card("tail_fringe_r", "tail", locks(12, 5, 124), "fringe", rel=(-3.65, -1.5, -5), offset=(0, -2, 0), rot=(0, 0, -14))
-card("tail_tuft", "tail", locks(7, 6, 125, min_len=0.6), "fringe", rel=(0, 0, -10.6), offset=(0, -2.5, 0), plane="xy",
-     rot=(-40, 0, 0))
-card("tail_crest", "tail", spikes(10, 4, 122), "fur_spikes", rel=(0, 3.6, -5), offset=(0, 2, 0))
-part("tail_mid", "tail", [3, 3, 10], "bone", rel=(0, 0, -10), offset=(0, 0, -5), rot=(-20, 0, 0))
-for k, z in enumerate((-2.0, -5.0, -8.0)):
-    part(f"vert{k}", "tail_mid", [5, 4, 2], "bone", rel=(0, 0, z))
-    card(f"vert{k}_spine", f"vert{k}", ["b..", "bb.", "bbb"], "bone", rel=(0, 3.4, 0), plane="yz", rot=(-30, 0, 0))
-part("tail_tip", "tail_mid", [7, 7, 9], "ice_club", rel=(0, 0, -10), offset=(0, 0, -4), rot=(-14, 0, 0))
+# the sabres: two enormous flattened blades curving back, reaching almost to the knees
+for s in (1, -1):
+    n = "l" if s > 0 else "r"
+    part(f"fang_{n}", "head", [2, 9, 4], "fang", rel=(s * 4.6, -5.0, 14.5), offset=(0, -4.5, 0), rot=MR((-4, 0, 2), s))
+    part(f"fang_{n}_mid", f"fang_{n}", [2, 6, 3], "fang", rel=(0, -9, -0.2), offset=(0, -3, 0), rot=(12, 0, 0))
+    part(f"fang_{n}_tip", f"fang_{n}_mid", [1, 5, 2], "fang_tip", rel=(0, -6, -0.2), offset=(0, -2.5, 0), rot=(16, 0, 0))
+
+# ======================================================================= tail: a short thick bobtail, bare vertebrae, an ice club
+part("tail", "hips", [7, 7, 7], "fur", at=(0, 26, -33.5), offset=(0, 0, -3), wrot=(-30, 8, 0))
+card("tail_fringe_l", "tail", locks(8, 5, 123), "fringe", rel=(3.65, -1.5, -3), offset=(0, -2, 0), rot=(0, 0, 14))
+card("tail_fringe_r", "tail", locks(8, 5, 124), "fringe", rel=(-3.65, -1.5, -3), offset=(0, -2, 0), rot=(0, 0, -14))
+card("tail_crest", "tail", spikes(7, 4, 122), "fur_spikes", rel=(0, 3.6, -3), offset=(0, 2, 0))
+part("tail_mid", "tail", [4, 4, 5], "bone", rel=(0, 0, -6), offset=(0, 0, -2.5), rot=(-12, 0, 0))
+part("vert0", "tail_mid", [5, 4, 1], "bone", rel=(0, 0, -2))
+card("vert0_spine", "vert0", ["b..", "bb.", "bbb"], "bone", rel=(0, 3.4, 0), plane="yz", rot=(-30, 0, 0))
+part("tail_tip", "tail_mid", [6, 6, 6], "ice_club", rel=(0, 0, -5), offset=(0, 0, -2.5), rot=(-10, 0, 0))
 for k, (rx, rz, h) in enumerate(((-60, 0, 7), (-40, 70, 6), (-40, -70, 6), (-120, 30, 5), (-110, -40, 5))):
-    part(f"tail_spike{k}", "tail_tip", [2, h, 2], "crystal" if k % 2 == 0 else "crystal_b", rel=(0, 0, -4.5),
-         offset=(0, h / 2 + 2.5, 0), rot=(rx, 0, rz))
+    part(f"tail_spike{k}", "tail_tip", [2, h, 2], "crystal" if k % 2 == 0 else "crystal_b", rel=(0, 0, -3),
+         offset=(0, h / 2 + 2, 0), rot=(rx, 0, rz))
 
 # ======================================================================= palette: indigo fur, pale mane, ice, bone
 ramps = {
@@ -432,7 +441,11 @@ STRANDS = {"id": "strands", "op": "stripes", "axis": "x", "period": 1.3, "width"
            "faces": ["front", "back", "top", "bottom"]}
 STRANDS_Z = {"id": "strands_z", "op": "stripes", "axis": "z", "period": 1.4, "width": 0.3, "shift": -1.5, "wobble": 0.8,
              "faces": ["left", "right"]}
-NOISE = {"id": "clumps", "op": "noise", "scale": 0.9, "amount": 0.7}
+NOISE = {"id": "clumps", "op": "noise", "scale": 0.9, "amount": 0.45}
+STRIPES = {"id": "stripes", "op": "stripes", "axis": "z", "period": 5.2, "width": 0.36, "wobble": 1.5,
+           "wobble_scale": 2.5, "ramp": "fur", "tone": 0.4, "post": True, "faces": ["left", "right", "top"]}
+LEG_STRIPES = {"id": "stripes", "op": "stripes", "axis": "y", "period": 4.2, "width": 0.34, "wobble": 1.0,
+               "ramp": "fur", "tone": 0.4, "post": True, "faces": ["left", "right", "front", "back"]}
 FRINGE_KEY = {"t": "fur:11", "m": "fur:9"}
 MANE_KEY = {"t": "mane:11", "m": "mane:9"}
 
@@ -440,31 +453,43 @@ styles = {
     # body fur: dark saddle, paler blue flanks, strand stripes, frost-tipped clumps
     "fur_body": {"ramp": "fur", "tone": 6.4, "layers": [
         {"id": "saddle", "op": "gradient", "axis": "y", "amount": -1.2},
-        NOISE, STRANDS, STRANDS_Z,
-        {"id": "sheen", "op": "spots", "count": 14, "radius": [0.8, 1.8], "stretch": [1, 0.5, 2], "shift": 1.6,
-         "faces": ["sides", "top"]},
+        NOISE, STRANDS, STRANDS_Z, STRIPES,
+        {"id": "sheen", "op": "spots", "count": 8, "radius": [0.8, 1.6], "stretch": [1, 0.5, 2], "shift": 1.4,
+         "faces": ["top"]},
         FROST,
         {"id": "under", "op": "band", "axis": "y", "from": -1.01, "to": -0.65, "shift": -1.2, "wobble": 0.3,
          "faces": ["sides", "front", "back"]}]},
     # the mid body: its right side is the inside of the torn flank, a dark frozen cavity
     "fur_torn": {"ramp": "fur", "tone": 6.4, "layers": [
         {"id": "saddle", "op": "gradient", "axis": "y", "amount": -1.2},
-        NOISE, STRANDS, STRANDS_Z, FROST,
+        NOISE, STRANDS, STRANDS_Z, dict(STRIPES, faces=["right", "top"]), FROST,
         {"id": "under", "op": "band", "axis": "y", "from": -1.01, "to": -0.65, "shift": -1.2, "wobble": 0.3,
          "faces": ["sides", "front", "back"]},
         {"id": "cavity", "op": "fill", "ramp": "cavity", "tone": 2.0, "faces": ["left"]},
         {"id": "cavity_frost", "op": "spots", "count": 9, "radius": [0.3, 0.8], "ramp": "ice", "tone": 3.0,
          "faces": ["left"]}]},
     "fur": {"ramp": "fur", "tone": 5.6, "layers": [
-        {"id": "dark_root", "op": "gradient", "axis": "y", "amount": 1.0}, NOISE, STRANDS, STRANDS_Z, FROST]},
+        {"id": "dark_root", "op": "gradient", "axis": "y", "amount": 1.0}, NOISE, STRANDS, STRANDS_Z,
+        dict(STRIPES, period=4.0), FROST]},
     "fur_dark": {"ramp": "fur", "tone": 4.4, "layers": [NOISE, dict(STRANDS, shift=-1.4), dict(STRANDS_Z, shift=-1.4),
                                                        dict(FROST, tone=10.4)]},
     "fur_leg": {"ramp": "fur", "tone": 5.4, "brush": {"flow": "y"}, "layers": [
         {"id": "dark_low", "op": "gradient", "axis": "y", "amount": 1.4}, NOISE,
-        STRANDS, STRANDS_Z, dict(FROST, tone=10.6)]},
-    "paw": {"ramp": "fur", "tone": 3.6, "layers": [NOISE,
-                                                  {"id": "pads", "op": "fill", "ramp": "nose", "tone": 1.0,
-                                                   "faces": ["bottom"]}]},
+        STRANDS, STRANDS_Z, LEG_STRIPES, dict(FROST, tone=10.6)]},
+    "paw": {"ramp": "fur", "tone": 3.6, "layers": [NOISE, dict(LEG_STRIPES, period=3.4, faces=["left", "right"]),
+                                                  {"id": "sole", "op": "fill", "ramp": "fur", "tone": 2.6,
+                                                   "faces": ["bottom"]},
+                                                  {"id": "pads", "op": "spots", "count": 6, "radius": [0.7, 1.3],
+                                                   "ramp": "nose", "tone": 1.6, "faces": ["bottom"],
+                                                   "bevel": {"highlight": 1, "shadow": 0}}]},
+    "horn_spike": {"ramp": "horn", "tone": 3.6, "rim": {"light_shift": 1.8, "dark_shift": -1.2}, "brush": {"off": True},
+                   "layers": [{"id": "tip", "op": "band", "axis": "y", "from": 0.45, "to": 1.01, "ramp": "bone",
+                               "tone": 8.6},
+                              {"id": "rings", "op": "stripes", "axis": "y", "period": 1.0, "width": 0.3,
+                               "shift": -1.0}]},
+    # ice-blue fire round the eyes (fully emissive in game)
+    "flame": {"ramp": "glow", "tone": 3.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+              "art_key": {"W": "glow:6", "w": "glow:5", "E": "glow:4", "e": "glow:2"}},
     "claw": {"ramp": "horn", "tone": 3.0, "rim": {"light_shift": 1.6, "dark_shift": -1.0}, "brush": {"off": True},
              "layers": [{"id": "tip", "op": "band", "axis": "z", "from": 0.4, "to": 1.01, "ramp": "bone",
                          "tone": 9.0}]},
@@ -534,6 +559,10 @@ styles = {
         {"id": "dark_top", "op": "gradient", "axis": "y", "amount": -0.8}, NOISE,
         dict(STRANDS, period=1.2, faces=["top"]), dict(STRANDS_Z, faces=["right"]),
         dict(FROST, tone=10.4, faces=["sides", "back"]),
+        {"id": "stripes", "op": "stripes", "axis": "x", "period": 3.2, "width": 0.4, "wobble": 0.8, "ramp": "fur",
+         "tone": 0.4, "post": True, "range": [0.05, 1.0], "faces": ["top", "front"]},
+        {"id": "cheek_stripes", "op": "stripes", "axis": [0, 1, 0.5], "period": 3.4, "width": 0.36, "wobble": 0.8,
+         "ramp": "fur", "tone": 0.4, "post": True, "faces": ["right"]},
         {"id": "skull", "op": "band", "axis": "x", "from": -1.01, "to": -0.08, "wobble": 0.22, "wobble_scale": 0.35,
          "ramp": "bone", "tone": 8.4, "bevel": {"shadow_ramp": "cavity", "shadow_shift": 0, "highlight": 0}},
         {"id": "bone_cracks", "op": "cracks", "scale": 3.0, "width": 0.035, "shift": -2.4, "faces": ["left", "top"]}]},
@@ -691,37 +720,64 @@ FLAT_FUR = add(r("brisket_fringe", -80), r("throat_fringe", -70), r("brisket", -
                r("cheek_fringe_l", 0, 0, -80), r("beard", -60))
 
 # ---------------------------------------------------------------- poses
-# rearing roar: the body pitches up about the hip joints, the hind legs stay planted, the forelegs claw the air,
-# the head is thrown back with the jaw wide open, the mane flared
-REAR = add(r("body", -32), r("chest", -6), r("neck", -24), r("head", -20), r("jaw", 44),
-           leg("f", 1, -62, 40, 30, 22), leg("f", -1, -54, 46, 26, 16),
+FLAMES = ("eye_l_flame", "eye_r_flame", "eye_l_wisp", "eye_r_wisp")
+
+
+def flames(sx=0.0, sy=0.0, sz=0.0):
+    """Scale all four eye flames (offsets from 1)."""
+    return {f: {"s": [sx, sy, sz]} for f in FLAMES}
+
+
+def flicker(length, rate=7.0, amp=1.0):
+    """Ice-fire flicker: the flames stretch, shrink and lick sideways, each on its own beat."""
+    c, c2 = max(1, round(length * rate)), max(1, round(length * rate * 0.6))
+    out = []
+    for k, f in enumerate(FLAMES):
+        ph = 0.13 * k
+        if "wisp" in f:
+            out.append({"part": f, "channel": "scale", "osc": {"amp": [0, 0.3 * amp, 0.28 * amp], "cycles": c,
+                                                               "phase": ph}})
+            out.append({"part": f, "axis": "y", "osc": {"amp": 7 * amp, "cycles": c2, "phase": ph + 0.3}})
+        else:
+            out.append({"part": f, "channel": "scale", "osc": {"amp": [0.16 * amp, 0.32 * amp, 0], "cycles": c,
+                                                               "phase": ph}})
+            out.append({"part": f, "axis": "z", "osc": {"amp": 9 * amp, "cycles": c2, "phase": ph + 0.25}})
+    return out
+
+
+# rearing roar: the body pitches up about the hip joints, the hind legs stay planted, the forelegs rake the air with
+# the claws out, the head is thrown back and the jaw gapes to bare the sabres, the ruff and the eye-fire flare
+REAR = add(r("body", -32), r("chest", -6), r("neck", -26), r("head", -18), r("jaw", 72),
+           leg("f", 1, -66, 44, -24, 24), leg("f", -1, -56, 50, -30, 18),
            leg("b", 1, 30, -6, 8, 3), leg("b", -1, 30, -6, 8, 3),
-           r("tail", 46), r("tail_mid", 14), r("tail_tip", 8), both("brow", z=6), r("ear_l", -30),
+           r("tail", 40), r("tail_mid", 14), r("tail_tip", 8), both("brow", z=6), r("ear_l", -36),
            sc("mane", 0.12, 0.2, 0.1), sc("mane_neck", 0.1, 0.18, 0.08), sc("throat", 0.08, 0.15, 0.05),
-           pos("body", 0, 0, -2))
-CROUCH = add(r("body", 4), r("chest", 5), r("neck", 12), r("head", 8), r("jaw", 6),
-             leg("f", 1, -10, 22, -12), leg("f", -1, -10, 22, -12),
-             leg("b", 1, -14, 24, -10), leg("b", -1, -14, 24, -10),
-             r("tail", -10), r("ear_l", -24, 0, 10), sc("mane", -0.04, -0.06, -0.02))
-SLAM = add(r("body", 5), r("chest", 4), r("neck", 18), r("head", 10), r("jaw", 34),
-           leg("f", 1, -18, 4, 14, 6), leg("f", -1, -18, 4, 14, 6),
+           pos("body", 0, 0, -2), flames(0.3, 0.6, 0.5))
+CROUCH = add(r("body", 4), r("chest", 6), r("neck", 10), r("head", 8), r("jaw", 10),
+             leg("f", 1, -12, 30, -18), leg("f", -1, -12, 30, -18),
+             leg("b", 1, -20, 32, -12), leg("b", -1, -20, 32, -12),
+             r("tail", 16), r("ear_l", -30, 0, 14), sc("mane", -0.04, -0.06, -0.02))
+SLAM = add(r("body", 5), r("chest", 4), r("neck", 16), r("head", 10), r("jaw", 50),
+           leg("f", 1, -22, 4, 18, 8), leg("f", -1, -22, 4, 18, 8),
            leg("b", 1, -8, 12, -4), leg("b", -1, -8, 12, -4), r("tail", 8), r("tail_mid", 6),
-           sc("mane", 0.1, -0.06, 0.08), sc("mane_neck", 0.08, -0.05, 0.06), r("ear_l", -28))
+           sc("mane", 0.1, -0.06, 0.08), sc("mane_neck", 0.08, -0.05, 0.06), r("ear_l", -30), flames(0.2, 0.4, 0.3))
 # collapsed on the belly: forelegs folded forward like a sphinx, hind legs folded under, head down on its cheek
-DOWN = add(r("body", 2), r("chest", 2), r("neck", 10, -8, -10), r("head", 2, -14, -64), r("jaw", 20),
-           leg("f", 1, 62, -138, 76, 10), leg("f", -1, 56, -134, 78, 14),
-           leg("b", 1, -74, 128, -54, 8), leg("b", -1, -74, 128, -54, 8),
+DOWN = add(r("body", 2), r("chest", 2), r("neck", 8, -8, -10), r("head", 0, -14, -64), r("jaw", 20),
+           leg("f", 1, 62, -132, 70, 10), leg("f", -1, 56, -128, 72, 14),
+           leg("b", 1, -70, 118, -40, 8), leg("b", -1, -70, 118, -40, 8),
            r("tail", 14), r("tail_mid", 6, 14), r("tail_tip", 4, 10), r("ear_l", 20, 0, -20),
            sc("mane", 0.04, -0.08, 0.04), FLAT_FUR)
-STUN_BASE = add(r("neck", 22), r("head", 14), r("jaw", 16), r("body", 3),
+STUN_BASE = add(r("neck", 20), r("head", 12), r("jaw", 22), r("body", 3),
                 leg("f", 1, -8, 14, -6, 9), leg("f", -1, -8, 14, -6, 9),
                 leg("b", 1, -6, 10, -4, 6), leg("b", -1, -6, 10, -4, 6),
-                r("tail", -18), r("tail_mid", -10), r("ear_l", 30, 0, -26), both("eye", ch="s", y=-0.45))
+                r("tail", -18), r("tail_mid", -10), r("ear_l", 30, 0, -26), both("eye", ch="s", y=-0.45),
+                flames(-0.4, -0.5, -0.4))
 
 # ---------------------------------------------------------------- clips
 ANIM = {}
 
-# idle: heavy slow breathing, the mane rising and ruffling, a low growl, looking around, tail sway, a blink
+# idle: heavy slow breathing, the ruff rising and ruffling, a low growl, looking around, the bobtail flicking, a blink,
+# the eye-fire flickering
 ANIM["idle"] = {"length": 3.0, "loop": True, "tracks": [
     {"part": "chest", "channel": "scale", "osc": {"amp": [0.022, 0, 0.01], "cycles": 2}},
     {"part": "chest", "axis": "x", "osc": {"amp": -1.2, "cycles": 2, "phase": 0.05}},
@@ -733,16 +789,17 @@ ANIM["idle"] = {"length": 3.0, "loop": True, "tracks": [
     {"part": "head", "axis": "z", "keys": [[0, 0], [0.8, -6], [1.3, -6], [2.0, 5], [2.5, 5], [3.0, 0]], "ease": "smooth"},
     {"part": "neck", "axis": "x", "osc": {"amp": 1.8, "cycles": 2, "phase": 0.3}},
     {"part": "head", "axis": "x", "osc": {"amp": -1.5, "cycles": 2, "phase": 0.4}},
-    {"part": "jaw", "axis": "x", "osc": {"amp": 2.5, "cycles": 2, "phase": 0.5, "bias": 3.5}},
+    {"part": "jaw", "axis": "x", "keys": [[0, 0], [1.5, 0], [1.62, 16, "out"], [1.85, 12], [2.1, 0, "back"], [3.0, 0]]},
+    {"part": "jaw", "axis": "x", "osc": {"amp": 2, "cycles": 2, "phase": 0.5, "bias": 3}},
     {"part": "ear_l", "axis": "z", "keys": [[0, 0], [1.05, 0], [1.1, 14, "out"], [1.3, 0], [2.3, 0], [2.35, 12, "out"],
                                             [2.5, 0]]},
-    {"part": "eye_l", "channel": "scale", "keys": [[0, [0, 0, 0]], [1.95, [0, 0, 0]], [2.0, [0, -0.85, 0]],
-                                                    [2.1, [0, 0, 0]]]},
-    {"part": "eye_r", "channel": "scale", "keys": [[0, [0, 0, 0]], [1.95, [0, 0, 0]], [2.0, [0, -0.85, 0]],
-                                                    [2.1, [0, 0, 0]]]},
-    {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "y", "amp": 6, "cycles": 1, "lag": 0.14,
-                                                          "growth": 1.25}},
-    {"part": "tail", "axis": "x", "osc": {"amp": 2.5, "cycles": 2, "phase": 0.2}},
+    {"part": "eye_l", "channel": "scale", "keys": [[0, [0, 0, 0]], [2.45, [0, 0, 0]], [2.5, [0, -0.85, 0]],
+                                                    [2.6, [0, 0, 0]]]},
+    {"part": "eye_r", "channel": "scale", "keys": [[0, [0, 0, 0]], [2.45, [0, 0, 0]], [2.5, [0, -0.85, 0]],
+                                                    [2.6, [0, 0, 0]]]},
+    {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "y", "amp": 7, "cycles": 2, "lag": 0.16,
+                                                          "growth": 1.3}},
+    {"part": "tail", "axis": "x", "keys": [[0, 0], [0.9, 0], [1.0, 18, "out"], [1.2, 6], [1.5, 0, "back"], [3.0, 0]]},
     {"part": "mane0", "axis": "z", "osc": {"amp": 4, "cycles": 3, "phase": 0.0}},
     {"part": "mane1", "axis": "z", "osc": {"amp": -4, "cycles": 3, "phase": 0.15}},
     {"part": "mane2", "axis": "z", "osc": {"amp": 3, "cycles": 3, "phase": 0.3}},
@@ -752,128 +809,139 @@ ANIM["idle"] = {"length": 3.0, "loop": True, "tracks": [
     {"part": "mane6", "axis": "z", "osc": {"amp": -3, "cycles": 3, "phase": 0.9}},
     {"part": "throat_fringe", "axis": "x", "osc": {"amp": 5, "cycles": 3, "phase": 0.2}},
     {"part": "brisket_fringe", "axis": "x", "osc": {"amp": 5, "cycles": 3, "phase": 0.5}},
-], "_lock": {}}
+] + flicker(3.0), "_lock": {}}
 
-# walk: a heavy lateral-sequence walk (left hind, left fore, right hind, right fore), shoulders rolling
-WALK_F = [(0.0, (-20, -4, 24)), (0.3, (0, 0, 0)), (0.55, (20, 4, -16)), (0.7, (14, 56, 30)), (0.86, (-22, 26, 10))]
-WALK_B = [(0.0, (-18, 4, 14)), (0.3, (0, 0, 0)), (0.55, (22, -10, -10)), (0.7, (8, 38, -6)), (0.86, (-20, 24, -4))]
+# walk: a stalking big cat: head low, shoulder blades rolling, lateral-sequence footfalls, the bobtail swinging
+WALK_F = [(0.0, (-22, -4, 26)), (0.3, (0, 0, 0)), (0.55, (22, 4, -18)), (0.7, (14, 60, 30)), (0.86, (-24, 28, 10))]
+WALK_B = [(0.0, (-20, 4, 14)), (0.3, (0, 0, 0)), (0.55, (24, -10, -12)), (0.7, (8, 40, -6)), (0.86, (-22, 26, -4))]
 L = 1.6
 ANIM["walk"] = {"length": L, "loop": True, "tracks": (
     gait("b", 1, L, 0.0, WALK_B) + gait("f", 1, L, 0.25, WALK_F) + gait("b", -1, L, 0.5, WALK_B)
     + gait("f", -1, L, 0.75, WALK_F) + [
-        {"part": "chest", "axis": "y", "osc": {"amp": 3, "cycles": 1, "phase": 0.1}},
-        {"part": "chest", "axis": "z", "osc": {"amp": 2, "cycles": 1, "phase": 0.1}},
-        {"part": "hips", "axis": "y", "osc": {"amp": -3, "cycles": 1, "phase": 0.85}},
+        {"part": "chest", "axis": "y", "osc": {"amp": 4, "cycles": 1, "phase": 0.1}},
+        {"part": "chest", "axis": "z", "osc": {"amp": 2.5, "cycles": 1, "phase": 0.1}},
+        {"part": "hips", "axis": "y", "osc": {"amp": -4, "cycles": 1, "phase": 0.85}},
         {"part": "hips", "axis": "z", "osc": {"amp": 2, "cycles": 1, "phase": 0.85}},
-        {"part": "neck", "axis": "x", "osc": {"amp": 2.5, "cycles": 2, "phase": 0.15, "bias": 4}},
-        {"part": "head", "axis": "x", "osc": {"amp": -2, "cycles": 2, "phase": 0.2}},
-        {"part": "neck", "axis": "y", "osc": {"amp": -3, "cycles": 1, "phase": 0.15}},
+        {"part": "neck", "axis": "x", "osc": {"amp": 2.5, "cycles": 2, "phase": 0.15, "bias": 8}},
+        {"part": "head", "axis": "x", "osc": {"amp": -2.5, "cycles": 2, "phase": 0.2, "bias": -4}},
+        {"part": "neck", "axis": "y", "osc": {"amp": -4, "cycles": 1, "phase": 0.15}},
         {"part": "jaw", "axis": "x", "osc": {"amp": 1.5, "cycles": 2, "bias": 3}},
-        {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "y", "amp": 7, "cycles": 1, "lag": 0.15,
+        {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "y", "amp": 9, "cycles": 1, "lag": 0.15,
                                                               "growth": 1.25}},
         {"part": "mane", "channel": "scale", "osc": {"amp": [0.02, 0.05, 0.02], "cycles": 2, "phase": 0.3}},
         {"part": "mane_neck", "channel": "scale", "osc": {"amp": [0.02, 0.05, 0.02], "cycles": 2, "phase": 0.35}},
         {"part": "throat_fringe", "axis": "x", "osc": {"amp": 8, "cycles": 2, "phase": 0.4}},
         {"part": "brisket_fringe", "axis": "x", "osc": {"amp": 8, "cycles": 2, "phase": 0.45}},
-    ]), "_lock": {}}
+    ] + flicker(L)), "_lock": {}}
 
-# run: a rotary gallop: the hind pair drives, the spine flexes and extends, a flight phase after the forelegs push
-RUN_F = [(0.0, (-34, -6, 40)), (0.16, (0, 0, 2)), (0.32, (34, 10, -20)), (0.5, (18, 92, 46)), (0.75, (-52, 24, 26))]
-RUN_B = [(0.0, (-34, 6, 26)), (0.16, (0, 0, 0)), (0.32, (40, -18, -16)), (0.5, (14, 58, -8)), (0.75, (-46, 30, 0))]
+# run: a bounding big-cat gallop: the hind legs drive together, the spine coils and uncoils, the forelegs reach far,
+# two flights (gathered after the hind push, extended after the forelegs push)
+RUN_F = [(0.0, (-52, -8, 48)), (0.15, (-10, 0, 8)), (0.3, (42, 14, -24)), (0.48, (24, 100, 50)), (0.75, (-66, 30, 30))]
+RUN_B = [(0.0, (-46, 8, 30)), (0.15, (-4, 0, 0)), (0.3, (50, -22, -18)), (0.48, (16, 66, -10)), (0.75, (-58, 36, 0))]
 L = 0.7
 ANIM["run"] = {"length": L, "loop": True, "tracks": (
-    gait("b", 1, L, 0.0, RUN_B) + gait("b", -1, L, 0.08, RUN_B) + gait("f", -1, L, 0.4, RUN_F)
-    + gait("f", 1, L, 0.48, RUN_F) + [
-        {"part": "body", "axis": "x", "osc": {"amp": 7, "cycles": 1, "phase": 0.5}},
-        {"part": "chest", "axis": "x", "osc": {"amp": 9, "cycles": 1, "phase": 0.55}},
-        {"part": "hips", "axis": "x", "osc": {"amp": -11, "cycles": 1, "phase": 0.45}},
-        {"part": "neck", "axis": "x", "osc": {"amp": -6, "cycles": 1, "phase": 0.6, "bias": 6}},
-        {"part": "head", "axis": "x", "osc": {"amp": 4, "cycles": 1, "phase": 0.65, "bias": -4}},
-        {"part": "jaw", "axis": "x", "osc": {"amp": 4, "cycles": 1, "phase": 0.2, "bias": 10}},
-        {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "x", "amp": 9, "cycles": 1, "lag": 0.15,
-                                                              "growth": 1.2, "bias": 8}},
+    gait("b", 1, L, 0.0, RUN_B) + gait("b", -1, L, 0.06, RUN_B) + gait("f", -1, L, 0.42, RUN_F)
+    + gait("f", 1, L, 0.49, RUN_F) + [
+        {"part": "body", "axis": "x", "osc": {"amp": 9, "cycles": 1, "phase": 0.5}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 12, "cycles": 1, "phase": 0.55}},
+        {"part": "hips", "axis": "x", "osc": {"amp": -15, "cycles": 1, "phase": 0.45}},
+        {"part": "neck", "axis": "x", "osc": {"amp": -7, "cycles": 1, "phase": 0.6, "bias": 6}},
+        {"part": "head", "axis": "x", "osc": {"amp": 5, "cycles": 1, "phase": 0.65, "bias": -5}},
+        {"part": "jaw", "axis": "x", "osc": {"amp": 6, "cycles": 1, "phase": 0.2, "bias": 14}},
+        {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "x", "amp": 12, "cycles": 1, "lag": 0.15,
+                                                              "growth": 1.2, "bias": 10}},
         {"part": "mane", "channel": "scale", "osc": {"amp": [0.03, 0.08, 0.03], "cycles": 1, "phase": 0.6}},
         {"part": "mane_neck", "channel": "scale", "osc": {"amp": [0.03, 0.08, 0.03], "cycles": 1, "phase": 0.65}},
         {"part": "throat_fringe", "axis": "x", "osc": {"amp": -14, "cycles": 1, "phase": 0.6, "bias": -10}},
         {"part": "brisket_fringe", "axis": "x", "osc": {"amp": -14, "cycles": 1, "phase": 0.6, "bias": -10}},
-        {"part": "ear_l", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -30}},
-    ]), "_lock": {"lift": [[0, 0], [0.42, 0], [0.54, 3.2, "out"], [0.64, 1.6], [0.7, 0, "in"]]}}
+        {"part": "ear_l", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -34}},
+    ] + flicker(L, amp=1.3) + [{"part": f, "axis": "y" if "wisp" in f else "x",
+                                "osc": {"amp": 0, "cycles": 1, "bias": -20 if "wisp" not in f else 0}} for f in FLAMES]),
+    "_lock": {"lift": [[0, 0], [0.2, 0], [0.25, 1.6, "out"], [0.29, 0, "in"], [0.5, 0], [0.59, 4.2, "out"],
+                       [0.66, 1.4], [0.7, 0, "in"]]}}
 
-# roar: anticipation crouch, rear up roaring with the forelegs clawing the air, a long trembling hold, slam down
+# roar: a crouch, rear up gaping with the forelegs raking the air, a long trembling hold, slam down
 ANIM["roar"] = timeline(2.0, [
-    (0.0, REST, None), (0.3, CROUCH, "ease"), (0.6, REAR, "out_back"), (1.15, add(REAR, r("neck", -4), r("jaw", 4)), "ease"),
-    (1.38, SLAM, "in"), (1.55, add(r("body", -2), r("neck", 6), r("jaw", 14), sc("mane", 0.04, 0.04, 0.03)), "out"),
+    (0.0, REST, None), (0.3, CROUCH, "ease"), (0.6, REAR, "out_back"), (1.15, add(REAR, r("neck", -4), r("jaw", 6)), "ease"),
+    (1.38, SLAM, "in"), (1.55, add(r("body", -2), r("neck", 6), r("jaw", 20), sc("mane", 0.04, 0.04, 0.03)), "out"),
     (2.0, REST, "ease")],
     extra=[jitter("head", 0.62, 1.15, 2.2, axis=2, seed=1), jitter("jaw", 0.62, 1.15, 3.0, seed=2),
-           jitter("mane", 0.62, 1.15, 0.04, ch="scale", axis=1, seed=3)])
+           jitter("mane", 0.62, 1.15, 0.04, ch="scale", axis=1, seed=3)] + flicker(2.0, amp=1.2))
 
-# frozen: the roar's peak, held (the Mauler is frozen in its tomb mid-roar)
-ANIM["frozen"] = timeline(1.0, [(0.0, REAR, None), (1.0, REAR, None)], loop=True)
+# frozen: the roar's peak, held (frozen in its tomb mid-roar, the eye-fire banked low)
+ANIM["frozen"] = timeline(1.0, [(0.0, add(REAR, flames(-0.7, -0.9, -0.8)), None),
+                                (1.0, add(REAR, flames(-0.7, -0.9, -0.8)), None)], loop=True)
 
-# claw_l: weight onto the right, the left foreleg winds up high and out, swipes down and across, follows through
-CLAW_L_WIND = add(r("body", 0, 0, 5), r("chest", 0, 16, 3), r("neck", -6, -12), r("head", 0, -6, 6), r("jaw", 12),
-                  leg("f", 1, -112, 56, 36, 40), leg("f", -1, 6, 4, -10, 4), r("tail", 6, -10), r("ear_l", -26))
-CLAW_L_HIT = add(r("body", 2, 0, -3), pos("body", 0, 0, 2.5), r("chest", 4, -18, -2), r("neck", 6, 10), r("head", 4, 8, -4),
-                 r("jaw", 26), leg("f", 1, -34, -8, 12, -30), leg("f", -1, -6, 10, -4, 6), r("tail", 0, 12))
-CLAW_L_FOLLOW = add(r("body", 2, 0, -4), pos("body", 0, 0, 2.5), r("chest", 5, -24, -3), r("neck", 8, 16), r("head", 5, 10, -6),
-                    r("jaw", 16), leg("f", 1, -8, 14, -4, -40), leg("f", -1, -6, 10, -4, 6), r("tail", 0, 16))
-ANIM["claw_l"] = timeline(0.8, [(0.0, REST, None), (0.22, CLAW_L_WIND, "out"), (0.3, add(CLAW_L_WIND, leg("f", 1, -6, 6, 4)), "ease"),
-                                (0.4, CLAW_L_HIT, "in"), (0.52, CLAW_L_FOLLOW, "out"), (0.8, REST, "back")])
-ANIM["claw_r"] = timeline(0.8, [(0.0, REST, None), (0.22, mirror_pose(CLAW_L_WIND), "out"),
-                                (0.3, mirror_pose(add(CLAW_L_WIND, leg("f", 1, -6, 6, 4))), "ease"),
-                                (0.4, mirror_pose(CLAW_L_HIT), "in"), (0.52, mirror_pose(CLAW_L_FOLLOW), "out"),
-                                (0.8, REST, "back")])
+# claw_l: weight onto the right, the left paw cocks high and wide with the claws out, a whip-fast rake down and across,
+# follow-through, a bouncy settle
+CLAW_L_WIND = add(r("body", 2, 0, 6), pos("body", 0, 0, -1), r("chest", 2, 18, 3), r("neck", -6, -12), r("head", 0, -6, 6),
+                  r("jaw", 24), leg("f", 1, -118, 58, -34, 42), leg("f", -1, 8, 8, -14, 4), r("tail", 14, -12),
+                  r("ear_l", -32), flames(0.1, 0.2, 0.2))
+CLAW_L_HIT = add(r("body", 3, 0, -3), pos("body", 0, 0, 3), r("chest", 5, -20, -2), r("neck", 6, 10), r("head", 6, 8, -4),
+                 r("jaw", 40), leg("f", 1, -40, -12, -18, -34), leg("f", -1, -6, 10, -4, 6), r("tail", 4, 14),
+                 flames(0.2, 0.4, 0.3))
+CLAW_L_FOLLOW = add(r("body", 2, 0, -4), pos("body", 0, 0, 3), r("chest", 6, -26, -3), r("neck", 8, 16), r("head", 5, 10, -6),
+                    r("jaw", 20), leg("f", 1, -6, 22, 14, -46), leg("f", -1, -6, 10, -4, 6), r("tail", 0, 18))
+CLAW_L = [(0.0, REST, None), (0.2, CLAW_L_WIND, "out"), (0.28, add(CLAW_L_WIND, leg("f", 1, -6, 6, -4)), "ease"),
+          (0.36, CLAW_L_HIT, "in"), (0.48, CLAW_L_FOLLOW, "out"), (0.8, REST, "back")]
+ANIM["claw_l"] = timeline(0.8, CLAW_L, extra=flicker(0.8))
+ANIM["claw_r"] = timeline(0.8, [(t, mirror_pose(p), e) for t, p, e in CLAW_L], extra=flicker(0.8))
 
-# fury: a loop of lunging bites: gather, spring forward with the jaw wide, snap shut, land with a squash
-FURY_GATHER = add(r("body", 5), r("chest", 5), r("neck", 8), r("head", 4), r("jaw", 6), pos("body", 0, 0, -1),
-                  leg("f", 1, 8, 22, -30), leg("f", -1, 8, 22, -30), leg("b", 1, -18, 30, -12), leg("b", -1, -18, 30, -12),
-                  sc("mane", -0.03, -0.06, -0.02), r("ear_l", -30))
-FURY_LUNGE = add(r("body", -8), pos("body", 0, 0, 4), r("neck", -8), r("head", -12), r("jaw", 46),
-                 leg("f", 1, -44, -6, 40), leg("f", -1, -40, -8, 36), leg("b", 1, 34, -10, 26), leg("b", -1, 34, -10, 26),
-                 sc("mane", 0.06, 0.1, 0.04), r("ear_l", -36), r("tail", 14))
-FURY_BITE = add(r("body", 1), pos("body", 0, 0, 4.5), r("neck", 12), r("head", 14), r("jaw", -2),
-                leg("f", 1, -24, 0, 22), leg("f", -1, -22, 0, 20), leg("b", 1, 22, -4, 12), leg("b", -1, 22, -4, 12),
-                r("ear_l", -36), r("tail", 8))
-FURY_LAND = add(r("body", 6), pos("body", 0, 0, 2), r("chest", 4), r("neck", 10), r("head", 6), r("jaw", 10),
-                leg("f", 1, -8, 24, -14), leg("f", -1, -8, 24, -14), leg("b", 1, -6, 18, -10), leg("b", -1, -6, 18, -10),
-                sc("mane", 0.08, -0.08, 0.06), r("ear_l", -30))
-ANIM["fury"] = timeline(0.5, [(0.0, FURY_GATHER, None), (0.12, FURY_LUNGE, "out"), (0.2, FURY_BITE, "in"),
+# fury: a loop of pouncing bites: coil low, spring forward stretched out with the claws reaching and the jaw gaping,
+# the sabres stab down as the jaw snaps shut, land in a squash
+FURY_GATHER = add(r("body", 5), r("chest", 6), r("neck", 6), r("head", 4), r("jaw", 12), pos("body", 0, 0, -1.5),
+                  leg("f", 1, 6, 30, -36), leg("f", -1, 6, 30, -36), leg("b", 1, -26, 40, -14), leg("b", -1, -26, 40, -14),
+                  sc("mane", -0.03, -0.06, -0.02), r("ear_l", -34), r("tail", 20))
+FURY_LUNGE = add(r("body", -10), pos("body", 0, 0, 6), r("neck", -10), r("head", -16), r("jaw", 80),
+                 leg("f", 1, -72, -10, -22), leg("f", -1, -66, -12, -26), leg("b", 1, 42, -14, 34), leg("b", -1, 42, -14, 34),
+                 sc("mane", 0.06, 0.1, 0.04), r("ear_l", -40), r("tail", 12), flames(0.3, 0.6, 0.5))
+FURY_BITE = add(r("body", 4), pos("body", 0, 0, 6.5), r("neck", 14), r("head", 22), r("jaw", -2),
+                leg("f", 1, -38, 0, 30), leg("f", -1, -34, 0, 28), leg("b", 1, 14, 8, 4), leg("b", -1, 14, 8, 4),
+                r("ear_l", -40), r("tail", 4), flames(0.2, 0.4, 0.3))
+FURY_LAND = add(r("body", 7), pos("body", 0, 0, 2), r("chest", 5), r("neck", 10), r("head", 6), r("jaw", 18),
+                leg("f", 1, -10, 30, -18), leg("f", -1, -10, 30, -18), leg("b", 1, -16, 30, -10), leg("b", -1, -16, 30, -10),
+                sc("mane", 0.08, -0.08, 0.06), r("ear_l", -34), r("tail", 14))
+ANIM["fury"] = timeline(0.5, [(0.0, FURY_GATHER, None), (0.13, FURY_LUNGE, "out"), (0.21, FURY_BITE, "in"),
                               (0.32, FURY_LAND, "out"), (0.5, FURY_GATHER, "ease")], loop=True,
                         extra=[{"parts": ["tail", "tail_mid", "tail_tip"],
-                                "wave": {"axis": "x", "amp": 7, "cycles": 1, "lag": 0.12, "growth": 1.2}}],
-                        lift=[[0, 0], [0.06, 0.4], [0.13, 4.5, "out"], [0.2, 3.0], [0.3, 0, "in"], [0.5, 0]])
+                                "wave": {"axis": "x", "amp": 8, "cycles": 1, "lag": 0.12, "growth": 1.2}}]
+                        + flicker(0.5, rate=8.0, amp=1.2),
+                        lift=[[0, 0], [0.07, 0.6], [0.14, 7.0, "out"], [0.22, 4.0], [0.3, 0, "in"], [0.5, 0]])
 
-# stunned: head low and swaying, jaw slack, wobbling on splayed legs, eyes half shut
+# stunned: head low and swaying, jaw slack, wobbling on splayed legs, eyes half shut, the eye-fire guttering
 ANIM["stunned"] = timeline(1.5, [(0.0, STUN_BASE, None), (1.5, STUN_BASE, None)], loop=True, extra=[
     {"part": "body", "axis": "z", "osc": {"amp": 4, "cycles": 1}},
     {"part": "body", "axis": "y", "osc": {"amp": 3, "cycles": 1, "phase": 0.25}},
     {"part": "neck", "axis": "y", "osc": {"amp": 12, "cycles": 1, "phase": 0.1}},
     {"part": "head", "axis": "z", "osc": {"amp": 10, "cycles": 1, "phase": 0.3}},
     {"part": "neck", "axis": "x", "osc": {"amp": 4, "cycles": 2, "phase": 0.2}},
-    {"part": "jaw", "axis": "x", "osc": {"amp": 5, "cycles": 2, "phase": 0.35}},
+    {"part": "jaw", "axis": "x", "osc": {"amp": 6, "cycles": 2, "phase": 0.35}},
     {"part": "front_leg_l", "axis": "z", "osc": {"amp": -3, "cycles": 1}},
     {"part": "front_leg_r", "axis": "z", "osc": {"amp": -3, "cycles": 1}},
     {"part": "back_leg_l", "axis": "z", "osc": {"amp": -2.5, "cycles": 1}},
     {"part": "back_leg_r", "axis": "z", "osc": {"amp": -2.5, "cycles": 1}},
     {"parts": ["tail", "tail_mid", "tail_tip"], "wave": {"axis": "y", "amp": 4, "cycles": 1, "lag": 0.18}},
     {"part": "ear_l", "axis": "z", "osc": {"amp": 6, "cycles": 2, "phase": 0.4}},
-])
+] + flicker(1.5, rate=4.0, amp=0.8))
 
-# wake: frozen mid-roar, the ice cracks, it crashes down onto its belly, lies stunned, pushes up, shakes off the ice
-SIT = add(r("body", -18), r("chest", 4), r("neck", 8), r("head", 6), r("jaw", 10),
-          leg("f", 1, 18, -4, 4), leg("f", -1, 18, -4, 4), leg("b", 1, -60, 112, -40, 6), leg("b", -1, -60, 112, -40, 6),
+# wake: frozen mid-roar, the ice cracks, it crashes down onto its belly, lies stunned, the eye-fire flares up, it pushes
+# up and shakes off the ice
+SIT = add(r("body", -18), r("chest", 4), r("neck", 8), r("head", 6), r("jaw", 14),
+          leg("f", 1, 18, -4, 4), leg("f", -1, 18, -4, 4), leg("b", 1, -60, 104, -30, 6), leg("b", -1, -60, 104, -30, 6),
           r("tail", -16), r("tail_mid", -8))
 SHAKE = []
 for k, (t, a) in enumerate([(2.24, 9), (2.33, -11), (2.42, 10), (2.51, -9), (2.6, 7), (2.69, -5), (2.78, 3)]):
     SHAKE.append((t, add(r("chest", 0, 0, a), r("hips", 0, 0, -a * 0.7), r("neck", -4, -a * 1.4, a * 0.8),
                          r("head", 0, -a * 1.2, a * 1.4), r("tail", 0, a * 2.2), r("tail_mid", 0, a * 1.6),
                          r("ear_l", 0, 0, a * 2), sc("mane", 0.1, 0.12, 0.08), sc("mane_neck", 0.08, 0.12, 0.06),
-                         r("jaw", 8)), "ease"))
+                         r("jaw", 12)), "ease"))
+DIM = flames(-0.7, -0.9, -0.8)
 ANIM["wake"] = timeline(3.0, [
-    (0.0, REAR, None), (0.3, REAR, None),
-    (0.58, add(r("body", 10), r("chest", 4), r("neck", 18), r("head", 8), r("jaw", 26), leg("f", 1, -30, 10, 20, 8),
-               leg("f", -1, -26, 8, 18, 8), leg("b", 1, -10, 18, -6), leg("b", -1, -10, 18, -6), r("tail", 10)), "in"),
-    (0.78, DOWN, "out"), (0.9, add(DOWN, r("neck", -4), r("head", -3)), "ease"), (1.45, DOWN, "ease"),
+    (0.0, add(REAR, DIM), None), (0.3, add(REAR, DIM), None),
+    (0.58, add(r("body", 10), r("chest", 4), r("neck", 18), r("head", 8), r("jaw", 36), leg("f", 1, -30, 10, 20, 8),
+               leg("f", -1, -26, 8, 18, 8), leg("b", 1, -10, 18, -6), leg("b", -1, -10, 18, -6), r("tail", 10), DIM), "in"),
+    (0.78, add(DOWN, DIM), "out"), (0.9, add(DOWN, r("neck", -4), r("head", -3), DIM), "ease"),
+    (1.3, add(DOWN, DIM), "ease"), (1.45, add(DOWN, flames(0.4, 0.8, 0.6)), "out_back"), (1.55, DOWN, "ease"),
     (1.7, add(DOWN, r("neck", -26, 14, 0), r("head", -14, 10, 20), r("jaw", -10)), "ease"),
     (1.95, SIT, "out"), (2.15, add(CROUCH, r("body", -2)), "ease")] + SHAKE + [(3.0, REST, "back")],
     extra=[jitter("body", 0.12, 0.3, 0.8, step=0.04, axis=2, seed=4), jitter("head", 0.12, 0.3, 1.5, step=0.04, axis=1, seed=5),
@@ -884,27 +952,31 @@ ANIM["wake"] = timeline(3.0, [
            {"part": "chest", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.8, [0, 0, 0]], [1.0, [0.04, 0, 0.02]],
                                                           [1.15, [0, 0, 0]], [1.3, [0.04, 0, 0.02]], [1.45, [0, 0, 0]],
                                                           [3.0, [0, 0, 0]]]},
-           {"part": "front_paw_l", "axis": "x", "keys": [[0, 0], [1.05, 0], [1.12, -18, "out"], [1.25, 0]]}])
+           {"part": "front_paw_l", "axis": "x", "keys": [[0, 0], [1.05, 0], [1.12, -18, "out"], [1.25, 0]]}]
+    + flicker(3.0))
 
-# death: hit, a last howl, staggers, the forelegs give, crashes down, rolls onto its right flank, a last breath
-DEATH_HOWL = add(r("body", -6), r("chest", -4), r("neck", -24), r("head", -14), r("jaw", 38),
-                 leg("f", 1, -22, 18, 10), leg("f", -1, -12, 10, 6), r("tail", 12), r("ear_l", -30))
-DEATH_STAGGER = add(r("body", 0, 8, -7), r("neck", 6, -8), r("head", 10, 0, 10), r("jaw", 24),
+# death: hit, a last gaping howl, staggers, the forelegs give, crashes down, rolls onto its left flank (the bare ribs
+# and the skull face up), a last breath; the eye-fire gutters out
+DEATH_HOWL = add(r("body", -6), r("chest", -4), r("neck", -24), r("head", -14), r("jaw", 62),
+                 leg("f", 1, -22, 18, 10), leg("f", -1, -12, 10, 6), r("tail", 12), r("ear_l", -30), flames(0.3, 0.6, 0.5))
+DEATH_STAGGER = add(r("body", 0, 8, -7), r("neck", 6, -8), r("head", 10, 0, 10), r("jaw", 30),
                     leg("f", -1, -8, 10, -2, 6), leg("f", 1, -16, 46, -20, 4), leg("b", -1, -4, 10, -4),
                     leg("b", 1, -10, 22, -8), r("tail", -4))
-DEATH_CRASH = add(r("body", 8, 6, -6), r("chest", 4), r("neck", 12, -6, 0), r("head", 6, 0, -30), r("jaw", 18),
-                  leg("f", 1, 52, -128, 70, 16), leg("f", -1, 58, -134, 70, 20),
-                  leg("b", 1, -12, 26, -10, 4), leg("b", -1, -16, 32, -12, 6), r("tail", -14))
-DEATH_ROLL = add(r("body", 4, 6, -40), r("neck", -12, 14, -14), r("head", -6, 12, -40), r("jaw", 22),
+DEATH_CRASH = add(r("body", 8, 6, -6), r("chest", 4), r("neck", 12, -6, 0), r("head", 6, 0, -30), r("jaw", 22),
+                  leg("f", 1, 52, -122, 64, 16), leg("f", -1, 58, -128, 64, 20),
+                  leg("b", 1, -12, 26, -10, 4), leg("b", -1, -16, 32, -12, 6), r("tail", -14), flames(-0.3, -0.4, -0.3))
+DEATH_ROLL = add(r("body", 4, 6, -40), r("neck", -12, 14, -14), r("head", -6, 12, -40), r("jaw", 28),
                  leg("f", 1, 24, -30, 10, -46), leg("f", -1, 10, -14, 8, 28),
                  leg("b", 1, -24, 40, -16, -44), leg("b", -1, -14, 22, -8, 26),
-                 r("tail", 6, -14), r("tail_mid", 2, -16), r("tail_tip", 2, -10), r("ear_l", 20, 0, -20), FLAT_FUR)
-DEATH_END = add(DEATH_ROLL, r("body", 0, 0, 3), r("jaw", 6), sc("chest", -0.03, 0, -0.02), sc("mane", -0.04, -0.08, -0.03),
-                both("eye", ch="s", y=-0.85))
+                 r("tail", 6, -14), r("tail_mid", 2, -16), r("tail_tip", 2, -10), r("ear_l", 20, 0, -20), FLAT_FUR,
+                 flames(-0.6, -0.7, -0.6))
+DEATH_END = add(DEATH_ROLL, r("body", 0, 0, 3), r("jaw", 8), sc("chest", -0.03, 0, -0.02), sc("mane", -0.04, -0.08, -0.03),
+                both("eye", ch="s", y=-0.85), flames(-0.35, -0.28, -0.38))
 ANIM["death"] = timeline(2.0, [
     (0.0, REST, None), (0.12, DEATH_HOWL, "out"), (0.42, DEATH_STAGGER, "ease"), (0.72, DEATH_CRASH, "in"),
     (0.86, add(DEATH_CRASH, r("neck", -8), r("head", -4)), "out"), (1.18, DEATH_ROLL, "in"),
-    (1.32, add(DEATH_ROLL, r("body", 0, 0, 5)), "out"), (1.7, DEATH_END, "ease"), (2.0, DEATH_END, None)])
+    (1.32, add(DEATH_ROLL, r("body", 0, 0, 5)), "out"), (1.7, DEATH_END, "ease"), (2.0, DEATH_END, None)],
+    extra=flicker(2.0, rate=5.0, amp=0.6))
 
 
 # ---------------------------------------------------------------- ground lock
@@ -961,7 +1033,8 @@ spec = {
     "budget": {"tris": 4000, "colors": 96},
     "light": light,
     "brush": brush,
-    "minecraft": {"fps": 20, "glow_parts": ["eye_l", "eye_r", "frost_core"]},
+    "minecraft": {"fps": 20, "glow_parts": ["eye_l", "eye_r", "frost_core", "eye_l_flame", "eye_r_flame", "eye_l_wisp",
+                                            "eye_r_wisp"]},
     "anim_ground_tolerance": 0.5,
     "render": {"background": "#232838", "hero": [-40, 16], "shadow": 0.5},
     "palette": {"ramps": ramps},
