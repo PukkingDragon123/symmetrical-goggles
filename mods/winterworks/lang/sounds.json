@@ -172,5 +172,7 @@
   "subtitles.winterworks.block.chorus_cocoon.crack": "Chorus Cocoon cracks",
   "subtitles.winterworks.block.chorus_cocoon.hatch": "Chorus Cocoon hatches",
   "subtitles.winterworks.block.meteorite.hum": "Meteorite hums",
-  "subtitles.winterworks.effect.recall.teleport": "Teleported home"
+  "subtitles.winterworks.effect.recall.teleport": "Teleported home",
+  "subtitles.winterworks.entity.falling_meteorite.whistle": "Meteor whistles",
+  "subtitles.winterworks.entity.falling_meteorite.impact": "Meteor crashes"
 }
