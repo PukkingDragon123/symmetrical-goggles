@@ -1,0 +1,1709 @@
+{
+ "name": "Soul Bull Skull",
+ "description": "The Soul Bull's skull, a Winterworks block: a heavy charred-black bull skull with big forward-sweeping horns, lying on its jaw; its eye sockets burn with soul fire when it is lit (eye_fire, glow). Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 600,
+  "colors": 64
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.75,
+  "gradient": 0.45,
+  "ao": 0.5,
+  "ao_height": 6.0
+ },
+ "brush": {
+  "flow": "long",
+  "length": 1.6,
+  "width": 0.6,
+  "rough": 0.55,
+  "overshoot": 0.25,
+  "textures": {
+   "bone": "organic",
+   "horn": "wood",
+   "leather": "leather",
+   "crimson": "cloth",
+   "gold": "metal",
+   "iron": "metal",
+   "diamond": "crystal"
+  }
+ },
+ "minecraft": {
+  "fps": 20,
+  "glow_parts": [
+   "eye_fire_l",
+   "eye_fire_l_front",
+   "eye_fire_r",
+   "eye_fire_r_front"
+  ],
+  "glow_ramps": [
+   "soul"
+  ]
+ },
+ "render": {
+  "background": "#7a6650",
+  "hero": [
+   -34,
+   22
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "bone": [
+    "#0b0b0c",
+    "#111112",
+    "#171718",
+    "#1d1d1e",
+    "#232424",
+    "#2a2b2b",
+    "#323333",
+    "#3b3d3d",
+    "#464949",
+    "#525656",
+    "#606464",
+    "#727675"
+   ],
+   "horn": [
+    "#0a0909",
+    "#110f0f",
+    "#181515",
+    "#201c1b",
+    "#292422",
+    "#332d2a",
+    "#3e3733",
+    "#4b423d",
+    "#5a4f49",
+    "#6c615a"
+   ],
+   "void": [
+    "#020103",
+    "#050307",
+    "#09060c",
+    "#0e0a12"
+   ],
+   "soul": [
+    "#071433",
+    "#0c2a63",
+    "#11479a",
+    "#1769c4",
+    "#1f92e0",
+    "#38bdf2",
+    "#7ce0fb",
+    "#c4f6ff",
+    "#ffffff"
+   ]
+  }
+ },
+ "styles": {
+  "bone": {
+   "ramp": "bone",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.6,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.7
+    },
+    {
+     "id": "soot",
+     "op": "patches",
+     "scale": 1.1,
+     "threshold": 0.55,
+     "shift": -1.2
+    },
+    {
+     "id": "pits",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.5
+     ],
+     "shift": -1.6
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.8
+    },
+    {
+     "id": "sheen",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.0
+    }
+   ]
+  },
+  "bone_dark": {
+   "ramp": "bone",
+   "tone": 3.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.6,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.7
+    },
+    {
+     "id": "soot",
+     "op": "patches",
+     "scale": 1.1,
+     "threshold": 0.55,
+     "shift": -1.2
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.8
+    }
+   ]
+  },
+  "rib": {
+   "ramp": "bone",
+   "tone": 4.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.8,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "long"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.7
+    },
+    {
+     "id": "rib_edge",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -0.6
+    },
+    {
+     "id": "sheen",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.0
+    }
+   ]
+  },
+  "skull": {
+   "ramp": "bone",
+   "tone": 5.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.8,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.7
+    },
+    {
+     "id": "soot",
+     "op": "patches",
+     "scale": 1.1,
+     "threshold": 0.55,
+     "shift": -1.2
+    },
+    {
+     "id": "pits",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.5
+     ],
+     "shift": -1.6
+    },
+    {
+     "id": "sutures",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.04,
+     "shift": -2.0
+    },
+    {
+     "id": "sheen",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.0
+    }
+   ]
+  },
+  "brow": {
+   "ramp": "bone",
+   "tone": 5.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 3.0,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "x"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.7
+    },
+    {
+     "id": "soot",
+     "op": "patches",
+     "scale": 1.1,
+     "threshold": 0.55,
+     "shift": -1.2
+    },
+    {
+     "id": "sheen",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.4,
+     "shift": 2.0
+    }
+   ]
+  },
+  "socket": {
+   "ramp": "void",
+   "tone": 1.4,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "glow_rim",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.4,
+     "ramp": "soul",
+     "tone": 1.0,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    }
+   ]
+  },
+  "void": {
+   "ramp": "void",
+   "tone": 1.0,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "teeth": {
+   "ramp": "bone",
+   "tone": 9.0,
+   "light": 0.3,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "bone:9",
+    "T": "bone:11",
+    "r": "bone:5"
+   }
+  },
+  "horn": {
+   "ramp": "horn",
+   "tone": 3.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "long",
+    "length": 2.2
+   },
+   "layers": [
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -1.2
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 3,
+     "inset": 1,
+     "density": 0.6,
+     "shift": 2.0
+    }
+   ]
+  },
+  "horn_tip": {
+   "ramp": "horn",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "long"
+   },
+   "layers": [
+    {
+     "id": "tip",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.4
+    }
+   ]
+  },
+  "flame": {
+   "ramp": "soul",
+   "tone": 4.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "W": "soul:8",
+    "w": "soul:7",
+    "c": "soul:6",
+    "E": "soul:5",
+    "e": "soul:4",
+    "b": "soul:3",
+    "k": "soul:2"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "skull",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    14.6341,
+    -6.0
+   ],
+   "rotation": [
+    34.0,
+    0.0,
+    0.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "skull_cranium",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    10.0,
+    6.0,
+    7.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    2.0
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "skull_poll",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    14.0,
+    3.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    3.25,
+    0.25
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "skull_frontal",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    10.0,
+    2.0,
+    8.0
+   ],
+   "pivot": [
+    0.0,
+    3.75,
+    4.75
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "skull_occiput",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    7.5,
+    5.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    -1.75
+   ],
+   "style": "bone_dark"
+  },
+  {
+   "id": "skull_face",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    7.5,
+    5.0,
+    7.5
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    10.75
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "skull_nasal",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    4.5,
+    1.0,
+    9.5
+   ],
+   "pivot": [
+    0.0,
+    3.625,
+    12.0
+   ],
+   "rotation": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_muzzle",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    6.0,
+    4.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.25,
+    16.0
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "skull_nose",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    7.5,
+    4.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -0.0,
+    19.0
+   ],
+   "style": "skull",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "center",
+      "art": [
+       ".vv..vv.",
+       "vVVvvVVv",
+       "vVVvvVVv",
+       ".vv..vv."
+      ],
+      "key": {
+       "v": "void:2",
+       "V": "void:0"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "skull_palate",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    6.0,
+    0.5,
+    12.5
+   ],
+   "pivot": [
+    0.0,
+    -2.0,
+    12.5
+   ],
+   "style": "void"
+  },
+  {
+   "id": "skull_orbit_l",
+   "shape": "bone",
+   "parent": "skull",
+   "pivot": [
+    5.375,
+    2.0,
+    6.125
+   ],
+   "rotation": [
+    0.0,
+    -38.0,
+    18.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "skull_orbit_l_top",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    2.75,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_bot",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -2.75,
+    -0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_fr",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    2.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    2.75
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_bk",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    2.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -2.75
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_c0",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    1.9445,
+    1.9445
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_c1",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    1.9445,
+    -1.9445
+   ],
+   "rotation": [
+    -45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_c2",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -1.9445,
+    1.9445
+   ],
+   "rotation": [
+    -45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_c3",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -1.9445,
+    -1.9445
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_l_floor",
+   "shape": "box",
+   "parent": "skull_orbit_l",
+   "size": [
+    0.5,
+    5.0,
+    5.0
+   ],
+   "pivot": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "skull_cheek_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    1.0,
+    3.0,
+    7.5
+   ],
+   "pivot": [
+    4.0,
+    -0.5,
+    10.25
+   ],
+   "rotation": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "bone_dark"
+  },
+  {
+   "id": "skull_teeth_l",
+   "shape": "card",
+   "parent": "skull",
+   "pivot": [
+    3.25,
+    -2.25,
+    12.5
+   ],
+   "offset": [
+    0.0,
+    -0.9375,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    "tTtTtTtTtTtT",
+    "tttttttttttt",
+    "r.rr.rr.rr.r"
+   ]
+  },
+  {
+   "id": "skull_orbit_r",
+   "shape": "bone",
+   "parent": "skull",
+   "pivot": [
+    -5.375,
+    2.0,
+    6.125
+   ],
+   "rotation": [
+    0.0,
+    38.0,
+    -18.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "skull_orbit_r_top",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_bot",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    -2.75,
+    -0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_fr",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    2.5,
+    1.0
+   ],
+   "pivot": [
+    -0.0,
+    0.0,
+    2.75
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_bk",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    2.5,
+    1.0
+   ],
+   "pivot": [
+    -0.0,
+    0.0,
+    -2.75
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_c0",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    1.9445,
+    1.9445
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_c1",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    1.9445,
+    -1.9445
+   ],
+   "rotation": [
+    -45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_c2",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    -1.9445,
+    1.9445
+   ],
+   "rotation": [
+    -45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_c3",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    -1.9445,
+    -1.9445
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "skull_orbit_r_floor",
+   "shape": "box",
+   "parent": "skull_orbit_r",
+   "size": [
+    0.5,
+    5.0,
+    5.0
+   ],
+   "pivot": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "skull_cheek_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    1.0,
+    3.0,
+    7.5
+   ],
+   "pivot": [
+    -4.0,
+    -0.5,
+    10.25
+   ],
+   "rotation": [
+    0.0,
+    -6.0,
+    0.0
+   ],
+   "style": "bone_dark"
+  },
+  {
+   "id": "skull_teeth_r",
+   "shape": "card",
+   "parent": "skull",
+   "pivot": [
+    -3.25,
+    -2.25,
+    12.5
+   ],
+   "offset": [
+    0.0,
+    -0.9375,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    "tTtTtTtTtTtT",
+    "tttttttttttt",
+    "r.rr.rr.rr.r"
+   ]
+  },
+  {
+   "id": "jaw",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    5.5,
+    2.5,
+    16.0
+   ],
+   "pivot": [
+    0.0,
+    -2.75,
+    2.25
+   ],
+   "offset": [
+    0.0,
+    -0.75,
+    8.125
+   ],
+   "rotation": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "jaw_ramus",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    7.0,
+    4.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    0.75
+   ],
+   "style": "bone_dark"
+  },
+  {
+   "id": "jaw_tongue",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    4.5,
+    0.5,
+    12.5
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    8.75
+   ],
+   "style": "void"
+  },
+  {
+   "id": "jaw_incisors",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.5,
+    16.25
+   ],
+   "offset": [
+    0.0,
+    0.9375,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "xy",
+   "art": [
+    "tTtTtTtT",
+    "tttttttt",
+    ".r.rr.r."
+   ]
+  },
+  {
+   "id": "jaw_teeth_l",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    2.5,
+    0.5,
+    9.375
+   ],
+   "offset": [
+    0.0,
+    0.9375,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    ".r.rr.rr.r..",
+    "tttttttttttt",
+    "tTtTtTtTtTtT"
+   ]
+  },
+  {
+   "id": "jaw_teeth_r",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    -2.5,
+    0.5,
+    9.375
+   ],
+   "offset": [
+    0.0,
+    0.9375,
+    0.0
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    ".r.rr.rr.r..",
+    "tttttttttttt",
+    "tTtTtTtTtTtT"
+   ]
+  },
+  {
+   "id": "horn_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    4.5,
+    4.5,
+    4.5
+   ],
+   "pivot": [
+    6.25,
+    3.25,
+    0.25
+   ],
+   "offset": [
+    0.0,
+    -1.125,
+    0.0
+   ],
+   "rotation": [
+    176.81,
+    -33.476,
+    -78.633
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_l_1",
+   "shape": "box",
+   "parent": "horn_l",
+   "size": [
+    4.0,
+    5.0,
+    4.0
+   ],
+   "pivot": [
+    -0.0,
+    -4.5,
+    0.0001
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    39.435,
+    -0.618,
+    -11.336
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_l_2",
+   "shape": "box",
+   "parent": "horn_l_1",
+   "size": [
+    2.5,
+    4.5,
+    2.5
+   ],
+   "pivot": [
+    -0.0,
+    -5.0,
+    0.0001
+   ],
+   "offset": [
+    0.0,
+    -1.625,
+    0.0
+   ],
+   "rotation": [
+    36.96,
+    27.39,
+    2.312
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_l_3",
+   "shape": "box",
+   "parent": "horn_l_2",
+   "size": [
+    2.0,
+    4.5,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    -4.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.75,
+    0.0
+   ],
+   "rotation": [
+    143.847,
+    -38.433,
+    -155.656
+   ],
+   "style": "horn_tip"
+  },
+  {
+   "id": "horn_l_boss",
+   "shape": "box",
+   "parent": "horn_l",
+   "size": [
+    5.0,
+    5.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    4.5,
+    4.5,
+    4.5
+   ],
+   "pivot": [
+    -6.25,
+    3.25,
+    0.25
+   ],
+   "offset": [
+    0.0,
+    -1.125,
+    0.0
+   ],
+   "rotation": [
+    176.81,
+    33.476,
+    78.633
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r_1",
+   "shape": "box",
+   "parent": "horn_r",
+   "size": [
+    4.0,
+    5.0,
+    4.0
+   ],
+   "pivot": [
+    0.0,
+    -4.5,
+    0.0001
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    39.435,
+    0.618,
+    11.336
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r_2",
+   "shape": "box",
+   "parent": "horn_r_1",
+   "size": [
+    2.5,
+    4.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -5.0,
+    0.0001
+   ],
+   "offset": [
+    0.0,
+    -1.625,
+    0.0
+   ],
+   "rotation": [
+    143.04,
+    27.39,
+    177.688
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "horn_r_3",
+   "shape": "box",
+   "parent": "horn_r_2",
+   "size": [
+    2.0,
+    4.5,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    -4.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.75,
+    0.0
+   ],
+   "rotation": [
+    -36.153,
+    -38.433,
+    24.344
+   ],
+   "style": "horn_tip"
+  },
+  {
+   "id": "horn_r_boss",
+   "shape": "box",
+   "parent": "horn_r",
+   "size": [
+    5.0,
+    5.0,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "horn"
+  },
+  {
+   "id": "eye_fire",
+   "shape": "bone",
+   "parent": "skull",
+   "pivot": [
+    0.0,
+    2.125,
+    6.125
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "eye_fire_l",
+   "shape": "card",
+   "parent": "eye_fire",
+   "pivot": [
+    5.5457,
+    -2.4353,
+    -0.431
+   ],
+   "offset": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "rotation": [
+    -0.0,
+    -38.0,
+    18.0
+   ],
+   "style": "flame",
+   "plane": "yz",
+   "art": [
+    ".......k.",
+    "......ke.",
+    "......ee.",
+    "......ee.",
+    "......ee.",
+    "......ee.",
+    "k....kbbk",
+    "e.kkkbEbe",
+    "bbbbbEEbb",
+    "bEcccwcEb",
+    "bEcwwwcEb",
+    "bEcwWwcEb",
+    "bEcwWwcEb",
+    "bEcwWwcEb"
+   ]
+  },
+  {
+   "id": "eye_fire_l_front",
+   "shape": "card",
+   "parent": "eye_fire_l",
+   "pivot": [
+    1.5,
+    0.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "yz",
+   "art": [
+    "..k....",
+    "..ek...",
+    "..ee...",
+    "..ee...",
+    ".kbbkk.",
+    ".ebEbe.",
+    "bEcwcEb",
+    "bEcwcEb",
+    "bEcwcEb",
+    "bEcwcEb"
+   ]
+  },
+  {
+   "id": "eye_fire_r",
+   "shape": "card",
+   "parent": "eye_fire",
+   "pivot": [
+    -5.5457,
+    -2.4353,
+    -0.431
+   ],
+   "offset": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "rotation": [
+    -0.0,
+    38.0,
+    -18.0
+   ],
+   "style": "flame",
+   "plane": "yz",
+   "art": [
+    ".......E.",
+    ".....k...",
+    ".....ek..",
+    ".....ee..",
+    "....kbbk.",
+    "....ebbe.",
+    "....ebbe.",
+    "..kkbEbe.",
+    ".bbbEEbb.",
+    "bEccwcEb.",
+    "bEcwWwcEb",
+    "bEcwWwcEb",
+    "bEcwWwcEb",
+    "bEcwWwcEb"
+   ]
+  },
+  {
+   "id": "eye_fire_r_front",
+   "shape": "card",
+   "parent": "eye_fire_r",
+   "pivot": [
+    -1.5,
+    0.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "yz",
+   "art": [
+    "..k....",
+    "..e....",
+    "..ek...",
+    "..ee...",
+    ".kbbkk.",
+    ".ebEbe.",
+    "bEcwcEb",
+    "bEcwcEb",
+    "bEcwcEb",
+    "bEcwcEb"
+   ]
+  },
+  {
+   "id": "frag_vert",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    3.0,
+    1.5,
+    2.0
+   ],
+   "pivot": [
+    5.5,
+    -1.2476,
+    12.9037
+   ],
+   "rotation": [
+    -37.913,
+    24.489,
+    -17.893
+   ],
+   "style": "bone_dark"
+  },
+  {
+   "id": "frag_rib",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    1.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    -6.0,
+    -2.5733,
+    11.3854
+   ],
+   "rotation": [
+    -41.364,
+    -32.201,
+    25.137
+   ],
+   "style": "rib"
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "eye_fire_l",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.1,
+       0.22,
+       0
+      ],
+      "cycles": 4
+     }
+    },
+    {
+     "part": "eye_fire_r",
+     "channel": "scale",
+     "osc": {
+      "amp": [
+       0.1,
+       0.22,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.35
+     }
+    },
+    {
+     "part": "eye_fire_l",
+     "axis": "z",
+     "osc": {
+      "amp": 6,
+      "cycles": 2,
+      "phase": 0.1
+     }
+    },
+    {
+     "part": "eye_fire_r",
+     "axis": "z",
+     "osc": {
+      "amp": 6,
+      "cycles": 2,
+      "phase": 0.6
+     }
+    },
+    {
+     "part": "jaw",
+     "axis": "x",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.9,
+       0
+      ],
+      [
+       1.05,
+       -2.0,
+       "out"
+      ],
+      [
+       1.3,
+       -0.6
+      ],
+      [
+       1.6,
+       0,
+       "back"
+      ],
+      [
+       2.0,
+       0
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}
