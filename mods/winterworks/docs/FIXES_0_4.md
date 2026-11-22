@@ -38,6 +38,12 @@ contract for the Java side.
 * **Icebreaker**: about 25% smaller (new model) and much furrier. It attacks polar bears. Feeding it fish plays the
   new `eat` clip. It is far more hostile when its cubs are near: it charges players who come within 10 blocks of a cub. When it rams it
   points its horns at the target (the `ram` clip holds the head low with horn and tusks aimed ahead).
+* **Icebreakers love water** (a fix: today they barely swim). They head for water often, swim fast and gracefully
+  (porpoising at the surface, diving deep, rolling), haul out onto ice and shores to rest, and spend most of their
+  time in or near water. They **sleep** lying flat on their bellies (new `sleep` clip, the cub too), mostly at night,
+  waking when hurt or approached. They **hunt salmon (and cod) violently**: they chase them fast underwater, lunge,
+  bite, shake and eat them (the `eat` clip), and go after salmon within 16 blocks whenever they're hungry (every
+  couple of minutes).
 * **Potion of Ramming**: when you reach top speed you get a battle cry (sound), a burst of snow and wind particles,
   speed lines on screen, a new running pose (leaning forward, arms swept back) and a further speed boost.
 
@@ -145,6 +151,11 @@ contract for the Java side.
 * Tamed: it takes **horse armour** and a **saddle** and can be ridden. While riding, a **soul bar** replaces the
   experience bar and shows its soul energy (= its health). Its **ram** (the jump key, charged like a horse jump) charges
   forward, pinning and soul-burning what it hits, and costs a lot of soul energy.
+* **Armoured variant**: about one wild Soul Bull in five is armoured: blackened, gilded blackstone plates bolted to
+  its bones (more armour, +50% health); Wither Skeletons ride these. The bones of every Soul Bull are the colour of
+  a Wither Skeleton's (dark charcoal greys), not pure black.
+* **Milking**: use an Elixir Bottle on a tamed Soul Bull to draw a **Soul Elixir** from its soul fire; it costs a
+  quarter of its soul energy (it refuses below a quarter).
 * **Recharging**: use a soul torch, soul lantern or soul campfire on it (big refills), or let it suck the souls out of
   soul fire, soul torches, soul lanterns and soul campfires near it, which breaks or puts them out (soul fire gives a
   little, the others a lot more).
