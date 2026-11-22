@@ -294,3 +294,24 @@ contract for the Java side.
   She drinks healing when low (once per fight). Killed, she drops her spellbook (a Hexed Book with a strong random
   hex) and her stash.
 * Structure id stays `hex_fortress`; `/winterworks hexfortress` builds one.
+
+## Piglins, hoglins and the Withered Commander (the Nether)
+* **Brutes love the elixirs too**: piglin brutes want the Elixir of Greed and the Cursed Elixir like piglins do
+  (they go after them, admire, fight for Greed, drink).
+* **Turning to gold sooner**: a piglin or brute that drinks the Cursed Elixir starts gilding at once (the golden
+  shimmer spreads over 20 s) and then **becomes a Golden Piglin** (a brute becomes a golden brute-sized Golden Piglin
+  with a gilded axe). Golden Piglins also turn up more often (1 in 15 piglin spawns, up from 1 in 40).
+* **Hoglin jockeys**: adult piglins ride adult hoglins (crimson forests, bastions, Hex Fortresses); piglins keep and use
+  hoglins far more: they ride them into fights, and herd them in pens at bastions and Hex Fortresses.
+* **Wither skeletons ride the unarmoured Soul Bulls** (as above).
+* **The Withered Commander** (`withered_commander`, a new mob): a mini-boss of vanilla **Nether fortresses** (one per
+  fortress, on a bridge crossing or courtyard), a towering wither skeleton officer in cool blackened-netherite armour
+  (spiked pauldrons, a crested helm, a torn banner cape) wielding a **netherite spear**, riding an unarmoured Soul Bull.
+  * Very strong: 150 health, armour 12, a boss bar; spear **lunges** (long reach, knockback, Wither II), a **sweeping
+    spin**, and a **war cry** that rallies wither skeletons and blazes nearby (Strength I). Charges on its bull.
+  * **When its bull dies it fights on** on foot (faster, angrier).
+  * Drops 1-3 **Ancient Debris**, its spear sometimes (a usable `netherite_spear`: long-reach melee weapon, thrust
+    attack), wither bones and XP 150.
+  * Model `withered_commander` (bones `body`, `head`, `helm`, `cape`, `arm_l`, `arm_r`, `spear` (in `arm_r`),
+    `leg_l`, `leg_r`, `pauldron_l`, `pauldron_r`; clips `idle`, `walk`, `ride`, `lunge` (0.8 s), `spin` (1.2 s),
+    `war_cry` (1.5 s), `death` (1.5 s)); item model `netherite_spear` (3D in hand and GUI).
