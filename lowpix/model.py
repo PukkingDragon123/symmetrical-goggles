@@ -136,6 +136,8 @@ class Model:
             anim = self.animator()
             tol = float(self.spec.get("anim_ground_tolerance", 0.15))
             for cname in clips:
+                if clips[cname].get("grounded", True) is False:   # airborne or burrowing on purpose (fly, dig)
+                    continue
                 length, _, _ = anim.clip(cname)
                 worst = {}
                 for k in range(24):
