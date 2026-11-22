@@ -184,7 +184,7 @@ def item_models():
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{n}"}})
     # the locomotives and carts show their own 3D model (client/express/CartItemRenderer), turned like a block
     for n in ("locomotive", "dragon_locomotive", "fox_cart", "zombie_cart"):
-        write(os.path.join(A, "models", "item", n + ".json"), builtin_3d(f"{M}:item/{n}", gui_scale=0.8))
+        write(os.path.join(A, "models", "item", n + ".json"), builtin_3d(f"{M}:item/{n}", 0.95, (25, 30, 0)))
     write(os.path.join(A, "models", "item", "heavy_shears.json"),
           {"parent": "minecraft:item/handheld", "textures": {"layer0": f"{M}:item/heavy_shears"}})
     write(os.path.join(A, "models", "item", "icebreaker_spawn_egg.json"), {"parent": "minecraft:item/template_spawn_egg"})
@@ -286,7 +286,7 @@ def rail_models():
     write(os.path.join(A, "models", "block", "coaster_loop.json"), {"textures": {"particle": f"{M}:block/coaster_track_rail"}})
     write(os.path.join(A, "blockstates", "coaster_loop.json"), {"variants": {
         "shape=north_south": m("coaster_loop"), "shape=east_west": m("coaster_loop", 90)}})
-    write(os.path.join(A, "models", "item", "coaster_loop.json"), builtin_3d(f"{M}:block/coaster_track_rail", 0.9, (20, 135, 0)))
+    write(os.path.join(A, "models", "item", "coaster_loop.json"), builtin_3d(f"{M}:block/coaster_track_rail", 0.95, (15, 120, 0)))
     # Switch Rail: the art's models are drawn toe-south (y 0); FACING points from the toe to the fork. The points
     # (SHAPE: straight on, or the curve onto the branch) pick the model: _on is set to the branch, lamp lit.
     # Multipart, so the shapes a switch can never take (express/SwitchRailBlock keeps them consistent) draw nothing.

@@ -19,6 +19,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
@@ -56,7 +61,8 @@ final class ExpressShots {
         then(40, () -> {
             Minecraft mc = Minecraft.getInstance();
             mc.options.hideGui = true;
-            mc.options.renderDistance().set(8);
+            mc.options.renderDistance().set(10);
+            mc.getWindow().setWindowed(1280, 720);
             for (String c : new String[]{"gamerule doDaylightCycle false", "gamerule doMobSpawning false", "gamerule doWeatherCycle false",
                     "time set 5000", "weather clear", "gamemode spectator"}) {
                 cmd(c);
@@ -84,9 +90,16 @@ final class ExpressShots {
         then(80, () -> shot("coaster_loop"));
         // a cart with a villager in it, launched off the boosters: freeze it upside down at the top of the loop
         then(2, () -> server(level -> {
-            cmd("summon minecraft:minecart -10.5 -53.9 0.5 {Passengers:[{id:\"minecraft:villager\",NoAI:1b,VillagerData:{profession:\"minecraft:librarian\",level:1,type:\"minecraft:snow\"}}]}");
+            Minecart cart = new Minecart(level, -10.5, -53.9375, 0.5);
+            level.addFreshEntity(cart);
+            Villager v = EntityType.VILLAGER.create(level);
+            v.moveTo(-10.5, -53.8, 0.5);
+            v.setNoAi(true);
+            v.setVillagerData(v.getVillagerData().setType(VillagerType.SNOW).setProfession(VillagerProfession.LIBRARIAN));
+            level.addFreshEntity(v);
+            v.startRiding(cart, true);
+            cart.setDeltaMovement(0.5, 0, 0);
         }));
-        then(5, () -> server(level -> carts(level, new AABB(-14, -56, -1, -8, -50, 2)).forEach(c -> c.setDeltaMovement(0.5, 0, 0))));
         until(() -> atTop(0.03), 200, () -> cmd("tick freeze"));
         then(2, () -> cmd("tp @s 6.5 -48.5 -6.5 facing 12.5 -49.5 0.5"));
         then(25, () -> shot("loop_rider_upside_down"));
@@ -110,12 +123,15 @@ final class ExpressShots {
                 c.setDeltaMovement(0.5, 0, 0);
             });
         }));
-        until(() -> atTop(-0.9), 200, () -> cmd("tick freeze"));
-        then(15, () -> shot("loop_seat_climbing"));
-        then(2, () -> cmd("tick unfreeze"));
-        until(() -> atTop(0.02), 60, () -> cmd("tick freeze"));
-        then(15, () -> shot("loop_seat_top"));
-        then(2, () -> cmd("tick unfreeze"));
+        then(2, () -> {   // the player's view is the client's: face along the track
+            Minecraft mc = Minecraft.getInstance();
+            mc.player.setYRot(-90f);
+            mc.player.setXRot(8f);
+        });
+        // (a cart with a player in it never freezes: shoot on the fly)
+        until(() -> atTop(-1.2), 200, () -> shot("loop_seat_climbing"));
+        until(() -> atTop(0.0), 60, () -> shot("loop_seat_top"));
+        until(() -> atTop(1.0), 60, () -> shot("loop_seat_coming_down"));
         then(80, () -> {
             cmd("kill @e[type=minecraft:minecart]");
             cmd("gamemode spectator");
@@ -128,21 +144,25 @@ final class ExpressShots {
                 cmd("setblock 5 -60 " + z + " winterworks:switch_rail[facing=east,branch=left,shape=east_west]");
                 cmd("fill 5 -60 " + (z - 1) + " 5 -60 " + (z - 7) + " minecraft:rail[shape=north_south]");
             }
-            cmd("setblock 5 -60 41 minecraft:lever[face=floor,facing=east]");
+            cmd("setblock 5 -61 40 minecraft:redstone_block");   // powers the second switch from underneath
+            cmd("tp @s 9.5 -57.8 33.5 facing 5.5 -60 30.5");
         });
-        then(5, () -> server(level -> {
-            ServerPlayer p = level.getServer().getPlayerList().getPlayers().get(0);
-            var lever = level.getBlockState(new net.minecraft.core.BlockPos(5, -60, 41));
-            ((net.minecraft.world.level.block.LeverBlock) lever.getBlock()).pull(lever, level, new net.minecraft.core.BlockPos(5, -60, 41), p);
-            cmd("summon minecraft:minecart -4.5 -60 30.5");
-            cmd("summon minecraft:chest_minecart -4.5 -60 40.5");
+        then(30, () -> shot("switch_unpowered_close"));
+        then(2, () -> cmd("tp @s 9.5 -57.8 43.5 facing 5.5 -60 40.5"));
+        then(20, () -> shot("switch_powered_close"));
+        then(2, () -> server(level -> {
+            for (int z : new int[]{30, 40}) {
+                Minecart cart = new Minecart(level, -4.5, -59.9375, z + 0.5);
+                level.addFreshEntity(cart);
+                cart.setDeltaMovement(0.8, 0, 0);
+            }
         }));
-        then(3, () -> server(level -> carts(level, new AABB(-6, -61, 29, -3, -58, 42)).forEach(c -> c.setDeltaMovement(0.3, 0, 0))));
-        then(6, () -> cmd("tp @s 0.5 -55.5 34.5 facing 6.5 -60 35.5"));
-        then(1, () -> shot("switch_junctions_approach"));
-        then(30, () -> shot("switch_junctions"));
-        then(2, () -> cmd("tp @s 5.5 -56.5 44.5 facing 5.5 -60 39"));
-        then(15, () -> shot("switch_close"));
+        then(2, () -> cmd("tp @s -3.5 -54.5 47.5 facing 6.5 -60 35.5"));
+        then(50, () -> shot("switch_junctions"));
+        then(2, () -> cmd("tp @s 5.5 -55 30.5 180 90"));
+        then(20, () -> shot("switch_unpowered_above"));
+        then(2, () -> cmd("tp @s 5.5 -55 40.5 180 90"));
+        then(20, () -> shot("switch_powered_above"));
         // ---- a locomotive on a furnace minecart's fire, pulling a train of vanilla minecarts
         then(5, () -> {
             cmd("kill @e[type=#minecraft:boats]");
@@ -200,12 +220,12 @@ final class ExpressShots {
         });
         then(30, () -> shot("hotbar_icons"));
         then(2, () -> cmd("gamemode creative"));
-        then(2, () -> server(level -> level.getServer().getPlayerList().getPlayers().get(0).getInventory().selected = 5));
+        then(2, () -> Minecraft.getInstance().player.getInventory().selected = 5);   // the selected slot is the client's
         then(15, () -> shot("hotbar_held_loop"));
         then(5, () -> Minecraft.getInstance().stop());
     }
 
-    /** A cart (client) is going round the loop at angle pi + offset (up to 0.4 rad past it). */
+    /** A cart (client) is going round the loop at angle pi + offset (up to 0.8 rad past it). */
     private static boolean atTop(double offset) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) {
@@ -213,7 +233,7 @@ final class ExpressShots {
         }
         for (Entity e : mc.level.entitiesForRendering()) {
             LoopMotion m = CoasterLoop.motion(e);
-            if (m != null && m.full && m.theta >= Math.PI + offset && m.theta <= Math.PI + offset + 0.4) {
+            if (m != null && m.full && m.theta >= Math.PI + offset && m.theta <= Math.PI + offset + 0.8) {
                 return true;
             }
         }

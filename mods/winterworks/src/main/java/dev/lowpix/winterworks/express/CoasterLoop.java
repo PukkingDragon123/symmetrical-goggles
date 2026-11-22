@@ -86,7 +86,10 @@ public final class CoasterLoop {
             return;   // not moving in line with the loop
         }
         int sign = along > 0 ? 1 : -1;
-        double speed = Math.min(2.0, new Vec3(v.x, 0, v.z).length());
+        // vanilla lets a fast cart's velocity run ahead of what it really moves (its speed limit clamps each step):
+        // ride the loop at the speed it was actually going
+        double limit = 0.4 * Math.max(1.0, ((CartSpeed) cart).ww$speedFactor());
+        double speed = Math.min(Math.min(2.0, limit), new Vec3(v.x, 0, v.z).length());
         double off = alongX ? to.x - (found.getX() + 0.5) : to.z - (found.getZ() + 0.5);
         double theta = Mth.clamp(sign * off / LoopMotion.PATH, -0.2, 0.6);
         start(cart, level, new LoopMotion(found, alongX, sign, speed, theta));

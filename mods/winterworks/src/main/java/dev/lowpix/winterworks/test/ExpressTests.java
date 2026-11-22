@@ -1,11 +1,13 @@
 package dev.lowpix.winterworks.test;
 
 import dev.lowpix.winterworks.express.BoosterRailBlock;
+import dev.lowpix.winterworks.express.CartSpeed;
 import dev.lowpix.winterworks.express.CoasterLoop;
 import dev.lowpix.winterworks.express.CoasterLoopBlock;
 import dev.lowpix.winterworks.express.Couplings;
 import dev.lowpix.winterworks.express.LocomotiveCart;
 import dev.lowpix.winterworks.express.LoopMotion;
+import dev.lowpix.winterworks.express.RailPhysics;
 import dev.lowpix.winterworks.express.SwitchRailBlock;
 import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWEntities;
@@ -214,6 +216,7 @@ public class ExpressTests implements FabricGameTest {
         Villager rider = h.spawn(EntityType.VILLAGER, new Vec3(8.5, 2.5, 5.5));
         rider.setNoAi(true);
         rider.startRiding(cart, true);
+        ((CartSpeed) cart).ww$setSpeedFactor(RailPhysics.BOOST_FACTOR);   // as if off booster rails
         cart.setDeltaMovement(1.0, 0, 0);
         double baseY = cart.getY();
         double[] peak = {baseY};
@@ -238,6 +241,25 @@ public class ExpressTests implements FabricGameTest {
             h.assertTrue(cart.getDeltaMovement().x > 0.6, "it should leave in the same direction near its speed, v=" + cart.getDeltaMovement());
             h.assertTrue(Math.abs(cart.getY() - baseY) < 0.1 && rider.getVehicle() == cart, "back on the track, rider still aboard");
         });
+    }
+
+    @GameTest(template = TRACK, timeoutTicks = 200)
+    public void aCartLaunchedOffBoostersLoops(GameTestHelper h) {
+        for (int x = 0; x <= 5; x++) {   // floating: boosters on redstone blocks, then coaster rails, then the loop
+            h.setBlock(new BlockPos(x, 1, 5), Blocks.REDSTONE_BLOCK);
+            h.setBlock(new BlockPos(x, 2, 5), WWBlocks.BOOSTER_RAIL.defaultBlockState().setValue(PoweredRailBlock.SHAPE, RailShape.EAST_WEST));
+        }
+        coasterLine(h, 2, 5, 6, 23);
+        h.setBlock(new BlockPos(19, 2, 5), WWBlocks.COASTER_LOOP.defaultBlockState().setValue(CoasterLoopBlock.SHAPE, RailShape.EAST_WEST));
+        AbstractMinecart cart = h.spawn(EntityType.MINECART, new Vec3(0.5, 2.1, 5.5));
+        Villager rider = h.spawn(EntityType.VILLAGER, new Vec3(0.5, 2.5, 5.5));
+        rider.setNoAi(true);
+        rider.startRiding(cart, true);
+        cart.setDeltaMovement(0.5, 0, 0);
+        boolean[] looped = {false};
+        h.onEachTick(() -> looped[0] |= CoasterLoop.motion(cart) != null && CoasterLoop.motion(cart).full);
+        h.succeedWhen(() -> h.assertTrue(looped[0] && !CoasterLoop.looping(cart) && relX(h, cart) > 21,
+                "a cart off the boosters should loop and come out, x=" + relX(h, cart) + " looped=" + looped[0]));
     }
 
     @GameTest(template = TRACK, timeoutTicks = 200)
@@ -269,6 +291,7 @@ public class ExpressTests implements FabricGameTest {
         double baseY = cars[0].getY();
         double[] peak = new double[3];
         for (AbstractMinecart c : cars) {
+            ((CartSpeed) c).ww$setSpeedFactor(RailPhysics.BOOST_FACTOR);
             c.setDeltaMovement(1.3, 0, 0);
         }
         h.onEachTick(() -> {
