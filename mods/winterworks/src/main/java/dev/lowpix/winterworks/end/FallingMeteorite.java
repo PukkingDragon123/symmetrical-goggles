@@ -1,6 +1,7 @@
 package dev.lowpix.winterworks.end;
 
 import dev.lowpix.winterworks.registry.EndEntities;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -49,8 +50,8 @@ public class FallingMeteorite extends Entity {
     private long seed;
     /** Ticks since the crash (server and client). */
     private int sinceImpact;
-    /** Client: it was seen in flight (so a late-loaded smouldering one doesn't flash). */
-    private boolean seenFlying;
+    /** Client: it was seen in flight (so a late-loaded smouldering one doesn't flash), and its crash was seen. */
+    private boolean seenFlying, crashSeen;
 
     public FallingMeteorite(EntityType<?> type, Level level) {
         super(type, level);
@@ -160,14 +161,17 @@ public class FallingMeteorite extends Entity {
         MeteorImpact.impact(level, at, hit, seed, safe, this);
     }
 
+    /** Client: the crash arrives with its impact point (both values are set before this runs). */
     @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        super.onSyncedDataUpdated(key);
-        if (STATE.equals(key) && level().isClientSide && !flying()) {
+    public void onSyncedDataUpdated(List<SynchedEntityData.DataValue<?>> values) {
+        super.onSyncedDataUpdated(values);
+        if (level().isClientSide && !flying() && !crashSeen) {
+            crashSeen = true;
             sinceImpact = 0;
             Vec3 at = impact();
             setPos(at.x, at.y, at.z);
             setOldPosAndRot();
+            setDeltaMovement(Vec3.ZERO);
             if (seenFlying) {
                 clientImpact.accept(this);
             }

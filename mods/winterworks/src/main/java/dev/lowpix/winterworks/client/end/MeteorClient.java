@@ -39,7 +39,7 @@ public final class MeteorClient {
     /** The screen flash: its strength 0..1 and the game time it started. */
     private static float flash;
     private static long flashAt = -1000;
-    private static final int FLASH_TICKS = 14;
+    private static final int FLASH_TICKS = 10;
 
     private MeteorClient() {}
 
@@ -119,6 +119,10 @@ public final class MeteorClient {
             Vec3 p = c.add(Math.cos(a) * d, r.nextDouble() * 1.5 - 1.0, Math.sin(a) * d);
             add(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, p, r.nextGaussian() * 0.005, 0.03 + 0.03 * heat, r.nextGaussian() * 0.005);
         }
+        if (r.nextFloat() < 0.08f + 0.25f * heat) {   // tall plumes rising off the hottest middle
+            Vec3 p = c.add(r.nextGaussian() * 1.8, -0.5, r.nextGaussian() * 1.8);
+            add(level, ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, p, r.nextGaussian() * 0.004, 0.06 + 0.04 * heat, r.nextGaussian() * 0.004);
+        }
         if (age < 120 && r.nextInt(2) == 0) {
             Vec3 p = c.add(r.nextGaussian() * 2.5, r.nextDouble(), r.nextGaussian() * 2.5);
             add(level, ParticleTypes.LARGE_SMOKE, p, 0, 0.05, 0);
@@ -162,7 +166,7 @@ public final class MeteorClient {
             double d = eye.distanceTo(c);
             Vec3 look = new Vec3(mc.gameRenderer.getMainCamera().getLookVector());
             double facing = c.subtract(eye).normalize().dot(look);
-            float s = (float) Mth.clamp(1.15 - d / 140.0, 0.2, 1.0) * (facing > 0.3 ? 1f : 0.45f);
+            float s = (float) Mth.clamp(1.0 - d / 120.0, 0.12, 0.85) * (facing > 0.3 ? 1f : 0.4f);
             if (s > flash * fade(level.getGameTime(), 0f)) {
                 flash = s;
                 flashAt = level.getGameTime();
@@ -194,7 +198,7 @@ public final class MeteorClient {
         if (a <= 0.01f) {
             return;
         }
-        int alpha = (int) (Math.min(0.85f, a) * 255);
+        int alpha = (int) (Math.min(0.6f, a * 0.7f) * 255);
         g.fill(0, 0, g.guiWidth(), g.guiHeight(), (alpha << 24) | 0xFFF0D8);
     }
 }

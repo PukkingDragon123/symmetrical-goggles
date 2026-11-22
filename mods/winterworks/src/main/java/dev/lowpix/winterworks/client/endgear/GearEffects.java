@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.lowpix.winterworks.client.end.MeteorGlow;
 import dev.lowpix.winterworks.endgear.EndGearPayloads;
 import dev.lowpix.winterworks.endgear.EndGlider;
+import dev.lowpix.winterworks.registry.EndItems;
 import dev.lowpix.winterworks.registry.EndParticles;
 import dev.lowpix.winterworks.registry.EndSounds;
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ import org.joml.Vector3f;
 public final class GearEffects {
     private static final List<Beam> BEAMS = new ArrayList<>();
     private static final int BEAM_TICKS = 14;
-    private static final DustParticleOptions VIOLET = new DustParticleOptions(new Vector3f(0.62f, 0.3f, 1.0f), 1.1f);
     private static final DustParticleOptions GREY = new DustParticleOptions(new Vector3f(0.45f, 0.42f, 0.5f), 1.0f);
     private static final DustParticleOptions WING_MOTE = new DustParticleOptions(new Vector3f(0.78f, 0.5f, 1.0f), 0.7f);
 
@@ -49,6 +49,17 @@ public final class GearEffects {
         if (level == null) {
             return;
         }
+        // your own shot in first person starts from the wand's head in your hand, not from the middle of the view
+        Vec3 from = b.from();
+        var cam = mc.gameRenderer.getMainCamera();
+        if (mc.player != null && !mc.player.isSpectator() && mc.options.getCameraType().isFirstPerson() && from.distanceTo(mc.player.getEyePosition()) < 2.0
+                && (mc.player.getMainHandItem().is(EndItems.MONOLITH_WAND) || mc.player.getOffhandItem().is(EndItems.MONOLITH_WAND))) {
+            boolean main = mc.player.getMainHandItem().is(EndItems.MONOLITH_WAND);
+            boolean leftHand = (mc.player.getMainArm() == net.minecraft.world.entity.HumanoidArm.LEFT) == main;
+            Vec3 right = new Vec3(cam.getLeftVector()).scale(leftHand ? 1 : -1);
+            from = cam.getPosition().add(new Vec3(cam.getLookVector())).add(right.scale(0.8)).add(new Vec3(cam.getUpVector()).scale(-0.35));
+        }
+        b = new EndGearPayloads.WandBeam(from, b.to(), b.resisted());
         BEAMS.add(new Beam(b.from(), b.to(), b.resisted(), level.getGameTime()));
         Vec3 d = b.to().subtract(b.from());
         double len = d.length();
@@ -57,7 +68,12 @@ public final class GearEffects {
         // along the beam: violet motes, portal wisps, and meteor sparks spitting off it
         for (double s = 0.4; s < len; s += 0.3) {
             Vec3 p = b.from().add(dir.scale(s));
-            level.addParticle(b.resisted() ? GREY : VIOLET, true, p.x, p.y, p.z, 0, 0, 0);
+            if (b.resisted() && r.nextInt(3) == 0) {
+                level.addParticle(GREY, true, p.x, p.y, p.z, 0, 0, 0);
+            }
+            if (!b.resisted() && r.nextInt(6) == 0) {
+                level.addParticle(ParticleTypes.END_ROD, true, p.x, p.y, p.z, r.nextGaussian() * 0.01, r.nextGaussian() * 0.01, r.nextGaussian() * 0.01);
+            }
             if (r.nextInt(4) == 0) {
                 level.addParticle(ParticleTypes.REVERSE_PORTAL, true, p.x, p.y, p.z, (r.nextDouble() - 0.5) * 0.05, 0.02, (r.nextDouble() - 0.5) * 0.05);
             }
@@ -135,7 +151,7 @@ public final class GearEffects {
                 // it crackles: a small wobble, pinned at both ends
                 float wob = (float) Math.sin(t * Math.PI) * 0.12f * k;
                 pts[i] = b.from().add(d.scale(t)).add(side.scale(Mth.sin(now * 2.3f + t * 17f) * wob)).add(lift.scale(Mth.cos(now * 1.9f + t * 13f) * wob));
-                float swell = 0.75f + 0.25f * (float) Math.sin(t * Math.PI);
+                float swell = Math.min(1f, 0.25f + t * 2.5f) * (0.85f + 0.15f * (float) Math.sin(t * Math.PI));   // thin at the eye
                 wGlow[i] = (0.35f + 0.55f * k) * swell;
                 wBody[i] = (0.1f + 0.24f * k) * swell;
                 wCore[i] = (0.03f + 0.08f * k) * swell;
@@ -156,13 +172,14 @@ public final class GearEffects {
             MeteorGlow.ribbon(vc, m, cam, pts, wBody, cBody, aBody);
             MeteorGlow.ribbon(vc, m, cam, pts, wCore, cCore, aCore);
             // a flash at the eye, and a hot flash where it strikes (swelling, then gone)
-            MeteorGlow.disc(vc, m, b.from(), right, up, 0.35f + 0.3f * k, 0xF0C8FF, 0.9f * k, 0x9A3CF0, 0f);
-            if (age < 8) {
-                float t = Math.max(0f, age) / 8f, f = 1f - t;
-                float r = b.resisted() ? 0.6f + 0.6f * t : 0.7f + 1.6f * (1f - f * f);
-                MeteorGlow.disc(vc, m, b.to(), right, up, r, b.resisted() ? 0xC8C0D0 : 0xFFF4C2, f * f, b.resisted() ? 0x605870 : 0xFF7D2A, 0f);
+            MeteorGlow.disc(vc, m, b.from(), right, up, 0.2f + 0.2f * k, 0xF0C8FF, 0.9f * k, 0x9A3CF0, 0f);
+            if (age < 9) {   // drawn a little toward the shooter so the target's body doesn't hide it
+                float t = Math.max(0f, age) / 9f, f = 1f - t;
+                Vec3 at = b.to().subtract(d.normalize().scale(0.9));
+                float r = b.resisted() ? 0.6f + 0.6f * t : 1.1f + 2.2f * (1f - f * f);
+                MeteorGlow.glow(vc, m, at, right, up, r, 0.35f, b.resisted() ? 0xC8C0D0 : 0xFFF4C2, f * f, b.resisted() ? 0x605870 : 0xFF7D2A);
                 if (!b.resisted()) {
-                    MeteorGlow.disc(vc, m, b.to(), right, up, r * 2.2f, 0xFF9040, 0.45f * f * f, 0xA8237F, 0f);
+                    MeteorGlow.glow(vc, m, at, right, up, r * 2.4f, 0.15f, 0xFF9040, 0.5f * f * f, 0xA8237F);
                 }
             }
             pose.popPose();

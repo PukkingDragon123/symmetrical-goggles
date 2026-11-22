@@ -49,6 +49,27 @@ public final class MeteorGlow {
     }
 
     /**
+     * A glow at `c` facing the camera, `r` across: an even `inner` core out to `core` (0..1) of the radius, then fading to
+     * nothing through `outer` at the rim (reads bigger and brighter than a plain disc).
+     */
+    public static void glow(VertexConsumer vc, Matrix4f m, Vec3 c, Vec3 right, Vec3 up, float r, float core, int inner, float a, int outer) {
+        int n = 24;
+        for (int i = 0; i < n; i++) {
+            double a0 = i * Math.PI * 2 / n, a1 = (i + 1) * Math.PI * 2 / n;
+            Vec3 d0 = right.scale(Math.cos(a0)).add(up.scale(Math.sin(a0))), d1 = right.scale(Math.cos(a1)).add(up.scale(Math.sin(a1)));
+            Vec3 i0 = c.add(d0.scale(r * core)), i1 = c.add(d1.scale(r * core)), o0 = c.add(d0.scale(r)), o1 = c.add(d1.scale(r));
+            v(vc, m, c, inner, a);
+            v(vc, m, i0, inner, a);
+            v(vc, m, i1, inner, a);
+            v(vc, m, c, inner, a);
+            v(vc, m, i0, inner, a);
+            v(vc, m, o0, outer, 0f);
+            v(vc, m, o1, outer, 0f);
+            v(vc, m, i1, inner, a);
+        }
+    }
+
+    /**
      * A ribbon facing the camera (at `eye`) through `pts`, `widths[i]` across at each point, coloured `rgb[i]` / `alpha[i]`.
      */
     public static void ribbon(VertexConsumer vc, Matrix4f m, Vec3 eye, Vec3[] pts, float[] widths, int[] rgb, float[] alpha) {

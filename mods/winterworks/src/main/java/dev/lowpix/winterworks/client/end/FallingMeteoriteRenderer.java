@@ -27,7 +27,7 @@ import org.joml.Quaternionf;
  */
 public class FallingMeteoriteRenderer extends EntityRenderer<FallingMeteorite> {
     /** The rock's size: the model (about 0.7 blocks) times this. */
-    public static final float SCALE = 2.6f;
+    public static final float SCALE = 3.2f;
     /** The glowing trail's length, blocks. */
     public static final float TRAIL = 40f;
     static final int WHITE = 0xFFF4C2, GOLD = 0xFFD76A, AMBER = 0xFFAD35, ORANGE = 0xFF7D2A, ROSE = 0xE04A5A, MAGENTA = 0xA8237F,
@@ -61,25 +61,31 @@ public class FallingMeteoriteRenderer extends EntityRenderer<FallingMeteorite> {
             float flown = Math.min(TRAIL, now * (float) e.getDeltaMovement().length());
             VertexConsumer vc = buffers.getBuffer(MeteorGlow.ADDITIVE);
             Matrix4f m = pose.last().pose();
-            trail(vc, m, eye, Vec3.ZERO, dir, flown, 1f);
+            trail(vc, m, eye, Vec3.ZERO, dir, flown, 1f, now * 0.9f);
             float flicker = 0.9f + 0.1f * Mth.sin(now * 1.7f);
-            MeteorGlow.disc(vc, m, Vec3.ZERO, right, up, 6.0f * flicker, 0xB040FF, 0.22f, 0x3A0C5C, 0f);
-            MeteorGlow.disc(vc, m, Vec3.ZERO, right, up, 3.0f * flicker, 0xFFB050, 0.75f, ORANGE, 0f);
-            MeteorGlow.disc(vc, m, dir.scale(0.6), right, up, 1.5f, WHITE, 0.85f, GOLD, 0f);
+            MeteorGlow.glow(vc, m, Vec3.ZERO, right, up, 9.0f * flicker, 0.15f, 0xB040FF, 0.3f, 0x3A0C5C);
+            MeteorGlow.glow(vc, m, Vec3.ZERO, right, up, 4.5f * flicker, 0.3f, 0xFFA040, 0.8f, ORANGE);
+            MeteorGlow.glow(vc, m, dir.scale(0.8), right, up, 2.2f, 0.45f, WHITE, 1f, GOLD);
         } else {
             float age = e.sinceImpact() + partial;
             VertexConsumer vc = buffers.getBuffer(MeteorGlow.ADDITIVE);
             Matrix4f m = pose.last().pose();
             // the trail left hanging in the sky, fading
             if (age < 40) {
-                trail(vc, m, eye, dir.scale(-2), dir, TRAIL, 1f - age / 40f);
+                trail(vc, m, eye, dir.scale(-2), dir, TRAIL, 1f - age / 40f, 0f);
             }
-            // the flash: a white-hot ball swelling and fading
+            // the flash: a white-hot ball swelling and fading, a pillar of light over it, a wide orange bloom
             if (age < 18) {
                 float t = age / 18f, k = 1f - t;
-                float r = 4f + 12f * (1f - k * k);
-                MeteorGlow.disc(vc, m, new Vec3(0, 1.5, 0), right, up, r, WHITE, k * k, ORANGE, 0f);
-                MeteorGlow.disc(vc, m, new Vec3(0, 1.0, 0), right, up, r * 1.8f, 0xFF9040, 0.5f * k * k, MAGENTA, 0f);
+                float r = 5f + 14f * (1f - k * k);
+                MeteorGlow.glow(vc, m, new Vec3(0, 2.0, 0), right, up, r * 2.2f, 0.2f, 0xFF9040, 0.55f * k * k, MAGENTA);
+                MeteorGlow.glow(vc, m, new Vec3(0, 1.5, 0), right, up, r, 0.4f, WHITE, Math.min(1f, 1.3f * k), GOLD);
+                if (age < 12) {
+                    float p = 1f - age / 12f;
+                    Vec3[] pts = {Vec3.ZERO, new Vec3(0, 12, 0), new Vec3(0, 30, 0), new Vec3(0, 60, 0)};
+                    MeteorGlow.ribbon(vc, m, eye, pts, new float[]{9f * p, 6f * p, 3f * p, 0.5f}, new int[]{WHITE, GOLD, ORANGE, ROSE},
+                            new float[]{0.9f * p, 0.6f * p, 0.25f * p, 0f});
+                }
             }
             // the shockwave: a ring racing out over the ground
             if (age < 16) {
@@ -94,7 +100,7 @@ public class FallingMeteoriteRenderer extends EntityRenderer<FallingMeteorite> {
     }
 
     /** The trail behind a head at `head`, flying along `dir`: `length` blocks, `fade` 0..1. */
-    private static void trail(VertexConsumer vc, Matrix4f m, Vec3 eye, Vec3 head, Vec3 dir, float length, float fade) {
+    private static void trail(VertexConsumer vc, Matrix4f m, Vec3 eye, Vec3 head, Vec3 dir, float length, float fade, float flick) {
         if (length < 0.5f || fade <= 0f) {
             return;
         }
@@ -105,14 +111,15 @@ public class FallingMeteoriteRenderer extends EntityRenderer<FallingMeteorite> {
         for (int i = 0; i < n; i++) {
             float t = i / (n - 1f);
             pts[i] = head.subtract(dir.scale(length * t));
-            float taper = (1f - t) * (1f - t * 0.3f);
-            wide[i] = 0.4f + 6.0f * taper;
-            core[i] = 0.15f + 2.4f * taper;
+            float taper = (float) Math.pow(1f - t, 1.4f);
+            float lick = 1f + 0.18f * Mth.sin(t * 19f - flick) * t;     // the trail licks and swells as it streams back
+            wide[i] = (0.4f + 6.5f * taper) * lick;
+            core[i] = (0.2f + 2.7f * taper) * lick;
             float c = t * (TRAIL_RAMP.length - 1);
             int k = Math.min((int) c, TRAIL_RAMP.length - 2);
             col[i] = MeteorGlow.mix(TRAIL_RAMP[k], TRAIL_RAMP[k + 1], c - k);
-            aWide[i] = 0.32f * (1f - t) * fade;
-            aCore[i] = 0.95f * (1f - t) * (1f - t) * fade;
+            aWide[i] = 0.38f * (1f - t) * (1f - t) * fade;
+            aCore[i] = Math.min(1f, 1.15f * (float) Math.pow(1f - t, 2.2f)) * fade;
         }
         MeteorGlow.ribbon(vc, m, eye, pts, wide, col, aWide);
         MeteorGlow.ribbon(vc, m, eye, pts, core, col, aCore);
