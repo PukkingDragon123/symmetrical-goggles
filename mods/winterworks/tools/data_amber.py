@@ -88,7 +88,17 @@ def run(ctx):
     block_model("amberwood_sapling", {"parent": "minecraft:block/cross", "textures": {"cross": f"{M}:block/amberwood_sapling"}})
     blockstate("amberwood_sapling", {"variants": {"": ref("amberwood_sapling")}})
     # the glowing flowers on top of every Amberwood column
-    block_model("amberwood_bloom", {"parent": "minecraft:block/cross", "textures": {"cross": f"{M}:block/amberwood_bloom"}})
+    # (vanilla's cross, plus a flat crown seen from above: block/amberwood_bloom_top)
+    cross = lambda frm, to, faces: {"from": frm, "to": to, "shade": False,  # noqa: E731
+                                    "rotation": {"origin": [8, 8, 8], "axis": "y", "angle": 45, "rescale": True},
+                                    "faces": {f: {"uv": [0, 0, 16, 16], "texture": "#cross"} for f in faces}}
+    block_model("amberwood_bloom", {
+        "ambientocclusion": False,
+        "textures": {"particle": f"{M}:block/amberwood_bloom", "cross": f"{M}:block/amberwood_bloom",
+                     "top": f"{M}:block/amberwood_bloom_top"},
+        "elements": [cross([0.8, 0, 8], [15.2, 16, 8], ("north", "south")), cross([8, 0, 0.8], [8, 16, 15.2], ("west", "east")),
+                     {"from": [1, 12, 1], "to": [15, 12, 15], "shade": False, "faces": {
+                         "up": {"uv": [0, 0, 16, 16], "texture": "#top"}, "down": {"uv": [0, 16, 16, 0], "texture": "#top"}}}]})
     blockstate("amberwood_bloom", {"variants": {"": ref("amberwood_bloom")}})
     cube("amberwood_planks")
     blockstate("amberwood_planks", {"variants": {"": ref("amberwood_planks")}})
@@ -106,7 +116,7 @@ def run(ctx):
     # ---------------------------------------------------------------------------------------- item models
     for name in ("amber_chunk", "amberwood_seed"):
         item_model(name, {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{name}"}})
-    item_model("amberwood_bloom", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:block/amberwood_bloom"}})
+    item_model("amberwood_bloom", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/amberwood_bloom"}})
     item_model("mosquito_spawn_egg", {"parent": "minecraft:item/template_spawn_egg"})
     for item, model in (("amber_block", "amber_block"), ("amber_fossil", "amber_fossil_0"), ("petrified_log", "petrified_log"),
                         ("amberwood_log", "amberwood_log"), ("amberwood_leaves", "amberwood_leaves"),

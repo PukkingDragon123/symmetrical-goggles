@@ -23,8 +23,8 @@ public class AmberInclusionRenderer implements BlockEntityRenderer<AmberInclusio
     private final Inclusion mosquito, seed;
 
     public AmberInclusionRenderer(BlockEntityRendererProvider.Context ctx) {
-        mosquito = new Inclusion(new WWModel<>(ctx.bakeLayer(AmberClient.MOSQUITO), "mosquito"), "fly", 0.04f, 0.78f);
-        seed = new Inclusion(new WWModel<>(ctx.bakeLayer(AmberClient.AMBER_SEED), "amber_seed"), null, 0f, 0.55f);
+        mosquito = new Inclusion(new WWModel<>(ctx.bakeLayer(AmberClient.MOSQUITO), "mosquito"), "fly", 0.04f, 0.6f);
+        seed = new Inclusion(new WWModel<>(ctx.bakeLayer(AmberClient.AMBER_SEED), "amber_seed"), null, 0f, 0.8f);   // no clips: frozen
     }
 
     @Override

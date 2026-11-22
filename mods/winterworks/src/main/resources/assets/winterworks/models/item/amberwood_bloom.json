@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "winterworks:block/amberwood_bloom"
+    "layer0": "winterworks:item/amberwood_bloom"
   }
 }
