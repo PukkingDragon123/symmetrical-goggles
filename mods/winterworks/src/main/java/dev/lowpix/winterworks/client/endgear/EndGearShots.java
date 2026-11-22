@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.player.LocalPlayer;
@@ -48,7 +49,8 @@ final class EndGearShots {
     private static final boolean ENABLED = Boolean.getBoolean("winterworks.endgearshots");
     private static final List<Runnable> PLAN = new ArrayList<>();
     private static final List<Integer> AT = new ArrayList<>();
-    private static boolean created, logFlight, wantFlight;
+    private static boolean created, logFlight, wantFlight, logRide;
+    private static Vec3 mark = Vec3.ZERO;
     private static int ticks, step, frames, framesAtStep, ticksAtStep, lastAt;
     private static Vec3 lastClient, lastServer;
 
@@ -146,6 +148,18 @@ final class EndGearShots {
             look(-160f, 15f);
         });
         at(t += 10, () -> shot("petrified_player"));
+        // frozen: holding forward and jump does nothing
+        at(t += 2, () -> {
+            mark = Minecraft.getInstance().player.position();
+            Minecraft.getInstance().options.keyUp.setDown(true);
+            Minecraft.getInstance().options.keyJump.setDown(true);
+        });
+        at(t += 15, () -> {
+            Minecraft.getInstance().options.keyUp.setDown(false);
+            Minecraft.getInstance().options.keyJump.setDown(false);
+            Winterworks.LOG.info("endgearshots: petrified player moved {} while holding forward + jump",
+                    Minecraft.getInstance().player.position().distanceTo(mark));
+        });
         at(t += 2, () -> camera(CameraType.FIRST_PERSON));
         at(t += 8, () -> shot("petrified_player_first_person"));
         at(t += 2, () -> server((level, p) -> p.removeEffect(EndEffects.PETRIFIED)));
@@ -220,6 +234,31 @@ final class EndGearShots {
         }));
         at(t += 5, () -> camera(CameraType.THIRD_PERSON_BACK));
         at(t += 15, () -> shot("dragonling_ridden"));
+        // ridden flight: jump climbs, forward flies where the rider looks; then a breath of fire on the key
+        at(t += 2, () -> {
+            server((level, p) -> {
+                if (p.getVehicle() instanceof Dragonling d) {
+                    d.setBreath(12);
+                }
+            });
+            mark = Minecraft.getInstance().player.position();
+            logRide = true;
+            Minecraft.getInstance().options.keyJump.setDown(true);
+        });
+        at(t += 25, () -> {
+            Minecraft.getInstance().options.keyJump.setDown(false);
+            look(180f, 10f);
+            Minecraft.getInstance().options.keyUp.setDown(true);
+        });
+        at(t += 30, () -> shot("dragonling_flying"));
+        at(t += 2, () -> KeyMapping.click(EndGearClient.DRAGON_BREATH.getDefaultKey()));
+        at(t += 4, () -> shot("dragonling_breath"));
+        at(t += 2, () -> {
+            Minecraft.getInstance().options.keyUp.setDown(false);
+            camera(CameraType.FIRST_PERSON);
+        });
+        at(t += 10, () -> shot("dragonling_breath_first_person"));
+        at(t += 20, () -> logRide = false);
         at(t += 5, () -> Minecraft.getInstance().stop());
     }
 
@@ -290,6 +329,10 @@ final class EndGearShots {
         mc.getToasts().clear();
         if (logFlight) {
             logFlight(mc);
+        }
+        if (logRide && ticks % 5 == 0 && mc.player.getVehicle() instanceof Dragonling d) {
+            Winterworks.LOG.info(String.format("endgearshots ride: tick %d dragonling at %.2f %.2f %.2f onGround=%s noGravity=%s breath=%d",
+                    ticks, d.getX(), d.getY(), d.getZ(), d.onGround(), d.isNoGravity(), d.getBreath()));
         }
         if (wantFlight && mc.player.isFallFlying()) {
             wantFlight = false;
