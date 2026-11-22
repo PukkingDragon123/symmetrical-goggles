@@ -41,7 +41,11 @@ public class ColdParticle extends TextureSheetParticle {
         /** A glint of amber light: twinkles in place. Animated, full bright. */
         AMBER_GLINT,
         /** Drifting cave dust (Dead Caves): tiny, slow, faint. A random still frame. */
-        CAVE_DUST
+        CAVE_DUST,
+        /** A cursed glyph: rises slowly, sways, fades. A random still frame, full bright. */
+        HEX_RUNE,
+        /** A glint of gold: twinkles in place. Animated, full bright. */
+        GOLD_GLINT
     }
 
     private final Kind kind;
@@ -151,6 +155,19 @@ public class ColdParticle extends TextureSheetParticle {
                 zd = (random.nextFloat() - 0.5f) * 0.01f;
                 anim = false;
             }
+            case HEX_RUNE -> {
+                lifetime = 24 + random.nextInt(16);
+                baseSize = endSize = 0.07f + random.nextFloat() * 0.03f;
+                gravity = -0.015f;
+                friction = 0.92f;
+                anim = false;
+            }
+            case GOLD_GLINT -> {
+                lifetime = 10 + random.nextInt(8);
+                baseSize = 0.09f;
+                endSize = 0.02f;
+                friction = 0.8f;
+            }
             case COLD_MIST -> {
                 lifetime = 70 + random.nextInt(50);
                 baseSize = endSize = 0.9f + random.nextFloat() * 0.8f;
@@ -191,6 +208,10 @@ public class ColdParticle extends TextureSheetParticle {
         roll += spin;
         switch (kind) {
             case FROST_BREATH, SNOW_PUFF, ROAR_WAVE -> alpha = baseAlpha * (1f - t * t);
+            case HEX_RUNE -> {
+                alpha = t < 0.2f ? t * 5f : 1f - (t - 0.2f) / 0.8f;
+                xd += Mth.sin((age + (float) y * 9f) * 0.3f) * 0.002f;
+            }
             case COLD_MIST, CAVE_DUST -> alpha = baseAlpha * Mth.sin(t * Mth.PI);
             case FUR_TUFT -> xd += Mth.sin((age + (float) x * 7f) * 0.25f) * 0.004f;
             case ICE_SHARD -> {
@@ -212,7 +233,7 @@ public class ColdParticle extends TextureSheetParticle {
     @Override
     protected int getLightColor(float partial) {
         return switch (kind) {
-            case FROST_BURST, ROAR_WAVE, FROST_SLASH, ICE_CRIT, AMBER_GLINT -> 0xF000F0;
+            case FROST_BURST, ROAR_WAVE, FROST_SLASH, ICE_CRIT, AMBER_GLINT, HEX_RUNE, GOLD_GLINT -> 0xF000F0;
             default -> super.getLightColor(partial);
         };
     }

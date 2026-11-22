@@ -15,10 +15,19 @@
     "BrushableBlockEntityMixin",
     "PotionContentsMixin",
     "ThrownPotionMixin",
-    "BlockStateBaseMixin"
+    "BlockStateBaseMixin",
+    "CurseLivingEntityMixin",
+    "CursePlayerMixin",
+    "CurseServerPlayerMixin",
+    "CurseEnchantmentHelperMixin",
+    "CursePiglinAiMixin",
+    "CurseAbstractVillagerMixin",
+    "CurseNaturalSpawnerMixin",
+    "CurseMobCategoryMixin"
   ],
   "client": [
-    "client.GameRendererMixin"
+    "client.GameRendererMixin",
+    "client.CurseMouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

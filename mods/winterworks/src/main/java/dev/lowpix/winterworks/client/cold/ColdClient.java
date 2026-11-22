@@ -34,6 +34,8 @@ public final class ColdClient {
         particle(WWParticles.BLOOD_DRIP, Kind.BLOOD_DRIP);
         particle(WWParticles.AMBER_GLINT, Kind.AMBER_GLINT);
         particle(WWParticles.CAVE_DUST, Kind.CAVE_DUST);
+        particle(WWParticles.HEX_RUNE, Kind.HEX_RUNE);
+        particle(WWParticles.GOLD_GLINT, Kind.GOLD_GLINT);
         ClientTickEvents.END_CLIENT_TICK.register(ColdClient::tick);
     }
 

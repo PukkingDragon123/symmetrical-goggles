@@ -1,0 +1,41 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.winterworks.wrath",
+    "color": "#C43A3A"
+  },
+  "exclusive_set": "#winterworks:exclusive_set/wrath",
+  "max_cost": {
+    "base": 60,
+    "per_level_above_first": 20
+  },
+  "max_level": 2,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 20
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:enchantable/fire_aspect",
+  "weight": 1,
+  "primary_items": "#minecraft:enchantable/sword",
+  "effects": {
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "enchanted": "attacker",
+        "effect": {
+          "type": "minecraft:ignite",
+          "duration": 8.0
+        },
+        "requirements": {
+          "condition": "minecraft:damage_source_properties",
+          "predicate": {
+            "is_direct": true
+          }
+        }
+      }
+    ]
+  }
+}
