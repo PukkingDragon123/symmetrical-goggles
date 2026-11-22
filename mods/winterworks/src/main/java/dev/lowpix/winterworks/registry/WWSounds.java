@@ -140,6 +140,11 @@ public final class WWSounds {
     public static final SoundEvent ORPHEUS = reg("curse.orpheus");
     public static final SoundEvent SIN = reg("curse.sin");
 
+    // ---- 0.4 fixes: hexes (docs/FIXES_0_4.md "Curses"): each kind of curse's screen-effect sound (client.curse.CurseScreenFx)
+    public static final SoundEvent CURSE_EFFECT_LESSER = reg("curse.effect.lesser");
+    public static final SoundEvent CURSE_EFFECT_SIN = reg("curse.effect.sin");
+    public static final SoundEvent CURSE_EFFECT_HIDDEN = reg("curse.effect.hidden");
+
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
             1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);

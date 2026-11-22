@@ -1794,6 +1794,53 @@
     ],
     "subtitle": "subtitles.winterworks.curse.sin"
   },
+  "curse.effect.lesser": {
+    "sounds": [
+      {
+        "name": "winterworks:hexing_table/whisper1",
+        "pitch": 0.8
+      },
+      {
+        "name": "winterworks:hexing_table/whisper3",
+        "pitch": 0.8
+      },
+      {
+        "name": "winterworks:curse/trigger2",
+        "pitch": 0.75
+      }
+    ],
+    "subtitle": "subtitles.winterworks.curse.effect.lesser"
+  },
+  "curse.effect.sin": {
+    "sounds": [
+      {
+        "name": "winterworks:hexing_table/hex1",
+        "pitch": 0.7
+      },
+      {
+        "name": "winterworks:hexing_table/hex2",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "subtitles.winterworks.curse.effect.sin"
+  },
+  "curse.effect.hidden": {
+    "sounds": [
+      {
+        "name": "winterworks:hexed_book/whisper1",
+        "pitch": 0.55
+      },
+      {
+        "name": "winterworks:hexed_book/whisper2",
+        "pitch": 0.55
+      },
+      {
+        "name": "winterworks:hexing_table/whisper2",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.winterworks.curse.effect.hidden"
+  },
   "entity.enderfly.ambient": {
     "sounds": [
       {

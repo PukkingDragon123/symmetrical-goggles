@@ -19,8 +19,9 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 /**
  * Client side of the curses (docs/HEXES_UPDATE.md 3-5): the Narcissus and Lot's Wife camera lock (mixin.client.
- * CurseMouseHandlerMixin), Sloth's eyelids closing as you nod off, the Moth's pull, and a faint vignette in the sin's
- * colour while you bear a sin. Fed by curse.CurseFxPayload; the sin tint reads your own equipment.
+ * CurseMouseHandlerMixin), Sloth's eyelids closing as you nod off, the Moth's pull, each curse's screen effect when it
+ * triggers (CurseScreenFx) and a faint vignette in the sin's colour while you bear a sin. Fed by curse.CurseFxPayload;
+ * the sin tint reads your own equipment. Soul fire: SoulFireClient.
  */
 public final class CurseClient {
     private static final int LID_TICKS = 10;
@@ -33,6 +34,7 @@ public final class CurseClient {
     private static int sinColour = -1;
     private static float sinAlpha, sinAlphaO;
     private static int ticks;
+    private static LocalPlayer effectFor;
 
     private CurseClient() {}
 
@@ -40,6 +42,8 @@ public final class CurseClient {
         ClientPlayNetworking.registerGlobalReceiver(CurseFxPayload.TYPE, (payload, ctx) -> handle(payload));
         ClientTickEvents.END_CLIENT_TICK.register(mc -> tick());
         HudRenderCallback.EVENT.register(CurseClient::render);
+        CurseScreenFx.init();
+        SoulFireClient.init();
     }
 
     /** Is the camera held by a curse right now? */
@@ -69,6 +73,13 @@ public final class CurseClient {
                     player.push(fx.x(), fx.y(), fx.z());
                 }
             }
+            case CurseFxPayload.EFFECT -> {
+                int i = Math.round(fx.x());
+                if (i >= 0 && i < Curse.ALL.length) {
+                    CurseScreenFx.start(Curse.ALL[i], fx.ticks());
+                    effectFor = player;
+                }
+            }
             default -> {
             }
         }
@@ -87,6 +98,12 @@ public final class CurseClient {
         }
         if (nodTicks > 0) {
             nodTicks--;
+        }
+        if (CurseScreenFx.active() && (p == null || !p.isAlive() || effectFor != null && p != effectFor)) {
+            CurseScreenFx.stop();   // death, respawn, leaving the world
+        }
+        if (!mc.isPaused()) {
+            CurseScreenFx.tick();
         }
         sinAlphaO = sinAlpha;
         if (p != null && ticks % 10 == 0) {
@@ -153,6 +170,7 @@ public final class CurseClient {
         if (nodTicks > 0) {
             eyelids(g, w, h, nodTicks - partial);
         }
+        CurseScreenFx.render(g, partial);
     }
 
     /** Sloth: the eyelids close, stay shut, then open. */

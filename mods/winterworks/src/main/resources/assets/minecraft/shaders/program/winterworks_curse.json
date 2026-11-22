@@ -1,0 +1,38 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "one",
+        "dstrgb": "zero"
+    },
+    "vertex": "sobel",
+    "fragment": "winterworks_curse",
+    "attributes": [ "Position" ],
+    "samplers": [
+        { "name": "DiffuseSampler" }
+    ],
+    "uniforms": [
+        { "name": "ProjMat",  "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "InSize",   "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "OutSize",  "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "Clock",    "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Strength", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Warp",     "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "Wave",     "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "WaveFreq", "type": "float", "count": 1, "values": [ 10.0 ] },
+        { "name": "Rise",     "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Swirl",    "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Zoom",     "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Chroma",   "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Ghost",    "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "GhostX",   "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "GhostY",   "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Desat",    "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "TintR",    "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "TintG",    "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "TintB",    "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "TintAmt",  "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Vignette", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Flicker",  "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Glare",    "type": "float", "count": 1, "values": [ 0.0 ] }
+    ]
+}
