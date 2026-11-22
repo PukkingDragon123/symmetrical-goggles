@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:stripped_amberwood_log"
+    }
+  },
+  "result": {
+    "id": "winterworks:stripped_amberwood_wood",
+    "count": 3
+  },
+  "group": "bark"
+}

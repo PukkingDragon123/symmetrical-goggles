@@ -18,6 +18,7 @@ public final class GolemClient {
     public static void init() {
         layer(POT_GOLEM, "pot_golem");
         EntityRendererRegistry.register(WWEntities.POT_GOLEM, PotGolemRenderer::new);
+        PotGlow.init();
     }
 
     /** Registers a lowpix model layer; a missing export draws nothing instead of crashing (as WWLayers does). */

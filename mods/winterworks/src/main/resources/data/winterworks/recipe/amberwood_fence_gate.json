@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "#W#",
+    "#W#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "W": {
+      "item": "winterworks:amberwood_planks"
+    }
+  },
+  "result": {
+    "id": "winterworks:amberwood_fence_gate",
+    "count": 1
+  },
+  "group": "wooden_fence_gate"
+}

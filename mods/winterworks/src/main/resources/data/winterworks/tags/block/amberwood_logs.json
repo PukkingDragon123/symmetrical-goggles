@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "winterworks:amberwood_log",
+    "winterworks:amberwood_wood",
+    "winterworks:stripped_amberwood_log",
+    "winterworks:stripped_amberwood_wood"
+  ]
+}

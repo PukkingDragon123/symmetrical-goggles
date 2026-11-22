@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "W#W",
+    "W#W"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "W": {
+      "item": "winterworks:amberwood_planks"
+    }
+  },
+  "result": {
+    "id": "winterworks:amberwood_fence",
+    "count": 3
+  },
+  "group": "wooden_fence"
+}

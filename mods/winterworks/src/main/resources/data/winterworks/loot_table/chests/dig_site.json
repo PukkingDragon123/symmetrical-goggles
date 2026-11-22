@@ -10,15 +10,15 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "winterworks:amber_chunk",
-          "weight": 10,
+          "name": "winterworks:amber_shard",
+          "weight": 14,
           "functions": [
             {
               "function": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
-                "min": 1,
-                "max": 5
+                "min": 2,
+                "max": 8
               }
             }
           ]
@@ -130,7 +130,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "winterworks:amberwood_seed",
+          "name": "winterworks:amberwood_bloom",
           "weight": 3,
           "functions": [
             {
@@ -190,32 +190,32 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:brush",
-          "weight": 4
+          "weight": 24
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_shovel",
-          "weight": 3
+          "weight": 18
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_pickaxe",
-          "weight": 1
+          "weight": 6
         },
         {
           "type": "minecraft:item",
           "name": "winterworks:amber_block",
-          "weight": 3
+          "weight": 24
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:echo_shard",
-          "weight": 1
+          "weight": 6
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:goat_horn",
-          "weight": 1
+          "weight": 6
         },
         {
           "type": "minecraft:item",

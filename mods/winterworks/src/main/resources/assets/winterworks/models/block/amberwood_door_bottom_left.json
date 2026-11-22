@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_left",
+  "textures": {
+    "bottom": "winterworks:block/amberwood_door_bottom",
+    "top": "winterworks:block/amberwood_door_top"
+  }
+}
