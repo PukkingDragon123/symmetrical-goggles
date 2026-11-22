@@ -95,7 +95,7 @@ final class SoulBullShots {
             bull(level, 1.5, 11.0, 195f);
             jockey = bull(level, 5.0, 5.5, 220f);
             rider(level, jockey, EntityType.WITHER_SKELETON.create(level), Items.STONE_SWORD);
-            SoulBull armored = bull(level, 13.0, 12.5, 230f);
+            SoulBull armored = bull(level, 13.0, 12.5, 150f);
             armored.setArmored(true);
             armored.setHealth(armored.getMaxHealth());
             rider(level, armored, EntityType.PIGLIN_BRUTE.create(level), Items.GOLDEN_AXE);
