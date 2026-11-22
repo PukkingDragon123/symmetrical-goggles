@@ -81,11 +81,11 @@ public class SoulTankRenderer implements BlockEntityRenderer<SoulTankBlockEntity
         return false;
     }
 
-    /** The tank as an item: its icon in slots, elsewhere the 3D tank as full as the souls it kept. */
+    /** The tank as an item, in slots too (docs/FIXES_0_4.md "3D icons"): the 3D tank as full as the souls it kept. */
     public static class Item implements BuiltinItemRendererRegistry.DynamicItemRenderer {
         @Override
         public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-            if (mode == ItemDisplayContext.GUI || model().missing()) {
+            if (model().missing()) {
                 HexRender.icon(HexRender.TANK_ICON, stack, mode, pose, buffers, light, overlay);
                 return;
             }
