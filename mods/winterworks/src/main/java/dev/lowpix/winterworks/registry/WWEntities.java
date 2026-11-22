@@ -83,10 +83,11 @@ public final class WWEntities {
                     .clientTrackingRange(10));
 
     // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
-    /** Rider seat: the model's `rider` locator, (0, 1, 1.5) px in model space: 1.44 blocks up, a little behind the middle. */
+    /** The trunk and legs are ~1.7 wide, the withers 2.0 up. Rider seat: the model's `rider` locator, (0, -11.25, 3.5) px in
+     * model space: 2.2 blocks up, a little behind the middle (players, Wither Skeletons and piglins alike). */
     public static final EntityType<dev.lowpix.winterworks.soulbull.SoulBull> SOUL_BULL = reg("soul_bull",
-            EntityType.Builder.of(dev.lowpix.winterworks.soulbull.SoulBull::new, MobCategory.MONSTER).sized(1.4f, 1.6f)
-                    .eyeHeight(1.35f).passengerAttachments(new net.minecraft.world.phys.Vec3(0, 1.4375, -0.094)).fireImmune()
+            EntityType.Builder.of(dev.lowpix.winterworks.soulbull.SoulBull::new, MobCategory.MONSTER).sized(1.7f, 2.5f)
+                    .eyeHeight(1.5f).passengerAttachments(new net.minecraft.world.phys.Vec3(0, 2.203, -0.219)).fireImmune()
                     .clientTrackingRange(10));
 
     private WWEntities() {}

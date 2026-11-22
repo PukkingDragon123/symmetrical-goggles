@@ -320,9 +320,9 @@ public class SoulBull extends AbstractHorse {
         return Vec3.directionFromRotation(0f, getYRot());
     }
 
-    /** How big this bull is next to the original 1.4-block-wide one: its reach, horns and chest scale with it. */
+    /** How big this bull is next to the first, 1.6-block-tall one (the model is 1.6x that): its reach, horns and chest scale with it. */
     public float bodyScale() {
-        return getBbWidth() / 1.4f;
+        return getBbHeight() / 1.6f;
     }
 
     /** Where a pinned victim's feet are held: on the horns, out in front of its lowered head. */

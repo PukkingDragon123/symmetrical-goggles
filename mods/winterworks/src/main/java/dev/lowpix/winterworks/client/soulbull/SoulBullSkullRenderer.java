@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Draws the Soul Bull Skull (lowpix model `soul_bull_skull`: bones skull, jaw, horn_l/r, eye_fire). The eye sockets'
- * soul fire (`eye_fire`) only shows while the skull is lit, emissive, flaring up as it catches. The Wither Bones given
+ * soul fire (`eye_fire`) only shows while the skull is lit, emissive, kindling as it catches. The Wither Bones given
  * to it are drawn as the bull's own bones (the `soul_bull` model in its `revive` clip's opening heap), gathering round the
  * skull piece by piece until the heap is whole. The item is the same 3D skull everywhere.
  */
@@ -143,10 +143,9 @@ public class SoulBullSkullRenderer implements BlockEntityRenderer<SoulBullSkullB
         m.clip("idle", (time / 20f) % 2.0f);
         boolean burning = lit >= 0f;
         m.show("eye_fire", burning);
-        if (burning) {   // the flames catch: a flare, then a steady flicker
+        if (burning) {   // the flames catch and flicker, never taller than at rest (they'd lick up through the brow)
             float catchUp = Mth.clamp(lit / 8f, 0f, 1f);
-            float flare = lit < 20f ? 1f + 0.35f * Mth.sin(Mth.clamp(lit / 20f, 0f, 1f) * Mth.PI) : 1f;
-            float s = 1.3f * catchUp * flare * (1f + 0.06f * Mth.sin(time * 0.7f));   // a touch larger than the socket: it reads at block scale
+            float s = catchUp * (0.93f + 0.07f * Mth.sin(time * 0.7f));
             m.get("eye_fire").ifPresent(p -> {
                 p.xScale *= s;
                 p.yScale *= s;
