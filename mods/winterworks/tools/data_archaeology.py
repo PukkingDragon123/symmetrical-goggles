@@ -11,7 +11,21 @@ def item(name, weight=1, count=None):
     return e
 
 
+# 0.4 fixes: a Harvester Egg turns up in about 1 in 150 brushes of suspicious sand and gravel (docs/FIXES_0_4.md "The
+# Harvester"): an entry as heavy as all the others together, kept only 2 times in 150 (random_chance), so 1 in 150 overall.
+EGG_CHANCE = 1 / 150
+
+
+def with_egg(ctx, entries):
+    total = sum(e.get("weight", 1) for e in entries)
+    egg = dict(item(f"{ctx.M}:harvester_egg", total),
+               conditions=[{"condition": "minecraft:random_chance", "chance": round(2 * EGG_CHANCE, 6)}])
+    return entries + [egg]
+
+
 def archaeology(ctx, name, entries):
+    if name in ("cave_amber", "cave_bones", "dead_cave", "dig_site"):   # the suspicious sand and gravel tables
+        entries = with_egg(ctx, entries)
     ctx.write(os.path.join(ctx.D, ctx.M, "loot_table", "archaeology", name + ".json"),
               {"type": "minecraft:archaeology", "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": entries}]})
 

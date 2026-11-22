@@ -8,6 +8,9 @@
     },
     "inclusion=mosquito": {
       "model": "winterworks:block/amber_block_mosquito"
+    },
+    "inclusion=egg": {
+      "model": "winterworks:block/amber_block"
     }
   }
 }

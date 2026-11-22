@@ -1,0 +1,118 @@
+{
+  "name": "Nautilus Horn",
+  "parts": 14,
+  "instances": 14,
+  "faces": 78,
+  "triangles": 156,
+  "vertices_flat": 312,
+  "vertices_unique": 104,
+  "atlas": [
+    64,
+    128
+  ],
+  "atlas_fill": 0.813,
+  "texel_density": 2.0,
+  "colors_used": 31,
+  "palette": {
+    "shell": [
+      "#6e5a44",
+      "#8f7759",
+      "#ae9673",
+      "#c9b494",
+      "#e0d0b2",
+      "#f2e8d2",
+      "#fdf8ec"
+    ],
+    "flame": [
+      "#3e170c",
+      "#5e2412",
+      "#7c341a",
+      "#9c4824",
+      "#b85e30"
+    ],
+    "nacre": [
+      "#4a3f52",
+      "#76708a",
+      "#a7a5bc",
+      "#cfd0e0",
+      "#ece9f4",
+      "#fff9fb"
+    ],
+    "brass": [
+      "#3b2408",
+      "#5e3c0e",
+      "#855a18",
+      "#ab7d26",
+      "#cda040",
+      "#e8c66a",
+      "#faeaa6"
+    ],
+    "wood": [
+      "#1f130d",
+      "#2c1c13",
+      "#3b271a",
+      "#4c3322",
+      "#5f412b",
+      "#745236",
+      "#8b6543"
+    ],
+    "flesh": [
+      "#17131b",
+      "#231c27",
+      "#2e2632",
+      "#3b313f",
+      "#4a3f4d",
+      "#5c4e5a",
+      "#6f606b"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -7.75,
+      0.0,
+      -2.5
+    ],
+    "max": [
+      5.5,
+      14.596,
+      2.5
+    ],
+    "size": [
+      13.25,
+      14.596,
+      5.0
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 1.0
+  },
+  "joints": [
+    "horn_block",
+    "foot",
+    "post_l",
+    "fork_l",
+    "post_r",
+    "fork_r",
+    "shell",
+    "shell_h",
+    "shell_v",
+    "shell_d",
+    "mouth",
+    "pipe",
+    "pipe_ring",
+    "pipe_cup"
+  ],
+  "files": {
+    "nautilus_horn.glb": "examples/output/nautilus_horn.glb",
+    "nautilus_horn.obj": "examples/output/nautilus_horn.obj",
+    "nautilus_horn.mtl": "examples/output/nautilus_horn.mtl",
+    "nautilus_horn.bbmodel": "examples/output/nautilus_horn.bbmodel",
+    "nautilus_horn_texture.png": "examples/output/nautilus_horn_texture.png",
+    "nautilus_horn_texture_x8.png": "examples/output/nautilus_horn_texture_x8.png",
+    "nautilus_horn_hero.png": "examples/output/nautilus_horn_hero.png",
+    "nautilus_horn_sheet.png": "examples/output/nautilus_horn_sheet.png",
+    "nautilus_horn_turntable.gif": "examples/output/nautilus_horn_turntable.gif",
+    "nautilus_horn_idle.gif": "examples/output/nautilus_horn_idle.gif"
+  }
+}

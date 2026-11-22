@@ -1,0 +1,30 @@
+{
+  "sources": [
+    {
+      "type": "winterworks:glow_mask",
+      "textures": [
+        "minecraft:block/torchflower",
+        "minecraft:block/torchflower_crop_stage1"
+      ],
+      "hue_min": 330,
+      "hue_max": 70,
+      "min_saturation": 0.45,
+      "min_value": 0.55,
+      "boost": 1.1
+    },
+    {
+      "type": "winterworks:glow_mask",
+      "textures": [
+        "minecraft:block/pitcher_crop_top_stage_3",
+        "minecraft:block/pitcher_crop_top_stage_4",
+        "minecraft:block/pitcher_crop_bottom_stage_3",
+        "minecraft:block/pitcher_crop_bottom_stage_4"
+      ],
+      "hue_min": 150,
+      "hue_max": 330,
+      "min_saturation": 0.15,
+      "min_value": 0.35,
+      "boost": 1.15
+    }
+  ]
+}

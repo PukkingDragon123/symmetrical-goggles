@@ -1,0 +1,920 @@
+{
+ "name": "Tube Worms",
+ "description": "Winterworks Tube Worms: a clump of white ringed tubes with feathery red plumes (extended) and the same with the plumes pulled in (retracted). Minecraft pixel units, density 2; exported as block models.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 500,
+  "colors": 40
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.9,
+  "gradient": 0.4,
+  "ao": 0.4,
+  "ao_height": 3.0
+ },
+ "brush": {
+  "flow": "vertical",
+  "length": 1.5,
+  "width": 0.5,
+  "rough": 0.5,
+  "overshoot": 0.3,
+  "textures": {
+   "tube": "organic",
+   "basalt": "stone"
+  }
+ },
+ "minecraft": {
+  "fps": 12
+ },
+ "render": {
+  "background": "#0f2230",
+  "hero": [
+   -30,
+   18
+  ],
+  "shadow": 0.4
+ },
+ "palette": {
+  "ramps": {
+   "tube": [
+    "#4a4038",
+    "#6c6156",
+    "#8f8579",
+    "#b0a89c",
+    "#cfc8bc",
+    "#e8e3d8",
+    "#f8f5ee"
+   ],
+   "plume": [
+    "#3d0610",
+    "#650c18",
+    "#8e1622",
+    "#b8232e",
+    "#da3c40",
+    "#f06a62",
+    "#fba196"
+   ],
+   "basalt": [
+    "#121318",
+    "#1a1b22",
+    "#23242c",
+    "#2d2e37",
+    "#383943",
+    "#45464f",
+    "#54545c",
+    "#65646a"
+   ],
+   "crust": [
+    "#2a120c",
+    "#451c10",
+    "#622a14",
+    "#80401a",
+    "#9c5a22",
+    "#b8782e",
+    "#d09a42",
+    "#e2bd62",
+    "#efdb92"
+   ]
+  }
+ },
+ "styles": {
+  "tube": {
+   "ramp": "tube",
+   "tone": 4.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.5,
+     "width": 0.25,
+     "shift": -1.2,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "stain",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.8
+    },
+    {
+     "id": "mouth",
+     "op": "rect",
+     "rect": [
+      0.2,
+      0.2,
+      0.8,
+      0.8
+     ],
+     "ramp": "plume",
+     "tone": 1.0,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "rock": {
+   "ramp": "basalt",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.8
+    },
+    {
+     "id": "crust",
+     "op": "patches",
+     "scale": 1.2,
+     "threshold": 0.6,
+     "ramp": "crust",
+     "tone": 3.2,
+     "space": "world",
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    }
+   ]
+  },
+  "plume": {
+   "ramp": "plume",
+   "tone": 4.0,
+   "light": 0.3,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "p": "plume:4",
+    "P": "plume:5",
+    "R": "plume:3",
+    "W": "plume:6",
+    "r": "plume:2"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "extended",
+   "shape": "bone",
+   "pivot": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "extended_rock",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    6.0,
+    1.5,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "style": "rock"
+  },
+  {
+   "id": "extended_rock_t",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    3.5,
+    1.0,
+    3.5
+   ],
+   "pivot": [
+    3.0,
+    0.5,
+    2.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "rock"
+  },
+  {
+   "id": "extended_tube0",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    2.0,
+    13.0,
+    2.0
+   ],
+   "pivot": [
+    -2.0,
+    0.5,
+    -1.5
+   ],
+   "offset": [
+    0.0,
+    6.5,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "extended_plume0_0",
+   "shape": "card",
+   "parent": "extended_tube0",
+   "pivot": [
+    0.0,
+    13.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_plume0_1",
+   "shape": "card",
+   "parent": "extended_tube0",
+   "pivot": [
+    0.0,
+    13.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_tube1",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    1.5,
+    10.5,
+    1.5
+   ],
+   "pivot": [
+    1.5,
+    0.5,
+    -3.0
+   ],
+   "offset": [
+    0.0,
+    5.25,
+    0.0
+   ],
+   "rotation": [
+    -22.5,
+    0.0,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "extended_plume1_0",
+   "shape": "card",
+   "parent": "extended_tube1",
+   "pivot": [
+    0.0,
+    10.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_plume1_1",
+   "shape": "card",
+   "parent": "extended_tube1",
+   "pivot": [
+    0.0,
+    10.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "yz",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_tube2",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    2.0,
+    8.5,
+    2.0
+   ],
+   "pivot": [
+    2.5,
+    0.5,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    4.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -22.5
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "extended_plume2_0",
+   "shape": "card",
+   "parent": "extended_tube2",
+   "pivot": [
+    -0.0,
+    8.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_plume2_1",
+   "shape": "card",
+   "parent": "extended_tube2",
+   "pivot": [
+    -0.0,
+    8.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "yz",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_tube3",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    1.5,
+    7.0,
+    1.5
+   ],
+   "pivot": [
+    -1.0,
+    0.5,
+    2.5
+   ],
+   "offset": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "extended_plume3_0",
+   "shape": "card",
+   "parent": "extended_tube3",
+   "pivot": [
+    0.0,
+    7.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_plume3_1",
+   "shape": "card",
+   "parent": "extended_tube3",
+   "pivot": [
+    0.0,
+    7.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_tube4",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    1.5,
+    5.5,
+    1.5
+   ],
+   "pivot": [
+    -4.5,
+    0.5,
+    1.5
+   ],
+   "offset": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    22.5
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "extended_plume4_0",
+   "shape": "card",
+   "parent": "extended_tube4",
+   "pivot": [
+    0.0,
+    5.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_plume4_1",
+   "shape": "card",
+   "parent": "extended_tube4",
+   "pivot": [
+    0.0,
+    5.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "yz",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_tube5",
+   "shape": "box",
+   "parent": "extended",
+   "size": [
+    1.5,
+    6.0,
+    1.5
+   ],
+   "pivot": [
+    5.0,
+    0.5,
+    -3.5
+   ],
+   "offset": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "extended_plume5_0",
+   "shape": "card",
+   "parent": "extended_tube5",
+   "pivot": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "extended_plume5_1",
+   "shape": "card",
+   "parent": "extended_tube5",
+   "pivot": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "plume",
+   "plane": "xy",
+   "art": [
+    "p.P..P.p",
+    ".P.pp.P.",
+    "p.PRRP.p",
+    ".pRWRRp.",
+    "..RRRR..",
+    "..rRRr..",
+    "...rr..."
+   ]
+  },
+  {
+   "id": "retracted",
+   "shape": "bone",
+   "pivot": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "retracted_rock",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    6.0,
+    1.5,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "style": "rock"
+  },
+  {
+   "id": "retracted_rock_t",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    3.5,
+    1.0,
+    3.5
+   ],
+   "pivot": [
+    3.0,
+    0.5,
+    2.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "rock"
+  },
+  {
+   "id": "retracted_tube0",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    2.0,
+    13.0,
+    2.0
+   ],
+   "pivot": [
+    -2.0,
+    0.5,
+    -1.5
+   ],
+   "offset": [
+    0.0,
+    6.5,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "retracted_tube1",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    1.5,
+    10.5,
+    1.5
+   ],
+   "pivot": [
+    1.5,
+    0.5,
+    -3.0
+   ],
+   "offset": [
+    0.0,
+    5.25,
+    0.0
+   ],
+   "rotation": [
+    -22.5,
+    0.0,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "retracted_tube2",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    2.0,
+    8.5,
+    2.0
+   ],
+   "pivot": [
+    2.5,
+    0.5,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    4.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -22.5
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "retracted_tube3",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    1.5,
+    7.0,
+    1.5
+   ],
+   "pivot": [
+    -1.0,
+    0.5,
+    2.5
+   ],
+   "offset": [
+    0.0,
+    3.5,
+    0.0
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "retracted_tube4",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    1.5,
+    5.5,
+    1.5
+   ],
+   "pivot": [
+    -4.5,
+    0.5,
+    1.5
+   ],
+   "offset": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    22.5
+   ],
+   "style": "tube"
+  },
+  {
+   "id": "retracted_tube5",
+   "shape": "box",
+   "parent": "retracted",
+   "size": [
+    1.5,
+    6.0,
+    1.5
+   ],
+   "pivot": [
+    5.0,
+    0.5,
+    -3.5
+   ],
+   "offset": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "tube"
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": []
+  }
+ }
+}

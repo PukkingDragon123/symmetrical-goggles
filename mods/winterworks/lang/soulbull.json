@@ -1,0 +1,10 @@
+{
+  "entity.winterworks.soul_bull": "Soul Bull",
+  "item.winterworks.soul_bull_spawn_egg": "Soul Bull Spawn Egg",
+  "block.winterworks.soul_bull_skull": "Soul Bull Skull",
+  "block.winterworks.soul_bull_skull.tip": "Set it on soul sand in a ring of soul fire, then give it Wither Bones",
+  "message.winterworks.soul_bull_skull.cold": "The skull is cold. Set it on soul sand with soul fire burning on all four sides.",
+  "message.winterworks.soul_bull_skull.bones": "The bones gather round the skull: %s of %s",
+  "message.winterworks.soul_bull.milk_refused": "Its soul fire burns too low to spare a drop",
+  "message.winterworks.soul_bull.ram_weak": "Not enough soul energy to ram"
+}

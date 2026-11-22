@@ -180,7 +180,8 @@ put("textures/item/wither_bone.png", draw(parse(WITHER_BONE), BONE_PAL, (32, 32)
 
 # ====================================================================== the soul bar HUD
 # Soul fire: ink blue -> blue -> cyan -> white (the Soul Bull's soul ramp).
-SOUL = ["#071433", "#0c2a63", "#11479a", "#1769c4", "#1f92e0", "#38bdf2", "#7ce0fb", "#c4f6ff", "#ffffff"]
+# vanilla soul fire's teal (sampled along the soul_fire / soul_torch gradient for colour only), deep teal -> near white
+SOUL = ["#021c1e", "#03383b", "#015a5e", "#018085", "#08a5aa", "#2ccfd2", "#6fe9ea", "#b6fbfc", "#e8ffff"]
 BAR_W = 182
 NOTCHES = [round(BAR_W * k / 10) for k in range(1, 10)]          # a mark every tenth of the soul
 

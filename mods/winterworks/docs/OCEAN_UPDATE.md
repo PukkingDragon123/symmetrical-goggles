@@ -160,3 +160,55 @@ spawn eggs `anglerfish_`, `lionfish_`, `nautilus_`, `whale_spawn_egg`. Entities:
 `nautilus`, `whale`, `lionfish_dart`, `cannonball`, `elder_bubble`. Biomes: `volcanic_depths`, `abyssal_trench`.
 Structures: `deep_shipwreck`, `sunken_treasure`, `whale_skeleton`. Dimension: `whale_belly`. Advancement:
 `ocean/whale_song`.
+
+## 11. Art notes for the Java side (blocks, items, armour)
+* Java models (`client/lowpix/*Model.java`, `textures/entity/<name>.png` + `_glow`), block-entity transform like
+  `HexRender.enterModel` (translate 0.5,0,0.5; rotate Y by yRot+180; translate 0,1.5,0; scale -1,-1,1), drawn with
+  `entityCutoutNoCull`, glow full-bright (`RenderType.eyes`):
+  * `whale_lure`: `frame` -> `stalk` (`stalk_0..2`) -> `bulb` (glow); `idle` 3 s loop.
+  * `eye_of_the_ocean`: `cage` -> `scales`; `eye` (centre (0,8,0), looks +Z) -> `pupil` (glow card); `idle` 4 s loop.
+  * `cannon`: `base` -> `yoke` (yaw: `yoke.yRot`) -> `barrel` (pitch: `barrel.xRot = -pitch`); clip `fire` 0.6 s.
+  * `turtle_shell_armor` (`carapace`, `plastron` at the body pivot): a Fabric `ArmorRenderer` for the chestplate:
+    `contextModel.body.translateAndRotate(pose)`, render with `RenderType.armorCutoutNoCull(winterworks:textures/entity/
+    turtle_shell_armor.png)` (+ glint when enchanted). Layers: `turtle_shell_layer_1` (boots only), `_layer_2` (legs).
+  * `turtle_shell_retreat` (`shell` -> `plastron`, `carapace`; `idle` loop, `hit` 0.4 s): drawn instead of the player
+    while retreating (living-entity transform: mulPose Y 180-bodyYaw, scale -1,-1,1, translate 0,-1.501,0).
+  * `cannonball` (`ball`, `spin` 1 s): translate up 0.2, scale -1,-1,1.
+* Blocks: `tube_worms` (cutout; blockstate on `extended`, random turns), `hydrothermal_vent` (solid; wrap
+  `block/hydrothermal_vent_glow` in an emissive model like `client/endmob/BloomGlowModel` for a full-bright mouth),
+  `nautilus_horn` (solid), `angler_light` (cube_all; texture animated 8 frames). Lure, eye, cannon have particle-only
+  block models, `""` blockstates and `builtin/entity` item models (add facing variants if a `facing` is added).
+* Particles (register types + providers; translucent sheet; frame 0 = birth): `vent_smoke` 6 (setSpriteFromAge over
+  40-60 t), `bioluminescence` 4 (full-bright), `whale_spout` 5 (~20 t), `belly_current` 4 (loop (age/2)%4), `song_note`
+  4 (loop (age/3)%4, full-bright, tint per note), `elder_bubble` 5 (0-3 shimmer, 4 pop).
+* Projectiles: `entity/elder_bubble.png` (32x128, 4 frames, billboard, full-bright), `entity/projectiles/lionfish_dart.png`
+  (arrow layout).
+* Sounds: `entity.whale.note` is one clean tone at F#3 (note-block base): play at pitch 2^((note-12)/12) for melodies.
+  `entity.whale.song` = three 12-13 s songs (streamed). Loops: `block.hydrothermal_vent.loop` (8 s),
+  `ambient.whale_belly.loop` (16 s).
+
+## 12. Art notes for the Java side (creatures)
+Lowpix coordinates (Y up, front +Z, feet at y=0); MC model space is (x, 24-y, -z). Draw every creature with
+`entityCutoutNoCull` (cards); glow layers with `RenderType.eyes(<name>_glow.png)` full-bright.
+* **Render scales**: anglerfish is built at the **female's** size: female 1.0, male 1/7. Baby turtle built at 2x: draw
+  at 0.5 (if vanilla's 0.3 baby scale stays, use 0.5/0.3). Lionfish ~0.6. Elder Guardian 1.0 (not vanilla's 2.35).
+* **Anglerfish**: locators `mouth` (0,10.6,8) for the grabbed player, `lure` (0,28.4,17) for the moving light; halo
+  cards drawn only by the eyes pass (pulse/flare by scaling the eyes-pass RGB). Clips swim 1.6, idle 4.0 (loops),
+  lunge 0.6, bite 0.5, hold 1.0 (loop), lure_flash 0.8.
+* **Lionfish**: `fins` (fin_l/r), `spines` (spine_0..5). Clips swim 2.0 (loop), hunt 0.5, flare 0.8.
+* **Nautilus**: toggle `saddle`; `rider` locator (0,25.5,-3) ~1.6 blocks up; `tentacle_0..7` (+`_tip`). Clips idle 3.0,
+  swim 1.2 (loops), dash 0.5.
+* **Sea turtles** (`sea_turtle`, `sea_turtle_baby`): `neck`->`head`, `jaw`, flipper joints, eyelids `lid_l/r`. Clips
+  idle 4.0, walk 1.6, swim 2.0 (baby 1.2), bask 5.0 (loops), dig 2.0.
+* **Elder Guardian**: `eye`, `pupil` (card; scale <1 = contracted), `spikes` (spike_0..11 with `_mid`,`_tip`; extend by
+  adding outward*px, directions in MC space: 0 (-.41,-.91,-.09), 1 (-.2,-.98,0), 2 (0,-1,-.05), 3 (.2,-.98,0),
+  4 (.41,-.91,-.09), 5 (.93,-.33,.19), 6 (.92,.28,.28), 7/8 as 5/6 with x negated, 9 (-.36,.89,.27), 10 (.36,.89,.27),
+  11 (0,-.57,.82)), `tail_0..3`, `fin_l/r`, `brow` (slides down 7 px to shut), `lids`, `jaw`; locators `mouth`
+  (0,11.2,15) bubbles, `laser` (0,21.2,14.2) beam. Clips idle 4.0, swim 1.6 (loops), bubble 1.0 (shots at .45/.60/.75),
+  stare 2.5 (telegraph 0-2.0, beam at 2.0, hold last frame), tail_whip 1.0 (wind-up 0-.4, spin .4-.75), death 2.0
+  (hold last frame).
+* **Whale** (density 1; texture 1024x2048): 11.45 x 6.4 x 26.9 blocks with fins and fluke (body 7 x 6). Locators
+  `spout` (0,97,139), `mouth` (0,46,176), `deck` (0,96,20) = MC (0,-72,-20): the centre of the 9 x 21 deck; the back is
+  flat at y=96 (6 blocks up) over x -42..42, z -36..152. Attach the deck mesh to `deck`'s transform. Extras `throat`,
+  `fluke_l/r`, `dorsal`. Clips swim 4.0, idle 6.0, sing 8.0 (loops), breathe 2.0 (spout 0.55-1.0), mouth_open 1.0
+  (hold), mouth_close 0.5, lunge 1.5 (gape .3-.85, shut ~1.05), shake 2.0 (rolls +-22 deg).

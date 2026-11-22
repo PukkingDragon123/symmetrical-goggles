@@ -10,7 +10,8 @@
                                              with glowing veins, round eye-spots and the rune sigils at their
                                              roots, the slim keel, the A-frame struts and the silk-gripped bar
     textures/item/monolith_wand_icon.png     the wand on the diagonal like a vanilla tool: starry void-rod shaft,
-                                             gold bands, obsidian pommel with an ember, the caged round eye
+                                             molten-seamed meteorite bands, a meteorite-core pommel, and the round
+                                             eye in a crown of jagged meteorite shards with white-hot tips, embers
 
 Drawn in code, pixel by pixel, with the same ramps as the 3D models (obsidian_kit.RAMPS), light from the top-left,
 hue-shifted dark outlines (never black) and only the glows saturated. Every eye is round (END_UPDATE.md, "Eyes") and
@@ -290,75 +291,91 @@ def glider():
 # ======================================================================= the Monolith Wand, on the diagonal
 def wand():
     c = Canvas()
+    AX, AY = 1 / math.sqrt(2), -1 / math.sqrt(2)          # along the wand, toward the head (top-right)
+    NX, NY = 1 / math.sqrt(2), 1 / math.sqrt(2)           # across it, toward the shaded bottom-right
+
     # shaft: a 2px void rod from the pommel (bottom-left) to the head (top-right), stars in it
-    for k in range(17):
-        x, y = 6 + k, 25 - k
+    for k in range(15):
+        x, y = 7 + k, 24 - k
         c.set(x, y, "void:3")
         c.set(x + 1, y, "void:4" if k % 2 else "void:3")
         c.set(x, y - 1, "void:5")
-    for k in (2, 6, 9, 13):
-        c.set(6 + k + (k % 2), 25 - k, "star:2" if k % 3 else "star:3")
-    c.set(9, 21, "star:1")
-    # gold bands across the shaft
-    for k in (4, 11):
-        x, y = 6 + k, 25 - k
-        c.set(x - 1, y, "gold:6")
-        c.set(x, y, "gold:5")
-        c.set(x + 1, y, "gold:5")
-        c.set(x + 2, y, "gold:3")
-        c.set(x, y - 1, "gold:6")
-        c.set(x + 1, y + 1, "gold:3")
-    # pommel: an obsidian diamond with an ember
-    for y in range(24, 31):
-        for x in range(1, 9):
-            d = abs(x + 0.5 - 5) + abs(y + 0.5 - 27)
-            if d <= 3.2:
-                c.set(x, y, "obsidian:5" if (x + 0.5 - 5) + (y + 0.5 - 27) < -0.5 else "obsidian:2")
-    c.set(4, 27, "ember:5")
-    c.set(5, 27, "ember:4")
-    c.set(4, 26, "ember:6")
-    # head: a collar, then prongs bowing round the eye to a capped point (a lens along the wand's axis)
-    hx, hy = 24.0, 8.0
-    ax, ay = 1 / math.sqrt(2), -1 / math.sqrt(2)          # along the wand, toward the tip
+    for k in (2, 7, 12):
+        c.set(7 + k + (k % 2), 24 - k, "star:2" if k % 3 else "star:3")
+    c.set(10, 20, "star:1")
+    # three rough meteorite bands, each split by a molten seam
+    for k in (3, 8, 12):
+        x, y = 7 + k, 24 - k
+        for (dx, dy, col) in ((-1, 0, "meteor:6"), (0, -1, "meteor:7"), (0, 0, "molten:5"), (1, 0, "molten:4"),
+                              (2, 0, "meteor:3"), (1, 1, "meteor:2"), (-1, -1, "meteor:5"), (2, 1, "molten:2")):
+            c.set(x + dx, y + dy, col)
+    # the meteorite-core pommel: a crust knuckle, crust claws and the glowing core at the very end
+    for y in range(22, 30):
+        for x in range(2, 10):
+            u, v = x + 0.5 - 6.0, y + 0.5 - 25.5
+            sa, tb = u * AX + v * AY, u * NX + v * NY
+            if abs(sa) <= 1.6 and abs(tb) <= 2.4:
+                c.set(x, y, "meteor:6" if tb < -0.8 else ("meteor:4" if tb < 0.8 else "meteor:2"))
+    c.set(6, 24, "meteor:8")
+    c.set(7, 26, "molten:4")
+    c.set(5, 24, "molten:3")
+    for y in range(25, 32):
+        for x in range(0, 8):
+            d = math.hypot(x + 0.5 - 3.6, y + 0.5 - 28.4)
+            if d <= 2.6:
+                c.set(x, y, "molten:8" if d < 0.9 else "molten:7" if d < 1.5 else "molten:5" if d < 2.1 else "molten:2")
+    for (x, y, col) in ((1, 26, "meteor:5"), (2, 25, "meteor:6"), (6, 30, "meteor:3"), (6, 29, "meteor:2"),
+                        (1, 27, "meteor:3")):
+        c.set(x, y, col)
+
+    # the head: a crown of jagged meteorite shards flaring round the eye from a crust collar, crust at the root,
+    # molten (rose, orange, gold, white) toward the tips; drawn back to front
+    hx, hy = 23.6, 8.4                                       # the eye's centre
+
+    def shard(x0, y0, x1, y1, side):
+        """A bold shard: 2px of crust (its `side` texel in shadow) heating to a 1px molten point."""
+        n = max(abs(x1 - x0), abs(y1 - y0))
+        for i in range(n + 1):
+            f = i / n
+            x, y = round(x0 + (x1 - x0) * f), round(y0 + (y1 - y0) * f)
+            col = ("molten:7" if f > 0.92 else "molten:6" if f > 0.8 else "molten:4" if f > 0.64 else
+                   "molten:2" if f > 0.5 else "meteor:6")
+            c.set(x, y, col)
+            if f < 0.72:
+                c.set(x + side[0], y + side[1], "meteor:3" if f < 0.48 else ("molten:2" if f < 0.6 else "molten:4"))
+
+    for x0, y0, x1, y1, side in ((18, 13, 13, 4, (1, 0)), (19, 12, 18, 1, (1, 0)), (20, 11, 24, 0, (1, 0)),
+                                 (21, 11, 30, 2, (0, 1)), (21, 12, 31, 8, (0, 1)), (20, 14, 29, 14, (0, 1))):
+        shard(x0, y0, x1, y1, side)
+    for y in range(10, 18):                                  # the collar: crust split by a molten seam
+        for x in range(15, 23):
+            u, v = x + 0.5 - 19.0, y + 0.5 - 14.0
+            sa, tb = u * AX + v * AY, u * NX + v * NY
+            if abs(sa) <= 1.0 and abs(tb) <= 2.6:
+                c.set(x, y, "molten:4" if -0.3 < sa < 0.5 else
+                      ("meteor:7" if tb < -1.0 else "meteor:4" if tb < 0.9 else "meteor:2"))
+    # the eye in the crown: a round eyeball, shaded, its round glowing iris, round pupil and catch-light
     for y in range(0, 17):
         for x in range(15, 32):
             dx, dy = x + 0.5 - hx, y + 0.5 - hy
-            sa = dx * ax + dy * ay
-            tb = dx * -ay + dy * ax                         # < 0: the top-left (lit) side
-            half = 4.6 * (1 - (sa / 7.2) ** 2)
-            if abs(sa) < 7.2 and abs(tb) <= half and abs(tb) > half - 1.7:
-                c.set(x, y, "obsidian:6" if tb < 0 else "obsidian:3")
-                if tb < 0 and abs(tb) > half - 0.8:
-                    c.set(x, y, "obsidian:7")
-    # the eye in the cage: a round eyeball, shaded, its round glowing iris, round pupil and catch-light
-    for y in range(0, 17):
-        for x in range(15, 32):
-            dx, dy = x + 0.5 - hx, y + 0.5 - hy
-            if math.hypot(dx, dy) <= 3.0:
+            if math.hypot(dx, dy) <= 3.3:
                 c.set(x, y, "sclera:6" if dx + dy < -1.5 else ("sclera:4" if dx + dy < 1.5 else "sclera:3"))
     for y in range(0, 17):
         for x in range(15, 32):
             dx, dy = x + 0.5 - hx, y + 0.5 - hy
-            if math.hypot(dx, dy) <= 2.0:
+            if math.hypot(dx, dy) <= 2.3:
                 c.set(x, y, "eye:3" if dy < 0 else "eye:5")
-    c.set(23, 8, "obsidian:0")
-    c.set(24, 8, "obsidian:0")
-    c.set(23, 7, "obsidian:0")
-    c.set(24, 7, "obsidian:0")
-    c.set(23, 6, "#ffffff")
-    # collar (gold-ringed) where the shaft enters, a cap and spike at the tip
-    c.set(19, 12, "gold:6")
-    c.set(20, 13, "gold:4")
-    c.set(18, 12, "gold:5")
-    c.set(19, 13, "gold:3")
-    c.set(28, 3, "obsidian:5")
-    c.set(29, 3, "obsidian:3")
-    c.set(28, 4, "obsidian:3")
-    c.set(29, 2, "obsidian:6")
-    c.set(30, 1, "obsidian:6")
-    for x, y in ((20, 4), (28, 12), (25, 2)):
-        c.set(x, y, "ember:5")
-    c.set(21, 5, "ember:4")
+    for x, y in ((23, 8), (24, 8), (23, 7), (24, 7)):
+        c.set(x, y, "obsidian:0")
+    c.set(22, 6, "#ffffff")
+    # two short molten fangs in front of the eye's lower corners
+    for (x, y, col) in ((21, 10, "meteor:6"), (20, 9, "molten:5"), (20, 8, "molten:7"),
+                        (25, 12, "meteor:3"), (26, 12, "molten:5"), (27, 12, "molten:7")):
+        c.set(x, y, col)
+    # orbiting embers: hot chips and a crusted cinder
+    for (x, y, col) in ((14, 1, "molten:7"), (15, 1, "molten:5"), (27, 17, "molten:6"), (26, 18, "molten:4"),
+                        (11, 8, "molten:5"), (25, 0, "meteor:6"), (26, 0, "molten:4")):
+        c.set(x, y, col)
     c.outline()
     return c
 

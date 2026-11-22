@@ -1,0 +1,78 @@
+{
+ "parent": "minecraft:block/block",
+ "ambientocclusion": false,
+ "textures": {
+  "particle": "winterworks:block/hydrothermal_vent",
+  "tex": "winterworks:block/hydrothermal_vent_glow"
+ },
+ "elements": [
+  {
+   "from": [
+    6.5,
+    12.5,
+    6.5
+   ],
+   "to": [
+    9.5,
+    14.5,
+    9.5
+   ],
+   "faces": {
+    "down": {
+     "uv": [
+      4.5,
+      9.0,
+      4.875,
+      8.625
+     ],
+     "texture": "#tex"
+    },
+    "up": {
+     "uv": [
+      4.125,
+      8.625,
+      4.5,
+      9.0
+     ],
+     "texture": "#tex"
+    },
+    "north": {
+     "uv": [
+      4.875,
+      9.0,
+      5.25,
+      9.25
+     ],
+     "texture": "#tex"
+    },
+    "south": {
+     "uv": [
+      4.125,
+      9.0,
+      4.5,
+      9.25
+     ],
+     "texture": "#tex"
+    },
+    "west": {
+     "uv": [
+      3.75,
+      9.0,
+      4.125,
+      9.25
+     ],
+     "texture": "#tex"
+    },
+    "east": {
+     "uv": [
+      4.5,
+      9.0,
+      4.875,
+      9.25
+     ],
+     "texture": "#tex"
+    }
+   }
+  }
+ ]
+}

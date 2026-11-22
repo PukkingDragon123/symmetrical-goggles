@@ -1,0 +1,5419 @@
+{
+ "name": "Whale",
+ "description": "The Winterworks whale: a massive original baleen whale, blue-grey and mottled, pale beneath, a broad flat back for a block deck, a wide head with a splash guard and twin blowhole, small round eyes, a bowed lower jaw over gums and baleen, throat grooves, long scalloped pectorals and a huge notched fluke. Minecraft pixel units at density 1: exports 1:1 to a vanilla entity model.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 1,
+ "grounded": false,
+ "budget": {
+  "tris": 900,
+  "colors": 96
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.8,
+  "gradient": 0.5,
+  "ao": 0.5,
+  "ao_height": 30.0
+ },
+ "brush": {
+  "flow": "horizontal",
+  "length": 6.0,
+  "width": 2.0,
+  "rough": 0.5,
+  "overshoot": 0.3,
+  "textures": {
+   "whale": "leather",
+   "belly": "organic",
+   "barnacle": "stone"
+  }
+ },
+ "minecraft": {
+  "fps": 12
+ },
+ "render": {
+  "background": "#1a4a63",
+  "hero": [
+   38,
+   18
+  ],
+  "shadow": 0.4
+ },
+ "palette": {
+  "ramps": {
+   "whale": [
+    "#070c13",
+    "#0c131d",
+    "#121b28",
+    "#192434",
+    "#212e41",
+    "#2a384e",
+    "#34445c",
+    "#3f506a",
+    "#4b5d78",
+    "#586a86",
+    "#677a94",
+    "#7889a2",
+    "#8c9cb2"
+   ],
+   "belly": [
+    "#2c3440",
+    "#414b58",
+    "#58636f",
+    "#717c88",
+    "#8b96a1",
+    "#a6afb8",
+    "#c0c8ce",
+    "#d8dee2",
+    "#eef1f3"
+   ],
+   "gum": [
+    "#1f0b10",
+    "#34121a",
+    "#4c1b26",
+    "#672633",
+    "#813343",
+    "#9b4553",
+    "#b45b66",
+    "#ca757d"
+   ],
+   "baleen": [
+    "#100e0c",
+    "#1d1915",
+    "#2c2620",
+    "#3d352c",
+    "#50463a",
+    "#655a4b",
+    "#7d705e",
+    "#968874"
+   ],
+   "barnacle": [
+    "#24211c",
+    "#3a362e",
+    "#545045",
+    "#706b5e",
+    "#8f8978",
+    "#ada793",
+    "#c9c3ae",
+    "#e1dccb",
+    "#f2efe3"
+   ],
+   "pupil": [
+    "#040406",
+    "#0a0a0e",
+    "#131318"
+   ],
+   "cream": [
+    "#4a3e33",
+    "#6b5d4e",
+    "#8d7e6c",
+    "#ae9f8b",
+    "#cbbea9",
+    "#e2d8c5",
+    "#f2ecdd",
+    "#fcf9f0"
+   ]
+  }
+ },
+ "styles": {
+  "hide": {
+   "ramp": "whale",
+   "tone": 6.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   }
+  },
+  "hide_back": {
+   "ramp": "whale",
+   "tone": 5.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "mottle",
+     "op": "spots",
+     "count": 26,
+     "radius": [
+      1.2,
+      3.2
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 9.6,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "mottle_dk",
+     "op": "spots",
+     "count": 14,
+     "radius": [
+      1.0,
+      2.4
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 3.8,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ],
+     "seed": 11
+    },
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 40.0,
+     "width": 0.01,
+     "threshold": 0.72,
+     "ramp": "whale",
+     "tone": 10.0,
+     "seed": 3,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    }
+   ]
+  },
+  "hide_side": {
+   "ramp": "whale",
+   "tone": 6.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "dark_top",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -0.8
+    },
+    {
+     "id": "mottle",
+     "op": "spots",
+     "count": 26,
+     "radius": [
+      1.2,
+      3.2
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 9.6,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "mottle_dk",
+     "op": "spots",
+     "count": 14,
+     "radius": [
+      1.0,
+      2.4
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 3.8,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ],
+     "seed": 11
+    },
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 40.0,
+     "width": 0.01,
+     "threshold": 0.72,
+     "ramp": "whale",
+     "tone": 10.0,
+     "seed": 3,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "belly",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.35,
+     "ramp": "belly",
+     "tone": 5.0,
+     "wobble": 0.25,
+     "wobble_scale": 30.0,
+     "faces": [
+      "sides",
+      "front",
+      "back",
+      "bottom"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_ramp": "whale",
+      "shadow_shift": -1.0
+     }
+    }
+   ]
+  },
+  "hide_belly": {
+   "ramp": "belly",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "pleats",
+     "op": "stripes",
+     "axis": "x",
+     "period": 4.0,
+     "width": 0.25,
+     "shift": -1.6,
+     "wobble": 0.4,
+     "faces": [
+      "bottom",
+      "sides"
+     ]
+    }
+   ]
+  },
+  "hide_head": {
+   "ramp": "whale",
+   "tone": 6.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "mottle",
+     "op": "spots",
+     "count": 26,
+     "radius": [
+      1.2,
+      3.2
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 9.6,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "mottle_dk",
+     "op": "spots",
+     "count": 14,
+     "radius": [
+      1.0,
+      2.4
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 3.8,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ],
+     "seed": 11
+    },
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 40.0,
+     "width": 0.01,
+     "threshold": 0.72,
+     "ramp": "whale",
+     "tone": 10.0,
+     "seed": 3,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "lip",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.7,
+     "ramp": "whale",
+     "tone": 2.4,
+     "faces": [
+      "sides",
+      "front"
+     ]
+    }
+   ]
+  },
+  "hide_head_top": {
+   "ramp": "whale",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "mottle",
+     "op": "spots",
+     "count": 16,
+     "radius": [
+      1.2,
+      3.2
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 9.6,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "mottle_dk",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      1.0,
+      2.4
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 3.8,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ],
+     "seed": 11
+    },
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 40.0,
+     "width": 0.01,
+     "threshold": 0.72,
+     "ramp": "whale",
+     "tone": 10.0,
+     "seed": 3,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "lip",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.6,
+     "ramp": "whale",
+     "tone": 2.2,
+     "faces": [
+      "sides",
+      "front"
+     ]
+    }
+   ]
+  },
+  "blowhole": {
+   "ramp": "whale",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "top",
+     "at": "center",
+     "art": [
+      "..dddd....dddd..",
+      ".dDDDDd..dDDDDd.",
+      ".dDkkDd..dDkkDd.",
+      ".dDkkDd..dDkkDd.",
+      ".dDkkDd..dDkkDd.",
+      ".dDkkDd..dDkkDd.",
+      ".dDkkDd..dDkkDd.",
+      ".dDkkDd..dDkkDd.",
+      ".ddDDd....dDDdd.",
+      "..dddd....dddd..",
+      "................",
+      "................"
+     ],
+     "key": {
+      "d": "whale:3",
+      "D": "whale:2",
+      "k": "whale:0"
+     }
+    }
+   ]
+  },
+  "jaw": {
+   "ramp": "whale",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "mottle",
+     "op": "spots",
+     "count": 26,
+     "radius": [
+      1.2,
+      3.2
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 9.6,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "belly",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": 0.0,
+     "ramp": "belly",
+     "tone": 5.0,
+     "wobble": 0.25,
+     "wobble_scale": 30.0,
+     "faces": [
+      "sides",
+      "front",
+      "back",
+      "bottom"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_ramp": "whale",
+      "shadow_shift": -1.0
+     }
+    },
+    {
+     "id": "pleats",
+     "op": "stripes",
+     "axis": "x",
+     "period": 4.0,
+     "width": 0.25,
+     "shift": -1.6,
+     "wobble": 0.4,
+     "faces": [
+      "bottom",
+      "sides"
+     ]
+    },
+    {
+     "id": "lip",
+     "op": "band",
+     "axis": "y",
+     "from": 0.75,
+     "to": 1.01,
+     "ramp": "whale",
+     "tone": 2.4,
+     "faces": [
+      "sides",
+      "front"
+     ]
+    },
+    {
+     "id": "inner",
+     "op": "band",
+     "axis": "x",
+     "from": -0.8,
+     "to": 0.8,
+     "ramp": "gum",
+     "tone": 3.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "tongue",
+     "op": "band",
+     "axis": "x",
+     "from": -0.4,
+     "to": 0.4,
+     "ramp": "gum",
+     "tone": 5.4,
+     "faces": [
+      "top"
+     ],
+     "wobble": 0.15
+    }
+   ]
+  },
+  "jaw_low": {
+   "ramp": "belly",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "pleats",
+     "op": "stripes",
+     "axis": "x",
+     "period": 4.0,
+     "width": 0.25,
+     "shift": -1.6,
+     "wobble": 0.4,
+     "faces": [
+      "bottom",
+      "sides"
+     ]
+    }
+   ]
+  },
+  "lip": {
+   "ramp": "whale",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "roof",
+     "op": "fill",
+     "ramp": "baleen",
+     "tone": 3.0,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "gums": {
+   "ramp": "gum",
+   "tone": 4.0,
+   "rim": {
+    "light": 0,
+    "dark": 1,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "tongue",
+     "op": "band",
+     "axis": "x",
+     "from": -0.45,
+     "to": 0.45,
+     "ramp": "gum",
+     "tone": 5.6,
+     "faces": [
+      "top"
+     ],
+     "wobble": 0.2
+    },
+    {
+     "id": "ridges",
+     "op": "stripes",
+     "axis": "z",
+     "period": 3.0,
+     "width": 0.25,
+     "shift": -1.0,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "throat": {
+   "ramp": "belly",
+   "tone": 5.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "pleats",
+     "op": "stripes",
+     "axis": "x",
+     "period": 3.0,
+     "width": 0.3,
+     "shift": -1.6,
+     "wobble": 0.4,
+     "faces": [
+      "bottom",
+      "sides"
+     ]
+    },
+    {
+     "id": "blush",
+     "op": "patches",
+     "scale": 18.0,
+     "threshold": 0.6,
+     "ramp": "gum",
+     "tone": 6.4,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "baleen": {
+   "ramp": "baleen",
+   "tone": 3,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "b": "baleen:2",
+    "B": "baleen:4",
+    "f": "baleen:7"
+   }
+  },
+  "eye": {
+   "ramp": "whale",
+   "tone": 3.0,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "stamps": [
+    {
+     "faces": [
+      "left",
+      "right"
+     ],
+     "at": "top-left",
+     "art": [
+      "...kkkk...",
+      ".kkiiiikk.",
+      ".kiiiiiik.",
+      "kiiiWpiiik",
+      "kIIppppIIk",
+      "kIIppppIIk",
+      "kJJJppJJJk",
+      ".kJJJJJJk.",
+      ".kkJJJJkk.",
+      "...kkkk..."
+     ],
+     "key": {
+      "k": "whale:1",
+      "i": "baleen:3",
+      "I": "baleen:4",
+      "J": "baleen:6",
+      "p": "pupil:0",
+      "W": "cream:7"
+     }
+    }
+   ]
+  },
+  "fin": {
+   "ramp": "whale",
+   "tone": 6.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "mottle",
+     "op": "spots",
+     "count": 8,
+     "radius": [
+      1.0,
+      2.0
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 9.6,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "pale_under",
+     "op": "fill",
+     "ramp": "belly",
+     "tone": 5.6,
+     "faces": [
+      "bottom"
+     ]
+    },
+    {
+     "id": "edge",
+     "op": "band",
+     "axis": "z",
+     "from": 0.6,
+     "to": 1.01,
+     "ramp": "belly",
+     "tone": 6.4,
+     "faces": [
+      "top",
+      "sides"
+     ],
+     "wobble": 0.3
+    }
+   ]
+  },
+  "fluke": {
+   "ramp": "whale",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "cloud",
+     "op": "noise",
+     "scale": 24.0,
+     "amount": 1.0
+    },
+    {
+     "id": "mottle",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      1.2,
+      3.2
+     ],
+     "stretch": [
+      1,
+      0.7,
+      1.6
+     ],
+     "ramp": "whale",
+     "tone": 9.6,
+     "roughness": 0.6,
+     "min_gap": 4.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "scars",
+     "op": "cracks",
+     "scale": 24.0,
+     "width": 0.01,
+     "threshold": 0.72,
+     "ramp": "whale",
+     "tone": 10.0,
+     "seed": 3,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "pale_under",
+     "op": "fill",
+     "ramp": "belly",
+     "tone": 5.0,
+     "faces": [
+      "bottom"
+     ]
+    },
+    {
+     "id": "under_spots",
+     "op": "spots",
+     "count": 10,
+     "radius": [
+      1.0,
+      2.5
+     ],
+     "ramp": "whale",
+     "tone": 3.0,
+     "faces": [
+      "bottom"
+     ],
+     "min_gap": 3.0
+    }
+   ]
+  },
+  "fluke_edge": {
+   "ramp": "whale",
+   "tone": 2,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "whale:1",
+    "m": "whale:2",
+    "f": "whale:3"
+   }
+  },
+  "barnacle": {
+   "ramp": "barnacle",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "faces": [
+      "front",
+      "top",
+      "left",
+      "right"
+     ],
+     "at": "top-left",
+     "art": [
+      "..BBB.....",
+      ".BBobb....",
+      ".Booor.B..",
+      ".BborrBob.",
+      "..brr..b..",
+      ".........."
+     ],
+     "key": {
+      "b": "barnacle:5",
+      "B": "barnacle:7",
+      "o": "barnacle:1",
+      "r": "barnacle:3"
+     }
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "body",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    52.0,
+    30.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "torso",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    112,
+    56,
+    140
+   ],
+   "pivot": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "hide_side"
+  },
+  {
+   "id": "torso_b",
+   "shape": "box",
+   "parent": "torso",
+   "size": [
+    100,
+    76,
+    136
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "hide_side"
+  },
+  {
+   "id": "torso_c",
+   "shape": "box",
+   "parent": "torso",
+   "size": [
+    84,
+    90,
+    132
+   ],
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "hide_back"
+  },
+  {
+   "id": "deck",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    44.0,
+    -10.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "throat",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    92,
+    10,
+    104
+   ],
+   "pivot": [
+    0.0,
+    -42.0,
+    20.0
+   ],
+   "offset": [
+    0.0,
+    -5.0,
+    -2.0
+   ],
+   "style": "throat"
+  },
+  {
+   "id": "head",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    4.0,
+    68.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "skull",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    100,
+    50,
+    52
+   ],
+   "pivot": [
+    0.0,
+    13.0,
+    26.0
+   ],
+   "style": "hide_head"
+  },
+  {
+   "id": "skull_b",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    88,
+    58,
+    56
+   ],
+   "pivot": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "hide_head_top"
+  },
+  {
+   "id": "rostrum",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    80,
+    36,
+    50
+   ],
+   "pivot": [
+    0.0,
+    4.0,
+    50.0
+   ],
+   "offset": [
+    0.0,
+    13.2428,
+    22.3747
+   ],
+   "rotation": [
+    8.0,
+    0.0,
+    0.0
+   ],
+   "style": "hide_head_top"
+  },
+  {
+   "id": "rostrum_b",
+   "shape": "box",
+   "parent": "rostrum",
+   "size": [
+    64,
+    30,
+    58
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    9.0,
+    23.0
+   ],
+   "style": "hide_head_top"
+  },
+  {
+   "id": "snout",
+   "shape": "box",
+   "parent": "rostrum",
+   "size": [
+    50,
+    22,
+    8
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    8.0,
+    54.0
+   ],
+   "style": "hide_head_top"
+  },
+  {
+   "id": "lip_up",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    90,
+    12,
+    104
+   ],
+   "pivot": [
+    0.0,
+    -10.0,
+    52.0
+   ],
+   "style": "lip"
+  },
+  {
+   "id": "splash_guard",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    22,
+    3,
+    8
+   ],
+   "pivot": [
+    0.0,
+    41.5,
+    52.0
+   ],
+   "style": "hide_head_top"
+  },
+  {
+   "id": "blowhole",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    16,
+    1,
+    12
+   ],
+   "pivot": [
+    0.0,
+    40.0,
+    41.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "style": "blowhole"
+  },
+  {
+   "id": "spout",
+   "shape": "bone",
+   "parent": "blowhole",
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "eye_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    10,
+    10
+   ],
+   "pivot": [
+    50.0,
+    -7.0,
+    14.0
+   ],
+   "offset": [
+    0.5,
+    0.0,
+    0.0
+   ],
+   "style": "eye"
+  },
+  {
+   "id": "eye_patch_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1,
+    16,
+    20
+   ],
+   "pivot": [
+    50.5,
+    -6.0,
+    16.0
+   ],
+   "style": "hide_head"
+  },
+  {
+   "id": "baleen_l",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    40.0,
+    -14.0,
+    52.0
+   ],
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -6.0,
+    0.0
+   ],
+   "style": "baleen",
+   "plane": "yz",
+   "art": [
+    "bbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBB",
+    "bbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBB",
+    "bbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBB",
+    "bfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbff",
+    "f.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.f",
+    "...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f"
+   ]
+  },
+  {
+   "id": "eye_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    10,
+    10
+   ],
+   "pivot": [
+    -50.0,
+    -7.0,
+    14.0
+   ],
+   "offset": [
+    -0.5,
+    0.0,
+    0.0
+   ],
+   "style": "eye"
+  },
+  {
+   "id": "eye_patch_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1,
+    16,
+    20
+   ],
+   "pivot": [
+    -50.5,
+    -6.0,
+    16.0
+   ],
+   "style": "hide_head"
+  },
+  {
+   "id": "baleen_r",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    -40.0,
+    -14.0,
+    52.0
+   ],
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "baleen",
+   "plane": "yz",
+   "art": [
+    "bbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBB",
+    "bbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBB",
+    "bbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBBbbBB",
+    "bfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbffbfbff",
+    "f.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.ff.f.f",
+    "...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f...f"
+   ]
+  },
+  {
+   "id": "jaw",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    -16.0,
+    0.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "jaw_bone",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    108,
+    28,
+    80
+   ],
+   "pivot": [
+    0.0,
+    -14.0,
+    42.0
+   ],
+   "style": "jaw"
+  },
+  {
+   "id": "jaw_front",
+   "shape": "box",
+   "parent": "jaw_bone",
+   "size": [
+    94,
+    26,
+    30
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    50.0
+   ],
+   "style": "jaw"
+  },
+  {
+   "id": "jaw_b",
+   "shape": "box",
+   "parent": "jaw_bone",
+   "size": [
+    98,
+    34,
+    86
+   ],
+   "pivot": [
+    0.0,
+    -5.0,
+    3.0
+   ],
+   "style": "jaw_low"
+  },
+  {
+   "id": "chin",
+   "shape": "box",
+   "parent": "jaw_bone",
+   "size": [
+    76,
+    22,
+    8
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    66.0
+   ],
+   "style": "jaw_low"
+  },
+  {
+   "id": "mouth",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    6.0,
+    78.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "chin_barnacles_0",
+   "shape": "box",
+   "parent": "chin",
+   "size": [
+    8,
+    6,
+    2
+   ],
+   "pivot": [
+    24.0,
+    -6.0,
+    5.0
+   ],
+   "style": "barnacle"
+  },
+  {
+   "id": "chin_barnacles_1",
+   "shape": "box",
+   "parent": "chin",
+   "size": [
+    10,
+    6,
+    2
+   ],
+   "pivot": [
+    -18.0,
+    -2.0,
+    5.0
+   ],
+   "style": "barnacle"
+  },
+  {
+   "id": "chin_barnacles_2",
+   "shape": "box",
+   "parent": "chin",
+   "size": [
+    8,
+    6,
+    2
+   ],
+   "pivot": [
+    34.0,
+    2.0,
+    5.0
+   ],
+   "style": "barnacle"
+  },
+  {
+   "id": "fin_l",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    30,
+    8,
+    24
+   ],
+   "pivot": [
+    54.0,
+    -22.0,
+    42.0
+   ],
+   "offset": [
+    14.0,
+    0.0,
+    -3.0
+   ],
+   "rotation": [
+    0.0,
+    -50.0,
+    -18.0
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_l_tip",
+   "shape": "box",
+   "parent": "fin_l",
+   "size": [
+    24,
+    6,
+    16
+   ],
+   "pivot": [
+    28.0,
+    -0.0,
+    -3.0
+   ],
+   "offset": [
+    11.0,
+    0.0,
+    -2.0
+   ],
+   "rotation": [
+    0.0,
+    -18.0,
+    4.0
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_l_knob0",
+   "shape": "box",
+   "parent": "fin_l",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    6.0,
+    -0.0,
+    11.5
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_l_knob1",
+   "shape": "box",
+   "parent": "fin_l",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    20.0,
+    0.0,
+    11.5
+   ],
+   "style": "barnacle"
+  },
+  {
+   "id": "fin_l_knob2",
+   "shape": "box",
+   "parent": "fin_l_tip",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    6.0,
+    -0.0,
+    7.5
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_l_knob3",
+   "shape": "box",
+   "parent": "fin_l_tip",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    20.0,
+    0.0,
+    7.5
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_r",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    30,
+    8,
+    24
+   ],
+   "pivot": [
+    -54.0,
+    -22.0,
+    42.0
+   ],
+   "offset": [
+    -14.0,
+    0.0,
+    -3.0
+   ],
+   "rotation": [
+    0.0,
+    50.0,
+    18.0
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_r_tip",
+   "shape": "box",
+   "parent": "fin_r",
+   "size": [
+    24,
+    6,
+    16
+   ],
+   "pivot": [
+    -28.0,
+    -0.0,
+    -3.0
+   ],
+   "offset": [
+    -11.0,
+    0.0,
+    -2.0
+   ],
+   "rotation": [
+    0.0,
+    18.0,
+    -4.0
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_r_knob0",
+   "shape": "box",
+   "parent": "fin_r",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    -6.0,
+    -0.0,
+    11.5
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_r_knob1",
+   "shape": "box",
+   "parent": "fin_r",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    -20.0,
+    0.0,
+    11.5
+   ],
+   "style": "barnacle"
+  },
+  {
+   "id": "fin_r_knob2",
+   "shape": "box",
+   "parent": "fin_r_tip",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    -6.0,
+    -0.0,
+    7.5
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "fin_r_knob3",
+   "shape": "box",
+   "parent": "fin_r_tip",
+   "size": [
+    5,
+    5,
+    3
+   ],
+   "pivot": [
+    -20.0,
+    0.0,
+    7.5
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "tail_0",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    2.0,
+    -66.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "stock",
+   "shape": "box",
+   "parent": "tail_0",
+   "size": [
+    96,
+    64,
+    88
+   ],
+   "pivot": [
+    0.0,
+    -2.0,
+    -44.0
+   ],
+   "style": "hide_side"
+  },
+  {
+   "id": "stock_b",
+   "shape": "box",
+   "parent": "stock",
+   "size": [
+    80,
+    78,
+    84
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "style": "hide_side"
+  },
+  {
+   "id": "stock_c",
+   "shape": "box",
+   "parent": "stock",
+   "size": [
+    64,
+    86,
+    80
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -2.0
+   ],
+   "style": "hide_back"
+  },
+  {
+   "id": "tail_1",
+   "shape": "bone",
+   "parent": "tail_0",
+   "pivot": [
+    0.0,
+    0.0,
+    -86.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "dorsal",
+   "shape": "box",
+   "parent": "tail_1",
+   "size": [
+    6,
+    12,
+    22
+   ],
+   "pivot": [
+    0.0,
+    34.0,
+    -28.0
+   ],
+   "offset": [
+    0.0,
+    0.9362,
+    -12.0467
+   ],
+   "rotation": [
+    20.0,
+    0.0,
+    0.0
+   ],
+   "style": "fin"
+  },
+  {
+   "id": "peduncle",
+   "shape": "box",
+   "parent": "tail_1",
+   "size": [
+    40,
+    50,
+    48
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -22.0
+   ],
+   "style": "hide_side"
+  },
+  {
+   "id": "peduncle_b",
+   "shape": "box",
+   "parent": "peduncle",
+   "size": [
+    28,
+    62,
+    44
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "hide_back"
+  },
+  {
+   "id": "keel_up",
+   "shape": "box",
+   "parent": "peduncle",
+   "size": [
+    8,
+    8,
+    38
+   ],
+   "pivot": [
+    0.0,
+    34.0,
+    -2.0
+   ],
+   "style": "hide_back"
+  },
+  {
+   "id": "keel_low",
+   "shape": "box",
+   "parent": "peduncle",
+   "size": [
+    8,
+    8,
+    34
+   ],
+   "pivot": [
+    0.0,
+    -34.0,
+    0.0
+   ],
+   "style": "hide_belly"
+  },
+  {
+   "id": "fluke",
+   "shape": "bone",
+   "parent": "tail_1",
+   "pivot": [
+    0.0,
+    0.0,
+    -44.0
+   ],
+   "style": "hide"
+  },
+  {
+   "id": "fluke_root",
+   "shape": "box",
+   "parent": "fluke",
+   "size": [
+    36,
+    10,
+    22
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -10.0
+   ],
+   "style": "fluke"
+  },
+  {
+   "id": "fluke_l",
+   "shape": "box",
+   "parent": "fluke",
+   "size": [
+    52,
+    6,
+    26
+   ],
+   "pivot": [
+    16.0,
+    0.0,
+    -10.0
+   ],
+   "offset": [
+    24.0,
+    0.0,
+    -7.0
+   ],
+   "rotation": [
+    0.0,
+    18.0,
+    0.0
+   ],
+   "style": "fluke"
+  },
+  {
+   "id": "fluke_l_tip",
+   "shape": "box",
+   "parent": "fluke_l",
+   "size": [
+    22,
+    4,
+    14
+   ],
+   "pivot": [
+    48.0,
+    0.0,
+    -9.0
+   ],
+   "offset": [
+    7.0,
+    0.0,
+    -3.0
+   ],
+   "rotation": [
+    0.0,
+    18.0,
+    0.0
+   ],
+   "style": "fluke"
+  },
+  {
+   "id": "fluke_l_edge",
+   "shape": "card",
+   "parent": "fluke_l",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    24.0,
+    0.0,
+    -21.5
+   ],
+   "style": "fluke_edge",
+   "plane": "xz",
+   "art": [
+    "..................t...............t.t...............",
+    ".....t..t.........m......t......t.m.m.....t..t...t..",
+    "ff...f..f..t.fft.fff.t.fff.ffff.ffffff.t..f..f...f.f",
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffff"
+   ]
+  },
+  {
+   "id": "fluke_r",
+   "shape": "box",
+   "parent": "fluke",
+   "size": [
+    52,
+    6,
+    26
+   ],
+   "pivot": [
+    -16.0,
+    0.0,
+    -10.0
+   ],
+   "offset": [
+    -24.0,
+    0.0,
+    -7.0
+   ],
+   "rotation": [
+    0.0,
+    -18.0,
+    0.0
+   ],
+   "style": "fluke"
+  },
+  {
+   "id": "fluke_r_tip",
+   "shape": "box",
+   "parent": "fluke_r",
+   "size": [
+    22,
+    4,
+    14
+   ],
+   "pivot": [
+    -48.0,
+    0.0,
+    -9.0
+   ],
+   "offset": [
+    -7.0,
+    0.0,
+    -3.0
+   ],
+   "rotation": [
+    0.0,
+    -18.0,
+    0.0
+   ],
+   "style": "fluke"
+  },
+  {
+   "id": "fluke_r_edge",
+   "shape": "card",
+   "parent": "fluke_r",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -24.0,
+    0.0,
+    -21.5
+   ],
+   "style": "fluke_edge",
+   "plane": "xz",
+   "art": [
+    ".t..........t......t...t........t...................",
+    ".m....t..t..m..t...m.t.m..t.t...m...t..t....t....t..",
+    "fff.t.f..f.fff.ffffffffff.f.f.fffffff..ffff.f..t.f..",
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffff"
+   ]
+  }
+ ],
+ "animations": {
+  "swim": {
+   "length": 4.0,
+   "loop": true,
+   "tracks": [
+    {
+     "parts": [
+      "tail_0",
+      "tail_1",
+      "fluke"
+     ],
+     "wave": {
+      "axis": "x",
+      "amp": 7.0,
+      "cycles": 1,
+      "lag": 0.14,
+      "growth": 1.45,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": -1.2,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "head",
+     "osc": {
+      "amp": 0.8,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "x"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": [
+       0,
+       1.2,
+       0
+      ],
+      "cycles": 1,
+      "phase": 0.35
+     },
+     "channel": "position"
+    },
+    {
+     "part": "fin_l",
+     "osc": {
+      "amp": -6,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fin_r",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fin_l",
+     "osc": {
+      "amp": 4,
+      "cycles": 1,
+      "phase": 0.45
+     },
+     "axis": "y"
+    },
+    {
+     "part": "fin_r",
+     "osc": {
+      "amp": -4,
+      "cycles": 1,
+      "phase": 0.45
+     },
+     "axis": "y"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": 1.0,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fluke_l",
+     "osc": {
+      "amp": 4,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "fluke_r",
+     "osc": {
+      "amp": 4,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "x"
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  },
+  "idle": {
+   "length": 6.0,
+   "loop": true,
+   "tracks": [
+    {
+     "parts": [
+      "tail_0",
+      "tail_1",
+      "fluke"
+     ],
+     "wave": {
+      "axis": "x",
+      "amp": 2.4499999999999997,
+      "cycles": 1,
+      "lag": 0.14,
+      "growth": 1.45,
+      "phase": 0.0
+     }
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": -0.42,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "head",
+     "osc": {
+      "amp": 0.27999999999999997,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "x"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": [
+       0,
+       0.42,
+       0
+      ],
+      "cycles": 1,
+      "phase": 0.35
+     },
+     "channel": "position"
+    },
+    {
+     "part": "fin_l",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "axis": "x"
+    },
+    {
+     "part": "fin_r",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "x"
+    },
+    {
+     "part": "fin_l_tip",
+     "osc": {
+      "amp": -5,
+      "cycles": 1,
+      "phase": 0.15
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fin_r_tip",
+     "osc": {
+      "amp": 5,
+      "cycles": 1,
+      "phase": 0.65
+     },
+     "axis": "z"
+    },
+    {
+     "part": "jaw",
+     "osc": {
+      "amp": 1.0,
+      "cycles": 2,
+      "phase": 0.3,
+      "bias": 0.5
+     },
+     "axis": "x"
+    },
+    {
+     "part": "eye_l",
+     "osc": {
+      "amp": 10,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "y"
+    },
+    {
+     "part": "eye_r",
+     "osc": {
+      "amp": -10,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "y"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": 0.8,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "z"
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  },
+  "breathe": {
+   "length": 2.0,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "blowhole",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.45,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.55,
+       [
+        0.35,
+        0.0,
+        0.45
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.35,
+        0.0,
+        0.45
+       ],
+       "ease"
+      ],
+      [
+       1.25,
+       [
+        -0.15,
+        0.0,
+        -0.15
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.45,
+       [
+        -1.5,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.55,
+       [
+        -2.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        -2.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.45,
+       [
+        0.0,
+        3.5,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.55,
+       [
+        0.0,
+        4.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        4.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        2.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.45,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.55,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "tail_0",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.45,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.55,
+       [
+        3.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        3.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "blowhole",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5417,
+       [
+        0.031,
+        0.0,
+        0.031
+       ]
+      ],
+      [
+       0.5833,
+       [
+        -0.042,
+        -0.0,
+        -0.042
+       ]
+      ],
+      [
+       0.625,
+       [
+        0.05,
+        0.0,
+        0.05
+       ]
+      ],
+      [
+       0.6667,
+       [
+        -0.056,
+        -0.0,
+        -0.056
+       ]
+      ],
+      [
+       0.7083,
+       [
+        0.059,
+        0.0,
+        0.059
+       ]
+      ],
+      [
+       0.75,
+       [
+        -0.06,
+        -0.0,
+        -0.06
+       ]
+      ],
+      [
+       0.7917,
+       [
+        0.059,
+        0.0,
+        0.059
+       ]
+      ],
+      [
+       0.8333,
+       [
+        -0.056,
+        -0.0,
+        -0.056
+       ]
+      ],
+      [
+       0.875,
+       [
+        0.05,
+        0.0,
+        0.05
+       ]
+      ],
+      [
+       0.9167,
+       [
+        -0.042,
+        -0.0,
+        -0.042
+       ]
+      ],
+      [
+       0.9583,
+       [
+        0.031,
+        0.0,
+        0.031
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  },
+  "mouth_open": {
+   "length": 1.0,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "fin_l",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.75,
+       [
+        0.0,
+        0.0,
+        6.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        0.0,
+        6.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "fin_r",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.75,
+       [
+        0.0,
+        0.0,
+        -6.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        0.0,
+        -6.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.15,
+       [
+        1.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.75,
+       [
+        -3.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        -3.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "jaw",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.15,
+       [
+        -2.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.75,
+       [
+        37.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        34.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "throat",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.75,
+       [
+        0.02,
+        0.6,
+        0.02
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.02,
+        0.6,
+        0.02
+       ],
+       "ease"
+      ]
+     ]
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  },
+  "mouth_close": {
+   "length": 0.5,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "fin_l",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        6.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.4,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "fin_r",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        -6.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.4,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        -3.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        1.5,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.4,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "jaw",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        34.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        -3.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.4,
+       [
+        1.5,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "throat",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.02,
+        0.6,
+        0.02
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       0.4,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  },
+  "lunge": {
+   "length": 1.5,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "body",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        2.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        -3.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        -3.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        2.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        -6.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        0.0,
+        1.0,
+        18.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        0.0,
+        1.0,
+        18.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.5,
+        22.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "fin_l",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        0.0,
+        10.0,
+        20.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        0.0,
+        10.0,
+        20.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "fin_r",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        0.0,
+        -10.0,
+        -20.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        0.0,
+        -10.0,
+        -20.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        -16.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        14.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        14.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "jaw",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        52.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        52.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "tail_0",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        5.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        5.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "tail_1",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        -8.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        8.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        8.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "throat",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.7,
+       [
+        0.1,
+        1.6,
+        0.06
+       ],
+       "out"
+      ],
+      [
+       0.85,
+       [
+        0.1,
+        1.6,
+        0.06
+       ],
+       "ease"
+      ],
+      [
+       1.05,
+       [
+        0.14,
+        2.2,
+        0.08
+       ],
+       "in"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "fluke",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.7,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.8667,
+       [
+        6.065,
+        0,
+        0
+       ]
+      ],
+      [
+       1.0333,
+       [
+        -3.679,
+        0,
+        0
+       ]
+      ],
+      [
+       1.2,
+       [
+        2.231,
+        0,
+        0
+       ]
+      ],
+      [
+       1.3667,
+       [
+        -1.353,
+        0,
+        0
+       ]
+      ],
+      [
+       1.5,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  },
+  "shake": {
+   "length": 2.0,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "body",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.05,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2423,
+       [
+        0,
+        0,
+        12.461
+       ]
+      ],
+      [
+       0.4346,
+       [
+        0,
+        0,
+        -17.15
+       ]
+      ],
+      [
+       0.6269,
+       [
+        0,
+        0,
+        20.047
+       ]
+      ],
+      [
+       0.8192,
+       [
+        0,
+        0,
+        -21.614
+       ]
+      ],
+      [
+       1.0115,
+       [
+        0,
+        0,
+        21.979
+       ]
+      ],
+      [
+       1.2038,
+       [
+        0,
+        0,
+        -21.164
+       ]
+      ],
+      [
+       1.3962,
+       [
+        0,
+        0,
+        19.116
+       ]
+      ],
+      [
+       1.5885,
+       [
+        0,
+        0,
+        -15.629
+       ]
+      ],
+      [
+       1.7808,
+       [
+        0,
+        0,
+        9.866
+       ]
+      ],
+      [
+       1.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "body",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2471,
+       [
+        0,
+        3.109,
+        0
+       ]
+      ],
+      [
+       0.3941,
+       [
+        0,
+        -4.315,
+        0
+       ]
+      ],
+      [
+       0.5412,
+       [
+        0,
+        5.119,
+        0
+       ]
+      ],
+      [
+       0.6882,
+       [
+        0,
+        -5.645,
+        0
+       ]
+      ],
+      [
+       0.8353,
+       [
+        0,
+        5.932,
+        0
+       ]
+      ],
+      [
+       0.9824,
+       [
+        0,
+        -5.995,
+        0
+       ]
+      ],
+      [
+       1.1294,
+       [
+        0,
+        5.834,
+        0
+       ]
+      ],
+      [
+       1.2765,
+       [
+        0,
+        -5.445,
+        0
+       ]
+      ],
+      [
+       1.4235,
+       [
+        0,
+        4.804,
+        0
+       ]
+      ],
+      [
+       1.5706,
+       [
+        0,
+        -3.848,
+        0
+       ]
+      ],
+      [
+       1.7176,
+       [
+        0,
+        2.336,
+        0
+       ]
+      ],
+      [
+       1.8,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "head",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2971,
+       [
+        0,
+        -4.206,
+        0
+       ]
+      ],
+      [
+       0.4441,
+       [
+        0,
+        5.831,
+        0
+       ]
+      ],
+      [
+       0.5912,
+       [
+        0,
+        -6.903,
+        0
+       ]
+      ],
+      [
+       0.7382,
+       [
+        0,
+        7.59,
+        0
+       ]
+      ],
+      [
+       0.8853,
+       [
+        0,
+        -7.942,
+        0
+       ]
+      ],
+      [
+       1.0324,
+       [
+        0,
+        7.976,
+        0
+       ]
+      ],
+      [
+       1.1794,
+       [
+        0,
+        -7.695,
+        0
+       ]
+      ],
+      [
+       1.3265,
+       [
+        0,
+        7.085,
+        0
+       ]
+      ],
+      [
+       1.4735,
+       [
+        0,
+        -6.105,
+        0
+       ]
+      ],
+      [
+       1.6206,
+       [
+        0,
+        4.63,
+        0
+       ]
+      ],
+      [
+       1.8,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "tail_0",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2667,
+       [
+        0,
+        5.355,
+        0
+       ]
+      ],
+      [
+       0.4333,
+       [
+        0,
+        -7.413,
+        0
+       ]
+      ],
+      [
+       0.6,
+       [
+        0,
+        8.752,
+        0
+       ]
+      ],
+      [
+       0.7667,
+       [
+        0,
+        -9.582,
+        0
+       ]
+      ],
+      [
+       0.9333,
+       [
+        0,
+        9.966,
+        0
+       ]
+      ],
+      [
+       1.1,
+       [
+        0,
+        -9.924,
+        0
+       ]
+      ],
+      [
+       1.2667,
+       [
+        0,
+        9.453,
+        0
+       ]
+      ],
+      [
+       1.4333,
+       [
+        0,
+        -8.529,
+        0
+       ]
+      ],
+      [
+       1.6,
+       [
+        0,
+        7.071,
+        0
+       ]
+      ],
+      [
+       1.7667,
+       [
+        0,
+        -4.802,
+        0
+       ]
+      ],
+      [
+       1.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "tail_1",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.15,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3167,
+       [
+        0,
+        7.498,
+        0
+       ]
+      ],
+      [
+       0.4833,
+       [
+        0,
+        -10.378,
+        0
+       ]
+      ],
+      [
+       0.65,
+       [
+        0,
+        12.253,
+        0
+       ]
+      ],
+      [
+       0.8167,
+       [
+        0,
+        -13.415,
+        0
+       ]
+      ],
+      [
+       0.9833,
+       [
+        0,
+        13.953,
+        0
+       ]
+      ],
+      [
+       1.15,
+       [
+        0,
+        -13.893,
+        0
+       ]
+      ],
+      [
+       1.3167,
+       [
+        0,
+        13.235,
+        0
+       ]
+      ],
+      [
+       1.4833,
+       [
+        0,
+        -11.94,
+        0
+       ]
+      ],
+      [
+       1.65,
+       [
+        0,
+        9.899,
+        0
+       ]
+      ],
+      [
+       1.8167,
+       [
+        0,
+        -6.723,
+        0
+       ]
+      ],
+      [
+       1.95,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "fluke",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3667,
+       [
+        8.687,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5333,
+       [
+        -12.009,
+        0,
+        0
+       ]
+      ],
+      [
+       0.7,
+       [
+        14.147,
+        0,
+        0
+       ]
+      ],
+      [
+       0.8667,
+       [
+        -15.437,
+        0,
+        0
+       ]
+      ],
+      [
+       1.0333,
+       [
+        15.978,
+        0,
+        0
+       ]
+      ],
+      [
+       1.2,
+       [
+        -15.798,
+        0,
+        0
+       ]
+      ],
+      [
+       1.3667,
+       [
+        14.89,
+        0,
+        0
+       ]
+      ],
+      [
+       1.5333,
+       [
+        -13.196,
+        0,
+        0
+       ]
+      ],
+      [
+       1.7,
+       [
+        10.539,
+        0,
+        0
+       ]
+      ],
+      [
+       1.95,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "fin_l",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2667,
+       [
+        0,
+        0,
+        12.853
+       ]
+      ],
+      [
+       0.4333,
+       [
+        0,
+        0,
+        -17.791
+       ]
+      ],
+      [
+       0.6,
+       [
+        0,
+        0,
+        21.006
+       ]
+      ],
+      [
+       0.7667,
+       [
+        0,
+        0,
+        -22.998
+       ]
+      ],
+      [
+       0.9333,
+       [
+        0,
+        0,
+        23.919
+       ]
+      ],
+      [
+       1.1,
+       [
+        0,
+        0,
+        -23.817
+       ]
+      ],
+      [
+       1.2667,
+       [
+        0,
+        0,
+        22.688
+       ]
+      ],
+      [
+       1.4333,
+       [
+        0,
+        0,
+        -20.469
+       ]
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        16.971
+       ]
+      ],
+      [
+       1.7667,
+       [
+        0,
+        0,
+        -11.525
+       ]
+      ],
+      [
+       1.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "fin_r",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.2667,
+       [
+        0,
+        0,
+        -12.853
+       ]
+      ],
+      [
+       0.4333,
+       [
+        0,
+        0,
+        17.791
+       ]
+      ],
+      [
+       0.6,
+       [
+        0,
+        0,
+        -21.006
+       ]
+      ],
+      [
+       0.7667,
+       [
+        0,
+        0,
+        22.998
+       ]
+      ],
+      [
+       0.9333,
+       [
+        0,
+        0,
+        -23.919
+       ]
+      ],
+      [
+       1.1,
+       [
+        0,
+        0,
+        23.817
+       ]
+      ],
+      [
+       1.2667,
+       [
+        0,
+        0,
+        -22.688
+       ]
+      ],
+      [
+       1.4333,
+       [
+        0,
+        0,
+        20.469
+       ]
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        -16.971
+       ]
+      ],
+      [
+       1.7667,
+       [
+        0,
+        0,
+        11.525
+       ]
+      ],
+      [
+       1.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "jaw",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.425,
+       [
+        3.273,
+        0,
+        0
+       ]
+      ],
+      [
+       0.55,
+       [
+        -4.522,
+        0,
+        0
+       ]
+      ],
+      [
+       0.675,
+       [
+        5.323,
+        0,
+        0
+       ]
+      ],
+      [
+       0.8,
+       [
+        -5.802,
+        0,
+        0
+       ]
+      ],
+      [
+       0.925,
+       [
+        5.995,
+        0,
+        0
+       ]
+      ],
+      [
+       1.05,
+       [
+        -5.912,
+        0,
+        0
+       ]
+      ],
+      [
+       1.175,
+       [
+        5.551,
+        0,
+        0
+       ]
+      ],
+      [
+       1.3,
+       [
+        -4.886,
+        0,
+        0
+       ]
+      ],
+      [
+       1.425,
+       [
+        3.844,
+        0,
+        0
+       ]
+      ],
+      [
+       1.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.05,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.1462,
+       [
+        0.0,
+        1.21,
+        0.0
+       ]
+      ],
+      [
+       0.2423,
+       [
+        -0.0,
+        -1.699,
+        -0.0
+       ]
+      ],
+      [
+       0.3385,
+       [
+        0.0,
+        2.058,
+        0.0
+       ]
+      ],
+      [
+       0.4346,
+       [
+        -0.0,
+        -2.339,
+        -0.0
+       ]
+      ],
+      [
+       0.5308,
+       [
+        0.0,
+        2.561,
+        0.0
+       ]
+      ],
+      [
+       0.6269,
+       [
+        -0.0,
+        -2.734,
+        -0.0
+       ]
+      ],
+      [
+       0.7231,
+       [
+        0.0,
+        2.862,
+        0.0
+       ]
+      ],
+      [
+       0.8192,
+       [
+        -0.0,
+        -2.947,
+        -0.0
+       ]
+      ],
+      [
+       0.9154,
+       [
+        0.0,
+        2.992,
+        0.0
+       ]
+      ],
+      [
+       1.0115,
+       [
+        -0.0,
+        -2.997,
+        -0.0
+       ]
+      ],
+      [
+       1.1077,
+       [
+        0.0,
+        2.962,
+        0.0
+       ]
+      ],
+      [
+       1.2038,
+       [
+        -0.0,
+        -2.886,
+        -0.0
+       ]
+      ],
+      [
+       1.3,
+       [
+        0.0,
+        2.768,
+        0.0
+       ]
+      ],
+      [
+       1.3962,
+       [
+        -0.0,
+        -2.607,
+        -0.0
+       ]
+      ],
+      [
+       1.4923,
+       [
+        0.0,
+        2.397,
+        0.0
+       ]
+      ],
+      [
+       1.5885,
+       [
+        -0.0,
+        -2.131,
+        -0.0
+       ]
+      ],
+      [
+       1.6846,
+       [
+        0.0,
+        1.794,
+        0.0
+       ]
+      ],
+      [
+       1.7808,
+       [
+        -0.0,
+        -1.345,
+        -0.0
+       ]
+      ],
+      [
+       1.9,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  },
+  "sing": {
+   "length": 8.0,
+   "loop": true,
+   "tracks": [
+    {
+     "parts": [
+      "tail_0",
+      "tail_1",
+      "fluke"
+     ],
+     "wave": {
+      "axis": "x",
+      "amp": 2.1,
+      "cycles": 1,
+      "lag": 0.14,
+      "growth": 1.45,
+      "phase": 0.2
+     }
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": -0.36,
+      "cycles": 1,
+      "phase": 0.30000000000000004
+     },
+     "axis": "x"
+    },
+    {
+     "part": "head",
+     "osc": {
+      "amp": 0.24,
+      "cycles": 1,
+      "phase": 0.4
+     },
+     "axis": "x"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": [
+       0,
+       0.36,
+       0
+      ],
+      "cycles": 1,
+      "phase": 0.55
+     },
+     "channel": "position"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": -3.0,
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "axis": "x"
+    },
+    {
+     "part": "head",
+     "osc": {
+      "amp": -2.5,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": 2.5,
+      "cycles": 1,
+      "phase": 0.25
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fin_l",
+     "osc": {
+      "amp": -16,
+      "cycles": 2,
+      "phase": 0.0
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fin_r",
+     "osc": {
+      "amp": 16,
+      "cycles": 2,
+      "phase": 0.0
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fin_l",
+     "osc": {
+      "amp": 10,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "y"
+    },
+    {
+     "part": "fin_r",
+     "osc": {
+      "amp": -10,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "y"
+    },
+    {
+     "part": "fin_l_tip",
+     "osc": {
+      "amp": -10,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "z"
+    },
+    {
+     "part": "fin_r_tip",
+     "osc": {
+      "amp": 10,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "z"
+    },
+    {
+     "part": "jaw",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.8,
+       0
+      ],
+      [
+       1.4,
+       7
+      ],
+      [
+       2.2,
+       7
+      ],
+      [
+       2.8,
+       1
+      ],
+      [
+       4.0,
+       0
+      ],
+      [
+       4.6,
+       9
+      ],
+      [
+       5.6,
+       9
+      ],
+      [
+       6.4,
+       2
+      ],
+      [
+       7.2,
+       0
+      ],
+      [
+       8.0,
+       0
+      ]
+     ],
+     "ease": "ease",
+     "axis": "x"
+    },
+    {
+     "part": "throat",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       1.4,
+       [
+        0.02,
+        0.35,
+        0.02
+       ]
+      ],
+      [
+       2.2,
+       [
+        0.02,
+        0.4,
+        0.02
+       ]
+      ],
+      [
+       2.8,
+       [
+        0,
+        0.05,
+        0
+       ]
+      ],
+      [
+       4.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       4.6,
+       [
+        0.03,
+        0.5,
+        0.02
+       ]
+      ],
+      [
+       5.6,
+       [
+        0.03,
+        0.55,
+        0.02
+       ]
+      ],
+      [
+       6.4,
+       [
+        0,
+        0.1,
+        0
+       ]
+      ],
+      [
+       7.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       8.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "ease",
+     "channel": "scale"
+    },
+    {
+     "part": "fluke_l",
+     "osc": {
+      "amp": 6,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "fluke_r",
+     "osc": {
+      "amp": 6,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "eye_l",
+     "osc": {
+      "amp": 8,
+      "cycles": 1,
+      "phase": 0.4
+     },
+     "axis": "y"
+    },
+    {
+     "part": "eye_r",
+     "osc": {
+      "amp": -8,
+      "cycles": 1,
+      "phase": 0.4
+     },
+     "axis": "y"
+    }
+   ],
+   "_lock": {
+    "lift": null
+   },
+   "grounded": false
+  }
+ }
+}

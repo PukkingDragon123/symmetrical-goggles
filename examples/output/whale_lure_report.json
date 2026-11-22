@@ -1,0 +1,120 @@
+{
+  "name": "Whale Lure",
+  "parts": 30,
+  "instances": 30,
+  "faces": 152,
+  "triangles": 304,
+  "vertices_flat": 608,
+  "vertices_unique": 208,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.669,
+  "texel_density": 2.0,
+  "colors_used": 26,
+  "palette": {
+    "prismarine": [
+      "#10221f",
+      "#173430",
+      "#1f4842",
+      "#2a5e55",
+      "#38766a",
+      "#4b8f80",
+      "#63a896",
+      "#82c2ad"
+    ],
+    "crystal": [
+      "#2d6d6a",
+      "#4b9993",
+      "#73c2b8",
+      "#a3e0d4",
+      "#d2f5ec",
+      "#f4fffb"
+    ],
+    "lure": [
+      "#0a2f3e",
+      "#115c6c",
+      "#1f94a0",
+      "#33b2b9",
+      "#56cdcd",
+      "#86e3dd",
+      "#b8f3ea",
+      "#e6fff9"
+    ],
+    "flesh": [
+      "#17131b",
+      "#231c27",
+      "#2e2632",
+      "#3b313f",
+      "#4a3f4d",
+      "#5c4e5a",
+      "#6f606b"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -6.718,
+      0.0,
+      -6.718
+    ],
+    "max": [
+      6.718,
+      15.25,
+      6.718
+    ],
+    "size": [
+      13.435,
+      15.25,
+      13.435
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 3.0
+  },
+  "joints": [
+    "frame",
+    "plinth",
+    "plinth_step",
+    "arch_post0",
+    "arch_post1",
+    "arch_post2",
+    "arch_post3",
+    "arch_x",
+    "arch_z",
+    "cap",
+    "crystal0",
+    "crystal1",
+    "crystal2",
+    "crystal3",
+    "crystal4",
+    "crystal5",
+    "crystal6",
+    "crystal7",
+    "stalk",
+    "stalk_0",
+    "stalk_1",
+    "stalk_2",
+    "bulb",
+    "bulb_cap",
+    "bulb_core",
+    "bulb_x",
+    "bulb_y",
+    "bulb_z",
+    "filament_a",
+    "filament_b"
+  ],
+  "files": {
+    "whale_lure.glb": "examples/output/whale_lure.glb",
+    "whale_lure.obj": "examples/output/whale_lure.obj",
+    "whale_lure.mtl": "examples/output/whale_lure.mtl",
+    "whale_lure.bbmodel": "examples/output/whale_lure.bbmodel",
+    "whale_lure_texture.png": "examples/output/whale_lure_texture.png",
+    "whale_lure_texture_x8.png": "examples/output/whale_lure_texture_x8.png",
+    "whale_lure_hero.png": "examples/output/whale_lure_hero.png",
+    "whale_lure_sheet.png": "examples/output/whale_lure_sheet.png",
+    "whale_lure_turntable.gif": "examples/output/whale_lure_turntable.gif",
+    "whale_lure_idle.gif": "examples/output/whale_lure_idle.gif"
+  }
+}
