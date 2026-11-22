@@ -1,6 +1,7 @@
 package dev.lowpix.winterworks.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import dev.lowpix.winterworks.client.WWLayers;
 import dev.lowpix.winterworks.icebreaker.IcebreakerEntity;
 import net.minecraft.client.model.geom.ModelPart;
@@ -37,9 +38,30 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
     @Override
     public void render(IcebreakerEntity e, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light) {
         model = e.isBaby() ? cub : adult;   // cubs are their own fluffy white model (drawn at half size)
-        shadowRadius = e.isBaby() ? 0.7f : 1.6f;
+        shadowRadius = e.isBaby() ? 0.53f : 1.2f;   // 0.75 size (docs/FIXES_0_4.md)
         model.partial = partial;
         super.render(e, yaw, partial, pose, buffers, light);
+    }
+
+    /**
+     * Swimming (docs/FIXES_0_4.md): the whole body pitches with the dive and the surfacing (and the arc of a
+     * porpoising leap), and rolls into its turns, with a barrel roll now and then; about the middle of the body.
+     */
+    @Override
+    protected void setupRotations(IcebreakerEntity e, PoseStack pose, float bob, float bodyYaw, float partial, float scale) {
+        super.setupRotations(e, pose, bob, bodyYaw, partial, scale);
+        float k = e.swimBlend(partial);
+        if (k <= 0f || e.isDeadOrDying()) {
+            return;
+        }
+        float pitch = Mth.lerp(partial, e.xRotO, e.getXRot());
+        float turn = Mth.wrapDegrees(e.yBodyRot - e.yBodyRotO);   // banking into the turn
+        float roll = Mth.clamp(turn * 2.5f, -30f, 30f) + e.rollAngle(partial);
+        float mid = e.getBbHeight() * 0.5f / Math.max(0.01f, scale);
+        pose.translate(0f, mid, 0f);
+        pose.mulPose(Axis.XP.rotationDegrees(pitch * k));
+        pose.mulPose(Axis.ZP.rotationDegrees(roll * k));
+        pose.translate(0f, -mid, 0f);
     }
 
     /** Adults are drawn 1.3x; babies use the cub model (drawn at twice its in-game size; 1.21.1 doesn't shrink babies). */
@@ -63,8 +85,13 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
         @Override
         public void setupAnim(IcebreakerEntity e, float limbSwing, float limbAmount, float age, float headYaw, float headPitch) {
             reset();
-            if (e.isInWater()) {
-                play(e.swimState, "swim", age, 1f);
+            boolean swimming = e.isSwimmingPose();
+            if (swimming) {
+                // faster strokes when it is really going (a chase, a porpoising run)
+                float speed = (float) e.getDeltaMovement().length();
+                play(e.swimState, "swim", age, Mth.clamp(0.8f + speed * 3.5f, 0.8f, 2.2f));
+            } else if (e.isAsleep()) {
+                play(e.sleepState, "sleep", age, 1f);
             } else if (e.isCharging()) {
                 play(e.chargeState, "charge", age, 1.1f);
             } else if (e.isSliding()) {
@@ -73,17 +100,35 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
                 walk("walk", limbSwing, limbAmount, 2.4f, 2.2f);
                 play(e.idleState, "idle", age, 1f);
             }
-            play(e.ramState, "ram", age, 1f);
+            if (!e.isCharging()) {   // the charge already aims the horns: no ram on top of it
+                play(e.ramState, "ram", age, 1f);
+            }
             play(e.happyState, "happy", age, 1f);
+            play(e.eatState, "eat", age, 1f);
             play(e.bellySlapState, "belly_slap", age, 1f);
             play(e.tailSlapState, "tail_slap", age, 1f);
-            play(e.barkState, "bark", age, 1f);
-            float yaw = headYaw * Mth.DEG_TO_RAD, pitch = headPitch * Mth.DEG_TO_RAD;
-            get("neck").ifPresent(p -> p.yRot += yaw * 0.4f);
-            get("head").ifPresent(p -> {
-                p.yRot += yaw * 0.5f;
-                p.xRot += pitch * 0.5f;
-            });
+            if (!e.isAsleep()) {
+                play(e.barkState, "bark", age, 1f);
+            }
+            float sinceBite = age - e.biteTick;
+            if (sinceBite >= 0f && sinceBite < 14f) {   // the bite: jaws snap shut and it shakes the catch side to side
+                float k = 1f - sinceBite / 14f;
+                float shake = Mth.sin(sinceBite * 1.9f) * 0.55f * k;
+                get("neck").ifPresent(p -> p.yRot += shake * 0.6f);
+                get("head").ifPresent(p -> {
+                    p.yRot += shake;
+                    p.zRot += shake * 0.5f;
+                });
+                get("jaw").ifPresent(p -> p.xRot += sinceBite < 2f ? 0.5f * (1f - sinceBite / 2f) : 0f);
+            }
+            if (!e.isAsleep() || swimming) {   // asleep, the head rests where the clip lays it
+                float yaw = headYaw * Mth.DEG_TO_RAD, pitch = swimming ? 0f : headPitch * Mth.DEG_TO_RAD;   // swimming: the body pitches
+                get("neck").ifPresent(p -> p.yRot += yaw * 0.4f);
+                get("head").ifPresent(p -> {
+                    p.yRot += yaw * 0.5f;
+                    p.xRot += pitch * 0.5f;
+                });
+            }
             // the belly is a spring: footfalls, landings and hits make it jiggle and settle
             float j = e.bellyJiggle(partial);
             get("belly_under").ifPresent(p -> {

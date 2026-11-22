@@ -97,7 +97,8 @@
     "eat": 1.2,
     "bark": 0.7,
     "belly_slap": 1.0,
-    "tail_slap": 0.8
+    "tail_slap": 0.8,
+    "sleep": 3.0
   },
   "joints": [
     "chest",
@@ -179,6 +180,7 @@
     "icebreaker_cub_eat.gif": "examples/output/icebreaker_cub_eat.gif",
     "icebreaker_cub_bark.gif": "examples/output/icebreaker_cub_bark.gif",
     "icebreaker_cub_belly_slap.gif": "examples/output/icebreaker_cub_belly_slap.gif",
-    "icebreaker_cub_tail_slap.gif": "examples/output/icebreaker_cub_tail_slap.gif"
+    "icebreaker_cub_tail_slap.gif": "examples/output/icebreaker_cub_tail_slap.gif",
+    "icebreaker_cub_sleep.gif": "examples/output/icebreaker_cub_sleep.gif"
   }
 }

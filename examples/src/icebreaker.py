@@ -574,6 +574,37 @@ anim = {
                                                               [0.66, [-0.05, 0.06, 0]], [0.78, [0, 0, 0]], [0.81, [0.2, -0.24, 0.1]],
                                                               [1.2, [0, 0, 0], "elastic"]]},
     ]},
+    # asleep flat on its belly (looped): the body sunk onto the ice, the fore-flippers swept back flat along its
+    # sides, the head laid down on its chin with the tusks resting forward on the ground, eyes shut, slow deep
+    # breaths (the belly swells, the nostrils flare), and once a cycle a dreaming twitch of the hind flippers
+    "sleep": {"length": 4.0, "loop": True, "tracks": [
+        {"part": "chest", "channel": "position", "osc": {"amp": [0, 0.35, 0], "cycles": 1, "bias": [0, -1.2, 0]}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 0.8, "cycles": 1, "bias": 3}},
+        {"part": "belly", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -2}},
+        {"part": "belly", "channel": "scale", "osc": {"amp": [0.025, 0.035, 0.01], "cycles": 1}},
+        {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.03, 0.05, 0.015], "cycles": 1, "phase": 0.05,
+                                                             "bias": [0.07, -0.2, 0.05]}},
+        {"part": "chest_under", "channel": "scale", "osc": {"amp": [0.02, 0.03, 0.01], "cycles": 1,
+                                                             "bias": [0.05, -0.18, 0.03]}},
+        {"parts": ["waist", "hips", "tail"], "wave": {"axis": "x", "amp": 0.6, "cycles": 1, "lag": 0.1, "bias": -1}},
+        {"part": "neck", "axis": "x", "osc": {"amp": 1.0, "cycles": 1, "phase": 0.08, "bias": 9}},
+        {"part": "head", "axis": "x", "osc": {"amp": 0.6, "cycles": 1, "phase": 0.12, "bias": 5}},
+        {"part": "head", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 7}},
+        {"part": "tusk", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -70}},
+        {"part": "jaw", "axis": "x", "osc": {"amp": 1.2, "cycles": 1, "phase": 0.1, "bias": 2}},
+        {"part": "flipper", "axis": "x", "osc": {"amp": 1.5, "cycles": 1, "bias": 62}},
+        {"part": "flipper", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 28}},
+        {"part": "palm", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -70}},
+        {"part": "fluke", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -6}},
+        {"part": "fluke", "axis": "y", "keys": [[0, 0], [2.6, 0], [2.72, 12, "out"], [2.84, -8], [2.96, 6], [3.2, 0, "smooth"],
+                                                [4.0, 0]]},
+        {"part": "fluke_fan", "axis": "y", "osc": {"amp": 2, "cycles": 1, "phase": 0.3}},
+        {"part": "lid", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -2.8, 0]}},
+        {"part": "brow", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -0.5, 0]}},
+        {"part": "brow", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": 6}},
+        {"part": "nostril", "channel": "scale", "osc": {"amp": [0.35, 0.35, 0], "cycles": 1, "bias": [0.05, 0.05, 0]}},
+        {"part": "mane", "channel": "scale", "osc": {"amp": [0.01, 0.02, 0.01], "cycles": 1, "bias": [0.02, -0.04, 0.02]}},
+    ]},
     # hind flippers swing up and slam down: a splash in water, a thump of snow on land
     "tail_slap": {"length": 1.0, "loop": False, "tracks": [
         {"part": "hips", "axis": "x", "keys": [[0, 0], [0.35, 16, "in"], [0.48, -1, "out"], [1.0, 0, "elastic"]]},
