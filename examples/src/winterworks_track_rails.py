@@ -727,6 +727,18 @@ ASCENDING = {"ascending_north": 0, "ascending_east": 90, "ascending_south": 180,
 CORNER = {"south_east": 0, "south_west": 90, "north_west": 180, "north_east": 270}
 
 
+def dump_model(body):
+    """A model as JSON with one element per line (compact, and diffs stay readable)."""
+    items = []
+    for k, v in body.items():
+        if k == "elements":
+            els = ",\n".join("    " + json.dumps(e) for e in v)
+            items.append(f'  "elements": [\n{els}\n  ]')
+        else:
+            items.append(f"  {json.dumps(k)}: {json.dumps(v)}")
+    return "{\n" + ",\n".join(items) + "\n}\n"
+
+
 def write(models=True):
     tex_dir = ASSETS / "textures" / "block"
     for name, im in OUT.items():
@@ -736,7 +748,7 @@ def write(models=True):
             meta.write_text(json.dumps(MCMETA[name], indent=2) + "\n")
     if models:
         for name, body in MODELS.items():
-            (ASSETS / "models" / "block" / f"{name}.json").write_text(json.dumps(body, indent=2) + "\n")
+            (ASSETS / "models" / "block" / f"{name}.json").write_text(dump_model(body))
 
 
 # ====================================================================== preview (read back from the mod's JSON)

@@ -1,6 +1,4 @@
 {
   "parent": "winterworks:block/track_powered_rail_straight",
-  "textures": {
-    "strip": "winterworks:block/track_redstone_lit"
-  }
+  "textures": {"strip": "winterworks:block/track_redstone_lit"}
 }
