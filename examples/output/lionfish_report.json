@@ -2,80 +2,66 @@
   "name": "Lionfish",
   "parts": 32,
   "instances": 32,
-  "faces": 89,
-  "triangles": 178,
-  "vertices_flat": 356,
-  "vertices_unique": 164,
+  "faces": 49,
+  "triangles": 98,
+  "vertices_flat": 196,
+  "vertices_unique": 96,
   "atlas": [
     64,
-    128
+    64
   ],
-  "atlas_fill": 0.856,
-  "texel_density": 2.0,
-  "colors_used": 24,
+  "atlas_fill": 0.569,
+  "texel_density": 1.0,
+  "colors_used": 16,
   "palette": {
     "coral": [
-      "#22050a",
-      "#3a0b10",
-      "#561314",
-      "#741d18",
-      "#93291d",
-      "#b13a24",
-      "#c9502e",
-      "#dc6c3e",
-      "#ea8d58",
-      "#f4ae7c"
+      "#5e1b12",
+      "#7a2516",
+      "#95311b",
+      "#ad3e20",
+      "#c34e26",
+      "#d6602e",
+      "#e47538"
     ],
     "cream": [
-      "#4a3e33",
-      "#6b5d4e",
-      "#8d7e6c",
-      "#ae9f8b",
-      "#cbbea9",
-      "#e2d8c5",
-      "#f2ecdd",
-      "#fcf9f0"
-    ],
-    "pupil": [
-      "#040406",
-      "#0a0a0e",
-      "#131318"
-    ],
-    "amber": [
-      "#1d1004",
-      "#352008",
-      "#52330c",
-      "#714a12",
-      "#92651b",
-      "#b38328",
-      "#cfa13d",
-      "#e6c15e",
-      "#f6df8e"
+      "#a3907a",
+      "#bcab94",
+      "#d2c3ab",
+      "#e4d8c3",
+      "#f1e9d8",
+      "#faf5ea"
     ],
     "veil": [
-      "#5b3f3d",
-      "#7d5c57",
-      "#a07f77",
-      "#c0a197",
-      "#dbc1b5",
-      "#eedcd0"
+      "#a87d6c",
+      "#c09684",
+      "#d5ae9c",
+      "#e6c6b6"
+    ],
+    "ink": [
+      "#0e0c10",
+      "#1a171d",
+      "#2a262e"
+    ],
+    "glint": [
+      "#9a9aa4",
+      "#d9d9df"
     ]
   },
   "bounds": {
     "min": [
-      -11.412,
-      -0.0,
-      -10.75
+      -11.321,
+      0.0,
+      -16.0
     ],
     "max": [
-      11.412,
-      20.769,
-      7.25
+      11.321,
+      23.769,
+      9.0
     ],
     "size": [
-      22.825,
-      20.769,
-      18.0
+      22.641,
+      23.769,
+      25.0
     ]
   },
   "warnings": [],
@@ -86,21 +72,21 @@
   },
   "joints": [
     "body",
-    "body_y",
-    "body_z",
     "belly",
     "head",
-    "head_z",
     "snout",
-    "lip",
     "jaw",
     "jaw_bone",
     "cheek_frill_l",
     "cheek_frill_r",
     "eye_l",
-    "brow_l",
     "eye_r",
+    "head_z",
+    "lip",
+    "brow_l",
     "brow_r",
+    "tail",
+    "tail_fin",
     "spines",
     "spine_0",
     "spine_1",
@@ -115,8 +101,8 @@
     "fin_pelvic_r",
     "fin_soft",
     "fin_anal",
-    "tail",
-    "tail_fin"
+    "body_y",
+    "body_z"
   ],
   "files": {
     "lionfish.glb": "examples/output/lionfish.glb",
@@ -124,7 +110,7 @@
     "lionfish.mtl": "examples/output/lionfish.mtl",
     "lionfish.bbmodel": "examples/output/lionfish.bbmodel",
     "lionfish_texture.png": "examples/output/lionfish_texture.png",
-    "lionfish_texture_x8.png": "examples/output/lionfish_texture_x8.png",
+    "lionfish_texture_x16.png": "examples/output/lionfish_texture_x16.png",
     "lionfish_hero.png": "examples/output/lionfish_hero.png",
     "lionfish_sheet.png": "examples/output/lionfish_sheet.png",
     "lionfish_turntable.gif": "examples/output/lionfish_turntable.gif",

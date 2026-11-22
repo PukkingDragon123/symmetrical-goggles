@@ -2,120 +2,91 @@
   "name": "Sea Turtle Baby",
   "parts": 30,
   "instances": 30,
-  "faces": 163,
-  "triangles": 326,
-  "vertices_flat": 652,
-  "vertices_unique": 220,
+  "faces": 126,
+  "triangles": 252,
+  "vertices_flat": 504,
+  "vertices_unique": 164,
   "atlas": [
-    128,
-    256
+    64,
+    128
   ],
-  "atlas_fill": 0.471,
-  "texel_density": 2.0,
-  "colors_used": 23,
+  "atlas_fill": 0.622,
+  "texel_density": 1.0,
+  "colors_used": 18,
   "palette": {
     "olive": [
-      "#0e110b",
-      "#191d13",
-      "#252b1b",
-      "#333b25",
-      "#424b2f",
-      "#535d3a",
-      "#657047",
-      "#798456",
-      "#8e9868",
-      "#a5ad7e",
-      "#bcc297"
+      "#3a4329",
+      "#45502f",
+      "#515d36",
+      "#5d6b3e",
+      "#6a7946",
+      "#78874f",
+      "#879558"
     ],
-    "tortoise": [
-      "#110a04",
-      "#1f1308",
-      "#311e0c",
-      "#452a10",
-      "#5b3815",
-      "#72481b",
-      "#8a5a22",
-      "#a26d2c",
-      "#b98239",
-      "#cd984b",
-      "#dfb064",
-      "#edc985"
+    "shell": [
+      "#3d3220",
+      "#4a3d26",
+      "#57482c",
+      "#655433",
+      "#73613b",
+      "#826f44",
+      "#917d4e"
     ],
     "straw": [
-      "#3d3520",
-      "#5a4f2e",
-      "#7a6d3f",
-      "#9a8d53",
-      "#b8ac6b",
-      "#d1c687",
-      "#e5dca7",
-      "#f3edc9"
+      "#9c9265",
+      "#b0a674",
+      "#c2b884",
+      "#d2c994",
+      "#e0d8a6"
     ],
     "horn": [
-      "#0f0d08",
-      "#1d1910",
-      "#2d2718",
-      "#403722",
-      "#55492e",
-      "#6c5d3c",
-      "#85744c",
-      "#9f8c5f"
-    ],
-    "amber": [
-      "#1d1004",
-      "#352008",
-      "#52330c",
-      "#714a12",
-      "#92651b",
-      "#b38328",
-      "#cfa13d",
-      "#e6c15e",
-      "#f6df8e"
-    ],
-    "pupil": [
-      "#040406",
-      "#0a0a0e",
-      "#131318"
-    ],
-    "cream": [
-      "#4a3e33",
-      "#6b5d4e",
-      "#8d7e6c",
-      "#ae9f8b",
-      "#cbbea9",
-      "#e2d8c5",
-      "#f2ecdd",
-      "#fcf9f0"
+      "#3f3524",
+      "#53462f",
+      "#685a3c",
+      "#7e6e4a",
+      "#958459"
     ],
     "slate": [
-      "#0f0d0c",
-      "#1a1715",
-      "#26221f",
-      "#332e2a",
-      "#413a35",
-      "#504842",
-      "#615851",
-      "#746a62",
-      "#8a7f76",
-      "#a3988e",
-      "#beb4aa"
+      "#262a2c",
+      "#2e3335",
+      "#373d3f",
+      "#41484a",
+      "#4c5456",
+      "#586062",
+      "#656e70",
+      "#737c7e"
+    ],
+    "ink": [
+      "#0e0c10",
+      "#1a171d",
+      "#2a262e"
+    ],
+    "glint": [
+      "#9a9aa4",
+      "#d9d9df"
+    ],
+    "ash": [
+      "#7d8582",
+      "#8f9794",
+      "#a2a9a6",
+      "#b5bbb8"
     ]
   },
   "bounds": {
     "min": [
-      -11.817,
-      0.0,
-      -8.612
+      -15.315,
+      -0.0,
+      -9.433
     ],
     "max": [
-      11.817,
-      6.5,
-      13.0
+      15.315,
+      9.435,
+      16.0
     ],
     "size": [
-      23.634,
-      6.5,
-      21.612
+      30.63,
+      9.435,
+      25.433
     ]
   },
   "warnings": [],
@@ -138,9 +109,6 @@
     "shell_serration",
     "neck",
     "head",
-    "head_y",
-    "head_z",
-    "head_m",
     "beak",
     "jaw",
     "jaw_plate",
@@ -148,6 +116,9 @@
     "lid_l",
     "eye_r",
     "lid_r",
+    "head_y",
+    "head_z",
+    "head_m",
     "flipper_fl",
     "flipper_fl_tip",
     "flipper_fl_end",
@@ -164,7 +135,7 @@
     "sea_turtle_baby.mtl": "examples/output/sea_turtle_baby.mtl",
     "sea_turtle_baby.bbmodel": "examples/output/sea_turtle_baby.bbmodel",
     "sea_turtle_baby_texture.png": "examples/output/sea_turtle_baby_texture.png",
-    "sea_turtle_baby_texture_x4.png": "examples/output/sea_turtle_baby_texture_x4.png",
+    "sea_turtle_baby_texture_x8.png": "examples/output/sea_turtle_baby_texture_x8.png",
     "sea_turtle_baby_hero.png": "examples/output/sea_turtle_baby_hero.png",
     "sea_turtle_baby_sheet.png": "examples/output/sea_turtle_baby_sheet.png",
     "sea_turtle_baby_turntable.gif": "examples/output/sea_turtle_baby_turntable.gif",
