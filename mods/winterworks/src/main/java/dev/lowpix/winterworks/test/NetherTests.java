@@ -286,12 +286,26 @@ public class NetherTests implements FabricGameTest {
         }
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    /** Are the chunks round a fortress at `origin` entity-ticking yet (forced chunks take a while on a busy server)? */
+    private static boolean entityTicking(ServerLevel level, BlockPos origin) {
+        for (int cx = (origin.getX() - 24) >> 4; cx <= (origin.getX() + 24) >> 4; cx++) {
+            for (int cz = (origin.getZ() - 24) >> 4; cz <= (origin.getZ() + 24) >> 4; cz++) {
+                if (!level.isPositionEntityTicking(new BlockPos(cx << 4, origin.getY(), cz << 4))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 800)
     public void hexFortressBuilderPlacesEverything(GameTestHelper h) {
         ServerLevel level = h.getLevel();
         BlockPos origin = farAway(h, 0);
         force(level, origin, true);
-        h.runAfterDelay(4, () -> checkBuilder(h, level, origin));
+        h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(entityTicking(level, origin), "the fortress's chunks load"))
+                .thenExecute(() -> checkBuilder(h, level, origin));
     }
 
     private void checkBuilder(GameTestHelper h, ServerLevel level, BlockPos origin) {

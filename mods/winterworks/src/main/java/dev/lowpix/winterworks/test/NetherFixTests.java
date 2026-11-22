@@ -118,6 +118,18 @@ public class NetherFixTests implements FabricGameTest {
         }
     }
 
+    /** Are the chunks under `box` loaded and entity-ticking (forced chunks take a while on a busy server)? */
+    private static boolean entityTicking(ServerLevel level, BoundingBox box) {
+        for (int cx = box.minX() >> 4; cx <= box.maxX() >> 4; cx++) {
+            for (int cz = box.minZ() >> 4; cz <= box.maxZ() >> 4; cz++) {
+                if (!level.areEntitiesLoaded(ChunkPos.asLong(cx, cz)) || !level.isPositionEntityTicking(new BlockPos(cx << 4, 64, cz << 4))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /** A mob to do the attacking (mock players count as creative, and creative players never start fights). */
     private static net.minecraft.world.entity.monster.Zombie attacker(GameTestHelper h, int x, int z) {
         net.minecraft.world.entity.monster.Zombie z0 = h.spawn(EntityType.ZOMBIE, new BlockPos(x, 1, z));
@@ -136,14 +148,16 @@ public class NetherFixTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------ the Hex Fortress
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 800)
     public void hexFortressHasItsRoomsCrewPensAndPortal(GameTestHelper h) {
         ServerLevel level = h.getLevel();
         BlockPos origin = h.absolutePos(BlockPos.ZERO).offset(1600, 40, -1600);
         Rotation rot = Rotation.COUNTERCLOCKWISE_90;
         BoundingBox area = BoundingBox.fromCorners(origin.offset(-24, -42, -24), origin.offset(24, 21, 24));
         force(level, area, true);
-        h.runAfterDelay(4, () -> checkFortress(h, level, origin, rot, area));
+        h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(entityTicking(level, area), "the fortress's chunks load"))
+                .thenExecute(() -> checkFortress(h, level, origin, rot, area));
     }
 
     private void checkFortress(GameTestHelper h, ServerLevel level, BlockPos origin, Rotation rot, BoundingBox area) {
@@ -329,16 +343,23 @@ public class NetherFixTests implements FabricGameTest {
         return g;
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH + "_spells", timeoutTicks = 600)
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH + "_spells", timeoutTicks = 1200)
     public void witchSpellsFire(GameTestHelper h) {
         floor(h, 10);
+        // her blink can take her a chunk over: keep the ground round the test entity-ticking, or she freezes mid-fight
+        ServerLevel level = h.getLevel();
+        BoundingBox area = BoundingBox.fromCorners(h.absolutePos(new BlockPos(-16, 0, -16)), h.absolutePos(new BlockPos(24, 6, 24)));
+        force(level, area, true);
         PiglinWitch witch = h.spawn(WWEntities.PIGLIN_WITCH, new BlockPos(4, 1, 4));
         IronGolem target = dummy(h, 4, 10);
         float[] hp = new float[1];
         Vec3[] at = new Vec3[1];
-        witch.provoke(target);
-        h.assertTrue(witch.isFighting() && witch.getTarget() == target, "provoked, she fights");
         h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(entityTicking(level, area), "the ground round the test loads"))
+                .thenExecute(() -> {
+                    witch.provoke(target);
+                    h.assertTrue(witch.isFighting() && witch.getTarget() == target, "provoked, she fights");
+                })
                 // hex bolts: a volley of homing soul fire
                 .thenExecute(() -> {
                     hp[0] = target.getHealth();
@@ -381,19 +402,33 @@ public class NetherFixTests implements FabricGameTest {
                     witch.castNow(PiglinWitch.Spell.BLINK);
                 })
                 .thenWaitUntil(() -> h.assertTrue(witch.position().distanceTo(at[0]) >= 4, "she blinks away"))
-                // her one healing
+                // her one healing (the summons sent off first, so nothing else is going on)
+                .thenExecute(() -> {
+                    for (Entity e : h.getLevel().getEntities((Entity) null, h.getBounds().inflate(20),
+                            e -> e instanceof PiglinBrute || e instanceof SoulBull || e instanceof HexBolt || e instanceof ThrownPotion)) {
+                        e.discard();
+                    }
+                    target.setHealth(target.getMaxHealth());
+                })
+                .thenWaitUntil(() -> h.assertTrue(witch.castSpell() == PiglinWitch.Spell.NONE && !witch.isDrinking(), "her blink is done"))
                 .thenExecute(() -> {
                     witch.provoke(target);
+                    h.assertTrue(witch.isFighting(), "still fighting");
                     witch.setHealth(witch.getMaxHealth() * 0.2f);
                 })
                 .thenWaitUntil(() -> h.assertTrue(witch.healedThisFight() && witch.getHealth() > witch.getMaxHealth() * 0.4f,
-                        "she drinks her healing when low"))
+                        "she drinks her healing when low: healed " + witch.healedThisFight() + ", health " + witch.getHealth()
+                                + ", casting " + witch.castSpell() + ", drinking " + witch.isDrinking() + ", fighting " + witch.isFighting()
+                                + ", alive " + witch.isAlive() + ", entity-ticking " + level.isPositionEntityTicking(witch.blockPosition())))
                 .thenExecute(() -> {
                     ItemStack book = witch.spellbook(h.getLevel());
                     h.assertTrue(book.is(WWItems.HEXED_BOOK) && dev.lowpix.winterworks.hex.Hexing.stored(book).size() >= 2,
                             "her spellbook is a hexed book: " + book);
                 })
-                .thenExecute(() -> cleanup(h, 24))
+                .thenExecute(() -> {
+                    cleanup(h, 24);
+                    force(level, area, false);
+                })
                 .thenSucceed();
     }
 
@@ -488,15 +523,27 @@ public class NetherFixTests implements FabricGameTest {
                 .withLevel(level), String.format("fillbiome %d %d %d %d %d %d minecraft:crimson_forest", a.getX(), a.getY(), a.getZ(),
                 b.getX(), b.getY(), b.getZ()));
         h.assertTrue(level.getBiome(h.absolutePos(new BlockPos(4, 1, 4))).is(Biomes.CRIMSON_FOREST), "the test ground is a crimson forest");
-        int jockeys = 0;
-        for (int i = 0; i < 60; i++) {
-            Hoglin hog = EntityType.HOGLIN.spawn(level, h.absolutePos(new BlockPos(i % 8, 1, 12 + (i / 8) % 4)), MobSpawnType.NATURAL);
-            if (hog != null && HoglinJockeys.rider(hog) != null) {
-                jockeys++;
-                h.assertTrue(!hog.isBaby() && HoglinJockeys.rider(hog).isAdult() && !hog.canBeHunted(), "an adult piglin on an adult hoglin");
+        float chance = HoglinJockeys.chance(level, h.absolutePos(new BlockPos(4, 1, 4)));
+        h.assertTrue(chance == HoglinJockeys.CRIMSON_CHANCE, "the crimson forest's jockey chance, " + chance);
+        int jockeys = 0, adults = 0;
+        for (int i = 0; i < 160; i++) {   // ~130 adults at 15%: none at all would be a 1-in-a-billion run
+            BlockPos at = h.absolutePos(new BlockPos(1 + i % 7, 1, 1 + (i / 7) % 7));
+            Hoglin hog = EntityType.HOGLIN.spawn(level, at, MobSpawnType.NATURAL);
+            if (hog == null) {
+                continue;
             }
+            if (!hog.isBaby() && HoglinJockeys.chance(level, hog.blockPosition()) > 0f) {
+                adults++;
+            }
+            Piglin rider = HoglinJockeys.rider(hog);
+            if (rider != null) {
+                jockeys++;
+                h.assertTrue(!hog.isBaby() && rider.isAdult() && !hog.canBeHunted(), "an adult piglin on an adult hoglin");
+                rider.discard();
+            }
+            hog.discard();
         }
-        h.assertTrue(jockeys >= 1, "piglins ride some of the hoglins spawned in a crimson forest, " + jockeys);
+        h.assertTrue(jockeys >= 1, "piglins ride some of the hoglins spawned in a crimson forest: " + jockeys + " of " + adults + " adults");
         cleanup(h, 30);
         // a jockey of our own, and a foe for its rider
         Hoglin hog = h.spawn(EntityType.HOGLIN, new BlockPos(1, 1, 1));
@@ -518,17 +565,25 @@ public class NetherFixTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------ the Withered Commander
 
-    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH + "_fortress", timeoutTicks = 100)
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH + "_fortress", timeoutTicks = 800)
     public void commanderSpawnsOnceInAFortress(GameTestHelper h) {
         ServerLevel level = h.getLevel();
         BlockPos far = h.absolutePos(BlockPos.ZERO).offset(-2200, 0, 2200);
         NetherFortressPieces.StartPiece start = new NetherFortressPieces.StartPiece(RandomSource.create(3L), far.getX(), far.getZ());
         BoundingBox box = start.getBoundingBox();
+        AABB around = AABB.of(box).inflate(4);
         force(level, box, true);
-        h.runAfterDelay(4, () -> buildCrossing(h, level, start, box));
+        h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(entityTicking(level, box), "the crossing's chunks load"))
+                .thenExecute(() -> buildCrossing(level, start, box))
+                .thenWaitUntil(() -> h.assertTrue(!level.getEntitiesOfClass(WitheredCommander.class, around).isEmpty(),
+                        "a Withered Commander on the crossing"))
+                .thenExecute(() -> checkCommander(h, level, box, around))
+                .thenSucceed();
     }
 
-    private void buildCrossing(GameTestHelper h, ServerLevel level, NetherFortressPieces.StartPiece start, BoundingBox box) {
+    /** Places the crossing chunk by chunk, as worldgen does (twice: the commander comes once all the same). */
+    private static void buildCrossing(ServerLevel level, NetherFortressPieces.StartPiece start, BoundingBox box) {
         ChunkGenerator gen = level.getChunkSource().getGenerator();
         for (int pass = 0; pass < 2; pass++) {
             for (int cx = box.minX() >> 4; cx <= box.maxX() >> 4; cx++) {
@@ -540,7 +595,9 @@ public class NetherFixTests implements FabricGameTest {
                 }
             }
         }
-        AABB around = AABB.of(box).inflate(4);
+    }
+
+    private static void checkCommander(GameTestHelper h, ServerLevel level, BoundingBox box, AABB around) {
         List<WitheredCommander> found = level.getEntitiesOfClass(WitheredCommander.class, around);
         h.assertTrue(found.size() == 1, "one Withered Commander per fortress, " + found.size());
         WitheredCommander c = found.get(0);
@@ -552,7 +609,6 @@ public class NetherFixTests implements FabricGameTest {
             e.discard();
         }
         force(level, box, false);
-        h.succeed();
     }
 
     private static WitheredCommander mountedCommander(GameTestHelper h) {
