@@ -71,8 +71,9 @@ import org.jetbrains.annotations.Nullable;
  * flies within a block of one, and mosquitoes keep away from them (their paths avoid them, and they flee one that is
  * close). Resin really gets drunk now: the resin goal used to run only while the mosquito had no target, but an empty,
  * hungry mosquito always has one (any player or animal with blood within 24 blocks), so outside the calmed GameTest it
- * never sipped. Now an oozing log within reach wins over the hunt: the mosquito drops its target and won't pick a new
- * one until it has sipped (or something hurts it).
+ * never sipped; and the tick after a sip crashed on the cleared log (the goal ticks every tick, its canContinueToUse
+ * runs every other). Now an oozing log within reach wins over the hunt: the mosquito drops its target and won't pick a
+ * new one until it has sipped (or something hurts it).
  */
 public class MosquitoEntity extends Monster implements FlyingAnimal {
     public enum State {
@@ -705,6 +706,12 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
 
         @Override
         public void tick() {
+            if (log == null) {
+                // it has sipped: this goal ticks every tick but canContinueToUse is only checked every other one, so
+                // the tick after the sip used to dereference the cleared log and crash the server (the second reason
+                // nobody ever saw a mosquito turn amber in game)
+                return;
+            }
             ticks++;
             getLookControl().setLookAt(Vec3.atCenterOf(log));
             if (drinkTicks > 0) {

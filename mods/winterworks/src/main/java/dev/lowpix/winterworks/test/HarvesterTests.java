@@ -324,8 +324,15 @@ public class HarvesterTests implements FabricGameTest {
         pig.setNoAi(true);
         MosquitoEntity m = h.spawn(WWEntities.MOSQUITO, new Vec3(2.5, 2, 1.5));
         m.setTarget(pig);   // hungry and already after the pig: before the fix it never went for the resin
+        int[] amberAt = {-1};
+        h.onEachTick(() -> {
+            if (amberAt[0] < 0 && m.isAmber()) {
+                amberAt[0] = m.tickCount;
+            }
+        });
         h.succeedWhen(() -> {
             h.assertTrue(m.isAmber(), "the mosquito should sip the resin and become amber-full, it is " + m.state());
+            h.assertTrue(m.isAlive() && m.tickCount - amberAt[0] >= 6, "and fly on afterwards (the tick after a sip used to crash)");
             h.assertFalse(h.getBlockState(log.above()).getValue(AmberwoodLogBlock.RESIN), "the log's resin should be gone");
             m.discard();
             pig.discard();

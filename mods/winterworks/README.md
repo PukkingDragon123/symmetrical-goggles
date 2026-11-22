@@ -214,6 +214,7 @@ gold (2-4 gold blocks); it barters much better loot.
 xvfb-run -a ./gradlew runShowcase       # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
 xvfb-run -a ./gradlew runShowcase -PshowcaseMode=hex   # only the Amber Age and Hexes & Havoc scenes
 xvfb-run -a ./gradlew runShowcaseCold   # a real generated world: finds and photographs Ice Caves, a frozen tomb, Dead Caves, a Dig Site
+JAVA_TOOL_OPTIONS=-Dwinterworks.harvestershots=all xvfb-run -a ./gradlew runClient   # the Harvester, glowing plants, mosquitoes, the sneezing sniffer: run/client/screenshots
 python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipes, loot, tags, lang fragments
 ```
 
@@ -244,3 +245,8 @@ Screenshots taken by `runShowcase` (the real client, software-rendered):
 | ![The witch's quarters](docs/screenshots/hex_fortress_witch.png) | ![Hexing Table, Soul Tank, Elixir Jars](docs/screenshots/hexing_table.png) |
 | ![Elixir Jars: Cursed brewing, Greed, Soul](docs/screenshots/elixir_jars.png) | ![The Hexing screen](docs/screenshots/hexing_screen.png) |
 | ![Hexed Books, elixirs, the Hex Core, 3D icons](docs/screenshots/hex_hotbar.png) | |
+| ![A Harvester cropping a farm](docs/screenshots/harvester_cropping.png) | ![Its chest full of the harvest](docs/screenshots/harvester_chest_harvest.png) |
+| ![Ridden, saddled](docs/screenshots/harvester_ridden.png) | ![Herding sheep](docs/screenshots/harvester_herding.png) |
+| ![Harvester eggs underwater](docs/screenshots/harvester_eggs_underwater.png) | ![A Harvester hatching](docs/screenshots/harvester_egg_hatching.png) |
+| ![Glowing torchflowers and pitcher plants](docs/screenshots/amber_plants_glow_close.png) | ![A mosquito burnt by a torchflower](docs/screenshots/amber_mosquito_torchflower_burning.png) |
+| ![A mosquito sipping Amberwood resin](docs/screenshots/amber_mosquito_resin.png) | ![A sniffer sneezing over crops](docs/screenshots/amber_sniffer_sneeze.png) |

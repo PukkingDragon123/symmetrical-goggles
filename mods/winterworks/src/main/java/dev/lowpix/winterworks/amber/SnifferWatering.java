@@ -189,6 +189,7 @@ public final class SnifferWatering {
         s.playSound(WWSounds.SNIFFER_SNEEZE, 1.6f, 0.95f + s.getRandom().nextFloat() * 0.1f);
         level.playSound(null, farm, SoundEvents.GENERIC_SPLASH, SoundSource.NEUTRAL, 0.6f, 1.3f);
         level.sendParticles(ParticleTypes.SNEEZE, nose.x, nose.y, nose.z, 10, 0.2, 0.15, 0.2, 0.08);
+        level.sendParticles(ParticleTypes.CLOUD, nose.x, nose.y, nose.z, 8, 0.2, 0.12, 0.2, 0.05);   // the misty spray
         for (int i = 1; i <= 10; i++) {   // the spray arcs from the nose onto the field
             double k = i / 10.0;
             Vec3 p = nose.lerp(c, k).add(0, Math.sin(k * Math.PI) * 0.8, 0);
