@@ -551,15 +551,16 @@ public class EndMobTests implements FabricGameTest {
     public void endGlowShinesLikeATorch(GameTestHelper h) {
         Cow cow = h.spawnWithNoFreeWill(EntityType.COW, 2.5f, 1, 2.5f);
         cow.addEffect(new MobEffectInstance(EndEffects.END_GLOW, 600));
-        h.runAfterDelay(4, () -> {
+        h.runAfterDelay(12, () -> {   // once it has settled on the ground: the light is at its head
             BlockPos head = BlockPos.containing(cow.getX(), cow.getEyeY(), cow.getZ());
             BlockState s = h.getLevel().getBlockState(head);
-            h.assertTrue(s.is(EndBlocks.GLOW_LIGHT), "End Glow should light the block at its head, got " + s);
+            h.assertTrue(s.is(EndBlocks.GLOW_LIGHT), "End Glow should light the block at its head " + head + " (cow at "
+                    + cow.position() + "), got " + s);
             h.assertTrue(s.getLightEmission() == 14, "as bright as a torch, got " + s.getLightEmission());
             h.assertTrue(s.canBeReplaced() && s.getCollisionShape(h.getLevel(), head).isEmpty(), "invisible and in nobody's way");
             cow.removeEffect(EndEffects.END_GLOW);
         });
-        h.runAfterDelay(4 + GlowLightBlock.CHECK * 2 + 2, () -> {
+        h.runAfterDelay(12 + GlowLightBlock.CHECK * 2 + 2, () -> {
             for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(0, 0, 0)), h.absolutePos(new BlockPos(5, 5, 5)))) {
                 h.assertFalse(h.getLevel().getBlockState(p).is(EndBlocks.GLOW_LIGHT), "the light goes out with the glow at " + p);
             }
