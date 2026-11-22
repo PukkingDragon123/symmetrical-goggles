@@ -8,32 +8,45 @@
   "vertices_unique": 404,
   "atlas": [
     128,
-    256
+    128
   ],
-  "atlas_fill": 0.755,
-  "texel_density": 2.0,
-  "colors_used": 26,
+  "atlas_fill": 0.545,
+  "texel_density": 1.0,
+  "colors_used": 28,
   "palette": {
     "crying": [
-      "#3a0b6e",
-      "#5a12a0",
-      "#7a1fd0",
-      "#9a3cf0",
-      "#b866ff",
-      "#d397ff",
-      "#ecc9ff",
-      "#fbf0ff"
+      "#3c0b78",
+      "#5a14a8",
+      "#7b23d3",
+      "#9a3bf0",
+      "#b65efd",
+      "#d08eff",
+      "#e8c2ff",
+      "#fbefff"
     ],
     "chorus": [
-      "#1f0f24",
-      "#331a3b",
-      "#4a2754",
-      "#633670",
-      "#7c4a8a",
-      "#9763a3",
-      "#b383bc",
-      "#cda7d3",
-      "#e7cfe9"
+      "#24132d",
+      "#371d44",
+      "#4c295c",
+      "#623674",
+      "#79468b",
+      "#9059a1",
+      "#a774b6",
+      "#bf93ca",
+      "#d6b5dd",
+      "#ead6ee"
+    ],
+    "obsidian": [
+      "#06040a",
+      "#0c0814",
+      "#130d1f",
+      "#1b132b",
+      "#241a39",
+      "#2f2348",
+      "#3c2e59",
+      "#4b3b6c",
+      "#5d4c80",
+      "#72619a"
     ],
     "stem": [
       "#1d0f1c",
@@ -41,7 +54,8 @@
       "#462843",
       "#5e385a",
       "#784b72",
-      "#94628c"
+      "#94628c",
+      "#ad7ea5"
     ],
     "petal": [
       "#6b4f78",
@@ -49,30 +63,23 @@
       "#bfa6c8",
       "#e0d0e6",
       "#f6eefa"
-    ],
-    "membrane": [
-      "#160e26",
-      "#1f1534",
-      "#2a1d44",
-      "#372756",
-      "#46336a"
     ]
   },
   "bounds": {
     "min": [
       -29.0,
-      0.75,
-      -7.578
+      0.5,
+      -7.828
     ],
     "max": [
-      34.578,
+      34.828,
       16.0,
       5.6
     ],
     "size": [
-      63.578,
-      15.25,
-      13.178
+      63.828,
+      15.5,
+      13.428
     ]
   },
   "warnings": [],
@@ -146,7 +153,7 @@
     "chorus_cocoon.mtl": "examples/output/chorus_cocoon.mtl",
     "chorus_cocoon.bbmodel": "examples/output/chorus_cocoon.bbmodel",
     "chorus_cocoon_texture.png": "examples/output/chorus_cocoon_texture.png",
-    "chorus_cocoon_texture_x4.png": "examples/output/chorus_cocoon_texture_x4.png",
+    "chorus_cocoon_texture_x8.png": "examples/output/chorus_cocoon_texture_x8.png",
     "chorus_cocoon_hero.png": "examples/output/chorus_cocoon_hero.png",
     "chorus_cocoon_sheet.png": "examples/output/chorus_cocoon_sheet.png",
     "chorus_cocoon_turntable.gif": "examples/output/chorus_cocoon_turntable.gif",

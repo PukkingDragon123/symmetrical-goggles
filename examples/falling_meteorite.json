@@ -1,9 +1,9 @@
 {
  "name": "Falling Meteorite",
- "description": "A falling meteorite for the Winterworks End: a lumpy rock of scorched meteorite crust split by molten fissures, trailing crossed flames. Minecraft pixel units, density 2.",
+ "description": "A falling meteorite for the Winterworks End: a lumpy rock of scorched meteorite crust split by molten fissures, trailing crossed flames, in vanilla style. Minecraft pixel units, density 1.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "grounded": false,
  "budget": {
   "tris": 300,
@@ -17,7 +17,8 @@
   ],
   "strength": 0.9,
   "gradient": 0.2,
-  "ao": 0.0
+  "ao": 0.0,
+  "ao_height": 4.0
  },
  "minecraft": {
   "fps": 20,
@@ -42,154 +43,132 @@
  "palette": {
   "ramps": {
    "meteor": [
-    "#0b0708",
-    "#130e0f",
-    "#1c1617",
-    "#262021",
-    "#312a2a",
-    "#3e3535",
-    "#4d4343",
-    "#625857",
-    "#867e7c",
-    "#bab4b0"
+    "#0d0909",
+    "#161011",
+    "#201819",
+    "#2b2222",
+    "#372d2c",
+    "#453938",
+    "#554846",
+    "#6a5d5a",
+    "#857a76"
    ],
    "molten": [
-    "#3a0c5c",
-    "#6c1585",
-    "#a8237f",
-    "#e04a5a",
-    "#ff7d2a",
-    "#ffad35",
-    "#ffd76a",
-    "#fff4c2",
-    "#fffdf2"
+    "#5a1170",
+    "#94207e",
+    "#d0405e",
+    "#f2702e",
+    "#ffa035",
+    "#ffcb57",
+    "#fff09a",
+    "#fffbe0"
    ]
   }
  },
  "styles": {
   "crust": {
    "ramp": "meteor",
-   "tone": 3.2,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.0,
-    "dark_shift": -1.2,
-    "outline": "dark"
-   },
+   "tone": 3.4,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.0,
+    "threshold": 0.2
+   },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
+    },
     {
      "id": "pits",
      "op": "patches",
-     "scale": 1.6,
-     "threshold": 0.55,
-     "shift": -1.1,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "highlight_shift": 1.6
-     }
+     "scale": 1.4,
+     "threshold": 0.58,
+     "shift": -1.2
     },
     {
      "id": "fissures",
-     "op": "cracks",
-     "scale": 5.0,
-     "width": 0.04,
-     "threshold": 0.32,
+     "op": "patches",
+     "scale": 0.8,
+     "threshold": 0.7,
+     "octaves": 1,
      "ramp": "molten",
-     "tone": 1.8,
+     "tone": 3.2,
      "seed": 5
-    },
-    {
-     "id": "fissures_hot",
-     "op": "cracks",
-     "scale": 5.0,
-     "width": 0.016,
-     "threshold": 0.32,
-     "ramp": "molten",
-     "tone": 5.8,
-     "seed": 5
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.4,
-     "shift": 2.4,
-     "ramps": [
-      "meteor"
-     ]
     }
    ]
   },
   "crust_hot": {
    "ramp": "meteor",
-   "tone": 3.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.0,
-    "dark_shift": -1.2,
-    "outline": "dark"
-   },
+   "tone": 3.6,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.0,
+    "threshold": 0.2
+   },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
+    },
     {
      "id": "pits",
      "op": "patches",
-     "scale": 1.6,
-     "threshold": 0.55,
-     "shift": -1.1,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "highlight_shift": 1.6
-     }
+     "scale": 1.4,
+     "threshold": 0.58,
+     "shift": -1.2
     },
     {
      "id": "fissures",
-     "op": "cracks",
-     "scale": 5.0,
-     "width": 0.06,
-     "threshold": 0.32,
+     "op": "patches",
+     "scale": 0.8,
+     "threshold": 0.7,
+     "octaves": 1,
      "ramp": "molten",
-     "tone": 2.4,
-     "seed": 5
-    },
-    {
-     "id": "fissures_hot",
-     "op": "cracks",
-     "scale": 5.0,
-     "width": 0.025,
-     "threshold": 0.32,
-     "ramp": "molten",
-     "tone": 6.5,
+     "tone": 3.2,
      "seed": 5
     },
     {
      "id": "melt",
-     "op": "fill",
-     "ramp": "molten",
-     "tone": 5.2,
-     "faces": [
-      "front"
-     ]
-    },
-    {
-     "id": "melt_crust",
      "op": "patches",
-     "scale": 1.3,
-     "threshold": 0.58,
+     "scale": 1.6,
+     "threshold": 0.5,
      "ramp": "molten",
-     "tone": 2.2,
+     "tone": 4.2,
      "faces": [
       "front"
      ]
@@ -197,26 +176,12 @@
     {
      "id": "melt_hot",
      "op": "patches",
-     "scale": 1.0,
-     "threshold": 0.6,
+     "scale": 1.6,
+     "threshold": 0.64,
      "ramp": "molten",
-     "tone": 7.2,
+     "tone": 6.4,
      "faces": [
       "front"
-     ],
-     "seed": 9
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.4,
-     "shift": 2.4,
-     "ramps": [
-      "meteor"
      ]
     }
    ]
@@ -233,7 +198,7 @@
     "dark": 0
    },
    "art_key": {
-    "W": "molten:8",
+    "W": "molten:7",
     "Y": "molten:6",
     "a": "molten:5",
     "o": "molten:4",
@@ -269,9 +234,9 @@
    "shape": "box",
    "parent": "rock",
    "size": [
-    8.0,
-    8.0,
-    8.0
+    8,
+    8,
+    8
    ],
    "pivot": [
     0.0,
@@ -290,9 +255,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    11.0,
-    6.0,
-    6.0
+    10,
+    6,
+    6
    ],
    "pivot": [
     0.0,
@@ -306,9 +271,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    6.0,
-    11.0,
-    6.0
+    6,
+    10,
+    6
    ],
    "pivot": [
     -0.5,
@@ -322,9 +287,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    6.0,
-    6.0,
-    11.0
+    6,
+    6,
+    10
    ],
    "pivot": [
     0.5,
@@ -338,9 +303,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    5.0,
-    4.0,
-    5.0
+    5,
+    4,
+    5
    ],
    "pivot": [
     3.5,
@@ -359,9 +324,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    5.0,
-    5.0,
-    4.0
+    5,
+    5,
+    4
    ],
    "pivot": [
     -3.0,
@@ -380,9 +345,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    5.0,
-    4.0,
-    4.0
+    5,
+    4,
+    4
    ],
    "pivot": [
     -3.5,
@@ -401,9 +366,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    4.0,
-    5.0,
-    5.0
+    4,
+    5,
+    5
    ],
    "pivot": [
     3.0,
@@ -422,9 +387,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    5.0,
-    4.0,
-    4.0
+    5,
+    4,
+    4
    ],
    "pivot": [
     0.5,
@@ -443,9 +408,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    4.0,
-    3.0,
-    4.0
+    4,
+    3,
+    4
    ],
    "pivot": [
     1.0,
@@ -464,9 +429,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    3.0,
-    5.0,
-    4.0
+    3,
+    5,
+    4
    ],
    "pivot": [
     -4.0,
@@ -485,9 +450,9 @@
    "shape": "box",
    "parent": "rock_core",
    "size": [
-    4.0,
-    3.0,
-    4.0
+    4,
+    3,
+    4
    ],
    "pivot": [
     1.5,
@@ -524,70 +489,38 @@
    "style": "flame",
    "plane": "xz",
    "art": [
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    "..........................",
-    ".............v..vv........",
-    ".............vv.vv........",
-    ".............vvvvv........",
-    ".............vvvvv........",
-    ".........v...vvvvv........",
-    "........vv..vrvvvvv.......",
-    "........vv..vrrvrrv.......",
-    "........vvv.vrrvrrv.......",
-    "........vvvvvrrrrrv.......",
-    "........vvvvrrrrrrv.......",
-    ".......vvrvvrrrrrrv.......",
-    ".......vrrvvrorrrrr.......",
-    ".......vrrrvroorrrr.......",
-    ".......vrrrrroororrv......",
-    ".......vrrrrrooooorv......",
-    "......vvrrrroooooorv......",
-    "......vrrorroooooorv......",
-    ".....vvrrorroooooorv......",
-    ".....vvrooooooooooor......",
-    "....vvvroooooaooooor......",
-    "....vvrroooooaaoooorv.....",
-    "...vvvrroooooaaoooorv.....",
-    "...vvrroooooaaaaaoorv.....",
-    "...vvrroooooaaaaaaorv.....",
-    "...vrrrooaooaaaaaaorvv....",
-    "..vvrrrooaaaaaaaaaoorv....",
-    "..vrrrooaaaaaaaaaaoorv....",
-    "..vrrrooaaaaaaaaaaaorvv...",
-    "..vrroooaaaaaYaaaaaorrv...",
-    "..rrroooaaaaaYaaaaaorrv...",
-    ".vrroooaaaaaYYYaaaaoorvv..",
-    ".vrroooaaaaaYYYaaaaoorrv..",
-    ".vrooooaaaaaYYYYaaaaorrv..",
-    ".vroooaaaaaYYYYYYaaaoorv..",
-    ".rroooaaaYYYYYYYYYaaoorrv.",
-    ".roooaaaaYYYYYYYYYaaoorrv.",
-    ".roooaaaYYYYYYYYYYaaooorv.",
-    ".rooaaaaYYYYYYYYYYaaaoorr.",
-    "..ooaaaaYYYYYWYYYYYaaoor..",
-    "..ooaaaYYYYYWWYYYYYaaaoo..",
-    "..oaaaaYYYYYWWWYYYYaaaoo..",
-    "...aaaaYYYYYWWWYYYYaaao...",
-    "...aaaYYYYYWWWWYYYYYaaa...",
-    "...aaaYYYYYWWWWWYYYYaaa...",
-    "....aYYYYYWWWWWWYYYYaa....",
-    "....aYYYYWWWWWWWWYYYYa....",
-    ".....YYYYWWWWWWWWYYYY.....",
-    ".....YYYYWWWWWWWWWYYY.....",
-    ".....YYYWWWWWWWWWWYYY.....",
-    "......YYWWWWWWWWWWYY......"
+    ".............",
+    ".............",
+    ".............",
+    ".............",
+    ".............",
+    ".............",
+    ".............",
+    ".............",
+    ".............",
+    ".....vvvv....",
+    "....vvvvv....",
+    "....vvrrv....",
+    "...vvrrrrv...",
+    "...vrrrrrv...",
+    "..vrrroorv...",
+    "..vrroooor...",
+    "..vrooooor...",
+    "..rrooaoorv..",
+    "..rooaaaoov..",
+    ".vrooaaaaor..",
+    ".vooaaaaaor..",
+    ".rooaaYaaorv.",
+    ".roaaaYaaaov.",
+    "vroaaYYYaaor.",
+    "voaaaYYYYaor.",
+    ".oaaYYYYYaoo.",
+    ".oaaYYWYYaao.",
+    ".aaYYYWYYYao.",
+    "..aYYWWWYYa..",
+    "..YYYWWWYYa..",
+    "..YYWWWWWYY..",
+    "...YWWWWWY..."
    ]
   },
   {
@@ -602,32 +535,19 @@
    "style": "flame",
    "plane": "yz",
    "art": [
-    "................................................................",
-    "............rrrrvvvv............................................",
-    ".........oooorrrrrrvvvv.........................................",
-    "......aaaoooooorrrrrvvvv........................................",
-    "....aaaaaaoooooorrrrrvvvv.......................................",
-    ".YYYYaaaaaaaaooooooorrrrrvvvvv..................................",
-    "YYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv............................",
-    "YYYYYYYYYYYaaaaaaaaaaaoooooooorrrrrrrvvvvvv.....................",
-    "WWYYYYYYYYYYYYaaaaaaaaaaaooooooooorrrrrrrvvvvvv.................",
-    "WWWWWYYYYYYYYYYYYaaaaaaaaaaoooooooorrrrrrrvvvvvv................",
-    "WWWWWWWYYYYYYYYYYYYaaaaaaaaaaoooooooorrrrrrvvvvvv...............",
-    "WWWWWWWWWYYYYYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv................",
-    "WWWWWWWWWWWYYYYYYYYYaaaaaaaaaoooooorrrrrrvvvvv..................",
-    "WWWWWWWWWWYYYYYYYYYYaaaaaaaaooooooorrrrrvvvvv...................",
-    "WWWWWWWWWYYYYYYYYYYaaaaaaaaaooooooorrrrrrvvvvv..................",
-    "WWWWWWWYYYYYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv..................",
-    "WWWWWYYYYYYYYYYaaaaaaaaaaooooooorrrrrrrvvvvv....................",
-    "WWYYYYYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv.......................",
-    "YYYYYYYYYYaaaaaaaaaaooooooorrrrrrvvvvv..........................",
-    "YYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv............................",
-    ".YYYYYaaaaaaaaaooooooorrrrrrvvvvv...............................",
-    "....aaaaaaaaoooooooorrrrrrvvvvv.................................",
-    "......aaaaoooooorrrrrrvvvv......................................",
-    ".........ooorrrrrvvvv...........................................",
-    "............rrvvvv..............................................",
-    "................................................................"
+    ".......vv.......................",
+    "....aooorrrvv...................",
+    ".YYaaaaoooorrrvv................",
+    "YYYYaaaaaooorrrvv...............",
+    "WWYYYYaaaaooorrrvv..............",
+    "WWWWYYYYaaaaoooorrvvv...........",
+    "WWWWWWYYYYYaaaaoooorrvvv........",
+    "WWWWWYYYYYaaaaaoooorrrvvv.......",
+    "WWYYYYYYaaaaaoooorrrrvvv........",
+    "YYYYYaaaaaoooorrrrvvv...........",
+    ".YYaaaaoooorrrvvv...............",
+    "....oooorrvv....................",
+    ".......v........................"
    ]
   },
   {
@@ -647,54 +567,30 @@
    "style": "flame",
    "plane": "xz",
    "art": [
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "........vvv.........",
-    "........vvv.........",
-    "........vvvv.v......",
-    ".......vvrvvvvv.....",
-    ".......vrrrvvvv.....",
-    ".......vrrrvvvv.....",
-    ".......vrrrrrrv.....",
-    "......vrrorrrrr.....",
-    "......vrooorrrrv....",
-    "....vvvrooorrrrv....",
-    "...vvvvroooorrrv....",
-    "...vvvrooooooorv....",
-    "..vvvrrooaooooor....",
-    "..vvrrrooaaoooor....",
-    "..vrrrroaaaoooorv...",
-    "..vrrrooaaaaooorv...",
-    "..rrrrooaaaaaooov...",
-    "..rroooaaaaaaaoorv..",
-    ".vrooooaaaaaaaoorv..",
-    ".vroooaaaYYaaaaorvv.",
-    ".vroooaaYYYaaaaorrv.",
-    ".roooaaaYYYYaaaoorv.",
-    ".roooaaaYYYYaaaaorrv",
-    ".rooaaaYYYYYYaaaorr.",
-    ".roaaaaYYYYYYYaaoor.",
-    ".ooaaaaYYYYYYYaaooo.",
-    "..aaaaYYYWWYYYYaao..",
-    "..aaaaYYYWWYYYYaao..",
-    "..aaaYYYWWWWYYYaaa..",
-    "...aYYYYWWWWYYYYa...",
-    "...aYYYWWWWWWYYYa...",
-    "....YYYWWWWWWYYY....",
-    "....YYYWWWWWWWYY....",
-    "....YYWWWWWWWWYY...."
+    "..........",
+    "..........",
+    "..........",
+    "..........",
+    "..........",
+    "..........",
+    "..........",
+    "...vv.....",
+    "...vv.....",
+    "..vrrv....",
+    "..vrrrv...",
+    "..roorvv..",
+    "..rooorv..",
+    ".voooorr..",
+    ".voaaoorv.",
+    ".roaaaoov.",
+    ".roaaaaor.",
+    "voaaYYaor.",
+    "voaYYYaaov",
+    ".oaYYYYao.",
+    ".aYYWYYaa.",
+    ".aYYWWYYa.",
+    "..YWWWYY..",
+    "..YWWWWY.."
    ]
   },
   {
@@ -714,26 +610,16 @@
    "style": "flame",
    "plane": "yz",
    "art": [
-    "................................................",
-    "........orrrrvvv................................",
-    ".....aaaooooorrrrrvvvv..........................",
-    "...aaaaaaaoooooorrrrrvvvv.......................",
-    "YYYYYaaaaaaaoooooorrrrvvvv......................",
-    "YYYYYYYaaaaaaaoooooorrrrrvvv....................",
-    "WWYYYYYYYYaaaaaaaaoooooorrrrvvvvv...............",
-    "WWWWYYYYYYYYYaaaaaaaoooooorrrrrvvvv.............",
-    "WWWWWWYYYYYYYYaaaaaaaaooooorrrrrvvvv............",
-    "WWWWWWWWWYYYYYYYaaaaaaaoooooorrrrvvvv...........",
-    "WWWWWWWWWYYYYYYYYaaaaaaoooooorrrrrvvvv..........",
-    "WWWWWWYYYYYYYYaaaaaaaoooooorrrrvvvv.............",
-    "WWWWYYYYYYYaaaaaaaooooorrrrrvvvv................",
-    "WWYYYYYYYaaaaaaaoooooorrrrvvvv..................",
-    "YYYYYYYYaaaaaaaoooooorrrrvvvv...................",
-    "YYYYYaaaaaaaoooooorrrrvvvv......................",
-    "...aaaaaaoooooorrrrvvvv.........................",
-    ".....aaooooorrrrrvvv............................",
-    "........orrrrvvv................................",
-    "................................................"
+    ".....v..................",
+    "..aaooorrvv.............",
+    "YYYYaaaoooorrvv.........",
+    "WWYYYYaaaaooorrrvv......",
+    "WWWWYYYYaaaooorrvv......",
+    "WWWWYYYYaaaoorrrv.......",
+    "WWYYYYaaaooorrrvv.......",
+    "YYYaaaaooorrvv..........",
+    "..aaooorrvv.............",
+    ".....rv................."
    ]
   }
  ],

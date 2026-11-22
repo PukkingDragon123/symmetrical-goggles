@@ -1,69 +1,67 @@
 {
   "name": "Endling",
-  "parts": 19,
-  "instances": 19,
-  "faces": 98,
-  "triangles": 196,
-  "vertices_flat": 392,
-  "vertices_unique": 136,
+  "parts": 12,
+  "instances": 12,
+  "faces": 56,
+  "triangles": 112,
+  "vertices_flat": 224,
+  "vertices_unique": 55,
   "atlas": [
-    64,
-    128
+    32,
+    64
   ],
-  "atlas_fill": 0.681,
-  "texel_density": 2.0,
+  "atlas_fill": 0.771,
+  "texel_density": 1.0,
   "colors_used": 17,
   "palette": {
+    "ender": [
+      "#030205",
+      "#08060b",
+      "#0e0b13",
+      "#15111c",
+      "#1d1826",
+      "#262031",
+      "#30293d",
+      "#3c344b",
+      "#4a405b"
+    ],
     "eyeglow": [
-      "#3d0f63",
-      "#6a19a6",
-      "#9a2fe0",
-      "#c05cff",
-      "#dc95ff",
-      "#f1cfff",
-      "#fdf4ff"
+      "#5b1a87",
+      "#8a2bc0",
+      "#b244e6",
+      "#cf6ef7",
+      "#e49cfb",
+      "#f4cdfd",
+      "#fdf1ff"
     ],
     "chorus": [
-      "#160a20",
-      "#241133",
-      "#341a48",
-      "#46245d",
-      "#5a3074",
-      "#703f8b",
-      "#8852a2",
-      "#a06bb8",
-      "#ba8acd",
-      "#d4addf",
-      "#ead1ef"
-    ],
-    "velvet": [
-      "#040207",
-      "#0a0610",
-      "#100a19",
-      "#171023",
-      "#1f162e",
-      "#281d3a",
-      "#322447",
-      "#3e2d56",
-      "#4b3766",
-      "#5b4478"
+      "#24132d",
+      "#371d44",
+      "#4c295c",
+      "#623674",
+      "#79468b",
+      "#9059a1",
+      "#a774b6",
+      "#bf93ca",
+      "#d6b5dd",
+      "#ead6ee"
     ]
   },
   "bounds": {
     "min": [
-      -3.25,
-      -0.0,
-      -3.05
+      -4.0,
+      0.0,
+      -3.0
     ],
     "max": [
-      3.25,
-      15.5,
-      3.953
+      4.0,
+      16.0,
+      4.04
     ],
     "size": [
-      6.5,
-      15.5,
-      7.003
+      8.0,
+      16.0,
+      7.04
     ]
   },
   "warnings": [],
@@ -78,17 +76,10 @@
   },
   "joints": [
     "body",
-    "belly",
-    "ruff",
-    "ruff_back",
     "head",
-    "head_tall",
-    "head_long",
-    "eye_l",
-    "cheek_l",
-    "eye_r",
-    "cheek_r",
     "jaw",
+    "eye_l",
+    "eye_r",
     "head_plant",
     "leg_l",
     "shin_l",
@@ -103,7 +94,7 @@
     "endling.mtl": "examples/output/endling.mtl",
     "endling.bbmodel": "examples/output/endling.bbmodel",
     "endling_texture.png": "examples/output/endling_texture.png",
-    "endling_texture_x8.png": "examples/output/endling_texture_x8.png",
+    "endling_texture_x16.png": "examples/output/endling_texture_x16.png",
     "endling_hero.png": "examples/output/endling_hero.png",
     "endling_sheet.png": "examples/output/endling_sheet.png",
     "endling_turntable.gif": "examples/output/endling_turntable.gif",

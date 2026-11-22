@@ -2,7 +2,10 @@
 them into the mod as block models.
 
     python examples/src/chorus_cocoon.py examples/chorus_cocoon.json                       # the spec only
-    python examples/src/chorus_cocoon.py examples/chorus_cocoon.json --mod mods/winterworks # + block models, texture
+
+Retired for the mod: the Chorus Cocoon in Winterworks is now a vanilla-style, cocoa-like block model over one 16 x 16
+texture, drawn by examples/src/winterworks_end_pixels.py. `--mod` refuses to overwrite it; this spec stays as a
+lowpix example.
 
 A pod that hangs from the block above on a short chorus stem, under a knot of stem and pale chorus-flower petals: a
 lumpy, chorus-fruit-like cluster of purple bulbs speckled with pale nubs that swells from a small bud (age 0) to a
@@ -11,7 +14,7 @@ inside pressing out through one of them.
 
 Units are Minecraft pixels; each age is a root `age0`..`age3`, laid side by side along x (at x = -27, -9, 9, 27) so
 the preview shows the growth; each fills the block x, z in -8..8, y in 0..16 round its own root, hanging from y = 16.
-Density 2 (32 texels per block, like the update's 32 x 32 block textures). Only boxes and cards, axis-aligned or
+Density 1 (16 texels per block, like vanilla blocks). Only boxes and cards, axis-aligned or
 turned 45 degrees about Y on the age root, so every part is a legal block-model element.
 
 `python -m lowpix mc export` writes entity models only (no block-model JSON), so `--mod` does the block export here:
@@ -28,28 +31,28 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from hex_kit import ROOT, Rig, dump  # noqa: E402
-from obsidian_kit import RAMPS  # noqa: E402
+from end_vanilla_kit import LIGHT, ROOT, Rig, dump, ramps, skin  # noqa: E402
 
-R = Rig(density=2, bone_style="chorus")
+R = Rig(density=1, bone_style="chorus")
 part, bone, card = R.part, R.bone, R.card
 
 AGE_X = [-27.0, -9.0, 9.0, 27.0]
-WING_TIP = ["...mM", "..mMm", ".mMEm", "mMmm.", "mm..."]
+WING_TIP = [".mM", "mME", "Mm."]
 # the pod's profile, top to bottom: (share of the height, share of the width); each layer is two crossed boxes, so
 # the cross-section is a stepped octagon and the outline an egg
 LAYERS = [(0.2, 0.68), (0.56, 1.0), (0.24, 0.7)]
 
 
-def h2(v, lo=0.5):
-    return max(lo, round(v * 2) / 2)
+def h2(v, lo=1):
+    """Round to whole pixels."""
+    return max(lo, int(round(v)))
 
 
 def calyx(w, seed):
     """A row of pointed chorus-flower petals drooping at both ends (a card seen from the side)."""
-    n = max(5, int(w * 2))
+    n = max(5, int(w))
     rows = []
-    for y in range(4):
+    for y in range(3):
         r = ""
         for x in range(n):
             u = abs(x - (n - 1) / 2) / ((n - 1) / 2)
@@ -58,10 +61,8 @@ def calyx(w, seed):
                 r += "P" if u < 0.75 and tooth else "."
             elif y == 1:
                 r += "P" if u < 0.95 else "."
-            elif y == 2:
-                r += "p" if (u > 0.45 or u < 0.15) else "."
             else:
-                r += "p" if u > 0.8 else "."
+                r += "p" if (u > 0.55 or u < 0.15) else "."
         rows.append(r)
     return rows
 
@@ -71,7 +72,7 @@ def age(k, stem, pod, lumps, cracked=False):
     x0 = AGE_X[k]
     a = bone(f"age{k}", None, at=(x0, 0, 0))
     sw, sl = stem
-    part(f"knot{k}", a["id"], [sw + 1.0, 1.0, sw + 1.0], "stem_knot", centre=(x0, 15.5, 0), rot=(0, 45, 0))
+    part(f"knot{k}", a["id"], [sw + 1, 1, sw + 1], "stem_knot", centre=(x0, 15.5, 0), rot=(0, 45, 0))
     part(f"stem{k}", a["id"], [sw, sl, sw], "stem", centre=(x0, 15.0 - sl / 2, 0))
     W, H = pod
     top = 15.0 - sl + 0.5
@@ -81,13 +82,13 @@ def age(k, stem, pod, lumps, cracked=False):
         lh, lw = h2(H * fh), h2(W * fw, 1.0)
         cy = y - lh / 2
         part(f"pod{k}_{j}", a["id"], [lw, lh, h2(lw * 0.75, 1.0)], style, centre=(x0, cy, 0))
-        part(f"pod{k}_{j}x", a["id"], [h2(lw * 0.75, 1.0), lh - 0.5 if lh > 1 else lh, lw], style, centre=(x0, cy, 0))
+        part(f"pod{k}_{j}x", a["id"], [h2(lw * 0.75, 1.0), lh - 1 if lh > 2 else lh, lw], style, centre=(x0, cy, 0))
         y -= lh
     mid = top - H * 0.45
     for j, (lx, ly, lz, sz, turned) in enumerate(lumps):
         part(f"lump{k}_{j}", a["id"], [sz, sz, sz], "lump_cracked" if cracked and j % 2 == 0 else "lump",
              centre=(x0 + lx, mid + ly, lz), rot=(0, 45 if turned else 0, 0))
-    part(f"tip{k}", a["id"], [h2(W * 0.22, 1.0), 1.0, h2(W * 0.22, 1.0)], "pod_tip", centre=(x0, y - 0.25, 0),
+    part(f"tip{k}", a["id"], [h2(W * 0.22, 1.0), 1, h2(W * 0.22, 1.0)], "pod_tip", centre=(x0, y - 0.5, 0),
          rot=(0, 45, 0))
     cw = h2(W * 0.95, 3.0)
     for j, yaw in enumerate((45, -45)):       # a calyx of pale petals over the pod's shoulders
@@ -96,73 +97,54 @@ def age(k, stem, pod, lumps, cracked=False):
 
 
 # age 0: a bud; age 1: a small pod; age 2: a fat pod; age 3: a mature, cracked pod with a wing pressing out
-age(0, (1.5, 3.5), (4.0, 5.0), [(1.75, 0.0, 0.5, 1.5, True)])
-age(1, (1.5, 3.0), (6.0, 7.5), [(2.75, 0.5, 1.0, 2.5, True), (-2.5, -1.0, 1.0, 2.0, False)])
-age(2, (2.0, 2.5), (8.5, 10.0), [(3.75, 1.0, 1.5, 3.0, True), (-3.75, -1.0, 1.0, 3.0, False),
-                                 (0.5, -2.0, -3.5, 3.0, True)])
-age(3, (2.0, 1.5), (11.0, 12.5), [(4.75, 1.5, 2.0, 4.0, True), (-5.0, -1.0, 1.5, 3.5, False),
-                                  (1.0, -2.5, -4.75, 4.0, True), (-2.0, 2.5, -4.5, 3.0, False)], cracked=True)
+age(0, (1, 3), (4, 5), [(2.0, 0.0, 0.5, 2, True)])
+age(1, (2, 3), (6, 8), [(3.0, 0.5, 1.0, 3, True), (-2.5, -1.0, 1.0, 2, False)])
+age(2, (2, 2), (8, 10), [(4.0, 1.0, 1.5, 3, True), (-4.0, -1.0, 1.0, 3, False),
+                         (0.5, -2.0, -3.5, 3, True)])
+age(3, (2, 2), (11, 12), [(5.0, 1.5, 2.0, 4, True), (-5.0, -1.0, 1.5, 4, False),
+                          (1.0, -2.5, -5.0, 4, True), (-2.0, 2.5, -4.5, 3, False)], cracked=True)
 card("wing3", "age3", WING_TIP, "wing_tip", plane="xy", at=(AGE_X[3] + 1.0, 7.0, 5.6), offset=(0, 0, 0))
 
 # ======================================================================= palette and paint
-ramps = {"crying": RAMPS["crying"]}
-ramps["chorus"] = ["#1f0f24", "#331a3b", "#4a2754", "#633670", "#7c4a8a", "#9763a3", "#b383bc", "#cda7d3", "#e7cfe9"]
-ramps["stem"] = ["#1d0f1c", "#2f1a2e", "#462843", "#5e385a", "#784b72", "#94628c"]
-ramps["petal"] = ["#6b4f78", "#977aa3", "#bfa6c8", "#e0d0e6", "#f6eefa"]
-ramps["membrane"] = RAMPS["obsidian"][2:7]
-RIM = {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.4, "outline": "dark"}
-SOFT = {"light": 1, "dark": 1, "light_shift": 0.8, "dark_shift": -0.7}
-NUBS = {"id": "nubs", "op": "spots", "count": 4, "radius": [0.3, 0.5], "ramp": "chorus", "tone": 6.0,
-        "space": "world",
-        "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.5}}
+RAMPS = ramps("crying", "chorus", "obsidian")
+RAMPS["stem"] = ["#1d0f1c", "#2f1a2e", "#462843", "#5e385a", "#784b72", "#94628c", "#ad7ea5"]
+RAMPS["petal"] = ["#6b4f78", "#977aa3", "#bfa6c8", "#e0d0e6", "#f6eefa"]
+# pale nubs dotted over the pod, like the chorus fruit's
+NUBS = {"id": "nubs", "op": "spots", "count": 3, "radius": [0.35, 0.5], "ramp": "chorus", "tone": 8.0,
+        "space": "world", "min_gap": 2.0}
+POD = dict(grain=0.9, grain_scale=0.7, lip=1.4, shade=-1.2, dark_low=0)
+SEAMS = {"id": "seams", "op": "cracks", "scale": 3.0, "width": 0.07, "threshold": 0.35, "ramp": "crying",
+         "tone": 4.6, "seed": 3, "space": "world"}
 styles = {
-    "chorus": {"ramp": "chorus", "tone": 4.0, "rim": RIM},
-    "pod": {"ramp": "chorus", "tone": 2.8, "rim": SOFT,
-            "layers": [{"id": "mottle", "op": "patches", "scale": 1.6, "threshold": 0.55, "shift": 0.8,
-                        "space": "world", "bevel": {"shadow": 1, "highlight": 1}},
-                       NUBS, {"id": "under", "op": "gradient", "axis": [0, 1, 0], "amount": 0.12,
-                              "space": "world"}]},
-    "lump": {"ramp": "chorus", "tone": 3.2, "rim": SOFT,
-             "layers": [{"id": "mottle", "op": "patches", "scale": 1.2, "threshold": 0.55, "shift": 0.8}, NUBS,
-                        {"id": "under", "op": "gradient", "axis": "y", "amount": 0.8}]},
-    "pod_cracked": {"ramp": "chorus", "tone": 2.8, "rim": SOFT,
-                    "layers": [{"id": "mottle", "op": "patches", "scale": 1.6, "threshold": 0.55, "shift": 0.8,
-                                "space": "world"},
-                               NUBS,
-                               {"id": "seams", "op": "cracks", "scale": 3.5, "width": 0.05, "threshold": 0.35,
-                                "ramp": "crying", "tone": 5.0, "seed": 3, "space": "world",
-                                "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -2.0}},
-                               {"id": "under", "op": "gradient", "axis": [0, 1, 0], "amount": 0.12,
-                                "space": "world"}]},
-    "lump_cracked": {"ramp": "chorus", "tone": 3.0, "rim": SOFT,
-                     "layers": [NUBS, {"id": "seams", "op": "cracks", "scale": 2.0, "width": 0.06, "threshold": 0.35,
-                                       "ramp": "crying", "tone": 4.6, "seed": 5,
-                                       "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -2.0}}]},
-    "pod_tip": {"ramp": "chorus", "tone": 3.0, "rim": RIM, "brush": {"off": True}},
-    "stem": {"ramp": "stem", "tone": 3.0, "rim": RIM, "brush": {"flow": "y"},
-             "layers": [{"id": "rings", "op": "stripes", "axis": "y", "period": 1.5, "width": 0.3, "shift": -1.0}]},
-    "stem_knot": {"ramp": "stem", "tone": 3.6, "rim": RIM, "brush": {"off": True}},
+    "chorus": {"ramp": "chorus", "tone": 4.0},
+    "pod": skin("chorus", 4.2, layers=[NUBS, {"id": "under", "op": "gradient", "axis": [0, 1, 0], "amount": 0.1,
+                                              "space": "world"}], **POD),
+    "lump": skin("chorus", 4.6, layers=[NUBS], **POD),
+    "pod_cracked": skin("chorus", 4.4, layers=[NUBS, SEAMS], **POD),
+    "lump_cracked": skin("chorus", 4.8, layers=[NUBS, dict(SEAMS, scale=2.0, seed=5)], **POD),
+    "pod_tip": skin("chorus", 4.0, grain=0.5, lip=1.2, shade=-1.2, clusters=False, dark_low=0),
+    "stem": skin("stem", 3.4, grain=0.6, lip=1.4, shade=-1.2, clusters=False, dark_low=0, layers=[
+        {"id": "rings", "op": "stripes", "axis": "y", "period": 2.0, "width": 0.5, "shift": -1.0}]),
+    "stem_knot": skin("stem", 4.0, grain=0.5, lip=1.4, shade=-1.2, clusters=False, dark_low=0),
     "petal": {"ramp": "petal", "tone": 3.0, "light": 0.3, "brush": {"off": True},
               "art_key": {"p": "petal:2", "P": "petal:3"}},
-    "wing_tip": {"ramp": "membrane", "tone": 2.0, "light": 0.2, "brush": {"off": True},
-                 "art_key": {"m": "membrane:2", "M": "membrane:4", "E": "crying:5"}},
+    "wing_tip": {"ramp": "obsidian", "tone": 3.0, "light": 0.2, "brush": {"off": True},
+                 "art_key": {"m": "obsidian:4", "M": "obsidian:6", "E": "crying:5"}},
 }
 
 spec = {
     "name": "Chorus Cocoon",
     "description": "The Winterworks Chorus Cocoon in its four ages: a lumpy purple chorus-fruit pod hanging on a "
                    "chorus stem, growing from a bud to a fat pod; the mature one is cracked with glowing violet seams. "
-                   "Minecraft pixel units, density 2; exported as block models.",
+                   "Minecraft pixel units, density 1 (vanilla block resolution); exported as block models.",
     "author": "lowpix example", "license": "CC0-1.0",
-    "density": 2,
+    "density": 1,
     "grounded": False,
     "budget": {"tris": 900, "colors": 48},
-    "light": {"dir": [-0.45, 1.0, 0.6], "strength": 0.9, "gradient": 0.3, "ao": 0.0},
-    "brush": {"flow": "horizontal", "length": 1.5, "width": 0.5, "rough": 0.5, "overshoot": 0.3,
-              "textures": {"chorus": "organic", "stem": "wood"}},
+    "light": dict(LIGHT, gradient=0.3, ao=0.0),
     "minecraft": {"fps": 12, "glow_ramps": ["crying"]},
     "render": {"background": "#2a2735", "hero": [-24, 12], "shadow": 0.3},
-    "palette": {"ramps": ramps},
+    "palette": {"ramps": RAMPS},
     "styles": styles,
     "parts": R.P,
     "animations": {"idle": {"length": 1.0, "loop": True, "tracks": []}},
@@ -334,12 +316,4 @@ if __name__ == "__main__":
     out = args[0] if args else os.path.join(ROOT, "examples", "chorus_cocoon.json")
     dump(spec, out)
     if mod:
-        tex, models = block_models(spec)
-        res = os.path.join(mod, "src", "main", "resources", "assets", "winterworks")
-        os.makedirs(os.path.join(res, "textures", "block"), exist_ok=True)
-        os.makedirs(os.path.join(res, "models", "block"), exist_ok=True)
-        tex.save(os.path.join(res, "textures", "block", "chorus_cocoon.png"))
-        for k, mdl in models.items():
-            with open(os.path.join(res, "models", "block", f"chorus_cocoon_age{k}.json"), "w") as fh:
-                json.dump(mdl, fh, indent=1)
-        print("texture", tex.size, "models", {k: len(v["elements"]) for k, v in models.items()})
+        sys.exit("--mod is retired: the mod's Chorus Cocoon comes from examples/src/winterworks_end_pixels.py")

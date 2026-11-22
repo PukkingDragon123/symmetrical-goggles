@@ -19,17 +19,10 @@ public final class EndlingModel {
     public static final String[] TINT_PARTS = {};
     public static final String[] CLIPS = {"idle", "walk", "run", "hop", "sit", "teleport", "sacrifice"};
     public static final String BODY = "body";
-    public static final String BELLY = "belly";
-    public static final String RUFF = "ruff";
-    public static final String RUFF_BACK = "ruff_back";
     public static final String HEAD = "head";
-    public static final String HEAD_TALL = "head_tall";
-    public static final String HEAD_LONG = "head_long";
-    public static final String EYE_L = "eye_l";
-    public static final String CHEEK_L = "cheek_l";
-    public static final String EYE_R = "eye_r";
-    public static final String CHEEK_R = "cheek_r";
     public static final String JAW = "jaw";
+    public static final String EYE_L = "eye_l";
+    public static final String EYE_R = "eye_r";
     public static final String HEAD_PLANT = "head_plant";
     public static final String LEG_L = "leg_l";
     public static final String SHIN_L = "shin_l";
@@ -43,25 +36,18 @@ public final class EndlingModel {
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        PartDefinition p_body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 32).addBox(-1.75F, -2.9F, -1.25F, 3.5F, 3F, 2.5F, CubeDeformation.NONE), PartPose.offset(0F, 17F, 0F));
-        PartDefinition p_belly = p_body.addOrReplaceChild("belly", CubeListBuilder.create().texOffs(12, 32).addBox(-1.5F, -0.75F, -1.5F, 3F, 1.5F, 3F, CubeDeformation.NONE), PartPose.offset(0F, -0.6F, -0.05F));
-        PartDefinition p_ruff = p_body.addOrReplaceChild("ruff", CubeListBuilder.create().texOffs(18, 43).addBox(-2.25F, -1.25F, 0F, 4.5F, 1.5F, 0F, CubeDeformation.NONE), PartPose.offsetAndRotation(0F, -2.7F, -1.3F, -0.2094F, -0F, 0F));
-        PartDefinition p_ruff_back = p_body.addOrReplaceChild("ruff_back", CubeListBuilder.create().texOffs(0, 46).addBox(-2.25F, -1.25F, 0F, 4.5F, 1.5F, 0F, CubeDeformation.NONE), PartPose.offsetAndRotation(0F, -2.7F, 1.3F, 0.2094F, -0F, 0F));
-        PartDefinition p_head = p_body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 22).addBox(-3.25F, -5.1F, -2.95F, 6.5F, 4.5F, 5.5F, CubeDeformation.NONE), PartPose.offset(0F, -2.9F, 0F));
-        PartDefinition p_head_tall = p_head.addOrReplaceChild("head_tall", CubeListBuilder.create().texOffs(0, 11).addBox(-2.75F, -2.75F, -2.75F, 5.5F, 5.5F, 5.5F, CubeDeformation.NONE), PartPose.offset(0F, -2.85F, -0.2F));
-        PartDefinition p_head_long = p_head.addOrReplaceChild("head_long", CubeListBuilder.create().texOffs(0, 0).addBox(-2.75F, -2.25F, -3.25F, 5.5F, 4.5F, 6.5F, CubeDeformation.NONE), PartPose.offset(0F, -2.85F, -0.2F));
-        PartDefinition p_eye_l = p_head.addOrReplaceChild("eye_l", CubeListBuilder.create().texOffs(8, 43).addBox(-1F, -1F, -0.25F, 2F, 2F, 0.5F, CubeDeformation.NONE), PartPose.offsetAndRotation(1.3F, -3.15F, -3.6F, 0F, 0.1047F, 0F));
-        PartDefinition p_cheek_l = p_head.addOrReplaceChild("cheek_l", CubeListBuilder.create().texOffs(9, 46).addBox(-0.75F, -0.5F, -0.25F, 1.5F, 1F, 0.5F, CubeDeformation.NONE), PartPose.offset(2.05F, -1.6F, -3.4F));
-        PartDefinition p_eye_r = p_head.addOrReplaceChild("eye_r", CubeListBuilder.create().texOffs(13, 43).addBox(-1F, -1F, -0.25F, 2F, 2F, 0.5F, CubeDeformation.NONE), PartPose.offsetAndRotation(-1.3F, -3.15F, -3.6F, 0F, -0.1047F, 0F));
-        PartDefinition p_cheek_r = p_head.addOrReplaceChild("cheek_r", CubeListBuilder.create().texOffs(13, 46).addBox(-0.75F, -0.5F, -0.25F, 1.5F, 1F, 0.5F, CubeDeformation.NONE), PartPose.offset(-2.05F, -1.6F, -3.4F));
-        PartDefinition p_jaw = p_head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(8, 38).addBox(-1.75F, 0F, -3F, 3.5F, 1F, 3F, CubeDeformation.NONE), PartPose.offset(0F, -1.6F, -0.5F));
-        PartDefinition p_head_plant = p_head.addOrReplaceChild("head_plant", CubeListBuilder.create(), PartPose.offset(0F, -5.6F, -0.2F));
-        PartDefinition p_leg_l = p_body.addOrReplaceChild("leg_l", CubeListBuilder.create().texOffs(24, 32).addBox(-0.5F, -0.25F, -0.5F, 1F, 4F, 1F, CubeDeformation.NONE), PartPose.offset(0.95F, -0.3F, 0F));
-        PartDefinition p_shin_l = p_leg_l.addOrReplaceChild("shin_l", CubeListBuilder.create().texOffs(28, 32).addBox(-0.5F, -0.15F, -0.5F, 1F, 3.5F, 1F, CubeDeformation.NONE), PartPose.offset(0F, 3.6F, 0F));
-        PartDefinition p_foot_l = p_shin_l.addOrReplaceChild("foot_l", CubeListBuilder.create().texOffs(21, 38).addBox(-0.75F, -0.1F, -1.75F, 1.5F, 0.5F, 2.5F, CubeDeformation.NONE), PartPose.offset(0F, 3.3F, 0F));
-        PartDefinition p_leg_r = p_body.addOrReplaceChild("leg_r", CubeListBuilder.create().texOffs(0, 38).addBox(-0.5F, -0.25F, -0.5F, 1F, 4F, 1F, CubeDeformation.NONE), PartPose.offset(-0.95F, -0.3F, 0F));
-        PartDefinition p_shin_r = p_leg_r.addOrReplaceChild("shin_r", CubeListBuilder.create().texOffs(4, 38).addBox(-0.5F, -0.15F, -0.5F, 1F, 3.5F, 1F, CubeDeformation.NONE), PartPose.offset(0F, 3.6F, 0F));
-        PartDefinition p_foot_r = p_shin_r.addOrReplaceChild("foot_r", CubeListBuilder.create().texOffs(0, 43).addBox(-0.75F, -0.1F, -1.75F, 1.5F, 0.5F, 2.5F, CubeDeformation.NONE), PartPose.offset(0F, 3.3F, 0F));
+        PartDefinition p_body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 20).addBox(-2F, -3F, -1.5F, 4F, 3F, 3F, CubeDeformation.NONE), PartPose.offset(0F, 17F, 0F));
+        PartDefinition p_head = p_body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -6F, -4F, 8F, 4F, 7F, CubeDeformation.NONE), PartPose.offset(0F, -3F, 0F));
+        PartDefinition p_jaw = p_head.addOrReplaceChild("jaw", CubeListBuilder.create().texOffs(0, 11).addBox(-4F, 0F, -7F, 8F, 2F, 7F, CubeDeformation.NONE), PartPose.offset(0F, -2F, 3F));
+        PartDefinition p_eye_l = p_head.addOrReplaceChild("eye_l", CubeListBuilder.create().texOffs(10, 31).addBox(-1F, -1F, 0F, 2F, 2F, 0F, CubeDeformation.NONE), PartPose.offset(2F, -3F, -4.04F));
+        PartDefinition p_eye_r = p_head.addOrReplaceChild("eye_r", CubeListBuilder.create().texOffs(14, 31).addBox(-1F, -1F, 0F, 2F, 2F, 0F, CubeDeformation.NONE), PartPose.offset(-2F, -3F, -4.04F));
+        PartDefinition p_head_plant = p_head.addOrReplaceChild("head_plant", CubeListBuilder.create(), PartPose.offset(0F, -6F, -0.5F));
+        PartDefinition p_leg_l = p_body.addOrReplaceChild("leg_l", CubeListBuilder.create().texOffs(14, 20).addBox(-1F, 0F, -1F, 2F, 3F, 2F, CubeDeformation.NONE), PartPose.offset(1F, 0F, 0F));
+        PartDefinition p_shin_l = p_leg_l.addOrReplaceChild("shin_l", CubeListBuilder.create().texOffs(22, 20).addBox(-1F, 0F, -1F, 2F, 3F, 2F, CubeDeformation.NONE), PartPose.offset(0F, 3F, 0F));
+        PartDefinition p_foot_l = p_shin_l.addOrReplaceChild("foot_l", CubeListBuilder.create().texOffs(16, 26).addBox(-1F, 0F, -2F, 2F, 1F, 3F, CubeDeformation.NONE), PartPose.offset(0F, 3F, 0F));
+        PartDefinition p_leg_r = p_body.addOrReplaceChild("leg_r", CubeListBuilder.create().texOffs(0, 26).addBox(-1F, 0F, -1F, 2F, 3F, 2F, CubeDeformation.NONE), PartPose.offset(-1F, 0F, 0F));
+        PartDefinition p_shin_r = p_leg_r.addOrReplaceChild("shin_r", CubeListBuilder.create().texOffs(8, 26).addBox(-1F, 0F, -1F, 2F, 3F, 2F, CubeDeformation.NONE), PartPose.offset(0F, 3F, 0F));
+        PartDefinition p_foot_r = p_shin_r.addOrReplaceChild("foot_r", CubeListBuilder.create().texOffs(0, 31).addBox(-1F, 0F, -2F, 2F, 1F, 3F, CubeDeformation.NONE), PartPose.offset(0F, 3F, 0F));
         return LayerDefinition.create(mesh, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 }
