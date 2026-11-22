@@ -32,6 +32,8 @@ import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.projectile.Arrow;
 
 /** GameTests for the Pot Golem (docs/AMBER_UPDATE.md section 9). ./gradlew runGametest */
 public class GolemTests implements FabricGameTest {
@@ -47,6 +49,11 @@ public class GolemTests implements FabricGameTest {
 
     private static ItemStack pot(Item back, Item left, Item right, Item front) {
         return DecoratedPotBlockEntity.createDecoratedPotItem(new PotDecorations(back, left, right, front));
+    }
+
+    /** A pot with the same sherd on all four faces. */
+    private static ItemStack four(Item sherd) {
+        return pot(sherd, sherd, sherd, sherd);
     }
 
     private static ItemStack withInside(ItemStack pot, ItemStack inside) {
@@ -150,16 +157,16 @@ public class GolemTests implements FabricGameTest {
 
     @GameTest(template = EMPTY_STRUCTURE)
     public void howlSherdBuildsAHowlHead(GameTestHelper h) {
-        PotGolemEntity g = build(h, pot(Items.BRICK, Items.HOWL_POTTERY_SHERD, Items.BRICK, Items.BRICK));
-        h.assertTrue(g.headForm() == HeadForm.HOWL, "the howl sherd makes a Howl Head, got " + g.headForm());
+        PotGolemEntity g = build(h, four(Items.HOWL_POTTERY_SHERD));
+        h.assertTrue(g.headForm() == HeadForm.HOWL, "four howl sherds make a Howl Head, got " + g.headForm());
         g.discard();
         h.succeed();
     }
 
     @GameTest(template = EMPTY_STRUCTURE)
     public void dangerSherdBuildsADangerHead(GameTestHelper h) {
-        PotGolemEntity g = build(h, pot(Items.BRICK, Items.BRICK, Items.BRICK, Items.DANGER_POTTERY_SHERD));
-        h.assertTrue(g.headForm() == HeadForm.DANGER, "the danger sherd makes a Danger Head, got " + g.headForm());
+        PotGolemEntity g = build(h, four(Items.DANGER_POTTERY_SHERD));
+        h.assertTrue(g.headForm() == HeadForm.DANGER, "four danger sherds make a Danger Head, got " + g.headForm());
         g.discard();
         h.succeed();
     }
@@ -197,7 +204,7 @@ public class GolemTests implements FabricGameTest {
     @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
     public void howlHeadBuffsWolves(GameTestHelper h) {
         floor(h);
-        PotGolemEntity g = spawn(h, pot(Items.BRICK, Items.HOWL_POTTERY_SHERD, Items.BRICK, Items.BRICK));
+        PotGolemEntity g = spawn(h, four(Items.HOWL_POTTERY_SHERD));
         Wolf wolf = h.spawn(EntityType.WOLF, new BlockPos(6, 1, 6));
         Zombie z = h.spawn(EntityType.ZOMBIE, new BlockPos(0, 1, 6));
         z.setNoAi(true);
@@ -216,7 +223,7 @@ public class GolemTests implements FabricGameTest {
     public void dangerHeadExplodesWithoutBreakingBlocks(GameTestHelper h) {
         floor(h);
         ServerPlayer owner = player(h, 3.5, 5.5);
-        PotGolemEntity g = spawn(h, pot(Items.BRICK, Items.BRICK, Items.BRICK, Items.DANGER_POTTERY_SHERD));
+        PotGolemEntity g = spawn(h, four(Items.DANGER_POTTERY_SHERD));
         g.setOwner(owner.getUUID());
         Zombie z = h.spawn(EntityType.ZOMBIE, new BlockPos(5, 1, 3));
         z.setNoAi(true);
@@ -233,7 +240,7 @@ public class GolemTests implements FabricGameTest {
                     h.assertBlockPresent(Blocks.STONE, new BlockPos(x, 0, zz));
                 }
             }
-            h.assertTrue(count(drops(h, Items.DANGER_POTTERY_SHERD)) == 1, "the danger sherd drops");
+            h.assertTrue(count(drops(h, Items.DANGER_POTTERY_SHERD)) == 4, "the danger sherds drop");
             g.discard();
         });
     }
@@ -263,7 +270,7 @@ public class GolemTests implements FabricGameTest {
         floor(h);
         PotGolemEntity g = spawn(h, ItemStack.EMPTY);
         ServerPlayer p = player(h, 1.5, 3.5);
-        ItemStack pot = pot(Items.BRICK, Items.BRICK, Items.DANGER_POTTERY_SHERD, Items.BRICK);
+        ItemStack pot = four(Items.DANGER_POTTERY_SHERD);
         p.setItemInHand(InteractionHand.MAIN_HAND, pot.copy());
         p.interactOn(g, InteractionHand.MAIN_HAND);
         h.assertTrue(g.hasPot() && g.headForm() == HeadForm.DANGER, "using a decorated pot on it gives it that head");
@@ -363,8 +370,8 @@ public class GolemTests implements FabricGameTest {
         g.setShard(Shard.BLADE);
         g.kill();
         h.succeedWhen(() -> {
-            int amber = count(drops(h, WWItems.AMBER_CHUNK));
-            h.assertTrue(amber >= 2 && amber <= 4, "a Pot Golem drops 2-4 amber chunks, dropped " + amber);
+            int amber = count(drops(h, WWItems.AMBER_SHARD));
+            h.assertTrue(amber >= 2 && amber <= 4, "a Pot Golem drops 2-4 amber shards, dropped " + amber);
             h.assertTrue(count(drops(h, Items.SKULL_POTTERY_SHERD)) == 1, "the head's sherds drop");
             h.assertTrue(count(drops(h, Items.BLADE_POTTERY_SHERD)) == 1, "the body shard drops");
         });
@@ -427,6 +434,287 @@ public class GolemTests implements FabricGameTest {
         h.assertTrue(copy.cracks() == 2, "cracks are saved, got " + copy.cracks());
         h.assertTrue(owner.getUUID().equals(copy.getOwnerUUID()), "the owner is saved");
         g.discard();
+        h.succeed();
+    }
+
+    // ------------------------------------------------------------------------------------------------ 0.4 fixes
+
+    /** Has `p` click `item` into `rel` the way a player does: aimed at a face of a solid neighbour (the floor first). */
+    private static void click(GameTestHelper h, ServerPlayer p, ItemStack item, BlockPos rel) {
+        BlockPos at = h.absolutePos(rel);
+        for (Direction d : new Direction[]{Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST, Direction.UP}) {
+            BlockPos n = at.relative(d);
+            if (!h.getLevel().getBlockState(n).isAir() && !h.getLevel().getBlockState(n).canBeReplaced()) {
+                Direction face = d.getOpposite();
+                p.setItemInHand(InteractionHand.MAIN_HAND, item);
+                Vec3 hit = Vec3.atCenterOf(n).add(face.getStepX() * 0.5, face.getStepY() * 0.5, face.getStepZ() * 0.5);
+                item.useOn(new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(hit, face, n, false)));
+                return;
+            }
+        }
+        throw new IllegalStateException("nothing to place " + rel + " against");
+    }
+
+    /**
+     * The T's five blocks (foot, centre, arm, arm, pot) for an upright T whose arms run along `arms`, or one lying on
+     * the floor with the pot towards -z.
+     */
+    private static BlockPos[] tee(Direction.Axis arms, boolean lying) {
+        BlockPos foot = lying ? new BlockPos(3, 1, 5) : new BlockPos(3, 1, 3);
+        BlockPos centre = lying ? foot.north() : foot.above();
+        Direction side = arms == Direction.Axis.X ? Direction.EAST : Direction.SOUTH;
+        return new BlockPos[]{foot, centre, centre.relative(side.getOpposite()), centre.relative(side), lying ? centre.north() : centre.above()};
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    public void golemBuildsInEveryOrientationWhicheverBlockIsLast(GameTestHelper h) {
+        floor(h);
+        ServerPlayer p = player(h, 0.5, 7.5);
+        // order: indices into tee(): 0 foot, 1 centre, 2/3 arms, 4 pot
+        record Way(String name, Direction.Axis arms, boolean lying, int[] order, float yaw, boolean grass) {}
+        List<Way> ways = List.of(
+                new Way("arms along x, pot last", Direction.Axis.X, false, new int[]{0, 1, 2, 3, 4}, 180f, false),
+                new Way("arms along z, pot last", Direction.Axis.Z, false, new int[]{0, 1, 2, 3, 4}, 90f, false),
+                new Way("arms along x, an arm last", Direction.Axis.X, false, new int[]{0, 1, 4, 2, 3}, 0f, false),
+                new Way("arms along z, an arm last", Direction.Axis.Z, false, new int[]{0, 1, 4, 3, 2}, 270f, false),
+                new Way("pot facing sideways", Direction.Axis.X, false, new int[]{0, 1, 2, 3, 4}, 90f, false),
+                new Way("grass and snow in the corners", Direction.Axis.X, false, new int[]{0, 1, 2, 3, 4}, 180f, true),
+                new Way("lying down, pot last", Direction.Axis.X, true, new int[]{0, 1, 2, 3, 4}, 180f, false),
+                new Way("lying down, the foot last", Direction.Axis.X, true, new int[]{4, 1, 2, 3, 0}, 0f, false),
+                new Way("lying down, the centre last", Direction.Axis.X, true, new int[]{4, 0, 2, 3, 1}, 90f, false));
+        ItemStack head = pot(Items.HEART_POTTERY_SHERD, Items.HEART_POTTERY_SHERD, Items.HEART_POTTERY_SHERD, Items.HEART_POTTERY_SHERD);
+        for (Way way : ways) {
+            for (BlockPos q : BlockPos.betweenClosed(new BlockPos(1, 1, 1), new BlockPos(6, 5, 6))) {
+                h.setBlock(q, Blocks.AIR);
+            }
+            BlockPos[] t = tee(way.arms(), way.lying());
+            if (way.grass()) {   // the empty corners beside the foot and the head hold plants and snow
+                Direction side = way.arms() == Direction.Axis.X ? Direction.EAST : Direction.SOUTH;
+                h.setBlock(t[0].relative(side), Blocks.SHORT_GRASS);
+                h.setBlock(t[0].relative(side.getOpposite()), Blocks.SNOW);
+            }
+            p.setYRot(way.yaw());
+            p.setYHeadRot(way.yaw());
+            for (int i : way.order()) {
+                click(h, p, i == 4 ? head.copy() : new ItemStack(WWItems.AMBER_BLOCK), t[i]);
+            }
+            List<PotGolemEntity> found = golems(h);
+            h.assertTrue(found.size() == 1, way.name() + ": expected one Pot Golem, found " + found.size());
+            PotGolemEntity g = found.get(0);
+            h.assertTrue(g.headForm() == HeadForm.HEART && p.getUUID().equals(g.getOwnerUUID()), way.name() + ": the golem wears the pot");
+            for (BlockPos q : t) {
+                h.assertTrue(!h.getBlockState(q).is(WWBlocks.AMBER_BLOCK) && !h.getBlockState(q).is(Blocks.DECORATED_POT),
+                        way.name() + ": the T is used up at " + q);
+            }
+            g.discard();
+        }
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void headAbilitiesNeedFourMatchingSherds(GameTestHelper h) {
+        Item heart = Items.HEART_POTTERY_SHERD;
+        h.assertTrue(PotGolemEntity.formOf(four(heart)) == HeadForm.HEART, "four heart sherds make a Heart Head");
+        h.assertTrue(PotGolemEntity.formOf(pot(heart, heart, heart, Items.BRICK)) == HeadForm.PLAIN, "three are not enough");
+        h.assertTrue(PotGolemEntity.formOf(pot(Items.HOWL_POTTERY_SHERD, Items.BRICK, Items.BRICK, Items.BRICK)) == HeadForm.PLAIN,
+                "one howl sherd no longer makes a Howl Head");
+        h.assertTrue(PotGolemEntity.formOf(pot(heart, Items.BURN_POTTERY_SHERD, heart, heart)) == HeadForm.PLAIN, "mixed faces: plain");
+        h.assertTrue(PotGolemEntity.formOf(four(Items.ARMS_UP_POTTERY_SHERD)) == HeadForm.PLAIN, "a sherd without an ability: plain");
+        h.assertTrue(PotGolemEntity.formOf(four(Items.BRICK)) == HeadForm.PLAIN, "a plain brick pot: plain");
+        h.assertTrue(PotGolemEntity.formOf(withInside(pot(heart, Items.BRICK, Items.SKULL_POTTERY_SHERD, heart), new ItemStack(Items.ECHO_SHARD)))
+                == HeadForm.ECHO, "an Echo Shard inside still gives the Echo Head");
+        Item[] sherds = {Items.HOWL_POTTERY_SHERD, Items.DANGER_POTTERY_SHERD, Items.HEART_POTTERY_SHERD, Items.BURN_POTTERY_SHERD,
+                Items.FLOW_POTTERY_SHERD, Items.SHELTER_POTTERY_SHERD, Items.PLENTY_POTTERY_SHERD, Items.BREWER_POTTERY_SHERD};
+        HeadForm[] forms = {HeadForm.HOWL, HeadForm.DANGER, HeadForm.HEART, HeadForm.BURN, HeadForm.FLOW, HeadForm.SHELTER, HeadForm.PLENTY,
+                HeadForm.BREWER};
+        for (int i = 0; i < sherds.length; i++) {
+            h.assertTrue(PotGolemEntity.formOf(four(sherds[i])) == forms[i], "four " + sherds[i] + " make " + forms[i]);
+            h.assertTrue(forms[i].glow != 0, forms[i] + " has a glow colour");
+        }
+        h.succeed();
+    }
+
+    private static PotGolemEntity owned(GameTestHelper h, ServerPlayer owner, Item sherd) {
+        PotGolemEntity g = spawn(h, four(sherd));
+        g.setOwner(owner.getUUID());
+        return g;
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    public void heartHeadHealsItsOwnerAndPets(GameTestHelper h) {
+        floor(h);
+        ServerPlayer owner = player(h, 6.5, 3.5);
+        owner.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        PotGolemEntity g = owned(h, owner, Items.HEART_POTTERY_SHERD);
+        Wolf pet = h.spawn(EntityType.WOLF, new BlockPos(1, 1, 1));
+        pet.setTame(true, false);
+        pet.setOwnerUUID(owner.getUUID());
+        var stray = h.spawn(EntityType.PIG, new BlockPos(1, 1, 6));   // not a pet (a wolf might catch a Howl from next door)
+        h.succeedWhen(() -> {
+            h.assertTrue(owner.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION), "the owner gets Regeneration");
+            h.assertTrue(owner.getEffect(net.minecraft.world.effect.MobEffects.REGENERATION).getAmplifier() == 0, "Regeneration I");
+            h.assertTrue(pet.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION), "the owner's pet gets Regeneration");
+            h.assertFalse(stray.hasEffect(net.minecraft.world.effect.MobEffects.REGENERATION), "an animal that isn't its owner's doesn't");
+            g.discard();
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    public void burnHeadSetsFoesAlightAndShieldsItsOwnerFromFire(GameTestHelper h) {
+        floor(h);
+        ServerPlayer owner = player(h, 6.5, 6.5);
+        owner.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        PotGolemEntity g = owned(h, owner, Items.BURN_POTTERY_SHERD);
+        g.setNoAi(true);
+        Zombie z = h.spawn(EntityType.ZOMBIE, new BlockPos(4, 1, 3));
+        z.setNoAi(true);
+        h.assertFalse(z.isOnFire(), "not burning yet");
+        g.doHurtTarget(z);
+        h.assertTrue(z.isOnFire(), "a Burn Head's fist sets what it hits on fire");
+        h.assertTrue(g.burnAura(h.getLevel()), "its owner is near");
+        h.assertTrue(owner.hasEffect(net.minecraft.world.effect.MobEffects.FIRE_RESISTANCE), "its owner gets Fire Resistance");
+        z.discard();
+        g.discard();
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void flowHeadHurlsFoesAway(GameTestHelper h) {
+        floor(h);
+        ServerPlayer owner = player(h, 1.5, 3.5);
+        PotGolemEntity g = owned(h, owner, Items.FLOW_POTTERY_SHERD);
+        g.setNoAi(true);
+        Zombie near = h.spawn(EntityType.ZOMBIE, new BlockPos(6, 1, 3));
+        near.setNoAi(true);
+        Vec3 ownerMotion = owner.getDeltaMovement();
+        h.assertTrue(g.windBurst(h.getLevel()) == 1, "one foe within 5 blocks");
+        Vec3 v = near.getDeltaMovement();
+        h.assertTrue(v.x > 1.0 && v.y > 0.3, "the gust hurls the zombie away from the golem, velocity " + v);
+        h.assertTrue(owner.getDeltaMovement().equals(ownerMotion), "its owner is not blown away");
+        near.discard();
+        g.discard();
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60)
+    public void shelterHeadShieldsItsOwner(GameTestHelper h) {
+        floor(h);
+        ServerPlayer owner = player(h, 5.5, 1.5);
+        owner.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        PotGolemEntity g = owned(h, owner, Items.SHELTER_POTTERY_SHERD);
+        g.setNoAi(true);
+        h.assertTrue(g.shelterAura(h.getLevel()), "its owner is within 6 blocks");
+        h.assertTrue(owner.hasEffect(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE)
+                && owner.getEffect(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE).getAmplifier() == 0, "Resistance I");
+        // an arrow flying at the owner from 5 blocks away
+        Arrow arrow = new Arrow(EntityType.ARROW, h.getLevel());
+        Vec3 aim = owner.getBoundingBox().getCenter();
+        arrow.setPos(aim.x, aim.y, aim.z + 5);
+        arrow.setDeltaMovement(0, 0, -2.5);
+        h.getLevel().addFreshEntity(arrow);
+        h.assertTrue(g.guardOwner(h.getLevel()) == 1, "the golem should step in front of the arrow");
+        h.assertTrue(arrow.getDeltaMovement().z > 0, "the arrow is knocked back, velocity " + arrow.getDeltaMovement());
+        float health = owner.getHealth();
+        h.runAfterDelay(10, () -> {
+            h.assertTrue(owner.getHealth() == health, "the owner is not hit");
+            arrow.discard();
+            g.discard();
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200)
+    public void plentyHeadStashesLootAndOpensWithAnEmptyHand(GameTestHelper h) {
+        floor(h);
+        ServerPlayer owner = player(h, 0.5, 0.5);
+        PotGolemEntity g = owned(h, owner, Items.PLENTY_POTTERY_SHERD);
+        g.setNoAi(true);
+        ItemEntity loot = new ItemEntity(h.getLevel(), g.getX() + 4, g.getY() + 0.5, g.getZ() + 3, new ItemStack(Items.DIAMOND, 3));
+        h.getLevel().addFreshEntity(loot);
+        h.succeedWhen(() -> {
+            g.vacuum(h.getLevel());   // NoAI golems don't tick their heads: call it as the head would
+            int diamonds = 0;
+            for (ItemStack st : g.stash().getItems()) {
+                diamonds += st.is(Items.DIAMOND) ? st.getCount() : 0;
+            }
+            h.assertTrue(diamonds == 3, "the golem should vacuum the diamonds into its pot, has " + diamonds);
+            owner.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            h.assertTrue(owner.interactOn(g, InteractionHand.MAIN_HAND).consumesAction(), "an empty hand opens the pot");
+            h.assertTrue(owner.containerMenu instanceof net.minecraft.world.inventory.ChestMenu cm && cm.getContainer().getContainerSize() == 27,
+                    "a 27-slot chest screen opens");
+            owner.closeContainer();
+            g.kill();   // the stash spills when it dies
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60)
+    public void brewerHeadThrowsPotions(GameTestHelper h) {
+        floor(h);
+        ServerPlayer owner = player(h, 6.5, 3.5);
+        owner.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+        PotGolemEntity g = owned(h, owner, Items.BREWER_POTTERY_SHERD);
+        g.setNoAi(true);
+        owner.setHealth(8f);
+        var heal = g.brew(h.getLevel());
+        h.assertTrue(heal != null && (heal.is(net.minecraft.world.item.alchemy.Potions.HEALING) || heal.is(net.minecraft.world.item.alchemy.Potions.STRONG_HEALING)),
+                "a hurt owner gets a splash Potion of Healing, got " + heal);
+        h.assertTrue(!h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.projectile.ThrownPotion.class, g.getBoundingBox().inflate(4)).isEmpty(),
+                "a splash potion is thrown");
+        owner.setHealth(owner.getMaxHealth());
+        owner.moveTo(h.absoluteVec(new Vec3(0.5, 1, 0.5)));
+        Zombie z = h.spawn(EntityType.ZOMBIE, new BlockPos(7, 1, 7));
+        z.setNoAi(true);
+        g.setTarget(z);
+        var curse = g.brew(h.getLevel());
+        h.assertTrue(curse != null && curse.is(net.minecraft.world.item.alchemy.Potions.WEAKNESS), "a foe gets Weakness first, got " + curse);
+        z.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 200));
+        var slow = g.brew(h.getLevel());
+        h.assertTrue(slow != null && slow.is(net.minecraft.world.item.alchemy.Potions.SLOWNESS), "then Slowness, got " + slow);
+        z.discard();
+        g.discard();
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE)
+    public void headshotsHurtDoubleAndAlwaysCrack(GameTestHelper h) {
+        floor(h);
+        ServerLevel level = h.getLevel();
+        PotGolemEntity head = h.spawn(WWEntities.POT_GOLEM, new BlockPos(2, 1, 2));
+        PotGolemEntity body = h.spawn(WWEntities.POT_GOLEM, new BlockPos(5, 1, 5));
+        for (PotGolemEntity g : List.of(head, body)) {
+            g.setHead(new ItemStack(Items.DECORATED_POT));
+            g.setNoAi(true);
+        }
+        // an arrow striking the pot vs one striking the chest
+        Arrow a = new Arrow(EntityType.ARROW, level);
+        a.setPos(head.getX() + 2, head.getY() + 2.8, head.getZ());
+        a.setDeltaMovement(-2, 0, 0);
+        h.assertTrue(head.isHeadshot(head.damageSources().arrow(a, null)), "an arrow into the pot is a headshot");
+        float hp = head.getHealth();
+        head.hurt(head.damageSources().arrow(a, null), 4f);
+        h.assertTrue(Math.abs(hp - head.getHealth() - 8f) < 0.01f, "a headshot does double damage, took " + (hp - head.getHealth()));
+        h.assertTrue(head.cracks() == 1, "a headshot always cracks the pot");
+        Arrow b = new Arrow(EntityType.ARROW, level);
+        b.setPos(body.getX() + 2, body.getY() + 1.3, body.getZ());
+        b.setDeltaMovement(-2, 0, 0);
+        h.assertFalse(body.isHeadshot(body.damageSources().arrow(b, null)), "an arrow into the chest is a body hit");
+        hp = body.getHealth();
+        body.hurt(body.damageSources().arrow(b, null), 4f);
+        h.assertTrue(Math.abs(hp - body.getHealth() - 4f) < 0.01f, "a body hit does normal damage, took " + (hp - body.getHealth()));
+        // melee: where the attacker looks
+        ServerPlayer p = player(h, 0.5, 0.5);
+        p.moveTo(head.getX() - 2.2, head.getY(), head.getZ());
+        p.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, head.position().add(0, 2.9, 0));
+        h.assertTrue(head.isHeadshot(head.damageSources().playerAttack(p)), "a player looking at the pot lands a headshot");
+        p.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, head.position().add(0, 1.2, 0));
+        h.assertFalse(head.isHeadshot(head.damageSources().playerAttack(p)), "a player looking at the chest hits the body");
+        Zombie z = h.spawn(EntityType.ZOMBIE, new BlockPos(0, 1, 2));
+        z.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, head.getEyePosition());
+        h.assertFalse(head.isHeadshot(head.damageSources().mobAttack(z)), "mobs swing at its eyes, at chest height: body hits");
+        h.assertFalse(head.isHeadshot(head.damageSources().explosion(null, null)), "blasts are never headshots");
+        z.discard();
+        head.discard();
+        body.discard();
         h.succeed();
     }
 }

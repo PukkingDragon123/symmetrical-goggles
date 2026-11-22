@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button",
+  "textures": {
+    "texture": "winterworks:block/amberwood_planks"
+  }
+}

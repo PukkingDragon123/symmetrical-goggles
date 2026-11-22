@@ -64,8 +64,9 @@ public final class WWEntities {
     public static final EntityType<dev.lowpix.winterworks.amber.MosquitoEntity> MOSQUITO = reg("mosquito",
             EntityType.Builder.of(dev.lowpix.winterworks.amber.MosquitoEntity::new, MobCategory.MONSTER).sized(0.5f, 0.4f)
                     .clientTrackingRange(8));
+    /** 3 high so the pot (its head, ~2.4-3.4 blocks up) can be hit; eyes at the chest so mobs swing at its body. */
     public static final EntityType<dev.lowpix.winterworks.golem.PotGolemEntity> POT_GOLEM = reg("pot_golem",
-            EntityType.Builder.of(dev.lowpix.winterworks.golem.PotGolemEntity::new, MobCategory.MISC).sized(1.4f, 2.7f)
+            EntityType.Builder.of(dev.lowpix.winterworks.golem.PotGolemEntity::new, MobCategory.MISC).sized(1.4f, 3.0f).eyeHeight(1.9f)
                     .clientTrackingRange(10));
     // ---- Hexes & Havoc (docs/HEXES_UPDATE.md)
     public static final EntityType<dev.lowpix.winterworks.nether.PiglinWitch> PIGLIN_WITCH = reg("piglin_witch",
@@ -74,6 +75,15 @@ public final class WWEntities {
     public static final EntityType<dev.lowpix.winterworks.nether.GoldenPiglin> GOLDEN_PIGLIN = reg("golden_piglin",
             EntityType.Builder.<dev.lowpix.winterworks.nether.GoldenPiglin>of(dev.lowpix.winterworks.nether.GoldenPiglin::new,
                     MobCategory.MONSTER).sized(0.6f, 1.95f).fireImmune().clientTrackingRange(8));
+
+    // ---- 0.4 fixes: amber (docs/FIXES_0_4.md): Amberwood boats (own entity types: Boat.Type can't be extended in 1.21.1)
+    public static final EntityType<dev.lowpix.winterworks.amber.AmberwoodBoat.Plain> AMBERWOOD_BOAT = reg("amberwood_boat",
+            EntityType.Builder.<dev.lowpix.winterworks.amber.AmberwoodBoat.Plain>of(dev.lowpix.winterworks.amber.AmberwoodBoat.Plain::new,
+                    MobCategory.MISC).sized(1.375f, 0.5625f).eyeHeight(0.5625f).clientTrackingRange(10));
+    public static final EntityType<dev.lowpix.winterworks.amber.AmberwoodBoat.WithChest> AMBERWOOD_CHEST_BOAT = reg("amberwood_chest_boat",
+            EntityType.Builder.<dev.lowpix.winterworks.amber.AmberwoodBoat.WithChest>of(
+                    dev.lowpix.winterworks.amber.AmberwoodBoat.WithChest::new, MobCategory.MISC).sized(1.375f, 0.5625f).eyeHeight(0.5625f)
+                    .clientTrackingRange(10));
 
     private WWEntities() {}
 

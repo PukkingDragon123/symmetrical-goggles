@@ -14,7 +14,11 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
-/** Client side of the amber feature (docs/AMBER_UPDATE.md): the mosquito, amber inclusions in 3D and the block render layers. */
+/**
+ * Client side of the amber feature (docs/AMBER_UPDATE.md, docs/FIXES_0_4.md): the mosquito, amber inclusions in 3D,
+ * the Amberwood boats and the block render layers. Amberwood signs and hanging signs use vanilla's sign renderers
+ * (their textures come from the WoodType, amber.Amberwood).
+ */
 public final class AmberClient {
     public static final ModelLayerLocation MOSQUITO = layer("mosquito");
     /** The seed trapped in amber (lowpix `amber_seed`, from the art). */
@@ -28,9 +32,12 @@ public final class AmberClient {
         EntityRendererRegistry.register(WWEntities.MOSQUITO, MosquitoRenderer::new);
         BlockEntityRenderers.register(AmberFeature.AMBER_INCLUSION_BE, AmberInclusionRenderer::new);
         BlockRenderLayerMap.INSTANCE.putBlock(WWBlocks.AMBER_BLOCK, RenderType.translucent());   // see-through amber
-        BlockRenderLayerMap.INSTANCE.putBlock(WWBlocks.AMBERWOOD_LEAVES, RenderType.cutoutMipped());
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), WWBlocks.AMBERWOOD_SAPLING, WWBlocks.AMBERWOOD_BLOOM,
-                WWBlocks.BLOOD_STAIN);
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), WWBlocks.AMBERWOOD_BLOOM, WWBlocks.BLOOD_STAIN,
+                WWBlocks.AMBERWOOD_DOOR, WWBlocks.AMBERWOOD_TRAPDOOR);
+        // ---- 0.4 fixes: amber
+        EntityRendererRegistry.register(WWEntities.AMBERWOOD_BOAT, ctx -> new AmberwoodBoatRenderer(ctx, false));
+        EntityRendererRegistry.register(WWEntities.AMBERWOOD_CHEST_BOAT, ctx -> new AmberwoodBoatRenderer(ctx, true));
+        AmberShots.init();
     }
 
     private static ModelLayerLocation layer(String name) {

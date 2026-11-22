@@ -172,5 +172,12 @@
   "subtitles.winterworks.block.chorus_cocoon.crack": "Chorus Cocoon cracks",
   "subtitles.winterworks.block.chorus_cocoon.hatch": "Chorus Cocoon hatches",
   "subtitles.winterworks.block.meteorite.hum": "Meteorite hums",
-  "subtitles.winterworks.effect.recall.teleport": "Teleported home"
+  "subtitles.winterworks.effect.recall.teleport": "Teleported home",
+  "subtitles.winterworks.entity.pot_golem.headshot": "Pot Golem's pot clinks",
+  "subtitles.winterworks.entity.pot_golem.soothe": "Pot Golem hums softly",
+  "subtitles.winterworks.entity.pot_golem.ignite": "Pot Golem's fists blaze",
+  "subtitles.winterworks.entity.pot_golem.wind_burst": "Pot Golem gusts",
+  "subtitles.winterworks.entity.pot_golem.shield": "Pot Golem blocks",
+  "subtitles.winterworks.entity.pot_golem.stash": "Pot Golem stashes an item",
+  "subtitles.winterworks.entity.pot_golem.throw": "Pot Golem throws a potion"
 }

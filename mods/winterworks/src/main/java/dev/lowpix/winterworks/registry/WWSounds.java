@@ -140,6 +140,15 @@ public final class WWSounds {
     public static final SoundEvent ORPHEUS = reg("curse.orpheus");
     public static final SoundEvent SIN = reg("curse.sin");
 
+    // ---- 0.4 fixes: amber (docs/FIXES_0_4.md): Pot Golem headshots and the six new head abilities
+    public static final SoundEvent POT_GOLEM_HEADSHOT = reg("entity.pot_golem.headshot");
+    public static final SoundEvent POT_GOLEM_SOOTHE = reg("entity.pot_golem.soothe");
+    public static final SoundEvent POT_GOLEM_IGNITE = reg("entity.pot_golem.ignite");
+    public static final SoundEvent POT_GOLEM_WIND_BURST = reg("entity.pot_golem.wind_burst");
+    public static final SoundEvent POT_GOLEM_SHIELD = reg("entity.pot_golem.shield");
+    public static final SoundEvent POT_GOLEM_STASH = reg("entity.pot_golem.stash");
+    public static final SoundEvent POT_GOLEM_THROW = reg("entity.pot_golem.throw");
+
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
             1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);

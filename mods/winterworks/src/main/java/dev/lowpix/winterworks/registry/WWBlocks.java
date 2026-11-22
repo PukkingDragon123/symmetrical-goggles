@@ -65,11 +65,6 @@ public final class WWBlocks {
                     .strength(2f, 6f)));
     public static final Block AMBERWOOD_LOG = reg("amberwood_log", new dev.lowpix.winterworks.amber.AmberwoodLogBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LOG).randomTicks()));
-    public static final Block AMBERWOOD_LEAVES = reg("amberwood_leaves", new net.minecraft.world.level.block.LeavesBlock(
-            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_LEAVES).lightLevel(s -> 4)
-                    .mapColor(net.minecraft.world.level.material.MapColor.GOLD)));
-    public static final Block AMBERWOOD_SAPLING = reg("amberwood_sapling", new net.minecraft.world.level.block.SaplingBlock(
-            dev.lowpix.winterworks.amber.AmberwoodGrower.GROWER, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING)));
     public static final Block AMBERWOOD_PLANKS = reg("amberwood_planks", new Block(
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS).mapColor(net.minecraft.world.level.material.MapColor.COLOR_ORANGE)));
     public static final Block BLOOD_STAIN = reg("blood_stain", new dev.lowpix.winterworks.amber.BloodStainBlock(
@@ -77,9 +72,60 @@ public final class WWBlocks {
                     .noOcclusion().randomTicks().sound(SoundType.SLIME_BLOCK).replaceable()
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
 
+    /** The Amberwood's flower, and its sapling (0.4): planted on sand, terracotta or dirt it grows into an Amberwood. */
     public static final Block AMBERWOOD_BLOOM = reg("amberwood_bloom", new dev.lowpix.winterworks.amber.AmberwoodBloomBlock(
-            BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWERING_AZALEA_LEAVES).noCollission().noOcclusion().lightLevel(s -> 7)
+            dev.lowpix.winterworks.amber.AmberwoodGrower.GROWER, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWERING_AZALEA_LEAVES)
+                    .noCollission().noOcclusion().instabreak().randomTicks().sound(SoundType.AZALEA).lightLevel(s -> 7)
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)
                     .mapColor(net.minecraft.world.level.material.MapColor.GOLD)));
+
+    // ---- 0.4 fixes: amber (docs/FIXES_0_4.md): amber sand and gravel, the Amberwood wood set
+    /** Brushable like suspicious sand / gravel (vanilla's BrushableBlockEntity, mixin.BlockEntityTypeMixin); brushing gives amber. */
+    public static final Block AMBER_SAND = reg("amber_sand", new net.minecraft.world.level.block.BrushableBlock(Blocks.SAND,
+            net.minecraft.sounds.SoundEvents.BRUSH_SAND, net.minecraft.sounds.SoundEvents.BRUSH_SAND_COMPLETED,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SUSPICIOUS_SAND)));
+    public static final Block AMBER_GRAVEL = reg("amber_gravel", new net.minecraft.world.level.block.BrushableBlock(Blocks.GRAVEL,
+            net.minecraft.sounds.SoundEvents.BRUSH_GRAVEL, net.minecraft.sounds.SoundEvents.BRUSH_GRAVEL_COMPLETED,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SUSPICIOUS_GRAVEL)));
+    public static final Block AMBERWOOD_WOOD = reg("amberwood_wood", new net.minecraft.world.level.block.RotatedPillarBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).mapColor(net.minecraft.world.level.material.MapColor.TERRACOTTA_LIGHT_GRAY)));
+    public static final Block STRIPPED_AMBERWOOD_LOG = reg("stripped_amberwood_log", new net.minecraft.world.level.block.RotatedPillarBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.STRIPPED_OAK_LOG).mapColor(net.minecraft.world.level.material.MapColor.COLOR_ORANGE)));
+    public static final Block STRIPPED_AMBERWOOD_WOOD = reg("stripped_amberwood_wood", new net.minecraft.world.level.block.RotatedPillarBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.STRIPPED_OAK_WOOD).mapColor(net.minecraft.world.level.material.MapColor.COLOR_ORANGE)));
+    public static final Block AMBERWOOD_STAIRS = reg("amberwood_stairs", new net.minecraft.world.level.block.StairBlock(
+            AMBERWOOD_PLANKS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(AMBERWOOD_PLANKS)));
+    public static final Block AMBERWOOD_SLAB = reg("amberwood_slab", new net.minecraft.world.level.block.SlabBlock(
+            BlockBehaviour.Properties.ofFullCopy(AMBERWOOD_PLANKS)));
+    public static final Block AMBERWOOD_FENCE = reg("amberwood_fence", new net.minecraft.world.level.block.FenceBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    public static final Block AMBERWOOD_FENCE_GATE = reg("amberwood_fence_gate", new net.minecraft.world.level.block.FenceGateBlock(
+            dev.lowpix.winterworks.amber.Amberwood.WOOD_TYPE,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_FENCE_GATE).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    public static final Block AMBERWOOD_DOOR = reg("amberwood_door", new net.minecraft.world.level.block.DoorBlock(
+            dev.lowpix.winterworks.amber.Amberwood.SET_TYPE,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_DOOR).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    public static final Block AMBERWOOD_TRAPDOOR = reg("amberwood_trapdoor", new net.minecraft.world.level.block.TrapDoorBlock(
+            dev.lowpix.winterworks.amber.Amberwood.SET_TYPE,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_TRAPDOOR).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    public static final Block AMBERWOOD_BUTTON = reg("amberwood_button", new net.minecraft.world.level.block.ButtonBlock(
+            dev.lowpix.winterworks.amber.Amberwood.SET_TYPE, 30, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_BUTTON)));
+    public static final Block AMBERWOOD_PRESSURE_PLATE = reg("amberwood_pressure_plate", new net.minecraft.world.level.block.PressurePlateBlock(
+            dev.lowpix.winterworks.amber.Amberwood.SET_TYPE,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PRESSURE_PLATE).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    public static final Block AMBERWOOD_SIGN = reg("amberwood_sign", new net.minecraft.world.level.block.StandingSignBlock(
+            dev.lowpix.winterworks.amber.Amberwood.WOOD_TYPE,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SIGN).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    public static final Block AMBERWOOD_WALL_SIGN = reg("amberwood_wall_sign", new net.minecraft.world.level.block.WallSignBlock(
+            dev.lowpix.winterworks.amber.Amberwood.WOOD_TYPE,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_SIGN).mapColor(AMBERWOOD_PLANKS.defaultMapColor()).dropsLike(AMBERWOOD_SIGN)));
+    public static final Block AMBERWOOD_HANGING_SIGN = reg("amberwood_hanging_sign", new net.minecraft.world.level.block.CeilingHangingSignBlock(
+            dev.lowpix.winterworks.amber.Amberwood.WOOD_TYPE,
+            BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_HANGING_SIGN).mapColor(AMBERWOOD_PLANKS.defaultMapColor())));
+    public static final Block AMBERWOOD_WALL_HANGING_SIGN = reg("amberwood_wall_hanging_sign",
+            new net.minecraft.world.level.block.WallHangingSignBlock(dev.lowpix.winterworks.amber.Amberwood.WOOD_TYPE,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WALL_HANGING_SIGN).mapColor(AMBERWOOD_PLANKS.defaultMapColor())
+                            .dropsLike(AMBERWOOD_HANGING_SIGN)));
 
     // ---- Hexes & Havoc (docs/HEXES_UPDATE.md)
     public static final Block ELIXIR_JAR = reg("elixir_jar", new dev.lowpix.winterworks.hex.ElixirJarBlock(
