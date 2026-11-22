@@ -1,0 +1,296 @@
+{
+ "name": "Amber Egg",
+ "description": "A small Harvester egg sealed in amber: stacked into an egg shape, mustard yellow speckled and blotched in dark green, a hairline crack near the top. Drawn in 3D inside amber blocks. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 200,
+  "colors": 24
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.6,
+  "gradient": 0.5,
+  "ao": 0.4,
+  "ao_height": 3.0
+ },
+ "brush": {
+  "flow": "y",
+  "length": 1.0,
+  "width": 0.4,
+  "rough": 0.4,
+  "overshoot": 0.2,
+  "textures": {
+   "shell": "organic"
+  }
+ },
+ "minecraft": {
+  "fps": 12
+ },
+ "render": {
+  "background": "#2a1d16",
+  "hero": [
+   -34,
+   20
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "shell": [
+    "#5a380b",
+    "#7c5110",
+    "#9c6913",
+    "#ba8217",
+    "#d39b1f",
+    "#e5b02a",
+    "#f2c63b",
+    "#fbdb5e",
+    "#fff0a0"
+   ],
+   "moss": [
+    "#0a2119",
+    "#0e3024",
+    "#14412f",
+    "#1b543a",
+    "#236845"
+   ],
+   "crack": [
+    "#2b1a08",
+    "#fde98e"
+   ]
+  }
+ },
+ "styles": {
+  "shell": {
+   "ramp": "shell",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "speckles",
+     "op": "spots",
+     "count": 14,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "moss",
+     "tone": 2.0,
+     "roughness": 0.3,
+     "min_gap": 0.6
+    },
+    {
+     "id": "blotches",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.7,
+      1.0
+     ],
+     "ramp": "moss",
+     "tone": 1.6,
+     "roughness": 0.5,
+     "min_gap": 1.5
+    }
+   ]
+  },
+  "shell_low": {
+   "ramp": "shell",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "speckles",
+     "op": "spots",
+     "count": 4,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "moss",
+     "tone": 2.0,
+     "roughness": 0.3,
+     "min_gap": 0.6
+    }
+   ]
+  },
+  "shell_top": {
+   "ramp": "shell",
+   "tone": 6.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "speckles",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "moss",
+     "tone": 2.0,
+     "roughness": 0.3,
+     "min_gap": 0.6
+    }
+   ]
+  },
+  "shell_crack": {
+   "ramp": "shell",
+   "tone": 6.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.0
+   },
+   "layers": [
+    {
+     "id": "speckles",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "moss",
+     "tone": 2.0,
+     "roughness": 0.3,
+     "min_gap": 0.6
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "...c",
+      "..c.",
+      ".cl."
+     ],
+     "key": {
+      "c": "crack:0",
+      "l": "crack:1"
+     }
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "egg",
+   "shape": "box",
+   "size": [
+    5,
+    2.5,
+    5
+   ],
+   "pivot": [
+    0,
+    2.75,
+    0
+   ],
+   "style": "shell"
+  },
+  {
+   "id": "foot",
+   "shape": "box",
+   "size": [
+    3,
+    0.5,
+    3
+   ],
+   "pivot": [
+    0,
+    -2.5,
+    0
+   ],
+   "style": "shell_low",
+   "parent": "egg"
+  },
+  {
+   "id": "low",
+   "shape": "box",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0,
+    -1.75,
+    0
+   ],
+   "style": "shell_low",
+   "parent": "egg"
+  },
+  {
+   "id": "upper",
+   "shape": "box",
+   "size": [
+    4,
+    1.5,
+    4
+   ],
+   "pivot": [
+    0,
+    2.0,
+    0
+   ],
+   "style": "shell",
+   "parent": "egg"
+  },
+  {
+   "id": "shoulder",
+   "shape": "box",
+   "size": [
+    3,
+    1,
+    3
+   ],
+   "pivot": [
+    0,
+    3.25,
+    0
+   ],
+   "style": "shell_crack",
+   "parent": "egg"
+  },
+  {
+   "id": "tip",
+   "shape": "box",
+   "size": [
+    2,
+    0.5,
+    2
+   ],
+   "pivot": [
+    0,
+    4.0,
+    0
+   ],
+   "style": "shell_top",
+   "parent": "egg"
+  }
+ ]
+}
