@@ -1,0 +1,17 @@
+{
+  "item.winterworks.obsidian_shield": "Obsidian Shield",
+  "item.winterworks.obsidian_shield.tip": "Throws half of every blocked hit back at the attacker",
+  "item.winterworks.obsidian_shield.tip2": "Sneak as you raise it: a knockback shockwave (5 s cooldown)",
+  "item.winterworks.monolith_wand": "Monolith Wand",
+  "item.winterworks.monolith_wand.tip": "Petrifies a creature in obsidian for 10 s. Bosses resist",
+  "item.winterworks.end_glider": "End Glider",
+  "item.winterworks.end_glider.tip": "Hold use while falling to glide where you look",
+  "item.winterworks.end_glider.tip2": "With an Elytra: fly where you look, no fireworks; hold use to boost",
+  "item.winterworks.dragonling_spawn_egg": "Dragonling Spawn Egg",
+  "entity.winterworks.dragonling": "Dragonling",
+  "effect.winterworks.petrified": "Petrified",
+  "key.winterworks.dragon_breath": "Dragon Breath (riding a Dragonling)",
+  "key.categories.winterworks": "Winterworks",
+  "message.winterworks.dragonling.breath": "Dragon's breath: %s / %s",
+  "message.winterworks.dragonling.no_breath": "Out of breath: feed it a bottle of Dragon's Breath"
+}

@@ -32,12 +32,24 @@
     "FoodDataMixin",
     "HexedPlayerMixin",
     "BurningClearFireMixin",
+    "endgear.EndGearMobAccessor",
+    "endgear.EndGearLivingEntityAccessor",
+    "endgear.EndGearLivingEntityMixin",
+    "endgear.EndGearPlayerMixin",
+    "endgear.EndGearEntityMixin",
+    "endgear.EndGearItemEntityMixin",
     "end.SuspiciousEndSandMixin",
     "end.ChorusSoilMixin",
     "end.ChorusFlowerSoilMixin",
     "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
-    "endmob.EffectParticlesAccessor"
+    "endmob.EffectParticlesAccessor",
+    "TrailerCartRemovalMixin",
+    "MinecartFurnaceMixin",
+    "LoopRiderMixin",
+    "LoopPlayerMixin",
+    "RailStateMixin",
+    "RailStateAccessor"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -52,11 +64,20 @@
     "client.hex.SoulGlintBuffersMixin",
     "client.hex.SoulGlintBatchMixin",
     "client.hex.BlockModelAccessor",
+    "endgear.client.EndGearMouseHandlerMixin",
+    "endgear.client.EndGearKeyboardInputMixin",
+    "endgear.client.EndGearMinecraftMixin",
+    "endgear.client.EndGearLivingEntityRendererMixin",
+    "endgear.client.EndGearHumanoidModelMixin",
+    "endgear.client.EndGearItemInHandLayerMixin",
     "client.endboss.DragonModelMixin",
     "client.endboss.EndSkyMixin",
     "client.endboss.EndFogMixin",
     "client.endboss.EclipseLightMixin",
-    "endmob.EndGlowLightMixin"
+    "endmob.EndGlowLightMixin",
+    "client.LoopMinecartRendererMixin",
+    "client.LoopLivingRendererMixin",
+    "client.LoopCameraMixin"
   ],
   "injectors": {
     "defaultRequire": 1

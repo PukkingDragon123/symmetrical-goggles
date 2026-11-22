@@ -162,11 +162,29 @@ def sounds():
 
 
 # ------------------------------------------------------------------------------------------------ models
+def builtin_3d(particle, gui_scale=0.625, gui_rot=(30, 225, 0)):
+    """An item drawn by a BuiltinItemRenderer in the item's 0..1 cube, with vanilla block-like display transforms."""
+    s = lambda k: [k, k, k]  # noqa: E731
+    return {"parent": "minecraft:builtin/entity", "gui_light": "side", "textures": {"particle": particle},
+            "display": {
+                "gui": {"rotation": list(gui_rot), "translation": [0, 0, 0], "scale": s(gui_scale)},
+                "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": s(0.25)},
+                "fixed": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": s(0.5)},
+                "thirdperson_righthand": {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": s(0.375)},
+                "thirdperson_lefthand": {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": s(0.375)},
+                "firstperson_righthand": {"rotation": [0, 45, 0], "translation": [0, 0, 0], "scale": s(0.4)},
+                "firstperson_lefthand": {"rotation": [0, 225, 0], "translation": [0, 0, 0], "scale": s(0.4)},
+            }}
+
+
 def item_models():
-    gen = ["cobble_ball", "icebreaker_horn", "locomotive", "dragon_locomotive", "fox_cart", "zombie_cart", "trailer_cart"]
+    gen = ["cobble_ball", "icebreaker_horn"]
     for n in gen:
         write(os.path.join(A, "models", "item", n + ".json"),
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{n}"}})
+    # the locomotives and carts show their own 3D model (client/express/CartItemRenderer), turned like a block
+    for n in ("locomotive", "dragon_locomotive", "fox_cart", "zombie_cart"):
+        write(os.path.join(A, "models", "item", n + ".json"), builtin_3d(f"{M}:item/{n}", 0.95, (25, 30, 0)))
     write(os.path.join(A, "models", "item", "heavy_shears.json"),
           {"parent": "minecraft:item/handheld", "textures": {"layer0": f"{M}:item/heavy_shears"}})
     write(os.path.join(A, "models", "item", "icebreaker_spawn_egg.json"), {"parent": "minecraft:item/template_spawn_egg"})
@@ -263,6 +281,29 @@ def rail_models():
     for rail in ("coaster_rail", "booster_rail", "lift_rail", "trap_rail", "drop_rail"):
         write(os.path.join(A, "models", "item", rail + ".json"),
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:block/{rail}_ties", "layer1": f"{M}:block/{rail}"}})
+    # ---- 0.4 fixes: rails
+    # Coaster Loop: no block model of its own (client/express/CoasterLoopRenderer draws the loop), only break particles
+    write(os.path.join(A, "models", "block", "coaster_loop.json"), {"textures": {"particle": f"{M}:block/coaster_track_rail"}})
+    write(os.path.join(A, "blockstates", "coaster_loop.json"), {"variants": {
+        "shape=north_south": m("coaster_loop"), "shape=east_west": m("coaster_loop", 90)}})
+    write(os.path.join(A, "models", "item", "coaster_loop.json"), builtin_3d(f"{M}:block/coaster_track_rail", 0.95, (15, 120, 0)))
+    # Switch Rail: the art's models are drawn toe-south (y 0); FACING points from the toe to the fork. The points
+    # (SHAPE: straight on, or the curve onto the branch) pick the model: _on is set to the branch, lamp lit.
+    # Multipart, so the shapes a switch can never take (express/SwitchRailBlock keeps them consistent) draw nothing.
+    yrot = {"north": 0, "east": 90, "south": 180, "west": 270}
+    opp = {"north": "south", "south": "north", "east": "west", "west": "east"}
+    ccw = {"north": "west", "west": "south", "south": "east", "east": "north"}
+    cw = {v: k for k, v in ccw.items()}
+    parts = []
+    for facing, y in yrot.items():
+        for branch in ("left", "right"):
+            toe, b = opp[facing], (ccw if branch == "left" else cw)[facing]
+            n, e = "north" in (toe, b), "east" in (toe, b)
+            curve = ("north_" if n else "south_") + ("east" if e else "west")
+            straight = "north_south" if facing in ("north", "south") else "east_west"
+            for shape, model in ((straight, f"switch_rail_{branch}"), (curve, f"switch_rail_{branch}_on")):
+                parts.append({"when": {"facing": facing, "branch": branch, "shape": shape}, "apply": m(model, y)})
+    write(os.path.join(A, "blockstates", "switch_rail.json"), {"multipart": parts})
 
 
 def particles():
@@ -312,16 +353,18 @@ def recipes():
               f"{M}:fox_cart")
     shapeless("zombie_cart", ["minecraft:minecart", "minecraft:rotten_flesh", "minecraft:rotten_flesh", "minecraft:rotten_flesh"],
               f"{M}:zombie_cart")
-    shapeless("trailer_cart", ["minecraft:minecart", "#minecraft:planks", "#minecraft:planks", "minecraft:lantern"],
-              f"{M}:trailer_cart")
     shaped("snow_globe", ["GGG", "GSG", "SSS"], {"G": "minecraft:glass", "S": "minecraft:snowball"}, f"{M}:snow_globe")
+    # ---- 0.4 fixes: rails
+    shaped("coaster_loop", ["CCC", "CIC", "CCC"], {"C": f"{M}:coaster_rail", "I": "minecraft:iron_block"}, f"{M}:coaster_loop")
+    shaped("switch_rail", ["I I", "IRI", "ITI"], {"I": "minecraft:iron_ingot", "R": "minecraft:rail",
+           "T": "minecraft:redstone_torch"}, f"{M}:switch_rail", 2)
 
 
 def loot():
     write(os.path.join(D, M, "loot_table", "blocks", "drop_rail_open.json"), {"type": "minecraft:block", "pools": [{
         "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"{M}:drop_rail"}],
         "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
-    for b in ("coaster_rail", "booster_rail", "lift_rail", "trap_rail", "drop_rail", "snow_globe"):
+    for b in ("coaster_rail", "booster_rail", "lift_rail", "trap_rail", "drop_rail", "snow_globe", "coaster_loop", "switch_rail"):
         write(os.path.join(D, M, "loot_table", "blocks", b + ".json"), {"type": "minecraft:block", "pools": [{
             "rolls": 1, "entries": [{"type": "minecraft:item", "name": f"{M}:{b}"}],
             "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
@@ -337,7 +380,8 @@ def loot():
 
 
 def tags():
-    rails = [f"{M}:coaster_rail", f"{M}:booster_rail", f"{M}:lift_rail", f"{M}:trap_rail", f"{M}:drop_rail"]
+    rails = [f"{M}:coaster_rail", f"{M}:booster_rail", f"{M}:lift_rail", f"{M}:trap_rail", f"{M}:drop_rail",
+             f"{M}:coaster_loop", f"{M}:switch_rail"]
     write(os.path.join(D, "minecraft", "tags", "block", "rails.json"), {"replace": False, "values": rails})
     write(os.path.join(D, "minecraft", "tags", "item", "rails.json"), {"replace": False, "values": rails})
     write(os.path.join(D, "minecraft", "tags", "block", "mineable", "pickaxe.json"),
@@ -374,12 +418,10 @@ def lang(subtitles):
         "item.winterworks.dragon_locomotive": "Dragon-Head Locomotive",
         "item.winterworks.fox_cart": "Fox Cart",
         "item.winterworks.zombie_cart": "Zombie Cart",
-        "item.winterworks.trailer_cart": "Trailer Cart",
         "entity.winterworks.locomotive": "Iron Locomotive",
         "entity.winterworks.dragon_locomotive": "Dragon-Head Locomotive",
         "entity.winterworks.fox_cart": "Fox Cart",
         "entity.winterworks.zombie_cart": "Zombie Cart",
-        "entity.winterworks.trailer_cart": "Trailer Cart",
         "entity.winterworks.locomotive.throttle.0": "Reverse",
         "entity.winterworks.locomotive.throttle.1": "Stopped",
         "entity.winterworks.locomotive.throttle.2": "Full steam ahead!",
@@ -389,6 +431,8 @@ def lang(subtitles):
         "block.winterworks.trap_rail": "Trap Rail",
         "block.winterworks.drop_rail": "Drop Rail",
         "block.winterworks.drop_rail_open": "Open Drop Rail",
+        "block.winterworks.coaster_loop": "Coaster Loop",
+        "block.winterworks.switch_rail": "Switch Rail",
         "message.winterworks.couple.first": "Now click the cart behind it",
         "message.winterworks.couple.too_far": "Too far apart to couple",
         "message.winterworks.couple.taken": "That coupler is already in use",

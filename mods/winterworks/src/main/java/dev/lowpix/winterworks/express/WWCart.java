@@ -131,8 +131,8 @@ public class WWCart extends Minecart {
         double px = getX(), pz = getZ();
         super.tick();
         if (level().isClientSide) {
-            double dx = getX() - px, dz = getZ() - pz;
-            clientSpeed = clientSpeed * 0.6 + Math.sqrt(dx * dx + dz * dz) * 0.4;
+            double dx = getX() - px, dz = getZ() - pz, dy = CoasterLoop.looping(this) ? getDeltaMovement().y : 0;
+            clientSpeed = clientSpeed * 0.6 + Math.sqrt(dx * dx + dy * dy + dz * dz) * 0.4;
             boolean moving = clientSpeed > 0.01;
             runState.animateWhen(moving, tickCount);
             idleState.animateWhen(!moving, tickCount);

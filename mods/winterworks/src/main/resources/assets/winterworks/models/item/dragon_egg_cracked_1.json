@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "winterworks:item/dragon_egg_cracked_1"
+  }
+}

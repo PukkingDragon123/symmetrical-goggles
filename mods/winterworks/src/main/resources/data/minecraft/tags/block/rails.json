@@ -5,6 +5,8 @@
     "winterworks:booster_rail",
     "winterworks:lift_rail",
     "winterworks:trap_rail",
-    "winterworks:drop_rail"
+    "winterworks:drop_rail",
+    "winterworks:coaster_loop",
+    "winterworks:switch_rail"
   ]
 }

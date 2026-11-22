@@ -144,6 +144,11 @@ public final class WWSounds {
     public static final SoundEvent CURSE_EFFECT_LESSER = reg("curse.effect.lesser");
     public static final SoundEvent CURSE_EFFECT_SIN = reg("curse.effect.sin");
     public static final SoundEvent CURSE_EFFECT_HIDDEN = reg("curse.effect.hidden");
+    // ---- end 0.4 fixes: hexes
+
+    // ---- 0.4 fixes: rails (docs/FIXES_0_4.md)
+    public static final SoundEvent SWITCH_RAIL_SWITCH = reg("block.switch_rail.switch");
+    // ---- end 0.4 fixes: rails
 
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
