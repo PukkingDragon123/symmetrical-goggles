@@ -429,9 +429,9 @@ def crossed(tex, scale=6):
     return out.resize((w * scale, h * scale), Image.NEAREST)
 
 
-def growth_strip(dst, scale=6):
+def growth_strip(dst, vanilla, scale=6):
     """Both crops growing, at night: each stage as the game stacks it (pod box, lower and upper halves)."""
-    T = lambda n: OUT[f"minecraft:textures/block/{n}.png"]  # noqa: E731
+    T = lambda n: OUT.get(f"minecraft:textures/block/{n}.png") or vanilla.image(f"textures/block/{n}.png")  # noqa: E731
     G = lambda n: OUT.get(GLOW.get(f"minecraft:textures/block/{n}.png", ""))  # noqa: E731
     cols = [("torch 0", [("torchflower_crop_stage0", 0)]), ("torch 1", [("torchflower_crop_stage1", 0)]),
             ("torchflower", [("torchflower", 0)]),
@@ -502,7 +502,7 @@ def main():
         main_keys = [k for k in OUT if "/particle/" not in k and not k.endswith("_glow.png")]
         print("sheet:", contact_sheet(sorted(main_keys), a.preview / "bloom_textures.png", vanilla))
         if vanilla:
-            print("sheet:", growth_strip(a.preview / "bloom_growth.png"))
+            print("sheet:", growth_strip(a.preview / "bloom_growth.png", vanilla))
         print("sheet:", particle_strip(a.preview / "bloom_particles.png"))
 
 
