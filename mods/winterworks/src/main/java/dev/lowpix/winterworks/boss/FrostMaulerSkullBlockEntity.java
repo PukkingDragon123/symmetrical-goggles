@@ -164,6 +164,11 @@ public class FrostMaulerSkullBlockEntity extends BlockEntity {
             level.addParticle(i == 0 ? WWParticles.BLIZZARD_FLAKE : ParticleTypes.SNOWFLAKE, cx + Math.cos(a) * r, y,
                     cz + Math.sin(a) * r, -Math.sin(a) * 0.08, 0.03, Math.cos(a) * 0.08);
         }
+        if (t % 2 == 0 && state.hasProperty(FrostMaulerSkullBlock.FACING)) {   // ice-blue flame licking out of the eye socket
+            var d = state.getValue(FrostMaulerSkullBlock.FACING);
+            level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, cx + d.getStepX() * 0.3 + (level.random.nextDouble() - 0.5) * 0.1, cy + 0.2,
+                    cz + d.getStepZ() * 0.3 + (level.random.nextDouble() - 0.5) * 0.1, 0, 0.02 + 0.03 * k, 0);
+        }
         if (t % 5 == 0) {
             level.addParticle(WWParticles.FROST_BREATH, cx + (level.random.nextDouble() - 0.5) * 2, cy + 1.6,
                     cz + (level.random.nextDouble() - 0.5) * 2, 0, 0.02, 0);

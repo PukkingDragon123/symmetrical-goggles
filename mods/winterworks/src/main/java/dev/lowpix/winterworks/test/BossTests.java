@@ -70,7 +70,7 @@ public class BossTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------- ancient ice
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100, batch = "boss")
     public void standingOnAncientIceGivesFrostbite(GameTestHelper h) {
         floor(h, 8);
         h.setBlock(new BlockPos(3, 1, 3), WWBlocks.ANCIENT_ICE);
@@ -78,7 +78,7 @@ public class BossTests implements FabricGameTest {
         h.succeedWhen(() -> h.assertTrue(frostbitten(pig, 0), "a pig standing on ancient ice should get Frostbite"));
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100, batch = "boss")
     public void walkingIntoAncientIceGivesFrostbite(GameTestHelper h) {
         floor(h, 8);
         for (int z = 0; z < 8; z++) {
@@ -94,7 +94,7 @@ public class BossTests implements FabricGameTest {
         });
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60, batch = "boss")
     public void breakingAncientIceBurstsOnNearbyMobs(GameTestHelper h) {
         floor(h, 8);
         BlockPos ice = new BlockPos(2, 1, 2);
@@ -113,7 +113,7 @@ public class BossTests implements FabricGameTest {
         });
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60, batch = "boss")
     public void silkTouchKeepsAncientIce(GameTestHelper h) {
         floor(h, 8);
         BlockPos ice = new BlockPos(2, 1, 2);
@@ -128,7 +128,7 @@ public class BossTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------- icicles
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100, batch = "boss")
     public void fallingIcicleDamagesWhatIsBelow(GameTestHelper h) {
         floor(h, 8);
         BlockPos roof = new BlockPos(3, 7, 3);
@@ -155,7 +155,7 @@ public class BossTests implements FabricGameTest {
         return m;
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60, batch = "boss")
     public void furyBitesIgnoreInvulnerabilityFrames(GameTestHelper h) {
         floor(h, 8);
         FrostMaulerEntity m = mauler(h, new Vec3(2.5, 1.0, 4.0));
@@ -173,7 +173,7 @@ public class BossTests implements FabricGameTest {
         h.succeed();
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60, batch = "boss")
     public void raisedShieldBlocksFuryBites(GameTestHelper h) {
         floor(h, 8);
         FrostMaulerEntity m = mauler(h, new Vec3(2.5, 1.0, 2.0));
@@ -197,7 +197,8 @@ public class BossTests implements FabricGameTest {
         h.succeed();
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60)
+    /** Its own batch: the roar throws back everything within 8 blocks, the neighbouring test area included. */
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60, batch = "boss_roar")
     public void roarSlowsAndBlowsBackAndShattersIce(GameTestHelper h) {
         floor(h, 8);
         FrostMaulerEntity m = mauler(h, new Vec3(2.5, 1.0, 2.5));
@@ -230,10 +231,11 @@ public class BossTests implements FabricGameTest {
         });
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40, batch = "boss")
     public void freezingAndFrostbiteCannotHurtIt(GameTestHelper h) {
         floor(h, 8);
         FrostMaulerEntity m = mauler(h, new Vec3(3.5, 1.0, 3.5));
+        h.assertTrue(m.getMaxHealth() == 400f, "the Frost Mauler has 400 health, not " + m.getMaxHealth());
         float hp = m.getHealth();
         m.hurt(h.getLevel().damageSources().freeze(), 20f);
         m.addEffect(new MobEffectInstance(WWEffects.FROSTBITE, 200, 1));
@@ -244,6 +246,113 @@ public class BossTests implements FabricGameTest {
         h.assertTrue(hp - m.getHealth() > 12f, "fire should hurt it 1.5x, took " + (hp - m.getHealth()));
         m.discard();
         h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40, batch = "boss")
+    public void enragedItRecoversFaster(GameTestHelper h) {
+        floor(h, 8);
+        FrostMaulerEntity m = mauler(h, new Vec3(3.5, 1.0, 3.5));
+        h.assertTrue(m.rechargeTicks() == FrostMaulerEntity.RECHARGE_TICKS, "a fresh Mauler recharges for 5 s");
+        m.setHealth(m.getMaxHealth() * 0.3f);
+        h.runAfterDelay(2, () -> {
+            h.assertTrue(m.isEnraged(), "below 35% health it is enraged");
+            h.assertTrue(m.rechargeTicks() < FrostMaulerEntity.RECHARGE_TICKS, "enraged, it recovers faster");
+            m.discard();
+            h.succeed();
+        });
+    }
+
+    // ------------------------------------------------------------------------------------------- icicle rain, hurling, combo
+
+    /** A pig under a stone roof; the Mauler (kept still) calls one icicle down on it. */
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 120, batch = "boss_icicles")
+    public void icicleRainIsTelegraphedThenHits(GameTestHelper h) {
+        floor(h, 8);
+        for (int x = 0; x < 8; x++) {
+            for (int z = 0; z < 8; z++) {
+                h.setBlock(new BlockPos(x, 8, z), Blocks.STONE);
+            }
+        }
+        FrostMaulerEntity m = mauler(h, new Vec3(1.5, 1.0, 1.5));
+        m.holdSpecialAttacks(100000);
+        Pig pig = still(h.spawn(EntityType.PIG, new Vec3(5.5, 1.0, 5.5)));
+        m.setTarget(pig);
+        float hp = pig.getHealth();
+        long start = h.getTick();
+        m.icicleRain(h.getLevel(), 1);
+        h.assertTrue(m.pendingIcicles() == 1, "one icicle should be on its way, " + m.pendingIcicles());
+        long[] hitAt = {-1};
+        boolean[] early = {false};
+        h.onEachTick(() -> {
+            if (hitAt[0] < 0 && pig.getHealth() < hp) {
+                hitAt[0] = h.getTick();
+            }
+            if (h.getTick() - start < 4 && !h.getEntities(WWEntities.FALLING_ICICLE).isEmpty()) {
+                early[0] = true;
+            }
+        });
+        h.succeedWhen(() -> {
+            h.assertTrue(hitAt[0] > 0, "the icicle should come down on the pig");
+            h.assertFalse(early[0], "it should warn before it drops");
+            h.assertTrue(hitAt[0] - start >= 15, "telegraphed about a second ahead, but it hit after " + (hitAt[0] - start) + " ticks");
+            h.assertTrue(pig.getHealth() <= hp - FallingIcicleEntity.DAMAGE + 0.01f || !pig.isAlive(), "skewered for 6");
+            m.discard();
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 60, batch = "boss_icicles")
+    public void hurledIcicleHitsTheTarget(GameTestHelper h) {
+        floor(h, 8);
+        FrostMaulerEntity m = mauler(h, new Vec3(1.5, 1.0, 1.5));
+        m.holdSpecialAttacks(100000);
+        m.setYRot(-45f);   // facing the pig (south-east)
+        m.setYHeadRot(-45f);
+        Pig pig = still(h.spawn(EntityType.PIG, new Vec3(6.5, 1.0, 6.5)));
+        float hp = pig.getHealth();
+        FallingIcicleEntity ice = m.hurlIcicle(h.getLevel(), pig, null);
+        h.assertTrue(ice.isThrown() && ice.getDeltaMovement().horizontalDistance() > 0.5, "it should be thrown hard");
+        h.succeedWhen(() -> {
+            h.assertTrue(pig.getHealth() <= hp - FallingIcicleEntity.DAMAGE + 0.01f || !pig.isAlive(),
+                    "the thrown icicle should hit the pig, health " + pig.getHealth());
+            h.assertTrue(m.getHealth() == m.getMaxHealth(), "it never hits its thrower");
+            h.assertEntityNotPresent(WWEntities.FALLING_ICICLE);
+            m.discard();
+        });
+    }
+
+    /** Fast then slow then spent (like the Fang Daggers): the gaps between hits grow, then it must recharge. */
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 400, batch = "boss_combo")
+    public void comboStartsFastTiresThenRecharges(GameTestHelper h) {
+        floor(h, 8);
+        FrostMaulerEntity m = h.spawn(WWEntities.FROST_MAULER, new Vec3(2.5, 1.0, 2.0));   // with its AI
+        m.holdSpecialAttacks(100000);
+        IronGolem golem = still(h.spawn(EntityType.IRON_GOLEM, new Vec3(2.5, 1.0, 5.4)));
+        List<Long> hits = new ArrayList<>();
+        float[] last = {golem.getHealth()};
+        long[] rechargeAt = {-1};
+        h.onEachTick(() -> {
+            if (m.getTarget() != golem) {
+                m.setTarget(golem);
+            }
+            if (rechargeAt[0] < 0) {
+                if (golem.getHealth() < last[0]) {
+                    hits.add(h.getTick());
+                }
+                if (m.isStunned()) {
+                    rechargeAt[0] = h.getTick();
+                }
+            }
+            last[0] = golem.getHealth();
+        });
+        h.succeedWhen(() -> {
+            h.assertTrue(rechargeAt[0] > 0, "it should wear itself out and recharge, " + hits.size() + " hits so far");
+            h.assertTrue(hits.size() >= 5, "a combo of several hits before it tires, got " + hits.size());
+            long first = hits.get(1) - hits.get(0), lastGap = hits.get(hits.size() - 1) - hits.get(hits.size() - 2);
+            h.assertTrue(first <= 8, "the combo opens at a frantic pace, first gap " + first + " ticks, hits " + hits);
+            h.assertTrue(lastGap >= 11 && lastGap > first, "and slows as it tires, last gap " + lastGap + " ticks, hits " + hits);
+            h.assertTrue(m.isStunned() && m.fatigue() > 0.5f, "recharging: winded and open");
+            m.discard();
+        });
     }
 
     // ------------------------------------------------------------------------------------------- the tomb
@@ -355,7 +464,7 @@ public class BossTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------- the skull
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200, batch = "boss")
     public void netherStarOnEncasedSkullRevivesTheMauler(GameTestHelper h) {
         floor(h, 8);
         BlockPos skull = new BlockPos(3, 2, 3);
@@ -380,7 +489,7 @@ public class BossTests implements FabricGameTest {
         });
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40, batch = "boss")
     public void skullNeedsAllSixSidesOfIce(GameTestHelper h) {
         floor(h, 8);
         BlockPos skull = new BlockPos(3, 2, 3);

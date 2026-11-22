@@ -9,7 +9,6 @@ import dev.lowpix.winterworks.registry.WWItems;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
@@ -37,7 +36,6 @@ public final class BossClient {
         EntityRendererRegistry.register(WWEntities.FALLING_ICICLE, FallingIcicleRenderer::new);
         BlockEntityRenderers.register(WWBlocks.FROST_MAULER_SKULL_BE, FrostMaulerSkullRenderer::new);
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.FROST_MAULER_SKULL, new FrostMaulerSkullRenderer.Item());
-        ModelLoadingPlugin.register(ctx -> ctx.addModels(FrostMaulerSkullRenderer.ICON_MODEL));
         BlockRenderLayerMap.INSTANCE.putBlock(WWBlocks.ANCIENT_ICE, RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(WWBlocks.ICICLE, RenderType.translucent());
 

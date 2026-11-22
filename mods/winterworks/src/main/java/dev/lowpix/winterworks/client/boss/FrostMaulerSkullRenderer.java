@@ -2,7 +2,6 @@ package dev.lowpix.winterworks.client.boss;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import dev.lowpix.winterworks.Winterworks;
 import dev.lowpix.winterworks.boss.FrostMaulerSkullBlock;
 import dev.lowpix.winterworks.boss.FrostMaulerSkullBlockEntity;
 import dev.lowpix.winterworks.client.render.WWModel;
@@ -13,8 +12,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -23,10 +20,9 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Draws the Frost Mauler skull (lowpix model `frost_mauler_skull`: bones skull, jaw, fang_l, fang_r, eye). The eye is
  * only drawn while the skull is lit (the revival), emissive and pulsing brighter as the ritual builds; the jaw
- * trembles open. In inventory slots the item shows its 2D icon (textures/item/frost_mauler_skull.png).
+ * trembles open, and soul flames lick out of the eye socket. The item is the same 3D skull everywhere.
  */
 public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMaulerSkullBlockEntity> {
-    public static final ResourceLocation ICON_MODEL = Winterworks.id("item/frost_mauler_skull_icon");
     private static WWModel<Entity> model;
 
     public FrostMaulerSkullRenderer(BlockEntityRendererProvider.Context ctx) {
@@ -84,19 +80,11 @@ public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMauler
         return false;
     }
 
-    /** The skull as an item: 3D in hand, on the ground and in frames; the 2D icon in inventory slots. */
+    /** The skull as an item: the 3D skull everywhere, inventory slots included (the GUI pose is in its item model). */
     public static class Item implements BuiltinItemRendererRegistry.DynamicItemRenderer {
         @Override
         public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
             Minecraft mc = Minecraft.getInstance();
-            if (mode == ItemDisplayContext.GUI) {
-                BakedModel icon = mc.getModelManager().getModel(ICON_MODEL);
-                pose.pushPose();
-                pose.translate(0.5f, 0.5f, 0.5f);
-                mc.getItemRenderer().render(stack, mode, false, pose, buffers, light, overlay, icon);
-                pose.popPose();
-                return;
-            }
             float time = mc.level == null ? 0 : mc.level.getGameTime() + mc.getTimer().getGameTimeDeltaPartialTick(false);
             draw(pose, buffers, light, overlay, 0f, -1f, time);
         }

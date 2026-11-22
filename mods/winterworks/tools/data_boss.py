@@ -31,26 +31,27 @@ def models(ctx):
     ctx.write(os.path.join(A, "blockstates", "icicle.json"), {"variants": {
         "tip=true": {"model": f"{M}:block/icicle_tip"}, "tip=false": {"model": f"{M}:block/icicle_base"}}})
     ctx.write(itm("icicle"), {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/icicle"}})
-    # the skull: drawn by FrostMaulerSkullRenderer (block entity + builtin item renderer); the block model only gives
-    # the breaking particles. In the GUI the item renderer draws the 2D icon model instead.
+    # the skull: drawn by FrostMaulerSkullRenderer (block entity + builtin item renderer), the 3D model everywhere;
+    # the block model only gives the breaking particles.
     ctx.write(blk("frost_mauler_skull"), {"textures": {"particle": "minecraft:block/bone_block_side"}})
     ctx.write(os.path.join(A, "blockstates", "frost_mauler_skull.json"),
               {"variants": {"": {"model": f"{M}:block/frost_mauler_skull"}}})
     ctx.write(itm("frost_mauler_skull"), {
-        "parent": "minecraft:builtin/entity", "gui_light": "front",
+        "parent": "minecraft:builtin/entity", "gui_light": "side",
         "textures": {"particle": "minecraft:block/bone_block_side"},
         "display": {
-            "gui": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
-            "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.5, 0.5, 0.5]},
-            "fixed": {"rotation": [0, 180, 0], "translation": [0, 2, 0], "scale": [0.9, 0.9, 0.9]},
-            "head": {"rotation": [0, 180, 0], "translation": [0, 4, 0], "scale": [1.1, 1.1, 1.1]},
-            "thirdperson_righthand": {"rotation": [45, 45, 0], "translation": [0, 2.5, 0], "scale": [0.45, 0.45, 0.45]},
-            "thirdperson_lefthand": {"rotation": [45, 45, 0], "translation": [0, 2.5, 0], "scale": [0.45, 0.45, 0.45]},
-            "firstperson_righthand": {"rotation": [0, 45, 0], "translation": [0, 2.5, 0], "scale": [0.5, 0.5, 0.5]},
-            "firstperson_lefthand": {"rotation": [0, 225, 0], "translation": [0, 2.5, 0], "scale": [0.5, 0.5, 0.5]},
+            "gui": {"rotation": [30, 45, 0], "translation": [0, -0.6, 0], "scale": [0.5, 0.5, 0.5]},
+            "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.35, 0.35, 0.35]},
+            "fixed": {"rotation": [0, 180, 0], "translation": [0, 1, 0], "scale": [0.65, 0.65, 0.65]},
+            "head": {"rotation": [0, 180, 0], "translation": [0, 4, 0], "scale": [0.9, 0.9, 0.9]},
+            "thirdperson_righthand": {"rotation": [45, 45, 0], "translation": [0, 2, 0], "scale": [0.3, 0.3, 0.3]},
+            "thirdperson_lefthand": {"rotation": [45, 45, 0], "translation": [0, 2, 0], "scale": [0.3, 0.3, 0.3]},
+            "firstperson_righthand": {"rotation": [0, 45, 0], "translation": [2, 2, 0], "scale": [0.2, 0.2, 0.2]},
+            "firstperson_lefthand": {"rotation": [0, 225, 0], "translation": [-2, 2, 0], "scale": [0.2, 0.2, 0.2]},
         }})
-    ctx.write(itm("frost_mauler_skull_icon"),
-              {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/frost_mauler_skull"}})
+    stale = itm("frost_mauler_skull_icon")   # the GUI used to show a 2D icon; it's 3D now
+    if os.path.exists(stale):
+        os.remove(stale)
     ctx.write(itm("frost_mauler_spawn_egg"), {"parent": "minecraft:item/template_spawn_egg"})
 
 

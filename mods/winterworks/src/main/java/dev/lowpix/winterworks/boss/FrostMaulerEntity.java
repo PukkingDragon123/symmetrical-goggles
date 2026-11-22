@@ -66,39 +66,53 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The Frost Mauler (docs/COLD_UPDATE.md section 7): a huge frozen beast, half wolf, half giant bear.
+ * The Frost Mauler (docs/COLD_UPDATE.md section 7): a huge frozen sabre-toothed beast.
  *
  * <p>It sleeps <b>dormant</b> in the ancient ice of its frozen tomb (no AI, invulnerable, no gravity, frozen pose)
  * until 6 of the tomb's ancient-ice blocks are broken: the cave rumbles and shakes, the ice cracks for 3 s, it all
- * bursts, the Mauler drops, gets up and roars. Awake, it fights with telegraphed attacks:
+ * bursts, the Mauler drops, gets up and roars. Awake (400 health), it fights with telegraphed attacks:
  * <ul>
- * <li><b>Roar</b> (2 s, blast at 0.6 s): knockback in 8 blocks, Slowness II, shatters ice and snow around it and
- *     shakes 4-8 icicles off the ceiling above nearby players (they glint and crackle before they drop);</li>
- * <li><b>Claws</b>: left / right swipes (wind-up, then 14 damage and knockback in a frontal arc);</li>
- * <li><b>Fury</b>: a crouching snarl, then it charges and bounds at you; if it reaches you it bites 6 times in a
- *     flurry (5 each, through invulnerability frames; a raised shield blocks each bite). Dodge the charge into a wall
- *     and it stuns itself sooner. After a fury it is <b>stunned</b> for 5 s and takes 1.5x damage.</li>
+ * <li><b>Combo</b>: claw, claw, bite... it opens at a frantic pace and slows hit by hit as it tires (like the Fang
+ *     Daggers' frenzy: {@link #fatigue()}). Spent, it must <b>recharge</b>: it stands panting, dazed and wide open
+ *     (1.5x damage) for 5 s, 2.75 s when enraged. A raised shield blocks claws and bites, and every swing still tires it.</li>
+ * <li><b>Roar</b>: knockback in 8 blocks, Slowness II, shatters ice and snow around it and brings icicles down.</li>
+ * <li><b>Icicle rain</b> (every ~12 s, more often below 50% health): it rears and slams the ground (or roars) and a
+ *     volley of icicles drops on and around you. Each one is telegraphed 1 s ahead: frost sifts down from where it
+ *     will fall and the ground under it cracks and rings with frost.</li>
+ * <li><b>Hurl</b>: at range it rips an icicle from the ceiling (or forms one in its jaws) and throws it at you.</li>
+ * <li><b>Fury</b>: a crouching snarl, then it charges and bounds at you and bites in a flurry (5 each, through
+ *     invulnerability frames; a raised shield blocks each bite) that tires it out: it recharges after. Dodge the
+ *     charge into a wall and it is winded at once.</li>
  * </ul>
- * Below 35% health it is enraged: faster, roaring twice as often. Freezing can't hurt it, fire hurts 1.5x. On death it
- * thrashes for 2 s and bursts in a frost explosion that throws everything back (no block damage), then drops its loot.
+ * Below 35% health it is enraged: faster, roaring twice as often, recovering faster, its eye flames flaring. Freezing
+ * can't hurt it, fire hurts 1.5x. On death it thrashes for 2 s and bursts in a frost explosion that throws everything
+ * back (no block damage), then drops its loot.
  */
 public class FrostMaulerEntity extends Monster {
     private static final EntityDataAccessor<Boolean> DORMANT = SynchedEntityData.defineId(FrostMaulerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MODE = SynchedEntityData.defineId(FrostMaulerEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Boolean> ENRAGED = SynchedEntityData.defineId(FrostMaulerEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> FATIGUE = SynchedEntityData.defineId(FrostMaulerEntity.class, EntityDataSerializers.FLOAT);
 
-    // modes (synced): what the whole body is doing
+    // modes (synced): what the whole body is doing. STUNNED is the recharge: winded, panting, open to punishment.
     public static final byte MODE_NONE = 0, MODE_FURY_WINDUP = 1, MODE_FURY_CHARGE = 2, MODE_FURY_BITE = 3, MODE_STUNNED = 4,
             MODE_WAKING = 5, MODE_AWAKENING = 6;
     // one-shot actions (server; the client hears about them through entity events)
-    private static final int ACT_NONE = 0, ACT_ROAR = 1, ACT_CLAW_L = 2, ACT_CLAW_R = 3;
-    public static final byte EVENT_ROAR = 70, EVENT_CLAW_L = 71, EVENT_CLAW_R = 72, EVENT_WAKE = 73, EVENT_FURY = 74, EVENT_BITE = 75,
-            EVENT_ROAR_BLAST = 76;
+    private static final int ACT_NONE = 0, ACT_ROAR = 1, ACT_CLAW_L = 2, ACT_CLAW_R = 3, ACT_SNAP = 4, ACT_SLAM = 5, ACT_HURL = 6;
+    public static final byte EVENT_ROAR = 70, EVENT_WAKE = 73, EVENT_FURY = 74, EVENT_BITE = 75, EVENT_ROAR_BLAST = 76;
+    /** Claws and combo bites carry their clip speed in the event id: base + bucket, speed 0.75 + 0.25 * bucket. */
+    public static final byte EVENT_CLAW_L = 80, EVENT_CLAW_R = 90, EVENT_SNAP = 100, EVENT_SLAM = 110, EVENT_HURL_L = 111, EVENT_HURL_R = 112;
 
+    public static final float MAX_HEALTH = 400f;
     // timings (ticks)
-    public static final int AWAKEN_TICKS = 60, WAKE_TICKS = 60, ROAR_TICKS = 40, ROAR_BLAST = 12, CLAW_TICKS = 16, CLAW_HIT = 9,
-            FURY_WINDUP = 18, FURY_CHARGE_MAX = 32, FURY_BITES = 6, BITE_INTERVAL = 6, STUN_TICKS = 100, DEATH_TICKS = 40;
-    public static final float BITE_DAMAGE = 5f;
+    public static final int AWAKEN_TICKS = 60, WAKE_TICKS = 60, ROAR_TICKS = 40, ROAR_BLAST = 8, SLAM_TICKS = 24, SLAM_HIT = 12,
+            HURL_TICKS = 22, HURL_THROW = 12, FURY_WINDUP = 18, FURY_CHARGE_MAX = 32, FURY_BITES = 6, DEATH_TICKS = 40,
+            RECHARGE_TICKS = 100, RECHARGE_TICKS_ENRAGED = 55, RAIN_WARNING = 20;
+    /** Clip timing: the claw clips strike at 0.4 s (8 ticks), the fury clip's jaws snap at 0.2 s (4 ticks). */
+    private static final float CLAW_STRIKE = 8f, SNAP_STRIKE = 4f;
+    public static final float BITE_DAMAGE = 5f, CLAW_DAMAGE = 14f;
+    /** Fatigue per swing (claw, bite): about 7 swings from fresh to spent. */
+    public static final float CLAW_FATIGUE = 0.14f, BITE_FATIGUE = 0.17f;
     public static final double ROAR_RADIUS = 8, ROAR_BREAK_RADIUS = 5;
     /** The tomb: ancient ice within this many blocks (a cube) is its tomb; breaking {@link #TOMB_BREAKS} wakes it. */
     public static final int TOMB_RADIUS = 6, TOMB_BREAKS = 6;
@@ -112,20 +126,27 @@ public class FrostMaulerEntity extends Monster {
     public final AnimationState roarState = new AnimationState();
     public final AnimationState clawLState = new AnimationState();
     public final AnimationState clawRState = new AnimationState();
+    public final AnimationState snapState = new AnimationState();
     public final AnimationState furyState = new AnimationState();
     public final AnimationState stunnedState = new AnimationState();
     public final AnimationState deathState = new AnimationState();
-    private int roarStart = -1000, clawStart = -1000, wakeStart = -1000, roarBlastTick = -1000;
-    /** Client: tick the fury snarl began (for the crouch). */
-    public int furyStart = -1000;
+    /** Client: playback speeds of the one-shots (they follow the combo's pace). */
+    public float clawLSpeed = 1f, clawRSpeed = 1f, snapSpeed = 1f;
+    private int roarStart = -1000, clawLStart = -1000, clawRStart = -1000, snapStart = -1000, wakeStart = -1000, roarBlastTick = -1000;
+    /** Client: when the fury snarl / the slam began (procedural crouch and rear). */
+    public int furyStart = -1000, slamStart = -1000;
+    /** Client: last tick the eye flames were emitted (client.boss.FrostMaulerRenderer). */
+    public int lastFlameTick = -1;
     private int breathTimer = 40;
 
     // server state
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(getDisplayName(), BossEvent.BossBarColor.BLUE,
             BossEvent.BossBarOverlay.PROGRESS).setCreateWorldFog(true);
-    private int action = ACT_NONE, actionTicks, modeTicks;
-    private int roarCooldown = 40, furyCooldown = 160, clawCooldown;
-    private int clawsInARow, bites, lastClawSide;
+    private int action = ACT_NONE, actionTicks, actionHit, actionLen, modeTicks, rechargeLen = RECHARGE_TICKS;
+    private int roarCooldown = 40, furyCooldown = 160, rainCooldown = 160, hurlCooldown = 100;
+    private int comboHits, comboStep, comboLost, lastSwing, bites, biteTimer, furyEnd = -1;
+    @Nullable
+    private BlockPos hurlFrom;
     private Vec3 chargeDir = Vec3.ZERO;
     private boolean wasOnGround = true;
     private int tombIce = -1, awakenTicks, crackStage = -1, sealedHint;
@@ -135,15 +156,24 @@ public class FrostMaulerEntity extends Monster {
     private DamageSource pendingLoot;
     private boolean lootPending;
 
+    /** An icicle about to drop: it warns for {@link #RAIN_WARNING} ticks (frost sifting, the ground cracking) first. */
     private static final class PendingIcicle {
-        final BlockPos pos;
+        final BlockPos from;
         final boolean existing;
-        int delay;
+        final double x, z, groundY;
+        final BlockState ground;
+        final int fallTicks;
+        int left;
 
-        PendingIcicle(BlockPos pos, boolean existing, int delay) {
-            this.pos = pos;
+        PendingIcicle(BlockPos from, boolean existing, double x, double z, double groundY, BlockState ground, int fallTicks, int left) {
+            this.from = from;
             this.existing = existing;
-            this.delay = delay;
+            this.x = x;
+            this.z = z;
+            this.groundY = groundY;
+            this.ground = ground;
+            this.fallTicks = fallTicks;
+            this.left = left;
         }
     }
 
@@ -154,8 +184,8 @@ public class FrostMaulerEntity extends Monster {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 320).add(Attributes.ARMOR, 10)
-                .add(Attributes.ATTACK_DAMAGE, 14).add(Attributes.MOVEMENT_SPEED, 0.3).add(Attributes.KNOCKBACK_RESISTANCE, 0.9)
+        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, MAX_HEALTH).add(Attributes.ARMOR, 10)
+                .add(Attributes.ATTACK_DAMAGE, CLAW_DAMAGE).add(Attributes.MOVEMENT_SPEED, 0.3).add(Attributes.KNOCKBACK_RESISTANCE, 0.9)
                 .add(Attributes.FOLLOW_RANGE, 40).add(Attributes.ATTACK_KNOCKBACK, 1.5).add(Attributes.STEP_HEIGHT, 1.1);
     }
 
@@ -165,6 +195,7 @@ public class FrostMaulerEntity extends Monster {
         builder.define(DORMANT, false);
         builder.define(MODE, MODE_NONE);
         builder.define(ENRAGED, false);
+        builder.define(FATIGUE, 0f);
     }
 
     @Override
@@ -198,8 +229,23 @@ public class FrostMaulerEntity extends Monster {
         return entityData.get(ENRAGED);
     }
 
+    /** Stunned = recharging: winded after a combo or a fury, taking 1.5x damage. */
     public boolean isStunned() {
         return mode() == MODE_STUNNED;
+    }
+
+    /** 0 = fresh (frantic, fast swings) .. 1 = spent (it must recharge). Synced: the client pants when it's high. */
+    public float fatigue() {
+        return entityData.get(FATIGUE);
+    }
+
+    private void setFatigue(float f) {
+        entityData.set(FATIGUE, Mth.clamp(f, 0f, 1f));
+    }
+
+    /** How long a recharge lasts: shorter when enraged. */
+    public int rechargeTicks() {
+        return isEnraged() ? RECHARGE_TICKS_ENRAGED : RECHARGE_TICKS;
     }
 
     /** Freezes it into its tomb: `tombIce` is how much ancient ice is around it (-1: count it on the first tick). */
@@ -228,7 +274,14 @@ public class FrostMaulerEntity extends Monster {
         setMode(MODE_WAKING);
         roarCooldown = 0;
         furyCooldown = 200;
+        rainCooldown = 200;
+        hurlCooldown = 120;
         level().broadcastEntityEvent(this, EVENT_WAKE);
+    }
+
+    /** For tests: hold back roars, icicle rain, fury and hurls (the combo still runs). */
+    public void holdSpecialAttacks(int ticks) {
+        roarCooldown = furyCooldown = rainCooldown = hurlCooldown = ticks;
     }
 
     // --------------------------------------------------------------------------------------- ticking
@@ -372,7 +425,7 @@ public class FrostMaulerEntity extends Monster {
         if (awakenTicks == 24 || awakenTicks == 44) {
             sl.playSound(null, getX(), getY(), getZ(), WWSounds.TOMB_RUMBLE, SoundSource.HOSTILE, 2.0f, 0.7f + awakenTicks / 120f);
             BossFeature.shake(sl, position(), 32, 1.6f + awakenTicks / 40f, 30);
-            shakeIciclesLoose(sl, 3);
+            icicleRain(sl, 3);
         }
         if (awakenTicks >= AWAKEN_TICKS) {
             burstTomb(sl);
@@ -417,23 +470,22 @@ public class FrostMaulerEntity extends Monster {
             setTarget(null);
             target = null;
         }
-        if (roarCooldown > 0) {
-            roarCooldown--;
-        }
-        if (furyCooldown > 0) {
-            furyCooldown--;
-        }
-        if (clawCooldown > 0) {
-            clawCooldown--;
-        }
+        roarCooldown = Math.max(0, roarCooldown - 1);
+        furyCooldown = Math.max(0, furyCooldown - 1);
+        rainCooldown = Math.max(0, rainCooldown - 1);
+        hurlCooldown = Math.max(0, hurlCooldown - 1);
         if (!isEnraged() && getHealth() < getMaxHealth() * 0.35f) {
             enrage();
+        }
+        // catching its breath between bouts (like the daggers' fatigue: it drains after a second without swinging)
+        if (mode() == MODE_NONE && action == ACT_NONE && tickCount - lastSwing > 20 && fatigue() > 0) {
+            setFatigue(fatigue() - (isEnraged() ? 0.025f : 0.012f));
         }
         boolean landed = onGround() && !wasOnGround;
         wasOnGround = onGround();
         switch (mode()) {
             case MODE_WAKING -> tickWaking(sl);
-            case MODE_STUNNED -> tickStunned(sl);
+            case MODE_STUNNED -> tickRecharge(sl);
             case MODE_FURY_WINDUP -> tickFuryWindup(sl, target);
             case MODE_FURY_CHARGE -> tickFuryCharge(sl, target, landed);
             case MODE_FURY_BITE -> tickFuryBites(sl, target);
@@ -442,24 +494,32 @@ public class FrostMaulerEntity extends Monster {
                 if (action != ACT_NONE) {
                     tickAction(sl, target);
                 } else if (target != null) {
-                    chooseAttack(target);
+                    chooseAttack(sl, target);
                 }
             }
         }
     }
 
-    private void chooseAttack(LivingEntity target) {
+    private void chooseAttack(ServerLevel sl, LivingEntity target) {
         if (!onGround()) {
             return;
         }
         double dist = distanceTo(target);
         boolean sees = hasLineOfSight(target);
+        boolean reach = inClawReach(target);
+        if (!reach && ++comboLost > 15) {
+            comboHits = 0;   // the bout is over
+        }
         if (roarCooldown <= 0 && dist < 14 && sees) {
             startRoar();
-        } else if (furyCooldown <= 0 && sees && ((dist > 6 && dist < 18) || clawsInARow >= 3)) {
+        } else if (rainCooldown <= 0 && dist < 16 && sees) {
+            startSlam();
+        } else if (reach) {
+            startSwing(target);
+        } else if (furyCooldown <= 0 && sees && dist > 7 && dist < 18 && fatigue() < 0.5f) {
             startFury();
-        } else if (clawCooldown <= 0 && inClawReach(target)) {
-            startClaw(target);
+        } else if (hurlCooldown <= 0 && sees && dist > 6 && dist < 26) {
+            startHurl(sl, target);
         }
     }
 
@@ -481,26 +541,31 @@ public class FrostMaulerEntity extends Monster {
         }
     }
 
-    private void tickStunned(ServerLevel sl) {
-        modeTicks++;
-        if (modeTicks % 20 == 0) {
-            playSound(WWSounds.MAULER_BREATH, 1.2f, 0.7f);
-        }
-        if (modeTicks >= STUN_TICKS) {
-            setMode(MODE_NONE);
-            furyCooldown = furyCooldownTicks();
-            roarCooldown = Math.min(roarCooldown, 25);   // it shakes it off with a roar soon after
-        }
-    }
-
-    private void stun(ServerLevel sl) {
+    /** Spent: it stands panting, dazed and open, its fatigue draining, then shakes it off (and roars soon after). */
+    private void recharge(ServerLevel sl) {
         setMode(MODE_STUNNED);
+        action = ACT_NONE;
+        rechargeLen = rechargeTicks();
+        comboHits = 0;
         getNavigation().stop();
         Vec3 v = getDeltaMovement();
         setDeltaMovement(v.x * 0.2, v.y, v.z * 0.2);
         playSound(WWSounds.MAULER_STUNNED, 2.0f, 1.0f);
         sl.sendParticles(WWParticles.SNOW_PUFF, getX(), getY() + 0.2, getZ(), 10, 1.0, 0.1, 1.0, 0.05);
-        furyCooldown = furyCooldownTicks();
+        furyCooldown = Math.max(furyCooldown, furyCooldownTicks());
+    }
+
+    private void tickRecharge(ServerLevel sl) {
+        modeTicks++;
+        setFatigue(1f - (float) modeTicks / rechargeLen);
+        if (modeTicks % 15 == 0) {
+            playSound(WWSounds.MAULER_BREATH, 1.2f, 0.7f + random.nextFloat() * 0.1f);   // heaving breaths
+        }
+        if (modeTicks >= rechargeLen) {
+            setMode(MODE_NONE);
+            setFatigue(0f);
+            roarCooldown = Math.min(roarCooldown, 25);   // it shakes it off with a roar soon after
+        }
     }
 
     private int roarCooldownTicks() {
@@ -509,6 +574,15 @@ public class FrostMaulerEntity extends Monster {
 
     private int furyCooldownTicks() {
         return isEnraged() ? 170 + random.nextInt(60) : 280 + random.nextInt(80);
+    }
+
+    /** Icicle rain every ~12 s, every ~7.5 s below half health. */
+    private int rainCooldownTicks() {
+        return getHealth() < getMaxHealth() * 0.5f ? 130 + random.nextInt(40) : 220 + random.nextInt(50);
+    }
+
+    private int hurlCooldownTicks() {
+        return isEnraged() ? 70 + random.nextInt(30) : 110 + random.nextInt(40);
     }
 
     private void enrage() {
@@ -548,7 +622,7 @@ public class FrostMaulerEntity extends Monster {
 
     /** Where its jaws are, roughly. */
     public Vec3 mouthPos() {
-        return position().add(forward().scale(getBbWidth() * 0.5 + 0.8)).add(0, getBbHeight() * 0.7, 0);
+        return position().add(forward().scale(getBbWidth() * 0.5 + 0.9)).add(0, getBbHeight() * 0.75, 0);
     }
 
     private boolean inClawReach(LivingEntity t) {
@@ -559,14 +633,23 @@ public class FrostMaulerEntity extends Monster {
         return t.getBoundingBox().distanceToSqr(mouthPos()) < reach * reach;
     }
 
-    // --------------------------------------------------------------------------------------- roar
+    /** Event id carrying a clip speed: base + bucket (speed 0.75 + 0.25 * bucket, buckets 0-9). */
+    private static byte speedEvent(byte base, float speed) {
+        return (byte) (base + Mth.clamp(Math.round((speed - 0.75f) / 0.25f), 0, 9));
+    }
 
-    private void startRoar() {
-        action = ACT_ROAR;
+    private static float eventSpeed(byte id, byte base) {
+        return 0.75f + 0.25f * (id - base);
+    }
+
+    // --------------------------------------------------------------------------------------- actions
+
+    private void startAction(int act, int hit, int len) {
+        action = act;
         actionTicks = 0;
+        actionHit = hit;
+        actionLen = len;
         getNavigation().stop();
-        playSound(WWSounds.MAULER_BREATH, 2.0f, 0.6f);   // the deep inhale
-        level().broadcastEntityEvent(this, EVENT_ROAR);
     }
 
     private void tickAction(ServerLevel sl, @Nullable LivingEntity target) {
@@ -582,31 +665,63 @@ public class FrostMaulerEntity extends Monster {
                     Vec3 m = mouthPos();
                     sl.sendParticles(WWParticles.ROAR_WAVE, m.x, m.y, m.z, 0, 6 + (actionTicks - ROAR_BLAST) * 0.6, 0, 0, 1.0);
                 }
-                if (actionTicks >= ROAR_TICKS) {
-                    action = ACT_NONE;
-                    roarCooldown = roarCooldownTicks();
+            }
+            case ACT_CLAW_L, ACT_CLAW_R, ACT_SNAP -> {
+                if (actionTicks < actionHit) {
+                    faceTarget(target, comboHits == 0 ? 9 : 15);
+                }
+                if (actionTicks == actionHit) {
+                    swingHits(sl, target);
                 }
             }
-            case ACT_CLAW_L, ACT_CLAW_R -> {
-                if (actionTicks < CLAW_HIT - 1) {
-                    faceTarget(target, 9);
+            case ACT_SLAM -> {
+                if (actionTicks < actionHit) {
+                    faceTarget(target, 8);
                 }
-                if (actionTicks == CLAW_HIT) {
-                    clawHit(sl, action == ACT_CLAW_L);
+                if (actionTicks == actionHit) {
+                    slamGround(sl);
                 }
-                if (actionTicks >= CLAW_TICKS) {
-                    action = ACT_NONE;
-                    clawCooldown = 6 + random.nextInt(8);
-                    clawsInARow++;
+            }
+            case ACT_HURL -> {
+                if (actionTicks < actionHit) {
+                    faceTarget(target, 12);
+                    hurlWindupFx(sl);
+                }
+                if (actionTicks == actionHit && target != null && target.isAlive()) {
+                    hurlIcicle(sl, target, hurlFrom);
                 }
             }
             default -> action = ACT_NONE;
         }
+        if (action != ACT_NONE && actionTicks >= actionLen) {
+            int done = action;
+            action = ACT_NONE;
+            switch (done) {
+                case ACT_ROAR -> roarCooldown = roarCooldownTicks();
+                case ACT_CLAW_L, ACT_CLAW_R, ACT_SNAP -> {
+                    comboHits++;
+                    comboStep++;
+                    if (fatigue() >= 1f) {
+                        recharge(sl);
+                    }
+                }
+                default -> {
+                }
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------- roar
+
+    private void startRoar() {
+        startAction(ACT_ROAR, ROAR_BLAST, ROAR_TICKS);
+        playSound(WWSounds.MAULER_BREATH, 2.0f, 0.6f);   // the deep inhale
+        level().broadcastEntityEvent(this, EVENT_ROAR);
     }
 
     /**
      * The roar itself: a shockwave that throws everything within 8 blocks back and slows it, shatters ice and snow
-     * within 5 blocks (not the floor it stands on) and shakes icicles loose above nearby players.
+     * within 5 blocks (not the floor it stands on) and brings a volley of icicles down on nearby players.
      */
     public void roarBlast(ServerLevel sl) {
         Vec3 m = mouthPos();
@@ -637,7 +752,8 @@ public class FrostMaulerEntity extends Monster {
             e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
         }
         breakIce(sl);
-        shakeIciclesLoose(sl, 4 + random.nextInt(5));
+        icicleRain(sl, 4 + random.nextInt(5));
+        rainCooldown = Math.max(rainCooldown, rainCooldownTicks() / 2);
         gameEvent(GameEvent.ENTITY_ACTION);
     }
 
@@ -668,106 +784,314 @@ public class FrostMaulerEntity extends Monster {
         }
     }
 
-    /** Picks `n` spots on the ceiling above nearby players; they glint and crackle, then an icicle drops from each. */
-    private void shakeIciclesLoose(ServerLevel sl, int n) {
-        List<Player> players = sl.getEntitiesOfClass(Player.class, getBoundingBox().inflate(16), p -> !p.isSpectator() && p.isAlive());
-        for (int i = 0; i < n; i++) {
-            BlockPos col;
-            if (players.isEmpty()) {
-                col = BlockPos.containing(getX() + (random.nextDouble() - 0.5) * 14, getEyeY(), getZ() + (random.nextDouble() - 0.5) * 14);
-            } else {
-                Player p = players.get(i % players.size());
-                double spread = i < players.size() ? 1.0 : 5.0;   // the first one is right above each player
-                col = BlockPos.containing(p.getX() + (random.nextDouble() - 0.5) * spread, p.getEyeY(),
-                        p.getZ() + (random.nextDouble() - 0.5) * spread);
+    // --------------------------------------------------------------------------------------- icicle rain
+
+    private void startSlam() {
+        startAction(ACT_SLAM, SLAM_HIT, SLAM_TICKS);
+        playSound(WWSounds.MAULER_FURY, 1.8f, 0.7f);
+        level().broadcastEntityEvent(this, EVENT_SLAM);
+        rainCooldown = rainCooldownTicks();
+    }
+
+    /** Both forepaws come down: the ground jumps, and the cave lets go of its icicles. */
+    private void slamGround(ServerLevel sl) {
+        Vec3 c = position().add(forward().scale(getBbWidth() * 0.5 + 0.8));
+        playSound(WWSounds.MAULER_STEP, 2.5f, 0.5f);
+        sl.playSound(null, c.x, c.y, c.z, WWSounds.ICE_CRACK, SoundSource.HOSTILE, 1.6f, 0.6f);
+        BlockState under = sl.getBlockState(BlockPos.containing(c.x, getY() - 0.2, c.z));
+        sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, under.isAir() ? Blocks.SNOW_BLOCK.defaultBlockState() : under),
+                c.x, getY() + 0.1, c.z, 30, 1.2, 0.1, 1.2, 0.2);
+        sl.sendParticles(WWParticles.ROAR_WAVE, c.x, getY() + 0.2, c.z, 0, 10, 0, 0, 1.0);
+        BossFeature.groundRing(sl, WWParticles.SNOW_PUFF, new Vec3(c.x, getY(), c.z), 16, 0.5);
+        BossFeature.shake(sl, c, 20, 1.3f, 14);
+        for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, new AABB(c, c).inflate(5, 2, 5),
+                e -> e != this && e.isAlive() && e.onGround() && !(e instanceof FrostMaulerEntity))) {
+            if (e instanceof Player p && (p.isSpectator() || p.getAbilities().instabuild)) {
+                continue;
             }
-            BlockPos.MutableBlockPos q = col.mutable();
-            for (int up = 0; up < 16; up++, q.move(Direction.UP)) {
-                if (sl.isOutsideBuildHeight(q)) {
-                    break;
-                }
-                BlockState s = sl.getBlockState(q);
-                if (s.is(WWBlocks.ICICLE)) {
-                    BlockPos top = q.immutable();
-                    while (sl.getBlockState(top.above()).is(WWBlocks.ICICLE)) {
-                        top = top.above();
-                    }
-                    pendingIcicles.add(new PendingIcicle(top, true, 12 + i * 3));
-                    break;
-                }
-                if (!s.isAir() && !s.getCollisionShape(sl, q).isEmpty()) {
-                    if (up > 1) {
-                        pendingIcicles.add(new PendingIcicle(q.below(), false, 12 + i * 3));
-                    }
-                    break;
-                }
+            Vec3 d = e.position().subtract(c).multiply(1, 0, 1);
+            Vec3 n = d.lengthSqr() < 1e-4 ? forward() : d.normalize();
+            double k = Math.max(0, 1.0 - e.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+            e.push(n.x * 0.4 * k, 0.45 * k, n.z * 0.4 * k);   // knocked off its feet
+            e.hurtMarked = true;
+        }
+        icicleRain(sl, getHealth() < getMaxHealth() * 0.5f ? 9 + random.nextInt(4) : 6 + random.nextInt(3));
+    }
+
+    /**
+     * A volley of `n` icicles: the first ones drop right on its target and the players nearby, the rest around them.
+     * Each is telegraphed {@link #RAIN_WARNING} ticks before it lands (they're staggered a few ticks apart).
+     */
+    public void icicleRain(ServerLevel sl, int n) {
+        List<LivingEntity> marks = new ArrayList<>();
+        LivingEntity t = getTarget();
+        if (t != null && t.isAlive()) {
+            marks.add(t);
+        }
+        for (Player p : sl.getEntitiesOfClass(Player.class, getBoundingBox().inflate(18), p -> !p.isSpectator() && p.isAlive())) {
+            if (p != t) {
+                marks.add(p);
             }
         }
+        for (int i = 0; i < n; i++) {
+            Vec3 at;
+            if (marks.isEmpty()) {
+                at = position().add((random.nextDouble() - 0.5) * 14, 0, (random.nextDouble() - 0.5) * 14);
+            } else {
+                LivingEntity m = marks.get(i % marks.size());
+                double spread = i < marks.size() ? 0 : 1.5 + random.nextDouble() * 3.5;
+                double a = random.nextDouble() * Math.PI * 2;
+                at = m.position().add(Math.cos(a) * spread, 0, Math.sin(a) * spread);
+            }
+            scheduleIcicle(sl, at, RAIN_WARNING + i * 3);
+        }
+    }
+
+    /** Finds where an icicle over `at` would fall from (a ceiling, an icicle already hanging there, or the open air). */
+    private void scheduleIcicle(ServerLevel sl, Vec3 at, int landIn) {
+        BlockPos.MutableBlockPos q = BlockPos.containing(at.x, at.y + 0.5, at.z).mutable();
+        int down = 0;
+        while (down < 8 && !sl.isOutsideBuildHeight(q) && sl.getBlockState(q).getCollisionShape(sl, q).isEmpty()) {
+            q.move(Direction.DOWN);
+            down++;
+        }
+        BlockState ground = sl.getBlockState(q);
+        if (ground.getCollisionShape(sl, q).isEmpty()) {
+            return;   // nothing to land on
+        }
+        double groundY = q.getY() + ground.getCollisionShape(sl, q).max(Direction.Axis.Y);
+        BlockPos.MutableBlockPos u = q.above().mutable();
+        BlockPos from = null;
+        boolean existing = false;
+        for (int up = 0; up < 16 && !sl.isOutsideBuildHeight(u); up++, u.move(Direction.UP)) {
+            BlockState s = sl.getBlockState(u);
+            if (s.is(WWBlocks.ICICLE)) {
+                BlockPos top = u.immutable();
+                while (sl.getBlockState(top.above()).is(WWBlocks.ICICLE)) {
+                    top = top.above();
+                }
+                from = top;
+                existing = true;
+                at = new Vec3(u.getX() + 0.5, at.y, u.getZ() + 0.5);
+                break;
+            }
+            if (!s.getCollisionShape(sl, u).isEmpty()) {
+                if (up >= 2) {
+                    from = u.below().immutable();
+                }
+                break;
+            }
+            if (up == 12) {
+                from = u.immutable();   // open air: it forms out of the cold, 12 blocks up
+                break;
+            }
+        }
+        if (from == null) {
+            return;
+        }
+        double fall = Math.max(0.5, (existing ? u.getY() : from.getY()) - groundY);
+        int fallTicks = (int) Math.ceil(Math.sqrt(2 * fall / FallingIcicleEntity.GRAVITY));
+        pendingIcicles.add(new PendingIcicle(from, existing, at.x, at.z, groundY, ground, fallTicks, Math.max(landIn, fallTicks + 1)));
     }
 
     private void tickPendingIcicles(ServerLevel sl) {
         for (Iterator<PendingIcicle> it = pendingIcicles.iterator(); it.hasNext(); ) {
             PendingIcicle pi = it.next();
-            pi.delay--;
-            double x = pi.pos.getX() + 0.5, y = pi.pos.getY() + (pi.existing ? 0.2 : 0.95), z = pi.pos.getZ() + 0.5;
-            if (pi.delay % 2 == 0) {   // the warning: frost dust sifting down
-                sl.sendParticles(ParticleTypes.SNOWFLAKE, x, y, z, 2, 0.2, 0.02, 0.2, 0.01);
-                sl.sendParticles(WWParticles.ICE_SHARD, x, y, z, 1, 0.15, 0.0, 0.15, 0.0);
-            }
-            if (pi.delay == 8) {
-                sl.playSound(null, pi.pos, WWSounds.ICE_CRACK, SoundSource.BLOCKS, 0.7f, 1.3f + random.nextFloat() * 0.3f);
-            }
-            if (pi.delay <= 0) {
-                it.remove();
-                if (pi.existing) {
-                    if (sl.getBlockState(pi.pos).is(WWBlocks.ICICLE)) {
-                        IcicleBlock.breakOff(sl, pi.pos);
-                    }
-                } else if (sl.getBlockState(pi.pos).isAir()) {
-                    FallingIcicleEntity.spawn(sl, x, pi.pos.getY(), z, true);
-                    sl.playSound(null, pi.pos, WWSounds.ICICLE_FALL, SoundSource.BLOCKS, 1.0f, 0.9f + random.nextFloat() * 0.3f);
+            pi.left--;
+            double top = pi.from.getY() + (pi.existing ? 0.2 : 0.95);
+            if (pi.left > pi.fallTicks - 2 && pi.left % 2 == 0) {
+                // the warning: frost sifting down the column and the ground under it cracking
+                double h = top - pi.groundY;
+                for (int k = 0; k < 2; k++) {
+                    sl.sendParticles(ParticleTypes.SNOWFLAKE, pi.x + (random.nextDouble() - 0.5) * 0.3, top - random.nextDouble() * h * 0.6,
+                            pi.z + (random.nextDouble() - 0.5) * 0.3, 0, 0, -1, 0, 0.18);
                 }
+                sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, pi.ground), pi.x, pi.groundY + 0.05, pi.z, 3, 0.25, 0.0, 0.25, 0.05);
+                sl.sendParticles(WWParticles.ICE_SHARD, pi.x, pi.groundY + 0.1, pi.z, 1, 0.2, 0.0, 0.2, 0.05);
+            }
+            if (pi.left > 0 && pi.left % 6 == 0) {
+                sl.sendParticles(WWParticles.FROST_BURST, pi.x, pi.groundY + 0.08, pi.z, 0, 1.4, 0, 0, 1.0);   // a frost ring marks the spot
+            }
+            if (pi.left == 12) {
+                sl.playSound(null, pi.from, WWSounds.ICE_CRACK, SoundSource.BLOCKS, 0.8f, 1.3f + random.nextFloat() * 0.3f);
+            }
+            if (pi.left == pi.fallTicks) {
+                if (pi.existing) {
+                    if (sl.getBlockState(pi.from).is(WWBlocks.ICICLE)) {
+                        IcicleBlock.breakOff(sl, pi.from);
+                    }
+                } else if (sl.getBlockState(pi.from).isAir()) {
+                    FallingIcicleEntity.spawn(sl, pi.x, pi.from.getY(), pi.z, true);
+                    sl.playSound(null, pi.from, WWSounds.ICICLE_FALL, SoundSource.BLOCKS, 1.0f, 0.9f + random.nextFloat() * 0.3f);
+                }
+            }
+            if (pi.left <= 0) {
+                it.remove();
             }
         }
     }
 
-    // --------------------------------------------------------------------------------------- claws
-
-    private void startClaw(LivingEntity target) {
-        Vec3 to = target.position().subtract(position());
-        double side = to.dot(left());
-        boolean leftPaw = Math.abs(side) < 0.4 ? lastClawSide != ACT_CLAW_L : side > 0;
-        action = leftPaw ? ACT_CLAW_L : ACT_CLAW_R;
-        lastClawSide = action;
-        actionTicks = 0;
-        getNavigation().stop();
-        level().broadcastEntityEvent(this, leftPaw ? EVENT_CLAW_L : EVENT_CLAW_R);
-        playSound(WWSounds.MAULER_AMBIENT, 1.2f, 1.2f);   // a short snarl as the paw goes up
+    /** Icicles waiting to drop (warning or falling). */
+    public int pendingIcicles() {
+        return pendingIcicles.size();
     }
 
-    private void clawHit(ServerLevel sl, boolean leftPaw) {
+    // --------------------------------------------------------------------------------------- hurling
+
+    private void startHurl(ServerLevel sl, LivingEntity target) {
+        hurlFrom = findCeilingIcicle(sl);
+        startAction(ACT_HURL, HURL_THROW, HURL_TICKS);
+        hurlCooldown = hurlCooldownTicks();
+        boolean leftPaw = target.position().subtract(position()).dot(left()) > 0;
+        level().broadcastEntityEvent(this, leftPaw ? EVENT_HURL_L : EVENT_HURL_R);
+        playSound(WWSounds.MAULER_AMBIENT, 1.6f, 0.8f);
+        if (hurlFrom != null) {
+            sl.playSound(null, hurlFrom, WWSounds.ICE_CRACK, SoundSource.BLOCKS, 1.2f, 0.8f);
+        }
+    }
+
+    /** An icicle hanging within reach overhead, to rip down and throw. */
+    @Nullable
+    private BlockPos findCeilingIcicle(ServerLevel sl) {
+        BlockPos c = blockPosition();
+        BlockPos best = null;
+        double bestD = Double.MAX_VALUE;
+        for (BlockPos p : BlockPos.betweenClosed(c.offset(-7, 1, -7), c.offset(7, 12, 7))) {
+            if (sl.getBlockState(p).is(WWBlocks.ICICLE)) {
+                double d = p.distSqr(c);
+                if (d < bestD) {
+                    bestD = d;
+                    best = p.immutable();
+                }
+            }
+        }
+        return best;
+    }
+
+    private void hurlWindupFx(ServerLevel sl) {
+        if (actionTicks % 2 != 0) {
+            return;
+        }
+        if (hurlFrom != null && sl.getBlockState(hurlFrom).is(WWBlocks.ICICLE)) {   // it wrenches at the icicle
+            sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, sl.getBlockState(hurlFrom)), hurlFrom.getX() + 0.5,
+                    hurlFrom.getY() + 0.9, hurlFrom.getZ() + 0.5, 4, 0.2, 0.05, 0.2, 0.05);
+            sl.sendParticles(ParticleTypes.SNOWFLAKE, hurlFrom.getX() + 0.5, hurlFrom.getY() + 0.5, hurlFrom.getZ() + 0.5, 2, 0.2, 0.3, 0.2, 0.01);
+        } else {   // frost gathers in its jaws
+            Vec3 m = mouthPos();
+            for (int i = 0; i < 3; i++) {
+                double a = random.nextDouble() * Math.PI * 2, r = 1.2;
+                sl.sendParticles(ParticleTypes.SNOWFLAKE, m.x + Math.cos(a) * r, m.y + (random.nextDouble() - 0.5), m.z + Math.sin(a) * r, 0,
+                        -Math.cos(a), 0, -Math.sin(a), 0.15);
+            }
+            sl.sendParticles(WWParticles.ICE_CRIT, m.x, m.y, m.z, 2, 0.15, 0.15, 0.15, 0.02);
+        }
+    }
+
+    /**
+     * Throws an icicle at `target`: torn from the ceiling at `fromIcicle` if that is still an icicle, otherwise formed
+     * in its jaws. Aimed with a little lead.
+     */
+    public FallingIcicleEntity hurlIcicle(ServerLevel sl, LivingEntity target, @Nullable BlockPos fromIcicle) {
+        Vec3 from;
+        if (fromIcicle != null && sl.getBlockState(fromIcicle).is(WWBlocks.ICICLE)) {
+            from = Vec3.atCenterOf(fromIcicle);
+            sl.levelEvent(2001, fromIcicle, Block.getId(sl.getBlockState(fromIcicle)));
+            sl.setBlock(fromIcicle, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);   // what hung below breaks off and falls
+        } else {
+            from = mouthPos();
+        }
+        Vec3 aim = target.position().add(0, target.getBbHeight() * 0.5, 0);
+        double t = from.distanceTo(aim) / FallingIcicleEntity.THROW_SPEED;
+        Vec3 motion = new Vec3(target.getX() - target.xOld, 0, target.getZ() - target.zOld);
+        aim = aim.add(motion.scale(t * 0.7));
+        playSound(WWSounds.MAULER_CLAW, 1.6f, 0.7f);
+        sl.playSound(null, from.x, from.y, from.z, WWSounds.ICICLE_FALL, SoundSource.HOSTILE, 1.2f, 1.3f);
+        sl.sendParticles(WWParticles.ICE_SHARD, from.x, from.y, from.z, 6, 0.2, 0.2, 0.2, 0.1);
+        return FallingIcicleEntity.throwAt(sl, from, aim, this);
+    }
+
+    // --------------------------------------------------------------------------------------- the combo
+
+    /**
+     * The next swing of the combo (claw, claw, bite, ...). The opening swing winds up slowly enough to read; then
+     * the pace is frantic and slows as fatigue builds: wind-up 3 -> 8 ticks, recovery 2 -> 7 ticks.
+     */
+    private void startSwing(LivingEntity target) {
+        comboLost = 0;
+        float f = fatigue();
+        int windup = comboHits == 0 ? 8 : Math.round(Mth.lerp(f, 3f, 8f));
+        int recover = Math.round(Mth.lerp(f, 2f, 7f));
+        int kind = comboStep % 3;
+        if (comboHits == 0) {   // open with the paw on the target's side
+            comboStep = target.position().subtract(position()).dot(left()) > 0 ? 0 : 1;
+            kind = comboStep % 3;
+        }
+        int act = kind == 0 ? ACT_CLAW_L : kind == 1 ? ACT_CLAW_R : ACT_SNAP;
+        startAction(act, windup, windup + recover);
+        if (comboHits > 0) {   // keep on it: a short lunge into each follow-up
+            Vec3 d = target.position().subtract(position()).multiply(1, 0, 1);
+            if (d.lengthSqr() > 1e-4) {
+                d = d.normalize();
+                setDeltaMovement(d.x * 0.3, getDeltaMovement().y, d.z * 0.3);
+            }
+        } else {
+            playSound(WWSounds.MAULER_AMBIENT, 1.2f, 1.2f);   // a snarl as the first paw goes up
+        }
+        byte event = act == ACT_CLAW_L ? speedEvent(EVENT_CLAW_L, CLAW_STRIKE / windup)
+                : act == ACT_CLAW_R ? speedEvent(EVENT_CLAW_R, CLAW_STRIKE / windup) : speedEvent(EVENT_SNAP, SNAP_STRIKE / windup);
+        level().broadcastEntityEvent(this, event);
+    }
+
+    /** The swing lands. Every swing tires it, hit, blocked or missed. */
+    private void swingHits(ServerLevel sl, @Nullable LivingEntity target) {
+        float f = fatigue();
+        lastSwing = tickCount;
+        if (action == ACT_SNAP) {
+            setFatigue(f + BITE_FATIGUE);
+            if (target != null && inBiteReach(target, 2.4)) {
+                furyBite(target);
+            } else {
+                playSound(WWSounds.MAULER_BITE, 1.0f, 1.35f);   // jaws closing on air
+            }
+            return;
+        }
+        setFatigue(f + CLAW_FATIGUE);
+        boolean leftPaw = action == ACT_CLAW_L;
+        // fast swipes are light and quick, the tired ones heavy: the opening swipe has the full weight
+        float damage = comboHits == 0 ? CLAW_DAMAGE : Mth.lerp(f, 5f, CLAW_DAMAGE);
+        float knock = comboHits == 0 || f > 0.8f ? 1.0f : Mth.lerp(f, 0.2f, 0.8f);
+        clawHit(sl, leftPaw, damage, knock, comboHits > 0);
+    }
+
+    /** A claw swipe through a frontal arc: everything there takes `damage` and is flung away from the paw. */
+    private void clawHit(ServerLevel sl, boolean leftPaw, float damage, float knock, boolean throughFrames) {
         Vec3 f = forward(), side = left().scale(leftPaw ? 1 : -1);
         Vec3 c = position().add(f.scale(getBbWidth() * 0.5 + 1.0)).add(side.scale(0.5)).add(0, 1.1, 0);
         AABB box = new AABB(c, c).inflate(1.9, 1.4, 1.9);
         boolean any = false;
+        DamageSource src = damageSources().mobAttack(this);
         for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, box, e -> e != this && e.isAlive() && !(e instanceof FrostMaulerEntity))) {
             Vec3 to = e.position().subtract(position()).multiply(1, 0, 1);
             if (to.lengthSqr() > 1e-4 && to.normalize().dot(f) < -0.1) {
                 continue;   // behind it
             }
-            if (doHurtTarget(e)) {
+            if (throughFrames && !e.isDamageSourceBlocked(src)) {
+                e.invulnerableTime = 0;   // the flurry is faster than invulnerability frames
+            }
+            if (e.hurt(src, damage)) {
                 any = true;
-                Vec3 k = f.scale(0.5).add(side.scale(-0.7));   // flung across, away from the paw
-                e.push(k.x, 0.25, k.z);
+                Vec3 k = f.scale(0.5).add(side.scale(-0.7)).normalize();   // flung across, away from the paw
+                e.knockback(0.5 * knock, -k.x, -k.z);
                 e.hurtMarked = true;
+                setLastHurtMob(e);
                 sl.sendParticles(WWParticles.ICE_CRIT, e.getX(), e.getY() + e.getBbHeight() * 0.6, e.getZ(), 8, 0.3, 0.3, 0.3, 0.3);
             }
         }
-        playSound(WWSounds.MAULER_CLAW, 1.6f, 0.9f + random.nextFloat() * 0.15f);
+        playSound(WWSounds.MAULER_CLAW, 1.6f, 0.9f + random.nextFloat() * 0.15f + (1f - fatigue()) * 0.15f);
         sl.sendParticles(WWParticles.FROST_SLASH, c.x, c.y, c.z, 0, leftPaw ? 0.7 : -0.7, 0, 0, 1.0);
         sl.sendParticles(WWParticles.SNOW_PUFF, c.x, getY() + 0.1, c.z, 4, 0.5, 0.05, 0.5, 0.03);
         if (any) {
-            BossFeature.shake(sl, c, 6, 0.6f, 8);
+            BossFeature.shake(sl, c, 6, 0.3f + 0.5f * knock, 8);
         }
     }
 
@@ -776,7 +1100,6 @@ public class FrostMaulerEntity extends Monster {
     private void startFury() {
         setMode(MODE_FURY_WINDUP);
         action = ACT_NONE;
-        clawsInARow = 0;
         getNavigation().stop();
         playSound(WWSounds.MAULER_FURY, 2.0f, 0.85f);
         level().broadcastEntityEvent(this, EVENT_FURY);
@@ -836,6 +1159,8 @@ public class FrostMaulerEntity extends Monster {
         if (target != null && inBiteReach(target, 2.4)) {
             setMode(MODE_FURY_BITE);
             bites = 0;
+            biteTimer = 2;
+            furyEnd = -1;
             return;
         }
         if (modeTicks > 4 && horizontalCollision) {   // straight into the wall
@@ -843,39 +1168,52 @@ public class FrostMaulerEntity extends Monster {
             Vec3 front = position().add(chargeDir.scale(getBbWidth() * 0.6)).add(0, 1.2, 0);
             BossFeature.iceBurstFx(sl, front, 4f, 20);
             BossFeature.shake(sl, position(), 14, 1.2f, 12);
-            stun(sl);
+            setFatigue(1f);
+            recharge(sl);
             return;
         }
         if (modeTicks >= FURY_CHARGE_MAX) {
-            stun(sl);
+            setFatigue(1f);
+            recharge(sl);
         }
     }
 
+    /** The flurry: up to 6 bites, quick at first and slower as it tires; spent, it recharges. */
     private void tickFuryBites(ServerLevel sl, @Nullable LivingEntity target) {
         modeTicks++;
         faceTarget(target, 20);
-        int phase = modeTicks % BITE_INTERVAL;
-        if (phase == 1 && target != null) {   // lunge (and bounce) after it
+        if (furyEnd >= 0) {
+            if (modeTicks >= furyEnd) {
+                setFatigue(1f);
+                recharge(sl);
+            }
+            return;
+        }
+        biteTimer--;
+        if (biteTimer == 2 && target != null) {   // lunge (and bounce) after it
             Vec3 d = target.position().subtract(position()).multiply(1, 0, 1);
             d = d.lengthSqr() < 1e-4 ? forward() : d.normalize();
             setDeltaMovement(d.x * 0.42, onGround() ? 0.2 : getDeltaMovement().y, d.z * 0.42);
         }
-        if (phase == 3 && bites < FURY_BITES) {   // snap
+        if (biteTimer <= 0) {   // snap
             bites++;
+            lastSwing = tickCount;
             level().broadcastEntityEvent(this, EVENT_BITE);
-            int r = target != null && inBiteReach(target, 2.3) ? furyBite(target) : BITE_MISS;
+            int r = target != null && inBiteReach(target, 2.4) ? furyBite(target) : BITE_MISS;
             if (r == BITE_MISS) {
                 playSound(WWSounds.MAULER_BITE, 1.0f, 1.35f);   // jaws closing on air
             }
-        }
-        if (bites >= FURY_BITES && phase == 0) {
-            stun(sl);
+            setFatigue(fatigue() + BITE_FATIGUE);
+            biteTimer = Math.round(Mth.lerp(fatigue(), 3f, 9f));
+            if (bites >= FURY_BITES || fatigue() >= 1f) {
+                furyEnd = modeTicks + 5;
+            }
         }
     }
 
     /**
-     * One fang bite of the fury flurry: 5 damage that ignores the target's invulnerability frames. A raised shield
-     * facing the Mauler blocks it. Returns {@link #BITE_HIT}, {@link #BITE_BLOCKED} or {@link #BITE_MISS}.
+     * One fang bite: 5 damage that ignores the target's invulnerability frames. A raised shield facing the Mauler
+     * blocks it. Returns {@link #BITE_HIT}, {@link #BITE_BLOCKED} or {@link #BITE_MISS}.
      */
     public int furyBite(LivingEntity target) {
         if (!(level() instanceof ServerLevel sl) || !target.isAlive()) {
@@ -897,6 +1235,7 @@ public class FrostMaulerEntity extends Monster {
             d = d.lengthSqr() < 1e-4 ? forward() : d.normalize();
             target.push(d.x * 0.15, 0.05, d.z * 0.15);
             target.hurtMarked = true;
+            setLastHurtMob(target);
             sl.sendParticles(WWParticles.ICE_CRIT, at.x, at.y, at.z, 10, 0.25, 0.25, 0.25, 0.3);
             sl.sendParticles(WWParticles.FROST_SLASH, at.x, at.y, at.z, 0, random.nextFloat() * 6.28, 0, 0, 1.0);
         }
@@ -1133,9 +1472,14 @@ public class FrostMaulerEntity extends Monster {
         if (tickCount - roarStart > ROAR_TICKS || dying) {
             roarState.stop();
         }
-        if (tickCount - clawStart > CLAW_TICKS || dying) {
+        if (tickCount - clawLStart > 16 / clawLSpeed + 1 || dying) {
             clawLState.stop();
+        }
+        if (tickCount - clawRStart > 16 / clawRSpeed + 1 || dying) {
             clawRState.stop();
+        }
+        if (tickCount - snapStart > 10 / snapSpeed || dying) {
+            snapState.stop();
         }
         if ((tickCount - wakeStart > WAKE_TICKS && m != MODE_WAKING) || dying || dormant) {
             wakeState.stop();
@@ -1150,12 +1494,13 @@ public class FrostMaulerEntity extends Monster {
             return;
         }
         Vec3 f = Vec3.directionFromRotation(0, yHeadRot);
-        Vec3 mouth = position().add(f.scale(getBbWidth() * 0.5 + 0.8)).add(0, getBbHeight() * 0.7, 0);
-        // breath vapour: slow puffs, quicker when angry
+        Vec3 mouth = position().add(f.scale(getBbWidth() * 0.5 + 0.9)).add(0, getBbHeight() * 0.75, 0);
+        // breath vapour: slow puffs, quicker when angry, heaving gasps when it is spent
+        boolean winded = m == MODE_STUNNED || fatigue() > 0.7f;
         if (--breathTimer <= 0) {
-            breathTimer = (isEnraged() ? 30 : 55) + random.nextInt(30);
-            for (int i = 0; i < 5; i++) {
-                level().addParticle(WWParticles.FROST_BREATH, mouth.x, mouth.y - 0.2, mouth.z, f.x * 0.06 + (random.nextDouble() - 0.5) * 0.02,
+            breathTimer = winded ? 7 + random.nextInt(4) : (isEnraged() ? 30 : 55) + random.nextInt(30);
+            for (int i = 0; i < (winded ? 3 : 5); i++) {
+                level().addParticle(WWParticles.FROST_BREATH, mouth.x, mouth.y - 0.3, mouth.z, f.x * 0.06 + (random.nextDouble() - 0.5) * 0.02,
                         -0.01, f.z * 0.06 + (random.nextDouble() - 0.5) * 0.02);
             }
         }
@@ -1174,7 +1519,7 @@ public class FrostMaulerEntity extends Monster {
         if (m == MODE_FURY_WINDUP && tickCount % 2 == 0) {
             level().addParticle(WWParticles.FROST_BREATH, mouth.x, mouth.y - 0.3, mouth.z, f.x * 0.12, 0.02, f.z * 0.12);
         }
-        // stunned: dizzy stars round its head
+        // recharging: dizzy stars round its head
         if (m == MODE_STUNNED && tickCount % 24 == 0) {
             for (int i = 0; i < 3; i++) {
                 level().addParticle(WWParticles.STUN_STAR, getX(), getY() + getBbHeight(), getZ(), getId(), i * Mth.TWO_PI / 3, 0);
@@ -1189,6 +1534,26 @@ public class FrostMaulerEntity extends Monster {
 
     @Override
     public void handleEntityEvent(byte id) {
+        if (id >= EVENT_CLAW_L && id < EVENT_CLAW_L + 10) {
+            roarState.stop();
+            clawLSpeed = eventSpeed(id, EVENT_CLAW_L);
+            clawLState.start(tickCount);
+            clawLStart = tickCount;
+            return;
+        }
+        if (id >= EVENT_CLAW_R && id < EVENT_CLAW_R + 10) {
+            roarState.stop();
+            clawRSpeed = eventSpeed(id, EVENT_CLAW_R);
+            clawRState.start(tickCount);
+            clawRStart = tickCount;
+            return;
+        }
+        if (id >= EVENT_SNAP && id < EVENT_SNAP + 10) {
+            snapSpeed = eventSpeed(id, EVENT_SNAP);
+            snapState.start(tickCount);
+            snapStart = tickCount;
+            return;
+        }
         switch (id) {
             case EVENT_ROAR -> {
                 clawLState.stop();
@@ -1197,17 +1562,22 @@ public class FrostMaulerEntity extends Monster {
                 roarStart = tickCount;
             }
             case EVENT_ROAR_BLAST -> roarBlastTick = tickCount;
-            case EVENT_CLAW_L -> {
-                roarState.stop();
-                clawRState.stop();
+            case EVENT_SLAM -> {   // both forepaws up, then down
+                clawLSpeed = clawRSpeed = CLAW_STRIKE / SLAM_HIT;
                 clawLState.start(tickCount);
-                clawStart = tickCount;
-            }
-            case EVENT_CLAW_R -> {
-                roarState.stop();
-                clawLState.stop();
                 clawRState.start(tickCount);
-                clawStart = tickCount;
+                clawLStart = clawRStart = slamStart = tickCount;
+            }
+            case EVENT_HURL_L, EVENT_HURL_R -> {
+                boolean l = id == EVENT_HURL_L;
+                (l ? clawLState : clawRState).start(tickCount);
+                if (l) {
+                    clawLSpeed = CLAW_STRIKE / HURL_THROW;
+                    clawLStart = tickCount;
+                } else {
+                    clawRSpeed = CLAW_STRIKE / HURL_THROW;
+                    clawRStart = tickCount;
+                }
             }
             case EVENT_WAKE -> {
                 roarState.stop();
@@ -1292,8 +1662,11 @@ public class FrostMaulerEntity extends Monster {
         tag.putInt("ModeTicks", modeTicks);
         tag.putInt("AwakenTicks", awakenTicks);
         tag.putBoolean("Enraged", isEnraged());
+        tag.putFloat("Fatigue", fatigue());
         tag.putInt("RoarCooldown", roarCooldown);
         tag.putInt("FuryCooldown", furyCooldown);
+        tag.putInt("RainCooldown", rainCooldown);
+        tag.putInt("HurlCooldown", hurlCooldown);
         tag.putBoolean("LootPending", lootPending);
     }
 
@@ -1307,8 +1680,12 @@ public class FrostMaulerEntity extends Monster {
         modeTicks = tag.getInt("ModeTicks");
         awakenTicks = tag.getInt("AwakenTicks");
         entityData.set(ENRAGED, tag.getBoolean("Enraged"));
+        setFatigue(tag.getFloat("Fatigue"));
+        rechargeLen = rechargeTicks();
         roarCooldown = tag.getInt("RoarCooldown");
         furyCooldown = tag.getInt("FuryCooldown");
+        rainCooldown = tag.contains("RainCooldown") ? tag.getInt("RainCooldown") : 160;
+        hurlCooldown = tag.contains("HurlCooldown") ? tag.getInt("HurlCooldown") : 100;
         lootPending = tag.getBoolean("LootPending");
         if (isDormant()) {
             setNoAi(true);
