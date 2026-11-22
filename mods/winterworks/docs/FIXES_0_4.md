@@ -87,3 +87,61 @@ contract for the Java side.
 * **Blood instead of yourself**: the Hexing Table gets a third slot for Potions of Blood. A lesser hex can take 1
   Potion of Blood instead of hexing you; a sin hex always needs 1 Potion of Blood, and takes 2 more instead of hexing
   you. With no blood offered, you are Hexed as before.
+
+## Rails (Winter Express)
+* **Booster Rails** are nerfed and buffed: they only run when a **redstone block** powers them (touching the rail or
+  directly under it; levers, torches and dust do nothing), and then they push far harder than a powered rail (about 3x
+  the speed gain, up to the cart's top speed).
+* **Switch Rail** (`switch_rail`, new): a Y-junction for splitting paths. Placed where a track forks, it sends carts
+  straight on when unpowered and onto the branch (left or right, set by where you place it) when powered. Whole trains
+  follow their leader's route. Recipe: 6 iron + a rail + a redstone torch -> 2.
+
+## 3D icons
+* Blocks and items that have a 3D model show that model as their inventory icon too: the Hexing Table, Soul Tank,
+  Elixir Jar and Hex Core, the locomotives and carts, the Snow Globe, and every new End block/item with a 3D model.
+
+## Potions
+* Every potion in the mod comes as drink, splash and lingering (vanilla brewing with gunpowder and dragon's breath),
+  as tipped arrows, and in levels where it makes sense: long (redstone) and strong (glowstone) for Ramming, Immunity
+  (long), Burning (long and strong), Decay (long and strong). All of them appear in the creative tabs.
+* **Potion of Decay** (`decay`): awkward potion + Wither Bone. Gives the Wither effect (0:40; long 1:30; strong II 0:20).
+
+## Cursed books and cursed gear (Hexes & Havoc)
+* Enchanted books carrying a curse (any of ours, Binding or Vanishing) get their own **cursed book** textures instead of
+  vanilla's enchanted book, and every cursed item gets a new **soul glint**: drifting blue souls and a slow, dizzying
+  swirl instead of the purple shimmer. The new art has no black outlines.
+* The **elixir** items (bottle, Soul Elixir, Elixir of Greed, Cursed Elixir) get vanilla-style potion-bottle icons.
+
+## The End
+* **Phantoms are locals in the End**: they spawn in the outer End (our biomes and the vanilla highlands/midlands) in
+  small flocks, regardless of insomnia.
+
+## The Soul Bull (a new Nether mob)
+* `soul_bull`: a bull that is a completely black skeleton, kept alive by soul fire burning inside its ribs and skull
+  (blue flames in the eye sockets). Spawns in **Soul Sand Valleys** (herds of 1-3); sometimes a **Wither Skeleton
+  rides it** (a jockey).
+* Wild ones are hostile: they **ram**, catch you on their horns and **pin** you (held 1.5 s), dealing **soul fire**
+  damage (it sets you alight with soul fire).
+* Its **health is its soul energy**. Water and rain hurt it, like a blaze.
+* **Drops** its **Soul Bull Skull** (always) and 1-3 **Wither Bones** (`wither_bone`). Wither Skeletons also drop a
+  Wither Bone 25% of the time.
+* **Taming**: a wild bull below half health can be tamed by feeding it a soul torch, soul lantern or soul campfire
+  (1 in 3). Or **revive** one: place a Soul Bull Skull on soul sand in the middle of lit soul fire (soul fire on the
+  4 sides at least); its eye sockets ignite. Then use 10-15 Wither Bones on it (the number is rolled per skull; each adds
+  bones round it); the last one rebuilds the bull, alive and tamed to you.
+* Tamed: it takes **horse armour** and a **saddle** and can be ridden. While riding, a **soul bar** replaces the
+  experience bar and shows its soul energy (= its health). Its **ram** (the jump key, charged like a horse jump) charges
+  forward, pinning and soul-burning what it hits, and costs a lot of soul energy.
+* **Recharging**: use a soul torch, soul lantern or soul campfire on it (big refills), or let it suck the souls out of
+  soul fire, soul torches, soul lanterns and soul campfires near it, which breaks or puts them out (soul fire gives a
+  little, the others a lot more).
+* Bones (model `soul_bull`): `body`, `ribs`, `soul_fire` (the flame inside, glow), `neck`, `head`, `jaw`, `horn_l`,
+  `horn_r`, `tail`, `leg_fl`, `leg_fr`, `leg_bl`, `leg_br`, `saddle`, `rider` (locator). Clips: `idle`, `walk`, `run`,
+  `ram` (1.0 s), `pin` (1.5 s), `drain` (souls flow in), `revive` (2.0 s). The skull block `soul_bull_skull` (3D, with
+  lit eyes as a state).
+
+## Sound events for this batch (namespace winterworks; registered by the Java side)
+`entity.harvester.ambient|hurt|death|chomp|shove|step`, `entity.soul_bull.ambient|hurt|death|snort|ram|pin|step|drain|revive`,
+`block.soul_bull_skull.ignite`, `entity.sniffer.sneeze`, `entity.player.ramming_cry`, `entity.player.ramming_wind`,
+`block.frost_mauler_skull.roar`, `block.switch_rail.switch`, `item.fang_dagger.slash_left|slash_right`,
+`curse.effect.lesser|sin|hidden`.
