@@ -50,7 +50,8 @@ class EatDroppedFishGoal extends Goal {
             return;
         }
         mob.getLookControl().setLookAt(fish, 30f, 30f);
-        if (mob.distanceToSqr(fish) < 2.2 * 2.2) {
+        // a big seal reaches with its body, not its centre: eat once the fish is within a block of its hitbox
+        if (mob.getBoundingBox().inflate(1.0, 0.5, 1.0).intersects(fish.getBoundingBox())) {
             mob.eatFish(fish.getItem());
             if (fish.getItem().isEmpty()) {
                 fish.discard();
