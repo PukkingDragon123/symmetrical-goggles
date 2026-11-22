@@ -53,6 +53,26 @@ public final class WWEffects {
     public static final Holder<Potion> STRONG_RAMMING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
             Winterworks.id("strong_ramming"), new Potion("ramming", new net.minecraft.world.effect.MobEffectInstance(RAMMING, 1800, 1)));
 
+    // ---- 0.4 fixes: shared potions (owned by the hexes/curses/potions agent; docs/FIXES_0_4.md "Potions")
+    public static final Holder<MobEffect> BURNING = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
+            Winterworks.id("burning"), new dev.lowpix.winterworks.potion.BurningEffect());
+    public static final Holder<Potion> BURNING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("burning"), new Potion("burning", new net.minecraft.world.effect.MobEffectInstance(BURNING, 3600)));
+    public static final Holder<Potion> LONG_BURNING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("long_burning"), new Potion("burning", new net.minecraft.world.effect.MobEffectInstance(BURNING, 9600)));
+    public static final Holder<Potion> STRONG_BURNING_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("strong_burning"), new Potion("burning", new net.minecraft.world.effect.MobEffectInstance(BURNING, 1800, 1)));
+    /** Potion of Decay: the Wither effect. */
+    public static final Holder<Potion> DECAY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("decay"), new Potion("decay", new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.WITHER, 800)));
+    public static final Holder<Potion> LONG_DECAY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("long_decay"), new Potion("decay", new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.WITHER, 1800)));
+    public static final Holder<Potion> STRONG_DECAY_POTION = Registry.registerForHolder(BuiltInRegistries.POTION,
+            Winterworks.id("strong_decay"), new Potion("decay", new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.WITHER, 400, 1)));
+
     private WWEffects() {}
 
     public static void init() {}

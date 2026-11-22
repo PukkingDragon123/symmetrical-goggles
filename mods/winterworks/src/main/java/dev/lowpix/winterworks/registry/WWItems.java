@@ -100,6 +100,10 @@ public final class WWItems {
     public static final Item ZOMBIE_POLAR_BEAR_SPAWN_EGG = reg("zombie_polar_bear_spawn_egg",
             new SpawnEggItem(WWEntities.ZOMBIE_POLAR_BEAR, 0xBFC7AE, 0x4E5B3D, new Item.Properties()));
 
+    // ---- 0.4 fixes: shared items (docs/FIXES_0_4.md)
+    /** From Soul Bulls and Wither Skeletons; brews the Potion of Decay. */
+    public static final Item WITHER_BONE = reg("wither_bone", new Item(new Item.Properties()));
+
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks"))
                     .icon(() -> new ItemStack(ICEBREAKER_HORN))
