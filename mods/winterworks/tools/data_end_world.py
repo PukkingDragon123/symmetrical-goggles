@@ -3,7 +3,7 @@
 Blockstates, block and item models for every block in section 2 except end_bloom and chorus_cocoon (the mobs
 area's), with the texture paths of section 15; their loot tables, recipes and tags; Chorus Meadows and the Dead End
 (biomes, their placed features, biome tags); the Obsidian Ruins, End Shrine and Monolith Tower (structures, structure
-sets, chest and archaeology loot); the end_spore / end_dust / meteor_spark particle definitions; and the lang.
+sets, chest and archaeology loot); and the lang. (The particle definitions come with the art.)
 """
 import os
 
@@ -425,18 +425,6 @@ def run(ctx):
             "structures": [{"structure": f"{M}:{name}", "weight": 1}],
             "placement": {"type": "minecraft:random_spread", "spacing": spacing, "separation": separation, "salt": salt,
                           "exclusion_zone": {"other_set": exclusion[0], "chunk_count": exclusion[1]}}})
-
-    # ---------------------------------------------------------------------------------------- particles
-    texdir = os.path.join(A, "textures", "particle")
-    fallback = {"end_spore": [f"minecraft:glitter_{i}" for i in range(7, -1, -1)],
-                "end_dust": [f"minecraft:generic_{i}" for i in range(8)],
-                "meteor_spark": [f"minecraft:spark_{i}" for i in range(8)]}
-    for name, fb in fallback.items():
-        frames = []
-        if os.path.isdir(texdir):
-            frames = sorted((f[:-4] for f in os.listdir(texdir) if f.startswith(name + "_") and f[len(name) + 1:-4].isdigit()
-                             and f.endswith(".png")), key=lambda f: int(f.rsplit("_", 1)[1]))
-        w(os.path.join(A, "particles", name + ".json"), {"textures": [f"{M}:{f}" for f in frames] or fb})
 
     # ---------------------------------------------------------------------------------------- lang
     lang = {"itemGroup.winterworks.end": "Winterworks: The Living End",

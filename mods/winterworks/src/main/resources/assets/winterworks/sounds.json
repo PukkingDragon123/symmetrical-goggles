@@ -1793,5 +1793,966 @@
       }
     ],
     "subtitle": "subtitles.winterworks.curse.sin"
+  },
+  "entity.enderfly.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:enderfly/ambient1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:enderfly/ambient2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:enderfly/ambient3",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:enderfly/ambient4",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.enderfly.ambient"
+  },
+  "entity.enderfly.flutter": {
+    "sounds": [
+      {
+        "name": "winterworks:enderfly/flutter1"
+      },
+      {
+        "name": "winterworks:enderfly/flutter2"
+      },
+      {
+        "name": "winterworks:enderfly/flutter3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.enderfly.flutter"
+  },
+  "entity.enderfly.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:enderfly/hurt1"
+      },
+      {
+        "name": "winterworks:enderfly/hurt2"
+      },
+      {
+        "name": "winterworks:enderfly/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.enderfly.hurt"
+  },
+  "entity.enderfly.death": {
+    "sounds": [
+      {
+        "name": "winterworks:enderfly/death1"
+      },
+      {
+        "name": "winterworks:enderfly/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.enderfly.death"
+  },
+  "entity.enderfly.teleport": {
+    "sounds": [
+      {
+        "name": "winterworks:enderfly/teleport1"
+      },
+      {
+        "name": "winterworks:enderfly/teleport2"
+      },
+      {
+        "name": "winterworks:enderfly/teleport3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.enderfly.teleport"
+  },
+  "entity.enderfly.dive": {
+    "sounds": [
+      {
+        "name": "winterworks:enderfly/dive1"
+      },
+      {
+        "name": "winterworks:enderfly/dive2"
+      },
+      {
+        "name": "winterworks:enderfly/dive3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.enderfly.dive"
+  },
+  "entity.endling.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:endling/ambient1"
+      },
+      {
+        "name": "winterworks:endling/ambient2"
+      },
+      {
+        "name": "winterworks:endling/ambient3"
+      },
+      {
+        "name": "winterworks:endling/ambient4"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.endling.ambient"
+  },
+  "entity.endling.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:endling/hurt1"
+      },
+      {
+        "name": "winterworks:endling/hurt2"
+      },
+      {
+        "name": "winterworks:endling/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.endling.hurt"
+  },
+  "entity.endling.death": {
+    "sounds": [
+      {
+        "name": "winterworks:endling/death1"
+      },
+      {
+        "name": "winterworks:endling/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.endling.death"
+  },
+  "entity.endling.happy": {
+    "sounds": [
+      {
+        "name": "winterworks:endling/happy1"
+      },
+      {
+        "name": "winterworks:endling/happy2"
+      },
+      {
+        "name": "winterworks:endling/happy3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.endling.happy"
+  },
+  "entity.endling.scared": {
+    "sounds": [
+      {
+        "name": "winterworks:endling/scared1"
+      },
+      {
+        "name": "winterworks:endling/scared2"
+      },
+      {
+        "name": "winterworks:endling/scared3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.endling.scared"
+  },
+  "entity.endling.teleport": {
+    "sounds": [
+      {
+        "name": "winterworks:endling/teleport1"
+      },
+      {
+        "name": "winterworks:endling/teleport2"
+      },
+      {
+        "name": "winterworks:endling/teleport3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.endling.teleport"
+  },
+  "entity.endling.sacrifice": {
+    "sounds": [
+      {
+        "name": "winterworks:endling/sacrifice1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:endling/sacrifice2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.endling.sacrifice"
+  },
+  "entity.gucker.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/ambient1",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:gucker/ambient2",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:gucker/ambient3",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:gucker/ambient4",
+        "attenuation_distance": 20
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.ambient"
+  },
+  "entity.gucker.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/hurt1"
+      },
+      {
+        "name": "winterworks:gucker/hurt2"
+      },
+      {
+        "name": "winterworks:gucker/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.hurt"
+  },
+  "entity.gucker.death": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/death1"
+      },
+      {
+        "name": "winterworks:gucker/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.death"
+  },
+  "entity.gucker.breathe": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/breathe1"
+      },
+      {
+        "name": "winterworks:gucker/breathe2"
+      },
+      {
+        "name": "winterworks:gucker/breathe3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.breathe"
+  },
+  "entity.gucker.burrow": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/burrow1"
+      },
+      {
+        "name": "winterworks:gucker/burrow2"
+      },
+      {
+        "name": "winterworks:gucker/burrow3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.burrow"
+  },
+  "entity.gucker.emerge": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/emerge1",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:gucker/emerge2",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "winterworks:gucker/emerge3",
+        "attenuation_distance": 20
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.emerge"
+  },
+  "entity.gucker.inflate": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/inflate1"
+      },
+      {
+        "name": "winterworks:gucker/inflate2"
+      },
+      {
+        "name": "winterworks:gucker/inflate3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.inflate"
+  },
+  "entity.gucker.spit": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/spit1"
+      },
+      {
+        "name": "winterworks:gucker/spit2"
+      },
+      {
+        "name": "winterworks:gucker/spit3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.spit"
+  },
+  "entity.gucker.bite": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/bite1"
+      },
+      {
+        "name": "winterworks:gucker/bite2"
+      },
+      {
+        "name": "winterworks:gucker/bite3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.gucker.bite"
+  },
+  "entity.gucker.step": {
+    "sounds": [
+      {
+        "name": "winterworks:gucker/step1"
+      },
+      {
+        "name": "winterworks:gucker/step2"
+      },
+      {
+        "name": "winterworks:gucker/step3"
+      },
+      {
+        "name": "winterworks:gucker/step4"
+      }
+    ]
+  },
+  "entity.obolisk.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:obolisk/ambient1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:obolisk/ambient2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:obolisk/ambient3",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.obolisk.ambient"
+  },
+  "entity.obolisk.rise": {
+    "sounds": [
+      {
+        "name": "winterworks:obolisk/rise1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:obolisk/rise2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.obolisk.rise"
+  },
+  "entity.obolisk.settle": {
+    "sounds": [
+      {
+        "name": "winterworks:obolisk/settle1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:obolisk/settle2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.obolisk.settle"
+  },
+  "entity.obolisk.slam": {
+    "sounds": [
+      {
+        "name": "winterworks:obolisk/slam1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:obolisk/slam2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:obolisk/slam3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.obolisk.slam"
+  },
+  "entity.obolisk.step": {
+    "sounds": [
+      {
+        "name": "winterworks:obolisk/step1"
+      },
+      {
+        "name": "winterworks:obolisk/step2"
+      },
+      {
+        "name": "winterworks:obolisk/step3"
+      },
+      {
+        "name": "winterworks:obolisk/step4"
+      }
+    ]
+  },
+  "entity.obolisk.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:obolisk/hurt1"
+      },
+      {
+        "name": "winterworks:obolisk/hurt2"
+      },
+      {
+        "name": "winterworks:obolisk/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.obolisk.hurt"
+  },
+  "entity.obolisk.death": {
+    "sounds": [
+      {
+        "name": "winterworks:obolisk/death1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:obolisk/death2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.obolisk.death"
+  },
+  "entity.monolith.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/ambient1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/ambient2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/ambient3",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.ambient"
+  },
+  "entity.monolith.stare": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/stare1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/stare2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.stare"
+  },
+  "entity.monolith.slam": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/slam1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:monolith/slam2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:monolith/slam3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.slam"
+  },
+  "entity.monolith.grab": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/grab1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/grab2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.grab"
+  },
+  "entity.monolith.clap": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/clap1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:monolith/clap2",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.clap"
+  },
+  "entity.monolith.summon": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/summon1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:monolith/summon2",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.summon"
+  },
+  "entity.monolith.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/hurt1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:monolith/hurt2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:monolith/hurt3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.hurt"
+  },
+  "entity.monolith.death": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/death1",
+        "attenuation_distance": 96
+      },
+      {
+        "name": "winterworks:monolith/death2",
+        "attenuation_distance": 96
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.monolith.death"
+  },
+  "entity.dragonling.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/ambient1"
+      },
+      {
+        "name": "winterworks:dragonling/ambient2"
+      },
+      {
+        "name": "winterworks:dragonling/ambient3"
+      },
+      {
+        "name": "winterworks:dragonling/ambient4"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.ambient"
+  },
+  "entity.dragonling.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/hurt1"
+      },
+      {
+        "name": "winterworks:dragonling/hurt2"
+      },
+      {
+        "name": "winterworks:dragonling/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.hurt"
+  },
+  "entity.dragonling.death": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/death1"
+      },
+      {
+        "name": "winterworks:dragonling/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.death"
+  },
+  "entity.dragonling.eat": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/eat1"
+      },
+      {
+        "name": "winterworks:dragonling/eat2"
+      },
+      {
+        "name": "winterworks:dragonling/eat3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.eat"
+  },
+  "entity.dragonling.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/roar1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:dragonling/roar2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:dragonling/roar3",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.roar"
+  },
+  "entity.dragonling.flap": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/flap1"
+      },
+      {
+        "name": "winterworks:dragonling/flap2"
+      },
+      {
+        "name": "winterworks:dragonling/flap3"
+      },
+      {
+        "name": "winterworks:dragonling/flap4"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.flap"
+  },
+  "entity.dragonling.breath": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/breath1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:dragonling/breath2",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.breath"
+  },
+  "entity.dragonling.hatch": {
+    "sounds": [
+      {
+        "name": "winterworks:dragonling/hatch1"
+      },
+      {
+        "name": "winterworks:dragonling/hatch2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.dragonling.hatch"
+  },
+  "item.dragon_egg.crack": {
+    "sounds": [
+      {
+        "name": "winterworks:dragon_egg/crack1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:dragon_egg/crack2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:dragon_egg/crack3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.dragon_egg.crack"
+  },
+  "entity.ender_dragon.grab": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/grab1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:ender_dragon/grab2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.ender_dragon.grab"
+  },
+  "entity.ender_dragon.throw": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/throw1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:ender_dragon/throw2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.ender_dragon.throw"
+  },
+  "entity.ender_dragon.beam_charge": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/beam_charge1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:ender_dragon/beam_charge2",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.ender_dragon.beam_charge"
+  },
+  "entity.ender_dragon.beam_fire": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/beam_fire1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:ender_dragon/beam_fire2",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.ender_dragon.beam_fire"
+  },
+  "entity.ender_dragon.crystal_regrow": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/crystal_regrow1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:ender_dragon/crystal_regrow2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.ender_dragon.crystal_regrow"
+  },
+  "entity.ender_dragon.tower_grow": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/tower_grow1",
+        "attenuation_distance": 96
+      },
+      {
+        "name": "winterworks:ender_dragon/tower_grow2",
+        "attenuation_distance": 96
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.ender_dragon.tower_grow"
+  },
+  "item.end_glider.flap": {
+    "sounds": [
+      {
+        "name": "winterworks:end_glider/flap1"
+      },
+      {
+        "name": "winterworks:end_glider/flap2"
+      },
+      {
+        "name": "winterworks:end_glider/flap3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.end_glider.flap"
+  },
+  "item.end_glider.jet": {
+    "sounds": [
+      {
+        "name": "winterworks:end_glider/jet1"
+      },
+      {
+        "name": "winterworks:end_glider/jet2"
+      },
+      {
+        "name": "winterworks:end_glider/jet3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.end_glider.jet"
+  },
+  "item.end_glider.boost": {
+    "sounds": [
+      {
+        "name": "winterworks:end_glider/boost1"
+      },
+      {
+        "name": "winterworks:end_glider/boost2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.end_glider.boost"
+  },
+  "item.obsidian_shield.reflect": {
+    "sounds": [
+      {
+        "name": "winterworks:obsidian_shield/reflect1"
+      },
+      {
+        "name": "winterworks:obsidian_shield/reflect2"
+      },
+      {
+        "name": "winterworks:obsidian_shield/reflect3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.obsidian_shield.reflect"
+  },
+  "item.obsidian_shield.shockwave": {
+    "sounds": [
+      {
+        "name": "winterworks:obsidian_shield/shockwave1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:obsidian_shield/shockwave2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.obsidian_shield.shockwave"
+  },
+  "item.monolith_wand.petrify": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith_wand/petrify1"
+      },
+      {
+        "name": "winterworks:monolith_wand/petrify2"
+      },
+      {
+        "name": "winterworks:monolith_wand/petrify3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.monolith_wand.petrify"
+  },
+  "effect.petrified.encase": {
+    "sounds": [
+      {
+        "name": "winterworks:petrified/encase1"
+      },
+      {
+        "name": "winterworks:petrified/encase2"
+      },
+      {
+        "name": "winterworks:petrified/encase3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.effect.petrified.encase"
+  },
+  "effect.petrified.shatter": {
+    "sounds": [
+      {
+        "name": "winterworks:petrified/shatter1"
+      },
+      {
+        "name": "winterworks:petrified/shatter2"
+      },
+      {
+        "name": "winterworks:petrified/shatter3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.effect.petrified.shatter"
+  },
+  "ambient.eclipse.begin": {
+    "sounds": [
+      {
+        "name": "winterworks:eclipse/begin1"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.ambient.eclipse.begin"
+  },
+  "ambient.eclipse.end": {
+    "sounds": [
+      {
+        "name": "winterworks:eclipse/end1"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.ambient.eclipse.end"
+  },
+  "ambient.eclipse.loop": {
+    "sounds": [
+      {
+        "name": "winterworks:eclipse/loop1",
+        "stream": true
+      }
+    ]
+  },
+  "block.end_bloom.open": {
+    "sounds": [
+      {
+        "name": "winterworks:end_bloom/open1"
+      },
+      {
+        "name": "winterworks:end_bloom/open2"
+      },
+      {
+        "name": "winterworks:end_bloom/open3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.end_bloom.open"
+  },
+  "block.chorus_cocoon.crack": {
+    "sounds": [
+      {
+        "name": "winterworks:chorus_cocoon/crack1"
+      },
+      {
+        "name": "winterworks:chorus_cocoon/crack2"
+      },
+      {
+        "name": "winterworks:chorus_cocoon/crack3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.chorus_cocoon.crack"
+  },
+  "block.chorus_cocoon.hatch": {
+    "sounds": [
+      {
+        "name": "winterworks:chorus_cocoon/hatch1"
+      },
+      {
+        "name": "winterworks:chorus_cocoon/hatch2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.chorus_cocoon.hatch"
+  },
+  "block.meteorite.hum": {
+    "sounds": [
+      {
+        "name": "winterworks:meteorite/hum1",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:meteorite/hum2",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:meteorite/hum3",
+        "attenuation_distance": 12
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.meteorite.hum"
+  },
+  "effect.recall.teleport": {
+    "sounds": [
+      {
+        "name": "winterworks:recall/teleport1"
+      },
+      {
+        "name": "winterworks:recall/teleport2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.effect.recall.teleport"
   }
 }

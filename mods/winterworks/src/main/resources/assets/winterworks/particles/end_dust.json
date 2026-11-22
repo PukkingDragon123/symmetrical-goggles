@@ -1,12 +1,8 @@
 {
   "textures": [
-    "minecraft:generic_0",
-    "minecraft:generic_1",
-    "minecraft:generic_2",
-    "minecraft:generic_3",
-    "minecraft:generic_4",
-    "minecraft:generic_5",
-    "minecraft:generic_6",
-    "minecraft:generic_7"
+    "winterworks:end_dust_0",
+    "winterworks:end_dust_1",
+    "winterworks:end_dust_2",
+    "winterworks:end_dust_3"
   ]
 }
