@@ -41,8 +41,9 @@ class Rig:
     `centre` (world) or `offset` (in the part's own rotated frame; default: on the joint). `rot` is local, `wrot` a
     world rotation (converted to local). Box sizes times `density` must be whole texels."""
 
-    def __init__(self, density=1):
+    def __init__(self, density=1, bone_style=None):
         self.density = density
+        self.bone_style = bone_style
         self.P = []
         self.F = {}          # part id -> (world rotation, world pivot)
 
@@ -81,7 +82,7 @@ class Rig:
         return d
 
     def bone(self, id, parent, **kw):
-        return self.part(id, parent, None, None, shape="bone", **kw)
+        return self.part(id, parent, None, self.bone_style, shape="bone", **kw)
 
     def card(self, id, parent, art, style, plane="xy", **kw):
         return self.part(id, parent, None, style, shape="card", plane=plane, art=art, **kw)
@@ -312,7 +313,7 @@ def jitter(part_, t0, t1, amp, step=0.05, axis=0, ch="rotation", seed=0):
         t += step
         sgn = -sgn
     ks.append([round(t1, 4), [0, 0, 0]])
-    return {"part": part_, "channel": ch, "keys": ks, "ease": "ease"}
+    return {"part": part_, "channel": ch, "keys": _dedupe(ks), "ease": "ease"}
 
 
 def ring(part_, t0, amp, freq=8.0, decay=6.0, axis=0, ch="rotation", end=None):
@@ -334,7 +335,40 @@ def ring(part_, t0, amp, freq=8.0, decay=6.0, axis=0, ch="rotation", end=None):
         n += 1
     t = min(t, end) if end is not None else t
     ks.append([round(t, 4), [0, 0, 0]])
-    return {"part": part_, "channel": ch, "keys": ks, "ease": "smooth"}
+    return {"part": part_, "channel": ch, "keys": _dedupe(ks), "ease": "smooth"}
+
+
+def _dedupe(ks):
+    out = []
+    for k in ks:
+        if out and abs(out[-1][0] - k[0]) < 1e-6:
+            out[-1] = k
+        else:
+            out.append(k)
+    return out
+
+
+def shake(part_, t0, t1, amp, freq=8.0, axis=0, ch="rotation", phase=1.0):
+    """An oscillation between t0 and t1 at `freq` Hz whose amplitude swells in and dies away (zero at both ends):
+    laughing, shivering, rattling. `amp` is a number (on `axis`) or an [x, y, z] vector."""
+    ks = [[0.0, [0, 0, 0]], [round(t0, 4), [0, 0, 0]]]
+    n = 1
+    while True:
+        t = t0 + n * 0.5 / freq
+        if t >= t1 - 0.25 / freq:
+            break
+        u = (t - t0) / (t1 - t0)
+        env = math.sin(math.pi * u) ** 0.5
+        sgn = phase if n % 2 else -phase
+        if isinstance(amp, (list, tuple)):
+            v = [round(a * env * sgn, 3) for a in amp]
+        else:
+            v = [0, 0, 0]
+            v[axis] = round(amp * env * sgn, 3)
+        ks.append([round(t, 4), v])
+        n += 1
+    ks.append([round(t1, 4), [0, 0, 0]])
+    return {"part": part_, "channel": ch, "keys": _dedupe(ks), "ease": "smooth"}
 
 
 def spin(part_, length, turns=1.0, axis="y", phase=0.0):

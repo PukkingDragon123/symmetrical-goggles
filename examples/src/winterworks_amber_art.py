@@ -76,38 +76,40 @@ def translucent(ramp, alphas):
     return {k: v + a for (k, v), a in zip(ramp.items(), alphas)}
 
 
-# ====================================================================== amber block: clear, deep amber glass
-# The game draws a real 3D mosquito or seed inside the block (a block-entity renderer), so the block is see-through:
-# the body is clear deep amber at 35-48% opacity, deepening towards the bottom right; the rim is brighter and more
-# solid (top/left lit, bottom/right in shadow), two soft reflection streaks cross the top-left and a few trapped
-# bubbles catch the light. The seed and mosquito variants are the same plain amber.
-AMBER_GLASS = {
-    "c": "#df8a2a7a", "b": "#cc6c1a6e", "a": "#b5541264", "d": "#9b420e5c", "e": "#84340a5a",      # the clear body
-    "9": "#fff6d6f2", "8": "#ffe28fe4", "7": "#f8c454d6", "6": "#eea32fc4",                          # lit rim
-    "3": "#a84812c0", "2": "#86300ecc", "1": "#601d0cd8",                                           # shaded rim
-    "S": "#fff2c4c4", "s": "#ffe6a088",                                                             # reflections
-    "o": "#ffe28fb8", "O": "#fffbeef0", "q": "#9b420e9c",                                           # bubbles
+# ====================================================================== amber block: thick, golden honey
+# The game draws a real 3D mosquito or seed inside the block (a block-entity renderer). The amber reads like thick
+# honey, about as see-through as vanilla's honey block: a golden body at 60-72% opacity, a soft glow in the middle
+# where light comes through (lighter but no more opaque, so a trapped thing still shows dark there), deepening to
+# dark honey at the bottom right; a solid lit rim (top/left) and shaded rim (bottom/right), a soft sheen, slow round
+# bubbles. The seed and mosquito variants are the same plain amber.
+HONEY_BLOCK = {
+    "c": "#dfa246b8", "b": "#cc8a34b0", "a": "#b47228a8", "d": "#985c20a0", "e": "#7e4a1a9a",      # the honey body
+    "g": "#ebb95aa0", "G": "#f4cd769a",                                                             # inner glow
+    "9": "#fff2cdf0", "8": "#f9dd98e8", "7": "#f1c770e0", "6": "#e2ad52d8",                          # lit rim
+    "3": "#a2652ad8", "2": "#83501ee0", "1": "#653d18e8",                                           # shaded rim
+    "S": "#fff0c8dc", "s": "#f9dea2cc",                                                             # sheen
+    "O": "#fff6dcec", "o": "#f6d690d0", "h": "#efc472c4", "q": "#94581ec8",                          # bubbles
 }
 AMBER_BLOCK = """
-9888 8888 8888 8886
-87cc cccc cccc cbb3
-8cSc cSsc cccc bba2
-8Scc Sscc cccb bba2
-8ccS scco cbbb bba2
-8cSs ccOq bbbb baa2
-8Ssc cbbb bbbb aaa2
-8scc bbbb bbba aaa2
-8ccb bbbb bbaa aad2
-7cbb bbbb baaa ado2
-7cbb bboq aaaa dOq2
-7bbb bbOq aaad ddd2
-7bbb aqqa aadd dde2
-6bba aaaa addd dee2
-6baa aaad ddde ee12
-3222 2222 2222 2211
+9888 8888 8888 8876
+877c cccc cccb bbb3
+8cSS sccc ccbb bbb2
+8sSc cccc cbbb bba2
+8scc cOcc bbbb baa2
+8ccc ccqg ggbb aaa2
+8ccc ccgg ggga aaa2
+8ccc cbgG GGga aaa2
+8ccc bbgG GGga aad2
+8ccb bbgg ggga add2
+8cbb bbbg ggaO odd2
+8bOo bbaa aaao qdd2
+8boh oaaa aadd dde2
+7bbo qaaa addd dee2
+7bba aaaa dddd eee2
+6322 2222 2222 2221
 """
 for _name in ("amber_block", "amber_block_seed", "amber_block_mosquito"):
-    block(_name, pal(AMBER_GLASS), AMBER_BLOCK)
+    block(_name, pal(HONEY_BLOCK), AMBER_BLOCK)
 
 # ====================================================================== amber fossil: petrified fossils in gravel
 # The gravel base, then four dusted stages: the brushed hollow grows and uncovers a petrified seed and the imprint of
@@ -291,36 +293,36 @@ oo12 1121 2112 21oo
 """)
 
 # ====================================================================== Amberwood: a columnar, cactus-like tree
-# A saguaro-like trunk: deep vertical ribs (a dark groove, a lit left flank, a gold-amber crest, a shaded right flank,
-# four ribs per face so they line up round the corners), felted areoles with pale spines on the crests, staggered
-# rib to rib, a faint growth band. Light from the top-left. The trunk and arm tops carry `amberwood_bloom`.
-RIB = {"o": "#2b130d", "1": "#3f1f12", "2": "#57301a", "3": "#73421f", "4": "#8c5527", "5": "#a56a30",
-       "6": "#bf863f", "7": "#d9a552", "W": "#fff4d6", "w": "#d6c09a", "x": "#f4e9cf", "n": "#3a1c10"}
-RESIN = {"Y": AMBER["9"], "b": AMBER["6"], "A": AMBER["5"], "a": AMBER["2"], "D": AMBER["1"]}
+# A saguaro-like trunk in muted desert colours: dusty sage crests, olive flanks, grey-brown grooves (hue-shifted:
+# warm brown shadows, cool sage lights). Four soft ribs per face (they line up round the corners), a calm stippled
+# skin, small felted areoles with a pale spine on every other crest. Amber only in the resin and the heart.
+RIB = {"1": "#332c26", "2": "#4a4238", "3": "#5f5c4b", "4": "#76785f", "5": "#8c9375", "6": "#a3ab8c",
+       "7": "#bfc4a6", "w": "#b3aa92", "W": "#d3cbb6", "x": "#ddd6c4"}
+RESIN = {"Y": "#fbe7b0", "b": "#e2b35e", "A": "#c88c3a", "a": "#9a6428", "D": "#6e451e"}
 LOG_SIDE = """
-o573 o573 o573 o673
-ox7x o573 ox7x o573
-owW3 o563 owW3 o573
-o5n3 o573 o5n3 o563
-o462 o462 o462 o462
-o573 ox7x o573 ox7x
-o563 owW3 o573 owW3
-o573 o5n3 o563 o5n3
-o573 o573 o573 o573
-ox7x o563 ox7x o573
-owW3 o573 owW3 o573
-o5n3 o573 o5n3 o563
-o462 o462 o462 o462
-o573 ox7x o573 ox7x
-o573 owW3 o563 owW3
-o563 o5n3 o573 o5n3
+2453 2453 2453 2453
+2453 2463 2453 2453
+24W3 2453 24W3 2453
+2w53 2453 2w53 2453
+2453 2453 2453 2463
+2453 24W3 2453 24W3
+2453 2w53 2453 2w53
+2463 2453 2453 2453
+2453 2453 2463 2453
+2453 2453 2453 2453
+24W3 2453 24W3 2453
+2w53 2453 2w53 2453
+2453 2463 2453 2453
+2453 24W3 2453 24W3
+2453 2w53 2453 2w53
+2453 2453 2453 2463
 """
 block("amberwood_log", pal(RIB), LOG_SIDE)
-# resin oozing from the grooves between the ribs: glossy beads that run down in thin drips and hang as drops
+# resin oozing from the grooves between the ribs: honey-gold beads that run down in thin drips and hang as drops
 block("amberwood_log_resin", pal(RIB, RESIN), over(LOG_SIDE, """
 D... .... .... ....
-b... ...a Yb.. Yb..
-a... ...a AA.. aa..
+b... ...a Yb.. ....
+a... ...a AA.. ....
 .... .... a... ....
 .... .... D... ....
 ...a Yb.. D... ....
@@ -328,37 +330,37 @@ a... ...a AA.. aa..
 .... a... a... ....
 .... D... .... ....
 .... D... ...a Yb..
-.... D... ...a AA..
-.... b... .... a...
-Yb.. a... .... D..a
-AA.. .... .... D..a
-a... .... .... b...
-D... .... .... a...
+.... b... ...a AA..
+.... a... .... a...
+Yb.. .... .... D...
+AA.. .... .... b...
+a... .... .... a...
+D... .... .... ....
 """))
-# the cut trunk: the scalloped rib ring, a dark rind, pale woody flesh with the ring of woody rods (the saguaro's
-# skeleton) and a glowing heart of amber resin
-block("amberwood_log_top", pal(RIB, RESIN), """
-o573 o573 o573 o57o
+# the cut trunk: the soft rib scallops, a grey-brown rind, pale sage-beige flesh with the ring of woody rods (the
+# saguaro's skeleton) and a warm heart of resin
+block("amberwood_log_top", pal(RIB, RESIN, f="#b9b596", F="#cdc9ab"), """
+2453 2453 2453 2452
+4222 2222 2222 2224
+5233 3333 3333 3325
+3233 fFFF FFFf 3323
+2233 F33F F33F 3322
+4233 FFFf fFFF 3324
+5233 FfaA Aaf3 3325
+323f 3FAY YAF3 f323
+223f 3FAY bAF3 f322
+4233 FfaA Aaf3 3324
+5233 FFFf fFFF 3325
+3233 F33F F33F 3323
+2233 fFFF FFFf 3322
+4233 3333 3333 3324
 5222 2222 2222 2225
-7256 6666 6666 6527
-3266 6545 5456 6623
-o265 4155 5514 562o
-5266 5566 6655 6625
-7254 56aa aa65 4527
-3251 56AY YA65 1523
-o251 56AY AA65 152o
-5254 56aa aa65 4525
-7266 5566 6655 6627
-3265 4155 5514 5623
-o266 6545 5456 662o
-5256 6666 6666 6525
-7222 2222 2222 2227
-3573 o573 o573 o573
+2453 2453 2453 2453
 """)
-# amberwood_bloom: the crown of glowing flowers on every trunk and arm top. Waxy cup flowers on scaly amber-brown
-# tubes: gold-orange petals (red-orange in the shade), a cream heart of stamens, a dark throat; a closed bud.
-BLOOM = {"k": "#7a2a0a", "p": "#c4410f", "P": "#e86a16", "q": "#f99a24", "Q": "#ffc23e", "h": "#ffe27a",
-         "c": "#fff3b0", "C": "#ffffff", "s": "#33190c", "t": "#4e2e16", "T": "#7a4d24", "u": "#a37238"}
+# amberwood_bloom: the crown of flowers on every trunk and arm top. Waxy cup flowers on scaly sage tubes, soft
+# apricot-cream petals (dusty rose in the shade), a pale yellow heart of stamens, a muted throat; a closed bud.
+BLOOM = {"k": "#7a4e40", "p": "#b5806a", "P": "#cf9d7e", "q": "#e3ba96", "Q": "#efd2b0", "h": "#f8e8d0",
+         "c": "#f1dea0", "C": "#fffaec", "s": "#2f2c25", "t": "#4b4a3d", "T": "#66684f", "u": "#848a6a"}
 block("amberwood_bloom", pal(BLOOM), """
 .... .... .... ....
 .... hQ.c .Qh. ....
@@ -396,8 +398,8 @@ QcCk P... uT.Q cCkP
 qQkq p..q Q..q Qkqp
 .pPp ...P p... pPp.
 """)
-# the item: one big bloom on its scaly tube, a bud beside it, a dark warm outline
-item("amberwood_bloom", pal(BLOOM, o="#4a1606"), """
+# the item: one big bloom on its scaly tube, a bud beside it, a dark warm-grey outline
+item("amberwood_bloom", pal(BLOOM, o="#4a3a30"), """
 .... .... .... ....
 ...o oo.o oo.. ....
 ..oh QQoc oQho ....
@@ -415,8 +417,8 @@ item("amberwood_bloom", pal(BLOOM, o="#4a1606"), """
 .... ..os tso. ....
 .... ...o oo.. ....
 """)
-# the sapling: a little ribbed sprout, a barrel of four ribs with tiny spines and a first bud on top
-block("amberwood_sapling", pal(RIB, BLOOM), """
+# the sapling: a little ribbed sprout, a barrel of four soft ribs, a pale spine or two and a first bud on top
+block("amberwood_sapling", pal(RIB, BLOOM, o="#3a332b"), """
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
@@ -425,17 +427,19 @@ block("amberwood_sapling", pal(RIB, BLOOM), """
 .... ..qQ .... ....
 .... ..Pp .... ....
 .... x.uT .x.. ....
-.... .o57 3o.. ....
-.... xo57 3ox. ....
-.... o573 o573 ....
-.... o5W3 o573 ....
-.... o573 o5W3 ....
-.... o573 o573 ....
-.... .o73 o53. ....
+.... .o54 3o.. ....
+.... .o45 34o. ....
+.... o453 2453 ....
+.... o4W3 2453 ....
+.... o453 24W3 ....
+.... o453 2453 ....
+.... .o53 243. ....
 .... ..oo oo.. ....
 """)
-LEAVES = {"o": "#6b1f0c", "1": "#8f3210", "2": "#b54d14", "3": "#d36d1a", "4": "#e98f25", "5": "#f6b23a",
-          "6": "#fdd365", "7": "#fff0a8"}
+# amberwood_leaves (the cactus-like tree has none; kept for the block id): muted sage succulent leaves in clusters,
+# cut out between them
+LEAVES = {"o": "#3a3a2e", "1": "#4f5240", "2": "#646b52", "3": "#7a8466", "4": "#919b7a", "5": "#a8b190",
+          "6": "#c0c6a8", "7": "#d8dbc2"}
 block("amberwood_leaves", pal(LEAVES), """
 .643 1.56 4..6 543.
 6754 31.6 543. 7643
@@ -454,9 +458,9 @@ block("amberwood_leaves", pal(LEAVES), """
 .754 5643 2.56 43.6
 6543 .32. ..43 2..5
 """)
-# planks: four boards, joints staggered, warm golden grain with dark seams, a little resin dot in one board
-PLANK = {"o": "#4a2614", "1": "#6e3a1c", "2": "#8f5226", "3": "#ad6a32", "4": "#c6843f", "5": "#dca055",
-         "6": "#ecbd72", "a": AMBER["5"], "Y": AMBER["8"]}
+# planks: four boards of weathered grey-tan cactus wood, joints staggered, dark seams, a resin dot in one board
+PLANK = {"o": "#3e352c", "1": "#5a4e40", "2": "#73654f", "3": "#8a7b60", "4": "#a19272", "5": "#b8a986",
+         "6": "#ccbe9c", "a": "#c88c3a", "Y": "#fbe7b0"}
 block("amberwood_planks", pal(PLANK), """
 5665 6556 o566 5656
 4454 5443 o445 4545
@@ -500,9 +504,10 @@ block("blood_stain", pal(BLOOD_T), """
 
 # ====================================================================== items (16x16)
 # An amber chunk: an irregular knapped nugget, glassy facets, a bubble, a bright rim, a dark red-brown outline.
-# translucent like the blocks: a solid dark rim, a clear body, opaque glints
-CHUNK = {"o": "#3a0f0ae6", **translucent({k: v for k, v in AMBER.items() if k != "0"},
-                                         ["d8", "c4", "b8", "b0", "b8", "c8", "e0", "f4", "fc"])}
+# honey-like, as the blocks: a solid dark rim, a golden body at about 70-80% opacity, solid glints
+HONEY = {"1": "#6b3a14", "2": "#8a5020", "3": "#a8692c", "4": "#c3843a", "5": "#d89d4c", "6": "#e8b55e",
+         "7": "#f3cb78", "8": "#fbe2a4", "9": "#fff4d8"}
+CHUNK = {"o": "#3e2410ec", **translucent(HONEY, ["e0", "d0", "c4", "bc", "c4", "d0", "e4", "f4", "fc"])}
 item("amber_chunk", pal(CHUNK), """
 .... .... .... ....
 .... .... .... ....
@@ -524,7 +529,7 @@ item("amber_chunk", pal(CHUNK), """
 # An Amberwood seed (as the 3D amber_seed model): a ribbed, pointed ovoid husk, lit from the left, a little
 # pale-gold sprout curling out of the top like a fiddlehead
 SEED = {"o": "#2a120c", "1": "#4a2414", "2": "#6b381e", "3": "#8a4f29", "4": "#a86836", "5": "#c4864a",
-        "6": "#d9a25c", "7": "#efc777", "s": "#a3a02c", "S": "#ece27f"}
+        "6": "#d9a25c", "7": "#efc777", "s": "#7d7c44", "S": "#bdb978"}
 item("amberwood_seed", pal(SEED), """
 .... .... .... ....
 .... .... .sS. ....

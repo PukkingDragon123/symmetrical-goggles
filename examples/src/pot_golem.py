@@ -260,14 +260,14 @@ for s in (1, -1):
 
 # ======================================================================= palette and paint
 ramps = {
-    # amber: deep red-brown shadows, orange body, honey-gold edges, cream glints
-    "amber": ["#1f0905", "#320f06", "#481707", "#602108", "#7b2f09", "#97410b", "#b2560e", "#cb6d13", "#e0881d",
-              "#f0a52d", "#fac14a", "#ffdb7e", "#fff1bb"],
+    # honey amber: deep brown shadows, a golden-honey body, pale honey edges, cream glints (natural, not neon)
+    "amber": ["#24100a", "#3a1a0c", "#52260f", "#6b3413", "#854518", "#9e581e", "#b66d27", "#cb8333", "#dc9b42",
+              "#e9b356", "#f3c96f", "#f9de97", "#fdf0c8"],
     # the dark inside of the amber (core) and what is trapped in it
-    "core": ["#240a06", "#361007", "#4b1808", "#612209", "#79300b"],
+    "core": ["#2a120a", "#3d1c0e", "#522812", "#683616", "#7f461c"],
     "fossil": ["#170a06", "#2a140a", "#3f2010", "#563018"],
     # hard amber crystal (clearer, more yellow)
-    "crystal": ["#3a1505", "#5c2507", "#843b0a", "#ad560e", "#d07a15", "#eb9f22", "#f9c23f", "#ffe07a", "#fff6c8"],
+    "crystal": ["#40220c", "#5f3512", "#83501c", "#a86b28", "#c88a3a", "#e0a84e", "#f0c46a", "#f9dd98", "#fff4d0"],
     "flint": ["#101116", "#191b22", "#24262f", "#30333e", "#3f434f", "#525764", "#686e7c", "#848a97", "#a5abb5",
               "#ccd0d5", "#f1f2ee"],
     "terracotta": ["#28120d", "#3f1c14", "#5b291b", "#783722", "#94472b", "#ad5a37", "#c27149", "#d38c63", "#e2aa86"],
@@ -284,9 +284,9 @@ GLOSS = {"id": "gloss", "op": "gloss", "post": True, "dash": True, "length": 3, 
          "shift": 2.4}
 # translucent-looking amber, painted opaque: a dark core, bright edges (the rims) and a glow along the lower edges
 # where the light comes out again; swirls of darker resin inside
-CORE = [{"id": "core", "op": "band", "axis": "x", "from": -0.6, "to": 0.6, "shift": -2.3, "wobble": 0.3,
+CORE = [{"id": "core", "op": "band", "axis": "x", "from": -0.6, "to": 0.6, "shift": -2.0, "wobble": 0.3,
          "wobble_scale": 0.5, "faces": ["front", "back", "top", "bottom"]},
-        {"id": "core_s", "op": "band", "axis": "z", "from": -0.55, "to": 0.55, "shift": -2.1, "wobble": 0.3,
+        {"id": "core_s", "op": "band", "axis": "z", "from": -0.55, "to": 0.55, "shift": -1.8, "wobble": 0.3,
          "wobble_scale": 0.5, "faces": ["left", "right"]},
         {"id": "exit_glow", "op": "band", "axis": "y", "from": -1.01, "to": -0.7, "shift": 1.8, "wobble": 0.15,
          "faces": ["sides"]}]

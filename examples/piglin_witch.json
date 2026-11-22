@@ -1,0 +1,5663 @@
+{
+ "name": "Piglin Witch",
+ "description": "The Winterworks Piglin Witch: an old, fat, half-zombified Piglin crone and happy drunk with a huge belly, a red snout, droopy soul-fire eyes, saggy jowls, a ragged shawl, gold trinkets and a hip flask, carrying a HUGE patched rucksack (pots, bottles, bones, a broom, a soul lantern). Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 1,
+ "budget": {
+  "tris": 3200,
+  "colors": 160
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.6,
+  "gradient": 0.35,
+  "ao": 0.8,
+  "ao_height": 8.0
+ },
+ "brush": {
+  "flow": "long",
+  "length": 2.6,
+  "width": 1.0,
+  "rough": 0.5,
+  "overshoot": 0.3,
+  "flows": {
+   "canvas": "y",
+   "leather": "horizontal",
+   "shawl": "y",
+   "dress": "y",
+   "wood": "long",
+   "straw": "long"
+  },
+  "textures": {
+   "skin": "organic",
+   "rot": "organic",
+   "bone": "organic",
+   "leather": "leather",
+   "canvas": "cloth",
+   "shawl": "cloth",
+   "dress": "cloth",
+   "wool": "cloth",
+   "metal": "metal",
+   "gold": "metal",
+   "clay": "stone",
+   "wood": "wood",
+   "straw": "wood",
+   "hair": "fur"
+  }
+ },
+ "minecraft": {
+  "fps": 20,
+  "glow_parts": [
+   "eye_l",
+   "eye_r",
+   "lantern_flame"
+  ]
+ },
+ "anim_ground_tolerance": 0.5,
+ "render": {
+  "background": "#2a1a1c",
+  "hero": [
+   -36,
+   16
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "skin": [
+    "#2b1119",
+    "#45202b",
+    "#5f2f39",
+    "#7a3f45",
+    "#965252",
+    "#b06862",
+    "#c78174",
+    "#d99b88",
+    "#e8b49f",
+    "#f3cdb9"
+   ],
+   "flush": [
+    "#3d0b14",
+    "#5c1220",
+    "#80192a",
+    "#a52432",
+    "#c8363a",
+    "#e2564a",
+    "#f27f66",
+    "#fbab8e"
+   ],
+   "rot": [
+    "#141a0d",
+    "#1f2b13",
+    "#2c3d18",
+    "#3b501e",
+    "#4d6625",
+    "#617d2e",
+    "#78953b",
+    "#91ad4d",
+    "#abc466"
+   ],
+   "bone": [
+    "#2a2016",
+    "#3e3122",
+    "#56452f",
+    "#6f5c40",
+    "#8a7454",
+    "#a48e6b",
+    "#bea984",
+    "#d4c29f",
+    "#e6d8bc",
+    "#f4ecdb"
+   ],
+   "dress": [
+    "#0f1119",
+    "#181b27",
+    "#232838",
+    "#2f3549",
+    "#3c435a",
+    "#4b536b",
+    "#5c657d",
+    "#707a91"
+   ],
+   "shawl": [
+    "#16091a",
+    "#240f2a",
+    "#35173c",
+    "#47204f",
+    "#5a2a62",
+    "#6e3675",
+    "#834586",
+    "#995b98"
+   ],
+   "hoof": [
+    "#120d0c",
+    "#1f1714",
+    "#2e231e",
+    "#3e3029",
+    "#4f3e35",
+    "#634f43"
+   ],
+   "gold": [
+    "#3b1d06",
+    "#5a2f09",
+    "#7c440d",
+    "#a05e12",
+    "#c47d18",
+    "#e0a020",
+    "#f3c434",
+    "#fde35a",
+    "#fff3a3",
+    "#fffbe0"
+   ],
+   "metal": [
+    "#14151b",
+    "#1f2129",
+    "#2c2f39",
+    "#3b3f4b",
+    "#4d525f",
+    "#626877",
+    "#7b8291",
+    "#979eab",
+    "#b6bcc6"
+   ],
+   "leather": [
+    "#1a0e08",
+    "#2a170d",
+    "#3c2213",
+    "#4f2e19",
+    "#643c20",
+    "#7a4b28",
+    "#905c31",
+    "#a66e3d",
+    "#ba824c"
+   ],
+   "canvas": [
+    "#231d14",
+    "#352c1f",
+    "#4a3e2b",
+    "#605139",
+    "#776548",
+    "#8e7a59",
+    "#a5906c",
+    "#bba682",
+    "#cdbb9a"
+   ],
+   "wool": [
+    "#2a0b0b",
+    "#451213",
+    "#631c1b",
+    "#822724",
+    "#a0342d",
+    "#bb473a",
+    "#d06350",
+    "#e0866c"
+   ],
+   "clay": [
+    "#28120d",
+    "#3f1c14",
+    "#5b291b",
+    "#783722",
+    "#94472b",
+    "#ad5a37",
+    "#c27149",
+    "#d38c63",
+    "#e2aa86"
+   ],
+   "glass": [
+    "#1d2a30",
+    "#2f454e",
+    "#4a6874",
+    "#76959f",
+    "#b0c9cf",
+    "#e4f1f3"
+   ],
+   "potg": [
+    "#0d260f",
+    "#174419",
+    "#246b24",
+    "#3c9a33",
+    "#68c552",
+    "#a6ea84"
+   ],
+   "potm": [
+    "#25092a",
+    "#431249",
+    "#6c1d78",
+    "#9b2fa5",
+    "#cc55cc",
+    "#f08ee8"
+   ],
+   "soul": [
+    "#06191d",
+    "#0b2f36",
+    "#0f4a52",
+    "#136b72",
+    "#1a9397",
+    "#2cbdbb",
+    "#5ee0d6",
+    "#a4fcef",
+    "#effffb"
+   ],
+   "hair": [
+    "#26252d",
+    "#3c3b45",
+    "#55545e",
+    "#706f79",
+    "#8d8c95",
+    "#abaab1",
+    "#c9c8cd",
+    "#e3e2e5"
+   ],
+   "straw": [
+    "#2e1f0b",
+    "#4a3311",
+    "#6b4c18",
+    "#8c6722",
+    "#ab842e",
+    "#c6a23e",
+    "#dcbf58",
+    "#ecd67e"
+   ],
+   "wood": [
+    "#1e120b",
+    "#301d11",
+    "#452a18",
+    "#5c3a20",
+    "#744b29",
+    "#8d5e34",
+    "#a77441"
+   ],
+   "mouth": [
+    "#1a070c",
+    "#2e0d16",
+    "#461623",
+    "#5f2131"
+   ],
+   "fungus": [
+    "#2b0709",
+    "#4d0d10",
+    "#771619",
+    "#a12423",
+    "#c83b33",
+    "#e06450"
+   ]
+  }
+ },
+ "styles": {
+  "dress": {
+   "ramp": "dress",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "folds",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.6,
+     "width": 0.3,
+     "shift": -0.9,
+     "wobble": 0.5,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "skirt": {
+   "ramp": "dress",
+   "tone": 3.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "folds",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.2,
+     "width": 0.35,
+     "shift": -1.1,
+     "wobble": 0.6,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "folds_s",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.2,
+     "width": 0.35,
+     "shift": -1.1,
+     "wobble": 0.6,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "mud",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.5,
+     "wobble": 0.3,
+     "ramp": "hoof",
+     "tone": 2.2,
+     "faces": [
+      "sides"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      9,
+      0
+     ],
+     "art": [
+      "SSSSS",
+      "SpppS",
+      "SpPpS",
+      "SpppS",
+      "SSSSS"
+     ],
+     "key": {
+      "S": "canvas:6",
+      "p": "shawl:4",
+      "P": "shawl:2"
+     }
+    }
+   ]
+  },
+  "torso": {
+   "ramp": "dress",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "hole_rim",
+     "op": "rect",
+     "rect": [
+      0.08,
+      0.1,
+      0.86,
+      0.78
+     ],
+     "ramp": "rot",
+     "tone": 4.6,
+     "faces": [
+      "right"
+     ]
+    },
+    {
+     "id": "hole",
+     "op": "rect",
+     "rect": [
+      0.18,
+      0.2,
+      0.76,
+      0.68
+     ],
+     "ramp": "mouth",
+     "tone": 0.6,
+     "faces": [
+      "right"
+     ]
+    }
+   ]
+  },
+  "belly": {
+   "ramp": "dress",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "stretch",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.4,
+     "width": 0.25,
+     "shift": -0.9,
+     "wobble": 0.4,
+     "faces": [
+      "front",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "sag",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.6
+    },
+    {
+     "id": "stains",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.6,
+      1.2
+     ],
+     "ramp": "dress",
+     "tone": 1.6,
+     "faces": [
+      "front"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      7,
+      3
+     ],
+     "art": [
+      ".kk.",
+      "kSSk",
+      "kSnk",
+      ".kk."
+     ],
+     "key": {
+      "k": "skin:3",
+      "S": "skin:6",
+      "n": "skin:2"
+     }
+    }
+   ]
+  },
+  "patch_canvas": {
+   "ramp": "canvas",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "layers": [
+    {
+     "id": "weave",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.0,
+     "width": 0.4,
+     "shift": -0.7
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "s.s.s",
+      ".....",
+      "s...s",
+      "....."
+     ],
+     "key": {
+      "s": "canvas:7",
+      "S": "canvas:2"
+     }
+    }
+   ]
+  },
+  "tatter_dress": {
+   "ramp": "dress",
+   "tone": 3.4,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "f": "dress:3",
+    "m": "dress:2",
+    "t": "dress:1"
+   }
+  },
+  "shawl": {
+   "ramp": "shawl",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y",
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "knit",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.4,
+     "shift": -0.6
+    },
+    {
+     "id": "stripe",
+     "op": "stripes",
+     "axis": "y",
+     "period": 4.0,
+     "width": 0.25,
+     "ramp": "gold",
+     "tone": 3.6,
+     "faces": [
+      "sides",
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "holes",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "shawl",
+     "tone": 0.4,
+     "faces": [
+      "top",
+      "front"
+     ]
+    }
+   ]
+  },
+  "tatter_shawl": {
+   "ramp": "shawl",
+   "tone": 4.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "f": "shawl:4",
+    "m": "shawl:3",
+    "t": "shawl:6"
+   }
+  },
+  "sleeve": {
+   "ramp": "dress",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "folds",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.0,
+     "width": 0.3,
+     "shift": -0.8,
+     "wobble": 0.4
+    }
+   ]
+  },
+  "stocking_r": {
+   "ramp": "shawl",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "stripes",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.0,
+     "width": 0.5,
+     "ramp": "dress",
+     "tone": 1.0,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "stocking_l": {
+   "ramp": "shawl",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "stripes",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.0,
+     "width": 0.5,
+     "ramp": "dress",
+     "tone": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "ladder",
+     "op": "patches",
+     "scale": 1.0,
+     "threshold": 0.45,
+     "ramp": "rot",
+     "tone": 4.4,
+     "faces": [
+      "right",
+      "front"
+     ]
+    }
+   ]
+  },
+  "hoof": {
+   "ramp": "hoof",
+   "tone": 2.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "split",
+     "op": "band",
+     "axis": "x",
+     "from": -0.1,
+     "to": 0.1,
+     "ramp": "hoof",
+     "tone": 0.4,
+     "faces": [
+      "front",
+      "top"
+     ]
+    },
+    {
+     "id": "wear",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 0.6
+    }
+   ]
+  },
+  "rope": {
+   "ramp": "straw",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "twist",
+     "op": "stripes",
+     "axis": [
+      1,
+      1,
+      0
+     ],
+     "period": 1.4,
+     "width": 0.5,
+     "shift": -1.2
+    }
+   ]
+  },
+  "rope_card": {
+   "ramp": "straw",
+   "tone": 3.6,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "r": "straw:4"
+   }
+  },
+  "head": {
+   "ramp": "skin",
+   "tone": 6.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "horizontal",
+    "rough": 0.5
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.7
+    },
+    {
+     "id": "wrinkles",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.6,
+     "width": 0.25,
+     "shift": -0.8,
+     "range": [
+      0.2,
+      1.0
+     ],
+     "faces": [
+      "front",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "liver",
+     "op": "spots",
+     "count": 4,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "skin",
+     "tone": 3.6,
+     "where": {
+      "x": [
+       -1.0,
+       0.0
+      ]
+     }
+    },
+    {
+     "id": "rot",
+     "op": "band",
+     "axis": "x",
+     "from": 0.06,
+     "to": 1.01,
+     "wobble": 0.22,
+     "wobble_scale": 0.35,
+     "ramp": "rot",
+     "tone": 5.0,
+     "bevel": {
+      "shadow_ramp": "mouth",
+      "shadow_shift": 0,
+      "highlight": 0
+     }
+    },
+    {
+     "id": "sores",
+     "op": "spots",
+     "count": 4,
+     "radius": [
+      0.4,
+      0.9
+     ],
+     "ramp": "rot",
+     "tone": 1.6,
+     "where": {
+      "x": [
+       0.15,
+       1.0
+      ]
+     },
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.5
+     }
+    },
+    {
+     "id": "mould",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "rot",
+     "tone": 8.0,
+     "where": {
+      "x": [
+       0.2,
+       1.0
+      ]
+     }
+    },
+    {
+     "id": "skull",
+     "op": "spots",
+     "centers": [
+      [
+       3.6,
+       3.0,
+       -1.0,
+       1.6
+      ],
+      [
+       4.2,
+       1.0,
+       1.4,
+       1.0
+      ]
+     ],
+     "ramp": "bone",
+     "tone": 6.4,
+     "faces": [
+      "top",
+      "right"
+     ],
+     "bevel": {
+      "shadow_ramp": "rot",
+      "shadow_shift": 0,
+      "highlight": 0
+     }
+    },
+    {
+     "id": "blush",
+     "op": "spots",
+     "centers": [
+      [
+       -3.4,
+       -2.0,
+       4.0,
+       1.4
+      ]
+     ],
+     "ramp": "flush",
+     "tone": 5.0,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "snout": {
+   "ramp": "flush",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "z",
+     "amount": -1.4
+    },
+    {
+     "id": "veins",
+     "op": "stripes",
+     "axis": [
+      1,
+      0.4,
+      0
+     ],
+     "period": 1.7,
+     "width": 0.2,
+     "shift": -1.0,
+     "wobble": 0.8,
+     "faces": [
+      "top",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "pores",
+     "op": "spots",
+     "count": 5,
+     "radius": [
+      0.25,
+      0.4
+     ],
+     "ramp": "flush",
+     "tone": 3.0,
+     "faces": [
+      "front",
+      "top"
+     ]
+    },
+    {
+     "id": "rot",
+     "op": "band",
+     "axis": "x",
+     "from": 0.55,
+     "to": 1.01,
+     "wobble": 0.2,
+     "ramp": "rot",
+     "tone": 4.6
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      ".h...",
+      ".....",
+      ".N.N.",
+      ".n.n."
+     ],
+     "key": {
+      "n": "mouth:0",
+      "N": "mouth:1",
+      "h": "flush:7"
+     }
+    }
+   ]
+  },
+  "wart": {
+   "ramp": "flush",
+   "tone": 2.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "hair": {
+   "ramp": "hair",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "long",
+    "rough": 0.8
+   },
+   "layers": [
+    {
+     "id": "strands",
+     "op": "stripes",
+     "axis": [
+      1,
+      0.3,
+      0
+     ],
+     "period": 1.0,
+     "width": 0.4,
+     "shift": -1.2
+    }
+   ]
+  },
+  "hair_card": {
+   "ramp": "hair",
+   "tone": 5.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "h": "hair:5",
+    "H": "hair:3",
+    "t": "hair:6",
+    "m": "hair:4",
+    "f": "hair:3"
+   }
+  },
+  "brow": {
+   "ramp": "hair",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "bristle",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.0,
+     "width": 0.5,
+     "shift": 1.2
+    }
+   ]
+  },
+  "eye": {
+   "ramp": "soul",
+   "tone": 6.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "Ee",
+      "wW"
+     ],
+     "key": {
+      "W": "soul:8",
+      "w": "soul:6",
+      "E": "soul:5",
+      "e": "soul:4"
+     }
+    }
+   ]
+  },
+  "lid_r": {
+   "ramp": "skin",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "lash",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.3,
+     "ramp": "skin",
+     "tone": 2.0,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "lid_l": {
+   "ramp": "rot",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "lash",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.3,
+     "ramp": "rot",
+     "tone": 1.6,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "bag_r": {
+   "ramp": "skin",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "pouch",
+     "op": "band",
+     "axis": "y",
+     "from": 0.0,
+     "to": 1.01,
+     "ramp": "shawl",
+     "tone": 5.0,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "bag_l": {
+   "ramp": "rot",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "socket": {
+   "ramp": "mouth",
+   "tone": 0.6,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "cheek": {
+   "ramp": "skin",
+   "tone": 6.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "sag",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    },
+    {
+     "id": "blush",
+     "op": "spots",
+     "count": 2,
+     "radius": [
+      0.6,
+      1.0
+     ],
+     "ramp": "flush",
+     "tone": 5.2,
+     "faces": [
+      "front",
+      "left"
+     ]
+    },
+    {
+     "id": "stubble",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.2,
+      0.3
+     ],
+     "ramp": "skin",
+     "tone": 3.0
+    }
+   ]
+  },
+  "zombie_cheek": {
+   "ramp": "rot",
+   "tone": 5.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "sag",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.2
+    },
+    {
+     "id": "sores",
+     "op": "spots",
+     "count": 4,
+     "radius": [
+      0.4,
+      0.9
+     ],
+     "ramp": "rot",
+     "tone": 1.6,
+     "where": {
+      "x": [
+       0.15,
+       1.0
+      ]
+     },
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.5
+     }
+    },
+    {
+     "id": "mould",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "rot",
+     "tone": 8.0,
+     "where": {
+      "x": [
+       0.2,
+       1.0
+      ]
+     }
+    },
+    {
+     "id": "tear",
+     "op": "rect",
+     "rect": [
+      0.2,
+      0.0,
+      0.8,
+      0.45
+     ],
+     "ramp": "mouth",
+     "tone": 0.8,
+     "faces": [
+      "front",
+      "right"
+     ],
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.0
+     }
+    }
+   ],
+   "stamps": [
+    {
+     "face": "right",
+     "at": [
+      1,
+      2
+     ],
+     "art": [
+      "t.t",
+      "ttt"
+     ],
+     "key": {
+      "t": "bone:8"
+     }
+    }
+   ]
+  },
+  "jaw": {
+   "ramp": "skin",
+   "tone": 5.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "lip",
+     "op": "band",
+     "axis": "y",
+     "from": 0.4,
+     "to": 1.01,
+     "ramp": "flush",
+     "tone": 3.6,
+     "faces": [
+      "front",
+      "sides"
+     ]
+    },
+    {
+     "id": "mouth",
+     "op": "fill",
+     "ramp": "mouth",
+     "tone": 2.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "rot",
+     "op": "band",
+     "axis": "x",
+     "from": 0.2,
+     "to": 1.01,
+     "wobble": 0.2,
+     "ramp": "rot",
+     "tone": 4.0
+    }
+   ]
+  },
+  "tusk": {
+   "ramp": "bone",
+   "tone": 7.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.6
+    }
+   ]
+  },
+  "teeth": {
+   "ramp": "bone",
+   "tone": 8.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "bone:7"
+   }
+  },
+  "ear": {
+   "ramp": "skin",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "inner",
+     "op": "rect",
+     "rect": [
+      0.2,
+      0.15,
+      0.8,
+      0.85
+     ],
+     "ramp": "flush",
+     "tone": 3.4,
+     "faces": [
+      "left",
+      "right"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    },
+    {
+     "id": "tip",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.8
+    },
+    {
+     "id": "notch",
+     "op": "spots",
+     "count": 1,
+     "radius": [
+      0.4,
+      0.5
+     ],
+     "ramp": "skin",
+     "tone": 2.0
+    }
+   ]
+  },
+  "ear_rot": {
+   "ramp": "rot",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "inner",
+     "op": "rect",
+     "rect": [
+      0.2,
+      0.15,
+      0.8,
+      0.85
+     ],
+     "ramp": "mouth",
+     "tone": 2.6,
+     "faces": [
+      "left",
+      "right"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    },
+    {
+     "id": "sores",
+     "op": "spots",
+     "count": 4,
+     "radius": [
+      0.4,
+      0.9
+     ],
+     "ramp": "rot",
+     "tone": 1.6,
+     "where": {
+      "x": [
+       0.15,
+       1.0
+      ]
+     },
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.5
+     }
+    },
+    {
+     "id": "mould",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "rot",
+     "tone": 8.0,
+     "where": {
+      "x": [
+       0.2,
+       1.0
+      ]
+     }
+    }
+   ]
+  },
+  "ear_tear": {
+   "ramp": "rot",
+   "tone": 4.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "b": "rot:3"
+   }
+  },
+  "arm_r": {
+   "ramp": "skin",
+   "tone": 5.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.6
+    },
+    {
+     "id": "liver",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.5
+     ],
+     "ramp": "skin",
+     "tone": 3.8
+    }
+   ]
+  },
+  "arm_l": {
+   "ramp": "rot",
+   "tone": 5.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.7
+    },
+    {
+     "id": "sores",
+     "op": "spots",
+     "count": 4,
+     "radius": [
+      0.4,
+      0.9
+     ],
+     "ramp": "rot",
+     "tone": 1.6,
+     "where": {},
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.5
+     }
+    },
+    {
+     "id": "mould",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "rot",
+     "tone": 8.0,
+     "where": {}
+    },
+    {
+     "id": "torn",
+     "op": "rect",
+     "rect": [
+      0.0,
+      0.25,
+      0.55,
+      0.85
+     ],
+     "ramp": "mouth",
+     "tone": 1.0,
+     "faces": [
+      "right"
+     ],
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.0
+     }
+    }
+   ]
+  },
+  "fist_r": {
+   "ramp": "skin",
+   "tone": 6.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "knuckles",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -1.0,
+     "faces": [
+      "front"
+     ]
+    },
+    {
+     "id": "nails",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.6,
+     "ramp": "hoof",
+     "tone": 3.6,
+     "faces": [
+      "front"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "...g"
+     ],
+     "key": {
+      "g": "gold:7"
+     }
+    }
+   ]
+  },
+  "fist_l": {
+   "ramp": "rot",
+   "tone": 5.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "knuckles",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -1.2,
+     "faces": [
+      "front"
+     ]
+    },
+    {
+     "id": "bones",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.55,
+     "ramp": "bone",
+     "tone": 7.0,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "rot": {
+   "ramp": "rot",
+   "tone": 4.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.8
+    },
+    {
+     "id": "sores",
+     "op": "spots",
+     "count": 4,
+     "radius": [
+      0.4,
+      0.9
+     ],
+     "ramp": "rot",
+     "tone": 1.6,
+     "where": {},
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 2.5
+     }
+    },
+    {
+     "id": "mould",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.3,
+      0.6
+     ],
+     "ramp": "rot",
+     "tone": 8.0,
+     "where": {}
+    }
+   ]
+  },
+  "rib": {
+   "ramp": "bone",
+   "tone": 7.6,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "b": "bone:7"
+   }
+  },
+  "bone": {
+   "ramp": "bone",
+   "tone": 7.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "long"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.8
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.5,
+     "width": 0.05,
+     "shift": -2.0
+    }
+   ]
+  },
+  "skull": {
+   "ramp": "bone",
+   "tone": 7.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": "top-left",
+     "art": [
+      "....",
+      "ee.e",
+      "e..e"
+     ],
+     "key": {
+      "e": "mouth:0",
+      "n": "mouth:1"
+     }
+    }
+   ]
+  },
+  "gold": {
+   "ramp": "gold",
+   "tone": 5.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -1.8
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.7,
+     "shift": 2.0
+    }
+   ]
+  },
+  "gold_gem": {
+   "ramp": "gold",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -1.8
+   },
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "front",
+     "at": "center",
+     "art": [
+      "s"
+     ],
+     "key": {
+      "s": "soul:6"
+     }
+    }
+   ]
+  },
+  "coin": {
+   "ramp": "gold",
+   "tone": 6.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "g": "gold:4",
+    "G": "gold:7",
+    "h": "gold:9"
+   }
+  },
+  "gold_card": {
+   "ramp": "gold",
+   "tone": 6.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "g": "gold:6",
+    "h": "gold:9"
+   }
+  },
+  "flask": {
+   "ramp": "metal",
+   "tone": 5.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "band",
+     "op": "band",
+     "axis": "y",
+     "from": 0.4,
+     "to": 0.62,
+     "ramp": "gold",
+     "tone": 5.4,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "dent",
+     "op": "spots",
+     "count": 2,
+     "radius": [
+      0.4,
+      0.6
+     ],
+     "shift": -1.6,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1
+     }
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.6,
+     "shift": 2.2
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": [
+      1,
+      3
+     ],
+     "art": [
+      "x"
+     ],
+     "key": {
+      "x": "mouth:0"
+     }
+    }
+   ]
+  },
+  "pewter": {
+   "ramp": "metal",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "iron": {
+   "ramp": "metal",
+   "tone": 2.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "rust",
+     "op": "spots",
+     "count": 2,
+     "radius": [
+      0.3,
+      0.5
+     ],
+     "ramp": "leather",
+     "tone": 4.0
+    }
+   ]
+  },
+  "chain": {
+   "ramp": "metal",
+   "tone": 4.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "c": "metal:5"
+   }
+  },
+  "lantern": {
+   "ramp": "metal",
+   "tone": 2.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "light": 0.4,
+   "layers": [
+    {
+     "id": "window",
+     "op": "rect",
+     "rect": [
+      0.25,
+      0.2,
+      0.75,
+      0.8
+     ],
+     "ramp": "soul",
+     "tone": 5.0,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "core",
+     "op": "rect",
+     "rect": [
+      0.25,
+      0.2,
+      0.75,
+      0.5
+     ],
+     "ramp": "soul",
+     "tone": 7.2,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "soul_flame": {
+   "ramp": "soul",
+   "tone": 5.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "W": "soul:7",
+    "w": "soul:6",
+    "E": "soul:4",
+    "e": "soul:2"
+   }
+  },
+  "pack": {
+   "ramp": "canvas",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y",
+    "rough": 0.6
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "seams",
+     "op": "stripes",
+     "axis": "y",
+     "period": 5.0,
+     "width": 0.12,
+     "shift": -1.4,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "grime",
+     "op": "patches",
+     "scale": 1.1,
+     "threshold": 0.55,
+     "shift": -1.2
+    },
+    {
+     "id": "under",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.7
+    }
+   ],
+   "stamps": [
+    {
+     "face": "right",
+     "at": [
+      1,
+      2
+     ],
+     "art": [
+      "s.s.s.s",
+      "SpppppS",
+      ".pPpPp.",
+      "SpppppS",
+      ".pPpPp.",
+      "SpppppS",
+      "s.s.s.s"
+     ],
+     "key": {
+      "s": "canvas:7",
+      "S": "canvas:2",
+      "p": "shawl:4",
+      "P": "shawl:3"
+     }
+    },
+    {
+     "face": "left",
+     "at": [
+      4,
+      9
+     ],
+     "art": [
+      "s.s.s.",
+      "SwwwwS",
+      ".wWww.",
+      "SwwwWS",
+      "s.s.s."
+     ],
+     "key": {
+      "s": "canvas:7",
+      "S": "canvas:2",
+      "w": "wool:4",
+      "W": "wool:2"
+     }
+    },
+    {
+     "face": "back",
+     "at": [
+      1,
+      1
+     ],
+     "art": [
+      "s.s.s",
+      "SlllS",
+      ".lLl.",
+      "SlllS",
+      "s.s.s"
+     ],
+     "key": {
+      "s": "canvas:7",
+      "S": "canvas:2",
+      "l": "leather:5",
+      "L": "leather:3"
+     }
+    },
+    {
+     "face": "back",
+     "at": [
+      9,
+      11
+     ],
+     "art": [
+      "sSsS",
+      "rrrr",
+      "rRrr",
+      "sSsS"
+     ],
+     "key": {
+      "s": "canvas:7",
+      "S": "canvas:2",
+      "r": "rot:5",
+      "R": "rot:3"
+     }
+    },
+    {
+     "face": "top",
+     "at": [
+      2,
+      2
+     ],
+     "art": [
+      "s.s",
+      ".x.",
+      "s.s"
+     ],
+     "key": {
+      "s": "canvas:7",
+      "x": "canvas:1"
+     }
+    }
+   ]
+  },
+  "pack_pocket": {
+   "ramp": "leather",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "scuff",
+     "op": "wear",
+     "width": 1,
+     "density": 0.2,
+     "shift": 1.4
+    },
+    {
+     "id": "seam",
+     "op": "band",
+     "axis": "y",
+     "from": 0.7,
+     "to": 0.82,
+     "shift": -1.4,
+     "faces": [
+      "sides"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "back",
+     "at": [
+      6,
+      3
+     ],
+     "art": [
+      "SpS",
+      "pPp",
+      "SpS"
+     ],
+     "key": {
+      "S": "canvas:7",
+      "p": "wool:4",
+      "P": "wool:2"
+     }
+    }
+   ]
+  },
+  "leather": {
+   "ramp": "leather",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "scuff",
+     "op": "wear",
+     "width": 1,
+     "density": 0.2,
+     "shift": 1.4
+    }
+   ]
+  },
+  "leather_dark": {
+   "ramp": "leather",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "long"
+   },
+   "layers": [
+    {
+     "id": "holes",
+     "op": "stripes",
+     "axis": "z",
+     "period": 3.0,
+     "width": 0.2,
+     "shift": -1.4
+    }
+   ]
+  },
+  "lid": {
+   "ramp": "leather",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "clumps",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.5
+    },
+    {
+     "id": "scuff",
+     "op": "wear",
+     "width": 1,
+     "density": 0.25,
+     "shift": 1.6
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.0,
+     "width": 0.05,
+     "shift": -1.4
+    }
+   ],
+   "stamps": [
+    {
+     "face": "top",
+     "at": [
+      9,
+      4
+     ],
+     "art": [
+      "s.s.s",
+      "SwwwS",
+      ".wWw.",
+      "SwwwS",
+      "s.s.s"
+     ],
+     "key": {
+      "s": "canvas:7",
+      "S": "canvas:2",
+      "w": "rot:5",
+      "W": "rot:3"
+     }
+    }
+   ]
+  },
+  "bedroll": {
+   "ramp": "wool",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "x"
+   },
+   "layers": [
+    {
+     "id": "roll",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.0,
+     "width": 0.3,
+     "shift": -1.4,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "check",
+     "op": "stripes",
+     "axis": "x",
+     "period": 3.0,
+     "width": 0.34,
+     "ramp": "canvas",
+     "tone": 6.0,
+     "faces": [
+      "front",
+      "back",
+      "top",
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "clay": {
+   "ramp": "clay",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "band",
+     "op": "band",
+     "axis": "y",
+     "from": 0.1,
+     "to": 0.4,
+     "ramp": "clay",
+     "tone": 2.0,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "glyph",
+     "op": "spots",
+     "count": 2,
+     "radius": [
+      0.4,
+      0.6
+     ],
+     "ramp": "gold",
+     "tone": 5.0,
+     "faces": [
+      "front",
+      "left"
+     ]
+    },
+    {
+     "id": "chip",
+     "op": "wear",
+     "width": 1,
+     "density": 0.2,
+     "ramp": "clay",
+     "tone": 2.4
+    }
+   ]
+  },
+  "clay_dark": {
+   "ramp": "clay",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "bottle_g": {
+   "ramp": "potg",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "glass_top",
+     "op": "band",
+     "axis": "y",
+     "from": 0.4,
+     "to": 1.01,
+     "ramp": "glass",
+     "tone": 3.0
+    },
+    {
+     "id": "glint",
+     "op": "band",
+     "axis": "x",
+     "from": -1.01,
+     "to": -0.4,
+     "shift": 1.8,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "bottle_m": {
+   "ramp": "potm",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "glass_top",
+     "op": "band",
+     "axis": "y",
+     "from": 0.25,
+     "to": 1.01,
+     "ramp": "glass",
+     "tone": 3.0
+    },
+    {
+     "id": "glint",
+     "op": "band",
+     "axis": "x",
+     "from": -1.01,
+     "to": -0.4,
+     "shift": 1.8,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "cork": {
+   "ramp": "straw",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "fungus_cap": {
+   "ramp": "fungus",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "dots",
+     "op": "spots",
+     "count": 2,
+     "radius": [
+      0.3,
+      0.4
+     ],
+     "ramp": "gold",
+     "tone": 7.0,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    }
+   ]
+  },
+  "fungus_stem": {
+   "ramp": "fungus",
+   "tone": 2.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "s": "fungus:2"
+   }
+  },
+  "wood": {
+   "ramp": "wood",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "long"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.5,
+     "amount": 0.6
+    }
+   ]
+  },
+  "straw": {
+   "ramp": "straw",
+   "tone": 4.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "flow": "y",
+    "rough": 0.8
+   },
+   "layers": [
+    {
+     "id": "stalks",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.0,
+     "width": 0.4,
+     "shift": -1.2
+    }
+   ]
+  },
+  "straw_card": {
+   "ramp": "straw",
+   "tone": 4.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "straw:6",
+    "m": "straw:4",
+    "f": "straw:3"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "body",
+   "shape": "box",
+   "size": [
+    13,
+    5,
+    10
+   ],
+   "pivot": [
+    0.0,
+    9.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    0.5
+   ],
+   "style": "dress"
+  },
+  {
+   "id": "skirt",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    15,
+    5,
+    12
+   ],
+   "pivot": [
+    0.0,
+    -3.5,
+    0.5
+   ],
+   "style": "skirt"
+  },
+  {
+   "id": "hem_f",
+   "shape": "card",
+   "parent": "skirt",
+   "pivot": [
+    0.0,
+    -2.5,
+    6.05
+   ],
+   "offset": [
+    0.0,
+    -1.4,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    0.0
+   ],
+   "style": "tatter_dress",
+   "plane": "xy",
+   "art": [
+    "tttffttttfffftt",
+    "...tt....ttmm..",
+    "...........tt.."
+   ]
+  },
+  {
+   "id": "hem_b",
+   "shape": "card",
+   "parent": "skirt",
+   "pivot": [
+    0.0,
+    -2.5,
+    -5.05
+   ],
+   "offset": [
+    0.0,
+    -1.4,
+    0.0
+   ],
+   "rotation": [
+    8.0,
+    0.0,
+    0.0
+   ],
+   "style": "tatter_dress",
+   "plane": "xy",
+   "art": [
+    "fftttffffttffft",
+    "tt...mmtt..mtt.",
+    ".....tt....t..."
+   ]
+  },
+  {
+   "id": "hem_l",
+   "shape": "card",
+   "parent": "skirt",
+   "pivot": [
+    7.55,
+    -2.5,
+    0.5
+   ],
+   "offset": [
+    0.0,
+    -1.4,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    8.0
+   ],
+   "style": "tatter_dress",
+   "plane": "yz",
+   "art": [
+    "tffffffffftt",
+    ".ttttmmttt..",
+    ".....tt....."
+   ]
+  },
+  {
+   "id": "hem_r",
+   "shape": "card",
+   "parent": "skirt",
+   "pivot": [
+    -7.55,
+    -2.5,
+    0.5
+   ],
+   "offset": [
+    0.0,
+    -1.4,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -8.0
+   ],
+   "style": "tatter_dress",
+   "plane": "yz",
+   "art": [
+    "fftttffffttf",
+    "tt...mmtt..m",
+    ".....tt....t"
+   ]
+  },
+  {
+   "id": "belt",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    14,
+    2,
+    11
+   ],
+   "pivot": [
+    0.0,
+    -1.5,
+    0.5
+   ],
+   "style": "rope"
+  },
+  {
+   "id": "pouch",
+   "shape": "box",
+   "parent": "belt",
+   "size": [
+    3,
+    4,
+    2
+   ],
+   "pivot": [
+    -5.2,
+    -1.9,
+    5.8
+   ],
+   "rotation": [
+    -6.0,
+    0.0,
+    6.0
+   ],
+   "style": "leather"
+  },
+  {
+   "id": "pouch_flap",
+   "shape": "box",
+   "parent": "pouch",
+   "size": [
+    3,
+    1,
+    3
+   ],
+   "pivot": [
+    -0.0,
+    1.8,
+    0.2
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "coin0",
+   "shape": "card",
+   "parent": "belt",
+   "pivot": [
+    -2.2,
+    -0.9,
+    5.6
+   ],
+   "offset": [
+    0.0,
+    -2.4,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    8.0
+   ],
+   "style": "coin",
+   "plane": "xy",
+   "art": [
+    ".gg.",
+    "gGGg",
+    "gGhg",
+    ".gg."
+   ]
+  },
+  {
+   "id": "coin1",
+   "shape": "card",
+   "parent": "belt",
+   "pivot": [
+    0.4,
+    -0.9,
+    5.6
+   ],
+   "offset": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    -6.0
+   ],
+   "style": "coin",
+   "plane": "xy",
+   "art": [
+    "gg..",
+    "gGg.",
+    "gGg.",
+    "gg.."
+   ]
+  },
+  {
+   "id": "coin2",
+   "shape": "card",
+   "parent": "belt",
+   "pivot": [
+    2.8,
+    -0.9,
+    5.6
+   ],
+   "offset": [
+    0.0,
+    -2.4,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    12.0
+   ],
+   "style": "coin",
+   "plane": "xy",
+   "art": [
+    ".gg.",
+    "gGGg",
+    "gGhg",
+    ".gg."
+   ]
+  },
+  {
+   "id": "coin3",
+   "shape": "card",
+   "parent": "belt",
+   "pivot": [
+    4.9,
+    -0.9,
+    5.6
+   ],
+   "offset": [
+    0.0,
+    -2.1,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    -10.0
+   ],
+   "style": "coin",
+   "plane": "xy",
+   "art": [
+    "gg..",
+    "gGg.",
+    "gGg.",
+    "gg.."
+   ]
+  },
+  {
+   "id": "leg_l",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    5,
+    5,
+    5
+   ],
+   "pivot": [
+    3.3,
+    -1.0,
+    0.5
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    2.0
+   ],
+   "style": "stocking_l"
+  },
+  {
+   "id": "shin_l",
+   "shape": "box",
+   "parent": "leg_l",
+   "size": [
+    4,
+    4,
+    4
+   ],
+   "pivot": [
+    -0.0397,
+    -4.0011,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.2
+   ],
+   "rotation": [
+    0.0,
+    -0.0,
+    -2.0
+   ],
+   "style": "stocking_l"
+  },
+  {
+   "id": "hoof_l",
+   "shape": "box",
+   "parent": "shin_l",
+   "size": [
+    5,
+    2,
+    6
+   ],
+   "pivot": [
+    -0.0,
+    -2.5,
+    0.2
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.6
+   ],
+   "rotation": [
+    0.0,
+    -8.0,
+    0.0
+   ],
+   "style": "hoof"
+  },
+  {
+   "id": "leg_r",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    5,
+    5,
+    5
+   ],
+   "pivot": [
+    -3.3,
+    -1.0,
+    0.5
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -2.0
+   ],
+   "style": "stocking_r"
+  },
+  {
+   "id": "shin_r",
+   "shape": "box",
+   "parent": "leg_r",
+   "size": [
+    4,
+    4,
+    4
+   ],
+   "pivot": [
+    0.0397,
+    -4.0011,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.2
+   ],
+   "rotation": [
+    0.0,
+    -0.0,
+    2.0
+   ],
+   "style": "stocking_r"
+  },
+  {
+   "id": "hoof_r",
+   "shape": "box",
+   "parent": "shin_r",
+   "size": [
+    5,
+    2,
+    6
+   ],
+   "pivot": [
+    0.0,
+    -2.5,
+    0.2
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.6
+   ],
+   "rotation": [
+    0.0,
+    8.0,
+    -0.0
+   ],
+   "style": "hoof"
+  },
+  {
+   "id": "zombie_shin",
+   "shape": "box",
+   "parent": "shin_l",
+   "size": [
+    1,
+    3,
+    2
+   ],
+   "pivot": [
+    2.05,
+    -1.5,
+    0.6
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "zombie_knee",
+   "shape": "box",
+   "parent": "leg_l",
+   "size": [
+    3,
+    2,
+    1
+   ],
+   "pivot": [
+    0.5,
+    -3.6,
+    2.6
+   ],
+   "style": "rot"
+  },
+  {
+   "id": "belly",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    12,
+    9,
+    7
+   ],
+   "pivot": [
+    0.0,
+    5.0,
+    2.0
+   ],
+   "offset": [
+    0.0,
+    -3.0,
+    4.0
+   ],
+   "style": "belly"
+  },
+  {
+   "id": "belly_sag",
+   "shape": "box",
+   "parent": "belly",
+   "size": [
+    10,
+    3,
+    5
+   ],
+   "pivot": [
+    0.0,
+    -6.5,
+    4.9
+   ],
+   "style": "belly"
+  },
+  {
+   "id": "belly_top",
+   "shape": "box",
+   "parent": "belly",
+   "size": [
+    10,
+    2,
+    5
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    3.6
+   ],
+   "style": "belly"
+  },
+  {
+   "id": "belly_patch",
+   "shape": "box",
+   "parent": "belly",
+   "size": [
+    5,
+    4,
+    1
+   ],
+   "pivot": [
+    -2.8,
+    -1.6,
+    7.6
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -8.0
+   ],
+   "style": "patch_canvas"
+  },
+  {
+   "id": "zombie_belly",
+   "shape": "box",
+   "parent": "belly",
+   "size": [
+    3,
+    4,
+    4
+   ],
+   "pivot": [
+    5.4,
+    -3.0,
+    4.4
+   ],
+   "style": "rot"
+  },
+  {
+   "id": "chest",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    12,
+    9,
+    9
+   ],
+   "pivot": [
+    0.0,
+    3.5,
+    -0.5
+   ],
+   "offset": [
+    0.0,
+    4.5,
+    -0.5
+   ],
+   "rotation": [
+    16.0,
+    0.0,
+    0.0
+   ],
+   "style": "torso"
+  },
+  {
+   "id": "zombie_rib0",
+   "shape": "card",
+   "parent": "chest",
+   "pivot": [
+    6.08,
+    6.6,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    4.0
+   ],
+   "style": "rib",
+   "plane": "yz",
+   "art": [
+    "bb.....",
+    ".bbb...",
+    "...bbb.",
+    ".....bb"
+   ]
+  },
+  {
+   "id": "zombie_rib1",
+   "shape": "card",
+   "parent": "chest",
+   "pivot": [
+    6.08,
+    5.0,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    4.0
+   ],
+   "style": "rib",
+   "plane": "yz",
+   "art": [
+    "bb.....",
+    ".bbb...",
+    "...bbb.",
+    ".....bb"
+   ]
+  },
+  {
+   "id": "zombie_rib2",
+   "shape": "card",
+   "parent": "chest",
+   "pivot": [
+    6.08,
+    3.4,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    4.0
+   ],
+   "style": "rib",
+   "plane": "yz",
+   "art": [
+    "bb.....",
+    ".bbb...",
+    "...bbb.",
+    ".....bb"
+   ]
+  },
+  {
+   "id": "zombie_rib3",
+   "shape": "card",
+   "parent": "chest",
+   "pivot": [
+    6.08,
+    1.8,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    4.0
+   ],
+   "style": "rib",
+   "plane": "yz",
+   "art": [
+    "bb.....",
+    ".bbb...",
+    "...bbb.",
+    ".....bb"
+   ]
+  },
+  {
+   "id": "shawl",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    15,
+    4,
+    11
+   ],
+   "pivot": [
+    0.0,
+    8.0,
+    0.0
+   ],
+   "rotation": [
+    -4.0,
+    0.0,
+    0.0
+   ],
+   "style": "shawl"
+  },
+  {
+   "id": "shawl_fringe_b",
+   "shape": "card",
+   "parent": "shawl",
+   "pivot": [
+    0.0,
+    -2.1,
+    -5.55
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "style": "tatter_shawl",
+   "plane": "xy",
+   "art": [
+    "fffffffffffffff",
+    "ffmmmfmmmmmmfff",
+    "mmtttmttttttmff",
+    "tt...t......tmm",
+    ".............tt"
+   ]
+  },
+  {
+   "id": "shawl_lap_l",
+   "shape": "box",
+   "parent": "shawl",
+   "size": [
+    5,
+    6,
+    1
+   ],
+   "pivot": [
+    3.6,
+    -3.6,
+    5.2
+   ],
+   "rotation": [
+    10.0,
+    0.0,
+    -10.0
+   ],
+   "style": "shawl"
+  },
+  {
+   "id": "shawl_lap_l_fringe",
+   "shape": "card",
+   "parent": "shawl_lap_l",
+   "pivot": [
+    -0.0,
+    -3.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "tatter_shawl",
+   "plane": "xy",
+   "art": [
+    "fffff",
+    "fttmm",
+    "m..tt",
+    "t...."
+   ]
+  },
+  {
+   "id": "shawl_fringe_l",
+   "shape": "card",
+   "parent": "shawl",
+   "pivot": [
+    7.55,
+    -2.1,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    12.0
+   ],
+   "style": "tatter_shawl",
+   "plane": "yz",
+   "art": [
+    "ffftfftfft",
+    "mfm.tt.mt.",
+    "tmt....t..",
+    ".t........"
+   ]
+  },
+  {
+   "id": "shawl_lap_r",
+   "shape": "box",
+   "parent": "shawl",
+   "size": [
+    5,
+    6,
+    1
+   ],
+   "pivot": [
+    -3.6,
+    -3.6,
+    5.2
+   ],
+   "rotation": [
+    10.0,
+    0.0,
+    10.0
+   ],
+   "style": "shawl"
+  },
+  {
+   "id": "shawl_lap_r_fringe",
+   "shape": "card",
+   "parent": "shawl_lap_r",
+   "pivot": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "tatter_shawl",
+   "plane": "xy",
+   "art": [
+    "fffft",
+    "tmtm.",
+    ".t.t.",
+    "....."
+   ]
+  },
+  {
+   "id": "shawl_fringe_r",
+   "shape": "card",
+   "parent": "shawl",
+   "pivot": [
+    -7.55,
+    -2.1,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -12.0
+   ],
+   "style": "tatter_shawl",
+   "plane": "yz",
+   "art": [
+    "ffffffffff",
+    "ttmmtmmmft",
+    "..tt.tttm.",
+    "........t."
+   ]
+  },
+  {
+   "id": "brooch",
+   "shape": "box",
+   "parent": "shawl",
+   "size": [
+    3,
+    3,
+    1
+   ],
+   "pivot": [
+    0.0,
+    -1.2,
+    5.9
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "gold_gem"
+  },
+  {
+   "id": "strap_l",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    2,
+    1,
+    11
+   ],
+   "pivot": [
+    3.8,
+    10.4,
+    -0.0
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "strap_l_front",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    2,
+    6,
+    1
+   ],
+   "pivot": [
+    3.8,
+    7.0,
+    5.0
+   ],
+   "rotation": [
+    6.0,
+    0.0,
+    4.0
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "strap_r",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    2,
+    1,
+    11
+   ],
+   "pivot": [
+    -3.8,
+    10.4,
+    -0.0
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "strap_r_front",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    2,
+    6,
+    1
+   ],
+   "pivot": [
+    -3.8,
+    7.0,
+    5.0
+   ],
+   "rotation": [
+    6.0,
+    0.0,
+    -4.0
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "strap_buckle_r",
+   "shape": "box",
+   "parent": "strap_r_front",
+   "size": [
+    2,
+    2,
+    1
+   ],
+   "pivot": [
+    0.0,
+    -1.2,
+    0.4
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "head",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    10,
+    9,
+    8
+   ],
+   "pivot": [
+    0.0,
+    9.8,
+    2.2
+   ],
+   "offset": [
+    0.0,
+    4.0,
+    2.5
+   ],
+   "rotation": [
+    -12.0,
+    -0.0,
+    0.0
+   ],
+   "style": "head"
+  },
+  {
+   "id": "snout",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    5,
+    4,
+    2
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    6.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "rotation": [
+    -4.0,
+    0.0,
+    0.0
+   ],
+   "style": "snout"
+  },
+  {
+   "id": "wart",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    -1.4,
+    2.2,
+    1.2
+   ],
+   "style": "wart"
+  },
+  {
+   "id": "wart_hair",
+   "shape": "card",
+   "parent": "wart",
+   "pivot": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    30.0,
+    0.0
+   ],
+   "style": "hair_card",
+   "plane": "xy",
+   "art": [
+    "h.h",
+    ".h.",
+    ".h."
+   ]
+  },
+  {
+   "id": "eye_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    2,
+    1
+   ],
+   "pivot": [
+    3.0,
+    5.0,
+    6.3
+   ],
+   "style": "eye"
+  },
+  {
+   "id": "lid_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    3,
+    1,
+    1
+   ],
+   "pivot": [
+    3.0,
+    6.5,
+    6.6
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.2
+   ],
+   "style": "lid_l"
+  },
+  {
+   "id": "bag_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    3,
+    1,
+    1
+   ],
+   "pivot": [
+    3.0,
+    3.5,
+    6.75
+   ],
+   "style": "bag_l"
+  },
+  {
+   "id": "brow_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    4,
+    1,
+    1
+   ],
+   "pivot": [
+    3.2,
+    7.4,
+    6.6
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -12.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "eye_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    2,
+    1
+   ],
+   "pivot": [
+    -3.0,
+    5.0,
+    6.3
+   ],
+   "style": "eye"
+  },
+  {
+   "id": "lid_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    3,
+    1,
+    1
+   ],
+   "pivot": [
+    -3.0,
+    6.5,
+    6.6
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.2
+   ],
+   "style": "lid_r"
+  },
+  {
+   "id": "bag_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    3,
+    1,
+    1
+   ],
+   "pivot": [
+    -3.0,
+    3.5,
+    6.75
+   ],
+   "style": "bag_r"
+  },
+  {
+   "id": "brow_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    4,
+    1,
+    1
+   ],
+   "pivot": [
+    -3.2,
+    7.4,
+    6.6
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    12.0
+   ],
+   "style": "brow"
+  },
+  {
+   "id": "zombie_socket",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    3,
+    3,
+    1
+   ],
+   "pivot": [
+    3.0,
+    5.0,
+    6.15
+   ],
+   "style": "socket"
+  },
+  {
+   "id": "cheek_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    4,
+    4
+   ],
+   "pivot": [
+    -4.8,
+    2.6,
+    4.2
+   ],
+   "offset": [
+    -0.6,
+    -1.8,
+    0.0
+   ],
+   "rotation": [
+    4.0,
+    0.0,
+    -12.0
+   ],
+   "style": "cheek"
+  },
+  {
+   "id": "zombie_cheek",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    2,
+    4,
+    4
+   ],
+   "pivot": [
+    4.8,
+    2.6,
+    4.2
+   ],
+   "offset": [
+    0.6,
+    -1.8,
+    0.0
+   ],
+   "rotation": [
+    4.0,
+    0.0,
+    12.0
+   ],
+   "style": "zombie_cheek"
+  },
+  {
+   "id": "jaw",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    7,
+    2,
+    5
+   ],
+   "pivot": [
+    0.0,
+    0.2,
+    3.4
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    2.4
+   ],
+   "rotation": [
+    4.0,
+    0.0,
+    0.0
+   ],
+   "style": "jaw"
+  },
+  {
+   "id": "tusk_l",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    1,
+    3,
+    1
+   ],
+   "pivot": [
+    2.6,
+    0.2,
+    4.6
+   ],
+   "offset": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    10.0
+   ],
+   "style": "tusk"
+  },
+  {
+   "id": "tusk_r",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    1,
+    3,
+    1
+   ],
+   "pivot": [
+    -2.6,
+    0.2,
+    4.6
+   ],
+   "offset": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    -10.0
+   ],
+   "style": "tusk"
+  },
+  {
+   "id": "tusk_cap",
+   "shape": "box",
+   "parent": "tusk_r",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    -0.0,
+    2.1,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "zombie_jaw",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    2,
+    2,
+    5
+   ],
+   "pivot": [
+    3.6,
+    -1.2,
+    2.4
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "zombie_teeth",
+   "shape": "card",
+   "parent": "zombie_jaw",
+   "pivot": [
+    -0.2,
+    1.5,
+    0.2
+   ],
+   "style": "teeth",
+   "plane": "yz",
+   "art": [
+    "t.tt.",
+    "tt.tt"
+   ]
+  },
+  {
+   "id": "chin_hairs",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    -1.0,
+    -2.05,
+    3.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "hair_card",
+   "plane": "xy",
+   "art": [
+    "h..h.",
+    "h..hh",
+    ".h..h"
+   ]
+  },
+  {
+   "id": "ear_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1,
+    7,
+    5
+   ],
+   "pivot": [
+    -4.9,
+    7.4,
+    2.6
+   ],
+   "offset": [
+    0.0,
+    -3.5,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    -48.0
+   ],
+   "style": "ear"
+  },
+  {
+   "id": "earring_r",
+   "shape": "bone",
+   "parent": "ear_r",
+   "pivot": [
+    0.0,
+    -6.6,
+    1.0
+   ],
+   "style": "dress"
+  },
+  {
+   "id": "earring_hoop",
+   "shape": "card",
+   "parent": "earring_r",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "style": "gold_card",
+   "plane": "yz",
+   "art": [
+    ".gg.",
+    "g..g",
+    "g..g",
+    "h..g",
+    ".gg."
+   ]
+  },
+  {
+   "id": "ear_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1,
+    5,
+    5
+   ],
+   "pivot": [
+    4.9,
+    7.4,
+    2.6
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    48.0
+   ],
+   "style": "ear_rot"
+  },
+  {
+   "id": "zombie_ear",
+   "shape": "card",
+   "parent": "ear_l",
+   "pivot": [
+    -0.0,
+    -5.0,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "style": "ear_tear",
+   "plane": "yz",
+   "art": [
+    "b.bb.",
+    "bbbbb",
+    ".bb.b"
+   ]
+  },
+  {
+   "id": "bun",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    4,
+    3,
+    4
+   ],
+   "pivot": [
+    0.0,
+    9.2,
+    1.6
+   ],
+   "rotation": [
+    -14.0,
+    0.0,
+    6.0
+   ],
+   "style": "hair"
+  },
+  {
+   "id": "bun_pin",
+   "shape": "box",
+   "parent": "bun",
+   "size": [
+    7,
+    1,
+    1
+   ],
+   "pivot": [
+    -0.0,
+    0.6,
+    -0.0
+   ],
+   "rotation": [
+    0.0,
+    30.0,
+    -14.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "hair_wisps",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    8.6,
+    -1.6
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "hair_card",
+   "plane": "xy",
+   "art": [
+    "......t...",
+    "ffft..f..t",
+    "ffffffffff"
+   ]
+  },
+  {
+   "id": "hair_side_l",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    5.08,
+    7.8,
+    0.6
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    16.0
+   ],
+   "style": "hair_card",
+   "plane": "yz",
+   "art": [
+    "HHHhHH",
+    "hhh.hh",
+    ".h....",
+    "......"
+   ]
+  },
+  {
+   "id": "hair_side_r",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    -5.08,
+    7.8,
+    0.6
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -16.0
+   ],
+   "style": "hair_card",
+   "plane": "yz",
+   "art": [
+    "HHHHHh",
+    "hhhhh.",
+    "hh.h..",
+    "......"
+   ]
+  },
+  {
+   "id": "arm_l",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    5,
+    6,
+    5
+   ],
+   "pivot": [
+    7.2,
+    7.4,
+    0.6
+   ],
+   "offset": [
+    0.3,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    -21.668,
+    3.285,
+    11.548
+   ],
+   "style": "sleeve"
+  },
+  {
+   "id": "sleeve_l_fringe",
+   "shape": "card",
+   "parent": "arm_l",
+   "pivot": [
+    0.0,
+    -5.55,
+    2.55
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "tatter_dress",
+   "plane": "xy",
+   "art": [
+    "tftff",
+    ".t.tt",
+    "....."
+   ]
+  },
+  {
+   "id": "forearm_l",
+   "shape": "box",
+   "parent": "arm_l",
+   "size": [
+    4,
+    6,
+    4
+   ],
+   "pivot": [
+    0.3,
+    -5.2,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -2.8,
+    0.2
+   ],
+   "rotation": [
+    -32.032,
+    0.626,
+    -5.967
+   ],
+   "style": "arm_l"
+  },
+  {
+   "id": "bangle_l",
+   "shape": "box",
+   "parent": "forearm_l",
+   "size": [
+    5,
+    1,
+    5
+   ],
+   "pivot": [
+    0.0,
+    -4.6,
+    0.2
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "fist_l",
+   "shape": "box",
+   "parent": "forearm_l",
+   "size": [
+    4,
+    4,
+    4
+   ],
+   "pivot": [
+    -0.0,
+    -5.8,
+    0.2
+   ],
+   "offset": [
+    0.0,
+    -1.8,
+    0.2
+   ],
+   "rotation": [
+    17.847,
+    3.69,
+    -4.735
+   ],
+   "style": "fist_l"
+  },
+  {
+   "id": "arm_r",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    5,
+    6,
+    5
+   ],
+   "pivot": [
+    -7.2,
+    7.4,
+    0.6
+   ],
+   "offset": [
+    -0.3,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    -21.668,
+    -3.285,
+    -11.548
+   ],
+   "style": "sleeve"
+  },
+  {
+   "id": "sleeve_r_fringe",
+   "shape": "card",
+   "parent": "arm_r",
+   "pivot": [
+    -0.0,
+    -5.55,
+    2.55
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "tatter_dress",
+   "plane": "xy",
+   "art": [
+    "fffff",
+    "tttmm",
+    "...tt"
+   ]
+  },
+  {
+   "id": "forearm_r",
+   "shape": "box",
+   "parent": "arm_r",
+   "size": [
+    4,
+    6,
+    4
+   ],
+   "pivot": [
+    -0.3,
+    -5.2,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -2.8,
+    0.2
+   ],
+   "rotation": [
+    -32.032,
+    -0.626,
+    5.967
+   ],
+   "style": "arm_r"
+  },
+  {
+   "id": "bangle_r",
+   "shape": "box",
+   "parent": "forearm_r",
+   "size": [
+    5,
+    1,
+    5
+   ],
+   "pivot": [
+    -0.0,
+    -4.6,
+    0.2
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "fist_r",
+   "shape": "box",
+   "parent": "forearm_r",
+   "size": [
+    4,
+    4,
+    4
+   ],
+   "pivot": [
+    0.0,
+    -5.8,
+    0.2
+   ],
+   "offset": [
+    0.0,
+    -1.8,
+    0.2
+   ],
+   "rotation": [
+    17.847,
+    -3.69,
+    4.735
+   ],
+   "style": "fist_r"
+  },
+  {
+   "id": "bangle_r2",
+   "shape": "box",
+   "parent": "forearm_r",
+   "size": [
+    5,
+    1,
+    5
+   ],
+   "pivot": [
+    0.0,
+    -3.2,
+    0.2
+   ],
+   "rotation": [
+    0.0,
+    20.0,
+    8.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "hand_r",
+   "shape": "bone",
+   "parent": "fist_r",
+   "pivot": [
+    0.0,
+    -2.6,
+    0.4
+   ],
+   "style": "dress"
+  },
+  {
+   "id": "zombie_arm",
+   "shape": "box",
+   "parent": "forearm_l",
+   "size": [
+    1,
+    5,
+    2
+   ],
+   "pivot": [
+    2.1,
+    -2.8,
+    0.2
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "zombie_flesh",
+   "shape": "box",
+   "parent": "arm_l",
+   "size": [
+    2,
+    3,
+    3
+   ],
+   "pivot": [
+    2.6,
+    -2.0,
+    0.4
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    8.0
+   ],
+   "style": "rot"
+  },
+  {
+   "id": "flask",
+   "shape": "box",
+   "parent": "fist_l",
+   "size": [
+    3,
+    5,
+    2
+   ],
+   "pivot": [
+    0.0,
+    -1.6,
+    2.6
+   ],
+   "rotation": [
+    20.0,
+    0.0,
+    0.0
+   ],
+   "style": "flask"
+  },
+  {
+   "id": "flask_neck",
+   "shape": "box",
+   "parent": "flask",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "pewter"
+  },
+  {
+   "id": "flask_cap",
+   "shape": "box",
+   "parent": "flask",
+   "size": [
+    2,
+    1,
+    2
+   ],
+   "pivot": [
+    0.0,
+    4.0,
+    -0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "backpack",
+   "shape": "box",
+   "parent": "chest",
+   "size": [
+    16,
+    20,
+    11
+   ],
+   "pivot": [
+    0.0,
+    7.6,
+    -4.9
+   ],
+   "offset": [
+    0.0,
+    3.0,
+    -5.9
+   ],
+   "rotation": [
+    -7.0,
+    0.0,
+    0.0
+   ],
+   "style": "pack"
+  },
+  {
+   "id": "pack_pocket",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    11,
+    8,
+    3
+   ],
+   "pivot": [
+    0.0,
+    -1.5,
+    -12.6
+   ],
+   "style": "pack_pocket"
+  },
+  {
+   "id": "pack_pocket_flap",
+   "shape": "box",
+   "parent": "pack_pocket",
+   "size": [
+    11,
+    2,
+    4
+   ],
+   "pivot": [
+    0.0,
+    4.1,
+    0.2
+   ],
+   "rotation": [
+    -8.0,
+    0.0,
+    0.0
+   ],
+   "style": "leather"
+  },
+  {
+   "id": "pack_buckle",
+   "shape": "box",
+   "parent": "pack_pocket_flap",
+   "size": [
+    2,
+    2,
+    1
+   ],
+   "pivot": [
+    0.0,
+    -1.2,
+    -2.2
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "bedroll",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    18,
+    5,
+    5
+   ],
+   "pivot": [
+    0.0,
+    -8.4,
+    -5.4
+   ],
+   "style": "bedroll"
+  },
+  {
+   "id": "bedroll_tie0",
+   "shape": "box",
+   "parent": "bedroll",
+   "size": [
+    1,
+    6,
+    6
+   ],
+   "pivot": [
+    -4.5,
+    0.0,
+    0.0
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "bedroll_tie1",
+   "shape": "box",
+   "parent": "bedroll",
+   "size": [
+    1,
+    6,
+    6
+   ],
+   "pivot": [
+    4.5,
+    0.0,
+    0.0
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "backpack_lid",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    17,
+    2,
+    12
+   ],
+   "pivot": [
+    0.0,
+    13.0,
+    -0.2
+   ],
+   "offset": [
+    0.0,
+    1.0,
+    -6.0
+   ],
+   "style": "lid"
+  },
+  {
+   "id": "lid_flap",
+   "shape": "box",
+   "parent": "backpack_lid",
+   "size": [
+    14,
+    7,
+    1
+   ],
+   "pivot": [
+    0.0,
+    -0.4,
+    -12.2
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "rotation": [
+    6.0,
+    0.0,
+    0.0
+   ],
+   "style": "lid"
+  },
+  {
+   "id": "lid_buckle",
+   "shape": "box",
+   "parent": "lid_flap",
+   "size": [
+    3,
+    2,
+    1
+   ],
+   "pivot": [
+    0.0,
+    -5.0,
+    -0.4
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "lid_strap",
+   "shape": "box",
+   "parent": "lid_flap",
+   "size": [
+    2,
+    5,
+    1
+   ],
+   "pivot": [
+    0.0,
+    -2.5,
+    -0.3
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "pack_side_pocket",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    3,
+    7,
+    7
+   ],
+   "pivot": [
+    -9.0,
+    -3.0,
+    -5.6
+   ],
+   "style": "pack_pocket"
+  },
+  {
+   "id": "bottle0",
+   "shape": "box",
+   "parent": "pack_side_pocket",
+   "size": [
+    2,
+    5,
+    2
+   ],
+   "pivot": [
+    -0.2,
+    3.8,
+    1.6
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    10.0
+   ],
+   "style": "bottle_g"
+  },
+  {
+   "id": "bottle0_cork",
+   "shape": "box",
+   "parent": "bottle0",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "cork"
+  },
+  {
+   "id": "bottle1",
+   "shape": "box",
+   "parent": "pack_side_pocket",
+   "size": [
+    2,
+    6,
+    2
+   ],
+   "pivot": [
+    0.2,
+    4.0,
+    -1.6
+   ],
+   "rotation": [
+    10.0,
+    0.0,
+    -6.0
+   ],
+   "style": "bottle_m"
+  },
+  {
+   "id": "bottle1_cork",
+   "shape": "box",
+   "parent": "bottle1",
+   "size": [
+    1,
+    1,
+    1
+   ],
+   "pivot": [
+    -0.0,
+    3.5,
+    -0.0
+   ],
+   "style": "cork"
+  },
+  {
+   "id": "pot",
+   "shape": "bone",
+   "parent": "backpack",
+   "pivot": [
+    -8.2,
+    10.0,
+    -6.0
+   ],
+   "style": "dress"
+  },
+  {
+   "id": "pot_rope",
+   "shape": "card",
+   "parent": "pot",
+   "pivot": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "style": "rope_card",
+   "plane": "yz",
+   "art": [
+    "r",
+    "r",
+    "r"
+   ]
+  },
+  {
+   "id": "pot_body",
+   "shape": "box",
+   "parent": "pot",
+   "size": [
+    5,
+    5,
+    5
+   ],
+   "pivot": [
+    -2.6,
+    -5.5,
+    0.0
+   ],
+   "style": "clay"
+  },
+  {
+   "id": "pot_bulge",
+   "shape": "box",
+   "parent": "pot_body",
+   "size": [
+    6,
+    3,
+    6
+   ],
+   "pivot": [
+    0.0,
+    -0.4,
+    0.0
+   ],
+   "style": "clay"
+  },
+  {
+   "id": "pot_neck",
+   "shape": "box",
+   "parent": "pot_body",
+   "size": [
+    3,
+    1,
+    3
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "clay_dark"
+  },
+  {
+   "id": "pot_rim",
+   "shape": "box",
+   "parent": "pot_neck",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "clay"
+  },
+  {
+   "id": "femur",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    2,
+    11,
+    2
+   ],
+   "pivot": [
+    8.9,
+    1.0,
+    -3.6
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -8.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "femur_knob0",
+   "shape": "box",
+   "parent": "femur",
+   "size": [
+    3,
+    2,
+    3
+   ],
+   "pivot": [
+    0.0,
+    5.6,
+    -0.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "femur_knob1",
+   "shape": "box",
+   "parent": "femur",
+   "size": [
+    3,
+    2,
+    3
+   ],
+   "pivot": [
+    -0.0,
+    -5.6,
+    0.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "femur_strap",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    1,
+    2,
+    4
+   ],
+   "pivot": [
+    8.6,
+    2.0,
+    -3.6
+   ],
+   "style": "leather_dark"
+  },
+  {
+   "id": "skull",
+   "shape": "bone",
+   "parent": "backpack",
+   "pivot": [
+    8.4,
+    12.0,
+    -9.0
+   ],
+   "style": "dress"
+  },
+  {
+   "id": "skull_cord",
+   "shape": "card",
+   "parent": "skull",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "style": "rope_card",
+   "plane": "yz",
+   "art": [
+    "r",
+    "r"
+   ]
+  },
+  {
+   "id": "skull_head",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    4,
+    3,
+    4
+   ],
+   "pivot": [
+    0.8,
+    -3.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    20.0,
+    0.0
+   ],
+   "style": "skull"
+  },
+  {
+   "id": "skull_jaw",
+   "shape": "box",
+   "parent": "skull_head",
+   "size": [
+    3,
+    1,
+    2
+   ],
+   "pivot": [
+    -0.0,
+    -2.0,
+    0.9
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "broom",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    1,
+    28,
+    1
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    -11.9
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    52.0
+   ],
+   "style": "wood"
+  },
+  {
+   "id": "broom_head",
+   "shape": "box",
+   "parent": "broom",
+   "size": [
+    3,
+    5,
+    3
+   ],
+   "pivot": [
+    0.0,
+    -15.0,
+    -0.0
+   ],
+   "rotation": [
+    0.0,
+    20.0,
+    0.0
+   ],
+   "style": "straw"
+  },
+  {
+   "id": "broom_bristles",
+   "shape": "card",
+   "parent": "broom_head",
+   "pivot": [
+    0.0,
+    -2.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "straw_card",
+   "plane": "yz",
+   "art": [
+    "fffff",
+    ".ffff",
+    ".t.m.",
+    "...t."
+   ]
+  },
+  {
+   "id": "broom_bristles_b",
+   "shape": "card",
+   "parent": "broom_head",
+   "pivot": [
+    0.0,
+    -2.5,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "straw_card",
+   "plane": "xy",
+   "art": [
+    "fffff",
+    "fff..",
+    "..t..",
+    "....."
+   ]
+  },
+  {
+   "id": "broom_tie",
+   "shape": "box",
+   "parent": "broom_head",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "style": "rope"
+  },
+  {
+   "id": "lantern_hook",
+   "shape": "box",
+   "parent": "backpack",
+   "size": [
+    1,
+    1,
+    6
+   ],
+   "pivot": [
+    7.2,
+    12.0,
+    -11.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -2.5
+   ],
+   "rotation": [
+    20.0,
+    0.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "lantern",
+   "shape": "bone",
+   "parent": "lantern_hook",
+   "pivot": [
+    0.0,
+    -0.0,
+    -5.4
+   ],
+   "style": "dress"
+  },
+  {
+   "id": "lantern_chain",
+   "shape": "card",
+   "parent": "lantern",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "style": "chain",
+   "plane": "xy",
+   "art": [
+    "cc",
+    "c.",
+    "cc",
+    ".c",
+    ".c"
+   ]
+  },
+  {
+   "id": "lantern_cap",
+   "shape": "box",
+   "parent": "lantern",
+   "size": [
+    3,
+    1,
+    3
+   ],
+   "pivot": [
+    0.0,
+    -5.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "lantern_cage",
+   "shape": "box",
+   "parent": "lantern",
+   "size": [
+    4,
+    5,
+    4
+   ],
+   "pivot": [
+    0.0,
+    -8.0,
+    0.0
+   ],
+   "style": "lantern"
+  },
+  {
+   "id": "lantern_base",
+   "shape": "box",
+   "parent": "lantern",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    -11.0,
+    0.0
+   ],
+   "style": "iron"
+  },
+  {
+   "id": "lantern_flame",
+   "shape": "card",
+   "parent": "lantern_cage",
+   "pivot": [
+    0.0,
+    -0.5,
+    -0.0
+   ],
+   "style": "soul_flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "belly",
+     "osc": {
+      "amp": [
+       0.03,
+       0.02,
+       0.04
+      ],
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    }
+   ]
+  }
+ }
+}
