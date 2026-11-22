@@ -364,41 +364,82 @@ def styles_for(v="base"):
                 marks, dict(skin, threshold=0.66 if k in ("leg", "fur_top") else 0.6), stubble]
         st["fur_card"]["stamps"] = INVISIBLE
     if zombie:
-        # rotting grey-green coat with mangy bald patches and wounds, a dark wound behind the bare ribs
-        rot = {"id": "rot", "op": "patches", "ramp": "rot", "tone": 3.2, "scale": 1.3, "threshold": 0.77,
-               "faces": ["sides", "back", "front", "top"]}
-        mange = {"id": "mange", "op": "patches", "ramp": "flesh", "tone": 4.4, "scale": 1.9, "threshold": 0.68,
-                 "faces": ["sides", "top"]}
-        wounds = {"id": "wounds", "op": "spots", "count": 3, "radius": [0.6, 1.2], "ramp": "rot", "tone": 1.4,
-                  "faces": ["sides", "top"], "bevel": {"highlight": 1, "shadow": 0, "highlight_shift": 2.0}}
-        for k in ("fur", "fur_body", "fur_top", "leg", "head"):
-            st[k]["tone"] -= 1.2
-            st[k]["layers"] = st[k]["layers"] + [mange, rot, wounds]
-        # dark sunken sockets round the eyes (head part space)
-        st["head"]["layers"].append({"id": "sockets", "op": "spots", "ramp": "eye", "tone": 1.2, "faces": ["front", "sides"],
-                                     "centers": [c + [1.3] for c in SOCKETS]})
-        st["brow"]["layers"].append({"id": "brow_dark", "op": "fill", "ramp": "fur", "tone": 3.0, "faces": ["bottom", "front"]})
-        # the cavity behind the ribs (body part space: the left flank at x=+8.5)
-        st["fur_body"]["layers"].append({"id": "cavity", "op": "spots", "ramp": "rot", "tone": 0.6,
-                                         "centers": [[8.5, 0.8, 7.2, 4.4], [8.5, -1.2, 9.6, 3.0], [8.5, 2.8, 5.0, 3.0]],
+        # In the style of vanilla's zombie horse: a green-grey rotten hide mottled with darker rot patches, soft flat
+        # shading and little noise, bare pale bone where the zombie_* cards are, sunken dark sockets with glowing points.
+        def hide(tone, flow="z", extra=()):
+            return {"ramp": "fur", "tone": tone, "rim": {"light_shift": 0.6, "dark_shift": -0.7},
+                    "brush": {"flow": flow, "length": 2.6, "rough": 0.35, "overshoot": 0.15}, "layers": [
+                {"id": "under", "op": "gradient", "axis": "y", "amount": 1.8},
+                {"id": "mottle", "op": "patches", "scale": 1.4, "threshold": 0.65, "shift": 1.0},
+                {"id": "rot", "op": "patches", "ramp": "rot", "tone": 4.6, "scale": 1.9, "threshold": 0.62, "seed": 11},
+                {"id": "rot_core", "op": "patches", "ramp": "rot", "tone": 2.6, "scale": 1.9, "threshold": 0.73,
+                 "seed": 11},
+                {"id": "strands", "op": "stripes", "axis": "z", "period": 2.2, "width": 0.2, "shift": -0.8,
+                 "wobble": 0.5, "faces": ["left", "right"]},
+                {"id": "strands_x", "op": "stripes", "axis": "x", "period": 2.2, "width": 0.2, "shift": -0.8,
+                 "wobble": 0.5, "faces": ["front", "back", "top"]},
+                {"id": "mange", "op": "spots", "count": 2, "radius": [0.6, 1.1], "ramp": "bone", "tone": 3.6,
+                 "faces": ["sides", "top"], "bevel": {"highlight": 0, "shadow": 1, "shadow_ramp": "rot",
+                                                      "shadow_shift": -2.0}}] + list(extra)}
+        for k, tone in (("fur", 8.8), ("fur_body", 8.8), ("fur_top", 9.5), ("head", 9.3)):
+            st[k] = hide(tone)
+        st["leg"] = hide(8.2, "y")
+        st["paw"] = dict(hide(7.4), stamps=st["paw"]["stamps"])
+        # the open wound behind the bare ribs (body part space: the left flank at x = +8.5)
+        st["fur_body"]["layers"].append({"id": "cavity", "op": "spots", "ramp": "eye", "tone": 1.6,
+                                         "centers": [[8.5, 0.8, 4.2, 4.4], [8.5, -1.2, 6.6, 3.0], [8.5, 2.8, 2.0, 3.0]],
                                          "faces": ["left", "right"],
-                                         "bevel": {"highlight": 1, "shadow": 0, "highlight_shift": 2.0}})
-        st["fur_card"]["layers"] = st["fur_card"]["layers"] + [dict(rot, threshold=0.66)]
-        st["fur_card"]["art_key"] = {"h": "fur:10", "d": "fur:2"}
-        st["zombie_bone"] = {"ramp": "bone", "tone": 6.4, "rim": {"light": 0, "dark": 0}, "brush": {"off": True},
-                             "art_key": {"b": "bone:6"}, "layers": [
-            {"id": "shade", "op": "gradient", "axis": "y", "amount": 1.2},
-            {"id": "grime", "op": "patches", "scale": 1.2, "threshold": 0.6, "shift": -2.0}]}
-        st["zombie_flesh"] = {"ramp": "flesh", "tone": 4.0, "art_key": {"f": "flesh:4"}}
-        # small intense glowing points in dark sockets
+                                         "bevel": {"highlight": 1, "shadow": 0, "highlight_ramp": "rot", "highlight_shift": 3}})
+        # sunken sockets round the glowing eyes
+        st["head"]["layers"].append({"id": "sockets", "op": "spots", "ramp": "eye", "tone": 0.4,
+                                     "faces": ["front", "sides"], "centers": [c + [1.7] for c in SOCKETS]})
+        st["brow"] = {"ramp": "fur", "tone": 8.4, "rim": {"light_shift": 0.6, "dark_shift": -0.8},
+                      "brush": {"rough": 0.3}, "layers": [
+            {"id": "under", "op": "fill", "ramp": "eye", "tone": 1.0, "faces": ["bottom"]},
+            {"id": "shade", "op": "gradient", "axis": "y", "amount": 2.0}]}
         st["eye"] = {"ramp": "eye", "tone": 0.2, "light": 0, "brush": {"off": True}, "stamps": [
             {"face": "front", "at": "top-left", "art": [".g"], "key": {"g": "glow:3"}}]}
+        # the muzzle: rotten lips, bare bone and teeth showing on the right side
+        st["muzzle"] = {"ramp": "fur", "tone": 8.6, "brush": {"length": 1.8, "rough": 0.3}, "layers": [
+            {"id": "under", "op": "gradient", "axis": "y", "amount": 1.8},
+            {"id": "rot", "op": "patches", "ramp": "rot", "tone": 2.8, "scale": 1.4, "threshold": 0.66},
+            {"id": "lip", "op": "band", "axis": "y", "from": -1.0, "to": -0.7, "ramp": "eye", "tone": 1.2,
+             "faces": ["sides", "front"]},
+            {"id": "bare", "op": "spots", "ramp": "bone", "tone": 4.6, "centers": [[-3.5, -1.0, 3.6, 1.8]],
+             "faces": ["right"], "bevel": {"highlight": 0, "shadow": 1, "shadow_ramp": "eye", "shadow_shift": -3}}]}
+        st["muzzle_top"] = {"ramp": "fur", "tone": 9.4, "brush": {"rough": 0.3}}
+        st["nose"] = {"ramp": "eye", "tone": 1.4, "brush": {"off": True}, "stamps": [
+            {"face": "front", "at": "bottom", "art": ["n..n"], "key": {"n": "eye:0"}}]}
+        st["jaw"] = {"ramp": "fur", "tone": 7.8, "brush": {"rough": 0.3}, "layers": [
+            {"id": "chin", "op": "gradient", "axis": "y", "amount": 1.4},
+            {"id": "lip", "op": "band", "axis": "y", "from": 0.2, "to": 1.0, "ramp": "eye", "tone": 1.0,
+             "faces": ["front"]},
+            {"id": "gum", "op": "band", "axis": "x", "from": -1.0, "to": -0.4, "ramp": "rot", "tone": 1.2,
+             "faces": ["sides", "front"]},
+            {"id": "tongue", "op": "fill", "ramp": "mouth", "tone": 1.0, "faces": ["top"]}]}
+        st["teeth"] = {"ramp": "bone", "tone": 4.6, "brush": {"off": True}}
+        for e in ("ear_l", "ear_r"):
+            st[e] = {"ramp": "fur", "tone": 8.4, "brush": {"off": True}, "layers": [
+                {"id": "under", "op": "gradient", "axis": "y", "amount": 1.2}], "stamps": [
+                {"face": "front", "at": "top-left", "art": ["_._", ".d.", "..."], "key": {"d": "rot:2"}},
+                {"face": "back", "at": "top-left", "art": ["_._"]}]}
         # the torn ear: a notch bitten out of the right ear
         st["ear_r"]["stamps"] = [
-            {"face": "front", "at": "top-left", "art": ["___", "_d.", "..."], "key": {"d": "rot:2"}},
+            {"face": "front", "at": "top-left", "art": ["___", "_d.", "..."], "key": {"d": "rot:1"}},
             {"face": "back", "at": "top-left", "art": ["___", "_.."]}]
-        st["jaw"]["layers"].append({"id": "gum", "op": "band", "axis": "x", "from": -1.0, "to": -0.4, "ramp": "rot",
-                                    "tone": 1.4, "faces": ["sides", "front"]})
+        st["fur_card"] = {"ramp": "fur", "tone": 8.6, "light": 0.5, "rim": {"light": 0, "dark": 0},
+                          "art_key": {"h": "fur:10", "d": "rot:1"}, "brush": {"flow": "y", "length": 2.4, "rough": 0.4},
+                          "layers": [
+            {"id": "under", "op": "gradient", "axis": "y", "amount": 1.4},
+            {"id": "rot", "op": "patches", "ramp": "rot", "tone": 2.6, "scale": 1.6, "threshold": 0.64},
+            {"id": "strand", "op": "stripes", "axis": "z", "period": 1.6, "width": 0.3, "shift": -1.0, "wobble": 0.3},
+            {"id": "strand_x", "op": "stripes", "axis": "x", "period": 1.6, "width": 0.3, "shift": -1.0, "wobble": 0.3}]}
+        st["zombie_bone"] = {"ramp": "bone", "tone": 5.4, "rim": {"light": 0, "dark": 0}, "brush": {"off": True},
+                             "art_key": {"b": "bone:5"}, "layers": [
+            {"id": "shade", "op": "gradient", "axis": "y", "amount": 1.4},
+            {"id": "grime", "op": "patches", "scale": 1.2, "threshold": 0.66, "shift": -1.6}]}
+        st["zombie_flesh"] = {"ramp": "rot", "tone": 3.0, "art_key": {"f": "rot:3"}}
+        st["claw"] = {"ramp": "eye", "tone": 1.2, "brush": {"off": True}}
     return st
 
 
@@ -902,10 +943,14 @@ VARIANT_RAMPS = {
         "pink": ["#2c2025", "#3d2c32", "#503a40", "#644a4f", "#7a5c60", "#8f6f71", "#a38384", "#b69897"],
     },
     "zombie": {
-        "fur": ["#121513", "#191d1a", "#212622", "#2a302b", "#343b35", "#3f4740", "#4b534b", "#585f57", "#656c63",
-                "#727870", "#7f847c", "#8b9088", "#969a91", "#a0a39a", "#a9aca2"],
-        "rot": ["#0c0809", "#170e0f", "#231416", "#311b1c", "#3f2322", "#4d2d29", "#5a3830"],
-        "flesh": ["#1b1719", "#272123", "#342c2d", "#423838", "#514544", "#605350", "#6f625d"],
+        # zombie-horse greens, a touch greyer and more teal: a rotten hide, not a green coat
+        "fur": ["#0a140e", "#102016", "#172c1e", "#1f3827", "#284530", "#32533a", "#3d6044", "#486d4e", "#547a58",
+                "#618763", "#6f936e", "#7e9f7a", "#8eab88", "#9eb797", "#afc3a7"],
+        "rot": ["#0d1c13", "#13261a", "#1a3121", "#223d29", "#2b4a32", "#35573b"],
+        "bone": ["#2a3427", "#46553f", "#64765a", "#859878", "#a5b697", "#c2d0b2", "#d9e3cb", "#e9f0df"],
+        "eye": ["#030705", "#070e0a", "#0d1810", "#16241a", "#26362a"],
+        "skin": ["#050a07", "#0a120d", "#101b14", "#17241b", "#1f2e23", "#2a3a2d"],
+        "mouth": ["#070c09", "#0d150f", "#142017", "#1d2b20", "#283a2b", "#344a36"],
         "glow": ["#06343d", "#0b5d6c", "#17a4b8", "#5ce3ef", "#c4fbff", "#f2ffff"],
     },
 }
@@ -920,6 +965,7 @@ def variant_spec(name):
     if name == "zombie":
         out["minecraft"] = dict(out["minecraft"], glow_ramps=["glow"])
         out["render"] = dict(out["render"], background="#1d2422")
+        out["light"] = dict(out["light"], strength=0.45, gradient=0.55, ao=0.9)   # flatter, vanilla-like shading
     return out
 
 
