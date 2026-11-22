@@ -710,7 +710,9 @@ def flicker(L, k=1.0, fast=1.0):
         tr.append(osc(f"{f}x", None, [0, 0.18 * k, 0.12 * k], c(4 - j * 0.5), 0.4 + 0.2 * j, ch="scale"))
         tr.append(osc(f, "y", 9 * k, c(2), 0.25 * j))
     for n in ("l", "r"):
-        tr.append(osc(f"eye_fire_{n}", None, [0.1 * k, 0.24 * k, 0], c(4), 0.2 if n == "l" else 0.55, ch="scale"))
+        # (the eye flames flicker no taller than at rest, so they never lick up through the brow)
+        tr.append(osc(f"eye_fire_{n}", None, [0.1 * k, 0.12 * k, 0], c(4), 0.2 if n == "l" else 0.55,
+                      bias=[0, -0.12 * k, 0], ch="scale"))
         tr.append(osc(f"eye_fire_{n}", "z", 6 * k, c(2), 0.1 if n == "l" else 0.6))
     tr.append(osc("tail_flame", None, [0.2 * k, 0, 0.25 * k], c(4), 0.3, ch="scale"))
     return tr
@@ -978,8 +980,10 @@ def build_block():
         "animations": {
             # the eye flames lick and flutter; the jaw creaks against the ground
             "idle": {"length": 2.0, "loop": True, "tracks": [
-                {"part": "eye_fire_l", "channel": "scale", "osc": {"amp": [0.1, 0.22, 0], "cycles": 4}},
-                {"part": "eye_fire_r", "channel": "scale", "osc": {"amp": [0.1, 0.22, 0], "cycles": 4, "phase": 0.35}},
+                {"part": "eye_fire_l", "channel": "scale", "osc": {"amp": [0.1, 0.12, 0], "cycles": 4,
+                                                                    "bias": [0, -0.12, 0]}},
+                {"part": "eye_fire_r", "channel": "scale", "osc": {"amp": [0.1, 0.12, 0], "cycles": 4, "phase": 0.35,
+                                                                    "bias": [0, -0.12, 0]}},
                 {"part": "eye_fire_l", "axis": "z", "osc": {"amp": 6, "cycles": 2, "phase": 0.1}},
                 {"part": "eye_fire_r", "axis": "z", "osc": {"amp": 6, "cycles": 2, "phase": 0.6}},
                 {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.9, 0], [1.05, -2.0, "out"], [1.3, -0.6], [1.6, 0, "back"],
