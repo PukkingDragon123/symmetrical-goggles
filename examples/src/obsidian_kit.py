@@ -1,5 +1,5 @@
 """Shared ramps and painted-detail generators for the Winterworks "Living End" 3D art (monolith.py, end_glider.py,
-obsidian_shield.py, monolith_wand.py, chorus_cocoon.py and winterworks_end_gear_icons.py, all in this folder).
+obsidian_shield.py, monolith_wand.py and chorus_cocoon.py, all in this folder).
 
 The palette is vanilla-friendly End: obsidian (violet-black), crying obsidian (the saturated violet glow of runes,
 cracks and seams), purpur, End stone, a weathered grey-violet stone, gold that shades into violet, iron, the starry

@@ -12,7 +12,10 @@ textures (the Monolith Eye item, chiseled obsidian) stay round. The Obolisk is i
 texel per Minecraft pixel), chunky boxes sized so every face has room for its texture, cards only for wings and
 membranes, and every texel shaded like a vanilla mob (a lit top, a shaded underside, light and dark lips on the
 edges, a soft grain of a few close tones, simple markings); obsidian is painted like the obsidian and crying obsidian
-blocks. Block textures and item icons are **32 x 32**; particles 16 x 16; the eclipse sky textures 256 x 256.
+blocks. Block textures and item icons are **16 x 16 in vanilla style** (a few tones per material, soft even noise,
+1-pixel item outlines in a darker shade of the item's own colour; `examples/src/winterworks_end_pixels.py`); the Chorus
+Cocoon is a cocoa-like block model over one 16 x 16 texture (not a lowpix export); particles 16 x 16; the eclipse sky
+textures 256 x 256.
 
 Java packages and owners (one agent each; other agents only call the public API named here):
 * `end/` **world**: biomes, terrain features, structures, the new blocks' behaviour, End City loot.
@@ -217,19 +220,20 @@ Structures: `obsidian_ruins`, `end_shrine`, `monolith_tower`. Particles: `end_sp
 `blinding_dust`, `gucker_breath`, `enderfly_scale`, `obsidian_crack`, `meteor_spark`. Key: `key.winterworks.dragon_breath`.
 
 ## 15. Art files (exact paths under `assets/winterworks/textures/`)
-* Blocks (32 x 32): `block/end_grass_block_top`, `block/end_grass_block_side`, `block/end_grass`,
+* Blocks (16 x 16, vanilla style): `block/end_grass_block_top`, `block/end_grass_block_side`, `block/end_grass`,
   `block/tall_end_grass_top`, `block/tall_end_grass_bottom`, `block/end_moss_block`, `block/end_bloom_closed`,
   `block/end_bloom_open`, `block/end_bloom_open_bare` (no bulb), `block/end_bloom_glow` (emissive overlay of the open
   bloom), `block/chorus_stem`, `block/chorus_stem_top`, `block/chorus_roots`, `block/chorus_roots_top`,
   `block/chorus_fruit_block`, `block/chorus_fruit_block_top`, `block/end_sand`, `block/suspicious_end_sand_0..3`,
   `block/dry_end_bush`, `block/meteorite`, `block/meteorite_core`, `block/polished_meteorite`, `block/meteorite_bricks`,
   `block/polished_obsidian`, `block/obsidian_bricks`, `block/cracked_obsidian_bricks`, `block/obsidian_tiles`,
-  `block/cracked_obsidian_tiles`, `block/chiseled_obsidian`, `block/chiseled_obsidian_top`. The Chorus Cocoon is a 3D
-  block model (`chorus_cocoon` ages 0-3) from the 3D art.
-* Items (32 x 32): `item/end_bulb`, `item/enderfly_wing`, `item/gucker_meat`, `item/cooked_gucker_meat`,
+  `block/cracked_obsidian_tiles`, `block/chiseled_obsidian`, `block/chiseled_obsidian_top`. The Chorus Cocoon is a
+  vanilla-style block model like cocoa (`models/block/chorus_cocoon_age0..3`: a few boxes over the one 16 x 16
+  `block/chorus_cocoon`), written by winterworks_end_pixels.py.
+* Items (16 x 16, vanilla style): `item/end_bulb`, `item/enderfly_wing`, `item/gucker_meat`, `item/cooked_gucker_meat`,
   `item/gucker_gland`, `item/obsidian_shard`, `item/monolith_eye`, `item/void_rod`, `item/dragon_egg_cracked_1`,
   `item/dragon_egg_cracked_2`, `item/end_bloom` (the flower's inventory icon). The shield, glider and wand are 3D
-  models everywhere (GUI included), with 32 x 32 2D icons `item/obsidian_shield_icon`, `item/end_glider_icon`,
+  models everywhere (GUI included), with 16 x 16 2D icons `item/obsidian_shield_icon`, `item/end_glider_icon`,
   `item/monolith_wand_icon` for first person if a renderer wants them.
 * Particles (16 x 16, frames `_0.._n`): `particle/end_spore`, `end_dust`, `eclipse_mote`, `blinding_dust`,
   `gucker_breath`, `enderfly_scale`, `obsidian_crack`, `meteor_spark`.
@@ -241,7 +245,7 @@ Structures: `obsidian_ruins`, `end_shrine`, `monolith_tower`. Particles: `end_sp
 * Entity models (lowpix specs in `examples/src/`, exported with `python -m lowpix mc export` to
   `client/lowpix/<Name>Model.java` and `entity/<name>.png` + `_glow` / `_tint`): `enderfly`, `endling`, `gucker`,
   `obolisk`, `dragonling_baby`, `dragonling_teen` (+ `dragonling_teen_armor_iron|gold|diamond` texture variants),
-  `monolith`, `end_glider`, `obsidian_shield`, `monolith_wand`, `chorus_cocoon`.
+  `monolith`, `end_glider`, `obsidian_shield`, `monolith_wand`.
 
 ## 16. Additions after review
 * **The Monolith Wand, cooler and more meteorite**: a remade 3D model: the round Monolith eye held in a crown of jagged,

@@ -2,7 +2,10 @@
 them into the mod as block models.
 
     python examples/src/chorus_cocoon.py examples/chorus_cocoon.json                       # the spec only
-    python examples/src/chorus_cocoon.py examples/chorus_cocoon.json --mod mods/winterworks # + block models, texture
+
+Retired for the mod: the Chorus Cocoon in Winterworks is now a vanilla-style, cocoa-like block model over one 16 x 16
+texture, drawn by examples/src/winterworks_end_pixels.py. `--mod` refuses to overwrite it; this spec stays as a
+lowpix example.
 
 A pod that hangs from the block above on a short chorus stem, under a knot of stem and pale chorus-flower petals: a
 lumpy, chorus-fruit-like cluster of purple bulbs speckled with pale nubs that swells from a small bud (age 0) to a
@@ -313,12 +316,4 @@ if __name__ == "__main__":
     out = args[0] if args else os.path.join(ROOT, "examples", "chorus_cocoon.json")
     dump(spec, out)
     if mod:
-        tex, models = block_models(spec)
-        res = os.path.join(mod, "src", "main", "resources", "assets", "winterworks")
-        os.makedirs(os.path.join(res, "textures", "block"), exist_ok=True)
-        os.makedirs(os.path.join(res, "models", "block"), exist_ok=True)
-        tex.save(os.path.join(res, "textures", "block", "chorus_cocoon.png"))
-        for k, mdl in models.items():
-            with open(os.path.join(res, "models", "block", f"chorus_cocoon_age{k}.json"), "w") as fh:
-                json.dump(mdl, fh, indent=1)
-        print("texture", tex.size, "models", {k: len(v["elements"]) for k, v in models.items()})
+        sys.exit("--mod is retired: the mod's Chorus Cocoon comes from examples/src/winterworks_end_pixels.py")
