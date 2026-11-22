@@ -227,7 +227,7 @@ final class NetherShots {
         // 6. the Netherite Spear in hand
         at(t += 2, () -> {
             cmd("gamemode creative");
-            cmd("tp @s 0.5 80 34.5 180 10");
+            cmd("tp @s -3.5 80 33.5 180 10");   // beside the deck, clear of the lunge's dummy
             cmd("clear @s");
             cmd("give @s winterworks:netherite_spear");
             cmd("give @s winterworks:withered_commander_spawn_egg");
