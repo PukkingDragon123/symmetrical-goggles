@@ -21,9 +21,9 @@ import org.joml.Matrix4f;
 
 /**
  * The soul glint (docs/FIXES_0_4.md "Cursed books and cursed gear"): every item carrying a curse (hex.CursedItems)
- * glints with drifting blue souls and a slow, dizzying swirl instead of vanilla's purple shimmer. These are vanilla's
- * five glint render types with the soul textures (misc/soul_glint_item.png, misc/soul_glint_entity.png; additive like
- * vanilla's) and their own texturing. While a cursed stack is drawn (mixin.client.hex.SoulGlintItemMixin and the armour
+ * glints with three soul-fire teal souls rising through soft swirls instead of vanilla's purple shimmer. These are
+ * vanilla's five glint render types with the soul textures (misc/soul_glint_item.png, misc/soul_glint_entity.png;
+ * additive like vanilla's) and their own texturing. While a cursed stack is drawn (mixin.client.hex.SoulGlintItemMixin and the armour
  * layers) the vanilla glint types resolve to these (mixin.client.hex.SoulGlintTypeMixin); they have fixed buffers
  * (mixin.client.hex.SoulGlintBuffersMixin) and are drawn when vanilla draws its glints.
  */
@@ -31,11 +31,13 @@ public final class SoulGlint extends RenderType {
     static final ResourceLocation ITEM_TEXTURE = Winterworks.id("textures/misc/soul_glint_item.png");
     static final ResourceLocation ENTITY_TEXTURE = Winterworks.id("textures/misc/soul_glint_entity.png");
 
-    // three times vanilla's scales: each item shows more of the sheet, so a few souls drift over it at once
+    // The glint texture holds three souls per tile. Items: one whole tile per 16 px sprite on the 1024-wide item atlas
+    // (atlas uv * 64), so every cursed item carries all three souls (vanilla's 8 shows an eighth of its sheet).
+    // Armour: 2 x the 64 x 32 armour uv, so a tile spans 32 x 16 armour px (soul_glint_entity.png is drawn for that).
     private static final TexturingStateShard ITEM_TEXTURING = new TexturingStateShard("winterworks_soul_glint_texturing",
-            () -> setupTexturing(24.0f), RenderSystem::resetTextureMatrix);
+            () -> setupTexturing(64.0f), RenderSystem::resetTextureMatrix);
     private static final TexturingStateShard ENTITY_TEXTURING = new TexturingStateShard("winterworks_soul_entity_glint_texturing",
-            () -> setupTexturing(0.48f), RenderSystem::resetTextureMatrix);
+            () -> setupTexturing(2.0f), RenderSystem::resetTextureMatrix);
 
     public static final RenderType ARMOR_ENTITY_GLINT = create("winterworks_soul_armor_entity_glint", DefaultVertexFormat.POSITION_TEX,
             VertexFormat.Mode.QUADS, 1536, CompositeState.builder()
@@ -110,17 +112,16 @@ public final class SoulGlint extends RenderType {
     }
 
     /**
-     * Souls drift slowly upward while the whole glint sways and turns, slow and dizzy (vanilla's slides diagonally).
-     * The glint speed option still applies.
+     * The souls rise slowly through the item (a tile every 5 glint seconds, 10 s at the default glint speed) and sway
+     * gently from side to side (vanilla's glint slides diagonally). Only translation: a turning texture matrix pivots
+     * on the atlas corner, which would sweep each item's souls past at a speed set by where its sprite sits in the
+     * atlas. The glint speed option still applies.
      */
     private static void setupTexturing(float scale) {
         double t = Util.getMillis() / 1000.0 * Minecraft.getInstance().options.glintSpeed().get();
-        float driftU = (float) ((t * 0.016) % 1.0);
-        float driftV = (float) ((t * 0.06) % 1.0);
-        float swirl = (float) (0.17 + Math.sin(t * 0.33) * 0.22 + Math.sin(t * 0.13 + 1.0) * 0.12);
-        Matrix4f m = new Matrix4f().translation(-driftU, driftV, 0f);
-        m.rotateZ(swirl).scale(scale);
-        RenderSystem.setTextureMatrix(m);
+        float sway = (float) (Math.sin(t * 0.9) * 0.05 + Math.sin(t * 0.37 + 1.0) * 0.03);
+        float rise = (float) ((t * 0.2 + Math.sin(t * 1.3) * 0.02) % 1.0);
+        RenderSystem.setTextureMatrix(new Matrix4f().translation(sway, rise, 0f).scale(scale));
     }
 
     // ------------------------------------------------------------------------------------------------ while drawing
