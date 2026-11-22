@@ -4,9 +4,11 @@
 
 A huge furry beast between a dire wolf and a giant bear, half dead and half frozen: deep slate-blue to indigo fur
 with cyan frost tips, a heavy pale mane over the neck and shoulders, tall ice crystal clusters erupting from its back
-and left shoulder, a left foreleg sheathed in ice plates, an icy tail club; the right half of its face is bare skull
-(a dark socket round a glowing eye), its right flank is torn open to a cage of bare ribs over a dark cavity where a
-frost core glows, the tail's middle is bare vertebrae. Two massive sabre fangs, long splayed toes with dark horn claws.
+and left shoulder, a left foreleg sheathed in ice plates, an icy tail club; its whole head is a frost-cracked
+sabretooth skull (scowling brow ridges over deep orbits where blue soul-fire burns, flames licking up beside the
+brows), frostbitten fur creeping onto the back of the skull; its right flank is torn open to a cage of bare ribs over
+a dark cavity where a frost core glows, the tail's middle is bare vertebrae. Two massive sabre fangs, long splayed
+toes with dark horn claws.
 
 Units are Minecraft pixels (16 per block), density 1, and every box is a whole number of pixels, so the model exports
 1:1 to a vanilla entity model (python -m lowpix mc export). Fur fringes, ribs, teeth and whiskers are alpha-cut cards
@@ -15,7 +17,7 @@ Units are Minecraft pixels (16 per block), density 1, and every box is a whole n
 Part contract (mods/winterworks/docs/COLD_UPDATE.md section 7): body (root), chest, hips, neck, head, jaw, fang_l,
 fang_r, eye_l, eye_r (glow), front_leg_l/r, front_paw_l/r, back_leg_l/r, back_paw_l/r, tail, tail_tip. Extra joints:
 front_fore_l/r (forearm, between leg and paw), back_shin_l/r (between leg and paw), tail_mid (between tail and
-tail_tip), frost_core (glow). Clips: idle, walk, run, roar, claw_l, claw_r, fury, stunned, wake, frozen, death.
+tail_tip), frost_core (glow); eye_*_glow, eye_*_flame and eye_*_wisp are the eye-fire cards (glow). Clips: idle, walk, run, roar, claw_l, claw_r, fury, stunned, wake, frozen, death.
 
 Every clip is keyed as a pose timeline; the body's height is then solved per frame so the lowest point of the model
 sits on the ground (feet planted while standing, belly or flank on the ground when collapsed), plus an explicit lift
@@ -342,36 +344,61 @@ card("mane_neck_fringe_r", "mane_neck", locks(12, 6, 93), "mane_fringe", rel=(-9
      rot=(0, 0, -10))
 card("mane_neck_crest", "mane_neck", spikes(16, 6, 94), "mane_spikes", rel=(0, 3.1, 0), offset=(0, 3, 0), rot=(-10, 0, 0))
 
-# the head: the whole head is a bare sabre-toothed cat's SKULL, bone white and ivory, cracked, a tall sagittal crest,
-# heavy brow ridges over deep sockets where soul-fire burns, wide cheekbones, the dark nasal aperture, ice crystals
-# growing out of the bone. Fur only from the neck back. Head frame: the cranium spans x -9..9, y -3.5..9.5, z -0.5..11.5.
-part("head", "neck", [18, 13, 12], "skull", at=(0, 29.5, 34), offset=(0, 3, 5.5), wrot=(4, 0, 0))
-part("crest", "head", [3, 4, 11], "skull", rel=(0, 10.5, 4), rot=(-10, 0, 0))
-part("crest_back", "crest", [3, 3, 4], "skull", rel=(0, 0.6, -6.5), rot=(-24, 0, 0))
-part("occiput", "head", [14, 9, 2], "skull_dark", rel=(0, 3.5, -1.2))
-# soul eyes: a ghostly face-in-the-flame soul rising out of each socket, another streaming back along each temple
-SOUL = ["...e...", "..eE...", "..EEe..", ".eEwEe.", "eEwWwEe", "EwfWfwE", "EwWWWwE", "eEwfwEe", ".eEwEe.", "..eWe..",
+# the head: the whole head is a bare sabre-toothed cat's SKULL, bone white and ivory, frost-cracked: a long low
+# braincase under a tall sagittal crest, heavy scowling brow ridges overhanging deep orbits ringed by bone (the brow,
+# a postorbital bar, the cheek), soul-fire burning in the orbits and licking up over the brows, wide flaring
+# cheekbones over a dark temporal hollow, a short broad muzzle with a pear-shaped nasal aperture, bulging sabre
+# roots. Frostbitten fur creeps onto the back of the skull and rotting sinew clings at the jaw hinges.
+# Head frame: the cranium spans x -8..8, y -2..9, z -1.5..11.5.
+part("head", "neck", [16, 11, 13], "skull", at=(0, 29.5, 34), offset=(0, 3.5, 5), wrot=(4, 0, 0))
+part("dome", "head", [12, 2, 9], "skull", rel=(0, 9.9, 4.5), rot=(-4, 0, 0))
+part("crest", "head", [2, 4, 12], "skull", rel=(0, 11.4, 3.5), rot=(-12, 0, 0))
+part("crest_back", "crest", [2, 3, 4], "skull", rel=(0, 0.8, -7.0), rot=(-28, 0, 0))
+part("occiput", "head", [14, 9, 2], "skull_dark", rel=(0, 3.5, -2.2))
+# the fur's last reach onto the bone: a ragged frostbitten scalp at the back of the braincase, its locks hanging
+part("scalp", "head", [14, 3, 5], "fur_bitten", rel=(0, 10.0, -0.5), rot=(-10, 0, 0))
+card("scalp_fringe", "scalp", locks(15, 5, 171, min_len=0.4), "fringe", rel=(0, 0.6, 2.65), offset=(0, -2.0, 0),
+     plane="xy", rot=(-40, 0, 0))
+for s in (1, -1):
+    n = "l" if s > 0 else "r"
+    card(f"scalp_fringe_{n}", "scalp", locks(6, 5, 172 + s), "fringe", rel=(s * 7.15, -0.5, 0), offset=(0, -2.0, 0),
+         rot=(0, 0, s * 18))
+    # rotting sinew at the jaw hinge, and the dark temporal hollow behind the orbit
+    part(f"sinew_{n}", "head", [2, 4, 4], "flesh", rel=(s * 7.6, -1.0, 2.0), rot=(0, 0, s * 8))
+    part(f"temple_{n}", "head", [1, 3, 5], "hollow", rel=(s * 8.1, 4.5, 5.0))
+# soul eyes: blue soul-fire burning deep in each orbit (a white-hot eye, the orbit lit round it), flames licking up
+# beside the brows, a wisp streaming back along each temple
+SOUL = [".e...e.", ".E..eE.", "eEe.EE.", "EwE.Ewe", "EwEeEwE", "EwWEwWE", "eWwWWwE", ".EWWWEe", "..eWe..",
         "...W..."]
 WISP = ["...eEe........", "..eEwEEe......", ".eEwfwwEEee.e.", "eEwWWWwwEEEe..", ".eEwfwEEee....", "..eEwEe.......",
         "...ee........."]
+GLOW_RING = ["e.e.e", "eEeEe", "EEEEE", "EEwEE", "eEWEe"]
 for s in (1, -1):
     n = "l" if s > 0 else "r"
-    part(f"brow_{n}", "head", [7, 3, 4], "skull", rel=(s * 4.6, 7.9, 11.4), rot=(0, 0, s * 14))
-    part(f"socket_{n}", "head", [5, 5, 1], "socket", rel=(s * 4.8, 5.0, 11.6))
-    part(f"eye_{n}", "head", [2, 2, 1], "eye", rel=(s * 4.8, 5.0, 11.7))
-    card(f"eye_{n}_flame", f"eye_{n}", SOUL, "flame", rel=(s * 0.3, 0.2, 2.0), offset=(0, 5.0, 0), plane="xy",
-         rot=(0, 0, -s * 10))
-    card(f"eye_{n}_wisp", f"eye_{n}", WISP, "flame", rel=(s * 4.7, 2.0, -1.0), offset=(0, 1.5, -6.0),
+    part(f"socket_{n}", "head", [5, 5, 2], "socket", rel=(s * 4.4, 4.6, 11.0))
+    part(f"brow_{n}", "head", [7, 3, 5], "skull", rel=(s * 4.3, 8.3, 11.6), rot=(-14, s * 6, s * 17))
+    part(f"orbit_{n}", "head", [2, 6, 3], "skull", rel=(s * 7.6, 4.4, 11.0), rot=(0, -s * 10, -s * 4))
+    part(f"cheek_{n}", "head", [6, 2, 3], "skull", rel=(s * 4.6, 1.4, 11.6), rot=(8, 0, -s * 6))
+    part(f"eye_{n}", "head", [3, 2, 1], "eye", rel=(s * 4.4, 4.2, 12.1))
+    card(f"eye_{n}_glow", f"eye_{n}", GLOW_RING, "flame", rel=(0, 0.6, -0.05), plane="xy")
+    # the fire licks up out of the orbit's outer corner, beside the brow, flaring outward like burning horns
+    card(f"eye_{n}_flame", f"eye_{n}", SOUL, "flame", rel=(s * 2.2, 1.2, 0.7), offset=(0, 4.5, 0), plane="xy",
+         rot=(-18, 0, -s * 20))
+    card(f"eye_{n}_wisp", f"eye_{n}", WISP, "flame", rel=(s * 3.6, 2.4, -1.2), offset=(0, 1.5, -6.0),
          rot=(0, s * 14, -s * 8))
-    part(f"zygo_{n}", "head", [2, 4, 11], "skull", rel=(s * 9.5, 1.5, 6), rot=(0, -s * 5, -s * 4))
-    part(f"temple_{n}", "head", [1, 4, 6], "socket", rel=(s * 9.1, 6.0, 4.5))
+    part(f"zygo_{n}", "head", [3, 4, 11], "skull", rel=(s * 9.4, 1.2, 5.5), rot=(0, -s * 8, -s * 6))
+part("glabella", "head", [4, 3, 3], "skull", rel=(0, 7.2, 12.0), rot=(-10, 0, 0))
 # the muzzle: short and broad bone, the nasal aperture, the tooth rows bare to the roots
 part("snout", "head", [12, 7, 6], "skull", rel=(0, -1, 10.5), offset=(0, -0.5, 3), rot=(6, 0, 0))
-part("nasal_bridge", "snout", [7, 2, 7], "skull", rel=(0, 3.0, 2.5), rot=(-8, 0, 0))
+part("nasal_bridge", "snout", [6, 2, 7], "skull", rel=(0, 3.0, 2.5), rot=(-8, 0, 0))
 part("snout_tip", "snout", [10, 5, 3], "skull", rel=(0, -1.2, 5.5), offset=(0, -0.3, 1.5), rot=(4, 0, 0))
-part("nasal", "snout_tip", [5, 3, 2], "socket", rel=(0, 1.4, 2.6))
+part("nasal", "snout_tip", [4, 4, 2], "hollow", rel=(0, 1.2, 2.6),
+     paint={"stamps": [{"face": "front", "at": "top-left", "art": ["d..d", "....", "....", "d..d"],
+                        "key": {"d": "bone:5"}}]})
 for s in (1, -1):
     part(f"maxilla_{'l' if s > 0 else 'r'}", "snout", [1, 6, 6], "skull_dark", rel=(s * 6.1, -1.0, 3))
+    part(f"sabre_root_{'l' if s > 0 else 'r'}", "snout", [3, 4, 3], "skull", rel=(s * 4.7, -2.6, 4.0),
+         rot=(0, 0, s * 6))
 card("teeth_up_l", "snout", ["yyyyyy", "yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(5.5, -4.0, 3), offset=(0, -2, 0))
 card("teeth_up_r", "snout", ["yyyyyy", "yyyyyy", "y.yy.y", "..y..."], "teeth", rel=(-5.5, -4.0, 3), offset=(0, -2, 0))
 card("teeth_up_f", "snout_tip", ["yyyyyyyy", "y.yy.yy.", "y.y..y.."], "teeth", rel=(0, -2.8, 2.8), offset=(0, -1.5, 0),
@@ -386,11 +413,11 @@ card("teeth_lo_r", "jaw", [".y...y...y....", "yy.yyy.yyy.yyy", "yyyyyyyyyyyyyy",
      rel=(-3.4, 0.9, 7.5))
 card("teeth_lo_f", "jaw", [".y..y.", "yyyyyy"], "teeth", rel=(0, 0.9, 15.1), plane="xy")
 # ice growing out of the bone: crystals bursting from the crown, a cheekbone and the brow
-cluster("skull_ice0", "head", wpos("head", (5.5, 9.0, 2.5)), [(0, 0, 3, 9, -26, -30), (1.5, 2, 2, 6, -8, -50),
-                                                               (-1, -1.5, 2, 5, -50, -14)])
-cluster("skull_ice1", "head", wpos("head", (-9.6, 3.5, 7.5)), [(0, 0, 2, 7, 10, 62), (0, 2, 2, 5, 34, 74),
-                                                                (0, -2.5, 1, 4, -20, 56)])
-cluster("skull_ice2", "head", wpos("head", (-3.0, 9.4, 9.5)), [(0, 0, 2, 5, 18, 22), (1.2, -1, 1, 4, -10, -10)])
+cluster("skull_ice0", "head", wpos("head", (5.0, 10.0, 1.5)), [(0, 0, 3, 9, -26, -30), (1.5, 2, 2, 6, -8, -50),
+                                                                (-1, -1.5, 2, 5, -50, -14)])
+cluster("skull_ice1", "head", wpos("head", (-10.4, 2.5, 6.5)), [(0, 0, 2, 7, 10, 62), (0, 2, 2, 5, 34, 74),
+                                                                 (0, -2.5, 1, 4, -20, 56)])
+cluster("skull_ice2", "head", wpos("head", (-3.2, 10.0, 8.5)), [(0, 0, 2, 5, 18, 22), (1.2, -1, 1, 4, -10, -10)])
 
 # the sabres: two enormous flattened blades curving back, reaching almost to the knees
 for s in (1, -1):
@@ -427,8 +454,8 @@ ramps = {
     "horn": ["#120b08", "#1d130d", "#2a1c13", "#38261a", "#473222", "#593f2b", "#6c4e36"],
     "cavity": ["#04040b", "#090914", "#0f0e1f", "#16142a", "#1f1b37"],
     "glow": ["#0d3a66", "#17609b", "#2490d0", "#47c0f2", "#8ce4ff", "#d4f7ff", "#ffffff"],
-    # soul fire: deep teal to cyan to white
-    "soul": ["#032826", "#06433f", "#0a6560", "#0f8c84", "#1ab8ad", "#43e0d2", "#8ff5ea", "#d4fffa", "#ffffff"],
+    # soul fire: deep sea-blue through soul-blue and cyan to white
+    "soul": ["#03183a", "#062a5c", "#0a4486", "#0f66b4", "#1a8fdc", "#3fbcf6", "#86e2ff", "#d0f6ff", "#ffffff"],
     "nose": ["#06060c", "#0d0d18", "#161627", "#212238"],
 }
 light = {"dir": [-0.4, 1.0, 0.55], "strength": 0.55, "gradient": 0.7, "ao": 1.0, "ao_height": 10.0}
@@ -520,6 +547,9 @@ styles = {
                          {"id": "sutures", "op": "cracks", "scale": 2.4, "width": 0.05, "shift": -3.6},
                          {"id": "cracks", "op": "cracks", "scale": 3.4, "width": 0.09, "shift": -6.0, "seed": 5,
                           "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.0}},
+                         # frost-cracked: hairline cracks packed with pale blue ice
+                         {"id": "frost_cracks", "op": "cracks", "scale": 2.6, "width": 0.05, "ramp": "ice",
+                          "tone": 8.6, "seed": 11},
                          {"id": "under", "op": "gradient", "axis": "y", "amount": 1.2},
                          {"id": "rime", "op": "drip", "ramp": "ice", "tone": 10.4, "depth": 0.22, "length": 0.8,
                           "width": 0.4, "scale": 1.2, "faces": ["sides", "front", "back"]}]},
@@ -594,9 +624,11 @@ styles = {
              "layers": [{"id": "grain", "op": "noise", "scale": 0.7, "amount": 0.8},
                         {"id": "cracks", "op": "cracks", "scale": 3.0, "width": 0.04, "shift": -2.4},
                         {"id": "under", "op": "gradient", "axis": "y", "amount": 0.8}]},
-    "socket": {"ramp": "cavity", "tone": 1.0, "light": 0.2, "brush": {"off": True},
-               "stamps": [{"face": "front", "at": "top-left", "art": ["bd.b", "d...", "....", "b..b"],
-                           "key": {"b": "bone:6", "d": "cavity:3"}}]},
+    "hollow": {"ramp": "cavity", "tone": 1.0, "light": 0.2, "brush": {"off": True}},
+    # a deep orbit: near-black, a bone lip at the corners, the lower inner edge lit cold blue by the fire inside
+    "socket": {"ramp": "cavity", "tone": 0.6, "light": 0.2, "brush": {"off": True},
+               "stamps": [{"face": "front", "at": "top-left", "art": ["bd.db", "d...d", ".....", "s...s", "bsssb"],
+                           "key": {"b": "bone:5", "d": "cavity:3", "s": "soul:2"}}]},
     "teeth": {"ramp": "bone", "tone": 9.4, "art_key": {}, "brush": {"off": True},
               "layers": [{"id": "root", "op": "gradient", "axis": "y", "amount": 1.6}]},
     "fang": {"ramp": "bone", "tone": 9.4, "rim": {"light_shift": 1.4, "dark_shift": -1.6}, "brush": {"flow": "y"},
@@ -604,9 +636,10 @@ styles = {
                          "faces": ["sides", "front", "back"]},
                         {"id": "root", "op": "gradient", "axis": "y", "amount": 1.0}]},
     "fang_tip": {"ramp": "bone", "tone": 10.4, "brush": {"off": True}},
+    # the eye itself: a white-hot pupil of soul fire in a cyan iris, bright enough to read across a cave
     "eye": {"ramp": "soul", "tone": 6.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-            "stamps": [{"face": "front", "at": "top-left", "art": ["wb", "bd"],
-                        "key": {"w": "soul:8", "b": "soul:6", "d": "soul:4"}}]},
+            "stamps": [{"face": "front", "at": "top-left", "art": ["bwb", "dbd"],
+                        "key": {"w": "soul:8", "b": "soul:7", "d": "soul:5"}}]},
 }
 
 # the paws: frostbite on the tops of the front paws and the hind feet (the toes stay plain)
@@ -1038,7 +1071,7 @@ spec = {
     "light": light,
     "brush": brush,
     "minecraft": {"fps": 20, "glow_parts": ["eye_l", "eye_r", "frost_core", "eye_l_flame", "eye_r_flame", "eye_l_wisp",
-                                            "eye_r_wisp"]},
+                                            "eye_r_wisp", "eye_l_glow", "eye_r_glow"]},
     "anim_ground_tolerance": 0.5,
     "render": {"background": "#232838", "hero": [-40, 16], "shadow": 0.5},
     "palette": {"ramps": ramps},

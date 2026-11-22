@@ -5,8 +5,8 @@
  "license": "CC0-1.0",
  "density": 2,
  "budget": {
-  "tris": 900,
-  "colors": 48
+  "tris": 1100,
+  "colors": 56
  },
  "light": {
   "dir": [
@@ -82,13 +82,13 @@
     "#1f1b37"
    ],
    "glow": [
-    "#06433f",
-    "#0a6560",
-    "#0f8c84",
-    "#1ab8ad",
-    "#43e0d2",
-    "#8ff5ea",
-    "#d4fffa"
+    "#03183a",
+    "#0a4486",
+    "#1a8fdc",
+    "#3fbcf6",
+    "#86e2ff",
+    "#d0f6ff",
+    "#ffffff"
    ]
   }
  },
@@ -114,6 +114,29 @@
      "scale": 1.6,
      "width": 0.05,
      "shift": -3.2
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.2,
+     "width": 0.07,
+     "shift": -5.0,
+     "seed": 5,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 1.0
+     }
+    },
+    {
+     "id": "frost_cracks",
+     "op": "cracks",
+     "scale": 1.8,
+     "width": 0.03,
+     "threshold": 0.55,
+     "ramp": "ice",
+     "tone": 9.0,
+     "seed": 11
     },
     {
      "id": "stain",
@@ -196,6 +219,29 @@
      "shift": -3.2
     },
     {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.2,
+     "width": 0.07,
+     "shift": -5.0,
+     "seed": 5,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 1.0
+     }
+    },
+    {
+     "id": "frost_cracks",
+     "op": "cracks",
+     "scale": 1.8,
+     "width": 0.03,
+     "threshold": 0.55,
+     "ramp": "ice",
+     "tone": 9.0,
+     "seed": 11
+    },
+    {
      "id": "stain",
      "op": "patches",
      "scale": 0.9,
@@ -241,6 +287,29 @@
      "scale": 1.6,
      "width": 0.05,
      "shift": -3.2
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.2,
+     "width": 0.07,
+     "shift": -5.0,
+     "seed": 5,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 1.0
+     }
+    },
+    {
+     "id": "frost_cracks",
+     "op": "cracks",
+     "scale": 1.8,
+     "width": 0.03,
+     "threshold": 0.55,
+     "ramp": "ice",
+     "tone": 9.0,
+     "seed": 11
     },
     {
      "id": "stain",
@@ -290,6 +359,29 @@
      "shift": -3.2
     },
     {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 2.2,
+     "width": 0.07,
+     "shift": -5.0,
+     "seed": 5,
+     "bevel": {
+      "shadow": 0,
+      "highlight": 1,
+      "highlight_shift": 1.0
+     }
+    },
+    {
+     "id": "frost_cracks",
+     "op": "cracks",
+     "scale": 1.8,
+     "width": 0.03,
+     "threshold": 0.55,
+     "ramp": "ice",
+     "tone": 9.0,
+     "seed": 11
+    },
+    {
      "id": "stain",
      "op": "patches",
      "scale": 0.9,
@@ -329,9 +421,17 @@
     }
    ]
   },
-  "socket": {
+  "hollow": {
    "ramp": "cavity",
    "tone": 1.2,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   }
+  },
+  "socket": {
+   "ramp": "cavity",
+   "tone": 0.6,
    "light": 0.2,
    "brush": {
     "off": true
@@ -362,7 +462,7 @@
   },
   "eye": {
    "ramp": "glow",
-   "tone": 4.6,
+   "tone": 4,
    "light": 0,
    "brush": {
     "off": true
@@ -371,23 +471,12 @@
     "light": 0,
     "dark": 0
    },
-   "stamps": [
-    {
-     "face": "front",
-     "at": "top-left",
-     "art": [
-      ".bb.",
-      "bwwb",
-      "bwwd",
-      ".dd."
-     ],
-     "key": {
-      "w": "glow:6",
-      "b": "glow:4",
-      "d": "glow:2"
-     }
-    }
-   ]
+   "art_key": {
+    "e": "glow:1",
+    "E": "glow:3",
+    "w": "glow:5",
+    "W": "glow:6"
+   }
   },
   "teeth": {
    "ramp": "bone",
@@ -438,6 +527,36 @@
       "left",
       "right"
      ]
+    },
+    {
+     "id": "groove",
+     "op": "band",
+     "axis": "z",
+     "from": -0.12,
+     "to": 0.12,
+     "shift": -2.2,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "cracks",
+     "op": "cracks",
+     "scale": 1.6,
+     "width": 0.05,
+     "shift": -3.0,
+     "seed": 3
+    },
+    {
+     "id": "rime",
+     "op": "cracks",
+     "scale": 1.2,
+     "width": 0.03,
+     "threshold": 0.55,
+     "ramp": "ice",
+     "tone": 10.0,
+     "seed": 9
     },
     {
      "id": "root",
@@ -617,7 +736,7 @@
    ],
    "pivot": [
     0.0,
-    11.5925,
+    12.1685,
     -1.0
    ],
    "offset": [
@@ -654,12 +773,12 @@
    "parent": "skull",
    "size": [
     2,
-    4,
-    11
+    4.5,
+    12
    ],
    "pivot": [
     0.0,
-    12.0,
+    12.2,
     -3.0
    ],
    "rotation": [
@@ -675,16 +794,16 @@
    "parent": "crest",
    "size": [
     2,
-    3,
-    3
+    3.5,
+    3.5
    ],
    "pivot": [
     0.0,
-    0.5,
-    -6.0
+    0.6,
+    -6.5
    ],
    "rotation": [
-    -24.0,
+    -26.0,
     0.0,
     0.0
    ],
@@ -695,8 +814,8 @@
    "shape": "box",
    "parent": "skull",
    "size": [
-    11,
-    6,
+    12,
+    7,
     1.5
    ],
    "pivot": [
@@ -707,44 +826,44 @@
    "style": "bone_dark"
   },
   {
-   "id": "brow_l",
+   "id": "glabella",
    "shape": "box",
    "parent": "skull",
    "size": [
-    6,
-    2,
-    3
+    3.5,
+    2.5,
+    2.5
    ],
    "pivot": [
-    4.4,
-    8.6,
-    3.6
+    0.0,
+    7.6,
+    4.2
    ],
    "rotation": [
+    -10.0,
     0.0,
-    0.0,
-    12.0
+    0.0
    ],
    "style": "bone"
   },
   {
-   "id": "brow_r",
+   "id": "brow_l",
    "shape": "box",
    "parent": "skull",
    "size": [
-    6,
-    2,
-    3
+    6.5,
+    2.5,
+    3.5
    ],
    "pivot": [
-    -4.4,
-    8.6,
+    4.3,
+    8.9,
     3.6
    ],
    "rotation": [
-    0.0,
-    0.0,
-    -12.0
+    -12.0,
+    6.0,
+    16.0
    ],
    "style": "bone"
   },
@@ -759,50 +878,60 @@
    ],
    "pivot": [
     4.4,
-    5.6,
+    5.4,
     4.1
    ],
    "style": "socket"
   },
   {
-   "id": "socket_r",
+   "id": "orbit_l",
    "shape": "box",
    "parent": "skull",
    "size": [
+    1.5,
+    5,
+    2.5
+   ],
+   "pivot": [
+    7.1,
+    5.4,
+    3.4
+   ],
+   "rotation": [
+    0.0,
+    -10.0,
+    -4.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "cheek_l",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    5,
+    1.5,
+    2.5
+   ],
+   "pivot": [
     4.5,
-    4,
-    0.5
+    2.9,
+    4.0
    ],
-   "pivot": [
-    -4.4,
-    5.6,
-    4.1
+   "rotation": [
+    8.0,
+    0.0,
+    -6.0
    ],
-   "style": "socket"
-  },
-  {
-   "id": "eye",
-   "shape": "box",
-   "parent": "skull",
-   "size": [
-    2,
-    2,
-    0.5
-   ],
-   "pivot": [
-    -4.4,
-    5.6,
-    4.25
-   ],
-   "style": "eye"
+   "style": "bone"
   },
   {
    "id": "zygo_l",
    "shape": "box",
    "parent": "skull",
    "size": [
-    2,
-    3,
+    2.5,
+    3.5,
     9
    ],
    "pivot": [
@@ -823,7 +952,7 @@
    "parent": "skull",
    "size": [
     0.5,
-    4,
+    3.5,
     5
    ],
    "pivot": [
@@ -831,15 +960,94 @@
     5.5,
     -2.0
    ],
+   "style": "hollow"
+  },
+  {
+   "id": "brow_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    6.5,
+    2.5,
+    3.5
+   ],
+   "pivot": [
+    -4.3,
+    8.9,
+    3.6
+   ],
+   "rotation": [
+    -12.0,
+    -6.0,
+    -16.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "socket_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    4.5,
+    4,
+    0.5
+   ],
+   "pivot": [
+    -4.4,
+    5.4,
+    4.1
+   ],
    "style": "socket"
+  },
+  {
+   "id": "orbit_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    1.5,
+    5,
+    2.5
+   ],
+   "pivot": [
+    -7.1,
+    5.4,
+    3.4
+   ],
+   "rotation": [
+    0.0,
+    10.0,
+    4.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "cheek_r",
+   "shape": "box",
+   "parent": "skull",
+   "size": [
+    5,
+    1.5,
+    2.5
+   ],
+   "pivot": [
+    -4.5,
+    2.9,
+    4.0
+   ],
+   "rotation": [
+    8.0,
+    0.0,
+    6.0
+   ],
+   "style": "bone"
   },
   {
    "id": "zygo_r",
    "shape": "box",
    "parent": "skull",
    "size": [
-    2,
-    3,
+    2.5,
+    3.5,
     9
    ],
    "pivot": [
@@ -860,7 +1068,7 @@
    "parent": "skull",
    "size": [
     0.5,
-    4,
+    3.5,
     5
    ],
    "pivot": [
@@ -868,7 +1076,39 @@
     5.5,
     -2.0
    ],
-   "style": "socket"
+   "style": "hollow"
+  },
+  {
+   "id": "eye",
+   "shape": "card",
+   "parent": "skull",
+   "pivot": [
+    0.0,
+    8.0,
+    5.7
+   ],
+   "style": "eye",
+   "plane": "xy",
+   "art": [
+    "........................",
+    "..e..................e..",
+    ".eE..e............e..Ee.",
+    ".EE..E............E..EE.",
+    "eEw..Ee..........eE..wEe",
+    "eEw.eEE..........EEe.wEe",
+    ".Ew.Ew............wE.wE.",
+    ".EwEww............wwEwE.",
+    "..EwwE............EwwE..",
+    "..EwE..............EwE..",
+    "..eEe..............eEe..",
+    "...e................e...",
+    ".eEEEe............eEEEe.",
+    "eEwWwEe..........eEwWwEe",
+    "EwWWWwE..........EwWWWwE",
+    "eEwWwEe..........eEwWwEe",
+    ".eEEEe............eEEEe.",
+    "........................"
+   ]
   },
   {
    "id": "snout",
@@ -912,16 +1152,16 @@
    "shape": "box",
    "parent": "snout_tip",
    "size": [
-    4,
-    2.5,
+    3.5,
+    3,
     0.5
    ],
    "pivot": [
     0.0,
-    0.4,
+    0.6,
     1.6
    ],
-   "style": "socket"
+   "style": "hollow"
   },
   {
    "id": "nasal_bridge",
@@ -959,6 +1199,48 @@
     0.5
    ],
    "style": "mouth"
+  },
+  {
+   "id": "sabre_root_l",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    3,
+    3.5,
+    3
+   ],
+   "pivot": [
+    4.0,
+    -0.8,
+    1.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    6.0
+   ],
+   "style": "bone"
+  },
+  {
+   "id": "sabre_root_r",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    3,
+    3.5,
+    3
+   ],
+   "pivot": [
+    -4.0,
+    -0.8,
+    1.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -6.0
+   ],
+   "style": "bone"
   },
   {
    "id": "teeth_up_l",
@@ -1188,7 +1470,7 @@
    "size": [
     1.5,
     7,
-    3
+    3.5
    ],
    "pivot": [
     4.3,
@@ -1213,8 +1495,8 @@
    "parent": "fang_l",
    "size": [
     1.5,
-    5,
-    2.5
+    5.5,
+    3
    ],
    "pivot": [
     -0.0,
@@ -1223,7 +1505,7 @@
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.75,
     0.0
    ],
    "rotation": [
@@ -1240,11 +1522,11 @@
    "size": [
     1,
     4,
-    1.5
+    2
    ],
    "pivot": [
     0.0,
-    -5.0,
+    -5.5,
     -0.1
    ],
    "offset": [
@@ -1266,7 +1548,7 @@
    "size": [
     1.5,
     7,
-    3
+    3.5
    ],
    "pivot": [
     -4.3,
@@ -1291,8 +1573,8 @@
    "parent": "fang_r",
    "size": [
     1.5,
-    5,
-    2.5
+    5.5,
+    3
    ],
    "pivot": [
     0.0,
@@ -1301,7 +1583,7 @@
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.75,
     0.0
    ],
    "rotation": [
@@ -1318,11 +1600,11 @@
    "size": [
     1,
     4,
-    1.5
+    2
    ],
    "pivot": [
     -0.0,
-    -5.0,
+    -5.5,
     -0.1
    ],
    "offset": [
@@ -1368,9 +1650,9 @@
     8
    ],
    "pivot": [
-    8.1,
+    8.6,
     4.0,
-    -1.0
+    -1.5
    ],
    "rotation": [
     0.0,
@@ -1401,25 +1683,25 @@
    "style": "ice_plate"
   },
   {
-   "id": "ice_eye",
+   "id": "ice_brow",
    "shape": "box",
-   "parent": "socket_l",
+   "parent": "brow_l",
    "size": [
-    4,
-    3.5,
-    1.5
+    5.5,
+    1.5,
+    3
    ],
    "pivot": [
-    0.0,
-    0.0,
-    0.4
+    0.5,
+    1.6,
+    -0.2
    ],
    "rotation": [
     0.0,
     0.0,
-    8.0
+    -4.0
    ],
-   "style": "crystal_b"
+   "style": "ice_plate"
   },
   {
    "id": "crystal0",
@@ -1628,6 +1910,32 @@
     -22.0
    ],
    "style": "crystal_b"
+  },
+  {
+   "id": "crystal8",
+   "shape": "box",
+   "parent": "ice_brow",
+   "size": [
+    1.5,
+    3.5,
+    1.5
+   ],
+   "pivot": [
+    2.6,
+    0.5,
+    -0.5
+   ],
+   "offset": [
+    0.0,
+    1.75,
+    0.0
+   ],
+   "rotation": [
+    20.0,
+    0.0,
+    -48.0
+   ],
+   "style": "crystal"
   },
   {
    "id": "frost_edge",
