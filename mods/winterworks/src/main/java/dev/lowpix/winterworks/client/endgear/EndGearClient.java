@@ -62,6 +62,21 @@ public final class EndGearClient {
                 }
             }
         });
+        ClientTickEvents.START_CLIENT_TICK.register(mc -> {   // petrified: the hands are stone too (no dropping, swapping or switching)
+            if (localFrozen()) {
+                while (mc.options.keyDrop.consumeClick()) {
+                    // swallowed
+                }
+                while (mc.options.keySwapOffhand.consumeClick()) {
+                    // swallowed
+                }
+                for (KeyMapping k : mc.options.keyHotbarSlots) {
+                    while (k.consumeClick()) {
+                        // swallowed
+                    }
+                }
+            }
+        });
         EndGearShots.init();
     }
 

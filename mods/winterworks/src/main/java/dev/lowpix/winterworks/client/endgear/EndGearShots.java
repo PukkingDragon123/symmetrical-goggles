@@ -227,6 +227,22 @@ final class EndGearShots {
             camera(CameraType.FIRST_PERSON);
         });
 
+        // ---- a Dragon Egg back from the void a third time hatches where it lands
+        at(t += 5, () -> server((level, p) -> {
+            p.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
+            p.stopFallFlying();
+            p.teleportTo(level, -6.5, -60, 2.5, 180f, 25f);
+            ItemStack egg = new ItemStack(Items.DRAGON_EGG);
+            egg.set(EndEffects.EGG_CRACKS, 3);
+            net.minecraft.world.entity.item.ItemEntity item = new net.minecraft.world.entity.item.ItemEntity(level, -6.5, -57, -0.5, egg);
+            item.setPickUpDelay(100);
+            level.addFreshEntity(item);
+        }));
+        at(t += 2, () -> Minecraft.getInstance().options.hideGui = true);
+        at(t += 14, () -> shot("egg_hatching"));
+        at(t += 10, () -> shot("egg_hatched"));
+        at(t += 2, () -> Minecraft.getInstance().options.hideGui = false);
+
         // ---- Dragonlings: a baby and a saddled, armoured teen
         at(t += 5, () -> server((level, p) -> {
             p.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);

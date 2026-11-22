@@ -536,7 +536,7 @@ public class Dragonling extends TamableAnimal implements FlyingAnimal {
         Vec3 dir = (getFirstPassenger() instanceof Player rider ? rider : this).getViewVector(1f);
         Vec3 from = mouth();
         Vec3 carry = new Vec3(getX() - xo, getY() - yo, getZ() - zo);
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < 90; i++) {
             Vec3 d = dir.add((random.nextDouble() - 0.5) * 0.35, (random.nextDouble() - 0.5) * 0.35, (random.nextDouble() - 0.5) * 0.35)
                     .normalize().scale(0.3 + random.nextDouble() * 0.5).add(carry);
             level().addParticle(i % 6 == 0 ? ParticleTypes.FLAME : ParticleTypes.DRAGON_BREATH, from.x, from.y, from.z, d.x, d.y, d.z);
