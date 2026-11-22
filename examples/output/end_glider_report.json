@@ -1,38 +1,38 @@
 {
   "name": "End Glider",
-  "parts": 44,
-  "instances": 44,
-  "faces": 114,
-  "triangles": 228,
-  "vertices_flat": 456,
-  "vertices_unique": 192,
+  "parts": 36,
+  "instances": 36,
+  "faces": 76,
+  "triangles": 152,
+  "vertices_flat": 304,
+  "vertices_unique": 136,
   "atlas": [
-    128,
-    256
+    64,
+    64
   ],
-  "atlas_fill": 0.741,
-  "texel_density": 4.0,
-  "colors_used": 54,
+  "atlas_fill": 0.677,
+  "texel_density": 1.0,
+  "colors_used": 37,
   "palette": {
     "crying": [
-      "#3a0b6e",
-      "#5a12a0",
-      "#7a1fd0",
-      "#9a3cf0",
-      "#b866ff",
-      "#d397ff",
-      "#ecc9ff",
-      "#fbf0ff"
+      "#3c0b78",
+      "#5a14a8",
+      "#7b23d3",
+      "#9a3bf0",
+      "#b65efd",
+      "#d08eff",
+      "#e8c2ff",
+      "#fbefff"
     ],
     "gold": [
-      "#2b1233",
-      "#4b1f3e",
-      "#73343f",
-      "#9c5441",
-      "#c27f4a",
-      "#dfac5e",
-      "#f2d27f",
-      "#fdf0b8"
+      "#3a1d14",
+      "#5e3016",
+      "#874b17",
+      "#b06c1b",
+      "#d18f24",
+      "#e8b23a",
+      "#f6d35e",
+      "#fdf09a"
     ],
     "membrane": [
       "#1c0f33",
@@ -60,8 +60,7 @@
       "#d33da0",
       "#f26bc0",
       "#ff9fd8",
-      "#ffd2ee",
-      "#fff4fb"
+      "#ffd2ee"
     ],
     "silver": [
       "#25202e",
@@ -73,39 +72,31 @@
       "#cfc9da",
       "#ece9f2"
     ],
-    "pearl": [
-      "#3a3050",
-      "#5a4e74",
-      "#7f739a",
-      "#a69bbe",
-      "#cbc2dd",
-      "#ebe6f4",
-      "#fdfbff"
-    ],
     "silk": [
       "#1b0f2a",
       "#2b1840",
       "#3e2458",
       "#533271",
       "#6a428b",
-      "#8558a6"
+      "#8558a6",
+      "#a173c0"
     ]
   },
   "bounds": {
     "min": [
       -18.107,
-      23.5,
-      -14.691
+      23.0,
+      -12.794
     ],
     "max": [
       18.107,
-      39.353,
-      7.936
+      38.242,
+      5.0
     ],
     "size": [
       36.213,
-      15.853,
-      22.627
+      15.242,
+      17.794
     ]
   },
   "warnings": [],
@@ -118,22 +109,14 @@
     "handle",
     "bar",
     "cuff_l",
-    "bar_tip_l",
-    "finial_l",
     "cuff_r",
-    "bar_tip_r",
-    "finial_r",
     "grip_l",
     "strut_l",
     "grip_r",
     "strut_r",
     "keel",
     "hub",
-    "keel_band",
-    "keel_tail",
     "heart",
-    "antenna_l",
-    "antenna_r",
     "wing_l",
     "fore_l",
     "hind_l",
@@ -165,7 +148,7 @@
     "end_glider.mtl": "examples/output/end_glider.mtl",
     "end_glider.bbmodel": "examples/output/end_glider.bbmodel",
     "end_glider_texture.png": "examples/output/end_glider_texture.png",
-    "end_glider_texture_x4.png": "examples/output/end_glider_texture_x4.png",
+    "end_glider_texture_x16.png": "examples/output/end_glider_texture_x16.png",
     "end_glider_hero.png": "examples/output/end_glider_hero.png",
     "end_glider_sheet.png": "examples/output/end_glider_sheet.png",
     "end_glider_turntable.gif": "examples/output/end_glider_turntable.gif",

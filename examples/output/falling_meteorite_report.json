@@ -7,35 +7,33 @@
   "vertices_flat": 304,
   "vertices_unique": 112,
   "atlas": [
-    128,
-    256
+    64,
+    128
   ],
-  "atlas_fill": 0.56,
-  "texel_density": 2.0,
-  "colors_used": 19,
+  "atlas_fill": 0.69,
+  "texel_density": 1.0,
+  "colors_used": 16,
   "palette": {
     "meteor": [
-      "#0b0708",
-      "#130e0f",
-      "#1c1617",
-      "#262021",
-      "#312a2a",
-      "#3e3535",
-      "#4d4343",
-      "#625857",
-      "#867e7c",
-      "#bab4b0"
+      "#0d0909",
+      "#161011",
+      "#201819",
+      "#2b2222",
+      "#372d2c",
+      "#453938",
+      "#554846",
+      "#6a5d5a",
+      "#857a76"
     ],
     "molten": [
-      "#3a0c5c",
-      "#6c1585",
-      "#a8237f",
-      "#e04a5a",
-      "#ff7d2a",
-      "#ffad35",
-      "#ffd76a",
-      "#fff4c2",
-      "#fffdf2"
+      "#5a1170",
+      "#94207e",
+      "#d0405e",
+      "#f2702e",
+      "#ffa035",
+      "#ffcb57",
+      "#fff09a",
+      "#fffbe0"
     ]
   },
   "bounds": {
@@ -86,7 +84,7 @@
     "falling_meteorite.mtl": "examples/output/falling_meteorite.mtl",
     "falling_meteorite.bbmodel": "examples/output/falling_meteorite.bbmodel",
     "falling_meteorite_texture.png": "examples/output/falling_meteorite_texture.png",
-    "falling_meteorite_texture_x4.png": "examples/output/falling_meteorite_texture_x4.png",
+    "falling_meteorite_texture_x8.png": "examples/output/falling_meteorite_texture_x8.png",
     "falling_meteorite_hero.png": "examples/output/falling_meteorite_hero.png",
     "falling_meteorite_sheet.png": "examples/output/falling_meteorite_sheet.png",
     "falling_meteorite_turntable.gif": "examples/output/falling_meteorite_turntable.gif",

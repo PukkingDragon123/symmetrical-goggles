@@ -3,13 +3,16 @@
 The End becomes a living alien ecosystem. Same rules as COLD_UPDATE.md / HEXES_UPDATE.md: ids, bone and clip names
 here are exact, every registration already exists in `registry/End*.java`, and no feature beyond this file.
 
-**Eyes.** Every eye motif (the Monolith, the shield, the wand, the Monolith Eye, chiseled obsidian, wing eye-spots) is
-**round**: round irises and pupils, soft highlights, no slit pupils or sharp diamond shapes. (The Obolisk was later
-remade in the vanilla mob style: see section 9.)
+**Eyes.** On the entity and 3D-item models eyes are flat pixels painted on the face, the vanilla way: a small eye
+(1 x 1 to 2 x 2 px; the teen Dragonling's 3 x 2) under a darker lid or brow line, glowing enderman violet on the End's
+creatures and gear (the Gucker's glow yellow), no 3D eyeballs, big round irises or catch-lights. Eye motifs on 2D
+textures (the Monolith Eye item, chiseled obsidian) stay round. The Obolisk is in the same vanilla mob style (section 9).
 
-**Resolution.** Everything new is higher resolution than the older content: entity and item models are lowpix specs at
-`density: 2` (2 texels per Minecraft pixel; held items may use 4), with more parts, cards and painted detail; block
-textures and item icons are **32 x 32**; particles 16 x 16; the eclipse sky textures 256 x 256.
+**Resolution.** Entity and 3D-item models (the lowpix specs of section 15) are vanilla resolution: `density: 1` (one
+texel per Minecraft pixel), chunky boxes sized so every face has room for its texture, cards only for wings and
+membranes, and every texel shaded like a vanilla mob (a lit top, a shaded underside, light and dark lips on the
+edges, a soft grain of a few close tones, simple markings); obsidian is painted like the obsidian and crying obsidian
+blocks. Block textures and item icons are **32 x 32**; particles 16 x 16; the eclipse sky textures 256 x 256.
 
 Java packages and owners (one agent each; other agents only call the public API named here):
 * `end/` **world**: biomes, terrain features, structures, the new blocks' behaviour, End City loot.
