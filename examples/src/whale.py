@@ -2,215 +2,246 @@
 
     python examples/src/whale.py examples/whale.json
 
-A massive, majestic baleen whale, an original design: a long blue-grey body mottled with pale spots and old scars,
-darker on the back and pale beneath; a broad, flat back (the deck sits on it); a wide U-shaped head with a raised
-splash guard and a twin `blowhole`, small round eyes at the corners of the mouth, a bowed lower `jaw` that drops wide
-open on gums and fringed baleen, throat grooves running from the chin back under the belly (the `throat` balloons when
-it lunge-feeds), long slender pectoral fins with scalloped, barnacled leading edges and pale undersides, a small dorsal
-fin far back, a narrow tail stock with keels and a huge notched fluke, dark above and pale beneath.
+A massive sperm whale built from **block-scale boxes**, in the vanilla mob style: every main box is whole blocks (16 px)
+on one block grid, so the silhouette reads as stacked Minecraft blocks. A huge, square head 9 blocks wide and 4 tall
+whose blunt snout (the middle two block rows of its face) juts one block further than the forehead and chin, over a
+narrow pale lower jaw lined with white conical teeth; small flat dot eyes far back on the head (2 x 2, a pale ring, a
+dark brow line); the blowhole on the snout's top at the front left; a long body whose flat 9-block back steps in below
+toward a pale belly (9, 7, 5, then 3 blocks wide); a low dorsal hump; small pectoral fins; a tail stepping down block
+by block to a broad fluke. Wrinkly slate-grey skin: soft grain, patches of long wavy wrinkle lines, short pale squid
+scars on the head, a lighter belly and jaw.
 
-Units are Minecraft pixels (16 per block) at **density 1** (vanilla texel size: the whale is 7 x 6 x 26 blocks, its
-texture would be 4x the size at density 2; 1 texel per pixel also matches the blocks built on its deck). Every box is
-a whole number of pixels, so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). Faces +Z,
-the lowest point (the throat) at y = 0, "left" is +X; the root (body) pivots in the middle of the torso.
+Units are Minecraft pixels (16 per block) at **density 1** (vanilla texel size): each block face carries a 16 x 16
+texel area like a real block. Every box is whole pixels, so the model exports 1:1 to a vanilla entity model:
 
-**The deck.** The back is flat: y = 96 (exactly 6 blocks above the model's lowest point) over x -42..42 and
-z -36..96 on the body, continuing at the same height over the head (x -44..44, z 96..152) up to the splash guard and
-blowhole (z 133..154, raised 1-3 px). The tail stock's top is 1 px lower (y 95, x -32..32) from z -42 back to -122,
-then the tail falls away. The flanks step down to y 88 at x +-50 and y 78 at x +-56. The locator `deck` (a bone on the
-body) sits on that surface at (0, 96, 20): the centre of a 9 x 21 block deck spanning x -72..72 and z -148..188 (it
-overhangs the flanks, the sloping snout and the tail stock; the little dorsal fin stands just behind it, z -150..-172). Keep the deck on the `deck` bone's transform; swim and
-idle move the body only a little (about 1 degree and 1 px).
+    PYTHONHASHSEED=0 python -m lowpix mc export examples/whale.json --mod mods/winterworks --modid winterworks \\
+        --package dev.lowpix.winterworks.client.lowpix -o out/whale
+
+**The block grid** is the deck's: block edges at x = ±8 + 16i (odd block widths centred on x = 0), y = 16j (the
+lowest point, the belly, at y = 0) and z = 12 + 16k. Main boxes use whole blocks; only small parts (the jaw, the
+teeth, the fins, the fluke tips, the dorsal hump, the blowhole) use half blocks.
+
+**The deck.** The back is flat at y = 96 (exactly 6 blocks above the belly) and 9 blocks wide (x -72..72) from
+z = -148 to the forehead at z = 188: 9 x 21 blocks (the body to z = 108, the head from there). The locator `deck` (a
+bone on the body) sits on that surface at (0, 96, 20): the centre of the 9 x 21 block deck spanning x -72..72 and
+z -148..188, whose cells line up 1:1 with the whale's blocks. The snout juts one block further below the forehead
+(y 48..80, z 188..204) with the blowhole on its top (y 80); the dorsal hump stands on the tail, behind the deck
+(z -212..-180). Keep the deck on the `deck` bone's transform; swim and idle move the body only a little (about 1
+degree and 1 px).
+
+Size: 13 x 6 x 28 blocks with the fins and fluke (208 x 96 x 448 px); the body 9 x 6 blocks.
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 8): bones body, head, jaw, blowhole, fin_l, fin_r, fluke,
-tail_0, tail_1, eye_l, eye_r. Extra joints: throat (the pleated throat pouch), fin_l_tip / fin_r_tip, fluke_l /
-fluke_r, dorsal, and the locators `deck` (the deck's origin on the back), `spout` (the top of the blowhole, where the
-spout starts) and `mouth` (inside the mouth: where swallowed things go). Clips: swim, idle (loops), breathe (spout,
-2 s; the spout peaks 0.5-1.0 s), mouth_open (1.0 s, ends open: hold the last frame), mouth_close (0.5 s, starts open),
-lunge (1.5 s), shake (2.0 s), sing (loop). No glow.
+tail_0, tail_1, eye_l, eye_r. Extra joints: throat (the block under the head's back, it swells a little when it
+gulps), fin_l_tip / fin_r_tip, fluke_l / fluke_r, dorsal, and the locators `deck` (the deck's origin on the back),
+`spout` (the top of the blowhole, where the spout starts: (16, 81, 196)) and `mouth` (inside the mouth, between the
+jaw and the head: (0, 28, 168)). Clips: swim 4.0, idle 6.0, sing 8.0 (loops), breathe 2.0 (spout 0.55-1.0 s),
+mouth_open 1.0 (ends open: hold the last frame), mouth_close 0.5 (starts open), lunge 1.5 (gape 0.3-0.85 s, shut about
+1.05 s), shake 2.0 (rolls ±22 degrees). No glow. Part names from the earlier design that are no longer drawn stay as
+empty bones (name compatibility).
 """
 import math
 import os
+import random
 import sys
 
-import numpy as np
-
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from sea_life_kit import (LIGHT, LR, M, ROOT, Rig, add, barnacle_cluster, dump, keys, osc, pos, r, ramps,  # noqa
-                       ring, round_eye, sc, shake, spikes, timeline, wave)
+from sea_life_kit import (LIGHT, LR, M, ROOT, Rig, add, card_style, combine, dump, flat, keep_names, keys,  # noqa
+                       marks, osc, pos, r, ramps, ring, sc, shake, side_eye, smooth_field, timeline, wave)
 
 DENSITY = 1
 R = Rig(density=DENSITY, bone_style="hide")
 part, bone, card = R.part, R.bone, R.card
-TOP = 96          # the flat back: the deck's floor
-# baleen: a comb of dark plates with a pale hair fringe along the bottom
-BALEEN = []
-for _y in range(6):
-    _row = ""
-    for _x in range(80):
-        if _y < 3:
-            _row += "bB"[(_x // 2) % 2]
-        elif _y < 5:
-            _row += "f" if (_x * 7 + _y * 3) % 5 < 3 else ("b" if _y == 3 else ".")
-        else:
-            _row += "f" if (_x * 5 + 1) % 4 == 0 else "."
-    BALEEN.append(_row)
+B = 16            # one block
+TOP = 6 * B       # the flat back: the deck's floor
+ZG = 12           # the z grid's offset (the deck's cells: z = 12 + 16k)
 
-# ======================================================================= torso: a stepped octagon with a flat back
-bone("body", None, at=(0, 52, 30))
-part("torso", "body", [112, 56, 140], "hide_side", centre=(0, 50, 30))
-part("torso_b", "torso", [100, 76, 136], "hide_side", centre=(0, 50, 30))
-part("torso_c", "torso", [84, 90, 132], "hide_back", centre=(0, 51, 30))
+
+def zc(k0, k1):
+    """Centre z of blocks k0..k1 (inclusive) on the deck's z grid."""
+    return ZG + B * (k0 + k1 + 1) / 2
+
+
+def blocks(nx, ny, nz):
+    return [nx * B, ny * B, nz * B]
+
+
+# ======================================================================= the body: a long block stepping in below
+bone("body", None, at=(0, 56, 20))
+# the back: a 9-block-wide slab two blocks deep under the deck, then 7, 5 and 3 blocks wide toward the belly, so the
+# body rounds off in block steps below the flat back and the head stands out as one big block
+part("torso", "body", blocks(9, 2, 16), "hide", centre=(0, 80, zc(-10, 5)))          # y 64..96, z -148..108
+part("torso_b", "torso", blocks(7, 2, 15), "hide", centre=(0, 48, zc(-10, 4)))       # y 32..64, z -148..92
+part("torso_m", "torso", blocks(5, 1, 12), "belly", centre=(0, 24, zc(-7, 4)))       # y 16..32, z -100..92
+part("torso_c", "torso", blocks(3, 1, 8), "belly", centre=(0, 8, zc(-5, 2)))         # y 0..16, z -68..60
 bone("deck", "body", at=(0, TOP, 20))
-# the throat pouch: pleats from the chin back under the belly to the navel
-part("throat", "body", [92, 10, 104], "throat", at=(0, 10, 50), centre=(0, 5, 48))
+# the throat: the block under the head's back; it swells a little when the whale gulps
+part("throat", "body", blocks(5, 1, 3), "belly", at=(0, 32, zc(5, 7)), centre=(0, 24, zc(5, 7)))
 
-# ======================================================================= head: broad and flat, the blowhole on top
-bone("head", "body", at=(0, 56, 98))
-part("skull", "head", [100, 50, 52], "hide_head", centre=(0, 69, 124))
-part("skull_b", "skull", [88, 58, 56], "hide_head_top", centre=(0, 67, 124))
-part("rostrum", "head", [80, 36, 50], "hide_head_top", at=(0, 60, 148), centre=(0, 70, 172), rot=(8, 0, 0))
-part("rostrum_b", "rostrum", [64, 30, 58], "hide_head_top", rel=(0, 0, 0), offset=(0, 9, 23))
-part("snout", "rostrum", [50, 22, 8], "hide_head_top", rel=(0, 0, 0), offset=(0, 8, 54))
-# the upper lip: comes down over the lower jaw all along the mouth, so the closed mouth is a dark lip line
-part("lip_up", "head", [90, 12, 104], "lip", centre=(0, 46, 150))
-# the splash guard and the twin blowhole, raised 1 px on the flat back
-part("splash_guard", "head", [22, 3, 8], "hide_head_top", centre=(0, 97.5, 150))
-part("blowhole", "head", [16, 1, 12], "blowhole", at=(0, 96, 139), centre=(0, 96.5, 139))
-bone("spout", "blowhole", at=(0, 97, 139))
+# ======================================================================= the head: one huge block, a narrow jaw
+bone("head", "body", at=(0, 56, 108))
+part("skull", "head", blocks(9, 4, 5), "head", centre=(0, 64, zc(6, 10)))           # y 32..96, z 108..188
+# the blunt snout: the middle of the face juts a block further, so the forehead and the chin step back
+bone("rostrum", "head", rel=(0, 0, 0))
+part("snout", "rostrum", blocks(9, 2, 1), "head", centre=(0, 64, zc(11, 11)))       # y 48..80, z 188..204
+# the blowhole: at the front left of the head, on the half-block grid
+part("blowhole", "head", [16, 1, 8], "blowhole", at=(16, 80, 196), centre=(16, 80.5, 196))
+bone("spout", "blowhole", at=(16, 81, 196))
+for s in (1, -1):
+    bone(f"eye_{LR(s)}", "head", at=M((72, 43, 121), s))
+# the jaw: a narrow pale beam on the half-block grid, hinged under the head's back, lined with conical teeth
+bone("jaw", "head", at=(0, 24, 132))
+part("jaw_bone", "jaw", [32, 8, 64], "jaw", centre=(0, 20, 164))                   # y 16..24, z 132..196
+bone("mouth", "jaw", at=(0, 28, 168))
+
+
+def tooth_row(w, h, every, tooth_w):
+    """Conical white teeth standing on the bottom row: each `tooth_w` wide at the root, a point at the top."""
+    rows = [["."] * w for _ in range(h)]
+    for x0 in range(1, w - tooth_w + 1, every):
+        for k in range(h):
+            half = (tooth_w - 1) * k / (2.0 * (h - 1))
+            c = x0 + (tooth_w - 1) / 2.0
+            for x in range(x0, x0 + tooth_w):
+                if abs(x - c) <= half + 0.01:
+                    rows[k][x] = "t" if k < h - 2 else "T"
+    return ["".join(r) for r in rows]
+
+
+TEETH = tooth_row(64, 7, 8, 5)
+for s in (1, -1):
+    card(f"teeth_{LR(s)}", "jaw", TEETH, "teeth", at=M((11.5, 24, 166), s), offset=(0, 3.5, 0), plane="yz")
+card("teeth_front", "jaw", tooth_row(16, 7, 8, 5), "teeth", at=(0, 24, 196.5), offset=(0, 3.5, 0), plane="xy")
+
+# ======================================================================= pectoral fins: small paddles behind the head
 for s in (1, -1):
     n = LR(s)
-    part(f"eye_{n}", "head", [2, 10, 10], "eye", at=M((50, 49, 112), s), centre=M((50.5, 49, 112), s))
-    part(f"eye_patch_{n}", "head", [1, 16, 20], "hide_head", centre=M((50.5, 50, 114), s))
-    # baleen: a comb of plates hanging inside the upper jaw (seen when the mouth opens)
-    card(f"baleen_{n}", "head", BALEEN, "baleen", at=M((40, 42, 150), s), offset=(0, -3.0, 0), plane="yz",
-         rot=(0, s * -6, 0))
+    part(f"fin_{n}", "body", [32, 8, 24], "fin", at=M((56, 38, 84), s), offset=(s * 16, 0, -4),
+         rot=(0, s * -30, s * -24))
+    part(f"fin_{n}_tip", f"fin_{n}", [16, 8, 16], "fin", rel=(s * 32, 0, -4), offset=(s * 8, 0, -2),
+         rot=(0, s * -20, 0))
 
-# ======================================================================= the jaw: bowed, wide, opening on a hinge
-bone("jaw", "head", at=(0, 40, 98))
-part("jaw_bone", "jaw", [108, 28, 80], "jaw", centre=(0, 26, 140))
-part("jaw_front", "jaw_bone", [94, 26, 30], "jaw", centre=(0, 26, 190))
-part("jaw_b", "jaw_bone", [98, 34, 86], "jaw_low", centre=(0, 21, 143))
-part("chin", "jaw_bone", [76, 22, 8], "jaw_low", centre=(0, 28, 206))
-bone("mouth", "jaw", at=(0, 46, 176))
-for k, (x, y) in enumerate(((24, 22), (-18, 26), (34, 30))):
-    part(f"chin_barnacles_{k}", "chin", [8 if k != 1 else 10, 6, 2], "barnacle", centre=(x, y, 211))
-
-# ======================================================================= pectoral fins: long, slender, scalloped
+# ======================================================================= tail: stepping down block by block
+bone("tail_0", "body", at=(0, 56, -148))
+part("stock", "tail_0", blocks(7, 3, 2), "hide", centre=(0, 56, zc(-12, -11)))      # y 32..80, z -180..-148
+part("stock_b", "stock", blocks(3, 1, 2), "belly", centre=(0, 24, zc(-12, -11)))    # y 16..32
+bone("tail_1", "tail_0", at=(0, 64, -180))
+part("peduncle", "tail_1", blocks(5, 2, 2), "hide", centre=(0, 64, zc(-14, -13)))   # y 48..80, z -212..-180
+# the low dorsal hump far back on the tail
+part("dorsal", "tail_1", [16, 8, 32], "hide", at=(0, 80, -196), centre=(0, 84, -196))
+bone("fluke", "tail_1", at=(0, 60, -212))
+part("fluke_root", "fluke", [48, 8, 32], "fluke", centre=(0, 60, zc(-16, -15)))     # y 56..64, z -244..-212
 for s in (1, -1):
     n = LR(s)
-    part(f"fin_{n}", "body", [30, 8, 24], "fin", at=M((54, 30, 72), s), offset=(s * 14, 0, -3),
-         rot=(0, s * -50, s * -18))
-    tip = R.wpos(f"fin_{n}", (s * 28, 0, -3))
-    part(f"fin_{n}_tip", f"fin_{n}", [24, 6, 16], "fin", at=tip, offset=(s * 11, 0, -2), rot=(0, s * -18, s * 4))
-    for k in range(4):
-        part(f"fin_{n}_knob{k}", f"fin_{n}" if k < 2 else f"fin_{n}_tip", [5, 5, 3], "barnacle" if k == 1 else "fin",
-             rel=(s * (6 + 14 * (k % 2)), 0, 11.5 if k < 2 else 7.5))
+    part(f"fluke_{n}", "fluke", [64, 8, 32], "fluke", at=M((24, 60, -212), s), centre=M((56, 60, -228), s))
+    part(f"fluke_{n}_tip", f"fluke_{n}", [16, 8, 16], "fluke", centre=M((96, 60, -236), s))
 
-# ======================================================================= tail: a tapering stock, keels, the fluke
-bone("tail_0", "body", at=(0, 54, -36))
-part("stock", "tail_0", [96, 64, 88], "hide_side", centre=(0, 52, -80))
-part("stock_b", "stock", [80, 78, 84], "hide_side", centre=(0, 54, -80))
-part("stock_c", "stock", [64, 86, 80], "hide_back", centre=(0, 52, -82))
-bone("tail_1", "tail_0", at=(0, 54, -122))
-part("dorsal", "tail_1", [6, 12, 22], "fin", at=(0, 88, -150), centre=(0, 93, -161), rot=(20, 0, 0))
-part("peduncle", "tail_1", [40, 50, 48], "hide_side", centre=(0, 54, -144))
-part("peduncle_b", "peduncle", [28, 62, 44], "hide_back", centre=(0, 54, -144))
-part("keel_up", "peduncle", [8, 8, 38], "hide_back", centre=(0, 88, -146))
-part("keel_low", "peduncle", [8, 8, 34], "hide_belly", centre=(0, 20, -144))
-bone("fluke", "tail_1", at=(0, 54, -166))
-part("fluke_root", "fluke", [36, 10, 22], "fluke", centre=(0, 54, -176))
-for s in (1, -1):
-    n = LR(s)
-    part(f"fluke_{n}", "fluke", [52, 6, 26], "fluke", at=M((16, 54, -176), s), offset=M((24, 0, -7), s),
-         rot=(0, s * 18, 0))
-    part(f"fluke_{n}_tip", f"fluke_{n}", [22, 4, 14], "fluke", rel=M((48, 0, -9), s), offset=M((7, 0, -3), s),
-         rot=(0, s * 18, 0))
-    card(f"fluke_{n}_edge", f"fluke_{n}", spikes(52, 4, seed=7 + s), "fluke_edge", rel=(0, 0, 0),
-         offset=M((24, 0.0, -21.5), s), plane="xz")
+# names of the earlier design that are not drawn any more (kept as empty bones for the mod's code)
+keep_names(R, {"skull_b": "skull", "rostrum": "head", "rostrum_b": "rostrum",
+               "lip_up": "head", "splash_guard": "head", "eye_patch_l": "head",
+               "baleen_l": "head", "eye_patch_r": "head", "baleen_r": "head", "jaw_front": "jaw_bone",
+               "jaw_b": "jaw_bone", "chin": "jaw_bone", "chin_barnacles_0": "chin", "chin_barnacles_1": "chin",
+               "chin_barnacles_2": "chin", "fin_l_knob0": "fin_l", "fin_l_knob1": "fin_l", "fin_l_knob2": "fin_l_tip",
+               "fin_l_knob3": "fin_l_tip", "fin_r_knob0": "fin_r", "fin_r_knob1": "fin_r", "fin_r_knob2": "fin_r_tip",
+               "fin_r_knob3": "fin_r_tip", "stock_c": "stock", "peduncle_b": "peduncle", "keel_up": "peduncle",
+               "keel_low": "peduncle", "fluke_l_edge": "fluke_l", "fluke_r_edge": "fluke_r"})
 
 # ======================================================================= palette and paint
-RAMPS = ramps("whale", "belly", "gum", "baleen", "barnacle", "pupil", "cream")
-brush = {"flow": "horizontal", "length": 6.0, "width": 2.0, "rough": 0.5, "overshoot": 0.3,
-         "textures": {"whale": "leather", "belly": "organic", "barnacle": "stone"}}
-RIM = {"light": 1, "dark": 1, "light_shift": 1.4, "dark_shift": -1.2}
-MOTTLE = {"id": "mottle", "op": "spots", "count": 26, "radius": [1.2, 3.2], "stretch": [1, 0.7, 1.6], "ramp": "whale",
-          "tone": 9.6, "roughness": 0.6, "min_gap": 4.0, "faces": ["top", "sides"]}
-MOTTLE_DK = dict(MOTTLE, id="mottle_dk", count=14, radius=[1.0, 2.4], ramp="whale", tone=3.8, seed=11)
-SCARS = {"id": "scars", "op": "cracks", "scale": 40.0, "width": 0.01, "threshold": 0.72, "ramp": "whale", "tone": 10.0,
-         "seed": 3, "faces": ["top", "sides"]}
-CLOUD = {"id": "cloud", "op": "noise", "scale": 24.0, "amount": 1.0}
-BELLY = {"id": "belly", "op": "band", "axis": "y", "from": -1.01, "to": -0.35, "ramp": "belly", "tone": 5.0,
-         "wobble": 0.25, "wobble_scale": 30.0, "faces": ["sides", "front", "back", "bottom"],
-         "bevel": {"shadow": 1, "highlight": 0, "shadow_ramp": "whale", "shadow_shift": -1.0}}
-PLEATS = {"id": "pleats", "op": "stripes", "axis": "x", "period": 4.0, "width": 0.25, "shift": -1.6, "wobble": 0.4,
-          "faces": ["bottom", "sides"]}
+RAMPS = ramps("whale", "belly", "gum", "tooth", "ink", "glint")
+BELLY = {"id": "pale_low", "op": "band", "axis": "y", "from": -1.01, "to": -0.55, "ramp": "belly", "tone": 2.0,
+         "faces": ["sides"]}
 styles = {
-    "hide": {"ramp": "whale", "tone": 6.0, "rim": RIM},
-    "hide_back": {"ramp": "whale", "tone": 5.2, "rim": RIM,
-                  "layers": [CLOUD, MOTTLE, MOTTLE_DK, SCARS]},
-    "hide_side": {"ramp": "whale", "tone": 6.0, "rim": RIM,
-                  "layers": [CLOUD, {"id": "dark_top", "op": "gradient", "axis": "y", "amount": -0.8}, MOTTLE,
-                             MOTTLE_DK, SCARS, BELLY]},
-    "hide_belly": {"ramp": "belly", "tone": 5.0, "rim": RIM, "layers": [CLOUD, PLEATS]},
-    "hide_head": {"ramp": "whale", "tone": 6.0, "rim": RIM,
-                  "layers": [CLOUD, MOTTLE, MOTTLE_DK, SCARS,
-                             {"id": "lip", "op": "band", "axis": "y", "from": -1.01, "to": -0.7, "ramp": "whale",
-                              "tone": 2.4, "faces": ["sides", "front"]}]},
-    "hide_head_top": {"ramp": "whale", "tone": 5.6, "rim": RIM,
-                      "layers": [CLOUD, dict(MOTTLE, count=16), dict(MOTTLE_DK, count=10), SCARS,
-                                 {"id": "lip", "op": "band", "axis": "y", "from": -1.01, "to": -0.6, "ramp": "whale",
-                                  "tone": 2.2, "faces": ["sides", "front"]}]},
-    "blowhole": {"ramp": "whale", "tone": 4.6, "rim": RIM, "brush": {"off": True},
-                 "stamps": [{"face": "top", "at": "center",
-                             "art": ["..dddd....dddd..", ".dDDDDd..dDDDDd.", ".dDkkDd..dDkkDd.", ".dDkkDd..dDkkDd.",
-                                     ".dDkkDd..dDkkDd.", ".dDkkDd..dDkkDd.", ".dDkkDd..dDkkDd.", ".dDkkDd..dDkkDd.",
-                                     ".ddDDd....dDDdd.", "..dddd....dddd..", "................", "................"],
-                             "key": {"d": "whale:3", "D": "whale:2", "k": "whale:0"}}]},
-    "jaw": {"ramp": "whale", "tone": 5.6, "rim": RIM,
-            "layers": [CLOUD, MOTTLE, dict(BELLY, **{"from": -1.01, "to": 0.0}), PLEATS,
-                       {"id": "lip", "op": "band", "axis": "y", "from": 0.75, "to": 1.01, "ramp": "whale",
-                        "tone": 2.4, "faces": ["sides", "front"]},
-                       {"id": "inner", "op": "band", "axis": "x", "from": -0.8, "to": 0.8, "ramp": "gum",
-                        "tone": 3.0, "faces": ["top"]},
-                       {"id": "tongue", "op": "band", "axis": "x", "from": -0.4, "to": 0.4, "ramp": "gum",
-                        "tone": 5.4, "faces": ["top"], "wobble": 0.15}]},
-    "jaw_low": {"ramp": "belly", "tone": 5.0, "rim": RIM, "layers": [CLOUD, PLEATS]},
-    "lip": {"ramp": "whale", "tone": 3.0, "rim": RIM,
-            "layers": [CLOUD, {"id": "roof", "op": "fill", "ramp": "baleen", "tone": 3.0, "faces": ["bottom"]}]},
-    "gums": {"ramp": "gum", "tone": 4.0, "rim": {"light": 0, "dark": 1, "dark_shift": -1.2},
-             "layers": [{"id": "tongue", "op": "band", "axis": "x", "from": -0.45, "to": 0.45, "ramp": "gum",
-                         "tone": 5.6, "faces": ["top"], "wobble": 0.2},
-                        {"id": "ridges", "op": "stripes", "axis": "z", "period": 3.0, "width": 0.25, "shift": -1.0,
-                         "faces": ["top"]}]},
-    "throat": {"ramp": "belly", "tone": 5.4, "rim": RIM,
-               "layers": [CLOUD, dict(PLEATS, period=3.0, width=0.3),
-                          {"id": "blush", "op": "patches", "scale": 18.0, "threshold": 0.6, "ramp": "gum",
-                           "tone": 6.4, "faces": ["bottom"]}]},
-    "baleen": {"ramp": "baleen", "tone": 3, "light": 0.2, "brush": {"off": True},
-               "art_key": {"b": "baleen:2", "B": "baleen:4", "f": "baleen:7"}},
-    "eye": {"ramp": "whale", "tone": 3.0, "light": 0.2, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-            "stamps": [{"faces": ["left", "right"], "at": "top-left", "art": round_eye(10, pupil=4),
-                        "key": {"k": "whale:1", "i": "baleen:3", "I": "baleen:4", "J": "baleen:6", "p": "pupil:0",
-                                "W": "cream:7"}}]},
-    "fin": {"ramp": "whale", "tone": 6.0, "rim": RIM,
-            "layers": [CLOUD, dict(MOTTLE, count=8, radius=[1.0, 2.0]),
-                       {"id": "pale_under", "op": "fill", "ramp": "belly", "tone": 5.6, "faces": ["bottom"]},
-                       {"id": "edge", "op": "band", "axis": "z", "from": 0.6, "to": 1.01, "ramp": "belly",
-                        "tone": 6.4, "faces": ["top", "sides"], "wobble": 0.3}]},
-    "fluke": {"ramp": "whale", "tone": 5.0, "rim": RIM,
-              "layers": [CLOUD, dict(MOTTLE, count=10), dict(SCARS, scale=24.0),
-                         {"id": "pale_under", "op": "fill", "ramp": "belly", "tone": 5.0, "faces": ["bottom"]},
-                         {"id": "under_spots", "op": "spots", "count": 10, "radius": [1.0, 2.5], "ramp": "whale",
-                          "tone": 3.0, "faces": ["bottom"], "min_gap": 3.0}]},
-    "fluke_edge": {"ramp": "whale", "tone": 2, "light": 0, "brush": {"off": True},
-                   "art_key": {"t": "whale:1", "m": "whale:2", "f": "whale:3"}},
-    "barnacle": {"ramp": "barnacle", "tone": 3.6, "rim": {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.4},
-                 "brush": {"off": True},
-                 "stamps": [{"faces": ["front", "top", "left", "right"], "at": "top-left",
-                             "art": barnacle_cluster(10, 6, seed=5, n=4),
-                             "key": {"b": "barnacle:5", "B": "barnacle:7", "o": "barnacle:1", "r": "barnacle:3"}}]},
+    "hide": flat("whale", 3.4),
+    "head": flat("whale", 3.6),
+    "belly": flat("belly", 1.4, {"id": "folds", "op": "stripes", "axis": "x", "period": 6.0, "width": 0.2,
+                                 "shift": -0.8, "faces": ["bottom", "sides"]}),
+    "jaw": flat("belly", 2.6, {"id": "gums", "op": "fill", "ramp": "gum", "tone": 1.2, "faces": ["top"]}),
+    "fin": flat("whale", 3.0, {"id": "pale_under", "op": "fill", "ramp": "belly", "tone": 1.6, "faces": ["bottom"]}),
+    "fluke": flat("whale", 3.0, {"id": "pale_under", "op": "fill", "ramp": "belly", "tone": 1.4,
+                                 "faces": ["bottom"]}),
+    "blowhole": flat("whale", 2.0, grain=0.5),
+    "teeth": card_style("tooth", 2, {"t": "tooth:3", "T": "tooth:1"}, light=0.1),
 }
+for st in ("head",):
+    styles[st]["layers"].append(BELLY)
+
+# markings: patches of darker grey with long wavy wrinkles running along the body, short pale squid scars on the head,
+# small eyes far back under a heavy brow line
+_patch = smooth_field(21, 60)
+_patch_b = smooth_field(5, 34)
+
+
+def wrinkles(x, y, z, f):
+    """Darker swirly patches of skin, and long wavy wrinkle lines (darker still) where the skin creases."""
+    if f == "bottom" or y < 18:
+        return "."
+    v = _patch(x, y, z) + 0.5 * _patch_b(x, y, z)
+    if f in ("top",):
+        a = x + 4 * math.sin(z / 13.0) + 3 * math.sin(z / 31.0 + 1)
+    elif f in ("front", "back"):
+        a = y + 3 * math.sin(x / 11.0) + 2 * math.sin(x / 27.0)
+    else:
+        a = y + 4 * math.sin(z / 14.0) + 3 * math.sin(z / 33.0 + 2) + 1.5 * math.sin(z / 5.0)
+    if v > 0.2 and (a + 0.5) % 9.0 < 1.0:
+        return "w"
+    if v > 0.75:
+        return "p"
+    return "."
+
+
+SCARS = []
+_rng = random.Random(7)
+for _ in range(14):
+    SCARS.append((_rng.uniform(-60, 60), _rng.uniform(40, 90), _rng.uniform(-1, 1), _rng.uniform(3, 7)))
+
+
+def scars(x, y, z, f):
+    """Short pale scratches on the head's front and sides."""
+    if f == "front":
+        u, v = x, y
+    elif f in ("left", "right"):
+        u, v = (z - 170) * 2.0, y
+    else:
+        return "."
+    for su, sv, slope, ln in SCARS:
+        du = u - su
+        if 0 <= du <= ln * 2 and abs(v - (sv + slope * du * 0.5)) < 0.5:
+            return "c"
+    return "."
+
+
+def mouth_line(x, y, z, f):
+    """The head's underside over the jaw: a gum-dark groove where the teeth sit."""
+    if f == "bottom" and abs(x) < 18 and z > 126:
+        return "g"
+    if f in ("left", "right", "front") and y < 34 and z > 126 and abs(x) > 70:
+        return "d"
+    return "."
+
+
+def blow(x, y, z, f):
+    """The blowhole: an S-shaped dark slit on top."""
+    if f != "top":
+        return "."
+    u, v = x - 16, z - 196
+    return "k" if abs(v - 1.5 * math.sin(u * 0.6)) < 0.8 and abs(u) < 5 else "."
+
+
+EYE = side_eye(44, 123, w=2, h=2, glint=True, brow="heavy", gap=1)
+
+
+def eye_socket(x, y, z, f):
+    """A pale ring of skin round the small eye, so it reads from far off."""
+    if f in ("left", "right") and 120 < z < 124 and 41 < y < 45:
+        return "e"
+    return "."
+KEY = {"w": "whale:1", "p": "whale:3", "c": "belly:3", "e": "belly:2", "g": "gum:0", "d": "whale:1", "k": "ink:0",
+       "h": "glint:1", "b": "ink:2", "l": "whale:1"}
+for pid in ("torso", "stock", "peduncle", "dorsal", "torso_b"):
+    marks(R, pid, wrinkles, KEY)
+marks(R, "skull", combine(EYE, eye_socket, mouth_line, scars, wrinkles), KEY)
+marks(R, "snout", combine(scars, wrinkles), KEY)
+marks(R, "blowhole", blow, KEY)
 
 # ======================================================================= animation
 REST = {}
@@ -235,36 +266,34 @@ ANIM["swim"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True, extr
     osc("fluke_r", "x", 4, 1, 0.3),
 ])
 
-# idle: hanging in the water: a lazy fluke drift, the pectorals sculling slowly, the jaw shifting, the eyes rolling
+# idle: hanging in the water: a lazy fluke drift, the pectorals sculling slowly, the jaw shifting
 L = 6.0
 ANIM["idle"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True, extra=stroke(L, 0.35, 1) + [
     osc("fin_l", "x", 6, 1, 0.0), osc("fin_r", "x", 6, 1, 0.5), osc("fin_l_tip", "z", -5, 1, 0.15),
-    osc("fin_r_tip", "z", 5, 1, 0.65), osc("jaw", "x", 1.0, 2, 0.3, bias=0.5),
-    osc("eye_l", "y", 10, 1, 0.2), osc("eye_r", "y", -10, 1, 0.2), osc("body", "z", 0.8, 1, 0.1),
+    osc("fin_r_tip", "z", 5, 1, 0.65), osc("jaw", "x", 1.5, 2, 0.3, bias=0.8), osc("body", "z", 0.8, 1, 0.1),
 ])
 
 # breathe: it rises, the blowhole flares open (the spout: 0.5-1.0 s), the back arches, it settles again
-OPEN_HOLE = add(sc("blowhole", 0.35, 0, 0.45), pos("body", 0, 4.0, 0), r("body", -2), r("tail_0", 3), r("fluke", 6))
+OPEN_HOLE = add(sc("blowhole", 0.5, 0, 0.6), pos("body", 0, 4.0, 0), r("body", -2), r("tail_0", 3), r("fluke", 6))
 ANIM["breathe"] = timeline(2.0, [(0.0, REST, None), (0.45, add(pos("body", 0, 3.5, 0), r("body", -1.5)), "ease"),
                                  (0.55, OPEN_HOLE, "out"), (1.0, OPEN_HOLE, "ease"),
                                  (1.25, add(sc("blowhole", -0.15, 0, -0.15), pos("body", 0, 2.0, 0)), "ease"),
                                  (2.0, REST, "ease")],
-                           extra=[shake("blowhole", 0.5, 1.0, [0.06, 0, 0.06], freq=12, ch="scale")])
+                           extra=[shake("blowhole", 0.5, 1.0, [0.08, 0, 0.08], freq=12, ch="scale")])
 
-# mouth_open: the jaw drops wide, the throat sags (ends open: the game holds the last frame)
-OPEN = add(r("jaw", 34), sc("throat", 0.02, 0.6, 0.02), r("head", -3), r("fin_l", 0, 0, 6), r("fin_r", 0, 0, -6))
+# mouth_open: the narrow jaw drops wide, the throat sags a little (ends open: the game holds the last frame)
+OPEN = add(r("jaw", 38), sc("throat", 0.0, 0.25, 0.0), r("head", -3), r("fin_l", 0, 0, 6), r("fin_r", 0, 0, -6))
 ANIM["mouth_open"] = timeline(1.0, [(0.0, REST, None), (0.15, add(r("jaw", -2), r("head", 1)), "ease"),
                                     (0.75, add(OPEN, r("jaw", 3)), "out"), (1.0, OPEN, "ease")])
 # mouth_close: from open, the jaw swings up and shuts with a small bounce
 ANIM["mouth_close"] = timeline(0.5, [(0.0, OPEN, None), (0.3, add(r("jaw", -3), r("head", 1.5)), "in"),
                                      (0.4, r("jaw", 1.5), "ease"), (0.5, REST, "ease")])
 
-# lunge: a big fluke drive, the jaw gapes enormously, the throat balloons with the gulp, the jaw slams shut, the
-# swollen throat slowly drains
+# lunge: a big fluke drive, the jaw gapes enormously, the throat swells with the gulp, the jaw slams shut
 DRIVE = add(r("tail_0", -6), r("tail_1", -8), r("fluke", -16), pos("body", 0, 0, -6.0), r("body", 2))
-GAPE = add(r("jaw", 52), r("head", -6), sc("throat", 0.1, 1.6, 0.06), pos("body", 0, 1.0, 18.0), r("body", -3),
+GAPE = add(r("jaw", 60), r("head", -6), sc("throat", 0.0, 0.5, 0.0), pos("body", 0, 1.0, 18.0), r("body", -3),
            r("tail_0", 5), r("tail_1", 8), r("fluke", 14), r("fin_l", 0, 10, 20), r("fin_r", 0, -10, -20))
-GULP = add(r("jaw", 0), sc("throat", 0.14, 2.2, 0.08), pos("body", 0, 0.5, 22.0), r("body", 2))
+GULP = add(r("jaw", 0), sc("throat", 0.0, 0.7, 0.0), pos("body", 0, 0.5, 22.0), r("body", 2))
 ANIM["lunge"] = timeline(1.5, [(0.0, REST, None), (0.3, DRIVE, "ease"), (0.7, GAPE, "out"), (0.85, GAPE, "ease"),
                                (1.05, GULP, "in"), (1.5, REST, "ease")],
                          extra=[ring("fluke", 0.7, 10, freq=3, decay=3, axis=0, end=1.5)])
@@ -277,7 +306,7 @@ ANIM["shake"] = timeline(2.0, [(0.0, REST, None), (2.0, REST, None)], extra=[
     shake("tail_0", 0.1, 1.9, 10, freq=3.0, axis=1), shake("tail_1", 0.15, 1.95, 14, freq=3.0, axis=1),
     shake("fluke", 0.2, 1.95, 16, freq=3.0, axis=0),
     shake("fin_l", 0.1, 1.9, 24, freq=3.0, axis=2), shake("fin_r", 0.1, 1.9, -24, freq=3.0, axis=2),
-    shake("jaw", 0.3, 1.6, 6, freq=4.0, axis=0),
+    shake("jaw", 0.3, 1.6, 8, freq=4.0, axis=0),
     shake("body", 0.05, 1.9, [0, 3.0, 0], freq=5.2, ch="position"),
 ])
 
@@ -288,14 +317,13 @@ ANIM["sing"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True, extr
     osc("body", "x", -3.0, 1, 0.0), osc("head", "x", -2.5, 2, 0.1), osc("body", "z", 2.5, 1, 0.25),
     osc("fin_l", "z", -16, 2, 0.0), osc("fin_r", "z", 16, 2, 0.0), osc("fin_l", "y", 10, 1, 0.2),
     osc("fin_r", "y", -10, 1, 0.2), osc("fin_l_tip", "z", -10, 2, 0.1), osc("fin_r_tip", "z", 10, 2, 0.1),
-    keys("jaw", "x", [[0, 0], [0.8, 0], [1.4, 7], [2.2, 7], [2.8, 1], [4.0, 0], [4.6, 9], [5.6, 9], [6.4, 2],
+    keys("jaw", "x", [[0, 0], [0.8, 0], [1.4, 9], [2.2, 9], [2.8, 1], [4.0, 0], [4.6, 12], [5.6, 12], [6.4, 2],
                       [7.2, 0], [8.0, 0]]),
-    keys("throat", None, [[0, [0, 0, 0]], [0.8, [0, 0, 0]], [1.4, [0.02, 0.35, 0.02]], [2.2, [0.02, 0.4, 0.02]],
-                          [2.8, [0, 0.05, 0]], [4.0, [0, 0, 0]], [4.6, [0.03, 0.5, 0.02]],
-                          [5.6, [0.03, 0.55, 0.02]], [6.4, [0, 0.1, 0]], [7.2, [0, 0, 0]], [8.0, [0, 0, 0]]],
+    keys("throat", None, [[0, [0, 0, 0]], [0.8, [0, 0, 0]], [1.4, [0, 0.2, 0]], [2.2, [0, 0.22, 0]],
+                          [2.8, [0, 0.03, 0]], [4.0, [0, 0, 0]], [4.6, [0, 0.28, 0]],
+                          [5.6, [0, 0.3, 0]], [6.4, [0, 0.05, 0]], [7.2, [0, 0, 0]], [8.0, [0, 0, 0]]],
          ch="scale"),
     osc("fluke_l", "x", 6, 2, 0.3), osc("fluke_r", "x", 6, 2, 0.3),
-    osc("eye_l", "y", 8, 1, 0.4), osc("eye_r", "y", -8, 1, 0.4),
 ])
 
 for clip in ANIM.values():
@@ -303,18 +331,18 @@ for clip in ANIM.values():
 
 spec = {
     "name": "Whale",
-    "description": "The Winterworks whale: a massive original baleen whale, blue-grey and mottled, pale beneath, a "
-                   "broad flat back for a block deck, a wide head with a splash guard and twin blowhole, small round "
-                   "eyes, a bowed lower jaw over gums and baleen, throat grooves, long scalloped pectorals and a huge "
-                   "notched fluke. Minecraft pixel units at density 1: exports 1:1 to a vanilla entity model.",
+    "description": "The Winterworks whale: a massive sperm whale built from block-scale boxes in the vanilla mob "
+                   "style: a huge square head over a narrow toothed jaw, small dot eyes far back under a heavy brow, a "
+                   "flat 9-block-wide back for a block deck, a body stepping in to a pale belly, small fins and a "
+                   "broad fluke; wrinkly slate-grey skin with pale scars. Minecraft pixel units at density 1: exports "
+                   "1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": DENSITY,
     "grounded": False,
-    "budget": {"tris": 900, "colors": 96},
+    "budget": {"tris": 400, "colors": 40},
     "light": dict(LIGHT, ao_height=30.0),
-    "brush": brush,
     "minecraft": {"fps": 12},
-    "render": {"background": "#1a4a63", "hero": [38, 18], "shadow": 0.4},
+    "render": {"background": "#1a4a63", "hero": [36, 9], "shadow": 0.4},
     "palette": {"ramps": RAMPS},
     "styles": styles,
     "parts": R.P,

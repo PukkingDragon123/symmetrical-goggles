@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "winterworks:fur_leggings"
+    "winterworks:fur_leggings",
+    "winterworks:turtle_shell_leggings"
   ]
 }

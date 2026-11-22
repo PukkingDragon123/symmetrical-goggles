@@ -3,29 +3,34 @@ section 11).
 
     python examples/src/monolith.py examples/monolith.json
 
-A towering slab of cracked obsidian, 3 blocks wide and 7 tall, hovering over its own jagged point: stepped, bevelled
-flanks, a heavy brow band under a crown of jagged obsidian spikes trimmed in violet-gold, and three round eyes in a
-triangle (a big one high in the middle, two under heavy angry brows): pale shaded eyeballs bulging from glowing
-sockets, round glowing violet irises with round pupils and catch-lights, and heavy obsidian upper lids that cut across
-the irises (slanted with the brows) and drop to blink. Columns of engraved runes smoulder
-crying-obsidian violet down its face and flanks, cracks leak the same light. A ring of floating debris (obsidian
-chunks with glowing veins, End stone and purpur rubble) circles its lower half. Beside it float two giant hands of
-weathered grey-violet stone armoured in obsidian: obsidian knuckle plates and claws, a glowing rune on the back of
-each hand, and a broken obsidian cuff at the wrist whose stump glows.
+Exported into the mod with a fixed hash seed (PYTHONHASHSEED=0):
 
-Units are Minecraft pixels (16 per block), density 2 (two texels per pixel), every box size a multiple of 0.5, so
-the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). Faces +Z; the slab is centred on
-x = z = 0 and its point hovers 2 px above y = 0 (the entity's feet). "Left" is +X.
+    python -m lowpix mc export examples/monolith.json --mod mods/winterworks --modid winterworks \\
+        --package dev.lowpix.winterworks.client.lowpix -o out/monolith
+
+A living block of obsidian, 3 blocks wide and 7 tall, hovering over its own stepped point, drawn like the vanilla
+blocks it is made of: every face is obsidian (violet-black with lighter streaky glints) or crying obsidian (its bright
+violet tears). Stepped flanks, a heavy brow band under a crown of blocky obsidian spikes trimmed in gold, and three
+flat eyes in a triangle: glowing enderman-violet slits set into the face, a bright 2 x 2 pupil in each that follows
+its prey, a heavy obsidian lid over the top row and angry brows over the lower pair, glowing crying-obsidian tears
+running down from them. Engraved rune columns smoulder violet down its face and flanks, a crack leaks the same light.
+A ring of floating debris (obsidian chunks, crying-obsidian chunks, End stone and purpur rubble) circles its lower
+half. Beside it float two giant blocky hands of grey-violet stone armoured in obsidian: knuckle plates and claws, a
+glowing rune on the back of each hand, and a broken obsidian cuff at the wrist whose stump glows.
+
+Units are Minecraft pixels (16 per block), density 1 (one texel per pixel, like the vanilla blocks), every box whole
+pixels, so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). Faces +Z; the slab is
+centred on x = z = 0 and its point hovers 2 px above y = 0 (the entity's feet). "Left" is +X.
 
 Contract (END_UPDATE.md section 11). Bones: body (root: the slab, crown and point), eye_0 (top), eye_1 (lower left),
-eye_2 (lower right; each eye_k holds eye_k_ball, the eyeball, eye_k_pupil, a card with the round iris, pupil and
-catch-light that wanders and tightens, and eye_k_lid, the upper lid that scales down to blink), hand_l, hand_r
+eye_2 (lower right; each eye_k holds eye_k_ball, the glowing eye behind its socket, eye_k_pupil, a card with the bright
+2 x 2 pupil that wanders and tightens, and eye_k_lid, the upper lid card that scales down to blink), hand_l, hand_r
 (separate roots; each with thumb_l / thumb_r and finger_l_0..3 / finger_r_0..3, index finger 0 to little finger 3,
 every digit with a `_tip` joint), shards (a separate root: the debris ring). Clips (all additive on top of idle,
 like the Frost Mauler's): idle (6 s loop), stare (2 s loop), slam_l, slam_r (1.2 s; impact at 0.9 s), grab (1.0 s,
 the right hand; ends holding), clap (1.2 s; contact at 0.62 s), summon (2.0 s; the hands drive down at 1.4 s),
-death (3.0 s; play it alone). Glow: the irises and every crying-obsidian texel (runes, cracks, the wrist stumps, the
-sockets' rims). The eyes look out through see-through holes in the slab's face and the irises are cards: draw the
+death (3.0 s; play it alone). Glow: the eyes and every crying-obsidian texel (runes, tears, cracks, the wrist
+stumps). The eyes look out through see-through sockets in the slab's face and the pupils and lids are cards: draw the
 model with a cutout render type (entityCutoutNoCull), never entitySolid.
 """
 import math
@@ -34,78 +39,81 @@ import random
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from hex_kit import ROOT, Rig, add, dump, jitter, keys, osc, ring, shake, spin, timeline  # noqa: E402
-from obsidian_kit import RAMPS, crack_line, eye_hole, eyeball, iris_card, rune_column, rune_row  # noqa: E402
+from end_vanilla_kit import (LIGHT, ROOT, Rig, add, dump, jitter, keys, obsidian, osc, ramps, ring,  # noqa: E402
+                             shake, skin, spin, timeline)
+from obsidian_kit import crack_line, rune_column  # noqa: E402
 
-R = Rig(density=2, bone_style="obsidian")
+D = 1
+R = Rig(density=D, bone_style="obsidian")
 part, bone, card = R.part, R.bone, R.card
 
 # ======================================================================= the slab
 BODY_PIVOT = (0, 58, 0)
 part("body", None, [30, 52, 16], "slab_face", at=BODY_PIVOT, centre=(0, 62, 0))        # y 36..88
 for s, n in ((1, "l"), (-1, "r")):
-    part(f"flank_{n}", "body", [4, 48, 12], "slab_flank", centre=(s * 16.5, 61, 0))      # stepped bevel
+    part(f"flank_{n}", "body", [4, 48, 12], "slab_flank", centre=(s * 16.0, 61, 0))      # stepped bevel
     part(f"flank_cap_{n}", f"flank_{n}", [5, 3, 13], "slab_dark", centre=(s * 16.5, 36.5, 0))
-part("back_plate", "body", [24, 44, 2], "slab_back", centre=(0, 60, -8.5))
-# the lower body tapers to a jagged point it hovers on
-part("hip", "body", [26, 10, 14], "slab_lower", centre=(0, 32.5, 0))                     # y 27.5..37.5
-part("lower", "body", [20, 10, 12], "slab_lower", centre=(0, 24, 0))                     # y 19..29
-part("base", "body", [12, 9, 12], "slab_point", centre=(0, 16, 0), rot=(0, 45, 0))     # a diamond
+part("back_plate", "body", [24, 44, 2], "slab_back", centre=(0, 60, -9))
+# the lower body steps down to the point it hovers on
+part("hip", "body", [26, 10, 14], "slab_lower", centre=(0, 32, 0))                       # y 27..37
+part("lower", "body", [20, 10, 12], "slab_lower", centre=(0, 23, 0))                     # y 18..28
+part("base", "body", [12, 9, 12], "slab_point", centre=(0, 15.5, 0), rot=(0, 45, 0))   # a diamond
 part("tip", "body", [7, 8, 7], "slab_point", centre=(0, 9, 0), rot=(0, 45, 0))
 part("point", "body", [3, 5, 3], "slab_point", centre=(0, 4.5, 0), rot=(0, 45, 0))     # lowest point y 2
 # broken chunks jutting from the lower edges
-for k, (c, sz, rot) in enumerate([((12.5, 30, 5), [4, 5, 4], (20, 30, -28)), ((-12, 28.5, -4.5), [4.5, 4, 4], (-15, 10, 32)),
-                                  ((9, 21, -5.5), [3.5, 3.5, 3.5], (30, 45, -20)), ((-8.5, 20, 5.5), [3, 4, 3], (-25, 20, 24))]):
+for k, (c, sz, rot) in enumerate([((12.5, 30, 5), [4, 5, 4], (20, 30, -28)), ((-12, 28.5, -4.5), [5, 4, 4], (-15, 10, 32)),
+                                  ((9, 21, -5.5), [4, 4, 4], (30, 45, -20)), ((-8.5, 20, 5.5), [3, 4, 3], (-25, 20, 24))]):
     part(f"chunk_{k}", "body", sz, "slab_chunk", centre=c, rot=rot)
 
 # ======================================================================= the brow band and the crown of spikes
-part("crown", "body", [34, 6, 18], "crown_band", centre=(0, 90, 0))                     # y 87..93
-part("crown_trim", "crown", [35, 1.5, 19], "gold_trim", centre=(0, 87.25, 0))
+part("crown", "body", [34, 6, 18], "crown_band", centre=(0, 91, 0))                     # y 88..94
+part("crown_trim", "crown", [36, 2, 20], "gold_trim", centre=(0, 88, 0))
 SPIKES = [  # (x, z, height, base width, outward lean, forward lean): a jagged crown, tallest in the middle
     (0, 2.5, 25, 8, 0, 5), (-8, 3.0, 18, 7, 14, 8), (8.5, 3.0, 19, 7, 12, 7), (-15, 3.0, 12, 6, 36, 9),
     (15, 3.0, 13, 6, 32, 8),
-    (-4.5, -4.5, 15, 6, 8, -11), (4.5, -4.5, 14, 6, 10, -10), (-12, -4, 10, 5.5, 28, -14), (12, -4, 9, 5.5, 30, -13),
+    (-4.5, -4.5, 15, 6, 8, -11), (4.5, -4.5, 14, 6, 10, -10), (-12, -4, 10, 6, 28, -14), (12, -4, 9, 6, 30, -13),
 ]
 
 
-def half(v, lo=1.0):
-    """Round to the 0.5 px grid (whole texels at density 2)."""
-    return max(lo, round(v * 2) / 2)
+def whole(v, lo=1):
+    """Round to whole pixels."""
+    return max(lo, int(round(v)))
 
 
 for k, (x, z, h, w, lz, lx) in enumerate(SPIKES):
     lz = -abs(lz) if x > 0 else abs(lz) if x < 0 else 0     # every spike leans away from the middle
-    h0, h1, h2 = half(h * 0.45), half(h * 0.35), half(h * 0.32)
-    b = part(f"spike_{k}", "crown", [w, h0, w], "spike", at=(x, 91.5, z), offset=(0, h0 / 2, 0),
+    h0, h1, h2 = whole(h * 0.45), whole(h * 0.35), whole(h * 0.32)
+    b = part(f"spike_{k}", "crown", [w, h0, w], "spike", at=(x, 93.0, z), offset=(0, h0 / 2, 0),
              rot=(lx, 45 + 7 * k, lz))
-    m = part(f"spike_{k}_mid", b["id"], [half(w * 0.66), h1, half(w * 0.66)],
+    m = part(f"spike_{k}_mid", b["id"], [whole(w * 0.66), h1, whole(w * 0.66)],
              "spike", rel=(0, h0 - 0.5, 0), offset=(0, h1 / 2, 0), rot=(lx * 0.25, 14, lz * 0.35))
-    part(f"spike_{k}_tip", m["id"], [half(w * 0.36), h2, half(w * 0.36)],
+    part(f"spike_{k}_tip", m["id"], [whole(w * 0.36), h2, whole(w * 0.36)],
          "spike_tip", rel=(0, h1 - 0.5, 0), offset=(0, h2 / 2, 0), rot=(lx * 0.2, -12, lz * 0.45))
-# jagged teeth along the brow band's front and back edges
+# blocky teeth along the brow band's front and back edges
 for k, x in enumerate((-12.5, -4.5, 4.5, 12.5)):
     for side, z in (("f", 8.0), ("b", -8.0)):
-        part(f"tooth_{side}{k}", "crown", [3, 4, 3], "spike", at=(x, 92.5, z), offset=(0, 1.5, 0),
+        part(f"tooth_{side}{k}", "crown", [3, 4, 3], "spike", at=(x, 94.0, z), offset=(0, 1.5, 0),
              rot=(10 if z > 0 else -10, 45, -x * 1.2))
 
 # ======================================================================= the three eyes (a triangle on the face)
-# Each eye looks out through a round hole cut in the slab's face (a transparent stamp ringed by the lid crease and a
-# glowing rim). Behind the hole, back to front: the eyeball box (1 px bigger than the hole all round), the iris card
-# (it wanders and tightens) and the obsidian upper lid, whose straight lower edge cuts across the top of the iris
-# (slanted with the brows on the lower pair). The face clips iris and lid to the round opening. The lid's pivot is
-# its top edge, so scaling it in y drops it over the whole opening: a blink.
+# Each eye looks out through a rectangular socket cut in the slab's face (a transparent stamp ringed by a dark crease).
+# Behind the socket, back to front: the glowing eye box (1 px bigger than the socket all round, its front 0.5 px behind
+# the face), the pupil card (it wanders and tightens) and the obsidian lid card, which covers the socket's top row (a
+# heavy-lidded glare; slanted with the brows on the lower pair). The face clips pupil and lid to the socket. The lid's
+# pivot is its top edge, so scaling it in y drops it over the whole socket: a blink.
 FACE_Z = 8.0
-# (x, y, ball w, ball h, iris texels, lid height, lid slant): eye_0 top, eye_1 lower left, eye_2 lower right
-EYES = [(0, 77, 9, 7, 10, 2.5, 0), (8, 65.5, 8, 6, 8, 2.5, 11), (-8, 65.5, 8, 6, 8, 2.5, -11)]
-for k, (x, y, w, h, iris, lid_h, slant) in enumerate(EYES):
+# (x, y, socket w, socket h, unused, lid height, lid slant): eye_0 top, eye_1 lower left, eye_2 lower right
+EYES = [(0, 77.5, 8, 3, 0, 1, 0), (8, 65.5, 8, 3, 0, 1, 9), (-8, 65.5, 8, 3, 0, 1, -9)]
+PUPIL = ["Ww", "wW"]
+for k, (x, y, w, h, _, lid_h, slant) in enumerate(EYES):
     bone(f"eye_{k}", "body", at=(x, y, FACE_Z))
-    part(f"eye_{k}_ball", f"eye_{k}", [w, h, 1.5], f"eye_ball_{k}", rel=(0, 0, -1.35))       # front at z 7.4
-    card(f"eye_{k}_pupil", f"eye_{k}", iris_card(iris), "iris", rel=(0, -0.5, -0.5))            # z 7.5
-    part(f"eye_{k}_lid", f"eye_{k}", [w + 1, lid_h, 0.5], f"lid_{k}", rel=(0, h / 2 + 0.5, -0.35),  # front at z 7.9
+    part(f"eye_{k}_ball", f"eye_{k}", [w + 2, h + 2, 1], f"eye_ball_{k}", rel=(0, 0, -1.0))   # front at z 7.5
+    card(f"eye_{k}_pupil", f"eye_{k}", PUPIL, "pupil", rel=(0, -0.5, -0.4))                      # z 7.6
+    card(f"eye_{k}_lid", f"eye_{k}", [("L" * (w + 4))] * lid_h, "lid", rel=(0, h / 2, -0.2),      # z 7.8
          offset=(0, -lid_h / 2, 0), rot=(0, 0, slant))
 for k, s in ((1, 1), (2, -1)):     # heavy brows slanting down to the middle: an angry V
-    part(f"brow_{k}", "body", [11, 2.5, 3], "brow", centre=(s * 8.5, 69.5, 8.5), rot=(0, 0, s * 13))
-part("brow_0", "body", [13, 2, 2.5], "brow", centre=(0, 81.5, 8.25))
+    part(f"brow_{k}", "body", [11, 2, 3], "brow", centre=(s * 8.5, 69.5, 8.5), rot=(0, 0, s * 13))
+part("brow_0", "body", [12, 2, 3], "brow", centre=(0, 81.0, 8.5))
 
 # ======================================================================= the debris ring
 SHARD_Y = 23.0
@@ -118,14 +126,14 @@ for k in range(11):
     y = rng.uniform(-4.5, 5)
     kind = ["shard", "shard_vein", "shard", "rubble_end", "shard_vein", "shard", "rubble_purpur", "shard",
             "shard_vein", "rubble_end", "shard"][k]
-    size = [rng.choice([4, 4.5, 5, 5.5, 6]), rng.choice([4.5, 5, 6, 7, 8]), rng.choice([3.5, 4, 4.5])]
+    size = [rng.choice([4, 4, 5, 5, 6]), rng.choice([4, 5, 6, 7, 8]), rng.choice([3, 4, 4])]
     if kind.startswith("rubble"):
-        size = [rng.choice([4.5, 5]), 3.5, rng.choice([4.5, 5])]
+        size = [rng.choice([4, 5]), 4, rng.choice([4, 5])]
     rot = (rng.uniform(-35, 35), rng.uniform(0, 90), rng.uniform(-40, 40))
     sid = f"shard_{k}"
     part(sid, "shards", size, kind, rel=(rad * math.sin(math.radians(a)), y, rad * math.cos(math.radians(a))), rot=rot)
     if k % 3 == 0:     # a splinter chipped off the bigger chunks
-        part(f"{sid}_chip", sid, [1.5, 2.5, 1.5], "shard", rel=(size[0] * 0.5 + 0.6, size[1] * 0.3, 0), rot=(0, 30, -35))
+        part(f"{sid}_chip", sid, [2, 3, 2], "shard", rel=(size[0] * 0.5 + 0.6, size[1] * 0.3, 0), rot=(0, 30, -35))
     SHARDS.append((sid, a, rad, y))
 
 
@@ -137,7 +145,7 @@ def H(n, s):
 HAND_REST = (37.0, 46.0, 11.0)                  # palm centre of hand_l; hand_r mirrors it across x
 HAND_ROT = (12.0, -10.0, -16.0)                 # pitch the fingers down, yaw them in, roll the palm toward the body
 # index (0) to little finger (3): x across the palm (inner side first), proximal / distal lengths, width
-FINGERS = [(-7.5, 8.0, 7.0, 4.5), (-2.5, 9.0, 8.0, 4.5), (2.5, 8.5, 7.5, 4.5), (7.25, 7.0, 6.0, 4.0)]
+FINGERS = [(-7.5, 8, 7, 5), (-2.5, 9, 8, 5), (2.5, 9, 7, 5), (7.5, 7, 6, 4)]
 FIST_CURL = [(84, 96), (88, 98), (86, 98), (82, 94)]
 
 
@@ -146,179 +154,129 @@ def hand(s):
     hx, hy, hz = HAND_REST
     root = bone(f"hand_{n}", None, at=(s * hx, hy, hz), rot=(HAND_ROT[0], s * HAND_ROT[1], s * HAND_ROT[2]))
     hid = root["id"]
-    part(f"palm_{n}", hid, [20, 7.5, 17], "stone_palm", rel=(0, 0, 0))
-    part(f"back_{n}", hid, [17, 2, 12.5], "hand_plate", rel=(0, 4.0, -1.0), rot=(-3, 0, 0))
-    part(f"knuckles_{n}", hid, [20.5, 3.5, 4], "knuckle_plate", rel=(0, 2.5, 7.0))
+    part(f"palm_{n}", hid, [20, 8, 17], "stone_palm", rel=(0, 0, 0))
+    part(f"back_{n}", hid, [17, 2, 12], "hand_plate", rel=(0, 4.5, -1.0), rot=(-3, 0, 0))
+    part(f"knuckles_{n}", hid, [21, 4, 4], "knuckle_plate", rel=(0, 2.5, 7.0))
     # the broken wrist: a jagged obsidian cuff, its torn stump glowing
     part(f"cuff_{n}", hid, [16, 9, 5], "cuff", rel=(0, 0.5, -10.0))
-    part(f"stump_{n}", hid, [12, 6.5, 1.5], "stump", rel=(0, 0.5, -13.0))
+    part(f"stump_{n}", hid, [12, 6, 1], "stump", rel=(0, 0.5, -13.0))
     for j, (rel, sz, rot) in enumerate([((s * 5, 4.5, -10), [3, 5, 3], (-30, 20, s * -25)),
-                                        ((s * -4.5, 4, -10.5), [2.5, 4, 2.5], (-35, 10, s * 20)),
+                                        ((s * -4.5, 4, -10.5), [3, 4, 3], (-35, 10, s * 20)),
                                         ((s * 7, -3, -10), [3, 4, 3], (-150, 15, s * -30))]):
         part(f"cuff_spike_{n}{j}", hid, sz, "cuff_spike", rel=rel, offset=(0, sz[1] / 2, 0), rot=rot)
     # four fingers on the knuckle line, each a proximal and a distal joint, an obsidian claw at the end
     for k, (fx, l1, l2, w) in enumerate(FINGERS):
         f = part(f"finger_{n}_{k}", hid, [w, 5, l1], "finger", rel=(s * fx, 0.25, 8.0), offset=(0, 0, l1 / 2),
                  rot=(18 + 2 * k, s * (-3 + 2.5 * k), 0))
-        part(f"finger_{n}_{k}_plate", f["id"], [w + 0.5, 1, l1 - 2], "finger_plate", rel=(0, 2.75, l1 / 2 - 0.5))
-        t = part(f"finger_{n}_{k}_tip", f["id"], [w - 0.5, 4.5, l2], "finger", rel=(0, -0.25, l1 - 0.5),
+        part(f"finger_{n}_{k}_plate", f["id"], [w + 1, 1, l1 - 2], "finger_plate", rel=(0, 3.0, l1 / 2 - 0.5))
+        t = part(f"finger_{n}_{k}_tip", f["id"], [w - 1, 4, l2], "finger", rel=(0, -0.5, l1 - 0.5),
                  offset=(0, 0, l2 / 2), rot=(22, 0, 0))
-        part(f"finger_{n}_{k}_claw", t["id"], [w - 1, 2.5, 3], "claw", rel=(0, 0.5, l2 - 0.25), offset=(0, 0, 1),
+        part(f"finger_{n}_{k}_claw", t["id"], [w - 2, 2, 3], "claw", rel=(0, 0.5, l2 - 0.25), offset=(0, 0, 1),
              rot=(28, 0, 0))
     # the thumb, on the inner side near the wrist, angled forward and in
     th = part(f"thumb_{n}", hid, [5, 5, 8], "finger", rel=(s * -9.0, -1.0, -1.5), offset=(0, 0, 4),
               rot=(22, s * -38, s * 10))
-    part(f"thumb_{n}_plate", th["id"], [5.5, 1, 5], "finger_plate", rel=(0, 2.75, 4))
-    tt = part(f"thumb_{n}_tip", th["id"], [4.5, 4.5, 6.5], "finger", rel=(0, -0.25, 7.5), offset=(0, 0, 3.25),
+    part(f"thumb_{n}_plate", th["id"], [6, 1, 5], "finger_plate", rel=(0, 3.0, 4))
+    tt = part(f"thumb_{n}_tip", th["id"], [4, 4, 6], "finger", rel=(0, -0.5, 7.5), offset=(0, 0, 3.0),
               rot=(18, 0, 0))
-    part(f"thumb_{n}_claw", tt["id"], [3.5, 2.5, 3], "claw", rel=(0, 0.5, 6.25), offset=(0, 0, 1), rot=(28, 0, 0))
+    part(f"thumb_{n}_claw", tt["id"], [3, 2, 3], "claw", rel=(0, 0.5, 6.0), offset=(0, 0, 1), rot=(28, 0, 0))
 
 
 hand(1)
 hand(-1)
 
 # ======================================================================= palette and paint
-ramps = {k: RAMPS[k] for k in ("obsidian", "crying", "eye", "sclera", "stone", "gold", "purpur", "endstone")}
-RIM = {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.1}
-OBS_RIM = {"light": 1, "dark": 1, "light_shift": 2.6, "dark_shift": -1.0, "outline": "dark"}
-GOLD_RIM = {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.6}
-# glassy obsidian: conchoidal facets (bevelled patches), fine dark fractures, a few glowing seams, glints on lit edges
-FACETS = {"id": "facets", "op": "patches", "scale": 3.2, "threshold": 0.56, "shift": 1.0,
-          "bevel": {"shadow": 1, "highlight": 1, "shadow_shift": -1.0, "highlight_shift": 2.0}}
-FACETS2 = {"id": "facets2", "op": "patches", "scale": 2.0, "threshold": 0.62, "shift": -0.6, "seed": 5,
-           "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.6}}
-FRACTURES = {"id": "fractures", "op": "cracks", "scale": 5.0, "width": 0.022, "shift": -1.8,
-             "bevel": {"shadow": 0, "highlight": 1, "highlight_shift": 1.4}}
-SEAMS = {"id": "seams", "op": "cracks", "scale": 8.0, "width": 0.016, "threshold": 0.68, "ramp": "crying", "tone": 3.0,
-         "seed": 9, "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.5}}
-GLINT = {"id": "glint", "op": "gloss", "post": True, "dash": True, "length": 3, "inset": 1, "density": 0.4,
-         "shift": 2.4, "ramps": ["obsidian"]}
-OBSIDIAN = [FACETS, FACETS2, FRACTURES, SEAMS, GLINT]
+RAMPS = ramps("obsidian", "crying", "eyeglow", "stone", "gold", "purpur", "endstone")
 RUNE_KEY = {"r": "crying:3", "R": "crying:5", "g": "obsidian:0", "w": "obsidian:1"}
-SOCKET_GLOW = {"s": "crying:2", "S": "crying:1", "k": "obsidian:0", "l": "obsidian:6"}
+FW, FH = 30, 52       # body front in texels; row 0 is y = 88
 
 
-# face stamps for the slab's front: an eye socket under each eye, a rune column down the middle, two flanking columns
-FW, FH = 60, 104       # body front in texels (30 x 52 px at density 2); row 0 is y = 88
 def face_xy(x, y):
-    return int(round((x + 15) * 2)), int(round((88 - y) * 2))
+    return int(round(x + 15)), int(round(88 - y))
 
 
 FACE_STAMPS = []
-for k, (x, y, w, h, *_) in enumerate(EYES):
-    art = eye_hole(int(w * 2) - 2, int(h * 2) - 2, pad=2)     # the round opening, its lid crease and glowing rim
-    cx, cy = face_xy(x, y)
-    FACE_STAMPS.append({"face": "front", "at": [cx - len(art[0]) // 2, cy - len(art) // 2], "art": art,
-                        "key": SOCKET_GLOW})
-COL_MID = rune_column(5, seed=3)
-FACE_STAMPS.append({"face": "front", "at": [FW // 2 - len(COL_MID[0]) // 2, 54], "art": COL_MID, "key": RUNE_KEY})
-for sx, seed in ((5, 7), (FW - 5 - 9, 8)):
-    col = rune_column(4, seed=seed)
-    FACE_STAMPS.append({"face": "front", "at": [sx, 64], "art": col, "key": RUNE_KEY})
-# a great glowing crack splitting the face from the brow band down past eye_2
-FACE_STAMPS.append({"face": "front", "at": [6, 0], "art": crack_line(14, 40, seed=5, x0=4, branches=3),
+for k, (x, y, w, h, _, lid_h, slant) in enumerate(EYES):
+    # the socket: a see-through opening ringed by a dark crease, a glowing tear running down from its lower corner
+    art = ["k" * (w + 2)] + ["k" + "_" * w + "k" for _ in range(h)] + ["k" * (w + 2)]
+    tears = []
+    if k:   # the lower eyes cry from their outer corners (image-right on eye_1, the left side; image-left on eye_2)
+        col = w if k == 1 else 1
+        tears = ["".join(c if i == col else "." for i in range(w + 2)) for c in "tTt"]
+    cx, cy = face_xy(x - w / 2, y + h / 2)
+    FACE_STAMPS.append({"face": "front", "at": [cx - 1, cy - 1], "art": art + tears,
+                        "key": {"k": "obsidian:0", "t": "crying:3", "T": "crying:5"}})
+COL_MID = rune_column(2, seed=3)
+FACE_STAMPS.append({"face": "front", "at": [FW // 2 - len(COL_MID[0]) // 2, 27], "art": COL_MID, "key": RUNE_KEY})
+# a glowing crack splitting the face from the brow band down past eye_2
+FACE_STAMPS.append({"face": "front", "at": [2, 0], "art": crack_line(7, 20, seed=5, x0=2, branches=2),
                     "key": {"c": "crying:3", "C": "crying:5", "d": "obsidian:0"}})
-FLANK_COL = rune_column(9, seed=21)
+FLANK_COL = rune_column(4, seed=21)
 HAND_RUNE = ["..rrr..", ".r...r.", "r..R..r", "r.RRR.r", "r..R..r", ".r...r.", "..rrr.."]
 
+SHADE_LOW = {"id": "shade_low", "op": "gradient", "axis": "y", "amount": 0.6}
 styles = {
-    "obsidian": {"ramp": "obsidian", "tone": 3.6, "rim": OBS_RIM, "layers": OBSIDIAN},
-    "slab_face": {"ramp": "obsidian", "tone": 3.0, "rim": OBS_RIM,
-                  "layers": OBSIDIAN + [{"id": "shade_low", "op": "gradient", "axis": "y", "amount": 0.8}],
-                  "stamps": FACE_STAMPS},
-    "slab_flank": {"ramp": "obsidian", "tone": 3.4, "rim": OBS_RIM, "brush": {"flow": "y"},
-                   "layers": OBSIDIAN + [{"id": "shade_low", "op": "gradient", "axis": "y", "amount": 0.9}],
-                   "stamps": [{"faces": ["left", "right"], "at": [7, 4], "art": FLANK_COL, "key": RUNE_KEY}]},
-    "slab_back": {"ramp": "obsidian", "tone": 2.8, "rim": OBS_RIM,
-                  "layers": OBSIDIAN + [{"id": "big_seam", "op": "cracks", "scale": 9.0, "width": 0.03,
-                                         "threshold": 0.4, "ramp": "crying", "tone": 4.0, "seed": 3,
-                                         "faces": ["back"]}]},
-    "slab_dark": {"ramp": "obsidian", "tone": 2.0, "rim": OBS_RIM, "layers": OBSIDIAN},
-    "slab_lower": {"ramp": "obsidian", "tone": 2.8, "rim": OBS_RIM,
-                   "layers": OBSIDIAN + [{"id": "shade_low", "op": "gradient", "axis": "y", "amount": 1.0},
-                                         {"id": "under_seams", "op": "cracks", "scale": 4.0, "width": 0.03,
-                                          "threshold": 0.62, "ramp": "crying", "tone": 3.0, "seed": 14}]},
-    "slab_point": {"ramp": "obsidian", "tone": 2.8, "rim": OBS_RIM,
-                   "layers": OBSIDIAN + [{"id": "shade_low", "op": "gradient", "axis": "y", "amount": 1.2},
-                                         {"id": "core", "op": "cracks", "scale": 3.0, "width": 0.04,
-                                          "threshold": 0.58, "ramp": "crying", "tone": 3.6, "seed": 21}]},
-    "slab_chunk": {"ramp": "obsidian", "tone": 3.0, "rim": OBS_RIM, "layers": [FACETS, GLINT]},
-    "facet_plate": {"ramp": "obsidian", "tone": 3.4, "rim": OBS_RIM, "brush": {"off": True},
-                    "layers": [FACETS, FRACTURES, GLINT, {"id": "sheen", "op": "gradient", "axis": [1, 1, 0],
-                                                          "amount": -0.8}]},
-    "crown_band": {"ramp": "obsidian", "tone": 2.8, "rim": OBS_RIM,
-                   "layers": OBSIDIAN,
-                   "stamps": [{"face": "front", "at": [4, 1], "art": rune_row(8, seed=4, gap=1), "key": RUNE_KEY}]},
-    "gold_trim": {"ramp": "gold", "tone": 4.4, "rim": GOLD_RIM, "brush": {"off": True},
-                  "layers": [{"id": "studs", "op": "stripes", "axis": "x", "period": 3.0, "width": 0.18, "shift": 1.8},
-                             {"id": "gloss", "op": "gloss", "post": True, "dash": True, "length": 2, "inset": 0,
-                              "density": 0.5, "shift": 2.0}]},
-    "spike": {"ramp": "obsidian", "tone": 3.4, "rim": OBS_RIM, "brush": {"flow": "y"},
-              "layers": [FACETS, FRACTURES, GLINT, {"id": "rise", "op": "gradient", "axis": "y", "amount": 0.8}]},
-    "spike_tip": {"ramp": "obsidian", "tone": 4.6, "rim": OBS_RIM, "brush": {"off": True},
-                  "layers": [{"id": "rise", "op": "gradient", "axis": "y", "amount": 1.0}, GLINT]},
-    "brow": {"ramp": "obsidian", "tone": 3.0, "rim": OBS_RIM, "brush": {"off": True},
-             "layers": [FACETS, GLINT, {"id": "under", "op": "band", "axis": "y", "from": -1.01, "to": -0.4,
-                                        "ramp": "crying", "tone": 1.6, "faces": ["bottom"]}]},
-    # the iris card: a round glowing violet iris, a round pupil, a soft catch-light
-    "iris": {"ramp": "eye", "tone": 3.0, "light": 0, "brush": {"off": True},
-             "art_key": {"o": "eye:0", "i": "eye:2", "I": "eye:3", "J": "eye:4", "c": "eye:5", "p": "obsidian:0",
-                         "W": "eye:7", "w": "eye:6"}},
-    "shard": {"ramp": "obsidian", "tone": 3.0, "rim": OBS_RIM, "layers": [FACETS, FRACTURES, GLINT]},
-    "shard_vein": {"ramp": "obsidian", "tone": 2.6, "rim": OBS_RIM,
-                   "layers": [FACETS, {"id": "vein", "op": "cracks", "scale": 2.0, "width": 0.05, "threshold": 0.35,
-                                       "ramp": "crying", "tone": 4.2, "seed": 2}, GLINT]},
-    "rubble_end": {"ramp": "endstone", "tone": 3.6, "rim": RIM, "brush": {"off": True},
-                   "layers": [{"id": "pits", "op": "spots", "count": 5, "radius": [0.3, 0.6], "shift": -1.4},
-                              {"id": "grain", "op": "noise", "scale": 0.8, "amount": 0.6}]},
-    "rubble_purpur": {"ramp": "purpur", "tone": 3.8, "rim": RIM, "brush": {"off": True},
-                      "layers": [{"id": "bricks", "op": "scales", "shape": "square", "along": "x", "size": [2.0, 1.0],
-                                  "gap": 0.5, "highlight": 0.8, "shadow": -1.2, "jitter": 0.3}]},
+    "obsidian": obsidian(),
+    "slab_face": obsidian(3.2, tears=0.25, layers=[SHADE_LOW], stamps=FACE_STAMPS),
+    "slab_flank": obsidian(3.4, tears=0.3, layers=[SHADE_LOW],
+                           stamps=[{"faces": ["left", "right"], "at": [1, 4], "art": FLANK_COL, "key": RUNE_KEY}]),
+    "slab_back": obsidian(3.0, tears=0.6),
+    "slab_dark": obsidian(2.6),
+    "slab_lower": obsidian(3.0, tears=0.4, layers=[SHADE_LOW]),
+    "slab_point": obsidian(3.0, tears=0.7, layers=[SHADE_LOW]),
+    "slab_chunk": obsidian(3.2),
+    "crown_band": obsidian(3.0, tears=0.2),
+    "gold_trim": skin("gold", 4.2, grain=0.6, lip=1.6, shade=-1.4, clusters=False, dark_low=0, layers=[
+        {"id": "studs", "op": "stripes", "axis": "x", "period": 4.0, "width": 0.25, "shift": 1.6}]),
+    "spike": obsidian(3.6, layers=[{"id": "rise", "op": "gradient", "axis": "y", "amount": 0.6}]),
+    "spike_tip": obsidian(4.4, streaks=False, layers=[{"id": "rise", "op": "gradient", "axis": "y", "amount": 0.8}]),
+    "brow": obsidian(3.4, layers=[{"id": "under", "op": "fill", "ramp": "crying", "tone": 1.4, "faces": ["bottom"]}]),
+    # the eye: enderman violet, brightest in the middle row, darker at its ends
+    "pupil": {"ramp": "eyeglow", "tone": 6, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+              "art_key": {"W": "eyeglow:6", "w": "eyeglow:5"}},
+    "lid": {"ramp": "obsidian", "tone": 4, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+            "art_key": {"L": "obsidian:5"}},
+    "shard": obsidian(3.2),
+    "shard_vein": obsidian(3.0, tears=1.0),
+    "rubble_end": skin("endstone", 5.0, grain=1.0, lip=1.2, shade=-1.0, dark_low=0,
+                       layers=[{"id": "pits", "op": "spots", "count": 4, "radius": [0.4, 0.7], "shift": -1.4}]),
+    "rubble_purpur": skin("purpur", 4.6, grain=0.6, lip=1.2, shade=-1.0, dark_low=0,
+                          layers=[{"id": "bricks", "op": "stripes", "axis": "y", "period": 2.0, "width": 0.3,
+                                   "shift": -1.4}]),
     # the hands: weathered grey-violet stone, armoured in obsidian
-    "stone_palm": {"ramp": "stone", "tone": 4.2, "rim": RIM,
-                   "layers": [{"id": "photo", "op": "photo", "src": "assets/photos/rock_face_03", "scale": 9.0,
-                               "amount": 0.6, "ramps": ["stone"]},
-                              {"id": "cracks", "op": "cracks", "scale": 3.0, "width": 0.03, "shift": -2.0,
-                               "bevel": {"shadow": 0, "highlight": 1}},
-                              {"id": "lines", "op": "cracks", "scale": 4.0, "width": 0.04, "threshold": 0.55,
-                               "ramp": "crying", "tone": 2.6, "seed": 6, "faces": ["bottom"]},
-                              {"id": "under", "op": "gradient", "axis": "y", "amount": 0.6}]},
-    "finger": {"ramp": "stone", "tone": 4.4, "rim": RIM, "brush": {"flow": "z"},
-               "layers": [{"id": "photo", "op": "photo", "src": "assets/photos/rock_face_03", "scale": 7.0,
-                           "amount": 0.5, "ramps": ["stone"]},
-                          {"id": "creases", "op": "stripes", "axis": "z", "period": 3.5, "width": 0.12, "shift": -1.4,
-                           "faces": ["bottom", "left", "right"]},
-                          {"id": "cracks", "op": "cracks", "scale": 2.0, "width": 0.04, "shift": -1.8}]},
-    "finger_plate": {"ramp": "obsidian", "tone": 3.2, "rim": OBS_RIM, "brush": {"off": True}, "layers": [GLINT]},
-    "hand_plate": {"ramp": "obsidian", "tone": 3.4, "rim": OBS_RIM, "layers": [FACETS, FRACTURES, GLINT],
-                   "stamps": [{"face": "top", "at": "center", "art": HAND_RUNE, "key": RUNE_KEY}]},
-    "knuckle_plate": {"ramp": "obsidian", "tone": 3.2, "rim": OBS_RIM, "layers": [FACETS, GLINT]},
-    "claw": {"ramp": "obsidian", "tone": 4.4, "rim": OBS_RIM, "brush": {"off": True},
-             "layers": [{"id": "edge", "op": "gradient", "axis": "z", "amount": 1.0}, GLINT]},
-    "cuff": {"ramp": "obsidian", "tone": 3.0, "rim": OBS_RIM, "layers": OBSIDIAN},
-    "cuff_spike": {"ramp": "obsidian", "tone": 4.0, "rim": OBS_RIM, "brush": {"off": True},
-                   "layers": [{"id": "rise", "op": "gradient", "axis": "y", "amount": 1.0}, GLINT]},
-    "stump": {"ramp": "crying", "tone": 4.0, "light": 0.2, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-              "layers": [{"id": "core", "op": "spots", "count": 4, "radius": [0.8, 1.6], "ramp": "crying", "tone": 6.4,
-                          "faces": ["back"]},
-                         {"id": "ring", "op": "band", "axis": "x", "from": 0.7, "to": 1.01, "ramp": "crying",
-                          "tone": 2.4}]},
+    "stone_palm": skin("stone", 5.0, grain=1.0, lip=1.4, shade=-1.0, layers=[
+        {"id": "cracks", "op": "cracks", "scale": 3.0, "width": 0.05, "shift": -1.6},
+        {"id": "lines", "op": "cracks", "scale": 4.0, "width": 0.06, "threshold": 0.55, "ramp": "crying",
+         "tone": 2.6, "seed": 6, "faces": ["bottom"]}]),
+    "finger": skin("stone", 5.2, grain=0.9, lip=1.4, shade=-1.0, layers=[
+        {"id": "creases", "op": "stripes", "axis": "z", "period": 4.0, "width": 0.2, "shift": -1.4,
+         "faces": ["bottom", "left", "right"]}]),
+    "finger_plate": obsidian(3.6, streaks=False),
+    "hand_plate": obsidian(3.4, stamps=[{"face": "top", "at": "center", "art": HAND_RUNE, "key": RUNE_KEY}]),
+    "knuckle_plate": obsidian(3.2),
+    "claw": obsidian(4.2, streaks=False, layers=[{"id": "edge", "op": "gradient", "axis": "z", "amount": 0.8}]),
+    "cuff": obsidian(3.0, tears=0.4),
+    "cuff_spike": obsidian(4.0, streaks=False),
+    "stump": skin("crying", 4.0, grain=0.8, light=0.2, lip=0.8, shade=-0.8, clusters=False, dark_low=0, layers=[
+        {"id": "core", "op": "spots", "count": 3, "radius": [0.8, 1.4], "ramp": "crying", "tone": 6.2,
+         "faces": ["back"]}]),
 }
-EYE_KEY = {"L": "sclera:1", "k": "sclera:1", "l": "sclera:1", "u": "sclera:1", "d": "sclera:2", "s": "sclera:4",
-           "S": "sclera:5"}
-for k, (x, y, w, h, iris, lid_h, slant) in enumerate(EYES):
-    # the upper lid: rounded obsidian, its lit margin catching the light over a crisp dark lash line
-    lw = int((w + 1) * 2)
-    styles[f"lid_{k}"] = {
-        "ramp": "obsidian", "tone": 4.0, "light": 0.4, "rim": {"light": 0, "dark": 0}, "brush": {"off": True},
-        "layers": [{"id": "round", "op": "gradient", "axis": "y", "amount": -1.2}, GLINT],
-        "stamps": [{"face": "front", "at": "bottom-left", "art": ["m" * lw, "M" * lw, "u" * lw],
-                    "key": {"m": "obsidian:6", "M": "obsidian:7", "u": "obsidian:0"}}]}
-    # the eyeball behind the hole: the whites shaded round the opening's rim and under the upper lid
+for k, (x, y, w, h, _, lid_h, slant) in enumerate(EYES):
+    # the eye behind the socket: a violet slit, white-hot along its middle row, deep violet at its ends and edges
+    ew, eh = w + 2, h + 2
+    rows = []
+    for j in range(eh):
+        row = ""
+        for i in range(ew):
+            edge = i in (0, ew - 1) or j in (0, eh - 1)
+            end = i in (1, ew - 2)
+            mid = j == eh // 2 + (0 if eh % 2 else -1) or j == eh // 2
+            row += "a" if edge else ("b" if end else ("d" if mid else "c"))
+        rows.append(row)
     styles[f"eye_ball_{k}"] = {
-        "ramp": "sclera", "tone": 1.0, "light": 0.2, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-        "stamps": [{"face": "front", "at": "center", "art": eyeball(int(w * 2), int(h * 2), lid_shade=6),
-                    "key": EYE_KEY}]}
+        "ramp": "eyeglow", "tone": 2, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+        "stamps": [{"face": "front", "at": "top-left", "art": rows,
+                    "key": {"a": "eyeglow:0", "b": "eyeglow:2", "c": "eyeglow:3", "d": "eyeglow:4"}}]}
 
 # ======================================================================= clips
 # Poses are dicts of offsets from the rest pose ({part: {"r"|"p"|"s": [x, y, z]}}) keyed on timelines (hex_kit).
@@ -601,7 +559,7 @@ def _extent(clip, t, ids, axis, lo=True):
     class _M:
         pass
     m = _M()
-    m.instances = expand_instances(R.P, 2.0)
+    m.instances = expand_instances(R.P, float(D))
     m.spec = {"animations": {clip: ANIM[clip]}}
     W = Animator(m).world_matrices(clip, t)
     vals = [transform_points(W[i.id], f.pts)[:, axis] for i in m.instances if i.id in ids for f in i.faces]
@@ -632,23 +590,21 @@ for s in HANDS:
     _nudge("clap", f"hand_{hn(s)}", (0.62, 0.7, 0.86), 0, -gap + s * 0.25)
     floor("clap", s, 0.62, (0.62, 0.7, 0.86), 1.0)
 
-GLOW = [f"eye_{k}_pupil" for k in range(3)]
+GLOW = [f"eye_{k}_pupil" for k in range(3)] + [f"eye_{k}_ball" for k in range(3)]
 spec = {
     "name": "Monolith",
-    "description": "The Winterworks Monolith: a towering, cracked obsidian slab boss with a crown of jagged spikes, "
-                   "three round eyes with glowing violet irises under heavy lids, smouldering rune columns, a ring "
-                   "of floating debris and two giant "
-                   "floating stone-and-obsidian hands. Minecraft pixel units, density 2.",
+    "description": "The Winterworks Monolith: a towering living block of obsidian and crying obsidian, a boss with a "
+                   "crown of blocky spikes, three flat glowing violet eyes with bright pupils under heavy lids and "
+                   "angry brows, crying-obsidian tears and rune columns, a ring of floating debris and two giant "
+                   "floating stone-and-obsidian hands. Minecraft pixel units, density 1.",
     "author": "lowpix example", "license": "CC0-1.0",
-    "density": 2,
+    "density": D,
     "grounded": False,
-    "budget": {"tris": 2400, "colors": 72},
-    "light": {"dir": [-0.45, 1.0, 0.6], "strength": 0.9, "gradient": 0.25, "ao": 0.0},
-    "brush": {"flow": "horizontal", "length": 2.0, "width": 0.5, "rough": 0.45, "overshoot": 0.3,
-              "textures": {"obsidian": "crystal", "stone": "stone", "gold": "metal"}},
-    "minecraft": {"fps": 20, "glow_parts": GLOW, "glow_ramps": ["crying", "eye"]},
+    "budget": {"tris": 2000, "colors": 72},
+    "light": dict(LIGHT, gradient=0.25, ao=0.0),
+    "minecraft": {"fps": 20, "glow_parts": GLOW, "glow_ramps": ["crying", "eyeglow"]},
     "render": {"background": "#2a2735", "hero": [-32, 14], "shadow": 0.4},
-    "palette": {"ramps": ramps},
+    "palette": {"ramps": RAMPS},
     "styles": styles,
     "parts": R.P,
     "animations": ANIM,

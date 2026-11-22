@@ -1,12 +1,12 @@
 {
  "name": "Sea Turtle Baby",
- "description": "The Winterworks sea turtle hatchling: a big round head with huge round eyes, a small bumpy slate shell and oversized pale-edged flippers. Made at twice its in-game size. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks sea turtle hatchling in the vanilla mob style: a big head with bright dot eyes, a small dark slate shell with a keel and oversized pale-edged flippers. Made at twice its in-game size. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "budget": {
-  "tris": 900,
-  "colors": 72
+  "tris": 500,
+  "colors": 48
  },
  "light": {
   "dir": [
@@ -14,24 +14,10 @@
    1.0,
    0.6
   ],
-  "strength": 0.8,
-  "gradient": 0.5,
-  "ao": 0.5,
+  "strength": 0.9,
+  "gradient": 0.6,
+  "ao": 0.4,
   "ao_height": 6.0
- },
- "brush": {
-  "flow": "horizontal",
-  "length": 1.6,
-  "width": 0.6,
-  "rough": 0.5,
-  "overshoot": 0.25,
-  "textures": {
-   "olive": "leather",
-   "tortoise": "scales",
-   "straw": "organic",
-   "slate": "leather",
-   "horn": "wood"
-  }
  },
  "minecraft": {
   "fps": 20
@@ -48,403 +34,371 @@
  "palette": {
   "ramps": {
    "olive": [
-    "#0e110b",
-    "#191d13",
-    "#252b1b",
-    "#333b25",
-    "#424b2f",
-    "#535d3a",
-    "#657047",
-    "#798456",
-    "#8e9868",
-    "#a5ad7e",
-    "#bcc297"
+    "#3a4329",
+    "#45502f",
+    "#515d36",
+    "#5d6b3e",
+    "#6a7946",
+    "#78874f",
+    "#879558"
    ],
-   "tortoise": [
-    "#110a04",
-    "#1f1308",
-    "#311e0c",
-    "#452a10",
-    "#5b3815",
-    "#72481b",
-    "#8a5a22",
-    "#a26d2c",
-    "#b98239",
-    "#cd984b",
-    "#dfb064",
-    "#edc985"
+   "shell": [
+    "#3d3220",
+    "#4a3d26",
+    "#57482c",
+    "#655433",
+    "#73613b",
+    "#826f44",
+    "#917d4e"
    ],
    "straw": [
-    "#3d3520",
-    "#5a4f2e",
-    "#7a6d3f",
-    "#9a8d53",
-    "#b8ac6b",
-    "#d1c687",
-    "#e5dca7",
-    "#f3edc9"
+    "#9c9265",
+    "#b0a674",
+    "#c2b884",
+    "#d2c994",
+    "#e0d8a6"
    ],
    "horn": [
-    "#0f0d08",
-    "#1d1910",
-    "#2d2718",
-    "#403722",
-    "#55492e",
-    "#6c5d3c",
-    "#85744c",
-    "#9f8c5f"
-   ],
-   "amber": [
-    "#1d1004",
-    "#352008",
-    "#52330c",
-    "#714a12",
-    "#92651b",
-    "#b38328",
-    "#cfa13d",
-    "#e6c15e",
-    "#f6df8e"
-   ],
-   "pupil": [
-    "#040406",
-    "#0a0a0e",
-    "#131318"
-   ],
-   "cream": [
-    "#4a3e33",
-    "#6b5d4e",
-    "#8d7e6c",
-    "#ae9f8b",
-    "#cbbea9",
-    "#e2d8c5",
-    "#f2ecdd",
-    "#fcf9f0"
+    "#3f3524",
+    "#53462f",
+    "#685a3c",
+    "#7e6e4a",
+    "#958459"
    ],
    "slate": [
-    "#0f0d0c",
-    "#1a1715",
-    "#26221f",
-    "#332e2a",
-    "#413a35",
-    "#504842",
-    "#615851",
-    "#746a62",
-    "#8a7f76",
-    "#a3988e",
-    "#beb4aa"
+    "#262a2c",
+    "#2e3335",
+    "#373d3f",
+    "#41484a",
+    "#4c5456",
+    "#586062",
+    "#656e70",
+    "#737c7e"
+   ],
+   "ink": [
+    "#0e0c10",
+    "#1a171d",
+    "#2a262e"
+   ],
+   "glint": [
+    "#9a9aa4",
+    "#d9d9df"
+   ],
+   "ash": [
+    "#7d8582",
+    "#8f9794",
+    "#a2a9a6",
+    "#b5bbb8"
    ]
   }
  },
  "styles": {
   "skin": {
    "ramp": "slate",
-   "tone": 5.0,
+   "tone": 4.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.3
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 0.7,
-     "shadow": -0.7,
-     "jitter": 0.3,
-     "faces": [
-      "top",
-      "sides"
-     ]
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
     },
     {
-     "id": "pale_low",
-     "op": "band",
+     "id": "falloff",
+     "op": "gradient",
      "axis": "y",
-     "from": -1.01,
-     "to": -0.4,
-     "ramp": "slate",
-     "tone": 7.0,
+     "amount": 1.0,
      "faces": [
-      "sides",
-      "bottom"
+      "sides"
+     ]
+    }
+   ]
+  },
+  "head": {
+   "ramp": "slate",
+   "tone": 4.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
      ]
     }
    ]
   },
   "plastron": {
-   "ramp": "slate",
-   "tone": 6.4,
+   "ramp": "ash",
+   "tone": 2.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.3
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
     {
      "id": "plates",
      "op": "scales",
      "shape": "square",
      "along": "x",
      "size": [
-      3.0,
-      3.0
+      4.0,
+      4.0
      ],
-     "gap": 0.5,
+     "gap": 0.6,
      "highlight": 0.8,
      "shadow": -1.2,
-     "jitter": 0.4
+     "jitter": 0.3
     }
    ]
   },
   "carapace": {
    "ramp": "slate",
-   "tone": 4.6,
+   "tone": 2.6,
+   "light": 1.0,
    "brush": {
     "off": true
    },
-   "rim": {
-    "light": 0,
-    "dark": 1,
-    "dark_shift": -1.0
-   },
-   "layers": [
-    {
-     "id": "mottle",
-     "op": "patches",
-     "scale": 2.0,
-     "threshold": 0.55,
-     "shift": -0.6
-    },
-    {
-     "id": "flame",
-     "op": "noise",
-     "scale": 1.4,
-     "amount": 0.4
-    },
-    {
-     "id": "dark_rim",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.5,
-     "shift": -1.0,
-     "faces": [
-      "sides"
-     ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
-    }
-   ]
-  },
-  "carapace_edge": {
-   "ramp": "slate",
-   "tone": 5,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "m": "slate:3"
-   }
-  },
-  "head": {
-   "ramp": "slate",
-   "tone": 5.2,
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.3
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.5
-     ],
-     "gap": 0.5,
-     "highlight": 2.0,
-     "shadow": -1.6,
-     "jitter": 0.3,
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
-      "top",
       "sides"
      ]
+    }
+   ]
+  },
+  "rim": {
+   "ramp": "slate",
+   "tone": 2.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
     },
     {
-     "id": "pale_chin",
-     "op": "band",
+     "id": "falloff",
+     "op": "gradient",
      "axis": "y",
-     "from": -1.01,
-     "to": -0.45,
-     "ramp": "slate",
-     "tone": 7.4,
+     "amount": 1.0,
      "faces": [
-      "sides",
-      "bottom",
-      "front"
+      "sides"
      ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
     }
    ]
   },
   "beak": {
-   "ramp": "horn",
-   "tone": 4.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.0,
-    "dark_shift": -1.3
-   },
+   "ramp": "slate",
+   "tone": 1.6,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
    "layers": [
     {
-     "id": "edge",
-     "op": "band",
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.6
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
      "axis": "y",
-     "from": -1.01,
-     "to": -0.4,
-     "shift": 1.6,
+     "amount": 1.0,
      "faces": [
-      "sides",
-      "front"
+      "sides"
      ]
     }
    ]
   },
   "beak_low": {
    "ramp": "horn",
-   "tone": 3.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.3
-   },
+   "tone": 1.4,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.5
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
+      "sides"
+     ]
+    },
     {
      "id": "mouth",
      "op": "fill",
      "ramp": "horn",
-     "tone": 0.8,
+     "tone": 0.2,
      "faces": [
       "top"
      ]
     }
    ]
   },
-  "eye": {
-   "ramp": "slate",
-   "tone": 2.0,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 0,
-    "dark": 0
-   },
-   "stamps": [
-    {
-     "faces": [
-      "left",
-      "right"
-     ],
-     "at": "top-left",
-     "art": [
-      "..kkk..",
-      ".kiiik.",
-      "kikWkik",
-      "kIpppIk",
-      "kJkpkJk",
-      ".kJJJk.",
-      "..kkk.."
-     ],
-     "key": {
-      "k": "slate:1",
-      "i": "amber:1",
-      "I": "amber:2",
-      "J": "amber:4",
-      "p": "pupil:0",
-      "W": "cream:7"
-     }
-    }
-   ]
-  },
   "lid": {
    "ramp": "slate",
    "tone": 4.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.4,
-    "dark_shift": -1.2
-   },
+   "light": 1.0,
    "brush": {
     "off": true
-   }
-  },
-  "flipper": {
-   "ramp": "slate",
-   "tone": 5.0,
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.0,
-    "dark_shift": -1.3
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "x",
-     "size": [
-      1.0,
-      1.0
-     ],
-     "gap": 0.5,
-     "highlight": 0.7,
-     "shadow": -0.7,
-     "jitter": 0.3,
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.4
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
-      "top",
+      "sides"
+     ]
+    }
+   ]
+  },
+  "flipper": {
+   "ramp": "slate",
+   "tone": 4.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.9
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.2
+    },
+    {
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
+     "faces": [
       "sides"
      ]
     },
@@ -452,47 +406,16 @@
      "id": "edge",
      "op": "band",
      "axis": "z",
-     "from": 0.45,
-     "to": 1.01,
-     "ramp": "slate",
-     "tone": 8.6,
+     "from": -1.01,
+     "to": -0.45,
+     "ramp": "ash",
+     "tone": 2.0,
      "faces": [
       "top",
       "sides"
      ]
-    },
-    {
-     "id": "pale_under",
-     "op": "fill",
-     "ramp": "slate",
-     "tone": 7.0,
-     "faces": [
-      "bottom"
-     ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
     }
    ]
-  },
-  "claw": {
-   "ramp": "horn",
-   "tone": 4,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "c": "horn:5",
-    "C": "horn:2"
-   }
   }
  },
  "parts": [
@@ -500,19 +423,14 @@
    "id": "body",
    "shape": "box",
    "size": [
-    7.5,
-    2.0,
-    10.0
+    10,
+    2,
+    12
    ],
    "pivot": [
     0.0,
-    2.0,
+    1.435,
     0.0
-   ],
-   "offset": [
-    0.0,
-    -1.0,
-    -0.5
    ],
    "style": "plastron"
   },
@@ -521,14 +439,14 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    9.0,
-    1.5,
-    11.0
+    12,
+    1,
+    14
    ],
    "pivot": [
     0.0,
-    0.5,
-    -0.5
+    1.5,
+    0.0
    ],
    "style": "skin"
   },
@@ -538,8 +456,8 @@
    "parent": "body",
    "pivot": [
     0.0,
-    1.0,
-    -0.5
+    2.0,
+    0.0
    ],
    "style": "skin"
   },
@@ -548,115 +466,128 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    11.0,
-    1.0,
-    10.5
+    12,
+    2,
+    14
    ],
    "pivot": [
     0.0,
-    0.0,
+    1.0,
     0.0
    ],
-   "style": "carapace",
+   "style": "rim",
    "paint": {
     "stamps": [
-     {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "L.....LSSSKKSSSL.....L",
-       "SS.LLSS...KK...SSLL.SS",
-       "..SSKK..L.KK..L.KKSS..",
-       "..SLKK..S.KK.SL.KK.S..",
-       "...SKK..SLLLLSL.KKSL..",
-       "...SLK.LS.KK.SL.KKS...",
-       "....SSSS..KK..SSSSL...",
-       "SSSSKK.S..KK..S.KKSSSS",
-       "..S.KK.SL.KK..S.KK.S..",
-       "..S.KK..S.KK.SL.KK.S..",
-       "..SLKK..SSSSSS..KK.S..",
-       "..SLKK..S.KK.SL.KK.S..",
-       "LLSLLLLSL.KK..SLLL.SLL",
-       "SS.SSSSS..KK..SSSSS.SS",
-       "...SKK.SL.KK..S.KKS...",
-       "...SKK..SLLLLSL.KKSL..",
-       "...SKK..S.KK.S..KKSL..",
-       "...LKK..S.KK.SL.KK.L..",
-       ".LSSSSLSL.KK..SLSSSSL.",
-       "SS.....SL.KK.LS.....SS",
-       ".......SSSLLSSSL......"
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "SL.....SL....S......S",
-       "SL.....SL....S......S"
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       "S......S....LS.....LS",
-       "S......S....LS.....LS"
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
      {
       "face": "front",
       "at": "top-left",
       "art": [
-       "......SL.SSSS..S......",
-       "......SL.SSSS..S......"
+       "S..SS..SL..S",
+       "S..SS..SL..S"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
      },
      {
       "face": "back",
       "at": "top-left",
       "art": [
-       "......S.LSSSSLLS......",
-       "......S.LSSSSLLS......"
+       "SL.SSLLS..LS",
+       "SL.SSLLS..LS"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "SS.LSS.LSS..LS",
+       "SS.LSS.LSS..LS"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "SS..SSL.SSL..S",
+       "SS..SSL.SSL..S"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "SLP.SKKS.PLS",
+       ".SSSSKKSSSS.",
+       "LS.SLKKLS.SL",
+       "SSP.SKKS.PSS",
+       "SPPPSKKSPPPS",
+       "SLPLSKKSLPLS",
+       "SSSS.KK.SSSS",
+       "SSSSLKKLSSSS",
+       "S.P.SKKS.P.S",
+       "SLPLSKKSLPLS",
+       "SSLLSKKSLLSS",
+       "PSLS.KK.SLSP",
+       "LSSSSKKSSSSL",
+       "S.PLSKKSLP.S"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
      }
     ]
@@ -667,116 +598,126 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    9.0,
-    0.5,
-    13.0
+    10,
+    2,
+    12
    ],
    "pivot": [
     0.0,
-    -0.25,
-    0.0
+    3.0,
+    -0.5
    ],
    "style": "carapace",
    "paint": {
     "stamps": [
      {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       "...SL....L....S...",
-       "....S....L...SL...",
-       "....SLLSSSSL.S....",
-       "..LLSSS.KK.SSSLL..",
-       "LSSS..L.KK..L.SSSL",
-       "S.KK..L.KK..L.KK.S",
-       ".SKK..S.KK.SL.KKSL",
-       ".SLK.LSSSSSSL.KKS.",
-       "..LLLS..KK..SLLKL.",
-       "LSKK.S..KK..S.KKSL",
-       "S.KK.SL.KK..S.KK.S",
-       "S.KK..S.KK.SL.KK.S",
-       "SLKK..SLLLLS..KK.S",
-       "SLKK..S.KK.SL.KK.S",
-       "SLKK.SL.KK..S.KK.S",
-       "SSSSSS..KK..SSSSSS",
-       ".SLK.S..KK..S.KKS.",
-       ".SKK..L.KK..L.KKS.",
-       ".SKK..SSSSSS..KKSL",
-       ".LKK..S.KK.SL.KK.L",
-       "SSLL..L.KK..L.LLSS",
-       "...SSS..KK..SSS...",
-       ".....SSLKKLSS.....",
-       "....SL.SSSS..S....",
-       "....S....L...SL...",
-       "...SL....L....S..."
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "....SL....SLLLLS....LS...."
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       "....S.....S....S.....S...."
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
       "face": "front",
       "at": "top-left",
       "art": [
-       "...S.....L....SL.."
+       "SSSSLLSSSS",
+       "SSSSLLSSSS"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
      },
      {
       "face": "back",
       "at": "top-left",
       "art": [
-       "..LS....L.....S..."
+       "L..SSSS..L",
+       "L..SSSS..L"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "S.SS.SSSLSSL",
+       "S.SS.SSSLSSL"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "LSSLSSS.SS.S",
+       "LSSLSSS.SS.S"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "SLLSKKSLLS",
+       "SSSLKKLSSS",
+       "S.SSKKSS.S",
+       "PPPSKKSPPP",
+       "PPLSKKSLPP",
+       "LLSSKKSSLL",
+       "SSSLKKLSSS",
+       "..SSKKSS..",
+       "LPLSKKSLPL",
+       "LPLSKKSLPL",
+       "SLSSKKSSLS",
+       "SSS.KK.SSS"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
      }
     ]
@@ -787,120 +728,118 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    9.5,
-    1.5,
-    11.0
+    6,
+    1,
+    8
    ],
    "pivot": [
     0.0,
-    1.25,
-    0.0
+    4.5,
+    -0.5
    ],
    "style": "carapace",
    "paint": {
     "stamps": [
      {
-      "face": "top",
-      "at": "top-left",
-      "art": [
-       ".....S.LSKSL.SL....",
-       "...LLSSS.K.SSSLL...",
-       "SSSS..S..K..S..SSSS",
-       ".S.K..S..K..S..K.SL",
-       ".SLK..SL.K..S..K.S.",
-       "..SK..SSSSSSS..KSL.",
-       "..SLLLS..K..SLLKS..",
-       ".LSSSSL..K...SSSSL.",
-       "SS.K..S..K..SL.K.SS",
-       ".L.K..SL.K..S..K..L",
-       ".S.K...LLLLLL..K.SL",
-       ".S.K..S..K..S..K.SL",
-       ".S.K..S..K..SL.K.SL",
-       "SSSSSSL..K...SSSSSS",
-       "..SK.SL..K...S.KSL.",
-       "..LK..SL.K..SL.K.L.",
-       ".SLK...SSSSSL..K.S.",
-       ".S.K..SL.K..S..K.S.",
-       ".SLLL.S..K..S.LLLSL",
-       "S..SSSS..K..SSSS..S",
-       ".....SSSLKLSSS.....",
-       ".....S..SLS..SL...."
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       "..S.....S....SL....SL.",
-       "..S.....S....SL....SL.",
-       "..S.....S....SL....SL."
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       ".LS....LS....S.....S..",
-       ".LS....LS....S.....S..",
-       ".LS....LS....S.....S.."
-      ],
-      "key": {
-       "S": "slate:3",
-       "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
-      }
-     },
-     {
       "face": "front",
       "at": "top-left",
       "art": [
-       ".....S...S...SL....",
-       ".....S...S...SL....",
-       ".....S...S...SL...."
+       "LS..SL"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
      },
      {
       "face": "back",
       "at": "top-left",
       "art": [
-       "....LS..LSL..S.....",
-       "....LS..LSL..S.....",
-       "....LS..LSL..S....."
+       "SL..LS"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "...LS..L"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "L..SL..."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "SSKKSS",
+       "PSKKSP",
+       "LSKKSL",
+       "SSKKSS",
+       "SLKKLS",
+       "SSKKSS",
+       "LSKKSL",
+       "LSKKSL"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
      }
     ]
@@ -911,223 +850,460 @@
    "shape": "box",
    "parent": "shell",
    "size": [
-    6.0,
-    1.0,
-    8.0
+    2,
+    1,
+    6
    ],
    "pivot": [
     0.0,
-    2.5,
-    0.0
+    5.5,
+    -0.5
    ],
    "style": "carapace",
    "paint": {
     "stamps": [
      {
-      "face": "top",
+      "face": "front",
       "at": "top-left",
       "art": [
-       "K..L.KK..L.K",
-       "K..S.KK.SL.K",
-       "K.LSSSSSSL.K",
-       "LLS..KK..SLL",
-       "K.S..KK..S.K",
-       "K.SL.KK..S.K",
-       "K..S.KK.SL.K",
-       "K..SLLLLS..K",
-       "K..S.KK.SL.K",
-       "K.SL.KK..S.K",
-       "SSS..KK..SSS",
-       "K.S..KK..S.K",
-       "K..L.KK..L.K",
-       "K..SSSSSS..K",
-       "K..S.KK.SL.K",
-       "L..L.KK..L.L"
+       "SS"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
-     }
-    ]
-   }
-  },
-  {
-   "id": "shell_4",
-   "shape": "box",
-   "parent": "shell",
-   "size": [
-    2.0,
-    0.5,
-    6.5
-   ],
-   "pivot": [
-    0.0,
-    3.25,
-    0.0
-   ],
-   "style": "carapace",
-   "paint": {
-    "stamps": [
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "LL"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "LS.LLS"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "SLL.SL"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
      {
       "face": "top",
       "at": "top-left",
       "art": [
-       "LLLL",
-       ".KK.",
-       ".KK.",
-       ".KK.",
-       ".KK.",
-       ".KK.",
-       "SSSS",
-       ".KK.",
-       ".KK.",
-       ".KK.",
-       ".KK.",
-       "LLLL",
-       ".KK."
+       "KK",
+       "KK",
+       "KK",
+       "KK",
+       "KK",
+       "KK"
       ],
       "key": {
-       "S": "slate:3",
+       "S": "slate:0",
        "L": "slate:6",
-       "g": "slate:4",
-       "k": "slate:3",
-       "a": "slate:7",
-       "K": "slate:9"
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
       }
      }
     ]
    }
-  },
-  {
-   "id": "shell_serration",
-   "shape": "card",
-   "parent": "shell",
-   "pivot": [
-    0.0,
-    -0.75,
-    -6.5
-   ],
-   "offset": [
-    0.0,
-    -0.5,
-    0.0
-   ],
-   "style": "carapace_edge",
-   "plane": "xy",
-   "art": [
-    "mmmmmmmmmmmmm",
-    "m.mm.mm.mm.mm",
-    "m..m..m..m..m"
-   ]
   },
   {
    "id": "neck",
    "shape": "box",
    "parent": "body",
    "size": [
-    4.0,
-    2.5,
-    3.0
+    4,
+    3,
+    3
    ],
    "pivot": [
     0.0,
-    0.0,
+    2.0,
     5.0
    ],
    "offset": [
     0.0,
-    0.0,
-    1.55
+    0.5,
+    1.5
    ],
-   "style": "skin"
+   "style": "skin",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "cccc",
+       "cccc",
+       "cccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "cccc",
+       "cccc",
+       "cccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".s..",
+       ".s..",
+       ".s.."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "cccc",
+       "cccc",
+       "cccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "head",
    "shape": "box",
    "parent": "neck",
    "size": [
-    7.0,
-    3.0,
-    4.5
+    8,
+    7,
+    7
    ],
    "pivot": [
     0.0,
     0.5,
-    1.5
+    2.0
    ],
    "offset": [
     0.0,
-    1.0,
-    3.0
+    2.0,
+    4.5
    ],
-   "style": "head"
-  },
-  {
-   "id": "head_y",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    5.0,
-    6.0,
-    3.0
-   ],
-   "pivot": [
-    0.0,
-    1.0,
-    3.0
-   ],
-   "style": "head"
-  },
-  {
-   "id": "head_z",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    3.5,
-    4.5,
-    6.0
-   ],
-   "pivot": [
-    0.0,
-    1.0,
-    3.0
-   ],
-   "style": "head"
-  },
-  {
-   "id": "head_m",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    6.5,
-    5.5,
-    5.5
-   ],
-   "pivot": [
-    0.0,
-    1.0,
-    3.0
-   ],
-   "style": "head"
+   "style": "head",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "s..s..s.",
+       "ssssssss",
+       "..s..s..",
+       "ssssssss",
+       "cccccccc",
+       "cccccccc",
+       "cccccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       ".s..s..s",
+       "ssssssss",
+       "..s..s..",
+       "ssssssss",
+       "cccccccc",
+       "cccccccc",
+       "cccccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "s..s..s",
+       "sssskhs",
+       "..s.kk.",
+       "sssssss",
+       "ccccccc",
+       "ccccccc",
+       "ccccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "s..s..s",
+       "shkssss",
+       ".kk.s..",
+       "sssssss",
+       "ccccccc",
+       "ccccccc",
+       "ccccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "s..s..s.",
+       "s..s..s.",
+       "s..s..s.",
+       "s..s..s.",
+       "s..s..s.",
+       "s..s..s.",
+       "s..s..s."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "cccccccc",
+       "cccccccc",
+       "cccccccc",
+       "cccccccc",
+       "cccccccc",
+       "cccccccc",
+       "cccccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "beak",
    "shape": "box",
    "parent": "head",
    "size": [
-    3.0,
-    1.5,
-    1.0
+    4,
+    1,
+    1
    ],
    "pivot": [
     0.0,
-    -0.25,
-    6.0
+    0.0,
+    8.5
    ],
    "style": "beak"
   },
@@ -1137,8 +1313,8 @@
    "parent": "head",
    "pivot": [
     0.0,
-    -1.0,
-    1.5
+    -1.5,
+    2.0
    ],
    "style": "skin"
   },
@@ -1147,88 +1323,78 @@
    "shape": "box",
    "parent": "jaw",
    "size": [
-    3.5,
-    0.5,
-    3.5
+    4,
+    1,
+    4
    ],
    "pivot": [
     0.0,
-    -0.25,
-    2.75
+    -0.5,
+    3.0
    ],
    "style": "beak_low"
   },
   {
    "id": "eye_l",
-   "shape": "box",
+   "shape": "bone",
    "parent": "head",
-   "size": [
-    0.5,
-    3.5,
-    3.5
-   ],
    "pivot": [
-    3.75,
-    1.5,
-    3.75
+    4.0,
+    3.5,
+    6.0
    ],
-   "style": "eye"
+   "style": "skin"
   },
   {
    "id": "lid_l",
    "shape": "box",
    "parent": "eye_l",
    "size": [
-    0.5,
-    0.5,
-    4.0
+    1,
+    1,
+    3
    ],
    "pivot": [
-    0.25,
-    1.75,
+    0.5,
+    2.0,
     0.0
    ],
    "offset": [
     0.0,
-    -0.25,
-    0.0
+    -0.5,
+    -0.5
    ],
    "style": "lid"
   },
   {
    "id": "eye_r",
-   "shape": "box",
+   "shape": "bone",
    "parent": "head",
-   "size": [
-    0.5,
-    3.5,
-    3.5
-   ],
    "pivot": [
-    -3.75,
-    1.5,
-    3.75
+    -4.0,
+    3.5,
+    6.0
    ],
-   "style": "eye"
+   "style": "skin"
   },
   {
    "id": "lid_r",
    "shape": "box",
    "parent": "eye_r",
    "size": [
-    0.5,
-    0.5,
-    4.0
+    1,
+    1,
+    3
    ],
    "pivot": [
-    -0.25,
-    1.75,
+    -0.5,
+    2.0,
     0.0
    ],
    "offset": [
     0.0,
-    -0.25,
-    0.0
+    -0.5,
+    -0.5
    ],
    "style": "lid"
   },
@@ -1237,17 +1403,17 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    1.0,
-    2.5
+    6,
+    1,
+    4
    ],
    "pivot": [
-    3.96,
-    -0.25,
-    3.9
+    5.0,
+    0.5,
+    3.5
    ],
    "offset": [
-    1.75,
+    3.0,
     0.0,
     0.0
    ],
@@ -1256,24 +1422,72 @@
     -28.0,
     -8.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".....s",
+       ".s...s",
+       "....s.",
+       "s...s."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "cccccc",
+       "cccccc",
+       "cccccc",
+       "cccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "flipper_fl_tip",
    "shape": "box",
    "parent": "flipper_fl",
    "size": [
-    4.5,
-    0.5,
-    3.5
+    5,
+    1,
+    4
    ],
    "pivot": [
-    3.5,
+    6.0,
     0.0,
-    -0.0
+    0.0
    ],
    "offset": [
-    2.25,
+    2.5,
     0.0,
     -0.5
    ],
@@ -1282,21 +1496,69 @@
     -24.0,
     0.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "..s..",
+       "..s..",
+       "..s..",
+       "..s.."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "flipper_fl_end",
    "shape": "box",
    "parent": "flipper_fl_tip",
    "size": [
-    3.5,
-    0.5,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
-    4.5,
-    0.0,
-    0.25
+    5.0,
+    -0.0,
+    0.5
    ],
    "offset": [
     1.5,
@@ -1308,24 +1570,68 @@
     -14.0,
     0.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "s..",
+       "s.."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "flipper_bl",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    0.5,
-    3.5
+    4,
+    1,
+    3
    ],
    "pivot": [
-    3.3,
-    -0.5,
-    -4.29
+    4.0,
+    0.5,
+    -5.0
    ],
    "offset": [
-    1.75,
+    2.0,
     0.0,
     -1.0
    ],
@@ -1334,24 +1640,70 @@
     38.0,
     -6.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "....",
+       "ssss",
+       "...."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "cccc",
+       "cccc",
+       "cccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "flipper_fr",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    1.0,
-    2.5
+    6,
+    1,
+    4
    ],
    "pivot": [
-    -3.96,
-    -0.25,
-    3.9
+    -5.0,
+    0.5,
+    3.5
    ],
    "offset": [
-    -1.75,
+    -3.0,
     0.0,
     0.0
    ],
@@ -1360,24 +1712,72 @@
     28.0,
     8.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "......",
+       "......",
+       "..ssss",
+       "......"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "cccccc",
+       "cccccc",
+       "cccccc",
+       "cccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "flipper_fr_tip",
    "shape": "box",
    "parent": "flipper_fr",
    "size": [
-    4.5,
-    0.5,
-    3.5
+    5,
+    1,
+    4
    ],
    "pivot": [
-    -3.5,
+    -6.0,
     0.0,
-    -0.0
+    0.0
    ],
    "offset": [
-    -2.25,
+    -2.5,
     0.0,
     -0.5
    ],
@@ -1386,21 +1786,69 @@
     24.0,
     0.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".....",
+       ".....",
+       "ss...",
+       "...ss"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "flipper_fr_end",
    "shape": "box",
    "parent": "flipper_fr_tip",
    "size": [
-    3.5,
-    0.5,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
-    -4.5,
-    0.0,
-    0.25
+    -5.0,
+    -0.0,
+    0.5
    ],
    "offset": [
     -1.5,
@@ -1412,24 +1860,48 @@
     14.0,
     0.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "flipper_br",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    0.5,
-    3.5
+    4,
+    1,
+    3
    ],
    "pivot": [
-    -3.3,
-    -0.5,
-    -4.29
+    -4.0,
+    0.5,
+    -5.0
    ],
    "offset": [
-    -1.75,
+    -2.0,
     0.0,
     -1.0
    ],
@@ -1438,26 +1910,127 @@
     -38.0,
     6.0
    ],
-   "style": "flipper"
+   "style": "flipper",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".s..",
+       "....",
+       "s..."
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "cccc",
+       "cccc",
+       "cccc"
+      ],
+      "key": {
+       "S": "slate:0",
+       "L": "slate:6",
+       "P": "slate:4",
+       "K": "slate:7",
+       "s": "slate:4",
+       "c": "ash:2",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "slate:0",
+       "l": "slate:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tail",
    "shape": "box",
    "parent": "body",
    "size": [
-    1.5,
-    1.0,
-    2.0
+    2,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    -0.5,
-    -4.94
+    0.5,
+    -6.0
    ],
    "offset": [
     0.0,
     0.0,
-    -0.825
+    -1.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "shell_4",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "shell_serration",
+   "shape": "bone",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "head_y",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "head_z",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "head_m",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
    ],
    "style": "skin"
   }
@@ -1721,18 +2294,26 @@
        ]
       ],
       [
-       1.5667,
+       1.5167,
        [
         0.0,
-        -0.059,
+        -0.029,
         0.0
        ]
       ],
       [
-       1.5833,
+       1.5333,
        [
         0.0,
-        0.038,
+        0.017,
+        0.0
+       ]
+      ],
+      [
+       1.5667,
+       [
+        0.0,
+        0.266,
         0.0
        ]
       ],
@@ -1740,7 +2321,7 @@
        1.6333,
        [
         0.0,
-        0.535,
+        0.939,
         0.0
        ]
       ],
@@ -1748,7 +2329,7 @@
        1.6667,
        [
         0.0,
-        0.775,
+        1.184,
         0.0
        ]
       ],
@@ -1756,7 +2337,7 @@
        1.6833,
        [
         0.0,
-        0.841,
+        1.252,
         0.0
        ]
       ],
@@ -1764,7 +2345,7 @@
        1.7,
        [
         0.0,
-        0.866,
+        1.277,
         0.0
        ]
       ],
@@ -1772,7 +2353,7 @@
        1.7167,
        [
         0.0,
-        0.847,
+        1.257,
         0.0
        ]
       ],
@@ -1780,23 +2361,31 @@
        1.75,
        [
         0.0,
-        0.686,
+        1.092,
         0.0
        ]
       ],
       [
-       1.8167,
+       1.85,
        [
         0.0,
-        0.065,
+        0.151,
         0.0
        ]
       ],
       [
-       1.8333,
+       1.8667,
        [
         0.0,
-        -0.03,
+        0.044,
+        0.0
+       ]
+      ],
+      [
+       1.9,
+       [
+        0.0,
+        -0.013,
         0.0
        ]
       ],
@@ -1804,7 +2393,7 @@
        3.9833,
        [
         0.0,
-        -0.003,
+        -0.002,
         0.0
        ]
       ]
@@ -1953,15 +2542,23 @@
        0.0,
        [
         0.0,
-        2.118,
+        3.098,
         0.0
        ]
       ],
       [
-       0.1167,
+       0.0833,
        [
         0.0,
-        1.981,
+        2.994,
+        0.0
+       ]
+      ],
+      [
+       0.1833,
+       [
+        0.0,
+        2.579,
         0.0
        ]
       ],
@@ -1969,7 +2566,7 @@
        0.3,
        [
         0.0,
-        1.243,
+        1.856,
         0.0
        ]
       ],
@@ -1977,39 +2574,39 @@
        0.3667,
        [
         0.0,
-        0.997,
+        1.515,
         0.0
        ]
       ],
       [
-       0.3833,
+       0.4333,
        [
         0.0,
-        0.907,
+        0.978,
         0.0
        ]
       ],
       [
-       0.4,
+       0.4667,
        [
         0.0,
-        0.862,
+        0.637,
         0.0
        ]
       ],
       [
-       0.5,
+       0.4833,
        [
         0.0,
-        0.811,
+        0.505,
         0.0
        ]
       ],
       [
-       0.7167,
+       0.7333,
        [
         0.0,
-        0.132,
+        -0.315,
         0.0
        ]
       ],
@@ -2017,7 +2614,7 @@
        0.8,
        [
         0.0,
-        0.084,
+        -0.343,
         0.0
        ]
       ],
@@ -2025,39 +2622,47 @@
        1.1,
        [
         0.0,
-        0.719,
+        0.353,
         0.0
        ]
       ],
       [
-       1.2333,
+       1.2833,
        [
         0.0,
-        0.874,
+        1.938,
         0.0
        ]
       ],
       [
-       1.3333,
+       1.3667,
        [
         0.0,
-        1.392,
+        2.447,
         0.0
        ]
       ],
       [
-       1.4333,
+       1.45,
        [
         0.0,
-        1.681,
+        2.72,
         0.0
        ]
       ],
       [
-       1.5333,
+       1.4667,
        [
         0.0,
-        2.033,
+        2.744,
+        0.0
+       ]
+      ],
+      [
+       1.55,
+       [
+        0.0,
+        3.038,
         0.0
        ]
       ],
@@ -2065,7 +2670,7 @@
        1.5833,
        [
         0.0,
-        2.108,
+        3.089,
         0.0
        ]
       ]
@@ -2639,7 +3244,7 @@
        0.0,
        [
         0.0,
-        1.423,
+        1.352,
         0.0
        ]
       ],
@@ -2647,7 +3252,7 @@
        4.9833,
        [
         0.0,
-        1.419,
+        1.35,
         0.0
        ]
       ]
@@ -3479,7 +4084,7 @@
        0.0167,
        [
         0.0,
-        1.073,
+        1.808,
         0.0
        ]
       ],
@@ -3487,7 +4092,7 @@
        0.0333,
        [
         0.0,
-        2.388,
+        3.447,
         0.0
        ]
       ],
@@ -3495,7 +4100,7 @@
        0.05,
        [
         0.0,
-        3.42,
+        4.734,
         0.0
        ]
       ],
@@ -3503,7 +4108,7 @@
        0.0667,
        [
         0.0,
-        4.103,
+        5.589,
         0.0
        ]
       ],
@@ -3511,7 +4116,7 @@
        0.0833,
        [
         0.0,
-        4.416,
+        5.987,
         0.0
        ]
       ],
@@ -3519,7 +4124,7 @@
        0.1,
        [
         0.0,
-        4.36,
+        5.931,
         0.0
        ]
       ],
@@ -3527,7 +4132,7 @@
        0.1167,
        [
         0.0,
-        3.942,
+        5.429,
         0.0
        ]
       ],
@@ -3535,7 +4140,7 @@
        0.1333,
        [
         0.0,
-        3.179,
+        4.502,
         0.0
        ]
       ],
@@ -3543,7 +4148,7 @@
        0.15,
        [
         0.0,
-        2.116,
+        3.204,
         0.0
        ]
       ],
@@ -3551,7 +4156,7 @@
        0.1667,
        [
         0.0,
-        0.845,
+        1.648,
         0.0
        ]
       ],
@@ -3559,7 +4164,7 @@
        0.1833,
        [
         0.0,
-        2.418,
+        3.606,
         0.0
        ]
       ],
@@ -3567,7 +4172,7 @@
        0.2,
        [
         0.0,
-        3.733,
+        5.236,
         0.0
        ]
       ],
@@ -3575,7 +4180,7 @@
        0.2167,
        [
         0.0,
-        4.69,
+        6.419,
         0.0
        ]
       ],
@@ -3583,7 +4188,7 @@
        0.2333,
        [
         0.0,
-        5.259,
+        7.12,
         0.0
        ]
       ],
@@ -3591,7 +4196,7 @@
        0.25,
        [
         0.0,
-        5.446,
+        7.35,
         0.0
        ]
       ],
@@ -3599,7 +4204,7 @@
        0.2667,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3607,7 +4212,7 @@
        0.2833,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3615,7 +4220,7 @@
        0.3,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3623,7 +4228,7 @@
        0.3167,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3631,7 +4236,7 @@
        0.3333,
        [
         0.0,
-        1.29,
+        2.24,
         0.0
        ]
       ],
@@ -3639,7 +4244,7 @@
        0.35,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3647,7 +4252,7 @@
        0.3667,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3655,7 +4260,7 @@
        0.3833,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3663,7 +4268,7 @@
        0.4,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3671,7 +4276,7 @@
        0.4167,
        [
         0.0,
-        5.446,
+        7.35,
         0.0
        ]
       ],
@@ -3679,7 +4284,7 @@
        0.4333,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3687,7 +4292,7 @@
        0.45,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3695,7 +4300,7 @@
        0.4667,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3703,7 +4308,7 @@
        0.4833,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3711,7 +4316,7 @@
        0.5,
        [
         0.0,
-        2.198,
+        2.24,
         0.0
        ]
       ],
@@ -3719,7 +4324,7 @@
        0.5167,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3727,7 +4332,7 @@
        0.5333,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3735,7 +4340,7 @@
        0.55,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3743,7 +4348,7 @@
        0.5667,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3751,7 +4356,7 @@
        0.5833,
        [
         0.0,
-        5.446,
+        7.35,
         0.0
        ]
       ],
@@ -3759,7 +4364,7 @@
        0.6,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3767,7 +4372,7 @@
        0.6167,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3775,7 +4380,7 @@
        0.6333,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3783,7 +4388,7 @@
        0.65,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3791,7 +4396,7 @@
        0.6667,
        [
         0.0,
-        1.966,
+        2.24,
         0.0
        ]
       ],
@@ -3799,7 +4404,7 @@
        0.6833,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3807,7 +4412,7 @@
        0.7,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3815,7 +4420,7 @@
        0.7167,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3823,7 +4428,7 @@
        0.7333,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3831,7 +4436,7 @@
        0.75,
        [
         0.0,
-        5.446,
+        7.35,
         0.0
        ]
       ],
@@ -3839,7 +4444,7 @@
        0.7667,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3847,7 +4452,7 @@
        0.7833,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3855,7 +4460,7 @@
        0.8,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3863,7 +4468,7 @@
        0.8167,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3871,7 +4476,7 @@
        0.8333,
        [
         0.0,
-        1.29,
+        2.24,
         0.0
        ]
       ],
@@ -3879,7 +4484,7 @@
        0.85,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3887,7 +4492,7 @@
        0.8667,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3895,7 +4500,7 @@
        0.8833,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3903,7 +4508,7 @@
        0.9,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3911,7 +4516,7 @@
        0.9167,
        [
         0.0,
-        5.446,
+        7.35,
         0.0
        ]
       ],
@@ -3919,7 +4524,7 @@
        0.9333,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3927,7 +4532,7 @@
        0.95,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3935,7 +4540,7 @@
        0.9667,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3943,7 +4548,7 @@
        0.9833,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3951,7 +4556,7 @@
        1.0,
        [
         0.0,
-        2.198,
+        2.24,
         0.0
        ]
       ],
@@ -3959,7 +4564,7 @@
        1.0167,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -3967,7 +4572,7 @@
        1.0333,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -3975,7 +4580,7 @@
        1.05,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -3983,7 +4588,7 @@
        1.0667,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -3991,7 +4596,7 @@
        1.0833,
        [
         0.0,
-        5.446,
+        7.35,
         0.0
        ]
       ],
@@ -3999,7 +4604,7 @@
        1.1,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -4007,7 +4612,7 @@
        1.1167,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -4015,7 +4620,7 @@
        1.1333,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -4023,7 +4628,7 @@
        1.15,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -4031,7 +4636,7 @@
        1.1667,
        [
         0.0,
-        1.966,
+        2.24,
         0.0
        ]
       ],
@@ -4039,7 +4644,7 @@
        1.1833,
        [
         0.0,
-        2.698,
+        3.975,
         0.0
        ]
       ],
@@ -4047,7 +4652,7 @@
        1.2,
        [
         0.0,
-        3.882,
+        5.433,
         0.0
        ]
       ],
@@ -4055,7 +4660,7 @@
        1.2167,
        [
         0.0,
-        4.752,
+        6.501,
         0.0
        ]
       ],
@@ -4063,7 +4668,7 @@
        1.2333,
        [
         0.0,
-        5.274,
+        7.139,
         0.0
        ]
       ],
@@ -4071,7 +4676,7 @@
        1.25,
        [
         0.0,
-        5.446,
+        7.35,
         0.0
        ]
       ],
@@ -4079,7 +4684,7 @@
        1.2667,
        [
         0.0,
-        5.276,
+        7.142,
         0.0
        ]
       ],
@@ -4087,7 +4692,7 @@
        1.2833,
        [
         0.0,
-        4.763,
+        6.512,
         0.0
        ]
       ],
@@ -4095,7 +4700,7 @@
        1.3,
        [
         0.0,
-        3.906,
+        5.458,
         0.0
        ]
       ],
@@ -4103,7 +4708,7 @@
        1.3167,
        [
         0.0,
-        2.74,
+        4.02,
         0.0
        ]
       ],
@@ -4111,7 +4716,7 @@
        1.3333,
        [
         0.0,
-        1.843,
+        2.309,
         0.0
        ]
       ],
@@ -4119,7 +4724,7 @@
        1.35,
        [
         0.0,
-        2.788,
+        4.072,
         0.0
        ]
       ],
@@ -4127,7 +4732,7 @@
        1.3667,
        [
         0.0,
-        4.0,
+        5.557,
         0.0
        ]
       ],
@@ -4135,7 +4740,7 @@
        1.3833,
        [
         0.0,
-        4.897,
+        6.653,
         0.0
        ]
       ],
@@ -4143,7 +4748,7 @@
        1.4,
        [
         0.0,
-        5.445,
+        7.319,
         0.0
        ]
       ],
@@ -4151,7 +4756,7 @@
        1.4167,
        [
         0.0,
-        5.646,
+        7.56,
         0.0
        ]
       ],
@@ -4159,7 +4764,7 @@
        1.4333,
        [
         0.0,
-        5.504,
+        7.38,
         0.0
        ]
       ],
@@ -4167,7 +4772,7 @@
        1.45,
        [
         0.0,
-        5.013,
+        6.775,
         0.0
        ]
       ],
@@ -4175,7 +4780,7 @@
        1.4667,
        [
         0.0,
-        4.174,
+        5.741,
         0.0
        ]
       ],
@@ -4183,7 +4788,7 @@
        1.4833,
        [
         0.0,
-        3.017,
+        4.314,
         0.0
        ]
       ],
@@ -4191,7 +4796,7 @@
        1.5,
        [
         0.0,
-        1.632,
+        2.602,
         0.0
        ]
       ],
@@ -4199,7 +4804,7 @@
        1.5167,
        [
         0.0,
-        3.048,
+        4.347,
         0.0
        ]
       ],
@@ -4207,7 +4812,7 @@
        1.5333,
        [
         0.0,
-        4.234,
+        5.804,
         0.0
        ]
       ],
@@ -4215,7 +4820,7 @@
        1.55,
        [
         0.0,
-        5.099,
+        6.865,
         0.0
        ]
       ],
@@ -4223,7 +4828,7 @@
        1.5667,
        [
         0.0,
-        5.609,
+        7.49,
         0.0
        ]
       ],
@@ -4231,7 +4836,7 @@
        1.5833,
        [
         0.0,
-        5.764,
+        7.678,
         0.0
        ]
       ],
@@ -4239,7 +4844,7 @@
        1.6,
        [
         0.0,
-        5.566,
+        7.434,
         0.0
        ]
       ],
@@ -4247,7 +4852,7 @@
        1.6167,
        [
         0.0,
-        5.007,
+        6.749,
         0.0
        ]
       ],
@@ -4255,7 +4860,7 @@
        1.6333,
        [
         0.0,
-        4.083,
+        5.612,
         0.0
        ]
       ],
@@ -4263,7 +4868,7 @@
        1.65,
        [
         0.0,
-        2.824,
+        4.059,
         0.0
        ]
       ],
@@ -4271,7 +4876,7 @@
        1.6667,
        [
         0.0,
-        1.324,
+        2.203,
         0.0
        ]
       ],
@@ -4279,7 +4884,7 @@
        1.6833,
        [
         0.0,
-        2.654,
+        3.842,
         0.0
        ]
       ],
@@ -4287,7 +4892,7 @@
        1.7,
        [
         0.0,
-        3.766,
+        5.208,
         0.0
        ]
       ],
@@ -4295,7 +4900,7 @@
        1.7167,
        [
         0.0,
-        4.567,
+        6.19,
         0.0
        ]
       ],
@@ -4303,7 +4908,7 @@
        1.7333,
        [
         0.0,
-        5.015,
+        6.737,
         0.0
        ]
       ],
@@ -4311,7 +4916,7 @@
        1.75,
        [
         0.0,
-        5.1,
+        6.837,
         0.0
        ]
       ],
@@ -4319,7 +4924,7 @@
        1.7667,
        [
         0.0,
-        4.816,
+        6.484,
         0.0
        ]
       ],
@@ -4327,7 +4932,7 @@
        1.7833,
        [
         0.0,
-        4.154,
+        5.664,
         0.0
        ]
       ],
@@ -4335,7 +4940,7 @@
        1.8,
        [
         0.0,
-        3.119,
+        4.382,
         0.0
        ]
       ],
@@ -4343,7 +4948,7 @@
        1.8167,
        [
         0.0,
-        1.763,
+        2.698,
         0.0
        ]
       ],
@@ -4351,7 +4956,7 @@
        1.8333,
        [
         0.0,
-        0.198,
+        0.751,
         0.0
        ]
       ],
@@ -4359,7 +4964,7 @@
        1.85,
        [
         0.0,
-        1.55,
+        2.424,
         0.0
        ]
       ],
@@ -4367,7 +4972,7 @@
        1.8667,
        [
         0.0,
-        2.71,
+        3.858,
         0.0
        ]
       ],
@@ -4375,7 +4980,7 @@
        1.8833,
        [
         0.0,
-        3.572,
+        4.921,
         0.0
        ]
       ],
@@ -4383,7 +4988,7 @@
        1.9,
        [
         0.0,
-        4.08,
+        5.545,
         0.0
        ]
       ],
@@ -4391,7 +4996,7 @@
        1.9167,
        [
         0.0,
-        4.212,
+        5.707,
         0.0
        ]
       ],
@@ -4399,7 +5004,7 @@
        1.9333,
        [
         0.0,
-        3.964,
+        5.398,
         0.0
        ]
       ],
@@ -4407,7 +5012,7 @@
        1.95,
        [
         0.0,
-        3.336,
+        4.619,
         0.0
        ]
       ],
@@ -4415,7 +5020,7 @@
        1.9667,
        [
         0.0,
-        2.349,
+        3.393,
         0.0
        ]
       ],
@@ -4423,7 +5028,7 @@
        1.9833,
        [
         0.0,
-        1.063,
+        1.794,
         0.0
        ]
       ],

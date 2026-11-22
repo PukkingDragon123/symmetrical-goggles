@@ -429,10 +429,19 @@ public class HarvesterTests implements FabricGameTest {
         SnifferTaming.tame(s, (TamedSniffer) s, UUID.randomUUID());   // an owner who is not around
         ((TamedSniffer) s).ww$job().cooldown = 100000;   // no digging
         ((WateringSniffer) s).ww$watering().cooldown = 1;
-        BlockPos mid = new BlockPos(14, 0, 10);
+        // any watered plot will do: the sniffer is heavy and may trample a block or two of farmland on its way in
         h.succeedWhen(() -> {
-            h.assertBlockProperty(mid, FarmBlock.MOISTURE, 7);
-            h.assertTrue(h.getBlockState(mid.above()).getValue(CropBlock.AGE) >= 1, "the crops get a growth tick");
+            int watered = 0;
+            for (int x = 12; x <= 16; x++) {
+                for (int z = 8; z <= 12; z++) {
+                    BlockState soil = h.getBlockState(new BlockPos(x, 0, z)), crop = h.getBlockState(new BlockPos(x, 1, z));
+                    if (soil.is(Blocks.FARMLAND) && soil.getValue(FarmBlock.MOISTURE) == FarmBlock.MAX_MOISTURE
+                            && crop.getBlock() instanceof CropBlock && crop.getValue(CropBlock.AGE) >= 1) {
+                        watered++;
+                    }
+                }
+            }
+            h.assertTrue(watered >= 4, "the sneeze should water the field and give the crops a growth tick: " + watered + " plots");
             s.discard();
         });
     }

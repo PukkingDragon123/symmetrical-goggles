@@ -60,7 +60,12 @@
     "ocean.MonumentBuildingMixin",
     "ocean.MonumentPieceMixin",
     "ocean.WingRoomAccessor",
-    "ocean.DeepOceanStructureMixin"
+    "ocean.DeepOceanStructureMixin",
+    "oceanmob.TurtleMixin",
+    "oceanmob.TurtleLayEggGoalMixin",
+    "oceanmob.NightVisionBrewingMixin",
+    "oceangear.ElderGuardianMixin",
+    "oceangear.ShellLivingEntityMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -98,7 +103,9 @@
     "client.RamHandMixin",
     "client.SoulBarGuiMixin",
     "harvester.client.SnifferSneezeModelMixin",
-    "harvester.client.SpriteSourcesAccessor"
+    "harvester.client.SpriteSourcesAccessor",
+    "oceanmob.client.GrabbedRiderPoseMixin",
+    "oceangear.client.ShellPlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

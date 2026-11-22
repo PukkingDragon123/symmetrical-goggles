@@ -1,13 +1,13 @@
 {
  "name": "Monolith Wand",
- "description": "The Winterworks Monolith Wand: a starry void-rod shaft banded with molten-seamed meteorite, a meteorite-core pommel, and a crown of jagged glowing meteorite shards holding a round Monolith eye with a glowing violet iris amid orbiting meteorite embers. Minecraft pixel units, density 4.",
+ "description": "The Winterworks Monolith Wand in vanilla style: a starry void-rod shaft banded with molten-seamed meteorite, a glowing meteorite-core pommel, and a crown of blocky meteorite shards with white-hot tips round a small obsidian block bearing the Monolith's flat glowing violet eye, amid orbiting embers. Minecraft pixel units, density 1.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 4,
+ "density": 1,
  "grounded": false,
  "budget": {
-  "tris": 900,
-  "colors": 56
+  "tris": 400,
+  "colors": 48
  },
  "light": {
   "dir": [
@@ -17,17 +17,8 @@
   ],
   "strength": 0.9,
   "gradient": 0.3,
-  "ao": 0.0
- },
- "brush": {
-  "flow": "long",
-  "length": 1.0,
-  "width": 0.25,
-  "rough": 0.4,
-  "overshoot": 0.3,
-  "textures": {
-   "meteor": "stone"
-  }
+  "ao": 0.0,
+  "ao_height": 4.0
  },
  "minecraft": {
   "fps": 20,
@@ -39,7 +30,8 @@
    "ember_4"
   ],
   "glow_ramps": [
-   "eye",
+   "eyeglow",
+   "crying",
    "star",
    "molten"
   ]
@@ -54,26 +46,36 @@
  },
  "palette": {
   "ramps": {
-   "eye": [
-    "#46075a",
-    "#6e0e86",
-    "#9a1fb4",
-    "#c13ddb",
-    "#de6cf2",
-    "#f0a6fb",
-    "#fcdcff",
-    "#ffffff"
+   "eyeglow": [
+    "#5b1a87",
+    "#8a2bc0",
+    "#b244e6",
+    "#cf6ef7",
+    "#e49cfb",
+    "#f4cdfd",
+    "#fdf1ff"
    ],
-   "sclera": [
-    "#2b2136",
-    "#3f3350",
-    "#58496b",
-    "#736587",
-    "#9183a3",
-    "#afa3bf",
-    "#cbc2d8",
-    "#e4def0",
-    "#f6f3fb"
+   "obsidian": [
+    "#06040a",
+    "#0c0814",
+    "#130d1f",
+    "#1b132b",
+    "#241a39",
+    "#2f2348",
+    "#3c2e59",
+    "#4b3b6c",
+    "#5d4c80",
+    "#72619a"
+   ],
+   "crying": [
+    "#3c0b78",
+    "#5a14a8",
+    "#7b23d3",
+    "#9a3bf0",
+    "#b65efd",
+    "#d08eff",
+    "#e8c2ff",
+    "#fbefff"
    ],
    "void": [
     "#040209",
@@ -90,256 +92,158 @@
     "#ffffff"
    ],
    "meteor": [
-    "#0b0708",
-    "#130e0f",
-    "#1c1617",
-    "#262021",
-    "#312a2a",
-    "#3e3535",
-    "#4d4343",
-    "#625857",
-    "#867e7c",
-    "#bab4b0"
+    "#0d0909",
+    "#161011",
+    "#201819",
+    "#2b2222",
+    "#372d2c",
+    "#453938",
+    "#554846",
+    "#6a5d5a",
+    "#857a76"
    ],
    "molten": [
-    "#3a0c5c",
-    "#6c1585",
-    "#a8237f",
-    "#e04a5a",
-    "#ff7d2a",
-    "#ffad35",
-    "#ffd76a",
-    "#fff4c2",
-    "#fffdf2"
+    "#5a1170",
+    "#94207e",
+    "#d0405e",
+    "#f2702e",
+    "#ffa035",
+    "#ffcb57",
+    "#fff09a",
+    "#fffbe0"
    ]
   }
  },
  "styles": {
   "crust": {
    "ramp": "meteor",
-   "tone": 3.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.2,
-    "dark_shift": -1.2,
-    "outline": "dark"
-   },
+   "tone": 3.6,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.0,
+    "threshold": 0.2
+   },
    "layers": [
     {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
+    },
+    {
      "id": "pits",
-     "op": "patches",
-     "scale": 0.7,
-     "threshold": 0.56,
-     "shift": -1.1,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "highlight_shift": 1.6
-     }
+     "op": "speckle",
+     "density": 0.15,
+     "shift": -1.4
     },
     {
-     "id": "seams",
-     "op": "cracks",
-     "scale": 2.6,
-     "width": 0.035,
-     "threshold": 0.5,
+     "id": "seam",
+     "op": "band",
+     "axis": "y",
+     "from": -0.2,
+     "to": 0.2,
      "ramp": "molten",
-     "tone": 1.6,
-     "seed": 3
-    },
-    {
-     "id": "seams_hot",
-     "op": "cracks",
-     "scale": 2.6,
-     "width": 0.012,
-     "threshold": 0.5,
-     "ramp": "molten",
-     "tone": 4.6,
-     "seed": 3
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.45,
-     "shift": 2.6,
-     "ramps": [
-      "meteor"
+     "tone": 3.6,
+     "faces": [
+      "sides"
      ]
     }
    ]
   },
   "crust_band": {
    "ramp": "meteor",
-   "tone": 3.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.2,
-    "dark_shift": -1.2,
-    "outline": "dark"
-   },
+   "tone": 3.8,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.0,
+    "threshold": 0.2
+   },
    "layers": [
     {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
+    },
+    {
      "id": "pits",
+     "op": "speckle",
+     "density": 0.15,
+     "shift": -1.4
+    },
+    {
+     "id": "seam",
      "op": "patches",
-     "scale": 0.7,
-     "threshold": 0.56,
-     "shift": -1.1,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "highlight_shift": 1.6
-     }
-    },
-    {
-     "id": "seams",
-     "op": "cracks",
-     "scale": 2.0,
-     "width": 0.035,
-     "threshold": 0.62,
+     "scale": 0.9,
+     "threshold": 0.6,
      "ramp": "molten",
-     "tone": 1.6,
-     "seed": 3
-    },
-    {
-     "id": "seams_hot",
-     "op": "cracks",
-     "scale": 2.0,
-     "width": 0.012,
-     "threshold": 0.62,
-     "ramp": "molten",
-     "tone": 4.6,
-     "seed": 3
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.45,
-     "shift": 2.6,
-     "ramps": [
-      "meteor"
+     "tone": 3.4,
+     "faces": [
+      "sides"
      ]
     }
    ]
   },
   "shard": {
    "ramp": "meteor",
-   "tone": 3.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.2,
-    "dark_shift": -1.2,
-    "outline": "dark"
-   },
+   "tone": 3.8,
+   "light": 1.0,
    "brush": {
     "off": true
    },
-   "layers": [
-    {
-     "id": "rise",
-     "op": "gradient",
-     "axis": "y",
-     "amount": 1.2
-    },
-    {
-     "id": "pits",
-     "op": "patches",
-     "scale": 0.7,
-     "threshold": 0.56,
-     "shift": -1.1,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "highlight_shift": 1.6
-     }
-    },
-    {
-     "id": "seams",
-     "op": "cracks",
-     "scale": 1.1,
-     "width": 0.035,
-     "threshold": 0.45,
-     "ramp": "molten",
-     "tone": 1.6,
-     "seed": 3
-    },
-    {
-     "id": "seams_hot",
-     "op": "cracks",
-     "scale": 1.1,
-     "width": 0.012,
-     "threshold": 0.45,
-     "ramp": "molten",
-     "tone": 4.6,
-     "seed": 3
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.45,
-     "shift": 2.6,
-     "ramps": [
-      "meteor"
-     ]
-    }
-   ]
-  },
-  "shard_tip": {
-   "ramp": "molten",
-   "tone": 4.4,
-   "light": 0.35,
-   "brush": {
-    "off": true
-   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.2,
-    "dark_shift": -1.8
+    "light_shift": 1.6,
+    "dark_shift": -1.0,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "heat",
-     "op": "gradient",
-     "axis": "y",
-     "amount": 3.6
-    }
-   ]
-  },
-  "shard_hot": {
-   "ramp": "meteor",
-   "tone": 3.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.2,
-    "dark_shift": -1.2,
-    "outline": "dark"
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
+    },
     {
      "id": "rise",
      "op": "gradient",
@@ -347,221 +251,162 @@
      "amount": 1.0
     },
     {
-     "id": "pits",
-     "op": "patches",
-     "scale": 0.7,
-     "threshold": 0.56,
-     "shift": -1.1,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1,
-      "highlight_shift": 1.6
-     }
-    },
-    {
-     "id": "seams",
-     "op": "cracks",
-     "scale": 1.1,
-     "width": 0.035,
-     "threshold": 0.45,
-     "ramp": "molten",
-     "tone": 1.6,
-     "seed": 3
-    },
-    {
-     "id": "seams_hot",
-     "op": "cracks",
-     "scale": 1.1,
-     "width": 0.012,
-     "threshold": 0.45,
-     "ramp": "molten",
-     "tone": 4.6,
-     "seed": 3
-    },
-    {
-     "id": "glow",
+     "id": "crack",
      "op": "band",
-     "axis": "y",
-     "from": 0.55,
-     "to": 1.0,
+     "axis": "x",
+     "from": -0.2,
+     "to": 0.2,
      "ramp": "molten",
-     "tone": 1.2
-    },
-    {
-     "id": "glow_hot",
-     "op": "band",
-     "axis": "y",
-     "from": 0.8,
-     "to": 1.0,
-     "ramp": "molten",
-     "tone": 2.6
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.45,
-     "shift": 2.6,
-     "ramps": [
-      "meteor"
+     "tone": 2.6,
+     "faces": [
+      "front",
+      "back"
      ]
     }
    ]
   },
-  "seam": {
+  "shard_tip": {
    "ramp": "molten",
-   "tone": 4.8,
+   "tone": 4.6,
    "light": 0.3,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.4,
-    "dark_shift": -2.4
-   }
+    "light_shift": 1.0,
+    "dark_shift": -1.6,
+    "threshold": 0.2
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.3,
+     "octaves": 2
+    },
+    {
+     "id": "heat",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 2.0
+    }
+   ]
   },
   "core": {
    "ramp": "molten",
-   "tone": 5.5,
+   "tone": 5.4,
    "light": 0.2,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
    "rim": {
-    "light": 0,
-    "dark": 0
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -1.6,
+    "threshold": 0.2
    },
-   "stamps": [
+   "layers": [
     {
-     "faces": [
-      "all"
-     ],
-     "at": "center",
-     "art": [
-      "vrhbbhrv",
-      "rhHCCHhr",
-      "hHCWWCHh",
-      "bCWWWWCb",
-      "bCWWWWCb",
-      "hHCWWCHh",
-      "rhHCCHhr",
-      "vrhbbhrv"
-     ],
-     "key": {
-      "W": "molten:8",
-      "C": "molten:7",
-      "H": "molten:6",
-      "h": "molten:4",
-      "r": "molten:2",
-      "v": "molten:1",
-      "b": "meteor:2"
-     }
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.6,
+     "octaves": 2
     }
    ]
   },
   "ember": {
    "ramp": "molten",
-   "tone": 5.6,
+   "tone": 5.4,
    "light": 0.3,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.2,
+    "dark_shift": -1.8,
+    "threshold": 0.2
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.3,
+     "octaves": 2
+    }
+   ]
+  },
+  "cinder": {
+   "ramp": "meteor",
+   "tone": 3.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
     "light_shift": 1.6,
-    "dark_shift": -2.6
-   }
-  },
-  "cinder": {
-   "ramp": "meteor",
-   "tone": 3.2,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.2,
-    "dark_shift": -1.2,
-    "outline": "dark"
-   },
-   "brush": {
-    "off": true
+    "dark_shift": -1.0,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "seams",
-     "op": "cracks",
-     "scale": 2.2,
-     "width": 0.08,
-     "threshold": 0.4,
-     "ramp": "molten",
-     "tone": 3.4,
-     "seed": 3
-    },
-    {
-     "id": "seams_hot",
-     "op": "cracks",
-     "scale": 2.2,
-     "width": 0.03,
-     "threshold": 0.4,
-     "ramp": "molten",
-     "tone": 6.0,
-     "seed": 3
-    },
-    {
-     "id": "glint",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 1,
-     "inset": 0,
-     "density": 0.45,
-     "shift": 2.6,
-     "ramps": [
-      "meteor"
-     ]
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.5,
+     "octaves": 2
     }
    ]
   },
   "void": {
    "ramp": "void",
    "tone": 2.6,
-   "light": 0.5,
+   "light": 0.6,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.0
+    "light_shift": 1.4,
+    "dark_shift": -1.0,
+    "threshold": 0.2
    },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.8,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.48,
+     "octaves": 1
+    },
     {
      "id": "nebula",
      "op": "patches",
      "scale": 1.6,
-     "threshold": 0.5,
+     "threshold": 0.55,
      "shift": 1.4
-    },
-    {
-     "id": "swirl",
-     "op": "stripes",
-     "axis": [
-      0.4,
-      1,
-      0.3
-     ],
-     "period": 3.0,
-     "width": 0.2,
-     "shift": 1.0,
-     "faces": [
-      "sides"
-     ]
     }
    ],
    "stamps": [
@@ -574,66 +419,22 @@
       0
      ],
      "art": [
-      "......",
-      "t....t",
-      "......",
-      "s.....",
-      "....s.",
-      "......",
-      "......",
-      "......",
-      "......",
-      ".....s",
-      "..t...",
-      "......",
-      "......",
-      "......",
-      "......",
-      "...ts.",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      ".....t",
-      "......",
-      "......",
-      ".....t",
-      "......",
-      "..t...",
-      "......",
-      "......",
-      "......",
-      "..S...",
-      "...t..",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      "......",
-      ".....t",
-      "......",
-      "......",
-      "......",
-      "......",
-      "....s.",
-      ".s....",
-      ".....s",
-      "......",
-      "..s...",
-      "......"
+      "..",
+      ".s",
+      "ss",
+      "ss",
+      "..",
+      "ts",
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      ".."
      ],
      "key": {
       "s": "star:1",
@@ -643,82 +444,91 @@
     }
    ]
   },
-  "eye_white": {
-   "ramp": "sclera",
-   "tone": 4.6,
-   "light": 0.6,
+  "eye_block": {
+   "ramp": "obsidian",
+   "tone": 3.4,
+   "light": 1.0,
    "brush": {
     "off": true
    },
+   "dither": 0.55,
    "rim": {
-    "light": 0,
-    "dark": 0
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -0.8,
+    "threshold": 0.2
    },
    "layers": [
     {
-     "id": "back",
-     "op": "gradient",
-     "axis": "z",
-     "amount": 1.4
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 1.1,
+     "octaves": 2
     },
     {
-     "id": "veins",
-     "op": "cracks",
-     "scale": 1.2,
-     "width": 0.05,
-     "threshold": 0.5,
-     "shift": -1.6,
-     "faces": [
-      "back",
-      "sides"
-     ],
-     "seed": 4
-    }
-   ]
-  },
-  "eye_cornea": {
-   "ramp": "sclera",
-   "tone": 4.6,
-   "light": 0.6,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 0,
-    "dark": 0
-   },
-   "layers": [
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.66,
+     "octaves": 1
+    },
     {
-     "id": "back",
+     "id": "dark_low",
      "op": "gradient",
-     "axis": "z",
-     "amount": 1.4
+     "axis": "y",
+     "amount": 0.6
+    },
+    {
+     "id": "streaks",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.66,
+     "octaves": 2,
+     "shift": 2.2
+    },
+    {
+     "id": "glints",
+     "op": "speckle",
+     "density": 0.035,
+     "shift": 3.0
+    },
+    {
+     "id": "tears",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.872,
+     "octaves": 2,
+     "ramp": "crying",
+     "tone": 3.2
+    },
+    {
+     "id": "tear_core",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.9359999999999999,
+     "octaves": 2,
+     "ramp": "crying",
+     "tone": 5.4
     }
    ],
    "stamps": [
     {
      "face": "front",
-     "at": "center",
+     "at": "top-left",
      "art": [
-      "..oooo..",
-      ".oiiiio.",
-      "oiWIwIIo",
-      "owIppIIo",
-      "oIcppcIo",
-      "oIIccwJo",
-      ".oJJJJo.",
-      "..oooo.."
+      "kkkk",
+      "aWwa",
+      "abba",
+      ".kk."
      ],
      "key": {
-      "o": "eye:1",
-      "i": "eye:3",
-      "I": "eye:4",
-      "J": "eye:5",
-      "c": "eye:5",
-      "p": "void:0",
-      "q": "eye:0",
-      "W": "eye:7",
-      "w": "eye:6"
+      "k": "obsidian:0",
+      "a": "eyeglow:1",
+      "b": "eyeglow:3",
+      "W": "eyeglow:6",
+      "w": "eyeglow:5"
      }
     }
    ]
@@ -740,13 +550,13 @@
    "shape": "box",
    "parent": "rod",
    "size": [
-    1.5,
-    15.0,
-    1.5
+    2,
+    16,
+    2
    ],
    "pivot": [
     0.0,
-    1.5,
+    1.0,
     0.0
    ],
    "style": "void"
@@ -756,417 +566,73 @@
    "shape": "box",
    "parent": "rod",
    "size": [
-    2.25,
-    1.0,
-    2.25
+    3,
+    1,
+    3
    ],
    "pivot": [
     0.0,
-    2.75,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    45.0,
-    0.0
-   ],
-   "style": "crust_band"
-  },
-  {
-   "id": "band_0_rough",
-   "shape": "box",
-   "parent": "band_0",
-   "size": [
-    2.0,
-    0.75,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    0.125,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    67.5,
-    0.0
-   ],
-   "style": "crust_band"
-  },
-  {
-   "id": "band_0_seam",
-   "shape": "box",
-   "parent": "band_0",
-   "size": [
     2.5,
-    0.25,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    -0.125,
     0.0
    ],
-   "rotation": [
-    0.0,
-    45.0,
-    0.0
-   ],
-   "style": "seam"
+   "style": "crust_band"
   },
   {
    "id": "band_1",
    "shape": "box",
    "parent": "rod",
    "size": [
-    2.25,
-    1.0,
-    2.25
+    3,
+    1,
+    3
    ],
    "pivot": [
     0.0,
-    -2.75,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    65.0,
+    -3.5,
     0.0
    ],
    "style": "crust_band"
-  },
-  {
-   "id": "band_1_rough",
-   "shape": "box",
-   "parent": "band_1",
-   "size": [
-    2.0,
-    0.75,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    0.125,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    87.5,
-    0.0
-   ],
-   "style": "crust_band"
-  },
-  {
-   "id": "band_1_seam",
-   "shape": "box",
-   "parent": "band_1",
-   "size": [
-    2.5,
-    0.25,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    -0.125,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    65.0,
-    0.0
-   ],
-   "style": "seam"
   },
   {
    "id": "band_2",
    "shape": "box",
    "parent": "rod",
    "size": [
-    2.25,
-    1.0,
-    2.25
+    3,
+    1,
+    3
    ],
    "pivot": [
     0.0,
-    6.25,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    85.0,
+    6.5,
     0.0
    ],
    "style": "crust_band"
-  },
-  {
-   "id": "band_2_rough",
-   "shape": "box",
-   "parent": "band_2",
-   "size": [
-    2.0,
-    0.75,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    0.125,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    107.5,
-    0.0
-   ],
-   "style": "crust_band"
-  },
-  {
-   "id": "band_2_seam",
-   "shape": "box",
-   "parent": "band_2",
-   "size": [
-    2.5,
-    0.25,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    -0.125,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    85.0,
-    0.0
-   ],
-   "style": "seam"
   },
   {
    "id": "pommel",
    "shape": "box",
    "parent": "rod",
    "size": [
-    2.5,
-    2.0,
-    2.5
+    3,
+    2,
+    3
    ],
    "pivot": [
     0.0,
-    -7.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    45.0,
+    -8.0,
     0.0
    ],
    "style": "crust"
-  },
-  {
-   "id": "pommel_rough",
-   "shape": "box",
-   "parent": "pommel",
-   "size": [
-    2.25,
-    1.5,
-    2.25
-   ],
-   "pivot": [
-    0.0,
-    -0.375,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    67.5,
-    0.0
-   ],
-   "style": "crust"
-  },
-  {
-   "id": "pommel_seam",
-   "shape": "box",
-   "parent": "pommel",
-   "size": [
-    2.75,
-    0.25,
-    2.75
-   ],
-   "pivot": [
-    0.0,
-    0.5,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    45.0,
-    0.0
-   ],
-   "style": "seam"
-  },
-  {
-   "id": "pommel_claw_0",
-   "shape": "box",
-   "parent": "pommel",
-   "size": [
-    0.75,
-    1.75,
-    0.75
-   ],
-   "pivot": [
-    0.3494,
-    -0.5,
-    1.304
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "rotation": [
-    -13.509,
-    -0.307,
-    3.685
-   ],
-   "style": "shard"
-  },
-  {
-   "id": "pommel_claw_0_hook",
-   "shape": "box",
-   "parent": "pommel_claw_0",
-   "size": [
-    0.5,
-    1.25,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    -1.5,
-    -0.0
-   ],
-   "offset": [
-    0.0,
-    -0.5,
-    0.0
-   ],
-   "rotation": [
-    58.538,
-    1.596,
-    -18.54
-   ],
-   "style": "shard_hot"
-  },
-  {
-   "id": "pommel_claw_1",
-   "shape": "box",
-   "parent": "pommel",
-   "size": [
-    0.75,
-    1.75,
-    0.75
-   ],
-   "pivot": [
-    0.9546,
-    -0.5,
-    -0.9546
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "rotation": [
-    9.851,
-    -0.851,
-    9.851
-   ],
-   "style": "shard"
-  },
-  {
-   "id": "pommel_claw_1_hook",
-   "shape": "box",
-   "parent": "pommel_claw_1",
-   "size": [
-    0.5,
-    1.25,
-    0.5
-   ],
-   "pivot": [
-    -0.0,
-    -1.5,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    -0.5,
-    0.0
-   ],
-   "rotation": [
-    -40.356,
-    -15.382,
-    -40.356
-   ],
-   "style": "shard_hot"
-  },
-  {
-   "id": "pommel_claw_2",
-   "shape": "box",
-   "parent": "pommel",
-   "size": [
-    0.75,
-    1.75,
-    0.75
-   ],
-   "pivot": [
-    -1.304,
-    -0.5,
-    -0.3494
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "rotation": [
-    3.511,
-    1.159,
-    -13.463
-   ],
-   "style": "shard"
-  },
-  {
-   "id": "pommel_claw_2_hook",
-   "shape": "box",
-   "parent": "pommel_claw_2",
-   "size": [
-    0.5,
-    1.25,
-    0.5
-   ],
-   "pivot": [
-    -0.0,
-    -1.5,
-    -0.0
-   ],
-   "offset": [
-    0.0,
-    -0.5,
-    0.0
-   ],
-   "rotation": [
-    -11.248,
-    14.917,
-    57.32
-   ],
-   "style": "shard_hot"
   },
   {
    "id": "pommel_tip",
    "shape": "box",
    "parent": "pommel",
    "size": [
-    2.0,
-    2.0,
-    2.0
+    2,
+    2,
+    2
    ],
    "pivot": [
     0.0,
@@ -1186,7 +652,7 @@
    "parent": "rod",
    "pivot": [
     0.0,
-    8.0,
+    9.0,
     0.0
    ],
    "style": "crust"
@@ -1196,60 +662,29 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    3.0,
-    1.25,
-    3.0
+    4,
+    1,
+    4
    ],
    "pivot": [
     0.0,
-    0.375,
+    0.5,
     0.0
    ],
-   "rotation": [
-    0.0,
-    45.0,
-    0.0
-   ],
-   "style": "crust"
-  },
-  {
-   "id": "collar_ring",
-   "shape": "box",
-   "parent": "collar",
-   "size": [
-    3.25,
-    0.25,
-    3.25
-   ],
-   "pivot": [
-    0.0,
-    -0.125,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    45.0,
-    0.0
-   ],
-   "style": "seam"
+   "style": "crust_band"
   },
   {
    "id": "collar_top",
    "shape": "box",
    "parent": "collar",
    "size": [
-    3.75,
-    0.75,
-    3.75
+    5,
+    1,
+    5
    ],
    "pivot": [
     0.0,
     1.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    22.5,
     0.0
    ],
    "style": "crust"
@@ -1259,102 +694,50 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    1.0,
-    3.5,
-    1.0
+    2,
+    6,
+    2
    ],
    "pivot": [
     0.0,
-    1.25,
-    -1.25
+    2.0,
+    -2.5
    ],
    "offset": [
     0.0,
-    1.75,
+    3.0,
     0.0
    ],
    "rotation": [
-    -22.22,
-    25.253,
-    -9.886
+    -16.731,
+    43.761,
+    -11.745
    ],
    "style": "shard"
   },
   {
-   "id": "shard_0_mid",
-   "shape": "box",
-   "parent": "shard_0",
-   "size": [
-    0.75,
-    3.25,
-    0.75
-   ],
-   "pivot": [
-    -0.0,
-    3.25,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    1.625,
-    0.0
-   ],
-   "rotation": [
-    12.833,
-    13.952,
-    9.602
-   ],
-   "style": "shard_hot"
-  },
-  {
    "id": "shard_0_tip",
    "shape": "box",
-   "parent": "shard_0_mid",
-   "size": [
-    0.5,
-    2.5,
-    0.5
-   ],
-   "pivot": [
-    -0.0,
-    3.05,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    1.25,
-    0.0
-   ],
-   "rotation": [
-    16.342,
-    12.639,
-    15.846
-   ],
-   "style": "shard_tip"
-  },
-  {
-   "id": "shard_0_barb",
-   "shape": "box",
    "parent": "shard_0",
    "size": [
-    0.5,
-    1.25,
-    0.5
+    1,
+    2,
+    1
    ],
    "pivot": [
     0.0,
-    2.1,
+    5.7,
     -0.0
    ],
    "offset": [
     0.0,
-    0.55,
+    1.0,
     0.0
    ],
    "rotation": [
-    -38.713,
-    -13.016,
-    22.983
+    7.054,
+    -0.435,
+    7.053
    ],
    "style": "shard_tip"
   },
@@ -1363,66 +746,40 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    1.0,
-    3.0,
-    1.0
+    2,
+    5,
+    2
    ],
    "pivot": [
-    0.985,
-    1.25,
-    -0.7696
+    2.0479,
+    2.0,
+    -1.4339
    ],
    "offset": [
     0.0,
-    1.5,
+    2.5,
     0.0
    ],
    "rotation": [
-    -20.456,
-    43.135,
-    -33.22
+    -14.447,
+    44.08,
+    -24.905
    ],
    "style": "shard"
   },
   {
-   "id": "shard_1_mid",
+   "id": "shard_1_tip",
    "shape": "box",
    "parent": "shard_1",
    "size": [
-    0.75,
-    2.75,
-    0.75
+    1,
+    2,
+    1
    ],
    "pivot": [
     0.0,
-    2.75,
+    4.7,
     0.0
-   ],
-   "offset": [
-    0.0,
-    1.375,
-    0.0
-   ],
-   "rotation": [
-    -1.876,
-    13.197,
-    13.3
-   ],
-   "style": "shard_hot"
-  },
-  {
-   "id": "shard_1_tip",
-   "shape": "box",
-   "parent": "shard_1_mid",
-   "size": [
-    0.5,
-    2.0,
-    0.5
-   ],
-   "pivot": [
-    -0.0,
-    2.55,
-    -0.0
    ],
    "offset": [
     0.0,
@@ -1430,35 +787,9 @@
     0.0
    ],
    "rotation": [
-    7.305,
-    17.145,
-    -7.695
-   ],
-   "style": "shard_tip"
-  },
-  {
-   "id": "shard_1_barb",
-   "shape": "box",
-   "parent": "shard_1",
-   "size": [
-    0.5,
-    1.25,
-    0.5
-   ],
-   "pivot": [
-    -0.0,
-    1.8,
-    -0.0
-   ],
-   "offset": [
-    0.0,
-    0.55,
-    0.0
-   ],
-   "rotation": [
-    38.122,
-    9.242,
-    -13.582
+    -1.779,
+    -0.913,
+    9.81
    ],
    "style": "shard_tip"
   },
@@ -1467,65 +798,39 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    1.0,
-    3.25,
-    1.0
+    2,
+    5,
+    2
    ],
    "pivot": [
-    -0.985,
-    1.25,
-    -0.7696
+    -2.0479,
+    2.0,
+    -1.4339
    ],
    "offset": [
     0.0,
-    1.625,
+    2.5,
     0.0
    ],
    "rotation": [
-    -30.156,
-    59.49,
-    -7.678
+    -14.447,
+    44.08,
+    4.584
    ],
    "style": "shard"
   },
   {
-   "id": "shard_2_mid",
+   "id": "shard_2_tip",
    "shape": "box",
    "parent": "shard_2",
    "size": [
-    0.75,
-    3.0,
-    0.75
+    1,
+    2,
+    1
    ],
    "pivot": [
-    -0.0,
-    3.0,
-    0.0
-   ],
-   "offset": [
     0.0,
-    1.5,
-    0.0
-   ],
-   "rotation": [
-    14.193,
-    16.23,
-    6.578
-   ],
-   "style": "shard_hot"
-  },
-  {
-   "id": "shard_2_tip",
-   "shape": "box",
-   "parent": "shard_2_mid",
-   "size": [
-    0.5,
-    2.0,
-    0.5
-   ],
-   "pivot": [
-    -0.0,
-    2.8,
+    4.7,
     0.0
    ],
    "offset": [
@@ -1534,35 +839,9 @@
     0.0
    ],
    "rotation": [
-    -10.193,
-    13.296,
-    -4.309
-   ],
-   "style": "shard_tip"
-  },
-  {
-   "id": "shard_2_barb",
-   "shape": "box",
-   "parent": "shard_2",
-   "size": [
-    0.5,
-    1.25,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    1.95,
-    -0.0
-   ],
-   "offset": [
-    0.0,
-    0.55,
-    0.0
-   ],
-   "rotation": [
-    -27.157,
-    3.353,
-    31.884
+    9.78,
+    1.203,
+    -1.598
    ],
    "style": "shard_tip"
   },
@@ -1571,76 +850,50 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    1.0,
-    2.5,
-    1.0
+    2,
+    4,
+    2
    ],
    "pivot": [
-    1.2227,
-    1.25,
-    0.2599
+    2.3492,
+    2.0,
+    0.8551
    ],
    "offset": [
     0.0,
-    1.25,
+    2.0,
     0.0
    ],
    "rotation": [
-    7.183,
-    35.786,
-    -23.173
+    12.477,
+    44.315,
+    -15.645
    ],
    "style": "shard"
   },
   {
-   "id": "shard_3_mid",
+   "id": "shard_3_tip",
    "shape": "box",
    "parent": "shard_3",
    "size": [
-    0.75,
-    2.25,
-    0.75
+    1,
+    2,
+    1
    ],
    "pivot": [
     -0.0,
-    2.25,
-    -0.0
-   ],
-   "offset": [
-    0.0,
-    1.125,
-    0.0
-   ],
-   "rotation": [
-    -10.689,
-    16.627,
-    6.449
-   ],
-   "style": "shard_hot"
-  },
-  {
-   "id": "shard_3_tip",
-   "shape": "box",
-   "parent": "shard_3_mid",
-   "size": [
-    0.5,
-    1.75,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    2.05,
+    3.7,
     0.0
    ],
    "offset": [
     0.0,
-    0.875,
+    1.0,
     0.0
    ],
    "rotation": [
-    -20.267,
-    16.039,
-    4.655
+    -8.957,
+    1.497,
+    4.072
    ],
    "style": "shard_tip"
   },
@@ -1649,76 +902,50 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    1.0,
-    2.5,
-    1.0
+    2,
+    4,
+    2
    ],
    "pivot": [
-    -1.2227,
-    1.25,
-    0.2599
+    -2.3492,
+    2.0,
+    0.8551
    ],
    "offset": [
     0.0,
-    1.25,
+    2.0,
     0.0
    ],
    "rotation": [
-    9.84,
-    53.595,
-    35.336
+    12.477,
+    44.315,
+    33.219
    ],
    "style": "shard"
   },
   {
-   "id": "shard_4_mid",
+   "id": "shard_4_tip",
    "shape": "box",
    "parent": "shard_4",
    "size": [
-    0.75,
-    2.25,
-    0.75
-   ],
-   "pivot": [
-    0.0,
-    2.25,
-    -0.0
-   ],
-   "offset": [
-    0.0,
-    1.125,
-    0.0
-   ],
-   "rotation": [
-    9.705,
-    14.604,
-    -7.909
-   ],
-   "style": "shard_hot"
-  },
-  {
-   "id": "shard_4_tip",
-   "shape": "box",
-   "parent": "shard_4_mid",
-   "size": [
-    0.5,
-    1.5,
-    0.5
+    1,
+    2,
+    1
    ],
    "pivot": [
     -0.0,
-    2.05,
-    -0.0
+    3.7,
+    0.0
    ],
    "offset": [
     0.0,
-    0.75,
+    1.0,
     0.0
    ],
    "rotation": [
-    17.377,
-    15.645,
-    -6.309
+    4.255,
+    -0.841,
+    -9.042
    ],
    "style": "shard_tip"
   },
@@ -1727,24 +954,24 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    1.0,
-    1.5,
-    1.0
+    2,
+    2,
+    2
    ],
    "pivot": [
-    0.8992,
-    1.25,
-    0.8683
+    0.8551,
+    2.0,
+    2.3492
    ],
    "offset": [
     0.0,
-    0.75,
+    1.0,
     0.0
    ],
    "rotation": [
-    30.6,
-    23.681,
-    -15.412
+    47.429,
+    34.078,
+    17.701
    ],
    "style": "shard"
   },
@@ -1753,24 +980,24 @@
    "shape": "box",
    "parent": "shard_5",
    "size": [
-    0.5,
-    1.5,
-    0.5
+    1,
+    2,
+    1
    ],
    "pivot": [
     0.0,
-    1.25,
-    0.0
+    1.7,
+    -0.0
    ],
    "offset": [
     0.0,
-    0.75,
+    1.0,
     0.0
    ],
    "rotation": [
-    -31.141,
-    34.492,
-    -8.367
+    -8.743,
+    1.502,
+    -4.733
    ],
    "style": "shard_tip"
   },
@@ -1779,24 +1006,24 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    1.0,
-    1.75,
-    1.0
+    2,
+    2,
+    2
    ],
    "pivot": [
-    -0.8992,
-    1.25,
-    0.8683
+    -0.8551,
+    2.0,
+    2.3492
    ],
    "offset": [
     0.0,
-    0.875,
+    1.0,
     0.0
    ],
    "rotation": [
-    36.693,
-    38.724,
-    53.767
+    47.429,
+    34.078,
+    45.063
    ],
    "style": "shard"
   },
@@ -1805,24 +1032,24 @@
    "shape": "box",
    "parent": "shard_6",
    "size": [
-    0.5,
-    1.5,
-    0.5
+    1,
+    2,
+    1
    ],
    "pivot": [
-    -0.0,
-    1.5,
-    0.0
+    0.0,
+    1.7,
+    -0.0
    ],
    "offset": [
     0.0,
-    0.75,
+    1.0,
     0.0
    ],
    "rotation": [
-    1.851,
-    23.809,
-    -28.396
+    -4.453,
+    -2.199,
+    -8.596
    ],
    "style": "shard_tip"
   },
@@ -1832,7 +1059,7 @@
    "parent": "head",
    "pivot": [
     0.0,
-    4.5,
+    5.0,
     0.0
    ],
    "style": "crust"
@@ -1842,64 +1069,16 @@
    "shape": "box",
    "parent": "eye",
    "size": [
-    2.5,
-    2.5,
-    2.5
+    4,
+    4,
+    4
    ],
    "pivot": [
     0.0,
     0.0,
     0.0
    ],
-   "style": "eye_white"
-  },
-  {
-   "id": "eye_ball_x",
-   "shape": "box",
-   "parent": "eye_ball",
-   "size": [
-    3.0,
-    2.0,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "eye_white"
-  },
-  {
-   "id": "eye_ball_y",
-   "shape": "box",
-   "parent": "eye_ball",
-   "size": [
-    2.0,
-    3.0,
-    2.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "eye_white"
-  },
-  {
-   "id": "eye_ball_z",
-   "shape": "box",
-   "parent": "eye_ball",
-   "size": [
-    2.0,
-    2.0,
-    3.0
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "eye_cornea"
+   "style": "eye_block"
   },
   {
    "id": "embers",
@@ -1907,7 +1086,7 @@
    "parent": "head",
    "pivot": [
     0.0,
-    4.5,
+    5.0,
     0.0
    ],
    "style": "crust"
@@ -1917,14 +1096,14 @@
    "shape": "box",
    "parent": "embers",
    "size": [
-    0.75,
-    0.75,
-    0.75
+    1,
+    1,
+    1
    ],
    "pivot": [
-    1.6482,
-    1.4,
-    3.5346
+    1.9018,
+    1.5,
+    4.0784
    ],
    "rotation": [
     35.0,
@@ -1938,14 +1117,14 @@
    "shape": "box",
    "parent": "embers",
    "size": [
-    0.75,
-    0.75,
-    0.75
+    1,
+    1,
+    1
    ],
    "pivot": [
-    4.184,
-    -0.9,
-    0.3661
+    4.4829,
+    -1.0,
+    0.3922
    ],
    "rotation": [
     55.0,
@@ -1959,14 +1138,14 @@
    "shape": "box",
    "parent": "embers",
    "size": [
-    1.0,
-    1.0,
-    1.0
+    1,
+    1,
+    1
    ],
    "pivot": [
-    2.1796,
-    0.3,
-    -3.1128
+    2.5811,
+    0.5,
+    -3.6862
    ],
    "rotation": [
     75.0,
@@ -1980,14 +1159,14 @@
    "shape": "box",
    "parent": "embers",
    "size": [
-    0.5,
-    0.5,
-    0.5
+    1,
+    1,
+    1
    ],
    "pivot": [
-    -1.8173,
-    -1.8,
-    -3.8971
+    -2.1131,
+    -2.0,
+    -4.5315
    ],
    "rotation": [
     95.0,
@@ -2001,14 +1180,14 @@
    "shape": "box",
    "parent": "embers",
    "size": [
-    0.75,
-    0.75,
-    0.75
+    1,
+    1,
+    1
    ],
    "pivot": [
-    -3.8852,
+    -4.4829,
     2.5,
-    -0.3399
+    -0.3922
    ],
    "rotation": [
     115.0,
@@ -2022,14 +1201,14 @@
    "shape": "box",
    "parent": "embers",
    "size": [
-    0.75,
-    0.75,
-    0.75
+    1,
+    1,
+    1
    ],
    "pivot": [
-    -2.3517,
-    -0.2,
-    3.3585
+    -2.8679,
+    0.0,
+    4.0958
    ],
    "rotation": [
     135.0,
@@ -2092,7 +1271,7 @@
      "osc": {
       "amp": [
        0,
-       0.25,
+       0.3,
        0
       ],
       "cycles": 1,
@@ -2127,7 +1306,7 @@
      "osc": {
       "amp": [
        0,
-       0.35,
+       0.4,
        0
       ],
       "cycles": 2,

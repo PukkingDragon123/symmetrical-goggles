@@ -1,12 +1,12 @@
 {
  "name": "Harvester",
- "description": "The Winterworks Harvester: a big, gentle prehistoric herbivore with a huge hammerhead-shark-like head, small friendly eyes at the ends of the hammer, a broad nose, a shovel mouth that hides rows of cropping teeth until it opens, a scaly mustard-yellow body on four thick legs with a dark green plated back, scutes down the spine and a banded tail, mossy fur accents, ferns and wildflowers. Two-tone, a small palette, painted in strokes. Saddle and saddlebag chests are separate bones the game shows or hides. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks Harvester: a big, gentle prehistoric herbivore with a huge hammerhead-shark-like head, small flat dot eyes at the ends of the hammer, a broad nose, a shovel mouth that hides its cropping teeth until it opens, a scaly mustard-yellow body on four thick legs with a dark green plated back, square scutes down the spine and a banded tail, short mossy fringes. Vanilla Minecraft mob style: chunky boxes, flat dot eyes, a small palette, clean scale rows. Saddle and saddlebag chests are separate bones the game shows or hides. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "budget": {
-  "tris": 2400,
-  "colors": 80
+  "tris": 1200,
+  "colors": 56
  },
  "light": {
   "dir": [
@@ -14,25 +14,13 @@
    1.0,
    0.6
   ],
-  "strength": 0.35,
+  "strength": 0.5,
   "gradient": 0.3,
   "ao": 0.5,
-  "ao_height": 8.0
+  "ao_height": 6.0
  },
  "brush": {
-  "flow": "z",
-  "length": 1.6,
-  "width": 0.5,
-  "rough": 0.45,
-  "overshoot": 0.2,
-  "textures": {
-   "fur": "scales",
-   "moss": "scales",
-   "leather": "leather",
-   "wood": "wood",
-   "iron": "metal",
-   "blanket": "cloth"
-  }
+  "off": true
  },
  "defaults": {
   "paint": {
@@ -54,822 +42,327 @@
  "palette": {
   "ramps": {
    "fur": [
-    "#3a2408",
-    "#5a380b",
-    "#7c5110",
-    "#9c6913",
-    "#ba8217",
-    "#d39b1f",
-    "#e5b02a",
-    "#f2c63b",
-    "#fbdb5e",
-    "#fff0a0"
+    "#5c3c0c",
+    "#7f5512",
+    "#a5721a",
+    "#c88e20",
+    "#e0aa2c",
+    "#f0c544",
+    "#f8db74",
+    "#fdeeb0"
    ],
    "moss": [
-    "#0a2119",
-    "#0e3024",
-    "#14412f",
-    "#1b543a",
-    "#236845",
-    "#2f7e51",
-    "#41955e"
+    "#08201a",
+    "#0d2d22",
+    "#13402c",
+    "#1b5337",
+    "#246743",
+    "#317c4f",
+    "#46945d"
    ],
    "dark": [
-    "#16100c",
-    "#291c13",
-    "#3d2a1b",
-    "#53402d"
+    "#1b130d",
+    "#33251a"
    ],
    "teeth": [
-    "#7a6e58",
-    "#b7ab8a",
-    "#e2d9be",
-    "#fbf6e8"
+    "#a3967a",
+    "#ddd3b8",
+    "#f6f0de"
    ],
    "mouth": [
-    "#38110f",
-    "#5a1d1b",
-    "#842f29",
-    "#ad4a3e"
-   ],
-   "flower": [
-    "#b84a6a",
-    "#f08aa4",
-    "#ffe07a"
+    "#3f1311",
+    "#62211c",
+    "#86342b",
+    "#a84b3c"
    ],
    "leather": [
-    "#1c0f09",
-    "#2f190e",
-    "#462614",
+    "#2a160c",
+    "#432513",
     "#5e351c",
-    "#784526",
-    "#925832",
-    "#ab6e40"
+    "#7a4626",
+    "#955a32"
    ],
    "blanket": [
-    "#0f2126",
-    "#163238",
-    "#1f464b",
-    "#2a5c5f",
-    "#377473",
-    "#4a8d89"
+    "#132b2f",
+    "#1d4043",
+    "#285657",
+    "#356d6b",
+    "#4a8783"
    ],
    "trim": [
-    "#7a4c10",
-    "#a8731c",
-    "#d0a032",
-    "#f0cd5c"
+    "#8f5f17",
+    "#c18e2c",
+    "#e8c25a"
    ],
    "wood": [
-    "#2a1a0e",
-    "#3f2814",
-    "#57381c",
-    "#704a25",
-    "#8b5e2f",
-    "#a6743b"
+    "#33200f",
+    "#4b3018",
+    "#664222",
+    "#83582e",
+    "#a0703c"
    ],
    "iron": [
-    "#1f2026",
-    "#33353c",
-    "#4f5259",
-    "#71757a",
-    "#9a9e9f",
-    "#c4c6c2"
+    "#2e3036",
+    "#53575d",
+    "#80858a",
+    "#b4b8b8"
    ]
   }
  },
  "styles": {
-  "scaly": {
-   "ramp": "fur",
-   "tone": 5.6,
-   "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.0,
-     "highlight": 0.8,
-     "shadow": -0.9,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.0,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
-  },
   "scaly_body": {
    "ramp": "fur",
-   "tone": 5.6,
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.0,
-     "highlight": 0.8,
-     "shadow": -0.9,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "dorsal",
-     "op": "band",
-     "axis": "y",
-     "from": 25.0,
-     "to": 60,
-     "ramp": "moss",
-     "tone": 3.4,
-     "space": "world",
-     "wobble": 1.0,
-     "wobble_scale": 3.0,
-     "faces": [
-      "sides",
-      "front",
-      "back",
-      "top"
-     ]
-    },
-    {
-     "id": "bands",
-     "op": "spots",
-     "count": 6,
-     "radius": [
-      1.4,
-      2.0
-     ],
-     "stretch": [
-      0.8,
-      2.6,
-      0.8
-     ],
-     "roughness": 0.4,
-     "ramp": "moss",
-     "tone": 3.4,
-     "faces": [
-      "sides"
-     ],
-     "where": {
-      "y": [
-       0.0,
-       1.0
-      ]
-     },
-     "min_gap": 3.0
-    },
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.0,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "scaly_neck": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "scaly": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
   },
   "scaly_low": {
    "ramp": "fur",
-   "tone": 5.0,
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.0,
-     "highlight": 0.8,
-     "shadow": -0.9,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.0,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
+    "light": 0,
+    "dark": 0
+   }
   },
   "scaly_tail": {
    "ramp": "fur",
-   "tone": 5.6,
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.0,
-     "highlight": 0.8,
-     "shadow": -0.9,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "top",
-     "op": "band",
-     "axis": "y",
-     "from": 0.3,
-     "to": 1.1,
-     "ramp": "moss",
-     "tone": 3.4,
-     "wobble": 0.3
-    },
-    {
-     "id": "rings",
-     "op": "stripes",
-     "axis": "z",
-     "period": 4.0,
-     "width": 0.3,
-     "ramp": "moss",
-     "tone": 3.4,
-     "faces": [
-      "sides",
-      "top"
-     ],
-     "where": {
-      "y": [
-       -0.4,
-       1.0
-      ]
-     }
-    },
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.0,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
+    "light": 0,
+    "dark": 0
+   }
   },
   "scaly_leg": {
    "ramp": "fur",
-   "tone": 5.2,
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.0,
-     "highlight": 0.8,
-     "shadow": -0.9,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.0,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
+    "light": 0,
+    "dark": 0
+   }
   },
   "scaly_shin": {
    "ramp": "fur",
-   "tone": 4.6,
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.5,
-      1.0
-     ],
-     "gap": 0.0,
-     "highlight": 0.8,
-     "shadow": -0.9,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.0,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "hammer": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "snout": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "nose": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "jaw": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "foot": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
   },
   "belly": {
    "ramp": "fur",
-   "tone": 6.8,
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "scutes",
-     "op": "scales",
-     "shape": "square",
-     "along": "x",
-     "size": [
-      5.0,
-      1.5
-     ],
-     "gap": 0.25,
-     "highlight": 0.6,
-     "shadow": -0.9,
-     "gradient": 0.2
-    }
-   ]
+    "light": 0,
+    "dark": 0
+   }
   },
   "back": {
-   "ramp": "moss",
-   "tone": 3.6,
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "plates",
-     "op": "scales",
-     "shape": "square",
-     "along": "z",
-     "size": [
-      2.5,
-      2.0
-     ],
-     "gap": 0.25,
-     "highlight": 1.0,
-     "shadow": -1.1,
-     "gradient": 0.4,
-     "jitter": 0.3
-    }
-   ]
+    "light": 0,
+    "dark": 0
+   }
   },
   "scute": {
-   "ramp": "moss",
-   "tone": 4.0,
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
    "rim": {
-    "light_shift": 1.2,
-    "dark_shift": -1.0
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "brow": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "mouth": {
+   "ramp": "mouth",
+   "tone": 0.6,
+   "light": 0.2,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "chin": {
+   "ramp": "fur",
+   "tone": 4,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   }
+  },
+  "tongue": {
+   "ramp": "mouth",
+   "tone": 2.4,
+   "light": 0.4,
+   "rim": {
+    "light": 0,
+    "dark": 0
    },
    "layers": [
     {
-     "id": "lit",
-     "op": "fill",
-     "shift": 1.2,
+     "id": "noise",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.5
+    },
+    {
+     "id": "groove",
+     "op": "band",
+     "axis": "x",
+     "from": -0.1,
+     "to": 0.1,
+     "shift": -1.0,
      "faces": [
       "top"
      ]
-    },
-    {
-     "id": "base",
-     "op": "band",
-     "axis": "y",
-     "from": -1.1,
-     "to": -0.4,
-     "shift": -1.0
     }
    ]
   },
   "fur_card": {
    "ramp": "moss",
-   "tone": 3,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "F": "moss:2",
-    "f": "moss:3",
-    "h": "moss:5",
-    "e": "moss:1"
-   }
-  },
-  "fern": {
-   "ramp": "moss",
-   "tone": 5,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "m": "moss:5",
-    "M": "moss:6",
-    "d": "moss:3"
-   }
-  },
-  "bloom": {
-   "ramp": "flower",
-   "tone": 1,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "B": "flower:1",
-    "b": "flower:0",
-    "c": "flower:2",
-    "s": "moss:4"
-   }
-  },
-  "hammer": {
-   "ramp": "fur",
-   "tone": 5.8,
-   "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "fine",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.0,
-      0.75
-     ],
-     "gap": 0.0,
-     "highlight": 0.6,
-     "shadow": -0.7,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "top",
-     "op": "fill",
-     "ramp": "moss",
-     "tone": 3.8,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.1,
-     "to": -0.4,
-     "shift": 1.0,
-     "faces": [
-      "front"
-     ]
-    },
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.0,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
-  },
-  "snout": {
-   "ramp": "fur",
-   "tone": 6.0,
-   "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "fine",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.0,
-      0.75
-     ],
-     "gap": 0.0,
-     "highlight": 0.6,
-     "shadow": -0.7,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.1,
-     "to": -0.6,
-     "ramp": "fur",
-     "tone": 4.0,
-     "faces": [
-      "front",
-      "sides"
-     ]
-    },
-    {
-     "id": "mouth_roof",
-     "op": "fill",
-     "ramp": "mouth",
-     "tone": 0.6,
-     "faces": [
-      "bottom"
-     ]
-    }
-   ]
-  },
-  "nose": {
-   "ramp": "fur",
-   "tone": 6.5,
-   "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "fine",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.0,
-      0.75
-     ],
-     "gap": 0.0,
-     "highlight": 0.6,
-     "shadow": -0.7,
-     "gradient": 0.35,
-     "jitter": 0.4
-    },
-    {
-     "id": "top",
-     "op": "fill",
-     "shift": 0.6,
-     "faces": [
-      "top"
-     ]
-    }
-   ],
-   "stamps": [
-    {
-     "face": "front",
-     "at": "center",
-     "art": [
-      "........................",
-      "........kk....kk........",
-      ".......bkkb..bkkb.......",
-      "........bb....bb........",
-      "........................"
-     ],
-     "key": {
-      "b": "fur:3",
-      "k": "dark:1"
-     }
-    }
-   ]
-  },
-  "mouth": {
-   "ramp": "mouth",
-   "tone": 0.4,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   }
-  },
-  "chin": {
-   "layers": [
-    {
-     "id": "gum",
-     "op": "fill",
-     "ramp": "fur",
-     "tone": 4.6,
-     "faces": [
-      "top"
-     ]
-    }
-   ]
-  },
-  "jaw": {
-   "ramp": "fur",
-   "tone": 6.4,
-   "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "under",
-     "op": "fill",
-     "shift": -1.2,
-     "faces": [
-      "bottom"
-     ]
-    },
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": 0.55,
-     "to": 1.1,
-     "ramp": "fur",
-     "tone": 3.6,
-     "faces": [
-      "front",
-      "sides"
-     ]
-    },
-    {
-     "id": "gum",
-     "op": "fill",
-     "ramp": "mouth",
-     "tone": 1.6,
-     "faces": [
-      "top"
-     ]
-    }
-   ]
-  },
-  "tongue": {
-   "ramp": "mouth",
-   "tone": 3,
-   "light": 0.4,
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "groove",
-     "op": "band",
-     "axis": "x",
-     "from": -0.08,
-     "to": 0.08,
-     "shift": -1.0,
-     "faces": [
-      "top"
-     ]
-    }
-   ]
-  },
-  "teeth": {
-   "ramp": "teeth",
    "tone": 2,
    "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "T": "teeth:3",
-    "t": "teeth:2",
-    "s": "teeth:1",
-    "g": "teeth:0"
-   }
-  },
-  "eye": {
-   "ramp": "fur",
-   "tone": 5.9,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
    "rim": {
     "light": 0,
     "dark": 0
    },
-   "stamps": [
-    {
-     "face": "front",
-     "at": "center",
-     "art": [
-      ".bbbb.",
-      "bkkkkb",
-      "bkWkkb",
-      "bkkkkb",
-      "bkkkkb",
-      ".bbbb."
-     ],
-     "key": {
-      "b": "dark:2",
-      "k": "dark:0",
-      "W": "teeth:3"
-     }
-    }
-   ]
+   "art_key": {
+    "F": "moss:1",
+    "f": "moss:3",
+    "h": "moss:4"
+   }
   },
-  "brow": {
-   "ramp": "moss",
-   "tone": 3.0,
-   "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "brush": {
-    "off": true
-   },
-   "layers": [
-    {
-     "id": "lit",
-     "op": "fill",
-     "shift": 1.4,
-     "faces": [
-      "top"
-     ]
-    }
-   ]
-  },
-  "foot": {
-   "ramp": "dark",
-   "tone": 2.4,
-   "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "layers": [
-    {
-     "id": "fur_top",
-     "op": "band",
-     "axis": "y",
-     "from": 0.4,
-     "to": 1.1,
-     "ramp": "fur",
-     "tone": 3.6,
-     "faces": [
-      "sides",
-      "top"
-     ]
-    }
-   ]
-  },
-  "nail": {
+  "teeth": {
    "ramp": "teeth",
-   "tone": 1.6,
-   "light": 0.4,
-   "brush": {
-    "off": true
+   "tone": 1,
+   "light": 0.2,
+   "rim": {
+    "light": 0,
+    "dark": 0
    },
-   "layers": [
-    {
-     "id": "tip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.1,
-     "to": -0.3,
-     "shift": -1.0
-    }
-   ]
+   "art_key": {
+    "T": "teeth:2",
+    "t": "teeth:1",
+    "g": "teeth:0"
+   }
+  },
+  "eye": {
+   "ramp": "dark",
+   "tone": 0,
+   "light": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "k": "dark:0",
+    "l": "dark:1"
+   }
   },
   "blanket": {
    "ramp": "blanket",
-   "tone": 3.0,
+   "tone": 2.0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
    "layers": [
+    {
+     "id": "noise",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.5
+    },
+    {
+     "id": "weave",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.0,
+     "width": 0.5,
+     "shift": -0.6
+    },
     {
      "id": "trim",
      "op": "band",
@@ -877,35 +370,11 @@
      "from": -1.1,
      "to": -0.7,
      "ramp": "trim",
-     "tone": 2.0,
+     "tone": 1.0,
      "faces": [
       "sides",
       "front",
       "back"
-     ]
-    },
-    {
-     "id": "border",
-     "op": "band",
-     "axis": "z",
-     "from": 0.82,
-     "to": 1.1,
-     "ramp": "trim",
-     "tone": 1.6,
-     "faces": [
-      "sides"
-     ]
-    },
-    {
-     "id": "border_b",
-     "op": "band",
-     "axis": "z",
-     "from": -1.1,
-     "to": -0.82,
-     "ramp": "trim",
-     "tone": 1.6,
-     "faces": [
-      "sides"
      ]
     }
    ],
@@ -916,28 +385,43 @@
       "right"
      ],
      "at": [
-      3,
-      4
+      2,
+      2
      ],
      "art": [
-      "...s.....s.....s.....",
-      "..sSs...sSs...sSs....",
-      ".sSWSs.sSWSs.sSWSs...",
-      "..sSs...sSs...sSs....",
-      "...s.....s.....s....."
+      "..s...s...s..",
+      ".sWs.sWs.sWs.",
+      "..s...s...s.."
      ],
      "key": {
-      "s": "blanket:1",
-      "S": "fur:8",
-      "W": "trim:3"
+      "s": "trim:1",
+      "W": "fur:7"
      }
     }
    ]
   },
   "blanket_top": {
    "ramp": "blanket",
-   "tone": 3.4,
+   "tone": 2.4,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
    "layers": [
+    {
+     "id": "noise",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.5
+    },
+    {
+     "id": "weave",
+     "op": "stripes",
+     "axis": "x",
+     "period": 2.0,
+     "width": 0.5,
+     "shift": -0.6
+    },
     {
      "id": "trim",
      "op": "band",
@@ -945,7 +429,7 @@
      "from": 0.8,
      "to": 1.1,
      "ramp": "trim",
-     "tone": 2.0
+     "tone": 1.0
     },
     {
      "id": "trim_b",
@@ -954,31 +438,50 @@
      "from": -1.1,
      "to": -0.8,
      "ramp": "trim",
-     "tone": 2.0
+     "tone": 1.0
     }
    ]
   },
   "strap": {
    "ramp": "leather",
-   "tone": 2.6,
-   "light": 0.5,
-   "brush": {
-    "off": true
-   }
+   "tone": 1.6,
+   "light": 0.4,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "edge",
+     "op": "band",
+     "axis": "x",
+     "from": -1.1,
+     "to": -0.6,
+     "shift": 1.0
+    }
+   ]
   },
   "leather": {
    "ramp": "leather",
-   "tone": 4.0,
+   "tone": 2.4,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1,
+    "dark_shift": -1
    },
    "layers": [
+    {
+     "id": "noise",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.6
+    },
     {
      "id": "stitch",
      "op": "panel",
      "inset": 1,
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ]
@@ -987,39 +490,43 @@
   },
   "iron": {
    "ramp": "iron",
-   "tone": 3.0,
+   "tone": 1.6,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
-   },
-   "brush": {
-    "off": true
+    "light": 1,
+    "dark": 0,
+    "light_shift": 1.4
    }
   },
   "chest_box": {
    "ramp": "wood",
-   "tone": 3.6,
+   "tone": 2.2,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
+    "light": 0,
+    "dark": 0
    },
    "layers": [
+    {
+     "id": "noise",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.6
+    },
     {
      "id": "planks",
      "op": "stripes",
      "axis": "y",
-     "period": 2.0,
-     "width": 0.12,
+     "period": 3.0,
+     "width": 0.34,
      "shift": -1.2
     },
     {
      "id": "bands",
      "op": "band",
      "axis": "z",
-     "from": 0.72,
+     "from": 0.7,
      "to": 1.01,
      "ramp": "iron",
-     "tone": 3.0,
+     "tone": 1.4,
      "faces": [
       "sides",
       "top",
@@ -1031,9 +538,9 @@
      "op": "band",
      "axis": "z",
      "from": -1.01,
-     "to": -0.72,
+     "to": -0.7,
      "ramp": "iron",
-     "tone": 3.0,
+     "tone": 1.4,
      "faces": [
       "sides",
       "top",
@@ -1044,29 +551,36 @@
   },
   "chest_lid": {
    "ramp": "wood",
-   "tone": 4.2,
+   "tone": 2.8,
    "rim": {
-    "light_shift": 0.7,
-    "dark_shift": -0.7
+    "light": 1,
+    "dark": 0,
+    "light_shift": 1
    },
    "layers": [
+    {
+     "id": "noise",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.6
+    },
     {
      "id": "bands",
      "op": "band",
      "axis": "z",
-     "from": 0.72,
+     "from": 0.7,
      "to": 1.01,
      "ramp": "iron",
-     "tone": 3.4
+     "tone": 1.8
     },
     {
      "id": "bands_b",
      "op": "band",
      "axis": "z",
      "from": -1.01,
-     "to": -0.72,
+     "to": -0.7,
      "ramp": "iron",
-     "tone": 3.4
+     "tone": 1.8
     }
    ]
   }
@@ -1085,7 +599,219 @@
     20.5,
     0.0
    ],
-   "style": "scaly_body"
+   "style": "scaly_body",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaabbccbbbbccbbcbbbccccaa",
+       "aaaabbccbbbbccbbbbbbccccaa",
+       "dddaaaabaaabaaabaaabbbbcdd",
+       "eeeeeeeeeefeeeeeeegaggeeee",
+       "ffffffeeffffffffffegeeffff",
+       "efeeefeeefeeefeeefgggeeeef",
+       "ffffeeeefeffffffffffhfffff",
+       "ffffeeeeffffffffffffffffff",
+       "eeefgggeeeefeeefeeefeeefee",
+       "fffffffffhihhheeeefffhhfee",
+       "fffffffffhihhheeeefffhhfee",
+       "geefffeeehhffhgeeeeeehfege",
+       "eefhfeeefffffffhfeeeffffhh",
+       "eefhfeeefffffffhfeeeffffhh",
+       "eeefgggeeeefeeefgggeeeefff"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "moss:4",
+       "d": "moss:1",
+       "e": "fur:3",
+       "f": "fur:4",
+       "g": "fur:2",
+       "h": "fur:5",
+       "i": "fur:6"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaabbaaabbbbaaaaaaaaccacaa",
+       "aaabbaaabbbbaaaaaaaaccccaa",
+       "cccacccaaaabcccacccdeeeccc",
+       "dddddddffdddddgddddfddffdf",
+       "fffffffhhfffffdfffffffhhfh",
+       "dfdddfdddfdddfgggddddffffh",
+       "fffhddddffffffffffffhhhhff",
+       "fffhddddffffffffffffhhhhff",
+       "dddfgggddddfdddfdddffffhdd",
+       "ffhhhhhhhffffffhhhffffhhff",
+       "fdhhhhhhhffffffhhhhfffhhff",
+       "ddfffhdfdfdddfdddffddfffdh",
+       "hfhhffffffffddfffffffddfff",
+       "hhhhffffffffddffffffffdfff",
+       "fffhdddfdddfdddfdddfdddfdd"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "moss:1",
+       "d": "fur:2",
+       "e": "moss:0",
+       "f": "fur:3",
+       "g": "fur:1",
+       "h": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abaabbbbaaaaccccaaaaaaaaaaaa",
+       "aaaabbbbaaaaccccaaaaaaaaaaaa",
+       "cddaaaabcccaeeecdccaccdfccca",
+       "afgffaaaafgbbbaaffffaafgffaa",
+       "aafggffaafhgggaafggfaaafggff",
+       "cacdfgdccfggghdccfffdacdfgff",
+       "faafhhhgafggggfabghhgfafgggg",
+       "faafhhhgafggggfaghhhgfafgggg",
+       "dcdgggggcdfgffdafgghfdcffffg",
+       "fafggghhghfffffafggggfafgggg",
+       "gfgggghihhfffffafgggggfggggg",
+       "fgfffgggghdddffdfgfffgfffgff",
+       "ffffgggggggggggggggggggggggg",
+       "ffffgggggggggggggggggggggggg",
+       "dddffffgfffgfffgfffgfffgfffg"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "moss:1",
+       "d": "fur:1",
+       "e": "moss:0",
+       "f": "fur:2",
+       "g": "fur:3",
+       "h": "fur:4",
+       "i": "fur:5"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "bbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+       "cccbcdcbcccecccbcccbcccbccdb",
+       "aacdddccddeebbbbbefaaabbeeeb",
+       "ffdedcccdefebbeeeffaafeefebb",
+       "fgddhcihdedcceeeefebbfeedbcc",
+       "fffffafgffebbeffffebefffebbe",
+       "fffffafgfffebeffffebefffebbe",
+       "eeefebegeeeecdefeedbdeefedce",
+       "eeeedcefffedcdffffgfggfffeae",
+       "eeeeedffffedcdffefggggffffef",
+       "dedddeeeefddheeeeffffgeeefee",
+       "ffffffffgfffffffffffffffgggg",
+       "ffffffffffffffffffffffffgggg",
+       "eeefeeefeeefeeefeeefeeeffffg"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:4",
+       "g": "fur:5",
+       "h": "fur:1",
+       "i": "moss:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaabcbbbaaaaddddaaaaaaaaaa",
+       "aaabcbbbaaaaaddedaaaaaaaaa",
+       "dddbaaabdddaeeededdadddadd",
+       "bbbbbbaaaaaaaabbbbaaaaaaaa",
+       "bbbbbbaaaaaaddbbbbaaaaaaaa",
+       "abadabdddaddedaabbdddaddda",
+       "ddddaaaaaaaaeeddbaaaaaaaba",
+       "deddaaaaaaaaddddaaaaaaaaaa",
+       "eeeddddadddaeeeddddadddadd",
+       "aaddddaaaaddddaaaaaaaaaaaa",
+       "bbddddaaaaddddaaaaaaaaaaaa",
+       "abeeedddddeeeddddadddaddda",
+       "bbaabbbbaaaaaaaaaaaaaaaaaa",
+       "aaaabbbbaaaaaaaaaaaaaaaaaa",
+       "dddddaabdddadddadddadddadd",
+       "aabbbbaaaaaaaaaaaaddddaaaa",
+       "aabbbbbbaaaaaaaaaaaaddaaaa",
+       "daaaabdadadddadddaddedddda",
+       "aaaaaaaaddddaaaaaaaaaaaadd",
+       "aaaaaaddddddaaaaaaaaaaaadd",
+       "dddaddedeeeddddadddadddaee",
+       "bbaaaaaaaaaaaaaaaaaaaaaaaa",
+       "bbaaaaaaaaaaaaaaaaaaabbaaa",
+       "abdddadddadddadddadddbadda",
+       "aaaaaaaaaaaaaaaaaaaabaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaddaab",
+       "dddadddadddadddadddadeeaaa",
+       "aaaaaaaaaaaaaaaaaaaaadaaaa"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:5",
+       "c": "moss:6",
+       "d": "moss:3",
+       "e": "moss:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaabbbbaaaaaaaaaaaaaaaaaa",
+       "aaaabbbbaaaaaaaaaaaaaaaaaa",
+       "bbbacccbbbbabbbabbbabbbabb",
+       "aabbbbaaaabbbbaaaaaaaabbbb",
+       "aabbbbaaaabbbbaaaaaaaabbbb",
+       "bacccbbbbacccbbbbabbbacccb",
+       "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "bbbabbbabbbabbbabbbabbbabb",
+       "aaaaaaaaaaaaaabbbbddddaaaa",
+       "aaaaaaaaaaaaaabbbbddddaaaa",
+       "babbbabbbabbbacccbaaadbbba",
+       "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "bbbabbbabbbabbbabbbabbbabb",
+       "aaaaaaaaaaaaaaddddaaaadddd",
+       "aaaaaaaaaaaaaaddddaaaadddd",
+       "babbbabbbabbbaaaadbbbaaaad",
+       "bbbbddddaaaaaaaabbbbaaaaaa",
+       "bbbbddddaaaaaaaabbbbaaaaaa",
+       "cccbaaadbbbabbbacccbbbbabb",
+       "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+       "babbbabbbabbbabbbabbbabbba",
+       "aaaabbbbddddaaaaddddaaaaaa",
+       "aaaabbbbddddaaaaddddaaaaaa",
+       "bbbacccbaaadbbbaaaadbbbabb",
+       "aaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:0",
+       "d": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "under",
@@ -1101,7 +827,136 @@
     -8.5,
     0.0
    ],
-   "style": "scaly_low"
+   "style": "scaly_low",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaabbcbdddaaddddddddddd",
+       "aaaabcccdddaaddddddddddd"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:4",
+       "c": "fur:5",
+       "d": "fur:3"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaabccbbbbbbbbbaaaaaaaa",
+       "aaaabccbbbbbbbbbaaaaaaaa"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaabbaacaaaaaaaa",
+       "aaaaaaaacaabbaacaaaaaaaa"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaabbaaaaaaaaaacccc",
+       "aaaaaaaabbaaaaaaaaaacccc"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaabbbbbbbbbbbbbbbbabbb",
+       "aaaabbbbbbbbbbbbbbbbbbbb",
+       "bbbacccbcccbcccbcccbcccb",
+       "bbbbbbbbbbbbbbaaaaccccbb",
+       "bbbbbbbbbbbbbbaaaaccccbb",
+       "cbcccbcccbcccbbbbadddccc",
+       "ccccccccbbbbabbbbbbbbbbb",
+       "ccccccccbbbbbbbbbbbbbbbb",
+       "dddcdddccccbcccbcccbcccb",
+       "bbbbbbbbbbbbbbbbbbbbbbbb",
+       "bbbbbbbbbbbbbbbbbbbbbbbb",
+       "cbcccbcccbcccbcccbcccbcc",
+       "bbbbbbbbbbbbbbbbbbbbbbbb",
+       "bbbbbbbbbbbbbbbbbbbbbbbb",
+       "cccbcccbcccbcccbcccbcccb",
+       "bbccccccccbbbbbbbbbbbbcc",
+       "bbccccccccbbbbbbbbbbbbcc",
+       "cbdddcdddccccbcccbcccbdd",
+       "bbbbbbbbaaaaccccbbbbbbbb",
+       "bbbbbbbbaaaaccccbbbbbbbb",
+       "cccbcccbbbbadddccccbcccb",
+       "bbaaaabbbbbbbbbbbbbbbbcc",
+       "bbaaaabbbbbbbbbbbbbbbbcc",
+       "cbbbbacccbcccbcccbcccbdd"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaabbbaaaccaaaaaaacccc",
+       "aaaaaabaaaaccaabaaaacccc",
+       "cccaccaacccccccbcccacccc",
+       "ccccaaaaaabaabbbbbaaaabb",
+       "aaaaaaaaaabbbbbbbbaaaabb",
+       "cacccccccaaaabccabcccaaa",
+       "aabaaccabbbdaacccaaaaaaa",
+       "aaaaaaaabbbbaaaaccaaabba",
+       "cccacccaccabcccacccaaaab",
+       "aaaaaaaaccaaaaaaaccaabba",
+       "aaaaaaaaaaaaaaaaaaaaaaaa",
+       "cacccacccacccacccbcccccc",
+       "aaaaaaaaaaaaaaaaabbacccc",
+       "aaaaaaaaaaaaaaaaaaaaccaa",
+       "cccacccacccacccacccaccca",
+       "aaaaaaaaaabbbbaaaabbbbaa",
+       "aaaaaaaaaabbbbaaaabbbbaa",
+       "cacccacccaaaabcccaaaabcc",
+       "aaaaaaaaaaaabbbbccccaaaa",
+       "aaaaaaaaaaaabbbbccccaaaa",
+       "cccacccacccaaaabccccccca",
+       "ccaaaaaaaaaaaaaaaaaaaaaa",
+       "ccaaaaaaaaaaaaaaaaaaaaaa",
+       "cccccacccacccacccacccacc"
+      ],
+      "key": {
+       "a": "fur:1",
+       "b": "fur:2",
+       "c": "fur:0",
+       "d": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "belly",
@@ -1109,15 +964,125 @@
    "parent": "body",
    "size": [
     20,
-    1.5,
+    1,
     20
    ],
    "pivot": [
     0.0,
-    -10.25,
+    -10.0,
     0.0
    ],
-   "style": "belly"
+   "style": "belly",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abbbbbbabbbbbbabbbbb"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:6"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abbbbbbabbbbbbabbbbb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abbbbbbabbbbbbabbbbb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abbbbbbabbbbbbabbbbb"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:6"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abbbbbbabbbbbbabbbbb",
+       "caaaaaacaaaaaacaaaaa",
+       "cccccccccccccccccccc",
+       "bbbbbabbbbbbabbbbbba",
+       "aaaaacaaaaaacaaaaaac",
+       "cccccccccccccccccccc",
+       "bbbabbbbbbabbbbbbabb",
+       "aaacaaaaaacaaaaaacaa",
+       "cccccccccccccccccccc",
+       "babbbbbbabbbbbbabbbb",
+       "acaaaaaacaaaaaacaaaa",
+       "cccccccccccccccccccc",
+       "bbbbbbabbbbbbabbbbbb",
+       "aaaaaacaaaaaacaaaaaa",
+       "cccccccccccccccccccc",
+       "bbbbabbbbbbabbbbbbab",
+       "aaaacaaaaaacaaaaaaca",
+       "cccccccccccccccccccc",
+       "bbabbbbbbabbbbbbabbb",
+       "aacaaaaaacaaaaaacaaa"
+      ],
+      "key": {
+       "a": "fur:6",
+       "b": "fur:7",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abbbbbbabbbbbbabbbbb",
+       "caaaaaacaaaaaacaaaaa",
+       "cccccccccccccccccccc",
+       "bbbbbabbbbbbabbbbbba",
+       "aaaaacaaaaaacaaaaaac",
+       "cccccccccccccccccccc",
+       "bbbabbbbbbabbbbbbabb",
+       "aaacaaaaaacaaaaaacaa",
+       "cccccccccccccccccccc",
+       "babbbbbbabbbbbbabbbb",
+       "acaaaaaacaaaaaacaaaa",
+       "cccccccccccccccccccc",
+       "bbbbbbabbbbbbabbbbbb",
+       "aaaaaacaaaaaacaaaaaa",
+       "cccccccccccccccccccc",
+       "bbbbabbbbbbabbbbbbab",
+       "aaaacaaaaaacaaaaaaca",
+       "cccccccccccccccccccc",
+       "bbabbbbbbabbbbbbabbb",
+       "aacaaaaaacaaaaaacaaa"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "chest",
@@ -1133,23 +1098,140 @@
     -0.5,
     15.0
    ],
-   "style": "scaly_body"
-  },
-  {
-   "id": "chest_b",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    18,
-    9,
-    1.5
-   ],
-   "pivot": [
-    0.0,
-    -1.0,
-    16.75
-   ],
-   "style": "scaly"
+   "style": "scaly_body",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaaabb",
+       "aaaaaaaaaaaaaaaaaaaabb",
+       "bbbabbbabbbabbbabbbacc",
+       "ddaaaaeeefdddaeeeeaadd",
+       "ffddddfffgfffdffffddff",
+       "dfdddffffgdddffffgdddf",
+       "ffffffffffffffffffffff",
+       "ffffffffffffffffffffff",
+       "dddfdddfdddfdddfdddfdd",
+       "ffggggddddggggffffgggg",
+       "ffggggddddggggffffgggg",
+       "dffffghhhdfffgdddffffg"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "fur:3",
+       "e": "moss:4",
+       "f": "fur:4",
+       "g": "fur:5",
+       "h": "fur:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "bbbabbbabbbabbbaccbabb",
+       "ddddadeeeedddddddddddd",
+       "ffffdfddddffffdfffffff",
+       "dfdddfeeeddddfdddfdddf",
+       "ffffffffggggffffffffff",
+       "fggfffffggggfggfffffff",
+       "dfffdddffffgdfffdddfdd",
+       "dfgffffggffffggfffdffd",
+       "ddfffffggfffffffffdffd",
+       "eddddfdfffdddfdddfeddd"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:0",
+       "d": "fur:2",
+       "e": "fur:1",
+       "f": "fur:3",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aa",
+       "aa",
+       "bb",
+       "ca",
+       "ca",
+       "cc",
+       "dd",
+       "dd",
+       "cc",
+       "dd",
+       "dd",
+       "cd"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "fur:2",
+       "d": "fur:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aa",
+       "aa",
+       "bb",
+       "cd",
+       "cd",
+       "ef",
+       "ff",
+       "ff",
+       "dd",
+       "ff",
+       "ff",
+       "df"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:3",
+       "d": "fur:3",
+       "e": "fur:2",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaabbbbbbbbbbbbbb",
+       "aaaaaaaabbbbbbbbbbbbbb"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaaabb",
+       "aaaaaaaaaaaaaaaaaaaabb"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "rump",
@@ -1165,87 +1247,143 @@
     0.5,
     -15.0
    ],
-   "style": "scaly_body"
-  },
-  {
-   "id": "rump_b",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    18,
-    9,
-    1.5
-   ],
-   "pivot": [
-    0.0,
-    1.0,
-    -16.75
-   ],
-   "style": "scaly"
-  },
-  {
-   "id": "shoulder_l",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1,
-    10,
-    10
-   ],
-   "pivot": [
-    13.5,
-    -3.5,
-    8.5
-   ],
-   "style": "scaly_body"
-  },
-  {
-   "id": "haunch_l",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1,
-    10,
-    12
-   ],
-   "pivot": [
-    13.5,
-    -2.5,
-    -8.0
-   ],
-   "style": "scaly_body"
-  },
-  {
-   "id": "shoulder_r",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1,
-    10,
-    10
-   ],
-   "pivot": [
-    -13.5,
-    -3.5,
-    8.5
-   ],
-   "style": "scaly_body"
-  },
-  {
-   "id": "haunch_r",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    1,
-    10,
-    12
-   ],
-   "pivot": [
-    -13.5,
-    -2.5,
-    -8.0
-   ],
-   "style": "scaly_body"
+   "style": "scaly_body",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaabba",
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "cccadcabaccacccbaccacc",
+       "eeffgfgggfeeeefffeeeee",
+       "ffggggggggffffffffffff",
+       "effffgfffgeeefeeefeeff",
+       "eeeeffffggggfffffffffe",
+       "eeeeffffggggffffffffee",
+       "dddeeefggffgeeegffefdd",
+       "fffffggggffffffgggffff",
+       "fffffgffffffffffgfffff",
+       "eedeefeeefddefeeefeeef"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:2",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:4",
+       "g": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaabbbbaa",
+       "aaaaaaaaaaaaaaaabbbbaa",
+       "bbcdcccdcbbabccdeeecbb",
+       "ddfffffffddddfffffffdd",
+       "ffffffffffffffffffffff",
+       "dfdddfdddfdddfdddfdddf",
+       "ffffffffffffffffffffgg",
+       "ffffffffffffffffffffgg",
+       "dddfdddfdddfdddfdddfff",
+       "ffffffffffffffffffffff",
+       "ffffffffffffffffffffff",
+       "dfdddfdddfdddfdddfdddf"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "fur:1",
+       "d": "fur:2",
+       "e": "fur:0",
+       "f": "fur:3",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aa",
+       "aa",
+       "bb",
+       "ca",
+       "dc",
+       "cd",
+       "dd",
+       "dd",
+       "cc",
+       "dd",
+       "dd",
+       "ed"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "fur:2",
+       "d": "fur:3",
+       "e": "fur:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aa",
+       "aa",
+       "bc",
+       "ad",
+       "de",
+       "de",
+       "ff",
+       "ff",
+       "dd",
+       "gg",
+       "dd",
+       "gd"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "fur:3",
+       "e": "fur:4",
+       "f": "fur:5",
+       "g": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaabbbbbbbbbbbbbbbccb",
+       "aaaabbbabbbbbbbbbbbccb"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abbaccaaaabbaaaaaaaaaa",
+       "abbaacaaaabbaaaaaaaaaa"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "back",
@@ -1261,474 +1399,595 @@
     9.0,
     -0.5
    ],
-   "style": "back"
+   "style": "back",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaabcddedeabeaabeeabdeea",
+       "baabdddeeeabaaabaeebeaea",
+       "bbbbeeeebbbbbbbbbbbbabaa"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:5",
+       "d": "moss:4",
+       "e": "moss:3"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abbcabbcbccdbccdabbcaaab",
+       "bbbcbbbccccdcccdbbbcbaab",
+       "ccccccccddddddddcccccccb"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abbcaaacbccdabbdbcbcbccdea",
+       "bbbcbaaccdcdbbbdccbccccdaa",
+       "ccccccccddddccccddddddddbb"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "moss:0",
+       "e": "moss:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abbcbcdecddebccdabbcbbbdce",
+       "bbbcccdedddecccdbbbccbbdde",
+       "ccccddeeeededdddccccddddee"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:2",
+       "e": "moss:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abbccddeabbccddebccdcdde",
+       "bbbcdddebbbcdddecccdddde",
+       "cccceeeecccceeeeddddeeee",
+       "cdbccdcddebccdcddeabbccd",
+       "cdcccddddecccddddebbbcdd",
+       "ddddddeeeeddddeeeeccccee",
+       "bccdbccdbccdbccdabbcabbc",
+       "cccdcccdcccdcccdbbbcbbbc",
+       "ddddddddddddddddcccccccc",
+       "cdabbcbccdbccdbccdabbcbc",
+       "cdbbbccccdcccdcccdbbbccc",
+       "ddccccddddddddddddccccdd",
+       "cddecddebccdbccdabbccdde",
+       "dddedddecccdcccdbbbcddde",
+       "eeeeeeeeddddddddcccceeee",
+       "cdabbccddebccdcddecddebc",
+       "cdbbbcdddecccddddedddecc",
+       "ddcccceeeeddddeeeeeeeedd",
+       "bccdbccdcddeabbcbccdabbc",
+       "cccdcccddddebbbccccdbbbc",
+       "ddddddddeeeeccccddddcccc",
+       "decddeabbccddecddeabbcbc",
+       "dedddebbbcdddedddebbbccc",
+       "eeeeeecccceeeeeeeeccccdd",
+       "cddecddebccdbccdbccdcdde",
+       "dddedddecccdcccdcccdddde"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4",
+       "d": "moss:3",
+       "e": "moss:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abcdbccdbccdbccdbccdbcbc",
+       "bbbccccdcccdcccdcccdbbbc",
+       "ccccddddddddddddddddcccc",
+       "cdbccdcdddbccdcdddabbccd",
+       "cdcccdddddcccdddddbbbcdd",
+       "ddddddddddddddddddccccdd",
+       "bccdbccdbccdabbcacccabbc",
+       "cccdcccdcccdbbbcbbbcbbbc",
+       "ddddddddddddcccccccccccc",
+       "cdcdddaccdbccdabbccdddbc",
+       "cdddddbccdcccdbbbcddddcc",
+       "ddddddddddddddccccdddddd",
+       "bccdbccdcdddbccdbccdcdcd",
+       "cccdcccdddddcccdcccdcccd",
+       "dddddddddddddddddddddddd",
+       "accdddabbcbccdcdddabbcbc",
+       "bcddddbbbccccdddddbbbccc",
+       "ccddddccccddddddddccccdd",
+       "cccdabbccdddbccdabbcbccd",
+       "dccdbbbcddddcccdbbbccccd",
+       "ddddcbbcdddddddcccccdddd",
+       "bcbcccbdddcdddeabccdddbc",
+       "bccccdddddddddbbbcddddcc",
+       "ccddddddddddddccccdddddd",
+       "bccdbdddbccdcdddabbcbccd",
+       "cccdcdddcccdddddbbbccccd"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "moss:0",
+       "e": "moss:4"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "scute0",
    "shape": "box",
    "parent": "back",
    "size": [
-    3.5,
+    4,
     2,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    2.25,
-    11.0
-   ],
-   "rotation": [
-    -8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "scute_l0",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3,
-    1.5,
     3
    ],
    "pivot": [
-    6.0,
-    2.0,
-    9.0
-   ],
-   "rotation": [
-    -6.0,
     0.0,
-    -10.0
+    2.5,
+    10.5
    ],
-   "style": "scute"
-  },
-  {
-   "id": "scute_r0",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3,
-    1.5,
-    3
-   ],
-   "pivot": [
-    -6.0,
-    2.0,
-    9.0
-   ],
-   "rotation": [
-    -6.0,
-    0.0,
-    10.0
-   ],
-   "style": "scute"
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "ccca"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abcc",
+       "cccd"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "cccb",
+       "abda"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abca",
+       "cccc",
+       "bcab"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "scute1",
    "shape": "box",
    "parent": "back",
    "size": [
-    3.5,
+    4,
     2,
-    3.5
+    3
    ],
    "pivot": [
     0.0,
-    2.25,
-    6.5
+    2.5,
+    4.5
    ],
-   "rotation": [
-    -8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abca",
+       "cccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abcb",
+       "cccd"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abca",
+       "cccc",
+       "abaa"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abcb",
+       "cccd",
+       "debc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:1",
+       "e": "moss:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "scute2",
    "shape": "box",
    "parent": "back",
    "size": [
-    3.5,
+    4,
     2,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    2.25,
-    2.0
-   ],
-   "rotation": [
-    -8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "scute_l2",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3,
-    1.5,
     3
    ],
    "pivot": [
-    6.0,
-    2.0,
-    0.0
-   ],
-   "rotation": [
-    -6.0,
     0.0,
-    -10.0
+    2.5,
+    -1.5
    ],
-   "style": "scute"
-  },
-  {
-   "id": "scute_r2",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3,
-    1.5,
-    3
-   ],
-   "pivot": [
-    -6.0,
-    2.0,
-    0.0
-   ],
-   "rotation": [
-    -6.0,
-    0.0,
-    10.0
-   ],
-   "style": "scute"
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abca",
+       "cccc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "bbbe"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "moss:5",
+       "e": "moss:3"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "bcca",
+       "abda"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abcb",
+       "cccd",
+       "debc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:1",
+       "e": "moss:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "scute3",
    "shape": "box",
    "parent": "back",
    "size": [
-    3.5,
+    4,
     2,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    2.25,
-    -2.5
-   ],
-   "rotation": [
-    -8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "scute4",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3.5,
-    2,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    2.25,
-    -7.0
-   ],
-   "rotation": [
-    -8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "scute_l4",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3,
-    1.5,
     3
    ],
    "pivot": [
-    6.0,
-    2.0,
-    -9.0
-   ],
-   "rotation": [
-    -6.0,
     0.0,
-    -10.0
+    2.5,
+    -7.5
    ],
-   "style": "scute"
-  },
-  {
-   "id": "scute_r4",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3,
-    1.5,
-    3
-   ],
-   "pivot": [
-    -6.0,
-    2.0,
-    -9.0
-   ],
-   "rotation": [
-    -6.0,
-    0.0,
-    10.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "scute5",
-   "shape": "box",
-   "parent": "back",
-   "size": [
-    3.5,
-    2,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    2.25,
-    -11.5
-   ],
-   "rotation": [
-    -8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "tuft_back0",
-   "shape": "card",
-   "parent": "back",
-   "pivot": [
-    -3.0,
-    1.5,
-    8.5
-   ],
-   "offset": [
-    0.0,
-    1.0,
-    0.0
-   ],
-   "rotation": [
-    -12.0,
-    30.0,
-    0.0
-   ],
-   "style": "fur_card",
-   "plane": "xy",
-   "art": [
-    "..f.....f....f..",
-    ".fhf.f.fhf..fhf.",
-    "fhFhfhfhFhf.hFhf",
-    "FFFhFFhFFhFfFFhF"
-   ]
-  },
-  {
-   "id": "tuft_back1",
-   "shape": "card",
-   "parent": "back",
-   "pivot": [
-    3.0,
-    1.5,
-    -4.5
-   ],
-   "offset": [
-    0.0,
-    1.0,
-    0.0
-   ],
-   "rotation": [
-    -12.0,
-    -40.0,
-    0.0
-   ],
-   "style": "fur_card",
-   "plane": "xy",
-   "art": [
-    "..f.....f....f..",
-    ".fhf.f.fhf..fhf.",
-    "fhFhfhfhFhf.hFhf",
-    "FFFhFFhFFhFfFFhF"
-   ]
-  },
-  {
-   "id": "frond0",
-   "shape": "card",
-   "parent": "back",
-   "pivot": [
-    3.5,
-    1.5,
-    4.5
-   ],
-   "offset": [
-    0.0,
-    1.75,
-    0.0
-   ],
-   "rotation": [
-    -6.0,
-    -30.0,
-    -10.0
-   ],
-   "style": "fern",
-   "plane": "xy",
-   "art": [
-    ".m...m.",
-    "mMm.mMm",
-    ".mdmdm.",
-    "..dMd..",
-    ".mMdMm.",
-    "..mdm..",
-    "...d..."
-   ]
-  },
-  {
-   "id": "frond1",
-   "shape": "card",
-   "parent": "back",
-   "pivot": [
-    -3.5,
-    1.5,
-    -9.0
-   ],
-   "offset": [
-    0.0,
-    3.0,
-    0.0
-   ],
-   "rotation": [
-    -6.0,
-    40.0,
-    10.0
-   ],
-   "style": "fern",
-   "plane": "xy",
-   "art": [
-    "....m......",
-    "...mMm..m..",
-    "..m.Mm.mM..",
-    ".....dMm.m.",
-    "..mMmdM.mM.",
-    ".m..mdMmM..",
-    "....mdM..m.",
-    "..mMmdMmMm.",
-    ".m...dMm...",
-    "...mMd.mm..",
-    "....md.....",
-    ".....d....."
-   ]
-  },
-  {
-   "id": "bloom0",
-   "shape": "card",
-   "parent": "back",
-   "pivot": [
-    -6.0,
-    1.5,
-    0.5
-   ],
-   "offset": [
-    0.0,
-    1.5,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    30.0,
-    0.0
-   ],
-   "style": "bloom",
-   "plane": "xy",
-   "art": [
-    ".BbB.",
-    "BbcbB",
-    ".BbB.",
-    "..s..",
-    ".ss..",
-    "..s.."
-   ]
-  },
-  {
-   "id": "bloom1",
-   "shape": "card",
-   "parent": "back",
-   "pivot": [
-    6.5,
-    1.5,
-    9.5
-   ],
-   "offset": [
-    0.0,
-    1.5,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    -40.0,
-    0.0
-   ],
-   "style": "bloom",
-   "plane": "xy",
-   "art": [
-    ".BbB.",
-    "BbcbB",
-    ".BbB.",
-    "..s..",
-    ".ss..",
-    "..s.."
-   ]
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abcc",
+       "cccd"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4",
+       "d": "moss:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "cccb"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:5"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "cccb",
+       "abda"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abca",
+       "cccc",
+       "daed"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:0",
+       "d": "moss:3",
+       "e": "moss:4"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "back_fur_l",
    "shape": "card",
    "parent": "back",
    "pivot": [
-    12.6,
-    0.3,
+    12.05,
+    -0.5,
     0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
     0.0,
     0.0,
-    10.0
+    8.0
    ],
    "style": "fur_card",
    "plane": "yz",
    "art": [
-    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
-    "fffhhfffhhfffhhffhhhffhhffhhffhhfffhhffhhhffhhff",
-    "fffhhfffhheeehheehhhffhhffeeffhhfffhhffhhhffhhff",
-    "fffhheeehh...hh..hhhffhhff..eehhfffhhffhhhffhhff",
-    "fffhh...hh...ee..hhhffhhff....hhfffhhffhhhffhhff",
-    "eeeee...hh.......hhheehhff....hheeeeeffhhheehhee",
-    "........hh.......eee..eeee....ee.....eehhh..hh..",
-    "........ee.............................eee..ee.."
+    "FFFFFFFFFFFFFFFFFFFFFFFF",
+    "fffhhfffhhfffhhffhhhffhh",
+    "fffhh...hh...hh..hhhffhh",
+    "........hh.......hhh..hh"
    ]
   },
   {
@@ -1736,32 +1995,27 @@
    "shape": "card",
    "parent": "back",
    "pivot": [
-    -12.6,
-    0.3,
+    -12.05,
+    -0.5,
     0.0
    ],
    "offset": [
     0.0,
-    -2.25,
+    -2.0,
     0.0
    ],
    "rotation": [
     0.0,
     0.0,
-    -10.0
+    -8.0
    ],
    "style": "fur_card",
    "plane": "yz",
    "art": [
-    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
-    "ffhhhffhhhfffhhhfffhhffhhffhhfffhhfffhhhffhhhfff",
-    "ffhhhffhhhfffhhhfffhhffhhffhhfffhhfffhhhffhhhfff",
-    "eehhhffeeefffeeefffhhffhheeeefffhhfffeeeffhhheee",
-    "..hhhee...fff...eeeeeeeee....fffhhfff...eeeee...",
-    "..hhh.....fff................fffhhfff...........",
-    "..hhh.....fff................fffeefff...........",
-    "..eee.....eee................eee..eee..........."
+    "FFFFFFFFFFFFFFFFFFFFFFFF",
+    "ffhhhffhhhfffhhhfffhhffh",
+    "..hhhff...fff...fffhhffh",
+    "..hhh.....fff..........."
    ]
   },
   {
@@ -1788,82 +2042,293 @@
     -0.0,
     0.0
    ],
-   "style": "scaly_body"
+   "style": "scaly_neck",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaabaaaaaaacc",
+       "aaaaaaaaaaaacc",
+       "dddadddadddaaa",
+       "aeffffaaaaaaae",
+       "efgffgeeeeeeef",
+       "effeegeeefeeef",
+       "fffeeffffeefff",
+       "fffffffffeefff",
+       "eeefeeefeeefee",
+       "ffffffffffeeee",
+       "ffffffffffeeee"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:5",
+       "d": "moss:2",
+       "e": "fur:3",
+       "f": "fur:4",
+       "g": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaabb",
+       "aaaaaaaaaaaabb",
+       "bbbcabbabbbadd",
+       "efffffffffffff",
+       "gggggggggggggg",
+       "fgfeegfffgfffg",
+       "gggffggggffggg",
+       "gggggggggggggg",
+       "fffgfffgfffgff",
+       "gggggggggghhhh",
+       "gggggggggghhhh"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:4",
+       "d": "moss:1",
+       "e": "fur:2",
+       "f": "fur:3",
+       "g": "fur:4",
+       "h": "fur:5"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "aaaaaaaaaa",
+       "bbbcdbbabb",
+       "eedccdaaac",
+       "ffcccccece",
+       "efdddccece",
+       "eeeeeeeeee",
+       "eeeeeeeeee",
+       "cceecccecc",
+       "eeeeeeffff",
+       "eeeeeeffff"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "fur:2",
+       "d": "fur:1",
+       "e": "fur:3",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaabbbbaa",
+       "aaaabbbbaa",
+       "bbbacccbbb",
+       "dabbefddda",
+       "gdeeddgggd",
+       "dgeeeddddg",
+       "hhhhgghghg",
+       "hhhhgggggg",
+       "ggghdddgdd",
+       "gggggggggg",
+       "gggggdgggg"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "fur:3",
+       "e": "fur:2",
+       "f": "fur:1",
+       "g": "fur:4",
+       "h": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaa",
+       "bbbabbbabbbabb",
+       "aaaaaacaaaaaaa",
+       "aaabbaaaaaaaaa",
+       "acbbbaaababbba",
+       "ccaaccddbbbbcc",
+       "caaaccccbbbbaa",
+       "bbbaaaaceeebbb",
+       "aaaaaaaaaabbbb"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:5",
+       "d": "moss:6",
+       "e": "moss:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abaaaaaaccccaa",
+       "aaaaaaaacccccc",
+       "bbbabbbaaaacaa",
+       "cccccccccccccc",
+       "aacccccccccccc",
+       "baaaacbbacaaac",
+       "cccdcaaacccccc",
+       "cccdcaaacccccc",
+       "aaacbbbaaaacaa",
+       "ccccccccccaaaa"
+      ],
+      "key": {
+       "a": "fur:1",
+       "b": "fur:0",
+       "c": "fur:2",
+       "d": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "neck_scute0",
    "shape": "box",
    "parent": "neck",
    "size": [
-    3,
-    1.5,
+    4,
+    2,
     3
    ],
    "pivot": [
     0.0,
-    5.8,
-    -2.5
+    6.0,
+    -1.0
    ],
-   "rotation": [
-    -6.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "neck_scute1",
-   "shape": "box",
-   "parent": "neck",
-   "size": [
-    3,
-    1.5,
-    3
-   ],
-   "pivot": [
-    0.0,
-    5.8,
-    2.0
-   ],
-   "rotation": [
-    -6.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "cbbb"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "cccb"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:5"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abcd",
+       "ccca",
+       "bcda"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabc",
+       "ddda",
+       "abea"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:4",
+       "d": "moss:0",
+       "e": "moss:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "mane_l",
    "shape": "card",
    "parent": "neck",
    "pivot": [
-    7.1,
-    5.4,
-    -0.0
+    7.05,
+    5.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
     0.0,
     0.0,
-    10.0
+    8.0
    ],
    "style": "fur_card",
    "plane": "yz",
    "art": [
-    "FFFFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFFFF",
-    "fffhhhffhhffhhffhhff",
-    "fffhhhffhhffhhffhhff",
-    "eeeeeeffhhffhhffhhff",
-    "......eeeeffhheehhee",
-    "..........ffhh..hh..",
-    "..........ffhh..hh..",
-    "..........eehh..hh..",
-    "............ee..ee.."
+    "FFFFFFFFFF",
+    "fffhhhffhh",
+    "..........",
+    ".........."
    ]
   },
   {
@@ -1871,33 +2336,27 @@
    "shape": "card",
    "parent": "neck",
    "pivot": [
-    -7.1,
-    5.4,
-    -0.0
+    -7.05,
+    5.0,
+    0.0
    ],
    "offset": [
     0.0,
-    -2.5,
+    -2.0,
     0.0
    ],
    "rotation": [
     0.0,
     0.0,
-    -10.0
+    -8.0
    ],
    "style": "fur_card",
    "plane": "yz",
    "art": [
-    "FFFFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFFFF",
-    "ffhhhffhhffhhhfffhhh",
-    "ffhhhffhhffhhhfffhhh",
-    "eehhhffhhffeeefffeee",
-    "..eeeffhhff...fff...",
-    ".....ffhhff...fff...",
-    ".....ffeeff...fff...",
-    ".....ff..ff...eee...",
-    ".....ee..ee........."
+    "FFFFFFFFFF",
+    "ffhhhffhhf",
+    ".....ffhhf",
+    ".....ff..f"
    ]
   },
   {
@@ -1906,7 +2365,7 @@
    "parent": "neck",
    "size": [
     18,
-    5.5,
+    5,
     12
    ],
    "pivot": [
@@ -1916,7 +2375,7 @@
    ],
    "offset": [
     0.0,
-    2.75,
+    2.5,
     6.0
    ],
    "rotation": [
@@ -1924,23 +2383,142 @@
     -0.0,
     0.0
    ],
-   "style": "hammer"
-  },
-  {
-   "id": "crown_scute",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    3,
-    1,
-    3
-   ],
-   "pivot": [
-    0.0,
-    6.0,
-    4.0
-   ],
-   "style": "scute"
+   "style": "hammer",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaabbbbbbbbbbbbbbb",
+       "ccdddeddeddeddedde",
+       "ffgfeffgfffffeeeff",
+       "efeeeeegeefeeedefe",
+       "gffgggffffffffffff"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "fur:1",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:4",
+       "g": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaabbaaaabbaa",
+       "ccdccdccdccdccdccd",
+       "eefffffffffdddffff",
+       "fedcfddfccfccdccfd",
+       "ffddffffddffeefdff"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "fur:1",
+       "d": "fur:2",
+       "e": "fur:4",
+       "f": "fur:3"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abbbbbbbccbb",
+       "ddeddeddedde",
+       "feffffffgggf",
+       "eeeefeefffge",
+       "gggfffffefff"
+      ],
+      "key": {
+       "a": "moss:1",
+       "b": "moss:2",
+       "c": "moss:3",
+       "d": "fur:1",
+       "e": "fur:2",
+       "f": "fur:3",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aabbbaccdcaa",
+       "eefeefggeeef",
+       "hhhhhhhhhhhf",
+       "fheehffhhhhe",
+       "iihfhhiiihii"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:2",
+       "d": "moss:1",
+       "e": "fur:2",
+       "f": "fur:3",
+       "g": "fur:1",
+       "h": "fur:4",
+       "i": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aabbaabbcbaaaaaaaa",
+       "ddaddaaabddaddadda",
+       "baaaabbbaaabbabaab",
+       "aaddaaabddaaaaddad",
+       "aaaaaaaaaaaaaaddaa",
+       "dddedadddedadddeda",
+       "aaaaaaaaddaaaaddaa",
+       "daddaddaeeaddaddad",
+       "daaaaabbadaabaaaaa",
+       "edaddaaaaedaddadda",
+       "bbdddaaadddaaaaaad",
+       "abeedaaaeedddaddae"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:5",
+       "c": "moss:6",
+       "d": "moss:3",
+       "e": "moss:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abbbbbbbaabbcbbbbb",
+       "bcbccbccbccbccbcca",
+       "bbbbbcbbbbbbbbbbbd",
+       "cbccbecbccbccbccba",
+       "bbbbbbbbbbbbbbbaaa",
+       "ccabcbccabcbccbbba",
+       "bbaabbbbddabbbbbbb",
+       "cbccbccbbbaccbccbc",
+       "cbbccecbbcccbbbcce",
+       "ecbeeeecbeecccbeee",
+       "bbbbbaaabbbbbbcccb",
+       "cbccbbbaeebccbeecc"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1",
+       "d": "fur:4",
+       "e": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "muzzle",
@@ -1948,7 +2526,7 @@
    "parent": "head",
    "size": [
     16,
-    4.5,
+    4,
     11
    ],
    "pivot": [
@@ -1956,7 +2534,122 @@
     -2.0,
     6.0
    ],
-   "style": "scaly"
+   "style": "scaly",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabaaaaabbaaabaa",
+       "cacacacaabcacaca",
+       "aaaaaaaaaaaaaaaa",
+       "accdcdacacaccdcc"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbaabbaaaabbbb",
+       "caabcaabcaababab",
+       "bbbbbbbbbaaaadda",
+       "bababababcacabdc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "fur:1",
+       "d": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaabaaaaa",
+       "cacacacacac",
+       "caaaaaaaabb",
+       "ccacacacaab"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aabbabccbbb",
+       "bacbcbdccbc",
+       "aabbbbbabcc",
+       "acbcbcbcbdc"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaabbccbbccbbbb",
+       "babacbdccbdccbcb",
+       "bccbbaabbbbbbccb",
+       "bdccbbacbcbcbdcc",
+       "ccccaabbbbbbbbaa",
+       "dcdcbacbcbbacbba",
+       "bbbbaabccbaabbbb",
+       "bcbcbcbedcbcbcbc",
+       "bbabbbbccbbbccbb",
+       "cbbbcbccdbcbdccb",
+       "abbbbbbbbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:6",
+       "b": "fur:5",
+       "c": "fur:4",
+       "d": "fur:3",
+       "e": "fur:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abbbcbddaaaaccba",
+       "bbcbcbadbacbcbba",
+       "abbbaaaddabbbaaa",
+       "abababababbcabab",
+       "ddaaccaaaaabbbaa",
+       "adbaccbababacbba",
+       "addaaaaaaaaaaaaa",
+       "adebabaadbababab",
+       "addaaaaddaaabbaa",
+       "babababababacbba",
+       "aaaddaaaadeaaaaa"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:0",
+       "d": "fur:3",
+       "e": "fur:4"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hammer_l",
@@ -1965,11 +2658,11 @@
    "size": [
     8,
     5,
-    10.5
+    10
    ],
    "pivot": [
     9.0,
-    2.75,
+    2.5,
     6.5
    ],
    "offset": [
@@ -1982,7 +2675,130 @@
     -8.0,
     -5.0
    ],
-   "style": "hammer"
+   "style": "hammer",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abbbbbbb",
+       "ccdccdcc",
+       "eedddfff",
+       "feccdddf",
+       "fffeeedd"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "fur:2",
+       "d": "fur:3",
+       "e": "fur:5",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "bbcbbcbb",
+       "dddddddd",
+       "cdccdccd",
+       "dddddddd"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "fur:1",
+       "c": "fur:2",
+       "d": "fur:3"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaabbbb",
+       "ccdccdeece",
+       "fffffdddfg",
+       "dfddfccddf",
+       "ddddffffff"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "fur:1",
+       "d": "fur:2",
+       "e": "fur:0",
+       "f": "fur:3",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaabaac",
+       "ddeddedded",
+       "ffffffffff",
+       "efeefeefee",
+       "feffffffff"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:2",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aabcccab",
+       "bbbaadbb",
+       "cccccdcc",
+       "acaadccc",
+       "cccccddc",
+       "aacaadca",
+       "cccccddc",
+       "acaacacc",
+       "acccccaa",
+       "bbcaacbb"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:4",
+       "d": "moss:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabbbbcc",
+       "bbbccbdd",
+       "aabbbbbc",
+       "cbccbccb",
+       "bbbaaacc",
+       "ccbbbadd",
+       "ccbbbbbb",
+       "dcccbccb",
+       "bbaabbcc",
+       "ccaccbdd"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1",
+       "d": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hammer_tip_l",
@@ -1995,7 +2811,7 @@
    ],
    "pivot": [
     8.0,
-    -0.25,
+    -0.5,
     0.0
    ],
    "offset": [
@@ -2008,7 +2824,127 @@
     -7.0,
     -4.0
    ],
-   "style": "hammer"
+   "style": "hammer",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaabb",
+       "ccdee",
+       "ccddd",
+       "fcccd"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "fur:3",
+       "d": "fur:4",
+       "e": "fur:2",
+       "f": "fur:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaabb",
+       "ccdde",
+       "eeffg",
+       "deeeg"
+      ],
+      "key": {
+       "a": "moss:1",
+       "b": "moss:2",
+       "c": "fur:0",
+       "d": "fur:1",
+       "e": "fur:2",
+       "f": "fur:3",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abbbaaaaa",
+       "cdedcdccd",
+       "eeeffeeee",
+       "dedefdded"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "fur:1",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaabaa",
+       "cdcddcddc",
+       "efffffffc",
+       "cfccfcccg"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "fur:3",
+       "d": "fur:2",
+       "e": "fur:5",
+       "f": "fur:4",
+       "g": "fur:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaabb",
+       "bbacc",
+       "ccbbb",
+       "dcccb",
+       "bbbbb",
+       "ccbcc",
+       "bbaae",
+       "cbbbe",
+       "bbbbb"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:2",
+       "e": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abbbb",
+       "cabaa",
+       "aaabb",
+       "cacab",
+       "aaabb",
+       "ccaaa",
+       "bbbab",
+       "abaca",
+       "aaaab"
+      ],
+      "key": {
+       "a": "fur:1",
+       "b": "fur:2",
+       "c": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hammer_cap_l",
@@ -2024,23 +2960,125 @@
     -0.0,
     -0.0
    ],
-   "style": "hammer"
+   "style": "hammer",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "c"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "fur:1",
+       "c": "fur:4"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "c"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "fur:1",
+       "c": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aabbbbb",
+       "ccddcdc",
+       "eeffeee"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "fur:1",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaabbb",
+       "ccddddc",
+       "eeefffe"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "fur:2",
+       "d": "fur:3",
+       "e": "fur:4",
+       "f": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "a",
+       "b",
+       "c",
+       "c",
+       "c"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "c",
+       "a",
+       "a",
+       "b",
+       "a"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "eye_l",
-   "shape": "box",
+   "shape": "card",
    "parent": "hammer_tip_l",
-   "size": [
-    3,
-    3,
-    0.5
-   ],
    "pivot": [
     3.0,
     -0.0,
-    4.75
+    4.55
    ],
-   "style": "eye"
+   "style": "eye",
+   "plane": "xy",
+   "art": [
+    "kk",
+    "kl"
+   ]
   },
   {
    "id": "brow_l",
@@ -2049,11 +3087,11 @@
    "size": [
     4,
     1,
-    1.5
+    2
    ],
    "pivot": [
     3.0,
-    1.9,
+    2.0,
     4.5
    ],
    "rotation": [
@@ -2061,7 +3099,83 @@
     0.0,
     7.0
    ],
-   "style": "brow"
+   "style": "brow",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abbc"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abbc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "ab"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "ab"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abbc",
+       "cdbc"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4",
+       "d": "moss:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abbb",
+       "abab"
+      ],
+      "key": {
+       "a": "moss:1",
+       "b": "moss:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hammer_r",
@@ -2070,11 +3184,11 @@
    "size": [
     8,
     5,
-    10.5
+    10
    ],
    "pivot": [
     -9.0,
-    2.75,
+    2.5,
     6.5
    ],
    "offset": [
@@ -2087,7 +3201,133 @@
     8.0,
     5.0
    ],
-   "style": "hammer"
+   "style": "hammer",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "bbcbbcbb",
+       "ddddedff",
+       "fdffeccf",
+       "ffffffdd"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "fur:2",
+       "c": "fur:3",
+       "d": "fur:5",
+       "e": "fur:6",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabaaaaa",
+       "ccdccdcc",
+       "eeeeeeee",
+       "deededde",
+       "eeeeeeee"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "fur:1",
+       "d": "fur:2",
+       "e": "fur:3"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abbacccddc",
+       "eefffgffgf",
+       "hhiiigggii",
+       "ihggiffffg",
+       "iiigggiggi"
+      ],
+      "key": {
+       "a": "moss:1",
+       "b": "moss:0",
+       "c": "moss:2",
+       "d": "moss:3",
+       "e": "fur:0",
+       "f": "fur:1",
+       "g": "fur:2",
+       "h": "fur:4",
+       "i": "fur:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "bbcbbcbbcb",
+       "dddddddddd",
+       "ddccdccdcc",
+       "eddfddcccc"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "fur:2",
+       "c": "fur:3",
+       "d": "fur:4",
+       "e": "fur:6",
+       "f": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaabba",
+       "bbabbbbb",
+       "aaaaabaa",
+       "baababba",
+       "aaaaaabb",
+       "bbabbacc",
+       "aaaaaaab",
+       "babbabbb",
+       "adaaaaab",
+       "baabbabb"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "moss:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaabb",
+       "ccaddaaa",
+       "aabbbddd",
+       "daaabccd",
+       "dddaaaaa",
+       "dcdddadd",
+       "addaaaaa",
+       "ddcdadda",
+       "aaaaabaa",
+       "ddaddadd"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "fur:0",
+       "d": "fur:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hammer_tip_r",
@@ -2100,7 +3340,7 @@
    ],
    "pivot": [
     -8.0,
-    -0.25,
+    -0.5,
     0.0
    ],
    "offset": [
@@ -2113,7 +3353,122 @@
     7.0,
     4.0
    ],
-   "style": "hammer"
+   "style": "hammer",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaa",
+       "bbcbb",
+       "ddddd",
+       "cdbbc"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "fur:2",
+       "c": "fur:3",
+       "d": "fur:4"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaa",
+       "bbcbb",
+       "deeee",
+       "eecce"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "fur:1",
+       "c": "fur:2",
+       "d": "fur:4",
+       "e": "fur:3"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "bbcbbcbbc",
+       "cddddddde",
+       "bcbbdccdf"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "fur:1",
+       "c": "fur:2",
+       "d": "fur:3",
+       "e": "fur:5",
+       "f": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaabbbaa",
+       "ccdcdedcd",
+       "fffffeefe",
+       "efeefdded"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "fur:2",
+       "d": "fur:3",
+       "e": "fur:4",
+       "f": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaa",
+       "bbabb",
+       "aaccc",
+       "baaac",
+       "ccaaa",
+       "ababb",
+       "caaaa",
+       "babba",
+       "aaaaa"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabbb",
+       "bbbcc",
+       "ddaab",
+       "adbba",
+       "dddaa",
+       "aadbb",
+       "aabbb",
+       "baccb",
+       "aaade"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:0",
+       "d": "fur:3",
+       "e": "fur:4"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "hammer_cap_r",
@@ -2129,23 +3484,126 @@
     -0.0,
     -0.0
    ],
-   "style": "hammer"
+   "style": "hammer",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "c"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "fur:2",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "c"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "fur:2",
+       "c": "fur:3"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abbaccc",
+       "dedffef",
+       "gdddddd"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:2",
+       "d": "fur:3",
+       "e": "fur:2",
+       "f": "fur:1",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaabaaa",
+       "ccdccdd",
+       "eedddff"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "fur:2",
+       "d": "fur:3",
+       "e": "fur:4",
+       "f": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "a",
+       "a",
+       "c",
+       "b",
+       "b"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "a",
+       "b",
+       "a",
+       "c",
+       "c",
+       "b",
+       "c"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:1",
+       "c": "fur:2"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "eye_r",
-   "shape": "box",
+   "shape": "card",
    "parent": "hammer_tip_r",
-   "size": [
-    3,
-    3,
-    0.5
-   ],
    "pivot": [
     -3.0,
     -0.0,
-    4.75
+    4.55
    ],
-   "style": "eye"
+   "style": "eye",
+   "plane": "xy",
+   "art": [
+    "kk",
+    "lk"
+   ]
   },
   {
    "id": "brow_r",
@@ -2154,11 +3612,11 @@
    "size": [
     4,
     1,
-    1.5
+    2
    ],
    "pivot": [
     -3.0,
-    1.9,
+    2.0,
     4.5
    ],
    "rotation": [
@@ -2166,7 +3624,83 @@
     0.0,
     -7.0
    ],
-   "style": "brow"
+   "style": "brow",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abbc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abbc"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "ab"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "ab"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abbc",
+       "abda"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abbb",
+       "abab"
+      ],
+      "key": {
+       "a": "moss:1",
+       "b": "moss:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "nose",
@@ -2174,15 +3708,111 @@
    "parent": "head",
    "size": [
     12,
-    2.5,
+    3,
     2
    ],
    "pivot": [
     0.0,
-    -0.25,
+    0.0,
     13.0
    ],
-   "style": "nose"
+   "style": "nose",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaa",
+       "aaaaaaaaabba",
+       "aaaaaaaaaacc"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:6",
+       "c": "fur:4"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbbbbbbbbc",
+       "cbbbbaaccbbb",
+       "cbbbbbbbccbb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aa",
+       "bb",
+       "cb"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aa",
+       "aa",
+       "aa"
+      ],
+      "key": {
+       "a": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abbbbbbbaabb",
+       "cbbbbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:7",
+       "b": "fur:6",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaabbaabbaa",
+       "aaaccaabbccc"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:4"
+      }
+     },
+     {
+      "face": "top",
+      "at": "bottom",
+      "art": [
+       "..ll....ll..",
+       "..kk....kk.."
+      ],
+      "key": {
+       "k": "dark:0",
+       "l": "fur:6"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "snout",
@@ -2190,31 +3820,124 @@
    "parent": "head",
    "size": [
     22,
-    2.5,
+    3,
     3
    ],
    "pivot": [
     0.0,
-    -2.75,
+    -2.5,
     12.0
    ],
-   "style": "snout"
-  },
-  {
-   "id": "snout_lip",
-   "shape": "box",
-   "parent": "snout",
-   "size": [
-    18,
-    2,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    1.75
-   ],
-   "style": "snout"
+   "style": "snout",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "bababababababababababa",
+       "aaaaaaaaaaaaaaaaaaabba"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbaaaaaaaaaaaaaabbaa",
+       "caabcacacacacacacaabca",
+       "aabccaabbaaccaaccaacca"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaa",
+       "bab",
+       "aaa"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaa",
+       "bab",
+       "ccc"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaabbbbbaaaaabbaaaaaa",
+       "babacbcbcabababbbabaaa",
+       "aaaaaaabaddaaaaaaaadda"
+      ],
+      "key": {
+       "a": "fur:6",
+       "b": "fur:5",
+       "c": "fur:4",
+       "d": "fur:7"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "key": {
+       "a": "mouth:0"
+      }
+     },
+     {
+      "face": "front",
+      "at": "bottom",
+      "art": [
+       "..k................k..",
+       "...kkkkkkkkkkkkkkkk..."
+      ],
+      "key": {
+       "k": "fur:1"
+      }
+     },
+     {
+      "faces": [
+       "left",
+       "right"
+      ],
+      "at": "bottom",
+      "art": [
+       "kkk"
+      ],
+      "key": {
+       "k": "fur:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "throat",
@@ -2238,7 +3961,7 @@
    "parent": "snout",
    "pivot": [
     0.0,
-    -1.25,
+    -1.5,
     0.5
    ],
    "style": "scaly"
@@ -2254,59 +3977,14 @@
    ],
    "offset": [
     0.0,
-    -0.75,
+    -1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "xy",
    "art": [
-    "gggg.gggg.gggg.gggg.gggg.gggg.gggg.gggg.",
-    "Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.",
-    ".tt...tt...tt...tt...tt...tt...tt...tt.."
-   ]
-  },
-  {
-   "id": "teeth_upper_1",
-   "shape": "card",
-   "parent": "teeth_upper",
-   "pivot": [
-    0.0,
-    0.4,
-    -0.9
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "xy",
-   "art": [
-    "gg.gggg.gggg.gggg.gggg.gggg.gggg.gggg.gg",
-    "ts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Tt",
-    "t...tt...tt...tt...tt...tt...tt...tt...t"
-   ]
-  },
-  {
-   "id": "teeth_upper_2",
-   "shape": "card",
-   "parent": "teeth_upper",
-   "pivot": [
-    0.0,
-    0.8,
-    -1.8
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "xy",
-   "art": [
-    ".gggg.gggg.gggg.gggg.gggg.gggg.gggg.gggg",
-    ".Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts",
-    "..tt...tt...tt...tt...tt...tt...tt...tt."
+    "gg.gg.gg.gg.gg.gg.gg",
+    "Tt.Tt.Tt.Tt.Tt.Tt.Tt"
    ]
   },
   {
@@ -2315,20 +3993,19 @@
    "parent": "teeth_upper",
    "pivot": [
     9.0,
-    0.4,
+    -0.0,
     -4.5
    ],
    "offset": [
     0.0,
-    -0.75,
+    -1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "ggg.gggg.ggg",
-    "tts.Ttts.Ttt",
-    "tt...tt...tt"
+    "g.gg.g",
+    "t.Tt.T"
    ]
   },
   {
@@ -2337,20 +4014,19 @@
    "parent": "teeth_upper",
    "pivot": [
     -9.0,
-    0.4,
+    -0.0,
     -4.5
    ],
    "offset": [
     0.0,
-    -0.75,
+    -1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "ggg.gggg.ggg",
-    "tts.Ttts.Ttt",
-    "tt...tt...tt"
+    "g.gg.g",
+    "t.Tt.T"
    ]
   },
   {
@@ -2359,7 +4035,7 @@
    "parent": "head",
    "size": [
     20,
-    2.5,
+    3,
     11
    ],
    "pivot": [
@@ -2369,10 +4045,115 @@
    ],
    "offset": [
     0.0,
-    -1.25,
+    -1.5,
     5.5
    ],
-   "style": "jaw"
+   "style": "jaw",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaabbccaaaaaaaaaa",
+       "cacacaabdccacacacaca",
+       "ccaaacdcabbaccaaaacc"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaabbbbbbbbbbbbbbaa",
+       "babacbcbcbcbcbcbcbba",
+       "baabbbbbbccbbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaba",
+       "cacacacacbc",
+       "aaaaaacaaba"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaab",
+       "bababababac",
+       "aaaaabbbbaa"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaa"
+      ],
+      "key": {
+       "a": "mouth:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabbbbaabbbbaabbbbab",
+       "abababababababababab",
+       "cbbaabbbbbbbbaabbbbb",
+       "dbbeaacbbabacaaabacb",
+       "bbbbbbccbbccbbccbbaa",
+       "abababbcabbcabbcabea",
+       "bbbbbbccbbbaaaaccbbb",
+       "babababababeaeaababa",
+       "ccccbbbbbbbbbbbbbbbb",
+       "bcbcabeaabababababbc",
+       "bbbbbbbbbbbbbbbbbbba"
+      ],
+      "key": {
+       "a": "fur:1",
+       "b": "fur:2",
+       "c": "fur:3",
+       "d": "fur:4",
+       "e": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "chin",
@@ -2388,29 +4169,94 @@
     -1.5,
     11.0
    ],
-   "style": [
-    "jaw",
-    "chin"
-   ]
-  },
-  {
-   "id": "chin_lip",
-   "shape": "box",
-   "parent": "chin",
-   "size": [
-    18,
-    2,
-    0.5
-   ],
-   "pivot": [
-    0.0,
-    0.25,
-    1.75
-   ],
-   "style": [
-    "jaw",
-    "chin"
-   ]
+   "style": "jaw",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabbccaaaabaaaaaaaaacc",
+       "caabdccacacacacacacadc",
+       "aaaabacccabbaaaabbaaaa"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbaaaaaaaaaaaaaaaaaa",
+       "caabcacacacacacacacaca",
+       "aaabbaaaaaabbaaaaccaaa"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaa",
+       "bab",
+       "aaa"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aab",
+       "bac",
+       "aaa"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaa",
+       "aaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "key": {
+       "a": "mouth:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaabbccaaaaaaaa",
+       "ccdacaccdaabdddacacaca",
+       "aaaaaaaaaaaaaccaaaaaaa"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "fur:1",
+       "d": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tongue",
@@ -2423,7 +4269,7 @@
    ],
    "pivot": [
     0.0,
-    0.25,
+    -0.0,
     5.0
    ],
    "style": "tongue"
@@ -2450,59 +4296,14 @@
    ],
    "offset": [
     0.0,
-    0.75,
+    1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "xy",
    "art": [
-    "t...tt...tt...tt...tt...tt...tt...tt..",
-    "ts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.",
-    "gg.gggg.gggg.gggg.gggg.gggg.gggg.gggg."
-   ]
-  },
-  {
-   "id": "teeth_lower_1",
-   "shape": "card",
-   "parent": "teeth_lower",
-   "pivot": [
-    0.0,
-    -0.4,
-    -0.9
-   ],
-   "offset": [
-    0.0,
-    0.75,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "xy",
-   "art": [
-    "..tt...tt...tt...tt...tt...tt...tt...t",
-    ".Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Tt",
-    ".gggg.gggg.gggg.gggg.gggg.gggg.gggg.gg"
-   ]
-  },
-  {
-   "id": "teeth_lower_2",
-   "shape": "card",
-   "parent": "teeth_lower",
-   "pivot": [
-    0.0,
-    -0.8,
-    -1.8
-   ],
-   "offset": [
-    0.0,
-    0.75,
-    0.0
-   ],
-   "style": "teeth",
-   "plane": "xy",
-   "art": [
-    "tt...tt...tt...tt...tt...tt...tt...tt.",
-    "tts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts.Ttts",
-    "ggg.gggg.gggg.gggg.gggg.gggg.gggg.gggg"
+    "t.Tt.Tt.Tt.Tt.Tt.Tt",
+    "g.gg.gg.gg.gg.gg.gg"
    ]
   },
   {
@@ -2511,20 +4312,19 @@
    "parent": "teeth_lower",
    "pivot": [
     8.6,
-    -0.4,
+    -0.0,
     -4.5
    ],
    "offset": [
     0.0,
-    0.75,
+    1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "...tt...tt..",
-    "s.Ttts.Ttts.",
-    "g.gggg.gggg."
+    ".Tt.Tt",
+    ".gg.gg"
    ]
   },
   {
@@ -2533,20 +4333,19 @@
    "parent": "teeth_lower",
    "pivot": [
     -8.6,
-    -0.4,
+    -0.0,
     -4.5
    ],
    "offset": [
     0.0,
-    0.75,
+    1.0,
     0.0
    ],
    "style": "teeth",
    "plane": "yz",
    "art": [
-    "...tt...tt..",
-    "s.Ttts.Ttts.",
-    "g.gggg.gggg."
+    ".Tt.Tt",
+    ".gg.gg"
    ]
   },
   {
@@ -2573,7 +4372,154 @@
     -0.0,
     0.0
    ],
-   "style": "scaly_tail"
+   "style": "scaly_tail",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaabbbaaac",
+       "aaaaaabbbaaac",
+       "ccaccaaabccad",
+       "ccccacacaccca",
+       "ccccacacacccc",
+       "dcccadcccdacc",
+       "aaaaaaaaaaaaa",
+       "eeeeeeeeeeeee",
+       "eeffefeefeefe",
+       "fgggffffgffff"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:2",
+       "d": "moss:1",
+       "e": "fur:3",
+       "f": "fur:4",
+       "g": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaabaaaaabbba",
+       "bbbbaacaabbdb",
+       "aabacaecaabda",
+       "aaabaacaaaaaa",
+       "aaaaaaaaaaaaa",
+       "caccaccaccacc",
+       "cccaaaaaaaaaa",
+       "fffgggggggggg",
+       "ffggghgghgghg",
+       "hhhhhhhhiiihh"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "moss:1",
+       "d": "moss:4",
+       "e": "moss:0",
+       "f": "fur:1",
+       "g": "fur:2",
+       "h": "fur:3",
+       "i": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "aaaaaaaa",
+       "bcbccbdb",
+       "beeecdfg",
+       "cedebgff",
+       "cddebdgf",
+       "agfgagff",
+       "gfffgfff",
+       "ggfggfgg",
+       "hhhhhfff"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:0",
+       "d": "fur:1",
+       "e": "fur:0",
+       "f": "fur:3",
+       "g": "fur:2",
+       "h": "fur:5"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaabb",
+       "aaaaaabb",
+       "bbabbacc",
+       "dddaaddb",
+       "eedadedb",
+       "defbddfa",
+       "eedadeda",
+       "egedeeed",
+       "degededd",
+       "egggggee"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "fur:3",
+       "e": "fur:4",
+       "f": "fur:2",
+       "g": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaabbbaaaaaaa",
+       "aaabbbaaaaaaa",
+       "ccaaabccaccac",
+       "aaaaaaaacccaa",
+       "aaaaaaaacccaa",
+       "caccaccaddccc",
+       "aaaaaaaaaaaaa",
+       "aaaaaaaaaaaaa"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:5",
+       "c": "moss:3",
+       "d": "moss:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaabbcddbaaa",
+       "aaaabbcddaaaa",
+       "bbabdbccdbbab",
+       "bbaabbdbbaaaa",
+       "bbabbbdbbaaaa",
+       "dbddbdcbdbadd",
+       "abbbbbaaaabbb",
+       "bbbbbbaaabbbb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:0",
+       "d": "fur:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tail_1",
@@ -2581,7 +4527,7 @@
    "parent": "tail_0",
    "size": [
     9,
-    7.5,
+    7,
     8
    ],
    "pivot": [
@@ -2599,7 +4545,140 @@
     0.0,
     0.0
    ],
-   "style": "scaly_tail"
+   "style": "scaly_tail",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abbbcbbaa",
+       "bbbbcbbaa",
+       "ccbccbccb",
+       "bbbbbbbba",
+       "bbbbbbbba",
+       "deddeddee",
+       "fggedehgg"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:6",
+       "g": "fur:5",
+       "h": "fur:4"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaabb",
+       "aaaaaaaba",
+       "bbabbabba",
+       "ccaaaaaaa",
+       "ccaaaaaaa",
+       "deffdffdf",
+       "ggeedeeee"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:3",
+       "d": "fur:2",
+       "e": "fur:3",
+       "f": "fur:1",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aabbbbbb",
+       "bbbbbbbb",
+       "ccbccbdd",
+       "becccdee",
+       "bedfgfee",
+       "deffffde",
+       "hheehhee"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "fur:1",
+       "e": "fur:2",
+       "f": "fur:0",
+       "g": "moss:0",
+       "h": "fur:3"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaabcc",
+       "aaaaaabb",
+       "ddaddaaa",
+       "eebbbaea",
+       "ffeaeeea",
+       "efegfgee",
+       "fffffeff"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:4",
+       "c": "moss:5",
+       "d": "moss:2",
+       "e": "fur:3",
+       "f": "fur:4",
+       "g": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaabbbaaa",
+       "aaabbbaaa",
+       "bbaccbbba",
+       "ccbbbbbbb",
+       "bcbbcbbaa",
+       "cbcccccab",
+       "aabbcbbaa",
+       "abbbcbbaa"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaabaaca",
+       "aaaaaaaaa",
+       "bdabbabba",
+       "aacccaaaa",
+       "aacccaaaa",
+       "baaacbbab",
+       "bbbabaaca",
+       "bbbbbaacc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:3",
+       "d": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tail_2",
@@ -2625,7 +4704,127 @@
     0.0,
     0.0
    ],
-   "style": "scaly_tail"
+   "style": "scaly_tail",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaabbb",
+       "aaabbb",
+       "ccaaab",
+       "ddddde",
+       "eeeeef"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "moss:1",
+       "d": "fur:3",
+       "e": "fur:4",
+       "f": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaabbb",
+       "baaabb",
+       "cdddab",
+       "efeeef",
+       "eeggge"
+      ],
+      "key": {
+       "a": "moss:1",
+       "b": "moss:2",
+       "c": "fur:1",
+       "d": "moss:0",
+       "e": "fur:3",
+       "f": "fur:2",
+       "g": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaa",
+       "aaaaaab",
+       "cdaccba",
+       "effggff",
+       "fghhgff"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:3",
+       "c": "moss:1",
+       "d": "fur:1",
+       "e": "fur:2",
+       "f": "fur:3",
+       "g": "fur:4",
+       "h": "fur:5"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaabbb",
+       "bbaaabb",
+       "ccbbbbc",
+       "dbbbddd",
+       "edddeee"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2",
+       "d": "fur:3",
+       "e": "fur:4"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abbbbb",
+       "abbbbb",
+       "bcbccb",
+       "ccbbbc",
+       "ccbbbc",
+       "dcccbd",
+       "bbbaaa"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabacc",
+       "aabacd",
+       "bbbbad",
+       "aabbac",
+       "aaaaac",
+       "babbaa",
+       "bbbaaa"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:3",
+       "d": "fur:4"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tail_tip",
@@ -2633,7 +4832,7 @@
    "parent": "tail_2",
    "size": [
     4,
-    3.5,
+    3,
     3
    ],
    "pivot": [
@@ -2646,7 +4845,93 @@
     0.0,
     -1.5
    ],
-   "style": "scaly_tail"
+   "style": "scaly_tail",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abab",
+       "abbb",
+       "bbac"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaab",
+       "aaab",
+       "bbac"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaa",
+       "aaa",
+       "bba"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaa",
+       "aaa",
+       "bca"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "fur:3",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaa",
+       "aaaa",
+       "bbab"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaa",
+       "aaaa",
+       "bacb"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tail_scute0",
@@ -2654,173 +4939,302 @@
    "parent": "tail_0",
    "size": [
     3,
-    1.5,
+    2,
     3
    ],
    "pivot": [
     0.0,
     5.5,
-    -2.0
+    -4.0
    ],
-   "rotation": [
-    8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc",
+       "abd"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3",
+       "d": "moss:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc",
+       "dad"
+      ],
+      "key": {
+       "a": "moss:2",
+       "b": "moss:1",
+       "c": "moss:0",
+       "d": "moss:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tail_scute1",
    "shape": "box",
-   "parent": "tail_0",
+   "parent": "tail_1",
    "size": [
     3,
-    1.5,
+    2,
     3
    ],
    "pivot": [
     0.0,
-    5.3,
-    -6.0
+    4.0,
+    -4.0
    ],
-   "rotation": [
-    8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aab",
+       "bbb",
+       "bcb"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc",
+       "bcb"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "tail_scute2",
    "shape": "box",
-   "parent": "tail_1",
-   "size": [
-    2.5,
-    1.5,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    4.2,
-    -2.0
-   ],
-   "rotation": [
-    8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "tail_scute3",
-   "shape": "box",
-   "parent": "tail_1",
-   "size": [
-    2.5,
-    1.5,
-    2.5
-   ],
-   "pivot": [
-    0.0,
-    4.0,
-    -6.0
-   ],
-   "rotation": [
-    8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "tail_scute4",
-   "shape": "box",
    "parent": "tail_2",
    "size": [
     2,
-    1.5,
-    2
+    2,
+    3
    ],
    "pivot": [
     0.0,
-    2.9,
-    -3.0
+    3.0,
+    -3.5
    ],
-   "rotation": [
-    8.0,
-    0.0,
-    0.0
-   ],
-   "style": "scute"
-  },
-  {
-   "id": "tail_tuft",
-   "shape": "card",
-   "parent": "tail_tip",
-   "pivot": [
-    0.0,
-    -0.0,
-    -2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    -1.5
-   ],
-   "style": "fur_card",
-   "plane": "yz",
-   "art": [
-    ".....f..........",
-    "...fhf.f........",
-    "..fhhfhff.f.....",
-    ".fhfFhhFfhf.....",
-    "fhhFhFFhFFff....",
-    "efhFFFhFFFFFFF..",
-    "ehfFFhFFFFFFFFFF",
-    "efhFFFhFFFFFFFFF",
-    "fhhFhFFhFFFFFF..",
-    ".fhfFhhFfhf.....",
-    "..fhhfhef.f.....",
-    "...ehf.e........",
-    ".....e.........."
-   ]
-  },
-  {
-   "id": "tail_tuft_x",
-   "shape": "card",
-   "parent": "tail_tip",
-   "pivot": [
-    0.0,
-    -0.0,
-    -2.0
-   ],
-   "offset": [
-    0.0,
-    0.0,
-    -1.5
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    90.0
-   ],
-   "style": "fur_card",
-   "plane": "yz",
-   "art": [
-    "..........f.....",
-    "........f.fhf...",
-    ".....f.ffhfhhf..",
-    ".....fhfFhhFfhf.",
-    "....ffFFhFFhFhhf",
-    "..FFFFFFFhFFFhfe",
-    "FFFFFFFFFFhFFfhe",
-    "FFFFFFFFFhFFFhfe",
-    "..FFFFFFhFFhFhhf",
-    ".....fhfFhhFfhf.",
-    ".....f.fehfhhf..",
-    "........e.fhe...",
-    "..........e....."
-   ]
+   "style": "scute",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "ab",
+       "cc"
+      ],
+      "key": {
+       "a": "moss:5",
+       "b": "moss:4",
+       "c": "moss:3"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "ab",
+       "cc"
+      ],
+      "key": {
+       "a": "moss:3",
+       "b": "moss:2",
+       "c": "moss:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:3",
+       "c": "moss:2"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abc",
+       "ccc"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "ab",
+       "cc",
+       "bc"
+      ],
+      "key": {
+       "a": "moss:6",
+       "b": "moss:5",
+       "c": "moss:4"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ab",
+       "bc",
+       "cd"
+      ],
+      "key": {
+       "a": "moss:4",
+       "b": "moss:2",
+       "c": "moss:1",
+       "d": "moss:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "leg_fl",
@@ -2841,39 +5255,141 @@
     -4.5,
     0.0
    ],
-   "style": "scaly_leg"
-  },
-  {
-   "id": "cuff_fl_out",
-   "shape": "card",
-   "parent": "leg_fl",
-   "pivot": [
-    4.55,
-    -2.5,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    -2.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    6.0
-   ],
-   "style": "fur_card",
-   "plane": "yz",
-   "art": [
-    "FFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFF",
-    "fffhhhfffhhfffhhhf",
-    "fffhhhfffhheeehhhf",
-    "fffhhhfffhh...hhhe",
-    "fffhhhfffhh...eee.",
-    "eeeeeefffhh.......",
-    "......eeeee......."
-   ]
+   "style": "scaly_leg",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaabcadde",
+       "aaaaaaeee",
+       "eeaeeadde",
+       "ccaeeacca",
+       "ccaaaaaaa",
+       "aceeaeeae",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "eeaeeaeea",
+       "aaeeeaaac"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:6",
+       "c": "fur:5",
+       "d": "fur:2",
+       "e": "fur:3"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaabbbbbb",
+       "aaabbbbbb",
+       "bbaccbccb",
+       "aabbbbbbb",
+       "aabbbbbbb",
+       "baccbccbc",
+       "bbbbbbbbb",
+       "bbbbbbbbb",
+       "ccbccbccb",
+       "bbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:2"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaabbbbbb",
+       "aaabbbbbb",
+       "ccaaabaab",
+       "bbbbbbbbb",
+       "bbbbbbbbb",
+       "abaabaaba",
+       "bbbaaabbb",
+       "bbbaaabbb",
+       "aabccaaab",
+       "bbaaaaaab"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "fur:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abbbbbbbb",
+       "bbbbbbbbb",
+       "ccbccbccb",
+       "bbbbbbbba",
+       "bbbbbbbba",
+       "cbccbccbb",
+       "bbbbbbbbb",
+       "bbbbbbbbb",
+       "ccbccbccb",
+       "bbccccccb"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:3"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaabbbbbb",
+       "aaabbbbbb",
+       "aaaccbccb",
+       "aabccaddb",
+       "aabccaddb",
+       "bacecbadc",
+       "bbbbbbccc",
+       "bbbabbcec",
+       "ccbbbbffc"
+      ],
+      "key": {
+       "a": "fur:6",
+       "b": "fur:5",
+       "c": "fur:4",
+       "d": "fur:7",
+       "e": "fur:3",
+       "f": "fur:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabcccbbb",
+       "abbcccbbb",
+       "ccbddcccb",
+       "bbbbbbbbb",
+       "bbbbbbbbb",
+       "cbccbccbc",
+       "bbbaabccb",
+       "bbbaabccb",
+       "ccbccbccb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1",
+       "d": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "shin_fl",
@@ -2894,7 +5410,122 @@
     -3.0,
     0.0
    ],
-   "style": "scaly_shin"
+   "style": "scaly_shin",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabbccbb",
+       "ababbcab",
+       "cccbbccb",
+       "cbcabbca",
+       "cbbbccbb",
+       "dadaabda"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:5",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbbbbb",
+       "bacbcbcb",
+       "baabbbbb",
+       "bbacbcbc",
+       "bbbbbbbb",
+       "dcdcdcdc"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:2",
+       "d": "fur:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababa",
+       "aaaaaaaa",
+       "abababab",
+       "aaaaaaaa",
+       "cbcbcbcb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aabbbbcc",
+       "daaadbbe",
+       "abbadbbe",
+       "aabdaabc",
+       "bbbbbbbc",
+       "dadadada"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:5",
+       "d": "fur:2",
+       "e": "fur:6"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababa",
+       "abbaabba",
+       "acbbacbb",
+       "aabbaadd",
+       "bacbbaad",
+       "adaaaaaa",
+       "abababab"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:3",
+       "d": "fur:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabbbbbb",
+       "bacbcbcb",
+       "abbbbbbb",
+       "acbcbcbc",
+       "bbbbbbbb",
+       "cbcbcbcb",
+       "bbbbbbbb",
+       "bcbcbcbc"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "foot_fl",
@@ -2902,7 +5533,7 @@
    "parent": "shin_fl",
    "size": [
     9,
-    2.5,
+    2,
     10
    ],
    "pivot": [
@@ -2912,58 +5543,120 @@
    ],
    "offset": [
     0.0,
-    -0.75,
-    0.8
+    -1.0,
+    1.0
    ],
-   "style": "foot"
-  },
-  {
-   "id": "nail_fl0",
-   "shape": "box",
-   "parent": "foot_fl",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    -2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_fl1",
-   "shape": "box",
-   "parent": "foot_fl",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    0.0,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_fl2",
-   "shape": "box",
-   "parent": "foot_fl",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
+   "style": "foot",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabbccccc",
+       "ddddddddd"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:4",
+       "c": "fur:3",
+       "d": "dark:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbaaaac",
+       "ddddddddd"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "fur:1",
+       "d": "dark:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "bbbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "dark:0"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaabbbb",
+       "cccccccccc"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "dark:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "babababab",
+       "aaaaaaaca",
+       "ababababa",
+       "aaaaaaaaa",
+       "babababab",
+       "caaaaaacc",
+       "cbababaac",
+       "aaaaaacaa",
+       "babababab"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa"
+      ],
+      "key": {
+       "a": "dark:0"
+      }
+     },
+     {
+      "face": "front",
+      "at": "bottom",
+      "art": [
+       ".tT.tT.tT",
+       ".ss.ss.ss"
+      ],
+      "key": {
+       "t": "teeth:2",
+       "T": "teeth:1",
+       "s": "teeth:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "leg_fr",
@@ -2984,39 +5677,140 @@
     -4.5,
     0.0
    ],
-   "style": "scaly_leg"
-  },
-  {
-   "id": "cuff_fr_out",
-   "shape": "card",
-   "parent": "leg_fr",
-   "pivot": [
-    -4.55,
-    -2.5,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    -2.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -6.0
-   ],
-   "style": "fur_card",
-   "plane": "yz",
-   "art": [
-    "FFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFF",
-    "ffhhffhhffhhhffhhf",
-    "eehhffhhffhhhffhhf",
-    "..hhffeeffhhhffeef",
-    "..eeff..ffhhhee..f",
-    "....ff..ffeee....f",
-    "....ee..ee.......e"
-   ]
+   "style": "scaly_leg",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaabbbaaa",
+       "aaabbbaaa",
+       "bbaccbbba",
+       "bbaaaaaad",
+       "bbaaaaaaa",
+       "cbbbabbab",
+       "bbbaaaabb",
+       "bbbaaaaaa",
+       "ccbbbabba",
+       "aabbbaadd"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:2",
+       "d": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaabbb",
+       "aaaaaabbb",
+       "ccaccaaab",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "caccaccac",
+       "cccaaaaaa",
+       "cccaaaaaa",
+       "ddcccacca",
+       "aaaaaaaac"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2",
+       "d": "fur:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaabbbbcc",
+       "aaabbbccc",
+       "ddaccbaac",
+       "cccccbbbb",
+       "cccccbbbb",
+       "acaacccbc",
+       "ccccbcaaa",
+       "ccccccaaa",
+       "aacaacdda",
+       "ccaaaaaac"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:4",
+       "c": "fur:3",
+       "d": "fur:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "abbaaaaaa",
+       "aaaaaaaaa",
+       "bbabbabba",
+       "cccaacccb",
+       "ccaaacccb",
+       "acbbaaacd",
+       "aaabddcac",
+       "aaabbbaaa",
+       "bbaddbbba",
+       "aaaaaaaaa"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "aaaaaaabb",
+       "ccaccacab",
+       "aaaaaaaba",
+       "abbaccaac",
+       "cacccdcad",
+       "aaacccbaa",
+       "aaacccaaa",
+       "ccaddccca"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:6",
+       "c": "fur:4",
+       "d": "fur:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaabb",
+       "aaaaaaabb",
+       "ccaccacca",
+       "aaaaaaacc",
+       "aaaaaaacc",
+       "caccaccac",
+       "aaabbbaaa",
+       "aaabbbaaa",
+       "ccaaabcca"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "fur:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "shin_fr",
@@ -3037,7 +5831,123 @@
     -3.0,
     0.0
    ],
-   "style": "scaly_shin"
+   "style": "scaly_shin",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababc",
+       "caaaaaad",
+       "cbababcc",
+       "aaaaaacc",
+       "ebebebeb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5",
+       "d": "fur:6",
+       "e": "fur:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababa",
+       "aaaaaaaa",
+       "abababab",
+       "aaaaaaaa",
+       "cbcbcbcb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaabbaa",
+       "aaccabca",
+       "baacaccb",
+       "bcadadca",
+       "baaccaaa",
+       "dcdcdcdc"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2",
+       "d": "fur:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaabbaa",
+       "cacaabca",
+       "aaaaaaaa",
+       "acacacac",
+       "baaaaabb",
+       "dcdcdcca"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababa",
+       "aaaaaaaa",
+       "abababab",
+       "cabbaaaa",
+       "badbbaba",
+       "aaaccaaa",
+       "abaacbab"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:6",
+       "d": "fur:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabbbbcc",
+       "daababbc",
+       "baabbbbb",
+       "bdaababa",
+       "aaccbbbb",
+       "dabcabab",
+       "cbbbbbba",
+       "cabababd"
+      ],
+      "key": {
+       "a": "fur:1",
+       "b": "fur:2",
+       "c": "fur:3",
+       "d": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "foot_fr",
@@ -3045,7 +5955,7 @@
    "parent": "shin_fr",
    "size": [
     9,
-    2.5,
+    2,
     10
    ],
    "pivot": [
@@ -3055,58 +5965,117 @@
    ],
    "offset": [
     0.0,
-    -0.75,
-    0.8
+    -1.0,
+    1.0
    ],
-   "style": "foot"
-  },
-  {
-   "id": "nail_fr0",
-   "shape": "box",
-   "parent": "foot_fr",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    -2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_fr1",
-   "shape": "box",
-   "parent": "foot_fr",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    0.0,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_fr2",
-   "shape": "box",
-   "parent": "foot_fr",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
+   "style": "foot",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "bbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "dark:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaab",
+       "ccccccccc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "dark:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "bbbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "dark:0"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "bbbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "dark:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aabbaaaaa",
+       "caabcacac",
+       "abbbaaaaa",
+       "aabcacaca",
+       "ccaaaaaaa",
+       "dccacacac",
+       "aaaaaaaaa",
+       "acacacaca",
+       "ccaaaaaaa",
+       "dccacacac"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa"
+      ],
+      "key": {
+       "a": "dark:0"
+      }
+     },
+     {
+      "face": "front",
+      "at": "bottom",
+      "art": [
+       ".tT.tT.tT",
+       ".ss.ss.ss"
+      ],
+      "key": {
+       "t": "teeth:2",
+       "T": "teeth:1",
+       "s": "teeth:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "leg_bl",
@@ -3127,39 +6096,149 @@
     -5.0,
     0.0
    ],
-   "style": "scaly_leg"
-  },
-  {
-   "id": "cuff_bl_out",
-   "shape": "card",
-   "parent": "leg_bl",
-   "pivot": [
-    5.05,
-    -3.0,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    -2.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    6.0
-   ],
-   "style": "fur_card",
-   "plane": "yz",
-   "art": [
-    "FFFFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFFFF",
-    "ffhhhfffhhhfffhhhffh",
-    "ffhhhfffhhhfffeeeffh",
-    "ffhhhfffeeefff...ffh",
-    "ffhhhfff...fff...eeh",
-    "ffeeefff...eee.....e",
-    "ee...eee............"
-   ]
+   "style": "scaly_leg",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabcddbbba",
+       "aabcddbbbb",
+       "ccbddcccbc",
+       "bbaaaaaaaa",
+       "ccbaeeaaaa",
+       "dccbebbabb",
+       "ccbbbbbbbb",
+       "ccbbbbbbbb",
+       "ccbccbccbc",
+       "bbbbbbbbbb",
+       "babbccbbbb"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:3",
+       "d": "fur:2",
+       "e": "fur:6"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "aabbaaaaaa",
+       "bbabbabbab",
+       "ccaaaaaacc",
+       "ccaaacaacc",
+       "acbbaabaaa",
+       "cccaacaaaa",
+       "cccaacaaaa",
+       "aacbbabbab",
+       "aacccaaaaa",
+       "aaaacaaaaa"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "aaaaaaaaaa",
+       "bbabbabbab",
+       "aabbbaaaaa",
+       "aabbbccabb",
+       "baddbaaadd",
+       "aaaaaccabb",
+       "aaaaaccabb",
+       "bbabbabbab",
+       "aaaaaaaaaa",
+       "aaaaaaaaac"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:4",
+       "d": "fur:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaabccddda",
+       "daabccadda",
+       "bbaccbaadb",
+       "ddbbbbbbaa",
+       "ddbbbbbbaa",
+       "adccbccbbb",
+       "aaaaaaaaab",
+       "aaaaaaaaab",
+       "bbabbabbab",
+       "aaddddddbb",
+       "daddaaaabb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:2",
+       "d": "fur:5"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaabaaaac",
+       "aaaaaaaaac",
+       "bbabbabbaa",
+       "aaccccccaa",
+       "abcccccdaa",
+       "bbaacaadbb",
+       "ababbbacaa",
+       "aaabbbaaaa",
+       "bbaeebbbab",
+       "aaaaaaaaaa"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:6",
+       "d": "fur:7",
+       "e": "fur:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaababbbbb",
+       "aaabbbbbbb",
+       "ccaaabaaba",
+       "aadddbbbbb",
+       "aadddbddbb",
+       "abbbdabdaa",
+       "bbbbbbeedb",
+       "bbbbbbdddb",
+       "aabaabbada",
+       "bbbbbbaabb"
+      ],
+      "key": {
+       "a": "fur:1",
+       "b": "fur:2",
+       "c": "fur:0",
+       "d": "fur:3",
+       "e": "fur:4"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "shin_bl",
@@ -3180,7 +6259,126 @@
     -3.0,
     0.0
    ],
-   "style": "scaly_shin"
+   "style": "scaly_shin",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabaaaba",
+       "cacacaca",
+       "abbaaaab",
+       "aabcacaa",
+       "aabbcccc",
+       "dccaeded"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3",
+       "d": "fur:2",
+       "e": "fur:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaabbaa",
+       "bbbacbba",
+       "baabbaad",
+       "bbaccbad",
+       "aaabbaad",
+       "cbcbcbcb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1",
+       "d": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababa",
+       "caaaaaac",
+       "cbababaa",
+       "aaaaaaaa",
+       "dbdbdbdb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:4",
+       "d": "fur:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaabbca",
+       "babaddba",
+       "aaabbbaa",
+       "abbedbab",
+       "fcbbbaaa",
+       "badbdbdb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5",
+       "d": "fur:2",
+       "e": "fur:1",
+       "f": "fur:6"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aabccccc",
+       "daacacac",
+       "accccccc",
+       "aacacaca",
+       "bcbbccbb",
+       "accbaccb",
+       "cccccbcc",
+       "cacacaca"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:6",
+       "c": "fur:5",
+       "d": "fur:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aabbaaaa",
+       "bacbbaba",
+       "daaaabba",
+       "dbabacbb",
+       "aaaaaaaa",
+       "babababa",
+       "aaaaaaaa",
+       "abababab"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:0",
+       "d": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "foot_bl",
@@ -3188,7 +6386,7 @@
    "parent": "shin_bl",
    "size": [
     9,
-    2.5,
+    2,
     10
    ],
    "pivot": [
@@ -3198,58 +6396,120 @@
    ],
    "offset": [
     0.0,
-    -0.75,
-    0.8
+    -1.0,
+    1.0
    ],
-   "style": "foot"
-  },
-  {
-   "id": "nail_bl0",
-   "shape": "box",
-   "parent": "foot_bl",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    -2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_bl1",
-   "shape": "box",
-   "parent": "foot_bl",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    0.0,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_bl2",
-   "shape": "box",
-   "parent": "foot_bl",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
+   "style": "foot",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaabbc",
+       "ddddddddd"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:4",
+       "d": "dark:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbbbbba",
+       "ccccccccc"
+      ],
+      "key": {
+       "a": "fur:1",
+       "b": "fur:2",
+       "c": "dark:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaabb",
+       "cccccccccc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "dark:0"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "bbbbbbbbbb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "dark:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaabbbbb",
+       "cacaababa",
+       "abbbbddbb",
+       "aababbdab",
+       "bbbbbbbbb",
+       "ababababa",
+       "abbdbaadd",
+       "aababcabd",
+       "ddbbaabbb",
+       "bdabcaaba"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2",
+       "d": "fur:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa"
+      ],
+      "key": {
+       "a": "dark:0"
+      }
+     },
+     {
+      "face": "front",
+      "at": "bottom",
+      "art": [
+       ".tT.tT.tT",
+       ".ss.ss.ss"
+      ],
+      "key": {
+       "t": "teeth:2",
+       "T": "teeth:1",
+       "s": "teeth:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "leg_br",
@@ -3270,39 +6530,147 @@
     -5.0,
     0.0
    ],
-   "style": "scaly_leg"
-  },
-  {
-   "id": "cuff_br_out",
-   "shape": "card",
-   "parent": "leg_br",
-   "pivot": [
-    -5.05,
-    -3.0,
-    0.0
-   ],
-   "offset": [
-    0.0,
-    -2.0,
-    0.0
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    -6.0
-   ],
-   "style": "fur_card",
-   "plane": "yz",
-   "art": [
-    "FFFFFFFFFFFFFFFFFFFF",
-    "FFFFFFFFFFFFFFFFFFFF",
-    "fffhhffhhhfffhhffhhh",
-    "fffhhffhhhfffhhffhhh",
-    "eeehhffhhhfffhhffhhh",
-    "...hhffhhhfffhhffhhh",
-    "...eeeeeeeeeehheeeee",
-    ".............ee....."
-   ]
+   "style": "scaly_leg",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabbaaaaaa",
+       "aabbaaaaaa",
+       "bbabbabbab",
+       "aaaaaaaaaa",
+       "acccaaaaaa",
+       "baaaabbabb",
+       "aaccaaaaac",
+       "aaccaaaaaa",
+       "bbabbabbaa",
+       "aaaaaaaaaa",
+       "aabbaaaaaa"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaabaccca",
+       "ccaaaaccca",
+       "bbabbaaacb",
+       "aaaaaaaaaa",
+       "aaaaccaaaa",
+       "babbcababb",
+       "aaaaccccca",
+       "aaaaccccca",
+       "bbabbaaacb",
+       "aacccaaacc",
+       "ccccaaaacc"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:4"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaabbaaaa",
+       "aaabbbaaac",
+       "bbabbabbab",
+       "bbaaacccaa",
+       "bbaaacccaa",
+       "dbbbaaacbb",
+       "baaaaaaaaa",
+       "baaaaaaaaa",
+       "bbabbabbab",
+       "aaaaaaaacc",
+       "aabbbbaace"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:4",
+       "d": "fur:1",
+       "e": "fur:5"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaabbbcccc",
+       "aaabbbcccb",
+       "ddaccbaaca",
+       "cccccccccc",
+       "ccccccbbcc",
+       "acaacacbaa",
+       "aaaccceebc",
+       "aaaccceebc",
+       "ddaaacccba",
+       "ccbbbccccc",
+       "ccbbbccccb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:5",
+       "c": "fur:4",
+       "d": "fur:2",
+       "e": "fur:6"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaabbaaaaa",
+       "aaabbbaaaa",
+       "ccaaabccac",
+       "aaaaaaaaaa",
+       "aabaaaaaca",
+       "caacaccadc",
+       "aaaaaaccca",
+       "aaaaaaccca",
+       "ccaccaddcc",
+       "aaaaaaaabb"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:6",
+       "c": "fur:4",
+       "d": "fur:3"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaaa",
+       "aaaaaaaaaa",
+       "bbcababbab",
+       "bbccaaaaab",
+       "bbccaaaabb",
+       "dbbbabbadd",
+       "bbbcccaabb",
+       "bbbcccaaaa",
+       "ddbaaabbca",
+       "aaaabbaacc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:3",
+       "d": "fur:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "shin_br",
@@ -3323,7 +6691,124 @@
     -3.0,
     0.0
    ],
-   "style": "scaly_shin"
+   "style": "scaly_shin",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababa",
+       "aaaaaaac",
+       "abababaa",
+       "caaaaaaa",
+       "dbdbdbdb"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "aabbcaba",
+       "aaabbaaa",
+       "ababacbb",
+       "bbaaabba",
+       "dccbcbcb"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:2",
+       "c": "fur:1",
+       "d": "fur:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aabbbbbb",
+       "caabcbab",
+       "bbbacbbb",
+       "bcadaaba",
+       "babbeebb",
+       "caababca"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "fur:1",
+       "d": "fur:0",
+       "e": "fur:4"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aaaabbaa",
+       "cacaabca",
+       "aaaaacca",
+       "acacadcc",
+       "aaaabbaa",
+       "dcdccadc"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:5",
+       "c": "fur:3",
+       "d": "fur:2"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaabb",
+       "bababacb",
+       "aaaaaaaa",
+       "abababab",
+       "aaaaddaa",
+       "babaadba",
+       "aaaaaaaa",
+       "abababab"
+      ],
+      "key": {
+       "a": "fur:5",
+       "b": "fur:4",
+       "c": "fur:3",
+       "d": "fur:6"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaa",
+       "babababa",
+       "aaaaabba",
+       "ababacbb",
+       "aaaaaabb",
+       "bababacb",
+       "daaaaaab",
+       "dbababac"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "fur:0",
+       "d": "fur:3"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "foot_br",
@@ -3331,7 +6816,7 @@
    "parent": "shin_br",
    "size": [
     9,
-    2.5,
+    2,
     10
    ],
    "pivot": [
@@ -3341,58 +6826,120 @@
    ],
    "offset": [
     0.0,
-    -0.75,
-    0.8
+    -1.0,
+    1.0
    ],
-   "style": "foot"
-  },
-  {
-   "id": "nail_br0",
-   "shape": "box",
-   "parent": "foot_br",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    -2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_br1",
-   "shape": "box",
-   "parent": "foot_br",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    0.0,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
-  },
-  {
-   "id": "nail_br2",
-   "shape": "box",
-   "parent": "foot_br",
-   "size": [
-    2,
-    1.5,
-    1
-   ],
-   "pivot": [
-    2.8,
-    -1.25,
-    6.3
-   ],
-   "style": "nail"
+   "style": "foot",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "aabbbbaaa",
+       "ccccccccc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "dark:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "aabbaaaaa",
+       "ccccccccc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:3",
+       "c": "dark:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaabb",
+       "cccccccccc"
+      ],
+      "key": {
+       "a": "fur:2",
+       "b": "fur:1",
+       "c": "dark:0"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "aabbccaaaa",
+       "dddddddddd"
+      ],
+      "key": {
+       "a": "fur:3",
+       "b": "fur:4",
+       "c": "fur:2",
+       "d": "dark:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "babababab",
+       "accaaccca",
+       "aacbaacba",
+       "caaaaaaaa",
+       "babababab",
+       "accaaaaaa",
+       "aacbababa",
+       "aaaaaaaac",
+       "babababab"
+      ],
+      "key": {
+       "a": "fur:4",
+       "b": "fur:3",
+       "c": "fur:5"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa",
+       "aaaaaaaaa"
+      ],
+      "key": {
+       "a": "dark:0"
+      }
+     },
+     {
+      "face": "front",
+      "at": "bottom",
+      "art": [
+       ".tT.tT.tT",
+       ".ss.ss.ss"
+      ],
+      "key": {
+       "t": "teeth:2",
+       "T": "teeth:1",
+       "s": "teeth:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "saddle",
@@ -3458,12 +7005,12 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    0.5,
+    1,
     11,
     2
    ],
    "pivot": [
-    14.25,
+    14.0,
     -14.5,
     1.0
    ],
@@ -3474,12 +7021,12 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    0.5,
+    1,
     6,
     1
    ],
    "pivot": [
-    14.75,
+    15.0,
     -8.5,
     3.0
    ],
@@ -3495,7 +7042,7 @@
     3
    ],
    "pivot": [
-    14.75,
+    15.0,
     -12.0,
     3.0
    ],
@@ -3538,12 +7085,12 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    0.5,
+    1,
     11,
     2
    ],
    "pivot": [
-    -14.25,
+    -14.0,
     -14.5,
     1.0
    ],
@@ -3554,12 +7101,12 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    0.5,
+    1,
     6,
     1
    ],
    "pivot": [
-    -14.75,
+    -15.0,
     -8.5,
     3.0
    ],
@@ -3575,7 +7122,7 @@
     3
    ],
    "pivot": [
-    -14.75,
+    -15.0,
     -12.0,
     3.0
    ],
@@ -3587,12 +7134,12 @@
    "parent": "saddle",
    "size": [
     20,
-    0.5,
+    1,
     2
    ],
    "pivot": [
     0.0,
-    -22.75,
+    -22.5,
     1.0
    ],
    "style": "strap"
@@ -3624,7 +7171,7 @@
    ],
    "pivot": [
     0.0,
-    3.25,
+    3.5,
     5.5
    ],
    "rotation": [
@@ -3645,7 +7192,7 @@
    ],
    "pivot": [
     0.0,
-    3.25,
+    3.5,
     -6.5
    ],
    "rotation": [
@@ -3676,13 +7223,13 @@
    "shape": "box",
    "parent": "chest_l",
    "size": [
-    4.5,
-    2.5,
-    10.5
+    5,
+    2,
+    11
    ],
    "pivot": [
     0.0,
-    3.25,
+    4.0,
     0.0
    ],
    "style": "chest_lid"
@@ -3692,13 +7239,13 @@
    "shape": "box",
    "parent": "chest_l",
    "size": [
-    0.5,
+    1,
     2,
     2
    ],
    "pivot": [
-    2.25,
-    1.75,
+    2.5,
+    2.0,
     0.0
    ],
    "style": "iron"
@@ -3708,14 +7255,14 @@
    "shape": "box",
    "parent": "chest_l",
    "size": [
-    0.5,
-    8,
-    1.5
+    1,
+    7,
+    2
    ],
    "pivot": [
-    -1.75,
-    7.0,
-    -3.0
+    -3.0,
+    7.5,
+    0.0
    ],
    "style": "strap"
   },
@@ -3724,46 +7271,14 @@
    "shape": "box",
    "parent": "chest_l",
    "size": [
-    4,
-    0.5,
-    1.5
+    3,
+    1,
+    2
    ],
    "pivot": [
-    -3.75,
-    11.25,
-    -3.0
-   ],
-   "style": "strap"
-  },
-  {
-   "id": "chest_strap_l1",
-   "shape": "box",
-   "parent": "chest_l",
-   "size": [
-    0.5,
-    8,
-    1.5
-   ],
-   "pivot": [
-    -1.75,
-    7.0,
-    3.0
-   ],
-   "style": "strap"
-  },
-  {
-   "id": "chest_strap_top_l1",
-   "shape": "box",
-   "parent": "chest_l",
-   "size": [
-    4,
-    0.5,
-    1.5
-   ],
-   "pivot": [
-    -3.75,
-    11.25,
-    3.0
+    -4.0,
+    11.0,
+    0.0
    ],
    "style": "strap"
   },
@@ -3788,13 +7303,13 @@
    "shape": "box",
    "parent": "chest_r",
    "size": [
-    4.5,
-    2.5,
-    10.5
+    5,
+    2,
+    11
    ],
    "pivot": [
     0.0,
-    3.25,
+    4.0,
     0.0
    ],
    "style": "chest_lid"
@@ -3804,13 +7319,13 @@
    "shape": "box",
    "parent": "chest_r",
    "size": [
-    0.5,
+    1,
     2,
     2
    ],
    "pivot": [
-    -2.25,
-    1.75,
+    -2.5,
+    2.0,
     0.0
    ],
    "style": "iron"
@@ -3820,14 +7335,14 @@
    "shape": "box",
    "parent": "chest_r",
    "size": [
-    0.5,
-    8,
-    1.5
+    1,
+    7,
+    2
    ],
    "pivot": [
-    1.75,
-    7.0,
-    -3.0
+    3.0,
+    7.5,
+    0.0
    ],
    "style": "strap"
   },
@@ -3836,46 +7351,14 @@
    "shape": "box",
    "parent": "chest_r",
    "size": [
-    4,
-    0.5,
-    1.5
+    3,
+    1,
+    2
    ],
    "pivot": [
-    3.75,
-    11.25,
-    -3.0
-   ],
-   "style": "strap"
-  },
-  {
-   "id": "chest_strap_r1",
-   "shape": "box",
-   "parent": "chest_r",
-   "size": [
-    0.5,
-    8,
-    1.5
-   ],
-   "pivot": [
-    1.75,
-    7.0,
-    3.0
-   ],
-   "style": "strap"
-  },
-  {
-   "id": "chest_strap_top_r1",
-   "shape": "box",
-   "parent": "chest_r",
-   "size": [
-    4,
-    0.5,
-    1.5
-   ],
-   "pivot": [
-    3.75,
-    11.25,
-    3.0
+    4.0,
+    11.0,
+    0.0
    ],
    "style": "strap"
   }

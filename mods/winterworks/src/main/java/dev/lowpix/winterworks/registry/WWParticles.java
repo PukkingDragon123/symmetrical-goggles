@@ -55,6 +55,11 @@ public final class WWParticles {
             Winterworks.id("sweet_scent"), FabricParticleTypes.simple());
     // ---- end 0.4 fixes: Harvester
 
+    // ---- ocean gear (docs/OCEAN_UPDATE.md section 6: the Elder Guardian's bubbles; 0-3 shimmer, 4 pop)
+    public static final SimpleParticleType ELDER_BUBBLE = Registry.register(BuiltInRegistries.PARTICLE_TYPE,
+            Winterworks.id("elder_bubble"), FabricParticleTypes.simple());
+    // ---- end ocean gear
+
     private WWParticles() {}
 
     public static void init() {}
