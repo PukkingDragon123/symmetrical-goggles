@@ -2754,5 +2754,89 @@
       }
     ],
     "subtitle": "subtitles.winterworks.effect.recall.teleport"
+  },
+  "block.frost_mauler_skull.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/roar1",
+        "pitch": 1.15,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:frost_mauler/roar2",
+        "pitch": 1.15,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:frost_mauler/roar3",
+        "pitch": 1.1,
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.frost_mauler_skull.roar"
+  },
+  "item.fang_dagger.slash_left": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/slash1",
+        "pitch": 0.96
+      },
+      {
+        "name": "winterworks:fang_dagger/slash2",
+        "pitch": 0.96
+      },
+      {
+        "name": "winterworks:fang_dagger/slash3",
+        "pitch": 0.98
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.fang_dagger.slash_left"
+  },
+  "item.fang_dagger.slash_right": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/slash3",
+        "pitch": 1.08
+      },
+      {
+        "name": "winterworks:fang_dagger/slash4",
+        "pitch": 1.06
+      },
+      {
+        "name": "winterworks:fang_dagger/slash5",
+        "pitch": 1.06
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.fang_dagger.slash_right"
+  },
+  "entity.player.ramming_cry": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/roar1",
+        "pitch": 1.45
+      },
+      {
+        "name": "winterworks:icebreaker/roar2",
+        "pitch": 1.5
+      },
+      {
+        "name": "winterworks:icebreaker/roar3",
+        "pitch": 1.45
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.player.ramming_cry"
+  },
+  "entity.player.ramming_wind": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/throw1",
+        "pitch": 1.2
+      },
+      {
+        "name": "winterworks:ender_dragon/throw2",
+        "pitch": 1.25
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.player.ramming_wind"
   }
 }
