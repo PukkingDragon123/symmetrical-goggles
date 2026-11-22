@@ -23,7 +23,10 @@
     "CursePiglinAiMixin",
     "CurseAbstractVillagerMixin",
     "CurseNaturalSpawnerMixin",
-    "CurseMobCategoryMixin"
+    "CurseMobCategoryMixin",
+    "PiglinAiMixin",
+    "PiglinMixin",
+    "AbstractPiglinAccessor"
   ],
   "client": [
     "client.GameRendererMixin",

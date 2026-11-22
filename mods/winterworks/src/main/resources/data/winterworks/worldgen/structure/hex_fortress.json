@@ -1,0 +1,7 @@
+{
+  "type": "winterworks:hex_fortress",
+  "biomes": "#winterworks:has_hex_fortress",
+  "step": "underground_decoration",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

@@ -1,0 +1,10 @@
+{
+  "entity.winterworks.piglin_witch": "Piglin Witch",
+  "entity.winterworks.golden_piglin": "Golden Piglin",
+  "item.winterworks.piglin_witch_spawn_egg": "Piglin Witch Spawn Egg",
+  "item.winterworks.golden_piglin_spawn_egg": "Golden Piglin Spawn Egg",
+  "effect.winterworks.golden": "Golden",
+  "message.winterworks.piglin_witch.refuse": "The Piglin Witch shakes her head and burps. She's thirsty for something golden...",
+  "message.winterworks.piglin_witch.busy": "The Piglin Witch waves you off: she's busy.",
+  "message.winterworks.hexfortress.built": "Built a Hex Fortress at %s, %s, %s (%s x %s blocks)"
+}
