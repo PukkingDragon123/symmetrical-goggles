@@ -174,6 +174,7 @@ public final class ShowcaseDirector {
         at(t += 3, () -> Minecraft.getInstance().options.keyUse.setDown(false));
         at(t += 30, () -> shot("launcher_magazine"));
         t = ColdScenes.plan(t);
+        t = AmberScenes.plan(t);
         at(t += 5, () -> Minecraft.getInstance().stop());
     }
 

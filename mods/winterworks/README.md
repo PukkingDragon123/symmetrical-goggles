@@ -51,18 +51,82 @@ wool to change the seat.
 **Snow Globe.** Glass + snowballs. Right-click to shake it: it wobbles and tiny flakes swirl around the little snowy
 cabin, then slowly settle.
 
+## The Cold Zone
+
+Design contract: [docs/COLD_UPDATE.md](docs/COLD_UPDATE.md).
+
+**The cold.** Ice Caves, cold water and snowstorms freeze you: the vanilla frost overlay, slowdown and freeze damage, no
+new HUD. Fires, lava, lit furnaces, and torches or lanterns nearby or in your hand keep you warm; any leather or fur
+armour stops the freezing. You see your breath in the cold, and blizzards drive the snow sideways. **Frostbite**
+(ancient ice, frost attacks) freezes fast and bites.
+
+**Ice Caves.** A new underground biome under every frozen land: packed and blue ice walls, snow floors with powder-snow
+traps, icicles, frozen pools, a wind loop and creaking ice. Frost Zombies, Strays and Zombie Polar Bears live there.
+
+**Polar bears, remade.** Hostile, heavier and furrier: they roar, swipe and charge-jump with a landing slam. A player
+holding salmon is spared; five salmon calm one for 5 minutes, and a calm bear can be shorn for **Polar Bear Fur** (it
+grows back). They carry fish in their mouths and catch fish at the water's edge. Frost Zombies and Strays ride them.
+**Frost Zombies** freeze you with every hit; **Zombie Polar Bears** are always hostile.
+
+**Fur armour.** Polar Bear Fur + wool: a bear-head hood, a mantle with the bear's forepaws, fur trousers and boots, in 3D.
+No freezing, no Slowness or Frostbite, and Strength in the cold (I, II with 3 pieces, III for the set). Too hot for the
+Nether: it hurts there.
+
+**The Frost Mauler.** A monstrous sabertooth, half skeleton, with ice crystals on its back and ice-blue flames in its
+eyes, frozen in see-through **Ancient Ice** inside a frozen tomb in the Ice Caves. Ancient ice is hard to mine (an axe
+is fastest), gives Frostbite when touched and bursts when broken. Break 6 blocks of the tomb and the cave shakes, the
+ice cracks and explodes, and the Mauler wakes and roars. It fights with a claw-claw-bite combo that starts fast, slows
+as it tires and ends with it panting and vulnerable; telegraphed icicle rain; hurled icicles; roars that knock you
+back and bring icicles down; a pouncing flurry of fang bites (block them with a shield). It drops its **skull** (3D;
+encase it in ancient ice and use a Nether Star to bring the Mauler back), **2 fangs**, bones and ancient ice.
+
+**Fang Daggers.** Fang + Polar Bear Fur + stick. Hold one in each hand: a frenzy of fast hits that slows as you tire and
+recharges when you stop; tired, a jumping hit is a **Fang Crit** (2x, Frostbite). Sneak + jump to **pounce** forward
+through everything in your way.
+
+## The Amber Age
+
+Design contract: [docs/AMBER_UPDATE.md](docs/AMBER_UPDATE.md).
+
+**Archaeology everywhere.** Every overworld cave has suspicious sand and gravel holding amber or bones. **Dead Caves**,
+a new underground biome under deserts, badlands and savannas, are a fossil desert that was a prehistoric forest:
+banded sandstone walls with amber seams, petrified trunks and stumps, boulders, dead bushes and lots of suspicious
+blocks. **Dig Sites** (Dead Caves and wherever mineshafts can be) are abandoned excavations: a shored-up cavern, a pit
+with a half-dug fossil skeleton, scaffolding, a ruined shack, a tent, and chests and barrels of loot.
+
+**Amber.** Amber blocks show what is trapped inside: break one to release an Amberwood seed (or torchflower seeds or a
+pitcher pod) or a live mosquito. Brush **amber fossils** for Amberwood seeds and plant a short **Amberwood** tree with
+glowing gold leaves; its logs ooze resin.
+
+**Mosquitoes.** Four-winged, with a giant needle. They hunt anything with blood (not the undead, golems, slimes and
+the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber chunk
+when you give them blood (a potion, a blood stain, a splash): an amber farm. Pitcher pods attract them, and they
+pollinate pitcher crops. **Potion of Blood** + torchflower = **Potion of Immunity**: no other effect can touch you.
+
+**Sniffers.** Tame one with pitcher pods: it follows you, sniffs out suspicious sand, gravel and amber fossils and digs
+them up for you; sniffer digging also turns up amber, Amberwood seeds, bones and sherds.
+
+**The Pot Golem.** Four amber blocks in a T and a decorated pot on top: a muscular, jelly-like amber golem that
+follows you and fights. Its pot is its head: an Echo Shard inside gives a Warden-like sonic beam, the Howl sherd
+rallies wolves, the Danger sherd makes it blow itself up when almost dead. Give it a Blade, Miner or Archer sherd for
+a blade arm, a pickaxe that mines ores for you, or a bow. The pot is its weak spot: hits crack it (repair it with a
+sherd or a brick). Brush it and it giggles and sneezes the pot off, showing its dumb little face.
+
 ## Building and testing
 
 ```bash
 ./gradlew build                 # the mod jar in build/libs
-./gradlew runGametest           # headless GameTests (11: shears, horn regrowth, fish, brewing, leaves, booster, trap and drop rails, trains, Alpha, recipes)
-xvfb-run -a ./gradlew runShowcase   # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
+./gradlew runGametest           # headless GameTests (88)
+xvfb-run -a ./gradlew runShowcase       # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
+xvfb-run -a ./gradlew runShowcaseCold   # a real generated world: finds and photographs Ice Caves, a frozen tomb, Dead Caves, a Dig Site
 python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipes, loot, tags, lang fragments
 ```
 
 Model sources live in `examples/src/` at the repo root (icebreaker, icebreaker_cub, snowball_launcher, snow_globe,
-locomotive, dragon_locomotive, fox_cart, zombie_cart, trailer_cart); 2D art in `examples/src/winterworks_art.py`.
-Sounds are re-pitched vanilla sounds (no new audio files).
+locomotive, dragon_locomotive, fox_cart, zombie_cart, trailer_cart, frost_mauler, frost_mauler_skull, fang_dagger, polar_bear,
+polar_bear_cub, fur_armor, mosquito, pot_golem); 2D art in `examples/src/winterworks_art.py`, `winterworks_cold_art.py` and
+`winterworks_amber_art.py`. Sounds (97 events) are made from CC0 / public-domain recordings by
+`tools/sounds/build_sounds.py`; every source is credited in [tools/sounds/CREDITS.md](tools/sounds/CREDITS.md).
 
 ## In game
 
@@ -73,4 +137,10 @@ Screenshots taken by `runShowcase` (the real client, software-rendered):
 | ![Icebreaker family](docs/screenshots/icebreaker_family.png) | ![Icebreaker close](docs/screenshots/icebreaker_close.png) |
 | ![Winter Express](docs/screenshots/winter_express_running.png) | ![Snow Globe](docs/screenshots/snow_globe_swirl.png) |
 | ![Launcher firing](docs/screenshots/launcher_firing.png) | ![Launcher magazine](docs/screenshots/launcher_magazine.png) |
-| ![Trap and Drop Rails](docs/screenshots/trap_and_drop_rails.png) | |
+| ![Trap and Drop Rails](docs/screenshots/trap_and_drop_rails.png) | ![Ice Caves](docs/screenshots/ice_caves.png) |
+| ![Frost Mauler](docs/screenshots/frost_mauler_close.png) | ![Frozen tomb](docs/screenshots/frozen_tomb.png) |
+| ![The Mauler awakens](docs/screenshots/mauler_awakens.png) | ![Fang Daggers and the skull](docs/screenshots/fang_daggers_and_skull.png) |
+| ![Polar bears](docs/screenshots/polar_bears.png) | ![Fur armour](docs/screenshots/fur_armour.png) |
+| ![Dig Site in the Dead Caves](docs/screenshots/dig_site_natural.png) | ![Dead Caves](docs/screenshots/dead_caves.png) |
+| ![Amber and mosquitoes](docs/screenshots/amber_and_mosquitoes.png) | ![Mosquitoes](docs/screenshots/mosquitoes_close.png) |
+| ![Pot Golems](docs/screenshots/pot_golems.png) | ![Potless Pot Golem](docs/screenshots/pot_golem_potless.png) |

@@ -81,6 +81,49 @@ final class ColdShowcase {
             }
         });
         at(t += 160, () -> shot("frozen_tomb_natural"));
+        // 4. the nearest Dead Caves, and a Dig Site
+        at(t += 5, () -> server(level -> {
+            var found = level.findClosestBiome3d(b -> b.is(WWWorldgen.DEAD_CAVES), level.getSharedSpawnPos(), 6400, 32, 64);
+            biomeAt = found == null ? null : found.getFirst();
+            Winterworks.LOG.info("showcase: nearest dead caves {}", biomeAt);
+            var dig = level.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolderOrThrow(WWWorldgen.DIG_SITE);
+            var r = biomeAt == null ? null : level.getChunkSource().getGenerator().findNearestMapStructure(level,
+                    HolderSet.direct(dig), biomeAt, 100, false);
+            tombAt = r == null ? null : r.getFirst();
+            Winterworks.LOG.info("showcase: nearest dig site {}", tombAt);
+        }));
+        at(t += 20, () -> {
+            if (biomeAt != null) {
+                cmd("tp @s " + biomeAt.getX() + " " + biomeAt.getY() + " " + biomeAt.getZ());
+            }
+        });
+        at(t += 260, () -> server(level -> pickView(level, biomeAt, null, WWWorldgen.DEAD_CAVES, ColdShowcase::dusty)));
+        at(t += 5, () -> {
+            if (eye != null) {
+                tpFacing(eye, look);
+            }
+        });
+        at(t += 160, () -> shot("dead_caves"));
+        at(t += 5, () -> {
+            if (tombAt != null) {
+                cmd("tp @s " + tombAt.getX() + " 0 " + tombAt.getZ());
+            }
+        });
+        at(t += 260, () -> server(level -> {
+            eye = look = null;
+            BlockPos c = structureCentre(level, tombAt, WWWorldgen.DIG_SITE);
+            if (c != null) {
+                BlockPos floor = c;   // the box is centred on the floor centre
+                look = Vec3.atCenterOf(floor.above(1));
+                eye = Vec3.atCenterOf(floor.offset(0, 4, -8));
+            }
+        }));
+        at(t += 5, () -> {
+            if (eye != null) {
+                tpFacing(eye, look);
+            }
+        });
+        at(t += 160, () -> shot("dig_site_natural"));
         at(t += 5, () -> Minecraft.getInstance().stop());
     }
 
@@ -91,6 +134,18 @@ final class ColdShowcase {
 
     /** The roomiest, iciest air pocket near `centre` (outside the tomb chamber), and a look at the middle of its ice. */
     private static void pickCaveView(ServerLevel level, BlockPos centre, BlockPos avoid) {
+        pickView(level, centre, avoid, WWWorldgen.ICE_CAVES, ColdShowcase::icy);
+    }
+
+    private static boolean dusty(BlockState s) {
+        return s.is(Blocks.SAND) || s.is(Blocks.SANDSTONE) || s.is(Blocks.SMOOTH_SANDSTONE) || s.is(Blocks.TERRACOTTA)
+                || s.is(Blocks.BROWN_TERRACOTTA) || s.is(Blocks.SUSPICIOUS_SAND) || s.is(Blocks.SUSPICIOUS_GRAVEL)
+                || s.is(WWBlocks.PETRIFIED_LOG) || s.is(WWBlocks.AMBER_BLOCK) || s.is(Blocks.DEAD_BUSH);
+    }
+
+    private static void pickView(ServerLevel level, BlockPos centre, BlockPos avoid,
+                                 net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome> biome,
+                                 java.util.function.Predicate<BlockState> interesting) {
         eye = look = null;
         if (centre == null) {
             return;
@@ -105,7 +160,7 @@ final class ColdShowcase {
                     if (avoid != null && p.distSqr(avoid) < 16 * 16) {
                         continue;
                     }
-                    if (!level.getBlockState(p).isAir() || !level.getBiome(p).is(WWWorldgen.ICE_CAVES)) {
+                    if (!level.getBlockState(p).isAir() || !level.getBiome(p).is(biome)) {
                         continue;
                     }
                     candidates++;
@@ -117,7 +172,7 @@ final class ColdShowcase {
                                 BlockState s = level.getBlockState(q.set(p.getX() + ax, p.getY() + ay, p.getZ() + az));
                                 if (s.isAir()) {
                                     air++;
-                                } else if (icy(s)) {
+                                } else if (interesting.test(s)) {
                                     ice++;
                                     sx += ax;
                                     sy += ay;
@@ -142,13 +197,18 @@ final class ColdShowcase {
     }
 
     private static BlockPos tombCentre(ServerLevel level) {
-        if (tombAt == null) {
+        return structureCentre(level, tombAt, WWWorldgen.FROZEN_TOMB);
+    }
+
+    private static BlockPos structureCentre(ServerLevel level, BlockPos at,
+                                            net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.structure.Structure> key) {
+        if (at == null) {
             return null;
         }
-        var structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(WWWorldgen.FROZEN_TOMB);
-        StructureStart start = level.getChunk(tombAt).getStartForStructure(structure);
+        var structure = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(key);
+        StructureStart start = level.getChunk(at).getStartForStructure(structure);
         if (start == null || !start.isValid()) {
-            Winterworks.LOG.warn("showcase: no tomb start at {}", tombAt);
+            Winterworks.LOG.warn("showcase: no {} start at {}", key.location(), at);
             return null;
         }
         BoundingBox box = start.getBoundingBox();
