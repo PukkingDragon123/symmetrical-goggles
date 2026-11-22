@@ -53,6 +53,17 @@ public final class Winterworks implements ModInitializer {
         dev.lowpix.winterworks.hex.HexFeature.init();
         dev.lowpix.winterworks.curse.CurseFeature.init();
         dev.lowpix.winterworks.nether.NetherFeature.init();
+        // ---- The Living End (docs/END_UPDATE.md)
+        dev.lowpix.winterworks.registry.EndSounds.init();
+        dev.lowpix.winterworks.registry.EndParticles.init();
+        dev.lowpix.winterworks.registry.EndEffects.init();
+        dev.lowpix.winterworks.registry.EndBlocks.init();
+        dev.lowpix.winterworks.registry.EndEntities.init();
+        dev.lowpix.winterworks.registry.EndItems.init();
+        dev.lowpix.winterworks.end.EndWorldFeature.init();
+        dev.lowpix.winterworks.endmob.EndMobFeature.init();
+        dev.lowpix.winterworks.endgear.EndGearFeature.init();
+        dev.lowpix.winterworks.endboss.EndBossFeature.init();
         PayloadTypeRegistry.playS2C().register(CouplingPayload.TYPE, CouplingPayload.CODEC);
         FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> {
             b.addMix(Potions.AWKWARD, WWItems.ICEBREAKER_HORN, WWEffects.RAMMING_POTION);

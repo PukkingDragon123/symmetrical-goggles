@@ -62,6 +62,10 @@ public final class WinterworksClient implements ClientModInitializer {
         dev.lowpix.winterworks.client.hex.HexClient.init();
         dev.lowpix.winterworks.client.curse.CurseClient.init();
         dev.lowpix.winterworks.client.nether.NetherClient.init();
+        dev.lowpix.winterworks.client.end.EndWorldClient.init();
+        dev.lowpix.winterworks.client.endmob.EndMobClient.init();
+        dev.lowpix.winterworks.client.endgear.EndGearClient.init();
+        dev.lowpix.winterworks.client.endboss.EndBossClient.init();
         ShowcaseDirector.init();
     }
 }
