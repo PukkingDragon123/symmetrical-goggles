@@ -1,0 +1,4205 @@
+{
+ "name": "Sea Turtle",
+ "description": "The Winterworks sea turtle: a domed carapace of real scutes with growth rings and tortoiseshell streaks, a straw plastron, a leathery olive head of pale-edged scales with a hooked horn beak and round dark eyes, long two-jointed front flippers. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 900,
+  "colors": 72
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.8,
+  "gradient": 0.5,
+  "ao": 0.5,
+  "ao_height": 6.0
+ },
+ "brush": {
+  "flow": "horizontal",
+  "length": 1.6,
+  "width": 0.6,
+  "rough": 0.5,
+  "overshoot": 0.25,
+  "textures": {
+   "olive": "leather",
+   "tortoise": "scales",
+   "straw": "organic",
+   "slate": "leather",
+   "horn": "wood"
+  }
+ },
+ "minecraft": {
+  "fps": 20
+ },
+ "anim_ground_tolerance": 0.4,
+ "render": {
+  "background": "#c9b98a",
+  "hero": [
+   38,
+   22
+  ],
+  "shadow": 0.5
+ },
+ "palette": {
+  "ramps": {
+   "olive": [
+    "#0e110b",
+    "#191d13",
+    "#252b1b",
+    "#333b25",
+    "#424b2f",
+    "#535d3a",
+    "#657047",
+    "#798456",
+    "#8e9868",
+    "#a5ad7e",
+    "#bcc297"
+   ],
+   "tortoise": [
+    "#110a04",
+    "#1f1308",
+    "#311e0c",
+    "#452a10",
+    "#5b3815",
+    "#72481b",
+    "#8a5a22",
+    "#a26d2c",
+    "#b98239",
+    "#cd984b",
+    "#dfb064",
+    "#edc985"
+   ],
+   "straw": [
+    "#3d3520",
+    "#5a4f2e",
+    "#7a6d3f",
+    "#9a8d53",
+    "#b8ac6b",
+    "#d1c687",
+    "#e5dca7",
+    "#f3edc9"
+   ],
+   "horn": [
+    "#0f0d08",
+    "#1d1910",
+    "#2d2718",
+    "#403722",
+    "#55492e",
+    "#6c5d3c",
+    "#85744c",
+    "#9f8c5f"
+   ],
+   "amber": [
+    "#1d1004",
+    "#352008",
+    "#52330c",
+    "#714a12",
+    "#92651b",
+    "#b38328",
+    "#cfa13d",
+    "#e6c15e",
+    "#f6df8e"
+   ],
+   "pupil": [
+    "#040406",
+    "#0a0a0e",
+    "#131318"
+   ],
+   "cream": [
+    "#4a3e33",
+    "#6b5d4e",
+    "#8d7e6c",
+    "#ae9f8b",
+    "#cbbea9",
+    "#e2d8c5",
+    "#f2ecdd",
+    "#fcf9f0"
+   ],
+   "slate": [
+    "#0f0d0c",
+    "#1a1715",
+    "#26221f",
+    "#332e2a",
+    "#413a35",
+    "#504842",
+    "#615851",
+    "#746a62",
+    "#8a7f76",
+    "#a3988e",
+    "#beb4aa"
+   ]
+  }
+ },
+ "styles": {
+  "skin": {
+   "ramp": "olive",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.3
+   },
+   "layers": [
+    {
+     "id": "scales",
+     "op": "scales",
+     "shape": "round",
+     "along": "z",
+     "size": [
+      1.5,
+      1.5
+     ],
+     "gap": 0.5,
+     "highlight": 1.6,
+     "shadow": -1.4,
+     "jitter": 0.7,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "pale_low",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.4,
+     "ramp": "olive",
+     "tone": 7.0,
+     "faces": [
+      "sides",
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "plastron": {
+   "ramp": "straw",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.3
+   },
+   "layers": [
+    {
+     "id": "plates",
+     "op": "scales",
+     "shape": "square",
+     "along": "x",
+     "size": [
+      3.0,
+      3.0
+     ],
+     "gap": 0.5,
+     "highlight": 0.8,
+     "shadow": -1.2,
+     "jitter": 0.4
+    }
+   ]
+  },
+  "carapace": {
+   "ramp": "tortoise",
+   "tone": 6.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -0.8
+   },
+   "layers": [
+    {
+     "id": "mottle",
+     "op": "patches",
+     "scale": 2.0,
+     "threshold": 0.55,
+     "shift": -1.2
+    },
+    {
+     "id": "flame",
+     "op": "noise",
+     "scale": 1.4,
+     "amount": 0.8
+    },
+    {
+     "id": "dark_rim",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.5,
+     "shift": -1.0,
+     "faces": [
+      "sides"
+     ]
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.45,
+     "shift": 1.6
+    }
+   ]
+  },
+  "carapace_edge": {
+   "ramp": "tortoise",
+   "tone": 5,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "m": "tortoise:4"
+   }
+  },
+  "head": {
+   "ramp": "olive",
+   "tone": 5.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.3
+   },
+   "layers": [
+    {
+     "id": "scales",
+     "op": "scales",
+     "shape": "round",
+     "along": "z",
+     "size": [
+      2.0,
+      2.0
+     ],
+     "gap": 0.5,
+     "highlight": 2.0,
+     "shadow": -1.6,
+     "jitter": 0.7,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "pale_chin",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.45,
+     "ramp": "olive",
+     "tone": 7.4,
+     "faces": [
+      "sides",
+      "bottom",
+      "front"
+     ]
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.45,
+     "shift": 1.6
+    }
+   ]
+  },
+  "beak": {
+   "ramp": "horn",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.3
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "edge",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.4,
+     "shift": 1.6,
+     "faces": [
+      "sides",
+      "front"
+     ]
+    }
+   ]
+  },
+  "beak_low": {
+   "ramp": "horn",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.3
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "mouth",
+     "op": "fill",
+     "ramp": "horn",
+     "tone": 0.8,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "eye": {
+   "ramp": "olive",
+   "tone": 2.0,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "stamps": [
+    {
+     "faces": [
+      "left",
+      "right"
+     ],
+     "at": "top-left",
+     "art": [
+      ".kkkk.",
+      "kkiikk",
+      "kIWpIk",
+      "kIppIk",
+      "kkJJkk",
+      ".kkkk."
+     ],
+     "key": {
+      "k": "olive:1",
+      "i": "amber:1",
+      "I": "amber:2",
+      "J": "amber:4",
+      "p": "pupil:0",
+      "W": "cream:7"
+     }
+    }
+   ]
+  },
+  "lid": {
+   "ramp": "olive",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "flipper": {
+   "ramp": "olive",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.3
+   },
+   "layers": [
+    {
+     "id": "scales",
+     "op": "scales",
+     "shape": "round",
+     "along": "x",
+     "size": [
+      1.5,
+      1.0
+     ],
+     "gap": 0.5,
+     "highlight": 1.6,
+     "shadow": -1.4,
+     "jitter": 0.7,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "edge",
+     "op": "band",
+     "axis": "z",
+     "from": 0.6,
+     "to": 1.01,
+     "ramp": "olive",
+     "tone": 7.6,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "pale_under",
+     "op": "fill",
+     "ramp": "olive",
+     "tone": 7.0,
+     "faces": [
+      "bottom"
+     ]
+    },
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 1,
+     "density": 0.45,
+     "shift": 1.6
+    }
+   ]
+  },
+  "claw": {
+   "ramp": "horn",
+   "tone": 4,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "c": "horn:5",
+    "C": "horn:2"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "body",
+   "shape": "box",
+   "size": [
+    14.0,
+    3.0,
+    18.5
+   ],
+   "pivot": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -1.0,
+    -0.5
+   ],
+   "style": "plastron"
+  },
+  {
+   "id": "skin_band",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    16.0,
+    2.0,
+    20.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    -0.5
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "shell",
+   "shape": "bone",
+   "parent": "body",
+   "pivot": [
+    0.0,
+    1.0,
+    -0.5
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "shell_0",
+   "shape": "box",
+   "parent": "shell",
+   "size": [
+    20.0,
+    1.5,
+    19.0
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "style": "carapace",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "..g...SL...g..SLSS....SSLS.kg...LSa..g..",
+       ".g.g..aSLLLL..S..k......aSk.LLLLS.a.g.ga",
+       "gg..g...L.SSSSS.g..gg.ag.SSSSS..L..g.agg",
+       "..g....SLk..a.S..g....g..S......S....g..",
+       ".g.....S..g...S.g.....kg.S...g..SL...kg.",
+       "L..g..SL......SLk.......kSaa.....S..g..L",
+       "SSL...S....g...L.......a.L..g....SLk.LSS",
+       "k..SL.L..g..a..SSSSSSSSSSL....gk..LLS...",
+       "k...kSL.a....aSa.......k.S...a....S..k..",
+       "g..k..SSSSSSSSL.a.....k...SSSSSSSSaa...g",
+       "..g...S.....k.S.gggggggg.S..k..a.SL..g..",
+       "g.g..SL....k..S..........SL..k.ak.S..g.g",
+       ".....S........SL......k..S........SL....",
+       "..a..L..g.....SL.a.....kkS.....g.aaL...a",
+       "LLLLSL.........LLLLLLLLL.Lkk.......SLLLL",
+       "..SSSk......kkkSSSSSSSSSSL.........SSS..",
+       "..k.SLa.......SL...k.....S......a..S....",
+       ".....SLLLLLLLLSk.........SLLLLLLLLSL....",
+       "..g..S..k....kL.gggggggg...a....a.Skkg..",
+       "..k..S..k...k.S..gggggg..SL.a.....SL....",
+       "....SL.....k..SL........aS........kS....",
+       "k...Sk........SL....a....S.........S....",
+       "LLSSS.......a..SSSSSSSSSSL.........SSSLL",
+       "....SL...............k.a.L.a.......Sa...",
+       "....aSagggggg.SL......a..S.ggggggkSL....",
+       "...a.SLLLLLLL.S..........SLLLLLLLkS.....",
+       "g.....SSSSSSSSLaaa......kkSSSSSSSSL....g",
+       "..g...La...a..S.gggggggg.SL....k..L..g..",
+       "g...aSLg......SL.........S.k....g.S....g",
+       "...LLSk....gg.SL.........S.gg.....SLL..k",
+       ".LLS.SL..g.g...SSSSSSSSSSL..g.g..LS.SLL.",
+       "SS....SL..g.g..L.........Lag.g..LS..k.SS",
+       "k..g...S...g..SL.........S..g...Sk..g...",
+       ".g......S.g...Sa........aSL..gaS.....ag.",
+       "..g.g.g.SLSSSSL..g....g...SSSSLS.g.g.gkk",
+       "ga.g..k.S.....S.g..gg..g.S.....S....g..g",
+       "a..g...S..g.g.SLL.a..a.LLSag.ga.Sa..g...",
+       "..g...Sa.g.g..S.SSL..LSS.S.ag.g..S...g.."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "g.gk.SLk.g.g..SLa......S..g.g...S..g.g",
+       "g.gk.SLk.g.g..SLa......S..g.g...S..g.g",
+       "g.gk.SLk.g.g..SLa......S..g.g...S..g.g"
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "g.g..Sk..g.g..Saa.....LS..g.g..LS..gag",
+       "g.g..Sk..g.g..Saa.....LS..g.g..LS..gag",
+       "g.g..Sk..g.g..Saa.....LS..g.g..LS..gag"
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       ".....LS.......SL.SSLLSSk.S.......SL...a.",
+       ".....LS.......SL.SSLLSSk.S.......SL...a.",
+       ".....LS.......SL.SSLLSSk.S.......SL...a."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       ".....aSL......S.LSS..SSLLS......LS...a..",
+       ".....aSL......S.LSS..SSLLS......LS...a..",
+       ".....aSL......S.LSS..SSLLS......LS...a.."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "shell_1",
+   "shape": "box",
+   "parent": "shell",
+   "size": [
+    16.5,
+    1.0,
+    24.0
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    0.0
+   ],
+   "style": "carapace",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "...k.g...S..gg..S...g..SL.kg.....",
+       "L...k..k.SL..g..S......S..k.....L",
+       "SL....g...L..g..S......Lk.g..kkLS",
+       ".SLa.....kS.g...S...g.SL......LS.",
+       "..SL......SLkLSSaSSL..Sa.....LS..",
+       "...SL..ka..SSS..a..SSSL.....LS...",
+       ".g..SLLL.a.S...g.g..aSk..LLLS..g.",
+       "..g.S.SSSSSL.a..g.....SSSSS.Skg..",
+       "g..kS...a.SL..g...g...S..k..SL..g",
+       "...SL......L..k.......L......S...",
+       "...S....g..Sk........SLag....SL..",
+       "..SL..g....S....k....S....g...S..",
+       "S.S.g...a..SSSSSSSSSSS......g.S.S",
+       "kSS......aaS...k...kkSL.....k.SS.",
+       "..SSSSSSSSSLaa....k...SSSSSSSSSa.",
+       "..S..a....SLggggggggg.S..k...kS..",
+       "..S.......SL..........S.......SL.",
+       ".SL........L......k...L........S.",
+       ".S.g.......S.a......kSL......gaSa",
+       ".S..g......SLLLLLLLLLSkkk...g..SL",
+       "SLk......kkSSSSSSSSSSS..........S",
+       ".S.........S......a..SL...k....SL",
+       ".SLLLLLLLLSL..........SLLLLLLLLS.",
+       "....k.....S..ggggggg..Sa.......Lk",
+       ".SL......kSL.ggggggg..S.a...a..S.",
+       ".S.........L.........aL..a.....SL",
+       ".Lk........S..k......SL......k..L",
+       "SL..g...a..SSSSSSSSSSS......g...S",
+       ".S.......g.S...a.....S.ga......SL",
+       ".SL.gggggg.S.....k...SLggggggk.S.",
+       "..SLLLLLLLSL..........SLLLLLLLSL.",
+       "..SSSSSSSSSaaa......kkSSSSSSSSS..",
+       "..S.....a.SL.ggggggg..S.......SL.",
+       "a.L.g..a...L..k.......Lkk..kg..L.",
+       "LSk..g.ggg.S.k...k...SLggg.g...SL",
+       "SkS.g.g....SSSSSSSSSSS....g.g.S.S",
+       ".kSL....ag.S..k...k..SLg.....LS..",
+       "...SL......S.........SL.k...LS...",
+       "g...SL.k..SLa.......aaS....LS...g",
+       ".g...SLSSSS.g.g...g.g.SSSSLS...g.",
+       "....LS.a..SL....g....kS....SL....",
+       "...LS..ag..SL..g.g..LSa.g...SL...",
+       ".aLS.......SSSL...LSSSL......SL..",
+       ".LS....g..SL..SSLSS...S..g....SL.",
+       "LS........S.g.k.Sa..g.SL.......SL",
+       "Skk...g.k.Lk....S..g...L..g.....S",
+       ".........SL.....S..g...S.k.......",
+       ".....g...S..g...S..gg..SLk.g..k.."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "..S...gg..gkSL.....aS...k..SL......S.g...g...SL.",
+       "..S...gg..gkSL.....aS...k..SL......S.g...g...SL."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".LS...g...g.S.k....LS......S..a...LS.g..gg...S..",
+       ".LS...g...g.S.k....LS......S..a...LS.g..gg...S.."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "..g..g..SLk.g...Sa.gg...Sk.g..gk.",
+       "..g..g..SLk.g...Sa.gg...Sk.g..gk."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "..g..gk.S...g...S..gg..LS..g..g..",
+       "..g..gk.S...g...S..gg..LS..g..g.."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "shell_2",
+   "shape": "box",
+   "parent": "shell",
+   "size": [
+    17.0,
+    2.0,
+    20.5
+   ],
+   "pivot": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "style": "carapace",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "..SL..gg...S...LSSLk..SL..gg..LS..",
+       "...SL......SLLSS..SSL.S......LSa..",
+       "....SL...a..S........SL.....LS.a..",
+       "...a.SSSSLLSa.......a.SLLSSSSL....",
+       ".g..SL....SS...g..g...SS.k...S..g.",
+       "....S...a..S..........S...k..SL...",
+       "g...L..g...SLkk.....kkSa..g...L..g",
+       "k..SL...g..SL.........S..g....S.k.",
+       "L..S..g.a...LLLLLLLLLLL....g..SLkL",
+       ".SSL.....a.S........kkS...a.k..SS.",
+       "k.SLLLLLLLLSa......k..SLLLLLLLLS..",
+       "...SSSSSSSSL..a........SSSSSSSSL..",
+       ".aaL.......S..........SL....a..L..",
+       "..SLg......S..gggggg..S...k..g.S..",
+       "..Sa.gggg..SL.......k.S..gggg..SLa",
+       ".SL.........La.......kL.........S.",
+       "SS.k.ggggg..SSSSSSSSSSL.ggggg...SS",
+       ".SL.......kS....k..a..S.........S.",
+       "..S...k....S.gggggggg.S......a.SL.",
+       "..SSSSSSSSSLkk.........SSSSSSSSSk.",
+       "..S..k....kS..........SLa......SL.",
+       "kkL..k...k.S........aaSL.a......L.",
+       ".SL........SLgggggggg.S.......kkS.",
+       "LS.kg.......LLLLLLLLL.L......g..SL",
+       "SS.g.gggggaaSSSSSSSSSSL.ggggg.g.SS",
+       "..La.......SL.........Sa.....k..L.",
+       ".aSL.......S..........SL..k...kS..",
+       "...SSSSSSSSL.gggggggg..SSSSSSSSL..",
+       "...Sa....a.L........kkk.....k.SLa.",
+       "..SL....a..S..........SL.......S..",
+       ".aS..g.....SL.k.......S..k..g..SLk",
+       "LSS.g.g.g...LLLLLLLLLLL..g.g.gkSSL",
+       "..SL..........k....k..L.......LS.k",
+       "...SL.....aSL..k..k...S......LS...",
+       "g...SL.k...S..........SL...aLS...g",
+       ".g...SLLLLLL...........LLLLLS...g.",
+       "......SSSS.Skk.g..g.kkS.SSSSk.....",
+       "....LS.....S..........S....aSL....",
+       "...LS.......SLLa..aLLSLa...a.SL...",
+       "..LS.......SL.SSLLSSk.S.......SL..",
+       ".LS....g...S....SS..k.SL..g..aaSL."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "shell_3",
+   "shape": "box",
+   "parent": "shell",
+   "size": [
+    13.0,
+    2.0,
+    17.0
+   ],
+   "pivot": [
+    0.0,
+    4.5,
+    0.0
+   ],
+   "style": "carapace",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".L.SSSSS.g..gg.ag.SSSSS..L",
+       "SLk..a.S..g....g..S......S",
+       "S..g...S.g.....kg.S...g..S",
+       "L......SLk.......kSaa.....",
+       "....g...L.......a.L..g....",
+       "..g..a..SSSSSSSSSSL....gk.",
+       ".a....aSa.......k.S...a...",
+       "SSSSSSSL.a.....k...SSSSSSS",
+       ".....k.S.gggggggg.S..k..a.",
+       "....k..S..........SL..k.ak",
+       ".......SL......k..S.......",
+       ".g.....SL.a.....kkS.....g.",
+       "........LLLLLLLLL.Lkk.....",
+       ".....kkkSSSSSSSSSSL.......",
+       ".......SL...k.....S......a",
+       "LLLLLLLSk.........SLLLLLLL",
+       ".k....kL.gggggggg...a....a",
+       ".k...k.S..gggggg..SL.a....",
+       "....k..SL........aS.......",
+       ".......SL....a....S.......",
+       ".....a..SSSSSSSSSSL.......",
+       "..............k.a.L.a.....",
+       "gggggg.SL......a..S.gggggg",
+       "LLLLLL.S..........SLLLLLLL",
+       "SSSSSSSLaaa......kkSSSSSSS",
+       "a...a..S.gggggggg.SL....k.",
+       "g......SL.........S.k....g",
+       "....gg.SL.........S.gg....",
+       "..g.g...SSSSSSSSSSL..g.g..",
+       "L..g.g..L.........Lag.g..L",
+       "S...g..SL.........S..g...S",
+       ".S.g...Sa........aSL..gaS.",
+       ".SLSSSSL..g....g...SSSSLS.",
+       ".S.....S.g..gg..g.S.....S."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "shell_4",
+   "shape": "box",
+   "parent": "shell",
+   "size": [
+    8.0,
+    1.0,
+    11.5
+   ],
+   "pivot": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "carapace",
+   "paint": {
+    "stamps": [
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "a.S........kkS..",
+       "LLSa......k..SLL",
+       "SSL..a........SS",
+       "..S..........SL.",
+       "..S..gggggg..S..",
+       "..SL.......k.S..",
+       "...La.......kL..",
+       "g..SSSSSSSSSSL.g",
+       ".kS....k..a..S..",
+       "..S.gggggggg.S..",
+       "SSLkk.........SS",
+       ".kS..........SLa",
+       "k.S........aaSL.",
+       "..SLgggggggg.S..",
+       "...LLLLLLLLL.L..",
+       "gaaSSSSSSSSSSL.g",
+       "..SL.........Sa.",
+       "..S..........SL.",
+       "SSL.gggggggg..SS",
+       "a.L........kkk..",
+       "..S..........SL.",
+       "..SL.k.......S..",
+       "...LLLLLLLLLLL.."
+      ],
+      "key": {
+       "S": "tortoise:1",
+       "L": "tortoise:9",
+       "g": "tortoise:5",
+       "k": "tortoise:3",
+       "a": "tortoise:10",
+       "K": "tortoise:8"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "shell_serration",
+   "shape": "card",
+   "parent": "shell",
+   "pivot": [
+    0.0,
+    0.0,
+    -12.0
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.0
+   ],
+   "style": "carapace_edge",
+   "plane": "xy",
+   "art": [
+    "mmmmmmmmmmmmmmmmmmmm",
+    "m.mm.mm.mm.mm.mm.mm.",
+    "m..m..m..m..m..m..m."
+   ]
+  },
+  {
+   "id": "neck",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    5.5,
+    4.5,
+    5.0
+   ],
+   "pivot": [
+    0.0,
+    1.0,
+    10.5
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    2.0
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "head",
+   "shape": "box",
+   "parent": "neck",
+   "size": [
+    6.5,
+    3.5,
+    5.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    3.5
+   ],
+   "offset": [
+    0.0,
+    0.5,
+    3.5
+   ],
+   "style": "head"
+  },
+  {
+   "id": "head_y",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    5.0,
+    5.5,
+    4.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    3.5
+   ],
+   "style": "head"
+  },
+  {
+   "id": "head_z",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    4.0,
+    4.5,
+    7.0
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    3.5
+   ],
+   "style": "head"
+  },
+  {
+   "id": "head_m",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    6.0,
+    5.0,
+    6.5
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    3.5
+   ],
+   "style": "head"
+  },
+  {
+   "id": "beak",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    4.0,
+    2.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -0.25,
+    7.75
+   ],
+   "style": "beak"
+  },
+  {
+   "id": "beak_hook",
+   "shape": "box",
+   "parent": "beak",
+   "size": [
+    2.5,
+    1.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -0.75,
+    1.25
+   ],
+   "style": "beak"
+  },
+  {
+   "id": "jaw",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    -1.25,
+    1.5
+   ],
+   "style": "skin"
+  },
+  {
+   "id": "jaw_plate",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    4.5,
+    1.0,
+    5.5
+   ],
+   "pivot": [
+    0.0,
+    -0.5,
+    4.25
+   ],
+   "style": "beak_low"
+  },
+  {
+   "id": "eye_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    0.5,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    3.5,
+    1.5,
+    4.5
+   ],
+   "style": "eye"
+  },
+  {
+   "id": "lid_l",
+   "shape": "box",
+   "parent": "eye_l",
+   "size": [
+    0.5,
+    1.0,
+    3.5
+   ],
+   "pivot": [
+    0.25,
+    1.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.0
+   ],
+   "style": "lid"
+  },
+  {
+   "id": "eye_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    0.5,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    -3.5,
+    1.5,
+    4.5
+   ],
+   "style": "eye"
+  },
+  {
+   "id": "lid_r",
+   "shape": "box",
+   "parent": "eye_r",
+   "size": [
+    0.5,
+    1.0,
+    3.5
+   ],
+   "pivot": [
+    -0.25,
+    1.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.0
+   ],
+   "style": "lid"
+  },
+  {
+   "id": "flipper_fl",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    6.0,
+    1.5,
+    3.5
+   ],
+   "pivot": [
+    7.2,
+    0.5,
+    7.2
+   ],
+   "offset": [
+    3.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -28.0,
+    -8.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "flipper_fl_tip",
+   "shape": "box",
+   "parent": "flipper_fl",
+   "size": [
+    8.0,
+    1.0,
+    4.5
+   ],
+   "pivot": [
+    6.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    4.0,
+    0.0,
+    -0.5
+   ],
+   "rotation": [
+    0.0,
+    -22.0,
+    0.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "flipper_fl_end",
+   "shape": "box",
+   "parent": "flipper_fl_tip",
+   "size": [
+    6.0,
+    0.5,
+    2.5
+   ],
+   "pivot": [
+    8.0,
+    -0.0,
+    0.5
+   ],
+   "offset": [
+    2.75,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -14.0,
+    0.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "claw_fl",
+   "shape": "card",
+   "parent": "flipper_fl_tip",
+   "pivot": [
+    3.0,
+    -0.0,
+    1.6
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    0.25
+   ],
+   "style": "claw",
+   "plane": "xz",
+   "art": [
+    "c",
+    "C"
+   ]
+  },
+  {
+   "id": "flipper_bl",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    5.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    6.0,
+    0.0,
+    -7.92
+   ],
+   "offset": [
+    2.5,
+    0.0,
+    -1.5
+   ],
+   "rotation": [
+    0.0,
+    38.0,
+    -6.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "flipper_bl_end",
+   "shape": "box",
+   "parent": "flipper_bl",
+   "size": [
+    3.0,
+    0.5,
+    3.5
+   ],
+   "pivot": [
+    5.0,
+    0.0,
+    -1.5
+   ],
+   "offset": [
+    1.25,
+    0.0,
+    0.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "flipper_fr",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    6.0,
+    1.5,
+    3.5
+   ],
+   "pivot": [
+    -7.2,
+    0.5,
+    7.2
+   ],
+   "offset": [
+    -3.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    28.0,
+    8.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "flipper_fr_tip",
+   "shape": "box",
+   "parent": "flipper_fr",
+   "size": [
+    8.0,
+    1.0,
+    4.5
+   ],
+   "pivot": [
+    -6.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -4.0,
+    0.0,
+    -0.5
+   ],
+   "rotation": [
+    0.0,
+    22.0,
+    0.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "flipper_fr_end",
+   "shape": "box",
+   "parent": "flipper_fr_tip",
+   "size": [
+    6.0,
+    0.5,
+    2.5
+   ],
+   "pivot": [
+    -8.0,
+    -0.0,
+    0.5
+   ],
+   "offset": [
+    -2.75,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    14.0,
+    0.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "claw_fr",
+   "shape": "card",
+   "parent": "flipper_fr_tip",
+   "pivot": [
+    -3.0,
+    -0.0,
+    1.6
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    0.25
+   ],
+   "style": "claw",
+   "plane": "xz",
+   "art": [
+    "c",
+    "C"
+   ]
+  },
+  {
+   "id": "flipper_br",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    5.0,
+    1.0,
+    5.0
+   ],
+   "pivot": [
+    -6.0,
+    0.0,
+    -7.92
+   ],
+   "offset": [
+    -2.5,
+    0.0,
+    -1.5
+   ],
+   "rotation": [
+    0.0,
+    -38.0,
+    6.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "flipper_br_end",
+   "shape": "box",
+   "parent": "flipper_br",
+   "size": [
+    3.0,
+    0.5,
+    3.5
+   ],
+   "pivot": [
+    -5.0,
+    0.0,
+    -1.5
+   ],
+   "offset": [
+    -1.25,
+    0.0,
+    0.0
+   ],
+   "style": "flipper"
+  },
+  {
+   "id": "tail",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    2.5,
+    1.0,
+    3.5
+   ],
+   "pivot": [
+    0.0,
+    -0.5,
+    -9.12
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -1.5
+   ],
+   "style": "skin"
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 4.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "lid_l",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.74,
+       [
+        0,
+        2.2,
+        0
+       ]
+      ],
+      [
+       2.81,
+       [
+        0,
+        2.2,
+        0
+       ]
+      ],
+      [
+       2.95,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "ease",
+     "channel": "scale"
+    },
+    {
+     "part": "lid_r",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.6,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       2.74,
+       [
+        0,
+        2.2,
+        0
+       ]
+      ],
+      [
+       2.81,
+       [
+        0,
+        2.2,
+        0
+       ]
+      ],
+      [
+       2.95,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "ease",
+     "channel": "scale"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": [
+       0.015,
+       0.03,
+       0.01
+      ],
+      "cycles": 2,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "shell",
+     "osc": {
+      "amp": -0.8,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "neck",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.6,
+       0
+      ],
+      [
+       1.2,
+       16
+      ],
+      [
+       2.0,
+       16
+      ],
+      [
+       2.6,
+       -12
+      ],
+      [
+       3.4,
+       -12
+      ],
+      [
+       4.0,
+       0
+      ]
+     ],
+     "ease": "ease",
+     "axis": "y"
+    },
+    {
+     "part": "head",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.2,
+       -6
+      ],
+      [
+       2.2,
+       4
+      ],
+      [
+       3.2,
+       -4
+      ],
+      [
+       4.0,
+       0
+      ]
+     ],
+     "ease": "ease",
+     "axis": "x"
+    },
+    {
+     "part": "jaw",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       3.3,
+       0
+      ],
+      [
+       3.45,
+       10
+      ],
+      [
+       3.6,
+       0
+      ],
+      [
+       4.0,
+       0
+      ]
+     ],
+     "ease": "ease",
+     "axis": "x"
+    },
+    {
+     "part": "flipper_fl_tip",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.5,
+       0
+      ],
+      [
+       1.7,
+       -10
+      ],
+      [
+       1.9,
+       0
+      ],
+      [
+       4.0,
+       0
+      ]
+     ],
+     "ease": "ease",
+     "axis": "z"
+    },
+    {
+     "part": "tail",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "y"
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       1.5667,
+       [
+        0.0,
+        -0.073,
+        0.0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0.0,
+        -0.035,
+        0.0
+       ]
+      ],
+      [
+       1.6333,
+       [
+        0.0,
+        0.839,
+        0.0
+       ]
+      ],
+      [
+       1.65,
+       [
+        0.0,
+        1.077,
+        0.0
+       ]
+      ],
+      [
+       1.6667,
+       [
+        0.0,
+        1.259,
+        0.0
+       ]
+      ],
+      [
+       1.6833,
+       [
+        0.0,
+        1.375,
+        0.0
+       ]
+      ],
+      [
+       1.7,
+       [
+        0.0,
+        1.417,
+        0.0
+       ]
+      ],
+      [
+       1.7167,
+       [
+        0.0,
+        1.383,
+        0.0
+       ]
+      ],
+      [
+       1.7333,
+       [
+        0.0,
+        1.274,
+        0.0
+       ]
+      ],
+      [
+       1.75,
+       [
+        0.0,
+        1.097,
+        0.0
+       ]
+      ],
+      [
+       1.7667,
+       [
+        0.0,
+        0.864,
+        0.0
+       ]
+      ],
+      [
+       1.8167,
+       [
+        0.0,
+        -0.003,
+        0.0
+       ]
+      ],
+      [
+       3.9833,
+       [
+        0.0,
+        -0.004,
+        0.0
+       ]
+      ]
+     ],
+     "ease": "linear"
+    }
+   ]
+  },
+  "walk": {
+   "length": 1.6,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "flipper_fl",
+     "osc": {
+      "amp": 28.0,
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "axis": "y"
+    },
+    {
+     "part": "flipper_fr",
+     "osc": {
+      "amp": 28.0,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "y"
+    },
+    {
+     "part": "flipper_fl",
+     "osc": {
+      "amp": -10,
+      "cycles": 1,
+      "phase": 0.25,
+      "bias": -4
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flipper_fr",
+     "osc": {
+      "amp": -10,
+      "cycles": 1,
+      "phase": 0.75,
+      "bias": -4
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flipper_fl_tip",
+     "osc": {
+      "amp": 12,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "y"
+    },
+    {
+     "part": "flipper_fr_tip",
+     "osc": {
+      "amp": 12,
+      "cycles": 1,
+      "phase": 0.6
+     },
+     "axis": "y"
+    },
+    {
+     "part": "flipper_bl",
+     "osc": {
+      "amp": -20,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "y"
+    },
+    {
+     "part": "flipper_br",
+     "osc": {
+      "amp": -20,
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "axis": "y"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": 3,
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "axis": "z"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": 3,
+      "cycles": 1,
+      "phase": 0.25
+     },
+     "axis": "y"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": -1.5,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "neck",
+     "osc": {
+      "amp": 5,
+      "cycles": 2,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "head",
+     "osc": {
+      "amp": -4,
+      "cycles": 2,
+      "phase": 0.4
+     },
+     "axis": "x"
+    },
+    {
+     "part": "tail",
+     "osc": {
+      "amp": 10,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "y"
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        3.555,
+        0.0
+       ]
+      ],
+      [
+       0.05,
+       [
+        0.0,
+        3.475,
+        0.0
+       ]
+      ],
+      [
+       0.1167,
+       [
+        0.0,
+        3.188,
+        0.0
+       ]
+      ],
+      [
+       0.2167,
+       [
+        0.0,
+        2.459,
+        0.0
+       ]
+      ],
+      [
+       0.3167,
+       [
+        0.0,
+        1.525,
+        0.0
+       ]
+      ],
+      [
+       0.3667,
+       [
+        0.0,
+        1.139,
+        0.0
+       ]
+      ],
+      [
+       0.3833,
+       [
+        0.0,
+        1.067,
+        0.0
+       ]
+      ],
+      [
+       0.4667,
+       [
+        0.0,
+        1.125,
+        0.0
+       ]
+      ],
+      [
+       0.55,
+       [
+        0.0,
+        0.95,
+        0.0
+       ]
+      ],
+      [
+       0.7167,
+       [
+        0.0,
+        0.193,
+        0.0
+       ]
+      ],
+      [
+       0.8,
+       [
+        0.0,
+        0.15,
+        0.0
+       ]
+      ],
+      [
+       1.0167,
+       [
+        0.0,
+        0.81,
+        0.0
+       ]
+      ],
+      [
+       1.1333,
+       [
+        0.0,
+        0.928,
+        0.0
+       ]
+      ],
+      [
+       1.2167,
+       [
+        0.0,
+        1.118,
+        0.0
+       ]
+      ],
+      [
+       1.2333,
+       [
+        0.0,
+        1.182,
+        0.0
+       ]
+      ],
+      [
+       1.3,
+       [
+        0.0,
+        1.861,
+        0.0
+       ]
+      ],
+      [
+       1.3667,
+       [
+        0.0,
+        2.362,
+        0.0
+       ]
+      ],
+      [
+       1.4,
+       [
+        0.0,
+        2.555,
+        0.0
+       ]
+      ],
+      [
+       1.4667,
+       [
+        0.0,
+        3.117,
+        0.0
+       ]
+      ],
+      [
+       1.5167,
+       [
+        0.0,
+        3.394,
+        0.0
+       ]
+      ],
+      [
+       1.5667,
+       [
+        0.0,
+        3.536,
+        0.0
+       ]
+      ],
+      [
+       1.5833,
+       [
+        0.0,
+        3.553,
+        0.0
+       ]
+      ]
+     ],
+     "ease": "linear"
+    }
+   ]
+  },
+  "swim": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "flipper_fl",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        -10.0,
+        34.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        -10.0,
+        24.0,
+        -38.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        -10.0,
+        34.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fl_tip",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        18.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        20.0,
+        0.0,
+        -16.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        18.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fr",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        10.0,
+        -34.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        -10.0,
+        -24.0,
+        38.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        10.0,
+        -34.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fr_tip",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        -18.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        20.0,
+        0.0,
+        16.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        -18.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": [
+       0,
+       0.8,
+       0
+      ],
+      "cycles": 1,
+      "phase": 0.6
+     },
+     "channel": "position"
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": 3,
+      "cycles": 1,
+      "phase": 0.55
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flipper_bl",
+     "osc": {
+      "amp": 14,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "y"
+    },
+    {
+     "part": "flipper_br",
+     "osc": {
+      "amp": -14,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "y"
+    },
+    {
+     "part": "flipper_bl",
+     "osc": {
+      "amp": -8,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flipper_br",
+     "osc": {
+      "amp": 8,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "z"
+    },
+    {
+     "part": "neck",
+     "osc": {
+      "amp": -3,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "head",
+     "osc": {
+      "amp": 3,
+      "cycles": 1,
+      "phase": 0.15
+     },
+     "axis": "x"
+    },
+    {
+     "part": "tail",
+     "osc": {
+      "amp": 8,
+      "cycles": 1,
+      "phase": 0.4
+     },
+     "axis": "y"
+    }
+   ],
+   "grounded": false
+  },
+  "bask": {
+   "length": 5.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "flipper_bl",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        -16.0,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        -16.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "flipper_br",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        16.0,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        16.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fl",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        18.0,
+        -4.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        18.0,
+        -4.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fl_tip",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        10.0,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        10.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fr",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        -18.0,
+        4.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        -18.0,
+        4.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fr_tip",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        -10.0,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        -10.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        8.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        8.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lid_l",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        2.2,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        2.2,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "lid_r",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        2.2,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0.0,
+        2.2,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "neck",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        10.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       5.0,
+       [
+        10.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "body",
+     "osc": {
+      "amp": [
+       0.02,
+       0.04,
+       0.015
+      ],
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "shell",
+     "osc": {
+      "amp": -1.0,
+      "cycles": 1,
+      "phase": 0.1
+     },
+     "axis": "x"
+    },
+    {
+     "part": "neck",
+     "osc": {
+      "amp": 2,
+      "cycles": 1,
+      "phase": 0.2
+     },
+     "axis": "x"
+    },
+    {
+     "part": "lid_l",
+     "keys": [
+      [
+       0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       3.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       3.5,
+       [
+        0,
+        -1.6,
+        0
+       ]
+      ],
+      [
+       3.9,
+       [
+        0,
+        -1.6,
+        0
+       ]
+      ],
+      [
+       4.2,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       5.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "ease",
+     "channel": "scale"
+    },
+    {
+     "part": "flipper_bl",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.5,
+       0
+      ],
+      [
+       1.8,
+       -12
+      ],
+      [
+       2.1,
+       0
+      ],
+      [
+       5.0,
+       0
+      ]
+     ],
+     "ease": "ease",
+     "axis": "z"
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        1.742,
+        0.0
+       ]
+      ],
+      [
+       4.9833,
+       [
+        0.0,
+        1.736,
+        0.0
+       ]
+      ]
+     ],
+     "ease": "linear"
+    }
+   ]
+  },
+  "dig": {
+   "length": 2.0,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "body",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.25,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.75,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.25,
+       [
+        -6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.55,
+       [
+        -4.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flipper_bl",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        -46.0,
+        -36.0
+       ],
+       "out"
+      ],
+      [
+       0.75,
+       [
+        0.0,
+        -10.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        -46.0,
+        -36.0
+       ],
+       "out"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        -10.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.55,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flipper_br",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        10.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.75,
+       [
+        0.0,
+        46.0,
+        36.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        10.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        46.0,
+        36.0
+       ],
+       "out"
+      ],
+      [
+       1.55,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fl",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0.0,
+        10.0,
+        -14.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        10.0,
+        -14.0
+       ],
+       "out"
+      ],
+      [
+       0.75,
+       [
+        0.0,
+        10.0,
+        -14.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        10.0,
+        -14.0
+       ],
+       "out"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        10.0,
+        -14.0
+       ],
+       "out"
+      ],
+      [
+       1.55,
+       [
+        0.0,
+        10.0,
+        -14.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flipper_fr",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.25,
+       [
+        0.0,
+        -10.0,
+        14.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        -10.0,
+        14.0
+       ],
+       "out"
+      ],
+      [
+       0.75,
+       [
+        0.0,
+        -10.0,
+        14.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        -10.0,
+        14.0
+       ],
+       "out"
+      ],
+      [
+       1.25,
+       [
+        0.0,
+        -10.0,
+        14.0
+       ],
+       "out"
+      ],
+      [
+       1.55,
+       [
+        0.0,
+        -10.0,
+        14.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "head",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.25,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.75,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.25,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.55,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "neck",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.25,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.5,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.75,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.25,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.55,
+       [
+        6.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "shell",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.4,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.4625,
+       [
+        0,
+        0,
+        0.53
+       ]
+      ],
+      [
+       0.525,
+       [
+        0,
+        0,
+        -0.742
+       ]
+      ],
+      [
+       0.5875,
+       [
+        0,
+        0,
+        0.894
+       ]
+      ],
+      [
+       0.65,
+       [
+        0,
+        0,
+        -1.009
+       ]
+      ],
+      [
+       0.7125,
+       [
+        0,
+        0,
+        1.094
+       ]
+      ],
+      [
+       0.775,
+       [
+        0,
+        0,
+        -1.153
+       ]
+      ],
+      [
+       0.8375,
+       [
+        0,
+        0,
+        1.188
+       ]
+      ],
+      [
+       0.9,
+       [
+        0,
+        0,
+        -1.2
+       ]
+      ],
+      [
+       0.9625,
+       [
+        0,
+        0,
+        1.188
+       ]
+      ],
+      [
+       1.025,
+       [
+        0,
+        0,
+        -1.153
+       ]
+      ],
+      [
+       1.0875,
+       [
+        0,
+        0,
+        1.094
+       ]
+      ],
+      [
+       1.15,
+       [
+        0,
+        0,
+        -1.009
+       ]
+      ],
+      [
+       1.2125,
+       [
+        0,
+        0,
+        0.894
+       ]
+      ],
+      [
+       1.275,
+       [
+        0,
+        0,
+        -0.742
+       ]
+      ],
+      [
+       1.3375,
+       [
+        0,
+        0,
+        0.53
+       ]
+      ],
+      [
+       1.4,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "tail",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0,
+        11.465,
+        0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0,
+        -8.215,
+        0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0,
+        5.886,
+        0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0,
+        -4.218,
+        0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0,
+        3.022,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        -2.165,
+        0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0,
+        1.552,
+        0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0,
+        -1.112,
+        0
+       ]
+      ],
+      [
+       1.25,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "body",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.0333,
+       [
+        0.0,
+        0.044,
+        0.0
+       ]
+      ],
+      [
+       0.0833,
+       [
+        0.0,
+        0.254,
+        0.0
+       ]
+      ],
+      [
+       0.1167,
+       [
+        0.0,
+        0.454,
+        0.0
+       ]
+      ],
+      [
+       0.1333,
+       [
+        0.0,
+        0.707,
+        0.0
+       ]
+      ],
+      [
+       0.1667,
+       [
+        0.0,
+        1.302,
+        0.0
+       ]
+      ],
+      [
+       0.1833,
+       [
+        0.0,
+        1.56,
+        0.0
+       ]
+      ],
+      [
+       0.2,
+       [
+        0.0,
+        1.776,
+        0.0
+       ]
+      ],
+      [
+       0.2167,
+       [
+        0.0,
+        1.938,
+        0.0
+       ]
+      ],
+      [
+       0.2333,
+       [
+        0.0,
+        2.038,
+        0.0
+       ]
+      ],
+      [
+       0.3167,
+       [
+        0.0,
+        2.072,
+        0.0
+       ]
+      ],
+      [
+       0.3333,
+       [
+        0.0,
+        2.289,
+        0.0
+       ]
+      ],
+      [
+       0.35,
+       [
+        0.0,
+        2.669,
+        0.0
+       ]
+      ],
+      [
+       0.3667,
+       [
+        0.0,
+        2.988,
+        0.0
+       ]
+      ],
+      [
+       0.3833,
+       [
+        0.0,
+        3.245,
+        0.0
+       ]
+      ],
+      [
+       0.4,
+       [
+        0.0,
+        3.445,
+        0.0
+       ]
+      ],
+      [
+       0.4167,
+       [
+        0.0,
+        3.594,
+        0.0
+       ]
+      ],
+      [
+       0.45,
+       [
+        0.0,
+        3.771,
+        0.0
+       ]
+      ],
+      [
+       0.5,
+       [
+        0.0,
+        3.848,
+        0.0
+       ]
+      ],
+      [
+       0.5167,
+       [
+        0.0,
+        3.626,
+        0.0
+       ]
+      ],
+      [
+       0.5333,
+       [
+        0.0,
+        3.344,
+        0.0
+       ]
+      ],
+      [
+       0.5667,
+       [
+        0.0,
+        2.647,
+        0.0
+       ]
+      ],
+      [
+       0.5833,
+       [
+        0.0,
+        2.26,
+        0.0
+       ]
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        2.625,
+        0.0
+       ]
+      ],
+      [
+       0.6167,
+       [
+        0.0,
+        2.935,
+        0.0
+       ]
+      ],
+      [
+       0.6333,
+       [
+        0.0,
+        3.19,
+        0.0
+       ]
+      ],
+      [
+       0.65,
+       [
+        0.0,
+        3.394,
+        0.0
+       ]
+      ],
+      [
+       0.6667,
+       [
+        0.0,
+        3.552,
+        0.0
+       ]
+      ],
+      [
+       0.7,
+       [
+        0.0,
+        3.752,
+        0.0
+       ]
+      ],
+      [
+       0.7333,
+       [
+        0.0,
+        3.838,
+        0.0
+       ]
+      ],
+      [
+       0.75,
+       [
+        0.0,
+        3.848,
+        0.0
+       ]
+      ],
+      [
+       0.7667,
+       [
+        0.0,
+        3.626,
+        0.0
+       ]
+      ],
+      [
+       0.7833,
+       [
+        0.0,
+        3.344,
+        0.0
+       ]
+      ],
+      [
+       0.8167,
+       [
+        0.0,
+        2.647,
+        0.0
+       ]
+      ],
+      [
+       0.8333,
+       [
+        0.0,
+        2.26,
+        0.0
+       ]
+      ],
+      [
+       0.85,
+       [
+        0.0,
+        2.625,
+        0.0
+       ]
+      ],
+      [
+       0.8667,
+       [
+        0.0,
+        2.935,
+        0.0
+       ]
+      ],
+      [
+       0.8833,
+       [
+        0.0,
+        3.19,
+        0.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0.0,
+        3.394,
+        0.0
+       ]
+      ],
+      [
+       0.9167,
+       [
+        0.0,
+        3.552,
+        0.0
+       ]
+      ],
+      [
+       0.95,
+       [
+        0.0,
+        3.752,
+        0.0
+       ]
+      ],
+      [
+       0.9833,
+       [
+        0.0,
+        3.838,
+        0.0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        3.848,
+        0.0
+       ]
+      ],
+      [
+       1.0167,
+       [
+        0.0,
+        3.626,
+        0.0
+       ]
+      ],
+      [
+       1.0333,
+       [
+        0.0,
+        3.344,
+        0.0
+       ]
+      ],
+      [
+       1.0667,
+       [
+        0.0,
+        2.647,
+        0.0
+       ]
+      ],
+      [
+       1.0833,
+       [
+        0.0,
+        2.26,
+        0.0
+       ]
+      ],
+      [
+       1.1,
+       [
+        0.0,
+        2.625,
+        0.0
+       ]
+      ],
+      [
+       1.1167,
+       [
+        0.0,
+        2.935,
+        0.0
+       ]
+      ],
+      [
+       1.1333,
+       [
+        0.0,
+        3.19,
+        0.0
+       ]
+      ],
+      [
+       1.15,
+       [
+        0.0,
+        3.394,
+        0.0
+       ]
+      ],
+      [
+       1.1667,
+       [
+        0.0,
+        3.552,
+        0.0
+       ]
+      ],
+      [
+       1.2,
+       [
+        0.0,
+        3.752,
+        0.0
+       ]
+      ],
+      [
+       1.2333,
+       [
+        0.0,
+        3.838,
+        0.0
+       ]
+      ],
+      [
+       1.2667,
+       [
+        0.0,
+        3.835,
+        0.0
+       ]
+      ],
+      [
+       1.3,
+       [
+        0.0,
+        3.717,
+        0.0
+       ]
+      ],
+      [
+       1.3167,
+       [
+        0.0,
+        3.595,
+        0.0
+       ]
+      ],
+      [
+       1.3333,
+       [
+        0.0,
+        3.417,
+        0.0
+       ]
+      ],
+      [
+       1.35,
+       [
+        0.0,
+        3.175,
+        0.0
+       ]
+      ],
+      [
+       1.3667,
+       [
+        0.0,
+        2.867,
+        0.0
+       ]
+      ],
+      [
+       1.3833,
+       [
+        0.0,
+        2.496,
+        0.0
+       ]
+      ],
+      [
+       1.4,
+       [
+        0.0,
+        2.399,
+        0.0
+       ]
+      ],
+      [
+       1.5167,
+       [
+        0.0,
+        2.705,
+        0.0
+       ]
+      ],
+      [
+       1.5667,
+       [
+        0.0,
+        2.713,
+        0.0
+       ]
+      ],
+      [
+       1.6,
+       [
+        0.0,
+        2.614,
+        0.0
+       ]
+      ],
+      [
+       1.6333,
+       [
+        0.0,
+        2.422,
+        0.0
+       ]
+      ],
+      [
+       1.6833,
+       [
+        0.0,
+        1.985,
+        0.0
+       ]
+      ],
+      [
+       1.8333,
+       [
+        0.0,
+        0.205,
+        0.0
+       ]
+      ],
+      [
+       2.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ]
+     ],
+     "ease": "linear"
+    }
+   ]
+  }
+ }
+}
