@@ -3,24 +3,71 @@
     python examples/src/icebreaker_cub.py examples/icebreaker_cub.json
 
 Drawn at twice its in-game size (Minecraft renders babies at half scale). Minecraft pixel units, faces +Z.
+Like the adult, it is laid out at its first size and drawn at S = 0.75 of it (box sizes rounded to whole pixels,
+pivots, offsets and animated positions scaled, card art resampled), and it is a ball of fluff: fluffy fur cards
+round the ruff, cheeks, flanks and tail over the soft painted coat.
 """
 import json
+import random
 import sys
 
 P = []
+S = 0.75          # the whole cub, scaled from the layout below
+
+
+def _s(v):
+    return [round(float(a) * S, 4) for a in v]
 
 
 def box(id, parent, size, pivot, style, offset=None, rot=None, **kw):
-    d = {"id": id, "shape": "box", "size": size, "pivot": pivot, "style": style}
+    d = {"id": id, "shape": "box", "size": [max(1, int(a * S + 0.5)) for a in size], "pivot": _s(pivot),
+         "style": style}
     if parent:
         d["parent"] = parent
     if offset:
-        d["offset"] = offset
+        d["offset"] = _s(offset)
     if rot:
         d["rotation"] = rot
     d.update(kw)
     P.append(d)
     return d
+
+
+def furcard(id, parent, art, pivot, style="fluff_card", plane="yz", offset=None, rot=None, **kw):
+    """A fluffy fur card painted by a fur style (art: 't' fluff, 'h' light tip, 'd' dark crevice, '.' cut)."""
+    d = {"id": id, "shape": "card", "plane": plane, "art": art, "pivot": _s(pivot), "style": style}
+    if parent:
+        d["parent"] = parent
+    if offset:
+        d["offset"] = _s(offset)
+    if rot:
+        d["rotation"] = rot
+    d.update(kw)
+    P.append(d)
+    return d
+
+
+def locks(w, h, seed, up=False, root=1, lo=0.5):
+    """Fluffy fur art at the cub's scale (w, h in layout pixels): short rounded clumps with light tips."""
+    w, h = max(2, int(w * S + 0.5)), max(2, int(h * S + 0.5))
+    rnd = random.Random(seed)
+    lengths = []
+    while len(lengths) < w:
+        cw = rnd.choice((2, 3, 3))
+        peak = rnd.randint(max(root + 1, int(round(h * lo))), h)
+        prof = {2: [0, 1], 3: [1, 0, 1]}[cw]
+        lengths += [max(root + 1, peak - d) for d in prof]
+    lengths = lengths[:w]
+    g = [["." for _ in range(w)] for _ in range(h)]
+    for x, n in enumerate(lengths):
+        for y in range(n):
+            g[y][x] = "t"
+        g[n - 1][x] = "h"
+        nb = max(lengths[max(0, x - 1)], lengths[min(w - 1, x + 1)])
+        if 1 <= n < nb - 1:
+            g[n - 1][x] = "d"
+    rows = ["".join(r) for r in g]
+    return rows[::-1] if up else rows
 
 
 # a round, plump pup built like a little Icebreaker: the same segmented body, a fluffy ruff and crest, big dark
@@ -43,15 +90,22 @@ box("shag_chest", "chest", [10, 2, 8], [5, 8.4, -1], "fluff_tuft", rot=[-9, -7, 
 box("shag_belly", "belly", [11, 2, 9], [5.5, 8.4, -6], "fluff_tuft", rot=[-9, -6, -8], mirror=True)
 box("tail_fur", "tail", [7, 2, 5], [0, 3.4, -1.5], "fluff_tuft", rot=[-14, 0, 0])
 
+def shrink(art):
+    """Resample card art to the cub's scale (nearest)."""
+    h, w = len(art), len(art[0])
+    nw, nh = max(1, int(w * S + 0.5)), max(1, int(h * S + 0.5))
+    return ["".join(art[min(h - 1, int(y / S))][min(w - 1, int(x / S))] for x in range(nw)) for y in range(nh)]
+
+
 def card(id, parent, art, pivot, key, plane="xy", offset=None, rot=None, **kw):
     """A flat alpha-cut card (whiskers): exports to Minecraft as a zero-thickness cube."""
     ramp = next(iter(key.values())).split(":")[0]
-    d = {"id": id, "shape": "card", "plane": plane, "art": art, "pivot": pivot,
+    d = {"id": id, "shape": "card", "plane": plane, "art": shrink(art), "pivot": _s(pivot),
          "paint": {"ramp": ramp, "light": 0.5, "art_key": key}}
     if parent:
         d["parent"] = parent
     if offset:
-        d["offset"] = offset
+        d["offset"] = _s(offset)
     if rot:
         d["rotation"] = rot
     d.update(kw)
@@ -90,6 +144,16 @@ box("lid", "head", [5, 2, 2], [5.5, 5.8, 14.2], "lid", mirror=True)
 box("brow", "head", [5, 1, 2], [5.5, 7.0, 14.0], "brow", rot=[0, 0, 6], mirror=True)
 box("horn", "crown", [3, 3, 3], [0, 1, 3], "horn", offset=[0, 1.5, 0], rot=[18, 0, 0])
 box("tusk", "muzzle", [1, 2, 1], [3.4, -3.2, 3.2], "horn", offset=[0, -1, 0], rot=[-10, 0, 6], mirror=True)
+# a ball of fluff: fringes round the ruff, cheeks, flanks and hips, little crests on the head, back and tail
+furcard("fur_ruff", "chest", locks(18, 7, 401), [0, -4.5, 8.2], plane="xy", offset=[0, -3, 0], rot=[-12, 0, 0])
+furcard("fur_ruff_side", "chest", locks(12, 7, 402), [10.3, -1.5, 3], offset=[0, -3, 0], rot=[0, 0, 16], mirror=True)
+furcard("fur_cheek", "head", locks(9, 6, 403), [10.4, -3.5, 7], offset=[0, -2.5, 0], rot=[0, 0, 18], mirror=True)
+furcard("fur_crown", "crown", locks(12, 5, 404, up=True), [0, 1.0, -3.5], plane="xy", offset=[0, 2, 0], rot=[-24, 0, 0])
+furcard("fur_crest", "crest", locks(6, 5, 405, up=True), [0, 1.4, 0], offset=[0, 2, 0], rot=[-10, 0, 0])
+furcard("fur_flank", "belly", locks(14, 5, 406), [11.3, -4.5, -6], offset=[0, -2, 0], rot=[0, 0, 12], mirror=True)
+furcard("fur_back", "belly", locks(12, 5, 407, up=True), [0, 8.4, -6], offset=[0, 2, 0], rot=[-8, 0, 0])
+furcard("fur_hips", "hips", locks(10, 5, 408), [7.8, -3.0, -4.5], offset=[0, -2, 0], rot=[0, 0, 12], mirror=True)
+furcard("fur_tail", "tail_fur", locks(7, 4, 409, up=True), [0, 0.8, 0], offset=[0, 1.5, 0], rot=[-14, 0, 0])
 
 ramps = {
     # a whitecoat pup: cream-white fluff with cool grey-blue shade, dusky muzzle and flippers
@@ -107,7 +171,13 @@ brush = {"flow": "z", "length": 2.6, "width": 1.0, "rough": 0.7, "overshoot": 0.
 styles = {
     "fluff": {"ramp": "fluff", "tone": 7.6, "layers": [
         {"id": "shade", "op": "gradient", "axis": "y", "amount": 1.0},
-        {"id": "tufts", "op": "patches", "scale": 1.6, "threshold": 0.6, "shift": 0.8}]},
+        {"id": "tufts", "op": "patches", "scale": 1.6, "threshold": 0.6, "shift": 0.8},
+        {"id": "hair", "op": "stripes", "axis": "z", "period": 1.6, "width": 0.26, "shift": -1.0, "wobble": 0.6,
+         "faces": ["left", "right"]},
+        {"id": "hair_x", "op": "stripes", "axis": "x", "period": 1.6, "width": 0.26, "shift": -1.0, "wobble": 0.6,
+         "faces": ["front", "back", "top"]},
+        {"id": "tips", "op": "drip", "ramp": "fluff", "tone": 9.0, "depth": 0.4, "length": 1.4, "width": 0.5,
+         "scale": 1.4, "faces": ["sides", "front", "back"]}]},
     "fluff_under": {"ramp": "fluff", "tone": 7.0, "layers": [
         {"id": "under", "op": "gradient", "axis": "y", "amount": 1.4},
         {"id": "tufts", "op": "patches", "scale": 1.4, "threshold": 0.62, "shift": -0.7}]},
@@ -126,6 +196,11 @@ styles = {
     "eye": {"ramp": "eye", "tone": 0.5, "light": 0, "brush": {"off": True}, "stamps": [
         {"face": "front", "at": "top-left", "art": ["hh..", "h...", "....", "..bb"], "key": {"h": "white:3", "b": "eye:3"}}]},
     "horn": {"ramp": "horn", "tone": 4.0, "layers": [{"id": "tip", "op": "gradient", "axis": "y", "amount": -1.0}]},
+    "fluff_card": {"ramp": "fluff", "tone": 7.4, "light": 0.6, "rim": {"light": 0, "dark": 0},
+                   "art_key": {"h": "fluff:9", "d": "fluff:3"}, "brush": {"flow": "y", "length": 2.0, "rough": 0.9},
+                   "layers": [{"id": "root", "op": "gradient", "axis": "y", "amount": -1.2},
+                              {"id": "strand_x", "op": "stripes", "axis": "x", "period": 1.4, "width": 0.3,
+                               "shift": -1.0, "wobble": 0.3}]},
     "fluff_tuft": {"ramp": "fluff", "tone": 7.0, "layers": [
         {"id": "strands", "op": "drip", "ramp": "fluff", "tone": 8.8, "depth": 1.2, "length": 3.0, "width": 0.6, "scale": 1.6,
          "faces": ["sides", "front", "back"]},
@@ -191,6 +266,20 @@ anim = {
                                                               [0.9, [0.1, -0.16, 0.06]], [1.4, [0, 0, 0], "elastic"]]},
         {"part": "fluke", "axis": "y", "keys": [[0, 0], [0.25, 22], [0.45, -22], [0.65, 22], [0.85, -22], [1.05, 0]]},
     ]},
+    # eating a fish: the head goes down to it, three little chomps, the head tips up to swallow, a happy squint
+    "eat": {"length": 1.2, "loop": False, "tracks": [
+        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.28, 22, "out"], [0.72, 20], [0.92, -14, "out_back"],
+                                               [1.05, -12], [1.2, 0, "smooth"]]},
+        {"part": "head", "axis": "x", "keys": [[0, 0], [0.28, 14, "out"], [0.72, 12], [0.92, -10, "out_back"],
+                                               [1.05, -8], [1.2, 0, "smooth"]]},
+        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.22, 20, "out"], [0.34, 1, "in"], [0.44, 18, "out"],
+                                              [0.54, 1, "in"], [0.62, 16, "out"], [0.72, 0, "in"], [1.2, 0]]},
+        {"part": "neck", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.9, [0, 0, 0]], [0.98, [0.08, 0.06, 0.04]],
+                                                      [1.08, [0.03, 0.02, 0]], [1.2, [0, 0, 0]]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, 0, 0]], [0.9, [0, 0, 0]], [0.98, [0, -1.8, 0]],
+                                                        [1.15, [0, -1.8, 0]], [1.2, [0, 0, 0]]]},
+        {"part": "fluke", "axis": "y", "keys": [[0, 0], [0.95, 0], [1.03, 20], [1.11, -20], [1.2, 0]]},
+    ]},
     # a squeaky little bark
     "bark": {"length": 0.7, "loop": False, "tracks": [
         {"part": "neck", "axis": "x", "keys": [[0, 0], [0.12, -14, "out"], [0.45, -12], [0.7, 0, "smooth"]]},
@@ -216,13 +305,22 @@ anim = {
     ]},
 }
 
+for _clip in anim.values():     # animated positions are in layout pixels too
+    for _t in _clip["tracks"]:
+        if _t.get("channel") == "position":
+            for _k in _t.get("keys", []):
+                _k[1] = _s(_k[1])
+            for _key in ("amp", "bias"):
+                if _key in _t.get("osc", {}):
+                    _t["osc"][_key] = _s(_t["osc"][_key])
+
 spec = {
     "name": "Icebreaker Cub",
     "description": "An Icebreaker cub: a fluffy white seal pup with big dark eyes and a tiny horn bud (Winterworks mod). "
                    "Minecraft pixel units at twice its in-game size, density 1.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": 1,
-    "budget": {"tris": 900, "colors": 48},
+    "budget": {"tris": 1200, "colors": 52},
     "light": light,
     "brush": brush,
     "minecraft": {"fps": 12},

@@ -1,18 +1,18 @@
 {
   "name": "Icebreaker Cub",
-  "parts": 32,
-  "instances": 45,
-  "faces": 270,
-  "triangles": 540,
-  "vertices_flat": 1080,
-  "vertices_unique": 360,
+  "parts": 42,
+  "instances": 61,
+  "faces": 286,
+  "triangles": 572,
+  "vertices_flat": 1144,
+  "vertices_unique": 424,
   "atlas": [
     128,
     256
   ],
-  "atlas_fill": 0.69,
+  "atlas_fill": 0.497,
   "texel_density": 1.0,
-  "colors_used": 36,
+  "colors_used": 35,
   "palette": {
     "fluff": [
       "#3b3f45",
@@ -73,19 +73,19 @@
   },
   "bounds": {
     "min": [
-      -16.734,
-      0.057,
-      -43.258
+      -12.812,
+      0.043,
+      -32.53
     ],
     "max": [
-      16.734,
-      38.384,
-      33.384
+      12.812,
+      31.544,
+      27.341
     ],
     "size": [
-      33.468,
-      38.327,
-      76.642
+      25.625,
+      31.501,
+      59.871
     ]
   },
   "warnings": [],
@@ -94,6 +94,7 @@
     "walk": 0.7,
     "swim": 1.6,
     "happy": 1.4,
+    "eat": 1.2,
     "bark": 0.7,
     "belly_slap": 1.0,
     "tail_slap": 0.8
@@ -110,8 +111,14 @@
     "fluke_mirror",
     "fluke_fan_mirror",
     "tail_fur",
+    "fur_tail",
+    "fur_hips",
+    "fur_hips_mirror",
     "shag_belly",
     "shag_belly_mirror",
+    "fur_flank",
+    "fur_flank_mirror",
+    "fur_back",
     "flipper",
     "palm",
     "flipper_mirror",
@@ -125,12 +132,17 @@
     "head",
     "crown",
     "crest",
+    "fur_crest",
     "horn",
+    "fur_crown",
     "cheek",
     "cheek_mirror",
     "muzzle",
     "whisker_pad",
+    "whisker",
+    "whisker_mirror",
     "whisker_pad_mirror",
+    "whisker_mirror",
     "nose",
     "nostril",
     "nostril_mirror",
@@ -143,7 +155,12 @@
     "lid",
     "lid_mirror",
     "brow",
-    "brow_mirror"
+    "brow_mirror",
+    "fur_cheek",
+    "fur_cheek_mirror",
+    "fur_ruff",
+    "fur_ruff_side",
+    "fur_ruff_side_mirror"
   ],
   "files": {
     "icebreaker_cub.glb": "examples/output/icebreaker_cub.glb",
@@ -159,6 +176,7 @@
     "icebreaker_cub_walk.gif": "examples/output/icebreaker_cub_walk.gif",
     "icebreaker_cub_swim.gif": "examples/output/icebreaker_cub_swim.gif",
     "icebreaker_cub_happy.gif": "examples/output/icebreaker_cub_happy.gif",
+    "icebreaker_cub_eat.gif": "examples/output/icebreaker_cub_eat.gif",
     "icebreaker_cub_bark.gif": "examples/output/icebreaker_cub_bark.gif",
     "icebreaker_cub_belly_slap.gif": "examples/output/icebreaker_cub_belly_slap.gif",
     "icebreaker_cub_tail_slap.gif": "examples/output/icebreaker_cub_tail_slap.gif"

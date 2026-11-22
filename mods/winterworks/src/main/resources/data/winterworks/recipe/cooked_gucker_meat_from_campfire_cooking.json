@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "winterworks:gucker_meat"
+  },
+  "result": {
+    "id": "winterworks:cooked_gucker_meat"
+  }
+}

@@ -1,43 +1,103 @@
-"""Builds examples/icebreaker.json: the Icebreaker, a huge fat horned seal (Winterworks mod mob).
+"""Builds examples/icebreaker.json: the Icebreaker, a big fat horned seal (Winterworks mod mob).
 
     python examples/src/icebreaker.py examples/icebreaker.json
 
 Units are Minecraft pixels (16 per block) and every box is a whole number of pixels, so the model exports 1:1 to a
 vanilla entity model (python -m lowpix mc export). Faces +Z, ground at y=0.
+
+The model is laid out at its first, larger size and drawn at S = 0.75 of it: box sizes are scaled and rounded to whole
+pixels, pivots, offsets and animated positions scaled exactly, card art resampled. It is shaggy like the polar bears:
+pelt-like fur cards (fringes hanging off the mane, flanks, cheeks and flippers, crests standing along the spine) over
+layered painted fur (directional strands, clumps, light tips), and keeps its blotches and old scars.
 """
 import json
+import random
 import sys
 
 P = []
+S = 0.75          # the whole Icebreaker, scaled from the layout below
+
+
+def _s(v):
+    return [round(float(a) * S, 4) for a in v]
 
 
 def box(id, parent, size, pivot, style, offset=None, rot=None, **kw):
-    d = {"id": id, "shape": "box", "size": size, "pivot": pivot, "style": style}
+    d = {"id": id, "shape": "box", "size": [max(1, int(a * S + 0.5)) for a in size], "pivot": _s(pivot),
+         "style": style}
     if parent:
         d["parent"] = parent
     if offset:
-        d["offset"] = offset
+        d["offset"] = _s(offset)
     if rot:
         d["rotation"] = rot
     d.update(kw)
     P.append(d)
     return d
+
+
+def shrink(art):
+    """Resample card art to the model's scale (nearest), keeping at least one pixel each way."""
+    h, w = len(art), len(art[0])
+    nw, nh = max(1, int(w * S + 0.5)), max(1, int(h * S + 0.5))
+    return ["".join(art[min(h - 1, int(y / S))][min(w - 1, int(x / S))] for x in range(nw)) for y in range(nh)]
 
 
 def card(id, parent, art, pivot, key, plane="xy", offset=None, rot=None, **kw):
     """A flat alpha-cut card (fur fringes, whiskers): exports to Minecraft as a zero-thickness cube."""
     ramp = next(iter(key.values())).split(":")[0]
-    d = {"id": id, "shape": "card", "plane": plane, "art": art, "pivot": pivot,
+    d = {"id": id, "shape": "card", "plane": plane, "art": shrink(art), "pivot": _s(pivot),
          "paint": {"ramp": ramp, "light": 0.5, "art_key": key}}
     if parent:
         d["parent"] = parent
     if offset:
-        d["offset"] = offset
+        d["offset"] = _s(offset)
     if rot:
         d["rotation"] = rot
     d.update(kw)
     P.append(d)
     return d
+
+
+def furcard(id, parent, art, pivot, style="fur_card", plane="yz", offset=None, rot=None, **kw):
+    """A shaggy fur card painted by a fur style (its art: 't' fur, 'h' light tip, 'd' dark crevice, '.' cut)."""
+    d = {"id": id, "shape": "card", "plane": plane, "art": art, "pivot": _s(pivot), "style": style}
+    if parent:
+        d["parent"] = parent
+    if offset:
+        d["offset"] = _s(offset)
+    if rot:
+        d["rotation"] = rot
+    d.update(kw)
+    P.append(d)
+    return d
+
+
+def locks(w, h, seed, up=False, root=1, lo=0.45):
+    """Shaggy fur art at the model's scale (w, h in layout pixels): pointed clumps of strands hanging from the top
+    row (standing from the bottom with up=True), a light tip on each, dark crevices between longer clumps."""
+    w, h = max(2, int(w * S + 0.5)), max(2, int(h * S + 0.5))
+    rnd = random.Random(seed)
+    lengths = []
+    while len(lengths) < w:
+        cw = rnd.choice((2, 2, 3, 3, 4))
+        peak = rnd.randint(max(root + 1, int(round(h * lo))), h)
+        prof = {2: [0, 1], 3: [1, 0, 1], 4: [2, 0, 0, 1]}[cw]
+        if rnd.random() < 0.5:
+            prof = prof[::-1]
+        lengths += [max(root + 1, peak - d) for d in prof]
+    lengths = lengths[:w]
+    g = [["." for _ in range(w)] for _ in range(h)]
+    for x, n in enumerate(lengths):
+        for y in range(n):
+            g[y][x] = "t"
+        if n >= root + 2:
+            g[n - 1][x] = "h"
+        nb = max(lengths[max(0, x - 1)], lengths[min(w - 1, x + 1)])
+        if 1 <= n < nb - 1:
+            g[n - 1][x] = "d"
+    rows = ["".join(r) for r in g]
+    return rows[::-1] if up else rows
 
 
 def strands(w, h, lines, ch="w"):
@@ -141,6 +201,42 @@ box("brow_ridge", "head", [20, 3, 4], [0, 8.8, 15.5], "brow")
 box("crest", "crown", [10, 4, 9], [0, 2.5, -2], "fur_dark", rot=[-28, 0, 0])
 box("crest_b", "crest", [7, 3, 7], [0, 1, -6], "fur_dark", rot=[-14, 0, 0])
 
+# ------------------------------------------------------------------ the shaggy pelt: fur cards (layout pixels)
+# Fringes hang off the mane, ruff, throat, cheeks, flanks and flippers, flared out a little at the bottom; crests stand
+# along the spine and the tail. Each is a card painted by a fur style, so every coat variant colours them too.
+furcard("fur_mane_side", "mane", locks(14, 10, 301), [16.2, -1.5, 0], offset=[0, -5, 0], rot=[0, 0, 16], mirror=True)
+furcard("fur_mane_front", "mane", locks(30, 9, 302), [0, -2.5, 6.7], plane="xy", offset=[0, -4.5, 0], rot=[-12, 0, 0])
+furcard("fur_mane_crest", "mane", locks(26, 7, 303, up=True), [0, 4.6, -1], offset=[0, 3.5, 0], rot=[-12, 0, 0])
+furcard("fur_shoulder", "shoulder_fur", locks(13, 8, 304), [3.2, -2.5, 0], offset=[0, -4, 0], rot=[0, 0, 14],
+        mirror=True)
+furcard("fur_ruff", "ruff", locks(22, 8, 305), [0, -3.0, 2.1], plane="xy", style="fur_card_pale", offset=[0, -4, 0],
+        rot=[-8, 0, 0])
+furcard("fur_throat", "neck", locks(22, 7, 306), [0, -8.0, 9.2], plane="xy", style="fur_card_pale", offset=[0, -3.5, 0],
+        rot=[-14, 0, 0])
+furcard("fur_neck_side", "neck", locks(10, 8, 307), [12.2, -3, 4], offset=[0, -4, 0], rot=[0, 0, 14], mirror=True)
+furcard("fur_cheek", "head", locks(11, 8, 308), [11.3, -3.5, 8], offset=[0, -4, 0], rot=[0, 0, 18], mirror=True)
+furcard("fur_crest", "crest", locks(10, 7, 309, up=True), [0, 1.8, 0], offset=[0, 3.5, 0], rot=[-10, 0, 0])
+furcard("fur_chest_skirt", "chest", locks(16, 6, 310), [14.4, -7.5, -1], offset=[0, -3, 0], rot=[0, 0, 12],
+        mirror=True)
+furcard("fur_flank", "belly", locks(20, 6, 311), [16.6, -5.5, -9], offset=[0, -3, 0], rot=[0, 0, 12], mirror=True)
+furcard("fur_waist_skirt", "waist", locks(15, 6, 312), [13.4, -5.5, -7], offset=[0, -3, 0], rot=[0, 0, 12],
+        mirror=True)
+furcard("fur_back_crest", "belly", locks(18, 6, 313, up=True), [0, 11.0, -10], offset=[0, 3, 0], rot=[-8, 0, 0])
+furcard("fur_waist_crest", "waist", locks(14, 5, 314, up=True), [0, 8.6, -8], offset=[0, 2.5, 0], rot=[-10, 0, 0])
+furcard("fur_hips_crest", "hips", locks(10, 5, 315, up=True), [0, 6.0, -6], offset=[0, 2.5, 0], rot=[-12, 0, 0])
+furcard("fur_rump", "hips", locks(17, 7, 316), [0, -2.0, -12.6], plane="xy", offset=[0, -3.5, 0], rot=[14, 0, 0])
+furcard("fur_tail", "tail", locks(9, 5, 317, up=True), [0, 4.0, -4.5], offset=[0, 2.5, 0], rot=[-16, 0, 0])
+furcard("fur_elbow", "flipper", locks(11, 7, 318), [4.7, -4, 1], offset=[0, -3.5, 0], rot=[0, 0, 12], mirror=True)
+furcard("fur_sideburn", "sideburn", locks(7, 7, 319), [1.7, -5.5, 0], offset=[0, -3.5, 0], rot=[0, 0, 10], mirror=True)
+# the shingled pelt plates down the back each end in a ragged fringe over the flank
+for k, (plate, half, depth) in enumerate((("shag_chest", 7, 10), ("fur_back", 8, 10), ("shag_belly", 7.5, 10),
+                                         ("fur_waist", 6, 9), ("shag_hips", 4.5, 8))):
+    furcard(f"fur_{plate}_fringe", plate, locks(depth, 7, 330 + k), [half + 0.2, -1.0, 0], offset=[0, -3.5, 0],
+            rot=[0, 0, 22], mirror=True)
+furcard("fur_crown", "crown", locks(16, 6, 336, up=True), [0, 1.6, -5.0], plane="xy", offset=[0, 3, 0], rot=[-22, 0, 0])
+furcard("fur_hips_side", "hips", locks(12, 6, 337), [9.7, -3.5, -6], offset=[0, -3, 0], rot=[0, 0, 12], mirror=True)
+furcard("fur_tail_fringe", "tail_fur", locks(9, 5, 338), [0, -1.0, -3.2], plane="xy", offset=[0, -2.5, 0], rot=[20, 0, 0])
+
 # the horn: a massive ice horn, stacked boxes curving up and forward
 box("horn", "crown", [7, 7, 7], [0, 1, 3], "horn", offset=[0, 3, 0], rot=[22, 0, 0])
 box("horn_1", "horn", [5, 6, 5], [0, 6, 0], "horn", offset=[0, 3, 0], rot=[12, 0, 4])
@@ -174,20 +270,47 @@ brush = {"flow": "z", "length": 3.6, "width": 1.2, "rough": 0.45, "overshoot": 0
 
 blotches = {"id": "blotches", "op": "spots", "count": 14, "radius": [0.9, 2.4], "ramp": "blotch", "tone": 3.2,
             "faces": ["top", "sides", "back"]}
+# layered fur over every coat, as on the polar bears: clumps and lighter patches, dark strand lines and light sheen
+# lines laid along the body (down the sides, back along the top), frosted light tips
+HAIR = [{"id": "clumps", "op": "patches", "scale": 1.4, "threshold": 0.64, "shift": -0.9},
+        {"id": "lights", "op": "patches", "scale": 1.2, "threshold": 0.68, "shift": 0.9, "faces": ["top", "sides"]},
+        {"id": "hair", "op": "stripes", "axis": "z", "period": 1.5, "width": 0.28, "shift": -2.0, "wobble": 0.5,
+         "faces": ["left", "right"]},
+        {"id": "hair_x", "op": "stripes", "axis": "x", "period": 1.5, "width": 0.28, "shift": -2.0, "wobble": 0.5,
+         "faces": ["front", "back", "top"]},
+        {"id": "shine", "op": "stripes", "axis": "z", "period": 2.1, "width": 0.22, "phase": 0.45, "shift": 1.6,
+         "wobble": 0.6, "faces": ["left", "right"]},
+        {"id": "shine_x", "op": "stripes", "axis": "x", "period": 2.1, "width": 0.22, "phase": 0.45, "shift": 1.4,
+         "wobble": 0.6, "faces": ["front", "back", "top"]},
+        {"id": "tips", "op": "drip", "ramp": "seal", "tone": 9.4, "depth": 0.45, "length": 1.8, "width": 0.5,
+         "scale": 1.5, "faces": ["sides", "front", "back"]}]
 styles = {
     "seal": {"ramp": "seal", "tone": 6.2, "layers": [
-        {"id": "back_dark", "op": "gradient", "axis": "y", "amount": -1.3},
+        {"id": "back_dark", "op": "gradient", "axis": "y", "amount": -1.3}] + HAIR + [
         blotches,
         {"id": "pale_side", "op": "gradient", "axis": "y", "amount": -0.6, "faces": ["sides"]}]},
     "seal_back": {"ramp": "seal", "tone": 6.0, "layers": [
-        {"id": "scars", "op": "cracks", "scale": 5.0, "width": 0.02, "shift": 1.6, "faces": ["sides"]},
-        {"id": "back_dark", "op": "gradient", "axis": "y", "amount": -1.4},
-        dict(blotches, count=26)]},
+        {"id": "back_dark", "op": "gradient", "axis": "y", "amount": -1.4}] + HAIR + [
+        dict(blotches, count=26),
+        {"id": "scars", "op": "cracks", "scale": 5.0, "width": 0.02, "shift": 1.6, "faces": ["sides"]}]},
     "head": {"ramp": "seal", "tone": 6.4, "layers": [
-        {"id": "scars", "op": "cracks", "scale": 4.0, "width": 0.025, "shift": 1.8, "faces": ["sides", "top"]},
-        {"id": "back_dark", "op": "gradient", "axis": "y", "amount": -1.1},
+        {"id": "back_dark", "op": "gradient", "axis": "y", "amount": -1.1}] + HAIR[:4] + [
         dict(blotches, count=7, radius=[0.8, 1.6], faces=["top", "sides"]),
-        {"id": "face_pale", "op": "gradient", "axis": "y", "amount": -1.2, "faces": ["front"]}]},
+        {"id": "face_pale", "op": "gradient", "axis": "y", "amount": -1.2, "faces": ["front"]},
+        {"id": "scars", "op": "cracks", "scale": 4.0, "width": 0.025, "shift": 1.8, "faces": ["sides", "top"]}]},
+    # the fur cards: strands down the card, a light tip on each clump, dark crevices between
+    "fur_card": {"ramp": "seal", "tone": 5.6, "light": 0.6, "rim": {"light": 0, "dark": 0},
+                 "art_key": {"h": "seal:10", "d": "seal:2"}, "brush": {"flow": "y", "length": 2.4, "rough": 0.9},
+                 "layers": [{"id": "root", "op": "gradient", "axis": "y", "amount": -1.4},
+                            {"id": "strand", "op": "stripes", "axis": "z", "period": 1.3, "width": 0.34,
+                             "shift": -1.6, "wobble": 0.3},
+                            {"id": "strand_x", "op": "stripes", "axis": "x", "period": 1.3, "width": 0.34,
+                             "shift": -1.6, "wobble": 0.3}]},
+    "fur_card_pale": {"ramp": "belly", "tone": 6.4, "light": 0.6, "rim": {"light": 0, "dark": 0},
+                      "art_key": {"h": "belly:9", "d": "belly:3"}, "brush": {"flow": "y", "length": 2.4, "rough": 0.9},
+                      "layers": [{"id": "root", "op": "gradient", "axis": "y", "amount": -1.2},
+                                 {"id": "strand_x", "op": "stripes", "axis": "x", "period": 1.3, "width": 0.34,
+                                  "shift": -1.4, "wobble": 0.3}]},
     "belly": {"ramp": "belly", "tone": 6.6, "layers": [
         {"id": "under", "op": "gradient", "axis": "y", "amount": 1.4},
         {"id": "grime", "op": "patches", "scale": 2.6, "threshold": 0.64, "shift": -0.8}]},
@@ -298,24 +421,28 @@ anim = {
         {"part": "fluke", "axis": "x", "osc": {"amp": 8, "cycles": 1, "phase": 0.5, "bias": 6}},
         {"part": "nostril", "channel": "scale", "osc": {"amp": [0.3, 0.3, 0], "cycles": 2}},
     ]},
-    # head down, horn levelled, brows knitted, nostrils flared, the whole body pumping
+    # the charge (looped for as long as it charges): the body low and driving, the head dropped so the horn levels
+    # straight ahead and the tusks swing forward under it like a battering ram, brows knitted, nostrils flared,
+    # the fore-flippers hauling, the belly pumping
     "charge": {"length": 0.5, "loop": True, "tracks": [
-        {"part": "chest", "axis": "x", "osc": {"amp": 7, "cycles": 1, "bias": -3}},
-        {"part": "belly", "axis": "x", "osc": {"amp": -7, "cycles": 1, "bias": 3}},
-        {"part": "chest", "channel": "position", "osc": {"amp": [0, 2.6, 0], "cycles": 1, "phase": 0.25, "shape": "bounce",
-                                                         "bias": [0, 1.0, 0]}},
-        {"parts": ["waist", "hips", "tail"], "wave": {"axis": "x", "amp": 4, "cycles": 1, "lag": 0.12, "bias": 2}},
+        {"part": "chest", "axis": "x", "osc": {"amp": 3, "cycles": 1, "bias": 6}},
+        {"part": "belly", "axis": "x", "osc": {"amp": -3, "cycles": 1, "bias": -4}},
+        {"part": "chest", "channel": "position", "osc": {"amp": [0, 1.8, 0], "cycles": 1, "phase": 0.25,
+                                                         "shape": "bounce", "bias": [0, 1.2, 1.0]}},
+        {"parts": ["waist", "hips", "tail"], "wave": {"axis": "x", "amp": 4, "cycles": 1, "lag": 0.12, "bias": 1}},
         {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.1, -0.18, 0.06], "cycles": 2, "phase": 0.2,
                                                              "bias": [0, -0.08, 0]}},
-        {"part": "neck", "axis": "x", "osc": {"amp": 2, "cycles": 1, "bias": 6}},
-        {"part": "head", "axis": "x", "osc": {"amp": 2, "cycles": 1, "phase": 0.15, "bias": 4}},
-        {"part": "flipper", "axis": "x", "osc": {"amp": 20, "cycles": 1, "bias": 4}},
+        {"part": "neck", "axis": "x", "osc": {"amp": 1.5, "cycles": 1, "bias": 14}},
+        {"part": "head", "axis": "x", "osc": {"amp": 1.5, "cycles": 1, "phase": 0.15, "bias": 20}},
+        {"part": "tusk", "axis": "x", "osc": {"amp": 0, "cycles": 1, "bias": -92}},
+        {"part": "flipper", "axis": "x", "osc": {"amp": 15, "cycles": 1, "bias": 2}},
         {"part": "palm", "axis": "x", "osc": {"amp": -16, "cycles": 1}},
+        {"part": "fluke", "axis": "x", "osc": {"amp": 4, "cycles": 1, "bias": 10}},
         {"part": "lid", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -1.0, 0]}},
         {"part": "brow", "axis": "z", "osc": {"amp": 0, "cycles": 1, "bias": -20}},
         {"part": "brow", "channel": "position", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [0, -0.8, 0]}},
         {"part": "nostril", "channel": "scale", "osc": {"amp": [0.2, 0.2, 0], "cycles": 2, "bias": [0.6, 0.6, 0]}},
-        {"part": "jaw", "axis": "x", "osc": {"amp": 3, "cycles": 2, "bias": 8}},
+        {"part": "jaw", "axis": "x", "osc": {"amp": 2, "cycles": 2, "bias": 5}},
         {"part": "mane", "channel": "scale", "osc": {"amp": [0.03, 0.06, 0.03], "cycles": 2, "bias": [0.06, 0.16, 0.06]}},
     ]},
     # belly-sliding on ice: flat, fore-flippers swept back, hind flippers up, nose forward
@@ -349,17 +476,53 @@ anim = {
         {"part": "belly_under", "channel": "scale", "osc": {"amp": [0.04, 0.07, 0.02], "cycles": 2, "phase": 0.2}},
         {"part": "nostril", "channel": "scale", "osc": {"amp": [0, 0, 0], "cycles": 1, "bias": [-0.6, -0.6, 0]}},
     ]},
-    # one horn jab: wind up, thrust, wobble back; brows knitted
+    # the ram (on a hit): drops into the battering-ram pose (head down, horn levelled straight ahead, tusks swung
+    # forward, body low), drives forward with a thrust, holds the aim, and only at the very end eases back (a
+    # one-shot clip holds its last frame while its state runs, so it ends at rest)
     "ram": {"length": 0.8, "loop": False, "tracks": [
-        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.18, -18, "out"], [0.3, 6, "in"], [0.45, 3], [0.8, 0, "elastic"]]},
-        {"part": "head", "axis": "x", "keys": [[0, 0], [0.18, -10, "out"], [0.3, 4, "in"], [0.45, 2], [0.8, 0, "elastic"]]},
-        {"part": "chest", "channel": "position", "keys": [[0, [0, 0, 0]], [0.18, [0, 0.6, -2], "out"],
-                                                          [0.3, [0, 1.2, 4], "in"], [0.8, [0, 0, 0], "elastic"]]},
-        {"part": "belly_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.3, [0, 0, 0]], [0.38, [0.14, -0.22, 0.08]],
-                                                              [0.8, [0, 0, 0], "elastic"]]},
-        {"part": "brow", "axis": "z", "keys": [[0, -20], [0.8, -20]]},
-        {"part": "lid", "channel": "position", "keys": [[0, [0, -1, 0]], [0.8, [0, -1, 0]]]},
-        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.3, 16, "out"], [0.8, 0]]},
+        {"part": "chest", "axis": "x", "keys": [[0, 0], [0.12, 6, "out"], [0.62, 6], [0.8, 0, "smooth"]]},
+        {"part": "belly", "axis": "x", "keys": [[0, 0], [0.12, -4, "out"], [0.62, -4], [0.8, 0, "smooth"]]},
+        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.12, 14, "out"], [0.22, 17, "out"], [0.32, 13], [0.62, 14],
+                                               [0.8, 0, "smooth"]]},
+        {"part": "head", "axis": "x", "keys": [[0, 0], [0.12, 20, "out"], [0.22, 21, "out"], [0.32, 19], [0.62, 20],
+                                               [0.8, 0, "smooth"]]},
+        {"part": "tusk", "axis": "x", "keys": [[0, 0], [0.12, -92, "out"], [0.62, -92], [0.8, 0, "smooth"]]},
+        {"part": "chest", "channel": "position", "keys": [[0, [0, 0, 0]], [0.12, [0, 0.4, -1], "out"],
+                                                          [0.22, [0, 1.4, 4], "out"], [0.36, [0, 0.6, 2]],
+                                                          [0.62, [0, 0.4, 1.5]], [0.8, [0, 0, 0], "smooth"]]},
+        {"part": "flipper", "axis": "x", "keys": [[0, 0], [0.12, -18, "out"], [0.24, 14, "out"], [0.5, 6],
+                                                  [0.8, 0, "smooth"]]},
+        {"part": "belly_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.22, [0, 0, 0]],
+                                                              [0.28, [0.14, -0.22, 0.08]], [0.8, [0, 0, 0], "elastic"]]},
+        {"part": "brow", "axis": "z", "keys": [[0, 0], [0.1, -20], [0.65, -20], [0.8, 0]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, 0, 0]], [0.1, [0, -1, 0]], [0.65, [0, -1, 0]],
+                                                        [0.8, [0, 0, 0]]]},
+        {"part": "nostril", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.2, [0.8, 0.8, 0]], [0.65, [0.5, 0.5, 0]],
+                                                         [0.8, [0, 0, 0]]]},
+        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.22, 14, "out"], [0.5, 6], [0.8, 0]]},
+    ]},
+    # eating a fish: the head goes down to it, three chomps, the head tips up and it swallows (a lump runs down the
+    # throat), a contented squint and a flick of the hind flippers
+    "eat": {"length": 1.2, "loop": False, "tracks": [
+        {"part": "neck", "axis": "x", "keys": [[0, 0], [0.28, 16, "out"], [0.72, 15], [0.92, -12, "out_back"],
+                                               [1.05, -10], [1.2, 0, "smooth"]]},
+        {"part": "head", "axis": "x", "keys": [[0, 0], [0.28, 12, "out"], [0.72, 11], [0.92, -14, "out_back"],
+                                               [1.05, -12], [1.2, 0, "smooth"]]},
+        {"part": "head", "axis": "z", "keys": [[0, 0], [0.35, 6], [0.5, -5], [0.65, 6], [0.8, 0]]},
+        {"part": "tusk", "axis": "x", "keys": [[0, 0], [0.24, -75, "out"], [0.76, -75], [0.95, 0, "smooth"]]},
+        {"part": "jaw", "axis": "x", "keys": [[0, 0], [0.22, 18, "out"], [0.34, 1, "in"], [0.44, 16, "out"],
+                                              [0.54, 1, "in"], [0.62, 14, "out"], [0.72, 0, "in"], [1.2, 0]]},
+        {"part": "neck", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.9, [0, 0, 0]], [0.98, [0.08, 0.06, 0.04]],
+                                                      [1.08, [0.03, 0.02, 0]], [1.2, [0, 0, 0]]]},
+        {"part": "chest_under", "channel": "scale", "keys": [[0, [0, 0, 0]], [1.02, [0, 0, 0]],
+                                                              [1.12, [0.06, 0.08, 0.04], "out"], [1.2, [0, 0, 0]]]},
+        {"part": "lid", "channel": "position", "keys": [[0, [0, 0, 0]], [0.9, [0, 0, 0]], [0.98, [0, -1.4, 0]],
+                                                        [1.15, [0, -1.4, 0]], [1.2, [0, 0, 0]]]},
+        {"part": "nostril", "channel": "scale", "keys": [[0, [0, 0, 0]], [0.2, [0.6, 0.6, 0]], [0.3, [0, 0, 0]],
+                                                         [0.9, [0, 0, 0]], [1.0, [0.5, 0.5, 0]], [1.2, [0, 0, 0]]]},
+        {"part": "chest", "channel": "position", "keys": [[0, [0, 0, 0]], [0.28, [0, -0.6, 0.6]], [0.72, [0, -0.6, 0.6]],
+                                                          [0.95, [0, 0.5, 0]], [1.2, [0, 0, 0]]]},
+        {"part": "fluke", "axis": "y", "keys": [[0, 0], [0.95, 0], [1.03, 16], [1.11, -16], [1.2, 0]]},
     ]},
     # fed a fish: happy squint, raised brows, chomp chomp, flipper claps, belly bounce, hind flippers wag
     "happy": {"length": 1.6, "loop": False, "tracks": [
@@ -423,14 +586,28 @@ anim = {
     ]},
 }
 
+def _scale_positions(clips):
+    for clip in clips.values():
+        for t in clip["tracks"]:
+            if t.get("channel") != "position":
+                continue
+            for k in t.get("keys", []):
+                k[1] = _s(k[1])
+            for key in ("amp", "bias"):
+                if key in t.get("osc", {}):
+                    t["osc"][key] = _s(t["osc"][key])
+
+
+_scale_positions(anim)
+
 spec = {
     "name": "Icebreaker",
-    "description": "A huge fat grey seal with an enormous head, short flippers and a massive old ice horn (Winterworks mod mob), "
-                   "painted naturalistically: muted greys, dark blotches, fur strokes, small dark eyes. "
+    "description": "A big fat shaggy grey seal with an enormous head, short flippers and a massive old ice horn "
+                   "(Winterworks mod mob): muted greys, dark blotches, layered fur and fur cards, small dark eyes. "
                    "Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": 1,
-    "budget": {"tris": 2000, "colors": 72},
+    "budget": {"tris": 2600, "colors": 80},
     "light": light,
     "brush": brush,
     "minecraft": {"fps": 12},

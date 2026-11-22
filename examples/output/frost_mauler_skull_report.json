@@ -1,16 +1,16 @@
 {
   "name": "Frost Mauler Skull",
-  "parts": 49,
-  "instances": 49,
-  "faces": 259,
-  "triangles": 518,
-  "vertices_flat": 1036,
-  "vertices_unique": 364,
+  "parts": 57,
+  "instances": 57,
+  "faces": 302,
+  "triangles": 604,
+  "vertices_flat": 1208,
+  "vertices_unique": 424,
   "atlas": [
-    128,
+    256,
     256
   ],
-  "atlas_fill": 0.826,
+  "atlas_fill": 0.479,
   "texel_density": 2.0,
   "colors_used": 32,
   "palette": {
@@ -50,30 +50,30 @@
       "#1f1b37"
     ],
     "glow": [
-      "#06433f",
-      "#0a6560",
-      "#0f8c84",
-      "#1ab8ad",
-      "#43e0d2",
-      "#8ff5ea",
-      "#d4fffa"
+      "#03183a",
+      "#0a4486",
+      "#1a8fdc",
+      "#3fbcf6",
+      "#86e2ff",
+      "#d0f6ff",
+      "#ffffff"
     ]
   },
   "bounds": {
     "min": [
-      -10.848,
+      -11.123,
       -0.0,
-      -17.426
+      -18.193
     ],
     "max": [
-      13.941,
-      24.588,
+      14.441,
+      25.164,
       10.25
     ],
     "size": [
-      24.789,
-      24.588,
-      27.676
+      25.564,
+      25.164,
+      28.443
     ]
   },
   "warnings": [],
@@ -86,19 +86,27 @@
     "crest",
     "crest_back",
     "occiput",
+    "glabella",
     "brow_l",
-    "brow_r",
+    "ice_brow",
+    "crystal8",
     "socket_l",
-    "ice_eye",
-    "socket_r",
-    "eye",
+    "orbit_l",
+    "cheek_l",
     "zygo_l",
     "temple_l",
+    "brow_r",
+    "socket_r",
+    "orbit_r",
+    "cheek_r",
     "zygo_r",
     "temple_r",
+    "eye",
     "snout",
     "nasal_bridge",
     "palate",
+    "sabre_root_l",
+    "sabre_root_r",
     "teeth_up_l",
     "teeth_up_r",
     "ice_snout",

@@ -7,8 +7,15 @@ contract for the Java side.
 * **Amber blocks** need **Silk Touch**: with it they drop themselves (inclusion kept); without it they shatter into
   2-4 **Amber Shards** (`amber_shard`, new item) and release whatever was inside (a mosquito flies out, a seed
   inclusion drops an Amberwood Bloom). The **Amber Chunk** item is replaced by Amber Shards everywhere (recipes,
-  loot, the mosquito amber farm, tags); 4 shards craft an amber block.
+  loot, the mosquito amber farm, tags); 9 shards craft an amber block (and an amber block crafts back into 9 shards).
 * The **Amber Fossil** stays; new texture (gravel with amber inside, vanilla suspicious-gravel style).
+* **Amber Sand** and **Amber Gravel** (`amber_sand`, `amber_gravel`, new): sand and gravel with amber showing through,
+  brushable like suspicious sand/gravel (4 dusting stages, turning into plain sand/gravel). Brushing gives amber: amber
+  shards mostly, sometimes a whole amber block (with an inclusion now and then). They generate in cave deposits, the
+  Dead Caves and Dig Sites, alongside suspicious sand and gravel.
+* **Archaeology is richer**: suspicious sand and gravel (and the new amber blocks) generate in caves about three times
+  as often, and amber turns up in them far more. **Sherds and decorated pots become much rarer** in all of this mod's
+  loot (cave deposits, Dig Sites, sniffer digging): about a fifth of their old weight, so pots are a real find.
 * **Amberwood**: a full vanilla-style wood set: log, wood, stripped log, stripped wood, planks, stairs, slab, fence,
   fence gate, door, trapdoor, button, pressure plate, sign and hanging sign (and boat and chest boat if the boat types
   can be registered cleanly). Vanilla behaviour throughout (stripping with an axe, sign editing, tags, recipes, fuel,
@@ -31,6 +38,12 @@ contract for the Java side.
 * **Icebreaker**: about 25% smaller (new model) and much furrier. It attacks polar bears. Feeding it fish plays the
   new `eat` clip. It is far more hostile when its cubs are near: it charges players who come within 10 blocks of a cub. When it rams it
   points its horns at the target (the `ram` clip holds the head low with horn and tusks aimed ahead).
+* **Icebreakers love water** (a fix: today they barely swim). They head for water often, swim fast and gracefully
+  (porpoising at the surface, diving deep, rolling), haul out onto ice and shores to rest, and spend most of their
+  time in or near water. They **sleep** lying flat on their bellies (new `sleep` clip, the cub too), mostly at night,
+  waking when hurt or approached. They **hunt salmon (and cod) violently**: they chase them fast underwater, lunge,
+  bite, shake and eat them (the `eat` clip), and go after salmon within 16 blocks whenever they're hungry (every
+  couple of minutes).
 * **Potion of Ramming**: when you reach top speed you get a battle cry (sound), a burst of snow and wind particles,
   speed lines on screen, a new running pose (leaning forward, arms swept back) and a further speed boost.
 
@@ -47,6 +60,11 @@ contract for the Java side.
 * **No trigger text** any more. Every curse instead plays a longer, stronger screen effect when it triggers, like
   Sloth's nod-off: its own colour, vignette, distortion and sound, a few seconds long.
 * Tooltips show just the curse name: no description lines.
+* **Soul fire looks like soul fire** (a fix): Wrath already sets victims alight with soul fire (double burn damage,
+  soul sparks), but they're drawn with vanilla's orange flames. Anything burning with soul fire (Wrath, Envy, the Soul
+  Bull's horns) must show **blue soul flames** on its body and, for the local player, on the first-person screen
+  overlay. The soul-burning state is synced to clients (e.g. entity data or a payload), and soul fire also lasts its
+  full time (8 s for Wrath).
 
 ## Torchflowers, pitcher plants, mosquitoes and sniffers (Amber Age)
 * **Torchflowers burn mosquitoes**: a mosquito that touches or flies within 1 block of a torchflower (planted, potted
@@ -87,3 +105,110 @@ contract for the Java side.
 * **Blood instead of yourself**: the Hexing Table gets a third slot for Potions of Blood. A lesser hex can take 1
   Potion of Blood instead of hexing you; a sin hex always needs 1 Potion of Blood, and takes 2 more instead of hexing
   you. With no blood offered, you are Hexed as before.
+
+## Rails (Winter Express)
+* **Booster Rails** are nerfed and buffed: they only run when a **redstone block** powers them (touching the rail or
+  directly under it; levers, torches and dust do nothing), and then they push far harder than a powered rail (about 3x
+  the speed gain, up to the cart's top speed).
+* **Switch Rail** (`switch_rail`, new): a Y-junction for splitting paths. Placed where a track forks, it sends carts
+  straight on when unpowered and onto the branch (left or right, set by where you place it) when powered. Whole trains
+  follow their leader's route. Recipe: 6 iron + a rail + a redstone torch -> 2.
+
+* **Coaster Loop** (`coaster_loop`, new): a full **360-degree vertical loop**. Placed in line with coaster rails, it
+  shows a complete 3D loop of coaster track (radius 3 blocks, made of the 3D coaster rail pieces, rendered by the block)
+  rising from it. A cart that enters fast enough (about 0.8 blocks/tick, e.g. off Booster Rails) rides all the way
+  round, upside down at the top with its rider, and comes out the far side at the same speed; too slow and it falls back
+  out of the loop. Whole trains loop one car after another. Recipe: 8 coaster rails round an iron block.
+
+## 3D icons
+* Blocks and items that have a 3D model show that model as their inventory icon too: the Hexing Table, Soul Tank,
+  Elixir Jar and Hex Core, the locomotives and carts, the Snow Globe, and every new End block/item with a 3D model.
+
+## Potions
+* Every potion in the mod comes as drink, splash and lingering (vanilla brewing with gunpowder and dragon's breath),
+  as tipped arrows, and in levels where it makes sense: long (redstone) and strong (glowstone) for Ramming, Immunity
+  (long), Burning (long and strong), Decay (long and strong). All of them appear in the creative tabs.
+* **Potion of Decay** (`decay`): awkward potion + Wither Bone. Gives the Wither effect (0:40; long 1:30; strong II 0:20).
+
+## Cursed books and cursed gear (Hexes & Havoc)
+* Enchanted books carrying a curse (any of ours, Binding or Vanishing) get their own **cursed book** textures instead of
+  vanilla's enchanted book, and every cursed item gets a new **soul glint**: drifting blue souls and a slow, dizzying
+  swirl instead of the purple shimmer. The new art has no black outlines.
+* The **elixir** items (bottle, Soul Elixir, Elixir of Greed, Cursed Elixir) get vanilla-style potion-bottle icons.
+
+## The End
+* **Phantoms are locals in the End**: they spawn in the outer End (our biomes and the vanilla highlands/midlands) in
+  small flocks, regardless of insomnia.
+
+## The Soul Bull (a new Nether mob)
+* `soul_bull`: a bull that is a completely black skeleton, kept alive by soul fire burning inside its ribs and skull
+  (blue flames in the eye sockets). Spawns in **Soul Sand Valleys** (herds of 1-3); sometimes a **Wither Skeleton
+  rides it** (a jockey).
+* Wild ones are hostile: they **ram**, catch you on their horns and **pin** you (held 1.5 s), dealing **soul fire**
+  damage (it sets you alight with soul fire).
+* Its **health is its soul energy**. Water and rain hurt it, like a blaze.
+* **Drops** its **Soul Bull Skull** (always) and 1-3 **Wither Bones** (`wither_bone`). Wither Skeletons also drop a
+  Wither Bone 25% of the time.
+* **Taming**: a wild bull below half health can be tamed by feeding it a soul torch, soul lantern or soul campfire
+  (1 in 3). Or **revive** one: place a Soul Bull Skull on soul sand in the middle of lit soul fire (soul fire on the
+  4 sides at least); its eye sockets ignite. Then use 10-15 Wither Bones on it (the number is rolled per skull; each adds
+  bones round it); the last one rebuilds the bull, alive and tamed to you.
+* Tamed: it takes **horse armour** and a **saddle** and can be ridden. While riding, a **soul bar** replaces the
+  experience bar and shows its soul energy (= its health). Its **ram** (the jump key, charged like a horse jump) charges
+  forward, pinning and soul-burning what it hits, and costs a lot of soul energy.
+* **Armoured variant**: about one wild Soul Bull in five is armoured: blackened, gilded blackstone plates bolted to
+  its bones (more armour, +50% health); Wither Skeletons ride these. The bones of every Soul Bull are the colour of
+  a Wither Skeleton's (dark charcoal greys), not pure black.
+* **Milking**: use an Elixir Bottle on a tamed Soul Bull to draw a **Soul Elixir** from its soul fire; it costs a
+  quarter of its soul energy (it refuses below a quarter).
+* **Recharging**: use a soul torch, soul lantern or soul campfire on it (big refills), or let it suck the souls out of
+  soul fire, soul torches, soul lanterns and soul campfires near it, which breaks or puts them out (soul fire gives a
+  little, the others a lot more).
+* Bones (model `soul_bull`): `body`, `ribs`, `soul_fire` (the flame inside, glow), `neck`, `head`, `jaw`, `horn_l`,
+  `horn_r`, `tail`, `leg_fl`, `leg_fr`, `leg_bl`, `leg_br`, `saddle`, `rider` (locator). Clips: `idle`, `walk`, `run`,
+  `ram` (1.0 s), `pin` (1.5 s), `drain` (souls flow in), `revive` (2.0 s). The skull block `soul_bull_skull` (3D, with
+  lit eyes as a state).
+
+## Sound events for this batch (namespace winterworks; registered by the Java side)
+`entity.harvester.ambient|hurt|death|chomp|shove|step`, `entity.soul_bull.ambient|hurt|death|snort|ram|pin|step|drain|revive`,
+`block.soul_bull_skull.ignite`, `entity.sniffer.sneeze`, `entity.player.ramming_cry`, `entity.player.ramming_wind`,
+`block.frost_mauler_skull.roar`, `block.switch_rail.switch`, `item.fang_dagger.slash_left|slash_right`,
+`curse.effect.lesser|sin|hidden`.
+
+## The Pot Golem (Amber Age)
+* **Fix**: building one must actually work in survival: four amber blocks in a T with a decorated pot placed on top
+  becomes a Pot Golem, like an iron golem. It doesn't matter which way the pot (or the T) faces, or which block is
+  placed last. Today it doesn't happen in game.
+* **Four matching faces**: a head ability only works when **all four faces of the pot carry the same sherd**. A mixed
+  pot still makes a golem, just without a head ability (the Echo Shard inside still gives the Echo Head).
+* **The pattern glows** while its ability is active: the sherd pattern on the head is drawn full-bright in a soft
+  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied).
+* **Six new head abilities** (on top of Howl and Danger), each from 4 matching sherds:
+  * **Heart**: a healing aura: its owner and their pets within 8 blocks get Regeneration I.
+  * **Burn**: burning fists (sets what it hits on fire) and Fire Resistance for its owner nearby.
+  * **Flow**: a wind burst every 6 s that hurls enemies within 5 blocks away (like a breeze charge, no block damage).
+  * **Shelter**: shields its owner: Resistance I within 6 blocks, and it steps in to block arrows aimed at them.
+  * **Plenty**: vacuums up dropped items within 8 blocks into its pot (27 slots); use it with an empty hand to open it.
+  * **Brewer**: throws splash potions: Healing at its owner when they're hurt, Weakness or Slowness at enemies.
+* **Headshots**: the pot is the golem's head and its weak spot. A hit that lands on the head (arrows, tridents and
+  other projectiles by where they strike; melee by where the attacker is looking, a ray against the head box) is a
+  **headshot**: double damage, it always cracks the pot, and it shows a crit burst of pottery chips with a sharp clink.
+  Body hits do normal damage and crack the pot only sometimes, as now.
+
+## Art notes for the Java side (from the art pass)
+* **Amberwood**: textures follow vanilla paths for WoodType `winterworks:amberwood` (`entity/signs/amberwood.png`,
+  `entity/signs/hanging/amberwood.png`, `gui/hanging_signs/amberwood.png`, `entity/boat/amberwood.png`,
+  `entity/chest_boat/amberwood.png`); blocks `amberwood_log(_top, _resin)`, `stripped_amberwood_log(_top)`,
+  `amberwood_planks`, `amberwood_door_top/bottom`, `amberwood_trapdoor`, `amberwood_bloom(_top)`; items
+  `amberwood_door`, `amberwood_sign`, `amberwood_hanging_sign`, `amberwood_boat`, `amberwood_chest_boat`, `amberwood_bloom`.
+* **Amber**: `item/amber_shard`, `block/amber_sand_0..3`, `block/amber_gravel_0..3`; `amber_chunk` can go.
+* **Coaster rail**: 3D models `coaster_rail_straight` (north_south 0 / east_west 90), `coaster_rail_ascending`
+  (ascending_north/east/south/west 0/90/180/270), `coaster_rail_corner` (south_east/south_west/north_west/north_east
+  0/90/180/270); the blockstate already maps them. Floating needs `canSurvive` overridden. `coaster_rail_loop_segment`
+  is 19.6 px of rail centred on (8,8,8) along z with the ride surface in the plane y=8 facing +y: 16 of them at radius
+  3 blocks, each turned so +y faces the loop centre, close the loop.
+* **Fur armour**: vanilla layers `models/armor/fur_layer_1/2.png` (ArmorMaterial layer `winterworks:fur`).
+* **Icebreaker**: 0.75 scale; hitbox 2.5 x 2.1 -> 1.875 x 1.575, eye height 1.35; new `eat` clip (1.2 s);
+  `charge` (loop) holds the head low with the horn levelled; `ram` (0.8 s) thrusts and returns to rest. Don't play
+  `ram` on top of `charge` (skip it while charging).
+* **Frost Mauler / skull**: new eye glow parts already in the export; no Java changes needed.

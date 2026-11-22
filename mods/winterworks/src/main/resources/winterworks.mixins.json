@@ -31,7 +31,8 @@
     "EnchantmentHelperMixin",
     "FoodDataMixin",
     "HexedPlayerMixin",
-    "endboss.EnderDragonMixin"
+    "endboss.EnderDragonMixin",
+    "endmob.EffectParticlesAccessor"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -39,7 +40,8 @@
     "client.endboss.DragonModelMixin",
     "client.endboss.EndSkyMixin",
     "client.endboss.EndFogMixin",
-    "client.endboss.EclipseLightMixin"
+    "client.endboss.EclipseLightMixin",
+    "endmob.EndGlowLightMixin"
   ],
   "injectors": {
     "defaultRequire": 1

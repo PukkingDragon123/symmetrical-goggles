@@ -256,6 +256,9 @@ give more joints.
 | `raw` | don't mirror the values for the mirrored copy. Default mirroring already makes paired motion symmetric (both wings flap up together); use `raw` when both sides must turn the *same* world direction, such as a whole-body lean |
 | `only` | drive just the un-mirrored copy of a mirrored part |
 
+A clip with `"grounded": false` skips the "sinks below the ground" lint: use it for clips that are airborne
+(flight, where wing tips sweep below the feet) or that burrow into the ground on purpose.
+
 Tracks on the same joint add up (scale multiplies). **Looping**: with `loop: true`,
 keys wrap to the first key, and oscillators loop seamlessly when `cycles` is a whole number.
 

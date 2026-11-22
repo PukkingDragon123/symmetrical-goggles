@@ -1,0 +1,118 @@
+{
+  "name": "Endling",
+  "parts": 19,
+  "instances": 19,
+  "faces": 98,
+  "triangles": 196,
+  "vertices_flat": 392,
+  "vertices_unique": 136,
+  "atlas": [
+    64,
+    128
+  ],
+  "atlas_fill": 0.681,
+  "texel_density": 2.0,
+  "colors_used": 17,
+  "palette": {
+    "eyeglow": [
+      "#3d0f63",
+      "#6a19a6",
+      "#9a2fe0",
+      "#c05cff",
+      "#dc95ff",
+      "#f1cfff",
+      "#fdf4ff"
+    ],
+    "chorus": [
+      "#160a20",
+      "#241133",
+      "#341a48",
+      "#46245d",
+      "#5a3074",
+      "#703f8b",
+      "#8852a2",
+      "#a06bb8",
+      "#ba8acd",
+      "#d4addf",
+      "#ead1ef"
+    ],
+    "velvet": [
+      "#040207",
+      "#0a0610",
+      "#100a19",
+      "#171023",
+      "#1f162e",
+      "#281d3a",
+      "#322447",
+      "#3e2d56",
+      "#4b3766",
+      "#5b4478"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -3.25,
+      -0.0,
+      -3.05
+    ],
+    "max": [
+      3.25,
+      15.5,
+      3.953
+    ],
+    "size": [
+      6.5,
+      15.5,
+      7.003
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 3.0,
+    "walk": 1.0,
+    "run": 0.6,
+    "hop": 0.5,
+    "sit": 3.0,
+    "teleport": 0.4,
+    "sacrifice": 1.2
+  },
+  "joints": [
+    "body",
+    "belly",
+    "ruff",
+    "ruff_back",
+    "head",
+    "head_tall",
+    "head_long",
+    "eye_l",
+    "cheek_l",
+    "eye_r",
+    "cheek_r",
+    "jaw",
+    "head_plant",
+    "leg_l",
+    "shin_l",
+    "foot_l",
+    "leg_r",
+    "shin_r",
+    "foot_r"
+  ],
+  "files": {
+    "endling.glb": "examples/output/endling.glb",
+    "endling.obj": "examples/output/endling.obj",
+    "endling.mtl": "examples/output/endling.mtl",
+    "endling.bbmodel": "examples/output/endling.bbmodel",
+    "endling_texture.png": "examples/output/endling_texture.png",
+    "endling_texture_x8.png": "examples/output/endling_texture_x8.png",
+    "endling_hero.png": "examples/output/endling_hero.png",
+    "endling_sheet.png": "examples/output/endling_sheet.png",
+    "endling_turntable.gif": "examples/output/endling_turntable.gif",
+    "endling_idle.gif": "examples/output/endling_idle.gif",
+    "endling_walk.gif": "examples/output/endling_walk.gif",
+    "endling_run.gif": "examples/output/endling_run.gif",
+    "endling_hop.gif": "examples/output/endling_hop.gif",
+    "endling_sit.gif": "examples/output/endling_sit.gif",
+    "endling_teleport.gif": "examples/output/endling_teleport.gif",
+    "endling_sacrifice.gif": "examples/output/endling_sacrifice.gif"
+  }
+}
