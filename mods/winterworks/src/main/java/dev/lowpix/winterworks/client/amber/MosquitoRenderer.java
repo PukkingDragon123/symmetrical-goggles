@@ -63,8 +63,8 @@ public class MosquitoRenderer extends MobRenderer<MosquitoEntity, MosquitoRender
             });
             // a full belly: swollen with blood (and throbbing a little) or with resin
             float swell = switch (e.state()) {
-                case BLOOD -> 1.35f + Mth.sin(age * 0.2f) * 0.03f;
-                case AMBER -> 1.3f;
+                case BLOOD -> 1.0f + Mth.sin(age * 0.2f) * 0.03f;   // the swelling is painted in the texture: just a throb
+                case AMBER -> 1.0f;
                 default -> 1f;
             };
             if (swell != 1f) {

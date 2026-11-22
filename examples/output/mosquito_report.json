@@ -1,0 +1,200 @@
+{
+  "name": "Mosquito",
+  "parts": 54,
+  "instances": 54,
+  "faces": 250,
+  "triangles": 500,
+  "vertices_flat": 1000,
+  "vertices_unique": 360,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.463,
+  "texel_density": 2.0,
+  "colors_used": 32,
+  "palette": {
+    "chitin": [
+      "#0c0912",
+      "#151019",
+      "#201721",
+      "#2c1f29",
+      "#3a2830",
+      "#4b3437",
+      "#5f423e",
+      "#765446",
+      "#8f6a50",
+      "#a98460"
+    ],
+    "scale": [
+      "#2a2c3e",
+      "#474b60",
+      "#6c7286",
+      "#979eac",
+      "#c3c8cc",
+      "#e7e8e0",
+      "#fffdf1"
+    ],
+    "eye": [
+      "#19050f",
+      "#330819",
+      "#520e22",
+      "#78142a",
+      "#a11d2d",
+      "#c93633",
+      "#e86244",
+      "#ff9a64",
+      "#ffd9ad"
+    ],
+    "wing": [
+      "#1b2439",
+      "#2f4059",
+      "#4f6a85",
+      "#7895ad",
+      "#a3c1d1",
+      "#cde6ec",
+      "#f1fffb"
+    ],
+    "iris": [
+      "#35296d",
+      "#5844a3",
+      "#3a86b0",
+      "#56c0b4",
+      "#c6d77a"
+    ],
+    "blood": [
+      "#130309",
+      "#260511",
+      "#3f0819",
+      "#5c0c1f",
+      "#7c1226",
+      "#9f1b2b",
+      "#c22d30",
+      "#e0503c",
+      "#ff8660"
+    ],
+    "amber": [
+      "#2a0f04",
+      "#481c06",
+      "#6c2d08",
+      "#91430b",
+      "#b65d0f",
+      "#d47c17",
+      "#ea9c24",
+      "#f7bf3e",
+      "#ffe079",
+      "#fff5c2"
+    ],
+    "bloodcore": [
+      "#2e0410",
+      "#4a0718",
+      "#680c22",
+      "#86132b",
+      "#a31c31"
+    ],
+    "ambercore": [
+      "#4a1c05",
+      "#6e2c07",
+      "#93420a",
+      "#b05a0e",
+      "#c9701a"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -7.496,
+      -0.0,
+      -9.224
+    ],
+    "max": [
+      7.496,
+      8.294,
+      10.336
+    ],
+    "size": [
+      14.992,
+      8.294,
+      19.559
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.0,
+    "fly": 1.0,
+    "stab": 0.6,
+    "drink": 1.2,
+    "spit": 0.6
+  },
+  "joints": [
+    "body",
+    "scutum",
+    "scutellum",
+    "pleuron_l",
+    "pleuron_r",
+    "head",
+    "eye_l",
+    "antenna_l",
+    "palp_l",
+    "eye_r",
+    "antenna_r",
+    "palp_r",
+    "needle",
+    "stylet",
+    "stylet_tip",
+    "abdomen",
+    "abdomen_1",
+    "abdomen_2",
+    "cerci",
+    "swell_2",
+    "swell_1",
+    "swell_0",
+    "wing_l1",
+    "wing_l1_m",
+    "wing_r1",
+    "wing_r1_m",
+    "wing_l2",
+    "wing_l2_m",
+    "wing_r2",
+    "wing_r2_m",
+    "leg_l1",
+    "knee_l1",
+    "shin_l1",
+    "foot_l1",
+    "leg_r1",
+    "knee_r1",
+    "shin_r1",
+    "foot_r1",
+    "leg_l2",
+    "knee_l2",
+    "shin_l2",
+    "foot_l2",
+    "leg_r2",
+    "knee_r2",
+    "shin_r2",
+    "foot_r2",
+    "leg_l3",
+    "knee_l3",
+    "shin_l3",
+    "foot_l3",
+    "leg_r3",
+    "knee_r3",
+    "shin_r3",
+    "foot_r3"
+  ],
+  "files": {
+    "mosquito.glb": "examples/output/mosquito.glb",
+    "mosquito.obj": "examples/output/mosquito.obj",
+    "mosquito.mtl": "examples/output/mosquito.mtl",
+    "mosquito.bbmodel": "examples/output/mosquito.bbmodel",
+    "mosquito_texture.png": "examples/output/mosquito_texture.png",
+    "mosquito_texture_x8.png": "examples/output/mosquito_texture_x8.png",
+    "mosquito_hero.png": "examples/output/mosquito_hero.png",
+    "mosquito_sheet.png": "examples/output/mosquito_sheet.png",
+    "mosquito_turntable.gif": "examples/output/mosquito_turntable.gif",
+    "mosquito_idle.gif": "examples/output/mosquito_idle.gif",
+    "mosquito_fly.gif": "examples/output/mosquito_fly.gif",
+    "mosquito_stab.gif": "examples/output/mosquito_stab.gif",
+    "mosquito_drink.gif": "examples/output/mosquito_drink.gif",
+    "mosquito_spit.gif": "examples/output/mosquito_spit.gif"
+  }
+}

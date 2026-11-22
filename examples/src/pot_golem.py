@@ -542,6 +542,9 @@ def splash(t0, amp=1.0, length=None, freq=7.0, decay=5.0, parts=None):
 
 
 REST = {}
+# idle carries the ready stance (knees soft, a slight hunch); the game always plays idle and walk together and starts
+# the one-shot clips on top of them, so walk and every one-shot clip are deltas from the rest pose (no stance of their
+# own, or it would be counted twice). dazed replaces idle and walk, so it is a full pose.
 STANCE = add(leg(1, -4, 8, -4, 2), leg(-1, -4, 8, -4, 2), r("body", 2), r("chest", 2))
 
 # ---------------------------------------------------------------- idle: heavy breathing, jelly wobble, look around
@@ -579,7 +582,7 @@ def walk_tracks(L):
     return tr
 
 
-ANIM["walk"] = timeline(L, [(0.0, STANCE, None), (L, STANCE, None)], loop=True,
+ANIM["walk"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True,
                         extra=walk_tracks(L) + wobble(L, 2, 1.0) + [
                             osc("chest", "y", 7, 1, 0.0), osc("chest", "z", 3, 1, 0.25),
                             osc("body", "y", -4, 1, 0.0), osc("body", "z", -3, 1, 0.25),
@@ -588,45 +591,45 @@ ANIM["walk"] = timeline(L, [(0.0, STANCE, None), (L, STANCE, None)], loop=True,
                             osc("chest", None, [0.02, -0.03, 0.02], 2, 0.0, ch="scale", shape="bounce")])
 
 # ---------------------------------------------------------------- attack: a double-fist hammer slam
-WIND = add(STANCE, r("chest", -18), r("body", -4), r("head", -12), arm(1, -168, 18, 0, -40, -20),
+WIND = add(r("chest", -18), r("body", -4), r("head", -12), arm(1, -168, 18, 0, -40, -20),
            arm(-1, -168, 18, 0, -40, -20), leg(1, -10, 16, -6), leg(-1, 4, 10, -6), sc("chest", 0.04, 0.06, 0.04))
 SLAM = add(r("chest", 30), r("body", 8), r("head", 16), arm(1, -42, 6, 0, -10, 10), arm(-1, -42, 6, 0, -10, 10),
            leg(1, -26, 34, -8), leg(-1, 12, 22, -14), pos("body", 0, 0, 3), sc("chest", 0.06, -0.08, 0.06))
-ANIM["attack"] = timeline(0.6, [(0.0, STANCE, None), (0.2, WIND, "out"), (0.25, add(WIND, r("chest", -3)), "ease"),
+ANIM["attack"] = timeline(0.6, [(0.0, REST, None), (0.2, WIND, "out"), (0.25, add(WIND, r("chest", -3)), "ease"),
                                 (0.33, SLAM, "in"), (0.42, add(SLAM, r("chest", 3), arm(1, 4), arm(-1, 4)), "out"),
-                                (0.6, STANCE, "ease")],
+                                (0.6, REST, "ease")],
                           extra=wobble(0.6, 1, 0.5, loop=False) + splash(0.33, 1.0, 0.6))
 
 # ---------------------------------------------------------------- slash: the blade arm sweeps across in a wide arc
-SLASH_WIND = add(STANCE, r("chest", -6, -38, -4), r("body", 0, -10), r("head", 0, 26), arm(-1, -60, 74, -10, -50, 0, 20),
+SLASH_WIND = add(r("chest", -6, -38, -4), r("body", 0, -10), r("head", 0, 26), arm(-1, -60, 74, -10, -50, 0, 20),
                  arm(1, -20, 10, 0, -30), leg(1, -14, 14, -4, 4), leg(-1, 10, 8, -4, 4))
 SLASH_HIT = add(r("chest", 10, 30, 4), r("body", 4, 12), r("head", 6, -20), arm(-1, -84, 6, 30, -6, 0, -20),
                 arm(1, 10, 18, 0, -10), leg(1, -20, 26, -6, 4), leg(-1, 16, 16, -8, 4), pos("body", 0, 0, 2))
 SLASH_FOLLOW = add(r("chest", 12, 44, 6), r("body", 4, 16), r("head", 4, -28), arm(-1, -60, -24, 50, -20, 0, -30),
                    arm(1, 14, 22, 0, -10), leg(1, -18, 24, -6, 4), leg(-1, 14, 16, -8, 4), pos("body", 0, 0, 2))
-ANIM["slash"] = timeline(0.7, [(0.0, STANCE, None), (0.24, SLASH_WIND, "out"),
+ANIM["slash"] = timeline(0.7, [(0.0, REST, None), (0.24, SLASH_WIND, "out"),
                                (0.3, add(SLASH_WIND, r("chest", 0, -4)), "ease"),
-                               (0.38, SLASH_HIT, "in"), (0.48, SLASH_FOLLOW, "out"), (0.7, STANCE, "ease")],
+                               (0.38, SLASH_HIT, "in"), (0.48, SLASH_FOLLOW, "out"), (0.7, REST, "ease")],
                          extra=wobble(0.7, 1, 0.5, loop=False) + splash(0.4, 0.8, 0.7))
 
 # ---------------------------------------------------------------- mine: the pickaxe fist swings overhead and strikes
-MINE_UP = add(STANCE, r("chest", -14, -10), r("head", -8), arm(-1, -176, 6, 0, -50, -30), arm(1, -30, 14, 0, -40),
+MINE_UP = add(r("chest", -14, -10), r("head", -8), arm(-1, -176, 6, 0, -50, -30), arm(1, -30, 14, 0, -40),
               leg(1, -12, 16, -4), leg(-1, 8, 10, -4))
 MINE_HIT = add(r("chest", 26, 4), r("body", 8), r("head", 14), arm(-1, -58, 4, 0, -8, 20), arm(1, -20, 16, 0, -24),
                leg(1, -24, 32, -8), leg(-1, 12, 22, -12), sc("chest", 0.05, -0.06, 0.05))
-ANIM["mine"] = timeline(0.8, [(0.0, STANCE, None), (0.3, MINE_UP, "out"), (0.36, add(MINE_UP, arm(-1, -4)), "ease"),
+ANIM["mine"] = timeline(0.8, [(0.0, REST, None), (0.3, MINE_UP, "out"), (0.36, add(MINE_UP, arm(-1, -4)), "ease"),
                               (0.44, MINE_HIT, "in"), (0.52, add(MINE_HIT, r("chest", 2), arm(-1, 6)), "out"),
-                              (0.8, STANCE, "ease")],
+                              (0.8, REST, "ease")],
                         extra=wobble(0.8, 1, 0.5, loop=False) + splash(0.44, 0.9, 0.8) +
                         [jitter("fist_r", 0.44, 0.56, 5, step=0.03, axis=2, seed=3)])
 
 # ---------------------------------------------------------------- shoot: raise the bow arm, draw, hold, loose, recoil
-AIM = add(STANCE, r("chest", 0, 30), r("head", 0, -26), arm(1, -84, 0, -10, -6, 0, 0), arm(-1, -84, -12, 0, -30),
+AIM = add(r("chest", 0, 30), r("head", 0, -26), arm(1, -84, 0, -10, -6, 0, 0), arm(-1, -84, -12, 0, -30),
           leg(1, -12, 10, -4, 6), leg(-1, 10, 10, -4, 6))
 DRAW = add(AIM, arm(-1, 6, 24, 0, -96, 0), r("chest", -2, 6), sc("chest", 0.04, 0.03, 0.04))
 LOOSE = add(AIM, arm(1, -10, 0, 0, -4), arm(-1, 26, 48, 0, -40), r("chest", -4, 10), r("head", -4))
-ANIM["shoot"] = timeline(0.8, [(0.0, STANCE, None), (0.16, AIM, "out"), (0.42, DRAW, "ease"), (0.52, DRAW, None),
-                               (0.56, LOOSE, "out"), (0.64, add(LOOSE, arm(1, 4)), "ease"), (0.8, STANCE, "ease")],
+ANIM["shoot"] = timeline(0.8, [(0.0, REST, None), (0.16, AIM, "out"), (0.42, DRAW, "ease"), (0.52, DRAW, None),
+                               (0.56, LOOSE, "out"), (0.64, add(LOOSE, arm(1, 4)), "ease"), (0.8, REST, "ease")],
                          extra=wobble(0.8, 1, 0.5, loop=False) + splash(0.56, 0.6, 0.8) +
                          [jitter("arm_l", 0.42, 0.54, 1.2, step=0.03, axis=0, seed=4)])
 
@@ -635,8 +638,8 @@ GATHER = add(r("chest", 22), r("body", 6), r("head", 24), arm(1, -20, -10, 0, -6
              leg(1, -18, 30, -10), leg(-1, -18, 30, -10), sc("chest", -0.03, -0.04, -0.03))
 HOWL = add(r("chest", -24), r("body", -6), r("head", -46), arm(1, -30, 70, 0, -30, -10), arm(-1, -30, 70, 0, -30, -10),
            leg(1, -6, 6, -2, 6), leg(-1, -6, 6, -2, 6), sc("chest", 0.08, 0.1, 0.08), sc("traps", 0.1, 0.16, 0.08))
-ANIM["howl"] = timeline(1.5, [(0.0, STANCE, None), (0.3, GATHER, "ease"), (0.5, HOWL, "out_back"),
-                              (1.15, add(HOWL, r("head", -4), r("chest", -2)), "ease"), (1.5, STANCE, "ease")],
+ANIM["howl"] = timeline(1.5, [(0.0, REST, None), (0.3, GATHER, "ease"), (0.5, HOWL, "out_back"),
+                              (1.15, add(HOWL, r("head", -4), r("chest", -2)), "ease"), (1.5, REST, "ease")],
                         extra=wobble(1.5, 3, 0.5, loop=False) + splash(0.5, 0.8, 1.5, decay=2.5) + [
                             jitter("head", 0.55, 1.15, 2.0, step=0.04, axis=2, seed=5),
                             jitter("chest", 0.55, 1.15, 0.03, step=0.04, axis=0, ch="scale", seed=6),
@@ -647,8 +650,8 @@ CHARGE = add(r("chest", -10), r("head", -18), arm(1, -10, 30, 0, -50), arm(-1, -
              leg(-1, 10, 14, -6, 8), sc("chest", 0.1, 0.08, 0.12), sc("traps", 0.12, 0.14, 0.1))
 BLAST = add(r("chest", 18), r("head", 16), r("body", 4), arm(1, 30, 40, 0, -20, 10), arm(-1, 30, 40, 0, -20, 10),
             leg(1, -18, 24, -8, 8), leg(-1, 16, 16, -10, 8), pos("body", 0, 0, -1.5), sc("chest", -0.04, -0.04, -0.02))
-ANIM["beam"] = timeline(1.2, [(0.0, STANCE, None), (0.4, CHARGE, "ease"), (0.46, BLAST, "out"),
-                              (0.92, add(BLAST, r("chest", 2)), "ease"), (1.2, STANCE, "ease")],
+ANIM["beam"] = timeline(1.2, [(0.0, REST, None), (0.4, CHARGE, "ease"), (0.46, BLAST, "out"),
+                              (0.92, add(BLAST, r("chest", 2)), "ease"), (1.2, REST, "ease")],
                         extra=wobble(1.2, 2, 0.5, loop=False) + splash(0.46, 1.0, 1.2, decay=3.0) + [
                             jitter("chest", 0.5, 0.92, 1.5, step=0.03, axis=1, seed=8),
                             jitter("head", 0.5, 0.92, 2.5, step=0.03, axis=0, seed=9),
@@ -657,7 +660,7 @@ ANIM["beam"] = timeline(1.2, [(0.0, STANCE, None), (0.4, CHARGE, "ease"), (0.46,
 # ---------------------------------------------------------------- giggle: a ticklish shimmy, hands on the belly
 TICKLE = add(r("chest", 10), r("body", 2), r("head", 8), arm(1, -24, -18, 0, -84, 0, 20), arm(-1, -24, -18, 0, -84, 0, 20),
              leg(1, -10, 18, -8), leg(-1, -10, 18, -8), sc("traps", 0.05, 0.1, 0.03))
-ANIM["giggle"] = timeline(1.0, [(0.0, STANCE, None), (0.15, TICKLE, "out"), (0.85, TICKLE, None), (1.0, STANCE, "ease")],
+ANIM["giggle"] = timeline(1.0, [(0.0, REST, None), (0.15, TICKLE, "out"), (0.85, TICKLE, None), (1.0, REST, "ease")],
                           extra=wobble(1.0, 6, 0.9, loop=False) + [
                               osc("chest", "z", 7, 5, 0.0), osc("chest", "y", 9, 5, 0.25),
                               osc("body", "z", -4, 5, 0.1), osc("head", "z", 9, 5, 0.3), osc("head", "x", 5, 10, 0.0),
@@ -675,11 +678,11 @@ AH3 = add(r("chest", -26), r("body", -6), r("head", -44), arm(1, -60, 40, 0, -70
           leg(1, -10, 10, -4), leg(-1, 6, 6, -2), sc("chest", 0.13, 0.12, 0.16), sc("traps", 0.12, 0.18, 0.08))
 CHOO = add(r("chest", 38), r("body", 12), r("head", 40), arm(1, -78, 30, 0, -16, 20), arm(-1, -78, 30, 0, -16, 20),
            leg(1, -30, 36, -10), leg(-1, 18, 28, -14), pos("body", 0, 0, 2.5), sc("chest", 0.08, -0.12, 0.06))
-ANIM["sneeze"] = timeline(1.0, [(0.0, STANCE, None), (0.12, AH1, "out"), (0.2, add(AH1, r("head", 4)), "ease"),
+ANIM["sneeze"] = timeline(1.0, [(0.0, REST, None), (0.12, AH1, "out"), (0.2, add(AH1, r("head", 4)), "ease"),
                                 (0.32, AH2, "out"), (0.38, add(AH2, r("head", 3)), "ease"), (0.52, AH3, "out"),
                                 (0.6, add(AH3, r("head", -3), sc("chest", 0.02, 0.02, 0.02)), "ease"),
                                 (0.65, CHOO, "in"), (0.74, add(CHOO, r("chest", -4), r("head", 6)), "out"),
-                                (1.0, STANCE, "ease")],
+                                (1.0, REST, "ease")],
                           extra=wobble(1.0, 2, 0.4, loop=False) + splash(0.65, 1.6, 1.0, decay=4.0) + [
                               jitter("head", 0.52, 0.64, 2.5, step=0.03, axis=2, seed=11),
                               jitter("chest", 0.52, 0.64, 0.025, step=0.03, axis=1, ch="scale", seed=12)],
@@ -709,7 +712,7 @@ for k in range(14):
     t0 = 0.2 + k * 0.07
     a = 1.5 + k * 0.5
     fuse_shake.append([round(t0, 3), [0, 0, round(a * (1 if k % 2 else -1), 2)]])
-ANIM["fuse"] = timeline(1.5, [(0.0, STANCE, None), (0.25, CLUTCH, "ease"), (1.1, add(CLUTCH, sc("chest", 0.08, 0.08, 0.08)),
+ANIM["fuse"] = timeline(1.5, [(0.0, REST, None), (0.25, CLUTCH, "ease"), (1.1, add(CLUTCH, sc("chest", 0.08, 0.08, 0.08)),
                                                                              "ease"),
                               (1.38, SWELL, "out_back"), (1.5, SWELL, None)],
                         extra=wobble(1.5, 6, 0.8, loop=False) + [
