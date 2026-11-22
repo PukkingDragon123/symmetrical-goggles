@@ -267,3 +267,20 @@ contract for the Java side.
   branches east, `_left` west); blockstate y: toe south 0, west 90, north 180, east 270. `item/switch_rail.json` exists.
   Add it to the rail colour providers (block tint 0 = RailPaint.tint; item 0xFF8A6B47) and the cutout layer.
 * **Booster Rail**: art shows a redstone-block plate (dull unpowered, bright powered); same file names.
+
+## The Hex Fortress, reworked (Hexes & Havoc)
+* **Story in the stones**: the Hex Fortress was a piglin **bastion** before blazes and wither skeletons overran it.
+  Build it as a real Nether fortress growing over and through a ruined bastion: long nether-brick bridges on tall piers,
+  covered corridors with fence windows, stair towers and crossings (vanilla fortress style), wrapped round and over the
+  bastion's blackstone, gilded blackstone, basalt and polished-blackstone ruins (broken ramparts, a cracked gold vault,
+  collapsed halls, lava falls). Keep its brewing rooms, wart farms, storerooms, the witch's quarters and the Nether
+  Portal.
+* **Inhabitants**: **no ordinary piglins**. Blazes (with spawners in the fortress parts) and wither skeletons hold it;
+  the Piglin Witch still lives in her quarters. A few **Golden Piglins** (caged and loose).
+* **Soul Bull farms**: soul-sand pens lit with soul fire where **Soul Bulls** are kept (2-4 per pen, wild and hostile,
+  some armoured, wither skeleton riders on some), in the courtyard and the old bastion stables. You must **defeat
+  them** to get through.
+* **The witch's weird experiments** all round: cells with half-transformed creatures (zombified and golden piglins in
+  cages), bubbling cauldrons and elixir jars over soul fire, soul tanks wired to cages, a dissection table with bones
+  and a Soul Bull skull, potion-stained floors, strange glowing mixtures. Chests get the experiments' loot.
+* Structure id stays `hex_fortress`; `/winterworks hexfortress` builds one. Bigger than before (about 96 x 96).
