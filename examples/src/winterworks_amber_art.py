@@ -75,34 +75,33 @@ def translucent(ramp, alphas):
     return {k: v + a for (k, v), a in zip(ramp.items(), alphas)}
 
 
-# ====================================================================== amber block: honey amber, an even repeating pattern
+# ====================================================================== amber block: thick honey
 # The game draws a real 3D mosquito or seed inside the block (a block-entity renderer), so every face is translucent.
-# Blocks tile like vanilla stone or sand, so there is no rim, no centre and no lone feature: uniformly translucent
-# honey amber (two body tones in soft flow bands, a few deeper and lighter pixels), flow streaks running diagonally
-# (each a dash along a line x - y = k, so it carries on across the block edges) and small trapped bubbles (a cream
-# glint over a dark underside) scattered evenly. Every edge wraps. The seed and mosquito variants are the same amber.
+# It reads like a block of thick honey: a calm, cloudy mass of translucent honey amber in five close tones, with one
+# slow swirl of deeper amber folding through it and a soft band of lighter gold (the sheen) flowing beside it. No
+# bubbles, specks or small motifs, and no rim or centre: every edge wraps and the tones are close, so a wall of amber
+# shows gentle flowing honey, not a grid. The seed and mosquito variants are the same amber.
 HONEY_BLOCK = {
-    "h": "#f09a24b4", "o": "#e47e18b4", "c": "#d06212b8", "g": "#f5b640b8",     # body: honey, orange, deep, light
-    "s": "#f9c552b4", "d": "#b85414bc",                                         # flow streaks (light / dark)
-    "B": "#fff6dcf4", "b": "#f9d27ed8", "q": "#86380ed0",                         # bubbles: glint, body, underside
+    "d": "#cf6a1cbe", "c": "#db7c1fba", "o": "#e68e24b6",                       # deep swirl, deep honey, body
+    "h": "#efa12db4", "g": "#f6b740b2",                                         # honey, the gold sheen
 }
 AMBER_BLOCK = """
-ohhh hhoh hoco hooh
-oohh shho bhoo ohoo
-oohB bshh oohh hBoo
-ohob qhsh ocdh hqho
-hooo hhhh hocd hhho
-scoh hhoh hhoc ohho
-csco hhBh hhho chho
-ocso hhqo ohhh hohb
-hooo ohod ohhh ghoo
-ohhh hooo ohhB bgho
-ohho hhoo ohhb qsoh
-hodh hhho hhoh hgoh
-Bhcd hhhh ohhh ohgh
-qhoc dhhh sohh hhoh
-hhho cohh oboo hdhh
-hhhh hohh occo oodo
+ohhh hhho oooc cooo
+oooo hooo hhoo oooo
+cooo oooh hhho oooc
+ccco oooh hhho oocc
+cccc oooh hgho oocc
+cccc oooh hghh oocc
+cccc oooh hghh oocc
+cddc cooo hggh hooc
+cddd cooo hhgg hooc
+cddd dcco ohgg hhoc
+ccdd dddc oohg ggho
+cccc dddc cohg ggho
+oocc ccdc ccoo hhho
+hhoo occc ccco oohh
+hhhh hooo occc cooh
+hhhh hhho oocc cooh
 """
 for _name in ("amber_block", "amber_block_seed", "amber_block_mosquito"):
     block(_name, pal(HONEY_BLOCK), AMBER_BLOCK)
@@ -118,21 +117,21 @@ FOSSIL = {"x": "#3f3639", "X": "#4d4446", "Z": "#5d5355",                       
           "k": "#4a1f0e", "a": "#8a3f13", "A": "#b9631c", "b": "#dc932f", "B": "#f3c15a", "W": "#fff0bc",
           "p": "#3b2416", "P": "#5c3a22"}                                           # amber, the seed inside
 GRAVEL_BASE = """
-3334 1543 3433 2303
-3261 3334 0434 3124
+3334 1543 3433 2313
+3261 3334 1434 3124
 5355 2334 4354 1225
-3565 5544 3346 3331
+3565 5544 3345 3331
 3351 3143 3341 4133
-2233 3313 6344 3343
+2233 3313 5344 3343
 2133 3305 1443 3232
-3013 5464 4333 3131
-4335 4314 3363 5336
+3013 5454 4333 3131
+4335 4314 3353 5335
 3236 5133 3343 3334
-2264 3431 3333 3512
-2143 3363 3253 2343
+2254 3431 3333 3512
+2143 3353 3253 2343
 3353 2333 2332 1432
-3334 0333 6333 4322
-3543 1323 4631 1321
+3334 0333 5333 4322
+3543 1323 4531 1321
 4345 1253 4433 3433
 """
 # the amber as it lies in the gravel: a rough lump (lit top-left, a cream glint, a small dark seed sealed in it)
@@ -165,7 +164,7 @@ REVEAL = ["""
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
-.... ...# .... ....
+.... .... .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
@@ -250,7 +249,8 @@ for k in range(4):
 # ====================================================================== amber sand and amber gravel (brushable)
 # Sand and gravel with loose amber in them, brushed like suspicious sand/gravel: honey-amber chunks (a cream glint,
 # lit top-left, a deep red-amber underside) and single glinting grains scattered through. Brushing digs shadowed
-# hollows that grow over the four stages: glints and a small chunk at stage 0, everything at stage 3. Unlike the
+# hollows that grow over the four stages: one chunk peeks out at stage 0 (the lone grains only glint once brushing
+# opens their hollows, so an untouched patch shows no specks), everything at stage 3. Unlike the
 # Amber Fossil (one big lump with a seed sealed in it) these are loose scattered chunks. The gravel is the fossil's
 # gravel turned round, with the amber laid out mirrored.
 SAND = {"0": "#c4ab7c", "1": "#ccb685", "2": "#d3c091", "3": "#d8c99c", "4": "#dfd3a7", "5": "#e6ddb3",
@@ -260,21 +260,21 @@ LOOSE = {"x": "#a99168", "X": "#b8a076", "Z": "#c6b083",                        
          "a": "#8a3a10", "A": "#c3601a", "b": "#e6922a", "B": "#f6c055", "W": "#fff2c4"}
 GRAVEL_LOOSE = dict(LOOSE, x=FOSSIL["x"], X=FOSSIL["X"], Z=FOSSIL["Z"])
 SAND_BASE = """
-1344 3335 3443 4446
-3154 3445 3344 5543
+2344 3335 3443 4445
+3254 3445 3344 5543
 5624 5435 4343 2444
 4556 6533 4443 3544
 3454 6345 4543 3633
-4454 4534 4423 3446
-5356 4143 3235 2433
+4454 4534 4423 3445
+5356 4243 3235 2433
 5334 4454 4444 4335
 4544 3534 3434 4435
 4524 5335 4454 3344
-4523 4445 3324 3402
+4523 4445 3324 3422
 4535 4453 4543 3434
 4544 5344 4345 3425
 4365 2346 3232 4443
-1544 4455 4433 5245
+2544 4455 4433 5245
 3445 4524 4454 5454
 """
 # the loose amber: five chunks and four glinting grains
@@ -298,13 +298,13 @@ AMBER_LOOSE = """
 """
 REVEAL_LOOSE = ["""
 .... .... .... ....
-.... ...# .... ....
+.... .... .... ....
 .... .... ...# #...
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
-.... .... .... ..#.
+.... .... .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
