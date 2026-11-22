@@ -1,0 +1,131 @@
+{
+  "name": "Golden Piglin",
+  "parts": 45,
+  "instances": 45,
+  "faces": 208,
+  "triangles": 416,
+  "vertices_flat": 832,
+  "vertices_unique": 304,
+  "atlas": [
+    64,
+    128
+  ],
+  "atlas_fill": 0.839,
+  "texel_density": 1.0,
+  "colors_used": 21,
+  "palette": {
+    "gold": [
+      "#2c1503",
+      "#4a2405",
+      "#6e3706",
+      "#94500a",
+      "#b86b0e",
+      "#d68b12",
+      "#eaa91c",
+      "#f6c934",
+      "#fde35c",
+      "#fff399",
+      "#fffbd6"
+    ],
+    "tarnish": [
+      "#1d1608",
+      "#2f250c",
+      "#433612",
+      "#5a4a19",
+      "#725f22",
+      "#8a742c",
+      "#a28937"
+    ],
+    "crack": [
+      "#0f0803",
+      "#1c1006",
+      "#2b1a09"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -9.619,
+      0.0,
+      -4.944
+    ],
+    "max": [
+      10.801,
+      33.37,
+      5.336
+    ],
+    "size": [
+      20.42,
+      33.37,
+      10.28
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.0,
+    "walk": 2.0,
+    "barter": 2.0,
+    "hurt_groan": 1.0
+  },
+  "joints": [
+    "body",
+    "belt",
+    "buckle",
+    "loincloth",
+    "loin_drip",
+    "belt_drip",
+    "nugget0",
+    "nugget1",
+    "nugget2",
+    "nugget3",
+    "leg_l",
+    "hoof_l",
+    "leg_r",
+    "hoof_r",
+    "arm_l",
+    "cuff_l",
+    "hand_drip_l",
+    "pauldron",
+    "spike0",
+    "spike1",
+    "spike2",
+    "pauldron_drip",
+    "arm_r",
+    "cuff_r",
+    "hand_drip_r",
+    "head",
+    "snout",
+    "snout_drip",
+    "tusk_l",
+    "brow_l",
+    "tusk_r",
+    "brow_r",
+    "jaw",
+    "jaw_drip",
+    "brow_drip",
+    "tear",
+    "head_nugget0",
+    "head_nugget1",
+    "head_nugget2",
+    "head_nugget3",
+    "ear_l",
+    "ear_l_drip",
+    "ear_r",
+    "ear_r_drip",
+    "ear_r_chip"
+  ],
+  "files": {
+    "golden_piglin.glb": "examples/output/golden_piglin.glb",
+    "golden_piglin.obj": "examples/output/golden_piglin.obj",
+    "golden_piglin.mtl": "examples/output/golden_piglin.mtl",
+    "golden_piglin.bbmodel": "examples/output/golden_piglin.bbmodel",
+    "golden_piglin_texture.png": "examples/output/golden_piglin_texture.png",
+    "golden_piglin_texture_x8.png": "examples/output/golden_piglin_texture_x8.png",
+    "golden_piglin_hero.png": "examples/output/golden_piglin_hero.png",
+    "golden_piglin_sheet.png": "examples/output/golden_piglin_sheet.png",
+    "golden_piglin_turntable.gif": "examples/output/golden_piglin_turntable.gif",
+    "golden_piglin_idle.gif": "examples/output/golden_piglin_idle.gif",
+    "golden_piglin_walk.gif": "examples/output/golden_piglin_walk.gif",
+    "golden_piglin_barter.gif": "examples/output/golden_piglin_barter.gif",
+    "golden_piglin_hurt_groan.gif": "examples/output/golden_piglin_hurt_groan.gif"
+  }
+}

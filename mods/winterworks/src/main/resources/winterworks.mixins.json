@@ -24,6 +24,9 @@
     "CurseAbstractVillagerMixin",
     "CurseNaturalSpawnerMixin",
     "CurseMobCategoryMixin",
+    "PiglinAiMixin",
+    "PiglinMixin",
+    "AbstractPiglinAccessor",
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "FoodDataMixin"

@@ -1,0 +1,127 @@
+{
+  "name": "Elixir Jar",
+  "parts": 27,
+  "instances": 27,
+  "faces": 152,
+  "triangles": 304,
+  "vertices_flat": 608,
+  "vertices_unique": 208,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.581,
+  "texel_density": 2.0,
+  "colors_used": 30,
+  "palette": {
+    "brass": [
+      "#1e1208",
+      "#33200d",
+      "#4d3214",
+      "#6b471c",
+      "#8c6025",
+      "#ad7c30",
+      "#c99a3f",
+      "#ddb756",
+      "#ecd27a",
+      "#f8ecb2"
+    ],
+    "verdigris": [
+      "#13302a",
+      "#1d4a3e",
+      "#2b6853",
+      "#3f8a6a"
+    ],
+    "glass": [
+      "#253a40",
+      "#3d5c64",
+      "#5f858d",
+      "#8db2b6",
+      "#c4dcdc",
+      "#eef8f6"
+    ],
+    "elixir": [
+      "#5a5a5a",
+      "#7a7a7a",
+      "#9a9a9a",
+      "#bdbdbd",
+      "#dcdcdc",
+      "#f4f4f4",
+      "#ffffff"
+    ],
+    "paper": [
+      "#6f5b3e",
+      "#a08660",
+      "#cbb68e",
+      "#e8d9b4"
+    ],
+    "ink": [
+      "#2a1420",
+      "#4a1e33"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -4.414,
+      0.0,
+      -4.414
+    ],
+    "max": [
+      4.414,
+      14.0,
+      6.616
+    ],
+    "size": [
+      8.828,
+      14.0,
+      11.031
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 3.0,
+    "bubble": 1.0
+  },
+  "joints": [
+    "jar",
+    "foot0",
+    "foot1",
+    "foot2",
+    "foot3",
+    "cup",
+    "glass",
+    "strap0",
+    "strap1",
+    "strap2",
+    "strap3",
+    "shoulder",
+    "shoulder_lip",
+    "neck",
+    "tag_string",
+    "tag",
+    "spout",
+    "spout_lip",
+    "lid",
+    "lid_step",
+    "knob",
+    "chain_loop",
+    "liquid",
+    "bubble_0",
+    "bubble_1",
+    "bubble_2",
+    "bubble_3"
+  ],
+  "files": {
+    "elixir_jar.glb": "examples/output/elixir_jar.glb",
+    "elixir_jar.obj": "examples/output/elixir_jar.obj",
+    "elixir_jar.mtl": "examples/output/elixir_jar.mtl",
+    "elixir_jar.bbmodel": "examples/output/elixir_jar.bbmodel",
+    "elixir_jar_texture.png": "examples/output/elixir_jar_texture.png",
+    "elixir_jar_texture_x8.png": "examples/output/elixir_jar_texture_x8.png",
+    "elixir_jar_hero.png": "examples/output/elixir_jar_hero.png",
+    "elixir_jar_sheet.png": "examples/output/elixir_jar_sheet.png",
+    "elixir_jar_turntable.gif": "examples/output/elixir_jar_turntable.gif",
+    "elixir_jar_idle.gif": "examples/output/elixir_jar_idle.gif",
+    "elixir_jar_bubble.gif": "examples/output/elixir_jar_bubble.gif"
+  }
+}
