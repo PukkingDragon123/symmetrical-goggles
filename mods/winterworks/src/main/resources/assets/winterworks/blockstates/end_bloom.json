@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "bulb=false,open=false": {
+      "model": "winterworks:block/end_bloom_closed"
+    },
+    "bulb=true,open=false": {
+      "model": "winterworks:block/end_bloom_closed"
+    },
+    "bulb=false,open=true": {
+      "model": "winterworks:block/end_bloom_open_bare"
+    },
+    "bulb=true,open=true": {
+      "model": "winterworks:block/end_bloom_open"
+    }
+  }
+}

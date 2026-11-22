@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:small_flowers",
+    "#minecraft:saplings",
+    "minecraft:red_mushroom",
+    "minecraft:brown_mushroom",
+    "minecraft:crimson_fungus",
+    "minecraft:warped_fungus",
+    "minecraft:crimson_roots",
+    "minecraft:warped_roots",
+    "minecraft:fern",
+    "minecraft:short_grass",
+    "minecraft:dead_bush",
+    "minecraft:chorus_flower",
+    "winterworks:end_bloom",
+    "winterworks:end_grass",
+    "winterworks:dry_end_bush"
+  ]
+}
