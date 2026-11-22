@@ -29,13 +29,17 @@ contract for the Java side.
   fast-then-slow-then-recharge rhythm. Cooler feel: snappy swings, a little camera kick, crit sparks.
 * **Snowball Launcher**: much bigger when held (first and third person).
 * **Icebreaker**: about 25% smaller (new model) and much furrier. It attacks polar bears. Feeding it fish plays the
-  new `eat` clip. It is far more hostile when its cubs are near: it charges players who come within 10 blocks of a cub.
+  new `eat` clip. It is far more hostile when its cubs are near: it charges players who come within 10 blocks of a cub. When it rams it
+  points its horns at the target (the `ram` clip holds the head low with horn and tusks aimed ahead).
 * **Potion of Ramming**: when you reach top speed you get a battle cry (sound), a burst of snow and wind particles,
   speed lines on screen, a new running pose (leaning forward, arms swept back) and a further speed boost.
 
 ## The Winter Express
 * The **Trailer Cart** is removed. **Normal minecarts** (and chest/hopper/furnace minecarts) couple to locomotives
   and to each other the way the trailer did, and get pulled.
+* **Furnace minecarts power trains**: a furnace minecart coupled into a train with a locomotive drives the locomotive
+  while the furnace burns (fed coal or charcoal as usual): the train runs by itself, no locomotive fuel needed. A
+  burning furnace minecart also pulls a train of coupled minecarts on its own.
 * **Coaster Rails** become full 3D track pieces (new models) that can be placed **floating**, with nothing under
   them, and still carry carts (straight, ascending, corners).
 
