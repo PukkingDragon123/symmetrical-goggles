@@ -118,19 +118,22 @@ public final class RamClient {
         float cx = w / 2f, cy = h / 2f, reach = (float) Math.sqrt(cx * cx + cy * cy);
         long frame = (long) ((mc.level.getGameTime() + partial) * 1.5f);   // the streaks re-roll fast, so they rush
         RandomSource r = RandomSource.create(frame * 341873128712L);
-        int n = 22 + (int) (26 * a);
+        int n = 30 + (int) (40 * a);
         PoseStack pose = g.pose();
         for (int i = 0; i < n; i++) {
             float angle = r.nextFloat() * 360f;
-            float start = reach * (0.5f + r.nextFloat() * 0.3f);
-            float len = reach * (0.18f + r.nextFloat() * 0.35f) * (0.6f + 0.4f * a);
-            float thick = 0.5f + r.nextFloat() * (0.8f + a);
-            int alpha = (int) (255 * a * (0.25f + 0.45f * r.nextFloat()));
+            float start = reach * (0.42f + r.nextFloat() * 0.35f);
+            float len = reach * (0.25f + r.nextFloat() * 0.45f) * (0.6f + 0.4f * a);
+            float thick = 0.6f + r.nextFloat() * (1.2f + 1.5f * a);
+            int alpha = (int) (255 * Math.min(1f, a * (0.45f + 0.55f * r.nextFloat())));
             pose.pushPose();
             pose.translate(cx, cy, 0f);
             pose.mulPose(Axis.ZP.rotationDegrees(angle));
-            g.fill(Math.round(start), Math.round(-thick), Math.round(start + len), Math.max(Math.round(thick), 1),
-                    (alpha << 24) | 0xF4F8FF);
+            // a streak tapering in toward the middle: a thin bright head, a wider faint tail out at the edge
+            g.fill(Math.round(start), Math.round(-thick * 0.5f), Math.round(start + len * 0.5f), Math.max(Math.round(thick * 0.5f), 1),
+                    (alpha << 24) | 0xFFFFFF);
+            g.fill(Math.round(start + len * 0.5f), Math.round(-thick), Math.round(start + len), Math.max(Math.round(thick), 1),
+                    ((alpha * 3 / 4) << 24) | 0xE6F0FF);
             pose.popPose();
         }
     }

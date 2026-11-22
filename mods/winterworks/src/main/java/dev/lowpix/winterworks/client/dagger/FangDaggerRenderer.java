@@ -47,6 +47,8 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
     /** Where the grip sits in item space (a vanilla sword's handle). */
     private static final Vector3f GRIP_AT = new Vector3f(3f / 16f, 3f / 16f, 8f / 16f);
     private static final float LENGTH = 17f / 16f;
+    /** Which side of the diagonal a curved blade bows to (+1: toward the sprite's lower right, -1: its upper left). */
+    private static final float BOW = -1f;
     private static final Pattern GRIP = Pattern.compile(".*(grip|handle|hilt|wrap).*");
     private static final Pattern POMMEL = Pattern.compile(".*pommel.*");
 
@@ -206,9 +208,41 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
             }
             g[along] = end + dir * 0.18f * len;
         }
-        Vector3f eY = axis(along).mul(dir), eX = axis(across), eZ = new Vector3f(eX).cross(eY);
+        // a curved fang: lay the chord from the grip to the tip along the diagonal (not the grip's own axis, or the
+        // curve swings the tip off sideways), with the blade bowing to one side of it in the sprite plane
+        float far = dir > 0 ? max[along] : min[along];
+        Vector3f tip = new Vector3f();
+        int n = 0;
+        for (float[] q : pts) {
+            if ((far - q[along]) * dir < 0.04f * len) {
+                tip.add(q[0], q[1], q[2]);
+                n++;
+            }
+        }
+        tip.div(Math.max(1, n));
+        Vector3f gv = new Vector3f(g[0], g[1], g[2]);
+        Vector3f eY = new Vector3f(tip).sub(gv);
+        if (eY.lengthSquared() < 1e-6f) {
+            eY = axis(along).mul(dir);
+        }
+        eY.normalize();
+        Vector3f a = axis(across);
+        Vector3f eX = new Vector3f(a).sub(new Vector3f(eY).mul(a.dot(eY))).normalize();
+        float[][] bc = bounds(blade.isEmpty() ? pts : blade, null, null);
+        Vector3f bow = new Vector3f((bc[0][0] + bc[1][0]) * 0.5f, (bc[0][1] + bc[1][1]) * 0.5f, (bc[0][2] + bc[1][2]) * 0.5f).sub(gv);
+        bow.sub(new Vector3f(eY).mul(bow.dot(eY)));
+        if (bow.dot(eX) * BOW < 0f) {
+            eX.negate();
+        }
+        Vector3f eZ = new Vector3f(eX).cross(eY);
+        float lo = Float.MAX_VALUE, hi = -Float.MAX_VALUE;   // the dagger's length along the chord
+        for (float[] q : pts) {
+            float t = (q[0] - g[0]) * eY.x + (q[1] - g[1]) * eY.y + (q[2] - g[2]) * eY.z;
+            lo = Math.min(lo, t);
+            hi = Math.max(hi, t);
+        }
         Matrix3f rot = new Matrix3f().setRow(0, eX).setRow(1, eY).setRow(2, eZ);
-        return new Fit(new Quaternionf().setFromNormalized(rot), new Vector3f(g[0], g[1], g[2]), LENGTH / len);
+        return new Fit(new Quaternionf().setFromNormalized(rot), gv, LENGTH / Math.max(hi - lo, 1e-3f));
     }
 
     private static Vector3f axis(int i) {

@@ -8,8 +8,8 @@ import os
 FUR = ["fur_hood", "fur_coat", "fur_leggings", "fur_boots"]
 
 # Vanilla item/handheld (+ item/generated) display transforms: FangDaggerRenderer lays the 3D dagger along the sprite
-# diagonal, so it is held like a sword in either hand, first person included (0.4 fixes). GUI stays identity: the
-# renderer poses its own 3D icon there.
+# diagonal, so it is held like a sword in either hand, first person included (0.4 fixes; a little higher there: a dagger
+# is shorter than a sword). GUI stays identity: the renderer poses its own 3D icon there.
 HANDHELD = {
     "gui": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
     "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
@@ -17,8 +17,8 @@ HANDHELD = {
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
     "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]},
     "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]},
-    "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
-    "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
+    "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 6.0, 1.13], "scale": [0.68, 0.68, 0.68]},
+    "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 6.0, 1.13], "scale": [0.68, 0.68, 0.68]},
 }
 
 
