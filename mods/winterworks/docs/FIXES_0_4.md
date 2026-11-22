@@ -151,3 +151,18 @@ contract for the Java side.
 `block.soul_bull_skull.ignite`, `entity.sniffer.sneeze`, `entity.player.ramming_cry`, `entity.player.ramming_wind`,
 `block.frost_mauler_skull.roar`, `block.switch_rail.switch`, `item.fang_dagger.slash_left|slash_right`,
 `curse.effect.lesser|sin|hidden`.
+
+## The Pot Golem (Amber Age)
+* **Fix**: building one must actually work in survival: four amber blocks in a T with a decorated pot placed on top
+  (any facing, placed last or not) becomes a Pot Golem, like an iron golem. Today it doesn't happen in game.
+* **Four matching faces**: a head ability only works when **all four faces of the pot carry the same sherd**. A mixed
+  pot still makes a golem, just without a head ability (the Echo Shard inside still gives the Echo Head).
+* **The pattern glows** while its ability is active: the sherd pattern on the head is drawn full-bright in a soft
+  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied).
+* **Six new head abilities** (on top of Howl and Danger), each from 4 matching sherds:
+  * **Heart**: a healing aura: its owner and their pets within 8 blocks get Regeneration I.
+  * **Burn**: burning fists (sets what it hits on fire) and Fire Resistance for its owner nearby.
+  * **Flow**: a wind burst every 6 s that hurls enemies within 5 blocks away (like a breeze charge, no block damage).
+  * **Shelter**: shields its owner: Resistance I within 6 blocks, and it steps in to block arrows aimed at them.
+  * **Plenty**: vacuums up dropped items within 8 blocks into its pot (27 slots); use it with an empty hand to open it.
+  * **Brewer**: throws splash potions: Healing at its owner when they're hurt, Weakness or Slowness at enemies.
