@@ -96,6 +96,12 @@ contract for the Java side.
   straight on when unpowered and onto the branch (left or right, set by where you place it) when powered. Whole trains
   follow their leader's route. Recipe: 6 iron + a rail + a redstone torch -> 2.
 
+* **Coaster Loop** (`coaster_loop`, new): a full **360-degree vertical loop**. Placed in line with coaster rails, it
+  shows a complete 3D loop of coaster track (radius 3 blocks, made of the 3D coaster rail pieces, rendered by the block)
+  rising from it. A cart that enters fast enough (about 0.8 blocks/tick, e.g. off Booster Rails) rides all the way
+  round, upside down at the top with its rider, and comes out the far side at the same speed; too slow and it falls back
+  out of the loop. Whole trains loop one car after another. Recipe: 8 coaster rails round an iron block.
+
 ## 3D icons
 * Blocks and items that have a 3D model show that model as their inventory icon too: the Hexing Table, Soul Tank,
   Elixir Jar and Hex Core, the locomotives and carts, the Snow Globe, and every new End block/item with a 3D model.

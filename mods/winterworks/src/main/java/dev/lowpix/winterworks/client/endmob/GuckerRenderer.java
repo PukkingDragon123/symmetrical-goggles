@@ -13,8 +13,11 @@ import net.minecraft.util.Mth;
  * and a faint light in the vents glow.
  */
 public class GuckerRenderer extends EndMobRenderer<Gucker> {
-    /** How deep a burrowed Gucker sits in the ground (blocks): its body is 0.9 tall, its back shows. */
-    static final float SINK = 0.55f;
+    /**
+     * How deep a burrowed Gucker sits in the ground (blocks): its body is 0.9 tall, its back shows. The exported model's
+     * `burrowed` and `emerge` clips already sink it, so only the stand-in needs this.
+     */
+    static final float SINK = EndMobModel.isExported("gucker") ? 0f : 0.55f;
 
     public GuckerRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new Model(ctx.bakeLayer(EndMobClient.GUCKER)), 0.8f);
