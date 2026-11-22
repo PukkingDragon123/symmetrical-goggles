@@ -9,7 +9,7 @@ clean violet veins and a glowing magenta eye-spot on each) and six jointed legs 
 
 Units are Minecraft pixels (16 per block), density 1 (one texel per pixel, like vanilla): every box is whole pixels,
 so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). Wings and antennae are alpha-cut
-cards. Faces +Z, ground at y = 0, "left" is +X. About 26 px across the wings, 17 px long; the rest pose is the
+cards. Faces +Z, ground at y = 0, "left" is +X. About 27 px across the wings, 18 px long; the rest pose is the
 hover, the dangling feet touching y = 0 (it always flies).
 
 Contract (mods/winterworks/docs/END_UPDATE.md section 4): bones body (root), thorax, abdomen, head, antenna_l,

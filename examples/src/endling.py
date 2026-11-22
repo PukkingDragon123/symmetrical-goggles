@@ -8,7 +8,7 @@ the enderman's), two wide glowing violet eyes under raised brows, a small black 
 the nap. A `head_plant` locator sits on the crown, where the game draws a flower or plant.
 
 Units are Minecraft pixels (16 per block), density 1 (one texel per pixel, like vanilla): every box is whole pixels,
-so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). About 8 x 16 x 8 px; faces +Z,
+so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). About 8 x 16 x 7 px; faces +Z,
 ground at y = 0, "left" is +X; the root (body) pivots between the hips.
 
 Contract (mods/winterworks/docs/END_UPDATE.md section 8): bones body, head, jaw, leg_l, leg_r, head_plant (locator).

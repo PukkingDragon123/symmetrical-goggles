@@ -1,9 +1,9 @@
 {
  "name": "Chorus Cocoon",
- "description": "The Winterworks Chorus Cocoon in its four ages: a lumpy purple chorus-fruit pod hanging on a chorus stem, growing from a bud to a fat pod; the mature one is cracked with glowing violet seams. Minecraft pixel units, density 2; exported as block models.",
+ "description": "The Winterworks Chorus Cocoon in its four ages: a lumpy purple chorus-fruit pod hanging on a chorus stem, growing from a bud to a fat pod; the mature one is cracked with glowing violet seams. Minecraft pixel units, density 1 (vanilla block resolution); exported as block models.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "grounded": false,
  "budget": {
   "tris": 900,
@@ -17,18 +17,8 @@
   ],
   "strength": 0.9,
   "gradient": 0.3,
-  "ao": 0.0
- },
- "brush": {
-  "flow": "horizontal",
-  "length": 1.5,
-  "width": 0.5,
-  "rough": 0.5,
-  "overshoot": 0.3,
-  "textures": {
-   "chorus": "organic",
-   "stem": "wood"
-  }
+  "ao": 0.0,
+  "ao_height": 4.0
  },
  "minecraft": {
   "fps": 12,
@@ -47,25 +37,38 @@
  "palette": {
   "ramps": {
    "crying": [
-    "#3a0b6e",
-    "#5a12a0",
-    "#7a1fd0",
-    "#9a3cf0",
-    "#b866ff",
-    "#d397ff",
-    "#ecc9ff",
-    "#fbf0ff"
+    "#3c0b78",
+    "#5a14a8",
+    "#7b23d3",
+    "#9a3bf0",
+    "#b65efd",
+    "#d08eff",
+    "#e8c2ff",
+    "#fbefff"
    ],
    "chorus": [
-    "#1f0f24",
-    "#331a3b",
-    "#4a2754",
-    "#633670",
-    "#7c4a8a",
-    "#9763a3",
-    "#b383bc",
-    "#cda7d3",
-    "#e7cfe9"
+    "#24132d",
+    "#371d44",
+    "#4c295c",
+    "#623674",
+    "#79468b",
+    "#9059a1",
+    "#a774b6",
+    "#bf93ca",
+    "#d6b5dd",
+    "#ead6ee"
+   ],
+   "obsidian": [
+    "#06040a",
+    "#0c0814",
+    "#130d1f",
+    "#1b132b",
+    "#241a39",
+    "#2f2348",
+    "#3c2e59",
+    "#4b3b6c",
+    "#5d4c80",
+    "#72619a"
    ],
    "stem": [
     "#1d0f1c",
@@ -73,7 +76,8 @@
     "#462843",
     "#5e385a",
     "#784b72",
-    "#94628c"
+    "#94628c",
+    "#ad7ea5"
    ],
    "petal": [
     "#6b4f78",
@@ -81,66 +85,56 @@
     "#bfa6c8",
     "#e0d0e6",
     "#f6eefa"
-   ],
-   "membrane": [
-    "#160e26",
-    "#1f1534",
-    "#2a1d44",
-    "#372756",
-    "#46336a"
    ]
   }
  },
  "styles": {
   "chorus": {
    "ramp": "chorus",
-   "tone": 4.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4,
-    "outline": "dark"
-   }
+   "tone": 4.0
   },
   "pod": {
    "ramp": "chorus",
-   "tone": 2.8,
+   "tone": 4.2,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 0.8,
-    "dark_shift": -0.7
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
      "id": "mottle",
-     "op": "patches",
-     "scale": 1.6,
-     "threshold": 0.55,
-     "shift": 0.8,
-     "space": "world",
-     "bevel": {
-      "shadow": 1,
-      "highlight": 1
-     }
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
     },
     {
      "id": "nubs",
      "op": "spots",
-     "count": 4,
+     "count": 3,
      "radius": [
-      0.3,
+      0.35,
       0.5
      ],
      "ramp": "chorus",
-     "tone": 6.0,
+     "tone": 8.0,
      "space": "world",
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_shift": -1.5
-     }
+     "min_gap": 2.0
     },
     {
      "id": "under",
@@ -150,212 +144,250 @@
       1,
       0
      ],
-     "amount": 0.12,
+     "amount": 0.1,
      "space": "world"
     }
    ]
   },
   "lump": {
    "ramp": "chorus",
-   "tone": 3.2,
+   "tone": 4.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 0.8,
-    "dark_shift": -0.7
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
      "id": "mottle",
-     "op": "patches",
-     "scale": 1.2,
-     "threshold": 0.55,
-     "shift": 0.8
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
     },
     {
      "id": "nubs",
      "op": "spots",
-     "count": 4,
+     "count": 3,
      "radius": [
-      0.3,
+      0.35,
       0.5
      ],
      "ramp": "chorus",
-     "tone": 6.0,
+     "tone": 8.0,
      "space": "world",
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_shift": -1.5
-     }
-    },
-    {
-     "id": "under",
-     "op": "gradient",
-     "axis": "y",
-     "amount": 0.8
+     "min_gap": 2.0
     }
    ]
   },
   "pod_cracked": {
    "ramp": "chorus",
-   "tone": 2.8,
+   "tone": 4.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 0.8,
-    "dark_shift": -0.7
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
      "id": "mottle",
-     "op": "patches",
-     "scale": 1.6,
-     "threshold": 0.55,
-     "shift": 0.8,
-     "space": "world"
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
     },
     {
      "id": "nubs",
      "op": "spots",
-     "count": 4,
+     "count": 3,
      "radius": [
-      0.3,
+      0.35,
       0.5
      ],
      "ramp": "chorus",
-     "tone": 6.0,
+     "tone": 8.0,
      "space": "world",
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_shift": -1.5
-     }
+     "min_gap": 2.0
     },
     {
      "id": "seams",
      "op": "cracks",
-     "scale": 3.5,
-     "width": 0.05,
+     "scale": 3.0,
+     "width": 0.07,
      "threshold": 0.35,
      "ramp": "crying",
-     "tone": 5.0,
+     "tone": 4.6,
      "seed": 3,
-     "space": "world",
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_shift": -2.0
-     }
-    },
-    {
-     "id": "under",
-     "op": "gradient",
-     "axis": [
-      0,
-      1,
-      0
-     ],
-     "amount": 0.12,
      "space": "world"
     }
    ]
   },
   "lump_cracked": {
    "ramp": "chorus",
-   "tone": 3.0,
+   "tone": 4.8,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 0.8,
-    "dark_shift": -0.7
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
     {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.9,
+     "octaves": 2
+    },
+    {
+     "id": "mottle",
+     "op": "noise",
+     "scale": 2.6,
+     "amount": 0.54,
+     "octaves": 1
+    },
+    {
      "id": "nubs",
      "op": "spots",
-     "count": 4,
+     "count": 3,
      "radius": [
-      0.3,
+      0.35,
       0.5
      ],
      "ramp": "chorus",
-     "tone": 6.0,
+     "tone": 8.0,
      "space": "world",
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_shift": -1.5
-     }
+     "min_gap": 2.0
     },
     {
      "id": "seams",
      "op": "cracks",
      "scale": 2.0,
-     "width": 0.06,
+     "width": 0.07,
      "threshold": 0.35,
      "ramp": "crying",
      "tone": 4.6,
      "seed": 5,
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_shift": -2.0
-     }
+     "space": "world"
     }
    ]
   },
   "pod_tip": {
    "ramp": "chorus",
-   "tone": 3.0,
+   "tone": 4.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4,
-    "outline": "dark"
+    "light_shift": 1.2,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
-   "brush": {
-    "off": true
-   }
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.5,
+     "octaves": 2
+    }
+   ]
   },
   "stem": {
    "ramp": "stem",
-   "tone": 3.0,
+   "tone": 3.4,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4,
-    "outline": "dark"
-   },
-   "brush": {
-    "flow": "y"
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
    "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.6,
+     "octaves": 2
+    },
     {
      "id": "rings",
      "op": "stripes",
      "axis": "y",
-     "period": 1.5,
-     "width": 0.3,
+     "period": 2.0,
+     "width": 0.5,
      "shift": -1.0
     }
    ]
   },
   "stem_knot": {
    "ramp": "stem",
-   "tone": 3.6,
+   "tone": 4.0,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0.55,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4,
-    "outline": "dark"
+    "light_shift": 1.4,
+    "dark_shift": -1.2,
+    "threshold": 0.2
    },
-   "brush": {
-    "off": true
-   }
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.7,
+     "amount": 0.5,
+     "octaves": 2
+    }
+   ]
   },
   "petal": {
    "ramp": "petal",
@@ -370,15 +402,15 @@
    }
   },
   "wing_tip": {
-   "ramp": "membrane",
-   "tone": 2.0,
+   "ramp": "obsidian",
+   "tone": 3.0,
    "light": 0.2,
    "brush": {
     "off": true
    },
    "art_key": {
-    "m": "membrane:2",
-    "M": "membrane:4",
+    "m": "obsidian:4",
+    "M": "obsidian:6",
     "E": "crying:5"
    }
   }
@@ -399,9 +431,9 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    2.5,
-    1.0,
-    2.5
+    2,
+    1,
+    2
    ],
    "pivot": [
     0.0,
@@ -420,13 +452,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    1.5,
-    3.5,
-    1.5
+    1,
+    3,
+    1
    ],
    "pivot": [
     0.0,
-    13.25,
+    13.5,
     0.0
    ],
    "style": "stem"
@@ -436,13 +468,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    2.5,
-    1.0,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    11.5,
+    12.0,
     0.0
    ],
    "style": "pod"
@@ -452,13 +484,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    2.0,
-    1.0,
-    2.5
+    2,
+    1,
+    3
    ],
    "pivot": [
     0.0,
-    11.5,
+    12.0,
     0.0
    ],
    "style": "pod"
@@ -468,13 +500,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    4.0,
-    3.0,
-    3.0
+    4,
+    3,
+    3
    ],
    "pivot": [
     0.0,
-    9.5,
+    10.0,
     0.0
    ],
    "style": "pod"
@@ -484,13 +516,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    3.0,
-    2.5,
-    4.0
+    3,
+    2,
+    4
    ],
    "pivot": [
     0.0,
-    9.5,
+    10.0,
     0.0
    ],
    "style": "pod"
@@ -500,13 +532,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    3.0,
-    1.0,
-    2.0
+    3,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    7.5,
+    8.0,
     0.0
    ],
    "style": "pod"
@@ -516,13 +548,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    2.0,
-    1.0,
-    3.0
+    2,
+    1,
+    3
    ],
    "pivot": [
     0.0,
-    7.5,
+    8.0,
     0.0
    ],
    "style": "pod"
@@ -532,13 +564,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    1.5,
-    1.5,
-    1.5
+    2,
+    2,
+    2
    ],
    "pivot": [
-    1.75,
-    9.75,
+    2.0,
+    10.25,
     0.5
    ],
    "rotation": [
@@ -553,13 +585,13 @@
    "shape": "box",
    "parent": "age0",
    "size": [
-    1.0,
-    1.0,
-    1.0
+    1,
+    1,
+    1
    ],
    "pivot": [
     0.0,
-    6.75,
+    7.0,
     0.0
    ],
    "rotation": [
@@ -575,7 +607,7 @@
    "parent": "age0",
    "pivot": [
     0.0,
-    12.25,
+    12.75,
     0.0
    ],
    "rotation": [
@@ -586,10 +618,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    "..PP.PP.",
-    ".PPPPPP.",
-    "pp.pp.pp",
-    "p......p"
+    "..PP.",
+    ".PPP.",
+    "p.p.p"
    ]
   },
   {
@@ -598,7 +629,7 @@
    "parent": "age0",
    "pivot": [
     0.0,
-    12.25,
+    12.75,
     0.0
    ],
    "rotation": [
@@ -609,10 +640,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    ".PP.PP..",
-    ".PPPPPP.",
-    "pp.pp.pp",
-    "p......p"
+    ".PP..",
+    ".PPP.",
+    "p.p.p"
    ]
   },
   {
@@ -630,9 +660,9 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    2.5,
-    1.0,
-    2.5
+    3,
+    1,
+    3
    ],
    "pivot": [
     0.0,
@@ -651,9 +681,9 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    1.5,
-    3.0,
-    1.5
+    2,
+    3,
+    2
    ],
    "pivot": [
     0.0,
@@ -667,13 +697,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    4.0,
-    1.5,
-    3.0
+    4,
+    2,
+    3
    ],
    "pivot": [
     0.0,
-    11.75,
+    11.5,
     0.0
    ],
    "style": "pod"
@@ -683,13 +713,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    3.0,
-    1.0,
-    4.0
+    3,
+    2,
+    4
    ],
    "pivot": [
     0.0,
-    11.75,
+    11.5,
     0.0
    ],
    "style": "pod"
@@ -699,13 +729,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    6.0,
-    4.0,
-    4.5
+    6,
+    4,
+    4
    ],
    "pivot": [
     0.0,
-    9.0,
+    8.5,
     0.0
    ],
    "style": "pod"
@@ -715,13 +745,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    4.5,
-    3.5,
-    6.0
+    4,
+    3,
+    6
    ],
    "pivot": [
     0.0,
-    9.0,
+    8.5,
     0.0
    ],
    "style": "pod"
@@ -731,13 +761,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    4.0,
-    2.0,
-    3.0
+    4,
+    2,
+    3
    ],
    "pivot": [
     0.0,
-    6.0,
+    5.5,
     0.0
    ],
    "style": "pod"
@@ -747,13 +777,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    3.0,
-    1.5,
-    4.0
+    3,
+    2,
+    4
    ],
    "pivot": [
     0.0,
-    6.0,
+    5.5,
     0.0
    ],
    "style": "pod"
@@ -763,13 +793,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    2.5,
-    2.5,
-    2.5
+    3,
+    3,
+    3
    ],
    "pivot": [
-    2.75,
-    9.625,
+    3.0,
+    9.4,
     1.0
    ],
    "rotation": [
@@ -784,13 +814,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    2.0,
-    2.0,
-    2.0
+    2,
+    2,
+    2
    ],
    "pivot": [
     -2.5,
-    8.125,
+    7.9,
     1.0
    ],
    "style": "lump"
@@ -800,13 +830,13 @@
    "shape": "box",
    "parent": "age1",
    "size": [
-    1.5,
-    1.0,
-    1.5
+    1,
+    1,
+    1
    ],
    "pivot": [
     0.0,
-    4.75,
+    4.0,
     0.0
    ],
    "rotation": [
@@ -833,10 +863,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    "..P.PP.PP..",
-    ".PPPPPPPPP.",
-    "ppp..p..ppp",
-    "p.........p"
+    ".PP.P.",
+    ".PPPP.",
+    "pp..pp"
    ]
   },
   {
@@ -856,10 +885,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    "...PP.PP...",
-    ".PPPPPPPPP.",
-    "ppp..p..ppp",
-    "p.........p"
+    ".P.PP.",
+    ".PPPP.",
+    "pp..pp"
    ]
   },
   {
@@ -877,9 +905,9 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    3.0,
-    1.0,
-    3.0
+    3,
+    1,
+    3
    ],
    "pivot": [
     0.0,
@@ -898,13 +926,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    2.0,
-    2.5,
-    2.0
+    2,
+    2,
+    2
    ],
    "pivot": [
     0.0,
-    13.75,
+    14.0,
     0.0
    ],
    "style": "stem"
@@ -914,13 +942,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    6.0,
-    2.0,
-    4.5
+    5,
+    2,
+    4
    ],
    "pivot": [
     0.0,
-    12.0,
+    12.5,
     0.0
    ],
    "style": "pod"
@@ -930,13 +958,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    4.5,
-    1.5,
-    6.0
+    4,
+    2,
+    5
    ],
    "pivot": [
     0.0,
-    12.0,
+    12.5,
     0.0
    ],
    "style": "pod"
@@ -946,13 +974,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    8.5,
-    5.5,
-    6.5
+    8,
+    6,
+    6
    ],
    "pivot": [
     0.0,
-    8.25,
+    8.5,
     0.0
    ],
    "style": "pod"
@@ -962,13 +990,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    6.5,
-    5.0,
-    8.5
+    6,
+    5,
+    8
    ],
    "pivot": [
     0.0,
-    8.25,
+    8.5,
     0.0
    ],
    "style": "pod"
@@ -978,13 +1006,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    6.0,
-    2.5,
-    4.5
+    6,
+    2,
+    4
    ],
    "pivot": [
     0.0,
-    4.25,
+    4.5,
     0.0
    ],
    "style": "pod"
@@ -994,13 +1022,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    4.5,
-    2.0,
-    6.0
+    4,
+    2,
+    6
    ],
    "pivot": [
     0.0,
-    4.25,
+    4.5,
     0.0
    ],
    "style": "pod"
@@ -1010,13 +1038,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    3.0,
-    3.0,
-    3.0
+    3,
+    3,
+    3
    ],
    "pivot": [
-    3.75,
-    9.5,
+    4.0,
+    10.0,
     1.5
    ],
    "rotation": [
@@ -1031,13 +1059,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    3.0,
-    3.0,
-    3.0
+    3,
+    3,
+    3
    ],
    "pivot": [
-    -3.75,
-    7.5,
+    -4.0,
+    8.0,
     1.0
    ],
    "style": "lump"
@@ -1047,13 +1075,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    3.0,
-    3.0,
-    3.0
+    3,
+    3,
+    3
    ],
    "pivot": [
     0.5,
-    6.5,
+    7.0,
     -3.5
    ],
    "rotation": [
@@ -1068,13 +1096,13 @@
    "shape": "box",
    "parent": "age2",
    "size": [
-    2.0,
-    1.0,
-    2.0
+    2,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    2.75,
+    3.0,
     0.0
    ],
    "rotation": [
@@ -1090,7 +1118,7 @@
    "parent": "age2",
    "pivot": [
     0.0,
-    13.25,
+    13.75,
     0.0
    ],
    "rotation": [
@@ -1101,10 +1129,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    "...PP.PP.PP.PP..",
-    ".PPPPPPPPPPPPPP.",
-    "ppppp..pp..ppppp",
-    "pp............pp"
+    ".P.PP.P.",
+    ".PPPPPP.",
+    "pp.pp.pp"
    ]
   },
   {
@@ -1113,7 +1140,7 @@
    "parent": "age2",
    "pivot": [
     0.0,
-    13.25,
+    13.75,
     0.0
    ],
    "rotation": [
@@ -1124,10 +1151,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    "..PP.PP.PP.PP...",
-    ".PPPPPPPPPPPPPP.",
-    "ppppp..pp..ppppp",
-    "pp............pp"
+    "..PP.PP.",
+    ".PPPPPP.",
+    "pp.pp.pp"
    ]
   },
   {
@@ -1145,9 +1171,9 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    3.0,
-    1.0,
-    3.0
+    3,
+    1,
+    3
    ],
    "pivot": [
     0.0,
@@ -1166,13 +1192,13 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    2.0,
-    1.5,
-    2.0
+    2,
+    2,
+    2
    ],
    "pivot": [
     0.0,
-    14.25,
+    14.0,
     0.0
    ],
    "style": "stem"
@@ -1182,13 +1208,13 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    7.5,
-    2.5,
-    5.5
+    7,
+    2,
+    5
    ],
    "pivot": [
     0.0,
-    12.75,
+    12.5,
     0.0
    ],
    "style": "pod_cracked"
@@ -1198,13 +1224,13 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    5.5,
-    2.0,
-    7.5
+    5,
+    2,
+    7
    ],
    "pivot": [
     0.0,
-    12.75,
+    12.5,
     0.0
    ],
    "style": "pod_cracked"
@@ -1214,9 +1240,9 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    11.0,
-    7.0,
-    8.0
+    11,
+    7,
+    8
    ],
    "pivot": [
     0.0,
@@ -1230,9 +1256,9 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    8.0,
-    6.5,
-    11.0
+    8,
+    6,
+    11
    ],
    "pivot": [
     0.0,
@@ -1246,9 +1272,9 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    7.5,
-    3.0,
-    5.5
+    8,
+    3,
+    6
    ],
    "pivot": [
     0.0,
@@ -1262,9 +1288,9 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    5.5,
-    2.5,
-    7.5
+    6,
+    2,
+    8
    ],
    "pivot": [
     0.0,
@@ -1278,13 +1304,13 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    4.0,
-    4.0,
-    4.0
+    4,
+    4,
+    4
    ],
    "pivot": [
-    4.75,
-    9.875,
+    5.0,
+    9.6,
     2.0
    ],
    "rotation": [
@@ -1299,13 +1325,13 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    3.5,
-    3.5,
-    3.5
+    4,
+    4,
+    4
    ],
    "pivot": [
     -5.0,
-    7.375,
+    7.1,
     1.5
    ],
    "style": "lump"
@@ -1315,14 +1341,14 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    4.0,
-    4.0,
-    4.0
+    4,
+    4,
+    4
    ],
    "pivot": [
     1.0,
-    5.875,
-    -4.75
+    5.6,
+    -5.0
    ],
    "rotation": [
     0.0,
@@ -1336,13 +1362,13 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    3.0,
-    3.0,
-    3.0
+    3,
+    3,
+    3
    ],
    "pivot": [
     -2.0,
-    10.875,
+    10.6,
     -4.5
    ],
    "style": "lump"
@@ -1352,13 +1378,13 @@
    "shape": "box",
    "parent": "age3",
    "size": [
-    2.5,
-    1.0,
-    2.5
+    2,
+    1,
+    2
    ],
    "pivot": [
     0.0,
-    1.25,
+    1.0,
     0.0
    ],
    "rotation": [
@@ -1374,7 +1400,7 @@
    "parent": "age3",
    "pivot": [
     0.0,
-    14.25,
+    13.75,
     0.0
    ],
    "rotation": [
@@ -1385,10 +1411,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    "...P.PP.PP.PP.PP.P...",
-    ".PPPPPPPPPPPPPPPPPPP.",
-    "pppppp...ppp...pppppp",
-    "pp.................pp"
+    "..PP.PP...",
+    ".PPPPPPPP.",
+    "ppp.pp.ppp"
    ]
   },
   {
@@ -1397,7 +1422,7 @@
    "parent": "age3",
    "pivot": [
     0.0,
-    14.25,
+    13.75,
     0.0
    ],
    "rotation": [
@@ -1408,10 +1433,9 @@
    "style": "petal",
    "plane": "xy",
    "art": [
-    "....PP.PP.PP.PP.PP...",
-    ".PPPPPPPPPPPPPPPPPPP.",
-    "pppppp...ppp...pppppp",
-    "pp.................pp"
+    "..P.PP.P..",
+    ".PPPPPPPP.",
+    "ppp.pp.ppp"
    ]
   },
   {
@@ -1426,11 +1450,9 @@
    "style": "wing_tip",
    "plane": "xy",
    "art": [
-    "...mM",
-    "..mMm",
-    ".mMEm",
-    "mMmm.",
-    "mm..."
+    ".mM",
+    "mME",
+    "Mm."
    ]
   }
  ],

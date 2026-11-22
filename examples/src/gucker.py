@@ -11,7 +11,7 @@ three-segment tail with a low fin. The hide is pale end-stone grey-violet with d
 a cream belly, so a burrowed Gucker is hard to tell from end stone.
 
 Units are Minecraft pixels (16 per block), density 1 (one texel per pixel, like vanilla): every box is whole pixels,
-so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). About 30 px across the feet and 52 px
+so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). About 33 px across the feet and 53 px
 long; faces +Z, ground at y = 0, "left" is +X; the root (body) pivots in the middle of the torso.
 
 Contract (mods/winterworks/docs/END_UPDATE.md section 7): bones body, head, jaw, throat (the sac; it pivots at its top
