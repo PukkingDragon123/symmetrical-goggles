@@ -500,10 +500,10 @@ public class EndGearTests implements FabricGameTest {
             d.yBodyRot = d.yHeadRot = -90f;
             p.setYRot(-90f);
             p.setXRot(10f);
-            float hp = z.getHealth();
+            float hp = z.getHealth(), hpBehind = behind.getHealth();   // (NoAI zombies may already smoulder in daylight)
             h.assertTrue(d.breathe(p), "it breathes fire");
             h.assertTrue(hp - z.getHealth() >= 5f && z.isOnFire(), "the zombie in front is burnt: " + (hp - z.getHealth()));
-            h.assertTrue(behind.getHealth() == behind.getMaxHealth(), "the one behind isn't");
+            h.assertTrue(behind.getHealth() == hpBehind, "the one behind isn't");
             h.assertTrue(d.getBreath() == Dragonling.MAX_BREATH - 1, "one charge used");
             h.assertFalse(d.breathe(p), "it needs a second to draw breath again");
             p.stopRiding();
