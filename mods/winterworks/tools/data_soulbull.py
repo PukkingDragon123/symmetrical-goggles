@@ -1,6 +1,6 @@
 """Data for the Soul Bull (docs/FIXES_0_4.md "The Soul Bull"): the Soul Bull Skull (blockstate, block and 3D item
 models, loot), the Soul Bull (spawn egg model, loot: its skull and 1-3 Wither Bones), tags (undead, pickaxe-mineable
-skull) and lang/soulbull.json. The biome spawn and the Wither Skeleton's Wither Bone are added in code
+skull, the piglin structures where armoured bulls spawn) and lang/soulbull.json. The biome spawn and the Wither Skeleton's Wither Bone are added in code
 (soulbull.SoulBullFeature); the sounds are mapped in tools/sound_map.json. The Wither Bone's own item model and name
 come from data_hex.py.
 Called by gen_data.py with ctx = gen_data.Ctx."""
@@ -45,6 +45,10 @@ def run(ctx):
             {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}},
             {"function": "minecraft:enchanted_count_increase", "enchantment": "minecraft:looting",
              "count": {"type": "minecraft:uniform", "min": 0, "max": 1}}]}]}])
+
+    # ---- the piglins' structures, where armoured bulls spawn (soulbull.SoulBullFeature.PIGLIN_LANDS)
+    ctx.write(os.path.join(D, M, "tags", "worldgen", "structure", "soul_bull_piglin_lands.json"), {"replace": False, "values": [
+        "minecraft:bastion_remnant", {"id": f"{M}:hex_fortress", "required": False}]})
 
     # ---- tags: a skeleton (smite, inverted healing and harm, no poison or regeneration); its skull mines with a pickaxe
     ctx.write(os.path.join(D, "minecraft", "tags", "entity_type", "undead.json"), {"replace": False, "values": [f"{M}:soul_bull"]})

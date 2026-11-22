@@ -25,7 +25,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -45,7 +44,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Dev-only screenshots of the Soul Bull: with -Dwinterworks.soulbullshots=true (e.g. in JAVA_TOOL_OPTIONS for
  * ./gradlew runClient under xvfb-run) the client makes a world, builds a soul sand valley room in the Nether, and shoots
- * a herd with an armoured Wither Skeleton jockey, a drain, a wild ram and pin, the skull ritual (lit, the heap, the
+ * a valley herd with a Wither Skeleton jockey, the piglins' armoured bull with a brute riding, a drain, a wild ram and pin, the skull ritual (lit, the heap, the
  * revive), riding with the soul bar, a charged ram from the saddle, and the bull's inventory; it saves
  * screenshots/winterworks_soulbull_*.png and quits. A shot freezes the game ticks (/tick freeze) and waits for the
  * chunks and a few fresh frames, so a slow software-GL client shoots the moment it was asked for.
@@ -89,24 +88,24 @@ final class SoulBullShots {
         });
         at(t += 80, () -> nether(SoulBullShots::buildRoom));
         at(t += 20, () -> cmd("fillbiome -24 80 -24 24 120 24 minecraft:soul_sand_valley"));
-        // 1. the herd: two bulls and an armoured Wither Skeleton jockey, then one drinks a soul lantern dry
+        // 1. the valley herd, a Wither Skeleton riding one; then the piglins' armoured bull with a brute up, on bastion stone;
+        // then one of the herd drinks a soul lantern dry
         at(t += 20, () -> nether(level -> {
             herdA = bull(level, -3.5, 7.5, 150f);
             bull(level, 1.5, 11.0, 195f);
             jockey = bull(level, 5.0, 5.5, 220f);
-            jockey.setArmored(true);
-            jockey.setHealth(jockey.getMaxHealth());
-            WitherSkeleton ws = EntityType.WITHER_SKELETON.create(level);
-            ws.moveTo(jockey.getX(), jockey.getY(), jockey.getZ(), 220f, 0f);
-            ws.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STONE_SWORD));
-            ws.setNoAi(true);
-            level.addFreshEntity(ws);
-            ws.startRiding(jockey, true);
+            rider(level, jockey, EntityType.WITHER_SKELETON.create(level), Items.STONE_SWORD);
+            SoulBull armored = bull(level, 13.0, 12.5, 230f);
+            armored.setArmored(true);
+            armored.setHealth(armored.getMaxHealth());
+            rider(level, armored, EntityType.PIGLIN_BRUTE.create(level), Items.GOLDEN_AXE);
         }));
         at(t += 10, () -> tpFacing(new Vec3(1.2, 92.5, 0.2), new Vec3(1.2, 90.8, 7.5)));
         at(t += 40, () -> shot("valley_herd"));
         at(t += 2, () -> tpFacing(new Vec3(8.4, 92.0, 8.2), new Vec3(5.0, 91.2, 5.5)));
-        at(t += 10, () -> shot("armored_jockey"));
+        at(t += 10, () -> shot("wither_jockey"));
+        at(t += 2, () -> tpFacing(new Vec3(8.6, 92.3, 8.6), new Vec3(13.0, 91.2, 12.5)));
+        at(t += 10, () -> shot("armored_piglin_rider"));
         at(t += 2, () -> nether(level -> {
             level.setBlockAndUpdate(new BlockPos(-6, 90, 10), Blocks.SOUL_LANTERN.defaultBlockState());
             herdA.setHealth(14f);   // hurt: it drinks the nearest soul source dry
@@ -280,6 +279,14 @@ final class SoulBullShots {
         });
     }
 
+    private static void rider(ServerLevel level, SoulBull bull, Mob rider, net.minecraft.world.item.Item weapon) {
+        rider.moveTo(bull.getX(), bull.getY(), bull.getZ(), bull.getYRot(), 0f);
+        rider.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(weapon));
+        rider.setNoAi(true);
+        level.addFreshEntity(rider);
+        rider.startRiding(bull, true);
+    }
+
     private static SoulBull bull(ServerLevel level, double x, double z, float yaw) {
         SoulBull b = WWEntities.SOUL_BULL.create(level);
         b.moveTo(x, 90, z, yaw, 0f);
@@ -337,7 +344,16 @@ final class SoulBullShots {
                         k == 3 ? Direction.Axis.X : Direction.Axis.Y), 2 | 16);
             }
         }
-        int[][] fires = {{-7, 14}, {8, 14}, {-2, 16}, {6, 17}, {-14, 4}, {16, -4}, {-3, -17}, {13, 9}, {-17, -4}};
+        for (int x = 9; x <= 17; x++) {   // a spill of bastion stone where the piglins' bull stands
+            for (int z = 8; z <= 17; z++) {
+                if ((x - 13) * (x - 13) + (z - 12.5) * (z - 12.5) < 22 + r.nextInt(8)) {
+                    int k = r.nextInt(10);
+                    level.setBlock(p.set(x, FLOOR, z), (k < 5 ? Blocks.POLISHED_BLACKSTONE_BRICKS : k < 8 ? Blocks.BLACKSTONE
+                            : Blocks.GILDED_BLACKSTONE).defaultBlockState(), 2 | 16);
+                }
+            }
+        }
+        int[][] fires = {{-7, 14}, {8, 14}, {-2, 16}, {6, 17}, {-14, 4}, {16, -4}, {-3, -17}, {17, 4}, {-17, -4}};
         for (int[] f : fires) {
             level.setBlock(p.set(f[0], FLOOR, f[1]), Blocks.SOUL_SOIL.defaultBlockState(), 2 | 16);
             level.setBlock(p.set(f[0], FLOOR + 1, f[1]), Blocks.SOUL_FIRE.defaultBlockState(), 2 | 16);

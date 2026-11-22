@@ -44,6 +44,8 @@
     "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor",
+    "SoulBullNaturalSpawnerMixin",
+    "SoulBullSpawnsAccessor",
     "TrailerCartRemovalMixin",
     "MinecartFurnaceMixin",
     "LoopRiderMixin",

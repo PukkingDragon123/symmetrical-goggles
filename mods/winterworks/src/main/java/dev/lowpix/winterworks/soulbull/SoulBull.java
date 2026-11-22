@@ -69,8 +69,9 @@ import org.jetbrains.annotations.Nullable;
  * and skull. Its health is its soul energy: water and rain hurt it like a blaze; soul torches, lanterns and campfires
  * (used on it, or drained from nearby along with soul fire) recharge it.
  * <ul>
- * <li>Wild: hostile. It rams, catches its victim on its horns and pins it ({@link #PIN_TICKS}), soul-burning it. One in
- * five is the armoured variant (+8 armour, +50% health), ridden by a Wither Skeleton.</li>
+ * <li>Wild: hostile. It rams, catches its victim on its horns and pins it ({@link #PIN_TICKS}), soul-burning it. The
+ * Soul Sand Valley bulls are unarmoured, and Wither Skeletons ride them; the armoured variant (+8 armour, +50% health)
+ * lives with the piglins, round bastions and Hex Fortresses, sometimes ridden by a piglin or a brute.</li>
  * <li>Tamed (fed a soul source when below half health, 1 in 3; or revived from its skull): horse armour, a saddle, and
  * riding like a horse. The jump key charges a ram that costs soul energy ({@link #ramCost}); an Elixir Bottle draws a
  * Soul Elixir for a quarter of its soul energy.</li>
@@ -91,6 +92,8 @@ public class SoulBull extends AbstractHorse {
     public static final double BASE_HEALTH = 40, BASE_ARMOR = 4, ARMORED_ARMOR_BONUS = 8, ARMORED_HEALTH_BONUS = 0.5;
     /** How far a wild bull's ram reaches: it starts a ram at its target from this close. */
     public static final double RAM_RANGE = 7.0;
+    /** Chances of a rider: a Wither Skeleton on a Soul Sand Valley bull; a piglin (or, 3 in 10 of those, a brute) on an armoured one. */
+    public static final float WITHER_RIDER_CHANCE = 0.2f, PIGLIN_RIDER_CHANCE = 0.25f, BRUTE_SHARE = 0.3f;
 
     private static final EntityDataAccessor<Boolean> ARMORED = SynchedEntityData.defineId(SoulBull.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MODE = SynchedEntityData.defineId(SoulBull.class, EntityDataSerializers.BYTE);
@@ -153,13 +156,32 @@ public class SoulBull extends AbstractHorse {
                 .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0.5);
     }
 
-    /** Natural spawns: Soul Sand Valleys, on soul sand or soul soil, never in peaceful. */
+    /**
+     * Natural spawns, never in peaceful: on soul sand or soul soil (the Soul Sand Valleys), or on any ground in and around
+     * the piglins' structures (SoulBullFeature.PIGLIN_LANDS).
+     */
     public static boolean checkSoulBullSpawnRules(EntityType<SoulBull> type, ServerLevelAccessor level, MobSpawnType reason, BlockPos pos,
                                                   RandomSource random) {
         if (level.getDifficulty() == Difficulty.PEACEFUL || !Mob.checkMobSpawnRules(type, level, reason, pos, random)) {
             return false;
         }
-        return reason == MobSpawnType.SPAWNER || level.getBlockState(pos.below()).is(net.minecraft.tags.BlockTags.SOUL_FIRE_BASE_BLOCKS);
+        return reason == MobSpawnType.SPAWNER || level.getBlockState(pos.below()).is(net.minecraft.tags.BlockTags.SOUL_FIRE_BASE_BLOCKS)
+                || (level instanceof ServerLevel sl && SoulBullFeature.inPiglinLands(sl, pos));
+    }
+
+    /**
+     * A bull for a structure to place (the Hex Fortress pens): hostile, persistent, armoured or not; add it with
+     * addFreshEntityWithPassengers. Works in world generation too (no structure lookups).
+     */
+    public static SoulBull createPenBull(ServerLevelAccessor level, double x, double y, double z, float yaw, boolean armored) {
+        SoulBull b = dev.lowpix.winterworks.registry.WWEntities.SOUL_BULL.create(level.getLevel());
+        b.moveTo(x, y, z, yaw, 0f);
+        b.setYHeadRot(yaw);
+        b.setYBodyRot(yaw);
+        b.setArmored(armored);
+        b.setHealth(b.getMaxHealth());
+        b.setPersistenceRequired();
+        return b;
     }
 
     @Override
@@ -178,7 +200,8 @@ public class SoulBull extends AbstractHorse {
         goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.8));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8f));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        targetSelector.addGoal(1, new HurtByTargetGoal(this, SoulBull.class, WitherSkeleton.class) {
+        targetSelector.addGoal(1, new HurtByTargetGoal(this, SoulBull.class, WitherSkeleton.class,
+                net.minecraft.world.entity.monster.piglin.AbstractPiglin.class) {
             @Override
             public boolean canUse() {
                 return !isTamed() && super.canUse();
@@ -316,15 +339,24 @@ public class SoulBull extends AbstractHorse {
                                         @Nullable SpawnGroupData data) {
         SpawnGroupData out = super.finalizeSpawn(level, difficulty, reason, data == null ? new AgeableMob.AgeableMobGroupData(false) : data);
         setAge(0);
-        if (reason != MobSpawnType.JOCKEY && level.getRandom().nextInt(5) == 0) {
-            setArmored(true);
+        if (reason == MobSpawnType.JOCKEY) {
+            return out;
+        }
+        RandomSource r = level.getRandom();
+        Mob rider = null;
+        if (level instanceof ServerLevel sl && SoulBullFeature.inPiglinLands(sl, blockPosition())) {
+            setArmored(true);   // the piglins' bulls wear blackstone plates, and now and then a piglin or a brute rides one
             setHealth(getMaxHealth());
-            WitherSkeleton rider = EntityType.WITHER_SKELETON.create(level.getLevel());   // armoured bulls carry a Wither Skeleton
-            if (rider != null) {
-                rider.moveTo(getX(), getY(), getZ(), getYRot(), 0f);
-                rider.finalizeSpawn(level, difficulty, MobSpawnType.JOCKEY, null);
-                rider.startRiding(this, true);
+            if (r.nextFloat() < PIGLIN_RIDER_CHANCE) {
+                rider = r.nextFloat() < BRUTE_SHARE ? EntityType.PIGLIN_BRUTE.create(sl) : EntityType.PIGLIN.create(sl);
             }
+        } else if (r.nextFloat() < WITHER_RIDER_CHANCE) {
+            rider = EntityType.WITHER_SKELETON.create(level.getLevel());   // the wild valley bulls carry Wither Skeletons
+        }
+        if (rider != null) {
+            rider.moveTo(getX(), getY(), getZ(), getYRot(), 0f);
+            rider.finalizeSpawn(level, difficulty, MobSpawnType.JOCKEY, null);
+            rider.startRiding(this, true);
         }
         return out;
     }
@@ -695,7 +727,7 @@ public class SoulBull extends AbstractHorse {
 
     private boolean isFriend(LivingEntity e) {
         if (!isTamed()) {
-            return e instanceof WitherSkeleton;
+            return e instanceof WitherSkeleton || e instanceof net.minecraft.world.entity.monster.piglin.AbstractPiglin;
         }
         if (getOwnerUUID() != null && getOwnerUUID().equals(e.getUUID())) {
             return true;

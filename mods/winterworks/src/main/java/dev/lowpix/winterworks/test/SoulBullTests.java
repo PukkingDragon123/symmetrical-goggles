@@ -5,6 +5,7 @@ import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWEntities;
 import dev.lowpix.winterworks.registry.WWItems;
 import dev.lowpix.winterworks.soulbull.SoulBull;
+import dev.lowpix.winterworks.soulbull.SoulBullFeature;
 import dev.lowpix.winterworks.soulbull.SoulBullSkullBlock;
 import dev.lowpix.winterworks.soulbull.SoulBullSkullBlockEntity;
 import dev.lowpix.winterworks.soulbull.SoulSources;
@@ -425,6 +426,86 @@ public class SoulBullTests implements FabricGameTest {
 
     // ------------------------------------------------------------------------------------------ spawning and the armoured variant
 
+    /**
+     * Finalizes `n` natural spawns at `at` and checks each: armoured (or not) as `armored` says. Returns {Wither Skeleton
+     * riders, piglin or brute riders}.
+     */
+    private static int[] rollSpawns(GameTestHelper h, ServerLevel level, Vec3 at, int n, boolean armored) {
+        int[] riders = new int[2];
+        for (int i = 0; i < n; i++) {
+            SoulBull b = WWEntities.SOUL_BULL.create(level);
+            b.moveTo(at);
+            b.finalizeSpawn(level, level.getCurrentDifficultyAt(b.blockPosition()), MobSpawnType.NATURAL, null);
+            h.assertFalse(b.isBaby(), "no calves");
+            h.assertTrue(b.isArmored() == armored, armored ? "the piglins' bulls are armoured" : "the valley bulls are unarmoured");
+            h.assertTrue(Math.abs(b.getHealth() - b.getMaxHealth()) < 0.01f, "spawned with full health");
+            Entity rider = b.getFirstPassenger();
+            if (rider instanceof WitherSkeleton) {
+                riders[0]++;
+            } else if (rider instanceof net.minecraft.world.entity.monster.piglin.AbstractPiglin) {
+                riders[1]++;
+            } else {
+                h.assertTrue(rider == null, "an unexpected rider: " + rider);
+            }
+            for (Entity e : List.copyOf(b.getPassengers())) {
+                e.discard();
+            }
+            b.discard();
+        }
+        return riders;
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, batch = BATCH, timeoutTicks = 400)
+    public void armouredBullsLiveWithThePiglins(GameTestHelper h) {
+        var server = h.getLevel().getServer();
+        var reg = server.registryAccess();
+        var structures = reg.registryOrThrow(Registries.STRUCTURE);
+        net.minecraft.world.level.levelgen.structure.Structure bastion = structures.get(
+                net.minecraft.world.level.levelgen.structure.BuiltinStructures.BASTION_REMNANT);
+        h.assertTrue(structures.getHolderOrThrow(net.minecraft.world.level.levelgen.structure.BuiltinStructures.BASTION_REMNANT)
+                .is(SoulBullFeature.PIGLIN_LANDS), "bastion remnants are piglin lands");
+        // a bastion remnant far out in the Nether, registered on its chunks the way world generation does it
+        ServerLevel nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
+        var gen = nether.getChunkSource().getGenerator();
+        net.minecraft.world.level.ChunkPos startChunk = new net.minecraft.world.level.ChunkPos(-90, 110);
+        net.minecraft.world.level.levelgen.structure.StructureStart start = bastion.generate(reg, gen, gen.getBiomeSource(),
+                nether.getChunkSource().randomState(), nether.getStructureManager(), nether.getSeed(), startChunk, 0, nether, b -> true);
+        h.assertTrue(start.isValid(), "a bastion remnant should generate");
+        var box = start.getBoundingBox();
+        for (int cx = box.minX() >> 4; cx <= box.maxX() >> 4; cx++) {
+            for (int cz = box.minZ() >> 4; cz <= box.maxZ() >> 4; cz++) {
+                var chunk = nether.getChunk(cx, cz, net.minecraft.world.level.chunk.status.ChunkStatus.STRUCTURE_REFERENCES, true);
+                if (cx == startChunk.x && cz == startChunk.z) {
+                    chunk.setStartForStructure(bastion, start);
+                }
+                chunk.addReferenceForStructure(bastion, startChunk.toLong());
+            }
+        }
+        BlockPos inside = box.getCenter(), outside = inside.offset(400, 0, 400);
+        h.assertTrue(SoulBullFeature.inPiglinLands(nether, inside), "in the bastion's bounds");
+        h.assertFalse(SoulBullFeature.inPiglinLands(nether, outside), "nowhere near a bastion");
+        // the natural spawner's own list: armoured bulls join the monsters round the bastion, and only there
+        var here = dev.lowpix.winterworks.mixin.SoulBullSpawnsAccessor.ww$mobsAt(nether, nether.structureManager(), gen, MobCategory.MONSTER, inside, null);
+        var there = dev.lowpix.winterworks.mixin.SoulBullSpawnsAccessor.ww$mobsAt(nether, nether.structureManager(), gen, MobCategory.MONSTER, outside, null);
+        h.assertTrue(here.unwrap().contains(SoulBullFeature.PIGLIN_LANDS_SPAWN), "Soul Bulls spawn round the bastion");
+        h.assertFalse(there.unwrap().contains(SoulBullFeature.PIGLIN_LANDS_SPAWN), "... but not away from the piglins");
+        h.assertFalse(dev.lowpix.winterworks.mixin.SoulBullSpawnsAccessor.ww$mobsAt(nether, nether.structureManager(), gen, MobCategory.CREATURE, inside, null)
+                .unwrap().contains(SoulBullFeature.PIGLIN_LANDS_SPAWN), "as monsters only");
+        // spawned there: armoured, and sometimes a piglin or brute rides, never a Wither Skeleton
+        int[] riders = rollSpawns(h, nether, Vec3.atBottomCenterOf(inside), 120, true);
+        h.assertTrue(riders[0] == 0, "Wither Skeletons don't ride the piglins' bulls");
+        h.assertTrue(riders[1] > 120 * 0.1 && riders[1] < 120 * 0.45, "about 1 in 4 carries a piglin or brute (" + riders[1] + ")");
+        // the spawn rule: any ground in piglin lands, only soul sand or soil elsewhere
+        floor(h, Blocks.BLACKSTONE);
+        h.setBlock(new BlockPos(2, 0, 2), Blocks.SOUL_SAND);
+        h.assertTrue(SoulBull.checkSoulBullSpawnRules(WWEntities.SOUL_BULL, h.getLevel(), MobSpawnType.NATURAL, h.absolutePos(new BlockPos(2, 1, 2)),
+                h.getLevel().getRandom()), "soul sand takes a valley bull");
+        h.assertFalse(SoulBull.checkSoulBullSpawnRules(WWEntities.SOUL_BULL, h.getLevel(), MobSpawnType.NATURAL, h.absolutePos(new BlockPos(6, 1, 6)),
+                h.getLevel().getRandom()), "blackstone away from the piglins doesn't");
+        cleanup(h);
+        h.succeed();
+    }
+
     @GameTest(template = EMPTY_STRUCTURE, batch = BATCH, timeoutTicks = 40)
     public void armouredVariantStats(GameTestHelper h) {
         floor(h, Blocks.STONE);
@@ -439,27 +520,11 @@ public class SoulBullTests implements FabricGameTest {
         SoulBull copy = WWEntities.SOUL_BULL.create(h.getLevel());
         copy.load(tag);
         h.assertTrue(copy.isArmored() && Math.abs(copy.getMaxHealth() - armored.getMaxHealth()) < 0.01f, "the variant survives saving");
-        // natural spawns: about 1 in 5 is armoured, and those carry a Wither Skeleton
+        // wild spawns away from the piglins (the Soul Sand Valleys): never armoured, and about 1 in 5 carries a Wither Skeleton
         ServerLevel level = h.getLevel();
-        int n = 300, armoredCount = 0;
-        for (int i = 0; i < n; i++) {
-            SoulBull b = WWEntities.SOUL_BULL.create(level);
-            b.moveTo(h.absoluteVec(new Vec3(4.5, 1, 4.5)));
-            b.finalizeSpawn(level, level.getCurrentDifficultyAt(b.blockPosition()), MobSpawnType.NATURAL, null);
-            h.assertFalse(b.isBaby(), "no calves");
-            if (b.isArmored()) {
-                armoredCount++;
-                h.assertTrue(b.getFirstPassenger() instanceof WitherSkeleton, "armoured bulls are Wither Skeleton jockeys");
-                h.assertTrue(Math.abs(b.getHealth() - b.getMaxHealth()) < 0.01f, "spawned with full health");
-            } else {
-                h.assertTrue(b.getPassengers().isEmpty(), "plain bulls carry no rider");
-            }
-            for (Entity e : List.copyOf(b.getPassengers())) {
-                e.discard();
-            }
-            b.discard();
-        }
-        h.assertTrue(armoredCount > n * 0.12 && armoredCount < n * 0.3, "about 1 in 5 should be armoured (" + armoredCount + "/" + n + ")");
+        int[] riders = rollSpawns(h, level, h.absoluteVec(new Vec3(4.5, 1, 4.5)), 300, false);
+        h.assertTrue(riders[0] > 300 * 0.1 && riders[0] < 300 * 0.3, "about 1 in 5 valley bulls has a Wither Skeleton rider (" + riders[0] + ")");
+        h.assertTrue(riders[1] == 0, "no piglins ride the valley bulls");
         // Soul Sand Valleys, herds of 1-3
         Biome valley = level.registryAccess().registryOrThrow(Registries.BIOME).getOrThrow(Biomes.SOUL_SAND_VALLEY);
         boolean listed = false;
