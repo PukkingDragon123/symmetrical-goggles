@@ -123,8 +123,7 @@ public final class LesserCurses {
                 Curses.runes(level, water.add(0, 0.2, 0), 1 + s.stare / 50, 0.25);
             }
         }
-        if (s.stare == STARE_TICKS / 2) {   // a warning, every time
-            Curses.tell(p, "curse.winterworks.narcissus.warn");
+        if (s.stare == STARE_TICKS / 2) {   // a warning, every time: the reflection calls to you
             level.playSound(null, water.x, water.y, water.z, WWSounds.NARCISSUS, SoundSource.PLAYERS, 0.35f, 1.3f);
         }
         if (s.stare >= STARE_TICKS) {
@@ -370,9 +369,7 @@ public final class LesserCurses {
         ServerLevel level = p.serverLevel();
         level.playSound(null, pet.getX(), pet.getY(), pet.getZ(), SoundEvents.SOUL_ESCAPE.value(), SoundSource.NEUTRAL, 1.2f, 0.6f);
         level.sendParticles(ParticleTypes.SCULK_SOUL, pet.getX(), pet.getY() + 0.3, pet.getZ(), 10, 0.4, 0.2, 0.4, 0.03);
-        if (!Curses.trigger(p, Curse.ORPHEUS, WWSounds.ORPHEUS, pet.getDisplayName())) {
-            Curses.tell(p, "curse.winterworks.orpheus.trigger", pet.getDisplayName());   // you always learn who you lost
-        }
+        Curses.trigger(p, Curse.ORPHEUS, WWSounds.ORPHEUS);
     }
 
     private static Vec3 standingSpot(ServerLevel level, LivingEntity e, BlockPos at) {

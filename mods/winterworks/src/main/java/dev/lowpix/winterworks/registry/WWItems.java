@@ -179,6 +179,7 @@ public final class WWItems {
                         out.accept(PotionContents.createItemStack(Items.POTION, WWEffects.LONG_IMMUNITY_POTION));
                         out.accept(MOSQUITO_SPAWN_EGG);
                         out.accept(POT_GOLEM_SPAWN_EGG);
+                        out.accept(WITHER_BONE);
                         for (Item i : new Item[]{ELIXIR_BOTTLE, SOUL_ELIXIR, ELIXIR_OF_GREED, CURSED_ELIXIR, ELIXIR_JAR, SOUL_TANK,
                                 HEX_CORE, HEXING_TABLE, HEXED_BOOK, PIGLIN_WITCH_SPAWN_EGG, GOLDEN_PIGLIN_SPAWN_EGG}) {
                             out.accept(i);

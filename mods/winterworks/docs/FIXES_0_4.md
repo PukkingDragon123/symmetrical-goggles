@@ -130,6 +130,16 @@ contract for the Java side.
   round, upside down at the top with its rider, and comes out the far side at the same speed; too slow and it falls back
   out of the loop. Whole trains loop one car after another. Recipe: 8 coaster rails round an iron block.
 
+* **Every rail is 3D track** (the user's choice): vanilla's own rails are replaced by the new 3D track style through
+  resource overrides of their blockstates and models (our own models and textures, no vanilla art copied):
+  * **Rail**: the plain 3D track (steel rails, ties, the spine beam below when nothing is underneath), all 10 shapes.
+  * **Powered Rail**: gold-plated ties and a redstone strip down the middle that glows when powered.
+  * **Detector Rail**: a sensor plate between the rails with a lamp that lights when a cart is on it.
+  * **Activator Rail**: red-trimmed ties with a fork that flips and lights when powered.
+  * The Winterworks rails get matching 3D versions: Booster (its redstone-block plate), Lift, Trap, Drop (and open),
+    Switch, Coaster Loop entry. The Coaster Rail stays the free-floating coaster piece.
+  * Item icons show the 3D pieces. Behaviour is unchanged; only the look.
+
 ## 3D icons
 * Blocks and items that have a 3D model show that model as their inventory icon too: the Hexing Table, Soul Tank,
   Elixir Jar and Hex Core, the locomotives and carts, the Snow Globe, and every new End block/item with a 3D model.
@@ -192,7 +202,8 @@ contract for the Java side.
 * **Four matching faces**: a head ability only works when **all four faces of the pot carry the same sherd**. A mixed
   pot still makes a golem, just without a head ability (the Echo Shard inside still gives the Echo Head).
 * **The pattern glows** while its ability is active: the sherd pattern on the head is drawn full-bright in a soft
-  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied).
+  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied). The same
+  glow shows on a **decorated pot item** whose four faces carry the same ability sherd (its inventory icon and in hand).
 * **Six new head abilities** (on top of Howl and Danger), each from 4 matching sherds:
   * **Heart**: a healing aura: its owner and their pets within 8 blocks get Regeneration I.
   * **Burn**: burning fists (sets what it hits on fire) and Fire Resistance for its owner nearby.

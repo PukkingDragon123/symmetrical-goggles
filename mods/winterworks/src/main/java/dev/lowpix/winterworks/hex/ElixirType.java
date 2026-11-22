@@ -13,7 +13,9 @@ public enum ElixirType {
     /** Molten gold. */
     GREED("greed", 0xF4B12C),
     /** Gold bound with souls: the renderer swirls it toward soul blue. */
-    CURSED("cursed", 0xD49A2E);
+    CURSED("cursed", 0xD49A2E),
+    /** A Potion of Blood poured in: what a gold block needs to become the Elixir of Greed. Not bottled. */
+    BLOOD("blood", 0x8E1016);
 
     public final String id;
     public final int color;
@@ -28,12 +30,17 @@ public enum ElixirType {
             case SOUL -> WWItems.SOUL_ELIXIR;
             case GREED -> WWItems.ELIXIR_OF_GREED;
             case CURSED -> WWItems.CURSED_ELIXIR;
-            case NONE -> Items.AIR;
+            case NONE, BLOOD -> Items.AIR;
         };
     }
 
+    /** Can an Elixir Bottle take a dose of it? */
+    public boolean bottled() {
+        return this == SOUL || this == GREED || this == CURSED;
+    }
+
     public ItemStack dose() {
-        return this == NONE ? ItemStack.EMPTY : new ItemStack(item());
+        return bottled() ? new ItemStack(item()) : ItemStack.EMPTY;
     }
 
     public String translationKey() {

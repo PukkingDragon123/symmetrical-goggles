@@ -35,7 +35,12 @@ public final class Hexing {
 
     /** Why a hex can't happen (0 = it can). Synced to the screen. */
     public static final int OK = 0, NO_BOOK = 1, NOT_A_BOOK = 2, NOTHING_TO_HEX = 3, NO_CURSE = 4, NO_TANK = 5,
-            NO_ELIXIR = 6, NO_SOULS = 7;
+            NO_ELIXIR = 6, NO_SOULS = 7, NO_BLOOD = 8;
+    /**
+     * Blood instead of yourself (docs/FIXES_0_4.md): Potions of Blood a hex always needs, and how many in all spare you
+     * the Hexed effect. A lesser hex needs none and is spared by 1; a sin hex needs 1 and is spared by 3.
+     */
+    public static final int LESSER_BLOOD = 0, LESSER_SPARE_BLOOD = 1, SIN_BLOOD = 1, SIN_SPARE_BLOOD = 3;
 
     public enum Kind {
         LESSER, SIN;
@@ -46,6 +51,16 @@ public final class Hexing {
 
         public int souls() {
             return this == LESSER ? LESSER_SOULS : SIN_SOULS;
+        }
+
+        /** Potions of Blood this hex always takes. */
+        public int blood() {
+            return this == LESSER ? LESSER_BLOOD : SIN_BLOOD;
+        }
+
+        /** Potions of Blood (in all) that this hex takes instead of hexing you. */
+        public int spareBlood() {
+            return this == LESSER ? LESSER_SPARE_BLOOD : SIN_SPARE_BLOOD;
         }
     }
 

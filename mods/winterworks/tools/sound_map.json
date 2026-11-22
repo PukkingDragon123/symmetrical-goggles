@@ -1811,6 +1811,53 @@
     ],
     "subtitle": "Sin stirs"
   },
+  "curse.effect.lesser": {
+    "sounds": [
+      {
+        "name": "winterworks:hexing_table/whisper1",
+        "pitch": 0.8
+      },
+      {
+        "name": "winterworks:hexing_table/whisper3",
+        "pitch": 0.8
+      },
+      {
+        "name": "winterworks:curse/trigger2",
+        "pitch": 0.75
+      }
+    ],
+    "subtitle": "A curse takes hold"
+  },
+  "curse.effect.sin": {
+    "sounds": [
+      {
+        "name": "winterworks:hexing_table/hex1",
+        "pitch": 0.7
+      },
+      {
+        "name": "winterworks:hexing_table/hex2",
+        "pitch": 0.7
+      }
+    ],
+    "subtitle": "A sin surges"
+  },
+  "curse.effect.hidden": {
+    "sounds": [
+      {
+        "name": "winterworks:hexed_book/whisper1",
+        "pitch": 0.55
+      },
+      {
+        "name": "winterworks:hexed_book/whisper2",
+        "pitch": 0.55
+      },
+      {
+        "name": "winterworks:hexing_table/whisper2",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "Something unseen whispers"
+  },
   "entity.enderfly.ambient": {
     "sounds": [
       {
@@ -2788,6 +2835,90 @@
       }
     ],
     "subtitle": "Switch rail clicks"
+  },
+  "block.frost_mauler_skull.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:frost_mauler/roar1",
+        "pitch": 1.15,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:frost_mauler/roar2",
+        "pitch": 1.15,
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:frost_mauler/roar3",
+        "pitch": 1.1,
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Skull roars"
+  },
+  "item.fang_dagger.slash_left": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/slash1",
+        "pitch": 0.96
+      },
+      {
+        "name": "winterworks:fang_dagger/slash2",
+        "pitch": 0.96
+      },
+      {
+        "name": "winterworks:fang_dagger/slash3",
+        "pitch": 0.98
+      }
+    ],
+    "subtitle": "Left dagger slashes"
+  },
+  "item.fang_dagger.slash_right": {
+    "sounds": [
+      {
+        "name": "winterworks:fang_dagger/slash3",
+        "pitch": 1.08
+      },
+      {
+        "name": "winterworks:fang_dagger/slash4",
+        "pitch": 1.06
+      },
+      {
+        "name": "winterworks:fang_dagger/slash5",
+        "pitch": 1.06
+      }
+    ],
+    "subtitle": "Right dagger slashes"
+  },
+  "entity.player.ramming_cry": {
+    "sounds": [
+      {
+        "name": "winterworks:icebreaker/roar1",
+        "pitch": 1.45
+      },
+      {
+        "name": "winterworks:icebreaker/roar2",
+        "pitch": 1.5
+      },
+      {
+        "name": "winterworks:icebreaker/roar3",
+        "pitch": 1.45
+      }
+    ],
+    "subtitle": "Battle cry"
+  },
+  "entity.player.ramming_wind": {
+    "sounds": [
+      {
+        "name": "winterworks:ender_dragon/throw1",
+        "pitch": 1.2
+      },
+      {
+        "name": "winterworks:ender_dragon/throw2",
+        "pitch": 1.25
+      }
+    ],
+    "subtitle": "Wind rushes"
   },
   "entity.pot_golem.headshot": {
     "sounds": [

@@ -36,7 +36,9 @@ import net.minecraft.world.level.levelgen.presets.WorldPresets;
  * brewing jar, opens the screen, hovers and presses things, saves screenshots/winterworks_hex_*.png and quits.
  */
 final class HexShots {
-    private static final boolean ENABLED = Boolean.getBoolean("winterworks.hexshots");
+    /** "true": the hex blocks and the Hexing screen; "fixes": the 0.4 fixes (client.hex.FixShots). */
+    private static final String MODE = System.getProperty("winterworks.hexshots", "");
+    private static final boolean ENABLED = "true".equals(MODE) || "fixes".equals(MODE);
     private static final List<Runnable> PLAN = new ArrayList<>();
     private static final List<Integer> AT = new ArrayList<>();
     private static final BlockPos TABLE = new BlockPos(0, -60, 3), TANK = new BlockPos(2, -60, 4), JAR = new BlockPos(-2, -59, 3);
@@ -50,6 +52,10 @@ final class HexShots {
             return;
         }
         ClientTickEvents.END_CLIENT_TICK.register(HexShots::tick);
+        if ("fixes".equals(MODE)) {
+            FixShots.plan();
+            return;
+        }
         int t = 40;
         at(t, () -> {
             for (String c : new String[]{"gamerule doDaylightCycle false", "gamerule doMobSpawning false", "time set 6000",
@@ -93,12 +99,12 @@ final class HexShots {
             p.containerMenu.getSlot(1).set(new ItemStack(WWItems.SOUL_ELIXIR, 3));
             p.containerMenu.broadcastChanges();
         }));
-        at(t += 10, () -> mouse(80 + 40, 14 + 9));
+        at(t += 10, () -> mouse(HexGui.ROW_X + 30, 14 + 9));
         at(t += 4, () -> shot("screen_hover_lesser_glyphs"));
         at(t += 30, () -> shot("screen_hover_lesser_revealed"));
-        at(t += 2, () -> mouse(80 + 40, 14 + 19 + 9));
+        at(t += 2, () -> mouse(HexGui.ROW_X + 30, 14 + 19 + 9));
         at(t += 30, () -> shot("screen_hover_sin"));
-        at(t += 2, () -> mouse(80 + 40, 14 + 38 + 9));
+        at(t += 2, () -> mouse(HexGui.ROW_X + 30, 14 + 38 + 9));
         at(t += 10, () -> shot("screen_hover_hidden"));
         at(t += 2, () -> mouse(37 + 16, 14 + 14));
         at(t += 6, () -> shot("screen_hover_button"));
@@ -109,36 +115,43 @@ final class HexShots {
         at(t += 5, () -> Minecraft.getInstance().stop());
     }
 
-    private static void at(int tick, Runnable r) {
+    static void at(int tick, Runnable r) {
         AT.add(tick);
         PLAN.add(r);
     }
 
-    private static void cmd(String c) {
+    static void cmd(String c) {
         Minecraft.getInstance().player.connection.sendCommand(c);
     }
 
-    private static void server(Consumer<ServerLevel> job) {
+    static void server(Consumer<ServerLevel> job) {
         var srv = Minecraft.getInstance().getSingleplayerServer();
         if (srv != null) {
             srv.execute(() -> job.accept(srv.overworld()));
         }
     }
 
-    private static void shot(String name) {
+    static void shot(String name) {
         Minecraft mc = Minecraft.getInstance();
-        Screenshot.grab(mc.gameDirectory, "winterworks_hex_" + name + ".png", mc.getMainRenderTarget(), msg -> {});
+        String prefix = "fixes".equals(MODE) ? "winterworks_fix_" : "winterworks_hex_";
+        Screenshot.grab(mc.gameDirectory, prefix + name + ".png", mc.getMainRenderTarget(), msg -> {});
         Winterworks.LOG.info("hexshots: {}", name);
     }
 
     /** Puts the mouse at GUI coordinates relative to the open container screen. */
-    private static void mouse(int gx, int gy) {
+    static void mouse(int gx, int gy) {
         Minecraft mc = Minecraft.getInstance();
         if (!(mc.screen instanceof HexingTableScreen s)) {
             return;
         }
+        mouseAt(s.leftPos() + gx, s.topPos() + gy);
+    }
+
+    /** Puts the mouse at GUI-scaled screen coordinates. */
+    static void mouseAt(double gx, double gy) {
+        Minecraft mc = Minecraft.getInstance();
         double scale = mc.getWindow().getScreenWidth() / (double) mc.getWindow().getGuiScaledWidth();
-        double x = (s.leftPos() + gx) * scale, y = (s.topPos() + gy) * scale;
+        double x = gx * scale, y = gy * scale;
         try {
             var fx = MouseHandler.class.getDeclaredField("xpos");
             var fy = MouseHandler.class.getDeclaredField("ypos");
@@ -151,7 +164,7 @@ final class HexShots {
         }
     }
 
-    private static void click(int gx, int gy) {
+    static void click(int gx, int gy) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.screen instanceof HexingTableScreen s) {
             s.mouseClicked(s.leftPos() + gx, s.topPos() + gy, 0);

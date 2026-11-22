@@ -190,7 +190,8 @@ def item_models():
     write(os.path.join(A, "models", "item", "icebreaker_spawn_egg.json"), {"parent": "minecraft:item/template_spawn_egg"})
     write(os.path.join(A, "models", "item", "snowball_launcher_icon.json"),
           {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/snowball_launcher"}})
-    # the 3D launcher (drawn by LauncherItemRenderer): identity in the GUI so the 2D icon sits right
+    # the 3D launcher (drawn by LauncherItemRenderer): identity in the GUI so the 2D icon sits right; held much bigger
+    # (0.4 fixes): a heavy gun in both first and third person
     write(os.path.join(A, "models", "item", "snowball_launcher.json"), {
         "parent": "minecraft:builtin/entity", "gui_light": "front",
         "textures": {"particle": "minecraft:block/iron_block"},
@@ -198,10 +199,10 @@ def item_models():
             "gui": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
             "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.5, 0.5, 0.5]},
             "fixed": {"rotation": [0, 90, 0], "translation": [0, 0, 0], "scale": [0.8, 0.8, 0.8]},
-            "thirdperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 3, 1], "scale": [0.45, 0.45, 0.45]},
-            "thirdperson_lefthand": {"rotation": [0, 0, 0], "translation": [0, 3, 1], "scale": [0.45, 0.45, 0.45]},
-            "firstperson_righthand": {"rotation": [0, -6, 0], "translation": [3.5, 2.0, -3.0], "scale": [0.42, 0.42, 0.42]},
-            "firstperson_lefthand": {"rotation": [0, 6, 0], "translation": [-3.5, 2.0, -3.0], "scale": [0.42, 0.42, 0.42]},
+            "thirdperson_righthand": {"rotation": [90, 0, 0], "translation": [0, 3, -2], "scale": [0.78, 0.78, 0.78]},
+            "thirdperson_lefthand": {"rotation": [90, 0, 0], "translation": [0, 3, -2], "scale": [0.78, 0.78, 0.78]},
+            "firstperson_righthand": {"rotation": [0, -6, 0], "translation": [-1.0, 6.0, -1.5], "scale": [0.66, 0.66, 0.66]},
+            "firstperson_lefthand": {"rotation": [0, 6, 0], "translation": [1.0, 6.0, -1.5], "scale": [0.66, 0.66, 0.66]},
             "head": {"rotation": [0, 180, 0], "translation": [0, 8, 0], "scale": [1, 1, 1]},
         }})
     write(os.path.join(A, "models", "item", "snow_globe.json"), {
