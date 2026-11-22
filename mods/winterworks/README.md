@@ -36,8 +36,16 @@ to charge, then ram: mobs in front take damage and huge knockback, and blocks TN
 break in a straight line at feet and head height. Limits: 2 blocks a tick, 24 a ram, no block entities, nothing
 unbreakable, respects spawn protection, adventure mode and land-claim mods (block-break events).
 
-**Winter Express.** Coaster rails (keep momentum, faster, dive down slopes), booster rails (powered: fling carts to 3x
-the vanilla speed limit; unpowered: brake) and chain lift rails (haul carts uphill, faster when powered). Rails are
+**Winter Express.** Coaster rails are 3D roller-coaster track (keep momentum, faster, dive down slopes) that hang in
+mid-air with nothing under them, straight, sloped or curved. Booster rails run only on a **redstone block** (beside the
+rail or under it; levers, torches and dust do nothing): then they push 3x as hard as a powered rail, up to 3x the vanilla
+speed limit; unpowered, they brake. Chain lift rails haul carts uphill, faster when powered. The **Coaster Loop**
+(8 coaster rails round an iron block) is a full vertical loop of track, radius 3, rising from where you place it in line
+with coaster rails: a cart that comes in at about 0.8 blocks a tick (off boosters) rides all the way round, upside down
+at the top with its rider (the view turns with you), and leaves at the speed it came in; a slower one rolls back out.
+Whole trains loop car after car. The **Switch Rail** (6 iron + a rail + a redstone torch -> 2) is a Y-junction: place it
+facing the fork (its branch goes toward a rail already beside it, else to the half of the block you click); unpowered,
+carts run straight on, powered they take the branch, and a train's cars all follow its first car's route. Rails are
 cheaper: the vanilla rail recipe gives 32, powered rails 12. Paint rail sleepers with any dye (a sponge washes it off).
 **Trap Rail** (redstone): while powered, its jaws clamp any cart and hold it still; cut the power and it lets go with a
 launch. Use it for coaster stations, brakes and launches. **Drop Rail** (redstone): it hangs in mid-air without
@@ -45,9 +53,11 @@ support; power it and it springs open like a trapdoor, so the cart falls to the 
 It closes again a moment after the power goes.
 Couple any minecarts into trains with a chain (click the front cart, then the one behind; sneak + click with an empty
 hand to uncouple). The Iron Locomotive and the Dragon-Head Locomotive burn coal, from your hand or from a chest
-minecart coupled behind them; sneak + right-click cycles stop / forward / reverse; longer trains are heavier and
-slower. Fox and zombie carts; any vanilla minecart (plain, chest, hopper, furnace, TNT) couples into a train too.
-Right-click carts with dye to paint the trim and with wool to change the seat.
+minecart coupled behind them, or run on a **furnace minecart** coupled into the train while it burns (stoke it with coal
+or charcoal as usual; a stopped train sets off); sneak + right-click cycles stop / forward / reverse; longer trains are
+heavier and slower. A burning furnace minecart also pulls a train of minecarts on its own. Fox and zombie carts; any
+vanilla minecart (plain, chest, hopper, furnace, TNT) couples into a train too. Right-click carts with dye to paint the
+trim and with wool to change the seat.
 
 **Snow Globe.** Glass + snowballs. Right-click to shake it: it wobbles and tiny flakes swirl around the little snowy
 cabin, then slowly settle.

@@ -16,6 +16,8 @@
   "block.winterworks.trap_rail": "Trap Rail",
   "block.winterworks.drop_rail": "Drop Rail",
   "block.winterworks.drop_rail_open": "Open Drop Rail",
+  "block.winterworks.coaster_loop": "Coaster Loop",
+  "block.winterworks.switch_rail": "Switch Rail",
   "message.winterworks.couple.first": "Now click the cart behind it",
   "message.winterworks.couple.too_far": "Too far apart to couple",
   "message.winterworks.couple.taken": "That coupler is already in use",

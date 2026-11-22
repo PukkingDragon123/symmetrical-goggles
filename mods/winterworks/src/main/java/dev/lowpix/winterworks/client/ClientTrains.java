@@ -2,6 +2,7 @@ package dev.lowpix.winterworks.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.lowpix.winterworks.express.CoasterLoop;
 import dev.lowpix.winterworks.net.CouplingPayload;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +54,8 @@ public final class ClientTrains {
             if (f == null || b == null) {
                 continue;
             }
-            Vec3 pf = f.getPosition(partial).add(0, 0.42, 0), pb = b.getPosition(partial).add(0, 0.42, 0);
+            Vec3 pf = f.getPosition(partial).add(CoasterLoop.upOf(f, partial).scale(0.42));
+            Vec3 pb = b.getPosition(partial).add(CoasterLoop.upOf(b, partial).scale(0.42));
             Vec3 d = pb.subtract(pf);
             double len = d.length();
             if (len < 0.1) {

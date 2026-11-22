@@ -99,6 +99,11 @@ public final class WWItems {
     public static final Item ZOMBIE_POLAR_BEAR_SPAWN_EGG = reg("zombie_polar_bear_spawn_egg",
             new SpawnEggItem(WWEntities.ZOMBIE_POLAR_BEAR, 0xBFC7AE, 0x4E5B3D, new Item.Properties()));
 
+    // ---- 0.4 fixes: rails (docs/FIXES_0_4.md "Rails"; creative tab entries: express.ExpressFixes)
+    public static final Item COASTER_LOOP = reg("coaster_loop", new BlockItem(WWBlocks.COASTER_LOOP, new Item.Properties().stacksTo(16)));
+    public static final Item SWITCH_RAIL = reg("switch_rail", new BlockItem(WWBlocks.SWITCH_RAIL, new Item.Properties()));
+    // ---- end 0.4 fixes: rails
+
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks"))
                     .icon(() -> new ItemStack(ICEBREAKER_HORN))

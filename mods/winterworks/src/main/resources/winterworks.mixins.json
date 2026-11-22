@@ -37,7 +37,12 @@
     "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor",
-    "TrailerCartRemovalMixin"
+    "TrailerCartRemovalMixin",
+    "MinecartFurnaceMixin",
+    "LoopRiderMixin",
+    "LoopPlayerMixin",
+    "RailStateMixin",
+    "RailStateAccessor"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -46,7 +51,10 @@
     "client.endboss.EndSkyMixin",
     "client.endboss.EndFogMixin",
     "client.endboss.EclipseLightMixin",
-    "endmob.EndGlowLightMixin"
+    "endmob.EndGlowLightMixin",
+    "client.LoopMinecartRendererMixin",
+    "client.LoopLivingRendererMixin",
+    "client.LoopCameraMixin"
   ],
   "injectors": {
     "defaultRequire": 1

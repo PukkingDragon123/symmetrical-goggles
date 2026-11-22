@@ -25,7 +25,9 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * A steam locomotive. Burns coal: put some in it directly, or couple a chest minecart full of coal behind it and it
- * stokes itself. Sneak + right-click (empty hand) cycles Stop / Forward / Reverse. Pulling more cars makes it slower.
+ * stokes itself, or couple a furnace minecart into its train: while that burns, the locomotive runs on its fire and
+ * needs no coal (stoking a stopped train's furnace cart sets it going). Sneak + right-click (empty hand) cycles
+ * Stop / Forward / Reverse. Pulling more cars makes it slower.
  */
 public class LocomotiveCart extends WWCart {
     private static final EntityDataAccessor<Boolean> BURNING = SynchedEntityData.defineId(LocomotiveCart.class, EntityDataSerializers.BOOLEAN);
@@ -37,6 +39,10 @@ public class LocomotiveCart extends WWCart {
 
     private int fuel;
     public int whistleTicks;   // client
+
+    public int fuel() {
+        return fuel;
+    }
 
     public LocomotiveCart(EntityType<?> type, Level level, CartKind kind) {
         super(type, level, kind);
@@ -128,13 +134,17 @@ public class LocomotiveCart extends WWCart {
             clientEffects();
             return;
         }
+        if (CoasterLoop.looping(this)) {
+            return;   // the loop carries it round
+        }
         int n = Couplings.trainLength(this);
-        if (fuel < 400) {
+        boolean furnace = FurnacePower.furnaceBurning(this);   // a burning furnace minecart in the train fires it
+        if (fuel < 400 && !furnace) {
             refuelFromTrain();
         }
-        boolean drive = throttle() != 0 && fuel > 0;
-        entityData.set(BURNING, fuel > 0);
-        if (fuel > 0 && (drive || tickCount % 3 == 0)) {
+        boolean drive = throttle() != 0 && (fuel > 0 || furnace);
+        entityData.set(BURNING, fuel > 0 || furnace);
+        if (fuel > 0 && !furnace && (drive || tickCount % 3 == 0)) {
             fuel--;
         }
         Vec3 v = getDeltaMovement();

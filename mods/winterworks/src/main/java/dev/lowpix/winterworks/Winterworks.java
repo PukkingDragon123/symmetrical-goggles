@@ -65,6 +65,8 @@ public final class Winterworks implements ModInitializer {
         dev.lowpix.winterworks.endgear.EndGearFeature.init();
         dev.lowpix.winterworks.endboss.EndBossFeature.init();
         PayloadTypeRegistry.playS2C().register(CouplingPayload.TYPE, CouplingPayload.CODEC);
+        // ---- 0.4 fixes: rails (docs/FIXES_0_4.md)
+        dev.lowpix.winterworks.express.ExpressFixes.init();
         FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> {
             b.addMix(Potions.AWKWARD, WWItems.ICEBREAKER_HORN, WWEffects.RAMMING_POTION);
             b.addMix(WWEffects.RAMMING_POTION, Items.REDSTONE, WWEffects.LONG_RAMMING_POTION);
