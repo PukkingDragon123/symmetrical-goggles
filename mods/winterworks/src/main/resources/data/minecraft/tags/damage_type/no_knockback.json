@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "winterworks:overheat",
-    "winterworks:narcissus"
+    "winterworks:narcissus",
+    "winterworks:elder_stare"
   ]
 }

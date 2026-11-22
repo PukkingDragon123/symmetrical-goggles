@@ -58,7 +58,9 @@
     "harvester.SnifferWaterMixin",
     "oceanmob.TurtleMixin",
     "oceanmob.TurtleLayEggGoalMixin",
-    "oceanmob.NightVisionBrewingMixin"
+    "oceanmob.NightVisionBrewingMixin",
+    "oceangear.ElderGuardianMixin",
+    "oceangear.ShellLivingEntityMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -97,7 +99,8 @@
     "client.SoulBarGuiMixin",
     "harvester.client.SnifferSneezeModelMixin",
     "harvester.client.SpriteSourcesAccessor",
-    "oceanmob.client.GrabbedRiderPoseMixin"
+    "oceanmob.client.GrabbedRiderPoseMixin",
+    "oceangear.client.ShellPlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
