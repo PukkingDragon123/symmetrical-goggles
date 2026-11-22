@@ -85,8 +85,8 @@ card("abd_crest", "abdomen", locks(6, 3, 60, up=True, min_len=0.5), "fur_card", 
 
 # ======================================================================= wings: four broad moth wings (cards, plane xz)
 WINGS = {  # name: (root (left), art w, h, hind?, eye-spot (u, v), radius, yaw back, dihedral)
-    "f": ((1.6, 7.6, 1.0), 22, 16, False, (0.7, 0.55), 1.7, 6, 12),
-    "b": ((1.5, 7.1, -0.7), 18, 15, True, (0.52, 0.52), 2.9, 34, 6),
+    "f": ((1.6, 7.6, 1.0), 22, 16, False, (0.7, 0.55), 2.5, 6, 12),
+    "b": ((1.5, 7.1, -0.7), 18, 15, True, (0.52, 0.52), 4.0, 34, 6),
 }
 for k, (root, w, h, hind, spot, rad, yaw, dih) in WINGS.items():
     art = check_art(moth_wing(w, h, 3 if k == "f" else 4, hind=hind, spot=spot, spot_r=rad))
@@ -154,7 +154,7 @@ def wing_style(s):
                         "roughness": 0.4}],
             "art_key": {"C": "chorus:2", "v": "chorus:3", "z": "dusk:4", "f": "dusk:2", "F": "lilac:7",
                         "k": "void:2", "E": "magglow:3", "e": "magglow:4", "p": "void:1", "w": "magglow:6",
-                        "d": "dusk:3", "h": "lilac:8"}}
+                        "H": "lilac:8", "d": "dusk:3", "h": "lilac:8"}}
 
 
 styles = {

@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "winterworks:end_shrine",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 32,
+    "separation": 12,
+    "salt": 20261202,
+    "exclusion_zone": {
+      "other_set": "minecraft:end_cities",
+      "chunk_count": 3
+    }
+  }
+}

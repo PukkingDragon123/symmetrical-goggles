@@ -1,6 +1,6 @@
 {
  "name": "Obsidian Shield",
- "description": "The Winterworks Obsidian Shield: fitted obsidian plates with glowing crying-obsidian seams in an iron rim, an Obolisk-eye motif glowing in the middle, a leather-wrapped grip behind. Vanilla shield proportions and layout; Minecraft pixel units, density 4.",
+ "description": "The Winterworks Obsidian Shield: fitted obsidian plates with glowing crying-obsidian seams in an iron rim, a round Obolisk eye glowing in a round gold-ringed boss in the middle, a leather-wrapped grip behind. Vanilla shield proportions and layout; Minecraft pixel units, density 4.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 4,
@@ -35,7 +35,7 @@
  "minecraft": {
   "fps": 20,
   "glow_parts": [
-   "eye_ball"
+   "eye_iris"
   ],
   "glow_ramps": [
    "crying",
@@ -82,6 +82,17 @@
     "#f0a6fb",
     "#fcdcff",
     "#ffffff"
+   ],
+   "sclera": [
+    "#2b2136",
+    "#3f3350",
+    "#58496b",
+    "#736587",
+    "#9183a3",
+    "#afa3bf",
+    "#cbc2d8",
+    "#e4def0",
+    "#f6f3fb"
    ],
    "iron": [
     "#1e1d24",
@@ -387,27 +398,25 @@
    "ramp": "obsidian",
    "tone": 3.6,
    "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.4,
-    "dark_shift": -1.0,
-    "outline": "dark"
+    "light": 0,
+    "dark": 0
    },
    "brush": {
     "off": true
    },
    "layers": [
     {
-     "id": "bevel",
-     "op": "panel",
-     "inset": 2,
-     "shift": -1.2,
-     "highlight": 1.6,
-     "shadow": -1.0,
-     "faces": [
-      "front"
-     ],
-     "min_size": 6
+     "id": "facets",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.55,
+     "shift": 1.1,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1,
+      "shadow_shift": -1.0,
+      "highlight_shift": 2.0
+     }
     },
     {
      "id": "glint",
@@ -421,36 +430,75 @@
      "ramps": [
       "obsidian"
      ]
+    },
+    {
+     "id": "dome",
+     "op": "gradient",
+     "axis": [
+      -1,
+      1,
+      0
+     ],
+     "amount": 0.6,
+     "faces": [
+      "front"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "center",
+     "art": [
+      "....................",
+      ".......kkkkkk.......",
+      ".....kk______kk.....",
+      "...kk__________kk...",
+      "...k____________k...",
+      "..k______________k..",
+      "skk______________kkS",
+      "Sk________________kS",
+      "Sk________________ks",
+      "sk________________kS",
+      "Sk________________kS",
+      "Skk______________kks",
+      ".Sl______________ls.",
+      ".Ssl____________lsS.",
+      "..Sll__________llS..",
+      "...sSll______llsS...",
+      "....SsSllllllSsS....",
+      ".......sSSsSS......."
+     ],
+     "key": {
+      "k": "obsidian:0",
+      "l": "obsidian:7",
+      "S": "crying:3",
+      "s": "crying:2"
+     }
     }
    ]
-  },
-  "socket": {
-   "ramp": "obsidian",
-   "tone": 1.0,
-   "light": 0.3,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.0,
-    "dark_shift": -1.0
-   }
   },
   "gold_ring": {
    "ramp": "gold",
    "tone": 4.6,
    "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 2.0,
-    "dark_shift": -1.8
+    "light": 0,
+    "dark": 0
    },
    "brush": {
     "off": true
    },
    "layers": [
+    {
+     "id": "lit",
+     "op": "gradient",
+     "axis": [
+      -1,
+      1,
+      0
+     ],
+     "amount": 1.2
+    },
     {
      "id": "gloss",
      "op": "gloss",
@@ -464,9 +512,9 @@
    ]
   },
   "eye_ball": {
-   "ramp": "eye",
-   "tone": 4.0,
-   "light": 0.1,
+   "ramp": "sclera",
+   "tone": 1.0,
+   "light": 0.2,
    "brush": {
     "off": true
    },
@@ -479,24 +527,83 @@
      "face": "front",
      "at": "center",
      "art": [
-      "kkkkkkkooooookkkkkkk",
-      "kkkkoooeeppeeoookkkk",
-      "kkooeeeeEppEeeeeookk",
-      "kooeeeEEEppEEEeeeook",
-      "ooeeeEEEWppWEEEeeeoo",
-      "ooeeeEEEWppWEEEeeeoo",
-      "kooeeeEEEppEEEeeeook",
-      "kkooeeeeEppEeeeeookk",
-      "kkkkoooeeppeeoookkkk",
-      "kkkkkkkooooookkkkkkk"
+      "kkkkLLLLLLLLLLkkkk",
+      "kkkLLLuuuuuuLLLkkk",
+      "kkLLuudddddduuLLkk",
+      "kLLudddddddddduLLk",
+      "LLudddddddddddduLL",
+      "LLddddddddddddddLL",
+      "LuddddssssssdddduL",
+      "LdddsSSSSSSSSsdddL",
+      "LddssSSSSSSSSssddL",
+      "LdsssSSSSSSSSsssdL",
+      "LldsssSSSSSSsssdlL",
+      "LLdssssSSSSssssdLL",
+      "kLldssssssssssdlLk",
+      "kkLlddssssssddlLkk",
+      "kkkLllddddddllLkkk",
+      "kkkkLLllllllLLkkkk"
      ],
      "key": {
-      "o": "eye:3",
-      "e": "eye:4",
-      "E": "eye:5",
-      "W": "eye:7",
-      "k": "obsidian:1",
-      "p": "obsidian:0"
+      "L": "sclera:1",
+      "k": "sclera:1",
+      "l": "sclera:1",
+      "u": "sclera:1",
+      "d": "sclera:2",
+      "s": "sclera:4",
+      "S": "sclera:5"
+     }
+    }
+   ]
+  },
+  "iris": {
+   "ramp": "eye",
+   "tone": 3.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "o": "eye:0",
+    "i": "eye:2",
+    "I": "eye:3",
+    "J": "eye:4",
+    "c": "eye:5",
+    "p": "obsidian:0",
+    "W": "eye:7",
+    "w": "eye:6"
+   }
+  },
+  "eye_lid": {
+   "ramp": "obsidian",
+   "tone": 4.0,
+   "light": 0.4,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "round",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -1.2
+    }
+   ],
+   "stamps": [
+    {
+     "face": "front",
+     "at": "bottom-left",
+     "art": [
+      "MMMMMMMMMMMMMMMMMMMM",
+      "uuuuuuuuuuuuuuuuuuuu"
+     ],
+     "key": {
+      "M": "obsidian:7",
+      "u": "obsidian:0"
      }
     }
    ]
@@ -836,19 +943,62 @@
    "shape": "box",
    "parent": "shield",
    "size": [
-    6.0,
-    6.0,
+    7.5,
+    3.5,
     0.5
    ],
    "pivot": [
     0.0,
     0.0,
-    2.75
+    2.7
    ],
-   "rotation": [
+   "style": "gold_ring"
+  },
+  {
+   "id": "boss_ring_b",
+   "shape": "box",
+   "parent": "boss_ring",
+   "size": [
+    6.5,
+    5.25,
+    0.75
+   ],
+   "pivot": [
     0.0,
     0.0,
-    45.0
+    -0.075
+   ],
+   "style": "gold_ring"
+  },
+  {
+   "id": "boss_ring_c",
+   "shape": "box",
+   "parent": "boss_ring",
+   "size": [
+    5.25,
+    6.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "gold_ring"
+  },
+  {
+   "id": "boss_ring_d",
+   "shape": "box",
+   "parent": "boss_ring",
+   "size": [
+    3.5,
+    7.5,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -0.05
    ],
    "style": "gold_ring"
   },
@@ -857,69 +1007,64 @@
    "shape": "box",
    "parent": "shield",
    "size": [
-    5.0,
-    5.0,
-    0.75
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    3.125
-   ],
-   "rotation": [
-    0.0,
-    0.0,
-    45.0
-   ],
-   "style": "boss"
-  },
-  {
-   "id": "socket",
-   "shape": "box",
-   "parent": "shield",
-   "size": [
-    5.75,
+    6.5,
     3.0,
     0.5
    ],
    "pivot": [
     0.0,
     0.0,
-    3.375
+    3.2
    ],
-   "style": "socket"
+   "style": "boss"
   },
   {
-   "id": "socket_top",
+   "id": "boss_b",
    "shape": "box",
-   "parent": "socket",
+   "parent": "boss",
    "size": [
-    4.0,
-    0.5,
+    5.5,
+    4.5,
+    0.75
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -0.075
+   ],
+   "style": "boss"
+  },
+  {
+   "id": "boss_c",
+   "shape": "box",
+   "parent": "boss",
+   "size": [
+    4.5,
+    5.5,
     0.5
    ],
    "pivot": [
     0.0,
-    1.75,
+    0.0,
     0.0
    ],
-   "style": "socket"
+   "style": "boss"
   },
   {
-   "id": "socket_bot",
+   "id": "boss_d",
    "shape": "box",
-   "parent": "socket",
+   "parent": "boss",
    "size": [
-    4.0,
-    0.5,
+    3.0,
+    6.5,
     0.5
    ],
    "pivot": [
     0.0,
-    -1.75,
-    0.0
+    0.0,
+    -0.05
    ],
-   "style": "socket"
+   "style": "boss"
   },
   {
    "id": "eye",
@@ -928,7 +1073,7 @@
    "pivot": [
     0.0,
     0.0,
-    3.625
+    3.5
    ],
    "style": "iron"
   },
@@ -937,16 +1082,61 @@
    "shape": "box",
    "parent": "eye",
    "size": [
-    5.0,
-    2.5,
+    4.5,
+    4.0,
     0.5
    ],
    "pivot": [
     0.0,
     0.0,
-    0.0
+    -0.7
    ],
    "style": "eye_ball"
+  },
+  {
+   "id": "eye_iris",
+   "shape": "card",
+   "parent": "eye",
+   "pivot": [
+    0.0,
+    -0.25,
+    -0.4
+   ],
+   "style": "iris",
+   "plane": "xy",
+   "art": [
+    "...oooo...",
+    ".ooiiIioo.",
+    ".oWWwIiIo.",
+    "owWWwpIIIo",
+    "oIwppppIIo",
+    "oIcppppcJo",
+    "oJIcppcJJo",
+    ".oIJccJwo.",
+    ".ooJJJJoo.",
+    "...oooo..."
+   ]
+  },
+  {
+   "id": "eye_lid",
+   "shape": "box",
+   "parent": "eye",
+   "size": [
+    5.0,
+    1.0,
+    0.25
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    -0.35
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    0.0
+   ],
+   "style": "eye_lid"
   },
   {
    "id": "handle",
@@ -1014,7 +1204,7 @@
    "loop": true,
    "tracks": [
     {
-     "part": "eye_ball",
+     "part": "eye_iris",
      "keys": [
       [
        0,
@@ -1077,7 +1267,7 @@
      "channel": "position"
     },
     {
-     "part": "eye_ball",
+     "part": "eye_lid",
      "channel": "scale",
      "keys": [
       [
@@ -1099,16 +1289,16 @@
       [
        2.66,
        [
-        0.05,
-        -0.85,
+        0,
+        3.0,
         0
        ]
       ],
       [
        2.76,
        [
-        0.05,
-        -0.85,
+        0,
+        3.0,
         0
        ]
       ],

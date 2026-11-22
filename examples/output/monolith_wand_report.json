@@ -1,18 +1,18 @@
 {
   "name": "Monolith Wand",
-  "parts": 31,
-  "instances": 31,
-  "faces": 162,
-  "triangles": 324,
-  "vertices_flat": 648,
-  "vertices_unique": 216,
+  "parts": 34,
+  "instances": 34,
+  "faces": 180,
+  "triangles": 360,
+  "vertices_flat": 720,
+  "vertices_unique": 240,
   "atlas": [
-    128,
-    128
+    64,
+    256
   ],
-  "atlas_fill": 0.687,
+  "atlas_fill": 0.817,
   "texel_density": 4.0,
-  "colors_used": 39,
+  "colors_used": 45,
   "palette": {
     "obsidian": [
       "#07040d",
@@ -34,6 +34,17 @@
       "#f0a6fb",
       "#fcdcff",
       "#ffffff"
+    ],
+    "sclera": [
+      "#2b2136",
+      "#3f3350",
+      "#58496b",
+      "#736587",
+      "#9183a3",
+      "#afa3bf",
+      "#cbc2d8",
+      "#e4def0",
+      "#f6f3fb"
     ],
     "gold": [
       "#2b1233",
@@ -116,6 +127,9 @@
     "cap_spike",
     "eye",
     "eye_ball",
+    "eye_ball_x",
+    "eye_ball_y",
+    "eye_ball_z",
     "embers",
     "ember_0",
     "ember_1",
@@ -129,7 +143,7 @@
     "monolith_wand.mtl": "examples/output/monolith_wand.mtl",
     "monolith_wand.bbmodel": "examples/output/monolith_wand.bbmodel",
     "monolith_wand_texture.png": "examples/output/monolith_wand_texture.png",
-    "monolith_wand_texture_x8.png": "examples/output/monolith_wand_texture_x8.png",
+    "monolith_wand_texture_x4.png": "examples/output/monolith_wand_texture_x4.png",
     "monolith_wand_hero.png": "examples/output/monolith_wand_hero.png",
     "monolith_wand_sheet.png": "examples/output/monolith_wand_sheet.png",
     "monolith_wand_turntable.gif": "examples/output/monolith_wand_turntable.gif",

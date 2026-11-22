@@ -1,18 +1,18 @@
 {
   "name": "Obolisk",
-  "parts": 38,
-  "instances": 38,
-  "faces": 222,
-  "triangles": 444,
-  "vertices_flat": 888,
+  "parts": 39,
+  "instances": 39,
+  "faces": 218,
+  "triangles": 436,
+  "vertices_flat": 872,
   "vertices_unique": 284,
   "atlas": [
     256,
     512
   ],
-  "atlas_fill": 0.621,
+  "atlas_fill": 0.626,
   "texel_density": 2.0,
-  "colors_used": 26,
+  "colors_used": 30,
   "palette": {
     "eyeglow": [
       "#3d0f63",
@@ -31,6 +31,17 @@
       "#b47dff",
       "#dab8ff",
       "#f6ecff"
+    ],
+    "sclera": [
+      "#2b2136",
+      "#3f3350",
+      "#58496b",
+      "#736587",
+      "#9183a3",
+      "#afa3bf",
+      "#cbc2d8",
+      "#e4def0",
+      "#f6f3fb"
     ],
     "obsidian": [
       "#04030a",
@@ -84,6 +95,7 @@
     "socket",
     "eye",
     "pupil",
+    "lids",
     "eyelid",
     "side_l",
     "cheek_l",

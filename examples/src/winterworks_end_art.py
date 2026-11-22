@@ -9,7 +9,9 @@ textures 256 x 256 and the mob-effect icons 18 x 18. At that size every sprite i
 in an ASCII grid as the older generators do, so each one is *built* here from hand-chosen parts: brick and tile
 layouts, crack paths, blade and branch lists, silhouettes (signed-distance shapes) and height fields, lit from the
 top-left and then quantised onto hand-picked, hue-shifted ramps (dark -> light). Small hand-placed ASCII stamps add
-the pixels that must be exact (eyes, catchlights, glints, glyphs). Every random choice is seeded by the texture's
+the pixels that must be exact (eyes, catchlights, glints, glyphs). Every eye is round (END_UPDATE.md, "Eyes"): a round
+opening and iris, a round pupil, a soft catch-light, a shaded eyeball and lids, drawn with obsidian_kit.eyeball, the
+generator the 3D models use. Every random choice is seeded by the texture's
 name, so a run always writes the same files.
 
 Rules (as winterworks_art.py): light from the top-left; dark hue-shifted outlines, never pure black; tone in
@@ -37,6 +39,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from obsidian_kit import RAMPS as KIT, eyeball  # noqa: E402  (the shared round-eye generator)
 from winterworks_art import ASSETS, checker  # noqa: E402  (no side effects)
 
 OUT: dict[str, Image.Image] = {}      # relative path -> image
@@ -658,26 +661,35 @@ def chiseled_frame(name, inset=3):
 
 
 def chiseled_obsidian():
-    # side: the Monolith's eye, carved into the panel; the iris is a polished boss of sheen glass
+    # side: the Monolith's eye carved into the panel: a round eye under a heavy upper lid, a lower lid below, the
+    # eyeball a smooth dome, the iris a polished boss of sheen glass with a round pupil and a catch-light
     I, panel = chiseled_frame("chiseled_obsidian")
     w = h = 32
-    cx, cy = 15.0, 15.0
-    t = np.linspace(0, 1, 40)
-    upper = [(5 + 20 * u, cy - 7.5 * math.sin(math.pi * u)) for u in t]
-    lower = [(5 + 20 * u, cy + 6.5 * math.sin(math.pi * u)) for u in t]
-    I, g1 = carve(I, poly_px(upper), w, h, deep=0, lit_step=3, shade_step=-1, wrap=False, hi=7)
-    I, g2 = carve(I, poly_px(lower), w, h, deep=0, lit_step=3, shade_step=-1, wrap=False, hi=7)
-    # inside the eye: a raised glassy iris (sheen ramp), a slit pupil, a catchlight
+    cx, cy = 15.0, 15.5
     yy, xx = np.mgrid[0:h, 0:w]
     d = np.hypot(xx - cx, yy - cy)
-    iris = d < 4.6
-    Lr = lit(-np.clip(d, 0, 4.6) ** 2 / 4, strength=0.9, wrap=False)
-    I[iris] = quant(4.6 + Lr[iris] * 6, 10, 3, 7)
-    ring = (d >= 4.6) & (d < 5.6)
-    I[ring & ~g1 & ~g2] = 1
-    I[(np.abs(xx - cx) < 0.6) & (np.abs(yy - cy) < 3.2)] = 0
-    I[int(cy) - 2, int(cx) - 2] = 9
-    I[int(cy) - 3, int(cx) - 1] = 8
+    ring = [(int(round(cx + 7.4 * math.cos(a))), int(round(cy + 7.4 * math.sin(a))))
+            for a in np.linspace(0, 2 * math.pi, 96)]
+    I, g0 = carve(I, ring, w, h, deep=0, lit_step=3, shade_step=-1, wrap=False, hi=7)
+    # the lids: a crease arching over the eye, a shorter curve under it
+    upper = [(cx + 10.5 * math.cos(a), cy + 2.5 - 10.5 * math.sin(a)) for a in np.linspace(0.35, math.pi - 0.35, 40)]
+    lower = [(cx + 9.4 * math.cos(a), cy - 1.0 + 9.4 * math.sin(a)) for a in np.linspace(0.75, math.pi - 0.75, 30)]
+    I, g1 = carve(I, poly_px(upper), w, h, deep=0, lit_step=3, shade_step=-1, wrap=False, hi=7)
+    I, g2 = carve(I, poly_px(lower), w, h, deep=0, lit_step=3, shade_step=-1, wrap=False, hi=7)
+    # inside the opening: the eyeball, a smooth dome shaded under the upper lid
+    ball = d < 6.9
+    Lb = lit(-np.clip(d, 0, 6.9) ** 2 / 9, strength=0.7, wrap=False)
+    I[ball] = quant(3.2 + Lb[ball] * 5, 10, 2, 5)
+    I[ball & (yy < cy - 4.2)] = np.clip(I[ball & (yy < cy - 4.2)] - 1, 1, 9)
+    # the iris: a raised boss of sheen glass, lit low (light through the cornea), its rim cut sharp
+    iris = d < 4.1
+    Lr = lit(-np.clip(d, 0, 4.1) ** 2 / 3, strength=0.9, wrap=False)
+    I[iris] = quant(4.8 + Lr[iris] * 6 + (yy[iris] - cy) * 0.25, 10, 3, 7)
+    I[(d >= 4.1) & (d < 4.9) & ball] = 1
+    # the round pupil and its catch-light
+    I[d < 1.6] = 0
+    for (x, y, v) in ((13, 13, 9), (14, 13, 8), (13, 14, 8), (17, 17, 6)):
+        I[y, x] = v
     # notches pointing at the eye from the panel corners
     for (x, y, dx, dy) in ((5, 5, 1, 1), (26, 5, -1, 1), (5, 26, 1, -1), (26, 26, -1, -1)):
         I, _ = carve(I, [(x + dx * i, y + dy * i) for i in range(3)], w, h, deep=0, lit_step=3, wrap=False, hi=7)
@@ -685,6 +697,7 @@ def chiseled_obsidian():
     block("chiseled_obsidian", paint(I, OBS, OBS_SHEEN, sheen))
     # top: an eclipse carved in the panel, a disc ringed by eight rays
     I, panel = chiseled_frame("chiseled_obsidian_top")
+    cx, cy = 15.0, 15.0
     d = np.hypot(xx - cx, yy - cy)
     ring = [(int(round(cx + 6.5 * math.cos(a))), int(round(cy + 6.5 * math.sin(a))))
             for a in np.linspace(0, 2 * math.pi, 80)]
@@ -1660,9 +1673,13 @@ def end_bulb_item():
     item("end_bulb", outlined(L.A, "#160a2a", "#2c1655"))
 
 
+MAG = ramp("#5a0d45", "#94196f", "#cc2c98", "#f04fbd", "#ff8ad6", "#ffc9ec", "#fff1fa")   # the Enderfly's eye-spot glow
+
+
 def enderfly_wing_item():
     """A moth forewing: hooked apex, dark base, wavy cross-lines, a pale outer field with a scalloped fringe,
-    veins from the root and a big eye-spot (dark ring, glowing teal iris, violet core, catch-light)."""
+    veins from the root and a big round eye-spot (pale halo, dark ring, glowing magenta iris, round pupil,
+    catch-light), as on the Enderfly."""
     L = Layers()
     wing = [(2.5, 17.0), (3.0, 14.0), (9.5, 8.0), (17.5, 4.5), (24.5, 3.0), (29.5, 3.0), (30.0, 5.0),
             (29.0, 7.0), (29.8, 11.0), (28.5, 17.5), (25.5, 23.0), (21.5, 27.0), (16.0, 25.5), (10.0, 23.0),
@@ -1686,15 +1703,20 @@ def enderfly_wing_item():
     outer = edge & (u > 21)
     A[outer & ((xx.astype(int) + yy.astype(int)) % 3 == 0)] = WING[2]  # the scalloped fringe
     A[outer & ((xx.astype(int) + yy.astype(int)) % 3 != 0)] = WING[8]
+    # the round eye-spot, as on the Enderfly's wings: a pale halo, a dark ring, a glowing magenta iris lit low, a
+    # round pupil with softened corners and a catch-light
     cx, cy = 20.5, 13.5
     d = np.hypot(xx - cx, yy - cy)
-    A[m & (d < 4.4)] = rgba("#120818")
-    A[m & (d < 3.5)] = TEAL[4]
-    A[m & (d < 3.5) & (xx + yy < cx + cy - 1.0)] = TEAL[5]
-    A[m & (d < 2.0)] = PETAL[6]
-    A[m & (d < 1.0)] = rgba("#16061f")
+    A[m & (d < 5.6) & (d >= 4.5)] = WING[8]
+    A[m & (d < 4.5)] = rgba("#120818")
+    A[m & (d < 3.5)] = MAG[2]
+    A[m & (d < 3.5) & ((yy > cy) | (xx - cx > 1.0))] = MAG[3]
+    A[m & (d < 3.5) & (yy > cy + 1.0)] = MAG[4]
+    A[m & (np.abs(xx - cx) < 1.6) & (np.abs(yy - cy) < 1.6)] = rgba("#3a0a2e")
+    A[m & (d < 1.5)] = rgba("#16061f")
     put_px(A, cx - 1.5, cy - 1.5, "#ffffff")
-    put_px(A, cx - 0.5, cy - 2.5, TEAL[6])
+    put_px(A, cx - 0.5, cy - 2.5, MAG[5])
+    put_px(A, cx + 1.5, cy + 1.5, MAG[5])
     stamp(A, 1, 15, """
         .ab
         abc
@@ -1811,29 +1833,34 @@ def obsidian_shard_item():
     item("obsidian_shard", outlined(A, "#030205", "#1a1226"))
 
 
-def eye_in_setting(A, m_setting, cx, cy, ew, eh, iris_r, glow=True):
-    """An almond eye (glowing violet iris, slit pupil, catch-light) cut into an obsidian setting."""
-    yy, xx = np.mgrid[0:A.shape[0], 0:A.shape[1]] + 0.5
-    # almond: the intersection of two circles
-    R = (ew ** 2 / 4 + eh ** 2) / (2 * eh) * 1.0
-    up = np.hypot(xx - cx, yy - (cy - eh / 2 + R)) < R
-    dn = np.hypot(xx - cx, yy - (cy + eh / 2 - R)) < R
-    eye = up & dn & m_setting
+SCLERA = ramp(*KIT["sclera"])                                      # the whites (as the 3D eyes)
+EYE = ramp(*KIT["eye"])                                            # the Monolith's iris glow (as the 3D eyes)
+EYE_KEY = {"u": OBS[1], "d": SCLERA[3], "s": SCLERA[5], "S": SCLERA[6], "o": EYE[0], "i": EYE[2], "I": EYE[3],
+           "J": EYE[4], "c": EYE[5], "p": rgba("#0d0418"), "q": EYE[1], "W": rgba("#ffffff"), "w": EYE[6]}
+
+
+def round_eye(A, m_setting, cx, cy, ow, oh, iris_d, glow=True, look=(0.0, 0.0), lid_shade=2):
+    """A round eye set into an obsidian setting, drawn with the shared obsidian_kit.eyeball: a round opening ow x oh
+    (centred on (cx, cy), whole or half pixels to match the sizes' parity) with a dark crease round it and a lit
+    lower lid, the eyeball shaded under the upper lid, a round glowing iris iris_d across with a round pupil and a
+    soft catch-light; `glow` spills a little violet light under the lower lid."""
+    w, h = ow + 2, oh + 2
+    rows = eyeball(w, h, ow, oh, iris=iris_d, look=look, lid_shade=lid_shade)
+    x0, y0 = int(round(cx - w / 2.0)), int(round(cy - h / 2.0))
+    eye = np.zeros(A.shape[:2], bool)
+    for ry, row in enumerate(rows):
+        for rx, ch in enumerate(row):
+            x, y = x0 + rx, y0 + ry
+            if ch in EYE_KEY and 0 <= x < A.shape[1] and 0 <= y < A.shape[0] and m_setting[y, x]:
+                A[y, x] = EYE_KEY[ch]
+                eye[y, x] = True
+    yy = np.mgrid[0:A.shape[0], 0:A.shape[1]][0] + 0.5
     rim = dilate(eye) & ~eye & m_setting
     A[rim] = OBS[0]
-    A[eye] = PETAL[3]
-    A[eye & (yy < cy - eh / 4)] = PETAL[2]                          # the lid's shadow on the eyeball
-    d = np.hypot(xx - cx, yy - cy)
-    iris = eye & (d < iris_r)
-    A[iris] = BULB[2]
-    A[iris & (d < iris_r * 0.66)] = BULB[3]
-    A[iris & (d < iris_r * 0.66) & (xx + yy > cx + cy)] = BULB[4]
-    A[eye & (np.abs(xx - cx) < 0.7) & (np.abs(yy - cy) < iris_r * 0.85)] = rgba("#0d0418")
-    put_px(A, cx - iris_r * 0.5, cy - iris_r * 0.5, "#ffffff")
-    put_px(A, cx - iris_r * 0.5 + 1, cy - iris_r * 0.5, BULB[5])
+    A[rim & (yy > cy + oh * 0.25)] = OBS_SHEEN[6]                  # the lower lid catches the light
     if glow:
-        spill = dilate(rim) & ~rim & ~eye & m_setting & (yy > cy)
-        A[spill] = OBS_SHEEN[6]
+        spill = dilate(rim) & ~rim & ~eye & m_setting & (yy > cy + oh * 0.25)
+        A[spill] = OBS_SHEEN[5]
     return eye
 
 
@@ -1855,7 +1882,7 @@ def monolith_eye_item():
     for x, y in ((8, 9), (9, 8), (10, 7), (15, 4)):
         put_px(A, x, y, OBS[8])
     put_px(A, 9, 8, OBS[9])
-    eye_in_setting(A, m, 16.0, 16.5, 19.0, 10.0, 4.4)
+    round_eye(A, m, 16.0, 16.5, 16, 13, 10, lid_shade=3)
     item("monolith_eye", outlined(A, "#030205", "#1a1226"))
 
 
@@ -1952,86 +1979,8 @@ def end_bloom_item():
     item("end_bloom", A)
 
 
-def obsidian_shield_icon():
-    yy, xx = np.mgrid[0:32, 0:32] + 0.5
-    shape = [(5, 3.5), (27, 3.5), (28.5, 5.5), (28.5, 15), (25, 23), (16, 30), (7, 23), (3.5, 15), (3.5, 5.5)]
-    X, Y = ss_coords(32, 32, 4)
-    m = down((sd_poly(X, Y, shape) < 0).astype(float), 4) >= 0.5
-    rimw = m & (chamfer(m) <= 2.0)
-    face = m & ~rimw
-    # the face: a mosaic of obsidian shards, each with its own tone and a lit edge
-    r = rng_for("obsidian_shield")
-    pts = [(r.uniform(5, 27), r.uniform(5, 27)) for _ in range(9)]
-    F1, F2, idx, dx, dy = voronoi(32, 32, pts, wrap=False)
-    tone = np.array([r.integers(2, 5) for _ in pts])[idx]
-    I = np.where((F2 - F1) < 1.0, 1, tone)
-    I = np.where(((F2 - F1) >= 1.0) & ((F2 - F1) < 2.0) & (dx + dy > 0), np.clip(tone + 2, 0, 7), I)
-    A = paint(np.where(face, I, -1), OBS, OBS_SHEEN, sheen_mask("obsidian_shield", 32, 32, 0.55))
-    # the iron rim, bevelled: lit top-left, dark bottom-right
-    Lr = np.clip(np.round(3.5 - ((xx - 16) + (yy - 16)) / 16 * 2.2), 1, 6).astype(int)
-    inner = rimw & ~dilate(~m) | (rimw & (chamfer(m) > 1.0))
-    A[rimw] = STEEL[Lr[rimw]]
-    A[rimw & (chamfer(m) > 1.0)] = STEEL[np.clip(Lr - 1, 0, 6)[rimw & (chamfer(m) > 1.0)]]
-    for (x, y) in ((6, 5), (26, 5), (6, 14), (26, 14), (16, 27)):     # rivets
-        put_px(A, x, y, STEEL[6])
-    # the eye boss in the middle
-    boss = np.hypot(xx - 16, yy - 14.5) < 5.4
-    A[boss & face] = OBS[2]
-    eye_in_setting(A, boss & face, 16.0, 14.5, 9.0, 5.0, 2.4)
-    item("obsidian_shield_icon", outlined(A, "#06040b", "#1d1a26"))
-
-
-def end_glider_icon():
-    L = Layers()
-    # wings: two moth wings spread up from the frame ends
-    for sgn in (-1, 1):
-        wing = [(16 + sgn * 3, 17), (16 + sgn * 6, 9), (16 + sgn * 11, 3.5), (16 + sgn * 15, 3), (16 + sgn * 15.5, 8),
-                (16 + sgn * 14, 14), (16 + sgn * 9, 18.5)]
-        m, I = L.add(lambda X, Y, w=wing: sd_poly(X, Y, w) + 0.2, WING, 4.6, gain=3, bevel=1.6)
-        cx, cy = 16 + sgn * 11.5, 8.5
-        yy, xx = np.mgrid[0:32, 0:32] + 0.5
-        d = np.hypot(xx - cx, yy - cy)
-        L.A[m & (d < 2.6)] = rgba("#120818")
-        L.A[m & (d < 1.8)] = TEAL[4]
-        L.A[m & (d < 0.8)] = PETAL[6]
-        for tx, ty in ((16 + sgn * 15, 4), (16 + sgn * 14, 12)):
-            for x, y in line_px(16 + sgn * 4, 16, tx, ty)[2:-1]:
-                if m[y, x] and d[y, x] > 2.6:
-                    L.A[y, x] = WING[2]
-    # the frame bar and its grip
-    L.add(lambda X, Y: sd_segment(X, Y, 4.5, 19.5, 27.5, 19.5, 1.5), STEEL, 3.6, gain=6, bevel=1.2)
-    L.add(lambda X, Y: sd_segment(X, Y, 16, 18, 16, 27.5, 1.6), SEAR, 3.4, gain=5, bevel=1.2)
-    for y in (21, 23, 25):
-        put_px(L.A, 15, y, SEAR[1])
-        put_px(L.A, 16, y, SEAR[2])
-    # jets: gland-sac pods under the bar ends, flames streaming down
-    for jx in (7.0, 25.0):
-        L.add(lambda X, Y, jx=jx: sd_ellipse(X, Y, jx, 22.5, 2.6, 3.4), GLAND, 4.2, gain=5, bevel=1.6)
-        L.add(lambda X, Y, jx=jx: sd_segment(X, Y, jx, 25, jx, 26.2, 1.6), STEEL, 3.0, gain=4, bevel=1.0)
-        flame = [(jx, 27.5, 7), (jx - 1, 27.5, 5), (jx + 1, 27.5, 5), (jx, 28.5, 6), (jx, 29.5, 4),
-                 (jx - 1, 28.5, 4), (jx + 1, 28.5, 3), (jx, 30.5, 3)]
-        for x, y, t in flame:
-            put_px(L.A, x, y, HOT[t])
-    item("end_glider_icon", outlined(L.A, "#0d0915", "#221a30"))
-
-
-def monolith_wand_icon():
-    A = np.zeros((32, 32, 4), np.uint8)
-    void_rod_item(A, a=(4.5, 28.5), b=(18.5, 14.5), seed_name="monolith_wand", draw=False)
-    L = Layers()
-    L.A = A
-    # the head: an obsidian claw of three prongs round a glowing eye-orb, a meteorite-core collar
-    L.add(lambda X, Y: sd_circle(X, Y, 19.5, 13.5, 3.0), MET, 4.0, gain=5, bevel=1.5)
-    for x, y in ((19, 13), (20, 13), (19, 14), (18, 14)):
-        put_px(A, x, y, HOT[5])
-    put_px(A, 19, 13, HOT[7])
-    for ctrl in ([(18.5, 13.5), (17.5, 8.0), (20.0, 3.5)], [(20.5, 15.0), (26.0, 15.5), (29.0, 11.0)],
-                 [(20.0, 13.0), (24.5, 7.5), (27.0, 3.0)]):
-        pts, rad = lens(ctrl, 1.7, 10, taper=(0.5, 0.5), base_w=1.6)
-        L.add(lambda X, Y, p=pts, r=rad: sd_stroke(X, Y, p, r), OBS, 3.6, gain=7, bevel=1.4)
-    m, I = L.add(lambda X, Y: sd_circle(X, Y, 23.5, 9.0, 4.0), PETAL, 3.0, gain=3, bevel=2.0)
-    eye_in_setting(A, m, 23.5, 9.0, 7.6, 4.6, 2.2, glow=False)
-    item("monolith_wand_icon", outlined(A, "#06040e", "#1a1530"))
+# The shield, glider and wand icons (item/obsidian_shield_icon, item/end_glider_icon, item/monolith_wand_icon) are
+# drawn by winterworks_end_gear_icons.py, which owns them; this script leaves them alone.
 
 
 end_bulb_item()
@@ -2043,9 +1992,6 @@ monolith_eye_item()
 void_rod_item()
 dragon_egg_items()
 end_bloom_item()
-obsidian_shield_icon()
-end_glider_icon()
-monolith_wand_icon()
 
 
 # ====================================================================== particles (16 x 16, frame 0 = birth)

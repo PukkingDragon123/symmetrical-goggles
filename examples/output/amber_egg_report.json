@@ -1,0 +1,77 @@
+{
+  "name": "Amber Egg",
+  "parts": 6,
+  "instances": 6,
+  "faces": 36,
+  "triangles": 72,
+  "vertices_flat": 144,
+  "vertices_unique": 48,
+  "atlas": [
+    64,
+    64
+  ],
+  "atlas_fill": 0.49,
+  "texel_density": 2.0,
+  "colors_used": 14,
+  "palette": {
+    "shell": [
+      "#5a380b",
+      "#7c5110",
+      "#9c6913",
+      "#ba8217",
+      "#d39b1f",
+      "#e5b02a",
+      "#f2c63b",
+      "#fbdb5e",
+      "#fff0a0"
+    ],
+    "moss": [
+      "#0a2119",
+      "#0e3024",
+      "#14412f",
+      "#1b543a",
+      "#236845"
+    ],
+    "crack": [
+      "#2b1a08",
+      "#fde98e"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -2.5,
+      0.0,
+      -2.5
+    ],
+    "max": [
+      2.5,
+      7.0,
+      2.5
+    ],
+    "size": [
+      5.0,
+      7.0,
+      5.0
+    ]
+  },
+  "warnings": [],
+  "animations": {},
+  "joints": [
+    "egg",
+    "foot",
+    "low",
+    "upper",
+    "shoulder",
+    "tip"
+  ],
+  "files": {
+    "amber_egg.glb": "examples/output/amber_egg.glb",
+    "amber_egg.obj": "examples/output/amber_egg.obj",
+    "amber_egg.mtl": "examples/output/amber_egg.mtl",
+    "amber_egg.bbmodel": "examples/output/amber_egg.bbmodel",
+    "amber_egg_texture.png": "examples/output/amber_egg_texture.png",
+    "amber_egg_texture_x16.png": "examples/output/amber_egg_texture_x16.png",
+    "amber_egg_hero.png": "examples/output/amber_egg_hero.png",
+    "amber_egg_sheet.png": "examples/output/amber_egg_sheet.png"
+  }
+}

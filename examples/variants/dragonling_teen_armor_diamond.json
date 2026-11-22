@@ -1,11 +1,11 @@
 {
  "name": "Dragonling Teen Armor Diamond",
- "description": "The Winterworks teen Dragonling: a lean, rideable young ender-dragon with a long neck and tail, swept-back horns, big folded wings with wrist joints, back spines, a saddle the renderer can hide, and transparent armour shells that the armour textures paint. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks teen Dragonling: a lean, rideable young Ender Dragon: black scales, a long flat box snout with nostril bumps and teeth over a separate jaw, swept-back horn plates, glowing violet eyes, light grey spines from crown to tail tip, big membranous wings on bony finger spars folded at rest, a long spined tail, a saddle the renderer can hide, and transparent armour shells that the armour textures paint. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
  "density": 2,
  "budget": {
-  "tris": 1400,
+  "tris": 2400,
   "colors": 128
  },
  "light": {
@@ -14,9 +14,9 @@
    1.0,
    0.6
   ],
-  "strength": 0.7,
+  "strength": 0.8,
   "gradient": 0.5,
-  "ao": 0.6,
+  "ao": 0.5,
   "ao_height": 6.0
  },
  "brush": {
@@ -28,7 +28,8 @@
   "textures": {
    "scale": "scales",
    "belly": "leather",
-   "horn": "wood",
+   "bone": "wood",
+   "membrane": "organic",
    "leather": "leather",
    "iron": "metal",
    "gold": "metal",
@@ -44,7 +45,7 @@
  },
  "anim_ground_tolerance": 0.3,
  "render": {
-  "background": "#d8d3a2",
+  "background": "#8f9a86",
   "hero": [
    36,
    20
@@ -63,49 +64,61 @@
     "#fdf4ff"
    ],
    "scale": [
-    "#07050c",
-    "#0e0a17",
-    "#161022",
-    "#1f162e",
-    "#291d3b",
-    "#342549",
-    "#402e58",
-    "#4e3868",
-    "#5e4479",
-    "#70538b"
+    "#030205",
+    "#08070b",
+    "#0f0e13",
+    "#17161c",
+    "#201e26",
+    "#2a2832",
+    "#35323e",
+    "#413e4b",
+    "#4e4a59",
+    "#5c5868",
+    "#6b6778"
    ],
    "belly": [
-    "#1c1526",
-    "#2b2139",
-    "#3c2e4d",
-    "#4f3d62",
-    "#634e77",
-    "#78618c",
-    "#8e76a1",
-    "#a68ebb",
-    "#bfa9d2"
+    "#0b0a0e",
+    "#131217",
+    "#1c1b21",
+    "#26252c",
+    "#313038",
+    "#3d3b45",
+    "#4a4853",
+    "#585662",
+    "#676572"
+   ],
+   "bone": [
+    "#1c1b21",
+    "#2b2a31",
+    "#3e3c45",
+    "#54525b",
+    "#6c6a73",
+    "#86848c",
+    "#a09ea5",
+    "#bbb9bd",
+    "#d5d3d4",
+    "#ecebe8"
    ],
    "membrane": [
-    "#1d0b2e",
-    "#2e1247",
-    "#421a61",
-    "#58247c",
-    "#702f97",
-    "#8a3eb2",
-    "#a656c9",
-    "#c27ade",
-    "#dba3ee"
+    "#09070c",
+    "#110d16",
+    "#1a1421",
+    "#241c2d",
+    "#2f243a",
+    "#3a2d47",
+    "#463656",
+    "#534066",
+    "#614b77",
+    "#715889"
    ],
-   "horn": [
-    "#221d29",
-    "#38313f",
-    "#514858",
-    "#6c6273",
-    "#897e8f",
-    "#a79cab",
-    "#c4bac7",
-    "#e0d8e2",
-    "#f6f1f7"
+   "maw": [
+    "#11050e",
+    "#1d0918",
+    "#2b0e24",
+    "#3b1432",
+    "#4d1b42",
+    "#612453",
+    "#782f66"
    ],
    "leather": [
     "#1d110b",
@@ -179,12 +192,15 @@
  "styles": {
   "scale": {
    "ramp": "scale",
-   "tone": 4.4,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
@@ -193,13 +209,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -218,7 +234,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -238,18 +254,21 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
   "scale_body": {
    "ramp": "scale",
-   "tone": 4.6,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
@@ -258,13 +277,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      3.0,
+      2.5
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.5,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -283,7 +302,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -296,7 +315,7 @@
      "from": -1.01,
      "to": -0.55,
      "ramp": "belly",
-     "tone": 5.0,
+     "tone": 3.4,
      "wobble": 0.15,
      "faces": [
       "sides",
@@ -307,7 +326,7 @@
      "bevel": {
       "shadow": 0,
       "highlight": 1,
-      "highlight_shift": 1.2
+      "highlight_shift": 1.4
      }
     },
     {
@@ -318,58 +337,67 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
   "belly": {
    "ramp": "belly",
-   "tone": 5.0,
+   "tone": 3.2,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "x"
+    "off": true
    },
    "layers": [
     {
      "id": "plates",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.5,
-     "width": 0.25,
-     "shift": -1.4,
-     "bevel": {
-      "shadow": 0,
-      "highlight": 1,
-      "highlight_shift": 1.0
-     }
+     "op": "scales",
+     "shape": "square",
+     "along": "x",
+     "size": [
+      3.5,
+      1.5
+     ],
+     "gap": 0.5,
+     "highlight": 1.6,
+     "gradient": 1.5,
+     "shadow": -1.6,
+     "jitter": 0.5
     }
    ]
   },
   "chest": {
    "ramp": "belly",
-   "tone": 5.2,
+   "tone": 3.4,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "x"
+    "off": true
    },
    "layers": [
     {
      "id": "plates",
-     "op": "stripes",
-     "axis": "y",
-     "period": 1.5,
-     "width": 0.25,
-     "shift": -1.4,
+     "op": "scales",
+     "shape": "square",
+     "along": "x",
+     "size": [
+      3.5,
+      1.5
+     ],
+     "gap": 0.5,
+     "highlight": 1.6,
+     "gradient": 1.5,
+     "shadow": -1.6,
+     "jitter": 0.5,
      "faces": [
       "front",
       "bottom"
@@ -379,7 +407,7 @@
      "id": "scaled_sides",
      "op": "fill",
      "ramp": "scale",
-     "tone": 4.4,
+     "tone": 3.0,
      "faces": [
       "top",
       "flanks"
@@ -391,13 +419,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "flanks"
@@ -407,12 +435,15 @@
   },
   "head": {
    "ramp": "scale",
-   "tone": 4.8,
+   "tone": 3.2,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.0,
+    "light_shift": 2.4,
     "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
    },
    "layers": [
     {
@@ -421,16 +452,34 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.0,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
-      "sides"
+      "sides",
+      "back"
+     ]
+    },
+    {
+     "id": "face_scales",
+     "op": "scales",
+     "shape": "round",
+     "along": "z",
+     "size": [
+      1.5,
+      1.5
+     ],
+     "gradient": 3.5,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
+     "faces": [
+      "front"
      ]
     },
     {
@@ -446,7 +495,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -460,34 +509,21 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
-    },
-    {
-     "id": "lip",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.6,
-     "ramp": "belly",
-     "tone": 4.6,
-     "faces": [
-      "sides",
-      "front"
-     ]
+     "shift": 1.6
     }
    ]
   },
   "snout": {
    "ramp": "scale",
-   "tone": 4.6,
+   "tone": 3.2,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 2.0,
+    "light_shift": 2.4,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "z"
+    "off": true
    },
    "layers": [
     {
@@ -496,13 +532,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.0,
+      1.5,
       1.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 3.5,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -516,211 +552,51 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     },
     {
      "id": "lip",
      "op": "band",
      "axis": "y",
      "from": -1.01,
-     "to": -0.45,
+     "to": -0.55,
      "ramp": "belly",
-     "tone": 4.6,
+     "tone": 3.0,
      "faces": [
       "sides",
       "front"
      ]
-    }
-   ],
-   "stamps": [
+    },
     {
-     "face": "front",
-     "at": "top",
-     "offset": [
-      0,
-      1
+     "id": "ridge",
+     "op": "band",
+     "axis": "x",
+     "from": -0.2,
+     "to": 0.2,
+     "shift": 1.2,
+     "faces": [
+      "top",
+      "front"
      ],
-     "art": [
-      "n..n",
-      "N..N"
-     ],
-     "key": {
-      "n": "scale:1",
-      "N": "scale:0"
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0,
+      "shadow_shift": -1.2
      }
     }
    ]
   },
-  "jaw": {
-   "ramp": "belly",
-   "tone": 4.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "z"
-   },
-   "layers": [
-    {
-     "id": "mouth",
-     "op": "fill",
-     "ramp": "membrane",
-     "tone": 1.6,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "tongue",
-     "op": "band",
-     "axis": "x",
-     "from": -0.35,
-     "to": 0.35,
-     "ramp": "membrane",
-     "tone": 3.6,
-     "faces": [
-      "top"
-     ]
-    },
-    {
-     "id": "scaled",
-     "op": "band",
-     "axis": "y",
-     "from": 0.0,
-     "to": 1.01,
-     "ramp": "scale",
-     "tone": 4.2,
-     "faces": [
-      "sides"
-     ]
-    }
-   ]
-  },
-  "eye": {
-   "ramp": "eyeglow",
-   "tone": 3.2,
-   "light": 0.3,
-   "brush": {
-    "off": true
-   },
-   "rim": {
-    "light": 1,
-    "dark": 0,
-    "light_shift": 1.0
-   },
-   "layers": [
-    {
-     "id": "lower",
-     "op": "gradient",
-     "axis": "y",
-     "amount": -1.2
-    }
-   ]
-  },
-  "horn": {
-   "ramp": "horn",
-   "tone": 5.4,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.6
-   },
-   "brush": {
-    "flow": "long"
-   },
-   "layers": [
-    {
-     "id": "rings",
-     "op": "stripes",
-     "axis": "z",
-     "period": 1.0,
-     "width": 0.3,
-     "shift": -1.0
-    },
-    {
-     "id": "root",
-     "op": "gradient",
-     "axis": "z",
-     "amount": 1.6
-    }
-   ]
-  },
-  "spine": {
-   "ramp": "horn",
-   "tone": 4,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "t": "horn:7",
-    "m": "horn:5",
-    "f": "scale:5"
-   }
-  },
-  "frill": {
-   "ramp": "membrane",
-   "tone": 4,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "t": "membrane:6",
-    "m": "membrane:4",
-    "f": "membrane:2"
-   }
-  },
-  "claw": {
-   "ramp": "horn",
-   "tone": 5,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "c": "horn:5",
-    "t": "horn:7"
-   }
-  },
-  "arm": {
+  "cheek": {
    "ramp": "scale",
-   "tone": 4.0,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "long"
-   },
-   "layers": [
-    {
-     "id": "knuckles",
-     "op": "stripes",
-     "axis": "x",
-     "period": 3.0,
-     "width": 0.15,
-     "shift": 1.4
-    }
-   ]
-  },
-  "leg": {
-   "ramp": "scale",
-   "tone": 4.2,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.8,
-    "dark_shift": -1.2
-   },
-   "brush": {
-    "flow": "y"
+    "off": true
    },
    "layers": [
     {
@@ -729,13 +605,13 @@
      "shape": "round",
      "along": "y",
      "size": [
-      1.0,
-      1.0
+      2.0,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -754,7 +630,323 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
+     "faces": [
+      "top"
+     ],
+     "roughness": 0.5
+    },
+    {
+     "id": "jowl",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": -0.35,
+     "ramp": "belly",
+     "tone": 3.0,
+     "faces": [
+      "sides",
+      "front",
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "jaw": {
+   "ramp": "belly",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "mouth",
+     "op": "fill",
+     "ramp": "maw",
+     "tone": 2.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "tongue",
+     "op": "band",
+     "axis": "x",
+     "from": -0.35,
+     "to": 0.35,
+     "ramp": "maw",
+     "tone": 4.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "scaled",
+     "op": "band",
+     "axis": "y",
+     "from": 0.0,
+     "to": 1.01,
+     "ramp": "scale",
+     "tone": 3.0,
+     "faces": [
+      "sides",
+      "front"
+     ]
+    },
+    {
+     "id": "chin",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.5,
+     "width": 0.25,
+     "shift": -1.3,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "brow": {
+   "ramp": "scale",
+   "tone": 4.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.6,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "nostril": {
+   "ramp": "scale",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "hole",
+     "op": "fill",
+     "tone": 0.5,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "eye": {
+   "ramp": "scale",
+   "tone": 1.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "W": "eyeglow:6",
+    "e": "eyeglow:4",
+    "E": "eyeglow:3",
+    "p": "scale:0"
+   }
+  },
+  "horn": {
+   "ramp": "bone",
+   "tone": 6.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -0.8
+    },
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 2.4
+    }
+   ]
+  },
+  "spine": {
+   "ramp": "bone",
+   "tone": 6.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.8
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 3.0
+    },
+    {
+     "id": "grain",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -0.6
+    }
+   ]
+  },
+  "spike": {
+   "ramp": "bone",
+   "tone": 5,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "bone:8",
+    "m": "bone:6",
+    "f": "bone:4"
+   }
+  },
+  "tooth": {
+   "ramp": "bone",
+   "tone": 7,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "t": "bone:9",
+    "m": "bone:7",
+    "f": "bone:6",
+    "c": "bone:7"
+   }
+  },
+  "claw": {
+   "ramp": "bone",
+   "tone": 5,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "c": "bone:6",
+    "t": "bone:8"
+   }
+  },
+  "wingbone": {
+   "ramp": "bone",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "knuckles",
+     "op": "stripes",
+     "axis": "x",
+     "period": 3.0,
+     "width": 0.15,
+     "shift": 1.4
+    }
+   ]
+  },
+  "spar": {
+   "ramp": "bone",
+   "tone": 3.8,
+   "rim": {
+    "light": 1,
+    "dark": 0,
+    "light_shift": 1.6
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "root",
+     "op": "gradient",
+     "axis": "x",
+     "amount": 0.8
+    }
+   ]
+  },
+  "leg": {
+   "ramp": "scale",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.2,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "scales",
+     "op": "scales",
+     "shape": "round",
+     "along": "y",
+     "size": [
+      1.5,
+      1.5
+     ],
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
+     "faces": [
+      "top",
+      "sides"
+     ]
+    },
+    {
+     "id": "sheen",
+     "op": "spots",
+     "count": 3,
+     "radius": [
+      0.6,
+      1.0
+     ],
+     "stretch": [
+      1,
+      0.5,
+      2
+     ],
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -770,11 +962,11 @@
   },
   "foot": {
    "ramp": "scale",
-   "tone": 3.6,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -785,7 +977,7 @@
      "id": "sole",
      "op": "fill",
      "ramp": "belly",
-     "tone": 3.0,
+     "tone": 2.0,
      "faces": [
       "bottom"
      ]
@@ -796,7 +988,7 @@
      "axis": "x",
      "period": 1.0,
      "width": 0.3,
-     "shift": -1.2,
+     "shift": -1.4,
      "faces": [
       "top",
       "front"
@@ -806,15 +998,15 @@
   },
   "tail": {
    "ramp": "scale",
-   "tone": 4.4,
+   "tone": 3.0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
-    "flow": "z"
+    "off": true
    },
    "layers": [
     {
@@ -823,13 +1015,13 @@
      "shape": "round",
      "along": "z",
      "size": [
-      1.5,
-      1.0
+      2.5,
+      2.0
      ],
-     "gap": 0.5,
-     "highlight": 1.1,
-     "shadow": -1.0,
-     "jitter": 0.4,
+     "gradient": 5.6,
+     "rim": -1.2,
+     "shadow": -2.2,
+     "jitter": 0.9,
      "faces": [
       "top",
       "sides"
@@ -848,7 +1040,7 @@
       0.5,
       2
      ],
-     "shift": 1.2,
+     "shift": 1.0,
      "faces": [
       "top"
      ],
@@ -861,7 +1053,7 @@
      "from": -1.01,
      "to": -0.55,
      "ramp": "belly",
-     "tone": 5.0,
+     "tone": 3.4,
      "wobble": 0.15,
      "faces": [
       "sides",
@@ -872,7 +1064,7 @@
      "bevel": {
       "shadow": 0,
       "highlight": 1,
-      "highlight_shift": 1.2
+      "highlight_shift": 1.4
      }
     },
     {
@@ -883,7 +1075,7 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
@@ -893,7 +1085,7 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -924,7 +1116,7 @@
      "length": 2,
      "inset": 1,
      "density": 0.5,
-     "shift": 1.8
+     "shift": 1.6
     }
    ]
   },
@@ -947,7 +1139,7 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -1009,7 +1201,7 @@
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.8,
+    "light_shift": 2.2,
     "dark_shift": -1.2
    },
    "brush": {
@@ -1093,7 +1285,7 @@
   },
   "wing_l": {
    "ramp": "membrane",
-   "tone": 4.4,
+   "tone": 4.8,
    "light": 0.25,
    "brush": {
     "flow": "x",
@@ -1111,7 +1303,7 @@
      "id": "trail_light",
      "op": "gradient",
      "axis": "z",
-     "amount": 1.2
+     "amount": 1.6
     },
     {
      "id": "mottle",
@@ -1121,16 +1313,17 @@
     }
    ],
    "art_key": {
-    "b": "scale:3",
-    "B": "scale:6",
-    "r": "membrane:6",
-    "v": "membrane:3",
-    "c": "horn:6"
+    "b": "membrane:1",
+    "r": "membrane:8",
+    "R": "membrane:6",
+    "v": "membrane:6",
+    "c": "bone:7",
+    "C": "bone:5"
    }
   },
   "wing_r": {
    "ramp": "membrane",
-   "tone": 4.4,
+   "tone": 4.8,
    "light": 0.25,
    "brush": {
     "flow": "x",
@@ -1148,7 +1341,7 @@
      "id": "trail_light",
      "op": "gradient",
      "axis": "z",
-     "amount": 1.2
+     "amount": 1.6
     },
     {
      "id": "mottle",
@@ -1158,11 +1351,12 @@
     }
    ],
    "art_key": {
-    "b": "scale:3",
-    "B": "scale:6",
-    "r": "membrane:6",
-    "v": "membrane:3",
-    "c": "horn:6"
+    "b": "membrane:1",
+    "r": "membrane:8",
+    "R": "membrane:6",
+    "v": "membrane:6",
+    "c": "bone:7",
+    "C": "bone:5"
    }
   }
  },
@@ -1198,7 +1392,7 @@
    ],
    "pivot": [
     0.0,
-    0.2,
+    0.25,
     -7.0
    ],
    "style": "scale_body"
@@ -1214,7 +1408,7 @@
    ],
    "pivot": [
     0.0,
-    -3.8,
+    -3.75,
     -1.5
    ],
    "style": "belly"
@@ -1231,7 +1425,7 @@
    "pivot": [
     0.0,
     -0.5,
-    10.6
+    10.75
    ],
    "style": "chest"
   },
@@ -1240,40 +1434,220 @@
    "shape": "box",
    "parent": "body",
    "size": [
-    6.0,
-    1.5,
-    9.0
+    7.0,
+    2.0,
+    6.0
    ],
    "pivot": [
     0.0,
-    5.6,
-    4.5
+    5.75,
+    7.25
    ],
    "style": "scale"
   },
   {
-   "id": "back_spines",
-   "shape": "card",
+   "id": "croup",
+   "shape": "box",
    "parent": "body",
+   "size": [
+    8.0,
+    1.5,
+    6.0
+   ],
    "pivot": [
     0.0,
+    4.5,
+    -9.5
+   ],
+   "style": "scale"
+  },
+  {
+   "id": "shoulder_l",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
     5.0,
+    6.0
+   ],
+   "pivot": [
+    5.25,
+    1.75,
+    6.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    6.0
+   ],
+   "style": "scale"
+  },
+  {
+   "id": "thigh_l",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
+    6.0,
+    7.0
+   ],
+   "pivot": [
+    4.75,
+    0.25,
+    -7.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    4.0
+   ],
+   "style": "scale"
+  },
+  {
+   "id": "shoulder_r",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
+    5.0,
+    6.0
+   ],
+   "pivot": [
+    -5.25,
+    1.75,
+    6.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -6.0
+   ],
+   "style": "scale"
+  },
+  {
+   "id": "thigh_r",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
+    6.0,
+    7.0
+   ],
+   "pivot": [
+    -4.75,
+    0.25,
+    -7.5
+   ],
+   "rotation": [
+    0.0,
+    0.0,
     -4.0
+   ],
+   "style": "scale"
+  },
+  {
+   "id": "back_spine_0",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
+    3.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    6.5,
+    9.25
    ],
    "offset": [
     0.0,
-    1.25,
+    1.15,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "..t........t.......................t..t.",
-    "..m..t.....m..t......t..t..t..t....m..m.",
-    "..f..m.tff.f..m......m..m..m..m.ff.f..f.",
-    "fffffffffffffffff.tfffffffffffffffffffff",
-    "ffffffffffffffffffffffffffffffffffffffff"
-   ]
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "back_spine_1",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
+    3.5,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    6.5,
+    6.75
+   ],
+   "offset": [
+    0.0,
+    1.4,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "back_spine_2",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
+    3.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    5.0,
+    -8.5
+   ],
+   "offset": [
+    0.0,
+    1.15,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "back_spine_3",
+   "shape": "box",
+   "parent": "body",
+   "size": [
+    1.5,
+    3.5,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    5.0,
+    -11.0
+   ],
+   "offset": [
+    0.0,
+    1.4,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "neck",
@@ -1302,27 +1676,72 @@
    "style": "scale"
   },
   {
-   "id": "neck_spines",
-   "shape": "card",
+   "id": "throat",
+   "shape": "box",
    "parent": "neck",
+   "size": [
+    4.0,
+    1.0,
+    7.5
+   ],
+   "pivot": [
+    0.0,
+    -2.5,
+    3.5
+   ],
+   "style": "belly"
+  },
+  {
+   "id": "neck_spine_0",
+   "shape": "box",
+   "parent": "neck",
+   "size": [
+    1.0,
+    2.5,
+    1.5
+   ],
    "pivot": [
     0.0,
     2.5,
-    3.5
+    1.5
    ],
    "offset": [
     0.0,
-    1.0,
+    0.9,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "....t.t.........",
-    "....m.m....t....",
-    ".t.ffffftfffff.t",
-    "ffffffffffffffff"
-   ]
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "neck_spine_1",
+   "shape": "box",
+   "parent": "neck",
+   "size": [
+    1.0,
+    2.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    2.5,
+    5.0
+   ],
+   "offset": [
+    0.0,
+    0.9,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "neck_1",
@@ -1351,36 +1770,81 @@
    "style": "scale"
   },
   {
-   "id": "neck_1_spines",
-   "shape": "card",
+   "id": "throat_1",
+   "shape": "box",
    "parent": "neck_1",
+   "size": [
+    3.5,
+    1.0,
+    6.5
+   ],
+   "pivot": [
+    0.0,
+    -2.25,
+    3.0
+   ],
+   "style": "belly"
+  },
+  {
+   "id": "neck_spine_2",
+   "shape": "box",
+   "parent": "neck_1",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
    "pivot": [
     0.0,
     2.25,
-    3.0
+    1.5
    ],
    "offset": [
     0.0,
-    1.0,
+    0.65,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    ".t..........t.",
-    ".m....t..t..m.",
-    "fff.t.f..f.fff",
-    "ffffffffffffff"
-   ]
+   "rotation": [
+    -14.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "neck_spine_3",
+   "shape": "box",
+   "parent": "neck_1",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    2.25,
+    4.5
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -14.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "head",
    "shape": "box",
    "parent": "neck_1",
    "size": [
-    6.0,
-    5.0,
-    7.0
+    6.5,
+    5.5,
+    6.0
    ],
    "pivot": [
     0.0,
@@ -1389,15 +1853,49 @@
    ],
    "offset": [
     0.0,
-    1.2,
-    2.5
+    1.4,
+    1.6
    ],
    "rotation": [
     30.0,
     0.0,
     0.0
    ],
-   "style": "head"
+   "style": "head",
+   "paint": {
+    "stamps": [
+     {
+      "face": "left",
+      "at": [
+       1,
+       2
+      ],
+      "art": [
+       "kkkk",
+       "k...",
+       ".kkk"
+      ],
+      "key": {
+       "k": "scale:0"
+      }
+     },
+     {
+      "face": "right",
+      "at": [
+       7,
+       2
+      ],
+      "art": [
+       "kkkk",
+       "...k",
+       "kkk."
+      ],
+      "key": {
+       "k": "scale:0"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "snout",
@@ -1405,41 +1903,100 @@
    "parent": "head",
    "size": [
     5.0,
-    3.5,
-    6.5
+    3.0,
+    8.5
    ],
    "pivot": [
     0.0,
-    0.6,
-    9.0
+    0.4,
+    8.1
    ],
    "rotation": [
-    4.0,
+    2.0,
     0.0,
     0.0
    ],
    "style": "snout"
   },
   {
-   "id": "brow",
+   "id": "nostril_l",
    "shape": "box",
-   "parent": "head",
+   "parent": "snout",
    "size": [
-    6.5,
     1.0,
-    2.5
+    1.0,
+    2.0
    ],
    "pivot": [
-    0.0,
-    3.5,
-    4.6
+    1.5,
+    1.9,
+    2.75
    ],
-   "rotation": [
-    -12.0,
-    0.0,
-    0.0
+   "style": "nostril"
+  },
+  {
+   "id": "teeth_l",
+   "shape": "card",
+   "parent": "snout",
+   "pivot": [
+    2.2,
+    -2.0,
+    0.25
    ],
-   "style": "head"
+   "style": "tooth",
+   "plane": "yz",
+   "art": [
+    "m.m.m.m.m.m.m.m",
+    "t.t.t.t.t.t.t.t"
+   ]
+  },
+  {
+   "id": "nostril_r",
+   "shape": "box",
+   "parent": "snout",
+   "size": [
+    1.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    -1.5,
+    1.9,
+    2.75
+   ],
+   "style": "nostril"
+  },
+  {
+   "id": "teeth_r",
+   "shape": "card",
+   "parent": "snout",
+   "pivot": [
+    -2.2,
+    -2.0,
+    0.25
+   ],
+   "style": "tooth",
+   "plane": "yz",
+   "art": [
+    "m.m.m.m.m.m.m.m",
+    "t.t.t.t.t.t.t.t"
+   ]
+  },
+  {
+   "id": "teeth",
+   "shape": "card",
+   "parent": "snout",
+   "pivot": [
+    0.0,
+    -2.0,
+    3.95
+   ],
+   "style": "tooth",
+   "plane": "xy",
+   "art": [
+    "m.m....m.m",
+    "t.t....t.t"
+   ]
   },
   {
    "id": "jaw",
@@ -1448,17 +2005,17 @@
    "size": [
     4.5,
     1.5,
-    9.0
+    9.5
    ],
    "pivot": [
     0.0,
-    -1.1,
-    0.0
+    -1.2,
+    0.6
    ],
    "offset": [
     0.0,
-    -0.6,
-    4.6
+    -0.75,
+    4.75
    ],
    "rotation": [
     3.0,
@@ -1468,83 +2025,227 @@
    "style": "jaw"
   },
   {
-   "id": "teeth",
+   "id": "chin",
+   "shape": "box",
+   "parent": "jaw",
+   "size": [
+    3.5,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    -0.75,
+    8.0
+   ],
+   "style": "jaw"
+  },
+  {
+   "id": "jaw_teeth_l",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    1.9,
+    1.25,
+    5.5
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ],
+   "style": "tooth",
+   "plane": "yz",
+   "art": [
+    ".m.m.m.m.m.m.m",
+    ".t.t.t.t.t.t.t"
+   ]
+  },
+  {
+   "id": "cheek_l",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1.0,
+    2.5,
+    4.0
+   ],
+   "pivot": [
+    3.5,
+    0.05,
+    1.1
+   ],
+   "style": "cheek"
+  },
+  {
+   "id": "cheek_spikes_l",
    "shape": "card",
    "parent": "head",
    "pivot": [
-    0.0,
-    -1.7,
-    11.6
+    4.05,
+    -0.1,
+    0.1
    ],
    "offset": [
     0.0,
-    -0.4,
+    0.0,
+    -1.0
+   ],
+   "rotation": [
+    -20.0,
+    0.0,
     0.0
    ],
-   "style": "claw",
-   "plane": "xy",
+   "style": "spike",
+   "plane": "yz",
    "art": [
-    "...ttttttttttttt",
-    "........t......."
+    "........",
+    "........",
+    "fffffft.",
+    "ffffffff"
+   ]
+  },
+  {
+   "id": "jaw_teeth_r",
+   "shape": "card",
+   "parent": "jaw",
+   "pivot": [
+    -1.9,
+    1.25,
+    5.5
+   ],
+   "rotation": [
+    180.0,
+    0.0,
+    0.0
+   ],
+   "style": "tooth",
+   "plane": "yz",
+   "art": [
+    ".m.m.m.m.m.m.m",
+    ".t.t.t.t.t.t.t"
+   ]
+  },
+  {
+   "id": "cheek_r",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1.0,
+    2.5,
+    4.0
+   ],
+   "pivot": [
+    -3.5,
+    0.05,
+    1.1
+   ],
+   "style": "cheek"
+  },
+  {
+   "id": "cheek_spikes_r",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    -4.05,
+    -0.1,
+    0.1
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "rotation": [
+    -20.0,
+    0.0,
+    0.0
+   ],
+   "style": "spike",
+   "plane": "yz",
+   "art": [
+    "........",
+    "......t.",
+    ".t.ff.ff",
+    "ffffffff"
    ]
   },
   {
    "id": "eye_l",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    3.31,
+    2.15,
+    2.85
+   ],
+   "style": "eye",
+   "plane": "yz",
+   "art": [
+    "Wee",
+    "epE"
+   ]
+  },
+  {
+   "id": "eye_r",
+   "shape": "card",
+   "parent": "head",
+   "pivot": [
+    -3.31,
+    2.15,
+    2.85
+   ],
+   "style": "eye",
+   "plane": "yz",
+   "art": [
+    "Wee",
+    "epE"
+   ]
+  },
+  {
+   "id": "brow_l",
    "shape": "box",
    "parent": "head",
    "size": [
-    0.5,
     1.5,
-    2.0
+    1.0,
+    4.0
    ],
    "pivot": [
-    3.05,
-    1.6,
-    4.4
+    3.0,
+    3.85,
+    2.7
    ],
-   "style": "eye",
-   "paint": {
-    "stamps": [
-     {
-      "face": "left",
-      "at": "top-left",
-      "art": [
-       ".WW.",
-       "Wwp.",
-       ".pp."
-      ],
-      "key": {
-       "p": "scale:0",
-       "W": "eyeglow:6",
-       "w": "eyeglow:5"
-      }
-     }
-    ]
-   }
+   "rotation": [
+    -8.0,
+    0.0,
+    -14.0
+   ],
+   "style": "brow"
   },
   {
    "id": "horn_l0",
    "shape": "box",
    "parent": "head",
    "size": [
-    1.5,
-    1.5,
+    1.0,
+    3.5,
     5.0
    ],
    "pivot": [
-    1.8,
-    3.3,
-    0.2
+    1.6,
+    3.75,
+    1.0
    ],
    "offset": [
     0.0,
-    0.0,
-    -2.1
+    1.4,
+    -1.5
    ],
    "rotation": [
-    30.0,
+    -26.0,
     0.0,
-    -8.0
+    -6.0
    ],
    "style": "horn"
   },
@@ -1554,21 +2255,21 @@
    "parent": "horn_l0",
    "size": [
     1.0,
-    1.0,
-    4.0
+    2.0,
+    2.5
    ],
    "pivot": [
     -0.0,
-    0.0,
-    -4.4
+    2.2,
+    -3.8
    ],
    "offset": [
     0.0,
     0.0,
-    -1.8
+    -0.6
    ],
    "rotation": [
-    14.0,
+    -14.0,
     0.0,
     0.0
    ],
@@ -1580,110 +2281,70 @@
    "parent": "head",
    "size": [
     1.0,
-    1.0,
-    3.0
+    2.0,
+    3.5
    ],
    "pivot": [
-    3.0,
-    1.4,
-    -0.0
+    2.9,
+    2.75,
+    0.0
    ],
    "offset": [
     0.0,
-    0.0,
-    -1.1
-   ],
-   "rotation": [
-    14.0,
-    0.0,
-    -40.0
-   ],
-   "style": "horn"
-  },
-  {
-   "id": "frill_l",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    3.05,
-    0.6,
-    0.2
-   ],
-   "offset": [
-    0.0,
-    0.6,
-    -0.4
+    0.8,
+    -1.2
    ],
    "rotation": [
     -30.0,
     0.0,
-    18.0
+    -34.0
    ],
-   "style": "frill",
-   "plane": "yz",
-   "art": [
-    "..........",
-    ".t...t.t.t",
-    "ffffffffff"
-   ]
+   "style": "horn"
   },
   {
-   "id": "eye_r",
+   "id": "brow_r",
    "shape": "box",
    "parent": "head",
    "size": [
-    0.5,
     1.5,
-    2.0
+    1.0,
+    4.0
    ],
    "pivot": [
-    -3.05,
-    1.6,
-    4.4
+    -3.0,
+    3.85,
+    2.7
    ],
-   "style": "eye",
-   "paint": {
-    "stamps": [
-     {
-      "face": "right",
-      "at": "top-left",
-      "art": [
-       ".WW.",
-       "Wwp.",
-       ".pp."
-      ],
-      "key": {
-       "p": "scale:0",
-       "W": "eyeglow:6",
-       "w": "eyeglow:5"
-      }
-     }
-    ]
-   }
+   "rotation": [
+    -8.0,
+    0.0,
+    14.0
+   ],
+   "style": "brow"
   },
   {
    "id": "horn_r0",
    "shape": "box",
    "parent": "head",
    "size": [
-    1.5,
-    1.5,
+    1.0,
+    3.5,
     5.0
    ],
    "pivot": [
-    -1.8,
-    3.3,
-    0.2
+    -1.6,
+    3.75,
+    1.0
    ],
    "offset": [
     0.0,
-    0.0,
-    -2.1
+    1.4,
+    -1.5
    ],
    "rotation": [
-    30.0,
+    -26.0,
     0.0,
-    8.0
+    6.0
    ],
    "style": "horn"
   },
@@ -1693,21 +2354,21 @@
    "parent": "horn_r0",
    "size": [
     1.0,
-    1.0,
-    4.0
+    2.0,
+    2.5
    ],
    "pivot": [
     0.0,
-    0.0,
-    -4.4
+    2.2,
+    -3.8
    ],
    "offset": [
     0.0,
     0.0,
-    -1.8
+    -0.6
    ],
    "rotation": [
-    14.0,
+    -14.0,
     0.0,
     0.0
    ],
@@ -1719,52 +2380,77 @@
    "parent": "head",
    "size": [
     1.0,
-    1.0,
-    3.0
+    2.0,
+    3.5
    ],
    "pivot": [
-    -3.0,
-    1.4,
-    -0.0
+    -2.9,
+    2.75,
+    0.0
    ],
    "offset": [
     0.0,
-    0.0,
-    -1.1
-   ],
-   "rotation": [
-    14.0,
-    0.0,
-    40.0
-   ],
-   "style": "horn"
-  },
-  {
-   "id": "frill_r",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    -3.05,
-    0.6,
-    0.2
-   ],
-   "offset": [
-    0.0,
-    0.6,
-    -0.4
+    0.8,
+    -1.2
    ],
    "rotation": [
     -30.0,
     0.0,
-    -18.0
+    34.0
    ],
-   "style": "frill",
-   "plane": "yz",
-   "art": [
-    ".t........",
-    ".f....t...",
-    "fffttffttf"
-   ]
+   "style": "horn"
+  },
+  {
+   "id": "head_spine_0",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    3.9,
+    1.4
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "head_spine_1",
+   "shape": "box",
+   "parent": "head",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    3.65,
+    -0.8
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -40.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "wing_l",
@@ -1776,9 +2462,9 @@
     6.0
    ],
    "rotation": [
-    -90.0,
-    75.0,
-    15.0
+    -60.651,
+    69.988,
+    43.07
    ],
    "style": "scale"
   },
@@ -1787,7 +2473,7 @@
    "shape": "box",
    "parent": "wing_l",
    "size": [
-    12.0,
+    13.0,
     1.5,
     1.5
    ],
@@ -1797,46 +2483,44 @@
     0.0
    ],
    "offset": [
-    6.0,
+    6.5,
     0.0,
     0.0
    ],
-   "style": "arm"
+   "style": "wingbone"
   },
   {
    "id": "wing_l_m",
    "shape": "card",
    "parent": "wing_l",
    "pivot": [
-    6.0,
+    6.5,
     -0.1,
-    -6.0
+    -4.75
    ],
    "style": "wing_l",
    "plane": "xz",
    "art": [
-    "rrrr....................",
-    "rmmmr...............rrrr",
-    "rmmmmrr...........rrmmmr",
-    "rmmmmmmr.........rmmmmmr",
-    "rmmmmmmmrr.....rrmmmmmmr",
-    "rmmmmvmmmmrrrrrmmmmmmmmr",
-    "rmmmmvmmmmmmmmmmmmmmmmmr",
-    "rmmmvvmmmmmmmmmmmmmmmmmr",
-    "rmmmmvmmmmmmmmmmmmmmmmmr",
-    "rmmmmvmmmmmmmmmmmmmmmmmr",
-    "rmmmmmvmmmmmvmmmmmmmmmmr",
-    "rmmmmmmmmmmvvmmmmmmmmmmr",
-    "rmmmmmmmmmmvmmmmmmmmmmmr",
-    "rmmmmmmmmmvvvvmmmmmmmmmr",
-    "rmmmvmmmmmvvvvmmmmmmmmmr",
-    "rmmmvmmmmmvmmvvmmmmmmvmr",
-    "rmmmvmmmmmvmmmvmmmmmmvmr",
-    "rmmmmmmmmmmmmmmmmmmmmvmr",
-    "rmmmmmmmmmmmmmmmmmmmmvmr",
-    "rmmmmmmmmmmmmmmmmmmmmmmr",
-    "rmmmmmmmmmmmmmmmmmmmmmmr",
-    "mmmmmmmmmmmmmmmmmmmmmmmm"
+    "m.........................",
+    "mR........................",
+    "mmR.......................",
+    "mmmRr.....................",
+    "mmmmmr....................",
+    "mmmmmmr...................",
+    "mmmmmmmr..................",
+    "mmmmmmmmrr................",
+    "mmmvmmmmmmr...............",
+    "mmmvmmmmmvmrR.............",
+    "mmmvvmmmmvmmmRrrRrrRrrRrrm",
+    "mmmvvmmmmvmmmmmvvvmmmmvmmm",
+    "mmmvvmmmmvmmmmmmvvmmmmvmmm",
+    "mmmvvmmmmvmmmmmmvvvmmmvmmm",
+    "mmmmvmmmmvvmmmmmvvvmmmvvmm",
+    "mmmmvmmmmmvmmmmmvvvmmmmvmm",
+    "mmmmvmmmmmvmmmmmvvvmmmmvmm",
+    "mmmmvvmmmmvmmmmmvvvmmmmvmm",
+    "mmmmvvmmmmvmmmmmvvvmmmmvmm",
+    "mmmmvvmmmmvmmmmmvvvmmmmvmm"
    ]
   },
   {
@@ -1844,9 +2528,9 @@
    "shape": "bone",
    "parent": "wing_l",
    "pivot": [
-    12.0,
-    -0.0,
-    -0.0
+    13.0,
+    0.0,
+    0.0
    ],
    "rotation": [
     0.0,
@@ -1856,11 +2540,62 @@
    "style": "scale"
   },
   {
-   "id": "wing_l_hand",
+   "id": "wing_l_knuckle",
    "shape": "box",
    "parent": "wing_l_tip",
    "size": [
-    12.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "wingbone"
+  },
+  {
+   "id": "wing_l_tip_m",
+   "shape": "card",
+   "parent": "wing_l_tip",
+   "pivot": [
+    7.5,
+    -0.12,
+    -5.0
+   ],
+   "style": "wing_l",
+   "plane": "xz",
+   "art": [
+    "..............................",
+    "..............................",
+    "........Rr....................",
+    ".......rmR.......r............",
+    ".......Rmr.....rRmr...........",
+    "......rmmmr.rrRmmR............",
+    ".....rmmmmmrmmmmmr............",
+    ".....rvmmmmmmmmmmr............",
+    "....rmvmmmmmmmmmmR............",
+    "...RmmvvmmmmmmmmmvRrrRrrRr....",
+    "mRrmmmvmmmmmmmmmvvmmmmmmmR....",
+    "mmmmmmvmmmmmmmmvvmmmmmmmr.....",
+    "mmmmmmvvvmmvmmmvvvmmmmmr......",
+    "mmmmmmmvvmvvmmmmmmmmmmR.......",
+    "mmmmmmvvvmvmmmmmmmmmmmr.......",
+    "mmmmmvmmvmmmmmmmmmmmmmr.......",
+    "mmmmmmmmmmmmmmmmmmmmmmmrrRr...",
+    "mmmmmmmmmmmmmmmmmmmmmmmmmmmrr.",
+    "mmmmmmmmmmmmmmmmmmmmmmmmRrr...",
+    "mmmmmmmmmmmmmmmmmmmmrrRr......",
+    "mmmmmmmmmmmmmmmmmmmm.........."
+   ]
+  },
+  {
+   "id": "wing_l_finger_0",
+   "shape": "box",
+   "parent": "wing_l_tip",
+   "size": [
+    14.5,
     1.0,
     1.0
    ],
@@ -1870,48 +2605,115 @@
     0.0
    ],
    "offset": [
-    6.0,
+    7.25,
     0.0,
     0.0
    ],
-   "style": "arm"
+   "rotation": [
+    0.0,
+    6.0,
+    0.0
+   ],
+   "style": "spar"
   },
   {
-   "id": "wing_l_tip_m",
-   "shape": "card",
+   "id": "wing_l_finger_1",
+   "shape": "box",
    "parent": "wing_l_tip",
-   "pivot": [
-    6.0,
-    -0.12,
-    -5.75
+   "size": [
+    14.0,
+    1.0,
+    1.0
    ],
-   "style": "wing_l",
-   "plane": "xz",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    7.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    24.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_l_finger_2",
+   "shape": "box",
+   "parent": "wing_l_tip",
+   "size": [
+    12.5,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    6.25,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    44.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_l_finger_3",
+   "shape": "box",
+   "parent": "wing_l_tip",
+   "size": [
+    10.5,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    5.25,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    66.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_l_claw",
+   "shape": "card",
+   "parent": "wing_l_finger_0",
+   "pivot": [
+    14.3,
+    0.2,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    0.6,
+    0.0
+   ],
+   "style": "claw",
+   "plane": "yz",
    "art": [
-    "........................",
-    "r.......................",
-    "rr......rb..............",
-    "rmr....rbbr.............",
-    "rmr...rmbBr.............",
-    "rmmr.rmbbmmr............",
-    "rmmvrmmbBmmr.....r......",
-    "rmmvvvmbmmmmr...rb......",
-    "rmvvmvbBmmmvvrrbbBr.....",
-    "rmvmmmbmmmmvmmbbBmr.....",
-    "rmmmmbBmmmvmmbbBmmr.....",
-    "rmmmmbmmmmmmbbBvmmr.....",
-    "rmmmbbmmmmmbbBmvmmmr....",
-    "rmmmbBmmmmbbBmmmmmvr....",
-    "rmmmbmmmmbbBmmmmmmvr....",
-    "rmmbBmmmbBBmmmmmmmvmrrb.",
-    "rmmbmmmbbmmmmmmmmvvbbbb.",
-    "rmbbmmbBBmmmmmmmbbbbBBBr",
-    "rmbBmbBmmmmmbbbbBBBBmmmr",
-    "rmbbbBmmmmbbbBBBmmmmmmcr",
-    "rbBbBmmbbbBBBmmmmmmmmmmc",
-    "rbbBbbbBBBmmmmmmmmmmmmmr",
-    "bbbbBBBmmmmmmmmmmmmrrrr.",
-    "bBBBmmmmmmmmmmmmmmm....."
+    "c",
+    "c",
+    "t"
    ]
   },
   {
@@ -1919,7 +2721,7 @@
    "shape": "card",
    "parent": "wing_l_tip",
    "pivot": [
-    -0.0,
+    0.0,
     0.2,
     0.6
    ],
@@ -1945,9 +2747,9 @@
     6.0
    ],
    "rotation": [
-    -90.0,
-    -75.0,
-    -15.0
+    -60.651,
+    -69.988,
+    -43.07
    ],
    "style": "scale"
   },
@@ -1956,7 +2758,7 @@
    "shape": "box",
    "parent": "wing_r",
    "size": [
-    12.0,
+    13.0,
     1.5,
     1.5
    ],
@@ -1966,46 +2768,44 @@
     0.0
    ],
    "offset": [
-    -6.0,
+    -6.5,
     0.0,
     0.0
    ],
-   "style": "arm"
+   "style": "wingbone"
   },
   {
    "id": "wing_r_m",
    "shape": "card",
    "parent": "wing_r",
    "pivot": [
-    -6.0,
+    -6.5,
     -0.1,
-    -6.0
+    -4.75
    ],
    "style": "wing_r",
    "plane": "xz",
    "art": [
-    "....................rrrr",
-    "rrrr...............rmmmr",
-    "rmmmrr...........rrmmmmr",
-    "rmmmmmr.........rmmmmmmr",
-    "rmmmmmmrr.....rrmmmmmmmr",
-    "rmmmmmmmmrrrrrmmmmvmmmmr",
-    "rmmmmmmmmmmmmmmmmmvmmmmr",
-    "rmmmmmmmmmmmmmmmmmvvmmmr",
-    "rmmmmmmmmmmmmmmmmmvmmmmr",
-    "rmmmmmmmmmmmmmmmmmvmmmmr",
-    "rmmmmmmmmmmvmmmmmvmmmmmr",
-    "rmmmmmmmmmmvvmmmmmmmmmmr",
-    "rmmmmmmmmmmmvmmmmmmmmmmr",
-    "rmmmmmmmmmvvvvmmmmmmmmmr",
-    "rmmmmmmmmmvvvvmmmmmvmmmr",
-    "rmvmmmmmmvvmmvmmmmmvmmmr",
-    "rmvmmmmmmvmmmvmmmmmvmmmr",
-    "rmvmmmmmmmmmmmmmmmmmmmmr",
-    "rmvmmmmmmmmmmmmmmmmmmmmr",
-    "rmmmmmmmmmmmmmmmmmmmmmmr",
-    "rmmmmmmmmmmmmmmmmmmmmmmr",
-    "mmmmmmmmmmmmmmmmmmmmmmmm"
+    ".........................m",
+    "........................Rm",
+    ".......................Rmm",
+    ".....................rRmmm",
+    "....................rmmmmm",
+    "...................rmmmmmm",
+    "..................rmmmmmmm",
+    "................rrmmmmmmmm",
+    "...............rmmmmmmvmmm",
+    ".............Rrmvmmmmmvmmm",
+    "mrrRrrRrrRrrRmmmvmmmmvvmmm",
+    "mmmvmmmmvvvmmmmmvmmmmvvmmm",
+    "mmmvmmmmvvmmmmmmvmmmmvvmmm",
+    "mmmvmmmvvvmmmmmmvmmmmvvmmm",
+    "mmvvmmmvvvmmmmmvvmmmmvmmmm",
+    "mmvmmmmvvvmmmmmvmmmmmvmmmm",
+    "mmvmmmmvvvmmmmmvmmmmmvmmmm",
+    "mmvmmmmvvvmmmmmvmmmmvvmmmm",
+    "mmvmmmmvvvmmmmmvmmmmvvmmmm",
+    "mmvmmmmvvvmmmmmvmmmmvvmmmm"
    ]
   },
   {
@@ -2013,9 +2813,9 @@
    "shape": "bone",
    "parent": "wing_r",
    "pivot": [
-    -12.0,
-    -0.0,
-    -0.0
+    -13.0,
+    0.0,
+    0.0
    ],
    "rotation": [
     0.0,
@@ -2025,11 +2825,62 @@
    "style": "scale"
   },
   {
-   "id": "wing_r_hand",
+   "id": "wing_r_knuckle",
    "shape": "box",
    "parent": "wing_r_tip",
    "size": [
-    12.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "wingbone"
+  },
+  {
+   "id": "wing_r_tip_m",
+   "shape": "card",
+   "parent": "wing_r_tip",
+   "pivot": [
+    -7.5,
+    -0.12,
+    -5.0
+   ],
+   "style": "wing_r",
+   "plane": "xz",
+   "art": [
+    "..............................",
+    "..............................",
+    "....................rR........",
+    "............r.......Rmr.......",
+    "...........rmRr.....rmR.......",
+    "............RmmRrr.rmmmr......",
+    "............rmmmmmrmmmmmr.....",
+    "............rmmmmmmmmmmvr.....",
+    "............Rmmmmmmmmmmvmr....",
+    "....rRrrRrrRvmmmmmmmmmvvmmR...",
+    "....RmmmmmmmvvmmmmmmmmmvmmmrRm",
+    ".....rmmmmmmmvvmmmmmmmmvmmmmmm",
+    "......rmmmmmvvvmmmvmmvvvmmmmmm",
+    ".......Rmmmmmmmmmmvvmvvmmmmmmm",
+    ".......rmmmmmmmmmmmvmvvvmmmmmm",
+    ".......rmmmmmmmmmmmmmvmmvmmmmm",
+    "...rRrrmmmmmmmmmmmmmmmmmmmmmmm",
+    ".rrmmmmmmmmmmmmmmmmmmmmmmmmmmm",
+    "...rrRmmmmmmmmmmmmmmmmmmmmmmmm",
+    "......rRrrmmmmmmmmmmmmmmmmmmmm",
+    "..........mmmmmmmmmmmmmmmmmmmm"
+   ]
+  },
+  {
+   "id": "wing_r_finger_0",
+   "shape": "box",
+   "parent": "wing_r_tip",
+   "size": [
+    14.5,
     1.0,
     1.0
    ],
@@ -2039,48 +2890,115 @@
     0.0
    ],
    "offset": [
-    -6.0,
+    -7.25,
     0.0,
     0.0
    ],
-   "style": "arm"
+   "rotation": [
+    0.0,
+    -6.0,
+    0.0
+   ],
+   "style": "spar"
   },
   {
-   "id": "wing_r_tip_m",
-   "shape": "card",
+   "id": "wing_r_finger_1",
+   "shape": "box",
    "parent": "wing_r_tip",
-   "pivot": [
-    -6.0,
-    -0.12,
-    -5.75
+   "size": [
+    14.0,
+    1.0,
+    1.0
    ],
-   "style": "wing_r",
-   "plane": "xz",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -7.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -24.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_r_finger_2",
+   "shape": "box",
+   "parent": "wing_r_tip",
+   "size": [
+    12.5,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -6.25,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -44.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_r_finger_3",
+   "shape": "box",
+   "parent": "wing_r_tip",
+   "size": [
+    10.5,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -5.25,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -66.0,
+    0.0
+   ],
+   "style": "spar"
+  },
+  {
+   "id": "wing_r_claw",
+   "shape": "card",
+   "parent": "wing_r_finger_0",
+   "pivot": [
+    -14.3,
+    0.2,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    0.6,
+    0.0
+   ],
+   "style": "claw",
+   "plane": "yz",
    "art": [
-    "........................",
-    ".......................r",
-    "..............br......rr",
-    ".............rbbr....rmr",
-    ".............rBbmr...rmr",
-    "............rmmbbmr.rmmr",
-    "......r.....rmmBbmmrvmmr",
-    "......br...rmmmmbmvvvmmr",
-    ".....rBbbrrvvmmmBbvmvvmr",
-    ".....rmBbbmmvmmmmbmmmvmr",
-    ".....rmmBbbmmvmmmBbmmmmr",
-    ".....rmmvBbbmmmmmmbmmmmr",
-    "....rmmmvmBbbmmmmmbbmmmr",
-    "....rvmmmmmBbbmmmmBbmmmr",
-    "....rvmmmmmmBbbmmmmbmmmr",
-    ".brrmvmmmmmmmBBbmmmBbmmr",
-    ".bbbbvvmmmmmmmmbbmmmbmmr",
-    "rBBBbbbbmmmmmmmBBbmmbbmr",
-    "rmmmBBBBbbbbmmmmmBbmBbmr",
-    "rcmmmmmmBBBbbbmmmmBbbbmr",
-    "cmmmmmmmmmmBBBbbbmmBbBbr",
-    "rmmmmmmmmmmmmmBBBbbbBbbr",
-    ".rrrrmmmmmmmmmmmmBBBbbbb",
-    ".....mmmmmmmmmmmmmmmBBBb"
+    "c",
+    "c",
+    "t"
    ]
   },
   {
@@ -2088,7 +3006,7 @@
    "shape": "card",
    "parent": "wing_r_tip",
    "pivot": [
-    0.0,
+    -0.0,
     0.2,
     0.6
    ],
@@ -2111,7 +3029,7 @@
    "size": [
     6.0,
     5.0,
-    9.0
+    8.5
    ],
    "pivot": [
     0.0,
@@ -2121,37 +3039,66 @@
    "offset": [
     0.0,
     0.0,
-    -4.0
+    -3.75
    ],
    "rotation": [
     -16.0,
-    6.0,
+    5.0,
     0.0
    ],
    "style": "tail"
   },
   {
-   "id": "tail_0_spines",
-   "shape": "card",
+   "id": "tail_0_spine",
+   "shape": "box",
    "parent": "tail_0",
+   "size": [
+    1.5,
+    3.0,
+    2.0
+   ],
    "pivot": [
     -0.0,
-    2.5,
-    -4.0
+    2.4,
+    -3.75
    ],
    "offset": [
     0.0,
-    1.0,
+    1.15,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "..................",
-    ".t.t.t....t...t...",
-    ".f.f.fff..f...f..t",
-    "ffffffffffffffffff"
-   ]
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_0_spine_b",
+   "shape": "box",
+   "parent": "tail_0",
+   "size": [
+    1.5,
+    2.5,
+    2.0
+   ],
+   "pivot": [
+    -0.0,
+    2.4,
+    -6.5
+   ],
+   "offset": [
+    0.0,
+    0.9,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "tail_1",
@@ -2159,148 +3106,377 @@
    "parent": "tail_0",
    "size": [
     5.0,
-    4.0,
-    9.0
+    4.5,
+    8.5
    ],
    "pivot": [
     -0.0,
     -0.2,
-    -8.0
+    -7.5
    ],
    "offset": [
     0.0,
     0.0,
-    -4.0
+    -3.75
    ],
    "rotation": [
     -6.0,
-    10.0,
+    7.0,
     0.0
    ],
    "style": "tail"
   },
   {
-   "id": "tail_1_spines",
-   "shape": "card",
+   "id": "tail_1_spine",
+   "shape": "box",
    "parent": "tail_1",
+   "size": [
+    1.0,
+    2.5,
+    2.0
+   ],
    "pivot": [
-    -0.0,
-    2.0,
-    -4.0
+    0.0,
+    2.15,
+    -3.75
    ],
    "offset": [
     0.0,
-    1.0,
+    0.9,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    ".....t............",
-    ".....m.t......t..t",
-    "ff.tffffff.ff.f..f",
-    "ffffffffffffffffff"
-   ]
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_1_spine_b",
+   "shape": "box",
+   "parent": "tail_1",
+   "size": [
+    1.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    -0.0,
+    2.15,
+    -6.5
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "tail_2",
    "shape": "box",
    "parent": "tail_1",
    "size": [
-    4.0,
-    3.0,
-    9.0
+    4.5,
+    3.5,
+    8.0
    ],
    "pivot": [
-    0.0,
+    -0.0,
     -0.2,
-    -8.0
+    -7.5
    ],
    "offset": [
     0.0,
     0.0,
-    -4.0
+    -3.5
    ],
    "rotation": [
-    6.0,
-    12.0,
+    5.0,
+    8.0,
     0.0
    ],
    "style": "tail"
   },
   {
-   "id": "tail_2_spines",
-   "shape": "card",
+   "id": "tail_2_spine",
+   "shape": "box",
    "parent": "tail_2",
+   "size": [
+    1.0,
+    2.5,
+    1.5
+   ],
    "pivot": [
-    -0.0,
-    1.5,
-    -4.0
+    0.0,
+    1.65,
+    -3.5
    ],
    "offset": [
     0.0,
-    1.0,
+    0.9,
     0.0
    ],
-   "style": "spine",
-   "plane": "yz",
-   "art": [
-    "......t....t......",
-    "......m.t..m.....t",
-    "..ff.ffff.ffft...f",
-    "ffffffffffffffffff"
-   ]
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_2_spine_b",
+   "shape": "box",
+   "parent": "tail_2",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    -0.0,
+    1.65,
+    -6.0
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
   },
   {
    "id": "tail_3",
    "shape": "box",
    "parent": "tail_2",
    "size": [
+    3.5,
     3.0,
-    2.0,
-    9.0
+    8.0
    ],
    "pivot": [
-    -0.0,
+    0.0,
     -0.2,
-    -8.0
+    -7.0
    ],
    "offset": [
     0.0,
     0.0,
-    -4.0
+    -3.5
    ],
    "rotation": [
+    7.0,
     8.0,
-    12.0,
     0.0
    ],
    "style": "tail"
   },
   {
-   "id": "tail_blade",
-   "shape": "card",
+   "id": "tail_3_spine",
+   "shape": "box",
    "parent": "tail_3",
+   "size": [
+    1.0,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    1.4,
+    -3.5
+   ],
+   "offset": [
+    0.0,
+    0.65,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_4",
+   "shape": "box",
+   "parent": "tail_3",
+   "size": [
+    3.0,
+    2.5,
+    7.0
+   ],
    "pivot": [
     -0.0,
-    -0.0,
-    -8.4
+    -0.2,
+    -7.0
    ],
    "offset": [
     0.0,
     0.0,
-    -1.5
+    -3.0
    ],
-   "style": "frill",
+   "rotation": [
+    6.0,
+    8.0,
+    0.0
+   ],
+   "style": "tail"
+  },
+  {
+   "id": "tail_4_spine",
+   "shape": "box",
+   "parent": "tail_4",
+   "size": [
+    1.0,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -0.0,
+    1.15,
+    -3.0
+   ],
+   "offset": [
+    0.0,
+    0.4,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_5",
+   "shape": "box",
+   "parent": "tail_4",
+   "size": [
+    2.0,
+    2.0,
+    6.5
+   ],
+   "pivot": [
+    -0.0,
+    -0.2,
+    -6.0
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -2.75
+   ],
+   "rotation": [
+    6.0,
+    6.0,
+    0.0
+   ],
+   "style": "tail"
+  },
+  {
+   "id": "tail_5_spine",
+   "shape": "box",
+   "parent": "tail_5",
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.9,
+    -2.75
+   ],
+   "offset": [
+    0.0,
+    0.15,
+    0.0
+   ],
+   "rotation": [
+    -34.0,
+    0.0,
+    0.0
+   ],
+   "style": "spine"
+  },
+  {
+   "id": "tail_blade",
+   "shape": "card",
+   "parent": "tail_5",
+   "pivot": [
+    0.0,
+    -0.0,
+    -5.7
+   ],
+   "offset": [
+    0.0,
+    0.0,
+    -2.75
+   ],
+   "style": "spike",
    "plane": "xz",
    "art": [
-    "...tt...",
-    "..tmmt..",
-    ".tmffmt.",
-    "tmffffmt",
-    ".tmffmt.",
-    "..tmmt..",
-    "...tm..."
+    "....tt....",
+    "...tfmt...",
+    "...tfmt...",
+    "..tffmft..",
+    "..tffmft..",
+    ".tfffmfft.",
+    ".tfffmfft.",
+    "tfmmfmmmft",
+    "tt..mm..tt",
+    "....mm....",
+    "....mm....",
+    "....mm...."
+   ]
+  },
+  {
+   "id": "tail_blade_v",
+   "shape": "card",
+   "parent": "tail_5",
+   "pivot": [
+    0.0,
+    -0.0,
+    -5.7
+   ],
+   "offset": [
+    0.0,
+    2.75,
+    0.0
+   ],
+   "rotation": [
+    -90.0,
+    0.0,
+    0.0
+   ],
+   "style": "spike",
+   "plane": "yz",
+   "art": [
+    "....tt....",
+    "...tfmt...",
+    "...tfmt...",
+    "..tffmft..",
+    "..tffmft..",
+    ".tfffmfft.",
+    ".tfffmfft.",
+    "tfmmfmmmft",
+    "tt..mm..tt",
+    "....mm....",
+    "....mm....",
+    "....mm...."
    ]
   },
   {
@@ -2356,6 +3532,29 @@
    "style": "leg"
   },
   {
+   "id": "spur_fl",
+   "shape": "card",
+   "parent": "shin_fl",
+   "pivot": [
+    0.0,
+    -0.3,
+    -1.25
+   ],
+   "rotation": [
+    150.0,
+    0.0,
+    0.0
+   ],
+   "style": "spike",
+   "plane": "yz",
+   "art": [
+    "....",
+    "....",
+    "ffft",
+    "ffff"
+   ]
+  },
+  {
    "id": "foot_fl",
    "shape": "box",
    "parent": "shin_fl",
@@ -2382,13 +3581,29 @@
    "style": "foot"
   },
   {
+   "id": "toes_fl",
+   "shape": "box",
+   "parent": "foot_fl",
+   "size": [
+    3.0,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    -0.0,
+    -0.0,
+    2.75
+   ],
+   "style": "foot"
+  },
+  {
    "id": "claws_fl",
    "shape": "card",
    "parent": "foot_fl",
    "pivot": [
     -0.0,
     -0.25,
-    4.25
+    3.5
    ],
    "offset": [
     0.0,
@@ -2461,6 +3676,29 @@
    "style": "leg"
   },
   {
+   "id": "spur_fr",
+   "shape": "card",
+   "parent": "shin_fr",
+   "pivot": [
+    -0.0,
+    -0.3,
+    -1.25
+   ],
+   "rotation": [
+    150.0,
+    0.0,
+    0.0
+   ],
+   "style": "spike",
+   "plane": "yz",
+   "art": [
+    "....",
+    "..t.",
+    "fff.",
+    "ffff"
+   ]
+  },
+  {
    "id": "foot_fr",
    "shape": "box",
    "parent": "shin_fr",
@@ -2487,13 +3725,29 @@
    "style": "foot"
   },
   {
+   "id": "toes_fr",
+   "shape": "box",
+   "parent": "foot_fr",
+   "size": [
+    3.0,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -0.0,
+    2.75
+   ],
+   "style": "foot"
+  },
+  {
    "id": "claws_fr",
    "shape": "card",
    "parent": "foot_fr",
    "pivot": [
     0.0,
     -0.25,
-    4.25
+    3.5
    ],
    "offset": [
     0.0,
@@ -2566,6 +3820,29 @@
    "style": "leg"
   },
   {
+   "id": "spur_bl",
+   "shape": "card",
+   "parent": "shin_bl",
+   "pivot": [
+    0.0,
+    -0.3,
+    1.75
+   ],
+   "rotation": [
+    30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spike",
+   "plane": "yz",
+   "art": [
+    "....",
+    "....",
+    "ffft",
+    "ffff"
+   ]
+  },
+  {
    "id": "foot_bl",
    "shape": "box",
    "parent": "shin_bl",
@@ -2592,13 +3869,29 @@
    "style": "foot"
   },
   {
+   "id": "toes_bl",
+   "shape": "box",
+   "parent": "foot_bl",
+   "size": [
+    3.0,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    3.0
+   ],
+   "style": "foot"
+  },
+  {
    "id": "claws_bl",
    "shape": "card",
    "parent": "foot_bl",
    "pivot": [
-    0.0,
+    -0.0,
     -0.25,
-    4.75
+    3.75
    ],
    "offset": [
     0.0,
@@ -2671,6 +3964,29 @@
    "style": "leg"
   },
   {
+   "id": "spur_br",
+   "shape": "card",
+   "parent": "shin_br",
+   "pivot": [
+    -0.0,
+    -0.3,
+    1.75
+   ],
+   "rotation": [
+    30.0,
+    0.0,
+    0.0
+   ],
+   "style": "spike",
+   "plane": "yz",
+   "art": [
+    "....",
+    "..t.",
+    "fff.",
+    "ffff"
+   ]
+  },
+  {
    "id": "foot_br",
    "shape": "box",
    "parent": "shin_br",
@@ -2697,13 +4013,29 @@
    "style": "foot"
   },
   {
+   "id": "toes_br",
+   "shape": "box",
+   "parent": "foot_br",
+   "size": [
+    3.0,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    -0.0,
+    0.0,
+    3.0
+   ],
+   "style": "foot"
+  },
+  {
    "id": "claws_br",
    "shape": "card",
    "parent": "foot_br",
    "pivot": [
-    -0.0,
+    0.0,
     -0.25,
-    4.75
+    3.75
    ],
    "offset": [
     0.0,
@@ -2888,7 +4220,7 @@
     7.0
    ],
    "pivot": [
-    5.35,
+    5.6,
     -2.4,
     0.0
    ],
@@ -2951,7 +4283,7 @@
     7.0
    ],
    "pivot": [
-    -5.35,
+    -5.6,
     -2.4,
     0.0
    ],
@@ -3009,7 +4341,7 @@
    "shape": "box",
    "parent": "saddle",
    "size": [
-    10.5,
+    11.0,
     10.0,
     1.5
    ],
@@ -3029,14 +4361,14 @@
    "shape": "box",
    "parent": "head",
    "size": [
-    6.5,
+    7.0,
     2.5,
-    7.5
+    6.5
    ],
    "pivot": [
     0.0,
-    2.7,
-    2.6
+    3.4,
+    1.6
    ],
    "style": "armor"
   },
@@ -3051,8 +4383,8 @@
    ],
    "pivot": [
     0.0,
-    1.3,
-    0.1
+    1.25,
+    -0.75
    ],
    "style": "armor"
   },
@@ -3061,13 +4393,13 @@
    "shape": "box",
    "parent": "neck",
    "size": [
-    5.5,
+    6.0,
     2.5,
     8.5
    ],
    "pivot": [
     0.0,
-    1.6,
+    1.75,
     3.5
    ],
    "style": "armor"
@@ -3077,7 +4409,7 @@
    "shape": "box",
    "parent": "neck_1",
    "size": [
-    5.0,
+    5.5,
     2.5,
     7.5
    ],
@@ -3100,7 +4432,7 @@
    "pivot": [
     0.0,
     0.0,
-    10.9
+    11.5
    ],
    "style": "armor"
   },
@@ -3114,7 +4446,7 @@
     11.0
    ],
    "pivot": [
-    5.3,
+    5.75,
     1.0,
     4.0
    ],
@@ -3130,7 +4462,7 @@
     11.0
    ],
    "pivot": [
-    -5.3,
+    -5.75,
     1.0,
     4.0
    ],
@@ -3223,14 +4555,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 8.0,
+      "amp": 7.0,
       "cycles": 1,
-      "lag": 0.12,
-      "growth": 1.25,
+      "lag": 0.1,
+      "growth": 1.2,
       "phase": 0.0
      }
     },
@@ -3239,7 +4573,9 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "x",
@@ -3781,14 +5117,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 10.0,
+      "amp": 8.0,
       "cycles": 1,
-      "lag": 0.14,
-      "growth": 1.2,
+      "lag": 0.12,
+      "growth": 1.15,
       "phase": 0.1
      }
     },
@@ -3840,7 +5178,7 @@
        0.0,
        [
         0.0,
-        1.023,
+        0.893,
         0.0
        ]
       ],
@@ -3848,7 +5186,7 @@
        0.05,
        [
         0.0,
-        0.88,
+        0.783,
         0.0
        ]
       ],
@@ -3856,15 +5194,7 @@
        0.1,
        [
         0.0,
-        0.567,
-        0.0
-       ]
-      ],
-      [
-       0.15,
-       [
-        0.0,
-        0.101,
+        0.512,
         0.0
        ]
       ],
@@ -3877,18 +5207,18 @@
        ]
       ],
       [
-       0.1833,
+       0.2,
        [
         0.0,
-        -0.072,
+        -0.124,
         0.0
        ]
       ],
       [
-       0.3,
+       0.3167,
        [
         0.0,
-        0.06,
+        -0.076,
         0.0
        ]
       ],
@@ -3896,60 +5226,20 @@
        0.4333,
        [
         0.0,
-        0.699,
+        0.374,
         0.0
        ]
       ],
       [
-       0.5,
+       0.4833,
        [
         0.0,
-        0.857,
+        0.462,
         0.0
        ]
       ],
       [
-       0.7167,
-       [
-        0.0,
-        2.031,
-        0.0
-       ]
-      ],
-      [
-       0.7667,
-       [
-        0.0,
-        2.192,
-        0.0
-       ]
-      ],
-      [
-       0.8,
-       [
-        0.0,
-        2.222,
-        0.0
-       ]
-      ],
-      [
-       0.8333,
-       [
-        0.0,
-        2.161,
-        0.0
-       ]
-      ],
-      [
-       0.8667,
-       [
-        0.0,
-        1.989,
-        0.0
-       ]
-      ],
-      [
-       0.9,
+       0.75,
        [
         0.0,
         1.7,
@@ -3957,18 +5247,42 @@
        ]
       ],
       [
-       0.9333,
+       0.8,
        [
         0.0,
-        1.301,
+        1.804,
         0.0
        ]
       ],
       [
-       1.0,
+       0.8333,
        [
         0.0,
-        0.289,
+        1.78,
+        0.0
+       ]
+      ],
+      [
+       0.8667,
+       [
+        0.0,
+        1.655,
+        0.0
+       ]
+      ],
+      [
+       0.9,
+       [
+        0.0,
+        1.422,
+        0.0
+       ]
+      ],
+      [
+       0.9333,
+       [
+        0.0,
+        1.086,
         0.0
        ]
       ],
@@ -3976,39 +5290,39 @@
        1.0167,
        [
         0.0,
-        0.162,
+        -0.033,
         0.0
        ]
       ],
       [
-       1.1167,
+       1.0333,
        [
         0.0,
-        0.467,
+        -0.141,
         0.0
        ]
       ],
       [
-       1.2,
+       1.1667,
        [
         0.0,
-        0.935,
+        0.396,
         0.0
        ]
       ],
       [
-       1.25,
+       1.2333,
        [
         0.0,
-        1.085,
+        0.715,
         0.0
        ]
       ],
       [
-       1.35,
+       1.3333,
        [
         0.0,
-        1.124,
+        0.945,
         0.0
        ]
       ],
@@ -4016,7 +5330,7 @@
        1.3833,
        [
         0.0,
-        1.073,
+        0.928,
         0.0
        ]
       ]
@@ -4388,201 +5702,201 @@
       [
        0.0,
        [
-        90.979,
-        6.932,
-        -66.941
+        81.346,
+        8.398,
+        -65.635
        ]
       ],
       [
        0.0417,
        [
-        88.782,
-        -9.926,
-        -67.966
+        79.122,
+        -8.395,
+        -63.83
        ]
       ],
       [
        0.0833,
        [
-        88.349,
-        -22.387,
-        -70.673
+        78.039,
+        -21.117,
+        -64.249
        ]
       ],
       [
        0.125,
        [
-        90.0,
-        -27.0,
-        -75.0
+        79.21,
+        -26.371,
+        -67.549
        ]
       ],
       [
        0.1667,
        [
-        91.651,
-        -22.387,
-        -79.327
+        81.198,
+        -22.561,
+        -72.727
        ]
       ],
       [
        0.2083,
        [
-        91.218,
-        -9.926,
-        -82.034
+        81.436,
+        -10.746,
+        -77.681
        ]
       ],
       [
        0.25,
        [
-        89.021,
-        6.932,
-        -83.059
+        79.382,
+        5.702,
+        -81.528
        ]
       ],
       [
        0.2917,
        [
-        86.926,
-        23.814,
-        -82.577
+        76.533,
+        22.411,
+        -84.072
        ]
       ],
       [
        0.3333,
        [
-        87.051,
-        36.342,
-        -79.968
+        75.237,
+        35.138,
+        -84.291
        ]
       ],
       [
        0.375,
        [
-        90.0,
-        41.0,
-        -75.0
+        77.254,
+        40.513,
+        -80.747
        ]
       ],
       [
        0.4167,
        [
-        92.949,
-        36.342,
-        -70.032
+        80.929,
+        36.794,
+        -74.616
        ]
       ],
       [
        0.4583,
        [
-        93.074,
-        23.814,
-        -67.423
+        82.54,
+        24.943,
+        -69.188
        ]
       ],
       [
        0.5,
        [
-        90.979,
-        6.932,
-        -66.941
+        81.346,
+        8.398,
+        -65.635
        ]
       ],
       [
        0.5417,
        [
-        88.782,
-        -9.926,
-        -67.966
+        79.122,
+        -8.395,
+        -63.83
        ]
       ],
       [
        0.5833,
        [
-        88.349,
-        -22.387,
-        -70.673
+        78.039,
+        -21.117,
+        -64.249
        ]
       ],
       [
        0.625,
        [
-        90.0,
-        -27.0,
-        -75.0
+        79.21,
+        -26.371,
+        -67.549
        ]
       ],
       [
        0.6667,
        [
-        91.651,
-        -22.387,
-        -79.327
+        81.198,
+        -22.561,
+        -72.727
        ]
       ],
       [
        0.7083,
        [
-        91.218,
-        -9.926,
-        -82.034
+        81.436,
+        -10.746,
+        -77.681
        ]
       ],
       [
        0.75,
        [
-        89.021,
-        6.932,
-        -83.059
+        79.382,
+        5.702,
+        -81.528
        ]
       ],
       [
        0.7917,
        [
-        86.926,
-        23.814,
-        -82.577
+        76.533,
+        22.411,
+        -84.072
        ]
       ],
       [
        0.8333,
        [
-        87.051,
-        36.342,
-        -79.968
+        75.237,
+        35.138,
+        -84.291
        ]
       ],
       [
        0.875,
        [
-        90.0,
-        41.0,
-        -75.0
+        77.254,
+        40.513,
+        -80.747
        ]
       ],
       [
        0.9167,
        [
-        92.949,
-        36.342,
-        -70.032
+        80.929,
+        36.794,
+        -74.616
        ]
       ],
       [
        0.9583,
        [
-        93.074,
-        23.814,
-        -67.423
+        82.54,
+        24.943,
+        -69.188
        ]
       ],
       [
        1.0,
        [
-        90.979,
-        6.932,
-        -66.941
+        81.346,
+        8.398,
+        -65.635
        ]
       ]
      ],
@@ -4802,201 +6116,201 @@
       [
        0.0,
        [
-        90.979,
-        -6.932,
-        66.941
+        81.346,
+        -8.398,
+        65.635
        ]
       ],
       [
        0.0417,
        [
-        88.782,
-        9.926,
-        67.966
+        79.122,
+        8.395,
+        63.83
        ]
       ],
       [
        0.0833,
        [
-        88.349,
-        22.387,
-        70.673
+        78.039,
+        21.117,
+        64.249
        ]
       ],
       [
        0.125,
        [
-        90.0,
-        27.0,
-        75.0
+        79.21,
+        26.371,
+        67.549
        ]
       ],
       [
        0.1667,
        [
-        91.651,
-        22.387,
-        79.327
+        81.198,
+        22.561,
+        72.727
        ]
       ],
       [
        0.2083,
        [
-        91.218,
-        9.926,
-        82.034
+        81.436,
+        10.746,
+        77.681
        ]
       ],
       [
        0.25,
        [
-        89.021,
-        -6.932,
-        83.059
+        79.382,
+        -5.702,
+        81.528
        ]
       ],
       [
        0.2917,
        [
-        86.926,
-        -23.814,
-        82.577
+        76.533,
+        -22.411,
+        84.072
        ]
       ],
       [
        0.3333,
        [
-        87.051,
-        -36.342,
-        79.968
+        75.237,
+        -35.138,
+        84.291
        ]
       ],
       [
        0.375,
        [
-        90.0,
-        -41.0,
-        75.0
+        77.254,
+        -40.513,
+        80.747
        ]
       ],
       [
        0.4167,
        [
-        92.949,
-        -36.342,
-        70.032
+        80.929,
+        -36.794,
+        74.616
        ]
       ],
       [
        0.4583,
        [
-        93.074,
-        -23.814,
-        67.423
+        82.54,
+        -24.943,
+        69.188
        ]
       ],
       [
        0.5,
        [
-        90.979,
-        -6.932,
-        66.941
+        81.346,
+        -8.398,
+        65.635
        ]
       ],
       [
        0.5417,
        [
-        88.782,
-        9.926,
-        67.966
+        79.122,
+        8.395,
+        63.83
        ]
       ],
       [
        0.5833,
        [
-        88.349,
-        22.387,
-        70.673
+        78.039,
+        21.117,
+        64.249
        ]
       ],
       [
        0.625,
        [
-        90.0,
-        27.0,
-        75.0
+        79.21,
+        26.371,
+        67.549
        ]
       ],
       [
        0.6667,
        [
-        91.651,
-        22.387,
-        79.327
+        81.198,
+        22.561,
+        72.727
        ]
       ],
       [
        0.7083,
        [
-        91.218,
-        9.926,
-        82.034
+        81.436,
+        10.746,
+        77.681
        ]
       ],
       [
        0.75,
        [
-        89.021,
-        -6.932,
-        83.059
+        79.382,
+        -5.702,
+        81.528
        ]
       ],
       [
        0.7917,
        [
-        86.926,
-        -23.814,
-        82.577
+        76.533,
+        -22.411,
+        84.072
        ]
       ],
       [
        0.8333,
        [
-        87.051,
-        -36.342,
-        79.968
+        75.237,
+        -35.138,
+        84.291
        ]
       ],
       [
        0.875,
        [
-        90.0,
-        -41.0,
-        75.0
+        77.254,
+        -40.513,
+        80.747
        ]
       ],
       [
        0.9167,
        [
-        92.949,
-        -36.342,
-        70.032
+        80.929,
+        -36.794,
+        74.616
        ]
       ],
       [
        0.9583,
        [
-        93.074,
-        -23.814,
-        67.423
+        82.54,
+        -24.943,
+        69.188
        ]
       ],
       [
        1.0,
        [
-        90.979,
-        -6.932,
-        66.941
+        81.346,
+        -8.398,
+        65.635
        ]
       ]
      ],
@@ -5251,14 +6565,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 6,
+      "amp": 5,
       "cycles": 1,
-      "lag": 0.14,
-      "growth": 1.2,
+      "lag": 0.12,
+      "growth": 1.15,
       "phase": 0.0
      }
     },
@@ -5267,13 +6583,15 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "x",
-      "amp": 4,
+      "amp": 3.5,
       "cycles": 2,
-      "lag": 0.12,
+      "lag": 0.1,
       "growth": 1.2,
       "phase": 0.0
      }
@@ -5653,393 +6971,393 @@
       [
        0.0,
        [
-        90.475,
-        8.988,
-        -71.963
+        80.707,
+        9.586,
+        -70.949
        ]
       ],
       [
        0.0417,
        [
-        90.443,
-        8.466,
-        -71.993
+        80.689,
+        9.067,
+        -70.889
        ]
       ],
       [
        0.0833,
        [
-        90.405,
-        7.954,
-        -72.074
+        80.664,
+        8.549,
+        -70.881
        ]
       ],
       [
        0.125,
        [
-        90.363,
-        7.46,
-        -72.205
+        80.633,
+        8.04,
+        -70.926
        ]
       ],
       [
        0.1667,
        [
-        90.319,
-        6.993,
-        -72.382
+        80.598,
+        7.549,
+        -71.022
        ]
       ],
       [
        0.2083,
        [
-        90.274,
-        6.559,
-        -72.604
+        80.561,
+        7.085,
+        -71.167
        ]
       ],
       [
        0.25,
        [
-        90.229,
-        6.167,
-        -72.866
+        80.522,
+        6.655,
+        -71.359
        ]
       ],
       [
        0.2917,
        [
-        90.186,
-        5.824,
-        -73.164
+        80.484,
+        6.266,
+        -71.594
        ]
       ],
       [
        0.3333,
        [
-        90.145,
-        5.534,
-        -73.493
+        80.446,
+        5.925,
+        -71.87
        ]
       ],
       [
        0.375,
        [
-        90.107,
-        5.303,
-        -73.847
+        80.41,
+        5.639,
+        -72.18
        ]
       ],
       [
        0.4167,
        [
-        90.07,
-        5.136,
-        -74.22
+        80.374,
+        5.411,
+        -72.52
        ]
       ],
       [
        0.4583,
        [
-        90.034,
-        5.034,
-        -74.607
+        80.339,
+        5.246,
+        -72.884
        ]
       ],
       [
        0.5,
        [
-        90.0,
-        5.0,
-        -75.0
+        80.305,
+        5.146,
+        -73.265
        ]
       ],
       [
        0.5417,
        [
-        89.966,
-        5.034,
-        -75.393
+        80.269,
+        5.114,
+        -73.659
        ]
       ],
       [
        0.5833,
        [
-        89.93,
-        5.136,
-        -75.78
+        80.233,
+        5.149,
+        -74.057
        ]
       ],
       [
        0.625,
        [
-        89.893,
-        5.303,
-        -76.153
+        80.194,
+        5.252,
+        -74.453
        ]
       ],
       [
        0.6667,
        [
-        89.855,
-        5.534,
-        -76.507
+        80.153,
+        5.42,
+        -74.841
        ]
       ],
       [
        0.7083,
        [
-        89.814,
-        5.824,
-        -76.836
+        80.108,
+        5.65,
+        -75.214
        ]
       ],
       [
        0.75,
        [
-        89.771,
-        6.167,
-        -77.134
+        80.061,
+        5.939,
+        -75.566
        ]
       ],
       [
        0.7917,
        [
-        89.726,
-        6.559,
-        -77.396
+        80.011,
+        6.281,
+        -75.891
        ]
       ],
       [
        0.8333,
        [
-        89.681,
-        6.993,
-        -77.618
+        79.959,
+        6.671,
+        -76.183
        ]
       ],
       [
        0.875,
        [
-        89.637,
-        7.46,
-        -77.795
+        79.906,
+        7.103,
+        -76.437
        ]
       ],
       [
        0.9167,
        [
-        89.595,
-        7.954,
-        -77.926
+        79.855,
+        7.568,
+        -76.65
        ]
       ],
       [
        0.9583,
        [
-        89.557,
-        8.466,
-        -78.007
+        79.806,
+        8.059,
+        -76.818
        ]
       ],
       [
        1.0,
        [
-        89.525,
-        8.988,
-        -78.037
+        79.761,
+        8.567,
+        -76.937
        ]
       ],
       [
        1.0417,
        [
-        89.501,
-        9.509,
-        -78.016
+        79.724,
+        9.085,
+        -77.005
        ]
       ],
       [
        1.0833,
        [
-        89.487,
-        10.022,
-        -77.943
+        79.695,
+        9.603,
+        -77.022
        ]
       ],
       [
        1.125,
        [
-        89.485,
-        10.518,
-        -77.819
+        79.676,
+        10.112,
+        -76.986
        ]
       ],
       [
        1.1667,
        [
-        89.495,
-        10.989,
-        -77.647
+        79.67,
+        10.604,
+        -76.897
        ]
       ],
       [
        1.2083,
        [
-        89.519,
-        11.425,
-        -77.428
+        79.677,
+        11.071,
+        -76.758
        ]
       ],
       [
        1.25,
        [
-        89.556,
-        11.82,
-        -77.167
+        79.699,
+        11.504,
+        -76.571
        ]
       ],
       [
        1.2917,
        [
-        89.606,
-        12.167,
-        -76.868
+        79.734,
+        11.896,
+        -76.337
        ]
       ],
       [
        1.3333,
        [
-        89.668,
-        12.46,
-        -76.536
+        79.783,
+        12.24,
+        -76.061
        ]
       ],
       [
        1.375,
        [
-        89.741,
-        12.693,
-        -76.177
+        79.845,
+        12.53,
+        -75.749
        ]
       ],
       [
        1.4167,
        [
-        89.823,
-        12.863,
-        -75.796
+        79.918,
+        12.761,
+        -75.404
        ]
       ],
       [
        1.4583,
        [
-        89.91,
-        12.965,
-        -75.402
+        79.999,
+        12.928,
+        -75.034
        ]
       ],
       [
        1.5,
        [
-        90.0,
-        13.0,
-        -75.0
+        80.086,
+        13.03,
+        -74.644
        ]
       ],
       [
        1.5417,
        [
-        90.09,
-        12.965,
-        -74.598
+        80.177,
+        13.063,
+        -74.242
        ]
       ],
       [
        1.5833,
        [
-        90.177,
-        12.863,
-        -74.204
+        80.268,
+        13.028,
+        -73.835
        ]
       ],
       [
        1.625,
        [
-        90.259,
-        12.693,
-        -73.823
+        80.356,
+        12.925,
+        -73.43
        ]
       ],
       [
        1.6667,
        [
-        90.332,
-        12.46,
-        -73.464
+        80.439,
+        12.755,
+        -73.034
        ]
       ],
       [
        1.7083,
        [
-        90.394,
-        12.167,
-        -73.132
+        80.513,
+        12.523,
+        -72.655
        ]
       ],
       [
        1.75,
        [
-        90.444,
-        11.82,
-        -72.833
+        80.577,
+        12.231,
+        -72.299
        ]
       ],
       [
        1.7917,
        [
-        90.481,
-        11.425,
-        -72.572
+        80.63,
+        11.886,
+        -71.973
        ]
       ],
       [
        1.8333,
        [
-        90.505,
-        10.989,
-        -72.353
+        80.67,
+        11.492,
+        -71.681
        ]
       ],
       [
        1.875,
        [
-        90.515,
-        10.518,
-        -72.181
+        80.698,
+        11.058,
+        -71.429
        ]
       ],
       [
        1.9167,
        [
-        90.513,
-        10.022,
-        -72.057
+        80.712,
+        10.59,
+        -71.221
        ]
       ],
       [
        1.9583,
        [
-        90.499,
-        9.509,
-        -71.984
+        80.715,
+        10.096,
+        -71.06
        ]
       ],
       [
        2.0,
        [
-        90.475,
-        8.988,
-        -71.963
+        80.707,
+        9.586,
+        -70.949
        ]
       ]
      ],
@@ -6451,393 +7769,393 @@
       [
        0.0,
        [
-        90.475,
-        -8.988,
-        71.963
+        80.707,
+        -9.586,
+        70.949
        ]
       ],
       [
        0.0417,
        [
-        90.443,
-        -8.466,
-        71.993
+        80.689,
+        -9.067,
+        70.889
        ]
       ],
       [
        0.0833,
        [
-        90.405,
-        -7.954,
-        72.074
+        80.664,
+        -8.549,
+        70.881
        ]
       ],
       [
        0.125,
        [
-        90.363,
-        -7.46,
-        72.205
+        80.633,
+        -8.04,
+        70.926
        ]
       ],
       [
        0.1667,
        [
-        90.319,
-        -6.993,
-        72.382
+        80.598,
+        -7.549,
+        71.022
        ]
       ],
       [
        0.2083,
        [
-        90.274,
-        -6.559,
-        72.604
+        80.561,
+        -7.085,
+        71.167
        ]
       ],
       [
        0.25,
        [
-        90.229,
-        -6.167,
-        72.866
+        80.522,
+        -6.655,
+        71.359
        ]
       ],
       [
        0.2917,
        [
-        90.186,
-        -5.824,
-        73.164
+        80.484,
+        -6.266,
+        71.594
        ]
       ],
       [
        0.3333,
        [
-        90.145,
-        -5.534,
-        73.493
+        80.446,
+        -5.925,
+        71.87
        ]
       ],
       [
        0.375,
        [
-        90.107,
-        -5.303,
-        73.847
+        80.41,
+        -5.639,
+        72.18
        ]
       ],
       [
        0.4167,
        [
-        90.07,
-        -5.136,
-        74.22
+        80.374,
+        -5.411,
+        72.52
        ]
       ],
       [
        0.4583,
        [
-        90.034,
-        -5.034,
-        74.607
+        80.339,
+        -5.246,
+        72.884
        ]
       ],
       [
        0.5,
        [
-        90.0,
-        -5.0,
-        75.0
+        80.305,
+        -5.146,
+        73.265
        ]
       ],
       [
        0.5417,
        [
-        89.966,
-        -5.034,
-        75.393
+        80.269,
+        -5.114,
+        73.659
        ]
       ],
       [
        0.5833,
        [
-        89.93,
-        -5.136,
-        75.78
+        80.233,
+        -5.149,
+        74.057
        ]
       ],
       [
        0.625,
        [
-        89.893,
-        -5.303,
-        76.153
+        80.194,
+        -5.252,
+        74.453
        ]
       ],
       [
        0.6667,
        [
-        89.855,
-        -5.534,
-        76.507
+        80.153,
+        -5.42,
+        74.841
        ]
       ],
       [
        0.7083,
        [
-        89.814,
-        -5.824,
-        76.836
+        80.108,
+        -5.65,
+        75.214
        ]
       ],
       [
        0.75,
        [
-        89.771,
-        -6.167,
-        77.134
+        80.061,
+        -5.939,
+        75.566
        ]
       ],
       [
        0.7917,
        [
-        89.726,
-        -6.559,
-        77.396
+        80.011,
+        -6.281,
+        75.891
        ]
       ],
       [
        0.8333,
        [
-        89.681,
-        -6.993,
-        77.618
+        79.959,
+        -6.671,
+        76.183
        ]
       ],
       [
        0.875,
        [
-        89.637,
-        -7.46,
-        77.795
+        79.906,
+        -7.103,
+        76.437
        ]
       ],
       [
        0.9167,
        [
-        89.595,
-        -7.954,
-        77.926
+        79.855,
+        -7.568,
+        76.65
        ]
       ],
       [
        0.9583,
        [
-        89.557,
-        -8.466,
-        78.007
+        79.806,
+        -8.059,
+        76.818
        ]
       ],
       [
        1.0,
        [
-        89.525,
-        -8.988,
-        78.037
+        79.761,
+        -8.567,
+        76.937
        ]
       ],
       [
        1.0417,
        [
-        89.501,
-        -9.509,
-        78.016
+        79.724,
+        -9.085,
+        77.005
        ]
       ],
       [
        1.0833,
        [
-        89.487,
-        -10.022,
-        77.943
+        79.695,
+        -9.603,
+        77.022
        ]
       ],
       [
        1.125,
        [
-        89.485,
-        -10.518,
-        77.819
+        79.676,
+        -10.112,
+        76.986
        ]
       ],
       [
        1.1667,
        [
-        89.495,
-        -10.989,
-        77.647
+        79.67,
+        -10.604,
+        76.897
        ]
       ],
       [
        1.2083,
        [
-        89.519,
-        -11.425,
-        77.428
+        79.677,
+        -11.071,
+        76.758
        ]
       ],
       [
        1.25,
        [
-        89.556,
-        -11.82,
-        77.167
+        79.699,
+        -11.504,
+        76.571
        ]
       ],
       [
        1.2917,
        [
-        89.606,
-        -12.167,
-        76.868
+        79.734,
+        -11.896,
+        76.337
        ]
       ],
       [
        1.3333,
        [
-        89.668,
-        -12.46,
-        76.536
+        79.783,
+        -12.24,
+        76.061
        ]
       ],
       [
        1.375,
        [
-        89.741,
-        -12.693,
-        76.177
+        79.845,
+        -12.53,
+        75.749
        ]
       ],
       [
        1.4167,
        [
-        89.823,
-        -12.863,
-        75.796
+        79.918,
+        -12.761,
+        75.404
        ]
       ],
       [
        1.4583,
        [
-        89.91,
-        -12.965,
-        75.402
+        79.999,
+        -12.928,
+        75.034
        ]
       ],
       [
        1.5,
        [
-        90.0,
-        -13.0,
-        75.0
+        80.086,
+        -13.03,
+        74.644
        ]
       ],
       [
        1.5417,
        [
-        90.09,
-        -12.965,
-        74.598
+        80.177,
+        -13.063,
+        74.242
        ]
       ],
       [
        1.5833,
        [
-        90.177,
-        -12.863,
-        74.204
+        80.268,
+        -13.028,
+        73.835
        ]
       ],
       [
        1.625,
        [
-        90.259,
-        -12.693,
-        73.823
+        80.356,
+        -12.925,
+        73.43
        ]
       ],
       [
        1.6667,
        [
-        90.332,
-        -12.46,
-        73.464
+        80.439,
+        -12.755,
+        73.034
        ]
       ],
       [
        1.7083,
        [
-        90.394,
-        -12.167,
-        73.132
+        80.513,
+        -12.523,
+        72.655
        ]
       ],
       [
        1.75,
        [
-        90.444,
-        -11.82,
-        72.833
+        80.577,
+        -12.231,
+        72.299
        ]
       ],
       [
        1.7917,
        [
-        90.481,
-        -11.425,
-        72.572
+        80.63,
+        -11.886,
+        71.973
        ]
       ],
       [
        1.8333,
        [
-        90.505,
-        -10.989,
-        72.353
+        80.67,
+        -11.492,
+        71.681
        ]
       ],
       [
        1.875,
        [
-        90.515,
-        -10.518,
-        72.181
+        80.698,
+        -11.058,
+        71.429
        ]
       ],
       [
        1.9167,
        [
-        90.513,
-        -10.022,
-        72.057
+        80.712,
+        -10.59,
+        71.221
        ]
       ],
       [
        1.9583,
        [
-        90.499,
-        -9.509,
-        71.984
+        80.715,
+        -10.096,
+        71.06
        ]
       ],
       [
        2.0,
        [
-        90.475,
-        -8.988,
-        71.963
+        80.707,
+        -9.586,
+        70.949
        ]
       ]
      ],
@@ -7278,14 +8596,16 @@
       "tail_0",
       "tail_1",
       "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": -8,
+      "amp": -7,
       "cycles": 1,
-      "lag": 0.15,
-      "growth": 1.2,
+      "lag": 0.12,
+      "growth": 1.15,
       "phase": 0.0
      }
     }
@@ -7752,7 +9072,7 @@
        0.05,
        [
         0.0,
-        0.573,
+        0.536,
         0.0
        ]
       ],
@@ -7760,7 +9080,7 @@
        0.0833,
        [
         0.0,
-        0.872,
+        0.815,
         0.0
        ]
       ],
@@ -7768,7 +9088,7 @@
        0.1167,
        [
         0.0,
-        1.074,
+        1.002,
         0.0
        ]
       ],
@@ -7776,7 +9096,7 @@
        0.15,
        [
         0.0,
-        1.166,
+        1.088,
         0.0
        ]
       ],
@@ -7784,7 +9104,7 @@
        0.3667,
        [
         0.0,
-        1.171,
+        1.093,
         0.0
        ]
       ],
@@ -7792,7 +9112,7 @@
        0.3833,
        [
         0.0,
-        1.124,
+        1.049,
         0.0
        ]
       ],
@@ -7800,7 +9120,7 @@
        0.4333,
        [
         0.0,
-        0.438,
+        0.41,
         0.0
        ]
       ],
@@ -7808,7 +9128,7 @@
        0.45,
        [
         0.0,
-        0.256,
+        0.24,
         0.0
        ]
       ],
@@ -7816,7 +9136,7 @@
        0.4667,
        [
         0.0,
-        0.117,
+        0.11,
         0.0
        ]
       ],
@@ -7824,7 +9144,7 @@
        0.4833,
        [
         0.0,
-        0.03,
+        0.028,
         0.0
        ]
       ],
@@ -8110,7 +9430,7 @@
       [
        0.28,
        [
-        0.0,
+        6.0,
         0.0,
         0.0
        ],
@@ -8119,7 +9439,7 @@
       [
        0.38,
        [
-        -10.0,
+        3.0,
         0.0,
         0.0
        ],
@@ -8128,7 +9448,7 @@
       [
        0.8,
        [
-        -10.0,
+        3.0,
         0.0,
         0.0
        ],
@@ -8483,7 +9803,7 @@
        0.48,
        [
         0,
-        9.384,
+        6.703,
         0
        ]
       ],
@@ -8491,7 +9811,7 @@
        0.58,
        [
         0,
-        -6.291,
+        -4.493,
         0
        ]
       ],
@@ -8499,7 +9819,7 @@
        0.68,
        [
         0,
-        4.217,
+        3.012,
         0
        ]
       ],
@@ -8507,7 +9827,7 @@
        0.78,
        [
         0,
-        -2.827,
+        -2.019,
         0
        ]
       ],
@@ -8515,12 +9835,83 @@
        0.88,
        [
         0,
-        1.895,
+        1.353,
         0
        ]
       ],
       [
        0.98,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "tail_5",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.42,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.52,
+       [
+        0,
+        9.384,
+        0
+       ]
+      ],
+      [
+       0.62,
+       [
+        0,
+        -6.291,
+        0
+       ]
+      ],
+      [
+       0.72,
+       [
+        0,
+        4.217,
+        0
+       ]
+      ],
+      [
+       0.82,
+       [
+        0,
+        -2.827,
+        0
+       ]
+      ],
+      [
+       0.92,
+       [
+        0,
+        1.895,
+        0
+       ]
+      ],
+      [
+       1.0,
        [
         0,
         0,
@@ -8610,23 +10001,7 @@
        0.3,
        [
         0.0,
-        0.117,
-        0.0
-       ]
-      ],
-      [
-       0.3167,
-       [
-        0.0,
-        0.198,
-        0.0
-       ]
-      ],
-      [
-       0.8667,
-       [
-        0.0,
-        0.156,
+        0.111,
         0.0
        ]
       ],
@@ -8985,7 +10360,7 @@
        0.0,
        [
         18.0,
-        10.0,
+        8.0,
         0.0
        ]
       ],
@@ -8993,7 +10368,7 @@
        3.0,
        [
         18.0,
-        10.0,
+        8.0,
         0.0
        ]
       ]
@@ -9007,7 +10382,7 @@
        0.0,
        [
         0.0,
-        26.0,
+        18.0,
         0.0
        ]
       ],
@@ -9015,7 +10390,7 @@
        3.0,
        [
         0.0,
-        26.0,
+        18.0,
         0.0
        ]
       ]
@@ -9029,7 +10404,7 @@
        0.0,
        [
         0.0,
-        30.0,
+        22.0,
         0.0
        ]
       ],
@@ -9037,7 +10412,7 @@
        3.0,
        [
         0.0,
-        30.0,
+        22.0,
         0.0
        ]
       ]
@@ -9051,7 +10426,7 @@
        0.0,
        [
         0.0,
-        30.0,
+        22.0,
         0.0
        ]
       ],
@@ -9059,7 +10434,51 @@
        3.0,
        [
         0.0,
-        30.0,
+        22.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "tail_4",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        20.0,
+        0.0
+       ]
+      ],
+      [
+       3.0,
+       [
+        0.0,
+        20.0,
+        0.0
+       ]
+      ]
+     ]
+    },
+    {
+     "part": "tail_5",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        16.0,
+        0.0
+       ]
+      ],
+      [
+       3.0,
+       [
+        0.0,
+        16.0,
         0.0
        ]
       ]
@@ -9107,15 +10526,16 @@
     },
     {
      "parts": [
-      "tail_2",
-      "tail_3"
+      "tail_3",
+      "tail_4",
+      "tail_5"
      ],
      "wave": {
       "axis": "y",
-      "amp": 8,
+      "amp": 7,
       "cycles": 1,
-      "lag": 0.15,
-      "growth": 1.3,
+      "lag": 0.12,
+      "growth": 1.25,
       "phase": 0.0
      }
     },

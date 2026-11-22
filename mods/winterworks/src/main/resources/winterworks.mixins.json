@@ -31,6 +31,10 @@
     "EnchantmentHelperMixin",
     "FoodDataMixin",
     "HexedPlayerMixin",
+    "end.SuspiciousEndSandMixin",
+    "end.ChorusSoilMixin",
+    "end.ChorusFlowerSoilMixin",
+    "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor",
     "TrailerCartRemovalMixin"

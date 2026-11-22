@@ -333,7 +333,13 @@ WTmhdbT.....mhdd
 
 CHEVRON_OFF = {"A": "#62382b", "B": "#3c2019", "C": "#7a4631"}
 CHEVRON_ON = {"A": "#ff8a3a", "B": "#d4311b", "C": "#ffe3a3"}
-rail({"booster_rail": {**GILT, **CHEVRON_OFF}, "booster_rail_on": {**GILT, **CHEVRON_ON}}, """
+# the redstone-block power plate set between the rails (it only runs on a redstone block): a dark iron socket round a
+# redstone inlay, dull when unpowered, blazing when powered
+PLATE = {"F": "#2a1a14", "E": "#4a2a1e"}
+PLATE_OFF = {"K": "#3e0d0b", "L": "#5c1712", "M": "#74201a", "N": "#8a2a1f"}
+PLATE_ON = {"K": "#a3140c", "L": "#e0301c", "M": "#ff6a3a", "N": "#ffc9a0"}
+rail({"booster_rail": {**GILT, **CHEVRON_OFF, **PLATE, **PLATE_OFF},
+      "booster_rail_on": {**GILT, **CHEVRON_ON, **PLATE, **PLATE_ON}}, """
 ..mhd......mhd..
 WTmhdbTTUTbmhdTW
 WVmhdpVCCVpmhdVW
@@ -342,12 +348,12 @@ WVmhdpVCCVpmhdVW
 WTmhdbTUTTbmhdUW
 WVmhdpVVVVpmhdVW
 ..mhd......mgd..
-..mhd......mhd..
-WUmhdbTTTUbmhdTW
-WVmhdpVCCVpmhdVW
-..mgd.ABBA.mhd..
-..mhdAB..BAmhd..
-WTmhdbUTTTbmhdTW
+..mhdEFFFFEmhd..
+WUmhdFNMLKFmhdTW
+WVmhdFMKLMFmhdVW
+..mgdFLMKLFmhd..
+..mhdFKLMNFmhd..
+WTmhdEFFFFEmhdTW
 WVmhdpVVVVpmhdVW
 ..mhd......mgd..
 """, ties="booster_rail_ties")
