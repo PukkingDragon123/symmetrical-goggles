@@ -236,9 +236,10 @@ public class HarvesterTests implements FabricGameTest {
         HarvesterEntity e = harvester(h, new Vec3(1.5, 1, 3.5), -90f);
         e.setTamed(true);
         BlockPos head = BlockPos.containing(e.headPoint()).atY(h.absolutePos(BlockPos.ZERO).getY() + 1);
-        BlockPos rel = h.relativePos(head);
+        BlockPos rel = head.subtract(h.absolutePos(BlockPos.ZERO));   // (relativePos isn't absolutePos's inverse in 1.21.1)
         h.setBlock(rel, ((CropBlock) Blocks.POTATOES).getStateForAge(7));
-        h.assertTrue(e.chompAhead() == 1, "the crop under its head should be cropped");
+        int n = e.chompAhead();
+        h.assertTrue(n == 1, "the crop under its head should be cropped, cropped " + n);
         h.assertBlockProperty(rel, CropBlock.AGE, 0);
         h.assertTrue(items(h, Items.POTATO, rel, 4.0) >= 1, "with no chest the harvest drops");
         e.discard();
@@ -250,12 +251,12 @@ public class HarvesterTests implements FabricGameTest {
         floor(h, 20, Blocks.GRASS_BLOCK);
         HarvesterEntity e = harvester(h, new Vec3(3.5, 1, 10.5), -90f);   // facing +x
         ServerPlayer p = player(h, new Vec3(3.5, 1, 10.5));
+        p.setYRot(-90f);   // a ridden mount turns the way its rider looks
         e.tameWithName(p);
         e.equipSaddle(new ItemStack(Items.SADDLE), null);
         p.startRiding(e, true);
         h.assertTrue(e.getControllingPassenger() == p, "the rider steers it");
         Sheep sheep = h.spawn(EntityType.SHEEP, new Vec3(6.6, 1, 10.5));
-        sheep.setNoAi(true);
         double start = sheep.getX();
         h.onEachTick(() -> {   // the rider walks it forward (on a server the client moves a ridden mount)
             if (e.isAlive() && e.getX() < h.absoluteVec(new Vec3(13, 0, 0)).x) {

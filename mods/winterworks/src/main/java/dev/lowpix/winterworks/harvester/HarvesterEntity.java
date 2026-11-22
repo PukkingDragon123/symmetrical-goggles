@@ -102,6 +102,8 @@ public class HarvesterEntity extends AbstractChestedHorse {
     private int shoveCooldown;
     private double herdX, herdZ;
     private boolean herdInit;
+    /** Busy cropping: no grazing on the way. */
+    private boolean harvesting;
 
     public HarvesterEntity(EntityType<? extends AbstractChestedHorse> type, Level level) {
         super(type, level);
@@ -310,6 +312,12 @@ public class HarvesterEntity extends AbstractChestedHorse {
         }
     }
 
+    /** Grazes now and then (the graze clip), but not while it is out cropping, sitting or ridden. */
+    @Override
+    public boolean canEatGrass() {
+        return !harvesting && !isSitting();
+    }
+
     @Override
     protected boolean canPerformRearing() {
         return false;
@@ -389,7 +397,7 @@ public class HarvesterEntity extends AbstractChestedHorse {
         Vec3 f = forward();
         Vec3 rel = p.subtract(headPoint());
         double along = rel.x * f.x + rel.z * f.z, across = rel.x * -f.z + rel.z * f.x;
-        return Math.abs(along) <= 1.0 && Math.abs(across) <= HEAD_HALF_WIDTH * bodyScale() && rel.y > -1.6 && rel.y < 2.2;
+        return Math.abs(along) <= 1.2 * bodyScale() && Math.abs(across) <= HEAD_HALF_WIDTH * bodyScale() && rel.y > -1.6 && rel.y < 2.2;
     }
 
     /** Crops every ripe plant under its head; the harvest goes into its chest or drops. Returns the number cropped. */
@@ -666,7 +674,10 @@ public class HarvesterEntity extends AbstractChestedHorse {
     class HarvestGoal extends Goal {
         @Nullable
         private BlockPos target;
-        private int cooldown, ticks, chomp, repaths;
+        private Vec3 stand = Vec3.ZERO;
+        private int cooldown, ticks, chomp, repaths, fine;
+        /** Crops it couldn't get its head over lately (skipped for a while). */
+        private final java.util.ArrayDeque<BlockPos> unreachable = new java.util.ArrayDeque<>();
 
         HarvestGoal() {
             setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
@@ -678,6 +689,9 @@ public class HarvesterEntity extends AbstractChestedHorse {
                 return false;
             }
             cooldown = adjustedTickDelay(30);
+            if (random.nextInt(20) == 0) {
+                unreachable.pollLast();   // try the hard ones again now and then
+            }
             target = findRipe();
             return target != null;
         }
@@ -697,29 +711,47 @@ public class HarvesterEntity extends AbstractChestedHorse {
             ticks = 0;
             chomp = 0;
             repaths = 0;
+            fine = 0;
+            harvesting = true;
             setEating(false);
             approach();
         }
 
         @Override
         public void stop() {
+            if (target != null && chomp == 0 && ticks >= 600) {
+                giveUp();
+            }
             target = null;
             chomp = 0;
+            harvesting = false;
             navigation.stop();
             cooldown = 0;
         }
 
+        private void giveUp() {
+            unreachable.addFirst(target);
+            if (unreachable.size() > 12) {
+                unreachable.removeLast();
+            }
+            target = null;
+        }
+
+        /** Walks to where its body must stand for its head to be over the crop (on the line from the crop to it). */
         private void approach() {
             Vec3 t = Vec3.atBottomCenterOf(target);
             Vec3 from = position().subtract(t);
             double d = from.horizontalDistance();
             Vec3 dir = d < 1e-3 ? forward().scale(-1) : new Vec3(from.x / d, 0, from.z / d);
-            Vec3 stand = t.add(dir.scale(HEAD_REACH * bodyScale()));   // where its body goes so the head is over the crop
+            stand = t.add(dir.scale(HEAD_REACH * bodyScale()));
             navigation.moveTo(stand.x, t.y, stand.z, 1.0);
         }
 
         @Override
         public void tick() {
+            if (target == null) {
+                return;   // done (it ticks every tick; canContinueToUse only every other)
+            }
             ticks++;
             Vec3 t = Vec3.atBottomCenterOf(target);
             if (chomp > 0) {
@@ -732,26 +764,30 @@ public class HarvesterEntity extends AbstractChestedHorse {
                 }
                 return;
             }
-            Vec3 h = headPoint();
-            double hx = t.x - h.x, hz = t.z - h.z;
-            if (hx * hx + hz * hz <= 1.0 && Math.abs(t.y - getY()) < 1.6) {
+            if (underHead(t)) {
                 navigation.stop();
-                faceTowards(t);
+                getMoveControl().setWantedPosition(getX(), getY(), getZ(), 0.0);
                 chomp = CHOMP_TICKS;
                 level().broadcastEntityEvent(HarvesterEntity.this, EV_CHOMP);
                 playSound(WWSounds.HARVESTER_CHOMP, 1.0f, getVoicePitch());
                 return;
             }
-            double bx = t.x - getX(), bz = t.z - getZ();
-            if (bx * bx + bz * bz < (HEAD_REACH + 1.2) * (HEAD_REACH + 1.2)) {
-                faceTowards(t);   // close: turn the head onto it
-            }
-            if (navigation.isDone()) {
-                if (++repaths > 6) {
-                    target = null;
-                    return;
+            double sx = stand.x - getX(), sz = stand.z - getZ();
+            boolean there = sx * sx + sz * sz < 0.35 * 0.35;
+            if (there) {
+                faceTowards(t);   // standing in the right spot: turn the head onto it
+                if (++fine > 40) {
+                    giveUp();
                 }
-                approach();
+            } else if (navigation.isDone()) {
+                if (sx * sx + sz * sz < 3.0 * 3.0 && fine < 60) {
+                    fine++;   // the path ends a block short for a beast this big: the last steps by hand
+                    getMoveControl().setWantedPosition(stand.x, getY(), stand.z, 0.6);
+                } else if (++repaths > 6) {
+                    giveUp();
+                } else {
+                    approach();
+                }
             }
         }
 
@@ -769,7 +805,7 @@ public class HarvesterEntity extends AbstractChestedHorse {
             double bestD = Double.MAX_VALUE;
             for (BlockPos p : BlockPos.betweenClosed(home.offset(-WORK_RADIUS, -WORK_HEIGHT, -WORK_RADIUS),
                     home.offset(WORK_RADIUS, WORK_HEIGHT, WORK_RADIUS))) {
-                if (!HarvesterCrops.isRipe(level(), p)) {
+                if (!HarvesterCrops.isRipe(level(), p) || unreachable.contains(p)) {
                     continue;
                 }
                 double d = distanceToSqr(Vec3.atBottomCenterOf(p));

@@ -117,11 +117,30 @@ fences and gates, doors, trapdoors, buttons, pressure plates, signs, hanging sig
 
 **Mosquitoes.** Four-winged, with a giant needle. They hunt anything with blood (not the undead, golems, slimes and
 the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber shard
-when you give them blood (a potion, a blood stain, a splash): an amber farm. Pitcher pods attract them, and they
-pollinate pitcher crops. **Potion of Blood** + torchflower = **Potion of Immunity**: no other effect can touch you.
+when you give them blood (a potion, a blood stain, a splash): an amber farm. A hungry mosquito near an oozing
+Amberwood goes for the resin before it goes for you. Pitcher pods and pitcher plants attract them, and they pollinate
+pitcher crops; **torchflowers** burn them (a mosquito that comes within a block of one, planted, potted or still a
+crop, catches fire), so they keep well away. **Potion of Blood** + torchflower = **Potion of Immunity**: no other
+effect can touch you.
+
+**Torchflowers and pitcher plants glow.** Every growth stage gives a little more light (a grown torchflower shines like
+a torch, a pitcher plant at 12) and their flame petals and pitchers are drawn full-bright, from the game's own
+textures. Use a grown one with an empty hand to pick it: 1-3 seeds or pods drop and it goes back to a young crop.
+Pitcher plants give off a sweet scent and count as flowers for bees.
 
 **Sniffers.** Tame one with pitcher pods: it follows you, sniffs out suspicious sand, gravel and amber fossils and digs
-them up for you; sniffer digging also turns up amber, Amberwood Blooms, bones and (rarely) sherds.
+them up for you; sniffer digging also turns up amber, Amberwood Blooms, bones and (rarely) sherds. About once a minute
+a tamed sniffer with water nearby drinks, walks over to the farmland by you and **sneezes** a spray over it: the
+farmland gets fully moist and the crops grow a stage.
+
+**The Harvester.** A big, gentle, extinct herbivore with a hammerhead of a head lined with cropping teeth. Its eggs are
+super rare: brushed out of suspicious sand and gravel, or sealed in the amber of Dig Sites. An egg only develops
+underwater (about 20 minutes, faster on moss) and hatches a baby that is tame to whoever is nearby; wild ones are tamed
+with pitcher plants. Saddle it and ride it (it jumps 1.5 blocks), give it a chest (15 slots), sneak + use to make it
+follow, sit or harvest. Get off it by your farm and it crops everything ripe within 16 blocks (wheat, carrots,
+potatoes, beetroots, nether wart, melons, pumpkins, sweet berries, torchflowers, pitcher plants) a whole head-wide
+mouthful at a time, replants it and puts the harvest in its chest. Ridden, its head shoves animals along ahead of it:
+herd them into a pen.
 
 **The Pot Golem.** Four amber blocks in a T and a decorated pot on top (any way round, in any order, like an iron
 golem): a muscular, jelly-like amber golem that follows you and fights. Its pot is its head, and a pot with the same
