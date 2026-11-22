@@ -1,0 +1,140 @@
+{
+  "name": "Obsidian Shield",
+  "parts": 28,
+  "instances": 28,
+  "faces": 150,
+  "triangles": 300,
+  "vertices_flat": 600,
+  "vertices_unique": 200,
+  "atlas": [
+    256,
+    256
+  ],
+  "atlas_fill": 0.625,
+  "texel_density": 4.0,
+  "colors_used": 41,
+  "palette": {
+    "obsidian": [
+      "#07040d",
+      "#0e0819",
+      "#160e26",
+      "#1f1534",
+      "#2a1d44",
+      "#372756",
+      "#46336a",
+      "#58427f",
+      "#6d5594"
+    ],
+    "crying": [
+      "#3a0b6e",
+      "#5a12a0",
+      "#7a1fd0",
+      "#9a3cf0",
+      "#b866ff",
+      "#d397ff",
+      "#ecc9ff",
+      "#fbf0ff"
+    ],
+    "eye": [
+      "#46075a",
+      "#6e0e86",
+      "#9a1fb4",
+      "#c13ddb",
+      "#de6cf2",
+      "#f0a6fb",
+      "#fcdcff",
+      "#ffffff"
+    ],
+    "iron": [
+      "#1e1d24",
+      "#33323b",
+      "#4b4a54",
+      "#65646e",
+      "#82818a",
+      "#a2a1a8",
+      "#c4c3c8",
+      "#e6e5e8"
+    ],
+    "gold": [
+      "#2b1233",
+      "#4b1f3e",
+      "#73343f",
+      "#9c5441",
+      "#c27f4a",
+      "#dfac5e",
+      "#f2d27f",
+      "#fdf0b8"
+    ],
+    "leather": [
+      "#1c1016",
+      "#2c1a20",
+      "#3f262b",
+      "#553536",
+      "#6d4743",
+      "#875c52"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -6.5,
+      11.75,
+      -5.0
+    ],
+    "max": [
+      6.5,
+      36.875,
+      3.875
+    ],
+    "size": [
+      13.0,
+      25.125,
+      8.875
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0
+  },
+  "joints": [
+    "shield",
+    "plate",
+    "slab_0",
+    "slab_1",
+    "slab_2",
+    "slab_3",
+    "rim_l",
+    "rim_r",
+    "rim_top",
+    "rim_bot",
+    "cap_0",
+    "cap_1",
+    "cap_2",
+    "cap_3",
+    "crest",
+    "crest_tip",
+    "foot",
+    "boss_ring",
+    "boss",
+    "socket",
+    "socket_top",
+    "socket_bot",
+    "eye",
+    "eye_ball",
+    "handle",
+    "grip",
+    "bracket_top",
+    "bracket_bot"
+  ],
+  "files": {
+    "obsidian_shield.glb": "examples/output/obsidian_shield.glb",
+    "obsidian_shield.obj": "examples/output/obsidian_shield.obj",
+    "obsidian_shield.mtl": "examples/output/obsidian_shield.mtl",
+    "obsidian_shield.bbmodel": "examples/output/obsidian_shield.bbmodel",
+    "obsidian_shield_texture.png": "examples/output/obsidian_shield_texture.png",
+    "obsidian_shield_texture_x4.png": "examples/output/obsidian_shield_texture_x4.png",
+    "obsidian_shield_hero.png": "examples/output/obsidian_shield_hero.png",
+    "obsidian_shield_sheet.png": "examples/output/obsidian_shield_sheet.png",
+    "obsidian_shield_turntable.gif": "examples/output/obsidian_shield_turntable.gif",
+    "obsidian_shield_idle.gif": "examples/output/obsidian_shield_idle.gif"
+  }
+}
