@@ -20,11 +20,12 @@ import org.joml.Vector3f;
  * and turns very slowly. A missing model or texture draws nothing / the missing texture; it never crashes.
  */
 public class AmberInclusionRenderer implements BlockEntityRenderer<AmberInclusionBlockEntity> {
-    private final Inclusion mosquito, seed;
+    private final Inclusion mosquito, seed, egg;
 
     public AmberInclusionRenderer(BlockEntityRendererProvider.Context ctx) {
         mosquito = new Inclusion(new WWModel<>(ctx.bakeLayer(AmberClient.MOSQUITO), "mosquito"), "fly", 0.04f, 0.6f);
         seed = new Inclusion(new WWModel<>(ctx.bakeLayer(AmberClient.AMBER_SEED), "amber_seed"), null, 0f, 0.8f);   // no clips: frozen
+        egg = new Inclusion(new WWModel<>(ctx.bakeLayer(AmberClient.AMBER_EGG), "amber_egg"), null, 0f, 0.6f);   // a Harvester Egg
     }
 
     @Override
@@ -36,6 +37,7 @@ public class AmberInclusionRenderer implements BlockEntityRenderer<AmberInclusio
         Inclusion inc = switch (state.getValue(AmberBlock.INCLUSION)) {
             case MOSQUITO -> mosquito;
             case SEED -> seed;
+            case EGG -> egg;
             default -> null;
         };
         if (inc == null || inc.empty()) {

@@ -39,7 +39,8 @@
       "dev.lowpix.winterworks.test.OceanMobTests",
       "dev.lowpix.winterworks.test.OceanGearTests",
       "dev.lowpix.winterworks.test.WhaleTests",
-      "dev.lowpix.winterworks.test.SoulBullTests"
+      "dev.lowpix.winterworks.test.SoulBullTests",
+      "dev.lowpix.winterworks.test.HarvesterTests"
     ]
   },
   "mixins": [

@@ -174,6 +174,14 @@ public final class WWBlocks {
             "soul_bull_skull", FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.soulbull.SoulBullSkullBlockEntity::new,
                     SOUL_BULL_SKULL).build());
 
+    // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester")
+    public static final Block HARVESTER_EGG = reg("harvester_egg", new dev.lowpix.winterworks.harvester.HarvesterEggBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SNIFFER_EGG).mapColor(net.minecraft.world.level.material.MapColor.COLOR_LIGHT_GREEN)));
+    public static final BlockEntityType<dev.lowpix.winterworks.harvester.HarvesterEggBlock.EggBlockEntity> HARVESTER_EGG_BE =
+            be("harvester_egg", FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.harvester.HarvesterEggBlock.EggBlockEntity::new,
+                    HARVESTER_EGG).build());
+    // ---- end 0.4 fixes: Harvester
+
     private static <T extends net.minecraft.world.level.block.entity.BlockEntity> BlockEntityType<T> be(String n, BlockEntityType<T> t) {
         return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, Winterworks.id(n), t);
     }

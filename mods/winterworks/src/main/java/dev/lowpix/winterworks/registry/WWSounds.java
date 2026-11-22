@@ -178,6 +178,16 @@ public final class WWSounds {
     public static final SoundEvent SOUL_BULL_REVIVE = reg("entity.soul_bull.revive");
     public static final SoundEvent SOUL_BULL_SKULL_IGNITE = reg("block.soul_bull_skull.ignite");
 
+    // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester"; with the Amber Age plants' sniffer sneeze)
+    public static final SoundEvent HARVESTER_AMBIENT = reg("entity.harvester.ambient");
+    public static final SoundEvent HARVESTER_HURT = reg("entity.harvester.hurt");
+    public static final SoundEvent HARVESTER_DEATH = reg("entity.harvester.death");
+    public static final SoundEvent HARVESTER_CHOMP = reg("entity.harvester.chomp");
+    public static final SoundEvent HARVESTER_SHOVE = reg("entity.harvester.shove");
+    public static final SoundEvent HARVESTER_STEP = reg("entity.harvester.step");
+    public static final SoundEvent SNIFFER_SNEEZE = reg("entity.sniffer.sneeze");
+    // ---- end 0.4 fixes: Harvester
+
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
             1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);

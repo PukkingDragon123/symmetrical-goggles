@@ -135,6 +135,13 @@ public final class WWItems {
     public static final Item SOUL_BULL_SPAWN_EGG = reg("soul_bull_spawn_egg",
             new SpawnEggItem(WWEntities.SOUL_BULL, 0x2F2E33, 0x46D2F2, new Item.Properties()));
 
+    // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester"; creative tab entries: harvester.HarvesterFeature)
+    public static final Item HARVESTER_EGG = reg("harvester_egg", new BlockItem(WWBlocks.HARVESTER_EGG,
+            new Item.Properties().rarity(Rarity.RARE)));
+    public static final Item HARVESTER_SPAWN_EGG = reg("harvester_spawn_egg",
+            new SpawnEggItem(WWEntities.HARVESTER, 0x6F8A4E, 0xD8B25A, new Item.Properties()));
+    // ---- end 0.4 fixes: Harvester
+
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks"))
                     .icon(() -> new ItemStack(ICEBREAKER_HORN))
