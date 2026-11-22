@@ -117,11 +117,30 @@ fences and gates, doors, trapdoors, buttons, pressure plates, signs, hanging sig
 
 **Mosquitoes.** Four-winged, with a giant needle. They hunt anything with blood (not the undead, golems, slimes and
 the like), drink, and swell red; bottle that blood. Amber-full ones (they sip Amberwood resin) spit an amber shard
-when you give them blood (a potion, a blood stain, a splash): an amber farm. Pitcher pods attract them, and they
-pollinate pitcher crops. **Potion of Blood** + torchflower = **Potion of Immunity**: no other effect can touch you.
+when you give them blood (a potion, a blood stain, a splash): an amber farm. A hungry mosquito near an oozing
+Amberwood goes for the resin before it goes for you. Pitcher pods and pitcher plants attract them, and they pollinate
+pitcher crops; **torchflowers** burn them (a mosquito that comes within a block of one, planted, potted or still a
+crop, catches fire), so they keep well away. **Potion of Blood** + torchflower = **Potion of Immunity**: no other
+effect can touch you.
+
+**Torchflowers and pitcher plants glow.** Every growth stage gives a little more light (a grown torchflower shines like
+a torch, a pitcher plant at 12) and their flame petals and pitchers are drawn full-bright, from the game's own
+textures. Use a grown one with an empty hand to pick it: 1-3 seeds or pods drop and it goes back to a young crop.
+Pitcher plants give off a sweet scent and count as flowers for bees.
 
 **Sniffers.** Tame one with pitcher pods: it follows you, sniffs out suspicious sand, gravel and amber fossils and digs
-them up for you; sniffer digging also turns up amber, Amberwood Blooms, bones and (rarely) sherds.
+them up for you; sniffer digging also turns up amber, Amberwood Blooms, bones and (rarely) sherds. About once a minute
+a tamed sniffer with water nearby drinks, walks over to the farmland by you and **sneezes** a spray over it: the
+farmland gets fully moist and the crops grow a stage.
+
+**The Harvester.** A big, gentle, extinct herbivore with a hammerhead of a head lined with cropping teeth. Its eggs are
+super rare: brushed out of suspicious sand and gravel, or sealed in the amber of Dig Sites. An egg only develops
+underwater (about 20 minutes, faster on moss) and hatches a baby that is tame to whoever is nearby; wild ones are tamed
+with pitcher plants. Saddle it and ride it (it jumps 1.5 blocks), give it a chest (15 slots), sneak + use to make it
+follow, sit or harvest. Get off it by your farm and it crops everything ripe within 16 blocks (wheat, carrots,
+potatoes, beetroots, nether wart, melons, pumpkins, sweet berries, torchflowers, pitcher plants) a whole head-wide
+mouthful at a time, replants it and puts the harvest in its chest. Ridden, its head shoves animals along ahead of it:
+herd them into a pen.
 
 **The Pot Golem.** Four amber blocks in a T and a decorated pot on top (any way round, in any order, like an iron
 golem): a muscular, jelly-like amber golem that follows you and fights. Its pot is its head, and a pot with the same
@@ -187,6 +206,35 @@ above half health, none below it, and triple fall damage.
 **The Golden Piglin.** A Piglin turned to solid gold: painfully slow, stiff, groaning. Other Piglins kill it for its
 gold (2-4 gold blocks); it barters much better loot.
 
+## The Living End
+
+Design contract: [docs/END_UPDATE.md](docs/END_UPDATE.md). The End becomes a living alien ecosystem, at double the
+texture resolution of the older content.
+
+* **Chorus Meadows** (purple End Grass, tall grass, End Blooms, End Moss, thick chorus trees hung with cocoons) and
+  **the Dead End** (a grey moon-dust desert of End Sand, rock piles, giant pillars, obsidian shards, dry bushes,
+  suspicious End Sand and very rare meteorites), with floating islands at many heights, hanging chorus roots, floating
+  rocks, cliffs and alien arches, rings and spires. Phantoms live out here too.
+* **Enderflies** hatch from chorus cocoons, teleport, dodge arrows and dive into you to teleport you; their wings brew the
+  Potion of Recall. **End Eclipses**: a giant moon, violet-gold light, blooms open (shear them for glowing End Bulbs).
+* **Guckers** burrow and spit blinding dust; **Endlings** can be tamed, wear flowers and save you from the void;
+  **Obolisks** disguise themselves as rock and only fear pickaxes (their shards make the Obsidian Shield).
+* **The End Glider** (glides alone, flies freely with an Elytra), **Dragonlings** (throw the egg into the void three
+  times; tame, grow, saddle, armour and ride them, with fire breath), a **harder Ender Dragon** (dives, grabs, a
+  second phase with an eclipse, four wings, light beams, regrowing crystals, rising towers and Obolisks), and **the
+  Monolith**, a boss atop its tower with a petrifying stare and giant hands; its eyes make the Monolith Wand.
+* Obsidian and meteorite building sets, Obsidian Ruins and End Shrines.
+
+## 0.4 fixes
+
+Everything asked for after Hexes & Havoc is in [docs/FIXES_0_4.md](docs/FIXES_0_4.md): amber shards and silk touch,
+Amber Sand and Gravel, the Amberwood wood set (the Bloom is its sapling), Pot Golems that really build, with six new
+abilities, glowing patterns and headshots; the new Frost Mauler head, a roaring redstone skull, vanilla-style fur
+armour, 3D dual Fang Daggers, a smaller furrier swimming Icebreaker, the ramming top speed; normal minecarts and furnace
+carts on trains, floating coaster track with 360-degree loops, Switch Rails, and every rail as 3D track; curse screen
+effects instead of text, blue soul fire, cursed books and the soul glint, blood in hexing and every potion form; and a
+harsher cold in four levels.
+
 ## Building and testing
 
 ```bash
@@ -195,6 +243,7 @@ gold (2-4 gold blocks); it barters much better loot.
 xvfb-run -a ./gradlew runShowcase       # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
 xvfb-run -a ./gradlew runShowcase -PshowcaseMode=hex   # only the Amber Age and Hexes & Havoc scenes
 xvfb-run -a ./gradlew runShowcaseCold   # a real generated world: finds and photographs Ice Caves, a frozen tomb, Dead Caves, a Dig Site
+JAVA_TOOL_OPTIONS=-Dwinterworks.harvestershots=all xvfb-run -a ./gradlew runClient   # the Harvester, glowing plants, mosquitoes, the sneezing sniffer: run/client/screenshots
 python3 tools/gen_data.py       # regenerate sounds, models, blockstates, recipes, loot, tags, lang fragments
 ```
 
@@ -225,3 +274,8 @@ Screenshots taken by `runShowcase` (the real client, software-rendered):
 | ![The witch's quarters](docs/screenshots/hex_fortress_witch.png) | ![Hexing Table, Soul Tank, Elixir Jars](docs/screenshots/hexing_table.png) |
 | ![Elixir Jars: Cursed brewing, Greed, Soul](docs/screenshots/elixir_jars.png) | ![The Hexing screen](docs/screenshots/hexing_screen.png) |
 | ![Hexed Books, elixirs, the Hex Core, 3D icons](docs/screenshots/hex_hotbar.png) | |
+| ![A Harvester cropping a farm](docs/screenshots/harvester_cropping.png) | ![Its chest full of the harvest](docs/screenshots/harvester_chest_harvest.png) |
+| ![Ridden, saddled](docs/screenshots/harvester_ridden.png) | ![Herding sheep](docs/screenshots/harvester_herding.png) |
+| ![Harvester eggs underwater](docs/screenshots/harvester_eggs_underwater.png) | ![A Harvester hatching](docs/screenshots/harvester_egg_hatching.png) |
+| ![Glowing torchflowers and pitcher plants](docs/screenshots/amber_plants_glow_close.png) | ![A mosquito burnt by a torchflower](docs/screenshots/amber_mosquito_torchflower_burning.png) |
+| ![A mosquito sipping Amberwood resin](docs/screenshots/amber_mosquito_resin.png) | ![A sniffer sneezing over crops](docs/screenshots/amber_sniffer_sneeze.png) |

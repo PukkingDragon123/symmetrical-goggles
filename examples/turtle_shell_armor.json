@@ -1,0 +1,556 @@
+{
+ "name": "Turtle Shell Armor",
+ "description": "The Winterworks Turtle Shell chestplate: a domed green carapace of real scutes on the back and a cream plastron on the chest. Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "grounded": false,
+ "budget": {
+  "tris": 200,
+  "colors": 32
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.85,
+  "gradient": 0.3,
+  "ao": 0.0
+ },
+ "brush": {
+  "flow": "vertical",
+  "length": 1.5,
+  "width": 0.5,
+  "rough": 0.45,
+  "overshoot": 0.3,
+  "textures": {
+   "carapace": "scales",
+   "plastron": "organic"
+  }
+ },
+ "minecraft": {
+  "fps": 12
+ },
+ "render": {
+  "background": "#14262c",
+  "hero": [
+   -150,
+   18
+  ],
+  "shadow": 0.0
+ },
+ "palette": {
+  "ramps": {
+   "carapace": [
+    "#141c0e",
+    "#1f2b14",
+    "#2c3b1b",
+    "#3a4c22",
+    "#4a5f2a",
+    "#5c7333",
+    "#71883d",
+    "#88a04a"
+   ],
+   "seam": [
+    "#5f5428",
+    "#8a7c3e",
+    "#b3a252",
+    "#d4c578",
+    "#ece0a4"
+   ],
+   "plastron": [
+    "#5e5236",
+    "#857552",
+    "#ab9a6e",
+    "#cbbb8c",
+    "#e2d6aa",
+    "#f2eacc"
+   ],
+   "skin": [
+    "#121a0e",
+    "#1b2715",
+    "#26361c",
+    "#334824",
+    "#425c2c",
+    "#527135"
+   ],
+   "sclera": [
+    "#3c3440",
+    "#5a5260",
+    "#7a7280",
+    "#9e96a0",
+    "#c1bbbf",
+    "#dcd7d6",
+    "#efebe8",
+    "#fbf9f6"
+   ],
+   "iris": [
+    "#2a0c04",
+    "#5a2108",
+    "#a0420e",
+    "#d8701c",
+    "#f5ae3e",
+    "#ffd88a",
+    "#ffffff"
+   ]
+  }
+ },
+ "styles": {
+  "marginal": {
+   "ramp": "carapace",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.6
+    },
+    {
+     "id": "scutes",
+     "op": "scales",
+     "along": "x",
+     "size": [
+      2.0,
+      2.0
+     ],
+     "shape": "square",
+     "gap": 0.5,
+     "stagger": false,
+     "ramp": "carapace",
+     "tone": 3.6,
+     "gradient": 1.8,
+     "highlight": 1.3,
+     "shadow": -3.0,
+     "jitter": 0.7
+    }
+   ]
+  },
+  "costal": {
+   "ramp": "carapace",
+   "tone": 4.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.6
+    },
+    {
+     "id": "scutes",
+     "op": "scales",
+     "along": "x",
+     "size": [
+      4.25,
+      3.5
+     ],
+     "shape": "square",
+     "gap": 0.5,
+     "stagger": true,
+     "ramp": "carapace",
+     "tone": 4.2,
+     "gradient": 1.8,
+     "highlight": 1.3,
+     "shadow": -3.0,
+     "jitter": 0.7
+    }
+   ]
+  },
+  "vertebral": {
+   "ramp": "carapace",
+   "tone": 4.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.6
+    },
+    {
+     "id": "scutes",
+     "op": "scales",
+     "along": "x",
+     "size": [
+      5.0,
+      2.6666666666666665
+     ],
+     "shape": "square",
+     "gap": 0.5,
+     "stagger": false,
+     "ramp": "carapace",
+     "tone": 4.8,
+     "gradient": 1.8,
+     "highlight": 1.3,
+     "shadow": -3.0,
+     "jitter": 0.7
+    },
+    {
+     "id": "keel",
+     "op": "band",
+     "axis": "x",
+     "from": -0.2,
+     "to": 0.2,
+     "shift": 0.8,
+     "faces": [
+      "back"
+     ]
+    }
+   ]
+  },
+  "plastron": {
+   "ramp": "plastron",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "x"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.6
+    },
+    {
+     "id": "midline",
+     "op": "band",
+     "axis": "x",
+     "from": -0.07,
+     "to": 0.07,
+     "ramp": "seam",
+     "tone": 1.0,
+     "faces": [
+      "front"
+     ]
+    },
+    {
+     "id": "across",
+     "op": "stripes",
+     "axis": "y",
+     "period": 2.6,
+     "width": 0.13,
+     "phase": 0.2,
+     "ramp": "seam",
+     "tone": 1.0,
+     "faces": [
+      "front",
+      "left",
+      "right"
+     ]
+    }
+   ]
+  },
+  "dome": {
+   "ramp": "carapace",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.6
+    },
+    {
+     "id": "scutes",
+     "op": "scales",
+     "along": "x",
+     "size": [
+      3.5,
+      3.0
+     ],
+     "shape": "square",
+     "gap": 0.5,
+     "stagger": true,
+     "ramp": "carapace",
+     "tone": 4.0,
+     "gradient": 1.8,
+     "highlight": 1.3,
+     "shadow": -3.0,
+     "jitter": 0.7
+    }
+   ]
+  },
+  "dome_top": {
+   "ramp": "carapace",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.6
+    },
+    {
+     "id": "scutes",
+     "op": "scales",
+     "along": "x",
+     "size": [
+      4.0,
+      3.4
+     ],
+     "shape": "square",
+     "gap": 0.5,
+     "stagger": true,
+     "ramp": "carapace",
+     "tone": 4.6,
+     "gradient": 1.8,
+     "highlight": 1.3,
+     "shadow": -3.0,
+     "jitter": 0.7
+    },
+    {
+     "id": "keel",
+     "op": "band",
+     "axis": "x",
+     "from": -0.2,
+     "to": 0.2,
+     "shift": 0.8,
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "carapace",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    24.0,
+    0.0
+   ],
+   "style": "marginal"
+  },
+  {
+   "id": "marginal",
+   "shape": "box",
+   "parent": "carapace",
+   "size": [
+    10.0,
+    12.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    -6.0,
+    -3.25
+   ],
+   "style": "marginal"
+  },
+  {
+   "id": "costal",
+   "shape": "box",
+   "parent": "carapace",
+   "size": [
+    8.5,
+    10.5,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    -5.75,
+    -5.25
+   ],
+   "style": "costal"
+  },
+  {
+   "id": "vertebral",
+   "shape": "box",
+   "parent": "carapace",
+   "size": [
+    5.0,
+    8.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -5.5,
+    -7.0
+   ],
+   "style": "vertebral"
+  },
+  {
+   "id": "flank_l",
+   "shape": "box",
+   "parent": "carapace",
+   "size": [
+    1.0,
+    10.5,
+    2.5
+   ],
+   "pivot": [
+    5.25,
+    -5.75,
+    -3.25
+   ],
+   "style": "marginal"
+  },
+  {
+   "id": "flank_r",
+   "shape": "box",
+   "parent": "carapace",
+   "size": [
+    1.0,
+    10.5,
+    2.5
+   ],
+   "pivot": [
+    -5.25,
+    -5.75,
+    -3.25
+   ],
+   "style": "marginal"
+  },
+  {
+   "id": "rear_flare",
+   "shape": "box",
+   "parent": "carapace",
+   "size": [
+    9.0,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    -11.5,
+    -2.5
+   ],
+   "offset": [
+    0.0,
+    -0.5,
+    -1.25
+   ],
+   "rotation": [
+    -20.0,
+    0.0,
+    0.0
+   ],
+   "style": "marginal"
+  },
+  {
+   "id": "plastron",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    24.0,
+    0.0
+   ],
+   "style": "marginal"
+  },
+  {
+   "id": "plastron_plate",
+   "shape": "box",
+   "parent": "plastron",
+   "size": [
+    8.0,
+    10.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -6.25,
+    2.75
+   ],
+   "style": "plastron"
+  },
+  {
+   "id": "gular",
+   "shape": "box",
+   "parent": "plastron",
+   "size": [
+    6.0,
+    1.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -0.75,
+    2.6
+   ],
+   "style": "plastron"
+  },
+  {
+   "id": "anal",
+   "shape": "box",
+   "parent": "plastron",
+   "size": [
+    5.0,
+    1.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    -11.75,
+    2.6
+   ],
+   "style": "plastron"
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": []
+  }
+ }
+}

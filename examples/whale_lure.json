@@ -1,0 +1,1108 @@
+{
+ "name": "Whale Lure",
+ "description": "The Winterworks Whale Lure: a prismarine plinth bristling with prismarine crystals under two crossed arches, and from its middle a fleshy stalk curling over to hang a glowing cyan-white anglerfish lure. Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 600,
+  "colors": 48
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.85,
+  "gradient": 0.4,
+  "ao": 0.5,
+  "ao_height": 4.0
+ },
+ "brush": {
+  "flow": "horizontal",
+  "length": 1.5,
+  "width": 0.5,
+  "rough": 0.45,
+  "overshoot": 0.3,
+  "textures": {
+   "prismarine": "stone",
+   "flesh": "organic"
+  }
+ },
+ "minecraft": {
+  "fps": 20,
+  "glow_parts": [
+   "bulb_cap",
+   "bulb_core",
+   "bulb_x",
+   "bulb_y",
+   "bulb_z",
+   "filament_a",
+   "filament_b"
+  ],
+  "glow_ramps": [
+   "lure"
+  ]
+ },
+ "render": {
+  "background": "#0b1e2c",
+  "hero": [
+   -32,
+   18
+  ],
+  "shadow": 0.4
+ },
+ "palette": {
+  "ramps": {
+   "prismarine": [
+    "#10221f",
+    "#173430",
+    "#1f4842",
+    "#2a5e55",
+    "#38766a",
+    "#4b8f80",
+    "#63a896",
+    "#82c2ad"
+   ],
+   "crystal": [
+    "#2d6d6a",
+    "#4b9993",
+    "#73c2b8",
+    "#a3e0d4",
+    "#d2f5ec",
+    "#f4fffb"
+   ],
+   "lure": [
+    "#0a2f3e",
+    "#115c6c",
+    "#1f94a0",
+    "#33b2b9",
+    "#56cdcd",
+    "#86e3dd",
+    "#b8f3ea",
+    "#e6fff9"
+   ],
+   "flesh": [
+    "#17131b",
+    "#231c27",
+    "#2e2632",
+    "#3b313f",
+    "#4a3f4d",
+    "#5c4e5a",
+    "#6f606b"
+   ]
+  }
+ },
+ "styles": {
+  "prismarine": {
+   "ramp": "prismarine",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "cells",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.5,
+     "shift": 0.9,
+     "space": "world",
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1
+     }
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.5
+    }
+   ]
+  },
+  "prismarine_lit": {
+   "ramp": "prismarine",
+   "tone": 5.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "cells",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.5,
+     "shift": 0.9,
+     "space": "world",
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1
+     }
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.5
+    }
+   ]
+  },
+  "plinth": {
+   "ramp": "prismarine",
+   "tone": 3.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "layers": [
+    {
+     "id": "cells",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.5,
+     "shift": 0.9,
+     "space": "world",
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1
+     }
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.5
+    },
+    {
+     "id": "trim",
+     "op": "panel",
+     "inset": 1,
+     "shift": -0.8,
+     "highlight": 1.2,
+     "shadow": -1.0,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "post": {
+   "ramp": "prismarine",
+   "tone": 3.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "cells",
+     "op": "patches",
+     "scale": 1.4,
+     "threshold": 0.5,
+     "shift": 0.9,
+     "space": "world",
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1
+     }
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.5
+    },
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "y",
+     "period": 3.0,
+     "width": 0.18,
+     "shift": -1.2
+    }
+   ]
+  },
+  "crystal": {
+   "ramp": "crystal",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "tip",
+     "op": "band",
+     "axis": "y",
+     "from": 0.4,
+     "to": 1.01,
+     "ramp": "crystal",
+     "tone": 4.8
+    }
+   ]
+  },
+  "stalk": {
+   "ramp": "flesh",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "rings",
+     "op": "stripes",
+     "axis": "y",
+     "period": 1.0,
+     "width": 0.3,
+     "shift": -0.9
+    },
+    {
+     "id": "glow_tint",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 0.6
+    }
+   ]
+  },
+  "flesh": {
+   "ramp": "flesh",
+   "tone": 4.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "lure": {
+   "ramp": "lure",
+   "tone": 4.4,
+   "light": 0.3,
+   "dither": 0.0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 0,
+    "light_shift": 1.2
+   }
+  },
+  "lure_core": {
+   "ramp": "lure",
+   "tone": 5.8,
+   "light": 0.3,
+   "dither": 0.0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 0,
+    "light_shift": 1.0
+   }
+  },
+  "filament": {
+   "ramp": "lure",
+   "tone": 4.0,
+   "light": 0.0,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "g": "lure:3",
+    "G": "lure:5",
+    "W": "lure:7"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "frame",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "prismarine"
+  },
+  {
+   "id": "plinth",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    13.0,
+    1.5,
+    13.0
+   ],
+   "pivot": [
+    0.0,
+    0.75,
+    0.0
+   ],
+   "style": "plinth"
+  },
+  {
+   "id": "plinth_step",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    9.5,
+    1.0,
+    9.5
+   ],
+   "pivot": [
+    0.0,
+    2.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "prismarine"
+  },
+  {
+   "id": "arch_post0",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.5,
+    11.0,
+    1.5
+   ],
+   "pivot": [
+    -5.0,
+    7.0,
+    -5.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "arch_post1",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.5,
+    11.0,
+    1.5
+   ],
+   "pivot": [
+    5.0,
+    7.0,
+    5.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "arch_post2",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.5,
+    11.0,
+    1.5
+   ],
+   "pivot": [
+    5.0,
+    7.0,
+    -5.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "arch_post3",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.5,
+    11.0,
+    1.5
+   ],
+   "pivot": [
+    -5.0,
+    7.0,
+    5.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "arch_x",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    15.0,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    13.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "prismarine"
+  },
+  {
+   "id": "arch_z",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    15.0,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    13.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "prismarine"
+  },
+  {
+   "id": "cap",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    3.0,
+    1.5,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    14.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "prismarine_lit"
+  },
+  {
+   "id": "crystal0",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    1.9134,
+    1.5,
+    4.6194
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    25.869,
+    -0.0,
+    -10.715
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal1",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    4.6194,
+    1.5,
+    1.9134
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    10.715,
+    -0.0,
+    -25.869
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal2",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    4.6194,
+    1.5,
+    -1.9134
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -10.715,
+    -0.0,
+    -25.869
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal3",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    1.9134,
+    1.5,
+    -4.6194
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -25.869,
+    -0.0,
+    -10.715
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal4",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    -1.9134,
+    1.5,
+    -4.6194
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -25.869,
+    -0.0,
+    10.715
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal5",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    -4.6194,
+    1.5,
+    -1.9134
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    -10.715,
+    -0.0,
+    25.869
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal6",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    -4.6194,
+    1.5,
+    1.9134
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    10.715,
+    -0.0,
+    25.869
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "crystal7",
+   "shape": "box",
+   "parent": "frame",
+   "size": [
+    1.0,
+    3.0,
+    1.0
+   ],
+   "pivot": [
+    -1.9134,
+    1.5,
+    4.6194
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    25.869,
+    -0.0,
+    10.715
+   ],
+   "style": "crystal"
+  },
+  {
+   "id": "stalk",
+   "shape": "bone",
+   "parent": "frame",
+   "pivot": [
+    0.0,
+    2.5,
+    0.0
+   ],
+   "style": "prismarine"
+  },
+  {
+   "id": "stalk_0",
+   "shape": "box",
+   "parent": "stalk",
+   "size": [
+    1.5,
+    6.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -1.5
+   ],
+   "offset": [
+    0.0,
+    3.25,
+    0.0
+   ],
+   "rotation": [
+    -10.0,
+    0.0,
+    0.0
+   ],
+   "style": "stalk"
+  },
+  {
+   "id": "stalk_1",
+   "shape": "box",
+   "parent": "stalk_0",
+   "size": [
+    1.5,
+    3.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    6.5,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    0.0,
+    0.0
+   ],
+   "style": "stalk"
+  },
+  {
+   "id": "stalk_2",
+   "shape": "box",
+   "parent": "stalk_1",
+   "size": [
+    1.0,
+    2.5,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.25,
+    0.0
+   ],
+   "rotation": [
+    70.0,
+    0.0,
+    0.0
+   ],
+   "style": "stalk"
+  },
+  {
+   "id": "bulb",
+   "shape": "bone",
+   "parent": "stalk_2",
+   "pivot": [
+    0.0,
+    3.1729,
+    2.5114
+   ],
+   "rotation": [
+    -105.0,
+    -0.0,
+    0.0
+   ],
+   "style": "prismarine"
+  },
+  {
+   "id": "bulb_cap",
+   "shape": "box",
+   "parent": "bulb",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    2.25,
+    0.0
+   ],
+   "style": "flesh"
+  },
+  {
+   "id": "bulb_core",
+   "shape": "box",
+   "parent": "bulb",
+   "size": [
+    3.5,
+    3.5,
+    3.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "lure_core"
+  },
+  {
+   "id": "bulb_x",
+   "shape": "box",
+   "parent": "bulb",
+   "size": [
+    4.5,
+    2.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "lure"
+  },
+  {
+   "id": "bulb_y",
+   "shape": "box",
+   "parent": "bulb",
+   "size": [
+    2.5,
+    4.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "lure"
+  },
+  {
+   "id": "bulb_z",
+   "shape": "box",
+   "parent": "bulb",
+   "size": [
+    2.5,
+    2.5,
+    4.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "lure"
+  },
+  {
+   "id": "filament_a",
+   "shape": "card",
+   "parent": "bulb",
+   "pivot": [
+    -0.75,
+    -2.25,
+    -0.0
+   ],
+   "offset": [
+    0.0,
+    -1.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    30.0,
+    0.0
+   ],
+   "style": "filament",
+   "plane": "xy",
+   "art": [
+    "g",
+    "g",
+    "G",
+    "g",
+    "G",
+    "W"
+   ]
+  },
+  {
+   "id": "filament_b",
+   "shape": "card",
+   "parent": "bulb",
+   "pivot": [
+    0.75,
+    -2.25,
+    0.5
+   ],
+   "offset": [
+    0.0,
+    -1.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -40.0,
+    0.0
+   ],
+   "style": "filament",
+   "plane": "xy",
+   "art": [
+    "g",
+    "g",
+    "G",
+    "g",
+    "G"
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 3.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "stalk_0",
+     "osc": {
+      "amp": 3.0,
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "axis": "z"
+    },
+    {
+     "part": "stalk_0",
+     "osc": {
+      "amp": 2.0,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "stalk_1",
+     "osc": {
+      "amp": 4.0,
+      "cycles": 1,
+      "phase": 0.15
+     },
+     "axis": "x"
+    },
+    {
+     "part": "stalk_2",
+     "osc": {
+      "amp": 5.0,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "bulb",
+     "osc": {
+      "amp": [
+       0,
+       0.35,
+       0
+      ],
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "channel": "position"
+    },
+    {
+     "part": "bulb",
+     "osc": {
+      "amp": [
+       0.06,
+       0.06,
+       0.06
+      ],
+      "cycles": 2,
+      "phase": 0.35
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "filament_a",
+     "osc": {
+      "amp": 12,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "x"
+    },
+    {
+     "part": "filament_b",
+     "osc": {
+      "amp": 10,
+      "cycles": 1,
+      "phase": 0.7
+     },
+     "axis": "x"
+    },
+    {
+     "part": "filament_a",
+     "osc": {
+      "amp": 6,
+      "cycles": 2,
+      "phase": 0.2
+     },
+     "axis": "z"
+    },
+    {
+     "part": "filament_b",
+     "osc": {
+      "amp": -6,
+      "cycles": 2,
+      "phase": 0.4
+     },
+     "axis": "z"
+    }
+   ]
+  }
+ }
+}

@@ -87,7 +87,9 @@ def run(ctx):
     for inc, tex in (("none", "amber_block"), ("seed", "amber_block_seed"), ("mosquito", "amber_block_mosquito")):
         cube(tex)
     blockstate("amber_block", {"variants": {"inclusion=none": ref("amber_block"), "inclusion=seed": ref("amber_block_seed"),
-                                            "inclusion=mosquito": ref("amber_block_mosquito")}})
+                                            "inclusion=mosquito": ref("amber_block_mosquito"),
+                                            # 0.4 fixes: a Harvester Egg (drawn in 3D by client/amber/AmberInclusionRenderer)
+                                            "inclusion=egg": ref("amber_block")}})
     # amber fossil, amber sand, amber gravel: brushed like suspicious gravel / sand (4 dusting stages)
     for b in ("amber_fossil", "amber_sand", "amber_gravel"):
         for d in range(4):

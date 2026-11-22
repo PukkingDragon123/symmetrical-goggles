@@ -136,6 +136,10 @@ public final class SnifferTaming {
             runJob(level, s, t, j);
             return true;
         }
+        // 0.4 fixes: about once a minute it waters the crops near its owner (between digs, before following)
+        if (SnifferWatering.tick(level, s, t, owner)) {
+            return true;
+        }
         // follow the owner (from 10 blocks away until 4 blocks away)
         if (owner != null && (far > 10 * 10 || (j.following && far > 4 * 4))) {
             if (!j.following) {

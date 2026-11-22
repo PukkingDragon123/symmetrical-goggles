@@ -36,7 +36,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ocean_kit import (LIGHT, LR, M, ROOT, Rig, add, barnacle_cluster, dump, keys, osc, pos, r, ramps,  # noqa
+from sea_life_kit import (LIGHT, LR, M, ROOT, Rig, add, barnacle_cluster, dump, keys, osc, pos, r, ramps,  # noqa
                        ring, round_eye, sc, shake, spikes, timeline, wave)
 
 DENSITY = 1

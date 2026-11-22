@@ -23,12 +23,15 @@ public final class AmberClient {
     public static final ModelLayerLocation MOSQUITO = layer("mosquito");
     /** The seed trapped in amber (lowpix `amber_seed`, from the art). */
     public static final ModelLayerLocation AMBER_SEED = layer("amber_seed");
+    /** A Harvester Egg trapped in amber (lowpix `amber_egg`, docs/FIXES_0_4.md "The Harvester"). */
+    public static final ModelLayerLocation AMBER_EGG = layer("amber_egg");
 
     private AmberClient() {}
 
     public static void init() {
         reg(MOSQUITO, "mosquito");
         reg(AMBER_SEED, "amber_seed");
+        reg(AMBER_EGG, "amber_egg");
         EntityRendererRegistry.register(WWEntities.MOSQUITO, MosquitoRenderer::new);
         BlockEntityRenderers.register(AmberFeature.AMBER_INCLUSION_BE, AmberInclusionRenderer::new);
         BlockRenderLayerMap.INSTANCE.putBlock(WWBlocks.AMBER_BLOCK, RenderType.translucent());   // see-through amber

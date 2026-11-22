@@ -44,13 +44,18 @@
     "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor",
+    "SoulBullNaturalSpawnerMixin",
+    "SoulBullSpawnsAccessor",
     "TrailerCartRemovalMixin",
     "MinecartFurnaceMixin",
     "LoopRiderMixin",
     "LoopPlayerMixin",
     "RailStateMixin",
     "RailStateAccessor",
-    "DaggerSwingMixin"
+    "DaggerSwingMixin",
+    "harvester.BlockStateLightAccessor",
+    "harvester.PlantAnimateTickMixin",
+    "harvester.SnifferWaterMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -85,7 +90,10 @@
     "client.DaggerItemInHandLayerMixin",
     "client.DaggerPlayerRendererMixin",
     "client.RamPoseMixin",
-    "client.RamHandMixin"
+    "client.RamHandMixin",
+    "client.SoulBarGuiMixin",
+    "harvester.client.SnifferSneezeModelMixin",
+    "harvester.client.SpriteSourcesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

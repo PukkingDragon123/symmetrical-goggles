@@ -1,0 +1,116 @@
+{
+  "name": "Turtle Shell Retreat",
+  "parts": 9,
+  "instances": 9,
+  "faces": 36,
+  "triangles": 72,
+  "vertices_flat": 144,
+  "vertices_unique": 48,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.685,
+  "texel_density": 2.0,
+  "colors_used": 22,
+  "palette": {
+    "carapace": [
+      "#141c0e",
+      "#1f2b14",
+      "#2c3b1b",
+      "#3a4c22",
+      "#4a5f2a",
+      "#5c7333",
+      "#71883d",
+      "#88a04a"
+    ],
+    "seam": [
+      "#5f5428",
+      "#8a7c3e",
+      "#b3a252",
+      "#d4c578",
+      "#ece0a4"
+    ],
+    "plastron": [
+      "#5e5236",
+      "#857552",
+      "#ab9a6e",
+      "#cbbb8c",
+      "#e2d6aa",
+      "#f2eacc"
+    ],
+    "skin": [
+      "#121a0e",
+      "#1b2715",
+      "#26361c",
+      "#334824",
+      "#425c2c",
+      "#527135"
+    ],
+    "sclera": [
+      "#3c3440",
+      "#5a5260",
+      "#7a7280",
+      "#9e96a0",
+      "#c1bbbf",
+      "#dcd7d6",
+      "#efebe8",
+      "#fbf9f6"
+    ],
+    "iris": [
+      "#2a0c04",
+      "#5a2108",
+      "#a0420e",
+      "#d8701c",
+      "#f5ae3e",
+      "#ffd88a",
+      "#ffffff"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -7.0,
+      0.0,
+      -8.5
+    ],
+    "max": [
+      7.0,
+      10.0,
+      8.5
+    ],
+    "size": [
+      14.0,
+      10.0,
+      17.0
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0,
+    "hit": 0.4
+  },
+  "joints": [
+    "shell",
+    "plastron",
+    "plastron_plate",
+    "carapace",
+    "rim",
+    "dome",
+    "dome_hi",
+    "crown",
+    "keel"
+  ],
+  "files": {
+    "turtle_shell_retreat.glb": "examples/output/turtle_shell_retreat.glb",
+    "turtle_shell_retreat.obj": "examples/output/turtle_shell_retreat.obj",
+    "turtle_shell_retreat.mtl": "examples/output/turtle_shell_retreat.mtl",
+    "turtle_shell_retreat.bbmodel": "examples/output/turtle_shell_retreat.bbmodel",
+    "turtle_shell_retreat_texture.png": "examples/output/turtle_shell_retreat_texture.png",
+    "turtle_shell_retreat_texture_x8.png": "examples/output/turtle_shell_retreat_texture_x8.png",
+    "turtle_shell_retreat_hero.png": "examples/output/turtle_shell_retreat_hero.png",
+    "turtle_shell_retreat_sheet.png": "examples/output/turtle_shell_retreat_sheet.png",
+    "turtle_shell_retreat_turntable.gif": "examples/output/turtle_shell_retreat_turntable.gif",
+    "turtle_shell_retreat_idle.gif": "examples/output/turtle_shell_retreat_idle.gif",
+    "turtle_shell_retreat_hit.gif": "examples/output/turtle_shell_retreat_hit.gif"
+  }
+}

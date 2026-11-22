@@ -1,0 +1,73 @@
+{
+  "name": "Cannonball",
+  "parts": 5,
+  "instances": 5,
+  "faces": 24,
+  "triangles": 48,
+  "vertices_flat": 96,
+  "vertices_unique": 32,
+  "atlas": [
+    64,
+    64
+  ],
+  "atlas_fill": 0.768,
+  "texel_density": 2.0,
+  "colors_used": 10,
+  "palette": {
+    "iron": [
+      "#121216",
+      "#1b1b21",
+      "#26262d",
+      "#33333b",
+      "#43434b",
+      "#57575f",
+      "#6e6e75",
+      "#8a8a90"
+    ],
+    "rust": [
+      "#2a140c",
+      "#4a2412",
+      "#6a3618"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -3.0,
+      21.0,
+      -3.0
+    ],
+    "max": [
+      3.0,
+      27.0,
+      3.0
+    ],
+    "size": [
+      6.0,
+      6.0,
+      6.0
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "spin": 1.0
+  },
+  "joints": [
+    "ball",
+    "core",
+    "slab_x",
+    "slab_y",
+    "slab_z"
+  ],
+  "files": {
+    "cannonball.glb": "examples/output/cannonball.glb",
+    "cannonball.obj": "examples/output/cannonball.obj",
+    "cannonball.mtl": "examples/output/cannonball.mtl",
+    "cannonball.bbmodel": "examples/output/cannonball.bbmodel",
+    "cannonball_texture.png": "examples/output/cannonball_texture.png",
+    "cannonball_texture_x16.png": "examples/output/cannonball_texture_x16.png",
+    "cannonball_hero.png": "examples/output/cannonball_hero.png",
+    "cannonball_sheet.png": "examples/output/cannonball_sheet.png",
+    "cannonball_turntable.gif": "examples/output/cannonball_turntable.gif",
+    "cannonball_spin.gif": "examples/output/cannonball_spin.gif"
+  }
+}

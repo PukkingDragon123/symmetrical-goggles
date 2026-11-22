@@ -30,7 +30,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ocean_kit import (LIGHT, LR, M, ROOT, Rig, add, aim, barnacle_cluster, dump, eyeball, fan_fin, iris_card,  # noqa
+from sea_life_kit import (LIGHT, LR, M, ROOT, Rig, add, aim, barnacle_cluster, dump, eyeball, fan_fin, iris_card,  # noqa
                        keys, lid_frame, limb, osc, pos, r, ragged_fin, ramps, rest_on_ground, ring, rounded, sc,
                        shake, spikes, timeline, wave)
 

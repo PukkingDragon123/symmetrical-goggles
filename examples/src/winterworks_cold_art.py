@@ -909,31 +909,31 @@ def block(name, palette, grid):
 
 
 # Ancient ice: deep layered glacier ice, translucent so the frozen Mauler shows through. It tiles like vanilla ice:
-# gently tilted strata of cobalt and blue (deep pockets nearly indigo) that run on across the edges, the same
-# depth everywhere (no lighter or darker band to stripe a wall), short pale cyan fractures with a bright glint and a
-# dark shadow under each, and trapped bubbles, all spread evenly. Animated (`.mcmeta`, interpolated): a slow band
+# gently tilted strata of cobalt and blue that run on across the edges, the same depth everywhere (no lighter or
+# darker band to stripe a wall), and a few short, soft fractures, only a step or two paler than the ice round them
+# (no white glints, bubbles or lone dark pockets to dot a wall). Animated (`.mcmeta`, interpolated): a slow band
 # of cold light sweeps diagonally through the ice, then it rests; the band wraps round the block (x + y taken
 # modulo 16), so across a wall it is one set of even diagonal stripes.
 DEEP_ICE = pal(**{"0": "#0a0f3aa4", "1": "#111d5c98", "2": "#18307e90", "3": "#20499e90", "4": "#2c68bc98",
                   "5": "#3c86d4a4", "6": "#66b2e6b8", "7": "#a8e2f8cc", "8": "#ecfcffe4", "w": "#f4fdffe6",
                   "b": "#7ec0ecbc"})
 ANCIENT_ICE = """
-2333 2223 2326 3321
-4311 6122 13w1 3223
-122w 0134 4701 0122
-4361 4422 3122 3123
-4715 4321 1211 3333
-5132 2221 0233 3234
-1232 1233 3121 b122
+2333 2223 2324 3321
+4311 5122 1351 3223
+1225 1134 4511 1122
+4351 4422 3122 3123
+4415 4321 1211 3333
+5132 2221 1233 3234
+1232 1233 3121 2122
 3213 4422 3322 3223
-334b 3321 6222 3322
-4322 222w 0233 4333
-2232 1261 3121 322b
-3223 5712 3223 4326
-3455 4121 0222 44w1
-5322 2221 0244 4713
-2332 2134 3222 2031
-2112 3323 b333 3113
+3343 3321 5222 3322
+4322 2225 1233 4333
+2232 1251 3121 3223
+3223 4512 3223 4325
+3455 4121 1222 4451
+5322 2221 1244 4513
+2332 2134 3222 2131
+2112 3323 3333 3113
 """
 # the shimmer: one frame per row of the strip; a 3 px band ((x + y - c) mod 16 in [0, 2]) is one tone brighter
 SHIMMER_UP = {"0": "1", "1": "2", "2": "3", "3": "4", "4": "5", "5": "6", "6": "7", "7": "8", "8": "w", "b": "7",

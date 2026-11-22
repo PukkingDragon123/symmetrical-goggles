@@ -3035,5 +3035,1062 @@
       }
     ],
     "subtitle": "Pot Golem throws a potion"
+  },
+  "entity.falling_meteorite.whistle": {
+    "sounds": [
+      {
+        "name": "winterworks:meteorite/hum1",
+        "pitch": 1.5,
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:meteorite/hum2",
+        "pitch": 1.4,
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:meteorite/hum3",
+        "pitch": 1.6,
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Meteor whistles"
+  },
+  "entity.falling_meteorite.impact": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/slam1",
+        "pitch": 0.7,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/slam2",
+        "pitch": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/slam3",
+        "pitch": 0.75,
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Meteor crashes"
+  },
+  "entity.anglerfish.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/ambient1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:anglerfish/ambient2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:anglerfish/ambient3",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:anglerfish/ambient4",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "Anglerfish gurgles"
+  },
+  "entity.anglerfish.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/hurt1"
+      },
+      {
+        "name": "winterworks:anglerfish/hurt2"
+      },
+      {
+        "name": "winterworks:anglerfish/hurt3"
+      }
+    ],
+    "subtitle": "Anglerfish hurts"
+  },
+  "entity.anglerfish.death": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/death1"
+      },
+      {
+        "name": "winterworks:anglerfish/death2"
+      }
+    ],
+    "subtitle": "Anglerfish dies"
+  },
+  "entity.anglerfish.lunge": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/lunge1"
+      },
+      {
+        "name": "winterworks:anglerfish/lunge2"
+      },
+      {
+        "name": "winterworks:anglerfish/lunge3"
+      }
+    ],
+    "subtitle": "Anglerfish lunges"
+  },
+  "entity.anglerfish.bite": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/bite1"
+      },
+      {
+        "name": "winterworks:anglerfish/bite2"
+      },
+      {
+        "name": "winterworks:anglerfish/bite3"
+      }
+    ],
+    "subtitle": "Anglerfish bites"
+  },
+  "entity.anglerfish.flop": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/flop1"
+      },
+      {
+        "name": "winterworks:anglerfish/flop2"
+      },
+      {
+        "name": "winterworks:anglerfish/flop3"
+      }
+    ],
+    "subtitle": "Anglerfish flops"
+  },
+  "entity.lionfish.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/hurt1"
+      },
+      {
+        "name": "winterworks:lionfish/hurt2"
+      },
+      {
+        "name": "winterworks:lionfish/hurt3"
+      }
+    ],
+    "subtitle": "Lionfish hurts"
+  },
+  "entity.lionfish.death": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/death1"
+      },
+      {
+        "name": "winterworks:lionfish/death2"
+      }
+    ],
+    "subtitle": "Lionfish dies"
+  },
+  "entity.lionfish.flare": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/flare1"
+      },
+      {
+        "name": "winterworks:lionfish/flare2"
+      },
+      {
+        "name": "winterworks:lionfish/flare3"
+      }
+    ],
+    "subtitle": "Lionfish flares its spines"
+  },
+  "entity.lionfish.flop": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/flop1"
+      },
+      {
+        "name": "winterworks:lionfish/flop2"
+      },
+      {
+        "name": "winterworks:lionfish/flop3"
+      }
+    ],
+    "subtitle": "Lionfish flops"
+  },
+  "entity.nautilus.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/ambient1",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:nautilus/ambient2",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:nautilus/ambient3",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:nautilus/ambient4",
+        "attenuation_distance": 12
+      }
+    ],
+    "subtitle": "Nautilus clicks"
+  },
+  "entity.nautilus.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/hurt1"
+      },
+      {
+        "name": "winterworks:nautilus/hurt2"
+      },
+      {
+        "name": "winterworks:nautilus/hurt3"
+      }
+    ],
+    "subtitle": "Nautilus hurts"
+  },
+  "entity.nautilus.death": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/death1"
+      },
+      {
+        "name": "winterworks:nautilus/death2"
+      }
+    ],
+    "subtitle": "Nautilus dies"
+  },
+  "entity.nautilus.dash": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/dash1"
+      },
+      {
+        "name": "winterworks:nautilus/dash2"
+      },
+      {
+        "name": "winterworks:nautilus/dash3"
+      }
+    ],
+    "subtitle": "Nautilus jets"
+  },
+  "entity.whale.song": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/song1",
+        "attenuation_distance": 96,
+        "stream": true
+      },
+      {
+        "name": "winterworks:whale/song2",
+        "attenuation_distance": 96,
+        "stream": true
+      },
+      {
+        "name": "winterworks:whale/song3",
+        "attenuation_distance": 96,
+        "stream": true
+      }
+    ],
+    "subtitle": "Whale sings"
+  },
+  "entity.whale.call": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/call1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:whale/call2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:whale/call3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Whale calls"
+  },
+  "entity.whale.breathe": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/breathe1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/breathe2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/breathe3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Whale spouts"
+  },
+  "entity.whale.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/hurt1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/hurt2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/hurt3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Whale hurts"
+  },
+  "entity.whale.death": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/death1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:whale/death2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Whale dies"
+  },
+  "entity.whale.swallow": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/swallow1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/swallow2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Whale swallows"
+  },
+  "entity.whale.mouth_open": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/mouth_open1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/mouth_open2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Whale opens its mouth"
+  },
+  "entity.whale.mouth_close": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/mouth_close1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/mouth_close2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Whale's jaws shut"
+  },
+  "entity.whale.shake": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/shake1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/shake2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Whale shakes"
+  },
+  "entity.whale.eat": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/eat1"
+      },
+      {
+        "name": "winterworks:whale/eat2"
+      },
+      {
+        "name": "winterworks:whale/eat3"
+      }
+    ],
+    "subtitle": "Whale eats"
+  },
+  "entity.whale.note": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/note1",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Whale sings a note"
+  },
+  "entity.whale.tamed": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/tamed1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/tamed2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Whale tamed"
+  },
+  "ambient.whale_belly.loop": {
+    "sounds": [
+      {
+        "name": "winterworks:whale_belly/loop1",
+        "stream": true
+      }
+    ],
+    "subtitle": null
+  },
+  "ambient.whale_belly.current": {
+    "sounds": [
+      {
+        "name": "winterworks:whale_belly/current1",
+        "stream": true
+      },
+      {
+        "name": "winterworks:whale_belly/current2",
+        "stream": true
+      }
+    ],
+    "subtitle": "Current rushes"
+  },
+  "entity.elder_guardian.bubble": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/bubble1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/bubble2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/bubble3",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Elder Guardian blows bubbles"
+  },
+  "entity.elder_guardian.stare_charge": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/stare_charge1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/stare_charge2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Elder Guardian charges its gaze"
+  },
+  "entity.elder_guardian.laser": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/laser1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/laser2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "Elder Guardian's beam hums"
+  },
+  "entity.elder_guardian.tail_whip": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/tail_whip1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:elder_guardian/tail_whip2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:elder_guardian/tail_whip3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Elder Guardian whips its tail"
+  },
+  "entity.elder_guardian.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/roar1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:elder_guardian/roar2",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Elder Guardian roars"
+  },
+  "block.hydrothermal_vent.loop": {
+    "sounds": [
+      {
+        "name": "winterworks:hydrothermal_vent/loop1",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "Vent bubbles"
+  },
+  "block.tube_worms.retract": {
+    "sounds": [
+      {
+        "name": "winterworks:tube_worms/retract1"
+      },
+      {
+        "name": "winterworks:tube_worms/retract2"
+      },
+      {
+        "name": "winterworks:tube_worms/retract3"
+      }
+    ],
+    "subtitle": "Tube worms retract"
+  },
+  "block.tube_worms.extend": {
+    "sounds": [
+      {
+        "name": "winterworks:tube_worms/extend1"
+      },
+      {
+        "name": "winterworks:tube_worms/extend2"
+      },
+      {
+        "name": "winterworks:tube_worms/extend3"
+      }
+    ],
+    "subtitle": "Tube worms extend"
+  },
+  "block.angler_light.hum": {
+    "sounds": [
+      {
+        "name": "winterworks:angler_light/hum1",
+        "attenuation_distance": 8
+      },
+      {
+        "name": "winterworks:angler_light/hum2",
+        "attenuation_distance": 8
+      },
+      {
+        "name": "winterworks:angler_light/hum3",
+        "attenuation_distance": 8
+      }
+    ],
+    "subtitle": "Angler light hums"
+  },
+  "block.whale_lure.pulse": {
+    "sounds": [
+      {
+        "name": "winterworks:whale_lure/pulse1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:whale_lure/pulse2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:whale_lure/pulse3",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "Whale lure pulses"
+  },
+  "block.eye_of_the_ocean.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:eye_of_the_ocean/ambient1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:eye_of_the_ocean/ambient2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:eye_of_the_ocean/ambient3",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "Eye of the Ocean pulses"
+  },
+  "block.eye_of_the_ocean.activate": {
+    "sounds": [
+      {
+        "name": "winterworks:eye_of_the_ocean/activate1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:eye_of_the_ocean/activate2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "Eye of the Ocean activates"
+  },
+  "block.cannon.fire": {
+    "sounds": [
+      {
+        "name": "winterworks:cannon/fire1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannon/fire2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannon/fire3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Cannon fires"
+  },
+  "block.cannon.load": {
+    "sounds": [
+      {
+        "name": "winterworks:cannon/load1"
+      },
+      {
+        "name": "winterworks:cannon/load2"
+      },
+      {
+        "name": "winterworks:cannon/load3"
+      }
+    ],
+    "subtitle": "Cannon loaded"
+  },
+  "block.cannon.aim": {
+    "sounds": [
+      {
+        "name": "winterworks:cannon/aim1"
+      },
+      {
+        "name": "winterworks:cannon/aim2"
+      },
+      {
+        "name": "winterworks:cannon/aim3"
+      }
+    ],
+    "subtitle": "Cannon turns"
+  },
+  "entity.cannonball.burst": {
+    "sounds": [
+      {
+        "name": "winterworks:cannonball/burst1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannonball/burst2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannonball/burst3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "Cannonball bursts"
+  },
+  "item.turtle_shell.retreat": {
+    "sounds": [
+      {
+        "name": "winterworks:turtle_shell/retreat1"
+      },
+      {
+        "name": "winterworks:turtle_shell/retreat2"
+      },
+      {
+        "name": "winterworks:turtle_shell/retreat3"
+      }
+    ],
+    "subtitle": "Shell closes"
+  },
+  "block.barnacles.break": {
+    "sounds": [
+      {
+        "name": "winterworks:barnacles/break1"
+      },
+      {
+        "name": "winterworks:barnacles/break2"
+      },
+      {
+        "name": "winterworks:barnacles/break3"
+      }
+    ],
+    "subtitle": "Barnacles crunch"
+  },
+  "item.nautilus_horn.bind": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus_horn/bind1"
+      },
+      {
+        "name": "winterworks:nautilus_horn/bind2"
+      }
+    ],
+    "subtitle": "Nautilus Horn bound"
+  },
+  "item.nautilus_horn.command": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus_horn/command1",
+        "attenuation_distance": 96
+      },
+      {
+        "name": "winterworks:nautilus_horn/command2",
+        "attenuation_distance": 96
+      },
+      {
+        "name": "winterworks:nautilus_horn/command3",
+        "attenuation_distance": 96
+      }
+    ],
+    "subtitle": "Nautilus Horn blows"
+  },
+  "entity.soul_bull.ambient": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/skeleton/idle1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/idle2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/idle3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/idle7",
+        "pitch": 0.65
+      }
+    ],
+    "subtitle": "Soul Bull rattles"
+  },
+  "entity.soul_bull.hurt": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/skeleton/hit1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/hit2",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/hit3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt2",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "Soul Bull hurts"
+  },
+  "entity.soul_bull.death": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/horse/skeleton/death",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/ravager/death2",
+        "pitch": 0.8
+      }
+    ],
+    "subtitle": "Soul Bull crumbles"
+  },
+  "entity.soul_bull.snort": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/hoglin/angry1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry3",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/hoglin/angry5",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/ravager/idle4",
+        "pitch": 0.9
+      }
+    ],
+    "subtitle": "Soul Bull snorts"
+  },
+  "entity.soul_bull.ram": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar1",
+        "pitch": 1.05
+      },
+      {
+        "name": "minecraft:mob/ravager/roar3",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:mob/hoglin/attack1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "Soul Bull charges"
+  },
+  "entity.soul_bull.pin": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/bite1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/ravager/bite2",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/hoglin/attack2",
+        "pitch": 0.55
+      },
+      {
+        "name": "minecraft:mob/zoglin/attack1",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "Soul Bull gores"
+  },
+  "entity.soul_bull.step": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/step1",
+        "pitch": 1.3,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:mob/ravager/step3",
+        "pitch": 1.25,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/bone_block/step2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/bone_block/step4",
+        "pitch": 0.75
+      }
+    ]
+  },
+  "entity.soul_bull.drain": {
+    "sounds": [
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper1",
+        "pitch": 1.2
+      },
+      {
+        "name": "minecraft:ambient/nether/soulsand_valley/whisper4",
+        "pitch": 1.1
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed8",
+        "pitch": 0.75
+      }
+    ],
+    "subtitle": "Soul Bull drinks souls"
+  },
+  "entity.soul_bull.revive": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/ravager/roar2",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/horse/skeleton/idle2",
+        "pitch": 0.45
+      },
+      {
+        "name": "minecraft:mob/wither/spawn",
+        "pitch": 1.6,
+        "volume": 0.5
+      }
+    ],
+    "subtitle": "Soul Bull rises"
+  },
+  "block.soul_bull_skull.ignite": {
+    "sounds": [
+      {
+        "name": "minecraft:fire/ignite",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:enchant/soulspeed/soulspeed11",
+        "pitch": 0.65
+      }
+    ],
+    "subtitle": "Skull's eyes kindle"
+  },
+  "entity.harvester.ambient": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/sniffer/idle1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/sniffer/idle3",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/sniffer/idle5",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/camel/ambient1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/camel/ambient3",
+        "pitch": 0.55
+      }
+    ],
+    "subtitle": "Harvester rumbles"
+  },
+  "entity.harvester.hurt": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/sniffer/hurt1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/sniffer/hurt2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/hoglin/hurt1",
+        "pitch": 0.55
+      }
+    ],
+    "subtitle": "Harvester hurts"
+  },
+  "entity.harvester.death": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/sniffer/death1",
+        "pitch": 0.65
+      },
+      {
+        "name": "minecraft:mob/sniffer/death2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/camel/death1",
+        "pitch": 0.55
+      }
+    ],
+    "subtitle": "Harvester dies"
+  },
+  "entity.harvester.chomp": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/camel/eat1",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/camel/eat3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/camel/eat5",
+        "pitch": 0.75
+      },
+      {
+        "name": "minecraft:mob/ravager/bite2",
+        "pitch": 1.1,
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "Harvester crops"
+  },
+  "entity.harvester.shove": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/hoglin/attack1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/hoglin/attack2",
+        "pitch": 0.55
+      }
+    ],
+    "subtitle": "Harvester shoves"
+  },
+  "entity.harvester.step": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/sniffer/step1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/sniffer/step3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/sniffer/step5",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/camel/step2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:mob/camel/step4",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": null
+  },
+  "entity.sniffer.sneeze": {
+    "sounds": [
+      {
+        "name": "winterworks:pot_golem/sneeze1",
+        "pitch": 0.62,
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:pot_golem/sneeze2",
+        "pitch": 0.58,
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "Sniffer sneezes"
   }
 }

@@ -56,6 +56,7 @@ public final class ExpressClient {
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.FOX_CART, new CartItemRenderer(CartKind.FOX_CART));
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.ZOMBIE_CART, new CartItemRenderer(CartKind.ZOMBIE_CART));
         ExpressShots.init();
+        RailShots.init();
     }
 
     private static boolean apply(ClientLevel level, LoopPayload payload) {

@@ -1,0 +1,127 @@
+{
+  "name": "Cannon",
+  "parts": 36,
+  "instances": 36,
+  "faces": 198,
+  "triangles": 396,
+  "vertices_flat": 792,
+  "vertices_unique": 260,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.587,
+  "texel_density": 2.0,
+  "colors_used": 27,
+  "palette": {
+    "bronze": [
+      "#1f1a10",
+      "#33281a",
+      "#4c3a20",
+      "#6a5128",
+      "#8a6a32",
+      "#a8843e",
+      "#c6a052",
+      "#dfc07a",
+      "#f2e0aa"
+    ],
+    "patina": [
+      "#16231e",
+      "#22382f",
+      "#335244",
+      "#4a6e5c"
+    ],
+    "iron": [
+      "#121216",
+      "#1b1b21",
+      "#26262d",
+      "#33333b",
+      "#43434b",
+      "#57575f",
+      "#6e6e75",
+      "#8a8a90"
+    ],
+    "oak": [
+      "#1c120b",
+      "#2a1b10",
+      "#3a2716",
+      "#4d351e",
+      "#614427",
+      "#775532",
+      "#8e683e"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -7.25,
+      0.0,
+      -7.75
+    ],
+    "max": [
+      7.25,
+      13.036,
+      12.5
+    ],
+    "size": [
+      14.5,
+      13.036,
+      20.25
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "fire": 0.6,
+    "idle": 1.0
+  },
+  "joints": [
+    "base",
+    "deck",
+    "corner0",
+    "corner1",
+    "corner2",
+    "corner3",
+    "turntable",
+    "turntable_t",
+    "yoke",
+    "swivel",
+    "cheek_l",
+    "cap_l",
+    "strap_l",
+    "cheek_r",
+    "cap_r",
+    "strap_r",
+    "barrel",
+    "trunnion",
+    "breech",
+    "breech_r",
+    "reinforce",
+    "reinforce_r",
+    "chase",
+    "chase_r",
+    "muzzle",
+    "muzzle_r",
+    "cascabel",
+    "knob",
+    "band0",
+    "band0_r",
+    "band1",
+    "band1_r",
+    "band2",
+    "band2_r",
+    "band3",
+    "band3_r"
+  ],
+  "files": {
+    "cannon.glb": "examples/output/cannon.glb",
+    "cannon.obj": "examples/output/cannon.obj",
+    "cannon.mtl": "examples/output/cannon.mtl",
+    "cannon.bbmodel": "examples/output/cannon.bbmodel",
+    "cannon_texture.png": "examples/output/cannon_texture.png",
+    "cannon_texture_x4.png": "examples/output/cannon_texture_x4.png",
+    "cannon_hero.png": "examples/output/cannon_hero.png",
+    "cannon_sheet.png": "examples/output/cannon_sheet.png",
+    "cannon_turntable.gif": "examples/output/cannon_turntable.gif",
+    "cannon_fire.gif": "examples/output/cannon_fire.gif",
+    "cannon_idle.gif": "examples/output/cannon_idle.gif"
+  }
+}

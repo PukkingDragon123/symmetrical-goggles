@@ -67,12 +67,45 @@ public class ColdTests implements FabricGameTest {
         h.succeed();
     }
 
-    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200)
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 400)
     public void iceCavesFreezeYou(GameTestHelper h) {
         ServerPlayer p = playerInIceCaves(h);
-        h.runAfterDelay(80, () -> {
-            h.assertTrue(ColdSystem.exposure(p) > 0, "the Ice Caves should be cold, exposure=" + ColdSystem.exposure(p));
-            h.assertTrue(p.getTicksFrozen() >= 15, "the player should be freezing, frozen ticks=" + p.getTicksFrozen());
+        h.runAfterDelay(80, () -> h.assertTrue(ColdSystem.exposure(p) > 0 && ColdSystem.coldMeter(p) > 30,
+                "the Ice Caves should be cold, exposure=" + ColdSystem.exposure(p) + " meter=" + ColdSystem.coldMeter(p)));
+        h.runAfterDelay(260, () -> {
+            h.assertTrue(ColdSystem.coldLevel(p) >= 1, "Chilly within 13 s, meter=" + ColdSystem.coldMeter(p));
+            h.assertTrue(p.hasEffect(dev.lowpix.winterworks.registry.WWEffects.COLD), "the Cold effect shows the level");
+            h.assertTrue(p.getTicksFrozen() >= 10, "the frost creeps in, frozen ticks=" + p.getTicksFrozen());
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    public void coldHasFourLevels(GameTestHelper h) {
+        h.assertTrue(ColdSystem.levelOf(0) == 0 && ColdSystem.levelOf(99) == 0 && ColdSystem.levelOf(100) == 1
+                && ColdSystem.levelOf(250) == 2 && ColdSystem.levelOf(399) == 3 && ColdSystem.levelOf(400) == 4, "levels");
+        ServerPlayer p = playerInIceCaves(h);
+        ColdSystem.setColdMeter(p, 400);
+        h.runAfterDelay(25, () -> {
+            h.assertTrue(ColdSystem.coldLevel(p) == 4, "Frozen");
+            var cold = p.getEffect(dev.lowpix.winterworks.registry.WWEffects.COLD);
+            h.assertTrue(cold != null && cold.getAmplifier() == 3, "Cold IV when Frozen");
+            h.assertTrue(p.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN)
+                    && p.hasEffect(net.minecraft.world.effect.MobEffects.WEAKNESS), "Frozen slows and weakens");
+            h.assertTrue(p.isFullyFrozen(), "fully frozen from Freezing on");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 100)
+    public void touchingIceChills(GameTestHelper h) {
+        ServerPlayer p = h.makeMockServerPlayerInLevel();
+        p.moveTo(h.absoluteVec(new net.minecraft.world.phys.Vec3(4.5, 2, 4.5)));
+        h.setBlock(new BlockPos(4, 1, 4), Blocks.BLUE_ICE);
+        h.setBlock(new BlockPos(5, 2, 4), Blocks.PACKED_ICE);
+        h.runAfterDelay(5, () -> {
+            h.assertTrue(ColdSystem.coldAt(h.getLevel(), p) >= ColdSystem.ON_ICE + ColdSystem.TOUCHING_ICE - 0.01f,
+                    "standing on and touching ice is cold: " + ColdSystem.coldAt(h.getLevel(), p));
             h.succeed();
         });
     }
@@ -90,9 +123,24 @@ public class ColdTests implements FabricGameTest {
     @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200)
     public void leatherKeepsTheColdOut(GameTestHelper h) {
         ServerPlayer p = playerInIceCaves(h);
+        p.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.LEATHER_HELMET));
+        p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.LEATHER_CHESTPLATE));
+        p.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.LEATHER_LEGGINGS));
         p.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.LEATHER_BOOTS));
         h.runAfterDelay(80, () -> {
-            h.assertTrue(p.getTicksFrozen() <= 2, "leather should stop freezing, frozen ticks=" + p.getTicksFrozen());
+            h.assertTrue(ColdSystem.coldMeter(p) == 0 && p.getTicksFrozen() <= 2,
+                    "a full leather set keeps the cold out, meter=" + ColdSystem.coldMeter(p));
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 200)
+    public void onePieceOnlySlowsTheCold(GameTestHelper h) {
+        ServerPlayer p = playerInIceCaves(h);
+        p.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.LEATHER_BOOTS));
+        h.runAfterDelay(80, () -> {
+            float m = ColdSystem.coldMeter(p);
+            h.assertTrue(m > 15 && m < 0.5f * 80, "one leather piece cuts the cold by a quarter, meter=" + m);
             h.succeed();
         });
     }

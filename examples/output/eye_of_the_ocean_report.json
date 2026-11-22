@@ -1,0 +1,157 @@
+{
+  "name": "Eye of the Ocean",
+  "parts": 44,
+  "instances": 44,
+  "faces": 241,
+  "triangles": 482,
+  "vertices_flat": 964,
+  "vertices_unique": 284,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.75,
+  "texel_density": 2.0,
+  "colors_used": 40,
+  "palette": {
+    "prismarine": [
+      "#10221f",
+      "#173430",
+      "#1f4842",
+      "#2a5e55",
+      "#38766a",
+      "#4b8f80",
+      "#63a896",
+      "#82c2ad"
+    ],
+    "crystal": [
+      "#2d6d6a",
+      "#4b9993",
+      "#73c2b8",
+      "#a3e0d4",
+      "#d2f5ec",
+      "#f4fffb"
+    ],
+    "scale": [
+      "#0e2628",
+      "#1d4746",
+      "#2b6660",
+      "#3c867a",
+      "#55a591",
+      "#78c3aa",
+      "#b3e5cf"
+    ],
+    "spike": [
+      "#5a240c",
+      "#8a3d18",
+      "#c46a26",
+      "#eea04a",
+      "#f8cf86"
+    ],
+    "sclera": [
+      "#3c3440",
+      "#5a5260",
+      "#7a7280",
+      "#9e96a0",
+      "#c1bbbf",
+      "#dcd7d6",
+      "#efebe8",
+      "#fbf9f6"
+    ],
+    "iris": [
+      "#2a0c04",
+      "#5a2108",
+      "#a0420e",
+      "#d8701c",
+      "#f5ae3e",
+      "#ffd88a",
+      "#ffffff"
+    ],
+    "tissue": [
+      "#3a1820",
+      "#5e2a36",
+      "#8a4552",
+      "#b56a76",
+      "#d998a0"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -7.217,
+      1.097,
+      -7.217
+    ],
+    "max": [
+      7.217,
+      14.903,
+      7.217
+    ],
+    "size": [
+      14.435,
+      13.806,
+      14.435
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0
+  },
+  "joints": [
+    "cage",
+    "post0",
+    "post1",
+    "post2",
+    "post3",
+    "bar_x0",
+    "bar_z0",
+    "bar_x1",
+    "bar_z1",
+    "bar_x2",
+    "bar_z2",
+    "bar_x3",
+    "bar_z3",
+    "knob0",
+    "knob1",
+    "knob2",
+    "knob3",
+    "knob4",
+    "knob5",
+    "knob6",
+    "knob7",
+    "scales",
+    "scale0",
+    "spike0",
+    "scale1",
+    "spike1",
+    "scale2",
+    "spike2",
+    "scale3",
+    "spike3",
+    "scale4",
+    "spike4",
+    "scale5",
+    "spike5",
+    "scale6",
+    "spike6",
+    "scale7",
+    "spike7",
+    "eye",
+    "eye_ball",
+    "eye_ball_x",
+    "eye_ball_y",
+    "eye_ball_z",
+    "pupil"
+  ],
+  "files": {
+    "eye_of_the_ocean.glb": "examples/output/eye_of_the_ocean.glb",
+    "eye_of_the_ocean.obj": "examples/output/eye_of_the_ocean.obj",
+    "eye_of_the_ocean.mtl": "examples/output/eye_of_the_ocean.mtl",
+    "eye_of_the_ocean.bbmodel": "examples/output/eye_of_the_ocean.bbmodel",
+    "eye_of_the_ocean_texture.png": "examples/output/eye_of_the_ocean_texture.png",
+    "eye_of_the_ocean_texture_x8.png": "examples/output/eye_of_the_ocean_texture_x8.png",
+    "eye_of_the_ocean_hero.png": "examples/output/eye_of_the_ocean_hero.png",
+    "eye_of_the_ocean_sheet.png": "examples/output/eye_of_the_ocean_sheet.png",
+    "eye_of_the_ocean_turntable.gif": "examples/output/eye_of_the_ocean_turntable.gif",
+    "eye_of_the_ocean_idle.gif": "examples/output/eye_of_the_ocean_idle.gif"
+  }
+}

@@ -26,7 +26,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ocean_kit import (GLOSS, LIGHT, LR, M, ROOT, Rig, add, dump, keys, limb, locks, osc, pattern_stamps,  # noqa
+from sea_life_kit import (GLOSS, LIGHT, LR, M, ROOT, Rig, add, dump, keys, limb, locks, osc, pattern_stamps,  # noqa
                        pos, r, ramps, rest_on_ground, ring, round_eye, rounded, sc, shake, tentacle_tuft, timeline,
                        wave)
 
