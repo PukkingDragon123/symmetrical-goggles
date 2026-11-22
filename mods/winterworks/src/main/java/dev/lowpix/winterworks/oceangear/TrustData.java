@@ -13,6 +13,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The trust lists (docs/OCEAN_UPDATE.md section 6), one per player, saved with the world (the overworld's
@@ -56,6 +57,20 @@ public final class TrustData extends SavedData {
         }
         setDirty();
         return true;
+    }
+
+    /** The id of the player on `owner`'s list with this name (any case), if any. */
+    @Nullable
+    public UUID find(UUID owner, String name) {
+        Map<UUID, String> l = lists.get(owner);
+        if (l != null) {
+            for (Map.Entry<UUID, String> e : l.entrySet()) {
+                if (e.getValue().equalsIgnoreCase(name)) {
+                    return e.getKey();
+                }
+            }
+        }
+        return null;
     }
 
     public List<String> names(UUID owner) {

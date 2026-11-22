@@ -2,12 +2,17 @@ package dev.lowpix.winterworks.oceangear;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import dev.lowpix.winterworks.Winterworks;
 import dev.lowpix.winterworks.registry.OceanItems;
 import java.lang.reflect.Field;
-import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +28,8 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.server.players.GameProfileCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +53,7 @@ import net.minecraft.world.level.storage.loot.functions.EnchantedCountIncreaseFu
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Tides & Treasures: the gear and the boss (docs/OCEAN_UPDATE.md sections 4-6). Lionfish darts from dispensers;
@@ -165,11 +172,20 @@ public final class OceanGearFeature {
     private static void commands(CommandDispatcher<CommandSourceStack> d) {
         d.register(Commands.literal("winterworks")
                 .then(Commands.literal("trust").executes(ctx -> list(ctx.getSource()))
-                        .then(Commands.argument("player", GameProfileArgument.gameProfile())
-                                .executes(ctx -> trust(ctx.getSource(), GameProfileArgument.getGameProfiles(ctx, "player"), true))))
+                        .then(Commands.argument("player", StringArgumentType.word()).suggests(OceanGearFeature::onlineNames)
+                                .executes(ctx -> trust(ctx.getSource(), StringArgumentType.getString(ctx, "player"), true))))
                 .then(Commands.literal("untrust")
-                        .then(Commands.argument("player", GameProfileArgument.gameProfile())
-                                .executes(ctx -> trust(ctx.getSource(), GameProfileArgument.getGameProfiles(ctx, "player"), false)))));
+                        .then(Commands.argument("player", StringArgumentType.word()).suggests(OceanGearFeature::trustedNames)
+                                .executes(ctx -> trust(ctx.getSource(), StringArgumentType.getString(ctx, "player"), false)))));
+    }
+
+    private static CompletableFuture<Suggestions> onlineNames(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder b) {
+        return SharedSuggestionProvider.suggest(ctx.getSource().getOnlinePlayerNames(), b);
+    }
+
+    private static CompletableFuture<Suggestions> trustedNames(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder b) {
+        ServerPlayer p = ctx.getSource().getPlayer();
+        return p == null ? b.buildFuture() : SharedSuggestionProvider.suggest(TrustData.get(ctx.getSource().getServer()).names(p.getUUID()), b);
     }
 
     private static int list(CommandSourceStack src) throws CommandSyntaxException {
@@ -183,28 +199,47 @@ public final class OceanGearFeature {
         return names.size();
     }
 
-    private static int trust(CommandSourceStack src, Collection<GameProfile> who, boolean add) throws CommandSyntaxException {
-        ServerPlayer p = src.getPlayerOrException();
-        TrustData data = TrustData.get(src.getServer());
-        int n = 0;
-        for (GameProfile g : who) {
-            if (g.getId().equals(p.getUUID())) {
-                src.sendFailure(Component.translatable("commands.winterworks.trust.self"));
-                continue;
-            }
-            if (add) {
-                boolean added = data.trust(p.getUUID(), g.getId(), g.getName());
-                src.sendSuccess(() -> Component.translatable(added ? "commands.winterworks.trust.added" : "commands.winterworks.trust.already",
-                        g.getName()), false);
-                n++;
-            } else if (data.untrust(p.getUUID(), g.getId())) {
-                src.sendSuccess(() -> Component.translatable("commands.winterworks.trust.removed", g.getName()), false);
-                n++;
-            } else {
-                src.sendFailure(Component.translatable("commands.winterworks.trust.not_trusted", g.getName()));
+    /** A name to a profile: someone online, else (untrust) a name on your list, else the server's profile cache. */
+    @Nullable
+    private static GameProfile resolve(CommandSourceStack src, UUID owner, String name, boolean add) {
+        ServerPlayer online = src.getServer().getPlayerList().getPlayerByName(name);
+        if (online != null) {
+            return online.getGameProfile();
+        }
+        if (!add) {
+            UUID id = TrustData.get(src.getServer()).find(owner, name);
+            if (id != null) {
+                return new GameProfile(id, name);
             }
         }
-        return n;
+        GameProfileCache cache = src.getServer().getProfileCache();
+        return cache == null ? null : cache.get(name).orElse(null);
+    }
+
+    private static int trust(CommandSourceStack src, String name, boolean add) throws CommandSyntaxException {
+        ServerPlayer p = src.getPlayerOrException();
+        TrustData data = TrustData.get(src.getServer());
+        GameProfile g = resolve(src, p.getUUID(), name, add);
+        if (g == null) {
+            src.sendFailure(Component.translatable("commands.winterworks.trust.unknown", name));
+            return 0;
+        }
+        if (g.getId().equals(p.getUUID())) {
+            src.sendFailure(Component.translatable("commands.winterworks.trust.self"));
+            return 0;
+        }
+        if (add) {
+            boolean added = data.trust(p.getUUID(), g.getId(), g.getName());
+            src.sendSuccess(() -> Component.translatable(added ? "commands.winterworks.trust.added" : "commands.winterworks.trust.already",
+                    g.getName()), false);
+            return 1;
+        }
+        if (data.untrust(p.getUUID(), g.getId())) {
+            src.sendSuccess(() -> Component.translatable("commands.winterworks.trust.removed", g.getName()), false);
+            return 1;
+        }
+        src.sendFailure(Component.translatable("commands.winterworks.trust.not_trusted", g.getName()));
+        return 0;
     }
 
     /**

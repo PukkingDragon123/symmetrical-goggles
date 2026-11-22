@@ -18,6 +18,7 @@
   "commands.winterworks.trust.removed": "You no longer trust %s",
   "commands.winterworks.trust.not_trusted": "You don't trust %s",
   "commands.winterworks.trust.self": "You always trust yourself",
+  "commands.winterworks.trust.unknown": "There is no player called %s",
   "commands.winterworks.trust.list": "You trust: %s",
   "commands.winterworks.trust.none": "You don't trust anyone yet. Use /winterworks trust <player>"
 }
