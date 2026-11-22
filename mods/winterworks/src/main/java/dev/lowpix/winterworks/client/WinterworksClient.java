@@ -66,6 +66,8 @@ public final class WinterworksClient implements ClientModInitializer {
         dev.lowpix.winterworks.client.endmob.EndMobClient.init();
         dev.lowpix.winterworks.client.endgear.EndGearClient.init();
         dev.lowpix.winterworks.client.endboss.EndBossClient.init();
+        // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
+        dev.lowpix.winterworks.client.soulbull.SoulBullClient.init();
         ShowcaseDirector.init();
     }
 }

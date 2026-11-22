@@ -57,7 +57,8 @@
     "client.endboss.EndSkyMixin",
     "client.endboss.EndFogMixin",
     "client.endboss.EclipseLightMixin",
-    "endmob.EndGlowLightMixin"
+    "endmob.EndGlowLightMixin",
+    "client.SoulBarGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

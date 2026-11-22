@@ -174,7 +174,7 @@ public class SoulBull extends AbstractHorse {
             public boolean canUse() {
                 return !isTamed() && super.canUse();
             }
-        });
+        }.setAlertOthers());   // the herd joins in
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, e -> !isTamed()));
     }
 
