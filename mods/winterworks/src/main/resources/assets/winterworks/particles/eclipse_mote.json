@@ -1,12 +1,10 @@
 {
   "textures": [
-    "minecraft:glitter_7",
-    "minecraft:glitter_6",
-    "minecraft:glitter_5",
-    "minecraft:glitter_4",
-    "minecraft:glitter_3",
-    "minecraft:glitter_2",
-    "minecraft:glitter_1",
-    "minecraft:glitter_0"
+    "winterworks:eclipse_mote_0",
+    "winterworks:eclipse_mote_1",
+    "winterworks:eclipse_mote_2",
+    "winterworks:eclipse_mote_3",
+    "winterworks:eclipse_mote_4",
+    "winterworks:eclipse_mote_5"
   ]
 }
