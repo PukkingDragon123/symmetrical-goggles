@@ -369,6 +369,9 @@ class TestEngineFixes(unittest.TestCase):
             {"part": "body", "channel": "position", "osc": {"axis": "y", "amp": 3}}]}}
         rep = build_model(spec).report()
         self.assertTrue(any("clip 'dip' sinks below the ground" in w for w in rep["warnings"]), rep["warnings"])
+        spec["animations"]["dip"]["grounded"] = False      # burrowing (or flying) on purpose
+        rep = build_model(spec).report()
+        self.assertFalse(any("sinks below the ground" in w for w in rep["warnings"]), rep["warnings"])
 
     def test_cli_size_and_negative_target(self):
         from lowpix.cli import _fix_negative_args, _size
