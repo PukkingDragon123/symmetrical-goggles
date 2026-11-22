@@ -3015,5 +3015,691 @@
       }
     ],
     "subtitle": "subtitles.winterworks.entity.pot_golem.throw"
+  },
+  "entity.anglerfish.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/ambient1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:anglerfish/ambient2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:anglerfish/ambient3",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:anglerfish/ambient4",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.anglerfish.ambient"
+  },
+  "entity.anglerfish.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/hurt1"
+      },
+      {
+        "name": "winterworks:anglerfish/hurt2"
+      },
+      {
+        "name": "winterworks:anglerfish/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.anglerfish.hurt"
+  },
+  "entity.anglerfish.death": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/death1"
+      },
+      {
+        "name": "winterworks:anglerfish/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.anglerfish.death"
+  },
+  "entity.anglerfish.lunge": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/lunge1"
+      },
+      {
+        "name": "winterworks:anglerfish/lunge2"
+      },
+      {
+        "name": "winterworks:anglerfish/lunge3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.anglerfish.lunge"
+  },
+  "entity.anglerfish.bite": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/bite1"
+      },
+      {
+        "name": "winterworks:anglerfish/bite2"
+      },
+      {
+        "name": "winterworks:anglerfish/bite3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.anglerfish.bite"
+  },
+  "entity.anglerfish.flop": {
+    "sounds": [
+      {
+        "name": "winterworks:anglerfish/flop1"
+      },
+      {
+        "name": "winterworks:anglerfish/flop2"
+      },
+      {
+        "name": "winterworks:anglerfish/flop3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.anglerfish.flop"
+  },
+  "entity.lionfish.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/hurt1"
+      },
+      {
+        "name": "winterworks:lionfish/hurt2"
+      },
+      {
+        "name": "winterworks:lionfish/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.lionfish.hurt"
+  },
+  "entity.lionfish.death": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/death1"
+      },
+      {
+        "name": "winterworks:lionfish/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.lionfish.death"
+  },
+  "entity.lionfish.flare": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/flare1"
+      },
+      {
+        "name": "winterworks:lionfish/flare2"
+      },
+      {
+        "name": "winterworks:lionfish/flare3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.lionfish.flare"
+  },
+  "entity.lionfish.flop": {
+    "sounds": [
+      {
+        "name": "winterworks:lionfish/flop1"
+      },
+      {
+        "name": "winterworks:lionfish/flop2"
+      },
+      {
+        "name": "winterworks:lionfish/flop3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.lionfish.flop"
+  },
+  "entity.nautilus.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/ambient1",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:nautilus/ambient2",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:nautilus/ambient3",
+        "attenuation_distance": 12
+      },
+      {
+        "name": "winterworks:nautilus/ambient4",
+        "attenuation_distance": 12
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.nautilus.ambient"
+  },
+  "entity.nautilus.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/hurt1"
+      },
+      {
+        "name": "winterworks:nautilus/hurt2"
+      },
+      {
+        "name": "winterworks:nautilus/hurt3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.nautilus.hurt"
+  },
+  "entity.nautilus.death": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/death1"
+      },
+      {
+        "name": "winterworks:nautilus/death2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.nautilus.death"
+  },
+  "entity.nautilus.dash": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus/dash1"
+      },
+      {
+        "name": "winterworks:nautilus/dash2"
+      },
+      {
+        "name": "winterworks:nautilus/dash3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.nautilus.dash"
+  },
+  "entity.whale.song": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/song1",
+        "attenuation_distance": 96,
+        "stream": true
+      },
+      {
+        "name": "winterworks:whale/song2",
+        "attenuation_distance": 96,
+        "stream": true
+      },
+      {
+        "name": "winterworks:whale/song3",
+        "attenuation_distance": 96,
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.song"
+  },
+  "entity.whale.call": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/call1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:whale/call2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:whale/call3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.call"
+  },
+  "entity.whale.breathe": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/breathe1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/breathe2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/breathe3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.breathe"
+  },
+  "entity.whale.hurt": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/hurt1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/hurt2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/hurt3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.hurt"
+  },
+  "entity.whale.death": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/death1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:whale/death2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.death"
+  },
+  "entity.whale.swallow": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/swallow1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/swallow2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.swallow"
+  },
+  "entity.whale.mouth_open": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/mouth_open1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/mouth_open2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.mouth_open"
+  },
+  "entity.whale.mouth_close": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/mouth_close1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/mouth_close2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.mouth_close"
+  },
+  "entity.whale.shake": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/shake1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/shake2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.shake"
+  },
+  "entity.whale.eat": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/eat1"
+      },
+      {
+        "name": "winterworks:whale/eat2"
+      },
+      {
+        "name": "winterworks:whale/eat3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.eat"
+  },
+  "entity.whale.note": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/note1",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.note"
+  },
+  "entity.whale.tamed": {
+    "sounds": [
+      {
+        "name": "winterworks:whale/tamed1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:whale/tamed2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.whale.tamed"
+  },
+  "ambient.whale_belly.loop": {
+    "sounds": [
+      {
+        "name": "winterworks:whale_belly/loop1",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.whale_belly.current": {
+    "sounds": [
+      {
+        "name": "winterworks:whale_belly/current1",
+        "stream": true
+      },
+      {
+        "name": "winterworks:whale_belly/current2",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.winterworks.ambient.whale_belly.current"
+  },
+  "entity.elder_guardian.bubble": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/bubble1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/bubble2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/bubble3",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.elder_guardian.bubble"
+  },
+  "entity.elder_guardian.stare_charge": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/stare_charge1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/stare_charge2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.elder_guardian.stare_charge"
+  },
+  "entity.elder_guardian.laser": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/laser1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:elder_guardian/laser2",
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.elder_guardian.laser"
+  },
+  "entity.elder_guardian.tail_whip": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/tail_whip1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:elder_guardian/tail_whip2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:elder_guardian/tail_whip3",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.elder_guardian.tail_whip"
+  },
+  "entity.elder_guardian.roar": {
+    "sounds": [
+      {
+        "name": "winterworks:elder_guardian/roar1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:elder_guardian/roar2",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.elder_guardian.roar"
+  },
+  "block.hydrothermal_vent.loop": {
+    "sounds": [
+      {
+        "name": "winterworks:hydrothermal_vent/loop1",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.hydrothermal_vent.loop"
+  },
+  "block.tube_worms.retract": {
+    "sounds": [
+      {
+        "name": "winterworks:tube_worms/retract1"
+      },
+      {
+        "name": "winterworks:tube_worms/retract2"
+      },
+      {
+        "name": "winterworks:tube_worms/retract3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.tube_worms.retract"
+  },
+  "block.tube_worms.extend": {
+    "sounds": [
+      {
+        "name": "winterworks:tube_worms/extend1"
+      },
+      {
+        "name": "winterworks:tube_worms/extend2"
+      },
+      {
+        "name": "winterworks:tube_worms/extend3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.tube_worms.extend"
+  },
+  "block.angler_light.hum": {
+    "sounds": [
+      {
+        "name": "winterworks:angler_light/hum1",
+        "attenuation_distance": 8
+      },
+      {
+        "name": "winterworks:angler_light/hum2",
+        "attenuation_distance": 8
+      },
+      {
+        "name": "winterworks:angler_light/hum3",
+        "attenuation_distance": 8
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.angler_light.hum"
+  },
+  "block.whale_lure.pulse": {
+    "sounds": [
+      {
+        "name": "winterworks:whale_lure/pulse1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:whale_lure/pulse2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "winterworks:whale_lure/pulse3",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.whale_lure.pulse"
+  },
+  "block.eye_of_the_ocean.ambient": {
+    "sounds": [
+      {
+        "name": "winterworks:eye_of_the_ocean/ambient1",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:eye_of_the_ocean/ambient2",
+        "attenuation_distance": 16
+      },
+      {
+        "name": "winterworks:eye_of_the_ocean/ambient3",
+        "attenuation_distance": 16
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.eye_of_the_ocean.ambient"
+  },
+  "block.eye_of_the_ocean.activate": {
+    "sounds": [
+      {
+        "name": "winterworks:eye_of_the_ocean/activate1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "winterworks:eye_of_the_ocean/activate2",
+        "attenuation_distance": 32
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.eye_of_the_ocean.activate"
+  },
+  "block.cannon.fire": {
+    "sounds": [
+      {
+        "name": "winterworks:cannon/fire1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannon/fire2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannon/fire3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.cannon.fire"
+  },
+  "block.cannon.load": {
+    "sounds": [
+      {
+        "name": "winterworks:cannon/load1"
+      },
+      {
+        "name": "winterworks:cannon/load2"
+      },
+      {
+        "name": "winterworks:cannon/load3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.cannon.load"
+  },
+  "block.cannon.aim": {
+    "sounds": [
+      {
+        "name": "winterworks:cannon/aim1"
+      },
+      {
+        "name": "winterworks:cannon/aim2"
+      },
+      {
+        "name": "winterworks:cannon/aim3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.cannon.aim"
+  },
+  "entity.cannonball.burst": {
+    "sounds": [
+      {
+        "name": "winterworks:cannonball/burst1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannonball/burst2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:cannonball/burst3",
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.cannonball.burst"
+  },
+  "item.turtle_shell.retreat": {
+    "sounds": [
+      {
+        "name": "winterworks:turtle_shell/retreat1"
+      },
+      {
+        "name": "winterworks:turtle_shell/retreat2"
+      },
+      {
+        "name": "winterworks:turtle_shell/retreat3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.turtle_shell.retreat"
+  },
+  "block.barnacles.break": {
+    "sounds": [
+      {
+        "name": "winterworks:barnacles/break1"
+      },
+      {
+        "name": "winterworks:barnacles/break2"
+      },
+      {
+        "name": "winterworks:barnacles/break3"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.block.barnacles.break"
+  },
+  "item.nautilus_horn.bind": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus_horn/bind1"
+      },
+      {
+        "name": "winterworks:nautilus_horn/bind2"
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.nautilus_horn.bind"
+  },
+  "item.nautilus_horn.command": {
+    "sounds": [
+      {
+        "name": "winterworks:nautilus_horn/command1",
+        "attenuation_distance": 96
+      },
+      {
+        "name": "winterworks:nautilus_horn/command2",
+        "attenuation_distance": 96
+      },
+      {
+        "name": "winterworks:nautilus_horn/command3",
+        "attenuation_distance": 96
+      }
+    ],
+    "subtitle": "subtitles.winterworks.item.nautilus_horn.command"
   }
 }
