@@ -100,12 +100,6 @@ SAND = ramp("#46434e", "#5a5762", "#6f6c76", "#85828a", "#9a979d", "#aeacae", "#
 TWIG = ramp("#1f1b22", "#332e37", "#4a444d", "#625b62", "#7c7479", "#988f91", "#b6adab")
 
 
-def mix(a, b, t):
-    """Blend two colours (rgba tuples) by t in 0..1."""
-    a, b = np.array(rgba(a), float), np.array(rgba(b), float)
-    return tuple(int(round(v)) for v in a + (b - a) * t)
-
-
 # ====================================================================== periodic noise + cells
 def pnoise(w, h, cx, cy, sd):
     """Smooth value noise, periodic over the w x h canvas (cx x cy lattice cells), 0..1."""
@@ -226,10 +220,6 @@ def paint(I, rmp, alt=None, use_alt=None):
 
 def to_img(A):
     return Image.fromarray(np.ascontiguousarray(A), "RGBA")
-
-
-def from_img(im):
-    return np.array(im.convert("RGBA"))
 
 
 # ====================================================================== masks, shapes, strokes
@@ -392,27 +382,6 @@ def outline(A, dark, lit=None, diag=False, inner=None):
         facing = ring & (shift(m, 0, -1) | shift(m, -1, 0)) & ~(shift(m, 0, 1) | shift(m, 1, 0))
         out[facing] = rgba(lit)
     return out
-
-
-def item_shade(sdf_fn, w=32, h=32, ss=4, bevel=4.0, strength=1.0, light=LIGHT, extra=None):
-    """Coverage + light for an item silhouette given as a signed-distance function of (X, Y).
-
-    The inside distance is turned into a rounded bevel of radius `bevel` px; `extra(X, Y)` adds height detail.
-    Returns (coverage 0..1, light -1..1, inside distance) at 1x."""
-    X, Y = ss_coords(w, h, ss)
-    D = sdf_fn(X, Y)
-    t = np.clip(-D / bevel, 0, 1)
-    H = np.sqrt(1 - (1 - t) ** 2) * bevel
-    if extra is not None:
-        H = H + extra(X, Y) * (D < 0)
-    gy, gx = np.gradient(H, 1.0 / ss)
-    n = np.dstack([-gx * strength, -gy * strength, np.ones_like(H)])
-    n /= np.linalg.norm(n, axis=2, keepdims=True)
-    L = (n @ light) - light[2]
-    inside = D < 0
-    cov = down(inside.astype(float), ss)
-    Lm = down(np.where(inside, L, 0.0), ss) / np.maximum(cov, 1e-9)
-    return cov, Lm, down(np.where(inside, -D, 0.0), ss) / np.maximum(cov, 1e-9)
 
 
 # ====================================================================== output helpers
@@ -1220,9 +1189,10 @@ def chorus_stem():
     sq = (np.abs(u) ** 4 + np.abs(v) ** 4) ** 0.25                   # a squircle filling the face
     ang = np.arctan2(v, u)
     bark = sq > 0.82 + 0.05 * np.cos(ang * 10)
-    T = 7.0 - sq * 1.8 + (fbm(w, h, 3, seed(name), 2) - 0.5) * 0.7
+    T = 7.2 - sq * 2.2 + (fbm(w, h, 3, seed(name), 2) - 0.5) * 0.7
+    T += np.where(np.cos(ang * 12) > 0.85, -0.7, 0) * (sq > 0.2)      # fibres radiating through the flesh
     for ring in (0.38, 0.62):
-        T -= np.exp(-((sq - ring) / 0.035) ** 2) * 1.7
+        T -= np.exp(-((sq - ring) / 0.035) ** 2) * 2.0
     pith = np.hypot(xx - 16, yy - 16)
     T = np.where(pith < 2.6, 4.2, T)
     I = quant(T, 10, 3, 9)
@@ -1338,7 +1308,7 @@ chorus_roots()
 chorus_fruit_block()
 
 
-# ====================================================================== plants (cross models, cutout: alpha is 0 or 255)
+# ====================================================================== plants (cross models; cutout, so alpha 0 / 255)
 # End Bloom stem and leaves: a deep teal-indigo, so the violet petals and the glowing bulb stand out.
 STEM = ramp("#0c1222", "#141f37", "#1d2f4c", "#284062", "#35557a", "#476f92", "#6690a8", "#91b5c2")
 PETAL = ramp("#1c0a2d", "#2d1047", "#431965", "#5b2484", "#7832a2", "#9545bc", "#b061d1", "#cb86e4",
@@ -1679,7 +1649,8 @@ def end_bulb_item():
     for x, y in ((11, 15), (11, 16), (12, 14)):
         put_px(L.A, x, y, BULB[6])
     # calyx, stalk and a little leaf (teal, like the End Bloom's stem)
-    for ctrl in ([(16, 10), (13, 11), (10.5, 13.5)], [(16, 10), (16, 12), (16.2, 14.5)], [(16, 10), (19, 11), (21.5, 13.5)]):
+    for ctrl in ([(16, 10), (13, 11), (10.5, 13.5)], [(16, 10), (16, 12), (16.2, 14.5)],
+                 [(16, 10), (19, 11), (21.5, 13.5)]):
         pts, rad = lens(ctrl, 1.6, 8)
         L.add(lambda X, Y, p=pts, r=rad: sd_stroke(X, Y, p, r), STEM, 4.6, gain=5, bevel=1.0)
     stalk = [tuple(p) for p in bezier([(16, 10), (16.5, 6), (19, 4), (21.5, 4.5)], 10)]
@@ -1787,10 +1758,10 @@ def gucker_gland_item():
     sac = lambda X, Y: smin(smin(sd_circle(X, Y, 14.0, 20.0, 8.2), sd_circle(X, Y, 20.5, 15.0, 6.4), 3.0),  # noqa
                             sd_circle(X, Y, 9.5, 14.5, 4.6), 2.5)
     m, I = L.add(sac, GLAND, 4.2, gain=6.0, bevel=4.5)
-    duct = [tuple(p) for p in bezier([(21.5, 10), (22.5, 6.5), (24.5, 4.5), (26.5, 3.5)], 8)]
-    L.add(lambda X, Y: sd_stroke(X, Y, duct, list(np.linspace(2.6, 1.8, 8))), GLAND, 3.6, gain=5, bevel=1.2)
+    duct = [tuple(p) for p in bezier([(21.0, 10.5), (21.8, 7.5), (23.0, 6.0), (24.2, 5.2)], 8)]
+    L.add(lambda X, Y: sd_stroke(X, Y, duct, list(np.linspace(2.8, 2.2, 8))), GLAND, 3.6, gain=5, bevel=1.2)
     A = L.A
-    for x, y in ((22, 7), (23, 7), (23, 6), (24, 6)):                 # a ring round the duct
+    for x, y in ((20, 8), (21, 8), (22, 8), (23, 7)):                 # a ring round the duct
         put_px(A, x, y, GLAND[1])
     yy, xx = np.mgrid[0:32, 0:32] + 0.5
     wob = (pnoise(32, 32, 5, 5, seed("gland_glow")) - 0.5) * 2.4      # the light inside, soft and lumpy
