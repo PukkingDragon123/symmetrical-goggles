@@ -4,16 +4,18 @@
 
 A void rod for a shaft (a sliver of starry night: violet-black, speckled with glowing stars, ringed with violet-gold
 bands round the grip) ending below in a faceted obsidian pommel set with a meteorite-core ember, and above in a cage of
-four curved obsidian prongs on a collar. In the cage floats one of the Monolith's eyes, glowing violet with a slit
-pupil, and round it drift hot embers of meteorite core.
+four curved obsidian prongs on a collar. In the cage floats one of the Monolith's eyes: a round eyeball (a stepped
+sphere of four boxes, pale and shaded, faintly veined toward the back) whose cornea bulges forward under a round
+glowing violet iris with a round pupil and a catch-light; round it drift hot embers of meteorite core.
 
 The hand holds the shaft at the root joint, which sits at lowpix (0, 24, 0) = Minecraft model (0, 0, 0); the wand
 stands straight up from there (lowpix +Y, Minecraft -Y), the eye looks forward (lowpix +Z, Minecraft -Z). Units are
 Minecraft pixels, density 4 (four texels per pixel), every box size a multiple of 0.25.
 
 Contract (mods/winterworks/docs/END_UPDATE.md section 11). Bones: rod (root: shaft, bands, pommel), head (the cage,
-on top of the rod), eye (the glowing eye inside it; glow). Extra: embers (the meteorite-core embers, a child of head;
-glow). Glow: eye, embers, the stars and every ember texel. Clip: idle (3 s loop: the eye throbs and bobs, the embers
+on top of the rod), eye (the eye inside it: eye_ball and its bars eye_ball_x, eye_ball_y, eye_ball_z, the last
+the bulging cornea with the iris). Extra: embers (the meteorite-core embers, a child of head; glow). Glow: the iris,
+embers, the stars and every ember texel. Clip: idle (3 s loop: the eye throbs and bobs, the embers
 circle it).
 """
 import math
@@ -22,7 +24,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from hex_kit import ROOT, Rig, dump, keys, osc, spin  # noqa: E402
-from obsidian_kit import RAMPS, almond, scatter  # noqa: E402
+from obsidian_kit import RAMPS, iris_card, scatter  # noqa: E402
 
 R = Rig(density=4, bone_style="obsidian")
 part, bone, card = R.part, R.bone, R.card
@@ -56,19 +58,27 @@ part("cap_spike", "cap", [1.0, 1.75, 1.0], "prong_tip", centre=(0, HY + 8.5, 0),
 # ======================================================================= the eye and the embers
 EY = HY + 3.75
 bone("eye", "head", at=(0, EY, 0))
-part("eye_ball", "eye", [2.75, 2.75, 2.75], "eye_ball", rel=(0, 0, 0))
+# a round eyeball: a stepped sphere of a 10-texel cube crossed by three 8 x 8 x 12 bars; the forward bar is the
+# cornea, bulging a texel out of the ball, with the round iris on its face (white in the corners)
+part("eye_ball", "eye", [2.5, 2.5, 2.5], "eye_white", rel=(0, 0, 0))
+part("eye_ball_x", "eye_ball", [3.0, 2.0, 2.0], "eye_white", rel=(0, 0, 0))
+part("eye_ball_y", "eye_ball", [2.0, 3.0, 2.0], "eye_white", rel=(0, 0, 0))
+part("eye_ball_z", "eye_ball", [2.0, 2.0, 3.0], "eye_cornea", rel=(0, 0, 0))
 bone("embers", "head", at=(0, EY, 0))
 for k, (r, y, sz) in enumerate([(2.2, 1.2, 0.75), (2.4, -0.8, 0.5), (2.1, 0.2, 0.75), (2.5, -1.4, 0.5), (2.0, 1.6, 0.5)]):
     a = math.radians(72 * k + 20)
     part(f"ember_{k}", "embers", [sz, sz, sz], "ember", rel=(r * math.sin(a), y, r * math.cos(a)), rot=(45, 30 * k, 45))
 
 # ======================================================================= palette and paint
-ramps = {k: RAMPS[k] for k in ("obsidian", "eye", "gold", "void", "star", "ember")}
+ramps = {k: RAMPS[k] for k in ("obsidian", "eye", "sclera", "gold", "void", "star", "ember")}
 OBS_RIM = {"light": 1, "dark": 1, "light_shift": 2.4, "dark_shift": -1.0, "outline": "dark"}
 GOLD_RIM = {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -1.8}
 GLINT = {"id": "glint", "op": "gloss", "post": True, "dash": True, "length": 2, "inset": 0, "density": 0.5,
          "shift": 2.4, "ramps": ["obsidian"]}
 STARS = scatter(6, 60, seed=7, density=0.07, chars="sSt")
+IRIS = iris_card(8)
+IRIS_KEY = {"o": "eye:1", "i": "eye:3", "I": "eye:4", "J": "eye:5", "c": "eye:5", "p": "obsidian:0", "q": "eye:0",
+            "W": "eye:7", "w": "eye:6"}
 styles = {
     "obsidian": {"ramp": "obsidian", "tone": 3.6, "rim": OBS_RIM, "brush": {"off": True},
                  "layers": [{"id": "facets", "op": "patches", "scale": 0.8, "threshold": 0.55, "shift": 1.0,
@@ -87,12 +97,17 @@ styles = {
     "prong": {"ramp": "obsidian", "tone": 3.8, "rim": OBS_RIM, "brush": {"off": True},
               "layers": [{"id": "rise", "op": "gradient", "axis": "y", "amount": 0.8}, GLINT]},
     "prong_tip": {"ramp": "obsidian", "tone": 5.0, "rim": OBS_RIM, "brush": {"off": True}, "layers": [GLINT]},
-    "eye_ball": {"ramp": "eye", "tone": 4.2, "light": 0.25, "brush": {"off": True},
-                 "rim": {"light": 1, "dark": 1, "light_shift": 1.4, "dark_shift": -1.4},
-                 "layers": [{"id": "core", "op": "spots", "count": 2, "radius": [0.5, 0.8], "ramp": "eye",
-                             "tone": 6.0, "faces": ["sides", "top", "bottom"]}],
-                 "stamps": [{"face": "front", "at": "center", "art": almond(11, 7, slit="p", corner="o"),
-                             "key": {"o": "eye:2", "e": "eye:4", "E": "eye:5", "W": "eye:7", "p": "obsidian:0"}}]},
+    # the whites: pale lilac, lit from the top-left, shading toward the back, a few fine violet veins behind
+    "eye_white": {"ramp": "sclera", "tone": 4.6, "light": 0.6, "brush": {"off": True},
+                  "rim": {"light": 0, "dark": 0},
+                  "layers": [{"id": "back", "op": "gradient", "axis": "z", "amount": 1.4},
+                             {"id": "veins", "op": "cracks", "scale": 1.2, "width": 0.05, "threshold": 0.5,
+                              "shift": -1.6, "faces": ["back", "sides"], "seed": 4}]},
+    # the cornea: the forward bar, its face the round glowing iris (pupil, catch-light) with white in the corners
+    "eye_cornea": {"ramp": "sclera", "tone": 4.6, "light": 0.6, "brush": {"off": True},
+                   "rim": {"light": 0, "dark": 0},
+                   "layers": [{"id": "back", "op": "gradient", "axis": "z", "amount": 1.4}],
+                   "stamps": [{"face": "front", "at": "center", "art": IRIS, "key": IRIS_KEY}]},
     "ember": {"ramp": "ember", "tone": 5.0, "light": 0.2, "brush": {"off": True},
               "rim": {"light": 1, "dark": 1, "light_shift": 1.2, "dark_shift": -1.6}},
     "ember_gem": {"ramp": "ember", "tone": 4.4, "light": 0.3, "brush": {"off": True},
@@ -109,11 +124,12 @@ ANIM = {"idle": {"length": L, "loop": True, "tracks": [
     osc("embers", None, [0, 0.3, 0], 2, 0.3, ch="position"),
 ] + [osc(f"ember_{k}", None, [0.25, 0.25, 0.25], 3, k / 5.0, ch="scale") for k in range(5)]}}
 
-GLOW = ["eye_ball", "pommel_tip"] + [f"ember_{k}" for k in range(5)]
+GLOW = ["pommel_tip"] + [f"ember_{k}" for k in range(5)]
 spec = {
     "name": "Monolith Wand",
     "description": "The Winterworks Monolith Wand: a starry void-rod shaft with violet-gold bands and an obsidian "
-                   "pommel, and an obsidian cage head holding a glowing Monolith eye amid drifting meteorite-core "
+                   "pommel, and an obsidian cage head holding a round Monolith eye with a glowing violet iris amid "
+                   "drifting meteorite-core "
                    "embers. Minecraft pixel units, density 4.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": 4,

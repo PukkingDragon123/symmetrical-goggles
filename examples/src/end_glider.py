@@ -2,22 +2,30 @@
 
     python examples/src/end_glider.py examples/end_glider.json
 
-A handheld flying machine stitched together from End mob parts, held overhead by its handle bar. Up from the bar's
-leather grips rise two struts to the core: a gucker-gland bellows (a ribbed, pinkish-violet fleshy sac pocked with
-breathing pores) clamped between two shulker-shell plates, with a lump of meteorite for a nose. From the top plate
-two enderfly-membrane wings spread on purpur-shell spars: dusky violet moth wings veined in dark violet with glowing
-eye-spots and pale fringes. Under the wing roots hang two jet pods of shulker shell banded in meteorite, blowing
-pulsing violet air-jet flames out of the back.
+A glowing magic wing glider: no machinery, just a light, elegant control bar under a pair of great luminous moth
+wings. The hands hold a slender moonsilver bar (violet silk wrapped round the grips, gold collars, the tips curling
+up into little pearl finials); two fine struts rise from it in an A to a slim keel, with a pearl heart at its front
+and two feathery antennae sweeping forward. From the keel spread two pairs of enderfly membranes, translucent
+violet, deep at the root and paling to lilac toward the edges: a broad forewing and, swept back beneath it, a
+rounded hindwing ending in a long trailing tail. Glowing veins fan from the roots, a soft glowing rim edges them,
+and each wing carries a soft round eye-spot (a pale halo, a dark ring, a glowing rose iris lit low, a round pupil
+and a catch-light). At each wing root lies a small glowing rune sigil, a ring of violet light that turns slowly;
+its flare (a halo of rays and a comet trail of light streaming back) breathes gently in flight and blazes out long
+and bright when boosting.
 
-The hands hold the bar at the root joint, which sits at lowpix (0, 24, 0) = Minecraft model (0, 0, 0); the machine
-rises above it (lowpix +Y, Minecraft -Y), flies toward lowpix +Z (Minecraft -Z) and blows its jets backward. Units are
-Minecraft pixels, density 4 (four texels per pixel), every box size a multiple of 0.25. The wing membranes are cards.
+The hands hold the bar at the root joint, which sits at lowpix (0, 24, 0) = Minecraft model (0, 0, 0), the grips at
+x = +-4.25 on it; the glider rises above it (lowpix +Y, Minecraft -Y) and flies toward lowpix +Z (Minecraft -Z). Units
+are Minecraft pixels, density 4 (four texels per pixel), every box size a multiple of 0.25. The membranes, sigils,
+flares and antennae are cards; the membranes are alpha parts (0.62 opacity: draw them translucent).
 
-Contract (mods/winterworks/docs/END_UPDATE.md section 12). Bones: frame (root: core and plates), handle (the bar and
-its struts), wing_l, wing_r (hinged at the top plate's sides), jet_l, jet_r (the pods), jet_flame_l, jet_flame_r (the
-flames at the nozzles, pointing back; glow). Extra: bellows (the sac, pumps in the clips). Glow: jet flames, the wing
-eye-spots. Clips: flap (0.8 s loop: a full wing beat, the bellows pumping twice, the flames pulsing), boost (0.4 s
-loop: quicker, shallower beats with the wings swept back, the bellows pumping hard, the flames twice as long).
+Contract (mods/winterworks/docs/END_UPDATE.md section 12). Bones: frame (root: the keel, its heart and antennae),
+handle (the bar, grips and struts), wing_l, wing_r (hinged at the keel; each holds its forewing, the hind_* joint
+with the hindwing, which lags a little behind each beat, and its sigil), jet_l, jet_r (the rune sigils at the wing
+roots, which turn), jet_flame_l, jet_flame_r (their flares: halo and trail; scaled small and breathing in flap, big
+and long in boost). Glow: the wing veins and rims, the eye-spots, the sigils and flares (ramps vein, spot, crying).
+Clips: flap (0.8 s loop: one gentle, unhurried beat, the hindwings following through, the wings feathering and
+shimmering, the sigils turning, the flares breathing), boost (0.4 s loop: quicker, shallower beats with the wings
+swept back, the sigils turning twice as fast, the flares blazing long).
 """
 import math
 import os
@@ -25,276 +33,335 @@ import random
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from hex_kit import ROOT, Rig, dump, osc  # noqa: E402
+from end_kit import Canvas, eye_spot, in_disc, mirror_art, plume  # noqa: E402
+from hex_kit import ROOT, Rig, dump, keys, osc, spin  # noqa: E402
 from obsidian_kit import RAMPS  # noqa: E402
 
-R = Rig(density=4, bone_style="shell")
+D = 4                         # density: texels per pixel
+R = Rig(density=D, bone_style="silver")
 part, bone, card = R.part, R.bone, R.card
 
-G = 24.0                      # the grip (Minecraft y = 0)
+G = 24.0                      # the grip line (Minecraft y = 0)
+HY = G + 10.0                 # the keel
 bone("frame", None, at=(0, G, 0))
 
-# ======================================================================= the handle bar and its struts
+# ======================================================================= the control bar and its struts
 bone("handle", "frame", at=(0, G, 0))
-part("bar", "handle", [13.0, 1.0, 1.0], "iron_bar", centre=(0, G, 0))
+part("bar", "handle", [11.0, 0.75, 0.75], "silver", centre=(0, G, 0))
+STRUT_X = 2.75
 for s, n in ((1, "l"), (-1, "r")):
-    part(f"grip_{n}", "handle", [3.0, 1.5, 1.5], "grip", centre=(s * 4.25, G, 0))
-    part(f"bar_cap_{n}", "handle", [1.0, 1.75, 1.75], "meteorite", centre=(s * 6.75, G, 0))
-    part(f"strut_{n}", "handle", [0.75, 6.5, 0.75], "iron_bar", at=(s * 2.0, G + 0.25, 0), offset=(0, 3.25, 0),
-         rot=(0, 0, s * 12))
+    part(f"grip_{n}", "handle", [2.5, 1.0, 1.0], "grip", centre=(s * 4.25, G, 0))
+    part(f"cuff_{n}", "bar", [0.5, 1.0, 1.0], "gold", centre=(s * STRUT_X, G, 0))
+    tip = part(f"bar_tip_{n}", "bar", [1.75, 0.75, 0.75], "silver", at=(s * 5.5, G, 0), offset=(s * 0.875, 0, 0),
+               rot=(0, 0, s * 32))
+    part(f"finial_{n}", tip["id"], [0.75, 0.75, 0.75], "pearl", rel=(s * 1.85, 0, 0), rot=(0, 0, s * -32))
+    # the struts: an A-frame from the bar up to the keel
+    dx, dy = STRUT_X - 0.5, HY - 0.5 - (G + 0.25)
+    L = round(math.hypot(dx, dy) * 4) / 4
+    part(f"strut_{n}", "handle", [0.5, L, 0.5], "silver", at=(s * STRUT_X, G + 0.25, 0), offset=(0, L / 2, 0),
+         rot=(0, 0, s * math.degrees(math.atan2(dx, dy))))
 
-# ======================================================================= the core: shell plates round the bellows
-CY = G + 7.0                  # bottom shell plate
-part("shell_bot", "frame", [8.5, 1.5, 10.0], "shell", centre=(0, CY, 0))
-part("shell_bot_rim", "shell_bot", [9.0, 0.75, 10.5], "shell_dark", centre=(0, CY - 0.875, 0))
-bone("bellows", "frame", at=(0, CY + 0.75, 0))
-for k, (w, d) in enumerate([(7.0, 8.0), (7.75, 8.75), (7.25, 8.25), (7.75, 8.75)]):
-    part(f"fold_{k}", "bellows", [w, 1.25, d], "gland" if k % 2 else "gland_fold", rel=(0, 0.625 + 1.25 * k, 0))
-part("shell_top", "frame", [9.0, 1.5, 10.5], "shell", centre=(0, CY + 6.5, 0))
-part("shell_ridge", "shell_top", [3.0, 1.0, 8.0], "shell_dark", centre=(0, CY + 7.75, -0.5))
-part("nose", "frame", [3.5, 3.5, 3.5], "meteorite", centre=(0, CY + 3.25, 5.25), rot=(20, 45, 10))
-part("nose_tip", "nose", [2.0, 2.0, 2.0], "meteorite", centre=(0.25, CY + 3.5, 7.0), rot=(35, 20, 40))
-part("tail", "frame", [1.0, 2.5, 3.0], "shell_dark", centre=(0, CY + 3.25, -5.75))
-# a pair of feathery enderfly antennae sweeping forward off the top plate
-ANTENNA = ["..................bA", "...............b.aA.", ".............b.aAb..", "...........b.aAb.b..",
-           ".........b.aAb.b....", "........baAb.b......", "......b.aA.b........", ".....baAb.b.........",
-           "....baAb............", "...baA.b............", "..baA...............", ".baA................",
-           ".aA.................", "aA..................", "A...................", "A..................."]
+# ======================================================================= the keel, its heart and antennae
+part("keel", "frame", [1.0, 1.0, 7.0], "keel", centre=(0, HY, -0.5))
+part("hub", "keel", [1.5, 1.0, 1.5], "gold", centre=(0, HY - 0.25, 0.5))
+part("keel_band", "keel", [1.25, 1.25, 0.5], "gold", centre=(0, HY, -3.0))
+part("keel_tail", "keel", [0.5, 0.5, 2.0], "silver", centre=(0, HY, -5.0))
+part("heart", "keel", [1.25, 1.25, 1.25], "pearl", centre=(0, HY + 0.1, 3.3))
 for s, n in ((1, "l"), (-1, "r")):
-    card(f"antenna_{n}", "frame", [r[::-1] for r in ANTENNA], "antenna", plane="yz", at=(s * 1.75, CY + 6.75, 3.5),
-         offset=(0, 2.0, 2.5), rot=(0, s * 24, s * -10))
+    card(f"antenna_{n}", "keel", plume(5, 24), "antenna", plane="yz", at=(s * 0.35, HY + 0.6, 3.6),
+         offset=(0, 3.0, 0), rot=(40, 0, s * -18))
 
 
-# ======================================================================= the wings: spars and membranes
-def wing_art(W, H, seed):
-    """An enderfly moth wing, root on the left, front edge at the bottom (plane xz: image top = back): a pointed
-    forewing sweeping out along the front edge, a rounded hindwing behind it, dark veins fanning from the root, a
-    dark rim with a pale scalloped fringe, and two glowing eye-spots."""
+# ======================================================================= the wings (cards, plane xz)
+def wing_art(w, h, seed, hind=False, window=None):
+    """An enderfly membrane, left wing lying flat: column 0 is the root, row 0 the back edge (-Z), the last row the
+    leading edge (+Z). Returns (rows, root v). Characters: '.' clear, 'm' membrane (painted by the style: deep at the
+    root, paling outward), 'M' a pale wash, 'r' the rim, 'R' a glowing rim bead, 'v' glowing veins, 'V' bright
+    veins near the root, 'x' glowing cross-veins, and the eye-spot ('H' halo, 'k' ring, 'E'/'e' iris, 'p' pupil,
+    'w' catch-light). `window` (x, y, d in texels, x and y on texel corners): a round window cut through the
+    membrane for a sigil, ringed with light."""
+    c = Canvas(w, h)
+    W, H = float(w), float(h)
+    xy = lambda u, v: (u * W, v * H)  # noqa: E731   (v: 0 back .. 1 front, like the canvas rows)
     rng = random.Random(seed)
-
-    FORE = [(0.0, 1.0), (0.0, 0.52), (0.3, 0.44), (0.62, 0.5), (0.86, 0.62), (1.0, 0.8), (0.97, 0.93),
-            (0.7, 0.99)]
-
-    def in_poly(u, v, poly):
-        hit = False
-        for (x1, y1), (x2, y2) in zip(poly, poly[1:] + poly[:1]):
-            if (y1 > v) != (y2 > v) and u < x1 + (v - y1) * (x2 - x1) / (y2 - y1):
-                hit = not hit
-        return hit
-
-    def inside(x, y):
-        u, v = x / W, y / H              # u: out from the root, v: 0 back .. 1 front
-        wob = 0.025 * math.sin(u * 23 + v * 7)
-        # forewing: a long blade from the root out to a tip near the front-outer corner
-        fore = in_poly(u + wob, v, FORE)
-        # hindwing: a rounded lobe behind it, near the root, scalloped
-        hu, hv = (u - 0.27) / 0.29, (v - 0.33) / 0.31
-        hind = hu * hu + hv * hv < 1.0 + 0.12 * math.sin(math.atan2(hv, hu) * 7)
-        return fore or hind
-    grid = [["." for _ in range(W)] for _ in range(H)]
-    for y in range(H):
-        for x in range(W):
-            if inside(x + 0.5, y + 0.5):
-                grid[y][x] = "m"
-    # mottled membrane: lighter scales toward the outer half
-    for y in range(H):
-        for x in range(W):
-            if grid[y][x] == "m" and (x / W) > 0.35 and rng.random() < 0.35 + 0.3 * (x / W):
-                grid[y][x] = "M"
-    # veins fanning from the root
-    root = (0.5, H * 0.72)
-    for ang in (-62, -40, -20, -5, 8, 20):
-        a = math.radians(ang)
-        for t in range(int(W * 1.2)):
-            x = int(root[0] + t * math.cos(a))
-            y = int(root[1] - t * math.sin(a) * (H / W) * 1.4)
-            if 0 <= x < W and 0 <= y < H and grid[y][x] in "mM":
-                grid[y][x] = "v"
-    # eye-spots: a dark ring, a glowing ring, a white-hot pupil
-    for cx, cy, r in ((W * 0.68, H * 0.74, 4.4), (W * 0.27, H * 0.3, 3.6)):
-        for y in range(H):
-            for x in range(W):
-                d = math.hypot(x + 0.5 - cx, (y + 0.5 - cy) * 1.1)
-                if grid[y][x] == ".":
-                    continue
-                if d < r * 0.35:
-                    grid[y][x] = "W"
-                elif d < r * 0.75:
-                    grid[y][x] = "E"
-                elif d < r:
-                    grid[y][x] = "k"
-    # a dark rim, then a pale scalloped fringe outside it on the outer and back edges
-    edge = [[False] * W for _ in range(H)]
-    for y in range(H):
-        for x in range(W):
-            if grid[y][x] != "." and any(not (0 <= x + dx < W and 0 <= y + dy < H) or grid[y + dy][x + dx] == "."
-                                         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                edge[y][x] = True
-    for y in range(H):
-        for x in range(W):
-            if edge[y][x] and x > 1:
-                grid[y][x] = "f" if (x + y) % 4 == 0 and y < H * 0.85 else "o"
-    return ["".join(r) for r in grid]
+    if not hind:
+        # broad forewing: a narrow root, a long leading edge to a rounded apex, a sweeping outer margin
+        ctrl = [(0.0, 0.6), (0.0, 0.88), (0.18, 0.97), (0.45, 1.0), (0.72, 0.99), (0.9, 0.93), (0.99, 0.8),
+                (0.985, 0.62), (0.9, 0.42), (0.76, 0.22), (0.58, 0.08), (0.4, 0.05), (0.24, 0.15), (0.1, 0.36)]
+        root = (0.0, 0.76)
+        targets = [(0.97, 0.86), (0.98, 0.68), (0.92, 0.47), (0.78, 0.26), (0.6, 0.1), (0.4, 0.07), (0.2, 0.2)]
+        spot = (0.66, 0.6, 12)
+    else:
+        # rounded hindwing with a long tail trailing back from its outer margin
+        ctrl = [(0.0, 0.7), (0.02, 0.98), (0.3, 1.0), (0.58, 0.95), (0.76, 0.82), (0.82, 0.64), (0.78, 0.46),
+                (0.8, 0.28), (0.9, 0.13), (0.98, 0.04), (0.95, 0.025), (0.8, 0.08), (0.64, 0.22), (0.48, 0.34),
+                (0.3, 0.44), (0.12, 0.54)]
+        root = (0.0, 0.86)
+        targets = [(0.5, 0.97), (0.74, 0.84), (0.81, 0.64), (0.76, 0.42), (0.95, 0.03), (0.48, 0.36), (0.24, 0.48)]
+        spot = (0.66, 0.46, 10)
+    c.shape([xy(u, v) for u, v in ctrl], "m", jitter=0.3, seed=seed)
+    # a soft pale wash in a band before the margin (scales catching the light), in a few soft clouds
+    clouds = [(rng.uniform(0.55, 0.9) * W, rng.uniform(0.1, 0.9) * H, rng.uniform(2.5, 4.5)) for _ in range(5)]
+    for y in range(h):
+        for x in range(w):
+            if c.g[y][x] == "m" and any(math.hypot(x - cx_, y - cy_) < r_ for cx_, cy_, r_ in clouds):
+                c.g[y][x] = "M"
+    # the rim: the outermost ring, with glowing beads along the outer margin
+    for x, y in c.edge("mM", "r"):
+        if x / W > 0.3 and (x * 3 + y * 5) % 7 == 0:
+            c.g[y][x] = "R"
+    # veins fanning from the root, bright near it; then cross-veins closing the cells at mid-wing and near the margin
+    R0 = xy(*root)
+    tips = []
+    for k, (u, v) in enumerate(targets):
+        ex, ey = xy(u, v)
+        mid = (R0[0] + (ex - R0[0]) * 0.45 + rng.uniform(-0.6, 0.6),
+               R0[1] + (ey - R0[1]) * 0.35 + rng.uniform(-0.6, 0.6))
+        c.curve([R0, mid, (ex, ey)], "v", where="mM")
+        tips.append([(R0[0] + (ex - R0[0]) * t, R0[1] + (ey - R0[1]) * t) for t in (0.42, 0.78)])
+    for a, b in zip(tips, tips[1:]):
+        for j in range(2):
+            c.line(a[j], b[j], "x", where="mM")
+    for y in range(h):
+        for x in range(w):
+            if c.g[y][x] == "v" and math.hypot(x + 0.5 - R0[0], y + 0.5 - R0[1]) < W * 0.28:
+                c.g[y][x] = "V"
+    # the eye-spot: round, soft-haloed
+    eye_spot(c, spot[0] * W, spot[1] * H, spot[2], where="mMvVxrR", mid="f", collar="c", soft="s")
+    if window:
+        wx, wy, wd = window
+        for y in range(h):
+            for x in range(w):
+                if in_disc(x, y, wx, wy, wd):
+                    c.g[y][x] = "."
+                elif in_disc(x, y, wx, wy, wd + 2) and c.g[y][x] != ".":
+                    c.g[y][x] = "V"
+    return c.rows(), root[1]
 
 
-WING = wing_art(64, 48, seed=5)              # 16 x 12 px at density 4
-WY = CY + 6.0                                # the hinge height (top shell plate)
+# the sigil's window in the forewing's root: centred on texel corner (12, 25) of the art
+WIN = (12, 25, 18)
+FORE, FORE_V = wing_art(72, 40, seed=3, window=WIN)      # 18 x 10 px
+HIND, HIND_V = wing_art(56, 52, seed=8, hind=True)       # 14 x 13 px
+WY = HY + 0.25
 for s, n in ((1, "l"), (-1, "r")):
-    w = bone(f"wing_{n}", "frame", at=(s * 4.25, WY, 1.0), rot=(0, s * -8, s * 8))
-    part(f"spar_{n}", w["id"], [14.0, 0.75, 0.75], "spar", rel=(0, 0.25, 0), offset=(s * 7.0, 0, 0),
-         rot=(0, s * 4, 0))
-    part(f"spar_{n}_back", w["id"], [10.0, 0.5, 0.5], "spar", rel=(0, 0.25, -0.5), offset=(s * 5.0, 0, 0),
-         rot=(0, s * 42, 0))
-    part(f"spar_{n}_tip", f"spar_{n}", [2.0, 1.0, 1.0], "spar_tip", rel=(s * 14.25, 0, 0))
-    art = WING if s > 0 else [r[::-1] for r in WING]
-    card(f"membrane_{n}", w["id"], art, "membrane", plane="xz", rel=(0, -0.05, 0), offset=(s * 8.0, 0, -4.4))
+    w = bone(f"wing_{n}", "keel", at=(s * 0.5, WY, 1.25), rot=(0, 0, s * 12))
+    for art, v, cid, par in ((FORE, FORE_V, f"fore_{n}", w["id"]), (HIND, HIND_V, f"hind_{n}_m", None)):
+        if par is None:          # the hindwing hangs from its own joint, swept back and a little lower
+            par = bone(f"hind_{n}", w["id"], rel=(0, -0.25, -2.5), rot=(0, s * 10, s * -5))["id"]
+        # the root texel (column 0, row v) sits on the joint; plane xz: image-top = -Z, so row v is Hp (0.5 - v) back
+        Wp, Hp = len(art[0]) / D, len(art) / D
+        card(cid, par, art if s > 0 else mirror_art(art), f"membrane_{n}", plane="xz",
+             offset=(s * Wp / 2, 0, Hp * (0.5 - v)))
 
-# ======================================================================= the jet pods and their flames
-def flame_art(length, width, seed):
-    """An air-jet plume pointing right (base on the left): white-hot along the axis near the nozzle, violet
-    outside, licking tongues toward the tip."""
-    rng = random.Random(seed)
-    rows = [["."] * length for _ in range(width)]
-    c = (width - 1) / 2.0
-    for x in range(length):
-        u = x / (length - 1)
-        hw = (width / 2.0) * (1.0 - u ** 1.6) * (0.85 + 0.15 * math.sin(u * 11 + seed)) + rng.uniform(-0.3, 0.3)
-        for y in range(width):
-            d = abs(y - c)
-            if d <= hw:
-                rows[y][x] = "W" if d < hw * 0.35 and u < 0.45 else ("w" if d < hw * 0.6 else "E")
+
+# ======================================================================= the sigils and their flares
+def sigil_art(n=16):
+    """A rune sigil n texels across, four-fold symmetric (so a quarter turn loops seamlessly): a dim glowing disc, a
+    bright outer ring, a rune mark at each quarter between it and a thinner inner ring, faint dots at the diagonals, a
+    white-hot heart."""
+    c = n / 2.0
+    rows = [["."] * n for _ in range(n)]
+    for y in range(n):
+        for x in range(n):
+            dx, dy = x + 0.5 - c, y + 0.5 - c
+            r = math.hypot(dx, dy)
+            a = (math.degrees(math.atan2(dy, dx)) + 360) % 90
+            card_ = min(a, 90 - a) < 13           # near a quarter point
+            diag = abs(a - 45) < 7
+            if c - 1.0 <= r <= c:
+                rows[y][x] = "a"
+            elif 4.6 <= r < c - 1.0 and card_:
+                rows[y][x] = "c"                  # the rune marks
+            elif 5.0 <= r < c - 1.4 and diag:
+                rows[y][x] = "e"
+            elif 3.3 <= r < 4.2:
+                rows[y][x] = "b"
+            elif r < 1.9:
+                rows[y][x] = "d"
+            elif r < c - 1.0:
+                rows[y][x] = "f"                  # the disc itself, a dim violet glow
     return ["".join(r) for r in rows]
 
 
-FL = 5.0                                     # card plume length in px
-FLAME_SIDE = flame_art(int(FL * 4), 10, 2)   # plane yz: image right is -Z (backward)
-FLAME_TOP = [r[::-1] for r in flame_art(int(FL * 4), 10, 5)]
-FLAME_TOP = ["".join(FLAME_TOP[y][x] for y in range(len(FLAME_TOP))) for x in range(len(FLAME_TOP[0]))][::-1]
+def halo_art(n=28):
+    """The flare's halo, n texels across: a dashed ring of light round the sigil and eight fine rays through it."""
+    c = n / 2.0
+    rows = [["."] * n for _ in range(n)]
+    for y in range(n):
+        for x in range(n):
+            dx, dy = x + 0.5 - c, y + 0.5 - c
+            r = math.hypot(dx, dy)
+            a = math.degrees(math.atan2(dy, dx)) % 360
+            ray = min(a % 45, 45 - a % 45) < 2.6 * 9.0 / max(r, 1.0)
+            if 9.6 <= r < 10.6 and (a + 15) % 30 < 18:
+                rows[y][x] = "b"
+            elif 9.0 <= r < c - 0.2 and ray:
+                rows[y][x] = "b" if r < 11.5 else "a"
+    return ["".join(r) for r in rows]
+
+
+def trail_art(w=6, h=24, seed=5):
+    """A comet trail of light, plane xz: row 0 the far (back) end, the last row next to the sigil; a white-hot core
+    narrowing back, violet edges breaking into sparks."""
+    rng = random.Random(seed)
+    rows = [["."] * w for _ in range(h)]
+    c = (w - 1) / 2.0
+    for y in range(h):
+        u = 1.0 - y / (h - 1)                    # 0 next to the sigil .. 1 at the far end
+        half = (w / 2.0) * (1.0 - u) ** 0.8
+        for x in range(w):
+            d = abs(x - c)
+            if d <= half + 0.2 and (u < 0.4 or rng.random() < 1.2 - u * 1.2):
+                rows[y][x] = "d" if d < half * 0.3 and u < 0.25 else ("c" if d < half * 0.6 and u < 0.6 else
+                                                                     ("b" if u < 0.7 else "a"))
+    return ["".join(r) for r in rows]
+
+
+SIGIL = sigil_art()
+HALO = halo_art()
+TRAIL = trail_art()
+# the same trail standing on edge (plane yz faces +X, image right = -Z): columns run from the sigil to the far end
+TRAIL_V = ["".join(TRAIL[len(TRAIL) - 1 - j][x] for j in range(len(TRAIL))) for x in range(len(TRAIL[0]))]
+TRAIL_LEN = len(TRAIL) / D
+# each sigil turns in its window, in the membrane's plane, so it shows from above and below; its flare (a halo and a
+# trail streaming back from behind the ring) lies just above and just below the membrane, with a third trail on edge
+WIN_X = WIN[0] / D                                 # px out from the wing joint
+WIN_Z = (WIN[1] / len(FORE) - FORE_V) * len(FORE) / D   # px forward of the joint (row v is at the joint)
 for s, n in ((1, "l"), (-1, "r")):
-    j = bone(f"jet_{n}", "frame", at=(s * 6.5, CY + 2.5, -0.5))
-    part(f"pod_{n}", j["id"], [3.0, 3.0, 6.5], "shell", rel=(0, 0, 0))
-    part(f"pod_{n}_band", j["id"], [3.5, 3.5, 1.0], "meteorite", rel=(0, 0, 2.25))
-    part(f"pod_{n}_band2", j["id"], [3.5, 3.5, 1.0], "meteorite", rel=(0, 0, -1.75))
-    part(f"intake_{n}", j["id"], [2.0, 2.0, 0.5], "intake", rel=(0, 0, 3.5))
-    part(f"nozzle_{n}", j["id"], [2.5, 2.5, 1.0], "nozzle", rel=(0, 0, -3.75))
-    part(f"pylon_{n}", j["id"], [1.0, 2.5, 3.0], "shell_dark", rel=(-s * 1.75, 1.0, 0), rot=(0, 0, s * 30))
-    f = bone(f"jet_flame_{n}", j["id"], rel=(0, 0, -4.25))
-    part(f"flame_{n}_core", f["id"], [1.25, 1.25, 2.0], "flame_hot", rel=(0, 0, -1.0))
-    part(f"flame_{n}", f["id"], [2.0, 2.0, 2.5], "flame", rel=(0, 0, -1.25))
-    # two crossed cards give the plume a licking, tapering outline
-    card(f"flame_{n}_v", f["id"], FLAME_SIDE, "flame_card", plane="yz", rel=(0, 0, 0), offset=(0, 0, -FL / 2))
-    card(f"flame_{n}_h", f["id"], FLAME_TOP, "flame_card", plane="xz", rel=(0, 0, 0), offset=(0, 0, -FL / 2))
+    rel = (s * WIN_X, 0, WIN_Z)
+    bone(f"jet_{n}", f"wing_{n}", rel=rel)
+    card(f"sigil_{n}", f"jet_{n}", SIGIL, "sigil", plane="xz")
+    f = bone(f"jet_flame_{n}", f"wing_{n}", rel=rel)
+    for side, dy in (("", 0.15), ("_under", -0.15)):
+        card(f"flare_{n}{side}", f["id"], HALO, "flare", plane="xz", rel=(0, dy, 0))
+        card(f"flare_{n}_trail{side}", f["id"], TRAIL, "flare", plane="xz", rel=(0, dy * 1.3, 0),
+             offset=(0, 0, -1.75 - TRAIL_LEN / 2))
+    card(f"flare_{n}_trail_v", f["id"], TRAIL_V, "flare", plane="yz", offset=(0, 0, -1.75 - TRAIL_LEN / 2))
 
 # ======================================================================= palette and paint
-ramps = {k: RAMPS[k] for k in ("purpur", "crying", "iron", "obsidian")}
-ramps["gland"] = ["#2c1020", "#4a1a33", "#6c2a4a", "#8f3f62", "#b0587a", "#cc7894", "#e39db0", "#f4c6d0"]
-ramps["membrane"] = ["#150c22", "#21143a", "#2f1d52", "#3f2a68", "#52397f", "#6a4d96", "#8a6bb0", "#b49ad0",
-                     "#e2d4f0"]
-ramps["meteorite"] = ["#141114", "#211b1e", "#302727", "#433533", "#584640", "#6f5a4f"]
-ramps["ember"] = RAMPS["ember"]
-ramps["leather"] = ["#1c1016", "#2c1a20", "#3f262b", "#553536", "#6d4743", "#875c52"]
+ramps = {k: RAMPS[k] for k in ("crying", "gold")}
+# translucent violet membrane, deep at the root, lilac at the edges (not a glow)
+ramps["membrane"] = ["#1c0f33", "#28154a", "#371d62", "#46277a", "#583291", "#6b40a6", "#8156ba", "#9a71cc",
+                     "#b590dc", "#d2b5ec"]
+# the glows: veins (violet-white light) and eye-spots (rose)
+ramps["vein"] = ["#5d2bbf", "#7d45e0", "#a06df5", "#c39bff", "#e3cdff", "#faf3ff"]
+ramps["spot"] = ["#640f52", "#9c1f7c", "#d33da0", "#f26bc0", "#ff9fd8", "#ffd2ee", "#fff4fb"]
+ramps["silver"] = ["#25202e", "#3a3346", "#534a62", "#6f667f", "#8e859e", "#aea6bd", "#cfc9da", "#ece9f2"]
+ramps["pearl"] = ["#3a3050", "#5a4e74", "#7f739a", "#a69bbe", "#cbc2dd", "#ebe6f4", "#fdfbff"]
+ramps["silk"] = ["#1b0f2a", "#2b1840", "#3e2458", "#533271", "#6a428b", "#8558a6"]
 RIM = {"light": 1, "dark": 1, "light_shift": 1.8, "dark_shift": -1.4, "outline": "dark"}
-SHELL_RIM = {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.4, "outline": "dark"}
+GLOSS = {"id": "gloss", "op": "gloss", "post": True, "dash": True, "length": 2, "inset": 0, "density": 0.6,
+         "shift": 2.0}
+
+
+def membrane_style(s):
+    g = 1.0 if s > 0 else -1.0            # card x runs root -> tip on the left wing, tip -> root on the right
+    return {"ramp": "membrane", "tone": 4.6, "light": 0.2, "brush": {"flow": "x", "length": 1.2, "rough": 0.3},
+            "layers": [{"id": "root_deep", "op": "gradient", "axis": "x", "amount": 2.6 * g},
+                       {"id": "sheen", "op": "noise", "scale": 1.6, "amount": 0.35}],
+            "art_key": {"M": "membrane:6", "r": "membrane:8", "R": "vein:4", "v": "vein:2", "V": "vein:4",
+                        "x": "vein:1", "H": "spot:1", "k": "membrane:0", "E": "spot:2", "f": "spot:3", "e": "spot:4",
+                        "c": "spot:5", "p": "membrane:0", "w": "spot:6", "s": "spot:5"}}
+
+
 styles = {
-    # shulker shell: purpur plates with a lighter rim and a scalloped seam, like the vanilla shulker's lid
-    "shell": {"ramp": "purpur", "tone": 2.3, "rim": SHELL_RIM,
-              "layers": [{"id": "plates", "op": "scales", "shape": "square", "along": "x", "size": [2.5, 1.25],
-                          "gap": 0.25, "highlight": 0.8, "shadow": -1.2, "jitter": 0.3, "faces": ["top", "sides"]},
-                         {"id": "under", "op": "gradient", "axis": "y", "amount": 0.6}]},
-    "shell_dark": {"ramp": "purpur", "tone": 2.4, "rim": SHELL_RIM, "brush": {"off": True}},
-    "gland": {"ramp": "gland", "tone": 4.0, "rim": {"light": 1, "dark": 1, "light_shift": 1.4, "dark_shift": -1.6},
-              "brush": {"off": True},
-              "layers": [{"id": "pores", "op": "spots", "count": 6, "radius": [0.25, 0.4], "ramp": "gland",
-                          "tone": 1.0, "faces": ["sides"]},
-                         {"id": "veins", "op": "cracks", "scale": 1.2, "width": 0.05, "shift": -1.2},
-                         {"id": "sheen", "op": "gloss", "post": True, "dash": True, "length": 2, "inset": 0,
-                          "density": 0.5, "shift": 1.8}]},
-    "gland_fold": {"ramp": "gland", "tone": 2.6, "rim": {"light": 1, "dark": 1, "light_shift": 1.2, "dark_shift": -1.2},
-                   "brush": {"off": True},
-                   "layers": [{"id": "crease", "op": "band", "axis": "y", "from": -0.3, "to": 0.3, "shift": -1.0,
-                               "faces": ["sides"]}]},
-    "meteorite": {"ramp": "meteorite", "tone": 2.6, "rim": RIM, "brush": {"off": True},
-                  "layers": [{"id": "pits", "op": "spots", "count": 4, "radius": [0.2, 0.4], "shift": -1.4},
-                             {"id": "embers", "op": "cracks", "scale": 1.0, "width": 0.05, "threshold": 0.45,
-                              "ramp": "ember", "tone": 4.6, "seed": 3}]},
-    "iron_bar": {"ramp": "iron", "tone": 3.2, "rim": RIM, "brush": {"off": True}, "dither": 0},
-    "grip": {"ramp": "leather", "tone": 3.0, "rim": {"light": 1, "dark": 1, "light_shift": 1.2, "dark_shift": -1.2},
+    "silver": {"ramp": "silver", "tone": 5.0, "rim": RIM, "brush": {"off": True}, "dither": 0,
+               "layers": [GLOSS]},
+    "keel": {"ramp": "silver", "tone": 2.8, "rim": RIM, "brush": {"off": True}, "dither": 0,
+             "layers": [GLOSS, {"id": "joints", "op": "stripes", "axis": "z", "period": 1.75, "width": 0.15,
+                                "shift": -1.4}]},
+    "gold": {"ramp": "gold", "tone": 5.0, "rim": {"light": 1, "dark": 1, "light_shift": 1.8, "dark_shift": -1.6},
+             "brush": {"off": True}, "layers": [GLOSS]},
+    "pearl": {"ramp": "pearl", "tone": 3.2, "light": 0.8, "rim": {"light": 1, "dark": 1, "light_shift": 1.6,
+                                                                  "dark_shift": -1.6},
+              "brush": {"off": True}, "layers": [GLOSS]},
+    # violet silk ribbon wound round the grips
+    "grip": {"ramp": "silk", "tone": 3.4, "rim": {"light": 1, "dark": 1, "light_shift": 1.2, "dark_shift": -1.2},
              "brush": {"off": True},
-             "layers": [{"id": "wrap", "op": "stripes", "axis": [1, 0.4, 0], "period": 0.75, "width": 0.3,
-                         "shift": -1.2}]},
-    "spar": {"ramp": "purpur", "tone": 4.2, "rim": SHELL_RIM, "brush": {"off": True},
-             "layers": [{"id": "joints", "op": "stripes", "axis": "x", "period": 3.5, "width": 0.15, "shift": -1.6}]},
-    "spar_tip": {"ramp": "purpur", "tone": 5.0, "rim": SHELL_RIM, "brush": {"off": True}},
-    "membrane": {"ramp": "membrane", "tone": 4.0, "light": 0.3, "brush": {"off": True},
-                 "art_key": {"m": "membrane:3", "M": "membrane:4", "v": "membrane:1", "o": "membrane:0",
-                             "f": "membrane:7", "k": "membrane:0", "E": "crying:4", "W": "crying:7"}},
-    "intake": {"ramp": "obsidian", "tone": 1.4, "light": 0.2, "brush": {"off": True},
-               "layers": [{"id": "fan", "op": "grille", "rect": [0.1, 0.1, 0.9, 0.9], "period": 2, "dir": "v",
-                           "slit_tone": 0.2, "lip": 2.0, "faces": ["front"]}]},
-    "nozzle": {"ramp": "meteorite", "tone": 1.6, "rim": RIM, "brush": {"off": True},
-               "layers": [{"id": "glow", "op": "rect", "rect": [0.2, 0.2, 0.8, 0.8], "ramp": "crying", "tone": 5.0,
-                           "faces": ["back"]}]},
-    "flame_hot": {"ramp": "crying", "tone": 7.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0}},
-    "flame": {"ramp": "crying", "tone": 4.6, "light": 0, "brush": {"off": True},
-              "rim": {"light": 1, "dark": 1, "light_shift": 1.0, "dark_shift": -1.0},
-              "layers": [{"id": "fade", "op": "gradient", "axis": "z", "amount": 1.6},
-                         {"id": "streaks", "op": "stripes", "axis": "x", "period": 0.75, "width": 0.3, "shift": 0.8,
-                          "faces": ["top", "bottom"]},
-                         {"id": "streaks_s", "op": "stripes", "axis": "y", "period": 0.75, "width": 0.3, "shift": 0.8,
-                          "faces": ["left", "right"]}]},
-    "antenna": {"ramp": "membrane", "tone": 5.0, "light": 0.3, "brush": {"off": True},
-                "art_key": {"a": "membrane:2", "A": "membrane:5", "b": "membrane:7"}},
-    "flame_card": {"ramp": "crying", "tone": 4.0, "light": 0, "brush": {"off": True},
-                   "art_key": {"W": "crying:7", "w": "crying:6", "E": "crying:4"}},
-    "flame_tail": {"ramp": "crying", "tone": 2.6, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-                   "layers": [{"id": "fade", "op": "gradient", "axis": "z", "amount": 1.4}]},
+             "layers": [{"id": "wrap", "op": "stripes", "axis": [1, 0.5, 0], "period": 0.75, "width": 0.3,
+                         "shift": -1.4},
+                        {"id": "sheen", "op": "stripes", "axis": [1, 0.5, 0], "period": 0.75, "width": 0.15,
+                         "phase": 0.4, "shift": 1.4}]},
+    "antenna": {"ramp": "membrane", "tone": 6.0, "light": 0.3, "brush": {"off": True},
+                "art_key": {"s": "membrane:3", "b": "membrane:7", "B": "membrane:5", "t": "vein:3"}},
+    "membrane_l": membrane_style(1),
+    "membrane_r": membrane_style(-1),
+    "sigil": {"ramp": "crying", "tone": 4.0, "light": 0, "brush": {"off": True},
+              "art_key": {"a": "crying:5", "b": "crying:4", "c": "crying:6", "d": "crying:7", "e": "crying:2",
+                          "f": "crying:0"}},
+    "flare": {"ramp": "crying", "tone": 4.0, "light": 0, "brush": {"off": True},
+              "art_key": {"a": "crying:2", "b": "crying:3", "c": "crying:5", "d": "crying:7"}},
 }
 
 # ======================================================================= clips
-FLAMES = ["jet_flame_l", "jet_flame_r"]
+L_FLAP, L_BOOST = 0.8, 0.4
 
 
-def beat(length, cycles, amp, sweep, pump, flame, flame_len):
+def beat(length, amp, sweep, bias, hind_amp, feather):
+    """One wing beat per loop: a quicker down-stroke, a slower recovery; the hindwing follows through a beat-
+    fraction late; the wings feather (twist) through the stroke and shimmer (a fine twist twice per beat)."""
     tr = []
     for s, n in ((1, "l"), (-1, "r")):
-        # the down-beat is the fast part: a skewed wave, the tip lagging a little (bias keeps it mostly up)
-        tr += [{"part": f"wing_{n}", "axis": "z", "keys": [
-                   [0, s * amp * 0.9], [length * 0.12 / cycles, s * amp], [length * 0.5 / cycles, s * -amp * 0.75],
-                   [length * 0.62 / cycles, s * -amp * 0.8], [length / cycles, s * amp * 0.9]] if cycles == 1 else
-               [[round(length * (c + u) / cycles, 4), s * a] for c in range(cycles)
-                for u, a in ((0, amp * 0.9), (0.12, amp), (0.5, -amp * 0.75), (0.62, -amp * 0.8))] +
-               [[length, s * amp * 0.9]], "ease": "smooth"},
-               osc(f"wing_{n}", "x", 4, cycles, 0.25),
-               {"part": f"wing_{n}", "axis": "y", "keys": [[0, s * sweep], [length, s * sweep]], "ease": "linear"}]
-    tr += [osc("bellows", None, [pump * 0.6, -pump, pump * 0.6], 2 * cycles, 0.1, ch="scale"),
-           osc("frame", None, [0, 0.35, 0], cycles, 0.6, ch="position")]
-    for k, f in enumerate(FLAMES):
-        tr += [{"part": f, "channel": "scale", "keys": [[0, [0, 0, flame_len]], [length, [0, 0, flame_len]]],
-                "ease": "linear"},
-               osc(f, None, [flame * 0.5, flame * 0.5, flame], 4 * cycles, 0.37 * k, ch="scale"),
-               osc(f, "z", 6, 2 * cycles, 0.2 + 0.3 * k)]
+        tr += [{"part": f"wing_{n}", "channel": "rotation", "ease": "smooth", "keys": [
+                   [0, [0, s * sweep, s * (bias + amp)]], [round(length * 0.4, 4), [0, s * sweep, s * (bias - amp)]],
+                   [length, [0, s * sweep, s * (bias + amp)]]]},
+               osc(f"wing_{n}", "x", feather, 1, 0.1),
+               osc(f"hind_{n}", "z", s * hind_amp, 1, 0.12),
+               osc(f"hind_{n}", "x", feather * 0.6, 2, 0.3)]
+    return tr
+
+
+def flare(length, size, stretch, pulse, cycles, sweep=0.0):
+    """The sigils' flares: scaled (`size` across, `size + stretch` along the trail), breathing by `pulse`, and turned
+    against the wings' sweep so the trails always stream straight back."""
+    tr = []
+    for k, (s, n) in enumerate(((1, "l"), (-1, "r"))):
+        tr += [{"part": f"jet_flame_{n}", "channel": "scale", "ease": "linear",
+                "keys": [[0, [size, 0, size + stretch]], [length, [size, 0, size + stretch]]]},
+               osc(f"jet_flame_{n}", None, [pulse, 0, pulse * 2.0], cycles, 0.25 * k, ch="scale")]
+        if sweep:
+            tr.append(keys(f"jet_flame_{n}", "y", [[0, -s * sweep], [length, -s * sweep]], ease="linear"))
+        # the halos stay round: undo the stretch along the trail
+        round_ = round((1.0 + size) / (1.0 + size + stretch) - 1.0, 4)
+        for side in ("", "_under"):
+            tr.append(keys(f"flare_{n}{side}", None, [[0, [0, 0, round_]], [length, [0, 0, round_]]], ease="linear",
+                           ch="scale"))
     return tr
 
 
 ANIM = {
-    "flap": {"length": 0.8, "loop": True, "tracks": beat(0.8, 1, 32, 0, 0.12, 0.18, 0.0)},
-    "boost": {"length": 0.4, "loop": True, "tracks": beat(0.4, 1, 20, -22, 0.2, 0.3, 1.0)},
+    "flap": {"length": L_FLAP, "loop": True, "tracks":
+             beat(L_FLAP, amp=13, sweep=0, bias=1, hind_amp=5, feather=4)
+             + flare(L_FLAP, -0.35, -0.25, 0.08, 2)
+             + [spin("jet_l", L_FLAP, 0.25), spin("jet_r", L_FLAP, -0.25),
+                osc("frame", None, [0, 0.3, 0], 1, 0.55, ch="position"),
+                osc("heart", None, [0.06, 0.06, 0.06], 2, 0.0, ch="scale"),
+                osc("antenna_l", "x", 5, 1, 0.2), osc("antenna_r", "x", 5, 1, 0.25)]},
+    "boost": {"length": L_BOOST, "loop": True, "tracks":
+              beat(L_BOOST, amp=8, sweep=22, bias=4, hind_amp=4, feather=3)
+              + flare(L_BOOST, 0.2, 1.5, 0.12, 2, sweep=22)
+              + [spin("jet_l", L_BOOST, 0.25), spin("jet_r", L_BOOST, -0.25),
+                 osc("frame", None, [0, 0.15, 0], 1, 0.55, ch="position"),
+                 keys("antenna_l", "x", [[0, -24], [L_BOOST, -24]], ease="linear"),
+                 keys("antenna_r", "x", [[0, -24], [L_BOOST, -24]], ease="linear")]},
 }
 
-GLOW = [p["id"] for p in R.P if p["id"].startswith("flame_")]
+MEMBRANES = [f"fore_{n}" for n in "lr"] + [f"hind_{n}_m" for n in "lr"]
 spec = {
     "name": "End Glider",
-    "description": "The Winterworks End Glider: a handheld flying machine of End mob parts: a gucker-gland bellows "
-                   "between shulker-shell plates, two flapping enderfly-membrane wings on purpur spars and two jet "
-                   "pods blowing pulsing violet air-jets. Minecraft pixel units, density 4.",
+    "description": "The Winterworks End Glider: a glowing magic wing glider: a slender moonsilver control bar with "
+                   "silk grips and an A-frame of struts under two pairs of great translucent violet enderfly "
+                   "wings with glowing veins and soft round eye-spots, a turning rune sigil at each wing root whose "
+                   "flare blazes when boosting. Minecraft pixel units, density 4.",
     "author": "lowpix example", "license": "CC0-1.0",
-    "density": 4,
+    "density": D,
     "grounded": False,
-    "budget": {"tris": 600, "colors": 72},
+    "budget": {"tris": 600, "colors": 80},
     "light": {"dir": [-0.45, 1.0, 0.6], "strength": 0.9, "gradient": 0.3, "ao": 0.0},
     "brush": {"flow": "long", "length": 1.0, "width": 0.25, "rough": 0.4, "overshoot": 0.3,
-              "textures": {"purpur": "stone", "gland": "organic", "meteorite": "stone"}},
-    "minecraft": {"fps": 24, "glow_parts": GLOW, "glow_ramps": ["crying"]},
+              "textures": {"membrane": "organic", "gold": "metal", "silver": "metal"}},
+    "minecraft": {"fps": 24, "glow_ramps": ["vein", "spot", "crying"], "alpha_parts": {m: 0.62 for m in MEMBRANES}},
     "render": {"background": "#2a2735", "hero": [-30, 26], "shadow": 0.3},
     "palette": {"ramps": ramps},
     "styles": styles,
