@@ -68,8 +68,7 @@ contract for the Java side.
 
 ## The Harvester (a new dinosaur, Amber Age)
 * `harvester`: a big, gentle prehistoric herbivore with a huge, wide **hammerhead-shark-like head** lined with rows of
-  teeth for cropping plants. Found rarely in savannas, badlands and the Dead Caves' surface biomes (herds of 1-2), and
-  hatched from nothing else.
+  teeth for cropping plants. Spawns rarely in savannas and badlands (herds of 1-2).
 * **Tame** it with pitcher plants (1 in 3 per plant). Tamed: follows, sits, can be **ridden with a saddle** (walks,
   jumps 1.5 blocks) and wears a **chest** like a donkey (15 slots).
 * **Harvests crops**: a tamed Harvester left near farmland (not sitting, not ridden) crops mature wheat, carrots,
