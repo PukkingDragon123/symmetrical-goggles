@@ -38,8 +38,8 @@ Vanilla look, polished personality. No extra features beyond this file.
 * Anvils accept hexed levels above vanilla's maximum (up to VI).
 * `hexed` effect: no natural regeneration from food; you heal only from potions (and potion-like effects). No
   heart loss. 5 / 10 / 20 minutes.
-* Hexed Books have their own animated textures: lesser (soul blue runes), sin (crimson and gold, a sin sigil),
-  hidden (black, flickering). The curse names show in the tooltip; hidden curses show as obfuscated text until you
+* Hexed Books have their own animated textures in the form of vanilla's enchanted book: lesser (indigo, a pulsing soul
+  flame), sin (crimson, a horned gold eye that pulses and blinks), hidden (near-black, a faint violet sigil surfacing). The curse names show in the tooltip; hidden curses show as obfuscated text until you
   have triggered them once.
 
 ## 3. Lesser curses (rare, poetic, specific; plus vanilla Binding and Vanishing)
