@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cross",
   "textures": {
-    "cross": "minecraft:block/lilac_top"
+    "cross": "winterworks:block/end_bloom_glow"
   }
 }
