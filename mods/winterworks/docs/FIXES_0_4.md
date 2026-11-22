@@ -222,3 +222,15 @@ contract for the Java side.
   `charge` (loop) holds the head low with the horn levelled; `ram` (0.8 s) thrusts and returns to rest. Don't play
   `ram` on top of `charge` (skip it while charging).
 * **Frost Mauler / skull**: new eye glow parts already in the export; no Java changes needed.
+* **Harvester**: `HarvesterModel` (texture 256x512, draw `entityCutoutNoCull`; cards for fringes and teeth). Hitbox
+  2.0 x 1.9 fits; the head is ~3 blocks wide, nose to tail ~4.9. Toggle `saddle`, `chest_l`, `chest_r`. Rider seat
+  top at y 35 px (~2.2 blocks). Clips: `idle` 4.0 loop, `walk` 1.6 loop, `run` 0.8 loop, `graze` 1.5, `chomp` 0.8,
+  `shove` 0.8 (sweeps toward its left), `sit` 3.0 loop.
+* **Harvester Egg**: block models `harvester_egg_{not_cracked,slightly_cracked,very_cracked}` (sniffer-egg box) and
+  `item/harvester_egg`; the blockstate (hatch 0-2) and item model are still to write. Amber egg inclusion:
+  `AmberEggModel` + `entity/amber_egg.png` (register an `AMBER_EGG` layer in AmberClient and an `EGG` case in
+  AmberInclusionRenderer like `seed`, fit ~0.6).
+* **Hexing Table GUI** (already in `gui/hexing_table.png`): blood slot item at (74, 20) (frame at 73, 19), ghost
+  blood potion at sheet (240, 64, 16, 16); the rows moved: `HexGui.ROW_X` 80 -> 95 and `ROW_W` 88 -> 73 (must change
+  with the art, or the rows draw misaligned). The no-sheet fallback's 9-link chain must fit 73 px.
+* `sweet_scent` particle: 5 frames, soft alpha (translucent sheet, setSpriteFromAge). `mob_effect/burning.png`.
