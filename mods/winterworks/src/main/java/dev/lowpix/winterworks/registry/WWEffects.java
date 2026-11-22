@@ -73,6 +73,10 @@ public final class WWEffects {
             Winterworks.id("strong_decay"), new Potion("decay", new net.minecraft.world.effect.MobEffectInstance(
                     net.minecraft.world.effect.MobEffects.WITHER, 400, 1)));
 
+    /** How cold you are (cold.ColdSystem): amplifier 0 Chilly, 1 Cold, 2 Freezing, 3 Frozen. Set by the cold meter. */
+    public static final Holder<MobEffect> COLD = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT,
+            Winterworks.id("cold"), new WWEffect(MobEffectCategory.HARMFUL, 0x9FD8FF));
+
     private WWEffects() {}
 
     public static void init() {}

@@ -47,6 +47,12 @@ contract for the Java side.
 * **Potion of Ramming**: when you reach top speed you get a battle cry (sound), a burst of snow and wind particles,
   speed lines on screen, a new running pose (leaning forward, arms swept back) and a further speed boost.
 
+* **The cold bites harder, in four levels**: a cold meter (shown as the Cold effect I-IV): **Chilly** (shivers, frost
+  breath, the frost overlay creeping in), **Cold** (Slowness, Mining Fatigue), **Freezing** (Slowness II, Weakness,
+  fully frozen: vanilla freeze damage), **Frozen** (Slowness IV, Weakness II, extra freeze damage). It fills from the Ice
+  Caves, cold water, standing on or touching ice, powder snow and snowstorms, much faster than before; warmth thaws you
+  fast, leaving the cold slowly. Each leather or fur piece cuts the cold by a quarter (a full set keeps it out).
+
 ## The Winter Express
 * The **Trailer Cart** is removed. **Normal minecarts** (and chest/hopper/furnace minecarts) couple to locomotives
   and to each other the way the trailer did, and get pulled.
