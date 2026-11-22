@@ -109,6 +109,34 @@ def chain_pose(R, ids, dirs, keep=(), turn=None):
     return out
 
 
+def rest_rot(R, pid):
+    return next(p for p in R.P if p["id"] == pid).get("rotation", [0, 0, 0])
+
+
+def toward(R, pid, target):
+    """Pose dict turning joint `pid` from its rest rotation to the absolute local rotation `target` (degrees)."""
+    return {pid: {"r": euler(rot_matrix(rest_rot(R, pid)).T @ rot_matrix(target))}}
+
+
+def abs_track(R, pid, length, fn, fps=24, loop=True):
+    """A rotation track sampled from fn(t) -> absolute local rotation (degrees), converted to deltas from the rest
+    rotation (joints with a folded rest pose, such as wings, flap about their spread pose)."""
+    Rr = rot_matrix(rest_rot(R, pid))
+    n = max(2, int(round(length * fps)))
+    ks = []
+    prev = None
+    for k in range(n + 1):
+        t = length * k / n
+        e = np.array(euler(Rr.T @ rot_matrix(fn(t))))
+        if prev is not None:   # keep the angles continuous
+            e = prev + ((e - prev + 180) % 360 - 180)
+        prev = e
+        ks.append([round(t, 4), [round(float(v), 3) for v in e]])
+    if loop:
+        ks[-1][1] = ks[0][1]
+    return {"part": pid, "channel": "rotation", "keys": ks, "ease": "smooth"}
+
+
 # ======================================================================= palettes
 # The End: pale end stone, purpur, obsidian, chorus violets. Glow ramps are kept apart from every body ramp (the
 # exporter puts exactly the texels of a glow ramp's colours into <name>_glow.png).
@@ -380,55 +408,55 @@ def moth_wing(w, h, seed, hind=False, spot=None, spot_r=None):
     return c.rows()
 
 
-def bat_wing(w, h, seed, fingers=3, root_frac=0.0, scallop=0.22, tip_hook=True, arm_rows=2):
+def membrane(w, h, seed, hand=False, fingers=3, scallop=0.16):
     """A dragon's wing membrane lying flat (card plane xz), left side: column 0 at the joint it hangs from, the last
-    column at the tip; the last rows are the leading edge (the arm), the top rows the scalloped trailing edge.
+    column outward; the bottom row is the leading edge (it hangs from the arm bone, a separate box), the top rows the
+    scalloped trailing edge. `hand`: the outer membrane, with finger bones fanning from the wrist to the scallop points
+    and a claw at the tip; otherwise the inner membrane between the flank and the wrist.
 
-    Characters: '.' clear, 'm' membrane (painted by the style), 'b' finger bones (dark), 'B' bone highlight,
-    'r' the trailing-edge rim (darker), 'v' small veins, 'c' a claw/hook at the tip."""
+    Characters: '.' clear, 'm' membrane (painted by the style), 'b' finger bones, 'B' a finger's lit edge, 'r' the
+    trailing-edge rim, 'v' fine veins, 'c' a claw."""
     c = Canvas(w, h)
     W, H = float(w), float(h)
-    # finger tips spread along the trailing edge; membrane scallops between them
-    tips = []
-    for k in range(fingers):
-        u = (k + 1) / fingers
-        tips.append((W * (0.18 + 0.8 * u), H * (0.02 + 0.55 * (1 - u) ** 1.4)))
-    pts = [(0.0, H * (1 - 0.0)), (0.0, H * 0.35 + root_frac * H * 0.5)]
-    prev = pts[-1]
-    for t in sorted(tips, key=lambda p: p[0]):
-        mid = ((prev[0] + t[0]) / 2, (prev[1] + t[1]) / 2 + scallop * H)
-        pts += [mid, t]
-        prev = t
-    pts += [(W, H * 0.62), (W * 0.97, H * 0.98), (W * 0.5, H)]
+    xy = lambda u, v: (u * W, v * H)  # noqa: E731
+    if hand:
+        tips = [(0.3 + 0.7 * (k + 1) / fingers * 0.95, 0.02 + 0.62 * ((k + 1) / fingers) ** 2.2) for k in range(fingers)]
+        tips[0] = (tips[0][0] * 0.75, tips[0][1])
+        pts = [xy(0.0, 1.0), xy(0.0, 0.08)]
+        prev = (0.0, 0.08)
+        for t in tips:
+            pts.append(xy((prev[0] + t[0]) / 2, (prev[1] + t[1]) / 2 + scallop))
+            pts.append(xy(*t))
+            prev = t
+        pts += [xy(1.0, 0.9), xy(0.6, 1.0)]
+    else:
+        tips = []
+        pts = [xy(0.0, 1.0), xy(0.0, 0.0), xy(0.5, scallop + 0.08), xy(1.0, 0.06), xy(1.0, 1.0)]
     c.shape(pts, "m", jitter=0.2, seed=seed)
-    # rim along the trailing edge
     for x, y in c.edge("m", "r"):
-        if y >= h - arm_rows - 1:
+        if y >= h - 1:
             c.g[y][x] = "m"
-    # finger bones from the leading-edge joint out to each tip
-    base = (W * 0.08, H - arm_rows - 0.5)
-    for k, t in enumerate(tips):
-        mid = (base[0] + (t[0] - base[0]) * 0.5, base[1] + (t[1] - base[1]) * 0.45)
-        c.curve([base, mid, (t[0], t[1] + 0.6)], "b", where="mr")
-    # small veins branching off the fingers
+    wrist = xy(0.02, 0.97)
     rng = random.Random(seed)
-    for k in range(fingers * 2):
-        x0 = rng.uniform(0.15, 0.85) * W
-        col = [y for y in range(h) if c.g[y][int(x0)] == "b"]
-        if not col:
+    for t in tips:
+        tx, ty = xy(*t)
+        mid = (wrist[0] + (tx - wrist[0]) * 0.5 + rng.uniform(-0.4, 0.4), wrist[1] + (ty - wrist[1]) * 0.5)
+        c.curve([wrist, mid, (tx, ty + 0.5)], "b", where="mr")
+    # a lit edge on the side of each finger toward the leading edge
+    for y in range(h - 1):
+        for x in range(w):
+            if c.g[y][x] == "b" and c.get(x, y + 1) == "m":
+                c.g[y + 1][x] = "B"
+    # fine veins branching toward the trailing edge
+    for k in range(int(w * h / 60) + 2):
+        x0 = rng.uniform(0.1, 0.9) * W
+        y0 = rng.uniform(0.35, 0.85) * H
+        if c.get(int(x0), int(y0)) != "m":
             continue
-        y0 = col[0]
-        c.line((x0, y0), (x0 + rng.uniform(-2, 2), y0 - rng.uniform(1.5, 3.5)), "v", where="m")
-    # the arm: leading edge rows are bone
-    for x in range(w):
-        col = [y for y in range(h) if c.g[y][x] != "."]
-        if col:
-            for k in range(arm_rows):
-                if max(col) - k >= 0:
-                    c.g[max(col) - k][x] = "B" if k == arm_rows - 1 else "b"
-    if tip_hook:
-        c.put(w - 1, h - 3, "c")
-        c.put(w - 2, h - 4, "c")
+        c.line((x0, y0), (x0 + rng.uniform(-1.5, 1.5), y0 - rng.uniform(2.0, 4.0)), "v", where="m")
+    if hand:
+        c.put(w - 1, int(H * 0.9) - 1, "c")
+        c.put(w - 2, int(H * 0.9) - 2, "c")
     return c.rows()
 
 
