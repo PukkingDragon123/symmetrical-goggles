@@ -112,7 +112,10 @@ final class OceanMobShots {
         if (on("turtles")) {
             t = turtles(t);
         }
-        at(t + 10, () -> Minecraft.getInstance().stop());
+        at(t + 10, () -> {
+            Minecraft.getInstance().options.gamma().set(0.5);   // the dev run's options back to normal brightness
+            Minecraft.getInstance().stop();
+        });
     }
 
     // --------------------------------------------------------------------------------------- scenes
