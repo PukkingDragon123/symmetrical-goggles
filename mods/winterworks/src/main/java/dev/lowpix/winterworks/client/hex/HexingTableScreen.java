@@ -578,11 +578,12 @@ public class HexingTableScreen extends AbstractContainerScreen<HexingTableMenu> 
         tip.add(CommonComponents.EMPTY);
         tip.add(costLine(k));
         int minutes = k == Hexing.Kind.SIN ? Hexing.SIN_MINUTES : Hexing.lesserMinutes(stored);
+        String tier = k == Hexing.Kind.LESSER ? "lesser" : "sin";
         if (menu.spares(k)) {
-            tip.add(Component.translatable("container.winterworks.hexing_table.spared", k.spareBlood()).withColor(HexGui.BLOOD));
+            tip.add(Component.translatable("container.winterworks.hexing_table.spared." + tier).withColor(HexGui.BLOOD));
         } else {
             tip.add(Component.translatable("container.winterworks.hexing_table.hexed", minutes).withColor(0x4FA3B5));
-            tip.add(Component.translatable("container.winterworks.hexing_table.spare_with", k.spareBlood())
+            tip.add(Component.translatable("container.winterworks.hexing_table.spare_with." + tier)
                     .withStyle(ChatFormatting.ITALIC).withColor(0x9A4A50));
         }
         if (p != Hexing.OK) {

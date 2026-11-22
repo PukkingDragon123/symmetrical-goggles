@@ -29,6 +29,7 @@ uniform float TintG;
 uniform float TintB;
 uniform float TintAmt;   // colour graded toward the tint
 uniform float Vignette;  // edges darkened into the tint
+uniform float Dark;      // how far the vignette goes to black instead (a tunnel)
 uniform float Flicker;   // hidden curses: the picture stutters to dark
 uniform float Glare;     // Icarus: the sun burning in from above
 
@@ -83,7 +84,7 @@ void main() {
     col = mix(col, graded, TintAmt * s);
 
     float v = smoothstep(0.22, 0.92, r);
-    col = mix(col, tint * 0.22, clamp(Vignette * s * v, 0.0, 0.95));
+    col = mix(col, mix(tint * 0.22, vec3(0.0), Dark), clamp(Vignette * s * v, 0.0, 0.95));
 
     if (Glare > 0.0) {
         float g = 1.0 - smoothstep(0.0, 0.95, length((texCoord - vec2(0.5, 1.08)) * aspect));

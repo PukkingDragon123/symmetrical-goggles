@@ -31,10 +31,11 @@ public final class SoulGlint extends RenderType {
     static final ResourceLocation ITEM_TEXTURE = Winterworks.id("textures/misc/soul_glint_item.png");
     static final ResourceLocation ENTITY_TEXTURE = Winterworks.id("textures/misc/soul_glint_entity.png");
 
+    // three times vanilla's scales: each item shows more of the sheet, so a few souls drift over it at once
     private static final TexturingStateShard ITEM_TEXTURING = new TexturingStateShard("winterworks_soul_glint_texturing",
-            () -> setupTexturing(8.0f), RenderSystem::resetTextureMatrix);
+            () -> setupTexturing(24.0f), RenderSystem::resetTextureMatrix);
     private static final TexturingStateShard ENTITY_TEXTURING = new TexturingStateShard("winterworks_soul_entity_glint_texturing",
-            () -> setupTexturing(0.16f), RenderSystem::resetTextureMatrix);
+            () -> setupTexturing(0.48f), RenderSystem::resetTextureMatrix);
 
     public static final RenderType ARMOR_ENTITY_GLINT = create("winterworks_soul_armor_entity_glint", DefaultVertexFormat.POSITION_TEX,
             VertexFormat.Mode.QUADS, 1536, CompositeState.builder()
@@ -110,12 +111,12 @@ public final class SoulGlint extends RenderType {
 
     /**
      * Souls drift slowly upward while the whole glint sways and turns, slow and dizzy (vanilla's slides diagonally).
-     * `scale` is vanilla's (8 for items, 0.16 for entities); the glint speed option still applies.
+     * The glint speed option still applies.
      */
     private static void setupTexturing(float scale) {
         double t = Util.getMillis() / 1000.0 * Minecraft.getInstance().options.glintSpeed().get();
-        float driftU = (float) ((t * 0.011) % 1.0);
-        float driftV = (float) ((t * 0.042) % 1.0);
+        float driftU = (float) ((t * 0.016) % 1.0);
+        float driftV = (float) ((t * 0.06) % 1.0);
         float swirl = (float) (0.17 + Math.sin(t * 0.33) * 0.22 + Math.sin(t * 0.13 + 1.0) * 0.12);
         Matrix4f m = new Matrix4f().translation(-driftU, driftV, 0f);
         m.rotateZ(swirl).scale(scale);

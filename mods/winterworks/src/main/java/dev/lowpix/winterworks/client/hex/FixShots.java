@@ -126,15 +126,26 @@ final class FixShots {
             inv.setItem(14, gear(level, Items.BOW, WWEnchantments.LEECH));
             inv.setItem(15, gear(level, Items.DIAMOND_PICKAXE, Enchantments.EFFICIENCY));
             inv.setItem(16, AmberFeature.bloodPotion(Items.POTION));
-            inv.setItem(17, new ItemStack(WWItems.WITHER_BONE));
-            p.setItemSlot(EquipmentSlot.HEAD, gear(level, Items.DIAMOND_HELMET, WWEnchantments.NARCISSUS));
-            p.setItemSlot(EquipmentSlot.CHEST, gear(level, Items.DIAMOND_CHESTPLATE, WWEnchantments.ENVY));
-            p.setItemSlot(EquipmentSlot.LEGS, gear(level, Items.DIAMOND_LEGGINGS, Enchantments.PROTECTION));
-            p.setItemSlot(EquipmentSlot.FEET, gear(level, Items.DIAMOND_BOOTS, Enchantments.BINDING_CURSE));
-            inv.selected = 4;
+            inv.setItem(17, gear(level, Items.DIAMOND_CHESTPLATE, WWEnchantments.ENVY));
+            // worn: cursed pieces (soul glint) beside a plainly enchanted chestplate (vanilla glint); no sin worn,
+            // so no sin vignette tints the screenshots
+            p.setItemSlot(EquipmentSlot.HEAD, gear(level, Items.DIAMOND_HELMET, WWEnchantments.MIDAS));
+            p.setItemSlot(EquipmentSlot.CHEST, gear(level, Items.DIAMOND_CHESTPLATE, Enchantments.PROTECTION));
+            p.setItemSlot(EquipmentSlot.LEGS, gear(level, Items.DIAMOND_LEGGINGS, Enchantments.BINDING_CURSE));
+            p.setItemSlot(EquipmentSlot.FEET, gear(level, Items.DIAMOND_BOOTS, Enchantments.VANISHING_CURSE));
+            inv.selected = 0;
         }));
         // 1. the hotbar: 3D hex blocks and the Hex Core, a soul-glinting Wrath sword beside a purple-glinting one
         at(t += 60, () -> shot("hotbar_3d_icons"));
+        if (Boolean.getBoolean("winterworks.hexshots.quick")) {   // just the items, a few frames apart (the glints move)
+            at(t += 5, () -> Minecraft.getInstance().setScreen(new InventoryScreen(Minecraft.getInstance().player)));
+            for (int i = 0; i < 4; i++) {
+                int k = i;
+                at(t += 15, () -> shot("quick_inventory_" + k));
+            }
+            at(t += 5, () -> Minecraft.getInstance().stop());
+            return;
+        }
         // 2. the inventory: cursed books, cursed gear with the soul glint, worn cursed armour
         at(t += 5, () -> {
             Minecraft mc = Minecraft.getInstance();
@@ -142,6 +153,7 @@ final class FixShots {
         });
         at(t += 15, () -> shot("inventory_cursed"));
         at(t += 2, () -> hoverInventorySlot(9));   // the Narcissus + Protection book: just the curse's name
+        at(t += 2, () -> hoverInventorySlot(9));
         at(t += 6, () -> shot("tooltip_cursed_book"));
         at(t += 2, () -> hoverInventorySlot(36 + 4));   // the Wrath sword
         at(t += 6, () -> shot("tooltip_wrath_sword"));
@@ -173,17 +185,17 @@ final class FixShots {
         at(t += 25, () -> shot("soul_fire_mob"));
         at(t += 2, () -> cmd("tp @s -0.5 -60 2.2 facing -0.5 -59.6 3.5"));
         at(t += 10, () -> shot("soul_fire_mob_close"));
-        // 4. the local player burning with soul fire: the first-person overlay
+        // 4. the local player burning with soul fire, looking away from the pig: the first-person overlay
+        at(t += 2, () -> server(level -> level.getEntities(null, new net.minecraft.world.phys.AABB(-10, -62, -4, 10, -55, 16))
+                .forEach(e -> {
+                    if (e instanceof Mob) {
+                        e.discard();
+                    }
+                })));
+        at(t += 2, () -> cmd("tp @s 0.5 -60 0.5 facing 0.5 -59 10"));
         at(t += 2, () -> server(level -> Curses.soulIgnite(player(level), 400)));
         at(t += 15, () -> shot("soul_fire_overlay"));
-        at(t += 2, () -> server(level -> {
-            Curses.soulExtinguish(player(level));
-            level.getEntities(null, new net.minecraft.world.phys.AABB(-10, -62, -4, 10, -55, 16)).forEach(e -> {
-                if (e instanceof Mob) {
-                    e.discard();
-                }
-            });
-        }));
+        at(t += 2, () -> server(level -> Curses.soulExtinguish(player(level))));
         // 5. the Hexing screen with its blood slot, a Sharpness + Fire Aspect book, elixir and two Potions of Blood
         at(t += 5, () -> cmd("tp @s 1.5 -60 3.5 0 40"));
         at(t += 10, () -> server(level -> {
@@ -237,7 +249,7 @@ final class FixShots {
             p.setItemSlot(EquipmentSlot.MAINHAND, gear(level, Items.DIAMOND_PICKAXE, WWEnchantments.SLOTH));
         }));
         at(t += 5, () -> server(level -> Sins.nodOff(player(level))));
-        at(t += 30, () -> shot("effect_sloth_from_server"));
+        at(t += 7, () -> shot("effect_sloth_from_server"));
         at(t += 70, () -> Minecraft.getInstance().stop());
     }
 

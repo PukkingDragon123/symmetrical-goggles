@@ -47,7 +47,7 @@ public final class CurseScreenFx {
     /** One curse's look: the post-pass settings, its pulse, camera and motes. */
     static final class Look {
         final int colour;
-        float wave, waveFreq = 10f, swirl, zoom, chroma, ghost, ghostX, ghostY, desat, tint, vignette, flicker, glare;
+        float wave, waveFreq = 10f, swirl, zoom, chroma, ghost, ghostX, ghostY, desat, tint, vignette, dark, flicker, glare;
         boolean rise;
         float pulseHz, pulseDepth, shake, roll, pitch = 1f;
         Mote mote = Mote.NONE;
@@ -66,6 +66,7 @@ public final class CurseScreenFx {
         Look desat(float a) { desat = a; return this; }
         Look tint(float a) { tint = a; return this; }
         Look vignette(float a) { vignette = a; return this; }
+        Look dark(float a) { dark = a; return this; }
         Look flicker(float a) { flicker = a; return this; }
         Look glare(float a) { glare = a; return this; }
         Look pulse(float hz, float depth) { pulseHz = hz; pulseDepth = depth; return this; }
@@ -86,16 +87,16 @@ public final class CurseScreenFx {
         look(Curse.MIDAS, new Look(0xE8B830).swirl(0.2f).zoom(0.03f).chroma(0.002f).desat(0.65f).tint(0.7f).vignette(0.6f)
                 .pitch(1.3f).mote(Mote.COIN, 2));
         look(Curse.ORPHEUS, new Look(0x7486B8).wave(0.004f, 8f).swirl(-0.3f).zoom(-0.07f).desat(0.9f).tint(0.3f).vignette(0.95f)
-                .pitch(0.8f).mote(Mote.SOUL, 2));
-        look(Curse.SISYPHUS, new Look(0x9A8C78).zoom(0.05f).chroma(0.007f).desat(0.55f).tint(0.35f).vignette(0.65f).shake(3f)
-                .pitch(0.7f).mote(Mote.DUST, 1));
+                .dark(0.6f).pitch(0.8f).mote(Mote.SOUL, 2));
+        look(Curse.SISYPHUS, new Look(0x9A8C78).pulse(0.7f, 0.35f).zoom(0.07f).chroma(0.011f).desat(0.7f).tint(0.5f).vignette(0.85f)
+                .dark(0.3f).shake(3.5f).pitch(0.7f).mote(Mote.DUST, 1));
         look(Curse.TANTALUS, new Look(0x3FA0A0).wave(0.009f, 9f).zoom(-0.1f).ghost(0.3f, 0f, -0.05f).desat(0.25f).tint(0.35f)
                 .vignette(0.55f).pitch(1.0f).mote(Mote.WATER, 1));
         look(Curse.MOTH, new Look(0xF4E2A0).zoom(0.08f).swirl(0.12f).chroma(0.003f).desat(0.35f).tint(0.3f).vignette(1.0f)
-                .glare(0.15f).pitch(1.4f).mote(Mote.MOTH, 4));
+                .dark(0.9f).glare(0.15f).pitch(1.4f).mote(Mote.MOTH, 4));
         // hidden curses: violet-black, flickering, whispering
-        look(Curse.CAIN, new Look(0xA01818).pulse(1.25f, 0.6f).chroma(0.009f).ghost(0.25f, 0.025f, 0f).desat(0.45f).tint(0.55f)
-                .vignette(0.9f).flicker(0.35f).pitch(0.75f).mote(Mote.BLOOD, 3));
+        look(Curse.CAIN, new Look(0xB01414).pulse(1.25f, 0.45f).chroma(0.01f).ghost(0.25f, 0.025f, 0f).desat(0.55f).tint(0.8f)
+                .vignette(1.0f).dark(0.4f).flicker(0.35f).pitch(0.75f).mote(Mote.BLOOD, 2));
         look(Curse.JUDAS, new Look(0xC4CCD6).ghost(0.35f, -0.035f, 0f).chroma(0.005f).desat(0.85f).tint(0.3f).vignette(0.75f)
                 .flicker(0.4f).pitch(0.7f).mote(Mote.SILVER, 3));
         look(Curse.LOTS_WIFE, new Look(0xE8E2D0).zoom(0.03f).desat(1.0f).tint(0.3f).vignette(0.85f).flicker(0.3f)
@@ -103,18 +104,18 @@ public final class CurseScreenFx {
         look(Curse.LEECH, new Look(0x6E9A2E).pulse(1.0f, 0.5f).wave(0.004f, 30f).chroma(0.005f).desat(0.45f).tint(0.5f)
                 .vignette(0.85f).flicker(0.3f).pitch(0.65f).mote(Mote.VEIN, 1));
         // the sins: hot, saturated, heavy, pulsing
-        look(Curse.WRATH, new Look(0xD0341E).pulse(1.6f, 0.55f).haze(0.006f, 34f).chroma(0.011f).desat(0.2f).tint(0.6f)
-                .vignette(0.9f).shake(2f).pitch(0.85f).mote(Mote.EMBER, 1));
+        look(Curse.WRATH, new Look(0xE0341A).pulse(1.6f, 0.4f).haze(0.008f, 34f).chroma(0.012f).desat(0.35f).tint(0.85f)
+                .vignette(1.0f).dark(0.2f).shake(2f).pitch(0.85f).mote(Mote.EMBER, 1));
         look(Curse.GREED, new Look(0xE2B33A).pulse(0.9f, 0.3f).swirl(0.3f).zoom(0.04f).chroma(0.004f).desat(0.5f).tint(0.65f)
                 .vignette(0.8f).pitch(0.95f).mote(Mote.COIN, 1));
-        look(Curse.LUST, new Look(0xD03C7C).pulse(1.3f, 0.5f).wave(0.005f, 12f).ghost(0.35f, 0.03f, 0f).chroma(0.007f).tint(0.55f)
-                .vignette(0.85f).pitch(1.0f).mote(Mote.HEART, 3));
-        look(Curse.GLUTTONY, new Look(0x8A9A2A).pulse(0.8f, 0.7f).zoom(0.09f).wave(0.007f, 6f).desat(0.3f).tint(0.55f)
-                .vignette(0.8f).roll(3f).pitch(0.6f).mote(Mote.CRUMB, 1));
+        look(Curse.LUST, new Look(0xE0408A).pulse(1.3f, 0.4f).wave(0.006f, 12f).ghost(0.35f, 0.03f, 0f).chroma(0.008f).desat(0.2f)
+                .tint(0.75f).vignette(0.95f).pitch(1.0f).mote(Mote.HEART, 2));
+        look(Curse.GLUTTONY, new Look(0x9AA82A).pulse(0.8f, 0.5f).zoom(0.1f).wave(0.008f, 6f).desat(0.4f).tint(0.75f)
+                .vignette(0.95f).dark(0.3f).roll(3f).pitch(0.6f).mote(Mote.CRUMB, 1));
         look(Curse.SLOTH, new Look(0x5E6E92).swirl(0.4f).ghost(0.45f, 0.035f, 0.012f).desat(0.6f).tint(0.45f).vignette(0.9f)
                 .roll(4.5f).pitch(0.55f).mote(Mote.LIDS, 1));
-        look(Curse.ENVY, new Look(0x3AA048).pulse(0.8f, 0.4f).ghost(0.4f, -0.035f, 0f).chroma(0.013f).desat(0.3f).tint(0.65f)
-                .vignette(0.9f).pitch(0.8f).mote(Mote.EYES, 8));
+        look(Curse.ENVY, new Look(0x3AA048).pulse(0.8f, 0.4f).ghost(0.4f, -0.035f, 0f).chroma(0.013f).desat(0.35f).tint(0.75f)
+                .vignette(1.0f).dark(0.5f).pitch(0.8f).mote(Mote.EYES, 6));
         look(Curse.PRIDE, new Look(0x9A4AC8).zoom(-0.05f).chroma(0.016f).desat(0.35f).tint(0.5f).vignette(0.8f).shake(3.5f)
                 .pitch(0.7f).mote(Mote.CRACK, 1));
     }
@@ -273,6 +274,7 @@ public final class CurseScreenFx {
         chain.setUniform("TintB", (l.colour & 255) / 255f);
         chain.setUniform("TintAmt", l.tint);
         chain.setUniform("Vignette", l.vignette);
+        chain.setUniform("Dark", l.dark);
         chain.setUniform("Flicker", l.flicker);
         chain.setUniform("Glare", l.glare);
         RenderSystem.disableBlend();
@@ -509,7 +511,7 @@ public final class CurseScreenFx {
                 for (int k = 0; k < 48; k++) {
                     double ang = k * Math.PI * 2 / 48;
                     int px = x + (int) Math.round(Math.cos(ang) * r), py = y + (int) Math.round(Math.sin(ang) * r * 0.38);
-                    g.fill(px, py, px + 2, py + 1, argb(a * (1f - life) * 0.8f, 0xBFE6FF));
+                    g.fill(px, py, px + 2, py + 1, argb(a * (1f - life) * 0.5f, 0xBFE6FF));
                 }
             }
             case MOTH -> {   // a dusky moth, wings beating
