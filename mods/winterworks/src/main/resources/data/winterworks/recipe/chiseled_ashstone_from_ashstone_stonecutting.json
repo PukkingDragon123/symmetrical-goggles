@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "winterworks:ashstone"
+  },
+  "result": {
+    "id": "winterworks:chiseled_ashstone",
+    "count": 1
+  }
+}

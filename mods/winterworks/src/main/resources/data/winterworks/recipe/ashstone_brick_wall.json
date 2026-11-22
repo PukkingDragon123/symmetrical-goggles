@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:ashstone_bricks"
+    }
+  },
+  "result": {
+    "id": "winterworks:ashstone_brick_wall",
+    "count": 6
+  }
+}

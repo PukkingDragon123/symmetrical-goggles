@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "winterworks:block/ashstone_slab"
+    },
+    "type=double": {
+      "model": "winterworks:block/ashstone"
+    },
+    "type=top": {
+      "model": "winterworks:block/ashstone_slab_top"
+    }
+  }
+}
