@@ -716,43 +716,44 @@ o3tNtNn2o.......
 ...oooo.........
 """)
 
-# Bear-head hood: round ears, eyes and snout over the brow, cheek flaps either side of the face hole.
+# Vanilla-style armour icons, a dark violet outline: the hood is a helmet with round bear ears, the bear's eyes
+# and nose on the brow, cheek flaps either side of the face hole.
 item("fur_hood", pal(FUR, k="#241d29", i="#2e2836"), """
-................
-..ooo......ooo..
-.o525oooooo424o.
-.o556566565443o.
-.o565655654433o.
-.o456556544342o.
-.o455k5545k332o.
-.o445356653432o.
-.o34325kk42321o.
-.o342244332321o.
-.o353iooooi231o.
-.o343iiiiii321o.
-.o453o....o231o.
-.o343o....o321o.
-.o454o....o232o.
-..ooo......ooo..
+.... .... .... ....
+.... .... .... ....
+...o o... ...o o...
+..o5 4ooo ooo4 5o..
+..o4 6656 5665 4o..
+..o5 6565 6555 3o..
+..o5 5655 5654 3o..
+..o5 k565 565k 3o..
+..o4 545i i443 2o..
+..o4 oooo oooo 2o..
+..o4 o... ...o 2o..
+..o4 o... ...o 2o..
+..o3 o... ...o 1o..
+..o3 o... ...o 1o..
+...o .... .... o...
+.... .... .... ....
 """)
 
 item("fur_coat", pal(FUR, HIDE, Y=BONE["Y"], y=BONE["y"]), """
-................
-.ooooo....ooooo.
-o56565o..o65443o
-o656656oo654433o
-o542565tN544233o
-o452655Yy454232o
-o542556tN443222o
-o652465tN434232o
-.oo5456Yy4343oo.
-..o5545tN4433o..
-..o4655tN3443o..
-..o5456Yy4332o..
-..o5545tN4323o..
-..o6565tN5443o..
-..o5654tN5443o..
-..oo.oooo.ooo...
+.... .... .... ....
+.ooo oo.. ..oo ooo.
+o566 56o. .o65 654o
+o656 656o o565 543o
+o565 556t N544 432o
+ooo5 656Y y544 3ooo
+..o5 556t N443 3o..
+..o6 565t N543 2o..
+..o5 656Y y443 3o..
+..o5 565t N432 2o..
+..oT tTtY ytTN No..
+..o6 556t N443 2o..
+..o5 656t N543 2o..
+..o4 545t N432 2o..
+..oo 5o4o o3o2 oo..
+.... .... .... ....
 """)
 
 item("fur_leggings", pal(FUR, HIDE, Y=BONE["Y"], y=BONE["y"]), """
@@ -775,22 +776,22 @@ item("fur_leggings", pal(FUR, HIDE, Y=BONE["Y"], y=BONE["y"]), """
 """)
 
 item("fur_boots", pal(FUR, HIDE), """
-................
-................
-................
-..ooooo...ooooo.
-.o65656o.o56545o
-.o56565o.o45454o
-.o45433o.o44332o
-.o54343o.o43432o
-.o45433o.o44322o
-.o54343o.o43432o
-o545433oo544332o
-o654343oo643432o
-oTtttnnooTtttnno
-.oooooo..oooooo.
-................
-................
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
+...o ooo. ...o ooo.
+..o5 656o ..o5 656o
+..o4 545o ..o4 545o
+..o3 45o. ..o3 45o.
+..o3 44o. ..o3 44o.
+.o33 445o .o33 445o
+o233 445o o233 445o
+onNN tttT onNN tttT
+.ooo ooo. .ooo ooo.
+.... .... .... ....
+.... .... .... ....
+.... .... .... ....
 """)
 
 # A Frost Mauler sabre, as on the 3D model: a broad flattened blade of bone-yellow ivory curving to a point, the
@@ -907,29 +908,48 @@ def block(name, palette, grid):
     put(f"textures/block/{name}.png", draw(parse(grid), palette, (16, 16), name))
 
 
-# Ancient ice: deep indigo glacier ice (translucent) with crystal prisms at different depths (bright
-# ridge, darker core, fading into the dark below), trapped bubbles. Tiles seamlessly (edges are depth).
-# the deep body is see-through enough to make out a frozen beast inside; the crystal ridges stay bright
-DEEP_ICE = pal(**{"0": "#14134470", "1": "#1c247070", "2": "#22399a78", "3": "#2856bc80", "4": "#2f7dd490",
-                  "5": "#45ace6a8", "6": "#82dcf4c8", "7": "#c8f4fce0", "8": "#ffffffee", "f": "#a6ecfa70"})
-block("ancient_ice", DEEP_ICE, """
-1121101121112112
-1211711217611151
-2116831126312463
-1165734112111462
-2164724211012352
-1264724111161131
-1163624121573121
-0153623115462412
-1253513126472411
-1142513416372421
-2132412426362461
-1121312425361312
-1211211315251311
-1751101314251f21
-252111721314f211
-11121111221f1211
-""")
+# Ancient ice: deep layered glacier ice, translucent so the frozen Mauler shows through. Gently tilted strata of
+# cobalt and blue (deep pockets nearly indigo), a pale cyan fracture with bright glints at its kinks and a dark
+# shadow under it, fainter hairlines, trapped bubbles; it tiles seamlessly. Animated (`.mcmeta`, interpolated): a
+# slow band of cold light sweeps diagonally through the ice, then it rests.
+DEEP_ICE = pal(**{"0": "#0a0f3aa4", "1": "#111d5c98", "2": "#18307e90", "3": "#20499e90", "4": "#2c68bc98",
+                  "5": "#3c86d4a4", "6": "#66b2e6b8", "7": "#a8e2f8cc", "8": "#ecfcffe4", "w": "#f4fdffe6",
+                  "b": "#7ec0ecbc"})
+ANCIENT_ICE = """
+3334 3333 4333 3233
+3343 3333 3433 33w3
+4444 4443 3444 4444
+3333 bw33 3333 3364
+2223 3b22 2222 2613
+2221 5522 2222 6022
+1255 2221 1268 1221
+3333 3233 3811 3w33
+2122 2112 6121 2212
+1111 2111 6101 11b1
+1101 1216 0111 0w11
+2111 1660 6115 5121
+2222 8112 1632 2552
+3366 1323 3163 3433
+2611 2222 2263 2222
+2122 1222 2212 2122
+"""
+# the shimmer: one frame per row of the strip; a 3 px band (x + y in [c, c + 2]) is one tone brighter
+SHIMMER_UP = {"0": "1", "1": "2", "2": "3", "3": "4", "4": "5", "5": "6", "6": "7", "7": "8", "8": "w", "b": "7",
+              "w": "w"}
+
+
+def shimmer(grid, centre):
+    rows = parse(grid)
+    return ["".join(SHIMMER_UP[c] if 0 <= (x + y - centre) <= 2 else c for x, c in enumerate(r))
+            for y, r in enumerate(rows)]
+
+
+ICE_FRAMES = [shimmer(ANCIENT_ICE, c) for c in (-3, 2, 7, 12, 17, 22, 27, 32)] + [parse(ANCIENT_ICE)] * 4
+_ice = Image.new("RGBA", (16, 16 * len(ICE_FRAMES)), (0, 0, 0, 0))
+for _i, _f in enumerate(ICE_FRAMES):
+    _ice.alpha_composite(draw(_f, DEEP_ICE, (16, 16), f"ancient_ice_{_i}"), (0, 16 * _i))
+put("textures/block/ancient_ice.png", _ice)
+JSON["textures/block/ancient_ice.png.mcmeta"] = {"animation": {"frametime": 10, "interpolate": True}}
 
 # Icicles (cross models like pointed dripstone): pale translucent ice prisms, bright left edge, darker
 # core. `icicle_base` is the upper block (its bottom width matches the top of `icicle_tip`).
@@ -1596,159 +1616,215 @@ put("textures/entity/frost_zombie_eyes.png", Skin().box(*HEAD, 8, 8, 8, ZOMBIE, 
 """).im)
 
 
-# ====================================================================== fur armour fallback (64x32)
-# Vanilla armour layout: layer 1 = helmet (head), chestplate (body + arms), boots (legs, lower part);
-# layer 2 = leggings (legs + waist). Cream polar fur in hanging strands, hide straps, bone toggles.
+# ====================================================================== fur armour (vanilla armour layers, 64x32)
+# Drawn for vanilla's armour renderer, with vanilla's coverage: layer 1 = the hood (head), the coat (body, and the
+# arms down past the elbow), the boots (lower legs); layer 2 = the leggings (legs and the hips). White-cream polar
+# fur in shaggy clumps (lit tips, violet-grey roots), each piece edged like vanilla armour (a lit top row, a shaded
+# lower row) and finished with a ragged fringe where the fur ends; hints of tanned hide: the hood's bear face, a
+# toggled closure and belt on the coat, a belt with a bone buckle on the leggings, hide soles wrapped onto the boots.
 FURARM = pal(FUR, HIDE, k="#241d29", Y=BONE["Y"], y=BONE["y"])
-FUR_SIDE = """
-45465445
-45465445
-54546554
-54546554
-45465445
-45464445
-54546543
-54545543
+# one 8 x 8 tile of fur clumps (lit tip, body, root), tiled with offsets over every face
+FUR_CLUMPS = """
+6545 5654
+5544 4543
+4543 4443
+4433 3543
+5654 6543
+5543 5543
+4443 5433
+3433 4433
 """
-FUR_STRANDS_4x12 = """
-4546
-4546
-5455
-5455
-4546
-4536
-5455
-5445
-4546
-4536
-5445
-4344
-"""
+
+
+def fur(w, h, ox=0, oy=0):
+    """A w x h face of fur clumps: the motif at an offset, the top row lit and the bottom row shaded."""
+    m = parse(FUR_CLUMPS)
+    rows = []
+    for y in range(h):
+        r = ""
+        for x in range(w):
+            c = int(m[(y + oy) % 8][(x + ox) % 8])
+            if y == 0:
+                c = min(6, c + 1)
+            elif y == h - 1:
+                c = max(2, c - 1)
+            r += str(c)
+        rows.append(r)
+    return rows
+
+
+def shaped(rows, mask):
+    """Apply a hand-drawn mask: '#' keeps the fur, '.' cuts it away, any other character is drawn as is."""
+    out = []
+    for r, m in zip(rows, parse(mask) if isinstance(mask, str) else mask):
+        out.append("".join(c if k == "#" else k for c, k in zip(r, m)))
+    return out
+
+
 layer1 = Skin((64, 32))
-layer1.box(*HEAD, 8, 8, 8, FURARM, "fur_layer_1.helmet", top="""
-45454545
-54545454
-45464546
-53255235
-42255224
-54545454
-45454545
-56565656
-""", front="""
-56565656
-45k55k45
-454kk454
-43....34
-4......4
-5......4
-4......3
-3......3
-""", right=FUR_SIDE, left=flip(FUR_SIDE), back="""
-54545454
-45465445
-45465445
-54546554
-54546554
-45465445
-45464445
-54545543
-""")
-layer1.box(*BODY, 8, 12, 4, FURARM, "fur_layer_1.coat", top="""
-45454545
-54566545
-45655654
-54545454
-""", front="""
-565tN565
-456tN545
-545Yy454
-456tN545
-565tN464
-454tN545
-545Yy454
-456tN545
-565tN454
-454tN545
-565Yy565
-656tN656
-""", right=FUR_STRANDS_4x12, left=flip(FUR_STRANDS_4x12), back="""
-54654565
-54654565
-45545456
-45545456
-54654565
-54654465
-45545456
-45545446
-54654565
-54653465
-45545446
-34434343
-""")
-FUR_SLEEVE = """
-4546
-4546
-5455
-5455
-4546
-4536
-5455
-5445
-6565
+# hood: a full crown, a brow band with the bear's little eyes, ear tufts on the top's front corners, cheek flaps
+# hanging past the brow, a ragged hem
+layer1.box(*HEAD, 8, 8, 8, FURARM, "fur_layer_1.hood", top=shaped(fur(8, 8, 1, 0), """
+########
+########
+########
+########
+########
+########
+#32##23#
+#21##12#
+"""), front=shaped(fur(8, 8, 2, 5), """
+########
+##k##k##
+###NN###
+#1....1#
+##....##
+#.....##
+#......#
+........
+"""), right=shaped(fur(8, 8, 5, 2), """
+########
+########
+########
+########
+########
+###.####
+#.#..#.#
+........
+"""), left=shaped(fur(8, 8, 3, 2), """
+########
+########
+########
+########
+########
+####.###
+#.#..#.#
+........
+"""), back=shaped(fur(8, 8, 6, 1), """
+########
+########
+########
+########
+########
+########
+#.######
+.#.#.#.#
+"""))
+# coat: the whole torso, a toggled hide closure down the front, a hide belt, a ragged hem; sleeves past the elbow
+layer1.box(*BODY, 8, 12, 4, FURARM, "fur_layer_1.coat", top=fur(8, 4, 0, 3), front=shaped(fur(8, 12, 4, 0), """
+##.##.##
+###tN###
+###Yy###
+###tN###
+###tN###
+###Yy###
+###tN###
+###tN###
+tTtYyTtN
+###tN###
+########
+#.#.##.#
+"""), right=shaped(fur(4, 12, 1, 1), """
+####
+####
+####
+####
+####
+####
+####
+####
+TtNn
+####
+####
+.#.#
+"""), left=shaped(fur(4, 12, 5, 1), """
+####
+####
+####
+####
+####
+####
+####
+####
+nNtT
+####
+####
+#.#.
+"""), back=shaped(fur(8, 12, 2, 4), """
+########
+########
+########
+########
+########
+########
+########
+########
+NtTtTttN
+########
+########
+#.##.#.#
+"""))
+SLEEVE = """
+####
+####
+####
+####
+####
+####
+####
+#.#.
+....
 ....
 ....
 ....
 """
-layer1.box(*R_ARM, 4, 12, 4, FURARM, "fur_layer_1.sleeve", top="""
-4545
-5465
-4564
-5454
-""", right=FUR_SLEEVE, front=FUR_SLEEVE, left=flip(FUR_SLEEVE), back=FUR_SLEEVE)
-FUR_BOOT = """
+layer1.box(*R_ARM, 4, 12, 4, FURARM, "fur_layer_1.sleeve", top=fur(4, 4, 2, 0),
+           right=shaped(fur(4, 12, 0, 2), SLEEVE), front=shaped(fur(4, 12, 4, 2), SLEEVE),
+           left=shaped(fur(4, 12, 1, 6), flip(SLEEVE)), back=shaped(fur(4, 12, 6, 6), SLEEVE))
+# boots: a fluffy cuff, fur over the shin, the hide sole wrapped up the foot
+BOOT = """
 ....
 ....
 ....
 ....
 ....
 ....
-....
-6565
-5456
-4546
-4545
-TtNn
+.#.#
+####
+####
+####
+TttN
+nNNn
 """
 layer1.box(*R_LEG, 4, 12, 4, FURARM, "fur_layer_1.boot", bottom="""
 NnNn
 nNnN
 NnNn
 nNnN
-""", right=FUR_BOOT, front=FUR_BOOT, left=flip(FUR_BOOT), back=FUR_BOOT)
+""", right=shaped(fur(4, 12, 3, 0), BOOT), front=shaped(fur(4, 12, 0, 0), BOOT),
+           left=shaped(fur(4, 12, 5, 4), flip(BOOT)), back=shaped(fur(4, 12, 7, 4), BOOT))
 put("textures/models/armor/fur_layer_1.png", layer1.im)
 
 layer2 = Skin((64, 32))
-FUR_TROUSER = """
-4546
-4546
-5455
-5455
-4546
-4536
-5455
-5445
-4546
+# leggings: fur trousers to below the knee, a hide belt with a bone buckle round the hips
+TROUSER = """
+####
+####
+####
+####
+####
+####
+####
+####
+#.##
 ....
 ....
 ....
 """
-layer2.box(*R_LEG, 4, 12, 4, FURARM, "fur_layer_2.trouser", top="""
-4545
-5454
-4545
-5454
-""", right=FUR_TROUSER, front=FUR_TROUSER, left=flip(FUR_TROUSER), back=FUR_TROUSER)
-layer2.box(*BODY, 8, 12, 4, FURARM, "fur_layer_2.waist", front="""
+layer2.box(*R_LEG, 4, 12, 4, FURARM, "fur_layer_2.trouser", top=fur(4, 4, 1, 1),
+           right=shaped(fur(4, 12, 2, 3), TROUSER), front=shaped(fur(4, 12, 6, 3), TROUSER),
+           left=shaped(fur(4, 12, 0, 7), flip(TROUSER)), back=shaped(fur(4, 12, 4, 7), TROUSER))
+layer2.box(*BODY, 8, 12, 4, FURARM, "fur_layer_2.hips", front=shaped(fur(8, 12, 3, 2), """
 ........
 ........
 ........
@@ -1756,12 +1832,12 @@ layer2.box(*BODY, 8, 12, 4, FURARM, "fur_layer_2.waist", front="""
 ........
 ........
 ........
-tTTYytTN
-45465445
-54546554
-45465445
-54546554
-""", right="""
+tTtYytTN
+########
+########
+########
+########
+"""), right=shaped(fur(4, 12, 1, 2), """
 ....
 ....
 ....
@@ -1770,11 +1846,11 @@ tTTYytTN
 ....
 ....
 tTtN
-4546
-5455
-4546
-5455
-""", left="""
+####
+####
+####
+####
+"""), left=shaped(fur(4, 12, 5, 2), """
 ....
 ....
 ....
@@ -1783,11 +1859,11 @@ tTtN
 ....
 ....
 NtTt
-6454
-5545
-6454
-5545
-""", back="""
+####
+####
+####
+####
+"""), back=shaped(fur(8, 12, 7, 2), """
 ........
 ........
 ........
@@ -1796,12 +1872,27 @@ NtTt
 ........
 ........
 NtTtTttN
-54654565
-45545456
-54654565
-45545456
-""")
+########
+########
+########
+########
+"""))
 put("textures/models/armor/fur_layer_2.png", layer2.im)
+
+
+def armor_overlay(layer, parts):
+    """Lay a 64x32 armour layer out as a 64x64 skin overlay (the left limbs mirror the right, as vanilla does)."""
+    im = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    im.alpha_composite(layer, (0, 0))
+    for src, dst in ((R_ARM, L_ARM), (R_LEG, L_LEG)):
+        limb = layer.crop((src[0], src[1], src[0] + 16, src[1] + 16))
+        # mirrored limb: faces swap right/left and each face flips; enough for a front/back/side preview
+        m = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        for (x, y, w, h), (x2, y2) in (((0, 4, 4, 12), (8, 4)), ((8, 4, 4, 12), (0, 4)), ((4, 4, 4, 12), (4, 4)),
+                                         ((12, 4, 4, 12), (12, 4)), ((4, 0, 4, 4), (4, 0)), ((8, 0, 4, 4), (8, 0))):
+            m.alpha_composite(limb.crop((x, y, x + w, y + h)).transpose(Image.FLIP_LEFT_RIGHT), (x2, y2))
+        im.alpha_composite(m, dst)
+    return im, parts
 
 
 def skin_mockup(base, overlays=(), size=64, scale=8):
@@ -1962,7 +2053,13 @@ def main():
                 ("+ outer frost layer + eyes", skin_mockup(base, [
                     (outer, {"head": 0.25, "body": 0.25, "right_arm": 0.25, "left_arm": 0.25,
                              "right_leg": 0.25, "left_leg": 0.25, "hat": 0.75}),
-                    (eyes, {"head": 0.0})]))]
+                    (eyes, {"head": 0.0})])),
+                ("+ the fur armour (layer 2 at 0.5, layer 1 at 1.0, as vanilla inflates them)", skin_mockup(base, [
+                    armor_overlay(OUT["textures/models/armor/fur_layer_2.png"],
+                                  {"body": 0.5, "right_leg": 0.5, "left_leg": 0.5}),
+                    armor_overlay(OUT["textures/models/armor/fur_layer_1.png"],
+                                  {"head": 1.0, "body": 1.0, "right_arm": 1.0, "left_arm": 1.0, "right_leg": 1.0,
+                                   "left_leg": 1.0})]))]
         w = max(r.width for _, r in rows)
         sheet = Image.new("RGBA", (w, sum(r.height + 20 for _, r in rows)), (26, 27, 33, 255))
         y = 0

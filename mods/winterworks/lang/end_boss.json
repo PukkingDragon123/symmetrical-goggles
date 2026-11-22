@@ -1,0 +1,8 @@
+{
+  "entity.winterworks.monolith": "The Monolith",
+  "entity.winterworks.dragon_light_beam": "Light Beam",
+  "item.winterworks.monolith_spawn_egg": "Monolith Spawn Egg",
+  "commands.winterworks.eclipse.start": "An eclipse rises over the End (%s s)",
+  "commands.winterworks.eclipse.stop": "The eclipse is over",
+  "commands.winterworks.eclipse.no_end": "This world has no End"
+}

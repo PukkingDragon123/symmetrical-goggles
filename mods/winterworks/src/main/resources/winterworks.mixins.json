@@ -37,6 +37,7 @@
     "endgear.EndGearPlayerMixin",
     "endgear.EndGearEntityMixin",
     "endgear.EndGearItemEntityMixin",
+    "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor"
   ],
   "client": [
@@ -48,6 +49,10 @@
     "endgear.client.EndGearLivingEntityRendererMixin",
     "endgear.client.EndGearHumanoidModelMixin",
     "endgear.client.EndGearItemInHandLayerMixin",
+    "client.endboss.DragonModelMixin",
+    "client.endboss.EndSkyMixin",
+    "client.endboss.EndFogMixin",
+    "client.endboss.EclipseLightMixin",
     "endmob.EndGlowLightMixin"
   ],
   "injectors": {
