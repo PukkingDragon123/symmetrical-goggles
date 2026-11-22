@@ -525,8 +525,14 @@ angler_light()
 # ====================================================================== items (16 x 16, vanilla style)
 # Hand-placed grids, '.' transparent, a dark hue-shifted outline, light from the top-left. Raw and cooked fish share
 # one drawing on two palettes. Eyes are round: a round iris ring, a round pupil and a catch-light.
+MODELLED_ELSEWHERE = {"tube_worms", "nautilus_horn"}      # their item models come with their block models
+
+
 def item_img(name, im):
     put(f"textures/item/{name}.png", im)
+    if name not in MODELLED_ELSEWHERE:
+        JSON[f"models/item/{name}.json"] = {"parent": "minecraft:item/generated",
+                                            "textures": {"layer0": f"winterworks:item/{name}"}}
 
 
 def icon(name, palette, grid):
@@ -1081,6 +1087,22 @@ def entity_textures():
     frames = [bubble_img(32, 14.5, k / 4) for k in range(4)]
     strip = np.concatenate(frames, axis=0)
     put("textures/entity/elder_bubble.png", strip)
+    # the flying lionfish dart, in vanilla's arrow layout (32 x 32) for an ArrowRenderer: the side view in the top
+    # 16 x 5 (the banded spine, its point at the right, a tuft of fin membrane at the left), the end view below it
+    dart = Image.new("RGBA", (32, 32))
+    pal_ = {"F": "#e8c3b0", "f": "#b5392c", "r": "#8e2620", "R": "#c84a34", "C": "#f8ead6", "W": "#ffffff",
+            "o": "#2a0d10"}
+    side = ["Ff..............",
+            "fFf.............",
+            "rRrCCRRrCCRRrCCW",
+            "fFf.............",
+            "Ff.............."]
+    end = [".f.f.", "fFoFf", ".oRo.", "fFoFf", ".f.f."]
+    for y, row in enumerate(side + end):
+        for x, ch in enumerate(row):
+            if ch != ".":
+                dart.putpixel((x, y), rgba(pal_[ch]))
+    put("textures/entity/projectiles/lionfish_dart.png", dart)
 
 
 entity_textures()
