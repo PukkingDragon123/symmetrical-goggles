@@ -562,7 +562,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         return wolves.size();
     }
 
-    // ---- Danger Head: hisses, then the pot explodes (hurts hostile mobs only, breaks no blocks)
+    // ---- Danger Head: almost dead, it hisses and blows itself up (hurts hostile mobs only, breaks no blocks)
     private void tickFuse(ServerLevel sl) {
         if (actionTicks >= FUSE_TICKS) {
             setFlag(FLAG_FUSING, false);
@@ -595,6 +595,7 @@ public class PotGolemEntity extends AbstractGolem implements OwnableEntity, Rang
         };
         sl.explode(this, null, mobsOnly, c.x, c.y, c.z, FUSE_RADIUS, false, Level.ExplosionInteraction.NONE);
         breakPot(sl);
+        kill();   // a last stand: the golem goes up with its pot (its amber and shard still drop)
     }
 
     // ---- brushing: it giggles, then sneezes the pot off

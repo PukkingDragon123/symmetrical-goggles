@@ -225,6 +225,7 @@ public class GolemTests implements FabricGameTest {
         h.runAfterDelay(2, () -> h.assertTrue(g.isFusing(), "a Danger Head fuses below 20% health"));
         h.succeedWhen(() -> {
             h.assertFalse(g.hasPot(), "the pot is spent in the blast");
+            h.assertFalse(g.isAlive(), "a Danger Head golem blows itself up");
             h.assertTrue(z.getHealth() < z.getMaxHealth(), "the blast hurts hostile mobs");
             h.assertTrue(owner.getHealth() == ownerHealth, "the blast doesn't hurt players");
             for (int x = 0; x < 8; x++) {
