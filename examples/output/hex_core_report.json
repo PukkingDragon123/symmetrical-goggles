@@ -1,0 +1,137 @@
+{
+  "name": "Hex Core",
+  "parts": 51,
+  "instances": 51,
+  "faces": 263,
+  "triangles": 526,
+  "vertices_flat": 1052,
+  "vertices_unique": 364,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.786,
+  "texel_density": 2.0,
+  "colors_used": 27,
+  "palette": {
+    "netherite": [
+      "#0d0a0c",
+      "#161114",
+      "#1f191d",
+      "#2a2227",
+      "#352c31",
+      "#42383d",
+      "#51464b",
+      "#61565b",
+      "#73686d"
+    ],
+    "gold": [
+      "#3b1d06",
+      "#5e300a",
+      "#86470e",
+      "#ad6213",
+      "#cf8118",
+      "#e8a422",
+      "#f6c836",
+      "#fde466",
+      "#fff4ae"
+    ],
+    "soul": [
+      "#06191d",
+      "#0b2f36",
+      "#0f4a52",
+      "#136b72",
+      "#1a9397",
+      "#2cbdbb",
+      "#5ee0d6",
+      "#a4fcef",
+      "#effffb"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -5.249,
+      0.0,
+      -6.061
+    ],
+    "max": [
+      5.249,
+      17.5,
+      6.061
+    ],
+    "size": [
+      10.497,
+      17.5,
+      12.121
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0
+  },
+  "joints": [
+    "cage",
+    "post0",
+    "ring_top0",
+    "ring_bot0",
+    "stud_top0",
+    "stud_bot0",
+    "post1",
+    "ring_top1",
+    "ring_bot1",
+    "stud_top1",
+    "stud_bot1",
+    "post2",
+    "ring_top2",
+    "ring_bot2",
+    "stud_top2",
+    "stud_bot2",
+    "post3",
+    "ring_top3",
+    "ring_bot3",
+    "stud_top3",
+    "stud_bot3",
+    "post4",
+    "ring_top4",
+    "ring_bot4",
+    "stud_top4",
+    "stud_bot4",
+    "post5",
+    "ring_top5",
+    "ring_bot5",
+    "stud_top5",
+    "stud_bot5",
+    "crown0",
+    "crown1",
+    "crown2",
+    "crown_boss",
+    "base0",
+    "base1",
+    "base2",
+    "base_boss",
+    "finial",
+    "finial_tip",
+    "point",
+    "souls",
+    "soul_0",
+    "soul_1",
+    "soul_2",
+    "soul_3",
+    "soul_4",
+    "core",
+    "core_a",
+    "core_b"
+  ],
+  "files": {
+    "hex_core.glb": "examples/output/hex_core.glb",
+    "hex_core.obj": "examples/output/hex_core.obj",
+    "hex_core.mtl": "examples/output/hex_core.mtl",
+    "hex_core.bbmodel": "examples/output/hex_core.bbmodel",
+    "hex_core_texture.png": "examples/output/hex_core_texture.png",
+    "hex_core_texture_x8.png": "examples/output/hex_core_texture_x8.png",
+    "hex_core_hero.png": "examples/output/hex_core_hero.png",
+    "hex_core_sheet.png": "examples/output/hex_core_sheet.png",
+    "hex_core_turntable.gif": "examples/output/hex_core_turntable.gif",
+    "hex_core_idle.gif": "examples/output/hex_core_idle.gif"
+  }
+}

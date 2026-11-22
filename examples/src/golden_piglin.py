@@ -43,7 +43,7 @@ for k, (x, y, z, s) in enumerate([(-1.5, 21.5, -2.4, 2), (1.5, 20.0, -2.6, 1), (
 # ======================================================================= legs: rigid pillars, no knees
 for s in (1, -1):
     n = "l" if s > 0 else "r"
-    leg = part(f"leg_{n}", "body", [4, 12, 4], "gold_leg", at=M((2, 12, 0), s), offset=(0, -6, 0))
+    leg = part(f"leg_{n}", "body", [4, 12, 4], "gold_leg", at=M((2, 12, 0), s), offset=(0, -6, 0), hide=["bottom"])
     part(f"hoof_{n}", leg["id"], [5, 2, 5], "tarnish_band", rel=(0, -11, 0.4))
 
 # ======================================================================= arms: held stiffly away from the body

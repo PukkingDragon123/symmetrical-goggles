@@ -1,0 +1,190 @@
+{
+  "name": "Hexing Table",
+  "parts": 56,
+  "instances": 56,
+  "faces": 215,
+  "triangles": 430,
+  "vertices_flat": 860,
+  "vertices_unique": 320,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.507,
+  "texel_density": 1.0,
+  "colors_used": 43,
+  "palette": {
+    "netherite": [
+      "#0d0a0c",
+      "#161114",
+      "#1f191d",
+      "#2a2227",
+      "#352c31",
+      "#42383d",
+      "#51464b",
+      "#61565b",
+      "#73686d"
+    ],
+    "gold": [
+      "#3b1d06",
+      "#5e300a",
+      "#86470e",
+      "#ad6213",
+      "#cf8118",
+      "#e8a422",
+      "#f6c836",
+      "#fde466",
+      "#fff4ae"
+    ],
+    "obsidian": [
+      "#0c0414",
+      "#1a0830",
+      "#2c0f52",
+      "#451a7a",
+      "#6630a6",
+      "#8f52cf",
+      "#b98cf0"
+    ],
+    "soul": [
+      "#06191d",
+      "#0b2f36",
+      "#0f4a52",
+      "#136b72",
+      "#1a9397",
+      "#2cbdbb",
+      "#5ee0d6",
+      "#a4fcef",
+      "#effffb"
+    ],
+    "soulsand": [
+      "#1c120c",
+      "#2b1d14",
+      "#3d2a1d",
+      "#503927"
+    ],
+    "leather": [
+      "#120812",
+      "#1e0d1f",
+      "#2d1430",
+      "#3e1c43",
+      "#512757",
+      "#66346b"
+    ],
+    "paper": [
+      "#5d4a35",
+      "#8c7656",
+      "#b9a27b",
+      "#d9c8a0",
+      "#eee2c2",
+      "#faf3de"
+    ],
+    "ink": [
+      "#3a0610",
+      "#6a0d1a",
+      "#9a1826"
+    ],
+    "iron": [
+      "#18181d",
+      "#2a2a31",
+      "#3e3e47",
+      "#55555f",
+      "#6f6f79",
+      "#8d8d96"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -8.0,
+      0.0,
+      -8.0
+    ],
+    "max": [
+      8.0,
+      21.875,
+      8.0
+    ],
+    "size": [
+      16.0,
+      21.875,
+      16.0
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0,
+    "open": 0.6,
+    "hex": 1.5
+  },
+  "joints": [
+    "table",
+    "body",
+    "pillar0",
+    "pillar_cap0",
+    "pillar_foot0",
+    "pillar1",
+    "pillar_cap1",
+    "pillar_foot1",
+    "pillar2",
+    "pillar_cap2",
+    "pillar_foot2",
+    "pillar3",
+    "pillar_cap3",
+    "pillar_foot3",
+    "slab",
+    "chain0",
+    "chain1",
+    "chain2",
+    "chain3",
+    "stand0",
+    "bowl0",
+    "flame_0",
+    "flame_0_a",
+    "flame_0_b",
+    "stand1",
+    "bowl1",
+    "flame_1",
+    "flame_1_a",
+    "flame_1_b",
+    "stand2",
+    "bowl2",
+    "flame_2",
+    "flame_2_a",
+    "flame_2_b",
+    "stand3",
+    "bowl3",
+    "flame_3",
+    "flame_3_a",
+    "flame_3_b",
+    "book",
+    "spine",
+    "ribbon",
+    "cover_l",
+    "page_block_l",
+    "corner_l0",
+    "corner_l1",
+    "cover_r",
+    "page_block_r",
+    "corner_r0",
+    "corner_r1",
+    "eye",
+    "book_chain",
+    "pages",
+    "page_0",
+    "page_1",
+    "page_2"
+  ],
+  "files": {
+    "hexing_table.glb": "examples/output/hexing_table.glb",
+    "hexing_table.obj": "examples/output/hexing_table.obj",
+    "hexing_table.mtl": "examples/output/hexing_table.mtl",
+    "hexing_table.bbmodel": "examples/output/hexing_table.bbmodel",
+    "hexing_table_texture.png": "examples/output/hexing_table_texture.png",
+    "hexing_table_texture_x8.png": "examples/output/hexing_table_texture_x8.png",
+    "hexing_table_hero.png": "examples/output/hexing_table_hero.png",
+    "hexing_table_sheet.png": "examples/output/hexing_table_sheet.png",
+    "hexing_table_turntable.gif": "examples/output/hexing_table_turntable.gif",
+    "hexing_table_idle.gif": "examples/output/hexing_table_idle.gif",
+    "hexing_table_open.gif": "examples/output/hexing_table_open.gif",
+    "hexing_table_hex.gif": "examples/output/hexing_table_hex.gif"
+  }
+}

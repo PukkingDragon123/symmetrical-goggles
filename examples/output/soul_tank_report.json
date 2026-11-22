@@ -1,0 +1,148 @@
+{
+  "name": "Soul Tank",
+  "parts": 37,
+  "instances": 37,
+  "faces": 161,
+  "triangles": 322,
+  "vertices_flat": 644,
+  "vertices_unique": 236,
+  "atlas": [
+    128,
+    128
+  ],
+  "atlas_fill": 0.471,
+  "texel_density": 1.0,
+  "colors_used": 35,
+  "palette": {
+    "netherite": [
+      "#0e0b0d",
+      "#171315",
+      "#211b1e",
+      "#2c2428",
+      "#383034",
+      "#463c41",
+      "#55494f",
+      "#665a60",
+      "#7a6e73"
+    ],
+    "gold": [
+      "#3b1d06",
+      "#5e300a",
+      "#86470e",
+      "#ad6213",
+      "#cf8118",
+      "#e8a422",
+      "#f6c836",
+      "#fde466",
+      "#fff4ae"
+    ],
+    "glass": [
+      "#1a2a33",
+      "#2c4652",
+      "#456a76",
+      "#6f97a0",
+      "#a7c8cc",
+      "#e2f2f1"
+    ],
+    "soulsand": [
+      "#1c120c",
+      "#2b1d14",
+      "#3d2a1d",
+      "#503927",
+      "#634832"
+    ],
+    "soul": [
+      "#06191d",
+      "#0b2f36",
+      "#0f4a52",
+      "#136b72",
+      "#1a9397",
+      "#2cbdbb",
+      "#5ee0d6",
+      "#a4fcef",
+      "#effffb"
+    ],
+    "dial": [
+      "#3a3226",
+      "#8f8268",
+      "#cfc3a4",
+      "#efe6cc"
+    ],
+    "red": [
+      "#4a0d0d",
+      "#9a1f1a"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -8.0,
+      0.0,
+      -8.0
+    ],
+    "max": [
+      8.0,
+      16.0,
+      8.15
+    ],
+    "size": [
+      16.0,
+      16.0,
+      16.15
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 4.0
+  },
+  "joints": [
+    "frame",
+    "cap",
+    "corner0",
+    "corner1",
+    "corner2",
+    "corner3",
+    "valve",
+    "valve_hub",
+    "post0",
+    "band0",
+    "foot0",
+    "post1",
+    "band1",
+    "foot1",
+    "post2",
+    "band2",
+    "foot2",
+    "post3",
+    "band3",
+    "foot3",
+    "gauge",
+    "gauge_b",
+    "dial",
+    "gauge_needle",
+    "glass",
+    "soul_sand",
+    "souls",
+    "soul_0",
+    "soul_1",
+    "soul_2",
+    "soul_3",
+    "soul_4",
+    "soul_5",
+    "soul_6",
+    "soul_7",
+    "soul_swirl",
+    "soul_swirl_b"
+  ],
+  "files": {
+    "soul_tank.glb": "examples/output/soul_tank.glb",
+    "soul_tank.obj": "examples/output/soul_tank.obj",
+    "soul_tank.mtl": "examples/output/soul_tank.mtl",
+    "soul_tank.bbmodel": "examples/output/soul_tank.bbmodel",
+    "soul_tank_texture.png": "examples/output/soul_tank_texture.png",
+    "soul_tank_texture_x8.png": "examples/output/soul_tank_texture_x8.png",
+    "soul_tank_hero.png": "examples/output/soul_tank_hero.png",
+    "soul_tank_sheet.png": "examples/output/soul_tank_sheet.png",
+    "soul_tank_turntable.gif": "examples/output/soul_tank_turntable.gif",
+    "soul_tank_idle.gif": "examples/output/soul_tank_idle.gif"
+  }
+}

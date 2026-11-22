@@ -10,7 +10,8 @@ Her left half (+X) is zombified: green rotting flesh down the left of her face, 
 teeth, a bitten-off ear tip, bare ribs through the torn dress, a rotten forearm with the bone showing.
 On her back a HUGE, very old, patched rucksack towers over her head: a flap lid with a buckle, a red bedroll, a clay
 pot and two potion bottles on the right, a femur and a little skull on the left, a witch's broom strapped across the
-back, and a soul lantern hanging off a hook. Her eyes and the lantern burn with soul fire (glow).
+back, and a soul lantern hanging off a hook. Her eyes, the lantern and the gem in her brooch burn with soul fire
+(glow: the eye and flame parts plus every soul-coloured texel).
 
 Units are Minecraft pixels (16 per block), density 1, every box a whole number of pixels, so the model exports 1:1
 to a vanilla entity model (python -m lowpix mc export). Tatters, hair, ribs, teeth, coins and the chain are alpha-cut
@@ -804,7 +805,7 @@ spec = {
     "budget": {"tris": 3200, "colors": 160},
     "light": light,
     "brush": brush,
-    "minecraft": {"fps": 20, "glow_parts": ["eye_l", "eye_r", "lantern_flame"]},
+    "minecraft": {"fps": 20, "glow_parts": ["eye_l", "eye_r", "lantern_flame"], "glow_ramps": ["soul"]},
     "anim_ground_tolerance": 0.5,
     "render": {"background": "#2a1a1c", "hero": [-36, 16], "shadow": 0.5},
     "palette": {"ramps": ramps},

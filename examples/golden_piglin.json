@@ -1033,7 +1033,10 @@
     -6.0,
     0.0
    ],
-   "style": "gold_leg"
+   "style": "gold_leg",
+   "hide": [
+    "bottom"
+   ]
   },
   {
    "id": "hoof_l",
@@ -1070,7 +1073,10 @@
     -6.0,
     0.0
    ],
-   "style": "gold_leg"
+   "style": "gold_leg",
+   "hide": [
+    "bottom"
+   ]
   },
   {
    "id": "hoof_r",

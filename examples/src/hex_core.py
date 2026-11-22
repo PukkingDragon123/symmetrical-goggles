@@ -2,7 +2,7 @@
 
     python examples/src/hex_core.py examples/hex_core.json
 
-A cursed hexagonal cage of dark netherite and gold: six fluted netherite posts on a hexagonal gold base and crown
+A cursed hexagonal cage of dark netherite and gold: six fluted netherite posts on a gold-edged hexagonal netherite base and crown
 (each plate three crossed slabs, so it reads as a true hexagon, engraved with a soul-blue glyph ring), gold rings round the top and bottom, gold studs at
 every corner, a gold spike finial above and a point below. Inside it a swarm of soul wisps (little ghosts with
 curling tails) swirls round a glowing soul centre (two crossed, turned cubes of soul fire).
@@ -43,13 +43,13 @@ for k in range(6):
              rot=(0, 60 * k + 30, 0))
     for lvl, y in (("top", CY + 5.25), ("bot", CY - 5.25)):
         part(f"stud_{lvl}{k}", "cage", [1.5, 1.5, 1.5], "gold_stud", centre=(x, y, z), rot=(0, 60 * k + 45, 0))
-# the crown and the base: hexagonal gold plates (three crossed slabs each) with a netherite boss
+# the crown and the base: hexagonal netherite plates (three crossed slabs each) with a netherite boss
 for lvl, y, sgn in (("crown", CY + 5.75, 1), ("base", CY - 5.75, -1)):
-    for j in range(3):
-        part(f"{lvl}{j}", "cage", [RAD, 1, 8.5], "plate", centre=(0, y, 0), rot=(0, 60 * j + 30, 0))
-    part(f"{lvl}_boss", "cage", [3, 1, 3], "netherite_boss", centre=(0, y + sgn * 0.75, 0), rot=(0, 45, 0))
+    for j in range(3):    # stepped thicknesses, so no two slabs share a face plane (no z-fighting)
+        part(f"{lvl}{j}", "cage", [RAD, 2.0 - 0.5 * j, 8.5], "plate", centre=(0, y, 0), rot=(0, 60 * j + 30, 0))
+    part(f"{lvl}_boss", "cage", [3, 1, 3], "netherite_boss", centre=(0, y + sgn * 1.0, 0), rot=(0, 45, 0))
 # the finial above and the point below
-part("finial", "cage", [1.5, 2, 1.5], "gold", centre=(0, CY + 7.5, 0), rot=(0, 45, 0))
+part("finial", "cage", [1.5, 2, 1.5], "gold", centre=(0, CY + 8.0, 0), rot=(0, 45, 0))
 part("finial_tip", "finial", [0.5, 1, 0.5], "gold", rel=(0, 1.5, 0))
 part("point", "cage", [1.5, 1.0, 1.5], "gold", centre=(0, 0.5, 0), rot=(0, 45, 0))
 

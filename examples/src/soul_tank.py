@@ -40,7 +40,7 @@ part("valve", "cap", [5, 1, 5], "gold_ring", centre=(0, 15.5, 0), rot=(0, 45, 0)
 part("valve_hub", "valve", [2, 1, 2], "gold", rel=(0, 0, 0))
 # the pressure gauge: a gold bezel (an octagon of two crossed plates) bolted to the front over the tank's foot
 part("gauge", "frame", [6, 4, 1], "gold", centre=(0, 3.5, 7.5))
-part("gauge_b", "gauge", [4, 6, 1], "gold", centre=(0, 3.5, 7.5))
+part("gauge_b", "gauge", [4, 6, 1], "gold", centre=(0, 3.5, 7.4))
 part("dial", "gauge", [4, 4, 1], "dial", centre=(0, 3.5, 7.6))
 card("gauge_needle", "dial", ["n", "n", "N"], "needle", at=(0, 3.5, 8.15), offset=(0, 1.0, 0), rot=(0, 0, 30))
 
