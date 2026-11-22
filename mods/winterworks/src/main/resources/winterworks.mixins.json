@@ -7,7 +7,8 @@
     "AbstractMinecartMixin",
     "LivingEntityMixin",
     "OverworldBiomeBuilderMixin",
-    "PolarBearMixin"
+    "PolarBearMixin",
+    "StrayJockeyMixin"
   ],
   "client": [
     "client.GameRendererMixin"

@@ -21,7 +21,7 @@ class EatDroppedFishGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.tickCount % 8 != 0) {
+        if ((mob.tickCount + mob.getId()) % 8 != 0) {   // goals start only when tickCount + id is even (Mob#serverAiStep)
             return false;
         }
         List<ItemEntity> items = mob.level().getEntitiesOfClass(ItemEntity.class, mob.getBoundingBox().inflate(10, 4, 10),
