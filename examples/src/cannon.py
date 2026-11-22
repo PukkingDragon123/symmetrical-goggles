@@ -11,7 +11,7 @@ Units are Minecraft pixels, density 2. The deck fills x, z = -7..7, y = 0..3; th
 front = the block's facing) and overhangs the block (the muzzle reaches z = 13).
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 9): bones base (root: the deck and the turntable), yoke
-(child of base, pivot at the turntable's centre, (0, 3, 0): turn it about Y to aim the yaw), barrel (child of yoke,
+(child of base, pivot on the turntable at (0, 3.5, 0): turn it about Y to aim the yaw), barrel (child of yoke,
 pivot on the trunnion axis, (0, 9.5, 0): turn it about X to aim the pitch; positive pitch in the game raises the
 muzzle, i.e. xRot = -pitch in model space). Clip: fire (0.6 s: the barrel recoils and kicks up, the yoke shudders).
 """
