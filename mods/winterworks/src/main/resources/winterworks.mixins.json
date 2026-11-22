@@ -26,7 +26,10 @@
     "CurseMobCategoryMixin",
     "PiglinAiMixin",
     "PiglinMixin",
-    "AbstractPiglinAccessor"
+    "AbstractPiglinAccessor",
+    "AnvilMenuMixin",
+    "EnchantmentHelperMixin",
+    "FoodDataMixin"
   ],
   "client": [
     "client.GameRendererMixin",

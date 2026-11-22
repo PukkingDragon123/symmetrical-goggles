@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "winterworks:block/soul_tank"
+    },
+    "facing=east": {
+      "model": "winterworks:block/soul_tank",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "winterworks:block/soul_tank",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "winterworks:block/soul_tank",
+      "y": 270
+    }
+  }
+}
