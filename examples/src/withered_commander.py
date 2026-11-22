@@ -256,10 +256,11 @@ def rowel():
     return ["s.s.s", ".sss.", "ss.ss", ".sss.", "s.s.s"]
 
 
-def leaf_blade(w, h, inlay=True):
+def leaf_blade(w, h, inlay=1.5):
     """A leaf-shaped spear blade (image top = the point): widest a third of the way up, pointed at the tip, narrowing
-    into the socket at the bottom. Characters: 'e' the honed edge (light), 'b' the blade, 'd' the shaded half, 'g' the
-    gold midline inlay, 'G' its lit texels."""
+    into the socket at the bottom. A gold inlay line runs up each side of the midrib, `inlay` texels out from the
+    centre line (the midrib box covers the middle). Characters: 'e' the honed edge (light), 'b' the blade, 'd' the
+    shaded half, 'g' the gold inlay, 'G' its lit texels."""
     rows = [["."] * w for _ in range(h)]
     cx = (w - 1) / 2
     for y in range(h):
@@ -273,10 +274,10 @@ def leaf_blade(w, h, inlay=True):
             if abs(d) <= half - 0.05:
                 edge = abs(d) > half - 1.0
                 rows[y][x] = "e" if edge else ("b" if d <= 0 else "d")
-        if inlay and 0.06 < u < 0.82:
+        if inlay and 0.06 < u < 0.7:
             for x in range(w):
-                if abs(x - cx) < 0.6 and rows[y][x] != ".":
-                    rows[y][x] = "G" if (y % 3 == 0) else "g"
+                if abs(abs(x - cx) - inlay) < 0.5 and rows[y][x] in "bd" and abs(x - cx) < half - 1.5:
+                    rows[y][x] = "G" if x < cx else "g"
     return ["".join(r) for r in rows]
 
 
@@ -320,18 +321,18 @@ SIGIL_KEY = {"G": "gold:6", "g": "gold:3"}
 
 
 # ======================================================================= the spear (shared with netherite_spear.py)
-def build_spear(R, parent, at, k=1.0, glow=None, wrot=(0, 0, 0)):
-    """The netherite spear in the frame of a `spear` bone at `at` (the grip; world), standing up along its local +Y.
-    k scales the lengths (the commander's is 1). Returns the local tip height."""
+def build_spear(R, parent, at, wrot=(0, 0, 0)):
+    """The commander's netherite spear in the frame of a `spear` bone at `at` (the grip; world), standing up along its
+    local +Y (the player's Netherite Spear, examples/src/netherite_spear.py, is the same design at density 4).
+    Returns the local tip height."""
     part, bone, card = R.part, R.bone, R.card
     bone("spear", parent, at=at, wrot=wrot)
-    L = lambda v: round(v * k * 2) / 2  # noqa: E731
-    BUTT, SHAFT_TOP, SOCK, TIP = L(-17.0), L(19.0), L(22.5), L(31.5)
+    BUTT, SHAFT_TOP, SOCK, TIP = -17.0, 19.0, 22.5, 31.5
     # shaft: blackened netherite, a leather grip wrap round the hand, gold bands
     part("spear_shaft", "spear", [1.5, SHAFT_TOP - BUTT + 1, 1.5], "spear_shaft",
          rel=(0, 0, 0), offset=(0, (SHAFT_TOP + BUTT + 1) / 2 - 0.5, 0))
     part("spear_grip", "spear", [2, 6, 2], "grip", rel=(0, 0, 0))
-    for j, y in enumerate((L(-11.0), L(-4.0), L(4.0), L(12.0))):
+    for j, y in enumerate((-11.0, -4.0, 4.0, 12.0)):
         part(f"spear_band_{j}", "spear", [2, 1, 2], "gold", rel=(0, y, 0))
     part("spear_ferrule", "spear", [2, 1.5, 2], "gold", rel=(0, BUTT + 1.25, 0))
     part("spear_butt", "spear", [1, 2, 1], "gold_tip", rel=(0, BUTT - 0.5, 0), rot=(0, 45, 0))
@@ -346,7 +347,7 @@ def build_spear(R, parent, at, k=1.0, glow=None, wrot=(0, 0, 0)):
     blade_len = TIP - SOCK
     part("spear_midrib", "spear", [1, blade_len - 1, 1], "spear_rib", rel=(0, SOCK + (blade_len - 1) / 2, 0),
          rot=(0, 45, 0))
-    card("spear_blade", "spear", leaf_blade(int(round(4 * 2)), int(round(blade_len * 2))), "spear_blade",
+    card("spear_blade", "spear", leaf_blade(8, int(round(blade_len * 2)), inlay=1.5), "spear_blade",
          rel=(0, SOCK + blade_len / 2, 0), plane="yz")
     # a crimson pennant tied under the socket, fluttering back
     card("pennant", "spear", pennant(7, 12), "pennant", rel=(0, SHAFT_TOP - 0.5, -0.8), offset=(0, -3.0, -1.75),
@@ -359,10 +360,10 @@ SPEAR_STYLES = {
                     "layers": [{"id": "grain", "op": "stripes", "axis": "y", "period": 1.5, "width": 0.2,
                                 "shift": -0.8}, PGLOSS]},
     "spear_socket": plate(4.6, trim(0.6, 1.01, id="collar_trim", faces=("sides",)), embers=False),
-    "spear_rib": {"ramp": "netherite", "tone": 6.4, "rim": PLATE_RIM, "brush": {"off": True},
+    "spear_rib": {"ramp": "netherite", "tone": 7.4, "rim": PLATE_RIM, "brush": {"off": True},
                   "layers": [{"id": "tipward", "op": "gradient", "axis": "y", "amount": 1.0}, PGLOSS]},
     "spear_blade": {"ramp": "netherite", "tone": 5.0, "light": 0.6, "brush": {"off": True},
-                    "art_key": {"e": "netherite:10", "b": "netherite:6", "d": "netherite:4", "g": "gold:5",
+                    "art_key": {"e": "netherite:11", "b": "netherite:8", "d": "netherite:5", "g": "gold:5",
                                 "G": "gold:7"}},
     "pennant": {"ramp": "crimson", "tone": 4.6, "light": 0.5, "brush": {"off": True},
                 "art_key": {"c": "crimson:5", "C": "crimson:7", "k": "crimson:3", "g": "gold:6", "G": "gold:7"}},

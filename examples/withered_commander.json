@@ -1097,7 +1097,7 @@
   },
   "spear_rib": {
    "ramp": "netherite",
-   "tone": 6.4,
+   "tone": 7.4,
    "rim": {
     "light": 1,
     "dark": 1,
@@ -1138,9 +1138,9 @@
     "off": true
    },
    "art_key": {
-    "e": "netherite:10",
-    "b": "netherite:6",
-    "d": "netherite:4",
+    "e": "netherite:11",
+    "b": "netherite:8",
+    "d": "netherite:5",
     "g": "gold:5",
     "G": "gold:7"
    }
@@ -5370,20 +5370,20 @@
     "........",
     "...ee...",
     "...ee...",
-    "...GG...",
-    "..egge..",
-    "..egge..",
-    "..eGGe..",
-    ".ebggde.",
-    ".ebggde.",
-    ".ebGGde.",
-    "ebbggdde",
-    "ebbggdde",
-    "ebbGGdde",
-    "ebbggdde",
-    "ebbggdde",
-    ".ebGGde.",
-    ".ebggde.",
+    "...ee...",
+    "..ebde..",
+    "..ebde..",
+    "..ebde..",
+    ".ebbdde.",
+    ".ebbdde.",
+    ".eGbdge.",
+    "ebGbdgde",
+    "ebGbdgde",
+    "ebGbdgde",
+    "ebGbdgde",
+    "ebGbdgde",
+    ".eGbdge.",
+    ".ebbdde.",
     "..ebde.."
    ]
   },
