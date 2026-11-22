@@ -174,3 +174,7 @@ contract for the Java side.
   * **Shelter**: shields its owner: Resistance I within 6 blocks, and it steps in to block arrows aimed at them.
   * **Plenty**: vacuums up dropped items within 8 blocks into its pot (27 slots); use it with an empty hand to open it.
   * **Brewer**: throws splash potions: Healing at its owner when they're hurt, Weakness or Slowness at enemies.
+* **Headshots**: the pot is the golem's head and its weak spot. A hit that lands on the head (arrows, tridents and
+  other projectiles by where they strike; melee by where the attacker is looking, a ray against the head box) is a
+  **headshot**: double damage, it always cracks the pot, and it shows a crit burst of pottery chips with a sharp clink.
+  Body hits do normal damage and crack the pot only sometimes, as now.
