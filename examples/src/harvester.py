@@ -4,15 +4,17 @@
 
 Sniffer-scale (about 2.0 x 1.9 blocks without head and tail), sturdy and slow: a deep barrel body on four thick legs,
 a heavy tapering tail, and a huge, wide hammerhead-shark-like head carried low on a short thick neck. The eyes sit at
-the very ends of the hammer, small, round and friendly under a little fur brow; across the front runs a broad shovel
-mouth with rows and rows of blunt cropping teeth (an upper battery under the lip, a lower one along the square chin,
-cheek teeth along the sides), like the plant-cropping grazers of the deep past.
+the very ends of the hammer, small, round and friendly under a little brow, and a broad sniffer-like nose sits over
+the mouth. The broad shovel mouth rests closed in a soft smile; its rows and rows of blunt cropping teeth (an upper
+battery under the lip, a lower one behind the square chin, cheek teeth along the sides) only show when it opens to
+graze or chomp, like the plant-cropping grazers of the deep past.
 
-Painted like the vanilla sniffer: chunky texels and a small palette, two-tone. A warm mustard-yellow coat of fur
-(vertical hair strokes, a darker ochre fringe along the belly) with a shaggy dark-green mossy mantle over the back,
-dark green stripes running down from it, and long dark-green fur fringes (alpha-cut cards) off the mantle, along the
-neck, round the thighs and on the tail, ending in a big tuft. A few ferns and wildflowers grow in the mantle. The
-hammer head is kept clean (yellow, a dark green brow at each eye) so it stays a clear silhouette.
+A scaly, reptilian hide in two tones, painted in strokes with a small palette: warm mustard-yellow scales (rows of
+small round scales, broad pale scutes under the belly), dark green across the back running down the upper flanks in
+bands, a dark green plated back with a ridge of rounded scutes down the spine, the neck and the tail (the tail banded
+like a lizard's). Fur and moss are accents: a short mossy fringe along the back, a short mane, a tuft on each thigh
+and at the tail's end, a few ferns and wildflowers between the scutes. The hammer head is kept clean (yellow scales,
+a dark green top, a dark green brow at each eye) so it stays a clear silhouette.
 
 Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
 to a vanilla entity model (python -m lowpix mc export). Faces +Z, ground at y=0, "right" is -X. Fur fringes, ferns
@@ -92,7 +94,7 @@ def part(id, parent, size, style=None, at=None, rel=None, centre=None, offset=No
 
 
 def bone(id, parent, **kw):
-    return part(id, parent, None, "fur", shape="bone", **kw)
+    return part(id, parent, None, "scaly", shape="bone", **kw)
 
 
 def card(id, parent, art, style, plane="xy", **kw):
@@ -136,15 +138,18 @@ def teeth_row(width_px, down=True, shift=0, tall=3, tooth=4, gap=1):
 
 
 def fringe(length_px, seed=1, depth=8, short=3):
-    """Shaggy fur hanging off an edge (image top = attached), drawn like the sniffer's: locks of 1-3 texels, each its
-    own length, a lit strand down the middle of the longer ones and dark tips."""
+    """Shaggy fur hanging off an edge (image top = attached), drawn like the sniffer's: locks 2-3 texels wide, each its
+    own length, flat clusters of two alternating tones with a darker tip (no strand lines)."""
     rnd = random.Random(seed)
     w = int(round(length_px * DENSITY))
-    lens = []
+    lens, tones = [], []
+    k = 0
     while len(lens) < w:
-        L = rnd.randint(short, depth)
-        lens += [L] * rnd.randint(1, 3)
-    lens = lens[:w]
+        L, n = rnd.randint(short, depth), rnd.randint(2, 3)
+        lens += [L] * n
+        tones += ["fh"[k % 2]] * n                 # neighbouring locks alternate between two flat tones
+        k += 1
+    lens, tones = lens[:w], tones[:w]
     rows = []
     for y in range(depth):
         r = ""
@@ -152,13 +157,12 @@ def fringe(length_px, seed=1, depth=8, short=3):
             L = lens[x]
             if y >= L:
                 r += "."
-            elif y == L - 1:
-                r += "e"                            # dark tip
+            elif y == L - 1 and L > 3:
+                r += "e"                            # the lock's tip, a shade darker
             elif y < 2:
                 r += "F"                            # root, in the shade of the edge it hangs from
             else:
-                lit = (x > 0 and lens[x - 1] < L) or (x * 5 + y) % 7 == 0
-                r += "h" if lit else "f"
+                r += tones[x]
         rows.append(r)
     return rows
 
@@ -221,114 +225,106 @@ TAIL_TUFT = [
 ]
 
 # ======================================================================= body: a deep barrel, rounded in steps
-part("body", None, [26, 15, 28], "fur_body", at=(0, 20.5, 0))
-part("under", "body", [24, 2, 24], "fur_low", centre=(0, 12.0, 0.0))
+part("body", None, [26, 15, 28], "scaly_body", at=(0, 20.5, 0))
+part("under", "body", [24, 2, 24], "scaly_low", centre=(0, 12.0, 0.0))
 part("belly", "body", [20, 1.5, 20], "belly", centre=(0, 10.25, 0.0))
-part("chest", "body", [22, 12, 2], "fur_body", centre=(0, 20.0, 15.0))
-part("chest_b", "body", [18, 9, 1.5], "fur", centre=(0, 19.5, 16.75))
-part("rump", "body", [22, 12, 2], "fur_body", centre=(0, 21.0, -15.0))
-part("rump_b", "body", [18, 9, 1.5], "fur", centre=(0, 21.5, -16.75))
+part("chest", "body", [22, 12, 2], "scaly_body", centre=(0, 20.0, 15.0))
+part("chest_b", "body", [18, 9, 1.5], "scaly", centre=(0, 19.5, 16.75))
+part("rump", "body", [22, 12, 2], "scaly_body", centre=(0, 21.0, -15.0))
+part("rump_b", "body", [18, 9, 1.5], "scaly", centre=(0, 21.5, -16.75))
 for s, n in SIDES:
-    part(f"shoulder_{n}", "body", [1, 10, 10], "fur_body", centre=(s * 13.5, 17.0, 8.5))
-    part(f"haunch_{n}", "body", [1, 10, 12], "fur_body", centre=(s * 13.5, 18.0, -8.0))
-    # the ochre fringe along the belly (the sniffer's bottom fringe)
-    hang(f"fringe_{n}", "body", fringe(22, seed=3, depth=7) if s > 0 else mirror_art(fringe(22, seed=3, depth=7)),
-         "fur_fringe", "yz", at=(s * 12.05, 11.2, 0.0))
-# the mossy mantle over the back: a thick dark green pelt, shaggy fringes hanging off both sides and the shoulders
-part("mantle", "body", [24, 3, 26], "mantle", centre=(0, 29.5, -0.5))
-part("mantle_top", "mantle", [18, 1, 20], "mantle_top", centre=(0, 31.5, -1.0))
-for s, n in SIDES:
-    for k, (depth, seed, x, y, tilt) in enumerate([(18, 11, 12.6, 30.2, 10), (12, 12, 13.2, 29.0, 16)]):
-        art = fringe(26, seed=seed + (s < 0) * 7, depth=depth, short=depth // 2)
-        hang(f"mantle_fur_{n}{k}", "mantle", art, "fur_card", "yz", at=(s * x, y, -0.5), rot=(0, 0, s * tilt))
-    hang(f"mantle_front_{n}", "mantle", fringe(8, seed=21 + (s < 0), depth=14, short=6), "fur_card", "xy",
-         at=(s * 8.0, 30.2, 14.1), rot=(-12, 0, 0))
-    hang(f"mantle_back_{n}", "mantle", fringe(6, seed=25 + (s < 0), depth=9, short=4), "fur_card", "xy",
-         at=(s * 9.5, 30.2, -14.1), rot=(12, 0, 0))
-# tufts, ferns and a couple of wildflowers growing in the mantle
-for k, (x, z, ry) in enumerate([(0.0, 10.0, 0), (-5.5, 3.0, 60), (5.0, -4.0, -50), (0.0, -9.5, 10)]):
-    card(f"tuft_back{k}", "mantle_top", TUFT, "fur_card", at=(x, 31.9, z), offset=(0, 1.0, 0), rot=(-12, ry, 0))
-for k, (x, z, art, ry) in enumerate([(-3.5, 7.0, FERN, 20), (4.0, 3.5, FROND, -30), (3.0, -1.5, FERN, -10),
-                                     (-4.0, -7.5, FROND, 40)]):
-    card(f"frond{k}", "mantle_top", art, "fern", at=(x, 31.9, z), offset=(0, len(art) / (2 * DENSITY), 0),
+    part(f"shoulder_{n}", "body", [1, 10, 10], "scaly_body", centre=(s * 13.5, 17.0, 8.5))
+    part(f"haunch_{n}", "body", [1, 10, 12], "scaly_body", centre=(s * 13.5, 18.0, -8.0))
+# the back: dark green plated hide, a ridge of rounded scutes down the spine and a row each side, moss in between
+part("back", "body", [24, 3, 26], "back", centre=(0, 29.5, -0.5))
+for k, z in enumerate((10.5, 6.0, 1.5, -3.0, -7.5, -12.0)):
+    part(f"scute{k}", "back", [3.5, 2, 3.5], "scute", centre=(0, 31.75, z), rot=(-8, 0, 0))
+    if k % 2 == 0 and k < 5:
+        for s, n in SIDES:
+            part(f"scute_{n}{k}", "back", [3, 1.5, 3], "scute", centre=(s * 6.0, 31.5, z - 2.0), rot=(-6, 0, s * -10))
+for k, (x, z, ry) in enumerate([(-3.0, 8.0, 30), (3.0, -5.0, -40)]):
+    card(f"tuft_back{k}", "back", TUFT, "fur_card", at=(x, 31.0, z), offset=(0, 1.0, 0), rot=(-12, ry, 0))
+for k, (x, z, art, ry) in enumerate([(3.5, 4.0, FROND, -30), (-3.5, -9.5, FERN, 40)]):
+    card(f"frond{k}", "back", art, "fern", at=(x, 31.0, z), offset=(0, len(art) / (2 * DENSITY), 0),
          rot=(-6, ry, (x > 0) * -10 + (x < 0) * 10))
-for k, (x, z, ry) in enumerate([(-6.0, 0.5, 30), (6.0, -8.5, -40)]):
-    card(f"bloom{k}", "mantle_top", BLOOM, "bloom", at=(x, 31.9, z), offset=(0, len(BLOOM) / (2 * DENSITY), 0),
+for k, (x, z, ry) in enumerate([(-6.0, 0.0, 30), (6.5, 9.0, -40)]):
+    card(f"bloom{k}", "back", BLOOM, "bloom", at=(x, 31.0, z), offset=(0, len(BLOOM) / (2 * DENSITY), 0),
          rot=(0, ry, 0))
-
-# ======================================================================= neck (with a shaggy mane) and the hammer head
-part("neck", "body", [14, 11, 10], "fur_neck", at=(0, 23.0, 11.5), centre=(0, 19.5, 17.0), wrot=(28, 0, 0))
+# a short mossy fringe along the edge of the plated back
 for s, n in SIDES:
-    hang(f"mane_{n}", "neck", fringe(10, seed=31 + (s < 0), depth=16, short=8), "fur_card", "yz",
-         rel=(s * 7.1, 5.4, 0.0), rot=(0, 0, s * 10))
+    hang(f"back_fur_{n}", "back", fringe(24, seed=11 + (s < 0) * 7, depth=9, short=4), "fur_card", "yz",
+         at=(s * 12.6, 29.8, -0.5), rot=(0, 0, s * 10))
+
+# ======================================================================= neck (scutes, a short mane) and the hammer head
+part("neck", "body", [14, 11, 10], "scaly_body", at=(0, 23.0, 11.5), centre=(0, 19.5, 17.0), wrot=(28, 0, 0))
 for k, z in enumerate((-2.5, 2.0)):
-    card(f"mane_crest{k}", "neck", TUFT, "fur_card", rel=(0, 5.4, z), offset=(0, 1.0, 0), rot=(-34, 0, 0))
-# The head IS the hammer: a flat, wide plate (the centre `head` plus a lobe and a tip each side, swept back and
+    part(f"neck_scute{k}", "neck", [3, 1.5, 3], "scute", rel=(0, 5.8, z), rot=(-6, 0, 0))
+for s, n in SIDES:
+    hang(f"mane_{n}", "neck", fringe(10, seed=31 + (s < 0), depth=10, short=5), "fur_card", "yz",
+         rel=(s * 7.1, 5.4, 0.0), rot=(0, 0, s * 10))
+# The head IS the hammer: a flat, wide plate (the centre `head` plus a lobe and a rounded tip each side, swept back and
 # drooping a little) over a deep muzzle that carries the mouth. The eyes look forward from the ends of the hammer.
 part("head", "neck", [18, 5.5, 12], "hammer", at=(0, 16.5, 21.0), offset=(0, 2.75, 6.0), wrot=(4, 0, 0))
-card("tuft_crown", "head", TUFT, "fur_card", rel=(0, 5.4, 3.5), offset=(0, 1.0, 0), rot=(-8, 0, 0))
-part("muzzle", "head", [16, 4.5, 11], "fur", rel=(0, -2.0, 6.0))
+part("crown_scute", "head", [3, 1, 3], "scute", rel=(0, 6.0, 4.0))
+part("muzzle", "head", [16, 4.5, 11], "scaly", rel=(0, -2.0, 6.0))
 for s, n in SIDES:
     part(f"hammer_{n}", "head", [8, 5, 10.5], "hammer", rel=(s * 9.0, 2.75, 6.5), offset=(s * 4.0, 0, 0),
          rot=(0, s * -8, s * -5))
     part(f"hammer_tip_{n}", f"hammer_{n}", [5, 4, 9], "hammer", rel=(s * 8.0, -0.25, 0.0),
          offset=(s * 2.5, 0, 0), rot=(0, s * -7, s * -4))
-    # a round eye set into the front of each tip, and a little fur brow over it
+    part(f"hammer_cap_{n}", f"hammer_tip_{n}", [1, 3, 7], "hammer", rel=(s * 5.5, 0.0, 0.0))     # a rounded end
+    # a round eye set into the front of each tip, and a little brow over it
     part(f"eye_{n}", f"hammer_tip_{n}", [3, 3, 0.5], "eye", rel=(s * 3.0, 0.0, 4.75))
     part(f"brow_{n}", f"hammer_tip_{n}", [4, 1, 1.5], "brow", rel=(s * 3.0, 1.9, 4.5), rot=(0, 0, s * 7))
-# the broad shovel mouth: an overhanging upper lip with the upper teeth under it, a square lower jaw
+# a broad, sniffer-like nose over the mouth, two wide nostrils
+part("nose", "head", [12, 2.5, 2], "nose", rel=(0, -0.25, 13.0))
+# The broad shovel mouth, closed at rest in a soft smile: the rows of teeth sit behind the lips (upper ones under the
+# lip, lower ones behind the chin) and only show when the jaw opens (graze, chomp).
 part("snout", "head", [22, 2.5, 3], "snout", rel=(0, -2.75, 12.0))
+part("snout_lip", "snout", [18, 2, 0.5], "snout", rel=(0, 0.0, 1.75))
 part("throat", "head", [14, 4, 1], "mouth", rel=(0, -2.5, 3.0))
-bone("teeth_upper", "snout", rel=(0, -1.25, 1.3))
+bone("teeth_upper", "snout", rel=(0, -1.25, 0.5))
 for k in range(3):
-    card(f"teeth_upper_{k}", "teeth_upper", teeth_row(21, True, shift=2 * k), "teeth",
-         rel=(0, 0.45 * k, -1.0 * k), offset=(0, -0.75, 0))
+    card(f"teeth_upper_{k}", "teeth_upper", teeth_row(20, True, shift=2 * k), "teeth",
+         rel=(0, 0.4 * k, -0.9 * k), offset=(0, -0.75, 0))
 for s, n in SIDES:
-    card(f"teeth_upper_side_{n}", "teeth_upper", teeth_row(7, True, shift=1), "teeth", plane="yz",
-         rel=(s * 10.3, 0.5, -4.5), offset=(0, -0.75, 0))
-part("jaw", "head", [20, 2.5, 11], "jaw", rel=(0, -4.0, 2.0), offset=(0, -1.25, 5.5), rot=(8, 0, 0))
-part("chin", "jaw", [22, 3, 3], "jaw", rel=(0, -1.5, 11.0))
+    card(f"teeth_upper_side_{n}", "teeth_upper", teeth_row(6, True, shift=1), "teeth", plane="yz",
+         rel=(s * 9.0, 0.4, -4.5), offset=(0, -0.75, 0))
+part("jaw", "head", [20, 2.5, 11], "jaw", rel=(0, -4.0, 2.0), offset=(0, -1.25, 5.5))
+part("chin", "jaw", [22, 3, 3], ["jaw", "chin"], rel=(0, -1.5, 11.0))
+part("chin_lip", "chin", [18, 2, 0.5], ["jaw", "chin"], rel=(0, 0.25, 1.75))
 part("tongue", "jaw", [12, 1, 7], "tongue", rel=(0, 0.25, 5.0))
-bone("teeth_lower", "jaw", rel=(0, 0.0, 12.2))
+bone("teeth_lower", "jaw", rel=(0, 0.0, 10.5))
 for k in range(3):
-    card(f"teeth_lower_{k}", "teeth_lower", teeth_row(20, False, shift=2 * k + 2), "teeth",
-         rel=(0, -0.45 * k, -1.0 * k), offset=(0, 0.75, 0))
+    card(f"teeth_lower_{k}", "teeth_lower", teeth_row(19, False, shift=2 * k + 2), "teeth",
+         rel=(0, -0.4 * k, -0.9 * k), offset=(0, 0.75, 0))
 for s, n in SIDES:
-    card(f"teeth_lower_side_{n}", "teeth_lower", teeth_row(7, False, shift=3), "teeth", plane="yz",
-         rel=(s * 9.6, -0.4, -5.0), offset=(0, 0.75, 0))
+    card(f"teeth_lower_side_{n}", "teeth_lower", teeth_row(6, False, shift=3), "teeth", plane="yz",
+         rel=(s * 8.6, -0.4, -4.5), offset=(0, 0.75, 0))
 
-# ======================================================================= tail: fur down both sides, a big tuft at the end
-part("tail_0", "body", [13, 10, 8], "fur_tail", at=(0, 23.5, -15.5), offset=(0, 0, -4.0), wrot=(-14, 0, 0))
-part("tail_1", "tail_0", [9, 7.5, 8], "fur_tail", rel=(0, -0.3, -7.5), offset=(0, 0, -4.0), rot=(-8, 0, 0))
-part("tail_2", "tail_1", [6, 5, 7], "fur_tail", rel=(0, -0.3, -7.5), offset=(0, 0, -3.5), rot=(-6, 0, 0))
-part("tail_tip", "tail_2", [4, 3.5, 3], "mantle", rel=(0, -0.2, -6.5), offset=(0, 0, -1.5))
-part("tail_mantle", "tail_0", [11, 1.5, 8], "mantle", rel=(0, 5.6, -4.0))
-for s, n in SIDES:
-    hang(f"tail_fur_{n}0", "tail_0", fringe(8, seed=41 + (s < 0), depth=13, short=6), "fur_card", "yz",
-         rel=(s * 6.0, 5.9, -4.0), rot=(0, 0, s * 14))
-    hang(f"tail_fur_{n}1", "tail_1", fringe(8, seed=43 + (s < 0), depth=10, short=5), "fur_card", "yz",
-         rel=(s * 4.3, 3.9, -4.0), rot=(0, 0, s * 14))
-card("tail_crest", "tail_1", TUFT, "fur_card", rel=(0, 3.7, -4.0), offset=(0, 1.0, 0), rot=(-20, 0, 0))
+# ======================================================================= tail: banded scales, scutes, a tuft at the end
+part("tail_0", "body", [13, 10, 8], "scaly_tail", at=(0, 23.5, -15.5), offset=(0, 0, -4.0), wrot=(-14, 0, 0))
+part("tail_1", "tail_0", [9, 7.5, 8], "scaly_tail", rel=(0, -0.3, -7.5), offset=(0, 0, -4.0), rot=(-8, 0, 0))
+part("tail_2", "tail_1", [6, 5, 7], "scaly_tail", rel=(0, -0.3, -7.5), offset=(0, 0, -3.5), rot=(-6, 0, 0))
+part("tail_tip", "tail_2", [4, 3.5, 3], "scaly_tail", rel=(0, -0.2, -6.5), offset=(0, 0, -1.5))
+for k, (seg, y, z, w) in enumerate([("tail_0", 5.5, -2.0, 3.0), ("tail_0", 5.3, -6.0, 3.0), ("tail_1", 4.2, -2.0, 2.5),
+                                    ("tail_1", 4.0, -6.0, 2.5), ("tail_2", 2.9, -3.0, 2.0)]):
+    part(f"tail_scute{k}", seg, [w, 1.5, w], "scute", rel=(0, y, z), rot=(8, 0, 0))
 card("tail_tuft", "tail_tip", TAIL_TUFT, "fur_card", plane="yz", rel=(0, 0.0, -2.0), offset=(0, 0, -1.5))
 card("tail_tuft_x", "tail_tip", [r[::-1] for r in TAIL_TUFT], "fur_card", plane="yz", rel=(0, 0.0, -2.0),
      offset=(0, 0, -1.5), rot=(0, 0, 90))
 
-# ======================================================================= legs: thick pillars, shaggy cuffs, broad feet
+# ======================================================================= legs: thick scaly pillars, a tuft of fur, broad feet
 LEGS = {"fl": (9.5, 15.0, 8.5), "fr": (-9.5, 15.0, 8.5), "bl": (9.5, 16.0, -8.0), "br": (-9.5, 16.0, -8.0)}
 for k, (x, y, z) in LEGS.items():
     front = k[0] == "f"
     s = 1 if x > 0 else -1
     w, h, d = (9, 10, 9) if front else (10, 11, 10)
-    part(f"leg_{k}", "body", [w, h, d], "fur_leg", at=(x, y, z), centre=(x, y - h / 2 + 0.5, z))
-    # a cuff of long green fur round the thigh, down over the knee
-    top = 12.5 if front else 13.0
-    hang(f"cuff_{k}_out", f"leg_{k}", fringe(d, seed=51 + len(P), depth=12, short=7), "fur_card", "yz",
-         at=(x + s * (w / 2 + 0.05), top, z), rot=(0, 0, s * 6))
-    hang(f"cuff_{k}_front", f"leg_{k}", fringe(w, seed=61 + len(P), depth=11, short=7), "fur_card", "xy",
-         at=(x, top, z + d / 2 + 0.05), rot=(-6, 0, 0))
-    hang(f"cuff_{k}_back", f"leg_{k}", fringe(w, seed=71 + len(P), depth=11, short=7), "fur_card", "xy",
-         at=(x, top, z - d / 2 - 0.05), rot=(6, 0, 0))
-    part(f"shin_{k}", f"leg_{k}", [8, 6, 8], "fur_shin", at=(x, 7.5, z), centre=(x, 4.5, z))
+    part(f"leg_{k}", "body", [w, h, d], "scaly_leg", at=(x, y, z), centre=(x, y - h / 2 + 0.5, z))
+    # a short tuft of green fur on the outside of the thigh
+    hang(f"cuff_{k}_out", f"leg_{k}", fringe(d, seed=51 + len(P), depth=8, short=4), "fur_card", "yz",
+         at=(x + s * (w / 2 + 0.05), 12.5 if front else 13.0, z), rot=(0, 0, s * 6))
+    part(f"shin_{k}", f"leg_{k}", [8, 6, 8], "scaly_shin", at=(x, 7.5, z), centre=(x, 4.5, z))
     part(f"foot_{k}", f"shin_{k}", [9, 2.5, 10], "foot", at=(x, 2.0, z), centre=(x, 1.25, z + 0.8))
     for t, dx in enumerate((-2.8, 0.0, 2.8)):
         part(f"nail_{k}{t}", f"foot_{k}", [2, 1.5, 1], "nail", centre=(x + dx, 0.75, z + 6.3))
@@ -373,63 +369,75 @@ ramps = {
     "iron": ["#1f2026", "#33353c", "#4f5259", "#71757a", "#9a9e9f", "#c4c6c2"],
 }
 # vanilla-like light: mostly flat (the game shades the faces itself), a touch of top light and contact shadow
-light = {"dir": [-0.45, 1.0, 0.6], "strength": 0.3, "gradient": 0.25, "ao": 0.45, "ao_height": 8.0}
-brush = {"flow": "y", "length": 2.0, "width": 0.5, "rough": 0.35, "overshoot": 0.2,
-         "textures": {"fur": "fur", "moss": "fur", "leather": "leather", "wood": "wood", "iron": "metal",
+light = {"dir": [-0.45, 1.0, 0.6], "strength": 0.35, "gradient": 0.3, "ao": 0.5, "ao_height": 8.0}
+# painted strokes that run along the body and follow the scale rows
+brush = {"flow": "z", "length": 1.6, "width": 0.5, "rough": 0.45, "overshoot": 0.2,
+         "textures": {"fur": "scales", "moss": "scales", "leather": "leather", "wood": "wood", "iron": "metal",
                       "blanket": "cloth"}}
-
-RIM = {"light_shift": 0.6, "dark_shift": -0.6}
-# hair: vertical locks a texel or two wide, a shade darker, the way the sniffer's coat is drawn
-HAIR = {"id": "hair", "op": "stripes", "axis": "x", "period": 2.0, "width": 0.3, "shift": -0.55, "wobble": 0.8,
-        "wobble_scale": 0.7, "faces": ["sides", "front", "back"]}
-HAIR_Z = dict(HAIR, id="hair_z", axis="z", faces=["left", "right"])
-# the mantle's green running down the upper flanks in ragged locks, and big dark green patches on the flanks
-MOSS_DRIP = {"id": "moss_drip", "op": "drip", "ramp": "moss", "tone": 3.0, "depth": 0.3, "length": 2.4,
-             "width": 0.7, "scale": 1.2, "faces": ["sides", "front", "back"]}
-PATCHES = {"id": "patches", "op": "spots", "count": 5, "radius": [1.8, 2.6], "stretch": [1.0, 1.6, 1.0],
-           "roughness": 0.5, "ramp": "moss", "tone": 3.0, "faces": ["sides"], "where": {"y": [-0.2, 0.8]},
-           "min_gap": 3.0}
-FUR = {"ramp": "fur", "tone": 5.4, "rim": RIM, "layers": [HAIR, HAIR_Z,
-                                                          {"id": "under", "op": "fill", "shift": -1.0,
-                                                           "faces": ["bottom"]}]}
+RIM = {"light_shift": 0.7, "dark_shift": -0.7}
+# reptile hide: rows of small round scales, each lit on top and shaded under the next row
+SCALES = {"id": "scales", "op": "scales", "shape": "round", "along": "z", "size": [1.5, 1.0], "gap": 0.0,
+          "highlight": 0.8, "shadow": -0.9, "gradient": 0.35, "jitter": 0.4}
+FINE = dict(SCALES, id="fine", size=[1.0, 0.75], highlight=0.6, shadow=-0.7)
+# the dark green of the back running down over the upper flanks (world units), and dark green bands below it
+DORSAL = {"id": "dorsal", "op": "band", "axis": "y", "from": 25.0, "to": 60, "ramp": "moss", "tone": 3.4,
+          "space": "world", "wobble": 1.0, "wobble_scale": 3.0, "faces": ["sides", "front", "back", "top"]}
+BANDS = {"id": "bands", "op": "spots", "count": 6, "radius": [1.4, 2.0], "stretch": [0.8, 2.6, 0.8],
+         "roughness": 0.4, "ramp": "moss", "tone": 3.4, "faces": ["sides"], "where": {"y": [0.0, 1.0]},
+         "min_gap": 3.0}
+UNDER = {"id": "under", "op": "fill", "shift": -1.0, "faces": ["bottom"]}
+SCALY = {"ramp": "fur", "tone": 5.6, "rim": RIM, "layers": [SCALES, UNDER]}
 styles = {
-    "fur": FUR,
-    "fur_body": dict(FUR, layers=FUR["layers"] + [PATCHES, MOSS_DRIP]),
-    "fur_low": dict(FUR, tone=4.9),
-    "fur_neck": dict(FUR, layers=FUR["layers"] + [dict(MOSS_DRIP, depth=0.35)]),
-    "fur_tail": dict(FUR, layers=FUR["layers"] + [dict(MOSS_DRIP, depth=0.35)]),
-    "fur_leg": dict(FUR, tone=5.0),
-    "fur_shin": dict(FUR, tone=4.5),
-    "belly": {"ramp": "fur", "tone": 6.8, "rim": RIM, "brush": {"flow": "x"},
-              "layers": [dict(HAIR, period=2.0, shift=-0.6)]},
-    "fur_fringe": {"ramp": "fur", "tone": 4, "light": 0.2, "brush": {"off": True},
-                   "art_key": {"F": "fur:3", "f": "fur:4", "h": "fur:6", "e": "fur:2"}},
+    "scaly": SCALY,
+    "scaly_body": dict(SCALY, layers=[SCALES, DORSAL, BANDS, UNDER]),
+    "scaly_low": dict(SCALY, tone=5.0),
+    "scaly_tail": dict(SCALY, layers=[SCALES, {"id": "top", "op": "band", "axis": "y", "from": 0.3, "to": 1.1,
+                                               "ramp": "moss", "tone": 3.4, "wobble": 0.3},
+                                      {"id": "rings", "op": "stripes", "axis": "z", "period": 4.0, "width": 0.3,
+                                       "ramp": "moss", "tone": 3.4, "faces": ["sides", "top"],
+                                       "where": {"y": [-0.4, 1.0]}}, UNDER]),
+    "scaly_leg": dict(SCALY, tone=5.2),
+    "scaly_shin": dict(SCALY, tone=4.6),
+    # the belly: broad pale scutes across it, like a crocodile's
+    "belly": {"ramp": "fur", "tone": 6.8, "rim": RIM,
+              "layers": [{"id": "scutes", "op": "scales", "shape": "square", "along": "x", "size": [5.0, 1.5],
+                          "gap": 0.25, "highlight": 0.6, "shadow": -0.9, "gradient": 0.2}]},
+    # the plated back: dark green square plates
+    "back": {"ramp": "moss", "tone": 3.6, "rim": RIM,
+             "layers": [{"id": "plates", "op": "scales", "shape": "square", "along": "z", "size": [2.5, 2.0],
+                         "gap": 0.25, "highlight": 1.0, "shadow": -1.1, "gradient": 0.4, "jitter": 0.3}]},
+    # scutes: rounded dark green knobs, lit on top
+    "scute": {"ramp": "moss", "tone": 4.0, "rim": {"light_shift": 1.2, "dark_shift": -1.0},
+              "layers": [{"id": "lit", "op": "fill", "shift": 1.2, "faces": ["top"]},
+                         {"id": "base", "op": "band", "axis": "y", "from": -1.1, "to": -0.4, "shift": -1.0}]},
     "fur_card": {"ramp": "moss", "tone": 3, "light": 0.2, "brush": {"off": True},
                  "art_key": {"F": "moss:2", "f": "moss:3", "h": "moss:5", "e": "moss:1"}},
-    "mantle": {"ramp": "moss", "tone": 3.2, "rim": RIM,
-               "layers": [dict(HAIR, shift=0.9, width=0.3), dict(HAIR_Z, shift=0.9, width=0.3),
-                          {"id": "clumps", "op": "patches", "scale": 1.6, "threshold": 0.58, "shift": 1.0,
-                           "faces": ["top"]}]},
-    "mantle_top": {"ramp": "moss", "tone": 3.8, "rim": RIM,
-                   "layers": [{"id": "clumps", "op": "patches", "scale": 1.4, "threshold": 0.55, "shift": 1.0},
-                              {"id": "hollows", "op": "patches", "scale": 1.8, "threshold": 0.66, "shift": -1.2,
-                               "seed": 5}]},
     "fern": {"ramp": "moss", "tone": 5, "light": 0.2, "brush": {"off": True},
              "art_key": {"m": "moss:5", "M": "moss:6", "d": "moss:3"}},
     "bloom": {"ramp": "flower", "tone": 1, "light": 0.2, "brush": {"off": True},
               "art_key": {"B": "flower:1", "b": "flower:0", "c": "flower:2", "s": "moss:4"}},
-    # the hammer: clean yellow (it must read as one shape), a slightly darker top, a pale front edge
-    "hammer": {"ramp": "fur", "tone": 5.7, "rim": RIM, "brush": {"flow": "z", "rough": 0.2},
-               "layers": [{"id": "top", "op": "fill", "shift": -0.6, "faces": ["top"]},
-                          {"id": "lip", "op": "band", "axis": "y", "from": -1.1, "to": -0.4, "shift": 1.2,
-                           "faces": ["front"]},
-                          {"id": "under", "op": "fill", "shift": -1.0, "faces": ["bottom"]}]},
-    "snout": {"ramp": "fur", "tone": 6.0, "rim": RIM, "brush": {"flow": "z", "rough": 0.2},
-              "layers": [{"id": "lip", "op": "band", "axis": "y", "from": -1.1, "to": -0.55, "ramp": "fur",
-                          "tone": 3.6, "faces": ["front", "sides"]},
+    # the hammer: yellow fine scales (it must read as one shape), a darker green top, a pale front edge
+    "hammer": {"ramp": "fur", "tone": 5.8, "rim": RIM,
+               "layers": [FINE, {"id": "top", "op": "fill", "ramp": "moss", "tone": 3.8, "faces": ["top"]},
+                          {"id": "lip", "op": "band", "axis": "y", "from": -1.1, "to": -0.4, "shift": 1.0,
+                           "faces": ["front"]}, UNDER]},
+    "snout": {"ramp": "fur", "tone": 6.0, "rim": RIM,
+              "layers": [FINE, {"id": "lip", "op": "band", "axis": "y", "from": -1.1, "to": -0.6, "ramp": "fur",
+                                "tone": 4.0, "faces": ["front", "sides"]},
                          {"id": "mouth_roof", "op": "fill", "ramp": "mouth", "tone": 0.6, "faces": ["bottom"]}]},
+    # the nose: a broad pad a shade lighter than the snout, two close-set nostrils flaring out (sniffer-like)
+    "nose": {"ramp": "fur", "tone": 6.5, "rim": RIM,
+             "layers": [FINE, {"id": "top", "op": "fill", "shift": 0.6, "faces": ["top"]}],
+             "stamps": [{"face": "front", "at": "center", "art": [
+                 "........................",
+                 "........kk....kk........",
+                 ".......bkkb..bkkb.......",
+                 "........bb....bb........",
+                 "........................",
+             ], "key": {"b": "fur:3", "k": "dark:1"}}]},
     "mouth": {"ramp": "mouth", "tone": 0.4, "light": 0.2, "brush": {"off": True}},
-    "jaw": {"ramp": "fur", "tone": 6.4, "rim": RIM, "brush": {"flow": "z", "rough": 0.2},
+    "chin": {"layers": [{"id": "gum", "op": "fill", "ramp": "fur", "tone": 4.6, "faces": ["top"]}]},
+    "jaw": {"ramp": "fur", "tone": 6.4, "rim": RIM,
             "layers": [{"id": "under", "op": "fill", "shift": -1.2, "faces": ["bottom"]},
                        {"id": "lip", "op": "band", "axis": "y", "from": 0.55, "to": 1.1, "ramp": "fur", "tone": 3.6,
                         "faces": ["front", "sides"]},
@@ -448,16 +456,16 @@ styles = {
                 "bkkkkb",
                 "bkkkkb",
                 ".bbbb.",
-            ], "key": {"b": "dark:2", "k": "dark:0", "W": "#ffffff"}}]},
+            ], "key": {"b": "dark:2", "k": "dark:0", "W": "teeth:3"}}]},
     "brow": {"ramp": "moss", "tone": 3.0, "rim": RIM, "brush": {"off": True},
              "layers": [{"id": "lit", "op": "fill", "shift": 1.4, "faces": ["top"]}]},
-    "foot": {"ramp": "dark", "tone": 2.4, "rim": RIM, "brush": {"flow": "x"},
+    "foot": {"ramp": "dark", "tone": 2.4, "rim": RIM,
              "layers": [{"id": "fur_top", "op": "band", "axis": "y", "from": 0.4, "to": 1.1, "ramp": "fur",
                          "tone": 3.6, "faces": ["sides", "top"]}]},
     "nail": {"ramp": "teeth", "tone": 1.6, "light": 0.4, "brush": {"off": True},
              "layers": [{"id": "tip", "op": "band", "axis": "y", "from": -1.1, "to": -0.3, "shift": -1.0}]},
     # a woven teal blanket: gold border, a row of cream diamonds
-    "blanket": {"ramp": "blanket", "tone": 3.0, "brush": {"flow": "z", "rough": 0.3},
+    "blanket": {"ramp": "blanket", "tone": 3.0,
                 "layers": [{"id": "trim", "op": "band", "axis": "y", "from": -1.1, "to": -0.7, "ramp": "trim",
                             "tone": 2.0, "faces": ["sides", "front", "back"]},
                            {"id": "border", "op": "band", "axis": "z", "from": 0.82, "to": 1.1, "ramp": "trim",
@@ -471,26 +479,23 @@ styles = {
                     "..sSs...sSs...sSs....",
                     "...s.....s.....s.....",
                 ], "key": {"s": "blanket:1", "S": "fur:8", "W": "trim:3"}}]},
-    "blanket_top": {"ramp": "blanket", "tone": 3.4, "brush": {"flow": "x", "rough": 0.3},
+    "blanket_top": {"ramp": "blanket", "tone": 3.4,
                     "layers": [{"id": "trim", "op": "band", "axis": "z", "from": 0.8, "to": 1.1, "ramp": "trim",
                                 "tone": 2.0},
                                {"id": "trim_b", "op": "band", "axis": "z", "from": -1.1, "to": -0.8, "ramp": "trim",
                                 "tone": 2.0}]},
     "strap": {"ramp": "leather", "tone": 2.6, "light": 0.5, "brush": {"off": True}},
-    "leather": {"ramp": "leather", "tone": 4.0, "rim": {"light": 1, "dark": 1, "light_shift": 1.4,
-                                                         "dark_shift": -1.0},
-                "brush": {"flow": "z", "rough": 0.35},
+    "leather": {"ramp": "leather", "tone": 4.0, "rim": RIM,
                 "layers": [{"id": "stitch", "op": "panel", "inset": 1, "shift": 1.2, "faces": ["top"]}]},
-    "iron": {"ramp": "iron", "tone": 3.0, "rim": {"light_shift": 1.4, "dark_shift": -1.0}, "brush": {"off": True}},
-    "chest_box": {"ramp": "wood", "tone": 3.6, "rim": {"light_shift": 1.0, "dark_shift": -1.0},
-                  "brush": {"flow": "z"},
+    "iron": {"ramp": "iron", "tone": 3.0, "rim": RIM, "brush": {"off": True}},
+    "chest_box": {"ramp": "wood", "tone": 3.6, "rim": RIM,
                   "layers": [{"id": "planks", "op": "stripes", "axis": "y", "period": 2.0, "width": 0.12,
                               "shift": -1.2},
                              {"id": "bands", "op": "band", "axis": "z", "from": 0.72, "to": 1.01, "ramp": "iron",
                               "tone": 3.0, "faces": ["sides", "top", "bottom"]},
                              {"id": "bands_b", "op": "band", "axis": "z", "from": -1.01, "to": -0.72, "ramp": "iron",
                               "tone": 3.0, "faces": ["sides", "top", "bottom"]}]},
-    "chest_lid": {"ramp": "wood", "tone": 4.2, "rim": {"light_shift": 1.2, "dark_shift": -1.0}, "brush": {"flow": "z"},
+    "chest_lid": {"ramp": "wood", "tone": 4.2, "rim": RIM,
                   "layers": [{"id": "bands", "op": "band", "axis": "z", "from": 0.72, "to": 1.01, "ramp": "iron",
                               "tone": 3.4},
                              {"id": "bands_b", "op": "band", "axis": "z", "from": -1.01, "to": -0.72, "ramp": "iron",
@@ -591,7 +596,7 @@ def gait(length, legs, stride=18.0, lift=26.0, duty=0.62, samples=12):
 REST = {}
 ANIM = {}
 TAIL = ["tail_0", "tail_1", "tail_2"]
-FUR_SWAY = ["mantle_fur_l0", "mantle_fur_r0", "mane_l", "mane_r"]
+FUR_SWAY = ["back_fur_l", "back_fur_r", "mane_l", "mane_r"]
 BLINK = [[0, [0, 0, 0]], [0.05, [0, -0.85, 0], "out"], [0.15, [0, 0, 0], "in"]]   # eyes squashed shut
 
 
@@ -617,8 +622,7 @@ ANIM["idle"] = {"length": L, "loop": True, "tracks": [
     osc("neck", "x", 2.0, 1, 0.2),
     {"parts": ["eye_l", "eye_r"], "channel": "scale",
      "keys": [[0, [0, 0, 0]]] + blink(1.1) + blink(3.4) + [[4.0, [0, 0, 0]]]},
-    {"part": "jaw", "axis": "x", "keys": [[0, 0], [2.0, 0], [2.15, 6], [2.3, -4], [2.45, 5], [2.6, -4], [2.8, 0],
-                                         [4.0, 0]]},
+    {"part": "jaw", "axis": "x", "keys": [[0, 0], [2.0, 0], [2.15, 7], [2.3, 1], [2.45, 6], [2.6, 0], [4.0, 0]]},
     {"part": "teeth_lower", "channel": "position", "keys": [[0, [0, 0, 0]], [2.0, [0, 0, 0]], [2.15, [0.5, 0, 0]],
                                                             [2.3, [-0.5, 0, 0]], [2.45, [0.5, 0, 0]],
                                                             [2.6, [-0.5, 0, 0]], [2.8, [0, 0, 0]], [4.0, [0, 0, 0]]]},
@@ -654,8 +658,8 @@ ANIM["run"] = {"length": L, "loop": True, "tracks": gait(L, {"fl": 0.0, "fr": 0.
 
 # graze (1.5 s): neck down, the wide mouth to the ground, crop crop (the jaw opens, snaps shut with a tug), back up
 DOWN = add(r("neck", 14), r("head", 3), r("body", 2))
-OPEN = add(DOWN, r("jaw", 10), r("head", -4), pos("teeth_lower", 0, 0, 0.4))
-SHUT = add(DOWN, r("jaw", -8), r("head", -6), r("neck", -3), pos("teeth_lower", 0, 0, -0.3))
+OPEN = add(DOWN, r("jaw", 18), r("head", -6), pos("teeth_lower", 0, 0, 0.4))
+SHUT = add(DOWN, r("jaw", 0), r("head", -6), r("neck", -3), pos("teeth_lower", 0, 0, -0.3))
 ANIM["graze"] = timeline(1.5, [(0.0, REST, None), (0.35, DOWN, "ease"), (0.5, OPEN, "out"), (0.62, SHUT, "in"),
                                (0.78, OPEN, "out"), (0.9, SHUT, "in"), (1.05, DOWN, "ease"), (1.5, REST, "ease")],
                          extra=[{"parts": TAIL, "wave": {"axis": "y", "amp": 4, "cycles": 1, "lag": 0.12}}])
@@ -663,7 +667,7 @@ ANIM["graze"] = timeline(1.5, [(0.0, REST, None), (0.35, DOWN, "ease"), (0.5, OP
 # chomp (0.8 s, harvesting): dip and bite twice, the rows of teeth shearing side to side
 DIP = add(r("neck", 9), r("head", 6))
 BITE_O = add(DIP, r("jaw", 20), r("head", -6), pos("teeth_upper", 0.6, 0, 0), pos("teeth_lower", -0.6, 0, 0.5))
-BITE_S = add(DIP, r("jaw", -8), r("head", 4), pos("teeth_upper", -0.6, 0, 0), pos("teeth_lower", 0.6, 0, -0.3),
+BITE_S = add(DIP, r("jaw", 0), r("head", 4), pos("teeth_upper", -0.6, 0, 0), pos("teeth_lower", 0.6, 0, -0.3),
              sc("head", 0.03, -0.04, 0))
 ANIM["chomp"] = timeline(0.8, [(0.0, REST, None), (0.12, DIP, "out"), (0.22, BITE_O, "out"), (0.32, BITE_S, "in"),
                                (0.44, BITE_O, "out"), (0.54, BITE_S, "in"), (0.8, REST, "ease")])
@@ -691,10 +695,10 @@ ANIM["sit"] = timeline(3.0, [(0.0, LIE, None), (3.0, LIE, None)], loop=True, ext
 spec = {
     "name": "Harvester",
     "description": "The Winterworks Harvester: a big, gentle prehistoric herbivore with a huge hammerhead-shark-like "
-                   "head, small friendly eyes at the ends of the hammer, a broad shovel mouth lined with rows of "
-                   "cropping teeth, a mustard-yellow furry body on four thick legs under a shaggy dark green mossy "
-                   "mantle, green fur fringes on the neck, thighs and tail, ferns and wildflowers in the moss. Painted "
-                   "like a vanilla mob (sniffer-style two-tone fur, a small palette). Saddle and saddlebag chests "
+                   "head, small friendly eyes at the ends of the hammer, a broad nose, a shovel mouth that hides rows "
+                   "of cropping teeth until it opens, a scaly mustard-yellow body on four thick legs with a dark green "
+                   "plated back, scutes down the spine and a banded tail, mossy fur accents, ferns and wildflowers. "
+                   "Two-tone, a small palette, painted in strokes. Saddle and saddlebag chests "
                    "are separate bones the game shows or hides. Minecraft pixel units, density 2: exports 1:1 to a "
                    "vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
@@ -702,6 +706,7 @@ spec = {
     "budget": {"tris": 2400, "colors": 80},
     "light": light,
     "brush": brush,
+    "defaults": {"paint": {"dither": 0.0}},
     "minecraft": {"fps": 12},
     "anim_ground_tolerance": 1.0,
     "render": {"background": "#2a2f3a", "hero": [-36, 20], "shadow": 0.5},
