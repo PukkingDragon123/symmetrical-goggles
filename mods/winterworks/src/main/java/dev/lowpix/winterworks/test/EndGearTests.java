@@ -268,11 +268,14 @@ public class EndGearTests implements FabricGameTest {
         h.assertTrue(EndGlider.canHangGlide(p) && !EndGlider.hangGliding(p), "in the air with it: holding use would glide");
         EndItems.END_GLIDER.use(h.getLevel(), p, InteractionHand.MAIN_HAND);
         h.assertTrue(EndGlider.hangGliding(p) && EndGlider.inUse(p) && !EndGlider.boosting(p), "holding use: hang-gliding");
-        p.resetFallDistance();
         p.fallDistance = 6f;
-        p.setDeltaMovement(0, -0.6, 0);
+        p.setDeltaMovement(0, -0.2, 0.3);
         h.assertTrue(EndGlider.travel(p), "the glider carries the player");
-        h.assertTrue(p.fallDistance == 0f, "no fall damage while gliding");
+        h.assertTrue(p.fallDistance == 0f, "no fall damage in a steady glide");
+        p.fallDistance = 6f;
+        p.setDeltaMovement(0, -1.2, 0.3);
+        EndGlider.travel(p);
+        h.assertTrue(p.fallDistance > 0f, "a steep dive still counts as a fall");
         p.stopUsingItem();
         p.setOnGround(true);
         h.assertFalse(EndGlider.canHangGlide(p), "not on the ground");
@@ -286,52 +289,54 @@ public class EndGearTests implements FabricGameTest {
         p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(EndItems.END_GLIDER));
         h.assertTrue(EndGlider.freeFlight(p), "the off hand works too");
-        // 1 durability per second of flight
-        for (int i = 0; i < 20; i++) {
-            EndGlider.serverTick(h.getLevel().getServer());
-        }
-        h.assertTrue(p.getOffhandItem().getDamageValue() >= 1, "a second of flight wears it, " + p.getOffhandItem().getDamageValue());
+        // with an Elytra the glider only beats its wings: one press, one push along the look, then a cooldown
+        p.setXRot(-20f);
+        p.setDeltaMovement(p.getLookAngle().scale(0.5));
+        double before = p.getDeltaMovement().length();
+        EndItems.END_GLIDER.use(h.getLevel(), p, InteractionHand.OFF_HAND);
+        h.assertTrue(Math.abs(p.getDeltaMovement().length() - before - EndGlider.BEAT) < 1e-3, "a beat pushes " + EndGlider.BEAT);
+        h.assertTrue(p.getCooldowns().isOnCooldown(EndItems.END_GLIDER), "then the wings need a moment");
+        h.assertTrue(p.getOffhandItem().getDamageValue() >= 1, "a beat wears it, " + p.getOffhandItem().getDamageValue());
+        h.assertTrue(EndGlider.boosting(p), "the beat shows (sigils flare)");
+        h.assertFalse(EndGlider.travel(p), "free flight is the Elytra's own physics");
+        Vec3 fast = EndGlider.beat(new Vec3(0, 0, 1.1), new Vec3(0, 0, 1));
+        h.assertTrue(Math.abs(fast.length() - EndGlider.BEAT_CAP) < 1e-6, "beats can't push past " + EndGlider.BEAT_CAP);
+        Vec3 dive = EndGlider.beat(new Vec3(0, -2.0, 0), new Vec3(0, 0, 1));
+        h.assertTrue(dive.length() >= 2.0 - 1e-6, "a beat never slows a faster dive");
         h.assertTrue(EndItems.END_GLIDER.isValidRepairItem(p.getOffhandItem(), new ItemStack(Items.PHANTOM_MEMBRANE)),
                 "repaired with phantom membrane");
 
-        // steering: settles to 1.1 blocks/tick along the look (climbing too), 2.2 boosting, with slower turns
-        Vec3 up = new Vec3(0, 0.6, 1).normalize();
-        Vec3 v = new Vec3(0, -0.4, 0.3);
-        for (int i = 0; i < 80; i++) {
-            v = EndGlider.steer(v, up, false);
+        // hang-gliding: momentum. Level flight settles slow (about 0.32 blocks/tick, a 5:1 glide), far below the old 0.6
+        Vec3 level = new Vec3(0, 0, 0), look0 = new Vec3(0, 0, 1);
+        for (int i = 0; i < 400; i++) {
+            level = EndGlider.glide(level, look0);
         }
-        h.assertTrue(Math.abs(v.length() - EndGlider.CRUISE) < 0.01, "cruise speed 1.1, got " + v.length());
-        h.assertTrue(v.normalize().dot(up) > 0.999 && v.y > 0.5, "flies where you look, climbing included: " + v);
-        Vec3 b = v;
-        for (int i = 0; i < 120; i++) {
-            b = EndGlider.steer(b, up, true);
+        h.assertTrue(level.horizontalDistance() > 0.28 && level.horizontalDistance() < 0.36, "level glide ~0.32, got " + level);
+        h.assertTrue(level.y < -0.04 && level.y > -0.09, "sinks gently, got " + level.y);
+        // a dive builds speed, capped
+        Vec3 down = new Vec3(0, -Math.sin(Math.toRadians(40)), Math.cos(Math.toRadians(40)));
+        Vec3 d = level;
+        for (int i = 0; i < 300; i++) {
+            d = EndGlider.glide(d, down);
         }
-        h.assertTrue(Math.abs(b.length() - EndGlider.BOOST) < 0.01, "boost speed 2.2, got " + b.length());
-        Vec3 side = new Vec3(1, 0, 0);
-        Vec3 cruiseTurn = v, boostTurn = b;
-        for (int i = 0; i < 5; i++) {
-            cruiseTurn = EndGlider.steer(cruiseTurn, side, false);
-            boostTurn = EndGlider.steer(boostTurn, side, true);
+        h.assertTrue(d.horizontalDistance() > 0.6 && d.horizontalDistance() <= EndGlider.MAX_GLIDE + 1e-6, "dive speed, got " + d);
+        // pulling up after the dive zooms you higher on that speed, then the wings stall and you sink again
+        Vec3 upLook = new Vec3(0, Math.sin(Math.toRadians(35)), Math.cos(Math.toRadians(35)));
+        double y = 0, peak = 0;
+        Vec3 z = d;
+        for (int i = 0; i < 160; i++) {
+            z = EndGlider.glide(z, upLook);
+            y += z.y;
+            peak = Math.max(peak, y);
         }
-        h.assertTrue(cruiseTurn.normalize().dot(side) > boostTurn.normalize().dot(side) + 0.2, "boosting turns much slower");
-
-        // hang-gliding: 0.6 forward along the look (pitch ignored), sinking 0.08, never climbing
-        Vec3 g = new Vec3(0, -1.2, 0.1);
-        Vec3 lookUp = new Vec3(1, 0.8, 0).normalize();
-        double highest = g.y;
-        for (int i = 0; i < 80; i++) {
-            g = EndGlider.glide(g, lookUp);
-            highest = Math.max(highest, g.y);
-        }
-        h.assertTrue(Math.abs(g.horizontalDistance() - EndGlider.GLIDE_SPEED) < 0.01, "glides at 0.6, got " + g.horizontalDistance());
-        h.assertTrue(Math.abs(g.y + EndGlider.GLIDE_SINK) < 0.005, "sinks at 0.08, got " + g.y);
-        h.assertTrue(g.x > 0.59 && highest <= -EndGlider.GLIDE_SINK + 1e-6, "steered by the look, no climbing: " + g);
-        Vec3 jump = new Vec3(0, 0.42, 0.3);
+        h.assertTrue(peak > 2.5, "a zoom climb of a few blocks, got " + peak);
+        h.assertTrue(z.horizontalDistance() < EndGlider.STALL && z.y < 0, "then it stalls and sinks: " + z);
+        // steering follows the look with momentum (it swings round, not instantly)
+        Vec3 turn = level;
         for (int i = 0; i < 3; i++) {
-            Vec3 next = EndGlider.glide(jump, lookUp);
-            h.assertTrue(next.y < jump.y, "gliding never lifts you");
-            jump = next;
+            turn = EndGlider.glide(turn, new Vec3(1, 0, 0));
         }
+        h.assertTrue(turn.x > 0.02 && turn.z > turn.x, "turns gradually: " + turn);
         leave(h, p);
         h.succeed();
     }

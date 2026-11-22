@@ -2,167 +2,122 @@
 
     python examples/src/lionfish.py examples/lionfish.json
 
-An elegant reef predator: a deep, flat body striped in broad coral-red bands and thin cream ones (the stripes bend
-round the head and through the eye), a big mouth, round red-gold eyes under frilly brow tentacles, a crest of long
-venomous dorsal `spines` (banded, with torn membrane flags, the tips bare), huge feathery pectoral `fins` spread like
-fans (banded rays reaching past a spotted membrane), little pelvic fins, spotted soft fins at the back and a rounded,
-spotted tail fan.
+A reef lionfish in the vanilla mob style: a deep, boxy orange-red body with clean cream stripes (they slant back
+round the head, a thin dark line runs through each coral band), a cream chin and belly, small flat dot eyes under a
+fierce brow, a crest of six striped spine cards with torn pale flags (`spines`), big striped pectoral fans (`fins`)
+spread to the sides, little pelvic fins, a soft dorsal and anal fin at the back and a striped tail fan.
 
-Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
-to a vanilla entity model (python -m lowpix mc export). About 18 px long with the tail fan, 21 px tall with the
-spines up and 23 px across the spread pectoral fans; faces +Z, the lowest point at y = 0, "left" is +X; the root (body)
-pivots in the middle of the trunk.
+Units are Minecraft pixels (16 per block) at **density 1** (vanilla texel size). About 25 px long, 24 px tall with the
+spines and 22 px across the spread fans; draw it at scale 0.6 (about 15 px long in game, like a big tropical fish).
+Every box is whole pixels, so the model exports 1:1 to a vanilla entity model:
+
+    PYTHONHASHSEED=0 python -m lowpix mc export examples/lionfish.json --mod mods/winterworks --modid winterworks \\
+        --package dev.lowpix.winterworks.client.lowpix -o out/lionfish
+
+Faces +Z, the lowest point (the pelvic fins) at y = 0, "left" is +X; the root (body) pivots in the middle of the trunk.
 
 Contract (mods/winterworks/docs/OCEAN_UPDATE.md section 4): bones body, fins (the pectoral pair: fin_l, fin_r), spines
-(the dorsal crest: spine_0..5), tail. Extra joints: jaw, tail_fin, fin_pelvic_l/r, fin_soft, fin_anal. Clips: swim
-(loop), hunt (0.5 s), flare (spines out, 0.8 s). No glow.
+(the dorsal crest: spine_0..5), tail. Extra joints: head, jaw, tail_fin, fin_pelvic_l/r, fin_soft, fin_anal, eye_l/r
+(the painted eyes' spots). Clips: swim 2.0 (loop), hunt 0.5, flare (spines out) 0.8. No glow. Part names from the
+earlier design that are no longer drawn stay as empty bones (name compatibility).
 """
-import math
 import os
-import random
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from sea_life_kit import (GLOSS, LIGHT, LR, M, ROOT, Canvas, Rig, add, dump, fan_fin, keys, osc, pos, r,  # noqa
-                       ramps, rest_on_ground, ring, round_eye, rounded, sc, shake, timeline, wave)
+from sea_life_kit import (LIGHT, LR, M, ROOT, Rig, add, banded_fan, card_style, combine, dump, flat, keep_names,  # noqa
+                       marks, osc, pos, r, ramps, rest_on_ground, ring, sc, shake, side_eye, timeline, wave)
 
-DENSITY = 2
+DENSITY = 1
 R = Rig(density=DENSITY, bone_style="red")
 part, bone, card = R.part, R.bone, R.card
 
-
-def spine_card(w, h, seed, n=2):
-    """Long venomous spines (banded 'r'/'w', one texel wide, bare dark tips 't') each with a torn membrane flag
-    ('m', its frayed edge 'e') trailing behind it over the lower part (plane yz: image-right is backward)."""
-    rng = random.Random(seed)
-    c = Canvas(w, h)
-    for k in range(n):
-        x = k * (w // n)
-        L = int(h * rng.uniform(0.75, 1.0))
-        flag = int(L * rng.uniform(0.3, 0.5))
-        for j in range(L):
-            y = h - 1 - j
-            c.g[y][x] = "t" if j >= L - 2 else ("r" if (j // 3) % 2 == 0 else "w")
-            if j < flag:
-                fw = (2 if j < flag * 0.4 else 1) if j < flag * 0.8 or rng.random() < 0.5 else 0
-                for dx in range(1, fw + 1):
-                    if x + dx < w:
-                        c.g[y][x + dx] = "e" if dx == fw and rng.random() < 0.6 else "m"
-        # a tear in the membrane
-        if flag > 4:
-            ty = h - 1 - rng.randrange(2, flag - 1)
-            if x + 1 < w:
-                c.g[ty][x + 1] = "."
-    return c.rows()
-
-
-def pec_fin(w, h, seed):
-    """A big feathery pectoral fan (plane yz: image-right backward): many banded rays reaching past a spotted membrane."""
-    rays = 9
-    tips = []
-    for k in range(rays):
-        u = k / (rays - 1)
-        ang = math.radians(-70 + 150 * u)
-        L = (w - 1.5) * (0.8 + 0.2 * math.sin(math.pi * u))
-        tips.append((1.0 + math.cos(ang) * L, h * 0.42 + math.sin(ang) * L * (h / w) * 0.95))
-    return fan_fin(w, h, (1.0, h * 0.42), tips, seed=seed, torn=0.0, scallop=0.55, band="w", band_every=2,
-                   spot="s", spots=4, ray_over=1.12)
-
-
-# ======================================================================= body: deep and flat, a big head
-rounded(R, "body", None, [3.5, 5.5, 6.5], "trunk", centre=(0, 5.5, -1.0), at=(0, 5.5, 0.0), cut=(0.73, 0.85))
-part("belly", "body", [2.5, 1, 5], "trunk_belly", centre=(0, 2.75, -0.5))
-rounded(R, "head", "body", [3.5, 5, 3.5], "head", centre=(0, 5.75, 3.5), skip=("y",), cut=(0.8, 0.86))
-part("snout", "head", [2.5, 2.5, 1.5], "head", centre=(0, 5.25, 5.75))
-part("lip", "head", [2.5, 1, 1], "lip", centre=(0, 4.5, 6.75))
-bone("jaw", "head", at=(0, 4.25, 4.5))
-part("jaw_bone", "jaw", [2.5, 1, 2.5], "jaw", centre=(0, 3.75, 5.75))
+# ======================================================================= body, head, tail
+part("body", None, [5, 9, 9], "red", at=(0, 8.5, 0), centre=(0, 8.5, -2.5))
+part("belly", "body", [3, 1, 7], "red", centre=(0, 3.5, -2.5))
+part("head", "body", [5, 8, 5], "head", centre=(0, 9, 4.5))
+part("snout", "head", [3, 4, 2], "head", centre=(0, 8, 8))
+bone("jaw", "head", at=(0, 6, 5))
+part("jaw_bone", "jaw", [3, 1, 4], "jaw", centre=(0, 5.5, 7))
 for s in (1, -1):
-    n = LR(s)
-    part(f"eye_{n}", "head", [0.5, 3.5, 3.5], "eye", centre=M((1.875, 6.75, 4.0), s))
-    # frilly brow tentacles over each eye
-    card(f"brow_{n}", "head", ["t.t", "tmt", ".m.", ".m.", ".m."], "frill", at=M((1.6, 8.25, 4.2), s),
-         offset=(0, 1.25, 0), plane="yz", rot=(-20, s * 10, s * -12))
-    card(f"cheek_frill_{n}", "jaw", ["m.m", "mtm", "t.t"], "frill", at=M((1.3, 3.5, 5.5), s), offset=(0, -0.75, 0),
-         plane="yz")
+    bone(f"eye_{LR(s)}", "head", at=M((2.5, 11, 6), s))
+part("tail", "body", [3, 3, 3], "red", at=(0, 8.5, -7), centre=(0, 8.5, -8.5))
+card("tail_fin", "tail", banded_fan(6, 11, (0.0, 5.5), 6.3, spread=(-72, 72), bands="wrr", notches=2, seed=9),
+     "fin", at=(0, 8.5, -10), offset=(0, 0, -3), plane="yz")
 
-# ======================================================================= the dorsal spines: a crest of banded spines
-bone("spines", "body", at=(0, 8.0, 2.5))
-SPINE_Z = (3.0, 2.0, 1.0, 0.0, -1.0, -2.0)
-SPINE_RX = (-10, -2, 6, 14, 22, 30)      # rest lean: each spine leans further back
-SPINE_H = (18, 20, 20, 18, 16, 13)
+# ======================================================================= the dorsal spines: six striped spine cards
+bone("spines", "body", at=(0, 13, 1))
+SPINE_Z = (3.0, 1.5, 0.0, -1.5, -3.0, -4.5)
+SPINE_RX = (-12, -4, 4, 12, 20, 28)      # rest lean: each spine leans further back, a fan
+SPINE_H = (9, 11, 11, 10, 8, 7)
 for k, (z, rx, h) in enumerate(zip(SPINE_Z, SPINE_RX, SPINE_H)):
-    card(f"spine_{k}", "spines", spine_card(3, h, seed=50 + k, n=1), "spine", at=(0, 7.75, z), offset=(0, h / 4, 0.25),
+    # a spine banded coral and cream with a dark tip, a torn pale membrane flag trailing its lower half;
+    # neighbours alternate two pixels apart in x so they never overlap flat
+    art = []
+    for j in range(h):
+        sp = "t" if j == 0 else "rw"[((h - j) // 2) % 2]
+        fl = "m" if j >= h // 2 and (j + k) % 4 else "."
+        art.append(sp + fl)
+    card(f"spine_{k}", "spines", art, "spine", at=(1 if k % 2 else -1, 12.8, z), offset=(0, h / 2, -0.5),
          plane="yz", rot=(rx, 0, 0))
 
 # ======================================================================= the pectoral fans and the little fins
-bone("fins", "body", at=(0, 4.5, 2.0))
+bone("fins", "body", at=(0, 7, 2))
+PEC = banded_fan(9, 11, (0.5, 5.5), 8.6, spread=(-70, 70), bands="rrw", notches=3, seed=4)
 for s in (1, -1):
     n = LR(s)
-    card(f"fin_{n}", "fins", pec_fin(20, 22, seed=60 + s), "fin", at=M((1.6, 4.5, 2.0), s), offset=(0, 0, -4.75),
-         plane="yz", rot=(10, s * -58, s * -28))
-    card(f"fin_pelvic_{n}", "body", ["rmm", "rmm", "rmw", "rwm", "rm.", "t.."], "fin", at=M((0.9, 3.0, 2.0), s),
-         offset=(0, -1.25, -0.5), plane="yz", rot=(28, s * -20, s * -15))
-card("fin_soft", "body", fan_fin(12, 8, (0.5, 7.5), [(2.0, 1.0), (5.0, 0.5), (8.5, 1.5), (11.0, 3.5), (11.5, 6.5)],
-                                 seed=71, scallop=0.25, spot="s", spots=5), "fin", at=(0, 7.75, -1.5),
-     offset=(0, 1.75, -3.0), plane="yz")
-card("fin_anal", "body", fan_fin(8, 6, (0.5, 0.5), [(2.0, 5.0), (5.0, 5.5), (7.5, 3.5), (7.5, 1.0)], seed=72,
-                                 scallop=0.25, spot="s", spots=3), "fin", at=(0, 3.25, -2.5),
-     offset=(0, -1.5, -2.0), plane="yz")
+    card(f"fin_{n}", "fins", PEC, "fin", at=M((2.5, 7, 2), s), offset=(0, 0, -4.5), plane="yz",
+         rot=(10, s * -55, s * -25))
+    card(f"fin_pelvic_{n}", "body", ["ww.", "rwr", "rw.", "r.."], "fin", at=M((1, 4, 1), s), offset=(0, -2, -1.5),
+         plane="yz", rot=(20, s * -15, s * -10))
+card("fin_soft", "body", ["..rw..", ".rwrw.", "rwrwrw", "rwrwrw"], "fin", at=(0, 13, -5), offset=(0, 2, -2.5),
+     plane="yz")
+card("fin_anal", "body", ["rwrwr", ".rwr.", "..r.."], "fin", at=(0, 4, -5), offset=(0, -1.5, -2), plane="yz")
 
-# ======================================================================= tail
-part("tail", "body", [2, 3, 2], "trunk", at=(0, 5.5, -4.0), centre=(0, 5.5, -5.0))
-card("tail_fin", "tail", fan_fin(10, 14, (0.5, 7.0), [(4.0, 0.5), (7.5, 1.5), (9.5, 4.5), (9.8, 7.0), (9.5, 9.5),
-                                                       (7.5, 12.5), (4.0, 13.5)], seed=81, scallop=0.2,
-                                 spot="s", spots=7, band="w", band_every=2),
-     "fin", at=(0, 5.5, -5.75), offset=(0, 0, -2.5), plane="yz")
+# names of the earlier design that are not drawn any more (kept as empty bones for the mod's code)
+keep_names(R, {"body_y": "body", "body_z": "body", "head_z": "head", "lip": "head", "brow_l": "head",
+               "brow_r": "head", "cheek_frill_l": "jaw", "cheek_frill_r": "jaw"})
 
 # ======================================================================= palette and paint
-RAMPS = ramps("coral", "cream", "pupil", "amber",
-              # the fins' pale membrane, faintly pink
-              veil=["#5b3f3d", "#7d5c57", "#a07f77", "#c0a197", "#dbc1b5", "#eedcd0"])
-brush = {"flow": "vertical", "length": 1.0, "width": 0.5, "rough": 0.45, "overshoot": 0.2,
-         "textures": {"coral": "scales"}}
-RIM = {"light": 1, "dark": 1, "light_shift": 1.6, "dark_shift": -1.4}
-# broad coral bands and narrow cream ones, bending a little; a thin dark line splits each red band
-STRIPES = {"id": "stripes", "op": "stripes", "axis": [0, -0.25, 1], "period": 1.75, "width": 0.36, "ramp": "cream",
-           "tone": 5.4, "wobble": 0.25, "faces": ["sides", "top", "bottom"],
-           "bevel": {"shadow": 1, "highlight": 0, "shadow_ramp": "coral", "shadow_shift": -1.5}}
-HAIRLINE = {"id": "hairline", "op": "stripes", "axis": [0, -0.25, 1], "period": 1.75, "width": 0.1, "phase": 1.15,
-            "ramp": "coral", "tone": 2.0, "wobble": 0.25, "faces": ["sides"]}
-SCALES = {"id": "scales", "op": "scales", "shape": "round", "along": "z", "size": [1.0, 1.0], "gap": 0.25,
-          "highlight": 0.5, "shadow": -0.6, "jitter": 0.6, "faces": ["sides"]}
+RAMPS = ramps("coral", "cream", "veil", "ink", "glint")
 styles = {
-    "red": {"ramp": "coral", "tone": 5.0, "rim": RIM},
-    "trunk": {"ramp": "coral", "tone": 5.0, "rim": RIM,
-              "layers": [SCALES, STRIPES, HAIRLINE,
-                         {"id": "dark_back", "op": "gradient", "axis": "y", "amount": -0.5}, GLOSS]},
-    "trunk_belly": {"ramp": "cream", "tone": 5.0, "rim": RIM,
-                    "layers": [dict(STRIPES, ramp="coral", tone=5.4, width=0.3)]},
-    "head": {"ramp": "coral", "tone": 5.2, "rim": RIM,
-             "layers": [dict(STRIPES, axis=[0, -0.6, 1], period=1.5, width=0.32),
-                        {"id": "eye_bar", "op": "band", "axis": "z", "from": 0.05, "to": 0.55, "ramp": "coral",
-                         "tone": 2.4, "faces": ["sides"], "wobble": 0.15},
-                        {"id": "chin", "op": "band", "axis": "y", "from": -1.01, "to": -0.6, "ramp": "cream",
-                         "tone": 5.6, "faces": ["sides", "bottom", "front"]}, GLOSS]},
-    "lip": {"ramp": "cream", "tone": 4.6, "rim": RIM, "brush": {"off": True}},
-    "jaw": {"ramp": "cream", "tone": 5.0, "rim": RIM, "brush": {"off": True},
-            "layers": [{"id": "mouth", "op": "fill", "ramp": "coral", "tone": 1.6, "faces": ["top"]},
-                       dict(STRIPES, ramp="coral", tone=4.6, period=1.0, width=0.4, faces=["sides"])]},
-    "eye": {"ramp": "coral", "tone": 2.0, "light": 0.2, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
-            "stamps": [{"faces": ["left", "right"], "at": "top-left",
-                        "art": round_eye(7),
-                        "key": {"k": "coral:1", "i": "amber:3", "I": "amber:5", "J": "amber:7", "p": "pupil:0",
-                                "W": "cream:7"}}]},
-    "frill": {"ramp": "veil", "tone": 3, "light": 0, "brush": {"off": True},
-              "art_key": {"m": "veil:3", "t": "coral:6"}},
-    # spines: banded red and cream, bare dark tips, a pale torn membrane behind each
-    "spine": {"ramp": "veil", "tone": 3, "light": 0.2, "brush": {"off": True},
-              "art_key": {"r": "coral:4", "w": "cream:6", "t": "coral:1", "m": "veil:3", "e": "veil:5"}},
-    # fins: banded rays past a pale membrane with red spots
-    "fin": {"ramp": "veil", "tone": 3.6, "light": 0.3, "brush": {"off": True},
-            "art_key": {"r": "coral:5", "w": "cream:6", "t": "coral:7", "e": "veil:5", "s": "coral:3"}},
+    "red": flat("coral", 3.6, grain=1.0),
+    "head": flat("coral", 3.8, grain=1.0),
+    "jaw": flat("cream", 2.6, grain=0.6),
+    # spines and fins: striped coral and cream, dark tips, a pale membrane
+    "spine": card_style("coral", 3, {"r": "coral:3", "w": "cream:4", "t": "coral:0", "m": "veil:3"}),
+    "fin": card_style("coral", 3, {"r": "coral:4", "w": "cream:4", "m": "veil:2"}),
 }
+
+
+# bands: broad coral and narrow cream ones slanting back toward the head, a thin dark line through each coral
+# band, a cream chin and belly
+def stripes(x, y, z, f):
+    if f == "bottom" or y < 5:
+        return "c"
+    u = z + 0.4 * (y - 8)
+    m = (u + 0.5) % 3.5
+    if m < 1.0:
+        return "c"
+    if 2.0 < m < 2.8 and f != "top":
+        return "d"
+    return "."
+
+
+def face(x, y, z, f):
+    """The face: a cream cheek patch under the eye, a dark mouth line."""
+    if f in ("left", "right", "front") and 6 < y < 7 and z > 6:
+        return "d"
+    if f in ("left", "right") and y < 8 and z > 5:
+        return "c"
+    return "."
+
+
+KEY = {"c": "cream:3", "d": "coral:1", "k": "ink:0", "h": "glint:1", "b": "coral:0", "l": "coral:1"}
+for pid in ("body", "tail", "belly"):
+    marks(R, pid, stripes, KEY)
+marks(R, "head", combine(side_eye(12, 7, w=2, h=2, brow="angry", gap=1), face, stripes), KEY)
+marks(R, "snout", combine(face, stripes), KEY)
 
 # ======================================================================= animation
 REST = {}
@@ -215,16 +170,14 @@ for clip in ANIM.values():
 
 spec = {
     "name": "Lionfish",
-    "description": "The Winterworks lionfish: an elegant striped reef predator, coral-red and cream bands, round "
-                   "red-gold eyes under frilly brow tentacles, a crest of long banded venomous spines with torn "
-                   "membranes, huge feathery spotted pectoral fans and a spotted tail fan. Minecraft pixel units, "
-                   "density 2: exports 1:1 to a vanilla entity model.",
+    "description": "The Winterworks lionfish in the vanilla mob style: a deep boxy orange-red body with clean cream "
+                   "stripes, flat dot eyes under a fierce brow, a crest of striped spines, big striped pectoral fans "
+                   "and a striped tail fan. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": DENSITY,
     "grounded": False,
-    "budget": {"tris": 600, "colors": 64},
+    "budget": {"tris": 200, "colors": 40},
     "light": LIGHT,
-    "brush": brush,
     "minecraft": {"fps": 20},
     "render": {"background": "#1d4f5c", "hero": [38, 18], "shadow": 0.4},
     "palette": {"ramps": RAMPS},

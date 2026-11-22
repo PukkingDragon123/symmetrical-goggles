@@ -1,13 +1,13 @@
 {
  "name": "Lionfish",
- "description": "The Winterworks lionfish: an elegant striped reef predator, coral-red and cream bands, round red-gold eyes under frilly brow tentacles, a crest of long banded venomous spines with torn membranes, huge feathery spotted pectoral fans and a spotted tail fan. Minecraft pixel units, density 2: exports 1:1 to a vanilla entity model.",
+ "description": "The Winterworks lionfish in the vanilla mob style: a deep boxy orange-red body with clean cream stripes, flat dot eyes under a fierce brow, a crest of striped spines, big striped pectoral fans and a striped tail fan. Minecraft pixel units, density 1: exports 1:1 to a vanilla entity model.",
  "author": "lowpix example",
  "license": "CC0-1.0",
- "density": 2,
+ "density": 1,
  "grounded": false,
  "budget": {
-  "tris": 600,
-  "colors": 64
+  "tris": 200,
+  "colors": 40
  },
  "light": {
   "dir": [
@@ -15,20 +15,10 @@
    1.0,
    0.6
   ],
-  "strength": 0.8,
-  "gradient": 0.5,
-  "ao": 0.5,
+  "strength": 0.9,
+  "gradient": 0.6,
+  "ao": 0.4,
   "ao_height": 6.0
- },
- "brush": {
-  "flow": "vertical",
-  "length": 1.0,
-  "width": 0.5,
-  "rough": 0.45,
-  "overshoot": 0.2,
-  "textures": {
-   "coral": "scales"
-  }
  },
  "minecraft": {
   "fps": 20
@@ -44,401 +34,171 @@
  "palette": {
   "ramps": {
    "coral": [
-    "#22050a",
-    "#3a0b10",
-    "#561314",
-    "#741d18",
-    "#93291d",
-    "#b13a24",
-    "#c9502e",
-    "#dc6c3e",
-    "#ea8d58",
-    "#f4ae7c"
+    "#5e1b12",
+    "#7a2516",
+    "#95311b",
+    "#ad3e20",
+    "#c34e26",
+    "#d6602e",
+    "#e47538"
    ],
    "cream": [
-    "#4a3e33",
-    "#6b5d4e",
-    "#8d7e6c",
-    "#ae9f8b",
-    "#cbbea9",
-    "#e2d8c5",
-    "#f2ecdd",
-    "#fcf9f0"
-   ],
-   "pupil": [
-    "#040406",
-    "#0a0a0e",
-    "#131318"
-   ],
-   "amber": [
-    "#1d1004",
-    "#352008",
-    "#52330c",
-    "#714a12",
-    "#92651b",
-    "#b38328",
-    "#cfa13d",
-    "#e6c15e",
-    "#f6df8e"
+    "#a3907a",
+    "#bcab94",
+    "#d2c3ab",
+    "#e4d8c3",
+    "#f1e9d8",
+    "#faf5ea"
    ],
    "veil": [
-    "#5b3f3d",
-    "#7d5c57",
-    "#a07f77",
-    "#c0a197",
-    "#dbc1b5",
-    "#eedcd0"
+    "#a87d6c",
+    "#c09684",
+    "#d5ae9c",
+    "#e6c6b6"
+   ],
+   "ink": [
+    "#0e0c10",
+    "#1a171d",
+    "#2a262e"
+   ],
+   "glint": [
+    "#9a9aa4",
+    "#d9d9df"
    ]
   }
  },
  "styles": {
   "red": {
    "ramp": "coral",
-   "tone": 5.0,
+   "tone": 3.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4
-   }
-  },
-  "trunk": {
-   "ramp": "coral",
-   "tone": 5.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "scales",
-     "op": "scales",
-     "shape": "round",
-     "along": "z",
-     "size": [
-      1.0,
-      1.0
-     ],
-     "gap": 0.25,
-     "highlight": 0.5,
-     "shadow": -0.6,
-     "jitter": 0.6,
-     "faces": [
-      "sides"
-     ]
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.0
     },
     {
-     "id": "stripes",
-     "op": "stripes",
-     "axis": [
-      0,
-      -0.25,
-      1
-     ],
-     "period": 1.75,
-     "width": 0.36,
-     "ramp": "cream",
-     "tone": 5.4,
-     "wobble": 0.25,
-     "faces": [
-      "sides",
-      "top",
-      "bottom"
-     ],
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_ramp": "coral",
-      "shadow_shift": -1.5
-     }
-    },
-    {
-     "id": "hairline",
-     "op": "stripes",
-     "axis": [
-      0,
-      -0.25,
-      1
-     ],
-     "period": 1.75,
-     "width": 0.1,
-     "phase": 1.15,
-     "ramp": "coral",
-     "tone": 2.0,
-     "wobble": 0.25,
-     "faces": [
-      "sides"
-     ]
-    },
-    {
-     "id": "dark_back",
+     "id": "falloff",
      "op": "gradient",
      "axis": "y",
-     "amount": -0.5
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
-    }
-   ]
-  },
-  "trunk_belly": {
-   "ramp": "cream",
-   "tone": 5.0,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4
-   },
-   "layers": [
-    {
-     "id": "stripes",
-     "op": "stripes",
-     "axis": [
-      0,
-      -0.25,
-      1
-     ],
-     "period": 1.75,
-     "width": 0.3,
-     "ramp": "coral",
-     "tone": 5.4,
-     "wobble": 0.25,
+     "amount": 1.0,
      "faces": [
-      "sides",
-      "top",
-      "bottom"
-     ],
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_ramp": "coral",
-      "shadow_shift": -1.5
-     }
+      "sides"
+     ]
     }
    ]
   },
   "head": {
    "ramp": "coral",
-   "tone": 5.2,
+   "tone": 3.8,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "stripes",
-     "op": "stripes",
-     "axis": [
-      0,
-      -0.6,
-      1
-     ],
-     "period": 1.5,
-     "width": 0.32,
-     "ramp": "cream",
-     "tone": 5.4,
-     "wobble": 0.25,
-     "faces": [
-      "sides",
-      "top",
-      "bottom"
-     ],
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_ramp": "coral",
-      "shadow_shift": -1.5
-     }
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 1.0
     },
     {
-     "id": "eye_bar",
-     "op": "band",
-     "axis": "z",
-     "from": 0.05,
-     "to": 0.55,
-     "ramp": "coral",
-     "tone": 2.4,
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
       "sides"
-     ],
-     "wobble": 0.15
-    },
-    {
-     "id": "chin",
-     "op": "band",
-     "axis": "y",
-     "from": -1.01,
-     "to": -0.6,
-     "ramp": "cream",
-     "tone": 5.6,
-     "faces": [
-      "sides",
-      "bottom",
-      "front"
      ]
-    },
-    {
-     "id": "gloss",
-     "op": "gloss",
-     "post": true,
-     "dash": true,
-     "length": 2,
-     "inset": 1,
-     "density": 0.45,
-     "shift": 1.6
     }
    ]
-  },
-  "lip": {
-   "ramp": "cream",
-   "tone": 4.6,
-   "rim": {
-    "light": 1,
-    "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4
-   },
-   "brush": {
-    "off": true
-   }
   },
   "jaw": {
    "ramp": "cream",
-   "tone": 5.0,
+   "tone": 2.6,
+   "light": 1.0,
+   "brush": {
+    "off": true
+   },
+   "dither": 0,
    "rim": {
     "light": 1,
     "dark": 1,
-    "light_shift": 1.6,
-    "dark_shift": -1.4
-   },
-   "brush": {
-    "off": true
+    "light_shift": 1.0,
+    "dark_shift": -0.9
    },
    "layers": [
     {
-     "id": "mouth",
-     "op": "fill",
-     "ramp": "coral",
-     "tone": 1.6,
-     "faces": [
-      "top"
-     ]
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.9,
+     "amount": 0.6
     },
     {
-     "id": "stripes",
-     "op": "stripes",
-     "axis": [
-      0,
-      -0.25,
-      1
-     ],
-     "period": 1.0,
-     "width": 0.4,
-     "ramp": "coral",
-     "tone": 4.6,
-     "wobble": 0.25,
+     "id": "falloff",
+     "op": "gradient",
+     "axis": "y",
+     "amount": 1.0,
      "faces": [
       "sides"
-     ],
-     "bevel": {
-      "shadow": 1,
-      "highlight": 0,
-      "shadow_ramp": "coral",
-      "shadow_shift": -1.5
-     }
+     ]
     }
    ]
   },
-  "eye": {
+  "spine": {
    "ramp": "coral",
-   "tone": 2.0,
-   "light": 0.2,
+   "tone": 3,
+   "light": 0.25,
    "brush": {
     "off": true
    },
+   "dither": 0,
    "rim": {
     "light": 0,
     "dark": 0
    },
-   "stamps": [
-    {
-     "faces": [
-      "left",
-      "right"
-     ],
-     "at": "top-left",
-     "art": [
-      "..kkk..",
-      ".kiiik.",
-      "kikWkik",
-      "kIpppIk",
-      "kJkpkJk",
-      ".kJJJk.",
-      "..kkk.."
-     ],
-     "key": {
-      "k": "coral:1",
-      "i": "amber:3",
-      "I": "amber:5",
-      "J": "amber:7",
-      "p": "pupil:0",
-      "W": "cream:7"
-     }
-    }
-   ]
-  },
-  "frill": {
-   "ramp": "veil",
-   "tone": 3,
-   "light": 0,
-   "brush": {
-    "off": true
-   },
    "art_key": {
-    "m": "veil:3",
-    "t": "coral:6"
-   }
-  },
-  "spine": {
-   "ramp": "veil",
-   "tone": 3,
-   "light": 0.2,
-   "brush": {
-    "off": true
-   },
-   "art_key": {
-    "r": "coral:4",
-    "w": "cream:6",
-    "t": "coral:1",
-    "m": "veil:3",
-    "e": "veil:5"
+    "r": "coral:3",
+    "w": "cream:4",
+    "t": "coral:0",
+    "m": "veil:3"
    }
   },
   "fin": {
-   "ramp": "veil",
-   "tone": 3.6,
-   "light": 0.3,
+   "ramp": "coral",
+   "tone": 3,
+   "light": 0.25,
    "brush": {
     "off": true
    },
+   "dither": 0,
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
    "art_key": {
-    "r": "coral:5",
-    "w": "cream:6",
-    "t": "coral:7",
-    "e": "veil:5",
-    "s": "coral:3"
+    "r": "coral:4",
+    "w": "cream:4",
+    "m": "veil:2"
    }
   }
  },
@@ -447,133 +207,539 @@
    "id": "body",
    "shape": "box",
    "size": [
-    3.5,
-    4.0,
-    5.5
+    5,
+    9,
+    9
    ],
    "pivot": [
     0.0,
-    8.4906,
+    8.3916,
     0.0
    ],
    "offset": [
     0.0,
     0.0,
-    -1.0
+    -2.5
    ],
-   "style": "trunk"
-  },
-  {
-   "id": "body_y",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    3.0,
-    5.5,
-    4.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.0
-   ],
-   "style": "trunk"
-  },
-  {
-   "id": "body_z",
-   "shape": "box",
-   "parent": "body",
-   "size": [
-    2.5,
-    4.5,
-    6.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    -1.0
-   ],
-   "style": "trunk"
+   "style": "red",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       ".....",
+       "ddddd",
+       "ddddd",
+       ".....",
+       ".....",
+       "ccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "ddddd",
+       ".....",
+       ".....",
+       ".....",
+       "ccccc",
+       "ccccc",
+       ".....",
+       ".....",
+       "ccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".c.d.c..c",
+       "d.c..c.d.",
+       "..c.dc...",
+       ".dc.d.c.d",
+       ".d.c.dc.d",
+       "c..c.d.c.",
+       "c.d.c..c.",
+       "c...c.dc.",
+       "ccccccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "c..c.d.c.",
+       ".d.c..c.d",
+       "...cd.c..",
+       "d.c.d.cd.",
+       "d.cd.c.d.",
+       ".c.d.c..c",
+       ".c..c.d.c",
+       ".cd.c...c",
+       "ccccccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".....",
+       "ccccc",
+       ".....",
+       ".....",
+       "ccccc",
+       ".....",
+       ".....",
+       ".....",
+       "ccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "belly",
    "shape": "box",
    "parent": "body",
    "size": [
-    2.5,
-    1.0,
-    5.0
+    3,
+    1,
+    7
    ],
    "pivot": [
     0.0,
-    -2.75,
-    -0.5
+    -5.0,
+    -2.5
    ],
-   "style": "trunk_belly"
+   "style": "red",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "ccccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "ccccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "head",
    "shape": "box",
    "parent": "body",
    "size": [
-    3.5,
-    4.0,
-    3.0
+    5,
+    8,
+    5
    ],
    "pivot": [
     0.0,
-    0.25,
-    3.5
+    0.5,
+    4.5
    ],
-   "style": "head"
-  },
-  {
-   "id": "head_z",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    3.0,
-    4.5,
-    3.5
-   ],
-   "pivot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "style": "head"
+   "style": "head",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "ddddd",
+       ".....",
+       ".....",
+       ".....",
+       "ccccc",
+       "ccccc",
+       "ddddd",
+       "....."
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       ".....",
+       "ddddd",
+       "ddddd",
+       ".....",
+       "....."
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".d.c.",
+       "c..kh",
+       "c.dkk",
+       "c.d.c",
+       ".c.dc",
+       ".c.cc",
+       "d.ccd",
+       "..ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       ".c.d.",
+       "hk..c",
+       "kkd.c",
+       "c.d.c",
+       "cd.c.",
+       "cc.c.",
+       "dcc.d",
+       "ccc.."
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       ".....",
+       ".....",
+       "ccccc",
+       ".....",
+       "....."
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc",
+       "ccccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "snout",
    "shape": "box",
    "parent": "head",
    "size": [
-    2.5,
-    2.5,
-    1.5
+    3,
+    4,
+    2
    ],
    "pivot": [
     0.0,
-    -0.5,
-    2.25
+    -1.0,
+    3.5
    ],
-   "style": "head"
-  },
-  {
-   "id": "lip",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    2.5,
-    1.0,
-    1.0
-   ],
-   "pivot": [
-    0.0,
-    -1.25,
-    3.25
-   ],
-   "style": "lip"
+   "style": "head",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "...",
+       "ddd",
+       "ddd",
+       "ddd"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "...",
+       "ccc",
+       "ccc",
+       "..."
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       ".d",
+       ".d",
+       "cc",
+       "dd"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "d.",
+       "d.",
+       "cc",
+       "dd"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     }
+    ]
+   }
   },
   {
    "id": "jaw",
@@ -581,8 +747,8 @@
    "parent": "head",
    "pivot": [
     0.0,
-    -1.5,
-    1.0
+    -3.0,
+    0.5
    ],
    "style": "red"
   },
@@ -591,149 +757,194 @@
    "shape": "box",
    "parent": "jaw",
    "size": [
-    2.5,
-    1.0,
-    2.5
+    3,
+    1,
+    4
    ],
    "pivot": [
     0.0,
     -0.5,
-    1.25
+    2.0
    ],
    "style": "jaw"
   },
   {
    "id": "eye_l",
-   "shape": "box",
-   "parent": "head",
-   "size": [
-    0.5,
-    3.5,
-    3.5
-   ],
-   "pivot": [
-    1.875,
-    1.0,
-    0.5
-   ],
-   "style": "eye"
-  },
-  {
-   "id": "brow_l",
-   "shape": "card",
+   "shape": "bone",
    "parent": "head",
    "pivot": [
-    1.6,
     2.5,
-    0.7
+    2.0,
+    1.5
    ],
-   "offset": [
-    0.0,
-    1.25,
-    0.0
-   ],
-   "rotation": [
-    -20.0,
-    10.0,
-    -12.0
-   ],
-   "style": "frill",
-   "plane": "yz",
-   "art": [
-    "t.t",
-    "tmt",
-    ".m.",
-    ".m.",
-    ".m."
-   ]
-  },
-  {
-   "id": "cheek_frill_l",
-   "shape": "card",
-   "parent": "jaw",
-   "pivot": [
-    1.3,
-    -0.75,
-    1.0
-   ],
-   "offset": [
-    0.0,
-    -0.75,
-    0.0
-   ],
-   "style": "frill",
-   "plane": "yz",
-   "art": [
-    "m.m",
-    "mtm",
-    "t.t"
-   ]
+   "style": "red"
   },
   {
    "id": "eye_r",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    -2.5,
+    2.0,
+    1.5
+   ],
+   "style": "red"
+  },
+  {
+   "id": "tail",
    "shape": "box",
-   "parent": "head",
+   "parent": "body",
    "size": [
-    0.5,
-    3.5,
-    3.5
+    3,
+    3,
+    3
    ],
    "pivot": [
-    -1.875,
-    1.0,
-    0.5
-   ],
-   "style": "eye"
-  },
-  {
-   "id": "brow_r",
-   "shape": "card",
-   "parent": "head",
-   "pivot": [
-    -1.6,
-    2.5,
-    0.7
+    0.0,
+    0.0,
+    -7.0
    ],
    "offset": [
     0.0,
-    1.25,
-    0.0
+    0.0,
+    -1.5
    ],
-   "rotation": [
-    -20.0,
-    -10.0,
-    12.0
-   ],
-   "style": "frill",
-   "plane": "yz",
-   "art": [
-    "t.t",
-    "tmt",
-    ".m.",
-    ".m.",
-    ".m."
-   ]
+   "style": "red",
+   "paint": {
+    "stamps": [
+     {
+      "face": "front",
+      "at": "top-left",
+      "art": [
+       "...",
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "back",
+      "at": "top-left",
+      "art": [
+       "...",
+       "...",
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "left",
+      "at": "top-left",
+      "art": [
+       "d.c",
+       ".dc",
+       ".d."
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "right",
+      "at": "top-left",
+      "art": [
+       "c.d",
+       "cd.",
+       ".d."
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "top",
+      "at": "top-left",
+      "art": [
+       "...",
+       "...",
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     },
+     {
+      "face": "bottom",
+      "at": "top-left",
+      "art": [
+       "ccc",
+       "ccc",
+       "ccc"
+      ],
+      "key": {
+       "c": "cream:3",
+       "d": "coral:1",
+       "k": "ink:0",
+       "h": "glint:1",
+       "b": "coral:0",
+       "l": "coral:1"
+      }
+     }
+    ]
+   }
   },
   {
-   "id": "cheek_frill_r",
+   "id": "tail_fin",
    "shape": "card",
-   "parent": "jaw",
+   "parent": "tail",
    "pivot": [
-    -1.3,
-    -0.75,
-    1.0
+    0.0,
+    0.0,
+    -3.0
    ],
    "offset": [
     0.0,
-    -0.75,
-    0.0
+    0.0,
+    -3.0
    ],
-   "style": "frill",
+   "style": "fin",
    "plane": "yz",
    "art": [
-    "m.m",
-    "mtm",
-    "t.t"
+    "..rw..",
+    ".rrrw.",
+    ".wwrrw",
+    ".rwrr.",
+    "rrrwrr",
+    "wrrwr.",
+    "rrrwrr",
+    ".rwrrr",
+    ".wwrrw",
+    ".rrrw.",
+    "..rw.."
    ]
   },
   {
@@ -742,8 +953,8 @@
    "parent": "body",
    "pivot": [
     0.0,
-    2.5,
-    2.5
+    4.5,
+    1.0
    ],
    "style": "red"
   },
@@ -752,41 +963,32 @@
    "shape": "card",
    "parent": "spines",
    "pivot": [
-    0.0,
-    -0.25,
-    0.5
+    -1.0,
+    -0.2,
+    2.0
    ],
    "offset": [
     0.0,
     4.5,
-    0.25
+    -0.5
    ],
    "rotation": [
-    -10.0,
+    -12.0,
     0.0,
     0.0
    ],
    "style": "spine",
    "plane": "yz",
    "art": [
-    "...",
-    "...",
-    "...",
-    "t..",
-    "t..",
-    "r..",
-    "w..",
-    "w..",
-    "w..",
-    "r..",
-    "r..",
-    "r..",
-    "w..",
-    "we.",
-    "wm.",
-    "r..",
-    "rme",
-    "rmm"
+    "t.",
+    "r.",
+    "w.",
+    "w.",
+    "r.",
+    "rm",
+    "wm",
+    "wm",
+    "r."
    ]
   },
   {
@@ -794,43 +996,34 @@
    "shape": "card",
    "parent": "spines",
    "pivot": [
-    0.0,
-    -0.25,
-    -0.5
+    1.0,
+    -0.2,
+    0.5
    ],
    "offset": [
     0.0,
-    5.0,
-    0.25
+    5.5,
+    -0.5
    ],
    "rotation": [
-    -2.0,
+    -4.0,
     0.0,
     0.0
    ],
    "style": "spine",
    "plane": "yz",
    "art": [
-    "...",
-    "...",
-    "...",
-    "...",
-    "t..",
-    "t..",
-    "r..",
-    "r..",
-    "w..",
-    "w..",
-    "w..",
-    "r..",
-    "r..",
-    "r..",
-    "wm.",
-    "w..",
-    "we.",
-    "rme",
-    "rmm",
-    "rme"
+    "t.",
+    "w.",
+    "r.",
+    "r.",
+    "w.",
+    "wm",
+    "rm",
+    "r.",
+    "wm",
+    "wm",
+    "rm"
    ]
   },
   {
@@ -838,43 +1031,34 @@
    "shape": "card",
    "parent": "spines",
    "pivot": [
-    0.0,
-    -0.25,
-    -1.5
+    -1.0,
+    -0.2,
+    -1.0
    ],
    "offset": [
     0.0,
-    5.0,
-    0.25
+    5.5,
+    -0.5
    ],
    "rotation": [
-    6.0,
+    4.0,
     0.0,
     0.0
    ],
    "style": "spine",
    "plane": "yz",
    "art": [
-    "...",
-    "t..",
-    "t..",
-    "w..",
-    "w..",
-    "r..",
-    "r..",
-    "r..",
-    "w..",
-    "w..",
-    "w..",
-    "r..",
-    "r..",
-    "r..",
-    "w..",
-    "w..",
-    "we.",
-    "r..",
-    "rme",
-    "rmm"
+    "t.",
+    "w.",
+    "r.",
+    "r.",
+    "w.",
+    "wm",
+    "r.",
+    "rm",
+    "wm",
+    "wm",
+    "r."
    ]
   },
   {
@@ -882,41 +1066,33 @@
    "shape": "card",
    "parent": "spines",
    "pivot": [
-    0.0,
-    -0.25,
+    1.0,
+    -0.2,
     -2.5
    ],
    "offset": [
     0.0,
-    4.5,
-    0.25
+    5.0,
+    -0.5
    ],
    "rotation": [
-    14.0,
+    12.0,
     0.0,
     0.0
    ],
    "style": "spine",
    "plane": "yz",
    "art": [
-    "...",
-    "...",
-    "t..",
-    "t..",
-    "r..",
-    "r..",
-    "w..",
-    "w..",
-    "w..",
-    "r..",
-    "r..",
-    "r..",
-    "wm.",
-    "wm.",
-    "we.",
-    "r.m",
-    "rmm",
-    "rme"
+    "t.",
+    "r.",
+    "r.",
+    "w.",
+    "w.",
+    "r.",
+    "rm",
+    "wm",
+    "wm",
+    "r."
    ]
   },
   {
@@ -924,39 +1100,31 @@
    "shape": "card",
    "parent": "spines",
    "pivot": [
-    0.0,
-    -0.25,
-    -3.5
+    -1.0,
+    -0.2,
+    -4.0
    ],
    "offset": [
     0.0,
     4.0,
-    0.25
+    -0.5
    ],
    "rotation": [
-    22.0,
+    20.0,
     0.0,
     0.0
    ],
    "style": "spine",
    "plane": "yz",
    "art": [
-    "...",
-    "t..",
-    "t..",
-    "r..",
-    "w..",
-    "w..",
-    "w..",
-    "r..",
-    "r..",
-    "r..",
-    "w..",
-    "w..",
-    "we.",
-    "rm.",
-    "rme",
-    "rme"
+    "t.",
+    "w.",
+    "w.",
+    "r.",
+    "r.",
+    "wm",
+    "wm",
+    "rm"
    ]
   },
   {
@@ -964,36 +1132,30 @@
    "shape": "card",
    "parent": "spines",
    "pivot": [
-    0.0,
-    -0.25,
-    -4.5
+    1.0,
+    -0.2,
+    -5.5
    ],
    "offset": [
     0.0,
-    3.25,
-    0.25
+    3.5,
+    -0.5
    ],
    "rotation": [
-    30.0,
+    28.0,
     0.0,
     0.0
    ],
    "style": "spine",
    "plane": "yz",
    "art": [
-    "...",
-    "...",
-    "...",
-    "t..",
-    "t..",
-    "r..",
-    "r..",
-    "w..",
-    "w..",
-    "wm.",
-    "rm.",
-    "rmm",
-    "rme"
+    "t.",
+    "w.",
+    "r.",
+    "r.",
+    "wm",
+    "wm",
+    "rm"
    ]
   },
   {
@@ -1002,7 +1164,7 @@
    "parent": "body",
    "pivot": [
     0.0,
-    -1.0,
+    -1.5,
     2.0
    ],
    "style": "red"
@@ -1012,45 +1174,34 @@
    "shape": "card",
    "parent": "fins",
    "pivot": [
-    1.6,
+    2.5,
     0.0,
     0.0
    ],
    "offset": [
     0.0,
     0.0,
-    -4.75
+    -4.5
    ],
    "rotation": [
     10.0,
-    -58.0,
-    -28.0
+    -55.0,
+    -25.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "...re..w....wwe.....",
-    "..wre.r...rrre......",
-    "..we.r..wwwme.......",
-    "..rmwwerrmme........",
-    ".rrmrmwrmme.....rrww",
-    ".werrrmmme.wrrwww...",
-    ".wwwrmmwwrrwe.......",
-    ".rwwwrrwmme.........",
-    ".rrwwssmme..........",
-    ".rrwwrrmmmeee.......",
-    ".rrwwmmwwrrwwrrwwrrw",
-    ".wwwrrrmmme........w",
-    ".wwmmrwwre..........",
-    ".rmrmmwwrrw.........",
-    ".rrrmemrrewwr.......",
-    ".ewmw.emrw...rw.....",
-    "..wer..eeww....rrw..",
-    "..r.er...err.....wwt",
-    "..r..w....er........",
-    "..w..ew....ew.......",
-    "..ww..rr....er......",
-    "...r...r.....rw....."
+    "..wwr.r..",
+    "..rwwrr..",
+    "..rrwwrrw",
+    ".wwrrwrr.",
+    ".rwrrwrrw",
+    "rrwrrwrrw",
+    ".rwrrwrrw",
+    ".wwrrwrrw",
+    "..rrwwrrw",
+    "..rwwrrw.",
+    "..wwrrr.."
    ]
   },
   {
@@ -1058,29 +1209,27 @@
    "shape": "card",
    "parent": "body",
    "pivot": [
-    0.9,
-    -2.5,
-    2.0
+    1.0,
+    -4.5,
+    1.0
    ],
    "offset": [
     0.0,
-    -1.25,
-    -0.5
+    -2.0,
+    -1.5
    ],
    "rotation": [
-    28.0,
-    -20.0,
-    -15.0
+    20.0,
+    -15.0,
+    -10.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "rmm",
-    "rmm",
-    "rmw",
-    "rwm",
-    "rm.",
-    "t.."
+    "ww.",
+    "rwr",
+    "rw.",
+    "r.."
    ]
   },
   {
@@ -1088,45 +1237,34 @@
    "shape": "card",
    "parent": "fins",
    "pivot": [
-    -1.6,
+    -2.5,
     0.0,
     0.0
    ],
    "offset": [
     0.0,
     0.0,
-    -4.75
+    -4.5
    ],
    "rotation": [
     10.0,
-    58.0,
-    28.0
+    55.0,
+    25.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "...reeew....ewrr....",
-    "...re.re.eeerw......",
-    "..wwer.eemmrr.......",
-    "..rmwwemmww.........",
-    "..rrresmrr........ww",
-    "..rrmmww......eewrr.",
-    ".wwmrrwmeeeewrrw....",
-    ".rwwwmmmmrrww.......",
-    ".rrwwrrww...........",
-    ".rrwwrrmwrrwwrrw....",
-    ".rrwwmmmeeeeeeeewrrw",
-    ".wwwrrre............",
-    ".wwmrmwwr...........",
-    ".rrrrwmerrw.........",
-    ".rmrmww...wwr.......",
-    ".wwww.rr.....rw.....",
-    ".ew.r..rw......rrw..",
-    "..r.rr..ww.......wwt",
-    "..r..w....r.........",
-    "..w..ww....w........",
-    "..w...r.....r.......",
-    "..rr...r.....r......"
+    "..wwr.r..",
+    "..rwwrr..",
+    "..rrwwrrw",
+    ".wwrrwrr.",
+    ".rwrrwrrw",
+    "rrwrrwrrw",
+    ".rwrrwrrw",
+    ".wwrrwrrw",
+    "..rrwwrrw",
+    "..rwwrrw.",
+    "..wwrrr.."
    ]
   },
   {
@@ -1134,29 +1272,27 @@
    "shape": "card",
    "parent": "body",
    "pivot": [
-    -0.9,
-    -2.5,
-    2.0
+    -1.0,
+    -4.5,
+    1.0
    ],
    "offset": [
     0.0,
-    -1.25,
-    -0.5
+    -2.0,
+    -1.5
    ],
    "rotation": [
-    28.0,
     20.0,
-    15.0
+    15.0,
+    10.0
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "rmm",
-    "rmm",
-    "rmw",
-    "rwm",
-    "rm.",
-    "t.."
+    "ww.",
+    "rwr",
+    "rw.",
+    "r.."
    ]
   },
   {
@@ -1165,25 +1301,21 @@
    "parent": "body",
    "pivot": [
     0.0,
-    2.25,
-    -1.5
+    4.5,
+    -5.0
    ],
    "offset": [
     0.0,
-    1.75,
-    -3.0
+    2.0,
+    -2.5
    ],
    "style": "fin",
    "plane": "yz",
    "art": [
-    "....rt......",
-    ".rtrr..rt...",
-    ".rererrr....",
-    ".rrmrre..rrt",
-    "rrrrrmmrrr..",
-    "rrrrrrrme...",
-    "rrrrrmeerrrt",
-    "rrrrrrrrr..."
+    "..rw..",
+    ".rwrw.",
+    "rwrwrw",
+    "rwrwrw"
    ]
   },
   {
@@ -1192,8 +1324,8 @@
    "parent": "body",
    "pivot": [
     0.0,
-    -2.25,
-    -2.5
+    -4.5,
+    -5.0
    ],
    "offset": [
     0.0,
@@ -1203,67 +1335,98 @@
    "style": "fin",
    "plane": "yz",
    "art": [
-    "rrrrrrrr",
-    "rrrrre.t",
-    ".rrsmrr.",
-    ".rsrmert",
-    ".rerr...",
-    "..t.rt.."
+    "rwrwr",
+    ".rwr.",
+    "..r.."
    ]
   },
   {
-   "id": "tail",
-   "shape": "box",
+   "id": "body_y",
+   "shape": "bone",
    "parent": "body",
-   "size": [
-    2.0,
-    3.0,
-    2.0
-   ],
    "pivot": [
     0.0,
     0.0,
-    -4.0
+    0.0
    ],
-   "offset": [
-    0.0,
-    0.0,
-    -1.0
-   ],
-   "style": "trunk"
+   "style": "red"
   },
   {
-   "id": "tail_fin",
-   "shape": "card",
-   "parent": "tail",
+   "id": "body_z",
+   "shape": "bone",
+   "parent": "body",
    "pivot": [
     0.0,
     0.0,
-    -1.75
+    0.0
    ],
-   "offset": [
+   "style": "red"
+  },
+  {
+   "id": "head_z",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
     0.0,
     0.0,
-    -2.5
+    0.0
    ],
-   "style": "fin",
-   "plane": "yz",
-   "art": [
-    "...wt.....",
-    "...we.rt..",
-    "..rmmww...",
-    ".wrsrwe...",
-    ".wwwmswwrt",
-    "rrwwrrwe..",
-    "rrwwrrwwrr",
-    "rrwmmmmmet",
-    ".rwwrrwe..",
-    ".ewwrmwwrt",
-    "..rrrwe...",
-    "..ereew...",
-    "...w..et..",
-    "...wt....."
-   ]
+   "style": "red"
+  },
+  {
+   "id": "lip",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "red"
+  },
+  {
+   "id": "brow_l",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "red"
+  },
+  {
+   "id": "brow_r",
+   "shape": "bone",
+   "parent": "head",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "red"
+  },
+  {
+   "id": "cheek_frill_l",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "red"
+  },
+  {
+   "id": "cheek_frill_r",
+   "shape": "bone",
+   "parent": "jaw",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "red"
   }
  ],
  "animations": {
