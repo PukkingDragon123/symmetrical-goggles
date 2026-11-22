@@ -1,0 +1,865 @@
+{
+ "name": "Falling Meteorite",
+ "description": "A falling meteorite for the Winterworks End: a lumpy rock of scorched meteorite crust split by molten fissures, trailing crossed flames. Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "grounded": false,
+ "budget": {
+  "tris": 300,
+  "colors": 24
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.9,
+  "gradient": 0.2,
+  "ao": 0.0
+ },
+ "minecraft": {
+  "fps": 20,
+  "glow_parts": [
+   "flame_0",
+   "flame_1",
+   "flame_2",
+   "flame_3"
+  ],
+  "glow_ramps": [
+   "molten"
+  ]
+ },
+ "render": {
+  "background": "#1a1424",
+  "hero": [
+   -50,
+   18
+  ],
+  "shadow": 0.0
+ },
+ "palette": {
+  "ramps": {
+   "meteor": [
+    "#0b0708",
+    "#130e0f",
+    "#1c1617",
+    "#262021",
+    "#312a2a",
+    "#3e3535",
+    "#4d4343",
+    "#625857",
+    "#867e7c",
+    "#bab4b0"
+   ],
+   "molten": [
+    "#3a0c5c",
+    "#6c1585",
+    "#a8237f",
+    "#e04a5a",
+    "#ff7d2a",
+    "#ffad35",
+    "#ffd76a",
+    "#fff4c2",
+    "#fffdf2"
+   ]
+  }
+ },
+ "styles": {
+  "crust": {
+   "ramp": "meteor",
+   "tone": 3.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.2,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "pits",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.55,
+     "shift": -1.1,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1,
+      "highlight_shift": 1.6
+     }
+    },
+    {
+     "id": "fissures",
+     "op": "cracks",
+     "scale": 5.0,
+     "width": 0.04,
+     "threshold": 0.32,
+     "ramp": "molten",
+     "tone": 1.8,
+     "seed": 5
+    },
+    {
+     "id": "fissures_hot",
+     "op": "cracks",
+     "scale": 5.0,
+     "width": 0.016,
+     "threshold": 0.32,
+     "ramp": "molten",
+     "tone": 5.8,
+     "seed": 5
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 1,
+     "inset": 0,
+     "density": 0.4,
+     "shift": 2.4,
+     "ramps": [
+      "meteor"
+     ]
+    }
+   ]
+  },
+  "crust_hot": {
+   "ramp": "meteor",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.0,
+    "dark_shift": -1.2,
+    "outline": "dark"
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "pits",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.55,
+     "shift": -1.1,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1,
+      "highlight_shift": 1.6
+     }
+    },
+    {
+     "id": "fissures",
+     "op": "cracks",
+     "scale": 5.0,
+     "width": 0.06,
+     "threshold": 0.32,
+     "ramp": "molten",
+     "tone": 2.4,
+     "seed": 5
+    },
+    {
+     "id": "fissures_hot",
+     "op": "cracks",
+     "scale": 5.0,
+     "width": 0.025,
+     "threshold": 0.32,
+     "ramp": "molten",
+     "tone": 6.5,
+     "seed": 5
+    },
+    {
+     "id": "melt",
+     "op": "fill",
+     "ramp": "molten",
+     "tone": 5.2,
+     "faces": [
+      "front"
+     ]
+    },
+    {
+     "id": "melt_crust",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.58,
+     "ramp": "molten",
+     "tone": 2.2,
+     "faces": [
+      "front"
+     ]
+    },
+    {
+     "id": "melt_hot",
+     "op": "patches",
+     "scale": 1.0,
+     "threshold": 0.6,
+     "ramp": "molten",
+     "tone": 7.2,
+     "faces": [
+      "front"
+     ],
+     "seed": 9
+    },
+    {
+     "id": "glint",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 1,
+     "inset": 0,
+     "density": 0.4,
+     "shift": 2.4,
+     "ramps": [
+      "meteor"
+     ]
+    }
+   ]
+  },
+  "flame": {
+   "ramp": "molten",
+   "tone": 5.0,
+   "light": 0.0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "W": "molten:8",
+    "Y": "molten:6",
+    "a": "molten:5",
+    "o": "molten:4",
+    "r": "molten:2",
+    "v": "molten:1"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "meteor",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    24.0,
+    0.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock",
+   "shape": "bone",
+   "parent": "meteor",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_core",
+   "shape": "box",
+   "parent": "rock",
+   "size": [
+    8.0,
+    8.0,
+    8.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    10.0,
+    14.0,
+    25.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_x",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    11.0,
+    6.0,
+    6.0
+   ],
+   "pivot": [
+    0.0,
+    0.5,
+    -0.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_y",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    6.0,
+    11.0,
+    6.0
+   ],
+   "pivot": [
+    -0.5,
+    0.0,
+    0.5
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_z",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    6.0,
+    6.0,
+    11.0
+   ],
+   "pivot": [
+    0.5,
+    -0.5,
+    -0.0
+   ],
+   "style": "crust_hot"
+  },
+  {
+   "id": "rock_lump_0",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    5.0,
+    4.0,
+    5.0
+   ],
+   "pivot": [
+    3.5,
+    2.5,
+    1.5
+   ],
+   "rotation": [
+    20.0,
+    35.0,
+    10.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_lump_1",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    5.0,
+    5.0,
+    4.0
+   ],
+   "pivot": [
+    -3.0,
+    -3.0,
+    2.5
+   ],
+   "rotation": [
+    -15.0,
+    20.0,
+    30.0
+   ],
+   "style": "crust_hot"
+  },
+  {
+   "id": "rock_lump_2",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    5.0,
+    4.0,
+    4.0
+   ],
+   "pivot": [
+    -3.5,
+    3.0,
+    -2.0
+   ],
+   "rotation": [
+    30.0,
+    -25.0,
+    15.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_lump_3",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    4.0,
+    5.0,
+    5.0
+   ],
+   "pivot": [
+    3.0,
+    -3.0,
+    -2.5
+   ],
+   "rotation": [
+    -25.0,
+    40.0,
+    -20.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_lump_4",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    5.0,
+    4.0,
+    4.0
+   ],
+   "pivot": [
+    0.5,
+    1.5,
+    4.0
+   ],
+   "rotation": [
+    10.0,
+    15.0,
+    40.0
+   ],
+   "style": "crust_hot"
+  },
+  {
+   "id": "rock_lump_5",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    4.0,
+    3.0,
+    4.0
+   ],
+   "pivot": [
+    1.0,
+    4.0,
+    -1.0
+   ],
+   "rotation": [
+    45.0,
+    10.0,
+    25.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_lump_6",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    3.0,
+    5.0,
+    4.0
+   ],
+   "pivot": [
+    -4.0,
+    -0.0,
+    1.0
+   ],
+   "rotation": [
+    5.0,
+    -30.0,
+    50.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "rock_lump_7",
+   "shape": "box",
+   "parent": "rock_core",
+   "size": [
+    4.0,
+    3.0,
+    4.0
+   ],
+   "pivot": [
+    1.5,
+    -4.0,
+    1.5
+   ],
+   "rotation": [
+    35.0,
+    60.0,
+    5.0
+   ],
+   "style": "crust_hot"
+  },
+  {
+   "id": "flames",
+   "shape": "bone",
+   "parent": "meteor",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "flame_0",
+   "shape": "card",
+   "parent": "flames",
+   "pivot": [
+    0.0,
+    0.0,
+    -13.0
+   ],
+   "style": "flame",
+   "plane": "xz",
+   "art": [
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    "..........................",
+    ".............v..vv........",
+    ".............vv.vv........",
+    ".............vvvvv........",
+    ".............vvvvv........",
+    ".........v...vvvvv........",
+    "........vv..vrvvvvv.......",
+    "........vv..vrrvrrv.......",
+    "........vvv.vrrvrrv.......",
+    "........vvvvvrrrrrv.......",
+    "........vvvvrrrrrrv.......",
+    ".......vvrvvrrrrrrv.......",
+    ".......vrrvvrorrrrr.......",
+    ".......vrrrvroorrrr.......",
+    ".......vrrrrroororrv......",
+    ".......vrrrrrooooorv......",
+    "......vvrrrroooooorv......",
+    "......vrrorroooooorv......",
+    ".....vvrrorroooooorv......",
+    ".....vvrooooooooooor......",
+    "....vvvroooooaooooor......",
+    "....vvrroooooaaoooorv.....",
+    "...vvvrroooooaaoooorv.....",
+    "...vvrroooooaaaaaoorv.....",
+    "...vvrroooooaaaaaaorv.....",
+    "...vrrrooaooaaaaaaorvv....",
+    "..vvrrrooaaaaaaaaaoorv....",
+    "..vrrrooaaaaaaaaaaoorv....",
+    "..vrrrooaaaaaaaaaaaorvv...",
+    "..vrroooaaaaaYaaaaaorrv...",
+    "..rrroooaaaaaYaaaaaorrv...",
+    ".vrroooaaaaaYYYaaaaoorvv..",
+    ".vrroooaaaaaYYYaaaaoorrv..",
+    ".vrooooaaaaaYYYYaaaaorrv..",
+    ".vroooaaaaaYYYYYYaaaoorv..",
+    ".rroooaaaYYYYYYYYYaaoorrv.",
+    ".roooaaaaYYYYYYYYYaaoorrv.",
+    ".roooaaaYYYYYYYYYYaaooorv.",
+    ".rooaaaaYYYYYYYYYYaaaoorr.",
+    "..ooaaaaYYYYYWYYYYYaaoor..",
+    "..ooaaaYYYYYWWYYYYYaaaoo..",
+    "..oaaaaYYYYYWWWYYYYaaaoo..",
+    "...aaaaYYYYYWWWYYYYaaao...",
+    "...aaaYYYYYWWWWYYYYYaaa...",
+    "...aaaYYYYYWWWWWYYYYaaa...",
+    "....aYYYYYWWWWWWYYYYaa....",
+    "....aYYYYWWWWWWWWYYYYa....",
+    ".....YYYYWWWWWWWWYYYY.....",
+    ".....YYYYWWWWWWWWWYYY.....",
+    ".....YYYWWWWWWWWWWYYY.....",
+    "......YYWWWWWWWWWWYY......"
+   ]
+  },
+  {
+   "id": "flame_1",
+   "shape": "card",
+   "parent": "flames",
+   "pivot": [
+    0.0,
+    0.0,
+    -13.0
+   ],
+   "style": "flame",
+   "plane": "yz",
+   "art": [
+    "................................................................",
+    "............rrrrvvvv............................................",
+    ".........oooorrrrrrvvvv.........................................",
+    "......aaaoooooorrrrrvvvv........................................",
+    "....aaaaaaoooooorrrrrvvvv.......................................",
+    ".YYYYaaaaaaaaooooooorrrrrvvvvv..................................",
+    "YYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv............................",
+    "YYYYYYYYYYYaaaaaaaaaaaoooooooorrrrrrrvvvvvv.....................",
+    "WWYYYYYYYYYYYYaaaaaaaaaaaooooooooorrrrrrrvvvvvv.................",
+    "WWWWWYYYYYYYYYYYYaaaaaaaaaaoooooooorrrrrrrvvvvvv................",
+    "WWWWWWWYYYYYYYYYYYYaaaaaaaaaaoooooooorrrrrrvvvvvv...............",
+    "WWWWWWWWWYYYYYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv................",
+    "WWWWWWWWWWWYYYYYYYYYaaaaaaaaaoooooorrrrrrvvvvv..................",
+    "WWWWWWWWWWYYYYYYYYYYaaaaaaaaooooooorrrrrvvvvv...................",
+    "WWWWWWWWWYYYYYYYYYYaaaaaaaaaooooooorrrrrrvvvvv..................",
+    "WWWWWWWYYYYYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv..................",
+    "WWWWWYYYYYYYYYYaaaaaaaaaaooooooorrrrrrrvvvvv....................",
+    "WWYYYYYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv.......................",
+    "YYYYYYYYYYaaaaaaaaaaooooooorrrrrrvvvvv..........................",
+    "YYYYYYYYaaaaaaaaaoooooooorrrrrrvvvvv............................",
+    ".YYYYYaaaaaaaaaooooooorrrrrrvvvvv...............................",
+    "....aaaaaaaaoooooooorrrrrrvvvvv.................................",
+    "......aaaaoooooorrrrrrvvvv......................................",
+    ".........ooorrrrrvvvv...........................................",
+    "............rrvvvv..............................................",
+    "................................................................"
+   ]
+  },
+  {
+   "id": "flame_2",
+   "shape": "card",
+   "parent": "flames",
+   "pivot": [
+    0.0,
+    0.0,
+    -9.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "flame",
+   "plane": "xz",
+   "art": [
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "....................",
+    "........vvv.........",
+    "........vvv.........",
+    "........vvvv.v......",
+    ".......vvrvvvvv.....",
+    ".......vrrrvvvv.....",
+    ".......vrrrvvvv.....",
+    ".......vrrrrrrv.....",
+    "......vrrorrrrr.....",
+    "......vrooorrrrv....",
+    "....vvvrooorrrrv....",
+    "...vvvvroooorrrv....",
+    "...vvvrooooooorv....",
+    "..vvvrrooaooooor....",
+    "..vvrrrooaaoooor....",
+    "..vrrrroaaaoooorv...",
+    "..vrrrooaaaaooorv...",
+    "..rrrrooaaaaaooov...",
+    "..rroooaaaaaaaoorv..",
+    ".vrooooaaaaaaaoorv..",
+    ".vroooaaaYYaaaaorvv.",
+    ".vroooaaYYYaaaaorrv.",
+    ".roooaaaYYYYaaaoorv.",
+    ".roooaaaYYYYaaaaorrv",
+    ".rooaaaYYYYYYaaaorr.",
+    ".roaaaaYYYYYYYaaoor.",
+    ".ooaaaaYYYYYYYaaooo.",
+    "..aaaaYYYWWYYYYaao..",
+    "..aaaaYYYWWYYYYaao..",
+    "..aaaYYYWWWWYYYaaa..",
+    "...aYYYYWWWWYYYYa...",
+    "...aYYYWWWWWWYYYa...",
+    "....YYYWWWWWWYYY....",
+    "....YYYWWWWWWWYY....",
+    "....YYWWWWWWWWYY...."
+   ]
+  },
+  {
+   "id": "flame_3",
+   "shape": "card",
+   "parent": "flames",
+   "pivot": [
+    0.0,
+    0.0,
+    -9.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    45.0
+   ],
+   "style": "flame",
+   "plane": "yz",
+   "art": [
+    "................................................",
+    "........orrrrvvv................................",
+    ".....aaaooooorrrrrvvvv..........................",
+    "...aaaaaaaoooooorrrrrvvvv.......................",
+    "YYYYYaaaaaaaoooooorrrrvvvv......................",
+    "YYYYYYYaaaaaaaoooooorrrrrvvv....................",
+    "WWYYYYYYYYaaaaaaaaoooooorrrrvvvvv...............",
+    "WWWWYYYYYYYYYaaaaaaaoooooorrrrrvvvv.............",
+    "WWWWWWYYYYYYYYaaaaaaaaooooorrrrrvvvv............",
+    "WWWWWWWWWYYYYYYYaaaaaaaoooooorrrrvvvv...........",
+    "WWWWWWWWWYYYYYYYYaaaaaaoooooorrrrrvvvv..........",
+    "WWWWWWYYYYYYYYaaaaaaaoooooorrrrvvvv.............",
+    "WWWWYYYYYYYaaaaaaaooooorrrrrvvvv................",
+    "WWYYYYYYYaaaaaaaoooooorrrrvvvv..................",
+    "YYYYYYYYaaaaaaaoooooorrrrvvvv...................",
+    "YYYYYaaaaaaaoooooorrrrvvvv......................",
+    "...aaaaaaoooooorrrrvvvv.........................",
+    ".....aaooooorrrrrvvv............................",
+    "........orrrrvvv................................",
+    "................................................"
+   ]
+  }
+ ],
+ "animations": {
+  "fall": {
+   "length": 2.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "rock",
+     "axis": "z",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.25,
+       45.0
+      ],
+      [
+       0.5,
+       90.0
+      ],
+      [
+       0.75,
+       135.0
+      ],
+      [
+       1.0,
+       180.0
+      ],
+      [
+       1.25,
+       225.0
+      ],
+      [
+       1.5,
+       270.0
+      ],
+      [
+       1.75,
+       315.0
+      ],
+      [
+       2.0,
+       360.0
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "rock",
+     "osc": {
+      "amp": 6,
+      "cycles": 1,
+      "phase": 0.25
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flames",
+     "osc": {
+      "amp": [
+       0.12,
+       0.12,
+       0.18
+      ],
+      "cycles": 4,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": [
+       0.1,
+       0.1,
+       0.22
+      ],
+      "cycles": 3,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": [
+       0.1,
+       0.1,
+       0.22
+      ],
+      "cycles": 3,
+      "phase": 0.25
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": [
+       0.1,
+       0.1,
+       0.22
+      ],
+      "cycles": 3,
+      "phase": 0.5
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": [
+       0.1,
+       0.1,
+       0.22
+      ],
+      "cycles": 3,
+      "phase": 0.75
+     },
+     "channel": "scale"
+    }
+   ]
+  }
+ }
+}

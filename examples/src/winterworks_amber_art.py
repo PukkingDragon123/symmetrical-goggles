@@ -75,37 +75,33 @@ def translucent(ramp, alphas):
     return {k: v + a for (k, v), a in zip(ramp.items(), alphas)}
 
 
-# ====================================================================== amber block: thick honey amber with depth
+# ====================================================================== amber block: thick honey
 # The game draws a real 3D mosquito or seed inside the block (a block-entity renderer), so every face is translucent.
-# It reads as a deep lump of honey amber: warm lit edges (a bright top/left rim and a glowing inner ring), the body
-# deepening to a dark red-amber core in the middle (more saturated, a little more opaque, still see-through so a
-# trapped thing shows dark there), flow streaks running diagonally through it, and small trapped bubbles (a cream
-# glint over a dark underside). The seed and mosquito variants are the same plain amber.
+# It reads like a block of thick honey: a calm, cloudy mass of translucent honey amber in five close tones, with one
+# slow swirl of deeper amber folding through it and a soft band of lighter gold (the sheen) flowing beside it. No
+# bubbles, specks or small motifs, and no rim or centre: every edge wraps and the tones are close, so a wall of amber
+# shows gentle flowing honey, not a grid. The seed and mosquito variants are the same amber.
 HONEY_BLOCK = {
-    "W": "#fff1c4f0", "Y": "#fbd27ae8", "y": "#f3b84fe4",                      # lit rim (top/left)
-    "r": "#d2741ee4", "R": "#ad5114e8",                                         # shaded rim (bottom/right)
-    "g": "#f5b640b8", "G": "#fac85fb8",                                         # the glowing inner ring
-    "h": "#f09a24b4", "o": "#e47e18b4", "c": "#d06212b8", "C": "#b44a0ec0",       # body deepening to the core
-    "s": "#f9c552b4", "d": "#b85414bc",                                         # flow streaks (light / dark)
-    "B": "#fff6dcf4", "b": "#f9d27ed8", "q": "#86380ed0",                         # bubbles: glint, body, underside
+    "d": "#cf6a1cbe", "c": "#db7c1fba", "o": "#e68e24b6",                       # deep swirl, deep honey, body
+    "h": "#efa12db4", "g": "#f6b740b2",                                         # honey, the gold sheen
 }
 AMBER_BLOCK = """
-WWWY YYYY YYYY yyyr
-WGGg gggg gGgg gghr
-WGsg ggGg gggg ghhr
-Ygsg gssh hhhh Bbhr
-Yggs shho oooh bqhR
-Yggs hhoo oooo ohhR
-YgBh hooc cccc oohR
-Ygqh oocc CCcc cohR
-Yghh occC CCCc cohR
-Yghh occC CCCC cdhR
-Yghh occC CCCc dohR
-Yghh oocc cccd oohR
-yghh hooc cdBb ohhR
-yggh hhoo oobq hhgR
-yggg ghhh hhhh hggR
-rrrr RRRR RRRR RRRR
+ohhh hhho oooc cooo
+oooo hooo hhoo oooo
+cooo oooh hhho oooc
+ccco oooh hhho oocc
+cccc oooh hgho oocc
+cccc oooh hghh oocc
+cccc oooh hghh oocc
+cddc cooo hggh hooc
+cddd cooo hhgg hooc
+cddd dcco ohgg hhoc
+ccdd dddc oohg ggho
+cccc dddc cohg ggho
+oocc ccdc ccoo hhho
+hhoo occc ccco oohh
+hhhh hooo occc cooh
+hhhh hhho oocc cooh
 """
 for _name in ("amber_block", "amber_block_seed", "amber_block_mosquito"):
     block(_name, pal(HONEY_BLOCK), AMBER_BLOCK)
@@ -121,21 +117,21 @@ FOSSIL = {"x": "#3f3639", "X": "#4d4446", "Z": "#5d5355",                       
           "k": "#4a1f0e", "a": "#8a3f13", "A": "#b9631c", "b": "#dc932f", "B": "#f3c15a", "W": "#fff0bc",
           "p": "#3b2416", "P": "#5c3a22"}                                           # amber, the seed inside
 GRAVEL_BASE = """
-3334 1543 3433 2303
-3261 3334 0434 3124
+3334 1543 3433 2313
+3261 3334 1434 3124
 5355 2334 4354 1225
-3565 5544 3346 3331
+3565 5544 3345 3331
 3351 3143 3341 4133
-2233 3313 6344 3343
+2233 3313 5344 3343
 2133 3305 1443 3232
-3013 5464 4333 3131
-4335 4314 3363 5336
+3013 5454 4333 3131
+4335 4314 3353 5335
 3236 5133 3343 3334
-2264 3431 3333 3512
-2143 3363 3253 2343
+2254 3431 3333 3512
+2143 3353 3253 2343
 3353 2333 2332 1432
-3334 0333 6333 4322
-3543 1323 4631 1321
+3334 0333 5333 4322
+3543 1323 4531 1321
 4345 1253 4433 3433
 """
 # the amber as it lies in the gravel: a rough lump (lit top-left, a cream glint, a small dark seed sealed in it)
@@ -168,7 +164,7 @@ REVEAL = ["""
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
-.... ...# .... ....
+.... .... .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
@@ -253,7 +249,8 @@ for k in range(4):
 # ====================================================================== amber sand and amber gravel (brushable)
 # Sand and gravel with loose amber in them, brushed like suspicious sand/gravel: honey-amber chunks (a cream glint,
 # lit top-left, a deep red-amber underside) and single glinting grains scattered through. Brushing digs shadowed
-# hollows that grow over the four stages: glints and a small chunk at stage 0, everything at stage 3. Unlike the
+# hollows that grow over the four stages: one chunk peeks out at stage 0 (the lone grains only glint once brushing
+# opens their hollows, so an untouched patch shows no specks), everything at stage 3. Unlike the
 # Amber Fossil (one big lump with a seed sealed in it) these are loose scattered chunks. The gravel is the fossil's
 # gravel turned round, with the amber laid out mirrored.
 SAND = {"0": "#c4ab7c", "1": "#ccb685", "2": "#d3c091", "3": "#d8c99c", "4": "#dfd3a7", "5": "#e6ddb3",
@@ -263,21 +260,21 @@ LOOSE = {"x": "#a99168", "X": "#b8a076", "Z": "#c6b083",                        
          "a": "#8a3a10", "A": "#c3601a", "b": "#e6922a", "B": "#f6c055", "W": "#fff2c4"}
 GRAVEL_LOOSE = dict(LOOSE, x=FOSSIL["x"], X=FOSSIL["X"], Z=FOSSIL["Z"])
 SAND_BASE = """
-1344 3335 3443 4446
-3154 3445 3344 5543
+2344 3335 3443 4445
+3254 3445 3344 5543
 5624 5435 4343 2444
 4556 6533 4443 3544
 3454 6345 4543 3633
-4454 4534 4423 3446
-5356 4143 3235 2433
+4454 4534 4423 3445
+5356 4243 3235 2433
 5334 4454 4444 4335
 4544 3534 3434 4435
 4524 5335 4454 3344
-4523 4445 3324 3402
+4523 4445 3324 3422
 4535 4453 4543 3434
 4544 5344 4345 3425
 4365 2346 3232 4443
-1544 4455 4433 5245
+2544 4455 4433 5245
 3445 4524 4454 5454
 """
 # the loose amber: five chunks and four glinting grains
@@ -301,13 +298,13 @@ AMBER_LOOSE = """
 """
 REVEAL_LOOSE = ["""
 .... .... .... ....
-.... ...# .... ....
+.... .... .... ....
 .... .... ...# #...
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
-.... .... .... ..#.
+.... .... .... ....
 .... .... .... ....
 .... .... .... ....
 .... .... .... ....
@@ -392,8 +389,9 @@ for k in range(4):
           brushed(turned_grid(GRAVEL_BASE), mirrored_grid(AMBER_LOOSE), mirrored_grid(REVEAL_LOOSE[k]), DIG))
 
 # ====================================================================== petrified log: stone-hard fossil wood
-# Side: deep vertical bark furrows turned to stone, a clean horizontal fracture (petrified trunks break into
-# segments), rust, ochre and chalcedony mineral streaks. Top: stony rings banded with minerals, a quartz heart.
+# Side: deep vertical bark furrows turned to stone in short offset plates, rust, ochre and chalcedony mineral
+# streaks spread through them; it tiles both ways like a vanilla log (no lone fracture line to stripe a pillar).
+# Top: stony rings banded with minerals, a quartz heart.
 PETRI = {"o": "#2a2228", "1": "#41363a", "2": "#5a4b4a", "3": "#77625c", "4": "#94806f", "5": "#b19c86",
          "6": "#cdbba0", "r": "#7e3f2c", "R": "#a65a3a", "y": "#a8843a", "Y": "#cdaa5a", "c": "#5f7d7a",
          "C": "#8fada4", "q": "#e7e3d6", "Q": "#fffdf4"}
@@ -404,8 +402,8 @@ o4R2 1o32 4o3y 21o4
 o3R1 1o43 3oy2 1o53
 54o2 2o54 2o32 o542
 43o1 3o43 1o21 o431
-1oo1 oo1o 1oo1 o1oo
-6566 5665 6556 6566
+32o5 3o65 42o5 3oR4
+21o4 2o54 31o4 2oR3
 4o53 2o54 3c4o 4o53
 3o42 1o43 2c3o 3o42
 4o3o 2o5R 2o43 2o31

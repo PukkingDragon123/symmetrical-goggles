@@ -50,9 +50,12 @@ public final class Meteorite {
                     for (int yy = floor + 1; yy <= gy; yy++) {
                         w.set(px, yy, pz, EndGen.AIR);
                     }
+                    // smooth rings, not a per-block mix (that read as a checkerboard): a glassy melt in the middle,
+                    // scorched stone round it, ash-pale sand out to the rim, with a ragged edge between rings
                     float f = w.rnd(px, floor, pz, 71);
-                    BlockState s = r < rc * 0.6 ? (f < 0.3 ? EndGen.OBSIDIAN : f < 0.36 ? EndGen.CRYING : EndGen.END_STONE)
-                            : (f < 0.5 ? EndGen.SAND : EndGen.END_STONE);
+                    double ring = r / rc + (f - 0.5) * 0.12;
+                    BlockState s = ring < 0.38 ? (f < 0.12 ? EndGen.CRYING : EndGen.OBSIDIAN)
+                            : ring < 0.72 ? EndGen.END_STONE : EndGen.SAND;
                     w.set(px, floor, pz, s);
                     w.set(px, floor - 1, pz, EndGen.END_STONE);
                     if (dx == 0 && dz == 0) {

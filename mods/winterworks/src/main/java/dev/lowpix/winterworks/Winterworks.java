@@ -64,6 +64,16 @@ public final class Winterworks implements ModInitializer {
         dev.lowpix.winterworks.endmob.EndMobFeature.init();
         dev.lowpix.winterworks.endgear.EndGearFeature.init();
         dev.lowpix.winterworks.endboss.EndBossFeature.init();
+        dev.lowpix.winterworks.end.MeteorShower.init();   // ---- section 16: falling meteorites
+        // ---- Tides & Treasures (docs/OCEAN_UPDATE.md)
+        dev.lowpix.winterworks.registry.OceanSounds.init();
+        dev.lowpix.winterworks.registry.OceanBlocks.init();
+        dev.lowpix.winterworks.registry.OceanEntities.init();
+        dev.lowpix.winterworks.registry.OceanItems.init();
+        dev.lowpix.winterworks.ocean.OceanWorldFeature.init();
+        dev.lowpix.winterworks.oceanmob.OceanMobFeature.init();
+        dev.lowpix.winterworks.oceangear.OceanGearFeature.init();
+        dev.lowpix.winterworks.whale.WhaleFeature.init();
         // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
         dev.lowpix.winterworks.soulbull.SoulBullFeature.init();
         PayloadTypeRegistry.playS2C().register(CouplingPayload.TYPE, CouplingPayload.CODEC);

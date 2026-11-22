@@ -908,43 +908,45 @@ def block(name, palette, grid):
     put(f"textures/block/{name}.png", draw(parse(grid), palette, (16, 16), name))
 
 
-# Ancient ice: deep layered glacier ice, translucent so the frozen Mauler shows through. Gently tilted strata of
-# cobalt and blue (deep pockets nearly indigo), a pale cyan fracture with bright glints at its kinks and a dark
-# shadow under it, fainter hairlines, trapped bubbles; it tiles seamlessly. Animated (`.mcmeta`, interpolated): a
-# slow band of cold light sweeps diagonally through the ice, then it rests.
+# Ancient ice: deep layered glacier ice, translucent so the frozen Mauler shows through. It tiles like vanilla ice:
+# gently tilted strata of cobalt and blue that run on across the edges, the same depth everywhere (no lighter or
+# darker band to stripe a wall), and a few short, soft fractures, only a step or two paler than the ice round them
+# (no white glints, bubbles or lone dark pockets to dot a wall). Animated (`.mcmeta`, interpolated): a slow band
+# of cold light sweeps diagonally through the ice, then it rests; the band wraps round the block (x + y taken
+# modulo 16), so across a wall it is one set of even diagonal stripes.
 DEEP_ICE = pal(**{"0": "#0a0f3aa4", "1": "#111d5c98", "2": "#18307e90", "3": "#20499e90", "4": "#2c68bc98",
                   "5": "#3c86d4a4", "6": "#66b2e6b8", "7": "#a8e2f8cc", "8": "#ecfcffe4", "w": "#f4fdffe6",
                   "b": "#7ec0ecbc"})
 ANCIENT_ICE = """
-3334 3333 4333 3233
-3343 3333 3433 33w3
-4444 4443 3444 4444
-3333 bw33 3333 3364
-2223 3b22 2222 2613
-2221 5522 2222 6022
-1255 2221 1268 1221
-3333 3233 3811 3w33
-2122 2112 6121 2212
-1111 2111 6101 11b1
-1101 1216 0111 0w11
-2111 1660 6115 5121
-2222 8112 1632 2552
-3366 1323 3163 3433
-2611 2222 2263 2222
-2122 1222 2212 2122
+2333 2223 2324 3321
+4311 5122 1351 3223
+1225 1134 4511 1122
+4351 4422 3122 3123
+4415 4321 1211 3333
+5132 2221 1233 3234
+1232 1233 3121 2122
+3213 4422 3322 3223
+3343 3321 5222 3322
+4322 2225 1233 4333
+2232 1251 3121 3223
+3223 4512 3223 4325
+3455 4121 1222 4451
+5322 2221 1244 4513
+2332 2134 3222 2131
+2112 3323 3333 3113
 """
-# the shimmer: one frame per row of the strip; a 3 px band (x + y in [c, c + 2]) is one tone brighter
+# the shimmer: one frame per row of the strip; a 3 px band ((x + y - c) mod 16 in [0, 2]) is one tone brighter
 SHIMMER_UP = {"0": "1", "1": "2", "2": "3", "3": "4", "4": "5", "5": "6", "6": "7", "7": "8", "8": "w", "b": "7",
               "w": "w"}
 
 
 def shimmer(grid, centre):
     rows = parse(grid)
-    return ["".join(SHIMMER_UP[c] if 0 <= (x + y - centre) <= 2 else c for x, c in enumerate(r))
+    return ["".join(SHIMMER_UP[c] if (x + y - centre) % 16 <= 2 else c for x, c in enumerate(r))
             for y, r in enumerate(rows)]
 
 
-ICE_FRAMES = [shimmer(ANCIENT_ICE, c) for c in (-3, 2, 7, 12, 17, 22, 27, 32)] + [parse(ANCIENT_ICE)] * 4
+ICE_FRAMES = [shimmer(ANCIENT_ICE, c) for c in range(0, 16, 2)] + [parse(ANCIENT_ICE)] * 4
 _ice = Image.new("RGBA", (16, 16 * len(ICE_FRAMES)), (0, 0, 0, 0))
 for _i, _f in enumerate(ICE_FRAMES):
     _ice.alpha_composite(draw(_f, DEEP_ICE, (16, 16), f"ancient_ice_{_i}"), (0, 16 * _i))
