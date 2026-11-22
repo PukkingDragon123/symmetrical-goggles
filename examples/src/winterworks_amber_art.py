@@ -75,37 +75,34 @@ def translucent(ramp, alphas):
     return {k: v + a for (k, v), a in zip(ramp.items(), alphas)}
 
 
-# ====================================================================== amber block: thick honey amber with depth
+# ====================================================================== amber block: honey amber, an even repeating pattern
 # The game draws a real 3D mosquito or seed inside the block (a block-entity renderer), so every face is translucent.
-# It reads as a deep lump of honey amber: warm lit edges (a bright top/left rim and a glowing inner ring), the body
-# deepening to a dark red-amber core in the middle (more saturated, a little more opaque, still see-through so a
-# trapped thing shows dark there), flow streaks running diagonally through it, and small trapped bubbles (a cream
-# glint over a dark underside). The seed and mosquito variants are the same plain amber.
+# Blocks tile like vanilla stone or sand, so there is no rim, no centre and no lone feature: uniformly translucent
+# honey amber (two body tones in soft flow bands, a few deeper and lighter pixels), flow streaks running diagonally
+# (each a dash along a line x - y = k, so it carries on across the block edges) and small trapped bubbles (a cream
+# glint over a dark underside) scattered evenly. Every edge wraps. The seed and mosquito variants are the same amber.
 HONEY_BLOCK = {
-    "W": "#fff1c4f0", "Y": "#fbd27ae8", "y": "#f3b84fe4",                      # lit rim (top/left)
-    "r": "#d2741ee4", "R": "#ad5114e8",                                         # shaded rim (bottom/right)
-    "g": "#f5b640b8", "G": "#fac85fb8",                                         # the glowing inner ring
-    "h": "#f09a24b4", "o": "#e47e18b4", "c": "#d06212b8", "C": "#b44a0ec0",       # body deepening to the core
+    "h": "#f09a24b4", "o": "#e47e18b4", "c": "#d06212b8", "g": "#f5b640b8",     # body: honey, orange, deep, light
     "s": "#f9c552b4", "d": "#b85414bc",                                         # flow streaks (light / dark)
     "B": "#fff6dcf4", "b": "#f9d27ed8", "q": "#86380ed0",                         # bubbles: glint, body, underside
 }
 AMBER_BLOCK = """
-WWWY YYYY YYYY yyyr
-WGGg gggg gGgg gghr
-WGsg ggGg gggg ghhr
-Ygsg gssh hhhh Bbhr
-Yggs shho oooh bqhR
-Yggs hhoo oooo ohhR
-YgBh hooc cccc oohR
-Ygqh oocc CCcc cohR
-Yghh occC CCCc cohR
-Yghh occC CCCC cdhR
-Yghh occC CCCc dohR
-Yghh oocc cccd oohR
-yghh hooc cdBb ohhR
-yggh hhoo oobq hhgR
-yggg ghhh hhhh hggR
-rrrr RRRR RRRR RRRR
+ohhh hhoh hoco hooh
+oohh shho bhoo ohoo
+oohB bshh oohh hBoo
+ohob qhsh ocdh hqho
+hooo hhhh hocd hhho
+scoh hhoh hhoc ohho
+csco hhBh hhho chho
+ocso hhqo ohhh hohb
+hooo ohod ohhh ghoo
+ohhh hooo ohhB bgho
+ohho hhoo ohhb qsoh
+hodh hhho hhoh hgoh
+Bhcd hhhh ohhh ohgh
+qhoc dhhh sohh hhoh
+hhho cohh oboo hdhh
+hhhh hohh occo oodo
 """
 for _name in ("amber_block", "amber_block_seed", "amber_block_mosquito"):
     block(_name, pal(HONEY_BLOCK), AMBER_BLOCK)
@@ -392,8 +389,9 @@ for k in range(4):
           brushed(turned_grid(GRAVEL_BASE), mirrored_grid(AMBER_LOOSE), mirrored_grid(REVEAL_LOOSE[k]), DIG))
 
 # ====================================================================== petrified log: stone-hard fossil wood
-# Side: deep vertical bark furrows turned to stone, a clean horizontal fracture (petrified trunks break into
-# segments), rust, ochre and chalcedony mineral streaks. Top: stony rings banded with minerals, a quartz heart.
+# Side: deep vertical bark furrows turned to stone in short offset plates, rust, ochre and chalcedony mineral
+# streaks spread through them; it tiles both ways like a vanilla log (no lone fracture line to stripe a pillar).
+# Top: stony rings banded with minerals, a quartz heart.
 PETRI = {"o": "#2a2228", "1": "#41363a", "2": "#5a4b4a", "3": "#77625c", "4": "#94806f", "5": "#b19c86",
          "6": "#cdbba0", "r": "#7e3f2c", "R": "#a65a3a", "y": "#a8843a", "Y": "#cdaa5a", "c": "#5f7d7a",
          "C": "#8fada4", "q": "#e7e3d6", "Q": "#fffdf4"}
@@ -404,8 +402,8 @@ o4R2 1o32 4o3y 21o4
 o3R1 1o43 3oy2 1o53
 54o2 2o54 2o32 o542
 43o1 3o43 1o21 o431
-1oo1 oo1o 1oo1 o1oo
-6566 5665 6556 6566
+32o5 3o65 42o5 3oR4
+21o4 2o54 31o4 2oR3
 4o53 2o54 3c4o 4o53
 3o42 1o43 2c3o 3o42
 4o3o 2o5R 2o43 2o31
