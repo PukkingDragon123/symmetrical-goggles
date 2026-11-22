@@ -1,0 +1,1799 @@
+{
+ "name": "Hex Core",
+ "description": "The Winterworks Hex Core: a cursed hexagonal cage of dark netherite and gold, filled with swirling soul wisps round a glowing soul centre. A 3D item; Minecraft pixel units, density 2.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "grounded": false,
+ "budget": {
+  "tris": 700,
+  "colors": 40
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.8,
+  "gradient": 0.3,
+  "ao": 0.4,
+  "ao_height": 2.0
+ },
+ "brush": {
+  "flow": "long",
+  "length": 1.6,
+  "width": 0.5,
+  "rough": 0.4,
+  "overshoot": 0.3,
+  "textures": {
+   "netherite": "metal",
+   "gold": "metal"
+  }
+ },
+ "minecraft": {
+  "fps": 24,
+  "glow_parts": [
+   "soul_0",
+   "soul_1",
+   "soul_2",
+   "soul_3",
+   "soul_4",
+   "core_a",
+   "core_b"
+  ],
+  "glow_ramps": [
+   "soul"
+  ]
+ },
+ "render": {
+  "background": "#1b1722",
+  "hero": [
+   -30,
+   20
+  ],
+  "shadow": 0.4
+ },
+ "palette": {
+  "ramps": {
+   "netherite": [
+    "#0d0a0c",
+    "#161114",
+    "#1f191d",
+    "#2a2227",
+    "#352c31",
+    "#42383d",
+    "#51464b",
+    "#61565b",
+    "#73686d"
+   ],
+   "gold": [
+    "#3b1d06",
+    "#5e300a",
+    "#86470e",
+    "#ad6213",
+    "#cf8118",
+    "#e8a422",
+    "#f6c836",
+    "#fde466",
+    "#fff4ae"
+   ],
+   "soul": [
+    "#06191d",
+    "#0b2f36",
+    "#0f4a52",
+    "#136b72",
+    "#1a9397",
+    "#2cbdbb",
+    "#5ee0d6",
+    "#a4fcef",
+    "#effffb"
+   ]
+  }
+ },
+ "styles": {
+  "netherite": {
+   "ramp": "netherite",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   }
+  },
+  "post": {
+   "ramp": "netherite",
+   "tone": 4.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "flute",
+     "op": "stripes",
+     "axis": "y",
+     "period": 3.0,
+     "width": 0.2,
+     "shift": -1.6
+    },
+    {
+     "id": "glyph",
+     "op": "spots",
+     "count": 1,
+     "radius": [
+      0.3,
+      0.4
+     ],
+     "ramp": "soul",
+     "tone": 5.0,
+     "faces": [
+      "front"
+     ]
+    }
+   ]
+  },
+  "netherite_boss": {
+   "ramp": "netherite",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "faces": [
+      "top",
+      "bottom"
+     ],
+     "at": "center",
+     "art": [
+      "ss",
+      "ss"
+     ],
+     "key": {
+      "s": "soul:5"
+     }
+    }
+   ]
+  },
+  "gold": {
+   "ramp": "gold",
+   "tone": 5.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.5,
+     "shift": 2.0
+    }
+   ]
+  },
+  "gold_stud": {
+   "ramp": "gold",
+   "tone": 6.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "plate": {
+   "ramp": "netherite",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "edge",
+     "op": "band",
+     "axis": "x",
+     "from": 0.6,
+     "to": 1.01,
+     "ramp": "gold",
+     "tone": 4.6,
+     "faces": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "edge2",
+     "op": "band",
+     "axis": "x",
+     "from": -1.01,
+     "to": -0.6,
+     "ramp": "gold",
+     "tone": 4.6,
+     "faces": [
+      "top",
+      "bottom",
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "glyphs",
+     "op": "stripes",
+     "axis": "z",
+     "period": 2.0,
+     "width": 0.25,
+     "ramp": "soul",
+     "tone": 3.6,
+     "range": [
+      -0.55,
+      0.55
+     ],
+     "faces": [
+      "top",
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "wisp": {
+   "ramp": "soul",
+   "tone": 5.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "W": "soul:7",
+    "w": "soul:6",
+    "E": "soul:4",
+    "e": "soul:2"
+   }
+  },
+  "core": {
+   "ramp": "soul",
+   "tone": 5.4,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.6,
+    "dark_shift": -1.4
+   }
+  },
+  "core_hot": {
+   "ramp": "soul",
+   "tone": 7.4,
+   "light": 0.1,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 1,
+    "dark": 0,
+    "light_shift": 1.0
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "cage",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    7.5,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "post0",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.0,
+    9.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    5.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "ring_top0",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    2.1651,
+    4.75,
+    3.75
+   ],
+   "rotation": [
+    0.0,
+    30.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "ring_bot0",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    2.1651,
+    -4.75,
+    3.75
+   ],
+   "rotation": [
+    0.0,
+    30.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "stud_top0",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    5.25,
+    5.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "stud_bot0",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -5.25,
+    5.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "post1",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.0,
+    9.0,
+    1.0
+   ],
+   "pivot": [
+    4.3301,
+    0.0,
+    2.5
+   ],
+   "rotation": [
+    0.0,
+    60.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "ring_top1",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    4.3301,
+    4.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "ring_bot1",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    4.3301,
+    -4.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "stud_top1",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    4.3301,
+    5.25,
+    2.5
+   ],
+   "rotation": [
+    0.0,
+    105.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "stud_bot1",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    4.3301,
+    -5.25,
+    2.5
+   ],
+   "rotation": [
+    0.0,
+    105.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "post2",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.0,
+    9.0,
+    1.0
+   ],
+   "pivot": [
+    4.3301,
+    0.0,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    120.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "ring_top2",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    2.1651,
+    4.75,
+    -3.75
+   ],
+   "rotation": [
+    0.0,
+    150.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "ring_bot2",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    2.1651,
+    -4.75,
+    -3.75
+   ],
+   "rotation": [
+    0.0,
+    150.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "stud_top2",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    4.3301,
+    5.25,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    165.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "stud_bot2",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    4.3301,
+    -5.25,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    165.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "post3",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.0,
+    9.0,
+    1.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    -5.0
+   ],
+   "rotation": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "ring_top3",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -2.1651,
+    4.75,
+    -3.75
+   ],
+   "rotation": [
+    0.0,
+    210.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "ring_bot3",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -2.1651,
+    -4.75,
+    -3.75
+   ],
+   "rotation": [
+    0.0,
+    210.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "stud_top3",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    5.25,
+    -5.0
+   ],
+   "rotation": [
+    0.0,
+    225.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "stud_bot3",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -5.25,
+    -5.0
+   ],
+   "rotation": [
+    0.0,
+    225.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "post4",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.0,
+    9.0,
+    1.0
+   ],
+   "pivot": [
+    -4.3301,
+    0.0,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    240.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "ring_top4",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -4.3301,
+    4.75,
+    -0.0
+   ],
+   "rotation": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "ring_bot4",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -4.3301,
+    -4.75,
+    -0.0
+   ],
+   "rotation": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "stud_top4",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -4.3301,
+    5.25,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    285.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "stud_bot4",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -4.3301,
+    -5.25,
+    -2.5
+   ],
+   "rotation": [
+    0.0,
+    285.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "post5",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.0,
+    9.0,
+    1.0
+   ],
+   "pivot": [
+    -4.3301,
+    0.0,
+    2.5
+   ],
+   "rotation": [
+    0.0,
+    300.0,
+    0.0
+   ],
+   "style": "post"
+  },
+  {
+   "id": "ring_top5",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -2.1651,
+    4.75,
+    3.75
+   ],
+   "rotation": [
+    0.0,
+    330.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "ring_bot5",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    1.0
+   ],
+   "pivot": [
+    -2.1651,
+    -4.75,
+    3.75
+   ],
+   "rotation": [
+    0.0,
+    330.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "stud_top5",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -4.3301,
+    5.25,
+    2.5
+   ],
+   "rotation": [
+    0.0,
+    345.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "stud_bot5",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.5,
+    1.5
+   ],
+   "pivot": [
+    -4.3301,
+    -5.25,
+    2.5
+   ],
+   "rotation": [
+    0.0,
+    345.0,
+    0.0
+   ],
+   "style": "gold_stud"
+  },
+  {
+   "id": "crown0",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    8.5
+   ],
+   "pivot": [
+    0.0,
+    5.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    30.0,
+    0.0
+   ],
+   "style": "plate"
+  },
+  {
+   "id": "crown1",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    8.5
+   ],
+   "pivot": [
+    0.0,
+    5.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "style": "plate"
+  },
+  {
+   "id": "crown2",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    8.5
+   ],
+   "pivot": [
+    0.0,
+    5.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    150.0,
+    0.0
+   ],
+   "style": "plate"
+  },
+  {
+   "id": "crown_boss",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    3.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    6.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "netherite_boss"
+  },
+  {
+   "id": "base0",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    8.5
+   ],
+   "pivot": [
+    0.0,
+    -5.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    30.0,
+    0.0
+   ],
+   "style": "plate"
+  },
+  {
+   "id": "base1",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    8.5
+   ],
+   "pivot": [
+    0.0,
+    -5.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "style": "plate"
+  },
+  {
+   "id": "base2",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    5.0,
+    1.0,
+    8.5
+   ],
+   "pivot": [
+    0.0,
+    -5.75,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    150.0,
+    0.0
+   ],
+   "style": "plate"
+  },
+  {
+   "id": "base_boss",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    3.0,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    -6.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "netherite_boss"
+  },
+  {
+   "id": "finial",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    2.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    7.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "finial_tip",
+   "shape": "box",
+   "parent": "finial",
+   "size": [
+    0.5,
+    1.0,
+    0.5
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "point",
+   "shape": "box",
+   "parent": "cage",
+   "size": [
+    1.5,
+    1.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    -7.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "souls",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    7.5,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "soul_0",
+   "shape": "card",
+   "parent": "souls",
+   "pivot": [
+    0.0,
+    -2.6,
+    2.6
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -20.0
+   ],
+   "style": "wisp",
+   "plane": "xy",
+   "art": [
+    ".eEe.",
+    "EwWwE",
+    "W.w.W",
+    "EwWwE",
+    ".EWe.",
+    "..Ee.",
+    "...e."
+   ]
+  },
+  {
+   "id": "soul_1",
+   "shape": "card",
+   "parent": "souls",
+   "pivot": [
+    1.9021,
+    -1.3,
+    0.618
+   ],
+   "rotation": [
+    0.0,
+    72.0,
+    -20.0
+   ],
+   "style": "wisp",
+   "plane": "xy",
+   "art": [
+    ".eEe.",
+    "eWwWe",
+    "E.W.E",
+    ".EWE.",
+    ".eE..",
+    ".e..."
+   ]
+  },
+  {
+   "id": "soul_2",
+   "shape": "card",
+   "parent": "souls",
+   "pivot": [
+    1.5282,
+    0.0,
+    -2.1034
+   ],
+   "rotation": [
+    0.0,
+    144.0,
+    -20.0
+   ],
+   "style": "wisp",
+   "plane": "xy",
+   "art": [
+    ".eE.",
+    "EwWE",
+    "W.w.",
+    ".EE.",
+    "..e.",
+    "..e."
+   ]
+  },
+  {
+   "id": "soul_3",
+   "shape": "card",
+   "parent": "souls",
+   "pivot": [
+    -1.1756,
+    1.3,
+    -1.618
+   ],
+   "rotation": [
+    0.0,
+    216.0,
+    -20.0
+   ],
+   "style": "wisp",
+   "plane": "xy",
+   "art": [
+    ".eEe.",
+    "EwWwE",
+    "W.w.W",
+    "EwWwE",
+    ".EWe.",
+    "..Ee.",
+    "...e."
+   ]
+  },
+  {
+   "id": "soul_4",
+   "shape": "card",
+   "parent": "souls",
+   "pivot": [
+    -2.4727,
+    2.6,
+    0.8034
+   ],
+   "rotation": [
+    0.0,
+    288.0,
+    -20.0
+   ],
+   "style": "wisp",
+   "plane": "xy",
+   "art": [
+    ".eEe.",
+    "eWwWe",
+    "E.W.E",
+    ".EWE.",
+    ".eE..",
+    ".e..."
+   ]
+  },
+  {
+   "id": "core",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    7.5,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "core_a",
+   "shape": "box",
+   "parent": "core",
+   "size": [
+    2.5,
+    2.5,
+    2.5
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    45.0,
+    35.0,
+    0.0
+   ],
+   "style": "core"
+  },
+  {
+   "id": "core_b",
+   "shape": "box",
+   "parent": "core",
+   "size": [
+    2.0,
+    2.0,
+    2.0
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    45.0
+   ],
+   "style": "core_hot"
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 4.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "cage",
+     "axis": "y",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.5,
+       45.0
+      ],
+      [
+       1.0,
+       90.0
+      ],
+      [
+       1.5,
+       135.0
+      ],
+      [
+       2.0,
+       180.0
+      ],
+      [
+       2.5,
+       225.0
+      ],
+      [
+       3.0,
+       270.0
+      ],
+      [
+       3.5,
+       315.0
+      ],
+      [
+       4.0,
+       360.0
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "souls",
+     "axis": "y",
+     "keys": [
+      [
+       0.0,
+       -0.0
+      ],
+      [
+       0.25,
+       -45.0
+      ],
+      [
+       0.5,
+       -90.0
+      ],
+      [
+       0.75,
+       -135.0
+      ],
+      [
+       1.0,
+       -180.0
+      ],
+      [
+       1.25,
+       -225.0
+      ],
+      [
+       1.5,
+       -270.0
+      ],
+      [
+       1.75,
+       -315.0
+      ],
+      [
+       2.0,
+       -360.0
+      ],
+      [
+       2.25,
+       -405.0
+      ],
+      [
+       2.5,
+       -450.0
+      ],
+      [
+       2.75,
+       -495.0
+      ],
+      [
+       3.0,
+       -540.0
+      ],
+      [
+       3.25,
+       -585.0
+      ],
+      [
+       3.5,
+       -630.0
+      ],
+      [
+       3.75,
+       -675.0
+      ],
+      [
+       4.0,
+       -720.0
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "core",
+     "axis": "y",
+     "keys": [
+      [
+       0.0,
+       0.0
+      ],
+      [
+       0.1667,
+       45.0
+      ],
+      [
+       0.3333,
+       90.0
+      ],
+      [
+       0.5,
+       135.0
+      ],
+      [
+       0.6667,
+       180.0
+      ],
+      [
+       0.8333,
+       225.0
+      ],
+      [
+       1.0,
+       270.0
+      ],
+      [
+       1.1667,
+       315.0
+      ],
+      [
+       1.3333,
+       360.0
+      ],
+      [
+       1.5,
+       405.0
+      ],
+      [
+       1.6667,
+       450.0
+      ],
+      [
+       1.8333,
+       495.0
+      ],
+      [
+       2.0,
+       540.0
+      ],
+      [
+       2.1667,
+       585.0
+      ],
+      [
+       2.3333,
+       630.0
+      ],
+      [
+       2.5,
+       675.0
+      ],
+      [
+       2.6667,
+       720.0
+      ],
+      [
+       2.8333,
+       765.0
+      ],
+      [
+       3.0,
+       810.0
+      ],
+      [
+       3.1667,
+       855.0
+      ],
+      [
+       3.3333,
+       900.0
+      ],
+      [
+       3.5,
+       945.0
+      ],
+      [
+       3.6667,
+       990.0
+      ],
+      [
+       3.8333,
+       1035.0
+      ],
+      [
+       4.0,
+       1080.0
+      ]
+     ],
+     "ease": "linear"
+    },
+    {
+     "part": "core",
+     "osc": {
+      "amp": [
+       0.18,
+       0.18,
+       0.18
+      ],
+      "cycles": 4,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "core",
+     "osc": {
+      "amp": 12,
+      "cycles": 2,
+      "phase": 0.0
+     },
+     "axis": "x"
+    },
+    {
+     "part": "soul_0",
+     "osc": {
+      "amp": [
+       0,
+       0.7,
+       0
+      ],
+      "cycles": 2,
+      "phase": 0.0
+     },
+     "channel": "position"
+    },
+    {
+     "part": "soul_0",
+     "osc": {
+      "amp": 12,
+      "cycles": 2,
+      "phase": 0.25
+     },
+     "axis": "z"
+    },
+    {
+     "part": "soul_0",
+     "osc": {
+      "amp": [
+       0.15,
+       0.2,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.1
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "soul_1",
+     "osc": {
+      "amp": [
+       0,
+       0.7,
+       0
+      ],
+      "cycles": 2,
+      "phase": 0.2
+     },
+     "channel": "position"
+    },
+    {
+     "part": "soul_1",
+     "osc": {
+      "amp": 12,
+      "cycles": 2,
+      "phase": 0.45
+     },
+     "axis": "z"
+    },
+    {
+     "part": "soul_1",
+     "osc": {
+      "amp": [
+       0.15,
+       0.2,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.30000000000000004
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "soul_2",
+     "osc": {
+      "amp": [
+       0,
+       0.7,
+       0
+      ],
+      "cycles": 2,
+      "phase": 0.4
+     },
+     "channel": "position"
+    },
+    {
+     "part": "soul_2",
+     "osc": {
+      "amp": 12,
+      "cycles": 2,
+      "phase": 0.65
+     },
+     "axis": "z"
+    },
+    {
+     "part": "soul_2",
+     "osc": {
+      "amp": [
+       0.15,
+       0.2,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.5
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "soul_3",
+     "osc": {
+      "amp": [
+       0,
+       0.7,
+       0
+      ],
+      "cycles": 2,
+      "phase": 0.6
+     },
+     "channel": "position"
+    },
+    {
+     "part": "soul_3",
+     "osc": {
+      "amp": 12,
+      "cycles": 2,
+      "phase": 0.85
+     },
+     "axis": "z"
+    },
+    {
+     "part": "soul_3",
+     "osc": {
+      "amp": [
+       0.15,
+       0.2,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.7
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "soul_4",
+     "osc": {
+      "amp": [
+       0,
+       0.7,
+       0
+      ],
+      "cycles": 2,
+      "phase": 0.8
+     },
+     "channel": "position"
+    },
+    {
+     "part": "soul_4",
+     "osc": {
+      "amp": 12,
+      "cycles": 2,
+      "phase": 1.05
+     },
+     "axis": "z"
+    },
+    {
+     "part": "soul_4",
+     "osc": {
+      "amp": [
+       0.15,
+       0.2,
+       0
+      ],
+      "cycles": 4,
+      "phase": 0.9
+     },
+     "channel": "scale"
+    }
+   ]
+  }
+ }
+}

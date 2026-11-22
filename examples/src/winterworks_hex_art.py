@@ -13,32 +13,42 @@ Animations are hand-placed too: a sprite's moving part is a second hand-drawn gr
 say on which frame each pixel lights (0-9, a-v), so the crawl of a rune, the spread of fire through the HEX rune or
 the orbit of a soul is drawn pixel by pixel and only the light/fade is stepped per frame.
 
-GUI sheet textures/gui/hexing_table.png (256x256). The screen is 176x166 like the vanilla enchanting table.
-Region map (x, y, w, h on the sheet; "at" = where the screen draws it, relative to leftPos/topPos):
+GUI sheet textures/gui/hexing_table.png (256x256). The screen is 176x166, like the vanilla enchanting table.
+Region map: "sheet" = (u, v, w, h) on the sheet; "at" = where the screen draws it, relative to (leftPos, topPos).
 
-    panel ................ 0,0 176x166         the background, at 0,0 (title at 8,6; "Inventory" label at 8,72;
-                                                labels in light colours, e.g. 0xE6C77A gold or 0x9FE8EA soul)
-    slots (in the panel)   book slot item at 34,47; Soul Elixir slot item at 56,47 (18x18 frames at 33,46 / 55,46)
-                           player inventory items at 8+18c, 84+18r; hotbar at 8+18c, 142 (vanilla)
-    soul tank gauge        inside at 10,17 16x48 (the glass, drawn empty in the panel)
-      fill strip ......... 176,0 16x80   loops every 32 px: draw (u=176, v=scroll+48-h, 16, h) at (10, 17+48-h),
-                                         scroll = (ticks/2) % 32, h = 48*souls/1000
-      surface ............ 176,80 16x4   the glowing meniscus, at (10, 17+48-h-1) when 0 < h < 48
-      glass overlay ...... 176,84 16x48  drawn over the fill at 10,17 (streaks, gauge marks)
-    hex option rows ...... 192,0 is not used; rows are 88x19, at (80, 14+19*i), i = 0..2
-      normal ............. 0,166 88x19
-      hovered ............ 0,185 88x19
-      disabled ........... 0,204 88x19
-      locked ............. 0,223 88x19   (chains + padlock; draw no cost icon/text on it)
-      cost icons ......... 192,32 + 16*n, 0 16x16 n = 0..2 (1, 2, 3 Soul Elixir), enabled; disabled at 192+16*n, 48;
-                           at (row.x+2, row.y+2); glyph text at (row.x+20, row.y+6)
-    cursed glyphs ........ 0,243 6x8 cells, 16 glyphs in a row (0,243 .. 95,250); glyph i at (6*i, 243)
-    HEX button ........... 32x28 cells at (88+32*c, 166+28*r); drawn at 37,14 (hit box 32x28)
-      normal 88,166  hover 120,166  pressed 152,166  disabled 184,166  (216,166: the glow halo, additive)
-      ignition frames 0..7: 88,194 120,194 152,194 184,194 216,194 / 88,222 120,222 152,222 (row 2, then 3)
-    swirling souls ....... 8 frames 16x16 at (192+16*(i%4), 0+16*(i//4)), i = 0..7 (draw over the fill, clipped)
-    ghost icons .......... book 240,32 16x16, Soul Elixir 240,48 16x16 (in empty slots)
-    rune glow halo ....... 216,166 32x28
+    element              sheet (u, v, w, h)          at / notes
+    panel                0, 0, 176, 166              0, 0. Title at 8,6 and "Inventory" at 8,72, drawn in light
+                                                     colours (title 0xE6C77A, label 0xB8A58A; the panel is dark)
+    book slot            (in the panel)              item at 34,47 (gold-ringed 18x18 frame at 33,46)
+    Soul Elixir slot     (in the panel)              item at 56,47 (frame at 55,46); accepts 1-3
+    player inventory     (in the panel)              items at 8+18*col, 84+18*row; hotbar 8+18*col, 142
+    soul tank glass      (in the panel, empty)       inside 9,17 16x48 (gold caps 6,13 and 6,65)
+    tank fill strip      176, 0, 16, 80              loops every 32 px. Fill h = 48*souls/1000: draw
+                                                     (176, scroll + 48 - h, 16, h) at 9, 65 - h,
+                                                     scroll = (ticks / 2) % 32 (souls rise)
+    tank surface         176, 80, 16, 3              at 9, 64 - h (the glowing meniscus; skip if h = 0 or 48)
+    tank glass overlay   176, 84, 16, 48             at 9, 17, over the fill (streaks, glint, gauge marks)
+    swirling souls       192 + 16*(i%4), 16*(i//4),  i = 0..7, 16x16; frame (ticks / 3) % 8 at 9, 65 - h +
+                         16, 16                      (h - 16) / 2 while h >= 16, clipped to the fill
+    hex option rows      88x19 each                  at 80, 14 + 19*i (i = 0..2), inside the panel's well
+      normal             0, 166                      cost icon at row + (1, 1); glyph text at row + (20, 6)
+      hovered            0, 185                      (soul-blue edge)
+      disabled           0, 204
+      locked             0, 223                      chains and a padlock: draw no cost icon or text on it
+    cost icons           192 + 16*(n-1), 32, 16, 16  n = 1..3 Soul Elixir (lit); unaffordable: same u, v = 48
+    ghost icons          240, 32 (book); 240, 48      16x16, in the empty book / elixir slot
+                         (Soul Elixir)
+    cursed glyphs        6*i, 243, 6, 8              i = 0..15: a 5x7 glyph + its 1px shadow, light soul
+                                                     colour (tint it); advance 6 px. Text resolving into
+                                                     words swaps glyphs for font letters as you hover
+    HEX button           32x28 cells                 at 37, 14 (hit box 32x28)
+      normal             96, 166
+      hover              128, 166
+      pressed            160, 166
+      disabled           192, 166                    (no book / not enough souls or elixir)
+      glow halo          224, 166                    drawn first, behind the button, while hovered or hexing
+      ignition 0..7      96 + 32*(i%5), 194 + 28*(i//5)   i.e. 0-4 on v = 194, 5-7 on v = 222; ~3 ticks a
+                                                     frame; frame 7 is the lit end state (hold or fade back)
 
 Particles are frame sequences `<name>_<i>.png` plus `particles/<name>.json`; hex_rune_0..5 are six different glyphs (a
 glyph that changes as it floats when played with setSpriteFromAge), gold_glint_0..3 a glint's life (frame 0 = birth).
@@ -343,24 +353,24 @@ item("soul_tank", pal(NETH, SOUL, z="#d8f4ff70", o="#0b080d", O="#1a141c", e=GOL
 .oooooooooooooo.
 ................
 """)
-# the Hexing Table: a netherite slab trimmed in gold on crying obsidian, an open book (runes on its pages) floating
-# over it in a soul flame
-item("hexing_table", pal(NETH, GOLD, SOUL, PAGE, o="#0b080d", n="#1d1a33", x="#170a24", X="#2a1442",
-                         y="#4a2378", Y="#9b5cf0"), """
-.......vw.......
-.oo....uv....oo.
-.oQoo..tu..ooQo.
-.oPuQoo..ooQuPo.
-..oPPQQooQQPPo..
-..onnPPQQPPnno..
-...oonnoonnoo...
+# the Hexing Table: a netherite slab trimmed in gold on crying obsidian, a hexed book (the trident burning on its
+# cover) floating over it among soul sparks
+item("hexing_table", pal(NETH, GOLD, SOUL, PAGE, o="#0b080d", S="#3c3a63", s="#24203f", j="#0e0b1a",
+                         **{"4": "#2a2848"}, x="#170a24", X="#2a1442", y="#4a2378", Y="#9b5cf0"), """
+....ooooooo...w.
+...oSj44444o..v.
+.v.oSju4u4uoo...
+...oSjv4v4voQo..
+...oSj4vWv4oPo..
+...oSj44v44oQo..
+...osjooooooPo.t
+..t.oqQPQPQPpo..
 ..oooooooooooo..
 .o887777766665o.
 .ogffffeeeeddco.
 .oXxXyxxXxyXxbo.
 .oexYyXxxXxxxbo.
 .oexXxxxYXxyxbo.
-.odxxXyxxxxXxao.
 .odccccbbbbbbao.
 .oooooooooooooo.
 """)
@@ -1335,10 +1345,10 @@ DROP_BIG = """
 .owvuo.
 owWvuto
 owvuuto
-ouuuttо
+ouuutto
 .ottmo.
 ..ooo..
-""".replace("о", "o")
+"""
 DROP = """
 ..o..
 .owo.
@@ -1370,7 +1380,7 @@ for n in (1, 2, 3):
 
 
 # --- ghost icons for the empty slots: the hexed book and the flask as flat silhouettes
-def ghost(grid, keep_inner="1234567QPpqzZ"):
+def ghost(grid):
     g = "\n".join("".join("." if c == "." else ("b" if c in "oO" else "a") for c in row) for row in parse(grid))
     return img(g, pal(a="#5f515370", b="#7a6a668c"), (16, 16), "ghost")
 
@@ -1457,9 +1467,9 @@ def panel():
     # the well the three hex option rows sit in
     bevel(im, 79, 13, 90, 59, "1", "5", inner="2", corner="3")
     # a carved rule from the "Inventory" label to the right edge, gold diamonds at its ends
-    fill(im, 60, 76, 105, 1, "1")
-    fill(im, 61, 77, 105, 1, "5")
-    for dx in (57, 166):
+    fill(im, 63, 76, 102, 1, "1")
+    fill(im, 64, 77, 101, 1, "5")
+    for dx in (61, 166):
         stamp(im, dx - 1, 75, """
 .f.
 fec
@@ -1695,7 +1705,8 @@ def screen(state):
     top = T + 17 + 48 - hgt
     blit(im, L + 9, top, "tank_fill", v=6 + 48 - hgt, h=hgt)
     blit(im, L + 9, top - 1, "tank_surface")
-    blit(im, L + 9, top + 4, "swirl_3" if state == "hover" else "swirl_6", h=min(16, hgt - 4))
+    if hgt >= 16:
+        blit(im, L + 9, top + (hgt - 16) // 2, "swirl_3" if state == "hover" else "swirl_6")
     blit(im, L + 9, T + 17, "tank_glass")
     # input slots
     book = img(BOOK, pal(PAGE, o="#1a0b26", S="#7a4fb0", s="#3a1f5c", j="#24103a", b="#a07ad8", c="#d8c0ff",
