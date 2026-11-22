@@ -23,6 +23,9 @@ import net.minecraft.world.item.ItemStack;
  * trembles open, and soul flames lick out of the eye socket. The item is the same 3D skull everywhere.
  */
 public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMaulerSkullBlockEntity> {
+    /** Block size: the model is bigger than a block. */
+    private static final float SCALE = 0.62f;
+
     private static WWModel<Entity> model;
 
     public FrostMaulerSkullRenderer(BlockEntityRendererProvider.Context ctx) {
@@ -58,6 +61,7 @@ public class FrostMaulerSkullRenderer implements BlockEntityRenderer<FrostMauler
         pose.pushPose();
         pose.translate(0.5, 0, 0.5);
         pose.mulPose(Axis.YP.rotationDegrees(yRot + 180f));
+        pose.scale(SCALE, SCALE, SCALE);   // the sabertooth skull is ~26 px: shrink it to sit on one block
         pose.translate(0, 1.5, 0);
         pose.scale(-1f, -1f, 1f);
         m.show("eye", false);

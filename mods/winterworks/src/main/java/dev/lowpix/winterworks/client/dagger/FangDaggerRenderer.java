@@ -70,6 +70,10 @@ public class FangDaggerRenderer implements BuiltinItemRendererRegistry.DynamicIt
             return;
         }
         WWModel<Entity> m = model();
+        if (mode.firstPerson()) {   // in first person, the crisp pixel-art dagger held like a vanilla blade
+            icon(mc, stack, mode, pose, buffers, light, overlay);
+            return;
+        }
         if (fit == null) {   // no 3D model: hold the flat icon like a sword
             icon(mc, stack, ItemDisplayContext.NONE, pose, buffers, light, overlay);
             return;

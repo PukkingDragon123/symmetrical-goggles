@@ -16,8 +16,9 @@ HANDHELD = {
     "head": {"rotation": [0, 180, 0], "translation": [0, 13, 7], "scale": [1, 1, 1]},
     "thirdperson_righthand": {"rotation": [0, -90, 55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]},
     "thirdperson_lefthand": {"rotation": [0, 90, -55], "translation": [0, 4.0, 0.5], "scale": [0.85, 0.85, 0.85]},
-    "firstperson_righthand": {"rotation": [0, -90, 25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
-    "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.13, 3.2, 1.13], "scale": [0.68, 0.68, 0.68]},
+    # first person draws the icon model (parent item/handheld), which brings its own vanilla handheld pose
+    "firstperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
+    "firstperson_lefthand": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
 }
 
 
@@ -26,7 +27,7 @@ def item_models(ctx):
     for n in FUR + ["polar_bear_fur", "mauler_fang"]:
         ctx.write(os.path.join(models, n + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": f"{ctx.M}:item/{n}"}})
     ctx.write(os.path.join(models, "fang_dagger_icon.json"),
-              {"parent": "minecraft:item/generated", "textures": {"layer0": f"{ctx.M}:item/fang_dagger"}})
+              {"parent": "minecraft:item/handheld", "textures": {"layer0": f"{ctx.M}:item/fang_dagger"}})
     ctx.write(os.path.join(models, "fang_dagger.json"), {
         "parent": "minecraft:builtin/entity", "gui_light": "front",
         "textures": {"particle": f"{ctx.M}:item/fang_dagger"},

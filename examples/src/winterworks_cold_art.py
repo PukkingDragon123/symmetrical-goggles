@@ -909,8 +909,9 @@ def block(name, palette, grid):
 
 # Ancient ice: deep indigo glacier ice (translucent) with crystal prisms at different depths (bright
 # ridge, darker core, fading into the dark below), trapped bubbles. Tiles seamlessly (edges are depth).
-DEEP_ICE = pal(**{"0": "#141344d0", "1": "#1c2470c4", "2": "#22399ac8", "3": "#2856bccc", "4": "#2f7dd4d0",
-                  "5": "#45ace6d8", "6": "#82dcf4e4", "7": "#c8f4fcee", "8": "#fffffff4", "f": "#a6ecfa90"})
+# the deep body is see-through enough to make out a frozen beast inside; the crystal ridges stay bright
+DEEP_ICE = pal(**{"0": "#14134470", "1": "#1c247070", "2": "#22399a78", "3": "#2856bc80", "4": "#2f7dd490",
+                  "5": "#45ace6a8", "6": "#82dcf4c8", "7": "#c8f4fce0", "8": "#ffffffee", "f": "#a6ecfa70"})
 block("ancient_ice", DEEP_ICE, """
 1121101121112112
 1211711217611151

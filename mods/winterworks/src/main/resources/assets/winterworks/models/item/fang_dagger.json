@@ -110,35 +110,35 @@
     "firstperson_righthand": {
       "rotation": [
         0,
-        -90,
-        25
+        0,
+        0
       ],
       "translation": [
-        1.13,
-        3.2,
-        1.13
+        0,
+        0,
+        0
       ],
       "scale": [
-        0.68,
-        0.68,
-        0.68
+        1,
+        1,
+        1
       ]
     },
     "firstperson_lefthand": {
       "rotation": [
         0,
-        90,
-        -25
+        0,
+        0
       ],
       "translation": [
-        1.13,
-        3.2,
-        1.13
+        0,
+        0,
+        0
       ],
       "scale": [
-        0.68,
-        0.68,
-        0.68
+        1,
+        1,
+        1
       ]
     }
   }
