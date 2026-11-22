@@ -3,16 +3,23 @@
 
     python examples/src/withered_commander.py
 
-A towering wither-skeleton officer, about 1.3 times a Wither Skeleton (some 49 px, three blocks, to the top of the helm):
-charred dark-grey bones in a Wither Skeleton's charcoal greys, a heavy skull with deep round eye sockets where a faint
-ember glows, a jaw full of teeth. It wears blackened netherite plate: a crested helm (a comb of gold-tipped spikes, a
-crimson horsehair plume, cheek guards, a neck guard and a raised visor with a slit), huge layered pauldrons bristling
-with gold-tipped spikes, a breastplate over the ribcage (the lowest ribs and the spine bare beneath it, embers
-smouldering inside), a gorget, a war belt with a gold buckle, tassets, vambraces and gauntlets, knee cops, greaves and
-sabatons with gold spurs. All of it is trimmed in gold and split by glowing ember cracks. A torn crimson banner cape
-with a gold border and a gold winged-spear sigil hangs from its shoulders. In its right fist it holds a long netherite
-spear upright: a leaf blade with a gold midline, gold lugs and socket, a crimson pennant, gold bands and a gold butt
-spike.
+A towering wither-skeleton officer, about 1.3 times a Wither Skeleton (50 px, three blocks, to the top of the helm; 54
+to the tips of its crest): charred dark-grey bones in a Wither Skeleton's charcoal greys, a heavy skull with deep round
+eye sockets where a faint ember glows, a jaw full of teeth. It wears blackened netherite plate: a crested helm (a comb
+of gold-tipped spikes, a crimson horsehair plume, cheek guards, a neck guard and a raised visor with a slit), huge
+layered pauldrons bristling with gold-tipped spikes, a breastplate over the ribcage (the ribs bare at its flanks, the
+lowest ribs and the spine bare beneath it, embers smouldering inside), a gorget, a war belt with a gold buckle,
+tassets, vambraces and gauntlets, knee cops, greaves and sabatons with gold spurs. All of it is trimmed in gold and
+split by glowing ember cracks. A torn crimson banner cape with a gold border and a gold winged-spear sigil hangs from
+its shoulders. In its right fist it holds a long netherite spear upright: a leaf blade with a gold inlay beside its
+midrib, gold lugs and socket, a crimson pennant, gold bands and a gold butt spike.
+
+The rest pose holds the spear upright in front of the right hip: the grip (bone `spear`) at (-7.54, 22.9, 7.82) and
+the blade's tip at (-7.54, 54.4, 7.82) = Minecraft model (-7.54, -30.4, -7.82), 31.5 px up the spear's local +Y from
+the grip (Minecraft: local -Y). The lunge's thrust reaches about 60 px (3.7 blocks) ahead. In the `ride` pose the hips
+(the bottom of the pelvis and belt) sit at y = 17.55 (the hip joint at 19.24): put that on the Soul Bull's `rider`
+locator (the top of its saddle, y = 23 in the bull's model), i.e. the commander's feet origin 17.55 px (1.1 blocks)
+below the seat.
 
 Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
 to a vanilla entity model (python -m lowpix mc export). Faces +Z, ground at y = 0, "left" is +X.
@@ -39,8 +46,8 @@ import types
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from end_kit import (DENSITY, LR, M, MR, ROOT, Rig, add, dump, euler, ground_lock, keys, limb, locks, osc,  # noqa: E402
-                     pos, r, rest_on_ground, ring, rot_matrix, sc, shake, spikes, tatters, timeline, wave)
+from end_kit import (DENSITY, LR, ROOT, Rig, add, dump, euler, ground_lock, keys, limb, locks, osc, pos,  # noqa: E402
+                     r, rest_on_ground, ring, rot_matrix, sc, shake, tatters, timeline, wave)
 from hex_kit import side  # noqa: E402
 
 # ======================================================================= palette
@@ -78,8 +85,8 @@ UNDER = {"id": "under", "op": "gradient", "axis": "y", "amount": 0.8}
 # netherite plate: hammered, a polished cool edge, dark outline, sparse bright scuffs, glowing ember cracks
 PLATE_RIM = {"light": 1, "dark": 1, "light_shift": 2.8, "dark_shift": -1.4, "outline": "dark"}
 HAMMER = {"id": "hammer", "op": "noise", "scale": 0.9, "amount": 0.55}
-EMBERS = {"id": "embers", "op": "cracks", "scale": 0.9, "width": 0.022, "threshold": 0.6, "ramp": "ember",
-          "tone": 2.8, "faces": ["front", "sides", "top"],
+EMBERS = {"id": "embers", "op": "cracks", "scale": 0.55, "width": 0.03, "threshold": 0.6, "ramp": "ember",
+          "tone": 3.0, "faces": ["front", "sides", "top"],
           "bevel": {"shadow": 1, "highlight": 0, "shadow_shift": -1.8}}
 SCUFF = {"id": "scuff", "op": "wear", "width": 1, "density": 0.12, "shift": 1.8}
 PGLOSS = {"id": "gloss", "op": "gloss", "post": True, "dash": True, "length": 2, "inset": 1, "density": 0.6,
@@ -113,9 +120,6 @@ STYLES = {
                                              "shift": -2.0}, SHEEN]},
     "brow": {"ramp": "bone", "tone": 5.8, "rim": dict(RIM, light_shift=3.0), "brush": {"flow": "x"},
              "layers": [GRAIN, SOOT, SHEEN]},
-    # the depth walls round a socket: bone darkening into the hole
-    "socket_wall": {"ramp": "bone", "tone": 2.6, "light": 0.3, "brush": {"off": True},
-                    "rim": {"light": 0, "dark": 0}},
     "jaw": {"ramp": "bone", "tone": 4.8, "rim": dict(RIM, light_shift=2.6),
             "layers": [GRAIN, SOOT, PITS, SHEEN],
             "stamps": [{"face": "front", "at": "top", "art": ["tTtTtvtTtTvtTtTt"],
@@ -318,6 +322,15 @@ SIGIL = [
     ".......G.......",
 ]
 SIGIL_KEY = {"G": "gold:6", "g": "gold:3"}
+
+
+def tear(w, at, art):
+    """A rent through a one-texel-thick cloth: the same holes punched through its back face (at `at`, face `w` texels
+    wide) and its front face (mirrored, since the front face is seen from the other side)."""
+    n = max(len(r) for r in art)
+    art = [r.ljust(n, ".") for r in art]
+    return [{"face": "back", "at": list(at), "art": art, "key": {}},
+            {"face": "front", "at": [w - at[0] - n, at[1]], "art": [r[::-1] for r in art], "key": {}}]
 
 
 # ======================================================================= the spear (shared with netherite_spear.py)
@@ -617,20 +630,18 @@ def build():
                                "key": {"a": "ember:1", "c": "ember:0"}}]},
         "eye_ember": {"ramp": "ember", "tone": 2.0, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
                       "stamps": [{"face": "front", "at": "top-left", "art": ["ab", "bc"],
-                                  "key": {"a": "ember:5", "b": "ember:3", "c": "ember:2"}}]},
+                                  "key": {"a": "ember:4", "b": "ember:2", "c": "ember:1"}}]},
         "rowel": {"ramp": "gold", "tone": 5, "light": 0.3, "brush": {"off": True}, "art_key": {"s": "gold:6"}},
         "cape_upper": copy.deepcopy(STYLES["cape"]),
         "cape_lower": copy.deepcopy(STYLES["cape"]),
     })
+    styles.pop("cape")
     styles["cape_upper"]["layers"].append({"id": "border_top", "op": "band", "axis": "y", "from": 0.86, "to": 0.97,
                                            "ramp": "gold", "tone": 4.6, "faces": ["back"]})
-    styles["cape_upper"]["stamps"] = [{"face": "back", "at": [4, 7], "art": SIGIL, "key": SIGIL_KEY},
-                                      # a rent torn through the cloth
-                                      {"face": "back", "at": [17, 18], "art": ["_", "__", ".__", "..__", "...__"],
-                                       "key": {}}]
-    styles["cape_lower"]["stamps"] = [{"face": "back", "at": [5, 4], "art": ["_.", "__", ".__", ".__", "..__", "..._"],
-                                       "key": {}},
-                                      {"face": "back", "at": [15, 9], "art": [".__", "___", "__."], "key": {}}]
+    styles["cape_upper"]["stamps"] = ([{"face": "back", "at": [4, 7], "art": SIGIL, "key": SIGIL_KEY}]
+                                      + tear(22, [17, 18], ["_", "__", ".__", "..__", "...__"]))
+    styles["cape_lower"]["stamps"] = (tear(23, [5, 3], ["_.", "__", ".__", ".__", "..__", "..._"])
+                                      + tear(23, [15, 9], [".__", "___", "__."]))
 
     spec = {
         "name": "Withered Commander",
@@ -795,12 +806,12 @@ def animate(spec):
     # (anticipation), then drives forward in a long lunge, the arm and spear fully extended at the target (the thrust
     # lands at 0.38 s), holds the strike, and hauls back to guard
     WIND = add(pos("body", 0, 0, -2.0), r("body", -3, -22), r("chest", -6, -22),
-               arm(-1, 24, 34, 0, -96, 0), arm(1, -44, 16, 0, -40),
+               arm(-1, 30, 30, 0, -40, 0), arm(1, -44, 16, 0, -40),
                leg(1, -16, 14, 0), leg(-1, 18, 16, -6), r("head", 4, 34), paul(-1, 12, -8),
                r("cape", 10), r("jaw", 6))
     WIND = spear(WIND, (0.06, 0.1, 1), side=(0, 1, 0))
-    THRUST = add(pos("body", 0, 0, 7.0), r("body", 12, 18), r("chest", 8, 24),
-                 arm(-1, -86, 4, 0, -2, 0), arm(1, 40, 24, 0, -24),
+    THRUST = add(pos("body", 0, 0, 7.0), r("body", 12, 12), r("chest", 8, 14),
+                 arm(-1, -86, 4, 0, 62, 0), arm(1, 40, 24, 0, -24),
                  leg(1, -56, 64, -8), leg(-1, 36, 6, 12), r("head", -14, -40), paul(-1, 16, -14), paul(1, -4),
                  r("cape", 28), r("cape_1", 16), r("jaw", 18))
     THRUST = spear(THRUST, (0.0, -0.08, 1), side=(0, 1, 0))
@@ -812,10 +823,10 @@ def animate(spec):
 
     # spin (1.2 s): coils back with the spear swung out level to the right, then whirls round a full turn, crouched,
     # sweeping it in a wide circle (the cape and plume flung out), and comes back to guard
-    OUT = arm(-1, -6, 84, 0, -4)
+    OUT = arm(-1, -6, 84, 0, 50)
     COIL = add(r("body", 0, -46), r("chest", 4, -16), OUT, arm(1, -40, 40, 0, -60),
                leg(1, -24, 36, 0), leg(-1, -10, 30, 0), r("head", 6, 40), paul(-1, 24), r("cape", 14))
-    COIL = spear(COIL, (-0.75, 0.05, -0.65), side=(0, 1, 0), frame="body")
+    COIL = spear(COIL, (-0.95, 0.12, 0.2), side=(0, 1, 0), frame="body")
     SWEEP = add(r("body", 0, 150), r("chest", 8, 10), OUT, arm(1, -30, 46, 0, -50),
                 leg(1, -30, 40, 0), leg(-1, -30, 40, 0), r("head", 6, -8), paul(-1, 26), r("cape", 34),
                 r("cape_1", 12), r("plume", 20))
@@ -837,8 +848,8 @@ def animate(spec):
                  sc("eye_l", -0.4, -0.4, 0), sc("eye_r", -0.4, -0.4, 0), r("cape", -6))
     GATHER = spear(GATHER, (0.15, 1, 0.5))
     ROAR = add(r("body", -6), r("chest", -14), r("head", -34), r("jaw", 40),
-               arm(-1, -168, 12, 0, -6), arm(1, -128, 46, 0, -36, 0),
-               leg(1, -8, 6, 0, 10), leg(-1, -8, 6, 0, 10), paul(-1, 34, -10), paul(1, 30, -8),
+               arm(-1, -168, 14, 0, 64), arm(1, -16, 122, 0, -34, 0),
+               leg(1, -14, 24, -10, 14), leg(-1, -14, 24, -10, 14), paul(-1, 34, -10), paul(1, 36, -8),
                sc("eye_l", 1.6, 1.6, 0), sc("eye_r", 1.6, 1.6, 0), r("cape", 22), r("cape_1", 12), r("plume", -20),
                sc("chest", 0.05, 0.06, 0.05))
     ROAR = spear(ROAR, (0.06, 1, 0.1))
@@ -861,7 +872,7 @@ def animate(spec):
     KNEEL = spear(KNEEL, (-0.25, -0.45, 1))
     SLUMP = add(KNEEL, r("chest", 6), r("head", 10))
     SLUMP = add({k: v for k, v in SLUMP.items() if k != "spear"}, P.aim(SLUMP, "spear", (-0.3, -0.5, 1)))
-    FALL = add(r("body", 82), leg(1, 2, 12, 30, 6), leg(-1, -2, 16, 30, 8), r("chest", 4, 4, -4),
+    FALL = add(r("body", 82), leg(1, -12, 6, 26, 8), leg(-1, -9, 10, 26, 10), r("chest", 4, 4, -4),
                r("head", -26, 26, 10), r("jaw", 30), arm(-1, -150, 26, 0, -10), arm(1, -20, 40, 0, -20),
                paul(1, 10), paul(-1, 10), r("cape", -40), r("cape_1", -10), r("plume", -30),
                sc("eye_l", -0.9, -0.9, -0.9), sc("eye_r", -0.9, -0.9, -0.9))
@@ -870,6 +881,13 @@ def animate(spec):
                                 (1.15, FALL, "in"), (1.25, add(FALL, r("head", -6), r("chest", -3)), "out"),
                                 (1.5, FALL, "ease")],
                             extra=[ring("cape_hem", 1.15, 18, freq=6), ring("plume", 1.15, 20, freq=6)])
+    # the spear's aimed turns are solved one key at a time: unwrap each angle so it takes the short way between keys
+    # (adding 360 to one Euler angle leaves the rotation unchanged)
+    for clip in A.values():
+        for tr in clip["tracks"]:
+            if tr.get("part") == "spear" and tr.get("channel") == "rotation" and "keys" in tr:
+                for prev, k in zip(tr["keys"], tr["keys"][1:]):
+                    k[1] = [v + 360 * round((p - v) / 360) for p, v in zip(prev[1], k[1])]
     spec["animations"] = A
 
 

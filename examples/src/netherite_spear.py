@@ -40,8 +40,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from hex_kit import ROOT, Rig, dump, osc  # noqa: E402
-from withered_commander import (GGLOSS, GOLD_RIM, PGLOSS, PLATE_RIM, RAMPS, SPEAR_STYLES, STYLES,  # noqa: E402
-                                leaf_blade, pennant, plate, trim)
+from withered_commander import RAMPS, SPEAR_STYLES, STYLES, leaf_blade, pennant  # noqa: E402
 
 ITEM_DIR = os.path.join(ROOT, "mods", "winterworks", "src", "main", "resources", "assets", "winterworks", "textures",
                         "item")
@@ -53,7 +52,8 @@ part, bone, card = R.part, R.bone, R.card
 G = 24.0                                    # the grip (Minecraft y = 0)
 BUTT, SHAFT_TOP, SOCK, TIP = -16.5, 15.5, 18.0, 25.0
 bone("spear", None, at=(0, G, 0))
-part("shaft", "spear", [1, SHAFT_TOP - (BUTT + 2.0), 1], "spear_shaft", centre=(0, G + (SHAFT_TOP + BUTT + 2.0) / 2, 0))
+part("shaft", "spear", [1, SHAFT_TOP - (BUTT + 2.0), 1], "spear_shaft",
+     centre=(0, G + (SHAFT_TOP + BUTT + 2.0) / 2, 0))
 # the grip: crimson leather wound between two gold rings
 part("grip", "spear", [1.5, 5, 1.5], "grip", centre=(0, G, 0))
 for k, y in enumerate((-2.75, 2.75)):
@@ -74,8 +74,8 @@ for s, n in ((1, "l"), (-1, "r")):
 # the leaf blade: a diamond midrib and the leaf (an alpha-cut card in the XY plane: honed edge, gold midline)
 part("midrib", "spear", [0.5, TIP - SOCK - 0.5, 0.5], "spear_rib", centre=(0, G + (SOCK + TIP - 0.5) / 2, 0),
      rot=(0, 45, 0))
-card("blade", "spear", leaf_blade(12, int(round((TIP - SOCK) * 4)), inlay=2.5), "spear_blade", centre=(0, G + (SOCK + TIP) / 2, 0),
-     plane="xy")
+card("blade", "spear", leaf_blade(12, int(round((TIP - SOCK) * 4)), inlay=2.5), "spear_blade",
+     centre=(0, G + (SOCK + TIP) / 2, 0), plane="xy")
 # the pennant under the socket, hanging off the -X side
 card("pennant", "spear", pennant(9, 15), "pennant", at=(-0.6, G + SHAFT_TOP - 0.5, 0), offset=(-1.125, -1.875, 0),
      plane="xy")
