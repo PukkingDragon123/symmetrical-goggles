@@ -1,0 +1,113 @@
+{
+  "name": "Hydrothermal Vent",
+  "parts": 21,
+  "instances": 21,
+  "faces": 120,
+  "triangles": 240,
+  "vertices_flat": 480,
+  "vertices_unique": 152,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.434,
+  "texel_density": 2.0,
+  "colors_used": 27,
+  "palette": {
+    "basalt": [
+      "#121318",
+      "#1a1b22",
+      "#23242c",
+      "#2d2e37",
+      "#383943",
+      "#45464f",
+      "#54545c",
+      "#65646a"
+    ],
+    "crust": [
+      "#2a120c",
+      "#451c10",
+      "#622a14",
+      "#80401a",
+      "#9c5a22",
+      "#b8782e",
+      "#d09a42",
+      "#e2bd62",
+      "#efdb92"
+    ],
+    "chalk": [
+      "#6f6a60",
+      "#8f897c",
+      "#ada798",
+      "#c8c2b2",
+      "#e0dbcc",
+      "#f1eee4"
+    ],
+    "heat": [
+      "#3a0a06",
+      "#6e1508",
+      "#a8260a",
+      "#d8440e",
+      "#f2701c",
+      "#ffa13a",
+      "#ffd06a",
+      "#fff1b8"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -7.778,
+      0.0,
+      -7.778
+    ],
+    "max": [
+      7.778,
+      16.0,
+      7.778
+    ],
+    "size": [
+      15.556,
+      16.0,
+      15.556
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 1.0
+  },
+  "joints": [
+    "vent",
+    "base",
+    "base_t",
+    "tier1",
+    "tier1_t",
+    "tier2",
+    "tier2_t",
+    "lip_n",
+    "lip_s",
+    "lip_e",
+    "lip_w",
+    "mouth",
+    "spire",
+    "spire_tip",
+    "spire_b",
+    "crust_a",
+    "crust_b",
+    "crust_c",
+    "crust_d",
+    "crust_e",
+    "crust_f"
+  ],
+  "files": {
+    "hydrothermal_vent.glb": "examples/output/hydrothermal_vent.glb",
+    "hydrothermal_vent.obj": "examples/output/hydrothermal_vent.obj",
+    "hydrothermal_vent.mtl": "examples/output/hydrothermal_vent.mtl",
+    "hydrothermal_vent.bbmodel": "examples/output/hydrothermal_vent.bbmodel",
+    "hydrothermal_vent_texture.png": "examples/output/hydrothermal_vent_texture.png",
+    "hydrothermal_vent_texture_x4.png": "examples/output/hydrothermal_vent_texture_x4.png",
+    "hydrothermal_vent_hero.png": "examples/output/hydrothermal_vent_hero.png",
+    "hydrothermal_vent_sheet.png": "examples/output/hydrothermal_vent_sheet.png",
+    "hydrothermal_vent_turntable.gif": "examples/output/hydrothermal_vent_turntable.gif",
+    "hydrothermal_vent_idle.gif": "examples/output/hydrothermal_vent_idle.gif"
+  }
+}

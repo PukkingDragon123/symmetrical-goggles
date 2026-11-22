@@ -1,0 +1,741 @@
+{
+ "name": "Hydrothermal Vent",
+ "description": "The Winterworks Hydrothermal Vent: a stepped chimney of columnar basalt crusted with sulphide and anhydrite, its mouth glowing with heat. Minecraft pixel units, density 2; exported as a block model.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 2,
+ "budget": {
+  "tris": 400,
+  "colors": 48
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.9,
+  "gradient": 0.4,
+  "ao": 0.5,
+  "ao_height": 4.0
+ },
+ "brush": {
+  "flow": "horizontal",
+  "length": 1.5,
+  "width": 0.5,
+  "rough": 0.55,
+  "overshoot": 0.3,
+  "textures": {
+   "basalt": "stone",
+   "crust": "stone",
+   "chalk": "stone"
+  }
+ },
+ "minecraft": {
+  "fps": 12,
+  "glow_parts": [
+   "mouth"
+  ],
+  "glow_ramps": [
+   "heat"
+  ]
+ },
+ "render": {
+  "background": "#0f2230",
+  "hero": [
+   -34,
+   24
+  ],
+  "shadow": 0.4
+ },
+ "palette": {
+  "ramps": {
+   "basalt": [
+    "#121318",
+    "#1a1b22",
+    "#23242c",
+    "#2d2e37",
+    "#383943",
+    "#45464f",
+    "#54545c",
+    "#65646a"
+   ],
+   "crust": [
+    "#2a120c",
+    "#451c10",
+    "#622a14",
+    "#80401a",
+    "#9c5a22",
+    "#b8782e",
+    "#d09a42",
+    "#e2bd62",
+    "#efdb92"
+   ],
+   "chalk": [
+    "#6f6a60",
+    "#8f897c",
+    "#ada798",
+    "#c8c2b2",
+    "#e0dbcc",
+    "#f1eee4"
+   ],
+   "heat": [
+    "#3a0a06",
+    "#6e1508",
+    "#a8260a",
+    "#d8440e",
+    "#f2701c",
+    "#ffa13a",
+    "#ffd06a",
+    "#fff1b8"
+   ]
+  }
+ },
+ "styles": {
+  "basalt": {
+   "ramp": "basalt",
+   "tone": 3.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "columns",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.5,
+     "width": 0.3,
+     "shift": -1.1,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "columns_s",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.5,
+     "width": 0.3,
+     "shift": -1.1,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.7
+    },
+    {
+     "id": "deposit",
+     "op": "drip",
+     "ramp": "crust",
+     "tone": 3.4,
+     "depth": 0.2,
+     "length": 0.35,
+     "width": 0.6,
+     "scale": 1.6,
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    },
+    {
+     "id": "sulphur",
+     "op": "patches",
+     "scale": 1.6,
+     "threshold": 0.76,
+     "ramp": "crust",
+     "tone": 4.2,
+     "space": "world",
+     "faces": [
+      "sides"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    }
+   ]
+  },
+  "basalt_base": {
+   "ramp": "basalt",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "columns",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.5,
+     "width": 0.3,
+     "shift": -1.1,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "columns_s",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.5,
+     "width": 0.3,
+     "shift": -1.1,
+     "faces": [
+      "left",
+      "right"
+     ]
+    },
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.2,
+     "amount": 0.7
+    },
+    {
+     "id": "sediment",
+     "op": "patches",
+     "scale": 1.3,
+     "threshold": 0.62,
+     "ramp": "crust",
+     "tone": 2.6,
+     "space": "world",
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1
+     }
+    },
+    {
+     "id": "chalky",
+     "op": "patches",
+     "scale": 1.0,
+     "threshold": 0.72,
+     "ramp": "chalk",
+     "tone": 2.4,
+     "space": "world",
+     "faces": [
+      "top"
+     ]
+    }
+   ]
+  },
+  "rim": {
+   "ramp": "basalt",
+   "tone": 3.2,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.8
+    },
+    {
+     "id": "glow_lip",
+     "op": "band",
+     "axis": "y",
+     "from": 0.6,
+     "to": 1.01,
+     "ramp": "crust",
+     "tone": 3.0,
+     "faces": [
+      "sides"
+     ],
+     "wobble": 0.3
+    },
+    {
+     "id": "soot",
+     "op": "gradient",
+     "axis": "y",
+     "amount": -0.6
+    }
+   ]
+  },
+  "crust": {
+   "ramp": "crust",
+   "tone": 3.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.9
+    },
+    {
+     "id": "anhydrite",
+     "op": "patches",
+     "scale": 0.9,
+     "threshold": 0.62,
+     "ramp": "chalk",
+     "tone": 3.6,
+     "space": "world",
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    }
+   ]
+  },
+  "chalk": {
+   "ramp": "chalk",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.4,
+    "dark_shift": -1.4,
+    "outline": "dark"
+   },
+   "brush": {
+    "flow": "horizontal"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.8,
+     "amount": 0.8
+    }
+   ]
+  },
+  "heat": {
+   "ramp": "heat",
+   "tone": 5.4,
+   "light": 0.2,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "layers": [
+    {
+     "id": "core",
+     "op": "rect",
+     "rect": [
+      0.25,
+      0.25,
+      0.75,
+      0.75
+     ],
+     "ramp": "heat",
+     "tone": 7.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "deep",
+     "op": "band",
+     "axis": "y",
+     "from": -1.01,
+     "to": 0.2,
+     "ramp": "heat",
+     "tone": 3.0,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  }
+ },
+ "parts": [
+  {
+   "id": "vent",
+   "shape": "bone",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "style": "basalt"
+  },
+  {
+   "id": "base",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    14.0,
+    3.0,
+    14.0
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "basalt_base"
+  },
+  {
+   "id": "base_t",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    11.0,
+    2.5,
+    11.0
+   ],
+   "pivot": [
+    0.0,
+    1.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "basalt_base"
+  },
+  {
+   "id": "tier1",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    9.0,
+    5.0,
+    9.0
+   ],
+   "pivot": [
+    0.0,
+    5.5,
+    0.0
+   ],
+   "style": "basalt"
+  },
+  {
+   "id": "tier1_t",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    8.0,
+    4.5,
+    8.0
+   ],
+   "pivot": [
+    0.0,
+    5.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "basalt"
+  },
+  {
+   "id": "tier2",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    7.0,
+    5.0,
+    7.0
+   ],
+   "pivot": [
+    0.0,
+    10.5,
+    0.0
+   ],
+   "style": "basalt"
+  },
+  {
+   "id": "tier2_t",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    5.5,
+    4.5,
+    5.5
+   ],
+   "pivot": [
+    0.0,
+    10.25,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "basalt"
+  },
+  {
+   "id": "lip_n",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    6.0,
+    3.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    14.5,
+    -2.25
+   ],
+   "style": "rim"
+  },
+  {
+   "id": "lip_s",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    6.0,
+    3.0,
+    1.5
+   ],
+   "pivot": [
+    0.0,
+    14.5,
+    2.25
+   ],
+   "style": "rim"
+  },
+  {
+   "id": "lip_e",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    1.5,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    2.25,
+    14.5,
+    0.0
+   ],
+   "style": "rim"
+  },
+  {
+   "id": "lip_w",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    1.5,
+    3.0,
+    3.0
+   ],
+   "pivot": [
+    -2.25,
+    14.5,
+    0.0
+   ],
+   "style": "rim"
+  },
+  {
+   "id": "mouth",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    3.0,
+    2.0,
+    3.0
+   ],
+   "pivot": [
+    0.0,
+    13.5,
+    0.0
+   ],
+   "style": "heat"
+  },
+  {
+   "id": "spire",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    3.0,
+    8.0,
+    3.0
+   ],
+   "pivot": [
+    5.0,
+    7.0,
+    -4.5
+   ],
+   "style": "basalt"
+  },
+  {
+   "id": "spire_tip",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    2.0,
+    1.5,
+    2.0
+   ],
+   "pivot": [
+    5.0,
+    11.75,
+    -4.5
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "spire_b",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    2.0,
+    4.0,
+    2.0
+   ],
+   "pivot": [
+    -5.0,
+    4.5,
+    4.5
+   ],
+   "style": "basalt"
+  },
+  {
+   "id": "crust_a",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    3.0,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    5.0,
+    7.5,
+    1.5
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "crust_b",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    2.5,
+    1.0,
+    3.0
+   ],
+   "pivot": [
+    -1.0,
+    10.0,
+    -4.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "crust_c",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    2.5,
+    1.0,
+    2.5
+   ],
+   "pivot": [
+    -4.0,
+    3.5,
+    -4.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "crust"
+  },
+  {
+   "id": "crust_d",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    2.0,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    3.0,
+    13.5,
+    2.5
+   ],
+   "style": "chalk"
+  },
+  {
+   "id": "crust_e",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    2.0,
+    1.5,
+    2.0
+   ],
+   "pivot": [
+    -5.25,
+    6.75,
+    -1.0
+   ],
+   "style": "chalk"
+  },
+  {
+   "id": "crust_f",
+   "shape": "box",
+   "parent": "vent",
+   "size": [
+    3.5,
+    1.0,
+    2.0
+   ],
+   "pivot": [
+    1.5,
+    3.5,
+    5.5
+   ],
+   "style": "crust"
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 1.0,
+   "loop": true,
+   "tracks": []
+  }
+ }
+}
