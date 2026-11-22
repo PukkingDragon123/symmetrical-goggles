@@ -4,6 +4,7 @@ import dev.lowpix.winterworks.amber.AmberBlock;
 import dev.lowpix.winterworks.amber.AmberwoodLogBlock;
 import dev.lowpix.winterworks.amber.MosquitoEntity;
 import dev.lowpix.winterworks.amber.SnifferTaming;
+import dev.lowpix.winterworks.amber.SnifferWatering;
 import dev.lowpix.winterworks.amber.TamedSniffer;
 import dev.lowpix.winterworks.amber.WateringSniffer;
 import dev.lowpix.winterworks.harvester.GlowPlants;
@@ -441,7 +442,10 @@ public class HarvesterTests implements FabricGameTest {
                     }
                 }
             }
-            h.assertTrue(watered >= 4, "the sneeze should water the field and give the crops a growth tick: " + watered + " plots");
+            SnifferWatering.Job job = ((WateringSniffer) s).ww$watering();
+            h.assertTrue(watered >= 4, "the sneeze should water the field and give the crops a growth tick: " + watered + " plots (phase "
+                    + job.phase + ", cooldown " + job.cooldown + ", state " + ((TamedSniffer) s).ww$state() + ", at "
+                    + h.relativeVec(s.position()) + ", on ground " + s.onGround() + ")");
             s.discard();
         });
     }
