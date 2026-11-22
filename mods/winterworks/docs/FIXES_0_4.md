@@ -7,7 +7,7 @@ contract for the Java side.
 * **Amber blocks** need **Silk Touch**: with it they drop themselves (inclusion kept); without it they shatter into
   2-4 **Amber Shards** (`amber_shard`, new item) and release whatever was inside (a mosquito flies out, a seed
   inclusion drops an Amberwood Bloom). The **Amber Chunk** item is replaced by Amber Shards everywhere (recipes,
-  loot, the mosquito amber farm, tags); 4 shards craft an amber block.
+  loot, the mosquito amber farm, tags); 9 shards craft an amber block (and an amber block crafts back into 9 shards).
 * The **Amber Fossil** stays; new texture (gravel with amber inside, vanilla suspicious-gravel style).
 * **Amber Sand** and **Amber Gravel** (`amber_sand`, `amber_gravel`, new): sand and gravel with amber showing through,
   brushable like suspicious sand/gravel (4 dusting stages, turning into plain sand/gravel). Brushing gives amber: amber
