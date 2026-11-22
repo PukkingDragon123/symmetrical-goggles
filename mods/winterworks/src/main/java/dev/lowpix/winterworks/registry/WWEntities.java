@@ -21,7 +21,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 public final class WWEntities {
     public static final EntityType<IcebreakerEntity> ICEBREAKER = reg("icebreaker",
-            EntityType.Builder.of(IcebreakerEntity::new, MobCategory.CREATURE).sized(2.5f, 2.1f).eyeHeight(1.8f)
+            EntityType.Builder.of(IcebreakerEntity::new, MobCategory.CREATURE).sized(1.875f, 1.575f).eyeHeight(1.35f)
                     .clientTrackingRange(10));
     public static final EntityType<IceShotEntity> ICE_SHOT = reg("ice_shot",
             EntityType.Builder.<IceShotEntity>of(IceShotEntity::new, MobCategory.MISC).sized(0.25f, 0.25f)
