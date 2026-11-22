@@ -134,7 +134,6 @@ final class ObsidianRuins {
             }
         }
         // 8. the sand drift over the windward side, with suspicious sand in it
-        int sus = 0;
         for (int x = -R; x <= R; x++) {
             for (int z = -R; z <= R; z++) {
                 if (oct(x, z) > R + 0.5) {
@@ -150,7 +149,6 @@ final class ObsidianRuins {
                     boolean buried = y < dd - 1 || dd >= 2;
                     if (buried && w.rnd(x, y, z, 10) < 0.07) {
                         w.suspicious(x, y, z, EndLoot.RUINS_ARCHAEOLOGY);
-                        sus++;
                     } else {
                         w.set(x, y, z, SB.SAND);
                     }

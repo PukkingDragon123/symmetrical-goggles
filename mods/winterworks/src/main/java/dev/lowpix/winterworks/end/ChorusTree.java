@@ -15,10 +15,10 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Chorus trees (docs/END_UPDATE.md section 1): a thick, gently leaning trunk of chorus stem (two by two at the foot of
- * the big ones, with buttress roots), branches reaching out and up from its upper half, each ending in a twig of
- * vanilla chorus plant with a chorus flower, a crown of flowers on top, and Chorus Cocoons hanging under the
- * branches. Also the meadows' vanilla chorus plants, with cocoons under their arms. Chorus plants and flowers stand on
+ * Chorus trees (docs/END_UPDATE.md section 1): a candelabra of chorus stem. A thick trunk (two by two at the foot of
+ * the big ones, with buttress roots) with a kink half way up; 2-4 branches from its upper half, each reaching out to
+ * one side and then up, holding up a twig of vanilla chorus plant with a chorus flower; a crown of flowers on top;
+ * and Chorus Cocoons hanging under the branches' elbows. Also the meadows' vanilla chorus plants, with cocoons under their arms. Chorus plants and flowers stand on
  * chorus stem and End Grass (mixin.end.ChorusSoilMixin).
  */
 public final class ChorusTree {
@@ -57,29 +57,24 @@ public final class ChorusTree {
         Map<BlockPos, BlockState> extras = new LinkedHashMap<>();   // twigs, flowers, cocoons: only into free air
         int h = MIN_HEIGHT + (int) Long.remainderUnsigned(id, MAX_HEIGHT - MIN_HEIGHT + 1);
         boolean big = h >= 13;
-        double lean = ((id >>> 8) & 0xFFFF) / 65536.0 * Math.PI * 2;
-        double lx = Math.cos(lean) * 0.16, lz = Math.sin(lean) * 0.16;
-        double px = x, pz = z;
-        int ptx = x, ptz = z;
+        // the trunk: straight, two by two at the foot of the big ones, with one gentle kink half way up
+        Direction kink = Direction.from2DDataValue((int) ((id >>> 8) & 3));
+        boolean kinks = ((id >>> 10) & 1) == 0;
         BlockPos[] trunk = new BlockPos[h];
+        BlockPos c = new BlockPos(x, y, z);
         for (int k = 0; k < h; k++) {
-            int tx = (int) Math.round(px), tz = (int) Math.round(pz);
-            BlockPos c = new BlockPos(tx, y + k, tz);
+            if (kinks && k == h / 2 + 1) {
+                plan.put(c.relative(kink), stem(Direction.Axis.Y));
+                c = c.relative(kink);
+            }
             trunk[k] = c;
             plan.put(c, stem(Direction.Axis.Y));
-            if (tx != ptx || tz != ptz) {
-                plan.put(new BlockPos(ptx, y + k, ptz), stem(Direction.Axis.Y));   // keep the trunk joined
-            }
-            if (big && k < h * 0.55) {
+            if (big && k < h * 0.42) {
                 plan.put(c.east(), stem(Direction.Axis.Y));
                 plan.put(c.south(), stem(Direction.Axis.Y));
                 plan.put(c.east().south(), stem(Direction.Axis.Y));
             }
-            ptx = tx;
-            ptz = tz;
-            double sway = Math.sin(k * 0.45 + (id & 7)) * 0.08;
-            px += lx + sway * lz;
-            pz += lz - sway * lx;
+            c = c.above();
         }
         // buttress roots at the foot
         if (big) {
@@ -92,58 +87,44 @@ public final class ChorusTree {
                 if (d == Direction.EAST || d == Direction.SOUTH) {
                     foot = foot.relative(d);   // the 2x2 trunk's far side
                 }
-                for (int k = 1; k <= 1 + (hd >>> 2 & 1); k++) {
-                    plan.put(foot.relative(d, k), stem(d.getAxis()));
-                    plan.put(foot.relative(d, k).below(), stem(Direction.Axis.Y));
-                }
+                plan.put(foot.relative(d), stem(d.getAxis()));
+                plan.put(foot.relative(d).below(), stem(Direction.Axis.Y));
             }
         }
-        // branches from the upper half, spiralling round the trunk
-        int branches = 3 + (int) ((id >>> 24) % 3) + (big ? 1 : 0);
-        double a0 = ((id >>> 30) & 0xFFFF) / 65536.0 * Math.PI * 2;
+        // candelabra branches: out along one side, then up, each holding up a flowering twig
+        int branches = 2 + (int) ((id >>> 24) & 1) + (big ? 1 : 0);
+        int d0 = (int) ((id >>> 28) & 3);
         int cocoons = 0;
         for (int b = 0; b < branches; b++) {
             long hb = EndGen.mix(id + (b + 1) * 0x9E3779B97F4A7C15L);
-            int at = (int) (h * 0.45 + h * 0.48 * (b + 0.5) / branches) + (int) (hb & 1);
-            at = Math.min(h - 2, at);
-            double a = a0 + b * 2.39996 + ((hb >>> 4) & 0xFF) / 256.0 * 0.5;
-            int len = 3 + (int) ((hb >>> 12) % 3) + (big ? 2 : 0);
+            Direction d = Direction.from2DDataValue(d0 + b);
+            int at = Math.min(h - 3, (int) (h * 0.42 + h * 0.4 * b / Math.max(1, branches - 1)) + (int) (hb & 1));
+            int out = 2 + (int) ((hb >>> 8) & 1) + (big ? 1 : 0), rise = 2 + (int) ((hb >>> 12) % 3);
             BlockPos cur = trunk[at];
-            double fx = cur.getX(), fz = cur.getZ();
-            BlockPos last = cur;
-            for (int s = 1; s <= len; s++) {
-                fx += Math.cos(a);
-                fz += Math.sin(a);
-                int nx = (int) Math.round(fx), nz = (int) Math.round(fz);
-                int ny = last.getY() + ((s % 2 == 0 && s > 1) ? 1 : 0);
-                if (ny != last.getY()) {
-                    last = last.above();
-                    plan.putIfAbsent(last, stem(Direction.Axis.Y));
-                }
-                if (nx != last.getX()) {
-                    last = new BlockPos(nx, last.getY(), last.getZ());
-                    plan.putIfAbsent(last, stem(Direction.Axis.X));
-                }
-                if (nz != last.getZ()) {
-                    last = new BlockPos(last.getX(), last.getY(), nz);
-                    plan.putIfAbsent(last, stem(Direction.Axis.Z));
-                }
-                if (s == len / 2 + 1 && cocoons < 3 && ((hb >>> 20) % 3) != 0) {
-                    extras.put(last.below(), cocoon(hb));
-                    cocoons++;
-                }
+            for (int s = 1; s <= out; s++) {
+                cur = cur.relative(d);
+                plan.putIfAbsent(cur, stem(d.getAxis()));
             }
-            tip(extras, last, hb);
+            if (cocoons < 3 && ((hb >>> 20) % 3) != 0) {
+                extras.put(cur.below(), cocoon(hb));
+                cocoons++;
+            }
+            for (int s = 1; s <= rise && cur.getY() < y + h; s++) {
+                cur = cur.above();
+                plan.putIfAbsent(cur, stem(Direction.Axis.Y));
+            }
+            tip(extras, cur, hb);
         }
         // the crown
         BlockPos crown = trunk[h - 1];
         tip(extras, crown, id);
-        for (Direction d : Direction.Plane.HORIZONTAL) {
-            long hd = EndGen.mix(id ^ (d.ordinal() + 9) * 0x2545F4914F6CDD1DL);
-            if ((hd & 1) == 0) {
-                BlockPos arm = crown.relative(d);
+        if (big) {
+            for (int i = 0; i < 2; i++) {
+                Direction d = Direction.from2DDataValue(d0 + 2 * i + 1);
+                BlockPos arm = crown.below().relative(d);
                 plan.putIfAbsent(arm, stem(d.getAxis()));
-                tip(extras, arm, hd);
+                plan.putIfAbsent(arm.above(), stem(Direction.Axis.Y));
+                tip(extras, arm.above(), EndGen.mix(id ^ (i + 9)));
             }
         }
         for (BlockPos p : plan.keySet()) {

@@ -226,6 +226,15 @@ public class EndWorldTests implements FabricGameTest {
         Map<net.minecraft.world.item.Item, Integer> furnace = AbstractFurnaceBlockEntity.getFuel();
         h.assertTrue(furnace.getOrDefault(EndBlocks.METEORITE.asItem(), 0) == 48000, "... in the furnace's own fuel table too");
         h.assertTrue(AbstractFurnaceBlockEntity.isFuel(new ItemStack(EndBlocks.METEORITE)), "meteorite is fuel");
+        // a burn longer than a short survives saving and loading (mixin.end.LongBurnFurnaceMixin)
+        h.setBlock(new BlockPos(1, 2, 1), Blocks.FURNACE);
+        var oven = (AbstractFurnaceBlockEntity) h.getLevel().getBlockEntity(h.absolutePos(new BlockPos(1, 2, 1)));
+        var regs = h.getLevel().registryAccess();
+        net.minecraft.nbt.CompoundTag tag = oven.saveWithoutMetadata(regs);
+        tag.putShort("BurnTime", (short) 40000);
+        tag.putInt("winterworks:BurnTime", 40000);
+        oven.loadWithComponents(tag, regs);
+        h.assertTrue(oven.saveWithoutMetadata(regs).getInt("winterworks:BurnTime") == 40000, "a 40000-tick burn is kept over a reload");
         h.succeed();
     }
 

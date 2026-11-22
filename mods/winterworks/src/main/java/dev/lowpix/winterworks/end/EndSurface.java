@@ -62,7 +62,8 @@ public final class EndSurface {
     /** End Grass, or End Moss in soft-edged patches. */
     public static BlockState meadowTop(EndGen.Noises n, int x, int z) {
         double m = n.patch(x + 3100, z - 1700, 0.045);
-        return m > 0.5 ? EndGen.MOSS : EndGen.GRASS;
+        double grove = n.patch(x + 1234, z - 4321, 0.018);   // the chorus groves' noise (EndFeatures): moss gathers there
+        return m > 0.66 - Math.max(0, grove) * 0.4 ? EndGen.MOSS : EndGen.GRASS;
     }
 
     /** Bare grey-yellow rock where the outcrop noise is high (the Dead End shows its bones there). */

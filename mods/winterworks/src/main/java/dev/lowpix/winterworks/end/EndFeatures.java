@@ -1,6 +1,5 @@
 package dev.lowpix.winterworks.end;
 
-import com.mojang.serialization.Codec;
 import dev.lowpix.winterworks.Winterworks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -17,7 +16,8 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
  * The Living End's terrain features (docs/END_UPDATE.md section 1), each run once per chunk by the biomes (placed
  * features without modifiers; data from tools/data_end_world.py), checking the biome column by column:
  * <ul>
- * <li>{@code end_surface} (raw generation): End Grass and Moss, End Sand dunes (EndSurface)</li>
+ * <li>{@code end_surface} (raw generation): terraced cliffs and overhangs at island edges (EndCliffs), then End
+ * Grass and Moss, End Sand dunes (EndSurface)</li>
  * <li>{@code floating_islands} (raw generation): floating islands and rocks (FloatingIsland)</li>
  * <li>{@code end_rocks} (local modifications): chorus trees and plants, formations, pillars, obsidian shards, rock
  * piles, meteorites</li>
@@ -26,8 +26,15 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
  * Everything writes only to the chunk and its neighbours, and nothing comes near the main island.
  */
 public final class EndFeatures {
-    public static final Feature<NoneFeatureConfiguration> SURFACE = reg("end_surface", ctx ->
-            EndSurface.surface(ctx.level(), ctx.origin().getX() & ~15, ctx.origin().getZ() & ~15));
+    public static final Feature<NoneFeatureConfiguration> SURFACE = reg("end_surface", ctx -> {
+        int x0 = ctx.origin().getX() & ~15, z0 = ctx.origin().getZ() & ~15;
+        boolean ours = false;
+        for (int i = 0; i < 5 && !ours; i++) {
+            ours = EndGen.style(ctx.level(), new BlockPos(x0 + (i == 4 ? 8 : (i & 1) * 15), 64, z0 + (i == 4 ? 8 : (i >> 1) * 15))) != null;
+        }
+        boolean cliffs = ours && EndCliffs.shape(EndWriter.forChunk(ctx.level(), x0 >> 4, z0 >> 4), x0, z0);
+        return EndSurface.surface(ctx.level(), x0, z0) | cliffs;
+    });
     public static final Feature<NoneFeatureConfiguration> FLOATING_ISLANDS = reg("floating_islands", ctx -> {
         int cx = ctx.origin().getX() >> 4, cz = ctx.origin().getZ() >> 4;
         EndWriter w = EndWriter.forChunk(ctx.level(), cx, cz);
@@ -54,11 +61,6 @@ public final class EndFeatures {
     }
 
     static void init() {}
-
-    /** Codec of our features (all configured with none). */
-    static Codec<NoneFeatureConfiguration> codec() {
-        return NoneFeatureConfiguration.CODEC;
-    }
 
     // ------------------------------------------------------------------------------------------ ground features
 
@@ -93,7 +95,6 @@ public final class EndFeatures {
         EndGen.Noises n = EndGen.noises(w.seed);
         long seed = w.seed;
         boolean any = false;
-        int salt = 0;
         // up to six candidate spots in the chunk, each tried for one kind of feature
         for (int i = 0; i < 6; i++) {
             int x = (cx << 4) + 2 + (int) (EndGen.rnd(seed, cx, i, cz, 501) * 12);
@@ -112,13 +113,13 @@ public final class EndFeatures {
                 double grove = n.patch(x + 1234, z - 4321, 0.018);
                 switch (i) {
                     case 0, 1 -> {   // chorus trees, in groves
-                        double p = grove > 0.3 ? 0.95 : grove > 0 ? 0.55 : 0.12;
-                        if (r < p * (i == 0 ? 1 : 0.7)) {
+                        double p = grove > 0.3 ? 0.75 : grove > 0.05 ? 0.3 : 0.05;
+                        if (r < p * (i == 0 ? 1 : 0.45)) {
                             any |= ChorusTree.grow(w, x, y, z, id);
                         }
                     }
                     case 2, 3 -> {   // vanilla chorus plants, round the groves' edges
-                        if (r < (i == 2 ? 0.5 : 0.22)) {
+                        if (r < (i == 2 ? 0.3 : 0.1)) {
                             any |= ChorusTree.chorusPlant(w, x, y, z, id);
                         }
                     }
@@ -160,7 +161,6 @@ public final class EndFeatures {
                     default -> { }
                 }
             }
-            salt++;
         }
         return any;
     }

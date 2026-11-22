@@ -25,7 +25,8 @@ public class EndStructure extends Structure {
         MONOLITH_TOWER("monolith_tower", 14, -24, 76);
 
         public final String id;
-        final int reach, bottom, top;
+        public final int reach;
+        final int bottom, top;
 
         Kind(String id, int reach, int bottom, int top) {
             this.id = id;

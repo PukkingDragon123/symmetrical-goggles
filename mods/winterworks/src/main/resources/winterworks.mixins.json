@@ -33,7 +33,8 @@
     "HexedPlayerMixin",
     "end.SuspiciousEndSandMixin",
     "end.ChorusSoilMixin",
-    "end.ChorusFlowerSoilMixin"
+    "end.ChorusFlowerSoilMixin",
+    "end.LongBurnFurnaceMixin"
   ],
   "client": [
     "client.GameRendererMixin",

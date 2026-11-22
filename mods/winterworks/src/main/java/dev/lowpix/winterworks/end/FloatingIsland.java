@@ -17,7 +17,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 public final class FloatingIsland {
     public static final int MIN_Y = 70, MAX_Y = 150, MIN_RADIUS = 4, MAX_RADIUS = 14;
     /** The share of chunks with an island centred in them. */
-    static final float CHANCE = 0.24f;
+    static final float CHANCE = 0.12f;
 
     private FloatingIsland() {}
 
@@ -29,7 +29,7 @@ public final class FloatingIsland {
             return null;
         }
         float s = EndGen.rnd(seed, cx, 1, cz, 402);
-        int radius = MIN_RADIUS + Math.round((float) Math.pow(s, 1.4) * (MAX_RADIUS - MIN_RADIUS));
+        int radius = MIN_RADIUS + Math.round((float) Math.pow(s, 0.85) * (MAX_RADIUS - MIN_RADIUS));
         int x = (cx << 4) + 3 + (int) (EndGen.rnd(seed, cx, 2, cz, 403) * 10);
         int z = (cz << 4) + 3 + (int) (EndGen.rnd(seed, cx, 3, cz, 404) * 10);
         int y = MIN_Y + 6 + (int) (EndGen.rnd(seed, cx, 4, cz, 405) * (MAX_Y - MIN_Y - 6));
@@ -103,7 +103,7 @@ public final class FloatingIsland {
                 }
                 int x = cx + dx, z = cz + dz;
                 int topOff = (int) Math.round((1 - t * t) * (0.6 + radius * 0.13) + n.b().getValue(x * 0.15, z * 0.15) * 0.7);
-                double raw = depth * Math.pow(1 - t, 0.62) + n.c().getValue(x * 0.11, z * 0.11) * 1.8;
+                double raw = depth * Math.pow(1 - t, 1.05) + n.c().getValue(x * 0.11, z * 0.11) * 1.8;
                 int d = Math.max(1, (int) Math.ceil(raw / step) * step);
                 if (t > 0.88) {
                     d = Math.min(d, 2);   // a thin lip: the overhang at the rim
@@ -194,7 +194,7 @@ public final class FloatingIsland {
     static boolean rocks(EndWriter w, int cx, int cz) {
         boolean any = false;
         for (int i = 0; i < 2; i++) {
-            if (EndGen.rnd(w.seed, cx, 10 + i, cz, 410) >= (i == 0 ? 0.5f : 0.18f)) {
+            if (EndGen.rnd(w.seed, cx, 10 + i, cz, 410) >= (i == 0 ? 0.11f : 0.03f)) {
                 continue;
             }
             int x = (cx << 4) + 2 + (int) (EndGen.rnd(w.seed, cx, 12 + i, cz, 411) * 12);

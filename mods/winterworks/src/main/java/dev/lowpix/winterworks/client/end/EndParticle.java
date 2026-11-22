@@ -51,7 +51,6 @@ public class EndParticle extends TextureSheetParticle {
                 zd = 0.012 + (random.nextFloat() - 0.5f) * 0.02;
                 friction = 1f;
                 gravity = 0f;
-                setColor(0.82f + random.nextFloat() * 0.1f, 0.81f + random.nextFloat() * 0.08f, 0.76f);
             }
             default -> {
                 lifetime = 10 + random.nextInt(14);

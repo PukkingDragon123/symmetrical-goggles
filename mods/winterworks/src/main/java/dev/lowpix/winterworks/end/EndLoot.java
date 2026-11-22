@@ -5,7 +5,6 @@ import dev.lowpix.winterworks.registry.EndItems;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -54,10 +53,5 @@ public final class EndLoot {
         }
         return LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry)
                 .when(LootItemRandomChanceCondition.randomChance(chance));
-    }
-
-    /** For tests: the item a pool hands out. */
-    static Item rod() {
-        return EndItems.VOID_ROD;
     }
 }

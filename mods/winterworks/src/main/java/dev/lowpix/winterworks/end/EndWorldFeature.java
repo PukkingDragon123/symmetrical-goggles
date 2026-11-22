@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -60,14 +59,23 @@ public final class EndWorldFeature {
         dispatcher.register(Commands.literal("winterworks").requires(s -> s.hasPermission(2)).then(end));
     }
 
+    /** The top of the ground at (x, z) near height `y` (not a floating island overhead), or the highest block there. */
+    public static int groundNear(ServerLevel level, int x, int z, double y) {
+        for (int yy = (int) Math.floor(y) + 6; yy > y - 40 && yy > level.getMinBuildHeight(); yy--) {
+            BlockPos p = new BlockPos(x, yy, z);
+            if (!level.getBlockState(p).isAir() && !level.getBlockState(p).canBeReplaced() && level.getBlockState(p.above()).isAir()
+                    && level.getBlockState(p.above(2)).isAir()) {
+                return yy;
+            }
+        }
+        return level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+    }
+
     /** Builds `kind` in front of `at` (looking along `yaw`), on the ground there; returns its origin. */
     public static BlockPos buildInFront(ServerLevel level, EndStructure.Kind kind, Vec3 at, float yaw, long seed) {
         Vec3 ahead = Vec3.directionFromRotation(0, yaw).scale(kind.reach + 6);
         int x = (int) Math.floor(at.x + ahead.x), z = (int) Math.floor(at.z + ahead.z);
-        int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
-        if (ground <= level.getMinBuildHeight()) {
-            ground = (int) Math.floor(at.y) - 1;
-        }
+        int ground = groundNear(level, x, z, at.y);
         int y = switch (kind) {
             case OBSIDIAN_RUINS -> ground - 1;
             case END_SHRINE -> ground + 2;
@@ -81,7 +89,7 @@ public final class EndWorldFeature {
             case EAST -> Rotation.CLOCKWISE_90;
             default -> Rotation.NONE;
         };
-        BoundingBox box = EndStructure.build(level, kind, origin, rot, seed);
+        EndStructure.build(level, kind, origin, rot, seed);
         return origin;
     }
 }
