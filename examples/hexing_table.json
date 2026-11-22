@@ -1,0 +1,4109 @@
+{
+ "name": "Hexing Table",
+ "description": "The Winterworks Hexing Table: a cursed enchanting table of dark netherite and gold with a rune-carved top smouldering soul-blue, soul-fire braziers at the corners, sagging chains, and an open hexed book floating above. Minecraft pixel units, density 1.",
+ "author": "lowpix example",
+ "license": "CC0-1.0",
+ "density": 1,
+ "budget": {
+  "tris": 700,
+  "colors": 72
+ },
+ "light": {
+  "dir": [
+   -0.45,
+   1.0,
+   0.6
+  ],
+  "strength": 0.8,
+  "gradient": 0.4,
+  "ao": 0.6,
+  "ao_height": 4.0
+ },
+ "brush": {
+  "flow": "horizontal",
+  "length": 2.0,
+  "width": 1.0,
+  "rough": 0.4,
+  "overshoot": 0.3,
+  "textures": {
+   "netherite": "metal",
+   "gold": "metal",
+   "leather": "leather"
+  }
+ },
+ "minecraft": {
+  "fps": 24,
+  "glow_parts": [
+   "flame_0",
+   "flame_0_a",
+   "flame_0_b",
+   "flame_1",
+   "flame_1_a",
+   "flame_1_b",
+   "flame_2",
+   "flame_2_a",
+   "flame_2_b",
+   "flame_3",
+   "flame_3_a",
+   "flame_3_b"
+  ],
+  "glow_ramps": [
+   "soul"
+  ]
+ },
+ "render": {
+  "background": "#1d1820",
+  "hero": [
+   -34,
+   22
+  ],
+  "shadow": 0.45
+ },
+ "palette": {
+  "ramps": {
+   "netherite": [
+    "#0d0a0c",
+    "#161114",
+    "#1f191d",
+    "#2a2227",
+    "#352c31",
+    "#42383d",
+    "#51464b",
+    "#61565b",
+    "#73686d"
+   ],
+   "gold": [
+    "#3b1d06",
+    "#5e300a",
+    "#86470e",
+    "#ad6213",
+    "#cf8118",
+    "#e8a422",
+    "#f6c836",
+    "#fde466",
+    "#fff4ae"
+   ],
+   "obsidian": [
+    "#0c0414",
+    "#1a0830",
+    "#2c0f52",
+    "#451a7a",
+    "#6630a6",
+    "#8f52cf",
+    "#b98cf0"
+   ],
+   "soul": [
+    "#06191d",
+    "#0b2f36",
+    "#0f4a52",
+    "#136b72",
+    "#1a9397",
+    "#2cbdbb",
+    "#5ee0d6",
+    "#a4fcef",
+    "#effffb"
+   ],
+   "soulsand": [
+    "#1c120c",
+    "#2b1d14",
+    "#3d2a1d",
+    "#503927"
+   ],
+   "leather": [
+    "#120812",
+    "#1e0d1f",
+    "#2d1430",
+    "#3e1c43",
+    "#512757",
+    "#66346b"
+   ],
+   "paper": [
+    "#5d4a35",
+    "#8c7656",
+    "#b9a27b",
+    "#d9c8a0",
+    "#eee2c2",
+    "#faf3de"
+   ],
+   "ink": [
+    "#3a0610",
+    "#6a0d1a",
+    "#9a1826"
+   ],
+   "iron": [
+    "#18181d",
+    "#2a2a31",
+    "#3e3e47",
+    "#55555f",
+    "#6f6f79",
+    "#8d8d96"
+   ]
+  }
+ },
+ "styles": {
+  "netherite": {
+   "ramp": "netherite",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.6
+    },
+    {
+     "id": "scratches",
+     "op": "wear",
+     "width": 1,
+     "density": 0.1,
+     "shift": 1.6
+    }
+   ]
+  },
+  "plinth": {
+   "ramp": "netherite",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.6
+    },
+    {
+     "id": "scratches",
+     "op": "wear",
+     "width": 1,
+     "density": 0.1,
+     "shift": 1.6
+    },
+    {
+     "id": "trim",
+     "op": "band",
+     "axis": "y",
+     "from": 0.2,
+     "to": 1.01,
+     "ramp": "gold",
+     "tone": 4.4,
+     "faces": [
+      "sides"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 0
+     }
+    }
+   ]
+  },
+  "carved": {
+   "ramp": "netherite",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.6
+    },
+    {
+     "id": "scratches",
+     "op": "wear",
+     "width": 1,
+     "density": 0.1,
+     "shift": 1.6
+    },
+    {
+     "id": "panel",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.0,
+     "highlight": 1.4,
+     "shadow": -1.2,
+     "faces": [
+      "sides"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "faces": [
+      "sides"
+     ],
+     "at": [
+      2,
+      0
+     ],
+     "art": [
+      ".gggggg.",
+      "g......g",
+      "g.oOOo.g",
+      "g.OsOO.g",
+      "g.oOOo.g",
+      "g......g",
+      ".gggggg."
+     ],
+     "key": {
+      "g": "gold:2",
+      "o": "obsidian:3",
+      "O": "obsidian:5",
+      "s": "soul:6"
+     }
+    }
+   ]
+  },
+  "pillar": {
+   "ramp": "netherite",
+   "tone": 4.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "flow": "y"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.6
+    },
+    {
+     "id": "scratches",
+     "op": "wear",
+     "width": 1,
+     "density": 0.1,
+     "shift": 1.6
+    },
+    {
+     "id": "flutes",
+     "op": "stripes",
+     "axis": "x",
+     "period": 1.0,
+     "width": 0.4,
+     "shift": -1.2,
+     "faces": [
+      "front",
+      "back"
+     ]
+    },
+    {
+     "id": "flutes_s",
+     "op": "stripes",
+     "axis": "z",
+     "period": 1.0,
+     "width": 0.4,
+     "shift": -1.2,
+     "faces": [
+      "left",
+      "right"
+     ]
+    }
+   ]
+  },
+  "slab": {
+   "ramp": "netherite",
+   "tone": 3.8,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 1.0,
+     "amount": 0.6
+    },
+    {
+     "id": "scratches",
+     "op": "wear",
+     "width": 1,
+     "density": 0.1,
+     "shift": 1.6
+    },
+    {
+     "id": "trim",
+     "op": "band",
+     "axis": "y",
+     "from": 0.33,
+     "to": 1.01,
+     "ramp": "gold",
+     "tone": 4.8,
+     "faces": [
+      "sides"
+     ],
+     "bevel": {
+      "shadow": 1,
+      "highlight": 1
+     }
+    }
+   ],
+   "stamps": [
+    {
+     "face": "top",
+     "at": "top-left",
+     "art": [
+      "................",
+      "...g.ss.g..ss...",
+      "..g........g.s..",
+      ".s.gggg.ggggg...",
+      ".s.g..........s.",
+      "..g..s.ss.s..g..",
+      ".gg.s......s.g..",
+      "..g..s....s..gg.",
+      ".gg.s.s..s.s.g..",
+      "..g..s....s..g..",
+      ".s.g..ss.ss..gs.",
+      ".s.g.........g..",
+      "...ggggg.gggg.s.",
+      "..s.g.........g.",
+      "...ss..g.ss..g..",
+      "................"
+     ],
+     "key": {
+      "g": "netherite:0",
+      "s": "soul:6"
+     }
+    }
+   ]
+  },
+  "gold": {
+   "ramp": "gold",
+   "tone": 5.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "gloss",
+     "op": "gloss",
+     "post": true,
+     "dash": true,
+     "length": 2,
+     "inset": 0,
+     "density": 0.6,
+     "shift": 2.0
+    }
+   ]
+  },
+  "gold_dark": {
+   "ramp": "gold",
+   "tone": 4.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "bowl": {
+   "ramp": "gold",
+   "tone": 4.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "sand",
+     "op": "rect",
+     "rect": [
+      0.25,
+      0.25,
+      0.75,
+      0.75
+     ],
+     "ramp": "soulsand",
+     "tone": 1.6,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "ember",
+     "op": "rect",
+     "rect": [
+      0.25,
+      0.5,
+      0.5,
+      0.75
+     ],
+     "ramp": "soul",
+     "tone": 5.0,
+     "faces": [
+      "top"
+     ]
+    },
+    {
+     "id": "band",
+     "op": "band",
+     "axis": "y",
+     "from": -0.2,
+     "to": 0.2,
+     "ramp": "netherite",
+     "tone": 2.0,
+     "faces": [
+      "sides"
+     ]
+    }
+   ]
+  },
+  "chain": {
+   "ramp": "iron",
+   "tone": 3,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "c": "iron:3",
+    "C": "iron:5"
+   }
+  },
+  "flame": {
+   "ramp": "soul",
+   "tone": 5.0,
+   "light": 0,
+   "brush": {
+    "off": true
+   },
+   "rim": {
+    "light": 0,
+    "dark": 0
+   },
+   "art_key": {
+    "W": "soul:7",
+    "w": "soul:6",
+    "E": "soul:4",
+    "e": "soul:2"
+   }
+  },
+  "leather": {
+   "ramp": "leather",
+   "tone": 3.0,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "off": true
+   }
+  },
+  "cover": {
+   "ramp": "leather",
+   "tone": 3.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.8,
+    "dark_shift": -1.6
+   },
+   "brush": {
+    "flow": "z"
+   },
+   "layers": [
+    {
+     "id": "grain",
+     "op": "noise",
+     "scale": 0.6,
+     "amount": 0.7
+    },
+    {
+     "id": "tooling",
+     "op": "panel",
+     "inset": 1,
+     "shift": -1.0,
+     "highlight": 1.2,
+     "shadow": -1.0,
+     "faces": [
+      "bottom"
+     ]
+    }
+   ]
+  },
+  "gold_eye": {
+   "ramp": "gold",
+   "tone": 5.4,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 2.4,
+    "dark_shift": -2.0
+   },
+   "brush": {
+    "off": true
+   },
+   "stamps": [
+    {
+     "face": "bottom",
+     "at": "top-left",
+     "art": [
+      "ss",
+      "sS"
+     ],
+     "key": {
+      "s": "soul:5",
+      "S": "soul:8"
+     }
+    }
+   ]
+  },
+  "page_block_l": {
+   "ramp": "paper",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "leaves",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.5,
+     "width": 0.5,
+     "shift": -0.8,
+     "faces": [
+      "sides"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "top",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      "kk.k.",
+      ".....",
+      "k.kk.",
+      ".....",
+      ".ss.k",
+      ".....",
+      "kk.kk"
+     ],
+     "key": {
+      "k": "ink:1",
+      "s": "soul:6"
+     }
+    }
+   ]
+  },
+  "page_block_r": {
+   "ramp": "paper",
+   "tone": 3.6,
+   "rim": {
+    "light": 1,
+    "dark": 1,
+    "light_shift": 1.0,
+    "dark_shift": -1.2
+   },
+   "brush": {
+    "off": true
+   },
+   "layers": [
+    {
+     "id": "leaves",
+     "op": "stripes",
+     "axis": "y",
+     "period": 0.5,
+     "width": 0.5,
+     "shift": -0.8,
+     "faces": [
+      "sides"
+     ]
+    }
+   ],
+   "stamps": [
+    {
+     "face": "top",
+     "at": [
+      0,
+      0
+     ],
+     "art": [
+      ".k.kk",
+      ".....",
+      "kk.s.",
+      ".....",
+      "k.kk.",
+      ".....",
+      "s.k.k"
+     ],
+     "key": {
+      "k": "ink:1",
+      "s": "soul:6"
+     }
+    }
+   ]
+  },
+  "page": {
+   "ramp": "paper",
+   "tone": 4.4,
+   "light": 0.4,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "p": "paper:4",
+    "k": "ink:1",
+    "s": "soul:6"
+   }
+  },
+  "ribbon": {
+   "ramp": "ink",
+   "tone": 2,
+   "brush": {
+    "off": true
+   },
+   "art_key": {
+    "r": "ink:2",
+    "R": "ink:1"
+   }
+  }
+ },
+ "parts": [
+  {
+   "id": "table",
+   "shape": "box",
+   "size": [
+    16,
+    2,
+    16
+   ],
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "plinth"
+  },
+  {
+   "id": "body",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    12,
+    7,
+    12
+   ],
+   "pivot": [
+    0.0,
+    5.5,
+    0.0
+   ],
+   "style": "carved"
+  },
+  {
+   "id": "pillar0",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    3,
+    7,
+    3
+   ],
+   "pivot": [
+    6.0,
+    5.5,
+    6.0
+   ],
+   "style": "pillar"
+  },
+  {
+   "id": "pillar_cap0",
+   "shape": "box",
+   "parent": "pillar0",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "pillar_foot0",
+   "shape": "box",
+   "parent": "pillar0",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "pillar1",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    3,
+    7,
+    3
+   ],
+   "pivot": [
+    -6.0,
+    5.5,
+    6.0
+   ],
+   "style": "pillar"
+  },
+  {
+   "id": "pillar_cap1",
+   "shape": "box",
+   "parent": "pillar1",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "pillar_foot1",
+   "shape": "box",
+   "parent": "pillar1",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "pillar2",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    3,
+    7,
+    3
+   ],
+   "pivot": [
+    -6.0,
+    5.5,
+    -6.0
+   ],
+   "style": "pillar"
+  },
+  {
+   "id": "pillar_cap2",
+   "shape": "box",
+   "parent": "pillar2",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "pillar_foot2",
+   "shape": "box",
+   "parent": "pillar2",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "pillar3",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    3,
+    7,
+    3
+   ],
+   "pivot": [
+    6.0,
+    5.5,
+    -6.0
+   ],
+   "style": "pillar"
+  },
+  {
+   "id": "pillar_cap3",
+   "shape": "box",
+   "parent": "pillar3",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    3.0,
+    0.0
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "pillar_foot3",
+   "shape": "box",
+   "parent": "pillar3",
+   "size": [
+    4,
+    1,
+    4
+   ],
+   "pivot": [
+    0.0,
+    -3.0,
+    0.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "slab",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    16,
+    3,
+    16
+   ],
+   "pivot": [
+    0.0,
+    10.5,
+    0.0
+   ],
+   "style": "slab"
+  },
+  {
+   "id": "chain0",
+   "shape": "card",
+   "parent": "table",
+   "pivot": [
+    0.0,
+    7.0,
+    7.0
+   ],
+   "style": "chain",
+   "plane": "xy",
+   "art": [
+    "c.......c",
+    ".C.....C.",
+    "..c...c..",
+    "...CcC..."
+   ]
+  },
+  {
+   "id": "chain1",
+   "shape": "card",
+   "parent": "table",
+   "pivot": [
+    7.0,
+    7.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "style": "chain",
+   "plane": "xy",
+   "art": [
+    "c.......c",
+    ".C.....C.",
+    "..c...c..",
+    "...CcC..."
+   ]
+  },
+  {
+   "id": "chain2",
+   "shape": "card",
+   "parent": "table",
+   "pivot": [
+    0.0,
+    7.0,
+    -7.0
+   ],
+   "rotation": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "style": "chain",
+   "plane": "xy",
+   "art": [
+    "c.......c",
+    ".C.....C.",
+    "..c...c..",
+    "...CcC..."
+   ]
+  },
+  {
+   "id": "chain3",
+   "shape": "card",
+   "parent": "table",
+   "pivot": [
+    -7.0,
+    7.0,
+    -0.0
+   ],
+   "rotation": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "style": "chain",
+   "plane": "xy",
+   "art": [
+    "c.......c",
+    ".C.....C.",
+    "..c...c..",
+    "...CcC..."
+   ]
+  },
+  {
+   "id": "stand0",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    2,
+    1,
+    2
+   ],
+   "pivot": [
+    6.0,
+    12.5,
+    6.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "bowl0",
+   "shape": "box",
+   "parent": "stand0",
+   "size": [
+    4,
+    2,
+    4
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "bowl"
+  },
+  {
+   "id": "flame_0",
+   "shape": "bone",
+   "parent": "bowl0",
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "flame_0_a",
+   "shape": "card",
+   "parent": "flame_0",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "flame_0_b",
+   "shape": "card",
+   "parent": "flame_0",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "stand1",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    2,
+    1,
+    2
+   ],
+   "pivot": [
+    -6.0,
+    12.5,
+    6.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "bowl1",
+   "shape": "box",
+   "parent": "stand1",
+   "size": [
+    4,
+    2,
+    4
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "bowl"
+  },
+  {
+   "id": "flame_1",
+   "shape": "bone",
+   "parent": "bowl1",
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "flame_1_a",
+   "shape": "card",
+   "parent": "flame_1",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "flame_1_b",
+   "shape": "card",
+   "parent": "flame_1",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "stand2",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    2,
+    1,
+    2
+   ],
+   "pivot": [
+    -6.0,
+    12.5,
+    -6.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "bowl2",
+   "shape": "box",
+   "parent": "stand2",
+   "size": [
+    4,
+    2,
+    4
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "bowl"
+  },
+  {
+   "id": "flame_2",
+   "shape": "bone",
+   "parent": "bowl2",
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "flame_2_a",
+   "shape": "card",
+   "parent": "flame_2",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "flame_2_b",
+   "shape": "card",
+   "parent": "flame_2",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "stand3",
+   "shape": "box",
+   "parent": "table",
+   "size": [
+    2,
+    1,
+    2
+   ],
+   "pivot": [
+    6.0,
+    12.5,
+    -6.0
+   ],
+   "style": "gold_dark"
+  },
+  {
+   "id": "bowl3",
+   "shape": "box",
+   "parent": "stand3",
+   "size": [
+    4,
+    2,
+    4
+   ],
+   "pivot": [
+    0.0,
+    1.5,
+    0.0
+   ],
+   "style": "bowl"
+  },
+  {
+   "id": "flame_3",
+   "shape": "bone",
+   "parent": "bowl3",
+   "pivot": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "flame_3_a",
+   "shape": "card",
+   "parent": "flame_3",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "flame_3_b",
+   "shape": "card",
+   "parent": "flame_3",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    0.0,
+    2.6,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    -45.0,
+    0.0
+   ],
+   "style": "flame",
+   "plane": "xy",
+   "art": [
+    "..e..",
+    ".eE.e",
+    ".EwE.",
+    "eEWwE",
+    "eWWWe",
+    ".eEe."
+   ]
+  },
+  {
+   "id": "book",
+   "shape": "bone",
+   "parent": "table",
+   "pivot": [
+    0.0,
+    17.0,
+    0.0
+   ],
+   "rotation": [
+    48.0,
+    0.0,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "spine",
+   "shape": "box",
+   "parent": "book",
+   "size": [
+    1,
+    1,
+    8
+   ],
+   "pivot": [
+    0.0,
+    -0.5,
+    -0.0
+   ],
+   "style": "leather"
+  },
+  {
+   "id": "cover_l",
+   "shape": "box",
+   "parent": "book",
+   "size": [
+    6,
+    1,
+    8
+   ],
+   "pivot": [
+    0.5,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    3.0,
+    -0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    12.0
+   ],
+   "style": "cover"
+  },
+  {
+   "id": "page_block_l",
+   "shape": "box",
+   "parent": "cover_l",
+   "size": [
+    5,
+    1,
+    7
+   ],
+   "pivot": [
+    3.0,
+    0.5,
+    -0.0
+   ],
+   "style": "page_block_l"
+  },
+  {
+   "id": "corner_l0",
+   "shape": "box",
+   "parent": "cover_l",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    5.5,
+    -0.5,
+    3.5
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "corner_l1",
+   "shape": "box",
+   "parent": "cover_l",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    5.5,
+    -0.5,
+    -3.5
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "cover_r",
+   "shape": "box",
+   "parent": "book",
+   "size": [
+    6,
+    1,
+    8
+   ],
+   "pivot": [
+    -0.5,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -3.0,
+    -0.5,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -12.0
+   ],
+   "style": "cover"
+  },
+  {
+   "id": "page_block_r",
+   "shape": "box",
+   "parent": "cover_r",
+   "size": [
+    5,
+    1,
+    7
+   ],
+   "pivot": [
+    -3.0,
+    0.5,
+    -0.0
+   ],
+   "style": "page_block_r"
+  },
+  {
+   "id": "corner_r0",
+   "shape": "box",
+   "parent": "cover_r",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    -5.5,
+    -0.5,
+    3.5
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "corner_r1",
+   "shape": "box",
+   "parent": "cover_r",
+   "size": [
+    2,
+    1,
+    1
+   ],
+   "pivot": [
+    -5.5,
+    -0.5,
+    -3.5
+   ],
+   "style": "gold"
+  },
+  {
+   "id": "eye",
+   "shape": "box",
+   "parent": "cover_r",
+   "size": [
+    2,
+    1,
+    2
+   ],
+   "pivot": [
+    -3.0,
+    -1.0,
+    -0.0
+   ],
+   "style": "gold_eye"
+  },
+  {
+   "id": "book_chain",
+   "shape": "card",
+   "parent": "cover_r",
+   "pivot": [
+    -6.1,
+    -0.5,
+    1.5
+   ],
+   "offset": [
+    0.0,
+    -2.5,
+    0.0
+   ],
+   "style": "chain",
+   "plane": "yz",
+   "art": [
+    "c",
+    "C",
+    "c",
+    "C",
+    "c"
+   ]
+  },
+  {
+   "id": "ribbon",
+   "shape": "card",
+   "parent": "spine",
+   "pivot": [
+    0.0,
+    -0.5,
+    -3.8
+   ],
+   "offset": [
+    0.0,
+    -2.0,
+    0.0
+   ],
+   "style": "ribbon",
+   "plane": "yz",
+   "art": [
+    "r",
+    "r",
+    "R",
+    "r"
+   ]
+  },
+  {
+   "id": "pages",
+   "shape": "bone",
+   "parent": "book",
+   "pivot": [
+    0.0,
+    0.6,
+    0.0
+   ],
+   "style": "netherite"
+  },
+  {
+   "id": "page_0",
+   "shape": "card",
+   "parent": "pages",
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "offset": [
+    -2.5,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -12.0
+   ],
+   "style": "page",
+   "plane": "xz",
+   "art": [
+    "kkpkp",
+    "ppppp",
+    "kpkkp",
+    "ppppp",
+    "kkpsp",
+    "ppppp",
+    "kpkkp"
+   ]
+  },
+  {
+   "id": "page_1",
+   "shape": "card",
+   "parent": "pages",
+   "pivot": [
+    0.0,
+    0.1,
+    -0.0
+   ],
+   "offset": [
+    -2.5,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -8.0
+   ],
+   "style": "page",
+   "plane": "xz",
+   "art": [
+    "pkpkk",
+    "ppppp",
+    "kkspp",
+    "ppppp",
+    "kpkpk",
+    "ppppp",
+    "pkkpk"
+   ]
+  },
+  {
+   "id": "page_2",
+   "shape": "card",
+   "parent": "pages",
+   "pivot": [
+    0.0,
+    0.2,
+    0.0
+   ],
+   "offset": [
+    -2.5,
+    0.0,
+    0.0
+   ],
+   "rotation": [
+    0.0,
+    0.0,
+    -4.0
+   ],
+   "style": "page",
+   "plane": "xz",
+   "art": [
+    "kpkpp",
+    "ppppp",
+    "pkkkp",
+    "ppppp",
+    "spkpk",
+    "ppppp",
+    "kkppp"
+   ]
+  }
+ ],
+ "animations": {
+  "idle": {
+   "length": 4.0,
+   "loop": true,
+   "tracks": [
+    {
+     "part": "book",
+     "osc": {
+      "amp": [
+       0,
+       0.8,
+       0
+      ],
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "channel": "position"
+    },
+    {
+     "part": "book",
+     "osc": {
+      "amp": 3,
+      "cycles": 1,
+      "phase": 0.25
+     },
+     "axis": "z"
+    },
+    {
+     "part": "book",
+     "osc": {
+      "amp": 2.5,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "x"
+    },
+    {
+     "part": "cover_l",
+     "osc": {
+      "amp": 2,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "z"
+    },
+    {
+     "part": "cover_r",
+     "osc": {
+      "amp": -2,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "z"
+    },
+    {
+     "part": "page_0",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       1.4,
+       0
+      ],
+      [
+       2.0,
+       26
+      ],
+      [
+       2.6,
+       4
+      ],
+      [
+       3.0,
+       0
+      ],
+      [
+       4.0,
+       0
+      ]
+     ],
+     "ease": "smooth",
+     "axis": "z"
+    },
+    {
+     "part": "page_1",
+     "osc": {
+      "amp": 2,
+      "cycles": 2,
+      "phase": 0.4
+     },
+     "axis": "z"
+    },
+    {
+     "part": "book_chain",
+     "osc": {
+      "amp": 9,
+      "cycles": 1,
+      "phase": 0.35
+     },
+     "axis": "x"
+    },
+    {
+     "part": "ribbon",
+     "osc": {
+      "amp": 7,
+      "cycles": 1,
+      "phase": 0.45
+     },
+     "axis": "x"
+    },
+    {
+     "part": "chain0",
+     "osc": {
+      "amp": 2,
+      "cycles": 1,
+      "phase": 0.0
+     },
+     "axis": "x"
+    },
+    {
+     "part": "chain1",
+     "osc": {
+      "amp": 2,
+      "cycles": 1,
+      "phase": 0.25
+     },
+     "axis": "x"
+    },
+    {
+     "part": "chain2",
+     "osc": {
+      "amp": 2,
+      "cycles": 1,
+      "phase": 0.5
+     },
+     "axis": "x"
+    },
+    {
+     "part": "chain3",
+     "osc": {
+      "amp": 2,
+      "cycles": 1,
+      "phase": 0.75
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": [
+       0.12,
+       0.28,
+       0.12
+      ],
+      "cycles": 20,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 12,
+      "phase": 0.1
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": 5.0,
+      "cycles": 8,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": [
+       0.12,
+       0.28,
+       0.12
+      ],
+      "cycles": 20,
+      "phase": 0.17
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 12,
+      "phase": 0.33
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": 5.0,
+      "cycles": 8,
+      "phase": 0.61
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": [
+       0.12,
+       0.28,
+       0.12
+      ],
+      "cycles": 20,
+      "phase": 0.34
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 12,
+      "phase": 0.56
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": 5.0,
+      "cycles": 8,
+      "phase": 0.9199999999999999
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": [
+       0.12,
+       0.28,
+       0.12
+      ],
+      "cycles": 20,
+      "phase": 0.51
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 12,
+      "phase": 0.79
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": 5.0,
+      "cycles": 8,
+      "phase": 1.23
+     },
+     "axis": "x"
+    }
+   ]
+  },
+  "open": {
+   "length": 0.6,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "book",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        -1.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        -1.0,
+        0.0
+       ]
+      ],
+      [
+       0.36,
+       [
+        0.0,
+        0.6,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       0.47,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "cover_l",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        78.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        78.0
+       ]
+      ],
+      [
+       0.36,
+       [
+        0.0,
+        0.0,
+        -12.0
+       ],
+       "out"
+      ],
+      [
+       0.47,
+       [
+        0.0,
+        0.0,
+        3.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "cover_r",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        -78.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        -78.0
+       ]
+      ],
+      [
+       0.36,
+       [
+        0.0,
+        0.0,
+        12.0
+       ],
+       "out"
+      ],
+      [
+       0.47,
+       [
+        0.0,
+        0.0,
+        -3.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "page_0",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.36,
+       [
+        0.0,
+        0.0,
+        60.0
+       ],
+       "out"
+      ],
+      [
+       0.47,
+       [
+        0.0,
+        0.0,
+        16.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "page_1",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.36,
+       [
+        0.0,
+        0.0,
+        30.0
+       ],
+       "out"
+      ],
+      [
+       0.47,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "pages",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        -78.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        -78.0
+       ]
+      ],
+      [
+       0.36,
+       [
+        0.0,
+        0.0,
+        16.0
+       ],
+       "out"
+      ],
+      [
+       0.47,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.6,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "book",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.12,
+       0
+      ],
+      [
+       0.2,
+       -8
+      ],
+      [
+       0.4,
+       4
+      ],
+      [
+       0.6,
+       0
+      ]
+     ],
+     "ease": "smooth",
+     "axis": "x"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": [
+       0.072,
+       0.168,
+       0.072
+      ],
+      "cycles": 3,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": 4.2,
+      "cycles": 2,
+      "phase": 0.1
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": 3.0,
+      "cycles": 1,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": [
+       0.072,
+       0.168,
+       0.072
+      ],
+      "cycles": 3,
+      "phase": 0.17
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": 4.2,
+      "cycles": 2,
+      "phase": 0.33
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": 3.0,
+      "cycles": 1,
+      "phase": 0.61
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": [
+       0.072,
+       0.168,
+       0.072
+      ],
+      "cycles": 3,
+      "phase": 0.34
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": 4.2,
+      "cycles": 2,
+      "phase": 0.56
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": 3.0,
+      "cycles": 1,
+      "phase": 0.9199999999999999
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": [
+       0.072,
+       0.168,
+       0.072
+      ],
+      "cycles": 3,
+      "phase": 0.51
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": 4.2,
+      "cycles": 2,
+      "phase": 0.79
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": 3.0,
+      "cycles": 1,
+      "phase": 1.23
+     },
+     "axis": "x"
+    }
+   ]
+  },
+  "hex": {
+   "length": 1.5,
+   "loop": false,
+   "tracks": [
+    {
+     "part": "book",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        -12.0,
+        0.0,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        -8.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "book",
+     "channel": "position",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        -0.8,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        0.0,
+        2.6,
+        0.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        2.2,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        -0.4,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.2,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "cover_l",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        14.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        0.0,
+        0.0,
+        -14.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        0.0,
+        -14.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        4.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "cover_r",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        -14.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        0.0,
+        0.0,
+        14.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.0,
+        0.0,
+        14.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        -4.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_0",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        8.0,
+        0.0,
+        -8.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        -28.0,
+        0.0,
+        28.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        -22.0,
+        0.0,
+        22.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_0",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        0.6,
+        1.3,
+        0.6
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.4,
+        1.0,
+        0.4
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_1",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        8.0,
+        0.0,
+        8.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        -28.0,
+        0.0,
+        -28.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        -22.0,
+        0.0,
+        -22.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_1",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        0.6,
+        1.3,
+        0.6
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.4,
+        1.0,
+        0.4
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_2",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        -8.0,
+        0.0,
+        8.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        28.0,
+        0.0,
+        -28.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        22.0,
+        0.0,
+        -22.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_2",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        0.6,
+        1.3,
+        0.6
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.4,
+        1.0,
+        0.4
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_3",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        -8.0,
+        0.0,
+        -8.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        28.0,
+        0.0,
+        28.0
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        22.0,
+        0.0,
+        22.0
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "flame_3",
+     "channel": "scale",
+     "keys": [
+      [
+       0.0,
+       [
+        0.0,
+        0.0,
+        0.0
+       ]
+      ],
+      [
+       0.12,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       0.26,
+       [
+        0.6,
+        1.3,
+        0.6
+       ],
+       "out"
+      ],
+      [
+       1.0,
+       [
+        0.4,
+        1.0,
+        0.4
+       ],
+       "ease"
+      ],
+      [
+       1.22,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "in"
+      ],
+      [
+       1.36,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ],
+      [
+       1.5,
+       [
+        0.0,
+        0.0,
+        0.0
+       ],
+       "ease"
+      ]
+     ]
+    },
+    {
+     "part": "book",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.28,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3633,
+       [
+        0,
+        0,
+        2.781
+       ]
+      ],
+      [
+       0.4467,
+       [
+        0,
+        0,
+        -3.271
+       ]
+      ],
+      [
+       0.53,
+       [
+        0,
+        0,
+        2.992
+       ]
+      ],
+      [
+       0.6133,
+       [
+        0,
+        0,
+        -3.366
+       ]
+      ],
+      [
+       0.6967,
+       [
+        0,
+        0,
+        3.401
+       ]
+      ],
+      [
+       0.78,
+       [
+        0,
+        0,
+        -2.505
+       ]
+      ],
+      [
+       0.8633,
+       [
+        0,
+        0,
+        2.421
+       ]
+      ],
+      [
+       0.9467,
+       [
+        0,
+        0,
+        -3.74
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "ease"
+    },
+    {
+     "part": "book",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3833,
+       [
+        0,
+        2.083,
+        0
+       ]
+      ],
+      [
+       0.4667,
+       [
+        0,
+        -1.924,
+        0
+       ]
+      ],
+      [
+       0.55,
+       [
+        0,
+        2.275,
+        0
+       ]
+      ],
+      [
+       0.6333,
+       [
+        0,
+        -1.986,
+        0
+       ]
+      ],
+      [
+       0.7167,
+       [
+        0,
+        1.88,
+        0
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        -2.282,
+        0
+       ]
+      ],
+      [
+       0.8833,
+       [
+        0,
+        2.902,
+        0
+       ]
+      ],
+      [
+       0.9667,
+       [
+        0,
+        -2.761,
+        0
+       ]
+      ],
+      [
+       1.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "ease"
+    },
+    {
+     "part": "cover_l",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.28,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3633,
+       [
+        0,
+        0,
+        5.775
+       ]
+      ],
+      [
+       0.4467,
+       [
+        0,
+        0,
+        -7.93
+       ]
+      ],
+      [
+       0.53,
+       [
+        0,
+        0,
+        9.231
+       ]
+      ],
+      [
+       0.6133,
+       [
+        0,
+        0,
+        -9.889
+       ]
+      ],
+      [
+       0.6967,
+       [
+        0,
+        0,
+        9.958
+       ]
+      ],
+      [
+       0.78,
+       [
+        0,
+        0,
+        -9.444
+       ]
+      ],
+      [
+       0.8633,
+       [
+        0,
+        0,
+        8.307
+       ]
+      ],
+      [
+       0.9467,
+       [
+        0,
+        0,
+        -6.397
+       ]
+      ],
+      [
+       1.05,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "cover_r",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.3833,
+       [
+        0,
+        0,
+        -5.848
+       ]
+      ],
+      [
+       0.4667,
+       [
+        0,
+        0,
+        8.017
+       ]
+      ],
+      [
+       0.55,
+       [
+        0,
+        0,
+        -9.306
+       ]
+      ],
+      [
+       0.6333,
+       [
+        0,
+        0,
+        9.924
+       ]
+      ],
+      [
+       0.7167,
+       [
+        0,
+        0,
+        -9.924
+       ]
+      ],
+      [
+       0.8,
+       [
+        0,
+        0,
+        9.306
+       ]
+      ],
+      [
+       0.8833,
+       [
+        0,
+        0,
+        -8.017
+       ]
+      ],
+      [
+       0.9667,
+       [
+        0,
+        0,
+        5.848
+       ]
+      ],
+      [
+       1.05,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "book_chain",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.26,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.4267,
+       [
+        20.838,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5933,
+       [
+        -27.58,
+        0,
+        0
+       ]
+      ],
+      [
+       0.76,
+       [
+        29.973,
+        0,
+        0
+       ]
+      ],
+      [
+       0.9267,
+       [
+        -28.515,
+        0,
+        0
+       ]
+      ],
+      [
+       1.0933,
+       [
+        22.936,
+        0,
+        0
+       ]
+      ],
+      [
+       1.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "ribbon",
+     "channel": "rotation",
+     "keys": [
+      [
+       0.0,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.26,
+       [
+        0,
+        0,
+        0
+       ]
+      ],
+      [
+       0.4029,
+       [
+        16.815,
+        0,
+        0
+       ]
+      ],
+      [
+       0.5457,
+       [
+        -22.664,
+        0,
+        0
+       ]
+      ],
+      [
+       0.6886,
+       [
+        25.503,
+        0,
+        0
+       ]
+      ],
+      [
+       0.8314,
+       [
+        -25.843,
+        0,
+        0
+       ]
+      ],
+      [
+       0.9743,
+       [
+        23.725,
+        0,
+        0
+       ]
+      ],
+      [
+       1.1171,
+       [
+        -18.833,
+        0,
+        0
+       ]
+      ],
+      [
+       1.3,
+       [
+        0,
+        0,
+        0
+       ]
+      ]
+     ],
+     "ease": "smooth"
+    },
+    {
+     "part": "page_0",
+     "axis": "z",
+     "ease": "ease",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.26,
+       0
+      ],
+      [
+       0.44,
+       190
+      ],
+      [
+       0.62,
+       0
+      ],
+      [
+       0.8,
+       190
+      ],
+      [
+       0.98,
+       0
+      ],
+      [
+       1.5,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "page_1",
+     "axis": "z",
+     "ease": "ease",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.33,
+       0
+      ],
+      [
+       0.51,
+       190
+      ],
+      [
+       0.69,
+       0
+      ],
+      [
+       0.87,
+       190
+      ],
+      [
+       1.05,
+       0
+      ],
+      [
+       1.5,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "page_2",
+     "axis": "z",
+     "ease": "ease",
+     "keys": [
+      [
+       0,
+       0
+      ],
+      [
+       0.4,
+       0
+      ],
+      [
+       0.58,
+       190
+      ],
+      [
+       0.76,
+       0
+      ],
+      [
+       0.94,
+       190
+      ],
+      [
+       1.12,
+       0
+      ],
+      [
+       1.5,
+       0
+      ]
+     ]
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": [
+       0.16799999999999998,
+       0.392,
+       0.16799999999999998
+      ],
+      "cycles": 10,
+      "phase": 0.0
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": 9.799999999999999,
+      "cycles": 6,
+      "phase": 0.1
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_0",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 4,
+      "phase": 0.3
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": [
+       0.16799999999999998,
+       0.392,
+       0.16799999999999998
+      ],
+      "cycles": 10,
+      "phase": 0.17
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": 9.799999999999999,
+      "cycles": 6,
+      "phase": 0.33
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_1",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 4,
+      "phase": 0.61
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": [
+       0.16799999999999998,
+       0.392,
+       0.16799999999999998
+      ],
+      "cycles": 10,
+      "phase": 0.34
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": 9.799999999999999,
+      "cycles": 6,
+      "phase": 0.56
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_2",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 4,
+      "phase": 0.9199999999999999
+     },
+     "axis": "x"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": [
+       0.16799999999999998,
+       0.392,
+       0.16799999999999998
+      ],
+      "cycles": 10,
+      "phase": 0.51
+     },
+     "channel": "scale"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": 9.799999999999999,
+      "cycles": 6,
+      "phase": 0.79
+     },
+     "axis": "z"
+    },
+    {
+     "part": "flame_3",
+     "osc": {
+      "amp": 7.0,
+      "cycles": 4,
+      "phase": 1.23
+     },
+     "axis": "x"
+    }
+   ]
+  }
+ }
+}

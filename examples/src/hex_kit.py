@@ -258,10 +258,20 @@ def timeline(length, keys, loop=False, extra=(), lift=None, lock=True):
                     k.append(ease)
                 ks.append(k)
             tracks.append({"part": n, "channel": cname, "keys": ks})
-    clip = {"length": length, "loop": loop, "tracks": tracks + list(extra)}
+    clip = {"length": length, "loop": loop, "tracks": tracks + [clamp(tr, length) for tr in extra]}
     if lock:
         clip["_lock"] = {"lift": lift}
     return clip
+
+
+def clamp(tr, length):
+    """Cut a keyed track at the clip's end (ring-outs that would run past it), easing to zero at the end."""
+    ks = tr.get("keys")
+    if not ks or ks[-1][0] <= length + 1e-9:
+        return tr
+    zero = [0, 0, 0] if isinstance(ks[0][1], list) else 0
+    kept = [k for k in ks if k[0] < length - 0.03]
+    return dict(tr, keys=kept + [[round(length, 4), zero]])
 
 
 def cycle(part_, length, keys, phase=0.0, ch="rotation", ease="smooth"):
@@ -318,6 +328,8 @@ def jitter(part_, t0, t1, amp, step=0.05, axis=0, ch="rotation", seed=0):
 
 def ring(part_, t0, amp, freq=8.0, decay=6.0, axis=0, ch="rotation", end=None):
     """A decaying ring-out (jiggle) starting at t0: alternating keys shrinking exponentially."""
+    if isinstance(amp, (list, tuple)):
+        axis, amp = list(amp), 1.0
     ks = [[0.0, [0, 0, 0]], [round(t0, 4), [0, 0, 0]]]
     n = 0
     t = t0

@@ -28,8 +28,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from hex_kit import (FLAME_SMALL, M, MR, ROOT, SOUL_KEY, Rig, add, both, chain, dump, ground_lock, jitter, keys,  # noqa: E402,F401
-                     osc, pos, r, rest_on_ground, ring, sc, side, spikes, tatters, timeline, wave)
+from hex_kit import (FLAME_SMALL, M, MR, ROOT, SOUL_KEY, Rig, add, both, chain, cycle, dump, ground_lock,  # noqa: E402
+                     keys, osc, r, rest_on_ground, ring, sc, shake, side, spikes, tatters, timeline, wave)
 
 R = Rig(density=1, bone_style="dress")
 part, bone, card, wpos = R.part, R.bone, R.card, R.wpos
@@ -548,9 +548,249 @@ styles = {
                    "art_key": {"t": "straw:6", "m": "straw:4", "f": "straw:3"}},
 }
 
-# ======================================================================= animation (filled in below)
+# ======================================================================= animation
+# Pose helpers. Axes: +x tips a part's top forward (arms: -x raises them forward), +y turns it to her left,
+# +z leans it to her right; side()/both() mirror y and z, so z > 0 is "outward" for a left/right pair.
+def arm(s, a=0, out=0, twist=0, elbow=0, wrist=0, roll=0):
+    """Shoulder pitch (- raises forward), abduction (+ out), twist; elbow (- bends the forearm up), wrist."""
+    return add(side("arm", s, a, twist, out), side("forearm", s, elbow), side("fist", s, wrist, 0, roll))
+
+
+def leg(s, a=0, knee=0, hoof=0, splay=0):
+    """Hip pitch (- forward), knee (+ bends the shin back), hoof pitch, splay (+ out)."""
+    return add(side("leg", s, a, 0, splay), side("shin", s, knee), side("hoof", s, hoof))
+
+
+def lids(v):
+    """Eyelids: +1 shuts the eyes, -0.6 opens them wide (scale offsets on the drooping lids)."""
+    return add(sc("lid_l", 0, v, 0), sc("lid_r", 0, v, 0))
+
+
+def ears(z=0, x=0):
+    return both("ear", x, 0, z)
+
+
+def jowls(v):
+    """Puff (+) or suck in (-) the jowls."""
+    return add(sc("cheek_r", v, v * 0.6, v), sc("zombie_cheek", v, v * 0.6, v))
+
+
+DANGLE = [("lantern", 1.0), ("pot", 0.6), ("skull", 0.9), ("earring_r", 1.2)]
+
+
+def dangles(t0, amp, freq=3.0, decay=3.0, end=None, axis=2):
+    """Everything hanging off her swings and rings out after a jolt at t0 (lantern, pot, skull, earring)."""
+    out = []
+    for k, (p, g) in enumerate(DANGLE):
+        out.append(ring(p, t0 + 0.03 * k, amp * g * (1 if k % 2 == 0 else -1), freq=freq, decay=decay, axis=axis,
+                        end=end))
+    return out
+
+
+def sway_all(L, amp=1.0, cycles=1, phase=0.0):
+    """Looping secondary motion: dangles swinging, fringes and jowls following through."""
+    tr = [osc("lantern", "z", 9 * amp, cycles, phase + 0.3), osc("lantern", "x", 5 * amp, cycles, phase + 0.55),
+          osc("pot", "z", -6 * amp, cycles, phase + 0.35), osc("skull", "z", 8 * amp, cycles, phase + 0.4),
+          osc("skull", "x", 5 * amp, cycles, phase + 0.2), osc("earring_r", "x", 14 * amp, cycles, phase + 0.45),
+          osc("earring_r", "z", 8 * amp, cycles, phase + 0.2),
+          osc("hem_f", "x", -5 * amp, cycles, phase + 0.3), osc("hem_b", "x", 5 * amp, cycles, phase + 0.35),
+          osc("hem_l", "z", 5 * amp, cycles, phase + 0.25), osc("hem_r", "z", -5 * amp, cycles, phase + 0.25),
+          osc("shawl_lap_l", "x", -5 * amp, cycles, phase + 0.3), osc("shawl_lap_r", "x", -5 * amp, cycles, phase + 0.4),
+          osc("cheek_r", "z", 4 * amp, cycles, phase + 0.3), osc("zombie_cheek", "z", -4 * amp, cycles, phase + 0.35)]
+    for k in range(4):
+        tr.append(osc(f"coin{k}", "x", (8 + 2 * k) * amp, cycles, phase + 0.2 + 0.07 * k))
+    return tr
+
+
+REST = {}
 ANIM = {}
-ANIM["idle"] = {"length": 2.0, "loop": True, "tracks": [osc("belly", None, [0.03, 0.02, 0.04], 1, ch="scale")]}
+
+# ---------------------------------------------------------------- idle: swaying tipsily, dozing off and jerking awake
+L = 4.0
+DOZE = [[0, 0], [1.2, 0], [2.2, 10], [2.5, 14], [2.58, -6, "out"], [2.8, 2], [3.1, 0]]
+ANIM["idle"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True, extra=[
+    osc("body", "z", 2.2, 1), osc("body", "y", 1.5, 1, 0.25),
+    osc("chest", "z", -1.6, 1, 0.12), osc("chest", "x", 1.4, 2, 0.1),
+    osc("belly", None, [0.035, 0.02, 0.045], 2, 0.05, ch="scale"), osc("belly", "x", -1.5, 2, 0.12),
+    osc("head", "z", 4, 1, 0.3),
+    keys("head", "x", DOZE),
+    keys("lid_l", None, [[0, [0, 0, 0]], [1.2, [0, 0, 0]], [2.4, [0, 0.9, 0]], [2.58, [0, -0.6, 0], "out"],
+                         [2.9, [0, 0, 0]], [3.6, [0, 0, 0]], [3.68, [0, 1, 0]], [3.78, [0, 0, 0]]], ch="scale"),
+    keys("lid_r", None, [[0, [0, 0, 0]], [1.2, [0, 0, 0]], [2.4, [0, 0.9, 0]], [2.58, [0, -0.6, 0], "out"],
+                         [2.9, [0, 0, 0]], [3.6, [0, 0, 0]], [3.68, [0, 1, 0]], [3.78, [0, 0, 0]]], ch="scale"),
+    keys("jaw", "x", [[0, 0], [1.4, 0], [2.4, 12], [2.58, 0, "out"], [4.0, 0]]),
+    keys("ear_l", "z", [[0, 0], [2.5, 0], [2.6, 18, "out"], [3.0, 0]]),
+    keys("ear_r", "z", [[0, 0], [2.52, 0], [2.62, -18, "out"], [3.05, 0]]),
+    wave(["ear_r", "earring_r"], "x", 5, 1, 0.15, 1.6, 0.4),
+    osc("arm_l", "z", 2, 1, 0.1), osc("arm_r", "z", -2, 1, 0.1),
+    osc("forearm_l", "x", -3, 2, 0.3), osc("forearm_r", "x", -3, 2, 0.35),
+    osc("backpack", "z", 1.2, 1, 0.2), osc("backpack_lid", "x", 1.5, 2, 0.4, bias=1.5),
+] + sway_all(L, 1.0, 1, 0.0))
+
+# ---------------------------------------------------------------- walk: a drunken, lurching, limping stumble
+L = 2.0
+STEP_R = [(0.0, (-26, 10, 14)), (0.22, (-8, 6, 4)), (0.5, (18, 8, -8)), (0.6, (8, 50, -16)), (0.78, (-30, 42, 0)),
+          (0.9, (-32, 16, 12))]
+DRAG_L = [(0.0, (-16, 4, 8)), (0.3, (-2, 2, 0)), (0.5, (16, 4, -4)), (0.66, (10, 16, 14)), (0.86, (-12, 12, 8))]
+
+
+def walk_legs(L):
+    tr = []
+    for s, ph, ks in ((-1, 0.0, STEP_R), (1, 0.5, DRAG_L)):
+        n = "l" if s > 0 else "r"
+        for j, nm in enumerate(("leg", "shin", "hoof")):
+            tr.append(cycle(f"{nm}_{n}", L, [(u, [v[j], 0, 0]) for u, v in ks], ph))
+        tr.append(osc(f"leg_{n}", "z", 3, 1, ph + 0.25, bias=2))
+    return tr
+
+
+STUMBLE = [[0, 0], [1.0, 0], [1.12, 10, "out"], [1.3, 3], [1.5, -2], [1.7, 0]]
+ANIM["walk"] = timeline(L, [(0.0, REST, None), (L, REST, None)], loop=True, extra=walk_legs(L) + [
+    osc("body", "z", 7, 1, 0.0), osc("body", "y", -6, 1, 0.1), osc("body", "z", 2, 3, 0.2),
+    osc("chest", "z", -5, 1, 0.12), osc("chest", "y", 5, 1, 0.2),
+    osc("chest", "x", 3, 2, 0.15, bias=3, shape="bounce"),
+    keys("chest", "x", STUMBLE),
+    osc("head", "z", 9, 1, 0.3), osc("head", "x", -4, 2, 0.25), osc("head", "y", -6, 1, 0.35),
+    keys("head", "x", [[0, 0], [1.1, 0], [1.2, -10, "out"], [1.45, 4], [1.7, 0]]),
+    # arms flail for balance: out when she lurches the other way, forearms flopping after
+    osc("arm_l", "z", 14, 1, 0.5, bias=10), osc("arm_r", "z", -14, 1, 0.5, bias=10),
+    osc("arm_l", "x", 14, 1, 0.0), osc("arm_r", "x", -14, 1, 0.0),
+    osc("forearm_l", "x", -12, 1, 0.12, bias=-10), osc("forearm_r", "x", 12, 1, 0.12, bias=-10),
+    keys("arm_l", "z", [[0, 0], [1.05, 0], [1.15, 28, "out"], [1.5, 0]]),
+    keys("arm_r", "z", [[0, 0], [1.05, 0], [1.17, -28, "out"], [1.52, 0]]),
+    osc("belly", None, [0.05, -0.06, 0.05], 2, 0.1, ch="scale", shape="bounce"), osc("belly", "x", 5, 2, 0.2),
+    osc("backpack", "z", 5, 1, 0.22), osc("backpack", "x", 3, 2, 0.3),
+    osc("backpack_lid", "x", 6, 2, 0.4, bias=6),
+    osc("ear_l", "z", 12, 2, 0.3, bias=4), osc("ear_r", "z", -12, 2, 0.35, bias=-4),
+    osc("jaw", "x", 4, 2, 0.4, bias=4),
+] + sway_all(L, 2.0, 1, 0.1) + [osc("lantern", "x", 12, 2, 0.5)])
+
+# ---------------------------------------------------------------- drink: a long, tipsy swig from the flask
+LOOK = add(r("head", 14, 22, -6), arm(1, -36, -6, 0, -46, -10), lids(-0.5), r("chest", 4, 6))
+RAISE = add(r("chest", -12, 4), r("body", -3), r("head", -26, 6), arm(1, -96, -30, 10, -62, -30), lids(0.8),
+            r("jaw", 10), r("belly", -6), sc("belly", 0.04, 0, 0.05), ears(-10))
+GLUG = add(r("chest", -18, 4), r("body", -5), r("head", -38, 4), arm(1, -122, -32, 10, -52, -56), lids(1.0),
+           r("jaw", 14), r("belly", -8), sc("belly", 0.08, 0.02, 0.1), ears(-14))
+AHH = add(r("chest", 8), r("head", 10, -4, 4), arm(1, -20, 6, 0, -30, 0), r("jaw", 30), lids(-0.4), ears(26),
+          sc("belly", 0.1, 0.04, 0.12), jowls(0.15))
+TIPSY = add(r("body", 0, 0, 7), r("chest", 4, 0, 5), r("head", 6, 0, 14), arm(1, -8, 10), arm(-1, 0, 14), lids(0.7),
+            r("jaw", 8), ears(10), sc("belly", 0.06, 0, 0.08))
+ANIM["drink"] = timeline(1.6, [
+    (0.0, REST, None), (0.2, LOOK, "out"), (0.42, RAISE, "out_back"), (0.55, GLUG, "ease"),
+    (1.02, add(GLUG, r("head", -4), arm(1, -6)), "ease"), (1.16, AHH, "out"),
+    (1.36, TIPSY, "ease"), (1.48, add(TIPSY, r("body", 0, 0, -9), r("head", 0, 0, -16)), "ease"),
+    (1.6, REST, "ease")],
+    extra=[shake("zombie_cheek", 0.55, 1.05, [0.22, 0.12, 0.22], freq=5.5, ch="scale"),
+           shake("cheek_r", 0.55, 1.05, [0.22, 0.12, 0.22], freq=5.5, ch="scale"),
+           shake("head", 0.55, 1.05, 3.0, freq=5.5, axis=0),
+           shake("chest", 1.16, 1.36, 2.5, freq=12, axis=2)] + dangles(1.16, 10) + dangles(1.4, 8))
+
+# ---------------------------------------------------------------- hiccup: HIC! a jolt through her whole body
+HIC = add(r("chest", -12), r("head", -16), lids(-0.7), jowls(0.3), r("jaw", -4), arm(1, -20, 26, 0, -30),
+          arm(-1, -20, 26, 0, -30), ears(30, -10), sc("belly", -0.04, 0.12, -0.04), r("backpack", -6),
+          r("backpack_lid", 28), leg(1, 0, 0, 10), leg(-1, 0, 0, 10))
+LAND = add(r("chest", 8), r("head", 10), lids(0.4), sc("belly", 0.1, -0.08, 0.1), arm(1, 4, 6), arm(-1, 4, 6),
+           ears(-8), r("backpack", 5), leg(1, -8, 16, -8), leg(-1, -8, 16, -8))
+ANIM["hiccup"] = timeline(0.6, [
+    (0.0, REST, None), (0.06, add(r("chest", 4), sc("belly", 0.03, -0.04, 0.03)), "ease"), (0.11, HIC, "out"),
+    (0.2, LAND, "in"), (0.32, add(r("chest", -3), r("head", -4), lids(0.2)), "ease"), (0.6, REST, "ease")],
+    lift=[[0, 0], [0.07, 0], [0.12, 2.2, "out"], [0.2, 0, "in"], [0.6, 0]],
+    extra=dangles(0.12, 16, freq=4.0) + [ring("backpack_lid", 0.2, -10, freq=7, decay=7, axis=0),
+                                         ring("belly", 0.2, [0.08, -0.08, 0.08], freq=6, decay=6, ch="scale"),
+                                         ring("zombie_cheek", 0.2, 8, freq=7, axis=2),
+                                         ring("cheek_r", 0.2, -8, freq=7, axis=2)])
+
+# ---------------------------------------------------------------- rummage: twist round, dig in the pack, pull out a find
+WIND_UP = add(r("body", 4, 8), r("chest", 6, 12), r("head", 6, 8), leg(1, -6, 12, -6), leg(-1, -6, 12, -6),
+              arm(-1, -10, 8, 0, -20))
+REACH = add(r("body", -2, -16, 2), r("chest", -8, -48, 8), r("head", -18, -34, 6), arm(-1, -168, 16, 0, -50, -20),
+            arm(1, -10, 20, 0, -20), r("backpack_lid", 112), leg(1, -4, 6, -2), leg(-1, 4, 4, -4), lids(-0.4),
+            ears(12))
+DIG = add(REACH, r("chest", 4, -4), r("head", 6, -4), arm(-1, 14, 0, 0, -16))
+YANK = add(r("body", -4, -12, 0), r("chest", -14, -40, 4), r("head", -22, -26, 0), arm(-1, -186, 22, 0, -10, 10),
+           r("backpack_lid", 120), lids(-0.7), ears(28), sc("belly", 0.05, 0.08, 0.05))
+LOOK_AT = add(r("body", 0, 6), r("chest", 4, 12), r("head", 16, 10, 16), arm(-1, -74, -14, 0, -66, -20, 10),
+              arm(1, -6, 10), lids(-0.5), ears(16))
+ANIM["rummage"] = timeline(2.0, [
+    (0.0, REST, None), (0.18, WIND_UP, "ease"), (0.42, REACH, "out_back"), (0.56, DIG, "ease"),
+    (0.7, REACH, "ease"), (0.84, DIG, "ease"), (0.96, REACH, "ease"), (1.06, DIG, "ease"),
+    (1.2, YANK, "out"), (1.42, LOOK_AT, "out_back"), (1.76, add(LOOK_AT, r("head", 0, -6, -10), r("fist_r", 0, 30)),
+                                                       "ease"), (2.0, REST, "ease")],
+    extra=[shake("backpack", 0.45, 1.15, 2.5, freq=9, axis=2), shake("lantern", 0.45, 1.2, 10, freq=4, axis=2),
+           shake("pot", 0.45, 1.2, 8, freq=5, axis=0), shake("skull", 0.45, 1.2, 10, freq=4.5, axis=2),
+           shake("belly", 0.45, 1.1, [0.04, 0.06, 0.04], freq=9, ch="scale")]
+    + dangles(1.42, 8) + [ring("backpack_lid", 1.6, -8, freq=6, decay=6, axis=0),
+                          {"part": "backpack_lid", "axis": "x",
+                           "keys": [[0, 0], [1.5, 0], [1.66, -112, "in"], [2.0, -112]], "ease": "ease"}])
+
+# ---------------------------------------------------------------- refuse: chin up, a head shake, a wave-off ... and a burp
+SNOOT = add(r("chest", -4, 18), r("head", -14, 18, -4), lids(0.6), arm(-1, -56, 34, 0, -60, 0, 20), ears(-6))
+SHAKES = []
+for k, t in enumerate((0.26, 0.38, 0.5, 0.62, 0.74)):
+    a = 22 * (1 if k % 2 == 0 else -1) * (1.0 - 0.12 * k)
+    SHAKES.append((t, add(SNOOT, r("head", 0, a, -a * 0.25), r("fist_r", 0, 0, -a * 1.4), r("forearm_r", 0, a * 0.8),
+                          jowls(0.05)), "ease"))
+BURP = add(r("chest", -10, 10), r("head", -18, 6), r("jaw", 26), lids(-0.4), jowls(0.3), sc("belly", 0.12, 0.04, 0.14),
+           r("belly", -8), arm(-1, -10, 10), ears(22))
+ANIM["refuse"] = timeline(1.2, [(0.0, REST, None), (0.16, SNOOT, "out")] + SHAKES + [
+    (0.86, add(SNOOT, r("head", 0, 0, 0)), "ease"), (0.96, BURP, "out"), (1.06, add(BURP, r("jaw", -8)), "ease"),
+    (1.2, REST, "ease")],
+    extra=[shake("ear_l", 0.26, 0.86, 16, freq=4.2, axis=2), shake("ear_r", 0.26, 0.86, -16, freq=4.2, axis=2),
+           shake("zombie_cheek", 0.26, 0.86, 10, freq=4.2, axis=1), shake("cheek_r", 0.26, 0.86, 10, freq=4.2, axis=1),
+           shake("earring_r", 0.3, 0.9, 20, freq=4.2, axis=2)] + dangles(0.96, 7))
+
+# ---------------------------------------------------------------- cackle: head thrown back, belly shaking with laughter
+GATHER = add(r("chest", 10), r("head", 12), arm(1, -10, -6), arm(-1, -10, -6), lids(0.5), ears(-8),
+             leg(1, -4, 8, -4), leg(-1, -4, 8, -4))
+CACKLE = add(r("chest", -16), r("body", -4), r("head", -26), r("jaw", 34), lids(0.85), jowls(0.12),
+             arm(1, -4, -22, 0, -52, -10), arm(-1, -4, -22, 0, -52, -10), ears(20), sc("belly", 0.06, 0.04, 0.08))
+ANIM["cackle"] = timeline(1.5, [(0.0, REST, None), (0.14, GATHER, "ease"), (0.3, CACKLE, "out_back"),
+                                (1.2, add(CACKLE, r("chest", 4), r("head", 6)), "ease"), (1.5, REST, "ease")],
+                          extra=[shake("chest", 0.3, 1.25, 5, freq=6.5, axis=0),
+                                 shake("head", 0.32, 1.27, 7, freq=6.5, axis=0),
+                                 shake("jaw", 0.3, 1.25, 14, freq=6.5, axis=0),
+                                 shake("belly", 0.3, 1.3, [0.08, -0.07, 0.08], freq=6.5, ch="scale"),
+                                 shake("belly", 0.33, 1.3, 5, freq=6.5, axis=0),
+                                 shake("arm_l", 0.3, 1.25, 6, freq=6.5, axis=0),
+                                 shake("arm_r", 0.3, 1.25, 6, freq=6.5, axis=0),
+                                 shake("ear_l", 0.34, 1.3, 16, freq=6.5, axis=2),
+                                 shake("ear_r", 0.34, 1.3, -16, freq=6.5, axis=2),
+                                 shake("zombie_cheek", 0.33, 1.3, [0.15, 0.1, 0.15], freq=6.5, ch="scale"),
+                                 shake("cheek_r", 0.33, 1.3, [0.15, 0.1, 0.15], freq=6.5, ch="scale"),
+                                 shake("backpack", 0.35, 1.3, 2.0, freq=6.5, axis=0),
+                                 shake("backpack_lid", 0.35, 1.3, 7, freq=6.5, axis=0, phase=-1.0),
+                                 shake("lantern", 0.35, 1.4, 10, freq=3.2, axis=2),
+                                 shake("body", 0.3, 1.25, 3, freq=3.25, axis=2)],
+                          lift=[[0, 0], [0.3, 0], [0.45, 0.6], [0.6, 0], [0.75, 0.6], [0.9, 0], [1.05, 0.5],
+                                [1.2, 0], [1.5, 0]])
+
+# ---------------------------------------------------------------- throw: wind up overhead, hurl, follow through
+WIND = add(r("body", -4, -12), r("chest", -14, -26, -4), r("head", 4, 24, 4), arm(-1, -158, 18, 0, -64, -20),
+           arm(1, -30, 24, 0, -20), leg(1, -18, 8, -6), leg(-1, 10, 10, -6), lids(-0.5), ears(-12),
+           r("backpack", -4))
+HURL = add(r("body", 6, 10), r("chest", 18, 22, 2), r("head", 6, -12), arm(-1, -52, 6, 0, -6, -20),
+           arm(1, 10, 30, 0, -26), leg(1, -24, 16, -8), leg(-1, 14, 6, -6), lids(-0.7), ears(24), r("backpack", 8))
+FOLLOW = add(r("body", 6, 14), r("chest", 22, 30, 4), r("head", 10, -18), arm(-1, 8, -12, 20, -16, 10),
+             arm(1, 12, 30, 0, -26), leg(1, -24, 18, -8), leg(-1, 14, 6, -6), r("backpack", 6))
+ANIM["throw"] = timeline(0.8, [(0.0, REST, None), (0.24, WIND, "out"), (0.3, add(WIND, arm(-1, -6)), "ease"),
+                               (0.37, HURL, "in"), (0.46, FOLLOW, "out"), (0.8, REST, "ease")],
+                         extra=dangles(0.4, 14) + [ring("belly", 0.4, 6, freq=6, axis=0),
+                                                   ring("backpack_lid", 0.42, 14, freq=6, decay=6, axis=0)])
+
+# ---------------------------------------------------------------- trade: holding something out, admiring it lovingly
+L = 3.0
+HOLD = add(arm(-1, -60, 24, 0, -16, -12), r("chest", -4, -10), r("head", 8, -24, 12), lids(-0.3), ears(10),
+           r("jaw", 6), arm(1, -6, 8))
+ANIM["trade"] = timeline(L, [(0.0, HOLD, None), (L, HOLD, None)], loop=True, extra=[
+    osc("fist_r", "y", 26, 1, 0.0), osc("forearm_r", "x", -6, 2, 0.1),
+    osc("head", "z", -9, 1, 0.12), osc("head", "y", -6, 1, 0.2), osc("head", "x", 3, 2, 0.3),
+    osc("chest", "x", 2, 2, 0.0), osc("chest", "z", 3, 1, 0.1), osc("body", "z", 2, 1, 0.05),
+    osc("belly", None, [0.04, 0.02, 0.05], 2, 0.1, ch="scale"),
+    osc("ear_l", "z", 8, 2, 0.3), osc("ear_r", "z", -8, 2, 0.35),
+    keys("lid_l", None, [[0, [0, 0, 0]], [1.9, [0, 0, 0]], [1.98, [0, 1.3, 0]], [2.08, [0, 0, 0]]], ch="scale"),
+    keys("lid_r", None, [[0, [0, 0, 0]], [1.9, [0, 0, 0]], [1.98, [0, 1.3, 0]], [2.08, [0, 0, 0]]], ch="scale"),
+    osc("arm_l", "z", 3, 1, 0.4),
+] + sway_all(L, 0.8, 1, 0.2))
 
 FEET = ["hoof_l", "hoof_r"]
 spec = {
