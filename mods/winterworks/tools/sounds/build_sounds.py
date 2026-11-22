@@ -25,6 +25,10 @@ A layer is {"src": "<source id>[/<file in archive>]", "t": start s, "d": duratio
 "eq": [[Hz, dB, Q], ...], "lsh"/"hsh": [Hz, dB], "dist": drive, "env": [[s, dB], ...], "fi"/"fo": fade s,
 "rev": true, "ch": "L"/"R", "pan": -1..1} or a synth layer {"synth": "noise"|"tone"|"chime"|"thump"|
 "crackle"|"whoosh"|"wind"|"rumble"|"pluck"|"clicks", ...}. Bus fx: reverb, eq, hp, lp, comp, sat, delay.
+More layer processing (any layer): "gran": {"out": s, "grain": s, "dens": grains/s, "scan": [from, to] (0..1 of
+the clip), "spread": 0..1, "jit": semitones, "pitch": factor, "seed"} granular resynthesis of the clip;
+"warble": [Hz, depth] pitch wobble; "trem": [Hz, depth 0..1] amplitude wobble; "ring": [Hz, mix] ring modulation;
+"comb": [Hz, feedback, mix] resonator (glassy / metallic ring).
 """
 import argparse
 import hashlib
@@ -492,6 +496,59 @@ def synth(L, rng, channels):
     return y
 
 
+def granular(x, G, rng):
+    """Granular resynthesis: Hann-windowed grains read from the clip (scanning `scan`, scattered by `spread`),
+    each re-pitched by `pitch` * 2^(+-jit/12), overlap-added over `out` seconds at `dens` grains a second."""
+    n_in = x.shape[1]
+    out = int(float(G.get("out", n_in / SR)) * SR)
+    g = max(16, int(float(G.get("grain", 0.08)) * SR))
+    dens = float(G.get("dens", 30.0))
+    s0, s1 = G.get("scan", [0.0, 1.0])
+    spread = float(G.get("spread", 0.1))
+    jit = float(G.get("jit", 0.0))
+    base = float(G.get("pitch", 1.0))
+    grng = np.random.default_rng(G["seed"]) if "seed" in G else rng
+    y = np.zeros((x.shape[0], out + 4 * g))
+    win = np.hanning(g)
+    k = max(1, int(dens * out / SR))
+    for i in range(k):
+        tpos = grng.uniform(0, out)
+        frac = tpos / max(1, out)
+        c = s0 + (s1 - s0) * frac + grng.uniform(-spread, spread) * 0.5
+        p = base * 2.0 ** (grng.uniform(-jit, jit) / 12.0)
+        need = int(g * p) + 2
+        src = int(np.clip(c, 0, 1) * max(0, n_in - need))
+        seg = x[:, src:src + need]
+        if seg.shape[1] < 4:
+            continue
+        idx = np.arange(g) * p
+        idx = idx[idx < seg.shape[1] - 1]
+        gr = np.vstack([np.interp(idx, np.arange(seg.shape[1]), seg[c_]) for c_ in range(x.shape[0])]) * win[:idx.size]
+        o = int(tpos)
+        y[:, o:o + gr.shape[1]] += gr * grng.uniform(0.6, 1.0)
+    y = y[:, :out]
+    # overlap normalisation: about dens * grain grains sound at once
+    y /= max(1.0, math.sqrt(dens * g / SR))
+    return y
+
+
+def warble(x, rate, depth):
+    """Pitch wobble (vibrato) of `depth` (fraction of pitch) at `rate` Hz, by a modulated read position."""
+    n = x.shape[1]
+    t = np.arange(n) / SR
+    amp = depth / (2 * math.pi * rate) * SR
+    pos = np.clip(np.arange(n) + amp * np.sin(2 * math.pi * rate * t), 0, n - 1)
+    return np.vstack([np.interp(pos, np.arange(n), x[c]) for c in range(x.shape[0])])
+
+
+def comb(x, f, fb=0.7, mix=0.5):
+    d = max(1, int(round(SR / f)))
+    a = np.zeros(d + 1)
+    a[0], a[d] = 1.0, -fb
+    wet = signal.lfilter([1.0 - fb], a, x, axis=-1)
+    return x * (1 - mix) + wet * mix
+
+
 def reverb(x, rt=1.2, mix=0.25, lpf=6000.0, pre=0.01, seed=7, width=0.0, er=True):
     rng = np.random.default_rng(seed)
     n = int((rt * 1.2 + pre) * SR)
@@ -658,15 +715,28 @@ class Renderer:
             x = fades(x, L.get("cfi", 0.003), L.get("cfo", 0.008))
         if L.get("rev"):
             x = x[:, ::-1].copy()
+        if "gran" in L:
+            x = fades(granular(x, L["gran"], rng), 0.01, 0.03)
         if L.get("stretch") and abs(L["stretch"] - 1) > 1e-4:
             x = atempo(x, L["stretch"]).astype(np.float64)
         if L.get("pitch", 1.0) != 1.0:
             x = resample_pitch(x, float(L["pitch"]))
+        if "warble" in L:
+            x = warble(x, *L["warble"])
         x = apply_filters(x, L)
+        if "ring" in L:
+            f, m = L["ring"]
+            x = x * (1 - m) + x * np.sin(2 * math.pi * f * np.arange(x.shape[1]) / SR)[None, :] * m
+        if "comb" in L:
+            x = comb(x, *L["comb"])
         if L.get("dist"):
             x = sat(x, L["dist"])
         if "env" in L:
             x = x * env_curve(x.shape[1], L["env"])[None, :]
+        if "trem" in L:
+            r_, dp = L["trem"][:2]
+            ph = L["trem"][2] if len(L["trem"]) > 2 else 0.0
+            x = x * (1 - dp * 0.5 * (1 - np.cos(2 * math.pi * r_ * np.arange(x.shape[1]) / SR + ph)))[None, :]
         x = fades(x, L.get("fi", 0), L.get("fo", 0))
         x = x * db2a(L.get("gain", 0.0))
         if channels == 2 and "pan" in L:
@@ -1008,7 +1078,7 @@ def write_credits(rec, used):
     src = rec["sources"]
     lines = ["# Winterworks sound credits", "",
              "Every sound in `src/main/resources/assets/winterworks/sounds/` is made by `tools/sounds/build_sounds.py` "
-             "from the recordings listed here (trimmed, layered, re-pitched, filtered, reverberated and normalised; see "
+             "from the recordings listed here (trimmed, layered, re-pitched, granulated, filtered, reverberated and normalised; see "
              "`tools/sounds/recipes.json`), plus procedural synthesis (numpy noise, tones, chimes, thumps, wind).",
              "Only CC0 and public-domain sources are used, so the derived files can be shipped with the mod. "
              "None of them carries an attribution requirement or a no-AI / no-machine-learning clause; credit is given "

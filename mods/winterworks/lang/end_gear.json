@@ -13,22 +13,5 @@
   "key.winterworks.dragon_breath": "Dragon Breath (riding a Dragonling)",
   "key.categories.winterworks": "Winterworks",
   "message.winterworks.dragonling.breath": "Dragon's breath: %s / %s",
-  "message.winterworks.dragonling.no_breath": "Out of breath: feed it a bottle of Dragon's Breath",
-  "subtitles.winterworks.item.end_glider.flap": "Glider wings beat",
-  "subtitles.winterworks.item.end_glider.jet": "Glider jets roar",
-  "subtitles.winterworks.item.end_glider.boost": "Glider boosts",
-  "subtitles.winterworks.item.obsidian_shield.reflect": "Shield reflects",
-  "subtitles.winterworks.item.obsidian_shield.shockwave": "Shield shockwave",
-  "subtitles.winterworks.item.monolith_wand.petrify": "Wand petrifies",
-  "subtitles.winterworks.effect.petrified.encase": "Encased in obsidian",
-  "subtitles.winterworks.effect.petrified.shatter": "Obsidian shatters",
-  "subtitles.winterworks.entity.dragonling.ambient": "Dragonling chirrs",
-  "subtitles.winterworks.entity.dragonling.hurt": "Dragonling hurts",
-  "subtitles.winterworks.entity.dragonling.death": "Dragonling dies",
-  "subtitles.winterworks.entity.dragonling.eat": "Dragonling eats",
-  "subtitles.winterworks.entity.dragonling.roar": "Dragonling roars",
-  "subtitles.winterworks.entity.dragonling.flap": "Dragonling flaps",
-  "subtitles.winterworks.entity.dragonling.breath": "Dragonling breathes fire",
-  "subtitles.winterworks.entity.dragonling.hatch": "Dragonling hatches",
-  "subtitles.winterworks.item.dragon_egg.crack": "Dragon Egg cracks"
+  "message.winterworks.dragonling.no_breath": "Out of breath: feed it a bottle of Dragon's Breath"
 }

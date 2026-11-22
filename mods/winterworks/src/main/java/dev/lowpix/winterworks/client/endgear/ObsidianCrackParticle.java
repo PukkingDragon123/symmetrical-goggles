@@ -10,15 +10,13 @@ import net.minecraft.core.particles.SimpleParticleType;
 
 /**
  * {@code winterworks:obsidian_crack}: a chip of obsidian flying off a shell (petrification, the shield). It tumbles,
- * falls, bounces once off the ground and crumbles through its frames. Spawned with its velocity.
+ * falls and settles on the ground, fading out. Each is one of the sprite set's chips. Spawned with its velocity.
  */
 public class ObsidianCrackParticle extends TextureSheetParticle {
-    private final SpriteSet sprites;
     private final float spin;
 
     ObsidianCrackParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites) {
         super(level, x, y, z, vx, vy, vz);
-        this.sprites = sprites;
         xd = vx + (random.nextDouble() - 0.5) * 0.05;
         yd = vy + random.nextDouble() * 0.06;
         zd = vz + (random.nextDouble() - 0.5) * 0.05;
@@ -31,7 +29,7 @@ public class ObsidianCrackParticle extends TextureSheetParticle {
         roll = random.nextFloat() * 6.28f;
         float shade = 0.75f + random.nextFloat() * 0.25f;
         setColor(shade, shade, shade);
-        setSpriteFromAge(sprites);
+        pickSprite(sprites);
     }
 
     @Override
@@ -41,7 +39,6 @@ public class ObsidianCrackParticle extends TextureSheetParticle {
         if (!onGround) {
             roll += spin;
         }
-        setSpriteFromAge(sprites);
         if (age > lifetime - 6) {
             alpha = (lifetime - age) / 6f;
         }

@@ -4,10 +4,9 @@ Dragon Egg cracking, Dragonling. Called by gen_data.py with ctx = gen_data.Ctx.
 Item models (the shield, wand and glider are 3D everywhere, drawn by client.endgear's BuiltinItemRenderers; the shield
 uses vanilla shield.json / shield_blocking.json transforms, the wand vanilla item/handheld's, the glider identity), the
 cracked Dragon Egg item models and the override on minecraft:dragon_egg, recipes, the petrify_immune entity tag,
-enchantability tags, the obsidian_crack particle, placeholder sounds for any gear event sounds.json doesn't map yet, and
+enchantability tags, placeholder sounds for any gear event sounds.json doesn't map yet, and
 lang/end_gear.json.
 """
-import glob
 import json
 import os
 
@@ -131,13 +130,6 @@ def tags(ctx):
               {"replace": False, "values": [f"{M}:obsidian_shield", f"{M}:monolith_wand", f"{M}:end_glider"]})
 
 
-def particles(ctx):
-    frames = sorted(glob.glob(os.path.join(ctx.A, "textures", "particle", "obsidian_crack_*.png")),
-                    key=lambda p: int(os.path.basename(p)[len("obsidian_crack_"):-4]))
-    textures = [f"{ctx.M}:{os.path.basename(p)[:-4]}" for p in frames] or [f"minecraft:generic_{i}" for i in range(4)]
-    ctx.write(os.path.join(ctx.A, "particles", "obsidian_crack.json"), {"textures": textures})
-
-
 def placeholder_sounds(ctx):
     """Adds the gear sound events that sounds.json doesn't have yet; returns the subtitles for those (only)."""
     path = os.path.join(ctx.A, "sounds.json")
@@ -180,5 +172,4 @@ def run(ctx):
     item_models(ctx)
     recipes(ctx)
     tags(ctx)
-    particles(ctx)
     lang(ctx, placeholder_sounds(ctx))
