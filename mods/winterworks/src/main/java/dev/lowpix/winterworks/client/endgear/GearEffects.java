@@ -26,14 +26,15 @@ import org.joml.Vector3f;
 
 /**
  * Client-side effects of the gear: the Monolith Wand's beam (a fading violet ray with a particle line), and the End
- * Glider's jets and wingbeats for everyone gliding with one (particles at the jets, flap and jet sounds; a torrent of
- * flame while boosting).
+ * Glider's shimmer for everyone it carries (luminous motes shed by the wings, sparks at the wing-root sigils that flare
+ * while boosting, wingbeat and boost sounds).
  */
 public final class GearEffects {
     private static final List<Beam> BEAMS = new ArrayList<>();
     private static final int BEAM_TICKS = 10;
     private static final DustParticleOptions VIOLET = new DustParticleOptions(new Vector3f(0.62f, 0.3f, 1.0f), 1.1f);
     private static final DustParticleOptions GREY = new DustParticleOptions(new Vector3f(0.45f, 0.42f, 0.5f), 1.0f);
+    private static final DustParticleOptions WING_MOTE = new DustParticleOptions(new Vector3f(0.78f, 0.5f, 1.0f), 0.7f);
 
     private record Beam(Vec3 from, Vec3 to, boolean resisted, long born) {}
 
@@ -110,57 +111,54 @@ public final class GearEffects {
 
     // ------------------------------------------------------------------------------------------------ glider
 
-    private static int t(AbstractClientPlayer p) {
-        return p.tickCount;
-    }
-
-    /** Every client tick: jets and wingbeats for everyone gliding with an End Glider. */
+    /** Every client tick: shimmer, sigil sparks and wingbeats for everyone carried by an End Glider. */
     static void tickGliders(Minecraft mc) {
         ClientLevel level = mc.level;
         if (level == null || mc.isPaused()) {
             return;
         }
         for (AbstractClientPlayer p : level.players()) {
-            if (!EndGlider.active(p)) {
+            if (!EndGlider.inUse(p)) {
                 continue;
             }
-            boolean boost = EndGlider.boosting(p);
-            boolean self = p == mc.player;
+            boolean flight = EndGlider.freeFlight(p), boost = EndGlider.boosting(p);
+            boolean self = p == mc.player, firstPerson = self && mc.options.getCameraType().isFirstPerson();
             RandomSource r = p.getRandom();
             Vec3 look = p.getViewVector(1f);
-            Vec3 right = look.cross(new Vec3(0, 1, 0));
+            Vec3 forward = flight ? look : new Vec3(look.x, 0, look.z);
+            forward = forward.lengthSqr() < 1e-6 ? new Vec3(0, 0, 1) : forward.normalize();
+            Vec3 right = forward.cross(new Vec3(0, 1, 0));
             right = right.lengthSqr() < 1e-6 ? new Vec3(1, 0, 0) : right.normalize();
-            Vec3 up = right.cross(look).normalize();
-            // the glider is held out past the head (the flying body lies along the look, feet at the position); its jets
-            // sit above the bar, a little apart
-            Vec3 at = self && mc.options.getCameraType().isFirstPerson()
-                    ? p.getEyePosition().add(look.scale(1.15)).add(up.scale(0.55))   // where the first-person view draws it
-                    : p.position().add(look.scale(2.0)).add(up.scale(0.6));
+            Vec3 up = right.cross(forward).normalize();
+            // where the bar is: out past the head of a body lying along the flight, over the head of an upright glider,
+            // or where the first-person view draws it
+            Vec3 bar = firstPerson ? p.getEyePosition().add(look.scale(1.15)).add(up.scale(0.35))
+                    : flight ? p.position().add(look.scale(2.0)).add(up.scale(0.1))
+                    : p.position().add(0, p.getBbHeight() + 0.25, 0).add(forward.scale(0.1));
             Vec3 vel = p.getDeltaMovement();
             for (int side = -1; side <= 1; side += 2) {
-                Vec3 jet = at.add(right.scale(side * 0.42)).subtract(look.scale(0.25));
-                // the exhaust keeps the glider's speed, so it streams just behind the jets instead of whipping past
-                if (boost || (t(p) & 1) == 0) {
-                    Vec3 v = vel.subtract(look.scale(boost ? 0.12 : 0.05))
-                            .add((r.nextDouble() - 0.5) * 0.02, (r.nextDouble() - 0.5) * 0.02, (r.nextDouble() - 0.5) * 0.02);
-                    level.addParticle(ParticleTypes.SMALL_FLAME, jet.x, jet.y, jet.z, v.x, v.y, v.z);
-                    if (boost && r.nextInt(3) == 0) {
-                        level.addParticle(ParticleTypes.FLAME, jet.x, jet.y, jet.z, v.x, v.y, v.z);
-                    }
+                // luminous motes shed along the wings
+                if (r.nextInt(boost ? 1 : 2) == 0) {
+                    Vec3 at = bar.add(up.scale(0.55 + r.nextDouble() * 0.2)).add(right.scale(side * (0.25 + r.nextDouble() * 0.85)))
+                            .subtract(forward.scale(r.nextDouble() * 0.3));
+                    Vec3 v = vel.scale(0.9).subtract(forward.scale(0.02)).add(0, -0.01, 0);
+                    level.addParticle(r.nextInt(5) == 0 ? ParticleTypes.END_ROD : WING_MOTE, at.x, at.y, at.z, v.x, v.y, v.z);
                 }
-                if (r.nextInt(boost ? 2 : 6) == 0) {
-                    Vec3 v = vel.scale(0.95);
-                    level.addParticle(ParticleTypes.REVERSE_PORTAL, jet.x, jet.y, jet.z, v.x, v.y, v.z);
+                // the sigils at the wing roots flare while boosting
+                if (boost || r.nextInt(8) == 0) {
+                    Vec3 at = bar.add(up.scale(0.5)).add(right.scale(side * 0.38));
+                    Vec3 v = vel.subtract(forward.scale(boost ? 0.1 : 0.02));
+                    level.addParticle(boost ? ParticleTypes.REVERSE_PORTAL : ParticleTypes.END_ROD, at.x, at.y, at.z, v.x, v.y, v.z);
                 }
             }
             float vol = self ? 0.55f : 0.8f;
             int t = p.tickCount;
-            if (t % (boost ? 5 : 16) == 0) {
-                level.playLocalSound(p.getX(), p.getY(), p.getZ(), boost ? EndSounds.GLIDER_JET : EndSounds.GLIDER_FLAP, SoundSource.PLAYERS,
-                        vol, (boost ? 1.1f : 1.0f) + Mth.randomBetween(r, -0.08f, 0.08f), false);
-            } else if (!boost && t % 16 == 8) {
-                level.playLocalSound(p.getX(), p.getY(), p.getZ(), EndSounds.GLIDER_JET, SoundSource.PLAYERS, vol * 0.5f,
-                        0.8f + Mth.randomBetween(r, -0.05f, 0.05f), false);
+            if (boost && t % 6 == 0) {
+                level.playLocalSound(p.getX(), p.getY(), p.getZ(), EndSounds.GLIDER_JET, SoundSource.PLAYERS, vol,
+                        1.1f + Mth.randomBetween(r, -0.08f, 0.08f), false);
+            } else if (!boost && t % (flight ? 14 : 20) == 0) {
+                level.playLocalSound(p.getX(), p.getY(), p.getZ(), EndSounds.GLIDER_FLAP, SoundSource.PLAYERS, vol,
+                        1.0f + Mth.randomBetween(r, -0.08f, 0.08f), false);
             }
         }
     }

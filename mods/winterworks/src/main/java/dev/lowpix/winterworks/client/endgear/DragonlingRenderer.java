@@ -22,8 +22,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * The Dragonling (docs/END_UPDATE.md section 13): the lowpix models {@code dragonling_baby} and {@code dragonling_teen}
- * by stage, with their glow passes, the teen's {@code saddle} part only when saddled, and its horse armour drawn with the
- * armour texture variant {@code dragonling_teen_armor_<iron|gold|diamond>}. Clips: idle, walk, fly, glide, sit and the
+ * by stage, with their glow passes, the teen's {@code saddle} part only when saddled, and its horse armour drawn by
+ * swapping in the armour texture variant {@code dragonling_teen_armor_<iron|gold|diamond>} (the armour shells are
+ * transparent in the base texture). Clips: idle, walk, fly, glide, sit and the
  * one-shots eat, breath and (baby) hatch; the head follows the look.
  */
 public class DragonlingRenderer extends MobRenderer<Dragonling, DragonlingRenderer.Model> {
@@ -31,13 +32,22 @@ public class DragonlingRenderer extends MobRenderer<Dragonling, DragonlingRender
 
     public DragonlingRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new Model(), 0.45f);
-        addLayer(new ArmorLayer(this));
+        addLayer(new StandInArmorLayer(this));
         addLayer(new GlowLayer(this));
     }
 
+    /** The armour textures are the teen's texture with the armour shells (transparent in the base) painted in. */
     @Override
     public ResourceLocation getTextureLocation(Dragonling e) {
-        return model.pick(e).texture;
+        GearModel g = model.pick(e);
+        ResourceLocation armor = armorTexture(e);
+        return armor != null && !g.standIn && exists(armor) ? armor : g.texture;
+    }
+
+    @Nullable
+    static ResourceLocation armorTexture(Dragonling e) {
+        String variant = e.armorVariant();
+        return variant == null || !e.isTeen() ? null : Winterworks.id("textures/entity/dragonling_teen_armor_" + variant + ".png");
     }
 
     @Override
@@ -136,9 +146,9 @@ public class DragonlingRenderer extends MobRenderer<Dragonling, DragonlingRender
         }
     }
 
-    /** Horse armour on a teen: the model again with the armour texture variant. */
-    static final class ArmorLayer extends RenderLayer<Dragonling, Model> {
-        ArmorLayer(RenderLayerParent<Dragonling, Model> parent) {
+    /** Stand-in models only (no armour shells): the body again, tinted in the metal's colour. */
+    static final class StandInArmorLayer extends RenderLayer<Dragonling, Model> {
+        StandInArmorLayer(RenderLayerParent<Dragonling, Model> parent) {
             super(parent);
         }
 
@@ -147,22 +157,17 @@ public class DragonlingRenderer extends MobRenderer<Dragonling, DragonlingRender
                            float partial, float age, float headYaw, float headPitch) {
             String variant = e.armorVariant();
             GearModel g = getParentModel().current();
-            if (variant == null || !e.isTeen() || g == null || e.isInvisible()) {
+            if (variant == null || !e.isTeen() || g == null || !g.standIn || e.isInvisible()) {
                 return;
             }
-            ResourceLocation tex = Winterworks.id("textures/entity/dragonling_teen_armor_" + variant + ".png");
+            int tint = switch (variant) {
+                case "gold" -> 0xFFF2C14E;
+                case "diamond" -> 0xFF5FE3E0;
+                default -> 0xFFC8C8D0;
+            };
             int overlay = LivingEntityRenderer.getOverlayCoords(e, 0f);
-            if (exists(tex) && !g.standIn) {
-                g.model.renderToBuffer(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(tex)), light, overlay, 0xFFFFFFFF);
-            } else {   // stand-in: the body tinted in the metal's colour
-                int tint = switch (variant) {
-                    case "gold" -> 0xFFF2C14E;
-                    case "diamond" -> 0xFF5FE3E0;
-                    default -> 0xFFC8C8D0;
-                };
-                g.model.maybePart("body").ifPresent(body -> body.render(pose,
-                        buffers.getBuffer(RenderType.entityCutoutNoCull(GearModel.vanilla("textures/block/iron_block.png"))), light, overlay, tint));
-            }
+            g.model.maybePart("body").ifPresent(body -> body.render(pose,
+                    buffers.getBuffer(RenderType.entityCutoutNoCull(GearModel.vanilla("textures/block/iron_block.png"))), light, overlay, tint));
         }
     }
 }

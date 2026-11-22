@@ -17,8 +17,8 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
 /**
- * The End Glider (docs/END_UPDATE.md section 12; the flight itself is endgear.EndGlider). Use while gliding on an
- * Elytra and hold it to boost. 432 durability, 1 per second of flight; repaired with phantom membrane.
+ * The End Glider (docs/END_UPDATE.md section 12; the flight itself is endgear.EndGlider). Hold use in the air to glide
+ * (alone), or while flying on an Elytra to boost. 432 durability, 1 per second in use; repaired with phantom membrane.
  */
 public class EndGliderItem extends Item {
     public EndGliderItem(Properties p) {
@@ -28,21 +28,22 @@ public class EndGliderItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!EndGlider.active(player)) {
-            return InteractionResultHolder.pass(stack);
+        boolean flight = EndGlider.freeFlight(player);
+        if (!flight && !EndGlider.canHangGlide(player)) {
+            return InteractionResultHolder.pass(stack);   // on the ground: nothing (holding use keeps trying till you're airborne)
         }
         player.startUsingItem(hand);
         if (!level.isClientSide) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), EndSounds.GLIDER_BOOST, SoundSource.PLAYERS, 1.0f,
-                    0.95f + level.random.nextFloat() * 0.1f);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), flight ? EndSounds.GLIDER_BOOST : EndSounds.GLIDER_FLAP,
+                    SoundSource.PLAYERS, 1.0f, 0.95f + level.random.nextFloat() * 0.1f);
         }
         return InteractionResultHolder.consume(stack);
     }
 
     @Override
     public void onUseTick(Level level, LivingEntity user, ItemStack stack, int remaining) {
-        if (user instanceof Player p && !EndGlider.active(p)) {
-            user.releaseUsingItem();   // landed (or lost the elytra): the boost ends
+        if (user instanceof Player p && !EndGlider.freeFlight(p) && !EndGlider.canHangGlide(p)) {
+            user.releaseUsingItem();   // landed (or in water, or grabbed a ladder): the glide or boost ends
         }
     }
 

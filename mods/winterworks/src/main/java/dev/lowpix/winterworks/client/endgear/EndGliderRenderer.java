@@ -25,8 +25,10 @@ import org.joml.Vector3f;
  * The End Glider, the lowpix model {@code end_glider} (bones frame, handle, wing_l/r, jet_l/r, jet_flame_l/r; clips
  * flap and boost), in 3D everywhere, the GUI included.
  * <ul>
- * <li>Gliding with it (endgear.EndGlider): held overhead in both hands, the arms raised (poseArms), the wings flapping
- * and the jets flaring while boosting; in first person it hangs above the view.
+ * <li>Gliding or flying with it (endgear.EndGlider): held overhead in both hands, the arms raised (poseArms), the
+ * wings beating ({@code flap}), {@code boost} while boosting on an Elytra. Hang-gliding the player is upright and the
+ * glider sits above their head; flying on an Elytra the body lies along the flight and the glider stays level above
+ * the outstretched arms. In first person it hangs above the view.
  * <li>Otherwise: carried by its handle in one hand, in a three-quarter view in slots, upright on the ground and in
  * item frames.
  * </ul>
@@ -102,7 +104,7 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
                 // back to view space: undo the arm offset ItemInHandRenderer applied (side * 0.56, -0.52, -0.72)
                 float side = mode == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND ? 1f : -1f;
                 pose.translate(-side * 0.56f, 0.52f, 0.72f);
-                boolean flying = player != null && EndGlider.active(player) && heldHere(player, stack);
+                boolean flying = player != null && EndGlider.inUse(player) && heldHere(player, stack);
                 boolean boosting = flying && EndGlider.boosting(player);
                 if (flying) {   // overhead, seen from below and behind: wings out, front away from the camera
                     float s = SPAN_FIRST_PERSON / span(m);
@@ -152,11 +154,11 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
         return hand != null && p.getItemInHand(hand) == stack;
     }
 
-    // ------------------------------------------------------------------------------------------------ overhead in flight
+    // ------------------------------------------------------------------------------------------------ overhead, gliding or flying
 
-    /** Gliding with the glider: both arms raised overhead, a little apart. */
+    /** Gliding or flying with the glider: both arms raised overhead, a little apart. */
     public static void poseArms(HumanoidModel<?> model, LivingEntity entity, float age) {
-        if (!(entity instanceof Player p) || !EndGlider.active(p)) {
+        if (!(entity instanceof Player p) || !EndGlider.inUse(p)) {
             return;
         }
         boolean boost = EndGlider.boosting(p);
@@ -175,7 +177,7 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
      */
     public static boolean renderOverhead(LivingEntity entity, ItemStack stack, EntityModel<?> parent, PoseStack pose,
                                          MultiBufferSource buffers, int light) {
-        if (!stack.is(EndItems.END_GLIDER) || !(entity instanceof Player p) || !EndGlider.active(p)
+        if (!stack.is(EndItems.END_GLIDER) || !(entity instanceof Player p) || !EndGlider.inUse(p)
                 || !(parent instanceof HumanoidModel<?> hm)) {
             return false;
         }
@@ -191,8 +193,13 @@ public class EndGliderRenderer implements BuiltinItemRendererRegistry.DynamicIte
         float s = SPAN_OVERHEAD / span(m);
         pose.pushPose();
         pose.translate(mid.x, mid.y, mid.z);
-        // lowpix front (+Z) -> toward the head, the flight direction (-Y); lowpix up (+Y) -> the back (+Z), up in flight
-        pose.mulPose(Axis.XP.rotationDegrees(90f));
+        if (EndGlider.freeFlight(p)) {
+            // the body lies along the flight: lowpix front (+Z) -> toward the head (-Y), lowpix up (+Y) -> the back (+Z)
+            pose.mulPose(Axis.XP.rotationDegrees(90f));
+        } else {
+            // hang-gliding upright: lowpix up (+Y) -> up the body (-Y), lowpix front (+Z) -> where the body faces (-Z)
+            pose.mulPose(Axis.XP.rotationDegrees(180f));
+        }
         pose.scale(s, s, s);
         pose.translate(-grip.x, -grip.y, -grip.z);
         animate(m, true, EndGlider.boosting(p), t + p.getId() * 7);

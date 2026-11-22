@@ -52,7 +52,7 @@ final class EndGearShots {
     private static boolean created, logFlight, wantFlight, logRide;
     private static Vec3 mark = Vec3.ZERO;
     private static int ticks, step, frames, framesAtStep, ticksAtStep, lastAt;
-    private static Vec3 lastClient, lastServer;
+    private static Vec3 lastClient, lastServer, lastClientBefore = Vec3.ZERO;
 
     private EndGearShots() {}
 
@@ -164,6 +164,36 @@ final class EndGearShots {
         at(t += 8, () -> shot("petrified_player_first_person"));
         at(t += 2, () -> server((level, p) -> p.removeEffect(EndEffects.PETRIFIED)));
         at(t += 10, () -> shot("petrify_shattered"));
+
+        // ---- the glider alone: hang-gliding off a height, in survival (no fall damage while gliding)
+        at(t += 10, () -> server((level, p) -> {
+            p.setGameMode(GameType.SURVIVAL);
+            p.getInventory().setItem(0, new ItemStack(EndItems.END_GLIDER));
+            p.teleportTo(level, 0.5, -46, -10.5, 0f, 10f);
+        }));
+        at(t += 2, () -> {
+            select(0);
+            camera(CameraType.THIRD_PERSON_FRONT);
+            look(0f, 10f);
+            Minecraft.getInstance().options.keyUse.setDown(true);   // retried until the player is in the air
+            logFlight = true;
+        });
+        at(t += 25, () -> shot("glider_hang_front"));
+        at(t += 2, () -> camera(CameraType.THIRD_PERSON_BACK));
+        at(t += 10, () -> shot("glider_hang_back"));
+        at(t += 2, () -> camera(CameraType.FIRST_PERSON));
+        at(t += 10, () -> shot("glider_hang_first_person"));
+        at(t += 2, () -> look(70f, 10f));   // steer by looking
+        at(t += 150, () -> {
+            logFlight = false;
+            Minecraft.getInstance().options.keyUse.setDown(false);
+            Winterworks.LOG.info("endgearshots: landed hang-gliding (on ground {}), health {}", Minecraft.getInstance().player.onGround(),
+                    Minecraft.getInstance().player.getHealth());
+        });
+        at(t += 30, () -> {
+            Winterworks.LOG.info("endgearshots: after landing, health {}", Minecraft.getInstance().player.getHealth());
+            cmd("gamemode creative");
+        });
 
         // ---- the glider: overhead in flight, cruise then boost, speeds logged every tick
         at(t += 10, () -> server((level, p) -> {
@@ -359,7 +389,10 @@ final class EndGearShots {
         double cs = lastClient == null ? 0 : c.distanceTo(lastClient), ss = lastServer == null ? 0 : s.distanceTo(lastServer);
         lastClient = c;
         lastServer = s;
-        Winterworks.LOG.info(String.format("endgearshots flight: tick %d active=%s boost=%s fallFlying=%s clientSpeed=%.3f serverSpeed=%.3f gap=%.3f y=%.1f pitch=%.0f",
-                ticks, EndGlider.active(lp), EndGlider.boosting(lp), lp.isFallFlying(), cs, ss, c.distanceTo(s), c.y, lp.getXRot()));
+        Vec3 v = lastClient == null ? Vec3.ZERO : c.subtract(lastClientBefore);
+        lastClientBefore = c;
+        Winterworks.LOG.info(String.format("endgearshots flight: tick %d flight=%s hang=%s boost=%s clientSpeed=%.3f horizontal=%.3f vertical=%.3f serverSpeed=%.3f gap=%.3f y=%.1f pitch=%.0f",
+                ticks, EndGlider.freeFlight(lp), EndGlider.hangGliding(lp), EndGlider.boosting(lp), cs, v.horizontalDistance(), v.y, ss,
+                c.distanceTo(s), c.y, lp.getXRot()));
     }
 }

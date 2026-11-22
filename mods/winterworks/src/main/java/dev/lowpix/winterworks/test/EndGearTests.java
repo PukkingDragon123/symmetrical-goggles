@@ -256,20 +256,36 @@ public class EndGearTests implements FabricGameTest {
     // ------------------------------------------------------------------------------------------------ the glider
 
     @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 20)
-    public void gliderNeedsAnElytraAndSteers(GameTestHelper h) {
+    public void gliderGlidesAloneAndFliesWithAnElytra(GameTestHelper h) {
         ServerPlayer p = player(h, new Vec3(3.5, 4, 3.5));
         p.setGameMode(GameType.SURVIVAL);
+        p.setOnGround(false);
         p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(EndItems.END_GLIDER));
+        // alone: hold use in the air to hang-glide; free flight needs an Elytra
         p.startFallFlying();
-        h.assertFalse(EndGlider.active(p), "no Elytra: the glider does nothing");
-        p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
+        h.assertFalse(EndGlider.freeFlight(p), "no Elytra: no free flight");
         p.stopFallFlying();
-        h.assertFalse(EndGlider.active(p), "not gliding: the glider does nothing");
+        h.assertTrue(EndGlider.canHangGlide(p) && !EndGlider.hangGliding(p), "in the air with it: holding use would glide");
+        EndItems.END_GLIDER.use(h.getLevel(), p, InteractionHand.MAIN_HAND);
+        h.assertTrue(EndGlider.hangGliding(p) && EndGlider.inUse(p) && !EndGlider.boosting(p), "holding use: hang-gliding");
+        p.resetFallDistance();
+        p.fallDistance = 6f;
+        p.setDeltaMovement(0, -0.6, 0);
+        h.assertTrue(EndGlider.travel(p), "the glider carries the player");
+        h.assertTrue(p.fallDistance == 0f, "no fall damage while gliding");
+        p.stopUsingItem();
+        p.setOnGround(true);
+        h.assertFalse(EndGlider.canHangGlide(p), "not on the ground");
+        p.setOnGround(false);
+        // with an Elytra: free flight
+        p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA));
+        h.assertFalse(EndGlider.freeFlight(p), "not fall-flying: no free flight");
         p.startFallFlying();
-        h.assertTrue(EndGlider.active(p), "gliding on an Elytra with the glider in hand: it steers");
+        h.assertTrue(EndGlider.freeFlight(p), "fall-flying on an Elytra with the glider in hand: free flight");
+        h.assertFalse(EndGlider.canHangGlide(p), "free flight, not hang-gliding");
         p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         p.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(EndItems.END_GLIDER));
-        h.assertTrue(EndGlider.active(p), "the off hand works too");
+        h.assertTrue(EndGlider.freeFlight(p), "the off hand works too");
         // 1 durability per second of flight
         for (int i = 0; i < 20; i++) {
             EndGlider.serverTick(h.getLevel().getServer());
@@ -298,6 +314,24 @@ public class EndGearTests implements FabricGameTest {
             boostTurn = EndGlider.steer(boostTurn, side, true);
         }
         h.assertTrue(cruiseTurn.normalize().dot(side) > boostTurn.normalize().dot(side) + 0.2, "boosting turns much slower");
+
+        // hang-gliding: 0.6 forward along the look (pitch ignored), sinking 0.08, never climbing
+        Vec3 g = new Vec3(0, -1.2, 0.1);
+        Vec3 lookUp = new Vec3(1, 0.8, 0).normalize();
+        double highest = g.y;
+        for (int i = 0; i < 80; i++) {
+            g = EndGlider.glide(g, lookUp);
+            highest = Math.max(highest, g.y);
+        }
+        h.assertTrue(Math.abs(g.horizontalDistance() - EndGlider.GLIDE_SPEED) < 0.01, "glides at 0.6, got " + g.horizontalDistance());
+        h.assertTrue(Math.abs(g.y + EndGlider.GLIDE_SINK) < 0.005, "sinks at 0.08, got " + g.y);
+        h.assertTrue(g.x > 0.59 && highest <= -EndGlider.GLIDE_SINK + 1e-6, "steered by the look, no climbing: " + g);
+        Vec3 jump = new Vec3(0, 0.42, 0.3);
+        for (int i = 0; i < 3; i++) {
+            Vec3 next = EndGlider.glide(jump, lookUp);
+            h.assertTrue(next.y < jump.y, "gliding never lifts you");
+            jump = next;
+        }
         leave(h, p);
         h.succeed();
     }
