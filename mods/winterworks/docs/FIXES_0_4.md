@@ -47,6 +47,12 @@ contract for the Java side.
 * **Potion of Ramming**: when you reach top speed you get a battle cry (sound), a burst of snow and wind particles,
   speed lines on screen, a new running pose (leaning forward, arms swept back) and a further speed boost.
 
+* **The cold bites harder, in four levels**: a cold meter (shown as the Cold effect I-IV): **Chilly** (shivers, frost
+  breath, the frost overlay creeping in), **Cold** (Slowness, Mining Fatigue), **Freezing** (Slowness II, Weakness,
+  fully frozen: vanilla freeze damage), **Frozen** (Slowness IV, Weakness II, extra freeze damage). It fills from the Ice
+  Caves, cold water, standing on or touching ice, powder snow and snowstorms, much faster than before; warmth thaws you
+  fast, leaving the cold slowly. Each leather or fur piece cuts the cold by a quarter (a full set keeps it out).
+
 ## The Winter Express
 * The **Trailer Cart** is removed. **Normal minecarts** (and chest/hopper/furnace minecarts) couple to locomotives
   and to each other the way the trailer did, and get pulled.
@@ -130,6 +136,16 @@ contract for the Java side.
   round, upside down at the top with its rider, and comes out the far side at the same speed; too slow and it falls back
   out of the loop. Whole trains loop one car after another. Recipe: 8 coaster rails round an iron block.
 
+* **Every rail is 3D track** (the user's choice): vanilla's own rails are replaced by the new 3D track style through
+  resource overrides of their blockstates and models (our own models and textures, no vanilla art copied):
+  * **Rail**: the plain 3D track (steel rails, ties, the spine beam below when nothing is underneath), all 10 shapes.
+  * **Powered Rail**: gold-plated ties and a redstone strip down the middle that glows when powered.
+  * **Detector Rail**: a sensor plate between the rails with a lamp that lights when a cart is on it.
+  * **Activator Rail**: red-trimmed ties with a fork that flips and lights when powered.
+  * The Winterworks rails get matching 3D versions: Booster (its redstone-block plate), Lift, Trap, Drop (and open),
+    Switch, Coaster Loop entry. The Coaster Rail stays the free-floating coaster piece.
+  * Item icons show the 3D pieces. Behaviour is unchanged; only the look.
+
 ## 3D icons
 * Blocks and items that have a 3D model show that model as their inventory icon too: the Hexing Table, Soul Tank,
   Elixir Jar and Hex Core, the locomotives and carts, the Snow Globe, and every new End block/item with a 3D model.
@@ -192,7 +208,8 @@ contract for the Java side.
 * **Four matching faces**: a head ability only works when **all four faces of the pot carry the same sherd**. A mixed
   pot still makes a golem, just without a head ability (the Echo Shard inside still gives the Echo Head).
 * **The pattern glows** while its ability is active: the sherd pattern on the head is drawn full-bright in a soft
-  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied).
+  colour per ability (the glow mask is made at runtime from the pattern texture, so no vanilla art is copied). The same
+  glow shows on a **decorated pot item** whose four faces carry the same ability sherd (its inventory icon and in hand).
 * **Six new head abilities** (on top of Howl and Danger), each from 4 matching sherds:
   * **Heart**: a healing aura: its owner and their pets within 8 blocks get Regeneration I.
   * **Burn**: burning fists (sets what it hits on fire) and Fire Resistance for its owner nearby.
@@ -250,3 +267,20 @@ contract for the Java side.
   branches east, `_left` west); blockstate y: toe south 0, west 90, north 180, east 270. `item/switch_rail.json` exists.
   Add it to the rail colour providers (block tint 0 = RailPaint.tint; item 0xFF8A6B47) and the cutout layer.
 * **Booster Rail**: art shows a redstone-block plate (dull unpowered, bright powered); same file names.
+
+## The Hex Fortress, reworked (Hexes & Havoc)
+* **Story in the stones**: the Hex Fortress was a piglin **bastion** before blazes and wither skeletons overran it.
+  Build it as a real Nether fortress growing over and through a ruined bastion: long nether-brick bridges on tall piers,
+  covered corridors with fence windows, stair towers and crossings (vanilla fortress style), wrapped round and over the
+  bastion's blackstone, gilded blackstone, basalt and polished-blackstone ruins (broken ramparts, a cracked gold vault,
+  collapsed halls, lava falls). Keep its brewing rooms, wart farms, storerooms, the witch's quarters and the Nether
+  Portal.
+* **Inhabitants**: **no ordinary piglins**. Blazes (with spawners in the fortress parts) and wither skeletons hold it;
+  the Piglin Witch still lives in her quarters. A few **Golden Piglins** (caged and loose).
+* **Soul Bull farms**: soul-sand pens lit with soul fire where **Soul Bulls** are kept (2-4 per pen, wild and hostile,
+  some armoured, wither skeleton riders on some), in the courtyard and the old bastion stables. You must **defeat
+  them** to get through.
+* **The witch's weird experiments** all round: cells with half-transformed creatures (zombified and golden piglins in
+  cages), bubbling cauldrons and elixir jars over soul fire, soul tanks wired to cages, a dissection table with bones
+  and a Soul Bull skull, potion-stained floors, strange glowing mixtures. Chests get the experiments' loot.
+* Structure id stays `hex_fortress`; `/winterworks hexfortress` builds one. Bigger than before (about 96 x 96).

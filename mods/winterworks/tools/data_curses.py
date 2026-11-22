@@ -1,7 +1,8 @@
 """Data for the curses area of Hexes & Havoc (docs/HEXES_UPDATE.md 3-5). Called by gen_data.py with ctx = gen_data.Ctx.
 
 Writes the 18 data-driven enchantments (data/winterworks/enchantment/), their tags, two damage types and
-lang/curses.json. Vanilla effect components carry what they can (Wrath and Envy ignite, Lust's equipment drops,
+lang/curses.json. A curse is only its name: no description strings, and no trigger text (each curse plays its own screen
+effect instead: client.curse.CurseScreenFx). Vanilla effect components carry what they can (Wrath and Envy ignite, Lust's equipment drops,
 Gluttony's XP mending, Sloth's mining speed and slowness, Pride's protection above half health); everything else is
 done in Java (curse/)."""
 import os
@@ -135,64 +136,25 @@ def sins():
 LANG = {
     # ---- lesser curses
     "enchantment.winterworks.narcissus": "Curse of Narcissus",
-    "enchantment.winterworks.narcissus.desc": "Do not linger over still water.",
     "enchantment.winterworks.icarus": "Curse of Icarus",
-    "enchantment.winterworks.icarus.desc": "Fly too near the sun and your wings will burn.",
     "enchantment.winterworks.midas": "Curse of Midas",
-    "enchantment.winterworks.midas.desc": "All you touch turns to gold, even your bread.",
     "enchantment.winterworks.orpheus": "Curse of Orpheus",
-    "enchantment.winterworks.orpheus.desc": "Whoever follows you is lost if you look back.",
     "enchantment.winterworks.sisyphus": "Curse of Sisyphus",
-    "enchantment.winterworks.sisyphus.desc": "The stone you dig always rolls back.",
     "enchantment.winterworks.tantalus": "Curse of Tantalus",
-    "enchantment.winterworks.tantalus.desc": "Your food is always just out of reach.",
     "enchantment.winterworks.moth": "Curse of the Moth",
-    "enchantment.winterworks.moth.desc": "At night the flame calls, and you go.",
     # ---- hidden curses
     "enchantment.winterworks.cain": "Curse of Cain",
-    "enchantment.winterworks.cain.desc": "Your blows fall on those who love you.",
     "enchantment.winterworks.judas": "Curse of Judas",
-    "enchantment.winterworks.judas.desc": "Every bargain is a betrayal.",
     "enchantment.winterworks.lots_wife": "Curse of Lot's Wife",
-    "enchantment.winterworks.lots_wife.desc": "When you flee, never look back.",
     "enchantment.winterworks.leech": "Curse of the Leech",
-    "enchantment.winterworks.leech.desc": "Your wounds give life to your enemies.",
     # ---- the seven sins
     "enchantment.winterworks.wrath": "Wrath",
-    "enchantment.winterworks.wrath.desc": "Your foes burn with soul fire. Stay your hand and the rage turns on you.",
     "enchantment.winterworks.greed": "Greed",
-    "enchantment.winterworks.greed.desc": "The earth gives up its gold. The Piglins want it back, and nothing you drop stays.",
     "enchantment.winterworks.lust": "Lust",
-    "enchantment.winterworks.lust.desc": "Your kills spill riches, and everything that hunts can smell you.",
     "enchantment.winterworks.gluttony": "Gluttony",
-    "enchantment.winterworks.gluttony.desc": "Your feasts mend your gear. You are never full.",
     "enchantment.winterworks.sloth": "Sloth",
-    "enchantment.winterworks.sloth.desc": "Stone gives way at a touch. You can barely stay awake.",
     "enchantment.winterworks.envy": "Envy",
-    "enchantment.winterworks.envy.desc": "What hurts you burns, and what they have is yours. Fear anyone with more.",
     "enchantment.winterworks.pride": "Pride",
-    "enchantment.winterworks.pride.desc": "Untouchable while you stand tall. Pride comes before a fall.",
-    # ---- the first time each one triggers (actionbar)
-    "curse.winterworks.narcissus.trigger": "You cannot look away from your reflection...",
-    "curse.winterworks.narcissus.warn": "Your reflection smiles back at you.",
-    "curse.winterworks.icarus.trigger": "Too near the sun! Your wings are burning.",
-    "curse.winterworks.midas.trigger": "Your food turns to gold in your hand.",
-    "curse.winterworks.orpheus.trigger": "You looked back. %s is dragged down to the underworld.",
-    "curse.winterworks.sisyphus.trigger": "The stone rolls back into place.",
-    "curse.winterworks.tantalus.trigger": "Your food slips out of reach.",
-    "curse.winterworks.moth.trigger": "The light is calling you...",
-    "curse.winterworks.cain.trigger": "Your blow falls on your own companion.",
-    "curse.winterworks.judas.trigger": "Your bargain is a betrayal. The golem turns on you.",
-    "curse.winterworks.lots_wife.trigger": "You looked back, and turned to stone.",
-    "curse.winterworks.leech.trigger": "Your blow feeds your foe.",
-    "curse.winterworks.wrath.trigger": "Wrath: strike, or the rage turns on you.",
-    "curse.winterworks.greed.trigger": "Greed: the Piglins can smell your gold.",
-    "curse.winterworks.greed.vanish": "Greed will not let go: it is gone.",
-    "curse.winterworks.lust.trigger": "Lust: everything that hunts can smell you.",
-    "curse.winterworks.gluttony.trigger": "Gluttony: your gear feeds on your feast.",
-    "curse.winterworks.sloth.trigger": "Sloth: your eyelids grow heavy...",
-    "curse.winterworks.envy.trigger": "Envy: what they had is yours now.",
-    "curse.winterworks.pride.trigger": "Pride: your pride shatters.",
     # ---- deaths
     "death.attack.winterworks.narcissus": "%1$s fell in love with their own reflection",
     "death.attack.winterworks.narcissus.player": "%1$s fell in love with their own reflection while fighting %2$s",

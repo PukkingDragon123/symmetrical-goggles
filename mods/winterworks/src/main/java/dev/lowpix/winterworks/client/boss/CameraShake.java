@@ -8,7 +8,8 @@ import net.minecraft.util.Mth;
 /**
  * Camera shake (client): a decaying, smoothly random wobble of the view. Fed by CameraShakePayload, applied by
  * mixin.client.GameRendererMixin in GameRenderer#bobHurt. Several shakes add up (capped). Scaled by the
- * "Distortion Effects" accessibility slider, so it can be turned off.
+ * "Distortion Effects" accessibility slider, so it can be turned off. {@link #kick} is a single directional jolt
+ * (the Fang Daggers' hits).
  */
 public final class CameraShake {
     private static final int MAX = 8;
@@ -37,12 +38,38 @@ public final class CameraShake {
         life[slot] = ticks;
     }
 
+    // a kick: one quick directional jolt of the view that springs back (a weapon's impact), not a wobble
+    private static float kickYaw, kickPitch, kickRoll;
+    private static int kickAge, kickLife;
+
+    /** A little camera kick: jolts the view by these angles (degrees) at once, easing back over `ticks`. */
+    public static void kick(float yaw, float pitch, float roll, int ticks) {
+        float left = kickLeft(0f);
+        kickYaw = kickYaw * left + yaw;
+        kickPitch = kickPitch * left + pitch;
+        kickRoll = kickRoll * left + roll;
+        kickAge = 0;
+        kickLife = Math.max(1, ticks);
+    }
+
+    private static float kickLeft(float partial) {
+        if (kickLife <= 0 || kickAge >= kickLife) {
+            return 0f;
+        }
+        float t = Math.min(1f, (kickAge + partial) / kickLife);
+        float k = 1f - t;
+        return k * k * Math.min(1f, (kickAge + partial) * 2.5f);   // snaps in within half a tick, then eases back
+    }
+
     public static void tick() {
         ticks++;
         for (int i = 0; i < MAX; i++) {
             if (age[i] < life[i]) {
                 age[i]++;
             }
+        }
+        if (kickAge < kickLife) {
+            kickAge++;
         }
     }
 
@@ -65,11 +92,18 @@ public final class CameraShake {
     }
 
     public static void apply(PoseStack pose, float partial) {
+        Minecraft mc = Minecraft.getInstance();
+        float k = kickLeft(partial);
+        if (k > 0.001f) {
+            float s = (mc.options == null ? 1f : mc.options.screenEffectScale().get().floatValue()) * k;
+            pose.mulPose(Axis.XP.rotationDegrees(kickPitch * s));
+            pose.mulPose(Axis.YP.rotationDegrees(kickYaw * s));
+            pose.mulPose(Axis.ZP.rotationDegrees(kickRoll * s));
+        }
         float amp = amplitude(partial);
         if (amp <= 0.001f) {
             return;
         }
-        Minecraft mc = Minecraft.getInstance();
         float scale = mc.options == null ? 1f : mc.options.screenEffectScale().get().floatValue();
         amp *= scale;
         if (amp <= 0.001f) {
@@ -89,5 +123,6 @@ public final class CameraShake {
         for (int i = 0; i < MAX; i++) {
             life[i] = 0;
         }
+        kickLife = 0;
     }
 }

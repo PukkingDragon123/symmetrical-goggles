@@ -248,9 +248,7 @@ public final class Sins {
         level.sendParticles(WWParticles.GOLD_GLINT, item.getX(), item.getY() + 0.2, item.getZ(), 4, 0.15, 0.15, 0.15, 0.02);
         level.playSound(null, item.getX(), item.getY(), item.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.4f, 1.8f);
         item.discard();
-        if (!Curses.trigger(p, Curse.GREED, WWSounds.SIN)) {
-            Curses.tell(p, "curse.winterworks.greed.vanish");
-        }
+        Curses.trigger(p, Curse.GREED, WWSounds.SIN);
     }
 
     /** Greed: ores give gold nuggets as well, gold ores plenty. */

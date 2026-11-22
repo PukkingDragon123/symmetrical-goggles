@@ -36,11 +36,11 @@ import net.minecraft.world.phys.Vec3;
 
 /** Amber, Amberwood, mosquitoes, blood and sniffers (docs/AMBER_UPDATE.md sections 4-8). */
 public final class AmberFeature {
-    /** Extra sniffer finds (Amberwood seeds, amber chunks, bones, sherds): data/winterworks/loot_table/gameplay/sniffer_finds. */
+    /** Extra sniffer finds (Amberwood blooms, amber shards, bones, rare sherds): data/winterworks/loot_table/gameplay/sniffer_finds. */
     public static final ResourceKey<LootTable> SNIFFER_FINDS = ResourceKey.create(Registries.LOOT_TABLE, Winterworks.id("gameplay/sniffer_finds"));
     /** Potion of Blood colour (it has no effect to take a colour from; see mixin.PotionContentsMixin). */
     public static final int BLOOD_COLOR = 0xFF6E0B14;
-    /** The saguaro-like Amberwood (configured feature winterworks:amberwood, grown by the sapling). */
+    /** The saguaro-like Amberwood (configured feature winterworks:amberwood, grown from a planted Amberwood Bloom). */
     public static final Feature<NoneFeatureConfiguration> AMBERWOOD = Registry.register(BuiltInRegistries.FEATURE,
             Winterworks.id("amberwood"), new AmberwoodFeature(NoneFeatureConfiguration.CODEC));
     /** Natural amber with an inclusion (seed or mosquito): drawn in 3D inside the block. */
@@ -51,6 +51,7 @@ public final class AmberFeature {
     private AmberFeature() {}
 
     public static void init() {
+        Amberwood.init();   // 0.4 fixes: the Amberwood wood set
         // natural spawning comes from the Dead Caves biome (data); like other monsters, only in the dark
         SpawnPlacements.register(WWEntities.MOSQUITO, SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules);

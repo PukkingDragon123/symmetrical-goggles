@@ -11,7 +11,10 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
-/** Armour materials. Fur: docs/COLD_UPDATE.md section 2 (drawn in 3D by client.dagger.FurArmorRenderer). */
+/**
+ * Armour materials. Fur: docs/COLD_UPDATE.md section 2; worn, it is drawn by vanilla's armour layer from the layer
+ * {@code winterworks:fur} ({@code textures/models/armor/fur_layer_1/2.png}, docs/FIXES_0_4.md).
+ */
 public final class WWArmor {
     public static final Holder<ArmorMaterial> FUR = Registry.registerForHolder(BuiltInRegistries.ARMOR_MATERIAL,
             Winterworks.id("fur"), new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), m -> {

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:chest"
+    },
+    {
+      "item": "winterworks:amberwood_boat"
+    }
+  ],
+  "result": {
+    "id": "winterworks:amberwood_chest_boat",
+    "count": 1
+  },
+  "group": "chest_boat"
+}

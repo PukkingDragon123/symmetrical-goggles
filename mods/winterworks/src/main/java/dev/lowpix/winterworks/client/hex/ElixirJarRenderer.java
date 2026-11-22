@@ -53,6 +53,9 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
             if (jar.liquid() == ElixirType.NONE) {
                 fill = 0.08f + 0.92f * f;   // the brew rises as it cooks
                 color = HexRender.lerpRgb(0.35f + 0.65f * f, 0x6B5A4A, kind.color);
+            } else if (jar.liquid() == ElixirType.BLOOD) {   // the gold melts into the blood and rises
+                fill = Mth.lerp(f, 1f / ElixirJarBlockEntity.DOSES, 1f);
+                color = HexRender.lerpRgb(f * f, jar.liquid().color, kind.color);
             } else {
                 fill = 1f;
                 color = HexRender.lerpRgb(f, jar.liquid().color, kind.color);
@@ -94,7 +97,7 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
             m.mask(n -> isLiquid(m, n));
             var tex = m.hasTint ? m.tintTexture : m.texture;
             m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityTranslucent(tex)), light, overlay, HexRender.argb(235, color));
-            if (kind != ElixirType.NONE) {   // elixirs glow faintly (molten gold too)
+            if (kind.bottled()) {   // elixirs glow faintly (molten gold too); blood doesn't
                 float pulse = 0.3f + 0.12f * Mth.sin(time * 0.12f) + (bubbling ? 0.15f : 0f);
                 m.renderToBuffer(pose, buffers.getBuffer(RenderType.eyes(tex)), 0xF000F0, OverlayTexture.NO_OVERLAY,
                         HexRender.argb(255, HexRender.scale(color, pulse)));
@@ -117,11 +120,11 @@ public class ElixirJarRenderer implements BlockEntityRenderer<ElixirJarBlockEnti
         return false;
     }
 
-    /** The jar as an item: its icon in slots, elsewhere the 3D jar half full of Soul Elixir. */
+    /** The jar as an item, in slots too (docs/FIXES_0_4.md "3D icons"): the 3D jar half full of Soul Elixir. */
     public static class Item implements BuiltinItemRendererRegistry.DynamicItemRenderer {
         @Override
         public void render(ItemStack stack, ItemDisplayContext mode, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-            if (mode == ItemDisplayContext.GUI || model().missing()) {
+            if (model().missing()) {
                 HexRender.icon(HexRender.JAR_ICON, stack, mode, pose, buffers, light, overlay);
                 return;
             }

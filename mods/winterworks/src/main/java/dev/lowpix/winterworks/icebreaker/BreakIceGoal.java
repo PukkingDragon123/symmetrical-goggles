@@ -22,7 +22,7 @@ class BreakIceGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.isBaby() || !mob.hasHorn() || mob.getTarget() != null || mob.iceCooldown > 0 || mob.isInWater()
+        if (mob.isBaby() || !mob.hasHorn() || mob.getTarget() != null || mob.iceCooldown > 0 || mob.isInWater() || mob.isAsleep()
                 || mob.getRandom().nextInt(120) != 0 || !mob.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             return false;
         }

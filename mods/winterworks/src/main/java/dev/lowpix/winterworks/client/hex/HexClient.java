@@ -8,6 +8,8 @@ import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWItems;
 import dev.lowpix.winterworks.registry.WWMenus;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.Event;
+import net.minecraft.resources.ResourceLocation;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -38,11 +40,15 @@ public final class HexClient {
         ModelLoadingPlugin.register(ctx -> ctx.addModels(HexCoreRenderer.ICON_MODEL, HexRender.JAR_ICON, HexRender.TANK_ICON,
                 HexRender.TABLE_ICON));
 
+        CursedBooks.init();
         MenuScreens.register(WWMenus.HEXING_TABLE, HexingTableScreen::new);
         // item/hexed_book overrides: 0 lesser, 0.5 sin, 1 hidden
         ItemProperties.register(WWItems.HEXED_BOOK, Winterworks.id("hex_tier"),
                 (stack, level, entity, seed) -> HexedBookItem.info(stack).look() / 2f);
-        ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> HexTooltips.append(stack, lines));
+        // late: after other mods' lines, so curse description lines anyone adds come out again
+        ResourceLocation late = Winterworks.id("curse_names");
+        ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, late);
+        ItemTooltipCallback.EVENT.register(late, (stack, context, type, lines) -> HexTooltips.append(stack, lines));
         ClientPlayNetworking.registerGlobalReceiver(SoulDriftPayload.TYPE, (payload, context) -> SoulDrifts.add(payload));
         HexShots.init();
         ClientTickEvents.END_CLIENT_TICK.register(mc -> {

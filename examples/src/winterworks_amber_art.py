@@ -75,37 +75,34 @@ def translucent(ramp, alphas):
     return {k: v + a for (k, v), a in zip(ramp.items(), alphas)}
 
 
-# ====================================================================== amber block: thick honey amber with depth
+# ====================================================================== amber block: honey amber, an even repeating pattern
 # The game draws a real 3D mosquito or seed inside the block (a block-entity renderer), so every face is translucent.
-# It reads as a deep lump of honey amber: warm lit edges (a bright top/left rim and a glowing inner ring), the body
-# deepening to a dark red-amber core in the middle (more saturated, a little more opaque, still see-through so a
-# trapped thing shows dark there), flow streaks running diagonally through it, and small trapped bubbles (a cream
-# glint over a dark underside). The seed and mosquito variants are the same plain amber.
+# Blocks tile like vanilla stone or sand, so there is no rim, no centre and no lone feature: uniformly translucent
+# honey amber (two body tones in soft flow bands, a few deeper and lighter pixels), flow streaks running diagonally
+# (each a dash along a line x - y = k, so it carries on across the block edges) and small trapped bubbles (a cream
+# glint over a dark underside) scattered evenly. Every edge wraps. The seed and mosquito variants are the same amber.
 HONEY_BLOCK = {
-    "W": "#fff1c4f0", "Y": "#fbd27ae8", "y": "#f3b84fe4",                      # lit rim (top/left)
-    "r": "#d2741ee4", "R": "#ad5114e8",                                         # shaded rim (bottom/right)
-    "g": "#f5b640b8", "G": "#fac85fb8",                                         # the glowing inner ring
-    "h": "#f09a24b4", "o": "#e47e18b4", "c": "#d06212b8", "C": "#b44a0ec0",       # body deepening to the core
+    "h": "#f09a24b4", "o": "#e47e18b4", "c": "#d06212b8", "g": "#f5b640b8",     # body: honey, orange, deep, light
     "s": "#f9c552b4", "d": "#b85414bc",                                         # flow streaks (light / dark)
     "B": "#fff6dcf4", "b": "#f9d27ed8", "q": "#86380ed0",                         # bubbles: glint, body, underside
 }
 AMBER_BLOCK = """
-WWWY YYYY YYYY yyyr
-WGGg gggg gGgg gghr
-WGsg ggGg gggg ghhr
-Ygsg gssh hhhh Bbhr
-Yggs shho oooh bqhR
-Yggs hhoo oooo ohhR
-YgBh hooc cccc oohR
-Ygqh oocc CCcc cohR
-Yghh occC CCCc cohR
-Yghh occC CCCC cdhR
-Yghh occC CCCc dohR
-Yghh oocc cccd oohR
-yghh hooc cdBb ohhR
-yggh hhoo oobq hhgR
-yggg ghhh hhhh hggR
-rrrr RRRR RRRR RRRR
+ohhh hhoh hoco hooh
+oohh shho bhoo ohoo
+oohB bshh oohh hBoo
+ohob qhsh ocdh hqho
+hooo hhhh hocd hhho
+scoh hhoh hhoc ohho
+csco hhBh hhho chho
+ocso hhqo ohhh hohb
+hooo ohod ohhh ghoo
+ohhh hooo ohhB bgho
+ohho hhoo ohhb qsoh
+hodh hhho hhoh hgoh
+Bhcd hhhh ohhh ohgh
+qhoc dhhh sohh hhoh
+hhho cohh oboo hdhh
+hhhh hohh occo oodo
 """
 for _name in ("amber_block", "amber_block_seed", "amber_block_mosquito"):
     block(_name, pal(HONEY_BLOCK), AMBER_BLOCK)
@@ -392,8 +389,9 @@ for k in range(4):
           brushed(turned_grid(GRAVEL_BASE), mirrored_grid(AMBER_LOOSE), mirrored_grid(REVEAL_LOOSE[k]), DIG))
 
 # ====================================================================== petrified log: stone-hard fossil wood
-# Side: deep vertical bark furrows turned to stone, a clean horizontal fracture (petrified trunks break into
-# segments), rust, ochre and chalcedony mineral streaks. Top: stony rings banded with minerals, a quartz heart.
+# Side: deep vertical bark furrows turned to stone in short offset plates, rust, ochre and chalcedony mineral
+# streaks spread through them; it tiles both ways like a vanilla log (no lone fracture line to stripe a pillar).
+# Top: stony rings banded with minerals, a quartz heart.
 PETRI = {"o": "#2a2228", "1": "#41363a", "2": "#5a4b4a", "3": "#77625c", "4": "#94806f", "5": "#b19c86",
          "6": "#cdbba0", "r": "#7e3f2c", "R": "#a65a3a", "y": "#a8843a", "Y": "#cdaa5a", "c": "#5f7d7a",
          "C": "#8fada4", "q": "#e7e3d6", "Q": "#fffdf4"}
@@ -404,8 +402,8 @@ o4R2 1o32 4o3y 21o4
 o3R1 1o43 3oy2 1o53
 54o2 2o54 2o32 o542
 43o1 3o43 1o21 o431
-1oo1 oo1o 1oo1 o1oo
-6566 5665 6556 6566
+32o5 3o65 42o5 3oR4
+21o4 2o54 31o4 2oR3
 4o53 2o54 3c4o 4o53
 3o42 1o43 2c3o 3o42
 4o3o 2o5R 2o43 2o31
@@ -900,50 +898,6 @@ block("amberwood_bloom_top", pal(BLOOM), """
 .... .... .... ....
 .... .... .... ....
 """)
-# the old ribbed sapling (amberwood_sapling, kept for its block id) in the earlier cactus-rib colours
-RIB = {"1": "#332c26", "2": "#4a4238", "3": "#5f5c4b", "4": "#76785f", "5": "#8c9375", "6": "#a3ab8c",
-       "7": "#bfc4a6", "w": "#b3aa92", "W": "#d3cbb6", "x": "#ddd6c4"}
-# the sapling: a little ribbed sprout, a barrel of four soft ribs, a pale spine or two and a first bud on top
-block("amberwood_sapling", pal(RIB, BLOOM, o="#3a332b"), """
-.... .... .... ....
-.... .... .... ....
-.... .... .... ....
-.... .... .... ....
-.... .... .... ....
-.... ..qQ .... ....
-.... ..Pp .... ....
-.... x.uT .x.. ....
-.... .o54 3o.. ....
-.... .o45 34o. ....
-.... o453 2453 ....
-.... o4W3 2453 ....
-.... o453 24W3 ....
-.... o453 2453 ....
-.... .o53 243. ....
-.... ..oo oo.. ....
-""")
-# amberwood_leaves (the cactus-like tree has none; kept for the block id): muted sage succulent leaves in clusters,
-# cut out between them
-LEAVES = {"o": "#3a3a2e", "1": "#4f5240", "2": "#646b52", "3": "#7a8466", "4": "#919b7a", "5": "#a8b190",
-          "6": "#c0c6a8", "7": "#d8dbc2"}
-block("amberwood_leaves", pal(LEAVES), """
-.643 1.56 4..6 543.
-6754 31.6 543. 7643
-5643 2o.5 4321 6531
-.32. ..54 3o.5 43o.
-.5.. 6754 32.6 7543
-5643 5643 1o.5 6432
-4321 4321 o..4 321.
-.1o. .1o. .65. .o..
-..65 4..6 7543 ..6.
-.675 43.5 6432 .754
-6543 21.4 4321 6643
-5431 o..3 1o.. 5432
-.21. .654 3..6 431.
-..6. 6754 3.67 54..
-.754 5643 2.56 43.6
-6543 .32. ..43 2..5
-""")
 # ====================================================================== blood stain: a thin, half-dried red layer
 BLOOD_T = {"k": "#3a0712b0", "r": "#5c0e1cc0", "R": "#85162ac8", "e": "#a8202fd0", "E": "#d0404ad8",
            "s": "#4a0a1670"}
@@ -967,29 +921,6 @@ block("blood_stain", pal(BLOOD_T), """
 """)
 
 # ====================================================================== items (16x16)
-# An amber chunk: an irregular knapped nugget, glassy facets, a bubble, a bright rim, a dark red-brown outline.
-# honey-like, as the blocks: a solid dark rim, a golden body at about 70-80% opacity, solid glints
-HONEY = {"1": "#6b3a14", "2": "#8a5020", "3": "#a8692c", "4": "#c3843a", "5": "#d89d4c", "6": "#e8b55e",
-         "7": "#f3cb78", "8": "#fbe2a4", "9": "#fff4d8"}
-CHUNK = {"o": "#3e2410ec", **translucent(HONEY, ["e0", "d0", "c4", "bc", "c4", "d0", "e4", "f4", "fc"])}
-item("amber_chunk", pal(CHUNK), """
-.... .... .... ....
-.... .... .... ....
-.... .... ooo. ....
-.... ..oo 877o ....
-.... .o88 7665 o...
-.... o879 7655 4o..
-...o 8796 5554 3o..
-..o8 7765 5443 3o..
-..o7 7655 4433 2o..
-..o6 6554 4332 o...
-...o 5543 3322 o...
-...o 4432 3221 o...
-.... o332 221o ....
-.... .ooo 11o. ....
-.... .... oo.. ....
-.... .... .... ....
-""")
 # An amber shard (amber blocks break into these): a long jagged splinter of honey amber, broken square at the base
 # and snapped to a sharp point, a ridge down its length between a lit facet and a deep red-amber one, a cream
 # highlight along the ridge, a chipped notch, a dark red-brown outline. Solid, so it reads at 1x.
@@ -1016,29 +947,6 @@ item("amber_shard", pal(SHARD), """
 
 
 
-
-# An Amberwood seed (as the 3D amber_seed model): a ribbed, pointed ovoid husk, lit from the left, a little
-# pale-gold sprout curling out of the top like a fiddlehead
-SEED = {"o": "#2a120c", "1": "#4a2414", "2": "#6b381e", "3": "#8a4f29", "4": "#a86836", "5": "#c4864a",
-        "6": "#d9a25c", "7": "#efc777", "s": "#7d7c44", "S": "#bdb978"}
-item("amberwood_seed", pal(SEED), """
-.... .... .... ....
-.... .... .sS. ....
-.... .... S..s ....
-.... .... s.S. ....
-.... .... s... ....
-.... ..oo oo.. ....
-.... .o76 54o. ....
-.... o765 543o ....
-...o 7656 5432 o...
-...o 6565 6432 o...
-...o 6565 4321 o...
-...o 5545 4321 o...
-.... o454 321o ....
-.... .o43 21o. ....
-.... ..o2 1o.. ....
-.... ...o o... ....
-""")
 
 # ====================================================================== mob effect icon (18x18)
 # Immunity: an amber shield with a drop of blood sealed in it, a cream glint, a dark red-brown rim.

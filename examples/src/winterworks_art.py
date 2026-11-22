@@ -248,25 +248,6 @@ item("zombie_cart", pal(ZOMBIE, d="#33323d", s="#4a4954", m="#66656c", l="#87858
 ...oo...oo......
 """)
 
-item("trailer_cart", pal(IRON, WOOD, L="#ffe9a0", c="#f6b94a", f="#d8862a", y="#a5843f"), """
-................
-........oooooo..
-........olmmmo..
-........omoosoo.
-........omodlhdo
-........omodLcdo
-........osodcfdo
-........osoosdo.
-oXXQXXXXQXXXXQXo
-oqqqmqqqqqmqqqqo
-onwwnwwwwnwwwwno
-..ooo.....ooo...
-.oXwQo...oXwQo..
-.owywo...owywo..
-.oQwqo...oQwqo..
-..ooo.....ooo...
-""")
-
 DRAGON = {"o": "#111a15", "1": "#1b2a22", "2": "#25392e", "3": "#33503d", "4": "#486a50", "5": "#64866a",
           "6": "#88a184", "N": "#0a100c", "R": "#3a0c08", "e": "#c84a12", "E": "#ff7a1c", "F": "#ffc670", "T": "#cfc6ae"}
 item("dragon_locomotive", pal(DRAGON, B=BRASS["B"], b=BRASS["b"], y=BRASS["y"], Y=BRASS["Y"], G=BRASS["G"]), """

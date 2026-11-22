@@ -30,11 +30,17 @@ class IcebreakerChargeGoal extends Goal {
     @Override
     public boolean canUse() {
         LivingEntity t = mob.getTarget();
-        if (t == null || !t.isAlive() || mob.isBaby() || mob.chargeCooldown > 0 || !mob.onGround() || mob.isInWater()) {
+        if (t == null || !t.isAlive() || mob.isBaby() || mob.chargeCooldown > 0 || !mob.onGround() || mob.isInWater() || mob.isAsleep()) {
             return false;
         }
         double d = mob.distanceToSqr(t);
-        return d > 4.5 * 4.5 && d < 18 * 18 && mob.getSensing().hasLineOfSight(t);
+        double min = guarding(t) ? 3.0 : 4.5;   // guarding its cubs it charges even at close range
+        return d > min * min && d < 18 * 18 && mob.getSensing().hasLineOfSight(t);
+    }
+
+    /** It is charging someone who came too near its cubs. */
+    private boolean guarding(LivingEntity t) {
+        return t instanceof net.minecraft.world.entity.player.Player && mob.nearCub(t);
     }
 
     @Override
@@ -61,7 +67,9 @@ class IcebreakerChargeGoal extends Goal {
     @Override
     public void stop() {
         mob.setCharging(false);
-        mob.chargeCooldown = 70 + mob.getRandom().nextInt(60);
+        LivingEntity t = mob.getTarget();
+        // far more hostile near its cubs: it charges again and again
+        mob.chargeCooldown = t != null && guarding(t) ? 30 + mob.getRandom().nextInt(20) : 70 + mob.getRandom().nextInt(60);
     }
 
     @Override

@@ -102,7 +102,9 @@ public class DeadCaveSurfaceFeature extends Feature<NoneFeatureConfiguration> {
             if (roll < 6) {
                 CaveDepositsFeature.place(level, below, (v > 0 ? Blocks.SUSPICIOUS_SAND : Blocks.SUSPICIOUS_GRAVEL).defaultBlockState(),
                         Archaeology.DEAD_CAVE, r);
-            } else if (roll < 7) {
+            } else if (roll < 8) {   // amber sand and gravel (docs/FIXES_0_4.md)
+                CaveDepositsFeature.placeAmber(level, below, v > 0, r);
+            } else if (roll < 9) {
                 CaveDepositsFeature.place(level, below, WWBlocks.AMBER_FOSSIL.defaultBlockState(), Archaeology.DEAD_CAVE, r);
             } else {
                 level.setBlock(below, (v > 0.1 ? Blocks.SAND : v > -0.35 ? Blocks.GRAVEL : Blocks.COARSE_DIRT).defaultBlockState(), 2);

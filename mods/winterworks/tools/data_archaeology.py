@@ -52,26 +52,34 @@ def run(ctx):
     ctx.write(os.path.join(W, "structure_set", "dig_site.json"), {
         "structures": [{"structure": f"{M}:dig_site", "weight": 1}],
         "placement": {"type": "minecraft:random_spread", "spacing": 24, "separation": 8, "salt": 31415926}})
-    # ---- loot
+    # ---- loot (docs/FIXES_0_4.md): much more amber; sherds (and decorated pots, of which there are none here) at about
+    # a fifth of their 0.3 weight, so a pot is a real find. Each sherd keeps weight 1; everything else is about five times
+    # what it was, amber more than that.
     sherds = lambda *names: [item(f"minecraft:{n}_pottery_sherd") for n in names]  # noqa
-    archaeology(ctx, "cave_amber", [item(f"{M}:amber_chunk", 8), item(f"{M}:amber_block", 1), item(f"{M}:amberwood_seed", 2),
-                                    item("minecraft:torchflower_seeds", 1), item("minecraft:pitcher_pod", 1),
-                                    item("minecraft:emerald", 1)] + sherds("miner", "blade", "archer"))
-    archaeology(ctx, "cave_bones", [item("minecraft:bone", 8), item("minecraft:bone_block", 2), item("minecraft:skeleton_skull", 1),
-                                    item(f"{M}:amber_chunk", 2), item("minecraft:arrow", 2)] + sherds("skull", "howl", "danger"))
-    dead = [item(f"{M}:amber_chunk", 6), item(f"{M}:amberwood_seed", 3), item("minecraft:bone", 3), item("minecraft:dead_bush", 1),
-            item("minecraft:torchflower_seeds", 1), item("minecraft:pitcher_pod", 1), item(f"{M}:amber_block", 1)] + \
-        sherds("blade", "miner", "archer", "howl", "danger", "skull", "explorer")
+    archaeology(ctx, "cave_amber", [item(f"{M}:amber_shard", 50, (1, 3)), item(f"{M}:amber_block", 8), item(f"{M}:amberwood_bloom", 8),
+                                    item("minecraft:torchflower_seeds", 5), item("minecraft:pitcher_pod", 5),
+                                    item("minecraft:emerald", 5)] + sherds("miner", "blade", "archer"))
+    archaeology(ctx, "cave_bones", [item("minecraft:bone", 30), item("minecraft:bone_block", 10), item("minecraft:skeleton_skull", 4),
+                                    item(f"{M}:amber_shard", 25, (1, 2)), item(f"{M}:amber_block", 2), item("minecraft:arrow", 6)]
+                + sherds("skull", "howl", "danger"))
+    dead = [item(f"{M}:amber_shard", 60, (1, 3)), item(f"{M}:amberwood_bloom", 12), item("minecraft:bone", 12),
+            item("minecraft:dead_bush", 4), item("minecraft:torchflower_seeds", 4), item("minecraft:pitcher_pod", 4),
+            item(f"{M}:amber_block", 10)] + sherds("blade", "miner", "archer", "howl", "danger", "skull", "explorer")
     archaeology(ctx, "dead_cave", dead)
-    archaeology(ctx, "dig_site", dead + [item("minecraft:brush", 1), item("minecraft:echo_shard", 1)])
+    archaeology(ctx, "dig_site", dead + [item("minecraft:brush", 5), item("minecraft:echo_shard", 5)])
+    # amber sand and amber gravel: amber shards mostly, sometimes a whole block, now and then with something sealed inside
+    with_inclusion = lambda inc, weight: dict(item(f"{M}:amber_block", weight), functions=[  # noqa: E731
+        {"function": "minecraft:set_components", "components": {"minecraft:block_state": {"inclusion": inc}}}])
+    archaeology(ctx, "amber_deposit", [item(f"{M}:amber_shard", 40, (1, 3)), item(f"{M}:amber_shard", 12, (3, 5)),
+                                       item(f"{M}:amber_block", 6), with_inclusion("seed", 1), with_inclusion("mosquito", 1)])
     ctx.write(os.path.join(ctx.D, M, "loot_table", "chests", "dig_site.json"), {"type": "minecraft:chest", "pools": [
         {"rolls": {"type": "minecraft:uniform", "min": 3, "max": 6}, "entries": [
-            item(f"{M}:amber_chunk", 10, (1, 5)), item("minecraft:bone", 8, (2, 6)), item("minecraft:gravel", 6, (2, 8)),
+            item(f"{M}:amber_shard", 14, (2, 8)), item("minecraft:bone", 8, (2, 6)), item("minecraft:gravel", 6, (2, 8)),
             item("minecraft:sand", 5, (2, 8)), item("minecraft:paper", 5, (1, 4)), item("minecraft:torch", 6, (2, 8)),
-            item("minecraft:bread", 5, (1, 3)), item("minecraft:coal", 5, (2, 6)), item(f"{M}:amberwood_seed", 3, (1, 2)),
+            item("minecraft:bread", 5, (1, 3)), item("minecraft:coal", 5, (2, 6)), item(f"{M}:amberwood_bloom", 3, (1, 2)),
             item("minecraft:map", 2), item("minecraft:string", 4, (1, 4)), item("minecraft:iron_ingot", 3, (1, 3))]},
         {"rolls": {"type": "minecraft:uniform", "min": 1, "max": 2}, "entries": [
-            item("minecraft:brush", 4), item("minecraft:iron_shovel", 3), item("minecraft:iron_pickaxe", 1),
-            item(f"{M}:amber_block", 3), item("minecraft:echo_shard", 1), item("minecraft:goat_horn", 1)]
+            item("minecraft:brush", 24), item("minecraft:iron_shovel", 18), item("minecraft:iron_pickaxe", 6),
+            item(f"{M}:amber_block", 24), item("minecraft:echo_shard", 6), item("minecraft:goat_horn", 6)]
             + sherds("blade", "miner", "archer", "howl", "danger", "skull", "explorer", "prize")}]})
     ctx.write(os.path.join(ctx.L, "archaeology.json"), {"biome.winterworks.dead_caves": "Dead Caves"})

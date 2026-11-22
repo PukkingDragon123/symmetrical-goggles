@@ -1,5 +1,6 @@
 package dev.lowpix.winterworks.client.hex;
 
+import dev.lowpix.winterworks.hex.CurseTooltips;
 import dev.lowpix.winterworks.hex.HexComponents;
 import dev.lowpix.winterworks.hex.HexDiscovery;
 import dev.lowpix.winterworks.hex.HexedBookItem;
@@ -27,7 +28,8 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 /**
  * Tooltips: a Hexed Book lists its enchantments, its curses coloured by tier (lesser soul blue, sins crimson, hidden
  * violet), and hidden curses the player hasn't discovered as obfuscated text. On any other item an undiscovered hidden
- * curse is obfuscated too. A Soul Tank item shows the souls it kept.
+ * curse is obfuscated too. Curses are just their names: description lines are taken out (hex.CurseTooltips). A Soul
+ * Tank item shows the souls it kept. Runs late, after other mods have added their lines.
  */
 final class HexTooltips {
     private HexTooltips() {}
@@ -37,6 +39,7 @@ final class HexTooltips {
         if (mc.level == null) {
             return;
         }
+        CurseTooltips.nameOnly(lines);   // a curse is just its name
         if (stack.is(WWItems.HEXED_BOOK)) {
             hexedBook(stack, lines, mc.player);
         } else {
@@ -74,10 +77,6 @@ final class HexTooltips {
             }
         }
         add.addAll(curses);
-        if (!info.hidden().isEmpty() && info.hidden().stream().anyMatch(id -> !HexDiscovery.isDiscovered(player,
-                ResourceKey.create(Registries.ENCHANTMENT, id)))) {
-            add.add(Component.translatable("item.winterworks.hexed_book.whispers").withStyle(ChatFormatting.ITALIC).withColor(0x6A5A88));
-        }
         lines.addAll(Math.min(1, lines.size()), add);
     }
 

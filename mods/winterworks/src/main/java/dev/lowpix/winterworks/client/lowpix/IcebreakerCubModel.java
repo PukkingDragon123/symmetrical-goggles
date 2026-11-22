@@ -17,7 +17,7 @@ public final class IcebreakerCubModel {
     public static final String[] GLOW_PARTS = {};
     public static final boolean HAS_TINT = false;
     public static final String[] TINT_PARTS = {};
-    public static final String[] CLIPS = {"idle", "walk", "swim", "happy", "eat", "bark", "belly_slap", "tail_slap"};
+    public static final String[] CLIPS = {"idle", "walk", "swim", "happy", "eat", "bark", "belly_slap", "tail_slap", "sleep"};
     public static final String CHEST = "chest";
     public static final String CHEST_UNDER = "chest_under";
     public static final String BELLY = "belly";
