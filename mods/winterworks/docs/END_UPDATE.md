@@ -3,6 +3,9 @@
 The End becomes a living alien ecosystem. Same rules as COLD_UPDATE.md / HEXES_UPDATE.md: ids, bone and clip names
 here are exact, every registration already exists in `registry/End*.java`, and no feature beyond this file.
 
+**Eyes.** Every eye motif (the Monolith, the Obolisk, the shield, the wand, the Monolith Eye, chiseled obsidian, wing
+eye-spots) is **round**: round irises and pupils, soft highlights, no slit pupils or sharp diamond shapes.
+
 **Resolution.** Everything new is higher resolution than the older content: entity and item models are lowpix specs at
 `density: 2` (2 texels per Minecraft pixel; held items may use 4), with more parts, cards and painted detail; block
 textures and item icons are **32 x 32**; particles 16 x 16; the eclipse sky textures 256 x 256.
@@ -162,12 +165,15 @@ Tower. 600 health, armour 20, immune to knockback and fire, a purple boss bar.
 ## 12. The End Glider
 `end_glider`: recipe `WSW` / `GMG` / `PSP` (W enderfly_wing, S shulker_shell, G gucker_gland, M meteorite,
 P phantom_membrane); 432 durability (1 per second of flight), repaired with phantom membrane.
-* A handheld flying machine: flapping wings and pulsing air jets. It needs an **Elytra**: while gliding with it in hand
-  you have full flight control without fireworks: it flies where you look at a cruising speed (1.1 blocks/tick),
-  climbing included.
-* Hold use to **boost** (2.2 blocks/tick), but steering gets heavy.
-* Held overhead in both hands while flying. Bones: `frame`, `handle`, `wing_l`, `wing_r`, `jet_l`, `jet_r`,
-  `jet_flame_l`, `jet_flame_r`. Clips: `flap` (loop), `boost` (loop). Glow: jet flames.
+* A **glowing magic wing glider**: a light handle under a pair of luminous, translucent violet wings (enderfly-like
+  membranes with glowing veins and soft round eye-spots) that shimmer and beat gently. No machinery.
+* **Alone**: hold it while falling and hold use to **glide** like a hang glider: about 0.6 blocks/tick forward, sinking
+  slowly (0.08 blocks/tick), steered by where you look; no climbing; no fall damage while gliding.
+* **With an Elytra** (gliding with it in hand): **free flight**: it flies where you look at a cruising speed (1.1
+  blocks/tick), climbing included, no fireworks; hold use to **boost** (2.2 blocks/tick) with heavier steering.
+* Held overhead in both hands while gliding or flying. Bones: `frame`, `handle`, `wing_l`, `wing_r`, and `jet_l`,
+  `jet_r`, `jet_flame_l`, `jet_flame_r` (now glowing rune sigils at the wing roots that flare when boosting). Clips:
+  `flap` (loop), `boost` (loop). Glow: wing veins, eye-spots, sigils.
 
 ## 13. Dragonlings
 * **Hatching**: throw the Dragon Egg into the void in the End. It comes back (falling onto whoever threw it, else onto
