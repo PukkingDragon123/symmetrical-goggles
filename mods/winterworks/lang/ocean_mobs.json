@@ -1,0 +1,16 @@
+{
+  "entity.winterworks.anglerfish": "Anglerfish",
+  "entity.winterworks.lionfish": "Lionfish",
+  "entity.winterworks.nautilus": "Nautilus",
+  "item.winterworks.anglerfish_spawn_egg": "Anglerfish Spawn Egg",
+  "item.winterworks.lionfish_spawn_egg": "Lionfish Spawn Egg",
+  "item.winterworks.nautilus_spawn_egg": "Nautilus Spawn Egg",
+  "item.winterworks.raw_anglerfish": "Raw Anglerfish",
+  "item.winterworks.cooked_anglerfish": "Cooked Anglerfish",
+  "item.winterworks.angler_lure": "Angler Lure",
+  "item.winterworks.anglerfish_bucket": "Bucket of Anglerfish",
+  "item.winterworks.lionfish": "Lionfish",
+  "item.winterworks.cooked_lionfish": "Cooked Lionfish",
+  "item.winterworks.turtle_shell_shard": "Turtle Shell Shard",
+  "block.winterworks.angler_light": "Angler Light"
+}
