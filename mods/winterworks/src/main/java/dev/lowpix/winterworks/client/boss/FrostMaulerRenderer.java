@@ -138,6 +138,10 @@ public class FrostMaulerRenderer extends MobRenderer<FrostMaulerEntity, FrostMau
                             p.z + (r.nextDouble() - 0.5) * spread, back.x + (r.nextDouble() - 0.5) * 0.01,
                             (enraged ? 0.022 : 0.01) + r.nextDouble() * 0.006, back.z + (r.nextDouble() - 0.5) * 0.01);
                 }
+                if (e.tickCount % (enraged ? 9 : 22) == 0) {   // soul eyes: now and then a soul rises out of each socket
+                    e.level().addParticle(ParticleTypes.SOUL, p.x, p.y + 0.05, p.z, back.x * 0.5, 0.02 + r.nextDouble() * 0.01,
+                            back.z * 0.5);
+                }
                 if (enraged && e.tickCount % 6 == 0) {   // the flare
                     e.level().addParticle(ParticleTypes.SOUL, p.x, p.y + 0.05, p.z, back.x, 0.035, back.z);
                     e.level().addParticle(WWParticles.ICE_CRIT, p.x, p.y, p.z, (r.nextDouble() - 0.5) * 0.1, 0.06, (r.nextDouble() - 0.5) * 0.1);
