@@ -1,18 +1,19 @@
 package dev.lowpix.winterworks.client.dagger;
 
 import dev.lowpix.winterworks.Winterworks;
+import dev.lowpix.winterworks.client.boss.CameraShake;
 import dev.lowpix.winterworks.client.lowpix.LowpixGeometry;
 import dev.lowpix.winterworks.dagger.DaggerFeature;
 import dev.lowpix.winterworks.dagger.FangDaggerItem;
 import dev.lowpix.winterworks.net.DaggerStatePayload;
 import dev.lowpix.winterworks.net.PouncePayload;
+import dev.lowpix.winterworks.registry.WWArmor;
 import dev.lowpix.winterworks.registry.WWItems;
 import dev.lowpix.winterworks.registry.WWSounds;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -28,24 +29,30 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Client side of the Fang Daggers and fur armour (docs/COLD_UPDATE.md sections 2 and 9): the 3D dagger and fur
- * armour renderers, the fur tooltip, and the local player's frenzy and pounce.
+ * Client side of the Fang Daggers (docs/COLD_UPDATE.md section 9, docs/FIXES_0_4.md): the 3D dagger renderer, the
+ * fur tooltip, and the local player's strikes and pounce. (Fur armour is drawn by vanilla's armour layer from
+ * {@code textures/models/armor/fur_layer_1/2.png}.)
  *
- * <p>Frenzy clicks go straight to the server (no client-side vanilla attack, so the hands never dip) and the swing
- * alternates hands. A pounce is detected here (sneak + jump on the ground), the leap is applied at once for
- * responsiveness and the server is told ({@link PouncePayload}); hits, fatigue and the cooldown are the server's.
+ * <p>The pair in the main hand draws a dagger in each hand (mixin.client.DaggerHandRendererMixin and friends).
+ * <b>Left click strikes with the left dagger, right click with the right dagger</b>: each swings its own hand
+ * (snappy: mixin.DaggerSwingMixin), flicks its own blade, and a hit kicks the camera a little toward the cut. Frenzy
+ * strikes go straight to the server (no client-side vanilla attack, so the hands never dip). A pounce is detected here
+ * (sneak + jump on the ground), the leap is applied at once for responsiveness and the server is told
+ * ({@link PouncePayload}); hits, fatigue and the cooldown are the server's.
  */
 public final class DaggerClient {
     public static final ModelLayerLocation FANG_DAGGER = new ModelLayerLocation(Winterworks.id("fang_dagger"), "main");
-    public static final ModelLayerLocation FUR_ARMOR = new ModelLayerLocation(Winterworks.id("fur_armor"), "main");
     private static final float DEG = Mth.DEG_TO_RAD;
 
     // the local player's dagger state, as the server last told us
@@ -53,9 +60,7 @@ public final class DaggerClient {
     private static float fatigue;
     private static boolean exhausted;
     private static float readyAt = -1000f;
-    // frenzy swings
-    private static int strikes;
-    @Nullable private static InteractionHand strikeHand;
+    /** Game time of the last strike of each dagger (by HumanoidArm ordinal: LEFT, RIGHT), for the blade flick. */
     private static final float[] LAST_STRIKE = {-1000f, -1000f};
     // pounce
     private static boolean wasOnGround;
@@ -66,18 +71,21 @@ public final class DaggerClient {
 
     public static void init() {
         layer(FANG_DAGGER, "fang_dagger");
-        layer(FUR_ARMOR, "fur_armor");
         BuiltinItemRendererRegistry.INSTANCE.register(WWItems.FANG_DAGGER, new FangDaggerRenderer());
         ModelLoadingPlugin.register(ctx -> ctx.addModels(FangDaggerRenderer.ICON_MODEL));
-        ArmorRenderer.register(new FurArmorRenderer(), WWItems.FUR_HOOD, WWItems.FUR_COAT, WWItems.FUR_LEGGINGS, WWItems.FUR_BOOTS);
         ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
-            if (FurArmorRenderer.isFur(stack)) {
+            if (isFur(stack)) {
                 lines.add(Math.min(1, lines.size()), Component.translatable("item.winterworks.fur.tip").withStyle(ChatFormatting.GRAY));
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(DaggerStatePayload.TYPE, (payload, ctx) -> onState(payload));
         AttackEntityCallback.EVENT.register(DaggerClient::onAttack);
         ClientTickEvents.END_CLIENT_TICK.register(DaggerClient::tick);
+        FangDaggerItem.clientHook = DaggerClient::rightSwing;
+    }
+
+    public static boolean isFur(ItemStack s) {
+        return s.getItem() instanceof ArmorItem a && a.getMaterial().is(WWArmor.FUR);
     }
 
     /** Registers a lowpix model layer; a missing export draws nothing instead of crashing (as WWLayers does). */
@@ -99,8 +107,6 @@ public final class DaggerClient {
             owner = mc.player;
             fatigue = 0f;
             exhausted = false;
-            strikes = 0;
-            strikeHand = null;
             pounceTicks = 0;
             wasOnGround = false;
         }
@@ -116,7 +122,7 @@ public final class DaggerClient {
         exhausted = s.exhausted();
     }
 
-    /** The local player has two daggers out and the frenzy is ready (not exhausted). */
+    /** The local player has the pair out and the frenzy is ready (not exhausted). */
     public static boolean frenzyReady(@Nullable LivingEntity e) {
         return e != null && e == owner && !exhausted && FangDaggerItem.dualWielding(e);
     }
@@ -125,9 +131,9 @@ public final class DaggerClient {
         return fatigue;
     }
 
-    /** Ticks since the local player's last frenzy strike with `hand`. */
-    public static float sinceStrike(InteractionHand hand, float now) {
-        return now - LAST_STRIKE[hand.ordinal()];
+    /** Ticks since the local player's last strike with the dagger on `arm`'s side. */
+    public static float sinceStrike(HumanoidArm arm, float now) {
+        return now - LAST_STRIKE[arm.ordinal()];
     }
 
     /** Ticks since the frenzy recharged. */
@@ -135,8 +141,18 @@ public final class DaggerClient {
         return now - readyAt;
     }
 
-    // ------------------------------------------------------------------------------------------------ frenzy
+    // ------------------------------------------------------------------------------------------------ strikes
 
+    private static void struck(Player p, HumanoidArm arm, boolean hit) {
+        LAST_STRIKE[arm.ordinal()] = p.level().getGameTime();
+        if (hit) {   // a little camera kick toward the cut: the right dagger cuts right to left, the left one left to right
+            float side = arm == HumanoidArm.RIGHT ? 1f : -1f;
+            float k = exhausted ? 1.6f : 1f;
+            CameraShake.kick(-0.7f * side * k, 0.55f * k, -0.9f * side * k, exhausted ? 7 : 5);
+        }
+    }
+
+    /** Left click at a mob (AttackEntityCallback): the left dagger. With the frenzy ready the server strikes it. */
     private static InteractionResult onAttack(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult hit) {
         if (!level.isClientSide) {
             return InteractionResult.PASS;
@@ -146,13 +162,51 @@ public final class DaggerClient {
             return InteractionResult.PASS;
         }
         syncOwner(mc);
-        if (exhausted || !(entity instanceof LivingEntity) || !entity.isAttackable()) {
-            return InteractionResult.PASS;   // exhausted: the vanilla attack (the server turns falling hits into Fang Crits)
+        if (!(entity instanceof LivingEntity) || !entity.isAttackable()) {
+            return InteractionResult.PASS;
         }
-        InteractionHand strike = strikes++ % 2 == 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-        strikeHand = strike;
-        LAST_STRIKE[strike.ordinal()] = level.getGameTime();
-        return InteractionResult.SUCCESS;   // sends the attack packet; the server strikes (or buffers) the frenzy hit
+        struck(player, HumanoidArm.LEFT, true);
+        // exhausted: the vanilla attack (the server turns falling hits into Fang Crits); else the frenzy strike packet
+        return exhausted ? InteractionResult.PASS : InteractionResult.SUCCESS;
+    }
+
+    /** Which hand a left click at a mob swings (mixin.client.DaggerMinecraftMixin): the left dagger's, with the pair out. */
+    public static InteractionHand leftClickHand(LocalPlayer p, InteractionHand vanilla) {
+        return FangDaggerItem.dualWielding(p) ? FangDaggerItem.handFor(p, HumanoidArm.LEFT) : vanilla;
+    }
+
+    /** A left click in the air with the frenzy ready: a quick swing of the left dagger (no miss penalty). */
+    public static boolean whiffLeft(LocalPlayer p) {
+        if (!frenzyReady(p) || p.isSpectator()) {
+            return false;
+        }
+        whiff(p, HumanoidArm.LEFT);
+        return true;
+    }
+
+    /** FangDaggerItem: a right click at a mob (`hit`) or in the air: the right dagger swings. */
+    private static void rightSwing(Player p, HumanoidArm arm, boolean hit) {
+        Minecraft mc = Minecraft.getInstance();
+        if (p != mc.player) {
+            return;
+        }
+        syncOwner(mc);
+        if (!hit) {
+            whiff(mc.player, arm);
+            return;
+        }
+        struck(p, arm, true);
+        p.swing(FangDaggerItem.handFor(p, arm));
+        if (exhausted) {
+            p.resetAttackStrengthTicker();   // the server makes it a vanilla attack, which spends the charge
+        }
+    }
+
+    private static void whiff(LocalPlayer p, HumanoidArm arm) {
+        struck(p, arm, false);
+        p.swing(FangDaggerItem.handFor(p, arm));
+        p.level().playLocalSound(p.getX(), p.getEyeY(), p.getZ(), arm == HumanoidArm.RIGHT ? WWSounds.DAGGER_SLASH_RIGHT
+                : WWSounds.DAGGER_SLASH_LEFT, SoundSource.PLAYERS, 0.25f, 1.3f + p.getRandom().nextFloat() * 0.15f, false);
     }
 
     private static void tick(Minecraft mc) {
@@ -162,12 +216,6 @@ public final class DaggerClient {
             return;
         }
         syncOwner(mc);
-        if (strikeHand != null) {
-            if (p.swinging && p.swingTime == 0) {   // the swing that started this tick belongs to the striking hand
-                p.swingingArm = strikeHand;
-            }
-            strikeHand = null;
-        }
         boolean jumped = wasOnGround && !p.onGround() && p.getDeltaMovement().y > 0.2 && p.input != null && p.input.jumping;
         if (jumped && p.isShiftKeyDown() && !exhausted && FangDaggerItem.dualWielding(p) && canPounce(p)
                 && ClientPlayNetworking.canSend(PouncePayload.TYPE)) {

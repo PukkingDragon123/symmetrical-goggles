@@ -4,6 +4,8 @@ import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWEntities;
 import dev.lowpix.winterworks.registry.WWParticles;
 import dev.lowpix.winterworks.registry.WWSounds;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -19,8 +21,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -29,14 +33,30 @@ import org.jetbrains.annotations.Nullable;
  * The skull's state: `lit` (its eye burns, synced to the client) and the revival ritual timer. The ritual lasts
  * {@link #RITUAL_TICKS}: frost swirls, the ground shakes and the ice cracks; then the ice and the skull burst and the
  * Frost Mauler rises from where the skull was (docs/COLD_UPDATE.md section 8).
+ *
+ * <p>Redstone (docs/FIXES_0_4.md): on a rising edge of power the skull {@link #roar roars} (at most once every
+ * {@link #ROAR_COOLDOWN} ticks) and shakes loose every icicle and pointed dripstone within {@link #ROAR_REACH} blocks
+ * above it: they fall (our falling icicles; vanilla falling dripstone).
  */
 public class FrostMaulerSkullBlockEntity extends BlockEntity {
     public static final int RITUAL_TICKS = 60;
+    /** 3 s between roars. */
+    public static final int ROAR_COOLDOWN = 60;
+    /** How far (blocks) the roar reaches: sideways, and up above the skull. */
+    public static final int ROAR_REACH = 12;
+    /** Block event: the skull roars (the client opens its jaw). */
+    public static final int EVENT_ROAR = 1;
+    /** Client: how long the jaw stays open (ticks). */
+    public static final int ROAR_TICKS = 30;
     private boolean lit;
     private int ritual;
     private int lastStage = -1;
+    private boolean powered;
+    private long lastRoar = Long.MIN_VALUE / 4;
     /** Client: ticks since the eye lit (for the swirl and the eye pulse). */
     public int clientTicks;
+    /** Client: the game time of the last roar (for the open jaw), or a long time ago. */
+    public long roarAt = Long.MIN_VALUE / 4;
 
     public FrostMaulerSkullBlockEntity(BlockPos pos, BlockState state) {
         super(WWBlocks.FROST_MAULER_SKULL_BE, pos, state);
@@ -49,6 +69,104 @@ public class FrostMaulerSkullBlockEntity extends BlockEntity {
     /** 0..1 through the ritual (client: from its own clock). */
     public float ritualProgress(float partial) {
         return Mth.clamp((clientTicks + partial) / RITUAL_TICKS, 0f, 1f);
+    }
+
+    public boolean isPowered() {
+        return powered;
+    }
+
+    /** The redstone power it last saw (set when placed, so a skull put down next to a lit lever doesn't roar). */
+    public void initPowered(boolean on) {
+        powered = on;
+        setChanged();
+    }
+
+    /** Its neighbours changed: on a rising edge of power it roars. Returns true if it roared. */
+    public boolean updatePower(boolean on) {
+        boolean rising = on && !powered;
+        if (on != powered) {
+            powered = on;
+            setChanged();
+        }
+        return rising && level instanceof ServerLevel sl && roar(sl);
+    }
+
+    /** Ticks until it can roar again (0: ready). */
+    public int roarCooldown() {
+        return level == null ? 0 : (int) Math.max(0, lastRoar + ROAR_COOLDOWN - level.getGameTime());
+    }
+
+    /**
+     * The roar: unless it is waking the Frost Mauler or roared in the last 3 s, it bellows, frost blasts out of its
+     * jaws, nearby cameras shake, and every icicle and pointed dripstone stalactite within {@link #ROAR_REACH} blocks
+     * above it breaks off and falls. Returns false if it couldn't roar.
+     */
+    public boolean roar(ServerLevel sl) {
+        if (lit || roarCooldown() > 0) {
+            return false;
+        }
+        lastRoar = sl.getGameTime();
+        setChanged();
+        BlockPos pos = worldPosition;
+        BlockState state = getBlockState();
+        sl.blockEvent(pos, state.getBlock(), EVENT_ROAR, 0);
+        sl.playSound(null, pos, WWSounds.SKULL_ROAR, SoundSource.BLOCKS, 2.5f, 0.95f + sl.random.nextFloat() * 0.1f);
+        Vec3 c = Vec3.atCenterOf(pos);
+        Vec3 mouth = c;
+        if (state.hasProperty(FrostMaulerSkullBlock.FACING)) {
+            Direction d = state.getValue(FrostMaulerSkullBlock.FACING);
+            mouth = c.add(d.getStepX() * 0.45, -0.15, d.getStepZ() * 0.45);
+            for (int i = 0; i < 10; i++) {   // a blast of frost breath out of the jaws
+                double s = 0.12 + i * 0.02;
+                sl.sendParticles(WWParticles.FROST_BREATH, mouth.x, mouth.y, mouth.z, 0,
+                        d.getStepX() * s + (sl.random.nextDouble() - 0.5) * 0.08, 0.02 + sl.random.nextDouble() * 0.04,
+                        d.getStepZ() * s + (sl.random.nextDouble() - 0.5) * 0.08, 1.0);
+            }
+        }
+        sl.sendParticles(WWParticles.ROAR_WAVE, mouth.x, mouth.y, mouth.z, 0, 7.0, 0, 0, 1.0);   // dx = final size (blocks)
+        sl.sendParticles(WWParticles.ROAR_WAVE, c.x, pos.getY() + 0.1, c.z, 0, 5.0, 0, 0, 1.0);
+        sl.sendParticles(ParticleTypes.SNOWFLAKE, c.x, c.y + 0.3, c.z, 24, 0.6, 0.4, 0.6, 0.12);
+        BossFeature.groundRing(sl, WWParticles.SNOW_PUFF, new Vec3(c.x, pos.getY(), c.z), 14, 0.3);
+        BossFeature.shake(sl, c, 20, 0.9f, 14);
+        int loosened = shakeLoose(sl, pos, ROAR_REACH);
+        if (loosened > 0) {   // frost sifts down from the ceiling where they let go
+            sl.sendParticles(WWParticles.BLIZZARD_FLAKE, c.x, c.y + ROAR_REACH * 0.5, c.z, 20, ROAR_REACH * 0.4, ROAR_REACH * 0.3,
+                    ROAR_REACH * 0.4, 0.02);
+        }
+        sl.gameEvent(null, GameEvent.BLOCK_ACTIVATE, pos);
+        return true;
+    }
+
+    /**
+     * Every icicle and pointed dripstone stalactite above `skull` (1 to `reach` blocks up, up to `reach` blocks
+     * sideways) breaks off: each hanging column falls from its top. Returns how many columns fell.
+     */
+    public static int shakeLoose(ServerLevel sl, BlockPos skull, int reach) {
+        List<BlockPos> tops = new ArrayList<>();
+        BlockPos.MutableBlockPos above = new BlockPos.MutableBlockPos();
+        for (BlockPos p : BlockPos.betweenClosed(skull.offset(-reach, 1, -reach), skull.offset(reach, reach, reach))) {
+            BlockState s = sl.getBlockState(p);
+            if (!s.is(WWBlocks.ICICLE) && !isStalactite(s)) {
+                continue;
+            }
+            BlockState up = sl.getBlockState(above.setWithOffset(p, Direction.UP));
+            if (s.is(WWBlocks.ICICLE) ? !up.is(WWBlocks.ICICLE) : !isStalactite(up)) {
+                tops.add(p.immutable());
+            }
+        }
+        for (BlockPos p : tops) {
+            BlockState s = sl.getBlockState(p);
+            if (s.is(WWBlocks.ICICLE)) {
+                IcicleBlock.breakOff(sl, p);
+            } else if (isStalactite(s)) {
+                s.tick(sl, p, sl.random);   // a stalactite's tick drops it and everything below it (vanilla falling dripstone)
+            }
+        }
+        return tops.size();
+    }
+
+    private static boolean isStalactite(BlockState s) {
+        return s.is(Blocks.POINTED_DRIPSTONE) && s.getValue(PointedDripstoneBlock.TIP_DIRECTION) == Direction.DOWN;
     }
 
     /** The Nether Star took: light the eye and start the ritual. */
@@ -150,7 +268,51 @@ public class FrostMaulerSkullBlockEntity extends BlockEntity {
         });
     }
 
+    @Override
+    public boolean triggerEvent(int id, int param) {
+        if (id == EVENT_ROAR) {
+            if (level != null && level.isClientSide) {
+                roarAt = level.getGameTime();
+                roarFx(level, worldPosition, getBlockState());
+            }
+            return true;
+        }
+        return super.triggerEvent(id, param);
+    }
+
+    /** Client: 0..1 how far open the jaw is in a roar (snaps open, holds, eases shut); 0 when not roaring. */
+    public float roarOpen(float partial) {
+        if (level == null) {
+            return 0f;
+        }
+        float t = level.getGameTime() - roarAt + partial;
+        if (t < 0f || t > ROAR_TICKS) {
+            return 0f;
+        }
+        return t < 3f ? t / 3f : Math.min(1f, (ROAR_TICKS - t) / 10f);
+    }
+
+    /** Client: soul flames burst out of the eye socket as it roars. */
+    private static void roarFx(Level level, BlockPos pos, BlockState state) {
+        if (!state.hasProperty(FrostMaulerSkullBlock.FACING)) {
+            return;
+        }
+        double cx = pos.getX() + 0.5, cy = pos.getY() + 0.5, cz = pos.getZ() + 0.5;
+        Direction d = state.getValue(FrostMaulerSkullBlock.FACING);
+        for (int i = 0; i < 8; i++) {
+            level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, cx + d.getStepX() * 0.3 + (level.random.nextDouble() - 0.5) * 0.2, cy + 0.2,
+                    cz + d.getStepZ() * 0.3 + (level.random.nextDouble() - 0.5) * 0.2, d.getStepX() * 0.03,
+                    0.04 + level.random.nextDouble() * 0.03, d.getStepZ() * 0.03);
+        }
+        level.addParticle(ParticleTypes.SOUL, cx, cy + 0.3, cz, 0, 0.05, 0);
+    }
+
     public static void clientTick(Level level, BlockPos pos, BlockState state, FrostMaulerSkullBlockEntity be) {
+        if (be.roarOpen(0f) > 0f && level.getGameTime() % 2 == 0 && state.hasProperty(FrostMaulerSkullBlock.FACING)) {
+            Direction d = state.getValue(FrostMaulerSkullBlock.FACING);   // the eye blazes while it roars
+            level.addParticle(ParticleTypes.SOUL_FIRE_FLAME, pos.getX() + 0.5 + d.getStepX() * 0.3, pos.getY() + 0.6,
+                    pos.getZ() + 0.5 + d.getStepZ() * 0.3, 0, 0.04, 0);
+        }
         if (!be.lit) {
             return;
         }
@@ -181,6 +343,7 @@ public class FrostMaulerSkullBlockEntity extends BlockEntity {
         boolean wasLit = lit;
         lit = tag.getBoolean("Lit");
         ritual = tag.getInt("Ritual");
+        powered = tag.getBoolean("Powered");
         if (lit && !wasLit) {
             clientTicks = ritual;
         }
@@ -191,6 +354,7 @@ public class FrostMaulerSkullBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         tag.putBoolean("Lit", lit);
         tag.putInt("Ritual", ritual);
+        tag.putBoolean("Powered", powered);
     }
 
     @Override

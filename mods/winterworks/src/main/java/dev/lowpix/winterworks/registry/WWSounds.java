@@ -150,6 +150,13 @@ public final class WWSounds {
     public static final SoundEvent SWITCH_RAIL_SWITCH = reg("block.switch_rail.switch");
     // ---- end 0.4 fixes: rails
 
+    // ---- 0.4 fixes: Cold Zone (docs/FIXES_0_4.md)
+    public static final SoundEvent SKULL_ROAR = reg("block.frost_mauler_skull.roar");
+    public static final SoundEvent DAGGER_SLASH_LEFT = reg("item.fang_dagger.slash_left");
+    public static final SoundEvent DAGGER_SLASH_RIGHT = reg("item.fang_dagger.slash_right");
+    public static final SoundEvent RAMMING_CRY = reg("entity.player.ramming_cry");
+    public static final SoundEvent RAMMING_WIND = reg("entity.player.ramming_wind");
+
     /** Ancient ice: deeper and heavier than glass. */
     public static final net.minecraft.world.level.block.SoundType ANCIENT_ICE_SOUNDS = new net.minecraft.world.level.block.SoundType(
             1.0f, 1.0f, ANCIENT_ICE_BREAK, ANCIENT_ICE_STEP, ANCIENT_ICE_PLACE, ANCIENT_ICE_HIT, ANCIENT_ICE_FALL);
