@@ -101,13 +101,13 @@ public class Monolith extends Monster {
     /** The clap ring's centre (relative to the body, on the floor). */
     private static final EntityDataAccessor<Vector3f> RING = SynchedEntityData.defineId(Monolith.class, EntityDataSerializers.VECTOR3);
 
-    public static final float MAX_HEALTH = 600f, SLAM_DAMAGE = 14f, CRUSH_DAMAGE = 2f, CLAP_DAMAGE = 10f;
+    public static final float MAX_HEALTH = 600f, SLAM_DAMAGE = 14f, CRUSH_DAMAGE = 2f, CLAP_DAMAGE = 10f, EYE_HEIGHT = 4.45f;
     public static final double STARE_RANGE = 32, SLAM_RADIUS = 3, SLAM_HEIGHT = 5.5, AGGRO_RANGE = 22, LEASH = 40,
             RING_SPEED = 0.55, RING_MAX = 20, RING_WIDTH = 0.85, RING_JUMP = 0.6, ARENA = 11;
     /** Stare: Slowness steps up each second for 3 s, petrified at 4 s of unbroken stare, for 3 s. */
     public static final int STARE_TICKS = 120, STARE_PETRIFY = 80, PETRIFY_TICKS = 60, SLAM_TELEGRAPH = 20, SLAM_TRACK = 8,
             SLAM_FALL = 4, GRAB_WIND = 12, GRAB_REACH = 34, GRAB_HOLD = 40, CLAP_SPREAD = 16, CLAP_HIT = 4, SUMMON_TICKS = 40,
-            SUMMON_AT = 24, SUMMON_EVERY = 900, MAX_OBOLISKS = 4, DEATH_TICKS = 60, XP = 500;
+            SUMMON_RAISE = 20, SUMMON_AT = 28, SUMMON_EVERY = 900, MAX_OBOLISKS = 4, DEATH_TICKS = 60, XP = 500;
     // hand states (synced)
     public static final byte H_REST = 0, H_SLAM_AIM = 1, H_SLAM_FALL = 2, H_SLAM_DOWN = 3, H_GRAB_WIND = 4, H_GRAB_REACH = 5,
             H_GRAB_HOLD = 6, H_CLAP_SPREAD = 7, H_CLAP_HIT = 8, H_SUMMON = 9, H_RETURN = 10, H_DEAD = 11;
@@ -127,6 +127,9 @@ public class Monolith extends Monster {
     public final Vector3f handLO = new Vector3f(), handL = new Vector3f(), handRO = new Vector3f(), handR = new Vector3f();
     /** Client: when the clap ring went off (its tick count), and when the last one-shots began. */
     public int ringStart = -1000, slamLStart = -1000, slamRStart = -1000, grabStart = -1000, clapStart = -1000, summonStart = -1000;
+    /** Client: each hand's state and the tick it began (for posing clips by what the hand is doing). */
+    public final byte[] clientHandState = {H_REST, H_REST};
+    public final int[] clientHandSince = {0, 0};
     private boolean handsSeen;
 
     // ---- server
@@ -335,16 +338,18 @@ public class Monolith extends Monster {
         return new Vec3(getX() + lx * leftOff + fx * forward, getY() + up, getZ() + lz * leftOff + fz * forward);
     }
 
+    /** Where a hand floats at rest: the model's rest pose (its hand boxes' middle), raised a little when awake. */
     private Vec3 rest(Hand h) {
-        double bob = Mth.sin((tickCount + (h.isLeft ? 0 : 31)) * 0.07f) * 0.25;
-        return isAwake() ? local(h.side() * 3.4, 3.1 + bob, 0.9) : local(h.side() * 3.1, 1.6 + bob * 0.5, 0.5);
+        double bob = Mth.sin((tickCount + (h.isLeft ? 0 : 31)) * 0.07f) * 0.18;
+        return isAwake() ? local(h.side() * 2.45, 3.25 + bob, 1.15) : local(h.side() * 2.35, 2.6 + bob * 0.5, 1.0);
+    }
+
+    @Override
+    protected net.minecraft.world.entity.EntityDimensions getDefaultDimensions(net.minecraft.world.entity.Pose pose) {
+        return super.getDefaultDimensions(pose).withEyeHeight(EYE_HEIGHT);   // between its three eyes
     }
 
     private void initHome(ServerLevel sl) {
-        BlockPos below = BlockPos.containing(getX(), getY() - 0.2, getZ());
-        if (!sl.getBlockState(below).getCollisionShape(sl, below).isEmpty()) {
-            setPos(getX(), getY() + 1.2, getZ());   // set down on the floor: it floats up off it
-        }
         home = position();
         floorY = findFloor(sl, home);
         left.pos = rest(left);
@@ -664,13 +669,10 @@ public class Monolith extends Monster {
                 return;
             }
         }
-        if (reachedPhase >= 2 && roll >= 60 && dist < 18) {
-            Hand h = nearerFree(target);
-            if (h != null) {
-                startGrab(h, target);
-                actionCooldown = cool + GRAB_WIND;
-                return;
-            }
+        if (reachedPhase >= 2 && roll >= 60 && dist < 18 && right.free()) {   // it grabs with its right hand
+            startGrab(right, target);
+            actionCooldown = cool + GRAB_WIND;
+            return;
         }
         Hand h = nextLeft ? (left.free() ? left : right.free() ? right : null) : (right.free() ? right : left.free() ? left : null);
         if (h != null) {
@@ -678,14 +680,6 @@ public class Monolith extends Monster {
             startSlam(h, target, null);
             actionCooldown = cool + (reachedPhase == 1 ? SLAM_TELEGRAPH : 0);
         }
-    }
-
-    @Nullable
-    private Hand nearerFree(LivingEntity t) {
-        if (left.free() && right.free()) {
-            return left.pos.distanceToSqr(t.position()) < right.pos.distanceToSqr(t.position()) ? left : right;
-        }
-        return left.free() ? left : right.free() ? right : null;
     }
 
     /** Where `t` is heading (the second hand of a double slam waits there). */
@@ -754,9 +748,10 @@ public class Monolith extends Monster {
         level().broadcastEntityEvent(this, EVENT_CLAP);
     }
 
+    /** The clap: the palms meet just above the floor, a little under 3 blocks in front (the `clap` clip). */
     private Vec3 clapPoint(double side) {
-        Vec3 p = local(side, 0, 4.6);
-        return new Vec3(p.x, floorY + 1.0, p.z);
+        Vec3 p = local(side, 0, 2.9);
+        return new Vec3(p.x, floorY + 0.75, p.z);
     }
 
     public void startSummon(ServerLevel sl) {
@@ -846,7 +841,7 @@ public class Monolith extends Monster {
                     h.set(H_RETURN);
                     break;
                 }
-                moveTo(h, local(h.side() * 1.6, 4.4, 3.0), 0.45);
+                moveTo(h, local(h.side() * 0.3, 3.8, 1.9), 0.45);   // up before its eyes (the end of the `grab` clip)
                 holdVictim(v, h.pos.add(0, -v.getBbHeight() * 0.5, 0));
                 if (h.t % 10 == 0) {
                     v.invulnerableTime = 0;
@@ -875,10 +870,21 @@ public class Monolith extends Monster {
                     h.set(H_RETURN);
                 }
             }
-            case H_SUMMON -> {
-                moveTo(h, local(h.side() * 3.7, 7.6, 0.6), 0.45);
-                if (h.isLeft && h.t == SUMMON_AT) {
-                    summonObolisks(sl);
+            case H_SUMMON -> {   // both hands rise, then strike the floor either side (the `summon` clip): the Obolisks come up
+                if (h.t < SUMMON_RAISE) {
+                    moveTo(h, local(h.side() * 3.0, 6.9, 0.9), 0.45);
+                } else if (h.t <= SUMMON_AT) {
+                    Vec3 p = local(h.side() * 2.1, 0, 2.45);
+                    moveTo(h, new Vec3(p.x, floorY + 0.55, p.z), 1.1);
+                }
+                if (h.t == SUMMON_AT) {
+                    Vec3 p = h.pos;
+                    sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OBSIDIAN.defaultBlockState()), p.x, floorY + 0.1, p.z,
+                            30, 0.8, 0.1, 0.8, 0.2);
+                    if (h.isLeft) {
+                        summonObolisks(sl);
+                        shake(sl, position(), 32, 1.2f, 16);
+                    }
                 }
                 if (h.t >= SUMMON_TICKS) {
                     h.set(H_RETURN);
@@ -970,7 +976,7 @@ public class Monolith extends Monster {
         level().broadcastEntityEvent(this, EVENT_RING);
         Vec3 c = ringCentre;
         sl.playSound(null, c.x, c.y, c.z, EndSounds.MONOLITH_CLAP, SoundSource.HOSTILE, 5f, 1f);
-        sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, c.x, c.y + 1, c.z, 1, 0, 0, 0, 0);
+        sl.sendParticles(ParticleTypes.EXPLOSION, c.x, c.y + 0.6, c.z, 3, 0.6, 0.2, 0.6, 0);
         sl.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OBSIDIAN.defaultBlockState()), c.x, c.y + 1, c.z, 40, 0.6,
                 0.4, 0.6, 0.3);
         shake(sl, c, 32, 2.2f, 18);
@@ -1267,14 +1273,21 @@ public class Monolith extends Monster {
             handLO.set(handL);
             handRO.set(handR);
         }
+        for (int i = 0; i < 2; i++) {
+            byte s = handState(i == 0);
+            if (s != clientHandState[i]) {
+                clientHandState[i] = s;
+                clientHandSince[i] = tickCount;
+            }
+        }
         boolean dying = isDeadOrDying();
         idleState.animateWhen(!dying, tickCount);
         stareState.animateWhen(!dying && stareTarget() >= 0, tickCount);
         deathState.animateWhen(dying, tickCount);
-        stopAfter(slamLState, slamLStart, 24);
-        stopAfter(slamRState, slamRStart, 24);
+        stopAfter(slamLState, slamLStart, 28);   // the clips' lengths at the speeds client.endboss.MonolithRenderer plays them
+        stopAfter(slamRState, slamRStart, 28);
         stopAfter(grabState, grabStart, 20);
-        stopAfter(clapState, clapStart, 24);
+        stopAfter(clapState, clapStart, 40);
         stopAfter(summonState, summonStart, 40);
         if (isAwake() && random.nextInt(4) == 0) {   // motes drift off its runes
             level().addParticle(EndParticles.ECLIPSE_MOTE, getRandomX(0.6), getY() + 1 + random.nextDouble() * 5.5, getRandomZ(0.6),

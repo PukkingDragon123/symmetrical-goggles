@@ -32,41 +32,46 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 /**
- * Draws the Monolith: the exported lowpix model {@code monolith} (bones {@code body}, {@code eye_0..2}, {@code hand_l},
- * {@code hand_r}, {@code shards}; clips idle, stare, slam_l, slam_r, grab, clap, summon, death; its {@code _glow} texture
- * as a pulsing emissive pass), or, until that model is exported, a stand-in built here from obsidian. Either way the hands
- * are drawn where the server says they are (Monolith's synced hand positions), so you see the hands where they hit.
+ * Draws the Monolith from its lowpix model {@code monolith} (client/lowpix/MonolithModel: bones {@code body},
+ * {@code eye_0..2} with {@code _ball} and {@code _pupil}, {@code hand_l}, {@code hand_r}, {@code shards}): the clips
+ * (idle under everything; stare, slam_l, slam_r, clap and summon as overlays at the server's timing; grab posed by
+ * what the right hand is doing; death alone), its {@code _glow} texture as a breathing emissive pass that blazes while
+ * it stares, and pupils that follow whoever it stares at (or you).
  *
- * <p>Telegraphs: a slam's shadow darkens on the floor under the rising hand, ringed in violet at its exact radius; the
- * clap's shockwave is a glowing ring running out along the floor (jump it); while it stares, its eyes flare and a gaze
- * streams to you, brighter the nearer you are to being petrified.
+ * <p>The hands are drawn where the server says they are (Monolith's synced hand positions): after the clips each hand
+ * bone is moved so the middle of its boxes sits there, keeping the clip's turn and its fingers. So you see the hands
+ * where they hit.
+ *
+ * <p>Telegraphs: a slam's shadow darkens on the floor under the rising fist, ringed in violet at its exact radius; the
+ * clap's shockwave is a glowing ring running out along the floor (jump it); while it stares, a gaze streams from its
+ * eyes to you, brighter the nearer you are to being petrified.
  */
 public class MonolithRenderer extends EntityRenderer<Monolith> {
-    static final ResourceLocation OBSIDIAN = ResourceLocation.withDefaultNamespace("textures/block/obsidian.png");
-    static final ResourceLocation CRYING = ResourceLocation.withDefaultNamespace("textures/block/crying_obsidian.png");
-    static final ResourceLocation WHITE = ResourceLocation.withDefaultNamespace("textures/misc/white.png");
     static final ResourceLocation SHADOW = ResourceLocation.withDefaultNamespace("textures/misc/shadow.png");
+    /** The slam clip strikes at 0.9 s, the clap's palms meet at 0.62 s: played so they land on the server's ticks. */
+    private static final float SLAM_SPEED = 0.9f * 20f / Monolith.SLAM_TELEGRAPH,
+            CLAP_SPEED = 0.62f * 20f / (Monolith.CLAP_SPREAD + Monolith.CLAP_HIT);
     @Nullable
     private final Model model;
+    private final Vector3f[] eyes = {new Vector3f(), new Vector3f(), new Vector3f()};
+    private boolean warned;
 
     public MonolithRenderer(EntityRendererProvider.Context ctx) {
         super(ctx);
-        shadowRadius = 1.6f;
-        shadowStrength = 0.6f;
+        shadowRadius = 1.4f;
+        shadowStrength = 0.55f;
         Model m = null;
-        if (MonolithRenderer.class.getResource("/assets/" + Winterworks.MOD_ID + "/lowpix/monolith.geo.json") != null) {
-            try {
-                m = new Model(ctx.bakeLayer(EndBossClient.MONOLITH_LAYER));
-            } catch (RuntimeException ex) {
-                Winterworks.LOG.error("monolith model: {}", ex.getMessage());
-            }
+        try {
+            m = new Model(ctx.bakeLayer(EndBossClient.MONOLITH_LAYER));
+        } catch (RuntimeException ex) {
+            Winterworks.LOG.error("monolith model: {}", ex.getMessage());
         }
         model = m;
     }
 
     @Override
     public ResourceLocation getTextureLocation(Monolith e) {
-        return model != null ? model.texture : OBSIDIAN;
+        return model != null ? model.texture : Winterworks.id("textures/entity/monolith.png");
     }
 
     @Override
@@ -76,21 +81,24 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
 
     @Override
     public void render(Monolith e, float entityYaw, float partial, PoseStack pose, MultiBufferSource buffers, int light) {
+        if (model == null || model.empty) {
+            if (!warned) {
+                warned = true;
+                Winterworks.LOG.error("the monolith model is missing: nothing to draw");
+            }
+            return;
+        }
         float age = e.tickCount + partial;
         float yaw = Mth.rotLerp(partial, e.yRotO, e.getYRot());
-        float death = e.deathTime > 0 ? Math.min(1f, (e.deathTime + partial) / Monolith.DEATH_TICKS) : 0f;
-        float bob = Mth.sin(age * 0.05f) * 0.12f * (1 - death);
+        boolean dying = e.isDeadOrDying();
+        float bob = dying ? 0f : Mth.sin(age * 0.05f) * 0.12f;
         Vector3f hl = new Vector3f(e.handLO).lerp(e.handL, partial), hr = new Vector3f(e.handRO).lerp(e.handR, partial);
-        int overlay = OverlayTexture.pack(0f, e.hurtTime > 0 && death == 0);
+        int overlay = OverlayTexture.pack(0f, e.hurtTime > 0 && !dying);
         float glow = glowLevel(e, age);
-        if (model != null) {
-            renderModel(e, model, pose, buffers, light, overlay, age, yaw, bob, death, glow, hl, hr);
-        } else {
-            MonolithStandIn.render(e, pose, buffers, light, overlay, age, yaw, bob, death, glow, hl, hr);
-        }
-        if (death == 0f) {
+        renderModel(e, model, pose, buffers, light, overlay, age, partial, yaw, bob, glow, hl, hr);
+        if (!dying) {
             telegraphs(e, pose, buffers, age, hl, hr);
-            gaze(e, pose, buffers, age, partial, yaw, bob);
+            gaze(e, pose, buffers, age, partial);
         }
         ring(e, pose, buffers, age);
         super.render(e, entityYaw, partial, pose, buffers, light);
@@ -102,27 +110,34 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
             return Math.max(0f, 1f - e.deathTime / (float) Monolith.DEATH_TICKS) * (0.6f + 0.4f * Mth.sin(age * 1.3f));
         }
         if (!e.isAwake()) {
-            return 0.22f + 0.04f * Mth.sin(age * 0.05f);
+            return 0.3f + 0.05f * Mth.sin(age * 0.05f);
         }
-        float k = 0.68f + 0.14f * Mth.sin(age * 0.11f) + 0.06f * (e.phase() - 1);
+        float k = 0.7f + 0.14f * Mth.sin(age * 0.11f) + 0.06f * (e.phase() - 1);
         if (e.stareTarget() >= 0) {
-            k = 0.9f + 0.5f * e.stareProgress() + 0.08f * Mth.sin(age * (0.6f + e.stareProgress()));
+            k = 0.95f + 0.6f * e.stareProgress() + 0.08f * Mth.sin(age * (0.6f + e.stareProgress()));
         }
         return k;
     }
 
-    // ------------------------------------------------------------------------------------------------ the exported model
-
-    private void renderModel(Monolith e, Model m, PoseStack pose, MultiBufferSource buffers, int light, int overlay, float age, float yaw,
-                             float bob, float death, float glow, Vector3f hl, Vector3f hr) {
+    private void renderModel(Monolith e, Model m, PoseStack pose, MultiBufferSource buffers, int light, int overlay, float age, float partial,
+                             float yaw, float bob, float glow, Vector3f hl, Vector3f hr) {
         pose.pushPose();
         pose.translate(0f, bob, 0f);
         pose.mulPose(Axis.YP.rotationDegrees(180f - yaw));
         pose.scale(-1f, -1f, 1f);
         pose.translate(0f, -1.501f, 0f);
         m.setupAnim(e, 0f, 0f, age, 0f, 0f);
-        m.placeHand("hand_l", new Vector3f(hl).sub(0, bob, 0), yaw);
-        m.placeHand("hand_r", new Vector3f(hr).sub(0, bob, 0), yaw);
+        if (!e.isDeadOrDying()) {   // dying, the death clip lets the hands fall where it likes
+            m.placeHand("hand_l", new Vector3f(hl).sub(0, bob, 0), yaw);
+            m.placeHand("hand_r", new Vector3f(hr).sub(0, bob, 0), yaw);
+            m.lookAt(e, partial, yaw);
+        }
+        PoseStack model = new PoseStack();   // the same turn, flip and lift, from the entity itself (not the camera)
+        model.translate(0f, bob, 0f);
+        model.mulPose(Axis.YP.rotationDegrees(180f - yaw));
+        model.scale(-1f, -1f, 1f);
+        model.translate(0f, -1.501f, 0f);
+        m.eyePositions(model, eyes);
         m.renderToBuffer(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(m.texture)), light, overlay, 0xFFFFFFFF);
         if (m.hasGlow) {
             int c = (int) (Mth.clamp(glow, 0f, 1f) * 255);
@@ -139,20 +154,23 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
         pose.popPose();
     }
 
-    /** The exported model with its clips, and a way to put each hand bone where the server put the hand. */
+    /** The exported model with its clips, a way to put each hand bone where the server put the hand, and looking pupils. */
     static final class Model extends WWModel<Monolith> {
-        /** Each hand bone's ancestors (root first) and the centre of its boxes in its own space (model pixels). */
+        /** Each hand bone's ancestors (root first) and the middle of its boxes in its own space (model pixels). */
         private final Map<String, List<ModelPart>> chains = new HashMap<>();
         private final Map<String, Vector3f> centres = new HashMap<>();
+        final boolean empty;
 
         Model(ModelPart root) {
             super(root, "monolith");
+            boolean none = true;
             try {
                 Map<String, JsonObject> parts = new HashMap<>();
                 for (JsonElement el : LowpixGeometry.read(Winterworks.MOD_ID, "monolith").getAsJsonArray("parts")) {
                     JsonObject p = el.getAsJsonObject();
                     parts.put(p.get("name").getAsString(), p);
                 }
+                none = parts.isEmpty();
                 for (String hand : new String[]{"hand_l", "hand_r"}) {
                     if (!parts.containsKey(hand) || get(hand).isEmpty()) {
                         continue;
@@ -175,16 +193,17 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
             } catch (RuntimeException ex) {
                 chains.clear();
             }
+            empty = none;
         }
 
-        /** The middle of all boxes under `bone`, in its own space (rest pose). */
+        /** The middle of all boxes under `bone`, in its own space (rest pose, digits straight). */
         private static Vector3f boxCentre(Map<String, JsonObject> parts, String bone) {
             Vector3f min = new Vector3f(Float.MAX_VALUE), max = new Vector3f(-Float.MAX_VALUE);
-            collect(parts, bone, new Vector3f(), min, max);
+            collect(parts, bone, new Vector3f(), min, max, true);
             return min.x > max.x ? new Vector3f() : new Vector3f(min).add(max).mul(0.5f);
         }
 
-        private static void collect(Map<String, JsonObject> parts, String bone, Vector3f at, Vector3f min, Vector3f max) {
+        private static void collect(Map<String, JsonObject> parts, String bone, Vector3f at, Vector3f min, Vector3f max, boolean top) {
             JsonObject p = parts.get(bone);
             if (p == null) {
                 return;
@@ -200,7 +219,8 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
                 JsonObject q = e.getValue();
                 if (!q.get("parent").isJsonNull() && q.get("parent").getAsString().equals(bone)) {
                     var o = q.getAsJsonArray("offset");
-                    collect(parts, e.getKey(), new Vector3f(at).add(o.get(0).getAsFloat(), o.get(1).getAsFloat(), o.get(2).getAsFloat()), min, max);
+                    collect(parts, e.getKey(), new Vector3f(at).add(o.get(0).getAsFloat(), o.get(1).getAsFloat(), o.get(2).getAsFloat()),
+                            min, max, false);
                 }
             }
         }
@@ -229,6 +249,43 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
             hand.z = inParent.z - turned.z;
         }
 
+        /** Its pupils turn to whoever it stares at, else to the player watching (when awake). */
+        void lookAt(Monolith e, float partial, float yaw) {
+            Minecraft mc = Minecraft.getInstance();
+            Entity t = e.stareTarget() >= 0 ? e.level().getEntity(e.stareTarget()) : e.isAwake() ? mc.getCameraEntity() : null;
+            if (t == null || t.distanceToSqr(e) > 48 * 48) {
+                return;
+            }
+            Vec3 d = t.getEyePosition(partial).subtract(e.getEyePosition(partial));
+            Vector3f l = new Vector3f((float) d.x, (float) d.y, (float) d.z).rotateY(yaw * Mth.DEG_TO_RAD).normalize();   // +x its left, +z ahead
+            for (int i = 0; i < 3; i++) {
+                int eye = i;
+                get("eye_" + i + "_pupil").ifPresent(p -> {
+                    p.x += Mth.clamp(l.x, -1f, 1f) * (eye == 0 ? 2.6f : 2.2f);
+                    p.y -= Mth.clamp(l.y, -1f, 1f) * 1.2f;
+                });
+            }
+        }
+
+        /** The pupils' positions (relative to the entity, world axes) in the pose the model is drawn with. */
+        void eyePositions(PoseStack pose, Vector3f[] out) {
+            for (int i = 0; i < out.length; i++) {
+                ModelPart body = get("body").orElse(null), eye = get("eye_" + i).orElse(null), pupil = get("eye_" + i + "_pupil").orElse(null);
+                if (body == null || eye == null) {
+                    continue;
+                }
+                pose.pushPose();
+                root().translateAndRotate(pose);
+                body.translateAndRotate(pose);
+                eye.translateAndRotate(pose);
+                if (pupil != null) {
+                    pupil.translateAndRotate(pose);
+                }
+                pose.last().pose().transformPosition(0f, 0f, 0f, out[i]);
+                pose.popPose();
+            }
+        }
+
         @Override
         public void setupAnim(Monolith e, float limbSwing, float limbAmount, float age, float headYaw, float headPitch) {
             reset();
@@ -238,11 +295,19 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
             }
             play(e.idleState, "idle", age, 1f);
             play(e.stareState, "stare", age, 1f);
-            play(e.slamLState, "slam_l", age, 1f);
-            play(e.slamRState, "slam_r", age, 1f);
-            play(e.grabState, "grab", age, 1f);
-            play(e.clapState, "clap", age, 1f);
+            play(e.slamLState, "slam_l", age, SLAM_SPEED);
+            play(e.slamRState, "slam_r", age, SLAM_SPEED);
+            play(e.clapState, "clap", age, CLAP_SPEED);
             play(e.summonState, "summon", age, 1f);
+            // the grab follows the right hand: open as it winds back and reaches, closing on you, then the fist held
+            byte st = e.clientHandState[1];
+            float since = age - e.clientHandSince[1];
+            switch (st) {
+                case Monolith.H_GRAB_WIND -> clip("grab", 0.3f * Mth.clamp(since / Monolith.GRAB_WIND, 0f, 1f));
+                case Monolith.H_GRAB_REACH -> clip("grab", 0.3f + 0.12f * Mth.clamp(since / 10f, 0f, 1f));
+                case Monolith.H_GRAB_HOLD -> clip("grab", Math.min(1f, 0.45f + since / 20f));
+                default -> {}
+            }
         }
     }
 
@@ -275,7 +340,7 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
             // the shadow, darkening as it comes
             VertexConsumer shadow = buffers.getBuffer(RenderType.entityShadow(SHADOW));
             PoseStack.Pose p = pose.last();
-            float a = 0.35f + 0.6f * k, s = r * (1.25f - 0.15f * k), y = c.y + 0.03f;
+            float a = 0.4f + 0.55f * k, s = r * (1.3f - 0.2f * k), y = c.y + 0.03f;
             shadowVertex(shadow, p, c.x - s, y, c.z - s, 0, 0, a);
             shadowVertex(shadow, p, c.x - s, y, c.z + s, 0, 1, a);
             shadowVertex(shadow, p, c.x + s, y, c.z + s, 1, 1, a);
@@ -283,8 +348,8 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
             // its reach: a violet ring at the slam's radius, pulsing faster as it falls
             VertexConsumer glow = buffers.getBuffer(RenderType.dragonRays());
             float pulse = 0.6f + 0.4f * Mth.sin(age * (0.4f + k * 1.6f));
-            DragonLightBeamRenderer.ring(glow, p.pose(), c, r - 0.18f, 0.36f, 200, 90, 255, (int) (180 * pulse * (0.4f + 0.6f * k)));
-            DragonLightBeamRenderer.ring(glow, p.pose(), c, 0f, r * 0.9f, 120, 40, 200, (int) (50 * k));
+            DragonLightBeamRenderer.ring(glow, p.pose(), c, r - 0.2f, 0.4f, 210, 100, 255, (int) (200 * pulse * (0.4f + 0.6f * k)));
+            DragonLightBeamRenderer.ring(glow, p.pose(), c, 0f, r * 0.9f, 150, 60, 230, (int) (85 * k));
         }
     }
 
@@ -308,30 +373,26 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
         float w = (float) Monolith.RING_WIDTH;
         DragonLightBeamRenderer.ring(glow, m, c, Math.max(0f, r - w), w * 2f, 255, 200, 255, (int) (230 * fade));
         DragonLightBeamRenderer.ring(glow, m, c, Math.max(0f, r - w * 2.5f), w * 5f, 170, 70, 255, (int) (90 * fade));
-        // the wall
-        int n = 64;
+        int n = 64;   // the wall
         float h = (float) Monolith.RING_JUMP;
+        int a = (int) (150 * fade);
         for (int i = 0; i < n; i++) {
             float a0 = Mth.TWO_PI * i / n, a1 = Mth.TWO_PI * (i + 1) / n;
             float x0 = c.x + Mth.cos(a0) * r, z0 = c.z + Mth.sin(a0) * r, x1 = c.x + Mth.cos(a1) * r, z1 = c.z + Mth.sin(a1) * r;
-            int a = (int) (150 * fade);
-            glow.addVertex(m, x0, c.y, z0).setColor(230, 160, 255, a);
-            glow.addVertex(m, x1, c.y, z1).setColor(230, 160, 255, a);
-            glow.addVertex(m, x1, c.y + h, z1).setColor(200, 120, 255, 0);
-            glow.addVertex(m, x0, c.y, z0).setColor(230, 160, 255, a);
-            glow.addVertex(m, x1, c.y + h, z1).setColor(200, 120, 255, 0);
-            glow.addVertex(m, x0, c.y + h, z0).setColor(200, 120, 255, 0);
-            glow.addVertex(m, x0, c.y, z0).setColor(230, 160, 255, a);
-            glow.addVertex(m, x1, c.y + h, z1).setColor(200, 120, 255, 0);
-            glow.addVertex(m, x1, c.y, z1).setColor(230, 160, 255, a);
-            glow.addVertex(m, x0, c.y, z0).setColor(230, 160, 255, a);
-            glow.addVertex(m, x0, c.y + h, z0).setColor(200, 120, 255, 0);
-            glow.addVertex(m, x1, c.y + h, z1).setColor(200, 120, 255, 0);
+            for (int side = 0; side < 2; side++) {   // both windings
+                float xa = side == 0 ? x0 : x1, za = side == 0 ? z0 : z1, xb = side == 0 ? x1 : x0, zb = side == 0 ? z1 : z0;
+                glow.addVertex(m, xa, c.y, za).setColor(230, 160, 255, a);
+                glow.addVertex(m, xb, c.y, zb).setColor(230, 160, 255, a);
+                glow.addVertex(m, xb, c.y + h, zb).setColor(200, 120, 255, 0);
+                glow.addVertex(m, xa, c.y, za).setColor(230, 160, 255, a);
+                glow.addVertex(m, xb, c.y + h, zb).setColor(200, 120, 255, 0);
+                glow.addVertex(m, xa, c.y + h, za).setColor(200, 120, 255, 0);
+            }
         }
     }
 
     /** While it stares: a gaze from its eyes to you, flickering, brighter as you near petrification. */
-    private void gaze(Monolith e, PoseStack pose, MultiBufferSource buffers, float age, float partial, float yaw, float bob) {
+    private void gaze(Monolith e, PoseStack pose, MultiBufferSource buffers, float age, float partial) {
         int id = e.stareTarget();
         if (id < 0) {
             return;
@@ -349,15 +410,12 @@ public class MonolithRenderer extends EntityRenderer<Monolith> {
         float flicker = 0.7f + 0.3f * Mth.sin(age * (1.1f + 2f * k));
         VertexConsumer glow = buffers.getBuffer(RenderType.dragonRays());
         Matrix4f m = pose.last().pose();
-        for (Vector3f eye : MonolithStandIn.eyesWorld(yaw, bob)) {
-            DragonLightBeamRenderer.ribbon(glow, m, eye, b, c, 0.05f + 0.06f * k, 230, 150, 255, (int) ((40 + 150 * k) * flicker));
+        for (Vector3f eye : eyes) {
+            DragonLightBeamRenderer.ribbon(glow, m, eye, b, c, 0.07f + 0.08f * k, 235, 160, 255, (int) ((90 + 150 * k) * flicker));
+            DragonLightBeamRenderer.flare(glow, m, eye, c, 0.35f + 0.5f * k, 230, 140, 255, (int) ((60 + 120 * k) * flicker));
         }
         if (k > 0.05f) {
             DragonLightBeamRenderer.flare(glow, m, b, c, 0.5f + 0.9f * k, 220, 120, 255, (int) (120 * k * flicker));
         }
-    }
-
-    static Minecraft mc() {
-        return Minecraft.getInstance();
     }
 }

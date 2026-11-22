@@ -92,35 +92,53 @@ public final class EclipseSky {
 
     // ------------------------------------------------------------------------------------------------ the sky box
 
-    /** Sky colour for a direction (before the End sky texture multiplies it), at full eclipse. */
+    /** Sky colour for a direction at full eclipse: deep violet overhead, magenta at the horizon, a haze round the moon. */
     static void eclipseColour(Vector3f d, Vector3f moon, Vector3f out) {
         float y = d.y;
         float r, g, b;
         if (y >= 0) {   // magenta horizon -> deep violet zenith
-            float k = (float) Math.pow(y, 0.55);
-            r = Mth.lerp(k, 1.55f, 0.38f);
-            g = Mth.lerp(k, 0.42f, 0.16f);
-            b = Mth.lerp(k, 1.20f, 0.78f);
+            float k = (float) Math.pow(y, 0.5);
+            r = Mth.lerp(k, 0.46f, 0.11f);
+            g = Mth.lerp(k, 0.11f, 0.05f);
+            b = Mth.lerp(k, 0.42f, 0.22f);
         } else {        // below the horizon: into the dark violet of the void
-            float k = Math.min(1f, -y * 2.2f);
-            r = Mth.lerp(k, 1.55f, 0.22f);
-            g = Mth.lerp(k, 0.42f, 0.06f);
-            b = Mth.lerp(k, 1.20f, 0.42f);
+            float k = Math.min(1f, -y * 2.5f);
+            r = Mth.lerp(k, 0.46f, 0.07f);
+            g = Mth.lerp(k, 0.11f, 0.02f);
+            b = Mth.lerp(k, 0.42f, 0.13f);
         }
         float m = Math.max(0f, d.dot(moon));
-        float haze = (float) Math.pow(m, 6) * 0.9f + (float) Math.pow(m, 40) * 0.8f;   // a warm glow round the moon
-        r += 0.9f * haze;
-        g += 0.45f * haze;
-        b += 0.15f * haze;
+        float haze = (float) Math.pow(m, 5) * 0.42f + (float) Math.pow(m, 30) * 0.5f;   // a glow round the moon
+        r += 0.62f * haze;
+        g += 0.22f * haze;
+        b += 0.55f * haze;
         out.set(r, g, b);
     }
 
+    /**
+     * The sky box: a smooth gradient (vertex colours), then vanilla's End sky texture added over it, faint: at full
+     * eclipse a fine grain of stars on the gradient; fading out, back to vanilla's (the texture tinted 0x282828).
+     */
     private static void skyBox(PoseStack pose, float f, Vector3f moon) {
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.setShaderTexture(0, END_SKY);
         Tesselator tess = Tesselator.getInstance();
         Vector3f dir = new Vector3f(), col = new Vector3f();
         float base = 40f / 255f;   // vanilla's End sky tint (0x282828)
+        for (int pass = 0; pass < 2; pass++) {
+            boolean grain = pass == 1;
+            if (grain) {
+                RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+                RenderSystem.setShaderTexture(0, END_SKY);
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+            } else {
+                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                RenderSystem.defaultBlendFunc();
+            }
+            skyPass(pose, tess, f, base, moon, dir, col, grain);
+        }
+        RenderSystem.defaultBlendFunc();
+    }
+
+    private static void skyPass(PoseStack pose, Tesselator tess, float f, float base, Vector3f moon, Vector3f dir, Vector3f col, boolean grain) {
         for (int face = 0; face < 6; face++) {
             pose.pushPose();
             switch (face) {
@@ -133,13 +151,13 @@ public final class EclipseSky {
             }
             Matrix4f m = pose.last().pose();
             Matrix4f rot = faceRotation(face);
-            BufferBuilder bb = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            BufferBuilder bb = tess.begin(VertexFormat.Mode.QUADS, grain ? DefaultVertexFormat.POSITION_TEX_COLOR : DefaultVertexFormat.POSITION_COLOR);
             for (int i = 0; i < GRID; i++) {
                 for (int j = 0; j < GRID; j++) {
-                    vertex(bb, m, rot, i, j, f, base, moon, dir, col);
-                    vertex(bb, m, rot, i, j + 1, f, base, moon, dir, col);
-                    vertex(bb, m, rot, i + 1, j + 1, f, base, moon, dir, col);
-                    vertex(bb, m, rot, i + 1, j, f, base, moon, dir, col);
+                    vertex(bb, m, rot, i, j, f, base, moon, dir, col, grain);
+                    vertex(bb, m, rot, i, j + 1, f, base, moon, dir, col, grain);
+                    vertex(bb, m, rot, i + 1, j + 1, f, base, moon, dir, col, grain);
+                    vertex(bb, m, rot, i + 1, j, f, base, moon, dir, col, grain);
                 }
             }
             BufferUploader.drawWithShader(bb.buildOrThrow());
@@ -162,13 +180,16 @@ public final class EclipseSky {
     }
 
     private static void vertex(BufferBuilder bb, Matrix4f m, Matrix4f rot, int i, int j, float f, float base, Vector3f moon,
-                               Vector3f dir, Vector3f col) {
+                               Vector3f dir, Vector3f col, boolean grain) {
         float x = -100f + 200f * i / GRID, z = -100f + 200f * j / GRID;
         rot.transformPosition(x, -100f, z, dir).normalize();
         eclipseColour(dir, moon, col);
-        float r = Mth.lerp(f, base, col.x * 0.62f), g = Mth.lerp(f, base, col.y * 0.62f), b = Mth.lerp(f, base, col.z * 0.62f);
-        bb.addVertex(m, x, -100f, z).setUv(16f * i / GRID, 16f * j / GRID)
-                .setColor(Math.min(1f, r), Math.min(1f, g), Math.min(1f, b), 1f);
+        if (grain) {   // vanilla's tint fading into a faint grain the colour of the sky
+            float r = Mth.lerp(f, base, col.x * 0.3f + 0.02f), g = Mth.lerp(f, base, col.y * 0.3f + 0.02f), b = Mth.lerp(f, base, col.z * 0.3f + 0.03f);
+            bb.addVertex(m, x, -100f, z).setUv(16f * i / GRID, 16f * j / GRID).setColor(Math.min(1f, r), Math.min(1f, g), Math.min(1f, b), 1f);
+        } else {
+            bb.addVertex(m, x, -100f, z).setColor(Math.min(1f, col.x * f), Math.min(1f, col.y * f), Math.min(1f, col.z * f), 1f);
+        }
     }
 
     // ------------------------------------------------------------------------------------------------ the moon
@@ -216,7 +237,7 @@ public final class EclipseSky {
         Tesselator tess = Tesselator.getInstance();
         BufferBuilder bb = tess.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
         float pulse = 0.85f + 0.15f * Mth.sin(t * 0.031f);
-        fan(bb, m, moon, MOON_RADIUS * 0.9f, MOON_RADIUS * 5.2f, 64, 255, 150, 120, (int) (150 * f * pulse), 120, 40, 150, 0, 0f, 0f);
+        fan(bb, m, moon, MOON_RADIUS * 0.9f, MOON_RADIUS * 5.2f, 64, 220, 140, 255, (int) (95 * f * pulse), 120, 40, 170, 0, 0f, 0f);
         BufferUploader.drawWithShader(bb.buildOrThrow());
     }
 
@@ -303,6 +324,12 @@ public final class EclipseSky {
         }
     }
 
+    /** Whether the eclipse is up enough in the End to lift the dragon's thick boss fog (so the sky shows). */
+    public static boolean liftsBossFog() {
+        Minecraft mc = Minecraft.getInstance();
+        return mc.level != null && mc.level.dimension() == net.minecraft.world.level.Level.END && Eclipse.fraction(mc.level) > 0.25f;
+    }
+
     /** The End's fog during an eclipse: towards a violet that matches the horizon. */
     public static Vec3 fog(Vec3 vanilla) {
         Minecraft mc = Minecraft.getInstance();
@@ -311,6 +338,6 @@ public final class EclipseSky {
             return vanilla;
         }
         float ease = f * f * (3 - 2 * f);
-        return vanilla.lerp(new Vec3(0.30, 0.10, 0.34), ease);
+        return vanilla.lerp(new Vec3(0.34, 0.09, 0.34), ease);
     }
 }

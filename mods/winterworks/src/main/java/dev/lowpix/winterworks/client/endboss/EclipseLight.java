@@ -29,9 +29,9 @@ public final class EclipseLight {
         float r = (abgr & 0xFF) / 255f, g = (abgr >> 8 & 0xFF) / 255f, b = (abgr >> 16 & 0xFF) / 255f;
         float lum = 0.3f * r + 0.59f * g + 0.11f * b;
         // lift the darks towards a violet glow, warm the lit parts towards gold
-        float lr = r + (1 - r) * LIFT * 0.95f, lg = g + (1 - g) * LIFT * 0.72f, lb = b + (1 - b) * LIFT * 1.15f;
+        float lr = r + (1 - r) * LIFT * 0.95f, lg = g + (1 - g) * LIFT * 0.6f, lb = b + (1 - b) * LIFT * 1.15f;
         float k = Mth.clamp((lum - 0.35f) / 0.5f, 0f, 1f);
-        float tr = Mth.lerp(k, 1.02f, 1.10f), tg = Mth.lerp(k, 0.84f, 0.97f), tb = Mth.lerp(k, 1.14f, 0.80f);
+        float tr = Mth.lerp(k, 1.04f, 1.10f), tg = Mth.lerp(k, 0.74f, 0.96f), tb = Mth.lerp(k, 1.24f, 0.80f);
         r = Mth.clamp(Mth.lerp(f, r, lr * tr), 0f, 1f);
         g = Mth.clamp(Mth.lerp(f, g, lg * tg), 0f, 1f);
         b = Mth.clamp(Mth.lerp(f, b, lb * tb), 0f, 1f);
