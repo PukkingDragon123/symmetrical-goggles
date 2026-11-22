@@ -160,3 +160,29 @@ spawn eggs `anglerfish_`, `lionfish_`, `nautilus_`, `whale_spawn_egg`. Entities:
 `nautilus`, `whale`, `lionfish_dart`, `cannonball`, `elder_bubble`. Biomes: `volcanic_depths`, `abyssal_trench`.
 Structures: `deep_shipwreck`, `sunken_treasure`, `whale_skeleton`. Dimension: `whale_belly`. Advancement:
 `ocean/whale_song`.
+
+## 11. Art notes for the Java side (blocks, items, armour)
+* Java models (`client/lowpix/*Model.java`, `textures/entity/<name>.png` + `_glow`), block-entity transform like
+  `HexRender.enterModel` (translate 0.5,0,0.5; rotate Y by yRot+180; translate 0,1.5,0; scale -1,-1,1), drawn with
+  `entityCutoutNoCull`, glow full-bright (`RenderType.eyes`):
+  * `whale_lure`: `frame` -> `stalk` (`stalk_0..2`) -> `bulb` (glow); `idle` 3 s loop.
+  * `eye_of_the_ocean`: `cage` -> `scales`; `eye` (centre (0,8,0), looks +Z) -> `pupil` (glow card); `idle` 4 s loop.
+  * `cannon`: `base` -> `yoke` (yaw: `yoke.yRot`) -> `barrel` (pitch: `barrel.xRot = -pitch`); clip `fire` 0.6 s.
+  * `turtle_shell_armor` (`carapace`, `plastron` at the body pivot): a Fabric `ArmorRenderer` for the chestplate:
+    `contextModel.body.translateAndRotate(pose)`, render with `RenderType.armorCutoutNoCull(winterworks:textures/entity/
+    turtle_shell_armor.png)` (+ glint when enchanted). Layers: `turtle_shell_layer_1` (boots only), `_layer_2` (legs).
+  * `turtle_shell_retreat` (`shell` -> `plastron`, `carapace`; `idle` loop, `hit` 0.4 s): drawn instead of the player
+    while retreating (living-entity transform: mulPose Y 180-bodyYaw, scale -1,-1,1, translate 0,-1.501,0).
+  * `cannonball` (`ball`, `spin` 1 s): translate up 0.2, scale -1,-1,1.
+* Blocks: `tube_worms` (cutout; blockstate on `extended`, random turns), `hydrothermal_vent` (solid; wrap
+  `block/hydrothermal_vent_glow` in an emissive model like `client/endmob/BloomGlowModel` for a full-bright mouth),
+  `nautilus_horn` (solid), `angler_light` (cube_all; texture animated 8 frames). Lure, eye, cannon have particle-only
+  block models, `""` blockstates and `builtin/entity` item models (add facing variants if a `facing` is added).
+* Particles (register types + providers; translucent sheet; frame 0 = birth): `vent_smoke` 6 (setSpriteFromAge over
+  40-60 t), `bioluminescence` 4 (full-bright), `whale_spout` 5 (~20 t), `belly_current` 4 (loop (age/2)%4), `song_note`
+  4 (loop (age/3)%4, full-bright, tint per note), `elder_bubble` 5 (0-3 shimmer, 4 pop).
+* Projectiles: `entity/elder_bubble.png` (32x128, 4 frames, billboard, full-bright), `entity/projectiles/lionfish_dart.png`
+  (arrow layout).
+* Sounds: `entity.whale.note` is one clean tone at F#3 (note-block base): play at pitch 2^((note-12)/12) for melodies.
+  `entity.whale.song` = three 12-13 s songs (streamed). Loops: `block.hydrothermal_vent.loop` (8 s),
+  `ambient.whale_belly.loop` (16 s).
