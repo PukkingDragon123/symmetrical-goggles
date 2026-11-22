@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "hatch=0,waterlogged=false": {
+      "model": "winterworks:block/harvester_egg_not_cracked"
+    },
+    "hatch=0,waterlogged=true": {
+      "model": "winterworks:block/harvester_egg_not_cracked"
+    },
+    "hatch=1,waterlogged=false": {
+      "model": "winterworks:block/harvester_egg_slightly_cracked"
+    },
+    "hatch=1,waterlogged=true": {
+      "model": "winterworks:block/harvester_egg_slightly_cracked"
+    },
+    "hatch=2,waterlogged=false": {
+      "model": "winterworks:block/harvester_egg_very_cracked"
+    },
+    "hatch=2,waterlogged=true": {
+      "model": "winterworks:block/harvester_egg_very_cracked"
+    }
+  }
+}

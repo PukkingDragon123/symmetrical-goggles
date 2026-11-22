@@ -50,7 +50,10 @@
     "LoopPlayerMixin",
     "RailStateMixin",
     "RailStateAccessor",
-    "DaggerSwingMixin"
+    "DaggerSwingMixin",
+    "harvester.BlockStateLightAccessor",
+    "harvester.PlantAnimateTickMixin",
+    "harvester.SnifferWaterMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -85,7 +88,9 @@
     "client.DaggerItemInHandLayerMixin",
     "client.DaggerPlayerRendererMixin",
     "client.RamPoseMixin",
-    "client.RamHandMixin"
+    "client.RamHandMixin",
+    "harvester.client.SnifferSneezeModelMixin",
+    "harvester.client.SpriteSourcesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

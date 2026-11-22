@@ -59,6 +59,17 @@
           "type": "minecraft:item",
           "name": "minecraft:danger_pottery_sherd",
           "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "winterworks:harvester_egg",
+          "weight": 80,
+          "conditions": [
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.013333
+            }
+          ]
         }
       ]
     }

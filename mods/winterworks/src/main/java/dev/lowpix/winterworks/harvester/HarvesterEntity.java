@@ -369,6 +369,11 @@ public class HarvesterEntity extends AbstractChestedHorse {
 
     // --------------------------------------------------------------------------------------- its head
 
+    /** Its size: babies are half size. */
+    public float bodyScale() {
+        return getScale() * getAgeScale();
+    }
+
     /** Facing (horizontal unit vector). */
     public Vec3 forward() {
         return Vec3.directionFromRotation(0f, getYRot());
@@ -376,7 +381,7 @@ public class HarvesterEntity extends AbstractChestedHorse {
 
     /** The middle of its head, at its feet's height. */
     public Vec3 headPoint() {
-        return position().add(forward().scale(HEAD_REACH * getScale()));
+        return position().add(forward().scale(HEAD_REACH * bodyScale()));
     }
 
     /** Is `p` under its head: within the wide head's footprint (3 wide, ~2 deep) and its height? */
@@ -384,7 +389,7 @@ public class HarvesterEntity extends AbstractChestedHorse {
         Vec3 f = forward();
         Vec3 rel = p.subtract(headPoint());
         double along = rel.x * f.x + rel.z * f.z, across = rel.x * -f.z + rel.z * f.x;
-        return Math.abs(along) <= 1.0 && Math.abs(across) <= HEAD_HALF_WIDTH * getScale() && rel.y > -1.6 && rel.y < 2.2;
+        return Math.abs(along) <= 1.0 && Math.abs(across) <= HEAD_HALF_WIDTH * bodyScale() && rel.y > -1.6 && rel.y < 2.2;
     }
 
     /** Crops every ripe plant under its head; the harvest goes into its chest or drops. Returns the number cropped. */
@@ -475,7 +480,7 @@ public class HarvesterEntity extends AbstractChestedHorse {
         Vec3 f = forward();
         Vec3 rel = e.position().subtract(headPoint());
         double along = rel.x * f.x + rel.z * f.z, across = rel.x * -f.z + rel.z * f.x;
-        double half = HEAD_HALF_WIDTH * getScale() + e.getBbWidth() * 0.5 + 0.2;
+        double half = HEAD_HALF_WIDTH * bodyScale() + e.getBbWidth() * 0.5 + 0.2;
         return along > -1.4 && along < 1.4 + e.getBbWidth() * 0.5 && Math.abs(across) <= half && Math.abs(rel.y) < 2.0;
     }
 
@@ -709,7 +714,7 @@ public class HarvesterEntity extends AbstractChestedHorse {
             Vec3 from = position().subtract(t);
             double d = from.horizontalDistance();
             Vec3 dir = d < 1e-3 ? forward().scale(-1) : new Vec3(from.x / d, 0, from.z / d);
-            Vec3 stand = t.add(dir.scale(HEAD_REACH * getScale()));   // where its body goes so the head is over the crop
+            Vec3 stand = t.add(dir.scale(HEAD_REACH * bodyScale()));   // where its body goes so the head is over the crop
             navigation.moveTo(stand.x, t.y, stand.z, 1.0);
         }
 

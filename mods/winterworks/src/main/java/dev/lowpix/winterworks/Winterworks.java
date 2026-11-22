@@ -67,6 +67,9 @@ public final class Winterworks implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(CouplingPayload.TYPE, CouplingPayload.CODEC);
         // ---- 0.4 fixes: rails (docs/FIXES_0_4.md)
         dev.lowpix.winterworks.express.ExpressFixes.init();
+        // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester", the Amber Age plants and sniffers)
+        dev.lowpix.winterworks.harvester.HarvesterFeature.init();
+        // ---- end 0.4 fixes: Harvester
         FabricBrewingRecipeRegistryBuilder.BUILD.register(b -> {
             b.addMix(Potions.AWKWARD, WWItems.ICEBREAKER_HORN, WWEffects.RAMMING_POTION);
             b.addMix(WWEffects.RAMMING_POTION, Items.REDSTONE, WWEffects.LONG_RAMMING_POTION);

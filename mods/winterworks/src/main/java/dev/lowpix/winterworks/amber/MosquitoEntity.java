@@ -1,6 +1,7 @@
 package dev.lowpix.winterworks.amber;
 
 import dev.lowpix.winterworks.Winterworks;
+import dev.lowpix.winterworks.harvester.GlowPlants;
 import dev.lowpix.winterworks.registry.WWBlocks;
 import dev.lowpix.winterworks.registry.WWItems;
 import dev.lowpix.winterworks.registry.WWParticles;
@@ -65,6 +66,13 @@ import org.jetbrains.annotations.Nullable;
  * stab it and drink (then they are calm and slow for 2 minutes); they also drink resin from Amberwood logs. A glass
  * bottle takes a blood mosquito's blood (a Potion of Blood); an amber mosquito fed blood spits out an amber shard.
  * Pitcher plants and pitcher pods charm them: they hang around the plants and pollinate pitcher crops.
+ *
+ * <p>0.4 fixes (docs/FIXES_0_4.md): torchflowers (planted, potted or the crop) set a mosquito alight when it touches or
+ * flies within a block of one, and mosquitoes keep away from them (their paths avoid them, and they flee one that is
+ * close). Resin really gets drunk now: the resin goal used to run only while the mosquito had no target, but an empty,
+ * hungry mosquito always has one (any player or animal with blood within 24 blocks), so outside the calmed GameTest it
+ * never sipped. Now an oozing log within reach wins over the hunt: the mosquito drops its target and won't pick a new
+ * one until it has sipped (or something hurts it).
  */
 public class MosquitoEntity extends Monster implements FlyingAnimal {
     public enum State {
@@ -102,6 +110,9 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
     public final AnimationState spitState = new AnimationState();
 
     private int calmTicks;
+    /** The oozing log it is on its way to (it doesn't hunt meanwhile). */
+    @Nullable
+    private BlockPos resinLog;
     private int stabCooldown;
     private int pollinateCooldown = 200;
     @Nullable
@@ -137,6 +148,13 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
             public boolean isStableDestination(BlockPos pos) {
                 return !this.level.getBlockState(pos.below()).isAir();
             }
+
+            @Override
+            protected net.minecraft.world.level.pathfinder.PathFinder createPathFinder(int maxVisited) {
+                this.nodeEvaluator = new TorchflowerShyEvaluator();
+                this.nodeEvaluator.setCanPassDoors(true);
+                return new net.minecraft.world.level.pathfinder.PathFinder(this.nodeEvaluator, maxVisited);
+            }
         };
         nav.setCanOpenDoors(false);
         nav.setCanFloat(false);
@@ -147,10 +165,11 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new StabGoal());
+        goalSelector.addGoal(0, new AvoidTorchflowerGoal());
+        goalSelector.addGoal(1, new DrinkResinGoal());   // before the hunt: resin wins (0.4 fixes)
+        goalSelector.addGoal(2, new StabGoal());
         goalSelector.addGoal(2, new TemptGoal(this, 1.0, s -> s.is(Items.PITCHER_POD), false));
         goalSelector.addGoal(3, new SeekBloodGoal());
-        goalSelector.addGoal(4, new DrinkResinGoal());
         goalSelector.addGoal(5, new PitcherGoal());
         goalSelector.addGoal(6, new HoverWanderGoal());
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0f));
@@ -220,7 +239,7 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
 
     /** Would this mosquito hunt `e` right now? */
     public boolean canHunt(LivingEntity e) {
-        if (e == this || !e.isAlive() || state() != State.EMPTY || calmTicks > 0 || !hasBlood(e)) {
+        if (e == this || !e.isAlive() || state() != State.EMPTY || calmTicks > 0 || !hasBlood(e) || resinLog != null) {
             return false;
         }
         if (e instanceof Player p) {   // a player holding pitcher pods charms them
@@ -303,6 +322,22 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
         if (pollinateCooldown > 0) {
             pollinateCooldown--;
         }
+        // torchflowers burn mosquitoes that touch them or fly within a block of one
+        if ((tickCount + getId()) % 4 == 0 && GlowPlants.torchflowerIn(level(), getBoundingBox().inflate(1.0))) {
+            if (!isOnFire()) {
+                playSound(SoundEvents.FIRECHARGE_USE, 0.5f, 1.6f);
+                if (level() instanceof ServerLevel sl) {
+                    sl.sendParticles(net.minecraft.core.particles.ParticleTypes.FLAME, getX(), getY() + 0.2, getZ(), 6, 0.15, 0.1, 0.15, 0.02);
+                }
+            }
+            igniteForSeconds(8.0f);
+        }
+    }
+
+    /** While it is on its way to resin it doesn't fight (so the hunt's target goal lets go too). */
+    @Override
+    public boolean canAttack(LivingEntity target) {
+        return resinLog == null && super.canAttack(target);
     }
 
     private void clientTick() {
@@ -628,10 +663,12 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
 
         @Override
         public boolean canUse() {
-            if (!isEmptyBelly() || getTarget() != null || --cooldown > 0) {
+            // not mid-drink, and not straight after being hit (it fights back first); a target of its own doesn't matter
+            if (!isEmptyBelly() || isDrinking() || --cooldown > 0
+                    || (getLastHurtByMob() != null && tickCount - getLastHurtByMobTimestamp() < 100)) {
                 return false;
             }
-            cooldown = 60 + random.nextInt(60);
+            cooldown = 40 + random.nextInt(40);
             log = findBlock(10, 5, s -> s.is(WWBlocks.AMBERWOOD_LOG) && s.getValue(AmberwoodLogBlock.RESIN));
             if (log == null) {
                 return false;
@@ -648,7 +685,8 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
 
         @Override
         public boolean canContinueToUse() {
-            return log != null && ticks < 400 && isEmptyBelly() && getTarget() == null && resin(log);
+            return log != null && ticks < 400 && isEmptyBelly() && getTarget() == null && resin(log)
+                    && (getLastHurtByMob() == null || tickCount - getLastHurtByMobTimestamp() > 2);
         }
 
         @Override
@@ -660,6 +698,8 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
         public void start() {
             ticks = 0;
             drinkTicks = 0;
+            resinLog = log;
+            setTarget(null);   // forget the hunt (canAttack is false until it has sipped)
             getNavigation().moveTo(spot.x, spot.y, spot.z, 1.0);
         }
 
@@ -702,6 +742,66 @@ public class MosquitoEntity extends Monster implements FlyingAnimal {
             }
             drinkTicks = 0;
             log = null;
+            resinLog = null;
+        }
+    }
+
+    /** Keeps away from torchflowers: one within 3 blocks sends it flying off the other way. */
+    class AvoidTorchflowerGoal extends Goal {
+        @Nullable
+        private BlockPos flower;
+        private int check;
+
+        AvoidTorchflowerGoal() {
+            setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (--check > 0) {
+                return false;
+            }
+            check = 5;
+            flower = GlowPlants.nearestTorchflower(level(), blockPosition(), 3);
+            return flower != null;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return flower != null && !getNavigation().isDone() && distanceToSqr(Vec3.atCenterOf(flower)) < 7 * 7;
+        }
+
+        @Override
+        public void start() {
+            Vec3 away = position().subtract(Vec3.atCenterOf(flower));
+            Vec3 dir = away.lengthSqr() < 1e-4 ? new Vec3(random.nextDouble() - 0.5, 0, random.nextDouble() - 0.5) : away;
+            dir = new Vec3(dir.x, 0, dir.z).normalize();
+            Vec3 to = position().add(dir.scale(6)).add(0, 1.5, 0);
+            getNavigation().moveTo(to.x, to.y, to.z, 1.3);
+            if (getNavigation().isDone()) {
+                getMoveControl().setWantedPosition(to.x, to.y, to.z, 1.3);
+            }
+        }
+
+        @Override
+        public void stop() {
+            flower = null;
+        }
+    }
+
+    /** Flight paths that keep clear of torchflowers: anywhere within a block of one counts as fire. */
+    static class TorchflowerShyEvaluator extends net.minecraft.world.level.pathfinder.FlyNodeEvaluator {
+        @Override
+        public PathType getPathType(net.minecraft.world.level.pathfinder.PathfindingContext ctx, int x, int y, int z) {
+            PathType t = super.getPathType(ctx, x, y, z);
+            if (t != PathType.BLOCKED && t != PathType.DANGER_FIRE) {
+                for (BlockPos p : BlockPos.betweenClosed(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1)) {
+                    if (GlowPlants.isTorchflower(ctx.level().getBlockState(p))) {
+                        return PathType.DANGER_FIRE;
+                    }
+                }
+            }
+            return t;
         }
     }
 

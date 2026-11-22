@@ -188,5 +188,11 @@
   "subtitles.winterworks.entity.pot_golem.wind_burst": "Pot Golem gusts",
   "subtitles.winterworks.entity.pot_golem.shield": "Pot Golem blocks",
   "subtitles.winterworks.entity.pot_golem.stash": "Pot Golem stashes an item",
-  "subtitles.winterworks.entity.pot_golem.throw": "Pot Golem throws a potion"
+  "subtitles.winterworks.entity.pot_golem.throw": "Pot Golem throws a potion",
+  "subtitles.winterworks.entity.harvester.ambient": "Harvester rumbles",
+  "subtitles.winterworks.entity.harvester.hurt": "Harvester hurts",
+  "subtitles.winterworks.entity.harvester.death": "Harvester dies",
+  "subtitles.winterworks.entity.harvester.chomp": "Harvester crops",
+  "subtitles.winterworks.entity.harvester.shove": "Harvester shoves",
+  "subtitles.winterworks.entity.sniffer.sneeze": "Sniffer sneezes"
 }

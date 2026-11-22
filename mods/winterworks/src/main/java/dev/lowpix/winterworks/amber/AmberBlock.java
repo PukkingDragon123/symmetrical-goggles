@@ -48,7 +48,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class AmberBlock extends HalfTransparentBlock implements EntityBlock {
     public enum Inclusion implements StringRepresentable {
-        NONE, SEED, MOSQUITO;
+        NONE, SEED, MOSQUITO,
+        /** A Harvester Egg (docs/FIXES_0_4.md "The Harvester"): released by harvester.HarvesterFeature. */
+        EGG;
 
         @Override
         public String getSerializedName() {

@@ -127,7 +127,8 @@ public final class DigSite {
         for (int i = 0; i < 8; i++) {
             double rad = r.nextDouble() * Math.PI * 2;
             BlockPos w = c.offset((int) Math.round(Math.cos(rad) * (R + 1)), 1 + r.nextInt(4), (int) Math.round(Math.sin(rad) * (R + 1)));
-            AmberBlock.Inclusion inc = AmberBlock.Inclusion.values()[r.nextInt(3)];
+            AmberBlock.Inclusion inc = r.nextInt(40) == 0 ? AmberBlock.Inclusion.EGG   // 0.4 fixes: Harvester eggs, 1 in 40
+                    : AmberBlock.Inclusion.values()[r.nextInt(3)];
             set(level, w, WWBlocks.AMBER_BLOCK.defaultBlockState().setValue(AmberBlock.INCLUSION, inc));
         }
         for (int i = 0; i < 10; i++) {

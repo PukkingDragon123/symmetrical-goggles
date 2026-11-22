@@ -193,6 +193,13 @@ public class HarvesterEggBlock extends Block implements EntityBlock, SimpleWater
         return false;
     }
 
+    @Override
+    public void appendHoverText(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.Item.TooltipContext ctx,
+                                java.util.List<net.minecraft.network.chat.Component> lines, net.minecraft.world.item.TooltipFlag flag) {
+        lines.add(net.minecraft.network.chat.Component.translatable("block.winterworks.harvester_egg.tip")
+                .withStyle(net.minecraft.ChatFormatting.AQUA));
+    }
+
     /** How far the egg is into its current stage (ticks underwater). */
     public static class EggBlockEntity extends BlockEntity {
         int progress;

@@ -1,0 +1,10 @@
+{
+  "entity.winterworks.harvester": "Harvester",
+  "block.winterworks.harvester_egg": "Harvester Egg",
+  "block.winterworks.harvester_egg.tip": "Hatches only underwater",
+  "item.winterworks.harvester_spawn_egg": "Harvester Spawn Egg",
+  "block.winterworks.amber_block.inclusion.egg": "A Harvester Egg is sealed inside",
+  "message.winterworks.harvester.order.follow": "The Harvester follows you",
+  "message.winterworks.harvester.order.sit": "The Harvester sits",
+  "message.winterworks.harvester.order.harvest": "The Harvester stays and crops the fields here"
+}
