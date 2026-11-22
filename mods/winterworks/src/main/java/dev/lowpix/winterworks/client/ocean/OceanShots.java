@@ -339,6 +339,15 @@ final class OceanShots {
         return level.getBlockState(BlockPos.containing(p)).is(Blocks.WATER);
     }
 
+    /** Whether most of the way from `eye` to `look` is water. */
+    private static boolean clearLine(ServerLevel level, Vec3 eye, Vec3 look) {
+        int n = 20, wet = 0;
+        for (int i = 1; i <= n; i++) {
+            wet += water(level, eye.add(look.subtract(eye).scale(i / (n + 1.0)))) ? 1 : 0;
+        }
+        return wet >= n - 1;
+    }
+
     /** Whether `eye` is in open water and most of the way to `look` is water too. */
     private static boolean clearView(ServerLevel level, Vec3 eye, Vec3 look) {
         for (int dx = -1; dx <= 1; dx++) {
@@ -604,10 +613,14 @@ final class OceanShots {
             if (p instanceof OceanMonumentPieces.OceanMonumentCoreRoom) {
                 VIEWS.put("monument_core", new Vec3[]{MonumentRework.worldVec(p, 4.5, 6.2, 1.3), MonumentRework.worldVec(p, 11.5, 1.5, 11.5)});
             } else if (p instanceof OceanMonumentPieces.OceanMonumentWingRoom && !VIEWS.containsKey("monument_wing")) {
-                for (double[] e : new double[][]{{11.5, 3.5, 9.5}, {11.5, 4.5, 6.5}, {8.5, 3.5, 10.5}, {11.5, 2.5, 12.5}}) {
-                    Vec3 eye = MonumentRework.worldVec(p, e[0], e[1], e[2]);
-                    if (water(level, eye) && roofed(level, eye) && !VIEWS.containsKey("monument_wing")) {
-                        VIEWS.put("monument_wing", new Vec3[]{eye, MonumentRework.worldVec(p, 11.5, 1, 15)});
+                // look at one of the wing's chests from somewhere open inside the wing
+                int design = ((dev.lowpix.winterworks.mixin.ocean.WingRoomAccessor) p).ww$mainDesign();
+                double[] chest = design == 0 ? new double[]{10.5, 1.5, 14.5} : new double[]{11.5, 0.5, 16.5};
+                Vec3 target = MonumentRework.worldVec(p, chest[0], chest[1], chest[2]);
+                for (double[] o : new double[][]{{0, 3, -7}, {-4, 3, -6}, {4, 3, -6}, {0, 2, -5}, {-6, 2.5, -2}, {6, 2.5, -2}, {0, 4, -9}}) {
+                    Vec3 eye = MonumentRework.worldVec(p, chest[0] + o[0], chest[1] + o[1], chest[2] + o[2]);
+                    if (!VIEWS.containsKey("monument_wing") && water(level, eye) && roofed(level, eye) && clearLine(level, eye, target)) {
+                        VIEWS.put("monument_wing", new Vec3[]{eye, target});
                     }
                 }
             }
@@ -689,7 +702,7 @@ final class OceanShots {
             eye = v == null ? null : v[0];
             look = v == null ? null : v[1];
             if (eye != null) {
-                cmd(String.format(Locale.ROOT, "tp @s %.2f %.2f %.2f facing %.2f %.2f %.2f", eye.x, eye.y, eye.z, look.x, look.y, look.z));
+                cmd(String.format(Locale.ROOT, "tp @s %.2f %.2f %.2f facing %.2f %.2f %.2f", eye.x, eye.y - 1.62, eye.z, look.x, look.y, look.z));   // the camera is at eye height over the feet
             }
             return true;
         });
