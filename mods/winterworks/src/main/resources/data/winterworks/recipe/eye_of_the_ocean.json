@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "GEG",
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "winterworks:guardian_scale"
+    },
+    "E": {
+      "item": "winterworks:elder_guardian_eye"
+    }
+  },
+  "result": {
+    "id": "winterworks:eye_of_the_ocean",
+    "count": 1
+  }
+}

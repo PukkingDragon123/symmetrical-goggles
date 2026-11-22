@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "SPS",
+    "S S",
+    "P P"
+  ],
+  "key": {
+    "S": {
+      "item": "winterworks:turtle_shell_shard"
+    },
+    "P": {
+      "item": "minecraft:prismarine_shard"
+    }
+  },
+  "result": {
+    "id": "winterworks:turtle_shell_leggings",
+    "count": 1
+  }
+}

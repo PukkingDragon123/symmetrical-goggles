@@ -55,7 +55,9 @@
     "DaggerSwingMixin",
     "harvester.BlockStateLightAccessor",
     "harvester.PlantAnimateTickMixin",
-    "harvester.SnifferWaterMixin"
+    "harvester.SnifferWaterMixin",
+    "oceangear.ElderGuardianMixin",
+    "oceangear.ShellLivingEntityMixin"
   ],
   "client": [
     "client.GameRendererMixin",
@@ -93,7 +95,8 @@
     "client.RamHandMixin",
     "client.SoulBarGuiMixin",
     "harvester.client.SnifferSneezeModelMixin",
-    "harvester.client.SpriteSourcesAccessor"
+    "harvester.client.SpriteSourcesAccessor",
+    "oceangear.client.ShellPlayerRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
