@@ -21,7 +21,8 @@ class EatDroppedFishGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.tickCount % 8 != 0) {
+        // + id: Mob only polls goals on ticks where tickCount + id is even, so an odd id would never see tickCount % 8 == 0
+        if ((mob.tickCount + mob.getId()) % 8 != 0) {
             return false;
         }
         List<ItemEntity> items = mob.level().getEntitiesOfClass(ItemEntity.class, mob.getBoundingBox().inflate(10, 4, 10),
