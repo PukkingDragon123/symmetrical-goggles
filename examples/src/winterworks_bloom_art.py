@@ -5,7 +5,8 @@
     python examples/src/winterworks_bloom_art.py --preview DIR    # also write contact sheets to DIR
 
 The torchflowers and pitcher plants stay vanilla's own textures, as asked (same shapes, colours and layout), and only
-GLOW: their luminous pixels (the torchflower's flame and bud, the pitcher's aqua tube, violet hood, maroon mouth and
+GLOW (shown here only as previews; nothing from vanilla is written into the mod, which makes them glow at runtime from
+the game's own textures): their luminous pixels (the torchflower's flame and bud, the pitcher's aqua tube, violet hood, maroon mouth and
 blue bud, the palest leaf tips) are lit up, a little more at every crop stage: the torchflower from faintly lit sprout
 tips (stage 0) to a lit bud (stage 1) to the full flame (light 15); the pitcher from a faint sprout in the seed pod, to
 lit leaf tips, a lit bud, the lantern pitcher whose maroon mouth warms to pink, and the grown plant, the brightest
@@ -339,6 +340,13 @@ def _dst(key):
 
 
 def write_all():
+    """Writes only Winterworks' own art. The glowing torchflower and pitcher textures built from vanilla's are previews
+    only: Mojang's textures are not redistributed, so the mod makes them glow at runtime from the game's own textures
+    (full-bright rendering plus light levels)."""
+    for key in [k for k in OUT if k.startswith("minecraft:")]:
+        del OUT[key]
+    for key in [k for k in JSON if k.startswith("minecraft:")]:
+        del JSON[key]
     for key, im in sorted(OUT.items()):
         dst = _dst(key)
         dst.parent.mkdir(parents=True, exist_ok=True)

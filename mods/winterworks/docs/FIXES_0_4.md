@@ -74,9 +74,10 @@ contract for the Java side.
   Immunity recipe (blood + torchflower) stays.
 * **Mosquitoes really harvest Amberwood**: empty mosquitoes find oozing Amberwood logs, sip the resin and become
   amber-full (fix: it doesn't happen today in game).
-* **Torchflowers and pitcher plants glow**: new textures (vanilla style, 16 x 16) for the torchflower, its crop
-  stages, the pitcher crop and plant, each crop stage glowing a little more (torchflower light 15 when grown, pitcher
-  plant 12). Harvesting: use a grown torchflower or pitcher plant with an empty hand to pick it: torchflower seeds or
+* **Torchflowers and pitcher plants glow**: they keep vanilla's own textures (the user asked for the old look) and
+  glow: each crop stage gives a little more light (torchflower light 15 when grown, pitcher plant 12) and their
+  luminous parts render full-bright at runtime from the game's own textures (an emissive pass, like the End Bloom's
+  BloomGlowModel). No vanilla texture files are copied into the mod. Harvesting: use a grown torchflower or pitcher plant with an empty hand to pick it: torchflower seeds or
   pitcher pods (1-3) drop and it goes back to a young crop (like sweet berries). Breaking still works as in vanilla.
 * **Pitcher plants attract bees** (they count as flowers for bees and pollination) and mosquitoes, and give off sweet
   golden-pink scent particles (`sweet_scent`).
