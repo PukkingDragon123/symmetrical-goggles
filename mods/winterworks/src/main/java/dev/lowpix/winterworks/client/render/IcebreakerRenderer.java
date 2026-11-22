@@ -29,6 +29,8 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
     }
 
     private static final ResourceLocation ALPHA_COAT = dev.lowpix.winterworks.Winterworks.id("textures/entity/icebreaker_alpha.png");
+    /** How far (blocks) the swim clip raises the body: 9 px on the adult; 4.5 px on the cub model, drawn at 0.6. */
+    private static final float SWIM_LIFT = 9f / 16f, SWIM_LIFT_CUB = 4.5f * 0.6f / 16f;
 
     @Override
     public ResourceLocation getTextureLocation(IcebreakerEntity e) {
@@ -58,6 +60,9 @@ public class IcebreakerRenderer extends MobRenderer<IcebreakerEntity, Icebreaker
         float turn = Mth.wrapDegrees(e.yBodyRot - e.yBodyRotO);   // banking into the turn
         float roll = Mth.clamp(turn * 2.5f, -30f, 30f) + e.rollAngle(partial);
         float mid = e.getBbHeight() * 0.5f / Math.max(0.01f, scale);
+        if (e.isInWater()) {   // the swim clip lifts the body (made for bobbing on top): in the water, swim in it
+            pose.translate(0f, -(e.isBaby() ? SWIM_LIFT_CUB : SWIM_LIFT) * scale * k, 0f);
+        }
         pose.translate(0f, mid, 0f);
         pose.mulPose(Axis.XP.rotationDegrees(pitch * k));
         pose.mulPose(Axis.ZP.rotationDegrees(roll * k));

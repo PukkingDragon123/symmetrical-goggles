@@ -12,8 +12,11 @@ import net.minecraft.world.entity.ai.control.MoveControl;
  * or the ice edge when its path climbs out.
  */
 final class IcebreakerControls {
-    /** Swimming speed: this times the movement speed attribute and the goal's speed modifier (cruise ~0.25 b/t). */
-    static final float SWIM_SPEED = 0.125f;
+    /**
+     * Swimming: the stroke's acceleration is this times the movement speed attribute (0.2) and the goal's speed
+     * modifier; with the water's drag it settles at 10x that: a cruise (1.25) ~0.25 blocks a tick, a chase (2.0) ~0.4.
+     */
+    static final float SWIM_SPEED = 0.1f;
     /** Degrees per tick it can turn and pitch while swimming. */
     static final float SWIM_TURN = 9f, SWIM_PITCH = 4f, MAX_PITCH = 70f;
 
@@ -58,14 +61,15 @@ final class IcebreakerControls {
             seal.setYRot(rotlerp(seal.getYRot(), yaw, SWIM_TURN));
             seal.yBodyRot = seal.getYRot();
             seal.yHeadRot = seal.getYRot();
+            // the speed is the acceleration along a unit stroke; with the water's drag (0.9) it settles at 10x that
             float speed = (float) (speedModifier * seal.getAttributeValue(Attributes.MOVEMENT_SPEED)) * SWIM_SPEED;
             double horiz = Math.sqrt(dx * dx + dz * dz);
             float pitch = Mth.clamp(-(float) (Mth.atan2(dy, horiz) * Mth.RAD_TO_DEG), -MAX_PITCH, MAX_PITCH);
             seal.setXRot(rotlerp(seal.getXRot(), pitch, SWIM_PITCH));
             float cos = Mth.cos(seal.getXRot() * Mth.DEG_TO_RAD), sin = Mth.sin(seal.getXRot() * Mth.DEG_TO_RAD);
             seal.setSpeed(speed);
-            seal.zza = cos * speed;
-            seal.yya = -sin * speed;
+            seal.zza = cos;
+            seal.yya = -sin;
             // hauling out: the path climbs onto the shore or an ice edge right in front of it: a heave up and over
             if (dy > 0.3 && horiz < 2.5 && seal.horizontalCollision) {
                 seal.setDeltaMovement(seal.getDeltaMovement().add(0, 0.12, 0));
