@@ -86,8 +86,13 @@ contract for the Java side.
 
 ## The Harvester (a new dinosaur, Amber Age)
 * `harvester`: a big, gentle prehistoric herbivore with a huge, wide **hammerhead-shark-like head** lined with rows of
-  teeth for cropping plants. Spawns rarely in savannas and badlands (herds of 1-2).
-* **Tame** it with pitcher plants (1 in 3 per plant). Tamed: follows, sits, can be **ridden with a saddle** (walks,
+  teeth for cropping plants, and a broad nose. It is extinct: it does **not** spawn naturally.
+* **Reviving it**: find a **Harvester Egg** (`harvester_egg`, a block like the sniffer egg). They are super rare:
+  brushed out of suspicious sand and gravel (about 1 in 150 brushes) and sealed inside the amber blocks of Dig Sites
+  (about 1 in 40 of those, as a new `egg` inclusion that drops the egg when the amber breaks). A placed egg only
+  develops while **submerged in water** (water above it, or waterlogged); it cracks in three stages over about 20
+  minutes (faster on moss, like sniffer eggs) and hatches a baby Harvester that grows up like other animals.
+* A Harvester hatched near a player starts tame to that player; others are tamed with pitcher plants (1 in 3 per plant). Tamed: follows, sits, can be **ridden with a saddle** (walks,
   jumps 1.5 blocks) and wears a **chest** like a donkey (15 slots).
 * **Harvests crops**: a tamed Harvester left near farmland (not sitting, not ridden) crops mature wheat, carrots,
   potatoes, beetroots, nether wart, melons, pumpkins, sweet berries, torchflowers and pitcher plants within 16 blocks of
@@ -102,6 +107,10 @@ contract for the Java side.
 ## Blood in hexing (Hexes & Havoc)
 * The **Elixir of Greed** needs blood: the Elixir Jar brews it from a gold block only after a Potion of Blood has been
   poured in (the jar takes the blood first, then the gold).
+* **Blood is a base potion**: besides the Elixir of Greed, the Potion of Blood is the base for Instant Damage and
+  Regeneration in the brewing stand: Potion of Blood + fermented spider eye -> Potion of Harming; Potion of Blood +
+  ghast tear -> Potion of Regeneration (the vanilla potions, which then extend/strengthen as usual). The vanilla
+  recipes stay too.
 * **Blood instead of yourself**: the Hexing Table gets a third slot for Potions of Blood. A lesser hex can take 1
   Potion of Blood instead of hexing you; a sin hex always needs 1 Potion of Blood, and takes 2 more instead of hexing
   you. With no blood offered, you are Hexed as before.
