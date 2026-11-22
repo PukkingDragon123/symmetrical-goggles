@@ -84,6 +84,17 @@ public class HarvesterTests implements FabricGameTest {
         return n;
     }
 
+    /** Every dropped `item` inside this test's area (counted once). */
+    private static int itemsInTest(GameTestHelper h, net.minecraft.world.item.Item item) {
+        int n = 0;
+        for (ItemEntity e : h.getEntities(EntityType.ITEM)) {
+            if (e.getItem().is(item)) {
+                n += e.getItem().getCount();
+            }
+        }
+        return n;
+    }
+
     // --------------------------------------------------------------------------------------- the egg
 
     @GameTest(template = EMPTY_STRUCTURE)
@@ -366,8 +377,7 @@ public class HarvesterTests implements FabricGameTest {
         h.assertBlockPresent(Blocks.PITCHER_CROP, wild);   // a wild one too: its grass became farmland
         h.assertBlockPresent(Blocks.FARMLAND, wild.below());
         h.succeedWhen(() -> {
-            int seeds = items(h, Items.TORCHFLOWER_SEEDS, torch, 2.5), pods = items(h, Items.PITCHER_POD, pitcher, 2.5)
-                    + items(h, Items.PITCHER_POD, wild, 2.5);
+            int seeds = itemsInTest(h, Items.TORCHFLOWER_SEEDS), pods = itemsInTest(h, Items.PITCHER_POD);
             h.assertTrue(seeds >= 1 && seeds <= 3, "1-3 torchflower seeds, got " + seeds);
             h.assertTrue(pods >= 2 && pods <= 6, "1-3 pitcher pods each, got " + pods);
         });
