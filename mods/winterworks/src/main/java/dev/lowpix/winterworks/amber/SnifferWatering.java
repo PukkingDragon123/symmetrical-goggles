@@ -33,7 +33,8 @@ import org.jetbrains.annotations.Nullable;
 public final class SnifferWatering {
     public static final int INTERVAL = 1200, INTERVAL_SPREAD = 400, WATER_RADIUS = 12, FARM_RANGE = 12, SPRAY_RADIUS = 3;
     public static final int DRINK_TICKS = 50, SNEEZE_TICKS = 40, ACHOO_AT = 21, WALK_LIMIT = 500;
-    /** After an errand that couldn't reach its water, it tries again this soon (not a whole interval later). */
+    /** After an errand that couldn't reach its water, or a look round that found no water or farmland, it tries again
+     * this soon (not a whole interval later). */
     public static final int RETRY = 200;
     /** Entity event: the sneeze starts (the client plays the animation; the spray comes {@link #ACHOO_AT} ticks later). */
     public static final byte EVENT_SNEEZE = 93;
@@ -75,6 +76,7 @@ public final class SnifferWatering {
             BlockPos farm = findFarm(level, s, owner);
             BlockPos water = farm == null ? null : findWater(level, s);
             if (farm == null || water == null) {
+                j.cooldown = RETRY;   // nothing in reach from here: look again soon (it wanders)
                 return false;
             }
             start(level, s, t, j, water, farm);

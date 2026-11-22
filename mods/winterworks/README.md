@@ -208,8 +208,8 @@ gold (2-4 gold blocks); it barters much better loot.
 
 ## The Living End
 
-Design contract: [docs/END_UPDATE.md](docs/END_UPDATE.md). The End becomes a living alien ecosystem, at double the
-texture resolution of the older content.
+Design contract: [docs/END_UPDATE.md](docs/END_UPDATE.md). The End becomes a living alien ecosystem, drawn in the
+vanilla style (16 x 16 blocks and items, mobs at one texel per pixel with flat pixel eyes).
 
 * **Chorus Meadows** (purple End Grass, tall grass, End Blooms, End Moss, thick chorus trees hung with cocoons) and
   **the Dead End** (a grey moon-dust desert of End Sand, rock piles, giant pillars, obsidian shards, dry bushes,
@@ -219,7 +219,8 @@ texture resolution of the older content.
   Potion of Recall. **End Eclipses**: a giant moon, violet-gold light, blooms open (shear them for glowing End Bulbs).
 * **Guckers** burrow and spit blinding dust; **Endlings** can be tamed, wear flowers and save you from the void;
   **Obolisks** disguise themselves as rock and only fear pickaxes (their shards make the Obsidian Shield).
-* **The End Glider** (glides alone, flies freely with an Elytra), **Dragonlings** (throw the egg into the void three
+* **The End Glider** (momentum and skill: dive for speed, pull up to climb, stall if too slow; with an Elytra, press use
+  for a wing beat), **End Bulbs** (eat one to shine like a torch), **Dragonlings** (throw the egg into the void three
   times; tame, grow, saddle, armour and ride them, with fire breath), a **harder Ender Dragon** (dives, grabs, a
   second phase with an eclipse, four wings, light beams, regrowing crystals, rising towers and Obolisks), and **the
   Monolith**, a boss atop its tower with a petrifying stare and giant hands; its eyes make the Monolith Wand.
@@ -235,11 +236,21 @@ carts on trains, floating coaster track with 360-degree loops, Switch Rails, and
 effects instead of text, blue soul fire, cursed books and the soul glint, blood in hexing and every potion form; and a
 harsher cold in four levels.
 
+## 0.4.1
+
+* The Nether: smaller, simpler and more common **Hex Fortresses** run by the Piglin Witch (a spellcaster with a floating
+  spellbook: hex bolts, soul ring, hexes, potion barrages, summons, blinks) and her piglin and brute crew, Soul Bull
+  pens and golden experiments; brutes love the elixirs and gild faster; hoglin jockeys; and the **Withered Commander**,
+  a mini-boss of vanilla Nether fortresses with a netherite spear, riding a Soul Bull and fighting on when it dies.
+* Vanilla-style art across the End, the Harvester and the Obolisk (now a living obsidian block with a grumpy face).
+* The End Glider runs on momentum; End Glow gives off real light; cursed and hexed books look like enchanted books, and
+  the soul glint is soul-fire teal with three souls.
+
 ## Building and testing
 
 ```bash
 ./gradlew build                 # the mod jar in build/libs
-./gradlew runGametest           # headless GameTests (126)
+./gradlew runGametest           # headless GameTests (341)
 xvfb-run -a ./gradlew runShowcase       # boots the client, builds scenes, saves in-game screenshots to run/showcase/screenshots
 xvfb-run -a ./gradlew runShowcase -PshowcaseMode=hex   # only the Amber Age and Hexes & Havoc scenes
 xvfb-run -a ./gradlew runShowcaseCold   # a real generated world: finds and photographs Ice Caves, a frozen tomb, Dead Caves, a Dig Site
