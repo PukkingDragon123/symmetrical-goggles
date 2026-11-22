@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 /**
- * The Harvester (lowpix `harvester`, client.lowpix.HarvesterModel; texture 512x512 on 256x256 UVs, drawn
- * entityCutoutNoCull). Clips: idle, walk, run (by speed), sit, and graze / chomp / shove on cue. The saddle and the two
+ * The Harvester (lowpix `harvester`, client.lowpix.HarvesterModel; vanilla style, density 1: texture 256x256 on
+ * 256x256 UVs, drawn entityCutoutNoCull). Clips: idle, walk, run (by speed), sit, and graze / chomp / shove on cue. The saddle and the two
  * chests show when it wears them. Babies are drawn half size.
  */
 public class HarvesterRenderer extends MobRenderer<HarvesterEntity, HarvesterRenderer.Model> {

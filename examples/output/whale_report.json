@@ -1,107 +1,71 @@
 {
   "name": "Whale",
-  "parts": 61,
-  "instances": 61,
-  "faces": 292,
-  "triangles": 584,
-  "vertices_flat": 1168,
-  "vertices_unique": 400,
+  "parts": 65,
+  "instances": 65,
+  "faces": 135,
+  "triangles": 270,
+  "vertices_flat": 540,
+  "vertices_unique": 168,
   "atlas": [
     1024,
     1024
   ],
-  "atlas_fill": 0.571,
+  "atlas_fill": 0.39,
   "texel_density": 1.0,
-  "colors_used": 46,
+  "colors_used": 20,
   "palette": {
     "whale": [
-      "#070c13",
-      "#0c131d",
-      "#121b28",
-      "#192434",
-      "#212e41",
-      "#2a384e",
-      "#34445c",
-      "#3f506a",
-      "#4b5d78",
-      "#586a86",
-      "#677a94",
-      "#7889a2",
-      "#8c9cb2"
+      "#3b3e45",
+      "#43474e",
+      "#4c5058",
+      "#555a62",
+      "#5f646c",
+      "#6a6f77",
+      "#757a82"
     ],
     "belly": [
-      "#2c3440",
-      "#414b58",
-      "#58636f",
-      "#717c88",
-      "#8b96a1",
-      "#a6afb8",
-      "#c0c8ce",
-      "#d8dee2",
-      "#eef1f3"
+      "#7d8189",
+      "#8a8e95",
+      "#979ba1",
+      "#a5a8ad",
+      "#b3b6ba"
     ],
     "gum": [
-      "#1f0b10",
-      "#34121a",
-      "#4c1b26",
-      "#672633",
-      "#813343",
-      "#9b4553",
-      "#b45b66",
-      "#ca757d"
+      "#6b3a43",
+      "#7d4650",
+      "#90535d"
     ],
-    "baleen": [
-      "#100e0c",
-      "#1d1915",
-      "#2c2620",
-      "#3d352c",
-      "#50463a",
-      "#655a4b",
-      "#7d705e",
-      "#968874"
+    "tooth": [
+      "#8d918a",
+      "#b3b6ac",
+      "#d6d7cc",
+      "#eeeee4"
     ],
-    "barnacle": [
-      "#24211c",
-      "#3a362e",
-      "#545045",
-      "#706b5e",
-      "#8f8978",
-      "#ada793",
-      "#c9c3ae",
-      "#e1dccb",
-      "#f2efe3"
+    "ink": [
+      "#0e0c10",
+      "#1a171d",
+      "#2a262e"
     ],
-    "pupil": [
-      "#040406",
-      "#0a0a0e",
-      "#131318"
-    ],
-    "cream": [
-      "#4a3e33",
-      "#6b5d4e",
-      "#8d7e6c",
-      "#ae9f8b",
-      "#cbbea9",
-      "#e2d8c5",
-      "#f2ecdd",
-      "#fcf9f0"
+    "glint": [
+      "#9a9aa4",
+      "#d9d9df"
     ]
   },
   "bounds": {
     "min": [
-      -91.613,
+      -104.0,
       0.0,
-      -218.063
+      -244.0
     ],
     "max": [
-      91.613,
-      102.4,
-      212.0
+      104.0,
+      96.0,
+      204.0
     ],
     "size": [
-      183.226,
-      102.4,
-      430.063
+      208.0,
+      96.0,
+      448.0
     ]
   },
   "warnings": [],
@@ -119,6 +83,7 @@
     "body",
     "torso",
     "torso_b",
+    "torso_m",
     "torso_c",
     "deck",
     "throat",
@@ -126,18 +91,12 @@
     "skull",
     "skull_b",
     "rostrum",
-    "rostrum_b",
     "snout",
-    "lip_up",
-    "splash_guard",
+    "rostrum_b",
     "blowhole",
     "spout",
     "eye_l",
-    "eye_patch_l",
-    "baleen_l",
     "eye_r",
-    "eye_patch_r",
-    "baleen_r",
     "jaw",
     "jaw_bone",
     "jaw_front",
@@ -147,6 +106,15 @@
     "chin_barnacles_1",
     "chin_barnacles_2",
     "mouth",
+    "teeth_l",
+    "teeth_r",
+    "teeth_front",
+    "lip_up",
+    "splash_guard",
+    "eye_patch_l",
+    "baleen_l",
+    "eye_patch_r",
+    "baleen_r",
     "fin_l",
     "fin_l_tip",
     "fin_l_knob2",
@@ -164,11 +132,11 @@
     "stock_b",
     "stock_c",
     "tail_1",
-    "dorsal",
     "peduncle",
     "peduncle_b",
     "keel_up",
     "keel_low",
+    "dorsal",
     "fluke",
     "fluke_root",
     "fluke_l",
