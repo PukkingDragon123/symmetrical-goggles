@@ -23,8 +23,8 @@ public final class EndEntities {
             EntityType.Builder.<dev.lowpix.winterworks.endmob.GuckerSpit>of(dev.lowpix.winterworks.endmob.GuckerSpit::new,
                     MobCategory.MISC).sized(0.4f, 0.4f).clientTrackingRange(6).updateInterval(2));
     public static final EntityType<dev.lowpix.winterworks.endmob.Obolisk> OBOLISK = reg("obolisk",
-            EntityType.Builder.of(dev.lowpix.winterworks.endmob.Obolisk::new, MobCategory.MONSTER).sized(1.8f, 3.6f)
-                    .fireImmune().clientTrackingRange(10));
+            EntityType.Builder.of(dev.lowpix.winterworks.endmob.Obolisk::new, MobCategory.MONSTER).sized(2.0f, 4.0f)
+                    .eyeHeight(2.8f).fireImmune().clientTrackingRange(10));   // the 2 x 4 block; eyes carved at 45 px
     public static final EntityType<dev.lowpix.winterworks.endboss.Monolith> MONOLITH = reg("monolith",
             EntityType.Builder.of(dev.lowpix.winterworks.endboss.Monolith::new, MobCategory.MONSTER).sized(3.0f, 7.0f)
                     .fireImmune().clientTrackingRange(16));

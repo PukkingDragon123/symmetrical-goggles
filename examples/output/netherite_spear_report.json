@@ -1,0 +1,119 @@
+{
+  "name": "Netherite Spear",
+  "parts": 20,
+  "instances": 20,
+  "faces": 104,
+  "triangles": 208,
+  "vertices_flat": 416,
+  "vertices_unique": 144,
+  "atlas": [
+    64,
+    256
+  ],
+  "atlas_fill": 0.517,
+  "texel_density": 4.0,
+  "colors_used": 30,
+  "palette": {
+    "netherite": [
+      "#09070a",
+      "#100d10",
+      "#171316",
+      "#1f191d",
+      "#282025",
+      "#31292e",
+      "#3c3238",
+      "#493e45",
+      "#574b53",
+      "#675b63",
+      "#7a6e76",
+      "#8f848b"
+    ],
+    "gold": [
+      "#2c1503",
+      "#4a2405",
+      "#6e3706",
+      "#94500a",
+      "#b86b0e",
+      "#d68b12",
+      "#eaa91c",
+      "#f6c934",
+      "#fde35c",
+      "#fff399"
+    ],
+    "crimson": [
+      "#16040a",
+      "#25060f",
+      "#370a16",
+      "#4c0e1d",
+      "#631426",
+      "#7c1b2f",
+      "#962539",
+      "#b03243",
+      "#c9444f"
+    ],
+    "leather": [
+      "#120a08",
+      "#1d110c",
+      "#2a1912",
+      "#382218",
+      "#472c1f",
+      "#583827",
+      "#6a4530"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -2.85,
+      6.75,
+      -1.061
+    ],
+    "max": [
+      2.193,
+      49.0,
+      1.061
+    ],
+    "size": [
+      5.043,
+      42.25,
+      2.121
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.0
+  },
+  "joints": [
+    "spear",
+    "shaft",
+    "grip",
+    "grip_ring_0",
+    "grip_ring_1",
+    "band_0",
+    "band_1",
+    "band_2",
+    "ferrule",
+    "butt",
+    "butt_tip",
+    "collar",
+    "socket",
+    "lug_l",
+    "lug_l_tip",
+    "lug_r",
+    "lug_r_tip",
+    "midrib",
+    "blade",
+    "pennant"
+  ],
+  "files": {
+    "netherite_spear.glb": "examples/output/netherite_spear.glb",
+    "netherite_spear.obj": "examples/output/netherite_spear.obj",
+    "netherite_spear.mtl": "examples/output/netherite_spear.mtl",
+    "netherite_spear.bbmodel": "examples/output/netherite_spear.bbmodel",
+    "netherite_spear_texture.png": "examples/output/netherite_spear_texture.png",
+    "netherite_spear_texture_x4.png": "examples/output/netherite_spear_texture_x4.png",
+    "netherite_spear_hero.png": "examples/output/netherite_spear_hero.png",
+    "netherite_spear_sheet.png": "examples/output/netherite_spear_sheet.png",
+    "netherite_spear_turntable.gif": "examples/output/netherite_spear_turntable.gif",
+    "netherite_spear_idle.gif": "examples/output/netherite_spear_idle.gif"
+  }
+}
