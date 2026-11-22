@@ -3016,6 +3016,46 @@
     ],
     "subtitle": "subtitles.winterworks.entity.pot_golem.throw"
   },
+  "entity.falling_meteorite.whistle": {
+    "sounds": [
+      {
+        "name": "winterworks:meteorite/hum1",
+        "pitch": 1.5,
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:meteorite/hum2",
+        "pitch": 1.4,
+        "attenuation_distance": 64
+      },
+      {
+        "name": "winterworks:meteorite/hum3",
+        "pitch": 1.6,
+        "attenuation_distance": 64
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.falling_meteorite.whistle"
+  },
+  "entity.falling_meteorite.impact": {
+    "sounds": [
+      {
+        "name": "winterworks:monolith/slam1",
+        "pitch": 0.7,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/slam2",
+        "pitch": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "winterworks:monolith/slam3",
+        "pitch": 0.75,
+        "attenuation_distance": 48
+      }
+    ],
+    "subtitle": "subtitles.winterworks.entity.falling_meteorite.impact"
+  },
   "entity.anglerfish.ambient": {
     "sounds": [
       {

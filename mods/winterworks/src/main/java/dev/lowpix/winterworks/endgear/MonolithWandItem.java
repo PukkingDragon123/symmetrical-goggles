@@ -31,8 +31,10 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * The Monolith Wand (docs/END_UPDATE.md section 11): use it on a living entity within 24 blocks (in sight) to petrify
- * it for 10 s in an invulnerable obsidian shell (end.Petrify). A violet beam shows the shot. 3 s cooldown, 1 durability
- * per petrification; bosses (winterworks:petrify_immune) shrug it off (the beam fizzles: cooldown, no wear).
+ * it for 10 s in an invulnerable obsidian shell (end.Petrify). The shot is a crackling beam from the eye, violet turning to
+ * meteor fire, spitting meteor sparks, that strikes with a hot flash, a burst of sparks and a hiss (client.endgear.GearEffects;
+ * section 16). 3 s cooldown, 1 durability per petrification; bosses (winterworks:petrify_immune) shrug it off (the beam
+ * fizzles grey: cooldown, no wear).
  */
 public class MonolithWandItem extends Item {
     public static final double RANGE = 24.0;
@@ -75,6 +77,9 @@ public class MonolithWandItem extends Item {
                 resisted ? 0.6f : 0.95f + level.random.nextFloat() * 0.1f);
         if (resisted) {
             level.playSound(null, target.getX(), target.getEyeY(), target.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.8f, 0.6f);
+        } else {   // the hot strike: a crack of meteor fire
+            level.playSound(null, to.x, to.y, to.z, EndSounds.METEOR_IMPACT, SoundSource.PLAYERS, 0.45f, 1.9f);
+            level.playSound(null, to.x, to.y, to.z, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 0.6f, 1.3f);
         }
         player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
         player.awardStat(Stats.ITEM_USED.get(stack.getItem()));

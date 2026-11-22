@@ -104,6 +104,7 @@ def run(ctx, extra_features=None):
     ctx.write(os.path.join(ctx.L, "cold.json"), {
         "biome.winterworks.ice_caves": "Ice Caves",
         "effect.winterworks.frostbite": "Frostbite",
+        "effect.winterworks.cold": "Cold",
         "death.attack.winterworks.overheat": "%1$s overheated in their fur",
         "death.attack.winterworks.overheat.player": "%1$s overheated in their fur while fighting %2$s",
         "death.attack.winterworks.falling_icicle": "%1$s was skewered by a falling icicle",

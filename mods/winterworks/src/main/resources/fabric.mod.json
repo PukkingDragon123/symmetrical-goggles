@@ -34,6 +34,7 @@
       "dev.lowpix.winterworks.test.EndMobTests",
       "dev.lowpix.winterworks.test.EndGearTests",
       "dev.lowpix.winterworks.test.EndBossTests",
+      "dev.lowpix.winterworks.test.MeteorTests",
       "dev.lowpix.winterworks.test.OceanWorldTests",
       "dev.lowpix.winterworks.test.OceanMobTests",
       "dev.lowpix.winterworks.test.OceanGearTests",
