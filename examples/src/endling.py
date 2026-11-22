@@ -2,102 +2,84 @@
 
     python examples/src/endling.py examples/endling.json
 
-A tiny, cute Enderman-like creature: a black velvet body no bigger than a fist, no arms, two very long thin legs
-(thigh, shin and a little pointed foot), and a big round head (three overlapping boxes, so it reads as a rounded
-loaf) with two large glowing violet eyes, a small jaw that drops open, a velvet ruff at the neck and violet ender
-motes drifting in the velvet. A `head_plant` locator sits on the crown, where the game draws a flower or plant.
+A tiny, cute Enderman-like creature in vanilla style: a big square head (a skull over a jaw that drops open, like
+the enderman's), two wide glowing violet eyes under raised brows, a small black body, no arms and two long legs
+(thigh, shin and a little flat foot). Enderman black, lit violet-grey along its top edges, with a few violet motes in
+the nap. A `head_plant` locator sits on the crown, where the game draws a flower or plant.
 
-Units are Minecraft pixels (16 per block), density 2: every box is a whole number of texels, so the model exports 1:1
-to a vanilla entity model (python -m lowpix mc export). About 7 x 15 x 7 px; faces +Z, ground at y = 0, "left" is
-+X; the root (body) pivots between the hips.
+Units are Minecraft pixels (16 per block), density 1 (one texel per pixel, like vanilla): every box is whole pixels,
+so the model exports 1:1 to a vanilla entity model (python -m lowpix mc export). About 8 x 16 x 8 px; faces +Z,
+ground at y = 0, "left" is +X; the root (body) pivots between the hips.
 
 Contract (mods/winterworks/docs/END_UPDATE.md section 8): bones body, head, jaw, leg_l, leg_r, head_plant (locator).
-Extra joints: shin_l/r (knees), foot_l/r, eye_l/r (blinks scale them). Clips: idle, walk, run, hop (0.5 s), sit (loop),
-teleport (0.4 s), sacrifice (1.2 s). Glow: the eyes (ramp eyeglow).
+Extra joints: shin_l/r (knees), foot_l/r, eye_l/r (the flat eyes, cards a hair in front of the face; blinks scale
+them). Clips: idle, walk, run, hop (0.5 s), sit (loop), teleport (0.4 s), sacrifice (1.2 s). Glow: the eyes (ramp
+eyeglow).
+
+Exported into the mod with a fixed hash seed (PYTHONHASHSEED=0):
+
+    python -m lowpix mc export examples/endling.json --mod mods/winterworks --modid winterworks \
+        --package dev.lowpix.winterworks.client.lowpix -o out/endling
 """
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from end_kit import (DENSITY, LR, M, ROOT, Rig, add, check_art, finish, jitter, keys, locks, osc,  # noqa: E402
-                     pos, r, ramps, ring, sc, shake, timeline)
+from end_vanilla_kit import (DENSITY, EPS, LIGHT, LR, M, ROOT, Rig, add, finish, jitter, keys, osc,  # noqa: E402
+                             pos, r, ramps, ring, sc, shake, skin, timeline)
 
-R = Rig(density=DENSITY, bone_style="velvet")
-part, bone, card, wpos = R.part, R.bone, R.card, R.wpos
+R = Rig(density=DENSITY, bone_style="ender")
+part, bone, card = R.part, R.bone, R.card
 
-HIP_Y = 7.0
-# ======================================================================= body: a small velvet torso between the hips
-part("body", None, [3.5, 3, 2.5], "velvet_body", at=(0, HIP_Y, 0), centre=(0, HIP_Y + 1.4, 0))
-part("belly", "body", [3, 1.5, 3], "velvet_body", centre=(0, HIP_Y + 0.6, 0.05))
-card("ruff", "body", locks(9, 3, 5, up=True, min_len=0.6), "velvet_card", at=(0, HIP_Y + 2.7, 1.3),
-     offset=(0, 0.5, 0), plane="xy", rot=(-12, 0, 0))
-card("ruff_back", "body", locks(9, 3, 6, up=True, min_len=0.6), "velvet_card", at=(0, HIP_Y + 2.7, -1.3),
-     offset=(0, 0.5, 0), plane="xy", rot=(12, 0, 0))
+HIP_Y = 7
+# flat eyes (image left = the model's right): a bright violet glint up and in, the iris below, lit low
+EYE_L = ["eW", "Ee"]
+EYE_R = ["We", "eE"]
+# ======================================================================= body: a small black torso between the hips
+part("body", None, [4, 3, 3], "ender_body", at=(0, HIP_Y, 0), centre=(0, HIP_Y + 1.5, 0))
 
-# ======================================================================= head: big and round, two large glowing eyes
-HY = HIP_Y + 2.9           # neck joint
-part("head", "body", [6.5, 4.5, 5.5], "velvet_head", at=(0, HY, 0), centre=(0, HY + 2.85, 0.2))
-part("head_tall", "head", [5.5, 5.5, 5.5], "velvet_head", centre=(0, HY + 2.85, 0.2))
-part("head_long", "head", [5.5, 4.5, 6.5], "velvet_face", centre=(0, HY + 2.85, 0.2))
+# ======================================================================= head: a big square skull over a dropping jaw
+NECK = HIP_Y + 3
+part("head", "body", [8, 4, 7], "ender_head", at=(0, NECK, 0), centre=(0, NECK + 4, 0.5))
+# the jaw: the head's lower two rows, hinged at the back of the skull's underside, so it drops open like an enderman's
+part("jaw", "head", [8, 2, 7], "ender_jaw", at=(0, NECK + 2, -3), centre=(0, NECK + 1, 0.5))
+# the flat eyes: 2 x 2 glowing cards a hair in front of the face, pivoting at their middle (blinks squash them)
 for s in (1, -1):
     n = LR(s)
-    part(f"eye_{n}", "head", [2, 2, 0.5], "eye", centre=M((1.3, HY + 3.15, 3.6), s), rot=(0, s * -6, 0))
-    part(f"cheek_{n}", "head", [1.5, 1, 0.5], "velvet_face", centre=M((2.05, HY + 1.6, 3.4), s))
-# the small jaw: hinged at the back of the head's underside, a dark mouth line inside
-part("jaw", "head", [3.5, 1, 3], "jaw", at=(0, HY + 1.6, 0.5), centre=(0, HY + 1.1, 2.0))
-bone("head_plant", "head", at=(0, HY + 5.6, 0.2))
+    card(f"eye_{n}", "head", EYE_L if s > 0 else EYE_R, "eye", at=M((2.0, NECK + 3.0, 4.0 + EPS), s), plane="xy")
+bone("head_plant", "head", at=(0, NECK + 6, 0.5))
 
-# ======================================================================= legs: very long and thin, a knee, a pointed foot
-FEET = []
+# ======================================================================= legs: long, a knee, a flat little foot
 for s in (1, -1):
     n = LR(s)
-    part(f"leg_{n}", "body", [1, 4, 1], "velvet_leg", at=M((0.95, HIP_Y + 0.3, 0), s), offset=(0, -1.75, 0))
-    part(f"shin_{n}", f"leg_{n}", [1, 3.5, 1], "velvet_leg", at=M((0.95, HIP_Y - 3.3, 0), s), offset=(0, -1.6, 0))
-    part(f"foot_{n}", f"shin_{n}", [1.5, 0.5, 2.5], "velvet_foot", at=M((0.95, HIP_Y - 6.6, 0), s),
-         centre=M((0.95, HIP_Y - 6.75, 0.5), s))
-    FEET.append(f"foot_{n}")
+    part(f"leg_{n}", "body", [2, 3, 2], "ender_leg", at=M((1, HIP_Y, 0), s), offset=(0, -1.5, 0))
+    part(f"shin_{n}", f"leg_{n}", [2, 3, 2], "ender_leg", at=M((1, HIP_Y - 3, 0), s), offset=(0, -1.5, 0))
+    part(f"foot_{n}", f"shin_{n}", [2, 1, 3], "ender_foot", at=M((1, 1, 0), s), centre=M((1, 0.5, 0.5), s))
 
 # ======================================================================= palette and paint
-RAMPS = ramps(
-    "eyeglow", "chorus",
-    # black velvet: violet-black shadows, a cool violet sheen on the lit nap
-    velvet=["#040207", "#0a0610", "#100a19", "#171023", "#1f162e", "#281d3a", "#322447", "#3e2d56", "#4b3766",
-            "#5b4478"],
-)
-light = {"dir": [-0.45, 1.0, 0.6], "strength": 0.7, "gradient": 0.5, "ao": 0.6, "ao_height": 4.0}
-brush = {"flow": "vertical", "length": 1.2, "width": 0.5, "rough": 0.55, "overshoot": 0.25,
-         "textures": {"velvet": "fur"}}
+RAMPS = ramps("ender", "eyeglow", "chorus")
+light = dict(LIGHT)
 
-NAP = {"id": "nap", "op": "noise", "scale": 0.6, "amount": 0.7}
-SHEEN = {"id": "sheen", "op": "spots", "count": 3, "radius": [0.5, 0.9], "stretch": [1, 0.5, 1], "shift": 1.3,
-         "faces": ["top", "front"], "roughness": 0.5}
-MOTES = {"id": "motes", "op": "spots", "count": 3, "radius": [0.25, 0.3], "ramp": "chorus", "tone": 5.5,
-         "post": True, "faces": ["sides", "top"], "min_gap": 1.0}
-RIM = {"light": 1, "dark": 1, "light_shift": 2.0, "dark_shift": -0.8}
-
+# a few violet motes drifting in the nap
+MOTES = {"id": "motes", "op": "spots", "count": 2, "radius": [0.3, 0.45], "ramp": "chorus", "tone": 4.0,
+         "post": True, "faces": ["sides", "top"], "min_gap": 2.0}
+# the head's front: raised brows over the eyes (lit nap), a lighter cheek line, the face otherwise plain black
+FACE = {"face": "front", "at": "top-left", "art": ["b......b", ".bb..bb.", "........", "c......c"],
+        "key": {"b": "ender:8", "c": "ender:5"}}
 styles = {
-    "velvet_body": {"ramp": "velvet", "tone": 3.0, "rim": RIM, "layers": [NAP, SHEEN, dict(MOTES, count=3)]},
-    "velvet_head": {"ramp": "velvet", "tone": 3.4, "rim": RIM, "brush": {"flow": "horizontal"},
-                    "layers": [NAP, dict(SHEEN, count=4), MOTES,
-                               {"id": "crown_sheen", "op": "band", "axis": "y", "from": 0.7, "to": 1.01, "shift": 0.8,
-                                "wobble": 0.3, "faces": ["sides"]}]},
-    "velvet_face": {"ramp": "velvet", "tone": 2.8, "rim": RIM, "brush": {"flow": "horizontal"},
-                    "layers": [NAP, dict(MOTES, count=2, faces=["sides", "top", "-front"])]},
-    "jaw": {"ramp": "velvet", "tone": 3.4, "rim": RIM, "brush": {"off": True},
-            "layers": [{"id": "mouth", "op": "fill", "ramp": "velvet", "tone": 0.3, "faces": ["top"]}],
-            "stamps": [{"face": "front", "at": "top-left", "art": [".mmmmm.", "......."], "key": {"m": "velvet:1"}}]},
-    # the eyes: large glowing violet, a dark slit pupil low inside, a big catchlight
-    "eye": {"ramp": "eyeglow", "tone": 3.2, "light": 0.3, "brush": {"off": True},
-            "rim": {"light": 1, "dark": 0, "light_shift": 1.0},
-            "layers": [{"id": "lower", "op": "gradient", "axis": "y", "amount": -1.0}],
-            "stamps": [{"face": "front", "at": "top-left", "art": [".WW.", "Ww..", "....", ".pp."],
-                        "key": {"W": "eyeglow:6", "w": "eyeglow:5", "p": "eyeglow:1"}}]},
-    "velvet_leg": {"ramp": "velvet", "tone": 2.8, "rim": RIM, "brush": {"flow": "y"},
-                   "layers": [NAP, {"id": "dark_low", "op": "gradient", "axis": "y", "amount": 0.8}]},
-    "velvet_foot": {"ramp": "velvet", "tone": 2.2, "rim": RIM, "brush": {"off": True}},
-    "velvet_card": {"ramp": "velvet", "tone": 5, "light": 0.2, "brush": {"off": True},
-                    "art_key": {"t": "velvet:6", "m": "velvet:4", "f": "velvet:3"}},
-    "velvet": {"ramp": "velvet", "tone": 4},
+    "ender_body": skin("ender", 2.6, grain=1.0, lip=1.6, shade=-0.8, layers=[MOTES]),
+    "ender_head": skin("ender", 2.8, grain=1.0, lip=1.8, shade=-0.8, stamps=[FACE],
+                       layers=[dict(MOTES, count=3, faces=["sides", "top", "back", "-front"])]),
+    # the jaw: a dark lip line along its front's top row, the mouth's inside (its top) deep violet
+    "ender_jaw": skin("ender", 2.4, grain=0.9, lip=1.2, shade=-0.8,
+                      layers=[{"id": "mouth", "op": "fill", "ramp": "chorus", "tone": 1.2, "faces": ["top"]}],
+                      stamps=[{"face": "front", "at": "top-left", "art": ["..mmmm..", "...ll..."],
+                               "key": {"m": "chorus:1", "l": "ender:5"}}]),
+    "ender_leg": skin("ender", 2.4, grain=0.9, lip=1.4, shade=-0.8),
+    "ender_foot": skin("ender", 2.0, grain=0.8, lip=1.2, shade=-0.6, dark_low=0),
+    "eye": {"ramp": "eyeglow", "tone": 3, "light": 0, "brush": {"off": True}, "rim": {"light": 0, "dark": 0},
+            "art_key": {"W": "eyeglow:6", "E": "eyeglow:4", "e": "eyeglow:2"}},
+    "ender": {"ramp": "ender", "tone": 3},
 }
 
 # ======================================================================= animation
@@ -207,15 +189,14 @@ ANIM["sacrifice"] = timeline(1.2, [
 
 spec = {
     "name": "Endling",
-    "description": "The Winterworks Endling: a tiny, cute Enderman-like creature: a black velvet body, no arms, two "
-                   "very long thin legs, a big round head with large glowing violet eyes and a small jaw, a "
-                   "head_plant locator on the crown. Minecraft pixel units, density 2: exports 1:1 to a vanilla "
-                   "entity model.",
+    "description": "The Winterworks Endling: a tiny, cute Enderman-like creature in vanilla style: a big square "
+                   "head with a dropping jaw, two flat glowing violet eyes under raised brows, a small black body, "
+                   "no arms, two long legs; a head_plant locator on the crown. Minecraft pixel units, density 1: "
+                   "exports 1:1 to a vanilla entity model.",
     "author": "lowpix example", "license": "CC0-1.0",
     "density": DENSITY,
-    "budget": {"tris": 600, "colors": 64},
+    "budget": {"tris": 400, "colors": 40},
     "light": light,
-    "brush": brush,
     "minecraft": {"fps": 24, "glow_ramps": ["eyeglow"]},
     "anim_ground_tolerance": 0.3,
     "render": {"background": "#5d6a4e", "hero": [32, 16], "shadow": 0.5},
