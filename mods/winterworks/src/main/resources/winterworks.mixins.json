@@ -44,6 +44,8 @@
     "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor",
+    "SoulBullNaturalSpawnerMixin",
+    "SoulBullSpawnsAccessor",
     "TrailerCartRemovalMixin",
     "MinecartFurnaceMixin",
     "LoopRiderMixin",
@@ -85,7 +87,8 @@
     "client.DaggerItemInHandLayerMixin",
     "client.DaggerPlayerRendererMixin",
     "client.RamPoseMixin",
-    "client.RamHandMixin"
+    "client.RamHandMixin",
+    "client.SoulBarGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

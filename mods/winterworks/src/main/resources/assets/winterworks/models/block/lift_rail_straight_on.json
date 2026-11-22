@@ -1,0 +1,4 @@
+{
+  "parent": "winterworks:block/lift_rail_straight",
+  "textures": {"chain": "winterworks:block/track_chain_fast", "lamp": "winterworks:block/track_lamp_lit"}
+}

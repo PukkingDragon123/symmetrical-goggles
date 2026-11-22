@@ -129,6 +129,12 @@ public final class WWItems {
     /** From Soul Bulls and Wither Skeletons; brews the Potion of Decay. */
     public static final Item WITHER_BONE = reg("wither_bone", new Item(new Item.Properties()));
 
+    // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md); creative tab entries: soulbull.SoulBullFeature
+    public static final Item SOUL_BULL_SKULL = reg("soul_bull_skull", new BlockItem(WWBlocks.SOUL_BULL_SKULL,
+            new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final Item SOUL_BULL_SPAWN_EGG = reg("soul_bull_spawn_egg",
+            new SpawnEggItem(WWEntities.SOUL_BULL, 0x2F2E33, 0x46D2F2, new Item.Properties()));
+
     public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("main"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks"))
                     .icon(() -> new ItemStack(ICEBREAKER_HORN))

@@ -35,20 +35,28 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * The cold (docs/COLD_UPDATE.md sections 1-2). Ice Caves, cold water and snowstorms push a player's vanilla frozen
- * ticks up (the powder-snow frost overlay, slowdown and freeze damage: no new HUD); warmth (fires, lava, lit
- * furnaces, torches and lanterns nearby or in hand) stops it, and leather or fur armour makes you freeze-immune.
+ * The cold (docs/COLD_UPDATE.md sections 1-2, made harsher in docs/FIXES_0_4.md). Ice Caves, cold water, touching or
+ * standing on ice, powder snow and snowstorms fill a cold meter (0-400) in four levels, shown as the Cold effect
+ * (amplifier 0-3): Chilly (shivers, frost breath), Cold (Slowness, Mining Fatigue), Freezing (Slowness II, Weakness,
+ * fully frozen: vanilla freeze damage), Frozen (Slowness IV, Weakness II, extra freeze damage). The vanilla frost
+ * overlay follows the meter. Warmth (fires, lava, lit furnaces, torches and lanterns nearby or in hand) thaws you fast;
+ * out of the cold you thaw slowly. Each leather or fur armour piece cuts the cold by a quarter (all four: immune).
  * Fur armour also turns the cold into Strength, but cooks you in the Nether.
  */
 public final class ColdSystem {
     private static final EquipmentSlot[] ARMOR = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    /** Frozen ticks added per tick by each source (vanilla full freeze = 140). */
-    public static final float ICE_CAVES = 0.25f, COLD_WATER = 0.4f, SNOWSTORM = 0.15f, BLIZZARD = 0.35f;
+    /** Cold meter points added per tick by each source (each level is 100 points; the meter tops out at 400). */
+    public static final float ICE_CAVES = 0.5f, COLD_WATER = 1.5f, SNOWSTORM = 0.3f, BLIZZARD = 0.8f, ON_ICE = 0.25f,
+            TOUCHING_ICE = 0.4f, POWDER_SNOW = 1.0f;
+    /** The cold meter: one level every 100 points, at most 4 levels. */
+    public static final float LEVEL = 100f, MAX_COLD = 400f;
+    /** Thawing per tick: near warmth, and simply out of the cold. */
+    public static final float THAW_WARM = 4f, THAW = 1f;
     /** A cold hit (Frostbite shrugged off, a frost zombie's claws, a roar) counts as "in the cold" this long. */
     private static final int CHILL_TICKS = 100;
 
     private static final class State {
-        float carry;
+        float cold;
         boolean warm;
         boolean nearAncientIce;
         long checked = -1000;
@@ -138,7 +146,63 @@ public final class ColdSystem {
         if (level.isRaining() && biome.value().getPrecipitationAt(pos) == Biome.Precipitation.SNOW && level.canSeeSky(eyes)) {
             rate += level.isThundering() ? BLIZZARD : SNOWSTORM;
         }
+        if (e.isInPowderSnow || e.wasInPowderSnow) {
+            rate += POWDER_SNOW;
+        }
+        if (isIce(level.getBlockState(e.getBlockPosBelowThatAffectsMyMovement()))) {
+            rate += ON_ICE;
+        }
+        if (touchingIce(level, e)) {
+            rate += TOUCHING_ICE;
+        }
         return rate;
+    }
+
+    /** Ice of every kind (vanilla ice, packed, blue, frosted; our ancient ice and icicles). */
+    public static boolean isIce(BlockState s) {
+        return s.is(BlockTags.ICE) || s.is(WWBlocks.ANCIENT_ICE) || s.is(WWBlocks.ICICLE);
+    }
+
+    /** Is any block of ice pressed against the entity (its box grown a little)? */
+    private static boolean touchingIce(ServerLevel level, LivingEntity e) {
+        var box = e.getBoundingBox().inflate(0.25, 0.0, 0.25);   // within arm's reach of a wall of ice
+        for (BlockPos p : BlockPos.betweenClosed(BlockPos.containing(box.minX, box.minY, box.minZ),
+                BlockPos.containing(box.maxX, box.maxY, box.maxZ))) {
+            if (isIce(level.getBlockState(p))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Leather and fur pieces (each cuts the cold by a quarter). */
+    public static int warmPieces(LivingEntity e) {
+        int n = 0;
+        for (EquipmentSlot slot : ARMOR) {
+            if (e.getItemBySlot(slot).is(net.minecraft.tags.ItemTags.FREEZE_IMMUNE_WEARABLES)) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    /** The cold meter (0-400) of this player. */
+    public static float coldMeter(Player p) {
+        return state(p).cold;
+    }
+
+    /** The cold level of this player: 0 none, 1 Chilly, 2 Cold, 3 Freezing, 4 Frozen. */
+    public static int coldLevel(Player p) {
+        return levelOf(state(p).cold);
+    }
+
+    public static int levelOf(float meter) {
+        return Math.min(4, (int) (meter / LEVEL));
+    }
+
+    /** Tests: set the meter directly. */
+    public static void setColdMeter(Player p, float meter) {
+        state(p).cold = Math.max(0, Math.min(MAX_COLD, meter));
     }
 
     /** Fires, lava, magma, lit furnaces within 5 blocks; torches and lanterns within 2 or in hand. */
@@ -215,6 +279,7 @@ public final class ColdSystem {
         // overheating: fur in the Nether
         if (fur > 0 && level.dimensionType().ultraWarm()) {
             s.exposure = 0;
+            s.cold = Math.max(0, s.cold - THAW_WARM);
             if (t % overheatInterval(fur) == 0) {
                 p.hurt(WWDamage.source(level, WWDamage.OVERHEAT), 1f);
                 level.sendParticles(ParticleTypes.WHITE_SMOKE, p.getX(), p.getY() + 1.2, p.getZ(), 6, 0.3, 0.5, 0.3, 0.02);
@@ -227,25 +292,45 @@ public final class ColdSystem {
         float cold = coldAt(level, p);
         if (t - s.checked >= 10 || t < s.checked) {   // the block scans run twice a second (and right away)
             s.checked = t;
-            s.warm = cold > 0 && isWarm(level, p);
+            s.warm = (cold > 0 || s.cold > 0) && isWarm(level, p);
             s.nearAncientIce = ancientIceNear(level, p);
         }
-        s.exposure = s.warm ? 0 : cold;
-        if (s.exposure > 0 && p.canFreeze()) {
-            s.carry += s.exposure;
-            int add = (int) s.carry;
-            s.carry -= add;
-            int required = p.getTicksRequiredToFreeze();
-            int now = p.getTicksFrozen();
-            // vanilla thaws 2 a tick outside powder snow: cancel that, then add the cold
-            if (now < required) {
-                p.setTicksFrozen(Math.min(required, now + 2 + add));
-            } else {
-                p.setTicksFrozen(Math.max(now, required));
+        int warmPieces = warmPieces(p);
+        s.exposure = s.warm ? 0 : cold * Math.max(0, 4 - warmPieces) / 4f;
+        if (s.exposure > 0) {
+            s.cold = Math.min(MAX_COLD, s.cold + s.exposure);
+        } else {
+            s.cold = Math.max(0, s.cold - (s.warm ? THAW_WARM : THAW));
+        }
+        int lvl = levelOf(s.cold);
+        // the vanilla frost overlay follows the meter: it starts at Chilly and is full (frozen) from Freezing
+        int required = p.getTicksRequiredToFreeze();
+        int frozen = s.cold <= LEVEL ? 0 : Math.min(required, (int) ((s.cold - LEVEL) / (2 * LEVEL) * required));
+        if (lvl >= 3) {
+            frozen = Math.max(frozen, required);
+        }
+        if (!p.isInPowderSnow || frozen > p.getTicksFrozen()) {
+            p.setTicksFrozen(frozen + (frozen >= required ? 0 : 2));   // +2: vanilla thaws 2 a tick
+        }
+        // the levels
+        if (lvl > 0 && t % 20 == 0) {
+            p.addEffect(new MobEffectInstance(WWEffects.COLD, 40, lvl - 1, true, false, true));
+            if (lvl >= 2) {
+                p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, lvl == 2 ? 0 : lvl == 3 ? 1 : 3, true, false, false));
+                p.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 40, lvl >= 4 ? 1 : 0, true, false, false));
+            }
+            if (lvl >= 3) {
+                p.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, lvl >= 4 ? 1 : 0, true, false, false));
+            }
+            if (lvl >= 4) {
+                p.hurt(level.damageSources().freeze(), 1f);
+            }
+            if (level.random.nextInt(3) == 0) {
+                level.sendParticles(WWParticles.FROST_BREATH, p.getX(), p.getEyeY() - 0.1, p.getZ(), 1 + lvl, 0.15, 0.05, 0.15, 0.01);
             }
         }
         // shivering
-        if (p.getTicksFrozen() > 100 && level.random.nextInt(70) == 0) {
+        if (lvl >= 1 && level.random.nextInt(Math.max(12, 80 - lvl * 15)) == 0) {
             level.playSound(null, p, WWSounds.PLAYER_SHIVER, SoundSource.PLAYERS, 0.5f, 0.9f + level.random.nextFloat() * 0.2f);
         }
         // fur armour: the colder it gets, the stronger you are
