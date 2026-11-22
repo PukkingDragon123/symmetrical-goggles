@@ -178,3 +178,21 @@ contract for the Java side.
   other projectiles by where they strike; melee by where the attacker is looking, a ray against the head box) is a
   **headshot**: double damage, it always cracks the pot, and it shows a crit burst of pottery chips with a sharp clink.
   Body hits do normal damage and crack the pot only sometimes, as now.
+
+## Art notes for the Java side (from the art pass)
+* **Amberwood**: textures follow vanilla paths for WoodType `winterworks:amberwood` (`entity/signs/amberwood.png`,
+  `entity/signs/hanging/amberwood.png`, `gui/hanging_signs/amberwood.png`, `entity/boat/amberwood.png`,
+  `entity/chest_boat/amberwood.png`); blocks `amberwood_log(_top, _resin)`, `stripped_amberwood_log(_top)`,
+  `amberwood_planks`, `amberwood_door_top/bottom`, `amberwood_trapdoor`, `amberwood_bloom(_top)`; items
+  `amberwood_door`, `amberwood_sign`, `amberwood_hanging_sign`, `amberwood_boat`, `amberwood_chest_boat`, `amberwood_bloom`.
+* **Amber**: `item/amber_shard`, `block/amber_sand_0..3`, `block/amber_gravel_0..3`; `amber_chunk` can go.
+* **Coaster rail**: 3D models `coaster_rail_straight` (north_south 0 / east_west 90), `coaster_rail_ascending`
+  (ascending_north/east/south/west 0/90/180/270), `coaster_rail_corner` (south_east/south_west/north_west/north_east
+  0/90/180/270); the blockstate already maps them. Floating needs `canSurvive` overridden. `coaster_rail_loop_segment`
+  is 19.6 px of rail centred on (8,8,8) along z with the ride surface in the plane y=8 facing +y: 16 of them at radius
+  3 blocks, each turned so +y faces the loop centre, close the loop.
+* **Fur armour**: vanilla layers `models/armor/fur_layer_1/2.png` (ArmorMaterial layer `winterworks:fur`).
+* **Icebreaker**: 0.75 scale; hitbox 2.5 x 2.1 -> 1.875 x 1.575, eye height 1.35; new `eat` clip (1.2 s);
+  `charge` (loop) holds the head low with the horn levelled; `ram` (0.8 s) thrusts and returns to rest. Don't play
+  `ram` on top of `charge` (skip it while charging).
+* **Frost Mauler / skull**: new eye glow parts already in the export; no Java changes needed.
