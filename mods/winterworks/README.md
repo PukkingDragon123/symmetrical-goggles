@@ -140,8 +140,9 @@ and 16 Soul Elixir), elixir bottles, soul sand, wart, ghast tears and crying obs
 
 **Elixirs.** Craft an **Elixir Bottle** from 4 gold ingots and a bottle. The lantern-sized **Elixir Jar** brews only
 over heat (fire, soul fire, a campfire, lava or magma): soul sand makes **Soul Elixir** (the Hexing Table's fuel), a
-gold block makes **Elixir of Greed** (drop it near Piglins and they fight to the death for it), and soul sand in a
-jar of Greed makes **Cursed Elixir** (a Piglin that drinks it turns golden and never zombifies).
+Potion of Blood poured in and then a gold block make **Elixir of Greed** (drop it near Piglins and they fight to the
+death for it), and soul sand in a jar of Greed makes **Cursed Elixir** (a Piglin that drinks it turns golden and never
+zombifies).
 
 **The Soul Tank and the Hexing Table.** A Soul Tank holds 1000 souls: mobs that die within 8 blocks drift in (10
 each), and Soul Elixir adds 50. The **Hexing Table** (netherite, an enchanting table, the Hex Core, crying obsidian)
@@ -153,15 +154,21 @@ Put an enchanted book and Soul Elixir in it and press the HEX rune:
 * Any hex has a 15% chance of a **hidden curse** that shows as scrambled text until it strikes.
 
 Hexing leaves you **Hexed** for 5, 10 or 20 minutes: no natural regeneration, so you heal only with potions. You keep
-all your hearts.
+all your hearts. **Blood instead of yourself**: a lesser hex takes a Potion of Blood from the table's blood slot instead
+of hexing you; a sin hex always needs one, and takes three instead of hexing you.
+
+Potions of Blood are a base potion too: with a fermented spider eye they brew Harming, with a ghast tear Regeneration.
+Awkward potions brew **Burning** with a torchflower (you burn for the whole time, and water won't put you out) and
+**Decay** with a Wither Bone (Wither); every mod potion comes as drink, splash, lingering and tipped arrows.
 
 **Curses.** Narcissus (stare at water and waste away), Icarus (fly too high in the sun and burn), Midas (your food
 turns to gold), Orpheus (look back and your pet is dragged under), Sisyphus (mined blocks come back), Tantalus
 (food rolls out of your hand), the Moth (drawn to light at night, even lava). Hidden: Cain (you wound your own pets),
 Judas (trades turn iron golems on you), Lot's Wife (look back while fleeing and turn to stone), the Leech (one hit in
-five heals).
+five heals). Curses never say what they do: each one plays its own few seconds of screen effect when it strikes. Cursed
+books look cursed, and anything carrying a curse glints with drifting souls instead of the purple shimmer.
 
-**The Seven Deadly Sins.** Each is a big power with a brutal curse. Wrath: soul fire, and strength while you keep
+**The Seven Deadly Sins.** Each is a big power with a brutal curse. Wrath: blue soul fire, and strength while you keep
 hitting, weakness when you stop. Greed: huge ore and gold drops, but every Piglin hunts you and dropped items vanish.
 Lust: far more loot, but twice the hostile spawns, all coming for you, and neutral mobs turn on you. Gluttony: food
 repairs your gear, but hunger drains three times as fast. Sloth: instant mining, but you are always slow and nod

@@ -113,6 +113,8 @@ def run(ctx):
     # (client.hex.CursedBooks, property winterworks:cursed: 0.5 a curse, 1 a sin)
     for name in ("cursed_book", "cursed_book_sin"):
         item_model(name, {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/{name}"}})
+    # the Wither Bone (registered with the shared 0.4 pieces; it brews the Potion of Decay): its plain item model
+    item_model("wither_bone", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{M}:item/wither_bone"}})
 
     # ---------------------------------------------------------------------------------------- recipes
     ctx.shaped("elixir_bottle", [" G ", "GBG", " G "], {"G": "minecraft:gold_ingot", "B": "minecraft:glass_bottle"},
@@ -223,6 +225,7 @@ def run(ctx):
         lang[f"item.minecraft.lingering_potion.effect.{potion}"] = f"Lingering Potion of {name}"
         lang[f"item.minecraft.tipped_arrow.effect.{potion}"] = f"Arrow of {name}"
     lang["effect.winterworks.burning"] = "Burning"
+    lang["item.winterworks.wither_bone"] = "Wither Bone"
     lang.update(subtitles)
     w(os.path.join(ctx.L, "hex.json"), lang)
 
