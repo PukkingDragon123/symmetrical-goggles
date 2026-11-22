@@ -30,7 +30,10 @@
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
     "FoodDataMixin",
-    "HexedPlayerMixin"
+    "HexedPlayerMixin",
+    "end.SuspiciousEndSandMixin",
+    "end.ChorusSoilMixin",
+    "end.ChorusFlowerSoilMixin"
   ],
   "client": [
     "client.GameRendererMixin",

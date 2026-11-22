@@ -1,0 +1,18 @@
+{
+  "structures": [
+    {
+      "structure": "winterworks:obsidian_ruins",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 28,
+    "separation": 10,
+    "salt": 20261201,
+    "exclusion_zone": {
+      "other_set": "winterworks:monolith_tower",
+      "chunk_count": 3
+    }
+  }
+}

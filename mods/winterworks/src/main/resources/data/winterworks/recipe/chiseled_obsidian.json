@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "#",
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "winterworks:obsidian_brick_slab"
+    }
+  },
+  "result": {
+    "id": "winterworks:chiseled_obsidian",
+    "count": 1
+  }
+}

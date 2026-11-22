@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "winterworks:block/chiseled_obsidian_top",
+    "side": "winterworks:block/chiseled_obsidian"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "winterworks:block/meteorite_bricks",
+    "side": "winterworks:block/meteorite_bricks",
+    "top": "winterworks:block/meteorite_bricks"
+  }
+}

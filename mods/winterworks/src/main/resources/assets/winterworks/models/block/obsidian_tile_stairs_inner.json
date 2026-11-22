@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "winterworks:block/obsidian_tiles",
+    "side": "winterworks:block/obsidian_tiles",
+    "top": "winterworks:block/obsidian_tiles"
+  }
+}

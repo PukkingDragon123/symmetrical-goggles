@@ -1,0 +1,7 @@
+{
+  "type": "winterworks:obsidian_ruins",
+  "biomes": "#winterworks:has_obsidian_ruins",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

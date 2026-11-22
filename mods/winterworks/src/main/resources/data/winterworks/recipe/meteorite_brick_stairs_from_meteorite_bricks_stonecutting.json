@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "winterworks:meteorite_bricks"
+  },
+  "result": {
+    "id": "winterworks:meteorite_brick_stairs",
+    "count": 1
+  }
+}

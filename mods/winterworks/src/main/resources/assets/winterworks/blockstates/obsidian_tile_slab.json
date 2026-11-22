@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "winterworks:block/obsidian_tile_slab"
+    },
+    "type=double": {
+      "model": "winterworks:block/obsidian_tiles"
+    },
+    "type=top": {
+      "model": "winterworks:block/obsidian_tile_slab_top"
+    }
+  }
+}
