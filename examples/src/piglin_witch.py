@@ -36,14 +36,14 @@ part, bone, card, wpos = R.part, R.bone, R.card, R.wpos
 
 # ======================================================================= hips, skirt, legs
 part("body", None, [13, 5, 10], "dress", at=(0, 9, 0), centre=(0, 9.5, 0.5))
-part("skirt", "body", [15, 5, 12], "skirt", centre=(0, 5.5, 0.5))
-card("hem_f", "skirt", tatters(15, 3, 3, min_len=0.3), "tatter_dress", rel=(0, -2.5, 6.05),
+part("skirt", "body", [15, 4, 12], "skirt", centre=(0, 6.0, 0.5))
+card("hem_f", "skirt", tatters(15, 3, 3, min_len=0.3), "tatter_dress", rel=(0, -2.0, 6.05),
      offset=(0, -1.4, 0), rot=(-8, 0, 0))
-card("hem_b", "skirt", tatters(15, 3, 4, min_len=0.3), "tatter_dress", rel=(0, -2.5, -5.05), offset=(0, -1.4, 0),
+card("hem_b", "skirt", tatters(15, 3, 4, min_len=0.3), "tatter_dress", rel=(0, -2.0, -5.05), offset=(0, -1.4, 0),
      rot=(8, 0, 0))
 for s in (1, -1):
     n = "l" if s > 0 else "r"
-    card(f"hem_{n}", "skirt", tatters(12, 3, 5 + s, min_len=0.3), "tatter_dress", rel=(s * 7.55, -2.5, 0.5),
+    card(f"hem_{n}", "skirt", tatters(12, 3, 5 + s, min_len=0.3), "tatter_dress", rel=(s * 7.55, -2.0, 0.5),
          offset=(0, -1.4, 0), plane="yz", rot=(0, 0, s * 8))
 # the rope belt under the belly, hung with gold coins and a pouch
 part("belt", "body", [14, 2, 11], "rope", centre=(0, 7.5, 0.5))
@@ -284,7 +284,7 @@ styles = {
                           "wobble": 0.6, "faces": ["left", "right"]},
                          {"id": "mud", "op": "band", "axis": "y", "from": -1.01, "to": -0.5, "wobble": 0.3,
                           "ramp": "hoof", "tone": 2.2, "faces": ["sides"]}],
-              "stamps": [{"face": "front", "at": [9, 0], "art": ["SSSSS", "SpppS", "SpPpS", "SpppS", "SSSSS"],
+              "stamps": [{"face": "front", "at": [9, 0], "art": ["SSSSS", "SpPpS", "SpppS", "SSSSS"],
                           "key": {"S": "canvas:6", "p": "shawl:4", "P": "shawl:2"}}]},
     "torso": {"ramp": "dress", "tone": 3.6, "rim": RIM_SOFT, "brush": {"flow": "y"},
               "layers": [NOISE,
