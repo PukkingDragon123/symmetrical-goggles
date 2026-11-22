@@ -91,7 +91,7 @@ def part(id, parent, size, style=None, at=None, rel=None, centre=None, offset=No
 
 
 def bone(id, parent, **kw):
-    return part(id, parent, None, None, shape="bone", **kw)
+    return part(id, parent, None, "chitin", shape="bone", **kw)
 
 
 def card(id, parent, art, style, plane="yz", **kw):
@@ -103,8 +103,9 @@ def wpos(id, local):
     return t + R @ np.array(local, float)
 
 
-def aim(d):
-    """World rotation (degrees) whose local -Y points along d, local X kept as level as possible."""
+def aim_mat(d):
+    """World rotation matrix whose local -Y points along d; local X is kept as level and as close to +X as possible,
+    so on every leg joint +x rotation pitches like the body (points above the joint swing forward)."""
     d = np.array(d, float)
     y = -d / np.linalg.norm(d)
     ref = np.array([0.0, 0.0, 1.0]) if abs(y[2]) < 0.9 else np.array([1.0, 0.0, 0.0])
@@ -113,7 +114,11 @@ def aim(d):
     if x[0] < 0:
         x = -x
     z = np.cross(x, y)
-    return _euler(np.stack([x, y, z], axis=1))
+    return np.stack([x, y, z], axis=1)
+
+
+def aim(d):
+    return _euler(aim_mat(d))
 
 
 def limb(id, parent, start, end, thick, style, **kw):
@@ -168,16 +173,18 @@ WING_HIND = [
 ]
 # plumose antenna (plane yz: left column = front): a dark shaft with whorls of pale hair
 ANTENNA = [
-    "h..h....",
-    ".hsh.h..",
-    "h.sh.h.h",
-    ".h.s.sh.",
-    "...hsh.h",
-    "....s.h.",
-    ".....ss.",
-    "......sd",
+    "..H..",
+    ".hsh.",
+    "H.s.H",
+    ".hsh.",
+    "h.s.h",
+    ".hsh.",
+    "h.s.h",
+    "..s..",
+    "..s..",
+    "..d..",
 ]
-PALP = ["ws", ".sws", "..sdw"]     # maxillary palps: dark with white tips, alongside the needle
+PALP = ["ws...", ".sws.", "..sdw"]     # maxillary palps: dark with white tips, alongside the needle
 TAIL = ["s.s", ".s."]                # cerci at the abdomen tip
 TIP = ["gGG", "g.."]                 # the stylet's glinting point (plane yz)
 
@@ -200,8 +207,8 @@ part("head", "body", [2, 2.5, 2], "head", at=(0, 4.9, 1.9), centre=(0, 4.45, 2.8
 for s in (1, -1):
     n = "l" if s > 0 else "r"
     part(f"eye_{n}", "head", [1.5, 3, 2.5], "eye", rel=(s * 1.65, -0.35, 0.95), rot=(0, s * 10, 0))
-    card(f"antenna_{n}", "head", ANTENNA if s > 0 else ANTENNA, "antenna", rel=(s * 0.55, 0.6, 1.75),
-         offset=(0, 1.6, 2.0), rot=(-48, s * 18, s * -8))
+    card(f"antenna_{n}", "head", ANTENNA, "antenna", rel=(s * 0.55, 0.75, 1.6), offset=(0, 2.5, 0),
+         rot=(34, s * 10, s * -22))
     card(f"palp_{n}", "head", PALP, "palp", rel=(s * 0.6, -1.15, 1.6), offset=(0, -0.4, 1.0), rot=(30, s * 4, 0))
 # the needle: a sheath from the mouth, the stylet slides out of it; long, aimed down and forward
 part("needle", "head", [1, 1, 2.5], "sheath", rel=(0, -1.0, 1.7), offset=(0, 0, 1.25), wrot=(24, 0, 0))
@@ -338,7 +345,7 @@ def styles_for(kind):
                            {"face": "right", "at": "top-left", "art": [".h...", ".Hh..", ".h..."],
                             "key": {"h": "eye:7", "H": "eye:8"}}]},
         "antenna": {"ramp": "chitin", "tone": 3.0, "light": 0.4, "brush": {"off": True},
-                    "art_key": {"s": "chitin:4", "d": "chitin:2", "h": "scale:3"}},
+                    "art_key": {"s": "chitin:5", "d": "chitin:2", "h": "chitin:7", "H": "scale:3"}},
         "palp": {"ramp": "chitin", "tone": 3.0, "light": 0.4, "brush": {"off": True},
                  "art_key": {"s": "chitin:3", "d": "chitin:1", "w": "scale:5"}},
         "sheath": {"ramp": "chitin", "tone": 3.4, "rim": {"light_shift": 1.6, "dark_shift": -1.0},
@@ -348,10 +355,12 @@ def styles_for(kind):
                               {"id": "band", "op": "band", "axis": "z", "from": 0.25, "to": 0.7, "ramp": "scale",
                                "tone": 4.6}]},
         # the stylet: glossy dark red-black blade with a pale glint running to the point
-        "stylet": {"ramp": "eye", "tone": 2.4, "rim": {"light": 1, "dark": 1, "light_shift": 2.6, "dark_shift": -1.2},
+        "stylet": {"ramp": "eye", "tone": 1.6, "rim": {"light": 1, "dark": 1, "light_shift": 2.4, "dark_shift": -1.0},
                    "brush": {"off": True},
-                   "layers": [{"id": "edge", "op": "band", "axis": "z", "from": 0.4, "to": 1.01, "ramp": "scale",
-                               "tone": 4.4, "faces": ["top", "left", "right"]}]},
+                   "layers": [{"id": "sheen", "op": "band", "axis": "z", "from": -0.2, "to": 0.75, "ramp": "eye",
+                               "tone": 3.2, "faces": ["top"]},
+                              {"id": "edge", "op": "band", "axis": "z", "from": 0.75, "to": 1.01, "ramp": "scale",
+                               "tone": 4.6, "faces": ["top", "left", "right"]}]},
         "stylet_tip": {"ramp": "scale", "tone": 5, "light": 0, "brush": {"off": True},
                        "art_key": {"g": "scale:4", "G": "scale:6"}},
         # abdomen: bronze-black segments, each with a silver band at its base and pale side spots
@@ -487,13 +496,33 @@ def jitter(part_, t0, t1, amp, step=0.025, axis=0, ch="rotation"):
     return {"part": part_, "channel": ch, "keys": ks, "ease": "ease"}
 
 
-# in flight the legs hang loose and trail back: knees drop, the long lower legs dangle down and back
-DANGLE = add(legs(1, 30, 26, 14), legs(2, 24, 30, 16, -6), legs(3, -18, 34, 24),
+def leg_pose(k, knee, ankle, foot):
+    """Pose leg pair k by points: where the knee, ankle and foot tip should be (left side, in the body's rest frame);
+    the femur, tibia and tarsus are aimed at them (their lengths stay), the right side mirrored."""
+    out = {}
+    for s, n in ((1, "l"), (-1, "r")):
+        ids = [f"leg_{n}{k}", f"shin_{n}{k}", f"foot_{n}{k}"]
+        pts = [FRAMES[ids[0]][1]] + [np.array(M(q, s), float) for q in (knee, ankle, foot)]
+        Wp, R0p = np.eye(3), np.eye(3)
+        for j, pid in enumerate(ids):
+            R0 = FRAMES[pid][0]
+            Rd = aim_mat(pts[j + 1] - pts[j])
+            out[pid] = {"r": _euler((R0p.T @ R0).T @ Wp.T @ Rd)}
+            Wp, R0p = Rd, R0
+    return out
+
+
+# hovering: knees out, the long lower legs hanging down and back, the hind pair trailing; lifted off the ground
+DANGLE = add(leg_pose(1, (2.3, 3.0, 2.6), (3.0, 0.4, 1.0), (3.2, -1.0, -0.8)),
+             leg_pose(2, (3.1, 3.0, 0.2), (3.8, 0.4, -1.6), (3.9, -0.9, -3.5)),
+             leg_pose(3, (2.3, 3.3, -2.4), (2.9, 1.4, -5.4), (3.0, 1.0, -7.9)),
              both("antenna_*", -6), r("needle", -4))
 HOVER = add(DANGLE, pos("body", 0, 3.2, 0))
-# fast flight: pitched nose down, legs swept back under the abdomen, antennae and needle streamlined
-FLY = add(legs(1, 58, 34, 20), legs(2, 52, 36, 20, -4), legs(3, 30, 40, 26),
-          r("body", 14), pos("body", 0, 3.6, 0), r("head", -8), r("needle", -12), r("abdomen", 8), r("abdomen_1", 4),
+# fast flight: pitched nose down, legs folded back under the abdomen, antennae and needle streamlined
+FLY = add(leg_pose(1, (2.1, 2.7, 1.2), (2.5, 1.0, -2.3), (2.4, 0.2, -4.9)),
+          leg_pose(2, (2.8, 2.7, -0.2), (3.0, 1.3, -3.9), (2.8, 0.8, -6.5)),
+          leg_pose(3, (2.1, 3.0, -2.7), (2.2, 2.4, -6.6), (2.0, 2.9, -9.0)),
+          r("body", 12), pos("body", 0, 2.6, 0), r("head", -10), r("needle", -14), r("abdomen", 6), r("abdomen_1", 4),
           both("antenna_*", 14))
 
 ANIM = {}
@@ -513,7 +542,7 @@ ANIM["idle"] = timeline(L, [(0.0, HOVER, None), (L, HOVER, None)], loop=True, ex
     osc("antenna_l", "x", 10, 4, 0.1, shape="pulse"), osc("antenna_r", "x", 10, 4, 0.35, shape="pulse"),
     osc("antenna_l", "z", 4, 2, 0.0), osc("antenna_r", "z", -4, 2, 0.25),
 ] + [{"parts": [f"leg_{s}{k}", f"shin_{s}{k}", f"foot_{s}{k}"],
-      "wave": {"axis": "x", "amp": 6, "cycles": 2, "lag": 0.12, "growth": 1.3,
+      "wave": {"axis": "x", "amp": 5, "cycles": 2, "lag": 0.12, "growth": 1.3,
                "phase": (0.17 * int(k) + (0.5 if s == "r" else 0))}} for s in "lr" for k in "123"])
 
 L = 1.0
@@ -527,17 +556,23 @@ ANIM["fly"] = timeline(L, [(0.0, FLY, None), (L, FLY, None)], loop=True, extra=b
     {"parts": ["abdomen", "abdomen_1", "abdomen_2"], "wave": {"axis": "y", "amp": -4, "cycles": 1, "lag": 0.12}},
     osc("antenna_l", "x", 6, 2, 0.1), osc("antenna_r", "x", 6, 2, 0.1),
 ] + [{"parts": [f"leg_{s}{k}", f"shin_{s}{k}", f"foot_{s}{k}"],
-      "wave": {"axis": "x", "amp": 8, "cycles": 2, "lag": 0.15, "growth": 1.25,
+      "wave": {"axis": "x", "amp": 7, "cycles": 2, "lag": 0.15, "growth": 1.25,
                "phase": (0.21 * int(k) + (0.5 if s == "r" else 0))}} for s in "lr" for k in "123"])
 
-# stab: rear back and cock the needle, a vicious lunge that drives the stylet out, a twitching hold, pull free
-REAR = add(HOVER, r("body", -24), pos("body", 0, 0.6, -1.4), r("head", -16), r("needle", -22),
-           r("abdomen", 22), r("abdomen_1", 14), r("abdomen_2", 12), legs(1, -24, 10, 8, 14), legs(2, -8, 4, 4, 10),
-           both("antenna_*", -20))
-LUNGE = add(HOVER, r("body", 30), pos("body", 0, -0.8, 2.6), r("head", 14), r("needle", 12), pos("stylet", 0, 0, 1.5),
-            r("abdomen", -16), r("abdomen_1", -10), r("abdomen_2", -8), legs(1, 40, -20, -10, 16),
-            legs(2, 30, -12, -8, 14), legs(3, 10, 20, 10), both("antenna_*", 26), sc("body", -0.06, 0.08, 0.1))
-STUCK = add(LUNGE, r("body", -4), pos("body", 0, 0.2, -0.4), pos("stylet", 0, 0, -0.3), sc("body", 0.06, -0.08, -0.1),
+# stab: rear back and cock the needle, a vicious lunge that drives the stylet out level at the target, a twitching
+# hold, pull free. The front legs reach out to grab, the hind legs kick up.
+REAR = add(HOVER, r("body", -22), pos("body", 0, 0.8, -1.6), r("head", -6), r("needle", -10),
+           r("abdomen", 24), r("abdomen_1", 16), r("abdomen_2", 14),
+           leg_pose(1, (2.6, 4.6, 2.6), (3.6, 2.6, 4.8), (4.0, 1.8, 6.6)),
+           leg_pose(2, (3.4, 4.0, 0.4), (4.6, 1.4, -0.4), (5.0, 0.2, -1.8)),
+           both("antenna_*", -24), sc("abdomen", 0.05, 0.05, -0.03))
+LUNGE = add(HOVER, r("body", 12), pos("body", 0, 0.2, 3.0), r("head", -14), r("needle", -12),
+            pos("stylet", 0, 0, 1.5), r("abdomen", -18), r("abdomen_1", -10), r("abdomen_2", -8),
+            leg_pose(1, (2.4, 4.2, 3.8), (3.0, 2.6, 7.4), (2.6, 2.2, 9.6)),
+            leg_pose(2, (3.4, 3.8, 1.2), (4.6, 2.0, 3.6), (4.8, 1.0, 5.4)),
+            leg_pose(3, (2.2, 4.0, -2.2), (2.8, 4.6, -5.6), (2.8, 6.6, -7.6)),
+            both("antenna_*", 26), sc("body", -0.06, 0.08, 0.1))
+STUCK = add(LUNGE, r("body", -3), pos("body", 0, 0, -0.4), pos("stylet", 0, 0, -0.3), sc("body", 0.12, -0.16, -0.2),
             sc("abdomen", 0.08, 0.08, 0.04))
 ANIM["stab"] = timeline(0.6, [(0.0, HOVER, None), (0.16, REAR, "out"), (0.22, add(REAR, r("body", -4)), "ease"),
                               (0.29, LUNGE, "in"), (0.36, STUCK, "out"), (0.44, STUCK, "ease"),
@@ -546,14 +581,18 @@ ANIM["stab"] = timeline(0.6, [(0.0, HOVER, None), (0.16, REAR, "out"), (0.22, ad
                             jitter("body", 0.36, 0.46, 3.0, axis=2), jitter("abdomen", 0.36, 0.46, 5.0),
                             jitter("wing_l1", 0.16, 0.24, 6, axis=2), jitter("wing_r1", 0.16, 0.24, -6, axis=2)])
 
-# drink: needle sunk in, pumping: gulps run down the abdomen, it swells a little each gulp; legs braced, wings at rest
-SIP = add(HOVER, r("body", 22), pos("body", 0, -0.4, 1.6), r("head", 12), r("needle", 14), pos("stylet", 0, 0, 1.0),
-          r("abdomen", -10), r("abdomen_1", -6), legs(1, 30, -16, -8, 14), legs(2, 20, -8, -6, 10), legs(3, -30, 20, 30),
+# drink: needle sunk in (forward and down), pumping: gulps run down the abdomen and it swells with each one;
+# front legs braced on the victim, hind legs raised and swaying, wings held up in a V with a shimmer
+SIP = add(HOVER, r("body", 10), pos("body", 0, 0, 1.6), r("head", 2), r("needle", 2), pos("stylet", 0, 0, 1.0),
+          r("abdomen", -12), r("abdomen_1", -6), r("abdomen_2", -4),
+          leg_pose(1, (2.4, 4.0, 3.4), (3.0, 1.4, 5.8), (2.8, 0.4, 7.4)),
+          leg_pose(2, (3.4, 3.6, 0.8), (4.4, 1.0, 2.0), (4.6, -0.2, 3.4)),
+          leg_pose(3, (2.2, 4.2, -2.0), (2.6, 5.4, -5.2), (2.4, 7.4, -6.8)),
           both("antenna_*", 10))
 L = 1.2
-ANIM["drink"] = timeline(L, [(0.0, SIP, None), (L, SIP, None)], loop=True, extra=buzz(L, amp=10, sweep=4, bias=18) + [
+ANIM["drink"] = timeline(L, [(0.0, SIP, None), (L, SIP, None)], loop=True, extra=buzz(L, amp=8, sweep=3, bias=20) + [
     {"parts": ["abdomen", "abdomen_1", "abdomen_2"], "channel": "scale",
-     "wave": {"amp": [0.09, 0.11, 0.03], "cycles": 3, "lag": 0.14, "growth": 1.15, "shape": "bounce"}},
+     "wave": {"amp": [0.12, 0.14, 0.04], "cycles": 3, "lag": 0.14, "growth": 1.15, "shape": "bounce"}},
     {"parts": ["abdomen", "abdomen_1", "abdomen_2"], "wave": {"axis": "x", "amp": 3, "cycles": 3, "lag": 0.12}},
     osc("head", "x", 3, 3, 0.0, shape="bounce"),
     osc("body", "x", -2.0, 3, 0.05, shape="bounce"),
@@ -564,16 +603,17 @@ ANIM["drink"] = timeline(L, [(0.0, SIP, None), (L, SIP, None)], loop=True, extra
 ])
 
 # spit: squeeze the abdomen (gather), rear up, a heave that snaps the head and needle down and out, recoil
-GATHER = add(HOVER, r("body", -14), pos("body", 0, 0.5, -0.6), r("head", -18), r("needle", -16), r("abdomen", 16),
-             r("abdomen_1", 12), r("abdomen_2", 10), sc("abdomen", 0.14, 0.14, -0.04), sc("abdomen_1", 0.12, 0.14, 0),
-             legs(1, -16, 8, 6, 10), both("antenna_*", -14))
-HEAVE = add(HOVER, r("body", 22), pos("body", 0, -0.3, 1.4), r("head", 18), r("needle", 20), pos("stylet", 0, 0, 0.8),
-            r("abdomen", -18), r("abdomen_1", -12), r("abdomen_2", -10), sc("abdomen", -0.14, -0.12, 0.08),
-            sc("abdomen_1", -0.12, -0.1, 0.06), sc("head", 0.12, 0.12, 0.08), legs(1, 30, -10, -6, 16),
-            legs(2, 20, -6, -4, 12), both("antenna_*", 24))
+GATHER = add(HOVER, r("body", -16), pos("body", 0, 0.6, -0.8), r("head", -14), r("needle", -12), r("abdomen", 18),
+             r("abdomen_1", 12), r("abdomen_2", 10), sc("abdomen", 0.16, 0.16, -0.04), sc("abdomen_1", 0.14, 0.16, 0),
+             leg_pose(1, (2.6, 4.4, 2.4), (3.4, 2.4, 4.4), (3.8, 1.4, 6.0)), both("antenna_*", -16))
+HEAVE = add(HOVER, r("body", 10), pos("body", 0, 0.2, 1.6), r("head", 0), r("needle", -8), pos("stylet", 0, 0, 0.8),
+            r("abdomen", -20), r("abdomen_1", -12), r("abdomen_2", -10), sc("abdomen", -0.16, -0.14, 0.08),
+            sc("abdomen_1", -0.14, -0.12, 0.06), sc("head", 0.14, 0.14, 0.1),
+            leg_pose(1, (2.6, 3.0, 2.6), (3.6, 0.4, 2.0), (3.8, -0.6, 0.6)), both("antenna_*", 24))
 ANIM["spit"] = timeline(0.6, [(0.0, HOVER, None), (0.2, GATHER, "out"), (0.25, add(GATHER, sc("abdomen", 0.04, 0.04)),
                                                                                  "ease"),
-                              (0.31, HEAVE, "in"), (0.4, add(HEAVE, r("body", -6), sc("head", -0.1, -0.1, -0.06)), "out"),
+                              (0.31, HEAVE, "in"), (0.4, add(HEAVE, r("body", -6), sc("head", -0.12, -0.12, -0.08)),
+                                                         "out"),
                               (0.6, HOVER, "back")],
                         extra=buzz(0.6, amp=46, sweep=16) + [jitter("abdomen", 0.12, 0.24, 4.0, axis=1),
                                                              jitter("abdomen_1", 0.12, 0.24, 5.0, axis=1)])
@@ -592,7 +632,7 @@ spec = {
     "brush": brush,
     "minecraft": {"fps": FPS, "alpha_parts": {f"wing_{n}{k}_m": 0.8 for n in "lr" for k in "12"}},
     "anim_ground_tolerance": 0.3,
-    "render": {"background": "#241f2b", "hero": [-36, 18], "shadow": 0.5},
+    "render": {"background": "#241f2b", "hero": [-62, 20], "shadow": 0.5},
     "palette": {"ramps": ramps},
     "styles": styles_for("empty"),
     "parts": P,
