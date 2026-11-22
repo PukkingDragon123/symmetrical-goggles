@@ -84,8 +84,8 @@ public class ElderGuardianBossModel extends LowpixEntityModel<ElderGuardian> {
             spikes[i].z += SPIKE_DIRS[i][2] * x;
         }
         // the pupil: a glance where it looks; tight while it stares
-        pupil.x += Mth.clamp(-netHeadYaw / 40f, -1f, 1f) * 1.5f;
-        pupil.y += Mth.clamp(headPitch / 40f, -1f, 1f) * 1.5f;
+        pupil.x += Mth.clamp(-netHeadYaw / 40f, -1f, 1f) * 1.5f;   // the eye is 8 x 6 px, the pupil 2 x 2
+        pupil.y += Mth.clamp(headPitch / 40f, -1f, 1f) * 1.0f;
         if (attack == ElderBoss.STARE) {
             float k = Math.min(1f, stareT / ElderBoss.STARE_TELEGRAPH);
             float sc = stareT < ElderBoss.STARE_TELEGRAPH ? 1f - 0.45f * k : 0.5f + 0.05f * Mth.sin(age * 2.1f);

@@ -66,7 +66,7 @@ public final class ElderBoss {
     public static final int[] BUBBLE_SHOTS = {9, 12, 15};
     public static final double WHIP_RADIUS = 4.5, STARE_RANGE = 32, BEAM_RADIUS = 0.35, AGGRO_RANGE = 24, LEASH = 40;
     /** The `mouth` and `laser` locators (lowpix pixels: up, forward). */
-    public static final double MOUTH_UP = 11.2 / 16, MOUTH_FWD = 15 / 16.0, LASER_UP = 21.2 / 16, LASER_FWD = 14.2 / 16;
+    public static final double MOUTH_UP = 10.4 / 16, MOUTH_FWD = 15 / 16.0, LASER_UP = 16.4 / 16, LASER_FWD = 14.2 / 16;
     public static final ResourceKey<DamageType> STARE_DAMAGE_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, Winterworks.id("elder_stare"));
 
     private ElderBoss() {}

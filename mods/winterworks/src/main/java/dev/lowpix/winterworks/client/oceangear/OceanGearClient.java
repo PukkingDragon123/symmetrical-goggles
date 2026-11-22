@@ -1,10 +1,7 @@
 package dev.lowpix.winterworks.client.oceangear;
 
 import dev.lowpix.winterworks.Winterworks;
-import dev.lowpix.winterworks.client.lowpix.EyeOfTheOceanModel;
-import dev.lowpix.winterworks.client.lowpix.ElderGuardianModel;
-import dev.lowpix.winterworks.client.lowpix.TurtleShellArmorModel;
-import dev.lowpix.winterworks.client.lowpix.TurtleShellRetreatModel;
+import dev.lowpix.winterworks.client.lowpix.LowpixGeometry;
 import dev.lowpix.winterworks.oceangear.LionfishDart;
 import dev.lowpix.winterworks.registry.OceanBlocks;
 import dev.lowpix.winterworks.registry.OceanEntities;
@@ -15,7 +12,15 @@ import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Mth;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -36,10 +41,10 @@ public final class OceanGearClient {
     private OceanGearClient() {}
 
     public static void init() {
-        EntityModelLayerRegistry.registerModelLayer(ELDER_GUARDIAN, ElderGuardianModel::createBodyLayer);
-        EntityModelLayerRegistry.registerModelLayer(EYE_OF_THE_OCEAN, EyeOfTheOceanModel::createBodyLayer);
-        EntityModelLayerRegistry.registerModelLayer(TURTLE_SHELL_ARMOR, TurtleShellArmorModel::createBodyLayer);
-        EntityModelLayerRegistry.registerModelLayer(TURTLE_SHELL_RETREAT, TurtleShellRetreatModel::createBodyLayer);
+        layer(ELDER_GUARDIAN, "elder_guardian");
+        layer(EYE_OF_THE_OCEAN, "eye_of_the_ocean");
+        layer(TURTLE_SHELL_ARMOR, "turtle_shell_armor");
+        layer(TURTLE_SHELL_RETREAT, "turtle_shell_retreat");
         EntityRendererRegistry.register(EntityType.ELDER_GUARDIAN, ElderGuardianBossRenderer::new);
         EntityRendererRegistry.register(OceanEntities.ELDER_BUBBLE, ElderBubbleRenderer::new);
         EntityRendererRegistry.register(OceanEntities.LIONFISH_DART, DartRenderer::new);
@@ -50,7 +55,22 @@ public final class OceanGearClient {
         OceanGearShots.init();
     }
 
-    /** Lionfish darts: the arrow renderer with the dart's own texture (arrow layout). */
+    /** A model layer straight from its lowpix export (assets/winterworks/lowpix/<name>.geo.json), so re-exports just work. */
+    private static void layer(ModelLayerLocation loc, String name) {
+        EntityModelLayerRegistry.registerModelLayer(loc, () -> {
+            try {
+                return LowpixGeometry.layer(Winterworks.MOD_ID, name);
+            } catch (RuntimeException e) {   // a missing export must not crash the game: draw nothing instead
+                Winterworks.LOG.error("model {} is missing: {}", name, e.getMessage());
+                return LayerDefinition.create(new MeshDefinition(), 16, 16);
+            }
+        });
+    }
+
+    /**
+     * Lionfish darts: vanilla's arrow geometry with the dart's own texture (arrow layout), its cross-section half as thick
+     * again so the needle-thin spine reads at a distance.
+     */
     static final class DartRenderer extends ArrowRenderer<LionfishDart> {
         static final ResourceLocation TEXTURE = Winterworks.id("textures/entity/projectiles/lionfish_dart.png");
 
@@ -61,6 +81,38 @@ public final class OceanGearClient {
         @Override
         public ResourceLocation getTextureLocation(LionfishDart e) {
             return TEXTURE;
+        }
+
+        @Override
+        public void render(LionfishDart d, float yaw, float partial, PoseStack pose, MultiBufferSource buffers, int light) {
+            pose.pushPose();
+            pose.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partial, d.yRotO, d.getYRot()) - 90f));
+            pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, d.xRotO, d.getXRot())));
+            float shake = d.shakeTime - partial;
+            if (shake > 0) {
+                pose.mulPose(Axis.ZP.rotationDegrees(-Mth.sin(shake * 3f) * shake));
+            }
+            pose.mulPose(Axis.XP.rotationDegrees(45f));
+            pose.scale(0.05625f, 0.05625f * 1.5f, 0.05625f * 1.5f);
+            pose.translate(-4f, 0f, 0f);
+            VertexConsumer vc = buffers.getBuffer(RenderType.entityCutout(TEXTURE));
+            PoseStack.Pose p = pose.last();
+            vertex(p, vc, -7, -2, -2, 0f, 0.15625f, -1, 0, 0, light);
+            vertex(p, vc, -7, -2, 2, 0.15625f, 0.15625f, -1, 0, 0, light);
+            vertex(p, vc, -7, 2, 2, 0.15625f, 0.3125f, -1, 0, 0, light);
+            vertex(p, vc, -7, 2, -2, 0f, 0.3125f, -1, 0, 0, light);
+            vertex(p, vc, -7, 2, -2, 0f, 0.15625f, 1, 0, 0, light);
+            vertex(p, vc, -7, 2, 2, 0.15625f, 0.15625f, 1, 0, 0, light);
+            vertex(p, vc, -7, -2, 2, 0.15625f, 0.3125f, 1, 0, 0, light);
+            vertex(p, vc, -7, -2, -2, 0f, 0.3125f, 1, 0, 0, light);
+            for (int i = 0; i < 4; i++) {
+                pose.mulPose(Axis.XP.rotationDegrees(90f));
+                vertex(p, vc, -8, -2, 0, 0f, 0f, 0, 1, 0, light);
+                vertex(p, vc, 8, -2, 0, 0.5f, 0f, 0, 1, 0, light);
+                vertex(p, vc, 8, 2, 0, 0.5f, 0.15625f, 0, 1, 0, light);
+                vertex(p, vc, -8, 2, 0, 0f, 0.15625f, 0, 1, 0, light);
+            }
+            pose.popPose();
         }
     }
 }
