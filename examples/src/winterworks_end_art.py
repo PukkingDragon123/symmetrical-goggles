@@ -573,16 +573,18 @@ BRICKS = [(0, 8, [0, 18]), (8, 8, [9, 25]), (16, 8, [3, 17]), (24, 8, [11, 26])]
 TILE_GRID = [(y, 8, [0, 8, 16, 24]) for y in (0, 8, 16, 24)]
 
 
-def crack_bricks(name, I, geo, n=4, chips=3):
-    """Cracks across the faces (dark grooves with a lit lower wall) and chipped corners."""
+def crack_bricks(name, I, geo, grid=(2, 2), length=(9, 15), chips=3):
+    """Cracks across the faces (dark grooves with a lit lower wall) and chipped corners. One crack is centred in
+    each cell of a jittered grid, so they spread evenly and no lone crack grids a wall."""
     lab, U, V, BW, BH, mortar = geo
     h, w = I.shape
     r = rng_for(name, "cracks")
     face = ~mortar
-    for _ in range(n):
-        x, y = r.uniform(0, w), r.uniform(0, h)
+    for cx, cy in jitter_points(w, h, *grid, r, 0.7):
         ang = r.uniform(0, 2 * math.pi)
-        pts = crack_path(r, x, y, ang, r.uniform(9, 15), wobble=0.6)
+        L = r.uniform(*length)
+        x, y = cx - math.cos(ang) * L / 2, cy - math.sin(ang) * L / 2
+        pts = crack_path(r, x, y, ang, L, wobble=0.6)
         if r.random() < 0.6:                            # a branch off the middle
             mx, my = pts[len(pts) // 2]
             pts2 = crack_path(r, mx, my, ang + r.choice([-1, 1]) * r.uniform(0.6, 1.2), r.uniform(3, 6), 0.5)
@@ -612,13 +614,13 @@ def obsidian_set():
     # bricks
     I, geo = obsidian_masonry("obsidian_bricks", BRICKS)
     block("obsidian_bricks", obsidian_paint("obsidian_bricks", I))
-    Ic = crack_bricks("cracked_obsidian_bricks", I.copy(), geo, n=4, chips=3)
+    Ic = crack_bricks("cracked_obsidian_bricks", I.copy(), geo, grid=(2, 2), length=(9, 13), chips=3)
     block("cracked_obsidian_bricks", obsidian_paint("obsidian_bricks", despeckle(Ic, passes=1, keep=Ic == 0)))
     # tiles
     I, geo = obsidian_masonry("obsidian_tiles", TILE_GRID, base=2.6, ripple=0.6, glint=0.4, glint_long=(2, 2),
                               hi=(+2.5,), lo=(-1,), diagonal=0.0)
     block("obsidian_tiles", obsidian_paint("obsidian_tiles", I))
-    Ic = crack_bricks("cracked_obsidian_tiles", I.copy(), geo, n=5, chips=4)
+    Ic = crack_bricks("cracked_obsidian_tiles", I.copy(), geo, grid=(3, 3), length=(5, 8), chips=4)
     block("cracked_obsidian_tiles", obsidian_paint("obsidian_tiles", despeckle(Ic, passes=1, keep=Ic == 0)))
     block("polished_obsidian", polished_obsidian())
     chiseled_obsidian()
