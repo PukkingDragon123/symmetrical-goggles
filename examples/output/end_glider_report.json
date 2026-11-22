@@ -1,0 +1,198 @@
+{
+  "name": "End Glider",
+  "parts": 57,
+  "instances": 57,
+  "faces": 248,
+  "triangles": 496,
+  "vertices_flat": 992,
+  "vertices_unique": 352,
+  "atlas": [
+    256,
+    512
+  ],
+  "atlas_fill": 0.461,
+  "texel_density": 4.0,
+  "colors_used": 58,
+  "palette": {
+    "purpur": [
+      "#3a2140",
+      "#55335c",
+      "#74497c",
+      "#93649b",
+      "#ae82b5",
+      "#c7a1cc",
+      "#ddc1e0"
+    ],
+    "crying": [
+      "#3a0b6e",
+      "#5a12a0",
+      "#7a1fd0",
+      "#9a3cf0",
+      "#b866ff",
+      "#d397ff",
+      "#ecc9ff",
+      "#fbf0ff"
+    ],
+    "iron": [
+      "#1e1d24",
+      "#33323b",
+      "#4b4a54",
+      "#65646e",
+      "#82818a",
+      "#a2a1a8",
+      "#c4c3c8",
+      "#e6e5e8"
+    ],
+    "obsidian": [
+      "#07040d",
+      "#0e0819",
+      "#160e26",
+      "#1f1534",
+      "#2a1d44",
+      "#372756",
+      "#46336a",
+      "#58427f",
+      "#6d5594"
+    ],
+    "gland": [
+      "#2c1020",
+      "#4a1a33",
+      "#6c2a4a",
+      "#8f3f62",
+      "#b0587a",
+      "#cc7894",
+      "#e39db0",
+      "#f4c6d0"
+    ],
+    "membrane": [
+      "#150c22",
+      "#21143a",
+      "#2f1d52",
+      "#3f2a68",
+      "#52397f",
+      "#6a4d96",
+      "#8a6bb0",
+      "#b49ad0",
+      "#e2d4f0"
+    ],
+    "meteorite": [
+      "#141114",
+      "#211b1e",
+      "#302727",
+      "#433533",
+      "#584640",
+      "#6f5a4f"
+    ],
+    "ember": [
+      "#3b0d0a",
+      "#6e1d0c",
+      "#a8380f",
+      "#d8611a",
+      "#f28f2c",
+      "#ffc35a",
+      "#fff0b0"
+    ],
+    "leather": [
+      "#1c1016",
+      "#2c1a20",
+      "#3f262b",
+      "#553536",
+      "#6d4743",
+      "#875c52"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -21.38,
+      23.125,
+      -9.75
+    ],
+    "max": [
+      21.38,
+      41.689,
+      8.433
+    ],
+    "size": [
+      42.761,
+      18.564,
+      18.183
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "flap": 0.8,
+    "boost": 0.4
+  },
+  "joints": [
+    "frame",
+    "handle",
+    "bar",
+    "grip_l",
+    "bar_cap_l",
+    "strut_l",
+    "grip_r",
+    "bar_cap_r",
+    "strut_r",
+    "shell_bot",
+    "shell_bot_rim",
+    "bellows",
+    "fold_0",
+    "fold_1",
+    "fold_2",
+    "fold_3",
+    "shell_top",
+    "shell_ridge",
+    "nose",
+    "nose_tip",
+    "tail",
+    "antenna_l",
+    "antenna_r",
+    "wing_l",
+    "spar_l",
+    "spar_l_tip",
+    "spar_l_back",
+    "membrane_l",
+    "wing_r",
+    "spar_r",
+    "spar_r_tip",
+    "spar_r_back",
+    "membrane_r",
+    "jet_l",
+    "pod_l",
+    "pod_l_band",
+    "pod_l_band2",
+    "intake_l",
+    "nozzle_l",
+    "pylon_l",
+    "jet_flame_l",
+    "flame_l_core",
+    "flame_l",
+    "flame_l_v",
+    "flame_l_h",
+    "jet_r",
+    "pod_r",
+    "pod_r_band",
+    "pod_r_band2",
+    "intake_r",
+    "nozzle_r",
+    "pylon_r",
+    "jet_flame_r",
+    "flame_r_core",
+    "flame_r",
+    "flame_r_v",
+    "flame_r_h"
+  ],
+  "files": {
+    "end_glider.glb": "examples/output/end_glider.glb",
+    "end_glider.obj": "examples/output/end_glider.obj",
+    "end_glider.mtl": "examples/output/end_glider.mtl",
+    "end_glider.bbmodel": "examples/output/end_glider.bbmodel",
+    "end_glider_texture.png": "examples/output/end_glider_texture.png",
+    "end_glider_texture_x2.png": "examples/output/end_glider_texture_x2.png",
+    "end_glider_hero.png": "examples/output/end_glider_hero.png",
+    "end_glider_sheet.png": "examples/output/end_glider_sheet.png",
+    "end_glider_turntable.gif": "examples/output/end_glider_turntable.gif",
+    "end_glider_flap.gif": "examples/output/end_glider_flap.gif",
+    "end_glider_boost.gif": "examples/output/end_glider_boost.gif"
+  }
+}
