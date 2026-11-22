@@ -2,6 +2,7 @@ package dev.lowpix.winterworks.test;
 
 import dev.lowpix.winterworks.boss.FallingIcicleEntity;
 import dev.lowpix.winterworks.boss.FrostMaulerEntity;
+import dev.lowpix.winterworks.boss.FrostMaulerSkullBlockEntity;
 import dev.lowpix.winterworks.boss.FrozenTomb;
 import dev.lowpix.winterworks.boss.IcicleBlock;
 import dev.lowpix.winterworks.registry.WWBlocks;
@@ -32,6 +33,9 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -487,6 +491,74 @@ public class BossTests implements FabricGameTest {
             h.assertTrue(!ms.get(0).isDormant(), "it should be awake");
             ms.forEach(FrostMaulerEntity::discard);
         });
+    }
+
+    // ---- 0.4 fixes: Cold Zone (docs/FIXES_0_4.md): the skull roars on redstone
+
+    private static BlockState stalactite(DripstoneThickness t) {
+        return Blocks.POINTED_DRIPSTONE.defaultBlockState().setValue(PointedDripstoneBlock.TIP_DIRECTION, Direction.DOWN)
+                .setValue(PointedDripstoneBlock.THICKNESS, t);
+    }
+
+    /**
+     * A skull under a cave roof hung with icicles and dripstone. A rising redstone edge: it roars and everything above
+     * it within 12 blocks falls (an icicle 13 blocks off stays); powered again within 3 s it stays quiet; after the
+     * cooldown it roars again.
+     */
+    @GameTest(template = ARENA, timeoutTicks = 160, batch = "boss_skull_roar")
+    public void poweredSkullRoarsAndBringsDownIciclesAndDripstone(GameTestHelper h) {
+        floor(h, 20);
+        for (int x = 0; x < 20; x++) {
+            for (int z = 0; z < 10; z++) {
+                h.setBlock(new BlockPos(x, 12, z), Blocks.STONE);
+            }
+        }
+        BlockPos skull = new BlockPos(4, 1, 4), power = new BlockPos(5, 1, 4);
+        h.setBlock(skull, WWBlocks.FROST_MAULER_SKULL.defaultBlockState());
+        BlockPos iceTop = new BlockPos(4, 11, 4), iceTip = new BlockPos(4, 10, 4), iceFar = new BlockPos(17, 11, 4),
+                iceSide = new BlockPos(12, 11, 9), dripTop = new BlockPos(7, 11, 2), dripTip = new BlockPos(7, 10, 2);
+        h.setBlock(iceTop, WWBlocks.ICICLE.defaultBlockState().setValue(IcicleBlock.TIP, false));
+        h.setBlock(iceTip, WWBlocks.ICICLE.defaultBlockState().setValue(IcicleBlock.TIP, true));
+        h.setBlock(iceSide, WWBlocks.ICICLE.defaultBlockState());
+        h.setBlock(iceFar, WWBlocks.ICICLE.defaultBlockState());
+        h.setBlock(dripTop, stalactite(DripstoneThickness.FRUSTUM));
+        h.setBlock(dripTip, stalactite(DripstoneThickness.TIP));
+        FrostMaulerSkullBlockEntity be = h.getBlockEntity(skull);
+        h.assertTrue(be != null && be.roarCooldown() == 0, "the skull should be ready to roar");
+        long[] firstRoar = {-1};
+        h.startSequence()
+                .thenExecuteAfter(2, () -> {
+                    h.assertBlockPresent(WWBlocks.ICICLE, iceTip);
+                    h.assertBlockPresent(Blocks.POINTED_DRIPSTONE, dripTip);
+                    h.setBlock(power, Blocks.REDSTONE_BLOCK);   // the rising edge
+                    firstRoar[0] = h.getTick();
+                    h.assertTrue(be.isPowered() && be.roarCooldown() > 0, "powered, it should have roared");
+                    for (BlockPos p : List.of(iceTop, iceTip, iceSide)) {
+                        h.assertBlockNotPresent(WWBlocks.ICICLE, p);
+                    }
+                    h.assertBlockNotPresent(Blocks.POINTED_DRIPSTONE, dripTop);
+                    h.assertBlockNotPresent(Blocks.POINTED_DRIPSTONE, dripTip);
+                    h.assertBlockPresent(WWBlocks.ICICLE, iceFar);   // 13 blocks off: out of reach
+                    h.assertTrue(h.getEntities(WWEntities.FALLING_ICICLE).size() >= 3, "the icicles should be falling");
+                    h.assertTrue(h.getEntities(EntityType.FALLING_BLOCK).size() >= 2, "the dripstone should fall like vanilla stalactites");
+                })
+                .thenExecuteAfter(1, () -> h.setBlock(power, Blocks.AIR))
+                .thenExecuteAfter(2, () -> {
+                    h.setBlock(iceTop, WWBlocks.ICICLE.defaultBlockState());
+                    h.setBlock(power, Blocks.REDSTONE_BLOCK);   // another edge, inside the 3 s cooldown
+                    h.assertBlockPresent(WWBlocks.ICICLE, iceTop);
+                })
+                .thenExecuteAfter(1, () -> h.setBlock(power, Blocks.AIR))
+                .thenWaitUntil(() -> h.assertTrue(be.roarCooldown() == 0, "the cooldown should run out"))
+                .thenExecute(() -> {
+                    h.assertTrue(h.getTick() - firstRoar[0] >= FrostMaulerSkullBlockEntity.ROAR_COOLDOWN - 1,
+                            "3 s between roars, ready after " + (h.getTick() - firstRoar[0]));
+                    h.assertBlockPresent(WWBlocks.ICICLE, iceTop);
+                    h.setBlock(power, Blocks.REDSTONE_BLOCK);
+                    h.assertBlockNotPresent(WWBlocks.ICICLE, iceTop);
+                    h.assertBlockPresent(WWBlocks.ICICLE, iceFar);
+                })
+                .thenSucceed();
     }
 
     @GameTest(template = EMPTY_STRUCTURE, timeoutTicks = 40, batch = "boss")
