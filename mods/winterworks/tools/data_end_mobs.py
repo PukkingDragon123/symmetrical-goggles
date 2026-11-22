@@ -243,6 +243,7 @@ def lang(ctx, subs):
         "item.winterworks.gucker_gland": "Gucker Gland",
         "item.winterworks.obsidian_shard": "Obsidian Shard",
         "effect.winterworks.end_glow": "End Glow",
+        "block.winterworks.glow_light": "End Glow Light",
         "effect.winterworks.recall": "Recall",
         "item.minecraft.potion.effect.recall": "Potion of Recall",
         "item.minecraft.splash_potion.effect.recall": "Splash Potion of Recall",
@@ -253,8 +254,16 @@ def lang(ctx, subs):
     ctx.write(os.path.join(ctx.L, "end_mobs.json"), L)
 
 
+def glow_light(ctx):
+    """End Glow's invisible light block: no model geometry, only a particle texture (never broken in survival)."""
+    ctx.write(os.path.join(ctx.A, "blockstates", "glow_light.json"), {"variants": {
+        "waterlogged=false": {"model": f"{ctx.M}:block/glow_light"}, "waterlogged=true": {"model": f"{ctx.M}:block/glow_light"}}})
+    ctx.write(os.path.join(ctx.A, "models", "block", "glow_light.json"), {"textures": {"particle": "minecraft:item/light_14"}})
+
+
 def run(ctx):
     subs = sounds(ctx)
+    glow_light(ctx)
     item_models(ctx)
     bloom(ctx)
     cocoon(ctx)

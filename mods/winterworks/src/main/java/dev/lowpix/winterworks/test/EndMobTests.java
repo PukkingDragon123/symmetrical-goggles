@@ -6,6 +6,7 @@ import dev.lowpix.winterworks.endmob.EndBloomBlock;
 import dev.lowpix.winterworks.endmob.EndMobFeature;
 import dev.lowpix.winterworks.endmob.Endling;
 import dev.lowpix.winterworks.endmob.Enderfly;
+import dev.lowpix.winterworks.endmob.GlowLightBlock;
 import dev.lowpix.winterworks.endmob.Gucker;
 import dev.lowpix.winterworks.endmob.GuckerSpit;
 import dev.lowpix.winterworks.endmob.Obolisk;
@@ -26,6 +27,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -543,6 +545,27 @@ public class EndMobTests implements FabricGameTest {
         PotionContents pc = out.get(DataComponents.POTION_CONTENTS);
         h.assertTrue(pc != null && pc.is(EndEffects.RECALL_POTION), "it should brew a Potion of Recall, got " + out);
         h.succeed();
+    }
+
+    @GameTest(template = EMPTY_STRUCTURE, batch = "endmob_misc", timeoutTicks = 100)
+    public void endGlowShinesLikeATorch(GameTestHelper h) {
+        Cow cow = h.spawnWithNoFreeWill(EntityType.COW, 2.5f, 1, 2.5f);
+        cow.addEffect(new MobEffectInstance(EndEffects.END_GLOW, 600));
+        h.runAfterDelay(4, () -> {
+            BlockPos head = BlockPos.containing(cow.getX(), cow.getEyeY(), cow.getZ());
+            BlockState s = h.getLevel().getBlockState(head);
+            h.assertTrue(s.is(EndBlocks.GLOW_LIGHT), "End Glow should light the block at its head, got " + s);
+            h.assertTrue(s.getLightEmission() == 14, "as bright as a torch, got " + s.getLightEmission());
+            h.assertTrue(s.canBeReplaced() && s.getCollisionShape(h.getLevel(), head).isEmpty(), "invisible and in nobody's way");
+            cow.removeEffect(EndEffects.END_GLOW);
+        });
+        h.runAfterDelay(4 + GlowLightBlock.CHECK * 2 + 2, () -> {
+            for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(0, 0, 0)), h.absolutePos(new BlockPos(5, 5, 5)))) {
+                h.assertFalse(h.getLevel().getBlockState(p).is(EndBlocks.GLOW_LIGHT), "the light goes out with the glow at " + p);
+            }
+            cleanup(h);
+            h.succeed();
+        });
     }
 
     @GameTest(template = EMPTY_STRUCTURE, batch = "endmob_misc")

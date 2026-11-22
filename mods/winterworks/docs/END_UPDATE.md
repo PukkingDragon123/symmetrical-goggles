@@ -84,8 +84,10 @@ Moth-like evolutions of Endermites, 0.7 x 0.6, flying, 10 health. Born from matu
   `Eclipse.start(ServerLevel, int ticks)`, `Eclipse.stop(ServerLevel)`.
 
 ## 6. End Bulbs and `end_glow`
-`end_bulb`: food (2 hunger, always edible). Eating it gives `end_glow` for 8 minutes: you glow softly (drawn at full
-brightness with faint violet motes). Its tooltip only mentions the glow; secretly, Enderflies are drawn to you.
+`end_bulb`: food (2 hunger, always edible). Eating it gives `end_glow` for 8 minutes: you **shine like a held torch**
+(real block light 14 from an invisible, replaceable `glow_light` block that follows your head, in air or water, and
+removes itself within half a second once nobody glowing is beside it), are drawn at full brightness, and violet motes
+and sparks drift round you. Its tooltip only mentions the glow; secretly, Enderflies are drawn to you.
 
 ## 7. Guckers (`gucker`)
 Big salamander-like predators, 1.6 x 0.9, 40 health, with breathing holes along the back.
@@ -167,10 +169,17 @@ Tower. 600 health, armour 20, immune to knockback and fire, a purple boss bar.
 P phantom_membrane); 432 durability (1 per second of flight), repaired with phantom membrane.
 * A **glowing magic wing glider**: a light handle under a pair of luminous, translucent violet wings (enderfly-like
   membranes with glowing veins and soft round eye-spots) that shimmer and beat gently. No machinery.
-* **Alone**: hold it while falling and hold use to **glide** like a hang glider: about 0.6 blocks/tick forward, sinking
-  slowly (0.08 blocks/tick), steered by where you look; no climbing; no fall damage while gliding.
-* **With an Elytra** (gliding with it in hand): **free flight**: it flies where you look at a cruising speed (1.1
-  blocks/tick), climbing included, no fireworks; hold use to **boost** (2.2 blocks/tick) with heavier steering.
+* **Momentum and skill, not an engine.**
+* **Alone**: hold it while falling and hold use to **hang-glide**. Elytra-like physics, slower and draggier: level flight
+  settles near 0.32 blocks/tick sinking 0.064 (about 5:1); looking down trades height for speed (at most 0.75), pulling
+  up trades speed for a zoom climb of a few blocks; below 0.18 the wings stall until you dive again. Steady glides take
+  no fall damage; a steep dive (sinking faster than 0.5) into the ground does.
+* **With an Elytra** (fall-flying with it in hand): ordinary Elytra physics plus a **wing beat** on each press of use: a
+  push of 0.32 blocks/tick along your look that can't take you past 1.2 (never slowing a faster dive), then a 1.4 s
+  cooldown. Timed beats on a gentle climb hold your height; diving and zooming between beats gains it. No fireworks
+  needed, but nothing like the old free cruise.
+* Wear: 1 durability per second of hang-gliding, 1 per beat. `boosting` (the sigils flare, the `boost` clip) shows for
+  half a second after a beat.
 * Held overhead in both hands while gliding or flying. Bones: `frame`, `handle`, `wing_l`, `wing_r`, and `jet_l`,
   `jet_r`, `jet_flame_l`, `jet_flame_r` (now glowing rune sigils at the wing roots that flare when boosting). Clips:
   `flap` (loop), `boost` (loop). Glow: wing veins, eye-spots, sigils.
