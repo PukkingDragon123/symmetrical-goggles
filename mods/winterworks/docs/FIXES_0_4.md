@@ -47,6 +47,12 @@ contract for the Java side.
 * **Potion of Ramming**: when you reach top speed you get a battle cry (sound), a burst of snow and wind particles,
   speed lines on screen, a new running pose (leaning forward, arms swept back) and a further speed boost.
 
+* **The cold bites harder, in four levels**: a cold meter (shown as the Cold effect I-IV): **Chilly** (shivers, frost
+  breath, the frost overlay creeping in), **Cold** (Slowness, Mining Fatigue), **Freezing** (Slowness II, Weakness,
+  fully frozen: vanilla freeze damage), **Frozen** (Slowness IV, Weakness II, extra freeze damage). It fills from the Ice
+  Caves, cold water, standing on or touching ice, powder snow and snowstorms, much faster than before; warmth thaws you
+  fast, leaving the cold slowly. Each leather or fur piece cuts the cold by a quarter (a full set keeps it out).
+
 ## The Winter Express
 * The **Trailer Cart** is removed. **Normal minecarts** (and chest/hopper/furnace minecarts) couple to locomotives
   and to each other the way the trailer did, and get pulled.
@@ -176,8 +182,9 @@ contract for the Java side.
 * Tamed: it takes **horse armour** and a **saddle** and can be ridden. While riding, a **soul bar** replaces the
   experience bar and shows its soul energy (= its health). Its **ram** (the jump key, charged like a horse jump) charges
   forward, pinning and soul-burning what it hits, and costs a lot of soul energy.
-* **Armoured variant**: about one wild Soul Bull in five is armoured: blackened, gilded blackstone plates bolted to
-  its bones (more armour, +50% health); Wither Skeletons ride these. The bones of every Soul Bull are the colour of
+* **Armoured variant**: blackened, gilded blackstone plates bolted to its bones (more armour, +50% health). Armoured
+  bulls are seen with **piglins**: round bastion remnants and in Hex Fortress pens (sometimes a piglin or brute rides
+  one). The **unarmoured** wild bulls of the Soul Sand Valleys are the ones **Wither Skeletons** ride. The bones of every Soul Bull are the colour of
   a Wither Skeleton's (dark charcoal greys), not pure black.
 * **Milking**: use an Elixir Bottle on a tamed Soul Bull to draw a **Soul Elixir** from its soul fire; it costs a
   quarter of its soul energy (it refuses below a quarter).
@@ -261,3 +268,29 @@ contract for the Java side.
   branches east, `_left` west); blockstate y: toe south 0, west 90, north 180, east 270. `item/switch_rail.json` exists.
   Add it to the rail colour providers (block tint 0 = RailPaint.tint; item 0xFF8A6B47) and the cutout layer.
 * **Booster Rail**: art shows a redstone-block plate (dull unpowered, bright powered); same file names.
+
+## The Hex Fortress, reworked (Hexes & Havoc)
+* **Smaller, simpler and more common** (about 40 x 40, spacing about 20 chunks): a compact stronghold that looks like a
+  real Nether fortress (nether-brick walls, a bridge or two on piers, corridors with fence windows, a stair tower) built
+  onto a piece of bastion (blackstone, gilded blackstone, basalt). It keeps a brewing room, a wart farm, a storeroom,
+  the witch's quarters and the Nether Portal.
+* **The witch's crew**: **piglins and piglin brutes** walk about and **work for the witch**: brutes guard the gate and
+  her quarters, piglins tend the wart, haul and brew. They are on her side: they defend her and each other and attack
+  whoever attacks her. (Bartering and the gold rules still work for the piglins.)
+* **Soul Bull pens**: soul-sand pens lit with soul fire holding 2-3 hostile **Soul Bulls** (sometimes armoured); you
+  must defeat them to get past.
+* **Golden Piglins** (her failed experiments, caged or wandering) and **weird experiments** about: caged half-turned
+  creatures, bubbling cauldrons and Elixir Jars over soul fire, soul tanks wired to cages, a table with bones and a Soul
+  Bull skull, potion stains. Chests hold the experiments' loot.
+* **The Piglin Witch, super strong**: still neutral and still trades after an Elixir of Greed, but attack her (or her
+  crew) and she fights with her **spellbook** (an open hexed book floats before her, glyphs circling): a boss bar,
+  250 health, and spells:
+  * **Hex bolts**: volleys of homing soul-fire bolts.
+  * **Soul ring**: a ring of soul fire bursting outward along the ground (jump it).
+  * **Hex**: curses you with Hexed (no natural regeneration) for 30 s, and Slowness.
+  * **Potion barrage**: throws Harming, Weakness and Slowness potions.
+  * **Summon**: calls her brutes, and raises a Soul Bull from a pile of bones.
+  * **Blink**: when hit hard, she vanishes in smoke and reappears nearby.
+  She drinks healing when low (once per fight). Killed, she drops her spellbook (a Hexed Book with a strong random
+  hex) and her stash.
+* Structure id stays `hex_fortress`; `/winterworks hexfortress` builds one.

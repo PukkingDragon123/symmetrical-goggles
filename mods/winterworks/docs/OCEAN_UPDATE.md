@@ -4,7 +4,8 @@ A full ocean overhaul that feels like a real vanilla update. Same rules as the o
 names here are exact, every registration exists up front in `registry/Ocean*.java`, nothing beyond this file. New art
 follows the newer standard (lowpix models at `density: 2`, 32 x 32 block/item textures for new blocks, vanilla-style
 16 x 16 where a texture must sit beside vanilla's own, e.g. sand-like blocks; every block texture tiles evenly with no
-standout spot). **Efficient**: worldgen work stays inside its chunk; per-tick work only near players; caches for
+standout spot). **In progress**: until it ships, its creative tab is hidden unless the game runs with `-Dwinterworks.ocean=true`
+(set it in dev runs and screenshot harnesses). **Efficient**: worldgen work stays inside its chunk; per-tick work only near players; caches for
 anything rendered every frame.
 
 Packages and owners (one agent each; others call only the public APIs named here):

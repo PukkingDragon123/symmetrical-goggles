@@ -83,10 +83,13 @@ public final class OceanItems {
     public static final Item WHALE_SPAWN_EGG = reg("whale_spawn_egg",
             new SpawnEggItem(OceanEntities.WHALE, 0x3C5A78, 0xC9D6DE, new Item.Properties()));
 
-    public static final CreativeModeTab TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("ocean"),
+    /** False until Tides & Treasures ships: its creative tab stays hidden in releases made while it is in progress. */
+    public static final boolean READY = Boolean.getBoolean("winterworks.ocean");
+
+    public static final CreativeModeTab TAB = READY ? Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Winterworks.id("ocean"),
             FabricItemGroup.builder().title(Component.translatable("itemGroup.winterworks.ocean"))
                     .icon(() -> new ItemStack(ANGLER_LURE))
-                    .displayItems((params, out) -> TAB_ITEMS.forEach(out::accept)).build());
+                    .displayItems((params, out) -> TAB_ITEMS.forEach(out::accept)).build()) : null;
 
     private OceanItems() {}
 
