@@ -1,0 +1,153 @@
+{
+  "name": "Soul Bull Skull",
+  "parts": 57,
+  "instances": 57,
+  "faces": 273,
+  "triangles": 546,
+  "vertices_flat": 1092,
+  "vertices_unique": 388,
+  "atlas": [
+    128,
+    256
+  ],
+  "atlas_fill": 0.771,
+  "texel_density": 2.0,
+  "colors_used": 33,
+  "palette": {
+    "bone": [
+      "#0b0b0c",
+      "#111112",
+      "#171718",
+      "#1d1d1e",
+      "#232424",
+      "#2a2b2b",
+      "#323333",
+      "#3b3d3d",
+      "#464949",
+      "#525656",
+      "#606464",
+      "#727675"
+    ],
+    "horn": [
+      "#0a0909",
+      "#110f0f",
+      "#181515",
+      "#201c1b",
+      "#292422",
+      "#332d2a",
+      "#3e3733",
+      "#4b423d",
+      "#5a4f49",
+      "#6c615a"
+    ],
+    "void": [
+      "#020103",
+      "#050307",
+      "#09060c",
+      "#0e0a12"
+    ],
+    "soul": [
+      "#071433",
+      "#0c2a63",
+      "#11479a",
+      "#1769c4",
+      "#1f92e0",
+      "#38bdf2",
+      "#7ce0fb",
+      "#c4f6ff",
+      "#ffffff"
+    ]
+  },
+  "bounds": {
+    "min": [
+      -16.23,
+      -0.0,
+      -8.984
+    ],
+    "max": [
+      16.23,
+      23.171,
+      11.906
+    ],
+    "size": [
+      32.459,
+      23.171,
+      20.89
+    ]
+  },
+  "warnings": [],
+  "animations": {
+    "idle": 2.0
+  },
+  "joints": [
+    "skull",
+    "skull_cranium",
+    "skull_poll",
+    "skull_frontal",
+    "skull_occiput",
+    "skull_face",
+    "skull_nasal",
+    "skull_muzzle",
+    "skull_nose",
+    "skull_palate",
+    "skull_orbit_l",
+    "skull_orbit_l_top",
+    "skull_orbit_l_bot",
+    "skull_orbit_l_fr",
+    "skull_orbit_l_bk",
+    "skull_orbit_l_c0",
+    "skull_orbit_l_c1",
+    "skull_orbit_l_c2",
+    "skull_orbit_l_c3",
+    "skull_orbit_l_floor",
+    "skull_cheek_l",
+    "skull_teeth_l",
+    "skull_orbit_r",
+    "skull_orbit_r_top",
+    "skull_orbit_r_bot",
+    "skull_orbit_r_fr",
+    "skull_orbit_r_bk",
+    "skull_orbit_r_c0",
+    "skull_orbit_r_c1",
+    "skull_orbit_r_c2",
+    "skull_orbit_r_c3",
+    "skull_orbit_r_floor",
+    "skull_cheek_r",
+    "skull_teeth_r",
+    "jaw",
+    "jaw_ramus",
+    "jaw_tongue",
+    "jaw_incisors",
+    "jaw_teeth_l",
+    "jaw_teeth_r",
+    "horn_l",
+    "horn_l_1",
+    "horn_l_2",
+    "horn_l_3",
+    "horn_l_boss",
+    "horn_r",
+    "horn_r_1",
+    "horn_r_2",
+    "horn_r_3",
+    "horn_r_boss",
+    "eye_fire",
+    "eye_fire_l",
+    "eye_fire_l_front",
+    "eye_fire_r",
+    "eye_fire_r_front",
+    "frag_vert",
+    "frag_rib"
+  ],
+  "files": {
+    "soul_bull_skull.glb": "examples/output/soul_bull_skull.glb",
+    "soul_bull_skull.obj": "examples/output/soul_bull_skull.obj",
+    "soul_bull_skull.mtl": "examples/output/soul_bull_skull.mtl",
+    "soul_bull_skull.bbmodel": "examples/output/soul_bull_skull.bbmodel",
+    "soul_bull_skull_texture.png": "examples/output/soul_bull_skull_texture.png",
+    "soul_bull_skull_texture_x4.png": "examples/output/soul_bull_skull_texture_x4.png",
+    "soul_bull_skull_hero.png": "examples/output/soul_bull_skull_hero.png",
+    "soul_bull_skull_sheet.png": "examples/output/soul_bull_skull_sheet.png",
+    "soul_bull_skull_turntable.gif": "examples/output/soul_bull_skull_turntable.gif",
+    "soul_bull_skull_idle.gif": "examples/output/soul_bull_skull_idle.gif"
+  }
+}

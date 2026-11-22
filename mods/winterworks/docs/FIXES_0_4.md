@@ -234,3 +234,19 @@ contract for the Java side.
   blood potion at sheet (240, 64, 16, 16); the rows moved: `HexGui.ROW_X` 80 -> 95 and `ROW_W` 88 -> 73 (must change
   with the art, or the rows draw misaligned). The no-sheet fallback's 9-link chain must fit 73 px.
 * `sweet_scent` particle: 5 frames, soft alpha (translucent sheet, setSpriteFromAge). `mob_effect/burning.png`.
+* **Soul Bull**: `SoulBullModel` (density 2; ~1.3 x 1.6 x 3.1 blocks with horns and tail flame); glow via `_glow`
+  with RenderType.eyes. Textures: `soul_bull`, `soul_bull_armor_{iron,gold,diamond}` (horse armour),
+  `soul_bull_armored` (the natural armoured variant). Hide `saddle` unless saddled; `rider` locator = MC model
+  (0, 1, 1.5), seat top ~1.44 blocks. Optional: scale `soul_fire` with soul energy. Clips: idle 4.0, walk 1.2, run 0.6,
+  drain 2.0 (loops); ram 1.0, pin 1.5, revive 2.0.
+* **Soul Bull Skull** block: `SoulBullSkullModel` (bones `skull`, `jaw`, `horn_l/r`, `eye_fire`; ~0.5 render scale;
+  hide `eye_fire` when unlit; idle 2 s loop); a renderer like FrostMaulerSkullRenderer.
+* **Soul bar**: `gui/soul_bar.png` 182x25: background at v=0, full-bar frames at v=5,10,15,20 (182x5 each; frame
+  (ticks/3)%4, width cropped to 182*soul/max); `gui/soul_bar_icon.png` 9x36 (4 frames at v=9i) drawn at (barX-10, barY-2).
+* **Soul glint**: `misc/soul_glint_item.png`, `misc/soul_glint_entity.png` (128x128 RGB, additive like vanilla's glint).
+* **Cursed books**: `item/cursed_book`, `item/cursed_book_sin` (item/generated); enchanted books carrying a curse use them
+  via a model override. `item/wither_bone`.
+* **Switch Rail**: models `block/switch_rail_{right,left}{,_on}` drawn toe-south (straight runs north; `_right`
+  branches east, `_left` west); blockstate y: toe south 0, west 90, north 180, east 270. `item/switch_rail.json` exists.
+  Add it to the rail colour providers (block tint 0 = RailPaint.tint; item 0xFF8A6B47) and the cutout layer.
+* **Booster Rail**: art shows a redstone-block plate (dull unpowered, bright powered); same file names.
