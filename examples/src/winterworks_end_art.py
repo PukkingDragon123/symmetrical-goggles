@@ -90,9 +90,11 @@ ENDSTONE = ramp("#8b8458", "#a49d6c", "#b9b27f", "#c9c48d", "#d6d699", "#e2e5a7"
 # End grass: violet, more saturated and bluer than purpur.
 GRASS = ramp("#170b26", "#25123d", "#361b57", "#4a2574", "#5f318f", "#7740a8", "#9156bf", "#ad74d4", "#c995e4",
              "#e3bdf2")
-# End moss: magenta body, teal tips.
+# End moss: magenta body (its crevices lean cool indigo, MOSS_UNDER below).
 MOSS = ramp("#1f0a22", "#3a1238", "#561a4e", "#752364", "#963079", "#b4448c", "#d0629f", "#ea8cb8")
 TEAL = ramp("#0c2c33", "#124a4f", "#1a6b6a", "#289082", "#4bb59d", "#86d9bb", "#c4f5df")
+# the moss's crevices: the same depths as MOSS's darkest steps, leaning cool indigo (its alien undertone)
+MOSS_UNDER = ramp("#1c0c28", "#33163f", "#4a2059", "#752364", "#963079", "#b4448c", "#d0629f", "#ea8cb8")
 # Chorus: vanilla's chorus-plant mauve, a little richer; roots darker and browner.
 CHORUS = ramp("#1c0a1f", "#2b112e", "#3c1a3f", "#502752", "#653665", "#7c4a7b", "#956494", "#b083ad", "#cca6c8",
               "#e8cde4")
@@ -359,6 +361,33 @@ def chamfer(mask, wrap=False, cap=64, border_inside=False):
     return d
 
 
+def components(m, wrap=True):
+    """8-connected groups of a mask (wrapping at the edges): a list of [(y, x), ...] per group."""
+    h, w = m.shape
+    seen = np.zeros_like(m, bool)
+    out = []
+    for y0, x0 in zip(*np.nonzero(m)):
+        if seen[y0, x0]:
+            continue
+        seen[y0, x0] = True
+        todo, comp = [(y0, x0)], []
+        while todo:
+            y, x = todo.pop()
+            comp.append((y, x))
+            for dy in (-1, 0, 1):
+                for dx in (-1, 0, 1):
+                    ny, nx = y + dy, x + dx
+                    if wrap:
+                        ny, nx = ny % h, nx % w
+                    elif not (0 <= ny < h and 0 <= nx < w):
+                        continue
+                    if m[ny, nx] and not seen[ny, nx]:
+                        seen[ny, nx] = True
+                        todo.append((ny, nx))
+        out.append(comp)
+    return out
+
+
 def stamp(A, x, y, art, key, wrap=False):
     """Hand-placed pixels: `art` rows ('.' = leave), `key` char -> colour."""
     h, w = A.shape[:2]
@@ -573,16 +602,18 @@ BRICKS = [(0, 8, [0, 18]), (8, 8, [9, 25]), (16, 8, [3, 17]), (24, 8, [11, 26])]
 TILE_GRID = [(y, 8, [0, 8, 16, 24]) for y in (0, 8, 16, 24)]
 
 
-def crack_bricks(name, I, geo, n=4, chips=3):
-    """Cracks across the faces (dark grooves with a lit lower wall) and chipped corners."""
+def crack_bricks(name, I, geo, grid=(2, 2), length=(9, 15), chips=3):
+    """Cracks across the faces (dark grooves with a lit lower wall) and chipped corners. One crack is centred in
+    each cell of a jittered grid, so they spread evenly and no lone crack grids a wall."""
     lab, U, V, BW, BH, mortar = geo
     h, w = I.shape
     r = rng_for(name, "cracks")
     face = ~mortar
-    for _ in range(n):
-        x, y = r.uniform(0, w), r.uniform(0, h)
+    for cx, cy in jitter_points(w, h, *grid, r, 0.7):
         ang = r.uniform(0, 2 * math.pi)
-        pts = crack_path(r, x, y, ang, r.uniform(9, 15), wobble=0.6)
+        L = r.uniform(*length)
+        x, y = cx - math.cos(ang) * L / 2, cy - math.sin(ang) * L / 2
+        pts = crack_path(r, x, y, ang, L, wobble=0.6)
         if r.random() < 0.6:                            # a branch off the middle
             mx, my = pts[len(pts) // 2]
             pts2 = crack_path(r, mx, my, ang + r.choice([-1, 1]) * r.uniform(0.6, 1.2), r.uniform(3, 6), 0.5)
@@ -612,30 +643,40 @@ def obsidian_set():
     # bricks
     I, geo = obsidian_masonry("obsidian_bricks", BRICKS)
     block("obsidian_bricks", obsidian_paint("obsidian_bricks", I))
-    Ic = crack_bricks("cracked_obsidian_bricks", I.copy(), geo, n=4, chips=3)
+    Ic = crack_bricks("cracked_obsidian_bricks", I.copy(), geo, grid=(2, 2), length=(9, 13), chips=3)
     block("cracked_obsidian_bricks", obsidian_paint("obsidian_bricks", despeckle(Ic, passes=1, keep=Ic == 0)))
     # tiles
     I, geo = obsidian_masonry("obsidian_tiles", TILE_GRID, base=2.6, ripple=0.6, glint=0.4, glint_long=(2, 2),
                               hi=(+2.5,), lo=(-1,), diagonal=0.0)
     block("obsidian_tiles", obsidian_paint("obsidian_tiles", I))
-    Ic = crack_bricks("cracked_obsidian_tiles", I.copy(), geo, n=5, chips=4)
+    Ic = crack_bricks("cracked_obsidian_tiles", I.copy(), geo, grid=(3, 3), length=(5, 8), chips=4)
     block("cracked_obsidian_tiles", obsidian_paint("obsidian_tiles", despeckle(Ic, passes=1, keep=Ic == 0)))
-    # polished: one slab with a double bevel, a soft top-left to bottom-right fall-off and two diagonal reflections
-    w = h = 32
-    lab, U, V, BW, BH = bond(w, h, [(0, 32, [0])])
-    yy, xx = np.mgrid[0:h, 0:w]
-    T = 3.1 - (xx + yy) / 64 * 1.4 + (fbm(w, h, 2, seed("polished_obsidian"), 2) - 0.5) * 0.5
-    diag = xx + yy
-    T += np.where((diag > 14) & (diag < 19), 0.9, 0) + np.where((diag > 21) & (diag < 23), 0.7, 0)
-    I = despeckle(quant(T, 10, 1, 5))
-    off, mortar = bevel_steps(U, V, BW, BH, hi=(+3, +1.5), lo=(-1.5, -0.5))
-    I = np.where(off != 0, quant(I + off, 10, 1, 7), I)
-    I[mortar] = 0
-    for (x, y, v) in ((3, 3, 9), (4, 3, 8), (5, 3, 7), (6, 3, 7), (3, 4, 7), (3, 5, 6), (8, 3, 6),
-                      (26, 27, 4), (27, 26, 4), (25, 27, 4)):
-        I[y, x] = v
-    block("polished_obsidian", obsidian_paint("polished_obsidian", I))
+    block("polished_obsidian", polished_obsidian())
     chiseled_obsidian()
+
+
+def polished_obsidian():
+    """Smooth glass that tiles like vanilla obsidian: no frame, fall-off or lone reflection to grid a wall. An even,
+    low-contrast body with faint polish streaks running diagonally (periodic, so they carry on across the edges),
+    a fine purple sheen, and short crisp reflection dashes scattered evenly (one per cell of a jittered grid)."""
+    name = "polished_obsidian"
+    w = h = 32
+    yy, xx = np.mgrid[0:h, 0:w]
+    T = 2.9 + (fbm(w, h, 4, seed(name), 2) - 0.5) * 0.8
+    streak = np.sin((xx - yy) / 32 * 2 * math.pi * 3 + fbm(w, h, 2, seed(name, "s"), 1) * 2.5)
+    T += np.where(streak > 0.82, 0.8, 0) - np.where(streak < -0.9, 0.4, 0)
+    I = despeckle(quant(T, 10, 1, 5))
+    r = rng_for(name, "glint")
+    for (px, py) in jitter_points(w, h, 4, 4, r, 0.75):
+        if r.random() < 0.5:
+            continue
+        x, y = int(px), int(py)
+        L = int(r.integers(2, 4))
+        cells = [(x + i, y + i) for i in range(L)] if r.random() < 0.6 else [(x + i, y) for i in range(L)]
+        for i, (cx, cy) in enumerate(cells):
+            I[cy % h, cx % w] = 7 if i == 0 else 6
+    sheen = fbm(w, h, 4, seed(name, "sheen"), 2) > 0.6
+    return paint(I, OBS, OBS_SHEEN, sheen)
 
 
 def chiseled_frame(name, inset=3):
@@ -720,7 +761,7 @@ obsidian_set()
 
 # ====================================================================== meteorites
 # Scorched iron-nickel: a warm black-brown fusion crust dimpled with thumbprint pits (regmaglypts), cool metal
-# glinting on the ridges, and fissures glowing white-gold at the core, orange, then rose and violet at the edges,
+# catching the light on the pit ridges, and fissures glowing white-gold at the core, orange, then rose and violet at the edges,
 # with a violet spill on the rock round them. Refined blocks show the etched lattice of the metal (Widmanstatten
 # lamellae) and keep the glow in their seams.
 MET_SPILL = ramp("#0f0611", "#1a0a1d", "#26102b", "#341739", "#431f46", "#542a52", "#66385e", "#7e4d6e",
@@ -794,10 +835,12 @@ def glow_over(A, core, thick, rock_I, g, wrap=True, spill=2.0):
     return A
 
 
-def meteorite_rock(name, base=3.4, w=32, h=32):
+def meteorite_rock(name, base=3.4, w=32, h=32, glints=True):
     H, _ = regmaglypts(name, w, h)
-    T = base + lit(H, 1.6) * 5.0 + (fbm(w, h, 2, seed(name, "val"), 2) - 0.5) * 1.0
+    T = base + lit(H, 1.6) * 5.0 + (fbm(w, h, 4, seed(name, "val"), 2) - 0.5) * 1.0
     I = despeckle(quant(T, 10, 1, 6))
+    if not glints:      # the meteorite face: the lit pit ridges carry the metal; no lone glint dashes to dot a wall
+        return I
     # iron-nickel glints: short bright dashes where a ridge faces the light
     ridge = (H > np.quantile(H, 0.8)) & (lit(H, 1.6) > 0.12)
     r = rng_for(name, "flecks")
@@ -811,70 +854,60 @@ def meteorite_rock(name, base=3.4, w=32, h=32):
 
 def meteorite():
     name = "meteorite"
-    I = meteorite_rock(name)
+    I = meteorite_rock(name, glints=False)
     rock = paint(I, MET)
-    core, thick = fissures(name, 32, 32, [(1, 9, 0.45, 34, 2), (22, 30, -2.0, 15, 1), (28, 2, 2.3, 9, 0)])
+    # an even web of fissures: one centred on each cell of a jittered 3 x 3 grid, each heading its own way and
+    # wrapping at the edges, so a crater wall of meteorite glows all over instead of repeating one long crack
+    r = rng_for(name, "web")
+    specs = []
+    for (x, y), a in zip(jitter_points(32, 32, 3, 3, r, 0.5), (0.5, 2.2, -0.6, 1.3, -1.1, 0.2, 2.7, -0.3, 1.0)):
+        L = r.uniform(7, 10)
+        specs.append((x - math.cos(a) * L / 2, y - math.sin(a) * L / 2, a, L, int(r.random() < 0.4)))
+    core, thick = fissures(name, 32, 32, specs)
     frames = [glow_over(rock, core, thick, I, g) for g in (0.0, 0.34, 0.67, 1.0)]
     animated("textures/block/meteorite.png", frames, frametime=6, order=[0, 1, 2, 3, 2, 1], interpolate=True)
     TILES.add("textures/block/meteorite.png")
 
 
 def meteorite_core():
-    """A blazing heart seen through a grate of gnarled rock bars, set in a rock shell split by hot fissures."""
+    """A blazing heart seen through a lattice of gnarled rock bars. Like any block it tiles: the bars are the
+    borders of jittered cells on the torus (a 3 x 3 grid), so every gap in the cage glows, white-gold in its
+    middle through amber and orange to rose at the bars, evenly over the face, with no single centre to grid a
+    wall. Animated: the heat pulses."""
     name = "meteorite_core"
     w = h = 32
     I = meteorite_rock(name, base=3.0)
-    X, Y = ss_coords(w, h, 4)
-    cx, cy = 16.0, 16.0
-    ang = np.arctan2(Y - cy, X - cx)
-    hole = sd_circle(X, Y, cx, cy, 13.0) + np.sin(ang * 6 + 0.5) * 0.8
-    # the cage: two bowed uprights and two bowed cross-bars of knobbly rock, thinner where they cross the heart
-    knob = (pnoise(w * 4, h * 4, 8, 8, seed(name, "knob")) - 0.5) * 0.9
-    bars = np.minimum.reduce([
-        sd_segment(X, Y, 10.0, 1.0, 11.0, 16.0, 2.2, 1.3), sd_segment(X, Y, 11.0, 16.0, 9.8, 31.0, 1.3, 2.2),
-        sd_segment(X, Y, 22.0, 1.0, 21.0, 16.0, 2.2, 1.3), sd_segment(X, Y, 21.0, 16.0, 22.2, 31.0, 1.3, 2.2),
-        sd_segment(X, Y, 1.0, 10.2, 16.0, 11.2, 2.2, 1.3), sd_segment(X, Y, 16.0, 11.2, 31.0, 10.0, 1.3, 2.2),
-        sd_segment(X, Y, 1.0, 22.0, 16.0, 21.0, 2.2, 1.3), sd_segment(X, Y, 16.0, 21.0, 31.0, 22.2, 1.3, 2.2),
-    ]) + knob
-    in_hole = down((hole < 0).astype(float), 4) >= 0.5
-    bar_px = (down((bars < 0).astype(float), 4) >= 0.5) & in_hole
-    open_px = in_hole & ~bar_px
-    # bars: rough cylinders lit from the top-left; knots where they cross
-    Hb = -down(np.clip(bars, -2.8, 0), 4)
-    Ib = quant(4.6 + lit(Hb * 1.8, 1.0, wrap=False) * 7 + (fbm(w, h, 4, seed(name, "barg"), 2) - 0.5) * 1.4,
-               10, 2, 8)
-    Ib = despeckle(Ib, wrap=False)
-    I = np.where(bar_px, Ib, I)
-    shell = ~in_hole
-    lip = dilate(in_hole) & shell                    # the shell's rim round the hollow, in shadow
-    I[lip] = np.clip(I[lip] - 2, 1, 9)
+    pts = jitter_points(w, h, 3, 3, rng_for(name, "cells"), 0.55)
+    F1, F2, idx, dx, dy = voronoi(w, h, pts)
+    knob = (pnoise(w, h, 8, 8, seed(name, "knob")) - 0.5) * 1.3
+    edge = (F2 - F1) / 2 + knob                      # about the distance from the middle of the nearest bar
+    bar_px = edge < 2.0
+    open_px = ~bar_px
+    # bars: rough knobbly cylinders lit from the top-left
+    Hb = np.clip(2.0 - edge, 0, 2.0)
+    Ib = quant(4.4 + lit(Hb * 1.8, 1.0) * 7 + (fbm(w, h, 4, seed(name, "barg"), 2) - 0.5) * 1.4, 10, 2, 8)
+    I = np.where(bar_px, despeckle(Ib), I)
     rock = paint(I, MET)
-    core, thick = fissures(name, w, h, [(0, 1, 0.75, 7, 0), (31, 1, 2.4, 7, 0), (1, 31, -0.8, 7, 0),
-                                        (31, 31, -2.35, 7, 0), (16, 0, 1.5, 3, 0)], wrap=False)
-    core &= shell & ~lip
-    thick &= shell & ~lip
-    yy, xx = np.mgrid[0:h, 0:w]
-    dist = np.hypot(xx + 0.5 - cx, yy + 0.5 - cy)
-    rim = dilate(open_px) & bar_px                   # bar edges facing the heart catch its light...
-    rim_hot = rim & (shift(open_px, 0, -1) | shift(open_px, -1, 0))   # ...brightest where the heart is below/right
+    depth = np.clip((edge - 2.0) / 2.8, 0, 1)        # 0 at a bar, 1 deep in a gap
+    rim = dilate(open_px, wrap=True) & bar_px        # bar edges facing a gap catch its light...
+    rim_hot = rim & (shift(open_px, 0, -1, wrap=True) | shift(open_px, -1, 0, wrap=True))  # ...most below/right
     frames = []
     for g in (0.0, 0.34, 0.67, 1.0):
-        A = glow_over(rock, core, thick, I, g, wrap=False, spill=1.2)
-        t = np.clip(dist / (13.0 + 1.0 * g), 0, 1)
-        heat = 8.8 - t ** 1.5 * 6.0 + 0.5 * g
-        Hi = quant(heat, 9, 2, 8)
+        A = rock.copy()
+        Hi = quant(3.2 + depth ** 0.8 * 5.0 + 0.6 * g, 9, 2, 8)
         A[open_px] = HOT[Hi[open_px]]
         A[rim] = MET_SPILL[np.clip(I[rim] + 2, 0, 9)]
-        A[rim_hot] = HOT[np.clip(Hi[rim_hot] - 4, 2, 4)]
+        A[rim_hot] = HOT[np.clip(Hi[rim_hot] - 1 + int(round(g)), 1, 3)]
         frames.append(A)
     animated("textures/block/meteorite_core.png", frames, frametime=5, order=[0, 1, 2, 3, 2, 1], interpolate=True)
 
 
-def lamellae(name, w=32, h=32):
-    """The etched lattice of meteoric iron: three families of irregular bands (0, ~63, ~117 degrees), periodic."""
+def lamellae(name, w=32, h=32, families=False):
+    """The etched lattice of meteoric iron: three families of irregular bands (0, ~63, ~117 degrees), periodic.
+    Returns their sum, or with `families` the three band maps (0.7 a light band, -0.6 a dark gap, 0 between)."""
     r = rng_for(name, "lamellae")
     yy, xx = np.mgrid[0:h, 0:w]
-    out = np.zeros((h, w))
+    fams = []
     for f in (yy % 32, (2 * xx + yy) % 32, (2 * xx - yy) % 32):
         table = np.zeros(32)
         i = int(r.integers(0, 4))
@@ -882,8 +915,8 @@ def lamellae(name, w=32, h=32):
             wd = int(r.integers(1, 3))
             table[i:i + wd] = r.choice([0.7, -0.6])
             i += wd + int(r.integers(4, 9))
-        out += table[f]
-    return out
+        fams.append(table[f])
+    return fams if families else sum(fams)
 
 
 def seam_glow(A, seam, I_face, name, w=32, h=32, hot=(3, 6)):
@@ -899,20 +932,29 @@ def seam_glow(A, seam, I_face, name, w=32, h=32, hot=(3, 6)):
 
 def refined_meteorite():
     w = h = 32
-    # polished: one slab with an etched lattice and a glowing seam all round
+    # polished: the etched lattice over the whole face, edge to edge (it is periodic, so the block tiles like a
+    # vanilla stone: no frame, fall-off or corner glint to grid a wall). The heat is a faint glow running along the
+    # level family's etched rows (whole rows, where the steep families only step) wherever a slow periodic heat
+    # field is warm: long dim violet seams, magenta where hottest; no embers, blobs or dots (stretches shorter than
+    # 4 px are dropped)
     name = "polished_meteorite"
-    lab, U, V, BW, BH = bond(w, h, [(0, 32, [0])])
-    yy, xx = np.mgrid[0:h, 0:w]
-    T = 3.6 - (xx + yy) / 64 * 1.3 + (fbm(w, h, 2, seed(name), 2) - 0.5) * 0.8
+    T = 3.4 + (fbm(w, h, 4, seed(name), 2) - 0.5) * 0.8
     I = despeckle(quant(T, 10, 2, 5))
-    lam = lamellae(name)                             # crisp etched lines: lighter kamacite bands, darker gaps
+    fams = lamellae(name, families=True)             # crisp etched lines: lighter kamacite bands, darker gaps
+    lam = sum(fams)
     I = np.clip(I + np.where(lam > 0.6, 2, 0) + np.where(lam > 1.3, 1, 0) - np.where(lam < -1.0, 1, 0), 1, 7)
-    off, mortar = bevel_steps(U, V, BW, BH, hi=(+3, +1.5), lo=(-1.5, -0.5))
-    I = np.where(off != 0, quant(I + off, 10, 1, 8), I)
-    for (x, y, v) in ((3, 3, 9), (4, 3, 8), (5, 3, 7), (3, 4, 8), (3, 5, 7)):
-        I[y, x] = v
     A = paint(I, MET)
-    block(name, seam_glow(A, mortar, I, name, hot=(4, 6)))
+    gaps = fams[0] < 0                                # the level family: whole etched rows (the steep ones step)
+    heat = fbm(w, h, 3, seed(name, "heat"), 2)
+    for lo, hot in ((0.45, False), (0.64, True)):              # warm, then hotter, stretches along the rows
+        warm = gaps & (heat > lo)
+        keep = np.zeros_like(warm)
+        for comp in components(warm):
+            if len(comp) >= 4:
+                for y, x in comp:
+                    keep[y, x] = True
+        A[keep] = HOT[2] if hot else MET_SPILL[np.clip(I[keep] + 2, 0, 9)]
+    block(name, A)
     # bricks: hammered metal-rock bricks set in glowing mortar
     name = "meteorite_bricks"
     rows = [(0, 8, [5, 21]), (8, 8, [13, 29]), (16, 8, [0, 16]), (24, 8, [8, 23])]
@@ -939,16 +981,17 @@ refined_meteorite()
 
 # ====================================================================== ground: end stone, End grass, moss, sand
 def endstone_field(name, w=32, h=32):
-    """End stone (index map on ENDSTONE): soft pale lumps and a scatter of small pits, like vanilla's."""
+    """End stone (index map on ENDSTONE): soft pale lumps and a scatter of small pits, like vanilla's. Lumps and
+    pits sit on jittered grids and the value noise is fine, so the field is even (no big light or dark patch)."""
     r = rng_for(name, "es")
-    pts = jitter_points(w, h, 4, 4, r, 0.9)
+    pts = jitter_points(w, h, 4, 4, r, 0.6)
     F1, F2, idx, dx, dy = voronoi(w, h, pts)
     H = np.sqrt(np.clip(1 - (F1 / 7.5) ** 2, 0, 1)) * 2.0 + (fbm(w, h, 4, seed(name, "es2"), 2) - 0.5) * 1.0
-    T = 4.7 + lit(H, 1.2) * 6.5 + (pnoise(w, h, 3, 3, seed(name, "es3")) - 0.5) * 0.9
+    T = 4.7 + lit(H, 1.2) * 6.5 + (pnoise(w, h, 8, 8, seed(name, "es3")) - 0.5) * 0.7
     T = np.where((F2 - F1) < 1.2, T - 1.0, T)
     I = despeckle(quant(T, 8, 2, 7))
-    for _ in range(7):                                           # pits: a dark dent with a lit lower-right lip
-        x, y = int(r.integers(w)), int(r.integers(h))
+    for px, py in jitter_points(w, h, 3, 3, r, 0.8):            # pits: a dark dent with a lit lower-right lip
+        x, y = int(px), int(py)
         big = r.random() < 0.5
         cells = [(0, 0, 1), (1, 0, 2), (0, 1, 2), (1, 1, 5)] if big else [(0, 0, 2), (1, 0, 4), (0, 1, 5)]
         for ox, oy, t in cells:
@@ -967,9 +1010,10 @@ def clumps(name, w, h, n, rad, wrap=True):
     return H, gap, dx, dy, idx, len(pts)
 
 
-def combed(T, name, n, flow_cells=2, length=(2, 4), jitter=0.45, lo=1, hi=9, light=0.55, wrap=True, steps=10):
-    """Grass blades seen from above, combed by a gentle flow: darker blades first, then lit blades (lighter
-    tips) that cast a one-pixel shadow down-right. Returns an index map."""
+def combed(T, name, n, flow_cells=2, length=(2, 4), jitter=0.45, lo=1, hi=9, light=0.55, wrap=True, steps=10,
+           tip=1):
+    """Grass blades seen from above, combed by a gentle flow: darker blades first, then lit blades (`tip` steps
+    lighter at their last two pixels) that cast a one-pixel shadow down-right. Returns an index map."""
     h, w = T.shape
     r = rng_for(name, "combed")
     flow = fbm(w, h, flow_cells, seed(name, "flow"), 1) * 2 * math.pi * 1.2
@@ -988,7 +1032,7 @@ def combed(T, name, n, flow_cells=2, length=(2, 4), jitter=0.45, lo=1, hi=9, lig
                 I[sy, sx] = max(lo, min(I[sy, sx], quant(T[sy, sx] - 1, steps, lo, hi)))
         for i, (x, y) in enumerate(px):
             base = quant(T[y, x], steps, lo, hi)
-            v = base + (1 + (i >= len(px) - 2)) if up else base - 1
+            v = base + (1 + tip * (i >= len(px) - 2)) if up else base - 1
             I[y, x] = np.clip(v, lo, hi)
     return I
 
@@ -997,10 +1041,12 @@ def end_grass_top():
     name = "end_grass_block_top"
     w = h = 32
     H, gap, dx, dy, idx, cnt = clumps(name, w, h, 4, (5.0, 7.0))
-    T = 4.4 + lit(H, 1.2) * 4.0 + (fbm(w, h, 2, seed(name, "v"), 2) - 0.5) * 1.2
+    T = 4.4 + lit(H, 1.2) * 4.0 + (fbm(w, h, 4, seed(name, "v"), 2) - 0.5) * 0.7   # fine: no big light patch
     T = np.where(gap, T - 1.2, T)
-    I = combed(T, name, 150, flow_cells=2, length=(3, 4), lo=2, hi=8)
-    I = despeckle(I, passes=1)
+    # blades one step lighter along their length (no brighter tip pixel) and capped below the palest lilacs, so
+    # the lit blades read as a soft sheen on the turf instead of a scatter of bright specks
+    I = combed(T, name, 150, flow_cells=2, length=(3, 4), lo=2, hi=7, tip=0)
+    I = despeckle(I, passes=2)
     block(name, paint(I, GRASS))
 
 
@@ -1047,7 +1093,9 @@ def end_grass_side():
 
 
 def end_moss():
-    """Magenta alien moss in soft fuzzy clumps, with a few teal sporangia gathered in little colonies."""
+    """Magenta alien moss in soft fuzzy clumps. No sporangia, dots or other small motifs: its alien cast is an
+    undertone, the crevices between the clumps (one connected web) sinking into a cool indigo shade at the same
+    depth as the magenta's, so a wall or a carpet of it reads as even turf."""
     name = "end_moss_block"
     w = h = 32
     H, gap, dx, dy, idx, cnt = clumps(name, w, h, 6, (3.4, 4.8))
@@ -1058,51 +1106,38 @@ def end_moss():
     T = 3.9 + lit(H, 1.5) * 5.0 + (H - 1.2) * 0.4
     T = np.where(gap, T - 1.1, T)
     I = despeckle(quant(T, 8, 1, 7))
-    A = paint(I, MOSS)
-    r = rng_for(name, "spor")
-    taken = np.zeros((h, w), bool)
-    for _ in range(4):
-        cx, cy = r.uniform(0, w), r.uniform(0, h)
-        for _ in range(int(r.integers(3, 6))):
-            x = int(cx + r.normal(0, 1.6)) % w
-            y = int(cy + r.normal(0, 1.6)) % h
-            if taken[max(0, y - 2):y + 3, max(0, x - 2):x + 3].any():
-                continue
-            tall = r.random() < 0.3
-            cells = [(0, 0, 6), (0, 1, 4), (0, 2, 2)] if tall else [(0, 0, 5), (1, 0, 4), (0, 1, 3), (1, 1, 2)]
-            for ox, oy, t in cells:
-                A[(y + oy) % h, (x + ox) % w] = TEAL[t]
-                taken[(y + oy) % h, (x + ox) % w] = True
-            foot = (y + 1 + max(c[1] for c in cells)) % h
-            A[foot, x % w] = MOSS[1]
-            A[foot, (x + 1) % w] = MOSS[2]
+    A = paint(I, MOSS, MOSS_UNDER, gap & (I <= 2))
     block(name, A)
 
 
-def sand_height(name, w=32, h=32, craters=2):
+def sand_height(name, w=32, h=32):
+    """Dust: fine grain, faint drift ripples and two small craters on one diagonal of a jittered 2 x 2 grid (the
+    pebbles take the cells between them), so nothing bunches up into a spot that grids a floor."""
     r = rng_for(name, "sand")
     yy, xx = np.mgrid[0:h, 0:w] + 0.5
     H = (fbm(w, h, 8, seed(name, "g"), 2) - 0.5) * 0.9
     H += np.sin((xx + yy * 0.5) / 32 * 2 * math.pi * 2 + r.uniform(0, 6)) * 0.12   # faint drift ripples
-    for _ in range(craters):
-        cx, cy, rad = r.uniform(0, w), r.uniform(0, h), r.uniform(1.8, 2.6)
+    for (cx, cy) in jitter_points(w, h, 2, 2, r, 0.5)[::3]:
+        rad = r.uniform(1.8, 2.6)
         d = np.hypot((xx - cx + w / 2) % w - w / 2, (yy - cy + h / 2) % h - h / 2) / rad
         H += np.where(d < 1, -(1 - d ** 2) * 1.0, 0) + np.exp(-((d - 1.15) / 0.3) ** 2) * 0.45
     return H
 
 
-def pebbles(A, name, n, w=32, h=32, avoid=None):
-    """Small grey stones lying on the dust: a dark body, a lit top-left pixel, a shadow down-right."""
+def pebbles(A, name, w=32, h=32, avoid=None):
+    """Small stones half sunk in the dust: a body just darker than the dust, a lit top-left pixel, a soft shadow
+    down-right, kept low in contrast so they read as part of the ground, not as dark specks. One in each cell of a
+    jittered 2 x 2 grid set half a cell across from the craters' grid, so they spread evenly."""
     r = rng_for(name, "pebbles")
-    for _ in range(n):
-        x, y = int(r.integers(w)), int(r.integers(h))
+    for (px, py) in jitter_points(w, h, 2, 2, r, 0.6):
+        x, y = int(px + w / 4) % w, int(py) % h
         art = str(r.choice(["ab|bc", "abb|bcc", "a|b"])).split("|")
         if avoid is not None and avoid[y % h, x % w]:
             continue
         for j, row in enumerate(art):
             for i, ch in enumerate(row):
-                A[(y + j) % h, (x + i) % w] = SAND[{"a": 5, "b": 3, "c": 2}[ch]]
-        A[(y + len(art)) % h, (x + len(art[-1])) % w] = SAND[2]
+                A[(y + j) % h, (x + i) % w] = SAND[{"a": 6, "b": 5, "c": 4}[ch]]
+        A[(y + len(art)) % h, (x + len(art[-1])) % w] = SAND[4]
 
 
 def end_sand_I(name, extra=None):
@@ -1116,7 +1151,7 @@ def end_sand_I(name, extra=None):
 def end_sand():
     I = end_sand_I("end_sand")
     A = paint(I, SAND)
-    pebbles(A, "end_sand", 3)
+    pebbles(A, "end_sand")
     block("end_sand", A)
     suspicious_sand()
 
@@ -1153,7 +1188,7 @@ def suspicious_sand():
         extra += np.where((np.cos(ang * 7 + stage * 0.7) > 0.7) & (d > 1.05) & (d < 1.55), 0.45, 0)
         I = end_sand_I(name, extra)
         A = paint(I, SAND)
-        pebbles(A, name, 4, avoid=d < 1.7)
+        pebbles(A, name, avoid=d < 1.7)
         show = relic & (d < 0.9)
         A[show] = Rc[show]
         cling = show & ~shift(show, 0, -1) & (d > 0.3)           # dust still clinging along the lower edge
@@ -1163,13 +1198,13 @@ def suspicious_sand():
 
 # ====================================================================== chorus: stems, roots, fruit block
 def chorus_stem():
-    """Side: ribbed like a chorus plant, jointed at two nodes (a pinched ring) where pale buds sit. Tiles both
-    ways. Top: the cut trunk, ribbed bark round pale flesh with growth rings and a dark pith."""
+    """Side: ribbed like a chorus plant (five ribs evenly spaced, so no wider groove stripes a wall), jointed at
+    two nodes (a pinched ring) where buds swell softly, one on every rib, alternating nodes. Tiles both ways. Top: the cut trunk, ribbed bark round pale flesh with growth rings and a dark pith."""
     name = "chorus_stem"
     w = h = 32
     r = rng_for(name)
     yy, xx = np.mgrid[0:h, 0:w] + 0.5
-    ribs = [2.5, 8.5, 14.0, 19.5, 25.5]
+    ribs = [2.5 + 6.4 * i for i in range(5)]
     H = np.zeros((h, w))
     nodes = (5, 21)
     for i, x0 in enumerate(ribs):
@@ -1184,18 +1219,15 @@ def chorus_stem():
     groove = H < 0.35
     I[groove] = np.clip(I[groove] - 1, 1, 9)
     A = paint(I, CHORUS)
-    for n in nodes:                                                  # pale bud nodules where the ribs pinch
-        for i, x0 in enumerate(ribs):
-            if r.random() < 0.4:
-                continue
-            x = int((x0 + 3.0) % w)
+    for i, x0 in enumerate(ribs):                                    # bud nodules where the ribs pinch: soft
+        for n in nodes[i % 2:i % 2 + 1]:                            # swellings a step or two lighter than the
+            x = int((x0 + 3.0) % w)                                  # rib, no bright star point or dark tail
             y = (n + int(r.integers(-1, 2))) % h
             stamp(A, x - 1, y - 1, """
-                .8..
-                897.
-                .75.
-                ..2.
-            """, {"9": CHORUS[9], "8": CHORUS[8], "7": CHORUS[7], "5": CHORUS[5], "2": CHORUS[1]}, wrap=True)
+                .6..
+                676.
+                .65.
+            """, {"7": CHORUS[6], "6": CHORUS[5], "5": CHORUS[4]}, wrap=True)
     block(name, A)
     name = "chorus_stem_top"
     u, v = (xx - 16) / 15.5, (yy - 16) / 15.5

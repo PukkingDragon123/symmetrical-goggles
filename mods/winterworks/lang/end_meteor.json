@@ -1,0 +1,7 @@
+{
+  "entity.winterworks.falling_meteorite": "Falling Meteorite",
+  "death.attack.winterworks.meteorite": "%1$s was struck down by a falling meteorite",
+  "death.attack.winterworks.meteorite.player": "%1$s was struck down by a falling meteorite while fighting %2$s",
+  "commands.winterworks.meteor.success": "A meteor is falling %s blocks ahead",
+  "commands.winterworks.meteor.no_ground": "There is no ground ahead for a meteor to hit"
+}

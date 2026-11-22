@@ -86,6 +86,9 @@ public final class EndSounds {
     public static final SoundEvent COCOON_HATCH = reg("block.chorus_cocoon.hatch");
     public static final SoundEvent METEORITE_HUM = reg("block.meteorite.hum");
     public static final SoundEvent RECALL = reg("effect.recall.teleport");
+    // ---- section 16: falling meteorites
+    public static final SoundEvent METEOR_WHISTLE = reg("entity.falling_meteorite.whistle");
+    public static final SoundEvent METEOR_IMPACT = reg("entity.falling_meteorite.impact");
 
     private EndSounds() {}
 

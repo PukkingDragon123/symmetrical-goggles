@@ -164,6 +164,16 @@ public final class WWBlocks {
                     COASTER_LOOP).build());
     // ---- end 0.4 fixes: rails
 
+    // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
+    public static final Block SOUL_BULL_SKULL = reg("soul_bull_skull", new dev.lowpix.winterworks.soulbull.SoulBullSkullBlock(
+            BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_BLACK).strength(1.5f, 6f)
+                    .sound(SoundType.BONE_BLOCK).noOcclusion()
+                    .lightLevel(s -> s.getValue(dev.lowpix.winterworks.soulbull.SoulBullSkullBlock.LIT) ? 10 : 0)
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+    public static final BlockEntityType<dev.lowpix.winterworks.soulbull.SoulBullSkullBlockEntity> SOUL_BULL_SKULL_BE = be(
+            "soul_bull_skull", FabricBlockEntityTypeBuilder.create(dev.lowpix.winterworks.soulbull.SoulBullSkullBlockEntity::new,
+                    SOUL_BULL_SKULL).build());
+
     // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester")
     public static final Block HARVESTER_EGG = reg("harvester_egg", new dev.lowpix.winterworks.harvester.HarvesterEggBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.SNIFFER_EGG).mapColor(net.minecraft.world.level.material.MapColor.COLOR_LIGHT_GREEN)));

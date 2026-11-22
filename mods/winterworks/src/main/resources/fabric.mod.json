@@ -3,7 +3,7 @@
   "id": "winterworks",
   "version": "${version}",
   "name": "Winterworks",
-  "description": "A winter mod: the Snowball Launcher, the Icebreaker, the Winter Express trains and the Snow Globe. The Cold Zone: Ice Caves, the cold, remade polar bears, fur armour, the Frost Mauler boss and Fang Daggers. The Amber Age: archaeology everywhere, the Dead Caves, Dig Sites, amber, mosquitoes, sniffers and the Pot Golem. Hexes & Havoc: the Hex Fortress, the Piglin Witch, the Golden Piglin, elixirs, the Soul Tank, the Hexing Table, Hexed Books, poetic curses and the Seven Deadly Sins. The Living End: Chorus Meadows and the Dead End, floating islands, eclipses, Enderflies, Endlings, Guckers, Obolisks, Dragonlings, the End Glider, a harder Ender Dragon and the Monolith. Models, textures and animations are made with lowpix.",
+  "description": "A winter mod: the Snowball Launcher, the Icebreaker, the Winter Express trains and the Snow Globe. The Cold Zone: Ice Caves, the cold, remade polar bears, fur armour, the Frost Mauler boss and Fang Daggers. The Amber Age: archaeology everywhere, the Dead Caves, Dig Sites, amber, mosquitoes, sniffers and the Pot Golem. Hexes & Havoc: the Hex Fortress, the Piglin Witch, the Golden Piglin, elixirs, the Soul Tank, the Hexing Table, Hexed Books, poetic curses and the Seven Deadly Sins. The Living End: Chorus Meadows and the Dead End, floating islands, eclipses, Enderflies, Endlings, Guckers, Obolisks, Dragonlings, the End Glider, a harder Ender Dragon and the Monolith. Tides & Treasures: deeper oceans, volcanic depths and trenches, anglerfish, lionfish, nautiluses, turtles, the Elder Guardian boss and whales you can live on. Models, textures and animations are made with lowpix.",
   "authors": [
     "lowpix"
   ],
@@ -34,6 +34,12 @@
       "dev.lowpix.winterworks.test.EndMobTests",
       "dev.lowpix.winterworks.test.EndGearTests",
       "dev.lowpix.winterworks.test.EndBossTests",
+      "dev.lowpix.winterworks.test.MeteorTests",
+      "dev.lowpix.winterworks.test.OceanWorldTests",
+      "dev.lowpix.winterworks.test.OceanMobTests",
+      "dev.lowpix.winterworks.test.OceanGearTests",
+      "dev.lowpix.winterworks.test.WhaleTests",
+      "dev.lowpix.winterworks.test.SoulBullTests",
       "dev.lowpix.winterworks.test.HarvesterTests"
     ]
   },

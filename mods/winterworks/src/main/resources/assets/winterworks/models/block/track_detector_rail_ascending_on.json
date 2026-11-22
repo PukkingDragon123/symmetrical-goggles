@@ -1,0 +1,4 @@
+{
+  "parent": "winterworks:block/track_detector_rail_ascending",
+  "textures": {"sensor": "winterworks:block/track_sensor_lit", "lamp": "winterworks:block/track_lamp_lit"}
+}

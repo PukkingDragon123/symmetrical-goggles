@@ -166,6 +166,18 @@ public final class WWSounds {
     public static final SoundEvent RAMMING_CRY = reg("entity.player.ramming_cry");
     public static final SoundEvent RAMMING_WIND = reg("entity.player.ramming_wind");
 
+    // ---- 0.4 fixes: Soul Bull (docs/FIXES_0_4.md)
+    public static final SoundEvent SOUL_BULL_AMBIENT = reg("entity.soul_bull.ambient");
+    public static final SoundEvent SOUL_BULL_HURT = reg("entity.soul_bull.hurt");
+    public static final SoundEvent SOUL_BULL_DEATH = reg("entity.soul_bull.death");
+    public static final SoundEvent SOUL_BULL_SNORT = reg("entity.soul_bull.snort");
+    public static final SoundEvent SOUL_BULL_RAM = reg("entity.soul_bull.ram");
+    public static final SoundEvent SOUL_BULL_PIN = reg("entity.soul_bull.pin");
+    public static final SoundEvent SOUL_BULL_STEP = reg("entity.soul_bull.step");
+    public static final SoundEvent SOUL_BULL_DRAIN = reg("entity.soul_bull.drain");
+    public static final SoundEvent SOUL_BULL_REVIVE = reg("entity.soul_bull.revive");
+    public static final SoundEvent SOUL_BULL_SKULL_IGNITE = reg("block.soul_bull_skull.ignite");
+
     // ---- 0.4 fixes: Harvester (docs/FIXES_0_4.md "The Harvester"; with the Amber Age plants' sniffer sneeze)
     public static final SoundEvent HARVESTER_AMBIENT = reg("entity.harvester.ambient");
     public static final SoundEvent HARVESTER_HURT = reg("entity.harvester.hurt");

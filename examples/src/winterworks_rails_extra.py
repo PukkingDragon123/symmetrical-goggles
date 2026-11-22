@@ -12,13 +12,10 @@ where its rails line up with an east-west rail (rows 2-4 and 11-13) just like a 
 dark; powered (`switch_rail_on.png`) the blade is thrown shut against the stock rail (polished steel) and the lamp
 glows. Sleepers are a separate greyscale layer (`switch_rail_ties.png`, tinted like every Winter Express rail).
 
-Models (written by this script): `block/switch_rail_right(_on)` branch to the east, `block/switch_rail_left(_on)` the
-mirror image (branch to the west), all with the toe to the south: flat rail layers like the other rails, plus a little
-3D ground throw (a low iron stand with a red-knobbed lever) on the side away from the branch, its lever leaning one
-way unpowered and the other way powered (`block/switch_rail_lever.png`). Rotate in the blockstate with
-"y": toe south 0, toe west 90, toe north 180, toe east 270. Item model `item/switch_rail` (flat, like the other rails).
+The rails themselves are 3D track now (examples/src/winterworks_track_rails.py writes every rail's block model, the
+switch rail's included, and keeps its lever texture `block/switch_rail_lever.png` from here); these flat textures stay
+for reference.
 """
-import json
 import os
 
 from PIL import Image
@@ -224,48 +221,6 @@ def draw_lever():
     return im
 
 
-def switch_model(name, rail, mirror, powered):
-    """A flat switch rail (tinted sleepers under the steel) plus the ground throw on the side away from the branch."""
-    M = "winterworks"
-    up, down = ([16, 0, 0, 16], [16, 16, 0, 0]) if mirror else ([0, 0, 16, 16], [0, 16, 16, 0])
-
-    def layer(y, tex, tint):
-        faces = {"up": {"uv": up, "texture": tex}, "down": {"uv": down, "texture": tex}}
-        if tint:
-            for f in faces.values():
-                f["tintindex"] = 0
-        return {"from": [0, y, 0], "to": [16, y, 16], "faces": faces}
-
-    def mx(a, b):                     # mirror an x range across the block
-        return (16 - b, 16 - a) if mirror else (a, b)
-
-    sx0, sx1 = mx(0.25, 1.75)
-    lx0, lx1 = mx(0.75, 1.25)
-    ox = 15.0 if mirror else 1.0
-    side = {"uv": [0, 4, 3, 5.5], "texture": "#lever"}
-    stand = {"from": [sx0, 1, 11.5], "to": [sx1, 2.5, 14.5], "faces": {
-        "up": {"uv": [0, 0, 1.5, 3], "texture": "#lever"}, "north": dict(side, uv=[0, 4, 1.5, 5.5]),
-        "south": dict(side, uv=[0, 4, 1.5, 5.5]), "east": side, "west": side,
-        "down": {"uv": [0, 0, 1.5, 3], "texture": "#lever"}}}
-    rod = {"uv": [5, 0, 6, 7], "texture": "#lever"}
-    # a short throw (+-22.5 degrees, low enough to clear a passing cart): one way unpowered, the other powered
-    angle = (22.5 if not powered else -22.5) * (-1 if mirror else 1)
-    lever = {"from": [lx0, 2.5, 12.75], "to": [lx1, 7.5, 13.25],
-             "rotation": {"origin": [ox, 2.5, 13], "axis": "z", "angle": angle},
-             "faces": {f: rod for f in ("north", "south", "east", "west")} | {
-                 "up": {"uv": [5, 0, 6, 1], "texture": "#lever"}}}
-    return {"ambientocclusion": False,
-            "textures": {"particle": f"{M}:block/{rail}", "rail": f"{M}:block/{rail}",
-                         "ties": f"{M}:block/switch_rail_ties", "lever": f"{M}:block/switch_rail_lever"},
-            "elements": [layer(1, "#ties", True), layer(1.01, "#rail", False), stand, lever]}
-
-
-def write_json(path, body):
-    with open(path, "w") as fh:
-        json.dump(body, fh, indent=2)
-        fh.write("\n")
-
-
 def switch_rail():
     off, ties = draw_switch(SWITCH, LAMP_OFF)
     on, ties_on = draw_switch(SWITCH_ON, LAMP_ON)
@@ -274,15 +229,6 @@ def switch_rail():
     on.save(os.path.join(ROOT, "switch_rail_on.png"))
     ties.save(os.path.join(ROOT, "switch_rail_ties.png"))
     draw_lever().save(os.path.join(ROOT, "switch_rail_lever.png"))
-    models = os.path.join(ROOT, "..", "..", "models")
-    for side, mirror in (("right", False), ("left", True)):
-        for powered in (False, True):
-            on_ = "_on" if powered else ""
-            write_json(os.path.join(models, "block", f"switch_rail_{side}{on_}.json"),
-                       switch_model(f"switch_rail_{side}{on_}", "switch_rail" + on_, mirror, powered))
-    write_json(os.path.join(models, "item", "switch_rail.json"),
-               {"parent": "minecraft:item/generated", "textures": {"layer0": "winterworks:block/switch_rail_ties",
-                                                                    "layer1": "winterworks:block/switch_rail"}})
 
 
 def main():
@@ -296,7 +242,7 @@ def main():
     paint(None, FRAME).save(os.path.join(ROOT, "drop_rail_frame.png"))
     switch_rail()
     print("wrote trap_rail, trap_rail_on, drop_rail, drop_rail_frame, switch_rail, switch_rail_on (+ tie layers), "
-          "switch_rail_lever and the switch rail models")
+          "switch_rail_lever")
 
 
 if __name__ == "__main__":

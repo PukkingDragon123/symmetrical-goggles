@@ -44,6 +44,8 @@
     "end.LongBurnFurnaceMixin",
     "endboss.EnderDragonMixin",
     "endmob.EffectParticlesAccessor",
+    "SoulBullNaturalSpawnerMixin",
+    "SoulBullSpawnsAccessor",
     "TrailerCartRemovalMixin",
     "MinecartFurnaceMixin",
     "LoopRiderMixin",
@@ -89,6 +91,7 @@
     "client.DaggerPlayerRendererMixin",
     "client.RamPoseMixin",
     "client.RamHandMixin",
+    "client.SoulBarGuiMixin",
     "harvester.client.SnifferSneezeModelMixin",
     "harvester.client.SpriteSourcesAccessor"
   ],
