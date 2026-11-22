@@ -4,7 +4,6 @@ import dev.lowpix.winterworks.registry.EndBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
@@ -40,10 +39,6 @@ public final class EndGen {
             return null;
         }
         return Style.of(level.getBiome(p));
-    }
-
-    public static boolean is(WorldGenLevel level, BlockPos p, ResourceKey<Biome> biome) {
-        return !nearMainIsland(p.getX(), p.getZ()) && level.getBiome(p).is(biome);
     }
 
     public static boolean nearMainIsland(int x, int z) {
@@ -132,10 +127,5 @@ public final class EndGen {
     public static void suspicious(WorldGenLevel level, BlockPos p, ResourceKey<LootTable> loot, long seed) {
         level.setBlock(p, EndBlocks.SUSPICIOUS_END_SAND.defaultBlockState(), FLAGS);
         level.getBlockEntity(p, BlockEntityType.BRUSHABLE_BLOCK).ifPresent(be -> be.setLootTable(loot, seed));
-    }
-
-    /** A random-source from a hash, for builders that want java-style randomness but must agree across chunks. */
-    public static RandomSource random(long seed) {
-        return RandomSource.create(seed);
     }
 }

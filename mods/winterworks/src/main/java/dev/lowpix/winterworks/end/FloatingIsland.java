@@ -10,7 +10,8 @@ import net.minecraft.world.level.levelgen.Heightmap;
 /**
  * Floating islands and rocks (docs/END_UPDATE.md section 1). An island (y 70-150, radius 4-14) is a gently domed disc
  * with a ragged outline whose underside narrows in terraces to a point, like an inverted ziggurat worn by the void;
- * its top has the biome's own surface and plants, and big chorus roots hang from it, the biggest two blocks thick.
+ * its top has the biome's own surface and plants (in the meadows, End Moss drapes over the rim), and big chorus roots
+ * hang from it, the biggest two blocks thick.
  * Small rocks drift between them. Every island is planned from its chunk's hash, so neighbours agree on who yields
  * where two would overlap.
  */
@@ -129,6 +130,24 @@ public final class FloatingIsland {
             }
         }
         roots(w, cx, cz, radius, reach, bottom, id);
+        if (st == EndGen.Style.MEADOWS) {   // End Moss draping over the rim
+            for (int dx = -reach; dx <= reach; dx++) {
+                for (int dz = -reach; dz <= reach; dz++) {
+                    if (bottom[dx + reach][dz + reach] == Integer.MIN_VALUE) {
+                        continue;
+                    }
+                    int x = cx + dx, z = cz + dz, yTop = top[dx + reach][dz + reach];
+                    int len = (int) Math.round(1 + 2.5 * (0.5 + 0.5 * n.b().getValue(x * 0.3 + 11, z * 0.3)));
+                    for (int k = 1; k <= len; k++) {
+                        int y = yTop - k;
+                        if (w.get(x, y, z).is(net.minecraft.world.level.block.Blocks.END_STONE) && (w.get(x + 1, y, z).isAir()
+                                || w.get(x - 1, y, z).isAir() || w.get(x, y, z + 1).isAir() || w.get(x, y, z - 1).isAir())) {
+                            w.set(x, y, z, EndGen.MOSS);
+                        }
+                    }
+                }
+            }
+        }
         if (st == EndGen.Style.MEADOWS && radius >= 8) {   // a chorus tree on the bigger meadow islands
             int tx = (int) ((id >>> 20) % 3) - 1, tz = (int) ((id >>> 24) % 3) - 1;
             ChorusTree.grow(w, cx + tx, top[tx + reach][tz + reach] + 1, cz + tz, EndGen.mix(id ^ 0x7EE));

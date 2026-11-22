@@ -105,6 +105,8 @@ final class EndShots {
         view(() -> island == null ? null : new Vec3[]{Vec3.atCenterOf(island).add(-(islandRadius + 16), -2, -(islandRadius + 9)),
                 Vec3.atCenterOf(island).add(0, -4, 0)});
         shot("floating_island");
+        view(() -> island == null ? null : new Vec3[]{Vec3.atCenterOf(island).add(-22, -30, -18), Vec3.atCenterOf(island).add(0, -6, 0)});
+        shot("floating_island_below");
         // ---- the Dead End
         view(() -> deadEnd == null ? null : vista(deadEnd, deadEndDir, 14));
         shot("dead_end");
@@ -324,7 +326,7 @@ final class EndShots {
         for (int cx = (x >> 4) - 3; cx <= (x >> 4) + 3; cx++) {
             for (int cz = (z >> 4) - 3; cz <= (z >> 4) + 3; cz++) {
                 FloatingIsland.Plan p = FloatingIsland.plan(seed, cx, cz);
-                if (p != null && Math.hypot(p.x() - x, p.z() - z) < p.radius() + 20) {
+                if (p != null && Math.hypot(p.x() - x, p.z() - z) < p.radius() + 14) {
                     return false;
                 }
                 if (Math.abs(cx - (x >> 4)) <= 2 && Math.abs(cz - (z >> 4)) <= 2 && level.getChunk(cx, cz,
