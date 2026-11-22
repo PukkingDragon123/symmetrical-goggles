@@ -245,11 +245,12 @@ contract for the Java side.
   blood potion at sheet (240, 64, 16, 16); the rows moved: `HexGui.ROW_X` 80 -> 95 and `ROW_W` 88 -> 73 (must change
   with the art, or the rows draw misaligned). The no-sheet fallback's 9-link chain must fit 73 px.
 * `sweet_scent` particle: 5 frames, soft alpha (translucent sheet, setSpriteFromAge). `mob_effect/burning.png`.
-* **Soul Bull**: `SoulBullModel` (density 2; ~1.3 x 1.6 x 3.1 blocks with horns and tail flame); glow via `_glow`
-  with RenderType.eyes. Textures: `soul_bull`, `soul_bull_armor_{iron,gold,diamond}` (horse armour),
+* **Soul Bull**: `SoulBullModel` (density 2; ~2.05 x 2.6 x 4.65 blocks with horns and tail flame, the trunk and legs
+  ~1.7 wide and 2.7 long, withers 2.0 blocks up, the hump's spine tips 2.6; a hitbox of about 1.7 x 2.5 fits); glow
+  via `_glow` with RenderType.eyes. Textures: `soul_bull`, `soul_bull_armor_{iron,gold,diamond}` (horse armour),
   `soul_bull_armored` (the natural armoured variant). Hide `saddle` unless saddled; `rider` locator = MC model
-  (0, 1, 1.5), seat top ~1.44 blocks. Optional: scale `soul_fire` with soul energy. Clips: idle 4.0, walk 1.2, run 0.6,
-  drain 2.0 (loops); ram 1.0, pin 1.5, revive 2.0.
+  (0, -11.25, 3.5), seat top ~2.2 blocks. Optional: scale `soul_fire` with soul energy. Clips: idle 4.0, walk 1.2,
+  run 0.6, drain 2.0 (loops); ram 1.0, pin 1.5, revive 2.0.
 * **Soul Bull Skull** block: `SoulBullSkullModel` (bones `skull`, `jaw`, `horn_l/r`, `eye_fire`; ~0.5 render scale;
   hide `eye_fire` when unlit; idle 2 s loop); a renderer like FrostMaulerSkullRenderer.
 * **Soul bar**: `gui/soul_bar.png` 182x25: background at v=0, full-bar frames at v=5,10,15,20 (182x5 each; frame
