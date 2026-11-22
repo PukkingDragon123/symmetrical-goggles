@@ -76,9 +76,9 @@ public class GuckerRenderer extends EndMobRenderer<Gucker> {
             if (swell > 0f) {
                 float wobble = phase == Gucker.Phase.INFLATING ? Mth.sin(age * 1.3f) * 0.05f * swell : 0f;
                 get("throat").ifPresent(p -> {
-                    p.xScale *= 1f + swell * 0.7f + wobble;
-                    p.yScale *= 1f + swell * 1.6f + wobble;
-                    p.zScale *= 1f + swell * 0.9f + wobble;
+                    p.xScale *= 1f + swell * 1.1f + wobble;   // a balloon: out to the sides as much as down
+                    p.yScale *= 1f + swell * 1.3f + wobble;
+                    p.zScale *= 1f + swell * 1.0f + wobble;
                 });
             }
             if (phase == Gucker.Phase.NORMAL) {
